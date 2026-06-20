@@ -48,7 +48,6 @@
 using namespace std::literals;
 
 using ::tr::serializer::to_variant;
-using ::trqt::variant_helpers::dictAdd;
 using ::trqt::variant_helpers::dictFind;
 
 /***
@@ -102,16 +101,15 @@ bool Session::portTestPending(Session::PortTestIpProtocol const ip_protocol) con
 
 void Session::copyMagnetLinkToClipboard(int torrent_id)
 {
-    static auto const Fields = std::array{ tr_quark_get_string_view(TR_KEY_magnet_link) };
-
-    tr_variant args;
-    tr_variantInitDict(&args, 2);
-    dictAdd(&args, TR_KEY_ids, std::array<int, 1>{ torrent_id });
-    dictAdd(&args, TR_KEY_fields, Fields);
+    auto params = makeParams(TR_KEY_ids, torrent_ids_t{ torrent_id });
+    auto fields = tr_variant::Vector{};
+    fields.reserve(1U);
+    fields.emplace_back(tr_variant::unmanaged_string(TR_KEY_magnet_link));
+    params.insert_or_assign(TR_KEY_fields, std::move(fields));
 
     auto* q = new RpcQueue{};
 
-    q->add([this, &args]() { return exec(TR_KEY_torrent_get, &args); });
+    q->add([this, params = std::move(params)]() mutable { return exec(TR_KEY_torrent_get, std::move(params)); });
 
     q->add(
         [](RpcResponse const& r)
@@ -951,13 +949,15 @@ void Session::addNewlyCreatedTorrent(QString const& filename, QString const& loc
 {
     QByteArray const b64 = AddData(filename).toBase64();
 
-    tr_variant args;
-    tr_variantInitDict(&args, 3);
-    dictAdd(&args, TR_KEY_download_dir, local_path);
-    dictAdd(&args, TR_KEY_paused, !prefs_.get<bool>(TR_KEY_start_added_torrents));
-    dictAdd(&args, TR_KEY_metainfo, b64);
-
-    exec(TR_KEY_torrent_add, &args);
+    exec(
+        TR_KEY_torrent_add,
+        makeParams(
+            TR_KEY_download_dir,
+            local_path,
+            TR_KEY_paused,
+            !prefs_.get<bool>(TR_KEY_start_added_torrents),
+            TR_KEY_metainfo,
+            b64.toStdString()));
 }
 
 void Session::removeTorrents(torrent_ids_t const& ids, bool delete_files)
