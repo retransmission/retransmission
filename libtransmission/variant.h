@@ -603,7 +603,6 @@ bool tr_variantGetStrView(tr_variant const* variant, std::string_view* setme);
 size_t tr_variantListSize(tr_variant const* var);
 tr_variant* tr_variantDictAdd(tr_variant* var, tr_quark key);
 tr_variant* tr_variantDictAddDict(tr_variant* var, tr_quark key, size_t n_reserve);
-tr_variant* tr_variantDictAddList(tr_variant* var, tr_quark key, size_t n_reserve);
 tr_variant* tr_variantDictAddStrView(tr_variant* var, tr_quark key, std::string_view value);
 tr_variant* tr_variantDictFind(tr_variant* var, tr_quark key);
 tr_variant* tr_variantListAdd(tr_variant* var);
