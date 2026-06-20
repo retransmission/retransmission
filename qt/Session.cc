@@ -832,30 +832,27 @@ void Session::setBlocklistSize(int64_t i)
     emit blocklistUpdated(i);
 }
 
-void Session::addTorrent(AddData const& add_me, tr_variant* args_dict)
+void Session::addTorrent(AddData const& add_me, tr_variant::Map args_dict)
 {
-    assert(tr_variantDictFind(args_dict, TR_KEY_filename) == nullptr);
-    assert(tr_variantDictFind(args_dict, TR_KEY_metainfo) == nullptr);
+    assert(!args_dict.contains(TR_KEY_filename));
+    assert(!args_dict.contains(TR_KEY_metainfo));
 
-    if (tr_variantDictFind(args_dict, TR_KEY_paused) == nullptr)
-    {
-        dictAdd(args_dict, TR_KEY_paused, !prefs_.get<bool>(TR_KEY_start_added_torrents));
-    }
+    args_dict.try_emplace(TR_KEY_paused, !prefs_.get<bool>(TR_KEY_start_added_torrents));
 
     switch (add_me.type)
     {
     case AddData::MAGNET:
-        dictAdd(args_dict, TR_KEY_filename, add_me.magnet);
+        args_dict.insert_or_assign(TR_KEY_filename, add_me.magnet.toStdString());
         break;
 
     case AddData::URL:
-        dictAdd(args_dict, TR_KEY_filename, add_me.url.toString());
+        args_dict.insert_or_assign(TR_KEY_filename, add_me.url.toString().toStdString());
         break;
 
     case AddData::FILENAME:
         [[fallthrough]];
     case AddData::METAINFO:
-        dictAdd(args_dict, TR_KEY_metainfo, add_me.toBase64());
+        args_dict.insert_or_assign(TR_KEY_metainfo, add_me.toBase64().toStdString());
         break;
 
     default:
@@ -866,7 +863,7 @@ void Session::addTorrent(AddData const& add_me, tr_variant* args_dict)
     auto* q = new RpcQueue{};
 
     q->add(
-        [this, args_dict]() { return exec(TR_KEY_torrent_add, args_dict); },
+        [this, args_dict = std::move(args_dict)]() mutable { return exec(TR_KEY_torrent_add, std::move(args_dict)); },
         [add_me](RpcResponse const& r)
         {
             auto* d = new QMessageBox{ QMessageBox::Warning,
@@ -881,18 +878,26 @@ void Session::addTorrent(AddData const& add_me, tr_variant* args_dict)
     q->add(
         [this, add_me](RpcResponse const& r)
         {
-            if (tr_variant* dup = nullptr; tr_variantDictFindDict(r.args.get(), TR_KEY_torrent_added, &dup))
+            if (auto const* const args = r.args->get_if<tr_variant::Map>(); args != nullptr)
             {
-                add_me.disposeSourceFile();
-            }
-            else if (tr_variantDictFindDict(r.args.get(), TR_KEY_torrent_duplicate, &dup))
-            {
-                add_me.disposeSourceFile();
-
-                if (auto const hash = dictFind<QString>(dup, TR_KEY_hash_string))
+                if (args->contains(TR_KEY_torrent_added))
                 {
-                    duplicates_.try_emplace(add_me.readableShortName(), *hash);
-                    duplicates_timer_.start(1000);
+                    add_me.disposeSourceFile();
+                }
+                else if (auto const* const dup = args->find_if<tr_variant::Map>(TR_KEY_torrent_duplicate); dup != nullptr)
+                {
+                    add_me.disposeSourceFile();
+
+                    if (auto const iter = dup->find(TR_KEY_hash_string); iter != dup->end())
+                    {
+                        if (auto const hash = iter->second.value_if<std::string_view>())
+                        {
+                            duplicates_.try_emplace(
+                                add_me.readableShortName(),
+                                QString::fromUtf8(std::data(*hash), static_cast<IF_QT6(qsizetype, int)>(std::size(*hash))));
+                            duplicates_timer_.start(1000);
+                        }
+                    }
                 }
             }
         });
@@ -935,9 +940,7 @@ void Session::onDuplicatesTimer()
 
 void Session::addTorrent(AddData const& add_me)
 {
-    tr_variant args;
-    tr_variantInitDict(&args, 3);
-    addTorrent(add_me, &args);
+    addTorrent(add_me, tr_variant::Map{ 3U });
 }
 
 void Session::addNewlyCreatedTorrent(QString const& filename, QString const& local_path)

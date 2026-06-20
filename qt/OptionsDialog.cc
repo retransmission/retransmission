@@ -12,6 +12,7 @@
 #include <libtransmission/transmission.h>
 
 #include <libtransmission/quark.h>
+#include <libtransmission/serializer.h>
 #include <libtransmission/variant.h>
 #include <libtransmission/torrent-metainfo.h>
 
@@ -23,9 +24,6 @@
 #include "Session.h"
 #include "Torrent.h"
 #include "Utils.h"
-#include "VariantHelpers.h"
-
-using ::trqt::variant_helpers::dictAdd;
 
 /***
 ****
@@ -225,8 +223,7 @@ void OptionsDialog::onAccepted()
 {
     // rpc spec section 3.4 "adding a torrent"
 
-    tr_variant args;
-    tr_variantInitDict(&args, 10);
+    auto args = tr_variant::Map{ 10U };
     QString download_dir;
 
     // "download-dir"
@@ -239,30 +236,33 @@ void OptionsDialog::onAccepted()
         download_dir = ui_.destinationEdit->text();
     }
 
-    dictAdd(&args, TR_KEY_download_dir, download_dir);
+    args.insert_or_assign(TR_KEY_download_dir, download_dir.toStdString());
 
     // paused
-    dictAdd(&args, TR_KEY_paused, !ui_.startCheck->isChecked());
+    args.insert_or_assign(TR_KEY_paused, !ui_.startCheck->isChecked());
 
     // priority
     int const index = ui_.priorityCombo->currentIndex();
     int const priority = ui_.priorityCombo->itemData(index).toInt();
-    dictAdd(&args, TR_KEY_bandwidth_priority, priority);
+    args.insert_or_assign(TR_KEY_bandwidth_priority, priority);
 
     // files_unwanted
     auto count = std::count(wanted_.begin(), wanted_.end(), false);
 
     if (count > 0)
     {
-        tr_variant* l = tr_variantDictAddList(&args, TR_KEY_files_unwanted, count);
+        auto files_unwanted = std::vector<int>{};
+        files_unwanted.reserve(static_cast<size_t>(count));
 
         for (size_t i = 0, n = wanted_.size(); i < n; ++i)
         {
             if (!wanted_.at(i))
             {
-                *tr_variantListAdd(l) = i;
+                files_unwanted.push_back(static_cast<int>(i));
             }
         }
+
+        args.insert_or_assign(TR_KEY_files_unwanted, tr::serializer::to_variant(files_unwanted));
     }
 
     // priority_low
@@ -270,15 +270,18 @@ void OptionsDialog::onAccepted()
 
     if (count > 0)
     {
-        tr_variant* l = tr_variantDictAddList(&args, TR_KEY_priority_low, count);
+        auto priority_low = std::vector<int>{};
+        priority_low.reserve(static_cast<size_t>(count));
 
         for (size_t i = 0, n = priorities_.size(); i < n; ++i)
         {
             if (priorities_.at(i) == TR_PRI_LOW)
             {
-                *tr_variantListAdd(l) = i;
+                priority_low.push_back(static_cast<int>(i));
             }
         }
+
+        args.insert_or_assign(TR_KEY_priority_low, tr::serializer::to_variant(priority_low));
     }
 
     // priority_high
@@ -286,21 +289,24 @@ void OptionsDialog::onAccepted()
 
     if (count > 0)
     {
-        tr_variant* l = tr_variantDictAddList(&args, TR_KEY_priority_high, count);
+        auto priority_high = std::vector<int>{};
+        priority_high.reserve(static_cast<size_t>(count));
 
         for (size_t i = 0, n = priorities_.size(); i < n; ++i)
         {
             if (priorities_.at(i) == TR_PRI_HIGH)
             {
-                *tr_variantListAdd(l) = i;
+                priority_high.push_back(static_cast<int>(i));
             }
         }
+
+        args.insert_or_assign(TR_KEY_priority_high, tr::serializer::to_variant(priority_high));
     }
 
     auto const disposal = ui_.trashCheck->isChecked() ? AddData::FilenameDisposal::Delete : AddData::FilenameDisposal::NoAction;
     add_.setFileDisposal(disposal);
 
-    session_.addTorrent(add_, &args);
+    session_.addTorrent(add_, std::move(args));
 
     deleteLater();
 }
