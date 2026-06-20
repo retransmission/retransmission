@@ -7,6 +7,7 @@
 
 #include <cstdint>
 #include <functional>
+#include <memory>
 #include <queue>
 #include <type_traits>
 #include <utility>
@@ -41,15 +42,17 @@ public:
     }
 
     template<typename Func>
-    void add(Func const& func)
+    void add(Func&& func)
     {
-        queue_.emplace(normalizeFunc(func), ErrorHandlerFunction());
+        queue_.emplace(normalizeFunc(std::forward<Func>(func)), ErrorHandlerFunction{});
     }
 
     template<typename Func, typename ErrorHandler>
-    void add(Func const& func, ErrorHandler const& error_handler)
+    void add(Func&& func, ErrorHandler&& error_handler)
     {
-        queue_.emplace(normalizeFunc(func), normalizeErrorHandler(error_handler));
+        queue_.emplace(
+            normalizeFunc(std::forward<Func>(func)),
+            normalizeErrorHandler(std::forward<ErrorHandler>(error_handler)));
     }
 
     // The first function in queue is ran synchronously
@@ -75,65 +78,82 @@ private:
 
     // These overloads convert various forms of input closures to what we store internally.
 
+    template<typename Func>
+    static auto makeCopyable(Func&& func)
+    {
+        using FuncType = std::remove_cvref_t<Func>;
+        auto shared_func = std::make_shared<FuncType>(std::forward<Func>(func));
+        return [shared_func](auto&&... args) -> decltype(auto)
+        {
+            return std::invoke(*shared_func, std::forward<decltype(args)>(args)...);
+        };
+    }
+
     // normal closure, takes response and returns new future
     template<detail::invoke_result_is<RpcResponseFuture, RpcResponse const&> Func>
-    static QueuedFunction normalizeFunc(Func const& func)
+    static QueuedFunction normalizeFunc(Func&& func)
     {
-        return [func](RpcResponseFuture const& r)
+        auto copyable_func = makeCopyable(std::forward<Func>(func));
+        return [func = std::move(copyable_func)](RpcResponseFuture const& r) mutable
         {
-            return func(r.result());
+            return std::invoke(func, r.result());
         };
     }
 
     // closure without argument (first step), takes nothing and returns new future
     template<detail::invoke_result_is<RpcResponseFuture> Func>
-    static QueuedFunction normalizeFunc(Func const& func)
+    static QueuedFunction normalizeFunc(Func&& func)
     {
-        return [func](RpcResponseFuture const&)
+        auto copyable_func = makeCopyable(std::forward<Func>(func));
+        return [func = std::move(copyable_func)](RpcResponseFuture const&) mutable
         {
-            return func();
+            return std::invoke(func);
         };
     }
 
     // closure without return value ("auxiliary"), takes response and returns nothing
     template<detail::invoke_result_is<void, RpcResponse const&> Func>
-    static QueuedFunction normalizeFunc(Func const& func)
+    static QueuedFunction normalizeFunc(Func&& func)
     {
-        return [func](RpcResponseFuture const& r)
+        auto copyable_func = makeCopyable(std::forward<Func>(func));
+        return [func = std::move(copyable_func)](RpcResponseFuture const& r) mutable
         {
-            func(r.result());
+            std::invoke(func, r.result());
             return createFinishedFuture();
         };
     }
 
     // closure without argument and return value, takes nothing and returns nothing -- next function will also get nothing
     template<detail::invoke_result_is<void> Func>
-    static QueuedFunction normalizeFunc(Func const& func)
+    static QueuedFunction normalizeFunc(Func&& func)
     {
-        return [func](RpcResponseFuture const&)
+        auto copyable_func = makeCopyable(std::forward<Func>(func));
+        return [func = std::move(copyable_func)](RpcResponseFuture const&) mutable
         {
-            func();
+            std::invoke(func);
             return createFinishedFuture();
         };
     }
 
     // normal error handler, takes last response
     template<detail::invoke_result_is<void, RpcResponse const&> Func>
-    static ErrorHandlerFunction normalizeErrorHandler(Func const& func)
+    static ErrorHandlerFunction normalizeErrorHandler(Func&& func)
     {
-        return [func](RpcResponseFuture const& r)
+        auto copyable_func = makeCopyable(std::forward<Func>(func));
+        return [func = std::move(copyable_func)](RpcResponseFuture const& r) mutable
         {
-            func(r.result());
+            std::invoke(func, r.result());
         };
     }
 
     // error handler without an argument, takes nothing
     template<detail::invoke_result_is<void> Func>
-    static ErrorHandlerFunction normalizeErrorHandler(Func const& func)
+    static ErrorHandlerFunction normalizeErrorHandler(Func&& func)
     {
-        return [func](RpcResponseFuture const&)
+        auto copyable_func = makeCopyable(std::forward<Func>(func));
+        return [func = std::move(copyable_func)](RpcResponseFuture const&) mutable
         {
-            func();
+            std::invoke(func);
         };
     }
 
