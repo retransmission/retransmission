@@ -22,7 +22,7 @@
 
 #include "libtransmission/log.h" // for tr_log_level
 #include "libtransmission/peer-mgr.h" // tr_pex
-#include "libtransmission/serializer.h"
+#include "libtransmission/converters.h"
 #include "libtransmission/session-settings.h" // Converter<small::max_size_vector<...>>
 #include "libtransmission/string-utils.h"
 #include "libtransmission/utils.h" // for tr_strv_strip(), tr_strlower()

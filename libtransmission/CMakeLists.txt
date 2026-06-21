@@ -53,6 +53,8 @@ target_sources(${TR_NAME}
         crypto-utils-wolfssl.cc
         crypto-utils.cc
         crypto-utils.h
+        converters.cc
+        converters.h
         error-types.h
         error.cc
         error.h
@@ -118,7 +120,6 @@ target_sources(${TR_NAME}
         rpc-server.h
         rpcimpl.cc
         rpcimpl.h
-        serializer.cc
         serializer.h
         session-alt-speeds.cc
         session-alt-speeds.h
