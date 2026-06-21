@@ -135,13 +135,11 @@ void reserve_if_possible(C& /*c*/, ...) // NOLINT(cert-dcl50-cpp)
  *   - `static tr_variant serialize(T const& src);`
  *   - `static bool deserialize(tr_variant const& src, T* tgt);`
  *
- * The primary template is intentionally undefined; an attempt to call
- * `Converters::serialize/deserialize` on an unsupported type produces
- * a compile error (rather than a runtime "no converter registered").
+ * The primary template is undefined so that calling `to_variant()` or
+ * `to_value()` on an unsupported type will fail to compile.
  *
  * Specializations for libtransmission's built-in types are declared in this
- * header (see below); specializations for app/UI types live in the relevant
- * binary's converter header.
+ * header (see below); specializations for app/UI types are in other folders.
  */
 template<typename T>
 struct Converter;
@@ -159,76 +157,87 @@ concept HasConverter = requires(T const& src, tr_variant const& var, T* tgt) {
 } // namespace detail
 
 /**
- * Compile-time dispatcher: routes `tr_variant` <-> `T` conversion to
+ * Compile-time dispatcher: routes `T` -> `tr_variant` conversion to
+ * `Converter<T>` if specialized, otherwise to the generic container fallbacks
+ * (push-back ranges, insert ranges, std::array, std::optional).
+ */
+template<typename T>
+[[nodiscard]] tr_variant to_variant(T const& src)
+{
+    if constexpr (detail::HasConverter<T>)
+    {
+        return Converter<T>::serialize(src);
+    }
+    else if constexpr (detail::is_push_back_range_v<T>)
+    {
+        return detail::from_push_back_range(src);
+    }
+    else if constexpr (detail::is_insert_range_v<T>)
+    {
+        return detail::from_insert_range(src);
+    }
+    else if constexpr (detail::is_std_array_v<T>)
+    {
+        return detail::from_array(src);
+    }
+    else if constexpr (detail::is_optional_v<T>)
+    {
+        return detail::from_optional(src);
+    }
+    else
+    {
+        static_assert(detail::HasConverter<T>, "No Converter<T> specialization for this type");
+    }
+}
+
+/**
+ * Compile-time dispatcher: routes `tr_variant` -> `T` conversion to
  * `Converter<T>` if specialized, otherwise to the generic container fallbacks
  * (push-back ranges, insert ranges, std::array, std::optional).
  *
- * `Converters` is a thin namespace-like shell kept for source-compat with
- * existing call sites of `Converters::serialize` / `Converters::deserialize`.
- * The actual customization point is `Converter<T>` above.
+ * Returns `true` on success and writes the decoded value to `*ptgt`.
  */
-class Converters
+template<typename T>
+bool to_value(tr_variant const& src, T* const ptgt)
 {
-public:
-    template<typename T>
-    static tr_variant serialize(T const& src)
+    if constexpr (detail::HasConverter<T>)
     {
-        if constexpr (detail::HasConverter<T>)
-        {
-            return Converter<T>::serialize(src);
-        }
-        else if constexpr (detail::is_push_back_range_v<T>)
-        {
-            return detail::from_push_back_range(src);
-        }
-        else if constexpr (detail::is_insert_range_v<T>)
-        {
-            return detail::from_insert_range(src);
-        }
-        else if constexpr (detail::is_std_array_v<T>)
-        {
-            return detail::from_array(src);
-        }
-        else if constexpr (detail::is_optional_v<T>)
-        {
-            return detail::from_optional(src);
-        }
-        else
-        {
-            static_assert(detail::HasConverter<T>, "No Converter<T> specialization for this type");
-        }
+        return Converter<T>::deserialize(src, ptgt);
+    }
+    else if constexpr (detail::is_push_back_range_v<T>)
+    {
+        return detail::to_push_back_range(src, ptgt);
+    }
+    else if constexpr (detail::is_insert_range_v<T>)
+    {
+        return detail::to_insert_range(src, ptgt);
+    }
+    else if constexpr (detail::is_std_array_v<T>)
+    {
+        return detail::to_array(src, ptgt);
+    }
+    else if constexpr (detail::is_optional_v<T>)
+    {
+        return detail::to_optional(src, ptgt);
+    }
+    else
+    {
+        static_assert(detail::HasConverter<T>, "No Converter<T> specialization for this type");
+        return false;
+    }
+}
+
+// Alternate version of `to_value()` that returns a std::optional
+template<typename T>
+[[nodiscard]] std::optional<T> to_value(tr_variant const& var)
+{
+    if (auto ret = T{}; to_value<T>(var, &ret))
+    {
+        return ret;
     }
 
-    template<typename T>
-    static bool deserialize(tr_variant const& src, T* const ptgt)
-    {
-        if constexpr (detail::HasConverter<T>)
-        {
-            return Converter<T>::deserialize(src, ptgt);
-        }
-        else if constexpr (detail::is_push_back_range_v<T>)
-        {
-            return detail::to_push_back_range(src, ptgt);
-        }
-        else if constexpr (detail::is_insert_range_v<T>)
-        {
-            return detail::to_insert_range(src, ptgt);
-        }
-        else if constexpr (detail::is_std_array_v<T>)
-        {
-            return detail::to_array(src, ptgt);
-        }
-        else if constexpr (detail::is_optional_v<T>)
-        {
-            return detail::to_optional(src, ptgt);
-        }
-        else
-        {
-            static_assert(detail::HasConverter<T>, "No Converter<T> specialization for this type");
-            return false;
-        }
-    }
-};
+    return {};
+}
 
 // ---
 // Built-in `Converter<T>` specializations defined in `serializer.cc`.
@@ -354,23 +363,6 @@ struct Converter<tr_verify_added_mode>
     static bool deserialize(tr_variant const& src, tr_verify_added_mode* tgt);
 };
 
-template<typename T>
-[[nodiscard]] std::optional<T> to_value(tr_variant const& var)
-{
-    if (auto ret = T{}; Converters::deserialize<T>(var, &ret))
-    {
-        return ret;
-    }
-
-    return {};
-}
-
-template<typename T>
-[[nodiscard]] tr_variant to_variant(T const& val)
-{
-    return Converters::serialize<T>(val);
-}
-
 // ---
 
 /**
@@ -413,7 +405,7 @@ struct Field<MemberPtr, Key>
         static_assert(std::is_base_of_v<Owner, Derived>);
         if (auto const iter = map.find(key); iter != std::end(map))
         {
-            (void)Converters::deserialize(iter->second, &(static_cast<Owner*>(derived)->*MemberPtr));
+            (void)to_value(iter->second, &(static_cast<Owner*>(derived)->*MemberPtr));
         }
     }
 
@@ -421,7 +413,7 @@ struct Field<MemberPtr, Key>
     void save(Derived const* derived, tr_variant::Map& map) const
     {
         static_assert(std::is_base_of_v<Owner, Derived>);
-        map.try_emplace(key, Converters::serialize(static_cast<Owner const*>(derived)->*MemberPtr));
+        map.try_emplace(key, to_variant(static_cast<Owner const*>(derived)->*MemberPtr));
     }
 };
 
@@ -656,8 +648,8 @@ template<typename T, typename Fields>
 
 // N.B. This second `detail` block contains the implementations of
 // to_push_back_range, from_push_back_range, etc., which were forward-
-// declared above. They must be defined after `Converters` because
-// they call Converters::serialize/deserialize for each element.
+// declared above. They must be defined after `to_variant`/`to_value`
+// because they call them for each element.
 namespace detail
 {
 
@@ -668,7 +660,7 @@ tr_variant from_push_back_range(C const& src)
     ret.reserve(std::size(src));
     for (auto const& elem : src)
     {
-        ret.emplace_back(Converters::serialize(elem));
+        ret.emplace_back(to_variant(elem));
     }
     return ret;
 }
@@ -688,7 +680,7 @@ bool to_push_back_range(tr_variant const& src, C* const ptgt)
     for (auto const& elem : *vec)
     {
         typename C::value_type value{};
-        if (!Converters::deserialize(elem, &value))
+        if (!to_value(elem, &value))
         {
             return false;
         }
@@ -706,7 +698,7 @@ tr_variant from_insert_range(C const& src)
     ret.reserve(std::size(src));
     for (auto const& elem : src)
     {
-        ret.emplace_back(Converters::serialize(elem));
+        ret.emplace_back(to_variant(elem));
     }
     return ret;
 }
@@ -725,7 +717,7 @@ bool to_insert_range(tr_variant const& src, C* const ptgt)
     for (auto const& elem : *vec)
     {
         typename C::value_type value{};
-        if (!Converters::deserialize(elem, &value))
+        if (!to_value(elem, &value))
         {
             return false;
         }
@@ -743,7 +735,7 @@ tr_variant from_array(C const& src)
     ret.reserve(std::size(src));
     for (auto const& elem : src)
     {
-        ret.emplace_back(Converters::serialize(elem));
+        ret.emplace_back(to_variant(elem));
     }
     return ret;
 }
@@ -765,7 +757,7 @@ bool to_array(tr_variant const& src, C* const ptgt)
     auto tmp = C{};
     for (std::size_t i = 0; i < std::size(*vec); ++i)
     {
-        if (!Converters::deserialize((*vec)[i], &tmp[i]))
+        if (!to_value((*vec)[i], &tmp[i]))
         {
             return false;
         }
@@ -779,7 +771,7 @@ template<typename T>
 tr_variant from_optional(std::optional<T> const& src)
 {
     static_assert(!is_optional_v<T>);
-    return src ? Converters::serialize(*src) : nullptr;
+    return src ? to_variant(*src) : nullptr;
 }
 
 template<typename T>

@@ -25,7 +25,8 @@
 
 using SerializerTest = ::tr::test::TransmissionTest;
 using namespace std::literals;
-using tr::serializer::Converters;
+using tr::serializer::to_value;
+using tr::serializer::to_variant;
 
 namespace
 {
@@ -95,63 +96,63 @@ namespace
 TEST_F(SerializerTest, usesBuiltins)
 {
     {
-        auto const var = Converters::serialize(true);
+        auto const var = to_variant(true);
         EXPECT_TRUE(var.holds_alternative<bool>());
 
         auto out = false;
-        EXPECT_TRUE(Converters::deserialize(var, &out));
+        EXPECT_TRUE(to_value(var, &out));
         EXPECT_EQ(out, true);
     }
 
     {
-        auto const var = Converters::serialize(3.5);
+        auto const var = to_variant(3.5);
         EXPECT_TRUE(var.holds_alternative<double>());
 
         auto out = 0.0;
-        EXPECT_TRUE(Converters::deserialize(var, &out));
+        EXPECT_TRUE(to_value(var, &out));
         EXPECT_DOUBLE_EQ(out, 3.5);
     }
 
     {
         auto const s = "hello"s;
-        auto const var = Converters::serialize(s);
+        auto const var = to_variant(s);
         EXPECT_TRUE(var.holds_alternative<std::string_view>());
         EXPECT_EQ(var.value_if<std::string_view>().value_or(""sv), "hello"sv);
 
         auto out = std::string{};
-        EXPECT_TRUE(Converters::deserialize(var, &out));
+        EXPECT_TRUE(to_value(var, &out));
         EXPECT_EQ(out, s);
     }
 
     {
         auto const s = std::optional<std::string>{ "opt"s };
-        auto const var = Converters::serialize(s);
+        auto const var = to_variant(s);
         EXPECT_TRUE(var.holds_alternative<std::string_view>());
         EXPECT_EQ(var.value_if<std::string_view>().value_or(""sv), "opt"sv);
 
         auto out = std::optional<std::string>{};
-        EXPECT_TRUE(Converters::deserialize(var, &out));
+        EXPECT_TRUE(to_value(var, &out));
         ASSERT_TRUE(out.has_value());
         EXPECT_EQ(*out, *s);
     }
 
     {
         auto const s = std::optional<std::string>{};
-        auto const var = Converters::serialize(s);
+        auto const var = to_variant(s);
         EXPECT_TRUE(var.holds_alternative<std::nullptr_t>());
 
         auto out = std::optional<std::string>{ "will reset"s };
-        EXPECT_TRUE(Converters::deserialize(var, &out));
+        EXPECT_TRUE(to_value(var, &out));
         EXPECT_FALSE(out.has_value());
     }
 
     {
         auto const expected = uint64_t{ 12345678901234ULL };
-        auto const var = Converters::serialize(expected);
+        auto const var = to_variant(expected);
         EXPECT_TRUE(var.holds_alternative<int64_t>());
 
         auto out = uint64_t{};
-        EXPECT_TRUE(Converters::deserialize(var, &out));
+        EXPECT_TRUE(to_value(var, &out));
         EXPECT_EQ(out, expected);
     }
 }
@@ -159,12 +160,12 @@ TEST_F(SerializerTest, usesBuiltins)
 TEST_F(SerializerTest, usesTimeT)
 {
     static auto constexpr Expected = time_t{ 1774486600 };
-    auto const var = Converters::serialize(Expected);
+    auto const var = to_variant(Expected);
     EXPECT_TRUE(var.holds_alternative<int64_t>());
     EXPECT_EQ(var.value_if<time_t>(), Expected);
 
     auto actual = time_t{};
-    EXPECT_TRUE(Converters::deserialize(var, &actual));
+    EXPECT_TRUE(to_value(var, &actual));
     EXPECT_EQ(actual, Expected);
 }
 
@@ -176,7 +177,7 @@ TEST_F(SerializerTest, usesTrPex)
     auto const expected_flags = static_cast<uint8_t>(tr_rand_int(0x100U));
     auto const expected_sockaddr = tr_socket_address::from_compact_ipv4(reinterpret_cast<std::byte const*>(CompactIp.data()))
                                        .first;
-    auto const var = Converters::serialize(tr_pex{ expected_sockaddr, expected_flags });
+    auto const var = to_variant(tr_pex{ expected_sockaddr, expected_flags });
 
     auto* const map = var.get_if<tr_variant::Map>();
     ASSERT_NE(map, nullptr);
@@ -188,7 +189,7 @@ TEST_F(SerializerTest, usesTrPex)
     EXPECT_EQ(map->value_if<int64_t>(TR_KEY_flags), expected_flags);
 
     auto actual = tr_pex{};
-    EXPECT_TRUE(Converters::deserialize(var, &actual));
+    EXPECT_TRUE(to_value(var, &actual));
     EXPECT_EQ(actual.socket_address, expected_sockaddr);
     EXPECT_EQ(actual.flags, expected_flags);
 }
@@ -196,17 +197,17 @@ TEST_F(SerializerTest, usesTrPex)
 TEST_F(SerializerTest, usesCustomTypes)
 {
     static constexpr Rect Expected{ .x = 10, .y = 20, .width = 640, .height = 480 };
-    auto const var = Converters::serialize(Expected);
+    auto const var = to_variant(Expected);
 
     auto actual = Rect{};
-    EXPECT_TRUE(Converters::deserialize(var, &actual));
+    EXPECT_TRUE(to_value(var, &actual));
     EXPECT_EQ(actual, Expected);
 }
 
 TEST_F(SerializerTest, usesLists)
 {
     auto const expected = std::list<std::string>{ "apple", "ball", "cat" };
-    auto const var = Converters::serialize(expected);
+    auto const var = to_variant(expected);
 
     auto const* const l = var.get_if<tr_variant::Vector>();
     ASSERT_NE(l, nullptr);
@@ -216,14 +217,14 @@ TEST_F(SerializerTest, usesLists)
     EXPECT_EQ((*l)[2].value_if<std::string_view>().value_or(""sv), "cat"sv);
 
     auto actual = decltype(expected){};
-    EXPECT_TRUE(Converters::deserialize(var, &actual));
+    EXPECT_TRUE(to_value(var, &actual));
     EXPECT_EQ(actual, expected);
 }
 
 TEST_F(SerializerTest, usesVectors)
 {
     auto const expected = std::vector<std::string>{ "apple", "ball", "cat" };
-    auto const var = Converters::serialize(expected);
+    auto const var = to_variant(expected);
 
     auto const* const l = var.get_if<tr_variant::Vector>();
     ASSERT_NE(l, nullptr);
@@ -233,7 +234,7 @@ TEST_F(SerializerTest, usesVectors)
     EXPECT_EQ((*l)[2].value_if<std::string_view>().value_or(""sv), "cat"sv);
 
     auto actual = decltype(expected){};
-    EXPECT_TRUE(Converters::deserialize(var, &actual));
+    EXPECT_TRUE(to_value(var, &actual));
     EXPECT_EQ(actual, expected);
 }
 
@@ -243,17 +244,17 @@ TEST_F(SerializerTest, usesVectorsOfCustom)
         { .x = 1, .y = 2, .width = 3, .height = 4 },
         { .x = 10, .y = 20, .width = 640, .height = 480 },
     };
-    auto const var = Converters::serialize(expected);
+    auto const var = to_variant(expected);
 
     auto actual = decltype(expected){};
-    EXPECT_TRUE(Converters::deserialize(var, &actual));
+    EXPECT_TRUE(to_value(var, &actual));
     EXPECT_EQ(actual, expected);
 }
 
 TEST_F(SerializerTest, usesNestedVectors)
 {
     auto const expected = std::vector<std::vector<std::string>>{ { "a", "b" }, { "c" } };
-    auto const var = Converters::serialize(expected);
+    auto const var = to_variant(expected);
 
     auto const* const outer = var.get_if<tr_variant::Vector>();
     ASSERT_NE(outer, nullptr);
@@ -271,7 +272,7 @@ TEST_F(SerializerTest, usesNestedVectors)
     EXPECT_EQ((*inner1)[0].value_if<std::string_view>().value_or(""sv), "c"sv);
 
     auto actual = decltype(expected){};
-    EXPECT_TRUE(Converters::deserialize(var, &actual));
+    EXPECT_TRUE(to_value(var, &actual));
     EXPECT_EQ(actual, expected);
 }
 
@@ -279,7 +280,7 @@ TEST_F(SerializerTest, vectorRejectsWrongType)
 {
     auto const var = tr_variant{ true };
     auto out = std::vector<std::string>{ "keep" };
-    EXPECT_FALSE(Converters::deserialize(var, &out));
+    EXPECT_FALSE(to_value(var, &out));
     EXPECT_EQ(out, (std::vector<std::string>{ "keep" }));
 }
 
@@ -293,43 +294,43 @@ TEST_F(SerializerTest, vectorIsNondestructiveOnPartialFailure)
 
     auto const var = tr_variant{ std::move(list) };
     auto out = std::vector<std::string>{ "keep" };
-    EXPECT_FALSE(Converters::deserialize(var, &out));
+    EXPECT_FALSE(to_value(var, &out));
     EXPECT_EQ(out, (std::vector<std::string>{ "keep" }));
 }
 
 TEST_F(SerializerTest, usesOptional)
 {
     auto const expected = std::optional{ "apple"s };
-    auto const var = Converters::serialize(expected);
+    auto const var = to_variant(expected);
 
     auto const sv = var.value_if<std::string_view>();
     ASSERT_EQ(sv, "apple"sv);
 
     auto actual = decltype(expected){};
-    EXPECT_TRUE(Converters::deserialize(var, &actual));
+    EXPECT_TRUE(to_value(var, &actual));
     EXPECT_EQ(actual, expected);
 }
 
 TEST_F(SerializerTest, usesNullOptional)
 {
     auto const expected = std::optional<std::string>{};
-    auto const var = Converters::serialize(expected);
+    auto const var = to_variant(expected);
 
     auto const sv = var.value_if<std::string_view>();
     ASSERT_FALSE(sv);
 
     auto actual = decltype(expected){ "discard"s };
-    EXPECT_TRUE(Converters::deserialize(var, &actual));
+    EXPECT_TRUE(to_value(var, &actual));
     EXPECT_EQ(actual, expected);
 }
 
 TEST_F(SerializerTest, usesOptionalOfCustom)
 {
     constexpr auto Expected = std::optional{ Rect{ .x = 1, .y = 2, .width = 3, .height = 4 } };
-    auto const var = Converters::serialize(Expected);
+    auto const var = to_variant(Expected);
 
     auto actual = decltype(Expected){};
-    EXPECT_TRUE(Converters::deserialize(var, &actual));
+    EXPECT_TRUE(to_value(var, &actual));
     EXPECT_EQ(actual, Expected);
 }
 
@@ -337,7 +338,7 @@ TEST_F(SerializerTest, optionalRejectsWrongType)
 {
     auto const var = tr_variant{ true };
     auto out = std::optional{ "keep"s };
-    EXPECT_FALSE(Converters::deserialize(var, &out));
+    EXPECT_FALSE(to_value(var, &out));
     EXPECT_EQ(out, "keep"s);
 }
 
@@ -349,7 +350,6 @@ using tr::serializer::load;
 using tr::serializer::save;
 using tr::serializer::set;
 using tr::serializer::set_from_variant;
-using tr::serializer::to_variant;
 
 struct Endpoint
 {

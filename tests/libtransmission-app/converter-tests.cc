@@ -21,7 +21,8 @@
 
 using ConverterTest = TransmissionTest;
 using namespace std::literals;
-using tr::serializer::Converters;
+using tr::serializer::to_value;
+using tr::serializer::to_variant;
 
 namespace
 {
@@ -55,12 +56,12 @@ void testModeRoundtrip(std::array<std::pair<std::string_view, T>, N> const& item
 {
     for (auto const& [key, mode] : items)
     {
-        auto const var = Converters::serialize(mode);
+        auto const var = to_variant(mode);
         EXPECT_TRUE(var.template holds_alternative<std::string_view>());
         EXPECT_EQ(var.template value_if<std::string_view>().value_or(""sv), key);
 
         auto out = T{};
-        EXPECT_TRUE(Converters::deserialize(tr_variant{ key }, &out));
+        EXPECT_TRUE(to_value(tr_variant{ key }, &out));
         EXPECT_EQ(out, mode);
     }
 }
@@ -119,7 +120,7 @@ TEST_F(ConverterTest, sysSecondsRoundtrip)
     using namespace tr::serializer;
 
     auto constexpr Expected = make_sys_seconds(2024, 2, 3, 4, 5, 6);
-    auto const var = Converters::serialize(Expected);
+    auto const var = to_variant(Expected);
     EXPECT_TRUE(var.holds_alternative<std::string_view>());
     auto const serialized = var.value_if<std::string_view>().value_or(""sv);
     static auto const re = std::regex(R"(^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:Z|[+-]\d{4})$)");
