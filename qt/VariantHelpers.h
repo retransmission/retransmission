@@ -29,14 +29,8 @@ struct Peer;
 struct TorrentFile;
 struct TrackerStat;
 
-// `Converter<T>` specializations for Qt-side types. Must be visible to any
-// TU that uses `tr::serializer::to_variant`, `to_value`, `Field<>`, etc. on
-// these types — notably `Prefs.cc`, which holds them as `Field<>` members.
-
 namespace tr::serializer
 {
-
-TR_DECLARE_CONVERTER(int)
 
 TR_DECLARE_CONVERTER(QDateTime)
 TR_DECLARE_CONVERTER(QString)
@@ -170,18 +164,14 @@ bool change(T& setme, T const& value)
     return changed;
 }
 
-bool change(double& setme, double const& value);
-bool change(Speed& setme, tr_variant const* value);
-bool change(Peer& setme, tr_variant const* value);
-bool change(TorrentFile& setme, tr_variant const* value);
-bool change(TorrentHash& setme, tr_variant const* value);
-bool change(TrackerStat& setme, tr_variant const* value);
+bool change(Peer& setme, tr_variant const* var);
+bool change(TorrentFile& setme, tr_variant const* var);
+bool change(TrackerStat& setme, tr_variant const* var);
 
 template<typename T>
-bool change(T& setme, tr_variant const* variant)
+bool change(T& setme, tr_variant const* var)
 {
-    auto const value = getValue<T>(variant);
-    return value && change(setme, *value);
+    return var && tr::serializer::set(setme, *var);
 }
 
 template<typename T>
@@ -207,15 +197,19 @@ bool change(std::vector<T>& setme, tr_variant const* value)
 ///
 
 template<typename T>
-auto dictFind(tr_variant* dict, tr_quark key)
+std::optional<T> dictFind(tr_variant* dict, tr_quark key)
 {
-    std::optional<T> ret;
-
-    if (auto const* child = tr_variantDictFind(dict, key); child != nullptr)
+    if (dict)
     {
-        ret = getValue<T>(child);
+        if (auto const* const map = dict->get_if<tr_variant::Map>())
+        {
+            if (auto const iter = map->find(key); iter != map->end())
+            {
+                return tr::serializer::to_value<T>(iter->second);
+            }
+        }
     }
 
-    return ret;
+    return {};
 }
 } // namespace trqt::variant_helpers

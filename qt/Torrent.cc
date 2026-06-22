@@ -173,6 +173,15 @@ Torrent::fields_t Torrent::update(tr_quark const* keys, tr_variant const* const*
 
         switch (key)
         {
+        case TR_KEY_error:
+            {
+                auto val = static_cast<int64_t>(error_);
+                field_changed = change(val, child);
+                changed.set(TORRENT_ERROR, field_changed);
+                error_ = static_cast<tr_stat::Error>(val);
+                break;
+            }
+
 #define HANDLE_KEY(key, field, bit) \
     case TR_KEY_##key: \
         field_changed = change(field##_, child); \
@@ -189,7 +198,6 @@ Torrent::fields_t Torrent::update(tr_quark const* keys, tr_variant const* const*
             HANDLE_KEY(download_limited, download_limited, DOWNLOAD_LIMITED)
             HANDLE_KEY(downloaded_ever, downloaded_ever, DOWNLOADED_EVER)
             HANDLE_KEY(edit_date, edit_date, EDIT_DATE)
-            HANDLE_KEY(error, error, TORRENT_ERROR)
             HANDLE_KEY(eta, eta, ETA)
             HANDLE_KEY(file_stats, files, FILES)
             HANDLE_KEY(files, files, FILES)

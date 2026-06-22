@@ -27,30 +27,6 @@ namespace ser = tr::serializer;
 namespace trqt::variant_helpers
 {
 
-bool change(double& setme, double const& value)
-{
-    bool const changed = std::fabs(setme - value) > std::numeric_limits<double>::epsilon();
-
-    if (changed)
-    {
-        setme = value;
-    }
-
-    return changed;
-}
-
-bool change(Speed& setme, tr_variant const* value)
-{
-    auto const byps = getValue<int>(value);
-    return byps && change(setme, Speed{ *byps, Speed::Units::Byps });
-}
-
-bool change(TorrentHash& setme, tr_variant const* value)
-{
-    auto const hash_string = getValue<std::string_view>(value);
-    return hash_string && change(setme, TorrentHash{ *hash_string });
-}
-
 bool change(Peer& setme, tr_variant const* value)
 {
     return !ser::load(setme, Peer::Fields, *value).empty();
@@ -92,29 +68,6 @@ bool change(TrackerStat& setme, tr_variant const* value)
 
 namespace
 {
-bool toInt(tr_variant const& src, int* tgt)
-{
-    if (auto const val = src.value_if<int64_t>())
-    {
-        if (*val < std::numeric_limits<int>::min() || *val > std::numeric_limits<int>::max())
-        {
-            return false;
-        }
-
-        *tgt = static_cast<int>(*val);
-        return true;
-    }
-
-    return false;
-}
-
-tr_variant fromInt(int const& val)
-{
-    return static_cast<int64_t>(val);
-}
-
-// ---
-
 bool toQDateTime(tr_variant const& src, QDateTime* tgt)
 {
     if (auto const val = ser::to_value<int64_t>(src))
@@ -195,15 +148,6 @@ tr_variant fromTorrentHash(TorrentHash const& src)
 namespace tr::serializer
 {
 namespace vh = trqt::variant_helpers;
-
-tr_variant Converter<int>::to_variant(int const& src)
-{
-    return vh::fromInt(src);
-}
-bool Converter<int>::to_value(tr_variant const& src, int* tgt)
-{
-    return vh::toInt(src, tgt);
-}
 
 tr_variant Converter<QDateTime>::to_variant(QDateTime const& src)
 {
