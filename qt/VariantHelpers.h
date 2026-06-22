@@ -42,12 +42,6 @@ TR_DECLARE_CONVERTER(TorrentHash)
 namespace trqt::variant_helpers
 {
 template<typename T>
-bool change(T& setme, T value)
-{
-    return tr::serializer::set(setme, std::move(value));
-}
-
-template<typename T>
 bool change(T& setme, tr_variant const* var)
 {
     return var && tr::serializer::set(setme, *var);
