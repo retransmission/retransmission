@@ -296,11 +296,6 @@ bool tr_variantGetStrView(tr_variant const* const var, std::string_view* setme)
     return value_if(var, setme);
 }
 
-bool tr_variantGetReal(tr_variant const* const var, double* setme)
-{
-    return value_if(var, setme);
-}
-
 bool tr_variantDictFindInt(tr_variant* const var, tr_quark key, int64_t* setme)
 {
     auto const* const child = tr_variantDictFind(var, key);
