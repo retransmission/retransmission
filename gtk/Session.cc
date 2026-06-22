@@ -1222,7 +1222,7 @@ void Session::Impl::send_rpc_request(tr_quark const method, tr_variant&& params,
         fmt::print("{:s}:{:d} sending req:\n{:s}\n", __FILE__, __LINE__, tr_variant_serde::json().to_string(req));
     }
 
-    tr_rpc_request_exec(session_, req, std::move(callback));
+    tr_rpc_request_exec(session_, std::move(req), std::move(callback));
 }
 
 /***

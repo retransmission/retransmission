@@ -96,7 +96,7 @@ private:
     void connectNetworkAccessManager();
 
     void sendNetworkRequest(QByteArray const& body, QFutureInterface<RpcResponse> const& promise);
-    void sendLocalRequest(tr_variant& req, QFutureInterface<RpcResponse> const& promise, int64_t id);
+    void sendLocalRequest(tr_variant&& req, QFutureInterface<RpcResponse> const& promise, int64_t id);
     [[nodiscard]] int64_t parseResponseId(tr_variant& response) const;
     [[nodiscard]] RpcResponse parseResponseData(tr_variant& response) const;
 

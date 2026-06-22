@@ -37,16 +37,14 @@ namespace
 {
     auto serde = tr_variant_serde::json().inplace();
 
-    auto request = serde.parse(jsonreq);
-    if (!request)
+    if (auto request = serde.parse(jsonreq))
     {
-        return {};
+        auto response = tr_variant{};
+        tr_rpc_request_exec(session, std::move(*request), [&response](tr_variant&& resp) { response = std::move(resp); });
+        return serde.to_string(response);
     }
 
-    auto response = tr_variant{};
-    tr_rpc_request_exec(session, *request, [&response](tr_variant&& resp) { response = std::move(resp); });
-
-    return serde.to_string(response);
+    return {};
 }
 } // namespace
 
@@ -85,7 +83,7 @@ TEST_F(RpcTest, NotArrayOrObject)
     for (auto& req : requests)
     {
         auto response = tr_variant{};
-        tr_rpc_request_exec(session_, req, [&response](tr_variant&& resp) { response = std::move(resp); });
+        tr_rpc_request_exec(session_, std::move(req), [&response](tr_variant&& resp) { response = std::move(resp); });
 
         auto const* const response_map = response.get_if<tr_variant::Map>();
         ASSERT_NE(response_map, nullptr);
@@ -111,14 +109,13 @@ TEST_F(RpcTest, NotArrayOrObject)
 
 TEST_F(RpcTest, JsonRpcWrongVersion)
 {
-    auto request_map = tr_variant::Map{ 3U };
-    request_map.try_emplace(TR_KEY_jsonrpc, "1.0");
-    request_map.try_emplace(TR_KEY_method, tr_variant::unmanaged_string(TR_KEY_session_stats));
-    request_map.try_emplace(TR_KEY_id, 12345);
-    auto request = tr_variant{ std::move(request_map) };
+    auto request = tr_variant::Map{ 3U };
+    request.try_emplace(TR_KEY_id, 12345);
+    request.try_emplace(TR_KEY_jsonrpc, "1.0");
+    request.try_emplace(TR_KEY_method, tr_variant::unmanaged_string(TR_KEY_session_stats));
 
     auto response = tr_variant{};
-    tr_rpc_request_exec(session_, request, [&response](tr_variant&& resp) { response = std::move(resp); });
+    tr_rpc_request_exec(session_, std::move(request), [&response](tr_variant&& resp) { response = std::move(resp); });
 
     auto const* const response_map = response.get_if<tr_variant::Map>();
     ASSERT_NE(response_map, nullptr);
@@ -151,14 +148,13 @@ TEST_F(RpcTest, idSync)
 
     for (auto const& request_id : ids)
     {
-        auto request_map = tr_variant::Map{ 3U };
-        request_map.try_emplace(TR_KEY_jsonrpc, JsonRpc::Version);
-        request_map.try_emplace(TR_KEY_method, tr_variant::unmanaged_string(TR_KEY_session_stats));
-        request_map[TR_KEY_id].merge(request_id); // copy
-        auto request = tr_variant{ std::move(request_map) };
+        auto request = tr_variant::Map{ 3U };
+        request.try_emplace(TR_KEY_id, request_id.clone());
+        request.try_emplace(TR_KEY_jsonrpc, JsonRpc::Version);
+        request.try_emplace(TR_KEY_method, tr_variant::unmanaged_string(TR_KEY_session_stats));
 
         auto response = tr_variant{};
-        tr_rpc_request_exec(session_, request, [&response](tr_variant&& resp) { response = std::move(resp); });
+        tr_rpc_request_exec(session_, std::move(request), [&response](tr_variant&& resp) { response = std::move(resp); });
 
         auto const* const response_map = response.get_if<tr_variant::Map>();
         ASSERT_NE(response_map, nullptr);
@@ -196,14 +192,13 @@ TEST_F(RpcTest, idWrongType)
 
     for (auto const& request_id : ids)
     {
-        auto request_map = tr_variant::Map{ 3U };
-        request_map.try_emplace(TR_KEY_jsonrpc, JsonRpc::Version);
-        request_map.try_emplace(TR_KEY_method, tr_variant::unmanaged_string(TR_KEY_session_stats));
-        request_map[TR_KEY_id].merge(request_id); // copy
-        auto request = tr_variant{ std::move(request_map) };
+        auto request = tr_variant::Map{ 3U };
+        request.try_emplace(TR_KEY_jsonrpc, JsonRpc::Version);
+        request.try_emplace(TR_KEY_method, tr_variant::unmanaged_string(TR_KEY_session_stats));
+        request.try_emplace(TR_KEY_id, request_id.clone());
 
         auto response = tr_variant{};
-        tr_rpc_request_exec(session_, request, [&response](tr_variant&& resp) { response = std::move(resp); });
+        tr_rpc_request_exec(session_, std::move(request), [&response](tr_variant&& resp) { response = std::move(resp); });
 
         auto const* const response_map = response.get_if<tr_variant::Map>();
         ASSERT_NE(response_map, nullptr);
@@ -229,13 +224,12 @@ TEST_F(RpcTest, idWrongType)
 
 TEST_F(RpcTest, tagSyncLegacy)
 {
-    auto request_map = tr_variant::Map{ 2U };
-    request_map.try_emplace(TR_KEY_method, tr_variant::unmanaged_string(TR_KEY_session_stats));
-    request_map.try_emplace(TR_KEY_tag, 12345);
-    auto request = tr_variant{ std::move(request_map) };
+    auto request = tr_variant::Map{ 2U };
+    request.try_emplace(TR_KEY_method, tr_variant::unmanaged_string(TR_KEY_session_stats));
+    request.try_emplace(TR_KEY_tag, 12345);
 
     auto response = tr_variant{};
-    tr_rpc_request_exec(session_, request, [&response](tr_variant&& resp) { response = std::move(resp); });
+    tr_rpc_request_exec(session_, std::move(request), [&response](tr_variant&& resp) { response = std::move(resp); });
 
     auto const* const response_map = response.get_if<tr_variant::Map>();
     ASSERT_NE(response_map, nullptr);
@@ -260,20 +254,22 @@ TEST_F(RpcTest, idAsync)
         auto* tor = zeroTorrentInit(ZeroTorrentState::Complete);
         EXPECT_NE(nullptr, tor);
 
-        auto request_map = tr_variant::Map{ 3U };
-        request_map.try_emplace(TR_KEY_jsonrpc, JsonRpc::Version);
-        request_map.try_emplace(TR_KEY_method, tr_variant::unmanaged_string(TR_KEY_torrent_rename_path));
-        request_map[TR_KEY_id].merge(request_id); // copy
-
         auto params_map = tr_variant::Map{ 2U };
-        params_map.try_emplace(TR_KEY_path, "files-filled-with-zeroes/512");
         params_map.try_emplace(TR_KEY_name, "512_test");
-        request_map.try_emplace(TR_KEY_params, std::move(params_map));
+        params_map.try_emplace(TR_KEY_path, "files-filled-with-zeroes/512");
 
-        auto request = tr_variant{ std::move(request_map) };
+        auto request = tr_variant::Map{ 4U };
+        request.try_emplace(TR_KEY_id, request_id.clone());
+        request.try_emplace(TR_KEY_jsonrpc, JsonRpc::Version);
+        request.try_emplace(TR_KEY_method, tr_variant::unmanaged_string(TR_KEY_torrent_rename_path));
+        request.try_emplace(TR_KEY_params, std::move(params_map));
+
         auto promise = std::promise<tr_variant>{};
         auto future = promise.get_future();
-        tr_rpc_request_exec(session_, request, [&promise](tr_variant&& resp) { promise.set_value(std::move(resp)); });
+        tr_rpc_request_exec(
+            session_,
+            std::move(request),
+            [&promise](tr_variant&& resp) { promise.set_value(std::move(resp)); });
         auto const response = future.get();
 
         auto const* const response_map = response.get_if<tr_variant::Map>();
@@ -312,19 +308,18 @@ TEST_F(RpcTest, tagAsyncLegacy)
     auto* tor = zeroTorrentInit(ZeroTorrentState::Complete);
     EXPECT_NE(nullptr, tor);
 
-    auto request_map = tr_variant::Map{ 3U };
-    request_map.try_emplace(TR_KEY_method, tr_variant::unmanaged_string(TR_KEY_torrent_rename_path));
-    request_map.try_emplace(TR_KEY_tag, 12345);
-
     auto arguments_map = tr_variant::Map{ 2U };
-    arguments_map.try_emplace(TR_KEY_path, "files-filled-with-zeroes/512");
     arguments_map.try_emplace(TR_KEY_name, "512_test");
-    request_map.try_emplace(TR_KEY_arguments, std::move(arguments_map));
+    arguments_map.try_emplace(TR_KEY_path, "files-filled-with-zeroes/512");
 
-    auto request = tr_variant{ std::move(request_map) };
+    auto request = tr_variant::Map{ 3U };
+    request.try_emplace(TR_KEY_arguments, std::move(arguments_map));
+    request.try_emplace(TR_KEY_method, tr_variant::unmanaged_string(TR_KEY_torrent_rename_path));
+    request.try_emplace(TR_KEY_tag, 12345);
+
     auto promise = std::promise<tr_variant>{};
     auto future = promise.get_future();
-    tr_rpc_request_exec(session_, request, [&promise](tr_variant&& resp) { promise.set_value(std::move(resp)); });
+    tr_rpc_request_exec(session_, std::move(request), [&promise](tr_variant&& resp) { promise.set_value(std::move(resp)); });
     auto const response = future.get();
 
     auto const* const response_map = response.get_if<tr_variant::Map>();
@@ -342,13 +337,12 @@ TEST_F(RpcTest, tagAsyncLegacy)
 
 TEST_F(RpcTest, NotificationSync)
 {
-    auto request_map = tr_variant::Map{ 2U };
-    request_map.try_emplace(TR_KEY_jsonrpc, JsonRpc::Version);
-    request_map.try_emplace(TR_KEY_method, tr_variant::unmanaged_string(TR_KEY_session_stats));
-    auto request = tr_variant{ std::move(request_map) };
+    auto request = tr_variant::Map{ 2U };
+    request.try_emplace(TR_KEY_jsonrpc, JsonRpc::Version);
+    request.try_emplace(TR_KEY_method, tr_variant::unmanaged_string(TR_KEY_session_stats));
 
     auto response = tr_variant{};
-    tr_rpc_request_exec(session_, request, [&response](tr_variant&& resp) { response = std::move(resp); });
+    tr_rpc_request_exec(session_, std::move(request), [&response](tr_variant&& resp) { response = std::move(resp); });
 
     EXPECT_FALSE(response.has_value());
 }
@@ -358,19 +352,18 @@ TEST_F(RpcTest, NotificationAsync)
     auto* tor = zeroTorrentInit(ZeroTorrentState::Complete);
     EXPECT_NE(nullptr, tor);
 
-    auto request_map = tr_variant::Map{ 2U };
-    request_map.try_emplace(TR_KEY_jsonrpc, JsonRpc::Version);
-    request_map.try_emplace(TR_KEY_method, tr_variant::unmanaged_string(TR_KEY_torrent_rename_path));
-
     auto params_map = tr_variant::Map{ 2U };
     params_map.try_emplace(TR_KEY_path, "files-filled-with-zeroes/512");
     params_map.try_emplace(TR_KEY_name, "512_test");
-    request_map.try_emplace(TR_KEY_params, std::move(params_map));
 
-    auto request = tr_variant{ std::move(request_map) };
+    auto request = tr_variant::Map{ 3U };
+    request.try_emplace(TR_KEY_jsonrpc, JsonRpc::Version);
+    request.try_emplace(TR_KEY_method, tr_variant::unmanaged_string(TR_KEY_torrent_rename_path));
+    request.try_emplace(TR_KEY_params, std::move(params_map));
+
     auto promise = std::promise<tr_variant>{};
     auto future = promise.get_future();
-    tr_rpc_request_exec(session_, request, [&promise](tr_variant&& resp) { promise.set_value(std::move(resp)); });
+    tr_rpc_request_exec(session_, std::move(request), [&promise](tr_variant&& resp) { promise.set_value(std::move(resp)); });
     auto const response = future.get();
 
     EXPECT_FALSE(response.has_value());
@@ -381,14 +374,13 @@ TEST_F(RpcTest, NotificationAsync)
 
 TEST_F(RpcTest, tagNoHandler)
 {
-    auto request_map = tr_variant::Map{ 3U };
-    request_map.try_emplace(TR_KEY_jsonrpc, JsonRpc::Version);
-    request_map.try_emplace(TR_KEY_method, "sdgdhsgg");
-    request_map.try_emplace(TR_KEY_id, 12345);
-    auto request = tr_variant{ std::move(request_map) };
+    auto request = tr_variant::Map{ 3U };
+    request.try_emplace(TR_KEY_jsonrpc, JsonRpc::Version);
+    request.try_emplace(TR_KEY_method, "sdgdhsgg");
+    request.try_emplace(TR_KEY_id, 12345);
 
     auto response = tr_variant{};
-    tr_rpc_request_exec(session_, request, [&response](tr_variant&& resp) { response = std::move(resp); });
+    tr_rpc_request_exec(session_, std::move(request), [&response](tr_variant&& resp) { response = std::move(resp); });
 
     auto const* const response_map = response.get_if<tr_variant::Map>();
     ASSERT_NE(response_map, nullptr);
@@ -412,13 +404,12 @@ TEST_F(RpcTest, tagNoHandler)
 
 TEST_F(RpcTest, tagNoHandlerLegacy)
 {
-    auto request_map = tr_variant::Map{ 2U };
-    request_map.try_emplace(TR_KEY_method, "sdgdhsgg");
-    request_map.try_emplace(TR_KEY_tag, 12345);
-    auto request = tr_variant{ std::move(request_map) };
+    auto request = tr_variant::Map{ 2U };
+    request.try_emplace(TR_KEY_method, "sdgdhsgg");
+    request.try_emplace(TR_KEY_tag, 12345);
 
     auto response = tr_variant{};
-    tr_rpc_request_exec(session_, request, [&response](tr_variant&& resp) { response = std::move(resp); });
+    tr_rpc_request_exec(session_, std::move(request), [&response](tr_variant&& resp) { response = std::move(resp); });
 
     auto const* const response_map = response.get_if<tr_variant::Map>();
     ASSERT_NE(response_map, nullptr);
@@ -435,48 +426,47 @@ TEST_F(RpcTest, batch)
     auto request_vec = tr_variant::Vector{};
     request_vec.reserve(8U);
 
-    auto request_map = tr_variant::Map{ 3U };
-    request_map.try_emplace(TR_KEY_jsonrpc, JsonRpc::Version);
-    request_map.try_emplace(TR_KEY_method, tr_variant::unmanaged_string(TR_KEY_session_stats));
-    request_map.try_emplace(TR_KEY_id, 12345);
-    request_vec.emplace_back(std::move(request_map));
+    auto request = tr_variant::Map{ 3U };
+    request.try_emplace(TR_KEY_jsonrpc, JsonRpc::Version);
+    request.try_emplace(TR_KEY_method, tr_variant::unmanaged_string(TR_KEY_session_stats));
+    request.try_emplace(TR_KEY_id, 12345);
+    request_vec.emplace_back(std::move(request));
 
-    request_map = tr_variant::Map{ 2U };
-    request_map.try_emplace(TR_KEY_jsonrpc, JsonRpc::Version);
-    request_map.try_emplace(TR_KEY_method, tr_variant::unmanaged_string(TR_KEY_session_set));
-    request_vec.emplace_back(std::move(request_map));
+    request = tr_variant::Map{ 2U };
+    request.try_emplace(TR_KEY_jsonrpc, JsonRpc::Version);
+    request.try_emplace(TR_KEY_method, tr_variant::unmanaged_string(TR_KEY_session_set));
+    request_vec.emplace_back(std::move(request));
 
-    request_map = tr_variant::Map{ 3U };
-    request_map.try_emplace(TR_KEY_jsonrpc, JsonRpc::Version);
-    request_map.try_emplace(TR_KEY_method, tr_variant::unmanaged_string(TR_KEY_session_stats));
-    request_map.try_emplace(TR_KEY_id, "12345"sv);
-    request_vec.emplace_back(std::move(request_map));
+    request = tr_variant::Map{ 3U };
+    request.try_emplace(TR_KEY_jsonrpc, JsonRpc::Version);
+    request.try_emplace(TR_KEY_method, tr_variant::unmanaged_string(TR_KEY_session_stats));
+    request.try_emplace(TR_KEY_id, "12345"sv);
+    request_vec.emplace_back(std::move(request));
 
-    request_map = tr_variant::Map{ 1U };
-    request_map.try_emplace(tr_quark_new("foo"sv), "boo"sv);
-    request_vec.emplace_back(std::move(request_map));
+    request = tr_variant::Map{ 1U };
+    request.try_emplace(tr_quark_new("foo"sv), "boo"sv);
+    request_vec.emplace_back(std::move(request));
 
     request_vec.emplace_back(1);
 
-    request_map = tr_variant::Map{ 3U };
-    request_map.try_emplace(TR_KEY_jsonrpc, JsonRpc::Version);
-    request_map.try_emplace(TR_KEY_method, "dnfsojnsdkjf");
-    request_map.try_emplace(TR_KEY_id, 12345);
-    request_vec.emplace_back(std::move(request_map));
+    request = tr_variant::Map{ 3U };
+    request.try_emplace(TR_KEY_jsonrpc, JsonRpc::Version);
+    request.try_emplace(TR_KEY_method, "dnfsojnsdkjf");
+    request.try_emplace(TR_KEY_id, 12345);
+    request_vec.emplace_back(std::move(request));
 
-    request_map = tr_variant::Map{ 1U };
-    request_map.try_emplace(TR_KEY_jsonrpc, JsonRpc::Version);
-    request_map.try_emplace(TR_KEY_method, "dnfsojnsdkjf");
-    request_vec.emplace_back(std::move(request_map));
+    request = tr_variant::Map{ 1U };
+    request.try_emplace(TR_KEY_jsonrpc, JsonRpc::Version);
+    request.try_emplace(TR_KEY_method, "dnfsojnsdkjf");
+    request_vec.emplace_back(std::move(request));
 
-    request_map = tr_variant::Map{ 2U };
-    request_map.try_emplace(TR_KEY_method, tr_variant::unmanaged_string(TR_KEY_session_stats));
-    request_map.try_emplace(TR_KEY_tag, 12345);
-    request_vec.emplace_back(std::move(request_map));
+    request = tr_variant::Map{ 2U };
+    request.try_emplace(TR_KEY_method, tr_variant::unmanaged_string(TR_KEY_session_stats));
+    request.try_emplace(TR_KEY_tag, 12345);
+    request_vec.emplace_back(std::move(request));
 
-    auto request = tr_variant{ std::move(request_vec) };
     auto response = tr_variant{};
-    tr_rpc_request_exec(session_, request, [&response](tr_variant&& resp) { response = std::move(resp); });
+    tr_rpc_request_exec(session_, std::move(request_vec), [&response](tr_variant&& resp) { response = std::move(resp); });
 
     auto* const response_vec_ptr = response.get_if<tr_variant::Vector>();
     ASSERT_NE(response_vec_ptr, nullptr);
@@ -585,14 +575,13 @@ TEST_F(RpcTest, sessionGet)
     auto* tor = zeroTorrentInit(ZeroTorrentState::NoFiles);
     EXPECT_NE(nullptr, tor);
 
-    auto request_map = tr_variant::Map{ 3U };
-    request_map.try_emplace(TR_KEY_jsonrpc, JsonRpc::Version);
-    request_map.try_emplace(TR_KEY_method, tr_variant::unmanaged_string(TR_KEY_session_get));
-    request_map.try_emplace(TR_KEY_id, 12345);
-    auto request = tr_variant{ std::move(request_map) };
+    auto request = tr_variant::Map{ 3U };
+    request.try_emplace(TR_KEY_jsonrpc, JsonRpc::Version);
+    request.try_emplace(TR_KEY_method, tr_variant::unmanaged_string(TR_KEY_session_get));
+    request.try_emplace(TR_KEY_id, 12345);
 
     auto response = tr_variant{};
-    tr_rpc_request_exec(session_, request, [&response](tr_variant&& resp) { response = std::move(resp); });
+    tr_rpc_request_exec(session_, std::move(request), [&response](tr_variant&& resp) { response = std::move(resp); });
 
     auto* response_map = response.get_if<tr_variant::Map>();
     ASSERT_NE(response_map, nullptr);
@@ -691,21 +680,19 @@ TEST_F(RpcTest, torrentGet)
     auto* tor = zeroTorrentInit(ZeroTorrentState::NoFiles);
     EXPECT_NE(nullptr, tor);
 
-    auto request_map = tr_variant::Map{ 3U };
-
-    request_map.try_emplace(TR_KEY_jsonrpc, JsonRpc::Version);
-    request_map.try_emplace(TR_KEY_method, tr_variant::unmanaged_string(TR_KEY_torrent_get));
-    request_map.try_emplace(TR_KEY_id, 12345);
-
     auto params = tr_variant::Map{ 1U };
     auto fields = tr_variant::Vector{};
     fields.emplace_back(tr_quark_get_string_view(TR_KEY_id));
     params.try_emplace(TR_KEY_fields, std::move(fields));
-    request_map.try_emplace(TR_KEY_params, std::move(params));
 
-    auto request = tr_variant{ std::move(request_map) };
+    auto request = tr_variant::Map{ 4U };
+    request.try_emplace(TR_KEY_id, 12345);
+    request.try_emplace(TR_KEY_jsonrpc, JsonRpc::Version);
+    request.try_emplace(TR_KEY_method, tr_variant::unmanaged_string(TR_KEY_torrent_get));
+    request.try_emplace(TR_KEY_params, std::move(params));
+
     auto response = tr_variant{};
-    tr_rpc_request_exec(session_, request, [&response](tr_variant&& resp) { response = std::move(resp); });
+    tr_rpc_request_exec(session_, std::move(request), [&response](tr_variant&& resp) { response = std::move(resp); });
 
     auto* response_map = response.get_if<tr_variant::Map>();
     ASSERT_NE(response_map, nullptr);
@@ -749,22 +736,20 @@ TEST_F(RpcTest, recentlyActiveEmptyOnStartup)
     EXPECT_EQ(tr_sessionLoadTorrents(session_, ctor), 1U);
     tr_ctorFree(ctor);
 
-    //Query recently_active. Should be empty
-    auto request_map = tr_variant::Map{ 3U };
-    request_map.try_emplace(TR_KEY_jsonrpc, JsonRpc::Version);
-    request_map.try_emplace(TR_KEY_method, tr_variant::unmanaged_string(TR_KEY_torrent_get));
-    request_map.try_emplace(TR_KEY_id, 12345);
-
-    auto params = tr_variant::Map{ 2U };
+    // Query recently_active. Should be empty
     auto fields = tr_variant::Vector{};
     fields.emplace_back(tr_quark_get_string_view(TR_KEY_id));
+    auto params = tr_variant::Map{ 2U };
     params.try_emplace(TR_KEY_fields, std::move(fields));
     params.try_emplace(TR_KEY_ids, tr_quark_get_string_view(TR_KEY_recently_active));
-    request_map.try_emplace(TR_KEY_params, std::move(params));
+    auto request = tr_variant::Map{ 4U };
+    request.try_emplace(TR_KEY_jsonrpc, JsonRpc::Version);
+    request.try_emplace(TR_KEY_method, tr_variant::unmanaged_string(TR_KEY_torrent_get));
+    request.try_emplace(TR_KEY_id, 12345);
+    request.try_emplace(TR_KEY_params, std::move(params));
 
-    auto request = tr_variant{ std::move(request_map) };
     auto response = tr_variant{};
-    tr_rpc_request_exec(session_, request, [&response](tr_variant&& resp) { response = std::move(resp); });
+    tr_rpc_request_exec(session_, std::move(request), [&response](tr_variant&& resp) { response = std::move(resp); });
 
     auto* response_map = response.get_if<tr_variant::Map>();
     ASSERT_NE(response_map, nullptr);
@@ -781,19 +766,17 @@ TEST_F(RpcTest, torrentGetLegacy)
     auto* tor = zeroTorrentInit(ZeroTorrentState::NoFiles);
     EXPECT_NE(nullptr, tor);
 
-    auto request_map = tr_variant::Map{ 1U };
-
-    request_map.try_emplace(TR_KEY_method, tr_quark_get_string_view(TR_KEY_torrent_get_kebab));
+    auto request = tr_variant::Map{ 2U };
+    request.try_emplace(TR_KEY_method, tr_quark_get_string_view(TR_KEY_torrent_get_kebab));
 
     auto args_in = tr_variant::Map{ 1U };
     auto fields = tr_variant::Vector{};
     fields.emplace_back(tr_quark_get_string_view(TR_KEY_id));
     args_in.try_emplace(TR_KEY_fields, std::move(fields));
-    request_map.try_emplace(TR_KEY_arguments, std::move(args_in));
+    request.try_emplace(TR_KEY_arguments, std::move(args_in));
 
-    auto request = tr_variant{ std::move(request_map) };
     auto response = tr_variant{};
-    tr_rpc_request_exec(session_, request, [&response](tr_variant&& resp) { response = std::move(resp); });
+    tr_rpc_request_exec(session_, std::move(request), [&response](tr_variant&& resp) { response = std::move(resp); });
 
     auto* response_map = response.get_if<tr_variant::Map>();
     ASSERT_NE(response_map, nullptr);

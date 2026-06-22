@@ -99,7 +99,7 @@ RpcResponseFuture RpcClient::exec(tr_quark const method, tr_variant::Map args)
 
     if (session_ != nullptr)
     {
-        sendLocalRequest(req, promise, id);
+        sendLocalRequest(std::move(req), promise, id);
     }
     else if (!url_.isEmpty())
     {
@@ -159,7 +159,7 @@ void RpcClient::sendNetworkRequest(QByteArray const& body, QFutureInterface<RpcR
     }
 }
 
-void RpcClient::sendLocalRequest(tr_variant& req, QFutureInterface<RpcResponse> const& promise, int64_t const id)
+void RpcClient::sendLocalRequest(tr_variant&& req, QFutureInterface<RpcResponse> const& promise, int64_t const id)
 {
     if (verbose_)
     {
@@ -169,7 +169,7 @@ void RpcClient::sendLocalRequest(tr_variant& req, QFutureInterface<RpcResponse> 
     local_requests_.try_emplace(id, promise);
     tr_rpc_request_exec(
         session_,
-        req,
+        std::move(req),
         [this](tr_variant&& response)
         {
             api_compat::convert_incoming_data(response);

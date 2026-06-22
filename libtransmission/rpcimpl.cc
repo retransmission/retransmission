@@ -2840,7 +2840,7 @@ void noop_response_callback(tr_variant&& /*response*/)
 {
 }
 
-void tr_rpc_request_exec_impl(tr_session* session, tr_variant& request, tr_rpc_response_func&& callback, bool is_batch)
+void tr_rpc_request_exec_impl(tr_session* session, tr_variant request, tr_rpc_response_func&& callback, bool is_batch)
 {
     using namespace JsonRpc;
 
@@ -2849,7 +2849,7 @@ void tr_rpc_request_exec_impl(tr_session* session, tr_variant& request, tr_rpc_r
         callback = noop_response_callback;
     }
 
-    auto const* map = request.get_if<tr_variant::Map>();
+    auto* const map = request.get_if<tr_variant::Map>();
     if (map == nullptr)
     {
         callback(build_response(
@@ -2859,7 +2859,7 @@ void tr_rpc_request_exec_impl(tr_session* session, tr_variant& request, tr_rpc_r
         return;
     }
 
-    auto is_jsonrpc = false;
+    bool is_jsonrpc = false;
     if (auto jsonrpc = map->value_if<std::string_view>(TR_KEY_jsonrpc); jsonrpc == Version)
     {
         is_jsonrpc = true;
@@ -2871,20 +2871,7 @@ void tr_rpc_request_exec_impl(tr_session* session, tr_variant& request, tr_rpc_r
     }
     else
     {
-        tr::api_compat::convert_incoming_data(request);
-        map = request.get_if<tr_variant::Map>();
-        TR_ASSERT(map != nullptr);
-        if (map == nullptr)
-        {
-            auto response = tr_variant::Map{ 2U };
-            response.try_emplace(TR_KEY_arguments, tr_variant::Map{});
-            response.try_emplace(
-                TR_KEY_result,
-                tr_variant::unmanaged_string(
-                    "bug in api-compat, please report a bug at https://github.com/transmissiontorrent/transmission/issues"sv));
-            callback(std::move(response));
-            return;
-        }
+        tr::api_compat::convert_incoming_data(*map);
     }
 
     auto const empty_params = tr_variant::Map{};
@@ -2947,7 +2934,7 @@ void tr_rpc_request_exec_impl(tr_session* session, tr_variant& request, tr_rpc_r
     tr_rpc_idle_done(data, Error::METHOD_NOT_FOUND, {});
 }
 
-void tr_rpc_request_exec_batch(tr_session* session, tr_variant::Vector& requests, tr_rpc_response_func&& callback)
+void tr_rpc_request_exec_batch(tr_session* session, tr_variant::Vector requests, tr_rpc_response_func&& callback)
 {
     auto const n_requests = std::size(requests);
     auto responses = std::make_shared<tr_variant::Vector>(n_requests);
@@ -2958,7 +2945,7 @@ void tr_rpc_request_exec_batch(tr_session* session, tr_variant::Vector& requests
     {
         tr_rpc_request_exec_impl(
             session,
-            requests[i],
+            std::move(requests[i]),
             [responses, n_requests, n_responses, i, cb](tr_variant&& response)
             {
                 (*responses)[i] = std::move(response);
@@ -2981,17 +2968,18 @@ void tr_rpc_request_exec_batch(tr_session* session, tr_variant::Vector& requests
 } // namespace
 
 // TODO(tearfur): take `tr_variant const& request` after removing api_compat
-void tr_rpc_request_exec(tr_session* session, tr_variant& request, tr_rpc_response_func&& callback)
+void tr_rpc_request_exec(tr_session* session, tr_variant request, tr_rpc_response_func&& callback)
 {
     auto const lock = session->unique_lock();
 
-    if (auto* const vec = request.get_if<tr_variant::Vector>(); vec != nullptr)
+    if (auto* const vec = request.get_if<tr_variant::Vector>())
     {
-        tr_rpc_request_exec_batch(session, *vec, std::move(callback));
-        return;
+        tr_rpc_request_exec_batch(session, std::move(*vec), std::move(callback));
     }
-
-    tr_rpc_request_exec_impl(session, request, std::move(callback), false);
+    else
+    {
+        tr_rpc_request_exec_impl(session, std::move(request), std::move(callback), false);
+    }
 }
 
 void tr_rpc_request_exec(tr_session* session, std::string_view request, tr_rpc_response_func&& callback)
@@ -2999,9 +2987,10 @@ void tr_rpc_request_exec(tr_session* session, std::string_view request, tr_rpc_r
     using namespace JsonRpc;
 
     auto serde = tr_variant_serde::json().inplace();
-    if (auto otop = serde.parse(request); otop)
+
+    if (auto otop = serde.parse(request))
     {
-        tr_rpc_request_exec(session, *otop, std::move(callback));
+        tr_rpc_request_exec(session, std::move(*otop), std::move(callback));
         return;
     }
 
