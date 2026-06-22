@@ -55,10 +55,9 @@ using ::trqt::variant_helpers::dictFind;
 
 void Session::sessionSet(tr_quark const key, tr_variant val)
 {
-    auto args = tr_variant{};
-    tr_variantInitDict(&args, 1);
-    *tr_variantDictAdd(&args, key) = std::move(val);
-    exec(TR_KEY_session_set, &args);
+    auto params = tr_variant::Map{ 1U };
+    params.insert_or_assign(key, std::move(val));
+    exec(TR_KEY_session_set, std::move(params));
 }
 
 void Session::portTest(Session::PortTestIpProtocol const ip_protocol)

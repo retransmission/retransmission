@@ -60,6 +60,11 @@ bool change(TrackerStat& setme, tr_variant const* var);
 template<typename T>
 bool change(std::vector<T>& setme, tr_variant const* value)
 {
+    if (!value)
+    {
+        return false;
+    }
+
     bool changed = false;
 
     auto const* const vec = value->get_if<tr_variant::Vector>();

@@ -321,11 +321,6 @@ bool tr_variantDictFindDict(tr_variant* const var, tr_quark key, tr_variant** se
 
 // ---
 
-void tr_variantInitDict(tr_variant* initme, size_t n_reserve)
-{
-    *initme = tr_variant::Map{ n_reserve };
-}
-
 tr_variant* tr_variantDictAdd(tr_variant* const var, tr_quark key)
 {
     TR_ASSERT(var != nullptr);
