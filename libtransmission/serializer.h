@@ -174,9 +174,9 @@ template<Serializable S>
     auto result = std::optional<tr_variant>{};
     auto try_field = [&](auto const& field)
     {
-        if (result || field.key != key)
+        if (field.key != key)
         {
-            return;
+            return false;
         }
 
         auto map = tr_variant::Map{ 1U };
@@ -186,48 +186,47 @@ template<Serializable S>
         {
             result = iter->second.clone();
         }
+
+        return true;
     };
 
-    std::apply([&](auto const&... field) { (try_field(field), ...); }, S::Fields);
+    std::apply([&](auto const&... field) { (try_field(field) || ...); }, S::Fields);
     return result;
 }
 
 template<Serializable S>
 bool set_from_variant(S& tgt, tr_quark key, tr_variant const& value)
 {
-    auto found = false;
     auto changed = false;
     auto try_field = [&](auto const& field)
     {
-        if (found || field.key != key)
+        if (field.key != key)
         {
-            return;
+            return false;
         }
 
-        found = true;
         using FieldType = std::remove_cvref_t<decltype(field)>;
-        changed |= set(tgt.*(FieldType::MemberPointer), value);
+        changed = set(tgt.*(FieldType::MemberPointer), value);
+        return true;
     };
 
-    std::apply([&](auto const&... field) { (try_field(field), ...); }, S::Fields);
+    std::apply([&](auto const&... field) { (try_field(field) || ...); }, S::Fields);
     return changed;
 }
 
 template<typename T, Serializable S>
 bool set(S& tgt, tr_quark key, T val)
 {
-    auto found = false;
     auto type_ok = true;
     auto changed = false;
 
     auto try_field = [&](auto const& field)
     {
-        if (found || field.key != key)
+        if (field.key != key)
         {
-            return;
+            return false;
         }
 
-        found = true;
         using FieldType = std::remove_cvref_t<decltype(field)>;
         if constexpr (std::is_same_v<T, typename FieldType::value_type>)
         {
@@ -237,10 +236,12 @@ bool set(S& tgt, tr_quark key, T val)
         {
             type_ok = false;
         }
+
+        return true;
     };
 
-    std::apply([&](auto const&... field) { (try_field(field), ...); }, S::Fields);
-    return found && type_ok && changed;
+    std::apply([&](auto const&... field) { (try_field(field) || ...); }, S::Fields);
+    return type_ok && changed;
 }
 
 /**
