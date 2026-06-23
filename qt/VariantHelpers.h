@@ -40,9 +40,9 @@ bool change(T& setme, tr_variant const* var)
     return var && tr::serializer::set(setme, *var);
 }
 
-bool change(Peer& setme, tr_variant const* var);
-bool change(TorrentFile& setme, tr_variant const* var);
-bool change(TrackerStat& setme, tr_variant const* var);
+bool change(Peer& setme, tr_variant const* value);
+bool change(TorrentFile& setme, tr_variant const* value);
+bool change(TrackerStat& setme, tr_variant const* value);
 
 template<typename T>
 bool change(std::vector<T>& setme, tr_variant const* value)
