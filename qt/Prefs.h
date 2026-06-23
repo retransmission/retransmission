@@ -11,11 +11,11 @@
 #include <cstdint>
 #include <tuple>
 #include <utility>
+#include <vector>
 
 #include <QDir>
 #include <QObject>
 #include <QString>
-#include <QStringList>
 
 #include <libtransmission/constants.h>
 #include <libtransmission/quark.h>
@@ -112,7 +112,7 @@ private:
     QString session_remote_url_base_path_ = QStringLiteral("/transmission/");
     QString session_remote_username_;
     QString socket_diffserv_;
-    QStringList complete_sound_command_;
+    std::vector<QString> complete_sound_command_;
     double ratio_ = 0.0;
     int alt_speed_limit_down_ = 0;
     int alt_speed_limit_time_begin_ = 0;

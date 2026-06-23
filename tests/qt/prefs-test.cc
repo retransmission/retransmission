@@ -5,13 +5,13 @@
 
 #include <string>
 #include <string_view>
+#include <vector>
 
 #include <QApplication>
 #include <QDateTime>
 #include <QDir>
 #include <QSignalSpy>
 #include <QString>
-#include <QStringList>
 #include <QTest>
 
 #include <fmt/format.h>
@@ -187,8 +187,8 @@ private slots:
         auto constexpr Key = TR_KEY_torrent_complete_sound_command;
         auto constexpr ValAStr = R"(["one","two","three"])"sv;
         auto constexpr ValBStr = R"(["alpha","beta"])"sv;
-        auto const val_a = QStringList{ QStringLiteral("one"), QStringLiteral("two"), QStringLiteral("three") };
-        auto const val_b = QStringList{ QStringLiteral("alpha"), QStringLiteral("beta") };
+        auto const val_a = std::vector<QString>{ QStringLiteral("one"), QStringLiteral("two"), QStringLiteral("three") };
+        auto const val_b = std::vector<QString>{ QStringLiteral("alpha"), QStringLiteral("beta") };
 
         auto prefs = Prefs{};
         verify_get_set_by_property(prefs, Key, val_a, val_b);
