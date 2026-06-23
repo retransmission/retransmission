@@ -3,38 +3,14 @@
 // or any future license endorsed by Mnemosaic LLC.
 // License text can be found in the licenses/ folder.
 
-#include <array>
-#include <cmath>
-#include <cassert>
-#include <limits>
-#include <string_view>
-#include <utility>
+#include <libtransmission/quark.h>
 
-#include <libtransmission/transmission.h>
+#include "libtransmission-app/prefs.h"
 
-#include <libtransmission/api-compat.h>
-#include <libtransmission/serializer.h>
-#include <libtransmission/variant.h>
-
-#include "Filters.h"
-#include "Prefs.h"
-#include "UserMetaType.h"
-
-using namespace std::string_view_literals;
-
-// ---
-
-Prefs::Prefs(tr::Settings const& settings)
+namespace tr::app
 {
-    tr::serializer::load(*this, Fields, settings);
-}
 
-Prefs::Prefs(QString const& dir)
-{
-    tr::serializer::load(*this, Fields, tr_sessionLoadSettings(dir.toStdString()));
-}
-
-bool Prefs::isCore(tr_quark const key)
+bool prefs_is_core(tr_quark const key)
 {
     switch (key)
     {
@@ -99,18 +75,4 @@ bool Prefs::isCore(tr_quark const key)
     }
 }
 
-tr::Settings Prefs::current_settings() const
-{
-    auto map = tr::serializer::save(*this, Fields);
-    map.erase(TR_KEY_filter_text);
-    return map;
-}
-
-void Prefs::save(QString const& filename) const
-{
-    auto const filename_str = filename.toStdString();
-    auto settings = current_settings();
-    settings.merge(tr::settings::load(filename_str));
-    settings.erase(TR_KEY_filter_text);
-    tr::settings::save(filename_str, settings);
-}
+} // namespace tr::app

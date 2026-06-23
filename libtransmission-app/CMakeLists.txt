@@ -13,7 +13,9 @@ target_sources(${LIBNAME}
         converters.cc
         converters.h
         display-modes.h
-        favicon-cache.h)
+        favicon-cache.h
+        prefs.cc
+        prefs.h)
 
 target_include_directories(${LIBNAME}
     PUBLIC
@@ -22,4 +24,5 @@ target_include_directories(${LIBNAME}
 
 target_link_libraries(${LIBNAME}
     PUBLIC
-        transmission::fmt-header-only)
+        transmission::fmt-header-only
+        transmission::small)

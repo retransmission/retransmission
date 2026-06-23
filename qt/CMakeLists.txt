@@ -66,7 +66,6 @@ target_sources(${TR_NAME}-qt-lib
         OptionsDialog.h
         PathButton.cc
         PathButton.h
-        Prefs.cc
         Prefs.h
         PrefsDialog.cc
         PrefsDialog.h
