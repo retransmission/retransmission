@@ -92,7 +92,7 @@ private:
     template<auto MemberPtr>
     using Field = tr::serializer::Field<MemberPtr>;
 
-    std::chrono::sys_seconds blocklist_date_ = {};
+    std::chrono::sys_seconds blocklist_date_;
     QString blocklist_url_;
     QString default_trackers_;
     QString dir_watch_ = QString::fromStdString(tr_getDefaultDownloadDir());
