@@ -27,10 +27,6 @@ Q_DECLARE_METATYPE(Style)
 
 namespace
 {
-auto const tr4_session_get_payload_re = QRegularExpression{ R"(^\{"method":"session-get","tag":[0-9]+\}$)" };
-auto const tr5_session_get_payload_re = QRegularExpression{ R"(^\{"id":[0-9]+,"jsonrpc":"2\.0","method":"session_get"\}$)" };
-} // namespace
-
 class RpcClientTest : public QObject
 {
     Q_OBJECT
@@ -43,7 +39,9 @@ class RpcClientTest : public QObject
 
     static void QVERIFY_is_session_get_request(Style style, QByteArray const& bytes)
     {
-        auto const payload_re = style == Style::Tr4 ? tr4_session_get_payload_re : tr5_session_get_payload_re;
+        auto const payload_re = style == Style::Tr4 ?
+            QRegularExpression{ QString::fromUtf8(R"(^\{"method":"session-get","tag":[0-9]+\}$)") } :
+            QRegularExpression{ QString::fromUtf8(R"(^\{"id":[0-9]+,"jsonrpc":"2\.0","method":"session_get"\}$)") };
         QVERIFY_re_matches(payload_re, bytes);
     }
 
@@ -78,7 +76,7 @@ private slots:
         // setup: create & start `client`
         auto nam = FakeNetworkAccessManager{};
         auto client = RpcClient{ nam };
-        auto const url = QUrl{ "http://example.invalid:9091/transmission/rpc" };
+        auto const url = QUrl{ QString::fromUtf8("http://example.invalid:9091/transmission/rpc") };
         client.start(url);
         QCOMPARE_EQ(client.url(), url);
 
@@ -109,7 +107,7 @@ private slots:
         api_compat::set_default_style(initial_style);
 
         // setup: create & start `client`
-        auto const url = QUrl{ "http://example.invalid:9091/transmission/rpc" };
+        auto const url = QUrl{ QString::fromUtf8("http://example.invalid:9091/transmission/rpc") };
         auto nam = FakeNetworkAccessManager{};
         auto client = RpcClient{ nam };
         client.start(url);
@@ -145,10 +143,10 @@ private slots:
         api_compat::set_default_style(initial_style);
 
         // setup: create & start `client`
-        auto const url = QUrl{ "http://example.invalid:9091/transmission/rpc" };
+        auto const url = QUrl{ QString::fromUtf8("http://example.invalid:9091/transmission/rpc") };
         auto nam = FakeNetworkAccessManager{};
         auto client = RpcClient{ nam };
-        client.start(QUrl{ "http://example.invalid:9091/transmission/rpc" });
+        client.start(url);
 
         // setup: post initial request
         client.exec(TR_KEY_session_get, nullptr);
@@ -174,6 +172,7 @@ private slots:
 private:
     Style const initial_style_ = api_compat::default_style();
 };
+} // namespace
 
 int main(int argc, char** argv)
 {
