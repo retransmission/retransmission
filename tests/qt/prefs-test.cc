@@ -121,7 +121,7 @@ private slots:
         QCOMPARE_EQ(prefs.get<ShowMode>(TR_KEY_filter_mode), DefaultShowMode);
         QCOMPARE_EQ(prefs.get<SortMode>(TR_KEY_sort_mode), DefaultSortMode);
         QCOMPARE_EQ(prefs.get<StatsMode>(TR_KEY_statusbar_stats), DefaultStatsMode);
-        QCOMPARE_EQ(prefs.get<QDateTime>(TR_KEY_blocklist_date), QDateTime::fromSecsSinceEpoch(0));
+        QCOMPARE_EQ(prefs.get<std::chrono::sys_seconds>(TR_KEY_blocklist_date), std::chrono::sys_seconds{});
         QCOMPARE_EQ(prefs.get<bool>(TR_KEY_torrent_complete_sound_enabled), true);
         QCOMPARE_EQ(prefs.get<bool>(TR_KEY_show_statusbar), true);
     }
@@ -196,18 +196,23 @@ private slots:
         verify_get_by_json(prefs, Key, val_b, ValBStr);
     }
 
-    void handles_qdatetime()
+    void handles_dates()
     {
         auto constexpr Key = TR_KEY_blocklist_date;
-        auto const val_a = QDateTime::fromMSecsSinceEpoch(1700000000000LL).toUTC();
-        auto const val_a_str = fmt::format("{}", val_a.toSecsSinceEpoch());
-        auto const val_b = QDateTime::fromMSecsSinceEpoch(1700000000000LL + 123000LL).toUTC();
-        auto const val_b_str = fmt::format("{}", val_b.toSecsSinceEpoch());
+        auto const val_a = std::chrono::sys_seconds{ std::chrono::seconds{ 1700000000LL } };
+        auto const val_a_str = tr::serializer::to_value<std::string>(tr::serializer::to_variant(val_a));
+        auto const val_b = std::chrono::sys_seconds{ std::chrono::seconds{ 1700000000LL + 123LL } };
+        auto const val_b_str = tr::serializer::to_value<std::string>(tr::serializer::to_variant(val_b));
+        QVERIFY(val_a_str.has_value());
+        QVERIFY(val_b_str.has_value());
 
-        auto prefs = Prefs{};
-        verify_get_set_by_property(prefs, Key, val_a, val_b);
-        verify_set_by_json(Key, val_a, val_a_str);
-        verify_get_by_json(prefs, Key, val_b, val_b_str);
+        if (val_a_str && val_b_str)
+        {
+            auto prefs = Prefs{};
+            verify_get_set_by_property(prefs, Key, val_a, val_b);
+            verify_set_by_json(Key, val_a, fmt::format(R"("{:s}")"sv, *val_a_str));
+            verify_get_by_json(prefs, Key, val_b, fmt::format(R"("{:s}")"sv, *val_b_str));
+        }
     }
 
     void handles_sortmode()
@@ -366,7 +371,7 @@ private slots:
         tr_variant_serde::json().to_file(tr_variant{ std::move(existing_settings) }, settings_file.toStdString());
 
         auto const download_dir = QDir{ sandbox_dir }.filePath(QStringLiteral("Downloads"));
-        auto const blocklist_date = QDateTime::fromSecsSinceEpoch(1700000000).toUTC();
+        auto const blocklist_date = std::chrono::sys_seconds{ std::chrono::seconds{ 1700000000 } };
 
         auto prefs = Prefs{};
         prefs.set(TR_KEY_download_dir, download_dir);
@@ -386,7 +391,7 @@ private slots:
         auto round_tripped = Prefs{ saved };
         QCOMPARE_EQ(round_tripped.get<QString>(TR_KEY_download_dir), download_dir);
         QCOMPARE_EQ(round_tripped.get<SortMode>(TR_KEY_sort_mode), SortMode::SortByQueue);
-        QCOMPARE_EQ(round_tripped.get<QDateTime>(TR_KEY_blocklist_date), blocklist_date);
+        QCOMPARE_EQ(round_tripped.get<std::chrono::sys_seconds>(TR_KEY_blocklist_date), blocklist_date);
         QCOMPARE_EQ(round_tripped.get<QString>(TR_KEY_filter_text), QString{});
     }
 

@@ -7,11 +7,11 @@
 
 #include <array>
 #include <cassert>
+#include <chrono>
 #include <cstdint>
 #include <tuple>
 #include <utility>
 
-#include <QDateTime>
 #include <QDir>
 #include <QObject>
 #include <QString>
@@ -92,7 +92,7 @@ private:
     template<auto MemberPtr>
     using Field = tr::serializer::Field<MemberPtr>;
 
-    QDateTime blocklist_date_ = QDateTime::fromSecsSinceEpoch(0);
+    std::chrono::sys_seconds blocklist_date_ = {};
     QString blocklist_url_;
     QString default_trackers_;
     QString dir_watch_ = QString::fromStdString(tr_getDefaultDownloadDir());

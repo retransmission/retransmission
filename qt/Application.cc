@@ -6,6 +6,7 @@
 #include "Application.h"
 
 #include <algorithm>
+#include <chrono>
 #include <utility>
 
 #include <QIcon>
@@ -398,9 +399,9 @@ void Application::maybeUpdateBlocklist() const
         return;
     }
 
-    auto const last_updated_at = prefs_.get<QDateTime>(TR_KEY_blocklist_date);
-    auto const next_update_at = last_updated_at.addDays(7);
-    auto const now = QDateTime::currentDateTime();
+    auto const last_updated_at = prefs_.get<std::chrono::sys_seconds>(TR_KEY_blocklist_date);
+    auto const next_update_at = last_updated_at + std::chrono::days{ 7 };
+    auto const now = std::chrono::time_point_cast<std::chrono::seconds>(std::chrono::system_clock::now());
 
     if (now < next_update_at)
     {

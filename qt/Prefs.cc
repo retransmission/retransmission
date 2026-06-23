@@ -10,8 +10,6 @@
 #include <string_view>
 #include <utility>
 
-#include <QDateTime>
-
 #include <libtransmission/transmission.h>
 
 #include <libtransmission/api-compat.h>

@@ -13,7 +13,6 @@
 #include <libtransmission/variant.h>
 
 class QByteArray;
-class QDateTime;
 class QString;
 
 class Speed;
@@ -25,7 +24,6 @@ struct TrackerStat;
 namespace tr::serializer
 {
 
-TR_DECLARE_CONVERTER(QDateTime)
 TR_DECLARE_CONVERTER(QString)
 TR_DECLARE_CONVERTER(Speed)
 TR_DECLARE_CONVERTER(TorrentHash)

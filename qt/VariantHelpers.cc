@@ -11,7 +11,6 @@
 #include <limits>
 #include <string_view>
 
-#include <QDateTime>
 #include <QString>
 #include <QUrl>
 
@@ -69,24 +68,6 @@ bool change(TrackerStat& setme, tr_variant const* value)
 
 namespace
 {
-bool toQDateTime(tr_variant const& src, QDateTime* tgt)
-{
-    if (auto const val = ser::to_value<int64_t>(src))
-    {
-        *tgt = QDateTime::fromSecsSinceEpoch(*val);
-        return true;
-    }
-
-    return false;
-}
-
-tr_variant fromQDateTime(QDateTime const& src)
-{
-    return ser::to_variant(int64_t{ src.toSecsSinceEpoch() });
-}
-
-// ---
-
 bool toQString(tr_variant const& src, QString* tgt)
 {
     if (auto const val = src.value_if<std::string_view>())
@@ -149,15 +130,6 @@ tr_variant fromTorrentHash(TorrentHash const& src)
 namespace tr::serializer
 {
 namespace vh = trqt::variant_helpers;
-
-tr_variant Converter<QDateTime>::to_variant(QDateTime const& src)
-{
-    return vh::fromQDateTime(src);
-}
-bool Converter<QDateTime>::to_value(tr_variant const& src, QDateTime* tgt)
-{
-    return vh::toQDateTime(src, tgt);
-}
 
 tr_variant Converter<QString>::to_variant(QString const& src)
 {
