@@ -258,6 +258,15 @@ jobs:
         with:
           arch: x64
       - name: Configure
+        env:
+          # MSVC AddressSanitizer is address-only (no leak/undefined sanitizers).
+          # Disable STL container annotations: the prebuilt Qt libraries are not
+          # ASan-instrumented, so annotated std::string/std::vector trip LNK2038
+          # 'annotate_string'/'annotate_vector' mismatches at link time.
+          # Set via CFLAGS/CXXFLAGS to seed CMAKE_*_FLAGS without escaping spaces
+          # through the PowerShell -> cmd -> cmake invocation below.
+          CFLAGS: /fsanitize=address /D_DISABLE_STRING_ANNOTATION /D_DISABLE_VECTOR_ANNOTATION
+          CXXFLAGS: /fsanitize=address /D_DISABLE_STRING_ANNOTATION /D_DISABLE_VECTOR_ANNOTATION
         run: |
           $CmakeArgs = @(
             '-S .'
@@ -266,9 +275,6 @@ jobs:
             # RelWithDebInfo avoids Debug's /RTC1, which is incompatible with ASan.
             '-DCMAKE_BUILD_TYPE=RelWithDebInfo'
             "-DCMAKE_PREFIX_PATH=`"$Env:DEPS_PREFIX`""
-            # MSVC AddressSanitizer is address-only (no leak/undefined sanitizers).
-            '-DCMAKE_C_FLAGS=/fsanitize=address'
-            '-DCMAKE_CXX_FLAGS=/fsanitize=address'
             '-DENABLE_CLI=OFF'
             '-DENABLE_DAEMON=OFF'
             '-DENABLE_GTK=OFF'
