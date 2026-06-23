@@ -36,20 +36,6 @@ Prefs::Prefs(QString const& dir)
     tr::serializer::load(*this, Fields, tr_sessionLoadSettings(dir.toStdString()));
 }
 
-Prefs::PrefItem const& Prefs::item(tr_quark const key)
-{
-    for (auto const& pref : Items)
-    {
-        if (pref.key == key)
-        {
-            return pref;
-        }
-    }
-
-    assert(false && "unknown pref key");
-    return Items[0];
-}
-
 bool Prefs::isCore(tr_quark const key)
 {
     switch (key)
@@ -120,15 +106,6 @@ tr::Settings Prefs::current_settings() const
     auto map = tr::serializer::save(*this, Fields);
     map.erase(TR_KEY_filter_text);
     return map;
-}
-
-std::pair<tr_quark, tr_variant> Prefs::keyvalImpl(tr_quark const key) const
-{
-    auto const& pref = item(key);
-    auto const map = tr::serializer::save(*this, Fields);
-    auto const iter = map.find(pref.key);
-    assert(iter != std::end(map));
-    return std::pair<tr_quark, tr_variant>{ pref.key, iter->second.clone() };
 }
 
 void Prefs::save(QString const& filename) const

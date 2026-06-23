@@ -45,97 +45,28 @@ public:
 
     [[nodiscard]] static bool isCore(tr_quark key);
 
-    [[nodiscard]] std::pair<tr_quark, tr_variant> keyval(tr_quark key) const
+    [[nodiscard]] std::pair<tr_quark, tr_variant> keyval(tr_quark const key) const
     {
-        return keyvalImpl(key);
+        if (auto val = tr::serializer::to_variant(*this, key))
+        {
+            return { key, std::move(*val) };
+        }
+
+        return { key, tr_variant{} };
     }
 
-    void set(tr_quark key, tr_variant const& value)
+    void set(tr_quark const key, tr_variant const& var)
     {
-        auto const& pref = item(key);
-
-        switch (pref.type)
+        if (tr::serializer::set_from_variant(*this, key, var))
         {
-        case QMetaType::Bool:
-            if (auto const tmp = tr::serializer::to_value<bool>(value))
-            {
-                set(key, *tmp);
-            }
-            break;
-
-        case QMetaType::Int:
-            if (auto const tmp = tr::serializer::to_value<int64_t>(value))
-            {
-                set(key, static_cast<int>(*tmp));
-            }
-            break;
-
-        case UserMetaType::EncryptionModeType:
-            if (auto const tmp = tr::serializer::to_value<tr_encryption_mode>(value))
-            {
-                set(key, *tmp);
-            }
-            break;
-
-        case UserMetaType::SortModeType:
-            if (auto const tmp = tr::serializer::to_value<SortMode>(value))
-            {
-                set(key, *tmp);
-            }
-            break;
-
-        case UserMetaType::StatsModeType:
-            if (auto const tmp = tr::serializer::to_value<StatsMode>(value))
-            {
-                set(key, *tmp);
-            }
-            break;
-
-        case UserMetaType::ShowModeType:
-            if (auto const tmp = tr::serializer::to_value<ShowMode>(value))
-            {
-                set(key, *tmp);
-            }
-            break;
-
-        case QMetaType::QString:
-            if (auto const tmp = tr::serializer::to_value<QString>(value))
-            {
-                set(key, *tmp);
-            }
-            break;
-
-        case QMetaType::QStringList:
-            if (auto const tmp = tr::serializer::to_value<QStringList>(value))
-            {
-                set(key, *tmp);
-            }
-            break;
-
-        case QMetaType::Double:
-            if (auto const tmp = tr::serializer::to_value<double>(value))
-            {
-                set(key, *tmp);
-            }
-            break;
-
-        case QMetaType::QDateTime:
-            if (auto const tmp = tr::serializer::to_value<QDateTime>(value))
-            {
-                set(key, *tmp);
-            }
-            break;
-
-        default:
-            assert(false && "unhandled type");
-            break;
+            emit changed(key);
         }
     }
 
     template<typename T>
-    void set(tr_quark key, T const& value)
+    void set(tr_quark const key, T const& val)
     {
-        if (tr::serializer::set(*this, item(key).key, value))
+        if (tr::serializer::set(*this, key, val))
         {
             emit changed(key);
         }
@@ -144,9 +75,9 @@ public:
     void set(tr_quark /*key*/, char const* /*value*/) = delete;
 
     template<typename T>
-    [[nodiscard]] T get(tr_quark key) const
+    [[nodiscard]] T get(tr_quark const key) const
     {
-        auto const val = tr::serializer::get<T>(*this, item(key).key);
+        auto const val = tr::serializer::get<T>(*this, key);
         assert(val.has_value());
         return val.value_or(T{});
     }
@@ -352,111 +283,4 @@ public:
         Field<&Prefs::uspeed_enabled_>{ TR_KEY_speed_limit_up_enabled },
         Field<&Prefs::uspeed_>{ TR_KEY_speed_limit_up },
         Field<&Prefs::upload_slots_per_torrent_>{ TR_KEY_upload_slots_per_torrent });
-
-private:
-    struct PrefItem
-    {
-        tr_quark key;
-        int type;
-    };
-
-    static auto constexpr Items = std::array<PrefItem, 94>{ {
-        { .key = TR_KEY_show_options_window, .type = QMetaType::Bool },
-        { .key = TR_KEY_open_dialog_dir, .type = QMetaType::QString },
-        { .key = TR_KEY_inhibit_desktop_hibernation, .type = QMetaType::Bool },
-        { .key = TR_KEY_watch_dir, .type = QMetaType::QString },
-        { .key = TR_KEY_watch_dir_enabled, .type = QMetaType::Bool },
-        { .key = TR_KEY_show_notification_area_icon, .type = QMetaType::Bool },
-        { .key = TR_KEY_start_minimized, .type = QMetaType::Bool },
-        { .key = TR_KEY_torrent_added_notification_enabled, .type = QMetaType::Bool },
-        { .key = TR_KEY_torrent_complete_notification_enabled, .type = QMetaType::Bool },
-        { .key = TR_KEY_prompt_before_exit, .type = QMetaType::Bool },
-        { .key = TR_KEY_sort_mode, .type = UserMetaType::SortModeType },
-        { .key = TR_KEY_sort_reversed, .type = QMetaType::Bool },
-        { .key = TR_KEY_compact_view, .type = QMetaType::Bool },
-        { .key = TR_KEY_show_filterbar, .type = QMetaType::Bool },
-        { .key = TR_KEY_show_statusbar, .type = QMetaType::Bool },
-        { .key = TR_KEY_statusbar_stats, .type = UserMetaType::StatsModeType },
-        { .key = TR_KEY_show_tracker_scrapes, .type = QMetaType::Bool },
-        { .key = TR_KEY_show_backup_trackers, .type = QMetaType::Bool },
-        { .key = TR_KEY_show_toolbar, .type = QMetaType::Bool },
-        { .key = TR_KEY_blocklist_date, .type = QMetaType::QDateTime },
-        { .key = TR_KEY_blocklist_updates_enabled, .type = QMetaType::Bool },
-        { .key = TR_KEY_main_window_layout_order, .type = QMetaType::QString },
-        { .key = TR_KEY_main_window_height, .type = QMetaType::Int },
-        { .key = TR_KEY_main_window_width, .type = QMetaType::Int },
-        { .key = TR_KEY_main_window_x, .type = QMetaType::Int },
-        { .key = TR_KEY_main_window_y, .type = QMetaType::Int },
-        { .key = TR_KEY_filter_mode, .type = UserMetaType::ShowModeType },
-        { .key = TR_KEY_filter_trackers, .type = QMetaType::QString },
-        { .key = TR_KEY_filter_text, .type = QMetaType::QString },
-        { .key = TR_KEY_remote_session_enabled, .type = QMetaType::Bool },
-        { .key = TR_KEY_remote_session_host, .type = QMetaType::QString },
-        { .key = TR_KEY_remote_session_https, .type = QMetaType::Bool },
-        { .key = TR_KEY_remote_session_password, .type = QMetaType::QString },
-        { .key = TR_KEY_remote_session_port, .type = QMetaType::Int },
-        { .key = TR_KEY_remote_session_requires_authentication, .type = QMetaType::Bool },
-        { .key = TR_KEY_remote_session_username, .type = QMetaType::QString },
-        { .key = TR_KEY_remote_session_url_base_path, .type = QMetaType::QString },
-        { .key = TR_KEY_torrent_complete_sound_command, .type = QMetaType::QStringList },
-        { .key = TR_KEY_torrent_complete_sound_enabled, .type = QMetaType::Bool },
-        { .key = TR_KEY_read_clipboard, .type = QMetaType::Bool },
-        { .key = TR_KEY_alt_speed_up, .type = QMetaType::Int },
-        { .key = TR_KEY_alt_speed_down, .type = QMetaType::Int },
-        { .key = TR_KEY_alt_speed_enabled, .type = QMetaType::Bool },
-        { .key = TR_KEY_alt_speed_time_begin, .type = QMetaType::Int },
-        { .key = TR_KEY_alt_speed_time_end, .type = QMetaType::Int },
-        { .key = TR_KEY_alt_speed_time_enabled, .type = QMetaType::Bool },
-        { .key = TR_KEY_alt_speed_time_day, .type = QMetaType::Int },
-        { .key = TR_KEY_blocklist_enabled, .type = QMetaType::Bool },
-        { .key = TR_KEY_blocklist_url, .type = QMetaType::QString },
-        { .key = TR_KEY_default_trackers, .type = QMetaType::QString },
-        { .key = TR_KEY_speed_limit_down, .type = QMetaType::Int },
-        { .key = TR_KEY_speed_limit_down_enabled, .type = QMetaType::Bool },
-        { .key = TR_KEY_download_dir, .type = QMetaType::QString },
-        { .key = TR_KEY_download_queue_enabled, .type = QMetaType::Bool },
-        { .key = TR_KEY_download_queue_size, .type = QMetaType::Int },
-        { .key = TR_KEY_encryption, .type = UserMetaType::EncryptionModeType },
-        { .key = TR_KEY_idle_seeding_limit, .type = QMetaType::Int },
-        { .key = TR_KEY_idle_seeding_limit_enabled, .type = QMetaType::Bool },
-        { .key = TR_KEY_incomplete_dir, .type = QMetaType::QString },
-        { .key = TR_KEY_incomplete_dir_enabled, .type = QMetaType::Bool },
-        { .key = TR_KEY_message_level, .type = QMetaType::Int },
-        { .key = TR_KEY_peer_limit_global, .type = QMetaType::Int },
-        { .key = TR_KEY_peer_limit_per_torrent, .type = QMetaType::Int },
-        { .key = TR_KEY_peer_port, .type = QMetaType::Int },
-        { .key = TR_KEY_peer_port_random_on_start, .type = QMetaType::Bool },
-        { .key = TR_KEY_peer_port_random_low, .type = QMetaType::Int },
-        { .key = TR_KEY_peer_port_random_high, .type = QMetaType::Int },
-        { .key = TR_KEY_queue_stalled_minutes, .type = QMetaType::Int },
-        { .key = TR_KEY_script_torrent_done_enabled, .type = QMetaType::Bool },
-        { .key = TR_KEY_script_torrent_done_filename, .type = QMetaType::QString },
-        { .key = TR_KEY_script_torrent_done_seeding_enabled, .type = QMetaType::Bool },
-        { .key = TR_KEY_script_torrent_done_seeding_filename, .type = QMetaType::QString },
-        { .key = TR_KEY_peer_socket_diffserv, .type = QMetaType::QString },
-        { .key = TR_KEY_start_added_torrents, .type = QMetaType::Bool },
-        { .key = TR_KEY_trash_original_torrent_files, .type = QMetaType::Bool },
-        { .key = TR_KEY_pex_enabled, .type = QMetaType::Bool },
-        { .key = TR_KEY_dht_enabled, .type = QMetaType::Bool },
-        { .key = TR_KEY_utp_enabled, .type = QMetaType::Bool },
-        { .key = TR_KEY_lpd_enabled, .type = QMetaType::Bool },
-        { .key = TR_KEY_port_forwarding_enabled, .type = QMetaType::Bool },
-        { .key = TR_KEY_preallocation, .type = QMetaType::Int },
-        { .key = TR_KEY_seed_ratio_limit, .type = QMetaType::Double },
-        { .key = TR_KEY_seed_ratio_limited, .type = QMetaType::Bool },
-        { .key = TR_KEY_rename_partial_files, .type = QMetaType::Bool },
-        { .key = TR_KEY_rpc_authentication_required, .type = QMetaType::Bool },
-        { .key = TR_KEY_rpc_enabled, .type = QMetaType::Bool },
-        { .key = TR_KEY_rpc_password, .type = QMetaType::QString },
-        { .key = TR_KEY_rpc_port, .type = QMetaType::Int },
-        { .key = TR_KEY_rpc_username, .type = QMetaType::QString },
-        { .key = TR_KEY_rpc_whitelist_enabled, .type = QMetaType::Bool },
-        { .key = TR_KEY_rpc_whitelist, .type = QMetaType::QString },
-        { .key = TR_KEY_speed_limit_up_enabled, .type = QMetaType::Bool },
-        { .key = TR_KEY_speed_limit_up, .type = QMetaType::Int },
-        { .key = TR_KEY_upload_slots_per_torrent, .type = QMetaType::Int },
-    } };
-
-    [[nodiscard]] static PrefItem const& item(tr_quark key);
-    [[nodiscard]] std::pair<tr_quark, tr_variant> keyvalImpl(tr_quark key) const;
 };
