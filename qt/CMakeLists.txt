@@ -218,11 +218,12 @@ target_link_libraries(${TR_NAME}-qt-lib
         transmission::qt_impl)
 
 target_compile_definitions(${TR_NAME}-qt-lib
+    PUBLIC
+        $<$<BOOL:${ENABLE_QT_COM_INTEROP}>:ENABLE_COM_INTEROP>
+        $<$<BOOL:${ENABLE_QT_DBUS_INTEROP}>:ENABLE_DBUS_INTEROP>
     PRIVATE
         "TRANSLATIONS_DIR=\"${CMAKE_INSTALL_FULL_DATADIR}/${TR_NAME}/translations\""
-        QT_NO_CAST_FROM_ASCII
-        $<$<BOOL:${ENABLE_QT_COM_INTEROP}>:ENABLE_COM_INTEROP>
-        $<$<BOOL:${ENABLE_QT_DBUS_INTEROP}>:ENABLE_DBUS_INTEROP>)
+        QT_NO_CAST_FROM_ASCII)
 
 set_target_properties(
     ${TR_NAME}-qt-lib
