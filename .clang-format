@@ -34,7 +34,8 @@ PenaltyBreakBeforeFirstCallParameter: 0
 PenaltyReturnTypeOnItsOwnLine: 1000
 PointerAlignment: Left
 ReflowComments: Never
-SortIncludes: Never
+SortIncludes:
+  Enabled: false
 SpaceAfterCStyleCast: false
 SpacesBeforeTrailingComments: 1
 SpacesInAngles: Never
