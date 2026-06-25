@@ -18,8 +18,7 @@ class tr_lru_cache
 public:
     [[nodiscard]] constexpr Val* get(Key const& key) noexcept
     {
-        if (auto const found = find(key); found != nullptr)
-        {
+        if (auto const found = find(key); found != nullptr) {
             found->sequence_ = next_sequence_++;
             return &found->val_;
         }
@@ -44,18 +43,15 @@ public:
 
     void erase(Key const& key)
     {
-        if (auto* const found = find(key); found != nullptr)
-        {
+        if (auto* const found = find(key); found != nullptr) {
             this->erase(*found);
         }
     }
 
     void erase_if(std::function<bool(Key const&, Val const&)> const& test)
     {
-        for (auto& entry : entries_)
-        {
-            if (entry.sequence_ != InvalidSeq && test(entry.key_, entry.val_))
-            {
+        for (auto& entry : entries_) {
+            if (entry.sequence_ != InvalidSeq && test(entry.key_, entry.val_)) {
                 erase(entry);
             }
         }
@@ -63,15 +59,13 @@ public:
 
     void clear()
     {
-        for (auto& entry : entries_)
-        {
+        for (auto& entry : entries_) {
             erase(entry);
         }
     }
 
 private:
-    struct Entry
-    {
+    struct Entry {
         Key key_ = {};
         Val val_ = {};
         uint64_t sequence_ = InvalidSeq;
@@ -86,10 +80,8 @@ private:
 
     [[nodiscard]] constexpr Entry* find(Key const& key) noexcept
     {
-        for (auto& entry : entries_)
-        {
-            if (entry.sequence_ != InvalidSeq && entry.key_ == key)
-            {
+        for (auto& entry : entries_) {
+            if (entry.sequence_ != InvalidSeq && entry.key_ == key) {
                 return &entry;
             }
         }
@@ -99,10 +91,8 @@ private:
 
     [[nodiscard]] constexpr Entry const* find(Key const& key) const noexcept
     {
-        for (auto const& entry : entries_)
-        {
-            if (entry.sequence_ != InvalidSeq && entry.key_ == key)
-            {
+        for (auto const& entry : entries_) {
+            if (entry.sequence_ != InvalidSeq && entry.key_ == key) {
                 return &entry;
             }
         }
@@ -112,10 +102,9 @@ private:
 
     Entry& get_free_slot()
     {
-        auto const iter = std::min_element(
-            std::begin(entries_),
-            std::end(entries_),
-            [](auto const& a, auto const& b) { return a.sequence_ < b.sequence_; });
+        auto const iter = std::min_element(std::begin(entries_), std::end(entries_), [](auto const& a, auto const& b) {
+            return a.sequence_ < b.sequence_;
+        });
         erase(*iter);
         return *iter;
     }

@@ -33,15 +33,11 @@
 {
     NSInteger const row = [self rowAtPoint:[self convertPoint:event.locationInWindow fromView:nil]];
 
-    if (row >= 0)
-    {
-        if (![self isRowSelected:row])
-        {
+    if (row >= 0) {
+        if (![self isRowSelected:row]) {
             [self selectRowIndexes:[NSIndexSet indexSetWithIndex:row] byExtendingSelection:NO];
         }
-    }
-    else
-    {
+    } else {
         [self deselectAll:self];
     }
 
@@ -51,15 +47,13 @@
 - (NSRect)iconRectForRow:(NSInteger)row
 {
     NSView* view = [self viewAtColumn:[self columnWithIdentifier:@"Name"] row:row makeIfNecessary:NO];
-    if (![view isKindOfClass:[FileNameCellView class]])
-    {
+    if (![view isKindOfClass:[FileNameCellView class]]) {
         return NSZeroRect;
     }
 
     FileNameCellView* cellView = (FileNameCellView*)view;
     NSImageView* iconView = [cellView valueForKey:@"iconView"];
-    if (!iconView)
-    {
+    if (!iconView) {
         return NSZeroRect;
     }
 

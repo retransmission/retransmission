@@ -39,14 +39,12 @@ static NSTimeInterval const kFullWait = 60 * 60 * 24 * 7;
     NSString* blocklistURL;
     if (![NSUserDefaults.standardUserDefaults boolForKey:@"BlocklistNew"] ||
         !((blocklistURL = [NSUserDefaults.standardUserDefaults stringForKey:@"BlocklistURL"]) && ![blocklistURL isEqualToString:@""]) ||
-        ![NSUserDefaults.standardUserDefaults boolForKey:@"BlocklistAutoUpdate"])
-    {
+        ![NSUserDefaults.standardUserDefaults boolForKey:@"BlocklistAutoUpdate"]) {
         return;
     }
 
     NSDate* lastUpdateDate = [NSUserDefaults.standardUserDefaults objectForKey:@"BlocklistNewLastUpdate"];
-    if (lastUpdateDate)
-    {
+    if (lastUpdateDate) {
         lastUpdateDate = [lastUpdateDate dateByAddingTimeInterval:kFullWait];
     }
     NSDate* closeDate = [NSDate dateWithTimeIntervalSinceNow:kSmallDelay];

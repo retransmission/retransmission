@@ -35,13 +35,11 @@ public:
 
     constexpr void init(void const* key, size_t key_length)
     {
-        for (size_t i = 0; i < 256; ++i)
-        {
+        for (size_t i = 0; i < 256; ++i) {
             s_[i] = static_cast<uint8_t>(i);
         }
 
-        for (size_t i = 0, j = 0; i < 256; ++i)
-        {
+        for (size_t i = 0, j = 0; i < 256; ++i) {
             j = static_cast<uint8_t>(j + s_[i] + static_cast<uint8_t const*>(key)[i % key_length]);
             arc4_swap(i, j);
         }
@@ -49,16 +47,14 @@ public:
 
     constexpr void process(uint8_t const* const src, size_t n_bytes, uint8_t* const tgt)
     {
-        for (size_t i = 0; i != n_bytes; ++i)
-        {
+        for (size_t i = 0; i != n_bytes; ++i) {
             tgt[i] = src[i] ^ arc4_next();
         }
     }
 
     constexpr void discard(size_t length)
     {
-        while (length-- > 0)
-        {
+        while (length-- > 0) {
             arc4_next();
         }
     }

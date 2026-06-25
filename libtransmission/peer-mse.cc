@@ -50,8 +50,7 @@ auto import_bits(std::array<std::byte, UIntWide::my_width2 / std::numeric_limits
     auto ret = UIntWide{};
     static_assert(sizeof(UIntWide) == sizeof(bigend_bin));
 
-    for (auto const walk : bigend_bin)
-    {
+    for (auto const walk : bigend_bin) {
         ret <<= 8;
         ret += static_cast<uint8_t>(walk);
     }
@@ -64,8 +63,7 @@ auto export_bits(UIntWide i)
 {
     auto ret = std::array<std::byte, UIntWide::my_width2 / std::numeric_limits<uint8_t>::digits>{};
 
-    for (auto& walk : ret | std::views::reverse)
-    {
+    for (auto& walk : ret | std::views::reverse) {
         walk = std::byte(static_cast<uint8_t>(i & 0xFF));
         i >>= 8;
     }
@@ -95,8 +93,7 @@ namespace tr_message_stream_encryption
 
 DH::key_bigend_t DH::publicKey() noexcept
 {
-    if (public_key_ == key_bigend_t{})
-    {
+    if (public_key_ == key_bigend_t{}) {
         auto const private_key_wi = wi::import_bits<wi::private_key_t>(private_key_);
         auto const public_key_wi = math::wide_integer::powm(wi::Generator, private_key_wi, wi::Prime);
         public_key_ = wi::export_bits(public_key_wi);

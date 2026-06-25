@@ -43,13 +43,10 @@ bool change(TrackerStat& setme, tr_variant const* value)
     auto const site_changed = std::ranges::binary_search(changed_keys, TR_KEY_announce) ||
         std::ranges::binary_search(changed_keys, TR_KEY_sitename);
 
-    if (site_changed && !setme.announce.isEmpty() && trApp != nullptr)
-    {
-        if (setme.sitename.isEmpty())
-        {
+    if (site_changed && !setme.announce.isEmpty() && trApp != nullptr) {
+        if (setme.sitename.isEmpty()) {
             auto const announce_str = setme.announce.toStdString();
-            if (auto const parsed = tr_urlParse(announce_str))
-            {
+            if (auto const parsed = tr_urlParse(announce_str)) {
                 auto const sitename = parsed->sitename;
                 setme.sitename = QString::fromUtf8(
                     std::data(sitename),
@@ -70,8 +67,7 @@ namespace
 {
 bool toQString(tr_variant const& src, QString* tgt)
 {
-    if (auto const val = src.value_if<std::string_view>())
-    {
+    if (auto const val = src.value_if<std::string_view>()) {
         *tgt = QString::fromUtf8(std::data(*val), static_cast<IF_QT6(qsizetype, int)>(std::size(*val)));
         return true;
     }
@@ -88,8 +84,7 @@ tr_variant fromQString(QString const& val)
 
 bool toSpeed(tr_variant const& src, Speed* tgt)
 {
-    if (auto const val = ser::to_value<int64_t>(src))
-    {
+    if (auto const val = ser::to_value<int64_t>(src)) {
         *tgt = Speed{ *val, Speed::Units::Byps };
         return true;
     }
@@ -106,8 +101,7 @@ tr_variant fromSpeed(Speed const& src)
 
 bool toTorrentHash(tr_variant const& src, TorrentHash* tgt)
 {
-    if (auto const val = src.value_if<std::string_view>())
-    {
+    if (auto const val = src.value_if<std::string_view>()) {
         *tgt = TorrentHash{ *val };
         return true;
     }

@@ -25,8 +25,7 @@ bool tr_urlIsValidTracker(std::string_view url);
 /** @brief return true if the url is a [ http, https, ftp, sftp ] url that Transmission understands */
 bool tr_urlIsValid(std::string_view url);
 
-struct tr_url_parsed_t
-{
+struct tr_url_parsed_t {
     // http://example.com:80/over/there?name=ferret#nose
 
     std::string_view scheme; // "http"
@@ -58,27 +57,21 @@ struct tr_url_parsed_t
 template<typename BackInsertIter>
 constexpr void tr_urlPercentEncode(BackInsertIter out, std::string_view input, bool escape_reserved = true)
 {
-    auto constexpr IsUnreserved = [](unsigned char ch)
-    {
+    auto constexpr IsUnreserved = [](unsigned char ch) {
         return ('0' <= ch && ch <= '9') || ('a' <= ch && ch <= 'z') || ('A' <= ch && ch <= 'Z') || ch == '-' || ch == '_' ||
             ch == '.' || ch == '~';
     };
 
-    auto constexpr IsReserved = [](unsigned char ch)
-    {
+    auto constexpr IsReserved = [](unsigned char ch) {
         return ch == '!' || ch == '*' || ch == '(' || ch == ')' || ch == ';' || ch == ':' || ch == '@' || ch == '&' ||
             ch == '=' || ch == '+' || ch == '$' || ch == ',' || ch == '/' || ch == '?' || ch == '%' || ch == '#' || ch == '[' ||
             ch == ']' || ch == '\'';
     };
 
-    for (unsigned char ch : input)
-    {
-        if (IsUnreserved(ch) || (!escape_reserved && IsReserved(ch)))
-        {
+    for (unsigned char ch : input) {
+        if (IsUnreserved(ch) || (!escape_reserved && IsReserved(ch))) {
             out = ch;
-        }
-        else
-        {
+        } else {
             fmt::format_to(out, "%{:02X}", ch);
         }
     }

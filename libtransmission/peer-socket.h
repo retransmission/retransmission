@@ -96,11 +96,7 @@ public:
     [[nodiscard]] static bool limit_reached(tr_session const* session) noexcept;
 
 protected:
-    enum class Type : uint8_t
-    {
-        UTP,
-        TCP
-    };
+    enum class Type : uint8_t { UTP, TCP };
 
     explicit tr_peer_socket(tr_socket_address const& socket_address);
 
@@ -111,22 +107,19 @@ protected:
 
     void read_cb() const
     {
-        if (read_cb_)
-        {
+        if (read_cb_) {
             read_cb_();
         }
     }
     void write_cb() const
     {
-        if (write_cb_)
-        {
+        if (write_cb_) {
             write_cb_();
         }
     }
     void error_cb(tr_error const& error) const
     {
-        if (error_cb_)
-        {
+        if (error_cb_) {
             error_cb_(error);
         }
     }

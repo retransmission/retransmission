@@ -178,8 +178,7 @@ TEST_F(AnnounceListTest, canSetUnsortedWithBackupsInTiers)
 
     // confirm that each has a unique id
     auto ids = std::set<tr_tracker_id_t>{};
-    for (auto const& tracker : announce_list)
-    {
+    for (auto const& tracker : announce_list) {
         ids.insert(tracker.id);
     }
     EXPECT_EQ(std::size(announce_list), std::size(ids));
@@ -337,8 +336,7 @@ TEST_F(AnnounceListTest, canNotReplaceWithDuplicate)
 
 TEST_F(AnnounceListTest, announceToScrape)
 {
-    struct ScrapeTest
-    {
+    struct ScrapeTest {
         std::string_view announce;
         std::string_view expected_scrape;
     };
@@ -349,8 +347,7 @@ TEST_F(AnnounceListTest, announceToScrape)
         { .announce = "udp://www.example.com:999/"sv, .expected_scrape = "udp://www.example.com:999/"sv },
     });
 
-    for (auto const& test : Tests)
-    {
+    for (auto const& test : Tests) {
         auto const scrape = tr_announce_list::announce_to_scrape(test.announce);
         EXPECT_EQ(test.expected_scrape, scrape.value_or(""));
     }

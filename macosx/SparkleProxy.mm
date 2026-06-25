@@ -27,8 +27,7 @@ void SUUpdater_checkForUpdates(id /*self*/, SEL /*_cmd*/, ...)
 /// Proxy SUUpdater if isn't registered at program startup due to codesigning.
 __attribute__((constructor)) static void registerSUUpdater()
 {
-    if (!objc_getClass("SUUpdater"))
-    {
+    if (!objc_getClass("SUUpdater")) {
         NSLog(@"App is not signed for running Sparkle");
         Class SUUpdaterClass = objc_allocateClassPair(objc_getClass("NSObject"), "SUUpdater", 0);
         class_addMethod(SUUpdaterClass, sel_getUid("checkForUpdates:"), (IMP)SUUpdater_checkForUpdates, "v@:@");

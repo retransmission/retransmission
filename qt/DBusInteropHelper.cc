@@ -34,19 +34,16 @@ QVariant DBusInteropHelper::addMetainfo(QString const& metainfo) const
 void DBusInteropHelper::registerObject(QObject* parent)
 {
     auto bus = QDBusConnection::sessionBus();
-    if (!bus.isConnected())
-    {
+    if (!bus.isConnected()) {
         return;
     }
 
-    if (auto const service_name = QStringLiteral("com.transmissionbt.Transmission"); !bus.registerService(service_name))
-    {
+    if (auto const service_name = QStringLiteral("com.transmissionbt.Transmission"); !bus.registerService(service_name)) {
         qWarning() << "couldn't register" << qPrintable(service_name);
     }
 
     if (auto const object_path = QStringLiteral("/com/transmissionbt/Transmission");
-        !bus.registerObject(object_path, new InteropObject{ parent }, QDBusConnection::ExportAllSlots))
-    {
+        !bus.registerObject(object_path, new InteropObject{ parent }, QDBusConnection::ExportAllSlots)) {
         qWarning() << "couldn't register" << qPrintable(object_path);
     }
 }

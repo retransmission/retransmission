@@ -17,12 +17,9 @@ using Icon = Glib::RefPtr<Gdk::Pixbuf>;
 template<>
 Icon FaviconCache<Icon>::create_from_file(std::string_view filename) const
 {
-    try
-    {
+    try {
         return Gdk::Pixbuf::create_from_file(std::string{ filename }, Width, Height, false);
-    }
-    catch (Glib::Error const&)
-    {
+    } catch (Glib::Error const&) {
         return {};
     }
 }
@@ -30,14 +27,11 @@ Icon FaviconCache<Icon>::create_from_file(std::string_view filename) const
 template<>
 Icon FaviconCache<Icon>::create_from_data(void const* data, size_t datalen) const
 {
-    try
-    {
+    try {
         auto memory_stream = Gio::MemoryInputStream::create();
         memory_stream->add_data(data, static_cast<gssize>(datalen), nullptr);
         return Gdk::Pixbuf::create_from_stream_at_scale(memory_stream, Width, Height, false);
-    }
-    catch (Glib::Error const&)
-    {
+    } catch (Glib::Error const&) {
         return {};
     }
 }

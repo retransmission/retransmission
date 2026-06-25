@@ -82,14 +82,11 @@ bool ListModelAdapter::iter_next_vfunc(iterator const& iter, iterator& iter_next
 {
     iter_clear(iter_next);
 
-    if (iter)
-    {
+    if (iter) {
         g_return_val_if_fail(iter_get_stamp(iter) == stamp_, false);
 
-        if (auto const position = find_item_position_by_id(iter_get_item_id(iter)); position.has_value())
-        {
-            if (auto const next_position = position.value() + 1; next_position < items_.size())
-            {
+        if (auto const position = find_item_position_by_id(iter_get_item_id(iter)); position.has_value()) {
+            if (auto const next_position = position.value() + 1; next_position < items_.size()) {
                 iter_set_stamp(iter_next, stamp_);
                 iter_set_item_id(iter_next, items_.at(next_position).id);
                 return true;
@@ -113,8 +110,7 @@ bool ListModelAdapter::iter_children_vfunc(iterator const& parent, iterator& ite
 {
     iter_clear(iter);
 
-    if (parent || items_.empty())
-    {
+    if (parent || items_.empty()) {
         return false;
     }
 
@@ -135,8 +131,7 @@ bool ListModelAdapter::iter_nth_root_child_vfunc(int position, iterator& iter) c
 
     g_return_val_if_fail(position >= 0, false);
 
-    if (position >= iter_n_root_children_vfunc())
-    {
+    if (position >= iter_n_root_children_vfunc()) {
         return false;
     }
 
@@ -159,12 +154,10 @@ Gtk::TreeModel::Path ListModelAdapter::get_path_vfunc(const_iterator const& iter
 {
     auto path = Path();
 
-    if (iter)
-    {
+    if (iter) {
         g_return_val_if_fail(iter_get_stamp(iter) == stamp_, path);
 
-        if (auto const position = find_item_position_by_id(iter_get_item_id(iter)); position.has_value())
-        {
+        if (auto const position = find_item_position_by_id(iter_get_item_id(iter)); position.has_value()) {
             path.push_back(static_cast<int>(position.value()));
         }
     }
@@ -179,20 +172,17 @@ void ListModelAdapter::get_value_vfunc(const_iterator const& iter, int column, G
 
     value.init(get_column_type_vfunc(column));
 
-    if (!iter)
-    {
+    if (!iter) {
         return;
     }
 
     auto const position = find_item_position_by_id(iter_get_item_id(iter));
-    if (!position.has_value())
-    {
+    if (!position.has_value()) {
         return;
     }
 
     auto const item = adaptee_->get_object(position.value());
-    if (item == nullptr)
-    {
+    if (item == nullptr) {
         return;
     }
 
@@ -207,10 +197,8 @@ std::optional<guint> ListModelAdapter::find_item_position_by_id(int item_id) con
 
 void ListModelAdapter::adjust_item_positions(guint min_position, PositionAdjustment adjustment)
 {
-    for (auto item_it = std::next(items_.begin(), min_position); item_it != items_.end(); ++item_it)
-    {
-        if (auto const item_position_it = item_positions_.find(item_it->id); item_position_it != item_positions_.end())
-        {
+    for (auto item_it = std::next(items_.begin(), min_position); item_it != items_.end(); ++item_it) {
+        if (auto const item_position_it = item_positions_.find(item_it->id); item_position_it != item_positions_.end()) {
             item_position_it->second += static_cast<int>(adjustment);
         }
     }
@@ -222,8 +210,7 @@ void ListModelAdapter::on_adaptee_items_changed(guint position, guint removed, g
     g_assert(position + removed <= items_.size());
     g_assert(position + added <= adaptee_->get_n_items());
 
-    for (auto i = 0U; i < removed; ++i)
-    {
+    for (auto i = 0U; i < removed; ++i) {
         auto const removed_position = position + removed - i - 1;
         auto info = items_.at(removed_position);
 
@@ -239,8 +226,7 @@ void ListModelAdapter::on_adaptee_items_changed(guint position, guint removed, g
         row_deleted(path);
     }
 
-    for (auto i = 0U; i < added; ++i)
-    {
+    for (auto i = 0U; i < added; ++i) {
         auto const added_position = position + i;
         auto const item = adaptee_->get_object(added_position);
         auto const info = ItemInfo{
@@ -271,8 +257,7 @@ void ListModelAdapter::on_adaptee_item_changed(Glib::RefPtr<Glib::ObjectBase con
 
     auto const item_id = id_getter_(item);
 
-    if (auto const position = find_item_position_by_id(item_id); position.has_value())
-    {
+    if (auto const position = find_item_position_by_id(item_id); position.has_value()) {
         auto path = Path();
         path.push_back(static_cast<int>(position.value()));
 

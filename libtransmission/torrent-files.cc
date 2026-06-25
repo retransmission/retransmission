@@ -45,19 +45,15 @@ using file_func_t = std::function<void(std::string_view filename)>;
 
 [[nodiscard]] bool is_empty_folder(std::string_view const path)
 {
-    if (!is_folder(path))
-    {
+    if (!is_folder(path)) {
         return false;
     }
 
-    if (auto const odir = tr_sys_dir_open(path); odir != TR_BAD_SYS_DIR)
-    {
+    if (auto const odir = tr_sys_dir_open(path); odir != TR_BAD_SYS_DIR) {
         char const* name_cstr = nullptr;
-        while ((name_cstr = tr_sys_dir_read_name(odir)) != nullptr)
-        {
+        while ((name_cstr = tr_sys_dir_read_name(odir)) != nullptr) {
             auto const name = std::string_view{ name_cstr };
-            if (name != "." && name != "..")
-            {
+            if (name != "." && name != "..") {
                 tr_sys_dir_close(odir);
                 return false;
             }
@@ -70,16 +66,12 @@ using file_func_t = std::function<void(std::string_view filename)>;
 
 void depth_first_walk(std::string_view const path, file_func_t const& func, std::optional<int> max_depth = {})
 {
-    if (is_folder(path) && (!max_depth || *max_depth > 0))
-    {
-        if (auto const odir = tr_sys_dir_open(path); odir != TR_BAD_SYS_DIR)
-        {
+    if (is_folder(path) && (!max_depth || *max_depth > 0)) {
+        if (auto const odir = tr_sys_dir_open(path); odir != TR_BAD_SYS_DIR) {
             char const* name_cstr = nullptr;
-            while ((name_cstr = tr_sys_dir_read_name(odir)) != nullptr)
-            {
+            while ((name_cstr = tr_sys_dir_read_name(odir)) != nullptr) {
                 auto const name = std::string_view{ name_cstr };
-                if (name == "." || name == "..")
-                {
+                if (name == "." || name == "..") {
                     continue;
                 }
 
@@ -99,8 +91,7 @@ bool is_junk_file(std::string_view filename)
 
 #ifdef __APPLE__
     // check for resource forks. <http://web.archive.org/web/20101010051608/http://support.apple.com/kb/TA20578>
-    if (tr_strv_starts_with(base, "._"sv))
-    {
+    if (tr_strv_starts_with(base, "._"sv)) {
         return true;
     }
 #endif
@@ -126,19 +117,16 @@ std::optional<tr_torrent_files::FoundFile> tr_torrent_files::find(
     auto filename = tr_pathbuf{};
     auto const& subpath = path(file_index);
 
-    for (size_t path_idx = 0; path_idx < n_paths; ++path_idx)
-    {
+    for (size_t path_idx = 0; path_idx < n_paths; ++path_idx) {
         auto const base = paths[path_idx];
 
         filename.assign(base, '/', subpath);
-        if (auto const info = tr_sys_path_get_info(filename); info)
-        {
+        if (auto const info = tr_sys_path_get_info(filename); info) {
             return FoundFile{ *info, std::move(filename), std::size(base) };
         }
 
         filename.assign(base, '/', subpath, PartialFileSuffix);
-        if (auto const info = tr_sys_path_get_info(filename); info)
-        {
+        if (auto const info = tr_sys_path_get_info(filename); info) {
             return FoundFile{ *info, std::move(filename), std::size(base) };
         }
     }
@@ -148,10 +136,8 @@ std::optional<tr_torrent_files::FoundFile> tr_torrent_files::find(
 
 bool tr_torrent_files::has_any_local_data(std::string_view const* paths, size_t n_paths) const
 {
-    for (tr_file_index_t i = 0, n = file_count(); i < n; ++i)
-    {
-        if (find(i, paths, n_paths))
-        {
+    for (tr_file_index_t i = 0, n = file_count(); i < n; ++i) {
+        if (find(i, paths, n_paths)) {
             return true;
         }
     }
@@ -163,14 +149,12 @@ std::string_view tr_torrent_files::primary_mime_type() const
 {
     // count up how many bytes there are for each mime-type in the torrent
     auto size_per_mime_type = small::unordered_map<std::string_view, size_t, 256U>{};
-    for (tr_file_index_t i = 0, n = file_count(); i < n; ++i)
-    {
+    for (tr_file_index_t i = 0, n = file_count(); i < n; ++i) {
         auto const mime_type = tr_get_mime_type_for_filename(path(i));
         size_per_mime_type[mime_type] += file_size(i);
     }
 
-    if (std::empty(size_per_mime_type))
-    {
+    if (std::empty(size_per_mime_type)) {
         // https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types/Common_types
         // application/octet-stream is the default value for all other cases.
         // An unknown file type should use this type.
@@ -178,9 +162,9 @@ std::string_view tr_torrent_files::primary_mime_type() const
         return Fallback;
     }
 
-    auto const it = std::ranges::max_element(
-        size_per_mime_type,
-        [](auto const& a, auto const& b) { return a.second < b.second; });
+    auto const it = std::ranges::max_element(size_per_mime_type, [](auto const& a, auto const& b) {
+        return a.second < b.second;
+    });
     return it->first;
 }
 
@@ -196,13 +180,11 @@ bool tr_torrent_files::move(
     auto const parent = tr_pathbuf{ parent_in };
     tr_logAddTrace(fmt::format("Moving files from '{:s}' to '{:s}'", old_parent, parent), parent_name);
 
-    if (tr_sys_path_is_same(old_parent, parent))
-    {
+    if (tr_sys_path_is_same(old_parent, parent)) {
         return true;
     }
 
-    if (!tr_sys_dir_create(parent, TR_SYS_DIR_CREATE_PARENTS, 0777, error))
-    {
+    if (!tr_sys_dir_create(parent, TR_SYS_DIR_CREATE_PARENTS, 0777, error)) {
         return false;
     }
 
@@ -210,11 +192,9 @@ bool tr_torrent_files::move(
 
     auto err = bool{};
 
-    for (tr_file_index_t i = 0, n = file_count(); i < n; ++i)
-    {
+    for (tr_file_index_t i = 0, n = file_count(); i < n; ++i) {
         auto const found = find(i, std::data(paths), std::size(paths));
-        if (!found)
-        {
+        if (!found) {
             continue;
         }
 
@@ -222,31 +202,25 @@ bool tr_torrent_files::move(
         auto const path = tr_pathbuf{ parent, '/', found->subpath() };
         tr_logAddTrace(fmt::format("Found file #{:d} '{:s}'", i, old_path), parent_name);
 
-        if (tr_sys_path_is_same(old_path, path))
-        {
+        if (tr_sys_path_is_same(old_path, path)) {
             continue;
         }
 
         tr_logAddTrace(fmt::format("Moving file #{:d} to '{:s}'", i, old_path, path), parent_name);
-        if (!tr_file_move(old_path, path, true, error))
-        {
+        if (!tr_file_move(old_path, path, true, error)) {
             err = true;
             break;
         }
     }
 
     // after moving the files, remove any leftover empty directories
-    if (!err)
-    {
-        auto const remove_empty_directories = [](std::string_view const path, tr_error* /*err*/)
-        {
-            if (is_empty_folder(path))
-            {
+    if (!err) {
+        auto const remove_empty_directories = [](std::string_view const path, tr_error* /*err*/) {
+            if (is_empty_folder(path)) {
                 // Since the files have already been moved, errors in this step
                 // are considered secondary and aren't propagated back in `err`.
                 // Log them instead.
-                if (auto log_error = tr_error{}; !tr_sys_path_remove(path, &log_error))
-                {
+                if (auto log_error = tr_error{}; !tr_sys_path_remove(path, &log_error)) {
                     tr_logAddWarn(
                         fmt::format(
                             fmt::runtime(_("Couldn't remove '{path}': {error} ({error_code})")),
@@ -285,27 +259,22 @@ void tr_torrent_files::remove(
     auto const parent = tr_pathbuf{ parent_in };
 
     // don't try to delete local data if the directory's gone missing
-    if (!tr_sys_path_exists(parent))
-    {
+    if (!tr_sys_path_exists(parent)) {
         return;
     }
 
     // try to make a tmpdir
     auto tmpdir = tr_pathbuf{ parent, '/', tmpdir_prefix, "__XXXXXX"sv };
-    if (!tr_sys_dir_create_temp(std::data(tmpdir), error))
-    {
+    if (!tr_sys_dir_create_temp(std::data(tmpdir), error)) {
         return;
     }
 
     // move the local data to the tmpdir
     auto const paths = std::to_array<std::string_view>({ parent.sv() });
-    for (tr_file_index_t idx = 0, n_files = file_count(); idx < n_files; ++idx)
-    {
-        if (auto const found = find(idx, std::data(paths), std::size(paths)); found)
-        {
+    for (tr_file_index_t idx = 0, n_files = file_count(); idx < n_files; ++idx) {
+        if (auto const found = find(idx, std::data(paths), std::size(paths)); found) {
             // if moving a file fails, give up and let the error propagate
-            if (!tr_file_move(found->filename(), tr_pathbuf{ tmpdir, '/', found->subpath() }, false, error))
-            {
+            if (!tr_file_move(found->filename(), tr_pathbuf{ tmpdir, '/', found->subpath() }, false, error)) {
                 return;
             }
         }
@@ -317,19 +286,15 @@ void tr_torrent_files::remove(
     auto top_files = std::set<std::string>{ std::string{ path } };
     depth_first_walk(
         tmpdir,
-        [&parent, &tmpdir, &top_files](std::string_view const filename)
-        {
-            if (tmpdir != filename)
-            {
+        [&parent, &tmpdir, &top_files](std::string_view const filename) {
+            if (tmpdir != filename) {
                 top_files.emplace(tr_pathbuf{ parent, '/', tr_sys_path_basename(filename) });
             }
         },
         1);
 
-    auto const func_wrapper = [&error, &func, &tmpdir](std::string_view const filename)
-    {
-        if (tmpdir != filename)
-        {
+    auto const func_wrapper = [&error, &func, &tmpdir](std::string_view const filename) {
+        if (tmpdir != filename) {
             func(filename, error);
         }
     };
@@ -346,15 +311,12 @@ void tr_torrent_files::remove(
     // OK we've removed the local data.
     // What's left are empty folders, junk, and user-generated files.
     // Remove the first two categories and leave the third alone.
-    auto const remove_junk = [](std::string_view const filename)
-    {
-        if (is_empty_folder(filename) || is_junk_file(filename))
-        {
+    auto const remove_junk = [](std::string_view const filename) {
+        if (is_empty_folder(filename) || is_junk_file(filename)) {
             tr_sys_path_remove(filename);
         }
     };
-    for (auto const& filename : top_files)
-    {
+    for (auto const& filename : top_files) {
         depth_first_walk(filename, remove_junk);
     }
 }
@@ -381,16 +343,14 @@ namespace
 // for example, NUL.txt is not recommended.
 [[nodiscard, maybe_unused]] bool is_win32_reserved_file(std::string_view in) noexcept
 {
-    if (std::empty(in))
-    {
+    if (std::empty(in)) {
         return false;
     }
 
     // Shortcut to avoid extra work below.
     // All the paths below involve filenames that begin with one of these chars
     static auto constexpr ReservedFilesBeginWithOneOf = "ACLNP"sv;
-    if (ReservedFilesBeginWithOneOf.find(static_cast<char>(toupper(in.front()))) == std::string_view::npos)
-    {
+    if (ReservedFilesBeginWithOneOf.find(static_cast<char>(toupper(in.front()))) == std::string_view::npos) {
         return false;
     }
 
@@ -405,8 +365,7 @@ namespace
         "LPT1"sv, "LPT2"sv, "LPT3"sv, "LPT4"sv, "LPT5"sv, "LPT6"sv, "LPT7"sv, "LPT8"sv, "LPT9"sv,
         // clang-format on
     });
-    if (std::ranges::find(ReservedNames, in_upper_sv) != std::ranges::end(ReservedNames))
-    {
+    if (std::ranges::find(ReservedNames, in_upper_sv) != std::ranges::end(ReservedNames)) {
         return true;
     }
 
@@ -417,15 +376,14 @@ namespace
         "LPT1."sv, "LPT2."sv, "LPT3."sv, "LPT4."sv, "LPT5."sv, "LPT6."sv, "LPT7."sv, "LPT8."sv, "LPT9."sv,
         // clang-format on
     });
-    return std::ranges::any_of(
-        ReservedPrefixes,
-        [in_upper_sv](auto const& prefix) { return tr_strv_starts_with(in_upper_sv, prefix); });
+    return std::ranges::any_of(ReservedPrefixes, [in_upper_sv](auto const& prefix) {
+        return tr_strv_starts_with(in_upper_sv, prefix);
+    });
 }
 
 [[nodiscard]] bool is_reserved_file(std::string_view in, bool os_specific) noexcept
 {
-    if (!os_specific)
-    {
+    if (!os_specific) {
         return is_unix_reserved_file(in) || is_win32_reserved_file(in);
     }
 #ifdef _WIN32
@@ -449,8 +407,7 @@ namespace
 // except for the following:
 [[nodiscard, maybe_unused]] auto constexpr is_win32_reserved_char(unsigned char ch) noexcept
 {
-    switch (ch)
-    {
+    switch (ch) {
     case '"':
     case '*':
     case ':':
@@ -467,13 +424,11 @@ namespace
 
 [[nodiscard]] auto constexpr is_reserved_char(unsigned char ch, bool os_specific) noexcept
 {
-    if (ch <= 31 || ch == '/')
-    {
+    if (ch <= 31 || ch == '/') {
         return true;
     }
 
-    if (!os_specific)
-    {
+    if (!os_specific) {
         return is_unix_reserved_char(ch) || is_win32_reserved_char(ch);
     }
 #ifdef _WIN32
@@ -491,21 +446,18 @@ void append_sanitized_component(std::string_view in, tr_pathbuf& out, bool os_sp
     in = tr_strv_strip(in);
 
     // remove trailing periods
-    while (tr_strv_ends_with(in, '.'))
-    {
+    while (tr_strv_ends_with(in, '.')) {
         in.remove_suffix(1);
     }
 #endif
 
     // replace reserved filenames with an underscore
-    if (is_reserved_file(in, os_specific))
-    {
+    if (is_reserved_file(in, os_specific)) {
         out.append('_');
     }
 
     // replace reserved characters with an underscore
-    auto const add_char = [os_specific](auto ch)
-    {
+    auto const add_char = [os_specific](auto ch) {
         return is_reserved_char(ch, os_specific) ? '_' : ch;
     };
     std::ranges::transform(in, std::back_inserter(out), add_char);
@@ -516,14 +468,12 @@ void append_sanitized_component(std::string_view in, tr_pathbuf& out, bool os_sp
 void tr_torrent_files::sanitize_subpath(std::string_view path, tr_pathbuf& append_me, bool os_specific)
 {
     auto segment = std::string_view{};
-    while (tr_strv_sep(&path, &segment, '/'))
-    {
+    while (tr_strv_sep(&path, &segment, '/')) {
         append_sanitized_component(segment, append_me, os_specific);
         append_me.append('/');
     }
 
-    if (auto const n = std::size(append_me); n > 0)
-    {
+    if (auto const n = std::size(append_me); n > 0) {
         append_me.resize(n - 1); // remove trailing slash
     }
 }

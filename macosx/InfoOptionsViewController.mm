@@ -65,8 +65,7 @@ static CGFloat const kStackViewSpacing = 8.0;
 
 - (instancetype)init
 {
-    if ((self = [super initWithNibName:@"InfoOptionsView" bundle:nil]))
-    {
+    if ((self = [super initWithNibName:@"InfoOptionsView" bundle:nil])) {
         self.title = NSLocalizedString(@"Options", "Inspector view -> title");
     }
 
@@ -114,8 +113,7 @@ static CGFloat const kStackViewSpacing = 8.0;
 
     // we check for existence of self.view.window
     // as when view is shown from TorrentTableView.mm popover we don't want to customize the view height
-    if (self.view.window)
-    {
+    if (self.view.window) {
         viewRect.size.height -= difference;
     }
 
@@ -124,13 +122,10 @@ static CGFloat const kStackViewSpacing = 8.0;
 
 - (void)checkLayout
 {
-    if (NSWidth(self.view.window.frame) >= self.fHorizLayoutWidth + 1)
-    {
+    if (NSWidth(self.view.window.frame) >= self.fHorizLayoutWidth + 1) {
         self.fOptionsStackView.orientation = NSUserInterfaceLayoutOrientationHorizontal;
         self.fCurrentHeight = self.fHorizLayoutHeight;
-    }
-    else
-    {
+    } else {
         self.fOptionsStackView.orientation = NSUserInterfaceLayoutOrientationVertical;
         self.fCurrentHeight = self.fVertLayoutHeight;
     }
@@ -147,8 +142,7 @@ static CGFloat const kStackViewSpacing = 8.0;
 {
     // we check for existence of self.view.window
     // as when view is shown from TorrentTableView.mm popover we don't want to customize the view height
-    if (self.view.window)
-    {
+    if (self.view.window) {
         [self checkLayout];
 
         CGFloat difference = self.fHeightChange;
@@ -162,9 +156,7 @@ static CGFloat const kStackViewSpacing = 8.0;
 
         self.view.frame = [self viewRect];
         [self.view.window setFrame:windowRect display:YES animate:YES];
-    }
-    else
-    {
+    } else {
         // set popover width
         NSRect rect = self.view.frame;
         rect.size.width = NSWidth(self.fOptionsStackView.frame) + (2 * kStackViewInset);
@@ -182,8 +174,7 @@ static CGFloat const kStackViewSpacing = 8.0;
 
 - (void)updateInfo
 {
-    if (!self.fSet)
-    {
+    if (!self.fSet) {
         [self setupInfo];
     }
 
@@ -192,8 +183,7 @@ static CGFloat const kStackViewSpacing = 8.0;
 
 - (void)updateOptions
 {
-    if (self.fTorrents.count == 0)
-    {
+    if (self.fTorrents.count == 0) {
         return;
     }
 
@@ -212,33 +202,27 @@ static CGFloat const kStackViewSpacing = 8.0;
     while (
         (torrent = [enumerator nextObject]) &&
         (uploadUseSpeedLimit != NSControlStateValueMixed || !multipleUploadSpeedLimits || downloadUseSpeedLimit != NSControlStateValueMixed ||
-         !multipleDownloadSpeedLimits || globalUseSpeedLimit != NSControlStateValueMixed))
-    {
+         !multipleDownloadSpeedLimits || globalUseSpeedLimit != NSControlStateValueMixed)) {
         if (uploadUseSpeedLimit != NSControlStateValueMixed &&
-            uploadUseSpeedLimit != ([torrent usesSpeedLimit:YES] ? NSControlStateValueOn : NSControlStateValueOff))
-        {
+            uploadUseSpeedLimit != ([torrent usesSpeedLimit:YES] ? NSControlStateValueOn : NSControlStateValueOff)) {
             uploadUseSpeedLimit = NSControlStateValueMixed;
         }
 
-        if (!multipleUploadSpeedLimits && uploadSpeedLimit != [torrent speedLimit:YES])
-        {
+        if (!multipleUploadSpeedLimits && uploadSpeedLimit != [torrent speedLimit:YES]) {
             multipleUploadSpeedLimits = YES;
         }
 
         if (downloadUseSpeedLimit != NSControlStateValueMixed &&
-            downloadUseSpeedLimit != ([torrent usesSpeedLimit:NO] ? NSControlStateValueOn : NSControlStateValueOff))
-        {
+            downloadUseSpeedLimit != ([torrent usesSpeedLimit:NO] ? NSControlStateValueOn : NSControlStateValueOff)) {
             downloadUseSpeedLimit = NSControlStateValueMixed;
         }
 
-        if (!multipleDownloadSpeedLimits && downloadSpeedLimit != [torrent speedLimit:NO])
-        {
+        if (!multipleDownloadSpeedLimits && downloadSpeedLimit != [torrent speedLimit:NO]) {
             multipleDownloadSpeedLimits = YES;
         }
 
         if (globalUseSpeedLimit != NSControlStateValueMixed &&
-            globalUseSpeedLimit != (torrent.usesGlobalSpeedLimit ? NSControlStateValueOn : NSControlStateValueOff))
-        {
+            globalUseSpeedLimit != (torrent.usesGlobalSpeedLimit ? NSControlStateValueOn : NSControlStateValueOff)) {
             globalUseSpeedLimit = NSControlStateValueMixed;
         }
     }
@@ -249,12 +233,9 @@ static CGFloat const kStackViewSpacing = 8.0;
 
     self.fUploadLimitLabel.enabled = uploadUseSpeedLimit == NSControlStateValueOn;
     self.fUploadLimitField.enabled = uploadUseSpeedLimit == NSControlStateValueOn;
-    if (!multipleUploadSpeedLimits)
-    {
+    if (!multipleUploadSpeedLimits) {
         self.fUploadLimitField.integerValue = uploadSpeedLimit;
-    }
-    else
-    {
+    } else {
         self.fUploadLimitField.stringValue = @"";
     }
 
@@ -264,12 +245,9 @@ static CGFloat const kStackViewSpacing = 8.0;
 
     self.fDownloadLimitLabel.enabled = downloadUseSpeedLimit == NSControlStateValueOn;
     self.fDownloadLimitField.enabled = downloadUseSpeedLimit == NSControlStateValueOn;
-    if (!multipleDownloadSpeedLimits)
-    {
+    if (!multipleDownloadSpeedLimits) {
         self.fDownloadLimitField.integerValue = downloadSpeedLimit;
-    }
-    else
-    {
+    } else {
         self.fDownloadLimitField.stringValue = @"";
     }
 
@@ -289,95 +267,71 @@ static CGFloat const kStackViewSpacing = 8.0;
     NSUInteger idleLimit = torrent.idleLimitMinutes;
     BOOL multipleIdleLimits = NO;
 
-    while ((torrent = [enumerator nextObject]) && (checkRatio != kInvalidValue || !multipleRatioLimits || checkIdle != kInvalidValue || !multipleIdleLimits))
-    {
-        if (checkRatio != kInvalidValue && checkRatio != torrent.ratioSetting)
-        {
+    while (
+        (torrent = [enumerator nextObject]) &&
+        (checkRatio != kInvalidValue || !multipleRatioLimits || checkIdle != kInvalidValue || !multipleIdleLimits)) {
+        if (checkRatio != kInvalidValue && checkRatio != torrent.ratioSetting) {
             checkRatio = kInvalidValue;
         }
 
-        if (!multipleRatioLimits && !isRatioEqual(ratioLimit, torrent.ratioLimit))
-        {
+        if (!multipleRatioLimits && !isRatioEqual(ratioLimit, torrent.ratioLimit)) {
             multipleRatioLimits = YES;
         }
 
-        if (checkIdle != kInvalidValue && checkIdle != torrent.idleSetting)
-        {
+        if (checkIdle != kInvalidValue && checkIdle != torrent.idleSetting) {
             checkIdle = kInvalidValue;
         }
 
-        if (!multipleIdleLimits && idleLimit != torrent.idleLimitMinutes)
-        {
+        if (!multipleIdleLimits && idleLimit != torrent.idleLimitMinutes) {
             multipleIdleLimits = YES;
         }
 
         if (removeWhenFinishSeeding != NSControlStateValueMixed &&
-            removeWhenFinishSeeding != (torrent.removeWhenFinishSeeding ? NSControlStateValueOn : NSControlStateValueOff))
-        {
+            removeWhenFinishSeeding != (torrent.removeWhenFinishSeeding ? NSControlStateValueOn : NSControlStateValueOff)) {
             removeWhenFinishSeeding = NSControlStateValueMixed;
         }
     }
 
     //set ratio view
     NSInteger index;
-    if (checkRatio == TR_RATIOLIMIT_SINGLE)
-    {
+    if (checkRatio == TR_RATIOLIMIT_SINGLE) {
         index = OptionPopupTypeLimit;
-    }
-    else if (checkRatio == TR_RATIOLIMIT_UNLIMITED)
-    {
+    } else if (checkRatio == TR_RATIOLIMIT_UNLIMITED) {
         index = OptionPopupTypeNoLimit;
-    }
-    else if (checkRatio == TR_RATIOLIMIT_GLOBAL)
-    {
+    } else if (checkRatio == TR_RATIOLIMIT_GLOBAL) {
         index = OptionPopupTypeGlobal;
-    }
-    else
-    {
+    } else {
         index = -1;
     }
     [self.fRatioPopUp selectItemAtIndex:index];
     self.fRatioPopUp.enabled = YES;
 
     self.fRatioLimitField.hidden = checkRatio != TR_RATIOLIMIT_SINGLE;
-    if (!multipleRatioLimits)
-    {
+    if (!multipleRatioLimits) {
         self.fRatioLimitField.floatValue = ratioLimit;
-    }
-    else
-    {
+    } else {
         self.fRatioLimitField.stringValue = @"";
     }
 
     self.fRatioLimitGlobalLabel.hidden = checkRatio != TR_RATIOLIMIT_GLOBAL;
 
     //set idle view
-    if (checkIdle == TR_IDLELIMIT_SINGLE)
-    {
+    if (checkIdle == TR_IDLELIMIT_SINGLE) {
         index = OptionPopupTypeLimit;
-    }
-    else if (checkIdle == TR_IDLELIMIT_UNLIMITED)
-    {
+    } else if (checkIdle == TR_IDLELIMIT_UNLIMITED) {
         index = OptionPopupTypeNoLimit;
-    }
-    else if (checkIdle == TR_IDLELIMIT_GLOBAL)
-    {
+    } else if (checkIdle == TR_IDLELIMIT_GLOBAL) {
         index = OptionPopupTypeGlobal;
-    }
-    else
-    {
+    } else {
         index = -1;
     }
     [self.fIdlePopUp selectItemAtIndex:index];
     self.fIdlePopUp.enabled = YES;
 
     self.fIdleLimitField.hidden = checkIdle != TR_IDLELIMIT_SINGLE;
-    if (!multipleIdleLimits)
-    {
+    if (!multipleIdleLimits) {
         self.fIdleLimitField.integerValue = idleLimit;
-    }
-    else
-    {
+    } else {
         self.fIdleLimitField.stringValue = @"";
     }
     self.fIdleLimitLabel.hidden = checkIdle != TR_IDLELIMIT_SINGLE;
@@ -394,29 +348,20 @@ static CGFloat const kStackViewSpacing = 8.0;
 
     NSInteger priority = torrent.priority;
 
-    while ((torrent = [enumerator nextObject]) && priority != kInvalidValue)
-    {
-        if (priority != torrent.priority)
-        {
+    while ((torrent = [enumerator nextObject]) && priority != kInvalidValue) {
+        if (priority != torrent.priority) {
             priority = kInvalidValue;
         }
     }
 
     //set priority view
-    if (priority == TR_PRI_HIGH)
-    {
+    if (priority == TR_PRI_HIGH) {
         index = OptionPopupPriorityHigh;
-    }
-    else if (priority == TR_PRI_NORMAL)
-    {
+    } else if (priority == TR_PRI_NORMAL) {
         index = OptionPopupPriorityNormal;
-    }
-    else if (priority == TR_PRI_LOW)
-    {
+    } else if (priority == TR_PRI_LOW) {
         index = OptionPopupPriorityLow;
-    }
-    else
-    {
+    } else {
         index = -1;
     }
     [self.fPriorityPopUp selectItemAtIndex:index];
@@ -428,10 +373,8 @@ static CGFloat const kStackViewSpacing = 8.0;
 
     NSInteger maxPeers = torrent.maxPeerConnect;
 
-    while ((torrent = [enumerator nextObject]))
-    {
-        if (maxPeers != torrent.maxPeerConnect)
-        {
+    while ((torrent = [enumerator nextObject])) {
+        if (maxPeers != torrent.maxPeerConnect) {
             maxPeers = kInvalidValue;
             break;
         }
@@ -440,12 +383,9 @@ static CGFloat const kStackViewSpacing = 8.0;
     //set peer view
     self.fPeersConnectField.enabled = YES;
     self.fPeersConnectLabel.enabled = YES;
-    if (maxPeers != kInvalidValue)
-    {
+    if (maxPeers != kInvalidValue) {
         self.fPeersConnectField.integerValue = maxPeers;
-    }
-    else
-    {
+    } else {
         self.fPeersConnectField.stringValue = @"";
     }
 }
@@ -454,21 +394,18 @@ static CGFloat const kStackViewSpacing = 8.0;
 {
     BOOL const upload = sender == self.fUploadLimitCheck;
 
-    if (((NSButton*)sender).state == NSControlStateValueMixed)
-    {
+    if (((NSButton*)sender).state == NSControlStateValueMixed) {
         [sender setState:NSControlStateValueOn];
     }
     BOOL const limit = ((NSButton*)sender).state == NSControlStateValueOn;
 
-    for (Torrent* torrent in self.fTorrents)
-    {
+    for (Torrent* torrent in self.fTorrents) {
         [torrent setUseSpeedLimit:limit upload:upload];
     }
 
     NSTextField* field = upload ? self.fUploadLimitField : self.fDownloadLimitField;
     field.enabled = limit;
-    if (limit)
-    {
+    if (limit) {
         [field selectText:self];
         [self.view.window makeKeyAndOrderFront:self];
     }
@@ -481,14 +418,12 @@ static CGFloat const kStackViewSpacing = 8.0;
 
 - (void)setUseGlobalSpeedLimit:(id)sender
 {
-    if (((NSButton*)sender).state == NSControlStateValueMixed)
-    {
+    if (((NSButton*)sender).state == NSControlStateValueMixed) {
         [sender setState:NSControlStateValueOn];
     }
     BOOL const limit = ((NSButton*)sender).state == NSControlStateValueOn;
 
-    for (Torrent* torrent in self.fTorrents)
-    {
+    for (Torrent* torrent in self.fTorrents) {
         torrent.usesGlobalSpeedLimit = limit;
     }
 
@@ -500,8 +435,7 @@ static CGFloat const kStackViewSpacing = 8.0;
     BOOL const upload = sender == self.fUploadLimitField;
     NSInteger const limit = [sender intValue];
 
-    for (Torrent* torrent in self.fTorrents)
-    {
+    for (Torrent* torrent in self.fTorrents) {
         [torrent setSpeedLimit:limit upload:upload];
     }
 
@@ -512,8 +446,7 @@ static CGFloat const kStackViewSpacing = 8.0;
 {
     NSInteger setting;
     BOOL single = NO;
-    switch ([sender indexOfSelectedItem])
-    {
+    switch ([sender indexOfSelectedItem]) {
     case OptionPopupTypeLimit:
         setting = TR_RATIOLIMIT_SINGLE;
         single = YES;
@@ -529,14 +462,12 @@ static CGFloat const kStackViewSpacing = 8.0;
         return;
     }
 
-    for (Torrent* torrent in self.fTorrents)
-    {
+    for (Torrent* torrent in self.fTorrents) {
         torrent.ratioSetting = static_cast<tr_ratiolimit>(setting);
     }
 
     self.fRatioLimitField.hidden = !single;
-    if (single)
-    {
+    if (single) {
         [self.fRatioLimitField selectText:self];
         [self.view.window makeKeyAndOrderFront:self];
     }
@@ -550,8 +481,7 @@ static CGFloat const kStackViewSpacing = 8.0;
 {
     CGFloat const limit = [sender floatValue];
 
-    for (Torrent* torrent in self.fTorrents)
-    {
+    for (Torrent* torrent in self.fTorrents) {
         torrent.ratioLimit = limit;
     }
 
@@ -562,8 +492,7 @@ static CGFloat const kStackViewSpacing = 8.0;
 {
     NSInteger setting;
     BOOL single = NO;
-    switch ([sender indexOfSelectedItem])
-    {
+    switch ([sender indexOfSelectedItem]) {
     case OptionPopupTypeLimit:
         setting = TR_IDLELIMIT_SINGLE;
         single = YES;
@@ -579,15 +508,13 @@ static CGFloat const kStackViewSpacing = 8.0;
         return;
     }
 
-    for (Torrent* torrent in self.fTorrents)
-    {
+    for (Torrent* torrent in self.fTorrents) {
         torrent.idleSetting = static_cast<tr_idlelimit>(setting);
     }
 
     self.fIdleLimitField.hidden = !single;
     self.fIdleLimitLabel.hidden = !single;
-    if (single)
-    {
+    if (single) {
         [self.fIdleLimitField selectText:self];
         [self.view.window makeKeyAndOrderFront:self];
     }
@@ -601,8 +528,7 @@ static CGFloat const kStackViewSpacing = 8.0;
 {
     NSUInteger const limit = [sender integerValue];
 
-    for (Torrent* torrent in self.fTorrents)
-    {
+    for (Torrent* torrent in self.fTorrents) {
         torrent.idleLimitMinutes = limit;
     }
 
@@ -611,14 +537,12 @@ static CGFloat const kStackViewSpacing = 8.0;
 
 - (IBAction)setRemoveWhenSeedingCompletes:(id)sender
 {
-    if (((NSButton*)sender).state == NSControlStateValueMixed)
-    {
+    if (((NSButton*)sender).state == NSControlStateValueMixed) {
         [sender setState:NSControlStateValueOn];
     }
     BOOL const enable = ((NSButton*)sender).state == NSControlStateValueOn;
 
-    for (Torrent* torrent in self.fTorrents)
-    {
+    for (Torrent* torrent in self.fTorrents) {
         torrent.removeWhenFinishSeeding = enable;
     }
 
@@ -628,8 +552,7 @@ static CGFloat const kStackViewSpacing = 8.0;
 - (void)setPriority:(id)sender
 {
     tr_priority_t priority;
-    switch ([sender indexOfSelectedItem])
-    {
+    switch ([sender indexOfSelectedItem]) {
     case OptionPopupPriorityHigh:
         priority = TR_PRI_HIGH;
         break;
@@ -644,8 +567,7 @@ static CGFloat const kStackViewSpacing = 8.0;
         return;
     }
 
-    for (Torrent* torrent in self.fTorrents)
-    {
+    for (Torrent* torrent in self.fTorrents) {
         torrent.priority = priority;
     }
 
@@ -658,8 +580,7 @@ static CGFloat const kStackViewSpacing = 8.0;
 {
     NSInteger limit = [sender intValue];
 
-    for (Torrent* torrent in self.fTorrents)
-    {
+    for (Torrent* torrent in self.fTorrents) {
         torrent.maxPeerConnect = limit;
     }
 
@@ -676,8 +597,7 @@ static CGFloat const kStackViewSpacing = 8.0;
 - (BOOL)control:(NSControl*)control didFailToFormatString:(NSString*)string errorDescription:(NSString*)error
 {
     NSBeep();
-    if (self.fInitialString)
-    {
+    if (self.fInitialString) {
         control.stringValue = self.fInitialString;
         self.fInitialString = nil;
     }
@@ -688,8 +608,7 @@ static CGFloat const kStackViewSpacing = 8.0;
 
 - (void)setupInfo
 {
-    if (self.fTorrents.count == 0)
-    {
+    if (self.fTorrents.count == 0) {
         self.fUploadLimitCheck.enabled = NO;
         self.fUploadLimitCheck.state = NSControlStateValueOff;
         self.fUploadLimitField.enabled = NO;
@@ -727,9 +646,7 @@ static CGFloat const kStackViewSpacing = 8.0;
         self.fPeersConnectField.enabled = NO;
         self.fPeersConnectField.stringValue = @"";
         self.fPeersConnectLabel.enabled = NO;
-    }
-    else
-    {
+    } else {
         [self updateOptions];
     }
 }
@@ -743,15 +660,12 @@ static CGFloat const kStackViewSpacing = 8.0;
 
     //idle field
     NSString* globalIdle;
-    if ([NSUserDefaults.standardUserDefaults boolForKey:@"IdleLimitCheck"])
-    {
+    if ([NSUserDefaults.standardUserDefaults boolForKey:@"IdleLimitCheck"]) {
         NSInteger const globalMin = [NSUserDefaults.standardUserDefaults integerForKey:@"IdleLimitMinutes"];
         globalIdle = globalMin == 1 ?
             NSLocalizedString(@"1 minute", "Info options -> global setting") :
             [NSString localizedStringWithFormat:NSLocalizedString(@"%ld minutes", "Info options -> global setting"), globalMin];
-    }
-    else
-    {
+    } else {
         globalIdle = NSLocalizedString(@"disabled", "Info options -> global setting");
     }
     self.fIdleLimitGlobalLabel.stringValue = globalIdle;
@@ -759,8 +673,7 @@ static CGFloat const kStackViewSpacing = 8.0;
 
 - (void)updateOptionsNotification:(NSNotification*)notification
 {
-    if (notification.object != self)
-    {
+    if (notification.object != self) {
         [self updateOptions];
     }
 }

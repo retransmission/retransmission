@@ -77,8 +77,7 @@ class DhtTest : public SandboxedTest
 {
 protected:
     // Helper for creating a mock dht.dat state file
-    struct MockStateFile
-    {
+    struct MockStateFile {
         // Fake data to be written to the test state file
 
         std::array<char, IdLength> const id_ = tr_rand_obj<std::array<char, IdLength>>();
@@ -101,13 +100,11 @@ protected:
         [[nodiscard]] auto nodesString() const
         {
             auto str = std::string{};
-            for (auto const& socket_address : ipv4_nodes_)
-            {
+            for (auto const& socket_address : ipv4_nodes_) {
                 str += socket_address.display_name();
                 str += ',';
             }
-            for (auto const& socket_address : ipv6_nodes_)
-            {
+            for (auto const& socket_address : ipv6_nodes_) {
                 str += socket_address.display_name();
                 str += ',';
             }
@@ -127,14 +124,12 @@ protected:
             map.try_emplace(TR_KEY_id, tr_variant::make_raw(id_));
             map.try_emplace(TR_KEY_id_timestamp, id_timestamp_);
             auto compact = std::vector<std::byte>{};
-            for (auto const& socket_address : ipv4_nodes_)
-            {
+            for (auto const& socket_address : ipv4_nodes_) {
                 socket_address.to_compact(std::back_inserter(compact));
             }
             map.try_emplace(TR_KEY_nodes, tr_variant::make_raw(compact));
             compact.clear();
-            for (auto const& socket_address : ipv6_nodes_)
-            {
+            for (auto const& socket_address : ipv6_nodes_) {
                 socket_address.to_compact(std::back_inserter(compact));
             }
             map.try_emplace(TR_KEY_nodes6, tr_variant::make_raw(compact));
@@ -153,23 +148,19 @@ protected:
 
         int nodes(int /*af*/, int* good, int* dubious, int* cached, int* incoming) override
         {
-            if (good != nullptr)
-            {
+            if (good != nullptr) {
                 *good = good_;
             }
 
-            if (dubious != nullptr)
-            {
+            if (dubious != nullptr) {
                 *dubious = dubious_;
             }
 
-            if (cached != nullptr)
-            {
+            if (cached != nullptr) {
                 *cached = cached_;
             }
 
-            if (incoming != nullptr)
-            {
+            if (incoming != nullptr) {
                 *incoming = incoming_;
             }
 
@@ -238,15 +229,13 @@ protected:
             incoming_ = 1;
         }
 
-        struct Searched
-        {
+        struct Searched {
             tr_sha1_digest_t info_hash;
             tr_port port;
             int af;
         };
 
-        struct Pinged
-        {
+        struct Pinged {
             tr_socket_address addrport;
             time_t timestamp;
         };
@@ -345,8 +334,7 @@ protected:
 
         [[nodiscard]] tr_sha1_digest_t torrent_info_hash(tr_torrent_id_t id) const override
         {
-            if (auto const iter = info_hashes_.find(id); iter != std::end(info_hashes_))
-            {
+            if (auto const iter = info_hashes_.find(id); iter != std::end(info_hashes_)) {
                 return iter->second;
             }
 
@@ -453,8 +441,7 @@ TEST_F(DhtTest, loadsStateFromStateFile)
     auto const n_expected_nodes = std::size(state_file.ipv4_nodes_) + std::size(state_file.ipv6_nodes_);
     waitFor(event_base_, [&pinged, n_expected_nodes]() { return std::size(pinged) >= n_expected_nodes; });
     auto actual_nodes_str = std::string{};
-    for (auto const& [addrport, timestamp] : pinged)
-    {
+    for (auto const& [addrport, timestamp] : pinged) {
         actual_nodes_str += addrport.display_name();
         actual_nodes_str += ',';
     }
@@ -486,8 +473,7 @@ TEST_F(DhtTest, loadsStateFromStateFileExpiredId)
     auto const n_expected_nodes = std::size(state_file.ipv4_nodes_) + std::size(state_file.ipv6_nodes_);
     waitFor(event_base_, [&pinged, n_expected_nodes]() { return std::size(pinged) >= n_expected_nodes; });
     auto actual_nodes_str = std::string{};
-    for (auto const& [addrport, timestamp] : pinged)
-    {
+    for (auto const& [addrport, timestamp] : pinged) {
         actual_nodes_str += addrport.display_name();
         actual_nodes_str += ',';
     }
@@ -582,8 +568,7 @@ TEST_F(DhtTest, usesBootstrapFile)
     // which tr-dht will try to ping as nodes
     static auto constexpr BootstrapNodeName = "91.121.74.28"sv;
     static auto constexpr BootstrapNodePort = tr_port::from_host(8080);
-    if (auto ofs = std::ofstream{ tr_pathbuf{ sandboxDir(), "/dht.bootstrap" } }; ofs)
-    {
+    if (auto ofs = std::ofstream{ tr_pathbuf{ sandboxDir(), "/dht.bootstrap" } }; ofs) {
         ofs << BootstrapNodeName << ' ' << BootstrapNodePort.host() << '\n';
         ofs.close();
     }

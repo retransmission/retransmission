@@ -73,8 +73,7 @@ void TorrentView::setHeaderText(QString const& text)
     header_widget_->setText(text);
     header_widget_->setVisible(header_visible);
 
-    if (header_visible)
-    {
+    if (header_visible) {
         adjustHeaderPosition();
     }
 
@@ -85,8 +84,7 @@ void TorrentView::resizeEvent(QResizeEvent* event)
 {
     QListView::resizeEvent(event);
 
-    if (header_widget_->isVisible())
-    {
+    if (header_widget_->isVisible()) {
         adjustHeaderPosition();
     }
 }

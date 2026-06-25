@@ -97,13 +97,11 @@ public:
 
     [[nodiscard]] constexpr auto percent() const noexcept
     {
-        if (has_all())
-        {
+        if (has_all()) {
             return 1.0F;
         }
 
-        if (has_none() || empty())
-        {
+        if (has_none() || empty()) {
             return 0.0F;
         }
 
@@ -120,8 +118,7 @@ private:
 
     [[nodiscard]] constexpr bool test_flag(size_t n) const
     {
-        if (n >> 3U >= std::size(flags_))
-        {
+        if (n >> 3U >= std::size(flags_)) {
             return false;
         }
 

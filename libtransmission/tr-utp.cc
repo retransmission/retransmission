@@ -61,20 +61,16 @@ void utp_on_accept(tr_session* const session, UTPSocket* const utp_sock)
     auto* const from = reinterpret_cast<sockaddr*>(&from_storage);
     socklen_t fromlen = sizeof(from_storage);
 
-    if (!session->allowsUTP() || tr_peer_socket::limit_reached(session))
-    {
+    if (!session->allowsUTP() || tr_peer_socket::limit_reached(session)) {
         utp_close(utp_sock);
         return;
     }
 
     utp_getpeername(utp_sock, from, &fromlen);
 
-    if (auto addrport = tr_socket_address::from_sockaddr(reinterpret_cast<struct sockaddr*>(&from_storage)); addrport)
-    {
+    if (auto addrport = tr_socket_address::from_sockaddr(reinterpret_cast<struct sockaddr*>(&from_storage)); addrport) {
         session->addIncoming(tr_peer_socket_utp::create(*addrport, utp_sock, session->timerMaker()));
-    }
-    else
-    {
+    } else {
         tr_logAddWarn(_("Unknown socket family"));
         utp_close(utp_sock);
     }
@@ -97,8 +93,7 @@ uint64 utp_callback(utp_callback_arguments* args)
     TR_ASSERT(session != nullptr);
     TR_ASSERT(session->utp_context == args->context);
 
-    switch (args->callback_type)
-    {
+    switch (args->callback_type) {
 #ifdef TR_UTP_TRACE
     case UTP_LOG:
         tr_logAddTrace(fmt::format("[µTP] {}", reinterpret_cast<char const*>(args->buf)));
@@ -125,15 +120,12 @@ void restart_timer(tr_session* session)
     auto interval = std::chrono::milliseconds{};
     auto const random_percent = tr_rand_int(1000U) / 1000.0;
 
-    if (session->allowsUTP())
-    {
+    if (session->allowsUTP()) {
         static auto constexpr MinInterval = UtpInterval * 0.5;
         static auto constexpr MaxInterval = UtpInterval * 1.5;
         auto const target = MinInterval + random_percent * (MaxInterval - MinInterval);
         interval = std::chrono::duration_cast<std::chrono::milliseconds>(target);
-    }
-    else
-    {
+    } else {
         // If somebody has disabled µTP, then we still want to run
         // utp_check_timeouts, in order to let closed sockets finish
         // gracefully and so on.  However, since we're not particularly
@@ -159,15 +151,13 @@ void timer_callback(void* vsession)
 
 void tr_utp_init(tr_session* session)
 {
-    if (session->utp_context != nullptr)
-    {
+    if (session->utp_context != nullptr) {
         return;
     }
 
     auto* const ctx = utp_init(2);
 
-    if (ctx == nullptr)
-    {
+    if (ctx == nullptr) {
         return;
     }
 
@@ -204,8 +194,7 @@ void tr_utp_close(tr_session* session)
 {
     session->utp_timer.reset();
 
-    if (session->utp_context != nullptr)
-    {
+    if (session->utp_context != nullptr) {
         utp_destroy(session->utp_context);
         session->utp_context = nullptr;
     }

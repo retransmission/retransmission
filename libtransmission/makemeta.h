@@ -40,14 +40,11 @@ public:
     // - Resolves with a `tr_error` which is set on failure or empty on success.
     std::future<tr_error> make_checksums()
     {
-        return std::async(
-            std::launch::async,
-            [this]()
-            {
-                auto error = tr_error{};
-                blocking_make_checksums(&error);
-                return error;
-            });
+        return std::async(std::launch::async, [this]() {
+            auto error = tr_error{};
+            blocking_make_checksums(&error);
+            return error;
+        });
     }
 
     // Returns the status of a `makeChecksums()` call:

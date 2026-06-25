@@ -131,31 +131,19 @@ typedef NS_ENUM(NSUInteger, TabTag) {
     self.fCurrentTabTag = kInvalidTag;
     NSString* identifier = [NSUserDefaults.standardUserDefaults stringForKey:@"InspectorSelected"];
     NSInteger tag;
-    if ([identifier isEqualToString:TabIdentifierInfo])
-    {
+    if ([identifier isEqualToString:TabIdentifierInfo]) {
         tag = TabTagGeneral;
-    }
-    else if ([identifier isEqualToString:TabIdentifierActivity])
-    {
+    } else if ([identifier isEqualToString:TabIdentifierActivity]) {
         tag = TabTagActivity;
-    }
-    else if ([identifier isEqualToString:TabIdentifierTracker])
-    {
+    } else if ([identifier isEqualToString:TabIdentifierTracker]) {
         tag = TabTagTrackers;
-    }
-    else if ([identifier isEqualToString:TabIdentifierPeers])
-    {
+    } else if ([identifier isEqualToString:TabIdentifierPeers]) {
         tag = TabTagPeers;
-    }
-    else if ([identifier isEqualToString:TabIdentifierFiles])
-    {
+    } else if ([identifier isEqualToString:TabIdentifierFiles]) {
         tag = TabTagFile;
-    }
-    else if ([identifier isEqualToString:TabIdentifierOptions])
-    {
+    } else if ([identifier isEqualToString:TabIdentifierOptions]) {
         tag = TabTagOptions;
-    }
-    else //safety
+    } else //safety
     {
         [NSUserDefaults.standardUserDefaults setObject:TabIdentifierInfo forKey:@"InspectorSelected"];
         tag = TabTagGeneral;
@@ -179,28 +167,23 @@ typedef NS_ENUM(NSUInteger, TabTag) {
 
 - (void)dealloc
 {
-    if ([_fViewController respondsToSelector:@selector(saveViewSize)])
-    {
+    if ([_fViewController respondsToSelector:@selector(saveViewSize)]) {
         [_fViewController saveViewSize];
     }
 }
 
 - (void)windowWasResized:(NSNotification*)notification
 {
-    if (self.fViewController == self.fOptionsViewController)
-    {
+    if (self.fViewController == self.fOptionsViewController) {
         [self.fOptionsViewController checkWindowSize];
-    }
-    else if (self.fViewController == self.fActivityViewController)
-    {
+    } else if (self.fViewController == self.fActivityViewController) {
         [self.fActivityViewController checkWindowSize];
     }
 }
 
 - (void)setInfoForTorrents:(NSArray<Torrent*>*)torrents
 {
-    if ([self.fTorrents isEqualToArray:torrents])
-    {
+    if ([self.fTorrents isEqualToArray:torrents]) {
         return;
     }
 
@@ -211,8 +194,7 @@ typedef NS_ENUM(NSUInteger, TabTag) {
 
 - (void)removeTorrentsFromInfo:(NSArray<Torrent*>*)torrents
 {
-    if (self.fTorrents.count == 0 || torrents.count == 0)
-    {
+    if (self.fTorrents.count == 0 || torrents.count == 0) {
         return;
     }
 
@@ -230,8 +212,7 @@ typedef NS_ENUM(NSUInteger, TabTag) {
 
 - (void)windowWillClose:(NSNotification*)notification
 {
-    if (self.fCurrentTabTag == TabTagFile && ([QLPreviewPanel sharedPreviewPanelExists] && [QLPreviewPanel sharedPreviewPanel].visible))
-    {
+    if (self.fCurrentTabTag == TabTagFile && ([QLPreviewPanel sharedPreviewPanelExists] && [QLPreviewPanel sharedPreviewPanel].visible)) {
         [[QLPreviewPanel sharedPreviewPanel] reloadData];
     }
 }
@@ -240,8 +221,7 @@ typedef NS_ENUM(NSUInteger, TabTag) {
 {
     NSInteger const oldTabTag = self.fCurrentTabTag;
     self.fCurrentTabTag = self.fTabs.selectedSegment;
-    if (self.fCurrentTabTag == oldTabTag)
-    {
+    if (self.fCurrentTabTag == oldTabTag) {
         return;
     }
 
@@ -250,15 +230,12 @@ typedef NS_ENUM(NSUInteger, TabTag) {
 
     //take care of old view
     CGFloat oldHeight = 0;
-    if (oldTabTag != kInvalidTag)
-    {
-        if ([self.fViewController respondsToSelector:@selector(saveViewSize)])
-        {
+    if (oldTabTag != kInvalidTag) {
+        if ([self.fViewController respondsToSelector:@selector(saveViewSize)]) {
             [self.fViewController saveViewSize];
         }
 
-        if ([self.fViewController respondsToSelector:@selector(clearView)])
-        {
+        if ([self.fViewController respondsToSelector:@selector(clearView)]) {
             [self.fViewController clearView];
         }
 
@@ -271,11 +248,9 @@ typedef NS_ENUM(NSUInteger, TabTag) {
 
     //set new tab item
     TabIdentifier identifier;
-    switch (self.fCurrentTabTag)
-    {
+    switch (self.fCurrentTabTag) {
     case TabTagGeneral:
-        if (!self.fGeneralViewController)
-        {
+        if (!self.fGeneralViewController) {
             self.fGeneralViewController = [[InfoGeneralViewController alloc] init];
             [self.fGeneralViewController setInfoForTorrents:self.fTorrents];
         }
@@ -284,8 +259,7 @@ typedef NS_ENUM(NSUInteger, TabTag) {
         identifier = TabIdentifierInfo;
         break;
     case TabTagActivity:
-        if (!self.fActivityViewController)
-        {
+        if (!self.fActivityViewController) {
             self.fActivityViewController = [[InfoActivityViewController alloc] init];
             [self.fActivityViewController setInfoForTorrents:self.fTorrents];
         }
@@ -294,8 +268,7 @@ typedef NS_ENUM(NSUInteger, TabTag) {
         identifier = TabIdentifierActivity;
         break;
     case TabTagTrackers:
-        if (!self.fTrackersViewController)
-        {
+        if (!self.fTrackersViewController) {
             self.fTrackersViewController = [[InfoTrackersViewController alloc] init];
             [self.fTrackersViewController setInfoForTorrents:self.fTorrents];
         }
@@ -304,8 +277,7 @@ typedef NS_ENUM(NSUInteger, TabTag) {
         identifier = TabIdentifierTracker;
         break;
     case TabTagPeers:
-        if (!self.fPeersViewController)
-        {
+        if (!self.fPeersViewController) {
             self.fPeersViewController = [[InfoPeersViewController alloc] init];
             [self.fPeersViewController setInfoForTorrents:self.fTorrents];
         }
@@ -314,8 +286,7 @@ typedef NS_ENUM(NSUInteger, TabTag) {
         identifier = TabIdentifierPeers;
         break;
     case TabTagFile:
-        if (!self.fFileViewController)
-        {
+        if (!self.fFileViewController) {
             self.fFileViewController = [[InfoFileViewController alloc] init];
             [self.fFileViewController setInfoForTorrents:self.fTorrents];
         }
@@ -324,8 +295,7 @@ typedef NS_ENUM(NSUInteger, TabTag) {
         identifier = TabIdentifierFiles;
         break;
     case TabTagOptions:
-        if (!self.fOptionsViewController)
-        {
+        if (!self.fOptionsViewController) {
             self.fOptionsViewController = [[InfoOptionsViewController alloc] init];
             [self.fOptionsViewController setInfoForTorrents:self.fTorrents];
         }
@@ -353,16 +323,13 @@ typedef NS_ENUM(NSUInteger, TabTag) {
     CGFloat minWindowWidth = MAX(self.fMinWindowWidth, view.fittingSize.width);
 
     //special case for Activity and Options views
-    if (self.fViewController == self.fActivityViewController)
-    {
+    if (self.fViewController == self.fActivityViewController) {
         [self.fActivityViewController setOldHeight:oldHeight];
         [self.fActivityViewController checkLayout];
 
         minWindowWidth = MAX(self.fMinWindowWidth, self.fActivityViewController.fTransferView.frame.size.width);
         viewRect = [self.fActivityViewController viewRect];
-    }
-    else if (self.fViewController == self.fOptionsViewController)
-    {
+    } else if (self.fViewController == self.fOptionsViewController) {
         [self.fOptionsViewController setOldHeight:oldHeight];
         [self.fOptionsViewController checkLayout];
 
@@ -377,11 +344,9 @@ typedef NS_ENUM(NSUInteger, TabTag) {
 
     if ([self.fViewController respondsToSelector:@selector(saveViewSize)]) //a little bit hacky, but avoids requiring an extra method
     {
-        if (window.screen)
-        {
+        if (window.screen) {
             CGFloat const screenHeight = NSHeight(window.screen.visibleFrame);
-            if (NSHeight(windowRect) > screenHeight)
-            {
+            if (NSHeight(windowRect) > screenHeight) {
                 CGFloat const windowHeightDifference = screenHeight - NSHeight(windowRect);
                 windowRect.origin.y -= windowHeightDifference;
                 windowRect.size.height += windowHeightDifference;
@@ -392,9 +357,7 @@ typedef NS_ENUM(NSUInteger, TabTag) {
 
         window.minSize = NSMakeSize(minWindowWidth, NSHeight(windowRect) - NSHeight(viewRect) + kTabMinHeight);
         window.maxSize = NSMakeSize(FLT_MAX, FLT_MAX);
-    }
-    else
-    {
+    } else {
         window.minSize = NSMakeSize(minWindowWidth, NSHeight(windowRect));
         window.maxSize = NSMakeSize(FLT_MAX, NSHeight(windowRect));
     }
@@ -402,26 +365,21 @@ typedef NS_ENUM(NSUInteger, TabTag) {
     viewRect.size.width = NSWidth(windowRect);
     view.frame = viewRect;
 
-    if (self.fViewController == self.fActivityViewController)
-    {
+    if (self.fViewController == self.fActivityViewController) {
         self.fActivityViewController.view.hidden = YES;
 
         dispatch_async(dispatch_get_main_queue(), ^{
             [self.fActivityViewController updateWindowLayout];
             self.fActivityViewController.view.hidden = NO;
         });
-    }
-    else if (self.fViewController == self.fOptionsViewController)
-    {
+    } else if (self.fViewController == self.fOptionsViewController) {
         self.fOptionsViewController.view.hidden = YES;
 
         dispatch_async(dispatch_get_main_queue(), ^{
             [self.fOptionsViewController updateWindowLayout];
             self.fOptionsViewController.view.hidden = NO;
         });
-    }
-    else
-    {
+    } else {
         [window setFrame:windowRect display:YES animate:oldTabTag != kInvalidTag];
     }
 
@@ -434,8 +392,7 @@ typedef NS_ENUM(NSUInteger, TabTag) {
                                                                  views:@{ @"tabs" : self.fTabs, @"view" : view }]];
 
     if ((self.fCurrentTabTag == TabTagFile || oldTabTag == TabTagFile) &&
-        ([QLPreviewPanel sharedPreviewPanelExists] && [QLPreviewPanel sharedPreviewPanel].visible))
-    {
+        ([QLPreviewPanel sharedPreviewPanelExists] && [QLPreviewPanel sharedPreviewPanel].visible)) {
         [[QLPreviewPanel sharedPreviewPanel] reloadData];
     }
 
@@ -450,8 +407,7 @@ typedef NS_ENUM(NSUInteger, TabTag) {
 - (void)setNextTab
 {
     NSInteger tag = self.fTabs.selectedSegment + 1;
-    if (tag >= self.fTabs.segmentCount)
-    {
+    if (tag >= self.fTabs.segmentCount) {
         tag = 0;
     }
 
@@ -462,8 +418,7 @@ typedef NS_ENUM(NSUInteger, TabTag) {
 - (void)setPreviousTab
 {
     NSInteger tag = self.fTabs.selectedSegment - 1;
-    if (tag < 0)
-    {
+    if (tag < 0) {
         tag = self.fTabs.segmentCount - 1;
     }
 
@@ -473,12 +428,9 @@ typedef NS_ENUM(NSUInteger, TabTag) {
 
 - (void)swipeWithEvent:(NSEvent*)event
 {
-    if (event.deltaX < 0.0)
-    {
+    if (event.deltaX < 0.0) {
         [self setNextTab];
-    }
-    else if (event.deltaX > 0.0)
-    {
+    } else if (event.deltaX > 0.0) {
         [self setPreviousTab];
     }
 }
@@ -500,8 +452,7 @@ typedef NS_ENUM(NSUInteger, TabTag) {
 
 - (BOOL)canQuickLook
 {
-    if (self.fCurrentTabTag != TabTagFile || !self.window.visible)
-    {
+    if (self.fCurrentTabTag != TabTagFile || !self.window.visible) {
         return NO;
     }
 
@@ -518,10 +469,8 @@ typedef NS_ENUM(NSUInteger, TabTag) {
 - (void)resetInfo
 {
     NSUInteger const numberSelected = self.fTorrents.count;
-    if (numberSelected != 1)
-    {
-        if (numberSelected > 0)
-        {
+    if (numberSelected != 1) {
+        if (numberSelected > 0) {
             self.fImageView.image = [NSImage imageNamed:NSImageNameMultipleDocuments];
 
             self.fNameField.stringValue = [NSString
@@ -530,40 +479,30 @@ typedef NS_ENUM(NSUInteger, TabTag) {
 
             uint64_t size = 0;
             NSUInteger fileCount = 0, magnetCount = 0;
-            for (Torrent* torrent in self.fTorrents)
-            {
+            for (Torrent* torrent in self.fTorrents) {
                 size += torrent.size;
                 fileCount += torrent.fileCount;
-                if (torrent.magnet)
-                {
+                if (torrent.magnet) {
                     ++magnetCount;
                 }
             }
 
             NSMutableArray* fileStrings = [NSMutableArray arrayWithCapacity:2];
-            if (fileCount > 0)
-            {
+            if (fileCount > 0) {
                 NSString* fileString;
-                if (fileCount == 1)
-                {
+                if (fileCount == 1) {
                     fileString = NSLocalizedString(@"1 file", "Inspector -> selected torrents");
-                }
-                else
-                {
+                } else {
                     fileString = [NSString
                         localizedStringWithFormat:NSLocalizedString(@"%lu files", "Inspector -> selected torrents"), fileCount];
                 }
                 [fileStrings addObject:fileString];
             }
-            if (magnetCount > 0)
-            {
+            if (magnetCount > 0) {
                 NSString* magnetString;
-                if (magnetCount == 1)
-                {
+                if (magnetCount == 1) {
                     magnetString = NSLocalizedString(@"1 magnetized transfer", "Inspector -> selected torrents");
-                }
-                else
-                {
+                } else {
                     magnetString = [NSString
                         localizedStringWithFormat:NSLocalizedString(@"%lu magnetized transfers", "Inspector -> selected torrents"), magnetCount];
                 }
@@ -572,8 +511,7 @@ typedef NS_ENUM(NSUInteger, TabTag) {
 
             NSString* fileString = [fileStrings componentsJoinedByString:@" + "];
 
-            if (magnetCount < numberSelected)
-            {
+            if (magnetCount < numberSelected) {
                 self.fBasicInfoField.stringValue = [NSString
                     stringWithFormat:@"%@, %@",
                                      fileString,
@@ -583,18 +521,14 @@ typedef NS_ENUM(NSUInteger, TabTag) {
                 NSByteCountFormatter* formatter = [[NSByteCountFormatter alloc] init];
                 formatter.allowedUnits = NSByteCountFormatterUseBytes;
                 self.fBasicInfoField.toolTip = [formatter stringFromByteCount:size];
-            }
-            else
-            {
+            } else {
                 self.fBasicInfoField.stringValue = fileString;
                 self.fBasicInfoField.toolTip = nil;
             }
             self.fBasicInfoField.hidden = NO;
 
             self.fNoneSelectedField.hidden = YES;
-        }
-        else
-        {
+        } else {
             self.fImageView.image = [NSImage imageNamed:NSImageNameApplicationIcon];
             self.fNoneSelectedField.hidden = NO;
 
@@ -603,9 +537,7 @@ typedef NS_ENUM(NSUInteger, TabTag) {
         }
 
         self.fNameField.toolTip = nil;
-    }
-    else
-    {
+    } else {
         Torrent* torrent = self.fTorrents[0];
 
         self.fImageView.image = torrent.icon;
@@ -615,19 +547,14 @@ typedef NS_ENUM(NSUInteger, TabTag) {
         self.fNameField.toolTip = name;
         self.fNameField.hidden = NO;
 
-        if (!torrent.magnet)
-        {
+        if (!torrent.magnet) {
             NSString* basicString = [NSString stringForFileSize:torrent.size];
-            if (torrent.folder)
-            {
+            if (torrent.folder) {
                 NSString* fileString;
                 NSUInteger const fileCount = torrent.fileCount;
-                if (fileCount == 1)
-                {
+                if (fileCount == 1) {
                     fileString = NSLocalizedString(@"1 file", "Inspector -> selected torrents");
-                }
-                else
-                {
+                } else {
                     fileString = [NSString
                         localizedStringWithFormat:NSLocalizedString(@"%lu files", "Inspector -> selected torrents"), fileCount];
                 }
@@ -638,9 +565,7 @@ typedef NS_ENUM(NSUInteger, TabTag) {
             NSByteCountFormatter* formatter = [[NSByteCountFormatter alloc] init];
             formatter.allowedUnits = NSByteCountFormatterUseBytes;
             self.fBasicInfoField.toolTip = [formatter stringFromByteCount:torrent.size];
-        }
-        else
-        {
+        } else {
             self.fBasicInfoField.stringValue = NSLocalizedString(@"Magnetized transfer", "Inspector -> selected torrents");
             self.fBasicInfoField.toolTip = nil;
         }
@@ -662,8 +587,7 @@ typedef NS_ENUM(NSUInteger, TabTag) {
 - (void)resetInfoForTorrent:(NSNotification*)notification
 {
     Torrent* torrent = notification.userInfo[@"Torrent"];
-    if (self.fTorrents && (!torrent || [self.fTorrents containsObject:torrent]))
-    {
+    if (self.fTorrents && (!torrent || [self.fTorrents containsObject:torrent])) {
         [self resetInfo];
     }
 }

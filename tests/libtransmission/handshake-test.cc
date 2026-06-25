@@ -63,8 +63,7 @@ public:
 
         [[nodiscard]] std::optional<TorrentInfo> torrent(tr_sha1_digest_t const& info_hash) const override
         {
-            if (auto const iter = torrents.find(info_hash); iter != std::end(torrents))
-            {
+            if (auto const iter = torrents.find(info_hash); iter != std::end(torrents)) {
                 return iter->second;
             }
 
@@ -73,10 +72,8 @@ public:
 
         [[nodiscard]] std::optional<TorrentInfo> torrent_from_obfuscated(tr_sha1_digest_t const& obfuscated) const override
         {
-            for (auto const& [info_hash, info] : torrents)
-            {
-                if (obfuscated == tr_sha1::digest("req2"sv, info.info_hash))
-                {
+            for (auto const& [info_hash, info] : torrents) {
+                if (obfuscated == tr_sha1::digest("req2"sv, info.info_hash)) {
                     return info;
                 }
             }
@@ -130,8 +127,7 @@ public:
         static_assert(sizeof(*walk) == 1);
         size_t len = std::size(data);
 
-        while (len > 0)
-        {
+        while (len > 0) {
             auto const n = send(sock, reinterpret_cast<char const*>(walk), len, 0);
             TR_ASSERT(n >= 0);
             len -= n;
@@ -197,8 +193,7 @@ public:
     static constexpr auto makePeerId(std::string_view sv)
     {
         auto peer_id = tr_peer_id_t{};
-        for (size_t i = 0, n = std::size(sv); i < n; ++i)
-        {
+        for (size_t i = 0, n = std::size(sv); i < n; ++i) {
             peer_id[i] = sv[i];
         }
         return peer_id;
@@ -218,14 +213,10 @@ public:
         std::shared_ptr<tr_peerIo> const& peer_io,
         tr_encryption_mode encryption_mode = TR_CLEAR_PREFERRED)
     {
-        return tr_handshake{ mediator,
-                             peer_io,
-                             encryption_mode,
-                             [&result](auto const& resin)
-                             {
-                                 result = resin;
-                                 return true;
-                             } };
+        return tr_handshake{ mediator, peer_io, encryption_mode, [&result](auto const& resin) {
+                                result = resin;
+                                return true;
+                            } };
     }
 };
 
@@ -347,10 +338,8 @@ TEST_F(HandshakeTest, incomingEncrypted)
 
     // 2. Wait for client to reply with Yb.
     ASSERT_TRUE(waitFor(
-        [&s = std::as_const(sock), buf = std::array<char, 16>{}, n_read = size_t{}]() mutable
-        {
-            if (auto ret = recv(s, std::data(buf), std::size(buf), 0); ret > 0)
-            {
+        [&s = std::as_const(sock), buf = std::array<char, 16>{}, n_read = size_t{}]() mutable {
+            if (auto ret = recv(s, std::data(buf), std::size(buf), 0); ret > 0) {
                 n_read += ret;
             }
             return n_read >= tr_handshake::DH::KeySize;
@@ -403,10 +392,8 @@ TEST_F(HandshakeTest, incomingEncryptedUnknownInfoHash)
 
     // 2. Wait for client to reply with Yb.
     ASSERT_TRUE(waitFor(
-        [&s = std::as_const(sock), buf = std::array<char, 16>{}, n_read = size_t{}]() mutable
-        {
-            if (auto ret = recv(s, std::data(buf), std::size(buf), 0); ret >= 0)
-            {
+        [&s = std::as_const(sock), buf = std::array<char, 16>{}, n_read = size_t{}]() mutable {
+            if (auto ret = recv(s, std::data(buf), std::size(buf), 0); ret >= 0) {
                 n_read += ret;
             }
             return n_read >= tr_handshake::DH::KeySize;
@@ -449,10 +436,8 @@ TEST_F(HandshakeTest, outgoingEncrypted)
     // in the wild for replay here. This test will play as the peer.
     // 1. Wait for client to send Ya.
     ASSERT_TRUE(waitFor(
-        [&s = std::as_const(sock), buf = std::array<char, 16>{}, n_read = size_t{}]() mutable
-        {
-            if (auto ret = recv(s, std::data(buf), std::size(buf), 0); ret >= 0)
-            {
+        [&s = std::as_const(sock), buf = std::array<char, 16>{}, n_read = size_t{}]() mutable {
+            if (auto ret = recv(s, std::data(buf), std::size(buf), 0); ret >= 0) {
                 n_read += ret;
             }
             return n_read >= tr_handshake::DH::KeySize;
@@ -472,22 +457,18 @@ TEST_F(HandshakeTest, outgoingEncrypted)
     auto const needle = tr_base64_decode(NeedleBase64);
     auto buf = tr::StackBuffer<WantedLen, char>{};
     ASSERT_TRUE(waitFor(
-        [&s = sock, &buf, &needle, n_read = size_t{}]() mutable
-        {
+        [&s = sock, &buf, &needle, n_read = size_t{}]() mutable {
             static auto constexpr StepSize = 14U;
             static_assert(WantedLen % StepSize == 0U);
-            while (n_read < WantedLen)
-            {
+            while (n_read < WantedLen) {
                 auto const [cur, curlen] = buf.reserve_space(StepSize);
                 auto const ret = recv(s, cur, curlen, 0);
-                if (ret <= 0)
-                {
+                if (ret <= 0) {
                     return false;
                 }
                 buf.commit_space(ret);
                 n_read += ret;
-                if (auto const range = std::ranges::search(buf, needle); !range.empty())
-                {
+                if (auto const range = std::ranges::search(buf, needle); !range.empty()) {
                     return true;
                 }
             }

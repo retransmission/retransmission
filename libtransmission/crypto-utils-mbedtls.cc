@@ -31,8 +31,7 @@ namespace
 {
 void log_mbedtls_error(int error_code, char const* file, int line)
 {
-    if (tr_logLevelIsActive(TR_LOG_ERROR))
-    {
+    if (tr_logLevelIsActive(TR_LOG_ERROR)) {
         char error_message[256];
         mbedtls_strerror(error_code, error_message, sizeof(error_message));
 
@@ -54,8 +53,7 @@ bool check_mbedtls_result(int result, int expected_result, char const* file, int
 {
     bool const ret = result == expected_result;
 
-    if (!ret)
-    {
+    if (!ret) {
         log_mbedtls_error(result, file, line);
     }
 
@@ -79,8 +77,7 @@ mbedtls_ctr_drbg_context* get_rng()
     static mbedtls_ctr_drbg_context rng;
     static bool rng_initialized = false;
 
-    if (!rng_initialized)
-    {
+    if (!rng_initialized) {
 #if MBEDTLS_VERSION_NUMBER >= 0x02000000
         mbedtls_ctr_drbg_init(&rng);
 
@@ -125,8 +122,7 @@ void tr_sha1::clear()
 
 void tr_sha1::add(void const* data, size_t data_length)
 {
-    if (data_length == 0U)
-    {
+    if (data_length == 0U) {
         return;
     }
 
@@ -172,8 +168,7 @@ void tr_sha256::clear()
 
 void tr_sha256::add(void const* data, size_t data_length)
 {
-    if (data_length == 0U)
-    {
+    if (data_length == 0U) {
         return;
     }
 
@@ -201,8 +196,7 @@ tr_sha256_digest_t tr_sha256::finish()
 
 bool tr_rand_buffer_crypto(void* buffer, size_t length)
 {
-    if (length == 0)
-    {
+    if (length == 0) {
         return true;
     }
 
@@ -213,13 +207,11 @@ bool tr_rand_buffer_crypto(void* buffer, size_t length)
 
     auto const lock = std::scoped_lock{ rng_mutex_ };
 
-    for (auto offset = size_t{ 0 }; offset < length; offset += ChunkSize)
-    {
+    for (auto offset = size_t{ 0 }; offset < length; offset += ChunkSize) {
         if (!check_result(mbedtls_ctr_drbg_random(
                 get_rng(),
                 static_cast<unsigned char*>(buffer) + offset,
-                std::min(ChunkSize, length - offset))))
-        {
+                std::min(ChunkSize, length - offset)))) {
             return false;
         }
     }

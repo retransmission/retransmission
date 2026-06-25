@@ -14,13 +14,11 @@ using namespace tr::Values;
 
 QString Formatter::memory_to_string(int64_t const bytes)
 {
-    if (bytes < 0)
-    {
+    if (bytes < 0) {
         return tr("Unknown");
     }
 
-    if (bytes == 0)
-    {
+    if (bytes == 0) {
         return tr("None");
     }
 
@@ -29,8 +27,7 @@ QString Formatter::memory_to_string(int64_t const bytes)
 
 QString Formatter::storage_to_string(uint64_t const bytes)
 {
-    if (bytes == 0)
-    {
+    if (bytes == 0) {
         return tr("None");
     }
 
@@ -39,8 +36,7 @@ QString Formatter::storage_to_string(uint64_t const bytes)
 
 QString Formatter::storage_to_string(int64_t const bytes)
 {
-    if (bytes < 0)
-    {
+    if (bytes < 0) {
         return tr("Unknown");
     }
 
@@ -59,22 +55,19 @@ QString Formatter::time_to_string(int seconds)
 {
     seconds = std::max(seconds, 0);
 
-    if (seconds < 60)
-    {
+    if (seconds < 60) {
         return tr("%Ln second(s)", nullptr, seconds);
     }
 
     auto const minutes = seconds / 60;
 
-    if (minutes < 60)
-    {
+    if (minutes < 60) {
         return tr("%Ln minute(s)", nullptr, minutes);
     }
 
     auto const hours = minutes / 60;
 
-    if (hours < 24)
-    {
+    if (hours < 24) {
         return tr("%Ln hour(s)", nullptr, hours);
     }
 

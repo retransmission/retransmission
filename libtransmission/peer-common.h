@@ -44,8 +44,7 @@ class tr_peer_event
     }
 
 public:
-    enum class Type : uint8_t
-    {
+    enum class Type : uint8_t {
         // Unless otherwise specified, all events are for BT peers only
         ClientGotBlock, // applies to webseed too
         ClientGotChoke,
@@ -200,8 +199,7 @@ using tr_peer_callback_generic = void (*)(tr_peer* peer, tr_peer_event const& ev
  * @see tr_peer_info
  * @see tr_peerMsgs
  */
-struct tr_peer
-{
+struct tr_peer {
     using Speed = tr::Values::Speed;
 
     explicit tr_peer(tr_torrent const& tor);
@@ -270,8 +268,7 @@ struct tr_peer
 
 // ---
 
-struct tr_swarm_stats
-{
+struct tr_swarm_stats {
     std::array<uint16_t, 2> active_peer_count;
     uint16_t active_webseed_count;
     // connected peers

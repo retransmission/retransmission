@@ -67,8 +67,7 @@ void SqueezeLabel::paintEvent(QPaintEvent* paint_event)
     updateAccessibilityIfNeeded();
 #endif
 
-    if (hasFocus() && (textInteractionFlags() & (Qt::TextSelectableByKeyboard | Qt::TextSelectableByMouse)) != 0)
-    {
+    if (hasFocus() && (textInteractionFlags() & (Qt::TextSelectableByKeyboard | Qt::TextSelectableByMouse)) != 0) {
         QLabel::paintEvent(paint_event);
         return;
     }
@@ -99,37 +98,25 @@ void SqueezeLabel::updateAccessibilityIfNeeded()
 {
     // NOTE: Dispatching events asynchronously to avoid blocking the painting
 
-    if (auto const new_text = text(); new_text != old_text_)
-    {
-        if (QAccessible::isActive())
-        {
-            QTimer::singleShot(
-                0,
-                this,
-                [this, old_text = old_text_, new_text]()
-                {
-                    QAccessibleTextUpdateEvent event(this, 0, old_text, new_text);
-                    event.setCursorPosition(selectionStart());
-                    QAccessible::updateAccessibility(&event);
-                });
+    if (auto const new_text = text(); new_text != old_text_) {
+        if (QAccessible::isActive()) {
+            QTimer::singleShot(0, this, [this, old_text = old_text_, new_text]() {
+                QAccessibleTextUpdateEvent event(this, 0, old_text, new_text);
+                event.setCursorPosition(selectionStart());
+                QAccessible::updateAccessibility(&event);
+            });
         }
 
         old_text_ = new_text;
     }
 
     // NOTE: Due to QLabel implementation specifics, this block will never be entered :(
-    if (auto const new_position = selectionStart(); new_position != old_position_ && !hasSelectedText())
-    {
-        if (QAccessible::isActive())
-        {
-            QTimer::singleShot(
-                0,
-                this,
-                [this, new_position]()
-                {
-                    QAccessibleTextCursorEvent event(this, new_position);
-                    QAccessible::updateAccessibility(&event);
-                });
+    if (auto const new_position = selectionStart(); new_position != old_position_ && !hasSelectedText()) {
+        if (QAccessible::isActive()) {
+            QTimer::singleShot(0, this, [this, new_position]() {
+                QAccessibleTextCursorEvent event(this, new_position);
+                QAccessible::updateAccessibility(&event);
+            });
         }
 
         old_position_ = new_position;

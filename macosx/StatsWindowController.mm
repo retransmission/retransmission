@@ -36,10 +36,8 @@ static tr_session* fLib = NULL;
 
 + (StatsWindowController*)statsWindow
 {
-    if (!fStatsWindowInstance)
-    {
-        if ((fStatsWindowInstance = [[self alloc] init]))
-        {
+    if (!fStatsWindowInstance) {
+        if ((fStatsWindowInstance = [[self alloc] init])) {
             fLib = ((Controller*)NSApp.delegate).sessionHandle;
         }
     }
@@ -98,8 +96,7 @@ static tr_session* fLib = NULL;
 
 - (void)resetStats:(id)sender
 {
-    if (![NSUserDefaults.standardUserDefaults boolForKey:@"WarningResetStats"])
-    {
+    if (![NSUserDefaults.standardUserDefaults boolForKey:@"WarningResetStats"]) {
         [self performResetStats];
         return;
     }
@@ -116,13 +113,11 @@ static tr_session* fLib = NULL;
     alert.showsSuppressionButton = YES;
 
     [alert beginSheetModalForWindow:self.window completionHandler:^(NSModalResponse returnCode) {
-        if (alert.suppressionButton.state == NSControlStateValueOn)
-        {
+        if (alert.suppressionButton.state == NSControlStateValueOn) {
             [NSUserDefaults.standardUserDefaults setBool:NO forKey:@"WarningResetStats"];
         }
 
-        if (returnCode == NSAlertFirstButtonReturn)
-        {
+        if (returnCode == NSAlertFirstButtonReturn) {
             [self performResetStats];
         }
     }];
@@ -176,12 +171,9 @@ static tr_session* fLib = NULL;
     self.fTimeAllField.stringValue = [NSString stringWithFormat:NSLocalizedString(@"%@ total", "stats total"),
                                                                 [timeFormatter stringFromTimeInterval:statsAll.secondsActive]];
 
-    if (statsAll.sessionCount == 1)
-    {
+    if (statsAll.sessionCount == 1) {
         self.fNumOpenedField.stringValue = NSLocalizedString(@"1 time", "stats window -> times opened");
-    }
-    else
-    {
+    } else {
         self.fNumOpenedField.stringValue = [NSString
             localizedStringWithFormat:NSLocalizedString(@"%llu times", "stats window -> times opened"), statsAll.sessionCount];
     }

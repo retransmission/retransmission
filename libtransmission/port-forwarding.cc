@@ -43,8 +43,7 @@ public:
 
     void local_port_changed() override
     {
-        if (!is_enabled_)
-        {
+        if (!is_enabled_) {
             return;
         }
 
@@ -55,13 +54,10 @@ public:
 
     void set_enabled(bool enabled) override
     {
-        if (enabled)
-        {
+        if (enabled) {
             is_enabled_ = true;
             startTimer();
-        }
-        else
-        {
+        } else {
             is_enabled_ = false;
             stopForwarding();
         }
@@ -106,23 +102,19 @@ private:
 
     void restartTimer()
     {
-        if (!timer_)
-        {
+        if (!timer_) {
             return;
         }
 
         // when to wake up again
-        switch (state())
-        {
+        switch (state()) {
         case TR_PORT_MAPPED:
             // if we're mapped, everything is fine... check back at `renew_time`
             // to renew the port forwarding if it's expired
             do_port_check_ = true;
-            if (auto const now = tr_time(); natpmp_->renewTime() > now)
-            {
+            if (auto const now = tr_time(); natpmp_->renewTime() > now) {
                 timer_->start_single_shot(std::chrono::seconds{ natpmp_->renewTime() - now });
-            }
-            else // ???
+            } else // ???
             {
                 timer_->start_single_shot(1min);
             }
@@ -154,8 +146,7 @@ private:
 
     static constexpr char const* getNatStateStr(int state)
     {
-        switch (state)
-        {
+        switch (state) {
         case TR_PORT_MAPPING:
             return _("Starting");
 
@@ -177,13 +168,11 @@ private:
     {
         auto const is_enabled = is_enabled_ && !is_shutting_down_;
 
-        if (!natpmp_)
-        {
+        if (!natpmp_) {
             natpmp_ = std::make_unique<tr_natpmp>();
         }
 
-        if (upnp_ == nullptr)
-        {
+        if (upnp_ == nullptr) {
             upnp_ = tr_upnpInit();
         }
 
@@ -191,8 +180,7 @@ private:
 
         auto const result = natpmp_->pulse(mediator_.local_peer_port(), is_enabled);
         natpmp_state_ = result.state;
-        if (!std::empty(result.local_port) && !std::empty(result.advertised_port))
-        {
+        if (!std::empty(result.local_port) && !std::empty(result.advertised_port)) {
             mediator_.on_port_forwarded(result.advertised_port);
             tr_logAddInfo(
                 fmt::format(
@@ -209,8 +197,7 @@ private:
             do_check,
             mediator_.incoming_peer_address().display_name());
 
-        if (auto const new_state = state(); new_state != old_state)
-        {
+        if (auto const new_state = state(); new_state != old_state) {
             tr_logAddInfo(
                 fmt::format(
                     fmt::runtime(_("State changed from '{old_state}' to '{state}'")),

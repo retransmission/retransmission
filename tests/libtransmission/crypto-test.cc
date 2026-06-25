@@ -36,8 +36,7 @@ std::string toString(std::array<std::byte, N> const& array)
 {
     auto ostr = std::ostringstream{};
     ostr << '[';
-    for (auto const b : array)
-    {
+    for (auto const b : array) {
         ostr << static_cast<unsigned>(b) << ' ';
     }
     ostr << ']';
@@ -129,8 +128,7 @@ TEST(Crypto, sha1)
 
 TEST(Crypto, ssha1)
 {
-    struct LocalTest
-    {
+    struct LocalTest {
         std::string_view plain_text;
         std::string_view ssha1;
     };
@@ -143,15 +141,13 @@ TEST(Crypto, ssha1)
 
     static auto constexpr HashCount = size_t{ 4U } * 1024U;
 
-    for (auto const& [plain_text, ssha1] : Tests)
-    {
+    for (auto const& [plain_text, ssha1] : Tests) {
         auto hashes = std::unordered_set<std::string>{};
         hashes.reserve(HashCount);
 
         EXPECT_TRUE(tr_ssha1_matches(ssha1, plain_text));
 
-        for (size_t j = 0; j < HashCount; ++j)
-        {
+        for (size_t j = 0; j < HashCount; ++j) {
             auto const hash = tr_ssha1(plain_text);
             EXPECT_TRUE(tr_ssha1_matches(hash, plain_text));
             hashes.insert(hash);
@@ -164,8 +160,7 @@ TEST(Crypto, ssha1)
         auto phrase = std::string{ plain_text };
         std::swap(phrase[0], phrase[1]);
 
-        for (auto const& hash : hashes)
-        {
+        for (auto const& hash : hashes) {
             /* changed phrase doesn't match the hashes */
             EXPECT_FALSE(tr_ssha1_matches(hash, phrase));
         }
@@ -229,8 +224,7 @@ TEST(Crypto, sha256FromString)
 TEST(Crypto, random)
 {
     /* test that tr_rand_int() stays in-bounds */
-    for (int i = 0; i < 100000; ++i)
-    {
+    for (int i = 0; i < 100000; ++i) {
         auto const val = tr_rand_int(100U);
         EXPECT_LE(0U, val);
         EXPECT_LT(val, 100U);
@@ -248,8 +242,7 @@ TEST_P(CryptoRandBufferTest, randBuf)
 
     auto buf = empty;
 
-    for (size_t i = 0; i < Iterations; ++i)
-    {
+    for (size_t i = 0; i < Iterations; ++i) {
         auto tmp = buf;
         tr_rand_buffer(std::data(tmp), std::size(tmp));
         EXPECT_NE(tmp, empty);
@@ -257,8 +250,7 @@ TEST_P(CryptoRandBufferTest, randBuf)
         buf = tmp;
     }
 
-    for (size_t i = 0; i < Iterations; ++i)
-    {
+    for (size_t i = 0; i < Iterations; ++i) {
         auto tmp = buf;
         EXPECT_TRUE(tr_rand_buffer_crypto(std::data(tmp), std::size(tmp)));
         EXPECT_NE(tmp, empty);
@@ -266,8 +258,7 @@ TEST_P(CryptoRandBufferTest, randBuf)
         buf = tmp;
     }
 
-    for (size_t i = 0; i < Iterations; ++i)
-    {
+    for (size_t i = 0; i < Iterations; ++i) {
         auto tmp = buf;
         tr_rand_buffer_std(std::data(tmp), std::size(tmp));
         EXPECT_NE(tmp, empty);
@@ -293,18 +284,15 @@ TEST(Crypto, base64)
     EXPECT_EQ(""sv, tr_base64_decode(""sv));
 
     static auto constexpr MaxBufSize = size_t{ 1024 };
-    for (size_t i = 1; i <= MaxBufSize; ++i)
-    {
+    for (size_t i = 1; i <= MaxBufSize; ++i) {
         auto buf = std::string{};
-        for (size_t j = 0; j < i; ++j)
-        {
+        for (size_t j = 0; j < i; ++j) {
             buf += static_cast<char>(tr_rand_int(256U));
         }
         EXPECT_EQ(buf, tr_base64_decode(tr_base64_encode(buf)));
 
         buf = std::string{};
-        for (size_t j = 0; j < i; ++j)
-        {
+        for (size_t j = 0; j < i; ++j) {
             buf += static_cast<char>(1U + tr_rand_int(255U));
         }
         EXPECT_EQ(buf, tr_base64_decode(tr_base64_encode(buf)));

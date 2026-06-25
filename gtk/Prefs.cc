@@ -28,13 +28,11 @@ std::string gl_confdir;
 
 [[nodiscard]] std::string get_default_download_dir()
 {
-    if (auto dir = Glib::get_user_special_dir(TR_GLIB_USER_DIRECTORY(DOWNLOAD)); !std::empty(dir))
-    {
+    if (auto dir = Glib::get_user_special_dir(TR_GLIB_USER_DIRECTORY(DOWNLOAD)); !std::empty(dir)) {
         return dir;
     }
 
-    if (auto dir = Glib::get_user_special_dir(TR_GLIB_USER_DIRECTORY(DESKTOP)); !std::empty(dir))
-    {
+    if (auto dir = Glib::get_user_special_dir(TR_GLIB_USER_DIRECTORY(DESKTOP)); !std::empty(dir)) {
         return dir;
     }
 
@@ -129,8 +127,7 @@ void gtr_pref_flag_set(tr_quark const key, bool const value)
 
 std::vector<std::string> gtr_pref_strv_get(tr_quark const key)
 {
-    if (auto val = gtr_pref_lookup<std::vector<std::string>>(key))
-    {
+    if (auto val = gtr_pref_lookup<std::vector<std::string>>(key)) {
         return std::move(*val);
     }
 

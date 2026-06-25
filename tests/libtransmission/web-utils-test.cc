@@ -172,8 +172,7 @@ TEST_F(WebUtilsTest, urlParseFuzz)
 {
     auto buf = std::vector<char>{};
 
-    for (size_t i = 0; i < 100000U; ++i)
-    {
+    for (size_t i = 0; i < 100000U; ++i) {
         buf.resize(tr_rand_int(1024U));
         tr_rand_buffer(std::data(buf), std::size(buf));
         (void)tr_urlParse({ std::data(buf), std::size(buf) });
@@ -262,8 +261,7 @@ TEST_F(WebUtilsTest, urlPercentDecode)
           "http://www.example.com/~user/?test=1&test1=2"sv },
     });
 
-    for (auto const& [encoded, decoded] : Tests)
-    {
+    for (auto const& [encoded, decoded] : Tests) {
         EXPECT_EQ(decoded, tr_urlPercentDecode(encoded));
     }
 }
@@ -283,8 +281,7 @@ TEST_F(WebUtilsTest, urlPercentEncode)
         { "udp://%E4%BD%A0%E5%A5%BD.com/announce"sv, "udp://%E4%BD%A0%E5%A5%BD.com/announce"sv, false },
     });
 
-    for (auto const& [decoded, encoded, escape_reserved] : Tests)
-    {
+    for (auto const& [decoded, encoded, escape_reserved] : Tests) {
         auto buf = tr_urlbuf{};
         tr_urlPercentEncode(std::back_inserter(buf), decoded, escape_reserved);
         EXPECT_EQ(encoded, buf);

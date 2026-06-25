@@ -136,32 +136,30 @@ Glib::RefPtr<Gio::SimpleActionGroup> gtr_actions_init(Glib::RefPtr<Gtk::Builder>
         key_to_action.try_emplace(action_name, action);
     }
 
-    for (auto const& action_name_view : ShowToggleEntries)
-    {
+    for (auto const& action_name_view : ShowToggleEntries) {
         auto const action_name = Glib::ustring{ std::string{ action_name_view } };
         auto const action = Gio::SimpleAction::create_bool(action_name);
-        action->signal_activate().connect([a = action.get(), callback_user_data](auto const& /*value*/)
-                                          { action_cb(*a, callback_user_data); });
+        action->signal_activate().connect(
+            [a = action.get(), callback_user_data](auto const& /*value*/) { action_cb(*a, callback_user_data); });
         action_group->add_action(action);
         key_to_action.try_emplace(action_name, action);
     }
 
-    for (auto const& [action_name_view, prefs_name_quark] : PrefToggleEntries)
-    {
+    for (auto const& [action_name_view, prefs_name_quark] : PrefToggleEntries) {
         auto const action_name = Glib::ustring{ std::string{ action_name_view } };
         auto const action = Gio::SimpleAction::create_bool(action_name, gtr_pref_flag_get(prefs_name_quark));
-        action->signal_activate().connect([a = action.get(), prefs_name_quark](auto const& /*value*/)
-                                          { toggle_pref_cb(*a, GINT_TO_POINTER(prefs_name_quark)); });
+        action->signal_activate().connect([a = action.get(), prefs_name_quark](auto const& /*value*/) {
+            toggle_pref_cb(*a, GINT_TO_POINTER(prefs_name_quark));
+        });
         action_group->add_action(action);
         key_to_action.try_emplace(action_name, action);
     }
 
-    for (auto const& action_name_view : Entries)
-    {
+    for (auto const& action_name_view : Entries) {
         auto const action_name = Glib::ustring{ std::string{ action_name_view } };
         auto const action = Gio::SimpleAction::create(action_name);
-        action->signal_activate().connect([a = action.get(), callback_user_data](auto const& /*value*/)
-                                          { action_cb(*a, callback_user_data); });
+        action->signal_activate().connect(
+            [a = action.get(), callback_user_data](auto const& /*value*/) { action_cb(*a, callback_user_data); });
         action_group->add_action(action);
         key_to_action.try_emplace(action_name, action);
     }
@@ -212,38 +210,30 @@ Glib::RefPtr<Gio::ListModel> gtr_shortcuts_get_from_menu(Glib::RefPtr<Gio::MenuM
     std::stack<Glib::RefPtr<Gio::MenuModel>> links;
     links.push(menu);
 
-    while (!links.empty())
-    {
+    while (!links.empty()) {
         auto const link = links.top();
         links.pop();
 
-        for (int i = 0; i < link->get_n_items(); ++i)
-        {
+        for (int i = 0; i < link->get_n_items(); ++i) {
             Glib::ustring action_name;
             Glib::ustring action_accel;
 
-            for (auto it = link->iterate_item_attributes(i); it->next();)
-            {
-                if (auto const name = it->get_name(); name == "action")
-                {
+            for (auto it = link->iterate_item_attributes(i); it->next();) {
+                if (auto const name = it->get_name(); name == "action") {
                     action_name = Glib::VariantBase::cast_dynamic<VariantString>(it->get_value()).get();
-                }
-                else if (name == "accel")
-                {
+                } else if (name == "accel") {
                     action_accel = Glib::VariantBase::cast_dynamic<VariantString>(it->get_value()).get();
                 }
             }
 
-            if (!action_name.empty() && !action_accel.empty())
-            {
+            if (!action_name.empty() && !action_accel.empty()) {
                 result->append(
                     Gtk::Shortcut::create(
                         Gtk::ShortcutTrigger::parse_string(action_accel),
                         Gtk::NamedAction::create(action_name)));
             }
 
-            for (auto it = link->iterate_item_links(i); it->next();)
-            {
+            for (auto it = link->iterate_item_links(i); it->next();) {
                 links.push(it->get_value());
             }
         }

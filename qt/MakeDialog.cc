@@ -85,8 +85,7 @@ MakeProgressDialog::MakeProgressDialog(
 
 void MakeProgressDialog::onButtonBoxClicked(QAbstractButton* button)
 {
-    switch (ui_.dialogButtons->standardButton(button))
-    {
+    switch (ui_.dialogButtons->standardButton(button)) {
     case QDialogButtonBox::Open:
         session_.addNewlyCreatedTorrent(outfile_, QFileInfo{ QString::fromStdString(builder_.top()) }.dir().path());
         break;
@@ -106,15 +105,13 @@ void MakeProgressDialog::onProgress()
 {
     auto const is_done = !future_.valid() || future_.wait_for(std::chrono::seconds(0)) == std::future_status::ready;
 
-    if (is_done)
-    {
+    if (is_done) {
         timer_.stop();
     }
 
     // progress bar
     auto progress = 100; // [0..100]
-    if (!is_done)
-    {
+    if (!is_done) {
         auto const [current, total] = builder_.checksum_status();
         progress = static_cast<int>((100.0 * current) / total);
     }
@@ -126,26 +123,19 @@ void MakeProgressDialog::onProgress()
     QString str;
 
     auto success = false;
-    if (!is_done)
-    {
+    if (!is_done) {
         str = tr("Creating \"%1\"").arg(base);
-    }
-    else
-    {
+    } else {
         auto error = future_.get();
 
-        if (!error)
-        {
+        if (!error) {
             builder_.save(outfile_.toStdString(), &error);
         }
 
-        if (!error)
-        {
+        if (!error) {
             str = tr("Created \"%1\"!").arg(base);
             success = true;
-        }
-        else
-        {
+        } else {
             auto err_msg = QString::fromUtf8(
                 std::data(error.message()),
                 static_cast<IF_QT6(qsizetype, int)>(std::size(error.message())));
@@ -169,8 +159,7 @@ void MakeProgressDialog::onProgress()
 
 void MakeDialog::makeTorrent()
 {
-    if (!builder_)
-    {
+    if (!builder_) {
         return;
     }
 
@@ -185,14 +174,12 @@ void MakeDialog::makeTorrent()
     auto const outfile = QDir{ ui_.destinationButton->path() }.filePath(torrent_name);
 
     // comment
-    if (ui_.commentCheck->isChecked())
-    {
+    if (ui_.commentCheck->isChecked()) {
         builder_->set_comment(ui_.commentEdit->text().toStdString());
     }
 
     // source
-    if (ui_.sourceCheck->isChecked())
-    {
+    if (ui_.sourceCheck->isChecked()) {
         builder_->set_source(ui_.sourceEdit->text().toStdString());
     }
 
@@ -221,15 +208,13 @@ void MakeDialog::onSourceChanged()
 {
     builder_.reset();
 
-    if (auto const filename = getSource(); !filename.isEmpty())
-    {
+    if (auto const filename = getSource(); !filename.isEmpty()) {
         builder_.emplace(filename.toStdString());
     }
 
     updatePiecesLabel();
 
-    if (builder_)
-    {
+    if (builder_) {
         ui_.pieceSizeSlider->setValue(static_cast<int>(log2(builder_->piece_size())));
     }
 }
@@ -273,8 +258,7 @@ void MakeDialog::dragEnterEvent(QDragEnterEvent* event)
 {
     QMimeData const* mime = event->mimeData();
 
-    if (!mime->urls().isEmpty() && QFileInfo{ mime->urls().front().path() }.exists())
-    {
+    if (!mime->urls().isEmpty() && QFileInfo{ mime->urls().front().path() }.exists()) {
         event->acceptProposedAction();
     }
 }
@@ -284,14 +268,11 @@ void MakeDialog::dropEvent(QDropEvent* event)
     auto const filename = event->mimeData()->urls().front().path();
     auto const file_info = QFileInfo{ filename };
 
-    if (file_info.exists())
-    {
-        if (file_info.isDir())
-        {
+    if (file_info.exists()) {
+        if (file_info.isDir()) {
             ui_.sourceFolderRadio->setChecked(true);
             ui_.sourceFolderButton->setPath(filename);
-        }
-        else // it's a file
+        } else // it's a file
         {
             ui_.sourceFileRadio->setChecked(true);
             ui_.sourceFileButton->setPath(filename);
@@ -303,13 +284,10 @@ void MakeDialog::updatePiecesLabel()
 {
     QString text;
 
-    if (!builder_)
-    {
+    if (!builder_) {
         text = tr("<i>No source selected</i>");
         ui_.pieceSizeSlider->setEnabled(false);
-    }
-    else
-    {
+    } else {
         auto const files = tr("%Ln File(s)", nullptr, static_cast<int>(builder_->file_count()));
         auto const pieces = tr("%Ln Piece(s)", nullptr, static_cast<int>(builder_->piece_count()));
         text = tr("%1 in %2; %3 @ %4")
@@ -327,8 +305,7 @@ void MakeDialog::onPieceSizeUpdated(int value)
 {
     auto new_size = static_cast<uint64_t>(pow(2, value));
 
-    if (builder_)
-    {
+    if (builder_) {
         builder_->set_piece_size(new_size);
     }
 

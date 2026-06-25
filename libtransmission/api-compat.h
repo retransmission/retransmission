@@ -11,8 +11,7 @@
 
 namespace tr::api_compat
 {
-enum class Style : uint8_t
-{
+enum class Style : uint8_t {
     Tr4, // bespoke RPC, mixed-case keys,
     Tr5, // jsonrpc, all snake_case keys
 };

@@ -23,8 +23,7 @@ tr_peer_socket::~tr_peer_socket()
 
 size_t tr_peer_socket::try_read(InBuf& buf, size_t max, tr_error* error)
 {
-    if (max == size_t{})
-    {
+    if (max == size_t{}) {
         return {};
     }
 
@@ -33,8 +32,7 @@ size_t tr_peer_socket::try_read(InBuf& buf, size_t max, tr_error* error)
 
 size_t tr_peer_socket::try_write(OutBuf& buf, size_t max, tr_error* error)
 {
-    if (max == size_t{})
-    {
+    if (max == size_t{}) {
         return {};
     }
 

@@ -18,8 +18,7 @@ using namespace std::literals;
 
 TEST(Client, clientForId)
 {
-    struct LocalTest
-    {
+    struct LocalTest {
         std::string_view peer_id;
         std::string_view expected_client;
     };
@@ -79,8 +78,7 @@ TEST(Client, clientForId)
           .expected_client = "BitComet 0.56"sv },
     });
 
-    for (auto const& test : Tests)
-    {
+    for (auto const& test : Tests) {
         auto peer_id = tr_rand_obj<tr_peer_id_t>();
         ASSERT_LE(test.peer_id.size(), peer_id.size()) << test.peer_id;
         std::ranges::copy(test.peer_id, std::begin(peer_id));
@@ -101,8 +99,7 @@ TEST(Client, clientForIdFuzzRegressions)
         "LVJTp3u+Aptl01HjzTHXVC5b9g4="sv,
     });
 
-    for (auto const& test : Tests)
-    {
+    for (auto const& test : Tests) {
         auto const input = tr_base64_decode(test);
         auto peer_id = tr_peer_id_t{};
         std::ranges::copy(input, std::begin(peer_id));
@@ -113,8 +110,7 @@ TEST(Client, clientForIdFuzzRegressions)
 
 TEST(Client, clientForIdFuzz)
 {
-    for (size_t i = 0; i < 10000; ++i)
-    {
+    for (size_t i = 0; i < 10000; ++i) {
         auto peer_id = tr_rand_obj<tr_peer_id_t>();
         auto buf = std::array<char, 128>{};
         tr_clientForId(buf.data(), buf.size(), peer_id);

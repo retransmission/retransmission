@@ -47,8 +47,7 @@ void lock_free(void* vlock, unsigned /*locktype*/)
 int lock_lock(unsigned mode, void* vlock)
 {
     auto* lock = static_cast<std::recursive_mutex*>(vlock);
-    if ((mode & EVTHREAD_TRY) != 0U)
-    {
+    if ((mode & EVTHREAD_TRY) != 0U) {
         auto const success = lock->try_lock();
         return success ? 0 : -1;
     }
@@ -75,12 +74,9 @@ void cond_free(void* vcond)
 int cond_signal(void* vcond, int broadcast)
 {
     auto* cond = static_cast<std::condition_variable_any*>(vcond);
-    if (broadcast != 0)
-    {
+    if (broadcast != 0) {
         cond->notify_all();
-    }
-    else
-    {
+    } else {
         cond->notify_one();
     }
     return 0;
@@ -90,8 +86,7 @@ int cond_wait(void* vcond, void* vlock, struct timeval const* tv)
 {
     auto* cond = static_cast<std::condition_variable_any*>(vcond);
     auto* lock = static_cast<std::recursive_mutex*>(vlock);
-    if (tv == nullptr)
-    {
+    if (tv == nullptr) {
         cond->wait(*lock);
         return 0;
     }
@@ -213,12 +208,9 @@ public:
 
     void run(callback_t&& func) override
     {
-        if (am_in_session_thread())
-        {
+        if (am_in_session_thread()) {
             func();
-        }
-        else
-        {
+        } else {
             queue(std::move(func));
         }
     }
@@ -234,8 +226,7 @@ private:
 #endif
         tr_evthread_init();
 
-        constexpr auto ToggleLooping = [](evutil_socket_t, short /*evtype*/, void* vself)
-        {
+        constexpr auto ToggleLooping = [](evutil_socket_t, short /*evtype*/, void* vself) {
             auto* const self = static_cast<tr_session_thread_impl*>(vself);
             self->is_looping_mutex_.lock();
             self->is_looping_ = !self->is_looping_;
@@ -275,8 +266,7 @@ private:
         work_queue_lock.unlock();
 
         // process the work queue
-        for (auto const& func : work_queue)
-        {
+        for (auto const& func : work_queue) {
             func();
         }
     }

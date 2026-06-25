@@ -157,8 +157,7 @@ concept HasConverter = requires(T const& src, tr_variant const& var, T* tgt) {
 // NOLINTBEGIN(bugprone-macro-parentheses)
 #define TR_DECLARE_CONVERTER(type) \
     template<> \
-    struct Converter<type> \
-    { \
+    struct Converter<type> { \
         static tr_variant to_variant(type const& src); \
         static bool to_value(tr_variant const& src, type* tgt); \
     };
@@ -172,28 +171,17 @@ concept HasConverter = requires(T const& src, tr_variant const& var, T* tgt) {
 template<typename T>
 [[nodiscard]] tr_variant to_variant(T const& src)
 {
-    if constexpr (detail::HasConverter<T>)
-    {
+    if constexpr (detail::HasConverter<T>) {
         return Converter<T>::to_variant(src);
-    }
-    else if constexpr (detail::is_push_back_range_v<T>)
-    {
+    } else if constexpr (detail::is_push_back_range_v<T>) {
         return detail::from_push_back_range(src);
-    }
-    else if constexpr (detail::is_insert_range_v<T>)
-    {
+    } else if constexpr (detail::is_insert_range_v<T>) {
         return detail::from_insert_range(src);
-    }
-    else if constexpr (detail::is_std_array_v<T>)
-    {
+    } else if constexpr (detail::is_std_array_v<T>) {
         return detail::from_array(src);
-    }
-    else if constexpr (detail::is_optional_v<T>)
-    {
+    } else if constexpr (detail::is_optional_v<T>) {
         return detail::from_optional(src);
-    }
-    else
-    {
+    } else {
         static_assert(detail::HasConverter<T>, "No Converter<T> specialization for this type");
     }
 }
@@ -208,28 +196,17 @@ template<typename T>
 template<typename T>
 bool to_value(tr_variant const& src, T* const ptgt)
 {
-    if constexpr (detail::HasConverter<T>)
-    {
+    if constexpr (detail::HasConverter<T>) {
         return Converter<T>::to_value(src, ptgt);
-    }
-    else if constexpr (detail::is_push_back_range_v<T>)
-    {
+    } else if constexpr (detail::is_push_back_range_v<T>) {
         return detail::to_push_back_range(src, ptgt);
-    }
-    else if constexpr (detail::is_insert_range_v<T>)
-    {
+    } else if constexpr (detail::is_insert_range_v<T>) {
         return detail::to_insert_range(src, ptgt);
-    }
-    else if constexpr (detail::is_std_array_v<T>)
-    {
+    } else if constexpr (detail::is_std_array_v<T>) {
         return detail::to_array(src, ptgt);
-    }
-    else if constexpr (detail::is_optional_v<T>)
-    {
+    } else if constexpr (detail::is_optional_v<T>) {
         return detail::to_optional(src, ptgt);
-    }
-    else
-    {
+    } else {
         static_assert(detail::HasConverter<T>, "No Converter<T> specialization for this type");
         return false;
     }
@@ -239,8 +216,7 @@ bool to_value(tr_variant const& src, T* const ptgt)
 template<typename T>
 [[nodiscard]] std::optional<T> to_value(tr_variant const& var)
 {
-    if (auto ret = T{}; to_value<T>(var, &ret))
-    {
+    if (auto ret = T{}; to_value<T>(var, &ret)) {
         return ret;
     }
 
@@ -251,8 +227,7 @@ template<typename T>
 template<typename T>
 bool set(T& tgt, T src)
 {
-    if (detail::values_differ(tgt, src))
-    {
+    if (detail::values_differ(tgt, src)) {
         tgt = std::move(src);
         return true;
     }
@@ -279,8 +254,7 @@ template<typename T>
         std::integral<T> && !std::is_same_v<T, bool> && !std::is_same_v<T, uint16_t> && !std::is_same_v<T, char> &&
         !std::is_same_v<T, signed char> && !std::is_same_v<T, unsigned char> && !std::is_same_v<T, wchar_t> &&
         !std::is_same_v<T, char16_t> && !std::is_same_v<T, char32_t>)
-struct Converter<T>
-{
+struct Converter<T> {
     static tr_variant to_variant(T const& src)
     {
         return src;
@@ -288,8 +262,7 @@ struct Converter<T>
 
     static bool to_value(tr_variant const& src, T* const tgt)
     {
-        if (auto const val = src.value_if<T>())
-        {
+        if (auto const val = src.value_if<T>()) {
             *tgt = *val;
             return true;
         }
@@ -327,8 +300,7 @@ tr_variant from_push_back_range(C const& src)
 {
     auto ret = tr_variant::Vector{};
     ret.reserve(std::size(src));
-    for (auto const& elem : src)
-    {
+    for (auto const& elem : src) {
         ret.emplace_back(to_variant(elem));
     }
     return ret;
@@ -338,19 +310,16 @@ template<typename C>
 bool to_push_back_range(tr_variant const& src, C* const ptgt)
 {
     auto const* const vec = src.get_if<tr_variant::Vector>();
-    if (vec == nullptr)
-    {
+    if (vec == nullptr) {
         return false;
     }
 
     auto tmp = C{};
     reserve_if_possible(tmp, std::size(*vec));
 
-    for (auto const& elem : *vec)
-    {
+    for (auto const& elem : *vec) {
         typename C::value_type value{};
-        if (!to_value(elem, &value))
-        {
+        if (!to_value(elem, &value)) {
             return false;
         }
         tmp.push_back(std::move(value));
@@ -365,8 +334,7 @@ tr_variant from_insert_range(C const& src)
 {
     auto ret = tr_variant::Vector{};
     ret.reserve(std::size(src));
-    for (auto const& elem : src)
-    {
+    for (auto const& elem : src) {
         ret.emplace_back(to_variant(elem));
     }
     return ret;
@@ -376,18 +344,15 @@ template<typename C>
 bool to_insert_range(tr_variant const& src, C* const ptgt)
 {
     auto const* const vec = src.get_if<tr_variant::Vector>();
-    if (vec == nullptr)
-    {
+    if (vec == nullptr) {
         return false;
     }
 
     auto tmp = C{};
 
-    for (auto const& elem : *vec)
-    {
+    for (auto const& elem : *vec) {
         typename C::value_type value{};
-        if (!to_value(elem, &value))
-        {
+        if (!to_value(elem, &value)) {
             return false;
         }
         tmp.insert(std::move(value));
@@ -402,8 +367,7 @@ tr_variant from_array(C const& src)
 {
     auto ret = tr_variant::Vector{};
     ret.reserve(std::size(src));
-    for (auto const& elem : src)
-    {
+    for (auto const& elem : src) {
         ret.emplace_back(to_variant(elem));
     }
     return ret;
@@ -413,21 +377,17 @@ template<typename C>
 bool to_array(tr_variant const& src, C* const ptgt)
 {
     auto const* const vec = src.get_if<tr_variant::Vector>();
-    if (vec == nullptr)
-    {
+    if (vec == nullptr) {
         return false;
     }
 
-    if (std::size(*vec) != std::size(*ptgt))
-    {
+    if (std::size(*vec) != std::size(*ptgt)) {
         return false; // Array size mismatch
     }
 
     auto tmp = C{};
-    for (std::size_t i = 0; i < std::size(*vec); ++i)
-    {
-        if (!to_value((*vec)[i], &tmp[i]))
-        {
+    for (std::size_t i = 0; i < std::size(*vec); ++i) {
+        if (!to_value((*vec)[i], &tmp[i])) {
             return false;
         }
     }
@@ -447,14 +407,12 @@ template<typename T>
 bool to_optional(tr_variant const& src, std::optional<T>* ptgt)
 {
     static_assert(!is_optional_v<T>);
-    if (src.index() == tr_variant::NullIndex)
-    {
+    if (src.index() == tr_variant::NullIndex) {
         ptgt->reset();
         return true;
     }
 
-    if (auto val = to_value<T>(src))
-    {
+    if (auto val = to_value<T>(src)) {
         *ptgt = std::move(val);
         return true;
     }

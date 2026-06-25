@@ -40,13 +40,7 @@ class HandshakeTest;
 }
 } // namespace tr
 
-enum class ReadState : uint8_t
-{
-    Now,
-    Later,
-    Break,
-    Err
-};
+enum class ReadState : uint8_t { Now, Later, Break, Err };
 
 class tr_peerIo final : public std::enable_shared_from_this<tr_peerIo>
 {
@@ -321,8 +315,7 @@ private:
 
     void call_error_callback(tr_error const& error)
     {
-        if (got_error_ != nullptr)
-        {
+        if (got_error_ != nullptr) {
             got_error_(this, error, user_data_);
         }
     }

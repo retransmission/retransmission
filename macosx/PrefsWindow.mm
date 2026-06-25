@@ -20,9 +20,7 @@
     if (event.keyCode == 53) //esc key
     {
         [self close];
-    }
-    else
-    {
+    } else {
         [super keyDown:event];
     }
 }

@@ -25,8 +25,7 @@ namespace
     constexpr auto needle = "\xEF\xBF\xBD"sv; // U+FFFD replacement
     auto pos = std::string_view::size_type{};
 
-    while ((pos = sv.find(needle, pos)) != std::string_view::npos)
-    {
+    while ((pos = sv.find(needle, pos)) != std::string_view::npos) {
         ++count;
         pos += std::size(needle);
     }
@@ -42,8 +41,7 @@ namespace
 
 TEST_F(UtilsTest, trStrvToUtf8NsstringValid)
 {
-    @autoreleasepool
-    {
+    @autoreleasepool {
         NSString* str = tr_strv_to_utf8_nsstring("hello"sv);
         EXPECT_TRUE([str isEqualToString:@"hello"]);
     }
@@ -51,8 +49,7 @@ TEST_F(UtilsTest, trStrvToUtf8NsstringValid)
 
 TEST_F(UtilsTest, trStrvToUtf8NsstringInvalid)
 {
-    @autoreleasepool
-    {
+    @autoreleasepool {
         constexpr auto bad = "\xF4\x33\x81\x82"sv;
         NSString* str = tr_strv_to_utf8_nsstring(bad);
         EXPECT_TRUE([str isEqualToString:@""]);
@@ -61,8 +58,7 @@ TEST_F(UtilsTest, trStrvToUtf8NsstringInvalid)
 
 TEST_F(UtilsTest, trStrvToUtf8NsstringFallback)
 {
-    @autoreleasepool
-    {
+    @autoreleasepool {
         constexpr auto bad = "\xF4\x33\x81\x82"sv;
         NSString* const key = @"tr.strv.to.utf8.fallback";
         NSString* const comment = @"fallback string for tests";
@@ -98,8 +94,7 @@ TEST_F(UtilsTest, trStrvToUtf8StringAutodetectImproves)
     EXPECT_LT(count_replacement_char(autodetect), count_replacement_char(replace_only));
 
     // If autodetect improves, it should yield valid UTF-8 with real non-ASCII characters.
-    if (count_replacement_char(autodetect) < count_replacement_char(replace_only))
-    {
+    if (count_replacement_char(autodetect) < count_replacement_char(replace_only)) {
         EXPECT_EQ(0U, count_replacement_char(autodetect));
         EXPECT_TRUE(has_non_ascii(autodetect));
     }

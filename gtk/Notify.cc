@@ -40,8 +40,7 @@ auto const NotificationsDbusName = "org.freedesktop.Notifications"sv; // TODO(C+
 auto const NotificationsDbusCoreObject = "/org/freedesktop/Notifications"sv; // TODO(C++20): Use ""s
 auto const NotificationsDbusCoreInterface = "org.freedesktop.Notifications"sv; // TODO(C++20): Use ""s
 
-struct TrNotification
-{
+struct TrNotification {
     Glib::RefPtr<Session> core;
     tr_torrent_id_t torrent_id = {};
 };
@@ -61,26 +60,20 @@ void get_capabilities_callback(Glib::RefPtr<Gio::AsyncResult>& res)
 {
     auto result = Glib::VariantContainerBase();
 
-    try
-    {
+    try {
         result = proxy->call_finish(res);
-    }
-    catch (Glib::Error const&)
-    {
+    } catch (Glib::Error const&) {
         return;
     }
 
-    if (!result || result.get_n_children() != 1 || !result.get_child(0).is_of_type(StringListVariantType::variant_type()))
-    {
+    if (!result || result.get_n_children() != 1 || !result.get_child(0).is_of_type(StringListVariantType::variant_type())) {
         return;
     }
 
     auto const caps = Glib::VariantBase::cast_dynamic<StringListVariantType>(result.get_child(0)).get();
 
-    for (auto const& cap : caps)
-    {
-        if (cap == "actions")
-        {
+    for (auto const& cap : caps) {
+        if (cap == "actions") {
             server_supports_actions = true;
             break;
         }
@@ -97,41 +90,31 @@ void g_signal_callback(
     auto const id = Glib::VariantBase::cast_dynamic<UInt32VariantType>(params.get_child(0)).get();
     auto const n_it = active_notifications.find(id);
 
-    if (n_it == active_notifications.end())
-    {
+    if (n_it == active_notifications.end()) {
         return;
     }
 
     auto const& n = n_it->second;
 
-    if (signal_name == "NotificationClosed")
-    {
+    if (signal_name == "NotificationClosed") {
         active_notifications.erase(n_it);
-    }
-    else if (
+    } else if (
         signal_name == "ActionInvoked" && params.get_n_children() > 1 &&
-        params.get_child(1).is_of_type(StringVariantType::variant_type()))
-    {
+        params.get_child(1).is_of_type(StringVariantType::variant_type())) {
         auto const* tor = n.core->find_torrent(n.torrent_id);
-        if (tor == nullptr)
-        {
+        if (tor == nullptr) {
             return;
         }
 
         auto const action = Glib::VariantBase::cast_dynamic<StringVariantType>(params.get_child(1)).get();
 
-        if (action == "folder")
-        {
+        if (action == "folder") {
             n.core->open_folder(n.torrent_id);
-        }
-        else if (action == "file")
-        {
+        } else if (action == "file") {
             std::string_view const base_dir = tr_torrentGetDownloadDir(tor);
             std::string_view const relative_path = tr_torrentFile(tor, 0).name;
             gtr_open_file(base_dir, relative_path);
-        }
-        else if (action == "start-now")
-        {
+        } else if (action == "start-now") {
             n.core->start_now(n.torrent_id);
         }
     }
@@ -139,12 +122,9 @@ void g_signal_callback(
 
 void dbus_proxy_ready_callback(Glib::RefPtr<Gio::AsyncResult>& res)
 {
-    try
-    {
+    try {
         proxy = Gio::DBus::Proxy::create_for_bus_finish(res);
-    }
-    catch (Glib::Error const& e)
-    {
+    } catch (Glib::Error const& e) {
         gtr_warning(
             fmt::format(
                 fmt::runtime(_("Couldn't create proxy for '{bus}': {error} ({error_code})")),
@@ -179,17 +159,13 @@ void notify_callback(Glib::RefPtr<Gio::AsyncResult>& res, TrNotification const& 
 {
     auto result = Glib::VariantContainerBase();
 
-    try
-    {
+    try {
         result = proxy->call_finish(res);
-    }
-    catch (Glib::Error const&)
-    {
+    } catch (Glib::Error const&) {
         return;
     }
 
-    if (!result || result.get_n_children() != 1 || !result.get_child(0).is_of_type(UInt32VariantType::variant_type()))
-    {
+    if (!result || result.get_n_children() != 1 || !result.get_child(0).is_of_type(UInt32VariantType::variant_type())) {
         return;
     }
 
@@ -202,16 +178,12 @@ void notify_callback(Glib::RefPtr<Gio::AsyncResult>& res, TrNotification const& 
 
 void gtr_notify_torrent_completed(Glib::RefPtr<Session> const& core, tr_torrent_id_t tor_id)
 {
-    if (gtr_pref_flag_get(TR_KEY_torrent_complete_sound_enabled))
-    {
+    if (gtr_pref_flag_get(TR_KEY_torrent_complete_sound_enabled)) {
         auto const argv = gtr_pref_strv_get(TR_KEY_torrent_complete_sound_command);
 
-        try
-        {
+        try {
             Glib::spawn_async({}, argv, TR_GLIB_SPAWN_FLAGS(SEARCH_PATH));
-        }
-        catch (Glib::SpawnError const& e)
-        {
+        } catch (Glib::SpawnError const& e) {
             gtr_warning(
                 fmt::format(
                     fmt::runtime(_("Couldn't spawn async process \"'{command}'\": {error} ({error_code})")),
@@ -221,8 +193,7 @@ void gtr_notify_torrent_completed(Glib::RefPtr<Session> const& core, tr_torrent_
         }
     }
 
-    if (!gtr_pref_flag_get(TR_KEY_torrent_complete_notification_enabled))
-    {
+    if (!gtr_pref_flag_get(TR_KEY_torrent_complete_notification_enabled)) {
         return;
     }
 
@@ -233,15 +204,11 @@ void gtr_notify_torrent_completed(Glib::RefPtr<Session> const& core, tr_torrent_
     auto const n = TrNotification{ .core = core, .torrent_id = tor_id };
 
     std::vector<Glib::ustring> actions;
-    if (server_supports_actions)
-    {
-        if (tr_torrentFileCount(tor) == 1)
-        {
+    if (server_supports_actions) {
+        if (tr_torrentFileCount(tor) == 1) {
             actions.emplace_back("file");
             actions.emplace_back(_("Open File"));
-        }
-        else
-        {
+        } else {
             actions.emplace_back("folder");
             actions.emplace_back(_("Open Folder"));
         }
@@ -268,16 +235,14 @@ void gtr_notify_torrent_added(Glib::RefPtr<Session> const& core, tr_torrent_id_t
 {
     g_return_if_fail(proxy != nullptr);
 
-    if (!gtr_pref_flag_get(TR_KEY_torrent_added_notification_enabled))
-    {
+    if (!gtr_pref_flag_get(TR_KEY_torrent_added_notification_enabled)) {
         return;
     }
 
     auto const* const tor = core->find_torrent(tor_id);
 
     std::vector<Glib::ustring> actions;
-    if (server_supports_actions)
-    {
+    if (server_supports_actions) {
         actions.emplace_back("start-now");
         actions.emplace_back(_("Start Now"));
     }

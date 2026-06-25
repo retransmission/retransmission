@@ -56,8 +56,7 @@ namespace
 #ifdef _WIN32
 std::string win32_get_known_folder_ex(REFKNOWNFOLDERID folder_id, DWORD flags)
 {
-    if (PWSTR path = nullptr; SHGetKnownFolderPath(folder_id, flags | KF_FLAG_DONT_UNEXPAND, nullptr, &path) == S_OK)
-    {
+    if (PWSTR path = nullptr; SHGetKnownFolderPath(folder_id, flags | KF_FLAG_DONT_UNEXPAND, nullptr, &path) == S_OK) {
         auto ret = tr_win32_native_to_utf8(path);
         CoTaskMemFree(path);
         return ret;
@@ -74,15 +73,13 @@ auto win32_get_known_folder(REFKNOWNFOLDERID folder_id)
 
 std::string getHomeDir()
 {
-    if (auto dir = tr_env_get_string("HOME"sv); !std::empty(dir))
-    {
+    if (auto dir = tr_env_get_string("HOME"sv); !std::empty(dir)) {
         return dir;
     }
 
 #ifdef _WIN32
 
-    if (auto dir = win32_get_known_folder(FOLDERID_Profile); !std::empty(dir))
-    {
+    if (auto dir = win32_get_known_folder(FOLDERID_Profile); !std::empty(dir)) {
         return dir;
     }
 
@@ -92,8 +89,7 @@ std::string getHomeDir()
     struct passwd* pw = nullptr;
     auto buf = std::array<char, 4096>{};
     getpwuid_r(getuid(), &pwent, std::data(buf), std::size(buf), &pw);
-    if (pw != nullptr)
-    {
+    if (pw != nullptr) {
         return pw->pw_dir;
     }
 
@@ -104,8 +100,7 @@ std::string getHomeDir()
 
 std::string xdgConfigHome()
 {
-    if (auto dir = tr_env_get_string("XDG_CONFIG_HOME"sv); !std::empty(dir))
-    {
+    if (auto dir = tr_env_get_string("XDG_CONFIG_HOME"sv); !std::empty(dir)) {
         return dir;
     }
 
@@ -116,29 +111,25 @@ std::string getXdgEntryFromUserDirs(std::string_view key)
 {
     auto content = std::vector<char>{};
     if (auto const filename = fmt::format("{:s}/{:s}"sv, xdgConfigHome(), "user-dirs.dirs"sv);
-        !tr_sys_path_exists(filename) || !tr_file_read(filename, content) || std::empty(content))
-    {
+        !tr_sys_path_exists(filename) || !tr_file_read(filename, content) || std::empty(content)) {
         return {};
     }
 
     // search for key="val" and extract val
     auto const search = fmt::format("{:s}=\"", key);
     auto const [key_first, key_last] = std::ranges::search(content, search);
-    if (key_first == key_last)
-    {
+    if (key_first == key_last) {
         return {};
     }
     auto const end = std::find(key_last, content.end(), '"');
-    if (end == content.end())
-    {
+    if (end == content.end()) {
         return {};
     }
     auto val = std::string{ key_last, end };
 
     // if val contains "$HOME", replace that with getHomeDir()
     auto constexpr Home = "$HOME"sv;
-    if (auto const [home_first, home_last] = std::ranges::search(val, Home); home_first != home_last)
-    {
+    if (auto const [home_first, home_last] = std::ranges::search(val, Home); home_first != home_last) {
         val.replace(home_first, home_last, getHomeDir());
     }
 
@@ -158,13 +149,11 @@ std::string getXdgEntryFromUserDirs(std::string_view key)
 
 std::string tr_getDefaultConfigDir(std::string_view appname)
 {
-    if (std::empty(appname))
-    {
+    if (std::empty(appname)) {
         appname = "Transmission"sv;
     }
 
-    if (auto dir = tr_env_get_string("TRANSMISSION_HOME"sv); !std::empty(dir))
-    {
+    if (auto dir = tr_env_get_string("TRANSMISSION_HOME"sv); !std::empty(dir)) {
         return dir;
     }
 
@@ -192,14 +181,12 @@ std::string tr_getDefaultConfigDir(std::string_view appname)
 
 std::string tr_getDefaultDownloadDir()
 {
-    if (auto dir = getXdgEntryFromUserDirs("XDG_DOWNLOAD_DIR"sv); !std::empty(dir))
-    {
+    if (auto dir = getXdgEntryFromUserDirs("XDG_DOWNLOAD_DIR"sv); !std::empty(dir)) {
         return dir;
     }
 
 #ifdef _WIN32
-    if (auto dir = win32_get_known_folder(FOLDERID_Downloads); !std::empty(dir))
-    {
+    if (auto dir = win32_get_known_folder(FOLDERID_Downloads); !std::empty(dir)) {
         return dir;
     }
 #endif
@@ -215,21 +202,18 @@ std::string tr_getDefaultDownloadDir()
 
 std::string tr_getWebClientDir([[maybe_unused]] tr_session const* session)
 {
-    if (auto dir = tr_env_get_string("CLUTCH_HOME"sv); !std::empty(dir))
-    {
+    if (auto dir = tr_env_get_string("CLUTCH_HOME"sv); !std::empty(dir)) {
         return dir;
     }
 
-    if (auto dir = tr_env_get_string("TRANSMISSION_WEB_HOME"sv); !std::empty(dir))
-    {
+    if (auto dir = tr_env_get_string("TRANSMISSION_WEB_HOME"sv); !std::empty(dir)) {
         return dir;
     }
 
 #ifdef BUILD_MAC_CLIENT
 
     // look in the Application Support folder
-    if (auto path = tr_pathbuf{ session->configDir(), "/public_html"sv }; isWebClientDir(path))
-    {
+    if (auto path = tr_pathbuf{ session->configDir(), "/public_html"sv }; isWebClientDir(path)) {
         return std::string{ path };
     }
 
@@ -243,8 +227,7 @@ std::string tr_getWebClientDir([[maybe_unused]] tr_session const* session)
     CFRelease(app_url);
     CFRelease(app_ref);
     if (auto const path = tr_pathbuf{ std::string_view{ std::data(buf) }, "/Contents/Resources/public_html"sv };
-        isWebClientDir(path))
-    {
+        isWebClientDir(path)) {
         return std::string{ path };
     }
 
@@ -259,12 +242,10 @@ std::string tr_getWebClientDir([[maybe_unused]] tr_session const* session)
         &FOLDERID_ProgramData,
     });
 
-    for (auto const* const folder_id : KnownFolderIds)
-    {
+    for (auto const* const folder_id : KnownFolderIds) {
         auto const dir = win32_get_known_folder(*folder_id);
 
-        if (auto const path = tr_pathbuf{ dir, "/Transmission/public_html"sv }; isWebClientDir(path))
-        {
+        if (auto const path = tr_pathbuf{ dir, "/Transmission/public_html"sv }; isWebClientDir(path)) {
             return std::string{ path };
         }
     }
@@ -273,10 +254,8 @@ std::string tr_getWebClientDir([[maybe_unused]] tr_session const* session)
     auto wide_module_path = std::array<wchar_t, MAX_PATH>{};
     GetModuleFileNameW(nullptr, std::data(wide_module_path), std::size(wide_module_path));
     auto const module_path = tr_win32_native_to_utf8({ std::data(wide_module_path) });
-    if (auto const dir = tr_sys_path_dirname(module_path); !std::empty(dir))
-    {
-        if (auto const path = tr_pathbuf{ dir, "/public_html"sv }; isWebClientDir(path))
-        {
+    if (auto const dir = tr_sys_path_dirname(module_path); !std::empty(dir)) {
+        if (auto const path = tr_pathbuf{ dir, "/public_html"sv }; isWebClientDir(path)) {
             return std::string{ path };
         }
     }
@@ -286,12 +265,9 @@ std::string tr_getWebClientDir([[maybe_unused]] tr_session const* session)
     auto candidates = std::list<std::string>{};
 
     /* XDG_DATA_HOME should be the first in the list of candidates */
-    if (auto tmp = tr_env_get_string("XDG_DATA_HOME"sv); !std::empty(tmp))
-    {
+    if (auto tmp = tr_env_get_string("XDG_DATA_HOME"sv); !std::empty(tmp)) {
         candidates.emplace_back(std::move(tmp));
-    }
-    else
-    {
+    } else {
         candidates.emplace_back(fmt::format("{:s}/.local/share"sv, getHomeDir()));
     }
 
@@ -303,21 +279,17 @@ std::string tr_getWebClientDir([[maybe_unused]] tr_session const* session)
 
         auto sv = std::string_view{ buf };
         auto token = std::string_view{};
-        while (tr_strv_sep(&sv, &token, ':'))
-        {
+        while (tr_strv_sep(&sv, &token, ':')) {
             token = tr_strv_strip(token);
-            if (!std::empty(token))
-            {
+            if (!std::empty(token)) {
                 candidates.emplace_back(token);
             }
         }
     }
 
     /* walk through the candidates & look for a match */
-    for (auto const& dir : candidates)
-    {
-        if (auto const path = tr_pathbuf{ dir, "/transmission/public_html"sv }; isWebClientDir(path))
-        {
+    for (auto const& dir : candidates) {
+        if (auto const path = tr_pathbuf{ dir, "/transmission/public_html"sv }; isWebClientDir(path)) {
             return std::string{ path };
         }
     }

@@ -46,11 +46,7 @@ static_assert(ProcessEventsTimeout > GenericRescanInterval);
 namespace tr::test
 {
 
-enum class WatchMode : uint8_t
-{
-    NATIVE,
-    GENERIC
-};
+enum class WatchMode : uint8_t { NATIVE, GENERIC };
 
 class WatchDirTest
     : public SandboxedTest
@@ -83,8 +79,7 @@ protected:
             Watchdir::create_generic(path, std::move(callback), *timer_maker_, GenericRescanInterval) :
             Watchdir::create(path, std::move(callback), *timer_maker_, ev_base_.get());
 
-        if (auto* const base_watchdir = dynamic_cast<impl::BaseWatchdir*>(watchdir.get()); base_watchdir != nullptr)
-        {
+        if (auto* const base_watchdir = dynamic_cast<impl::BaseWatchdir*>(watchdir.get()); base_watchdir != nullptr) {
             base_watchdir->setRetryDuration(RetryDuration);
         }
 
@@ -122,8 +117,7 @@ TEST_P(WatchDirTest, construct)
 {
     auto const path = sandboxDir();
 
-    auto callback = [](std::string_view /*dirname*/, std::string_view /*basename*/)
-    {
+    auto callback = [](std::string_view /*dirname*/, std::string_view /*basename*/) {
         return Watchdir::Action::Done;
     };
     auto watchdir = createWatchDir(path, callback);
@@ -141,8 +135,7 @@ TEST_P(WatchDirTest, initialScan)
     // this block confirms that it's empty
     {
         auto called = false;
-        auto callback = [&called](std::string_view /*dirname*/, std::string_view /*basename*/)
-        {
+        auto callback = [&called](std::string_view /*dirname*/, std::string_view /*basename*/) {
             called = true;
             return Watchdir::Action::Done;
         };
@@ -160,8 +153,7 @@ TEST_P(WatchDirTest, initialScan)
     // was created before the wd was instantiated
     {
         auto names = std::set<std::string>{};
-        auto callback = [&names](std::string_view /*dirname*/, std::string_view basename)
-        {
+        auto callback = [&names](std::string_view /*dirname*/, std::string_view basename) {
             names.insert(std::string{ basename });
             return Watchdir::Action::Done;
         };
@@ -179,8 +171,7 @@ TEST_P(WatchDirTest, watch)
 
     // create a new watchdir and confirm it's empty
     auto names = std::vector<std::string>{};
-    auto callback = [&names](std::string_view /*dirname*/, std::string_view basename)
-    {
+    auto callback = [&names](std::string_view /*dirname*/, std::string_view basename) {
         names.emplace_back(basename);
         return Watchdir::Action::Done;
     };
@@ -194,8 +185,7 @@ TEST_P(WatchDirTest, watch)
     createFile(dirname, file1);
     processEvents();
     EXPECT_EQ(1U, std::size(names));
-    if (!std::empty(names))
-    {
+    if (!std::empty(names)) {
         EXPECT_EQ(file1, names.front());
     }
 
@@ -206,8 +196,7 @@ TEST_P(WatchDirTest, watch)
     processEvents();
     processEvents();
     EXPECT_EQ(1U, std::size(names));
-    if (!std::empty(names))
-    {
+    if (!std::empty(names)) {
         EXPECT_EQ(file2, names.front());
     }
 
@@ -228,8 +217,7 @@ TEST_P(WatchDirTest, DISABLED_retry)
     // Create a file and return 'retry' back to the watchdir code from our callback.
     // This should cause the wd to wait a bit and try again.
     auto names = std::vector<std::string>{};
-    auto callback = [&names](std::string_view /*dirname*/, std::string_view basename)
-    {
+    auto callback = [&names](std::string_view /*dirname*/, std::string_view basename) {
         names.emplace_back(basename);
         return Watchdir::Action::Retry;
     };
@@ -247,8 +235,7 @@ TEST_P(WatchDirTest, DISABLED_retry)
     createFile(path, test_file);
     processEvents(SlowRetryWaitTime);
     EXPECT_LE(2U, std::size(names));
-    for (auto const& name : names)
-    {
+    for (auto const& name : names) {
         EXPECT_EQ(test_file, name);
     }
 }

@@ -68,8 +68,7 @@ public:
     {
         retry_duration_ = retry_duration;
 
-        for (auto& [basename, info] : pending_)
-        {
+        for (auto& [basename, info] : pending_) {
             setNextKickTime(info);
         }
     }
@@ -81,8 +80,7 @@ protected:
 private:
     using Timestamp = std::chrono::time_point<std::chrono::steady_clock>;
 
-    struct Pending
-    {
+    struct Pending {
         size_t strikes = 0U;
         Timestamp first_kick_at;
         Timestamp last_kick_at;
@@ -98,10 +96,8 @@ private:
     {
         auto next_time = std::optional<Timestamp>{};
 
-        for (auto const& [name, info] : pending_)
-        {
-            if (!next_time || info.next_kick_at < *next_time)
-            {
+        for (auto const& [name, info] : pending_) {
+            if (!next_time || info.next_kick_at < *next_time) {
                 next_time = info.next_kick_at;
             }
         }
@@ -111,8 +107,7 @@ private:
 
     void restartTimerIfPending()
     {
-        if (auto next_kick_time = nextKickTime(); next_kick_time)
-        {
+        if (auto next_kick_time = nextKickTime(); next_kick_time) {
             using namespace std::chrono;
             auto const now = steady_clock::now();
             auto duration = duration_cast<milliseconds>(*next_kick_time - now);
@@ -127,14 +122,10 @@ private:
 
         auto tmp = decltype(pending_){};
         std::swap(tmp, pending_);
-        for (auto const& [basename, info] : tmp)
-        {
-            if (info.next_kick_at <= now)
-            {
+        for (auto const& [basename, info] : tmp) {
+            if (info.next_kick_at <= now) {
                 processFile(basename);
-            }
-            else
-            {
+            } else {
                 pending_.try_emplace(basename, info);
             }
         }

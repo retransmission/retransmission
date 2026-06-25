@@ -21,8 +21,7 @@ class tr_web
 public:
     // The response struct passed to the user's FetchDoneFunc callback
     // when a fetch() finishes.
-    struct FetchResponse
-    {
+    struct FetchResponse {
         long status = 0; // http server response, e.g. 200
         std::string body;
         std::string primary_ip;
@@ -37,8 +36,7 @@ public:
     class FetchOptions
     {
     public:
-        enum class IPProtocol : uint8_t
-        {
+        enum class IPProtocol : uint8_t {
             ANY,
             V4,
             V6,

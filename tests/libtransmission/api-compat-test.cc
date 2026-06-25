@@ -1304,8 +1304,7 @@ TEST_F(ApiCompatTest, canConvertRpc)
     });
     // clang-format on
 
-    for (auto const& [name, src, tgt_style, expected] : TestCases)
-    {
+    for (auto const& [name, src, tgt_style, expected] : TestCases) {
         auto serde = tr_variant_serde::json();
         auto parsed = serde.parse(src);
         ASSERT_TRUE(parsed.has_value()) << name << ": " << serde.error_;
@@ -1343,8 +1342,7 @@ TEST_F(ApiCompatTest, canConvertJsonDataFiles)
         { "stats tr4 -> tr4", LegacyStatsJson, Style::Tr4, LegacyStatsJson },
     });
 
-    for (auto const& [name, src, tgt_style, expected] : TestCases)
-    {
+    for (auto const& [name, src, tgt_style, expected] : TestCases) {
         auto serde = tr_variant_serde::json();
         serde.inplace();
 
@@ -1372,8 +1370,7 @@ TEST_F(ApiCompatTest, migratesLegacyRatioSettingKeys)
         { "settings ratio tr5 -> tr4", CurrentSeedRatioSettingsJson, Style::Tr4, LegacyRatioSettingsKebabJson },
     });
 
-    for (auto const& [name, src, tgt_style, expected] : TestCases)
-    {
+    for (auto const& [name, src, tgt_style, expected] : TestCases) {
         auto serde = tr_variant_serde::json();
         serde.inplace();
 
@@ -1396,8 +1393,7 @@ TEST_F(ApiCompatTest, canConvertBencDataFiles)
         { "resume tr4 -> tr4", LegacyResumeBenc, Style::Tr4, LegacyResumeBenc },
     });
 
-    for (auto const& [name, src, tgt_style, expected] : TestCases)
-    {
+    for (auto const& [name, src, tgt_style, expected] : TestCases) {
         auto serde = tr_variant_serde::benc();
         serde.inplace();
 

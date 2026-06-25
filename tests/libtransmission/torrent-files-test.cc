@@ -197,8 +197,7 @@ TEST_F(TorrentFilesTest, isSubpathPortable)
         { "hello#.txt", true },
     } };
 
-    for (auto const& [subpath, expected] : Tests)
-    {
+    for (auto const& [subpath, expected] : Tests) {
         EXPECT_EQ(expected, tr_torrent_files::is_subpath_sanitized(subpath)) << " subpath " << subpath;
     }
 }

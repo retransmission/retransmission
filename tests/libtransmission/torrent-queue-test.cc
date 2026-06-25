@@ -18,8 +18,7 @@
 
 using namespace std::literals;
 
-struct TorrentQueueTest : public tr::test::SandboxedTest
-{
+struct TorrentQueueTest : public tr::test::SandboxedTest {
     class MockMediator final : public tr_torrent_queue::Mediator
     {
     public:
@@ -35,8 +34,7 @@ struct TorrentQueueTest : public tr::test::SandboxedTest
 
         [[nodiscard]] std::string store_filename(tr_torrent_id_t id) const override
         {
-            if (auto it = test_.torrents_.find(id); it != std::end(test_.torrents_))
-            {
+            if (auto it = test_.torrents_.find(id); it != std::end(test_.torrents_)) {
                 return it->second.store_filename();
             }
             return {};
@@ -63,8 +61,7 @@ TEST_F(TorrentQueueTest, addRemoveToFromQueue)
     auto queue = tr_torrent_queue{ mediator_ };
 
     auto owned = std::vector<std::unique_ptr<tr_torrent>>{};
-    for (auto const& name : TorFilenames)
-    {
+    for (auto const& name : TorFilenames) {
         auto const path = tr_pathbuf{ LIBTRANSMISSION_TEST_ASSETS_DIR, '/', name };
         auto tm = tr_torrent_metainfo{};
         EXPECT_TRUE(tm.parse_torrent_file(path));
@@ -75,16 +72,14 @@ TEST_F(TorrentQueueTest, addRemoveToFromQueue)
         queue.add(tor->id());
     }
 
-    for (size_t i = 0; i < std::size(owned); ++i)
-    {
+    for (size_t i = 0; i < std::size(owned); ++i) {
         EXPECT_EQ(i, queue.get_pos(owned[i]->id()));
     }
 
     queue.remove(owned[1]->id());
     queue.remove(owned[2]->id());
     owned.erase(std::begin(owned) + 1, std::begin(owned) + 3);
-    for (size_t i = 0; i < std::size(owned); ++i)
-    {
+    for (size_t i = 0; i < std::size(owned); ++i) {
         EXPECT_EQ(i, queue.get_pos(owned[i]->id()));
     }
 }
@@ -107,8 +102,7 @@ TEST_F(TorrentQueueTest, setQueuePos)
     auto queue = tr_torrent_queue{ mediator_ };
 
     auto owned = std::vector<std::unique_ptr<tr_torrent>>{};
-    for (auto const& name : TorFilenames)
-    {
+    for (auto const& name : TorFilenames) {
         auto const path = tr_pathbuf{ LIBTRANSMISSION_TEST_ASSETS_DIR, '/', name };
         auto tm = tr_torrent_metainfo{};
         EXPECT_TRUE(tm.parse_torrent_file(path));
@@ -119,13 +113,11 @@ TEST_F(TorrentQueueTest, setQueuePos)
         queue.add(tor->id());
     }
 
-    for (size_t i = 0; i < std::size(owned); ++i)
-    {
+    for (size_t i = 0; i < std::size(owned); ++i) {
         EXPECT_EQ(i, queue.get_pos(owned[i]->id()));
     }
 
-    for (size_t i = 0; i < std::size(owned); ++i)
-    {
+    for (size_t i = 0; i < std::size(owned); ++i) {
         auto const id = owned[i]->id();
         auto const pos = QueuePos[i];
         auto changed_ids = queue.set_pos(id, pos);
@@ -135,8 +127,7 @@ TEST_F(TorrentQueueTest, setQueuePos)
         EXPECT_EQ(std::ranges::adjacent_find(changed_ids), std::ranges::end(changed_ids)); // check if unique
     }
 
-    for (size_t i = 0; i < std::size(owned); ++i)
-    {
+    for (size_t i = 0; i < std::size(owned); ++i) {
         EXPECT_EQ(queue.get_pos(owned[i]->id()), QueuePos[i]);
     }
 }
@@ -154,8 +145,7 @@ TEST_F(TorrentQueueTest, toFromFile)
     auto queue = tr_torrent_queue{ mediator_ };
 
     auto owned = std::vector<std::unique_ptr<tr_torrent>>{};
-    for (auto const& name : TorFilenames)
-    {
+    for (auto const& name : TorFilenames) {
         auto const path = tr_pathbuf{ LIBTRANSMISSION_TEST_ASSETS_DIR, '/', name };
         auto tm = tr_torrent_metainfo{};
         EXPECT_TRUE(tm.parse_torrent_file(path));
@@ -175,8 +165,7 @@ TEST_F(TorrentQueueTest, toFromFile)
 
     auto const filenames = queue.from_file();
     ASSERT_EQ(std::size(filenames), std::size(owned));
-    for (size_t i = 0; i < std::size(filenames); ++i)
-    {
+    for (size_t i = 0; i < std::size(filenames); ++i) {
         EXPECT_EQ(filenames[i], owned[i]->store_filename());
     }
 }

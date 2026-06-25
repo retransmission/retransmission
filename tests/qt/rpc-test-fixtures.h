@@ -98,14 +98,11 @@ protected:
         operations.push_back(op);
         requests.push_back(req);
 
-        if (outgoing_data != nullptr)
-        {
+        if (outgoing_data != nullptr) {
             last_body = outgoing_data->readAll();
             outgoing_data->seek(0);
             request_bodies.push_back(last_body);
-        }
-        else
-        {
+        } else {
             request_bodies.push_back({});
         }
 

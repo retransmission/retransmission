@@ -143,8 +143,7 @@ protected:
 
         auto files = tr_torrent_files{};
 
-        for (auto const& file : AliceFiles)
-        {
+        for (auto const& file : AliceFiles) {
             auto const& [filename, size] = file;
             files.add(filename, size);
         }
@@ -159,8 +158,7 @@ protected:
 
         auto files = tr_torrent_files{};
 
-        for (auto const& file : Files)
-        {
+        for (auto const& file : Files) {
             auto const& [filename, size] = file;
             files.add(filename, size);
         }
@@ -172,15 +170,13 @@ protected:
     {
         auto paths = std::set<std::string>{};
 
-        for (tr_file_index_t i = 0, n = files.file_count(); i < n; ++i)
-        {
+        for (tr_file_index_t i = 0, n = files.file_count(); i < n; ++i) {
             auto const filename = tr_pathbuf{ parent, '/', files.path(i) };
             createFileWithContents(filename, std::data(Content), std::size(Content));
             paths.emplace(filename);
 
             auto walk = filename.sv();
-            while (!tr_sys_path_is_same(parent, walk))
-            {
+            while (!tr_sys_path_is_same(parent, walk)) {
                 walk = tr_sys_path_dirname(walk);
                 paths.emplace(walk);
             }
@@ -193,8 +189,7 @@ protected:
     {
         auto filenames = std::set<std::string>{};
 
-        auto file_func = [&filenames](char const* filename)
-        {
+        auto file_func = [&filenames](char const* filename) {
             filenames.emplace(filename);
         };
 
@@ -321,8 +316,7 @@ TEST_F(RemoveTest, PreservesDirectoryHierarchyIfPossible)
     expected_tree.emplace(recycle_bin);
     EXPECT_EQ(expected_tree, getSubtreeContents(parent));
 
-    auto const recycle_func = [&recycle_bin](std::string_view const old_name, tr_error* error) -> bool
-    {
+    auto const recycle_func = [&recycle_bin](std::string_view const old_name, tr_error* error) -> bool {
         auto const new_name = tr_pathbuf{ recycle_bin, '/', tr_sys_path_basename(old_name) };
         return tr_sys_path_rename(old_name, new_name, error);
     };
@@ -330,8 +324,7 @@ TEST_F(RemoveTest, PreservesDirectoryHierarchyIfPossible)
 
     // after remove, the subtree should be:
     expected_tree = { parent, recycle_bin.c_str() };
-    for (tr_file_index_t i = 0, n = files.file_count(); i < n; ++i)
-    {
+    for (tr_file_index_t i = 0, n = files.file_count(); i < n; ++i) {
         expected_tree.emplace(tr_pathbuf{ recycle_bin, '/', files.path(i) });
     }
     expected_tree.emplace(tr_pathbuf{ recycle_bin, "/alice_in_wonderland_librivox"sv });

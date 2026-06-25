@@ -49,8 +49,7 @@ char constexpr const* const RequestFutureinterfacePropertyKey{ "requestReplyFutu
     req.try_emplace(TR_KEY_jsonrpc, tr_variant::unmanaged_string(JsonRpc::Version));
     req.try_emplace(TR_KEY_method, tr_variant::unmanaged_string(method));
     req.try_emplace(TR_KEY_id, id);
-    if (!std::empty(params))
-    {
+    if (!std::empty(params)) {
         req.try_emplace(TR_KEY_params, std::move(params));
     }
 
@@ -97,12 +96,9 @@ RpcResponseFuture RpcClient::exec(tr_quark const method, tr_variant::Map args)
     promise.setProgressValue(0);
     promise.reportStarted();
 
-    if (session_ != nullptr)
-    {
+    if (session_ != nullptr) {
         sendLocalRequest(std::move(req), promise, id);
-    }
-    else if (!url_.isEmpty())
-    {
+    } else if (!url_.isEmpty()) {
         api_compat::convert(req, network_style_);
         auto const json = tr_variant_serde::json().compact().to_string(req);
         auto const body = QByteArray::fromStdString(json);
@@ -114,10 +110,8 @@ RpcResponseFuture RpcClient::exec(tr_quark const method, tr_variant::Map args)
 
 RpcResponseFuture RpcClient::exec(tr_quark const method, tr_variant* args)
 {
-    if (args != nullptr)
-    {
-        if (auto* const args_map = args->get_if<tr_variant::Map>())
-        {
+    if (args != nullptr) {
+        if (auto* const args_map = args->get_if<tr_variant::Map>()) {
             return exec(method, args_map->clone());
         }
     }
@@ -131,17 +125,14 @@ void RpcClient::sendNetworkRequest(QByteArray const& body, QFutureInterface<RpcR
     req.setUrl(url_);
     req.setRawHeader("Content-Type", "application/json; charset=UTF-8");
     req.setRawHeader("User-Agent", "Transmission/" SHORT_VERSION_STRING);
-    if (!session_id_.isEmpty())
-    {
+    if (!session_id_.isEmpty()) {
         req.setRawHeader(SessionIdHeaderName, session_id_);
     }
 
-    if (verbose_)
-    {
+    if (verbose_) {
         qInfo() << "sending POST " << qPrintable(url_.path());
 
-        for (QByteArray const& name : req.rawHeaderList())
-        {
+        for (QByteArray const& name : req.rawHeaderList()) {
             qInfo() << name.constData() << ": " << req.rawHeader(name).constData();
         }
 
@@ -149,8 +140,7 @@ void RpcClient::sendNetworkRequest(QByteArray const& body, QFutureInterface<RpcR
         qInfo() << body.constData();
     }
 
-    if (QNetworkReply* reply = nam_->post(req, body))
-    {
+    if (QNetworkReply* reply = nam_->post(req, body)) {
         reply->setProperty(RequestBodyKey, body);
         reply->setProperty(RequestFutureinterfacePropertyKey, QVariant::fromValue(promise));
 
@@ -161,31 +151,25 @@ void RpcClient::sendNetworkRequest(QByteArray const& body, QFutureInterface<RpcR
 
 void RpcClient::sendLocalRequest(tr_variant&& req, QFutureInterface<RpcResponse> const& promise, int64_t const id)
 {
-    if (verbose_)
-    {
+    if (verbose_) {
         fmt::print("{:s}:{:d} sending req:\n{:s}\n", __FILE__, __LINE__, tr_variant_serde::json().to_string(req));
     }
 
     local_requests_.try_emplace(id, promise);
-    tr_rpc_request_exec(
-        session_,
-        std::move(req),
-        [this](tr_variant&& response)
-        {
-            api_compat::convert_incoming_data(response);
+    tr_rpc_request_exec(session_, std::move(req), [this](tr_variant&& response) {
+        api_compat::convert_incoming_data(response);
 
-            if (verbose_)
-            {
-                auto serde = tr_variant_serde::json();
-                serde.compact();
-                fmt::print("{:s}:{:d} got response:\n{:s}\n", __FILE__, __LINE__, serde.to_string(response));
-            }
+        if (verbose_) {
+            auto serde = tr_variant_serde::json();
+            serde.compact();
+            fmt::print("{:s}:{:d} got response:\n{:s}\n", __FILE__, __LINE__, serde.to_string(response));
+        }
 
-            // this callback is invoked in the libtransmission thread, so we don't want
-            // to process the response here... let's push it over to the Qt thread.
-            auto shared = std::make_shared<tr_variant>(std::move(response));
-            QMetaObject::invokeMethod(this, "localRequestFinished", Qt::QueuedConnection, Q_ARG(TrVariantPtr, shared));
-        });
+        // this callback is invoked in the libtransmission thread, so we don't want
+        // to process the response here... let's push it over to the Qt thread.
+        auto shared = std::make_shared<tr_variant>(std::move(response));
+        QMetaObject::invokeMethod(this, "localRequestFinished", Qt::QueuedConnection, Q_ARG(TrVariantPtr, shared));
+    });
 }
 
 void RpcClient::connectNetworkAccessManager()
@@ -201,30 +185,25 @@ void RpcClient::networkRequestFinished(QNetworkReply* reply)
 
     auto promise = reply->property(RequestFutureinterfacePropertyKey).value<QFutureInterface<RpcResponse>>();
 
-    if (verbose_)
-    {
+    if (verbose_) {
         qInfo() << "http response header:";
 
-        for (QByteArray const& b : reply->rawHeaderList())
-        {
+        for (QByteArray const& b : reply->rawHeaderList()) {
             qInfo() << b.constData() << ": " << reply->rawHeader(b).constData();
         }
     }
 
-    if (reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt() == 409 && reply->hasRawHeader(SessionIdHeaderName))
-    {
+    if (reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt() == 409 && reply->hasRawHeader(SessionIdHeaderName)) {
         // we got a 409 telling us our session id has expired.
         // update it and resubmit the request.
 
         auto version_str = QString::fromUtf8("unknown");
 
-        if (reply->hasRawHeader(VersionHeaderName))
-        {
+        if (reply->hasRawHeader(VersionHeaderName)) {
             network_style_ = api_compat::Style::Tr5;
 
             version_str = QString::fromUtf8(reply->rawHeader(VersionHeaderName));
-            if (QVersionNumber::fromString(version_str).majorVersion() > TrRpcVersionSemverMajor)
-            {
+            if (QVersionNumber::fromString(version_str).majorVersion() > TrRpcVersionSemverMajor) {
                 fmt::print(
                     stderr,
                     "Server '{:s}' RPC version is {:s}, which may be incompatible with our version {:s}.\n",
@@ -232,14 +211,11 @@ void RpcClient::networkRequestFinished(QNetworkReply* reply)
                     version_str.toStdString(),
                     TrRpcVersionSemver);
             }
-        }
-        else
-        {
+        } else {
             network_style_ = api_compat::Style::Tr4;
         }
 
-        if (verbose_)
-        {
+        if (verbose_) {
             fmt::print(
                 "Server '{:s}' RPC version is {:s}. Using style {:d}\n",
                 url_.toDisplayString().toStdString(),
@@ -254,31 +230,25 @@ void RpcClient::networkRequestFinished(QNetworkReply* reply)
 
     emit networkResponse(reply->error(), reply->errorString());
 
-    if (reply->error() != QNetworkReply::NoError)
-    {
+    if (reply->error() != QNetworkReply::NoError) {
         RpcResponse result;
         result.networkError = reply->error();
 
         promise.setProgressValueAndText(1, reply->errorString());
         promise.reportFinished(&result);
-    }
-    else
-    {
+    } else {
         auto const json = reply->readAll().trimmed().toStdString();
 
-        if (verbose_)
-        {
+        if (verbose_) {
             fmt::print("{:s}:{:d} got raw response:\n{:s}\n", __FILE__, __LINE__, json);
         }
 
         auto response = RpcResponse{};
 
-        if (auto var = tr_variant_serde::json().parse(json))
-        {
+        if (auto var = tr_variant_serde::json().parse(json)) {
             api_compat::convert_incoming_data(*var);
 
-            if (verbose_)
-            {
+            if (verbose_) {
                 auto serde = tr_variant_serde::json();
                 serde.compact();
                 fmt::print("{:s}:{:d} compat response:\n{:s}\n", __FILE__, __LINE__, serde.to_string(*var));
@@ -295,8 +265,7 @@ void RpcClient::networkRequestFinished(QNetworkReply* reply)
 // NOLINTNEXTLINE(performance-unnecessary-value-param): DO NOT make the parameter a reference as this method is called from another thread
 void RpcClient::localRequestFinished(TrVariantPtr response)
 {
-    if (auto node = local_requests_.extract(parseResponseId(*response)))
-    {
+    if (auto node = local_requests_.extract(parseResponseId(*response))) {
         auto const result = parseResponseData(*response);
 
         auto& promise = node.mapped();
@@ -318,31 +287,24 @@ RpcResponse RpcClient::parseResponseData(tr_variant& response) const
     ret.success = false;
     ret.errmsg = QStringLiteral("unknown error");
 
-    if (auto* response_map = response.get_if<tr_variant::Map>())
-    {
-        if (auto* result = response_map->find_if<tr_variant::Map>(TR_KEY_result))
-        {
+    if (auto* response_map = response.get_if<tr_variant::Map>()) {
+        if (auto* result = response_map->find_if<tr_variant::Map>(TR_KEY_result)) {
             ret.success = true;
             ret.errmsg.clear();
             ret.args = std::make_shared<tr_variant>(std::move(*result));
         }
 
-        if (auto* error_map = response_map->find_if<tr_variant::Map>(TR_KEY_error))
-        {
-            if (auto const errmsg = error_map->value_if<std::string_view>(TR_KEY_message))
-            {
+        if (auto* error_map = response_map->find_if<tr_variant::Map>(TR_KEY_error)) {
+            if (auto const errmsg = error_map->value_if<std::string_view>(TR_KEY_message)) {
                 ret.errmsg = QString::fromUtf8(std::data(*errmsg), static_cast<IF_QT6(qsizetype, int)>(std::size(*errmsg)));
             }
 
-            if (auto* const data = error_map->find_if<tr_variant::Map>(TR_KEY_data))
-            {
-                if (auto const errstr = data->value_if<std::string_view>(TR_KEY_error_string))
-                {
+            if (auto* const data = error_map->find_if<tr_variant::Map>(TR_KEY_data)) {
+                if (auto const errstr = data->value_if<std::string_view>(TR_KEY_error_string)) {
                     ret.errmsg = QString::fromUtf8(std::data(*errstr), static_cast<IF_QT6(qsizetype, int)>(std::size(*errstr)));
                 }
 
-                if (auto* const result = data->find_if<tr_variant::Map>(TR_KEY_result))
-                {
+                if (auto* const result = data->find_if<tr_variant::Map>(TR_KEY_result)) {
                     ret.args = std::make_shared<tr_variant>(std::move(*result));
                 }
             }

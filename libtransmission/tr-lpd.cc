@@ -58,8 +58,7 @@ auto makeCookie()
     static auto constexpr Pool = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"sv;
 
     auto buf = tr_rand_obj<std::array<char, 12>>();
-    for (auto& ch : buf)
-    {
+    for (auto& ch : buf) {
         ch = Pool[static_cast<unsigned char>(ch) % std::size(Pool)];
     }
 
@@ -95,8 +94,7 @@ std::string makeAnnounceMsg(
     std::vector<std::string_view> const& info_hash_strings)
 {
     TR_ASSERT(tr_address::is_valid(ip_protocol));
-    if (!tr_address::is_valid(ip_protocol))
-    {
+    if (!tr_address::is_valid(ip_protocol)) {
         return {};
     }
 
@@ -107,21 +105,18 @@ std::string makeAnnounceMsg(
         McastSockAddr[ip_protocol],
         port.host());
 
-    for (auto const& info_hash : info_hash_strings)
-    {
+    for (auto const& info_hash : info_hash_strings) {
         ret += fmt::format("Infohash: {:s}\r\n", tr_strupper(info_hash));
     }
 
-    if (!std::empty(cookie))
-    {
+    if (!std::empty(cookie)) {
         ret += fmt::format("cookie: {:s}\r\n", cookie);
     }
 
     return ret + "\r\n\r\n";
 }
 
-struct ParsedAnnounce
-{
+struct ParsedAnnounce {
     int major;
     int minor;
     tr_port port;
@@ -137,77 +132,55 @@ std::optional<ParsedAnnounce> parseAnnounceMsg(std::string_view announce)
 
     // get major, minor
     auto key = "BT-SEARCH * HTTP/"sv;
-    if (auto const pos = announce.find(key); pos != std::string_view::npos)
-    {
+    if (auto const pos = announce.find(key); pos != std::string_view::npos) {
         // parse `${major}.${minor}`
         auto walk = announce.substr(pos + std::size(key));
-        if (auto const major = tr_num_parse<int>(walk, &walk); major && tr_strv_starts_with(walk, '.'))
-        {
+        if (auto const major = tr_num_parse<int>(walk, &walk); major && tr_strv_starts_with(walk, '.')) {
             ret.major = *major;
-        }
-        else
-        {
+        } else {
             return {};
         }
 
         walk.remove_prefix(1); // the '.' between major and minor
-        if (auto const minor = tr_num_parse<int>(walk, &walk); minor && tr_strv_starts_with(walk, CrLf))
-        {
+        if (auto const minor = tr_num_parse<int>(walk, &walk); minor && tr_strv_starts_with(walk, CrLf)) {
             ret.minor = *minor;
-        }
-        else
-        {
+        } else {
             return {};
         }
     }
 
     key = "Port: "sv;
-    if (auto const pos = announce.find(key); pos != std::string_view::npos)
-    {
+    if (auto const pos = announce.find(key); pos != std::string_view::npos) {
         auto walk = announce.substr(pos + std::size(key));
-        if (auto const port = tr_num_parse<uint16_t>(walk, &walk); port && tr_strv_starts_with(walk, CrLf))
-        {
+        if (auto const port = tr_num_parse<uint16_t>(walk, &walk); port && tr_strv_starts_with(walk, CrLf)) {
             ret.port = tr_port::from_host(*port);
-        }
-        else
-        {
+        } else {
             return {};
         }
     }
 
     key = "cookie: "sv;
-    if (auto const pos = announce.find(key); pos != std::string_view::npos)
-    {
+    if (auto const pos = announce.find(key); pos != std::string_view::npos) {
         auto walk = announce.substr(pos + std::size(key));
-        if (auto const end = walk.find(CrLf); end != std::string_view::npos)
-        {
+        if (auto const end = walk.find(CrLf); end != std::string_view::npos) {
             ret.cookie = walk.substr(0, end);
-        }
-        else
-        {
+        } else {
             return {};
         }
     }
 
     key = "Infohash: "sv;
-    for (;;)
-    {
-        if (auto const pos = announce.find(key); pos != std::string_view::npos)
-        {
+    for (;;) {
+        if (auto const pos = announce.find(key); pos != std::string_view::npos) {
             announce.remove_prefix(pos + std::size(key));
-        }
-        else
-        {
+        } else {
             break;
         }
 
-        if (auto const end = announce.find(CrLf); end != std::string_view::npos)
-        {
+        if (auto const end = announce.find(CrLf); end != std::string_view::npos) {
             ret.info_hash_strings.push_back(announce.substr(0, end));
             announce.remove_prefix(end + std::size(CrLf));
-        }
-        else
-        {
+        } else {
             return {};
         }
     }
@@ -225,8 +198,7 @@ public:
         , announce_timer_{ mediator.timerMaker().create([this]() { announceUpkeep(); }) }
         , dos_timer_{ mediator.timerMaker().create([this]() { dosUpkeep(); }) }
     {
-        if (!init(event_base))
-        {
+        if (!init(event_base)) {
             return;
         }
 
@@ -243,15 +215,12 @@ public:
 
     ~tr_lpd_impl() override
     {
-        for (auto& event : events_)
-        {
+        for (auto& event : events_) {
             event.reset();
         }
 
-        for (auto const sock : mcast_sockets_)
-        {
-            if (is_valid_socket(sock))
-            {
+        for (auto const sock : mcast_sockets_) {
+            if (is_valid_socket(sock)) {
                 tr_net_close_socket(sock);
             }
         }
@@ -263,8 +232,7 @@ private:
     bool init(struct event_base* event_base)
     {
         ipp_t n_success = NUM_TR_AF_INET_TYPES;
-        if (!initImpl<TR_AF_INET>(event_base))
-        {
+        if (!initImpl<TR_AF_INET>(event_base)) {
             auto const err = sockerrno;
             tr_net_close_socket(mcast_sockets_[TR_AF_INET]);
             mcast_sockets_[TR_AF_INET] = TR_BAD_SOCKET;
@@ -277,8 +245,7 @@ private:
             --n_success;
         }
 
-        if (!initImpl<TR_AF_INET6>(event_base))
-        {
+        if (!initImpl<TR_AF_INET6>(event_base)) {
             auto const err = sockerrno;
             tr_net_close_socket(mcast_sockets_[TR_AF_INET6]);
             mcast_sockets_[TR_AF_INET6] = TR_BAD_SOCKET;
@@ -314,33 +281,27 @@ private:
         // setup datagram socket
         sock = socket(tr_ip_protocol_to_af(ip_protocol), SOCK_DGRAM, 0);
 
-        if (!is_valid_socket(sock))
-        {
+        if (!is_valid_socket(sock)) {
             return false;
         }
 
-        if (evutil_make_socket_nonblocking(sock) == -1)
-        {
+        if (evutil_make_socket_nonblocking(sock) == -1) {
             return false;
         }
 
-        if (setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, reinterpret_cast<char const*>(&opt_on), sizeof(opt_on)) == -1)
-        {
+        if (setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, reinterpret_cast<char const*>(&opt_on), sizeof(opt_on)) == -1) {
             return false;
         }
 
 #if HAVE_SO_REUSEPORT
-        if (setsockopt(sock, SOL_SOCKET, SO_REUSEPORT, reinterpret_cast<char const*>(&opt_on), sizeof(opt_on)) == -1)
-        {
+        if (setsockopt(sock, SOL_SOCKET, SO_REUSEPORT, reinterpret_cast<char const*>(&opt_on), sizeof(opt_on)) == -1) {
             return false;
         }
 #endif
 
-        if constexpr (ip_protocol == TR_AF_INET6)
-        {
+        if constexpr (ip_protocol == TR_AF_INET6) {
             // must be done before binding on Linux
-            if (tr_make_listen_socket_ipv6only(sock) == -1)
-            {
+            if (tr_make_listen_socket_ipv6only(sock) == -1) {
                 return false;
             }
         }
@@ -350,13 +311,11 @@ private:
         auto const [mcast_ss, mcast_sslen] = mcast_sockaddr->to_sockaddr();
 
         auto const [bind_ss, bind_sslen] = tr_socket_address::to_sockaddr(tr_address::any(ip_protocol), mcast_sockaddr->port());
-        if (bind(sock, reinterpret_cast<sockaddr const*>(&bind_ss), bind_sslen) == -1)
-        {
+        if (bind(sock, reinterpret_cast<sockaddr const*>(&bind_ss), bind_sslen) == -1) {
             return false;
         }
 
-        if constexpr (ip_protocol == TR_AF_INET)
-        {
+        if constexpr (ip_protocol == TR_AF_INET) {
             std::memcpy(&mcast_addr_, &mcast_ss, mcast_sslen);
 
             // we want to join that LPD multicast group
@@ -365,8 +324,7 @@ private:
             mcast_req.imr_interface = mediator_.bind_address(ip_protocol).addr.addr4;
 
             if (setsockopt(sock, IPPROTO_IP, IP_ADD_MEMBERSHIP, reinterpret_cast<char const*>(&mcast_req), sizeof(mcast_req)) ==
-                -1)
-            {
+                -1) {
                 return false;
             }
 
@@ -376,8 +334,7 @@ private:
                     IPPROTO_IP,
                     IP_MULTICAST_TTL,
                     reinterpret_cast<char const*>(&AnnounceScope),
-                    sizeof(AnnounceScope)) == -1)
-            {
+                    sizeof(AnnounceScope)) == -1) {
                 return false;
             }
 
@@ -386,18 +343,15 @@ private:
                     IPPROTO_IP,
                     IP_MULTICAST_IF,
                     reinterpret_cast<char const*>(&mcast_req.imr_interface),
-                    sizeof(mcast_req.imr_interface)) == -1)
-            {
+                    sizeof(mcast_req.imr_interface)) == -1) {
                 return false;
             }
 
             // needed to announce to BT clients on the same interface
-            if (setsockopt(sock, IPPROTO_IP, IP_MULTICAST_LOOP, reinterpret_cast<char const*>(&opt_on), sizeof(opt_on)) == -1)
-            {
+            if (setsockopt(sock, IPPROTO_IP, IP_MULTICAST_LOOP, reinterpret_cast<char const*>(&opt_on), sizeof(opt_on)) == -1) {
                 return false;
             }
-        }
-        else // TR_AF_INET6
+        } else // TR_AF_INET6
         {
             std::memcpy(&mcast6_addr_, &mcast_ss, mcast_sslen);
 
@@ -407,8 +361,7 @@ private:
             mcast_req.ipv6mr_interface = mediator_.bind_address(ip_protocol).to_interface_index().value_or(0);
 
             if (setsockopt(sock, IPPROTO_IPV6, IPV6_JOIN_GROUP, reinterpret_cast<char const*>(&mcast_req), sizeof(mcast_req)) ==
-                -1)
-            {
+                -1) {
                 return false;
             }
 
@@ -418,8 +371,7 @@ private:
                     IPPROTO_IPV6,
                     IPV6_MULTICAST_HOPS,
                     reinterpret_cast<char const*>(&AnnounceScope),
-                    sizeof(AnnounceScope)) == -1)
-            {
+                    sizeof(AnnounceScope)) == -1) {
                 return false;
             }
 
@@ -428,15 +380,13 @@ private:
                     IPPROTO_IPV6,
                     IPV6_MULTICAST_IF,
                     reinterpret_cast<char const*>(&mcast_req.ipv6mr_interface),
-                    sizeof(mcast_req.ipv6mr_interface)) == -1)
-            {
+                    sizeof(mcast_req.ipv6mr_interface)) == -1) {
                 return false;
             }
 
             // needed to announce to BT clients on the same interface
             if (setsockopt(sock, IPPROTO_IPV6, IPV6_MULTICAST_LOOP, reinterpret_cast<char const*>(&opt_on), sizeof(opt_on)) ==
-                -1)
-            {
+                -1) {
                 return false;
             }
         }
@@ -457,8 +407,7 @@ private:
     template<tr_address_type ip_protocol>
     static void event_callback(evutil_socket_t /*s*/, short type, void* vself)
     {
-        if ((type & EV_READ) != 0)
-        {
+        if ((type & EV_READ) != 0) {
             static_cast<tr_lpd_impl*>(vself)->onCanRead(ip_protocol);
         }
     }
@@ -466,13 +415,11 @@ private:
     void onCanRead(tr_address_type ip_protocol)
     {
         TR_ASSERT(tr_address::is_valid(ip_protocol));
-        if (!tr_address::is_valid(ip_protocol))
-        {
+        if (!tr_address::is_valid(ip_protocol)) {
             return;
         }
 
-        if (!mediator_.allowsLPD())
-        {
+        if (!mediator_.allowsLPD()) {
             return;
         }
 
@@ -489,22 +436,19 @@ private:
             &addr_len);
 
         // If we couldn't read it, discard it
-        if (res < 1)
-        {
+        if (res < 1) {
             return;
         }
         TR_ASSERT(tr_af_to_ip_protocol(foreign_addr.ss_family) == ip_protocol);
 
         // If it doesn't look like a BEP14 message, discard it
         auto const msg = std::string_view{ std::data(foreign_msg), static_cast<size_t>(res) };
-        if (static auto constexpr SearchKey = "BT-SEARCH * HTTP/"sv; msg.find(SearchKey) == std::string_view::npos)
-        {
+        if (static auto constexpr SearchKey = "BT-SEARCH * HTTP/"sv; msg.find(SearchKey) == std::string_view::npos) {
             return;
         }
 
         // If we're receiving too many, discard it
-        if (++messages_received_since_upkeep_ > MaxIncomingPerUpkeep)
-        {
+        if (++messages_received_since_upkeep_ > MaxIncomingPerUpkeep) {
             return;
         }
 
@@ -512,21 +456,17 @@ private:
         // Note this comes *after* incrementing the count since there is some
         // small CPU overhead in parsing, so don't do it for *every* message
         auto const parsed = parseAnnounceMsg(msg);
-        if (!parsed || parsed->major != 1 || parsed->minor < 1 || parsed->cookie == cookie_)
-        {
+        if (!parsed || parsed->major != 1 || parsed->minor < 1 || parsed->cookie == cookie_) {
             tr_logAddTrace("Discarded invalid multicast message");
             return;
         }
 
         auto peer_sockaddr = tr_socket_address::from_sockaddr(reinterpret_cast<sockaddr*>(&foreign_addr));
-        if (!peer_sockaddr)
-        {
+        if (!peer_sockaddr) {
             return;
         }
-        for (auto const& hash_string : parsed->info_hash_strings)
-        {
-            if (!mediator_.onPeerFound(hash_string, peer_sockaddr->address(), parsed->port))
-            {
+        for (auto const& hash_string : parsed->info_hash_strings) {
+            if (!mediator_.onPeerFound(hash_string, peer_sockaddr->address(), parsed->port)) {
                 tr_logAddDebug(fmt::format("Cannot serve torrent #{:s}", hash_string));
             }
         }
@@ -534,8 +474,7 @@ private:
 
     void announceUpkeep()
     {
-        if (!mediator_.allowsLPD())
-        {
+        if (!mediator_.allowsLPD()) {
             return;
         }
 
@@ -543,28 +482,23 @@ private:
 
         // remove torrents that don't need to be announced
         auto const now = tr_time();
-        auto const needs_announce = [&now](auto& info)
-        {
+        auto const needs_announce = [&now](auto& info) {
             return info.allows_lpd && (info.activity == TR_STATUS_DOWNLOAD || info.activity == TR_STATUS_SEED) &&
                 info.announce_after < now;
         };
         std::erase_if(torrents, std::not_fn(needs_announce));
 
-        if (std::empty(torrents))
-        {
+        if (std::empty(torrents)) {
             return;
         }
 
         // prioritize the remaining torrents
-        static auto constexpr TorrentComparator = [](auto const& a, auto const& b)
-        {
-            if (a.activity != b.activity)
-            {
+        static auto constexpr TorrentComparator = [](auto const& a, auto const& b) {
+            if (a.activity != b.activity) {
                 return a.activity < b.activity;
             }
 
-            if (a.announce_after != b.announce_after)
-            {
+            if (a.announce_after != b.announce_after) {
                 return a.announce_after < b.announce_after;
             }
             return false;
@@ -572,8 +506,7 @@ private:
         std::ranges::sort(torrents, TorrentComparator);
 
         auto const next_announce_after = now + TorrentAnnounceIntervalSec;
-        for (ipp_t ipp = 0; ipp < NUM_TR_AF_INET_TYPES; ++ipp)
-        {
+        for (ipp_t ipp = 0; ipp < NUM_TR_AF_INET_TYPES; ++ipp) {
             auto const ip_protocol = static_cast<tr_address_type>(ipp);
 
             // cram in as many as will fit in a message
@@ -591,13 +524,11 @@ private:
                 std::back_inserter(info_hash_strings),
                 [](auto const& tor) { return tor.info_hash_str; });
 
-            if (!sendAnnounce(static_cast<tr_address_type>(ipp), info_hash_strings))
-            {
+            if (!sendAnnounce(static_cast<tr_address_type>(ipp), info_hash_strings)) {
                 continue;
             }
 
-            for (auto const& info_hash_string : info_hash_strings)
-            {
+            for (auto const& info_hash_string : info_hash_strings) {
                 mediator_.setNextAnnounceTime(info_hash_string, next_announce_after);
             }
         }
@@ -605,8 +536,7 @@ private:
 
     void dosUpkeep()
     {
-        if (messages_received_since_upkeep_ > MaxIncomingPerUpkeep)
-        {
+        if (messages_received_since_upkeep_ > MaxIncomingPerUpkeep) {
             tr_logAddTrace(
                 fmt::format(
                     "Dropped {} announces in the last interval (max. {} allowed)",
@@ -629,13 +559,11 @@ private:
     bool sendAnnounce(tr_address_type ip_protocol, std::vector<std::string_view> const& info_hash_strings)
     {
         TR_ASSERT(tr_address::is_valid(ip_protocol));
-        if (!tr_address::is_valid(ip_protocol))
-        {
+        if (!tr_address::is_valid(ip_protocol)) {
             return false;
         }
 
-        if (!is_valid_socket(mcast_sockets_[ip_protocol]))
-        {
+        if (!is_valid_socket(mcast_sockets_[ip_protocol])) {
             return true;
         }
 

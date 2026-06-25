@@ -102,8 +102,7 @@ public:
 
     [[nodiscard]] auto get_matching(std::function<bool(tr_torrent const*)> pred_in) const
     {
-        auto const pred = [&pred_in](tr_torrent const* const tor)
-        {
+        auto const pred = [&pred_in](tr_torrent const* const tor) {
             return tor != nullptr && pred_in(tor);
         };
 

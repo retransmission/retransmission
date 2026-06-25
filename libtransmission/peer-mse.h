@@ -109,24 +109,18 @@ private:
     template<typename T>
     static constexpr void process(T const* buf_in, size_t buf_len, T* buf_out, bool active, tr_arc4& arc4) noexcept
     {
-        if (buf_in == nullptr || buf_out == nullptr)
-        {
+        if (buf_in == nullptr || buf_out == nullptr) {
             skip(buf_len, active, arc4);
-        }
-        else if (active)
-        {
+        } else if (active) {
             arc4.process(reinterpret_cast<uint8_t const*>(buf_in), buf_len, reinterpret_cast<uint8_t*>(buf_out));
-        }
-        else if (buf_in != buf_out)
-        {
+        } else if (buf_in != buf_out) {
             std::copy_n(buf_in, buf_len, buf_out);
         }
     }
 
     static constexpr void skip(size_t len, bool active, tr_arc4& arc4)
     {
-        if (active)
-        {
+        if (active) {
             arc4.discard(len);
         }
     }

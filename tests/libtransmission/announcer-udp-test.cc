@@ -95,35 +95,30 @@ protected:
         {
             auto const is_localhost = name == "localhost"sv;
             auto const port = tr_port::from_host(service);
-            switch (ip_protocol)
-            {
+            switch (ip_protocol) {
             case TR_AF_INET:
-                if (is_localhost)
-                {
+                if (is_localhost) {
                     auto const addr = tr_address::from_string("127.0.0.1"sv);
                     EXPECT_TRUE(addr);
                     EXPECT_TRUE(addr->is_ipv4_loopback());
                     return tr_socket_address{ *addr, port };
                 }
 
-                if (auto const addr = tr_address::from_string(name); addr && addr->is_ipv4_loopback())
-                {
+                if (auto const addr = tr_address::from_string(name); addr && addr->is_ipv4_loopback()) {
                     return tr_socket_address{ *addr, port };
                 }
 
                 break;
 
             case TR_AF_INET6:
-                if (is_localhost)
-                {
+                if (is_localhost) {
                     auto const addr = tr_address::from_string("::1");
                     EXPECT_TRUE(addr);
                     EXPECT_TRUE(addr->is_ipv6_loopback());
                     return tr_socket_address{ *addr, port };
                 }
 
-                if (auto const addr = tr_address::from_string(name); addr && addr->is_ipv6_loopback())
-                {
+                if (auto const addr = tr_address::from_string(name); addr && addr->is_ipv6_loopback()) {
                     return tr_socket_address{ *addr, port };
                 }
 
@@ -136,8 +131,7 @@ protected:
             return {};
         }
 
-        struct Sent
-        {
+        struct Sent {
             Sent() = default;
 
             Sent(char const* buf, size_t buflen, sockaddr const* sa, socklen_t salen)
@@ -166,8 +160,7 @@ protected:
         EXPECT_EQ(expected.scrape_url, actual.scrape_url);
 
         EXPECT_EQ(expected.row_count, actual.row_count);
-        for (size_t i = 0; i < std::min(expected.row_count, actual.row_count); ++i)
-        {
+        for (size_t i = 0; i < std::min(expected.row_count, actual.row_count); ++i) {
             EXPECT_EQ(expected.rows[i].info_hash, actual.rows[i].info_hash);
             EXPECT_EQ(expected.rows[i].seeders, actual.rows[i].seeders);
             EXPECT_EQ(expected.rows[i].leechers, actual.rows[i].leechers);
@@ -179,8 +172,7 @@ protected:
     static void expectEqual(tr_scrape_request const& expected, std::vector<tr_sha1_digest_t> const& actual)
     {
         EXPECT_EQ(expected.info_hash_count, std::size(actual));
-        for (size_t i = 0; i < std::min(expected.info_hash_count, std::size(actual)); ++i)
-        {
+        for (size_t i = 0; i < std::min(expected.info_hash_count, std::size(actual)); ++i) {
             EXPECT_EQ(expected.info_hash[i], actual[i]);
         }
     }
@@ -198,8 +190,7 @@ protected:
         auto request = tr_scrape_request{};
         request.scrape_url = response.scrape_url;
         request.info_hash_count = response.row_count;
-        for (size_t i = 0; i < request.info_hash_count; ++i)
-        {
+        for (size_t i = 0; i < request.info_hash_count; ++i) {
             request.info_hash[i] = response.rows[i].info_hash;
         }
         return request;
@@ -229,8 +220,7 @@ protected:
         EXPECT_EQ(ScrapeAction, buf.to_uint32());
         auto const transaction_id = buf.to_uint32();
         auto info_hashes = std::vector<tr_sha1_digest_t>{};
-        while (!std::empty(buf))
-        {
+        while (!std::empty(buf)) {
             auto tmp = tr_sha1_digest_t{};
             buf.to_buf(std::data(tmp), std::size(tmp));
             info_hashes.emplace_back(tmp);
@@ -246,12 +236,10 @@ protected:
         EXPECT_TRUE(tr::test::waitFor(mediator.eventBase(), [&mediator]() { return !std::empty(mediator.sent_); }));
         auto& sent = mediator.sent_.front();
         auto const buf = std::move(sent.buf_);
-        if (from != nullptr)
-        {
+        if (from != nullptr) {
             std::memcpy(from, &sent.ss_, sent.sslen_);
         }
-        if (fromlen != nullptr)
-        {
+        if (fromlen != nullptr) {
             *fromlen = sent.sslen_;
         }
         mediator.sent_.pop_front();
@@ -296,8 +284,7 @@ protected:
         return connection_id;
     }
 
-    struct UdpAnnounceReq
-    {
+    struct UdpAnnounceReq {
         uint64_t connection_id = 0;
         uint32_t action = 0; // 1: announce
         tau_transaction_t transaction_id = 0;
@@ -524,8 +511,7 @@ TEST_F(AnnouncerUdpTest, canMultiScrape)
     auto buf = MessageBuffer{};
     buf.add_uint32(ScrapeAction);
     buf.add_uint32(scrape_transaction_id);
-    for (size_t i = 0; i < expected_response.row_count; ++i)
-    {
+    for (size_t i = 0; i < expected_response.row_count; ++i) {
         buf.add_uint32(expected_response.rows[i].seeders.value_or(-1));
         buf.add_uint32(expected_response.rows[i].downloads.value_or(-1));
         buf.add_uint32(expected_response.rows[i].leechers.value_or(-1));
@@ -616,9 +602,9 @@ TEST_F(AnnouncerUdpTest, canHandleConnectError)
 
     // tell the announcer to scrape
     auto response = std::optional<tr_scrape_response>{};
-    announcer->scrape(
-        buildScrapeRequestFromResponse(expected_response),
-        [&response](tr_scrape_response const& resp) { response = resp; });
+    announcer->scrape(buildScrapeRequestFromResponse(expected_response), [&response](tr_scrape_response const& resp) {
+        response = resp;
+    });
 
     auto from = sockaddr_storage{};
     auto* const from_ptr = reinterpret_cast<struct sockaddr*>(&from);
@@ -758,8 +744,7 @@ TEST_F(AnnouncerUdpTest, canAnnounceIPv4)
     buf.add_uint32(expected_response.interval);
     buf.add_uint32(expected_response.leechers.value_or(-1));
     buf.add_uint32(expected_response.seeders.value_or(-1));
-    for (auto const& [addr, port] : addresses)
-    {
+    for (auto const& [addr, port] : addresses) {
         // NOLINTNEXTLINE(cppcoreguidelines-pro-type-union-access)
         buf.add(&addr.addr.addr4.s_addr, sizeof(addr.addr.addr4.s_addr));
         buf.add_uint16(port.host());
@@ -844,8 +829,7 @@ TEST_F(AnnouncerUdpTest, canAnnounceIPv6)
     buf.add_uint32(expected_response.interval);
     buf.add_uint32(expected_response.leechers.value_or(-1));
     buf.add_uint32(expected_response.seeders.value_or(-1));
-    for (auto const& [addr, port] : addresses)
-    {
+    for (auto const& [addr, port] : addresses) {
         // NOLINTNEXTLINE(cppcoreguidelines-pro-type-union-access)
         buf.add(&addr.addr.addr6.s6_addr, sizeof(addr.addr.addr6.s6_addr));
         buf.add_uint16(port.host());
@@ -891,8 +875,7 @@ TEST_F(AnnouncerUdpTest, canAnnounceDualStack)
     request.info_hash = tr_rand_obj<tr_sha1_digest_t>();
 
     auto expected_responses = std::array<tr_announce_response, NUM_TR_AF_INET_TYPES>{};
-    for (auto& expected_response : expected_responses)
-    {
+    for (auto& expected_response : expected_responses) {
         expected_response.info_hash = request.info_hash;
         expected_response.did_connect = true;
         expected_response.did_timeout = false;
@@ -930,16 +913,14 @@ TEST_F(AnnouncerUdpTest, canAnnounceDualStack)
     auto fromlen = socklen_t{};
 
     auto connection_ids = std::array<tau_connection_t, NUM_TR_AF_INET_TYPES>{};
-    for (uint8_t i = 0U; i < NUM_TR_AF_INET_TYPES; ++i)
-    {
+    for (uint8_t i = 0U; i < NUM_TR_AF_INET_TYPES; ++i) {
         // Announcer will request a connection. Verify and grant the request
         auto const connect_transaction_id = parseConnectionRequest(waitForAnnouncerToSendMessage(mediator, from_ptr, &fromlen));
         auto const ipp = tr_af_to_ip_protocol(from_ptr->sa_family);
         connection_ids[ipp] = sendConnectionResponse(*announcer, connect_transaction_id, from_ptr, fromlen);
     }
 
-    for (uint8_t i = 0U; i < NUM_TR_AF_INET_TYPES; ++i)
-    {
+    for (uint8_t i = 0U; i < NUM_TR_AF_INET_TYPES; ++i) {
         response.reset();
 
         // The announcer should have sent a UDP announce request.
@@ -957,15 +938,11 @@ TEST_F(AnnouncerUdpTest, canAnnounceDualStack)
         buf.add_uint32(expected_response.interval);
         buf.add_uint32(expected_response.leechers.value_or(-1));
         buf.add_uint32(expected_response.seeders.value_or(-1));
-        for (auto const& [addr, port] : addresses[ipp])
-        {
-            if (ipp == TR_AF_INET)
-            {
+        for (auto const& [addr, port] : addresses[ipp]) {
+            if (ipp == TR_AF_INET) {
                 // NOLINTNEXTLINE(cppcoreguidelines-pro-type-union-access)
                 buf.add(&addr.addr.addr4.s_addr, sizeof(addr.addr.addr4.s_addr));
-            }
-            else
-            {
+            } else {
                 // NOLINTNEXTLINE(cppcoreguidelines-pro-type-union-access)
                 buf.add(&addr.addr.addr6.s6_addr, sizeof(addr.addr.addr6.s6_addr));
             }
@@ -1035,16 +1012,14 @@ TEST_F(AnnouncerUdpTest, announceDualStackOnlyIPv4Successful)
     auto fromlen = socklen_t{};
 
     auto connection_ids = std::array<tau_connection_t, NUM_TR_AF_INET_TYPES>{};
-    for (uint8_t i = 0U; i < NUM_TR_AF_INET_TYPES; ++i)
-    {
+    for (uint8_t i = 0U; i < NUM_TR_AF_INET_TYPES; ++i) {
         // Announcer will request a connection. Verify and grant the request
         auto const connect_transaction_id = parseConnectionRequest(waitForAnnouncerToSendMessage(mediator, from_ptr, &fromlen));
         auto const ipp = tr_af_to_ip_protocol(from_ptr->sa_family);
         connection_ids[ipp] = sendConnectionResponse(*announcer, connect_transaction_id, from_ptr, fromlen);
     }
 
-    for (uint8_t i = 0U; i < NUM_TR_AF_INET_TYPES; ++i)
-    {
+    for (uint8_t i = 0U; i < NUM_TR_AF_INET_TYPES; ++i) {
         response.reset();
 
         // The announcer should have sent a UDP announce request.
@@ -1055,16 +1030,14 @@ TEST_F(AnnouncerUdpTest, announceDualStackOnlyIPv4Successful)
         expectEqual(request, udp_ann_req);
 
         // Have the tracker respond to the request
-        if (ipp == TR_AF_INET)
-        {
+        if (ipp == TR_AF_INET) {
             auto buf = MessageBuffer{};
             buf.add_uint32(AnnounceAction);
             buf.add_uint32(udp_ann_req.transaction_id);
             buf.add_uint32(expected_response.interval);
             buf.add_uint32(expected_response.leechers.value_or(-1));
             buf.add_uint32(expected_response.seeders.value_or(-1));
-            for (auto const& [addr, port] : addresses)
-            {
+            for (auto const& [addr, port] : addresses) {
                 // NOLINTNEXTLINE(cppcoreguidelines-pro-type-union-access)
                 buf.add(&addr.addr.addr4.s_addr, sizeof(addr.addr.addr4.s_addr));
                 buf.add_uint16(port.host());
@@ -1072,16 +1045,13 @@ TEST_F(AnnouncerUdpTest, announceDualStackOnlyIPv4Successful)
 
             EXPECT_TRUE(
                 announcer->handle_message(reinterpret_cast<uint8_t const*>(std::data(buf)), std::size(buf), from_ptr, fromlen));
-        }
-        else
-        {
+        } else {
             EXPECT_TRUE(sendError(*announcer, udp_ann_req.transaction_id, "Failed"sv, from_ptr, fromlen));
         }
 
         // Failed responses won't be processed if one of the other announce requests succeeded
         EXPECT_TRUE(ipp == TR_AF_INET6 ? !response.has_value() : response.has_value());
-        if (response)
-        {
+        if (response) {
             expectEqual(expected_response, *response);
         }
     }
@@ -1141,16 +1111,14 @@ TEST_F(AnnouncerUdpTest, announceDualStackOnlyIPv6Successful)
     auto fromlen = socklen_t{};
 
     auto connection_ids = std::array<tau_connection_t, NUM_TR_AF_INET_TYPES>{};
-    for (uint8_t i = 0U; i < NUM_TR_AF_INET_TYPES; ++i)
-    {
+    for (uint8_t i = 0U; i < NUM_TR_AF_INET_TYPES; ++i) {
         // Announcer will request a connection. Verify and grant the request
         auto const connect_transaction_id = parseConnectionRequest(waitForAnnouncerToSendMessage(mediator, from_ptr, &fromlen));
         auto const ipp = tr_af_to_ip_protocol(from_ptr->sa_family);
         connection_ids[ipp] = sendConnectionResponse(*announcer, connect_transaction_id, from_ptr, fromlen);
     }
 
-    for (uint8_t i = 0U; i < NUM_TR_AF_INET_TYPES; ++i)
-    {
+    for (uint8_t i = 0U; i < NUM_TR_AF_INET_TYPES; ++i) {
         response.reset();
 
         // The announcer should have sent a UDP announce request.
@@ -1161,16 +1129,14 @@ TEST_F(AnnouncerUdpTest, announceDualStackOnlyIPv6Successful)
         expectEqual(request, udp_ann_req);
 
         // Have the tracker respond to the request
-        if (ipp == TR_AF_INET6)
-        {
+        if (ipp == TR_AF_INET6) {
             auto buf = MessageBuffer{};
             buf.add_uint32(AnnounceAction);
             buf.add_uint32(udp_ann_req.transaction_id);
             buf.add_uint32(expected_response.interval);
             buf.add_uint32(expected_response.leechers.value_or(-1));
             buf.add_uint32(expected_response.seeders.value_or(-1));
-            for (auto const& [addr, port] : addresses)
-            {
+            for (auto const& [addr, port] : addresses) {
                 // NOLINTNEXTLINE(cppcoreguidelines-pro-type-union-access)
                 buf.add(&addr.addr.addr6.s6_addr, sizeof(addr.addr.addr6.s6_addr));
                 buf.add_uint16(port.host());
@@ -1178,16 +1144,13 @@ TEST_F(AnnouncerUdpTest, announceDualStackOnlyIPv6Successful)
 
             EXPECT_TRUE(
                 announcer->handle_message(reinterpret_cast<uint8_t const*>(std::data(buf)), std::size(buf), from_ptr, fromlen));
-        }
-        else
-        {
+        } else {
             EXPECT_TRUE(sendError(*announcer, udp_ann_req.transaction_id, "Failed"sv, from_ptr, fromlen));
         }
 
         // Failed responses won't be processed if one of the other announce requests succeeded
         EXPECT_TRUE(ipp == TR_AF_INET ? !response.has_value() : response.has_value());
-        if (response)
-        {
+        if (response) {
             expectEqual(expected_response, *response);
         }
     }
@@ -1238,16 +1201,14 @@ TEST_F(AnnouncerUdpTest, announceDualStackNoneSuccessful)
     auto fromlen = socklen_t{};
 
     auto connection_ids = std::array<tau_connection_t, NUM_TR_AF_INET_TYPES>{};
-    for (uint8_t i = 0U; i < NUM_TR_AF_INET_TYPES; ++i)
-    {
+    for (uint8_t i = 0U; i < NUM_TR_AF_INET_TYPES; ++i) {
         // Announcer will request a connection. Verify and grant the request
         auto const connect_transaction_id = parseConnectionRequest(waitForAnnouncerToSendMessage(mediator, from_ptr, &fromlen));
         auto const ipp = tr_af_to_ip_protocol(from_ptr->sa_family);
         connection_ids[ipp] = sendConnectionResponse(*announcer, connect_transaction_id, from_ptr, fromlen);
     }
 
-    for (uint8_t i = 0U; i < NUM_TR_AF_INET_TYPES; ++i)
-    {
+    for (uint8_t i = 0U; i < NUM_TR_AF_INET_TYPES; ++i) {
         auto const received_response = response.has_value();
 
         // The announcer should have sent a UDP announce request.
@@ -1263,8 +1224,7 @@ TEST_F(AnnouncerUdpTest, announceDualStackNoneSuccessful)
         // Failed responses will only be processed if none of the announce requests are successful
         // Or in other words, at most one failed response will be processed for each announce event
         EXPECT_FALSE(received_response && response.has_value());
-        if (response)
-        {
+        if (response) {
             expectEqual(expected_response, *response);
         }
     }

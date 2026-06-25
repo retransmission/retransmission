@@ -30,11 +30,9 @@ TEST_F(TorrentMagnetTest, getMetadataPiece)
     };
     auto piece = 0;
     auto info_dict_size = size_t{ 0U };
-    for (;;)
-    {
+    for (;;) {
         auto data = tor->get_metadata_piece(piece++);
-        if (!data)
-        {
+        if (!data) {
             break;
         }
 
@@ -78,12 +76,10 @@ TEST_F(TorrentMagnetTest, setMetadataPiece)
     auto const metainfo_benc = tr_base64_decode(InfoDictBase64);
     auto const metainfo_size = std::size(metainfo_benc);
     EXPECT_LE(metainfo_size, MetadataPieceSize);
-    session_->run_in_session_thread(
-        [&]()
-        {
-            tor->maybe_start_metadata_transfer(metainfo_size);
-            tor->set_metadata_piece(0, std::data(metainfo_benc), metainfo_size);
-        });
+    session_->run_in_session_thread([&]() {
+        tor->maybe_start_metadata_transfer(metainfo_size);
+        tor->set_metadata_piece(0, std::data(metainfo_benc), metainfo_size);
+    });
 
     EXPECT_TRUE(waitFor([tor] { return tor->has_metainfo(); }, 5s));
     EXPECT_EQ(tor->info_dict_size(), metainfo_size);

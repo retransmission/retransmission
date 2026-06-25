@@ -15,14 +15,8 @@
 /** @brief Similar to optind, this is the current index into argv */
 extern int tr_optind;
 
-struct tr_option
-{
-    enum class Arg : uint8_t
-    {
-        None,
-        Optional,
-        Required
-    };
+struct tr_option {
+    enum class Arg : uint8_t { None, Optional, Required };
 
     [[nodiscard]] constexpr bool has_arg() const noexcept
     {
@@ -37,8 +31,7 @@ struct tr_option
     char const* argName; /* argument's description for tr_getopt_usage() */
 };
 
-enum : int8_t
-{
+enum : int8_t {
     /* all options have been processed */
     TR_OPT_DONE = 0,
     /* a syntax error was detected, such as a missing

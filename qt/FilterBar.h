@@ -45,8 +45,7 @@ private:
     FilterBarComboBox* createActivityCombo();
     void refreshTrackers();
 
-    enum : uint8_t
-    {
+    enum : uint8_t {
         ACTIVITY,
         TRACKERS,
 

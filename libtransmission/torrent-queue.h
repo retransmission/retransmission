@@ -19,8 +19,7 @@
 class tr_torrent_queue
 {
 public:
-    struct Mediator
-    {
+    struct Mediator {
         virtual ~Mediator() = default;
 
         [[nodiscard]] virtual std::string config_dir() const = 0;

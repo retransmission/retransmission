@@ -56,8 +56,7 @@ static CGFloat const kStackViewVerticalSpacing = 8.0;
 
 - (instancetype)init
 {
-    if ((self = [super initWithNibName:@"InfoActivityView" bundle:nil]))
-    {
+    if ((self = [super initWithNibName:@"InfoActivityView" bundle:nil])) {
         self.title = NSLocalizedString(@"Activity", "Inspector view -> title");
     }
 
@@ -102,16 +101,13 @@ static CGFloat const kStackViewVerticalSpacing = 8.0;
 
 - (void)checkLayout
 {
-    if (NSWidth(self.view.window.frame) >= self.fHorizLayoutWidth + 1)
-    {
+    if (NSWidth(self.view.window.frame) >= self.fHorizLayoutWidth + 1) {
         self.fActivityStackView.orientation = NSUserInterfaceLayoutOrientationHorizontal;
 
         //add some padding between views in horizontal layout
         self.fActivityStackView.spacing = kStackViewHorizontalSpacing;
         self.fCurrentHeight = self.fHorizLayoutHeight;
-    }
-    else
-    {
+    } else {
         self.fActivityStackView.orientation = NSUserInterfaceLayoutOrientationVertical;
         self.fActivityStackView.spacing = kStackViewVerticalSpacing;
         self.fCurrentHeight = self.fVertLayoutHeight;
@@ -152,14 +148,12 @@ static CGFloat const kStackViewVerticalSpacing = 8.0;
 
 - (void)updateInfo
 {
-    if (!self.fSet)
-    {
+    if (!self.fSet) {
         [self setupInfo];
     }
 
     NSInteger const numberSelected = self.fTorrents.count;
-    if (numberSelected == 0)
-    {
+    if (numberSelected == 0) {
         return;
     }
 
@@ -169,8 +163,7 @@ static CGFloat const kStackViewVerticalSpacing = 8.0;
     uint64_t uploadedTotal = 0;
     uint64_t failedHash = 0;
     NSDate* lastActivity = nil;
-    for (Torrent* torrent in self.fTorrents)
-    {
+    for (Torrent* torrent in self.fTorrents) {
         have += torrent.haveTotal;
         haveVerified += torrent.haveVerified;
         downloadedTotal += torrent.downloadedTotal;
@@ -178,26 +171,19 @@ static CGFloat const kStackViewVerticalSpacing = 8.0;
         failedHash += torrent.failedHash;
 
         NSDate* nextLastActivity;
-        if ((nextLastActivity = torrent.dateActivity))
-        {
+        if ((nextLastActivity = torrent.dateActivity)) {
             lastActivity = lastActivity ? [lastActivity laterDate:nextLastActivity] : nextLastActivity;
         }
     }
 
-    if (have == 0)
-    {
+    if (have == 0) {
         self.fHaveField.stringValue = [NSString stringForFileSize:0];
-    }
-    else
-    {
+    } else {
         NSString* verifiedString = [NSString stringWithFormat:NSLocalizedString(@"%@ verified", "Inspector -> Activity tab -> have"),
                                                               [NSString stringForFileSize:haveVerified]];
-        if (have == haveVerified)
-        {
+        if (have == haveVerified) {
             self.fHaveField.stringValue = verifiedString;
-        }
-        else
-        {
+        } else {
             self.fHaveField.stringValue = [NSString stringWithFormat:@"%@ (%@)", [NSString stringForFileSize:have], verifiedString];
         }
     }
@@ -208,15 +194,13 @@ static CGFloat const kStackViewVerticalSpacing = 8.0;
 
     self.fDateActivityField.objectValue = lastActivity;
 
-    if (numberSelected == 1)
-    {
+    if (numberSelected == 1) {
         Torrent* torrent = self.fTorrents[0];
 
         self.fStateField.stringValue = torrent.stateString;
 
         NSString* progressString = [NSString percentString:torrent.progress longDecimals:YES];
-        if (torrent.folder)
-        {
+        if (torrent.folder) {
             NSString* progressSelectedString = [NSString
                 stringWithFormat:NSLocalizedString(@"%@ selected", "Inspector -> Activity tab -> progress"),
                                  [NSString percentString:torrent.progressDone longDecimals:YES]];
@@ -248,9 +232,7 @@ static CGFloat const kStackViewVerticalSpacing = 8.0;
         self.fSeedTimeField.stringValue = [timeFormatter stringFromTimeInterval:torrent.secondsSeeding];
 
         [self.fPiecesView updateView];
-    }
-    else if (numberSelected > 1)
-    {
+    } else if (numberSelected > 1) {
         self.fRatioField.stringValue = [NSString stringForRatio:tr_getRatio(uploadedTotal, downloadedTotal)];
     }
 }
@@ -282,10 +264,8 @@ static CGFloat const kStackViewVerticalSpacing = 8.0;
 - (void)setupInfo
 {
     NSUInteger const count = self.fTorrents.count;
-    if (count != 1)
-    {
-        if (count == 0)
-        {
+    if (count != 1) {
+        if (count == 0) {
             self.fHaveField.stringValue = @"";
             self.fDownloadedTotalField.stringValue = @"";
             self.fUploadedTotalField.stringValue = @"";
@@ -310,9 +290,7 @@ static CGFloat const kStackViewVerticalSpacing = 8.0;
         [self.fPiecesControl setSelected:NO forSegment:PiecesControlSegmentProgress];
         self.fPiecesControl.enabled = NO;
         self.fPiecesView.torrent = nil;
-    }
-    else
-    {
+    } else {
         Torrent* torrent = self.fTorrents[0];
 
         BOOL const piecesAvailableSegment = [NSUserDefaults.standardUserDefaults boolForKey:@"PiecesViewShowAvailability"];

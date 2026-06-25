@@ -32,8 +32,7 @@
 {
     SEL const action = menuItem.action;
 
-    if (action == @selector(copy:))
-    {
+    if (action == @selector(copy:)) {
         return self.numberOfSelectedRows > 0;
     }
 

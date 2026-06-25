@@ -53,21 +53,18 @@ TEST_F(PeerInfoTest, mergeConnectable)
     };
     static_assert(std::size(Tests) == 25U);
 
-    for (auto const& [condition, result] : Tests)
-    {
+    for (auto const& [condition, result] : Tests) {
         auto const& [this_connectable, this_connected, that_connectable, that_connected] = condition;
 
         auto info_this = tr_peer_info{ tr_address{}, 0, TR_PEER_FROM_PEX, {} };
         auto info_that = tr_peer_info{ tr_address{}, 0, TR_PEER_FROM_PEX, {} };
 
-        if (this_connectable)
-        {
+        if (this_connectable) {
             info_this.set_connectable(*this_connectable);
         }
         info_this.set_connected(time_t{}, this_connected);
 
-        if (that_connectable)
-        {
+        if (that_connectable) {
             info_that.set_connectable(*that_connectable);
         }
         info_that.set_connected(time_t{}, that_connected);
@@ -139,13 +136,11 @@ TEST_F(PeerInfoTest, updateCanonicalPriority)
                     uint32_t{ 0x67F8FE57 } },
     };
 
-    for (auto const& [client_sockaddr_str, peer_sockaddr_str, expected] : Tests)
-    {
+    for (auto const& [client_sockaddr_str, peer_sockaddr_str, expected] : Tests) {
         auto client_sockaddr = tr_socket_address::from_string(client_sockaddr_str);
         auto peer_sockaddr = tr_socket_address::from_string(peer_sockaddr_str);
         EXPECT_TRUE(client_sockaddr && peer_sockaddr) << "Test case is bugged";
-        if (!client_sockaddr || !peer_sockaddr)
-        {
+        if (!client_sockaddr || !peer_sockaddr) {
             continue;
         }
 

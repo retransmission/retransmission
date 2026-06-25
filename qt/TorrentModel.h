@@ -17,9 +17,8 @@
 class Prefs;
 class Speed;
 
-extern "C"
-{
-    struct tr_variant;
+extern "C" {
+struct tr_variant;
 }
 
 class TorrentModel : public QAbstractListModel
@@ -28,10 +27,7 @@ class TorrentModel : public QAbstractListModel
 
 public:
     // NOLINTNEXTLINE(performance-enum-size)
-    enum Role
-    {
-        TorrentRole = Qt::UserRole
-    };
+    enum Role { TorrentRole = Qt::UserRole };
 
     explicit TorrentModel(Prefs const& prefs);
     TorrentModel& operator=(TorrentModel&&) = delete;

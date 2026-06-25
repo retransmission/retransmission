@@ -58,12 +58,9 @@ void FileTreeView::onClicked(QModelIndex const& proxy_index)
 {
     QModelIndex const model_index = proxy_->mapToSource(proxy_index);
 
-    if (model_index.column() == FileTreeModel::COL_WANTED)
-    {
+    if (model_index.column() == FileTreeModel::COL_WANTED) {
         model_->twiddleWanted(QModelIndexList{} << model_index);
-    }
-    else if (model_index.column() == FileTreeModel::COL_PRIORITY)
-    {
+    } else if (model_index.column() == FileTreeModel::COL_PRIORITY) {
         model_->twiddlePriority(QModelIndexList{} << model_index);
     }
 }
@@ -78,10 +75,8 @@ void FileTreeView::resizeEvent(QResizeEvent* event)
 
     int left = event->size().width() - 1;
 
-    for (int column = 0; column < FileTreeModel::NUM_COLUMNS; ++column)
-    {
-        if (column == FileTreeModel::COL_NAME)
-        {
+    for (int column = 0; column < FileTreeModel::NUM_COLUMNS; ++column) {
+        if (column == FileTreeModel::COL_NAME) {
             continue;
         }
 
@@ -89,8 +84,7 @@ void FileTreeView::resizeEvent(QResizeEvent* event)
 
         QStringList item_texts;
 
-        switch (column)
-        {
+        switch (column) {
         case FileTreeModel::COL_SIZE:
             item_texts << QString::fromStdString(Memory{ 999.9, Memory::Units::Bytes }.to_string())
                        << QString::fromStdString(Memory{ 999.9, Memory::Units::KBytes }.to_string())
@@ -118,8 +112,7 @@ void FileTreeView::resizeEvent(QResizeEvent* event)
 
         int item_width = 0;
 
-        for (QString const& item_text : item_texts)
-        {
+        for (QString const& item_text : item_texts) {
             item_width = std::max(item_width, Utils::measureViewItem(this, item_text));
         }
 
@@ -137,21 +130,18 @@ void FileTreeView::resizeEvent(QResizeEvent* event)
 
 void FileTreeView::keyPressEvent(QKeyEvent* event)
 {
-    if ((state() != EditingState) && (event->key() == Qt::Key_Space))
-    {
+    if ((state() != EditingState) && (event->key() == Qt::Key_Space)) {
         // handle using the keyboard to toggle the
         // wanted/unwanted state or the file priority
 
         Qt::KeyboardModifiers const modifiers = event->modifiers();
 
-        if (modifiers == Qt::NoModifier)
-        {
+        if (modifiers == Qt::NoModifier) {
             model_->twiddleWanted(selectedSourceRows());
             return;
         }
 
-        if (modifiers == Qt::ShiftModifier)
-        {
+        if (modifiers == Qt::ShiftModifier) {
             model_->twiddlePriority(selectedSourceRows());
             return;
         }
@@ -163,13 +153,11 @@ void FileTreeView::keyPressEvent(QKeyEvent* event)
 void FileTreeView::mouseDoubleClickEvent(QMouseEvent* event)
 {
     if (auto const index = currentIndex();
-        !index.isValid() || index.column() == FileTreeModel::COL_WANTED || index.column() == FileTreeModel::COL_PRIORITY)
-    {
+        !index.isValid() || index.column() == FileTreeModel::COL_WANTED || index.column() == FileTreeModel::COL_PRIORITY) {
         return;
     }
 
-    if (openSelectedItem())
-    {
+    if (openSelectedItem()) {
         return;
     }
 
@@ -178,13 +166,11 @@ void FileTreeView::mouseDoubleClickEvent(QMouseEvent* event)
 
 void FileTreeView::contextMenuEvent(QContextMenuEvent* event)
 {
-    if (auto const root_index = model_->index(0, 0); !root_index.isValid())
-    {
+    if (auto const root_index = model_->index(0, 0); !root_index.isValid()) {
         return;
     }
 
-    if (context_menu_ == nullptr)
-    {
+    if (context_menu_ == nullptr) {
         initContextMenu();
     }
 
@@ -195,13 +181,11 @@ void FileTreeView::update(FileList const& files, bool update_fields)
 {
     bool const model_was_empty = proxy_->rowCount() == 0;
 
-    for (TorrentFile const& file : files)
-    {
+    for (TorrentFile const& file : files) {
         model_->addFile(file.index, file.filename, file.wanted, file.priority, file.size, file.have, update_fields);
     }
 
-    if (model_was_empty)
-    {
+    if (model_was_empty) {
         expand(proxy_->index(0, 0));
     }
 
@@ -220,15 +204,13 @@ void FileTreeView::setEditable(bool editable)
 
 bool FileTreeView::edit(QModelIndex const& index, EditTrigger trigger, QEvent* event)
 {
-    if (selectionModel()->selectedRows().size() != 1)
-    {
+    if (selectionModel()->selectedRows().size() != 1) {
         return false;
     }
 
     QModelIndex const name_index = index.sibling(index.row(), FileTreeModel::COL_NAME);
 
-    if (editTriggers().testFlag(trigger))
-    {
+    if (editTriggers().testFlag(trigger)) {
         selectionModel()->setCurrentIndex(name_index, QItemSelectionModel::NoUpdate);
     }
 
@@ -249,8 +231,7 @@ void FileTreeView::onlyCheckSelectedItems()
 {
     QModelIndex const root_index = model_->index(0, 0);
 
-    if (!root_index.isValid())
-    {
+    if (!root_index.isValid()) {
         return;
     }
 
@@ -262,10 +243,8 @@ void FileTreeView::onlyCheckSelectedItems()
 
     auto wanted_indices_parents = std::set<QModelIndex>{};
 
-    for (QModelIndex const& i : wanted_indices)
-    {
-        for (QModelIndex p = i.parent(); p.isValid(); p = p.parent())
-        {
+    for (QModelIndex const& i : wanted_indices) {
+        for (QModelIndex p = i.parent(); p.isValid(); p = p.parent()) {
             wanted_indices_parents.insert(p);
         }
     }
@@ -274,41 +253,32 @@ void FileTreeView::onlyCheckSelectedItems()
     parents_queue.emplace(root_index);
     QModelIndexList unwanted_indices;
 
-    while (!std::empty(parents_queue))
-    {
+    while (!std::empty(parents_queue)) {
         auto const parent_index = parents_queue.front();
         parents_queue.pop();
 
         // NOLINTNEXTLINE(modernize-use-ranges)
-        if (std::binary_search(wanted_indices.begin(), wanted_indices.end(), parent_index))
-        {
+        if (std::binary_search(wanted_indices.begin(), wanted_indices.end(), parent_index)) {
             continue;
         }
 
         auto const* parent_model = parent_index.model();
 
-        for (int i = 0, count = model_->rowCount(parent_index); i < count; ++i)
-        {
+        for (int i = 0, count = model_->rowCount(parent_index); i < count; ++i) {
             QModelIndex const child_index = parent_model->index(i, 0, parent_index);
             int const child_check_state = child_index.data(FileTreeModel::WantedRole).toInt();
 
             if (child_check_state == Qt::Unchecked ||
                 // NOLINTNEXTLINE(modernize-use-ranges)
-                std::binary_search(wanted_indices.begin(), wanted_indices.end(), child_index))
-            {
+                std::binary_search(wanted_indices.begin(), wanted_indices.end(), child_index)) {
                 continue;
             }
 
-            if (child_check_state == Qt::Checked && child_index.data(FileTreeModel::FileIndexRole).toInt() >= 0)
-            {
+            if (child_check_state == Qt::Checked && child_index.data(FileTreeModel::FileIndexRole).toInt() >= 0) {
                 unwanted_indices << child_index;
-            }
-            else if (!wanted_indices_parents.contains(child_index))
-            {
+            } else if (!wanted_indices_parents.contains(child_index)) {
                 unwanted_indices << child_index;
-            }
-            else
-            {
+            } else {
                 parents_queue.emplace(child_index);
             }
         }
@@ -387,8 +357,7 @@ QModelIndexList FileTreeView::selectedSourceRows(int column) const
 {
     QModelIndexList indices;
 
-    for (QModelIndex const& i : selectionModel()->selectedRows(column))
-    {
+    for (QModelIndex const& i : selectionModel()->selectedRows(column)) {
         indices << proxy_->mapToSource(i);
     }
 
@@ -400,10 +369,8 @@ Qt::CheckState FileTreeView::getCumulativeCheckState(QModelIndexList const& indi
     bool have_checked = false;
     bool have_unchecked = false;
 
-    for (QModelIndex const& i : indices)
-    {
-        switch (i.data(FileTreeModel::WantedRole).toInt())
-        {
+    for (QModelIndex const& i : indices) {
+        switch (i.data(FileTreeModel::WantedRole).toInt()) {
         case Qt::Checked:
             have_checked = true;
             break;
@@ -419,8 +386,7 @@ Qt::CheckState FileTreeView::getCumulativeCheckState(QModelIndexList const& indi
             break;
         }
 
-        if (have_checked && have_unchecked)
-        {
+        if (have_checked && have_unchecked) {
             return Qt::PartiallyChecked;
         }
     }

@@ -42,8 +42,7 @@ typedef NS_ENUM(NSUInteger, StatusTag) {
 
 - (instancetype)initWithLib:(tr_session*)lib
 {
-    if ((self = [super initWithNibName:@"StatusBar" bundle:nil]))
-    {
+    if ((self = [super initWithNibName:@"StatusBar" bundle:nil])) {
         _fLib = lib;
 
         _fPreviousDownloadRate = -1.0;
@@ -78,14 +77,12 @@ typedef NS_ENUM(NSUInteger, StatusTag) {
 - (void)updateWithDownload:(CGFloat)dlRate upload:(CGFloat)ulRate
 {
     //set rates
-    if (!isSpeedEqual(self.fPreviousDownloadRate, dlRate))
-    {
+    if (!isSpeedEqual(self.fPreviousDownloadRate, dlRate)) {
         self.fTotalDLField.stringValue = [NSString stringForSpeed:dlRate];
         self.fPreviousDownloadRate = dlRate;
     }
 
-    if (!isSpeedEqual(self.fPreviousUploadRate, ulRate))
-    {
+    if (!isSpeedEqual(self.fPreviousUploadRate, ulRate)) {
         self.fTotalULField.stringValue = [NSString stringForSpeed:ulRate];
         self.fPreviousUploadRate = ulRate;
     }
@@ -93,14 +90,12 @@ typedef NS_ENUM(NSUInteger, StatusTag) {
     //set status button text
     NSString *statusLabel = [NSUserDefaults.standardUserDefaults stringForKey:@"StatusLabel"], *statusString;
     BOOL total;
-    if ((total = [statusLabel isEqualToString:StatusRatioTypeTotal]) || [statusLabel isEqualToString:StatusRatioTypeSession])
-    {
+    if ((total = [statusLabel isEqualToString:StatusRatioTypeTotal]) || [statusLabel isEqualToString:StatusRatioTypeSession]) {
         auto const stats = total ? tr_sessionGetCumulativeStats(self.fLib) : tr_sessionGetStats(self.fLib);
 
         statusString = [NSLocalizedString(@"Ratio", "status bar -> status label")
             stringByAppendingFormat:@": %@", [NSString stringForRatio:stats.ratio]];
-    }
-    else //StatusTransferTypeTotal or StatusTransferTypeSession
+    } else //StatusTransferTypeTotal or StatusTransferTypeSession
     {
         total = [statusLabel isEqualToString:StatusTransferTypeTotal];
 
@@ -113,8 +108,7 @@ typedef NS_ENUM(NSUInteger, StatusTag) {
                                                   [NSString stringForFileSize:stats.uploadedBytes]];
     }
 
-    if (![self.fStatusButton.title isEqualToString:statusString])
-    {
+    if (![self.fStatusButton.title isEqualToString:statusString]) {
         self.fStatusButton.title = statusString;
     }
 }
@@ -122,8 +116,7 @@ typedef NS_ENUM(NSUInteger, StatusTag) {
 - (void)setStatusLabel:(id)sender
 {
     NSString* statusLabel;
-    switch ([sender tag])
-    {
+    switch ([sender tag]) {
     case StatusTagTotalRatio:
         statusLabel = StatusRatioTypeTotal;
         break;
@@ -150,34 +143,25 @@ typedef NS_ENUM(NSUInteger, StatusTag) {
 {
     NSString *uploadText, *downloadText;
 
-    if ([NSUserDefaults.standardUserDefaults boolForKey:@"SpeedLimit"])
-    {
+    if ([NSUserDefaults.standardUserDefaults boolForKey:@"SpeedLimit"]) {
         NSString* speedString = [NSString stringWithFormat:@"%@ (%@)",
                                                            NSLocalizedString(@"%ld KB/s", "Status Bar -> speed tooltip"),
                                                            NSLocalizedString(@"Speed Limit", "Status Bar -> speed tooltip")];
 
         uploadText = [NSString stringWithFormat:speedString, [NSUserDefaults.standardUserDefaults integerForKey:@"SpeedLimitUploadLimit"]];
         downloadText = [NSString stringWithFormat:speedString, [NSUserDefaults.standardUserDefaults integerForKey:@"SpeedLimitDownloadLimit"]];
-    }
-    else
-    {
-        if ([NSUserDefaults.standardUserDefaults boolForKey:@"CheckUpload"])
-        {
+    } else {
+        if ([NSUserDefaults.standardUserDefaults boolForKey:@"CheckUpload"]) {
             uploadText = [NSString localizedStringWithFormat:NSLocalizedString(@"%ld KB/s", "Status Bar -> speed tooltip"),
                                                              [NSUserDefaults.standardUserDefaults integerForKey:@"UploadLimit"]];
-        }
-        else
-        {
+        } else {
             uploadText = NSLocalizedString(@"unlimited", "Status Bar -> speed tooltip");
         }
 
-        if ([NSUserDefaults.standardUserDefaults boolForKey:@"CheckDownload"])
-        {
+        if ([NSUserDefaults.standardUserDefaults boolForKey:@"CheckDownload"]) {
             downloadText = [NSString localizedStringWithFormat:NSLocalizedString(@"%ld KB/s", "Status Bar -> speed tooltip"),
                                                                [NSUserDefaults.standardUserDefaults integerForKey:@"DownloadLimit"]];
-        }
-        else
-        {
+        } else {
             downloadText = NSLocalizedString(@"unlimited", "Status Bar -> speed tooltip");
         }
     }
@@ -194,11 +178,9 @@ typedef NS_ENUM(NSUInteger, StatusTag) {
     SEL const action = menuItem.action;
 
     //enable sort options
-    if (action == @selector(setStatusLabel:))
-    {
+    if (action == @selector(setStatusLabel:)) {
         NSString* statusLabel;
-        switch (menuItem.tag)
-        {
+        switch (menuItem.tag) {
         case StatusTagTotalRatio:
             statusLabel = StatusRatioTypeTotal;
             break;

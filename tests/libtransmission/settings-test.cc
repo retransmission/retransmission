@@ -468,8 +468,7 @@ TEST_F(SettingsTest, canLoadPreferredTransport)
     };
     auto expected_value_vec = tr_variant::Vector{};
     expected_value_vec.reserve(std::size(expected_value));
-    for (auto const ele : expected_value)
-    {
+    for (auto const ele : expected_value) {
         expected_value_vec.emplace_back(ele);
     }
 
@@ -488,8 +487,7 @@ TEST_F(SettingsTest, canLoadPreferredTransport)
 
     expected_value_vec = tr_variant::Vector{};
     expected_value_vec.reserve(std::size(expected_value_single));
-    for (auto const ele : expected_value_single)
-    {
+    for (auto const ele : expected_value_single) {
         expected_value_vec.emplace_back(ele);
     }
     settings = std::make_unique<tr_session::Settings>();
@@ -526,8 +524,7 @@ TEST_F(SettingsTest, canSavePreferredTransport)
     auto* const l = map.find_if<tr_variant::Vector>(Key);
     ASSERT_NE(l, nullptr);
     ASSERT_EQ(std::size(ExpectedValue), std::size(*l));
-    for (size_t i = 0, n = std::size(*l); i < n; ++i)
-    {
+    for (size_t i = 0, n = std::size(*l); i < n; ++i) {
         auto const expected = ExpectedValue[i];
         auto const& actual = (*l)[i];
         ASSERT_TRUE(actual.holds_alternative<int64_t>());

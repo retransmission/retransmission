@@ -50,26 +50,22 @@ BOOL tr_get_overlapped_result_ex(
     static impl_t real_impl = nullptr;
     static bool is_real_impl_valid = false;
 
-    if (!is_real_impl_valid)
-    {
+    if (!is_real_impl_valid) {
         real_impl = reinterpret_cast<impl_t>(GetProcAddress(GetModuleHandleW(L"kernel32.dll"), "GetOverlappedResultEx"));
         is_real_impl_valid = true;
     }
 
-    if (real_impl != nullptr)
-    {
+    if (real_impl != nullptr) {
         return (*real_impl)(handle, overlapped, bytes_transferred, timeout, alertable);
     }
 
     DWORD const wait_result = WaitForSingleObjectEx(handle, timeout, alertable);
 
-    if (wait_result == WAIT_FAILED)
-    {
+    if (wait_result == WAIT_FAILED) {
         return FALSE;
     }
 
-    if (wait_result == WAIT_IO_COMPLETION || wait_result == WAIT_TIMEOUT)
-    {
+    if (wait_result == WAIT_IO_COMPLETION || wait_result == WAIT_TIMEOUT) {
         SetLastError(wait_result);
         return FALSE;
     }
@@ -96,34 +92,28 @@ public:
 
     ~Win32Watchdir() override
     {
-        if (fd_ != INVALID_HANDLE_VALUE)
-        {
+        if (fd_ != INVALID_HANDLE_VALUE) {
             CancelIoEx(fd_, &overlapped_);
         }
 
-        if (thread_ != nullptr)
-        {
+        if (thread_ != nullptr) {
             WaitForSingleObject(thread_, INFINITE);
             CloseHandle(thread_);
         }
 
-        if (event_ != nullptr)
-        {
+        if (event_ != nullptr) {
             bufferevent_free(event_);
         }
 
-        if (is_valid_socket(notify_pipe_[0]))
-        {
+        if (is_valid_socket(notify_pipe_[0])) {
             tr_net_close_socket(notify_pipe_[0]);
         }
 
-        if (is_valid_socket(notify_pipe_[1]))
-        {
+        if (is_valid_socket(notify_pipe_[1])) {
             tr_net_close_socket(notify_pipe_[1]);
         }
 
-        if (fd_ != INVALID_HANDLE_VALUE)
-        {
+        if (fd_ != INVALID_HANDLE_VALUE) {
             CloseHandle(fd_);
         }
     }
@@ -136,8 +126,7 @@ private:
     {
         auto const path = dirname();
         auto const wide_path = tr_win32_utf8_to_native(path);
-        if (std::empty(wide_path))
-        {
+        if (std::empty(wide_path)) {
             tr_logAddError(fmt::format(_("Couldn't convert '{path}' to native path"), fmt::arg("path", path)));
             return;
         }
@@ -150,8 +139,7 @@ private:
             OPEN_EXISTING,
             FILE_FLAG_BACKUP_SEMANTICS | FILE_FLAG_OVERLAPPED,
             nullptr);
-        if (fd_ == INVALID_HANDLE_VALUE)
-        {
+        if (fd_ == INVALID_HANDLE_VALUE) {
             tr_logAddError(fmt::format(_("Couldn't read '{path}'"), fmt::arg("path", path)));
             return;
         }
@@ -166,14 +154,12 @@ private:
                 Win32WatchMask,
                 nullptr,
                 &overlapped_,
-                nullptr)))
-        {
+                nullptr))) {
             tr_logAddError(fmt::format(_("Couldn't read '{path}'"), fmt::arg("path", path)));
             return;
         }
 
-        if (evutil_socketpair(AF_INET, SOCK_STREAM, 0, std::data(notify_pipe_)) == -1)
-        {
+        if (evutil_socketpair(AF_INET, SOCK_STREAM, 0, std::data(notify_pipe_)) == -1) {
             auto const error_code = errno;
             tr_logAddError(
                 fmt::format(
@@ -184,8 +170,7 @@ private:
         }
 
         event_ = bufferevent_socket_new(event_base, notify_pipe_[0], 0);
-        if (event_ == nullptr)
-        {
+        if (event_ == nullptr) {
             auto const error_code = errno;
             tr_logAddError(
                 fmt::format(
@@ -201,8 +186,7 @@ private:
 
         // NOLINTNEXTLINE(performance-no-int-to-ptr)
         thread_ = reinterpret_cast<HANDLE>(_beginthreadex(nullptr, 0, Win32Watchdir::staticThreadFunc, this, 0, nullptr));
-        if (thread_ == nullptr)
-        {
+        if (thread_ == nullptr) {
             tr_logAddError(_("Couldn't create thread"));
             return;
         }
@@ -217,12 +201,10 @@ private:
     {
         DWORD bytes_transferred = 0;
 
-        while (to_bool(tr_get_overlapped_result_ex(fd_, &overlapped_, &bytes_transferred, INFINITE, FALSE)))
-        {
+        while (to_bool(tr_get_overlapped_result_ex(fd_, &overlapped_, &bytes_transferred, INFINITE, FALSE))) {
             auto* info = reinterpret_cast<PFILE_NOTIFY_INFORMATION>(std::data(buffer_));
 
-            while (info->NextEntryOffset != 0)
-            {
+            while (info->NextEntryOffset != 0) {
                 *reinterpret_cast<BYTE**>(&info) += info->NextEntryOffset;
             }
 
@@ -239,15 +221,13 @@ private:
                     Win32WatchMask,
                     nullptr,
                     &overlapped_,
-                    nullptr)))
-            {
+                    nullptr))) {
                 tr_logAddError(_("Couldn't read directory changes"));
                 return 0;
             }
         }
 
-        if (GetLastError() != ERROR_OPERATION_ABORTED)
-        {
+        if (GetLastError() != ERROR_OPERATION_ABORTED) {
             tr_logAddError(_("Couldn't wait for directory changes"));
         }
 
@@ -276,16 +256,13 @@ private:
 
         // Read the size of the struct excluding name into buf.
         // Guaranteed to have at least sizeof(*ev) available
-        for (;;)
-        {
+        for (;;) {
             auto nread = bufferevent_read(event, ev, header_size);
-            if (nread == 0)
-            {
+            if (nread == 0) {
                 break;
             }
 
-            if (nread != header_size)
-            {
+            if (nread != header_size) {
                 tr_logAddError(
                     fmt::format(
                         _("Couldn't read event: expected {expected_size}, got {actual_size}"),
@@ -300,8 +277,7 @@ private:
             TR_ASSERT(ev->FileNameLength > 0);
             TR_ASSERT(ev->FileNameLength <= nleft);
 
-            if (nleft > name_size)
-            {
+            if (nleft > name_size) {
                 name_size = nleft;
                 buffer.resize(sizeof(FILE_NOTIFY_INFORMATION) + name_size);
                 ev = reinterpret_cast<PFILE_NOTIFY_INFORMATION>(std::data(buffer));
@@ -309,8 +285,7 @@ private:
 
             // consume entire name into buffer
             nread = bufferevent_read(event, &buffer[header_size], nleft);
-            if (nread != nleft)
-            {
+            if (nread != nleft) {
                 tr_logAddError(
                     fmt::format(
                         _("Couldn't read filename: expected {expected_size}, got {actual_size}"),
@@ -320,11 +295,9 @@ private:
             }
 
             if (ev->Action == FILE_ACTION_ADDED || ev->Action == FILE_ACTION_MODIFIED ||
-                ev->Action == FILE_ACTION_RENAMED_NEW_NAME)
-            {
+                ev->Action == FILE_ACTION_RENAMED_NEW_NAME) {
                 if (auto const name = tr_win32_native_to_utf8({ ev->FileName, ev->FileNameLength / sizeof(WCHAR) });
-                    !std::empty(name))
-                {
+                    !std::empty(name)) {
                     processFile(name);
                 }
             }

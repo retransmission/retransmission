@@ -59,8 +59,7 @@ public:
     }
 
 private:
-    struct Node
-    {
+    struct Node {
         Node(std::unique_ptr<Mediator> mediator, tr_priority_t priority) noexcept
             : mediator_{ std::move(mediator) }
             , priority_{ priority }

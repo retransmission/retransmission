@@ -37,8 +37,7 @@ namespace
 {
     auto serde = tr_variant_serde::json().inplace();
 
-    if (auto request = serde.parse(jsonreq))
-    {
+    if (auto request = serde.parse(jsonreq)) {
         auto response = tr_variant{};
         tr_rpc_request_exec(session, std::move(*request), [&response](tr_variant&& resp) { response = std::move(resp); });
         return serde.to_string(response);
@@ -80,8 +79,7 @@ TEST_F(RpcTest, NotArrayOrObject)
     requests.emplace_back(nullptr);
     requests.emplace_back(true);
 
-    for (auto& req : requests)
-    {
+    for (auto& req : requests) {
         auto response = tr_variant{};
         tr_rpc_request_exec(session_, std::move(req), [&response](tr_variant&& resp) { response = std::move(resp); });
 
@@ -146,8 +144,7 @@ TEST_F(RpcTest, idSync)
     ids.emplace_back("12345"sv);
     ids.emplace_back(nullptr);
 
-    for (auto const& request_id : ids)
-    {
+    for (auto const& request_id : ids) {
         auto request = tr_variant::Map{ 3U };
         request.try_emplace(TR_KEY_id, request_id.clone());
         request.try_emplace(TR_KEY_jsonrpc, JsonRpc::Version);
@@ -162,8 +159,7 @@ TEST_F(RpcTest, idSync)
         EXPECT_NE(result, nullptr);
         auto const error = response_map->find(TR_KEY_error);
         EXPECT_EQ(error, std::end(*response_map));
-        switch (request_id.index())
-        {
+        switch (request_id.index()) {
         case tr_variant::IntIndex:
             EXPECT_EQ(request_id.value_if<int64_t>(), response_map->value_if<int64_t>(TR_KEY_id));
             break;
@@ -190,8 +186,7 @@ TEST_F(RpcTest, idWrongType)
     ids.emplace_back(tr_variant::Vector{});
     ids.emplace_back(true);
 
-    for (auto const& request_id : ids)
-    {
+    for (auto const& request_id : ids) {
         auto request = tr_variant::Map{ 3U };
         request.try_emplace(TR_KEY_jsonrpc, JsonRpc::Version);
         request.try_emplace(TR_KEY_method, tr_variant::unmanaged_string(TR_KEY_session_stats));
@@ -249,8 +244,7 @@ TEST_F(RpcTest, idAsync)
     ids.emplace_back("12345"sv);
     ids.emplace_back(nullptr);
 
-    for (auto const& request_id : ids)
-    {
+    for (auto const& request_id : ids) {
         auto* tor = zeroTorrentInit(ZeroTorrentState::Complete);
         EXPECT_NE(nullptr, tor);
 
@@ -266,10 +260,9 @@ TEST_F(RpcTest, idAsync)
 
         auto promise = std::promise<tr_variant>{};
         auto future = promise.get_future();
-        tr_rpc_request_exec(
-            session_,
-            std::move(request),
-            [&promise](tr_variant&& resp) { promise.set_value(std::move(resp)); });
+        tr_rpc_request_exec(session_, std::move(request), [&promise](tr_variant&& resp) {
+            promise.set_value(std::move(resp));
+        });
         auto const response = future.get();
 
         auto const* const response_map = response.get_if<tr_variant::Map>();
@@ -278,8 +271,7 @@ TEST_F(RpcTest, idAsync)
         EXPECT_NE(result, nullptr);
         auto const error = response_map->find(TR_KEY_error);
         EXPECT_EQ(error, std::end(*response_map));
-        switch (request_id.index())
-        {
+        switch (request_id.index()) {
         case tr_variant::IntIndex:
             EXPECT_EQ(request_id.value_if<int64_t>(), response_map->value_if<int64_t>(TR_KEY_id));
             break;
@@ -658,8 +650,7 @@ TEST_F(RpcTest, sessionGet)
 
     // what we got
     std::set<tr_quark> actual_keys;
-    for (auto const& key : std::views::keys(*args_map))
-    {
+    for (auto const& key : std::views::keys(*args_map)) {
         actual_keys.insert(key);
     }
 
@@ -726,8 +717,7 @@ TEST_F(RpcTest, recentlyActiveEmptyOnStartup)
         !tr_sys_path_copy(
             ResumeFile,
             tr_pathbuf{ session_->resumeDir(), "/c9a337562cb0360fd6f5ab40fd2b1b81d5325dbd.resume"sv },
-            &error))
-    {
+            &error)) {
         GTEST_SKIP() << fmt::format("Failed to setup torrents and resume dir: {} ({})", error.message(), error.code());
     }
 

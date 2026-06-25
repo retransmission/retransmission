@@ -9,9 +9,8 @@
 
 #include "libtransmission/timer.h"
 
-extern "C"
-{
-    struct event_base;
+extern "C" {
+struct event_base;
 }
 
 namespace tr

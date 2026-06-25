@@ -59,8 +59,7 @@ std::string_view tr_ip_protocol_to_sv(tr_address_type type)
 {
     using namespace std::literals;
 
-    switch (type)
-    {
+    switch (type) {
     case TR_AF_INET:
         return "IPv4"sv;
     case TR_AF_INET6:
@@ -73,8 +72,7 @@ std::string_view tr_ip_protocol_to_sv(tr_address_type type)
 
 int tr_ip_protocol_to_af(tr_address_type type)
 {
-    switch (type)
-    {
+    switch (type) {
     case TR_AF_INET:
         return AF_INET;
     case TR_AF_INET6:
@@ -87,8 +85,7 @@ int tr_ip_protocol_to_af(tr_address_type type)
 
 tr_address_type tr_af_to_ip_protocol(int af)
 {
-    switch (af)
-    {
+    switch (af) {
     case AF_INET:
         return TR_AF_INET;
     case AF_INET6:
@@ -113,32 +110,24 @@ int tr_make_listen_socket_ipv6only(tr_socket_t const sock)
 
 void tr_netSetDiffServ([[maybe_unused]] tr_socket_t s, [[maybe_unused]] int tos, tr_address_type type)
 {
-    if (!is_valid_socket(s))
-    {
+    if (!is_valid_socket(s)) {
         return;
     }
 
-    if (type == TR_AF_INET)
-    {
+    if (type == TR_AF_INET) {
 #if defined(IP_TOS) && !defined(_WIN32)
 
-        if (setsockopt(s, IPPROTO_IP, IP_TOS, (void const*)&tos, sizeof(tos)) == -1)
-        {
+        if (setsockopt(s, IPPROTO_IP, IP_TOS, (void const*)&tos, sizeof(tos)) == -1) {
             tr_logAddDebug(fmt::format("Can't set TOS '{}': {}", tos, tr_net_strerror(sockerrno)));
         }
 #endif
-    }
-    else if (type == TR_AF_INET6)
-    {
+    } else if (type == TR_AF_INET6) {
 #if defined(IPV6_TCLASS) && !defined(_WIN32)
-        if (setsockopt(s, IPPROTO_IPV6, IPV6_TCLASS, (void const*)&tos, sizeof(tos)) == -1)
-        {
+        if (setsockopt(s, IPPROTO_IPV6, IPV6_TCLASS, (void const*)&tos, sizeof(tos)) == -1) {
             tr_logAddDebug(fmt::format("Can't set IPv6 QoS '{}': {}", tos, tr_net_strerror(sockerrno)));
         }
 #endif
-    }
-    else
-    {
+    } else {
         /* program should never reach here! */
         tr_logAddDebug("Something goes wrong while setting TOS/Traffic-Class");
     }
@@ -151,14 +140,12 @@ tr_socket_t tr_netBindTCPImpl(tr_address const& addr, tr_port port, bool suppres
     TR_ASSERT(addr.is_valid());
 
     auto const fd = socket(tr_ip_protocol_to_af(addr.type), SOCK_STREAM, 0);
-    if (!is_valid_socket(fd))
-    {
+    if (!is_valid_socket(fd)) {
         *err_out = sockerrno;
         return TR_BAD_SOCKET;
     }
 
-    if (evutil_make_socket_nonblocking(static_cast<evutil_socket_t>(fd)) == -1)
-    {
+    if (evutil_make_socket_nonblocking(static_cast<evutil_socket_t>(fd)) == -1) {
         *err_out = sockerrno;
         tr_net_close_socket(fd);
         return TR_BAD_SOCKET;
@@ -178,12 +165,10 @@ tr_socket_t tr_netBindTCPImpl(tr_address const& addr, tr_port port, bool suppres
 
     auto const [sock, addrlen] = tr_socket_address::to_sockaddr(addr, port);
 
-    if (bind(fd, reinterpret_cast<sockaddr const*>(&sock), addrlen) == -1)
-    {
+    if (bind(fd, reinterpret_cast<sockaddr const*>(&sock), addrlen) == -1) {
         int const err = sockerrno;
 
-        if (!suppress_msgs)
-        {
+        if (!suppress_msgs) {
             tr_logAddError(
                 fmt::format(
                     fmt::runtime(
@@ -201,8 +186,7 @@ tr_socket_t tr_netBindTCPImpl(tr_address const& addr, tr_port port, bool suppres
         return TR_BAD_SOCKET;
     }
 
-    if (!suppress_msgs)
-    {
+    if (!suppress_msgs) {
         tr_logAddDebug(fmt::format("Bound socket {:d} to port {:d} on {:s}", fd, port.host(), addr.display_name()));
     }
 
@@ -247,8 +231,7 @@ std::optional<std::pair<tr_socket_address, tr_socket_t>> tr_netAccept(tr_session
     auto sock = sockaddr_storage{};
     socklen_t len = sizeof(struct sockaddr_storage);
     auto const sockfd = accept(listening_sockfd, reinterpret_cast<sockaddr*>(&sock), &len);
-    if (!is_valid_socket(sockfd))
-    {
+    if (!is_valid_socket(sockfd)) {
         return {};
     }
 
@@ -257,8 +240,7 @@ std::optional<std::pair<tr_socket_address, tr_socket_t>> tr_netAccept(tr_session
     // and confirm we don't have too many peers
     auto const addrport = tr_socket_address::from_sockaddr(reinterpret_cast<struct sockaddr*>(&sock));
     if (!addrport || evutil_make_socket_nonblocking(static_cast<evutil_socket_t>(sockfd)) == -1 ||
-        tr_peer_socket::limit_reached(session))
-    {
+        tr_peer_socket::limit_reached(session)) {
         tr_net_close_socket(sockfd);
         return {};
     }
@@ -323,14 +305,12 @@ std::optional<tr_address> tr_address::from_string(std::string_view address_sv)
 
     auto ss = sockaddr_storage{};
     auto sslen = int{ sizeof(ss) };
-    if (evutil_parse_sockaddr_port(address_sz, reinterpret_cast<sockaddr*>(&ss), &sslen) != 0)
-    {
+    if (evutil_parse_sockaddr_port(address_sz, reinterpret_cast<sockaddr*>(&ss), &sslen) != 0) {
         return {};
     }
 
     auto addr = tr_address{};
-    switch (ss.ss_family)
-    {
+    switch (ss.ss_family) {
     case AF_INET:
         addr.addr.addr4 = reinterpret_cast<sockaddr_in*>(&ss)->sin_addr;
         addr.type = TR_AF_INET;
@@ -350,8 +330,7 @@ std::optional<tr_address> tr_address::from_string(std::string_view address_sv)
 {
     auto buf = std::array<char, std::max(INET_ADDRSTRLEN, INET6_ADDRSTRLEN)>{};
     TR_ASSERT(is_valid());
-    if (auto* name = evutil_inet_ntop(tr_ip_protocol_to_af(type), &addr, std::data(buf), std::size(buf)))
-    {
+    if (auto* name = evutil_inet_ntop(tr_ip_protocol_to_af(type), &addr, std::data(buf), std::size(buf))) {
         return std::string{ name };
     }
     return std::string{ "Invalid address" };
@@ -384,8 +363,7 @@ std::pair<tr_address, std::byte const*> tr_address::from_compact_ipv6(std::byte 
 
 std::optional<unsigned> tr_address::to_interface_index() const noexcept
 {
-    if (!is_valid())
-    {
+    if (!is_valid()) {
         tr_logAddDebug("Invalid target address to find interface index");
         return {};
     }
@@ -401,11 +379,9 @@ std::optional<unsigned> tr_address::to_interface_index() const noexcept
     // GetAdaptersAddresses function returns ERROR_BUFFER_OVERFLOW, which would require
     // calling GetAdaptersAddresses function multiple times.
     // https://learn.microsoft.com/en-us/windows/win32/api/iphlpapi/nf-iphlpapi-getadaptersaddresses
-    for (auto p_addresses_size = ULONG{ 15000 } /* 15KB */;;)
-    {
+    for (auto p_addresses_size = ULONG{ 15000 } /* 15KB */;;) {
         p_addresses.reset(operator new(p_addresses_size, std::nothrow));
-        if (!p_addresses)
-        {
+        if (!p_addresses) {
             tr_logAddDebug("Could not allocate memory for interface list");
             return {};
         }
@@ -416,10 +392,8 @@ std::optional<unsigned> tr_address::to_interface_index() const noexcept
                 nullptr,
                 reinterpret_cast<PIP_ADAPTER_ADDRESSES>(p_addresses.get()),
                 &p_addresses_size);
-            ret != ERROR_BUFFER_OVERFLOW)
-        {
-            if (ret != ERROR_SUCCESS)
-            {
+            ret != ERROR_BUFFER_OVERFLOW) {
+            if (ret != ERROR_SUCCESS) {
                 tr_logAddDebug(fmt::format("Failed to retrieve interface list: {} ({})", ret, tr_win32_format_message(ret)));
                 return {};
             }
@@ -427,18 +401,14 @@ std::optional<unsigned> tr_address::to_interface_index() const noexcept
         }
     }
 
-    for (auto const* cur = reinterpret_cast<PIP_ADAPTER_ADDRESSES>(p_addresses.get()); cur != nullptr; cur = cur->Next)
-    {
-        if (cur->OperStatus != IfOperStatusUp)
-        {
+    for (auto const* cur = reinterpret_cast<PIP_ADAPTER_ADDRESSES>(p_addresses.get()); cur != nullptr; cur = cur->Next) {
+        if (cur->OperStatus != IfOperStatusUp) {
             continue;
         }
 
-        for (auto const* sa_p = cur->FirstUnicastAddress; sa_p != nullptr; sa_p = sa_p->Next)
-        {
+        for (auto const* sa_p = cur->FirstUnicastAddress; sa_p != nullptr; sa_p = sa_p->Next) {
             if (auto if_addr = tr_socket_address::from_sockaddr(sa_p->Address.lpSockaddr);
-                if_addr && if_addr->address() == *this)
-            {
+                if_addr && if_addr->address() == *this) {
                 auto const ret = type == TR_AF_INET ? cur->IfIndex : cur->Ipv6IfIndex;
                 tr_logAddDebug(fmt::format("Found interface index for {}: {}", display_name(), ret));
                 return ret;
@@ -447,23 +417,19 @@ std::optional<unsigned> tr_address::to_interface_index() const noexcept
     }
 #else
     struct ifaddrs* ifa = nullptr;
-    if (getifaddrs(&ifa) != 0)
-    {
+    if (getifaddrs(&ifa) != 0) {
         auto err = errno;
         tr_logAddDebug(fmt::format("Failed to retrieve interface list: {} ({})", err, tr_strerror(err)));
         return {};
     }
     auto const ifa_uniq = std::unique_ptr<ifaddrs, void (*)(struct ifaddrs*)>{ ifa, freeifaddrs };
 
-    for (; ifa != nullptr; ifa = ifa->ifa_next)
-    {
-        if (ifa->ifa_addr == nullptr || (ifa->ifa_flags & IFF_UP) == 0U)
-        {
+    for (; ifa != nullptr; ifa = ifa->ifa_next) {
+        if (ifa->ifa_addr == nullptr || (ifa->ifa_flags & IFF_UP) == 0U) {
             continue;
         }
 
-        if (auto if_addr = tr_socket_address::from_sockaddr(ifa->ifa_addr); if_addr && if_addr->address() == *this)
-        {
+        if (auto if_addr = tr_socket_address::from_sockaddr(ifa->ifa_addr); if_addr && if_addr->address() == *this) {
             auto const ret = if_nametoindex(ifa->ifa_name);
             tr_logAddDebug(fmt::format("Found interface index for {}: {}", display_name(), ret));
             return ret;
@@ -478,20 +444,17 @@ std::optional<unsigned> tr_address::to_interface_index() const noexcept
 std::strong_ordering tr_address::operator<=>(tr_address const& that) const noexcept
 {
     // IPv6 addresses are always "greater than" IPv4
-    if (auto const val = this->type <=> that.type; val != 0)
-    {
+    if (auto const val = this->type <=> that.type; val != 0) {
         return val;
     }
 
     auto const val = this->is_ipv4() ?
         memcmp(&this->addr.addr4, &that.addr.addr4, sizeof(this->addr.addr4)) :
         memcmp(&this->addr.addr6.s6_addr, &that.addr.addr6.s6_addr, sizeof(this->addr.addr6.s6_addr));
-    if (val < 0)
-    {
+    if (val < 0) {
         return std::strong_ordering::less;
     }
-    if (val > 0)
-    {
+    if (val > 0) {
         return std::strong_ordering::greater;
     }
     return std::strong_ordering::equal;
@@ -534,8 +497,7 @@ std::strong_ordering tr_address::operator<=>(tr_address const& that) const noexc
 
 std::optional<tr_address> tr_address::from_ipv4_mapped() const noexcept
 {
-    if (!is_ipv6_ipv4_mapped())
-    {
+    if (!is_ipv6_ipv4_mapped()) {
         return {};
     }
 
@@ -561,8 +523,8 @@ std::optional<tr_socket_address> tr_socket_address::from_string(std::string_view
 {
     auto ss = sockaddr_storage{};
     auto sslen = int{ sizeof(ss) };
-    if (evutil_parse_sockaddr_port(tr_strbuf<char, TrAddrStrlen>{ sockaddr_sv }, reinterpret_cast<sockaddr*>(&ss), &sslen) != 0)
-    {
+    if (evutil_parse_sockaddr_port(tr_strbuf<char, TrAddrStrlen>{ sockaddr_sv }, reinterpret_cast<sockaddr*>(&ss), &sslen) !=
+        0) {
         return {};
     }
 
@@ -571,13 +533,11 @@ std::optional<tr_socket_address> tr_socket_address::from_string(std::string_view
 
 std::optional<tr_socket_address> tr_socket_address::from_sockaddr(struct sockaddr const* from)
 {
-    if (from == nullptr)
-    {
+    if (from == nullptr) {
         return {};
     }
 
-    if (from->sa_family == AF_INET)
-    {
+    if (from->sa_family == AF_INET) {
         auto const* const sin = reinterpret_cast<struct sockaddr_in const*>(from);
         auto addr = tr_address{};
         addr.type = TR_AF_INET;
@@ -585,8 +545,7 @@ std::optional<tr_socket_address> tr_socket_address::from_sockaddr(struct sockadd
         return tr_socket_address{ addr, tr_port::from_network(sin->sin_port) };
     }
 
-    if (from->sa_family == AF_INET6)
-    {
+    if (from->sa_family == AF_INET6) {
         auto const* const sin6 = reinterpret_cast<struct sockaddr_in6 const*>(from);
         auto addr = tr_address{};
         addr.type = TR_AF_INET6;
@@ -602,8 +561,7 @@ std::pair<sockaddr_storage, socklen_t> tr_socket_address::to_sockaddr(tr_address
 {
     auto ss = sockaddr_storage{};
 
-    if (addr.is_ipv4())
-    {
+    if (addr.is_ipv4()) {
         auto* const ss4 = reinterpret_cast<sockaddr_in*>(&ss);
         ss4->sin_addr = addr.addr.addr4;
         ss4->sin_family = AF_INET;

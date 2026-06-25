@@ -24,20 +24,16 @@
 
 - (id)transformedValue:(id)value
 {
-    if (!value)
-    {
+    if (!value) {
         return nil;
     }
 
     NSString* path = [value stringByExpandingTildeInPath];
     NSImage* icon;
     //show a folder icon if the folder doesn't exist
-    if ([path.pathExtension isEqualToString:@""] && ![NSFileManager.defaultManager fileExistsAtPath:path])
-    {
+    if ([path.pathExtension isEqualToString:@""] && ![NSFileManager.defaultManager fileExistsAtPath:path]) {
         icon = [NSWorkspace.sharedWorkspace iconForFileType:NSFileTypeForHFSTypeCode(kGenericFolderIcon)];
-    }
-    else
-    {
+    } else {
         icon = [NSWorkspace.sharedWorkspace iconForFile:path];
     }
 

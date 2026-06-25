@@ -38,8 +38,7 @@ struct tr_session;
 struct tr_torrent;
 
 /* added_f's bitwise-or'ed flags */
-enum : uint8_t
-{
+enum : uint8_t {
     /* true if the peer supports encryption */
     ADDED_F_ENCRYPTION_FLAG = 1,
     /* true if the peer is a seed or partial seed */
@@ -94,8 +93,7 @@ public:
 
     ~tr_peer_info()
     {
-        if (!std::empty(listen_socket_address_.port()))
-        {
+        if (!std::empty(listen_socket_address_.port())) {
             [[maybe_unused]] auto const n_prev = n_known_connectable--;
             TR_ASSERT(n_prev > 0U);
         }
@@ -125,10 +123,8 @@ public:
 
     void set_listen_port(tr_port port_in) noexcept
     {
-        if (auto& port = listen_socket_address_.port_; !std::empty(port_in) && port_in != port)
-        {
-            if (std::empty(port))
-            {
+        if (auto& port = listen_socket_address_.port_; !std::empty(port_in) && port_in != port) {
+            if (std::empty(port)) {
                 // increment known connectable peers if we did not know the listening port of this peer before
                 ++n_known_connectable;
             }
@@ -245,8 +241,7 @@ public:
 
     constexpr auto set_connected(time_t now, bool is_connected = true, bool is_disconnecting = false) noexcept
     {
-        if (is_connected_ == is_connected)
-        {
+        if (is_connected_ == is_connected) {
             return;
         }
 
@@ -254,16 +249,11 @@ public:
 
         is_connected_ = is_connected;
 
-        if (is_connected_)
-        {
+        if (is_connected_) {
             piece_data_at_ = {};
-        }
-        else if (has_transferred_piece_data())
-        {
+        } else if (has_transferred_piece_data()) {
             num_consecutive_fruitless_ = {};
-        }
-        else if (is_disconnecting)
-        {
+        } else if (is_disconnecting) {
             on_fruitless_connection();
         }
     }
@@ -282,8 +272,7 @@ public:
     void start_handshake(Args&&... args)
     {
         TR_ASSERT(!outgoing_handshake_);
-        if (!outgoing_handshake_)
-        {
+        if (!outgoing_handshake_) {
             outgoing_handshake_ = std::make_unique<tr_handshake>(std::forward<Args>(args)...);
         }
     }
@@ -302,8 +291,7 @@ public:
 
     [[nodiscard]] bool is_blocklisted(tr::Blocklists const& blocklist) const
     {
-        if (!blocklisted_.has_value())
-        {
+        if (!blocklisted_.has_value()) {
             blocklisted_ = blocklist.contains(listen_address());
         }
 
@@ -357,8 +345,7 @@ public:
 
     [[nodiscard]] constexpr std::optional<time_t> idle_secs(time_t now) const noexcept
     {
-        if (!is_connected_)
-        {
+        if (!is_connected_) {
             return {};
         }
 
@@ -374,8 +361,7 @@ public:
 
     constexpr void on_fruitless_connection() noexcept
     {
-        if (num_consecutive_fruitless_ != std::numeric_limits<decltype(num_consecutive_fruitless_)>::max())
-        {
+        if (num_consecutive_fruitless_ != std::numeric_limits<decltype(num_consecutive_fruitless_)>::max()) {
             ++num_consecutive_fruitless_;
         }
     }
@@ -391,28 +377,23 @@ public:
     {
         pex_flags_ = pex_flags;
 
-        if ((pex_flags & ADDED_F_CONNECTABLE) != 0U)
-        {
+        if ((pex_flags & ADDED_F_CONNECTABLE) != 0U) {
             set_connectable();
         }
 
-        if ((pex_flags & ADDED_F_UTP_FLAGS) != 0U)
-        {
+        if ((pex_flags & ADDED_F_UTP_FLAGS) != 0U) {
             set_utp_supported();
         }
 
-        if ((pex_flags & ADDED_F_ENCRYPTION_FLAG) != 0U)
-        {
+        if ((pex_flags & ADDED_F_ENCRYPTION_FLAG) != 0U) {
             set_encryption_preferred();
         }
 
-        if ((pex_flags & ADDED_F_HOLEPUNCH) != 0U)
-        {
+        if ((pex_flags & ADDED_F_HOLEPUNCH) != 0U) {
             set_holepunch_supported();
         }
 
-        if ((pex_flags & ADDED_F_UPLOAD_ONLY_FLAG) != 0U)
-        {
+        if ((pex_flags & ADDED_F_UPLOAD_ONLY_FLAG) != 0U) {
             set_upload_only();
         }
     }
@@ -421,60 +402,41 @@ public:
     {
         auto ret = pex_flags_;
 
-        if (is_connectable_)
-        {
-            if (*is_connectable_)
-            {
+        if (is_connectable_) {
+            if (*is_connectable_) {
                 ret |= ADDED_F_CONNECTABLE;
-            }
-            else
-            {
+            } else {
                 ret &= ~ADDED_F_CONNECTABLE;
             }
         }
 
-        if (is_utp_supported_)
-        {
-            if (*is_utp_supported_)
-            {
+        if (is_utp_supported_) {
+            if (*is_utp_supported_) {
                 ret |= ADDED_F_UTP_FLAGS;
-            }
-            else
-            {
+            } else {
                 ret &= ~ADDED_F_UTP_FLAGS;
             }
         }
 
-        if (is_encryption_preferred_)
-        {
-            if (*is_encryption_preferred_)
-            {
+        if (is_encryption_preferred_) {
+            if (*is_encryption_preferred_) {
                 ret |= ADDED_F_ENCRYPTION_FLAG;
-            }
-            else
-            {
+            } else {
                 ret &= ~ADDED_F_ENCRYPTION_FLAG;
             }
         }
 
-        if (is_holepunch_supported_)
-        {
-            if (*is_holepunch_supported_)
-            {
+        if (is_holepunch_supported_) {
+            if (*is_holepunch_supported_) {
                 ret |= ADDED_F_HOLEPUNCH;
-            }
-            else
-            {
+            } else {
                 ret &= ~ADDED_F_HOLEPUNCH;
             }
         }
 
-        if (is_upload_only())
-        {
+        if (is_upload_only()) {
             ret |= ADDED_F_UPLOAD_ONLY_FLAG;
-        }
-        else
-        {
+        } else {
             ret &= ~ADDED_F_UPLOAD_ONLY_FLAG;
         }
 
@@ -485,13 +447,11 @@ public:
 
     void maybe_update_canonical_priority(tr_address client_external_address)
     {
-        if (!client_external_address.is_valid() || client_external_address.type != listen_address().type)
-        {
+        if (!client_external_address.is_valid() || client_external_address.type != listen_address().type) {
             return;
         }
 
-        if (client_external_address == client_external_address_)
-        {
+        if (client_external_address == client_external_address_) {
             return;
         }
 
@@ -517,8 +477,7 @@ private:
         // data, try to reconnect to them sooner rather that later -- we don't
         // want network troubles to get in the way of a good peer.
         auto const unreachable = is_connectable_ && !*is_connectable_;
-        if (!unreachable && now - piece_data_at_ <= MinimumReconnectIntervalSecs * 2)
-        {
+        if (!unreachable && now - piece_data_at_ <= MinimumReconnectIntervalSecs * 2) {
             return MinimumReconnectIntervalSecs;
         }
 
@@ -526,13 +485,11 @@ private:
         // and failed to connect to the peer. Penalize peers that were
         // unreachable the last time we tried
         auto step = num_consecutive_fruitless_;
-        if (unreachable)
-        {
+        if (unreachable) {
             step += 2;
         }
 
-        switch (step)
-        {
+        switch (step) {
         case 0:
             return 0U;
         case 1:
@@ -591,8 +548,7 @@ private:
     std::function<tr_port()> const get_client_advertised_port_;
 };
 
-struct tr_pex
-{
+struct tr_pex {
     tr_pex() = default;
 
     explicit tr_pex(tr_socket_address socket_address_in, uint8_t flags_in = {})
@@ -610,8 +566,7 @@ struct tr_pex
     template<typename OutputIt>
     static OutputIt to_compact(OutputIt out, tr_pex const* pex, size_t n_pex)
     {
-        for (size_t i = 0; i < n_pex; ++i)
-        {
+        for (size_t i = 0; i < n_pex; ++i) {
             out = pex[i].to_compact(out);
         }
         return out;
@@ -674,11 +629,7 @@ void tr_peerMgrAddIncoming(tr_peerMgr* manager, std::shared_ptr<tr_peer_socket> 
 
 size_t tr_peerMgrAddPex(tr_torrent* tor, tr_peer_from from, tr_pex const* pex, size_t n_pex);
 
-enum : uint8_t
-{
-    TR_PEERS_CONNECTED,
-    TR_PEERS_INTERESTING
-};
+enum : uint8_t { TR_PEERS_CONNECTED, TR_PEERS_INTERESTING };
 
 [[nodiscard]] std::vector<tr_pex> tr_peerMgrGetPeers(
     tr_torrent const* tor,

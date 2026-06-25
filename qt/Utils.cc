@@ -61,8 +61,7 @@ QString Utils::removeTrailingDirSeparator(QString const& path)
 {
     auto i = path.size();
 
-    while (i > 1 && isSlashChar(path[i - 1]))
-    {
+    while (i > 1 && isSlashChar(path[i - 1])) {
         --i;
     }
 
@@ -104,20 +103,17 @@ void Utils::updateSpinBoxFormat(QSpinBox* spinBox, char const* context, char con
 {
     QString const units_format = QCoreApplication::translate(context, format, nullptr, spinBox->value());
     auto const placeholder_pos = units_format.indexOf(placeholder);
-    if (placeholder_pos == -1)
-    {
+    if (placeholder_pos == -1) {
         return;
     }
 
     auto const units_prefix = units_format.left(placeholder_pos);
     auto const units_suffix = units_format.mid(placeholder_pos + placeholder.size());
 
-    if (spinBox->prefix() != units_prefix)
-    {
+    if (spinBox->prefix() != units_prefix) {
         spinBox->setPrefix(units_prefix);
     }
-    if (spinBox->suffix() != units_suffix)
-    {
+    if (spinBox->suffix() != units_suffix) {
         spinBox->setSuffix(units_suffix);
     }
 }

@@ -70,20 +70,13 @@ using tr_socket_t = int;
 #include "libtransmission/types.h"
 #include "libtransmission/utils.h" // for tr_compare_3way()
 
-enum tr_address_type : uint8_t
-{
-    TR_AF_INET = 0,
-    TR_AF_INET6,
-    NUM_TR_AF_INET_TYPES,
-    TR_AF_UNSPEC = NUM_TR_AF_INET_TYPES
-};
+enum tr_address_type : uint8_t { TR_AF_INET = 0, TR_AF_INET6, NUM_TR_AF_INET_TYPES, TR_AF_UNSPEC = NUM_TR_AF_INET_TYPES };
 
 std::string_view tr_ip_protocol_to_sv(tr_address_type type);
 int tr_ip_protocol_to_af(tr_address_type type);
 tr_address_type tr_af_to_ip_protocol(int af);
 
-struct tr_address
-{
+struct tr_address {
     [[nodiscard]] static std::optional<tr_address> from_string(std::string_view address_sv);
     [[nodiscard]] static std::pair<tr_address, std::byte const*> from_compact_ipv4(std::byte const* compact) noexcept;
     [[nodiscard]] static std::pair<tr_address, std::byte const*> from_compact_ipv6(std::byte const* compact) noexcept;
@@ -122,8 +115,7 @@ struct tr_address
     template<typename OutputIt>
     OutputIt to_compact(OutputIt out) const // NOLINT(modernize-use-nodiscard)
     {
-        switch (type)
-        {
+        switch (type) {
         case TR_AF_INET:
             return to_compact_ipv4(out, addr.addr4);
         case TR_AF_INET6:
@@ -319,8 +311,7 @@ struct tr_address
     [[nodiscard]] std::optional<tr_address> from_ipv4_mapped() const noexcept;
 
     tr_address_type type = NUM_TR_AF_INET_TYPES;
-    union
-    {
+    union {
         struct in6_addr addr6;
         struct in_addr addr4;
     } addr = {};
@@ -331,8 +322,7 @@ struct tr_address
 
     [[nodiscard]] static auto any(tr_address_type type) noexcept
     {
-        switch (type)
-        {
+        switch (type) {
         case TR_AF_INET:
             return tr_address{ .type = TR_AF_INET, .addr = { .addr4 = { INADDR_ANY } } };
         case TR_AF_INET6:
@@ -359,8 +349,7 @@ struct tr_address
     }
 };
 
-struct tr_socket_address
-{
+struct tr_socket_address {
     tr_socket_address() = default;
 
     tr_socket_address(tr_address const& address, tr_port port)
@@ -430,8 +419,7 @@ struct tr_socket_address
     template<typename OutputIt>
     static OutputIt to_compact(OutputIt out, sockaddr const* saddr)
     {
-        if (auto socket_address = from_sockaddr(saddr); socket_address)
-        {
+        if (auto socket_address = from_sockaddr(saddr); socket_address) {
             return socket_address->to_compact(out);
         }
 
@@ -459,8 +447,7 @@ struct tr_socket_address
 
     [[nodiscard]] auto operator<=>(tr_socket_address const& that) const noexcept
     {
-        if (auto const val = address_ <=> that.address_; val != 0)
-        {
+        if (auto const val = address_ <=> that.address_; val != 0) {
             return val;
         }
 
@@ -482,8 +469,7 @@ struct tr_socket_address
 };
 
 template<>
-struct std::hash<tr_socket_address>
-{
+struct std::hash<tr_socket_address> {
 public:
     std::size_t operator()(tr_socket_address const& socket_address) const noexcept
     {
@@ -500,8 +486,7 @@ private:
 
     [[nodiscard]] static std::size_t ip_hash(tr_address const& addr) noexcept
     {
-        switch (addr.type)
-        {
+        switch (addr.type) {
         case TR_AF_INET:
             return IPv4Hasher(addr.addr.addr4.s_addr);
         case TR_AF_INET6:

@@ -27,8 +27,7 @@ namespace
 
 char const* ccrypto_error_to_str(CCCryptorStatus error_code)
 {
-    switch (error_code)
-    {
+    switch (error_code) {
     case kCCSuccess:
         return "Operation completed normally";
 
@@ -62,8 +61,7 @@ char const* ccrypto_error_to_str(CCCryptorStatus error_code)
 
 void log_ccrypto_error(CCCryptorStatus error_code, char const* file, long line)
 {
-    if (tr_logLevelIsActive(TR_LOG_ERROR))
-    {
+    if (tr_logLevelIsActive(TR_LOG_ERROR)) {
         tr_logAddMessage(
             file,
             line,
@@ -80,8 +78,7 @@ bool check_ccrypto_result(CCCryptorStatus result, char const* file, long line)
 {
     bool const ret = result == kCCSuccess;
 
-    if (!ret)
-    {
+    if (!ret) {
         log_ccrypto_error(result, file, line);
     }
 
@@ -110,8 +107,7 @@ void tr_sha1::clear()
 
 void tr_sha1::add(void const* data, size_t data_length)
 {
-    if (data_length == 0U)
-    {
+    if (data_length == 0U) {
         return;
     }
 
@@ -144,8 +140,7 @@ void tr_sha256::clear()
 
 void tr_sha256::add(void const* data, size_t data_length)
 {
-    if (data_length == 0U)
-    {
+    if (data_length == 0U) {
         return;
     }
 
@@ -164,8 +159,7 @@ tr_sha256_digest_t tr_sha256::finish()
 
 bool tr_rand_buffer_crypto(void* buffer, size_t length)
 {
-    if (length == 0)
-    {
+    if (length == 0) {
         return true;
     }
 

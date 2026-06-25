@@ -44,12 +44,9 @@
 
     //figure out the magnitude of the two, since we can't rely on comparing the units because of localization and pluralization issues (for example, "1 byte of 2 bytes")
     BOOL partialUnitsSame;
-    if (partialSize == 0)
-    {
+    if (partialSize == 0) {
         partialUnitsSame = YES; //we want to just show "0" when we have no partial data, so always set to the same units
-    }
-    else
-    {
+    } else {
         auto const magnitudePartial = static_cast<unsigned int>(log(partialSize) / log(1000));
         // we have to catch 0 with a special case, so might as well avoid the math for all of magnitude 0
         auto const magnitudeFull = static_cast<unsigned int>(fullSize < 1000 ? 0 : log(fullSize) / log(1000));
@@ -83,23 +80,19 @@
 {
     //N/A is different than libtransmission's
 
-    if (static_cast<int>(ratio) == TR_RATIO_NA)
-    {
+    if (static_cast<int>(ratio) == TR_RATIO_NA) {
         return NSLocalizedString(@"N/A", "No Ratio");
     }
 
-    if (static_cast<int>(ratio) == TR_RATIO_INF)
-    {
+    if (static_cast<int>(ratio) == TR_RATIO_INF) {
         return @"\xE2\x88\x9E";
     }
 
-    if (ratio < 10.0)
-    {
+    if (ratio < 10.0) {
         return [NSString localizedStringWithFormat:@"%.2f", tr_truncd(ratio, 2)];
     }
 
-    if (ratio < 100.0)
-    {
+    if (ratio < 100.0) {
         return [NSString localizedStringWithFormat:@"%.1f", tr_truncd(ratio, 1)];
     }
 
@@ -119,16 +112,11 @@
         shortFormatter.numberStyle = NSNumberFormatterPercentStyle;
         shortFormatter.maximumFractionDigits = 1;
     });
-    if (progress >= 1.0)
-    {
+    if (progress >= 1.0) {
         return [shortFormatter stringFromNumber:@(1)];
-    }
-    else if (longDecimals)
-    {
+    } else if (longDecimals) {
         return [longFormatter stringFromNumber:@(MIN(progress, 0.9999))];
-    }
-    else
-    {
+    } else {
         return [shortFormatter stringFromNumber:@(MIN(progress, 0.999))];
     }
 }
@@ -142,10 +130,8 @@
 - (NSArray<NSString*>*)nonEmptyComponentsSeparatedByCharactersInSet:(NSCharacterSet*)separators
 {
     NSMutableArray<NSString*>* components = [NSMutableArray array];
-    for (NSString* evaluatedObject in [self componentsSeparatedByCharactersInSet:separators])
-    {
-        if (evaluatedObject.length > 0)
-        {
+    for (NSString* evaluatedObject in [self componentsSeparatedByCharactersInSet:separators]) {
+        if (evaluatedObject.length > 0) {
             [components addObject:evaluatedObject];
         }
     }
@@ -156,15 +142,13 @@
 {
     // UTF-8 encoding
     NSString* fullPath = @(bytes);
-    if (fullPath)
-    {
+    if (fullPath) {
         return fullPath;
     }
     // autodetection of the encoding (#3434)
     NSData* data = [NSData dataWithBytes:(void const*)bytes length:sizeof(unsigned char) * strlen(bytes)];
     [NSString stringEncodingForData:data encodingOptions:nil convertedString:&fullPath usedLossyConversion:nil];
-    if (fullPath)
-    {
+    if (fullPath) {
         return fullPath;
     }
     // hexa encoding
@@ -187,8 +171,7 @@
     if (speed < 99.995) // 1.00 MB/s to 99.99 MB/s
     {
         return [NSString localizedStringWithFormat:@"%.2f %@", speed, mb];
-    }
-    else if (speed < 999.95) // 100.0 MB/s to 999.9 MB/s
+    } else if (speed < 999.95) // 100.0 MB/s to 999.9 MB/s
     {
         return [NSString localizedStringWithFormat:@"%.1f %@", speed, mb];
     }

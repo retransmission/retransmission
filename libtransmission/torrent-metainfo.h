@@ -19,8 +19,7 @@
 
 struct tr_error;
 
-struct tr_torrent_metainfo : public tr_magnet_metainfo
-{
+struct tr_torrent_metainfo : public tr_magnet_metainfo {
 public:
     [[nodiscard]] constexpr auto empty() const noexcept
     {
@@ -197,11 +196,7 @@ private:
     static bool parse_impl(tr_torrent_metainfo& setme, std::string_view benc, tr_error* error);
     static std::string fix_webseed_url(tr_torrent_metainfo const& tm, std::string_view url);
 
-    enum class BasenameFormat : uint8_t
-    {
-        Hash,
-        NameAndPartialHash
-    };
+    enum class BasenameFormat : uint8_t { Hash, NameAndPartialHash };
 
     [[nodiscard]] static std::string make_filename(
         std::string_view dirname,

@@ -75,8 +75,7 @@ void RelocateDialog::Impl::startMovingNextTorrent()
 {
     auto* const tor = core_->find_torrent(torrent_ids_.back());
 
-    if (tor != nullptr)
-    {
+    if (tor != nullptr) {
         tr_torrentSetLocation(tor, targetLocation.c_str(), do_move_, &done_);
     }
 
@@ -91,8 +90,7 @@ void RelocateDialog::Impl::startMovingNextTorrent()
  * if so, delete the dialog */
 bool RelocateDialog::Impl::onTimer()
 {
-    if (done_ == TR_LOC_ERROR)
-    {
+    if (done_ == TR_LOC_ERROR) {
         auto d = std::make_shared<Gtk::MessageDialog>(
             *message_dialog_,
             _("Couldn't move torrent"),
@@ -101,26 +99,20 @@ bool RelocateDialog::Impl::onTimer()
             TR_GTK_BUTTONS_TYPE(CLOSE),
             true);
 
-        d->signal_response().connect(
-            [this, d](int /*response*/) mutable
-            {
-                d.reset();
-                message_dialog_.reset();
-                dialog_.close();
-            });
+        d->signal_response().connect([this, d](int /*response*/) mutable {
+            d.reset();
+            message_dialog_.reset();
+            dialog_.close();
+        });
 
         d->show();
         return false;
     }
 
-    if (done_ == TR_LOC_DONE)
-    {
-        if (!torrent_ids_.empty())
-        {
+    if (done_ == TR_LOC_DONE) {
+        if (!torrent_ids_.empty()) {
             startMovingNextTorrent();
-        }
-        else
-        {
+        } else {
             message_dialog_.reset();
             dialog_.close();
             return false;
@@ -132,8 +124,7 @@ bool RelocateDialog::Impl::onTimer()
 
 void RelocateDialog::Impl::onResponse(int response)
 {
-    if (response == TR_GTK_RESPONSE_TYPE(APPLY))
-    {
+    if (response == TR_GTK_RESPONSE_TYPE(APPLY)) {
         auto const location = chooser_->get_filename();
 
         do_move_ = move_tb_->get_active();
@@ -160,9 +151,7 @@ void RelocateDialog::Impl::onResponse(int response)
         done_ = TR_LOC_DONE;
         timer_ = Glib::signal_timeout().connect_seconds(sigc::mem_fun(*this, &Impl::onTimer), 1);
         onTimer();
-    }
-    else
-    {
+    } else {
         dialog_.close();
     }
 }
@@ -206,13 +195,10 @@ RelocateDialog::Impl::Impl(
     dialog_.signal_response().connect(sigc::mem_fun(*this, &Impl::onResponse));
 
     auto recent_dirs = gtr_get_recent_dirs("relocate");
-    if (recent_dirs.empty())
-    {
+    if (recent_dirs.empty()) {
         /* default to download dir */
         chooser_->set_filename(gtr_pref_string_get(TR_KEY_download_dir));
-    }
-    else
-    {
+    } else {
         /* set last used as target */
         chooser_->set_filename(recent_dirs.front());
         recent_dirs.pop_front();

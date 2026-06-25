@@ -28,11 +28,9 @@
  *
  * @see tr_variant_serde
  */
-struct tr_variant
-{
+struct tr_variant {
 public:
-    enum Type : uint8_t
-    {
+    enum Type : uint8_t {
         NoneIndex,
         NullIndex,
         BoolIndex,
@@ -88,8 +86,7 @@ public:
 
         [[nodiscard]] constexpr auto find(tr_quark const key) noexcept
         {
-            auto const predicate = [key](auto const& item)
-            {
+            auto const predicate = [key](auto const& item) {
                 return item.first == key;
             };
             return std::ranges::find_if(vec_, predicate);
@@ -122,8 +119,7 @@ public:
 
         auto erase(tr_quark const key)
         {
-            if (auto iter = find(key); iter != end())
-            {
+            if (auto iter = find(key); iter != end()) {
                 vec_.erase(iter);
                 return 1U;
             }
@@ -133,14 +129,12 @@ public:
 
         constexpr bool replace_key(tr_quark const old_key, tr_quark const new_key)
         {
-            if (contains(new_key))
-            {
+            if (contains(new_key)) {
                 return false;
             }
 
             auto iter = find(old_key);
-            if (iter == end())
-            {
+            if (iter == end()) {
                 return false;
             }
 
@@ -150,8 +144,7 @@ public:
 
         [[nodiscard]] tr_variant& operator[](tr_quark const& key)
         {
-            if (auto const iter = find(key); iter != end())
-            {
+            if (auto const iter = find(key); iter != end()) {
                 return iter->second;
             }
 
@@ -161,8 +154,7 @@ public:
         template<typename Val>
         std::pair<tr_variant&, bool> try_emplace(tr_quark const key, Val&& val)
         {
-            if (auto iter = find(key); iter != end())
-            {
+            if (auto iter = find(key); iter != end()) {
                 return { iter->second, false };
             }
 
@@ -173,8 +165,7 @@ public:
         std::pair<tr_variant&, bool> insert_or_assign(tr_quark const key, Val&& val)
         {
             auto res = try_emplace(key, std::forward<Val>(val));
-            if (!res.second)
-            {
+            if (!res.second) {
                 res.first = std::forward<Val>(val);
             }
             return res;
@@ -198,8 +189,7 @@ public:
         template<typename Type>
         [[nodiscard]] std::optional<Type> value_if(tr_quark const key) const noexcept
         {
-            if (auto it = find(key); it != end())
-            {
+            if (auto it = find(key); it != end()) {
                 return it->second.value_if<Type>();
             }
 
@@ -273,28 +263,20 @@ public:
     template<typename Val>
     tr_variant& operator=(Val value)
     {
-        if constexpr (std::is_same_v<Val, std::string_view>)
-        {
+        if constexpr (std::is_same_v<Val, std::string_view>) {
             // Note: std::string_view assignment takes ownership by copying.
             // Use unmanaged_string() if you want the variant to hold a shallow copy.
             val_.emplace<std::string>(value);
-        }
-        else if constexpr (std::is_same_v<Val, char const*> || std::is_same_v<Val, char*>)
-        {
+        } else if constexpr (std::is_same_v<Val, char const*> || std::is_same_v<Val, char*>) {
             val_.emplace<std::string>(value != nullptr ? value : "");
         }
         // note: std::is_integral_v<bool> is true, so this check
         // must come first to prevent bools from being stored as ints
-        else if constexpr (std::is_same_v<Val, bool>)
-        {
+        else if constexpr (std::is_same_v<Val, bool>) {
             val_.emplace<bool>(value);
-        }
-        else if constexpr (std::is_integral_v<Val> || std::is_enum_v<Val>)
-        {
+        } else if constexpr (std::is_integral_v<Val> || std::is_enum_v<Val>) {
             val_ = static_cast<int64_t>(value);
-        }
-        else
-        {
+        } else {
             val_ = std::move(value);
         }
         return *this;
@@ -345,8 +327,7 @@ public:
     template<typename Val>
     [[nodiscard]] constexpr std::optional<Val> value_if() const noexcept
     {
-        if (auto const* const val = get_if<Val>())
-        {
+        if (auto const* const val = get_if<Val>()) {
             return *val;
         }
 
@@ -359,12 +340,9 @@ public:
     template<typename Val>
     [[nodiscard]] constexpr bool holds_alternative() const noexcept
     {
-        if constexpr (std::is_same_v<Val, std::string_view>)
-        {
+        if constexpr (std::is_same_v<Val, std::string_view>) {
             return std::holds_alternative<std::string>(val_) || std::holds_alternative<std::string_view>(val_);
-        }
-        else
-        {
+        } else {
             return std::holds_alternative<Val>(val_);
         }
     }
@@ -407,8 +385,7 @@ private:
 template<>
 [[nodiscard]] constexpr std::optional<std::string_view> tr_variant::value_if() const noexcept
 {
-    switch (index())
-    {
+    switch (index()) {
     case StringIndex:
         return *std::get_if<std::string>(&val_);
 
@@ -423,8 +400,7 @@ template<>
 template<>
 [[nodiscard]] constexpr std::optional<int64_t> tr_variant::value_if() const noexcept
 {
-    switch (index())
-    {
+    switch (index()) {
     case IntIndex:
         return *get_if<IntIndex>();
 
@@ -439,26 +415,21 @@ template<>
 template<>
 [[nodiscard]] constexpr std::optional<bool> tr_variant::value_if() const noexcept
 {
-    switch (index())
-    {
+    switch (index()) {
     case BoolIndex:
         return *get_if<BoolIndex>();
 
     case IntIndex:
-        if (auto const val = *get_if<IntIndex>(); val == 0 || val == 1)
-        {
+        if (auto const val = *get_if<IntIndex>(); val == 0 || val == 1) {
             return val != 0;
         }
         break;
 
     case StringIndex:
     case StringViewIndex:
-        if (auto const val = value_if<std::string_view>(); val == "true")
-        {
+        if (auto const val = value_if<std::string_view>(); val == "true") {
             return true;
-        }
-        else if (val == "false")
-        {
+        } else if (val == "false") {
             return false;
         }
         break;
@@ -479,8 +450,7 @@ template<std::integral Val>
     static_assert(!std::is_same_v<Val, bool>);
     static_assert(!std::is_same_v<Val, int64_t>);
     if (auto val = value_if<int64_t>(); val && std::cmp_greater_equal(*val, std::numeric_limits<Val>::lowest()) &&
-        std::cmp_less_equal(*val, std::numeric_limits<Val>::max()))
-    {
+        std::cmp_less_equal(*val, std::numeric_limits<Val>::max())) {
         return val;
     }
 
@@ -553,11 +523,7 @@ public:
 private:
     friend tr_variant;
 
-    enum class Type : uint8_t
-    {
-        Benc,
-        Json
-    };
+    enum class Type : uint8_t { Benc, Json };
 
     explicit tr_variant_serde(Type type)
         : type_{ type }

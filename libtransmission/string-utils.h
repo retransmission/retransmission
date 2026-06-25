@@ -91,8 +91,7 @@ template <typename... Args> constexpr std::string_view tr_strv_sep(std::string_v
 
 template <typename... Args> constexpr bool tr_strv_sep(std::string_view* sv, std::string_view* token, Args&&... args)
 {
-    if (std::empty(*sv))
-    {
+    if (std::empty(*sv)) {
         return false;
     }
 

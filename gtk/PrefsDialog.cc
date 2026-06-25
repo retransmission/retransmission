@@ -82,13 +82,11 @@ private:
 
 void PrefsDialog::Impl::response_cb(int response)
 {
-    if (response == TR_GTK_RESPONSE_TYPE(HELP))
-    {
+    if (response == TR_GTK_RESPONSE_TYPE(HELP)) {
         gtr_open_uri(gtr_get_help_uri() + "/html/preferences.html");
     }
 
-    if (response == TR_GTK_RESPONSE_TYPE(CLOSE))
-    {
+    if (response == TR_GTK_RESPONSE_TYPE(CLOSE)) {
         dialog_.close();
     }
 }
@@ -159,8 +157,7 @@ private:
         g_return_val_if_fail(last_change_it != spin_timers_.end(), false);
 
         // if the user is still making changes, then do nothing yet
-        if (last_change_it->second.first->elapsed() < SpinIdleThresholdSec)
-        {
+        if (last_change_it->second.first->elapsed() < SpinIdleThresholdSec) {
             return true;
         }
 
@@ -178,8 +175,7 @@ private:
         // user may be spinning through many values, so let's hold off
         // for a moment to keep from flooding the core with changes
         auto last_change_it = spin_timers_.find(key);
-        if (last_change_it == spin_timers_.end())
-        {
+        if (last_change_it == spin_timers_.end()) {
             auto timeout_tag = Glib::signal_timeout().connect_seconds([this, &w, key]() { return spun_cb_idle<T>(w, key); }, 1);
             last_change_it = spin_timers_.emplace(key, std::pair(std::make_unique<Glib::Timer>(), timeout_tag)).first;
         }
@@ -211,8 +207,7 @@ PageBase::PageBase(BaseObjectType* cast_item, Glib::RefPtr<Gtk::Builder> const& 
 
 PageBase::~PageBase()
 {
-    for (auto& [key, info] : spin_timers_)
-    {
+    for (auto& [key, info] : spin_timers_) {
         info.second.disconnect();
     }
 }
@@ -234,8 +229,7 @@ Gtk::Entry* PageBase::init_entry(Glib::ustring const& name, tr_quark const key)
 {
     auto* const entry = get_widget<Gtk::Entry>(name);
 
-    if (auto const value = gtr_pref_string_get(key); !value.empty())
-    {
+    if (auto const value = gtr_pref_string_get(key); !value.empty()) {
         entry->set_text(value);
     }
 
@@ -250,8 +244,7 @@ Gtk::TextView* PageBase::init_text_view(Glib::ustring const& name, tr_quark cons
     auto buffer = view->get_buffer();
     buffer->set_text(gtr_pref_string_get(key));
 
-    auto const save_buffer = [this, buffer, key]()
-    {
+    auto const save_buffer = [this, buffer, key]() {
         core_->set_pref(key, buffer->get_text());
     };
 
@@ -276,8 +269,7 @@ PathButton* PageBase::init_chooser_button(Glib::ustring const& name, tr_quark co
 {
     auto* const button = get_widget_derived<PathButton>(name);
 
-    if (auto const path = gtr_pref_string_get(key); !path.empty())
-    {
+    if (auto const path = gtr_pref_string_get(key); !path.empty()) {
         button->set_filename(path);
     }
 
@@ -326,8 +318,7 @@ Gtk::ComboBox* PageBase::init_time_combo(Glib::ustring const& name, tr_quark con
     /* build a store at 15 minute intervals */
     auto store = Gtk::ListStore::create(time_cols);
 
-    for (int i = 0; i < 60 * 24; i += 15)
-    {
+    for (int i = 0; i < 60 * 24; i += 15) {
         auto const iter = store->append();
         (*iter)[time_cols.offset] = i;
         (*iter)[time_cols.title] = fmt::format("{:02}:{:02}", i / 60, i % 60);
@@ -340,14 +331,11 @@ Gtk::ComboBox* PageBase::init_time_combo(Glib::ustring const& name, tr_quark con
     combo->pack_start(*r, true);
     combo->add_attribute(r->property_text(), time_cols.title);
     combo->set_active(gtr_pref_int_get<int>(key) / 15);
-    combo->signal_changed().connect(
-        [this, combo, key]()
-        {
-            if (auto const iter = combo->get_active(); iter)
-            {
-                core_->set_pref(key, iter->get_value(time_cols.offset));
-            }
-        });
+    combo->signal_changed().connect([this, combo, key]() {
+        if (auto const iter = combo->get_active(); iter) {
+            core_->set_pref(key, iter->get_value(time_cols.offset));
+        }
+    });
     return combo;
 }
 
@@ -408,8 +396,7 @@ private:
 
 void DownloadingPage::on_core_prefs_changed(tr_quark const key)
 {
-    if (key == TR_KEY_download_dir)
-    {
+    if (key == TR_KEY_download_dir) {
         std::string const download_dir = tr_sessionGetDownloadDir(core_->get_session());
         freespace_label_->set_dir(download_dir);
     }
@@ -509,12 +496,9 @@ DesktopPage::DesktopPage(
 {
     init_check_button("inhibit_hibernation_check", TR_KEY_inhibit_desktop_hibernation);
 
-    if (SystemTrayIcon::is_available())
-    {
+    if (SystemTrayIcon::is_available()) {
         init_check_button("show_systray_icon_check", TR_KEY_show_notification_area_icon);
-    }
-    else
-    {
+    } else {
         get_widget<Gtk::CheckButton>("show_systray_icon_check")->hide();
     }
 
@@ -617,8 +601,8 @@ PrivacyPage::PrivacyPage(
     updateBlocklistText();
     updateBlocklistButton_->signal_clicked().connect([this]() { onBlocklistUpdate(); });
     updateBlocklistButton_->set_sensitive(check_->get_active());
-    blocklist_url_entry->signal_changed().connect([this, blocklist_url_entry]()
-                                                  { on_blocklist_url_changed(blocklist_url_entry); });
+    blocklist_url_entry->signal_changed().connect(
+        [this, blocklist_url_entry]() { on_blocklist_url_changed(blocklist_url_entry); });
     on_blocklist_url_changed(blocklist_url_entry);
 
     init_check_button("blocklist_autoupdate_check", TR_KEY_blocklist_updates_enabled);
@@ -687,12 +671,10 @@ Glib::RefPtr<Gtk::ListStore> RemotePage::whitelist_tree_model_new(std::string co
     std::istringstream stream(whitelist);
     std::string s;
 
-    while (std::getline(stream, s, ','))
-    {
+    while (std::getline(stream, s, ',')) {
         s = gtr_str_strip(s);
 
-        if (s.empty())
-        {
+        if (s.empty()) {
             continue;
         }
 
@@ -707,14 +689,12 @@ void RemotePage::refreshWhitelist()
 {
     std::ostringstream gstr;
 
-    for (auto const& row : store_->children())
-    {
+    for (auto const& row : store_->children()) {
         gstr << row.get_value(whitelist_cols.address) << ",";
     }
 
     auto str = gstr.str();
-    if (!str.empty())
-    {
+    if (!str.empty()) {
         str.resize(str.size() - 1); /* remove the trailing comma */
     }
 
@@ -724,8 +704,7 @@ void RemotePage::refreshWhitelist()
 // NOLINTNEXTLINE(bugprone-easily-swappable-parameters)
 void RemotePage::onAddressEdited(Glib::ustring const& path, Glib::ustring const& address)
 {
-    if (auto const iter = store_->get_iter(path); iter)
-    {
+    if (auto const iter = store_->get_iter(path); iter) {
         (*iter)[whitelist_cols.address] = address;
     }
 
@@ -744,8 +723,7 @@ void RemotePage::onRemoveWhitelistClicked()
 {
     auto const sel = view_->get_selection();
 
-    if (auto const iter = sel->get_selected(); iter)
-    {
+    if (auto const iter = sel->get_selected(); iter) {
         store_->erase(iter);
         refreshWhitelist();
     }
@@ -760,13 +738,11 @@ void RemotePage::refreshRPCSensitivity()
     auto const have_addr = sel->get_selected();
     auto const n_rules = store_->children().size();
 
-    for (auto* const widget : auth_widgets_)
-    {
+    for (auto* const widget : auth_widgets_) {
         widget->set_sensitive(rpc_active && auth_active);
     }
 
-    for (auto* const widget : whitelist_widgets_)
-    {
+    for (auto* const widget : whitelist_widgets_) {
         widget->set_sensitive(rpc_active && whitelist_active);
     }
 
@@ -809,10 +785,9 @@ RemotePage::RemotePage(BaseObjectType* cast_item, Glib::RefPtr<Gtk::Builder> con
         store_ = whitelist_tree_model_new(gtr_pref_string_get(TR_KEY_rpc_whitelist));
 
         view_->set_model(store_);
-        setup_item_view_button_event_handling(
-            *view_,
-            {},
-            [this](double view_x, double view_y) { return on_item_view_button_released(*view_, view_x, view_y); });
+        setup_item_view_button_event_handling(*view_, {}, [this](double view_x, double view_y) {
+            return on_item_view_button_released(*view_, view_x, view_y);
+        });
 
         whitelist_widgets_.push_back(view_);
         auto const sel = view_->get_selection();
@@ -895,8 +870,7 @@ public:
     ~NetworkPage() override;
 
 private:
-    enum PortTestStatus : uint8_t
-    {
+    enum PortTestStatus : uint8_t {
         PORT_TEST_UNKNOWN = 0U,
         PORT_TEST_CHECKING,
         PORT_TEST_OPEN,
@@ -927,8 +901,7 @@ private:
 
 void NetworkPage::onCorePrefsChanged(tr_quark const key)
 {
-    if (key == TR_KEY_peer_port)
-    {
+    if (key == TR_KEY_peer_port) {
         portTestStatus_[Session::PORT_TEST_IPV4] = PORT_TEST_UNKNOWN;
         portTestStatus_[Session::PORT_TEST_IPV6] = PORT_TEST_UNKNOWN;
         updatePortStatusText();
@@ -944,8 +917,7 @@ NetworkPage::~NetworkPage()
 
 std::string_view NetworkPage::getPortStatusText(PortTestStatus const status) noexcept
 {
-    switch (status)
-    {
+    switch (status) {
     case PORT_TEST_UNKNOWN:
         return C_("Port test status", "unknown");
     case PORT_TEST_CHECKING:
@@ -988,14 +960,11 @@ void NetworkPage::portTestSetSensitive()
 
 void NetworkPage::onPortTested(std::optional<bool> const result, Session::PortTestIpProtocol const ip_protocol)
 {
-    auto constexpr ResultToStatus = [](std::optional<bool> const res)
-    {
-        if (!res)
-        {
+    auto constexpr ResultToStatus = [](std::optional<bool> const res) {
+        if (!res) {
             return PORT_TEST_ERROR;
         }
-        if (!*res)
-        {
+        if (!*res) {
             return PORT_TEST_CLOSED;
         }
         return PORT_TEST_OPEN;
@@ -1004,8 +973,7 @@ void NetworkPage::onPortTested(std::optional<bool> const result, Session::PortTe
     // Only update the UI if the current status is "checking", so that
     // we won't show the port test results for the old peer port if it
     // changed while we have port_test RPC call(s) in-flight.
-    if (auto& status = portTestStatus_[ip_protocol]; status == PORT_TEST_CHECKING)
-    {
+    if (auto& status = portTestStatus_[ip_protocol]; status == PORT_TEST_CHECKING) {
         status = ResultToStatus(result);
         updatePortStatusText();
     }
@@ -1018,8 +986,7 @@ void NetworkPage::onPortTest()
     portTestStatus_[Session::PORT_TEST_IPV6] = PORT_TEST_CHECKING;
     updatePortStatusText();
 
-    if (!portTag_.connected())
-    {
+    if (!portTag_.connected()) {
         portTag_ = core_->signal_port_tested().connect(
             [this](std::optional<bool> status, Session::PortTestIpProtocol ip_protocol) { onPortTested(status, ip_protocol); });
     }

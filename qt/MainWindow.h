@@ -41,9 +41,8 @@ class TorrentDelegate;
 class TorrentDelegateMin;
 class TorrentModel;
 
-extern "C"
-{
-    struct tr_variant;
+extern "C" {
+struct tr_variant;
 }
 
 class MainWindow : public QMainWindow
@@ -181,8 +180,7 @@ private:
 
     QString const show_options_checkbox_name_ = QStringLiteral("show-options-checkbox");
 
-    struct TransferStats
-    {
+    struct TransferStats {
         Speed speed_up;
         Speed speed_down;
         size_t peers_sending = 0;

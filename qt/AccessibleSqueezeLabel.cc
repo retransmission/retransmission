@@ -19,8 +19,7 @@ AccessibleSqueezeLabel::AccessibleSqueezeLabel(QWidget* widget)
 
 QString AccessibleSqueezeLabel::text(QAccessible::Text kind) const
 {
-    switch (kind)
-    {
+    switch (kind) {
     case QAccessible::Value:
         return label()->text();
 
@@ -44,8 +43,7 @@ QAccessible::State AccessibleSqueezeLabel::state() const
 
 void* AccessibleSqueezeLabel::interface_cast(QAccessible::InterfaceType ifaceType)
 {
-    if (ifaceType == QAccessible::TextInterface)
-    {
+    if (ifaceType == QAccessible::TextInterface) {
         return static_cast<QAccessibleTextInterface*>(this);
     }
 
@@ -54,8 +52,7 @@ void* AccessibleSqueezeLabel::interface_cast(QAccessible::InterfaceType ifaceTyp
 
 void AccessibleSqueezeLabel::selection(int selectionIndex, int* startOffset, int* endOffset) const
 {
-    if (selectionIndex != 0)
-    {
+    if (selectionIndex != 0) {
         *startOffset = 0;
         *endOffset = 0;
         return;
@@ -83,8 +80,7 @@ void AccessibleSqueezeLabel::removeSelection(int selectionIndex)
 
 void AccessibleSqueezeLabel::setSelection(int selectionIndex, int startOffset, int endOffset)
 {
-    if (selectionIndex != 0 || startOffset > endOffset)
-    {
+    if (selectionIndex != 0 || startOffset > endOffset) {
         return;
     }
 

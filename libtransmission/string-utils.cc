@@ -34,8 +34,7 @@ bool tr_wildmat(char const* text, char const* pattern)
 
 char const* tr_strerror(int errnum)
 {
-    if (char const* const ret = strerror(errnum); ret != nullptr)
-    {
+    if (char const* const ret = strerror(errnum); ret != nullptr) {
         return ret;
     }
 
@@ -46,8 +45,7 @@ char const* tr_strerror(int errnum)
 
 std::string_view tr_strv_strip(std::string_view str)
 {
-    auto constexpr Test = [](auto ch)
-    {
+    auto constexpr Test = [](auto ch) {
         return isspace(static_cast<unsigned char>(ch));
     };
 
@@ -74,8 +72,7 @@ std::string tr_strv_to_utf8_string(std::string_view sv)
 std::string tr_strv_replace_invalid(std::string_view sv, uint32_t replacement)
 {
     // stripping characters after first \0
-    if (auto first_null = sv.find('\0'); first_null != std::string::npos)
-    {
+    if (auto first_null = sv.find('\0'); first_null != std::string::npos) {
         sv = { std::data(sv), first_null };
     }
     auto out = std::string{};
@@ -130,23 +127,20 @@ std::string tr_win32_format_message(uint32_t code)
         0,
         nullptr);
 
-    if (wide_size == 0)
-    {
+    if (wide_size == 0) {
         return fmt::format("Unknown error ({:#08x})", code);
     }
 
     auto text = std::string{};
 
-    if (wide_size != 0 && wide_text != nullptr)
-    {
+    if (wide_size != 0 && wide_text != nullptr) {
         text = tr_win32_native_to_utf8({ wide_text, wide_size });
     }
 
     LocalFree(wide_text);
 
     // Most (all?) messages contain "\r\n" in the end, chop it
-    while (!std::empty(text) && isspace(text.back()) != 0)
-    {
+    while (!std::empty(text) && isspace(text.back()) != 0) {
         text.resize(text.size() - 1);
     }
 

@@ -136,8 +136,7 @@ private:
 };
 
 template<>
-struct fmt::formatter<tr_interned_string> : formatter<std::string_view>
-{
+struct fmt::formatter<tr_interned_string> : formatter<std::string_view> {
     template<typename FormatContext>
     constexpr auto format(tr_interned_string const& is, FormatContext& ctx) const
     {

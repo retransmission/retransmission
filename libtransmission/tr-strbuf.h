@@ -35,16 +35,14 @@ public:
 
     tr_strbuf(tr_strbuf const& other)
     {
-        if (this != &other)
-        {
+        if (this != &other) {
             assign(other.sv());
         }
     }
 
     tr_strbuf& operator=(tr_strbuf const& other)
     {
-        if (this != &other)
-        {
+        if (this != &other) {
             assign(other.sv());
         }
 
@@ -219,8 +217,7 @@ public:
 
     void append(Char const* sz_value)
     {
-        if (sz_value != nullptr)
-        {
+        if (sz_value != nullptr) {
             append(std::basic_string_view<Char>{ sz_value });
         }
     }
@@ -290,8 +287,7 @@ private:
 };
 
 template<typename Char, size_t N>
-struct fmt::formatter<tr_strbuf<Char, N>> : formatter<std::basic_string_view<Char>, Char>
-{
+struct fmt::formatter<tr_strbuf<Char, N>> : formatter<std::basic_string_view<Char>, Char> {
     template<typename FormatContext>
     constexpr auto format(tr_strbuf<Char, N> const& strbuf, FormatContext& ctx) const
     {

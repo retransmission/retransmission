@@ -52,8 +52,7 @@ QIcon IconCache::guessMimeIcon(QString const& filename, QIcon fallback) const
 
 #ifdef _WIN32
 
-    if (!filename.isEmpty())
-    {
+    if (!filename.isEmpty()) {
         QFileInfo const file_info(filename);
 
         addAssociatedFileIcon(file_info, SHGFI_SMALLICON, icon);
@@ -67,8 +66,7 @@ QIcon IconCache::guessMimeIcon(QString const& filename, QIcon fallback) const
 
 #endif
 
-    if (icon.isNull())
-    {
+    if (icon.isNull()) {
         icon = std::move(fallback);
     }
 
@@ -79,13 +77,11 @@ QIcon IconCache::getMimeTypeIcon(QString const& mime_type_name, bool multifile) 
 {
     auto& icon = (multifile ? name_to_emblem_icon_ : name_to_icon_)[mime_type_name];
 
-    if (!icon.isNull())
-    {
+    if (!icon.isNull()) {
         return icon;
     }
 
-    if (!multifile)
-    {
+    if (!multifile) {
         static auto const MimeDb = QMimeDatabase{};
         auto const type = MimeDb.mimeTypeForName(mime_type_name);
         auto const filename = QStringLiteral("filename.%1").arg(type.preferredSuffix());
@@ -93,8 +89,7 @@ QIcon IconCache::getMimeTypeIcon(QString const& mime_type_name, bool multifile) 
     }
 
     auto const mime_icon = getMimeTypeIcon(mime_type_name, false);
-    for (auto const& size : { QSize{ 24, 24 }, QSize{ 32, 32 }, QSize{ 48, 48 } })
-    {
+    for (auto const& size : { QSize{ 24, 24 }, QSize{ 32, 32 }, QSize{ 48, 48 } }) {
         // upper left corner
         auto const folder_size = size / 2;
         auto const folder_rect = QRect{ QPoint{}, folder_size };
@@ -134,8 +129,7 @@ void IconCache::addAssociatedFileIcon(QFileInfo const& file_info, unsigned int i
 
     QPixmap pixmap;
 
-    if (!QPixmapCache::find(pixmap_cache_key, &pixmap))
-    {
+    if (!QPixmapCache::find(pixmap_cache_key, &pixmap)) {
         auto const filename = file_info.fileName().toStdWString();
 
         SHFILEINFO shell_file_info;
@@ -145,10 +139,8 @@ void IconCache::addAssociatedFileIcon(QFileInfo const& file_info, unsigned int i
                 FILE_ATTRIBUTE_NORMAL,
                 &shell_file_info,
                 sizeof(shell_file_info),
-                SHGFI_ICON | icon_size | SHGFI_USEFILEATTRIBUTES) != 0)
-        {
-            if (shell_file_info.hIcon != nullptr)
-            {
+                SHGFI_ICON | icon_size | SHGFI_USEFILEATTRIBUTES) != 0) {
+            if (shell_file_info.hIcon != nullptr) {
                 pixmap = IF_QT6(
                     QPixmap::fromImage(QImage::fromHICON(shell_file_info.hIcon)),
                     QtWin::fromHICON(shell_file_info.hIcon));
@@ -159,8 +151,7 @@ void IconCache::addAssociatedFileIcon(QFileInfo const& file_info, unsigned int i
         QPixmapCache::insert(pixmap_cache_key, pixmap);
     }
 
-    if (!pixmap.isNull())
-    {
+    if (!pixmap.isNull()) {
         icon.addPixmap(pixmap);
     }
 }
@@ -169,18 +160,15 @@ void IconCache::addAssociatedFileIcon(QFileInfo const& file_info, unsigned int i
 
 QIcon IconCache::getMimeIcon(QString const& filename) const
 {
-    if (suffixes_.empty())
-    {
-        for (auto const& type : QMimeDatabase{}.allMimeTypes())
-        {
+    if (suffixes_.empty()) {
+        for (auto const& type : QMimeDatabase{}.allMimeTypes()) {
             auto const tmp = type.suffixes();
             suffixes_.insert(tmp.begin(), tmp.end());
         }
     }
 
     auto const ext = QFileInfo{ filename }.suffix();
-    if (!suffixes_.contains(ext))
-    {
+    if (!suffixes_.contains(ext)) {
         return {};
     }
 
@@ -189,18 +177,15 @@ QIcon IconCache::getMimeIcon(QString const& filename) const
     {
         QMimeDatabase const mime_db;
         auto const type = mime_db.mimeTypeForFile(filename, QMimeDatabase::MatchExtension);
-        if (icon.isNull())
-        {
+        if (icon.isNull()) {
             icon = getThemeIcon(type.iconName());
         }
 
-        if (icon.isNull())
-        {
+        if (icon.isNull()) {
             icon = getThemeIcon(type.genericIconName());
         }
 
-        if (icon.isNull())
-        {
+        if (icon.isNull()) {
             icon = {};
         }
     }
@@ -219,13 +204,11 @@ QIcon IconCache::getThemeIcon(
 
     auto icon = QIcon::fromTheme(name + rtl_suffix);
 
-    if (icon.isNull())
-    {
+    if (icon.isNull()) {
         icon = QIcon::fromTheme(fallbackName + rtl_suffix);
     }
 
-    if (icon.isNull() && fallbackPixmap.has_value())
-    {
+    if (icon.isNull() && fallbackPixmap.has_value()) {
         icon = QApplication::style()->standardIcon(*fallbackPixmap, nullptr);
     }
 

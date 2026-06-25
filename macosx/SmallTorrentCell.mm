@@ -20,8 +20,7 @@
     [super mouseEntered:event];
 
     NSPoint mouseLocation = [self convertPoint:[event locationInWindow] fromView:nil];
-    if (NSPointInRect(mouseLocation, self.fTrackingArea.rect))
-    {
+    if (NSPointInRect(mouseLocation, self.fTrackingArea.rect)) {
         [self.fTorrentTableView hoverEventBeganForView:self];
     }
 }
@@ -31,8 +30,7 @@
     [super mouseExited:event];
 
     NSPoint mouseLocation = [self convertPoint:[event locationInWindow] fromView:nil];
-    if (!NSPointInRect(mouseLocation, self.fTrackingArea.rect))
-    {
+    if (!NSPointInRect(mouseLocation, self.fTrackingArea.rect)) {
         [self.fTorrentTableView hoverEventEndedForView:self];
     }
 }
@@ -47,8 +45,7 @@
 {
     [super updateTrackingAreas];
 
-    if (self.fTrackingArea != nil)
-    {
+    if (self.fTrackingArea != nil) {
         [self removeTrackingArea:self.fTrackingArea];
     }
 
@@ -62,12 +59,9 @@
     NSPoint mouseLocation = [self.window mouseLocationOutsideOfEventStream];
     mouseLocation = [self.superview convertPoint:mouseLocation fromView:nil];
 
-    if (NSPointInRect(mouseLocation, rect))
-    {
+    if (NSPointInRect(mouseLocation, rect)) {
         [self mouseEntered:[[NSEvent alloc] init]];
-    }
-    else
-    {
+    } else {
         [self mouseExited:[[NSEvent alloc] init]];
     }
 }

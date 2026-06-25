@@ -89,8 +89,7 @@ OptionsDialog::Impl::~Impl()
 
 void OptionsDialog::Impl::removeOldTorrent()
 {
-    if (tor_ != nullptr)
-    {
+    if (tor_ != nullptr) {
         file_list_->clear();
         tr_torrentRemove(tor_, false);
         tor_ = nullptr;
@@ -99,21 +98,17 @@ void OptionsDialog::Impl::removeOldTorrent()
 
 void OptionsDialog::Impl::addResponseCB(int response)
 {
-    if (tor_ != nullptr)
-    {
-        if (response == TR_GTK_RESPONSE_TYPE(ACCEPT))
-        {
+    if (tor_ != nullptr) {
+        if (response == TR_GTK_RESPONSE_TYPE(ACCEPT)) {
             tr_torrentSetPriority(tor_, static_cast<tr_priority_t>(gtr_combo_box_get_active_enum(*priority_combo_)));
 
-            if (run_check_->get_active())
-            {
+            if (run_check_->get_active()) {
                 tr_torrentStart(tor_);
             }
 
             core_->add_torrent(Torrent::create(tor_), false);
 
-            if (trash_check_->get_active())
-            {
+            if (trash_check_->get_active()) {
                 gtr_file_trash_or_remove(filename_, nullptr);
             }
 
@@ -130,13 +125,10 @@ void OptionsDialog::Impl::updateTorrent()
     bool const isLocalFile = tr_ctorGetSourceFile(ctor_.get()).has_value();
     trash_check_->set_sensitive(isLocalFile);
 
-    if (tor_ == nullptr)
-    {
+    if (tor_ == nullptr) {
         file_list_->clear();
         file_list_->set_sensitive(false);
-    }
-    else
-    {
+    } else {
         tr_torrentSetDownloadDir(tor_, downloadDir_);
         file_list_->set_sensitive(tr_torrentHasMetadata(tor_));
         file_list_->set_torrent(tr_torrentId(tor_));
@@ -156,12 +148,10 @@ void OptionsDialog::Impl::sourceChanged(PathButton* b)
     auto const filename = b->get_filename();
 
     /* maybe instantiate a torrent */
-    if (!filename.empty() || tor_ == nullptr)
-    {
+    if (!filename.empty() || tor_ == nullptr) {
         bool new_file = false;
 
-        if (!filename.empty() && (filename_.empty() || !tr_sys_path_is_same(filename, filename_)))
-        {
+        if (!filename.empty() && (filename_.empty() || !tr_sys_path_is_same(filename, filename_))) {
             filename_ = filename;
             tr_ctorSetMetainfoFromFile(ctor_.get(), filename_);
             new_file = true;
@@ -172,13 +162,10 @@ void OptionsDialog::Impl::sourceChanged(PathButton* b)
         tr_ctorSetDeleteSource(ctor_.get(), false);
 
         tr_torrent* duplicate_of = nullptr;
-        if (tr_torrent* const torrent = tr_torrentNew(ctor_.get(), &duplicate_of); torrent != nullptr)
-        {
+        if (tr_torrent* const torrent = tr_torrentNew(ctor_.get(), &duplicate_of); torrent != nullptr) {
             removeOldTorrent();
             tor_ = torrent;
-        }
-        else if (new_file)
-        {
+        } else if (new_file) {
             gtr_add_torrent_error_dialog(*b, duplicate_of, filename_);
         }
 
@@ -190,8 +177,7 @@ void OptionsDialog::Impl::downloadDirChanged(PathButton* b)
 {
     auto const fname = b->get_filename();
 
-    if (!fname.empty() && (downloadDir_.empty() || !tr_sys_path_is_same(fname, downloadDir_)))
-    {
+    if (!fname.empty() && (downloadDir_.empty() || !tr_sys_path_is_same(fname, downloadDir_))) {
         downloadDir_ = fname;
         updateTorrent();
 
@@ -276,19 +262,17 @@ OptionsDialog::Impl::Impl(
     destination_chooser->set_filename(downloadDir_);
     destination_chooser->set_shortcut_folders(gtr_get_recent_dirs("download"));
 
-    destination_chooser->signal_selection_changed().connect([this, destination_chooser]()
-                                                            { downloadDirChanged(destination_chooser); });
+    destination_chooser->signal_selection_changed().connect(
+        [this, destination_chooser]() { downloadDirChanged(destination_chooser); });
 
     bool flag = false;
-    if (!tr_ctorGetPaused(ctor_.get(), TR_FORCE, &flag))
-    {
+    if (!tr_ctorGetPaused(ctor_.get(), TR_FORCE, &flag)) {
         g_assert_not_reached();
     }
 
     run_check_->set_active(!flag);
 
-    if (!tr_ctorGetDeleteSource(ctor_.get(), &flag))
-    {
+    if (!tr_ctorGetDeleteSource(ctor_.get(), &flag)) {
         g_assert_not_reached();
     }
 
@@ -296,12 +280,9 @@ OptionsDialog::Impl::Impl(
 
     /* trigger sourceChanged, either directly or indirectly,
      * so that it creates the tor/gtor objects */
-    if (!filename_.empty())
-    {
+    if (!filename_.empty()) {
         source_chooser->set_filename(filename_);
-    }
-    else
-    {
+    } else {
         sourceChanged(source_chooser);
     }
 
@@ -314,8 +295,7 @@ OptionsDialog::Impl::Impl(
 
 void TorrentFileChooserDialog::onOpenDialogResponse(int response, Glib::RefPtr<Session> const& core)
 {
-    if (response == TR_GTK_RESPONSE_TYPE(ACCEPT))
-    {
+    if (response == TR_GTK_RESPONSE_TYPE(ACCEPT)) {
         bool const do_start = gtr_pref_flag_get(TR_KEY_start_added_torrents);
         bool const do_prompt = get_choice(std::string(ShowOptionsDialogChoice)) == "true";
         bool const do_notify = false;
@@ -324,12 +304,9 @@ void TorrentFileChooserDialog::onOpenDialogResponse(int response, Glib::RefPtr<S
         g_assert(!files.empty());
 
         /* remember this folder the next time we use this dialog */
-        if (auto const folder = IF_GTKMM4(get_current_folder, get_current_folder_file)(); folder != nullptr)
-        {
+        if (auto const folder = IF_GTKMM4(get_current_folder, get_current_folder_file)(); folder != nullptr) {
             gtr_pref_string_set(TR_KEY_open_dialog_dir, folder->get_path());
-        }
-        else if (auto const parent = files.front()->get_parent(); parent != nullptr)
-        {
+        } else if (auto const parent = files.front()->get_parent(); parent != nullptr) {
             gtr_pref_string_set(TR_KEY_open_dialog_dir, parent->get_path());
         }
 
@@ -353,8 +330,7 @@ TorrentFileChooserDialog::TorrentFileChooserDialog(Gtk::Window& parent, Glib::Re
     addTorrentFilters(this);
     signal_response().connect([this, core](int response) { onOpenDialogResponse(response, core); });
 
-    if (auto const folder = gtr_pref_string_get(TR_KEY_open_dialog_dir); !folder.empty())
-    {
+    if (auto const folder = gtr_pref_string_get(TR_KEY_open_dialog_dir); !folder.empty()) {
         IF_GTKMM4(set_current_folder, set_current_folder_file)(Gio::File::create_for_path(folder));
     }
 
@@ -368,25 +344,18 @@ TorrentFileChooserDialog::TorrentFileChooserDialog(Gtk::Window& parent, Glib::Re
 
 void TorrentUrlChooserDialog::onOpenURLResponse(int response, Gtk::Entry const& entry, Glib::RefPtr<Session> const& core)
 {
-    if (response == TR_GTK_RESPONSE_TYPE(CANCEL))
-    {
+    if (response == TR_GTK_RESPONSE_TYPE(CANCEL)) {
         close();
-    }
-    else if (response == TR_GTK_RESPONSE_TYPE(ACCEPT))
-    {
+    } else if (response == TR_GTK_RESPONSE_TYPE(ACCEPT)) {
         auto const url = gtr_str_strip(entry.get_text());
 
-        if (url.empty())
-        {
+        if (url.empty()) {
             return;
         }
 
-        if (core->add_from_url(url))
-        {
+        if (core->add_from_url(url)) {
             close();
-        }
-        else
-        {
+        } else {
             gtr_unrecognized_url_dialog(*this, url);
         }
     }

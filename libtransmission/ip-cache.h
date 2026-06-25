@@ -43,8 +43,7 @@
 class tr_ip_cache : public std::enable_shared_from_this<tr_ip_cache>
 {
 public:
-    struct Mediator
-    {
+    struct Mediator {
         virtual ~Mediator() = default;
 
         virtual void fetch(tr_web::FetchOptions&& /* options */)
@@ -128,12 +127,7 @@ private:
 
     Mediator& mediator_;
 
-    enum class is_updating_t : uint8_t
-    {
-        No = 0,
-        Yes,
-        Abort
-    };
+    enum class is_updating_t : uint8_t { No = 0, Yes, Abort };
     array_ip_t<is_updating_t> is_updating_ = {};
     array_ip_t<std::vector<std::string>> current_ip_endpoints_ = {};
 

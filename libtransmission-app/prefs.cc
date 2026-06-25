@@ -12,8 +12,7 @@ namespace tr::app
 
 bool prefs_is_core(tr_quark const key)
 {
-    switch (key)
-    {
+    switch (key) {
     case TR_KEY_alt_speed_up:
     case TR_KEY_alt_speed_down:
     case TR_KEY_alt_speed_enabled:

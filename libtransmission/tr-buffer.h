@@ -191,8 +191,7 @@ public:
 
     void add_address(tr_address const& addr)
     {
-        switch (addr.type)
-        {
+        switch (addr.type) {
         case TR_AF_INET:
             add(&addr.addr.addr4.s_addr, sizeof(addr.addr.addr4.s_addr));
             break;
@@ -247,17 +246,14 @@ public:
 
     std::pair<value_type*, size_t> reserve_space(size_t n_bytes) override
     {
-        if (auto const free_at_end = buf_.size() - end_pos_; free_at_end < n_bytes)
-        {
-            if (auto const total_free = begin_pos_ + free_at_end; total_free >= n_bytes)
-            {
+        if (auto const free_at_end = buf_.size() - end_pos_; free_at_end < n_bytes) {
+            if (auto const total_free = begin_pos_ + free_at_end; total_free >= n_bytes) {
                 // move data so that all free space is at the end
                 auto const size = this->size();
                 std::copy(data(), data() + size, std::data(buf_));
                 begin_pos_ = 0;
                 end_pos_ = size;
-            }
-            else // even `total_free` is not enough, so resize
+            } else // even `total_free` is not enough, so resize
             {
                 buf_.resize(end_pos_ + n_bytes);
             }

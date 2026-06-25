@@ -17,8 +17,7 @@
 
 - (instancetype)init
 {
-    if ((self = [super init]))
-    {
+    if ((self = [super init])) {
         BadgeView* view = [[BadgeView alloc] init];
         NSApp.dockTile.contentView = view;
 
@@ -34,8 +33,7 @@
     CGFloat const displayUlRate = [NSUserDefaults.standardUserDefaults boolForKey:@"BadgeUploadRate"] ? uploadRate : 0.0;
 
     //only update if the badged values change
-    if ([(BadgeView*)NSApp.dockTile.contentView setRatesWithDownload:displayDlRate upload:displayUlRate])
-    {
+    if ([(BadgeView*)NSApp.dockTile.contentView setRatesWithDownload:displayDlRate upload:displayUlRate]) {
         [NSApp.dockTile display];
     }
 }
@@ -50,15 +48,11 @@
 
 - (void)removeTorrent:(Torrent*)torrent
 {
-    if ([self.fHashes member:torrent.hashString])
-    {
+    if ([self.fHashes member:torrent.hashString]) {
         [self.fHashes removeObject:torrent.hashString];
-        if (self.fHashes.count > 0)
-        {
+        if (self.fHashes.count > 0) {
             NSApp.dockTile.badgeLabel = [NSString localizedStringWithFormat:@"%lu", self.fHashes.count];
-        }
-        else
-        {
+        } else {
             NSApp.dockTile.badgeLabel = @"";
         }
     }
@@ -66,8 +60,7 @@
 
 - (void)clearCompleted
 {
-    if (self.fHashes.count > 0)
-    {
+    if (self.fHashes.count > 0) {
         [self.fHashes removeAllObjects];
         NSApp.dockTile.badgeLabel = @"";
     }

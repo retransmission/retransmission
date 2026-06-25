@@ -19,22 +19,19 @@ using event_callback_fn = void (*)(evutil_socket_t, short, void*);
 namespace tr::evhelpers
 {
 
-struct EventBaseDeleter
-{
+struct EventBaseDeleter {
     void operator()(struct event_base* evbase) const noexcept;
 };
 
 using evbase_unique_ptr = std::unique_ptr<struct event_base, EventBaseDeleter>;
 
-struct EventDeleter
-{
+struct EventDeleter {
     void operator()(struct event* event) const;
 };
 
 using event_unique_ptr = std::unique_ptr<struct event, EventDeleter>;
 
-struct EvhttpDeleter
-{
+struct EvhttpDeleter {
     void operator()(struct evhttp* evh) const noexcept;
 };
 

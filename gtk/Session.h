@@ -38,15 +38,13 @@ public:
     Session& operator=(Session&&) = delete;
     Session& operator=(Session const&) = delete;
 
-    enum ErrorCode : uint16_t
-    {
+    enum ErrorCode : uint16_t {
         ERR_ADD_TORRENT_ERR = 1,
         ERR_ADD_TORRENT_DUP = 2,
         ERR_NO_MORE_TORRENTS = 1000 /* finished adding a batch */
     };
 
-    enum PortTestIpProtocol : uint8_t
-    {
+    enum PortTestIpProtocol : uint8_t {
         PORT_TEST_IPV4,
         PORT_TEST_IPV6,
         NUM_PORT_TEST_IP_PROTOCOL // Must always be the last value
@@ -137,8 +135,7 @@ public:
     {
         auto const old_val = gtr_pref_lookup<T>(key);
 
-        if (!old_val || tr::serializer::detail::values_differ(*old_val, val))
-        {
+        if (!old_val || tr::serializer::detail::values_differ(*old_val, val)) {
             gtr_pref_set<T>(key, val);
             signal_prefs_changed().emit(key);
             gtr_pref_save(get_session());
@@ -154,8 +151,7 @@ public:
     {
         auto vec = tr_variant::Vector{};
         vec.reserve(std::size(items));
-        for (auto const& item : items)
-        {
+        for (auto const& item : items) {
             vec.emplace_back(item);
         }
         return vec;

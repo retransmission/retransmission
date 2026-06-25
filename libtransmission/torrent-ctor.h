@@ -24,8 +24,7 @@ struct tr_error;
 struct tr_session;
 struct tr_torrent;
 
-struct tr_ctor
-{
+struct tr_ctor {
 public:
     explicit tr_ctor(tr_session* session);
 
@@ -85,8 +84,7 @@ public:
 
     void set_file_priorities(tr_file_index_t const* const files, tr_file_index_t const n_files, tr_priority_t const priority)
     {
-        switch (priority)
-        {
+        switch (priority) {
         case TR_PRI_LOW:
             low_.assign(files, files + n_files);
             break;
@@ -112,8 +110,7 @@ public:
 
     constexpr void set_bandwidth_priority(tr_priority_t priority)
     {
-        if (priority == TR_PRI_LOW || priority == TR_PRI_NORMAL || priority == TR_PRI_HIGH)
-        {
+        if (priority == TR_PRI_LOW || priority == TR_PRI_NORMAL || priority == TR_PRI_HIGH) {
             priority_ = priority;
         }
     }
@@ -227,8 +224,7 @@ public:
     }
 
 private:
-    struct OptionalArgs
-    {
+    struct OptionalArgs {
         std::optional<bool> paused_;
         std::optional<bool> sequential_download_;
         std::optional<tr_piece_index_t> sequential_download_from_piece_;

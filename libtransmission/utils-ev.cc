@@ -13,16 +13,14 @@ namespace tr::evhelpers
 
 void EventBaseDeleter::operator()(struct event_base* evbase) const noexcept
 {
-    if (evbase != nullptr)
-    {
+    if (evbase != nullptr) {
         event_base_free(evbase);
     }
 }
 
 void EventDeleter::operator()(struct event* event) const
 {
-    if (event != nullptr)
-    {
+    if (event != nullptr) {
         event_del(event);
         event_free(event);
     }
@@ -30,8 +28,7 @@ void EventDeleter::operator()(struct event* event) const
 
 void EvhttpDeleter::operator()(struct evhttp* evh) const noexcept
 {
-    if (evh != nullptr)
-    {
+    if (evh != nullptr) {
         evhttp_free(evh);
     }
 }

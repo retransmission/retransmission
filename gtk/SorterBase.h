@@ -18,8 +18,7 @@ class SorterBase : public IF_GTKMM4(Gtk::Sorter, Glib::Object)
 {
 #if !GTKMM_CHECK_VERSION(4, 0, 0)
 public:
-    enum class Change : uint8_t
-    {
+    enum class Change : uint8_t {
         DIFFERENT,
         INVERTED,
         LESS_STRICT,

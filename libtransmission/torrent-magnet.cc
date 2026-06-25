@@ -53,8 +53,7 @@ void tr_metadata_download::create_all_needed(int64_t n_pieces) noexcept
     pieces_needed_.clear();
     pieces_needed_.resize(n_pieces);
 
-    for (int64_t i = 0; i < n_pieces; ++i)
-    {
+    for (int64_t i = 0; i < n_pieces; ++i) {
         pieces_needed_[i].piece = i;
     }
 }
@@ -74,13 +73,11 @@ tr_metadata_download::tr_metadata_download(std::string_view log_name, int64_t co
 
 void tr_torrent::maybe_start_metadata_transfer(int64_t const size) noexcept
 {
-    if (has_metainfo() || metadata_download_)
-    {
+    if (has_metainfo() || metadata_download_) {
         return;
     }
 
-    if (!tr_metadata_download::is_valid_metadata_size(size))
-    {
+    if (!tr_metadata_download::is_valid_metadata_size(size)) {
         TR_ASSERT(false);
         return;
     }
@@ -92,8 +89,7 @@ void tr_torrent::maybe_start_metadata_transfer(int64_t const size) noexcept
 {
     TR_ASSERT(piece >= 0);
 
-    if (!has_metainfo())
-    {
+    if (!has_metainfo()) {
         return {};
     }
 
@@ -101,20 +97,17 @@ void tr_torrent::maybe_start_metadata_transfer(int64_t const size) noexcept
     using size_type = std::remove_cv_t<decltype(info_dict_size)>;
     TR_ASSERT(info_dict_size > 0);
     if (auto const n_pieces = std::max(size_type{ 1 }, n_metadata_pieces(info_dict_size));
-        piece < 0 || std::cmp_greater_equal(piece, n_pieces))
-    {
+        piece < 0 || std::cmp_greater_equal(piece, n_pieces)) {
         return {};
     }
 
     auto in = std::ifstream{ torrent_file(), std::ios_base::in | std::ios_base::binary };
-    if (!in.is_open())
-    {
+    if (!in.is_open()) {
         return {};
     }
     auto const offset_in_info_dict = piece * MetadataPieceSize;
     if (auto const offset_in_file = info_dict_offset() + offset_in_info_dict;
-        !in.seekg(static_cast<std::streamoff>(offset_in_file)))
-    {
+        !in.seekg(static_cast<std::streamoff>(offset_in_file))) {
         return {};
     }
 
@@ -122,8 +115,7 @@ void tr_torrent::maybe_start_metadata_transfer(int64_t const size) noexcept
         MetadataPieceSize :
         info_dict_size - offset_in_info_dict;
     if (auto ret = tr_metadata_piece(piece_len);
-        in.read(reinterpret_cast<char*>(std::data(ret)), static_cast<std::streamsize>(std::size(ret))))
-    {
+        in.read(reinterpret_cast<char*>(std::data(ret)), static_cast<std::streamsize>(std::size(ret)))) {
         return ret;
     }
 
@@ -133,8 +125,7 @@ void tr_torrent::maybe_start_metadata_transfer(int64_t const size) noexcept
 bool tr_torrent::use_metainfo_from_file(tr_torrent_metainfo const* metainfo, char const* filename_in, tr_error* error)
 {
     // add .torrent file
-    if (!tr_sys_path_copy(filename_in, torrent_file(), error))
-    {
+    if (!tr_sys_path_copy(filename_in, torrent_file(), error)) {
         return false;
     }
 
@@ -159,37 +150,30 @@ tr_variant build_metainfo_except_info_dict(tr_torrent_metainfo const& tm)
 {
     auto top = tr_variant::Map{ 8U };
 
-    if (auto const& val = tm.comment(); !std::empty(val))
-    {
+    if (auto const& val = tm.comment(); !std::empty(val)) {
         top.try_emplace(TR_KEY_comment, val);
     }
 
-    if (auto const& val = tm.source(); !std::empty(val))
-    {
+    if (auto const& val = tm.source(); !std::empty(val)) {
         top.try_emplace(TR_KEY_source, val);
     }
 
-    if (auto const& val = tm.creator(); !std::empty(val))
-    {
+    if (auto const& val = tm.creator(); !std::empty(val)) {
         top.try_emplace(TR_KEY_created_by, val);
     }
 
-    if (auto const val = tm.date_created(); val != 0)
-    {
+    if (auto const val = tm.date_created(); val != 0) {
         top.try_emplace(TR_KEY_creation_date, val);
     }
 
-    if (auto const& announce_list = tm.announce_list(); !std::empty(announce_list))
-    {
+    if (auto const& announce_list = tm.announce_list(); !std::empty(announce_list)) {
         announce_list.add_to_map(top);
     }
 
-    if (auto const n_webseeds = tm.webseed_count(); n_webseeds > 0U)
-    {
+    if (auto const n_webseeds = tm.webseed_count(); n_webseeds > 0U) {
         auto webseed_vec = tr_variant::Vector{};
         webseed_vec.reserve(n_webseeds);
-        for (size_t i = 0U; i < n_webseeds; ++i)
-        {
+        for (size_t i = 0U; i < n_webseeds; ++i) {
             webseed_vec.emplace_back(tm.webseed(i));
         }
     }
@@ -207,18 +191,15 @@ tr_variant build_metainfo_except_info_dict(tr_torrent_metainfo const& tm)
     TR_ASSERT(m);
 
     // test the info_dict checksum
-    if (tr_sha1::digest(m->get_metadata()) != info_hash())
-    {
+    if (tr_sha1::digest(m->get_metadata()) != info_hash()) {
         return false;
     }
 
     // checksum passed; now try to parse it as benc
     auto serde = tr_variant_serde::benc().inplace();
     auto info_dict_v = serde.parse(m->get_metadata());
-    if (!info_dict_v)
-    {
-        if (error != nullptr)
-        {
+    if (!info_dict_v) {
+        if (error != nullptr) {
             *error = std::move(serde.error_);
             serde.error_ = {};
         }
@@ -233,14 +214,12 @@ tr_variant build_metainfo_except_info_dict(tr_torrent_metainfo const& tm)
 
     // does this synthetic torrent file parse?
     auto metainfo = tr_torrent_metainfo{};
-    if (!metainfo.parse_benc(benc))
-    {
+    if (!metainfo.parse_benc(benc)) {
         return false;
     }
 
     // save it
-    if (!tr_file_save(torrent_file(), benc, error))
-    {
+    if (!tr_file_save(torrent_file(), benc, error)) {
         return false;
     }
 
@@ -256,8 +235,7 @@ tr_variant build_metainfo_except_info_dict(tr_torrent_metainfo const& tm)
 void tr_torrent::on_have_all_metainfo()
 {
     auto& m = metadata_download_;
-    if (!m)
-    {
+    if (!m) {
         return;
     }
 
@@ -277,22 +255,19 @@ bool tr_metadata_download::set_metadata_piece(int64_t const piece, void const* c
     TR_ASSERT(data != nullptr);
 
     // sanity test: is `piece` in range?
-    if (piece < 0 || piece >= piece_count_)
-    {
+    if (piece < 0 || piece >= piece_count_) {
         return false;
     }
 
     // sanity test: is `len` the right size?
-    if (get_piece_length(piece) != len)
-    {
+    if (get_piece_length(piece) != len) {
         return false;
     }
 
     // do we need this piece?
     auto& needed = pieces_needed_;
     auto const iter = std::ranges::find_if(needed, [piece](auto const& item) { return item.piece == piece; });
-    if (iter == std::ranges::end(needed))
-    {
+    if (iter == std::ranges::end(needed)) {
         return false;
     }
 
@@ -311,20 +286,16 @@ void tr_torrent::set_metadata_piece(int64_t const piece, void const* const data,
 
     tr_logAddDebugTor(this, fmt::format("got metadata piece {} of {} bytes", piece, len));
 
-    if (auto& m = metadata_download_; m && m->set_metadata_piece(piece, data, len))
-    {
+    if (auto& m = metadata_download_; m && m->set_metadata_piece(piece, data, len)) {
         tr_logAddDebugTor(this, fmt::format("we now have all the metainfo!"));
 
         // Why queue this invocation in session thread:
         // https://github.com/transmission/transmission/pull/6383#discussion_r1429202253
-        session->queue_session_thread(
-            [s = session, id = id()]
-            {
-                if (auto* tor = s->torrents().get(id); tor != nullptr)
-                {
-                    tor->on_have_all_metainfo();
-                }
-            });
+        session->queue_session_thread([s = session, id = id()] {
+            if (auto* tor = s->torrents().get(id); tor != nullptr) {
+                tor->on_have_all_metainfo();
+            }
+        });
     }
 }
 
@@ -333,8 +304,7 @@ void tr_torrent::set_metadata_piece(int64_t const piece, void const* const data,
 [[nodiscard]] std::optional<int64_t> tr_metadata_download::get_next_metadata_request(time_t const now) noexcept
 {
     auto& needed = pieces_needed_;
-    if (std::empty(needed) || needed.front().requested_at + MinRepeatIntervalSecs >= now)
-    {
+    if (std::empty(needed) || needed.front().requested_at + MinRepeatIntervalSecs >= now) {
         return {};
     }
 
@@ -348,8 +318,7 @@ void tr_torrent::set_metadata_piece(int64_t const piece, void const* const data,
 
 [[nodiscard]] std::optional<int64_t> tr_torrent::get_next_metadata_request(time_t const now) noexcept
 {
-    if (auto& m = metadata_download_; m)
-    {
+    if (auto& m = metadata_download_; m) {
         return m->get_next_metadata_request(now);
     }
 
@@ -358,8 +327,7 @@ void tr_torrent::set_metadata_piece(int64_t const piece, void const* const data,
 
 [[nodiscard]] double tr_metadata_download::get_metadata_percent() const noexcept
 {
-    if (auto const n = piece_count_; n != 0)
-    {
+    if (auto const n = piece_count_; n != 0) {
         return static_cast<double>(n - std::size(pieces_needed_)) / static_cast<double>(n);
     }
 
@@ -368,13 +336,11 @@ void tr_torrent::set_metadata_piece(int64_t const piece, void const* const data,
 
 [[nodiscard]] double tr_torrent::get_metadata_percent() const noexcept
 {
-    if (has_metainfo())
-    {
+    if (has_metainfo()) {
         return 1.0;
     }
 
-    if (auto const& m = metadata_download_; m)
-    {
+    if (auto const& m = metadata_download_; m) {
         return m->get_metadata_percent();
     }
 

@@ -17,37 +17,17 @@
 
 namespace tr::Values
 {
-enum class MemoryUnits : uint8_t
-{
-    Bytes,
-    KBytes,
-    MBytes,
-    GBytes,
-    TBytes
-};
+enum class MemoryUnits : uint8_t { Bytes, KBytes, MBytes, GBytes, TBytes };
 
 using StorageUnits = MemoryUnits;
 
-enum class SpeedUnits : uint8_t
-{
-    Byps,
-    KByps,
-    MByps,
-    GByps,
-    TByps
-};
+enum class SpeedUnits : uint8_t { Byps, KByps, MByps, GByps, TByps };
 
-struct Config
-{
-    enum class Base : uint16_t
-    {
-        Kilo = 1000U,
-        Kibi = 1024U
-    };
+struct Config {
+    enum class Base : uint16_t { Kilo = 1000U, Kibi = 1024U };
 
     template<typename UnitsEnum>
-    struct Units
-    {
+    struct Units {
         template<typename... Names> // NOLINTNEXTLINE(google-explicit-constructor, cppcoreguidelines-pro-type-member-init)
         Units(Base base, Names... names)
         {
@@ -83,8 +63,7 @@ struct Config
             base_ = base;
 
             auto val = uint64_t{ 1U };
-            for (auto& multiplier : multipliers_)
-            {
+            for (auto& multiplier : multipliers_) {
                 multiplier = val;
                 val *= static_cast<size_t>(base);
             }
@@ -183,10 +162,8 @@ public:
     {
         auto idx = size_t{ 0 };
         auto val = 1.0 * base_quantity_;
-        for (;;)
-        {
-            if (std::fabs(val - std::floor(val)) < 0.001 && (val < 999.5 || std::empty(units_.display_name(idx + 1))))
-            {
+        for (;;) {
+            if (std::fabs(val - std::floor(val)) < 0.001 && (val < 999.5 || std::empty(units_.display_name(idx + 1)))) {
                 *fmt::format_to_n(buf, buflen - 1, "{:.0Lf} {:s}", val, units_.display_name(idx)).out = '\0';
                 return buf;
             }

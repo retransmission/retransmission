@@ -42,10 +42,8 @@ void merge_variant(tr_variant& dest, tr_variant&& src);
 void merge_map(tr_variant::Map& dest, tr_variant::Map const& src)
 {
     dest.reserve(std::size(dest) + std::size(src));
-    for (auto const& [key, child] : src)
-    {
-        if (!dest.contains(key))
-        {
+    for (auto const& [key, child] : src) {
+        if (!dest.contains(key)) {
             dest.try_emplace(key, child.clone());
         }
     }
@@ -54,10 +52,8 @@ void merge_map(tr_variant::Map& dest, tr_variant::Map const& src)
 void merge_map(tr_variant::Map& dest, tr_variant::Map&& src)
 {
     dest.reserve(std::size(dest) + std::size(src));
-    for (auto& [key, child] : std::move(src))
-    {
-        if (!dest.contains(key))
-        {
+    for (auto& [key, child] : std::move(src)) {
+        if (!dest.contains(key)) {
             dest.try_emplace(key, std::move(child));
         }
     }
@@ -66,75 +62,51 @@ void merge_map(tr_variant::Map& dest, tr_variant::Map&& src)
 template<bool MoveSrc>
 void merge_variant_impl(tr_variant& dest, std::conditional_t<MoveSrc, tr_variant&, tr_variant const&> src)
 {
-    src.visit(
-        [&dest](auto& value)
-        {
-            using ValueType = std::remove_cvref_t<decltype(value)>;
+    src.visit([&dest](auto& value) {
+        using ValueType = std::remove_cvref_t<decltype(value)>;
 
-            if constexpr (
-                std::is_same_v<ValueType, std::monostate> || std::is_same_v<ValueType, std::nullptr_t> ||
-                std::is_same_v<ValueType, bool> || std::is_same_v<ValueType, int64_t> || std::is_same_v<ValueType, double>)
-            {
-                dest = value;
-            }
-            else if constexpr (std::is_same_v<ValueType, std::string>)
-            {
-                if constexpr (MoveSrc)
-                {
-                    dest = std::move(value);
-                }
-                else
-                {
-                    // std::string assignment via std::string_view materializes into an owned string.
-                    dest = std::string_view{ value };
-                }
-            }
-            else if constexpr (std::is_same_v<ValueType, std::string_view>)
-            {
-                // std::string_view assignment is materialized into an owned string.
+        if constexpr (
+            std::is_same_v<ValueType, std::monostate> || std::is_same_v<ValueType, std::nullptr_t> ||
+            std::is_same_v<ValueType, bool> || std::is_same_v<ValueType, int64_t> || std::is_same_v<ValueType, double>) {
+            dest = value;
+        } else if constexpr (std::is_same_v<ValueType, std::string>) {
+            if constexpr (MoveSrc) {
+                dest = std::move(value);
+            } else {
+                // std::string assignment via std::string_view materializes into an owned string.
                 dest = std::string_view{ value };
             }
-            else if constexpr (std::is_same_v<ValueType, tr_variant::Vector>)
-            {
-                dest = tr_variant::Vector{};
+        } else if constexpr (std::is_same_v<ValueType, std::string_view>) {
+            // std::string_view assignment is materialized into an owned string.
+            dest = std::string_view{ value };
+        } else if constexpr (std::is_same_v<ValueType, tr_variant::Vector>) {
+            dest = tr_variant::Vector{};
 
-                if (auto* out = dest.get_if<tr_variant::VectorIndex>(); out != nullptr)
-                {
-                    out->resize(std::size(value));
+            if (auto* out = dest.get_if<tr_variant::VectorIndex>(); out != nullptr) {
+                out->resize(std::size(value));
 
-                    for (size_t i = 0; i < std::size(value); ++i)
-                    {
-                        if constexpr (MoveSrc)
-                        {
-                            merge_variant((*out)[i], std::move(value[i]));
-                        }
-                        else
-                        {
-                            merge_variant((*out)[i], value[i]);
-                        }
+                for (size_t i = 0; i < std::size(value); ++i) {
+                    if constexpr (MoveSrc) {
+                        merge_variant((*out)[i], std::move(value[i]));
+                    } else {
+                        merge_variant((*out)[i], value[i]);
                     }
                 }
             }
-            else if constexpr (std::is_same_v<ValueType, tr_variant::Map>)
-            {
-                if (!dest.holds_alternative<tr_variant::Map>())
-                {
-                    dest = tr_variant::Map{};
-                }
+        } else if constexpr (std::is_same_v<ValueType, tr_variant::Map>) {
+            if (!dest.holds_alternative<tr_variant::Map>()) {
+                dest = tr_variant::Map{};
+            }
 
-                if (auto* out = dest.get_if<tr_variant::MapIndex>(); out != nullptr)
-                {
-                    if constexpr (MoveSrc)
-                    {
-                        merge_map(*out, std::move(value));
-                    }
-                    else
-                    {
-                        merge_map(*out, value);
-                    }
+            if (auto* out = dest.get_if<tr_variant::MapIndex>(); out != nullptr) {
+                if constexpr (MoveSrc) {
+                    merge_map(*out, std::move(value));
+                } else {
+                    merge_map(*out, value);
                 }
             }
-        });
+        }
+    });
 }
 
 void merge_variant(tr_variant& dest, tr_variant const& src)
@@ -151,12 +123,9 @@ void merge_variant(tr_variant& dest, tr_variant&& src)
 template<typename T>
 [[nodiscard]] bool value_if(tr_variant const* const var, T* const setme)
 {
-    if (var != nullptr)
-    {
-        if (auto val = var->value_if<T>())
-        {
-            if (setme)
-            {
+    if (var != nullptr) {
+        if (auto val = var->value_if<T>()) {
+            if (setme) {
                 *setme = *val;
             }
             return true;
@@ -172,8 +141,7 @@ template<typename T>
     TR_ASSERT(var != nullptr);
     TR_ASSERT(var->holds_alternative<tr_variant::Map>());
 
-    if (auto* const map = var != nullptr ? var->get_if<tr_variant::MapIndex>() : nullptr; map != nullptr)
-    {
+    if (auto* const map = var != nullptr ? var->get_if<tr_variant::MapIndex>() : nullptr; map != nullptr) {
         return &map->insert_or_assign(key, std::forward<T>(val)).first;
     }
 
@@ -186,8 +154,7 @@ template<typename T>
     TR_ASSERT(var != nullptr);
     TR_ASSERT(var->holds_alternative<tr_variant::Vector>());
 
-    if (auto* const vec = var != nullptr ? var->get_if<tr_variant::VectorIndex>() : nullptr; vec != nullptr)
-    {
+    if (auto* const vec = var != nullptr ? var->get_if<tr_variant::VectorIndex>() : nullptr; vec != nullptr) {
         return &vec->emplace_back(std::forward<T>(val));
     }
 
@@ -200,8 +167,7 @@ template<typename T>
 template<>
 [[nodiscard]] std::optional<double> tr_variant::value_if() const noexcept
 {
-    switch (index())
-    {
+    switch (index()) {
     case DoubleIndex:
         return *get_if<DoubleIndex>();
 
@@ -210,8 +176,7 @@ template<>
 
     case StringIndex:
     case StringViewIndex:
-        if (auto const sv = value_if<std::string_view>())
-        {
+        if (auto const sv = value_if<std::string_view>()) {
             return tr_num_parse<double>(*sv);
         }
         break;
@@ -267,10 +232,8 @@ tr_variant& tr_variant::merge(tr_variant&& that)
 
 tr_variant* tr_variantDictFind(tr_variant* const var, tr_quark key)
 {
-    if (auto* const map = var != nullptr ? var->get_if<tr_variant::MapIndex>() : nullptr; map != nullptr)
-    {
-        if (auto iter = map->find(key); iter != std::end(*map))
-        {
+    if (auto* const map = var != nullptr ? var->get_if<tr_variant::MapIndex>() : nullptr; map != nullptr) {
+        if (auto iter = map->find(key); iter != std::end(*map)) {
             return &iter->second;
         }
     }
@@ -280,10 +243,8 @@ tr_variant* tr_variantDictFind(tr_variant* const var, tr_quark key)
 
 tr_variant* tr_variantListChild(tr_variant* const var, size_t pos)
 {
-    if (auto* const vec = var != nullptr ? var->get_if<tr_variant::VectorIndex>() : nullptr; vec != nullptr)
-    {
-        if (pos < std::size(*vec))
-        {
+    if (auto* const vec = var != nullptr ? var->get_if<tr_variant::VectorIndex>() : nullptr; vec != nullptr) {
+        if (pos < std::size(*vec)) {
             return &vec->at(pos);
         }
     }
@@ -299,8 +260,7 @@ bool tr_variantDictFindInt(tr_variant* const var, tr_quark key, int64_t* setme)
 
 bool tr_variantDictFindList(tr_variant* const var, tr_quark key, tr_variant** setme)
 {
-    if (auto* const res = tr_variantDictFind(var, key); res != nullptr && res->holds_alternative<tr_variant::Vector>())
-    {
+    if (auto* const res = tr_variantDictFind(var, key); res != nullptr && res->holds_alternative<tr_variant::Vector>()) {
         *setme = res;
         return true;
     }
@@ -310,8 +270,7 @@ bool tr_variantDictFindList(tr_variant* const var, tr_quark key, tr_variant** se
 
 bool tr_variantDictFindDict(tr_variant* const var, tr_quark key, tr_variant** setme)
 {
-    if (auto* const res = tr_variantDictFind(var, key); res != nullptr && res->holds_alternative<tr_variant::Map>())
-    {
+    if (auto* const res = tr_variantDictFind(var, key); res != nullptr && res->holds_alternative<tr_variant::Map>()) {
         *setme = res;
         return true;
     }
@@ -326,8 +285,7 @@ tr_variant* tr_variantDictAdd(tr_variant* const var, tr_quark key)
     TR_ASSERT(var != nullptr);
     TR_ASSERT(var->holds_alternative<tr_variant::Map>());
 
-    if (auto* const map = var != nullptr ? var->get_if<tr_variant::MapIndex>() : nullptr; map != nullptr)
-    {
+    if (auto* const map = var != nullptr ? var->get_if<tr_variant::MapIndex>() : nullptr; map != nullptr) {
         return &(*map)[key];
     }
 
@@ -352,8 +310,7 @@ bool tr_variantDictChild(tr_variant* const var, size_t pos, tr_quark* key, tr_va
     TR_ASSERT(var->holds_alternative<tr_variant::Map>());
 
     if (auto* const map = var != nullptr ? var->get_if<tr_variant::MapIndex>() : nullptr;
-        map != nullptr && pos < std::size(*map))
-    {
+        map != nullptr && pos < std::size(*map)) {
         auto iter = std::begin(*map);
         std::advance(iter, pos);
         *key = iter->first;
@@ -384,8 +341,7 @@ std::optional<tr_variant> tr_variant_serde::parse(std::string_view input)
     TR_ASSERT_MSG(!parse_inplace_, "not supported in from_file()");
     parse_inplace_ = false;
 
-    if (auto buf = std::vector<char>{}; tr_file_read(filename, buf, &error_))
-    {
+    if (auto buf = std::vector<char>{}; tr_file_read(filename, buf, &error_)) {
         return parse(buf);
     }
 
@@ -401,8 +357,7 @@ bool tr_variant_serde::to_file(tr_variant const& var, std::string_view filename)
 {
     tr_file_save(filename, to_string(var), &error_);
 
-    if (error_)
-    {
+    if (error_) {
         tr_logAddError(
             fmt::format(
                 fmt::runtime(_("Couldn't save '{path}': {error} ({error_code})")),
@@ -420,12 +375,9 @@ namespace tr::settings
 
 Settings load(std::string_view filename)
 {
-    if (tr_sys_path_exists(filename))
-    {
-        if (auto var = tr_variant_serde::json().parse_file(filename))
-        {
-            if (auto* settings = var->get_if<tr_variant::Map>())
-            {
+    if (tr_sys_path_exists(filename)) {
+        if (auto var = tr_variant_serde::json().parse_file(filename)) {
+            if (auto* settings = var->get_if<tr_variant::Map>()) {
                 tr::api_compat::convert_incoming_data(*settings);
                 return std::move(*settings);
             }

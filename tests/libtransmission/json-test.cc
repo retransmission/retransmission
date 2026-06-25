@@ -34,16 +34,14 @@ protected:
 
         auto const* locale_str = GetParam();
         old_locale_ = tr_locale_set_global(locale_str);
-        if (!old_locale_)
-        {
+        if (!old_locale_) {
             GTEST_SKIP();
         }
     }
 
     void TearDown() override
     {
-        if (old_locale_)
-        {
+        if (old_locale_) {
             tr_locale_set_global(*old_locale_);
         }
 
@@ -289,8 +287,7 @@ TEST_P(JSONTest, parseJsonFuzz)
     EXPECT_FALSE(var);
 
     auto buf = std::vector<char>{};
-    for (size_t i = 0; i < 100000U; ++i)
-    {
+    for (size_t i = 0; i < 100000U; ++i) {
         buf.resize(tr_rand_int(1024U));
         tr_rand_buffer(std::data(buf), std::size(buf));
 

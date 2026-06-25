@@ -20,8 +20,7 @@ static CGFloat const kIconWidth = 64.0;
 
 - (instancetype)initWithFrame:(NSRect)frame
 {
-    if ((self = [super initWithFrame:frame]))
-    {
+    if ((self = [super initWithFrame:frame])) {
         //create attributes
         NSShadow* stringShadow = [[NSShadow alloc] init];
         stringShadow.shadowOffset = NSMakeSize(2.0, -2.0);
@@ -89,8 +88,7 @@ static CGFloat const kIconWidth = 64.0;
 
 - (void)drawRect:(NSRect)rect
 {
-    if (self.fBadge)
-    {
+    if (self.fBadge) {
         NSRect const frame = self.frame;
         NSSize const imageSize = self.fBadge.size;
         [self.fBadge drawAtPoint:NSMakePoint((NSWidth(frame) - imageSize.width) * 0.5, (NSHeight(frame) - imageSize.height) * 0.5)

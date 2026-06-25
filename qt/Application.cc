@@ -62,10 +62,8 @@ auto constexpr InternRefreshIntervalMsec = 5 * 60 * 1000;
 
 bool loadTranslation(QTranslator& translator, QString const& name, QLocale const& locale, QStringList const& search_directories)
 {
-    for (QString const& directory : search_directories)
-    {
-        if (translator.load(locale, name, QStringLiteral("_"), directory))
-        {
+    for (QString const& directory : search_directories) {
+        if (translator.load(locale, name, QStringLiteral("_"), directory)) {
             return true;
         }
     }
@@ -102,8 +100,7 @@ void initUnits()
 [[nodiscard]] auto makeWindowIcon()
 {
     // first, try to load it from the system theme
-    if (auto icon = QIcon::fromTheme(QStringLiteral("transmission")); !icon.isNull())
-    {
+    if (auto icon = QIcon::fromTheme(QStringLiteral("transmission")); !icon.isNull()) {
         return icon;
     }
 
@@ -117,10 +114,8 @@ QAccessibleInterface* accessibleFactory(QString const& className, QObject* objec
 {
     auto* widget = qobject_cast<QWidget*>(object);
 
-    if (widget != nullptr)
-    {
-        if (className == QStringLiteral("SqueezeLabel"))
-        {
+    if (widget != nullptr) {
+        if (className == QStringLiteral("SqueezeLabel")) {
             return new AccessibleSqueezeLabel(widget);
         }
     }
@@ -166,8 +161,7 @@ Application::Application(
     // ensure our config directory exists
     QDir const dir(config_dir);
 
-    if (!dir.exists())
-    {
+    if (!dir.exists()) {
         dir.mkpath(config_dir);
     }
 
@@ -195,8 +189,7 @@ Application::Application(
     connect(watch_dir_.get(), &WatchDir::torrentFileAdded, this, qOverload<QString const&>(&Application::addWatchdirTorrent));
 
     // init from preferences
-    for (auto const key : { TR_KEY_watch_dir })
-    {
+    for (auto const key : { TR_KEY_watch_dir }) {
         refreshPref(key);
     }
 
@@ -226,26 +219,21 @@ Application::Application(
 
     maybeUpdateBlocklist();
 
-    if (!first_time)
-    {
+    if (!first_time) {
         session_->restart();
-    }
-    else
-    {
+    } else {
         window_->openSession();
     }
 
     // torrent files passed in on the command line
-    for (QString const& filename : filenames)
-    {
+    for (QString const& filename : filenames) {
         addTorrent(AddData{ filename });
     }
 
     InteropHelper::registerObject(this);
 
 #ifdef QT_DBUS_LIB
-    if (auto bus = QDBusConnection::sessionBus(); bus.isConnected())
-    {
+    if (auto bus = QDBusConnection::sessionBus(); bus.isConnected()) {
         bus.connect(
             FDONotificationsServiceName,
             FDONotificationsPath,
@@ -281,14 +269,12 @@ void Application::loadTranslations()
     QLocale const english_locale(QLocale::English, QLocale::UnitedStates);
 
     if (loadTranslation(qt_translator_, qt_file_name, locale, qt_qm_dirs) ||
-        loadTranslation(qt_translator_, qt_file_name, english_locale, qt_qm_dirs))
-    {
+        loadTranslation(qt_translator_, qt_file_name, english_locale, qt_qm_dirs)) {
         installTranslator(&qt_translator_);
     }
 
     if (loadTranslation(app_translator_, ConfigName, locale, app_qm_dirs) ||
-        loadTranslation(app_translator_, ConfigName, english_locale, app_qm_dirs))
-    {
+        loadTranslation(app_translator_, ConfigName, english_locale, app_qm_dirs)) {
         installTranslator(&app_translator_);
     }
 }
@@ -302,8 +288,7 @@ void Application::onTorrentsEdited(torrent_ids_t const& torrent_ids) const
 QStringList Application::getNames(torrent_ids_t const& torrent_ids) const
 {
     QStringList names;
-    for (auto const& id : torrent_ids)
-    {
+    for (auto const& id : torrent_ids) {
         names.push_back(model_->getTorrentFromId(id)->name());
     }
 
@@ -313,34 +298,29 @@ QStringList Application::getNames(torrent_ids_t const& torrent_ids) const
 
 void Application::onTorrentsAdded(torrent_ids_t const& torrent_ids) const
 {
-    if (!prefs_.get<bool>(TR_KEY_torrent_added_notification_enabled))
-    {
+    if (!prefs_.get<bool>(TR_KEY_torrent_added_notification_enabled)) {
         return;
     }
 
-    for (auto id : torrent_ids)
-    {
+    for (auto id : torrent_ids) {
         notifyTorrentAdded(model_->getTorrentFromId(id));
     }
 }
 
 void Application::onTorrentsCompleted(torrent_ids_t const& torrent_ids) const
 {
-    if (prefs_.get<bool>(TR_KEY_torrent_complete_notification_enabled))
-    {
+    if (prefs_.get<bool>(TR_KEY_torrent_complete_notification_enabled)) {
         auto const title = tr("Torrent(s) Completed", nullptr, static_cast<int>(std::size(torrent_ids)));
         auto const body = getNames(torrent_ids).join(QStringLiteral("\n"));
         notifyApp(title, body);
     }
 
-    if (prefs_.get<bool>(TR_KEY_torrent_complete_sound_enabled))
-    {
+    if (prefs_.get<bool>(TR_KEY_torrent_complete_sound_enabled)) {
 #if defined(Q_OS_WIN) || defined(Q_OS_MAC)
         beep();
 #else
         auto const args = prefs_.get<std::vector<QString>>(TR_KEY_torrent_complete_sound_command);
-        if (!args.empty())
-        {
+        if (!args.empty()) {
             auto const& command = args.front();
             auto const arguments = QStringList(std::next(std::begin(args)), std::end(args));
             QProcess::execute(command, arguments);
@@ -351,8 +331,7 @@ void Application::onTorrentsCompleted(torrent_ids_t const& torrent_ids) const
 
 void Application::onTorrentsNeedInfo(torrent_ids_t const& torrent_ids) const
 {
-    if (!torrent_ids.empty())
-    {
+    if (!torrent_ids.empty()) {
         session_->initTorrents(torrent_ids);
     }
 }
@@ -368,8 +347,7 @@ void Application::notifyTorrentAdded(Torrent const* tor) const
 
 void Application::saveGeometry() const
 {
-    if (window_ != nullptr)
-    {
+    if (window_ != nullptr) {
         auto const geometry = window_->geometry();
         prefs_.set(TR_KEY_main_window_height, std::max(100, geometry.height()));
         prefs_.set(TR_KEY_main_window_width, std::max(100, geometry.width()));
@@ -382,8 +360,7 @@ void Application::saveGeometry() const
 
 void Application::refreshPref(tr_quark key) const
 {
-    switch (key)
-    {
+    switch (key) {
     case TR_KEY_blocklist_updates_enabled:
         maybeUpdateBlocklist();
         break;
@@ -400,8 +377,7 @@ void Application::refreshPref(tr_quark key) const
 
 void Application::maybeUpdateBlocklist() const
 {
-    if (!prefs_.get<bool>(TR_KEY_blocklist_updates_enabled))
-    {
+    if (!prefs_.get<bool>(TR_KEY_blocklist_updates_enabled)) {
         return;
     }
 
@@ -409,8 +385,7 @@ void Application::maybeUpdateBlocklist() const
     auto const next_update_at = last_updated_at + std::chrono::days{ 7 };
     auto const now = std::chrono::time_point_cast<std::chrono::seconds>(std::chrono::system_clock::now());
 
-    if (now < next_update_at)
-    {
+    if (now < next_update_at) {
         session_->updateBlocklist();
         prefs_.set(TR_KEY_blocklist_date, now);
     }
@@ -430,12 +405,9 @@ void Application::refreshTorrents()
     // nothing's falling through the cracks.
     time_t const now = time(nullptr);
 
-    if (last_full_update_time_ + 60 >= now)
-    {
+    if (last_full_update_time_ + 60 >= now) {
         session_->refreshActiveTorrents();
-    }
-    else
-    {
+    } else {
         last_full_update_time_ = now;
         session_->refreshAllTorrents();
     }
@@ -456,24 +428,19 @@ void Application::addWatchdirTorrent(QString const& filename) const
 
 void Application::addTorrent(AddData addme) const
 {
-    if (addme.type == AddData::NONE)
-    {
+    if (addme.type == AddData::NONE) {
         return;
     }
 
     // if there's not already a disposal action set,
     // then honor the `trash original` preference setting
-    if (!addme.fileDisposal() && prefs_.get<bool>(TR_KEY_trash_original_torrent_files))
-    {
+    if (!addme.fileDisposal() && prefs_.get<bool>(TR_KEY_trash_original_torrent_files)) {
         addme.setFileDisposal(AddData::FilenameDisposal::Delete);
     }
 
-    if (!prefs_.get<bool>(TR_KEY_show_options_window))
-    {
+    if (!prefs_.get<bool>(TR_KEY_show_options_window)) {
         session_->addTorrent(addme);
-    }
-    else
-    {
+    } else {
         auto* o = new OptionsDialog{ *session_, prefs_, addme, window_.get() };
         o->show();
     }
@@ -493,8 +460,7 @@ void Application::raise() const
 bool Application::notifyApp(QString const& title, QString const& body, QStringList const& actions) const
 {
 #ifdef QT_DBUS_LIB
-    if (auto bus = QDBusConnection::sessionBus(); bus.isConnected())
-    {
+    if (auto bus = QDBusConnection::sessionBus(); bus.isConnected()) {
         QDBusMessage m = QDBusMessage::createMethodCall(
             FDONotificationsServiceName,
             FDONotificationsPath,
@@ -515,8 +481,7 @@ bool Application::notifyApp(QString const& title, QString const& body, QStringLi
         m.setArguments(args);
         QDBusReply<quint32> const reply_msg = bus.call(m);
 
-        if (reply_msg.isValid() && reply_msg.value() > 0)
-        {
+        if (reply_msg.isValid() && reply_msg.value() > 0) {
             return true;
         }
     }
@@ -533,8 +498,7 @@ void Application::onNotificationActionInvoked(quint32 /* notification_id */, QSt
 {
     static QRegularExpression const StartNowRegex{ QStringLiteral(R"rgx(start-now\((\d+)\))rgx") };
 
-    if (auto const match = StartNowRegex.match(action_key); match.hasMatch())
-    {
+    if (auto const match = StartNowRegex.match(action_key); match.hasMatch()) {
         int const torrent_id = match.captured(1).toInt();
         session_->startTorrentsNow({ torrent_id });
     }

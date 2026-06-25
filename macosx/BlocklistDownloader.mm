@@ -22,8 +22,7 @@ static BlocklistDownloader* fBLDownloader = nil;
 
 + (BlocklistDownloader*)downloader
 {
-    if (!fBLDownloader)
-    {
+    if (!fBLDownloader) {
         fBLDownloader = [[BlocklistDownloader alloc] init];
         [fBLDownloader startDownload];
     }
@@ -39,10 +38,8 @@ static BlocklistDownloader* fBLDownloader = nil;
 - (void)setViewController:(BlocklistDownloaderViewController*)viewController
 {
     _viewController = viewController;
-    if (_viewController)
-    {
-        switch (self.fState)
-        {
+    if (_viewController) {
+        switch (self.fState) {
         case BlocklistDownloadStateStart:
             [_viewController setStatusStarting];
             break;
@@ -86,8 +83,7 @@ static BlocklistDownloader* fBLDownloader = nil;
 - (void)URLSession:(NSURLSession*)session task:(NSURLSessionTask*)task didCompleteWithError:(NSError*)error
 {
     dispatch_async(dispatch_get_main_queue(), ^{
-        if (error)
-        {
+        if (error) {
             [self.viewController setFailed:error.localizedDescription];
         }
 
@@ -110,8 +106,7 @@ static BlocklistDownloader* fBLDownloader = nil;
     });
 
     NSString* filename = downloadTask.response.suggestedFilename;
-    if (filename == nil)
-    {
+    if (filename == nil) {
         filename = @"transmission-blocklist.tmp";
     }
 
@@ -120,12 +115,9 @@ static BlocklistDownloader* fBLDownloader = nil;
 
     [NSFileManager.defaultManager moveItemAtPath:location.path toPath:tempFile error:nil];
 
-    if ([@"text/plain" isEqualToString:downloadTask.response.MIMEType])
-    {
+    if ([@"text/plain" isEqualToString:downloadTask.response.MIMEType]) {
         blocklistFile = tempFile;
-    }
-    else
-    {
+    } else {
         [self decompressFrom:[NSURL fileURLWithPath:tempFile] to:[NSURL fileURLWithPath:blocklistFile] error:nil];
         [NSFileManager.defaultManager removeItemAtPath:tempFile error:nil];
     }
@@ -136,12 +128,9 @@ static BlocklistDownloader* fBLDownloader = nil;
         //delete downloaded file
         [NSFileManager.defaultManager removeItemAtPath:blocklistFile error:nil];
 
-        if (count)
-        {
+        if (count) {
             [self.viewController setFinished];
-        }
-        else
-        {
+        } else {
             [self.viewController
                 setFailed:NSLocalizedString(@"The specified blocklist file did not contain any valid rules.", "blocklist fail message")];
         }
@@ -171,15 +160,11 @@ static BlocklistDownloader* fBLDownloader = nil;
     [BlocklistScheduler.scheduler cancelSchedule];
 
     NSString* urlString = [NSUserDefaults.standardUserDefaults stringForKey:@"BlocklistURL"];
-    if (!urlString)
-    {
+    if (!urlString) {
         urlString = @"";
-    }
-    else
-    {
+    } else {
         urlString = [urlString stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
-        if (![urlString isEqualToString:@""] && [urlString rangeOfString:@"://"].location == NSNotFound)
-        {
+        if (![urlString isEqualToString:@""] && [urlString rangeOfString:@"://"].location == NSNotFound) {
             urlString = [@"https://" stringByAppendingString:urlString];
         }
     }
@@ -190,24 +175,20 @@ static BlocklistDownloader* fBLDownloader = nil;
 
 - (BOOL)decompressFrom:(NSURL*)file to:(NSURL*)destination error:(NSError**)error
 {
-    if ([self untarFrom:file to:destination])
-    {
+    if ([self untarFrom:file to:destination]) {
         return YES;
     }
 
-    if ([self unzipFrom:file to:destination])
-    {
+    if ([self unzipFrom:file to:destination]) {
         return YES;
     }
 
-    if ([self gunzipFrom:file to:destination])
-    {
+    if ([self gunzipFrom:file to:destination]) {
         return YES;
     }
 
     // If it doesn't look like archive just copy it to destination
-    else
-    {
+    else {
         return [NSFileManager.defaultManager copyItemAtURL:file toURL:destination error:error];
     }
 }
@@ -222,18 +203,14 @@ static BlocklistDownloader* fBLDownloader = nil;
     tarListCheck.standardOutput = nil;
     tarListCheck.standardError = nil;
 
-    @try
-    {
+    @try {
         [tarListCheck launch];
         [tarListCheck waitUntilExit];
 
-        if (tarListCheck.terminationStatus != 0)
-        {
+        if (tarListCheck.terminationStatus != 0) {
             return NO;
         }
-    }
-    @catch (NSException* exception)
-    {
+    } @catch (NSException* exception) {
         return NO;
     }
 
@@ -248,13 +225,11 @@ static BlocklistDownloader* fBLDownloader = nil;
 
     NSString* filename;
 
-    @try
-    {
+    @try {
         [tarList launch];
         [tarList waitUntilExit];
 
-        if (tarList.terminationStatus != 0)
-        {
+        if (tarList.terminationStatus != 0) {
             return NO;
         }
 
@@ -263,15 +238,12 @@ static BlocklistDownloader* fBLDownloader = nil;
         NSString* output = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
 
         filename = [output componentsSeparatedByCharactersInSet:NSCharacterSet.newlineCharacterSet].firstObject;
-    }
-    @catch (NSException* exception)
-    {
+    } @catch (NSException* exception) {
         return NO;
     }
 
     // It's a directory, skip
-    if ([filename hasSuffix:@"/"])
-    {
+    if ([filename hasSuffix:@"/"]) {
         return NO;
     }
 
@@ -282,18 +254,14 @@ static BlocklistDownloader* fBLDownloader = nil;
     untar.currentDirectoryPath = destinationDir.path;
     untar.arguments = @[ @"--extract", @"--file", file.path, filename ];
 
-    @try
-    {
+    @try {
         [untar launch];
         [untar waitUntilExit];
 
-        if (untar.terminationStatus != 0)
-        {
+        if (untar.terminationStatus != 0) {
             return NO;
         }
-    }
-    @catch (NSException* exception)
-    {
+    } @catch (NSException* exception) {
         return NO;
     }
 
@@ -312,18 +280,14 @@ static BlocklistDownloader* fBLDownloader = nil;
     gunzip.currentDirectoryPath = destinationDir.path;
     gunzip.arguments = @[ @"--keep", @"--force", file.path ];
 
-    @try
-    {
+    @try {
         [gunzip launch];
         [gunzip waitUntilExit];
 
-        if (gunzip.terminationStatus != 0)
-        {
+        if (gunzip.terminationStatus != 0) {
             return NO;
         }
-    }
-    @catch (NSException* exception)
-    {
+    } @catch (NSException* exception) {
         return NO;
     }
 
@@ -347,13 +311,11 @@ static BlocklistDownloader* fBLDownloader = nil;
 
     NSString* filename;
 
-    @try
-    {
+    @try {
         [zipinfo launch];
         [zipinfo waitUntilExit];
 
-        if (zipinfo.terminationStatus != 0)
-        {
+        if (zipinfo.terminationStatus != 0) {
             return NO;
         }
 
@@ -362,15 +324,12 @@ static BlocklistDownloader* fBLDownloader = nil;
         NSString* output = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
 
         filename = [output componentsSeparatedByCharactersInSet:NSCharacterSet.newlineCharacterSet].firstObject;
-    }
-    @catch (NSException* exception)
-    {
+    } @catch (NSException* exception) {
         return NO;
     }
 
     // It's a directory, skip
-    if ([filename hasSuffix:@"/"])
-    {
+    if ([filename hasSuffix:@"/"]) {
         return NO;
     }
 
@@ -381,18 +340,14 @@ static BlocklistDownloader* fBLDownloader = nil;
     unzip.currentDirectoryPath = destinationDir.path;
     unzip.arguments = @[ file.path, filename ];
 
-    @try
-    {
+    @try {
         [unzip launch];
         [unzip waitUntilExit];
 
-        if (unzip.terminationStatus != 0)
-        {
+        if (unzip.terminationStatus != 0) {
             return NO;
         }
-    }
-    @catch (NSException* exception)
-    {
+    } @catch (NSException* exception) {
         return NO;
     }
 

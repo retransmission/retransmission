@@ -31,8 +31,7 @@
 
 - (instancetype)init
 {
-    if ((self = [super initWithNibName:@"InfoGeneralView" bundle:nil]))
-    {
+    if ((self = [super initWithNibName:@"InfoGeneralView" bundle:nil])) {
         self.title = NSLocalizedString(@"General Info", "Inspector view -> title");
     }
 
@@ -49,13 +48,11 @@
 
 - (void)updateInfo
 {
-    if (!self.fSet)
-    {
+    if (!self.fSet) {
         [self setupInfo];
     }
 
-    if (self.fTorrents.count != 1)
-    {
+    if (self.fTorrents.count != 1) {
         return;
     }
 
@@ -79,8 +76,7 @@
 {
     Torrent* torrent = self.fTorrents[0];
     NSString* location = torrent.dataLocation;
-    if (!location)
-    {
+    if (!location) {
         return;
     }
 
@@ -95,8 +91,7 @@
     self.fLastDataLabel.hidden = YES;
     self.fLastDataLocationField.hidden = YES;
 
-    if (self.fTorrents.count == 1)
-    {
+    if (self.fTorrents.count == 1) {
         Torrent* torrent = self.fTorrents[0];
 
         // Associated Press Style: "Use a semicolon to clarify a series that includes a number of commas."
@@ -118,9 +113,7 @@
         NSString* creatorString = torrent.creator;
         self.fCreatorField.stringValue = creatorString;
         self.fDateCreatedField.objectValue = torrent.dateCreated;
-    }
-    else
-    {
+    } else {
         self.fPiecesField.stringValue = @"";
         self.fHashField.stringValue = @"";
         self.fHashField.toolTip = nil;

@@ -31,8 +31,7 @@ typedef NS_ENUM(NSInteger, ArrowDirection) {
 
 - (instancetype)init
 {
-    if ((self = [super init]))
-    {
+    if ((self = [super init])) {
         _fDownloadRate = 0.0;
         _fUploadRate = 0.0;
 
@@ -62,8 +61,7 @@ typedef NS_ENUM(NSInteger, ArrowDirection) {
 - (BOOL)setRatesWithDownload:(CGFloat)downloadRate upload:(CGFloat)uploadRate
 {
     //only needs update if the badges were displayed or are displayed now
-    if (isSpeedEqual(self.fDownloadRate, downloadRate) && isSpeedEqual(self.fUploadRate, uploadRate))
-    {
+    if (isSpeedEqual(self.fDownloadRate, downloadRate) && isSpeedEqual(self.fUploadRate, uploadRate)) {
         return NO;
     }
 
@@ -79,19 +77,16 @@ typedef NS_ENUM(NSInteger, ArrowDirection) {
     BOOL const upload = self.fUploadRate >= 0.1;
     BOOL const download = self.fDownloadRate >= 0.1;
     CGFloat bottom = 0.0;
-    if (download)
-    {
+    if (download) {
         NSImage* downloadBadge = [NSImage imageNamed:@"DownloadBadge"];
         [self badge:downloadBadge arrow:ArrowDirectionDown string:[NSString stringForSpeedAbbrevCompact:self.fDownloadRate]
             atHeight:bottom];
 
-        if (upload)
-        {
+        if (upload) {
             bottom += downloadBadge.size.height + kBetweenPadding; //upload rate above download rate
         }
     }
-    if (upload)
-    {
+    if (upload) {
         [self badge:[NSImage imageNamed:@"UploadBadge"] arrow:ArrowDirectionUp
               string:[NSString stringForSpeedAbbrevCompact:self.fUploadRate]
             atHeight:bottom];

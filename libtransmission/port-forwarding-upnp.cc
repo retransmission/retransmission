@@ -35,8 +35,7 @@
 
 namespace
 {
-enum class UpnpState : uint8_t
-{
+enum class UpnpState : uint8_t {
     Idle,
     WillDiscover, // next action is upnpDiscover()
     Discovering, // currently making blocking upnpDiscover() call in a worker thread
@@ -45,8 +44,7 @@ enum class UpnpState : uint8_t
 };
 } // namespace
 
-struct tr_upnp
-{
+struct tr_upnp {
     tr_upnp() = default;
     tr_upnp(tr_upnp&&) = delete;
     tr_upnp(tr_upnp const&) = delete;
@@ -79,8 +77,7 @@ namespace
 {
 constexpr auto port_fwd_state(UpnpState upnp_state, bool is_mapped)
 {
-    switch (upnp_state)
-    {
+    switch (upnp_state) {
     case UpnpState::WillDiscover:
     case UpnpState::Discovering:
         return TR_PORT_UNMAPPED;
@@ -115,8 +112,7 @@ constexpr auto port_fwd_state(UpnpState upnp_state, bool is_mapped)
 
     have_err = err != UPNPDISCOVER_SUCCESS;
 
-    if (have_err)
-    {
+    if (have_err) {
         tr_logAddDebug(fmt::format("upnpDiscover failed: {} ({})", tr_strerror(errno), errno));
     }
 
@@ -183,8 +179,7 @@ constexpr auto port_fwd_state(UpnpState upnp_state, bool is_mapped)
         nullptr,
         nullptr);
 
-    if (err != 0)
-    {
+    if (err != 0) {
         tr_logAddDebug(fmt::format("{} Port forwarding failed with error {}: {} ({})", proto, err, tr_strerror(errno), errno));
     }
 
@@ -199,13 +194,7 @@ void tr_upnpDeletePortMapping(tr_upnp const* handle, char const* proto, tr_port 
     UPNP_DeletePortMapping(handle->urls.controlURL, handle->data.first.servicetype, port_str.c_str(), proto, nullptr);
 }
 
-enum : uint8_t
-{
-    UPNP_IGD_NONE = 0,
-    UPNP_IGD_VALID_CONNECTED = 1,
-    UPNP_IGD_VALID_NOT_CONNECTED = 2,
-    UPNP_IGD_INVALID = 3
-};
+enum : uint8_t { UPNP_IGD_NONE = 0, UPNP_IGD_VALID_CONNECTED = 1, UPNP_IGD_VALID_NOT_CONNECTED = 2, UPNP_IGD_INVALID = 3 };
 
 auto* discover_thread_func(std::string bindaddr) // NOLINT performance-unnecessary-value-param
 {
@@ -242,8 +231,7 @@ tr_port_forwarding_state tr_upnpPulse(
     bool do_port_check,
     std::string bindaddr)
 {
-    if (is_enabled && handle->state == UpnpState::WillDiscover)
-    {
+    if (is_enabled && handle->state == UpnpState::WillDiscover) {
         TR_ASSERT(!handle->discover_future);
 
         auto task = std::packaged_task<UPNPDev*(std::string)>{ discover_thread_func };
@@ -254,8 +242,7 @@ tr_port_forwarding_state tr_upnpPulse(
     }
 
     if (is_enabled && handle->state == UpnpState::Discovering && handle->discover_future &&
-        is_future_ready(*handle->discover_future))
-    {
+        is_future_ready(*handle->discover_future)) {
         auto* const devlist = handle->discover_future->get();
         handle->discover_future.reset();
 
@@ -267,8 +254,7 @@ tr_port_forwarding_state tr_upnpPulse(
 #else
             UPNP_GetValidIGD(devlist, &handle->urls, &handle->data, std::data(lanaddr), std::size(lanaddr) - 1)
 #endif
-            == UPNP_IGD_VALID_CONNECTED)
-        {
+            == UPNP_IGD_VALID_CONNECTED) {
             tr_logAddInfo(
                 fmt::format(
                     fmt::runtime(_("Found Internet Gateway Device '{url}'")),
@@ -276,9 +262,7 @@ tr_port_forwarding_state tr_upnpPulse(
             tr_logAddInfo(fmt::format(fmt::runtime(_("Local Address is '{address}'")), fmt::arg("address", lanaddr.data())));
             handle->state = UpnpState::Idle;
             handle->lanaddr = std::data(lanaddr);
-        }
-        else
-        {
+        } else {
             handle->state = UpnpState::WillDiscover;
             tr_logAddDebug(fmt::format("UPNP_GetValidIGD failed: {} ({})", tr_strerror(errno), errno));
             tr_logAddDebug("If your router supports UPnP, please make sure UPnP is enabled!");
@@ -288,15 +272,13 @@ tr_port_forwarding_state tr_upnpPulse(
     }
 
     if (handle->state == UpnpState::Idle && handle->isMapped &&
-        (!is_enabled || handle->advertised_port != advertised_port || handle->local_port != local_port))
-    {
+        (!is_enabled || handle->advertised_port != advertised_port || handle->local_port != local_port)) {
         handle->state = UpnpState::WillUnmap;
     }
 
     if (is_enabled && handle->isMapped && do_port_check &&
         (get_specific_port_mapping_entry(handle, "TCP") != UPNPCOMMAND_SUCCESS ||
-         get_specific_port_mapping_entry(handle, "UDP") != UPNPCOMMAND_SUCCESS))
-    {
+         get_specific_port_mapping_entry(handle, "UDP") != UPNPCOMMAND_SUCCESS)) {
         tr_logAddInfo(
             fmt::format(
                 fmt::runtime(_("Local port {local_port} is not forwarded to {advertised_port}")),
@@ -305,8 +287,7 @@ tr_port_forwarding_state tr_upnpPulse(
         handle->isMapped = false;
     }
 
-    if (handle->state == UpnpState::WillUnmap)
-    {
+    if (handle->state == UpnpState::WillUnmap) {
         tr_upnpDeletePortMapping(handle, "TCP", handle->advertised_port);
         tr_upnpDeletePortMapping(handle, "UDP", handle->advertised_port);
 
@@ -322,21 +303,16 @@ tr_port_forwarding_state tr_upnpPulse(
         handle->local_port = {};
     }
 
-    if (handle->state == UpnpState::Idle && is_enabled && !handle->isMapped)
-    {
+    if (handle->state == UpnpState::Idle && is_enabled && !handle->isMapped) {
         handle->state = UpnpState::WillMap;
     }
 
-    if (handle->state == UpnpState::WillMap)
-    {
+    if (handle->state == UpnpState::WillMap) {
         errno = 0;
 
-        if (handle->urls.controlURL == nullptr)
-        {
+        if (handle->urls.controlURL == nullptr) {
             handle->isMapped = false;
-        }
-        else
-        {
+        } else {
             auto const desc = fmt::format("Transmission at {:d}", local_port.host());
             int const err_tcp = upnp_add_port_mapping(handle, "TCP", advertised_port, local_port, desc.c_str());
             int const err_udp = upnp_add_port_mapping(handle, "UDP", advertised_port, local_port, desc.c_str());
@@ -352,8 +328,7 @@ tr_port_forwarding_state tr_upnpPulse(
                 fmt::arg("address", handle->lanaddr),
                 fmt::arg("port", local_port.host())));
 
-        if (handle->isMapped)
-        {
+        if (handle->isMapped) {
             tr_logAddInfo(
                 fmt::format(
                     fmt::runtime(_("Forwarded local port {local_port} to {advertised_port}")),
@@ -361,9 +336,7 @@ tr_port_forwarding_state tr_upnpPulse(
                     fmt::arg("advertised_port", advertised_port.host())));
             handle->advertised_port = advertised_port;
             handle->local_port = local_port;
-        }
-        else
-        {
+        } else {
             tr_logAddInfo(_("If your router supports UPnP, please make sure UPnP is enabled!"));
             handle->advertised_port = {};
             handle->local_port = {};

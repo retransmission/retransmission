@@ -43,8 +43,7 @@ TEST_F(SessionTest, propertiesApi)
 
     // download dir
 
-    for (auto const& value : { "foo"sv, "bar"sv, ""sv })
-    {
+    for (auto const& value : { "foo"sv, "bar"sv, ""sv }) {
         session->setDownloadDir(value);
         EXPECT_EQ(value, session->downloadDir());
         EXPECT_EQ(value, tr_sessionGetDownloadDir(session));
@@ -56,8 +55,7 @@ TEST_F(SessionTest, propertiesApi)
 
     // incomplete dir
 
-    for (auto const& value : { "foo"sv, "bar"sv, ""sv })
-    {
+    for (auto const& value : { "foo"sv, "bar"sv, ""sv }) {
         session->setIncompleteDir(value);
         EXPECT_EQ(value, session->incompleteDir());
         EXPECT_EQ(value, tr_sessionGetIncompleteDir(session));
@@ -69,10 +67,8 @@ TEST_F(SessionTest, propertiesApi)
 
     // script
 
-    for (auto const& type : { TR_SCRIPT_ON_TORRENT_ADDED, TR_SCRIPT_ON_TORRENT_DONE })
-    {
-        for (auto const& value : { "foo"sv, "bar"sv, ""sv })
-        {
+    for (auto const& type : { TR_SCRIPT_ON_TORRENT_ADDED, TR_SCRIPT_ON_TORRENT_DONE }) {
+        for (auto const& value : { "foo"sv, "bar"sv, ""sv }) {
             session->setScript(type, value);
             EXPECT_EQ(value, session->script(type));
             EXPECT_EQ(value, tr_sessionGetScript(session, type));
@@ -82,8 +78,7 @@ TEST_F(SessionTest, propertiesApi)
             EXPECT_EQ(value, tr_sessionGetScript(session, type));
         }
 
-        for (auto const value : { true, false })
-        {
+        for (auto const value : { true, false }) {
             session->useScript(type, value);
             EXPECT_EQ(value, session->useScript(type));
             EXPECT_EQ(value, tr_sessionIsScriptEnabled(session, type));
@@ -96,8 +91,7 @@ TEST_F(SessionTest, propertiesApi)
 
     // incomplete dir enabled
 
-    for (auto const value : { true, false })
-    {
+    for (auto const value : { true, false }) {
         session->useIncompleteDir(value);
         EXPECT_EQ(value, session->useIncompleteDir());
         EXPECT_EQ(value, tr_sessionIsIncompleteDirEnabled(session));
@@ -109,8 +103,7 @@ TEST_F(SessionTest, propertiesApi)
 
     // blocklist url
 
-    for (auto const& value : { "foo"sv, "bar"sv, ""sv })
-    {
+    for (auto const& value : { "foo"sv, "bar"sv, ""sv }) {
         session->setBlocklistUrl(value);
         EXPECT_EQ(value, session->blocklistUrl());
         EXPECT_EQ(value, tr_blocklistGetURL(session));
@@ -122,8 +115,7 @@ TEST_F(SessionTest, propertiesApi)
 
     // rpc username
 
-    for (auto const& value : { "foo"sv, "bar"sv, ""sv })
-    {
+    for (auto const& value : { "foo"sv, "bar"sv, ""sv }) {
         tr_sessionSetRPCUsername(session, value);
         EXPECT_EQ(value, tr_sessionGetRPCUsername(session));
     }
@@ -148,8 +140,7 @@ TEST_F(SessionTest, propertiesApi)
 
     // blocklist enabled
 
-    for (auto const value : { true, false })
-    {
+    for (auto const value : { true, false }) {
         session->set_blocklist_enabled(value);
         EXPECT_EQ(value, session->blocklist_enabled());
         EXPECT_EQ(value, tr_blocklistIsEnabled(session));
@@ -164,8 +155,7 @@ TEST_F(SessionTest, peerId)
 {
     auto const peer_id_prefix = std::string{ PEERID_PREFIX };
 
-    for (int i = 0; i < 100000; ++i)
-    {
+    for (int i = 0; i < 100000; ++i) {
         // get a new peer-id
         auto const buf = tr_peerIdInit();
 
@@ -176,8 +166,7 @@ TEST_F(SessionTest, peerId)
         // confirm that its total is evenly divisible by 36
         int val = 0;
         auto const suffix = peer_id.substr(peer_id_prefix.size());
-        for (char const ch : suffix)
-        {
+        for (char const ch : suffix) {
             auto const tmp = std::to_array<char>({ ch, '\0' });
             val += strtoul(tmp.data(), nullptr, 36);
         }
@@ -269,8 +258,7 @@ TEST_F(SessionTest, getDefaultSettingsIncludesSubmodules)
 
     // Choose a setting from each of [tr_session, tr_session_alt_speeds, tr_rpc_server] to test all of them.
     // These are all `false` by default
-    for (auto const& key : { TR_KEY_peer_port_random_on_start, TR_KEY_alt_speed_time_enabled, TR_KEY_rpc_enabled })
-    {
+    for (auto const& key : { TR_KEY_peer_port_random_on_start, TR_KEY_alt_speed_time_enabled, TR_KEY_rpc_enabled }) {
         auto flag = settings.value_if<bool>(key);
         ASSERT_TRUE(flag);
         EXPECT_FALSE(*flag);
@@ -287,8 +275,7 @@ TEST_F(SessionTest, honorsSettings)
     // Choose a setting from each of [tr_session, tr_session_alt_speeds, tr_rpc_server] to test all of them.
     // These are all `false` by default
     auto settings = tr_sessionGetDefaultSettings();
-    for (auto const& key : { TR_KEY_peer_port_random_on_start, TR_KEY_alt_speed_time_enabled, TR_KEY_rpc_enabled })
-    {
+    for (auto const& key : { TR_KEY_peer_port_random_on_start, TR_KEY_alt_speed_time_enabled, TR_KEY_rpc_enabled }) {
         settings.insert_or_assign(key, true);
     }
     auto* session = tr_sessionInit(sandboxDir(), false, settings);
@@ -314,8 +301,7 @@ TEST_F(SessionTest, savesSettings)
 
     // Choose a setting from each of [tr_session, tr_session_alt_speeds, tr_rpc_server] to test all of them.
     auto settings = tr_sessionGetSettings(session_);
-    for (auto const& key : { TR_KEY_peer_port_random_on_start, TR_KEY_alt_speed_time_enabled, TR_KEY_rpc_enabled })
-    {
+    for (auto const& key : { TR_KEY_peer_port_random_on_start, TR_KEY_alt_speed_time_enabled, TR_KEY_rpc_enabled }) {
         auto flag = settings.value_if<bool>(key);
         ASSERT_TRUE(flag);
         EXPECT_TRUE(*flag);
@@ -335,8 +321,7 @@ TEST_F(SessionTest, loadTorrentsThenMagnets)
         !tr_sys_path_copy(
             MagnetFile,
             tr_pathbuf{ session_->torrentDir(), "/2e34989b1c60df821b2d046c884d8f4d1858b97a.magnet"sv },
-            &error))
-    {
+            &error)) {
         GTEST_SKIP() << fmt::format("Failed to setup torrents dir: {} ({})", error.message(), error.code());
     }
 

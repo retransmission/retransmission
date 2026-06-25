@@ -23,10 +23,8 @@
 
 - (void)drawWithFrame:(NSRect)cellFrame inView:(NSView*)controlView
 {
-    if ([NSUserDefaults.standardUserDefaults boolForKey:@"DisplayPeerProgressBarNumber"])
-    {
-        if (!self.fAttributes)
-        {
+    if ([NSUserDefaults.standardUserDefaults boolForKey:@"DisplayPeerProgressBarNumber"]) {
+        if (!self.fAttributes) {
             NSMutableParagraphStyle* paragraphStyle = [NSParagraphStyle.defaultParagraphStyle mutableCopy];
             paragraphStyle.alignment = NSTextAlignmentRight;
 
@@ -38,18 +36,14 @@
         }
 
         [[NSString percentString:self.floatValue longDecimals:NO] drawInRect:cellFrame withAttributes:self.fAttributes];
-    }
-    else
-    {
+    } else {
         //attributes not needed anymore
-        if (self.fAttributes)
-        {
+        if (self.fAttributes) {
             self.fAttributes = nil;
         }
 
         [super drawWithFrame:cellFrame inView:controlView];
-        if (self.seed)
-        {
+        if (self.seed) {
             NSImage* checkImage = [NSImage imageNamed:@"CompleteCheck"];
 
             NSSize const imageSize = checkImage.size;

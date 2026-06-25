@@ -42,8 +42,7 @@ public:
 
     TR_CONSTEXPR23 Flags(std::initializer_list<FlagType> flags) noexcept
     {
-        for (auto const flag : flags)
-        {
+        for (auto const flag : flags) {
             set(flag);
         }
     }

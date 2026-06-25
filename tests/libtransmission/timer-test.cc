@@ -35,8 +35,7 @@ protected:
         ::testing::Test::TearDown();
     }
 
-    static auto constexpr AsMSec = [](auto val)
-    {
+    static auto constexpr AsMSec = [](auto val) {
         return std::chrono::duration_cast<std::chrono::milliseconds>(val);
     };
 
@@ -86,8 +85,7 @@ TEST_F(TimerTest, singleShotCallsCallback)
     EXPECT_TRUE(timer);
 
     auto called = false;
-    auto callback = [&called]()
-    {
+    auto callback = [&called]() {
         called = true;
     };
     timer->set_callback(callback);
@@ -106,8 +104,7 @@ TEST_F(TimerTest, repeatingCallsCallback)
     EXPECT_TRUE(timer);
 
     auto called = false;
-    auto callback = [&called]()
-    {
+    auto callback = [&called]() {
         called = true;
     };
     timer->set_callback(callback);
@@ -126,8 +123,7 @@ TEST_F(TimerTest, singleShotHonorsInterval)
     EXPECT_TRUE(timer);
 
     auto called = false;
-    auto callback = [&called]()
-    {
+    auto callback = [&called]() {
         called = true;
     };
     timer->set_callback(callback);
@@ -153,8 +149,7 @@ TEST_F(TimerTest, repeatingHonorsInterval)
     EXPECT_TRUE(timer);
 
     auto n_calls = size_t{ 0U };
-    auto callback = [&n_calls]()
-    {
+    auto callback = [&n_calls]() {
         ++n_calls;
     };
     timer->set_callback(callback);
@@ -182,14 +177,12 @@ TEST_F(TimerTest, DISABLED_restartWithDifferentInterval)
     EXPECT_TRUE(timer);
 
     auto n_calls = size_t{ 0U };
-    auto callback = [&n_calls]()
-    {
+    auto callback = [&n_calls]() {
         ++n_calls;
     };
     timer->set_callback(callback);
 
-    auto const test = [this, &n_calls, &timer](auto interval)
-    {
+    auto const test = [this, &n_calls, &timer](auto interval) {
         auto const next = n_calls + 1;
         auto const begin_time = currentTime();
         timer->start_single_shot(interval);
@@ -212,14 +205,12 @@ TEST_F(TimerTest, DISABLED_restartWithSameInterval)
     EXPECT_TRUE(timer);
 
     auto n_calls = size_t{ 0U };
-    auto callback = [&n_calls]()
-    {
+    auto callback = [&n_calls]() {
         ++n_calls;
     };
     timer->set_callback(callback);
 
-    auto const test = [this, &n_calls, &timer](auto interval)
-    {
+    auto const test = [this, &n_calls, &timer](auto interval) {
         auto const next = n_calls + 1;
         auto const begin_time = currentTime();
         timer->start_single_shot(interval);
@@ -242,8 +233,7 @@ TEST_F(TimerTest, DISABLED_repeatingThenSingleShot)
     EXPECT_TRUE(timer);
 
     auto n_calls = size_t{ 0U };
-    auto callback = [&n_calls]()
-    {
+    auto callback = [&n_calls]() {
         ++n_calls;
     };
     timer->set_callback(callback);
@@ -285,8 +275,7 @@ TEST_F(TimerTest, DISABLED_singleShotStop)
     EXPECT_TRUE(timer);
 
     auto n_calls = size_t{ 0U };
-    auto callback = [&n_calls]()
-    {
+    auto callback = [&n_calls]() {
         ++n_calls;
     };
     timer->set_callback(callback);
@@ -315,8 +304,7 @@ TEST_F(TimerTest, repeatingStop)
     EXPECT_TRUE(timer);
 
     auto n_calls = size_t{ 0U };
-    auto callback = [&n_calls]()
-    {
+    auto callback = [&n_calls]() {
         ++n_calls;
     };
     timer->set_callback(callback);
@@ -345,8 +333,7 @@ TEST_F(TimerTest, destroyedTimersStop)
     EXPECT_TRUE(timer);
 
     auto n_calls = size_t{ 0U };
-    auto callback = [&n_calls]()
-    {
+    auto callback = [&n_calls]() {
         ++n_calls;
     };
     timer->set_callback(callback);

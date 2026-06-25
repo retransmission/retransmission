@@ -84,8 +84,7 @@ class SessionTest;
 } // namespace tr::test
 
 /** @brief handle to an active libtransmission session */
-struct tr_session
-{
+struct tr_session {
     using Memory = tr::Values::Memory;
     using Speed = tr::Values::Speed;
 
@@ -149,8 +148,7 @@ private:
 
         [[nodiscard]] std::optional<tr_address> announce_ip() const override
         {
-            if (!session_.useAnnounceIP())
-            {
+            if (!session_.useAnnounceIP()) {
                 return {};
             }
 
@@ -221,8 +219,7 @@ private:
 
         void on_port_forwarded(tr_port public_port) override
         {
-            if (session_.advertised_peer_port_ != public_port)
-            {
+            if (session_.advertised_peer_port_ != public_port) {
                 session_.advertised_peer_port_ = public_port;
                 session_.onAdvertisedPeerPortChanged();
             }
@@ -326,8 +323,7 @@ private:
 
         [[nodiscard]] std::string_view settings_bind_addr(tr_address_type type) override
         {
-            switch (type)
-            {
+            switch (type) {
             case TR_AF_INET:
                 return session_.settings_.bind_address_ipv4;
             case TR_AF_INET6:
@@ -340,8 +336,7 @@ private:
 
         [[nodiscard]] std::span<std::string const> settings_ip_endpoint(tr_address_type type) override
         {
-            switch (type)
-            {
+            switch (type) {
             case TR_AF_INET:
                 return session_.settings_.ip_endpoint_ipv4;
             case TR_AF_INET6:
@@ -680,8 +675,7 @@ public:
 
     void onIdleLimitHit(tr_torrent_id_t const tor_id)
     {
-        if (idle_limit_hit_callback_)
-        {
+        if (idle_limit_hit_callback_) {
             idle_limit_hit_callback_(tor_id);
         }
     }
@@ -693,8 +687,7 @@ public:
 
     void onRatioLimitHit(tr_torrent_id_t const tor_id)
     {
-        if (ratio_limit_hit_cb_)
-        {
+        if (ratio_limit_hit_cb_) {
             ratio_limit_hit_cb_(tor_id);
         }
     }
@@ -706,8 +699,7 @@ public:
 
     void onMetadataCompleted(tr_torrent_id_t const tor_id)
     {
-        if (got_metadata_cb_)
-        {
+        if (got_metadata_cb_) {
             got_metadata_cb_(tor_id);
         }
     }
@@ -719,8 +711,7 @@ public:
 
     void onTorrentCompletenessChanged(tr_torrent_id_t const tor_id, tr_completeness const completeness, bool const was_running)
     {
-        if (completeness_func_)
-        {
+        if (completeness_func_) {
             completeness_func_(tor_id, completeness, was_running);
         }
     }
@@ -889,8 +880,7 @@ public:
 
     bool load_preferred_transports(tr_variant const& var) noexcept
     {
-        if (!tr::serializer::to_value(var, &settings_.preferred_transports))
-        {
+        if (!tr::serializer::to_value(var, &settings_.preferred_transports)) {
             return false;
         }
         settings_.fixup_from_preferred_transports();
@@ -911,8 +901,7 @@ public:
 
     auto rpcNotify(tr_rpc_callback_type type, std::optional<tr_torrent_id_t> tor_id = {})
     {
-        if (rpc_func_)
-        {
+        if (rpc_func_) {
             return rpc_func_(type, tor_id);
         }
 
@@ -1016,8 +1005,7 @@ public:
 
     void fetch(tr_web::FetchOptions&& options) const
     {
-        if (web_)
-        {
+        if (web_) {
             web_->fetch(std::move(options));
         }
     }
@@ -1034,8 +1022,7 @@ public:
     // NOLINTNEXTLINE(readability-make-member-function-const)
     void maybe_add_dht_node(tr_address const& addr, tr_port port)
     {
-        if (dht_)
-        {
+        if (dht_) {
             dht_->maybe_add_node(addr, port);
         }
     }
@@ -1053,13 +1040,11 @@ public:
 private:
     constexpr bool& scriptEnabledFlag(TrScript i)
     {
-        if (i == TR_SCRIPT_ON_TORRENT_ADDED)
-        {
+        if (i == TR_SCRIPT_ON_TORRENT_ADDED) {
             return settings_.script_torrent_added_enabled;
         }
 
-        if (i == TR_SCRIPT_ON_TORRENT_DONE)
-        {
+        if (i == TR_SCRIPT_ON_TORRENT_DONE) {
             return settings_.script_torrent_done_enabled;
         }
 
@@ -1068,13 +1053,11 @@ private:
 
     constexpr std::string& scriptFilename(TrScript i)
     {
-        if (i == TR_SCRIPT_ON_TORRENT_ADDED)
-        {
+        if (i == TR_SCRIPT_ON_TORRENT_ADDED) {
             return settings_.script_torrent_added_filename;
         }
 
-        if (i == TR_SCRIPT_ON_TORRENT_DONE)
-        {
+        if (i == TR_SCRIPT_ON_TORRENT_DONE) {
             return settings_.script_torrent_done_filename;
         }
 
@@ -1170,8 +1153,7 @@ private:
 public:
     /// constexpr fields
 
-    struct ScriptInfo
-    {
+    struct ScriptInfo {
         tr_quark enabled_key;
         tr_quark filename_key;
         TrScript script;

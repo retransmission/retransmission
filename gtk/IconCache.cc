@@ -28,15 +28,13 @@ Glib::RefPtr<Gio::Icon> gtr_get_mime_type_icon(std::string_view mime_type)
 {
     static IconCache cache;
 
-    if (auto mime_it = cache.find(mime_type); mime_it != std::end(cache))
-    {
+    if (auto mime_it = cache.find(mime_type); mime_it != std::end(cache)) {
         return mime_it->second;
     }
 
     auto mime_type_str = std::string{ mime_type };
     auto icon = Gio::content_type_get_icon(mime_type_str);
-    if (icon != nullptr)
-    {
+    if (icon != nullptr) {
         cache.try_emplace(std::move(mime_type_str), icon);
     }
 

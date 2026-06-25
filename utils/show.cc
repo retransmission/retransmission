@@ -69,8 +69,7 @@ static_assert(Options[std::size(Options) - 2].val != 0);
 
 namespace
 {
-struct app_opts
-{
+struct app_opts {
     std::string_view filename;
     bool scrape = false;
     bool show_magnet = false;
@@ -88,10 +87,8 @@ int parseCommandLine(app_opts& opts, int argc, char const* const* argv)
     int c;
     char const* optarg;
 
-    while ((c = tr_getopt(Usage, argc, argv, std::data(Options), &optarg)) != TR_OPT_DONE)
-    {
-        switch (c)
-        {
+    while ((c = tr_getopt(Usage, argc, argv, std::data(Options), &optarg)) != TR_OPT_DONE) {
+        switch (c) {
         case 'b':
             opts.show_bytesize = true;
             break;
@@ -176,14 +173,12 @@ int parseCommandLine(app_opts& opts, int argc, char const* const* argv)
 bool compareSecondField(std::string_view l, std::string_view r)
 {
     auto const lpos = l.find(' ');
-    if (lpos == std::string_view::npos)
-    {
+    if (lpos == std::string_view::npos) {
         return false;
     }
 
     auto const rpos = r.find(' ');
-    if (rpos == std::string_view::npos)
-    {
+    if (rpos == std::string_view::npos) {
         return true;
     }
 
@@ -195,28 +190,23 @@ void showInfo(app_opts const& opts, tr_torrent_metainfo const& metainfo)
     /**
     ***  General Info
     **/
-    if (opts.print_info)
-    {
+    if (opts.print_info) {
         fmt::print("GENERAL\n\n");
         fmt::print("  Name: {:s}\n", metainfo.name());
-        if (metainfo.has_v1_metadata())
-        {
+        if (metainfo.has_v1_metadata()) {
             fmt::print("  Hash v1: {:s}\n", metainfo.info_hash_string());
         }
-        if (metainfo.has_v2_metadata())
-        {
+        if (metainfo.has_v2_metadata()) {
             fmt::print("  Hash v2: {:s}\n", metainfo.info_hash2_string());
         }
         fmt::print("  Created by: {:s}\n", std::empty(metainfo.creator()) ? "Unknown" : metainfo.creator());
         fmt::print("  Created on: {:s}\n\n", toString(metainfo.date_created()));
 
-        if (!std::empty(metainfo.comment()))
-        {
+        if (!std::empty(metainfo.comment())) {
             fmt::print("  Comment: {:s}\n", metainfo.comment());
         }
 
-        if (!std::empty(metainfo.source()))
-        {
+        if (!std::empty(metainfo.source())) {
             fmt::print("  Source: {:s}\n", metainfo.source());
         }
 
@@ -230,15 +220,12 @@ void showInfo(app_opts const& opts, tr_torrent_metainfo const& metainfo)
     ***  Trackers
     **/
 
-    if (opts.print_trackers)
-    {
+    if (opts.print_trackers) {
         fmt::print("\nTRACKERS\n");
         auto current_tier = std::optional<tr_tracker_tier_t>{};
         auto print_tier = size_t{ 1 };
-        for (auto const& tracker : metainfo.announce_list())
-        {
-            if (!current_tier || current_tier != tracker.tier)
-            {
+        for (auto const& tracker : metainfo.announce_list()) {
+            if (!current_tier || current_tier != tracker.tier) {
                 current_tier = tracker.tier;
                 fmt::print("\n  Tier #{:d}\n", print_tier);
                 ++print_tier;
@@ -251,12 +238,10 @@ void showInfo(app_opts const& opts, tr_torrent_metainfo const& metainfo)
         ***
         **/
 
-        if (auto const n_webseeds = metainfo.webseed_count(); n_webseeds > 0)
-        {
+        if (auto const n_webseeds = metainfo.webseed_count(); n_webseeds > 0) {
             fmt::print("\nWEBSEEDS\n\n");
 
-            for (size_t i = 0; i < n_webseeds; ++i)
-            {
+            for (size_t i = 0; i < n_webseeds; ++i) {
                 fmt::print("  {:s}\n", metainfo.webseed(i));
             }
         }
@@ -266,25 +251,19 @@ void showInfo(app_opts const& opts, tr_torrent_metainfo const& metainfo)
     ***  Files
     **/
 
-    if (opts.print_files)
-    {
-        if (!opts.show_bytesize)
-        {
+    if (opts.print_files) {
+        if (!opts.show_bytesize) {
             fmt::print("\nFILES\n\n");
         }
 
         auto filenames = std::vector<std::string>{};
-        for (tr_file_index_t i = 0, n = metainfo.file_count(); i < n; ++i)
-        {
+        for (tr_file_index_t i = 0, n = metainfo.file_count(); i < n; ++i) {
             std::string filename;
-            if (opts.show_bytesize)
-            {
+            if (opts.show_bytesize) {
                 filename = std::to_string(metainfo.file_size(i));
                 filename += " ";
                 filename += metainfo.file_subpath(i);
-            }
-            else
-            {
+            } else {
                 filename = "  ";
                 filename += metainfo.file_subpath(i);
                 filename += " (";
@@ -294,20 +273,15 @@ void showInfo(app_opts const& opts, tr_torrent_metainfo const& metainfo)
             filenames.emplace_back(filename);
         }
 
-        if (!opts.unsorted)
-        {
-            if (opts.show_bytesize)
-            {
+        if (!opts.unsorted) {
+            if (opts.show_bytesize) {
                 std::sort(std::begin(filenames), std::end(filenames), compareSecondField);
-            }
-            else
-            {
+            } else {
                 std::sort(std::begin(filenames), std::end(filenames));
             }
         }
 
-        for (auto const& filename : filenames)
-        {
+        for (auto const& filename : filenames) {
             fmt::print("{:s}\n", filename);
         }
     }
@@ -326,10 +300,8 @@ void doScrape(tr_torrent_metainfo const& metainfo)
     auto mediator = Mediator{};
     auto web = tr_web::create(mediator);
 
-    for (auto const& tracker : metainfo.announce_list())
-    {
-        if (std::empty(tracker.scrape))
-        {
+    for (auto const& tracker : metainfo.announce_list()) {
+        if (std::empty(tracker.scrape)) {
             continue;
         }
 
@@ -348,8 +320,7 @@ void doScrape(tr_torrent_metainfo const& metainfo)
         auto lock = std::unique_lock(response_mutex);
         web->fetch(
             { scrape_url,
-              [&response, &response_cv](tr_web::FetchResponse const& resp)
-              {
+              [&response, &response_cv](tr_web::FetchResponse const& resp) {
                   response = resp;
                   response_cv.notify_one();
               },
@@ -358,24 +329,21 @@ void doScrape(tr_torrent_metainfo const& metainfo)
         response_cv.wait(lock);
 
         // check the response code
-        if (auto const code = response.status; code != 200 /*HTTP OK*/)
-        {
+        if (auto const code = response.status; code != 200 /*HTTP OK*/) {
             fmt::print("error: unexpected response {:d} '{:s}'\n", code, tr_webGetResponseStr(code));
             continue;
         }
 
         // print it out
         auto otop = tr_variant_serde::benc().inplace().parse(response.body);
-        if (!!otop)
-        {
+        if (!!otop) {
             fmt::print("error parsing scrape response\n");
             continue;
         }
         auto& top = *otop;
 
         bool matched = false;
-        if (tr_variant* files = nullptr; tr_variantDictFindDict(&top, TR_KEY_files, &files))
-        {
+        if (tr_variant* files = nullptr; tr_variantDictFindDict(&top, TR_KEY_files, &files)) {
             size_t child_pos = 0;
             tr_quark key;
             tr_variant* val;
@@ -383,10 +351,8 @@ void doScrape(tr_torrent_metainfo const& metainfo)
             auto hashsv = std::string_view{ reinterpret_cast<char const*>(std::data(metainfo.info_hash())),
                                             std::size(metainfo.info_hash()) };
 
-            while (tr_variantDictChild(files, child_pos, &key, &val))
-            {
-                if (hashsv == tr_quark_get_string_view(key))
-                {
+            while (tr_variantDictChild(files, child_pos, &key, &val)) {
+                if (hashsv == tr_quark_get_string_view(key)) {
                     auto i = int64_t{};
                     auto const seeders = tr_variantDictFindInt(val, TR_KEY_complete, &i) ? int(i) : -1;
                     auto const leechers = tr_variantDictFindInt(val, TR_KEY_incomplete, &i) ? int(i) : -1;
@@ -398,8 +364,7 @@ void doScrape(tr_torrent_metainfo const& metainfo)
             }
         }
 
-        if (!matched)
-        {
+        if (!matched) {
             fmt::print("no match\n");
         }
     }
@@ -417,20 +382,17 @@ int tr_main(int argc, char* argv[])
     tr_logSetLevel(TR_LOG_ERROR);
 
     auto opts = app_opts{};
-    if (parseCommandLine(opts, argc, (char const* const*)argv) != 0)
-    {
+    if (parseCommandLine(opts, argc, (char const* const*)argv) != 0) {
         return EXIT_FAILURE;
     }
 
-    if (opts.show_version)
-    {
+    if (opts.show_version) {
         fmt::print(stderr, "{:s} {:s}\n", MyName, LONG_VERSION_STRING);
         return EXIT_SUCCESS;
     }
 
     /* make sure the user specified a filename */
-    if (std::empty(opts.filename))
-    {
+    if (std::empty(opts.filename)) {
         fmt::print(stderr, "ERROR: No torrent file specified.\n");
         tr_getopt_usage(MyName, Usage, std::data(Options));
         fmt::print(stderr, "\n");
@@ -441,35 +403,26 @@ int tr_main(int argc, char* argv[])
     auto metainfo = tr_torrent_metainfo{};
     auto error = tr_error{};
     auto const parsed = metainfo.parse_torrent_file(opts.filename, nullptr, &error);
-    if (error)
-    {
+    if (error) {
         fmt::print(stderr, "Error parsing torrent file '{:s}': {:s} ({:d})\n", opts.filename, error.message(), error.code());
     }
-    if (!parsed)
-    {
+    if (!parsed) {
         return EXIT_FAILURE;
     }
 
-    if (opts.show_magnet)
-    {
+    if (opts.show_magnet) {
         fmt::print("{:s}", metainfo.magnet());
-    }
-    else
-    {
-        if (opts.print_header)
-        {
+    } else {
+        if (opts.print_header) {
             fmt::print("Name: {:s}\n", metainfo.name());
             fmt::print("File: {:s}\n", opts.filename);
             fmt::print("\n");
             fflush(stdout);
         }
 
-        if (opts.scrape)
-        {
+        if (opts.scrape) {
             doScrape(metainfo);
-        }
-        else
-        {
+        } else {
             showInfo(opts, metainfo);
         }
     }

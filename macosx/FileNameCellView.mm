@@ -28,8 +28,7 @@ static CGFloat const kPaddingBetweenNameAndFolderStatus = 4.0;
 
 - (instancetype)initWithFrame:(NSRect)frameRect
 {
-    if ((self = [super initWithFrame:frameRect]))
-    {
+    if ((self = [super initWithFrame:frameRect])) {
         // Create icon view
         NSImageView* iconView = [[NSImageView alloc] initWithFrame:NSZeroRect];
         iconView.translatesAutoresizingMaskIntoConstraints = NO;
@@ -97,8 +96,7 @@ static CGFloat const kPaddingBetweenNameAndFolderStatus = 4.0;
 
 - (void)updateDisplay
 {
-    if (!self.node)
-    {
+    if (!self.node) {
         return;
     }
 
@@ -109,10 +107,8 @@ static CGFloat const kPaddingBetweenNameAndFolderStatus = 4.0;
 
     // Update icon size constraints based on folder/file
     CGFloat const imageSize = node.isFolder ? kImageFolderSize : kImageIconSize;
-    for (NSLayoutConstraint* constraint in self.iconView.constraints)
-    {
-        if (constraint.firstAttribute == NSLayoutAttributeWidth || constraint.firstAttribute == NSLayoutAttributeHeight)
-        {
+    for (NSLayoutConstraint* constraint in self.iconView.constraints) {
+        if (constraint.firstAttribute == NSLayoutAttributeWidth || constraint.firstAttribute == NSLayoutAttributeHeight) {
             constraint.constant = imageSize;
         }
     }
@@ -136,8 +132,7 @@ static CGFloat const kPaddingBetweenNameAndFolderStatus = 4.0;
     NSTextField* nameField = self.nameField;
     NSTextField* statusField = self.statusField;
 
-    if (node.isFolder)
-    {
+    if (node.isFolder) {
         // For folders, status appears next to name, both centered
         self.statusField.hidden = NO;
         self.dynamicConstraints = @[
@@ -149,9 +144,7 @@ static CGFloat const kPaddingBetweenNameAndFolderStatus = 4.0;
             [statusField.centerYAnchor constraintEqualToAnchor:self.centerYAnchor],
             [statusField.trailingAnchor constraintLessThanOrEqualToAnchor:self.trailingAnchor],
         ];
-    }
-    else
-    {
+    } else {
         // For files, status appears below name
         self.statusField.hidden = NO;
         self.dynamicConstraints = @[
@@ -175,8 +168,7 @@ static CGFloat const kPaddingBetweenNameAndFolderStatus = 4.0;
 
 - (void)updateTooltip
 {
-    if (!self.node)
-    {
+    if (!self.node) {
         return;
     }
 
@@ -184,8 +176,7 @@ static CGFloat const kPaddingBetweenNameAndFolderStatus = 4.0;
     Torrent* torrent = node.torrent;
 
     NSString* path = [torrent fileLocation:node];
-    if (!path)
-    {
+    if (!path) {
         path = [node.path stringByAppendingPathComponent:node.name];
     }
     self.toolTip = path;
@@ -199,26 +190,20 @@ static CGFloat const kPaddingBetweenNameAndFolderStatus = 4.0;
 
 - (void)updateColors
 {
-    if (!self.node)
-    {
+    if (!self.node) {
         return;
     }
 
     FileListNode* node = self.node;
     Torrent* torrent = node.torrent;
 
-    if (self.backgroundStyle == NSBackgroundStyleEmphasized)
-    {
+    if (self.backgroundStyle == NSBackgroundStyleEmphasized) {
         self.nameField.textColor = NSColor.whiteColor;
         self.statusField.textColor = NSColor.whiteColor;
-    }
-    else if ([torrent checkForFiles:node.indexes] == NSControlStateValueOff)
-    {
+    } else if ([torrent checkForFiles:node.indexes] == NSControlStateValueOff) {
         self.nameField.textColor = NSColor.disabledControlTextColor;
         self.statusField.textColor = NSColor.disabledControlTextColor;
-    }
-    else
-    {
+    } else {
         self.nameField.textColor = NSColor.controlTextColor;
         self.statusField.textColor = NSColor.secondaryLabelColor;
     }

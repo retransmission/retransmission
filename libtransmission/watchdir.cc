@@ -28,8 +28,7 @@ namespace
 
 [[nodiscard]] constexpr std::string_view actionToString(Watchdir::Action action)
 {
-    switch (action)
-    {
+    switch (action) {
     case Watchdir::Action::Retry:
         return "retry";
 
@@ -46,8 +45,7 @@ namespace
 
     auto error = tr_error{};
     auto const info = tr_sys_path_get_info(path, 0, &error);
-    if (error && !tr_error_is_enoent(error.code()))
-    {
+    if (error && !tr_error_is_enoent(error.code())) {
         tr_logAddWarn(
             fmt::format(
                 fmt::runtime(_("Skipping '{path}': {error} ({error_code})")),
@@ -66,15 +64,13 @@ namespace impl
 
 void BaseWatchdir::processFile(std::string_view basename)
 {
-    if (!isRegularFile(dirname_, basename) || handled_.contains(basename))
-    {
+    if (!isRegularFile(dirname_, basename) || handled_.contains(basename)) {
         return;
     }
 
     auto const action = callback_(dirname_, basename);
     tr_logAddDebug(fmt::format("Callback decided to {:s} file '{:s}'", actionToString(action), basename));
-    if (action == Action::Retry)
-    {
+    if (action == Action::Retry) {
         auto const [iter, added] = pending_.try_emplace(std::string{ basename });
 
         auto const now = std::chrono::steady_clock::now();
@@ -82,24 +78,18 @@ void BaseWatchdir::processFile(std::string_view basename)
         ++info.strikes;
         info.last_kick_at = now;
 
-        if (info.first_kick_at == Timestamp{})
-        {
+        if (info.first_kick_at == Timestamp{}) {
             info.first_kick_at = now;
         }
 
-        if (now - info.first_kick_at > timeoutDuration())
-        {
+        if (now - info.first_kick_at > timeoutDuration()) {
             tr_logAddWarn(fmt::format(fmt::runtime(_("Couldn't add torrent file '{path}'")), fmt::arg("path", basename)));
             pending_.erase(iter);
-        }
-        else
-        {
+        } else {
             setNextKickTime(info);
             restartTimerIfPending();
         }
-    }
-    else if (action == Action::Done)
-    {
+    } else if (action == Action::Done) {
         handled_.emplace(basename);
     }
 }
@@ -108,13 +98,11 @@ void BaseWatchdir::scan()
 {
     auto error = tr_error{};
 
-    for (auto const& file : tr_sys_dir_get_files(dirname_, tr_basename_is_not_dotfile, &error))
-    {
+    for (auto const& file : tr_sys_dir_get_files(dirname_, tr_basename_is_not_dotfile, &error)) {
         processFile(file);
     }
 
-    if (error)
-    {
+    if (error) {
         tr_logAddWarn(
             fmt::format(
                 fmt::runtime(_("Couldn't read '{path}': {error} ({error_code})")),

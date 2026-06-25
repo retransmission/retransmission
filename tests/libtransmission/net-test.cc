@@ -204,8 +204,7 @@ TEST_F(NetTest, isGlobalUnicastAddress)
         { "2001:0:0eab:dead::a0:abcd:4e"sv, true },
     });
 
-    for (auto const& [presentation, expected] : Tests)
-    {
+    for (auto const& [presentation, expected] : Tests) {
         auto const address = tr_address::from_string(presentation);
         ASSERT_TRUE(address.has_value());
         EXPECT_EQ(expected, address->is_global_unicast()) << presentation;
@@ -236,8 +235,7 @@ TEST_F(NetTest, isIPv4CurrentNetwork)
         { "2001:0:0eab:dead::a0:abcd:4e"sv, false },
     });
 
-    for (auto const& [presentation, expected] : Tests)
-    {
+    for (auto const& [presentation, expected] : Tests) {
         auto const address = tr_address::from_string(presentation);
         ASSERT_TRUE(address.has_value());
         EXPECT_EQ(expected, address->is_ipv4_current_network()) << presentation;
@@ -267,8 +265,7 @@ TEST_F(NetTest, isIPv4And10Private)
         { "2001:0:0eab:dead::a0:abcd:4e"sv, false },
     });
 
-    for (auto const& [presentation, expected] : Tests)
-    {
+    for (auto const& [presentation, expected] : Tests) {
         auto const address = tr_address::from_string(presentation);
         ASSERT_TRUE(address.has_value());
         EXPECT_EQ(expected, address->is_ipv4_10_private()) << presentation;
@@ -299,8 +296,7 @@ TEST_F(NetTest, isIPv4CarrierGradeNAT)
         { "2001:0:0eab:dead::a0:abcd:4e"sv, false },
     });
 
-    for (auto const& [presentation, expected] : Tests)
-    {
+    for (auto const& [presentation, expected] : Tests) {
         auto const address = tr_address::from_string(presentation);
         ASSERT_TRUE(address.has_value());
         EXPECT_EQ(expected, address->is_ipv4_carrier_grade_nat()) << presentation;
@@ -331,8 +327,7 @@ TEST_F(NetTest, isIPv4Loopback)
         { "2001:0:0eab:dead::a0:abcd:4e"sv, false },
     });
 
-    for (auto const& [presentation, expected] : Tests)
-    {
+    for (auto const& [presentation, expected] : Tests) {
         auto const address = tr_address::from_string(presentation);
         ASSERT_TRUE(address.has_value());
         EXPECT_EQ(expected, address->is_ipv4_loopback()) << presentation;
@@ -362,8 +357,7 @@ TEST_F(NetTest, isIPv4LinkLocal)
         { "2001:0:0eab:dead::a0:abcd:4e"sv, false },
     });
 
-    for (auto const& [presentation, expected] : Tests)
-    {
+    for (auto const& [presentation, expected] : Tests) {
         auto const address = tr_address::from_string(presentation);
         ASSERT_TRUE(address.has_value());
         EXPECT_EQ(expected, address->is_ipv4_link_local()) << presentation;
@@ -385,8 +379,7 @@ TEST_F(NetTest, isIPv4And172Private)
         { "0:0:0:0:0:0:0:1"sv, false }, { "2001:0:0eab:dead::a0:abcd:4e"sv, false },
     });
 
-    for (auto const& [presentation, expected] : Tests)
-    {
+    for (auto const& [presentation, expected] : Tests) {
         auto const address = tr_address::from_string(presentation);
         ASSERT_TRUE(address.has_value());
         EXPECT_EQ(expected, address->is_ipv4_172_private()) << presentation;
@@ -408,8 +401,7 @@ TEST_F(NetTest, isIPv4IetfProtocolAssignment)
         { "0:0:0:0:0:0:0:1"sv, false }, { "2001:0:0eab:dead::a0:abcd:4e"sv, false },
     });
 
-    for (auto const& [presentation, expected] : Tests)
-    {
+    for (auto const& [presentation, expected] : Tests) {
         auto const address = tr_address::from_string(presentation);
         ASSERT_TRUE(address.has_value());
         EXPECT_EQ(expected, address->is_ipv4_ietf_protocol_assignment()) << presentation;
@@ -431,8 +423,7 @@ TEST_F(NetTest, isIPv4TestNet1)
         { "0:0:0:0:0:0:0:1"sv, false }, { "2001:0:0eab:dead::a0:abcd:4e"sv, false },
     });
 
-    for (auto const& [presentation, expected] : Tests)
-    {
+    for (auto const& [presentation, expected] : Tests) {
         auto const address = tr_address::from_string(presentation);
         ASSERT_TRUE(address.has_value());
         EXPECT_EQ(expected, address->is_ipv4_test_net_1()) << presentation;
@@ -454,8 +445,7 @@ TEST_F(NetTest, isIPv4And6to4Relay)
         { "0:0:0:0:0:0:0:1"sv, false }, { "2001:0:0eab:dead::a0:abcd:4e"sv, false },
     });
 
-    for (auto const& [presentation, expected] : Tests)
-    {
+    for (auto const& [presentation, expected] : Tests) {
         auto const address = tr_address::from_string(presentation);
         ASSERT_TRUE(address.has_value());
         EXPECT_EQ(expected, address->is_ipv4_6to4_relay()) << presentation;
@@ -477,8 +467,7 @@ TEST_F(NetTest, isIPv4And192Private)
         { "0:0:0:0:0:0:0:1"sv, false }, { "2001:0:0eab:dead::a0:abcd:4e"sv, false },
     });
 
-    for (auto const& [presentation, expected] : Tests)
-    {
+    for (auto const& [presentation, expected] : Tests) {
         auto const address = tr_address::from_string(presentation);
         ASSERT_TRUE(address.has_value());
         EXPECT_EQ(expected, address->is_ipv4_192_168_private()) << presentation;
@@ -500,8 +489,7 @@ TEST_F(NetTest, isIPv4Benchmark)
         { "0:0:0:0:0:0:0:1"sv, false }, { "2001:0:0eab:dead::a0:abcd:4e"sv, false },
     });
 
-    for (auto const& [presentation, expected] : Tests)
-    {
+    for (auto const& [presentation, expected] : Tests) {
         auto const address = tr_address::from_string(presentation);
         ASSERT_TRUE(address.has_value());
         EXPECT_EQ(expected, address->is_ipv4_benchmark()) << presentation;
@@ -523,8 +511,7 @@ TEST_F(NetTest, isIPv4TestNet2)
         { "0:0:0:0:0:0:0:1"sv, false }, { "2001:0:0eab:dead::a0:abcd:4e"sv, false },
     });
 
-    for (auto const& [presentation, expected] : Tests)
-    {
+    for (auto const& [presentation, expected] : Tests) {
         auto const address = tr_address::from_string(presentation);
         ASSERT_TRUE(address.has_value());
         EXPECT_EQ(expected, address->is_ipv4_test_net_2()) << presentation;
@@ -546,8 +533,7 @@ TEST_F(NetTest, isIPv4TestNet3)
         { "0:0:0:0:0:0:0:1"sv, false }, { "2001:0:0eab:dead::a0:abcd:4e"sv, false },
     });
 
-    for (auto const& [presentation, expected] : Tests)
-    {
+    for (auto const& [presentation, expected] : Tests) {
         auto const address = tr_address::from_string(presentation);
         ASSERT_TRUE(address.has_value());
         EXPECT_EQ(expected, address->is_ipv4_test_net_3()) << presentation;
@@ -569,8 +555,7 @@ TEST_F(NetTest, isIPv4Multicast)
         { "0:0:0:0:0:0:0:1"sv, false }, { "2001:0:0eab:dead::a0:abcd:4e"sv, false },
     });
 
-    for (auto const& [presentation, expected] : Tests)
-    {
+    for (auto const& [presentation, expected] : Tests) {
         auto const address = tr_address::from_string(presentation);
         ASSERT_TRUE(address.has_value());
         EXPECT_EQ(expected, address->is_ipv4_multicast()) << presentation;
@@ -592,8 +577,7 @@ TEST_F(NetTest, isIPv4McastTestNet)
         { "0:0:0:0:0:0:0:1"sv, false }, { "2001:0:0eab:dead::a0:abcd:4e"sv, false },
     });
 
-    for (auto const& [presentation, expected] : Tests)
-    {
+    for (auto const& [presentation, expected] : Tests) {
         auto const address = tr_address::from_string(presentation);
         ASSERT_TRUE(address.has_value());
         EXPECT_EQ(expected, address->is_ipv4_mcast_test_net()) << presentation;
@@ -615,8 +599,7 @@ TEST_F(NetTest, isIPv4ReservedClassE)
         { "0:0:0:0:0:0:0:1"sv, false }, { "2001:0:0eab:dead::a0:abcd:4e"sv, false },
     });
 
-    for (auto const& [presentation, expected] : Tests)
-    {
+    for (auto const& [presentation, expected] : Tests) {
         auto const address = tr_address::from_string(presentation);
         ASSERT_TRUE(address.has_value());
         EXPECT_EQ(expected, address->is_ipv4_reserved_class_e()) << presentation;
@@ -638,8 +621,7 @@ TEST_F(NetTest, isIPv4LimitedBroadcast)
         { "0:0:0:0:0:0:0:1"sv, false }, { "2001:0:0eab:dead::a0:abcd:4e"sv, false },
     });
 
-    for (auto const& [presentation, expected] : Tests)
-    {
+    for (auto const& [presentation, expected] : Tests) {
         auto const address = tr_address::from_string(presentation);
         ASSERT_TRUE(address.has_value());
         EXPECT_EQ(expected, address->is_ipv4_limited_broadcast()) << presentation;
@@ -677,8 +659,7 @@ TEST_F(NetTest, isIPv6Unspecified)
         { "ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff"sv, false },
     });
 
-    for (auto const& [presentation, expected] : Tests)
-    {
+    for (auto const& [presentation, expected] : Tests) {
         auto const address = tr_address::from_string(presentation);
         ASSERT_TRUE(address.has_value());
         EXPECT_EQ(expected, address->is_ipv6_unspecified()) << presentation;
@@ -716,8 +697,7 @@ TEST_F(NetTest, isIPv6Loopback)
         { "ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff"sv, false },
     });
 
-    for (auto const& [presentation, expected] : Tests)
-    {
+    for (auto const& [presentation, expected] : Tests) {
         auto const address = tr_address::from_string(presentation);
         ASSERT_TRUE(address.has_value());
         EXPECT_EQ(expected, address->is_ipv6_loopback()) << presentation;
@@ -755,8 +735,7 @@ TEST_F(NetTest, isIPv6IPv4Mapped)
         { "ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff"sv, false },
     });
 
-    for (auto const& [presentation, expected] : Tests)
-    {
+    for (auto const& [presentation, expected] : Tests) {
         auto const address = tr_address::from_string(presentation);
         ASSERT_TRUE(address.has_value());
         EXPECT_EQ(expected, address->is_ipv6_ipv4_mapped()) << presentation;
@@ -794,8 +773,7 @@ TEST_F(NetTest, isIPv6Teredo)
         { "ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff"sv, false },
     });
 
-    for (auto const& [presentation, expected] : Tests)
-    {
+    for (auto const& [presentation, expected] : Tests) {
         auto const address = tr_address::from_string(presentation);
         ASSERT_TRUE(address.has_value());
         EXPECT_EQ(expected, address->is_ipv6_teredo()) << presentation;
@@ -833,8 +811,7 @@ TEST_F(NetTest, isIPv6And6to4)
         { "ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff"sv, false },
     });
 
-    for (auto const& [presentation, expected] : Tests)
-    {
+    for (auto const& [presentation, expected] : Tests) {
         auto const address = tr_address::from_string(presentation);
         ASSERT_TRUE(address.has_value());
         EXPECT_EQ(expected, address->is_ipv6_6to4()) << presentation;
@@ -872,8 +849,7 @@ TEST_F(NetTest, isIPv6LinkLocal)
         { "ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff"sv, false },
     });
 
-    for (auto const& [presentation, expected] : Tests)
-    {
+    for (auto const& [presentation, expected] : Tests) {
         auto const address = tr_address::from_string(presentation);
         ASSERT_TRUE(address.has_value());
         EXPECT_EQ(expected, address->is_ipv6_link_local()) << presentation;
@@ -911,8 +887,7 @@ TEST_F(NetTest, isIPv6Multicast)
         { "ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff"sv, true },
     });
 
-    for (auto const& [presentation, expected] : Tests)
-    {
+    for (auto const& [presentation, expected] : Tests) {
         auto const address = tr_address::from_string(presentation);
         ASSERT_TRUE(address.has_value());
         EXPECT_EQ(expected, address->is_ipv6_multicast()) << presentation;
@@ -932,8 +907,7 @@ TEST_F(NetTest, ipCompare)
         std::tuple{ "2001:1890:1112:1::20"sv, "[2001:1890:1112:1::20]"sv, std::strong_ordering::equal },
     };
 
-    for (auto const& [sv1, sv2, res] : IpPairs)
-    {
+    for (auto const& [sv1, sv2, res] : IpPairs) {
         auto const ip1 = *tr_address::from_string(sv1);
         auto const ip2 = *tr_address::from_string(sv2);
 
@@ -966,8 +940,7 @@ TEST_F(NetTest, IPv4MappedAddress)
         { "::ffff:224.0.0.0"sv, "224.0.0.0"sv },
     });
 
-    for (auto const& [mapped_sv, native_sv] : Tests)
-    {
+    for (auto const& [mapped_sv, native_sv] : Tests) {
         auto const mapped = tr_address::from_string(mapped_sv);
         ASSERT_TRUE(mapped);
 

@@ -29,25 +29,17 @@ using namespace std::literals;
 namespace
 {
 
-enum class tr_app_type : uint8_t
-{
-    EXE,
-    BATCH
-};
+enum class tr_app_type : uint8_t { EXE, BATCH };
 
 void set_system_error(tr_error* error, DWORD code, std::string_view what)
 {
-    if (error == nullptr)
-    {
+    if (error == nullptr) {
         return;
     }
 
-    if (auto const message = tr_win32_format_message(code); !std::empty(message))
-    {
+    if (auto const message = tr_win32_format_message(code); !std::empty(message)) {
         error->set(code, fmt::format("{:s} failed: {:s}", what, message));
-    }
-    else
-    {
+    } else {
         error->set(code, fmt::format("{:s} failed: Unknown error: {:#08x}", what, code));
     }
 }
@@ -65,8 +57,7 @@ public:
     {
         int diff = wcsnicmp(std::data(a), std::data(b), std::min(std::size(a), std::size(b)));
 
-        if (diff == 0)
-        {
+        if (diff == 0) {
             diff = tr_compare_3way(std::size(a), std::size(b));
         }
 
@@ -95,8 +86,7 @@ auto to_env_string(SortedWideEnv const& wide_env)
 {
     auto ret = std::vector<wchar_t>{};
 
-    for (auto const& [key, val] : wide_env)
-    {
+    for (auto const& [key, val] : wide_env) {
         fmt::format_to(std::back_inserter(ret), L"{:s}={:s}", key, val);
         ret.insert(std::end(ret), L'\0');
     }
@@ -117,16 +107,13 @@ auto parse_env_string(wchar_t const* env)
 {
     auto sorted = SortedWideEnv{};
 
-    for (;;)
-    {
+    for (;;) {
         auto const line = std::wstring_view{ env };
-        if (std::empty(line))
-        {
+        if (std::empty(line)) {
             break;
         }
 
-        if (auto const pos = line.find(L'='); pos != std::string_view::npos)
-        {
+        if (auto const pos = line.find(L'='); pos != std::string_view::npos) {
             sorted.insert_or_assign(std::wstring{ line.substr(0, pos) }, std::wstring{ line.substr(pos + 1) });
         }
 
@@ -140,8 +127,7 @@ auto get_current_env()
 {
     auto env = SortedWideEnv{};
 
-    if (auto* pwch = GetEnvironmentStringsW(); pwch != nullptr)
-    {
+    if (auto* pwch = GetEnvironmentStringsW(); pwch != nullptr) {
         env = parse_env_string(pwch);
 
         FreeEnvironmentStringsW(pwch);
@@ -154,31 +140,26 @@ void append_argument(std::string& arguments, char const* argument)
 {
     TR_ASSERT(argument != nullptr);
 
-    if (!std::empty(arguments))
-    {
+    if (!std::empty(arguments)) {
         arguments += ' ';
     }
 
-    if (*argument != '\0' && strpbrk(argument, " \t\n\v\"") == nullptr)
-    {
+    if (*argument != '\0' && strpbrk(argument, " \t\n\v\"") == nullptr) {
         arguments += argument;
         return;
     }
 
     arguments += '"';
 
-    for (char const* src = argument; *src != '\0';)
-    {
+    for (char const* src = argument; *src != '\0';) {
         size_t backslash_count = 0;
 
-        while (*src == '\\')
-        {
+        while (*src == '\\') {
             ++backslash_count;
             ++src;
         }
 
-        switch (*src)
-        {
+        switch (*src) {
         case '\0':
             backslash_count = backslash_count * 2;
             break;
@@ -191,13 +172,11 @@ void append_argument(std::string& arguments, char const* argument)
             break;
         }
 
-        if (backslash_count != 0)
-        {
+        if (backslash_count != 0) {
             arguments.append(backslash_count, '\\');
         }
 
-        if (*src != '\0')
-        {
+        if (*src != '\0') {
             arguments += *src++;
         }
     }
@@ -218,8 +197,7 @@ auto get_app_type(char const* app)
 {
     auto const lower = tr_strlower(app);
 
-    if (tr_strv_ends_with(lower, ".cmd") || tr_strv_ends_with(lower, ".bat"))
-    {
+    if (tr_strv_ends_with(lower, ".cmd") || tr_strv_ends_with(lower, ".bat")) {
         return tr_app_type::BATCH;
     }
 
@@ -230,8 +208,7 @@ auto get_app_type(char const* app)
 
 void append_app_launcher_arguments(tr_app_type app_type, std::string& args)
 {
-    switch (app_type)
-    {
+    switch (app_type) {
     case tr_app_type::EXE:
         break;
 
@@ -258,10 +235,8 @@ std::wstring construct_cmd_line(char const* const* cmd)
 
     append_app_launcher_arguments(app_type, args);
 
-    for (size_t i = 0; cmd[i] != nullptr; ++i)
-    {
-        if (app_type == tr_app_type::BATCH && i > 0 && contains_batch_metachars(cmd[i]))
-        {
+    for (size_t i = 0; cmd[i] != nullptr; ++i) {
+        if (app_type == tr_app_type::BATCH && i > 0 && contains_batch_metachars(cmd[i])) {
             /* FIXME: My attempts to escape them one or another way didn't lead to anything good so far */
             args.clear();
             break;
@@ -270,8 +245,7 @@ std::wstring construct_cmd_line(char const* const* cmd)
         append_argument(args, cmd[i]);
     }
 
-    if (!std::empty(args))
-    {
+    if (!std::empty(args)) {
         return tr_win32_utf8_to_native(args);
     }
 
@@ -288,14 +262,12 @@ bool tr_spawn_async(
 {
     // full_env = current_env + env;
     auto full_env = get_current_env();
-    for (auto const& [key, val] : env)
-    {
+    for (auto const& [key, val] : env) {
         full_env.insert_or_assign(tr_win32_utf8_to_native(key), tr_win32_utf8_to_native(val));
     }
 
     auto cmd_line = construct_cmd_line(cmd);
-    if (std::empty(cmd_line))
-    {
+    if (std::empty(cmd_line)) {
         set_system_error(error, ERROR_INVALID_PARAMETER, "Constructing command line");
         return false;
     }
@@ -321,13 +293,10 @@ bool tr_spawn_async(
         &si,
         &pi));
 
-    if (ret)
-    {
+    if (ret) {
         CloseHandle(pi.hThread);
         CloseHandle(pi.hProcess);
-    }
-    else
-    {
+    } else {
         set_system_error(error, GetLastError(), "Call to CreateProcess()");
     }
 

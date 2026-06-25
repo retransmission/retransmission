@@ -38,12 +38,7 @@ private slots:
     void rescanAllWatchedDirectories();
 
 private:
-    enum class AddResult : uint8_t
-    {
-        Success,
-        Duplicate,
-        Error
-    };
+    enum class AddResult : uint8_t { Success, Duplicate, Error };
 
     [[nodiscard]] AddResult metainfoTest(QString const& filename) const;
 

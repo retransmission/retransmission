@@ -57,8 +57,7 @@ TEST_F(TorrentMetainfoTest, magnetLink)
 // FIXME: split these into parameterized tests?
 TEST_F(TorrentMetainfoTest, bucket)
 {
-    struct LocalTest
-    {
+    struct LocalTest {
         std::string_view benc;
         bool expected_parse_result;
     };
@@ -87,8 +86,7 @@ TEST_F(TorrentMetainfoTest, bucket)
 
     tr_logSetLevel(TR_LOG_OFF);
 
-    for (auto const& [benc, expected_parse_result] : Tests)
-    {
+    for (auto const& [benc, expected_parse_result] : Tests) {
         auto metainfo = tr_torrent_metainfo{};
         EXPECT_EQ(expected_parse_result, metainfo.parse_benc(benc));
     }
@@ -100,8 +98,7 @@ TEST_F(TorrentMetainfoTest, parseBencFuzzRegressions)
         "ZC/veNSVW0Ss+KGfMqH4DQqtYXzgmVi5oBi0XlxviLytlwwjf7MLanOcnS73eSB/iye83hVyvSWg27tPl5oqWdNEZ0euMbo7E8FH/xgTvUEOnBVgvPno50CyI7c5F2QTw16avUB7dvGzx5xIjzJ2qkD2BsNtOoiZI3skC6XwSifsDfJUN8NxHFiwvWxmZRLq2eQlE2wGxAW5aLj6U1MHDzPZ83+2o81pRyMr11bHmWFcNorTGLeOpHBd9veduHpNOKNwOatoXeb57jZCy1Zmu9y/wCuUx6DP3I5FGQ/t3AYh7w028Z/zgIlvWat6QjqSPp7j1nEbl6SNZNl1doGmusl9hvRsbaCq9b1XHpTDtQSJ8Owj07fph0p0ZVu5kJpQBfOGsHLh6ALVrTepptIvcnNW9+nauE+NJa2z+9Yla7780sCdBsGYZZA6HUr0J9GXES7+uRPPBwAl2YB1qWhCsOCClixTiAlwrsBl1bJ/a4FV04aU5jXDEYrpJMzdSAEoypDWMsn3Fc5umLqJ1jtqPqykKY0HjPrCkVAMmvmacauBzIj5Eg/uw0xtZp+wXdLQv8qyuXgsJs7dExZbgTgfPY4niTBpftM6YFQrCx/IxiMshYp7tMolykoed/8gZMm6yyWizzml4BlvnvY3+J2eVKRvS7QToRKxN5eFP9l/pflrK+8cHbwVnjQ1pE3hTQACmNIQHRTY2QoOGwG+HTwo48akfbJnjJ3F0iN6miy7lvv5u0p1rpbM2On5FJ3G98OYnzGIxf8BomHvVp/3eX6QJZUMZKsUTpgbRqg0AJH9FjiERQ9v6B25Va+Q0yV8z5DmiA5AgyIwkIzlSBAl0PYsNaw+rH06a93yBhAfK6EPSArYLjMI6o/1kF4UxNyfE+F79xbdCAKRAX3iJ7DH1GncFoIQ1fZd/uZaF9tXjViQ7P/sHuKdZvfLpvJq88JV5Pcdsfdlle86QAF4weB+k/k8f/xgvxRNbbcAfjLvEHhDBzfEvHkgFrW19WvLHyAqjjUovpecIu3KeCqwyOr1dHViUVelxqc5BklyGQ+Asd6GnWPSzO5Hamj4rYrapgogEup5PKm1j2CgL2HH2tySWwjgtOWbooGhsdBnCeQOsapCxwc6ALtudG4Q9RBu6A6pLUfFE3rm1RuvNGoJNHiEQ4BAFiqLpYJd4lR7V2fI6EIKug0dB3SpHpUeNCQbG67IM+kVe0I+vP3cECGOGXo="sv,
     });
 
-    for (auto const& test : Tests)
-    {
+    for (auto const& test : Tests) {
         auto tm = tr_torrent_metainfo{};
         tm.parse_benc(tr_base64_decode(test));
     }
@@ -111,8 +108,7 @@ TEST_F(TorrentMetainfoTest, parseBencFuzz)
 {
     auto buf = std::vector<char>{};
 
-    for (size_t i = 0; i < 100000U; ++i)
-    {
+    for (size_t i = 0; i < 100000U; ++i) {
         buf.resize(tr_rand_int(1024U));
         tr_rand_buffer(std::data(buf), std::size(buf));
         // std::cerr << '[' << tr_base64_encode({ std::data(buf), std::size(buf) }) << ']' << std::endl;
@@ -230,8 +226,7 @@ TEST_F(TorrentMetainfoTest, piecesKeyTest)
         EXPECT_TRUE(tm.parse_torrent_file(Path));
     }
 
-    for (auto const& [name, errmsg] : BadTorrents)
-    {
+    for (auto const& [name, errmsg] : BadTorrents) {
         auto error = tr_error{};
         auto tm = tr_torrent_metainfo{};
         auto const path = tr_pathbuf{ LIBTRANSMISSION_TEST_ASSETS_DIR, '/', name };
@@ -245,8 +240,7 @@ TEST_F(TorrentMetainfoTest, pathKeyTest)
 {
     static auto constexpr BadTorrents = std::array{ "dup-files.torrent"sv };
 
-    for (auto const& name : BadTorrents)
-    {
+    for (auto const& name : BadTorrents) {
         auto tm = tr_torrent_metainfo{};
         auto const path = tr_pathbuf{ LIBTRANSMISSION_TEST_ASSETS_DIR, '/', name };
         EXPECT_FALSE(tm.parse_torrent_file(path));
@@ -283,8 +277,7 @@ TEST_F(TorrentMetainfoTest, preservesInfoDictOrder)
         { "perfect-pieces.torrent"sv, "efa7eb3dec5661698f353fde079418543a63e872"sv },
     });
 
-    for (auto const& [name, v1hash] : Tests)
-    {
+    for (auto const& [name, v1hash] : Tests) {
         auto tm = tr_torrent_metainfo{};
         auto const path = tr_pathbuf{ LIBTRANSMISSION_TEST_ASSETS_DIR, '/', name };
         EXPECT_TRUE(tm.parse_torrent_file(path)) << name;

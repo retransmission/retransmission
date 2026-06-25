@@ -15,21 +15,9 @@ class AddData
 {
 public:
     // what to do with the source file after adding the torrent
-    enum class FilenameDisposal : uint8_t
-    {
-        NoAction,
-        Delete,
-        Rename
-    };
+    enum class FilenameDisposal : uint8_t { NoAction, Delete, Rename };
 
-    enum Type : uint8_t
-    {
-        NONE,
-        MAGNET,
-        URL,
-        FILENAME,
-        METAINFO
-    };
+    enum Type : uint8_t { NONE, MAGNET, URL, FILENAME, METAINFO };
 
     AddData() = default;
 
@@ -58,8 +46,7 @@ public:
 
     static std::optional<AddData> create(QString const& str)
     {
-        if (auto ret = AddData{ str }; ret.type != NONE)
-        {
+        if (auto ret = AddData{ str }; ret.type != NONE) {
             return ret;
         }
 

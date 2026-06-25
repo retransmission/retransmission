@@ -13,12 +13,7 @@ class FilterBarComboBox : public QComboBox
 
 public:
     // NOLINTNEXTLINE(performance-enum-size)
-    enum
-    {
-        CountRole = Qt::UserRole + 1,
-        CountStringRole,
-        UserRole
-    };
+    enum { CountRole = Qt::UserRole + 1, CountStringRole, UserRole };
 
     explicit FilterBarComboBox(QWidget* parent = nullptr);
     ~FilterBarComboBox() override = default;

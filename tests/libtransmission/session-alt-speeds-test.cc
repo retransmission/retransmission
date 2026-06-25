@@ -34,8 +34,7 @@ protected:
 
         time_t current_time_ = 0;
 
-        struct Change
-        {
+        struct Change {
             Change() = default;
 
             Change(bool is_active_in, ChangeReason reason_in, time_t timestamp_in)

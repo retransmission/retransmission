@@ -80,8 +80,7 @@ auto constexpr StatsMenuActionGroupName = "stats-menu"sv;
 
 class MainWindow::Impl
 {
-    struct OptionMenuInfo
-    {
+    struct OptionMenuInfo {
         Glib::RefPtr<Gio::SimpleAction> action;
         Glib::RefPtr<Gio::MenuItem> on_item;
         Glib::RefPtr<Gio::Menu> section;
@@ -179,8 +178,7 @@ private:
 
 void MainWindow::Impl::on_popup_menu([[maybe_unused]] double event_x, [[maybe_unused]] double event_y)
 {
-    if (popup_menu_ == nullptr)
-    {
+    if (popup_menu_ == nullptr) {
         auto const menu = gtr_action_get_object<Gio::Menu>("main-window-popup");
 
 #if GTKMM_CHECK_VERSION(4, 0, 0)
@@ -189,12 +187,10 @@ void MainWindow::Impl::on_popup_menu([[maybe_unused]] double event_x, [[maybe_un
         popup_menu_->set_has_arrow(false);
         popup_menu_->set_halign(view_->get_direction() == Gtk::TextDirection::RTL ? Gtk::Align::END : Gtk::Align::START);
 
-        view_->signal_destroy().connect(
-            [this]()
-            {
-                popup_menu_->unparent();
-                popup_menu_ = nullptr;
-            });
+        view_->signal_destroy().connect([this]() {
+            popup_menu_->unparent();
+            popup_menu_ = nullptr;
+        });
 #else
         popup_menu_ = Gtk::make_managed<Gtk::Menu>(menu);
         popup_menu_->attach_to_widget(window_);
@@ -219,8 +215,7 @@ class GtrStrvBuilderDeleter
 public:
     void operator()(GStrvBuilder* builder) const
     {
-        if (builder != nullptr)
-        {
+        if (builder != nullptr) {
             g_strv_builder_unref(builder);
         }
     }
@@ -231,8 +226,7 @@ using GtrStrvBuilderPtr = std::unique_ptr<GStrvBuilder, GtrStrvBuilderDeleter>;
 GStrv gtr_strv_join(GObject* /*object*/, GStrv lhs, GStrv rhs)
 {
     auto const builder = GtrStrvBuilderPtr(g_strv_builder_new());
-    if (builder == nullptr)
-    {
+    if (builder == nullptr) {
         return nullptr;
     }
 
@@ -263,8 +257,7 @@ bool tree_view_search_equal_func(
 void MainWindow::Impl::init_view(TorrentView* view, Glib::RefPtr<FilterBar::Model> const& model)
 {
 #if GTKMM_CHECK_VERSION(4, 0, 0)
-    auto const create_builder_list_item_factory = [](std::string const& filename)
-    {
+    auto const create_builder_list_item_factory = [](std::string const& filename) {
         auto builder_scope = Glib::wrap(G_OBJECT(gtk_builder_cscope_new()));
         gtk_builder_cscope_add_callback(GTK_BUILDER_CSCOPE(builder_scope->gobj()), gtr_strv_join);
 
@@ -279,8 +272,8 @@ void MainWindow::Impl::init_view(TorrentView* view, Glib::RefPtr<FilterBar::Mode
     view->signal_activate().connect([](guint /*position*/) { gtr_action_activate("show-torrent-properties"); });
 
     selection_ = Gtk::MultiSelection::create(model);
-    selection_->signal_selection_changed().connect([this](guint /*position*/, guint /*n_items*/)
-                                                   { signal_selection_changed_.emit(); });
+    selection_->signal_selection_changed().connect(
+        [this](guint /*position*/, guint /*n_items*/) { signal_selection_changed_.emit(); });
 
     view->set_factory(gtr_pref_flag_get(TR_KEY_compact_view) ? item_factory_compact_ : item_factory_full_);
     view->set_model(selection_);
@@ -297,8 +290,8 @@ void MainWindow::Impl::init_view(TorrentView* view, Glib::RefPtr<FilterBar::Mode
     column_->add_attribute(renderer_->property_torrent(), torrent_cols.self);
 
     view->signal_popup_menu().connect_notify([this]() { on_popup_menu(0, 0); });
-    view->signal_row_activated().connect([](auto const& /*path*/, auto* /*column*/)
-                                         { gtr_action_activate("show-torrent-properties"); });
+    view->signal_row_activated().connect(
+        [](auto const& /*path*/, auto* /*column*/) { gtr_action_activate("show-torrent-properties"); });
 
     view->set_model(model);
 
@@ -307,8 +300,7 @@ void MainWindow::Impl::init_view(TorrentView* view, Glib::RefPtr<FilterBar::Mode
 
     setup_item_view_button_event_handling(
         *view,
-        [this, view](guint /*button*/, TrGdkModifierType /*state*/, double view_x, double view_y, bool context_menu_requested)
-        {
+        [this, view](guint /*button*/, TrGdkModifierType /*state*/, double view_x, double view_y, bool context_menu_requested) {
             return on_item_view_button_pressed(
                 *view,
                 view_x,
@@ -321,8 +313,7 @@ void MainWindow::Impl::init_view(TorrentView* view, Glib::RefPtr<FilterBar::Mode
 
 void MainWindow::Impl::prefsChanged(tr_quark const key)
 {
-    switch (key)
-    {
+    switch (key) {
     case TR_KEY_compact_view:
 #if GTKMM_CHECK_VERSION(4, 0, 0)
         view_->set_factory(gtr_pref_flag_get(key) ? item_factory_compact_ : item_factory_full_);
@@ -448,11 +439,11 @@ Glib::RefPtr<Gio::MenuModel> MainWindow::Impl::createSpeedMenu(
     actions->add_action_with_parameter(
         stock_action_name,
         VariantInt::variant_type(),
-        [this, dir](Glib::VariantBase const& value)
-        { onSpeedSet(dir, Glib::VariantBase::cast_dynamic<VariantInt>(value).get()); });
+        [this, dir](Glib::VariantBase const& value) {
+            onSpeedSet(dir, Glib::VariantBase::cast_dynamic<VariantInt>(value).get());
+        });
 
-    for (auto const KBps : { 50, 100, 250, 500, 1000, 2500, 5000, 10000 })
-    {
+    for (auto const KBps : { 50, 100, 250, 500, 1000, 2500, 5000, 10000 }) {
         auto item = Gio::MenuItem::create(Speed{ KBps, Speed::Units::KByps }.to_string(), full_stock_action_name);
         item->set_action_and_target(full_stock_action_name, VariantInt::create(KBps));
         section->append_item(item);
@@ -513,8 +504,7 @@ Glib::RefPtr<Gio::MenuModel> MainWindow::Impl::createRatioMenu(Glib::RefPtr<Gio:
         VariantDouble::variant_type(),
         [this](Glib::VariantBase const& value) { onRatioSet(Glib::VariantBase::cast_dynamic<VariantDouble>(value).get()); });
 
-    for (auto const ratio : stockRatios)
-    {
+    for (auto const ratio : stockRatios) {
         auto item = Gio::MenuItem::create(tr_strlratio(ratio), full_stock_action_name);
         item->set_action_and_target(full_stock_action_name, VariantDouble::create(ratio));
         section->append_item(item);
@@ -550,11 +540,9 @@ Glib::RefPtr<Gio::MenuModel> MainWindow::Impl::createOptionsMenu()
 
 void MainWindow::Impl::onOptionsClicked()
 {
-    static auto const update_menu = [](OptionMenuInfo& info, Glib::ustring const& new_on_label, tr_quark on_off_key)
-    {
+    static auto const update_menu = [](OptionMenuInfo& info, Glib::ustring const& new_on_label, tr_quark on_off_key) {
         if (auto on_label = Glib::VariantBase::cast_dynamic<VariantString>(info.on_item->get_attribute_value("label")).get();
-            on_label != new_on_label)
-        {
+            on_label != new_on_label) {
             info.on_item->set_label(new_on_label);
 
             // Items aren't refed by menu on insert but their attributes copied instead, so need to replace.
@@ -589,8 +577,7 @@ Glib::RefPtr<Gio::MenuModel> MainWindow::Impl::createStatsMenu()
     using StatsType = gint32;
     using StatsVariant = Glib::Variant<StatsType>;
 
-    auto const to_var = [](auto const mode)
-    {
+    auto const to_var = [](auto const mode) {
         return StatsVariant::create(static_cast<StatsType>(mode));
     };
 
@@ -601,8 +588,7 @@ Glib::RefPtr<Gio::MenuModel> MainWindow::Impl::createStatsMenu()
     auto actions = Gio::SimpleActionGroup::create();
     actions->add_action_radio_integer(
         action_name,
-        [this, action_name, actions, to_var](gint32 const ival)
-        {
+        [this, action_name, actions, to_var](gint32 const ival) {
             actions->change_action_state(action_name, to_var(ival));
             core_->set_pref(Key, static_cast<StatsMode>(ival));
         },
@@ -617,8 +603,7 @@ Glib::RefPtr<Gio::MenuModel> MainWindow::Impl::createStatsMenu()
         { StatsMode::TotalTransfer, N_("Total Transfer") },
         { StatsMode::SessionTransfer, N_("Session Transfer") },
     } });
-    for (auto const& [mode, display_name] : stats_modes)
-    {
+    for (auto const& [mode, display_name] : stats_modes) {
         auto item = Gio::MenuItem::create(_(display_name), full_action_name);
         item->set_action_and_target(full_action_name, to_var(mode));
         top->append_item(item);
@@ -681,8 +666,7 @@ MainWindow::Impl::Impl(
     window.move(gtr_pref_int_get<int>(TR_KEY_main_window_x), gtr_pref_int_get<int>(TR_KEY_main_window_y));
 #endif
 
-    if (gtr_pref_flag_get(TR_KEY_main_window_is_maximized))
-    {
+    if (gtr_pref_flag_get(TR_KEY_main_window_is_maximized)) {
         window.maximize();
     }
 
@@ -696,10 +680,8 @@ MainWindow::Impl::Impl(
     auto* gear_button = gtr_get_widget<Gtk::MenuButton>(builder, "gear_button");
     gear_button->set_menu_model(createOptionsMenu());
 #if GTKMM_CHECK_VERSION(4, 0, 0)
-    for (auto* child = gear_button->get_first_child(); child != nullptr; child = child->get_next_sibling())
-    {
-        if (auto* popover = dynamic_cast<Gtk::Popover*>(child); popover != nullptr)
-        {
+    for (auto* child = gear_button->get_first_child(); child != nullptr; child = child->get_next_sibling()) {
+        if (auto* popover = dynamic_cast<Gtk::Popover*>(child); popover != nullptr) {
             popover->signal_show().connect([this]() { onOptionsClicked(); }, false);
             break;
         }
@@ -740,10 +722,9 @@ MainWindow::Impl::Impl(
     prefsChanged(TR_KEY_alt_speed_enabled);
     pref_handler_id_ = core_->signal_prefs_changed().connect(sigc::mem_fun(*this, &Impl::prefsChanged));
 
-    tr_sessionSetAltSpeedFunc(
-        core_->get_session(),
-        [this](bool const /*is_enabled*/, bool const /*by_user*/)
-        { Glib::signal_idle().connect_once([this]() { onAltSpeedToggledIdle(); }); });
+    tr_sessionSetAltSpeedFunc(core_->get_session(), [this](bool const /*is_enabled*/, bool const /*by_user*/) {
+        Glib::signal_idle().connect_once([this]() { onAltSpeedToggledIdle(); });
+    });
 
     refresh();
 
@@ -782,16 +763,14 @@ void MainWindow::Impl::updateSpeeds()
 {
     auto const* const session = core_->get_session();
 
-    if (session != nullptr)
-    {
+    if (session != nullptr) {
         auto dn_count = int{};
         auto dn_speed = Speed{};
         auto up_count = int{};
         auto up_speed = Speed{};
 
         auto const model = core_->get_model();
-        for (auto i = 0U, count = model->get_n_items(); i < count; ++i)
-        {
+        for (auto i = 0U, count = model->get_n_items(); i < count; ++i) {
             auto const torrent = gtr_ptr_dynamic_cast<Torrent>(model->get_object(i));
             dn_count += torrent->get_active_peers_down();
             dn_speed += torrent->get_speed_down();
@@ -814,8 +793,7 @@ void MainWindow::refresh()
 
 void MainWindow::Impl::refresh()
 {
-    if (core_ != nullptr && core_->get_session() != nullptr)
-    {
+    if (core_ != nullptr && core_->get_session() != nullptr) {
         updateSpeeds();
         updateStats();
     }
@@ -839,10 +817,8 @@ bool MainWindow::for_each_selected_torrent_until(std::function<bool(Glib::RefPtr
 
 #if GTKMM_CHECK_VERSION(4, 0, 0)
     auto const selected_items = selection->get_selection(); // TODO(C++20): Move into the `for`
-    for (auto const position : *selected_items)
-    {
-        if (callback(gtr_ptr_dynamic_cast<Torrent>(model->get_object(position))))
-        {
+    for (auto const position : *selected_items) {
+        if (callback(gtr_ptr_dynamic_cast<Torrent>(model->get_object(position)))) {
             result = true;
             break;
         }
@@ -850,12 +826,10 @@ bool MainWindow::for_each_selected_torrent_until(std::function<bool(Glib::RefPtr
 #else
     static auto const& self_col = Torrent::get_columns().self;
 
-    for (auto const& path : selection->get_selected_rows())
-    {
+    for (auto const& path : selection->get_selected_rows()) {
         auto const torrent = Glib::make_refptr_for_instance(model->get_iter(path)->get_value(self_col));
         torrent->reference();
-        if (callback(torrent))
-        {
+        if (callback(torrent)) {
             result = true;
             break;
         }
@@ -877,8 +851,7 @@ void MainWindow::unselect_all()
 
 void MainWindow::set_busy(bool isBusy)
 {
-    if (get_realized())
-    {
+    if (get_realized()) {
 #if GTKMM_CHECK_VERSION(4, 0, 0)
         auto const cursor = isBusy ? Gdk::Cursor::create(Glib::ustring("wait")) : Glib::RefPtr<Gdk::Cursor>();
         set_cursor(cursor);

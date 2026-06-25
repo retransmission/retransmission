@@ -94,8 +94,7 @@ public:
 
     void task_finished(bool success)
     {
-        if (!success)
-        {
+        if (!success) {
             task_failed();
         }
 
@@ -112,14 +111,12 @@ public:
 
     [[nodiscard]] size_t slots_available() const noexcept
     {
-        if (is_paused())
-        {
+        if (is_paused()) {
             return 0;
         }
 
         auto const max = max_connections();
-        if (n_tasks_ >= max)
-        {
+        if (n_tasks_ >= max) {
             return 0;
         }
 
@@ -141,8 +138,7 @@ private:
     {
         TR_ASSERT(n_tasks_ > 0);
 
-        if (++n_consecutive_failures_ >= MaxConsecutiveFailures)
-        {
+        if (++n_consecutive_failures_ >= MaxConsecutiveFailures) {
             paused_until_ = tr_time() + TimeoutIntervalSecs;
         }
     }
@@ -159,8 +155,7 @@ private:
 class tr_webseed_impl final : public tr_webseed
 {
 public:
-    struct RequestLimit
-    {
+    struct RequestLimit {
         // How many spans those blocks could be in.
         // This is for webseeds, which make parallel requests.
         size_t max_spans = 0;
@@ -222,8 +217,7 @@ public:
 
     [[nodiscard]] std::string display_name() const override
     {
-        if (auto const parsed = tr_urlParse(base_url))
-        {
+        if (auto const parsed = tr_urlParse(base_url)) {
             return fmt::format("{:s}:{:d}", parsed->host, parsed->port);
         }
 
@@ -261,10 +255,8 @@ public:
 
     void on_rejection(tr_block_span_t block_span)
     {
-        for (auto block = block_span.begin; block < block_span.end; ++block)
-        {
-            if (active_requests.test(block))
-            {
+        for (auto block = block_span.begin; block < block_span.end; ++block) {
+            if (active_requests.test(block)) {
                 publish(tr_peer_event::GotRejected(tor.block_info(), block));
             }
         }
@@ -273,13 +265,11 @@ public:
 
     void request_blocks(tr_block_span_t const* block_spans, size_t n_spans) override
     {
-        if (is_banned_ || !tor.is_running() || tor.is_done())
-        {
+        if (is_banned_ || !tor.is_running() || tor.is_done()) {
             return;
         }
 
-        for (auto const *span = block_spans, *end = span + n_spans; span != end; ++span)
-        {
+        for (auto const *span = block_spans, *end = span + n_spans; span != end; ++span) {
             auto* const task = new tr_webseed_task{ tor, this, *span };
             tasks.insert(task);
             task->request_next_chunk();
@@ -291,14 +281,12 @@ public:
 
     void on_idle()
     {
-        if (is_banned_)
-        {
+        if (is_banned_) {
             return;
         }
 
         auto const [max_spans, max_blocks] = max_available_reqs();
-        if (max_spans == 0 || max_blocks == 0)
-        {
+        if (max_spans == 0 || max_blocks == 0) {
             return;
         }
 
@@ -306,8 +294,7 @@ public:
         // The actual value of '64' is arbitrary here; we could probably
         // be smarter about this.
         auto spans = tr_peerMgrGetNextRequests(&tor, this, max_blocks);
-        if (std::size(spans) > max_spans)
-        {
+        if (std::size(spans) > max_spans) {
             spans.resize(max_spans);
         }
         request_blocks(std::data(spans), std::size(spans));
@@ -316,13 +303,11 @@ public:
     [[nodiscard]] RequestLimit max_available_reqs() const noexcept
     {
         auto const n_slots = connection_limiter.slots_available();
-        if (n_slots == 0)
-        {
+        if (n_slots == 0) {
             return {};
         }
 
-        if (!tor.is_running() || tor.is_done())
-        {
+        if (!tor.is_running() || tor.is_done()) {
             return {};
         }
 
@@ -335,8 +320,7 @@ public:
 
     void publish(tr_peer_event const& peer_event)
     {
-        if (callback_ != nullptr)
-        {
+        if (callback_ != nullptr) {
             (*callback_)(this, peer_event, callback_data_);
         }
     }
@@ -370,32 +354,24 @@ void tr_webseed_task::use_fetched_blocks()
 
     auto const& tor = webseed_->tor;
 
-    for (;;)
-    {
+    for (;;) {
         auto const block_size = tor.block_size(loc_.block);
-        if (std::size(content_) < block_size)
-        {
+        if (std::size(content_) < block_size) {
             break;
         }
 
-        if (tor.has_block(loc_.block))
-        {
+        if (tor.has_block(loc_.block)) {
             content_.drain(block_size);
-        }
-        else
-        {
+        } else {
             auto block_buf = std::vector<uint8_t>{};
             block_buf.resize(block_size);
             content_.to_buf(block_buf);
 
             session_->run_in_session_thread(
-                [buf = std::move(block_buf), loc = loc_, session = session_, tor_id = tor.id(), webseed = webseed_]()
-                {
-                    if (auto* const torrent = session->torrents().get(tor_id))
-                    {
+                [buf = std::move(block_buf), loc = loc_, session = session_, tor_id = tor.id(), webseed = webseed_]() {
+                    if (auto* const torrent = session->torrents().get(tor_id)) {
                         webseed->active_requests.unset(loc.block);
-                        if (tr_ioWrite(*torrent, session->openFiles(), loc, buf) != 0)
-                        {
+                        if (tr_ioWrite(*torrent, session->openFiles(), loc, buf) != 0) {
                             return;
                         }
                         webseed->publish(tr_peer_event::GotBlock(torrent->block_info(), loc.block));
@@ -414,8 +390,7 @@ void tr_webseed_task::use_fetched_blocks()
 
 void tr_webseed_task::on_data_received(size_t const n_bytes)
 {
-    if (n_bytes == 0 || dead)
-    {
+    if (n_bytes == 0 || dead) {
         return;
     }
 
@@ -430,8 +405,7 @@ void tr_webseed_task::on_partial_data_fetched(tr_web::FetchResponse const& web_r
 
     auto* const task = static_cast<tr_webseed_task*>(vtask);
 
-    if (task->dead)
-    {
+    if (task->dead) {
         delete task;
         return;
     }
@@ -439,8 +413,7 @@ void tr_webseed_task::on_partial_data_fetched(tr_web::FetchResponse const& web_r
     auto* const webseed = task->webseed_;
     webseed->connection_limiter.task_finished(success);
 
-    if (!success)
-    {
+    if (!success) {
         webseed->on_rejection({ .begin = task->loc_.block, .end = task->blocks.end });
         webseed->tasks.erase(task);
         delete task;
@@ -450,8 +423,7 @@ void tr_webseed_task::on_partial_data_fetched(tr_web::FetchResponse const& web_r
     task->content_.add(std::data(body), std::size(body));
     task->use_fetched_blocks();
 
-    if (task->loc_.byte < task->end_byte_)
-    {
+    if (task->loc_.byte < task->end_byte_) {
         // Request finished successfully but there's still data missing.
         // That means we've reached the end of a file and need to request
         // the next one
@@ -474,8 +446,7 @@ void makeUrl(tr_webseed_impl const* const webseed, std::string_view name, Output
 
     out = std::copy(std::begin(url), std::end(url), out);
 
-    if (tr_strv_ends_with(url, "/"sv) && !std::empty(name))
-    {
+    if (tr_strv_ends_with(url, "/"sv) && !std::empty(name)) {
         tr_urlPercentEncode(out, name, false);
     }
 }
@@ -499,8 +470,7 @@ void tr_webseed_task::request_next_chunk()
     auto options = tr_web::FetchOptions{ url.sv(), on_partial_data_fetched, this };
     options.range.emplace(file_offset, file_offset + this_chunk - 1);
     options.speed_limit_tag = tor.id();
-    options.on_data_received = [this](size_t const n_bytes)
-    {
+    options.on_data_received = [this](size_t const n_bytes) {
         on_data_received(n_bytes);
     };
     tor.session->fetch(std::move(options));

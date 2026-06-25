@@ -35,8 +35,7 @@
 
 - (instancetype)init
 {
-    if ((self = [super init]))
-    {
+    if ((self = [super init])) {
         _log = os_log_create("org.transmission", "power");
         _listening = NO;
     }
@@ -52,8 +51,7 @@
 - (void)start
 {
     os_log_info(self.log, "Starting power manager");
-    if (!self.isListening)
-    {
+    if (!self.isListening) {
         os_log_debug(self.log, "Registering sleep/wake/low power mode notifications");
         [NSWorkspace.sharedWorkspace.notificationCenter addObserver:self selector:@selector(systemWillSleep:)
                                                                name:NSWorkspaceWillSleepNotification
@@ -61,8 +59,7 @@
         [NSWorkspace.sharedWorkspace.notificationCenter addObserver:self selector:@selector(systemDidWakeUp:)
                                                                name:NSWorkspaceDidWakeNotification
                                                              object:nil];
-        if (@available(macOS 12.0, *))
-        {
+        if (@available(macOS 12.0, *)) {
             [NSNotificationCenter.defaultCenter addObserver:self selector:@selector(powerStateDidChange:)
                                                        name:NSProcessInfoPowerStateDidChangeNotification
                                                      object:nil];
@@ -70,8 +67,7 @@
         self.listening = YES;
     }
 
-    if (self.noNapActivity == nil)
-    {
+    if (self.noNapActivity == nil) {
         os_log_debug(self.log, "Starting no-nap activity");
         self.noNapActivity = [NSProcessInfo.processInfo beginActivityWithOptions:NSActivityUserInitiatedAllowingIdleSystemSleep
                                                                           reason:@"Transmission: Application is active"];
@@ -81,27 +77,23 @@
 - (void)stop
 {
     os_log_info(self.log, "Stopping power manager");
-    if (self.isListening)
-    {
+    if (self.isListening) {
         os_log_debug(self.log, "Unregistering sleep/wake/low power mode notifications");
         [NSWorkspace.sharedWorkspace.notificationCenter removeObserver:self name:NSWorkspaceWillSleepNotification object:nil];
         [NSWorkspace.sharedWorkspace.notificationCenter removeObserver:self name:NSWorkspaceDidWakeNotification object:nil];
-        if (@available(macOS 12.0, *))
-        {
+        if (@available(macOS 12.0, *)) {
             [NSNotificationCenter.defaultCenter removeObserver:self name:NSProcessInfoPowerStateDidChangeNotification object:nil];
         }
         self.listening = NO;
     }
 
-    if (self.noNapActivity != nil)
-    {
+    if (self.noNapActivity != nil) {
         os_log_debug(self.log, "Ending no-nap activity");
         [NSProcessInfo.processInfo endActivity:self.noNapActivity];
         self.noNapActivity = nil;
     }
 
-    if (self.noSleepActivity != nil)
-    {
+    if (self.noSleepActivity != nil) {
         os_log_debug(self.log, "Ending no-sleep activity");
         [NSProcessInfo.processInfo endActivity:self.noSleepActivity];
         self.noSleepActivity = nil;
@@ -123,8 +115,7 @@
 - (void)powerStateDidChange:(NSNotification*)notification
 {
     os_log_info(self.log, "Power state did change notification received");
-    if (NSProcessInfo.processInfo.lowPowerModeEnabled)
-    {
+    if (NSProcessInfo.processInfo.lowPowerModeEnabled) {
         os_log_info(self.log, "Low power mode enabled, disabling sleep prevention");
         self.shouldPreventSleep = NO;
     }
@@ -132,29 +123,22 @@
 
 - (void)setShouldPreventSleep:(BOOL)shouldPreventSleep
 {
-    if (@available(macOS 12.0, *))
-    {
-        if (shouldPreventSleep && NSProcessInfo.processInfo.lowPowerModeEnabled)
-        {
+    if (@available(macOS 12.0, *)) {
+        if (shouldPreventSleep && NSProcessInfo.processInfo.lowPowerModeEnabled) {
             return;
         }
     }
 
-    if (shouldPreventSleep)
-    {
-        if (self.noSleepActivity != nil)
-        {
+    if (shouldPreventSleep) {
+        if (self.noSleepActivity != nil) {
             return;
         }
 
         os_log_info(self.log, "Starting no-sleep activity");
         self.noSleepActivity = [NSProcessInfo.processInfo beginActivityWithOptions:NSActivityIdleSystemSleepDisabled
                                                                             reason:@"Transmission: Active Torrents"];
-    }
-    else
-    {
-        if (self.noSleepActivity == nil)
-        {
+    } else {
+        if (self.noSleepActivity == nil) {
             return;
         }
 

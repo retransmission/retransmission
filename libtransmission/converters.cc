@@ -44,10 +44,8 @@ template<typename T, size_t N>
 {
     static_assert(std::is_enum_v<T> || std::is_integral_v<T>);
 
-    for (auto const& [key, value] : rows)
-    {
-        if (value == src)
-        {
+    for (auto const& [key, value] : rows) {
+        if (value == src) {
             return tr_variant::unmanaged_string(key);
         }
     }
@@ -60,31 +58,24 @@ template<typename T, size_t N>
 {
     static_assert(std::is_enum_v<T> || std::is_integral_v<T>);
 
-    if (tgt == nullptr)
-    {
+    if (tgt == nullptr) {
         return false;
     }
 
-    if (auto const val = src.value_if<std::string_view>())
-    {
+    if (auto const val = src.value_if<std::string_view>()) {
         auto const needle = tr_strlower(tr_strv_strip(*val));
 
-        for (auto const& [key, value] : rows)
-        {
-            if (key == needle)
-            {
+        for (auto const& [key, value] : rows) {
+            if (key == needle) {
                 *tgt = value;
                 return true;
             }
         }
     }
 
-    if (auto const val = src.value_if<int64_t>())
-    {
-        for (auto const& [key, value] : rows)
-        {
-            if (static_cast<int64_t>(value) == *val)
-            {
+    if (auto const val = src.value_if<int64_t>()) {
+        for (auto const& [key, value] : rows) {
+            if (static_cast<int64_t>(value) == *val) {
                 *tgt = value;
                 return true;
             }
@@ -98,8 +89,7 @@ template<typename T, size_t N>
 
 bool to_bool(tr_variant const& src, bool* tgt)
 {
-    if (auto val = src.value_if<bool>())
-    {
+    if (auto val = src.value_if<bool>()) {
         *tgt = *val;
         return true;
     }
@@ -116,8 +106,7 @@ tr_variant from_bool(bool const& val)
 
 bool to_double(tr_variant const& src, double* tgt)
 {
-    if (auto val = src.value_if<double>())
-    {
+    if (auto val = src.value_if<double>()) {
         *tgt = *val;
         return true;
     }
@@ -178,17 +167,14 @@ tr_variant from_log_level(tr_log_level const& val)
 
 bool to_mode_t(tr_variant const& src, tr_mode_t* tgt)
 {
-    if (auto const val = src.value_if<std::string_view>())
-    {
-        if (auto const mode = tr_num_parse<uint32_t>(*val, nullptr, 8); mode)
-        {
+    if (auto const val = src.value_if<std::string_view>()) {
+        if (auto const mode = tr_num_parse<uint32_t>(*val, nullptr, 8); mode) {
             *tgt = static_cast<tr_mode_t>(*mode);
             return true;
         }
     }
 
-    if (auto const val = src.value_if<int64_t>())
-    {
+    if (auto const val = src.value_if<int64_t>()) {
         *tgt = static_cast<tr_mode_t>(*val);
         return true;
     }
@@ -205,10 +191,8 @@ tr_variant from_mode_t(tr_mode_t const& val)
 
 bool to_sched_day(tr_variant const& src, tr_sched_day* tgt)
 {
-    if (auto const val = src.value_if<int64_t>())
-    {
-        switch (*val)
-        {
+    if (auto const val = src.value_if<int64_t>()) {
+        switch (*val) {
         case TR_SCHED_SUN:
             *tgt = TR_SCHED_SUN;
             return true;
@@ -267,8 +251,7 @@ tr_variant from_sched_day(tr_sched_day const& val)
 
 bool to_msec(tr_variant const& src, std::chrono::milliseconds* tgt)
 {
-    if (auto val = src.value_if<int64_t>())
-    {
+    if (auto val = src.value_if<int64_t>()) {
         *tgt = std::chrono::milliseconds(*val);
         return true;
     }
@@ -285,8 +268,7 @@ tr_variant from_msec(std::chrono::milliseconds const& src)
 
 bool to_port(tr_variant const& src, tr_port* tgt)
 {
-    if (auto const val = src.value_if<uint16_t>())
-    {
+    if (auto const val = src.value_if<uint16_t>()) {
         *tgt = tr_port::from_host(*val);
         return true;
     }
@@ -328,22 +310,18 @@ auto constexpr PreferredTransportKeys = LookupTable<tr_preferred_transport, Pref
 
 bool to_preferred_transport(tr_variant const& src, small::max_size_vector<tr_preferred_transport, PreferredTransportCount>* tgt)
 {
-    static auto constexpr LoadSingle = [](tr_variant const& var) -> std::optional<tr_preferred_transport>
-    {
+    static auto constexpr LoadSingle = [](tr_variant const& var) -> std::optional<tr_preferred_transport> {
         auto tmp = tr_preferred_transport{};
         return to_enum_or_integral_with_lookup(PreferredTransportKeys, var, &tmp) ? std::make_optional(tmp) : std::nullopt;
     };
 
-    if (auto* const l = src.get_if<tr_variant::Vector>(); l != nullptr)
-    {
+    if (auto* const l = src.get_if<tr_variant::Vector>(); l != nullptr) {
         auto tmp = small::max_size_unordered_set<tr_preferred_transport, PreferredTransportCount>{};
         tmp.reserve(tmp.max_size());
 
-        for (size_t i = 0, n = std::min(std::size(*l), tmp.max_size()); i < n; ++i)
-        {
+        for (size_t i = 0, n = std::min(std::size(*l), tmp.max_size()); i < n; ++i) {
             auto const value = LoadSingle((*l)[i]);
-            if (!value || !tmp.insert(*value).second)
-            {
+            if (!value || !tmp.insert(*value).second) {
                 return false;
             }
         }
@@ -355,8 +333,7 @@ bool to_preferred_transport(tr_variant const& src, small::max_size_vector<tr_pre
     }
 
     auto const preferred = LoadSingle(src);
-    if (!preferred)
-    {
+    if (!preferred) {
         return false;
     }
 
@@ -366,15 +343,13 @@ bool to_preferred_transport(tr_variant const& src, small::max_size_vector<tr_pre
 
 tr_variant from_preferred_transport(small::max_size_vector<tr_preferred_transport, PreferredTransportCount> const& val)
 {
-    static auto constexpr SaveSingle = [](tr_preferred_transport const ele) -> tr_variant
-    {
+    static auto constexpr SaveSingle = [](tr_preferred_transport const ele) -> tr_variant {
         return static_cast<int64_t>(ele);
     };
 
     auto ret = tr_variant::Vector{};
     ret.reserve(std::size(val));
-    for (auto const ele : val)
-    {
+    for (auto const ele : val) {
         ret.emplace_back(SaveSingle(ele));
     }
 
@@ -385,8 +360,7 @@ tr_variant from_preferred_transport(small::max_size_vector<tr_preferred_transpor
 
 bool to_string(tr_variant const& src, std::string* tgt)
 {
-    if (auto const val = src.value_if<std::string_view>())
-    {
+    if (auto const val = src.value_if<std::string_view>()) {
         *tgt = std::string{ *val };
         return true;
     }
@@ -441,8 +415,7 @@ auto constexpr DiffServKeys = LookupTable<int, 28U>{ {
 bool to_diffserv_t(tr_variant const& src, tr_diffserv_t* tgt)
 {
     auto tmp = int{};
-    if (!to_enum_or_integral_with_lookup(DiffServKeys, src, &tmp))
-    {
+    if (!to_enum_or_integral_with_lookup(DiffServKeys, src, &tmp)) {
         return false;
     }
 
@@ -477,21 +450,18 @@ tr_variant from_verify_added_mode(tr_verify_added_mode const& val)
 bool to_pex(tr_variant const& src, tr_pex* tgt)
 {
     auto* const map = src.get_if<tr_variant::Map>();
-    if (map == nullptr)
-    {
+    if (map == nullptr) {
         return false;
     }
 
     auto const sockaddr = map->value_if<std::string_view>(TR_KEY_socket_address);
-    if (!sockaddr)
-    {
+    if (!sockaddr) {
         return false;
     }
 
     auto pex = tr_pex{};
     auto* const compact = reinterpret_cast<std::byte const*>(std::data(*sockaddr));
-    switch (std::size(*sockaddr))
-    {
+    switch (std::size(*sockaddr)) {
     case tr_socket_address::CompactSockAddrBytes[TR_AF_INET]:
         pex.socket_address = tr_socket_address::from_compact_ipv4(compact).first;
         break;

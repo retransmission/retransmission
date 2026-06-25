@@ -26,8 +26,7 @@ struct tr_error;
 /**
  * A simple collection of files & utils for finding them, moving them, etc.
  */
-struct tr_torrent_files
-{
+struct tr_torrent_files {
 public:
     [[nodiscard]] constexpr bool empty() const noexcept
     {
@@ -63,8 +62,7 @@ public:
     {
         auto const buf = tr_pathbuf{ path, '/' };
 
-        for (auto& file : files_)
-        {
+        for (auto& file : files_) {
             file.path_.insert(0, buf.sv());
             file.path_.shrink_to_fit();
         }
@@ -90,10 +88,9 @@ public:
     {
         auto ret = std::vector<std::pair<std::string /*path*/, uint64_t /*size*/>>{};
         ret.reserve(std::size(files_));
-        std::ranges::transform(
-            files_,
-            std::back_inserter(ret),
-            [](auto const& in) { return std::make_pair(in.path_, in.size_); });
+        std::ranges::transform(files_, std::back_inserter(ret), [](auto const& in) {
+            return std::make_pair(in.path_, in.size_);
+        });
 
         std::ranges::sort(std::views::keys(ret));
 
@@ -120,8 +117,7 @@ public:
         tr_torrent_remove_func const& func,
         tr_error* error = nullptr) const;
 
-    struct FoundFile : public tr_sys_path_info
-    {
+    struct FoundFile : public tr_sys_path_info {
     public:
         FoundFile(tr_sys_path_info info, tr_pathbuf&& filename_in, size_t base_len_in)
             : tr_sys_path_info{ info }
@@ -174,13 +170,11 @@ public:
     static constexpr std::string_view PartialFileSuffix = ".part";
 
 private:
-    struct file_t
-    {
+    struct file_t {
     public:
         TR_CONSTEXPR_STR void set_path(std::string_view subpath)
         {
-            if (path_ != subpath)
-            {
+            if (path_ != subpath) {
                 path_ = subpath;
                 path_.shrink_to_fit();
             }

@@ -25,8 +25,7 @@ public:
     using PropertyIdType = guint;
     static_assert(std::is_same_v<std::underlying_type_t<PropertyType>, PropertyIdType>);
 
-    struct PropertyInfo
-    {
+    struct PropertyInfo {
         template<typename MethodT>
         using ValueType = std::invoke_result_t<MethodT, ObjectType>;
 
@@ -40,8 +39,9 @@ public:
         PropertyInfo(PropertyType index, char const* name, char const* nick, char const* blurb, MethodT getter_method)
             : id(static_cast<PropertyIdType>(index))
             , spec(gtr_get_param_spec<ValueType<MethodT>>(name, nick, blurb))
-            , getter([getter_method](ObjectType const& object, Glib::ValueBase& value)
-                     { static_cast<Glib::Value<ValueType<MethodT>>&>(value).set((object.*getter_method)()); })
+            , getter([getter_method](ObjectType const& object, Glib::ValueBase& value) {
+                static_cast<Glib::Value<ValueType<MethodT>>&>(value).set((object.*getter_method)());
+            })
         {
         }
     };
@@ -62,8 +62,7 @@ public:
         g_assert(properties_.size() == properties.size() + 1);
         std::move(properties.begin(), properties.end(), properties_.begin() + 1);
 
-        for (auto id = PropertyIdType{ 1 }; id < PropertyCount; ++id)
-        {
+        for (auto id = PropertyIdType{ 1 }; id < PropertyCount; ++id) {
             g_assert(id == properties_[id].id);
             g_object_class_install_property(cls, id, properties_[id].spec);
         }
@@ -90,13 +89,12 @@ private:
 
     static void get_property_vfunc(GObject* object, PropertyIdType id, GValue* value, GParamSpec* /*param_spec*/)
     {
-        if (id <= 0 || id >= PropertyCount)
-        {
+        if (id <= 0 || id >= PropertyCount) {
             return;
         }
 
-        if (auto const* const typed_object = dynamic_cast<ObjectType const*>(Glib::wrap_auto(object)); typed_object != nullptr)
-        {
+        if (auto const* const typed_object = dynamic_cast<ObjectType const*>(Glib::wrap_auto(object));
+            typed_object != nullptr) {
             // NOLINTNEXTLINE(cppcoreguidelines-pro-type-reinterpret-cast)
             get().get_value(*typed_object, PropertyType{ id }, *reinterpret_cast<Glib::ValueBase*>(value));
         }

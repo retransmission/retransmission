@@ -43,8 +43,7 @@ class tr_handshake
 public:
     using DH = tr_message_stream_encryption::DH;
 
-    struct Result
-    {
+    struct Result {
         std::shared_ptr<tr_peerIo> io;
         std::optional<tr_peer_id_t> peer_id;
         bool read_anything_from_peer = false;
@@ -56,8 +55,7 @@ public:
     class Mediator
     {
     public:
-        struct TorrentInfo
-        {
+        struct TorrentInfo {
             tr_sha1_digest_t info_hash;
             tr_peer_id_t client_peer_id;
             tr_torrent_id_t id;
@@ -153,8 +151,7 @@ public:
     static auto constexpr VC = vc_t{};
 
 private:
-    enum class State : uint8_t
-    {
+    enum class State : uint8_t {
         // incoming and outgoing
         AwaitingHandshake,
         AwaitingPeerId,
@@ -265,8 +262,7 @@ private:
     {
         auto lock = std::unique_lock(dh_pool_mutex);
 
-        if (std::empty(dh_pool))
-        {
+        if (std::empty(dh_pool)) {
             return {};
         }
 
@@ -279,16 +275,14 @@ private:
     {
         auto lock = std::unique_lock(dh_pool_mutex);
 
-        if (std::size(dh_pool) < dh_pool.max_size())
-        {
+        if (std::size(dh_pool) < dh_pool.max_size()) {
             dh_pool.emplace_back(std::move(dh));
         }
     }
 
     [[nodiscard]] DH& get_dh()
     {
-        if (!dh_)
-        {
+        if (!dh_) {
             dh_.emplace(pop_dh_pool().value_or(DH{ mediator_->private_key() }));
         }
 
@@ -299,13 +293,11 @@ private:
     {
         // keys are expensive to make, so recycle iff the peer was unreachable
 
-        if (have_read_anything_from_peer_)
-        {
+        if (have_read_anything_from_peer_) {
             return;
         }
 
-        if (dh_)
-        {
+        if (dh_) {
             push_dh_pool(std::move(*dh_));
             dh_.reset();
         }

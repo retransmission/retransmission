@@ -40,8 +40,7 @@ public:
         return renew_time_;
     }
 
-    struct PulseResult
-    {
+    struct PulseResult {
         tr_port_forwarding_state state = TR_PORT_ERROR;
 
         tr_port local_port;
@@ -51,17 +50,7 @@ public:
     PulseResult pulse(tr_port local_port, bool is_enabled);
 
 private:
-    enum class State : uint8_t
-    {
-        Idle,
-        Err,
-        Discover,
-        RecvPub,
-        SendMap,
-        RecvMap,
-        SendUnmap,
-        RecvUnmap
-    };
+    enum class State : uint8_t { Idle, Err, Discover, RecvPub, SendMap, RecvMap, SendUnmap, RecvUnmap };
 
     static constexpr auto LifetimeSecs = uint32_t{ 3600 };
     static constexpr auto CommandWaitSecs = time_t{ 8 };

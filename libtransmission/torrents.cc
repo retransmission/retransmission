@@ -17,8 +17,7 @@
 namespace
 {
 
-constexpr struct
-{
+constexpr struct {
     bool operator()(tr_sha1_digest_t const& a, tr_sha1_digest_t const& b) const
     {
         return a < b;
@@ -56,10 +55,8 @@ tr_torrent* tr_torrents::get(tr_sha1_digest_t const& hash) const
 
 tr_torrent* tr_torrents::find_from_obfuscated_hash(tr_sha1_digest_t const& obfuscated_hash) const
 {
-    for (auto* const tor : *this)
-    {
-        if (tor->obfuscated_hash_equals(obfuscated_hash))
-        {
+    for (auto* const tor : *this) {
+        if (tor->obfuscated_hash_equals(obfuscated_hash)) {
             return tor;
         }
     }
@@ -91,10 +88,8 @@ std::vector<tr_torrent_id_t> tr_torrents::removedSince(time_t timestamp) const
     auto ids = std::vector<tr_torrent_id_t>{};
     ids.reserve(std::size(removed_));
 
-    for (auto const& [id, removed_at] : removed_)
-    {
-        if (removed_at >= timestamp)
-        {
+    for (auto const& [id, removed_at] : removed_) {
+        if (removed_at >= timestamp) {
             ids.emplace_back(id);
         }
     }

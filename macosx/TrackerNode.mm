@@ -29,8 +29,7 @@
 
 - (instancetype)initWithTrackerView:(tr_tracker_view const*)stat torrent:(Torrent*)torrent
 {
-    if ((self = [super init]))
-    {
+    if ((self = [super init])) {
         _fStat = *stat;
         _torrent = torrent; //weak reference
     }
@@ -51,19 +50,16 @@
 
 - (BOOL)isEqual:(id)object
 {
-    if (self == object)
-    {
+    if (self == object) {
         return YES;
     }
 
-    if (![object isKindOfClass:[self class]])
-    {
+    if (![object isKindOfClass:[self class]]) {
         return NO;
     }
 
     auto other = static_cast<decltype(self)>(object);
-    if (self.torrent != other.torrent)
-    {
+    if (self.torrent != other.torrent) {
         return NO;
     }
 
@@ -108,46 +104,31 @@
 - (NSString*)lastAnnounceStatusString
 {
     NSString* dateString;
-    if (self.fStat.hasAnnounced)
-    {
+    if (self.fStat.hasAnnounced) {
         dateString = [self.class.dateFormatter stringFromDate:[NSDate dateWithTimeIntervalSince1970:self.fStat.lastAnnounceTime]];
-    }
-    else
-    {
+    } else {
         dateString = NSLocalizedString(@"N/A", "Tracker last announce");
     }
 
     NSString* baseString;
-    if (self.fStat.hasAnnounced && self.fStat.lastAnnounceTimedOut)
-    {
+    if (self.fStat.hasAnnounced && self.fStat.lastAnnounceTimedOut) {
         baseString = [NSLocalizedString(@"Announce timed out", "Tracker last announce") stringByAppendingFormat:@": %@", dateString];
-    }
-    else if (self.fStat.hasAnnounced && !self.fStat.lastAnnounceSucceeded)
-    {
+    } else if (self.fStat.hasAnnounced && !self.fStat.lastAnnounceSucceeded) {
         baseString = NSLocalizedString(@"Announce error", "Tracker last announce");
 
         NSString* errorString = @(self.fStat.lastAnnounceResult);
-        if ([errorString isEqualToString:@""])
-        {
+        if ([errorString isEqualToString:@""]) {
             baseString = [baseString stringByAppendingFormat:@": %@", dateString];
-        }
-        else
-        {
+        } else {
             baseString = [baseString stringByAppendingFormat:@": %@ - %@", errorString, dateString];
         }
-    }
-    else
-    {
+    } else {
         baseString = [NSLocalizedString(@"Last Announce", "Tracker last announce") stringByAppendingFormat:@": %@", dateString];
-        if (self.fStat.hasAnnounced && self.fStat.lastAnnounceSucceeded && self.fStat.lastAnnouncePeerCount > 0)
-        {
+        if (self.fStat.hasAnnounced && self.fStat.lastAnnounceSucceeded && self.fStat.lastAnnouncePeerCount > 0) {
             NSString* peerString;
-            if (self.fStat.lastAnnouncePeerCount == 1)
-            {
+            if (self.fStat.lastAnnouncePeerCount == 1) {
                 peerString = NSLocalizedString(@"got 1 peer", "Tracker last announce");
-            }
-            else
-            {
+            } else {
                 peerString = [NSString localizedStringWithFormat:NSLocalizedString(@"got %zu peers", "Tracker last announce"),
                                                                  (size_t)self.fStat.lastAnnouncePeerCount];
             }
@@ -160,8 +141,7 @@
 
 - (NSString*)nextAnnounceStatusString
 {
-    switch (self.fStat.announceState)
-    {
+    switch (self.fStat.announceState) {
     case TR_TRACKER_ACTIVE:
         return [NSLocalizedString(@"Announce in progress", "Tracker next announce") stringByAppendingEllipsis];
 
@@ -197,36 +177,25 @@
 - (NSString*)lastScrapeStatusString
 {
     NSString* dateString;
-    if (self.fStat.hasScraped)
-    {
+    if (self.fStat.hasScraped) {
         dateString = [self.class.dateFormatter stringFromDate:[NSDate dateWithTimeIntervalSince1970:self.fStat.lastScrapeTime]];
-    }
-    else
-    {
+    } else {
         dateString = NSLocalizedString(@"N/A", "Tracker last scrape");
     }
 
     NSString* baseString;
-    if (self.fStat.hasScraped && self.fStat.lastScrapeTimedOut)
-    {
+    if (self.fStat.hasScraped && self.fStat.lastScrapeTimedOut) {
         baseString = [NSLocalizedString(@"Scrape timed out", "Tracker last scrape") stringByAppendingFormat:@": %@", dateString];
-    }
-    else if (self.fStat.hasScraped && !self.fStat.lastScrapeSucceeded)
-    {
+    } else if (self.fStat.hasScraped && !self.fStat.lastScrapeSucceeded) {
         baseString = NSLocalizedString(@"Scrape error", "Tracker last scrape");
 
         NSString* errorString = @(self.fStat.lastScrapeResult);
-        if ([errorString isEqualToString:@""])
-        {
+        if ([errorString isEqualToString:@""]) {
             baseString = [baseString stringByAppendingFormat:@": %@", dateString];
-        }
-        else
-        {
+        } else {
             baseString = [baseString stringByAppendingFormat:@": %@ - %@", errorString, dateString];
         }
-    }
-    else
-    {
+    } else {
         baseString = [NSLocalizedString(@"Last Scrape", "Tracker last scrape") stringByAppendingFormat:@": %@", dateString];
     }
 

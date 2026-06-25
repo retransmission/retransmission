@@ -48,8 +48,7 @@ FreeSpaceLabel::Impl::~Impl()
 
 bool FreeSpaceLabel::Impl::on_freespace_timer()
 {
-    if (core_->get_session() == nullptr)
-    {
+    if (core_->get_session() == nullptr) {
         return false;
     }
 

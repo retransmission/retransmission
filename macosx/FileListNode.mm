@@ -21,8 +21,7 @@
 
 - (instancetype)initWithFolderName:(NSString*)name path:(NSString*)path torrent:(Torrent*)torrent
 {
-    if ((self = [self initWithFolder:YES name:name path:path torrent:torrent]))
-    {
+    if ((self = [self initWithFolder:YES name:name path:path torrent:torrent])) {
         _children = [[NSMutableArray alloc] init];
         _size = 0;
     }
@@ -36,8 +35,7 @@
                            index:(NSUInteger)index
                          torrent:(Torrent*)torrent
 {
-    if ((self = [self initWithFolder:NO name:name path:path torrent:torrent]))
-    {
+    if ((self = [self initWithFolder:NO name:name path:path torrent:torrent])) {
         _size = size;
         [_indexesInternal addIndex:index];
     }
@@ -68,20 +66,16 @@
 
 - (NSString*)description
 {
-    if (!_isFolder)
-    {
+    if (!_isFolder) {
         return [NSString stringWithFormat:@"%@ (%ld)", _name, _indexesInternal.firstIndex];
-    }
-    else
-    {
+    } else {
         return [NSString stringWithFormat:@"%@ (folder: %@)", _name, _indexesInternal];
     }
 }
 
 - (NSImage*)icon
 {
-    if (!_iconInternal)
-    {
+    if (!_iconInternal) {
         _iconInternal = [NSWorkspace.sharedWorkspace
             iconForFileType:_isFolder ? NSFileTypeForHFSTypeCode(kGenericFolderIcon) : _name.pathExtension];
     }
@@ -104,14 +98,12 @@
 
     if ([lookupPathComponents isEqualToArray:thesePathComponents]) //this node represents what's being renamed
     {
-        if ([oldName isEqualToString:self.name])
-        {
+        if ([oldName isEqualToString:self.name]) {
             _name = [newName copy];
             _iconInternal = nil;
             return YES;
         }
-    }
-    else if (lookupPathComponents.count < thesePathComponents.count) //what's being renamed is part of this node's path
+    } else if (lookupPathComponents.count < thesePathComponents.count) //what's being renamed is part of this node's path
     {
         lookupPathComponents = [lookupPathComponents arrayByAddingObject:oldName];
         BOOL const allSame = NSNotFound ==
@@ -120,8 +112,7 @@
                                                    return ![name isEqualToString:thesePathComponents[idx]];
                                                }];
 
-        if (allSame)
-        {
+        if (allSame) {
             NSString* oldPathPrefix = [path stringByAppendingPathComponent:oldName];
             NSString* newPathPrefix = [path stringByAppendingPathComponent:newName];
 
@@ -137,8 +128,7 @@
 
 - (instancetype)initWithFolder:(BOOL)isFolder name:(NSString*)name path:(NSString*)path torrent:(Torrent*)torrent
 {
-    if ((self = [super init]))
-    {
+    if ((self = [super init])) {
         _isFolder = isFolder;
         _name = [name copy];
         _path = [path copy];

@@ -36,13 +36,11 @@ std::optional<double> Torrent::getSeedRatioLimit() const
 {
     auto const mode = seedRatioMode();
 
-    if (mode == TR_RATIOLIMIT_SINGLE)
-    {
+    if (mode == TR_RATIOLIMIT_SINGLE) {
         return seedRatioLimit();
     }
 
-    if (mode == TR_RATIOLIMIT_GLOBAL && prefs_.get<bool>(TR_KEY_seed_ratio_limited))
-    {
+    if (mode == TR_RATIOLIMIT_GLOBAL && prefs_.get<bool>(TR_KEY_seed_ratio_limited)) {
         return prefs_.get<double>(TR_KEY_seed_ratio_limit);
     }
 
@@ -59,36 +57,30 @@ std::partial_ordering Torrent::compareSeedProgress(Torrent const& that) const
     auto const a_ratio_limit = getSeedRatioLimit();
     auto const b_ratio_limit = that.getSeedRatioLimit();
 
-    if (!a_ratio_limit && !b_ratio_limit)
-    {
+    if (!a_ratio_limit && !b_ratio_limit) {
         return compareRatio(that);
     }
 
     auto const a_ratio = ratio();
     auto const b_ratio = that.ratio();
 
-    if (!a_ratio_limit)
-    {
+    if (!a_ratio_limit) {
         return b_ratio < *b_ratio_limit ? std::partial_ordering::greater : std::partial_ordering::less;
     }
 
-    if (!b_ratio_limit)
-    {
+    if (!b_ratio_limit) {
         return a_ratio < *a_ratio_limit ? std::partial_ordering::less : std::partial_ordering::greater;
     }
 
-    if (!(*a_ratio_limit > 0) && !(*b_ratio_limit > 0))
-    {
+    if (!(*a_ratio_limit > 0) && !(*b_ratio_limit > 0)) {
         return compareRatio(that);
     }
 
-    if (!(*a_ratio_limit > 0))
-    {
+    if (!(*a_ratio_limit > 0)) {
         return std::partial_ordering::greater;
     }
 
-    if (!(*b_ratio_limit > 0))
-    {
+    if (!(*b_ratio_limit > 0)) {
         return std::partial_ordering::less;
     }
 
@@ -102,18 +94,15 @@ std::partial_ordering Torrent::compareRatio(Torrent const& that) const
     double const a = ratio();
     double const b = that.ratio();
 
-    if (static_cast<int>(a) == TR_RATIO_INF && static_cast<int>(b) == TR_RATIO_INF)
-    {
+    if (static_cast<int>(a) == TR_RATIO_INF && static_cast<int>(b) == TR_RATIO_INF) {
         return std::partial_ordering::equivalent;
     }
 
-    if (static_cast<int>(a) == TR_RATIO_INF)
-    {
+    if (static_cast<int>(a) == TR_RATIO_INF) {
         return std::partial_ordering::greater;
     }
 
-    if (static_cast<int>(b) == TR_RATIO_INF)
-    {
+    if (static_cast<int>(b) == TR_RATIO_INF) {
         return std::partial_ordering::less;
     }
 
@@ -125,18 +114,15 @@ std::strong_ordering Torrent::compareETA(Torrent const& that) const
     bool const have_a(hasETA());
     bool const have_b(that.hasETA());
 
-    if (have_a && have_b)
-    {
+    if (have_a && have_b) {
         return getETA() <=> that.getETA();
     }
 
-    if (have_a)
-    {
+    if (have_a) {
         return std::strong_ordering::greater;
     }
 
-    if (have_b)
-    {
+    if (have_b) {
         return std::strong_ordering::less;
     }
 
@@ -149,8 +135,7 @@ std::strong_ordering Torrent::compareETA(Torrent const& that) const
 
 QIcon Torrent::getMimeTypeIcon() const
 {
-    if (icon_.isNull())
-    {
+    if (icon_.isNull()) {
         icon_ = IconCache::get().getMimeTypeIcon(primary_mime_type_, file_count_ > 1);
     }
 
@@ -165,14 +150,12 @@ Torrent::fields_t Torrent::update(tr_quark const* keys, tr_variant const* const*
 {
     auto changed = fields_t{};
 
-    for (size_t pos = 0; pos < n; ++pos)
-    {
+    for (size_t pos = 0; pos < n; ++pos) {
         tr_quark const key = keys[pos];
         tr_variant const* child = values[pos];
         bool field_changed = false;
 
-        switch (key)
-        {
+        switch (key) {
         case TR_KEY_error:
             {
                 auto val = static_cast<int64_t>(error_);
@@ -249,8 +232,7 @@ Torrent::fields_t Torrent::update(tr_quark const* keys, tr_variant const* const*
 #define HANDLE_KEY(key, bit) \
     case TR_KEY_##key: \
         field_changed = change(key##_, child); \
-        if (field_changed) \
-        { \
+        if (field_changed) { \
             key##_ = trApp->intern(key##_); \
         } \
         changed.set(bit, field_changed); \
@@ -266,18 +248,15 @@ Torrent::fields_t Torrent::update(tr_quark const* keys, tr_variant const* const*
             break;
         }
 
-        if (field_changed)
-        {
-            switch (key)
-            {
+        if (field_changed) {
+            switch (key) {
             case TR_KEY_file_count:
             case TR_KEY_primary_mime_type:
                 icon_ = {};
                 break;
 
             case TR_KEY_files:
-                for (size_t i = 0; i < files_.size(); ++i)
-                {
+                for (size_t i = 0; i < files_.size(); ++i) {
                     files_[i].index = static_cast<int>(i);
                 }
                 break;
@@ -285,8 +264,7 @@ Torrent::fields_t Torrent::update(tr_quark const* keys, tr_variant const* const*
             case TR_KEY_trackers:
                 {
                     auto tmp = std::set<QString>{};
-                    for (auto const& ts : tracker_stats_)
-                    {
+                    for (auto const& ts : tracker_stats_) {
                         tmp.insert(ts.sitename);
                     }
                     sitenames_ = std::vector<QString>{ std::begin(tmp), std::end(tmp) };
@@ -304,8 +282,7 @@ Torrent::fields_t Torrent::update(tr_quark const* keys, tr_variant const* const*
 
 QString Torrent::activityString() const
 {
-    switch (getActivity())
-    {
+    switch (getActivity()) {
     case TR_STATUS_STOPPED:
         return isFinished() ? tr("Finished") : tr("Paused");
 
@@ -334,8 +311,7 @@ QString Torrent::activityString() const
 
 QString Torrent::getError() const
 {
-    switch (error_)
-    {
+    switch (error_) {
     case tr_stat::Error::TrackerWarning:
         return tr("Tracker gave a warning: %1").arg(error_string_);
 

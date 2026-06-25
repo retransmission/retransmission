@@ -52,13 +52,11 @@ public:
     {
         event_.reset();
 
-        if (kq_ != -1)
-        {
+        if (kq_ != -1) {
             close(kq_);
         }
 
-        if (dirfd_ != -1)
-        {
+        if (dirfd_ != -1) {
             close(dirfd_);
         }
     }
@@ -67,8 +65,7 @@ private:
     void init(struct event_base* evbase)
     {
         kq_ = kqueue();
-        if (kq_ == -1)
-        {
+        if (kq_ == -1) {
             auto const error_code = errno;
             tr_logAddError(
                 fmt::format(
@@ -81,8 +78,7 @@ private:
         // open fd for watching
         auto const szdirname = tr_pathbuf{ dirname() };
         dirfd_ = open(szdirname, O_RDONLY | O_EVTONLY);
-        if (dirfd_ == -1)
-        {
+        if (dirfd_ == -1) {
             auto const error_code = errno;
             tr_logAddError(
                 fmt::format(
@@ -97,8 +93,7 @@ private:
         struct kevent ke;
         static auto constexpr KqueueWatchMask = (NOTE_WRITE | NOTE_EXTEND);
         EV_SET(&ke, dirfd_, EVFILT_VNODE, EV_ADD | EV_ENABLE | EV_CLEAR, KqueueWatchMask, 0, NULL);
-        if (kevent(kq_, &ke, 1, nullptr, 0, nullptr) == -1)
-        {
+        if (kevent(kq_, &ke, 1, nullptr, 0, nullptr) == -1) {
             auto const error_code = errno;
             tr_logAddError(
                 fmt::format(
@@ -111,8 +106,7 @@ private:
 
         // create libevent task for event descriptor
         event_.reset(event_new(evbase, kq_, EV_READ | EV_ET | EV_PERSIST, &onKqueueEvent, this));
-        if (!event_)
-        {
+        if (!event_) {
             auto const error_code = errno;
             tr_logAddError(
                 fmt::format(
@@ -122,8 +116,7 @@ private:
             return;
         }
 
-        if (event_add(event_.get(), nullptr) == -1)
-        {
+        if (event_add(event_.get(), nullptr) == -1) {
             auto const error_code = errno;
             tr_logAddError(
                 fmt::format(
@@ -143,8 +136,7 @@ private:
     {
         struct kevent ke;
         auto ts = timespec{};
-        if (kevent(kq_, nullptr, 0, &ke, 1, &ts) == -1)
-        {
+        if (kevent(kq_, nullptr, 0, &ke, 1, &ts) == -1) {
             auto const error_code = errno;
             tr_logAddError(
                 fmt::format(

@@ -54,8 +54,7 @@ public:
     }
 
 private:
-    struct metadata_node
-    {
+    struct metadata_node {
         time_t requested_at = {};
         int64_t piece = {};
     };

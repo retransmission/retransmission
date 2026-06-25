@@ -121,8 +121,7 @@ static NSUInteger const kMaxQueueLength = 10000U;
            effectiveRange:NULL];
 
     //select proper level in popup button
-    switch ([NSUserDefaults.standardUserDefaults integerForKey:@"MessageLevel"])
-    {
+    switch ([NSUserDefaults.standardUserDefaults integerForKey:@"MessageLevel"]) {
     case TR_LOG_ERROR:
         [self.fLevelButton selectItemAtIndex:LevelButtonLevelError];
         break;
@@ -154,8 +153,7 @@ static NSUInteger const kMaxQueueLength = 10000U;
 
 - (void)windowDidBecomeKey:(NSNotification*)notification
 {
-    if (!self.fTimer)
-    {
+    if (!self.fTimer) {
         __weak __auto_type weakSelf = self;
         self.fTimer = [NSTimer scheduledTimerWithTimeInterval:kUpdateSeconds repeats:YES block:^(NSTimer* _Nonnull timer) {
             [weakSelf updateLog];
@@ -193,8 +191,7 @@ static NSUInteger const kMaxQueueLength = 10000U;
 + (NSImage*)iconForLevel:(NSInteger)level
 {
     NSColor* color;
-    switch (level)
-    {
+    switch (level) {
     case TR_LOG_CRITICAL:
     case TR_LOG_ERROR:
         color = NSColor.systemRedColor;
@@ -224,8 +221,7 @@ static NSUInteger const kMaxQueueLength = 10000U;
     // cache dictionary
     static NSMutableDictionary<NSColor*, NSImage*>* icons = [NSMutableDictionary dictionary];
     NSImage* icon;
-    if ((icon = icons[color]))
-    {
+    if ((icon = icons[color])) {
         return icon;
     }
     icon = [NSImage discIconWithColor:color insetFactor:0.5];
@@ -236,8 +232,7 @@ static NSUInteger const kMaxQueueLength = 10000U;
 - (void)updateLog
 {
     auto const messages = tr_logGetQueue();
-    if (messages.empty())
-    {
+    if (messages.empty()) {
         return;
     }
 
@@ -253,8 +248,7 @@ static NSUInteger const kMaxQueueLength = 10000U;
 
     BOOL changed = NO;
 
-    for (auto const& currentMessage : messages)
-    {
+    for (auto const& currentMessage : messages) {
         NSString* name = !std::empty(currentMessage.name) ? @(currentMessage.name.c_str()) : NSProcessInfo.processInfo.processName;
 
         auto const basename = tr_sys_path_basename(currentMessage.file);
@@ -271,15 +265,13 @@ static NSUInteger const kMaxQueueLength = 10000U;
         };
         [self.fMessages addObject:message];
 
-        if (currentMessage.level <= maxLevel && [self shouldIncludeMessageForFilter:filterString message:message])
-        {
+        if (currentMessage.level <= maxLevel && [self shouldIncludeMessageForFilter:filterString message:message]) {
             [self.fDisplayedMessages addObject:message];
             changed = YES;
         }
     }
 
-    if (self.fMessages.count > kMaxQueueLength)
-    {
+    if (self.fMessages.count > kMaxQueueLength) {
         NSUInteger const oldCount = self.fDisplayedMessages.count;
 
         NSIndexSet* removeIndexes = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, self.fMessages.count - kMaxQueueLength)];
@@ -291,8 +283,7 @@ static NSUInteger const kMaxQueueLength = 10000U;
         changed |= oldCount > self.fDisplayedMessages.count;
     }
 
-    if (changed)
-    {
+    if (changed) {
         [self.fDisplayedMessages sortUsingDescriptors:self.fMessageTable.sortDescriptors];
 
         [self.fMessageTable reloadData];
@@ -313,21 +304,14 @@ static NSUInteger const kMaxQueueLength = 10000U;
     NSString* ident = column.identifier;
     NSDictionary* message = self.fDisplayedMessages[row];
 
-    if ([ident isEqualToString:@"Date"])
-    {
+    if ([ident isEqualToString:@"Date"]) {
         return message[@"Date"];
-    }
-    else if ([ident isEqualToString:@"Level"])
-    {
+    } else if ([ident isEqualToString:@"Level"]) {
         NSInteger const level = [message[@"Level"] integerValue];
         return [self.class iconForLevel:level];
-    }
-    else if ([ident isEqualToString:@"Name"])
-    {
+    } else if ([ident isEqualToString:@"Name"]) {
         return message[@"Name"];
-    }
-    else
-    {
+    } else {
         return message[@"Message"];
     }
 }
@@ -364,8 +348,7 @@ static NSUInteger const kMaxQueueLength = 10000U;
     NSIndexSet* indexes = self.fMessageTable.selectedRowIndexes;
     NSMutableArray* messageStrings = [NSMutableArray arrayWithCapacity:indexes.count];
 
-    for (NSDictionary* message in [self.fDisplayedMessages objectsAtIndexes:indexes])
-    {
+    for (NSDictionary* message in [self.fDisplayedMessages objectsAtIndexes:indexes]) {
         [messageStrings addObject:[self stringForMessage:message]];
     }
 
@@ -380,8 +363,7 @@ static NSUInteger const kMaxQueueLength = 10000U;
 {
     SEL action = menuItem.action;
 
-    if (action == @selector(copy:))
-    {
+    if (action == @selector(copy:)) {
         return self.fMessageTable.numberOfSelectedRows > 0;
     }
 
@@ -391,8 +373,7 @@ static NSUInteger const kMaxQueueLength = 10000U;
 - (void)changeLevel:(id)sender
 {
     NSInteger level;
-    switch (self.fLevelButton.indexOfSelectedItem)
-    {
+    switch (self.fLevelButton.indexOfSelectedItem) {
     case LevelButtonLevelError:
         level = TR_LOG_ERROR;
         break;
@@ -410,8 +391,7 @@ static NSUInteger const kMaxQueueLength = 10000U;
         level = TR_LOG_INFO;
     }
 
-    if ([NSUserDefaults.standardUserDefaults integerForKey:@"MessageLevel"] == level)
-    {
+    if ([NSUserDefaults.standardUserDefaults integerForKey:@"MessageLevel"] == level) {
         return;
     }
 
@@ -459,8 +439,7 @@ static NSUInteger const kMaxQueueLength = 10000U;
     panel.nameFieldStringValue = NSLocalizedString(@"untitled", "Save log panel -> default file name");
 
     [panel beginSheetModalForWindow:self.window completionHandler:^(NSInteger result) {
-        if (result == NSModalResponseOK)
-        {
+        if (result == NSModalResponseOK) {
             //make the array sorted by date
             NSSortDescriptor* descriptor = [NSSortDescriptor sortDescriptorWithKey:@"Index" ascending:YES];
             NSArray* descriptors = @[ descriptor ];
@@ -468,15 +447,13 @@ static NSUInteger const kMaxQueueLength = 10000U;
 
             //create the text to output
             NSMutableArray* messageStrings = [NSMutableArray arrayWithCapacity:sortedMessages.count];
-            for (NSDictionary* message in sortedMessages)
-            {
+            for (NSDictionary* message in sortedMessages) {
                 [messageStrings addObject:[self stringForMessage:message]];
             }
 
             NSString* fileString = [messageStrings componentsJoinedByString:@"\n"];
 
-            if (![fileString writeToFile:panel.URL.path atomically:YES encoding:NSUTF8StringEncoding error:nil])
-            {
+            if (![fileString writeToFile:panel.URL.path atomically:YES encoding:NSUTF8StringEncoding error:nil]) {
                 NSAlert* alert = [[NSAlert alloc] init];
                 [alert addButtonWithTitle:NSLocalizedString(@"OK", "Save log alert panel -> button")];
                 alert.messageText = NSLocalizedString(@"Log Could Not Be Saved", "Save log alert panel -> title");
@@ -501,8 +478,7 @@ static NSUInteger const kMaxQueueLength = 10000U;
 
 - (BOOL)shouldIncludeMessageForFilter:(NSString*)filterString message:(NSDictionary*)message
 {
-    if ([filterString isEqualToString:@""])
-    {
+    if ([filterString isEqualToString:@""]) {
         return YES;
     }
 
@@ -530,20 +506,15 @@ static NSUInteger const kMaxQueueLength = 10000U;
     NSMutableArray* itemsToAdd = [NSMutableArray array];
     NSMutableIndexSet* itemsToAddIndexes = [NSMutableIndexSet indexSet];
 
-    for (NSDictionary* message in tempMessages)
-    {
+    for (NSDictionary* message in tempMessages) {
         NSUInteger const previousIndex = [self.fDisplayedMessages
             indexOfObject:message
                   inRange:NSMakeRange(currentIndex, self.fDisplayedMessages.count - currentIndex)];
-        if (previousIndex == NSNotFound)
-        {
+        if (previousIndex == NSNotFound) {
             [itemsToAdd addObject:message];
             [itemsToAddIndexes addIndex:totalCount];
-        }
-        else
-        {
-            if (previousIndex != currentIndex)
-            {
+        } else {
+            if (previousIndex != currentIndex) {
                 [self.fDisplayedMessages moveObjectAtIndex:previousIndex toIndex:currentIndex];
                 [self.fMessageTable moveRowAtIndex:previousIndex toIndex:currentIndex];
             }
@@ -554,8 +525,7 @@ static NSUInteger const kMaxQueueLength = 10000U;
     }
 
     //remove trailing items - those are the unused
-    if (currentIndex < self.fDisplayedMessages.count)
-    {
+    if (currentIndex < self.fDisplayedMessages.count) {
         NSRange const removeRange = NSMakeRange(currentIndex, self.fDisplayedMessages.count - currentIndex);
         [self.fDisplayedMessages removeObjectsInRange:removeRange];
         [self.fMessageTable removeRowsAtIndexes:[NSIndexSet indexSetWithIndexesInRange:removeRange]
@@ -575,8 +545,7 @@ static NSUInteger const kMaxQueueLength = 10000U;
 {
     NSString* levelString;
     NSInteger const level = [message[@"Level"] integerValue];
-    switch (level)
-    {
+    switch (level) {
     case TR_LOG_ERROR:
         levelString = NSLocalizedString(@"Error", "Message window -> level");
         break;

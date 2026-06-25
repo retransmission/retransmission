@@ -140,8 +140,7 @@ TEST_F(StrbufTest, move)
 {
     static auto constexpr Value = "/hello/world"sv;
 
-    auto generator = []()
-    {
+    auto generator = []() {
         return tr_pathbuf{ Value };
     };
     auto const path = generator();

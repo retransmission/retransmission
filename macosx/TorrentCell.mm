@@ -12,8 +12,7 @@
 
 - (void)drawRect:(NSRect)dirtyRect
 {
-    if (self.fTorrentTableView)
-    {
+    if (self.fTorrentTableView) {
         Torrent* torrent = (Torrent*)self.objectValue;
 
         // draw progress bar
@@ -21,8 +20,7 @@
         [ProgressBarView.sharedInstance drawBarInRect:barRect forTableView:self.fTorrentTableView withTorrent:torrent];
 
         // set priority icon
-        if (torrent.priority != TR_PRI_NORMAL)
-        {
+        if (torrent.priority != TR_PRI_NORMAL) {
             NSColor* priorityColor = self.backgroundStyle == NSBackgroundStyleEmphasized ? NSColor.whiteColor : NSColor.labelColor;
             NSImage* priorityImage = [[NSImage imageNamed:(torrent.priority == TR_PRI_HIGH ? @"PriorityHighTemplate" : @"PriorityLowTemplate")]
                 imageWithColor:priorityColor];
@@ -30,9 +28,7 @@
             self.fTorrentPriorityView.image = priorityImage;
 
             [self.fStackView setVisibilityPriority:NSStackViewVisibilityPriorityMustHold forView:self.fTorrentPriorityView];
-        }
-        else
-        {
+        } else {
             [self.fStackView setVisibilityPriority:NSStackViewVisibilityPriorityNotVisible forView:self.fTorrentPriorityView];
         }
     }

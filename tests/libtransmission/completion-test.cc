@@ -23,8 +23,7 @@ using CompletionTest = ::tr::test::TransmissionTest;
 namespace
 {
 
-struct TestTorrent
-{
+struct TestTorrent {
     std::set<tr_piece_index_t> dnd_pieces;
 
     [[nodiscard]] tr_completion makeCompletion(tr_block_info const& block_info) const
@@ -155,8 +154,7 @@ TEST_F(CompletionTest, hasPiece)
     EXPECT_EQ(0, completion.has_valid());
 
     // check that adding all the blocks in a piece means we have it
-    for (tr_block_index_t i = 1, n = block_info.piece_loc(1).block; i < n; ++i)
-    {
+    for (tr_block_index_t i = 1, n = block_info.piece_loc(1).block; i < n; ++i) {
         completion.add_block(i);
     }
     EXPECT_FALSE(completion.has_piece(0));
@@ -179,8 +177,7 @@ TEST_F(CompletionTest, percentCompleteAndDone)
     EXPECT_DOUBLE_EQ(0.0, completion.percent_done());
 
     // add half the pieces
-    for (size_t i = 0; i < 32; ++i)
-    {
+    for (size_t i = 0; i < 32; ++i) {
         completion.add_piece(i);
     }
     EXPECT_DOUBLE_EQ(0.5, completion.percent_complete());
@@ -188,8 +185,7 @@ TEST_F(CompletionTest, percentCompleteAndDone)
 
     // but marking some of the pieces we have as unwanted
     // should not change percent_done
-    for (size_t i = 0; i < 16; ++i)
-    {
+    for (size_t i = 0; i < 16; ++i) {
         torrent.dnd_pieces.insert(i);
     }
     completion.invalidate_size_when_done();
@@ -198,8 +194,7 @@ TEST_F(CompletionTest, percentCompleteAndDone)
 
     // but marking some of the pieces we DON'T have as unwanted
     // SHOULD change percent_done
-    for (size_t i = 32; i < 48; ++i)
-    {
+    for (size_t i = 32; i < 48; ++i) {
         torrent.dnd_pieces.insert(i);
     }
     completion.invalidate_size_when_done();
@@ -311,8 +306,7 @@ TEST_F(CompletionTest, sizeWhenDone)
     EXPECT_EQ(block_info.total_size(), completion.size_when_done());
 
     // check that flagging complete pieces as dnd does not affect size_when_done
-    for (size_t i = 0; i < 32; ++i)
-    {
+    for (size_t i = 0; i < 32; ++i) {
         completion.add_piece(i);
         torrent.dnd_pieces.insert(i);
     }
@@ -320,8 +314,7 @@ TEST_F(CompletionTest, sizeWhenDone)
     EXPECT_EQ(block_info.total_size(), completion.size_when_done());
 
     // check that flagging missing pieces as dnd does not affect size_when_done
-    for (size_t i = 32; i < 48; ++i)
-    {
+    for (size_t i = 32; i < 48; ++i) {
         torrent.dnd_pieces.insert(i);
     }
     completion.invalidate_size_when_done();
@@ -339,10 +332,8 @@ TEST_F(CompletionTest, createPieceBitfield)
     auto completion = torrent.makeCompletion(block_info);
     auto buf = tr_rand_obj<std::array<char, 65>>();
     ASSERT_EQ(std::size(buf), block_info.piece_count());
-    for (uint64_t i = 0; i < block_info.piece_count(); ++i)
-    {
-        if ((buf[i] % 2) != 0)
-        {
+    for (uint64_t i = 0; i < block_info.piece_count(); ++i) {
+        if ((buf[i] % 2) != 0) {
             completion.add_piece(i);
         }
     }
@@ -352,8 +343,7 @@ TEST_F(CompletionTest, createPieceBitfield)
     auto const pieces_raw_bitfield = completion.create_piece_bitfield();
     tr_bitfield pieces{ size_t{ block_info.piece_count() } };
     pieces.set_raw(std::data(pieces_raw_bitfield), std::size(pieces_raw_bitfield));
-    for (uint64_t i = 0; i < block_info.piece_count(); ++i)
-    {
+    for (uint64_t i = 0; i < block_info.piece_count(); ++i) {
         EXPECT_EQ(completion.has_piece(i), pieces.test(i));
     }
 }
@@ -396,8 +386,7 @@ TEST_F(CompletionTest, amountDone)
     // make bins s.t. each bin is a single piece
     auto bins = std::array<float, TotalSize / PieceSize>{};
 
-    for (tr_piece_index_t piece = 0; piece < block_info.piece_count(); ++piece)
-    {
+    for (tr_piece_index_t piece = 0; piece < block_info.piece_count(); ++piece) {
         completion.remove_piece(piece);
     }
     completion.amount_done(std::data(bins), std::size(bins));
@@ -415,8 +404,7 @@ TEST_F(CompletionTest, amountDone)
     EXPECT_FLOAT_EQ(0.0, bins[1]);
 
     // all pieces
-    for (tr_piece_index_t piece = 0; piece < block_info.piece_count(); ++piece)
-    {
+    for (tr_piece_index_t piece = 0; piece < block_info.piece_count(); ++piece) {
         completion.add_piece(piece);
     }
     completion.amount_done(std::data(bins), std::size(bins));
@@ -485,8 +473,7 @@ TEST_F(CompletionTest, wantNone)
     completion.add_block(0);
 
     // and want nothing
-    for (tr_piece_index_t i = 0, n = block_info.block_count(); i < n; ++i)
-    {
+    for (tr_piece_index_t i = 0, n = block_info.block_count(); i < n; ++i) {
         torrent.dnd_pieces.insert(i);
     }
     completion.invalidate_size_when_done();

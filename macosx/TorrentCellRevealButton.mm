@@ -65,8 +65,7 @@
 
 - (void)updateTrackingAreas
 {
-    if (self.fTrackingArea != nil)
-    {
+    if (self.fTrackingArea != nil) {
         [self removeTrackingArea:self.fTrackingArea];
     }
 

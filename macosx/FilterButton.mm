@@ -9,8 +9,7 @@
 
 - (instancetype)initWithCoder:(NSCoder*)coder
 {
-    if ((self = [super initWithCoder:coder]))
-    {
+    if ((self = [super initWithCoder:coder])) {
         _count = NSNotFound;
     }
     return self;
@@ -18,8 +17,7 @@
 
 - (void)setCount:(NSUInteger)count
 {
-    if (count == _count)
-    {
+    if (count == _count) {
         return;
     }
 

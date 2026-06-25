@@ -14,8 +14,7 @@ QSize FileTreeDelegate::sizeHint(QStyleOptionViewItem const& item, QModelIndex c
 {
     QSize size;
 
-    switch (index.column())
-    {
+    switch (index.column()) {
     case FileTreeModel::COL_PROGRESS:
     case FileTreeModel::COL_WANTED:
         size = QSize{ 20, 1 };
@@ -33,8 +32,7 @@ void FileTreeDelegate::paint(QPainter* painter, QStyleOptionViewItem const& opti
 {
     int const column(index.column());
 
-    if (column != FileTreeModel::COL_PROGRESS && column != FileTreeModel::COL_WANTED)
-    {
+    if (column != FileTreeModel::COL_PROGRESS && column != FileTreeModel::COL_WANTED) {
         QItemDelegate::paint(painter, option, index);
         return;
     }
@@ -44,8 +42,7 @@ void FileTreeDelegate::paint(QPainter* painter, QStyleOptionViewItem const& opti
     painter->save();
     QItemDelegate::drawBackground(painter, option, index);
 
-    if (column == FileTreeModel::COL_PROGRESS)
-    {
+    if (column == FileTreeModel::COL_PROGRESS) {
         QStyleOptionProgressBar p;
         p.state = option.state | QStyle::State_Horizontal | QStyle::State_Small;
         p.direction = QApplication::layoutDirection();
@@ -60,9 +57,7 @@ void FileTreeDelegate::paint(QPainter* painter, QStyleOptionViewItem const& opti
         p.progress = static_cast<int>(100.0 * index.data().toDouble());
         p.text = QStringLiteral("%1%").arg(p.progress);
         StyleHelper::drawProgressBar(*painter, p);
-    }
-    else if (column == FileTreeModel::COL_WANTED)
-    {
+    } else if (column == FileTreeModel::COL_WANTED) {
         QStyleOptionViewItem vi(option);
         vi.features |= QStyleOptionViewItem::HasCheckIndicator;
         QRect check_rect = style->subElementRect(QStyle::SE_ItemViewItemCheckIndicator, &vi, nullptr);

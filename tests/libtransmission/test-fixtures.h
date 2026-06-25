@@ -48,20 +48,15 @@ using file_func_t = std::function<void(char const* filename)>;
 
 static void depthFirstWalk(char const* path, file_func_t const& func)
 {
-    if (auto const info = tr_sys_path_get_info(path); info && info->isFolder())
-    {
-        if (auto const odir = tr_sys_dir_open(path); odir != TR_BAD_SYS_DIR)
-        {
-            for (;;)
-            {
+    if (auto const info = tr_sys_path_get_info(path); info && info->isFolder()) {
+        if (auto const odir = tr_sys_dir_open(path); odir != TR_BAD_SYS_DIR) {
+            for (;;) {
                 char const* const name = tr_sys_dir_read_name(odir);
-                if (name == nullptr)
-                {
+                if (name == nullptr) {
                     break;
                 }
 
-                if ("."sv != name && ".."sv != name)
-                {
+                if ("."sv != name && ".."sv != name) {
                     auto const child = fmt::format("{:s}/{:s}"sv, path, name);
                     depthFirstWalk(child.c_str(), func);
                 }
@@ -78,15 +73,12 @@ inline bool waitFor(std::function<bool()> const& test, std::chrono::milliseconds
 {
     auto const deadline = std::chrono::steady_clock::now() + msec;
 
-    for (;;)
-    {
-        if (test())
-        {
+    for (;;) {
+        if (test()) {
             return true;
         }
 
-        if (std::chrono::steady_clock::now() > deadline)
-        {
+        if (std::chrono::steady_clock::now() > deadline) {
             return false;
         }
 
@@ -106,15 +98,12 @@ inline bool waitFor(
 {
     auto const deadline = std::chrono::steady_clock::now() + msec;
 
-    for (;;)
-    {
-        if (test())
-        {
+    for (;;) {
+        if (test()) {
             return true;
         }
 
-        if (std::chrono::steady_clock::now() > deadline)
-        {
+        if (std::chrono::steady_clock::now() > deadline) {
             return false;
         }
 
@@ -166,8 +155,7 @@ public:
 protected:
     static std::string getDefaultParentDir()
     {
-        if (auto* const path = getenv("TMPDIR"); path != nullptr)
-        {
+        if (auto* const path = getenv("TMPDIR"); path != nullptr) {
             return path;
         }
 
@@ -177,10 +165,8 @@ protected:
 
     static void rimraf(std::string const& path, bool verbose = false)
     {
-        auto remove = [verbose](char const* filename)
-        {
-            if (verbose)
-            {
+        auto remove = [verbose](char const* filename) {
+            if (verbose) {
                 std::cerr << "cleanup: removing '" << filename << "'\n";
             }
 
@@ -216,8 +202,7 @@ protected:
     {
         auto const tmperr = errno;
 
-        if (auto const dir = tr_sys_path_dirname(path); !tr_sys_path_exists(dir))
-        {
+        if (auto const dir = tr_sys_path_dirname(path); !tr_sys_path_exists(dir)) {
             auto error = tr_error{};
             tr_sys_dir_create(dir, TR_SYS_DIR_CREATE_PARENTS, 0700, &error);
             EXPECT_FALSE(error) << "path[" << path << "] dir[" << dir << "] " << error;
@@ -229,18 +214,15 @@ protected:
     static void blockingFileWrite(tr_sys_file_t fd, void const* data, size_t data_len, tr_error* error = nullptr)
     {
         auto local_error = tr_error{};
-        if (error == nullptr)
-        {
+        if (error == nullptr) {
             error = &local_error;
         }
 
         uint64_t n_left = data_len;
         auto const* left = static_cast<uint8_t const*>(data);
-        while (n_left > 0)
-        {
+        while (n_left > 0) {
             uint64_t n = {};
-            if (!tr_sys_file_write(fd, left, n_left, &n, error))
-            {
+            if (!tr_sys_file_write(fd, left, n_left, &n, error)) {
                 fmt::print(stderr, "Error writing file: '{:s}'\n", error->message());
                 break;
             }
@@ -260,8 +242,7 @@ protected:
         auto const fd = tr_sys_file_open_temp(tmpl, &error);
         blockingFileWrite(fd, payload, n, &error);
         tr_sys_file_close(fd, &error);
-        if (error)
-        {
+        if (error) {
             fmt::print(
                 "Couldn't create '{path}': {error} ({error_code})\n",
                 fmt::arg("path", tmpl),
@@ -357,29 +338,21 @@ private:
     }
 
 protected:
-    enum class ZeroTorrentState : uint8_t
-    {
-        NoFiles,
-        Partial,
-        Complete
-    };
+    enum class ZeroTorrentState : uint8_t { NoFiles, Partial, Complete };
 
     [[nodiscard]] tr_torrent* createTorrentAndWaitForVerifyDone(tr_ctor* ctor)
     {
         auto verified_lock = std::unique_lock(verified_mutex_);
         auto const n_previously_verified = std::size(verified_);
 
-        ctor->set_verify_done_callback(
-            [this](tr_torrent* const tor)
-            {
-                auto lambda_verified_lock = std::lock_guard{ verified_mutex_ };
-                verified_.emplace_back(tor);
-                verified_cv_.notify_one();
-            });
+        ctor->set_verify_done_callback([this](tr_torrent* const tor) {
+            auto lambda_verified_lock = std::lock_guard{ verified_mutex_ };
+            verified_.emplace_back(tor);
+            verified_cv_.notify_one();
+        });
 
         auto* const tor = tr_torrentNew(ctor, nullptr);
-        auto const stop_waiting = [this, tor, n_previously_verified]()
-        {
+        auto const stop_waiting = [this, tor, n_previously_verified]() {
             return std::size(verified_) > n_previously_verified && verified_.back() == tor;
         };
 
@@ -423,11 +396,9 @@ protected:
         tr_ctorSetPaused(ctor, TR_FORCE, true);
 
         // maybe create the files
-        if (state != ZeroTorrentState::NoFiles)
-        {
+        if (state != ZeroTorrentState::NoFiles) {
             auto const* const metainfo = tr_ctorGetMetainfo(ctor);
-            for (tr_file_index_t i = 0, n = metainfo->file_count(); i < n; ++i)
-            {
+            for (tr_file_index_t i = 0, n = metainfo->file_count(); i < n; ++i) {
                 auto const base = state == ZeroTorrentState::Partial && tr_sessionIsIncompleteDirEnabled(session_) ?
                     tr_sessionGetIncompleteDir(session_) :
                     tr_sessionGetDownloadDir(session_);
@@ -442,8 +413,7 @@ protected:
                 auto const file_size = metainfo->file_size(i);
                 static auto constexpr BlockSize = uint64_t{ 524288U };
                 auto buf = std::vector<char>(BlockSize);
-                for (uint64_t j = 0; j < file_size;)
-                {
+                for (uint64_t j = 0; j < file_size;) {
                     auto const piece_0_size = metainfo->piece_size(0U);
                     auto const is_one = partial && j < piece_0_size;
                     auto const n_write = std::min(BlockSize, (is_one ? piece_0_size : file_size) - j);
@@ -497,8 +467,7 @@ protected:
         auto verified_lock = std::unique_lock(verified_mutex_);
 
         auto const n_previously_verified = std::size(verified_);
-        auto const stop_waiting = [this, tor, n_previously_verified]()
-        {
+        auto const stop_waiting = [this, tor, n_previously_verified]() {
             return std::size(verified_) > n_previously_verified && verified_.back() == tor;
         };
         tr_torrentVerify(tor);
@@ -509,8 +478,7 @@ protected:
 
     tr::Settings& settings()
     {
-        if (!settings_)
-        {
+        if (!settings_) {
             settings_.emplace(10U);
         }
 

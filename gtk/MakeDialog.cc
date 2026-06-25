@@ -169,8 +169,7 @@ bool MakeProgressDialog::onProgressDialogRefresh()
 {
     auto const is_done = !future_.valid() || future_.wait_for(std::chrono::seconds(0)) == std::future_status::ready;
 
-    if (is_done)
-    {
+    if (is_done) {
         progress_tag_.disconnect();
     }
 
@@ -178,8 +177,7 @@ bool MakeProgressDialog::onProgressDialogRefresh()
     auto percent_done = 1.0;
     auto piece_index = tr_piece_index_t{};
 
-    if (!is_done)
-    {
+    if (!is_done) {
         auto const [current, total] = builder_.checksum_status();
         percent_done = static_cast<double>(current) / total;
         piece_index = current;
@@ -189,26 +187,19 @@ bool MakeProgressDialog::onProgressDialogRefresh()
     auto str = std::string{};
     auto success = false;
     auto const base = Glib::path_get_basename(builder_.top());
-    if (!is_done)
-    {
+    if (!is_done) {
         str = fmt::format(fmt::runtime(_("Creating '{path}'")), fmt::arg("path", base));
-    }
-    else
-    {
+    } else {
         auto error = future_.get();
 
-        if (!error)
-        {
+        if (!error) {
             builder_.save(target_, &error);
         }
 
-        if (!error)
-        {
+        if (!error) {
             str = fmt::format(fmt::runtime(_("Created '{path}'")), fmt::arg("path", base));
             success = true;
-        }
-        else
-        {
+        } else {
             str = fmt::format(
                 fmt::runtime(_("Couldn't create '{path}': {error} ({error_code})")),
                 fmt::arg("path", base),
@@ -220,12 +211,9 @@ bool MakeProgressDialog::onProgressDialogRefresh()
     gtr_label_set_text(*progress_label_, str);
 
     /* progress bar */
-    if (piece_index == 0)
-    {
+    if (piece_index == 0) {
         str.clear();
-    }
-    else
-    {
+    } else {
         /* how much data we've scanned through to generate checksums */
         str = fmt::format(
             fmt::runtime(_("Scanned {file_size}")),
@@ -259,8 +247,7 @@ void MakeProgressDialog::addTorrent()
 
 void MakeProgressDialog::onProgressDialogResponse(int response)
 {
-    switch (response)
-    {
+    switch (response) {
     case TR_GTK_RESPONSE_TYPE(CANCEL):
     case TR_GTK_RESPONSE_TYPE(DELETE_EVENT):
         builder_.cancel_checksums();
@@ -321,14 +308,12 @@ std::unique_ptr<MakeProgressDialog> MakeProgressDialog::create(
 
 void MakeDialog::Impl::onResponse(int response)
 {
-    if (response == TR_GTK_RESPONSE_TYPE(CLOSE) || response == TR_GTK_RESPONSE_TYPE(DELETE_EVENT))
-    {
+    if (response == TR_GTK_RESPONSE_TYPE(CLOSE) || response == TR_GTK_RESPONSE_TYPE(DELETE_EVENT)) {
         dialog_.close();
         return;
     }
 
-    if (response != TR_GTK_RESPONSE_TYPE(ACCEPT) || !builder_.has_value())
-    {
+    if (response != TR_GTK_RESPONSE_TYPE(ACCEPT) || !builder_.has_value()) {
         return;
     }
 
@@ -343,14 +328,12 @@ void MakeDialog::Impl::onResponse(int response)
     builder_->set_announce_list(std::move(trackers));
 
     // comment
-    if (comment_check_->get_active())
-    {
+    if (comment_check_->get_active()) {
         builder_->set_comment(comment_entry_->get_text().raw());
     }
 
     // source
-    if (source_check_->get_active())
-    {
+    if (source_check_->get_active()) {
         builder_->set_source(source_entry_->get_text().raw());
     }
 
@@ -359,17 +342,13 @@ void MakeDialog::Impl::onResponse(int response)
     // build the .torrent
     progress_dialog_ = MakeProgressDialog::create(target, *builder_, builder_->make_checksums(), core_);
     progress_dialog_->set_transient_for(dialog_);
-    gtr_window_on_close(
-        *progress_dialog_,
-        [this]()
-        {
-            auto const success = progress_dialog_->success();
-            progress_dialog_.reset();
-            if (success)
-            {
-                dialog_.close();
-            }
-        });
+    gtr_window_on_close(*progress_dialog_, [this]() {
+        auto const success = progress_dialog_->success();
+        progress_dialog_.reset();
+        if (success) {
+            dialog_.close();
+        }
+    });
     progress_dialog_->show();
 }
 
@@ -381,13 +360,10 @@ void MakeDialog::Impl::updatePiecesLabel()
 {
     auto gstr = Glib::ustring();
 
-    if (!builder_.has_value() || std::empty(builder_->top()))
-    {
+    if (!builder_.has_value() || std::empty(builder_->top())) {
         gstr += _("No source selected");
         piece_size_scale_->set_visible(false);
-    }
-    else
-    {
+    } else {
         gstr += fmt::format(
             fmt::runtime(ngettext(
                 "{total_size} in {file_count:L} file",
@@ -420,8 +396,7 @@ void MakeDialog::Impl::setFilename(std::string_view filename)
 {
     builder_.reset();
 
-    if (!filename.empty())
-    {
+    if (!filename.empty()) {
         builder_.emplace(filename);
         configurePieceSizeScale(builder_->piece_size());
     }
@@ -436,24 +411,21 @@ void MakeDialog::Impl::onChooserChosen(PathButton* chooser)
 
 void MakeDialog::Impl::onSourceToggled(Gtk::CheckButton* tb, PathButton* chooser)
 {
-    if (tb->get_active())
-    {
+    if (tb->get_active()) {
         onChooserChosen(chooser);
     }
 }
 
 bool MakeDialog::Impl::set_dropped_source_path(std::string const& filename)
 {
-    if (Glib::file_test(filename, TR_GLIB_FILE_TEST(IS_DIR)))
-    {
+    if (Glib::file_test(filename, TR_GLIB_FILE_TEST(IS_DIR))) {
         /* a directory was dragged onto the dialog... */
         folder_radio_->set_active(true);
         folder_chooser_->set_filename(filename);
         return true;
     }
 
-    if (Glib::file_test(filename, TR_GLIB_FILE_TEST(IS_REGULAR)))
-    {
+    if (Glib::file_test(filename, TR_GLIB_FILE_TEST(IS_REGULAR))) {
         /* a file was dragged on to the dialog... */
         file_radio_->set_active(true);
         file_chooser_->set_filename(filename);
@@ -467,13 +439,11 @@ bool MakeDialog::Impl::set_dropped_source_path(std::string const& filename)
 
 bool MakeDialog::Impl::on_drag_data_received(Glib::ValueBase const& value, double /*x*/, double /*y*/)
 {
-    if (G_VALUE_HOLDS(value.gobj(), GDK_TYPE_FILE_LIST))
-    {
+    if (G_VALUE_HOLDS(value.gobj(), GDK_TYPE_FILE_LIST)) {
         FileListValue files_value;
         files_value.init(value.gobj());
         if (auto const files = FileListHandler::slist_to_vector(files_value.get(), Glib::OwnershipType::OWNERSHIP_NONE);
-            !files.empty())
-        {
+            !files.empty()) {
             return set_dropped_source_path(files.front()->get_path());
         }
     }
@@ -493,8 +463,7 @@ void MakeDialog::Impl::on_drag_data_received(
 {
     bool success = false;
 
-    if (auto const uris = selection_data.get_uris(); !uris.empty())
-    {
+    if (auto const uris = selection_data.get_uris(); !uris.empty()) {
         success = set_dropped_source_path(Glib::filename_from_uri(uris.front()));
     }
 
@@ -567,8 +536,7 @@ MakeDialog::Impl::Impl(MakeDialog& dialog, Glib::RefPtr<Gtk::Builder> const& bui
 
 void MakeDialog::Impl::onPieceSizeUpdated()
 {
-    if (builder_)
-    {
+    if (builder_) {
         builder_->set_piece_size(static_cast<uint32_t>(std::pow(2, piece_size_scale_->get_value())));
         updatePiecesLabel();
     }

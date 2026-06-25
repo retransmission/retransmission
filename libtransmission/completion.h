@@ -25,8 +25,7 @@ struct tr_torrent;
 /**
  * @brief knows which blocks and pieces we have
  */
-struct tr_completion
-{
+struct tr_completion {
     using PieceIsWantedFunc = std::function<bool(tr_piece_index_t piece)>;
 
     tr_completion(PieceIsWantedFunc&& piece_is_wanted, tr_block_info const* block_info)
@@ -97,18 +96,15 @@ struct tr_completion
 
     [[nodiscard]] tr_completeness status() const
     {
-        if (!has_metainfo())
-        {
+        if (!has_metainfo()) {
             return TR_LEECH;
         }
 
-        if (has_all())
-        {
+        if (has_all()) {
             return TR_SEED;
         }
 
-        if (size_now_ == size_when_done())
-        {
+        if (size_now_ == size_when_done()) {
             return TR_PARTIAL_SEED;
         }
 
@@ -136,12 +132,9 @@ struct tr_completion
 
     void set_has_piece(tr_piece_index_t i, bool has)
     {
-        if (has)
-        {
+        if (has) {
             add_piece(i);
-        }
-        else
-        {
+        } else {
             remove_piece(i);
         }
     }

@@ -13,8 +13,7 @@
 
 - (instancetype)initWithGroup:(NSInteger)group
 {
-    if ((self = [super init]))
-    {
+    if ((self = [super init])) {
         _groupIndex = group;
         _torrents = [[NSMutableArray alloc] init];
     }
@@ -34,8 +33,7 @@
 - (CGFloat)ratio
 {
     uint64_t uploaded = 0, total_size = 0;
-    for (Torrent* torrent in self.torrents)
-    {
+    for (Torrent* torrent in self.torrents) {
         uploaded += torrent.uploadedTotal;
         total_size += torrent.totalSizeSelected;
     }
@@ -46,8 +44,7 @@
 - (CGFloat)uploadRate
 {
     CGFloat rate = 0.0;
-    for (Torrent* torrent in self.torrents)
-    {
+    for (Torrent* torrent in self.torrents) {
         rate += torrent.uploadRate;
     }
 
@@ -57,8 +54,7 @@
 - (CGFloat)downloadRate
 {
     CGFloat rate = 0.0;
-    for (Torrent* torrent in self.torrents)
-    {
+    for (Torrent* torrent in self.torrents) {
         rate += torrent.downloadRate;
     }
 

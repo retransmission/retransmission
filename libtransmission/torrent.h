@@ -64,8 +64,7 @@ class RenameTest_singleFilenameTorrent_Test;
 } // namespace tr::test
 
 /** @brief Torrent object */
-struct tr_torrent
-{
+struct tr_torrent {
     using Speed = tr::Values::Speed;
 
     class ResumeHelper
@@ -216,16 +215,14 @@ struct tr_torrent
 
     constexpr void set_speed_limit(tr_direction dir, Speed limit)
     {
-        if (bandwidth().set_desired_speed(dir, limit))
-        {
+        if (bandwidth().set_desired_speed(dir, limit)) {
             set_dirty();
         }
     }
 
     constexpr void use_speed_limit(tr_direction dir, bool do_use)
     {
-        if (bandwidth().set_limited(dir, do_use))
-        {
+        if (bandwidth().set_limited(dir, do_use)) {
             set_dirty();
         }
     }
@@ -432,8 +429,7 @@ struct tr_torrent
 
     void set_file_priority(tr_file_index_t file, tr_priority_t priority)
     {
-        if (priority != file_priorities_.file_priority(file))
-        {
+        if (priority != file_priorities_.file_priority(file)) {
             file_priorities_.set(file, priority);
             priority_changed_(this, &file, 1U, priority);
             set_dirty();
@@ -658,8 +654,7 @@ struct tr_torrent
 
     void set_is_queued(bool queued = true) noexcept
     {
-        if (is_queued_ != queued)
-        {
+        if (is_queued_ != queued) {
             is_queued_ = queued;
             mark_changed();
             set_dirty();
@@ -717,28 +712,23 @@ struct tr_torrent
 
     [[nodiscard]] constexpr auto activity() const noexcept
     {
-        if (verify_state_ == VerifyState::Active)
-        {
+        if (verify_state_ == VerifyState::Active) {
             return TR_STATUS_CHECK;
         }
 
-        if (verify_state_ == VerifyState::Queued)
-        {
+        if (verify_state_ == VerifyState::Queued) {
             return TR_STATUS_CHECK_WAIT;
         }
 
-        if (is_running())
-        {
+        if (is_running()) {
             return is_done() ? TR_STATUS_SEED : TR_STATUS_DOWNLOAD;
         }
 
-        if (is_queued(tr_direction::Up) && session->queueEnabled(tr_direction::Up))
-        {
+        if (is_queued(tr_direction::Up) && session->queueEnabled(tr_direction::Up)) {
             return TR_STATUS_SEED_WAIT;
         }
 
-        if (is_queued(tr_direction::Down) && session->queueEnabled(tr_direction::Down))
-        {
+        if (is_queued(tr_direction::Down) && session->queueEnabled(tr_direction::Down)) {
             return TR_STATUS_DOWNLOAD_WAIT;
         }
 
@@ -758,8 +748,7 @@ struct tr_torrent
 
     void set_sequential_download(bool is_sequential) noexcept
     {
-        if (is_sequential != sequential_download_)
-        {
+        if (is_sequential != sequential_download_) {
             sequential_download_ = is_sequential;
             sequential_download_changed_(this, is_sequential);
             set_dirty();
@@ -774,8 +763,7 @@ struct tr_torrent
     bool set_sequential_download_from_piece(tr_piece_index_t piece) noexcept
     {
         auto const is_valid = piece < piece_count();
-        if (is_valid && piece != sequential_download_from_piece_)
-        {
+        if (is_valid && piece != sequential_download_from_piece_) {
             sequential_download_from_piece_ = piece;
             sequential_download_from_piece_changed_(this, piece);
             return true;
@@ -829,8 +817,7 @@ struct tr_torrent
 
     constexpr void set_peer_limit(uint16_t val) noexcept
     {
-        if (max_connected_peers_ != val)
-        {
+        if (max_connected_peers_ != val) {
             max_connected_peers_ = val;
             set_dirty();
         }
@@ -842,8 +829,7 @@ struct tr_torrent
     {
         auto const is_valid = mode == TR_IDLELIMIT_GLOBAL || mode == TR_IDLELIMIT_SINGLE || mode == TR_IDLELIMIT_UNLIMITED;
         TR_ASSERT(is_valid);
-        if (idle_limit_mode_ != mode && is_valid)
-        {
+        if (idle_limit_mode_ != mode && is_valid) {
             idle_limit_mode_ = mode;
             set_dirty();
         }
@@ -856,8 +842,7 @@ struct tr_torrent
 
     constexpr void set_idle_limit_minutes(uint16_t idle_minutes) noexcept
     {
-        if ((idle_limit_minutes_ != idle_minutes) && (idle_minutes > 0))
-        {
+        if ((idle_limit_minutes_ != idle_minutes) && (idle_minutes > 0)) {
             idle_limit_minutes_ = idle_minutes;
             set_dirty();
         }
@@ -872,10 +857,8 @@ struct tr_torrent
     {
         auto const activity = this->activity();
 
-        if (activity == TR_STATUS_DOWNLOAD || activity == TR_STATUS_SEED)
-        {
-            if (auto const latest = std::max(date_started_, date_active_); latest != 0)
-            {
+        if (activity == TR_STATUS_DOWNLOAD || activity == TR_STATUS_SEED) {
+            if (auto const latest = std::max(date_started_, date_active_); latest != 0) {
                 return std::max(now - latest, time_t{ 0 });
             }
         }
@@ -889,8 +872,7 @@ struct tr_torrent
     {
         auto const is_valid = mode == TR_RATIOLIMIT_GLOBAL || mode == TR_RATIOLIMIT_SINGLE || mode == TR_RATIOLIMIT_UNLIMITED;
         TR_ASSERT(is_valid);
-        if (seed_ratio_mode_ != mode && is_valid)
-        {
+        if (seed_ratio_mode_ != mode && is_valid) {
             seed_ratio_mode_ = mode;
             set_dirty();
         }
@@ -903,8 +885,7 @@ struct tr_torrent
 
     constexpr void set_seed_ratio(double desired_ratio)
     {
-        if (static_cast<int>(seed_ratio_ * 100.0) != static_cast<int>(desired_ratio * 100.0))
-        {
+        if (static_cast<int>(seed_ratio_ * 100.0) != static_cast<int>(desired_ratio * 100.0)) {
             seed_ratio_ = desired_ratio;
             set_dirty();
         }
@@ -919,13 +900,11 @@ struct tr_torrent
     {
         auto const mode = seed_ratio_mode();
 
-        if (mode == TR_RATIOLIMIT_SINGLE)
-        {
+        if (mode == TR_RATIOLIMIT_SINGLE) {
             return seed_ratio_;
         }
 
-        if (mode == TR_RATIOLIMIT_GLOBAL && session->isRatioLimited())
-        {
+        if (mode == TR_RATIOLIMIT_GLOBAL && session->isRatioLimited()) {
             return session->desiredRatio();
         }
 
@@ -936,14 +915,12 @@ struct tr_torrent
 
     void do_idle_work()
     {
-        if (needs_completeness_check_)
-        {
+        if (needs_completeness_check_) {
             needs_completeness_check_ = false;
             recheck_completeness();
         }
 
-        if (is_stopping_)
-        {
+        if (is_stopping_) {
             tr_torrentStop(this);
         }
     }
@@ -986,10 +963,8 @@ struct tr_torrent
 
     void set_queue_position(size_t const new_pos) // NOLINT(readability-make-member-function-const)
     {
-        for (auto const& changed_id : session->torrent_queue().set_pos(id(), new_pos))
-        {
-            if (auto* const tor = session->torrents().get(changed_id))
-            {
+        for (auto const& changed_id : session->torrent_queue().set_pos(id(), new_pos)) {
+            if (auto* const tor = session->torrents().get(changed_id)) {
                 tor->mark_changed();
             }
         }
@@ -1003,8 +978,7 @@ struct tr_torrent
 
     static void queue_move_bottom(std::span<tr_torrent* const> torrents);
 
-    static constexpr struct
-    {
+    static constexpr struct {
         bool operator()(tr_torrent const* a, tr_torrent const* b) const noexcept
         {
             return a->queue_position() < b->queue_position();
@@ -1056,12 +1030,7 @@ private:
     friend void tr_torrentUseSessionLimits(tr_torrent* tor, bool enabled);
     friend void tr_torrentVerify(tr_torrent* tor);
 
-    enum class VerifyState : uint8_t
-    {
-        None,
-        Queued,
-        Active
-    };
+    enum class VerifyState : uint8_t { None, Queued, Active };
 
     // Tracks a torrent's error state, either local (e.g. file IO errors)
     // or tracker errors (e.g. warnings returned by a tracker).
@@ -1119,16 +1088,14 @@ private:
         constexpr auto update(uint64_t time_msec, Speed speed)
         {
             // If the old speed is too old, just replace it
-            if (timestamp_msec_ + MaxAgeMSec <= time_msec)
-            {
+            if (timestamp_msec_ + MaxAgeMSec <= time_msec) {
                 timestamp_msec_ = time_msec;
                 speed_ = speed;
             }
 
             // To prevent the smoothing from being overwhelmed by frequent calls
             // to update(), do nothing if not enough time elapsed since last update.
-            else if (timestamp_msec_ + MinUpdateMSec <= time_msec)
-            {
+            else if (timestamp_msec_ + MinUpdateMSec <= time_msec) {
                 timestamp_msec_ = time_msec;
                 speed_ = (speed_ * 4U + speed) / 5U;
             }
@@ -1148,14 +1115,10 @@ private:
     {
         auto n_secs = seconds_downloading_before_current_start_;
 
-        if (is_running())
-        {
-            if (date_done_ > date_started_)
-            {
+        if (is_running()) {
+            if (date_done_ > date_started_) {
                 n_secs += date_done_ - date_started_;
-            }
-            else if (date_done_ == time_t{})
-            {
+            } else if (date_done_ == time_t{}) {
                 n_secs += now - date_started_;
             }
         }
@@ -1167,14 +1130,10 @@ private:
     {
         auto n_secs = seconds_seeding_before_current_start_;
 
-        if (is_running())
-        {
-            if (date_done_ > date_started_)
-            {
+        if (is_running()) {
+            if (date_done_ > date_started_) {
                 n_secs += now - date_done_;
-            }
-            else if (date_done_ != time_t{})
-            {
+            } else if (date_done_ != time_t{}) {
                 n_secs += now - date_started_;
             }
         }
@@ -1193,13 +1152,11 @@ private:
     {
         auto const mode = idle_limit_mode();
 
-        if (mode == TR_IDLELIMIT_SINGLE)
-        {
+        if (mode == TR_IDLELIMIT_SINGLE) {
             return idle_limit_minutes();
         }
 
-        if (mode == TR_IDLELIMIT_GLOBAL && session->isIdleLimited())
-        {
+        if (mode == TR_IDLELIMIT_GLOBAL && session->isIdleLimited()) {
             return session->idleLimitMinutes();
         }
 
@@ -1209,14 +1166,12 @@ private:
     [[nodiscard]] constexpr std::optional<time_t> idle_seconds_left(time_t now) const noexcept
     {
         auto const idle_limit_minutes = effective_idle_limit_minutes();
-        if (!idle_limit_minutes)
-        {
+        if (!idle_limit_minutes) {
             return {};
         }
 
         auto const idle_seconds = this->idle_seconds(now);
-        if (!idle_seconds)
-        {
+        if (!idle_seconds) {
             return {};
         }
 
@@ -1226,15 +1181,12 @@ private:
 
     [[nodiscard]] constexpr bool is_piece_transfer_allowed(tr_direction direction) const noexcept
     {
-        if (uses_speed_limit(direction) && speed_limit(direction).is_zero())
-        {
+        if (uses_speed_limit(direction) && speed_limit(direction).is_zero()) {
             return false;
         }
 
-        if (uses_session_limits())
-        {
-            if (auto const limit = session->active_speed_limit(direction); limit && limit->is_zero())
-            {
+        if (uses_session_limits()) {
+            if (auto const limit = session->active_speed_limit(direction); limit && limit->is_zero()) {
                 return false;
             }
         }
@@ -1255,8 +1207,7 @@ private:
         completion_.invalidate_size_when_done();
         files_wanted_changed_(this, files, n_files, wanted);
 
-        if (!is_bootstrapping)
-        {
+        if (!is_bootstrapping) {
             set_dirty();
             recheck_completeness();
         }
@@ -1266,8 +1217,7 @@ private:
 
     [[nodiscard]] constexpr std::optional<float> verify_progress() const noexcept
     {
-        if (verify_state_ == VerifyState::Active)
-        {
+        if (verify_state_ == VerifyState::Active) {
             return verify_progress_;
         }
 

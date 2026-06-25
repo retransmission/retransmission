@@ -113,8 +113,7 @@ private:
     {
         auto const tag = session_.torrentSet(ids, key, val);
         pending_changes_tags_.insert(tag);
-        if (!pending_changes_connection_)
-        {
+        if (!pending_changes_connection_) {
             pending_changes_connection_ = connect(&session_, &Session::sessionCalled, this, &DetailsDialog::onSessionCalled);
         }
     }

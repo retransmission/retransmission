@@ -45,8 +45,7 @@ constexpr std::chrono::sys_seconds make_sys_seconds(int year, int month, int day
 void expect_sys_seconds_eq(std::optional<std::chrono::sys_seconds> const& actual, std::chrono::sys_seconds expected)
 {
     EXPECT_TRUE(actual.has_value());
-    if (actual.has_value())
-    {
+    if (actual.has_value()) {
         EXPECT_EQ(actual->time_since_epoch().count(), expected.time_since_epoch().count());
     }
 }
@@ -54,8 +53,7 @@ void expect_sys_seconds_eq(std::optional<std::chrono::sys_seconds> const& actual
 template<typename T, size_t N>
 void testModeRoundtrip(std::array<std::pair<std::string_view, T>, N> const& items)
 {
-    for (auto const& [key, mode] : items)
-    {
+    for (auto const& [key, mode] : items) {
         auto const var = to_variant(mode);
         EXPECT_TRUE(var.template holds_alternative<std::string_view>());
         EXPECT_EQ(var.template value_if<std::string_view>().value_or(""sv), key);

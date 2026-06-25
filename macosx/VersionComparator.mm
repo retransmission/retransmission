@@ -15,22 +15,18 @@
     NSArray<NSString*>* versionBComponents = [versionB componentsSeparatedByString:@"."];
     if (versionBComponents.count > 2 && versionBComponents[2].integerValue % 100 != 99 &&
         ![NSUserDefaults.standardUserDefaults boolForKey:@"AutoUpdateBeta"] &&
-        ![[[NSBundle mainBundle] objectForInfoDictionaryKey:(NSString*)kCFBundleVersionKey] isEqualToString:versionB])
-    {
+        ![[[NSBundle mainBundle] objectForInfoDictionaryKey:(NSString*)kCFBundleVersionKey] isEqualToString:versionB]) {
         // pre-releases are ignored
         return NSOrderedDescending;
     }
     NSArray<NSString*>* versionAComponents = [versionA componentsSeparatedByString:@"."];
-    for (NSUInteger idx = 0; versionAComponents.count > idx || versionBComponents.count > idx; idx++)
-    {
+    for (NSUInteger idx = 0; versionAComponents.count > idx || versionBComponents.count > idx; idx++) {
         NSInteger vA = versionAComponents.count > idx ? versionAComponents[idx].integerValue : 0;
         NSInteger vB = versionBComponents.count > idx ? versionBComponents[idx].integerValue : 0;
-        if (vA < vB)
-        {
+        if (vA < vB) {
             return NSOrderedAscending;
         }
-        if (vA > vB)
-        {
+        if (vA > vB) {
             return NSOrderedDescending;
         }
     }

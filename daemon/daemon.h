@@ -27,8 +27,7 @@ public:
     ~tr_daemon()
     {
 #ifdef HAVE_SYS_SIGNALFD_H
-        if (sigfd_ != -1)
-        {
+        if (sigfd_ != -1) {
             close(sigfd_);
         }
 #endif /* signalfd API */

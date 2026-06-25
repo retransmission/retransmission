@@ -55,8 +55,7 @@ private:
         memset(buf, 0, buf_len);
 
         size_t buf_pos = 0;
-        while (buf_pos < buf_len && bytes_remaining > 0)
-        {
+        while (buf_pos < buf_len && bytes_remaining > 0) {
             uint64_t const chunk_size = std::min(uint64_t{ buf_len - buf_pos }, bytes_remaining);
             uint64_t bytes_read = 0;
 

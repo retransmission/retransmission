@@ -29,13 +29,11 @@ void SessionDialog::resensitize() const
     bool const is_remote = ui_.remoteSessionRadio->isChecked();
     bool const use_auth = ui_.authCheck->isChecked();
 
-    for (QWidget* const w : remote_widgets_)
-    {
+    for (QWidget* const w : remote_widgets_) {
         w->setEnabled(is_remote);
     }
 
-    for (QWidget* const w : auth_widgets_)
-    {
+    for (QWidget* const w : auth_widgets_) {
         w->setEnabled(is_remote && use_auth);
     }
 }

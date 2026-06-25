@@ -30,13 +30,11 @@ class QNetworkAccessManager;
 using TrVariantPtr = std::shared_ptr<tr_variant>;
 Q_DECLARE_METATYPE(TrVariantPtr)
 
-extern "C"
-{
-    struct tr_session;
+extern "C" {
+struct tr_session;
 }
 
-struct RpcResponse
-{
+struct RpcResponse {
     QString errmsg;
     TrVariantPtr args;
     bool success = false;

@@ -27,8 +27,7 @@ class tr_peerIo;
  * @{
  */
 
-struct tr_bandwidth_limits
-{
+struct tr_bandwidth_limits {
     tr::Values::Speed up_limit;
     tr::Values::Speed down_limit;
     bool up_limited = false;
@@ -74,8 +73,7 @@ struct tr_bandwidth_limits
  *   and call `tr_bandwidth::clamp()` before performing I/O to see how much
  *   bandwidth they can safely use.
  */
-struct tr_bandwidth
-{
+struct tr_bandwidth {
 private:
     using Speed = tr::Values::Speed;
 
@@ -173,8 +171,7 @@ public:
 
     [[nodiscard]] bool is_maxed_out(tr_direction dir, uint64_t now_msec) const noexcept
     {
-        if (!is_limited(dir))
-        {
+        if (!is_limited(dir)) {
             return false;
         }
 
@@ -226,8 +223,7 @@ public:
     void set_limits(tr_bandwidth_limits const& limits);
 
 private:
-    struct RateControl
-    {
+    struct RateControl {
         std::array<uint64_t, HistorySize> date_;
         std::array<size_t, HistorySize> size_;
         uint64_t cache_time_;
@@ -235,8 +231,7 @@ private:
         size_t newest_;
     };
 
-    struct Band
-    {
+    struct Band {
         RateControl raw_;
         RateControl piece_;
         size_t bytes_left_;

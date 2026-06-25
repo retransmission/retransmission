@@ -26,10 +26,8 @@ uint64_t tr_completion::compute_has_valid() const
 {
     uint64_t size = 0;
 
-    for (tr_piece_index_t piece = 0, n_pieces = block_info_->piece_count(); piece < n_pieces; ++piece)
-    {
-        if (has_piece(piece))
-        {
+    for (tr_piece_index_t piece = 0, n_pieces = block_info_->piece_count(); piece < n_pieces; ++piece) {
+        if (has_piece(piece)) {
             size += block_info_->piece_size(piece);
         }
     }
@@ -39,8 +37,7 @@ uint64_t tr_completion::compute_has_valid() const
 
 uint64_t tr_completion::has_valid() const
 {
-    if (!has_valid_)
-    {
+    if (!has_valid_) {
         auto const val = compute_has_valid();
         has_valid_ = val;
         return val;
@@ -51,21 +48,16 @@ uint64_t tr_completion::has_valid() const
 
 uint64_t tr_completion::compute_size_when_done() const
 {
-    if (has_all())
-    {
+    if (has_all()) {
         return block_info_->total_size();
     }
 
     // count bytes that we want or that we already have
     auto size = uint64_t{ 0 };
-    for (tr_piece_index_t piece = 0, n_pieces = block_info_->piece_count(); piece < n_pieces; ++piece)
-    {
-        if (piece_is_wanted_(piece))
-        {
+    for (tr_piece_index_t piece = 0, n_pieces = block_info_->piece_count(); piece < n_pieces; ++piece) {
+        if (piece_is_wanted_(piece)) {
             size += block_info_->piece_size(piece);
-        }
-        else
-        {
+        } else {
             size += count_has_bytes_in_piece(piece);
         }
     }
@@ -75,8 +67,7 @@ uint64_t tr_completion::compute_size_when_done() const
 
 uint64_t tr_completion::size_when_done() const
 {
-    if (!size_when_done_)
-    {
+    if (!size_when_done_) {
         auto const value = compute_size_when_done();
         size_when_done_ = value;
         return value;
@@ -87,14 +78,12 @@ uint64_t tr_completion::size_when_done() const
 
 void tr_completion::amount_done(float* tab, size_t n_tabs) const
 {
-    if (n_tabs < 1)
-    {
+    if (n_tabs < 1) {
         return;
     }
 
     auto const blocks_per_tab = std::size(blocks_) / n_tabs;
-    for (size_t i = 0; i < n_tabs; ++i)
-    {
+    for (size_t i = 0; i < n_tabs; ++i) {
         auto const begin = i * blocks_per_tab;
         auto const end = std::min(begin + blocks_per_tab, std::size(blocks_));
         auto const numerator = blocks_.count(begin, end);
@@ -109,8 +98,7 @@ std::vector<uint8_t> tr_completion::create_piece_bitfield() const
 
     // NOLINTNEXTLINE modernize-avoid-c-arrays
     auto flags = std::make_unique<bool[]>(n);
-    for (tr_piece_index_t piece = 0; piece < n; ++piece)
-    {
+    for (tr_piece_index_t piece = 0; piece < n; ++piece) {
         flags[piece] = has_piece(piece);
     }
     pieces.set_from_bools(flags.get(), n);
@@ -122,8 +110,7 @@ std::vector<uint8_t> tr_completion::create_piece_bitfield() const
 
 void tr_completion::add_block(tr_block_index_t block)
 {
-    if (has_block(block))
-    {
+    if (has_block(block)) {
         return; // already had it
     }
 
@@ -158,16 +145,14 @@ void tr_completion::add_piece(tr_piece_index_t piece)
 {
     auto const span = block_info_->block_span_for_piece(piece);
 
-    for (tr_block_index_t block = span.begin; block < span.end; ++block)
-    {
+    for (tr_block_index_t block = span.begin; block < span.end; ++block) {
         add_block(block);
     }
 }
 
 void tr_completion::remove_block(tr_block_index_t block)
 {
-    if (!has_block(block))
-    {
+    if (!has_block(block)) {
         return; // already didn't have it
     }
 
@@ -180,8 +165,7 @@ void tr_completion::remove_block(tr_block_index_t block)
 
 void tr_completion::remove_piece(tr_piece_index_t piece)
 {
-    for (auto [block, end] = block_info_->block_span_for_piece(piece); block < end; ++block)
-    {
+    for (auto [block, end] = block_info_->block_span_for_piece(piece); block < end; ++block) {
         remove_block(block);
     }
 }
@@ -193,8 +177,7 @@ uint64_t tr_completion::count_has_bytes_in_span(tr_byte_span_t span) const
     span.end = std::clamp(span.end, uint64_t{ 0 }, block_info_->total_size());
     auto const [begin_byte, end_byte] = span;
     TR_ASSERT(end_byte >= begin_byte);
-    if (begin_byte >= end_byte)
-    {
+    if (begin_byte >= end_byte) {
         return 0;
     }
 
@@ -203,16 +186,14 @@ uint64_t tr_completion::count_has_bytes_in_span(tr_byte_span_t span) const
     auto const final_block = block_info_->byte_loc(end_byte - 1).block;
 
     // if the entire span is in a single block
-    if (begin_block == final_block)
-    {
+    if (begin_block == final_block) {
         return has_block(begin_block) ? end_byte - begin_byte : 0;
     }
 
     auto total = uint64_t{};
 
     // the first block
-    if (has_block(begin_block))
-    {
+    if (has_block(begin_block)) {
         uint64_t u = begin_block + 1;
         u *= tr_block_info::BlockSize;
         u -= begin_byte;
@@ -220,16 +201,14 @@ uint64_t tr_completion::count_has_bytes_in_span(tr_byte_span_t span) const
     }
 
     // the middle blocks
-    if (begin_block + 1 < final_block)
-    {
+    if (begin_block + 1 < final_block) {
         uint64_t u = blocks_.count(begin_block + 1, final_block);
         u *= tr_block_info::BlockSize;
         total += u;
     }
 
     // the last block
-    if (has_block(final_block))
-    {
+    if (has_block(final_block)) {
         uint64_t u = final_block;
         u *= tr_block_info::BlockSize;
         total += end_byte - u;

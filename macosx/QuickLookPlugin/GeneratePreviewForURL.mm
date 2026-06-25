@@ -53,8 +53,7 @@ NSString* generateIconData(NSString* fileExtension, NSUInteger width, NSMutableD
     // we need to do this once per file extension, per size
     NSString* iconFileName = [NSString stringWithFormat:@"%ldx%@.tiff", width, rawFilename];
 
-    if (!allImgProps[iconFileName])
-    {
+    if (!allImgProps[iconFileName]) {
         NSImage* icon = [[NSWorkspace sharedWorkspace] iconForFileType:fileExtension];
 
         NSRect const iconFrame = NSMakeRect(0.0, 0.0, width, width);
@@ -78,8 +77,7 @@ NSString* generateIconData(NSString* fileExtension, NSUInteger width, NSMutableD
 OSStatus GeneratePreviewForURL(void* /*thisInterface*/, QLPreviewRequestRef preview, CFURLRef url, CFStringRef contentTypeUTI, CFDictionaryRef options)
 {
     // Before proceeding make sure the user didn't cancel the request
-    if (QLPreviewRequestIsCancelled(preview))
-    {
+    if (QLPreviewRequestIsCancelled(preview)) {
         return noErr;
     }
 
@@ -88,8 +86,7 @@ OSStatus GeneratePreviewForURL(void* /*thisInterface*/, QLPreviewRequestRef prev
 
     //try to parse the torrent file
     auto metainfo = tr_torrent_metainfo{};
-    if (!metainfo.parse_torrent_file(((__bridge NSURL*)url).path.UTF8String))
-    {
+    if (!metainfo.parse_torrent_file(((__bridge NSURL*)url).path.UTF8String)) {
         return noErr;
     }
 
@@ -117,8 +114,7 @@ OSStatus GeneratePreviewForURL(void* /*thisInterface*/, QLPreviewRequestRef prev
                              name];
 
     NSString* fileSizeString = [NSString stringForFileSize:metainfo.total_size()];
-    if (is_multifile)
-    {
+    if (is_multifile) {
         NSString* fileCountString = [NSString
             localizedStringWithFormat:NSLocalizedStringFromTableInBundle(@"%lu files", nil, bundle, "quicklook file count"), n_files];
         fileSizeString = [NSString stringWithFormat:@"%@, %@", fileCountString, fileSizeString];
@@ -132,36 +128,28 @@ OSStatus GeneratePreviewForURL(void* /*thisInterface*/, QLPreviewRequestRef prev
         nil;
     auto const& creator = metainfo.creator();
     NSString* creatorString = !std::empty(creator) ? @(creator.c_str()) : nil;
-    if ([creatorString isEqualToString:@""])
-    {
+    if ([creatorString isEqualToString:@""]) {
         creatorString = nil;
     }
     NSString* creationString = nil;
-    if (dateCreatedString && creatorString)
-    {
+    if (dateCreatedString && creatorString) {
         creationString = [NSString
             stringWithFormat:NSLocalizedStringFromTableInBundle(@"Created on %@ with %@", nil, bundle, "quicklook creation info"),
                              dateCreatedString,
                              creatorString];
-    }
-    else if (dateCreatedString)
-    {
+    } else if (dateCreatedString) {
         creationString = [NSString
             stringWithFormat:NSLocalizedStringFromTableInBundle(@"Created on %@", nil, bundle, "quicklook creation info"), dateCreatedString];
-    }
-    else if (creatorString)
-    {
+    } else if (creatorString) {
         creationString = [NSString
             stringWithFormat:NSLocalizedStringFromTableInBundle(@"Created with %@", nil, bundle, "quicklook creation info"), creatorString];
     }
-    if (creationString)
-    {
+    if (creationString) {
         [htmlString appendFormat:@"<p>%@</p>", creationString];
     }
 
     auto const& commentStr = metainfo.comment();
-    if (!std::empty(commentStr))
-    {
+    if (!std::empty(commentStr)) {
         NSString* comment = @(commentStr.c_str());
         if (![comment isEqualToString:@""])
             [htmlString appendFormat:@"<p>%@</p>", comment];
@@ -170,8 +158,7 @@ OSStatus GeneratePreviewForURL(void* /*thisInterface*/, QLPreviewRequestRef prev
     NSMutableArray* lists = [NSMutableArray array];
 
     auto const n_webseeds = metainfo.webseed_count();
-    if (n_webseeds > 0)
-    {
+    if (n_webseeds > 0) {
         NSMutableString* listSection = [NSMutableString string];
         [listSection appendString:@"<table>"];
 
@@ -181,8 +168,7 @@ OSStatus GeneratePreviewForURL(void* /*thisInterface*/, QLPreviewRequestRef prev
                                                 n_webseeds];
         [listSection appendFormat:@"<tr><th>%@</th></tr>", headerTitleString];
 
-        for (size_t i = 0; i < n_webseeds; ++i)
-        {
+        for (size_t i = 0; i < n_webseeds; ++i) {
             [listSection appendFormat:@"<tr><td>%s</td></tr>", metainfo.webseed(i).c_str()];
         }
 
@@ -192,8 +178,7 @@ OSStatus GeneratePreviewForURL(void* /*thisInterface*/, QLPreviewRequestRef prev
     }
 
     auto const& announce_list = metainfo.announce_list();
-    if (!std::empty(announce_list))
-    {
+    if (!std::empty(announce_list)) {
         NSMutableString* listSection = [NSMutableString string];
         [listSection appendString:@"<table>"];
 
@@ -204,8 +189,7 @@ OSStatus GeneratePreviewForURL(void* /*thisInterface*/, QLPreviewRequestRef prev
         [listSection appendFormat:@"<tr><th>%@</th></tr>", headerTitleString];
 
         // TODO: handle tiers?
-        for (auto const& tracker : announce_list)
-        {
+        for (auto const& tracker : announce_list) {
             [listSection appendFormat:@"<tr><td>%s</td></tr>", tracker.announce.c_str()];
         }
 
@@ -214,8 +198,7 @@ OSStatus GeneratePreviewForURL(void* /*thisInterface*/, QLPreviewRequestRef prev
         [lists addObject:listSection];
     }
 
-    if (is_multifile)
-    {
+    if (is_multifile) {
         NSMutableString* listSection = [NSMutableString string];
         [listSection appendString:@"<table>"];
 
@@ -225,42 +208,34 @@ OSStatus GeneratePreviewForURL(void* /*thisInterface*/, QLPreviewRequestRef prev
 
         FileTreeNode root{};
 
-        for (auto const& [path, size] : metainfo.files().sorted_by_path())
-        {
+        for (auto const& [path, size] : metainfo.files().sorted_by_path()) {
             FileTreeNode* curNode = &root;
             size_t level = 0;
 
             auto subpath = std::string_view{ path };
             auto path_vec = std::vector<std::string_view>{};
             auto token = std::string_view{};
-            while (tr_strv_sep(&subpath, &token, '/'))
-            {
+            while (tr_strv_sep(&subpath, &token, '/')) {
                 path_vec.emplace_back(token);
             }
             size_t const last = path_vec.size() - 1;
 
-            for (auto const& part : path_vec)
-            {
+            for (auto const& part : path_vec) {
                 auto [it, inserted] = curNode->MaybeCreateChild(part);
-                if (inserted)
-                {
+                if (inserted) {
                     NSString* prefix = @"";
-                    for (size_t i = 0; i < level; ++i)
-                    {
+                    for (size_t i = 0; i < level; ++i) {
                         prefix = [prefix stringByAppendingString:@"&emsp;"];
                     }
 
                     NSString* pathPart = @(it->first.c_str());
                     NSString* pathExt = nil;
                     NSString* fileSize = nil;
-                    if (level < last)
-                    {
+                    if (level < last) {
                         // This node is a directory.
                         pathExt = NSFileTypeForHFSTypeCode(kGenericFolderIcon);
                         fileSize = @"";
-                    }
-                    else
-                    {
+                    } else {
                         // This node is a leaf file.
                         pathExt = pathPart.pathExtension;
                         fileSize = [NSString stringForFileSize:size];
@@ -285,8 +260,7 @@ OSStatus GeneratePreviewForURL(void* /*thisInterface*/, QLPreviewRequestRef prev
         [lists addObject:listSection];
     }
 
-    if (lists.count > 0)
-    {
+    if (lists.count > 0) {
         [htmlString appendFormat:@"<hr/><br>%@", [lists componentsJoinedByString:@"<br>"]];
     }
 

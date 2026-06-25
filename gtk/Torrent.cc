@@ -40,8 +40,7 @@ Glib::Value<T>& column_value_cast(Glib::ValueBase& value, Gtk::TreeModelColumn<T
 template<typename T, typename U>
 void update_cache_value(T& value, U&& new_value, Torrent::ChangeFlags& changes, Torrent::ChangeFlag flag)
 {
-    if (value != new_value)
-    {
+    if (value != new_value) {
         value = std::forward<U>(new_value);
         changes.set(flag);
     }
@@ -50,8 +49,7 @@ void update_cache_value(T& value, U&& new_value, Torrent::ChangeFlags& changes, 
 template<std::floating_point T, typename U>
 void update_cache_value(T& value, U new_value, T epsilon, Torrent::ChangeFlags& changes, Torrent::ChangeFlag flag)
 {
-    if (std::fabs(value - new_value) >= epsilon)
-    {
+    if (std::fabs(value - new_value) >= epsilon) {
         value = new_value;
         changes.set(flag);
     }
@@ -61,10 +59,8 @@ unsigned int build_torrent_trackers_hash(tr_torrent const& torrent)
 {
     auto hash = uint64_t(0);
 
-    for (auto i = size_t(0), n = tr_torrentTrackerCount(&torrent); i < n; ++i)
-    {
-        for (auto const ch : std::string_view{ tr_torrentTracker(&torrent, i).announce })
-        {
+    for (auto i = size_t(0), n = tr_torrentTrackerCount(&torrent); i < n; ++i) {
+        for (auto const ch : std::string_view{ tr_torrentTracker(&torrent, i).announce }) {
             hash = (hash << 4U) ^ (hash >> 28U) ^ static_cast<unsigned char>(ch);
         }
     }
@@ -76,13 +72,11 @@ std::string_view get_mime_type(tr_torrent const& torrent)
 {
     auto const n_files = tr_torrentFileCount(&torrent);
 
-    if (n_files == 0)
-    {
+    if (n_files == 0) {
         return UnknownMimeType;
     }
 
-    if (n_files > 1)
-    {
+    if (n_files > 1) {
         return DirectoryMimeType;
     }
 
@@ -93,8 +87,7 @@ std::string_view get_mime_type(tr_torrent const& torrent)
 
 std::string_view get_activity_direction(tr_torrent_activity activity)
 {
-    switch (activity)
-    {
+    switch (activity) {
     case TR_STATUS_DOWNLOAD:
         return "down"sv;
     case TR_STATUS_SEED:
@@ -116,8 +109,7 @@ class Torrent::Impl
 {
 public:
     // NOLINTNEXTLINE(performance-enum-size): must be guint to match glib API
-    enum class Property : guint
-    {
+    enum class Property : guint {
         ICON = 1,
         NAME,
         PERCENT_DONE,
@@ -132,8 +124,7 @@ public:
 
     using PropertyStore = DynamicPropertyStore<Torrent, Property>;
 
-    struct Cache
-    {
+    struct Cache {
         Glib::ustring error_message;
         Glib::ustring name;
         Glib::ustring name_collated;
@@ -231,8 +222,7 @@ Torrent::Impl::Impl(Torrent& torrent, tr_torrent* raw_torrent)
     : torrent_(torrent)
     , raw_torrent_(raw_torrent)
 {
-    if (raw_torrent_ != nullptr)
-    {
+    if (raw_torrent_ != nullptr) {
         update_cache();
     }
 }
@@ -337,8 +327,7 @@ Torrent::ChangeFlags Torrent::Impl::update_cache()
     update_cache_value(cache_.peers_sending_to_us, stats.peers_sending_to_us, result, ChangeFlag::LONG_STATUS);
     update_cache_value(cache_.webseeds_sending_to_us, stats.webseeds_sending_to_us, result, ChangeFlag::LONG_STATUS);
 
-    if (result.test(ChangeFlag::NAME))
-    {
+    if (result.test(ChangeFlag::NAME)) {
         cache_.name_collated = fmt::format("{}\t{}", cache_.name.lowercase(), view.hash_string);
     }
 
@@ -348,8 +337,7 @@ Torrent::ChangeFlags Torrent::Impl::update_cache()
 void Torrent::Impl::notify_property_changes(ChangeFlags changes) const
 {
     // Updating the model triggers off resort/refresh, so don't notify unless something's actually changed
-    if (changes.none())
-    {
+    if (changes.none()) {
         return;
     }
 
@@ -376,10 +364,8 @@ void Torrent::Impl::notify_property_changes(ChangeFlags changes) const
 
     auto& properties = PropertyStore::get();
 
-    for (auto const& [property, flags] : properties_flags)
-    {
-        if (changes.test(flags))
-        {
+    for (auto const& [property, flags] : properties_flags) {
+        if (changes.test(flags)) {
             properties.notify_changed(torrent_, property);
         }
     }
@@ -396,12 +382,9 @@ void Torrent::Impl::get_value(int column, Glib::ValueBase& value) const
 {
     static auto const& columns = get_columns();
 
-    if (column == columns.self.index())
-    {
+    if (column == columns.self.index()) {
         column_value_cast(value, columns.self).set(&torrent_);
-    }
-    else if (column == columns.name_collated.index())
-    {
+    } else if (column == columns.name_collated.index()) {
         column_value_cast(value, columns.name_collated).set(cache_.name_collated);
     }
 }
@@ -413,8 +396,7 @@ Glib::RefPtr<Gio::Icon> Torrent::Impl::get_icon() const
 
 Glib::ustring Torrent::Impl::get_short_status_text() const
 {
-    switch (cache_.activity)
-    {
+    switch (cache_.activity) {
     case TR_STATUS_STOPPED:
         return cache_.finished ? _("Finished") : _("Paused");
 
@@ -461,8 +443,7 @@ Glib::ustring Torrent::Impl::get_long_progress_text() const
             fmt::arg("current_size", tr_strlsize(haveTotal)),
             fmt::arg("complete_size", tr_strlsize(cache_.size_when_done)),
             fmt::arg("percent_done", cache_.percent_done.to_string()));
-    }
-    else if (!isSeed && cache_.has_seed_ratio) // partial seed, seed ratio
+    } else if (!isSeed && cache_.has_seed_ratio) // partial seed, seed ratio
     {
         // 50 MB of 200 MB (25%), uploaded 30 MB (Ratio: X%, Goal: Y%)
         gstr += fmt::format(
@@ -475,8 +456,7 @@ Glib::ustring Torrent::Impl::get_long_progress_text() const
             fmt::arg("uploaded_size", tr_strlsize(cache_.uploaded_ever)),
             fmt::arg("ratio", tr_strlratio(cache_.ratio)),
             fmt::arg("seed_ratio", tr_strlratio(cache_.seed_ratio)));
-    }
-    else if (!isSeed) // partial seed, no seed ratio
+    } else if (!isSeed) // partial seed, no seed ratio
     {
         gstr += fmt::format(
             // xgettext:no-c-format
@@ -487,8 +467,7 @@ Glib::ustring Torrent::Impl::get_long_progress_text() const
             fmt::arg("percent_complete", cache_.percent_complete.to_string()),
             fmt::arg("uploaded_size", tr_strlsize(cache_.uploaded_ever)),
             fmt::arg("ratio", tr_strlratio(cache_.ratio)));
-    }
-    else if (cache_.has_seed_ratio) // seed, seed ratio
+    } else if (cache_.has_seed_ratio) // seed, seed ratio
     {
         gstr += fmt::format(
             fmt::runtime(_("{complete_size}, uploaded {uploaded_size} (Ratio: {ratio}, Goal: {seed_ratio})")),
@@ -496,8 +475,7 @@ Glib::ustring Torrent::Impl::get_long_progress_text() const
             fmt::arg("uploaded_size", tr_strlsize(cache_.uploaded_ever)),
             fmt::arg("ratio", tr_strlratio(cache_.ratio)),
             fmt::arg("seed_ratio", tr_strlratio(cache_.seed_ratio)));
-    }
-    else // seed, no seed ratio
+    } else // seed, no seed ratio
     {
         gstr += fmt::format(
             fmt::runtime(_("{complete_size}, uploaded {uploaded_size} (Ratio: {ratio})")),
@@ -507,16 +485,12 @@ Glib::ustring Torrent::Impl::get_long_progress_text() const
     }
 
     // add time remaining when applicable
-    if (cache_.activity == TR_STATUS_DOWNLOAD || (cache_.has_seed_ratio && cache_.activity == TR_STATUS_SEED))
-    {
+    if (cache_.activity == TR_STATUS_DOWNLOAD || (cache_.has_seed_ratio && cache_.activity == TR_STATUS_SEED)) {
         gstr += " - ";
 
-        if (cache_.eta < 0)
-        {
+        if (cache_.eta < 0) {
             gstr += _("Remaining time unknown");
-        }
-        else
-        {
+        } else {
             gstr += tr_format_time_left(cache_.eta);
         }
     }
@@ -527,13 +501,11 @@ Glib::ustring Torrent::Impl::get_long_progress_text() const
 Glib::ustring Torrent::Impl::get_long_status_text() const
 {
     auto status_str = get_error_text();
-    if (status_str.empty())
-    {
+    if (status_str.empty()) {
         status_str = get_activity_text();
     }
 
-    switch (cache_.activity)
-    {
+    switch (cache_.activity) {
     case TR_STATUS_CHECK_WAIT:
     case TR_STATUS_CHECK:
     case TR_STATUS_DOWNLOAD_WAIT:
@@ -542,8 +514,7 @@ Glib::ustring Torrent::Impl::get_long_status_text() const
         break;
 
     default:
-        if (auto const buf = get_short_transfer_text(); !std::empty(buf))
-        {
+        if (auto const buf = get_short_transfer_text(); !std::empty(buf)) {
             status_str += fmt::format(" - {:s}", buf);
         }
     }
@@ -557,8 +528,7 @@ std::vector<Glib::ustring> Torrent::Impl::get_css_classes() const
         fmt::format("tr-transfer-{}", get_activity_direction(cache_.activity)),
     });
 
-    if (cache_.error_code != tr_stat::Error::Ok)
-    {
+    if (cache_.error_code != tr_stat::Error::Ok) {
         result.emplace_back("tr-error");
     }
 
@@ -607,21 +577,18 @@ void Torrent::Impl::class_init(void* cls, void* /*user_data*/)
 
 Glib::ustring Torrent::Impl::get_short_transfer_text() const
 {
-    if (cache_.has_metadata && cache_.active_peers_down > 0)
-    {
+    if (cache_.has_metadata && cache_.active_peers_down > 0) {
         return fmt::format(
             fmt::runtime(_("{download_speed} ▼  {upload_speed} ▲")),
             fmt::arg("upload_speed", cache_.speed_up.to_string()),
             fmt::arg("download_speed", cache_.speed_down.to_string()));
     }
 
-    if (cache_.has_metadata && cache_.active_peers_up > 0)
-    {
+    if (cache_.has_metadata && cache_.active_peers_up > 0) {
         return fmt::format(fmt::runtime(_("{upload_speed} ▲")), fmt::arg("upload_speed", cache_.speed_up.to_string()));
     }
 
-    if (cache_.stalled)
-    {
+    if (cache_.stalled) {
         return _("Stalled");
     }
 
@@ -630,8 +597,7 @@ Glib::ustring Torrent::Impl::get_short_transfer_text() const
 
 Glib::ustring Torrent::Impl::get_error_text() const
 {
-    switch (cache_.error_code)
-    {
+    switch (cache_.error_code) {
     case tr_stat::Error::TrackerWarning:
         return fmt::format(fmt::runtime(_("Tracker warning: '{warning}'")), fmt::arg("warning", cache_.error_message));
 
@@ -648,8 +614,7 @@ Glib::ustring Torrent::Impl::get_error_text() const
 
 Glib::ustring Torrent::Impl::get_activity_text() const
 {
-    switch (cache_.activity)
-    {
+    switch (cache_.activity) {
     case TR_STATUS_STOPPED:
     case TR_STATUS_CHECK_WAIT:
     case TR_STATUS_CHECK:
@@ -658,8 +623,7 @@ Glib::ustring Torrent::Impl::get_activity_text() const
         return get_short_status_text();
 
     case TR_STATUS_DOWNLOAD:
-        if (!cache_.has_metadata)
-        {
+        if (!cache_.has_metadata) {
             return fmt::format(
                 fmt::runtime(ngettext(
                     // xgettext:no-c-format
@@ -670,8 +634,7 @@ Glib::ustring Torrent::Impl::get_activity_text() const
                 fmt::arg("percent_done", cache_.metadata_percent_complete.to_string()));
         }
 
-        if (cache_.peers_sending_to_us != 0 && cache_.webseeds_sending_to_us != 0)
-        {
+        if (cache_.peers_sending_to_us != 0 && cache_.webseeds_sending_to_us != 0) {
             return fmt::format(
                 fmt::runtime(ngettext(
                     "Downloading from {active_count} of {connected_count} connected peer and webseed",
@@ -681,8 +644,7 @@ Glib::ustring Torrent::Impl::get_activity_text() const
                 fmt::arg("connected_count", cache_.peers_connected + cache_.webseeds_sending_to_us));
         }
 
-        if (cache_.webseeds_sending_to_us != 0)
-        {
+        if (cache_.webseeds_sending_to_us != 0) {
             return fmt::format(
                 fmt::runtime(ngettext(
                     "Downloading from {active_count} webseed",
@@ -909,8 +871,7 @@ Torrent::Columns const& Torrent::get_columns()
 
 int Torrent::get_item_id(Glib::RefPtr<Glib::ObjectBase const> const& item)
 {
-    if (auto const torrent = gtr_ptr_dynamic_cast<Torrent const>(item); torrent != nullptr)
-    {
+    if (auto const torrent = gtr_ptr_dynamic_cast<Torrent const>(item); torrent != nullptr) {
         return torrent->get_id();
     }
 
@@ -919,8 +880,7 @@ int Torrent::get_item_id(Glib::RefPtr<Glib::ObjectBase const> const& item)
 
 void Torrent::get_item_value(Glib::RefPtr<Glib::ObjectBase const> const& item, int column, Glib::ValueBase& value)
 {
-    if (auto const torrent = gtr_ptr_dynamic_cast<Torrent const>(item); torrent != nullptr)
-    {
+    if (auto const torrent = gtr_ptr_dynamic_cast<Torrent const>(item); torrent != nullptr) {
         torrent->impl_->get_value(column, value);
     }
 }

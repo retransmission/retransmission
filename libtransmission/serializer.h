@@ -42,8 +42,7 @@ template<auto MemberPtr, typename Key = tr_quark>
 struct Field;
 
 template<typename Owner, typename T, T Owner::* MemberPtr, typename Key>
-struct Field<MemberPtr, Key>
-{
+struct Field<MemberPtr, Key> {
     using owner_type = Owner;
     using value_type = T;
     using key_type = Key;
@@ -123,8 +122,7 @@ template<Serializable S>
 template<typename T, Serializable S>
 [[nodiscard]] std::optional<T> get(S const& src, tr_quark key)
 {
-    if (auto value = to_variant(src, key))
-    {
+    if (auto value = to_variant(src, key)) {
         return to_value<T>(*value);
     }
 
@@ -159,8 +157,7 @@ constexpr bool set(S& tgt, T val)
     static_assert(std::is_base_of_v<typename FieldType::owner_type, S>);
 
     auto& target = tgt.*(FieldType::MemberPointer);
-    if (target == val)
-    {
+    if (target == val) {
         return false;
     }
 
@@ -172,18 +169,15 @@ template<Serializable S>
 [[nodiscard]] std::optional<tr_variant> to_variant(S const& src, tr_quark key)
 {
     auto result = std::optional<tr_variant>{};
-    auto try_field = [&](auto const& field)
-    {
-        if (field.key != key)
-        {
+    auto try_field = [&](auto const& field) {
+        if (field.key != key) {
             return false;
         }
 
         auto map = tr_variant::Map{ 1U };
         field.save(&src, map);
 
-        if (auto const iter = map.find(key); iter != std::end(map))
-        {
+        if (auto const iter = map.find(key); iter != std::end(map)) {
             result = iter->second.clone();
         }
 
@@ -198,10 +192,8 @@ template<Serializable S>
 bool set_from_variant(S& tgt, tr_quark key, tr_variant const& value)
 {
     auto changed = false;
-    auto try_field = [&](auto const& field)
-    {
-        if (field.key != key)
-        {
+    auto try_field = [&](auto const& field) {
+        if (field.key != key) {
             return false;
         }
 
@@ -220,20 +212,15 @@ bool set(S& tgt, tr_quark key, T val)
     auto type_ok = true;
     auto changed = false;
 
-    auto try_field = [&](auto const& field)
-    {
-        if (field.key != key)
-        {
+    auto try_field = [&](auto const& field) {
+        if (field.key != key) {
             return false;
         }
 
         using FieldType = std::remove_cvref_t<decltype(field)>;
-        if constexpr (std::is_same_v<T, typename FieldType::value_type>)
-        {
+        if constexpr (std::is_same_v<T, typename FieldType::value_type>) {
             changed = set(tgt.*(FieldType::MemberPointer), std::move(val));
-        }
-        else
-        {
+        } else {
             type_ok = false;
         }
 
@@ -258,13 +245,10 @@ auto load(T& tgt, Fields const& fields, tr_variant::Map const& src)
 {
     auto changed_keys = small::vector<tr_quark, std::tuple_size_v<Fields>>{};
     std::apply(
-        [&tgt, &src, &changed_keys](auto const&... field)
-        {
+        [&tgt, &src, &changed_keys](auto const&... field) {
             (
-                [&]
-                {
-                    if (field.load(&tgt, src))
-                    {
+                [&] {
+                    if (field.load(&tgt, src)) {
                         changed_keys.emplace_back(field.key);
                     }
                 }(),
@@ -278,8 +262,7 @@ auto load(T& tgt, Fields const& fields, tr_variant::Map const& src)
 template<typename T, typename Fields>
 auto load(T& tgt, Fields const& fields, tr_variant const& src)
 {
-    if (auto const* const map = src.get_if<tr_variant::Map>())
-    {
+    if (auto const* const map = src.get_if<tr_variant::Map>()) {
         return load(tgt, fields, *map);
     }
 

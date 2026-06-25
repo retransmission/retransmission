@@ -37,8 +37,7 @@ void setAllTrue(uint8_t* array, size_t bit_count)
        for bitcount > SIZE_MAX - 8. */
     size_t const n = getBytesNeededSafe(bit_count);
 
-    if (n > 0)
-    {
+    if (n > 0) {
         std::fill_n(array, n, Val);
         /* -bit_count & 7U. Since bitcount is unsigned do ~bitcount +
            1 to replace -bitcount as linters warn about negating
@@ -53,8 +52,7 @@ void setAllTrue(uint8_t* array, size_t bit_count)
 {
     auto ret = size_t{};
 
-    for (auto const* const end = flags + n; flags != end; ++flags)
-    {
+    for (auto const* const end = flags + n; flags != end; ++flags) {
         ret += std::popcount(*flags);
     }
 
@@ -76,21 +74,18 @@ size_t tr_bitfield::count_flags(size_t begin, size_t end) const noexcept
     size_t const first_byte = begin >> 3U;
     size_t const last_byte = (end - 1) >> 3U;
 
-    if (bit_count_ == 0)
-    {
+    if (bit_count_ == 0) {
         return 0;
     }
 
-    if (first_byte >= std::size(flags_))
-    {
+    if (first_byte >= std::size(flags_)) {
         return 0;
     }
 
     TR_ASSERT(begin < end);
     TR_ASSERT(!std::empty(flags_));
 
-    if (first_byte == last_byte)
-    {
+    if (first_byte == last_byte) {
         uint8_t val = flags_[first_byte];
 
         auto i = begin & 7U;
@@ -98,9 +93,7 @@ size_t tr_bitfield::count_flags(size_t begin, size_t end) const noexcept
         i = (begin - end) & 7U;
         val >>= i;
         ret = std::popcount(val);
-    }
-    else
-    {
+    } else {
         size_t const walk_end = std::min(std::size(flags_), last_byte);
 
         /* first byte */
@@ -115,12 +108,10 @@ size_t tr_bitfield::count_flags(size_t begin, size_t end) const noexcept
         /* Use 2x accumulators to help alleviate high latency of
            popcnt instruction on many architectures. */
         size_t tmp_accum = 0;
-        for (size_t i = first_byte + 1; i < walk_end;)
-        {
+        for (size_t i = first_byte + 1; i < walk_end;) {
             tmp_accum += std::popcount(flags_[i]);
             i += 2;
-            if (i > walk_end)
-            {
+            if (i > walk_end) {
                 break;
             }
             ret += std::popcount(flags_[i - 1]);
@@ -128,8 +119,7 @@ size_t tr_bitfield::count_flags(size_t begin, size_t end) const noexcept
         ret += tmp_accum;
 
         /* last byte */
-        if (last_byte < std::size(flags_))
-        {
+        if (last_byte < std::size(flags_)) {
             /* -end & 7U. Since bitcount is unsigned do ~end + 1 to
                replace -end as linters warn about negating unsigned
                types. Any compiler will optimize ~x + 1 to -x in the
@@ -148,13 +138,11 @@ size_t tr_bitfield::count_flags(size_t begin, size_t end) const noexcept
 
 size_t tr_bitfield::count(size_t begin, size_t end) const
 {
-    if (has_all())
-    {
+    if (has_all()) {
         return end - begin;
     }
 
-    if (has_none())
-    {
+    if (has_none()) {
         return 0;
     }
 
@@ -173,15 +161,13 @@ std::vector<uint8_t> tr_bitfield::raw() const
     /* Impossible for bit_count_ to exceed SIZE_MAX - 8 */
     auto const n = getBytesNeededSafe(bit_count_);
 
-    if (!std::empty(flags_))
-    {
+    if (!std::empty(flags_)) {
         return flags_;
     }
 
     auto raw = std::vector<uint8_t>(n);
 
-    if (has_all())
-    {
+    if (has_all()) {
         setAllTrue(std::data(raw), bit_count_);
     }
 
@@ -195,11 +181,9 @@ void tr_bitfield::ensure_bits_alloced(size_t n)
     /* Can't use getBytesNeededSafe as n can be > SIZE_MAX - 8. */
     size_t const bytes_needed = has_all ? getBytesNeeded(std::max(n, true_count_)) : getBytesNeeded(n);
 
-    if (std::size(flags_) < bytes_needed)
-    {
+    if (std::size(flags_) < bytes_needed) {
         flags_.resize(bytes_needed);
-        if (has_all)
-        {
+        if (has_all) {
             setAllTrue(std::data(flags_), true_count_);
         }
     }
@@ -208,8 +192,7 @@ void tr_bitfield::ensure_bits_alloced(size_t n)
 bool tr_bitfield::ensure_nth_bit_alloced(size_t nth)
 {
     // count is zero-based, so we need to allocate nth+1 bits before setting the nth */
-    if (nth == SIZE_MAX)
-    {
+    if (nth == SIZE_MAX) {
         return false;
     }
 
@@ -225,8 +208,7 @@ void tr_bitfield::set_true_count(size_t n) noexcept
     have_all_hint_ = n == bit_count_;
     have_none_hint_ = n == 0;
 
-    if (has_all() || has_none())
-    {
+    if (has_all() || has_none()) {
         free_array();
     }
 
@@ -282,14 +264,12 @@ void tr_bitfield::set_raw(uint8_t const* raw, size_t byte_count)
     flags_.assign(raw, raw + byte_count);
 
     // ensure any excess bits at the end of the array are set to '0'.
-    if (byte_count == getBytesNeededSafe(bit_count_))
-    {
+    if (byte_count == getBytesNeededSafe(bit_count_)) {
         auto const excess_bit_count = (byte_count * 8) - bit_count_;
 
         TR_ASSERT(excess_bit_count <= 7);
 
-        if (excess_bit_count != 0)
-        {
+        if (excess_bit_count != 0) {
             flags_.back() &= 0xff << excess_bit_count;
         }
     }
@@ -304,10 +284,8 @@ void tr_bitfield::set_from_bools(bool const* flags, size_t n)
     free_array();
     ensure_bits_alloced(n);
 
-    for (size_t i = 0; i < n; ++i)
-    {
-        if (flags[i])
-        {
+    for (size_t i = 0; i < n; ++i) {
+        if (flags[i]) {
             ++true_count;
             flags_[i >> 3U] |= (0x80 >> (i & 7U));
         }
@@ -318,13 +296,11 @@ void tr_bitfield::set_from_bools(bool const* flags, size_t n)
 
 void tr_bitfield::set(size_t nth, bool value)
 {
-    if (test(nth) == value)
-    {
+    if (test(nth) == value) {
         return;
     }
 
-    if (!ensure_nth_bit_alloced(nth))
-    {
+    if (!ensure_nth_bit_alloced(nth)) {
         return;
     }
 
@@ -338,13 +314,10 @@ void tr_bitfield::set(size_t nth, bool value)
     auto const new_byte_pop = std::popcount(byte);
 #endif
 
-    if (value)
-    {
+    if (value) {
         ++true_count_;
         TR_ASSERT(old_byte_pop + 1 == new_byte_pop);
-    }
-    else
-    {
+    } else {
         --true_count_;
         TR_ASSERT(new_byte_pop + 1 == old_byte_pop);
     }
@@ -357,8 +330,7 @@ void tr_bitfield::set_span(size_t begin, size_t end, bool value)
 {
     // bounds check
     end = std::min(end, bit_count_);
-    if (end == 0 || begin >= end)
-    {
+    if (end == 0 || begin >= end) {
         return;
     }
 
@@ -367,14 +339,12 @@ void tr_bitfield::set_span(size_t begin, size_t end, bool value)
     size_t const old_count = count(begin, end);
     size_t const new_count = value ? (end - begin) : 0;
     // did anything change?
-    if (old_count == new_count)
-    {
+    if (old_count == new_count) {
         return;
     }
 
     --end;
-    if (!ensure_nth_bit_alloced(end))
-    {
+    if (!ensure_nth_bit_alloced(end)) {
         return;
     }
 
@@ -383,42 +353,31 @@ void tr_bitfield::set_span(size_t begin, size_t end, bool value)
 
     unsigned char first_mask = 0xff >> (begin & 7U);
     unsigned char last_mask = 0xff << ((~end) & 7U);
-    if (value)
-    {
-        if (walk == last_byte)
-        {
+    if (value) {
+        if (walk == last_byte) {
             flags_[walk] |= first_mask & last_mask;
-        }
-        else
-        {
+        } else {
             flags_[walk] |= first_mask;
             /* last_byte is expected to be hot in cache due to earlier
                count(begin, end) */
             flags_[last_byte] |= last_mask;
-            if (++walk < last_byte)
-            {
+            if (++walk < last_byte) {
                 std::fill_n(std::data(flags_) + walk, last_byte - walk, 0xff);
             }
         }
 
         increment_true_count(new_count - old_count);
-    }
-    else
-    {
+    } else {
         first_mask = ~first_mask;
         last_mask = ~last_mask;
-        if (walk == last_byte)
-        {
+        if (walk == last_byte) {
             flags_[walk] &= first_mask | last_mask;
-        }
-        else
-        {
+        } else {
             flags_[walk] &= first_mask;
             /* last_byte is expected to be hot in cache due to earlier
                count(begin, end) */
             flags_[last_byte] &= last_mask;
-            if (++walk < last_byte)
-            {
+            if (++walk < last_byte) {
                 std::fill_n(std::data(flags_) + walk, last_byte - walk, 0);
             }
         }
@@ -429,21 +388,18 @@ void tr_bitfield::set_span(size_t begin, size_t end, bool value)
 
 tr_bitfield& tr_bitfield::operator|=(tr_bitfield const& that) noexcept
 {
-    if (has_all() || that.has_none())
-    {
+    if (has_all() || that.has_none()) {
         return *this;
     }
 
-    if (that.has_all() || has_none())
-    {
+    if (that.has_all() || has_none()) {
         *this = that;
         return *this;
     }
 
     flags_.resize(std::max(std::size(flags_), std::size(that.flags_)));
 
-    for (size_t i = 0, n = std::size(that.flags_); i < n; ++i)
-    {
+    for (size_t i = 0, n = std::size(that.flags_); i < n; ++i) {
         flags_[i] |= that.flags_[i];
     }
 
@@ -453,21 +409,18 @@ tr_bitfield& tr_bitfield::operator|=(tr_bitfield const& that) noexcept
 
 tr_bitfield& tr_bitfield::operator&=(tr_bitfield const& that) noexcept
 {
-    if (has_none() || that.has_all())
-    {
+    if (has_none() || that.has_all()) {
         return *this;
     }
 
-    if (that.has_none() || has_all())
-    {
+    if (that.has_none() || has_all()) {
         *this = that;
         return *this;
     }
 
     flags_.resize(std::min(std::size(flags_), std::size(that.flags_)));
 
-    for (size_t i = 0, n = std::size(flags_); i < n; ++i)
-    {
+    for (size_t i = 0, n = std::size(flags_); i < n; ++i) {
         flags_[i] &= that.flags_[i];
     }
 
@@ -477,20 +430,16 @@ tr_bitfield& tr_bitfield::operator&=(tr_bitfield const& that) noexcept
 
 bool tr_bitfield::intersects(tr_bitfield const& that) const noexcept
 {
-    if (has_none() || that.has_none())
-    {
+    if (has_none() || that.has_none()) {
         return false;
     }
 
-    if (has_all() || that.has_all())
-    {
+    if (has_all() || that.has_all()) {
         return true;
     }
 
-    for (size_t i = 0, n = std::min(std::size(flags_), std::size(that.flags_)); i < n; ++i)
-    {
-        if ((flags_[i] & that.flags_[i]) != 0U)
-        {
+    for (size_t i = 0, n = std::min(std::size(flags_), std::size(that.flags_)); i < n; ++i) {
+        if ((flags_[i] & that.flags_[i]) != 0U) {
             return true;
         }
     }

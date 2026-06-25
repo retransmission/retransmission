@@ -27,8 +27,7 @@ public:
 
     static void narrowRect(QRect& rect, int dx1, int dx2, Qt::LayoutDirection direction)
     {
-        if (direction == Qt::RightToLeft)
-        {
+        if (direction == Qt::RightToLeft) {
             qSwap(dx1, dx2);
         }
 
@@ -43,14 +42,11 @@ public:
     template<typename DialogT, typename... ArgsT>
     static void openDialog(QPointer<DialogT>& dialog, ArgsT&&... args)
     {
-        if (dialog.isNull())
-        {
+        if (dialog.isNull()) {
             dialog = new DialogT{ std::forward<ArgsT>(args)... }; // NOLINT clang-analyzer-cplusplus.NewDelete
             dialog->setAttribute(Qt::WA_DeleteOnClose);
             dialog->show();
-        }
-        else
-        {
+        } else {
             dialog->raise();
             dialog->activateWindow();
         }

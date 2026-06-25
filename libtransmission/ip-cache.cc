@@ -78,18 +78,14 @@ namespace global_source_ip_helpers
 
     auto const [dst_ss, dst_sslen] = tr_socket_address::to_sockaddr(dst_addr, dst_port);
     auto const [bind_ss, bind_sslen] = tr_socket_address::to_sockaddr(bind_addr, {});
-    if (auto const sock = socket(dst_ss.ss_family, SOCK_DGRAM, 0); is_valid_socket(sock))
-    {
-        if (bind(sock, reinterpret_cast<sockaddr const*>(&bind_ss), bind_sslen) == 0)
-        {
-            if (connect(sock, reinterpret_cast<sockaddr const*>(&dst_ss), dst_sslen) == 0)
-            {
+    if (auto const sock = socket(dst_ss.ss_family, SOCK_DGRAM, 0); is_valid_socket(sock)) {
+        if (bind(sock, reinterpret_cast<sockaddr const*>(&bind_ss), bind_sslen) == 0) {
+            if (connect(sock, reinterpret_cast<sockaddr const*>(&dst_ss), dst_sslen) == 0) {
                 auto src_ss = sockaddr_storage{};
                 auto src_sslen = socklen_t{ sizeof(src_ss) };
-                if (getsockname(sock, reinterpret_cast<sockaddr*>(&src_ss), &src_sslen) == 0)
-                {
-                    if (auto const addrport = tr_socket_address::from_sockaddr(reinterpret_cast<sockaddr*>(&src_ss)); addrport)
-                    {
+                if (getsockname(sock, reinterpret_cast<sockaddr*>(&src_ss), &src_sslen) == 0) {
+                    if (auto const addrport = tr_socket_address::from_sockaddr(reinterpret_cast<sockaddr*>(&src_ss));
+                        addrport) {
                         tr_net_close_socket(sock);
                         set_sockerrno(save);
                         return addrport->address();
@@ -100,9 +96,7 @@ namespace global_source_ip_helpers
 
         err_out = sockerrno;
         tr_net_close_socket(sock);
-    }
-    else
-    {
+    } else {
         err_out = sockerrno;
     }
 
@@ -121,8 +115,7 @@ namespace global_source_ip_helpers
     // this should be a global unicast address, not Teredo or 6to4
     TR_ASSERT(dst_addr && dst_addr->is_global_unicast() && !dst_addr->is_ipv6_teredo() && !dst_addr->is_ipv6_6to4());
 
-    if (dst_addr)
-    {
+    if (dst_addr) {
         return get_source_address(*dst_addr, dst_port, bind_addr, err_out);
     }
 
@@ -140,11 +133,9 @@ tr_ip_cache::tr_ip_cache(Mediator& mediator_in)
     static_assert(TR_AF_INET6 == 1);
     static_assert(NUM_TR_AF_INET_TYPES == 2);
 
-    for (std::size_t i = 0; i < NUM_TR_AF_INET_TYPES; ++i)
-    {
+    for (std::size_t i = 0; i < NUM_TR_AF_INET_TYPES; ++i) {
         auto const type = static_cast<tr_address_type>(i);
-        auto const cb = [this, type]()
-        {
+        auto const cb = [this, type]() {
             update_addr(type);
         };
         upkeep_timers_[i]->set_callback(cb);
@@ -165,23 +156,19 @@ tr_ip_cache::~tr_ip_cache()
                                          source_addr_mutex_[TR_AF_INET],
                                          source_addr_mutex_[TR_AF_INET6] };
 
-    if (!std::ranges::all_of(is_updating_, [](is_updating_t const& v) { return v == is_updating_t::Abort; }))
-    {
+    if (!std::ranges::all_of(is_updating_, [](is_updating_t const& v) { return v == is_updating_t::Abort; })) {
         tr_logAddDebug("Destructed while some global IP queries were pending.");
     }
 }
 
 bool tr_ip_cache::try_shutdown() noexcept
 {
-    for (auto& timer : upkeep_timers_)
-    {
+    for (auto& timer : upkeep_timers_) {
         timer->stop();
     }
 
-    for (std::size_t i = 0; i < NUM_TR_AF_INET_TYPES; ++i)
-    {
-        if (is_updating_[i] == is_updating_t::Yes)
-        {
+    for (std::size_t i = 0; i < NUM_TR_AF_INET_TYPES; ++i) {
+        if (is_updating_[i] == is_updating_t::Yes) {
             return false;
         }
         is_updating_[i] = is_updating_t::Abort; // Abort any future updates
@@ -191,10 +178,8 @@ bool tr_ip_cache::try_shutdown() noexcept
 
 tr_address tr_ip_cache::bind_addr(tr_address_type type) const noexcept
 {
-    if (tr_address::is_valid(type))
-    {
-        if (auto const addr = tr_address::from_string(mediator_.settings_bind_addr(type)); addr && type == addr->type)
-        {
+    if (tr_address::is_valid(type)) {
+        if (auto const addr = tr_address::from_string(mediator_.settings_bind_addr(type)); addr && type == addr->type) {
             return *addr;
         }
         return tr_address::any(type);
@@ -206,11 +191,9 @@ tr_address tr_ip_cache::bind_addr(tr_address_type type) const noexcept
 
 bool tr_ip_cache::set_global_addr(tr_address const& addr_new) noexcept
 {
-    if (addr_new.is_global_unicast())
-    {
+    if (addr_new.is_global_unicast()) {
         auto const lock = std::scoped_lock{ global_addr_mutex_[addr_new.type] };
-        if (auto& addr = global_addr_[addr_new.type]; addr != addr_new)
-        {
+        if (auto& addr = global_addr_[addr_new.type]; addr != addr_new) {
             addr = addr_new;
             tr_logAddInfo(fmt::format("Cached {} global address {}", tr_ip_protocol_to_sv(addr->type), addr->display_name()));
         }
@@ -222,8 +205,7 @@ bool tr_ip_cache::set_global_addr(tr_address const& addr_new) noexcept
 void tr_ip_cache::update_addr(tr_address_type type) noexcept
 {
     update_source_addr(type);
-    if (source_addr(type))
-    {
+    if (source_addr(type)) {
         update_global_addr(type);
     }
 }
@@ -234,14 +216,12 @@ void tr_ip_cache::update_global_addr(tr_address_type const type) noexcept
     TR_ASSERT(has_ip_protocol_[type]);
 
     auto const ip_endpoints = mediator_.settings_ip_endpoint(type);
-    if (std::empty(ip_endpoints))
-    {
+    if (std::empty(ip_endpoints)) {
         return;
     }
 
     auto const ix_service = ix_service_[type];
-    if (ix_service == 0U && !set_is_updating(type, ip_endpoints))
-    {
+    if (ix_service == 0U && !set_is_updating(type, ip_endpoints)) {
         return;
     }
     TR_ASSERT(ix_service < std::size(current_ip_endpoints_[type]));
@@ -254,10 +234,8 @@ void tr_ip_cache::update_global_addr(tr_address_type const type) noexcept
     };
     auto options = tr_web::FetchOptions{
         current_ip_endpoints_[type][ix_service],
-        [weak = weak_from_this(), type](tr_web::FetchResponse const& response)
-        {
-            if (auto const ptr = weak.lock())
-            {
+        [weak = weak_from_this(), type](tr_web::FetchResponse const& response) {
+            if (auto const ptr = weak.lock()) {
                 ptr->on_response_ip_query(type, response);
             }
         },
@@ -276,8 +254,7 @@ void tr_ip_cache::update_source_addr(tr_address_type type) noexcept
     auto& has_ip_protocol = has_ip_protocol_[type];
     TR_ASSERT(has_ip_protocol);
 
-    if (!set_is_updating(type))
-    {
+    if (!set_is_updating(type)) {
         return;
     }
     TR_ASSERT(is_updating_[type] == is_updating_t::Yes);
@@ -285,29 +262,25 @@ void tr_ip_cache::update_source_addr(tr_address_type type) noexcept
     auto const protocol = tr_ip_protocol_to_sv(type);
     auto err = 0;
     source_addr_checked_[type] = true;
-    if (auto const& source_addr = get_global_source_address(bind_addr(type), err); source_addr)
-    {
+    if (auto const& source_addr = get_global_source_address(bind_addr(type), err); source_addr) {
         set_source_addr(*source_addr);
         tr_logAddDebug(
             fmt::format(
                 fmt::runtime(_("Successfully updated source {protocol} address to {ip}")),
                 fmt::arg("protocol", protocol),
                 fmt::arg("ip", source_addr->display_name())));
-    }
-    else
-    {
+    } else {
         // Stop the update process since we have no public internet connectivity
         unset_addr(type);
         upkeep_timers_[type]->set_interval(RetryUpkeepInterval);
 
         tr_logAddDebug(fmt::format("Couldn't obtain source {} address: {} ({})", protocol, tr_net_strerror(err), err));
-        if (std::ranges::all_of(source_addr_checked_, std::identity{}) && std::ranges::all_of(source_addr_, std::logical_not{}))
-        {
+        if (std::ranges::all_of(source_addr_checked_, std::identity{}) &&
+            std::ranges::all_of(source_addr_, std::logical_not{})) {
             tr_logAddError(_("Couldn't obtain source address in any IP protocol, no network connections possible"));
         }
 
-        if (err == EAFNOSUPPORT)
-        {
+        if (err == EAFNOSUPPORT) {
             stop_timer(type); // No point in retrying
             has_ip_protocol = false;
             tr_logAddInfo(
@@ -328,12 +301,10 @@ void tr_ip_cache::on_response_ip_query(tr_address_type const type, tr_web::Fetch
     auto const protocol = tr_ip_protocol_to_sv(type);
     auto success = false;
 
-    if (response.status == 200 /* HTTP_OK */)
-    {
+    if (response.status == 200 /* HTTP_OK */) {
         // Update member
         if (auto const addr = tr_address::from_string(tr_strv_strip(response.body));
-            addr && type == addr->type && set_global_addr(*addr))
-        {
+            addr && type == addr->type && set_global_addr(*addr)) {
             success = true;
             upkeep_timers_[type]->set_interval(UpkeepInterval);
 
@@ -347,10 +318,8 @@ void tr_ip_cache::on_response_ip_query(tr_address_type const type, tr_web::Fetch
     }
 
     // Try next IP query URL
-    if (!success)
-    {
-        if (++ix_service < std::size(ip_endpoints))
-        {
+    if (!success) {
+        if (++ix_service < std::size(ip_endpoints)) {
             update_global_addr(type);
             return;
         }
@@ -380,8 +349,7 @@ void tr_ip_cache::unset_global_addr(tr_address_type type) noexcept
 void tr_ip_cache::set_source_addr(tr_address const& addr_new) noexcept
 {
     auto const lock = std::scoped_lock{ source_addr_mutex_[addr_new.type] };
-    if (auto& addr = source_addr_[addr_new.type]; addr != addr_new)
-    {
+    if (auto& addr = source_addr_[addr_new.type]; addr != addr_new) {
         addr = addr_new;
         tr_logAddInfo(fmt::format("Cached {} source address {}", tr_ip_protocol_to_sv(addr->type), addr->display_name()));
     }
@@ -399,8 +367,7 @@ void tr_ip_cache::unset_addr(tr_address_type type) noexcept
 
 bool tr_ip_cache::set_is_updating(tr_address_type type, std::span<std::string const> ip_endpoints) noexcept
 {
-    if (is_updating_[type] != is_updating_t::No)
-    {
+    if (is_updating_[type] != is_updating_t::No) {
         return false;
     }
     is_updating_[type] = is_updating_t::Yes;

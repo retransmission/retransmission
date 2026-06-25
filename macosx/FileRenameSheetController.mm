@@ -107,23 +107,17 @@ typedef void (^CompletionBlock)(BOOL);
 - (IBAction)rename:(id)sender
 {
     void (^completionHandler)(BOOL) = ^(BOOL didRename) {
-        if (didRename)
-        {
+        if (didRename) {
             [NSApp endSheet:self.window returnCode:NSModalResponseOK];
-        }
-        else
-        {
+        } else {
 #warning more thorough error
             NSBeep();
         }
     };
 
-    if (self.node)
-    {
+    if (self.node) {
         [self.torrent renameFileNode:self.node withName:self.inputField.stringValue completionHandler:completionHandler];
-    }
-    else
-    {
+    } else {
         [self.torrent renameTorrent:self.inputField.stringValue completionHandler:completionHandler];
     }
 }

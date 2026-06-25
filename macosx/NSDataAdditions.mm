@@ -13,16 +13,14 @@
     NSUInteger length = self.length;
     unsigned char const* bytes = (unsigned char const*)self.bytes;
     char* chars = (char*)malloc(length * 2);
-    if (chars == NULL)
-    {
+    if (chars == NULL) {
         // malloc returns null if attempting to allocate more memory than the system can provide. Thanks Cœur
         [NSException raise:@"NSInternalInconsistencyException" format:@"failed malloc" arguments:nil];
         return nil;
     }
     char* s = chars;
     NSUInteger i = length;
-    while (i--)
-    {
+    while (i--) {
         *s++ = hexChars[*bytes >> 4];
         *s++ = hexChars[*bytes & 0xF];
         bytes++;

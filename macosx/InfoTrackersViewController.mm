@@ -34,8 +34,7 @@ typedef NS_ENUM(NSInteger, TrackerSegmentTag) {
 
 - (instancetype)init
 {
-    if ((self = [super initWithNibName:@"InfoTrackersView" bundle:nil]))
-    {
+    if ((self = [super initWithNibName:@"InfoTrackersView" bundle:nil])) {
         self.title = NSLocalizedString(@"Trackers", "Inspector view -> title");
 
         _fTrackerCell = [[TrackerCell alloc] init];
@@ -53,8 +52,7 @@ typedef NS_ENUM(NSInteger, TrackerSegmentTag) {
                                         forSegment:TrackerSegmentTagRemove];
 
     CGFloat const height = [NSUserDefaults.standardUserDefaults floatForKey:@"InspectorContentHeightTracker"];
-    if (height != 0.0)
-    {
+    if (height != 0.0) {
         NSRect viewRect = self.view.frame;
         viewRect.size.height = height;
         self.view.frame = viewRect;
@@ -71,47 +69,35 @@ typedef NS_ENUM(NSInteger, TrackerSegmentTag) {
 
 - (void)updateInfo
 {
-    if (!self.fSet)
-    {
+    if (!self.fSet) {
         [self setupInfo];
     }
 
-    if (self.fTorrents.count == 0)
-    {
+    if (self.fTorrents.count == 0) {
         return;
     }
 
     //get updated tracker stats
-    if (self.fTrackerTable.editedRow == -1)
-    {
+    if (self.fTrackerTable.editedRow == -1) {
         NSArray* oldTrackers = self.fTrackers;
 
-        if (self.fTorrents.count == 1)
-        {
+        if (self.fTorrents.count == 1) {
             self.fTrackers = self.fTorrents[0].allTrackerStats;
-        }
-        else
-        {
+        } else {
             self.fTrackers = [[NSMutableArray alloc] init];
-            for (Torrent* torrent in self.fTorrents)
-            {
+            for (Torrent* torrent in self.fTorrents) {
                 [self.fTrackers addObjectsFromArray:torrent.allTrackerStats];
             }
         }
 
         self.fTrackerTable.trackers = self.fTrackers;
 
-        if (oldTrackers && [self.fTrackers isEqualToArray:oldTrackers])
-        {
+        if (oldTrackers && [self.fTrackers isEqualToArray:oldTrackers]) {
             self.fTrackerTable.needsDisplay = YES;
-        }
-        else
-        {
+        } else {
             [self.fTrackerTable reloadData];
         }
-    }
-    else
-    {
+    } else {
         NSAssert1(self.fTorrents.count == 1, @"Attempting to add tracker with %ld transfers selected", self.fTorrents.count);
 
         NSIndexSet* addedIndexes = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(self.fTrackers.count - 2, 2)];
@@ -147,21 +133,17 @@ typedef NS_ENUM(NSInteger, TrackerSegmentTag) {
 {
     id item = self.fTrackers[row];
 
-    if ([item isKindOfClass:[NSDictionary class]])
-    {
+    if ([item isKindOfClass:[NSDictionary class]]) {
         NSInteger const tier = [item[@"Tier"] integerValue];
         NSString* tierString = tier == -1 ?
             NSLocalizedString(@"New Tier", "Inspector -> tracker table") :
             [NSString stringWithFormat:NSLocalizedString(@"Tier %ld", "Inspector -> tracker table"), tier];
 
-        if (self.fTorrents.count > 1)
-        {
+        if (self.fTorrents.count > 1) {
             tierString = [tierString stringByAppendingFormat:@" - %@", item[@"Name"]];
         }
         return tierString;
-    }
-    else
-    {
+    } else {
         return item; //TrackerNode or NSString
     }
 }
@@ -175,12 +157,9 @@ typedef NS_ENUM(NSInteger, TrackerSegmentTag) {
 - (CGFloat)tableView:(NSTableView*)tableView heightOfRow:(NSInteger)row
 {
     //check for NSDictionary instead of TrackerNode because of display issue when adding a row
-    if ([self.fTrackers[row] isKindOfClass:[NSDictionary class]])
-    {
+    if ([self.fTrackers[row] isKindOfClass:[NSDictionary class]]) {
         return kTrackerGroupSeparatorHeight;
-    }
-    else
-    {
+    } else {
         return tableView.rowHeight;
     }
 }
@@ -204,8 +183,7 @@ typedef NS_ENUM(NSInteger, TrackerSegmentTag) {
 - (BOOL)tableView:(NSTableView*)tableView shouldSelectRow:(NSInteger)row
 {
     id node = self.fTrackers[row];
-    if ([node isKindOfClass:[TrackerNode class]])
-    {
+    if ([node isKindOfClass:[TrackerNode class]]) {
         return YES;
     }
     return NO;
@@ -219,12 +197,9 @@ typedef NS_ENUM(NSInteger, TrackerSegmentTag) {
          mouseLocation:(NSPoint)mouseLocation
 {
     id node = self.fTrackers[row];
-    if ([node isKindOfClass:[TrackerNode class]])
-    {
+    if ([node isKindOfClass:[TrackerNode class]]) {
         return ((TrackerNode*)node).fullAnnounceAddress;
-    }
-    else
-    {
+    } else {
         return nil;
     }
 }
@@ -237,16 +212,13 @@ typedef NS_ENUM(NSInteger, TrackerSegmentTag) {
     Torrent* torrent = self.fTorrents[0];
 
     BOOL added = NO;
-    for (NSString* tracker in [object componentsSeparatedByString:@"\n"])
-    {
-        if ([torrent addTrackerToNewTier:tracker])
-        {
+    for (NSString* tracker in [object componentsSeparatedByString:@"\n"]) {
+        if ([torrent addTrackerToNewTier:tracker]) {
             added = YES;
         }
     }
 
-    if (!added)
-    {
+    if (!added) {
         NSBeep();
     }
 
@@ -263,19 +235,15 @@ typedef NS_ENUM(NSInteger, TrackerSegmentTag) {
 - (void)addRemoveTracker:(id)sender
 {
     //don't allow add/remove when currently adding - it leads to weird results
-    if (self.fTrackerTable.editedRow != -1)
-    {
+    if (self.fTrackerTable.editedRow != -1) {
         return;
     }
 
     [self updateInfo];
 
-    if ([[sender cell] tagForSegment:[sender selectedSegment]] == TrackerSegmentTagRemove)
-    {
+    if ([[sender cell] tagForSegment:[sender selectedSegment]] == TrackerSegmentTagRemove) {
         [self removeTrackers];
-    }
-    else
-    {
+    } else {
         [self addTrackers];
     }
 }
@@ -285,10 +253,8 @@ typedef NS_ENUM(NSInteger, TrackerSegmentTag) {
 - (void)setupInfo
 {
     NSUInteger const numberSelected = self.fTorrents.count;
-    if (numberSelected != 1)
-    {
-        if (numberSelected == 0)
-        {
+    if (numberSelected != 1) {
+        if (numberSelected == 0) {
             self.fTrackers = nil;
 
             self.fTrackerTable.trackers = nil;
@@ -299,9 +265,7 @@ typedef NS_ENUM(NSInteger, TrackerSegmentTag) {
 
         [self.fTrackerAddRemoveControl setEnabled:NO forSegment:TrackerSegmentTagAdd];
         [self.fTrackerAddRemoveControl setEnabled:NO forSegment:TrackerSegmentTagRemove];
-    }
-    else
-    {
+    } else {
         self.fTrackerTable.torrent = self.fTorrents[0];
 
         [self.fTrackerAddRemoveControl setEnabled:YES forSegment:TrackerSegmentTagAdd];
@@ -339,18 +303,14 @@ typedef NS_ENUM(NSInteger, TrackerSegmentTag) {
     BOOL groupSelected = NO;
     NSUInteger groupRowIndex = NSNotFound;
     NSMutableIndexSet* removeIndexes = [NSMutableIndexSet indexSet];
-    for (NSUInteger i = 0; i < self.fTrackers.count; ++i)
-    {
+    for (NSUInteger i = 0; i < self.fTrackers.count; ++i) {
         id object = self.fTrackers[i];
-        if ([object isKindOfClass:[TrackerNode class]])
-        {
+        if ([object isKindOfClass:[TrackerNode class]]) {
             TrackerNode* node = (TrackerNode*)object;
-            if (groupSelected || [selectedIndexes containsIndex:i])
-            {
+            if (groupSelected || [selectedIndexes containsIndex:i]) {
                 Torrent* torrent = node.torrent;
                 NSMutableSet* removeSet;
-                if (!(removeSet = removeIdentifiers[torrent]))
-                {
+                if (!(removeSet = removeIdentifiers[torrent])) {
                     removeSet = [NSMutableSet set];
                     removeIdentifiers[torrent] = removeSet;
                 }
@@ -359,23 +319,17 @@ typedef NS_ENUM(NSInteger, TrackerSegmentTag) {
                 ++removeTrackerCount;
 
                 [removeIndexes addIndex:i];
-            }
-            else
-            {
+            } else {
                 groupRowIndex = NSNotFound; //don't remove the group row
             }
-        }
-        else
-        {
+        } else {
             //mark the previous group row for removal, if necessary
-            if (groupRowIndex != NSNotFound)
-            {
+            if (groupRowIndex != NSNotFound) {
                 [removeIndexes addIndex:groupRowIndex];
             }
 
             groupSelected = [selectedIndexes containsIndex:i];
-            if (!groupSelected && i > selectedIndexes.lastIndex)
-            {
+            if (!groupSelected && i > selectedIndexes.lastIndex) {
                 groupRowIndex = NSNotFound;
                 break;
             }
@@ -385,8 +339,7 @@ typedef NS_ENUM(NSInteger, TrackerSegmentTag) {
     }
 
     //mark the last group for removal, too
-    if (groupRowIndex != NSNotFound)
-    {
+    if (groupRowIndex != NSNotFound) {
         [removeIndexes addIndex:groupRowIndex];
     }
 
@@ -398,17 +351,14 @@ typedef NS_ENUM(NSInteger, TrackerSegmentTag) {
 
 //we might have no trackers if remove right after a failed add (race condition ftw)
 #warning look into having a failed add apply right away, so that this can become an assert
-    if (removeTrackerCount == 0)
-    {
+    if (removeTrackerCount == 0) {
         return;
     }
 
-    if ([NSUserDefaults.standardUserDefaults boolForKey:@"WarningRemoveTrackers"])
-    {
+    if ([NSUserDefaults.standardUserDefaults boolForKey:@"WarningRemoveTrackers"]) {
         NSAlert* alert = [[NSAlert alloc] init];
 
-        if (removeTrackerCount > 1)
-        {
+        if (removeTrackerCount > 1) {
             alert.messageText = [NSString
                 localizedStringWithFormat:NSLocalizedString(@"Are you sure you want to remove %lu trackers?", "Remove trackers alert -> title"),
                                           removeTrackerCount];
@@ -416,9 +366,7 @@ typedef NS_ENUM(NSInteger, TrackerSegmentTag) {
                 @"Once removed, Transmission will no longer attempt to contact them."
                  " This cannot be undone.",
                 "Remove trackers alert -> message");
-        }
-        else
-        {
+        } else {
             alert.messageText = NSLocalizedString(@"Are you sure you want to remove this tracker?", "Remove trackers alert -> title");
             alert.informativeText = NSLocalizedString(
                 @"Once removed, Transmission will no longer attempt to contact it."
@@ -432,28 +380,24 @@ typedef NS_ENUM(NSInteger, TrackerSegmentTag) {
         alert.showsSuppressionButton = YES;
 
         NSInteger result = [alert runModal];
-        if (alert.suppressionButton.state == NSControlStateValueOn)
-        {
+        if (alert.suppressionButton.state == NSControlStateValueOn) {
             [NSUserDefaults.standardUserDefaults setBool:NO forKey:@"WarningRemoveTrackers"];
         }
 
-        if (result != NSAlertFirstButtonReturn)
-        {
+        if (result != NSAlertFirstButtonReturn) {
             return;
         }
     }
 
     [self.fTrackerTable beginUpdates];
 
-    for (Torrent* torrent in removeIdentifiers)
-    {
+    for (Torrent* torrent in removeIdentifiers) {
         [torrent removeTrackers:removeIdentifiers[torrent]];
     }
 
     //reset table with either new or old value
     self.fTrackers = [[NSMutableArray alloc] init];
-    for (Torrent* torrent in self.fTorrents)
-    {
+    for (Torrent* torrent in self.fTorrents) {
         [self.fTrackers addObjectsFromArray:torrent.allTrackerStats];
     }
 

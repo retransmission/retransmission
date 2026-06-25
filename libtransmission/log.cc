@@ -71,8 +71,7 @@ void logAddImpl(
     std::string&& msg,
     [[maybe_unused]] std::string_view name)
 {
-    if (std::empty(msg))
-    {
+    if (std::empty(msg)) {
         return;
     }
 
@@ -82,8 +81,7 @@ void logAddImpl(
 
     int prio;
 
-    switch (level)
-    {
+    switch (level) {
     case TR_LOG_CRITICAL:
         prio = ANDROID_LOG_FATAL;
         break;
@@ -112,8 +110,7 @@ void logAddImpl(
 
 #else
 
-    if (log_state.queue_enabled_)
-    {
+    if (log_state.queue_enabled_) {
         auto& newmsg = log_state.queue_.emplace_back();
         newmsg.level = level;
         newmsg.when = std::chrono::system_clock::now();
@@ -122,22 +119,16 @@ void logAddImpl(
         newmsg.line = line;
         newmsg.name = name;
 
-        if (std::size(log_state.queue_) > MaxQueueLength)
-        {
+        if (std::size(log_state.queue_) > MaxQueueLength) {
             log_state.queue_.pop_front();
         }
-    }
-    else
-    {
+    } else {
         auto buf = std::array<char, 64U>{};
         auto const timestr = tr_logGetTimeStr(std::data(buf), std::size(buf));
 
-        if (std::empty(name))
-        {
+        if (std::empty(name)) {
             fmt::print(stderr, "[{:s}] {:s}\n", timestr, msg);
-        }
-        else
-        {
+        } else {
             fmt::print("[{:s}] {:s}: {:s}\n", timestr, name, msg);
         }
     }
@@ -189,8 +180,7 @@ std::string_view tr_logGetTimeStr(std::chrono::system_clock::time_point const no
     static auto constexpr Fmt = HasTmGmtoff ? "{0:%FT%R:}{1:%S}{0:%z}"sv : "{0:%FT%R:}{1:%S}"sv;
     walk = fmt::format_to_n(walk, buflen, Fmt, now_tm, std::chrono::time_point_cast<std::chrono::milliseconds>(now)).out;
 #ifdef _WIN32
-    if (auto tz_info = TIME_ZONE_INFORMATION{}; GetTimeZoneInformation(&tz_info) != TIME_ZONE_ID_INVALID)
-    {
+    if (auto tz_info = TIME_ZONE_INFORMATION{}; GetTimeZoneInformation(&tz_info) != TIME_ZONE_ID_INVALID) {
         // https://learn.microsoft.com/en-us/windows/win32/api/timezoneapi/nf-timezoneapi-gettimezoneinformation
         // All translations between UTC time and local time are based on the following formula:
         //     UTC = local time + bias
@@ -221,14 +211,12 @@ void tr_logAddMessage(char const* file, long line, tr_log_level level, std::stri
 
     // strip source path to only include the filename
     auto filename = tr_sys_path_basename(file);
-    if (std::empty(filename))
-    {
+    if (std::empty(filename)) {
         filename = "?"sv;
     }
 
     auto name_fallback = std::string{};
-    if (std::empty(name))
-    {
+    if (std::empty(name)) {
         name_fallback = fmt::format("{:s}:{:d}", filename, line);
         name = name_fallback;
     }
@@ -237,8 +225,7 @@ void tr_logAddMessage(char const* file, long line, tr_log_level level, std::stri
     int const err = errno;
 
     // skip unwanted messages
-    if (!tr_logLevelIsActive(level))
-    {
+    if (!tr_logLevelIsActive(level)) {
         errno = err;
         return;
     }
@@ -248,16 +235,14 @@ void tr_logAddMessage(char const* file, long line, tr_log_level level, std::stri
     // don't log the same warning ad infinitum.
     // at some point, it stops being useful.
     bool last_one = false;
-    if (level == TR_LOG_CRITICAL || level == TR_LOG_ERROR || level == TR_LOG_WARN)
-    {
+    if (level == TR_LOG_CRITICAL || level == TR_LOG_ERROR || level == TR_LOG_WARN) {
         static auto constexpr MaxRepeat = size_t{ 30 };
         static auto* const counts = new small::map<std::pair<std::string_view, long>, size_t>{};
 
         auto& count = (*counts)[std::make_pair(filename, line)];
         ++count;
         last_one = count == MaxRepeat;
-        if (count > MaxRepeat)
-        {
+        if (count > MaxRepeat) {
             errno = err;
             return;
         }
@@ -265,8 +250,7 @@ void tr_logAddMessage(char const* file, long line, tr_log_level level, std::stri
 
     // log the messages
     logAddImpl(filename, line, level, std::move(msg), name);
-    if (last_one)
-    {
+    if (last_one) {
         char const* final_msg = _("Too many messages like this! I won't log this message anymore this session.");
         logAddImpl(filename, line, level, final_msg, name);
     }
@@ -291,10 +275,8 @@ auto constexpr LogKeys = std::to_array<std::pair<std::string_view, tr_log_level>
 
 bool constexpr keysAreOrdered()
 {
-    for (size_t i = 0, n = std::size(LogKeys); i < n; ++i)
-    {
-        if (LogKeys[i].second != static_cast<tr_log_level>(i))
-        {
+    for (size_t i = 0, n = std::size(LogKeys); i < n; ++i) {
+        if (LogKeys[i].second != static_cast<tr_log_level>(i)) {
             return false;
         }
     }
@@ -310,10 +292,8 @@ std::optional<tr_log_level> tr_logGetLevelFromKey(std::string_view key_in)
 {
     auto const key = tr_strlower(tr_strv_strip(key_in));
 
-    for (auto const& [name, level] : LogKeys)
-    {
-        if (key == name)
-        {
+    for (auto const& [name, level] : LogKeys) {
+        if (key == name) {
             return level;
         }
     }

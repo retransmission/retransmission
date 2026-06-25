@@ -49,62 +49,53 @@
 using namespace std::literals;
 
 // the dht library needs us to implement these:
-extern "C"
+extern "C" {
+// This function should return true when a node is blacklisted.
+// We don't support using a blacklist with the DHT in Transmission,
+// since massive (ab)use of this feature could harm the DHT. However,
+// feel free to add support to your private copy as long as you don't
+// redistribute it.
+int dht_blacklisted(sockaddr const* /*sa*/, int /*salen*/)
 {
-    // This function should return true when a node is blacklisted.
-    // We don't support using a blacklist with the DHT in Transmission,
-    // since massive (ab)use of this feature could harm the DHT. However,
-    // feel free to add support to your private copy as long as you don't
-    // redistribute it.
-    int dht_blacklisted(sockaddr const* /*sa*/, int /*salen*/)
-    {
-        return 0;
-    }
+    return 0;
+}
 
-    void dht_hash(
-        void* hash_return,
-        int hash_size,
-        void const* v1,
-        int len1,
-        void const* v2,
-        int len2,
-        void const* v3,
-        int len3)
-    {
-        auto* setme = static_cast<std::byte*>(hash_return);
-        std::fill_n(static_cast<char*>(hash_return), hash_size, '\0');
+void dht_hash(void* hash_return, int hash_size, void const* v1, int len1, void const* v2, int len2, void const* v3, int len3)
+{
+    auto* setme = static_cast<std::byte*>(hash_return);
+    std::fill_n(static_cast<char*>(hash_return), hash_size, '\0');
 
-        auto const sv1 = std::string_view{ static_cast<char const*>(v1), size_t(len1) };
-        auto const sv2 = std::string_view{ static_cast<char const*>(v2), size_t(len2) };
-        auto const sv3 = std::string_view{ static_cast<char const*>(v3), size_t(len3) };
-        auto const digest = tr_sha1::digest(sv1, sv2, sv3);
-        std::copy_n(std::data(digest), std::min(size_t(hash_size), std::size(digest)), setme);
-    }
+    auto const sv1 = std::string_view{ static_cast<char const*>(v1), size_t(len1) };
+    auto const sv2 = std::string_view{ static_cast<char const*>(v2), size_t(len2) };
+    auto const sv3 = std::string_view{ static_cast<char const*>(v3), size_t(len3) };
+    auto const digest = tr_sha1::digest(sv1, sv2, sv3);
+    std::copy_n(std::data(digest), std::min(size_t(hash_size), std::size(digest)), setme);
+}
 
-    int dht_random_bytes(void* buf, size_t size)
-    {
-        tr_rand_buffer(buf, size);
-        return static_cast<int>(size);
-    }
+int dht_random_bytes(void* buf, size_t size)
+{
+    tr_rand_buffer(buf, size);
+    return static_cast<int>(size);
+}
 
-    int dht_sendto(int sockfd, void const* buf, int len, int flags, struct sockaddr const* to, int tolen)
-    {
-        // NOLINTNEXTLINE(readability-redundant-casting)
-        return static_cast<int>(sendto(sockfd, static_cast<char const*>(buf), len, flags, to, tolen));
-    }
+int dht_sendto(int sockfd, void const* buf, int len, int flags, struct sockaddr const* to, int tolen)
+{
+    // NOLINTNEXTLINE(readability-redundant-casting)
+    return static_cast<int>(sendto(sockfd, static_cast<char const*>(buf), len, flags, to, tolen));
+}
 
 #if defined(_WIN32) && !defined(__MINGW32__)
-    int dht_gettimeofday(struct timeval* tv, [[maybe_unused]] struct timezone* tz)
-    {
-        TR_ASSERT(tz == nullptr);
+int dht_gettimeofday(struct timeval* tv, [[maybe_unused]] struct timezone* tz)
+{
+    TR_ASSERT(tz == nullptr);
 
-        auto const d = std::chrono::system_clock::now().time_since_epoch();
-        auto const s = std::chrono::duration_cast<std::chrono::seconds>(d);
-        tv->tv_sec = static_cast<decltype(tv->tv_sec)>(s.count());
-        tv->tv_usec = static_cast<decltype(tv->tv_usec)>(std::chrono::duration_cast<std::chrono::microseconds>(d - s).count());
+    auto const d = std::chrono::system_clock::now().time_since_epoch();
+    auto const s = std::chrono::duration_cast<std::chrono::seconds>(d);
+    tv->tv_sec = static_cast<decltype(tv->tv_sec)>(s.count());
+    tv->tv_usec = static_cast<decltype(tv->tv_usec)>(std::chrono::duration_cast<std::chrono::microseconds>(d - s).count());
 
-        return 0;
-    }
+    return 0;
+}
 #endif
 
 } // extern "C"
@@ -127,14 +118,7 @@ private:
     using Nodes = std::deque<Node>;
     using Id = std::array<unsigned char, 20>;
 
-    enum class SwarmStatus : uint8_t
-    {
-        Stopped,
-        Broken,
-        Poor,
-        Firewalled,
-        Good
-    };
+    enum class SwarmStatus : uint8_t { Stopped, Broken, Poor, Firewalled, Good };
 
 public:
     tr_dht_impl(Mediator& mediator, tr_port peer_port, tr_socket_t udp4_socket, tr_socket_t udp6_socket)
@@ -153,8 +137,7 @@ public:
         init_state(state_filename_);
 
         get_nodes_from_bootstrap_file(tr_pathbuf{ mediator_.config_dir(), "/dht.bootstrap"sv }, bootstrap_queue_);
-        for (auto const& [host, port] : DefaultBootstraps)
-        {
+        for (auto const& [host, port] : DefaultBootstraps) {
             get_nodes_from_name(host, tr_port::from_host(port), bootstrap_queue_);
         }
         bootstrap_timer_->start_single_shot(100ms);
@@ -178,8 +161,7 @@ public:
 
         // Since we only save known good nodes,
         // only overwrite older data if we know enough nodes.
-        if (is_ready(AF_INET) || is_ready(AF_INET6))
-        {
+        if (is_ready(AF_INET) || is_ready(AF_INET6)) {
             save_state();
         }
 
@@ -189,16 +171,13 @@ public:
 
     void maybe_add_node(tr_address const& addr, tr_port port) override
     {
-        if (addr.is_ipv4())
-        {
+        if (addr.is_ipv4()) {
             auto sin = sockaddr_in{};
             sin.sin_family = AF_INET;
             sin.sin_addr = addr.addr.addr4;
             sin.sin_port = port.network();
             mediator_.api().ping_node(reinterpret_cast<sockaddr*>(&sin), sizeof(sin));
-        }
-        else if (addr.is_ipv6())
-        {
+        } else if (addr.is_ipv6()) {
             auto sin6 = sockaddr_in6{};
             sin6.sin6_family = AF_INET6;
             sin6.sin6_addr = addr.addr.addr6;
@@ -220,8 +199,7 @@ public:
 private:
     [[nodiscard]] constexpr tr_socket_t udp_socket(int af) const noexcept
     {
-        switch (af)
-        {
+        switch (af) {
         case AF_INET:
             return udp4_socket_;
 
@@ -235,10 +213,8 @@ private:
 
     [[nodiscard]] SwarmStatus swarm_status(int family, int* const setme_node_count = nullptr) const
     {
-        if (!is_valid_socket(udp_socket(family)))
-        {
-            if (setme_node_count != nullptr)
-            {
+        if (!is_valid_socket(udp_socket(family))) {
+            if (setme_node_count != nullptr) {
                 *setme_node_count = 0;
             }
 
@@ -250,23 +226,19 @@ private:
         int incoming = 0;
         mediator_.api().nodes(family, &good, &dubious, nullptr, &incoming);
 
-        if (setme_node_count != nullptr)
-        {
+        if (setme_node_count != nullptr) {
             *setme_node_count = good + dubious;
         }
 
-        if (good < 4 || good + dubious <= 8)
-        {
+        if (good < 4 || good + dubious <= 8) {
             return SwarmStatus::Broken;
         }
 
-        if (good < 40)
-        {
+        if (good < 40) {
             return SwarmStatus::Poor;
         }
 
-        if (incoming < 8)
-        {
+        if (incoming < 8) {
             return SwarmStatus::Firewalled;
         }
 
@@ -296,13 +268,11 @@ private:
         // Our DHT code is able to take up to 9 nodes in a row without
         // dropping any. After that, it takes some time to split buckets.
         // So ping the first 8 nodes quickly, then slow down.
-        if (n_added < 8U)
-        {
+        if (n_added < 8U) {
             return 2s;
         }
 
-        if (n_added < 16U)
-        {
+        if (n_added < 16U) {
             return 15s;
         }
 
@@ -313,8 +283,7 @@ private:
     {
         // Since we don't want to abuse our bootstrap nodes,
         // we don't ping them if the DHT is in a good state.
-        if (is_ready() || std::empty(bootstrap_queue_))
-        {
+        if (is_ready() || std::empty(bootstrap_queue_)) {
             return;
         }
 
@@ -340,24 +309,20 @@ private:
     void on_announce_timer()
     {
         // don't announce if the swarm isn't ready
-        if (swarm_status(AF_INET) < SwarmStatus::Poor && swarm_status(AF_INET6) < SwarmStatus::Poor)
-        {
+        if (swarm_status(AF_INET) < SwarmStatus::Poor && swarm_status(AF_INET6) < SwarmStatus::Poor) {
             return;
         }
 
         auto const now = tr_time();
-        for (auto const id : mediator_.torrents_allowing_dht())
-        {
+        for (auto const id : mediator_.torrents_allowing_dht()) {
             auto& times = announce_times_[id];
 
-            if (auto& announce_after = times.ipv4_announce_after; announce_after < now)
-            {
+            if (auto& announce_after = times.ipv4_announce_after; announce_after < now) {
                 auto const announce_again_in_n_secs = announce_torrent(mediator_.torrent_info_hash(id), AF_INET, peer_port_);
                 announce_after = now + std::chrono::seconds{ announce_again_in_n_secs }.count();
             }
 
-            if (auto& announce_after = times.ipv6_announce_after; announce_after < now)
-            {
+            if (auto& announce_after = times.ipv6_announce_after; announce_after < now) {
                 auto const announce_again_in_n_secs = announce_torrent(mediator_.torrent_info_hash(id), AF_INET6, peer_port_);
                 announce_after = now + std::chrono::seconds{ announce_again_in_n_secs }.count();
             }
@@ -391,8 +356,7 @@ private:
 
     static auto remove_bad_pex(std::vector<tr_pex>&& pex)
     {
-        static constexpr auto IsBadPex = [](tr_pex const& candidate)
-        {
+        static constexpr auto IsBadPex = [](tr_pex const& candidate) {
             // paper over a bug in some DHT implementation that gives port 1.
             // Xref: https://github.com/transmission/transmission/issues/527
             return candidate.socket_address.port_ == tr_port::from_host(1);
@@ -408,13 +372,10 @@ private:
         auto hash = tr_sha1_digest_t{};
         std::copy_n(reinterpret_cast<std::byte const*>(info_hash), std::size(hash), std::data(hash));
 
-        if (event == DHT_EVENT_VALUES)
-        {
+        if (event == DHT_EVENT_VALUES) {
             auto const pex = remove_bad_pex(tr_pex::from_compact_ipv4(data, data_len, nullptr, 0));
             self->mediator_.add_pex(hash, std::data(pex), std::size(pex));
-        }
-        else if (event == DHT_EVENT_VALUES6)
-        {
+        } else if (event == DHT_EVENT_VALUES6) {
             auto const pex = remove_bad_pex(tr_pex::from_compact_ipv6(data, data_len, nullptr, 0));
             self->mediator_.add_pex(hash, std::data(pex), std::size(pex));
         }
@@ -442,12 +403,10 @@ private:
         benc[TR_KEY_id] = tr_variant::make_raw(std::data(id_), std::size(id_));
         benc[TR_KEY_id_timestamp] = id_timestamp_;
 
-        if (num4 > 0)
-        {
+        if (num4 > 0) {
             auto compact = std::array<char, MaxNodes * CompactLen>{};
             char* out = std::data(compact);
-            for (auto const* in = std::data(sins4), *end = in + num4; in != end; ++in)
-            {
+            for (auto const* in = std::data(sins4), *end = in + num4; in != end; ++in) {
                 memcpy(out, &in->sin_addr, CompactAddrLen);
                 out += CompactAddrLen;
                 memcpy(out, &in->sin_port, PortLen); // saved in network byte order
@@ -457,12 +416,10 @@ private:
             benc[TR_KEY_nodes] = tr_variant::make_raw(std::data(compact), out - std::data(compact));
         }
 
-        if (num6 > 0)
-        {
+        if (num6 > 0) {
             auto compact6 = std::array<char, MaxNodes * Compact6Len>{};
             char* out6 = std::data(compact6);
-            for (auto const* in = std::data(sins6), *end = in + num6; in != end; ++in)
-            {
+            for (auto const* in = std::data(sins6), *end = in + num6; in != end; ++in) {
                 memcpy(out6, &in->sin6_addr, Compact6AddrLen);
                 out6 += Compact6AddrLen;
                 memcpy(out6, &in->sin6_port, PortLen); // saved in network byte order
@@ -482,14 +439,12 @@ private:
         id_ = tr_rand_obj<Id>();
         id_timestamp_ = tr_time();
 
-        if (!tr_sys_path_exists(filename))
-        {
+        if (!tr_sys_path_exists(filename)) {
             return;
         }
 
         auto otop = tr_variant_serde::benc().parse_file(filename);
-        if (!otop)
-        {
+        if (!otop) {
             return;
         }
 
@@ -499,26 +454,21 @@ private:
 
         auto& top = *otop;
         auto* const top_map = top.get_if<tr_variant::Map>();
-        if (top_map == nullptr)
-        {
+        if (top_map == nullptr) {
             return;
         }
 
-        if (auto t_opt = top_map->value_if<int64_t>(TR_KEY_id_timestamp); t_opt && *t_opt + IdTtl > id_timestamp_)
-        {
-            if (auto sv_opt = top_map->value_if<std::string_view>(TR_KEY_id); sv_opt && sv_opt->size() == id_.size())
-            {
+        if (auto t_opt = top_map->value_if<int64_t>(TR_KEY_id_timestamp); t_opt && *t_opt + IdTtl > id_timestamp_) {
+            if (auto sv_opt = top_map->value_if<std::string_view>(TR_KEY_id); sv_opt && sv_opt->size() == id_.size()) {
                 id_timestamp_ = *t_opt;
                 std::ranges::copy(*sv_opt, std::begin(id_));
             }
         }
 
-        if (auto sv_opt = top_map->value_if<std::string_view>(TR_KEY_nodes); sv_opt && sv_opt->size() % CompactLen == 0)
-        {
+        if (auto sv_opt = top_map->value_if<std::string_view>(TR_KEY_nodes); sv_opt && sv_opt->size() % CompactLen == 0) {
             auto const* walk = reinterpret_cast<std::byte const*>(sv_opt->data());
             auto const* const end = walk + sv_opt->size();
-            while (walk < end)
-            {
+            while (walk < end) {
                 auto addr = tr_address{};
                 auto port = tr_port{};
                 std::tie(addr, walk) = tr_address::from_compact_ipv4(walk);
@@ -527,12 +477,10 @@ private:
             }
         }
 
-        if (auto sv_opt = top_map->value_if<std::string_view>(TR_KEY_nodes6); sv_opt && sv_opt->size() % Compact6Len == 0)
-        {
+        if (auto sv_opt = top_map->value_if<std::string_view>(TR_KEY_nodes6); sv_opt && sv_opt->size() % Compact6Len == 0) {
             auto const* walk = reinterpret_cast<std::byte const*>(sv_opt->data());
             auto const* const end = walk + sv_opt->size();
-            while (walk < end)
-            {
+            while (walk < end) {
                 auto addr = tr_address{};
                 auto port = tr_port{};
                 std::tie(addr, walk) = tr_address::from_compact_ipv6(walk);
@@ -547,30 +495,25 @@ private:
     static void get_nodes_from_bootstrap_file(std::string_view filename, Nodes& nodes)
     {
         auto in = std::ifstream{ std::string{ filename } };
-        if (!in.is_open())
-        {
+        if (!in.is_open()) {
             return;
         }
 
         // format is each line has host, a space char, and port number
         auto line = std::string{};
-        while (std::getline(in, line))
-        {
+        while (std::getline(in, line)) {
             auto line_stream = std::istringstream{ line };
             auto addrstr = std::string{};
             auto hport = uint16_t{};
             line_stream >> addrstr >> hport;
 
-            if (line_stream.bad() || std::empty(addrstr))
-            {
+            if (line_stream.bad() || std::empty(addrstr)) {
                 tr_logAddWarn(
                     fmt::format(
                         fmt::runtime(_("Couldn't parse '{filename}' line: '{line}'")),
                         fmt::arg("filename", filename),
                         fmt::arg("line", line)));
-            }
-            else
-            {
+            } else {
                 get_nodes_from_name(addrstr.c_str(), tr_port::from_host(hport), nodes);
             }
         }
@@ -586,8 +529,7 @@ private:
 
         auto const port_str = fmt::format("{:d}", port_in.host());
         addrinfo* info = nullptr;
-        if (int const rc = getaddrinfo(name, port_str.c_str(), &hints, &info); rc != 0)
-        {
+        if (int const rc = getaddrinfo(name, port_str.c_str(), &hints, &info); rc != 0) {
             tr_logAddWarn(
                 fmt::format(
                     fmt::runtime(_("Couldn't look up '{address}:{port}': {error} ({error_code})")),
@@ -598,10 +540,8 @@ private:
             return;
         }
 
-        for (auto* infop = info; infop != nullptr; infop = infop->ai_next)
-        {
-            if (auto addrport = tr_socket_address::from_sockaddr(infop->ai_addr); addrport)
-            {
+        for (auto* infop = info; infop != nullptr; infop = infop->ai_next) {
+            if (auto addrport = tr_socket_address::from_sockaddr(infop->ai_addr); addrport) {
                 nodes.emplace_back(*addrport);
             }
         }
@@ -627,8 +567,7 @@ private:
     Nodes bootstrap_queue_;
     size_t n_bootstrapped_ = 0;
 
-    struct AnnounceInfo
-    {
+    struct AnnounceInfo {
         time_t ipv4_announce_after = 0;
         time_t ipv6_announce_after = 0;
     };

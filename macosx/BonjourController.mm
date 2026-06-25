@@ -37,8 +37,7 @@ static BonjourController* fDefaultController = nil;
 
     NSMutableString* serviceName = [NSMutableString
         stringWithFormat:@"Transmission (%@ - %@)", NSUserName(), [NSHost currentHost].localizedName];
-    if (serviceName.length > kBonjourServiceNameMaxLength)
-    {
+    if (serviceName.length > kBonjourServiceNameMaxLength) {
         [serviceName deleteCharactersInRange:NSMakeRange(kBonjourServiceNameMaxLength, serviceName.length - kBonjourServiceNameMaxLength)];
     }
 

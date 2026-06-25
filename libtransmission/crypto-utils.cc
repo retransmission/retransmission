@@ -16,8 +16,7 @@
 #include <string_view>
 #include <vector>
 
-extern "C"
-{
+extern "C" {
 #include <b64/cdecode.h>
 #include <b64/cencode.h>
 
@@ -86,8 +85,7 @@ bool tr_ssha1_matches(std::string_view ssha1, std::string_view plaintext)
 {
     using namespace ssha1_impl;
 
-    if (!tr_ssha1_test(ssha1))
-    {
+    if (!tr_ssha1_test(ssha1)) {
         return false;
     }
 
@@ -126,11 +124,9 @@ std::string tr_base64_encode(std::string_view input)
     size_t len = base64_encode_block(std::data(input), std::size(input), std::data(buf), &state);
     len += base64_encode_blockend(std::data(buf) + len, &state);
     auto str = std::string{};
-    std::copy_if(
-        std::data(buf),
-        std::data(buf) + len,
-        std::back_inserter(str),
-        [](auto ch) { return !tr_strv_contains("\r\n"sv, ch); });
+    std::copy_if(std::data(buf), std::data(buf) + len, std::back_inserter(str), [](auto ch) {
+        return !tr_strv_contains("\r\n"sv, ch);
+    });
     return str;
 }
 
@@ -156,8 +152,7 @@ constexpr void tr_binary_to_hex(InIt begin, InIt end, OutIt out)
 {
     auto constexpr Hex = "0123456789abcdef"sv;
 
-    while (begin != end)
-    {
+    while (begin != end) {
         auto const val = static_cast<unsigned int>(*begin++);
         *out++ = Hex[val >> 4];
         *out++ = Hex[val & 0xF];
@@ -170,8 +165,7 @@ constexpr void tr_hex_to_binary(char const* input, void* voutput, size_t byte_le
 
     auto* output = static_cast<uint8_t*>(voutput);
 
-    for (size_t i = 0; i < byte_length; ++i)
-    {
+    for (size_t i = 0; i < byte_length; ++i) {
         auto const upper_nibble = Hex.find(static_cast<char>(std::tolower(*input++)));
         auto const lower_nibble = Hex.find(static_cast<char>(std::tolower(*input++)));
         *output++ = (uint8_t)((upper_nibble << 4) | lower_nibble);
@@ -205,13 +199,11 @@ std::optional<tr_sha1_digest_t> tr_sha1_from_string(std::string_view hex)
 {
     using namespace hex_impl;
 
-    if (std::size(hex) != TrSha1DigestStrlen)
-    {
+    if (std::size(hex) != TrSha1DigestStrlen) {
         return {};
     }
 
-    if (!std::ranges::all_of(hex, [](unsigned char ch) { return isxdigit(ch); }))
-    {
+    if (!std::ranges::all_of(hex, [](unsigned char ch) { return isxdigit(ch); })) {
         return {};
     }
 
@@ -224,13 +216,11 @@ std::optional<tr_sha256_digest_t> tr_sha256_from_string(std::string_view hex)
 {
     using namespace hex_impl;
 
-    if (std::size(hex) != TrSha256DigestStrlen)
-    {
+    if (std::size(hex) != TrSha256DigestStrlen) {
         return {};
     }
 
-    if (!std::ranges::all_of(hex, [](unsigned char ch) { return isxdigit(ch); }))
-    {
+    if (!std::ranges::all_of(hex, [](unsigned char ch) { return isxdigit(ch); })) {
         return {};
     }
 
@@ -250,8 +240,7 @@ void tr_rand_buffer_std(void* buffer, size_t length)
     static thread_local auto gen = std::mt19937{ std::random_device{}() };
     static thread_local auto dist = std::uniform_int_distribution<unsigned long long>{};
 
-    for (auto *walk = static_cast<uint8_t*>(buffer), *end = walk + length; walk < end;)
-    {
+    for (auto *walk = static_cast<uint8_t*>(buffer), *end = walk + length; walk < end;) {
         auto const tmp = dist(gen);
         auto const step = std::min(sizeof(tmp), static_cast<size_t>(end - walk));
         walk = std::copy_n(reinterpret_cast<uint8_t const*>(&tmp), step, walk);
@@ -260,8 +249,7 @@ void tr_rand_buffer_std(void* buffer, size_t length)
 
 void tr_rand_buffer(void* buffer, size_t length)
 {
-    if (!tr_rand_buffer_crypto(buffer, length))
-    {
+    if (!tr_rand_buffer_crypto(buffer, length)) {
         tr_rand_buffer_std(buffer, length);
     }
 }

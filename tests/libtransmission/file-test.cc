@@ -94,28 +94,24 @@ protected:
     {
         char const* p = path;
 
-        while (*p != '\0')
-        {
+        while (*p != '\0') {
             char const* slash_pos = strchr(p, '/');
 
 #ifdef _WIN32
             char const* backslash_pos = strchr(p, '\\');
 
-            if (slash_pos == nullptr || (backslash_pos != nullptr && backslash_pos < slash_pos))
-            {
+            if (slash_pos == nullptr || (backslash_pos != nullptr && backslash_pos < slash_pos)) {
                 slash_pos = backslash_pos;
             }
 #endif
 
-            if (slash_pos == nullptr)
-            {
+            if (slash_pos == nullptr) {
                 slash_pos = p + strlen(p) - 1;
             }
 
             auto const path_part = std::string{ path, static_cast<size_t>(slash_pos - path + 1) };
             auto const info = tr_sys_path_get_info(path_part, TR_SYS_PATH_NO_FOLLOW);
-            if (!info || (!info->isFile() && !info->isFolder()))
-            {
+            if (!info || (!info->isFile() && !info->isFolder())) {
                 return false;
             }
 
@@ -136,8 +132,7 @@ protected:
 #endif
     }
 
-    struct XnameTestData
-    {
+    struct XnameTestData {
         std::string_view input;
         std::string_view output;
     };
@@ -147,20 +142,16 @@ protected:
         size_t data_size,
         std::string_view (*func)(std::string_view, tr_error*))
     {
-        for (size_t i = 0; i < data_size; ++i)
-        {
+        for (size_t i = 0; i < data_size; ++i) {
             auto error = tr_error{};
             auto const& [input, output] = data[i];
             auto const name = func(input, &error);
 
-            if (!std::empty(data[i].output))
-            {
+            if (!std::empty(data[i].output)) {
                 EXPECT_NE(""sv, name);
                 EXPECT_FALSE(error) << error;
                 EXPECT_EQ(output, name) << " in [" << input << ']';
-            }
-            else
-            {
+            } else {
                 EXPECT_EQ(""sv, name) << " in [" << input << ']';
                 EXPECT_TRUE(error);
             }
@@ -176,31 +167,23 @@ protected:
         EXPECT_NE(TR_BAD_SYS_DIR, dd);
         EXPECT_FALSE(err) << err;
 
-        for (;;)
-        {
+        for (;;) {
             char const* name = tr_sys_dir_read_name(dd, &err);
-            if (name == nullptr)
-            {
+            if (name == nullptr) {
                 break;
             }
 
             EXPECT_FALSE(err) << err;
 
-            if (strcmp(name, ".") == 0 || strcmp(name, "..") == 0)
-            {
+            if (strcmp(name, ".") == 0 || strcmp(name, "..") == 0) {
                 continue;
             }
 
-            if (strcmp(name, "a") == 0)
-            {
+            if (strcmp(name, "a") == 0) {
                 *have1 = true;
-            }
-            else if (strcmp(name, "b") == 0)
-            {
+            } else if (strcmp(name, "b") == 0) {
                 *have2 = true;
-            }
-            else
-            {
+            } else {
                 FAIL();
             }
         }
@@ -254,8 +237,7 @@ TEST_F(FileTest, getInfo)
     EXPECT_LE(info->last_modified_at, time(nullptr) + 1);
     tr_sys_path_remove(path1);
 
-    if (createSymlink(path1, path2, false))
-    {
+    if (createSymlink(path1, path2, false)) {
         // Can't get info of non-existent file/directory
         info = tr_sys_path_get_info(path1, 0, &err);
         EXPECT_FALSE(info.has_value());
@@ -300,9 +282,7 @@ TEST_F(FileTest, getInfo)
 
         tr_sys_path_remove(path2);
         tr_sys_path_remove(path1);
-    }
-    else
-    {
+    } else {
         fmt::print(stderr, "WARNING: [{:s}] unable to run symlink tests\n", __FUNCTION__);
     }
 }
@@ -364,8 +344,7 @@ TEST_F(FileTest, pathExists)
 
     tr_sys_path_remove(path1);
 
-    if (createSymlink(path1, path2, false))
-    {
+    if (createSymlink(path1, path2, false)) {
         // Non-existent file does not exist (via symlink)
         EXPECT_FALSE(tr_sys_path_exists(path1, &error));
         EXPECT_FALSE(error) << error;
@@ -386,9 +365,7 @@ TEST_F(FileTest, pathExists)
 
         tr_sys_path_remove(path2);
         tr_sys_path_remove(path1);
-    }
-    else
-    {
+    } else {
         fmt::print(stderr, "WARNING: [{:s}] unable to run symlink tests\n", __FUNCTION__);
     }
 }
@@ -491,8 +468,7 @@ TEST_F(FileTest, pathIsSame)
     tr_sys_path_remove(path1);
     tr_sys_path_remove(path2);
 
-    if (createSymlink(path1, ".", true))
-    {
+    if (createSymlink(path1, ".", true)) {
         /* Directory and symlink pointing to it are the same */
         EXPECT_TRUE(tr_sys_path_is_same(path1, test_dir.data(), &error));
         EXPECT_FALSE(error) << error;
@@ -579,9 +555,7 @@ TEST_F(FileTest, pathIsSame)
 
         tr_sys_path_remove(path2);
         tr_sys_path_remove(path1);
-    }
-    else
-    {
+    } else {
         fmt::print(stderr, "WARNING: [{:s}] unable to run symlink tests\n", __FUNCTION__);
     }
 
@@ -589,8 +563,7 @@ TEST_F(FileTest, pathIsSame)
 
     createFileWithContents(path1, "test");
 
-    if (createHardlink(path2, path1))
-    {
+    if (createHardlink(path2, path1)) {
         /* File and hardlink to it are the same */
         EXPECT_TRUE(tr_sys_path_is_same(path1, path2, &error));
         EXPECT_FALSE(error) << error;
@@ -619,19 +592,14 @@ TEST_F(FileTest, pathIsSame)
 
         tr_sys_path_remove(path3);
         tr_sys_path_remove(path2);
-    }
-    else
-    {
+    } else {
         fmt::print(stderr, "WARNING: [{:s}] unable to run symlink tests\n", __FUNCTION__);
     }
 
-    if (createSymlink(path2, path1, false) && createHardlink(path3, path1))
-    {
+    if (createSymlink(path2, path1, false) && createHardlink(path3, path1)) {
         EXPECT_TRUE(tr_sys_path_is_same(path2, path3, &error));
         EXPECT_FALSE(error) << error;
-    }
-    else
-    {
+    } else {
         fmt::print(stderr, "WARNING: [{:s}] unable to run combined symlink and hardlink tests\n", __FUNCTION__);
     }
 
@@ -652,8 +620,7 @@ TEST_F(FileTest, pathResolve)
 
     createFileWithContents(path1, "test");
 
-    if (createSymlink(path2, path1, false))
-    {
+    if (createSymlink(path2, path1, false)) {
         auto resolved = tr_sys_path_resolve(path2, &error);
         EXPECT_FALSE(error) << error;
         EXPECT_TRUE(pathContainsNoSymlinks(resolved.c_str()));
@@ -666,9 +633,7 @@ TEST_F(FileTest, pathResolve)
         resolved = tr_sys_path_resolve(path2, &error);
         EXPECT_FALSE(error) << error;
         EXPECT_TRUE(pathContainsNoSymlinks(resolved.c_str()));
-    }
-    else
-    {
+    } else {
         fmt::print(stderr, "WARNING: [{:s}] unable to run symlink tests\n", __FUNCTION__);
     }
 
@@ -845,8 +810,7 @@ TEST_F(FileTest, pathDirname)
     });
 #endif
 
-    for (auto const& [input, expected] : DirnameTests)
-    {
+    for (auto const& [input, expected] : DirnameTests) {
         EXPECT_EQ(expected, tr_sys_path_dirname(input))
             << "input[" << input << "] expected [" << expected << "] actual [" << tr_sys_path_dirname(input) << "]\n";
     }
@@ -916,8 +880,7 @@ TEST_F(FileTest, pathRename)
 
     path3.assign(test_dir, "/c"sv);
 
-    if (createSymlink(path2, path1, false))
-    {
+    if (createSymlink(path2, path1, false)) {
         /* Preconditions */
         EXPECT_TRUE(tr_sys_path_exists(path2));
         EXPECT_FALSE(tr_sys_path_exists(path3));
@@ -931,14 +894,11 @@ TEST_F(FileTest, pathRename)
         EXPECT_TRUE(tr_sys_path_is_same(path1, path3));
 
         tr_sys_path_remove(path3);
-    }
-    else
-    {
+    } else {
         fmt::print(stderr, "WARNING: [{:s}] unable to run symlink tests\n", __FUNCTION__);
     }
 
-    if (createHardlink(path2, path1))
-    {
+    if (createHardlink(path2, path1)) {
         /* Preconditions */
         EXPECT_TRUE(tr_sys_path_exists(path2));
         EXPECT_FALSE(tr_sys_path_exists(path3));
@@ -952,9 +912,7 @@ TEST_F(FileTest, pathRename)
         EXPECT_TRUE(tr_sys_path_is_same(path1, path3));
 
         tr_sys_path_remove(path3);
-    }
-    else
-    {
+    } else {
         fmt::print(stderr, "WARNING: [{:s}] unable to run hardlink tests\n", __FUNCTION__);
     }
 
@@ -1018,8 +976,7 @@ TEST_F(FileTest, pathNativeSeparators)
         { "C:\\a/b\\c", TR_IF_WIN32("C:\\a\\b\\c", "C:\\a/b\\c") },
     });
 
-    for (auto const& [input, expected] : Tests)
-    {
+    for (auto const& [input, expected] : Tests) {
         auto buf = tr_pathbuf{ input };
         EXPECT_EQ(expected, tr_sys_path_native_separators(std::data(buf)));
     }
@@ -1203,16 +1160,13 @@ TEST_F(FileTest, filePreallocate)
 
     auto error = tr_error{};
     auto prealloc_size = size_t{ 50 };
-    if (tr_sys_file_preallocate(fd, prealloc_size, 0, &error))
-    {
+    if (tr_sys_file_preallocate(fd, prealloc_size, 0, &error)) {
         EXPECT_FALSE(error) << error;
         auto info = tr_sys_path_get_info(path1);
         EXPECT_TRUE(info.has_value());
         assert(info.has_value());
         EXPECT_EQ(prealloc_size, info->size);
-    }
-    else
-    {
+    } else {
         EXPECT_TRUE(error);
         fmt::print(
             stderr,
@@ -1230,16 +1184,13 @@ TEST_F(FileTest, filePreallocate)
     fd = tr_sys_file_open(path1, TR_SYS_FILE_WRITE | TR_SYS_FILE_CREATE, 0600);
 
     prealloc_size = size_t{ 500U } * 1024U * 1024U;
-    if (tr_sys_file_preallocate(fd, prealloc_size, TR_SYS_FILE_PREALLOC_SPARSE, &error))
-    {
+    if (tr_sys_file_preallocate(fd, prealloc_size, TR_SYS_FILE_PREALLOC_SPARSE, &error)) {
         EXPECT_FALSE(error) << error;
         auto info = tr_sys_path_get_info(path1);
         EXPECT_TRUE(info.has_value());
         assert(info.has_value());
         EXPECT_EQ(prealloc_size, info->size);
-    }
-    else
-    {
+    } else {
         EXPECT_TRUE(error);
         fmt::print(
             stderr,
@@ -1376,11 +1327,9 @@ TEST_F(FileTest, dirOpen)
     EXPECT_NE(TR_BAD_SYS_DIR, odir);
     EXPECT_FALSE(err);
     auto files = std::set<std::string>{};
-    for (;;)
-    {
+    for (;;) {
         char const* const filename = tr_sys_dir_read_name(odir, &err);
-        if (filename == nullptr)
-        {
+        if (filename == nullptr) {
             break;
         }
         files.insert(filename);

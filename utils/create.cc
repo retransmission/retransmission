@@ -60,8 +60,7 @@ static_assert(Options[std::size(Options) - 2].val != 0);
 
 namespace
 {
-struct app_options
-{
+struct app_options {
     tr_announce_list trackers;
     std::vector<std::string> webseeds;
     std::string outfile;
@@ -79,10 +78,8 @@ int parseCommandLine(app_options& options, int argc, char const* const* argv)
     int c;
     char const* optarg;
 
-    while ((c = tr_getopt(Usage, argc, argv, std::data(Options), &optarg)) != TR_OPT_DONE)
-    {
-        switch (c)
-        {
+    while ((c = tr_getopt(Usage, argc, argv, std::data(Options), &optarg)) != TR_OPT_DONE) {
+        switch (c) {
         case 'V':
             options.show_version = true;
             break;
@@ -108,12 +105,10 @@ int parseCommandLine(app_options& options, int argc, char const* const* argv)
             break;
 
         case 's':
-            if (optarg != nullptr)
-            {
+            if (optarg != nullptr) {
                 char* endptr = nullptr;
                 options.piece_size = strtoul(optarg, &endptr, 10) * KiB;
-                if (endptr != nullptr && *endptr == 'M')
-                {
+                if (endptr != nullptr && *endptr == 'M') {
                     options.piece_size *= KiB;
                 }
             }
@@ -147,31 +142,26 @@ int tr_main(int argc, char* argv[])
     tr_logSetLevel(TR_LOG_ERROR);
 
     auto options = app_options{};
-    if (parseCommandLine(options, argc, (char const* const*)argv) != 0)
-    {
+    if (parseCommandLine(options, argc, (char const* const*)argv) != 0) {
         return EXIT_FAILURE;
     }
 
-    if (options.show_version)
-    {
+    if (options.show_version) {
         fprintf(stderr, "%s %s\n", MyName, LONG_VERSION_STRING);
         return EXIT_SUCCESS;
     }
 
-    if (std::empty(options.infile))
-    {
+    if (std::empty(options.infile)) {
         fprintf(stderr, "ERROR: No input file or directory specified.\n");
         tr_getopt_usage(MyName, Usage, std::data(Options));
         fprintf(stderr, "\n");
         return EXIT_FAILURE;
     }
 
-    if (std::empty(options.outfile))
-    {
+    if (std::empty(options.outfile)) {
         auto error = tr_error{};
         auto const base = tr_sys_path_basename(options.infile, &error);
-        if (error)
-        {
+        if (error) {
             auto const errmsg = fmt::format(
                 "Couldn't use '{path}': {error} ({error_code})",
                 fmt::arg("path", options.infile),
@@ -182,8 +172,7 @@ int tr_main(int argc, char* argv[])
         }
 
         auto const cur = tr_sys_dir_get_current(&error);
-        if (error)
-        {
+        if (error) {
             auto const errmsg = fmt::format(
                 "Couldn't create '{path}': {error} ({error_code})",
                 fmt::arg("path", base),
@@ -196,15 +185,11 @@ int tr_main(int argc, char* argv[])
         options.outfile = fmt::format("{:s}/{:s}.torrent"sv, cur, base);
     }
 
-    if (std::empty(options.trackers))
-    {
-        if (options.is_private)
-        {
+    if (std::empty(options.trackers)) {
+        if (options.is_private) {
             fprintf(stderr, "ERROR: no trackers specified for a private torrent\n");
             return EXIT_FAILURE;
-        }
-        else
-        {
+        } else {
             printf("WARNING: no trackers specified\n");
         }
     }
@@ -213,25 +198,21 @@ int tr_main(int argc, char* argv[])
 
     auto builder = tr_metainfo_builder(options.infile);
     auto const n_files = builder.file_count();
-    if (n_files == 0U)
-    {
+    if (n_files == 0U) {
         fprintf(stderr, "ERROR: Cannot find specified input file or directory.\n");
         return EXIT_FAILURE;
     }
 
-    for (tr_file_index_t i = 0; i < n_files; ++i)
-    {
+    for (tr_file_index_t i = 0; i < n_files; ++i) {
         auto const& path = builder.path(i);
-        if (!tr_torrent_files::is_subpath_sanitized(path, false))
-        {
+        if (!tr_torrent_files::is_subpath_sanitized(path, false)) {
             fmt::print(stderr, "WARNING\n");
             fmt::print(stderr, "filename \"{:s}\" may not be portable on all systems.\n", path);
             fmt::print(stderr, "consider \"{:s}\" instead.\n", tr_torrent_files::sanitize_subpath(path, false));
         }
     }
 
-    if (options.piece_size != 0 && !builder.set_piece_size(options.piece_size))
-    {
+    if (options.piece_size != 0 && !builder.set_piece_size(options.piece_size)) {
         fmt::print(stderr, "ERROR: piece size must be at least 16 KiB and must be a power of two.\n");
         return EXIT_FAILURE;
     }
@@ -250,13 +231,11 @@ int tr_main(int argc, char* argv[])
         fmt::arg("piece_count", builder.piece_count()),
         fmt::arg("piece_size", Memory{ builder.piece_size(), Memory::Units::Bytes }.to_string()));
 
-    if (!std::empty(options.comment))
-    {
+    if (!std::empty(options.comment)) {
         builder.set_comment(options.comment);
     }
 
-    if (!std::empty(options.source))
-    {
+    if (!std::empty(options.source)) {
         builder.set_source(options.source);
     }
 
@@ -267,12 +246,10 @@ int tr_main(int argc, char* argv[])
 
     auto future = builder.make_checksums();
     auto last = std::optional<tr_piece_index_t>{};
-    while (future.wait_for(std::chrono::milliseconds(500)) != std::future_status::ready)
-    {
+    while (future.wait_for(std::chrono::milliseconds(500)) != std::future_status::ready) {
         auto const [current, total] = builder.checksum_status();
 
-        if (!last || current != *last)
-        {
+        if (!last || current != *last) {
             fmt::print("\rPiece {:d}/{:d} ...", current, total);
             fflush(stdout);
             last = current;
@@ -281,14 +258,12 @@ int tr_main(int argc, char* argv[])
 
     fmt::print(" ");
 
-    if (auto error = future.get(); error)
-    {
+    if (auto error = future.get(); error) {
         fmt::print("ERROR: {:s} {:d}\n", error.message(), error.code());
         return EXIT_FAILURE;
     }
 
-    if (auto error = tr_error{}; !builder.save(options.outfile, &error))
-    {
+    if (auto error = tr_error{}; !builder.save(options.outfile, &error)) {
         auto const errmsg = fmt::format(
             "Couldn't save '{path}': {error} ({error_code})",
             fmt::arg("path", options.outfile),

@@ -30,12 +30,7 @@ class tr_session_alt_speeds
 public:
     using Settings = tr::SessionAltSpeedSettings;
 
-    enum class ChangeReason : uint8_t
-    {
-        User,
-        Scheduler,
-        LoadSettings
-    };
+    enum class ChangeReason : uint8_t { User, Scheduler, LoadSettings };
 
     class Mediator
     {
@@ -120,12 +115,9 @@ public:
 
     constexpr void set_speed_limit(tr_direction dir, Speed const limit) noexcept
     {
-        if (dir == tr_direction::Down)
-        {
+        if (dir == tr_direction::Down) {
             settings_.speed_down_kbyps = static_cast<decltype(settings_.speed_down_kbyps)>(limit.count(Speed::Units::KByps));
-        }
-        else
-        {
+        } else {
             settings_.speed_up_kbyps = static_cast<decltype(settings_.speed_up_kbyps)>(limit.count(Speed::Units::KByps));
         }
     }

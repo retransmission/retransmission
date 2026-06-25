@@ -33,9 +33,9 @@ public:
 
     [[nodiscard]] bool contains(tr_address const& addr) const noexcept
     {
-        return std::ranges::any_of(
-            blocklists_,
-            [&addr](auto const& blocklist) { return blocklist.enabled() && blocklist.contains(addr); });
+        return std::ranges::any_of(blocklists_, [&addr](auto const& blocklist) {
+            return blocklist.enabled() && blocklist.contains(addr);
+        });
     }
 
     [[nodiscard]] constexpr auto num_lists() const noexcept
@@ -45,11 +45,9 @@ public:
 
     [[nodiscard]] constexpr auto num_rules() const noexcept
     {
-        return std::accumulate(
-            std::begin(blocklists_),
-            std::end(blocklists_),
-            size_t{},
-            [](auto sum, auto& cur) { return sum + std::size(cur); });
+        return std::accumulate(std::begin(blocklists_), std::end(blocklists_), size_t{}, [](auto sum, auto& cur) {
+            return sum + std::size(cur);
+        });
     }
 
     void load(std::string_view folder, bool is_enabled);

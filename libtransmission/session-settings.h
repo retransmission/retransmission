@@ -30,8 +30,7 @@
 namespace tr::serializer
 {
 template<>
-struct Converter<small::max_size_vector<tr_preferred_transport, PreferredTransportCount>>
-{
+struct Converter<small::max_size_vector<tr_preferred_transport, PreferredTransportCount>> {
     static tr_variant to_variant(small::max_size_vector<tr_preferred_transport, PreferredTransportCount> const& src);
     static bool to_value(tr_variant const& src, small::max_size_vector<tr_preferred_transport, PreferredTransportCount>* tgt);
 };
@@ -53,8 +52,7 @@ template<typename Settings>
 
 } // namespace detail
 
-struct SessionSettings final
-{
+struct SessionSettings final {
 public:
     SessionSettings() = default;
 
@@ -70,12 +68,9 @@ public:
     {
         tr::serializer::load(*this, Fields, src);
 
-        if (src.contains(TR_KEY_preferred_transports))
-        {
+        if (src.contains(TR_KEY_preferred_transports)) {
             fixup_from_preferred_transports();
-        }
-        else
-        {
+        } else {
             fixup_to_preferred_transports();
         }
     }
@@ -230,8 +225,7 @@ public:
         Field<&SessionSettings::utp_enabled>{ TR_KEY_utp_enabled });
 };
 
-struct SessionAltSpeedSettings final
-{
+struct SessionAltSpeedSettings final {
 public:
     SessionAltSpeedSettings() = default;
 
@@ -278,8 +272,7 @@ public:
         Field<&SessionAltSpeedSettings::minute_end>{ TR_KEY_alt_speed_time_end });
 };
 
-struct RpcServerSettings final
-{
+struct RpcServerSettings final {
 public:
     RpcServerSettings() = default;
 

@@ -16,12 +16,10 @@
 std::string tr_strv_to_utf8_string(std::string_view sv)
 {
     // local pool for non-app tools like transmission-daemon, transmission-remote, transmission-create, ...
-    @autoreleasepool
-    {
+    @autoreleasepool {
         // UTF-8 encoding
         NSString* const utf8 = [[NSString alloc] initWithBytes:std::data(sv) length:std::size(sv) encoding:NSUTF8StringEncoding];
-        if (utf8 != nil && utf8.UTF8String != nullptr)
-        {
+        if (utf8 != nil && utf8.UTF8String != nullptr) {
             return tr_strv_to_utf8_string(utf8);
         }
 
@@ -41,8 +39,7 @@ std::string tr_strv_to_utf8_string(std::string_view sv)
                   convertedString:&convertedString
               usedLossyConversion:nil];
 
-        if (stringEncoding && convertedString != nil && convertedString.UTF8String != nullptr)
-        {
+        if (stringEncoding && convertedString != nil && convertedString.UTF8String != nullptr) {
             return tr_strv_to_utf8_string(convertedString);
         }
 

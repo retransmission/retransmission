@@ -38,12 +38,9 @@
     NSRect cancelFrame = self.fCancelButton.frame;
     cancelFrame.size.width += 10.0;
 
-    if (NSWidth(openFrame) > NSWidth(cancelFrame))
-    {
+    if (NSWidth(openFrame) > NSWidth(cancelFrame)) {
         cancelFrame.size.width = NSWidth(openFrame);
-    }
-    else
-    {
+    } else {
         openFrame.size.width = NSWidth(cancelFrame);
     }
 
@@ -79,15 +76,11 @@
 - (void)updateOpenButtonForURL:(NSString*)string
 {
     BOOL enable = YES;
-    if ([string isEqualToString:@""])
-    {
+    if ([string isEqualToString:@""]) {
         enable = NO;
-    }
-    else
-    {
+    } else {
         NSRange prefixRange = [string rangeOfString:@"://"];
-        if (prefixRange.location != NSNotFound && string.length == NSMaxRange(prefixRange))
-        {
+        if (prefixRange.location != NSNotFound && string.length == NSMaxRange(prefixRange)) {
             enable = NO;
         }
     }

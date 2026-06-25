@@ -25,8 +25,7 @@ class tr_file_piece_map
 {
 public:
     template<typename T>
-    struct index_span_t
-    {
+    struct index_span_t {
         T begin;
         T end;
     };
@@ -34,8 +33,7 @@ public:
     using piece_span_t = index_span_t<tr_piece_index_t>;
 
     template<typename T>
-    struct offset_t
-    {
+    struct offset_t {
         T index;
         uint64_t offset;
     };

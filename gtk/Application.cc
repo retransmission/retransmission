@@ -137,8 +137,7 @@ public:
     void actions_handler(Glib::ustring const& action_name);
 
 private:
-    struct counts_data
-    {
+    struct counts_data {
         int total_count = 0;
         int queued_count = 0;
         int stopped_count = 0;
@@ -250,8 +249,7 @@ std::string get_details_dialog_key(std::vector<tr_torrent_id_t> const& id_list)
 
     std::ostringstream gstr;
 
-    for (auto const id : tmp)
-    {
+    for (auto const id : tmp) {
         gstr << id << ' ';
     }
 
@@ -274,8 +272,7 @@ void Application::Impl::show_details_dialog_for_selected_torrents()
 
     auto dialog_it = details_.find(key);
 
-    if (dialog_it == details_.end())
-    {
+    if (dialog_it == details_.end()) {
         auto dialog = DetailsDialog::create(*wind_, core_);
         dialog->set_torrents(ids);
         gtr_window_on_close(*dialog, [this, key]() { details_.erase(key); });
@@ -296,31 +293,26 @@ Application::Impl::counts_data Application::Impl::get_selected_torrent_counts() 
 {
     counts_data counts;
 
-    wind_->for_each_selected_torrent(
-        [&counts](auto const& torrent)
-        {
-            ++counts.total_count;
+    wind_->for_each_selected_torrent([&counts](auto const& torrent) {
+        ++counts.total_count;
 
-            auto const activity = torrent->get_activity();
+        auto const activity = torrent->get_activity();
 
-            if (activity == TR_STATUS_DOWNLOAD_WAIT || activity == TR_STATUS_SEED_WAIT)
-            {
-                ++counts.queued_count;
-            }
+        if (activity == TR_STATUS_DOWNLOAD_WAIT || activity == TR_STATUS_SEED_WAIT) {
+            ++counts.queued_count;
+        }
 
-            if (activity == TR_STATUS_STOPPED)
-            {
-                ++counts.stopped_count;
-            }
-        });
+        if (activity == TR_STATUS_STOPPED) {
+            ++counts.stopped_count;
+        }
+    });
 
     return counts;
 }
 
 bool Application::Impl::refresh_actions()
 {
-    if (!is_closing_)
-    {
+    if (!is_closing_) {
         size_t const total = core_->get_torrent_count();
         size_t const active = core_->get_active_torrent_count();
         auto const torrent_count = core_->get_model()->get_n_items();
@@ -348,9 +340,9 @@ bool Application::Impl::refresh_actions()
         gtr_action_set_sensitive("open-torrent-folder", sel_counts.total_count == 1);
         gtr_action_set_sensitive("copy-magnet-link-to-clipboard", sel_counts.total_count == 1);
 
-        bool const can_update = wind_ != nullptr &&
-            wind_->for_each_selected_torrent_until([](auto const& torrent)
-                                                   { return tr_torrentCanManualUpdate(&torrent->get_underlying()); });
+        bool const can_update = wind_ != nullptr && wind_->for_each_selected_torrent_until([](auto const& torrent) {
+            return tr_torrentCanManualUpdate(&torrent->get_underlying());
+        });
         gtr_action_set_sensitive("torrent-reannounce", can_update);
     }
 
@@ -360,8 +352,7 @@ bool Application::Impl::refresh_actions()
 
 void Application::Impl::refresh_actions_soon()
 {
-    if (!is_closing_ && !refresh_actions_tag_.connected())
-    {
+    if (!is_closing_ && !refresh_actions_tag_.connected()) {
         refresh_actions_tag_ = Glib::signal_idle().connect(sigc::mem_fun(*this, &Impl::refresh_actions));
     }
 }
@@ -382,16 +373,13 @@ void register_magnet_link_handler()
 {
     std::string const content_type = "x-scheme-handler/magnet";
 
-    try
-    {
+    try {
         auto const app = Gio::AppInfo::create_from_commandline(
             "transmission-gtk",
             "transmission-gtk",
             TR_GIO_APP_INFO_CREATE_FLAGS(SUPPORTS_URIS));
         app->set_as_default_for_type(content_type);
-    }
-    catch (Gio::Error const& e)
-    {
+    } catch (Gio::Error const& e) {
         gtr_warning(
             fmt::format(
                 fmt::runtime(_("Couldn't register Transmission as a {content_type} handler: {error} ({error_code})")),
@@ -403,8 +391,7 @@ void register_magnet_link_handler()
 
 void ensure_magnet_handler_exists()
 {
-    if (!has_magnet_link_handler())
-    {
+    if (!has_magnet_link_handler()) {
         register_magnet_link_handler();
     }
 }
@@ -422,8 +409,7 @@ void Application::Impl::on_main_window_size_allocated()
 
     gtr_pref_flag_set(TR_KEY_main_window_is_maximized, is_maximized);
 
-    if (!is_maximized)
-    {
+    if (!is_maximized) {
 #if !GTKMM_CHECK_VERSION(4, 0, 0)
         int x = 0;
         int y = 0;
@@ -450,32 +436,27 @@ void Application::Impl::on_main_window_size_allocated()
 
 bool Application::Impl::on_rpc_changed_idle(tr_rpc_callback_type type, std::optional<tr_torrent_id_t> tor_id)
 {
-    switch (type)
-    {
+    switch (type) {
     case TR_RPC_SESSION_CLOSE:
         gtr_action_activate("quit");
         break;
 
     case TR_RPC_TORRENT_ADDED:
-        if (tor_id)
-        {
-            if (auto* tor = core_->find_torrent(*tor_id); tor != nullptr)
-            {
+        if (tor_id) {
+            if (auto* tor = core_->find_torrent(*tor_id); tor != nullptr) {
                 core_->add_torrent(Torrent::create(tor), true);
             }
         }
         break;
 
     case TR_RPC_TORRENT_REMOVING:
-        if (tor_id)
-        {
+        if (tor_id) {
             core_->remove_torrent(*tor_id, false);
         }
         break;
 
     case TR_RPC_TORRENT_TRASHING:
-        if (tor_id)
-        {
+        if (tor_id) {
             core_->remove_torrent(*tor_id, true);
         }
         break;
@@ -489,18 +470,16 @@ bool Application::Impl::on_rpc_changed_idle(tr_rpc_callback_type type, std::opti
             auto& vals = gtr_pref_get_all();
             auto const serde = tr_variant_serde::benc();
 
-            for (auto& [key, newval] : tr_sessionGetSettings(session))
-            {
-                if (auto iter = vals.find(key); iter == vals.end() || serde.to_string(iter->second) != serde.to_string(newval))
-                {
+            for (auto& [key, newval] : tr_sessionGetSettings(session)) {
+                if (auto iter = vals.find(key);
+                    iter == vals.end() || serde.to_string(iter->second) != serde.to_string(newval)) {
                     changed_keys.emplace(key);
                     vals.insert_or_assign(key, std::move(newval));
                 }
             }
 
             // emit change notifications
-            for (auto const& changed_key : changed_keys)
-            {
+            for (auto const& changed_key : changed_keys) {
                 core_->signal_prefs_changed().emit(changed_key);
             }
             break;
@@ -578,13 +557,11 @@ void Application::Impl::on_startup()
 #endif
 
     /* ensure the directories are created */
-    if (auto const str = gtr_pref_string_get(TR_KEY_download_dir); !str.empty())
-    {
+    if (auto const str = gtr_pref_string_get(TR_KEY_download_dir); !str.empty()) {
         (void)g_mkdir_with_parents(str.c_str(), 0777);
     }
 
-    if (auto const str = gtr_pref_string_get(TR_KEY_incomplete_dir); !str.empty())
-    {
+    if (auto const str = gtr_pref_string_get(TR_KEY_incomplete_dir); !str.empty()) {
         (void)g_mkdir_with_parents(str.c_str(), 0777);
     }
 
@@ -621,23 +598,18 @@ void Application::Impl::on_startup()
 
     app_.hold();
     app_setup();
-    tr_sessionSetRPCCallback(
-        session,
-        [this](tr_rpc_callback_type const type, std::optional<tr_torrent_id_t> const tor_id)
-        {
-            Glib::signal_idle().connect([this, type, tor_id]() { return on_rpc_changed_idle(type, tor_id); });
-            return TR_RPC_NOREMOVE;
-        });
+    tr_sessionSetRPCCallback(session, [this](tr_rpc_callback_type const type, std::optional<tr_torrent_id_t> const tor_id) {
+        Glib::signal_idle().connect([this, type, tor_id]() { return on_rpc_changed_idle(type, tor_id); });
+        return TR_RPC_NOREMOVE;
+    });
 
     /* check & see if it's time to update the blocklist */
-    if (gtr_pref_flag_get(TR_KEY_blocklist_enabled) && gtr_pref_flag_get(TR_KEY_blocklist_updates_enabled))
-    {
+    if (gtr_pref_flag_get(TR_KEY_blocklist_enabled) && gtr_pref_flag_get(TR_KEY_blocklist_updates_enabled)) {
         auto const last_time = gtr_pref_int_get<time_t>(TR_KEY_blocklist_date);
         int const SECONDS_IN_A_WEEK = 7 * 24 * 60 * 60;
         time_t const now = time(nullptr);
 
-        if (last_time + SECONDS_IN_A_WEEK < now)
-        {
+        if (last_time + SECONDS_IN_A_WEEK < now) {
             core_->blocklist_update();
         }
     }
@@ -660,8 +632,7 @@ void Application::Impl::on_activate()
     /* GApplication emits an 'activate' signal when bootstrapping the primary.
      * Ordinarily we handle that by presenting the main window, but if the user
      * started Transmission minimized, ignore that initial signal... */
-    if (start_iconified_ && activation_count_ == 1)
-    {
+    if (start_iconified_ && activation_count_ == 1) {
         return;
     }
 
@@ -719,8 +690,7 @@ void Application::Impl::on_core_busy(bool busy)
 
 void Application::Impl::app_setup()
 {
-    if (start_iconified_)
-    {
+    if (start_iconified_) {
         gtr_pref_flag_set(TR_KEY_show_notification_area_icon, true);
     }
 
@@ -749,13 +719,10 @@ void Application::Impl::app_setup()
     update_model_once();
 
     /* either show the window or iconify it */
-    if (!start_iconified_)
-    {
+    if (!start_iconified_) {
         wind_->show();
         gtr_action_set_toggled("toggle-main-window", true);
-    }
-    else
-    {
+    } else {
         gtr_window_set_skip_taskbar_hint(*wind_, icon_ != nullptr);
         gtr_action_set_toggled("toggle-main-window", false);
     }
@@ -775,15 +742,13 @@ void Application::Impl::presentMainWindow()
 {
     gtr_action_set_toggled("toggle-main-window", true);
 
-    if (is_iconified_)
-    {
+    if (is_iconified_) {
         is_iconified_ = false;
 
         gtr_window_set_skip_taskbar_hint(*wind_, false);
     }
 
-    if (!wind_->get_visible())
-    {
+    if (!wind_->get_visible()) {
         placeWindowFromPrefs();
         gtr_widget_set_visible(*wind_, true);
     }
@@ -803,24 +768,18 @@ void Application::Impl::hideMainWindow()
 
 void Application::Impl::toggleMainWindow()
 {
-    if (is_iconified_)
-    {
+    if (is_iconified_) {
         presentMainWindow();
-    }
-    else
-    {
+    } else {
         hideMainWindow();
     }
 }
 
 bool Application::Impl::winclose()
 {
-    if (icon_ != nullptr)
-    {
+    if (icon_ != nullptr) {
         gtr_action_activate("toggle-main-window");
-    }
-    else
-    {
+    } else {
         on_app_exit();
     }
 
@@ -830,9 +789,8 @@ bool Application::Impl::winclose()
 void Application::Impl::rowChangedCB(std::unordered_set<tr_torrent_id_t> const& torrent_ids, Torrent::ChangeFlags changes)
 {
     if (changes.test(Torrent::ChangeFlag::ACTIVITY) &&
-        wind_->for_each_selected_torrent_until([&torrent_ids](auto const& torrent)
-                                               { return torrent_ids.find(torrent->get_id()) != torrent_ids.end(); }))
-    {
+        wind_->for_each_selected_torrent_until(
+            [&torrent_ids](auto const& torrent) { return torrent_ids.find(torrent->get_id()) != torrent_ids.end(); })) {
         refresh_actions_soon();
     }
 }
@@ -841,20 +799,17 @@ void Application::Impl::rowChangedCB(std::unordered_set<tr_torrent_id_t> const& 
 
 bool Application::Impl::on_drag_data_received(Glib::ValueBase const& value, double /*x*/, double /*y*/)
 {
-    if (G_VALUE_HOLDS(value.gobj(), GDK_TYPE_FILE_LIST))
-    {
+    if (G_VALUE_HOLDS(value.gobj(), GDK_TYPE_FILE_LIST)) {
         FileListValue files_value;
         files_value.init(value.gobj());
         open_files(FileListHandler::slist_to_vector(files_value.get(), Glib::OwnershipType::OWNERSHIP_NONE));
         return true;
     }
 
-    if (G_VALUE_HOLDS(value.gobj(), StringValue::value_type()))
-    {
+    if (G_VALUE_HOLDS(value.gobj(), StringValue::value_type())) {
         StringValue string_value;
         string_value.init(value.gobj());
-        if (auto const text = gtr_str_strip(string_value.get()); !text.empty())
-        {
+        if (auto const text = gtr_str_strip(string_value.get()); !text.empty()) {
             return core_->add_from_url(text);
         }
     }
@@ -872,20 +827,16 @@ void Application::Impl::on_drag_data_received(
     guint /*info*/,
     guint time_)
 {
-    if (auto const uris = selection_data.get_uris(); !uris.empty())
-    {
+    if (auto const uris = selection_data.get_uris(); !uris.empty()) {
         auto files = std::vector<Glib::RefPtr<Gio::File>>();
         files.reserve(uris.size());
         std::ranges::transform(uris, std::back_inserter(files), &Gio::File::create_for_uri);
 
         open_files(files);
-    }
-    else
-    {
+    } else {
         auto const text = gtr_str_strip(selection_data.get_text());
 
-        if (!text.empty())
-        {
+        if (!text.empty()) {
             core_->add_from_url(text);
         }
     }
@@ -937,8 +888,7 @@ bool Application::Impl::on_session_closed()
 
 void Application::Impl::on_app_exit()
 {
-    if (is_closing_)
-    {
+    if (is_closing_) {
         return;
     }
 
@@ -1004,13 +954,10 @@ void Application::Impl::on_app_exit()
     /* since tr_sessionClose () is a blocking function,
      * delegate its call to another thread here... when it's done,
      * punt the GUI teardown back to the GTK+ thread */
-    std::thread(
-        [this, session = core_->close()]()
-        {
-            tr_sessionClose(session);
-            Glib::signal_idle().connect(sigc::mem_fun(*this, &Impl::on_session_closed));
-        })
-        .detach();
+    std::thread([this, session = core_->close()]() {
+        tr_sessionClose(session);
+        Glib::signal_idle().connect(sigc::mem_fun(*this, &Impl::on_session_closed));
+    }).detach();
 }
 
 void Application::Impl::show_torrent_errors(Glib::ustring const& primary, std::vector<std::string>& files)
@@ -1018,8 +965,7 @@ void Application::Impl::show_torrent_errors(Glib::ustring const& primary, std::v
     std::ostringstream s;
     auto const leader = files.size() > 1 ? gtr_get_unicode_string(GtrUnicode::Bullet) : "";
 
-    for (auto const& f : files)
-    {
+    for (auto const& f : files) {
         s << leader << ' ' << f << '\n';
     }
 
@@ -1039,15 +985,13 @@ void Application::Impl::show_torrent_errors(Glib::ustring const& primary, std::v
 
 void Application::Impl::flush_torrent_errors()
 {
-    if (!error_list_.empty())
-    {
+    if (!error_list_.empty()) {
         show_torrent_errors(
             ngettext("Couldn't add corrupt torrent", "Couldn't add corrupt torrents", error_list_.size()),
             error_list_);
     }
 
-    if (!duplicates_list_.empty())
-    {
+    if (!duplicates_list_.empty()) {
         show_torrent_errors(
             ngettext("Couldn't add duplicate torrent", "Couldn't add duplicate torrents", duplicates_list_.size()),
             duplicates_list_);
@@ -1056,8 +1000,7 @@ void Application::Impl::flush_torrent_errors()
 
 void Application::Impl::on_core_error(Session::ErrorCode code, Glib::ustring const& msg)
 {
-    switch (code)
-    {
+    switch (code) {
     case Session::ERR_ADD_TORRENT_ERR:
         error_list_.push_back(Glib::path_get_basename(msg.raw()));
         break;
@@ -1078,8 +1021,7 @@ void Application::Impl::on_core_error(Session::ErrorCode code, Glib::ustring con
 
 void Application::Impl::on_main_window_focus_in()
 {
-    if (wind_ != nullptr)
-    {
+    if (wind_ != nullptr) {
         gtr_window_set_urgency_hint(*wind_, false);
     }
 }
@@ -1099,8 +1041,7 @@ void Application::Impl::on_add_torrent(tr_ctor* ctor)
     w->signal_focus_in_event().connect_notify(sigc::hide<0>(sigc::mem_fun(*this, &Impl::on_main_window_focus_in)));
 #endif
 
-    if (wind_ != nullptr)
-    {
+    if (wind_ != nullptr) {
         gtr_window_set_urgency_hint(*wind_, true);
     }
 
@@ -1113,8 +1054,7 @@ void Application::Impl::on_prefs_changed(tr_quark const key)
 
     auto* tr = core_->get_session();
 
-    switch (key)
-    {
+    switch (key) {
     case TR_KEY_encryption:
         tr_sessionSetEncryption(tr, gtr_pref_get<tr_encryption_mode>(key));
         break;
@@ -1144,12 +1084,9 @@ void Application::Impl::on_prefs_changed(tr_quark const key)
         break;
 
     case TR_KEY_show_notification_area_icon:
-        if (bool const show = gtr_pref_get<bool>(key); show && icon_ == nullptr)
-        {
+        if (bool const show = gtr_pref_get<bool>(key); show && icon_ == nullptr) {
             icon_ = SystemTrayIcon::create(*wind_, core_);
-        }
-        else if (!show && icon_ != nullptr)
-        {
+        } else if (!show && icon_ != nullptr) {
             icon_.reset();
         }
         break;
@@ -1329,8 +1266,7 @@ bool Application::Impl::update_model_once()
     core_->update();
 
     /* refresh the main window's statusbar and toolbar buttons */
-    if (wind_ != nullptr)
-    {
+    if (wind_ != nullptr) {
         wind_->refresh();
     }
 
@@ -1338,8 +1274,7 @@ bool Application::Impl::update_model_once()
     refresh_actions();
 
     /* update the status tray icon */
-    if (icon_ != nullptr)
-    {
+    if (icon_ != nullptr) {
         icon_->refresh();
     }
 
@@ -1349,16 +1284,14 @@ bool Application::Impl::update_model_once()
 
 void Application::Impl::update_model_soon()
 {
-    if (!update_model_soon_tag_.connected())
-    {
+    if (!update_model_soon_tag_.connected()) {
         update_model_soon_tag_ = Glib::signal_idle().connect(sigc::mem_fun(*this, &Impl::update_model_once));
     }
 }
 
 bool Application::Impl::update_model_loop()
 {
-    if (!is_closing_)
-    {
+    if (!is_closing_) {
         update_model_once();
     }
 
@@ -1403,8 +1336,7 @@ void Application::Impl::show_about_dialog()
 bool Application::Impl::call_rpc_for_selected_torrents(tr_quark const method)
 {
     auto const ids = get_selected_torrent_ids();
-    if (std::empty(ids))
-    {
+    if (std::empty(ids)) {
         return false;
     }
 
@@ -1416,8 +1348,7 @@ bool Application::Impl::call_rpc_for_selected_torrents(tr_quark const method)
 
 void Application::Impl::remove_selected(bool delete_files)
 {
-    if (auto const l = get_selected_torrent_ids(); !l.empty())
-    {
+    if (auto const l = get_selected_torrent_ids(); !l.empty()) {
         gtr_confirm_remove(*wind_, core_, l, delete_files);
     }
 }
@@ -1456,17 +1387,14 @@ namespace
 [[nodiscard]] std::optional<tr_quark> action_name_to_torrent_rpc_method(std::string_view const action_name)
 {
     // action-name -> rpc_method
-    auto action_to_rpc = [](std::string_view const in)
-    {
+    auto action_to_rpc = [](std::string_view const in) {
         auto out = std::string{ in };
         std::ranges::transform(out, std::ranges::begin(out), [](auto const ch) { return ch == '-' ? '_' : ch; });
         return out;
     };
 
-    if (auto quark = tr_quark_lookup(action_to_rpc(action_name)))
-    {
-        switch (*quark)
-        {
+    if (auto quark = tr_quark_lookup(action_to_rpc(action_name))) {
+        switch (*quark) {
         // supported methods
         case TR_KEY_queue_move_bottom:
         case TR_KEY_queue_move_down:
@@ -1493,144 +1421,88 @@ void Application::Impl::actions_handler(Glib::ustring const& action_name)
 {
     bool changed = false;
 
-    if (action_name == "open-torrent-from-url")
-    {
+    if (action_name == "open-torrent-from-url") {
         auto w = std::shared_ptr<TorrentUrlChooserDialog>(TorrentUrlChooserDialog::create(*wind_, core_));
         gtr_window_on_close(*w, [w]() mutable { w.reset(); });
         w->show();
-    }
-    else if (action_name == "open-torrent")
-    {
+    } else if (action_name == "open-torrent") {
         auto w = std::shared_ptr<TorrentFileChooserDialog>(TorrentFileChooserDialog::create(*wind_, core_));
         w->signal_response().connect([w](int /*response*/) mutable { w.reset(); });
         w->show();
-    }
-    else if (action_name == "show-stats")
-    {
+    } else if (action_name == "show-stats") {
         auto dialog = std::shared_ptr<StatsDialog>(StatsDialog::create(*wind_, core_));
         gtr_window_on_close(*dialog, [dialog]() mutable { dialog.reset(); });
         dialog->show();
-    }
-    else if (action_name == "donate")
-    {
+    } else if (action_name == "donate") {
         gtr_open_uri("https://transmissiontorrent.com/donate/");
-    }
-    else if (action_name == "pause-all-torrents")
-    {
+    } else if (action_name == "pause-all-torrents") {
         pause_all_torrents();
-    }
-    else if (action_name == "start-all-torrents")
-    {
+    } else if (action_name == "start-all-torrents") {
         start_all_torrents();
-    }
-    else if (action_name == "copy-magnet-link-to-clipboard")
-    {
+    } else if (action_name == "copy-magnet-link-to-clipboard") {
         wind_->for_each_selected_torrent_until(
             sigc::bind_return(sigc::mem_fun(*this, &Impl::copy_magnet_link_to_clipboard), true));
-    }
-    else if (action_name == "relocate-torrent")
-    {
+    } else if (action_name == "relocate-torrent") {
         auto const ids = get_selected_torrent_ids();
 
-        if (!ids.empty())
-        {
+        if (!ids.empty()) {
             auto w = std::shared_ptr<RelocateDialog>(RelocateDialog::create(*wind_, core_, ids));
             gtr_window_on_close(*w, [w]() mutable { w.reset(); });
             w->show();
         }
-    }
-    else if (auto const method = action_name_to_torrent_rpc_method(action_name.raw()))
-    {
+    } else if (auto const method = action_name_to_torrent_rpc_method(action_name.raw())) {
         changed = call_rpc_for_selected_torrents(*method);
-    }
-    else if (action_name == "open-torrent-folder")
-    {
+    } else if (action_name == "open-torrent-folder") {
         wind_->for_each_selected_torrent([this](auto const& torrent) { core_->open_folder(torrent->get_id()); });
-    }
-    else if (action_name == "show-torrent-properties")
-    {
+    } else if (action_name == "show-torrent-properties") {
         show_details_dialog_for_selected_torrents();
-    }
-    else if (action_name == "new-torrent")
-    {
+    } else if (action_name == "new-torrent") {
         auto w = std::shared_ptr<MakeDialog>(MakeDialog::create(*wind_, core_));
         gtr_window_on_close(*w, [w]() mutable { w.reset(); });
         w->show();
-    }
-    else if (action_name == "remove-torrent")
-    {
+    } else if (action_name == "remove-torrent") {
         remove_selected(false);
-    }
-    else if (action_name == "delete-torrent")
-    {
+    } else if (action_name == "delete-torrent") {
         remove_selected(true);
-    }
-    else if (action_name == "quit")
-    {
+    } else if (action_name == "quit") {
         on_app_exit();
-    }
-    else if (action_name == "select-all")
-    {
+    } else if (action_name == "select-all") {
         wind_->select_all();
-    }
-    else if (action_name == "deselect-all")
-    {
+    } else if (action_name == "deselect-all") {
         wind_->unselect_all();
-    }
-    else if (action_name == "edit-preferences")
-    {
-        if (prefs_ == nullptr)
-        {
+    } else if (action_name == "edit-preferences") {
+        if (prefs_ == nullptr) {
             prefs_ = PrefsDialog::create(*wind_, core_);
             gtr_window_on_close(*prefs_, [this]() { prefs_.reset(); });
         }
 
         gtr_window_present(prefs_);
-    }
-    else if (action_name == "toggle-message-log")
-    {
-        if (msgwin_ == nullptr)
-        {
+    } else if (action_name == "toggle-message-log") {
+        if (msgwin_ == nullptr) {
             msgwin_ = MessageLogWindow::create(*wind_, core_);
-            gtr_window_on_close(
-                *msgwin_,
-                [this]()
-                {
-                    gtr_action_set_toggled("toggle-message-log", false);
-                    msgwin_.reset();
-                });
+            gtr_window_on_close(*msgwin_, [this]() {
+                gtr_action_set_toggled("toggle-message-log", false);
+                msgwin_.reset();
+            });
 
             gtr_action_set_toggled("toggle-message-log", true);
             msgwin_->show();
-        }
-        else
-        {
+        } else {
             msgwin_->close();
         }
-    }
-    else if (action_name == "show-about-dialog")
-    {
+    } else if (action_name == "show-about-dialog") {
         show_about_dialog();
-    }
-    else if (action_name == "help")
-    {
+    } else if (action_name == "help") {
         gtr_open_uri(gtr_get_help_uri());
-    }
-    else if (action_name == "toggle-main-window")
-    {
+    } else if (action_name == "toggle-main-window") {
         toggleMainWindow();
-    }
-    else if (action_name == "present-main-window")
-    {
+    } else if (action_name == "present-main-window") {
         presentMainWindow();
-    }
-    else
-    {
+    } else {
         gtr_warning(fmt::format("Unhandled action: {}", action_name));
     }
 
-    if (changed)
-    {
+    if (changed) {
         update_model_soon();
     }
 }

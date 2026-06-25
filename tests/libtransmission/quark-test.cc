@@ -16,8 +16,7 @@ using QuarkTest = ::tr::test::TransmissionTest;
 
 TEST_F(QuarkTest, allPredefinedKeysCanBeLookedUp)
 {
-    for (size_t i = 0; i < TR_N_KEYS; ++i)
-    {
+    for (size_t i = 0; i < TR_N_KEYS; ++i) {
         auto const str = tr_quark_get_string_view(i);
         auto const q = tr_quark_lookup(str);
         ASSERT_TRUE(q.has_value());

@@ -29,13 +29,11 @@ namespace
 {
 void handle_sigchld(int /*i*/)
 {
-    for (;;)
-    {
+    for (;;) {
         // FIXME: only check for our own PIDs
         auto const res = waitpid(-1, nullptr, WNOHANG);
 
-        if ((res == 0) || (res == -1 && errno != EINTR))
-        {
+        if ((res == 0) || (res == -1 && errno != EINTR)) {
             break;
         }
     }
@@ -45,8 +43,7 @@ void handle_sigchld(int /*i*/)
 
 void set_system_error(tr_error* error, int code, std::string_view what)
 {
-    if (error != nullptr)
-    {
+    if (error != nullptr) {
         error->set(code, fmt::format("{:s} failed: {:s} ({:d})", what, tr_strerror(code), code));
     }
 }
@@ -59,24 +56,20 @@ void set_system_error(tr_error* error, int code, std::string_view what)
     auto key_sz = std::string{};
     auto val_sz = std::string{};
 
-    for (auto const& [key_sv, val_sv] : env)
-    {
+    for (auto const& [key_sv, val_sv] : env) {
         key_sz = key_sv;
         val_sz = val_sv;
 
-        if (setenv(key_sz.c_str(), val_sz.c_str(), 1) != 0)
-        {
+        if (setenv(key_sz.c_str(), val_sz.c_str(), 1) != 0) {
             return false;
         }
     }
 
-    if (!std::empty(work_dir) && chdir(tr_pathbuf{ work_dir }) == -1)
-    {
+    if (!std::empty(work_dir) && chdir(tr_pathbuf{ work_dir }) == -1) {
         return false;
     }
 
-    if (execvp(cmd[0], const_cast<char* const*>(cmd)) == -1)
-    {
+    if (execvp(cmd[0], const_cast<char* const*>(cmd)) == -1) {
         return false;
     }
 
@@ -87,8 +80,7 @@ void set_system_error(tr_error* error, int code, std::string_view what)
 {
     auto child_errno = int{};
     auto n_read = ssize_t{};
-    for (auto done = false; !done;)
-    {
+    for (auto done = false; !done;) {
         n_read = read(pipe_fd, &child_errno, sizeof(child_errno));
         done = n_read != -1 || errno != EINTR;
     }
@@ -120,8 +112,7 @@ bool tr_spawn_async(
 {
     static bool sigchld_handler_set = false;
 
-    if (!sigchld_handler_set)
-    {
+    if (!sigchld_handler_set) {
         /* FIXME: "The effects of signal() in a multithreaded process are unspecified." © man 2 signal */
         if (signal(SIGCHLD, &handle_sigchld) == SIG_ERR) // NOLINT(performance-no-int-to-ptr)
         {
@@ -134,14 +125,12 @@ bool tr_spawn_async(
 
     auto pipe_fds = std::array<int, 2>{};
 
-    if (pipe(std::data(pipe_fds)) == -1)
-    {
+    if (pipe(std::data(pipe_fds)) == -1) {
         set_system_error(error, errno, "Call to pipe()");
         return false;
     }
 
-    if (fcntl(pipe_fds[1], F_SETFD, fcntl(pipe_fds[1], F_GETFD) | FD_CLOEXEC) == -1)
-    {
+    if (fcntl(pipe_fds[1], F_SETFD, fcntl(pipe_fds[1], F_GETFD) | FD_CLOEXEC) == -1) {
         set_system_error(error, errno, "Call to fcntl()");
         close(pipe_fds[0]);
         close(pipe_fds[1]);
@@ -150,20 +139,17 @@ bool tr_spawn_async(
 
     int const child_pid = fork();
 
-    if (child_pid == -1)
-    {
+    if (child_pid == -1) {
         set_system_error(error, errno, "Call to fork()");
         close(pipe_fds[0]);
         close(pipe_fds[1]);
         return false;
     }
 
-    if (child_pid == 0)
-    {
+    if (child_pid == 0) {
         close(pipe_fds[0]);
 
-        if (!tr_spawn_async_in_child(cmd, env, work_dir))
-        {
+        if (!tr_spawn_async_in_child(cmd, env, work_dir)) {
             auto const ok = write(pipe_fds[1], &errno, sizeof(errno)) != -1;
             _exit(ok ? EXIT_SUCCESS : EXIT_FAILURE);
         }

@@ -23,8 +23,7 @@ namespace tr
 {
 namespace
 {
-struct HashResult
-{
+struct HashResult {
     tr_error_code_t error = 0;
     std::optional<tr_sha1_digest_t> hash;
 };
@@ -32,8 +31,7 @@ struct HashResult
 [[nodiscard]] tr_error make_error(tr_error_code_t err)
 {
     auto error = tr_error{};
-    if (err != 0)
-    {
+    if (err != 0) {
         error.set_from_errno(err);
     }
 
@@ -54,25 +52,21 @@ struct HashResult
     auto const [begin_byte, end_byte] = block_info.byte_span_for_piece(piece);
     auto const [begin_block, end_block] = block_info.block_span_for_piece(piece);
     [[maybe_unused]] auto n_bytes_checked = size_t{};
-    for (auto block = begin_block; block < end_block; ++block)
-    {
+    for (auto block = begin_block; block < end_block; ++block) {
         auto const byte_span = block_info.byte_span_for_block(block);
 
         buffer.clear();
-        if (auto const err = backend.read(id, byte_span, buffer); err != 0)
-        {
+        if (auto const err = backend.read(id, byte_span, buffer); err != 0) {
             return { .error = err, .hash = {} };
         }
 
         auto* begin = std::data(buffer);
         auto* end = begin + byte_span.size();
 
-        if (block == begin_block)
-        {
+        if (block == begin_block) {
             begin += (begin_byte - byte_span.begin);
         }
-        if (block + 1U == end_block)
-        {
+        if (block + 1U == end_block) {
             end -= (byte_span.end - end_byte);
         }
 
@@ -96,21 +90,18 @@ public:
     [[nodiscard]] tr_error_code_t read(tr_torrent_id_t const id, tr_byte_span_t const byte_span, LocalData::BlockData& setme)
         override
     {
-        if (!byte_span.is_valid())
-        {
+        if (!byte_span.is_valid()) {
             return TR_ERROR_EINVAL;
         }
 
         auto const len = byte_span.size();
-        if (len > tr_block_info::BlockSize)
-        {
+        if (len > tr_block_info::BlockSize) {
             return TR_ERROR_EINVAL;
         }
         auto const span_size = static_cast<size_t>(len);
 
         auto const* const tor = torrents_.get(id);
-        if (tor == nullptr)
-        {
+        if (tor == nullptr) {
             return TR_ERROR_EINVAL;
         }
 
@@ -125,14 +116,12 @@ public:
         tr_sha1_digest_t& setme_hash) override
     {
         auto const* const tor = torrents_.get(id);
-        if (tor == nullptr || piece >= tor->piece_count())
-        {
+        if (tor == nullptr || piece >= tor->piece_count()) {
             return TR_ERROR_EINVAL;
         }
 
         auto const result = recalculate_hash(*this, id, tor->block_info(), piece);
-        if (!result.hash)
-        {
+        if (!result.hash) {
             return result.error != 0 ? result.error : EIO;
         }
 
@@ -145,21 +134,18 @@ public:
         tr_byte_span_t const byte_span,
         LocalData::BlockData const& data) override
     {
-        if (!byte_span.is_valid())
-        {
+        if (!byte_span.is_valid()) {
             return TR_ERROR_EINVAL;
         }
 
         auto const len = byte_span.size();
-        if (len > std::size(data))
-        {
+        if (len > std::size(data)) {
             return TR_ERROR_EINVAL;
         }
         auto const span_size = static_cast<size_t>(len);
 
         auto* const tor = torrents_.get(id);
-        if (tor == nullptr)
-        {
+        if (tor == nullptr) {
             return TR_ERROR_EINVAL;
         }
 
@@ -174,14 +160,12 @@ public:
         std::string_view const parent_name) override
     {
         auto* const tor = torrents_.get(id);
-        if (tor == nullptr)
-        {
+        if (tor == nullptr) {
             return TR_ERROR_EINVAL;
         }
 
         auto error = tr_error{};
-        if (tor->files().move(old_parent, parent, parent_name, &error))
-        {
+        if (tor->files().move(old_parent, parent, parent_name, &error)) {
             return 0;
         }
 
@@ -191,13 +175,11 @@ public:
     [[nodiscard]] tr_error_code_t remove(tr_torrent_id_t const id, tr_torrent_remove_func remove_func) override
     {
         auto* const tor = torrents_.get(id);
-        if (tor == nullptr)
-        {
+        if (tor == nullptr) {
             return TR_ERROR_EINVAL;
         }
 
-        if (!remove_func)
-        {
+        if (!remove_func) {
             remove_func = tr_sys_path_remove;
         }
 
@@ -213,10 +195,8 @@ public:
         tr_torrent_rename_done_func callback) override
     {
         auto* const tor = torrents_.get(id);
-        if (tor == nullptr)
-        {
-            if (callback != nullptr)
-            {
+        if (tor == nullptr) {
+            if (callback != nullptr) {
                 callback(id, oldpath, newname, make_error(TR_ERROR_EINVAL));
             }
             return;
@@ -264,13 +244,11 @@ void LocalData::read(tr_torrent_id_t const id, tr_byte_span_t const byte_span, O
 {
     auto data = std::make_unique<BlockData>();
     auto const err = backend_->read(id, byte_span, *data);
-    if (err != 0)
-    {
+    if (err != 0) {
         data.reset();
     }
 
-    if (on_read)
-    {
+    if (on_read) {
         std::move(on_read)(id, byte_span, make_error(err), std::move(data));
     }
 }
@@ -281,8 +259,7 @@ void LocalData::test_piece(tr_torrent_id_t const id, tr_piece_index_t const piec
     auto hash = tr_sha1_digest_t{};
     auto const err = backend_->test_piece(id, piece, hash);
 
-    if (on_test)
-    {
+    if (on_test) {
         std::move(on_test)(id, piece, make_error(err), err == 0 ? std::optional<tr_sha1_digest_t>{ hash } : std::nullopt);
     }
 }
@@ -294,13 +271,11 @@ void LocalData::write(
     OnWrite on_write) // NOLINT(performance-unnecessary-value-param)
 {
     auto err = tr_error_code_t{ TR_ERROR_EINVAL };
-    if (data != nullptr)
-    {
+    if (data != nullptr) {
         err = backend_->write(id, byte_span, *data);
     }
 
-    if (on_write)
-    {
+    if (on_write) {
         std::move(on_write)(id, byte_span, make_error(err));
     }
 }
@@ -329,8 +304,7 @@ void LocalData::move(
 {
     auto const err = backend_->move(id, old_parent, parent, parent_name);
 
-    if (on_move)
-    {
+    if (on_move) {
         std::move(on_move)(id, make_error(err));
     }
 }

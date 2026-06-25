@@ -28,8 +28,7 @@ void gtr_confirm_remove(
     bool delete_files)
 {
     auto const count = torrent_ids.size();
-    if (count == 0)
-    {
+    if (count == 0) {
         return;
     }
 
@@ -37,15 +36,12 @@ void gtr_confirm_remove(
     size_t incomplete = 0;
     // TODO(c++20) remove `torrents` local when tr_torrentStat() takes a span
     auto const torrents = core->find_torrents(torrent_ids);
-    for (auto const& stat : tr_torrentStat(std::data(torrents), std::size(torrents)))
-    {
-        if (stat.left_until_done != 0)
-        {
+    for (auto const& stat : tr_torrentStat(std::data(torrents), std::size(torrents))) {
+        if (stat.left_until_done != 0) {
             ++incomplete;
         }
 
-        if (stat.peers_connected != 0)
-        {
+        if (stat.peers_connected != 0) {
             ++connected;
         }
     }
@@ -60,41 +56,31 @@ void gtr_confirm_remove(
         fmt::arg("count", count));
 
     Glib::ustring secondary_text;
-    if (incomplete == 0 && connected == 0)
-    {
+    if (incomplete == 0 && connected == 0) {
         secondary_text = ngettext(
             "Once removed, continuing the transfer will require the torrent file or magnet link.",
             "Once removed, continuing the transfers will require the torrent files or magnet links.",
             count);
-    }
-    else if (count == incomplete)
-    {
+    } else if (count == incomplete) {
         secondary_text = ngettext(
             "This torrent has not finished downloading.",
             "These torrents have not finished downloading.",
             count);
-    }
-    else if (count == connected)
-    {
+    } else if (count == connected) {
         secondary_text = ngettext("This torrent is connected to peers.", "These torrents are connected to peers.", count);
-    }
-    else
-    {
-        if (connected != 0)
-        {
+    } else {
+        if (connected != 0) {
             secondary_text += ngettext(
                 "One of these torrents is connected to peers.",
                 "Some of these torrents are connected to peers.",
                 connected);
         }
 
-        if (connected != 0 && incomplete != 0)
-        {
+        if (connected != 0 && incomplete != 0) {
             secondary_text += "\n";
         }
 
-        if (incomplete != 0)
-        {
+        if (incomplete != 0) {
             secondary_text += ngettext(
                 "One of these torrents has not finished downloading.",
                 "Some of these torrents have not finished downloading.",
@@ -110,8 +96,7 @@ void gtr_confirm_remove(
         TR_GTK_BUTTONS_TYPE(NONE),
         true /*modal*/);
 
-    if (!secondary_text.empty())
-    {
+    if (!secondary_text.empty()) {
         d->set_secondary_text(secondary_text, true);
     }
 
@@ -119,19 +104,15 @@ void gtr_confirm_remove(
     d->add_button(delete_files ? _("_Delete") : _("_Remove"), TR_GTK_RESPONSE_TYPE(ACCEPT));
     d->set_default_response(TR_GTK_RESPONSE_TYPE(CANCEL));
 
-    d->signal_response().connect(
-        [d, core, torrent_ids, delete_files](int response) mutable
-        {
-            if (response == TR_GTK_RESPONSE_TYPE(ACCEPT))
-            {
-                for (auto const id : torrent_ids)
-                {
-                    core->remove_torrent(id, delete_files);
-                }
+    d->signal_response().connect([d, core, torrent_ids, delete_files](int response) mutable {
+        if (response == TR_GTK_RESPONSE_TYPE(ACCEPT)) {
+            for (auto const id : torrent_ids) {
+                core->remove_torrent(id, delete_files);
             }
+        }
 
-            d.reset();
-        });
+        d.reset();
+    });
 
     d->show();
 }

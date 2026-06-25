@@ -35,8 +35,7 @@ static NSInteger const kMaxPieces = 18 * 18;
 
 - (instancetype)init
 {
-    if ((self = [super init]))
-    {
+    if ((self = [super init])) {
         _fDefaults = NSUserDefaults.standardUserDefaults;
 
         _fPiecesBitmap = [[NSBitmapImageRep alloc] initWithBitmapDataPlanes:nil pixelsWide:kMaxPieces pixelsHigh:1
@@ -60,16 +59,13 @@ static NSInteger const kMaxPieces = 18 * 18;
     BOOL const minimal = [self.fDefaults boolForKey:@"SmallView"];
 
     CGFloat const piecesBarPercent = tableView.piecesBarPercent;
-    if (piecesBarPercent > 0.0)
-    {
+    if (piecesBarPercent > 0.0) {
         NSRect piecesBarRect, regularBarRect;
         NSDivideRect(barRect, &piecesBarRect, &regularBarRect, floor(NSHeight(barRect) * kPiecesTotalPercent * piecesBarPercent), NSMaxYEdge);
 
         [self drawRegularBar:regularBarRect forTorrent:torrent];
         [self drawPiecesBar:piecesBarRect forTorrent:torrent minimal:minimal];
-    }
-    else
-    {
+    } else {
         torrent.previousFinishedPieces = nil;
 
         [self drawRegularBar:barRect forTorrent:torrent];
@@ -85,57 +81,41 @@ static NSInteger const kMaxPieces = 18 * 18;
     NSRect haveRect, missingRect;
     NSDivideRect(barRect, &haveRect, &missingRect, round(torrent.progress * NSWidth(barRect)), NSMinXEdge);
 
-    if (!NSIsEmptyRect(haveRect))
-    {
-        if (torrent.active)
-        {
-            if (torrent.checking)
-            {
+    if (!NSIsEmptyRect(haveRect)) {
+        if (torrent.active) {
+            if (torrent.checking) {
                 [ProgressGradients.progressYellowGradient drawInRect:haveRect angle:90];
-            }
-            else if (torrent.seeding)
-            {
+            } else if (torrent.seeding) {
                 NSRect ratioHaveRect, ratioRemainingRect;
                 NSDivideRect(haveRect, &ratioHaveRect, &ratioRemainingRect, round(torrent.progressStopRatio * NSWidth(haveRect)), NSMinXEdge);
 
                 [ProgressGradients.progressGreenGradient drawInRect:ratioHaveRect angle:90];
                 [ProgressGradients.progressLightGreenGradient drawInRect:ratioRemainingRect angle:90];
-            }
-            else
-            {
+            } else {
                 [ProgressGradients.progressBlueGradient drawInRect:haveRect angle:90];
             }
-        }
-        else
-        {
-            if (torrent.waitingToStart)
-            {
-                if (torrent.allDownloaded)
-                {
+        } else {
+            if (torrent.waitingToStart) {
+                if (torrent.allDownloaded) {
                     [ProgressGradients.progressDarkGreenGradient drawInRect:haveRect angle:90];
-                }
-                else
-                {
+                } else {
                     [ProgressGradients.progressDarkBlueGradient drawInRect:haveRect angle:90];
                 }
-            }
-            else
-            {
+            } else {
                 [ProgressGradients.progressGrayGradient drawInRect:haveRect angle:90];
             }
         }
     }
 
-    if (!torrent.allDownloaded)
-    {
+    if (!torrent.allDownloaded) {
         CGFloat const widthRemaining = round(NSWidth(barRect) * torrent.progressLeft);
 
         NSRect wantedRect;
         NSDivideRect(missingRect, &wantedRect, &missingRect, widthRemaining, NSMinXEdge);
 
         //not-available section
-        if (torrent.active && !torrent.checking && torrent.availableDesired < 1.0 && [self.fDefaults boolForKey:@"DisplayProgressBarAvailable"])
-        {
+        if (torrent.active && !torrent.checking && torrent.availableDesired < 1.0 &&
+            [self.fDefaults boolForKey:@"DisplayProgressBarAvailable"]) {
             NSRect unavailableRect;
             NSDivideRect(wantedRect, &wantedRect, &unavailableRect, round(NSWidth(wantedRect) * torrent.availableDesired), NSMinXEdge);
 
@@ -147,14 +127,10 @@ static NSInteger const kMaxPieces = 18 * 18;
     }
 
     //unwanted section
-    if (!NSIsEmptyRect(missingRect))
-    {
-        if (!torrent.magnet)
-        {
+    if (!NSIsEmptyRect(missingRect)) {
+        if (!torrent.magnet) {
             [ProgressGradients.progressLightGrayGradient drawInRect:missingRect angle:90];
-        }
-        else
-        {
+        } else {
             [ProgressGradients.progressRedGradient drawInRect:missingRect angle:90];
         }
     }
@@ -163,14 +139,10 @@ static NSInteger const kMaxPieces = 18 * 18;
 - (void)drawPiecesBar:(NSRect)barRect forTorrent:(Torrent*)torrent minimal:(BOOL)minimal
 {
     // Fill a solid color bar for magnet links
-    if (torrent.magnet)
-    {
-        if (NSApp.darkMode)
-        {
+    if (torrent.magnet) {
+        if (NSApp.darkMode) {
             [NSColor.controlColor set];
-        }
-        else
-        {
+        } else {
             [[NSColor colorWithCalibratedWhite:1.0 alpha:minimal ? 0.25 : 1.0] set];
         }
         NSRectFillUsingOperation(barRect, NSCompositingOperationSourceOver);
@@ -178,8 +150,7 @@ static NSInteger const kMaxPieces = 18 * 18;
     }
 
     int const pieceCount = static_cast<int>(MIN(torrent.pieceCount, kMaxPieces));
-    if (pieceCount <= 0)
-    {
+    if (pieceCount <= 0) {
         torrent.previousFinishedPieces = nil;
         return;
     }
@@ -194,23 +165,16 @@ static NSInteger const kMaxPieces = 18 * 18;
 
     NSColor* const pieceBgColor = NSApp.darkMode ? NSColor.controlColor : NSColor.whiteColor;
 
-    for (int i = 0; i < pieceCount; i++)
-    {
+    for (int i = 0; i < pieceCount; i++) {
         NSColor* pieceColor;
-        if (piecesPercent[i] == 1.0F)
-        {
-            if (previousFinishedIndexes && ![previousFinishedIndexes containsIndex:i])
-            {
+        if (piecesPercent[i] == 1.0F) {
+            if (previousFinishedIndexes && ![previousFinishedIndexes containsIndex:i]) {
                 pieceColor = NSColor.orangeColor;
-            }
-            else
-            {
+            } else {
                 pieceColor = self.fBluePieceColor;
             }
             [finishedIndexes addIndex:i];
-        }
-        else
-        {
+        } else {
             pieceColor = [pieceBgColor blendedColorWithFraction:piecesPercent[i] ofColor:self.fBluePieceColor];
         }
 

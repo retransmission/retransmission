@@ -46,14 +46,7 @@ private slots:
     void onBlocklistUpdated(int64_t n);
 
 private:
-    enum class PortTestStatus : uint8_t
-    {
-        Unknown = 0U,
-        Checking,
-        Open,
-        Closed,
-        Error
-    };
+    enum class PortTestStatus : uint8_t { Unknown = 0U, Checking, Open, Closed, Error };
 
     template<typename T>
     void set(tr_quark const key, T const& val)

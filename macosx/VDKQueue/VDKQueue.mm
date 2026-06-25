@@ -50,12 +50,10 @@ NSString const* VDKQueueAccessRevocationNotification = @"VDKQueueAccessWasRevoke
 - (nullable instancetype)initWithPath:(NSString*)inPath andSubscriptionFlags:(u_int)flags
 {
     self = [super init];
-    if (self)
-    {
+    if (self) {
         _path = [inPath copy];
         _watchedFD = open(_path.fileSystemRepresentation, O_EVTONLY, 0);
-        if (_watchedFD < 0)
-        {
+        if (_watchedFD < 0) {
             return nil;
         }
         _subscriptionFlags = flags;
@@ -65,8 +63,7 @@ NSString const* VDKQueueAccessRevocationNotification = @"VDKQueueAccessWasRevoke
 
 - (void)dealloc
 {
-    if (_watchedFD >= 0)
-    {
+    if (_watchedFD >= 0) {
         close(_watchedFD);
     }
 }
@@ -76,8 +73,7 @@ NSString const* VDKQueueAccessRevocationNotification = @"VDKQueueAccessWasRevoke
 #pragma mark -
 #pragma mark VDKQueue
 
-@interface VDKQueue ()
-{
+@interface VDKQueue () {
   @private
     /// The actual kqueue ID (Unix file descriptor).
     int _coreQueueFD;
@@ -96,11 +92,9 @@ NSString const* VDKQueueAccessRevocationNotification = @"VDKQueueAccessWasRevoke
 - (instancetype)init
 {
     self = [super init];
-    if (self)
-    {
+    if (self) {
         _coreQueueFD = kqueue();
-        if (_coreQueueFD == -1)
-        {
+        if (_coreQueueFD == -1) {
             return nil;
         }
         _watchedPathEntries = [[NSMutableDictionary alloc] init];
@@ -111,8 +105,7 @@ NSString const* VDKQueueAccessRevocationNotification = @"VDKQueueAccessWasRevoke
 - (void)dealloc
 {
     // Close our kqueue's file descriptor
-    if (close(_coreQueueFD) == -1)
-    {
+    if (close(_coreQueueFD) == -1) {
         NSLog(@"VDKQueue watcherThread: Couldn't close main kqueue (%d)", errno);
     }
 }
@@ -122,28 +115,23 @@ NSString const* VDKQueueAccessRevocationNotification = @"VDKQueueAccessWasRevoke
 
 - (VDKQueuePathEntry*)addPathToQueue:(NSString*)path notifyingAbout:(u_int)flags
 {
-    @synchronized(self)
-    {
+    @synchronized(self) {
         // Are we already watching this path?
         VDKQueuePathEntry* pathEntry = _watchedPathEntries[path];
 
-        if (pathEntry)
-        {
+        if (pathEntry) {
             // All flags already set?
-            if ((pathEntry.subscriptionFlags & flags) == flags)
-            {
+            if ((pathEntry.subscriptionFlags & flags) == flags) {
                 return pathEntry;
             }
             flags |= pathEntry.subscriptionFlags;
         }
 
-        if (!pathEntry)
-        {
+        if (!pathEntry) {
             pathEntry = [[VDKQueuePathEntry alloc] initWithPath:path andSubscriptionFlags:flags];
         }
 
-        if (pathEntry)
-        {
+        if (pathEntry) {
             struct timespec nullts = { 0, 0 };
             struct kevent ev;
             EV_SET(&ev, pathEntry.watchedFD, EVFILT_VNODE, EV_ADD | EV_ENABLE | EV_CLEAR, flags, 0, (__bridge void*)pathEntry);
@@ -154,8 +142,7 @@ NSString const* VDKQueueAccessRevocationNotification = @"VDKQueueAccessWasRevoke
             kevent(_coreQueueFD, &ev, 1, NULL, 0, &nullts);
 
             // Start the thread that fetches and processes our events if it's not already running.
-            if (!_keepWatcherThreadRunning)
-            {
+            if (!_keepWatcherThreadRunning) {
                 _keepWatcherThreadRunning = YES;
                 [NSThread detachNewThreadSelector:@selector(watcherThread:) toTarget:self withObject:nil];
             }
@@ -178,23 +165,19 @@ NSString const* VDKQueueAccessRevocationNotification = @"VDKQueueAccessWasRevoke
 
     NSMutableArray* notesToPost = [[NSMutableArray alloc] initWithCapacity:5];
 
-    while (_keepWatcherThreadRunning)
-    {
+    while (_keepWatcherThreadRunning) {
         int n = kevent(theFD, NULL, 0, &ev, 1, NULL);
-        if (n <= 0 || ev.filter != EVFILT_VNODE || !ev.fflags)
-        {
+        if (n <= 0 || ev.filter != EVFILT_VNODE || !ev.fflags) {
             continue;
         }
         // The KEVENT can be sent back to us with a udata value that is NOT what we assigned to the queue.
         // A KEVENT that does not have a VDKQueuePathEntry object attached as the udata parameter is not an event we registered for.
         id pe = (__bridge id)(ev.udata);
-        if (![pe isKindOfClass:VDKQueuePathEntry.class])
-        {
+        if (![pe isKindOfClass:VDKQueuePathEntry.class]) {
             continue;
         }
         NSString* fpath = ((VDKQueuePathEntry*)pe).path;
-        if (!fpath)
-        {
+        if (!fpath) {
             continue;
         }
 
@@ -202,32 +185,25 @@ NSString const* VDKQueueAccessRevocationNotification = @"VDKQueueAccessWasRevoke
         [notesToPost removeAllObjects];
 
         // Figure out which notifications we need to issue
-        if ((ev.fflags & NOTE_RENAME) == NOTE_RENAME)
-        {
+        if ((ev.fflags & NOTE_RENAME) == NOTE_RENAME) {
             [notesToPost addObject:VDKQueueRenameNotification];
         }
-        if ((ev.fflags & NOTE_WRITE) == NOTE_WRITE)
-        {
+        if ((ev.fflags & NOTE_WRITE) == NOTE_WRITE) {
             [notesToPost addObject:VDKQueueWriteNotification];
         }
-        if ((ev.fflags & NOTE_DELETE) == NOTE_DELETE)
-        {
+        if ((ev.fflags & NOTE_DELETE) == NOTE_DELETE) {
             [notesToPost addObject:VDKQueueDeleteNotification];
         }
-        if ((ev.fflags & NOTE_ATTRIB) == NOTE_ATTRIB)
-        {
+        if ((ev.fflags & NOTE_ATTRIB) == NOTE_ATTRIB) {
             [notesToPost addObject:VDKQueueAttributeChangeNotification];
         }
-        if ((ev.fflags & NOTE_EXTEND) == NOTE_EXTEND)
-        {
+        if ((ev.fflags & NOTE_EXTEND) == NOTE_EXTEND) {
             [notesToPost addObject:VDKQueueSizeIncreaseNotification];
         }
-        if ((ev.fflags & NOTE_LINK) == NOTE_LINK)
-        {
+        if ((ev.fflags & NOTE_LINK) == NOTE_LINK) {
             [notesToPost addObject:VDKQueueLinkCountChangeNotification];
         }
-        if ((ev.fflags & NOTE_REVOKE) == NOTE_REVOKE)
-        {
+        if ((ev.fflags & NOTE_REVOKE) == NOTE_REVOKE) {
             [notesToPost addObject:VDKQueueAccessRevocationNotification];
         }
 
@@ -236,12 +212,10 @@ NSString const* VDKQueueAccessRevocationNotification = @"VDKQueueAccessWasRevoke
 
         // Post the notifications (or call the delegate method) on the main thread.
         dispatch_async(dispatch_get_main_queue(), ^{
-            for (NSString* note in notes)
-            {
+            for (NSString* note in notes) {
                 [self->_delegate VDKQueue:self receivedNotification:note forPath:fpath];
 
-                if (!self->_delegate || self->_alwaysPostNotifications)
-                {
+                if (!self->_delegate || self->_alwaysPostNotifications) {
                     [NSNotificationCenter.defaultCenter postNotificationName:note object:self userInfo:@{ @"path" : fpath }];
                 }
             }
@@ -263,23 +237,19 @@ NSString const* VDKQueueAccessRevocationNotification = @"VDKQueueAccessWasRevoke
 
 - (void)addPath:(NSString*)aPath notifyingAbout:(u_int)flags
 {
-    if (!aPath)
-    {
+    if (!aPath) {
         return;
     }
 
     aPath = aPath.stringByStandardizingPath;
 
-    @synchronized(self)
-    {
-        if (_watchedPathEntries[aPath])
-        {
+    @synchronized(self) {
+        if (_watchedPathEntries[aPath]) {
             // Only add this path if we don't already have it.
             return;
         }
         VDKQueuePathEntry* entry = [self addPathToQueue:aPath notifyingAbout:flags];
-        if (!entry)
-        {
+        if (!entry) {
             // By default, a darwin process can only have 256 file descriptors open at once.
             // https://wilsonmar.github.io/maximum-limits/
             NSLog(
@@ -302,20 +272,17 @@ NSString const* VDKQueueAccessRevocationNotification = @"VDKQueueAccessWasRevoke
 
 - (void)removePath:(NSString*)aPath
 {
-    if (!aPath)
-    {
+    if (!aPath) {
         return;
     }
 
     aPath = aPath.stringByStandardizingPath;
 
-    @synchronized(self)
-    {
+    @synchronized(self) {
         // Close the open file descriptor if we're watching it.
         [_watchedPathEntries removeObjectForKey:aPath];
 
-        if (_watchedPathEntries.count == 0)
-        {
+        if (_watchedPathEntries.count == 0) {
             [self shutdownWatcherThread];
         }
     }
@@ -323,8 +290,7 @@ NSString const* VDKQueueAccessRevocationNotification = @"VDKQueueAccessWasRevoke
 
 - (void)removeAllPaths
 {
-    @synchronized(self)
-    {
+    @synchronized(self) {
         // Close all the open file descriptors for files we're watching.
         [_watchedPathEntries removeAllObjects];
 

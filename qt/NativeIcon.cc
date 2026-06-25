@@ -54,13 +54,11 @@ QString getWindowsFontFamily()
 #ifdef DEV_FORCE_FONT_FAMILY
     return DEV_FORCE_FONT_FAMILY;
 #else
-    if (QOperatingSystemVersion::current() >= QOperatingSystemVersion(QOperatingSystemVersion::Windows, 11))
-    {
+    if (QOperatingSystemVersion::current() >= QOperatingSystemVersion(QOperatingSystemVersion::Windows, 11)) {
         return Win11IconFamily;
     }
 
-    if (QOperatingSystemVersion::current() >= QOperatingSystemVersion(QOperatingSystemVersion::Windows, 10))
-    {
+    if (QOperatingSystemVersion::current() >= QOperatingSystemVersion(QOperatingSystemVersion::Windows, 10)) {
         return Win10IconFamily;
     }
 
@@ -78,8 +76,7 @@ void ensureFontsLoaded()
 QPixmap makeIconFromCodepoint(QString const& family, QChar const codepoint, int const pixel_size)
 {
     auto font = QFont{ family };
-    if (!QFontMetrics{ font }.inFont(codepoint))
-    {
+    if (!QFontMetrics{ font }.inFont(codepoint)) {
         return {};
     }
 
@@ -101,8 +98,7 @@ QPixmap makeIconFromCodepoint(QString const& family, QChar const codepoint, int 
     return pixmap;
 }
 
-struct Info
-{
+struct Info {
     std::string_view sf_symbol_name;
     char16_t segoe_codepoint = {};
     std::string_view xdg_icon_name;
@@ -170,8 +166,7 @@ struct Info
     auto fallback = std::optional<QStyle::StandardPixmap>{};
     auto ok_in_gnome_menus = false;
 
-    switch (type)
-    {
+    switch (type) {
     case Type::AddTracker:
         sf_symbol_name = "plus";
         segoe_codepoint = 0xE710U; // Add
@@ -449,60 +444,47 @@ QIcon icon(Type const type, QStyle const* const style)
     auto const info = getInfo(type);
 
 #if defined(Q_OS_MAC)
-    if (auto const key = info.sf_symbol_name; !std::empty(key))
-    {
+    if (auto const key = info.sf_symbol_name; !std::empty(key)) {
         auto icon = QIcon{};
         auto const name = QString::fromUtf8(std::data(key), std::size(key));
-        for (int const pixel_size : pixel_sizes)
-        {
-            if (auto const pixmap = loadSFSymbol(name, pixel_size); !pixmap.isNull())
-            {
+        for (int const pixel_size : pixel_sizes) {
+            if (auto const pixmap = loadSFSymbol(name, pixel_size); !pixmap.isNull()) {
                 icon.addPixmap(pixmap);
             }
         }
-        if (!icon.isNull())
-        {
+        if (!icon.isNull()) {
             return icon;
         }
     }
 #endif
 
-    if (auto const key = info.segoe_codepoint)
-    {
-        if (auto const family = getWindowsFontFamily(); !family.isEmpty())
-        {
+    if (auto const key = info.segoe_codepoint) {
+        if (auto const family = getWindowsFontFamily(); !family.isEmpty()) {
             auto icon = QIcon{};
             auto const ch = QChar{ key };
-            for (int const pixel_size : pixel_sizes)
-            {
-                if (auto pixmap = makeIconFromCodepoint(family, ch, pixel_size); !pixmap.isNull())
-                {
+            for (int const pixel_size : pixel_sizes) {
+                if (auto pixmap = makeIconFromCodepoint(family, ch, pixel_size); !pixmap.isNull()) {
                     icon.addPixmap(pixmap);
                 }
             }
-            if (!icon.isNull())
-            {
+            if (!icon.isNull()) {
                 return icon;
             }
         }
     }
 
-    if (auto const key = info.xdg_icon_name; !std::empty(key))
-    {
+    if (auto const key = info.xdg_icon_name; !std::empty(key)) {
         auto const name = QString::fromUtf8(std::data(key), static_cast<IF_QT6(qsizetype, int)>(std::size(key)));
 
-        if (auto icon = QIcon::fromTheme(name); !icon.isNull())
-        {
+        if (auto icon = QIcon::fromTheme(name); !icon.isNull()) {
             return icon;
         }
-        if (auto icon = QIcon::fromTheme(name + QStringLiteral("-symbolic")); !icon.isNull())
-        {
+        if (auto icon = QIcon::fromTheme(name + QStringLiteral("-symbolic")); !icon.isNull()) {
             return icon;
         }
     }
 
-    if (info.fallback)
-    {
+    if (info.fallback) {
         return style->standardIcon(*info.fallback);
     }
 

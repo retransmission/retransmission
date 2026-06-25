@@ -47,8 +47,7 @@ TEST_F(BencTest, ContextTokenIsCorrect)
     // clang-format on
 
     auto constexpr MaxBencDepth = 32;
-    struct ContextHandler final : public tr::benc::BasicHandler<MaxBencDepth>
-    {
+    struct ContextHandler final : public tr::benc::BasicHandler<MaxBencDepth> {
         using BasicHandler = tr::benc::BasicHandler<MaxBencDepth>;
 
         bool StartArray(Context const& context) override

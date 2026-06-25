@@ -36,15 +36,13 @@ namespace
 {
 void log_openssl_error(char const* file, int line)
 {
-    if (!tr_logLevelIsActive(TR_LOG_ERROR))
-    {
+    if (!tr_logLevelIsActive(TR_LOG_ERROR)) {
         return;
     }
 
     auto const error_code = ERR_get_error();
 
-    if (static bool strings_loaded = false; !strings_loaded)
-    {
+    if (static bool strings_loaded = false; !strings_loaded) {
 #if OPENSSL_VERSION_NUMBER < 0x10100000 || (defined(LIBRESSL_VERSION_NUMBER) && LIBRESSL_VERSION_NUMBER < 0x20700000)
         ERR_load_crypto_strings();
 #else
@@ -73,8 +71,7 @@ bool check_openssl_result(int result, int expected_result, bool expected_equal, 
 {
     bool const ret = (result == expected_result) == expected_equal;
 
-    if (!ret)
-    {
+    if (!ret) {
         log_openssl_error(file, line);
     }
 
@@ -85,8 +82,7 @@ bool check_openssl_result(int result, int expected_result, bool expected_equal, 
 
 void digest_add_bytes(EVP_MD_CTX* ctx, void const* data, size_t data_length)
 {
-    if (data_length != 0U)
-    {
+    if (data_length != 0U) {
         EVP_DigestUpdate(ctx, data, data_length);
     }
 }
@@ -167,8 +163,7 @@ tr_sha256_digest_t tr_sha256::finish()
 
 tr_x509_store_t tr_ssl_get_x509_store(tr_ssl_ctx_t handle)
 {
-    if (handle == nullptr)
-    {
+    if (handle == nullptr) {
         return nullptr;
     }
 
@@ -189,8 +184,7 @@ tr_x509_cert_t tr_x509_cert_new(void const* der, long der_length)
 
     X509* const ret = d2i_X509(nullptr, reinterpret_cast<unsigned char const**>(&der), der_length);
 
-    if (ret == nullptr)
-    {
+    if (ret == nullptr) {
         log_error();
     }
 
@@ -199,8 +193,7 @@ tr_x509_cert_t tr_x509_cert_new(void const* der, long der_length)
 
 void tr_x509_cert_free(tr_x509_cert_t handle)
 {
-    if (handle == nullptr)
-    {
+    if (handle == nullptr) {
         return;
     }
 
@@ -211,8 +204,7 @@ void tr_x509_cert_free(tr_x509_cert_t handle)
 
 bool tr_rand_buffer_crypto(void* buffer, size_t length)
 {
-    if (length == 0)
-    {
+    if (length == 0) {
         return true;
     }
 

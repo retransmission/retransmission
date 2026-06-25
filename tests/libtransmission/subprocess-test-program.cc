@@ -14,8 +14,7 @@
 
 int main(int argc, char** argv)
 {
-    if (argc < 3)
-    {
+    if (argc < 3) {
         return 1;
     }
 
@@ -24,38 +23,27 @@ int main(int argc, char** argv)
     auto const tmp_result_path = result_path + ".tmp";
 
     auto out = std::ofstream(tmp_result_path.c_str(), std::ios::out | std::ios::trunc | std::ios::binary);
-    if (!out)
-    {
+    if (!out) {
         return 1;
     }
 
-    if (test_action == "--dump-args")
-    {
-        for (int i = 3; i < argc; ++i)
-        {
+    if (test_action == "--dump-args") {
+        for (int i = 3; i < argc; ++i) {
             fmt::print(out, "{:s}\n", argv[i]);
         }
-    }
-    else if (test_action == "--dump-env")
-    {
-        for (int i = 3; i < argc; ++i)
-        {
+    } else if (test_action == "--dump-env") {
+        for (int i = 3; i < argc; ++i) {
             fmt::print(out, "{:s}\n", tr_env_get_string(argv[i], "<null>"));
         }
-    }
-    else if (test_action == "--dump-cwd")
-    {
+    } else if (test_action == "--dump-cwd") {
         auto cwd = tr_sys_dir_get_current(nullptr);
 
-        if (std::empty(cwd))
-        {
+        if (std::empty(cwd)) {
             cwd = "<null>";
         }
 
         fmt::print(out, "{:s}\n", cwd);
-    }
-    else
-    {
+    } else {
         out.close();
         (void)std::remove(tmp_result_path.c_str());
         return 1;

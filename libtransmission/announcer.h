@@ -36,10 +36,8 @@ struct tr_torrent_announcer;
 // --- Tracker Publish / Subscribe
 
 /** @brief Notification object to tell listeners about announce or scrape occurrences */
-struct tr_tracker_event
-{
-    enum class Type : uint8_t
-    {
+struct tr_tracker_event {
+    enum class Type : uint8_t {
         Error,
         ErrorClear,
         Counts,
@@ -91,12 +89,7 @@ void tr_announcerManualAnnounce(tr_torrent* tor);
 
 void tr_announcerTorrentCompleted(tr_torrent* tor);
 
-enum : uint8_t
-{
-    TR_ANN_UP,
-    TR_ANN_DOWN,
-    TR_ANN_CORRUPT
-};
+enum : uint8_t { TR_ANN_UP, TR_ANN_DOWN, TR_ANN_CORRUPT };
 
 void tr_announcerAddBytes(tr_torrent* tor, int type, uint32_t n_bytes);
 
@@ -108,8 +101,7 @@ size_t tr_announcerTrackerCount(tr_torrent const* tor);
 
 // --- ANNOUNCE
 
-enum tr_announce_event : uint8_t
-{
+enum tr_announce_event : uint8_t {
     /* Note: the ordering of this enum's values is important to
      * announcer.c's tr_tier.announce_event_priority. If changing
      * the enum, ensure announcer.c is compatible with the change. */

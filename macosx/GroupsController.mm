@@ -32,11 +32,9 @@ static CGFloat const kIconWidthSmall = 12.0;
 
 - (instancetype)init
 {
-    if ((self = [super init]))
-    {
+    if ((self = [super init])) {
         NSData* data;
-        if ((data = [NSUserDefaults.standardUserDefaults dataForKey:@"GroupDicts"]))
-        {
+        if ((data = [NSUserDefaults.standardUserDefaults dataForKey:@"GroupDicts"])) {
             _fGroups = [NSKeyedUnarchiver unarchivedObjectOfClasses:[NSSet setWithObjects:NSMutableArray.class,
                                                                                           NSMutableDictionary.class,
                                                                                           NSNumber.class,
@@ -46,15 +44,13 @@ static CGFloat const kIconWidthSmall = 12.0;
                                                                                           nil]
                                                            fromData:data
                                                               error:nil];
-        }
-        else if ((data = [NSUserDefaults.standardUserDefaults dataForKey:@"Groups"])) //handle old groups
+        } else if ((data = [NSUserDefaults.standardUserDefaults dataForKey:@"Groups"])) //handle old groups
         {
             _fGroups = [NSKeyedUnarchiver deprecatedUnarchiveObjectWithData:data];
             [NSUserDefaults.standardUserDefaults removeObjectForKey:@"Groups"];
             [self saveGroups];
         }
-        if (_fGroups == nil)
-        {
+        if (_fGroups == nil) {
             //default groups
             NSMutableDictionary* red = [NSMutableDictionary
                 dictionaryWithObjectsAndKeys:NSColor.systemRedColor, @"Color", NSLocalizedString(@"Red", "Groups -> Name"), @"Name", @0, @"Index", nil];
@@ -92,12 +88,9 @@ static CGFloat const kIconWidthSmall = 12.0;
 
 - (NSInteger)rowValueForIndex:(NSInteger)index
 {
-    if (index != -1)
-    {
-        for (NSUInteger i = 0; i < self.fGroups.count; i++)
-        {
-            if (index == [self.fGroups[i][@"Index"] integerValue])
-            {
+    if (index != -1) {
+        for (NSUInteger i = 0; i < self.fGroups.count; i++) {
+            if (index == [self.fGroups[i][@"Index"] integerValue]) {
                 return i;
             }
         }
@@ -150,8 +143,7 @@ static CGFloat const kIconWidthSmall = 12.0;
 
 - (BOOL)usesCustomDownloadLocationForIndex:(NSInteger)index
 {
-    if (![self customDownloadLocationForIndex:index])
-    {
+    if (![self customDownloadLocationForIndex:index]) {
         return NO;
     }
 
@@ -185,8 +177,7 @@ static CGFloat const kIconWidthSmall = 12.0;
 - (BOOL)usesAutoAssignRulesForIndex:(NSInteger)index
 {
     NSInteger orderIndex = [self rowValueForIndex:index];
-    if (orderIndex == -1)
-    {
+    if (orderIndex == -1) {
         return NO;
     }
 
@@ -206,8 +197,7 @@ static CGFloat const kIconWidthSmall = 12.0;
 - (NSPredicate*)autoAssignRulesForIndex:(NSInteger)index
 {
     NSInteger orderIndex = [self rowValueForIndex:index];
-    if (orderIndex == -1)
-    {
+    if (orderIndex == -1) {
         return nil;
     }
 
@@ -218,13 +208,10 @@ static CGFloat const kIconWidthSmall = 12.0;
 {
     NSMutableDictionary* dict = self.fGroups[[self rowValueForIndex:index]];
 
-    if (predicate)
-    {
+    if (predicate) {
         dict[@"AutoGroupRules"] = predicate;
         [GroupsController.groups saveGroups];
-    }
-    else
-    {
+    } else {
         [dict removeObjectForKey:@"AutoGroupRules"];
         [self setUsesAutoAssignRules:NO forIndex:index];
     }
@@ -234,8 +221,7 @@ static CGFloat const kIconWidthSmall = 12.0;
 {
     //find the lowest index
     NSMutableIndexSet* candidates = [NSMutableIndexSet indexSetWithIndexesInRange:NSMakeRange(0, self.fGroups.count + 1)];
-    for (NSDictionary* dict in self.fGroups)
-    {
+    for (NSDictionary* dict in self.fGroups) {
         [candidates removeIndex:[dict[@"Index"] integerValue]];
     }
 
@@ -263,8 +249,7 @@ static CGFloat const kIconWidthSmall = 12.0;
     [NSNotificationCenter.defaultCenter postNotificationName:@"GroupValueRemoved" object:self
                                                     userInfo:@{ @"Index" : @(index) }];
 
-    if (index == [NSUserDefaults.standardUserDefaults integerForKey:@"FilterGroup"])
-    {
+    if (index == [NSUserDefaults.standardUserDefaults integerForKey:@"FilterGroup"]) {
         [NSUserDefaults.standardUserDefaults setInteger:-2 forKey:@"FilterGroup"];
     }
 
@@ -289,15 +274,12 @@ static CGFloat const kIconWidthSmall = 12.0;
         item.target = target;
         item.tag = tag;
 
-        if (small)
-        {
+        if (small) {
             icon = [icon copy];
             icon.size = NSMakeSize(kIconWidthSmall, kIconWidthSmall);
 
             item.image = icon;
-        }
-        else
-        {
+        } else {
             item.image = icon;
         }
 
@@ -306,8 +288,7 @@ static CGFloat const kIconWidthSmall = 12.0;
 
     addItemWithTitleTagIcon(NSLocalizedString(@"None", "Groups -> Menu"), -1, [self imageForGroupNone]);
 
-    for (NSMutableDictionary* dict in self.fGroups)
-    {
+    for (NSMutableDictionary* dict in self.fGroups) {
         addItemWithTitleTagIcon(dict[@"Name"], [dict[@"Index"] integerValue], [self imageForGroup:dict]);
     }
 
@@ -316,11 +297,9 @@ static CGFloat const kIconWidthSmall = 12.0;
 
 - (NSInteger)groupIndexForTorrent:(Torrent*)torrent
 {
-    for (NSDictionary* group in self.fGroups)
-    {
+    for (NSDictionary* group in self.fGroups) {
         NSInteger row = [group[@"Index"] integerValue];
-        if ([self torrent:torrent doesMatchRulesForGroupAtIndex:row])
-        {
+        if ([self torrent:torrent doesMatchRulesForGroupAtIndex:row]) {
             return row;
         }
     }
@@ -333,8 +312,7 @@ static CGFloat const kIconWidthSmall = 12.0;
 {
     //don't archive the icon
     NSMutableArray* groups = [NSMutableArray arrayWithCapacity:self.fGroups.count];
-    for (NSDictionary* dict in self.fGroups)
-    {
+    for (NSDictionary* dict in self.fGroups) {
         NSMutableDictionary* tempDict = [dict mutableCopy];
         [tempDict removeObjectForKey:@"Icon"];
         [groups addObject:tempDict];
@@ -348,8 +326,7 @@ static CGFloat const kIconWidthSmall = 12.0;
 - (NSImage*)imageForGroupNone
 {
     static NSImage* icon;
-    if (icon)
-    {
+    if (icon) {
         return icon;
     }
 
@@ -378,8 +355,7 @@ static CGFloat const kIconWidthSmall = 12.0;
 - (NSImage*)imageForGroup:(NSMutableDictionary*)dict
 {
     NSImage* icon;
-    if ((icon = dict[@"Icon"]))
-    {
+    if ((icon = dict[@"Icon"])) {
         return icon;
     }
 
@@ -392,24 +368,18 @@ static CGFloat const kIconWidthSmall = 12.0;
 
 - (BOOL)torrent:(Torrent*)torrent doesMatchRulesForGroupAtIndex:(NSInteger)index
 {
-    if (![self usesAutoAssignRulesForIndex:index])
-    {
+    if (![self usesAutoAssignRulesForIndex:index]) {
         return NO;
     }
 
     NSPredicate* predicate = [self autoAssignRulesForIndex:index];
     [predicate allowEvaluation];
     BOOL eval = NO;
-    @try
-    {
+    @try {
         eval = [predicate evaluateWithObject:torrent];
-    }
-    @catch (NSException* exception)
-    {
+    } @catch (NSException* exception) {
         NSLog(@"Error when evaluating predicate (%@) - %@", predicate, exception);
-    }
-    @finally
-    {
+    } @finally {
         return eval;
     }
 }

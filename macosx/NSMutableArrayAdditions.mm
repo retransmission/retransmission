@@ -13,25 +13,19 @@
  */
 - (void)moveObjectAtIndex:(NSUInteger)fromIndex toIndex:(NSUInteger)toIndex
 {
-    if (fromIndex == toIndex)
-    {
+    if (fromIndex == toIndex) {
         return;
     }
 
     id object = self[fromIndex];
 
     //shift objects - more efficient than simply removing the object and re-inserting the object
-    if (fromIndex < toIndex)
-    {
-        for (NSUInteger i = fromIndex; i < toIndex; ++i)
-        {
+    if (fromIndex < toIndex) {
+        for (NSUInteger i = fromIndex; i < toIndex; ++i) {
             self[i] = self[i + 1];
         }
-    }
-    else
-    {
-        for (NSUInteger i = fromIndex; i > toIndex; --i)
-        {
+    } else {
+        for (NSUInteger i = fromIndex; i > toIndex; --i) {
             self[i] = self[i - 1];
         }
     }

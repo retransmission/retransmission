@@ -185,8 +185,7 @@ TEST_F(BlockInfoTest, pieceLoc)
     auto loc = info.piece_loc(0);
     EXPECT_EQ(tr_block_info::Location{}, loc);
 
-    for (uint64_t i = 0; i < PieceCount; ++i)
-    {
+    for (uint64_t i = 0; i < PieceCount; ++i) {
         loc = info.piece_loc(i);
         EXPECT_EQ(info.block_loc(i * ExpectedBlocksPerPiece), loc);
         EXPECT_EQ(PieceSize * i, loc.byte);

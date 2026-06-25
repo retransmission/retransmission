@@ -40,8 +40,7 @@ protected:
     void torrentRemoveAndWait(tr_torrent* tor, size_t expected_torrent_count)
     {
         tr_torrentRemove(tor, false);
-        auto const test = [this, expected_torrent_count]()
-        {
+        auto const test = [this, expected_torrent_count]() {
             return std::size(session_->torrents()) == expected_torrent_count;
         };
         EXPECT_TRUE(waitFor(test, MaxWaitMsec));
@@ -88,8 +87,7 @@ protected:
 
     static bool testFileExistsAndConsistsOfThisString(tr_torrent const* tor, tr_file_index_t file_index, std::string_view str)
     {
-        if (auto const found = tor->find_file(file_index); found)
-        {
+        if (auto const found = tor->find_file(file_index); found) {
             EXPECT_TRUE(tr_sys_path_exists(found->filename()));
             auto contents = std::vector<char>{};
             return tr_file_read(found->filename(), contents) &&
@@ -122,8 +120,7 @@ protected:
                 std::string_view const /*oldpath*/,
                 std::string_view const /*newname*/,
                 tr_error const& rename_error) noexcept { error = rename_error ? rename_error.code() : 0; });
-        auto test = [&error]()
-        {
+        auto test = [&error]() {
             return error != -1;
         };
         EXPECT_TRUE(waitFor(test, MaxWaitMsec));
@@ -262,8 +259,7 @@ TEST_F(RenameTest, multifileTorrent)
     EXPECT_EQ(TotalSize, tor->total_size());
     EXPECT_EQ(tr_file_index_t{ 4 }, tor->file_count());
 
-    for (tr_file_index_t i = 0; i < 4; ++i)
-    {
+    for (tr_file_index_t i = 0; i < 4; ++i) {
         EXPECT_EQ(ExpectedFiles[i], tr_torrentFile(tor, i).name);
     }
 
@@ -323,8 +319,7 @@ TEST_F(RenameTest, multifileTorrent)
     // ...and back again
     EXPECT_EQ(0, torrentRenameAndWait(tor, "Felidae/Felinae/Felis/placeholder", "catus"));
 
-    for (tr_file_index_t i = 0; i < 4; ++i)
-    {
+    for (tr_file_index_t i = 0; i < 4; ++i) {
         EXPECT_EQ(ExpectedFiles[i], tr_torrentFile(tor, i).name);
         EXPECT_TRUE(testFileExistsAndConsistsOfThisString(tor, i, ExpectedContents[i]));
     }
@@ -345,8 +340,7 @@ TEST_F(RenameTest, multifileTorrent)
     blockingTorrentVerify(tor);
     testFileExistsAndConsistsOfThisString(tor, 0, ExpectedContents[0]);
 
-    for (tr_file_index_t i = 1; i <= 2; ++i)
-    {
+    for (tr_file_index_t i = 1; i <= 2; ++i) {
         str = tr_torrentFindFile(tor, i);
         EXPECT_EQ(""sv, str);
     }
@@ -363,8 +357,7 @@ TEST_F(RenameTest, multifileTorrent)
     // ...and back again
     EXPECT_EQ(0, torrentRenameAndWait(tor, "Felidae/Felinae/Felis/foo", "catus"));
 
-    for (tr_file_index_t i = 0; i < 4; ++i)
-    {
+    for (tr_file_index_t i = 0; i < 4; ++i) {
         EXPECT_EQ(ExpectedFiles[i], tr_torrentFile(tor, i).name);
     }
 
@@ -375,8 +368,7 @@ TEST_F(RenameTest, multifileTorrent)
     strings[2] = "gabba/Felinae/Felis/catus/Saffron";
     strings[3] = "gabba/Pantherinae/Panthera/Tiger/Tony";
 
-    for (tr_file_index_t i = 0; i < 4; ++i)
-    {
+    for (tr_file_index_t i = 0; i < 4; ++i) {
         EXPECT_STREQ(strings[i], tr_torrentFile(tor, i).name);
         testFileExistsAndConsistsOfThisString(tor, i, ExpectedContents[i]);
     }
@@ -390,8 +382,7 @@ TEST_F(RenameTest, multifileTorrent)
     strings[2] = "Felidae/Felinae/Felis/catus/Saffron";
     strings[3] = "Felidae/Pantherinae/Panthera/Snow Leopard/10.6";
 
-    for (tr_file_index_t i = 0; i < 4; ++i)
-    {
+    for (tr_file_index_t i = 0; i < 4; ++i) {
         EXPECT_STREQ(strings[i], tr_torrentFile(tor, i).name);
         testFileExistsAndConsistsOfThisString(tor, i, ExpectedContents[i]);
     }
@@ -479,15 +470,13 @@ TEST_F(RenameTest, partialFile)
     strings[1] = "foo/4096"sv;
     strings[2] = "foo/512"sv;
 
-    for (tr_file_index_t i = 0; i < 3; ++i)
-    {
+    for (tr_file_index_t i = 0; i < 3; ++i) {
         EXPECT_EQ(strings[i], tor->file_subpath(i));
     }
 
     strings[0] = "foo/bar.part";
 
-    for (tr_file_index_t i = 0; i < 3; ++i)
-    {
+    for (tr_file_index_t i = 0; i < 3; ++i) {
         auto const expected = tr_pathbuf{ tor->current_dir(), '/', strings[i] };
         auto const actual = tr_torrentFindFile(tor, i);
         EXPECT_EQ(expected, actual);

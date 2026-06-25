@@ -23,18 +23,15 @@ tr_ctor::tr_ctor(tr_session* const session)
 
 bool tr_ctor::set_metainfo_from_file(std::string_view filename, tr_error* error)
 {
-    if (std::empty(filename))
-    {
-        if (error != nullptr)
-        {
+    if (std::empty(filename)) {
+        if (error != nullptr) {
             error->set(EINVAL, "no filename specified"sv);
         }
 
         return false;
     }
 
-    if (!tr_file_read(filename, contents_, error))
-    {
+    if (!tr_file_read(filename, contents_, error)) {
         return false;
     }
 
@@ -47,10 +44,8 @@ bool tr_ctor::save(std::string_view filename, tr_error* error) const
 {
     TR_ASSERT(!std::empty(filename));
 
-    if (std::empty(contents_))
-    {
-        if (error != nullptr)
-        {
+    if (std::empty(contents_)) {
+        if (error != nullptr) {
             error->set(EINVAL, "torrent ctor has no contents to save"sv);
         }
 
@@ -103,8 +98,7 @@ bool tr_ctorSetMetainfoFromMagnetLink(tr_ctor* const ctor, std::string_view cons
 
 std::optional<std::string> tr_ctorGetSourceFile(tr_ctor const* const ctor)
 {
-    if (auto const& filename = ctor->torrent_filename(); !std::empty(filename))
-    {
+    if (auto const& filename = ctor->torrent_filename(); !std::empty(filename)) {
         return filename;
     }
 
@@ -118,10 +112,8 @@ void tr_ctorSetDeleteSource(tr_ctor* const ctor, bool const delete_source)
 
 bool tr_ctorGetDeleteSource(tr_ctor const* const ctor, bool* const setme)
 {
-    if (ctor != nullptr)
-    {
-        if (setme != nullptr)
-        {
+    if (ctor != nullptr) {
+        if (setme != nullptr) {
             *setme = ctor->should_delete_source_file();
         }
 
@@ -153,10 +145,8 @@ void tr_ctorSetIncompleteDir(tr_ctor* const ctor, std::string_view const dir)
 
 bool tr_ctorGetPeerLimit(tr_ctor const* const ctor, tr_ctorMode const mode, uint16_t* const setme)
 {
-    if (auto const val = ctor->peer_limit(mode); val)
-    {
-        if (setme != nullptr)
-        {
+    if (auto const val = ctor->peer_limit(mode); val) {
+        if (setme != nullptr) {
             *setme = *val;
         }
 
@@ -168,10 +158,8 @@ bool tr_ctorGetPeerLimit(tr_ctor const* const ctor, tr_ctorMode const mode, uint
 
 bool tr_ctorGetPaused(tr_ctor const* const ctor, tr_ctorMode const mode, bool* const setme)
 {
-    if (auto const val = ctor->paused(mode); val)
-    {
-        if (setme != nullptr)
-        {
+    if (auto const val = ctor->paused(mode); val) {
+        if (setme != nullptr) {
             *setme = *val;
         }
 
@@ -183,8 +171,7 @@ bool tr_ctorGetPaused(tr_ctor const* const ctor, tr_ctorMode const mode, bool* c
 
 std::optional<std::string> tr_ctorGetDownloadDir(tr_ctor const* const ctor, tr_ctorMode const mode)
 {
-    if (auto const& dir = ctor->download_dir(mode); !std::empty(dir))
-    {
+    if (auto const& dir = ctor->download_dir(mode); !std::empty(dir)) {
         return dir;
     }
 

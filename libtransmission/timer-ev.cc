@@ -43,8 +43,7 @@ public:
 
     void stop() override
     {
-        if (!is_running_)
-        {
+        if (!is_running_) {
             return;
         }
 
@@ -55,8 +54,7 @@ public:
 
     void start() override
     {
-        if (is_running_)
-        {
+        if (is_running_) {
             return;
         }
 
@@ -84,8 +82,7 @@ public:
     {
         TR_ASSERT_MSG(interval.count() > 0 || !is_repeating(), "repeating timers must have a positive interval");
 
-        if (interval_ == interval)
-        {
+        if (interval_ == interval) {
             return;
         }
 
@@ -100,8 +97,7 @@ public:
 
     void set_repeating(bool repeating) override
     {
-        if (is_repeating_ == repeating)
-        {
+        if (is_repeating_ == repeating) {
             return;
         }
 
@@ -121,20 +117,17 @@ private:
         auto const new_events = events(is_repeating());
         auto const was_running = isRunning();
 
-        if (was_running)
-        {
+        if (was_running) {
             stop();
         }
 
-        if (new_events != old_events)
-        {
+        if (new_events != old_events) {
             [[maybe_unused]] auto const val = event_assign(evtimer_.get(), base_, -1, new_events, &EvTimer::onTimer, this);
             TR_ASSERT(val == 0);
             event_priority_set(evtimer_.get(), 2);
         }
 
-        if (was_running)
-        {
+        if (was_running) {
             start();
         }
     }

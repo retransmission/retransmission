@@ -22,8 +22,7 @@ namespace
 
 QString getNameFromMetainfo(QByteArray const& benc)
 {
-    if (auto metainfo = tr_torrent_metainfo{}; metainfo.parse_benc({ benc.constData(), static_cast<size_t>(benc.size()) }))
-    {
+    if (auto metainfo = tr_torrent_metainfo{}; metainfo.parse_benc({ benc.constData(), static_cast<size_t>(benc.size()) })) {
         return QString::fromStdString(metainfo.name());
     }
 
@@ -34,13 +33,11 @@ QString getNameFromMagnet(QString const& magnet)
 {
     auto tmp = tr_magnet_metainfo{};
 
-    if (!tmp.parseMagnet(magnet.toStdString()))
-    {
+    if (!tmp.parseMagnet(magnet.toStdString())) {
         return magnet;
     }
 
-    if (!std::empty(tmp.name()))
-    {
+    if (!std::empty(tmp.name())) {
         return QString::fromStdString(tmp.name());
     }
 
@@ -52,20 +49,14 @@ QString getNameFromMagnet(QString const& magnet)
 
 AddData::Type AddData::set(QString const& key)
 {
-    if (auto const key_std = key.toStdString(); tr_urlIsValid(key_std))
-    {
+    if (auto const key_std = key.toStdString(); tr_urlIsValid(key_std)) {
         this->url = key;
         this->type = URL;
-    }
-    else if (tr_magnet_metainfo{}.parseMagnet(key_std))
-    {
+    } else if (tr_magnet_metainfo{}.parseMagnet(key_std)) {
         this->magnet = key;
         this->type = MAGNET;
-    }
-    else if (auto const kurl = QUrl::fromUserInput(key, QDir::currentPath()); kurl.isValid() && kurl.isLocalFile())
-    {
-        if (auto file = QFile{ kurl.toLocalFile() }; file.exists())
-        {
+    } else if (auto const kurl = QUrl::fromUserInput(key, QDir::currentPath()); kurl.isValid() && kurl.isLocalFile()) {
+        if (auto file = QFile{ kurl.toLocalFile() }; file.exists()) {
             this->filename = file.fileName();
             this->type = FILENAME;
 
@@ -73,14 +64,10 @@ AddData::Type AddData::set(QString const& key)
             this->metainfo = file.readAll();
             file.close();
         }
-    }
-    else if (auto const raw = QByteArray::fromBase64(key.toUtf8()); !raw.isEmpty())
-    {
+    } else if (auto const raw = QByteArray::fromBase64(key.toUtf8()); !raw.isEmpty()) {
         this->metainfo.append(raw);
         this->type = METAINFO;
-    }
-    else
-    {
+    } else {
         this->type = NONE;
     }
 
@@ -94,8 +81,7 @@ QByteArray AddData::toBase64() const
 
 QString AddData::readableName() const
 {
-    switch (type)
-    {
+    switch (type) {
     case FILENAME:
         return filename;
 
@@ -115,8 +101,7 @@ QString AddData::readableName() const
 
 QString AddData::readableShortName() const
 {
-    switch (type)
-    {
+    switch (type) {
     case FILENAME:
         return QFileInfo{ filename }.baseName();
 
@@ -131,13 +116,11 @@ QString AddData::readableShortName() const
 void AddData::disposeSourceFile() const
 {
     auto file = QFile{ filename };
-    if (!disposal_ || !file.exists())
-    {
+    if (!disposal_ || !file.exists()) {
         return;
     }
 
-    switch (*disposal_)
-    {
+    switch (*disposal_) {
     case FilenameDisposal::Delete:
         file.setPermissions(QFile::ReadOwner | QFile::WriteOwner);
         file.remove();

@@ -135,21 +135,16 @@ bool MessageLogWindow::Impl::is_pinned_to_new() const
 {
     bool pinned_to_new = false;
 
-    if (view_ == nullptr)
-    {
+    if (view_ == nullptr) {
         pinned_to_new = true;
-    }
-    else
-    {
+    } else {
         Gtk::TreeModel::Path first_visible;
         Gtk::TreeModel::Path last_visible;
 
-        if (view_->get_visible_range(first_visible, last_visible))
-        {
+        if (view_->get_visible_range(first_visible, last_visible)) {
             auto const row_count = sort_->children().size();
 
-            if (auto const iter = sort_->children()[row_count - 1]; iter)
-            {
+            if (auto const iter = sort_->children()[row_count - 1]; iter) {
                 pinned_to_new = last_visible == sort_->get_path(TR_GTK_TREE_MODEL_CHILD_ITER(iter));
             }
         }
@@ -161,13 +156,11 @@ bool MessageLogWindow::Impl::is_pinned_to_new() const
 void MessageLogWindow::Impl::scroll_to_bottom()
 {
     auto const row_count = sort_->children().size();
-    if (row_count == 0)
-    {
+    if (row_count == 0) {
         return;
     }
 
-    if (auto const iter = sort_->children()[row_count - 1]; iter)
-    {
+    if (auto const iter = sort_->children()[row_count - 1]; iter) {
         view_->scroll_to_row(sort_->get_path(TR_GTK_TREE_MODEL_CHILD_ITER(iter)), 1);
     }
 }
@@ -185,8 +178,7 @@ void MessageLogWindow::Impl::level_combo_init(Gtk::ComboBox* level_combo)
     auto has_pref_level = false;
     auto items = std::vector<std::pair<Glib::ustring, int>>{};
     items.reserve(std::size(level_names_));
-    for (auto const& [level, name] : level_names_)
-    {
+    for (auto const& [level, name] : level_names_) {
         items.emplace_back(g_dpgettext2(nullptr, "Logging level", name), level);
         has_pref_level |= level == pref_level;
     }
@@ -205,8 +197,7 @@ void MessageLogWindow::Impl::level_combo_changed_cb(Gtk::ComboBox* combo_box)
     maxLevel_ = level;
     filter_->refilter();
 
-    if (pinned_to_new)
-    {
+    if (pinned_to_new) {
         scroll_to_bottom();
     }
 }
@@ -225,29 +216,25 @@ Glib::ustring gtr_asctime(system_clock::time_point t)
 
 void MessageLogWindow::Impl::doSave(std::string const& filename)
 {
-    try
-    {
+    try {
         auto stream = std::ofstream();
         stream.exceptions(std::ios_base::failbit | std::ios_base::badbit);
         stream.open(filename, std::ios_base::trunc);
 
-        for (auto const& row : store_->children())
-        {
+        for (auto const& row : store_->children()) {
             auto const* const node = row.get_value(message_log_cols.tr_msg);
             auto const date = gtr_asctime(node->when);
 
-            auto const iter = std::ranges::find_if(
-                level_names_,
-                [key = node->level](auto const& item) { return item.first == key; });
+            auto const iter = std::ranges::find_if(level_names_, [key = node->level](auto const& item) {
+                return item.first == key;
+            });
             auto const level_str = iter != std::ranges::end(level_names_) ?
                 Glib::ustring(g_dpgettext2(nullptr, "Logging level", iter->second)) :
                 Glib::ustring("???");
 
             fmt::print(stream, "{}\t{}\t{}\t{}\n", date, level_str, node->name, node->message);
         }
-    }
-    catch (std::ios_base::failure const& e)
-    {
+    } catch (std::ios_base::failure const& e) {
         auto w = std::make_shared<Gtk::MessageDialog>(
             window_,
             fmt::format(
@@ -270,8 +257,7 @@ void MessageLogWindow::Impl::onSaveDialogResponse(Glib::RefPtr<Gtk::FileChooserN
 
     d.reset();
 
-    if (!filename.empty())
-    {
+    if (!filename.empty()) {
         doSave(filename);
     }
 }
@@ -304,8 +290,7 @@ namespace
 
 void setForegroundColor(Gtk::CellRendererText* renderer, tr_log_level level)
 {
-    switch (level)
-    {
+    switch (level) {
     case TR_LOG_CRITICAL:
     case TR_LOG_ERROR:
     case TR_LOG_WARN:
@@ -345,33 +330,26 @@ void appendColumn(Gtk::TreeView* view, Gtk::TreeModelColumnBase const& col)
 {
     Gtk::TreeViewColumn* c = nullptr;
 
-    if (col == message_log_cols.name)
-    {
+    if (col == message_log_cols.name) {
         auto* r = Gtk::make_managed<Gtk::CellRendererText>();
         c = Gtk::make_managed<Gtk::TreeViewColumn>(_("Name"), *r);
         c->set_cell_data_func(*r, [r](auto* /*renderer*/, auto const& iter) { renderText(r, iter, message_log_cols.name); });
         c->set_sizing(TR_GTK_TREE_VIEW_COLUMN_SIZING(FIXED));
         c->set_fixed_width(200);
         c->set_resizable(true);
-    }
-    else if (col == message_log_cols.message)
-    {
+    } else if (col == message_log_cols.message) {
         auto* r = Gtk::make_managed<Gtk::CellRendererText>();
         c = Gtk::make_managed<Gtk::TreeViewColumn>(_("Message"), *r);
         c->set_cell_data_func(*r, [r](auto* /*renderer*/, auto const& iter) { renderText(r, iter, message_log_cols.message); });
         c->set_sizing(TR_GTK_TREE_VIEW_COLUMN_SIZING(FIXED));
         c->set_fixed_width(500);
         c->set_resizable(true);
-    }
-    else if (col == message_log_cols.sequence)
-    {
+    } else if (col == message_log_cols.sequence) {
         auto* r = Gtk::make_managed<Gtk::CellRendererText>();
         c = Gtk::make_managed<Gtk::TreeViewColumn>(_("Time"), *r);
         c->set_cell_data_func(*r, [r](auto* /*renderer*/, auto const& iter) { renderTime(r, iter); });
         c->set_resizable(true);
-    }
-    else
-    {
+    } else {
         g_assert_not_reached();
     }
 
@@ -404,8 +382,7 @@ void addLatestMessagesToStore(
     auto const default_name = Glib::get_application_name();
     auto const total = std::size(messages);
 
-    for (auto i = total - std::min(total, n_messages); i < total; ++i)
-    {
+    for (auto i = total - std::min(total, n_messages); i < total; ++i) {
         auto const& message = messages[i];
 
         char const* name = !std::empty(message.name) ? message.name.c_str() : default_name.c_str();
@@ -418,12 +395,10 @@ void addLatestMessagesToStore(
         row[message_log_cols.sequence] = ++sequence;
 
         /* if it's an error message, dump it to the terminal too */
-        if (message.level == TR_LOG_ERROR)
-        {
+        if (message.level == TR_LOG_ERROR) {
             auto gstr = fmt::format("{}:{} {}", message.file, message.line, message.message);
 
-            if (!std::empty(message.name))
-            {
+            if (!std::empty(message.name)) {
                 gstr += fmt::format(" ({})", message.name.c_str());
             }
 
@@ -445,12 +420,10 @@ bool MessageLogWindow::Impl::onRefresh()
 {
     bool const pinned_to_new = is_pinned_to_new();
 
-    if (!isPaused_)
-    {
+    if (!isPaused_) {
         addMessages(store_, log_messages(), tr_logGetQueue());
 
-        if (pinned_to_new)
-        {
+        if (pinned_to_new) {
             scroll_to_bottom();
         }
     }
@@ -534,10 +507,9 @@ MessageLogWindow::Impl::Impl(
     filter_->set_visible_func(sigc::mem_fun(*this, &Impl::isRowVisible));
 
     view_->set_model(sort_);
-    setup_item_view_button_event_handling(
-        *view_,
-        {},
-        [this](double view_x, double view_y) { return on_item_view_button_released(*view_, view_x, view_y); });
+    setup_item_view_button_event_handling(*view_, {}, [this](double view_x, double view_y) {
+        return on_item_view_button_released(*view_, view_x, view_y);
+    });
     appendColumn(view_, message_log_cols.sequence);
     appendColumn(view_, message_log_cols.name);
     appendColumn(view_, message_log_cols.message);

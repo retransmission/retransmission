@@ -31,10 +31,8 @@ namespace
 tr_socket_t create_socket(int const domain)
 {
     auto const sockfd = socket(domain, SOCK_STREAM, 0);
-    if (!is_valid_socket(sockfd))
-    {
-        if (sockerrno != EAFNOSUPPORT)
-        {
+    if (!is_valid_socket(sockfd)) {
+        if (sockerrno != EAFNOSUPPORT) {
             tr_logAddWarn(
                 fmt::format(
                     fmt::runtime(_("Couldn't create socket: {error} ({error_code})")),
@@ -44,27 +42,23 @@ tr_socket_t create_socket(int const domain)
         return TR_BAD_SOCKET;
     }
 
-    if (evutil_make_socket_nonblocking(static_cast<evutil_socket_t>(sockfd)) == -1)
-    {
+    if (evutil_make_socket_nonblocking(static_cast<evutil_socket_t>(sockfd)) == -1) {
         tr_net_close_socket(sockfd);
         return TR_BAD_SOCKET;
     }
 
-    if (static bool buf_logged = false; !buf_logged)
-    {
+    if (static bool buf_logged = false; !buf_logged) {
         int i = 0;
         socklen_t size = sizeof(i);
 
-        if (getsockopt(sockfd, SOL_SOCKET, SO_SNDBUF, reinterpret_cast<char*>(&i), &size) != -1)
-        {
+        if (getsockopt(sockfd, SOL_SOCKET, SO_SNDBUF, reinterpret_cast<char*>(&i), &size) != -1) {
             tr_logAddTrace(fmt::format("SO_SNDBUF size is {}", i));
         }
 
         i = 0;
         size = sizeof(i);
 
-        if (getsockopt(sockfd, SOL_SOCKET, SO_RCVBUF, reinterpret_cast<char*>(&i), &size) != -1)
-        {
+        if (getsockopt(sockfd, SOL_SOCKET, SO_RCVBUF, reinterpret_cast<char*>(&i), &size) != -1) {
             tr_logAddTrace(fmt::format("SO_RCVBUF size is {}", i));
         }
 
@@ -80,23 +74,19 @@ tr_socket_t open_peer_socket(tr_session const& session, tr_socket_address const&
 
     TR_ASSERT(addr.is_valid());
 
-    if (!session.allowsTCP() || !socket_address.is_valid())
-    {
+    if (!session.allowsTCP() || !socket_address.is_valid()) {
         return TR_BAD_SOCKET;
     }
 
     auto const s = create_socket(tr_ip_protocol_to_af(addr.type));
-    if (!is_valid_socket(s))
-    {
+    if (!is_valid_socket(s)) {
         return TR_BAD_SOCKET;
     }
 
     // seeds don't need a big read buffer, so make it smaller
-    if (client_is_seed)
-    {
+    if (client_is_seed) {
         constexpr int N = 8192;
-        if (setsockopt(s, SOL_SOCKET, SO_RCVBUF, reinterpret_cast<char const*>(&N), sizeof(N)) == -1)
-        {
+        if (setsockopt(s, SOL_SOCKET, SO_RCVBUF, reinterpret_cast<char const*>(&N), sizeof(N)) == -1) {
             tr_logAddDebug(fmt::format("Unable to set SO_RCVBUF on socket {}: {}", s, tr_net_strerror(sockerrno)));
         }
     }
@@ -107,8 +97,7 @@ tr_socket_t open_peer_socket(tr_session const& session, tr_socket_address const&
     auto const source_addr = session.bind_address(addr.type);
     auto const [source_sock, sourcelen] = tr_socket_address::to_sockaddr(source_addr, {});
 
-    if (bind(s, reinterpret_cast<sockaddr const*>(&source_sock), sourcelen) == -1)
-    {
+    if (bind(s, reinterpret_cast<sockaddr const*>(&source_sock), sourcelen) == -1) {
         tr_logAddWarn(
             fmt::format(
                 fmt::runtime(_("Couldn't set source address {address} on {socket}: {error} ({error_code})")),
@@ -124,11 +113,9 @@ tr_socket_t open_peer_socket(tr_session const& session, tr_socket_address const&
 #ifdef _WIN32
         sockerrno != WSAEWOULDBLOCK &&
 #endif
-        sockerrno != EINPROGRESS)
-    {
+        sockerrno != EINPROGRESS) {
         if (auto const tmperrno = sockerrno;
-            (tmperrno != ECONNREFUSED && tmperrno != ENETUNREACH && tmperrno != EHOSTUNREACH) || addr.is_ipv4())
-        {
+            (tmperrno != ECONNREFUSED && tmperrno != ENETUNREACH && tmperrno != EHOSTUNREACH) || addr.is_ipv4()) {
             tr_logAddWarn(
                 fmt::format(
                     fmt::runtime(_("Couldn't connect socket {socket} to {address}:{port}: {error} ({error_code})")),
@@ -151,8 +138,7 @@ tr_socket_t open_peer_socket(tr_session const& session, tr_socket_address const&
 void set_congestion_control([[maybe_unused]] tr_socket_t const s, [[maybe_unused]] char const* const algorithm)
 {
 #ifdef TCP_CONGESTION
-    if (setsockopt(s, IPPROTO_TCP, TCP_CONGESTION, algorithm, strlen(algorithm) + 1) == -1)
-    {
+    if (setsockopt(s, IPPROTO_TCP, TCP_CONGESTION, algorithm, strlen(algorithm) + 1) == -1) {
         tr_logAddDebug(fmt::format("Can't set congestion control algorithm '{}': {}", algorithm, tr_net_strerror(sockerrno)));
     }
 #endif
@@ -169,8 +155,7 @@ public:
 
         session.setSocketDiffServ(sock, address().type);
 
-        if (auto const& algo = session.peerCongestionAlgorithm(); !std::empty(algo))
-        {
+        if (auto const& algo = session.peerCongestionAlgorithm(); !std::empty(algo)) {
             set_congestion_control(sock, algo.c_str());
         }
 
@@ -211,19 +196,15 @@ public:
 
     void set_read_enabled(bool const enabled) override
     {
-        if (is_read_enabled_ == enabled)
-        {
+        if (is_read_enabled_ == enabled) {
             return;
         }
 
         is_read_enabled_ = enabled;
-        if (enabled)
-        {
+        if (enabled) {
             tr_logAddTraceSock(this, "enabling ready-to-read polling");
             event_add(event_read_.get(), nullptr);
-        }
-        else
-        {
+        } else {
             tr_logAddTraceSock(this, "disabling ready-to-read polling");
             event_del(event_read_.get());
         }
@@ -231,19 +212,15 @@ public:
 
     void set_write_enabled(bool const enabled) override
     {
-        if (is_write_enabled_ == enabled)
-        {
+        if (is_write_enabled_ == enabled) {
             return;
         }
 
         is_write_enabled_ = enabled;
-        if (enabled)
-        {
+        if (enabled) {
             tr_logAddTraceSock(this, "enabling ready-to-write polling");
             event_add(event_write_.get(), nullptr);
-        }
-        else
-        {
+        } else {
             tr_logAddTraceSock(this, "disabling ready-to-write polling");
             event_del(event_write_.get());
         }
@@ -268,22 +245,17 @@ private:
         auto const n_read = recv(sock_, reinterpret_cast<char*>(bufptr), TR_IF_WIN32(static_cast<int>(n_bytes), n_bytes), 0);
         auto const err = sockerrno;
 
-        if (n_read > 0)
-        {
+        if (n_read > 0) {
             buf.commit_space(n_read);
             return static_cast<size_t>(n_read);
         }
 
         // When a stream socket peer has performed an orderly shutdown,
         // the return value will be 0 (the traditional "end-of-file" return).
-        if (error != nullptr)
-        {
-            if (n_read == 0)
-            {
+        if (error != nullptr) {
+            if (n_read == 0) {
                 error->set_from_errno(ENOTCONN);
-            }
-            else
-            {
+            } else {
                 error->set(err, tr_net_strerror(err));
             }
         }
@@ -294,8 +266,7 @@ private:
     size_t try_write_impl(OutBuf& buf, size_t n_bytes, tr_error* error) override
     {
         n_bytes = std::min(n_bytes, std::size(buf));
-        if (n_bytes == 0U)
-        {
+        if (n_bytes == 0U) {
             return {};
         }
 
@@ -304,14 +275,12 @@ private:
                 reinterpret_cast<char const*>(std::data(buf)),
                 TR_IF_WIN32(static_cast<int>(n_bytes), n_bytes),
                 0);
-            n_sent >= 0)
-        {
+            n_sent >= 0) {
             buf.drain(n_sent);
             return n_sent;
         }
 
-        if (error != nullptr)
-        {
+        if (error != nullptr) {
             auto const err = sockerrno;
             error->set(err, tr_net_strerror(err));
         }
@@ -361,8 +330,7 @@ std::unique_ptr<tr_peer_socket_tcp> tr_peer_socket_tcp::create(
     tr_socket_address const& socket_address,
     bool const client_is_seed)
 {
-    if (auto const sock = open_peer_socket(session, socket_address, client_is_seed); is_valid_socket(sock))
-    {
+    if (auto const sock = open_peer_socket(session, socket_address, client_is_seed); is_valid_socket(sock)) {
         return create(session, socket_address, sock);
     }
     return {};

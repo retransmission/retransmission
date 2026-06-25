@@ -26,8 +26,7 @@
 
 - (instancetype)init
 {
-    if ((self = [super initWithNibName:@"InfoFileView" bundle:nil]))
-    {
+    if ((self = [super initWithNibName:@"InfoFileView" bundle:nil])) {
         self.title = NSLocalizedString(@"Files", "Inspector view -> title");
     }
 
@@ -38,8 +37,7 @@
 {
     [super awakeFromNib];
     CGFloat const height = [NSUserDefaults.standardUserDefaults floatForKey:@"InspectorContentHeightFiles"];
-    if (height != 0.0)
-    {
+    if (height != 0.0) {
         NSRect viewRect = self.view.frame;
         viewRect.size.height = height;
         self.view.frame = viewRect;
@@ -81,19 +79,16 @@
 
 - (void)updateInfo
 {
-    if (!self.fSet)
-    {
+    if (!self.fSet) {
         [self setupInfo];
     }
 
-    if (self.fTorrents.count == 1)
-    {
+    if (self.fTorrents.count == 1) {
         [self.fFileController reloadVisibleRows];
 
 #warning use TorrentFileCheckChange notification as well
         Torrent* torrent = self.fTorrents[0];
-        if (torrent.folder)
-        {
+        if (torrent.folder) {
             NSControlStateValue const filesCheckState = [torrent
                 checkForFiles:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, torrent.fileCount)]];
             self.fCheckAllButton.enabled = filesCheckState != NSControlStateValueOn; //if anything is unchecked
@@ -126,24 +121,18 @@
 {
     unichar const firstChar = [event.charactersIgnoringModifiers characterAtIndex:0];
 
-    if (firstChar == ' ')
-    {
+    if (firstChar == ' ') {
         [self toggleQuickLook:nil];
-    }
-    else
-    {
+    } else {
         [super keyDown:event];
     }
 }
 
 - (void)toggleQuickLook:(id)sender
 {
-    if ([QLPreviewPanel sharedPreviewPanel].visible)
-    {
+    if ([QLPreviewPanel sharedPreviewPanel].visible) {
         [[QLPreviewPanel sharedPreviewPanel] orderOut:nil];
-    }
-    else
-    {
+    } else {
         [[QLPreviewPanel sharedPreviewPanel] makeKeyAndOrderFront:nil];
     }
 }
@@ -155,11 +144,9 @@
     NSIndexSet* indexes = fileOutlineView.selectedRowIndexes;
     NSMutableArray* urlArray = [NSMutableArray arrayWithCapacity:indexes.count];
 
-    for (NSUInteger i = indexes.firstIndex; i != NSNotFound; i = [indexes indexGreaterThanIndex:i])
-    {
+    for (NSUInteger i = indexes.firstIndex; i != NSNotFound; i = [indexes indexGreaterThanIndex:i]) {
         FileListNode* item = [fileOutlineView itemAtRow:i];
-        if ([self canQuickLookFile:item])
-        {
+        if ([self canQuickLookFile:item]) {
             [urlArray addObject:[NSURL fileURLWithPath:[torrent fileLocation:item]]];
         }
     }
@@ -169,24 +156,20 @@
 
 - (BOOL)canQuickLook
 {
-    if (self.fTorrents.count != 1)
-    {
+    if (self.fTorrents.count != 1) {
         return NO;
     }
 
     Torrent* torrent = self.fTorrents[0];
-    if (!torrent.folder)
-    {
+    if (!torrent.folder) {
         return NO;
     }
 
     FileOutlineView* fileOutlineView = self.fFileController.outlineView;
     NSIndexSet* indexes = fileOutlineView.selectedRowIndexes;
 
-    for (NSUInteger i = indexes.firstIndex; i != NSNotFound; i = [indexes indexGreaterThanIndex:i])
-    {
-        if ([self canQuickLookFile:[fileOutlineView itemAtRow:i]])
-        {
+    for (NSUInteger i = indexes.firstIndex; i != NSNotFound; i = [indexes indexGreaterThanIndex:i]) {
+        if ([self canQuickLookFile:[fileOutlineView itemAtRow:i]]) {
             return YES;
         }
     }
@@ -202,15 +185,12 @@
     Torrent* torrent = self.fTorrents[0];
     NSRange visibleRows = [fileOutlineView rowsInRect:fileOutlineView.bounds];
 
-    for (NSUInteger row = visibleRows.location; row < NSMaxRange(visibleRows); row++)
-    {
+    for (NSUInteger row = visibleRows.location; row < NSMaxRange(visibleRows); row++) {
         FileListNode* rowItem = [fileOutlineView itemAtRow:row];
-        if ([[torrent fileLocation:rowItem] isEqualToString:fullPath])
-        {
+        if ([[torrent fileLocation:rowItem] isEqualToString:fullPath]) {
             NSRect frame = [fileOutlineView iconRectForRow:row];
 
-            if (!NSIntersectsRect(fileOutlineView.visibleRect, frame))
-            {
+            if (!NSIntersectsRect(fileOutlineView.visibleRect, frame)) {
                 return NSZeroRect;
             }
 
@@ -231,8 +211,7 @@
     self.fFileFilterField.stringValue = @"";
     [self setFileFilterText:self.fFileFilterField];
 
-    if (self.fTorrents.count == 1)
-    {
+    if (self.fTorrents.count == 1) {
         Torrent* torrent = self.fTorrents[0];
 
         self.fFileController.torrent = torrent;
@@ -240,14 +219,11 @@
         BOOL const isFolder = torrent.folder;
         self.fFileFilterField.enabled = isFolder;
 
-        if (!isFolder)
-        {
+        if (!isFolder) {
             self.fCheckAllButton.enabled = NO;
             self.fUncheckAllButton.enabled = NO;
         }
-    }
-    else
-    {
+    } else {
         self.fFileController.torrent = nil;
 
         self.fFileFilterField.enabled = NO;

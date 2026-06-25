@@ -21,8 +21,7 @@ class FileTreeModel final : public QAbstractItemModel
     Q_OBJECT
 
 public:
-    enum : uint8_t
-    {
+    enum : uint8_t {
         COL_NAME,
         COL_SIZE,
         COL_PROGRESS,
@@ -32,13 +31,7 @@ public:
         NUM_COLUMNS
     };
 
-    enum Role : uint16_t
-    {
-        SortRole = Qt::UserRole,
-        FileIndexRole,
-        WantedRole,
-        CompleteRole
-    };
+    enum Role : uint16_t { SortRole = Qt::UserRole, FileIndexRole, WantedRole, CompleteRole };
 
     explicit FileTreeModel(QObject* parent = nullptr, bool is_editable = true);
     FileTreeModel& operator=(FileTreeModel&&) = delete;

@@ -117,20 +117,17 @@ char const* getUsage()
 bool tryDelegate(QStringList const& filenames)
 {
     InteropHelper const interop_client;
-    if (!interop_client.isConnected())
-    {
+    if (!interop_client.isConnected()) {
         return false;
     }
 
     bool delegated = false;
 
-    for (auto const& filename : filenames)
-    {
+    for (auto const& filename : filenames) {
         auto const add_data = AddData(filename);
         QString metainfo;
 
-        switch (add_data.type)
-        {
+        switch (add_data.type) {
         case AddData::URL:
             metainfo = add_data.url.toString();
             break;
@@ -148,8 +145,7 @@ bool tryDelegate(QStringList const& filenames)
             break;
         }
 
-        if (!metainfo.isEmpty() && interop_client.addMetainfo(metainfo))
-        {
+        if (!metainfo.isEmpty() && interop_client.addMetainfo(metainfo)) {
             delegated = true;
         }
     }
@@ -178,10 +174,8 @@ int tr_main(int argc, char** argv)
     int qt_args_start_idx = -1;
     while (
         file_args_start_idx < 0 && qt_args_start_idx < 0 &&
-        (opt = tr_getopt(getUsage(), argc, static_cast<char const* const*>(argv), std::data(Opts), &arg)) != TR_OPT_DONE)
-    {
-        switch (opt)
-        {
+        (opt = tr_getopt(getUsage(), argc, static_cast<char const* const*>(argv), std::data(Opts), &arg)) != TR_OPT_DONE) {
+        switch (opt) {
         case 'g':
             config_dir = QString::fromUtf8(arg);
             break;
@@ -216,16 +210,11 @@ int tr_main(int argc, char** argv)
             return 1;
 
         default:
-            if (arg == FileArgsSeparator)
-            {
+            if (arg == FileArgsSeparator) {
                 file_args_start_idx = tr_optind;
-            }
-            else if (arg == QtArgsSeparator)
-            {
+            } else if (arg == QtArgsSeparator) {
                 qt_args_start_idx = tr_optind;
-            }
-            else
-            {
+            } else {
                 filenames.append(QString::fromUtf8(arg));
             }
 
@@ -233,12 +222,9 @@ int tr_main(int argc, char** argv)
         }
     }
 
-    if (file_args_start_idx >= 0)
-    {
-        for (int i = file_args_start_idx; i < argc; ++i)
-        {
-            if (argv[i] == QtArgsSeparator)
-            {
+    if (file_args_start_idx >= 0) {
+        for (int i = file_args_start_idx; i < argc; ++i) {
+            if (argv[i] == QtArgsSeparator) {
                 qt_args_start_idx = i + 1;
                 break;
             }
@@ -251,59 +237,49 @@ int tr_main(int argc, char** argv)
 
     // try to delegate the work to an existing copy of Transmission
     // before starting ourselves...
-    if (tryDelegate(filenames))
-    {
+    if (tryDelegate(filenames)) {
         return 0;
     }
 
     // set the fallback config dir
-    if (config_dir.isNull())
-    {
+    if (config_dir.isNull()) {
         config_dir = QString::fromStdString(tr_getDefaultConfigDir("transmission"));
     }
 
     // initialize the prefs
     auto prefs = Prefs{ config_dir };
 
-    if (!host.isNull())
-    {
+    if (!host.isNull()) {
         prefs.set(TR_KEY_remote_session_host, host);
     }
 
-    if (!port.isNull())
-    {
+    if (!port.isNull()) {
         prefs.set(TR_KEY_remote_session_port, port.toUInt());
     }
 
-    if (!username.isNull())
-    {
+    if (!username.isNull()) {
         prefs.set(TR_KEY_remote_session_username, username);
     }
 
-    if (!password.isNull())
-    {
+    if (!password.isNull()) {
         prefs.set(TR_KEY_remote_session_password, password);
     }
 
-    if (!host.isNull() || !port.isNull() || !username.isNull() || !password.isNull())
-    {
+    if (!host.isNull() || !port.isNull() || !username.isNull() || !password.isNull()) {
         prefs.set(TR_KEY_remote_session_enabled, true);
     }
 
-    if (prefs.get<bool>(TR_KEY_start_minimized))
-    {
+    if (prefs.get<bool>(TR_KEY_start_minimized)) {
         minimized = true;
     }
 
     // start as minimized only if the system tray present
-    if (!prefs.get<bool>(TR_KEY_show_notification_area_icon))
-    {
+    if (!prefs.get<bool>(TR_KEY_show_notification_area_icon)) {
         minimized = false;
     }
 
     auto qt_argv = std::vector<char*>{ argv[0] };
-    if (qt_args_start_idx >= 0)
-    {
+    if (qt_args_start_idx >= 0) {
         qt_argv.insert(qt_argv.end(), &argv[qt_args_start_idx], &argv[argc]);
     }
 

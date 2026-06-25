@@ -26,14 +26,12 @@ class ListModelAdapter
     using IdGetter = std::function<int(Glib::RefPtr<Glib::ObjectBase const> const&)>;
     using ValueGetter = std::function<void(Glib::RefPtr<Glib::ObjectBase const> const&, int, Glib::ValueBase&)>;
 
-    enum class PositionAdjustment : int8_t
-    {
+    enum class PositionAdjustment : int8_t {
         DECREMENT = -1,
         INCREMENT = 1,
     };
 
-    struct ItemInfo
-    {
+    struct ItemInfo {
         int id = 0;
         sigc::connection notify_tag;
     };

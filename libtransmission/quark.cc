@@ -743,10 +743,8 @@ auto constexpr MyStatic = std::array<std::string_view, TR_N_KEYS>{
 
 bool constexpr quarks_are_sorted()
 {
-    for (size_t i = 1; i < std::size(MyStatic); ++i)
-    {
-        if (MyStatic[i - 1] >= MyStatic[i])
-        {
+    for (size_t i = 1; i < std::size(MyStatic); ++i) {
+        if (MyStatic[i - 1] >= MyStatic[i]) {
             return false;
         }
     }
@@ -767,16 +765,14 @@ std::optional<tr_quark> tr_quark_lookup(std::string_view key)
     auto constexpr Sbegin = std::begin(MyStatic);
     auto constexpr Send = std::end(MyStatic);
 
-    if (auto const sit = std::lower_bound(Sbegin, Send, key); sit != Send && *sit == key)
-    {
+    if (auto const sit = std::lower_bound(Sbegin, Send, key); sit != Send && *sit == key) {
         return std::distance(Sbegin, sit);
     }
 
     /* was it added during runtime? */
     auto const rbegin = std::begin(my_runtime);
     auto const rend = std::end(my_runtime);
-    if (auto const rit = std::find(rbegin, rend, key); rit != rend)
-    {
+    if (auto const rit = std::find(rbegin, rend, key); rit != rend) {
         return TR_N_KEYS + std::distance(rbegin, rit);
     }
 
@@ -786,8 +782,7 @@ std::optional<tr_quark> tr_quark_lookup(std::string_view key)
 tr_quark tr_quark_new(std::string_view str)
 {
     auto const utf8 = tr_strv_to_utf8_string(str);
-    if (auto const prior = tr_quark_lookup(utf8); prior)
-    {
+    if (auto const prior = tr_quark_lookup(utf8); prior) {
         return *prior;
     }
 

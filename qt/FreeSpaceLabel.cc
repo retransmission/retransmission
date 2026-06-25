@@ -42,8 +42,7 @@ FreeSpaceLabel::FreeSpaceLabel(QWidget* parent)
 
 void FreeSpaceLabel::setSession(Session& session)
 {
-    if (session_ == &session)
-    {
+    if (session_ == &session) {
         return;
     }
 
@@ -53,8 +52,7 @@ void FreeSpaceLabel::setSession(Session& session)
 
 void FreeSpaceLabel::setPath(QString const& path)
 {
-    if (path_ != path)
-    {
+    if (path_ != path) {
         setText(tr("<i>Calculating Free Space…</i>"));
         path_ = path;
         onTimer();
@@ -65,8 +63,7 @@ void FreeSpaceLabel::onTimer()
 {
     timer_.stop();
 
-    if (session_ == nullptr || path_.isEmpty())
-    {
+    if (session_ == nullptr || path_.isEmpty()) {
         return;
     }
 
@@ -77,25 +74,20 @@ void FreeSpaceLabel::onTimer()
 
     q->add([this, params = std::move(params)]() mutable { return session_->exec(TR_KEY_free_space, std::move(params)); });
 
-    q->add(
-        [this](RpcResponse const& r)
-        {
-            // update the label
-            if (auto const bytes = dictFind<int64_t>(r.args.get(), TR_KEY_size_bytes); bytes && *bytes > 1)
-            {
-                setText(tr("%1 free").arg(Formatter::storage_to_string(*bytes)));
-            }
-            else
-            {
-                setText(QString{});
-            }
+    q->add([this](RpcResponse const& r) {
+        // update the label
+        if (auto const bytes = dictFind<int64_t>(r.args.get(), TR_KEY_size_bytes); bytes && *bytes > 1) {
+            setText(tr("%1 free").arg(Formatter::storage_to_string(*bytes)));
+        } else {
+            setText(QString{});
+        }
 
-            // update the tooltip
-            auto const path = dictFind<QString>(r.args.get(), TR_KEY_path);
-            setToolTip(QDir::toNativeSeparators(path.value_or(QString{})));
+        // update the tooltip
+        auto const path = dictFind<QString>(r.args.get(), TR_KEY_path);
+        setToolTip(QDir::toNativeSeparators(path.value_or(QString{})));
 
-            timer_.start();
-        });
+        timer_.start();
+    });
 
     q->run();
 }

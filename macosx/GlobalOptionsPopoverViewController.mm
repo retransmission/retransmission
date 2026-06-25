@@ -23,8 +23,7 @@
 
 - (instancetype)initWithHandle:(tr_session*)handle
 {
-    if ((self = [super initWithNibName:@"GlobalOptionsPopover" bundle:nil]))
-    {
+    if ((self = [super initWithNibName:@"GlobalOptionsPopover" bundle:nil])) {
         _fHandle = handle;
 
         _fDefaults = NSUserDefaults.standardUserDefaults;
@@ -146,8 +145,7 @@
 - (BOOL)control:(NSControl*)control didFailToFormatString:(NSString*)string errorDescription:(NSString*)error
 {
     NSBeep();
-    if (self.fInitialString)
-    {
+    if (self.fInitialString) {
         control.stringValue = self.fInitialString;
         self.fInitialString = nil;
     }

@@ -53,13 +53,7 @@ void gtr_error(std::string const& message);
 ****
 ***/
 
-enum class GtrUnicode : uint8_t
-{
-    Up,
-    Down,
-    Inf,
-    Bullet
-};
+enum class GtrUnicode : uint8_t { Up, Down, Inf, Bullet };
 
 Glib::ustring gtr_get_unicode_string(GtrUnicode uni);
 
@@ -216,8 +210,7 @@ inline Glib::RefPtr<T> gtr_ptr_dynamic_cast(Glib::RefPtr<U> const& ptr)
 }
 
 template<>
-struct std::hash<Glib::ustring>
-{
+struct std::hash<Glib::ustring> {
     std::size_t operator()(Glib::ustring const& s) const
     {
         return std::hash<std::string>()(s.raw());
@@ -225,8 +218,7 @@ struct std::hash<Glib::ustring>
 };
 
 template<>
-struct fmt::formatter<Glib::ustring> : formatter<std::string>
-{
+struct fmt::formatter<Glib::ustring> : formatter<std::string> {
     template<typename FormatContext>
     auto format(Glib::ustring const& ustr, FormatContext& ctx) const
     {
@@ -261,15 +253,11 @@ T* gtr_get_widget_derived(Glib::RefPtr<Gtk::Builder> const& builder, Glib::ustri
 template<typename F>
 void gtr_window_on_close(Gtk::Window& widget, F&& callback)
 {
-    auto bool_callback = [callback = std::forward<F>(callback)]() mutable -> bool
-    {
-        if constexpr (std::is_same_v<void, std::invoke_result_t<decltype(callback)>>)
-        {
+    auto bool_callback = [callback = std::forward<F>(callback)]() mutable -> bool {
+        if constexpr (std::is_same_v<void, std::invoke_result_t<decltype(callback)>>) {
             callback();
             return false;
-        }
-        else
-        {
+        } else {
             return callback();
         }
     };

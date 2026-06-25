@@ -184,8 +184,7 @@ TEST_F(OpenFilesTest, closesLeastRecentlyUsedFile)
     // Walk through a number of files. Confirm that they all succeed
     // even when the number exhausts the cache size, and newer files
     // supplant older ones.
-    for (int i = 0; i < LargerThanCacheLimit; ++i)
-    {
+    for (int i = 0; i < LargerThanCacheLimit; ++i) {
         auto filename = tr_pathbuf{ sandboxDir(), fmt::format("/file-{:d}.txt"sv, i) };
         EXPECT_TRUE(session_->openFiles().get(TorId, i, true, filename, PreallocateFull, std::size(Contents)));
     }
@@ -196,8 +195,7 @@ TEST_F(OpenFilesTest, closesLeastRecentlyUsedFile)
     // once we get a success, all the remaining should also succeed.
     auto results = std::array<bool, LargerThanCacheLimit>{};
     auto sorted = std::array<bool, LargerThanCacheLimit>{};
-    for (int i = 0; i < LargerThanCacheLimit; ++i)
-    {
+    for (int i = 0; i < LargerThanCacheLimit; ++i) {
         auto filename = tr_pathbuf{ sandboxDir(), fmt::format("/file-{:d}.txt"sv, i) };
         results[i] = static_cast<bool>(session_->openFiles().get(TorId, i, false));
     }

@@ -83,8 +83,7 @@ std::optional<std::locale> tr_locale_set_global(char const* locale_name) noexcep
         return tr_locale_set_global(std::locale{ locale_name });
     }
 #ifndef WORKAROUND_CLANG_TIDY_GH44701
-    catch (std::runtime_error const&)
-    {
+    catch (std::runtime_error const&) {
         return {};
     }
 #endif
@@ -104,8 +103,7 @@ std::optional<std::locale> tr_locale_set_global(std::locale const& locale) noexc
         return old_locale;
     }
 #ifndef WORKAROUND_CLANG_TIDY_GH44701
-    catch (std::exception const&)
-    {
+    catch (std::exception const&) {
         return {};
     }
 #endif
@@ -122,13 +120,11 @@ uint64_t tr_time_msec()
 
 double tr_getRatio(uint64_t numerator, uint64_t denominator)
 {
-    if (denominator > 0)
-    {
+    if (denominator > 0) {
         return static_cast<double>(numerator) / static_cast<double>(denominator);
     }
 
-    if (numerator > 0)
-    {
+    if (numerator > 0) {
         return TR_RATIO_INF;
     }
 
@@ -146,18 +142,14 @@ std::optional<std::vector<std::string>> win32MakeUtf8Argv()
 {
     int argc = 0;
     auto argv = std::vector<std::string>{};
-    if (wchar_t** wargv = CommandLineToArgvW(GetCommandLineW(), &argc); wargv != nullptr)
-    {
-        for (int i = 0; i < argc; ++i)
-        {
-            if (wargv[i] == nullptr)
-            {
+    if (wchar_t** wargv = CommandLineToArgvW(GetCommandLineW(), &argc); wargv != nullptr) {
+        for (int i = 0; i < argc; ++i) {
+            if (wargv[i] == nullptr) {
                 break;
             }
 
             auto str = tr_win32_native_to_utf8(wargv[i]);
-            if (std::empty(str))
-            {
+            if (std::empty(str)) {
                 break;
             }
 
@@ -167,8 +159,7 @@ std::optional<std::vector<std::string>> win32MakeUtf8Argv()
         LocalFree(reinterpret_cast<HLOCAL>(wargv));
     }
 
-    if (std::cmp_equal(std::size(argv), argc))
-    {
+    if (std::cmp_equal(std::size(argv), argc)) {
         return argv;
     }
 
@@ -186,15 +177,12 @@ int tr_main_win32(int argc, char** argv, int (*real_main)(int, char**))
     SetConsoleOutputCP(CP_UTF8);
 
     // build an argv from GetCommandLineW + CommandLineToArgvW
-    if (auto argv_strs = win32MakeUtf8Argv(); argv_strs)
-    {
+    if (auto argv_strs = win32MakeUtf8Argv(); argv_strs) {
         auto argv_cstrs = std::vector<char*>{};
         argv_cstrs.reserve(std::size(*argv_strs));
-        std::transform(
-            std::begin(*argv_strs),
-            std::end(*argv_strs),
-            std::back_inserter(argv_cstrs),
-            [](auto& str) { return std::data(str); });
+        std::transform(std::begin(*argv_strs), std::end(*argv_strs), std::back_inserter(argv_cstrs), [](auto& str) {
+            return std::data(str);
+        });
         argv_cstrs.push_back(nullptr); // argv is nullptr-terminated
         return (*real_main)(static_cast<int>(std::size(*argv_strs)), std::data(argv_cstrs));
     }
@@ -211,8 +199,7 @@ namespace
 namespace tr_num_parse_range_impl
 {
 
-struct number_range
-{
+struct number_range {
     int low;
     int high;
 };
@@ -226,26 +213,22 @@ bool parseNumberSection(std::string_view str, number_range& range)
     auto constexpr Delimiter = "-"sv;
 
     auto const first = tr_num_parse<int>(str, &str);
-    if (!first)
-    {
+    if (!first) {
         return false;
     }
 
     range.low = range.high = *first;
-    if (std::empty(str))
-    {
+    if (std::empty(str)) {
         return true;
     }
 
-    if (!tr_strv_starts_with(str, Delimiter))
-    {
+    if (!tr_strv_starts_with(str, Delimiter)) {
         return false;
     }
 
     str.remove_prefix(std::size(Delimiter));
     auto const second = tr_num_parse<int>(str);
-    if (!second)
-    {
+    if (!second) {
         return false;
     }
 
@@ -269,10 +252,8 @@ std::vector<int> tr_num_parse_range(std::string_view str)
     auto values = std::vector<int>{};
     auto token = std::string_view{};
     auto range = number_range{};
-    while (tr_strv_sep(&str, &token, ',') && parseNumberSection(token, range))
-    {
-        for (auto i = range.low; i <= range.high; ++i)
-        {
+    while (tr_strv_sep(&str, &token, ',') && parseNumberSection(token, range)) {
+        for (auto i = range.low; i <= range.high; ++i) {
             values.emplace_back(i);
         }
     }
@@ -291,8 +272,7 @@ double tr_truncd(double x, int decimal_places)
     auto const [out, len] = fmt::format_to_n(std::data(buf), std::size(buf) - 1, "{:.{}f}", x, DBL_DIG);
     *out = '\0';
 
-    if (auto* const pt = strchr(std::data(buf), '.'); pt != nullptr)
-    {
+    if (auto* const pt = strchr(std::data(buf), '.'); pt != nullptr) {
         pt[decimal_places != 0 ? decimal_places + 1 : 0] = '\0';
     }
 
@@ -301,13 +281,11 @@ double tr_truncd(double x, int decimal_places)
 
 std::string tr_strpercent(double x)
 {
-    if (x < 5.0)
-    {
+    if (x < 5.0) {
         return fmt::format("{:.2Lf}", tr_truncd(x, 2));
     }
 
-    if (x < 100.0)
-    {
+    if (x < 100.0) {
         return fmt::format("{:.1Lf}", tr_truncd(x, 1));
     }
 
@@ -316,13 +294,11 @@ std::string tr_strpercent(double x)
 
 std::string tr_strratio(double ratio, std::string_view const none, std::string_view const infinity)
 {
-    if ((int)ratio == TR_RATIO_NA)
-    {
+    if ((int)ratio == TR_RATIO_NA) {
         return std::string{ none };
     }
 
-    if ((int)ratio == TR_RATIO_INF)
-    {
+    if ((int)ratio == TR_RATIO_INF) {
         return std::string{ infinity };
     }
 
@@ -342,8 +318,7 @@ uint64_t tr_htonll(uint64_t hostlonglong)
 #else
 
     /* fallback code by bdonlan at https://stackoverflow.com/questions/809902/64-bit-ntohl-in-c/875505#875505 */
-    union
-    {
+    union {
         std::array<uint32_t, 2> lx;
         uint64_t llx;
     } u = {};
@@ -363,8 +338,7 @@ uint64_t tr_ntohll(uint64_t netlonglong)
 #else
 
     /* fallback code by bdonlan at https://stackoverflow.com/questions/809902/64-bit-ntohl-in-c/875505#875505 */
-    union
-    {
+    union {
         std::array<uint32_t, 2> lx;
         uint64_t llx;
     } u = {};
@@ -387,8 +361,7 @@ private:
     {
         // try to init curl with default settings (currently ssl support + win32 sockets)
         // but if that fails, we need to init win32 sockets as a bare minimum
-        if (curl_global_init(CURL_GLOBAL_ALL) != CURLE_OK)
-        {
+        if (curl_global_init(CURL_GLOBAL_ALL) != CURLE_OK) {
             curl_global_init(CURL_GLOBAL_WIN32);
         }
     }
@@ -405,8 +378,7 @@ public:
 
     static void create()
     {
-        if (!instance)
-        {
+        if (!instance) {
             instance = std::unique_ptr<tr_net_init_mgr>{ new tr_net_init_mgr };
         }
     }
@@ -430,25 +402,21 @@ void tr_lib_init()
 
 std::string_view tr_get_mime_type_for_filename(std::string_view filename)
 {
-    static auto constexpr Project = [](mime_type_suffix const& entry)
-    {
+    static auto constexpr Project = [](mime_type_suffix const& entry) {
         return entry.suffix;
     };
 
-    if (auto const pos = filename.rfind('.'); pos != std::string_view::npos)
-    {
+    if (auto const pos = filename.rfind('.'); pos != std::string_view::npos) {
         auto const suffix_lc = tr_strlower(filename.substr(pos + 1));
         auto const it = std::ranges::lower_bound(MimeTypeSuffixes, suffix_lc, {}, Project);
-        if (it != std::end(MimeTypeSuffixes) && suffix_lc == it->suffix)
-        {
+        if (it != std::end(MimeTypeSuffixes) && suffix_lc == it->suffix) {
             std::string_view mime_type = it->mime_type;
 
             // https://github.com/transmission/transmission/issues/5965#issuecomment-1704421231
             // An mp4 file's correct mime-type depends on the codecs used in the file,
             // which we have no way of inspecting and which might not be downloaded yet.
             // Let's use `video/mp4` since that's by far the most common use case for torrents.
-            if (mime_type == "application/mp4")
-            {
+            if (mime_type == "application/mp4") {
                 mime_type = "video/mp4";
             }
 
@@ -472,12 +440,10 @@ template<std::integral T>
     auto const* const begin_ch = std::data(str);
     auto const* const end_ch = begin_ch + std::size(str);
     auto const result = std::from_chars(begin_ch, end_ch, val, base);
-    if (result.ec != std::errc{})
-    {
+    if (result.ec != std::errc{}) {
         return std::nullopt;
     }
-    if (remainder != nullptr)
-    {
+    if (remainder != nullptr) {
         *remainder = str;
         remainder->remove_prefix(result.ptr - std::data(str));
     }
@@ -502,12 +468,10 @@ template<std::floating_point T>
     auto const* const end_ch = begin_ch + std::size(str);
     auto val = T{};
     auto const result = fast_float::from_chars(begin_ch, end_ch, val);
-    if (result.ec != std::errc{})
-    {
+    if (result.ec != std::errc{}) {
         return std::nullopt;
     }
-    if (remainder != nullptr)
-    {
+    if (remainder != nullptr) {
         *remainder = str;
         remainder->remove_prefix(result.ptr - std::data(str));
     }

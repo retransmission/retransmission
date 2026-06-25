@@ -71,10 +71,8 @@ public:
 
     void setNextAnnounceTime(std::string_view info_hash_str, time_t announce_after) override
     {
-        for (auto& tor : torrents_)
-        {
-            if (tor.info_hash_str == info_hash_str)
-            {
+        for (auto& tor : torrents_) {
+            if (tor.info_hash_str == info_hash_str) {
                 tor.announce_after = announce_after;
                 break;
             }
@@ -148,8 +146,7 @@ TEST_F(LpdTest, DISABLED_canMultiAnnounce)
     auto info_hash_strings = std::array<std::string, 2>{};
     auto infos = std::array<tr_lpd::Mediator::TorrentInfo, 2>{};
     auto mediator_b = MyMediator{ *session_ };
-    for (size_t i = 0; i < std::size(info_hash_strings); ++i)
-    {
+    for (size_t i = 0; i < std::size(info_hash_strings); ++i) {
         auto& info_hash_string = info_hash_strings[i];
         auto& info = infos[i];
 
@@ -161,16 +158,14 @@ TEST_F(LpdTest, DISABLED_canMultiAnnounce)
         info.announce_after = 0; // never announced
     }
 
-    for (auto const& info : infos)
-    {
+    for (auto const& info : infos) {
         mediator_b.torrents_.push_back(info);
     }
 
     auto lpd_b = tr_lpd::create(mediator_b, session_->event_base());
     waitFor([&mediator_a]() { return !std::empty(mediator_a.found_); }, 1s);
 
-    for (auto const& info : infos)
-    {
+    for (auto const& info : infos) {
         EXPECT_EQ(1U, mediator_a.found_.count(std::string{ info.info_hash_str }));
     }
 }
@@ -186,8 +181,7 @@ TEST_F(LpdTest, DISABLED_DoesNotReannounceTooSoon)
     auto info_hash_strings = std::array<std::string, 2>{};
     auto infos = std::array<tr_lpd::Mediator::TorrentInfo, 2>{};
     auto mediator_b = MyMediator{ *session_ };
-    for (size_t i = 0; i < std::size(info_hash_strings); ++i)
-    {
+    for (size_t i = 0; i < std::size(info_hash_strings); ++i) {
         auto& info_hash_string = info_hash_strings[i];
         auto& info = infos[i];
 
@@ -204,16 +198,14 @@ TEST_F(LpdTest, DISABLED_DoesNotReannounceTooSoon)
     auto const now = time(nullptr);
     infos[0].announce_after = now + 60;
 
-    for (auto const& info : infos)
-    {
+    for (auto const& info : infos) {
         mediator_b.torrents_.push_back(info);
     }
 
     auto lpd_b = tr_lpd::create(mediator_b, session_->event_base());
     waitFor([&mediator_a]() { return !std::empty(mediator_a.found_); }, 1s);
 
-    for (auto& info : infos)
-    {
+    for (auto& info : infos) {
         auto const expected_count = info.announce_after <= now ? 1U : 0U;
         EXPECT_EQ(expected_count, mediator_a.found_.count(std::string{ info.info_hash_str }));
     }

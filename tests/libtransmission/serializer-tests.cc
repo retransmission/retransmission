@@ -31,8 +31,7 @@ using tr::serializer::to_variant;
 namespace
 {
 
-struct Rect
-{
+struct Rect {
     int x = 0;
     int y = 0;
     int width = 0;
@@ -51,8 +50,7 @@ struct Rect
 // `to_variant`/`to_value` names are dictated by the Converter<T> interface,
 // so suppress the ClassMethodCase check from .clang-tidy.
 template<>
-struct tr::serializer::Converter<Rect>
-{
+struct tr::serializer::Converter<Rect> {
     // NOLINTNEXTLINE(readability-identifier-naming)
     static tr_variant to_variant(Rect const& r)
     {
@@ -69,8 +67,7 @@ struct tr::serializer::Converter<Rect>
     static bool to_value(tr_variant const& src, Rect* tgt)
     {
         auto const* const v = src.get_if<tr_variant::Vector>();
-        if (v == nullptr || std::size(*v) != 4U)
-        {
+        if (v == nullptr || std::size(*v) != 4U) {
             return false;
         }
 
@@ -79,8 +76,7 @@ struct tr::serializer::Converter<Rect>
         auto const w = (*v)[2].value_if<int64_t>();
         auto const h = (*v)[3].value_if<int64_t>();
 
-        if (!x || !y || !w || !h)
-        {
+        if (!x || !y || !w || !h) {
             return false;
         }
 
@@ -355,8 +351,7 @@ using tr::serializer::save;
 using tr::serializer::set;
 using tr::serializer::set_from_variant;
 
-struct Endpoint
-{
+struct Endpoint {
     std::string address;
     tr_port port;
 
@@ -377,8 +372,7 @@ struct Endpoint
     }
 };
 
-struct Simple
-{
+struct Simple {
     int blocks = 0;
     bool enabled = false;
 
@@ -388,8 +382,7 @@ struct Simple
     };
 };
 
-struct Floating
-{
+struct Floating {
     double ratio = 0.0;
 
     static constexpr auto Fields = std::tuple{
@@ -518,16 +511,14 @@ TEST_F(SerializerTest, serializableConstexprGetSet)
     constexpr auto KBlocks = TR_KEY_blocks;
     constexpr auto KEnabled = TR_KEY_dht_enabled;
 
-    constexpr auto CompileTimeGet = []
-    {
+    constexpr auto CompileTimeGet = [] {
         auto s = Simple{ .blocks = 5, .enabled = true };
         return get<int, KBlocks>(s) == 5 && get<bool, KEnabled>(s);
     }();
 
     static_assert(CompileTimeGet);
 
-    constexpr auto CompileTimeSet = []
-    {
+    constexpr auto CompileTimeSet = [] {
         auto s = Simple{ .blocks = 1, .enabled = false };
         auto changed1 = set<int, KBlocks>(s, 2);
         auto changed2 = set<bool, KEnabled>(s, true);

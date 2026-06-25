@@ -25,8 +25,7 @@ auto inline constexpr Version = std::string_view{ "2.0" };
 
 namespace Error
 {
-enum Code : int16_t
-{
+enum Code : int16_t {
     PARSE_ERROR = -32700,
     INVALID_REQUEST = -32600,
     METHOD_NOT_FOUND = -32601,

@@ -44,8 +44,7 @@ typedef NS_ENUM(NSInteger, SegmentTag) {
 
     [self.fSelectedColorView addObserver:self forKeyPath:@"color" options:0 context:NULL];
 
-    if (@available(macOS 13.0, *))
-    {
+    if (@available(macOS 13.0, *)) {
         self.fSelectedColorView.colorWellStyle = NSColorWellStyleMinimal;
     }
 
@@ -63,12 +62,9 @@ typedef NS_ENUM(NSInteger, SegmentTag) {
     NSInteger groupsIndex = [groupsController indexForRow:row];
 
     NSString* identifier = tableColumn.identifier;
-    if ([identifier isEqualToString:@"Color"])
-    {
+    if ([identifier isEqualToString:@"Color"]) {
         return [groupsController imageForIndex:groupsIndex];
-    }
-    else
-    {
+    } else {
         return [groupsController nameForIndex:groupsIndex];
     }
 }
@@ -80,8 +76,7 @@ typedef NS_ENUM(NSInteger, SegmentTag) {
 
 - (void)observeValueForKeyPath:(NSString*)keyPath ofObject:(id)object change:(NSDictionary*)change context:(void*)context
 {
-    if (object == self.fSelectedColorView && self.fTableView.numberOfSelectedRows == 1)
-    {
+    if (object == self.fSelectedColorView && self.fTableView.numberOfSelectedRows == 1) {
         NSInteger index = [GroupsController.groups indexForRow:self.fTableView.selectedRow];
         [GroupsController.groups setColor:self.fSelectedColorView.color forIndex:index];
         self.fTableView.needsDisplay = YES;
@@ -90,8 +85,7 @@ typedef NS_ENUM(NSInteger, SegmentTag) {
 
 - (void)controlTextDidEndEditing:(NSNotification*)notification
 {
-    if (notification.object == self.fSelectedColorNameField)
-    {
+    if (notification.object == self.fSelectedColorNameField) {
         NSInteger index = [GroupsController.groups indexForRow:self.fTableView.selectedRow];
         [GroupsController.groups setName:self.fSelectedColorNameField.stringValue forIndex:index];
         self.fTableView.needsDisplay = YES;
@@ -112,8 +106,7 @@ typedef NS_ENUM(NSInteger, SegmentTag) {
        proposedDropOperation:(NSTableViewDropOperation)operation
 {
     NSPasteboard* pasteboard = info.draggingPasteboard;
-    if ([pasteboard.types containsObject:kGroupTableViewDataType])
-    {
+    if ([pasteboard.types containsObject:kGroupTableViewDataType]) {
         [self.fTableView setDropRow:row dropOperation:NSTableViewDropAbove];
         return NSDragOperationGeneric;
     }
@@ -127,14 +120,12 @@ typedef NS_ENUM(NSInteger, SegmentTag) {
     dropOperation:(NSTableViewDropOperation)operation
 {
     NSPasteboard* pasteboard = info.draggingPasteboard;
-    if ([pasteboard.types containsObject:kGroupTableViewDataType])
-    {
+    if ([pasteboard.types containsObject:kGroupTableViewDataType]) {
         NSIndexSet* indexes = [NSKeyedUnarchiver unarchivedObjectOfClass:NSIndexSet.class fromData:[pasteboard dataForType:kGroupTableViewDataType]
                                                                    error:nil];
         NSInteger oldRow = indexes.firstIndex;
 
-        if (oldRow < newRow)
-        {
+        if (oldRow < newRow) {
             newRow--;
         }
 
@@ -151,15 +142,13 @@ typedef NS_ENUM(NSInteger, SegmentTag) {
 
 - (void)addRemoveGroup:(id)sender
 {
-    if (NSColorPanel.sharedColorPanelExists)
-    {
+    if (NSColorPanel.sharedColorPanelExists) {
         [NSColorPanel.sharedColorPanel close];
     }
 
     NSInteger row;
 
-    switch ([[sender cell] tagForSegment:[sender selectedSegment]])
-    {
+    switch ([[sender cell] tagForSegment:[sender selectedSegment]]) {
     case SegmentTagAdd:
         [self.fTableView beginUpdates];
 
@@ -187,10 +176,8 @@ typedef NS_ENUM(NSInteger, SegmentTag) {
         [self.fTableView removeRowsAtIndexes:[NSIndexSet indexSetWithIndex:row] withAnimation:NSTableViewAnimationSlideUp];
         [self.fTableView endUpdates];
 
-        if (self.fTableView.numberOfRows > 0)
-        {
-            if (row == self.fTableView.numberOfRows)
-            {
+        if (self.fTableView.numberOfRows > 0) {
+            if (row == self.fTableView.numberOfRows) {
                 --row;
             }
             [self.fTableView selectRowIndexes:[NSIndexSet indexSetWithIndex:row] byExtendingSelection:NO];
@@ -215,16 +202,12 @@ typedef NS_ENUM(NSInteger, SegmentTag) {
 
     [panel beginSheetModalForWindow:self.fCustomLocationPopUp.window completionHandler:^(NSInteger result) {
         NSInteger const index = [GroupsController.groups indexForRow:self.fTableView.selectedRow];
-        if (result == NSModalResponseOK)
-        {
+        if (result == NSModalResponseOK) {
             NSString* path = panel.URLs[0].path;
             [GroupsController.groups setCustomDownloadLocation:path forIndex:index];
             [GroupsController.groups setUsesCustomDownloadLocation:YES forIndex:index];
-        }
-        else
-        {
-            if (![GroupsController.groups customDownloadLocationForIndex:index])
-            {
+        } else {
+            if (![GroupsController.groups customDownloadLocationForIndex:index]) {
                 [GroupsController.groups setUsesCustomDownloadLocation:NO forIndex:index];
             }
         }
@@ -238,19 +221,13 @@ typedef NS_ENUM(NSInteger, SegmentTag) {
 - (IBAction)toggleUseCustomDownloadLocation:(id)sender
 {
     NSInteger index = [GroupsController.groups indexForRow:self.fTableView.selectedRow];
-    if (self.fCustomLocationEnableCheck.state == NSControlStateValueOn)
-    {
-        if ([GroupsController.groups customDownloadLocationForIndex:index])
-        {
+    if (self.fCustomLocationEnableCheck.state == NSControlStateValueOn) {
+        if ([GroupsController.groups customDownloadLocationForIndex:index]) {
             [GroupsController.groups setUsesCustomDownloadLocation:YES forIndex:index];
-        }
-        else
-        {
+        } else {
             [self customDownloadLocationSheetShow:nil];
         }
-    }
-    else
-    {
+    } else {
         [GroupsController.groups setUsesCustomDownloadLocation:NO forIndex:index];
     }
 
@@ -263,19 +240,13 @@ typedef NS_ENUM(NSInteger, SegmentTag) {
 - (IBAction)toggleUseAutoAssignRules:(id)sender
 {
     NSInteger index = [GroupsController.groups indexForRow:self.fTableView.selectedRow];
-    if (self.fAutoAssignRulesEnableCheck.state == NSControlStateValueOn)
-    {
-        if ([GroupsController.groups autoAssignRulesForIndex:index])
-        {
+    if (self.fAutoAssignRulesEnableCheck.state == NSControlStateValueOn) {
+        if ([GroupsController.groups autoAssignRulesForIndex:index]) {
             [GroupsController.groups setUsesAutoAssignRules:YES forIndex:index];
-        }
-        else
-        {
+        } else {
             [self orderFrontRulesSheet:nil];
         }
-    }
-    else
-    {
+    } else {
         [GroupsController.groups setUsesAutoAssignRules:NO forIndex:index];
     }
 
@@ -284,8 +255,7 @@ typedef NS_ENUM(NSInteger, SegmentTag) {
 
 - (IBAction)orderFrontRulesSheet:(id)sender
 {
-    if (!self.groupRulesSheetWindow)
-    {
+    if (!self.groupRulesSheetWindow) {
         [NSBundle.mainBundle loadNibNamed:@"GroupRules" owner:self topLevelObjects:NULL];
     }
 
@@ -293,8 +263,7 @@ typedef NS_ENUM(NSInteger, SegmentTag) {
     NSPredicate* predicate = [GroupsController.groups autoAssignRulesForIndex:index];
     self.ruleEditor.objectValue = predicate;
 
-    if (self.ruleEditor.numberOfRows == 0)
-    {
+    if (self.ruleEditor.numberOfRows == 0) {
         [self.ruleEditor addRow:nil];
     }
 
@@ -306,8 +275,7 @@ typedef NS_ENUM(NSInteger, SegmentTag) {
     [self.fTableView.window endSheet:self.groupRulesSheetWindow];
 
     NSInteger index = [GroupsController.groups indexForRow:self.fTableView.selectedRow];
-    if (![GroupsController.groups autoAssignRulesForIndex:index])
-    {
+    if (![GroupsController.groups autoAssignRulesForIndex:index]) {
         [GroupsController.groups setUsesAutoAssignRules:NO forIndex:index];
         self.fAutoAssignRulesEnableCheck.state = NO;
         self.fAutoAssignRulesEditButton.enabled = NO;
@@ -347,8 +315,7 @@ typedef NS_ENUM(NSInteger, SegmentTag) {
 - (void)updateSelectedGroup
 {
     [self.fAddRemoveControl setEnabled:self.fTableView.numberOfSelectedRows > 0 forSegment:SegmentTagRemove];
-    if (self.fTableView.numberOfSelectedRows == 1)
-    {
+    if (self.fTableView.numberOfSelectedRows == 1) {
         NSInteger const index = [GroupsController.groups indexForRow:self.fTableView.selectedRow];
         self.fSelectedColorView.color = [GroupsController.groups colorForIndex:index];
         self.fSelectedColorView.enabled = YES;
@@ -360,9 +327,7 @@ typedef NS_ENUM(NSInteger, SegmentTag) {
         self.fAutoAssignRulesEnableCheck.state = [GroupsController.groups usesAutoAssignRulesForIndex:index];
         self.fAutoAssignRulesEnableCheck.enabled = YES;
         self.fAutoAssignRulesEditButton.enabled = (self.fAutoAssignRulesEnableCheck.state == NSControlStateValueOn);
-    }
-    else
-    {
+    } else {
         self.fSelectedColorView.color = NSColor.whiteColor;
         self.fSelectedColorView.enabled = NO;
         self.fSelectedColorNameField.stringValue = @"";
@@ -384,15 +349,12 @@ typedef NS_ENUM(NSInteger, SegmentTag) {
     self.fCustomLocationPopUp.enabled = hasCustomLocation;
 
     NSString* location = [GroupsController.groups customDownloadLocationForIndex:index];
-    if (location)
-    {
+    if (location) {
         ExpandedPathToPathTransformer* pathTransformer = [[ExpandedPathToPathTransformer alloc] init];
         [self.fCustomLocationPopUp itemAtIndex:0].title = [pathTransformer transformedValue:location];
         ExpandedPathToIconTransformer* iconTransformer = [[ExpandedPathToIconTransformer alloc] init];
         [self.fCustomLocationPopUp itemAtIndex:0].image = [iconTransformer transformedValue:location];
-    }
-    else
-    {
+    } else {
         [self.fCustomLocationPopUp itemAtIndex:0].title = @"";
         [self.fCustomLocationPopUp itemAtIndex:0].image = nil;
     }

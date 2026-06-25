@@ -34,8 +34,7 @@ class QPixmap;
 
 class Prefs;
 
-struct Peer
-{
+struct Peer {
     bool client_is_choked = {};
     bool client_is_interested = {};
     bool is_downloading_from = {};
@@ -75,8 +74,7 @@ struct Peer
 
 using PeerList = std::vector<Peer>;
 
-struct TrackerStat
-{
+struct TrackerStat {
     [[nodiscard]] QPixmap getFavicon() const;
 
     bool has_announced = {};
@@ -138,8 +136,7 @@ struct TrackerStat
 
 using TrackerStatsList = std::vector<TrackerStat>;
 
-struct TorrentFile
-{
+struct TorrentFile {
     bool wanted = true;
     int index = -1;
     int priority = 0;
@@ -603,8 +600,7 @@ public:
 
     QIcon getMimeTypeIcon() const;
 
-    enum Field : uint8_t
-    {
+    enum Field : uint8_t {
         ACTIVITY_DATE,
         ADDED_DATE,
         BANDWIDTH_PRIORITY,

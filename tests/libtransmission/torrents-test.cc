@@ -236,8 +236,7 @@ TEST_F(TorrentsTest, rangedLoop)
     auto torrents = tr_torrents{};
     auto torrents_set = std::set<tr_torrent const*>{};
 
-    for (auto const& name : Filenames)
-    {
+    for (auto const& name : Filenames) {
         auto const path = tr_pathbuf{ LIBTRANSMISSION_TEST_ASSETS_DIR, '/', name };
         auto tm = tr_torrent_metainfo{};
         EXPECT_TRUE(tm.parse_torrent_file(path));
@@ -249,8 +248,7 @@ TEST_F(TorrentsTest, rangedLoop)
         torrents_set.insert(tor);
     }
 
-    for (auto* const tor : torrents)
-    {
+    for (auto* const tor : torrents) {
         EXPECT_EQ(1U, torrents_set.erase(tor));
     }
     EXPECT_EQ(0U, std::size(torrents_set));
@@ -271,8 +269,7 @@ TEST_F(TorrentsTest, removedSince)
     torrents_v.reserve(std::size(Filenames));
 
     // setup: add the torrents
-    for (auto const& name : Filenames)
-    {
+    for (auto const& name : Filenames) {
         auto const path = tr_pathbuf{ LIBTRANSMISSION_TEST_ASSETS_DIR, '/', name };
         auto tm = tr_torrent_metainfo{};
         EXPECT_TRUE(tm.parse_torrent_file(path));
@@ -285,8 +282,7 @@ TEST_F(TorrentsTest, removedSince)
 
     // setup: remove them at the given timestamp
     auto constexpr TimeRemoved = std::to_array<time_t>({ 100, 200, 200, 300 });
-    for (size_t i = 0; i < 4; ++i)
-    {
+    for (size_t i = 0; i < 4; ++i) {
         auto* const tor = torrents_v[i];
         EXPECT_EQ(tor, torrents.get(tor->id()));
         torrents.remove(torrents_v[i], TimeRemoved[i]);

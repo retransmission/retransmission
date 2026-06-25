@@ -11,8 +11,7 @@
 #include <array>
 #include <string_view>
 
-struct mime_type_suffix
-{
+struct mime_type_suffix {
     std::string_view suffix;
     std::string_view mime_type;
 };

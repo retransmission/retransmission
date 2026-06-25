@@ -22,8 +22,7 @@ static NSTimeInterval const kCheckFireInterval = 3.0;
 
 - (instancetype)initForPort:(NSInteger)portNumber delay:(BOOL)delay withDelegate:(id<PortCheckerDelegate>)delegate
 {
-    if ((self = [super init]))
-    {
+    if ((self = [super init])) {
         _fSession = [NSURLSession sessionWithConfiguration:NSURLSessionConfiguration.ephemeralSessionConfiguration delegate:nil
                                              delegateQueue:nil];
         _fDelegate = delegate;
@@ -35,8 +34,7 @@ static NSTimeInterval const kCheckFireInterval = 3.0;
             [weakSelf startProbe:portNumber];
         }];
 
-        if (!delay)
-        {
+        if (!delay) {
             [_fTimer fire];
         }
     }
@@ -75,28 +73,20 @@ static NSTimeInterval const kCheckFireInterval = 3.0;
 
     _fTask = [_fSession dataTaskWithRequest:portProbeRequest
                           completionHandler:^(NSData* _Nullable data, NSURLResponse* _Nullable, NSError* _Nullable error) {
-                              if (error)
-                              {
+                              if (error) {
                                   NSLog(@"Unable to get port status: connection failed (%@)", error.localizedDescription);
                                   [self callBackWithStatus:PortStatusError];
                                   return;
                               }
                               NSString* probeString = [[NSString alloc] initWithData:data ?: NSData.data encoding:NSUTF8StringEncoding];
-                              if (!probeString)
-                              {
+                              if (!probeString) {
                                   NSLog(@"Unable to get port status: invalid data received");
                                   [self callBackWithStatus:PortStatusError];
-                              }
-                              else if ([probeString isEqualToString:@"1"])
-                              {
+                              } else if ([probeString isEqualToString:@"1"]) {
                                   [self callBackWithStatus:PortStatusOpen];
-                              }
-                              else if ([probeString isEqualToString:@"0"])
-                              {
+                              } else if ([probeString isEqualToString:@"0"]) {
                                   [self callBackWithStatus:PortStatusClosed];
-                              }
-                              else
-                              {
+                              } else {
                                   NSLog(@"Unable to get port status: invalid response (%@)", probeString);
                                   [self callBackWithStatus:PortStatusError];
                               }

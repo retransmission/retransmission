@@ -29,8 +29,7 @@
 class Wishlist
 {
 public:
-    struct Mediator
-    {
+    struct Mediator {
         [[nodiscard]] virtual bool client_has_block(tr_block_index_t block) const = 0;
         [[nodiscard]] virtual bool client_has_piece(tr_piece_index_t piece) const = 0;
         [[nodiscard]] virtual bool client_wants_piece(tr_piece_index_t piece) const = 0;
@@ -44,31 +43,26 @@ public:
     };
 
 private:
-    struct Candidate
-    {
+    struct Candidate {
         Candidate(tr_piece_index_t piece_in, tr_piece_index_t salt_in, Mediator const* mediator);
 
         [[nodiscard]] constexpr auto operator<=>(Candidate const& that) const noexcept
         {
             // prefer pieces closer to completion, skipped in sequential mode
             // where we want to prioritize pieces in order.
-            if (!is_sequential)
-            {
-                if (auto const val = std::size(unrequested) <=> std::size(that.unrequested); val != 0)
-                {
+            if (!is_sequential) {
+                if (auto const val = std::size(unrequested) <=> std::size(that.unrequested); val != 0) {
                     return val;
                 }
             }
 
             // prefer higher priority
-            if (auto const val = that.priority <=> priority; val != 0)
-            {
+            if (auto const val = that.priority <=> priority; val != 0) {
                 return val;
             }
 
             // prefer rarer pieces
-            if (auto const val = replication <=> that.replication; val != 0)
-            {
+            if (auto const val = replication <=> that.replication; val != 0) {
                 return val;
             }
 
@@ -129,8 +123,7 @@ public:
 
     constexpr void on_got_block(tr_block_index_t const block)
     {
-        if (auto const iter = find_by_block(block); iter != std::end(candidates_))
-        {
+        if (auto const iter = find_by_block(block); iter != std::end(candidates_)) {
             iter->unrequested.erase(block);
             resort_piece(iter);
         }
@@ -143,8 +136,7 @@ public:
 
     constexpr void on_got_have(tr_piece_index_t const piece)
     {
-        if (auto const iter = find_by_piece(piece); iter != std::end(candidates_))
-        {
+        if (auto const iter = find_by_piece(piece); iter != std::end(candidates_)) {
             ++iter->replication;
             resort_piece(iter);
         }
@@ -206,21 +198,17 @@ private:
 
     constexpr void dec_replication_bitfield(tr_bitfield const& bitfield)
     {
-        if (bitfield.has_none())
-        {
+        if (bitfield.has_none()) {
             return;
         }
 
-        if (bitfield.has_all())
-        {
+        if (bitfield.has_all()) {
             dec_replication();
             return;
         }
 
-        for (auto& candidate : candidates_)
-        {
-            if (bitfield.test(candidate.piece))
-            {
+        for (auto& candidate : candidates_) {
+            if (bitfield.test(candidate.piece)) {
                 --candidate.replication;
             }
         }
@@ -235,21 +223,17 @@ private:
 
     constexpr void inc_replication_bitfield(tr_bitfield const& bitfield)
     {
-        if (bitfield.has_none())
-        {
+        if (bitfield.has_none()) {
             return;
         }
 
-        if (bitfield.has_all())
-        {
+        if (bitfield.has_all()) {
             inc_replication();
             return;
         }
 
-        for (auto& candidate : candidates_)
-        {
-            if (bitfield.test(candidate.piece))
-            {
+        for (auto& candidate : candidates_) {
+            if (bitfield.test(candidate.piece)) {
                 ++candidate.replication;
             }
         }
@@ -261,11 +245,9 @@ private:
 
     constexpr void requested_block_span(tr_block_span_t const block_span)
     {
-        for (auto block = block_span.begin; block < block_span.end;)
-        {
+        for (auto block = block_span.begin; block < block_span.end;) {
             auto const it_p = find_by_block(block);
-            if (it_p == std::end(candidates_))
-            {
+            if (it_p == std::end(candidates_)) {
                 // std::unreachable();
                 break;
             }
@@ -288,8 +270,7 @@ private:
 
     constexpr void reset_block(tr_block_index_t block)
     {
-        if (auto const it_p = find_by_block(block); it_p != std::end(candidates_))
-        {
+        if (auto const it_p = find_by_block(block); it_p != std::end(candidates_)) {
             it_p->unrequested.insert(block);
             resort_piece(it_p);
         }
@@ -297,18 +278,14 @@ private:
 
     TR_CONSTEXPR_VEC void reset_blocks_bitfield(tr_bitfield const& requests)
     {
-        for (auto& candidate : candidates_)
-        {
+        for (auto& candidate : candidates_) {
             auto const [begin, end] = candidate.block_span;
-            if (requests.count(begin, end) == 0U)
-            {
+            if (requests.count(begin, end) == 0U) {
                 continue;
             }
 
-            for (auto i = end; i > begin; --i)
-            {
-                if (auto const block = i - 1U; requests.test(block))
-                {
+            for (auto i = end; i > begin; --i) {
+                if (auto const block = i - 1U; requests.test(block)) {
                     candidate.unrequested.insert(block);
                 }
             }
@@ -339,8 +316,7 @@ private:
 
     constexpr void remove_piece(tr_piece_index_t const piece)
     {
-        if (auto const iter = find_by_piece(piece); iter != std::end(candidates_))
-        {
+        if (auto const iter = find_by_piece(piece); iter != std::end(candidates_)) {
             candidates_.erase(iter);
         }
     }
@@ -356,14 +332,12 @@ private:
         auto const pos_begin = std::begin(candidates_);
 
         // Candidate needs to be moved towards the front of the list
-        if (auto const pos_next = std::next(pos_old); pos_old > pos_begin && *pos_old < *std::prev(pos_old))
-        {
+        if (auto const pos_next = std::next(pos_old); pos_old > pos_begin && *pos_old < *std::prev(pos_old)) {
             auto const pos_new = std::lower_bound(pos_begin, pos_old, *pos_old);
             std::rotate(pos_new, pos_old, pos_next);
         }
         // Candidate needs to be moved towards the end of the list
-        else if (auto const pos_end = std::end(candidates_); pos_next < pos_end && *pos_next < *pos_old)
-        {
+        else if (auto const pos_end = std::end(candidates_); pos_next < pos_end && *pos_next < *pos_old) {
             auto const pos_new = std::lower_bound(pos_next, pos_end, *pos_old);
             std::rotate(pos_old, pos_next, pos_new);
         }

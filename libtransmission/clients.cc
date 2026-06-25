@@ -30,8 +30,7 @@ namespace
 template<typename T>
 constexpr std::pair<char*, size_t> buf_append(char* buf, size_t buflen, T const& value)
 {
-    if (buflen == 0)
-    {
+    if (buflen == 0) {
         return { buf, buflen };
     }
 
@@ -92,8 +91,7 @@ int strint(char const* pch, int span, int base = 10)
 
 constexpr std::string_view utSuffix(uint8_t ch)
 {
-    switch (ch)
-    {
+    switch (ch) {
     case 'b':
     case 'B':
         return " (Beta)"sv;
@@ -128,8 +126,7 @@ std::optional<int> get_shad0w_int(char ch)
 {
     auto constexpr Str = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz.-"sv;
 
-    if (auto const pos = Str.find(ch); pos != std::string_view::npos)
-    {
+    if (auto const pos = Str.find(ch); pos != std::string_view::npos) {
         return pos;
     }
 
@@ -142,20 +139,16 @@ bool decodeShad0wClient(char* buf, size_t buflen, std::string_view in)
 
     auto peer_id = std::string_view{ std::data(in), 9 };
 
-    if (std::size(peer_id) != 9 || peer_id[6] != '-' || peer_id[7] != '-' || peer_id[8] != '-')
-    {
+    if (std::size(peer_id) != 9 || peer_id[6] != '-' || peer_id[7] != '-' || peer_id[8] != '-') {
         return false;
     }
-    while (!std::empty(peer_id) && peer_id.back() == '-')
-    {
+    while (!std::empty(peer_id) && peer_id.back() == '-') {
         peer_id.remove_suffix(1);
     }
     auto vals = std::vector<int>{};
-    while (std::size(peer_id) > 1)
-    {
+    while (std::size(peer_id) > 1) {
         auto const num = get_shad0w_int(peer_id.back());
-        if (!num)
-        {
+        if (!num) {
             return false;
         }
         vals.push_back(*num);
@@ -163,8 +156,7 @@ bool decodeShad0wClient(char* buf, size_t buflen, std::string_view in)
     }
 
     auto name = std::string_view{};
-    switch (peer_id.front())
-    {
+    switch (peer_id.front()) {
     case 'A':
         name = "ABC"sv;
         break;
@@ -191,12 +183,10 @@ bool decodeShad0wClient(char* buf, size_t buflen, std::string_view in)
     }
 
     std::tie(buf, buflen) = buf_append(buf, buflen, name, ' ');
-    for (auto const num : vals | std::views::reverse)
-    {
+    for (auto const num : vals | std::views::reverse) {
         std::tie(buf, buflen) = buf_append(buf, buflen, num, '.');
     }
-    if (buf > buf_in)
-    {
+    if (buf > buf_in) {
         buf[-1] = '\0'; // remove trailing '.'
     }
     return true;
@@ -212,20 +202,13 @@ bool decodeBitCometClient(char* buf, size_t buflen, std::string_view peer_id)
     // replaced exbc with FUTB. The encoding for BitComet Peer IDs changed
     // to Azureus-style as of BitComet version 0.59.
     auto mod = std::string_view{};
-    if (auto const lead = std::string_view{ std::data(peer_id), std::min(std::size(peer_id), size_t{ 4 }) }; lead == "exbc")
-    {
+    if (auto const lead = std::string_view{ std::data(peer_id), std::min(std::size(peer_id), size_t{ 4 }) }; lead == "exbc") {
         mod = ""sv;
-    }
-    else if (lead == "FUTB")
-    {
+    } else if (lead == "FUTB") {
         mod = "(Solidox Mod) "sv;
-    }
-    else if (lead == "xUTB"sv)
-    {
+    } else if (lead == "xUTB"sv) {
         mod = "(Mod 2) "sv;
-    }
-    else
-    {
+    } else {
         return false;
     }
 
@@ -265,16 +248,11 @@ constexpr void amazon_formatter(char* buf, size_t buflen, std::string_view name,
 
 constexpr void aria2_formatter(char* buf, size_t buflen, std::string_view name, tr_peer_id_t id)
 {
-    if (id[4] == '-' && id[6] == '-' && id[8] == '-')
-    {
+    if (id[4] == '-' && id[6] == '-' && id[8] == '-') {
         buf_append(buf, buflen, name, ' ', id[3], '.', id[5], '.', id[7]);
-    }
-    else if (id[4] == '-' && id[7] == '-' && id[9] == '-')
-    {
+    } else if (id[4] == '-' && id[7] == '-' && id[9] == '-') {
         buf_append(buf, buflen, name, ' ', id[3], '.', id[5], id[6], '.', id[8]);
-    }
-    else
-    {
+    } else {
         buf_append(buf, buflen, name);
     }
 }
@@ -306,16 +284,11 @@ void bits_on_wheels_formatter(char* buf, size_t buflen, std::string_view name, t
     // (uppercase letters) and x depends on the version.
     // Version 1.0.6 has xxx = A0C.
 
-    if (std::equal(&id[4], &id[7], "A0B"))
-    {
+    if (std::equal(&id[4], &id[7], "A0B")) {
         buf_append(buf, buflen, name, " 1.0.5"sv);
-    }
-    else if (std::equal(&id[4], &id[7], "A0C"))
-    {
+    } else if (std::equal(&id[4], &id[7], "A0C")) {
         buf_append(buf, buflen, name, " 1.0.6"sv);
-    }
-    else
-    {
+    } else {
         buf_append(buf, buflen, name, ' ', id[4], '.', id[5], '.', id[6]);
     }
 }
@@ -347,16 +320,11 @@ constexpr void folx_formatter(char* buf, size_t buflen, std::string_view name, t
 
 constexpr void ktorrent_formatter(char* buf, size_t buflen, std::string_view name, tr_peer_id_t id)
 {
-    if (id[5] == 'D')
-    {
+    if (id[5] == 'D') {
         buf_append(buf, buflen, name, ' ', base62str(id[3]), '.', base62str(id[4]), " Dev "sv, base62str(id[6]));
-    }
-    else if (id[5] == 'R')
-    {
+    } else if (id[5] == 'R') {
         buf_append(buf, buflen, name, ' ', base62str(id[3]), '.', base62str(id[4]), " RC "sv, base62str(id[6]));
-    }
-    else
-    {
+    } else {
         three_digit_formatter(buf, buflen, name, id);
     }
 }
@@ -369,13 +337,10 @@ constexpr void mainline_formatter(char* buf, size_t buflen, std::string_view nam
     if (id[4] == '-' && id[6] == '-') // Mx-y-z--
     {
         buf_append(buf, buflen, name, ' ', id[1], '.', id[3], '.', id[5]);
-    }
-    else if (id[5] == '-') // Mx-yy-z-
+    } else if (id[5] == '-') // Mx-yy-z-
     {
         buf_append(buf, buflen, name, ' ', id[1], '.', id[3], id[4], '.', id[6]);
-    }
-    else
-    {
+    } else {
         buf_append(buf, buflen, name);
     }
 }
@@ -424,16 +389,13 @@ void transmission_formatter(char* buf, size_t buflen, std::string_view name, tr_
     if (std::equal(&id[3], &id[6], "000")) // very old client style: -TR0006- is 0.6
     {
         *fmt::format_to_n(buf, buflen - 1, "0.{:c}", id[6]).out = '\0';
-    }
-    else if (std::equal(&id[3], &id[5], "00")) // pre-1.0 style: -TR0072- is 0.72
+    } else if (std::equal(&id[3], &id[5], "00")) // pre-1.0 style: -TR0072- is 0.72
     {
         *fmt::format_to_n(buf, buflen - 1, "0.{:02d}", strint(&id[5], 2)).out = '\0';
-    }
-    else if (id[3] <= '3') // style up through 3.00: -TR111Z- is 1.11+
+    } else if (id[3] <= '3') // style up through 3.00: -TR111Z- is 1.11+
     {
         *fmt::format_to_n(buf, buflen - 1, "{:s}.{:02d}{:s}", base62str(id[3]), strint(&id[4], 2), utSuffix(id[6])).out = '\0';
-    }
-    else // -TR400X- is 4.0.0 (Beta)"
+    } else // -TR400X- is 4.0.0 (Beta)"
     {
         buf_append(buf, buflen, base62str(id[3]), '.', base62str(id[4]), '.', base62str(id[5]), utSuffix(id[6]));
     }
@@ -441,8 +403,7 @@ void transmission_formatter(char* buf, size_t buflen, std::string_view name, tr_
 
 void utorrent_formatter(char* buf, size_t buflen, std::string_view name, tr_peer_id_t id)
 {
-    if (id[7] == '-')
-    {
+    if (id[7] == '-') {
         buf_append(
             buf,
             buflen,
@@ -454,8 +415,7 @@ void utorrent_formatter(char* buf, size_t buflen, std::string_view name, tr_peer
             '.',
             strint(&id[5], 1, 16),
             utSuffix(id[6]));
-    }
-    else // uTorrent replaces the trailing dash with an extra digit for longer version numbers
+    } else // uTorrent replaces the trailing dash with an extra digit for longer version numbers
     {
         buf_append(
             buf,
@@ -478,12 +438,9 @@ constexpr void xbt_formatter(char* buf, size_t buflen, std::string_view name, tr
 
 constexpr void xfplay_formatter(char* buf, size_t buflen, std::string_view name, tr_peer_id_t id)
 {
-    if (id[6] == '0')
-    {
+    if (id[6] == '0') {
         three_digit_formatter(buf, buflen, name, id);
-    }
-    else
-    {
+    } else {
         buf_append(buf, buflen, name, ' ', id[3], '.', id[4], '.', id[5], id[6]);
     }
 }
@@ -494,8 +451,7 @@ void xtorrent_formatter(char* buf, size_t buflen, std::string_view name, tr_peer
     *fmt::format_to_n(buf, buflen - 1, "{:d}", strint(&id[5], 2)).out = '\0';
 }
 
-struct Client
-{
+struct Client {
     std::string_view begins_with;
     std::string_view name;
     format_func formatter;
@@ -643,19 +599,16 @@ void tr_clientForId(char* buf, size_t buflen, tr_peer_id_t peer_id)
 
     auto const key = std::string_view{ std::data(peer_id), std::size(peer_id) };
 
-    if (decodeShad0wClient(buf, buflen, key) || decodeBitCometClient(buf, buflen, key))
-    {
+    if (decodeShad0wClient(buf, buflen, key) || decodeBitCometClient(buf, buflen, key)) {
         return;
     }
 
-    if (peer_id[0] == '\0' && peer_id[2] == 'B' && peer_id[3] == 'S')
-    {
+    if (peer_id[0] == '\0' && peer_id[2] == 'B' && peer_id[3] == 'S') {
         *fmt::format_to_n(buf, buflen - 1, "BitSpirit {:d}", peer_id[1] == '\0' ? 1 : int(peer_id[1])).out = '\0';
         return;
     }
 
-    struct Compare
-    {
+    struct Compare {
         bool operator()(std::string_view const& key, Client const& client) const
         {
             return key.substr(0, std::min(std::size(key), std::size(client.begins_with))) < client.begins_with;
@@ -668,30 +621,24 @@ void tr_clientForId(char* buf, size_t buflen, tr_peer_id_t peer_id)
 
     // NOLINTNEXTLINE(modernize-use-ranges)
     if (auto const [eq_begin, eq_end] = std::equal_range(std::begin(Clients), std::end(Clients), key, Compare{});
-        eq_begin != std::end(Clients) && eq_begin != eq_end)
-    {
+        eq_begin != std::end(Clients) && eq_begin != eq_end) {
         eq_begin->formatter(buf, buflen, eq_begin->name, peer_id);
         return;
     }
 
     // no match
-    if (*buf == '\0')
-    {
+    if (*buf == '\0') {
         auto out = std::array<char, 32>{};
         char* walk = std::data(out);
         char const* const begin = walk;
         char const* const end = begin + std::size(out);
 
-        for (size_t i = 0; i < 8; ++i)
-        {
+        for (size_t i = 0; i < 8; ++i) {
             char const c = peer_id[i];
 
-            if (isprint((unsigned char)c) != 0)
-            {
+            if (isprint((unsigned char)c) != 0) {
                 *walk++ = c;
-            }
-            else
-            {
+            } else {
                 walk = fmt::format_to_n(walk, end - walk - 1, "%{:02X}", static_cast<unsigned char>(c)).out;
             }
         }

@@ -63,16 +63,14 @@
     [super mouseDown:event];
 
     BOOL minimal = [self.fDefaults boolForKey:@"SmallView"];
-    if (!minimal)
-    {
+    if (!minimal) {
         [self.torrentTableView hoverEventEndedForView:self];
     }
 }
 
 - (void)updateTrackingAreas
 {
-    if (self.fTrackingArea != nil)
-    {
+    if (self.fTrackingArea != nil) {
         [self removeTrackingArea:self.fTrackingArea];
     }
 

@@ -62,13 +62,11 @@ int tr_main_win32(int argc, char** argv, int (*real_main)(int, char**));
 template<typename T>
 [[nodiscard]] constexpr int tr_compare_3way(T const& left, T const& right)
 {
-    if (left < right)
-    {
+    if (left < right) {
         return -1;
     }
 
-    if (right < left)
-    {
+    if (right < left) {
         return 1;
     }
 

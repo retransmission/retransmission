@@ -37,8 +37,7 @@ class tr_dht
 public:
     // Wrapper around DHT library.
     // This calls `jech/dht` in production, but makes it possible for tests to inject a mock.
-    struct API
-    {
+    struct API {
         virtual ~API() = default;
 
         virtual int get_nodes(struct sockaddr_in* sin, int* num, struct sockaddr_in6* sin6, int* num6)

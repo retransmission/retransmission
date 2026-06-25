@@ -44,8 +44,7 @@ std::string tr_torrent_metainfo::fix_webseed_url(tr_torrent_metainfo const& tm, 
 {
     url = tr_strv_strip(url);
 
-    if (tm.file_count() > 1U && !std::empty(url) && url.back() != '/')
-    {
+    if (tm.file_count() > 1U && !std::empty(url) && url.back() != '/') {
         return std::string{ url } + '/';
     }
 
@@ -57,8 +56,7 @@ namespace
 auto constexpr MaxBencDepth = 32;
 } // namespace
 
-struct MetainfoHandler final : public tr::benc::BasicHandler<MaxBencDepth>
-{
+struct MetainfoHandler final : public tr::benc::BasicHandler<MaxBencDepth> {
     using BasicHandler = tr::benc::BasicHandler<MaxBencDepth>;
 
     tr_torrent_metainfo& tm_;
@@ -70,8 +68,7 @@ struct MetainfoHandler final : public tr::benc::BasicHandler<MaxBencDepth>
     tr_pathbuf file_subpath_;
     int64_t file_length_ = 0;
 
-    enum class State : uint8_t
-    {
+    enum class State : uint8_t {
         UsePath,
         FileTree,
         Files,
@@ -93,33 +90,24 @@ struct MetainfoHandler final : public tr::benc::BasicHandler<MaxBencDepth>
     bool StartDict(Context const& context) override
     {
         // TODO Bittorrent v2. For now just parse and throw away.
-        if (state_ == State::FileTree)
-        {
+        if (state_ == State::FileTree) {
             auto const path_element = currentKey();
-            if (!path_element)
-            {
+            if (!path_element) {
                 return false;
             }
 
-            if (!std::empty(file_subpath_))
-            {
+            if (!std::empty(file_subpath_)) {
                 file_subpath_ += '/';
             }
             tr_torrent_files::sanitize_subpath(tr_strv_to_utf8_string(*path_element), file_subpath_);
-        }
-        else if (pathIs(InfoKey))
-        {
+        } else if (pathIs(InfoKey)) {
             info_dict_begin_ = context.raw();
             tm_.info_dict_offset_ = context.tokenSpan().first;
-        }
-        else if (pathIs(InfoKey, FileTreeKey))
-        {
+        } else if (pathIs(InfoKey, FileTreeKey)) {
             state_ = State::FileTree;
             file_subpath_.clear();
             file_length_ = 0;
-        }
-        else if (pathIs(PieceLayersKey))
-        {
+        } else if (pathIs(PieceLayersKey)) {
             state_ = State::PieceLayers;
         }
 
@@ -130,8 +118,7 @@ struct MetainfoHandler final : public tr::benc::BasicHandler<MaxBencDepth>
     {
         BasicHandler::EndDict(context);
 
-        if (pathIs(InfoKey))
-        {
+        if (pathIs(InfoKey)) {
             return finishInfoDict(context);
         }
 
@@ -145,18 +132,14 @@ struct MetainfoHandler final : public tr::benc::BasicHandler<MaxBencDepth>
             // v2, ignore for today
             tr_logAddInfo("'file tree' is ignored");
             state_ = State::UsePath;
-        }
-        else if (state_ == State::Files) // bittorrent v1 format
+        } else if (state_ == State::Files) // bittorrent v1 format
         {
-            if (!addFile(context))
-            {
+            if (!addFile(context)) {
                 return false;
             }
 
             file_subpath_.clear();
-        }
-        else if (state_ == State::PieceLayers)
-        {
+        } else if (state_ == State::PieceLayers) {
             state_ = State::UsePath;
         }
 
@@ -165,14 +148,11 @@ struct MetainfoHandler final : public tr::benc::BasicHandler<MaxBencDepth>
 
     bool StartArray(Context const& context) override
     {
-        if (pathIs(InfoKey, FilesKey))
-        {
+        if (pathIs(InfoKey, FilesKey)) {
             state_ = std::empty(tm_.files_) ? State::Files : State::FilesIgnored;
             file_subpath_.clear();
             file_length_ = 0;
-        }
-        else if (pathStartsWith(InfoKey, FilesKey, ArrayKey, PathUtf8Key))
-        {
+        } else if (pathStartsWith(InfoKey, FilesKey, ArrayKey, PathUtf8Key)) {
             // torrent has a utf8 path, drop the other one due to probable non-utf8 encoding
             file_subpath_.clear();
         }
@@ -190,8 +170,7 @@ struct MetainfoHandler final : public tr::benc::BasicHandler<MaxBencDepth>
             return true;
         }
 
-        if (depth() == 2 && key(1) == AnnounceListKey)
-        {
+        if (depth() == 2 && key(1) == AnnounceListKey) {
             ++tier_;
         }
 
@@ -202,48 +181,29 @@ struct MetainfoHandler final : public tr::benc::BasicHandler<MaxBencDepth>
     {
         auto unhandled = false;
 
-        if (state_ == State::FilesIgnored)
-        {
+        if (state_ == State::FilesIgnored) {
             // no-op
-        }
-        else if (state_ == State::FileTree || state_ == State::Files)
-        {
-            if (currentKey() == LengthKey)
-            {
+        } else if (state_ == State::FileTree || state_ == State::Files) {
+            if (currentKey() == LengthKey) {
                 file_length_ = value;
-            }
-            else if (pathIs(InfoKey, FilesKey, ArrayKey, MtimeKey))
-            {
+            } else if (pathIs(InfoKey, FilesKey, ArrayKey, MtimeKey)) {
                 // unused by Transmission
-            }
-            else
-            {
+            } else {
                 unhandled = true;
             }
-        }
-        else if (pathIs(CreationDateKey) || pathIs(InfoKey, CreationDateKey))
-        {
+        } else if (pathIs(CreationDateKey) || pathIs(InfoKey, CreationDateKey)) {
             tm_.date_created_ = value;
-        }
-        else if (pathIs(InfoKey, PrivateKey))
-        {
+        } else if (pathIs(InfoKey, PrivateKey)) {
             tm_.is_private_ = value != 0;
-        }
-        else if (pathIs(PieceLengthKey) || pathIs(InfoKey, PieceLengthKey))
-        {
+        } else if (pathIs(PieceLengthKey) || pathIs(InfoKey, PieceLengthKey)) {
             piece_size_ = static_cast<uint32_t>(value);
-        }
-        else if (pathIs(InfoKey, LengthKey))
-        {
+        } else if (pathIs(InfoKey, LengthKey)) {
             length_ = value;
-        }
-        else if (pathIs(InfoKey, MetaVersionKey))
-        {
+        } else if (pathIs(InfoKey, MetaVersionKey)) {
             // currently unused. TODO support for bittorrent v2
             // TODO https://github.com/transmission/transmission/issues/458
             tm_.is_v2_ = value == 2;
-        }
-        else if (
+        } else if (
             pathIs(CodepageKey) || //
             pathIs(DurationKey) || //
             pathIs(EncodedRateKey) || //
@@ -259,17 +219,13 @@ struct MetainfoHandler final : public tr::benc::BasicHandler<MaxBencDepth>
             pathStartsWith(InfoKey, FileMediaKey) || //
             pathStartsWith(InfoKey, ProfilesKey) || //
             pathStartsWith(LibtorrentResumeKey) || //
-            pathStartsWith(NodesKey))
-        {
+            pathStartsWith(NodesKey)) {
             // unused by Transmission
-        }
-        else
-        {
+        } else {
             unhandled = true;
         }
 
-        if (unhandled)
-        {
+        if (unhandled) {
             tr_logAddWarn(fmt::format("unexpected: path '{}', int '{}'", path(), value));
         }
 
@@ -282,137 +238,91 @@ struct MetainfoHandler final : public tr::benc::BasicHandler<MaxBencDepth>
         auto const current_key = currentKey();
         auto unhandled = false;
 
-        if (state_ == State::FilesIgnored)
-        {
+        if (state_ == State::FilesIgnored) {
             // no-op
-        }
-        else if (state_ == State::FileTree)
-        {
-            if (current_key == AttrKey || current_key == PiecesRootKey)
-            {
+        } else if (state_ == State::FileTree) {
+            if (current_key == AttrKey || current_key == PiecesRootKey) {
                 // currently unused. TODO support for BEP0047
                 // TODO https://github.com/transmission/transmission/issues/3387
-            }
-            else
-            {
+            } else {
                 unhandled = true;
             }
-        }
-        else if (state_ == State::Files)
-        {
-            if (curdepth > 1 && (key(curdepth - 1) == PathKey || key(curdepth - 1) == PathUtf8Key))
-            {
-                if (!std::empty(file_subpath_))
-                {
+        } else if (state_ == State::Files) {
+            if (curdepth > 1 && (key(curdepth - 1) == PathKey || key(curdepth - 1) == PathUtf8Key)) {
+                if (!std::empty(file_subpath_)) {
                     file_subpath_ += '/';
                 }
                 // BEP-3 says strings are UTF-8, so mask non-conformant path strings
                 tr_torrent_files::sanitize_subpath(tr_strv_to_utf8_string(value), file_subpath_);
-            }
-            else if (current_key == AttrKey)
-            {
+            } else if (current_key == AttrKey) {
                 // currently unused. TODO support for BEP0047
                 // TODO https://github.com/transmission/transmission/issues/3387
-            }
-            else if (
+            } else if (
                 pathIs(InfoKey, FilesKey, ArrayKey, Crc32Key) || //
                 pathIs(InfoKey, FilesKey, ArrayKey, Ed2kKey) || //
                 pathIs(InfoKey, FilesKey, ArrayKey, FilehashKey) || //
                 pathIs(InfoKey, FilesKey, ArrayKey, Md5Key) || //
                 pathIs(InfoKey, FilesKey, ArrayKey, Md5sumKey) || //
                 pathIs(InfoKey, FilesKey, ArrayKey, MtimeKey) || // (why a string?)
-                pathIs(InfoKey, FilesKey, ArrayKey, Sha1Key))
-            {
+                pathIs(InfoKey, FilesKey, ArrayKey, Sha1Key)) {
                 // unused by Transmission
-            }
-            else
-            {
+            } else {
                 unhandled = true;
             }
-        }
-        else if (pathIs(CommentKey) || pathIs(CommentUtf8Key))
-        {
+        } else if (pathIs(CommentKey) || pathIs(CommentUtf8Key)) {
             tm_.comment_ = tr_strv_to_utf8_string(value);
-        }
-        else if (pathIs(CreatedByKey) || pathIs(CreatedByUtf8Key))
-        {
+        } else if (pathIs(CreatedByKey) || pathIs(CreatedByUtf8Key)) {
             tm_.creator_ = tr_strv_to_utf8_string(value);
-        }
-        else if (
+        } else if (
             pathIs(SourceKey) || pathIs(InfoKey, SourceKey) || //
             pathIs(PublisherKey) || pathIs(InfoKey, PublisherKey) || //
-            pathIs(PublisherUtf8Key) || pathIs(InfoKey, PublisherUtf8Key))
-        {
+            pathIs(PublisherUtf8Key) || pathIs(InfoKey, PublisherUtf8Key)) {
             // “publisher” is rare, but used by BitComet and appears
             // to have the same use as the 'source' key
             // http://wiki.bitcomet.com/inside_bitcomet
 
             tm_.source_ = tr_strv_to_utf8_string(value);
-        }
-        else if (pathIs(AnnounceKey))
-        {
+        } else if (pathIs(AnnounceKey)) {
             tm_.announce_list().add(value, tier_);
-        }
-        else if (pathIs(EncodingKey))
-        {
+        } else if (pathIs(EncodingKey)) {
             encoding_ = tr_strv_strip(value);
-        }
-        else if (pathIs(UrlListKey))
-        {
+        } else if (pathIs(UrlListKey)) {
             tm_.add_webseed(value);
-        }
-        else if (pathIs(InfoKey, NameKey) || pathIs(InfoKey, NameUtf8Key))
-        {
+        } else if (pathIs(InfoKey, NameKey) || pathIs(InfoKey, NameUtf8Key)) {
             tm_.set_name(value);
-        }
-        else if (pathIs(InfoKey, PiecesKey))
-        {
-            if (tm_.has_v1_metadata())
-            {
+        } else if (pathIs(InfoKey, PiecesKey)) {
+            if (tm_.has_v1_metadata()) {
                 context.error.set(EINVAL, "invalid duplicate 'pieces'");
                 return false;
             }
 
             static auto constexpr Sha1Len = std::tuple_size_v<tr_sha1_digest_t>;
             auto const len = std::size(value);
-            if (len % Sha1Len != 0U)
-            {
+            if (len % Sha1Len != 0U) {
                 context.error.set(EINVAL, fmt::format("invalid 'pieces' size: {}", len));
                 return false;
             }
 
             tm_.pieces_.resize(len / Sha1Len);
             std::copy_n(std::data(value), len, reinterpret_cast<char*>(std::data(tm_.pieces_)));
-        }
-        else if (pathStartsWith(PieceLayersKey))
-        {
+        } else if (pathStartsWith(PieceLayersKey)) {
             // currently unused. TODO support for bittorrent v2
             // TODO https://github.com/transmission/transmission/issues/458
-        }
-        else if (pathStartsWith(AnnounceListKey))
-        {
+        } else if (pathStartsWith(AnnounceListKey)) {
             tm_.announce_list().add(value, tier_);
-        }
-        else if (curdepth == 2 && (pathStartsWith(HttpSeedsKey) || pathStartsWith(UrlListKey)))
-        {
+        } else if (curdepth == 2 && (pathStartsWith(HttpSeedsKey) || pathStartsWith(UrlListKey))) {
             tm_.add_webseed(value);
-        }
-        else if (pathIs(MagnetInfoKey, DisplayNameKey) && std::empty(tm_.name()))
-        {
+        } else if (pathIs(MagnetInfoKey, DisplayNameKey) && std::empty(tm_.name())) {
             // compatibility with Transmission <= 3.0
             tm_.set_name(value);
-        }
-        else if (pathIs(MagnetInfoKey, InfoHashKey))
-        {
+        } else if (pathIs(MagnetInfoKey, InfoHashKey)) {
             // compatibility with Transmission <= 3.0
-            if (value.length() == sizeof(tr_sha1_digest_t))
-            {
+            if (value.length() == sizeof(tr_sha1_digest_t)) {
                 std::copy_n(std::data(value), sizeof(tr_sha1_digest_t), reinterpret_cast<char*>(std::data(tm_.info_hash_)));
                 tm_.info_hash_str_ = tr_sha1_to_string(tm_.info_hash_);
                 tm_.has_magnet_info_hash_ = true;
             }
-        }
-        else if (
+        } else if (
             pathIs(ChecksumKey) || //
             pathIs(ErrCallbackKey) || //
             pathIs(InfoKey, AttrKey) || //
@@ -438,17 +348,13 @@ struct MetainfoHandler final : public tr::benc::BasicHandler<MaxBencDepth>
             pathStartsWith(InfoKey, ProfilesKey) || //
             pathStartsWith(LibtorrentResumeKey) || //
             pathStartsWith(MagnetInfoKey) || //
-            pathStartsWith(NodesKey))
-        {
+            pathStartsWith(NodesKey)) {
             // unused by Transmission
-        }
-        else
-        {
+        } else {
             unhandled = true;
         }
 
-        if (unhandled)
-        {
+        if (unhandled) {
             tr_logAddWarn(fmt::format("unexpected: path '{}', str '{}'", path(), value));
         }
 
@@ -460,13 +366,10 @@ private:
     {
         bool ok = true;
 
-        if (std::empty(file_subpath_))
-        {
+        if (std::empty(file_subpath_)) {
             context.error.set(EINVAL, fmt::format("invalid path [{:s}]", file_subpath_));
             ok = false;
-        }
-        else
-        {
+        } else {
             tm_.files_.add(file_subpath_, file_length_);
         }
 
@@ -478,14 +381,12 @@ private:
 
     bool finishInfoDict(Context const& context)
     {
-        if (std::empty(info_dict_begin_))
-        {
+        if (std::empty(info_dict_begin_)) {
             context.error.set(EINVAL, "no info_dict found");
             return false;
         }
 
-        if (!tm_.has_v1_metadata())
-        {
+        if (!tm_.has_v1_metadata()) {
             context.error.set(EINVAL, "missing v1 metadata");
             return false;
         }
@@ -496,16 +397,14 @@ private:
         if (auto dupe = std::ranges::adjacent_find(
                 sorted_paths,
                 [](auto const& p1, auto const& p2) { return p1.first == p2.first; });
-            dupe != sorted_paths.end())
-        {
+            dupe != sorted_paths.end()) {
             context.error.set(EINVAL, fmt::format("duplicate path [{:s}]", dupe->first));
             return false;
         }
 
         auto root = tr_pathbuf{};
         tr_torrent_files::sanitize_subpath(tm_.name_, root);
-        if (!std::empty(root))
-        {
+        if (!std::empty(root)) {
             tm_.files_.insert_subpath_prefix(root);
         }
 
@@ -534,37 +433,29 @@ private:
         // If 'length' is present then the download represents a single file,
         // otherwise it represents a set of files which go in a directory structure.
         // In the single file case, 'length' maps to the length of the file in bytes."
-        if (tm_.file_count() == 0 && length_ != 0 && !std::empty(tm_.name_))
-        {
+        if (tm_.file_count() == 0 && length_ != 0 && !std::empty(tm_.name_)) {
             tm_.files_.add(tr_torrent_files::sanitize_subpath(tm_.name_), length_);
         }
 
-        if (auto const has_metainfo = tm_.info_dict_size() != 0U; has_metainfo)
-        {
+        if (auto const has_metainfo = tm_.info_dict_size() != 0U; has_metainfo) {
             // do some sanity checks to make sure the torrent looks sane
-            if (tm_.file_count() == 0)
-            {
-                if (!context.error)
-                {
+            if (tm_.file_count() == 0) {
+                if (!context.error) {
                     context.error.set(EINVAL, "no files found");
                 }
                 return false;
             }
 
-            if (piece_size_ == 0U)
-            {
-                if (!context.error)
-                {
+            if (piece_size_ == 0U) {
+                if (!context.error) {
                     context.error.set(EINVAL, fmt::format("invalid 'piece length': {}", piece_size_));
                 }
                 return false;
             }
 
             tm_.block_info_ = tr_block_info{ tm_.files_.total_size(), piece_size_ };
-            if (tm_.block_info_.piece_count() != std::size(tm_.pieces_))
-            {
-                if (!context.error)
-                {
+            if (tm_.block_info_.piece_count() != std::size(tm_.pieces_)) {
+                if (!context.error) {
                     context.error.set(
                         EINVAL,
                         fmt::format(
@@ -660,25 +551,21 @@ bool tr_torrent_metainfo::parse_benc(std::string_view benc, tr_error* error)
     auto handler = MetainfoHandler{ *this };
 
     auto local_error = tr_error{};
-    if (error == nullptr)
-    {
+    if (error == nullptr) {
         error = &local_error;
     }
 
     auto const ok = tr::benc::parse(benc, stack, handler, nullptr, error);
 
-    if (*error)
-    {
+    if (*error) {
         tr_logAddError(fmt::format("{} ({})", error->message(), error->code()));
     }
 
-    if (!ok)
-    {
+    if (!ok) {
         return false;
     }
 
-    if (std::empty(name_))
-    {
+    if (std::empty(name_)) {
         // TODO from first file
     }
 
@@ -689,8 +576,7 @@ bool tr_torrent_metainfo::parse_torrent_file(std::string_view filename, std::vec
 {
     auto local_contents = std::vector<char>{};
 
-    if (contents == nullptr)
-    {
+    if (contents == nullptr) {
         contents = &local_contents;
     }
 
@@ -707,12 +593,9 @@ std::string tr_torrent_metainfo::make_filename(
     // `[${dirname}/]${name}.${info_hash}${suffix}`
     // `[${dirname}/]${info_hash}${suffix}`
     auto filename = std::empty(dirname) ? tr_pathbuf{} : tr_pathbuf{ dirname, '/' };
-    if (format == BasenameFormat::Hash)
-    {
+    if (format == BasenameFormat::Hash) {
         filename.append(info_hash_string);
-    }
-    else
-    {
+    } else {
         filename.append(name, '.', info_hash_string.substr(0, 16));
     }
     filename.append(suffix);
@@ -726,21 +609,18 @@ bool tr_torrent_metainfo::migrate_file(
     std::string_view suffix)
 {
     auto const old_filename = make_filename(dirname, name, info_hash_string, BasenameFormat::NameAndPartialHash, suffix);
-    if (!tr_sys_path_exists(old_filename))
-    {
+    if (!tr_sys_path_exists(old_filename)) {
         return false;
     }
 
     auto const new_filename = make_filename(dirname, name, info_hash_string, BasenameFormat::Hash, suffix);
-    if (tr_sys_path_exists(new_filename))
-    {
+    if (tr_sys_path_exists(new_filename)) {
         tr_sys_path_remove(old_filename);
         return false;
     }
 
     auto const renamed = tr_sys_path_rename(old_filename, new_filename);
-    if (!renamed)
-    {
+    if (!renamed) {
         tr_logAddError(
             fmt::format(
                 fmt::runtime(_("Migrated torrent file from '{old_path}' to '{path}'")),

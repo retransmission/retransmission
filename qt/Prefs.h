@@ -23,8 +23,7 @@
 namespace tr::app
 {
 template<>
-struct PrefsStringTraits<QString>
-{
+struct PrefsStringTraits<QString> {
     [[nodiscard]] static QString from_utf8(std::string_view const str)
     {
         return QString::fromUtf8(std::data(str), static_cast<IF_QT6(qsizetype, int)>(std::size(str)));

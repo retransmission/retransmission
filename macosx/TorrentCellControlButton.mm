@@ -69,22 +69,14 @@
 {
     NSImage* controlImage;
     Torrent* torrent = [self.torrentTableView itemAtRow:[self.torrentTableView rowForView:self]];
-    if (torrent.active)
-    {
+    if (torrent.active) {
         controlImage = [NSImage imageNamed:[@"Pause" stringByAppendingString:self.controlImageSuffix]];
-    }
-    else
-    {
-        if (NSApp.currentEvent.modifierFlags & NSEventModifierFlagOption)
-        {
+    } else {
+        if (NSApp.currentEvent.modifierFlags & NSEventModifierFlagOption) {
             controlImage = [NSImage imageNamed:[@"ResumeNoWait" stringByAppendingString:self.controlImageSuffix]];
-        }
-        else if (torrent.waitingToStart)
-        {
+        } else if (torrent.waitingToStart) {
             controlImage = [NSImage imageNamed:[@"Pause" stringByAppendingString:self.controlImageSuffix]];
-        }
-        else
-        {
+        } else {
             controlImage = [NSImage imageNamed:[@"Resume" stringByAppendingString:self.controlImageSuffix]];
         }
     }
@@ -93,8 +85,7 @@
 
 - (void)updateTrackingAreas
 {
-    if (self.fTrackingArea != nil)
-    {
+    if (self.fTrackingArea != nil) {
         [self removeTrackingArea:self.fTrackingArea];
     }
 

@@ -64,8 +64,7 @@ typedef NS_ENUM(NSUInteger, PopupPriority) {
     deleteTorrentCheckEnableInitially:(BOOL)deleteTorrent
                       canToggleDelete:(BOOL)canToggleDelete
 {
-    if ((self = [super initWithWindowNibName:@"AddWindow"]))
-    {
+    if ((self = [super initWithWindowNibName:@"AddWindow"])) {
         _torrent = torrent;
         _fDestination = path.stringByExpandingTildeInPath;
         _fLockDestination = lockDestination;
@@ -105,8 +104,7 @@ typedef NS_ENUM(NSUInteger, PopupPriority) {
 
     self.fIconView.image = self.torrent.icon;
 
-    if (!self.torrent.folder)
-    {
+    if (!self.torrent.folder) {
         self.fFileFilterField.hidden = YES;
         self.fCheckAllButton.hidden = YES;
         self.fUncheckAllButton.hidden = YES;
@@ -116,9 +114,7 @@ typedef NS_ENUM(NSUInteger, PopupPriority) {
         scrollFrame.origin.y -= diff;
         scrollFrame.size.height += diff;
         self.fFileScrollView.frame = scrollFrame;
-    }
-    else
-    {
+    } else {
         [self updateCheckButtons:nil];
     }
 
@@ -126,8 +122,7 @@ typedef NS_ENUM(NSUInteger, PopupPriority) {
     [self.fGroupPopUp selectItemWithTag:self.fGroupValue];
 
     PopupPriority priorityIndex;
-    switch (self.torrent.priority)
-    {
+    switch (self.torrent.priority) {
     case TR_PRI_HIGH:
         priorityIndex = PopupPriorityHigh;
         break;
@@ -149,13 +144,10 @@ typedef NS_ENUM(NSUInteger, PopupPriority) {
     self.fDeleteCheck.state = self.fDeleteTorrentEnableInitially ? NSControlStateValueOn : NSControlStateValueOff;
     self.fDeleteCheck.enabled = self.fCanToggleDelete;
 
-    if (self.fDestination)
-    {
+    if (self.fDestination) {
         [self setDestinationPath:self.fDestination
                determinationType:(self.fLockDestination ? TorrentDeterminationUserSpecified : TorrentDeterminationAutomatic)];
-    }
-    else
-    {
+    } else {
         self.fLocationField.stringValue = @"";
         self.fLocationImageView.image = nil;
     }
@@ -171,8 +163,7 @@ typedef NS_ENUM(NSUInteger, PopupPriority) {
 - (void)windowDidLoad
 {
     //if there is no destination, prompt for one right away
-    if (!self.fDestination)
-    {
+    if (!self.fDestination) {
         [self setDestination:nil];
     }
 }
@@ -196,15 +187,11 @@ typedef NS_ENUM(NSUInteger, PopupPriority) {
                                                self.torrent.name];
 
     [panel beginSheetModalForWindow:self.window completionHandler:^(NSInteger result) {
-        if (result == NSModalResponseOK)
-        {
+        if (result == NSModalResponseOK) {
             self.fLockDestination = YES;
             [self setDestinationPath:panel.URLs[0].path determinationType:TorrentDeterminationUserSpecified];
-        }
-        else
-        {
-            if (!self.fDestination)
-            {
+        } else {
+            if (!self.fDestination) {
                 dispatch_async(dispatch_get_main_queue(), ^{
                     [self cancelAdd:nil];
                 });
@@ -216,8 +203,7 @@ typedef NS_ENUM(NSUInteger, PopupPriority) {
 - (void)add:(id)sender
 {
     if ([self.fDestination.lastPathComponent isEqualToString:self.torrent.name] &&
-        [NSUserDefaults.standardUserDefaults boolForKey:@"WarningFolderDataSameName"])
-    {
+        [NSUserDefaults.standardUserDefaults boolForKey:@"WarningFolderDataSameName"]) {
         NSAlert* alert = [[NSAlert alloc] init];
         alert.messageText = NSLocalizedString(@"The destination directory and root data directory have the same name.", "Add torrent -> same name -> title");
         alert.informativeText = NSLocalizedString(
@@ -230,21 +216,17 @@ typedef NS_ENUM(NSUInteger, PopupPriority) {
         alert.showsSuppressionButton = YES;
 
         [alert beginSheetModalForWindow:self.window completionHandler:^(NSModalResponse returnCode) {
-            if (alert.suppressionButton.state == NSControlStateValueOn)
-            {
+            if (alert.suppressionButton.state == NSControlStateValueOn) {
                 [NSUserDefaults.standardUserDefaults setBool:NO forKey:@"WarningFolderDataSameName"];
             }
 
-            if (returnCode == NSAlertSecondButtonReturn)
-            {
+            if (returnCode == NSAlertSecondButtonReturn) {
                 dispatch_async(dispatch_get_main_queue(), ^{
                     [self confirmAdd];
                 });
             }
         }];
-    }
-    else
-    {
+    } else {
         [self confirmAdd];
     }
 }
@@ -290,8 +272,7 @@ typedef NS_ENUM(NSUInteger, PopupPriority) {
 - (void)changePriority:(id)sender
 {
     tr_priority_t priority;
-    switch ([sender indexOfSelectedItem])
-    {
+    switch ([sender indexOfSelectedItem]) {
     case PopupPriorityHigh:
         priority = TR_PRI_HIGH;
         break;
@@ -311,8 +292,7 @@ typedef NS_ENUM(NSUInteger, PopupPriority) {
 - (void)updateCheckButtons:(NSNotification*)notification
 {
     NSString* statusString = [NSString stringForFileSize:self.torrent.size];
-    if (self.torrent.folder)
-    {
+    if (self.torrent.folder) {
         //check buttons
         //keep synced with identical code in InfoFileViewController.m
         NSControlStateValue const filesCheckState = [self.torrent
@@ -323,12 +303,9 @@ typedef NS_ENUM(NSUInteger, PopupPriority) {
         //status field
         NSString* fileString;
         NSUInteger count = self.torrent.fileCount;
-        if (count != 1)
-        {
+        if (count != 1) {
             fileString = [NSString localizedStringWithFormat:NSLocalizedString(@"%lu files", "Add torrent -> info"), count];
-        }
-        else
-        {
+        } else {
             fileString = NSLocalizedString(@"1 file", "Add torrent -> info");
         }
 
@@ -344,8 +321,7 @@ typedef NS_ENUM(NSUInteger, PopupPriority) {
 - (void)updateGroupMenu:(NSNotification*)notification
 {
     [self setGroupsMenu];
-    if (![self.fGroupPopUp selectItemWithTag:self.fGroupValue])
-    {
+    if (![self.fGroupPopUp selectItemWithTag:self.fGroupValue]) {
         self.fGroupValue = -1;
         self.fGroupValueDetermination = TorrentDeterminationAutomatic;
         [self.fGroupPopUp selectItemWithTag:self.fGroupValue];
@@ -362,21 +338,15 @@ typedef NS_ENUM(NSUInteger, PopupPriority) {
 
     [self updateCheckButtons:nil]; //call in case button state changed by checking
 
-    if (self.torrent.checking)
-    {
+    if (self.torrent.checking) {
         BOOL const waiting = self.torrent.checkingWaiting;
         self.fVerifyIndicator.indeterminate = waiting;
-        if (waiting)
-        {
+        if (waiting) {
             [self.fVerifyIndicator startAnimation:self];
-        }
-        else
-        {
+        } else {
             self.fVerifyIndicator.doubleValue = self.torrent.checkingProgress;
         }
-    }
-    else
-    {
+    } else {
         self.fVerifyIndicator.indeterminate = YES; //we want to hide when stopped, which only applies when indeterminate
         [self.fVerifyIndicator stopAnimation:self];
     }
@@ -388,13 +358,11 @@ typedef NS_ENUM(NSUInteger, PopupPriority) {
     self.fTimer = nil;
     [self.torrent setGroupValue:self.fGroupValue determinationType:self.fGroupValueDetermination];
 
-    if (self.fTorrentFile && self.fCanToggleDelete && self.fDeleteCheck.state == NSControlStateValueOn)
-    {
+    if (self.fTorrentFile && self.fCanToggleDelete && self.fDeleteCheck.state == NSControlStateValueOn) {
         [Torrent trashFile:self.fTorrentFile error:nil];
     }
 
-    if (self.fStartCheck.state == NSControlStateValueOn)
-    {
+    if (self.fStartCheck.state == NSControlStateValueOn) {
         [self.torrent startTransfer];
     }
 
@@ -407,8 +375,7 @@ typedef NS_ENUM(NSUInteger, PopupPriority) {
 - (void)setDestinationPath:(NSString*)destination determinationType:(TorrentDeterminationType)determinationType
 {
     destination = destination.stringByExpandingTildeInPath;
-    if (!self.fDestination || ![self.fDestination isEqualToString:destination])
-    {
+    if (!self.fDestination || ![self.fDestination isEqualToString:destination]) {
         self.fDestination = destination;
 
         [self.torrent changeDownloadFolderBeforeUsing:self.fDestination determinationType:determinationType];
@@ -433,15 +400,11 @@ typedef NS_ENUM(NSUInteger, PopupPriority) {
     self.fGroupValue = [sender tag];
     self.fGroupValueDetermination = TorrentDeterminationUserSpecified;
 
-    if (!self.fLockDestination)
-    {
-        if ([GroupsController.groups usesCustomDownloadLocationForIndex:self.fGroupValue])
-        {
+    if (!self.fLockDestination) {
+        if ([GroupsController.groups usesCustomDownloadLocationForIndex:self.fGroupValue]) {
             [self setDestinationPath:[GroupsController.groups customDownloadLocationForIndex:self.fGroupValue]
                    determinationType:TorrentDeterminationAutomatic];
-        }
-        else if ([self.fDestination isEqualToString:[GroupsController.groups customDownloadLocationForIndex:previousGroup]])
-        {
+        } else if ([self.fDestination isEqualToString:[GroupsController.groups customDownloadLocationForIndex:previousGroup]]) {
             [self setDestinationPath:[NSUserDefaults.standardUserDefaults stringForKey:@"DownloadFolder"]
                    determinationType:TorrentDeterminationAutomatic];
         }

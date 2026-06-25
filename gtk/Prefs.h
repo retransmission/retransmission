@@ -30,8 +30,7 @@ template<typename T>
 {
     auto const& prefs = gtr_pref_get_all();
 
-    if (auto iter = prefs.find(key); iter != prefs.end())
-    {
+    if (auto iter = prefs.find(key); iter != prefs.end()) {
         return tr::serializer::to_value<T>(iter->second);
     }
 
@@ -41,8 +40,7 @@ template<typename T>
 template<typename T>
 [[nodiscard]] T gtr_pref_get(tr_quark const key, T default_value = {})
 {
-    if (auto val = gtr_pref_lookup<T>(key))
-    {
+    if (auto val = gtr_pref_lookup<T>(key)) {
         return std::move(*val);
     }
 

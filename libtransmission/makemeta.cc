@@ -43,8 +43,7 @@ namespace
 namespace find_files_helpers
 {
 
-struct TorrentFile
-{
+struct TorrentFile {
     TorrentFile(std::string_view subpath, size_t size)
         : subpath_{ subpath }
         , lowercase_{ tr_strlower(subpath) }
@@ -67,8 +66,7 @@ void walkTree(std::string_view const top, std::string_view const subpath, std::s
     TR_ASSERT(!std::empty(top));
     TR_ASSERT(!std::empty(subpath));
 
-    if (std::empty(top) || std::empty(subpath))
-    {
+    if (std::empty(top) || std::empty(subpath)) {
         return;
     }
 
@@ -76,8 +74,7 @@ void walkTree(std::string_view const top, std::string_view const subpath, std::s
     tr_sys_path_native_separators(std::data(path));
     auto error = tr_error{};
     auto const info = tr_sys_path_get_info(path, 0, &error);
-    if (error)
-    {
+    if (error) {
         tr_logAddWarn(
             fmt::format(
                 fmt::runtime(_("Skipping '{path}': {error} ({error_code})")),
@@ -85,22 +82,16 @@ void walkTree(std::string_view const top, std::string_view const subpath, std::s
                 fmt::arg("error", error.message()),
                 fmt::arg("error_code", error.code())));
     }
-    if (!info)
-    {
+    if (!info) {
         return;
     }
 
-    switch (info->type)
-    {
+    switch (info->type) {
     case TR_SYS_PATH_IS_DIRECTORY:
-        for (auto const& name : tr_sys_dir_get_files(path))
-        {
-            if (!std::empty(subpath))
-            {
+        for (auto const& name : tr_sys_dir_get_files(path)) {
+            if (!std::empty(subpath)) {
                 walkTree(top, tr_pathbuf{ subpath, '/', name }, files);
-            }
-            else
-            {
+            } else {
                 walkTree(top, name, files);
             }
         }
@@ -124,8 +115,7 @@ tr_torrent_files findFiles(std::string_view const top, std::string_view const su
     auto tmp = std::set<TorrentFile>{};
     walkTree(top, subpath, tmp);
     auto files = tr_torrent_files{};
-    for (auto const& file : tmp)
-    {
+    for (auto const& file : tmp) {
         files.add(file.subpath_, file.size_);
     }
     return files;
@@ -142,8 +132,7 @@ tr_metainfo_builder::tr_metainfo_builder(std::string_view single_file_or_parent_
 
 bool tr_metainfo_builder::set_piece_size(uint32_t piece_size) noexcept
 {
-    if (!is_legal_piece_size(piece_size))
-    {
+    if (!is_legal_piece_size(piece_size)) {
         return false;
     }
 
@@ -156,10 +145,8 @@ bool tr_metainfo_builder::blocking_make_checksums(tr_error* error)
     checksum_piece_ = 0;
     cancel_ = false;
 
-    if (total_size() == 0U)
-    {
-        if (error != nullptr)
-        {
+    if (total_size() == 0U) {
+        if (error != nullptr) {
             error->set(ENOENT, "zero-length torrents are not allowed"sv);
         }
 
@@ -183,13 +170,11 @@ bool tr_metainfo_builder::blocking_make_checksums(tr_error* error)
         TR_SYS_FILE_READ | TR_SYS_FILE_SEQUENTIAL,
         0,
         error);
-    if (fd == TR_BAD_SYS_FILE)
-    {
+    if (fd == TR_BAD_SYS_FILE) {
         return false;
     }
 
-    while (!cancel_ && (total_remain > 0U))
-    {
+    while (!cancel_ && (total_remain > 0U)) {
         checksum_piece_ = piece_index;
 
         TR_ASSERT(piece_index < piece_count());
@@ -199,8 +184,7 @@ bool tr_metainfo_builder::blocking_make_checksums(tr_error* error)
         auto* bufptr = std::data(buf);
 
         auto left_in_piece = piece_size;
-        while (left_in_piece > 0U)
-        {
+        while (left_in_piece > 0U) {
             auto const n_this_pass = std::min(file_size(file_index) - off, uint64_t{ left_in_piece });
             auto n_read = uint64_t{};
 
@@ -209,21 +193,18 @@ bool tr_metainfo_builder::blocking_make_checksums(tr_error* error)
             off += n_read;
             left_in_piece -= n_read;
 
-            if (off == file_size(file_index))
-            {
+            if (off == file_size(file_index)) {
                 off = 0;
                 tr_sys_file_close(fd);
                 fd = TR_BAD_SYS_FILE;
 
-                if (++file_index < file_count())
-                {
+                if (++file_index < file_count()) {
                     fd = tr_sys_file_open(
                         tr_pathbuf{ parent, '/', path(file_index) },
                         TR_SYS_FILE_READ | TR_SYS_FILE_SEQUENTIAL,
                         0,
                         error);
-                    if (fd == TR_BAD_SYS_FILE)
-                    {
+                    if (fd == TR_BAD_SYS_FILE) {
                         return false;
                     }
                 }
@@ -244,15 +225,12 @@ bool tr_metainfo_builder::blocking_make_checksums(tr_error* error)
     TR_ASSERT(cancel_ || size_t(walk - std::data(hashes)) == std::size(hashes));
     TR_ASSERT(cancel_ || total_remain == 0U);
 
-    if (fd != TR_BAD_SYS_FILE)
-    {
+    if (fd != TR_BAD_SYS_FILE) {
         tr_sys_file_close(fd);
     }
 
-    if (cancel_)
-    {
-        if (error != nullptr)
-        {
+    if (cancel_) {
+        if (error != nullptr) {
             error->set_from_errno(ECANCELED);
         }
 
@@ -272,10 +250,8 @@ std::string tr_metainfo_builder::benc(tr_error* error) const
     auto const& source = this->source();
     auto const& webseeds = this->webseeds();
 
-    if (total_size() == 0)
-    {
-        if (error != nullptr)
-        {
+    if (total_size() == 0) {
+        if (error != nullptr) {
             error->set_from_errno(ENOENT);
         }
 
@@ -288,8 +264,7 @@ std::string tr_metainfo_builder::benc(tr_error* error) const
     announce_list().add_to_map(top);
 
     // add the webseeds
-    if (auto const n_webseeds = std::size(webseeds); n_webseeds > 0U)
-    {
+    if (auto const n_webseeds = std::size(webseeds); n_webseeds > 0U) {
         auto webseeds_vec = tr_variant::Vector{};
         webseeds_vec.reserve(n_webseeds);
         std::copy_n(std::cbegin(webseeds), n_webseeds, std::back_inserter(webseeds_vec));
@@ -297,14 +272,12 @@ std::string tr_metainfo_builder::benc(tr_error* error) const
     }
 
     // add the comment
-    if (!std::empty(comment))
-    {
+    if (!std::empty(comment)) {
         top.try_emplace(TR_KEY_comment, comment);
     }
 
     // maybe add some optional metainfo
-    if (!anonymize)
-    {
+    if (!anonymize) {
         top.try_emplace(TR_KEY_created_by, TR_NAME "/" LONG_VERSION_STRING);
         top.try_emplace(TR_KEY_creation_date, time(nullptr));
     }
@@ -317,31 +290,25 @@ std::string tr_metainfo_builder::benc(tr_error* error) const
     // "There is also a key `length` or a key `files`, but not both or neither.
     // If length is present then the download represents a single file,
     // otherwise it represents a set of files which go in a directory structure."
-    if (file_count() == 1U && !tr_strv_contains(path(0), '/'))
-    {
+    if (file_count() == 1U && !tr_strv_contains(path(0), '/')) {
         info_dict.try_emplace(TR_KEY_length, file_size(0));
-    }
-    else
-    {
+    } else {
         auto const n_files = file_count();
         auto file_vec = tr_variant::Vector{};
         file_vec.reserve(n_files);
 
-        for (tr_file_index_t i = 0U; i < n_files; ++i)
-        {
+        for (tr_file_index_t i = 0U; i < n_files; ++i) {
             auto file_map = tr_variant::Map{ 2U };
             file_map.try_emplace(TR_KEY_length, file_size(i));
 
             auto subpath = std::string_view{ path(i) };
-            if (!std::empty(base))
-            {
+            if (!std::empty(base)) {
                 subpath.remove_prefix(std::size(base) + std::size("/"sv));
             }
 
             auto path_vec = tr_variant::Vector{};
             auto token = std::string_view{};
-            while (tr_strv_sep(&subpath, &token, '/'))
-            {
+            while (tr_strv_sep(&subpath, &token, '/')) {
                 path_vec.emplace_back(token);
             }
             file_map.try_emplace(TR_KEY_path, std::move(path_vec));
@@ -352,21 +319,18 @@ std::string tr_metainfo_builder::benc(tr_error* error) const
         info_dict.try_emplace(TR_KEY_files, std::move(file_vec));
     }
 
-    if (!std::empty(base))
-    {
+    if (!std::empty(base)) {
         info_dict.try_emplace(TR_KEY_name, base);
     }
 
     info_dict.try_emplace(TR_KEY_piece_length, piece_size());
     info_dict.try_emplace(TR_KEY_pieces, tr_variant::make_raw(std::data(piece_hashes_), std::size(piece_hashes_)));
 
-    if (is_private_)
-    {
+    if (is_private_) {
         info_dict.try_emplace(TR_KEY_private, 1);
     }
 
-    if (!std::empty(source))
-    {
+    if (!std::empty(source)) {
         info_dict.try_emplace(TR_KEY_source, source_);
     }
 

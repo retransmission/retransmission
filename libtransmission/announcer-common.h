@@ -38,8 +38,7 @@ void tr_announcerParseHttpScrapeResponse(tr_scrape_response& response, std::stri
 
 [[nodiscard]] constexpr std::string_view tr_announce_event_get_string(tr_announce_event e)
 {
-    switch (e)
-    {
+    switch (e) {
     case TR_ANNOUNCE_EVENT_COMPLETED:
         return "completed";
 
@@ -54,8 +53,7 @@ void tr_announcerParseHttpScrapeResponse(tr_scrape_response& response, std::stri
     }
 }
 
-struct tr_announce_request
-{
+struct tr_announce_request {
     tr_announce_event event = {};
     bool partial_seed = false;
 
@@ -98,8 +96,7 @@ struct tr_announce_request
     std::string log_name;
 };
 
-struct tr_announce_response
-{
+struct tr_announce_response {
     /* the torrent's info hash */
     tr_sha1_digest_t info_hash = {};
 
@@ -148,13 +145,11 @@ struct tr_announce_response
 
     static constexpr auto compare_failed(tr_announce_response const& lhs, tr_announce_response const& rhs) noexcept
     {
-        if (auto const val = static_cast<int>(lhs.did_connect) <=> static_cast<int>(rhs.did_connect); val != 0)
-        {
+        if (auto const val = static_cast<int>(lhs.did_connect) <=> static_cast<int>(rhs.did_connect); val != 0) {
             return val;
         }
 
-        if (auto const val = static_cast<int>(rhs.did_timeout) <=> static_cast<int>(lhs.did_timeout); val != 0)
-        {
+        if (auto const val = static_cast<int>(rhs.did_timeout) <=> static_cast<int>(lhs.did_timeout); val != 0) {
             return val;
         }
 
@@ -179,8 +174,7 @@ auto inline constexpr TrMultiscrapeMax = 60U;
 auto inline constexpr TrAnnounceTimeoutSec = std::chrono::seconds{ 45 };
 auto inline constexpr TrScrapeTimeoutSec = std::chrono::seconds{ 30 };
 
-struct tr_scrape_request
-{
+struct tr_scrape_request {
     /* the scrape URL */
     tr_interned_string scrape_url;
 
@@ -194,8 +188,7 @@ struct tr_scrape_request
     size_t info_hash_count = 0U;
 };
 
-struct tr_scrape_response_row
-{
+struct tr_scrape_response_row {
     /* the torrent's info_hash */
     tr_sha1_digest_t info_hash;
 
@@ -214,8 +207,7 @@ struct tr_scrape_response_row
     std::optional<int64_t> downloaders;
 };
 
-struct tr_scrape_response
-{
+struct tr_scrape_response {
     /* whether or not we managed to connect to the tracker */
     bool did_connect = false;
 

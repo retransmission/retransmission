@@ -92,14 +92,12 @@ class PrefsTest
         auto serde = tr_variant_serde::json();
         auto const var = serde.parse(json_object_str);
         QVERIFY(var.has_value());
-        if (!var.has_value())
-        {
+        if (!var.has_value()) {
             return;
         }
         auto const* const map = var->get_if<tr_variant::Map>();
         QVERIFY(map);
-        if (map)
-        {
+        if (map) {
             auto const prefs = Prefs{ *map };
             QCOMPARE_EQ(prefs.get<T>(key), val);
         }
@@ -206,8 +204,7 @@ private slots:
         QVERIFY(val_a_str.has_value());
         QVERIFY(val_b_str.has_value());
 
-        if (val_a_str && val_b_str)
-        {
+        if (val_a_str && val_b_str) {
             auto prefs = Prefs{};
             verify_get_set_by_property(prefs, Key, val_a, val_b);
             verify_set_by_json(Key, val_a, fmt::format(R"("{:s}")"sv, *val_a_str));

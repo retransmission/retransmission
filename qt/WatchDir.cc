@@ -28,13 +28,11 @@ WatchDir::WatchDir(TorrentModel const& model)
 WatchDir::AddResult WatchDir::metainfoTest(QString const& filename) const
 {
     auto metainfo = tr_torrent_metainfo();
-    if (!metainfo.parse_torrent_file(filename.toUtf8().constData()))
-    {
+    if (!metainfo.parse_torrent_file(filename.toUtf8().constData())) {
         return AddResult::Error;
     }
 
-    if (model_.hasTorrent(TorrentHash{ metainfo.info_hash() }))
-    {
+    if (model_.hasTorrent(TorrentHash{ metainfo.info_hash() })) {
         return AddResult::Duplicate;
     }
 
@@ -45,8 +43,7 @@ void WatchDir::onTimeout()
 {
     auto* t = qobject_cast<QTimer*>(sender());
 
-    if (auto const filename = t->objectName(); metainfoTest(filename) == AddResult::Success)
-    {
+    if (auto const filename = t->objectName(); metainfoTest(filename) == AddResult::Success) {
         emit torrentFileAdded(filename);
     }
 
@@ -60,8 +57,7 @@ void WatchDir::setPath(QString const& path, bool is_enabled)
     watcher_.reset();
 
     // maybe create a new watcher
-    if (is_enabled)
-    {
+    if (is_enabled) {
         watcher_ = std::make_unique<QFileSystemWatcher>(QStringList{ path });
         connect(watcher_.get(), &QFileSystemWatcher::directoryChanged, this, &WatchDir::watcherActivated);
         // trigger the watchdir for torrent files in there already
@@ -77,16 +73,13 @@ void WatchDir::watcherActivated(QString const& path)
 
     // try to add any new files which end in torrent
     auto const torrent_suffix = QStringLiteral(".torrent");
-    for (auto const& name : files)
-    {
-        if (!name.endsWith(torrent_suffix, Qt::CaseInsensitive) || watch_dir_files_.contains(name))
-        {
+    for (auto const& name : files) {
+        if (!name.endsWith(torrent_suffix, Qt::CaseInsensitive) || watch_dir_files_.contains(name)) {
             continue;
         }
 
         auto const filename = dir.absoluteFilePath(name);
-        switch (metainfoTest(filename))
-        {
+        switch (metainfoTest(filename)) {
         case AddResult::Success:
             emit torrentFileAdded(filename);
             break;
@@ -113,13 +106,11 @@ void WatchDir::watcherActivated(QString const& path)
 
 void WatchDir::rescanAllWatchedDirectories()
 {
-    if (!watcher_)
-    {
+    if (!watcher_) {
         return;
     }
 
-    for (auto const& path : watcher_->directories())
-    {
+    for (auto const& path : watcher_->directories()) {
         watcherActivated(path);
     }
 }

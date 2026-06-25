@@ -10,8 +10,7 @@
 #include "libtransmission/constants.h"
 #include "libtransmission/types.h"
 
-struct tr_block_info
-{
+struct tr_block_info {
 public:
     static auto constexpr BlockSize = TrBlockSize;
 
@@ -52,8 +51,7 @@ public:
         return total_size_;
     }
 
-    struct Location
-    {
+    struct Location {
         [[nodiscard]] constexpr bool operator==(Location const& that) const noexcept
         {
             return this->byte == that.byte;
@@ -78,8 +76,7 @@ public:
     {
         auto loc = Location{};
 
-        if (is_initialized())
-        {
+        if (is_initialized()) {
             loc.byte = byte_idx;
 
             loc.block = static_cast<tr_block_index_t>(byte_idx / BlockSize);
@@ -125,8 +122,7 @@ public:
 
     [[nodiscard]] constexpr tr_block_span_t block_span_for_piece(tr_piece_index_t const piece) const noexcept
     {
-        if (!is_initialized())
-        {
+        if (!is_initialized()) {
             return { .begin = 0U, .end = 0U };
         }
 
@@ -135,8 +131,7 @@ public:
 
     [[nodiscard]] constexpr tr_byte_span_t byte_span_for_piece(tr_piece_index_t const piece) const noexcept
     {
-        if (!is_initialized())
-        {
+        if (!is_initialized()) {
             return { .begin = 0U, .end = 0U };
         }
 

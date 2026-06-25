@@ -18,19 +18,14 @@
 {
     NSMutableArray* addresses = [NSMutableArray arrayWithCapacity:self.trackers.count];
     NSIndexSet* indexes = self.selectedRowIndexes;
-    for (NSUInteger i = indexes.firstIndex; i != NSNotFound; i = [indexes indexGreaterThanIndex:i])
-    {
+    for (NSUInteger i = indexes.firstIndex; i != NSNotFound; i = [indexes indexGreaterThanIndex:i]) {
         id item = self.trackers[i];
-        if (![item isKindOfClass:[TrackerNode class]])
-        {
-            for (++i; i < self.trackers.count && [self.trackers[i] isKindOfClass:[TrackerNode class]]; ++i)
-            {
+        if (![item isKindOfClass:[TrackerNode class]]) {
+            for (++i; i < self.trackers.count && [self.trackers[i] isKindOfClass:[TrackerNode class]]; ++i) {
                 [addresses addObject:((TrackerNode*)self.trackers[i]).fullAnnounceAddress];
             }
             --i;
-        }
-        else
-        {
+        } else {
             [addresses addObject:((TrackerNode*)item).fullAnnounceAddress];
         }
     }
@@ -51,20 +46,16 @@
     NSArray* items = [NSPasteboard.generalPasteboard readObjectsForClasses:@[ [NSString class] ] options:nil];
     NSAssert(items != nil, @"no string items to paste; should not be able to call this method");
 
-    for (NSString* pbItem in items)
-    {
-        for (NSString* item in [pbItem componentsSeparatedByString:@"\n"])
-        {
-            if ([self.torrent addTrackerToNewTier:item])
-            {
+    for (NSString* pbItem in items) {
+        for (NSString* item in [pbItem componentsSeparatedByString:@"\n"]) {
+            if ([self.torrent addTrackerToNewTier:item]) {
                 added = YES;
             }
         }
     }
 
     //none added
-    if (!added)
-    {
+    if (!added) {
         NSBeep();
     }
 }
@@ -73,13 +64,11 @@
 {
     SEL const action = menuItem.action;
 
-    if (action == @selector(copy:))
-    {
+    if (action == @selector(copy:)) {
         return self.numberOfSelectedRows > 0;
     }
 
-    if (action == @selector(paste:))
-    {
+    if (action == @selector(paste:)) {
         return self.torrent && [NSPasteboard.generalPasteboard canReadObjectForClasses:@[ [NSString class] ] options:nil];
     }
 

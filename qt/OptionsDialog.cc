@@ -43,17 +43,14 @@ OptionsDialog::OptionsDialog(Session& session, Prefs const& prefs, AddData addme
     edit_timer_.setSingleShot(true);
     connect(&edit_timer_, &QTimer::timeout, this, &OptionsDialog::onDestinationChanged);
 
-    if (add_.type == AddData::FILENAME)
-    {
+    if (add_.type == AddData::FILENAME) {
         ui_.sourceStack->setCurrentWidget(ui_.sourceButton);
         ui_.sourceButton->setMode(PathButton::FileMode);
         ui_.sourceButton->setTitle(tr("Open Torrent"));
         ui_.sourceButton->setNameFilter(tr("Torrent Files (*.torrent);;All Files (*.*)"));
         ui_.sourceButton->setPath(add_.filename);
         connect(ui_.sourceButton, &PathButton::pathChanged, this, &OptionsDialog::onSourceChanged);
-    }
-    else
-    {
+    } else {
         ui_.sourceStack->setCurrentWidget(ui_.sourceEdit);
         ui_.sourceEdit->setText(add_.readableName());
         ui_.sourceEdit->selectAll();
@@ -76,8 +73,7 @@ OptionsDialog::OptionsDialog(Session& session, Prefs const& prefs, AddData addme
     ui_.destinationButton->setPath(download_dir);
     ui_.destinationEdit->setText(download_dir);
 
-    if (is_local_)
-    {
+    if (is_local_) {
         local_destination_.setPath(download_dir);
     }
 
@@ -128,8 +124,7 @@ void OptionsDialog::reload()
     auto metainfo = tr_torrent_metainfo{};
     auto ok = bool{};
 
-    switch (add_.type)
-    {
+    switch (add_.type) {
     case AddData::MAGNET:
         ok = metainfo.parseMagnet(add_.magnet.toStdString());
         break;
@@ -152,8 +147,7 @@ void OptionsDialog::reload()
     priorities_.clear();
     wanted_.clear();
 
-    if (ok)
-    {
+    if (ok) {
         metainfo_ = metainfo;
     }
 
@@ -162,14 +156,12 @@ void OptionsDialog::reload()
     ui_.filesView->setVisible(have_files_to_show);
     layout()->setSizeConstraint(have_files_to_show ? QLayout::SetDefaultConstraint : QLayout::SetFixedSize);
 
-    if (metainfo_)
-    {
+    if (metainfo_) {
         auto const n_files = metainfo_->file_count();
         priorities_.assign(n_files, TR_PRI_NORMAL);
         wanted_.assign(n_files, true);
 
-        for (tr_file_index_t i = 0; i < n_files; ++i)
-        {
+        for (tr_file_index_t i = 0; i < n_files; ++i) {
             auto f = TorrentFile{};
             f.index = static_cast<int>(i);
             f.priority = priorities_[i];
@@ -196,8 +188,7 @@ void OptionsDialog::onSessionUpdated()
 {
     bool const is_local = session_.isLocal();
 
-    if (is_local_ != is_local)
-    {
+    if (is_local_ != is_local) {
         is_local_ = is_local;
         updateWidgetsLocality();
     }
@@ -205,16 +196,14 @@ void OptionsDialog::onSessionUpdated()
 
 void OptionsDialog::onPriorityChanged(file_indices_t const& file_indices, int priority)
 {
-    for (int const i : file_indices)
-    {
+    for (int const i : file_indices) {
         priorities_[i] = priority;
     }
 }
 
 void OptionsDialog::onWantedChanged(file_indices_t const& file_indices, bool is_wanted)
 {
-    for (int const i : file_indices)
-    {
+    for (int const i : file_indices) {
         wanted_[i] = is_wanted;
     }
 }
@@ -227,12 +216,9 @@ void OptionsDialog::onAccepted()
     QString download_dir;
 
     // "download-dir"
-    if (ui_.destinationStack->currentWidget() == ui_.destinationButton)
-    {
+    if (ui_.destinationStack->currentWidget() == ui_.destinationButton) {
         download_dir = local_destination_.absolutePath();
-    }
-    else
-    {
+    } else {
         download_dir = ui_.destinationEdit->text();
     }
 
@@ -249,15 +235,12 @@ void OptionsDialog::onAccepted()
     // files_unwanted
     auto count = std::count(wanted_.begin(), wanted_.end(), false);
 
-    if (count > 0)
-    {
+    if (count > 0) {
         auto files_unwanted = std::vector<int>{};
         files_unwanted.reserve(static_cast<size_t>(count));
 
-        for (size_t i = 0, n = wanted_.size(); i < n; ++i)
-        {
-            if (!wanted_.at(i))
-            {
+        for (size_t i = 0, n = wanted_.size(); i < n; ++i) {
+            if (!wanted_.at(i)) {
                 files_unwanted.push_back(static_cast<int>(i));
             }
         }
@@ -268,15 +251,12 @@ void OptionsDialog::onAccepted()
     // priority_low
     count = std::count(priorities_.begin(), priorities_.end(), TR_PRI_LOW);
 
-    if (count > 0)
-    {
+    if (count > 0) {
         auto priority_low = std::vector<int>{};
         priority_low.reserve(static_cast<size_t>(count));
 
-        for (size_t i = 0, n = priorities_.size(); i < n; ++i)
-        {
-            if (priorities_.at(i) == TR_PRI_LOW)
-            {
+        for (size_t i = 0, n = priorities_.size(); i < n; ++i) {
+            if (priorities_.at(i) == TR_PRI_LOW) {
                 priority_low.push_back(static_cast<int>(i));
             }
         }
@@ -287,15 +267,12 @@ void OptionsDialog::onAccepted()
     // priority_high
     count = std::count(priorities_.begin(), priorities_.end(), TR_PRI_HIGH);
 
-    if (count > 0)
-    {
+    if (count > 0) {
         auto priority_high = std::vector<int>{};
         priority_high.reserve(static_cast<size_t>(count));
 
-        for (size_t i = 0, n = priorities_.size(); i < n; ++i)
-        {
-            if (priorities_.at(i) == TR_PRI_HIGH)
-            {
+        for (size_t i = 0, n = priorities_.size(); i < n; ++i) {
+            if (priorities_.at(i) == TR_PRI_HIGH) {
                 priority_high.push_back(static_cast<int>(i));
             }
         }
@@ -313,12 +290,9 @@ void OptionsDialog::onAccepted()
 
 void OptionsDialog::onSourceChanged()
 {
-    if (ui_.sourceStack->currentWidget() == ui_.sourceButton)
-    {
+    if (ui_.sourceStack->currentWidget() == ui_.sourceButton) {
         add_.set(ui_.sourceButton->path());
-    }
-    else if (auto const text = ui_.sourceEdit->text(); text != add_.readableName())
-    {
+    } else if (auto const text = ui_.sourceEdit->text(); text != add_.readableName()) {
         add_.set(text);
     }
 
@@ -327,13 +301,10 @@ void OptionsDialog::onSourceChanged()
 
 void OptionsDialog::onDestinationChanged()
 {
-    if (ui_.destinationStack->currentWidget() == ui_.destinationButton)
-    {
+    if (ui_.destinationStack->currentWidget() == ui_.destinationButton) {
         local_destination_.setPath(ui_.destinationButton->path());
         ui_.freeSpaceLabel->setPath(local_destination_.absolutePath());
-    }
-    else
-    {
+    } else {
         ui_.freeSpaceLabel->setPath(ui_.destinationEdit->text());
     }
 }

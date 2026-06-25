@@ -11,8 +11,7 @@
 void tr_block_info::init_sizes(uint64_t const total_size_in, uint32_t const piece_size_in) noexcept
 {
     TR_ASSERT(piece_size_in == 0 || piece_size_in >= BlockSize);
-    if (piece_size_in == 0)
-    {
+    if (piece_size_in == 0) {
         *this = {};
         return;
     }

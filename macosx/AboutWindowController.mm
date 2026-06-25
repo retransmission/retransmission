@@ -24,8 +24,7 @@ static AboutWindowController* fAboutBoxInstance = nil;
 
 + (AboutWindowController*)aboutController
 {
-    if (!fAboutBoxInstance)
-    {
+    if (!fAboutBoxInstance) {
         fAboutBoxInstance = [[self alloc] initWithWindowNibName:@"AboutWindow"];
     }
     return fAboutBoxInstance;

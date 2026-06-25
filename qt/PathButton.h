@@ -12,11 +12,7 @@ class PathButton : public QToolButton
     Q_OBJECT
 
 public:
-    enum Mode : uint8_t
-    {
-        DirectoryMode,
-        FileMode
-    };
+    enum Mode : uint8_t { DirectoryMode, FileMode };
 
     explicit PathButton(QWidget* parent = nullptr);
     ~PathButton() override = default;

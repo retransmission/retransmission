@@ -31,8 +31,7 @@ public:
      */
     constexpr void add(time_t now, SizeType n)
     {
-        if (timestamps_[newest_] != now)
-        {
+        if (timestamps_[newest_] != now) {
             newest_ = (newest_ + 1) % Seconds;
             timestamps_[newest_] = now;
             count_[newest_] = {};
@@ -51,10 +50,8 @@ public:
         auto sum = SizeType{};
         time_t const oldest = now - age_sec;
 
-        for (std::size_t i = 0; i < Seconds; ++i)
-        {
-            if (timestamps_[i] >= oldest)
-            {
+        for (std::size_t i = 0; i < Seconds; ++i) {
+            if (timestamps_[i] >= oldest) {
                 sum += count_[i];
             }
         }

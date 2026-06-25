@@ -38,10 +38,8 @@ static void handle_signals(evutil_socket_t fd, short /*what*/, void* arg)
 
     if (read(fd, &fdsi, sizeof(fdsi)) != sizeof(fdsi))
         assert("Error reading signal descriptor" && 0);
-    else
-    {
-        switch (fdsi.ssi_signo)
-        {
+    else {
+        switch (fdsi.ssi_signo) {
         case SIGHUP:
             daemon->reconfigure();
             break;
@@ -117,15 +115,13 @@ bool tr_daemon::setup_signals(struct event*& sig_ev)
 
 void tr_daemon::cleanup_signals(struct event* sig_ev) const
 {
-    if (sig_ev != nullptr)
-    {
+    if (sig_ev != nullptr) {
         event_del(sig_ev);
         event_free(sig_ev);
     }
 
 #ifdef HAVE_SYS_SIGNALFD_H
-    if (sigfd_ >= 0)
-    {
+    if (sigfd_ >= 0) {
         close(sigfd_);
     }
 #endif /* HAVE_SYS_SIGNALFD_H */
@@ -135,12 +131,10 @@ bool tr_daemon::spawn(bool foreground, int* exit_code, tr_error& error)
 {
     *exit_code = 1;
 
-    if (!foreground)
-    {
+    if (!foreground) {
 #if defined(HAVE_DAEMON) && !defined(__APPLE__) && !defined(__UCLIBC__)
 
-        if (daemon(true, false) == -1)
-        {
+        if (daemon(true, false) == -1) {
             set_system_error(error, errno, "daemon() failed");
             return false;
         }
@@ -150,8 +144,7 @@ bool tr_daemon::spawn(bool foreground, int* exit_code, tr_error& error)
         /* this is loosely based off of glibc's daemon() implementation
          * https://sourceware.org/git/?p=glibc.git;a=blob_plain;f=misc/daemon.c */
 
-        switch (fork())
-        {
+        switch (fork()) {
         case -1:
             set_system_error(error, errno, "fork() failed");
             return false;
@@ -164,8 +157,7 @@ bool tr_daemon::spawn(bool foreground, int* exit_code, tr_error& error)
             return true;
         }
 
-        if (setsid() == -1)
-        {
+        if (setsid() == -1) {
             set_system_error(error, errno, "setsid() failed");
             return false;
         }

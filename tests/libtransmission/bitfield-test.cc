@@ -19,13 +19,11 @@ TEST(Bitfield, count)
 {
     auto constexpr IterCount = size_t{ 10000U };
 
-    for (size_t i = 0; i < IterCount; ++i)
-    {
+    for (size_t i = 0; i < IterCount; ++i) {
         // generate a random bitfield
         auto const bit_count = 100U + tr_rand_int(1000U);
         auto bf = tr_bitfield{ bit_count };
-        for (size_t idx = 0U; idx < bit_count; ++idx)
-        {
+        for (size_t idx = 0U; idx < bit_count; ++idx) {
             bf.set(idx, tr_rand_int(2U) != 0U);
         }
 
@@ -36,10 +34,8 @@ TEST(Bitfield, count)
 
         // test the bitfield
         unsigned long count1 = {};
-        for (auto j = begin; j < end; ++j)
-        {
-            if (bf.test(j))
-            {
+        for (auto j = begin; j < end; ++j) {
+            if (bf.test(j)) {
                 ++count1;
             }
         }
@@ -69,8 +65,7 @@ TEST(Bitfield, ctorFromFlagArray)
         { false, false, false, false, false, false, false, false, false, false }, // have none
     });
 
-    for (auto const& flags : Tests)
-    {
+    for (auto const& flags : Tests) {
         size_t const true_count = std::count(std::begin(flags), std::end(flags), true);
         size_t const n = std::size(flags);
         bool const have_all = true_count == n;
@@ -84,8 +79,7 @@ TEST(Bitfield, ctorFromFlagArray)
         EXPECT_EQ(have_none, bf.has_none());
         EXPECT_EQ(true_count, bf.count());
 
-        for (size_t i = 0; i < std::size(flags); ++i)
-        {
+        for (size_t i = 0; i < std::size(flags); ++i) {
             EXPECT_EQ(flags[i], bf.test(i));
         }
     }
@@ -106,10 +100,8 @@ TEST(Bitfield, setRaw)
     // from high bit to low bit, respectively. The next one 8-15, etc.
     // Spare bits at the end are set to zero.
     auto test = uint8_t{};
-    for (int i = 0; i < 8; ++i)
-    {
-        if (bf.test(i))
-        {
+    for (int i = 0; i < 8; ++i) {
+        if (bf.test(i)) {
             test |= (1 << (7 - i));
         }
     }
@@ -141,38 +133,31 @@ TEST(Bitfield, bitfields)
     tr_bitfield field(bitcount);
 
     // test tr_bitfield::set()
-    for (unsigned int i = 0; i < bitcount; i++)
-    {
-        if (i % 7 == 0)
-        {
+    for (unsigned int i = 0; i < bitcount; i++) {
+        if (i % 7 == 0) {
             field.set(i);
         }
     }
 
-    for (unsigned int i = 0; i < bitcount; i++)
-    {
+    for (unsigned int i = 0; i < bitcount; i++) {
         EXPECT_EQ(field.test(i), (i % 7 == 0));
     }
 
     /* test tr_bitfield::setSpan */
     field.set_span(0, bitcount);
 
-    for (unsigned int i = 0; i < bitcount; i++)
-    {
+    for (unsigned int i = 0; i < bitcount; i++) {
         EXPECT_TRUE(field.test(i));
     }
 
     /* test tr_bitfield::clearBit */
-    for (unsigned int i = 0; i < bitcount; i++)
-    {
-        if (i % 7 != 0)
-        {
+    for (unsigned int i = 0; i < bitcount; i++) {
+        if (i % 7 != 0) {
             field.unset(i);
         }
     }
 
-    for (unsigned int i = 0; i < bitcount; i++)
-    {
+    for (unsigned int i = 0; i < bitcount; i++) {
         EXPECT_EQ(field.test(i), (i % 7 == 0));
     }
 
@@ -180,8 +165,7 @@ TEST(Bitfield, bitfields)
     field.set_span(0, 64);
     field.unset_span(4, 21);
 
-    for (unsigned int i = 0; i < 64; i++)
-    {
+    for (unsigned int i = 0; i < 64; i++) {
         EXPECT_EQ(field.test(i), (i < 4 || i >= 21));
     }
 
@@ -189,8 +173,7 @@ TEST(Bitfield, bitfields)
     field.set_span(0, 64);
     field.unset_span(8, 24);
 
-    for (unsigned int i = 0; i < 64; i++)
-    {
+    for (unsigned int i = 0; i < 64; i++) {
         EXPECT_EQ(field.test(i), (i < 8 || i >= 24));
     }
 
@@ -198,8 +181,7 @@ TEST(Bitfield, bitfields)
     field.set_span(0, 64);
     field.unset_span(4, 5);
 
-    for (unsigned int i = 0; i < 64; i++)
-    {
+    for (unsigned int i = 0; i < 64; i++) {
         EXPECT_EQ(field.test(i), (i < 4 || i >= 5));
     }
 
@@ -207,8 +189,7 @@ TEST(Bitfield, bitfields)
     field.unset_span(0, 64);
     field.set_span(4, 21);
 
-    for (unsigned int i = 0; i < 64; i++)
-    {
+    for (unsigned int i = 0; i < 64; i++) {
         EXPECT_EQ(field.test(i), (4 <= i && i < 21));
     }
 
@@ -216,8 +197,7 @@ TEST(Bitfield, bitfields)
     field.unset_span(0, 64);
     field.set_span(8, 24);
 
-    for (unsigned int i = 0; i < 64; i++)
-    {
+    for (unsigned int i = 0; i < 64; i++) {
         EXPECT_EQ(field.test(i), (8 <= i && i < 24));
     }
 
@@ -225,8 +205,7 @@ TEST(Bitfield, bitfields)
     field.unset_span(0, 64);
     field.set_span(4, 5);
 
-    for (unsigned int i = 0; i < 64; i++)
-    {
+    for (unsigned int i = 0; i < 64; i++) {
         EXPECT_EQ(field.test(i), (4 <= i && i < 5));
     }
 
@@ -358,14 +337,10 @@ TEST(Bitfield, bitwiseOr)
 
     a.set_has_none();
     b.set_has_none();
-    for (size_t i = 0; i < std::size(a); ++i)
-    {
-        if ((i % 2U) != 0U)
-        {
+    for (size_t i = 0; i < std::size(a); ++i) {
+        if ((i % 2U) != 0U) {
             a.set(i);
-        }
-        else
-        {
+        } else {
             b.set(i);
         }
     }
@@ -406,14 +381,10 @@ TEST(Bitfield, bitwiseAnd)
 
     a.set_has_none();
     b.set_has_none();
-    for (size_t i = 0; i < std::size(a); ++i)
-    {
-        if ((i % 2U) != 0U)
-        {
+    for (size_t i = 0; i < std::size(a); ++i) {
+        if ((i % 2U) != 0U) {
             a.set(i);
-        }
-        else
-        {
+        } else {
             b.set(i);
         }
     }
@@ -466,14 +437,10 @@ TEST(Bitfield, intersects)
 
     a.set_has_none();
     b.set_has_none();
-    for (size_t i = 0; i < std::size(a); ++i)
-    {
-        if ((i % 2U) != 0U)
-        {
+    for (size_t i = 0; i < std::size(a); ++i) {
+        if ((i % 2U) != 0U) {
             a.set(i);
-        }
-        else
-        {
+        } else {
             b.set(i);
         }
     }

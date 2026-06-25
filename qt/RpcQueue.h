@@ -83,8 +83,7 @@ private:
     {
         using FuncType = std::remove_cvref_t<Func>;
         auto shared_func = std::make_shared<FuncType>(std::forward<Func>(func));
-        return [shared_func](auto&&... args) -> decltype(auto)
-        {
+        return [shared_func](auto&&... args) -> decltype(auto) {
             return std::invoke(*shared_func, std::forward<decltype(args)>(args)...);
         };
     }
@@ -94,8 +93,7 @@ private:
     static QueuedFunction normalizeFunc(Func&& func)
     {
         auto copyable_func = makeCopyable(std::forward<Func>(func));
-        return [func = std::move(copyable_func)](RpcResponseFuture const& r) mutable
-        {
+        return [func = std::move(copyable_func)](RpcResponseFuture const& r) mutable {
             return std::invoke(func, r.result());
         };
     }
@@ -105,8 +103,7 @@ private:
     static QueuedFunction normalizeFunc(Func&& func)
     {
         auto copyable_func = makeCopyable(std::forward<Func>(func));
-        return [func = std::move(copyable_func)](RpcResponseFuture const&) mutable
-        {
+        return [func = std::move(copyable_func)](RpcResponseFuture const&) mutable {
             return std::invoke(func);
         };
     }
@@ -116,8 +113,7 @@ private:
     static QueuedFunction normalizeFunc(Func&& func)
     {
         auto copyable_func = makeCopyable(std::forward<Func>(func));
-        return [func = std::move(copyable_func)](RpcResponseFuture const& r) mutable
-        {
+        return [func = std::move(copyable_func)](RpcResponseFuture const& r) mutable {
             std::invoke(func, r.result());
             return createFinishedFuture();
         };
@@ -128,8 +124,7 @@ private:
     static QueuedFunction normalizeFunc(Func&& func)
     {
         auto copyable_func = makeCopyable(std::forward<Func>(func));
-        return [func = std::move(copyable_func)](RpcResponseFuture const&) mutable
-        {
+        return [func = std::move(copyable_func)](RpcResponseFuture const&) mutable {
             std::invoke(func);
             return createFinishedFuture();
         };
@@ -140,8 +135,7 @@ private:
     static ErrorHandlerFunction normalizeErrorHandler(Func&& func)
     {
         auto copyable_func = makeCopyable(std::forward<Func>(func));
-        return [func = std::move(copyable_func)](RpcResponseFuture const& r) mutable
-        {
+        return [func = std::move(copyable_func)](RpcResponseFuture const& r) mutable {
             std::invoke(func, r.result());
         };
     }
@@ -151,8 +145,7 @@ private:
     static ErrorHandlerFunction normalizeErrorHandler(Func&& func)
     {
         auto copyable_func = makeCopyable(std::forward<Func>(func));
-        return [func = std::move(copyable_func)](RpcResponseFuture const&) mutable
-        {
+        return [func = std::move(copyable_func)](RpcResponseFuture const&) mutable {
             std::invoke(func);
         };
     }

@@ -72,11 +72,11 @@ TEST_P(IncompleteDirTest, incompleteDir)
     auto completeness = TR_LEECH;
     tr_sessionSetCompletenessCallback(
         session_,
-        [&completeness](tr_torrent_id_t const /*tor_id*/, tr_completeness const c, bool const /*was_running*/) noexcept
-        { completeness = c; });
+        [&completeness](tr_torrent_id_t const /*tor_id*/, tr_completeness const c, bool const /*was_running*/) noexcept {
+            completeness = c;
+        });
 
-    struct TestIncompleteDirData
-    {
+    struct TestIncompleteDirData {
         tr_session* session = {};
         tr_torrent* tor = {};
         tr_block_index_t block = {};
@@ -85,10 +85,8 @@ TEST_P(IncompleteDirTest, incompleteDir)
         bool done = {};
     };
 
-    auto const test_incomplete_dir_threadfunc = [](TestIncompleteDirData* data) noexcept
-    {
-        if (tr_ioWrite(*data->tor, data->session->openFiles(), data->tor->block_loc(data->block), data->buf) == 0)
-        {
+    auto const test_incomplete_dir_threadfunc = [](TestIncompleteDirData* data) noexcept {
+        if (tr_ioWrite(*data->tor, data->session->openFiles(), data->tor->block_loc(data->block), data->buf) == 0) {
             data->tor->on_block_received(data->block);
         }
 
@@ -103,16 +101,14 @@ TEST_P(IncompleteDirTest, incompleteDir)
 
         auto const [begin, end] = tor->block_span_for_piece(data.pieceIndex);
 
-        for (tr_block_index_t block_index = begin; block_index < end; ++block_index)
-        {
+        for (tr_block_index_t block_index = begin; block_index < end; ++block_index) {
             data.buf.resize(tr_block_info::BlockSize);
             std::ranges::fill(data.buf, '\0');
             data.block = block_index;
             data.done = false;
             session_->run_in_session_thread(test_incomplete_dir_threadfunc, &data);
 
-            auto const test = [&data]()
-            {
+            auto const test = [&data]() {
                 return data.done;
             };
             EXPECT_TRUE(waitFor(test, MaxWaitMsec));
@@ -122,16 +118,14 @@ TEST_P(IncompleteDirTest, incompleteDir)
     blockingTorrentVerify(tor);
     EXPECT_EQ(0, tr_torrentStat(tor).left_until_done);
 
-    auto test = [&completeness]()
-    {
+    auto test = [&completeness]() {
         return completeness != TR_LEECH;
     };
     EXPECT_TRUE(waitFor(test, MaxWaitMsec));
     EXPECT_EQ(TR_SEED, completeness);
 
     auto const n = tr_torrentFileCount(tor);
-    for (tr_file_index_t i = 0; i < n; ++i)
-    {
+    for (tr_file_index_t i = 0; i < n; ++i) {
         auto const expected = tr_pathbuf{ download_dir, '/', tr_torrentFile(tor, i).name };
         EXPECT_EQ(expected, tr_torrentFindFile(tor, i));
     }
@@ -170,8 +164,7 @@ TEST_F(MoveTest, setLocation)
     // now move it
     auto state = -1;
     tr_torrentSetLocation(tor, target_dir, true, &state);
-    auto test = [&state]()
-    {
+    auto test = [&state]() {
         return state == TR_LOC_DONE;
     };
     EXPECT_TRUE(waitFor(test, MaxWaitMsec));
@@ -184,8 +177,7 @@ TEST_F(MoveTest, setLocation)
     // confirm the files really got moved
     sync();
     auto const n = tr_torrentFileCount(tor);
-    for (tr_file_index_t i = 0; i < n; ++i)
-    {
+    for (tr_file_index_t i = 0; i < n; ++i) {
         auto const expected = tr_pathbuf{ target_dir, '/', tr_torrentFile(tor, i).name };
         EXPECT_EQ(expected, tr_torrentFindFile(tor, i));
     }

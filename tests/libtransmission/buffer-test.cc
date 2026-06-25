@@ -68,8 +68,7 @@ TEST_F(BufferTest, startsWithInMultiSegment)
 
 TEST_F(BufferTest, Numbers)
 {
-    for (auto i = 0; i < 100; ++i)
-    {
+    for (auto i = 0; i < 100; ++i) {
         auto const expected_u8 = tr_rand_obj<uint8_t>();
         auto const expected_u16 = tr_rand_obj<uint16_t>();
         auto const expected_u32 = tr_rand_obj<uint32_t>();

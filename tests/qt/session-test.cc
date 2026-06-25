@@ -36,8 +36,7 @@ namespace
 {
     dir = QRegularExpression::escape(dir);
 
-    switch (style)
-    {
+    switch (style) {
     case Style::Tr4:
         return QRegularExpression{
             QStringLiteral(R"(^\{"arguments":\{"download-dir":"%1"\},"method":"session-set","tag":[0-9]+\}$)").arg(dir)
@@ -100,8 +99,7 @@ private slots:
         auto const payload_re = getSessionSetDownloadDirRegEx(initial_style, downloads_dir);
         auto const has_session_set = std::ranges::any_of(
             std::as_const(nam.request_bodies),
-            [&payload_re](QByteArray const& body)
-            {
+            [&payload_re](QByteArray const& body) {
                 auto const str = QString::fromUtf8(body);
                 return payload_re.match(str).hasMatch();
             });

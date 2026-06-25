@@ -19,8 +19,7 @@ static CGFloat const kImageOverlap = 1.0;
 
 - (instancetype)initWithFrame:(NSRect)frameRect
 {
-    if ((self = [super initWithFrame:frameRect]))
-    {
+    if ((self = [super initWithFrame:frameRect])) {
         // Create segmented control for hover state
         NSSegmentedControl* segmentedControl = [[NSSegmentedControl alloc] initWithFrame:NSZeroRect];
         segmentedControl.translatesAutoresizingMaskIntoConstraints = NO;
@@ -28,8 +27,7 @@ static CGFloat const kImageOverlap = 1.0;
         segmentedControl.controlSize = NSControlSizeMini;
         segmentedControl.segmentCount = 3;
 
-        for (NSInteger i = 0; i < segmentedControl.segmentCount; i++)
-        {
+        for (NSInteger i = 0; i < segmentedControl.segmentCount; i++) {
             [segmentedControl setLabel:@"" forSegment:i];
             [segmentedControl setWidth:9.0F forSegment:i];
         }
@@ -83,8 +81,7 @@ static CGFloat const kImageOverlap = 1.0;
 
 - (void)updateDisplay
 {
-    if (!self.node)
-    {
+    if (!self.node) {
         return;
     }
 
@@ -93,8 +90,7 @@ static CGFloat const kImageOverlap = 1.0;
     NSSet* priorities = [torrent filePrioritiesForIndexes:node.indexes];
 
     NSUInteger const count = priorities.count;
-    if (self.hovered && count > 0)
-    {
+    if (self.hovered && count > 0) {
         // Show segmented control
         self.segmentedControl.hidden = NO;
         self.iconsContainerView.hidden = YES;
@@ -102,9 +98,7 @@ static CGFloat const kImageOverlap = 1.0;
         [self.segmentedControl setSelected:[priorities containsObject:@(TR_PRI_LOW)] forSegment:0];
         [self.segmentedControl setSelected:[priorities containsObject:@(TR_PRI_NORMAL)] forSegment:1];
         [self.segmentedControl setSelected:[priorities containsObject:@(TR_PRI_HIGH)] forSegment:2];
-    }
-    else
-    {
+    } else {
         // Show static priority icons
         self.segmentedControl.hidden = YES;
         self.iconsContainerView.hidden = NO;
@@ -119,35 +113,28 @@ static CGFloat const kImageOverlap = 1.0;
 - (void)updatePriorityIcons:(NSSet*)priorities
 {
     // Remove all existing image views
-    for (NSView* subview in self.iconsContainerView.subviews)
-    {
+    for (NSView* subview in self.iconsContainerView.subviews) {
         [subview removeFromSuperview];
     }
 
     NSUInteger const count = priorities.count;
     NSMutableArray* images = [NSMutableArray arrayWithCapacity:MAX(count, 1U)];
 
-    if (count == 0)
-    {
+    if (count == 0) {
         NSImage* image = [[NSImage imageNamed:@"PriorityNormalTemplate"] imageWithColor:NSColor.lightGrayColor];
         [images addObject:image];
-    }
-    else
-    {
+    } else {
         NSColor* priorityColor = self.backgroundStyle == NSBackgroundStyleEmphasized ? NSColor.whiteColor : NSColor.darkGrayColor;
 
-        if ([priorities containsObject:@(TR_PRI_LOW)])
-        {
+        if ([priorities containsObject:@(TR_PRI_LOW)]) {
             NSImage* image = [[NSImage imageNamed:@"PriorityLowTemplate"] imageWithColor:priorityColor];
             [images addObject:image];
         }
-        if ([priorities containsObject:@(TR_PRI_NORMAL)])
-        {
+        if ([priorities containsObject:@(TR_PRI_NORMAL)]) {
             NSImage* image = [[NSImage imageNamed:@"PriorityNormalTemplate"] imageWithColor:priorityColor];
             [images addObject:image];
         }
-        if ([priorities containsObject:@(TR_PRI_HIGH)])
-        {
+        if ([priorities containsObject:@(TR_PRI_HIGH)]) {
             NSImage* image = [[NSImage imageNamed:@"PriorityHighTemplate"] imageWithColor:priorityColor];
             [images addObject:image];
         }
@@ -155,8 +142,7 @@ static CGFloat const kImageOverlap = 1.0;
 
     NSView* previousView = nil;
 
-    for (NSImage* image in images)
-    {
+    for (NSImage* image in images) {
         NSImageView* imageView = [[NSImageView alloc] initWithFrame:NSZeroRect];
         imageView.translatesAutoresizingMaskIntoConstraints = NO;
         imageView.image = image;
@@ -170,20 +156,16 @@ static CGFloat const kImageOverlap = 1.0;
             [imageView.centerYAnchor constraintEqualToAnchor:self.iconsContainerView.centerYAnchor],
         ]];
 
-        if (previousView == nil)
-        {
+        if (previousView == nil) {
             [imageView.leadingAnchor constraintEqualToAnchor:self.iconsContainerView.leadingAnchor].active = YES;
-        }
-        else
-        {
+        } else {
             [imageView.leadingAnchor constraintEqualToAnchor:previousView.trailingAnchor constant:-kImageOverlap].active = YES;
         }
 
         previousView = imageView;
     }
 
-    if (previousView)
-    {
+    if (previousView) {
         [previousView.trailingAnchor constraintEqualToAnchor:self.iconsContainerView.trailingAnchor].active = YES;
     }
 }
@@ -191,14 +173,12 @@ static CGFloat const kImageOverlap = 1.0;
 - (void)segmentedControlClicked:(NSSegmentedControl*)sender
 {
     NSInteger segment = sender.selectedSegment;
-    if (segment == -1)
-    {
+    if (segment == -1) {
         return;
     }
 
     tr_priority_t priority;
-    switch (segment)
-    {
+    switch (segment) {
     case 0:
         priority = TR_PRI_LOW;
         break;
@@ -231,8 +211,7 @@ static CGFloat const kImageOverlap = 1.0;
 {
     [super updateTrackingAreas];
 
-    if (self.trackingArea)
-    {
+    if (self.trackingArea) {
         [self removeTrackingArea:self.trackingArea];
     }
 
@@ -241,19 +220,14 @@ static CGFloat const kImageOverlap = 1.0;
     // Check if mouse is currently inside the bounds
     NSPoint mouseLocation = [self.window mouseLocationOutsideOfEventStream];
     NSPoint localPoint = [self convertPoint:mouseLocation fromView:nil];
-    if (NSPointInRect(localPoint, self.bounds))
-    {
+    if (NSPointInRect(localPoint, self.bounds)) {
         options |= NSTrackingAssumeInside;
-        if (!self.hovered)
-        {
+        if (!self.hovered) {
             self.hovered = YES;
         }
-    }
-    else
-    {
+    } else {
         // Mouse is not inside, reset hovered state
-        if (self.hovered)
-        {
+        if (self.hovered) {
             self.hovered = NO;
         }
     }
@@ -274,20 +248,17 @@ static CGFloat const kImageOverlap = 1.0;
 
 - (void)updateTooltip:(NSSet*)priorities
 {
-    if (!self.node)
-    {
+    if (!self.node) {
         return;
     }
 
     NSString* tooltip = nil;
-    switch (priorities.count)
-    {
+    switch (priorities.count) {
     case 0:
         tooltip = NSLocalizedString(@"Priority Not Available", "files tab -> tooltip");
         break;
     case 1:
-        switch ([[priorities anyObject] intValue])
-        {
+        switch ([[priorities anyObject] intValue]) {
         case TR_PRI_LOW:
             tooltip = NSLocalizedString(@"Low Priority", "files tab -> tooltip");
             break;

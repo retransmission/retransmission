@@ -77,8 +77,7 @@ public:
     {
         renamed_from = std::string{ oldpath };
         renamed_to = std::string{ newname };
-        if (callback != nullptr)
-        {
+        if (callback != nullptr) {
             callback(id, oldpath, newname, tr_error{});
         }
     }
@@ -131,8 +130,7 @@ TEST(LocalData, ReadRunsInline)
     local_data.read(
         7,
         { .begin = 10U, .end = 13U },
-        [&called, raw_backend](tr_torrent_id_t tor_id, tr_byte_span_t byte_span, tr_error const& error, auto data)
-        {
+        [&called, raw_backend](tr_torrent_id_t tor_id, tr_byte_span_t byte_span, tr_error const& error, auto data) {
             called = true;
             EXPECT_EQ(7, tor_id);
             EXPECT_EQ(raw_backend->read_span.begin, byte_span.begin);
@@ -155,8 +153,7 @@ TEST(LocalData, TestPieceRunsInline)
     local_data.test_piece(
         9,
         3,
-        [&called, raw_backend](tr_torrent_id_t tor_id, tr_piece_index_t piece, tr_error const& error, auto hash)
-        {
+        [&called, raw_backend](tr_torrent_id_t tor_id, tr_piece_index_t piece, tr_error const& error, auto hash) {
             called = true;
             EXPECT_EQ(9, tor_id);
             EXPECT_EQ(raw_backend->tested_piece, piece);
@@ -182,8 +179,7 @@ TEST(LocalData, WriteRunsInline)
         11,
         { .begin = 20U, .end = 23U },
         std::move(data),
-        [&called, raw_backend](tr_torrent_id_t tor_id, tr_byte_span_t byte_span, tr_error const& error)
-        {
+        [&called, raw_backend](tr_torrent_id_t tor_id, tr_byte_span_t byte_span, tr_error const& error) {
             called = true;
             EXPECT_EQ(11, tor_id);
             EXPECT_EQ(raw_backend->write_span.begin, byte_span.begin);
@@ -203,17 +199,11 @@ TEST(LocalData, AdminOperationsDelegate)
     auto local_data = tr::LocalData{ std::move(backend) };
 
     auto move_called = false;
-    local_data.move(
-        5,
-        "/old",
-        "/new",
-        "name",
-        [&move_called](tr_torrent_id_t tor_id, tr_error const& error)
-        {
-            move_called = true;
-            EXPECT_EQ(5, tor_id);
-            EXPECT_FALSE(error);
-        });
+    local_data.move(5, "/old", "/new", "name", [&move_called](tr_torrent_id_t tor_id, tr_error const& error) {
+        move_called = true;
+        EXPECT_EQ(5, tor_id);
+        EXPECT_FALSE(error);
+    });
     EXPECT_TRUE(move_called);
     EXPECT_EQ("/old", raw_backend->moved_from);
     EXPECT_EQ("/new", raw_backend->moved_to);
@@ -224,8 +214,7 @@ TEST(LocalData, AdminOperationsDelegate)
         8,
         "old",
         "new",
-        [&rename_called](tr_torrent_id_t tor_id, std::string_view oldpath, std::string_view newname, tr_error const& error)
-        {
+        [&rename_called](tr_torrent_id_t tor_id, std::string_view oldpath, std::string_view newname, tr_error const& error) {
             rename_called = true;
             EXPECT_EQ(8, tor_id);
             EXPECT_EQ("old", oldpath);

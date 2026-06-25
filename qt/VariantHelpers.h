@@ -45,8 +45,7 @@ bool change(TrackerStat& setme, tr_variant const* value);
 template<typename T>
 bool change(std::vector<T>& setme, tr_variant const* value)
 {
-    if (!value)
-    {
+    if (!value) {
         return false;
     }
 
@@ -54,14 +53,12 @@ bool change(std::vector<T>& setme, tr_variant const* value)
 
     auto const* const vec = value->get_if<tr_variant::Vector>();
     auto const n = vec ? std::size(*vec) : 0;
-    if (setme.size() != n)
-    {
+    if (setme.size() != n) {
         setme.resize(n);
         changed = true;
     }
 
-    for (size_t i = 0; i < n; ++i)
-    {
+    for (size_t i = 0; i < n; ++i) {
         changed = change(setme[i], &(*vec)[i]) || changed;
     }
 
@@ -73,12 +70,9 @@ bool change(std::vector<T>& setme, tr_variant const* value)
 template<typename T>
 std::optional<T> dictFind(tr_variant* dict, tr_quark key)
 {
-    if (dict)
-    {
-        if (auto const* const map = dict->get_if<tr_variant::Map>())
-        {
-            if (auto const iter = map->find(key); iter != map->end())
-            {
+    if (dict) {
+        if (auto const* const map = dict->get_if<tr_variant::Map>()) {
+            if (auto const iter = map->find(key); iter != map->end()) {
                 return tr::serializer::to_value<T>(iter->second);
             }
         }

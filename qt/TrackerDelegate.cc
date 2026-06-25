@@ -74,8 +74,7 @@ ItemLayout::ItemLayout(
     QTextOption text_option;
     text_option.setTextDirection(direction);
 
-    if (suppress_colors)
-    {
+    if (suppress_colors) {
         text_option.setFlags(QTextOption::SuppressColors);
     }
 
@@ -132,12 +131,10 @@ void TrackerDelegate::drawTracker(QPainter* painter, QStyleOptionViewItem const&
 
     painter->save();
 
-    if (is_item_selected)
-    {
+    if (is_item_selected) {
         QPalette::ColorGroup cg = is_item_enabled ? QPalette::Normal : QPalette::Disabled;
 
-        if (cg == QPalette::Normal && !is_item_active)
-        {
+        if (cg == QPalette::Normal && !is_item_active) {
             cg = QPalette::Inactive;
         }
 
@@ -167,8 +164,7 @@ namespace
 {
 QString timeToRoundedString(int seconds)
 {
-    if (seconds > 60)
-    {
+    if (seconds > 60) {
         seconds -= seconds % 60;
     }
 
@@ -187,20 +183,17 @@ QString TrackerDelegate::getText(TrackerInfo const& inf) const
     auto const success_markup_end = QStringLiteral("</span>");
 
     auto const now = time(nullptr);
-    auto const time_until = [&now](auto t)
-    {
+    auto const time_until = [&now](auto t) {
         return timeToRoundedString(static_cast<int>(t - now));
     };
-    auto const time_since = [&now](auto t)
-    {
+    auto const time_since = [&now](auto t) {
         return timeToRoundedString(static_cast<int>(now - t));
     };
 
     // hostname
     str += inf.st.is_backup ? QStringLiteral("<i>") : QStringLiteral("<b>");
     auto const announce_url = inf.st.announce.toStdString();
-    if (auto const parsed = tr_urlParse(announce_url); parsed)
-    {
+    if (auto const parsed = tr_urlParse(announce_url); parsed) {
         str += QStringLiteral("%1:%2")
                    .arg(
                        QString::fromUtf8(std::data(parsed->host), static_cast<IF_QT6(qsizetype, int)>(std::size(parsed->host))))
@@ -209,31 +202,24 @@ QString TrackerDelegate::getText(TrackerInfo const& inf) const
     str += inf.st.is_backup ? QStringLiteral("</i>") : QStringLiteral("</b>");
 
     // announce & scrape info
-    if (!inf.st.is_backup)
-    {
-        if (inf.st.has_announced && inf.st.announce_state != TR_TRACKER_INACTIVE)
-        {
+    if (!inf.st.is_backup) {
+        if (inf.st.has_announced && inf.st.announce_state != TR_TRACKER_INACTIVE) {
             auto const tstr = time_since(inf.st.last_announce_time);
             str += QStringLiteral("<br/>\n");
 
-            if (inf.st.last_announce_succeeded)
-            {
+            if (inf.st.last_announce_succeeded) {
                 //: %1 and %2 are replaced with HTML markup, %3 is duration
                 str += tr("Got a list of%1 %Ln peer(s)%2 %3 ago", nullptr, inf.st.last_announce_peer_count)
                            .arg(success_markup_begin)
                            .arg(success_markup_end)
                            .arg(tstr);
-            }
-            else if (inf.st.last_announce_timed_out)
-            {
+            } else if (inf.st.last_announce_timed_out) {
                 //: %1 and %2 are replaced with HTML markup, %3 is duration
                 str += tr("Peer list request %1timed out%2 %3 ago; will retry")
                            .arg(timeout_markup_begin)
                            .arg(timeout_markup_end)
                            .arg(tstr);
-            }
-            else
-            {
+            } else {
                 //: %1 and %3 are replaced with HTML markup, %2 is error message, %4 is duration
                 str += tr("Got an error %1\"%2\"%3 %4 ago")
                            .arg(err_markup_begin)
@@ -243,8 +229,7 @@ QString TrackerDelegate::getText(TrackerInfo const& inf) const
             }
         }
 
-        switch (inf.st.announce_state)
-        {
+        switch (inf.st.announce_state) {
         case TR_TRACKER_INACTIVE:
             str += QStringLiteral("<br/>\n");
             str += tr("No updates scheduled");
@@ -271,27 +256,22 @@ QString TrackerDelegate::getText(TrackerInfo const& inf) const
             break;
         }
 
-        if (!show_more_)
-        {
+        if (!show_more_) {
             return str;
         }
 
-        if (inf.st.has_scraped)
-        {
+        if (inf.st.has_scraped) {
             str += QStringLiteral("<br/>\n");
             auto const tstr = time_since(inf.st.last_scrape_time);
 
-            if (!inf.st.last_scrape_succeeded)
-            {
+            if (!inf.st.last_scrape_succeeded) {
                 //: %1 and %3 are replaced with HTML markup, %2 is error message, %4 is duration
                 str += tr("Got a scrape error %1\"%2\"%3 %4 ago")
                            .arg(err_markup_begin)
                            .arg(inf.st.last_scrape_result)
                            .arg(err_markup_end)
                            .arg(tstr);
-            }
-            else if (inf.st.seeder_count >= 0 && inf.st.leecher_count >= 0)
-            {
+            } else if (inf.st.seeder_count >= 0 && inf.st.leecher_count >= 0) {
                 //: First part of phrase "Tracker had ... seeder(s) and ... leecher(s) ... ago",
                 //: %1 and %2 are replaced with HTML markup
                 str += tr("Tracker had%1 %Ln seeder(s)%2", nullptr, inf.st.seeder_count)
@@ -304,9 +284,7 @@ QString TrackerDelegate::getText(TrackerInfo const& inf) const
                            .arg(success_markup_begin)
                            .arg(success_markup_end)
                            .arg(tstr);
-            }
-            else
-            {
+            } else {
                 //: %1 and %2 are replaced with HTML markup, %3 is duration
                 str += tr("Tracker had %1no information%2 on peer counts %3 ago")
                            .arg(success_markup_begin)
@@ -315,8 +293,7 @@ QString TrackerDelegate::getText(TrackerInfo const& inf) const
             }
         }
 
-        switch (inf.st.scrape_state)
-        {
+        switch (inf.st.scrape_state) {
         case TR_TRACKER_WAITING:
             str += QStringLiteral("<br/>\n");
             //: %1 is duration

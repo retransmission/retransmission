@@ -45,8 +45,7 @@ protected:
     {
         auto files = std::vector<std::pair<std::string, std::vector<std::byte>>>{};
 
-        for (size_t i = 0U; i < n_files; ++i)
-        {
+        for (size_t i = 0U; i < n_files; ++i) {
             auto payload = std::vector<std::byte>{};
             payload.resize(tr_rand_int(max_size) + 1U);
             tr_rand_buffer(std::data(payload), std::size(payload));
@@ -72,8 +71,7 @@ protected:
         EXPECT_EQ(builder.piece_size(), metainfo.piece_size());
         EXPECT_EQ(builder.total_size(), metainfo.total_size());
         EXPECT_EQ(builder.total_size(), metainfo.total_size());
-        for (size_t i = 0, n = std::min(builder.file_count(), metainfo.file_count()); i < n; ++i)
-        {
+        for (size_t i = 0, n = std::min(builder.file_count(), metainfo.file_count()); i < n; ++i) {
             EXPECT_EQ(builder.file_size(i), metainfo.files().file_size(i));
             EXPECT_EQ(builder.path(i), metainfo.files().path(i));
         }
@@ -114,8 +112,7 @@ TEST_F(MakemetaTest, isPrivate)
     auto const files = makeRandomFiles(sandboxDir(), 1);
     auto const [filename, payload] = files.front();
 
-    for (bool const is_private : { true, false })
-    {
+    for (bool const is_private : { true, false }) {
         auto builder = tr_metainfo_builder{ filename };
         builder.set_private(is_private);
         EXPECT_EQ(is_private, testBuilder(builder).is_private());
@@ -127,8 +124,7 @@ TEST_F(MakemetaTest, pieceSize)
     auto const files = makeRandomFiles(sandboxDir(), 1);
     auto const [filename, payload] = files.front();
 
-    for (uint32_t const piece_size : { 16384, 32768 })
-    {
+    for (uint32_t const piece_size : { 16384, 32768 }) {
         auto builder = tr_metainfo_builder{ filename };
         builder.set_piece_size(piece_size);
         EXPECT_EQ(piece_size, testBuilder(builder).piece_size());
@@ -249,8 +245,7 @@ TEST_F(MakemetaTest, announceMultiTracker)
 
     // add the trackers
     auto trackers = tr_announce_list{};
-    for (auto const& url : { "udp://tracker.openbittorrent.com:80"sv, "udp://tracker.publicbt.com:80"sv })
-    {
+    for (auto const& url : { "udp://tracker.openbittorrent.com:80"sv, "udp://tracker.publicbt.com:80"sv }) {
         trackers.add(url, trackers.nextTier());
     }
     builder.set_announce_list(std::move(trackers));

@@ -55,12 +55,10 @@ namespace
 namespace curl_helpers
 {
 
-struct ShareDeleter
-{
+struct ShareDeleter {
     void operator()(CURLSH* shared)
     {
-        if (shared == nullptr)
-        {
+        if (shared == nullptr) {
             return;
         }
 
@@ -71,12 +69,10 @@ struct ShareDeleter
 
 using shared_unique_ptr = std::unique_ptr<CURLSH, ShareDeleter>;
 
-struct MultiDeleter
-{
+struct MultiDeleter {
     void operator()(CURLM* multi) const
     {
-        if (multi == nullptr)
-        {
+        if (multi == nullptr) {
             return;
         }
 
@@ -87,12 +83,10 @@ struct MultiDeleter
 
 using multi_unique_ptr = std::unique_ptr<CURLM, MultiDeleter>;
 
-struct EasyDeleter
-{
+struct EasyDeleter {
     void operator()(CURL* val) const noexcept
     {
-        if (val != nullptr)
-        {
+        if (val != nullptr) {
             curl_easy_cleanup(val);
         }
     }
@@ -106,14 +100,12 @@ using easy_unique_ptr = std::unique_ptr<CURL, EasyDeleter>;
 CURLcode ssl_context_func(CURL* /*curl*/, void* ssl_ctx, void* /*user_data*/)
 {
     auto const cert_store = tr_ssl_get_x509_store(ssl_ctx);
-    if (cert_store == nullptr)
-    {
+    if (cert_store == nullptr) {
         return CURLE_OK;
     }
 
     curl_version_info_data const* const curl_ver = curl_version_info(CURLVERSION_NOW);
-    if (curl_ver->age >= 0 && strncmp(curl_ver->ssl_version, "Schannel", 8) == 0)
-    {
+    if (curl_ver->age >= 0 && strncmp(curl_ver->ssl_version, "Schannel", 8) == 0) {
         return CURLE_OK;
     }
 
@@ -122,27 +114,22 @@ CURLcode ssl_context_func(CURL* /*curl*/, void* ssl_ctx, void* /*user_data*/)
         L"ROOT",
     });
 
-    for (auto& sys_store_name : SysStoreNames)
-    {
+    for (auto& sys_store_name : SysStoreNames) {
         auto* const sys_cert_store = CertOpenSystemStoreW(0, sys_store_name);
-        if (sys_cert_store == nullptr)
-        {
+        if (sys_cert_store == nullptr) {
             continue;
         }
 
         PCCERT_CONTEXT sys_cert = nullptr;
 
-        while (true)
-        {
+        while (true) {
             sys_cert = CertFindCertificateInStore(sys_cert_store, X509_ASN_ENCODING, 0, CERT_FIND_ANY, nullptr, sys_cert);
-            if (sys_cert == nullptr)
-            {
+            if (sys_cert == nullptr) {
                 break;
             }
 
             auto* const cert = tr_x509_cert_new(sys_cert->pbCertEncoded, static_cast<long>(sys_cert->cbCertEncoded));
-            if (cert == nullptr)
-            {
+            if (cert == nullptr) {
                 continue;
             }
 
@@ -167,8 +154,7 @@ public:
         : mediator{ mediator_in }
     {
         auto const curl_version_num = get_curl_version();
-        if (curl_version_num == 0x080901)
-        {
+        if (curl_version_num == 0x080901) {
             tr_logAddWarn(_("Consider upgrading your curl installation."));
             tr_logAddWarn(
                 fmt::format(
@@ -177,8 +163,7 @@ public:
                     fmt::arg("details_url", "https://github.com/transmission/transmission/issues/7035")));
         }
 
-        if (curl_version_num == 0x080B01)
-        {
+        if (curl_version_num == 0x080B01) {
             tr_logAddWarn(_("Consider upgrading your curl installation."));
             tr_logAddWarn(
                 fmt::format(
@@ -189,15 +174,13 @@ public:
                     fmt::arg("details_url", "https://curl.se/docs/CVE-2025-0665.html")));
         }
 
-        if (auto bundle = tr_env_get_string("CURL_CA_BUNDLE"); !std::empty(bundle))
-        {
+        if (auto bundle = tr_env_get_string("CURL_CA_BUNDLE"); !std::empty(bundle)) {
             curl_ca_bundle = std::move(bundle);
         }
 
         share_setopt();
 
-        if (curl_ssl_verify)
-        {
+        if (curl_ssl_verify) {
             auto const* bundle = std::empty(curl_ca_bundle) ? "none" : curl_ca_bundle.c_str();
             tr_logAddInfo(
                 fmt::format(
@@ -207,13 +190,11 @@ public:
             tr_logAddInfo(_("NB: Invalid certs will appear as 'Could not connect to tracker' like many other errors"));
         }
 
-        if (auto const& file = mediator.cookieFile(); file)
-        {
+        if (auto const& file = mediator.cookieFile(); file) {
             this->cookie_file = *file;
         }
 
-        if (auto const& ua = mediator.userAgent(); ua)
-        {
+        if (auto const& ua = mediator.userAgent(); ua) {
             this->user_agent = *ua;
         }
 
@@ -241,8 +222,7 @@ public:
 
     void fetch(FetchOptions&& options)
     {
-        if (deadline_exists())
-        {
+        if (deadline_exists()) {
             return;
         }
 
@@ -268,8 +248,7 @@ public:
 
             response.user_data = options_.done_func_user_data;
 
-            if (options_.range)
-            {
+            if (options_.range) {
                 // preallocate the response body buffer
                 auto const& [first, last] = *options_.range;
                 response.body.reserve(last + 1U - first);
@@ -330,8 +309,7 @@ public:
 
         [[nodiscard]] constexpr auto ipProtocol() const
         {
-            switch (options_.ip_proto)
-            {
+            switch (options_.ip_proto) {
             case FetchOptions::IPProtocol::V4:
                 return CURL_IPRESOLVE_V4;
             case FetchOptions::IPProtocol::V6:
@@ -343,16 +321,14 @@ public:
 
         [[nodiscard]] auto bind_address() const
         {
-            switch (options_.ip_proto)
-            {
+            switch (options_.ip_proto) {
             case FetchOptions::IPProtocol::V4:
                 return impl.mediator.bind_address_V4();
             case FetchOptions::IPProtocol::V6:
                 return impl.mediator.bind_address_V6();
             default:
                 auto ip = impl.mediator.bind_address_V4();
-                if (ip == std::nullopt)
-                {
+                if (ip == std::nullopt) {
                     ip = impl.mediator.bind_address_V6();
                 }
 
@@ -365,16 +341,14 @@ public:
             response.body.append(static_cast<char const*>(data), n_bytes);
             tr_logAddTrace(fmt::format("wrote {} bytes to task {}'s buffer", n_bytes, fmt::ptr(this)));
 
-            if (options_.on_data_received)
-            {
+            if (options_.on_data_received) {
                 options_.on_data_received(n_bytes);
             }
         }
 
         void done()
         {
-            if (!options_.done_func)
-            {
+            if (!options_.done_func) {
                 return;
             }
 
@@ -393,20 +367,16 @@ public:
     private:
         void easy_dispose(CURL* easy)
         {
-            if (easy == nullptr)
-            {
+            if (easy == nullptr) {
                 return;
             }
 
             impl.paused_easy_handles.erase(easy_);
 
-            if (auto const url = tr_urlParse(options_.url); url)
-            {
+            if (auto const url = tr_urlParse(options_.url); url) {
                 curl_easy_reset(easy);
                 impl.easy_pool_[std::string{ url->host }].emplace(easy);
-            }
-            else
-            {
+            } else {
                 curl_easy_cleanup(easy);
             }
         }
@@ -489,14 +459,12 @@ public:
     {
         CURL* easy = nullptr;
 
-        if (auto iter = easy_pool_.find(host); iter != std::end(easy_pool_) && !std::empty(iter->second))
-        {
+        if (auto iter = easy_pool_.find(host); iter != std::end(easy_pool_) && !std::empty(iter->second)) {
             easy = iter->second.top().release();
             iter->second.pop();
         }
 
-        if (easy == nullptr)
-        {
+        if (easy == nullptr) {
             easy = curl_easy_init();
         }
 
@@ -509,8 +477,7 @@ public:
         auto* task = static_cast<Task*>(vtask);
         TR_ASSERT(std::this_thread::get_id() == task->impl.curl_thread->get_id());
 
-        if (auto const range = task->range())
-        {
+        if (auto const range = task->range()) {
             // https://curl.se/libcurl/c/CURLINFO_RESPONSE_CODE.html
             // "The stored value will be zero if no server response code has been received"
             static auto constexpr NoResponseCode = 0L;
@@ -519,8 +486,7 @@ public:
             // Test for webservers that don't support partial-content, see GH #4595
             auto code = long{};
             (void)curl_easy_getinfo(task->easy(), CURLINFO_RESPONSE_CODE, &code);
-            if (code != NoResponseCode && code != PartialContentResponseCode)
-            {
+            if (code != NoResponseCode && code != PartialContentResponseCode) {
                 tr_logAddWarn(
                     fmt::format(
                         fmt::runtime(
@@ -536,13 +502,11 @@ public:
             }
         }
 
-        if (auto const& tag = task->speedLimitTag(); tag)
-        {
+        if (auto const& tag = task->speedLimitTag(); tag) {
             // If this is more bandwidth than is allocated for this tag,
             // then pause the torrent for a tick. curl will deliver `data`
             // again when the transfer is unpaused.
-            if (task->impl.mediator.clamp(*tag, bytes_used) < bytes_used)
-            {
+            if (task->impl.mediator.clamp(*tag, bytes_used) < bytes_used) {
                 task->impl.paused_easy_handles.emplace(task->easy(), tr_time_msec());
                 return CURL_WRITEFUNC_PAUSE;
             }
@@ -560,12 +524,10 @@ public:
         // Ignore the sockopt() return values -- these are suggestions
         // rather than hard requirements & it's OK for them to fail
 
-        if (auto const& buf = task->sndbuf(); buf)
-        {
+        if (auto const& buf = task->sndbuf(); buf) {
             (void)setsockopt(fd, SOL_SOCKET, SO_SNDBUF, reinterpret_cast<char const*>(&*buf), sizeof(*buf));
         }
-        if (auto const& buf = task->rcvbuf(); buf)
-        {
+        if (auto const& buf = task->rcvbuf(); buf) {
             (void)setsockopt(fd, SOL_SOCKET, SO_RCVBUF, reinterpret_cast<char const*>(&*buf), sizeof(*buf));
         }
 
@@ -590,42 +552,33 @@ public:
         (void)curl_easy_setopt(e, CURLOPT_SOCKOPTFUNCTION, onSocketCreated);
         (void)curl_easy_setopt(e, CURLOPT_SOCKOPTDATA, &task);
 
-        if (!curl_ssl_verify)
-        {
+        if (!curl_ssl_verify) {
 #if LIBCURL_VERSION_NUM >= 0x073400 /* 7.52.0 */
             (void)curl_easy_setopt(e, CURLOPT_SSL_VERIFYHOST, 0L);
             (void)curl_easy_setopt(e, CURLOPT_SSL_VERIFYPEER, 0L);
 #endif
-        }
-        else if (!std::empty(curl_ca_bundle))
-        {
+        } else if (!std::empty(curl_ca_bundle)) {
             (void)curl_easy_setopt(e, CURLOPT_CAINFO, curl_ca_bundle.c_str());
-        }
-        else
-        {
+        } else {
 #ifdef _WIN32
             (void)curl_easy_setopt(e, CURLOPT_SSL_CTX_FUNCTION, ssl_context_func);
 #endif
         }
 
-        if (!curl_proxy_ssl_verify)
-        {
+        if (!curl_proxy_ssl_verify) {
             (void)curl_easy_setopt(e, CURLOPT_CAINFO, NULL);
             (void)curl_easy_setopt(e, CURLOPT_CAPATH, NULL);
 #if LIBCURL_VERSION_NUM >= 0x073400 /* 7.52.0 */
             (void)curl_easy_setopt(e, CURLOPT_PROXY_SSL_VERIFYHOST, 0L);
             (void)curl_easy_setopt(e, CURLOPT_PROXY_SSL_VERIFYPEER, 0L);
 #endif
-        }
-        else if (!std::empty(curl_ca_bundle))
-        {
+        } else if (!std::empty(curl_ca_bundle)) {
 #if LIBCURL_VERSION_NUM >= 0x073400 /* 7.52.0 */
             (void)curl_easy_setopt(e, CURLOPT_PROXY_CAINFO, curl_ca_bundle.c_str());
 #endif
         }
 
-        if (auto const& ua = user_agent; !std::empty(ua))
-        {
+        if (auto const& ua = user_agent; !std::empty(ua)) {
             (void)curl_easy_setopt(e, CURLOPT_USERAGENT, ua.c_str());
         }
 
@@ -635,32 +588,25 @@ public:
         (void)curl_easy_setopt(e, CURLOPT_WRITEDATA, &task);
         (void)curl_easy_setopt(e, CURLOPT_WRITEFUNCTION, &tr_web::Impl::onDataReceived);
 
-        if (auto const addrstr = task.bind_address(); addrstr)
-        {
+        if (auto const addrstr = task.bind_address(); addrstr) {
             (void)curl_easy_setopt(e, CURLOPT_INTERFACE, addrstr->c_str());
         }
 
-        if (auto const& cookies = task.cookies(); cookies)
-        {
+        if (auto const& cookies = task.cookies(); cookies) {
             (void)curl_easy_setopt(e, CURLOPT_COOKIE, cookies->c_str());
         }
 
-        if (auto const& file = cookie_file; !std::empty(file))
-        {
+        if (auto const& file = cookie_file; !std::empty(file)) {
             (void)curl_easy_setopt(e, CURLOPT_COOKIEFILE, file.c_str());
         }
 
-        if (auto const& proxy_url = mediator.proxyUrl(); proxy_url)
-        {
+        if (auto const& proxy_url = mediator.proxyUrl(); proxy_url) {
             (void)curl_easy_setopt(e, CURLOPT_PROXY, proxy_url->c_str());
-        }
-        else
-        {
+        } else {
             (void)curl_easy_setopt(e, CURLOPT_PROXY, nullptr);
         }
 
-        if (auto const& range = task.range())
-        {
+        if (auto const& range = task.range()) {
             // don't bother asking the server to compress webseed fragments
             (void)curl_easy_setopt(e, CURLOPT_ACCEPT_ENCODING, "identity");
             (void)curl_easy_setopt(e, CURLOPT_HTTP_CONTENT_DECODING, 0L);
@@ -671,8 +617,7 @@ public:
             (void)curl_easy_setopt(e, CURLOPT_RANGE, str.c_str());
         }
 
-        if (curl_avoid_http2)
-        {
+        if (curl_avoid_http2) {
             (void)curl_easy_setopt(e, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_1);
         }
     }
@@ -682,22 +627,17 @@ public:
         TR_ASSERT(std::this_thread::get_id() == curl_thread->get_id());
 
         auto& paused = paused_easy_handles;
-        if (std::empty(paused))
-        {
+        if (std::empty(paused)) {
             return;
         }
 
         auto const now = tr_time_msec();
 
-        for (auto it = std::begin(paused); it != std::end(paused);)
-        {
-            if (it->second + BandwidthPauseMsec < now)
-            {
+        for (auto it = std::begin(paused); it != std::end(paused);) {
+            if (it->second + BandwidthPauseMsec < now) {
                 curl_easy_pause(it->first, CURLPAUSE_CONT);
                 it = paused.erase(it);
-            }
-            else
-            {
+            } else {
                 ++it;
             }
         }
@@ -709,8 +649,7 @@ public:
 
         auto const iter = std::ranges::find(running_tasks_, task);
         TR_ASSERT(iter != std::ranges::end(running_tasks_));
-        if (iter == std::ranges::end(running_tasks_))
-        {
+        if (iter == std::ranges::end(running_tasks_)) {
             return;
         }
 
@@ -739,40 +678,31 @@ public:
         auto const start_time = mediator.now();
 
         auto repeats = unsigned{};
-        for (;;)
-        {
-            if (deadline_reached())
-            {
-                while (!std::empty(running_tasks_))
-                {
+        for (;;) {
+            if (deadline_reached()) {
+                while (!std::empty(running_tasks_)) {
                     auto& task = running_tasks_.front();
                     curl_multi_remove_handle(multi.get(), task.easy());
                     timeout_task(task);
                 }
             }
 
-            if (deadline_exists() && is_idle())
-            {
+            if (deadline_exists() && is_idle()) {
                 break;
             }
 
-            if (auto lock = std::unique_lock{ tasks_mutex_ }; lock.owns_lock())
-            {
+            if (auto lock = std::unique_lock{ tasks_mutex_ }; lock.owns_lock()) {
                 // sleep until there's something to do
-                auto const stop_waiting = [this]()
-                {
+                auto const stop_waiting = [this]() {
                     return !is_idle() || !deadline_exists();
                 };
-                if (!stop_waiting())
-                {
+                if (!stop_waiting()) {
                     queued_tasks_cv_.wait(lock, stop_waiting);
                 }
 
                 // add queued tasks
-                if (!std::empty(queued_tasks_))
-                {
-                    for (auto& task : queued_tasks_)
-                    {
+                if (!std::empty(queued_tasks_)) {
+                    for (auto& task : queued_tasks_) {
                         initEasy(task);
                         curl_multi_add_handle(multi.get(), task.easy());
                     }
@@ -797,16 +727,12 @@ public:
             // milliseconds.
             auto numfds = int{};
             curl_multi_wait(multi.get(), nullptr, 0, timeout_ms, &numfds);
-            if (numfds == 0)
-            {
+            if (numfds == 0) {
                 ++repeats;
-                if (repeats > 1U)
-                {
+                if (repeats > 1U) {
                     std::this_thread::sleep_for(100ms);
                 }
-            }
-            else
-            {
+            } else {
                 repeats = 0;
             }
 
@@ -817,10 +743,8 @@ public:
             // process any tasks that just finished
             CURLMsg* msg = nullptr;
             auto unused = int{};
-            while ((msg = curl_multi_info_read(multi.get(), &unused)) != nullptr)
-            {
-                if (msg->msg == CURLMSG_DONE && msg->easy_handle != nullptr)
-                {
+            while ((msg = curl_multi_info_read(multi.get(), &unused)) != nullptr) {
+                if (msg->msg == CURLMSG_DONE && msg->easy_handle != nullptr) {
                     auto* const e = msg->easy_handle;
 
                     Task* task = nullptr;

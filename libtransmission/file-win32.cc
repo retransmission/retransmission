@@ -26,8 +26,7 @@
 
 using namespace std::literals;
 
-struct tr_sys_dir_win32
-{
+struct tr_sys_dir_win32 {
     std::wstring pattern;
     HANDLE find_handle = INVALID_HANDLE_VALUE;
     WIN32_FIND_DATAW find_data = {};
@@ -41,8 +40,7 @@ auto constexpr NativeUncPathPrefix = L"\\\\?\\UNC\\"sv;
 
 void set_system_error(tr_error* error, DWORD code)
 {
-    if (error != nullptr)
-    {
+    if (error != nullptr) {
         auto const message = tr_win32_format_message(code);
         error->set(code, !std::empty(message) ? message : fmt::format("Unknown error: {:#08x}", code));
     }
@@ -50,8 +48,7 @@ void set_system_error(tr_error* error, DWORD code)
 
 void set_system_error_if_file_found(tr_error* error, DWORD code)
 {
-    if (code != ERROR_FILE_NOT_FOUND && code != ERROR_PATH_NOT_FOUND && code != ERROR_NO_MORE_FILES)
-    {
+    if (code != ERROR_FILE_NOT_FOUND && code != ERROR_PATH_NOT_FOUND && code != ERROR_NO_MORE_FILES) {
         set_system_error(error, code);
     }
 }
@@ -75,17 +72,12 @@ constexpr bool is_unc_path(std::string_view path)
 
 bool is_valid_path(std::string_view path)
 {
-    if (is_unc_path(path))
-    {
-        if (path[2] != '\0' && isalnum(path[2]) == 0)
-        {
+    if (is_unc_path(path)) {
+        if (path[2] != '\0' && isalnum(path[2]) == 0) {
             return false;
         }
-    }
-    else if (auto const pos = path.find(':'); pos != std::string_view::npos)
-    {
-        if (pos != 1 || isalpha(path[0]) == 0)
-        {
+    } else if (auto const pos = path.find(':'); pos != std::string_view::npos) {
+        if (pos != 1 || isalpha(path[0]) == 0) {
             return false;
         }
 
@@ -100,15 +92,13 @@ bool is_valid_path(std::string_view path)
     auto wide_path = tr_win32_utf8_to_native(path);
 
     // convert '/' to '\'
-    static auto constexpr Convert = [](wchar_t wch)
-    {
+    static auto constexpr Convert = [](wchar_t wch) {
         return wch == L'/' ? L'\\' : wch;
     };
     std::ranges::transform(wide_path, std::begin(wide_path), Convert);
 
     // squash multiple consecutive separators into one to avoid ERROR_INVALID_NAME
-    static auto constexpr Equal = [](wchar_t a, wchar_t b)
-    {
+    static auto constexpr Equal = [](wchar_t a, wchar_t b) {
         return a == b && a == L'\\';
     };
     auto const tmp = wide_path;
@@ -122,8 +112,7 @@ bool is_valid_path(std::string_view path)
    https://msdn.microsoft.com/en-us/library/windows/desktop/aa365247.aspx for more info */
 [[nodiscard]] auto path_to_native_path(std::string_view path)
 {
-    if (is_unc_path(path))
-    {
+    if (is_unc_path(path)) {
         // UNC path: "\\server\share" -> "\\?\UNC\server\share"
         path.remove_prefix(2); // remove path's UNC prefix slashes
         auto wide_path = path_to_fixed_native_path(path);
@@ -131,8 +120,7 @@ bool is_valid_path(std::string_view path)
         return wide_path;
     }
 
-    if (!tr_sys_path_is_relative(path))
-    {
+    if (!tr_sys_path_is_relative(path)) {
         // local path: "C:" -> "\\?\C:"
         auto wide_path = path_to_fixed_native_path(path);
         wide_path.insert(0, NativeLocalPathPrefix);
@@ -144,21 +132,18 @@ bool is_valid_path(std::string_view path)
 
 std::string native_path_to_path(std::wstring_view wide_path)
 {
-    if (std::empty(wide_path))
-    {
+    if (std::empty(wide_path)) {
         return {};
     }
 
-    if (tr_strv_starts_with(wide_path, NativeUncPathPrefix))
-    {
+    if (tr_strv_starts_with(wide_path, NativeUncPathPrefix)) {
         wide_path.remove_prefix(std::size(NativeUncPathPrefix));
         auto path = tr_win32_native_to_utf8(wide_path);
         path.insert(0, R"(\\)"sv);
         return path;
     }
 
-    if (tr_strv_starts_with(wide_path, NativeLocalPathPrefix))
-    {
+    if (tr_strv_starts_with(wide_path, NativeLocalPathPrefix)) {
         wide_path.remove_prefix(std::size(NativeLocalPathPrefix));
         return tr_win32_native_to_utf8(wide_path);
     }
@@ -175,8 +160,7 @@ std::string native_path_to_path(std::wstring_view wide_path)
 {
     tr_sys_file_t ret = TR_BAD_SYS_FILE;
 
-    if (auto const wide_path = path_to_native_path(path); !std::empty(wide_path))
-    {
+    if (auto const wide_path = path_to_native_path(path); !std::empty(wide_path)) {
         ret = CreateFileW(
             wide_path.c_str(),
             access,
@@ -187,8 +171,7 @@ std::string native_path_to_path(std::wstring_view wide_path)
             nullptr);
     }
 
-    if (ret == TR_BAD_SYS_FILE)
-    {
+    if (ret == TR_BAD_SYS_FILE) {
         set_system_error(error, GetLastError());
     }
 
@@ -207,38 +190,30 @@ std::string native_path_to_path(std::wstring_view wide_path)
     auto const wide_path = path_to_native_path(path);
 
     // already exists (no-op)
-    if (auto const info = tr_sys_path_get_info(path); info && info->isFolder())
-    {
+    if (auto const info = tr_sys_path_get_info(path); info && info->isFolder()) {
         return true;
     }
 
-    if ((flags & TR_SYS_DIR_CREATE_PARENTS) != 0)
-    {
+    if ((flags & TR_SYS_DIR_CREATE_PARENTS) != 0) {
         error_code = SHCreateDirectoryExW(nullptr, wide_path.c_str(), nullptr);
         ret = error_code == ERROR_SUCCESS;
-    }
-    else
-    {
+    } else {
         ret = to_bool(CreateDirectoryW(wide_path.c_str(), nullptr));
 
-        if (!ret)
-        {
+        if (!ret) {
             error_code = GetLastError();
         }
     }
 
-    if (!ret && error_code == ERROR_ALREADY_EXISTS && okay_if_exists)
-    {
+    if (!ret && error_code == ERROR_ALREADY_EXISTS && okay_if_exists) {
         DWORD const attributes = GetFileAttributesW(wide_path.c_str());
 
-        if (attributes != INVALID_FILE_ATTRIBUTES && (attributes & FILE_ATTRIBUTE_DIRECTORY) != 0)
-        {
+        if (attributes != INVALID_FILE_ATTRIBUTES && (attributes & FILE_ATTRIBUTE_DIRECTORY) != 0) {
             ret = true;
         }
     }
 
-    if (!ret)
-    {
+    if (!ret) {
         set_system_error(error, error_code);
     }
 
@@ -257,12 +232,10 @@ void create_temp_path(char* path_template, CallbackT const& callback, tr_error* 
 
     auto local_error = tr_error{};
 
-    for (int attempt = 0; attempt < 100; ++attempt)
-    {
+    for (int attempt = 0; attempt < 100; ++attempt) {
         size_t i = path_size;
 
-        while (i > 0 && path_template[i - 1] == 'X')
-        {
+        while (i > 0 && path_template[i - 1] == 'X') {
             static auto constexpr Chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"sv;
             path[i - 1] = Chars[tr_rand_int(std::size(Chars))];
             --i;
@@ -274,18 +247,14 @@ void create_temp_path(char* path_template, CallbackT const& callback, tr_error* 
 
         callback(path.c_str(), &local_error);
 
-        if (!local_error)
-        {
+        if (!local_error) {
             break;
         }
     }
 
-    if (!local_error)
-    {
+    if (!local_error) {
         std::copy_n(std::begin(path), path_size, path_template);
-    }
-    else if (error != nullptr)
-    {
+    } else if (error != nullptr) {
         *error = std::move(local_error);
     }
 }
@@ -294,30 +263,25 @@ void create_temp_path(char* path_template, CallbackT const& callback, tr_error* 
 
 std::string_view tr_sys_path_basename(std::string_view path, tr_error* error)
 {
-    if (std::empty(path))
-    {
+    if (std::empty(path)) {
         return "."sv;
     }
 
-    if (!is_valid_path(path))
-    {
+    if (!is_valid_path(path)) {
         set_system_error(error, ERROR_PATH_NOT_FOUND);
         return {};
     }
 
     // Remove all trailing slashes.
     // If nothing is left, return "/"
-    if (auto const pos = path.find_last_not_of(Slashes); pos != std::string_view::npos)
-    {
+    if (auto const pos = path.find_last_not_of(Slashes); pos != std::string_view::npos) {
         path = path.substr(0, pos + 1);
-    }
-    else // all slashes
+    } else // all slashes
     {
         return "/"sv;
     }
 
-    if (auto pos = path.find_last_of("\\/:"); pos != std::string_view::npos)
-    {
+    if (auto pos = path.find_last_of("\\/:"); pos != std::string_view::npos) {
         path.remove_prefix(pos + 1);
     }
 
@@ -344,13 +308,11 @@ std::string_view tr_sys_path_dirname(std::string_view path)
 {
     auto const len = std::size(path);
 
-    if (len == 0)
-    {
+    if (len == 0) {
         return "."sv;
     }
 
-    if (len == 1)
-    {
+    if (len == 1) {
         return isPathSeparator(path[0]) ? path : "."sv;
     }
 
@@ -358,47 +320,38 @@ std::string_view tr_sys_path_dirname(std::string_view path)
     auto offset = std::string_view::size_type{ 0 };
 
     // Try to match a root
-    if (isPathSeparator(path[0]))
-    {
+    if (isPathSeparator(path[0])) {
         // Possible UNC root
 
         root_end = offset = 1;
 
-        if (isPathSeparator(path[1]))
-        {
+        if (isPathSeparator(path[1])) {
             // Matched double path separator at beginning
             std::string_view::size_type j = 2;
             std::string_view::size_type last = j;
             // Match 1 or more non-path separators
-            while (j < len && !isPathSeparator(path[j]))
-            {
+            while (j < len && !isPathSeparator(path[j])) {
                 j++;
             }
-            if (j < len && j != last)
-            {
+            if (j < len && j != last) {
                 // Matched!
                 last = j;
                 // Match 1 or more path separators
-                while (j < len && isPathSeparator(path[j]))
-                {
+                while (j < len && isPathSeparator(path[j])) {
                     j++;
                 }
-                if (j < len && j != last)
-                {
+                if (j < len && j != last) {
                     // Matched!
                     last = j;
                     // Match 1 or more non-path separators
-                    while (j < len && !isPathSeparator(path[j]))
-                    {
+                    while (j < len && !isPathSeparator(path[j])) {
                         j++;
                     }
-                    if (j == len)
-                    {
+                    if (j == len) {
                         // We matched a UNC root only
                         return path;
                     }
-                    if (j != last)
-                    {
+                    if (j != last) {
                         // We matched a UNC root with leftovers
 
                         // Offset by 1 to include the separator after the UNC root to
@@ -409,40 +362,30 @@ std::string_view tr_sys_path_dirname(std::string_view path)
             }
         }
         // Possible device root
-    }
-    else if (isWindowsDeviceRoot(path[0]) && path[1] == ':')
-    {
+    } else if (isWindowsDeviceRoot(path[0]) && path[1] == ':') {
         root_end = len > 2 && isPathSeparator(path[2]) ? 3 : 2;
         offset = root_end;
     }
 
     auto end = std::string_view::npos;
     auto matched_slash = true;
-    for (std::string_view::size_type i = len - 1; i >= offset; --i)
-    {
-        if (isPathSeparator(path[i]))
-        {
-            if (!matched_slash)
-            {
+    for (std::string_view::size_type i = len - 1; i >= offset; --i) {
+        if (isPathSeparator(path[i])) {
+            if (!matched_slash) {
                 end = i;
                 break;
             }
-        }
-        else
-        {
+        } else {
             // We saw the first non-path separator
             matched_slash = false;
         }
-        if (i <= offset)
-        {
+        if (i <= offset) {
             break;
         }
     }
 
-    if (end == std::string_view::npos)
-    {
-        if (root_end == std::string_view::npos)
-        {
+    if (end == std::string_view::npos) {
+        if (root_end == std::string_view::npos) {
             return "."sv;
         }
 
@@ -457,27 +400,22 @@ bool tr_sys_path_rename(std::string_view const src_path, std::string_view const 
     auto const wide_src_path = path_to_native_path(src_path);
     auto const wide_dst_path = path_to_native_path(dst_path);
 
-    if (!std::empty(wide_src_path) && !std::empty(wide_dst_path))
-    {
+    if (!std::empty(wide_src_path) && !std::empty(wide_dst_path)) {
         DWORD flags = MOVEFILE_REPLACE_EXISTING;
 
         if (auto const src_attributes = GetFileAttributesW(wide_src_path.c_str());
-            src_attributes != INVALID_FILE_ATTRIBUTES && (src_attributes & FILE_ATTRIBUTE_DIRECTORY) != 0)
-        {
+            src_attributes != INVALID_FILE_ATTRIBUTES && (src_attributes & FILE_ATTRIBUTE_DIRECTORY) != 0) {
             flags = 0;
-        }
-        else if (
+        } else if (
             auto const dst_attributes = GetFileAttributesW(wide_dst_path.c_str());
-            dst_attributes != INVALID_FILE_ATTRIBUTES && (dst_attributes & FILE_ATTRIBUTE_DIRECTORY) != 0)
-        {
+            dst_attributes != INVALID_FILE_ATTRIBUTES && (dst_attributes & FILE_ATTRIBUTE_DIRECTORY) != 0) {
             flags = 0;
         }
 
         ret = to_bool(MoveFileExW(wide_src_path.c_str(), wide_dst_path.c_str(), flags));
     }
 
-    if (!ret)
-    {
+    if (!ret) {
         set_system_error(error, GetLastError());
     }
 
@@ -488,16 +426,14 @@ bool tr_sys_path_copy(std::string_view const src_path, std::string_view const ds
 {
     auto const wide_src_path = path_to_native_path(src_path);
     auto const wide_dst_path = path_to_native_path(dst_path);
-    if (std::empty(wide_src_path) || std::empty(wide_dst_path))
-    {
+    if (std::empty(wide_src_path) || std::empty(wide_dst_path)) {
         set_system_error(error, ERROR_INVALID_PARAMETER);
         return false;
     }
 
     auto cancel = BOOL{ FALSE };
     DWORD const flags = COPY_FILE_ALLOW_DECRYPTED_DESTINATION | COPY_FILE_FAIL_IF_EXISTS;
-    if (!to_bool(CopyFileExW(wide_src_path.c_str(), wide_dst_path.c_str(), nullptr, nullptr, &cancel, flags)))
-    {
+    if (!to_bool(CopyFileExW(wide_src_path.c_str(), wide_dst_path.c_str(), nullptr, nullptr, &cancel, flags))) {
         set_system_error(error, GetLastError());
         return false;
     }
@@ -509,25 +445,19 @@ bool tr_sys_path_remove(std::string_view const path, tr_error* error)
 {
     bool ret = false;
 
-    if (auto const wide_path = path_to_native_path(path); !std::empty(wide_path))
-    {
+    if (auto const wide_path = path_to_native_path(path); !std::empty(wide_path)) {
         DWORD const attributes = GetFileAttributesW(wide_path.c_str());
 
-        if (attributes != INVALID_FILE_ATTRIBUTES)
-        {
-            if ((attributes & FILE_ATTRIBUTE_DIRECTORY) != 0)
-            {
+        if (attributes != INVALID_FILE_ATTRIBUTES) {
+            if ((attributes & FILE_ATTRIBUTE_DIRECTORY) != 0) {
                 ret = to_bool(RemoveDirectoryW(wide_path.c_str()));
-            }
-            else
-            {
+            } else {
                 ret = to_bool(DeleteFileW(wide_path.c_str()));
             }
         }
     }
 
-    if (!ret)
-    {
+    if (!ret) {
         set_system_error(error, GetLastError());
     }
 
@@ -536,13 +466,11 @@ bool tr_sys_path_remove(std::string_view const path, tr_error* error)
 
 char* tr_sys_path_native_separators(char* path)
 {
-    if (path == nullptr)
-    {
+    if (path == nullptr) {
         return nullptr;
     }
 
-    for (char* slash = strchr(path, '/'); slash != nullptr; slash = strchr(slash, '/'))
-    {
+    for (char* slash = strchr(path, '/'); slash != nullptr; slash = strchr(slash, '/')) {
         *slash = '\\';
     }
 
@@ -557,35 +485,28 @@ tr_sys_file_t tr_sys_file_open(std::string_view const path, int const flags, int
     DWORD native_disposition = OPEN_EXISTING;
     DWORD native_flags = FILE_ATTRIBUTE_NORMAL;
 
-    if ((flags & TR_SYS_FILE_READ) != 0)
-    {
+    if ((flags & TR_SYS_FILE_READ) != 0) {
         native_access |= GENERIC_READ;
     }
 
-    if ((flags & TR_SYS_FILE_WRITE) != 0)
-    {
+    if ((flags & TR_SYS_FILE_WRITE) != 0) {
         native_access |= GENERIC_WRITE;
     }
 
-    if ((flags & TR_SYS_FILE_CREATE) != 0)
-    {
+    if ((flags & TR_SYS_FILE_CREATE) != 0) {
         native_disposition = (flags & TR_SYS_FILE_TRUNCATE) != 0 ? CREATE_ALWAYS : OPEN_ALWAYS;
-    }
-    else if ((flags & TR_SYS_FILE_TRUNCATE) != 0)
-    {
+    } else if ((flags & TR_SYS_FILE_TRUNCATE) != 0) {
         native_disposition = TRUNCATE_EXISTING;
     }
 
-    if ((flags & TR_SYS_FILE_SEQUENTIAL) != 0)
-    {
+    if ((flags & TR_SYS_FILE_SEQUENTIAL) != 0) {
         native_flags |= FILE_FLAG_SEQUENTIAL_SCAN;
     }
 
     auto ret = open_file(path, native_access, native_disposition, native_flags, error);
     auto success = ret != TR_BAD_SYS_FILE;
 
-    if (!success)
-    {
+    if (!success) {
         set_system_error(error, GetLastError());
 
         CloseHandle(ret);
@@ -603,8 +524,9 @@ tr_sys_file_t tr_sys_file_open_temp(char* path_template, tr_error* error)
 
     create_temp_path(
         path_template,
-        [&ret](char const* path, tr_error* error)
-        { ret = open_file(path, GENERIC_READ | GENERIC_WRITE, CREATE_NEW, FILE_ATTRIBUTE_TEMPORARY, error); },
+        [&ret](char const* path, tr_error* error) {
+            ret = open_file(path, GENERIC_READ | GENERIC_WRITE, CREATE_NEW, FILE_ATTRIBUTE_TEMPORARY, error);
+        },
         error);
 
     return ret;
@@ -616,8 +538,7 @@ bool tr_sys_file_close(tr_sys_file_t handle, tr_error* error)
 
     bool const ret = to_bool(CloseHandle(handle));
 
-    if (!ret)
-    {
+    if (!ret) {
         set_system_error(error, GetLastError());
     }
 
@@ -629,8 +550,7 @@ bool tr_sys_file_read(tr_sys_file_t handle, void* buffer, uint64_t size, uint64_
     TR_ASSERT(handle != TR_BAD_SYS_FILE);
     TR_ASSERT(buffer != nullptr || size == 0);
 
-    if (size > MAXDWORD)
-    {
+    if (size > MAXDWORD) {
         set_system_error(error, ERROR_INVALID_PARAMETER);
         return false;
     }
@@ -638,17 +558,13 @@ bool tr_sys_file_read(tr_sys_file_t handle, void* buffer, uint64_t size, uint64_
     bool ret = false;
     DWORD my_bytes_read = 0;
 
-    if (to_bool(ReadFile(handle, buffer, static_cast<DWORD>(size), &my_bytes_read, nullptr)))
-    {
-        if (bytes_read != nullptr)
-        {
+    if (to_bool(ReadFile(handle, buffer, static_cast<DWORD>(size), &my_bytes_read, nullptr))) {
+        if (bytes_read != nullptr) {
             *bytes_read = my_bytes_read;
         }
 
         ret = true;
-    }
-    else
-    {
+    } else {
         set_system_error(error, GetLastError());
     }
 
@@ -666,8 +582,7 @@ bool tr_sys_file_read_at(
     TR_ASSERT(handle != TR_BAD_SYS_FILE);
     TR_ASSERT(buffer != nullptr || size == 0);
 
-    if (size > MAXDWORD)
-    {
+    if (size > MAXDWORD) {
         set_system_error(error, ERROR_INVALID_PARAMETER);
         return false;
     }
@@ -680,17 +595,13 @@ bool tr_sys_file_read_at(
     overlapped.OffsetHigh = static_cast<DWORD>(offset >> 32);
     overlapped.hEvent = nullptr;
 
-    if (to_bool(ReadFile(handle, buffer, static_cast<DWORD>(size), &my_bytes_read, &overlapped)))
-    {
-        if (bytes_read != nullptr)
-        {
+    if (to_bool(ReadFile(handle, buffer, static_cast<DWORD>(size), &my_bytes_read, &overlapped))) {
+        if (bytes_read != nullptr) {
             *bytes_read = my_bytes_read;
         }
 
         ret = true;
-    }
-    else
-    {
+    } else {
         set_system_error(error, GetLastError());
     }
 
@@ -702,8 +613,7 @@ bool tr_sys_file_write(tr_sys_file_t handle, void const* buffer, uint64_t size, 
     TR_ASSERT(handle != TR_BAD_SYS_FILE);
     TR_ASSERT(buffer != nullptr || size == 0);
 
-    if (size > MAXDWORD)
-    {
+    if (size > MAXDWORD) {
         set_system_error(error, ERROR_INVALID_PARAMETER);
         return false;
     }
@@ -711,17 +621,13 @@ bool tr_sys_file_write(tr_sys_file_t handle, void const* buffer, uint64_t size, 
     bool ret = false;
     DWORD my_bytes_written = 0;
 
-    if (to_bool(WriteFile(handle, buffer, static_cast<DWORD>(size), &my_bytes_written, nullptr)))
-    {
-        if (bytes_written != nullptr)
-        {
+    if (to_bool(WriteFile(handle, buffer, static_cast<DWORD>(size), &my_bytes_written, nullptr))) {
+        if (bytes_written != nullptr) {
             *bytes_written = my_bytes_written;
         }
 
         ret = true;
-    }
-    else
-    {
+    } else {
         set_system_error(error, GetLastError());
     }
 
@@ -739,8 +645,7 @@ bool tr_sys_file_write_at(
     TR_ASSERT(handle != TR_BAD_SYS_FILE);
     TR_ASSERT(buffer != nullptr || size == 0);
 
-    if (size > MAXDWORD)
-    {
+    if (size > MAXDWORD) {
         set_system_error(error, ERROR_INVALID_PARAMETER);
         return false;
     }
@@ -753,17 +658,13 @@ bool tr_sys_file_write_at(
     overlapped.OffsetHigh = static_cast<DWORD>(offset >> 32);
     overlapped.hEvent = nullptr;
 
-    if (to_bool(WriteFile(handle, buffer, static_cast<DWORD>(size), &my_bytes_written, &overlapped)))
-    {
-        if (bytes_written != nullptr)
-        {
+    if (to_bool(WriteFile(handle, buffer, static_cast<DWORD>(size), &my_bytes_written, &overlapped))) {
+        if (bytes_written != nullptr) {
             *bytes_written = my_bytes_written;
         }
 
         ret = true;
-    }
-    else
-    {
+    } else {
         set_system_error(error, GetLastError());
     }
 
@@ -779,8 +680,7 @@ bool tr_sys_file_truncate(tr_sys_file_t handle, uint64_t size, tr_error* error)
 
     bool const ret = to_bool(SetFileInformationByHandle(handle, FileEndOfFileInfo, &info, sizeof(info)));
 
-    if (!ret)
-    {
+    if (!ret) {
         set_system_error(error, GetLastError());
     }
 
@@ -791,12 +691,10 @@ bool tr_sys_file_preallocate(tr_sys_file_t handle, uint64_t size, int flags, tr_
 {
     TR_ASSERT(handle != TR_BAD_SYS_FILE);
 
-    if ((flags & TR_SYS_FILE_PREALLOC_SPARSE) != 0)
-    {
+    if ((flags & TR_SYS_FILE_PREALLOC_SPARSE) != 0) {
         DWORD tmp = 0;
 
-        if (!to_bool(DeviceIoControl(handle, FSCTL_SET_SPARSE, nullptr, 0, nullptr, 0, &tmp, nullptr)))
-        {
+        if (!to_bool(DeviceIoControl(handle, FSCTL_SET_SPARSE, nullptr, 0, nullptr, 0, &tmp, nullptr))) {
             set_system_error(error, GetLastError());
             return false;
         }
@@ -815,20 +713,17 @@ bool tr_sys_file_lock(tr_sys_file_t handle, int operation, tr_error* error)
 
     DWORD native_flags = 0;
 
-    if ((operation & TR_SYS_FILE_LOCK_EX) != 0)
-    {
+    if ((operation & TR_SYS_FILE_LOCK_EX) != 0) {
         native_flags |= LOCKFILE_EXCLUSIVE_LOCK;
     }
 
-    if ((operation & TR_SYS_FILE_LOCK_NB) != 0)
-    {
+    if ((operation & TR_SYS_FILE_LOCK_NB) != 0) {
         native_flags |= LOCKFILE_FAIL_IMMEDIATELY;
     }
 
     bool const ret = LockFileEx(handle, native_flags, 0, MAXDWORD, MAXDWORD, &overlapped) != FALSE;
 
-    if (!ret)
-    {
+    if (!ret) {
         set_system_error(error, GetLastError());
     }
 
@@ -837,12 +732,10 @@ bool tr_sys_file_lock(tr_sys_file_t handle, int operation, tr_error* error)
 
 std::string tr_sys_dir_get_current(tr_error* error)
 {
-    if (auto const size = GetCurrentDirectoryW(0, nullptr); size != 0)
-    {
+    if (auto const size = GetCurrentDirectoryW(0, nullptr); size != 0) {
         auto wide_ret = std::wstring{};
         wide_ret.resize(size);
-        if (GetCurrentDirectoryW(std::size(wide_ret), std::data(wide_ret)) != 0)
-        {
+        if (GetCurrentDirectoryW(std::size(wide_ret), std::data(wide_ret)) != 0) {
             // `size` includes the terminating '\0'; remove it from `wide_ret`
             wide_ret.resize(std::size(wide_ret) - 1);
             return tr_win32_native_to_utf8(wide_ret);
@@ -871,15 +764,13 @@ tr_sys_dir_t tr_sys_dir_open(std::string_view path, tr_error* error)
 {
     TR_ASSERT(!std::empty(path));
 
-    if (auto const info = tr_sys_path_get_info(path, 0); !info || !info->isFolder())
-    {
+    if (auto const info = tr_sys_path_get_info(path, 0); !info || !info->isFolder()) {
         set_system_error(error, ERROR_DIRECTORY);
         return TR_BAD_SYS_DIR;
     }
 
     auto const pattern = path_to_native_path(path);
-    if (std::empty(pattern))
-    {
+    if (std::empty(pattern)) {
         set_system_error(error, GetLastError());
         return TR_BAD_SYS_DIR;
     }
@@ -896,31 +787,24 @@ char const* tr_sys_dir_read_name(tr_sys_dir_t handle, tr_error* error)
 
     DWORD error_code = ERROR_SUCCESS;
 
-    if (handle->find_handle == INVALID_HANDLE_VALUE)
-    {
+    if (handle->find_handle == INVALID_HANDLE_VALUE) {
         handle->find_handle = FindFirstFileW(handle->pattern.c_str(), &handle->find_data);
 
-        if (handle->find_handle == INVALID_HANDLE_VALUE)
-        {
+        if (handle->find_handle == INVALID_HANDLE_VALUE) {
             error_code = GetLastError();
         }
-    }
-    else
-    {
-        if (!to_bool(FindNextFileW(handle->find_handle, &handle->find_data)))
-        {
+    } else {
+        if (!to_bool(FindNextFileW(handle->find_handle, &handle->find_data))) {
             error_code = GetLastError();
         }
     }
 
-    if (error_code != ERROR_SUCCESS)
-    {
+    if (error_code != ERROR_SUCCESS) {
         set_system_error_if_file_found(error, error_code);
         return nullptr;
     }
 
-    if (auto const utf8 = tr_win32_native_to_utf8(handle->find_data.cFileName); !std::empty(utf8))
-    {
+    if (auto const utf8 = tr_win32_native_to_utf8(handle->find_data.cFileName); !std::empty(utf8)) {
         handle->utf8_name = utf8;
         return handle->utf8_name.c_str();
     }
@@ -935,8 +819,7 @@ bool tr_sys_dir_close(tr_sys_dir_t handle, tr_error* error)
 
     bool const ret = to_bool(FindClose(handle->find_handle));
 
-    if (!ret)
-    {
+    if (!ret) {
         set_system_error(error, GetLastError());
     }
 

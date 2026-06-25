@@ -15,8 +15,7 @@ class UserMetaType
 {
 public:
     // NOLINTNEXTLINE(performance-enum-size)
-    enum
-    {
+    enum {
         ShowModeType = QMetaType::User,
         SortModeType,
         StatsModeType,

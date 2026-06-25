@@ -205,8 +205,7 @@ Gtk::Requisition TorrentCellRenderer::Impl::get_size_full(Gtk::Widget& widget) c
 
 void TorrentCellRenderer::get_preferred_width_vfunc(Gtk::Widget& widget, int& minimum_width, int& natural_width) const
 {
-    if (impl_->property_torrent().get_value() != nullptr)
-    {
+    if (impl_->property_torrent().get_value() != nullptr) {
         auto const size = impl_->property_compact().get_value() ? impl_->get_size_compact(widget) :
                                                                   impl_->get_size_full(widget);
 
@@ -217,8 +216,7 @@ void TorrentCellRenderer::get_preferred_width_vfunc(Gtk::Widget& widget, int& mi
 
 void TorrentCellRenderer::get_preferred_height_vfunc(Gtk::Widget& widget, int& minimum_height, int& natural_height) const
 {
-    if (impl_->property_torrent().get_value() != nullptr)
-    {
+    if (impl_->property_torrent().get_value() != nullptr) {
         auto const size = impl_->property_compact().get_value() ? impl_->get_size_compact(widget) :
                                                                   impl_->get_size_full(widget);
 
@@ -241,12 +239,9 @@ void set_error_color(
     auto color = Gdk::RGBA();
     if (torrent.get_error_code() != tr_stat::Error::Ok &&
         (flags & TR_GTK_CELL_RENDERER_STATE(SELECTED)) == Gtk::CellRendererState{} &&
-        widget.get_style_context()->lookup_color(error_color_name, color))
-    {
+        widget.get_style_context()->lookup_color(error_color_name, color)) {
         text_renderer.property_foreground_rgba() = color;
-    }
-    else
-    {
+    } else {
         text_renderer.property_foreground_set() = false;
     }
 }
@@ -258,8 +253,7 @@ std::optional<Gdk::RGBA> get_progress_bar_color(Torrent const& torrent, Gtk::Wid
     static auto const idle_color_name = Glib::ustring{ "tr_transfer_idle_color" };
 
     auto const* color_name = &idle_color_name;
-    switch (torrent.get_activity())
-    {
+    switch (torrent.get_activity()) {
     case TR_STATUS_DOWNLOAD:
         color_name = &down_color_name;
         break;
@@ -320,8 +314,7 @@ void TorrentCellRenderer::Impl::render_progress_bar(
     Gtk::CellRendererState flags,
     std::optional<Gdk::RGBA> const& color)
 {
-    if (!color.has_value())
-    {
+    if (!color.has_value()) {
         progress_renderer_->render(context, widget, area, area, flags);
         return;
     }
@@ -392,15 +385,12 @@ void TorrentCellRenderer::Impl::render_compact(
     name_area.set_width(
         fill_area.get_width() - icon_area.get_width() - stat_area.get_width() - prog_area.get_width() - (GUI_PAD * 3));
 
-    if ((renderer_.get_state(widget, flags) & TR_GTK_STATE_FLAGS(DIR_RTL)) == Gtk::StateFlags{})
-    {
+    if ((renderer_.get_state(widget, flags) & TR_GTK_STATE_FLAGS(DIR_RTL)) == Gtk::StateFlags{}) {
         icon_area.set_x(fill_area.get_x());
         prog_area.set_x(fill_area.get_x() + fill_area.get_width() - prog_area.get_width());
         stat_area.set_x(prog_area.get_x() - stat_area.get_width() - GUI_PAD);
         name_area.set_x(icon_area.get_x() + icon_area.get_width() + GUI_PAD);
-    }
-    else
-    {
+    } else {
         icon_area.set_x(fill_area.get_x() + fill_area.get_width() - icon_area.get_width());
         prog_area.set_x(fill_area.get_x());
         stat_area.set_x(prog_area.get_x() + prog_area.get_width() + GUI_PAD);
@@ -503,13 +493,10 @@ void TorrentCellRenderer::Impl::render_full(
     name_area.set_y(fill_area.get_y());
     name_area.set_width(fill_area.get_width() - GUI_PAD - icon_area.get_width());
 
-    if ((renderer_.get_state(widget, flags) & TR_GTK_STATE_FLAGS(DIR_RTL)) == Gtk::StateFlags{})
-    {
+    if ((renderer_.get_state(widget, flags) & TR_GTK_STATE_FLAGS(DIR_RTL)) == Gtk::StateFlags{}) {
         icon_area.set_x(fill_area.get_x());
         name_area.set_x(fill_area.get_x() + fill_area.get_width() - name_area.get_width());
-    }
-    else
-    {
+    } else {
         icon_area.set_x(fill_area.get_x() + fill_area.get_width() - icon_area.get_width());
         name_area.set_x(fill_area.get_x());
     }
@@ -572,14 +559,10 @@ void TorrentCellRenderer::render_vfunc(
     widget.set_direction(Gtk::TEXT_DIR_RTL);
 #endif
 
-    if (impl_->property_torrent().get_value() != nullptr)
-    {
-        if (impl_->property_compact().get_value())
-        {
+    if (impl_->property_torrent().get_value() != nullptr) {
+        if (impl_->property_compact().get_value()) {
             impl_->render_compact(context, widget, background_area, flags);
-        }
-        else
-        {
+        } else {
             impl_->render_full(context, widget, background_area, flags);
         }
     }

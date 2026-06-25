@@ -59,8 +59,7 @@ public:
         }
 
         // If we already have it, use it.
-        if (auto const* const icon = find(url->sitename); icon != nullptr)
-        {
+        if (auto const* const icon = find(url->sitename); icon != nullptr) {
             callback(icon);
             return;
         }
@@ -74,20 +73,15 @@ public:
         auto n_ports = 0;
         auto ports = std::array<int, 2>{};
         ports[n_ports++] = 80;
-        if (url->port != 80)
-        {
+        if (url->port != 80) {
             ports[n_ports++] = url->port;
         }
 
         auto in_flight = std::make_shared<InFlightData>(callback, url->sitename);
-        for (auto i = 0; i < n_ports; ++i)
-        {
-            for (auto const scheme : { "http", "https" })
-            {
-                for (auto const suffix : { "ico", "png", "gif", "jpg" })
-                {
-                    auto on_fetch_response = [this, in_flight](auto const& response)
-                    {
+        for (auto i = 0; i < n_ports; ++i) {
+            for (auto const scheme : { "http", "https" }) {
+                for (auto const suffix : { "ico", "png", "gif", "jpg" }) {
+                    auto on_fetch_response = [this, in_flight](auto const& response) {
                         in_flight->add_response(response.body, response.status);
                         add_to_ui_thread([this, in_flight]() { check_responses(in_flight); });
                     };
@@ -128,8 +122,7 @@ private:
 
         void invoke_callback(Icon const* icon)
         {
-            if (callback_)
-            {
+            if (callback_) {
                 callback_(icon);
                 callback_ = {};
             }
@@ -180,26 +173,20 @@ private:
 
         // remember which hosts we've asked for a favicon so that we
         // don't re-ask them every time we start a new session
-        if (auto ifs = std::ifstream{ scraped_sitenames_filename_ }; ifs.is_open())
-        {
+        if (auto ifs = std::ifstream{ scraped_sitenames_filename_ }; ifs.is_open()) {
             auto sitename = std::string{};
-            while (std::getline(ifs, sitename))
-            {
+            while (std::getline(ifs, sitename)) {
                 icons_.try_emplace(sitename);
             }
         }
 
         // load the cached favicons
-        for (auto const& sitename : tr_sys_dir_get_files(icons_dir_))
-        {
+        for (auto const& sitename : tr_sys_dir_get_files(icons_dir_)) {
             auto const filename = fmt::format("{:s}/{:s}", icons_dir_, sitename);
 
-            if (auto icon = create_from_file(filename); !icon)
-            {
+            if (auto icon = create_from_file(filename); !icon) {
                 tr_sys_path_remove(filename);
-            }
-            else
-            {
+            } else {
                 icons_[sitename] = std::move(icon);
             }
         }
@@ -207,24 +194,20 @@ private:
 
     void mark_site_as_scraped(std::string_view sitename) const
     {
-        if (auto ofs = std::ofstream{ scraped_sitenames_filename_, std::ios_base::out | std::ios_base::app }; ofs.is_open())
-        {
+        if (auto ofs = std::ofstream{ scraped_sitenames_filename_, std::ios_base::out | std::ios_base::app }; ofs.is_open()) {
             ofs << sitename << '\n';
         }
     }
 
     void check_responses(std::shared_ptr<FaviconCache::InFlightData> in_flight)
     {
-        for (auto const& [contents, code] : in_flight->get_responses())
-        {
-            if (std::empty(contents) || code < 200 || code >= 300)
-            {
+        for (auto const& [contents, code] : in_flight->get_responses()) {
+            if (std::empty(contents) || code < 200 || code >= 300) {
                 continue;
             }
 
             auto const icon = create_from_data(std::data(contents), std::size(contents));
-            if (!icon)
-            {
+            if (!icon) {
                 continue;
             }
 

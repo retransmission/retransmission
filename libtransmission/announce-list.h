@@ -24,8 +24,7 @@ struct tr_url_parsed_t;
 class tr_announce_list
 {
 public:
-    struct tracker_info
-    {
+    struct tracker_info {
         tr_interned_string announce;
         tr_interned_string scrape;
         tr_url_parsed_t announce_parsed;
@@ -34,8 +33,7 @@ public:
 
         [[nodiscard]] constexpr auto operator<=>(tracker_info const& that) const noexcept
         {
-            if (auto const res = this->tier <=> that.tier; res != 0)
-            {
+            if (auto const res = this->tier <=> that.tier; res != 0) {
                 return res;
             }
 

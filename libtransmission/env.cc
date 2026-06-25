@@ -32,14 +32,12 @@ std::string tr_env_get_string(std::string_view key, std::string_view default_val
 {
 #ifdef _WIN32
 
-    if (auto const wide_key = tr_win32_utf8_to_native(key); !std::empty(wide_key))
-    {
-        if (auto const size = GetEnvironmentVariableW(wide_key.c_str(), nullptr, 0); size != 0)
-        {
+    if (auto const wide_key = tr_win32_utf8_to_native(key); !std::empty(wide_key)) {
+        if (auto const size = GetEnvironmentVariableW(wide_key.c_str(), nullptr, 0); size != 0) {
             auto wide_val = std::wstring{};
             wide_val.resize(size);
-            if (GetEnvironmentVariableW(wide_key.c_str(), std::data(wide_val), std::size(wide_val)) == std::size(wide_val) - 1)
-            {
+            if (GetEnvironmentVariableW(wide_key.c_str(), std::data(wide_val), std::size(wide_val)) ==
+                std::size(wide_val) - 1) {
                 TR_ASSERT(wide_val.back() == L'\0');
                 wide_val.resize(std::size(wide_val) - 1);
                 return tr_win32_native_to_utf8(wide_val);
@@ -51,8 +49,7 @@ std::string tr_env_get_string(std::string_view key, std::string_view default_val
 
     auto const szkey = tr_strbuf<char, 256>{ key };
 
-    if (auto const* const value = getenv(szkey); value != nullptr)
-    {
+    if (auto const* const value = getenv(szkey); value != nullptr) {
         return value;
     }
 

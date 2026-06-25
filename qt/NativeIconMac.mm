@@ -21,8 +21,7 @@ CGBitmapInfo CGBitmapInfoForQImage(QImage const& image)
 {
     CGBitmapInfo bitmapInfo = kCGImageAlphaNone;
 
-    switch (image.format())
-    {
+    switch (image.format()) {
     case QImage::Format_ARGB32:
         bitmapInfo = kCGImageAlphaFirst | kCGBitmapByteOrder32Host;
         break;
@@ -75,11 +74,9 @@ QImage CGImageToQImage(CGImageRef cgImage)
 
 QPixmap loadSFSymbol(QString const symbol_name, int const pixel_size)
 {
-    if (NSImage* image = [NSImage imageWithSystemSymbolName:symbol_name.toNSString() accessibilityDescription:nil])
-    {
+    if (NSImage* image = [NSImage imageWithSystemSymbolName:symbol_name.toNSString() accessibilityDescription:nil]) {
         auto* configuration = [NSImageSymbolConfiguration configurationWithPointSize:pixel_size weight:NSFontWeightRegular];
-        if (@available(macOS 12.0, *))
-        {
+        if (@available(macOS 12.0, *)) {
             // use whatever color QPalette::ButtonText is using
             // @available check needed for configurationWithHierarchicalColor
             QColor const qfg = qApp->palette().color(QPalette::ButtonText);

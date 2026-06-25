@@ -28,11 +28,9 @@ using namespace std::literals;
 
 TEST_F(UtilsTest, trParseNumberRange)
 {
-    auto const tostring = [](std::vector<int> const& v)
-    {
+    auto const tostring = [](std::vector<int> const& v) {
         std::stringstream ss;
-        for (auto const& i : v)
-        {
+        for (auto const& i : v) {
             ss << i << ' ';
         }
         return ss.str();
@@ -111,8 +109,7 @@ TEST_F(UtilsTest, ratioToString)
     // Inf contains only null character
     ASSERT_EQ(tr_strratio(TR_RATIO_INF, "None", &nullchar), "");
 
-    for (auto const& [input, expected] : Tests)
-    {
+    for (auto const& [input, expected] : Tests) {
         ASSERT_EQ(tr_strratio(input, "None", "inf"), expected);
     }
 }

@@ -120,8 +120,7 @@ TEST_F(FilePieceMapTest, pieceSpan)
     auto const n_files = fpm.file_count();
     EXPECT_EQ(std::size(FileSizes), n_files);
     uint64_t offset = 0U;
-    for (tr_file_index_t file = 0U; file < n_files; ++file)
-    {
+    for (tr_file_index_t file = 0U; file < n_files; ++file) {
         EXPECT_EQ(ExpectedPieceSpans[file].begin, fpm.piece_span_for_file(file).begin);
         EXPECT_EQ(ExpectedPieceSpans[file].end, fpm.piece_span_for_file(file).end);
         offset += FileSizes[file];
@@ -139,30 +138,24 @@ TEST_F(FilePieceMapTest, priorities)
     // make a helper to compare file & piece priorities
     auto expected_file_priorities = std::vector<tr_priority_t>(n_files, TR_PRI_NORMAL);
     auto expected_piece_priorities = std::vector<tr_priority_t>(block_info_.piece_count(), TR_PRI_NORMAL);
-    auto const compare_to_expected = [&, this]()
-    {
-        for (tr_file_index_t i = 0U; i < n_files; ++i)
-        {
+    auto const compare_to_expected = [&, this]() {
+        for (tr_file_index_t i = 0U; i < n_files; ++i) {
             auto const expected = expected_file_priorities[i];
             auto const actual = file_priorities.file_priority(i);
             EXPECT_EQ(expected, actual) << "idx[" << i << "] expected [" << expected << "] actual [" << actual << ']';
         }
-        for (tr_piece_index_t i = 0U; i < block_info_.piece_count(); ++i)
-        {
+        for (tr_piece_index_t i = 0U; i < block_info_.piece_count(); ++i) {
             auto const expected = expected_piece_priorities[i];
             auto const actual = file_priorities.piece_priority(i);
             EXPECT_EQ(expected, actual) << "idx[" << i << "] expected [" << expected << "] actual [" << actual << ']';
         }
     };
 
-    auto const mark_file_endpoints_as_high_priority = [&]()
-    {
-        for (tr_file_index_t file = 0U; file < n_files; ++file)
-        {
+    auto const mark_file_endpoints_as_high_priority = [&]() {
+        for (tr_file_index_t file = 0U; file < n_files; ++file) {
             auto const [begin_piece, end_piece] = fpm.piece_span_for_file(file);
             expected_piece_priorities[begin_piece] = TR_PRI_HIGH;
-            if (end_piece > begin_piece)
-            {
+            if (end_piece > begin_piece) {
                 expected_piece_priorities[end_piece - 1U] = TR_PRI_HIGH;
             }
         }
@@ -178,8 +171,7 @@ TEST_F(FilePieceMapTest, priorities)
     auto pri = TR_PRI_HIGH;
     file_priorities.set(0U, pri);
     expected_file_priorities[0] = pri;
-    for (size_t i = 0U; i < 5U; ++i)
-    {
+    for (size_t i = 0U; i < 5U; ++i) {
         expected_piece_priorities[i] = pri;
     }
     mark_file_endpoints_as_high_priority();
@@ -213,8 +205,7 @@ TEST_F(FilePieceMapTest, priorities)
 
     // setup for the next test: set all files to low priority
     pri = TR_PRI_LOW;
-    for (tr_file_index_t i = 0U; i < n_files; ++i)
-    {
+    for (tr_file_index_t i = 0U; i < n_files; ++i) {
         file_priorities.set(i, pri);
     }
     std::ranges::fill(expected_file_priorities, pri);
@@ -243,8 +234,7 @@ TEST_F(FilePieceMapTest, priorities)
 
     // Prep for the next test: set all files to normal priority
     pri = TR_PRI_NORMAL;
-    for (tr_file_index_t i = 0U; i < n_files; ++i)
-    {
+    for (tr_file_index_t i = 0U; i < n_files; ++i) {
         file_priorities.set(i, pri);
     }
     std::ranges::fill(expected_file_priorities, pri);
@@ -300,16 +290,13 @@ TEST_F(FilePieceMapTest, wanted)
     // make a helper to compare file & piece wanted bitfields
     auto expected_files_wanted = tr_bitfield(n_files);
     auto expected_pieces_wanted = tr_bitfield(block_info_.piece_count());
-    auto const compare_to_expected = [&, this]()
-    {
-        for (tr_file_index_t i = 0U; i < n_files; ++i)
-        {
+    auto const compare_to_expected = [&, this]() {
+        for (tr_file_index_t i = 0U; i < n_files; ++i) {
             auto const expected = expected_files_wanted.test(i);
             auto const actual = files_wanted.file_wanted(i);
             EXPECT_EQ(expected, actual) << "idx[" << i << "] expected [" << expected << "] actual [" << actual << ']';
         }
-        for (tr_piece_index_t i = 0U; i < block_info_.piece_count(); ++i)
-        {
+        for (tr_piece_index_t i = 0U; i < block_info_.piece_count(); ++i) {
             auto const expected = expected_pieces_wanted.test(i);
             auto const actual = files_wanted.piece_wanted(i);
             EXPECT_EQ(expected, actual) << "idx[" << i << "] expected [" << expected << "] actual [" << actual << ']';
@@ -372,8 +359,7 @@ TEST_F(FilePieceMapTest, wanted)
     compare_to_expected();
 
     // Prep for the next test: set all files to unwanted
-    for (tr_file_index_t i = 0U; i < n_files; ++i)
-    {
+    for (tr_file_index_t i = 0U; i < n_files; ++i) {
         files_wanted.set(i, false);
     }
     expected_files_wanted.set_has_none();

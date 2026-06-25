@@ -38,8 +38,7 @@ static NSString* const kWebSeedAnimationId = @"webSeed";
 
 - (instancetype)init
 {
-    if ((self = [super initWithNibName:@"InfoPeersView" bundle:nil]))
-    {
+    if ((self = [super initWithNibName:@"InfoPeersView" bundle:nil])) {
         self.title = NSLocalizedString(@"Peers", "Inspector view -> title");
     }
 
@@ -50,8 +49,7 @@ static NSString* const kWebSeedAnimationId = @"webSeed";
 {
     [super awakeFromNib];
     CGFloat const height = [NSUserDefaults.standardUserDefaults floatForKey:@"InspectorContentHeightPeers"];
-    if (height != 0.0)
-    {
+    if (height != 0.0) {
         NSRect viewRect = self.view.frame;
         viewRect.size.height = height;
         self.view.frame = viewRect;
@@ -101,31 +99,23 @@ static NSString* const kWebSeedAnimationId = @"webSeed";
 
 - (void)updateInfo
 {
-    if (!self.fSet)
-    {
+    if (!self.fSet) {
         [self setupInfo];
     }
 
-    if (self.fTorrents.count == 0)
-    {
+    if (self.fTorrents.count == 0) {
         return;
     }
 
-    if (!self.fPeers)
-    {
+    if (!self.fPeers) {
         self.fPeers = [[NSMutableArray alloc] init];
-    }
-    else
-    {
+    } else {
         [self.fPeers removeAllObjects];
     }
 
-    if (!self.fWebSeeds)
-    {
+    if (!self.fWebSeeds) {
         self.fWebSeeds = [[NSMutableArray alloc] init];
-    }
-    else
-    {
+    } else {
         [self.fWebSeeds removeAllObjects];
     }
 
@@ -147,21 +137,17 @@ static NSString* const kWebSeedAnimationId = @"webSeed";
     NSUInteger knownDht = 0;
     NSUInteger knownLtep = 0;
     BOOL anyActive = false;
-    for (Torrent* torrent in self.fTorrents)
-    {
-        if (torrent.webSeedCount > 0)
-        {
+    for (Torrent* torrent in self.fTorrents) {
+        if (torrent.webSeedCount > 0) {
             [self.fWebSeeds addObjectsFromArray:torrent.webSeeds];
         }
 
-        if (torrent.active)
-        {
+        if (torrent.active) {
             anyActive = YES;
             [self.fPeers addObjectsFromArray:torrent.peers];
 
             NSUInteger const connectedThis = torrent.totalPeersConnected;
-            if (connectedThis > 0)
-            {
+            if (connectedThis > 0) {
                 connected += torrent.totalPeersConnected;
                 tracker += torrent.totalPeersTracker;
                 incoming += torrent.totalPeersIncoming;
@@ -191,34 +177,26 @@ static NSString* const kWebSeedAnimationId = @"webSeed";
     [self.fWebSeedTable reloadData];
     self.fWebSeedTable.webSeeds = self.fWebSeeds;
 
-    if (anyActive)
-    {
+    if (anyActive) {
         NSString* connectedText;
-        if (connected == 1)
-        {
+        if (connected == 1) {
             connectedText = NSLocalizedString(@"1 Connected", "Inspector -> Peers tab -> peers");
-        }
-        else
-        {
+        } else {
             connectedText = [NSString
                 localizedStringWithFormat:NSLocalizedString(@"%lu Connected", "Inspector -> Peers tab -> peers"), connected];
         }
 
-        if (connected > 0)
-        {
+        if (connected > 0) {
             NSMutableArray* upDownComponents = [NSMutableArray arrayWithCapacity:2];
-            if (toUs > 0)
-            {
+            if (toUs > 0) {
                 [upDownComponents
                     addObject:[NSString localizedStringWithFormat:NSLocalizedString(@"DL from %lu", "Inspector -> Peers tab -> peers"), toUs]];
             }
-            if (fromUs > 0)
-            {
+            if (fromUs > 0) {
                 [upDownComponents
                     addObject:[NSString localizedStringWithFormat:NSLocalizedString(@"UL to %lu", "Inspector -> Peers tab -> peers"), fromUs]];
             }
-            if (upDownComponents.count > 0)
-            {
+            if (upDownComponents.count > 0) {
                 connectedText = [connectedText stringByAppendingFormat:@": %@", [upDownComponents componentsJoinedByString:@", "]];
             }
 
@@ -227,16 +205,11 @@ static NSString* const kWebSeedAnimationId = @"webSeed";
         }
 
         self.fConnectedPeersField.stringValue = connectedText;
-    }
-    else
-    {
+    } else {
         NSString* notActiveString;
-        if (self.fTorrents.count == 1)
-        {
+        if (self.fTorrents.count == 1) {
             notActiveString = NSLocalizedString(@"Transfer Not Active", "Inspector -> Peers tab -> peers");
-        }
-        else
-        {
+        } else {
             notActiveString = NSLocalizedString(@"Transfers Not Active", "Inspector -> Peers tab -> peers");
         }
 
@@ -244,13 +217,10 @@ static NSString* const kWebSeedAnimationId = @"webSeed";
     }
     auto totalKnown = knownTracker + knownIncoming + knownCache + knownLpd + knownPex + knownDht + knownLtep;
     NSString* knownText = [self connectedTextFrom:knownTracker:knownIncoming:knownCache:knownLpd:knownPex:knownDht:knownLtep];
-    if (totalKnown <= 1)
-    {
+    if (totalKnown <= 1) {
         self.fConnectedPeersField.toolTip = [NSLocalizedString(@"Known:", "Inspector -> Peers tab -> peers")
             stringByAppendingFormat:@" %@", totalKnown > 0 ? knownText : @"0"];
-    }
-    else
-    {
+    } else {
         self.fConnectedPeersField.toolTip = [[NSString
             localizedStringWithFormat:NSLocalizedString(@"%lu Known:", "Inspector -> Peers tab -> peers"), totalKnown]
             stringByAppendingFormat:@" %@", knownText];
@@ -266,38 +236,31 @@ static NSString* const kWebSeedAnimationId = @"webSeed";
                               :(NSUInteger)ltep
 {
     NSMutableArray* fromComponents = [NSMutableArray arrayWithCapacity:7];
-    if (tracker > 0)
-    {
+    if (tracker > 0) {
         [fromComponents
             addObject:[NSString localizedStringWithFormat:NSLocalizedString(@"%lu tracker", "Inspector -> Peers tab -> peers"), tracker]];
     }
-    if (incoming > 0)
-    {
+    if (incoming > 0) {
         [fromComponents
             addObject:[NSString localizedStringWithFormat:NSLocalizedString(@"%lu incoming", "Inspector -> Peers tab -> peers"), incoming]];
     }
-    if (cache > 0)
-    {
+    if (cache > 0) {
         [fromComponents
             addObject:[NSString localizedStringWithFormat:NSLocalizedString(@"%lu cache", "Inspector -> Peers tab -> peers"), cache]];
     }
-    if (lpd > 0)
-    {
+    if (lpd > 0) {
         [fromComponents
             addObject:[NSString localizedStringWithFormat:NSLocalizedString(@"%lu local discovery", "Inspector -> Peers tab -> peers"), lpd]];
     }
-    if (pex > 0)
-    {
+    if (pex > 0) {
         [fromComponents
             addObject:[NSString localizedStringWithFormat:NSLocalizedString(@"%lu PEX", "Inspector -> Peers tab -> peers"), pex]];
     }
-    if (dht > 0)
-    {
+    if (dht > 0) {
         [fromComponents
             addObject:[NSString localizedStringWithFormat:NSLocalizedString(@"%lu DHT", "Inspector -> Peers tab -> peers"), dht]];
     }
-    if (ltep > 0)
-    {
+    if (ltep > 0) {
         [fromComponents
             addObject:[NSString localizedStringWithFormat:NSLocalizedString(@"%lu LTEP", "Inspector -> Peers tab -> peers"), ltep]];
     }
@@ -318,62 +281,42 @@ static NSString* const kWebSeedAnimationId = @"webSeed";
 
 - (NSInteger)numberOfRowsInTableView:(NSTableView*)tableView
 {
-    if (tableView == self.fWebSeedTable)
-    {
+    if (tableView == self.fWebSeedTable) {
         return self.fWebSeeds ? self.fWebSeeds.count : 0;
-    }
-    else
-    {
+    } else {
         return self.fPeers ? self.fPeers.count : 0;
     }
 }
 
 - (id)tableView:(NSTableView*)tableView objectValueForTableColumn:(NSTableColumn*)column row:(NSInteger)row
 {
-    if (tableView == self.fWebSeedTable)
-    {
+    if (tableView == self.fWebSeedTable) {
         NSString* ident = column.identifier;
         NSDictionary* webSeed = self.fWebSeeds[row];
 
-        if ([ident isEqualToString:@"DL From"])
-        {
+        if ([ident isEqualToString:@"DL From"]) {
             NSNumber* rate;
             return (rate = webSeed[@"DL From Rate"]) ? [NSString stringForSpeedAbbrev:rate.doubleValue] : @"";
-        }
-        else
-        {
+        } else {
             return webSeed[@"Address"];
         }
-    }
-    else
-    {
+    } else {
         NSString* ident = column.identifier;
         NSDictionary* peer = self.fPeers[row];
 
-        if ([ident isEqualToString:@"Encryption"])
-        {
+        if ([ident isEqualToString:@"Encryption"]) {
             return [peer[@"Encryption"] boolValue] ? [NSImage imageWithSystemSymbolName:@"lock.fill" accessibilityDescription:nil] : nil;
-        }
-        else if ([ident isEqualToString:@"Client"])
-        {
+        } else if ([ident isEqualToString:@"Client"]) {
             return peer[@"Client"];
-        }
-        else if ([ident isEqualToString:@"Progress"])
-        {
+        } else if ([ident isEqualToString:@"Progress"]) {
             return peer[@"Progress"];
-        }
-        else if ([ident isEqualToString:@"UL To"])
-        {
+        } else if ([ident isEqualToString:@"UL To"]) {
             NSNumber* rate;
             return (rate = peer[@"UL To Rate"]) ? [NSString stringForSpeedAbbrev:rate.doubleValue] : @"";
-        }
-        else if ([ident isEqualToString:@"DL From"])
-        {
+        } else if ([ident isEqualToString:@"DL From"]) {
             NSNumber* rate;
             return (rate = peer[@"DL From Rate"]) ? [NSString stringForSpeedAbbrev:rate.doubleValue] : @"";
-        }
-        else
-        {
+        } else {
             return peer[@"IP"];
         }
     }
@@ -381,12 +324,10 @@ static NSString* const kWebSeedAnimationId = @"webSeed";
 
 - (void)tableView:(NSTableView*)tableView willDisplayCell:(id)cell forTableColumn:(NSTableColumn*)tableColumn row:(NSInteger)row
 {
-    if (tableView == self.fPeerTable)
-    {
+    if (tableView == self.fPeerTable) {
         NSString* ident = tableColumn.identifier;
 
-        if ([ident isEqualToString:@"Progress"])
-        {
+        if ([ident isEqualToString:@"Progress"]) {
             NSDictionary* peer = self.fPeers[row];
             ((PeerProgressIndicatorCell*)cell).seed = [peer[@"Seed"] boolValue];
         }
@@ -395,18 +336,13 @@ static NSString* const kWebSeedAnimationId = @"webSeed";
 
 - (void)tableView:(NSTableView*)tableView didClickTableColumn:(NSTableColumn*)tableColumn
 {
-    if (tableView == self.fWebSeedTable)
-    {
-        if (self.fWebSeeds)
-        {
+    if (tableView == self.fWebSeedTable) {
+        if (self.fWebSeeds) {
             [self.fWebSeeds sortUsingDescriptors:self.fWebSeedTable.sortDescriptors];
             [tableView reloadData];
         }
-    }
-    else
-    {
-        if (self.fPeers)
-        {
+    } else {
+        if (self.fPeers) {
             [self.fPeers sortUsingDescriptors:self.peerSortDescriptors];
             [tableView reloadData];
         }
@@ -425,31 +361,27 @@ static NSString* const kWebSeedAnimationId = @"webSeed";
                    row:(NSInteger)row
          mouseLocation:(NSPoint)mouseLocation
 {
-    if (tableView == self.fPeerTable)
-    {
+    if (tableView == self.fPeerTable) {
         BOOL const multiple = self.fTorrents.count > 1;
 
         NSDictionary* peer = self.fPeers[row];
         NSMutableArray* components = [NSMutableArray arrayWithCapacity:multiple ? 6 : 5];
 
-        if (multiple)
-        {
+        if (multiple) {
             [components addObject:peer[@"Name"]];
         }
 
         CGFloat const progress = [peer[@"Progress"] floatValue];
         NSString* progressString = [NSString stringWithFormat:NSLocalizedString(@"Progress: %@", "Inspector -> Peers tab -> table row tooltip"),
                                                               [NSString percentString:progress longDecimals:NO]];
-        if (progress < 1.0 && [peer[@"Seed"] boolValue])
-        {
+        if (progress < 1.0 && [peer[@"Seed"] boolValue]) {
             progressString = [progressString
                 stringByAppendingFormat:@" (%@)", NSLocalizedString(@"Partial Seed", "Inspector -> Peers tab -> table row tooltip")];
         }
         [components addObject:progressString];
 
         NSString* protocolString = [peer[@"uTP"] boolValue] ? @"\u00b5TP" : @"TCP";
-        if ([peer[@"Encryption"] boolValue])
-        {
+        if ([peer[@"Encryption"] boolValue]) {
             protocolString = [protocolString
                 stringByAppendingFormat:@" (%@)", NSLocalizedString(@"encrypted", "Inspector -> Peers tab -> table row tooltip")];
         }
@@ -458,20 +390,16 @@ static NSString* const kWebSeedAnimationId = @"webSeed";
 
         NSString* portString;
         NSInteger port;
-        if ((port = [peer[@"Port"] intValue]) > 0)
-        {
+        if ((port = [peer[@"Port"] intValue]) > 0) {
             portString = [NSString stringWithFormat:@"%ld", port];
-        }
-        else
-        {
+        } else {
             portString = NSLocalizedString(@"N/A", "Inspector -> Peers tab -> table row tooltip");
         }
         [components addObject:[NSString stringWithFormat:NSLocalizedString(@"Port: %@", "Inspector -> Peers tab -> table row tooltip"),
                                                          portString]];
 
         NSInteger const peerFrom = [peer[@"From"] integerValue];
-        switch (peerFrom)
-        {
+        switch (peerFrom) {
         case TR_PEER_FROM_TRACKER:
             [components addObject:NSLocalizedString(@"From: tracker", "Inspector -> Peers tab -> table row tooltip")];
             break;
@@ -501,45 +429,35 @@ static NSString* const kWebSeedAnimationId = @"webSeed";
         NSMutableArray* statusArray = [NSMutableArray arrayWithCapacity:6];
         NSString* flags = peer[@"Flags"];
 
-        if ([flags rangeOfString:@"D"].location != NSNotFound)
-        {
+        if ([flags rangeOfString:@"D"].location != NSNotFound) {
             [statusArray addObject:NSLocalizedString(@"Currently downloading (interested and not choked)", "Inspector -> peer -> status")];
         }
-        if ([flags rangeOfString:@"d"].location != NSNotFound)
-        {
+        if ([flags rangeOfString:@"d"].location != NSNotFound) {
             [statusArray addObject:NSLocalizedString(
                                        @"You want to download, but peer does not want to send (interested and choked)",
                                        "Inspector -> peer -> status")];
         }
-        if ([flags rangeOfString:@"U"].location != NSNotFound)
-        {
+        if ([flags rangeOfString:@"U"].location != NSNotFound) {
             [statusArray addObject:NSLocalizedString(@"Currently uploading (interested and not choked)", "Inspector -> peer -> status")];
         }
-        if ([flags rangeOfString:@"u"].location != NSNotFound)
-        {
+        if ([flags rangeOfString:@"u"].location != NSNotFound) {
             [statusArray addObject:NSLocalizedString(@"Peer wants you to upload, but you do not want to (interested and choked)", "Inspector -> peer -> status")];
         }
-        if ([flags rangeOfString:@"K"].location != NSNotFound)
-        {
+        if ([flags rangeOfString:@"K"].location != NSNotFound) {
             [statusArray addObject:NSLocalizedString(@"Peer is unchoking you, but you are not interested", "Inspector -> peer -> status")];
         }
-        if ([flags rangeOfString:@"?"].location != NSNotFound)
-        {
+        if ([flags rangeOfString:@"?"].location != NSNotFound) {
             [statusArray addObject:NSLocalizedString(@"You unchoked the peer, but the peer is not interested", "Inspector -> peer -> status")];
         }
 
-        if (statusArray.count > 0)
-        {
+        if (statusArray.count > 0) {
             NSString* statusStrings = [statusArray componentsJoinedByString:@"\n\n"];
             [components addObject:[@"\n" stringByAppendingString:statusStrings]];
         }
 
         return [components componentsJoinedByString:@"\n"];
-    }
-    else
-    {
-        if (self.fTorrents.count > 1)
-        {
+    } else {
+        if (self.fTorrents.count > 1) {
             return self.fWebSeeds[row][@"Name"];
         }
     }
@@ -549,8 +467,7 @@ static NSString* const kWebSeedAnimationId = @"webSeed";
 
 - (void)animationDidStart:(CAAnimation*)animation
 {
-    if (![[animation valueForKey:kAnimationIdKey] isEqualToString:kWebSeedAnimationId])
-    {
+    if (![[animation valueForKey:kAnimationIdKey] isEqualToString:kWebSeedAnimationId]) {
         return;
     }
 
@@ -559,8 +476,7 @@ static NSString* const kWebSeedAnimationId = @"webSeed";
 
 - (void)animationDidStop:(CAAnimation*)animation finished:(BOOL)finished
 {
-    if (![[animation valueForKey:kAnimationIdKey] isEqualToString:kWebSeedAnimationId])
-    {
+    if (![[animation valueForKey:kAnimationIdKey] isEqualToString:kWebSeedAnimationId]) {
         return;
     }
 
@@ -573,32 +489,25 @@ static NSString* const kWebSeedAnimationId = @"webSeed";
 {
     __block BOOL hasWebSeeds = NO;
 
-    if (self.fTorrents.count == 0)
-    {
+    if (self.fTorrents.count == 0) {
         self.fPeers = nil;
         [self.fPeerTable reloadData];
 
         self.fConnectedPeersField.stringValue = @"";
-    }
-    else
-    {
+    } else {
         [self.fTorrents enumerateObjectsWithOptions:NSEnumerationConcurrent
                                          usingBlock:^(Torrent* torrent, NSUInteger /*idx*/, BOOL* stop) {
-                                             if (torrent.webSeedCount > 0)
-                                             {
+                                             if (torrent.webSeedCount > 0) {
                                                  hasWebSeeds = YES;
                                                  *stop = YES;
                                              }
                                          }];
     }
 
-    if (!hasWebSeeds)
-    {
+    if (!hasWebSeeds) {
         self.fWebSeeds = nil;
         [self.fWebSeedTable reloadData];
-    }
-    else
-    {
+    } else {
         [self.fWebSeedTable deselectAll:self];
     }
     [self setWebSeedTableHidden:!hasWebSeeds animate:YES];
@@ -608,8 +517,7 @@ static NSString* const kWebSeedAnimationId = @"webSeed";
 
 - (void)setWebSeedTableHidden:(BOOL)hide animate:(BOOL)animate
 {
-    if (animate && (!self.view.window || !self.view.window.visible))
-    {
+    if (animate && (!self.view.window || !self.view.window.visible)) {
         animate = NO;
     }
 
@@ -624,20 +532,17 @@ static NSString* const kWebSeedAnimationId = @"webSeed";
 
     NSArray* oldDescriptors = self.fPeerTable.sortDescriptors;
     BOOL useSecond = YES, asc = YES;
-    if (oldDescriptors.count > 0)
-    {
+    if (oldDescriptors.count > 0) {
         NSSortDescriptor* descriptor = oldDescriptors[0];
         [descriptors addObject:descriptor];
 
-        if ((useSecond = ![descriptor.key isEqualToString:@"IP"]))
-        {
+        if ((useSecond = ![descriptor.key isEqualToString:@"IP"])) {
             asc = descriptor.ascending;
         }
     }
 
     //sort by IP after primary sort
-    if (useSecond)
-    {
+    if (useSecond) {
         NSSortDescriptor* secondDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"IP" ascending:asc
                                                                             selector:@selector(compareNumeric:)];
         [descriptors addObject:secondDescriptor];

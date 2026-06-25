@@ -34,8 +34,7 @@ namespace
 {
 
 template<class... Ts>
-struct Overloaded : Ts...
-{
+struct Overloaded : Ts... {
     using Ts::operator()...;
 };
 
@@ -108,16 +107,12 @@ TYPED_TEST_SUITE(VariantIntTest, TestTypes);
 TYPED_TEST(VariantIntTest, getIntTypes)
 {
     auto v = tr_variant{};
-    auto const test = [&v](auto const expected)
-    {
+    auto const test = [&v](auto const expected) {
         v = expected;
         if (std::cmp_greater_equal(expected, std::numeric_limits<TypeParam>::lowest()) &&
-            std::cmp_less_equal(expected, std::numeric_limits<TypeParam>::max()))
-        {
+            std::cmp_less_equal(expected, std::numeric_limits<TypeParam>::max())) {
             EXPECT_EQ(expected, v.value_if<TypeParam>());
-        }
-        else
-        {
+        } else {
             EXPECT_EQ(std::nullopt, v.value_if<TypeParam>());
         }
     };
@@ -149,13 +144,11 @@ TYPED_TEST(VariantIntTest, getIntTypes)
 
 TEST_F(VariantTest, mergeStringsTakesOwnership)
 {
-    auto const is_equal_string = [](std::string_view const a, std::string_view const b)
-    {
+    auto const is_equal_string = [](std::string_view const a, std::string_view const b) {
         return a == b;
     };
 
-    auto const is_same_address = [](std::string_view const a, std::string_view const b)
-    {
+    auto const is_same_address = [](std::string_view const a, std::string_view const b) {
         return std::data(a) == std::data(b);
     };
 
@@ -371,12 +364,10 @@ TEST_F(VariantTest, bencParseAndReencode)
     auto serde = tr_variant_serde::benc();
     serde.inplace();
 
-    for (auto const& [benc, is_good] : Tests)
-    {
+    for (auto const& [benc, is_good] : Tests) {
         auto var = serde.parse(benc);
         EXPECT_EQ(is_good, var.has_value());
-        if (var)
-        {
+        if (var) {
             EXPECT_EQ(benc.data() + benc.size(), serde.end());
             EXPECT_EQ(benc, serde.to_string(*var));
         }
@@ -440,8 +431,7 @@ TEST_F(VariantTest, bencToJson)
     benc_serde.inplace();
     json_serde.compact();
 
-    for (auto const& [benc, expected] : Tests)
-    {
+    for (auto const& [benc, expected] : Tests) {
         auto top = benc_serde.parse(benc).value_or(tr_variant{});
         EXPECT_EQ(expected, json_serde.to_string(top));
     }
@@ -677,12 +667,9 @@ TEST_F(VariantTest, mergeOverwritesDifferingTypes)
     serde.compact();
     serde.inplace();
 
-    for (auto const& [src, src_expected] : variants)
-    {
-        for (auto const& [tgt, tgt_expected] : variants)
-        {
-            if (&src != &tgt)
-            {
+    for (auto const& [src, src_expected] : variants) {
+        for (auto const& [tgt, tgt_expected] : variants) {
+            if (&src != &tgt) {
                 // set up `var` to be a copy of `src`
                 auto var = src.clone();
                 EXPECT_EQ(src_expected, serde.to_string(var));
@@ -874,13 +861,11 @@ TEST_F(VariantTest, visitConstVariant)
     vec->emplace_back(int64_t{ 99 });
 
     auto const result = std::as_const(var).visit(
-        Overloaded{ [](tr_variant::Vector const& values) -> int64_t
-                    {
-                        EXPECT_EQ(1U, std::size(values));
-                        return values[0].value_if<int64_t>().value_or(-1);
-                    },
-                    [](auto&&) -> int64_t
-                    {
+        Overloaded{ [](tr_variant::Vector const& values) -> int64_t {
+                       EXPECT_EQ(1U, std::size(values));
+                       return values[0].value_if<int64_t>().value_or(-1);
+                   },
+                    [](auto&&) -> int64_t {
                         ADD_FAILURE() << "unexpected alternative";
                         return -1;
                     } });
@@ -910,42 +895,32 @@ TEST_F(VariantTest, visitsNodesDepthFirst)
     flattened.reserve(64U);
 
     // set up the visitor
-    auto flatten = [&](tr_variant const& node, auto const& self) -> void
-    {
+    auto flatten = [&](tr_variant const& node, auto const& self) -> void {
         ++visited_counts[node.index()];
 
-        node.visit(
-            [&](auto const& val)
-            {
-                using ValueType = std::remove_cvref_t<decltype(val)>;
+        node.visit([&](auto const& val) {
+            using ValueType = std::remove_cvref_t<decltype(val)>;
 
-                if constexpr (
-                    std::is_same_v<ValueType, bool> || //
-                    std::is_same_v<ValueType, double> || //
-                    std::is_same_v<ValueType, int64_t> || //
-                    std::is_same_v<ValueType, std::monostate> || //
-                    std::is_same_v<ValueType, std::nullptr_t> || //
-                    std::is_same_v<ValueType, std::string_view> || //
-                    std::is_same_v<ValueType, std::string>)
-                {
-                    flattened.emplace_back(val);
+            if constexpr (
+                std::is_same_v<ValueType, bool> || //
+                std::is_same_v<ValueType, double> || //
+                std::is_same_v<ValueType, int64_t> || //
+                std::is_same_v<ValueType, std::monostate> || //
+                std::is_same_v<ValueType, std::nullptr_t> || //
+                std::is_same_v<ValueType, std::string_view> || //
+                std::is_same_v<ValueType, std::string>) {
+                flattened.emplace_back(val);
+            } else if constexpr (std::is_same_v<ValueType, tr_variant::Vector>) {
+                for (auto const& child : val) {
+                    self(child, self);
                 }
-                else if constexpr (std::is_same_v<ValueType, tr_variant::Vector>)
-                {
-                    for (auto const& child : val)
-                    {
-                        self(child, self);
-                    }
+            } else if constexpr (std::is_same_v<ValueType, tr_variant::Map>) {
+                for (auto const& [key, child] : val) {
+                    flattened.emplace_back(tr_variant::unmanaged_string(key));
+                    self(child, self);
                 }
-                else if constexpr (std::is_same_v<ValueType, tr_variant::Map>)
-                {
-                    for (auto const& [key, child] : val)
-                    {
-                        flattened.emplace_back(tr_variant::unmanaged_string(key));
-                        self(child, self);
-                    }
-                }
-            });
+            }
+        });
     };
 
     flatten(var, flatten);
@@ -977,8 +952,7 @@ TEST_F(VariantTest, variantFromBufFuzz)
     auto json_serde = tr_variant_serde::json();
     auto buf = std::vector<char>{};
 
-    for (size_t i = 0; i < 100000; ++i)
-    {
+    for (size_t i = 0; i < 100000; ++i) {
         buf.resize(tr_rand_int(4096U));
         tr_rand_buffer(std::data(buf), std::size(buf));
 
@@ -998,8 +972,7 @@ TEST_F(VariantTest, serdeEnd)
         std::tuple{ "d5:benc1i1ee"sv, '\0', 12U },
     };
 
-    for (auto [in, c, pos] : TestsJson)
-    {
+    for (auto [in, c, pos] : TestsJson) {
         auto json_serde = tr_variant_serde::json().inplace();
         auto json_var = json_serde.parse(in).value_or(tr_variant{});
         EXPECT_TRUE(json_var.holds_alternative<tr_variant::Map>()) << json_serde.error_;
@@ -1007,8 +980,7 @@ TEST_F(VariantTest, serdeEnd)
         EXPECT_EQ(json_serde.end() - std::data(in), pos);
     }
 
-    for (auto [in, c, pos] : TestsBenc)
-    {
+    for (auto [in, c, pos] : TestsBenc) {
         auto benc_serde = tr_variant_serde::benc().inplace();
         auto benc_var = benc_serde.parse(in).value_or(tr_variant{});
         EXPECT_TRUE(benc_var.holds_alternative<tr_variant::Map>()) << benc_serde.error_;

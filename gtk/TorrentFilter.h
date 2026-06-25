@@ -20,8 +20,7 @@ class TorrentFilter : public FilterBase<Torrent>
 public:
     using ShowMode = tr::app::ShowMode;
 
-    enum class Tracker : int8_t
-    {
+    enum class Tracker : int8_t {
         ALL,
         HOST,
     };

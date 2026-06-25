@@ -168,8 +168,7 @@ QString TorrentDelegate::progressString(Torrent const& tor)
         //: %1 is the percentage of torrent metadata downloaded
         str = tr("Magnetized transfer - retrieving metadata (%1%)")
                   .arg(Formatter::percent_to_string(tor.metadataPercentDone() * 100.0));
-    }
-    else if (!is_done) // downloading
+    } else if (!is_done) // downloading
     {
         //: First part of torrent progress string,
         //: %1 is how much we've got,
@@ -179,11 +178,9 @@ QString TorrentDelegate::progressString(Torrent const& tor)
                   .arg(Formatter::storage_to_string(have_total))
                   .arg(Formatter::storage_to_string(tor.sizeWhenDone()))
                   .arg(Formatter::percent_to_string(tor.percentDone() * 100.0));
-    }
-    else if (!is_seed) // partial seed
+    } else if (!is_seed) // partial seed
     {
-        if (seed_ratio_limit)
-        {
+        if (seed_ratio_limit) {
             //: First part of torrent progress string,
             //: %1 is how much we've got,
             //: %2 is the torrent's total size,
@@ -198,9 +195,7 @@ QString TorrentDelegate::progressString(Torrent const& tor)
                       .arg(Formatter::storage_to_string(tor.uploadedEver()))
                       .arg(Formatter::ratio_to_string(tor.ratio()))
                       .arg(Formatter::ratio_to_string(*seed_ratio_limit));
-        }
-        else
-        {
+        } else {
             //: First part of torrent progress string,
             //: %1 is how much we've got,
             //: %2 is the torrent's total size,
@@ -214,11 +209,9 @@ QString TorrentDelegate::progressString(Torrent const& tor)
                       .arg(Formatter::storage_to_string(tor.uploadedEver()))
                       .arg(Formatter::ratio_to_string(tor.ratio()));
         }
-    }
-    else // seeding
+    } else // seeding
     {
-        if (seed_ratio_limit)
-        {
+        if (seed_ratio_limit) {
             //: First part of torrent progress string,
             //: %1 is the torrent's total size,
             //: %2 is how much we've uploaded,
@@ -229,8 +222,7 @@ QString TorrentDelegate::progressString(Torrent const& tor)
                       .arg(Formatter::storage_to_string(tor.uploadedEver()))
                       .arg(Formatter::ratio_to_string(tor.ratio()))
                       .arg(Formatter::ratio_to_string(*seed_ratio_limit));
-        }
-        else // seeding w/o a ratio
+        } else // seeding w/o a ratio
         {
             //: First part of torrent progress string,
             //: %1 is the torrent's total size,
@@ -244,17 +236,13 @@ QString TorrentDelegate::progressString(Torrent const& tor)
     }
 
     // add time when downloading
-    if ((seed_ratio_limit && tor.isSeeding()) || tor.isDownloading())
-    {
-        if (tor.hasETA())
-        {
+    if ((seed_ratio_limit && tor.isSeeding()) || tor.isDownloading()) {
+        if (tor.hasETA()) {
             //: Second (optional) part of torrent progress string,
             //: %1 is duration,
             //: notice that leading space (before the dash) is included here
             str += tr(" - %1 left").arg(Formatter::time_to_string(tor.getETA()));
-        }
-        else
-        {
+        } else {
             //: Second (optional) part of torrent progress string,
             //: notice that leading space (before the dash) is included here
             str += tr(" - Remaining time unknown");
@@ -271,12 +259,9 @@ QString TorrentDelegate::shortTransferString(Torrent const& tor)
     bool const have_down(have_meta && ((tor.webseedsWeAreDownloadingFrom() > 0) || (tor.peersWeAreDownloadingFrom() > 0)));
     bool const have_up(have_meta && tor.peersWeAreUploadingTo() > 0);
 
-    if (have_down)
-    {
+    if (have_down) {
         str = tor.downloadSpeed().to_download_qstring() + QStringLiteral("   ") + tor.uploadSpeed().to_upload_qstring();
-    }
-    else if (have_up)
-    {
+    } else if (have_up) {
         str = tor.uploadSpeed().to_upload_qstring();
     }
 
@@ -287,8 +272,7 @@ QString TorrentDelegate::shortStatusString(Torrent const& tor)
 {
     QString str;
 
-    switch (tor.getActivity())
-    {
+    switch (tor.getActivity()) {
     case TR_STATUS_CHECK:
         str = tr("Verifying local data (%1% tested)").arg(Formatter::percent_to_string(tor.getVerifyProgress() * 100.0));
         break;
@@ -305,18 +289,14 @@ QString TorrentDelegate::shortStatusString(Torrent const& tor)
 
     // add time when downloading
     auto const seed_ratio_limit = tor.getSeedRatioLimit();
-    if ((seed_ratio_limit && tor.isSeeding()) || tor.isDownloading())
-    {
+    if ((seed_ratio_limit && tor.isSeeding()) || tor.isDownloading()) {
         str += QStringLiteral("    ");
-        if (tor.hasETA())
-        {
+        if (tor.hasETA()) {
             //: Second (optional) part of torrent progress string,
             //: %1 is duration,
             //: notice that leading space (before the dash) is included here
             str += tr("%1 left").arg(Formatter::time_to_string(tor.getETA()));
-        }
-        else
-        {
+        } else {
             //: Second (optional) part of torrent progress string,
             //: notice that leading space (before the dash) is included here
             str += tr("Remaining time unknown");
@@ -330,14 +310,10 @@ QString TorrentDelegate::statusString(Torrent const& tor)
 {
     QString str;
 
-    if (tor.hasError())
-    {
+    if (tor.hasError()) {
         str = tor.getError();
-    }
-    else
-    {
-        switch (tor.getActivity())
-        {
+    } else {
+        switch (tor.getActivity()) {
         case TR_STATUS_STOPPED:
         case TR_STATUS_CHECK_WAIT:
         case TR_STATUS_CHECK:
@@ -347,29 +323,22 @@ QString TorrentDelegate::statusString(Torrent const& tor)
             break;
 
         case TR_STATUS_DOWNLOAD:
-            if (!tor.hasMetadata())
-            {
+            if (!tor.hasMetadata()) {
                 str = tr("Downloading metadata from %Ln peer(s) (%1% done)", nullptr, tor.peersWeAreDownloadingFrom())
                           .arg(Formatter::percent_to_string(100.0 * tor.metadataPercentDone()));
-            }
-            else
-            {
+            } else {
                 /* it would be nicer for translation if this was all one string, but I don't see how to do multiple %n's in
                  * tr() */
-                if (tor.connectedPeersAndWebseeds() == 0)
-                {
+                if (tor.connectedPeersAndWebseeds() == 0) {
                     //: First part of phrase "Downloading from ... peer(s) and ... web seed(s)"
                     str = tr("Downloading from %Ln peer(s)", nullptr, tor.peersWeAreDownloadingFrom());
-                }
-                else
-                {
+                } else {
                     //: First part of phrase "Downloading from ... of ... connected peer(s) and ... web seed(s)"
                     str = tr("Downloading from %1 of %Ln connected peer(s)", nullptr, tor.connectedPeersAndWebseeds())
                               .arg(tor.peersWeAreDownloadingFrom());
                 }
 
-                if (tor.webseedsWeAreDownloadingFrom())
-                {
+                if (tor.webseedsWeAreDownloadingFrom()) {
                     //: Second (optional) part of phrase "Downloading from ... of ... connected peer(s) and ... web seed(s)",
                     //: notice that leading space (before "and") is included here
                     str += tr(" and %Ln web seed(s)", nullptr, tor.webseedsWeAreDownloadingFrom());
@@ -379,12 +348,9 @@ QString TorrentDelegate::statusString(Torrent const& tor)
             break;
 
         case TR_STATUS_SEED:
-            if (tor.connectedPeers() == 0)
-            {
+            if (tor.connectedPeers() == 0) {
                 str = tr("Seeding to %Ln peer(s)", nullptr, tor.peersWeAreUploadingTo());
-            }
-            else
-            {
+            } else {
                 str = tr("Seeding to %1 of %Ln connected peer(s)", nullptr, tor.connectedPeers())
                           .arg(tor.peersWeAreUploadingTo());
             }
@@ -393,12 +359,10 @@ QString TorrentDelegate::statusString(Torrent const& tor)
         }
     }
 
-    if (tor.isReadyToTransfer())
-    {
+    if (tor.isReadyToTransfer()) {
         QString const s = shortTransferString(tor);
 
-        if (!s.isEmpty())
-        {
+        if (!s.isEmpty()) {
             str += tr(" - ") + s;
         }
     }
@@ -423,15 +387,13 @@ QSize TorrentDelegate::sizeHint(QStyleOptionViewItem const& option, Torrent cons
 QSize TorrentDelegate::sizeHint(QStyleOptionViewItem const& option, QModelIndex const& index) const
 {
     // if the font changed, invalidate the height cache
-    if (height_font_ != option.font)
-    {
+    if (height_font_ != option.font) {
         height_font_ = option.font;
         height_hint_.reset();
     }
 
     // ensure the height is cached
-    if (!height_hint_)
-    {
+    if (!height_hint_) {
         auto const* tor = index.data(TorrentModel::TorrentRole).value<Torrent const*>();
         height_hint_ = sizeHint(option, *tor).height();
     }
@@ -452,15 +414,12 @@ void TorrentDelegate::setProgressBarPercentDone(QStyleOptionViewItem const& opti
 {
     auto const seed_ratio_limit = tor.getSeedRatioLimit();
 
-    if (tor.isSeeding() && seed_ratio_limit)
-    {
+    if (tor.isSeeding() && seed_ratio_limit) {
         auto const seed_rate_ratio = tor.ratio() / *seed_ratio_limit;
         auto const scaled_progress = static_cast<int>(
             seed_rate_ratio * (progress_bar_style_.maximum - progress_bar_style_.minimum));
         progress_bar_style_.progress = progress_bar_style_.minimum + scaled_progress;
-    }
-    else
-    {
+    } else {
         bool const is_magnet(!tor.hasMetadata());
         progress_bar_style_.direction = option.direction;
         progress_bar_style_.progress = static_cast<int>(
@@ -482,12 +441,10 @@ void TorrentDelegate::drawTorrent(QPainter* painter, QStyleOptionViewItem const&
 
     painter->save();
 
-    if (is_item_selected)
-    {
+    if (is_item_selected) {
         QPalette::ColorGroup cg = is_item_enabled ? QPalette::Normal : QPalette::Disabled;
 
-        if (cg == QPalette::Normal && !is_item_active)
-        {
+        if (cg == QPalette::Normal && !is_item_active) {
             cg = QPalette::Inactive;
         }
 
@@ -496,16 +453,11 @@ void TorrentDelegate::drawTorrent(QPainter* painter, QStyleOptionViewItem const&
 
     auto icon_mode = QIcon::Mode{};
 
-    if (is_paused || !is_item_enabled)
-    {
+    if (is_paused || !is_item_enabled) {
         icon_mode = QIcon::Disabled;
-    }
-    else if (is_item_selected)
-    {
+    } else if (is_item_selected) {
         icon_mode = QIcon::Selected;
-    }
-    else
-    {
+    } else {
         icon_mode = QIcon::Normal;
     }
 
@@ -515,15 +467,13 @@ void TorrentDelegate::drawTorrent(QPainter* painter, QStyleOptionViewItem const&
 
     auto text_color = (tor.hasError() && !is_item_selected) ? QColor{ Qt::GlobalColor::red } :
                                                               option.palette.color(color_group, color_role);
-    if (is_paused || !is_item_enabled)
-    {
+    if (is_paused || !is_item_enabled) {
         text_color.setAlphaF(0.5);
     }
 
     QStyle::State progress_bar_state(option.state);
 
-    if (is_paused)
-    {
+    if (is_paused) {
         progress_bar_state = QStyle::State_None;
     }
 
@@ -543,8 +493,7 @@ void TorrentDelegate::drawTorrent(QPainter* painter, QStyleOptionViewItem const&
 
     tor.getMimeTypeIcon().paint(painter, layout.icon_rect, Qt::AlignCenter, icon_mode, icon_state);
 
-    if (!emblem_icon.isNull())
-    {
+    if (!emblem_icon.isNull()) {
         emblem_icon.paint(painter, layout.emblem_rect, Qt::AlignCenter, emblem_im, icon_state);
     }
 
@@ -556,20 +505,15 @@ void TorrentDelegate::drawTorrent(QPainter* painter, QStyleOptionViewItem const&
     painter->drawText(layout.progress_rect, Qt::AlignLeft | Qt::AlignVCenter, layout.progressText());
     progress_bar_style_.rect = layout.bar_rect;
 
-    if (tor.isDownloading())
-    {
+    if (tor.isDownloading()) {
         progress_bar_style_.palette.setBrush(QPalette::Highlight, BlueBrush);
         progress_bar_style_.palette.setColor(QPalette::Base, BlueBack);
         progress_bar_style_.palette.setColor(QPalette::Window, BlueBack);
-    }
-    else if (tor.isSeeding())
-    {
+    } else if (tor.isSeeding()) {
         progress_bar_style_.palette.setBrush(QPalette::Highlight, GreenBrush);
         progress_bar_style_.palette.setColor(QPalette::Base, GreenBack);
         progress_bar_style_.palette.setColor(QPalette::Window, GreenBack);
-    }
-    else
-    {
+    } else {
         progress_bar_style_.palette.setBrush(QPalette::Highlight, SilverBrush);
         progress_bar_style_.palette.setColor(QPalette::Base, SilverBack);
         progress_bar_style_.palette.setColor(QPalette::Window, SilverBack);

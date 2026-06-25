@@ -23,14 +23,11 @@ AboutDialog::AboutDialog(Session& session, QWidget* parent)
 
     ui_.iconLabel->setPixmap(QApplication::windowIcon().pixmap(48));
 
-    if (session.isServer())
-    {
+    if (session.isServer()) {
         auto const title = QStringLiteral("<b style='font-size:x-large'>Transmission %1</b>")
                                .arg(QStringLiteral(LONG_VERSION_STRING));
         ui_.titleLabel->setText(title);
-    }
-    else
-    {
+    } else {
         QString title = QStringLiteral(
             "<div style='font-size:x-large; font-weight: bold; text-align: center'>Transmission</div>");
         title += QStringLiteral("<div style='text-align: center'>%1: %2</div>")

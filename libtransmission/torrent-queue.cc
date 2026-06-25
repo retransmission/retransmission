@@ -33,13 +33,10 @@ size_t tr_torrent_queue::add(tr_torrent_id_t const id)
 void tr_torrent_queue::remove(tr_torrent_id_t const id)
 {
     auto const pos = std::cmp_less(id, std::size(pos_cache_)) ? pos_cache_[id] : 0U;
-    if (pos < std::size(queue_) && queue_[pos] == id)
-    {
+    if (pos < std::size(queue_) && queue_[pos] == id) {
         using diff_type = decltype(queue_)::difference_type;
         queue_.erase(std::begin(queue_) + static_cast<diff_type>(pos));
-    }
-    else
-    {
+    } else {
         std::erase(queue_, id);
     }
     set_dirty();
@@ -49,11 +46,9 @@ size_t tr_torrent_queue::get_pos(tr_torrent_id_t const id)
 {
     auto const uid = static_cast<size_t>(id);
     if (auto n_cache = std::size(pos_cache_);
-        uid >= n_cache || pos_cache_[uid] >= std::size(queue_) || id != queue_[pos_cache_[uid]])
-    {
+        uid >= n_cache || pos_cache_[uid] >= std::size(queue_) || id != queue_[pos_cache_[uid]]) {
         auto it = std::ranges::find(queue_, id);
-        if (it == std::ranges::cend(queue_))
-        {
+        if (it == std::ranges::cend(queue_)) {
             return MaxQueuePosition;
         }
 
@@ -69,15 +64,13 @@ std::vector<tr_torrent_id_t> tr_torrent_queue::set_pos(tr_torrent_id_t const id,
 {
     auto const old_pos = get_pos(id);
     auto const n_queue = std::size(queue_);
-    if (old_pos >= n_queue || queue_[old_pos] != id)
-    {
+    if (old_pos >= n_queue || queue_[old_pos] != id) {
         return {};
     }
 
     new_pos = std::min(new_pos, n_queue - 1U);
 
-    if (old_pos == new_pos)
-    {
+    if (old_pos == new_pos) {
         return {};
     }
 
@@ -88,13 +81,10 @@ std::vector<tr_torrent_id_t> tr_torrent_queue::set_pos(tr_torrent_id_t const id,
     auto const old_it = std::next(begin, static_cast<diff_type>(old_pos));
     auto const old_next_it = std::next(old_it);
     auto const new_it = std::next(begin, static_cast<diff_type>(new_pos));
-    if (old_pos > new_pos)
-    {
+    if (old_pos > new_pos) {
         ret.assign(new_it, old_next_it);
         std::rotate(new_it, old_it, old_next_it);
-    }
-    else
-    {
+    } else {
         auto const new_next_it = std::next(new_it);
         ret.assign(old_it, new_next_it);
         std::rotate(old_it, old_next_it, new_next_it);
@@ -106,16 +96,14 @@ std::vector<tr_torrent_id_t> tr_torrent_queue::set_pos(tr_torrent_id_t const id,
 
 bool tr_torrent_queue::to_file()
 {
-    if (!is_dirty())
-    {
+    if (!is_dirty()) {
         return false;
     }
     set_dirty(false);
 
     auto vec = tr_variant::Vector{};
     vec.reserve(std::size(queue_));
-    for (auto const id : queue_)
-    {
+    for (auto const id : queue_) {
         vec.emplace_back(mediator_.store_filename(id));
     }
 
@@ -125,23 +113,19 @@ bool tr_torrent_queue::to_file()
 std::vector<std::string> tr_torrent_queue::from_file()
 {
     auto top = tr_variant_serde::json().parse_file(get_file_path(mediator_.config_dir()));
-    if (!top)
-    {
+    if (!top) {
         return {};
     }
 
     auto const* const vec = top->get_if<tr_variant::Vector>();
-    if (vec == nullptr)
-    {
+    if (vec == nullptr) {
         return {};
     }
 
     auto ret = std::vector<std::string>{};
     ret.reserve(std::size(*vec));
-    for (auto const& var : *vec)
-    {
-        if (auto file = var.value_if<std::string_view>(); file)
-        {
+    for (auto const& var : *vec) {
+        if (auto file = var.value_if<std::string_view>(); file) {
             ret.emplace_back(*file);
         }
     }

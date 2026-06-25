@@ -59,8 +59,7 @@ using address_range_t = std::pair<tr_address, tr_address>;
 void save(std::string_view filename, address_range_t const* ranges, size_t n_ranges)
 {
     auto out = std::ofstream{ tr_pathbuf{ filename }, std::ios_base::out | std::ios_base::trunc | std::ios_base::binary };
-    if (!out.is_open())
-    {
+    if (!out.is_open()) {
         tr_logAddWarn(
             fmt::format(
                 fmt::runtime(_("Couldn't read '{path}': {error} ({error_code})")),
@@ -71,17 +70,14 @@ void save(std::string_view filename, address_range_t const* ranges, size_t n_ran
     }
 
     if (!out.write(std::data(BinContentsPrefix), std::size(BinContentsPrefix)) ||
-        !out.write(reinterpret_cast<char const*>(ranges), static_cast<std::streamsize>(n_ranges * sizeof(*ranges))))
-    {
+        !out.write(reinterpret_cast<char const*>(ranges), static_cast<std::streamsize>(n_ranges * sizeof(*ranges)))) {
         tr_logAddWarn(
             fmt::format(
                 fmt::runtime(_("Couldn't save '{path}': {error} ({error_code})")),
                 fmt::arg("path", filename),
                 fmt::arg("error", tr_strerror(errno)),
                 fmt::arg("error_code", errno)));
-    }
-    else
-    {
+    } else {
         tr_logAddInfo(
             fmt::format(
                 fmt::runtime(
@@ -102,38 +98,30 @@ std::optional<address_range_t> parsePeerGuardianLine(std::string_view line)
 {
     // remove leading "comment:"
     auto pos = line.find(':');
-    if (pos == std::string_view::npos)
-    {
+    if (pos == std::string_view::npos) {
         return {};
     }
     line = line.substr(pos + 1);
 
     // parse the leading 'x.x.x.x'
     pos = line.find('-');
-    if (pos == std::string_view::npos)
-    {
+    if (pos == std::string_view::npos) {
         return {};
     }
 
     auto addrpair = address_range_t{};
-    if (auto const addr = tr_address::from_string(line.substr(0, pos)); addr)
-    {
+    if (auto const addr = tr_address::from_string(line.substr(0, pos)); addr) {
         addrpair.first = *addr;
-    }
-    else
-    {
+    } else {
         return {};
     }
 
     line = line.substr(pos + 1);
 
     // parse the trailing 'y.y.y.y'
-    if (auto const addr = tr_address::from_string(line); addr)
-    {
+    if (auto const addr = tr_address::from_string(line); addr) {
         addrpair.second = *addr;
-    }
-    else
-    {
+    } else {
         return {};
     }
 
@@ -148,35 +136,27 @@ std::optional<address_range_t> parseEmuleLine(std::string_view line)
     static auto constexpr Delim2 = std::string_view{ " , " };
 
     auto pos = line.find(Delim1);
-    if (pos == std::string_view::npos)
-    {
+    if (pos == std::string_view::npos) {
         return {};
     }
 
     auto addrpair = address_range_t{};
 
-    if (auto const addr = tr_address::from_string(line.substr(0, pos)); addr)
-    {
+    if (auto const addr = tr_address::from_string(line.substr(0, pos)); addr) {
         addrpair.first = *addr;
-    }
-    else
-    {
+    } else {
         return {};
     }
 
     line = line.substr(pos + std::size(Delim1));
     pos = line.find(Delim2);
-    if (pos == std::string_view::npos)
-    {
+    if (pos == std::string_view::npos) {
         return {};
     }
 
-    if (auto const addr = tr_address::from_string(line.substr(0, pos)); addr)
-    {
+    if (auto const addr = tr_address::from_string(line.substr(0, pos)); addr) {
         addrpair.second = *addr;
-    }
-    else
-    {
+    } else {
         return {};
     }
 
@@ -191,23 +171,18 @@ std::optional<address_range_t> parseCidrLine(std::string_view line)
     auto addrpair = address_range_t{};
 
     auto pos = line.find('/');
-    if (pos == std::string_view::npos)
-    {
+    if (pos == std::string_view::npos) {
         return {};
     }
 
-    if (auto const addr = tr_address::from_string(line.substr(0, pos)); addr && addr->is_ipv4())
-    {
+    if (auto const addr = tr_address::from_string(line.substr(0, pos)); addr && addr->is_ipv4()) {
         addrpair.first = *addr;
-    }
-    else
-    {
+    } else {
         return {};
     }
 
     auto const pflen = tr_num_parse<size_t>(line.substr(pos + 1));
-    if (!pflen)
-    {
+    if (!pflen) {
         return {};
     }
 
@@ -222,10 +197,8 @@ std::optional<address_range_t> parseCidrLine(std::string_view line)
 
 std::optional<address_range_t> parseLine(std::string_view line)
 {
-    for (auto const& line_parser : { parsePeerGuardianLine, parseEmuleLine, parseCidrLine })
-    {
-        if (auto range = line_parser(line); range)
-        {
+    for (auto const& line_parser : { parsePeerGuardianLine, parseEmuleLine, parseCidrLine }) {
+        if (auto range = line_parser(line); range) {
             return range;
         }
     }
@@ -239,8 +212,7 @@ std::optional<std::vector<address_range_t>> parseFile(std::string_view filename)
     using namespace ParseHelpers;
 
     auto in = std::ifstream{ tr_pathbuf{ filename } };
-    if (!in.is_open())
-    {
+    if (!in.is_open()) {
         tr_logAddWarn(
             fmt::format(
                 fmt::runtime(_("Couldn't read '{path}': {error} ({error_code})")),
@@ -255,29 +227,23 @@ std::optional<std::vector<address_range_t>> parseFile(std::string_view filename)
     auto line = std::string{};
     auto line_number = size_t{ 0U };
     auto is_empty = true;
-    while (std::getline(in, line))
-    {
+    while (std::getline(in, line)) {
         ++line_number;
 
         // ignore empty lines
-        if (std::empty(line) || std::ranges::all_of(line, [](char c) { return std::isspace(static_cast<unsigned char>(c)); }))
-        {
+        if (std::empty(line) || std::ranges::all_of(line, [](char c) { return std::isspace(static_cast<unsigned char>(c)); })) {
             continue;
         }
 
         // ignore comments
-        if (tr_strv_starts_with(line, "//"sv) || tr_strv_starts_with(line, "#"sv))
-        {
+        if (tr_strv_starts_with(line, "//"sv) || tr_strv_starts_with(line, "#"sv)) {
             continue;
         }
 
         is_empty = false;
-        if (auto range = parseLine(line); range && (range->first.type == range->second.type))
-        {
+        if (auto range = parseLine(line); range && (range->first.type == range->second.type)) {
             ranges.push_back(*range);
-        }
-        else
-        {
+        } else {
             auto const base64 = tr_base64_encode(line);
             tr_logAddWarn(
                 fmt::format(
@@ -288,16 +254,13 @@ std::optional<std::vector<address_range_t>> parseFile(std::string_view filename)
     }
     in.close();
 
-    if (std::empty(ranges))
-    {
+    if (std::empty(ranges)) {
         return is_empty ? std::make_optional(std::move(ranges)) : std::nullopt;
     }
 
     // safeguard against some joker swapping the begin & end ranges
-    for (auto& [low, high] : ranges)
-    {
-        if (low > high)
-        {
+    for (auto& [low, high] : ranges) {
+        if (low > high) {
             std::swap(low, high);
         }
     }
@@ -307,14 +270,10 @@ std::optional<std::vector<address_range_t>> parseFile(std::string_view filename)
 
     // merge overlapping ranges
     auto keep = size_t{ 0U };
-    for (auto const& range : ranges)
-    {
-        if (ranges[keep].second < range.first)
-        {
+    for (auto const& range : ranges) {
+        if (ranges[keep].second < range.first) {
             ranges[++keep] = range;
-        }
-        else if (ranges[keep].second < range.second)
-        {
+        } else if (ranges[keep].second < range.second) {
             ranges[keep].second = range.second;
         }
     }
@@ -323,12 +282,10 @@ std::optional<std::vector<address_range_t>> parseFile(std::string_view filename)
     ranges.resize(keep + 1);
 
 #ifdef TR_ENABLE_ASSERTS
-    for (auto const& [low, high] : ranges)
-    {
+    for (auto const& [low, high] : ranges) {
         TR_ASSERT(low <= high);
     }
-    for (size_t i = 1, n = std::size(ranges); i < n; ++i)
-    {
+    for (size_t i = 1, n = std::size(ranges); i < n; ++i) {
         TR_ASSERT(ranges[i - 1].second < ranges[i].first);
     }
 #endif
@@ -340,8 +297,7 @@ auto getFilenamesInDir(std::string_view folder)
 {
     auto const prefix = std::string{ folder } + '/';
     auto files = tr_sys_dir_get_files(folder);
-    for (auto& file : files)
-    {
+    for (auto& file : files) {
         file.insert(0, prefix);
     }
     return files;
@@ -351,8 +307,7 @@ auto getFilenamesInDir(std::string_view folder)
 
 void Blocklists::Blocklist::ensureLoaded() const
 {
-    if (rules_)
-    {
+    if (rules_) {
         return;
     }
     rules_.emplace();
@@ -360,8 +315,7 @@ void Blocklists::Blocklist::ensureLoaded() const
     // get the file's size
     auto error = tr_error{};
     auto const file_info = tr_sys_path_get_info(bin_file_, 0, &error);
-    if (error)
-    {
+    if (error) {
         tr_logAddWarn(
             fmt::format(
                 fmt::runtime(_("Couldn't read '{path}': {error} ({error_code})")),
@@ -369,15 +323,13 @@ void Blocklists::Blocklist::ensureLoaded() const
                 fmt::arg("error", error.message()),
                 fmt::arg("error_code", error.code())));
     }
-    if (!file_info)
-    {
+    if (!file_info) {
         return;
     }
 
     // open the file
     auto in = std::ifstream{ bin_file_, std::ios_base::in | std::ios_base::binary };
-    if (!in)
-    {
+    if (!in) {
         tr_logAddWarn(
             fmt::format(
                 fmt::runtime(_("Couldn't read '{path}': {error} ({error_code})")),
@@ -392,27 +344,21 @@ void Blocklists::Blocklist::ensureLoaded() const
     if (file_info->size < std::size(BinContentsPrefix)) // too small
     {
         supported_file = false;
-    }
-    else if (((file_info->size - std::size(BinContentsPrefix)) % sizeof(address_range_t)) != 0) // wrong size
+    } else if (((file_info->size - std::size(BinContentsPrefix)) % sizeof(address_range_t)) != 0) // wrong size
     {
         supported_file = false;
-    }
-    else
-    {
+    } else {
         auto tmp = std::array<char, std::size(BinContentsPrefix)>{};
         in.read(std::data(tmp), std::size(tmp));
         supported_file = BinContentsPrefix == std::string_view{ std::data(tmp), std::size(tmp) };
     }
 
-    if (!supported_file)
-    {
+    if (!supported_file) {
         // bad binary file; try to rebuild it
         in.close();
         if (auto const sz_src_file = std::string{ std::data(bin_file_), std::size(bin_file_) - std::size(BinFileSuffix) };
-            tr_sys_path_exists(sz_src_file))
-        {
-            if (auto rules = parseFile(sz_src_file))
-            {
+            tr_sys_path_exists(sz_src_file)) {
+            if (auto rules = parseFile(sz_src_file)) {
                 rules_ = std::move(*rules);
             }
 
@@ -430,8 +376,7 @@ void Blocklists::Blocklist::ensureLoaded() const
 
     auto range = address_range_t{};
     rules_->reserve((file_info->size - std::size(BinContentsPrefix)) / sizeof(address_range_t));
-    while (in.read(reinterpret_cast<char*>(&range), sizeof(range)))
-    {
+    while (in.read(reinterpret_cast<char*>(&range), sizeof(range))) {
         rules_->emplace_back(range);
     }
 
@@ -449,24 +394,20 @@ bool Blocklists::Blocklist::contains(tr_address const& addr) const
 {
     TR_ASSERT(addr.is_valid());
 
-    if (!is_enabled_)
-    {
+    if (!is_enabled_) {
         return false;
     }
 
     ensureLoaded();
     TR_ASSERT(rules_);
 
-    static constexpr struct
-    {
+    static constexpr struct {
         [[nodiscard]] static auto compare(tr_address const& a, address_range_t const& b) noexcept // <=>
         {
-            if (a < b.first)
-            {
+            if (a < b.first) {
                 return -1;
             }
-            if (b.second < a)
-            {
+            if (b.second < a) {
                 return 1;
             }
             return 0;
@@ -499,8 +440,7 @@ std::optional<Blocklists::Blocklist> Blocklists::Blocklist::saveNew(
 {
     // if we can't parse the file, do nothing
     auto rules = parseFile(external_file);
-    if (!rules)
-    {
+    if (!rules) {
         return {};
     }
 
@@ -509,8 +449,7 @@ std::optional<Blocklists::Blocklist> Blocklists::Blocklist::saveNew(
     tr_sys_path_remove(src_file);
     auto error = tr_error{};
     auto const copied = tr_sys_path_copy(external_file, src_file, &error);
-    if (error)
-    {
+    if (error) {
         tr_logAddWarn(
             fmt::format(
                 fmt::runtime(_("Couldn't save '{path}': {error} ({error_code})")),
@@ -518,8 +457,7 @@ std::optional<Blocklists::Blocklist> Blocklists::Blocklist::saveNew(
                 fmt::arg("error", error.message()),
                 fmt::arg("error_code", error.code())));
     }
-    if (!copied)
-    {
+    if (!copied) {
         return {};
     }
 
@@ -535,8 +473,7 @@ std::optional<Blocklists::Blocklist> Blocklists::Blocklist::saveNew(
 
 void Blocklists::set_enabled(bool is_enabled)
 {
-    for (auto& blocklist : blocklists_)
-    {
+    for (auto& blocklist : blocklists_) {
         blocklist.setEnabled(is_enabled);
     }
 
@@ -555,10 +492,8 @@ void Blocklists::load(std::string_view folder, bool is_enabled)
 std::vector<Blocklists::Blocklist> Blocklists::load_folder(std::string_view const folder, bool const is_enabled)
 {
     // check for files that need to be updated
-    for (auto const& src_file : getFilenamesInDir(folder))
-    {
-        if (tr_strv_ends_with(src_file, BinFileSuffix))
-        {
+    for (auto const& src_file : getFilenamesInDir(folder)) {
+        if (tr_strv_ends_with(src_file, BinFileSuffix)) {
             continue;
         }
 
@@ -567,20 +502,16 @@ std::vector<Blocklists::Blocklist> Blocklists::load_folder(std::string_view cons
         auto const bin_file = tr_pathbuf{ src_file, BinFileSuffix };
         auto const bin_info = tr_sys_path_get_info(bin_file);
         auto const bin_needs_update = src_info && (!bin_info || bin_info->last_modified_at <= src_info->last_modified_at);
-        if (bin_needs_update)
-        {
-            if (auto const ranges = parseFile(src_file))
-            {
+        if (bin_needs_update) {
+            if (auto const ranges = parseFile(src_file)) {
                 save(bin_file, std::data(*ranges), std::size(*ranges));
             }
         }
     }
 
     auto ret = std::vector<Blocklist>{};
-    for (auto const& bin_file : getFilenamesInDir(folder))
-    {
-        if (tr_strv_ends_with(bin_file, BinFileSuffix))
-        {
+    for (auto const& bin_file : getFilenamesInDir(folder)) {
+        if (tr_strv_ends_with(bin_file, BinFileSuffix)) {
             ret.emplace_back(bin_file, is_enabled);
         }
     }
@@ -595,8 +526,7 @@ std::optional<size_t> Blocklists::update_primary_blocklist(std::string_view cons
 
     // Try to save it
     auto added = Blocklist::saveNew(external_file, bin_file, is_enabled);
-    if (!added)
-    {
+    if (!added) {
         return {};
     }
 
@@ -606,12 +536,9 @@ std::optional<size_t> Blocklists::update_primary_blocklist(std::string_view cons
     if (auto iter = std::ranges::find_if(
             blocklists_,
             [&bin_file](auto const& candidate) { return bin_file == candidate.binFile(); });
-        iter != std::ranges::end(blocklists_))
-    {
+        iter != std::ranges::end(blocklists_)) {
         *iter = std::move(*added);
-    }
-    else
-    {
+    } else {
         blocklists_.emplace_back(std::move(*added));
     }
 

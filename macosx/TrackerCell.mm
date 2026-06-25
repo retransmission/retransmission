@@ -46,8 +46,7 @@ static NSMutableSet* fTrackerIconLoading;
 
 - (instancetype)init
 {
-    if ((self = [super init]))
-    {
+    if ((self = [super init])) {
         NSMutableParagraphStyle* paragraphStyle = [NSParagraphStyle.defaultParagraphStyle mutableCopy];
         paragraphStyle.lineBreakMode = NSLineBreakByTruncatingTail;
 
@@ -80,12 +79,9 @@ static NSMutableSet* fTrackerIconLoading;
 
     //set table colors
     NSColor *nameColor, *statusColor;
-    if (self.backgroundStyle == NSBackgroundStyleEmphasized)
-    {
+    if (self.backgroundStyle == NSBackgroundStyleEmphasized) {
         nameColor = statusColor = NSColor.whiteColor;
-    }
-    else
-    {
+    } else {
         nameColor = NSColor.labelColor;
         statusColor = NSColor.secondaryLabelColor;
     }
@@ -158,28 +154,24 @@ static NSMutableSet* fTrackerIconLoading;
     id icon = nil;
     NSURL* address = [NSURL URLWithString:((TrackerNode*)self.objectValue).fullAnnounceAddress];
     NSString* host;
-    if ((host = address.host))
-    {
+    if ((host = address.host)) {
         //don't try to parse ip address
         BOOL const isIP = tr_addressIsIP(host.UTF8String);
         NSArray* hostComponents = !isIP ? [host componentsSeparatedByString:@"."] : nil;
 
-        if (!isIP && hostComponents.count >= 2)
-        {
+        if (!isIP && hostComponents.count >= 2) {
             NSString* domain = hostComponents[hostComponents.count - 2];
             NSString* tld = hostComponents[hostComponents.count - 1];
             NSString* baseAddress = [NSString stringWithFormat:@"%@.%@", domain, tld];
 
             icon = [fTrackerIconCache objectForKey:baseAddress];
-            if (!icon)
-            {
+            if (!icon) {
                 [self loadTrackerIcon:baseAddress];
             }
         }
     }
 
-    if ((icon && icon != [NSNull null]))
-    {
+    if ((icon && icon != [NSNull null])) {
         return icon;
     }
 
@@ -194,8 +186,7 @@ static NSMutableSet* fTrackerIconLoading;
 
 - (void)loadTrackerIcon:(NSString*)baseAddress
 {
-    if ([fTrackerIconLoading containsObject:baseAddress])
-    {
+    if ([fTrackerIconLoading containsObject:baseAddress]) {
         return;
     }
     [fTrackerIconLoading addObject:baseAddress];
@@ -207,28 +198,23 @@ static NSMutableSet* fTrackerIconLoading;
 
     NSURLSessionDataTask* task = [NSURLSession.sharedSession
         dataTaskWithRequest:request completionHandler:^(NSData* iconData, NSURLResponse* response, NSError* error) {
-            if (error)
-            {
+            if (error) {
                 NSLog(@"Unable to get tracker icon: task failed (%@)", error.localizedDescription);
                 return;
             }
             BOOL ok = ((NSHTTPURLResponse*)response).statusCode == 200 ? YES : NO;
-            if (!ok)
-            {
+            if (!ok) {
                 NSLog(@"Unable to get tracker icon: status code not OK (%ld)", (long)((NSHTTPURLResponse*)response).statusCode);
                 return;
             }
 
             dispatch_async(dispatch_get_main_queue(), ^{
                 NSImage* icon = [[NSImage alloc] initWithData:iconData];
-                if (icon)
-                {
+                if (icon) {
                     [fTrackerIconCache setObject:icon forKey:baseAddress];
 
                     self.controlView.needsDisplay = YES;
-                }
-                else
-                {
+                } else {
                     [fTrackerIconCache setObject:[NSNull null] forKey:baseAddress];
                 }
 

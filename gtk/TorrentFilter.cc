@@ -23,19 +23,15 @@ TorrentFilter::TorrentFilter()
 
 void TorrentFilter::set_mode(ShowMode const mode)
 {
-    if (show_mode_ == mode)
-    {
+    if (show_mode_ == mode) {
         return;
     }
 
     auto change = Change::DIFFERENT;
 
-    if (show_mode_ == ShowMode::ShowAll)
-    {
+    if (show_mode_ == ShowMode::ShowAll) {
         change = Change::MORE_STRICT;
-    }
-    else if (mode == ShowMode::ShowAll)
-    {
+    } else if (mode == ShowMode::ShowAll) {
         change = Change::LESS_STRICT;
     }
 
@@ -45,31 +41,22 @@ void TorrentFilter::set_mode(ShowMode const mode)
 
 void TorrentFilter::set_tracker(Tracker type, Glib::ustring const& host)
 {
-    if (tracker_type_ == type && tracker_host_ == host)
-    {
+    if (tracker_type_ == type && tracker_host_ == host) {
         return;
     }
 
     auto change = Change::DIFFERENT;
-    if (tracker_type_ != type)
-    {
-        if (tracker_type_ == Tracker::ALL)
-        {
+    if (tracker_type_ != type) {
+        if (tracker_type_ == Tracker::ALL) {
             change = Change::MORE_STRICT;
-        }
-        else if (type == Tracker::ALL)
-        {
+        } else if (type == Tracker::ALL) {
             change = Change::LESS_STRICT;
         }
-    }
-    else // tracker_host_ != host
+    } else // tracker_host_ != host
     {
-        if (tracker_host_.empty() || host.find(tracker_host_) != Glib::ustring::npos)
-        {
+        if (tracker_host_.empty() || host.find(tracker_host_) != Glib::ustring::npos) {
             change = Change::MORE_STRICT;
-        }
-        else if (host.empty() || tracker_host_.find(host) != Glib::ustring::npos)
-        {
+        } else if (host.empty() || tracker_host_.find(host) != Glib::ustring::npos) {
             change = Change::LESS_STRICT;
         }
     }
@@ -82,18 +69,14 @@ void TorrentFilter::set_tracker(Tracker type, Glib::ustring const& host)
 void TorrentFilter::set_text(Glib::ustring const& text)
 {
     auto const normalized_text = gtr_str_strip(text.casefold());
-    if (text_ == normalized_text)
-    {
+    if (text_ == normalized_text) {
         return;
     }
 
     auto change = Change::DIFFERENT;
-    if (text_.empty() || normalized_text.find(text_) != Glib::ustring::npos)
-    {
+    if (text_.empty() || normalized_text.find(text_) != Glib::ustring::npos) {
         change = Change::MORE_STRICT;
-    }
-    else if (normalized_text.empty() || text_.find(normalized_text) != Glib::ustring::npos)
-    {
+    } else if (normalized_text.empty() || text_.find(normalized_text) != Glib::ustring::npos) {
         change = Change::LESS_STRICT;
     }
 
@@ -132,8 +115,7 @@ void TorrentFilter::update(Torrent::ChangeFlags changes)
 
     bool refilter_needed = false;
 
-    if (show_mode_ != ShowMode::ShowAll)
-    {
+    if (show_mode_ != ShowMode::ShowAll) {
         static auto TR_CONSTEXPR23 ShowModeFlags = std::to_array<std::pair<ShowMode, Torrent::ChangeFlags>>({
             { ShowMode::ShowActive, Flag::ACTIVE_PEER_COUNT | Flag::ACTIVITY },
             { ShowMode::ShowDownloading, Flag::ACTIVITY },
@@ -148,18 +130,15 @@ void TorrentFilter::update(Torrent::ChangeFlags changes)
         refilter_needed = iter != std::ranges::end(ShowModeFlags) && changes.test(iter->second);
     }
 
-    if (!refilter_needed)
-    {
+    if (!refilter_needed) {
         refilter_needed = tracker_type_ != Tracker::ALL && changes.test(Flag::TRACKERS);
     }
 
-    if (!refilter_needed)
-    {
+    if (!refilter_needed) {
         refilter_needed = !text_.empty() && changes.test(Flag::NAME);
     }
 
-    if (refilter_needed)
-    {
+    if (refilter_needed) {
         changed(Change::DIFFERENT);
     }
 }
@@ -174,8 +153,7 @@ bool TorrentFilter::match_mode(Torrent const& torrent, ShowMode const mode)
 {
     auto activity = tr_torrent_activity();
 
-    switch (mode)
-    {
+    switch (mode) {
     case ShowMode::ShowAll:
         return true;
 
@@ -210,8 +188,7 @@ bool TorrentFilter::match_mode(Torrent const& torrent, ShowMode const mode)
 
 bool TorrentFilter::match_tracker(Torrent const& torrent, Tracker type, Glib::ustring const& host)
 {
-    if (type == Tracker::ALL)
-    {
+    if (type == Tracker::ALL) {
         return true;
     }
 
@@ -219,10 +196,8 @@ bool TorrentFilter::match_tracker(Torrent const& torrent, Tracker type, Glib::us
 
     auto const& raw_torrent = torrent.get_underlying();
 
-    for (auto i = size_t{ 0 }, n = tr_torrentTrackerCount(&raw_torrent); i < n; ++i)
-    {
-        if (auto const tracker = tr_torrentTracker(&raw_torrent, i); std::data(tracker.sitename) == host)
-        {
+    for (auto i = size_t{ 0 }, n = tr_torrentTrackerCount(&raw_torrent); i < n; ++i) {
+        if (auto const tracker = tr_torrentTracker(&raw_torrent, i); std::data(tracker.sitename) == host) {
             return true;
         }
     }
@@ -234,20 +209,16 @@ bool TorrentFilter::match_text(Torrent const& torrent, Glib::ustring const& text
 {
     bool ret = false;
 
-    if (text.empty())
-    {
+    if (text.empty()) {
         ret = true;
-    }
-    else
-    {
+    } else {
         auto const& raw_torrent = torrent.get_underlying();
 
         /* test the torrent name... */
         ret = torrent.get_name().casefold().find(text) != Glib::ustring::npos;
 
         /* test the files... */
-        for (auto i = size_t{ 0 }, n = tr_torrentFileCount(&raw_torrent); i < n && !ret; ++i)
-        {
+        for (auto i = size_t{ 0 }, n = tr_torrentFileCount(&raw_torrent); i < n && !ret; ++i) {
             ret = Glib::ustring(tr_torrentFile(&raw_torrent, i).name).casefold().find(text) != Glib::ustring::npos;
         }
     }

@@ -59,16 +59,14 @@ using tr_sha256_digest_t = std::array<std::byte, 32>;
 
 using tr_torrent_id_t = int;
 
-enum class tr_preferred_transport : uint8_t
-{
+enum class tr_preferred_transport : uint8_t {
     UTP,
     TCP,
 };
 
 inline auto constexpr PreferredTransportCount = 2U;
 
-enum class tr_file_preallocation : uint8_t
-{
+enum class tr_file_preallocation : uint8_t {
     None,
     Sparse,
     Full,
@@ -156,21 +154,11 @@ using tr_tracker_id_t = uint32_t;
 
 using tr_tracker_tier_t = uint32_t;
 
-enum : uint8_t
-{
-    TR_LOC_MOVING,
-    TR_LOC_DONE,
-    TR_LOC_ERROR
-};
+enum : uint8_t { TR_LOC_MOVING, TR_LOC_DONE, TR_LOC_ERROR };
 
-enum : int8_t
-{
-    TR_RATIO_NA = -1,
-    TR_RATIO_INF = -2
-};
+enum : int8_t { TR_RATIO_NA = -1, TR_RATIO_INF = -2 };
 
-enum TrScript : uint8_t
-{
+enum TrScript : uint8_t {
     TR_SCRIPT_ON_TORRENT_ADDED,
     TR_SCRIPT_ON_TORRENT_DONE,
     TR_SCRIPT_ON_TORRENT_DONE_SEEDING,
@@ -178,33 +166,25 @@ enum TrScript : uint8_t
     TR_SCRIPT_N_TYPES
 };
 
-enum tr_completeness : uint8_t
-{
+enum tr_completeness : uint8_t {
     TR_LEECH, /* doesn't have all the desired pieces */
     TR_SEED, /* has the entire torrent */
     TR_PARTIAL_SEED /* has the desired pieces, but not the entire torrent */
 };
 
-enum tr_ctorMode : uint8_t
-{
+enum tr_ctorMode : uint8_t {
     TR_FALLBACK, /* indicates the ctor value should be used only in case of missing resume settings */
     TR_FORCE /* indicates the ctor value should be used regardless of what's in the resume settings */
 };
 
-enum class tr_direction : uint8_t
-{
+enum class tr_direction : uint8_t {
     ClientToPeer = 0,
     Up = 0,
     PeerToClient = 1,
     Down = 1,
 };
 
-enum tr_encryption_mode : uint8_t
-{
-    TR_CLEAR_PREFERRED,
-    TR_ENCRYPTION_PREFERRED,
-    TR_ENCRYPTION_REQUIRED
-};
+enum tr_encryption_mode : uint8_t { TR_CLEAR_PREFERRED, TR_ENCRYPTION_PREFERRED, TR_ENCRYPTION_REQUIRED };
 
 enum tr_eta : time_t // NOLINT(performance-enum-size)
 {
@@ -212,8 +192,7 @@ enum tr_eta : time_t // NOLINT(performance-enum-size)
     TR_ETA_UNKNOWN = -2,
 };
 
-enum tr_idlelimit : uint8_t
-{
+enum tr_idlelimit : uint8_t {
     /* follow the global settings */
     TR_IDLELIMIT_GLOBAL = 0,
     /* override the global settings, seeding until a certain idle time */
@@ -222,8 +201,7 @@ enum tr_idlelimit : uint8_t
     TR_IDLELIMIT_UNLIMITED = 2
 };
 
-enum tr_log_level : uint8_t
-{
+enum tr_log_level : uint8_t {
     // No logging at all
     TR_LOG_OFF,
 
@@ -249,8 +227,7 @@ enum tr_log_level : uint8_t
     TR_LOG_TRACE
 };
 
-enum tr_peer_from : uint8_t
-{
+enum tr_peer_from : uint8_t {
     TR_PEER_FROM_INCOMING = 0, /* connections made to the listening port */
     TR_PEER_FROM_LPD, /* peers found by local announcements */
     TR_PEER_FROM_TRACKER, /* peers found from a tracker */
@@ -261,24 +238,15 @@ enum tr_peer_from : uint8_t
     TR_PEER_FROM_N_TYPES
 };
 
-enum tr_priority_t : int8_t
-{
+enum tr_priority_t : int8_t {
     TR_PRI_LOW = -1,
     TR_PRI_NORMAL = 0, /* since Normal is 0, memset initializes nicely */
     TR_PRI_HIGH = 1
 };
 
-enum tr_port_forwarding_state : uint8_t
-{
-    TR_PORT_ERROR,
-    TR_PORT_UNMAPPED,
-    TR_PORT_UNMAPPING,
-    TR_PORT_MAPPING,
-    TR_PORT_MAPPED
-};
+enum tr_port_forwarding_state : uint8_t { TR_PORT_ERROR, TR_PORT_UNMAPPED, TR_PORT_UNMAPPING, TR_PORT_MAPPING, TR_PORT_MAPPED };
 
-enum tr_ratiolimit : uint8_t
-{
+enum tr_ratiolimit : uint8_t {
     /* follow the global settings */
     TR_RATIOLIMIT_GLOBAL = 0,
     /* override the global settings, seeding until a certain ratio */
@@ -287,8 +255,7 @@ enum tr_ratiolimit : uint8_t
     TR_RATIOLIMIT_UNLIMITED = 2
 };
 
-enum tr_rpc_callback_type : uint8_t
-{
+enum tr_rpc_callback_type : uint8_t {
     TR_RPC_TORRENT_ADDED,
     TR_RPC_TORRENT_STARTED,
     TR_RPC_TORRENT_STOPPED,
@@ -301,8 +268,7 @@ enum tr_rpc_callback_type : uint8_t
     TR_RPC_SESSION_CLOSE
 };
 
-enum tr_rpc_callback_status : uint8_t
-{
+enum tr_rpc_callback_status : uint8_t {
     /* no special handling is needed by the caller */
     TR_RPC_OK = 0,
     /* indicates to the caller that the client will take care of
@@ -312,8 +278,7 @@ enum tr_rpc_callback_status : uint8_t
     TR_RPC_NOREMOVE = (1 << 1)
 };
 
-enum tr_sched_day : uint8_t
-{
+enum tr_sched_day : uint8_t {
     TR_SCHED_SUN = (1 << 0),
     TR_SCHED_MON = (1 << 1),
     TR_SCHED_TUES = (1 << 2),
@@ -332,8 +297,7 @@ enum tr_sched_day : uint8_t
  * Note: these values will become a straight enum at some point in the future.
  * Do not rely on their current `bitfield` implementation
  */
-enum tr_torrent_activity : uint8_t
-{
+enum tr_torrent_activity : uint8_t {
     TR_STATUS_STOPPED = 0, /* Torrent is stopped */
     TR_STATUS_CHECK_WAIT = 1, /* Queued to check files */
     TR_STATUS_CHECK = 2, /* Checking files */
@@ -343,8 +307,7 @@ enum tr_torrent_activity : uint8_t
     TR_STATUS_SEED = 6 /* Seeding */
 };
 
-enum tr_tracker_state : uint8_t
-{
+enum tr_tracker_state : uint8_t {
     /* we won't (announce,scrape) this torrent to this tracker because
      * the torrent is stopped, or because of an error, or whatever */
     TR_TRACKER_INACTIVE = 0,
@@ -358,8 +321,7 @@ enum tr_tracker_state : uint8_t
     TR_TRACKER_ACTIVE = 3
 };
 
-enum tr_verify_added_mode : uint8_t
-{
+enum tr_verify_added_mode : uint8_t {
     // See discussion @ https://github.com/transmission/transmission/pull/2626
     // Let newly-added torrents skip upfront verify do it on-demand later.
     TR_VERIFY_ADDED_FAST = 0,
@@ -368,14 +330,12 @@ enum tr_verify_added_mode : uint8_t
     TR_VERIFY_ADDED_FULL = 1
 };
 
-struct tr_block_span_t
-{
+struct tr_block_span_t {
     tr_block_index_t begin;
     tr_block_index_t end;
 };
 
-struct tr_byte_span_t
-{
+struct tr_byte_span_t {
     [[nodiscard]] constexpr bool is_valid() const noexcept
     {
         return begin <= end;
@@ -394,8 +354,7 @@ struct tr_byte_span_t
  * This view structure is intended for short-term use. Its pointers are owned
  * by the torrent and may be invalidated if the torrent is edited or removed.
  */
-struct tr_file_view
-{
+struct tr_file_view {
     char const* name = ""; // This file's name. Includes the full subpath in the torrent.
     uint64_t have = {}; // the current size of the file, i.e. how much we've downloaded
     uint64_t length = {}; // the total size of the file
@@ -406,8 +365,7 @@ struct tr_file_view
     bool wanted = {}; // do we want to download this file?
 };
 
-struct tr_peer_stat
-{
+struct tr_peer_stat {
     std::string addr;
     std::string flag_str;
 
@@ -458,8 +416,7 @@ struct tr_peer_stat
 };
 
 /** @brief Used by `tr_sessionGetStats()` and `tr_sessionGetCumulativeStats()` */
-struct tr_session_stats
-{
+struct tr_session_stats {
     double ratio; /* TR_RATIO_INF, TR_RATIO_NA, or total up/down */
     uint64_t uploadedBytes; /* total up */
     uint64_t downloadedBytes; /* total down */
@@ -468,8 +425,7 @@ struct tr_session_stats
     time_t secondsActive; /* how long Transmission's been running */
 };
 
-struct tr_stat
-{
+struct tr_stat {
     /** A warning or error message regarding the torrent.
         @see error */
     std::string error_string;
@@ -617,8 +573,7 @@ struct tr_stat
     // What is this torrent doing right now?
     tr_torrent_activity activity = {};
 
-    enum class Error : uint8_t
-    {
+    enum class Error : uint8_t {
         Ok, // everything's fine
         TrackerWarning, // tracker returned a warning
         TrackerError, // tracker returned an error
@@ -642,8 +597,7 @@ struct tr_stat
  * This view structure is intended for short-term use. Its pointers are owned
  * by the torrent and may be invalidated if the torrent is edited or removed.
  */
-struct tr_torrent_view
-{
+struct tr_torrent_view {
     char const* name = "";
     char const* hash_string = "";
 
@@ -667,8 +621,7 @@ struct tr_torrent_view
  * Unlike other _view structs, it is safe to keep a tr_tracker_view copy.
  * The announce and scrape strings are interned & never go out-of-scope.
  */
-struct tr_tracker_view
-{
+struct tr_tracker_view {
     char const* announce = ""; // full announce URL
     char const* scrape = ""; // full scrape URL
     char host_and_port[72] = {}; // uniquely-identifying tracker name (`${host}:${port}`)
@@ -716,8 +669,7 @@ struct tr_tracker_view
  * This view structure is intended for short-term use. Its pointers are owned
  * by the torrent and may be invalidated if the torrent is edited or removed.
  */
-struct tr_webseed_view
-{
+struct tr_webseed_view {
     char const* url = ""; // the url to download from
     bool is_downloading = {}; // can be true even if speed is 0, e.g. slow download
     uint64_t download_bytes_per_second = {}; // current download speed

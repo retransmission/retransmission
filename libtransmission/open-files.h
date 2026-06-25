@@ -45,8 +45,7 @@ private:
         return std::make_pair(tor_id, file_num);
     }
 
-    struct Val
-    {
+    struct Val {
         Val() noexcept = default;
         Val(Val const&) = delete;
         Val& operator=(Val const&) = delete;

@@ -29,8 +29,7 @@ public:
     class Mediator
     {
     public:
-        struct TorrentInfo
-        {
+        struct TorrentInfo {
             std::string_view info_hash_str;
             tr_torrent_activity activity;
             bool allows_lpd;

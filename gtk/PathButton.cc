@@ -156,56 +156,44 @@ void PathButton::Impl::show_dialog()
     dialog->set_transient_for(gtr_widget_get_window(widget_));
     dialog->set_modal(true);
 
-    if (!current_file_.empty())
-    {
+    if (!current_file_.empty()) {
         dialog->set_file(Gio::File::create_for_path(current_file_));
     }
 
-    for (auto const& folder : shortcut_folders_)
-    {
+    for (auto const& folder : shortcut_folders_) {
         dialog->remove_shortcut_folder(Gio::File::create_for_path(folder));
         dialog->add_shortcut_folder(Gio::File::create_for_path(folder));
     }
 
-    for (auto const& filter : filters_)
-    {
+    for (auto const& filter : filters_) {
         dialog->add_filter(filter);
     }
 
-    dialog->signal_response().connect(
-        [this, dialog](int response) mutable
-        {
-            if (response == TR_GTK_RESPONSE_TYPE(ACCEPT))
-            {
-                set_filename(dialog->get_file()->get_path());
-                selection_changed_.emit();
-            }
+    dialog->signal_response().connect([this, dialog](int response) mutable {
+        if (response == TR_GTK_RESPONSE_TYPE(ACCEPT)) {
+            set_filename(dialog->get_file()->get_path());
+            selection_changed_.emit();
+        }
 
-            dialog.reset();
-        });
+        dialog.reset();
+    });
 
     dialog->show();
 }
 
 void PathButton::Impl::update()
 {
-    if (!current_file_.empty())
-    {
+    if (!current_file_.empty()) {
         auto const file = Gio::File::create_for_path(current_file_);
 
-        try
-        {
+        try {
             image_->set(file->query_info()->get_icon());
-        }
-        catch (Glib::Error const&)
-        {
+        } catch (Glib::Error const&) {
             image_->set_from_icon_name("image-missing");
         }
 
         label_->set_text(file->get_basename());
-    }
-    else
-    {
+    } else {
         image_->set_from_icon_name("image-missing");
         label_->set_text(_("(None)"));
     }
@@ -241,8 +229,7 @@ void PathButton::set_shortcut_folders(std::list<std::string> const& value)
 #if GTKMM_CHECK_VERSION(4, 0, 0)
     impl_->set_shortcut_folders(value);
 #else
-    for (auto const& folder : value)
-    {
+    for (auto const& folder : value) {
         remove_shortcut_folder(folder);
         add_shortcut_folder(folder);
     }

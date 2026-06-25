@@ -29,15 +29,12 @@ void tr_session_alt_speeds::update_minutes()
 {
     minutes_.reset();
 
-    for (int day = 0; day < 7; ++day)
-    {
-        if ((settings_.use_on_these_weekdays & (1 << day)) != 0)
-        {
+    for (int day = 0; day < 7; ++day) {
+        if ((settings_.use_on_these_weekdays & (1 << day)) != 0) {
             auto const begin = settings_.minute_begin;
             auto const end = settings_.minute_end > settings_.minute_begin ? settings_.minute_end :
                                                                              settings_.minute_end + MinutesPerDay;
-            for (auto i = begin; i < end; ++i)
-            {
+            for (auto i = begin; i < end; ++i) {
                 minutes_.set((i + day * MinutesPerDay) % MinutesPerWeek);
             }
         }
@@ -53,14 +50,12 @@ void tr_session_alt_speeds::update_scheduler()
 
 void tr_session_alt_speeds::check_scheduler()
 {
-    if (!is_scheduler_enabled())
-    {
+    if (!is_scheduler_enabled()) {
         return;
     }
 
     if (auto const active = is_active_minute(mediator_.time());
-        !scheduler_set_is_active_to_ || scheduler_set_is_active_to_ != active)
-    {
+        !scheduler_set_is_active_to_ || scheduler_set_is_active_to_ != active) {
         tr_logAddInfo(active ? _("Time to turn on turtle mode") : _("Time to turn off turtle mode"));
         scheduler_set_is_active_to_ = active;
         set_active(active, ChangeReason::Scheduler);
@@ -69,8 +64,7 @@ void tr_session_alt_speeds::check_scheduler()
 
 void tr_session_alt_speeds::set_active(bool active, ChangeReason reason, bool force)
 {
-    if (auto& tgt = settings_.is_active; force || tgt != active)
-    {
+    if (auto& tgt = settings_.is_active; force || tgt != active) {
         tgt = active;
         mediator_.is_active_changed(tgt, reason);
     }

@@ -40,8 +40,7 @@ bool tr_addressIsIP(char const* address)
 
 char const* tr_webGetResponseStr(long code)
 {
-    switch (code)
-    {
+    switch (code) {
     case 0:
         return "No Response";
 
@@ -188,10 +187,8 @@ constexpr std::optional<uint16_t> getPortForScheme(std::string_view scheme)
         { "udp"sv, 80U },
     });
 
-    for (auto const& [known_scheme, port] : KnownSchemes)
-    {
-        if (scheme == known_scheme)
-        {
+    for (auto const& [known_scheme, port] : KnownSchemes) {
+        if (scheme == known_scheme) {
             return port;
         }
     }
@@ -232,20 +229,17 @@ bool isAsciiNonUpperCase(std::string_view host)
 std::string_view getSiteName(std::string_view host)
 {
     // is it empty?
-    if (std::empty(host))
-    {
+    if (std::empty(host)) {
         return host;
     }
 
     // is it an IP?
-    if (auto const addr = tr_address::from_string(host); addr)
-    {
+    if (auto const addr = tr_address::from_string(host); addr) {
         return host;
     }
 
     TR_ASSERT(psl_builtin() != nullptr);
-    if (psl_builtin() == nullptr)
-    {
+    if (psl_builtin() == nullptr) {
         tr_logAddWarn("psl_builtin is null");
         return host;
     }
@@ -254,19 +248,14 @@ std::string_view getSiteName(std::string_view host)
     auto const szhost = tr_urlbuf{ host };
 
     // is it a registered name?
-    if (isAsciiNonUpperCase(host))
-    {
+    if (isAsciiNonUpperCase(host)) {
         // www.example.co.uk -> example.co.uk
-        if (char const* const top = psl_registrable_domain(psl_builtin(), std::data(szhost)); top != nullptr)
-        {
+        if (char const* const top = psl_registrable_domain(psl_builtin(), std::data(szhost)); top != nullptr) {
             host.remove_prefix(top - std::data(szhost));
         }
-    }
-    else if (char* lower = nullptr; psl_str_to_utf8lower(std::data(szhost), nullptr, nullptr, &lower) == PSL_SUCCESS)
-    {
+    } else if (char* lower = nullptr; psl_str_to_utf8lower(std::data(szhost), nullptr, nullptr, &lower) == PSL_SUCCESS) {
         // www.example.co.uk -> example.co.uk
-        if (char const* const top = psl_registrable_domain(psl_builtin(), lower); top != nullptr)
-        {
+        if (char const* const top = psl_registrable_domain(psl_builtin(), lower); top != nullptr) {
             host.remove_prefix(top - lower);
         }
 
@@ -274,8 +263,7 @@ std::string_view getSiteName(std::string_view host)
     }
 
     // example.co.uk -> example
-    if (auto const dot_pos = host.find('.'); dot_pos != std::string_view::npos)
-    {
+    if (auto const dot_pos = host.find('.'); dot_pos != std::string_view::npos) {
         host = host.substr(0, dot_pos);
     }
 
@@ -287,8 +275,7 @@ std::string_view getSiteName(std::string_view host)
 // strings that are wrapped in square brackets (e.g. inet_pton())
 std::string_view getHostWoBrackets(std::string_view host)
 {
-    if (tr_strv_starts_with(host, '['))
-    {
+    if (tr_strv_starts_with(host, '[')) {
         host.remove_prefix(1);
         host.remove_suffix(1);
     }
@@ -306,22 +293,19 @@ std::optional<tr_url_parsed_t> tr_urlParse(std::string_view url)
     // So many magnet links are malformed, e.g. not escaping text
     // in the display name, that we're better off handling magnets
     // as a special case before even scanning for invalid chars.
-    if (auto constexpr MagnetStart = "magnet:?"sv; tr_strv_starts_with(url, MagnetStart))
-    {
+    if (auto constexpr MagnetStart = "magnet:?"sv; tr_strv_starts_with(url, MagnetStart)) {
         parsed.scheme = "magnet"sv;
         parsed.query = url.substr(std::size(MagnetStart));
         return parsed;
     }
 
-    if (!urlCharsAreValid(url))
-    {
+    if (!urlCharsAreValid(url)) {
         return std::nullopt;
     }
 
     // scheme
     parsed.scheme = tr_strv_sep(&url, ':');
-    if (std::empty(parsed.scheme))
-    {
+    if (std::empty(parsed.scheme)) {
         return std::nullopt;
     }
 
@@ -329,8 +313,7 @@ std::optional<tr_url_parsed_t> tr_urlParse(std::string_view url)
     // The authority component is preceded by a double slash ("//") and is
     // terminated by the next slash ("/"), question mark ("?"), or number
     // sign ("#") character, or by the end of the URI.
-    if (auto key = "//"sv; tr_strv_starts_with(url, key))
-    {
+    if (auto key = "//"sv; tr_strv_starts_with(url, key)) {
         url.remove_prefix(std::size(key));
         auto pos = url.find_first_of("/?#");
         parsed.authority = url.substr(0, pos);
@@ -341,11 +324,9 @@ std::optional<tr_url_parsed_t> tr_urlParse(std::string_view url)
         // within square brackets ("[" and "]").  This is the only place where
         // square bracket characters are allowed in the URI syntax.
         auto remain = parsed.authority;
-        if (tr_strv_starts_with(remain, '['))
-        {
+        if (tr_strv_starts_with(remain, '[')) {
             pos = remain.find(']');
-            if (pos == std::string_view::npos)
-            {
+            if (pos == std::string_view::npos) {
                 return std::nullopt;
             }
             parsed.host = remain.substr(0, pos + 1);
@@ -353,39 +334,29 @@ std::optional<tr_url_parsed_t> tr_urlParse(std::string_view url)
         }
         // Not legal by RFC3986 standards, but sometimes users omit
         // square brackets for an IPv6 address with an implicit port
-        else if (std::count(std::begin(remain), std::end(remain), ':') > 1U)
-        {
+        else if (std::count(std::begin(remain), std::end(remain), ':') > 1U) {
             parsed.host = remain;
             remain = ""sv;
-        }
-        else
-        {
+        } else {
             pos = remain.find(':');
             parsed.host = remain.substr(0, pos);
             remain.remove_prefix(std::size(parsed.host));
         }
 
-        if (std::empty(remain))
-        {
+        if (std::empty(remain)) {
             auto const port = getPortForScheme(parsed.scheme);
-            if (!port)
-            {
+            if (!port) {
                 return std::nullopt;
             }
             parsed.port = *port;
-        }
-        else if (tr_strv_starts_with(remain, ':'))
-        {
+        } else if (tr_strv_starts_with(remain, ':')) {
             remain.remove_prefix(1);
             auto const port = tr_num_parse<uint16_t>(remain);
-            if (!port || *port == 0U)
-            {
+            if (!port || *port == 0U) {
                 return std::nullopt;
             }
             parsed.port = *port;
-        }
-        else
-        {
+        } else {
             return std::nullopt;
         }
 
@@ -400,8 +371,7 @@ std::optional<tr_url_parsed_t> tr_urlParse(std::string_view url)
     url = pos == std::string_view::npos ? ""sv : url.substr(pos);
 
     // query
-    if (tr_strv_starts_with(url, '?'))
-    {
+    if (tr_strv_starts_with(url, '?')) {
         url.remove_prefix(1);
         pos = url.find('#');
         parsed.query = url.substr(0, pos);
@@ -409,8 +379,7 @@ std::optional<tr_url_parsed_t> tr_urlParse(std::string_view url)
     }
 
     // fragment
-    if (tr_strv_starts_with(url, '#'))
-    {
+    if (tr_strv_starts_with(url, '#')) {
         parsed.fragment = url.substr(1);
     }
 
@@ -437,8 +406,7 @@ bool tr_urlIsValid(std::string_view url)
 
 std::string tr_urlTrackerLogName(std::string_view url)
 {
-    if (auto const parsed = tr_urlParse(url); parsed)
-    {
+    if (auto const parsed = tr_urlParse(url); parsed) {
         return fmt::format("{:s}://{:s}:{:d}", parsed->scheme, parsed->host, parsed->port);
     }
 
@@ -451,8 +419,7 @@ std::vector<std::pair<std::string_view, std::string_view>> tr_url_parsed_t::quer
     auto tmp = query;
     auto ret = std::vector<std::pair<std::string_view, std::string_view>>{};
     ret.reserve(std::count(std::begin(tmp), std::end(tmp), '&') + 1U);
-    while (!std::empty(tmp))
-    {
+    while (!std::empty(tmp)) {
         auto val = tr_strv_sep(&tmp, '&');
         auto key = tr_strv_sep(&val, '=');
         ret.emplace_back(key, val);
@@ -465,25 +432,20 @@ std::string tr_urlPercentDecode(std::string_view in)
     auto out = std::string{};
     out.reserve(std::size(in));
 
-    for (;;)
-    {
+    for (;;) {
         auto pos = in.find('%');
         out += in.substr(0, pos);
-        if (pos == std::string_view::npos)
-        {
+        if (pos == std::string_view::npos) {
             break;
         }
 
         in.remove_prefix(pos);
-        if (std::size(in) >= 3 && in[0] == '%' && (std::isxdigit(in[1]) != 0) && (std::isxdigit(in[2]) != 0))
-        {
+        if (std::size(in) >= 3 && in[0] == '%' && (std::isxdigit(in[1]) != 0) && (std::isxdigit(in[2]) != 0)) {
             auto hexstr = std::to_array<char>({ in[1], in[2], '\0' });
             auto const hex = strtoul(std::data(hexstr), nullptr, 16);
             out += char(hex);
             in.remove_prefix(3);
-        }
-        else
-        {
+        } else {
             out += in.front();
             in.remove_prefix(1);
         }

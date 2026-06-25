@@ -12,8 +12,7 @@
 namespace icons
 {
 
-enum class Type : uint8_t
-{
+enum class Type : uint8_t {
     AddTracker,
     EditTrackers,
     RemoveTracker,

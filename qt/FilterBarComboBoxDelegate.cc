@@ -38,10 +38,8 @@ void FilterBarComboBoxDelegate::setSeparator(QAbstractItemModel* model, QModelIn
 {
     model->setData(index, QStringLiteral("separator"), Qt::AccessibleDescriptionRole);
 
-    if (auto const* const m = qobject_cast<QStandardItemModel*>(model))
-    {
-        if (QStandardItem* item = m->itemFromIndex(index))
-        {
+    if (auto const* const m = qobject_cast<QStandardItemModel*>(model)) {
+        if (QStandardItem* item = m->itemFromIndex(index)) {
             item->setFlags(item->flags() & ~(Qt::ItemIsSelectable | Qt::ItemIsEnabled));
         }
     }
@@ -49,21 +47,17 @@ void FilterBarComboBoxDelegate::setSeparator(QAbstractItemModel* model, QModelIn
 
 void FilterBarComboBoxDelegate::paint(QPainter* painter, QStyleOptionViewItem const& option, QModelIndex const& index) const
 {
-    if (isSeparator(index))
-    {
+    if (isSeparator(index)) {
         QRect rect = option.rect;
 
-        if (auto const* view = qobject_cast<QAbstractItemView const*>(option.widget))
-        {
+        if (auto const* view = qobject_cast<QAbstractItemView const*>(option.widget)) {
             rect.setWidth(view->viewport()->width());
         }
 
         QStyleOption opt;
         opt.rect = rect;
         combo_->style()->drawPrimitive(QStyle::PE_IndicatorToolBarSeparator, &opt, painter, combo_);
-    }
-    else
-    {
+    } else {
         QStyleOptionViewItem disabled_option = option;
         QPalette::ColorRole const disabled_color_role = (disabled_option.state & QStyle::State_Selected) != 0 ?
             QPalette::HighlightedText :
@@ -103,8 +97,7 @@ void FilterBarComboBoxDelegate::paint(QPainter* painter, QStyleOptionViewItem co
 
 QSize FilterBarComboBoxDelegate::sizeHint(QStyleOptionViewItem const& option, QModelIndex const& index) const
 {
-    if (isSeparator(index))
-    {
+    if (isSeparator(index)) {
         int const pm = combo_->style()->pixelMetric(QStyle::PM_DefaultFrameWidth, nullptr, combo_);
         return { pm, pm + 10 };
     }

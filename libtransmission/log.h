@@ -18,8 +18,7 @@
 
 std::optional<tr_log_level> tr_logGetLevelFromKey(std::string_view key);
 
-struct tr_log_message
-{
+struct tr_log_message {
     tr_log_level level = TR_LOG_INFO;
 
     // location in the source code
@@ -64,10 +63,8 @@ void tr_logAddMessage(
     std::string_view module_name = {});
 
 #define tr_logAddLevel(level, ...) \
-    do \
-    { \
-        if (tr_logLevelIsActive(level)) \
-        { \
+    do { \
+        if (tr_logLevelIsActive(level)) { \
             tr_logAddMessage(__FILE__, __LINE__, level, __VA_ARGS__); \
         } \
     } while (0)

@@ -29,8 +29,7 @@ namespace keys
 {
 namespace detail
 {
-struct ApiKey
-{
+struct ApiKey {
     // snake-case quark
     tr_quark current;
 
@@ -39,15 +38,13 @@ struct ApiKey
 };
 
 template<size_t N>
-struct KeyLookupTable
-{
+struct KeyLookupTable {
     std::array<tr_quark, N> value = {};
 
     constexpr void insert(tr_quark const src, tr_quark const dst) noexcept
     {
         auto const idx = static_cast<size_t>(src);
-        if (idx < N)
-        {
+        if (idx < N) {
             value[idx] = dst;
         }
     }
@@ -428,14 +425,12 @@ auto constexpr SessionKeys = std::to_array<ApiKey>({
 {
     auto max_key = tr_quark{};
 
-    for (auto const [current, legacy] : RpcKeys)
-    {
+    for (auto const [current, legacy] : RpcKeys) {
         max_key = std::max(max_key, current);
         max_key = std::max(max_key, legacy);
     }
 
-    for (auto const [current, legacy] : SessionKeys)
-    {
+    for (auto const [current, legacy] : SessionKeys) {
         max_key = std::max(max_key, current);
         max_key = std::max(max_key, legacy);
     }
@@ -455,8 +450,7 @@ static_assert(has_no_none_entries(SessionKeys));
 template<size_t N, size_t M>
 consteval void add_current_entries(KeyLookupTable<N>& table, std::array<ApiKey, M> const& keys)
 {
-    for (auto const [current, legacy] : keys)
-    {
+    for (auto const [current, legacy] : keys) {
         table.insert(current, current);
         table.insert(legacy, current);
     }
@@ -465,8 +459,7 @@ consteval void add_current_entries(KeyLookupTable<N>& table, std::array<ApiKey, 
 template<size_t N, size_t M>
 consteval void add_legacy_entries(KeyLookupTable<N>& table, std::array<ApiKey, M> const& keys)
 {
-    for (auto const [current, legacy] : keys)
-    {
+    for (auto const [current, legacy] : keys) {
         table.insert(current, legacy);
         table.insert(legacy, legacy);
     }
@@ -526,8 +519,7 @@ auto constexpr PreferClearLegacy = std::string_view{ "tolerated" };
 
     auto const result = tr_strlower(result_in);
 
-    if (result == "success")
-    {
+    if (result == "success") {
         return Error::SUCCESS;
     }
 
@@ -548,10 +540,8 @@ auto constexpr PreferClearLegacy = std::string_view{ "tolerated" };
         { MethodNotFoundLegacyErrmsg, Error::METHOD_NOT_FOUND },
     });
 
-    for (auto const& [substr, code] : Phrases)
-    {
-        if (tr_strv_contains(result, substr))
-        {
+    for (auto const& [substr, code] : Phrases) {
+        if (tr_strv_contains(result, substr)) {
             return code;
         }
     }
@@ -559,8 +549,7 @@ auto constexpr PreferClearLegacy = std::string_view{ "tolerated" };
     return {};
 }
 
-struct State
-{
+struct State {
     api_compat::Style style = {};
     bool is_free_space_response = false;
     bool is_request = false;
@@ -596,18 +585,15 @@ struct State
         (was_jsonrpc_response ? top.contains(TR_KEY_result) :
                                 top.value_if<std::string_view>(TR_KEY_result).value_or("") == "success");
 
-    if (auto const method = top.value_if<std::string_view>(TR_KEY_method))
-    {
+    if (auto const method = top.value_if<std::string_view>(TR_KEY_method)) {
         auto const key = tr_quark_lookup(*method);
         state.is_torrent = key &&
             (*key == TR_KEY_torrent_get || *key == TR_KEY_torrent_get_kebab || *key == TR_KEY_torrent_set ||
              *key == TR_KEY_torrent_set_kebab_APICOMPAT);
     }
 
-    if (state.is_response)
-    {
-        if (auto const* const args = top.find_if<tr_variant::Map>(state.was_jsonrpc ? TR_KEY_result : TR_KEY_arguments))
-        {
+    if (state.is_response) {
+        if (auto const* const args = top.find_if<tr_variant::Map>(state.was_jsonrpc ? TR_KEY_result : TR_KEY_arguments)) {
             state.is_free_space_response = args->contains(TR_KEY_path) &&
                 args->contains(state.was_jsonrpc ? TR_KEY_size_bytes : TR_KEY_size_bytes_kebab_APICOMPAT);
             state.is_torrent = args->contains(TR_KEY_torrents);
@@ -627,15 +613,12 @@ struct State
     // download_dir in Tr5
     if (state.is_rpc &&
         (src == TR_KEY_download_dir_camel_APICOMPAT || src == TR_KEY_download_dir_kebab_APICOMPAT ||
-         src == TR_KEY_download_dir))
-    {
-        if (state.style == Style::Tr5)
-        {
+         src == TR_KEY_download_dir)) {
+        if (state.style == Style::Tr5) {
             return TR_KEY_download_dir;
         }
 
-        if (state.is_torrent)
-        {
+        if (state.is_torrent) {
             return TR_KEY_download_dir_camel_APICOMPAT;
         }
 
@@ -646,8 +629,8 @@ struct State
     // totalSize in Tr4 torrent-get
     // total_size in Tr4 free-space
     // total_size in Tr5
-    if (state.is_rpc && state.is_free_space_response && (src == TR_KEY_total_size || src == TR_KEY_total_size_camel_APICOMPAT))
-    {
+    if (state.is_rpc && state.is_free_space_response &&
+        (src == TR_KEY_total_size || src == TR_KEY_total_size_camel_APICOMPAT)) {
         return state.style == Style::Tr5 || state.is_free_space_response ? TR_KEY_total_size :
                                                                            TR_KEY_total_size_camel_APICOMPAT;
     }
@@ -656,10 +639,8 @@ struct State
     // ratio_limit(_enabled) is a legacy transitional settings key in underscore case.
     // Map it one-way to Tr5's seed_ratio_* when reading legacy settings,
     // while preserving canonical Tr5 -> Tr4 output as kebab ratio-limit*.
-    if (state.is_settings && state.style == Style::Tr5)
-    {
-        switch (src)
-        {
+    if (state.is_settings && state.style == Style::Tr5) {
+        switch (src) {
         case TR_KEY_ratio_limit_APICOMPAT:
             return TR_KEY_seed_ratio_limit;
 
@@ -674,8 +655,7 @@ struct State
     // Crazy cases done.
     // Now for the lookup tables
 
-    if (state.style == Style::Tr5)
-    {
+    if (state.style == Style::Tr5) {
         return keys::Tr5KeyLookup.lookup_or(src, src);
     }
 
@@ -690,8 +670,7 @@ struct State
 
 [[nodiscard]] std::optional<std::string_view> convert_string(State const& state, std::string_view const src)
 {
-    if (state.is_settings && state.current_key_is_any_of({ TR_KEY_sort_mode, TR_KEY_sort_mode_kebab_APICOMPAT }))
-    {
+    if (state.is_settings && state.current_key_is_any_of({ TR_KEY_sort_mode, TR_KEY_sort_mode_kebab_APICOMPAT })) {
         static auto constexpr Strings = std::to_array<std::pair<std::string_view /*Tr5*/, std::string_view /*Tr4*/>>({
             { "sort_by_activity", "sort-by-activity" },
             { "sort_by_age", "sort-by-age" },
@@ -704,17 +683,14 @@ struct State
             { "sort_by_size", "sort-by-size" },
             { "sort_by_state", "sort-by-state" },
         });
-        for (auto const& [current, legacy] : Strings)
-        {
-            if (src == current || src == legacy)
-            {
+        for (auto const& [current, legacy] : Strings) {
+            if (src == current || src == legacy) {
                 return state.style == Style::Tr5 ? current : legacy;
             }
         }
     }
 
-    if (state.is_settings && state.current_key_is_any_of({ TR_KEY_filter_mode, TR_KEY_filter_mode_kebab_APICOMPAT }))
-    {
+    if (state.is_settings && state.current_key_is_any_of({ TR_KEY_filter_mode, TR_KEY_filter_mode_kebab_APICOMPAT })) {
         static auto constexpr Strings = std::to_array<std::pair<std::string_view, std::string_view>>({
             { "show_active", "show-active" },
             { "show_all", "show-all" },
@@ -725,27 +701,22 @@ struct State
             { "show_seeding", "show-seeding" },
             { "show_verifying", "show-verifying" },
         });
-        for (auto const& [current, legacy] : Strings)
-        {
-            if (src == current || src == legacy)
-            {
+        for (auto const& [current, legacy] : Strings) {
+            if (src == current || src == legacy) {
                 return state.style == Style::Tr5 ? current : legacy;
             }
         }
     }
 
-    if (state.is_settings && state.current_key_is_any_of({ TR_KEY_statusbar_stats, TR_KEY_statusbar_stats_kebab_APICOMPAT }))
-    {
+    if (state.is_settings && state.current_key_is_any_of({ TR_KEY_statusbar_stats, TR_KEY_statusbar_stats_kebab_APICOMPAT })) {
         static auto constexpr Strings = std::to_array<std::pair<std::string_view, std::string_view>>({
             { "total_ratio", "total-ratio" },
             { "total_transfer", "total-transfer" },
             { "session_ratio", "session-ratio" },
             { "session_transfer", "session-transfer" },
         });
-        for (auto const& [current, legacy] : Strings)
-        {
-            if (src == current || src == legacy)
-            {
+        for (auto const& [current, legacy] : Strings) {
+            if (src == current || src == legacy) {
                 return state.style == Style::Tr5 ? current : legacy;
             }
         }
@@ -754,12 +725,9 @@ struct State
     // TODO(ckerr): replace `new_key == TR_KEY_TORRENTS` here to turn on convert
     // if it's an array inside an array val whose key was `torrents`.
     // This is for the edge case of table mode: `torrents : [ [ 'key1', 'key2' ], [ ... ] ]`
-    if (state.is_rpc && state.current_key_is_any_of({ TR_KEY_method, TR_KEY_fields, TR_KEY_ids, TR_KEY_torrents }))
-    {
-        if (auto const old_key = tr_quark_lookup(src))
-        {
-            if (auto const new_key = convert_key(state, *old_key); *old_key != new_key)
-            {
+    if (state.is_rpc && state.current_key_is_any_of({ TR_KEY_method, TR_KEY_fields, TR_KEY_ids, TR_KEY_torrents })) {
+        if (auto const old_key = tr_quark_lookup(src)) {
+            if (auto const new_key = convert_key(state, *old_key); *old_key != new_key) {
                 return tr_quark_get_string_view(new_key);
             }
         }
@@ -772,15 +740,13 @@ void convert_keys(tr_variant& var, State& state);
 
 void convert_keys(tr_variant::Map& var, State& state)
 {
-    for (auto& [old_key, child] : var)
-    {
+    for (auto& [old_key, child] : var) {
         auto const new_key = convert_key(state, old_key);
 
         // maybe change the key.
         // IMPORTANT: this is safe even inside a range loop of `var`:
         // tr_variant.replace_key() does not invalidate iterators
-        if (old_key != new_key)
-        {
+        if (old_key != new_key) {
             var.replace_key(old_key, new_key);
         }
 
@@ -792,60 +758,42 @@ void convert_keys(tr_variant::Map& var, State& state)
 
 void convert_keys(tr_variant& var, State& state)
 {
-    var.visit(
-        [&state](auto& val)
-        {
-            using ValueType = std::remove_cvref_t<decltype(val)>;
+    var.visit([&state](auto& val) {
+        using ValueType = std::remove_cvref_t<decltype(val)>;
 
-            if constexpr (std::is_same_v<ValueType, std::string> || std::is_same_v<ValueType, std::string_view>)
-            {
-                if (auto const new_val = convert_string(state, val))
-                {
-                    val = *new_val;
-                }
+        if constexpr (std::is_same_v<ValueType, std::string> || std::is_same_v<ValueType, std::string_view>) {
+            if (auto const new_val = convert_string(state, val)) {
+                val = *new_val;
             }
-            else if constexpr (std::is_same_v<ValueType, tr_variant::Vector>)
-            {
-                for (auto& child : val)
-                {
-                    convert_keys(child, state);
-                }
+        } else if constexpr (std::is_same_v<ValueType, tr_variant::Vector>) {
+            for (auto& child : val) {
+                convert_keys(child, state);
             }
-            else if constexpr (std::is_same_v<ValueType, tr_variant::Map>)
-            {
-                convert_keys(val, state);
-            }
-        });
+        } else if constexpr (std::is_same_v<ValueType, tr_variant::Map>) {
+            convert_keys(val, state);
+        }
+    });
 }
 
 void convert_settings_encryption(tr_variant::Map& top, State const& state)
 {
-    if (state.is_rpc)
-    {
+    if (state.is_rpc) {
         return;
     }
 
-    if (state.style == Style::Tr4)
-    {
+    if (state.style == Style::Tr4) {
         using namespace EncryptionModeString;
-        if (auto const encryption = top.value_if<std::string_view>(TR_KEY_encryption); encryption == PreferEncryption)
-        {
+        if (auto const encryption = top.value_if<std::string_view>(TR_KEY_encryption); encryption == PreferEncryption) {
             top.insert_or_assign(TR_KEY_encryption, TR_ENCRYPTION_PREFERRED);
-        }
-        else if (encryption == RequireEncryption)
-        {
+        } else if (encryption == RequireEncryption) {
             top.insert_or_assign(TR_KEY_encryption, TR_ENCRYPTION_REQUIRED);
-        }
-        else if (encryption == PreferClear)
-        {
+        } else if (encryption == PreferClear) {
             top.insert_or_assign(TR_KEY_encryption, TR_CLEAR_PREFERRED);
         }
     }
 
-    if (state.style == Style::Tr5)
-    {
-        if (auto const* const encryption = top.find_if<int64_t>(TR_KEY_encryption))
-        {
+    if (state.style == Style::Tr5) {
+        if (auto const* const encryption = top.find_if<int64_t>(TR_KEY_encryption)) {
             top.insert_or_assign(TR_KEY_encryption, serializer::to_variant(static_cast<tr_encryption_mode>(*encryption)));
         }
     }
@@ -857,27 +805,17 @@ void convert_files_wanted(tr_variant::Vector& wanted, State const& state)
 {
     auto ret = tr_variant::Vector{};
     ret.reserve(std::size(wanted));
-    for (auto const& var : wanted)
-    {
-        if (state.style == Style::Tr5)
-        {
-            if (auto const val = var.value_if<bool>())
-            {
+    for (auto const& var : wanted) {
+        if (state.style == Style::Tr5) {
+            if (auto const val = var.value_if<bool>()) {
                 ret.emplace_back(*val);
-            }
-            else
-            {
+            } else {
                 return;
             }
-        }
-        else
-        {
-            if (auto const val = var.value_if<int64_t>(); val == 0 || val == 1)
-            {
+        } else {
+            if (auto const val = var.value_if<int64_t>(); val == 0 || val == 1) {
                 ret.emplace_back(*val);
-            }
-            else
-            {
+            } else {
                 return;
             }
         }
@@ -888,28 +826,23 @@ void convert_files_wanted(tr_variant::Vector& wanted, State const& state)
 
 void convert_files_wanted_response(tr_variant::Map& top, State const& state)
 {
-    if (auto* const args = top.find_if<tr_variant::Map>(state.style == Style::Tr5 ? TR_KEY_result : TR_KEY_arguments))
-    {
+    if (auto* const args = top.find_if<tr_variant::Map>(state.style == Style::Tr5 ? TR_KEY_result : TR_KEY_arguments)) {
         if (auto* const torrents = args->find_if<tr_variant::Vector>(TR_KEY_torrents);
-            torrents != nullptr && !std::empty(*torrents))
-        {
+            torrents != nullptr && !std::empty(*torrents)) {
             // TrFormat::Table
             if (auto* const first_vec = torrents->front().get_if<tr_variant::Vector>();
-                first_vec != nullptr && !std::empty(*first_vec))
-            {
+                first_vec != nullptr && !std::empty(*first_vec)) {
                 if (auto const wanted_iter = std::ranges::find_if(
                         *first_vec,
-                        [](tr_variant const& v)
-                        { return v.value_if<std::string_view>() == tr_quark_get_string_view(TR_KEY_wanted); });
-                    wanted_iter != std::ranges::end(*first_vec))
-                {
+                        [](tr_variant const& v) {
+                            return v.value_if<std::string_view>() == tr_quark_get_string_view(TR_KEY_wanted);
+                        });
+                    wanted_iter != std::ranges::end(*first_vec)) {
                     auto const wanted_idx = static_cast<size_t>(wanted_iter - std::begin(*first_vec));
-                    for (auto it = std::next(std::begin(*torrents)); it != std::end(*torrents); ++it)
-                    {
-                        if (auto* const row = it->get_if<tr_variant::Vector>(); row != nullptr && wanted_idx < std::size(*row))
-                        {
-                            if (auto* const wanted = (*row)[wanted_idx].get_if<tr_variant::Vector>())
-                            {
+                    for (auto it = std::next(std::begin(*torrents)); it != std::end(*torrents); ++it) {
+                        if (auto* const row = it->get_if<tr_variant::Vector>();
+                            row != nullptr && wanted_idx < std::size(*row)) {
+                            if (auto* const wanted = (*row)[wanted_idx].get_if<tr_variant::Vector>()) {
                                 convert_files_wanted(*wanted, state);
                             }
                         }
@@ -917,14 +850,10 @@ void convert_files_wanted_response(tr_variant::Map& top, State const& state)
                 }
             }
             // TrFormat::Object
-            else if (torrents->front().index() == tr_variant::MapIndex)
-            {
-                for (auto& var : *torrents)
-                {
-                    if (auto* const map = var.get_if<tr_variant::Map>())
-                    {
-                        if (auto* const wanted = map->find_if<tr_variant::Vector>(TR_KEY_wanted))
-                        {
+            else if (torrents->front().index() == tr_variant::MapIndex) {
+                for (auto& var : *torrents) {
+                    if (auto* const map = var.get_if<tr_variant::Map>()) {
+                        if (auto* const wanted = map->find_if<tr_variant::Vector>(TR_KEY_wanted)) {
                             convert_files_wanted(*wanted, state);
                         }
                     }
@@ -939,19 +868,15 @@ void convert_files_wanted_response(tr_variant::Map& top, State const& state)
 void convert_encryption(tr_variant& var, State const& state)
 {
     using namespace EncryptionModeString;
-    if (auto const val = var.value_if<std::string_view>())
-    {
-        switch (state.style)
-        {
+    if (auto const val = var.value_if<std::string_view>()) {
+        switch (state.style) {
         case Style::Tr5:
-            if (val == PreferClearLegacy)
-            {
+            if (val == PreferClearLegacy) {
                 var = tr_variant::unmanaged_string(PreferClear);
             }
             break;
         case Style::Tr4:
-            if (val == PreferClear)
-            {
+            if (val == PreferClear) {
                 var = tr_variant::unmanaged_string(PreferClearLegacy);
             }
             break;
@@ -965,8 +890,7 @@ void convert_jsonrpc(tr_variant::Map& top, State const& state)
 {
     using namespace convert_jsonrpc_helpers;
 
-    if (!state.is_rpc)
-    {
+    if (!state.is_rpc) {
         return;
     }
 
@@ -975,27 +899,21 @@ void convert_jsonrpc(tr_variant::Map& top, State const& state)
 
     // - use `jsonrpc` in jsonrpc, but not in legacy
     // - use `id` in jsonrpc; use `tag` in legacy
-    if (is_jsonrpc)
-    {
+    if (is_jsonrpc) {
         top.try_emplace(TR_KEY_jsonrpc, tr_variant::unmanaged_string(JsonRpc::Version));
-        if (auto const tag = top.value_if<int64_t>(TR_KEY_tag); state.was_legacy && !tag)
-        {
+        if (auto const tag = top.value_if<int64_t>(TR_KEY_tag); state.was_legacy && !tag) {
             top.erase(TR_KEY_tag);
         }
         top.replace_key(TR_KEY_tag, TR_KEY_id);
-    }
-    else
-    {
+    } else {
         top.erase(TR_KEY_jsonrpc);
         top.replace_key(TR_KEY_id, TR_KEY_tag);
-        if (auto const tag = top.find_if<int64_t>(TR_KEY_tag); state.was_jsonrpc && tag == nullptr)
-        {
+        if (auto const tag = top.find_if<int64_t>(TR_KEY_tag); state.was_jsonrpc && tag == nullptr) {
             top.erase(TR_KEY_tag);
         }
     }
 
-    if (state.is_response && is_legacy && state.is_success && state.was_jsonrpc)
-    {
+    if (state.is_response && is_legacy && state.is_success && state.was_jsonrpc) {
         // in legacy messages:
         // - move `result` to `arguments`
         // - add `result: "success"`
@@ -1004,48 +922,39 @@ void convert_jsonrpc(tr_variant::Map& top, State const& state)
 
         convert_files_wanted_response(top, state);
 
-        if (auto* const args = top.find_if<tr_variant::Map>(TR_KEY_arguments))
-        {
-            if (auto const iter = args->find(TR_KEY_encryption); iter != std::end(*args))
-            {
+        if (auto* const args = top.find_if<tr_variant::Map>(TR_KEY_arguments)) {
+            if (auto const iter = args->find(TR_KEY_encryption); iter != std::end(*args)) {
                 convert_encryption(iter->second, state);
             }
         }
     }
 
-    if (state.is_response && is_legacy && !state.is_success)
-    {
+    if (state.is_response && is_legacy && !state.is_success) {
         // in legacy error responses:
         // - copy `error.data.error_string` to `result`
         // - remove `error` object
         // - add an empty `arguments` object
-        if (auto* error_ptr = top.find_if<tr_variant::Map>(TR_KEY_error))
-        {
+        if (auto* error_ptr = top.find_if<tr_variant::Map>(TR_KEY_error)) {
             // move the `error` object before memory reallocations invalidate the pointer
             auto error = std::move(*error_ptr);
             top.erase(TR_KEY_error);
 
             // crazy case: current and legacy METHOD_NOT_FOUND has different error messages
-            if (auto const code = error.value_if<int64_t>(TR_KEY_code); code && *code == JsonRpc::Error::METHOD_NOT_FOUND)
-            {
+            if (auto const code = error.value_if<int64_t>(TR_KEY_code); code && *code == JsonRpc::Error::METHOD_NOT_FOUND) {
                 top.try_emplace(TR_KEY_result, tr_variant::unmanaged_string(MethodNotFoundLegacyErrmsg));
             }
 
-            if (auto* data = error.find_if<tr_variant::Map>(TR_KEY_data))
-            {
-                if (auto const errmsg = data->value_if<std::string_view>(TR_KEY_error_string_camel_APICOMPAT))
-                {
+            if (auto* data = error.find_if<tr_variant::Map>(TR_KEY_data)) {
+                if (auto const errmsg = data->value_if<std::string_view>(TR_KEY_error_string_camel_APICOMPAT)) {
                     top.try_emplace(TR_KEY_result, *errmsg);
                 }
 
-                if (auto const result = data->find(TR_KEY_result); result != std::end(*data))
-                {
+                if (auto const result = data->find(TR_KEY_result); result != std::end(*data)) {
                     top.try_emplace(TR_KEY_arguments, std::move(result->second));
                 }
             }
 
-            if (auto const errmsg = error.value_if<std::string_view>(TR_KEY_message))
-            {
+            if (auto const errmsg = error.value_if<std::string_view>(TR_KEY_message)) {
                 top.try_emplace(TR_KEY_result, *errmsg);
             }
         }
@@ -1053,24 +962,20 @@ void convert_jsonrpc(tr_variant::Map& top, State const& state)
         top.try_emplace(TR_KEY_arguments, tr_variant::make_map());
     }
 
-    if (state.is_response && is_jsonrpc && state.is_success && state.was_legacy)
-    {
+    if (state.is_response && is_jsonrpc && state.is_success && state.was_legacy) {
         top.erase(TR_KEY_result);
         top.replace_key(TR_KEY_arguments, TR_KEY_result);
 
         convert_files_wanted_response(top, state);
 
-        if (auto* const result = top.find_if<tr_variant::Map>(TR_KEY_result))
-        {
-            if (auto const iter = result->find(TR_KEY_encryption); iter != std::end(*result))
-            {
+        if (auto* const result = top.find_if<tr_variant::Map>(TR_KEY_result)) {
+            if (auto const iter = result->find(TR_KEY_encryption); iter != std::end(*result)) {
                 convert_encryption(iter->second, state);
             }
         }
     }
 
-    if (state.is_response && is_jsonrpc && !state.is_success && state.was_legacy)
-    {
+    if (state.is_response && is_jsonrpc && !state.is_success && state.was_legacy) {
         // in jsonrpc error message:
         // - copy `result` to `error.data.error_string`
         // - ensure `error` object exists and is well-formatted
@@ -1083,51 +988,41 @@ void convert_jsonrpc(tr_variant::Map& top, State const& state)
         error.try_emplace(TR_KEY_code, code);
         error.try_emplace(TR_KEY_message, errmsg);
         // crazy case: current and legacy METHOD_NOT_FOUND has different error messages
-        if (errstr != errmsg && errstr != MethodNotFoundLegacyErrmsg)
-        {
+        if (errstr != errmsg && errstr != MethodNotFoundLegacyErrmsg) {
             data.try_emplace(TR_KEY_error_string, errstr);
         }
         top.erase(TR_KEY_result);
 
-        if (auto const args_it = top.find(TR_KEY_arguments); args_it != std::end(top))
-        {
+        if (auto const args_it = top.find(TR_KEY_arguments); args_it != std::end(top)) {
             auto args = std::move(args_it->second);
             top.erase(TR_KEY_arguments);
 
-            if (auto const* args_map = args.get_if<tr_variant::Map>(); args_map != nullptr && !std::empty(*args_map))
-            {
+            if (auto const* args_map = args.get_if<tr_variant::Map>(); args_map != nullptr && !std::empty(*args_map)) {
                 data.try_emplace(TR_KEY_result, std::move(args));
             }
         }
 
-        if (!std::empty(data))
-        {
+        if (!std::empty(data)) {
             error.try_emplace(TR_KEY_data, std::move(data));
         }
         top.try_emplace(TR_KEY_error, std::move(error));
     }
 
-    if (state.is_request && is_jsonrpc)
-    {
+    if (state.is_request && is_jsonrpc) {
         top.replace_key(TR_KEY_arguments, TR_KEY_params);
 
-        if (auto* const params = top.find_if<tr_variant::Map>(TR_KEY_params))
-        {
-            if (auto const iter = params->find(TR_KEY_encryption); iter != std::end(*params))
-            {
+        if (auto* const params = top.find_if<tr_variant::Map>(TR_KEY_params)) {
+            if (auto const iter = params->find(TR_KEY_encryption); iter != std::end(*params)) {
                 convert_encryption(iter->second, state);
             }
         }
     }
 
-    if (state.is_request && is_legacy)
-    {
+    if (state.is_request && is_legacy) {
         top.replace_key(TR_KEY_params, TR_KEY_arguments);
 
-        if (auto* const args = top.find_if<tr_variant::Map>(TR_KEY_arguments))
-        {
-            if (auto const iter = args->find(TR_KEY_encryption); iter != std::end(*args))
-            {
+        if (auto* const args = top.find_if<tr_variant::Map>(TR_KEY_arguments)) {
+            if (auto const iter = args->find(TR_KEY_encryption); iter != std::end(*args)) {
                 convert_encryption(iter->second, state);
             }
         }
@@ -1160,8 +1055,7 @@ void convert(tr_variant::Map& top, Style const tgt_style)
 
 void convert(tr_variant& var, Style const tgt_style)
 {
-    if (auto* const top = var.get_if<tr_variant::Map>())
-    {
+    if (auto* const top = var.get_if<tr_variant::Map>()) {
         convert(*top, tgt_style);
     }
 }

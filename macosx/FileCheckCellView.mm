@@ -14,8 +14,7 @@
 
 - (instancetype)initWithFrame:(NSRect)frameRect
 {
-    if ((self = [super initWithFrame:frameRect]))
-    {
+    if ((self = [super initWithFrame:frameRect])) {
         // Create checkbox button
         NSButton* checkButton = [[NSButton alloc] initWithFrame:NSZeroRect];
         checkButton.translatesAutoresizingMaskIntoConstraints = NO;
@@ -44,8 +43,7 @@
 
 - (void)updateDisplay
 {
-    if (!self.node)
-    {
+    if (!self.node) {
         return;
     }
 
@@ -62,14 +60,12 @@
 
 - (void)updateTooltip
 {
-    if (!self.node)
-    {
+    if (!self.node) {
         return;
     }
 
     NSString* tooltip = nil;
-    switch (self.checkButton.state)
-    {
+    switch (self.checkButton.state) {
     case NSControlStateValueOff:
         tooltip = NSLocalizedString(@"Don't Download", "files tab -> tooltip");
         break;
@@ -85,8 +81,7 @@
 
 - (void)checkButtonClicked:(NSButton*)sender
 {
-    if (!self.node)
-    {
+    if (!self.node) {
         return;
     }
 
@@ -94,12 +89,9 @@
     Torrent* torrent = node.torrent;
 
     NSIndexSet* indexSet;
-    if (NSEvent.modifierFlags & NSEventModifierFlagOption)
-    {
+    if (NSEvent.modifierFlags & NSEventModifierFlagOption) {
         indexSet = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, torrent.fileCount)];
-    }
-    else
-    {
+    } else {
         indexSet = node.indexes;
     }
 

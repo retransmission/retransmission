@@ -20,11 +20,7 @@ class TimerMaker;
 class Watchdir
 {
 public:
-    enum class Action : uint8_t
-    {
-        Done,
-        Retry
-    };
+    enum class Action : uint8_t { Done, Retry };
 
     using Callback = std::function<Action(std::string_view dirname, std::string_view basename)>;
 

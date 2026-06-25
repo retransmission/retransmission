@@ -26,9 +26,8 @@
 class Prefs;
 class Session;
 
-extern "C"
-{
-    struct tr_variant;
+extern "C" {
+struct tr_variant;
 }
 
 class OptionsDialog : public BaseDialog

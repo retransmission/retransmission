@@ -67,8 +67,7 @@ public:
 
     [[nodiscard]] std::pair<tr_quark, tr_variant> keyval(tr_quark const key) const
     {
-        if (auto val = tr::serializer::to_variant(*this, key))
-        {
+        if (auto val = tr::serializer::to_variant(*this, key)) {
             return { key, std::move(*val) };
         }
 
@@ -77,8 +76,7 @@ public:
 
     void set(tr_quark const key, tr_variant const& var)
     {
-        if (tr::serializer::set_from_variant(*this, key, var))
-        {
+        if (tr::serializer::set_from_variant(*this, key, var)) {
             static_cast<Derived*>(this)->on_changed(key);
         }
     }
@@ -86,8 +84,7 @@ public:
     template<typename T>
     void set(tr_quark const key, T const& val)
     {
-        if (tr::serializer::set(*this, key, val))
-        {
+        if (tr::serializer::set(*this, key, val)) {
             static_cast<Derived*>(this)->on_changed(key);
         }
     }

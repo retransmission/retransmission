@@ -59,16 +59,13 @@ public:
 
     ~INotifyWatchdir() override
     {
-        if (event_ != nullptr)
-        {
+        if (event_ != nullptr) {
             bufferevent_disable(event_, EV_READ);
             bufferevent_free(event_);
         }
 
-        if (infd_ != -1)
-        {
-            if (inwd_ != -1)
-            {
+        if (infd_ != -1) {
+            if (inwd_ != -1) {
                 inotify_rm_watch(infd_, inwd_);
             }
 
@@ -80,8 +77,7 @@ private:
     void init(struct event_base* evbase)
     {
         infd_ = inotify_init();
-        if (infd_ == -1)
-        {
+        if (infd_ == -1) {
             auto const error_code = errno;
             tr_logAddError(
                 fmt::format(
@@ -93,8 +89,7 @@ private:
         }
 
         inwd_ = inotify_add_watch(infd_, tr_pathbuf{ dirname() }, InotifyWatchMask | IN_ONLYDIR);
-        if (inwd_ == -1)
-        {
+        if (inwd_ == -1) {
             auto const error_code = errno;
             tr_logAddError(
                 fmt::format(
@@ -106,8 +101,7 @@ private:
         }
 
         event_ = bufferevent_socket_new(evbase, infd_, 0);
-        if (event_ == nullptr)
-        {
+        if (event_ == nullptr) {
             auto const error_code = errno;
             tr_logAddError(
                 fmt::format(
@@ -137,10 +131,8 @@ private:
         // Read the size of the struct excluding name into buf.
         // Guaranteed to have at least sizeof(ev) available.
         auto nread = size_t{};
-        while ((nread = bufferevent_read(event, &ev, sizeof(ev))) != 0)
-        {
-            if (nread != sizeof(ev))
-            {
+        while ((nread = bufferevent_read(event, &ev, sizeof(ev))) != 0) {
+            if (nread != sizeof(ev)) {
                 tr_logAddError(
                     fmt::format(
                         fmt::runtime(_("Couldn't read event: expected {expected_size}, got {actual_size}")),
@@ -157,8 +149,7 @@ private:
             name.resize(ev.len);
             nread = bufferevent_read(event, name.data(), ev.len);
 
-            if (nread != ev.len)
-            {
+            if (nread != ev.len) {
                 tr_logAddError(
                     fmt::format(
                         fmt::runtime(_("Couldn't read filename: expected {expected_size}, got {actual_size}")),

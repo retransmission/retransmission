@@ -41,19 +41,15 @@ using namespace tr;
 template<typename T, size_t N>
 void PrefsDialog::initComboFromItems(std::array<std::pair<QString, T>, N> const& items, QComboBox* const w, tr_quark const key)
 {
-    for (auto const& [label, value] : items)
-    {
+    for (auto const& [label, value] : items) {
         w->addItem(label);
     }
 
-    auto updater = [this, key, w, items]()
-    {
+    auto updater = [this, key, w, items]() {
         auto const blocker = QSignalBlocker{ w };
         auto const val = prefs_.get<T>(key);
-        for (size_t i = 0; i < std::size(items); ++i)
-        {
-            if (items[i].second == val)
-            {
+        for (size_t i = 0; i < std::size(items); ++i) {
+            if (items[i].second == val) {
                 w->setCurrentIndex(static_cast<int>(i));
             }
         }
@@ -61,10 +57,8 @@ void PrefsDialog::initComboFromItems(std::array<std::pair<QString, T>, N> const&
     updater();
     updaters_.emplace(key, std::move(updater));
 
-    auto on_activated = [this, key, items](int const idx)
-    {
-        if (0 <= idx && idx < static_cast<int>(std::size(items)))
-        {
+    auto on_activated = [this, key, items](int const idx) {
+        if (0 <= idx && idx < static_cast<int>(std::size(items))) {
             set(key, items[static_cast<size_t>(idx)].second);
         }
     };
@@ -73,8 +67,7 @@ void PrefsDialog::initComboFromItems(std::array<std::pair<QString, T>, N> const&
 
 void PrefsDialog::initAltSpeedDaysCombo(QComboBox* const w, tr_quark const key)
 {
-    static auto items = []
-    {
+    static auto items = [] {
         auto ret = std::array<std::pair<QString, int>, 10U>{};
         auto idx = 0;
         ret[idx++] = { tr("Every Day"), TR_SCHED_ALL };
@@ -92,12 +85,10 @@ void PrefsDialog::initAltSpeedDaysCombo(QComboBox* const w, tr_quark const key)
             { Qt::Sunday, TR_SCHED_SUN },
         } };
         auto const first_day_of_week = locale.firstDayOfWeek();
-        for (int i = first_day_of_week; i <= Qt::Sunday; ++i)
-        {
+        for (int i = first_day_of_week; i <= Qt::Sunday; ++i) {
             ret[idx++] = { locale.dayName(i), qt_day_to_tr_day.at(i) };
         }
-        for (int i = Qt::Monday; i < first_day_of_week; ++i)
-        {
+        for (int i = Qt::Monday; i < first_day_of_week; ++i) {
             ret[idx++] = { locale.dayName(i), qt_day_to_tr_day.at(i) };
         }
         return ret;
@@ -119,8 +110,7 @@ void PrefsDialog::initEncryptionCombo(QComboBox* const w, tr_quark const key)
 
 void PrefsDialog::initWidget(QPlainTextEdit* const w, tr_quark const key)
 {
-    auto updater = [this, key, w]()
-    {
+    auto updater = [this, key, w]() {
         auto const blocker = QSignalBlocker{ w };
         w->setPlainText(prefs_.get<QString>(key));
     };
@@ -130,10 +120,8 @@ void PrefsDialog::initWidget(QPlainTextEdit* const w, tr_quark const key)
     // We don't want to change the preference every time there's a keystroke
     // in a QPlainTextEdit, so instead of connecting to the textChanged signal,
     // only update the pref when the text changed AND focus was lost.
-    auto on_focus_changed = [this, key, w](QWidget* old, QWidget* /*cur*/)
-    {
-        if (w == old && w->document()->isModified())
-        {
+    auto on_focus_changed = [this, key, w](QWidget* old, QWidget* /*cur*/) {
+        if (w == old && w->document()->isModified()) {
             set(key, w->toPlainText());
         }
     };
@@ -142,8 +130,7 @@ void PrefsDialog::initWidget(QPlainTextEdit* const w, tr_quark const key)
 
 void PrefsDialog::initWidget(FreeSpaceLabel* const w, tr_quark const key)
 {
-    auto updater = [this, key, w]()
-    {
+    auto updater = [this, key, w]() {
         auto const blocker = QSignalBlocker{ w };
         w->setPath(prefs_.get<QString>(key));
     };
@@ -153,8 +140,7 @@ void PrefsDialog::initWidget(FreeSpaceLabel* const w, tr_quark const key)
 
 void PrefsDialog::initWidget(PathButton* const w, tr_quark const key)
 {
-    auto updater = [this, key, w]()
-    {
+    auto updater = [this, key, w]() {
         auto const blocker = QSignalBlocker{ w };
         w->setPath(prefs_.get<QString>(key));
     };
@@ -166,8 +152,7 @@ void PrefsDialog::initWidget(PathButton* const w, tr_quark const key)
 
 void PrefsDialog::initWidget(QCheckBox* const w, tr_quark const key)
 {
-    auto updater = [this, key, w]()
-    {
+    auto updater = [this, key, w]() {
         auto const blocker = QSignalBlocker{ w };
         w->setChecked(prefs_.get<bool>(key));
     };
@@ -179,8 +164,7 @@ void PrefsDialog::initWidget(QCheckBox* const w, tr_quark const key)
 
 void PrefsDialog::initWidget(QDoubleSpinBox* const w, tr_quark const key)
 {
-    auto updater = [this, key, w]()
-    {
+    auto updater = [this, key, w]() {
         auto const blocker = QSignalBlocker{ w };
         w->setValue(prefs_.get<double>(key));
     };
@@ -192,18 +176,15 @@ void PrefsDialog::initWidget(QDoubleSpinBox* const w, tr_quark const key)
 
 void PrefsDialog::initWidget(QLineEdit* const w, tr_quark const key)
 {
-    auto updater = [this, key, w]()
-    {
+    auto updater = [this, key, w]() {
         auto const blocker = QSignalBlocker{ w };
         w->setText(prefs_.get<QString>(key));
     };
     updater();
     updaters_.emplace(key, std::move(updater));
 
-    auto on_editing_finished = [this, key, w]()
-    {
-        if (w->isModified())
-        {
+    auto on_editing_finished = [this, key, w]() {
+        if (w->isModified()) {
             set(key, w->text());
         }
     };
@@ -212,8 +193,7 @@ void PrefsDialog::initWidget(QLineEdit* const w, tr_quark const key)
 
 void PrefsDialog::initWidget(QSpinBox* const w, tr_quark const key)
 {
-    auto updater = [this, key, w]()
-    {
+    auto updater = [this, key, w]() {
         auto const blocker = QSignalBlocker{ w };
         w->setValue(prefs_.get<int>(key));
     };
@@ -225,8 +205,7 @@ void PrefsDialog::initWidget(QSpinBox* const w, tr_quark const key)
 
 void PrefsDialog::initWidget(QTimeEdit* const w, tr_quark const key)
 {
-    auto updater = [this, key, w]()
-    {
+    auto updater = [this, key, w]() {
         auto const blocker = QSignalBlocker{ w };
         auto const minutes = prefs_.get<int>(key);
         w->setTime(QTime{ 0, 0 }.addSecs(minutes * 60));
@@ -234,8 +213,7 @@ void PrefsDialog::initWidget(QTimeEdit* const w, tr_quark const key)
     updater();
     updaters_.emplace(key, std::move(updater));
 
-    auto on_editing_finished = [this, key, w]()
-    {
+    auto on_editing_finished = [this, key, w]() {
         auto const minutes = w->time().msecsSinceStartOfDay() / (1000 * 60);
         set(key, minutes);
     };
@@ -308,8 +286,7 @@ void PrefsDialog::initDesktopTab()
 
 QString PrefsDialog::getPortStatusText(PrefsDialog::PortTestStatus status) noexcept
 {
-    switch (status)
-    {
+    switch (status) {
     case PortTestStatus::Unknown:
         return tr("unknown");
     case PortTestStatus::Checking:
@@ -349,14 +326,11 @@ void PrefsDialog::portTestSetEnabled()
 
 void PrefsDialog::onPortTested(std::optional<bool> result, Session::PortTestIpProtocol ip_protocol)
 {
-    constexpr auto StatusFromResult = [](std::optional<bool> const res)
-    {
-        if (!res)
-        {
+    constexpr auto StatusFromResult = [](std::optional<bool> const res) {
+        if (!res) {
             return PortTestStatus::Error;
         }
-        if (!*res)
-        {
+        if (!*res) {
             return PortTestStatus::Closed;
         }
         return PortTestStatus::Open;
@@ -365,8 +339,7 @@ void PrefsDialog::onPortTested(std::optional<bool> result, Session::PortTestIpPr
     // Only update the UI if the current status is "checking", so that
     // we won't show the port test results for the old peer port if it
     // changed while we have port_test RPC call(s) in-flight.
-    if (port_test_status_[ip_protocol] == PortTestStatus::Checking)
-    {
+    if (port_test_status_[ip_protocol] == PortTestStatus::Checking) {
         port_test_status_[ip_protocol] = StatusFromResult(result);
         updatePortStatusLabel();
     }
@@ -610,17 +583,14 @@ PrefsDialog::PrefsDialog(Session& session, Prefs& prefs, QWidget* parent)
         TR_KEY_rpc_enabled,       TR_KEY_script_torrent_done_filename,
     };
 
-    for (auto const key : InitKeys)
-    {
+    for (auto const key : InitKeys) {
         refreshPref(key);
     }
 
     // if it's a remote session, disable the preferences
     // that don't work in remote sessions
-    if (!is_server_)
-    {
-        for (QWidget* const w : unsupported_when_remote_)
-        {
+    if (!is_server_) {
+        for (QWidget* const w : unsupported_when_remote_) {
             w->setToolTip(tr("Not supported by remote sessions"));
             w->setEnabled(false);
         }
@@ -633,8 +603,7 @@ PrefsDialog::PrefsDialog(Session& session, Prefs& prefs, QWidget* parent)
 
 void PrefsDialog::sessionUpdated()
 {
-    if (bool const is_local = session_.isLocal(); is_local_ != is_local)
-    {
+    if (bool const is_local = session_.isLocal(); is_local_ != is_local) {
         is_local_ = is_local;
         updateDownloadingWidgetsLocality();
         updateSeedingWidgetsLocality();
@@ -651,8 +620,7 @@ void PrefsDialog::updateBlocklistLabel()
 
 void PrefsDialog::refreshPref(tr_quark key)
 {
-    switch (key)
-    {
+    switch (key) {
     case TR_KEY_rpc_enabled:
     case TR_KEY_rpc_whitelist_enabled:
     case TR_KEY_rpc_authentication_required:
@@ -661,18 +629,15 @@ void PrefsDialog::refreshPref(tr_quark key)
             bool const whitelist(prefs_.get<bool>(TR_KEY_rpc_whitelist_enabled));
             bool const auth(prefs_.get<bool>(TR_KEY_rpc_authentication_required));
 
-            for (auto* const w : web_whitelist_widgets_)
-            {
+            for (auto* const w : web_whitelist_widgets_) {
                 w->setEnabled(enabled && whitelist);
             }
 
-            for (auto* const w : web_auth_widgets_)
-            {
+            for (auto* const w : web_auth_widgets_) {
                 w->setEnabled(enabled && auth);
             }
 
-            for (auto* const w : web_widgets_)
-            {
+            for (auto* const w : web_widgets_) {
                 w->setEnabled(enabled);
             }
 
@@ -683,8 +648,7 @@ void PrefsDialog::refreshPref(tr_quark key)
         {
             bool const enabled = prefs_.get<bool>(key);
 
-            for (auto* const w : sched_widgets_)
-            {
+            for (auto* const w : sched_widgets_) {
                 w->setEnabled(enabled);
             }
 
@@ -695,8 +659,7 @@ void PrefsDialog::refreshPref(tr_quark key)
         {
             bool const enabled = prefs_.get<bool>(key);
 
-            for (auto* const w : block_widgets_)
-            {
+            for (auto* const w : block_widgets_) {
                 w->setEnabled(enabled);
             }
 
@@ -714,8 +677,7 @@ void PrefsDialog::refreshPref(tr_quark key)
         break;
     }
 
-    for (auto [iter, end] = updaters_.equal_range(key); iter != end; ++iter)
-    {
+    for (auto [iter, end] = updaters_.equal_range(key); iter != end; ++iter) {
         iter->second();
     }
 }

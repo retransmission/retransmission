@@ -45,8 +45,7 @@ void get_bufsize(tr_socket_t const fd, int const optname, int& ret)
 {
     auto tmp = int{};
     socklen_t len = sizeof(tmp);
-    if (getsockopt(fd, SOL_SOCKET, optname, reinterpret_cast<char*>(&tmp), &len) == 0)
-    {
+    if (getsockopt(fd, SOL_SOCKET, optname, reinterpret_cast<char*>(&tmp), &len) == 0) {
         ret = std::max(tmp, ret);
     }
 }
@@ -55,14 +54,12 @@ int default_udp_bufsize(int const optname)
 {
     int ret = -1;
 
-    if (auto const fd = socket(PF_INET, SOCK_DGRAM, 0); is_valid_socket(fd))
-    {
+    if (auto const fd = socket(PF_INET, SOCK_DGRAM, 0); is_valid_socket(fd)) {
         get_bufsize(fd, optname, ret);
         tr_net_close_socket(fd);
     }
 
-    if (auto const fd = socket(PF_INET6, SOCK_DGRAM, 0); is_valid_socket(fd))
-    {
+    if (auto const fd = socket(PF_INET6, SOCK_DGRAM, 0); is_valid_socket(fd)) {
         get_bufsize(fd, optname, ret);
         tr_net_close_socket(fd);
     }
@@ -105,12 +102,9 @@ public:
     void set_read_enabled(bool const enabled) override
     {
         is_read_enabled_ = enabled;
-        if (enabled)
-        {
+        if (enabled) {
             maybe_read_soon();
-        }
-        else
-        {
+        } else {
             read_timer_->stop();
         }
     }
@@ -146,8 +140,7 @@ public:
 #ifdef RCVBUF_OVERFLOW_PROTECTION
             || std::cmp_greater(read_buffer_size(), utp_getsockopt(sock_, UTP_RCVBUF))
 #endif
-        )
-        {
+        ) {
             read_timer_->start_single_shot(std::chrono::milliseconds::zero());
         }
     }
@@ -156,15 +149,13 @@ public:
 
     void on_utp_state_change(int const state) const
     {
-        switch (state)
-        {
+        switch (state) {
         case UTP_STATE_CONNECT:
             tr_logAddTraceSock(this, "utp_on_state_change -- changed to connected");
             break;
         case UTP_STATE_WRITABLE:
             tr_logAddTraceSock(this, "utp_on_state_change -- changed to writable");
-            if (is_write_enabled())
-            {
+            if (is_write_enabled()) {
                 write_cb();
             }
             break;
@@ -188,14 +179,12 @@ public:
     {
         tr_logAddTraceSock(this, fmt::format("on_utp_error -- {}", utp_error_code_names[errcode]));
 
-        if (!error_cb_)
-        {
+        if (!error_cb_) {
             return;
         }
 
         auto error = tr_error{};
-        switch (errcode)
-        {
+        switch (errcode) {
         case UTP_ECONNREFUSED:
             error.set_from_errno(ECONNREFUSED);
             break;
@@ -225,22 +214,19 @@ private:
     size_t try_write_impl(OutBuf& buf, size_t n_bytes, tr_error* error) override
     {
         n_bytes = std::min(n_bytes, std::size(buf));
-        if (n_bytes == 0U)
-        {
+        if (n_bytes == 0U) {
             return {};
         }
 
         set_sockerrno(0);
         // NB: utp_write() does not modify its 2nd arg, but a wart in
         // libutp's public API requires it to be non-const anyway :shrug:
-        if (auto const n_written = utp_write(sock_, const_cast<std::byte*>(std::data(buf)), n_bytes); n_written >= 0)
-        {
+        if (auto const n_written = utp_write(sock_, const_cast<std::byte*>(std::data(buf)), n_bytes); n_written >= 0) {
             buf.drain(n_written);
             return static_cast<size_t>(n_written);
         }
 
-        if (auto const error_code = sockerrno; error != nullptr && error_code != 0)
-        {
+        if (auto const error_code = sockerrno; error != nullptr && error_code != 0) {
             error->set(error_code, tr_net_strerror(error_code));
         }
 
@@ -303,8 +289,7 @@ std::shared_ptr<tr_peer_socket_utp> tr_peer_socket_utp::create(
 #ifdef WITH_UTP
     auto* const sock = utp_create_socket(ctx);
     auto const [ss, sslen] = socket_address.to_sockaddr();
-    if (utp_connect(sock, reinterpret_cast<sockaddr const*>(&ss), sslen) == 0)
-    {
+    if (utp_connect(sock, reinterpret_cast<sockaddr const*>(&ss), sslen) == 0) {
         return std::make_shared<tr_peer_socket_utp_impl>(socket_address, sock, timer_maker);
     }
 #endif
@@ -315,70 +300,48 @@ void tr_peer_socket_utp::init([[maybe_unused]] struct_utp_context* ctx)
 {
 #ifdef WITH_UTP
     // Mimic OS UDP socket buffer
-    if (auto const rcvbuf = default_udp_bufsize(SO_RCVBUF); rcvbuf > 0)
-    {
+    if (auto const rcvbuf = default_udp_bufsize(SO_RCVBUF); rcvbuf > 0) {
         utp_context_set_option(ctx, UTP_RCVBUF, rcvbuf);
     }
-    if (auto const sndbuf = default_udp_bufsize(SO_SNDBUF); sndbuf > 0)
-    {
+    if (auto const sndbuf = default_udp_bufsize(SO_SNDBUF); sndbuf > 0) {
         utp_context_set_option(ctx, UTP_SNDBUF, sndbuf);
     }
 
     // note: all the callback handlers here need to check `userdata` for nullptr
     // because libutp can fire callbacks on a socket after utp_close() is called
 
-    utp_set_callback(
-        ctx,
-        UTP_ON_READ,
-        [](utp_callback_arguments* const args) -> uint64
-        {
-            if (auto* const s = static_cast<tr_peer_socket_utp_impl*>(utp_get_userdata(args->socket)); s != nullptr)
-            {
-                s->read_buffer().add(args->buf, args->len);
-                s->maybe_read_soon();
+    utp_set_callback(ctx, UTP_ON_READ, [](utp_callback_arguments* const args) -> uint64 {
+        if (auto* const s = static_cast<tr_peer_socket_utp_impl*>(utp_get_userdata(args->socket)); s != nullptr) {
+            s->read_buffer().add(args->buf, args->len);
+            s->maybe_read_soon();
 
-                // utp_read_drained() notifies libutp that we read a packet from them.
-                // It opens up the congestion window by sending an ACK (soonish) if
-                // one was not going to be sent.
-                utp_read_drained(args->socket);
-            }
-            return {};
-        });
+            // utp_read_drained() notifies libutp that we read a packet from them.
+            // It opens up the congestion window by sending an ACK (soonish) if
+            // one was not going to be sent.
+            utp_read_drained(args->socket);
+        }
+        return {};
+    });
 
-    utp_set_callback(
-        ctx,
-        UTP_GET_READ_BUFFER_SIZE,
-        [](utp_callback_arguments* const args) -> uint64
-        {
-            if (auto const* const s = static_cast<tr_peer_socket_utp_impl*>(utp_get_userdata(args->socket)); s != nullptr)
-            {
-                return s->read_buffer_size();
-            }
-            return {};
-        });
+    utp_set_callback(ctx, UTP_GET_READ_BUFFER_SIZE, [](utp_callback_arguments* const args) -> uint64 {
+        if (auto const* const s = static_cast<tr_peer_socket_utp_impl*>(utp_get_userdata(args->socket)); s != nullptr) {
+            return s->read_buffer_size();
+        }
+        return {};
+    });
 
-    utp_set_callback(
-        ctx,
-        UTP_ON_ERROR,
-        [](utp_callback_arguments* const args) -> uint64
-        {
-            if (auto const* const s = static_cast<tr_peer_socket_utp_impl*>(utp_get_userdata(args->socket)); s != nullptr)
-            {
-                s->on_utp_error(args->error_code);
-            }
-            return {};
-        });
+    utp_set_callback(ctx, UTP_ON_ERROR, [](utp_callback_arguments* const args) -> uint64 {
+        if (auto const* const s = static_cast<tr_peer_socket_utp_impl*>(utp_get_userdata(args->socket)); s != nullptr) {
+            s->on_utp_error(args->error_code);
+        }
+        return {};
+    });
 
-    utp_set_callback(
-        ctx,
-        UTP_ON_STATE_CHANGE,
-        [](utp_callback_arguments* const args) -> uint64
-        {
-            if (auto const* const s = static_cast<tr_peer_socket_utp_impl*>(utp_get_userdata(args->socket)); s != nullptr)
-            {
-                s->on_utp_state_change(args->state);
-            }
-            return {};
-        });
+    utp_set_callback(ctx, UTP_ON_STATE_CHANGE, [](utp_callback_arguments* const args) -> uint64 {
+        if (auto const* const s = static_cast<tr_peer_socket_utp_impl*>(utp_get_userdata(args->socket)); s != nullptr) {
+            s->on_utp_state_change(args->state);
+        }
+        return {};
+    });
 #endif
 }

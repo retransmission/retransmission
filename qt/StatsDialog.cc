@@ -37,8 +37,7 @@ void StatsDialog::setVisible(bool visible)
 {
     timer_.stop();
 
-    if (visible)
-    {
+    if (visible) {
         timer_.start(RefreshIntervalMsec);
     }
 

@@ -37,8 +37,7 @@ namespace
 {
 void log_wolfssl_error(int error_code, char const* file, int line)
 {
-    if (tr_logLevelIsActive(TR_LOG_ERROR))
-    {
+    if (tr_logLevelIsActive(TR_LOG_ERROR)) {
         tr_logAddMessage(
             file,
             line,
@@ -55,8 +54,7 @@ bool check_wolfssl_result(int result, char const* file, int line)
 {
     bool const ret = result == 0;
 
-    if (!ret)
-    {
+    if (!ret) {
         log_wolfssl_error(result, file, line);
     }
 
@@ -72,10 +70,8 @@ TR_WC_RNG* get_rng()
     static TR_WC_RNG rng;
     static bool rng_initialized = false;
 
-    if (!rng_initialized)
-    {
-        if (!check_result(wc_InitRng(&rng)))
-        {
+    if (!rng_initialized) {
+        if (!check_result(wc_InitRng(&rng))) {
             return nullptr;
         }
 
@@ -105,8 +101,7 @@ void tr_sha1::clear()
 
 void tr_sha1::add(void const* data, size_t data_length)
 {
-    if (data_length > 0U)
-    {
+    if (data_length > 0U) {
         wc_ShaUpdate(&handle_, static_cast<byte const*>(data), data_length);
     }
 }
@@ -135,8 +130,7 @@ void tr_sha256::clear()
 
 void tr_sha256::add(void const* data, size_t data_length)
 {
-    if (data_length > 0U)
-    {
+    if (data_length > 0U) {
         wc_Sha256Update(&handle_, static_cast<byte const*>(data), data_length);
     }
 }
@@ -153,8 +147,7 @@ tr_sha256_digest_t tr_sha256::finish()
 
 bool tr_rand_buffer_crypto(void* buffer, size_t length)
 {
-    if (length == 0)
-    {
+    if (length == 0) {
         return true;
     }
 

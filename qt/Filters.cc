@@ -10,8 +10,7 @@
 // then update `ShowModeFields` accordingly.
 bool should_show_torrent(Torrent const& tor, ShowMode const mode)
 {
-    switch (mode)
-    {
+    switch (mode) {
     case ShowMode::ShowActive:
         return tor.peersWeAreUploadingTo() > 0 || tor.peersWeAreDownloadingFrom() > 0 || tor.isVerifying();
 

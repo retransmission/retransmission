@@ -17,14 +17,12 @@ void RpcQueue::stepFinished()
 {
     RpcResponse result;
 
-    if (future_watcher_.future().isResultReadyAt(0))
-    {
+    if (future_watcher_.future().isResultReadyAt(0)) {
         result = future_watcher_.result();
         RpcResponseFuture const future = future_watcher_.future();
 
         // we can't handle network errors, abort queue and pass the error upwards
-        if (result.networkError != QNetworkReply::NoError)
-        {
+        if (result.networkError != QNetworkReply::NoError) {
             assert(!result.success);
 
             promise_.reportFinished(&result);
@@ -33,20 +31,16 @@ void RpcQueue::stepFinished()
         }
 
         // call user-handler for ordinary errors
-        if (!result.success && next_error_handler_)
-        {
+        if (!result.success && next_error_handler_) {
             next_error_handler_(future);
         }
 
         // run next request, if we have one to run and there was no error (or if we tolerate errors)
-        if ((result.success || tolerate_errors_) && !std::empty(queue_))
-        {
+        if ((result.success || tolerate_errors_) && !std::empty(queue_)) {
             runNext(future);
             return;
         }
-    }
-    else
-    {
+    } else {
         assert(!next_error_handler_);
         assert(std::empty(queue_));
 

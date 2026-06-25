@@ -14,8 +14,7 @@
 
 class TorrentModel;
 
-struct TrackerInfo
-{
+struct TrackerInfo {
     TrackerStat st;
     int torrent_id = {};
 };
@@ -28,10 +27,7 @@ class TrackerModel : public QAbstractListModel
 
 public:
     // NOLINTNEXTLINE(performance-enum-size)
-    enum Role
-    {
-        TrackerRole = Qt::UserRole
-    };
+    enum Role { TrackerRole = Qt::UserRole };
 
     TrackerModel() = default;
     ~TrackerModel() override = default;

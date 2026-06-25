@@ -93,8 +93,7 @@ void gtr_error(std::string const& message)
 
 Glib::ustring gtr_get_unicode_string(GtrUnicode uni)
 {
-    switch (uni)
-    {
+    switch (uni) {
     case GtrUnicode::Up:
         return "\xE2\x96\xB4";
 
@@ -135,30 +134,26 @@ auto constexpr SecondsPerDay = time_t{ 86400 };
 
 std::string tr_format_future_time(time_t seconds)
 {
-    if (auto const days_from_now = seconds / SecondsPerDay; days_from_now > 0)
-    {
+    if (auto const days_from_now = seconds / SecondsPerDay; days_from_now > 0) {
         return fmt::format(
             fmt::runtime(ngettext("{days_from_now:L} day from now", "{days_from_now:L} days from now", days_from_now)),
             fmt::arg("days_from_now", days_from_now));
     }
 
-    if (auto const hours_from_now = (seconds % SecondsPerDay) / SecondsPerHour; hours_from_now > 0)
-    {
+    if (auto const hours_from_now = (seconds % SecondsPerDay) / SecondsPerHour; hours_from_now > 0) {
         return fmt::format(
             fmt::runtime(ngettext("{hours_from_now:L} hour from now", "{hours_from_now:L} hours from now", hours_from_now)),
             fmt::arg("hours_from_now", hours_from_now));
     }
 
-    if (auto const minutes_from_now = (seconds % SecondsPerHour) / SecondsPerMinute; minutes_from_now > 0)
-    {
+    if (auto const minutes_from_now = (seconds % SecondsPerHour) / SecondsPerMinute; minutes_from_now > 0) {
         return fmt::format(
             fmt::runtime(
                 ngettext("{minutes_from_now:L} minute from now", "{minutes_from_now:L} minutes from now", minutes_from_now)),
             fmt::arg("minutes_from_now", minutes_from_now));
     }
 
-    if (auto const seconds_from_now = seconds % SecondsPerMinute; seconds_from_now > 0)
-    {
+    if (auto const seconds_from_now = seconds % SecondsPerMinute; seconds_from_now > 0) {
         return fmt::format(
             fmt::runtime(
                 ngettext("{seconds_from_now:L} second from now", "{seconds_from_now:L} seconds from now", seconds_from_now)),
@@ -170,29 +165,25 @@ std::string tr_format_future_time(time_t seconds)
 
 std::string tr_format_past_time(time_t seconds)
 {
-    if (auto const days_ago = seconds / SecondsPerDay; days_ago > 0)
-    {
+    if (auto const days_ago = seconds / SecondsPerDay; days_ago > 0) {
         return fmt::format(
             fmt::runtime(ngettext("{days_ago:L} day ago", "{days_ago:L} days ago", days_ago)),
             fmt::arg("days_ago", days_ago));
     }
 
-    if (auto const hours_ago = (seconds % SecondsPerDay) / SecondsPerHour; hours_ago > 0)
-    {
+    if (auto const hours_ago = (seconds % SecondsPerDay) / SecondsPerHour; hours_ago > 0) {
         return fmt::format(
             fmt::runtime(ngettext("{hours_ago:L} hour ago", "{hours_ago:L} hours ago", hours_ago)),
             fmt::arg("hours_ago", hours_ago));
     }
 
-    if (auto const minutes_ago = (seconds % SecondsPerHour) / SecondsPerMinute; minutes_ago > 0)
-    {
+    if (auto const minutes_ago = (seconds % SecondsPerHour) / SecondsPerMinute; minutes_ago > 0) {
         return fmt::format(
             fmt::runtime(ngettext("{minutes_ago:L} minute ago", "{minutes_ago:L} minutes ago", minutes_ago)),
             fmt::arg("minutes_ago", minutes_ago));
     }
 
-    if (auto const seconds_ago = seconds % SecondsPerMinute; seconds_ago > 0)
-    {
+    if (auto const seconds_ago = seconds % SecondsPerMinute; seconds_ago > 0) {
         return fmt::format(
             fmt::runtime(ngettext("{seconds_ago:L} second ago", "{seconds_ago:L} seconds ago", seconds_ago)),
             fmt::arg("seconds_ago", seconds_ago));
@@ -205,25 +196,21 @@ std::string tr_format_past_time(time_t seconds)
 
 std::string tr_format_time(time_t timestamp)
 {
-    if (auto const days = timestamp / SecondsPerDay; days > 0)
-    {
+    if (auto const days = timestamp / SecondsPerDay; days > 0) {
         return fmt::format(fmt::runtime(ngettext("{days:L} day", "{days:L} days", days)), fmt::arg("days", days));
     }
 
-    if (auto const hours = (timestamp % SecondsPerDay) / SecondsPerHour; hours > 0)
-    {
+    if (auto const hours = (timestamp % SecondsPerDay) / SecondsPerHour; hours > 0) {
         return fmt::format(fmt::runtime(ngettext("{hours:L} hour", "{hours:L} hours", hours)), fmt::arg("hours", hours));
     }
 
-    if (auto const minutes = (timestamp % SecondsPerHour) / SecondsPerMinute; minutes > 0)
-    {
+    if (auto const minutes = (timestamp % SecondsPerHour) / SecondsPerMinute; minutes > 0) {
         return fmt::format(
             fmt::runtime(ngettext("{minutes:L} minute", "{minutes:L} minutes", minutes)),
             fmt::arg("minutes", minutes));
     }
 
-    if (auto const seconds = timestamp % SecondsPerMinute; seconds > 0)
-    {
+    if (auto const seconds = timestamp % SecondsPerMinute; seconds > 0) {
         return fmt::format(
             fmt::runtime(ngettext("{seconds:L} second", "{seconds:L} seconds", seconds)),
             fmt::arg("seconds", seconds));
@@ -234,29 +221,25 @@ std::string tr_format_time(time_t timestamp)
 
 std::string tr_format_time_left(time_t timestamp)
 {
-    if (auto const days_left = timestamp / SecondsPerDay; days_left > 0)
-    {
+    if (auto const days_left = timestamp / SecondsPerDay; days_left > 0) {
         return fmt::format(
             fmt::runtime(ngettext("{days_left:L} day left", "{days_left:L} days left", days_left)),
             fmt::arg("days_left", days_left));
     }
 
-    if (auto const hours_left = (timestamp % SecondsPerDay) / SecondsPerHour; hours_left > 0)
-    {
+    if (auto const hours_left = (timestamp % SecondsPerDay) / SecondsPerHour; hours_left > 0) {
         return fmt::format(
             fmt::runtime(ngettext("{hours_left:L} hour left", "{hours_left:L} hours left", hours_left)),
             fmt::arg("hours_left", hours_left));
     }
 
-    if (auto const minutes_left = (timestamp % SecondsPerHour) / SecondsPerMinute; minutes_left > 0)
-    {
+    if (auto const minutes_left = (timestamp % SecondsPerHour) / SecondsPerMinute; minutes_left > 0) {
         return fmt::format(
             fmt::runtime(ngettext("{minutes_left:L} minute left", "{minutes_left:L} minutes left", minutes_left)),
             fmt::arg("minutes_left", minutes_left));
     }
 
-    if (auto const seconds_left = timestamp % SecondsPerMinute; seconds_left > 0)
-    {
+    if (auto const seconds_left = timestamp % SecondsPerMinute; seconds_left > 0) {
         return fmt::format(
             fmt::runtime(ngettext("{seconds_left:L} second left", "{seconds_left:L} seconds left", seconds_left)),
             fmt::arg("seconds_left", seconds_left));
@@ -274,15 +257,12 @@ void gtr_add_torrent_error_dialog(Gtk::Widget& child, tr_torrent* duplicate_torr
 {
     Glib::ustring secondary;
 
-    if (duplicate_torrent != nullptr)
-    {
+    if (duplicate_torrent != nullptr) {
         secondary = fmt::format(
             fmt::runtime(_("The torrent file '{path}' is already in use by '{torrent_name}'.")),
             fmt::arg("path", filename),
             fmt::arg("torrent_name", tr_torrentName(duplicate_torrent)));
-    }
-    else
-    {
+    } else {
         secondary = fmt::format(fmt::runtime(_("Couldn't add torrent file '{path}'")), fmt::arg("path", filename));
     }
 
@@ -306,19 +286,16 @@ bool on_item_view_button_pressed(
     bool context_menu_requested,
     std::function<void(double, double)> const& callback)
 {
-    if (context_menu_requested)
-    {
+    if (context_menu_requested) {
         Gtk::TreeModel::Path path;
 
         if (auto const selection = view.get_selection();
-            view.get_path_at_pos(static_cast<int>(event_x), static_cast<int>(event_y), path) && !selection->is_selected(path))
-        {
+            view.get_path_at_pos(static_cast<int>(event_x), static_cast<int>(event_y), path) && !selection->is_selected(path)) {
             selection->unselect_all();
             selection->select(path);
         }
 
-        if (callback)
-        {
+        if (callback) {
             callback(event_x, event_y);
         }
 
@@ -337,13 +314,11 @@ namespace
 std::optional<guint> get_position_from_allocation(Gtk::ListView& view, double view_x, double view_y)
 {
     auto* child = view.pick(view_x, view_y);
-    while (child != nullptr && child->get_css_name() != "row")
-    {
+    while (child != nullptr && child->get_css_name() != "row") {
         child = child->get_parent();
     }
 
-    if (child == nullptr)
-    {
+    if (child == nullptr) {
         return {};
     }
 
@@ -362,18 +337,14 @@ bool on_item_view_button_pressed(
     bool context_menu_requested,
     std::function<void(double, double)> const& callback)
 {
-    if (context_menu_requested)
-    {
-        if (auto const position = get_position_from_allocation(view, event_x, event_y); position.has_value())
-        {
-            if (auto const selection_model = view.get_model(); !selection_model->is_selected(position.value()))
-            {
+    if (context_menu_requested) {
+        if (auto const position = get_position_from_allocation(view, event_x, event_y); position.has_value()) {
+            if (auto const selection_model = view.get_model(); !selection_model->is_selected(position.value())) {
                 selection_model->select_item(position.value(), true);
             }
         }
 
-        if (callback)
-        {
+        if (callback) {
             callback(event_x, event_y);
         }
 
@@ -389,8 +360,7 @@ bool on_item_view_button_pressed(
  * clear all the selections. */
 bool on_item_view_button_released(Gtk::TreeView& view, double event_x, double event_y)
 {
-    if (Gtk::TreeModel::Path path; !view.get_path_at_pos(static_cast<int>(event_x), static_cast<int>(event_y), path))
-    {
+    if (Gtk::TreeModel::Path path; !view.get_path_at_pos(static_cast<int>(event_x), static_cast<int>(event_y), path)) {
         view.get_selection()->unselect_all();
     }
 
@@ -401,8 +371,7 @@ bool on_item_view_button_released(Gtk::TreeView& view, double event_x, double ev
 
 bool on_item_view_button_released(Gtk::ListView& view, double event_x, double event_y)
 {
-    if (!get_position_from_allocation(view, event_x, event_y).has_value())
-    {
+    if (!get_position_from_allocation(view, event_x, event_y).has_value()) {
         view.get_model()->unselect_all();
     }
 
@@ -441,11 +410,9 @@ void setup_item_view_button_event_handling_impl(
     auto controller = Gtk::GestureClick::create();
     controller->set_button(0);
     controller->set_propagation_phase(Gtk::PropagationPhase::CAPTURE);
-    if (press_callback)
-    {
+    if (press_callback) {
         controller->signal_pressed().connect(
-            [&view, press_callback, controller](int /*n_press*/, double view_x, double view_y)
-            {
+            [&view, press_callback, controller](int /*n_press*/, double view_x, double view_y) {
                 auto const [event_x, event_y] = convert_widget_to_bin_window_coords(
                     view,
                     static_cast<int>(view_x),
@@ -460,18 +427,15 @@ void setup_item_view_button_event_handling_impl(
                         event->get_modifier_state(),
                         event_x,
                         event_y,
-                        event->triggers_context_menu()))
-                {
+                        event->triggers_context_menu())) {
                     controller->set_sequence_state(sequence, Gtk::EventSequenceState::CLAIMED);
                 }
             },
             false);
     }
-    if (release_callback)
-    {
+    if (release_callback) {
         controller->signal_released().connect(
-            [&view, release_callback, controller](int /*n_press*/, double view_x, double view_y)
-            {
+            [&view, release_callback, controller](int /*n_press*/, double view_x, double view_y) {
                 auto const [event_x, event_y] = convert_widget_to_bin_window_coords(
                     view,
                     static_cast<int>(view_x),
@@ -480,25 +444,23 @@ void setup_item_view_button_event_handling_impl(
                 auto* const sequence = controller->get_current_sequence();
                 auto const event = controller->get_last_event(sequence);
 
-                if (event->get_event_type() == TR_GDK_EVENT_TYPE(BUTTON_RELEASE) && release_callback(event_x, event_y))
-                {
+                if (event->get_event_type() == TR_GDK_EVENT_TYPE(BUTTON_RELEASE) && release_callback(event_x, event_y)) {
                     controller->set_sequence_state(sequence, Gtk::EventSequenceState::CLAIMED);
                 }
             });
     }
     view.add_controller(controller);
 #else
-    if (press_callback)
-    {
+    if (press_callback) {
         view.signal_button_press_event().connect(
-            [press_callback](GdkEventButton* event)
-            { return press_callback(event->button, event->state, event->x, event->y, event->button == GDK_BUTTON_SECONDARY); },
+            [press_callback](GdkEventButton* event) {
+                return press_callback(event->button, event->state, event->x, event->y, event->button == GDK_BUTTON_SECONDARY);
+            },
             false);
     }
-    if (release_callback)
-    {
-        view.signal_button_release_event().connect([release_callback](GdkEventButton* event)
-                                                   { return release_callback(event->x, event->y); });
+    if (release_callback) {
+        view.signal_button_release_event().connect(
+            [release_callback](GdkEventButton* event) { return release_callback(event->x, event->y); });
     }
 #endif
 }
@@ -530,22 +492,17 @@ bool gtr_file_trash_or_remove(std::string_view const filename, tr_error* error)
     g_return_val_if_fail(!filename.empty(), false);
 
     auto local_error = tr_error{};
-    if (error == nullptr)
-    {
+    if (error == nullptr) {
         error = &local_error;
     }
 
     auto const file = Gio::File::create_for_path(std::string{ filename });
     bool trashed = false;
 
-    if (gtr_pref_flag_get(TR_KEY_trash_can_enabled))
-    {
-        try
-        {
+    if (gtr_pref_flag_get(TR_KEY_trash_can_enabled)) {
+        try {
             trashed = file->trash();
-        }
-        catch (Glib::Error const& e)
-        {
+        } catch (Glib::Error const& e) {
             error->set(e.code(), TR_GLIB_EXCEPTION_WHAT(e));
             gtr_message(
                 fmt::format(
@@ -557,14 +514,10 @@ bool gtr_file_trash_or_remove(std::string_view const filename, tr_error* error)
     }
 
     bool result = true;
-    if (!trashed)
-    {
-        try
-        {
+    if (!trashed) {
+        try {
             file->remove();
-        }
-        catch (Glib::Error const& e)
-        {
+        } catch (Glib::Error const& e) {
             error->set(e.code(), TR_GLIB_EXCEPTION_WHAT(e));
             gtr_message(
                 fmt::format(
@@ -584,10 +537,8 @@ namespace
 
 void object_signal_notify_callback(GObject* object, GParamSpec* /*param_spec*/, gpointer data)
 {
-    if (object != nullptr && data != nullptr)
-    {
-        if (auto const* const slot = Glib::SignalProxyBase::data_to_slot(data); slot != nullptr)
-        {
+    if (object != nullptr && data != nullptr) {
+        if (auto const* const slot = Glib::SignalProxyBase::data_to_slot(data); slot != nullptr) {
             // NOLINTNEXTLINE(cppcoreguidelines-pro-type-static-cast-downcast)
             (*static_cast<sigc::slot<TrObjectSignalNotifyCallback> const*>(slot))(Glib::wrap(object, true));
         }
@@ -634,22 +585,17 @@ void gtr_open_file(std::string_view const filename)
 
 void gtr_open_uri(std::string_view const uri)
 {
-    if (std::empty(uri))
-    {
+    if (std::empty(uri)) {
         return;
     }
 
     auto const uri_str = std::string{ uri };
 
-    try
-    {
-        if (Gio::AppInfo::launch_default_for_uri(uri_str))
-        {
+    try {
+        if (Gio::AppInfo::launch_default_for_uri(uri_str)) {
             return;
         }
-    }
-    catch (Glib::Error const& e)
-    {
+    } catch (Glib::Error const& e) {
         gtr_warning(
             fmt::format(
                 fmt::runtime(_("Couldn't launch default application for URI '{uri}': {error} ({error_code})")),
@@ -658,13 +604,10 @@ void gtr_open_uri(std::string_view const uri)
                 fmt::arg("error_code", e.code())));
     }
 
-    try
-    {
+    try {
         Glib::spawn_async({}, std::vector<std::string>{ "xdg-open", uri_str }, TR_GLIB_SPAWN_FLAGS(SEARCH_PATH));
         return;
-    }
-    catch (Glib::SpawnError const& e)
-    {
+    } catch (Glib::SpawnError const& e) {
         gtr_warning(
             fmt::format(
                 fmt::runtime(_("Couldn't invoke xdg-open for URI '{uri}': {error} ({error_code})")),
@@ -703,19 +646,15 @@ void gtr_combo_box_set_active_enum(Gtk::ComboBox& combo, int value)
     auto const& column = enum_combo_cols.value;
 
     /* do the value and current value match? */
-    if (auto const iter = combo.get_active(); iter)
-    {
-        if (iter->get_value(column) == value)
-        {
+    if (auto const iter = combo.get_active(); iter) {
+        if (iter->get_value(column) == value) {
             return;
         }
     }
 
     /* find the one to select */
-    for (auto const& row : combo.get_model()->children())
-    {
-        if (row.get_value(column) == value)
-        {
+    for (auto const& row : combo.get_model()->children()) {
+        if (row.get_value(column) == value) {
             combo.set_active(TR_GTK_TREE_MODEL_CHILD_ITER(row));
             return;
         }
@@ -726,8 +665,7 @@ void gtr_combo_box_set_enum(Gtk::ComboBox& combo, std::vector<std::pair<Glib::us
 {
     auto store = Gtk::ListStore::create(enum_combo_cols);
 
-    for (auto const& [label, value] : items)
-    {
+    for (auto const& [label, value] : items) {
         auto const iter = store->append();
         (*iter)[enum_combo_cols.value] = value;
         (*iter)[enum_combo_cols.label] = label;
@@ -745,8 +683,7 @@ int gtr_combo_box_get_active_enum(Gtk::ComboBox const& combo)
 {
     int value = 0;
 
-    if (auto const iter = combo.get_active(); iter)
-    {
+    if (auto const iter = combo.get_active(); iter) {
         iter->get_value(0, value);
     }
 
@@ -771,8 +708,7 @@ void gtr_widget_set_visible(Gtk::Widget& widget, bool is_visible)
     static auto const ChildHiddenKey = Glib::Quark("gtr-child-hidden");
 
     auto* const widget_as_window = dynamic_cast<Gtk::Window*>(&widget);
-    if (widget_as_window == nullptr)
-    {
+    if (widget_as_window == nullptr) {
         widget.set_visible(is_visible);
         return;
     }
@@ -781,22 +717,18 @@ void gtr_widget_set_visible(Gtk::Widget& widget, bool is_visible)
     auto windows = std::stack<Gtk::Window*>();
     windows.push(widget_as_window);
 
-    while (!windows.empty())
-    {
+    while (!windows.empty()) {
         auto* const window = windows.top();
         bool transient_child_found = false;
 
-        for (auto* const top_level_window : Gtk::Window::list_toplevels())
-        {
+        for (auto* const top_level_window : Gtk::Window::list_toplevels()) {
 #if !GTKMM_CHECK_VERSION(4, 0, 0)
-            if (top_level_window->get_window_type() != Gtk::WINDOW_TOPLEVEL)
-            {
+            if (top_level_window->get_window_type() != Gtk::WINDOW_TOPLEVEL) {
                 continue;
             }
 #endif
 
-            if (top_level_window->get_transient_for() != window || top_level_window->get_visible() == is_visible)
-            {
+            if (top_level_window->get_transient_for() != window || top_level_window->get_visible() == is_visible) {
                 continue;
             }
 
@@ -805,18 +737,14 @@ void gtr_widget_set_visible(Gtk::Widget& widget, bool is_visible)
             break;
         }
 
-        if (transient_child_found)
-        {
+        if (transient_child_found) {
             continue;
         }
 
-        if (is_visible && window->get_data(ChildHiddenKey) != nullptr)
-        {
+        if (is_visible && window->get_data(ChildHiddenKey) != nullptr) {
             window->steal_data(ChildHiddenKey);
             window->set_visible(true);
-        }
-        else if (!is_visible)
-        {
+        } else if (!is_visible) {
             window->set_data(ChildHiddenKey, GINT_TO_POINTER(1));
             window->set_visible(false);
         }
@@ -827,8 +755,7 @@ void gtr_widget_set_visible(Gtk::Widget& widget, bool is_visible)
 
 Gtk::Window& gtr_widget_get_window(Gtk::Widget& widget)
 {
-    if (auto* const window = dynamic_cast<Gtk::Window*>(TR_GTK_WIDGET_GET_ROOT(widget)); window != nullptr)
-    {
+    if (auto* const window = dynamic_cast<Gtk::Window*>(TR_GTK_WIDGET_GET_ROOT(widget)); window != nullptr) {
         return *window;
     }
 
@@ -843,8 +770,7 @@ void gtr_window_set_skip_taskbar_hint([[maybe_unused]] Gtk::Window& window, [[ma
 {
 #if GTK_CHECK_VERSION(4, 0, 0)
 #if defined(GDK_WINDOWING_X11)
-    if (auto* const surface = Glib::unwrap(window.get_surface()); GDK_IS_X11_SURFACE(surface))
-    {
+    if (auto* const surface = Glib::unwrap(window.get_surface()); GDK_IS_X11_SURFACE(surface)) {
         gdk_x11_surface_set_skip_taskbar_hint(surface, value ? TRUE : FALSE);
     }
 #endif
@@ -857,8 +783,7 @@ void gtr_window_set_urgency_hint([[maybe_unused]] Gtk::Window& window, [[maybe_u
 {
 #if GTK_CHECK_VERSION(4, 0, 0)
 #if defined(GDK_WINDOWING_X11)
-    if (auto* const surface = Glib::unwrap(window.get_surface()); GDK_IS_X11_SURFACE(surface))
-    {
+    if (auto* const surface = Glib::unwrap(window.get_surface()); GDK_IS_X11_SURFACE(surface)) {
         gdk_x11_surface_set_urgency_hint(surface, value ? TRUE : FALSE);
     }
 #endif
@@ -890,8 +815,7 @@ void gtr_unrecognized_url_dialog(Gtk::Widget& parent, Glib::ustring const& url)
 
     gstr += fmt::format(fmt::runtime(_("Transmission doesn't know how to use '{url}'")), fmt::arg("url", url));
 
-    if (tr_magnet_metainfo{}.parseMagnet(url.raw()))
-    {
+    if (tr_magnet_metainfo{}.parseMagnet(url.raw())) {
         gstr += "\n \n";
         gstr += _("This magnet link appears to be intended for something other than BitTorrent.");
     }
@@ -907,11 +831,9 @@ void gtr_unrecognized_url_dialog(Gtk::Widget& parent, Glib::ustring const& url)
 
 void gtr_paste_clipboard_url_into_entry(Gtk::Entry& entry)
 {
-    auto const process = [&entry](Glib::ustring const& text)
-    {
+    auto const process = [&entry](Glib::ustring const& text) {
         if (auto const sv = tr_strv_strip(text.raw());
-            !sv.empty() && (tr_urlIsValid(sv) || tr_magnet_metainfo{}.parseMagnet(sv)))
-        {
+            !sv.empty() && (tr_urlIsValid(sv) || tr_magnet_metainfo{}.parseMagnet(sv))) {
             entry.set_text(text);
             return true;
         }
@@ -919,28 +841,21 @@ void gtr_paste_clipboard_url_into_entry(Gtk::Entry& entry)
     };
 
 #if GTKMM_CHECK_VERSION(4, 0, 0)
-    auto const request = [](Glib::RefPtr<Gdk::Clipboard> const& clipboard, auto&& callback)
-    {
-        clipboard->read_text_async([clipboard, callback](Glib::RefPtr<Gio::AsyncResult>& result)
-                                   { callback(clipboard->read_text_finish(result)); });
+    auto const request = [](Glib::RefPtr<Gdk::Clipboard> const& clipboard, auto&& callback) {
+        clipboard->read_text_async(
+            [clipboard, callback](Glib::RefPtr<Gio::AsyncResult>& result) { callback(clipboard->read_text_finish(result)); });
     };
 
-    request(
-        Gdk::Display::get_default()->get_primary_clipboard(),
-        [request, process](Glib::ustring const& text)
-        {
-            if (!process(text))
-            {
-                request(Gdk::Display::get_default()->get_clipboard(), process);
-            }
-        });
+    request(Gdk::Display::get_default()->get_primary_clipboard(), [request, process](Glib::ustring const& text) {
+        if (!process(text)) {
+            request(Gdk::Display::get_default()->get_clipboard(), process);
+        }
+    });
 #else
     for (
         auto const& str : { Gtk::Clipboard::get(GDK_SELECTION_PRIMARY)->wait_for_text(),
-                            Gtk::Clipboard::get(GDK_SELECTION_CLIPBOARD)->wait_for_text() })
-    {
-        if (process(str))
-        {
+                            Gtk::Clipboard::get(GDK_SELECTION_CLIPBOARD)->wait_for_text() }) {
+        if (process(str)) {
             break;
         }
     }
@@ -953,8 +868,7 @@ void gtr_paste_clipboard_url_into_entry(Gtk::Entry& entry)
 
 void gtr_label_set_text(Gtk::Label& lb, Glib::ustring const& text)
 {
-    if (lb.get_text() != text)
-    {
+    if (lb.get_text() != text) {
         lb.set_text(text);
     }
 }
@@ -975,12 +889,10 @@ std::list<std::string> gtr_get_recent_dirs(std::string const& pref)
 {
     std::list<std::string> list;
 
-    for (size_t i = 0; i < max_recent_dirs; ++i)
-    {
+    for (size_t i = 0; i < max_recent_dirs; ++i) {
         auto const key = fmt::format("recent-{}-dir-{}", pref, i + 1);
 
-        if (auto const val = gtr_pref_string_get(tr_quark_new(key)); !val.empty())
-        {
+        if (auto const val = gtr_pref_string_get(tr_quark_new(key)); !val.empty()) {
             list.push_back(val);
         }
     }
@@ -990,8 +902,7 @@ std::list<std::string> gtr_get_recent_dirs(std::string const& pref)
 
 void gtr_save_recent_dir(std::string const& pref, Glib::RefPtr<Session> const& core, std::string const& dir)
 {
-    if (dir.empty())
-    {
+    if (dir.empty()) {
         return;
     }
 
@@ -1006,8 +917,7 @@ void gtr_save_recent_dir(std::string const& pref, Glib::RefPtr<Session> const& c
     /* save the first max_recent_dirs directories */
     list.resize(max_recent_dirs);
     int i = 0;
-    for (auto const& d : list)
-    {
+    for (auto const& d : list) {
         auto const key = fmt::format("recent-{}-dir-{}", pref, ++i);
         gtr_pref_string_set(tr_quark_new(key), d);
     }

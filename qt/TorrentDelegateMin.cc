@@ -164,12 +164,10 @@ void TorrentDelegateMin::drawTorrent(QPainter* painter, QStyleOptionViewItem con
 
     painter->save();
 
-    if (is_item_selected)
-    {
+    if (is_item_selected) {
         auto color_group = is_item_enabled ? QPalette::Normal : QPalette::Disabled;
 
-        if (color_group == QPalette::Normal && !is_item_active)
-        {
+        if (color_group == QPalette::Normal && !is_item_active) {
             color_group = QPalette::Inactive;
         }
 
@@ -178,16 +176,11 @@ void TorrentDelegateMin::drawTorrent(QPainter* painter, QStyleOptionViewItem con
 
     auto icon_mode = QIcon::Mode{};
 
-    if (is_paused || !is_item_enabled)
-    {
+    if (is_paused || !is_item_enabled) {
         icon_mode = QIcon::Disabled;
-    }
-    else if (is_item_selected)
-    {
+    } else if (is_item_selected) {
         icon_mode = QIcon::Selected;
-    }
-    else
-    {
+    } else {
         icon_mode = QIcon::Normal;
     }
 
@@ -197,15 +190,13 @@ void TorrentDelegateMin::drawTorrent(QPainter* painter, QStyleOptionViewItem con
 
     auto text_color = (tor.hasError() && !is_item_selected) ? QColor{ Qt::GlobalColor::red } :
                                                               option.palette.color(color_group, color_role);
-    if (is_paused || !is_item_enabled)
-    {
+    if (is_paused || !is_item_enabled) {
         text_color.setAlphaF(0.5);
     }
 
     QStyle::State progress_bar_state(option.state);
 
-    if (is_paused)
-    {
+    if (is_paused) {
         progress_bar_state = QStyle::State_None;
     }
 
@@ -230,8 +221,7 @@ void TorrentDelegateMin::drawTorrent(QPainter* painter, QStyleOptionViewItem con
 
     tor.getMimeTypeIcon().paint(painter, layout.icon_rect, Qt::AlignCenter, icon_mode, icon_state);
 
-    if (!emblem_icon.isNull())
-    {
+    if (!emblem_icon.isNull()) {
         emblem_icon.paint(painter, layout.emblem_rect, Qt::AlignCenter, emblem_im, icon_state);
     }
 
@@ -241,20 +231,15 @@ void TorrentDelegateMin::drawTorrent(QPainter* painter, QStyleOptionViewItem con
     painter->drawText(layout.status_rect, Qt::AlignLeft | Qt::AlignVCenter, layout.statusText());
     progress_bar_style_.rect = layout.bar_rect;
 
-    if (tor.isDownloading())
-    {
+    if (tor.isDownloading()) {
         progress_bar_style_.palette.setBrush(QPalette::Highlight, BlueBrush);
         progress_bar_style_.palette.setColor(QPalette::Base, BlueBack);
         progress_bar_style_.palette.setColor(QPalette::Window, BlueBack);
-    }
-    else if (tor.isSeeding())
-    {
+    } else if (tor.isSeeding()) {
         progress_bar_style_.palette.setBrush(QPalette::Highlight, GreenBrush);
         progress_bar_style_.palette.setColor(QPalette::Base, GreenBack);
         progress_bar_style_.palette.setColor(QPalette::Window, GreenBack);
-    }
-    else
-    {
+    } else {
         progress_bar_style_.palette.setBrush(QPalette::Highlight, SilverBrush);
         progress_bar_style_.palette.setColor(QPalette::Base, SilverBack);
         progress_bar_style_.palette.setColor(QPalette::Window, SilverBack);

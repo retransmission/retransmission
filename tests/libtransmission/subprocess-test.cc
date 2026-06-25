@@ -71,8 +71,7 @@ protected:
 
     static void waitForFileToBeReadable(std::string const& path)
     {
-        auto const test = [&path]()
-        {
+        auto const test = [&path]() {
             return std::ifstream{ path, std::ios_base::in }.is_open();
         };
         EXPECT_TRUE(waitFor(test, 30000));
@@ -137,8 +136,7 @@ TEST_P(SubprocessTest, SpawnAsyncArgs)
     EXPECT_TRUE(std::getline(in, line));
     EXPECT_EQ(test_arg3, line);
 
-    if (allow_batch_metachars)
-    {
+    if (allow_batch_metachars) {
         EXPECT_TRUE(std::getline(in, line));
         EXPECT_EQ(test_arg4, line);
     }

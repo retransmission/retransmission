@@ -42,8 +42,7 @@ namespace
 {
 namespace parse_helpers
 {
-struct json_to_variant_handler : public rapidjson::BaseReaderHandler<>
-{
+struct json_to_variant_handler : public rapidjson::BaseReaderHandler<> {
     static_assert(std::is_same_v<Ch, char>);
 
     explicit json_to_variant_handler(tr_variant* const top)
@@ -101,8 +100,7 @@ struct json_to_variant_handler : public rapidjson::BaseReaderHandler<>
 
     bool StartObject()
     {
-        if (auto* node = push_stack())
-        {
+        if (auto* node = push_stack()) {
             *node = tr_variant::Map{ prealloc_guess() };
             return true;
         }
@@ -112,13 +110,10 @@ struct json_to_variant_handler : public rapidjson::BaseReaderHandler<>
 
     bool Key(Ch const* const str, rapidjson::SizeType const len, bool const copy)
     {
-        if (copy)
-        {
+        if (copy) {
             key_buf_.assign(str, len);
             cur_key_ = key_buf_;
-        }
-        else
-        {
+        } else {
             cur_key_ = std::string_view{ str, len };
         }
         return true;
@@ -132,8 +127,7 @@ struct json_to_variant_handler : public rapidjson::BaseReaderHandler<>
 
     bool StartArray()
     {
-        if (auto* node = push_stack())
-        {
+        if (auto* node = push_stack()) {
             *node = tr_variant::make_vector(prealloc_guess());
             return true;
         }
@@ -162,12 +156,9 @@ private:
     void pop_stack(rapidjson::SizeType const len) noexcept
     {
 #ifdef TR_ENABLE_ASSERTS
-        if (auto* top = stack_.top(); top->holds_alternative<tr_variant::Vector>())
-        {
+        if (auto* top = stack_.top(); top->holds_alternative<tr_variant::Vector>()) {
             TR_ASSERT(std::size(*top->get_if<tr_variant::Vector>()) == len);
-        }
-        else if (top->holds_alternative<tr_variant::Map>())
-        {
+        } else if (top->holds_alternative<tr_variant::Map>()) {
             TR_ASSERT(std::size(*top->get_if<tr_variant::Map>()) == len);
         }
 #endif
@@ -175,8 +166,7 @@ private:
         auto const depth = std::size(stack_);
         stack_.pop();
         TR_ASSERT(!std::empty(stack_));
-        if (depth < MaxDepth)
-        {
+        if (depth < MaxDepth) {
             prealloc_guess_[depth] = len;
         }
     }
@@ -186,12 +176,10 @@ private:
         auto* const parent = stack_.top();
         TR_ASSERT(parent != nullptr);
 
-        if (auto* const vec = parent->get_if<tr_variant::Vector>())
-        {
+        if (auto* const vec = parent->get_if<tr_variant::Vector>()) {
             return &vec->emplace_back();
         }
-        if (auto* const map = parent->get_if<tr_variant::Map>())
-        {
+        if (auto* const map = parent->get_if<tr_variant::Map>()) {
             TR_ASSERT(!std::empty(cur_key_));
             auto tmp = std::string_view{};
             std::swap(cur_key_, tmp);
@@ -220,8 +208,7 @@ private:
 std::optional<tr_variant> tr_variant_serde::parse_json(std::string_view input)
 {
     auto* begin = std::data(input);
-    if (begin == nullptr)
-    {
+    if (begin == nullptr) {
         // RapidJSON will dereference a nullptr otherwise
         begin = "";
     }
@@ -240,20 +227,14 @@ std::optional<tr_variant> tr_variant_serde::parse_json(std::string_view input)
     auto const pos = eis.Peek() == '\0' ? eis.Tell() : eis.Tell() - 1U;
     end_ = begin + pos;
 
-    if (!reader.HasParseError())
-    {
+    if (!reader.HasParseError()) {
         return std::optional<tr_variant>{ std::move(top) };
     }
-    if (auto err_code = reader.GetParseErrorCode(); err_code == rapidjson::kParseErrorDocumentEmpty)
-    {
+    if (auto err_code = reader.GetParseErrorCode(); err_code == rapidjson::kParseErrorDocumentEmpty) {
         error_.set(EINVAL, "No content");
-    }
-    else if (err_code == rapidjson::kParseErrorTermination)
-    {
+    } else if (err_code == rapidjson::kParseErrorTermination) {
         error_.set(E2BIG, "Max stack depth reached; unable to continue parsing");
-    }
-    else
-    {
+    } else {
         error_.set(
             EILSEQ,
             fmt::format(
@@ -275,8 +256,7 @@ namespace to_string_helpers
 {
 // implements RapidJSON's write-only stream concept using fmt::memory_buffer.
 // See <rapidjson/stream.h> for details.
-struct FmtOutputStream
-{
+struct FmtOutputStream {
     using Ch = char;
 
     void Put(Ch const ch)
@@ -302,8 +282,7 @@ private:
     static auto constexpr N = 32U;
     auto entries = small::vector<std::pair<std::string_view, tr_variant const*>, N>{};
     entries.reserve(map.size());
-    for (auto const& [key, child] : map)
-    {
+    for (auto const& [key, child] : map) {
         entries.emplace_back(tr_quark_get_string_view(key), &child);
     }
     std::ranges::sort(entries);
@@ -311,8 +290,7 @@ private:
 }
 
 template<typename WriterT>
-struct JsonWriter
-{
+struct JsonWriter {
     WriterT& writer;
 
     void operator()(std::monostate /*unused*/) const
@@ -351,8 +329,7 @@ struct JsonWriter
     void operator()(tr_variant::Vector const& val) const
     {
         writer.StartArray();
-        for (auto const& child : val)
-        {
+        for (auto const& child : val) {
             child.visit(*this);
         }
         writer.EndArray();
@@ -361,8 +338,7 @@ struct JsonWriter
     void operator()(tr_variant::Map const& val) const
     {
         writer.StartObject();
-        for (auto const& [key, child] : sorted_entries(val))
-        {
+        for (auto const& [key, child] : sorted_entries(val)) {
             writer.Key(std::data(key), std::size(key));
             child->visit(*this);
         }
@@ -381,13 +357,10 @@ std::string tr_variant_serde::to_json_string(tr_variant const& var) const
     using namespace to_string_helpers;
 
     auto buf = FmtOutputStream{};
-    if (compact_)
-    {
+    if (compact_) {
         auto writer = rapidjson::Writer{ buf };
         var.visit(JsonWriter{ writer });
-    }
-    else
-    {
+    } else {
         // Explicitly specify template parameter to workaround
         // https://gcc.gnu.org/bugzilla/show_bug.cgi?id=85790
         auto writer = rapidjson::PrettyWriter<FmtOutputStream>{ buf };

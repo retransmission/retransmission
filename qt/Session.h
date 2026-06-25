@@ -32,9 +32,8 @@
 
 class AddData;
 
-extern "C"
-{
-    struct tr_variant;
+extern "C" {
+struct tr_variant;
 }
 
 class Session : public QObject
@@ -77,12 +76,7 @@ public:
         return blocklist_size_;
     }
 
-    enum PortTestIpProtocol : uint8_t
-    {
-        PORT_TEST_IPV4,
-        PORT_TEST_IPV6,
-        NUM_PORT_TEST_IP_PROTOCOL
-    };
+    enum PortTestIpProtocol : uint8_t { PORT_TEST_IPV4, PORT_TEST_IPV6, NUM_PORT_TEST_IP_PROTOCOL };
 
     void setBlocklistSize(int64_t i);
     void updateBlocklist();
@@ -129,15 +123,7 @@ public:
     void reannounceTorrents(torrent_ids_t const& torrent_ids);
     void refreshExtraStats(torrent_ids_t const& torrent_ids);
 
-    enum class TorrentProperties : uint8_t
-    {
-        MainInfo,
-        MainStats,
-        MainAll,
-        DetailInfo,
-        DetailStat,
-        Rename
-    };
+    enum class TorrentProperties : uint8_t { MainInfo, MainStats, MainAll, DetailInfo, DetailStat, Rename };
 
 public slots:
     void addTorrent(AddData const& add_me);
@@ -174,15 +160,11 @@ private:
     template<typename T>
     static void addParamPair(tr_variant::Map& params, tr_quark const key, T const& val)
     {
-        if constexpr (std::is_same_v<std::remove_cvref_t<T>, torrent_ids_t>)
-        {
-            if (auto var = getTorrentIdsVariant(val); var.has_value())
-            {
+        if constexpr (std::is_same_v<std::remove_cvref_t<T>, torrent_ids_t>) {
+            if (auto var = getTorrentIdsVariant(val); var.has_value()) {
                 params.insert_or_assign(key, std::move(var));
             }
-        }
-        else
-        {
+        } else {
             params.insert_or_assign(key, tr::serializer::to_variant(val));
         }
     }
@@ -192,8 +174,7 @@ private:
     {
         addParamPair(params, key, val);
 
-        if constexpr (sizeof...(rest) != 0U)
-        {
+        if constexpr (sizeof...(rest) != 0U) {
             addParamPairs(params, rest...);
         }
     }

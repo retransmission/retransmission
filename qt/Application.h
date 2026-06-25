@@ -69,15 +69,11 @@ public:
     {
         auto weak_self = QPointer<Application>{ this };
 
-        favicon_cache_.load(
-            url.toStdString(),
-            [weak_self = std::move(weak_self)](QPixmap const* /*favicon_or_nullptr*/)
-            {
-                if (!weak_self.isNull())
-                {
-                    weak_self.data()->faviconsChanged();
-                }
-            });
+        favicon_cache_.load(url.toStdString(), [weak_self = std::move(weak_self)](QPixmap const* /*favicon_or_nullptr*/) {
+            if (!weak_self.isNull()) {
+                weak_self.data()->faviconsChanged();
+            }
+        });
     }
 
 signals:

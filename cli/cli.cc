@@ -89,23 +89,19 @@ void sigHandler(int signal);
 
 [[nodiscard]] std::string tr_strlratio(double ratio)
 {
-    if (static_cast<int>(ratio) == TR_RATIO_NA)
-    {
+    if (static_cast<int>(ratio) == TR_RATIO_NA) {
         return _("None");
     }
 
-    if (static_cast<int>(ratio) == TR_RATIO_INF)
-    {
+    if (static_cast<int>(ratio) == TR_RATIO_INF) {
         return _("Inf");
     }
 
-    if (ratio < 10.0)
-    {
+    if (ratio < 10.0) {
         return fmt::format("{:.2f}", ratio);
     }
 
-    if (ratio < 100.0)
-    {
+    if (ratio < 100.0) {
         return fmt::format("{:.1f}", ratio);
     }
 
@@ -123,21 +119,18 @@ void onTorrentFileDownloaded(tr_web::FetchResponse const& response)
 
 [[nodiscard]] std::string getStatusStr(tr_stat const& st)
 {
-    if (st.activity == TR_STATUS_CHECK_WAIT)
-    {
+    if (st.activity == TR_STATUS_CHECK_WAIT) {
         return "Waiting to verify local files";
     }
 
-    if (st.activity == TR_STATUS_CHECK)
-    {
+    if (st.activity == TR_STATUS_CHECK) {
         return fmt::format(
             "Verifying local files ({:.2f}%, {:.2f}% valid)",
             tr_truncd(100 * st.recheck_progress, 2),
             tr_truncd(100 * st.percent_done, 2));
     }
 
-    if (st.activity == TR_STATUS_DOWNLOAD)
-    {
+    if (st.activity == TR_STATUS_DOWNLOAD) {
         return fmt::format(
             "Progress: {:.1f}%, dl from {:d} of {:d} peers ({:s}), ul to {:d} ({:s}) [{:s}]",
             tr_truncd(100 * st.percent_done, 1),
@@ -149,8 +142,7 @@ void onTorrentFileDownloaded(tr_web::FetchResponse const& response)
             tr_strlratio(st.upload_ratio));
     }
 
-    if (st.activity == TR_STATUS_SEED)
-    {
+    if (st.activity == TR_STATUS_SEED) {
         return fmt::format(
             "Seeding, uploading to {:d} of {:d} peer(s), {:s} [{:s}]",
             st.peers_getting_from_us,
@@ -168,10 +160,8 @@ void onTorrentFileDownloaded(tr_web::FetchResponse const& response)
     char const* my_optarg;
     int const ind = tr_optind;
 
-    while ((c = tr_getopt(Usage, argc, argv, std::data(Options), &my_optarg)) != TR_OPT_DONE)
-    {
-        if (c == 'g')
-        {
+    while ((c = tr_getopt(Usage, argc, argv, std::data(Options), &my_optarg)) != TR_OPT_DONE) {
+        if (c == 'g') {
             tr_optind = ind;
             return my_optarg;
         }
@@ -189,10 +179,8 @@ int parseCommandLine(tr_variant::Map& map, int argc, char const** argv)
     int c;
     char const* my_optarg;
 
-    while ((c = tr_getopt(Usage, argc, argv, std::data(Options), &my_optarg)) != TR_OPT_DONE)
-    {
-        switch (c)
-        {
+    while ((c = tr_getopt(Usage, argc, argv, std::data(Options), &my_optarg)) != TR_OPT_DONE) {
+        switch (c) {
         case 'b':
             map[TR_KEY_blocklist_enabled] = true;
             break;
@@ -272,8 +260,7 @@ int parseCommandLine(tr_variant::Map& map, int argc, char const** argv)
             break;
 
         case TR_OPT_UNK:
-            if (torrentPath == nullptr)
-            {
+            if (torrentPath == nullptr) {
                 torrentPath = my_optarg;
             }
 
@@ -289,8 +276,7 @@ int parseCommandLine(tr_variant::Map& map, int argc, char const** argv)
 
 void sigHandler(int signal)
 {
-    switch (signal)
-    {
+    switch (signal) {
     case SIGINT:
         gotsig = true;
         break;
@@ -310,8 +296,7 @@ void sigHandler(int signal)
 
 [[nodiscard]] constexpr std::string_view getErrorMessagePrefix(auto const err)
 {
-    switch (err)
-    {
+    switch (err) {
     case tr_stat::Error::TrackerWarning:
         return "Tracker gave a warning:"sv;
     case tr_stat::Error::TrackerError:
@@ -333,8 +318,7 @@ int tr_main(int argc, char* argv[])
     printf("%s %s\n", MyReadableName, LONG_VERSION_STRING);
 
     /* user needs to pass in at least one argument */
-    if (argc < 2)
-    {
+    if (argc < 2) {
         tr_getopt_usage(MyReadableName, Usage, std::data(Options));
         return EXIT_FAILURE;
     }
@@ -344,19 +328,16 @@ int tr_main(int argc, char* argv[])
     auto settings = tr_sessionLoadSettings(config_dir);
 
     /* the command line overrides defaults */
-    if (parseCommandLine(settings, argc, (char const**)argv) != 0)
-    {
+    if (parseCommandLine(settings, argc, (char const**)argv) != 0) {
         return EXIT_FAILURE;
     }
 
-    if (showVersion)
-    {
+    if (showVersion) {
         return EXIT_SUCCESS;
     }
 
     /* Check the options for validity */
-    if (torrentPath == nullptr)
-    {
+    if (torrentPath == nullptr) {
         fprintf(stderr, "No torrent specified!\n");
         return EXIT_FAILURE;
     }
@@ -367,22 +348,16 @@ int tr_main(int argc, char* argv[])
     tr_ctorSetPaused(ctor, TR_FORCE, false);
 
     if (tr_sys_path_exists(torrentPath) ? tr_ctorSetMetainfoFromFile(ctor, torrentPath) :
-                                          tr_ctorSetMetainfoFromMagnetLink(ctor, torrentPath))
-    {
+                                          tr_ctorSetMetainfoFromMagnetLink(ctor, torrentPath)) {
         // all good
-    }
-    else if (tr_urlIsValid(torrentPath))
-    {
+    } else if (tr_urlIsValid(torrentPath)) {
         // fetch it
         tr_sessionFetch(h, { torrentPath, onTorrentFileDownloaded, ctor });
         waitingOnWeb = true;
-        while (waitingOnWeb)
-        {
+        while (waitingOnWeb) {
             std::this_thread::sleep_for(1s);
         }
-    }
-    else
-    {
+    } else {
         fprintf(stderr, "ERROR: Unrecognized torrent \"%s\".\n", torrentPath);
         fprintf(stderr, " * If you're trying to create a torrent, use transmission-create.\n");
         fprintf(stderr, " * If you're trying to see a torrent's info, use transmission-show.\n");
@@ -392,8 +367,7 @@ int tr_main(int argc, char* argv[])
 
     tr_torrent* tor = tr_torrentNew(ctor, nullptr);
     tr_ctorFree(ctor);
-    if (tor == nullptr)
-    {
+    if (tor == nullptr) {
         fprintf(stderr, "Failed opening torrent file `%s'\n", torrentPath);
         tr_sessionClose(h);
         return EXIT_FAILURE;
@@ -405,49 +379,40 @@ int tr_main(int argc, char* argv[])
 #endif
     tr_torrentStart(tor);
 
-    if (verify)
-    {
+    if (verify) {
         verify = false;
         tr_torrentVerify(tor);
     }
 
-    for (;;)
-    {
+    for (;;) {
         std::this_thread::sleep_for(200ms);
 
-        if (gotsig)
-        {
+        if (gotsig) {
             gotsig = false;
             printf("\nStopping torrent...\n");
             tr_torrentStop(tor);
         }
 
-        if (manualUpdate)
-        {
+        if (manualUpdate) {
             manualUpdate = false;
 
-            if (!tr_torrentCanManualUpdate(tor))
-            {
+            if (!tr_torrentCanManualUpdate(tor)) {
                 fprintf(stderr, "\nReceived SIGHUP, but can't send a manual update now\n");
-            }
-            else
-            {
+            } else {
                 fprintf(stderr, "\nReceived SIGHUP: manual update scheduled\n");
                 tr_torrentManualUpdate(tor);
             }
         }
 
         auto const st = tr_torrentStat(tor);
-        if (st.activity == TR_STATUS_STOPPED)
-        {
+        if (st.activity == TR_STATUS_STOPPED) {
             break;
         }
 
         auto const status_str = getStatusStr(st);
         printf("\r%-*s", LineWidth, status_str.c_str());
 
-        if (auto const prefix = getErrorMessagePrefix(st.error); !std::empty(prefix))
-        {
+        if (auto const prefix = getErrorMessagePrefix(st.error); !std::empty(prefix)) {
             fmt::print(stderr, "\n{:s}: {:s}\n", prefix, st.error_string);
         }
     }

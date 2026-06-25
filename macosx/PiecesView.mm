@@ -20,8 +20,7 @@ static NSColor* const DoneColor = NSColor.systemBlueColor;
 static NSColor* const BlinkColor = NSColor.systemOrangeColor;
 static NSColor* const HighColor = NSColor.systemGreenColor; // high availability
 
-typedef struct PieceInfo
-{
+typedef struct PieceInfo {
     int8_t available[kMaxCells];
     float complete[kMaxCells];
 } PieceInfo;
@@ -29,8 +28,7 @@ typedef struct PieceInfo
 @interface PiecesView ()
 @end
 
-@implementation PiecesView
-{
+@implementation PiecesView {
     PieceInfo fPieceInfo;
     NSString* fRenderedHashString;
 }
@@ -52,13 +50,11 @@ typedef struct PieceInfo
 
 - (NSColor*)completenessColor:(float)oldVal newVal:(float)newVal noBlink:(BOOL)noBlink
 {
-    if ([self isCompletenessDone:newVal])
-    {
+    if ([self isCompletenessDone:newVal]) {
         return noBlink || [self isCompletenessDone:oldVal] ? DoneColor : BlinkColor;
     }
 
-    if ([self isCompletenessNone:newVal])
-    {
+    if ([self isCompletenessNone:newVal]) {
         return noBlink || [self isCompletenessNone:oldVal] ? [self backgroundColor] : BlinkColor;
     }
 
@@ -82,18 +78,15 @@ typedef struct PieceInfo
 
 - (NSColor*)availabilityColor:(int8_t)oldVal newVal:(int8_t)newVal noBlink:(bool)noBlink
 {
-    if ([self isAvailabilityDone:newVal])
-    {
+    if ([self isAvailabilityDone:newVal]) {
         return noBlink || [self isAvailabilityDone:oldVal] ? DoneColor : BlinkColor;
     }
 
-    if ([self isAvailabilityNone:newVal])
-    {
+    if ([self isAvailabilityNone:newVal]) {
         return noBlink || [self isAvailabilityNone:oldVal] ? [self backgroundColor] : BlinkColor;
     }
 
-    if ([self isAvailabilityHigh:newVal])
-    {
+    if ([self isAvailabilityHigh:newVal]) {
         return noBlink || [self isAvailabilityHigh:oldVal] ? HighColor : BlinkColor;
     }
 
@@ -141,8 +134,7 @@ typedef struct PieceInfo
 
 - (void)updateView
 {
-    if (!self.torrent)
-    {
+    if (!self.torrent) {
         return;
     }
 
@@ -164,8 +156,7 @@ typedef struct PieceInfo
     NSInteger const extraBorder = (NSInteger)((fullWidth - ((cellWidth + kBetweenPadding) * across + kBetweenPadding)) / 2);
     NSMutableArray<NSValue*>* cellBounds = [NSMutableArray arrayWithCapacity:numCells];
     NSMutableArray<NSColor*>* cellColors = [NSMutableArray arrayWithCapacity:numCells];
-    for (int index = 0; index < numCells; index++)
-    {
+    for (int index = 0; index < numCells; index++) {
         int const row = index / across;
         int const col = index % across;
 
@@ -181,17 +172,14 @@ typedef struct PieceInfo
     }
 
     // build an image with the cells
-    if (numCells > 0)
-    {
+    if (numCells > 0) {
         self.image = [NSImage imageWithSize:self.bounds.size flipped:NO drawingHandler:^BOOL(NSRect /*dstRect*/) {
             NSRect cFillRects[kMaxCells];
-            for (int i = 0; i < numCells; ++i)
-            {
+            for (int i = 0; i < numCells; ++i) {
                 cFillRects[i] = cellBounds[i].rectValue;
             }
             NSColor* cFillColors[kMaxCells];
-            for (int i = 0; i < numCells; ++i)
-            {
+            for (int i = 0; i < numCells; ++i) {
                 cFillColors[i] = cellColors[i];
             }
             NSRectFillListWithColors(cFillRects, cFillColors, numCells);
@@ -212,8 +200,7 @@ typedef struct PieceInfo
 
 - (void)mouseDown:(NSEvent*)event
 {
-    if (self.torrent)
-    {
+    if (self.torrent) {
         BOOL const availability = ![NSUserDefaults.standardUserDefaults boolForKey:@"PiecesViewShowAvailability"];
         [NSUserDefaults.standardUserDefaults setBool:availability forKey:@"PiecesViewShowAvailability"];
 

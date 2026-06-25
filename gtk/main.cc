@@ -96,12 +96,9 @@ int main(int argc, char** argv)
 #endif
     option_context.set_translation_domain(GETTEXT_PACKAGE);
 
-    try
-    {
+    try {
         option_context.parse(argc, argv);
-    }
-    catch (Glib::OptionError const& e)
-    {
+    } catch (Glib::OptionError const& e) {
         fmt::print(stderr, "{}\n", TR_GLIB_EXCEPTION_WHAT(e));
         fmt::print(
             stderr,
@@ -111,8 +108,7 @@ int main(int argc, char** argv)
     }
 
     /* handle the trivial "version" option */
-    if (show_version)
-    {
+    if (show_version) {
         fmt::print(stderr, "{} {}\n", AppName, LONG_VERSION_STRING);
         return 0;
     }
@@ -124,8 +120,7 @@ int main(int argc, char** argv)
     Config::storage = { Config::Base::Kilo, _("B"), _("kB"), _("MB"), _("GB"), _("TB") };
 
     /* set up the config dir */
-    if (std::empty(config_dir))
-    {
+    if (std::empty(config_dir)) {
         config_dir = tr_getDefaultConfigDir(AppConfigDirName);
     }
 

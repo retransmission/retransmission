@@ -31,17 +31,13 @@ namespace
 {
 void log_val(char const* func, int ret)
 {
-    if (ret == NATPMP_TRYAGAIN)
-    {
+    if (ret == NATPMP_TRYAGAIN) {
         return;
     }
 
-    if (ret >= 0)
-    {
+    if (ret >= 0) {
         tr_logAddDebug(fmt::format("{} succeeded ({})", func, ret));
-    }
-    else
-    {
+    } else {
         tr_logAddDebug(
             fmt::format(
                 "{} failed. Natpmp returned {} ({}); errno is {} ({})",
@@ -66,8 +62,7 @@ void tr_natpmp::setCommandTime()
 
 tr_natpmp::PulseResult tr_natpmp::pulse(tr_port local_port, bool is_enabled)
 {
-    if (is_enabled && state_ == State::Discover)
-    {
+    if (is_enabled && state_ == State::Discover) {
         int val = initnatpmp(&natpmp_, 0, 0);
         log_val("initnatpmp", val);
         val = sendpublicaddressrequest(&natpmp_);
@@ -77,33 +72,27 @@ tr_natpmp::PulseResult tr_natpmp::pulse(tr_port local_port, bool is_enabled)
         setCommandTime();
     }
 
-    if (state_ == State::RecvPub && canSendCommand())
-    {
+    if (state_ == State::RecvPub && canSendCommand()) {
         natpmpresp_t response;
         auto const val = readnatpmpresponseorretry(&natpmp_, &response);
         log_val("readnatpmpresponseorretry", val);
 
-        if (val >= 0)
-        {
+        if (val >= 0) {
             auto str = std::array<char, 128>{};
             evutil_inet_ntop(AF_INET, &response.pnu.publicaddress.addr, std::data(str), std::size(str));
             tr_logAddInfo(
                 fmt::format(fmt::runtime(_("Found public address '{address}'")), fmt::arg("address", std::data(str))));
             state_ = State::Idle;
-        }
-        else if (val != NATPMP_TRYAGAIN)
-        {
+        } else if (val != NATPMP_TRYAGAIN) {
             state_ = State::Err;
         }
     }
 
-    if ((state_ == State::Idle || state_ == State::Err) && is_mapped_ && (!is_enabled || local_port_ != local_port))
-    {
+    if ((state_ == State::Idle || state_ == State::Err) && is_mapped_ && (!is_enabled || local_port_ != local_port)) {
         state_ = State::SendUnmap;
     }
 
-    if (state_ == State::SendUnmap && canSendCommand())
-    {
+    if (state_ == State::SendUnmap && canSendCommand()) {
         auto const val = sendnewportmappingrequest(
             &natpmp_,
             NATPMP_PROTOCOL_TCP,
@@ -115,41 +104,34 @@ tr_natpmp::PulseResult tr_natpmp::pulse(tr_port local_port, bool is_enabled)
         setCommandTime();
     }
 
-    if (state_ == State::RecvUnmap)
-    {
+    if (state_ == State::RecvUnmap) {
         auto resp = natpmpresp_t{};
         auto const val = readnatpmpresponseorretry(&natpmp_, &resp);
         log_val("readnatpmpresponseorretry", val);
 
-        if (val >= 0)
-        {
+        if (val >= 0) {
             auto const unmapped_port = tr_port::from_host(resp.pnu.newportmapping.privateport);
 
             tr_logAddInfo(
                 fmt::format(fmt::runtime(_("Port {port} is no longer forwarded")), fmt::arg("port", unmapped_port.host())));
 
-            if (local_port_ == unmapped_port)
-            {
+            if (local_port_ == unmapped_port) {
                 local_port_.clear();
                 advertised_port_.clear();
                 state_ = State::Idle;
                 is_mapped_ = false;
             }
-        }
-        else if (val != NATPMP_TRYAGAIN)
-        {
+        } else if (val != NATPMP_TRYAGAIN) {
             state_ = State::Err;
         }
     }
 
     if ((state_ == State::Idle || state_ == State::Err) &&
-        (is_mapped_ ? tr_time() >= renew_time_ : is_enabled && has_discovered_))
-    {
+        (is_mapped_ ? tr_time() >= renew_time_ : is_enabled && has_discovered_)) {
         state_ = State::SendMap;
     }
 
-    if (state_ == State::SendMap && canSendCommand())
-    {
+    if (state_ == State::SendMap && canSendCommand()) {
         auto const val = sendnewportmappingrequest(
             &natpmp_,
             NATPMP_PROTOCOL_TCP,
@@ -161,14 +143,12 @@ tr_natpmp::PulseResult tr_natpmp::pulse(tr_port local_port, bool is_enabled)
         setCommandTime();
     }
 
-    if (state_ == State::RecvMap)
-    {
+    if (state_ == State::RecvMap) {
         auto resp = natpmpresp_t{};
         auto const val = readnatpmpresponseorretry(&natpmp_, &resp);
         log_val("readnatpmpresponseorretry", val);
 
-        if (val >= 0)
-        {
+        if (val >= 0) {
             state_ = State::Idle;
             is_mapped_ = true;
             renew_time_ = tr_time() + (resp.pnu.newportmapping.lifetime / 2);
@@ -176,15 +156,12 @@ tr_natpmp::PulseResult tr_natpmp::pulse(tr_port local_port, bool is_enabled)
             advertised_port_ = tr_port::from_host(resp.pnu.newportmapping.mappedpublicport);
             tr_logAddInfo(
                 fmt::format(fmt::runtime(_("Port {port} forwarded successfully")), fmt::arg("port", local_port_.host())));
-        }
-        else if (val != NATPMP_TRYAGAIN)
-        {
+        } else if (val != NATPMP_TRYAGAIN) {
             state_ = State::Err;
         }
     }
 
-    switch (state_)
-    {
+    switch (state_) {
     case State::Idle:
         return {
             .state = is_mapped_ ? TR_PORT_MAPPED : TR_PORT_UNMAPPED,

@@ -35,22 +35,15 @@ RelocateDialog::RelocateDialog(Session& session, TorrentModel const& model, torr
 
     QString path;
 
-    for (int const id : ids_)
-    {
+    for (int const id : ids_) {
         Torrent const* tor = model.getTorrentFromId(id);
 
-        if (path.isEmpty())
-        {
+        if (path.isEmpty()) {
             path = tor->getPath();
-        }
-        else if (path != tor->getPath())
-        {
-            if (session_.isLocal())
-            {
+        } else if (path != tor->getPath()) {
+            if (session_.isLocal()) {
                 path = QDir::homePath();
-            }
-            else
-            {
+            } else {
                 path = QDir::rootPath();
             }
 
@@ -58,15 +51,12 @@ RelocateDialog::RelocateDialog(Session& session, TorrentModel const& model, torr
         }
     }
 
-    if (session_.isLocal())
-    {
+    if (session_.isLocal()) {
         ui_.newLocationStack->setCurrentWidget(ui_.newLocationButton);
         ui_.newLocationButton->setMode(PathButton::DirectoryMode);
         ui_.newLocationButton->setTitle(tr("Select Location"));
         ui_.newLocationButton->setPath(path);
-    }
-    else
-    {
+    } else {
         ui_.newLocationStack->setCurrentWidget(ui_.newLocationEdit);
         ui_.newLocationEdit->setText(path);
         ui_.newLocationEdit->selectAll();
@@ -75,12 +65,9 @@ RelocateDialog::RelocateDialog(Session& session, TorrentModel const& model, torr
     ui_.newLocationStack->setFixedHeight(ui_.newLocationStack->currentWidget()->sizeHint().height());
     ui_.newLocationLabel->setBuddy(ui_.newLocationStack->currentWidget());
 
-    if (move_flag)
-    {
+    if (move_flag) {
         ui_.moveDataRadio->setChecked(true);
-    }
-    else
-    {
+    } else {
         ui_.findDataRadio->setChecked(true);
     }
 

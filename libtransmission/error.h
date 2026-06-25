@@ -12,8 +12,7 @@
 #include "libtransmission/tr-macros.h"
 
 /** @brief Structure holding error information. */
-struct tr_error
-{
+struct tr_error {
 public:
     TR_CONSTEXPR_STR tr_error() = default;
 
