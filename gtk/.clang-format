@@ -27,4 +27,16 @@ IncludeCategories:
     Priority: 7
   - Regex: '.*'
     Priority: 2
-SortIncludes: CaseInsensitive
+SortIncludes:
+  Enabled: true
+  IgnoreCase: true
+
+# Workaround. Needed until we adopt a version that includes https://github.com/llvm/llvm-project/pull/192283
+BreakAfterOpenBracketFunction: true
+BreakAfterOpenBracketIf: true
+BreakAfterOpenBracketLoop: true
+BreakAfterOpenBracketSwitch: true
+BreakBeforeCloseBracketFunction: false
+BreakBeforeCloseBracketIf: false
+BreakBeforeCloseBracketLoop: false
+BreakBeforeCloseBracketSwitch: false
