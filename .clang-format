@@ -40,6 +40,8 @@ IndentWidth: 4
 KeepEmptyLines:
   AtStartOfBlock: false
 MaxEmptyLinesToKeep: 1
+NumericLiteralCase:
+  Suffix: Upper # Matches clang-tidy readability-uppercase-literal-suffix
 PenaltyBreakAssignment: 1000
 PenaltyBreakBeforeFirstCallParameter: 0
 PenaltyReturnTypeOnItsOwnLine: 1000
