@@ -185,15 +185,15 @@ protected:
         return paths;
     }
 
-    static auto getSubtreeContents(std::string_view parent_dir)
+    static auto getSubtreeContents(std::string_view const parent_dir)
     {
         auto filenames = std::set<std::string>{};
 
-        auto file_func = [&filenames](char const* filename) {
+        auto file_func = [&filenames](std::string_view const filename) {
             filenames.emplace(filename);
         };
 
-        tr::test::depthFirstWalk(tr_pathbuf{ parent_dir }, file_func);
+        tr::test::depthFirstWalk(parent_dir, file_func);
 
         return filenames;
     }

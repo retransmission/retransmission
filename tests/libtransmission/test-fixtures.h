@@ -44,9 +44,9 @@ inline std::ostream& operator<<(std::ostream& os, tr_error const& err)
 namespace tr::test
 {
 
-using file_func_t = std::function<void(char const* filename)>;
+using file_func_t = std::function<void(std::string_view filename)>;
 
-static void depthFirstWalk(char const* path, file_func_t const& func)
+static void depthFirstWalk(std::string_view const path, file_func_t const& func)
 {
     if (auto const info = tr_sys_path_get_info(path); info && info->isFolder()) {
         if (auto const odir = tr_sys_dir_open(path); odir != TR_BAD_SYS_DIR) {
@@ -58,7 +58,7 @@ static void depthFirstWalk(char const* path, file_func_t const& func)
 
                 if ("."sv != name && ".."sv != name) {
                     auto const child = fmt::format("{:s}/{:s}"sv, path, name);
-                    depthFirstWalk(child.c_str(), func);
+                    depthFirstWalk(child, func);
                 }
             }
 
@@ -165,7 +165,7 @@ protected:
 
     static void rimraf(std::string const& path, bool verbose = false)
     {
-        auto remove = [verbose](char const* filename) {
+        auto remove = [verbose](std::string_view const filename) {
             if (verbose) {
                 std::cerr << "cleanup: removing '" << filename << "'\n";
             }
@@ -173,7 +173,7 @@ protected:
             tr_sys_path_remove(filename);
         };
 
-        depthFirstWalk(path.c_str(), remove);
+        depthFirstWalk(path, remove);
     }
 
 private:
