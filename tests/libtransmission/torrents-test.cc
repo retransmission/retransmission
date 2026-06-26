@@ -81,7 +81,7 @@ TEST_F(TorrentsTest, invalidArgsAreLogged)
     tr_torrentRemove(nullptr, false, {});
     ++expected_log_size;
 
-    tr_torrentSetLocation(nullptr, nullptr, false, nullptr);
+    tr_torrentSetLocation(nullptr, "", false, nullptr);
     ++expected_log_size;
 
     tr_torrentSetDownloadDir(nullptr, ""sv);
