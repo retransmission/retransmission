@@ -260,6 +260,8 @@ DetailsDialog::DetailsDialog(Session& session, Prefs& prefs, TorrentModel const&
     ui_.commentTextEdit->setMaximumHeight(QWIDGETSIZE_MAX);
     ui_.tabs->setCurrentIndex(prev_tab_index);
 
+    resize(prefs_.get<int>(TR_KEY_details_window_width), prefs_.get<int>(TR_KEY_details_window_height));
+
     static std::array<tr_quark, 2> constexpr InitKeys = {
         TR_KEY_show_tracker_scrapes,
         TR_KEY_show_backup_trackers,
@@ -290,6 +292,15 @@ DetailsDialog::DetailsDialog(Session& session, Prefs& prefs, TorrentModel const&
 DetailsDialog::~DetailsDialog()
 {
     prev_tab_index = ui_.tabs->currentIndex();
+}
+
+void DetailsDialog::resizeEvent(QResizeEvent* event)
+{
+    BaseDialog::resizeEvent(event);
+
+    auto const rect = geometry();
+    prefs_.set(TR_KEY_details_window_width, rect.width());
+    prefs_.set(TR_KEY_details_window_height, rect.height());
 }
 
 void DetailsDialog::setIds(torrent_ids_t const& ids)

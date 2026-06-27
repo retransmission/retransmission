@@ -140,6 +140,8 @@ private:
     StringType session_remote_url_base_path_ = Traits::from_utf8("/transmission/");
     StringType session_remote_username_;
     std::vector<StringType> complete_sound_command_;
+    int details_window_height_ = 500;
+    int details_window_width_ = 700;
     int main_window_height_ = 500;
     int main_window_width_ = 600;
     int main_window_x_ = 50;
