@@ -530,6 +530,10 @@ jobs:
           build-path: obj
           regex: ${{ matrix.regex }}
           clang-tidy-binary: clang-tidy
+          # MSVC-style compile commands carry flags clang-cl ignores (e.g. /GL),
+          # whose per-TU 'unused argument' driver warning escapes the line
+          # filter; silence it so it is not mistaken for a finding.
+          extra-arg: -Wno-unused-command-line-argument
           full-run: ${{ needs.what-to-make.outputs.tidy-everything }}
 
   macos-xcodebuild-universal:
