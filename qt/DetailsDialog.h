@@ -19,6 +19,7 @@
 #include "ui_DetailsDialog.h"
 #include "ui_TrackersDialog.h"
 
+class QResizeEvent;
 class QTreeWidgetItem;
 
 class Prefs;
@@ -48,6 +49,10 @@ public:
     {
         return QSize{ 440, 460 };
     }
+
+protected:
+    // QWidget
+    void resizeEvent(QResizeEvent* event) override;
 
 private:
     void initPeersTab();
