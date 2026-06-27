@@ -35,6 +35,8 @@ class TimerMaker;
 class tr_dht
 {
 public:
+    using unique_ptr = std::unique_ptr<tr_dht, void (*)(tr_dht*)>;
+
     // Wrapper around DHT library.
     // This calls `jech/dht` in production, but makes it possible for tests to inject a mock.
     struct API {
@@ -104,7 +106,7 @@ public:
         API api_;
     };
 
-    [[nodiscard]] static std::unique_ptr<tr_dht> create(
+    [[nodiscard]] static unique_ptr create(
         Mediator& mediator,
         tr_port peer_port,
         tr_socket_t udp4_socket,

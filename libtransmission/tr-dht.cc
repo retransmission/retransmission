@@ -102,14 +102,11 @@ int dht_gettimeofday(struct timeval* tv, [[maybe_unused]] struct timezone* tz)
 
 namespace
 {
-
 constexpr std::array<std::pair<char const*, uint16_t>, 3> const DefaultBootstraps = { {
     { "dht.transmissiontorrent.com", 6881 },
     { "router.bittorrent.com", 6881 },
     { "dht.libtorrent.org", 25401 },
 } };
-
-}
 
 class tr_dht_impl final : public tr_dht
 {
@@ -155,7 +152,7 @@ public:
     tr_dht_impl& operator=(tr_dht_impl&&) = delete;
     tr_dht_impl& operator=(tr_dht_impl const&) = delete;
 
-    ~tr_dht_impl() override
+    void uninit()
     {
         tr_logAddTrace("Uninitializing DHT");
 
@@ -575,11 +572,19 @@ private:
     std::map<tr_torrent_id_t, AnnounceInfo> announce_times_;
 };
 
-[[nodiscard]] std::unique_ptr<tr_dht> tr_dht::create(
-    Mediator& mediator,
-    tr_port peer_port,
-    tr_socket_t udp4_socket,
-    tr_socket_t udp6_socket)
+void free_dht(tr_dht* const dht)
 {
-    return std::make_unique<tr_dht_impl>(mediator, peer_port, udp4_socket, udp6_socket);
+    // NOLINTNEXTLINE(cppcoreguidelines-pro-type-static-cast-downcast): this function is only used with `new tr_dht_impl`
+    static_cast<tr_dht_impl*>(dht)->uninit();
+    delete dht;
+}
+} // namespace
+
+[[nodiscard]] tr_dht::unique_ptr tr_dht::create(
+    Mediator& mediator,
+    tr_port const peer_port,
+    tr_socket_t const udp4_socket,
+    tr_socket_t const udp6_socket)
+{
+    return tr_dht::unique_ptr{ new tr_dht_impl{ mediator, peer_port, udp4_socket, udp6_socket }, free_dht };
 }
