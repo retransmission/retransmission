@@ -460,13 +460,14 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
+        toolkit: [headless, qt6]
         include:
-          - name: core
+          - toolkit: headless
             deps: CoreDeps
             enable-qt: 'OFF'
             regex: '(libtransmission|libtransmission-app|tests/libtransmission)/.*'
             enabled: ${{ needs.what-to-make.outputs.tidy-core }}
-          - name: qt6
+          - toolkit: qt6
             deps: Deps
             enable-qt: 'ON'
             regex: '(qt|tests/qt)/.*'
