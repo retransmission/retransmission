@@ -31,9 +31,9 @@ jobs:
       make-utils: ${{ steps.check-main-push.outputs.is-main-push == '1' || steps.check-diffs.outputs.utils-changed == '1' || steps.check-diffs.outputs.tests-changed == '1' || steps.check-diffs.outputs.ci-actions-changed == '1' }}
       make-web: ${{ steps.check-main-push.outputs.is-main-push == '1' || steps.check-diffs.outputs.web-changed == '1' }}
       test-style: ${{ steps.check-main-push.outputs.is-main-push == '1' || steps.check-diffs.outputs.our-code-changed == '1' || steps.check-diffs.outputs.ci-actions-changed == '1' }}
-      tidy-core: ${{ steps.check-main-push.outputs.is-main-push == '1' || steps.check-diffs.outputs.core-changed == '1' || steps.check-diffs.outputs.tests-changed == '1' || steps.check-diffs.outputs.ci-actions-changed == '1' || steps.check-diffs.outputs.tidy-config-changed == '1' }}
-      tidy-gtk: ${{ steps.check-main-push.outputs.is-main-push == '1' || steps.check-diffs.outputs.gtk-changed == '1' || steps.check-diffs.outputs.ci-actions-changed == '1' || steps.check-diffs.outputs.tidy-config-changed == '1' }}
-      tidy-qt: ${{ steps.check-main-push.outputs.is-main-push == '1' || steps.check-diffs.outputs.qt-changed == '1' || steps.check-diffs.outputs.tests-changed == '1' || steps.check-diffs.outputs.ci-actions-changed == '1' || steps.check-diffs.outputs.tidy-config-changed == '1' }}
+      tidy-core: ${{ steps.check-main-push.outputs.is-main-push == '1' || steps.check-diffs.outputs.tidy-core-src-changed == '1' || steps.check-diffs.outputs.ci-actions-changed == '1' || steps.check-diffs.outputs.tidy-config-changed == '1' }}
+      tidy-gtk: ${{ steps.check-main-push.outputs.is-main-push == '1' || steps.check-diffs.outputs.tidy-gtk-src-changed == '1' || steps.check-diffs.outputs.ci-actions-changed == '1' || steps.check-diffs.outputs.tidy-config-changed == '1' }}
+      tidy-qt: ${{ steps.check-main-push.outputs.is-main-push == '1' || steps.check-diffs.outputs.tidy-qt-src-changed == '1' || steps.check-diffs.outputs.ci-actions-changed == '1' || steps.check-diffs.outputs.tidy-config-changed == '1' }}
       tidy-everything: ${{ steps.check-main-push.outputs.is-main-push == '1' || steps.check-diffs.outputs.tidy-config-changed == '1' }}
     steps:
       - name: Check Push to Main Branch
@@ -70,6 +70,12 @@ jobs:
           get_changes any-code   CMakeLists.txt cmake Transmission.xcodeproj libtransmission libtransmission-app cli daemon gtk macosx qt utils tests web third-party
           get_changes our-code   CMakeLists.txt cmake Transmission.xcodeproj libtransmission libtransmission-app cli daemon gtk macosx qt utils tests web
           get_changes tidy-config libtransmission/.clang-tidy libtransmission-app/.clang-tidy gtk/.clang-tidy qt/.clang-tidy tests/libtransmission/.clang-tidy tests/qt/.clang-tidy
+          # clang-tidy-diff only inspects changed lines, so each tidy cell keys
+          # off just the directories its -regex matches -- not the wider build
+          # deps (a libtransmission-only change has no gtk/qt lines to check).
+          get_changes tidy-core-src libtransmission libtransmission-app tests/libtransmission
+          get_changes tidy-gtk-src  gtk
+          get_changes tidy-qt-src   qt tests/qt
           get_changes daemon     CMakeLists.txt cmake Transmission.xcodeproj third-party libtransmission daemon
           get_changes dist       dist release
           get_changes docs       docs
