@@ -42,6 +42,7 @@ Checks:
   - -misc-no-recursion
   - -misc-non-private-member-variables-in-classes
   - modernize-*
+  - -modernize-use-nullptr # TODO: enable after https://github.com/llvm/llvm-project/issues/206245 is fixed
   - -modernize-use-trailing-return-type
   - performance-*
   - portability-*

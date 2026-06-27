@@ -20,9 +20,11 @@ Checks:
   - hicpp-*
   - -hicpp-no-array-decay # alias of `cppcoreguidelines-pro-bounds-array-to-pointer-decay`
   - -hicpp-special-member-functions # alias of `cppcoreguidelines-special-member-functions`
+  - -hicpp-use-nullptr # alias of `modernize-use-nullptr`
   - misc-*
   - -misc-include-cleaner
   - modernize-*
+  - -modernize-use-nullptr # TODO: enable after https://github.com/llvm/llvm-project/issues/206245 is fixed
   - -modernize-use-trailing-return-type
   - performance-*
   - readability-*

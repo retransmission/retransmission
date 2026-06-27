@@ -32,11 +32,13 @@ Checks:
   - -hicpp-signed-bitwise
   - -hicpp-special-member-functions # alias of `cppcoreguidelines-special-member-functions`
   - -hicpp-use-equals-delete # alias of `modernize-use-equals-delete`
+  - -hicpp-use-nullptr # alias of `modernize-use-nullptr`
   - misc-*
   - -misc-include-cleaner
   - -misc-no-recursion
   - -misc-non-private-member-variables-in-classes
   - modernize-*
+  - -modernize-use-nullptr # TODO: enable after https://github.com/llvm/llvm-project/issues/206245 is fixed
   - -modernize-use-trailing-return-type # keep
   - performance-*
   - readability-*
