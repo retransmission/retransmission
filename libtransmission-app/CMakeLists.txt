@@ -25,4 +25,5 @@ target_include_directories(${LIBNAME}
 target_link_libraries(${LIBNAME}
     PUBLIC
         transmission::fmt-header-only
+        Pal::Sigslot
         transmission::small)

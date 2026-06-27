@@ -12,6 +12,8 @@
 #include <utility>
 #include <vector>
 
+#include <sigslot/signal.hpp>
+
 #include <libtransmission/constants.h>
 #include <libtransmission/quark.h>
 #include <libtransmission/types.h>
@@ -43,27 +45,27 @@ struct PrefsStringTraits;
  */
 [[nodiscard]] bool prefs_is_core(tr_quark key);
 
-template<typename Derived, typename StringType>
-class BasePrefs
+template<typename StringType>
+class Prefs final
 {
 public:
-    BasePrefs() = default;
+    Prefs() = default;
 
-    explicit BasePrefs(tr::Settings const& settings)
+    explicit Prefs(tr::Settings const& settings)
     {
         tr::serializer::load(*this, Fields, settings);
     }
 
-    explicit BasePrefs(std::string_view config_dir)
+    explicit Prefs(std::string_view config_dir)
     {
         tr::serializer::load(*this, Fields, tr_sessionLoadSettings(config_dir));
     }
 
-    BasePrefs(BasePrefs&&) = delete;
-    BasePrefs(BasePrefs const&) = delete;
-    BasePrefs& operator=(BasePrefs&&) = delete;
-    BasePrefs& operator=(BasePrefs const&) = delete;
-    ~BasePrefs() = default;
+    Prefs(Prefs&&) = delete;
+    Prefs(Prefs const&) = delete;
+    Prefs& operator=(Prefs&&) = delete;
+    Prefs& operator=(Prefs const&) = delete;
+    ~Prefs() = default;
 
     [[nodiscard]] std::pair<tr_quark, tr_variant> keyval(tr_quark const key) const
     {
@@ -77,7 +79,7 @@ public:
     void set(tr_quark const key, tr_variant const& var)
     {
         if (tr::serializer::set_from_variant(*this, key, var)) {
-            static_cast<Derived*>(this)->on_changed(key);
+            on_changed(key);
         }
     }
 
@@ -85,7 +87,7 @@ public:
     void set(tr_quark const key, T const& val)
     {
         if (tr::serializer::set(*this, key, val)) {
-            static_cast<Derived*>(this)->on_changed(key);
+            on_changed(key);
         }
     }
 
@@ -114,16 +116,24 @@ public:
         tr::settings::save(filename, settings);
     }
 
-protected:
-    void on_changed(tr_quark /*key*/) // CRTP method
+    template<typename Observer>
+    [[nodiscard]] sigslot::scoped_connection observe_changed(Observer observer) const
     {
+        return changed_.connect_scoped(std::move(observer));
     }
 
 private:
+    void on_changed(tr_quark const key)
+    {
+        changed_(key);
+    }
+
     template<auto MemberPtr>
     using Field = tr::serializer::Field<MemberPtr>;
 
     using Traits = PrefsStringTraits<StringType>;
+
+    mutable sigslot::signal<tr_quark> changed_;
 
     // --- Category 1: local application preferences ---
     // These belong to this client and are always meaningful,
@@ -233,100 +243,100 @@ private:
 
 public:
     static constexpr auto Fields = std::make_tuple(
-        Field<&BasePrefs::alt_speed_limit_down_>{ TR_KEY_alt_speed_down },
-        Field<&BasePrefs::alt_speed_limit_enabled_>{ TR_KEY_alt_speed_enabled },
-        Field<&BasePrefs::alt_speed_limit_time_begin_>{ TR_KEY_alt_speed_time_begin },
-        Field<&BasePrefs::alt_speed_limit_time_day_>{ TR_KEY_alt_speed_time_day },
-        Field<&BasePrefs::alt_speed_limit_time_enabled_>{ TR_KEY_alt_speed_time_enabled },
-        Field<&BasePrefs::alt_speed_limit_time_end_>{ TR_KEY_alt_speed_time_end },
-        Field<&BasePrefs::alt_speed_limit_up_>{ TR_KEY_alt_speed_up },
-        Field<&BasePrefs::askquit_>{ TR_KEY_prompt_before_exit },
-        Field<&BasePrefs::blocklist_date_>{ TR_KEY_blocklist_date },
-        Field<&BasePrefs::blocklist_enabled_>{ TR_KEY_blocklist_enabled },
-        Field<&BasePrefs::blocklist_updates_enabled_>{ TR_KEY_blocklist_updates_enabled },
-        Field<&BasePrefs::blocklist_url_>{ TR_KEY_blocklist_url },
-        Field<&BasePrefs::compact_view_>{ TR_KEY_compact_view },
-        Field<&BasePrefs::complete_sound_command_>{ TR_KEY_torrent_complete_sound_command },
-        Field<&BasePrefs::complete_sound_enabled_>{ TR_KEY_torrent_complete_sound_enabled },
-        Field<&BasePrefs::default_trackers_>{ TR_KEY_default_trackers },
-        Field<&BasePrefs::dht_enabled_>{ TR_KEY_dht_enabled },
-        Field<&BasePrefs::dir_watch_>{ TR_KEY_watch_dir },
-        Field<&BasePrefs::dir_watch_enabled_>{ TR_KEY_watch_dir_enabled },
-        Field<&BasePrefs::download_dir_>{ TR_KEY_download_dir },
-        Field<&BasePrefs::download_queue_enabled_>{ TR_KEY_download_queue_enabled },
-        Field<&BasePrefs::download_queue_size_>{ TR_KEY_download_queue_size },
-        Field<&BasePrefs::dspeed_>{ TR_KEY_speed_limit_down },
-        Field<&BasePrefs::dspeed_enabled_>{ TR_KEY_speed_limit_down_enabled },
-        Field<&BasePrefs::encryption_>{ TR_KEY_encryption },
-        Field<&BasePrefs::filter_mode_>{ TR_KEY_filter_mode },
-        Field<&BasePrefs::filter_text_>{ TR_KEY_filter_text },
-        Field<&BasePrefs::filter_trackers_>{ TR_KEY_filter_trackers },
-        Field<&BasePrefs::filterbar_>{ TR_KEY_show_filterbar },
-        Field<&BasePrefs::idle_limit_>{ TR_KEY_idle_seeding_limit },
-        Field<&BasePrefs::idle_limit_enabled_>{ TR_KEY_idle_seeding_limit_enabled },
-        Field<&BasePrefs::incomplete_dir_>{ TR_KEY_incomplete_dir },
-        Field<&BasePrefs::incomplete_dir_enabled_>{ TR_KEY_incomplete_dir_enabled },
-        Field<&BasePrefs::inhibit_hibernation_>{ TR_KEY_inhibit_desktop_hibernation },
-        Field<&BasePrefs::lpd_enabled_>{ TR_KEY_lpd_enabled },
-        Field<&BasePrefs::main_window_height_>{ TR_KEY_main_window_height },
-        Field<&BasePrefs::main_window_layout_order_>{ TR_KEY_main_window_layout_order },
-        Field<&BasePrefs::main_window_width_>{ TR_KEY_main_window_width },
-        Field<&BasePrefs::main_window_x_>{ TR_KEY_main_window_x },
-        Field<&BasePrefs::main_window_y_>{ TR_KEY_main_window_y },
-        Field<&BasePrefs::msglevel_>{ TR_KEY_message_level },
-        Field<&BasePrefs::open_dialog_folder_>{ TR_KEY_open_dialog_dir },
-        Field<&BasePrefs::options_prompt_>{ TR_KEY_show_options_window },
-        Field<&BasePrefs::peer_limit_global_>{ TR_KEY_peer_limit_global },
-        Field<&BasePrefs::peer_limit_torrent_>{ TR_KEY_peer_limit_per_torrent },
-        Field<&BasePrefs::peer_port_>{ TR_KEY_peer_port },
-        Field<&BasePrefs::peer_port_random_high_>{ TR_KEY_peer_port_random_high },
-        Field<&BasePrefs::peer_port_random_low_>{ TR_KEY_peer_port_random_low },
-        Field<&BasePrefs::peer_port_random_on_start_>{ TR_KEY_peer_port_random_on_start },
-        Field<&BasePrefs::pex_enabled_>{ TR_KEY_pex_enabled },
-        Field<&BasePrefs::port_forwarding_>{ TR_KEY_port_forwarding_enabled },
-        Field<&BasePrefs::preallocation_>{ TR_KEY_preallocation },
-        Field<&BasePrefs::queue_stalled_minutes_>{ TR_KEY_queue_stalled_minutes },
-        Field<&BasePrefs::ratio_>{ TR_KEY_seed_ratio_limit },
-        Field<&BasePrefs::ratio_enabled_>{ TR_KEY_seed_ratio_limited },
-        Field<&BasePrefs::read_clipboard_>{ TR_KEY_read_clipboard },
-        Field<&BasePrefs::rename_partial_files_>{ TR_KEY_rename_partial_files },
-        Field<&BasePrefs::rpc_auth_required_>{ TR_KEY_rpc_authentication_required },
-        Field<&BasePrefs::rpc_enabled_>{ TR_KEY_rpc_enabled },
-        Field<&BasePrefs::rpc_password_>{ TR_KEY_rpc_password },
-        Field<&BasePrefs::rpc_port_>{ TR_KEY_rpc_port },
-        Field<&BasePrefs::rpc_username_>{ TR_KEY_rpc_username },
-        Field<&BasePrefs::rpc_whitelist_>{ TR_KEY_rpc_whitelist },
-        Field<&BasePrefs::rpc_whitelist_enabled_>{ TR_KEY_rpc_whitelist_enabled },
-        Field<&BasePrefs::script_torrent_done_enabled_>{ TR_KEY_script_torrent_done_enabled },
-        Field<&BasePrefs::script_torrent_done_filename_>{ TR_KEY_script_torrent_done_filename },
-        Field<&BasePrefs::script_torrent_done_seeding_enabled_>{ TR_KEY_script_torrent_done_seeding_enabled },
-        Field<&BasePrefs::script_torrent_done_seeding_filename_>{ TR_KEY_script_torrent_done_seeding_filename },
-        Field<&BasePrefs::session_is_remote_>{ TR_KEY_remote_session_enabled },
-        Field<&BasePrefs::session_remote_auth_>{ TR_KEY_remote_session_requires_authentication },
-        Field<&BasePrefs::session_remote_host_>{ TR_KEY_remote_session_host },
-        Field<&BasePrefs::session_remote_https_>{ TR_KEY_remote_session_https },
-        Field<&BasePrefs::session_remote_password_>{ TR_KEY_remote_session_password },
-        Field<&BasePrefs::session_remote_port_>{ TR_KEY_remote_session_port },
-        Field<&BasePrefs::session_remote_url_base_path_>{ TR_KEY_remote_session_url_base_path },
-        Field<&BasePrefs::session_remote_username_>{ TR_KEY_remote_session_username },
-        Field<&BasePrefs::show_backup_trackers_>{ TR_KEY_show_backup_trackers },
-        Field<&BasePrefs::show_notification_on_add_>{ TR_KEY_torrent_added_notification_enabled },
-        Field<&BasePrefs::show_notification_on_complete_>{ TR_KEY_torrent_complete_notification_enabled },
-        Field<&BasePrefs::show_tracker_scrapes_>{ TR_KEY_show_tracker_scrapes },
-        Field<&BasePrefs::show_tray_icon_>{ TR_KEY_show_notification_area_icon },
-        Field<&BasePrefs::socket_diffserv_>{ TR_KEY_peer_socket_diffserv },
-        Field<&BasePrefs::sort_mode_>{ TR_KEY_sort_mode },
-        Field<&BasePrefs::sort_reversed_>{ TR_KEY_sort_reversed },
-        Field<&BasePrefs::start_>{ TR_KEY_start_added_torrents },
-        Field<&BasePrefs::start_minimized_>{ TR_KEY_start_minimized },
-        Field<&BasePrefs::statusbar_>{ TR_KEY_show_statusbar },
-        Field<&BasePrefs::statusbar_stats_>{ TR_KEY_statusbar_stats },
-        Field<&BasePrefs::toolbar_>{ TR_KEY_show_toolbar },
-        Field<&BasePrefs::trash_original_>{ TR_KEY_trash_original_torrent_files },
-        Field<&BasePrefs::upload_slots_per_torrent_>{ TR_KEY_upload_slots_per_torrent },
-        Field<&BasePrefs::uspeed_>{ TR_KEY_speed_limit_up },
-        Field<&BasePrefs::uspeed_enabled_>{ TR_KEY_speed_limit_up_enabled },
-        Field<&BasePrefs::utp_enabled_>{ TR_KEY_utp_enabled });
+        Field<&Prefs::alt_speed_limit_down_>{ TR_KEY_alt_speed_down },
+        Field<&Prefs::alt_speed_limit_enabled_>{ TR_KEY_alt_speed_enabled },
+        Field<&Prefs::alt_speed_limit_time_begin_>{ TR_KEY_alt_speed_time_begin },
+        Field<&Prefs::alt_speed_limit_time_day_>{ TR_KEY_alt_speed_time_day },
+        Field<&Prefs::alt_speed_limit_time_enabled_>{ TR_KEY_alt_speed_time_enabled },
+        Field<&Prefs::alt_speed_limit_time_end_>{ TR_KEY_alt_speed_time_end },
+        Field<&Prefs::alt_speed_limit_up_>{ TR_KEY_alt_speed_up },
+        Field<&Prefs::askquit_>{ TR_KEY_prompt_before_exit },
+        Field<&Prefs::blocklist_date_>{ TR_KEY_blocklist_date },
+        Field<&Prefs::blocklist_enabled_>{ TR_KEY_blocklist_enabled },
+        Field<&Prefs::blocklist_updates_enabled_>{ TR_KEY_blocklist_updates_enabled },
+        Field<&Prefs::blocklist_url_>{ TR_KEY_blocklist_url },
+        Field<&Prefs::compact_view_>{ TR_KEY_compact_view },
+        Field<&Prefs::complete_sound_command_>{ TR_KEY_torrent_complete_sound_command },
+        Field<&Prefs::complete_sound_enabled_>{ TR_KEY_torrent_complete_sound_enabled },
+        Field<&Prefs::default_trackers_>{ TR_KEY_default_trackers },
+        Field<&Prefs::dht_enabled_>{ TR_KEY_dht_enabled },
+        Field<&Prefs::dir_watch_>{ TR_KEY_watch_dir },
+        Field<&Prefs::dir_watch_enabled_>{ TR_KEY_watch_dir_enabled },
+        Field<&Prefs::download_dir_>{ TR_KEY_download_dir },
+        Field<&Prefs::download_queue_enabled_>{ TR_KEY_download_queue_enabled },
+        Field<&Prefs::download_queue_size_>{ TR_KEY_download_queue_size },
+        Field<&Prefs::dspeed_>{ TR_KEY_speed_limit_down },
+        Field<&Prefs::dspeed_enabled_>{ TR_KEY_speed_limit_down_enabled },
+        Field<&Prefs::encryption_>{ TR_KEY_encryption },
+        Field<&Prefs::filter_mode_>{ TR_KEY_filter_mode },
+        Field<&Prefs::filter_text_>{ TR_KEY_filter_text },
+        Field<&Prefs::filter_trackers_>{ TR_KEY_filter_trackers },
+        Field<&Prefs::filterbar_>{ TR_KEY_show_filterbar },
+        Field<&Prefs::idle_limit_>{ TR_KEY_idle_seeding_limit },
+        Field<&Prefs::idle_limit_enabled_>{ TR_KEY_idle_seeding_limit_enabled },
+        Field<&Prefs::incomplete_dir_>{ TR_KEY_incomplete_dir },
+        Field<&Prefs::incomplete_dir_enabled_>{ TR_KEY_incomplete_dir_enabled },
+        Field<&Prefs::inhibit_hibernation_>{ TR_KEY_inhibit_desktop_hibernation },
+        Field<&Prefs::lpd_enabled_>{ TR_KEY_lpd_enabled },
+        Field<&Prefs::main_window_height_>{ TR_KEY_main_window_height },
+        Field<&Prefs::main_window_layout_order_>{ TR_KEY_main_window_layout_order },
+        Field<&Prefs::main_window_width_>{ TR_KEY_main_window_width },
+        Field<&Prefs::main_window_x_>{ TR_KEY_main_window_x },
+        Field<&Prefs::main_window_y_>{ TR_KEY_main_window_y },
+        Field<&Prefs::msglevel_>{ TR_KEY_message_level },
+        Field<&Prefs::open_dialog_folder_>{ TR_KEY_open_dialog_dir },
+        Field<&Prefs::options_prompt_>{ TR_KEY_show_options_window },
+        Field<&Prefs::peer_limit_global_>{ TR_KEY_peer_limit_global },
+        Field<&Prefs::peer_limit_torrent_>{ TR_KEY_peer_limit_per_torrent },
+        Field<&Prefs::peer_port_>{ TR_KEY_peer_port },
+        Field<&Prefs::peer_port_random_high_>{ TR_KEY_peer_port_random_high },
+        Field<&Prefs::peer_port_random_low_>{ TR_KEY_peer_port_random_low },
+        Field<&Prefs::peer_port_random_on_start_>{ TR_KEY_peer_port_random_on_start },
+        Field<&Prefs::pex_enabled_>{ TR_KEY_pex_enabled },
+        Field<&Prefs::port_forwarding_>{ TR_KEY_port_forwarding_enabled },
+        Field<&Prefs::preallocation_>{ TR_KEY_preallocation },
+        Field<&Prefs::queue_stalled_minutes_>{ TR_KEY_queue_stalled_minutes },
+        Field<&Prefs::ratio_>{ TR_KEY_seed_ratio_limit },
+        Field<&Prefs::ratio_enabled_>{ TR_KEY_seed_ratio_limited },
+        Field<&Prefs::read_clipboard_>{ TR_KEY_read_clipboard },
+        Field<&Prefs::rename_partial_files_>{ TR_KEY_rename_partial_files },
+        Field<&Prefs::rpc_auth_required_>{ TR_KEY_rpc_authentication_required },
+        Field<&Prefs::rpc_enabled_>{ TR_KEY_rpc_enabled },
+        Field<&Prefs::rpc_password_>{ TR_KEY_rpc_password },
+        Field<&Prefs::rpc_port_>{ TR_KEY_rpc_port },
+        Field<&Prefs::rpc_username_>{ TR_KEY_rpc_username },
+        Field<&Prefs::rpc_whitelist_>{ TR_KEY_rpc_whitelist },
+        Field<&Prefs::rpc_whitelist_enabled_>{ TR_KEY_rpc_whitelist_enabled },
+        Field<&Prefs::script_torrent_done_enabled_>{ TR_KEY_script_torrent_done_enabled },
+        Field<&Prefs::script_torrent_done_filename_>{ TR_KEY_script_torrent_done_filename },
+        Field<&Prefs::script_torrent_done_seeding_enabled_>{ TR_KEY_script_torrent_done_seeding_enabled },
+        Field<&Prefs::script_torrent_done_seeding_filename_>{ TR_KEY_script_torrent_done_seeding_filename },
+        Field<&Prefs::session_is_remote_>{ TR_KEY_remote_session_enabled },
+        Field<&Prefs::session_remote_auth_>{ TR_KEY_remote_session_requires_authentication },
+        Field<&Prefs::session_remote_host_>{ TR_KEY_remote_session_host },
+        Field<&Prefs::session_remote_https_>{ TR_KEY_remote_session_https },
+        Field<&Prefs::session_remote_password_>{ TR_KEY_remote_session_password },
+        Field<&Prefs::session_remote_port_>{ TR_KEY_remote_session_port },
+        Field<&Prefs::session_remote_url_base_path_>{ TR_KEY_remote_session_url_base_path },
+        Field<&Prefs::session_remote_username_>{ TR_KEY_remote_session_username },
+        Field<&Prefs::show_backup_trackers_>{ TR_KEY_show_backup_trackers },
+        Field<&Prefs::show_notification_on_add_>{ TR_KEY_torrent_added_notification_enabled },
+        Field<&Prefs::show_notification_on_complete_>{ TR_KEY_torrent_complete_notification_enabled },
+        Field<&Prefs::show_tracker_scrapes_>{ TR_KEY_show_tracker_scrapes },
+        Field<&Prefs::show_tray_icon_>{ TR_KEY_show_notification_area_icon },
+        Field<&Prefs::socket_diffserv_>{ TR_KEY_peer_socket_diffserv },
+        Field<&Prefs::sort_mode_>{ TR_KEY_sort_mode },
+        Field<&Prefs::sort_reversed_>{ TR_KEY_sort_reversed },
+        Field<&Prefs::start_>{ TR_KEY_start_added_torrents },
+        Field<&Prefs::start_minimized_>{ TR_KEY_start_minimized },
+        Field<&Prefs::statusbar_>{ TR_KEY_show_statusbar },
+        Field<&Prefs::statusbar_stats_>{ TR_KEY_statusbar_stats },
+        Field<&Prefs::toolbar_>{ TR_KEY_show_toolbar },
+        Field<&Prefs::trash_original_>{ TR_KEY_trash_original_torrent_files },
+        Field<&Prefs::upload_slots_per_torrent_>{ TR_KEY_upload_slots_per_torrent },
+        Field<&Prefs::uspeed_>{ TR_KEY_speed_limit_up },
+        Field<&Prefs::uspeed_enabled_>{ TR_KEY_speed_limit_up_enabled },
+        Field<&Prefs::utp_enabled_>{ TR_KEY_utp_enabled });
 };
 
 } // namespace tr::app
