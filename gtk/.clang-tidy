@@ -16,6 +16,7 @@ Checks:
   - -cppcoreguidelines-pro-bounds-array-to-pointer-decay
   - -cppcoreguidelines-pro-bounds-avoid-unchecked-container-access
   - -cppcoreguidelines-pro-bounds-constant-array-index
+  - -cppcoreguidelines-use-enum-class
   - hicpp-*
   - -hicpp-no-array-decay # alias of `cppcoreguidelines-pro-bounds-array-to-pointer-decay`
   - -hicpp-special-member-functions # alias of `cppcoreguidelines-special-member-functions`
