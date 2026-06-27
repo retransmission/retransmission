@@ -340,22 +340,23 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
+        toolkit: [none, gtk3, gtk4, qt5, qt6]
         include:
-          - name: core
+          - toolkit: none
             runner: ubuntu-24.04
             enable-gtk: false
             enable-qt: false
             enable-tests: true
             regex: '(libtransmission|libtransmission-app|tests/libtransmission)/.*'
             enabled: ${{ needs.what-to-make.outputs.tidy-core }}
-          - name: gtk3
+          - toolkit: gtk3
             runner: ubuntu-24.04
             enable-gtk: gtk3
             enable-qt: false
             enable-tests: false
             regex: 'gtk/.*'
             enabled: ${{ needs.what-to-make.outputs.tidy-gtk }}
-          - name: gtk4
+          - toolkit: gtk4
             # Ubuntu 24.04 ships gtkmm-4.0 4.10, but the project requires
             # >= 4.11.1 (GTKMM4_MINIMUM); 26.04 is the first GA-track image new
             # enough. install-deps installs clang-tidy-20 from the distro there.
@@ -365,14 +366,14 @@ jobs:
             enable-tests: false
             regex: 'gtk/.*'
             enabled: ${{ needs.what-to-make.outputs.tidy-gtk }}
-          - name: qt5
+          - toolkit: qt5
             runner: ubuntu-24.04
             enable-gtk: false
             enable-qt: qt5
             enable-tests: true
             regex: '(qt|tests/qt)/.*'
             enabled: ${{ needs.what-to-make.outputs.tidy-qt }}
-          - name: qt6
+          - toolkit: qt6
             runner: ubuntu-24.04
             enable-gtk: false
             enable-qt: qt6
