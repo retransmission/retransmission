@@ -167,6 +167,7 @@ private:
     bool dir_watch_enabled_ = false;
     bool filterbar_ = true;
     bool inhibit_hibernation_ = false;
+    bool main_window_is_maximized_ = false;
     bool options_prompt_ = true;
     bool read_clipboard_ = false;
     bool session_is_remote_ = false;
@@ -281,6 +282,7 @@ public:
         Field<&Prefs::inhibit_hibernation_>{ TR_KEY_inhibit_desktop_hibernation },
         Field<&Prefs::lpd_enabled_>{ TR_KEY_lpd_enabled },
         Field<&Prefs::main_window_height_>{ TR_KEY_main_window_height },
+        Field<&Prefs::main_window_is_maximized_>{ TR_KEY_main_window_is_maximized },
         Field<&Prefs::main_window_layout_order_>{ TR_KEY_main_window_layout_order },
         Field<&Prefs::main_window_width_>{ TR_KEY_main_window_width },
         Field<&Prefs::main_window_x_>{ TR_KEY_main_window_x },

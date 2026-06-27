@@ -348,11 +348,18 @@ void Application::notifyTorrentAdded(Torrent const* tor) const
 void Application::saveGeometry() const
 {
     if (window_ != nullptr) {
-        auto const geometry = window_->geometry();
-        prefs_.set(TR_KEY_main_window_height, std::max(100, geometry.height()));
-        prefs_.set(TR_KEY_main_window_width, std::max(100, geometry.width()));
-        prefs_.set(TR_KEY_main_window_x, geometry.x());
-        prefs_.set(TR_KEY_main_window_y, geometry.y());
+        bool const is_maximized = window_->isMaximized();
+        prefs_.set(TR_KEY_main_window_is_maximized, is_maximized);
+
+        // When maximized, keep the previously-saved "normal" geometry so the
+        // window can be restored to it after un-maximizing.
+        if (!is_maximized) {
+            auto const geometry = window_->geometry();
+            prefs_.set(TR_KEY_main_window_height, std::max(100, geometry.height()));
+            prefs_.set(TR_KEY_main_window_width, std::max(100, geometry.width()));
+            prefs_.set(TR_KEY_main_window_x, geometry.x());
+            prefs_.set(TR_KEY_main_window_y, geometry.y());
+        }
     }
 }
 

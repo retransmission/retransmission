@@ -219,7 +219,7 @@ MainWindow::MainWindow(Session& session, Prefs& prefs, TorrentModel& model, bool
     connect(&filter_model_, &TorrentFilter::rowsRemoved, this, refresh_header_soon);
     connect(ui_.listView, &TorrentView::headerDoubleClicked, filter_bar, &FilterBar::clear);
 
-    static std::array<tr_quark, 17> constexpr InitKeys = {
+    static auto constexpr InitKeys = std::to_array<tr_quark>({
         TR_KEY_alt_speed_enabled, //
         TR_KEY_compact_view, //
         TR_KEY_speed_limit_down, //
@@ -237,7 +237,8 @@ MainWindow::MainWindow(Session& session, Prefs& prefs, TorrentModel& model, bool
         TR_KEY_show_toolbar, //
         TR_KEY_speed_limit_up, //
         TR_KEY_speed_limit_up_enabled, //
-    };
+        TR_KEY_main_window_is_maximized, //
+    });
     for (auto const key : InitKeys) {
         refreshPref(key);
     }
@@ -1128,6 +1129,15 @@ void MainWindow::refreshPref(tr_quark const key)
             prefs_.get<int>(TR_KEY_main_window_y),
             prefs_.get<int>(TR_KEY_main_window_width),
             prefs_.get<int>(TR_KEY_main_window_height));
+        break;
+
+    case TR_KEY_main_window_is_maximized:
+        if (prefs_.get<bool>(key)) {
+            // Set the state rather than calling showMaximized() so a window
+            // that is hidden (e.g. started minimized to tray) stays hidden
+            // until it is explicitly shown.
+            setWindowState(windowState() | Qt::WindowMaximized);
+        }
         break;
 
     case TR_KEY_alt_speed_enabled:
