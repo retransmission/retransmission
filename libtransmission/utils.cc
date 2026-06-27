@@ -390,8 +390,6 @@ std::unique_ptr<tr_net_init_mgr> tr_net_init_mgr::instance;
 
 void tr_lib_init()
 {
-    // DO NOT MERGE
-    fmt::print("hello, world!\n");
     static auto once = std::once_flag{};
     std::call_once(once, [] { tr_net_init_impl::tr_net_init_mgr::create(); });
 }

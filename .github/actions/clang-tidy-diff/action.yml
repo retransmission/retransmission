@@ -25,6 +25,12 @@ inputs:
   base-ref:
     description: Git ref to diff against in changed-lines mode
     default: origin/main
+  extra-arg:
+    description: >
+      Optional extra argument appended to every clang invocation (clang-tidy
+      -extra-arg), e.g. -Wno-unused-command-line-argument to silence the
+      driver diagnostics MSVC-style compile commands trigger under clang-cl.
+    default: ''
 runs:
   using: composite
   steps:
@@ -53,6 +59,12 @@ runs:
         # -regex scopes a cell to its own directories; -only-check-in-db skips
         # any matched path that has no compile command (headers, files excluded
         # by this toolkit), so we never invoke clang-tidy without a command.
+        extra=()
+        if [ -n '${{ inputs.extra-arg }}' ]; then
+          # Single token (-extra-arg=VALUE) so argparse never mistakes a
+          # leading-dash VALUE for another option.
+          extra+=('-extra-arg=${{ inputs.extra-arg }}')
+        fi
         set +e
         git diff -U0 "$base" HEAD \
           | "$py" clang-tidy-diff.py \
@@ -62,6 +74,7 @@ runs:
               -regex '${{ inputs.regex }}' \
               -only-check-in-db \
               -allow-no-checks \
+              "${extra[@]}" \
               -j 0 \
               2>&1 | tee clang-tidy.log
         tidy_status=${PIPESTATUS[1]}
