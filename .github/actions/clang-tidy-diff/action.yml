@@ -1,0 +1,76 @@
+name: Run clang-tidy on changed lines
+description: >
+  Runs clang-tidy using LLVM's clang-tidy-diff.py so that only the lines
+  changed since the merge base are analyzed (or, when full-run is true, every
+  compilable file in the selected directories). Per-directory .clang-tidy files
+  are auto-discovered by clang-tidy itself, so no config path is passed.
+inputs:
+  build-path:
+    description: Directory containing compile_commands.json
+    default: obj
+  regex:
+    description: >
+      Anchored regex (clang-tidy-diff -regex) selecting which changed file
+      paths to check, e.g. '(qt|tests/qt)/.*'. Scopes a cell to its own source
+      directories so toolkit-independent files are not checked more than once.
+    required: true
+  clang-tidy-binary:
+    description: clang-tidy executable to use (e.g. clang-tidy-20 on Linux)
+    default: clang-tidy
+  full-run:
+    description: >
+      When 'true', check every compilable file in the selected directories by
+      diffing against the empty tree instead of only the changed lines.
+    default: 'false'
+  base-ref:
+    description: Git ref to diff against in changed-lines mode
+    default: origin/main
+runs:
+  using: composite
+  steps:
+    - name: clang-tidy (changed lines)
+      shell: bash
+      run: |
+        set -euo pipefail
+
+        # Fetch the clang-tidy-diff.py that ships with LLVM 20.1.8, matching
+        # the clang-tidy-20 we install. Pinned to an exact release tag for
+        # reproducibility.
+        script_url='https://raw.githubusercontent.com/llvm/llvm-project/llvmorg-20.1.8/clang-tools-extra/clang-tidy/tool/clang-tidy-diff.py'
+        curl -fsSL "$script_url" -o clang-tidy-diff.py
+
+        py="$(command -v python3 || command -v python)"
+
+        if [ '${{ inputs.full-run }}' = 'true' ]; then
+          # The empty tree makes every line of every file look "added", so all
+          # compilable files in the selected directories get re-checked. Used
+          # when a .clang-tidy changed (or on push to main).
+          base="$(git hash-object -t tree /dev/null)"
+        else
+          base="$(git merge-base '${{ inputs.base-ref }}' HEAD)"
+        fi
+
+        # -regex scopes a cell to its own directories; -only-check-in-db skips
+        # any matched path that has no compile command (headers, files excluded
+        # by this toolkit), so we never invoke clang-tidy without a command.
+        set +e
+        git diff -U0 "$base" HEAD \
+          | "$py" clang-tidy-diff.py \
+              -p1 \
+              -path '${{ inputs.build-path }}' \
+              -clang-tidy-binary '${{ inputs.clang-tidy-binary }}' \
+              -regex '${{ inputs.regex }}' \
+              -only-check-in-db \
+              -allow-no-checks \
+              -j 0 \
+              2>&1 | tee clang-tidy.log
+        tidy_status=${PIPESTATUS[1]}
+        set -e
+
+        # clang-tidy-diff exits non-zero only when an invocation fails (e.g. a
+        # compile error); diagnostics themselves do not change the exit code, so
+        # we also fail when any 'warning:'/'error:' line was emitted.
+        if [ "$tidy_status" -ne 0 ] || grep -E -q '(warning|error):' clang-tidy.log; then
+          echo '::error::clang-tidy reported problems on changed lines'
+          exit 1
+        fi
