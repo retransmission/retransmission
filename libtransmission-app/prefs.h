@@ -259,6 +259,8 @@ public:
         Field<&Prefs::complete_sound_command_>{ TR_KEY_torrent_complete_sound_command },
         Field<&Prefs::complete_sound_enabled_>{ TR_KEY_torrent_complete_sound_enabled },
         Field<&Prefs::default_trackers_>{ TR_KEY_default_trackers },
+        Field<&Prefs::details_window_height_>{ TR_KEY_details_window_height },
+        Field<&Prefs::details_window_width_>{ TR_KEY_details_window_width },
         Field<&Prefs::dht_enabled_>{ TR_KEY_dht_enabled },
         Field<&Prefs::dir_watch_>{ TR_KEY_watch_dir },
         Field<&Prefs::dir_watch_enabled_>{ TR_KEY_watch_dir_enabled },
