@@ -367,10 +367,6 @@ private:
     }
 
 public:
-    tr_net_init_mgr(tr_net_init_mgr const&) = delete;
-    tr_net_init_mgr(tr_net_init_mgr&&) = delete;
-    tr_net_init_mgr& operator=(tr_net_init_mgr const&) = delete;
-    tr_net_init_mgr& operator=(tr_net_init_mgr&&) = delete;
     ~tr_net_init_mgr()
     {
         curl_global_cleanup();
