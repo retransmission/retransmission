@@ -214,7 +214,7 @@ struct tau_announce_request {
         std::optional<tr_address> announce_ip,
         tr_announce_request const& in,
         std::shared_ptr<tau_announce_data> data)
-        : ip_protocol{ ip_protocol_in }
+        : ip_protocol_{ ip_protocol_in }
         , data_{ std::move(data) }
     {
         // https://www.bittorrent.org/beps/bep_0015.html sets key size at 32 bits
@@ -252,7 +252,7 @@ struct tau_announce_request {
     // an announce request is sent on a single, specific protocol
     [[nodiscard]] constexpr bool wants_protocol(tr_address_type ipp) const noexcept
     {
-        return ipp == ip_protocol;
+        return ipp == ip_protocol_;
     }
 
     void fail(bool did_connect, bool did_timeout, std::string_view errmsg)
@@ -308,7 +308,6 @@ struct tau_announce_request {
 
     PayloadBuffer payload;
 
-    tr_address_type const ip_protocol;
     time_t sent_at = 0;
     tau_transaction_t const transaction_id = tau_transaction_new();
 
@@ -334,6 +333,7 @@ private:
 
     time_t const created_at_ = tr_time();
 
+    tr_address_type const ip_protocol_;
     std::shared_ptr<tau_announce_data> data_;
 };
 
