@@ -15,7 +15,7 @@ env:
   GTEST_OUTPUT: xml:./
 jobs:
   what-to-make:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
     outputs:
       make-core: ${{ steps.check-main-push.outputs.is-main-push == '1' || steps.check-diffs.outputs.core-changed == '1' || steps.check-diffs.outputs.ci-actions-changed == '1' }}
       make-android: ${{ steps.check-main-push.outputs.is-main-push == '1' || steps.check-diffs.outputs.android-changed == '1' || steps.check-diffs.outputs.ci-actions-changed == '1' }}
