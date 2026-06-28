@@ -25,6 +25,10 @@ inputs:
     description: 'Use sudo for package installation (false for containers)'
     required: false
     default: 'true'
+  enable-mold:
+    description: 'Install the mold linker (used via -fuse-ld=mold)'
+    required: false
+    default: 'false'
 runs:
   using: composite
   steps:
@@ -71,6 +75,11 @@ runs:
           # Debugging tools
           if [[ "${{ inputs.enable-debugging }}" == "true" ]]; then
             dnf install -y gdb valgrind
+          fi
+
+          # Faster linker
+          if [[ "${{ inputs.enable-mold }}" == "true" ]]; then
+            dnf install -y mold
           fi
 
         elif [[ "$PKG_FAMILY" == "apt" ]]; then
@@ -143,6 +152,11 @@ runs:
           # Debugging tools
           if [[ "${{ inputs.enable-debugging }}" == "true" ]]; then
             BASE_PACKAGES+=(gdb libc6-dbg valgrind)
+          fi
+
+          # Faster linker
+          if [[ "${{ inputs.enable-mold }}" == "true" ]]; then
+            BASE_PACKAGES+=(mold)
           fi
 
           $SUDO_CMD apt-get install -y --no-install-recommends "${BASE_PACKAGES[@]}"

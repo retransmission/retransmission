@@ -430,10 +430,14 @@ jobs:
       - name: Generate sources
         if: matrix.enabled == 'true'
         run: |
-          # Materialize generated moc/uic headers so clang-tidy can compile the
-          # changed Qt translation units. Non-Qt cells have no autogen targets,
-          # so this is a no-op for them.
-          mapfile -t targets < <(ninja -C obj -t targets all 2>/dev/null | sed -n 's/^\([^:]*_autogen\):.*/\1/p' | sort -u)
+          # clang-tidy parses each changed TU fully, so its headers must exist
+          # even though we never build the main targets. Build the Qt *_autogen
+          # headers and the bundled ExternalProject libs whose installed headers
+          # (e.g. dht/dht.h) only appear once their `_<lib>` target is built.
+          mapfile -t targets < <(
+            ninja -C obj -t targets all 2>/dev/null \
+              | sed -n -e 's/^\([^:]*_autogen\):.*/\1/p' -e 's/^\(_[A-Za-z0-9_]*\): phony$/\1/p' \
+              | sort -u)
           if [ "${#targets[@]}" -gt 0 ]; then
             cmake --build obj --target "${targets[@]}"
           fi
@@ -512,11 +516,15 @@ jobs:
       - name: Generate sources
         if: matrix.enabled == 'true'
         run: |
-          # Materialize generated moc/uic headers so clang-tidy can compile the
-          # changed Qt translation units. Non-Qt cells have no autogen targets.
+          # Like the Linux job, but USE_SYSTEM_DEFAULT=OFF bundles every lib, so
+          # build the Qt *_autogen headers plus all `_*` ExternalProject targets
+          # (e.g. _dht) to install headers like dht/dht.h before clang-tidy runs.
           $list = cmd /c "`"$Env:VCVARSALL`" $Env:VC_ARCH >nul && ninja -C obj -t targets all"
           $targets = $list |
-            ForEach-Object { if ($_ -match '^([^:]+_autogen):') { $Matches[1] } } |
+            ForEach-Object {
+              if ($_ -match '^([^:]+_autogen):') { $Matches[1] }
+              elseif ($_ -match '^(_[A-Za-z0-9_]+): phony$') { $Matches[1] }
+            } |
             Sort-Object -Unique
           if ($targets) {
             cmd /c "`"$Env:VCVARSALL`" $Env:VC_ARCH >nul && cmake --build obj --target $($targets -join ' ')"
@@ -677,6 +685,7 @@ jobs:
             libpsl-dev \
             linux-headers \
             miniupnpc-dev \
+            mold \
             ninja \
             npm \
             pkgconfig \
@@ -710,6 +719,7 @@ jobs:
             -DREBUILD_WEB=${{ (needs.what-to-make.outputs.make-web == 'true') && 'ON' || 'OFF' }} \
             -DENABLE_WERROR=ON \
             -DRUN_CLANG_TIDY=OFF \
+            -DCMAKE_EXE_LINKER_FLAGS=-fuse-ld=mold \
             -DUSE_SYSTEM_DEFAULT=ON \
             -DUSE_SYSTEM_B64=OFF `# Not packaged in Alpine` \
             -DUSE_SYSTEM_DHT=OFF `# Not packaged in Alpine` \
@@ -986,6 +996,8 @@ jobs:
           enable-gtk: ${{ needs.what-to-make.outputs.make-gtk == 'true' && matrix.gtk || 'false' }}
           enable-qt: ${{ needs.what-to-make.outputs.make-qt == 'true' && matrix.qt || 'false' }}
           use-sudo: false
+          # Debian 11 (oldoldstable) has no mold package and its GCC 10 predates -fuse-ld=mold.
+          enable-mold: ${{ matrix.use-legacy-packages != true }}
       - name: Get NPM
         if: ${{ needs.what-to-make.outputs.make-web == 'true' }}
         uses: actions/setup-node@v6
@@ -1028,6 +1040,8 @@ jobs:
               -DUSE_SYSTEM_FAST_FLOAT=OFF \
               -DUSE_SYSTEM_FMT=OFF \
               -DUSE_SYSTEM_UTF8CPP=OFF
+          else
+            set -- "$@" -DCMAKE_EXE_LINKER_FLAGS=-fuse-ld=mold
           fi
 
           cmake "$@"
@@ -1075,6 +1089,7 @@ jobs:
           enable-gtk: ${{ needs.what-to-make.outputs.make-gtk == 'true' && 'gtk4' || 'false' }}
           enable-qt: ${{ needs.what-to-make.outputs.make-qt == 'true' && 'qt6' || 'false' }}
           use-sudo: false
+          enable-mold: true
       - name: Get NPM
         if: ${{ needs.what-to-make.outputs.make-web == 'true' }}
         uses: actions/setup-node@v6
@@ -1104,6 +1119,7 @@ jobs:
             -DREBUILD_WEB=${{ (needs.what-to-make.outputs.make-web == 'true') && 'ON' || 'OFF' }} \
             -DENABLE_WERROR=OFF \
             -DRUN_CLANG_TIDY=OFF \
+            -DCMAKE_EXE_LINKER_FLAGS=-fuse-ld=mold \
             -DUSE_SYSTEM_DEFAULT=ON \
             -DUSE_SYSTEM_DHT=OFF `# Not packaged in Fedora` \
             -DUSE_SYSTEM_SIGSLOT=OFF `# Not packaged in Fedora` \
@@ -1148,6 +1164,7 @@ jobs:
         with:
           compiler: clang # Workaround https://gcc.gnu.org/bugzilla/show_bug.cgi?id=109717
           use-sudo: true
+          enable-mold: true
       - name: Get NPM
         if: ${{ needs.what-to-make.outputs.make-web == 'true' }}
         uses: actions/setup-node@v6
@@ -1180,6 +1197,7 @@ jobs:
             -DREBUILD_WEB=OFF \
             -DENABLE_WERROR=ON \
             -DRUN_CLANG_TIDY=OFF \
+            -DCMAKE_EXE_LINKER_FLAGS=-fuse-ld=mold \
             -DUSE_SYSTEM_DEFAULT=ON \
             -DUSE_SYSTEM_DHT=OFF `# Not packaged in Ubuntu` \
             -DUSE_SYSTEM_SIGSLOT=OFF `# Not packaged in Ubuntu` \
@@ -1274,6 +1292,7 @@ jobs:
           enable-gtk: ${{ needs.what-to-make.outputs.make-gtk == 'true' && 'gtk3' || 'false' }}
           enable-qt: ${{ needs.what-to-make.outputs.make-qt == 'true' && 'qt6' || 'false' }}
           use-sudo: true
+          enable-mold: true
       - name: Configure
         run: |
           cmake \
@@ -1285,6 +1304,7 @@ jobs:
             -DCMAKE_C_COMPILER='clang' \
             -DCMAKE_BUILD_TYPE=RelWithDebInfo \
             -DCMAKE_INSTALL_PREFIX=pfx \
+            -DCMAKE_EXE_LINKER_FLAGS=-fuse-ld=mold \
             -DENABLE_CLI=${{ (needs.what-to-make.outputs.make-cli == 'true') && 'ON' || 'OFF' }} \
             -DENABLE_DAEMON=${{ (needs.what-to-make.outputs.make-daemon == 'true') && 'ON' || 'OFF' }} \
             -DENABLE_GTK=${{ (needs.what-to-make.outputs.make-gtk == 'true') && 'ON' || 'OFF' }} \
@@ -1333,6 +1353,7 @@ jobs:
           enable-gtk: ${{ needs.what-to-make.outputs.make-gtk == 'true' && 'gtk3' || 'false' }}
           enable-qt: ${{ needs.what-to-make.outputs.make-qt == 'true' && 'qt6' || 'false' }}
           use-sudo: true
+          enable-mold: true
       - name: Get NPM
         if: needs.what-to-make.outputs.make-web == 'true'
         uses: actions/setup-node@v6
@@ -1354,6 +1375,7 @@ jobs:
             -DCMAKE_C_COMPILER='clang' \
             -DCMAKE_BUILD_TYPE=RelWithDebInfo \
             -DCMAKE_INSTALL_PREFIX=pfx \
+            -DCMAKE_EXE_LINKER_FLAGS=-fuse-ld=mold \
              -DENABLE_CLI=${{ (needs.what-to-make.outputs.make-cli == 'true') && 'ON' || 'OFF' }} \
             -DENABLE_DAEMON=${{ (needs.what-to-make.outputs.make-daemon == 'true') && 'ON' || 'OFF' }} \
             -DENABLE_GTK=${{ (needs.what-to-make.outputs.make-gtk == 'true') && 'ON' || 'OFF' }} \
@@ -1501,6 +1523,7 @@ jobs:
           enable-gtk: false
           enable-qt: false
           use-sudo: true
+          enable-mold: true
       - name: Install Crypto Library
         run: sudo apt-get install -y --no-install-recommends ${{ matrix.crypto.apt }}
       - name: Get NPM
@@ -1534,6 +1557,7 @@ jobs:
             -DENABLE_WERROR=ON \
             -DREBUILD_WEB=OFF \
             -DRUN_CLANG_TIDY=OFF \
+            -DCMAKE_EXE_LINKER_FLAGS=-fuse-ld=mold \
             -DUSE_SYSTEM_DEFAULT=ON \
             -DUSE_SYSTEM_DHT=OFF `# Not packaged in Ubuntu` \
             -DUSE_SYSTEM_SIGSLOT=OFF `# Not packaged in Ubuntu` \
