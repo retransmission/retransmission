@@ -35,6 +35,7 @@ Checks:
   - -hicpp-use-equals-delete # alias of `modernize-use-equals-delete`
   - -hicpp-use-nullptr # alias of `modernize-use-nullptr`
   - misc-*
+  - -misc-const-correctness # TODO: enable after https://github.com/llvm/llvm-project/issues/206429 is fixed
   - -misc-include-cleaner
   - -misc-no-recursion
   - -misc-non-private-member-variables-in-classes

@@ -22,6 +22,7 @@ Checks:
   - -hicpp-special-member-functions # alias of `cppcoreguidelines-special-member-functions`
   - -hicpp-use-nullptr # alias of `modernize-use-nullptr`
   - misc-*
+  - -misc-const-correctness # TODO: enable after https://github.com/llvm/llvm-project/issues/206429 is fixed
   - -misc-include-cleaner
   - modernize-*
   - -modernize-use-nullptr # TODO: enable after https://github.com/llvm/llvm-project/issues/206245 is fixed
