@@ -493,6 +493,22 @@ public:
         settings_.download_dir = dir;
     }
 
+    // recently-used directories
+
+    [[nodiscard]] auto const& recent_download_paths() const noexcept
+    {
+        return settings_.recent_download_paths;
+    }
+
+    void add_recent_download_dir(std::string_view dir);
+
+    [[nodiscard]] auto const& recent_relocate_paths() const noexcept
+    {
+        return settings_.recent_relocate_paths;
+    }
+
+    void add_recent_relocate_dir(std::string_view dir);
+
     // default trackers
     // (trackers to apply automatically to public torrents)
 

@@ -458,6 +458,8 @@ auto constexpr MyStatic = std::array<std::string_view, TR_N_KEYS>{
     "ratio_mode"sv, // .resume
     "read-clipboard"sv, // qt app
     "read_clipboard"sv, // qt app
+    "recent_download_paths"sv, // rpc
+    "recent_relocate_paths"sv, // rpc
     "recently-active"sv, // rpc
     "recently_active"sv, // rpc
     "recheckProgress"sv, // rpc

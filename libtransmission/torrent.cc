@@ -919,6 +919,8 @@ void tr_torrent::init(tr_ctor const& ctor)
     bool const is_new_torrent = !tr_sys_path_exists(file_path);
 
     if (is_new_torrent) {
+        session->add_recent_download_dir(download_dir_.sv());
+
         auto error = tr_error{};
 
         if (has_metainfo()) // torrent file
@@ -1032,6 +1034,7 @@ void tr_torrent::set_location_in_session_thread(std::string_view const path, boo
     // tell the torrent where the files are
     if (ok) {
         set_download_dir(path);
+        session->add_recent_relocate_dir(path);
 
         if (move_from_old_path) {
             incomplete_dir_.clear();
@@ -2098,6 +2101,8 @@ void tr_torrent::set_download_dir(std::string_view path, bool is_new_torrent)
     mark_edited();
     set_dirty();
     refresh_current_dir();
+
+    session->add_recent_download_dir(path);
 
     if (is_new_torrent) {
         if (session->shouldFullyVerifyAddedTorrents() || !is_new_torrent_a_seed()) {

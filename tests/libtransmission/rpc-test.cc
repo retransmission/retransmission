@@ -617,6 +617,8 @@ TEST_F(RpcTest, sessionGet)
         TR_KEY_preferred_transports,
         TR_KEY_queue_stalled_enabled,
         TR_KEY_queue_stalled_minutes,
+        TR_KEY_recent_download_paths,
+        TR_KEY_recent_relocate_paths,
         TR_KEY_rename_partial_files,
         TR_KEY_reqq,
         TR_KEY_rpc_version,

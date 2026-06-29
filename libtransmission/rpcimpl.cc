@@ -29,6 +29,7 @@
 #include "libtransmission/transmission.h"
 
 #include "libtransmission/announcer.h"
+#include "libtransmission/converters.h"
 #include "libtransmission/crypto-utils.h"
 #include "libtransmission/error.h"
 #include "libtransmission/file-utils.h"
@@ -2208,6 +2209,16 @@ using SessionAccessors = std::pair<SessionGetter, SessionSetter>;
                 tr_sessionSetQueueStalledMinutes(&tgt, *val);
             }
         });
+
+    map.try_emplace(
+        TR_KEY_recent_download_paths,
+        [](tr_session const& src) { return tr::serializer::to_variant(src.recent_download_paths()); },
+        nullptr);
+
+    map.try_emplace(
+        TR_KEY_recent_relocate_paths,
+        [](tr_session const& src) { return tr::serializer::to_variant(src.recent_relocate_paths()); },
+        nullptr);
 
     map.try_emplace(
         TR_KEY_rename_partial_files,

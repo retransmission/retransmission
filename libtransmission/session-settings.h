@@ -121,8 +121,6 @@ public:
         tr_preferred_transport::UTP,
         tr_preferred_transport::TCP,
     };
-    std::vector<std::string> ip_endpoint_ipv4 = { "https://ip4.transmissiontorrent.com/" };
-    std::vector<std::string> ip_endpoint_ipv6 = { "https://ip6.transmissiontorrent.com/" };
     std::chrono::milliseconds sleep_per_seconds_during_verify = std::chrono::milliseconds{ 100 };
     std::optional<std::string> proxy_url;
     std::string announce_ip;
@@ -131,11 +129,16 @@ public:
     std::string blocklist_url = "http://www.example.com/blocklist";
     std::string default_trackers_str;
     std::string download_dir = get_default_download_dir();
-    std::string incomplete_dir = get_default_download_dir();
+    std::string incomplete_dir = download_dir; // declare after download_dir
     std::string peer_congestion_algorithm;
     std::string script_torrent_added_filename;
     std::string script_torrent_done_filename;
     std::string script_torrent_done_seeding_filename;
+    std::vector<std::string> ip_endpoint_ipv4 = { "https://ip4.transmissiontorrent.com/" };
+    std::vector<std::string> ip_endpoint_ipv6 = { "https://ip6.transmissiontorrent.com/" };
+    std::vector<std::string> recent_download_paths = { download_dir }; // declare after download_dir
+    std::vector<std::string> recent_relocate_paths = { download_dir }; // declare after download_dir
+
     tr_encryption_mode encryption_mode = TR_ENCRYPTION_PREFERRED;
     tr_log_level log_level = TR_LOG_INFO;
     tr_mode_t umask = 022;
@@ -161,21 +164,21 @@ public:
         Field<&SessionSettings::bind_address_ipv6>{ TR_KEY_bind_address_ipv6 },
         Field<&SessionSettings::blocklist_enabled>{ TR_KEY_blocklist_enabled },
         Field<&SessionSettings::blocklist_url>{ TR_KEY_blocklist_url },
-        Field<&SessionSettings::unused_cache_size_mbytes>{ TR_KEY_cache_size_mib },
         Field<&SessionSettings::default_trackers_str>{ TR_KEY_default_trackers },
         Field<&SessionSettings::dht_enabled>{ TR_KEY_dht_enabled },
         Field<&SessionSettings::download_dir>{ TR_KEY_download_dir },
         Field<&SessionSettings::download_queue_enabled>{ TR_KEY_download_queue_enabled },
         Field<&SessionSettings::download_queue_size>{ TR_KEY_download_queue_size },
         Field<&SessionSettings::encryption_mode>{ TR_KEY_encryption },
-        Field<&SessionSettings::idle_seeding_limit_minutes>{ TR_KEY_idle_seeding_limit },
         Field<&SessionSettings::idle_seeding_limit_enabled>{ TR_KEY_idle_seeding_limit_enabled },
+        Field<&SessionSettings::idle_seeding_limit_minutes>{ TR_KEY_idle_seeding_limit },
         Field<&SessionSettings::incomplete_dir>{ TR_KEY_incomplete_dir },
         Field<&SessionSettings::incomplete_dir_enabled>{ TR_KEY_incomplete_dir_enabled },
         Field<&SessionSettings::ip_endpoint_ipv4>{ TR_KEY_ip_endpoints_ipv4 },
         Field<&SessionSettings::ip_endpoint_ipv6>{ TR_KEY_ip_endpoints_ipv6 },
-        Field<&SessionSettings::lpd_enabled>{ TR_KEY_lpd_enabled },
+        Field<&SessionSettings::is_incomplete_file_naming_enabled>{ TR_KEY_rename_partial_files },
         Field<&SessionSettings::log_level>{ TR_KEY_message_level },
+        Field<&SessionSettings::lpd_enabled>{ TR_KEY_lpd_enabled },
         Field<&SessionSettings::peer_congestion_algorithm>{ TR_KEY_peer_congestion_algorithm },
         Field<&SessionSettings::peer_limit_global>{ TR_KEY_peer_limit_global },
         Field<&SessionSettings::peer_limit_per_torrent>{ TR_KEY_peer_limit_per_torrent },
@@ -193,9 +196,9 @@ public:
         Field<&SessionSettings::queue_stalled_minutes>{ TR_KEY_queue_stalled_minutes },
         Field<&SessionSettings::ratio_limit>{ TR_KEY_seed_ratio_limit },
         Field<&SessionSettings::ratio_limit_enabled>{ TR_KEY_seed_ratio_limited },
-        Field<&SessionSettings::is_incomplete_file_naming_enabled>{ TR_KEY_rename_partial_files },
+        Field<&SessionSettings::recent_download_paths>{ TR_KEY_recent_download_paths },
+        Field<&SessionSettings::recent_relocate_paths>{ TR_KEY_recent_relocate_paths },
         Field<&SessionSettings::reqq>{ TR_KEY_reqq },
-        Field<&SessionSettings::should_scrape_paused_torrents>{ TR_KEY_scrape_paused_torrents_enabled },
         Field<&SessionSettings::script_torrent_added_enabled>{ TR_KEY_script_torrent_added_enabled },
         Field<&SessionSettings::script_torrent_added_filename>{ TR_KEY_script_torrent_added_filename },
         Field<&SessionSettings::script_torrent_done_enabled>{ TR_KEY_script_torrent_done_enabled },
@@ -205,17 +208,19 @@ public:
         Field<&SessionSettings::seed_queue_enabled>{ TR_KEY_seed_queue_enabled },
         Field<&SessionSettings::seed_queue_size>{ TR_KEY_seed_queue_size },
         Field<&SessionSettings::sequential_download>{ TR_KEY_sequential_download },
+        Field<&SessionSettings::should_delete_source_torrents>{ TR_KEY_trash_original_torrent_files },
+        Field<&SessionSettings::should_scrape_paused_torrents>{ TR_KEY_scrape_paused_torrents_enabled },
+        Field<&SessionSettings::should_start_added_torrents>{ TR_KEY_start_added_torrents },
         Field<&SessionSettings::sleep_per_seconds_during_verify>{ TR_KEY_sleep_per_seconds_during_verify },
         Field<&SessionSettings::speed_limit_down>{ TR_KEY_speed_limit_down },
         Field<&SessionSettings::speed_limit_down_enabled>{ TR_KEY_speed_limit_down_enabled },
         Field<&SessionSettings::speed_limit_up>{ TR_KEY_speed_limit_up },
         Field<&SessionSettings::speed_limit_up_enabled>{ TR_KEY_speed_limit_up_enabled },
-        Field<&SessionSettings::should_start_added_torrents>{ TR_KEY_start_added_torrents },
         Field<&SessionSettings::tcp_enabled>{ TR_KEY_tcp_enabled },
         Field<&SessionSettings::torrent_added_verify_mode>{ TR_KEY_torrent_added_verify_mode },
         Field<&SessionSettings::torrent_complete_verify_enabled>{ TR_KEY_torrent_complete_verify_enabled },
-        Field<&SessionSettings::should_delete_source_torrents>{ TR_KEY_trash_original_torrent_files },
         Field<&SessionSettings::umask>{ TR_KEY_umask },
+        Field<&SessionSettings::unused_cache_size_mbytes>{ TR_KEY_cache_size_mib },
         Field<&SessionSettings::upload_slots_per_torrent>{ TR_KEY_upload_slots_per_torrent },
         Field<&SessionSettings::utp_enabled>{ TR_KEY_utp_enabled });
 };

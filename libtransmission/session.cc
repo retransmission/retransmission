@@ -34,6 +34,7 @@
 #include "libtransmission/api-compat.h"
 #include "libtransmission/bandwidth.h"
 #include "libtransmission/blocklist.h"
+#include "libtransmission/constants.h"
 #include "libtransmission/crypto-utils.h"
 #include "libtransmission/file-utils.h"
 #include "libtransmission/file.h"
@@ -1992,4 +1993,32 @@ void tr_session::addTorrent(tr_torrent* tor)
     torrent_queue_.add(tor->id());
 
     tr_peerMgrAddTorrent(peer_mgr_.get(), tor);
+}
+
+namespace
+{
+void add_recent_dir(std::vector<std::string>& dirs, std::string_view dir)
+{
+    if (std::empty(dir)) {
+        return;
+    }
+
+    std::erase(dirs, dir);
+
+    dirs.emplace(std::begin(dirs), dir);
+
+    if (std::size(dirs) > TrMaxRecentDirs) {
+        dirs.resize(TrMaxRecentDirs);
+    }
+}
+} // namespace
+
+void tr_session::add_recent_download_dir(std::string_view dir)
+{
+    add_recent_dir(settings_.recent_download_paths, dir);
+}
+
+void tr_session::add_recent_relocate_dir(std::string_view dir)
+{
+    add_recent_dir(settings_.recent_relocate_paths, dir);
 }

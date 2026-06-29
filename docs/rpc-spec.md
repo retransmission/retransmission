@@ -604,6 +604,8 @@ Response parameters: `path`, `name`, and `id`, holding the torrent ID integer
 | `preferred_transports` | string[] | preference of transport protocols, see [Editing Configuration Files](Editing-Configuration-Files.md#misc) for details
 | `queue_stalled_enabled` | boolean | whether or not to consider idle torrents as stalled
 | `queue_stalled_minutes` | number | torrents that are idle for N minuets aren't counted toward `seed_queue_size` or `download_queue_size`
+| `recent_download_paths` | string[] | recently-used download directories, most recent first. *read-only*
+| `recent_relocate_paths` | string[] | recently-used relocation (move) destinations, most recent first *read-only*
 | `rename_partial_files` | boolean | true means append `.part` to incomplete files
 | `reqq` | number | the number of outstanding block requests a peer is allowed to queue in the client
 | `rpc_version_minimum` | number | **DEPRECATED** the minimum RPC API version supported
@@ -652,6 +654,8 @@ except:
 
 * `blocklist_size`
 * `config_dir`
+* `recent_download_paths`
+* `recent_relocate_paths`
 * `rpc_version_minimum`,
 * `rpc_version_semver`
 * `rpc_version`
@@ -1121,4 +1125,6 @@ Transmission 4.2.0 (`rpc_version_semver` 6.1.0, `rpc_version`: ?)
 |:---|:---
 | `torrent_get` | new arg `webseeds_ex`
 | `torrent_get` | **DEPRECATED** `webseeds`. Use `webseeds_ex` instead.
+| `session_get` | new arg `recent_download_paths`
+| `session_get` | new arg `recent_relocate_paths`
 | `session_get` | **DEPRECATED** `cache_size_mib`. The memory cache is being removed, making this setting moot. The setting will still be gettable and settable via RPC `session_get` and `session_set` until Transmission 5.0.0 to avoid client breakage, but it will be otherwise unused in libtransmission. Clients should stop using this key.

@@ -3,6 +3,7 @@
 // or any future license endorsed by Mnemosaic LLC.
 // License text can be found in the licenses/ folder.
 
+#include <algorithm>
 #include <array>
 #include <cstdlib>
 #include <cstring>
@@ -16,6 +17,7 @@
 
 #include <libtransmission/transmission.h>
 
+#include <libtransmission/constants.h>
 #include <libtransmission/crypto-utils.h>
 #include <libtransmission/quark.h>
 #include <libtransmission/session-id.h>
@@ -149,6 +151,51 @@ TEST_F(SessionTest, propertiesApi)
         EXPECT_EQ(value, session->blocklist_enabled());
         EXPECT_EQ(value, tr_blocklistIsEnabled(session));
     }
+}
+
+TEST_F(SessionTest, recentDownloadDirs)
+{
+    auto* const session = session_;
+    auto const& recent = session->recent_download_paths(); // live ref into the session
+
+    // empty input is ignored
+    auto const before = recent; // copy
+    session->add_recent_download_dir(""sv);
+    EXPECT_EQ(before, recent);
+
+    // a new dir is prepended (most-recent-first)
+    session->add_recent_download_dir("/a"sv);
+    EXPECT_EQ("/a", recent.front());
+    session->add_recent_download_dir("/b"sv);
+    EXPECT_EQ("/b", recent.front());
+
+    // re-adding an existing dir moves it to the front without duplicating
+    // (regression guard for the bubble-to-front fix)
+    session->add_recent_download_dir("/a"sv);
+    EXPECT_EQ("/a", recent.front());
+    EXPECT_EQ(1, std::ranges::count(recent, "/a"s));
+
+    // the list is capped at TrMaxRecentDirs, dropping the oldest
+    for (auto i = 0; i < 10; ++i) {
+        session->add_recent_download_dir("/dir/" + std::to_string(i));
+    }
+    EXPECT_LE(std::size(recent), TrMaxRecentDirs);
+    EXPECT_EQ("/dir/9", recent.front());
+}
+
+TEST_F(SessionTest, recentRelocateDirs)
+{
+    auto* const session = session_;
+    auto const& recent = session->recent_relocate_paths(); // live ref into the session
+
+    session->add_recent_relocate_dir("/x"sv);
+    EXPECT_EQ("/x", recent.front());
+
+    // re-adding an existing dir moves it to the front without duplicating
+    session->add_recent_relocate_dir("/y"sv);
+    session->add_recent_relocate_dir("/x"sv);
+    EXPECT_EQ("/x", recent.front());
+    EXPECT_EQ(1, std::ranges::count(recent, "/x"s));
 }
 
 TEST_F(SessionTest, peerId)
