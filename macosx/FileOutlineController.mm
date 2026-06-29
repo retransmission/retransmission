@@ -6,7 +6,7 @@
 #import "Torrent.h"
 #import "FileListNode.h"
 #import "FileOutlineView.h"
-#import "FileNameCellView.h"
+#import "BaseFileNameCellView.h"
 #import "FilePriorityCellView.h"
 #import "FileCheckCellView.h"
 #import "FileRenameSheetController.h"
@@ -208,10 +208,20 @@ typedef NS_ENUM(NSUInteger, FilePriorityMenuTag) { //
     FileListNode* node = (FileListNode*)item;
 
     if ([identifier isEqualToString:@"Name"]) {
-        FileNameCellView* cellView = [outlineView makeViewWithIdentifier:@"NameCell" owner:self];
-        if (!cellView) {
-            cellView = [[FileNameCellView alloc] initWithFrame:NSZeroRect];
-            cellView.identifier = @"NameCell";
+        BaseFileNameCellView* cellView = nil;
+
+        if (node.isFolder) {
+            cellView = [outlineView makeViewWithIdentifier:@"OnlyFolderCell" owner:self];
+            if (!cellView) {
+                cellView = [[FolderNameCellView alloc] initWithFrame:NSZeroRect];
+                cellView.identifier = @"OnlyFolderCell";
+            }
+        } else {
+            cellView = [outlineView makeViewWithIdentifier:@"OnlyFileCell" owner:self];
+            if (!cellView) {
+                cellView = [[FileNameCellView alloc] initWithFrame:NSZeroRect];
+                cellView.identifier = @"OnlyFileCell";
+            }
         }
         cellView.node = node;
 
