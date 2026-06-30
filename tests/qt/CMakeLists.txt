@@ -23,6 +23,7 @@ function(add_trqt_test source)
     endif()
 endfunction()
 
+add_trqt_test(options-dialog-test.cc)
 add_trqt_test(prefs-test.cc)
 add_trqt_test(session-test.cc)
 
@@ -34,6 +35,7 @@ target_link_libraries(qt-test-session
 
 add_custom_target(qt-tests
     DEPENDS
+        qt-test-options-dialog
         qt-test-prefs
         qt-test-session)
 
