@@ -24,6 +24,7 @@ Checks:
   - misc-*
   - -misc-const-correctness # TODO: enable after https://github.com/llvm/llvm-project/issues/206429 is fixed
   - -misc-include-cleaner
+  - -misc-multiple-inheritance
   - modernize-*
   - -modernize-use-nullptr # TODO: enable after https://github.com/llvm/llvm-project/issues/206245 is fixed
   - -modernize-use-trailing-return-type

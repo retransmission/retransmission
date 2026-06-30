@@ -31,6 +31,7 @@ Checks:
   - misc-*
   - -misc-const-correctness # TODO: enable after https://github.com/llvm/llvm-project/issues/206429 is fixed
   - -misc-include-cleaner
+  - -misc-multiple-inheritance
   - -misc-no-recursion
   - -misc-non-private-member-variables-in-classes
   - modernize-*
