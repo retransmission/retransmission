@@ -8,6 +8,7 @@
 #include "FilterListModel.hh"
 #include "HigWorkarea.h" // GUI_PAD
 #include "ListModelAdapter.h"
+#include "Prefs.h"
 #include "Session.h" // torrent_cols
 #include "Torrent.h"
 #include "TorrentFilter.h"
@@ -524,12 +525,11 @@ void FilterBar::Impl::update_filter_text()
 
 void FilterBar::Impl::update_filter_show_mode()
 {
-    /* set active_show_mode_type_ from the show_mode combobox */
-    if (auto const iter = show_mode_->get_active(); iter) {
-        filter_->set_mode(ShowMode{ iter->get_value(show_mode_filter_cols.show_mode) });
-    } else {
-        filter_->set_mode(ShowMode::ShowAll);
-    }
+    // set the filter's show-mode from the combobox selection and persist it
+    auto const iter = show_mode_->get_active();
+    auto const mode = iter ? iter->get_value(show_mode_filter_cols.show_mode) : DefaultShowMode;
+    filter_->set_mode(mode);
+    gtr_pref_set(TR_KEY_show_mode, mode);
 }
 
 void FilterBar::Impl::update_filter_tracker()
@@ -692,6 +692,15 @@ FilterBar::Impl::Impl(FilterBar& widget, Glib::RefPtr<Session> const& core)
     entry_->signal_icon_release().connect([this](auto /*icon_position*/, auto const* /*event*/) { entry_->set_text({}); });
 #endif
     entry_->signal_changed().connect(sigc::mem_fun(*this, &Impl::update_filter_text));
+
+    // restore the show-mode filter from the saved preference
+    auto const saved_mode = gtr_pref_get<ShowMode>(TR_KEY_show_mode, DefaultShowMode);
+    for (auto const& row : show_mode_model_->children()) {
+        if (row.get_value(show_mode_filter_cols.show_mode) == saved_mode) {
+            show_mode_->set_active(TR_GTK_TREE_MODEL_CHILD_ITER(row));
+            break;
+        }
+    }
 }
 
 FilterBar::Impl::~Impl()

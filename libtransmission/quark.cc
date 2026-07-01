@@ -193,7 +193,6 @@ auto constexpr MyStatic = std::array<std::string_view, TR_N_KEYS>{
     "filter-mode"sv, // qt app
     "filter-text"sv, // qt app
     "filter-trackers"sv, // qt app
-    "filter_mode"sv, // qt app
     "filter_text"sv, // qt app
     "filter_trackers"sv, // qt app
     "flagStr"sv, // rpc
@@ -585,6 +584,7 @@ auto constexpr MyStatic = std::array<std::string_view, TR_N_KEYS>{
     "show_backup_trackers"sv, // gtk app, qt app
     "show_extra_peer_details"sv, // gtk app
     "show_filterbar"sv, // gtk app, qt app
+    "show_mode"sv, // gtk app, qt app
     "show_notification_area_icon"sv, // gtk app, qt app
     "show_options_window"sv, // gtk app, qt app
     "show_statusbar"sv, // gtk app, qt app

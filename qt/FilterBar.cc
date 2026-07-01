@@ -220,7 +220,7 @@ FilterBar::FilterBar(Prefs& prefs, TorrentModel const& torrents, TorrentFilter c
     is_bootstrapping_ = false; // NOLINT cppcoreguidelines-prefer-member-initializer
 
     // initialize our state
-    for (tr_quark const key : { TR_KEY_filter_mode, TR_KEY_filter_trackers }) {
+    for (tr_quark const key : { TR_KEY_show_mode, TR_KEY_filter_trackers }) {
         refreshPref(key);
     }
 }
@@ -243,7 +243,7 @@ void FilterBar::clear()
 void FilterBar::refreshPref(tr_quark key)
 {
     switch (key) {
-    case TR_KEY_filter_mode:
+    case TR_KEY_show_mode:
         {
             auto const show_mode = prefs_.get<ShowMode>(key);
             QAbstractItemModel const* const model = activity_combo_->model();
@@ -307,7 +307,7 @@ void FilterBar::onActivityIndexChanged(int i)
 {
     if (!is_bootstrapping_) {
         auto const show_mode = activity_combo_->itemData(i, ACTIVITY_ROLE).value<ShowMode>();
-        prefs_.set(TR_KEY_filter_mode, show_mode);
+        prefs_.set(TR_KEY_show_mode, show_mode);
     }
 }
 

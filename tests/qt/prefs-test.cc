@@ -111,7 +111,7 @@ private slots:
     {
         auto prefs = Prefs{};
 
-        TRCOMPARE_EQ(prefs.get<ShowMode>(TR_KEY_filter_mode), DefaultShowMode);
+        TRCOMPARE_EQ(prefs.get<ShowMode>(TR_KEY_show_mode), DefaultShowMode);
         TRCOMPARE_EQ(prefs.get<SortMode>(TR_KEY_sort_mode), DefaultSortMode);
         TRCOMPARE_EQ(prefs.get<StatsMode>(TR_KEY_statusbar_stats), DefaultStatsMode);
         TRCOMPARE_EQ(prefs.get<std::chrono::sys_seconds>(TR_KEY_blocklist_date), std::chrono::sys_seconds{});
@@ -223,7 +223,7 @@ private slots:
 
     void handles_showmode()
     {
-        auto constexpr Key = TR_KEY_filter_mode;
+        auto constexpr Key = TR_KEY_show_mode;
         auto constexpr ValA = ShowMode::ShowAll;
         auto constexpr ValAStr = R"("show_all")"sv;
         auto constexpr ValB = ShowMode::ShowActive;

@@ -157,7 +157,7 @@ private:
     int main_window_x_ = 50;
     int main_window_y_ = 50;
     int session_remote_port_ = static_cast<int>(TrDefaultRpcPort);
-    ShowMode filter_mode_ = DefaultShowMode;
+    ShowMode show_mode_ = DefaultShowMode;
     SortMode sort_mode_ = DefaultSortMode;
     StatsMode statusbar_stats_ = DefaultStatsMode;
     bool askquit_ = true;
@@ -271,7 +271,7 @@ public:
         Field<&Prefs::dspeed_>{ TR_KEY_speed_limit_down },
         Field<&Prefs::dspeed_enabled_>{ TR_KEY_speed_limit_down_enabled },
         Field<&Prefs::encryption_>{ TR_KEY_encryption },
-        Field<&Prefs::filter_mode_>{ TR_KEY_filter_mode },
+        Field<&Prefs::show_mode_>{ TR_KEY_show_mode },
         Field<&Prefs::filter_text_>{ TR_KEY_filter_text },
         Field<&Prefs::filter_trackers_>{ TR_KEY_filter_trackers },
         Field<&Prefs::filterbar_>{ TR_KEY_show_filterbar },
