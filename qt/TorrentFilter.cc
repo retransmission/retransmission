@@ -46,8 +46,8 @@ void TorrentFilter::onPrefChanged(tr_quark key)
         msec = prefs_.get<QString>(key).isEmpty() ? FastMSec : SlowMSec;
         break;
 
-    case TR_KEY_filter_mode:
     case TR_KEY_filter_trackers:
+    case TR_KEY_show_mode:
     case TR_KEY_sort_mode:
     case TR_KEY_sort_reversed:
         msec = FastMSec;
@@ -205,8 +205,7 @@ bool TorrentFilter::filterAcceptsRow(int source_row, QModelIndex const& source_p
     bool accepts = true;
 
     if (accepts) {
-        auto const show_mode = prefs_.get<ShowMode>(TR_KEY_filter_mode);
-        accepts = should_show_torrent(tor, show_mode);
+        accepts = should_show_torrent(tor, prefs_.get<ShowMode>(TR_KEY_show_mode));
     }
 
     if (accepts) {

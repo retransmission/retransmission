@@ -682,7 +682,7 @@ constexpr std::string_view CurrentSettingsJson = R"json({
     "download_queue_enabled": true,
     "download_queue_size": 5,
     "encryption": "preferred",
-    "filter_mode": "show_all",
+    "show_mode": "show_all",
     "filter_trackers": "",
     "idle_seeding_limit": 30,
     "idle_seeding_limit_enabled": false,

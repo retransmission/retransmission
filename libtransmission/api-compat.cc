@@ -308,7 +308,7 @@ auto constexpr SessionKeys = std::to_array<ApiKey>({
     { .current = TR_KEY_downloaded_bytes, .legacy = TR_KEY_downloaded_bytes_kebab_APICOMPAT },
     { .current = TR_KEY_downloading_time_seconds, .legacy = TR_KEY_downloading_time_seconds_kebab_APICOMPAT },
     { .current = TR_KEY_files_added, .legacy = TR_KEY_files_added_kebab_APICOMPAT },
-    { .current = TR_KEY_filter_mode, .legacy = TR_KEY_filter_mode_kebab_APICOMPAT },
+    { .current = TR_KEY_show_mode, .legacy = TR_KEY_filter_mode_kebab_APICOMPAT },
     { .current = TR_KEY_filter_text, .legacy = TR_KEY_filter_text_kebab_APICOMPAT },
     { .current = TR_KEY_filter_trackers, .legacy = TR_KEY_filter_trackers_kebab_APICOMPAT },
     { .current = TR_KEY_idle_limit, .legacy = TR_KEY_idle_limit_kebab_APICOMPAT },
@@ -690,7 +690,7 @@ struct State {
         }
     }
 
-    if (state.is_settings && state.current_key_is_any_of({ TR_KEY_filter_mode, TR_KEY_filter_mode_kebab_APICOMPAT })) {
+    if (state.is_settings && state.current_key_is_any_of({ TR_KEY_show_mode, TR_KEY_filter_mode_kebab_APICOMPAT })) {
         static auto constexpr Strings = std::to_array<std::pair<std::string_view, std::string_view>>({
             { "show_active", "show-active" },
             { "show_all", "show-all" },
