@@ -52,6 +52,7 @@ Checks:
   - -readability-magic-numbers
   - -readability-redundant-access-specifiers # keep: 'private' vs 'private slots'
   - -readability-redundant-typename # TODO: enable after https://github.com/llvm/llvm-project/issues/206995 is fixed
+  - -readability-use-concise-preprocessor-directives
 
 CheckOptions:
   - { key: cppcoreguidelines-avoid-do-while.IgnoreMacros,                   value: true       }
