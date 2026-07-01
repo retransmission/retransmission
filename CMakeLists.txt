@@ -780,17 +780,21 @@ else()
         -Wextra
         -Warc-unsafe-retained-assign
         -Wcast-align
+        -Wduplicated-branches
         -Wduplicated-cond
         -Wextra-semi
         -Wextra-semi-stmt
         -Wextra-tokens
         -Wfloat-equal
         -Wgnu
+        -Wimplicit-fallthrough
         -Winit-self
         -Wint-in-bool-context
         -Wlogical-op
         -Wmissing-format-attribute
+        -Wnon-virtual-dtor
         -Wnull-dereference
+        -Woverloaded-virtual
         -Wpointer-arith
         -Wredundant-decls
         -Wredundant-move
