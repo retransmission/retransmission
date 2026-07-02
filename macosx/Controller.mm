@@ -481,7 +481,7 @@ static void removeKeRangerRansomware()
 
         initUnits();
 
-        auto const default_config_dir = tr_getDefaultConfigDir("Transmission");
+        auto const default_config_dir = tr::platform::get_default_config_dir("Transmission");
         _fLib = tr_sessionInit(default_config_dir, YES, settings);
         _fConfigDirectory = @(default_config_dir.c_str());
 

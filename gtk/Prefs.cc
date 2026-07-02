@@ -36,7 +36,7 @@ std::string gl_confdir;
         return dir;
     }
 
-    return tr_getDefaultDownloadDir();
+    return tr::platform::get_download_dir();
 }
 
 /**

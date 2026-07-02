@@ -33,7 +33,6 @@ namespace tr::app
  *
  * Specializations should provide:
  *  - `static StringType from_utf8(std::string_view);`
- *  - `static StringType home_dir();`
  */
 template<typename StringType>
 struct PrefsStringTraits;
@@ -140,11 +139,11 @@ private:
     // whether we run an in-process session or are connected to a remote one.
     // Members are kept in descending-alignment order to minimize struct padding.
     std::chrono::sys_seconds blocklist_date_;
-    StringType dir_watch_ = Traits::from_utf8(tr_getDefaultDownloadDir());
+    StringType dir_watch_ = Traits::from_utf8(tr::platform::get_download_dir());
     StringType filter_text_;
     StringType filter_trackers_;
     StringType main_window_layout_order_ = Traits::from_utf8("menu,toolbar,filter,list,statusbar");
-    StringType open_dialog_folder_ = Traits::home_dir();
+    StringType open_dialog_folder_ = Traits::from_utf8(tr::platform::get_home_dir());
     StringType session_remote_host_ = Traits::from_utf8("localhost");
     StringType session_remote_password_;
     StringType session_remote_url_base_path_ = Traits::from_utf8("/transmission/");
@@ -189,7 +188,7 @@ private:
     // Kept in descending-alignment order to minimize struct padding.
     StringType blocklist_url_;
     StringType default_trackers_;
-    StringType download_dir_ = Traits::from_utf8(tr_getDefaultDownloadDir());
+    StringType download_dir_ = Traits::from_utf8(tr::platform::get_download_dir());
     StringType incomplete_dir_;
     StringType rpc_password_;
     StringType rpc_username_;

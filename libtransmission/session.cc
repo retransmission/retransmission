@@ -791,7 +791,7 @@ void tr_sessionSet(tr_session* session, tr::Settings const& settings)
 
 std::string tr::SessionSettings::get_default_download_dir()
 {
-    return tr_getDefaultDownloadDir();
+    return tr::platform::get_download_dir();
 }
 
 void tr::SessionSettings::fixup_from_preferred_transports()
