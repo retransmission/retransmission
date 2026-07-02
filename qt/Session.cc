@@ -715,7 +715,7 @@ void Session::updateStats(tr_variant const& args_dict, tr_session_stats& stats)
         tr::serializer::Field<&tr_session_stats::sessionCount>{ TR_KEY_session_count },
         tr::serializer::Field<&tr_session_stats::uploadedBytes>{ TR_KEY_uploaded_bytes },
     };
-    tr::serializer::load(stats, Fields, args_dict);
+    tr::serializer::load(args_dict, stats, Fields);
 
     stats.ratio = static_cast<float>(tr_getRatio(stats.uploadedBytes, stats.downloadedBytes));
 }

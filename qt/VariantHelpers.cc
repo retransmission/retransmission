@@ -30,17 +30,17 @@ namespace trqt::variant_helpers
 
 bool change(Peer& setme, tr_variant const* value)
 {
-    return !ser::load(setme, Peer::Fields, *value).empty();
+    return !ser::load(*value, setme, Peer::Fields).empty();
 }
 
 bool change(TorrentFile& setme, tr_variant const* value)
 {
-    return !ser::load(setme, TorrentFile::Fields, *value).empty();
+    return !ser::load(*value, setme, TorrentFile::Fields).empty();
 }
 
 bool change(TrackerStat& setme, tr_variant const* value)
 {
-    auto const changed_keys = ser::load(setme, TrackerStat::Fields, *value);
+    auto const changed_keys = ser::load(*value, setme, TrackerStat::Fields);
     auto const site_changed = std::ranges::binary_search(changed_keys, TR_KEY_announce) ||
         std::ranges::binary_search(changed_keys, TR_KEY_sitename);
 

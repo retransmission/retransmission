@@ -56,7 +56,7 @@ tr_session_stats tr_stats::load_old_stats(std::string_view const config_dir)
 
     api_compat::convert_incoming_data(*var);
     auto ret = tr_session_stats{};
-    serializer::load(ret, Fields, *var);
+    serializer::load(*var, ret, Fields);
     return ret;
 }
 

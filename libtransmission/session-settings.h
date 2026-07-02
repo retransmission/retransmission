@@ -66,18 +66,13 @@ public:
 
     void load(tr::Settings const& src)
     {
-        tr::serializer::load(*this, Fields, src);
+        tr::serializer::load(src, *this, Fields);
 
         if (src.contains(TR_KEY_preferred_transports)) {
             fixup_from_preferred_transports();
         } else {
             fixup_to_preferred_transports();
         }
-    }
-
-    [[nodiscard]] tr::Settings save() const
-    {
-        return tr::serializer::save(*this, Fields);
     }
 
     [[nodiscard]] static constexpr auto const& fields() noexcept
@@ -236,12 +231,7 @@ public:
 
     void load(tr::Settings const& src)
     {
-        tr::serializer::load(*this, Fields, src);
-    }
-
-    [[nodiscard]] tr::Settings save() const
-    {
-        return tr::serializer::save(*this, Fields);
+        tr::serializer::load(src, *this, Fields);
     }
 
     [[nodiscard]] static constexpr auto const& fields() noexcept
@@ -283,12 +273,7 @@ public:
 
     void load(tr::Settings const& src)
     {
-        tr::serializer::load(*this, Fields, src);
-    }
-
-    [[nodiscard]] tr::Settings save() const
-    {
-        return tr::serializer::save(*this, Fields);
+        tr::serializer::load(src, *this, Fields);
     }
 
     [[nodiscard]] static constexpr auto const& fields() noexcept

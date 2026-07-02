@@ -462,7 +462,7 @@ TEST_F(SerializerTest, fieldSaveLoad)
     // Load back into a new instance
     auto actual = Endpoint{};
     EXPECT_NE(actual, expected);
-    load(actual, Endpoint::Fields, var);
+    load(var, actual, Endpoint::Fields);
     EXPECT_EQ(actual, expected);
 }
 
@@ -471,7 +471,7 @@ TEST_F(SerializerTest, fieldLoadIgnoresMissingKeys)
     auto endpoint = Endpoint{ .address = "default", .port = tr_port::from_host(9999) };
     auto const original = endpoint;
 
-    load(endpoint, Endpoint::Fields, tr_variant::make_map());
+    load(tr_variant::make_map(), endpoint, Endpoint::Fields);
 
     // Should remain unchanged
     EXPECT_EQ(original, endpoint);
@@ -482,7 +482,7 @@ TEST_F(SerializerTest, fieldLoadIgnoresNonMap)
     auto endpoint = Endpoint{ .address = "default", .port = tr_port::from_host(9999) };
     auto const original = endpoint;
 
-    load(endpoint, Endpoint::Fields, tr_variant{ 42 });
+    load(tr_variant{ 42 }, endpoint, Endpoint::Fields);
 
     // Should remain unchanged
     EXPECT_EQ(original, endpoint);
@@ -492,18 +492,18 @@ TEST_F(SerializerTest, serializableGetByKey)
 {
     auto const endpoint = Endpoint{ .address = "localhost", .port = tr_port::from_host(TrDefaultPeerPort) };
 
-    auto const addr = get<std::string>(endpoint, TR_KEY_address);
+    auto const addr = get<std::string>(TR_KEY_address, endpoint);
     ASSERT_TRUE(addr.has_value());
     EXPECT_EQ(*addr, "localhost");
 
-    auto const port = get<tr_port>(endpoint, TR_KEY_port);
+    auto const port = get<tr_port>(TR_KEY_port, endpoint);
     ASSERT_TRUE(port.has_value());
     EXPECT_EQ(*port, tr_port::from_host(TrDefaultPeerPort));
 
-    auto const missing = get<std::string>(endpoint, TR_KEY_comment);
+    auto const missing = get<std::string>(TR_KEY_comment, endpoint);
     EXPECT_FALSE(missing.has_value());
 
-    auto const wrong_type = get<int>(endpoint, TR_KEY_address);
+    auto const wrong_type = get<int>(TR_KEY_address, endpoint);
     EXPECT_FALSE(wrong_type.has_value());
 }
 
@@ -511,16 +511,16 @@ TEST_F(SerializerTest, serializableSetByKey)
 {
     auto endpoint = Endpoint{ .address = "localhost", .port = tr_port::from_host(TrDefaultPeerPort) };
 
-    EXPECT_TRUE(set(endpoint, TR_KEY_address, std::string{ "example.com" }));
+    EXPECT_TRUE(set(TR_KEY_address, std::string{ "example.com" }, endpoint));
     EXPECT_EQ(endpoint.address, "example.com");
 
-    EXPECT_FALSE(set(endpoint, TR_KEY_address, std::string{ "example.com" }));
+    EXPECT_FALSE(set(TR_KEY_address, std::string{ "example.com" }, endpoint));
 
-    EXPECT_FALSE(set(endpoint, TR_KEY_comment, std::string{ "no field" }));
+    EXPECT_FALSE(set(TR_KEY_comment, std::string{ "no field" }, endpoint));
 
-    EXPECT_FALSE(set(endpoint, TR_KEY_address, 42));
+    EXPECT_FALSE(set(TR_KEY_address, 42, endpoint));
 
-    EXPECT_TRUE(set(endpoint, TR_KEY_port, tr_port::from_host(1234)));
+    EXPECT_TRUE(set(TR_KEY_port, tr_port::from_host(1234), endpoint));
     EXPECT_EQ(endpoint.port, tr_port::from_host(1234));
 }
 
@@ -528,28 +528,28 @@ TEST_F(SerializerTest, serializableToVariantByKey)
 {
     auto const endpoint = Endpoint{ .address = "localhost", .port = tr_port::from_host(TrDefaultPeerPort) };
 
-    auto const address = to_variant(endpoint, TR_KEY_address);
+    auto const address = to_variant(TR_KEY_address, endpoint);
     ASSERT_TRUE(address);
     EXPECT_EQ("localhost"sv, address->value_if<std::string_view>().value_or(""sv));
 
-    auto const port = to_variant(endpoint, TR_KEY_port);
+    auto const port = to_variant(TR_KEY_port, endpoint);
     ASSERT_TRUE(port);
     EXPECT_EQ(TrDefaultPeerPort, port->value_if<int64_t>().value_or(-1));
 
-    EXPECT_FALSE(to_variant(endpoint, TR_KEY_comment));
+    EXPECT_FALSE(to_variant(TR_KEY_comment, endpoint));
 }
 
 TEST_F(SerializerTest, serializableSetFromVariantByKey)
 {
     auto endpoint = Endpoint{ .address = "localhost", .port = tr_port::from_host(TrDefaultPeerPort) };
 
-    EXPECT_TRUE(set_from_variant(endpoint, TR_KEY_address, tr_variant{ "example.com"sv }));
+    EXPECT_TRUE(set_from_variant(TR_KEY_address, tr_variant{ "example.com"sv }, endpoint));
     EXPECT_EQ("example.com", endpoint.address);
-    EXPECT_FALSE(set_from_variant(endpoint, TR_KEY_address, tr_variant{ "example.com"sv }));
-    EXPECT_FALSE(set_from_variant(endpoint, TR_KEY_address, tr_variant{ 123 }));
-    EXPECT_FALSE(set_from_variant(endpoint, TR_KEY_comment, tr_variant{ "unused"sv }));
+    EXPECT_FALSE(set_from_variant(TR_KEY_address, tr_variant{ "example.com"sv }, endpoint));
+    EXPECT_FALSE(set_from_variant(TR_KEY_address, tr_variant{ 123 }, endpoint));
+    EXPECT_FALSE(set_from_variant(TR_KEY_comment, tr_variant{ "unused"sv }, endpoint));
 
-    EXPECT_TRUE(set_from_variant(endpoint, TR_KEY_port, tr_variant{ int64_t{ 1234 } }));
+    EXPECT_TRUE(set_from_variant(TR_KEY_port, tr_variant{ int64_t{ 1234 } }, endpoint));
     EXPECT_EQ(tr_port::from_host(1234), endpoint.port);
 }
 
@@ -557,12 +557,12 @@ TEST_F(SerializerTest, serializableSetFromVariantUsesFloatingChangePolicy)
 {
     auto floating = Floating{ .ratio = std::numeric_limits<double>::quiet_NaN() };
 
-    EXPECT_TRUE(set_from_variant(floating, TR_KEY_seed_ratio_limit, tr_variant{ std::numeric_limits<double>::quiet_NaN() }));
+    EXPECT_TRUE(set_from_variant(TR_KEY_seed_ratio_limit, tr_variant{ std::numeric_limits<double>::quiet_NaN() }, floating));
     EXPECT_TRUE(std::isnan(floating.ratio));
 
-    EXPECT_TRUE(set_from_variant(floating, TR_KEY_seed_ratio_limit, tr_variant{ 2.5 }));
+    EXPECT_TRUE(set_from_variant(TR_KEY_seed_ratio_limit, tr_variant{ 2.5 }, floating));
     EXPECT_DOUBLE_EQ(2.5, floating.ratio);
-    EXPECT_FALSE(set_from_variant(floating, TR_KEY_seed_ratio_limit, tr_variant{ 2.5 }));
+    EXPECT_FALSE(set_from_variant(TR_KEY_seed_ratio_limit, tr_variant{ 2.5 }, floating));
 }
 
 TEST_F(SerializerTest, serializableConstexprGetSet)
@@ -586,6 +586,101 @@ TEST_F(SerializerTest, serializableConstexprGetSet)
     }();
 
     static_assert(CompileTimeSet);
+}
+
+// --- Group A: multiple coupled (object, Fields) pairs ---
+
+static_assert(tr::serializer::has_unique_keys<Endpoint, Simple>());
+static_assert(!tr::serializer::has_unique_keys<Endpoint, Endpoint>());
+
+TEST_F(SerializerTest, multiPairSaveMergesIntoOneMap)
+{
+    auto const endpoint = Endpoint{ .address = "localhost", .port = tr_port::from_host(TrDefaultPeerPort) };
+    auto const simple = Simple{ .blocks = 7, .enabled = true };
+
+    auto const map = save(endpoint, Endpoint::Fields, simple, Simple::Fields);
+
+    EXPECT_NE(std::end(map), map.find(TR_KEY_address));
+    EXPECT_NE(std::end(map), map.find(TR_KEY_port));
+    EXPECT_NE(std::end(map), map.find(TR_KEY_blocks));
+    EXPECT_NE(std::end(map), map.find(TR_KEY_dht_enabled));
+}
+
+TEST_F(SerializerTest, multiPairLoadRoundTrip)
+{
+    auto const src_endpoint = Endpoint{ .address = "example.com", .port = tr_port::from_host(1234) };
+    auto const src_simple = Simple{ .blocks = 9, .enabled = true };
+    auto const map = save(src_endpoint, Endpoint::Fields, src_simple, Simple::Fields);
+
+    auto dst_endpoint = Endpoint{};
+    auto dst_simple = Simple{};
+    auto const changed = load(map, dst_endpoint, Endpoint::Fields, dst_simple, Simple::Fields);
+
+    EXPECT_EQ(src_endpoint, dst_endpoint);
+    EXPECT_EQ(src_simple.blocks, dst_simple.blocks);
+    EXPECT_EQ(src_simple.enabled, dst_simple.enabled);
+
+    // changed_keys aggregates across both pairs and is sorted
+    EXPECT_TRUE(std::ranges::is_sorted(changed));
+    EXPECT_TRUE(std::ranges::binary_search(changed, TR_KEY_address));
+    EXPECT_TRUE(std::ranges::binary_search(changed, TR_KEY_blocks));
+}
+
+TEST_F(SerializerTest, multiPairLoadIgnoresNonMap)
+{
+    auto endpoint = Endpoint{ .address = "keep", .port = tr_port::from_host(42) };
+    auto simple = Simple{ .blocks = 3, .enabled = true };
+    auto const original_endpoint = endpoint;
+
+    auto const changed = load(tr_variant{ 7 }, endpoint, Endpoint::Fields, simple, Simple::Fields);
+
+    EXPECT_TRUE(changed.empty());
+    EXPECT_EQ(original_endpoint, endpoint);
+    EXPECT_EQ(3, simple.blocks);
+}
+
+// --- Group B: one key across multiple Serializables ---
+
+TEST_F(SerializerTest, multiObjectGetAndToVariantByKey)
+{
+    auto const endpoint = Endpoint{ .address = "localhost", .port = tr_port::from_host(TrDefaultPeerPort) };
+    auto const simple = Simple{ .blocks = 11, .enabled = true };
+
+    // key owned by the first object
+    EXPECT_EQ("localhost", get<std::string>(TR_KEY_address, endpoint, simple).value_or(""));
+
+    // key owned by the second object
+    EXPECT_EQ(11, get<int>(TR_KEY_blocks, endpoint, simple).value_or(0));
+
+    // to_variant finds the owner regardless of argument position
+    EXPECT_TRUE(to_variant(TR_KEY_dht_enabled, endpoint, simple));
+
+    // key owned by neither
+    EXPECT_FALSE(to_variant(TR_KEY_comment, endpoint, simple));
+    EXPECT_FALSE(get<int>(TR_KEY_comment, endpoint, simple).has_value());
+}
+
+TEST_F(SerializerTest, multiObjectSetRoutesToOwner)
+{
+    auto endpoint = Endpoint{ .address = "localhost", .port = tr_port::from_host(TrDefaultPeerPort) };
+    auto simple = Simple{ .blocks = 1, .enabled = false };
+
+    // routes to the second object, leaving the first untouched
+    EXPECT_TRUE(set(TR_KEY_blocks, 5, endpoint, simple));
+    EXPECT_EQ(5, simple.blocks);
+    EXPECT_EQ("localhost", endpoint.address);
+
+    // routes to the first object
+    EXPECT_TRUE(set(TR_KEY_address, std::string{ "example.com" }, endpoint, simple));
+    EXPECT_EQ("example.com", endpoint.address);
+
+    // owned by neither
+    EXPECT_FALSE(set(TR_KEY_comment, 99, endpoint, simple));
+
+    // via variant, routes to the owning object
+    EXPECT_TRUE(set_from_variant(TR_KEY_dht_enabled, tr_variant{ true }, endpoint, simple));
+    EXPECT_TRUE(simple.enabled);
+    EXPECT_FALSE(set_from_variant(TR_KEY_comment, tr_variant{ true }, endpoint, simple));
 }
 
 } // namespace
