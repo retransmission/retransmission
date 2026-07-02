@@ -53,17 +53,15 @@ void verboseLog(std::string_view description, tr_direction direction, std::strin
     }
 
     auto const direction_sv = direction == tr_direction::Down ? "<< "sv : ">> "sv;
-    auto& out = std::cerr;
-    out << description << '\n' << "[raw]"sv << direction_sv;
+    fmt::print(stderr, "{:s}\n[raw]{:s}"sv, description, direction_sv);
     for (unsigned char const ch : message) {
         if (isprint(ch) != 0) {
-            out << ch;
+            fmt::print(stderr, "{:c}"sv, ch);
         } else {
-            out << R"(\x)" << std::hex << std::setw(2) << std::setfill('0') << unsigned(ch) << std::dec << std::setw(1)
-                << std::setfill(' ');
+            fmt::print(stderr, R"(\x{:02x})"sv, ch);
         }
     }
-    out << '\n' << "[b64]"sv << direction_sv << tr_base64_encode(message) << '\n';
+    fmt::print(stderr, "\n[b64]{:s}{:s}\n"sv, direction_sv, tr_base64_encode(message));
 }
 
 auto constexpr MaxBencDepth = 8;
