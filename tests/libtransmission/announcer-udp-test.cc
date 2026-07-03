@@ -46,6 +46,8 @@
 
 using namespace std::literals;
 
+namespace
+{
 using tau_connection_t = uint64_t;
 using tau_transaction_t = uint32_t;
 
@@ -53,14 +55,13 @@ using MessageBuffer = tr::StackBuffer<4096, std::byte>;
 
 class AnnouncerUdpTest : public ::tr::test::TransmissionTest
 {
-private:
+protected:
     void SetUp() override
     {
         ::testing::Test::SetUp();
         tr_timeUpdate(time(nullptr));
     }
 
-protected:
     class MockMediator final : public tr_announcer_udp::Mediator
     {
     public:
@@ -376,6 +377,7 @@ protected:
 
     static auto constexpr DefaultScrapeUrl = "https://127.0.0.1/scrape"sv;
 };
+} // namespace
 
 TEST_F(AnnouncerUdpTest, canInstantiate)
 {

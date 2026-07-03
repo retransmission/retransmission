@@ -97,7 +97,7 @@ struct TrYearMonthDay {
         year -= static_cast<int>(month <= 2);
         auto const era = (year >= 0 ? year : year - 399) / 400;
         auto const yoe = static_cast<unsigned>(year - (era * 400));
-        auto const doy = ((153 * (month + (month > 2 ? -3 : 9)) + 2) / 5) + day - 1;
+        auto const doy = (((153 * (month + (month > 2 ? -3 : 9))) + 2) / 5) + day - 1;
         auto const doe = (yoe * 365) + (yoe / 4) - (yoe / 100) + doy;
         return (static_cast<int64_t>(era) * 146097) + static_cast<int64_t>(doe) - 719468;
     };

@@ -31,7 +31,8 @@ using namespace std::literals;
 
 namespace tr::test
 {
-
+namespace
+{
 class RenameTest : public SessionTest
 {
     static auto constexpr MaxWaitMsec = 3000;
@@ -127,6 +128,7 @@ protected:
         return error;
     }
 };
+} // namespace
 
 TEST_F(RenameTest, singleFilenameTorrent)
 {

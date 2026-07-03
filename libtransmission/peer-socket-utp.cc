@@ -94,11 +94,6 @@ public:
         utp_close(sock_);
     }
 
-    [[nodiscard]] constexpr Type type() const noexcept override
-    {
-        return Type::UTP;
-    }
-
     void set_read_enabled(bool const enabled) override
     {
         is_read_enabled_ = enabled;
@@ -202,7 +197,12 @@ public:
         error_cb_(error);
     }
 
-private:
+protected:
+    [[nodiscard]] constexpr Type type() const noexcept override
+    {
+        return Type::UTP;
+    }
+
     size_t try_read_impl(InBuf& buf, size_t n_bytes, tr_error* /*error*/) override
     {
         n_bytes = std::min(n_bytes, read_buffer_size());
@@ -233,6 +233,7 @@ private:
         return {};
     }
 
+private:
     void read_now()
     {
         // The socket can destruct inside read_cb(), so keep it alive

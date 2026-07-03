@@ -188,8 +188,6 @@ std::optional<ParsedAnnounce> parseAnnounceMsg(std::string_view announce)
     return ret;
 }
 
-} // namespace
-
 class tr_lpd_impl final : public tr_lpd
 {
 public:
@@ -610,6 +608,7 @@ private:
     static auto constexpr TtlSameSubnet = 1;
     static auto constexpr AnnounceScope = int{ TtlSameSubnet }; // the maximum scope for LPD datagrams
 };
+} // namespace
 
 std::unique_ptr<tr_lpd> tr_lpd::create(Mediator& mediator, struct event_base* event_base)
 {

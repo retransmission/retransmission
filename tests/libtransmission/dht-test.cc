@@ -71,8 +71,6 @@ bool waitFor(struct event_base* event_base, std::chrono::milliseconds msec)
 auto constexpr IdLength = size_t{ 20U };
 auto constexpr MockTimerInterval = 40ms;
 
-} // namespace
-
 class DhtTest : public SandboxedTest
 {
 protected:
@@ -392,6 +390,7 @@ protected:
     static auto constexpr ArbitrarySock6 = tr_socket_t{ 418 };
     static auto constexpr ArbitraryPeerPort = tr_port::from_host(909);
 };
+} // namespace
 
 TEST_F(DhtTest, initsWithCorrectSockets)
 {

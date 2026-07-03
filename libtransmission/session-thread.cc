@@ -137,18 +137,6 @@ auto make_event_base()
     return tr::evhelpers::evbase_unique_ptr{ b };
 }
 
-} // namespace
-
-// ---
-
-void tr_session_thread::tr_evthread_init()
-{
-    using namespace tr_evthread_init_helpers;
-
-    static auto evthread_flag = std::once_flag{};
-    std::call_once(evthread_flag, init_evthreads_once);
-}
-
 class tr_session_thread_impl final : public tr_session_thread
 {
 public:
@@ -289,6 +277,17 @@ private:
     std::atomic<bool> is_shutting_down_ = false;
     static constexpr std::chrono::seconds Deadline = 5s;
 };
+} // namespace
+
+// ---
+
+void tr_session_thread::tr_evthread_init()
+{
+    using namespace tr_evthread_init_helpers;
+
+    static auto evthread_flag = std::once_flag{};
+    std::call_once(evthread_flag, init_evthreads_once);
+}
 
 std::unique_ptr<tr_session_thread> tr_session_thread::create()
 {

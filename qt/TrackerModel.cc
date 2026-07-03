@@ -51,27 +51,27 @@ QVariant TrackerModel::data(QModelIndex const& index, int role) const
 ****
 ***/
 
-struct CompareTrackers {
-    bool operator()(TrackerInfo const& a, TrackerInfo const& b) const
-    {
-        if (a.torrent_id != b.torrent_id) {
-            return a.torrent_id < b.torrent_id;
-        }
-
-        if (a.st.tier != b.st.tier) {
-            return a.st.tier < b.st.tier;
-        }
-
-        if (a.st.is_backup != b.st.is_backup) {
-            return !a.st.is_backup;
-        }
-
-        return a.st.announce < b.st.announce;
-    }
-};
-
 void TrackerModel::refresh(TorrentModel const& torrent_model, torrent_ids_t const& ids)
 {
+    struct CompareTrackers {
+        bool operator()(TrackerInfo const& a, TrackerInfo const& b) const
+        {
+            if (a.torrent_id != b.torrent_id) {
+                return a.torrent_id < b.torrent_id;
+            }
+
+            if (a.st.tier != b.st.tier) {
+                return a.st.tier < b.st.tier;
+            }
+
+            if (a.st.is_backup != b.st.is_backup) {
+                return !a.st.is_backup;
+            }
+
+            return a.st.announce < b.st.announce;
+        }
+    };
+
     // build a list of the TrackerInfos
     auto trackers = std::vector<TrackerInfo>{};
 

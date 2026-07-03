@@ -93,8 +93,6 @@ struct StopsCompare {
     // NOLINTEND(readability-redundant-casting)
 };
 
-} // namespace
-
 // ---
 
 struct tr_scrape_info {
@@ -217,6 +215,7 @@ private:
 
     bool is_shutting_down_ = false;
 };
+} // namespace
 
 std::unique_ptr<tr_announcer> tr_announcer::create(tr_session* session, tr_announcer_udp& announcer_udp)
 {
@@ -226,6 +225,8 @@ std::unique_ptr<tr_announcer> tr_announcer::create(tr_session* session, tr_annou
 
 // ---
 
+namespace
+{
 /* a row in tr_tier's list of trackers */
 struct tr_tracker {
     explicit tr_tracker(tr_announcer_impl* announcer, tr_announce_list::tracker_info const& info)
@@ -522,6 +523,7 @@ private:
 
     static inline size_t next_key = {};
 };
+} // namespace
 
 // ---
 
@@ -709,7 +711,7 @@ bool tr_announcerCanManualAnnounce(tr_torrent const* tor)
 
 time_t tr_announcerNextManualAnnounce(tr_torrent const* tor)
 {
-    time_t ret = ~(time_t)0;
+    time_t ret = ~static_cast<time_t>(0);
 
     for (auto const& tier : tor->torrent_announcer->tiers) {
         if (tier.isRunning) {

@@ -103,14 +103,11 @@ int dht_gettimeofday(struct timeval* tv, [[maybe_unused]] struct timezone* tz)
 
 namespace
 {
-
 constexpr std::array<std::pair<char const*, uint16_t>, 3> const DefaultBootstraps = { {
     { "dht.transmissiontorrent.com", 6881 },
     { "router.bittorrent.com", 6881 },
     { "dht.libtorrent.org", 25401 },
 } };
-
-}
 
 class tr_dht_impl final : public tr_dht
 {
@@ -581,6 +578,7 @@ private:
 
     std::map<tr_torrent_id_t, AnnounceInfo> announce_times_;
 };
+} // namespace
 
 [[nodiscard]] std::unique_ptr<tr_dht> tr_dht::create(
     Mediator& mediator,

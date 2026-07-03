@@ -3,8 +3,7 @@
 // or any future license endorsed by Mnemosaic LLC.
 // License text can be found in the licenses/ folder.
 
-#ifndef TR_CRYPTO_UTILS_H
-#define TR_CRYPTO_UTILS_H
+#pragma once
 
 #include <array>
 #include <cstddef> // size_t
@@ -266,5 +265,3 @@ template<class T>
 }
 
 /** @} */
-
-#endif /* TR_CRYPTO_UTILS_H */

@@ -29,6 +29,8 @@ using namespace std::literals;
 
 Q_DECLARE_METATYPE(tr_quark)
 
+namespace
+{
 class PrefsTest
     : public QObject
     , SandboxedTest
@@ -395,6 +397,7 @@ private slots:
         QVERIFY(!Prefs::isCore(TR_KEY_show_statusbar));
     }
 };
+} // namespace
 
 int main(int argc, char** argv)
 {

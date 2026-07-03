@@ -412,7 +412,7 @@ private:
         TR_ASSERT(context.raw().back() == 'e');
         char const* const begin = &info_dict_begin_.front();
         char const* const end = &context.raw().back() + 1;
-        auto const info_dict_benc = std::string_view{ begin, size_t(end - begin) };
+        auto const info_dict_benc = std::string_view{ begin, static_cast<size_t>(end - begin) };
         auto const hash = tr_sha1::digest(info_dict_benc);
         auto const hash2 = tr_sha256::digest(info_dict_benc);
 

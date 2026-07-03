@@ -135,8 +135,6 @@ int measureViewItem(QTreeWidget const* view, int column, QString const& text)
     return std::max(item_width, header_width);
 }
 
-} // namespace
-
 // ---
 
 class PeerItem : public QTreeWidgetItem
@@ -236,6 +234,7 @@ private:
         return collated;
     }
 };
+} // namespace
 
 // ---
 

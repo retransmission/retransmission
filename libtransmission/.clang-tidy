@@ -1,7 +1,6 @@
 ---
 HeaderFilterRegex: .*/libtransmission/.*
 
-# TODO: Enable `portability-template-virtual-member-function` after https://github.com/llvm/llvm-project/issues/139031 is fixed
 # TODO: Enable `cppcoreguidelines-pro-bounds-pointer-arithmetic` after converting all pointers to std::span
 #
 # PRs welcome to fix & re-enable any of these explicitly-disabled checks
@@ -10,9 +9,10 @@ Checks:
   - -bugprone-branch-clone
   - -bugprone-easily-swappable-parameters
   - -bugprone-implicit-widening-of-multiplication-result
+  - -bugprone-throwing-static-initialization
   - cert-*
-  - -cert-err58-cpp
-  - -cert-int09-c
+  - -cert-err58-cpp # alias of `bugprone-throwing-static-initialization
+  - -cert-int09-c # alias of `readability-enum-initial-value`
   - clang-analyzer-*
   # -clang-analyzer-optin.core.EnumCastOutOfRange: disabled due false <filesystem> warning in file.cc calling
   # std::filesystem::last_write_time() on windows ci builds with MSVC STL 14.44.35207.
@@ -28,27 +28,35 @@ Checks:
   - -cppcoreguidelines-non-private-member-variables-in-classes
   - -cppcoreguidelines-owning-memory
   - -cppcoreguidelines-pro-bounds-array-to-pointer-decay
+  - -cppcoreguidelines-pro-bounds-avoid-unchecked-container-access
   - -cppcoreguidelines-pro-bounds-constant-array-index
   - -cppcoreguidelines-pro-bounds-pointer-arithmetic
   - -cppcoreguidelines-pro-type-const-cast
   - -cppcoreguidelines-pro-type-reinterpret-cast
   - -cppcoreguidelines-pro-type-union-access
   - -cppcoreguidelines-pro-type-vararg
+  - -cppcoreguidelines-use-enum-class
   - google-explicit-constructor
   - misc-*
+  - -misc-const-correctness # TODO: enable after https://github.com/llvm/llvm-project/issues/206429 is fixed
   - -misc-include-cleaner
+  - -misc-multiple-inheritance
   - -misc-no-recursion
   - -misc-non-private-member-variables-in-classes
   - modernize-*
+  - -modernize-use-nullptr # TODO: enable after https://github.com/llvm/llvm-project/issues/206245 is fixed
   - -modernize-use-trailing-return-type
   - performance-*
   - portability-*
+  - -portability-avoid-pragma-once
   - -portability-template-virtual-member-function
   - readability-*
   - -readability-function-cognitive-complexity
   - -readability-identifier-length
   - -readability-magic-numbers
   - -readability-qualified-auto
+  - -readability-redundant-typename # TODO: enable after https://github.com/llvm/llvm-project/issues/206995 is fixed
+  - -readability-use-concise-preprocessor-directives
 
 CheckOptions:
   - { key: cppcoreguidelines-avoid-do-while.IgnoreMacros,                           value: true       }

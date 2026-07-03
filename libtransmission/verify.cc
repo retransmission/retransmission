@@ -62,7 +62,7 @@ void tr_verify_worker::verify_torrent(
         uint64_t left_in_piece = metainfo.piece_size(piece) - piece_pos;
         uint64_t left_in_file = file_length - file_pos;
         uint64_t bytes_this_pass = std::min(left_in_file, left_in_piece);
-        bytes_this_pass = std::min(bytes_this_pass, uint64_t(std::size(buffer)));
+        bytes_this_pass = std::min(bytes_this_pass, static_cast<uint64_t>(std::size(buffer)));
 
         /* read a bit */
         if (fd != TR_BAD_SYS_FILE) {

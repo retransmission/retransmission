@@ -443,7 +443,7 @@ void FileTreeModel::twiddleWanted(QModelIndexList const& indices)
     }
 
     for (int i = 0; i <= 1; ++i) {
-        if (wanted_indices.count(i) != 0) {
+        if (wanted_indices.contains(i)) {
             setWanted(wanted_indices[i], i != 0);
         }
     }

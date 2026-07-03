@@ -17,9 +17,7 @@
 class Prefs;
 class Speed;
 
-extern "C" {
 struct tr_variant;
-}
 
 class TorrentModel : public QAbstractListModel
 {

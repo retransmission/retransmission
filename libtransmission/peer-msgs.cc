@@ -1318,7 +1318,7 @@ void tr_peerMsgsImpl::parse_ut_metadata(MessageReader& payload_in)
 
     switch (msg_type) {
     case MetadataMsgType::Data:
-        if (auto const piece_len = msg_end - serde.end(); piece * MetadataPieceSize + piece_len <= total_size) {
+        if (auto const piece_len = msg_end - serde.end(); (piece * MetadataPieceSize) + piece_len <= total_size) {
             tor_.set_metadata_piece(piece, serde.end(), piece_len);
         }
         break;

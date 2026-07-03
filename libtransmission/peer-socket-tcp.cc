@@ -189,11 +189,6 @@ public:
         tr_net_close_socket(sock_);
     }
 
-    [[nodiscard]] constexpr Type type() const noexcept override
-    {
-        return Type::TCP;
-    }
-
     void set_read_enabled(bool const enabled) override
     {
         if (is_read_enabled_ == enabled) {
@@ -236,7 +231,12 @@ public:
         return is_write_enabled_;
     }
 
-private:
+protected:
+    [[nodiscard]] constexpr Type type() const noexcept override
+    {
+        return Type::TCP;
+    }
+
     size_t try_read_impl(InBuf& buf, size_t n_bytes, tr_error* error) override
     {
         auto const [bufptr, buflen] = buf.reserve_space(n_bytes);
@@ -288,6 +288,7 @@ private:
         return {};
     }
 
+private:
     static void event_read_cb([[maybe_unused]] evutil_socket_t fd, short /*event*/, void* vs)
     {
         auto* const s = static_cast<tr_peer_socket_tcp_impl*>(vs);

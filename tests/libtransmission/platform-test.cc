@@ -34,7 +34,7 @@ TEST_F(PlatformTest, defaultDownloadDirXdg)
     setenv("XDG_CONFIG_HOME", LIBTRANSMISSION_TEST_ASSETS_DIR, 1);
 
     auto const expected = fmt::format("{:s}/UserDirsDownloads"sv, sandboxDir());
-    auto const actual = tr_getDefaultDownloadDir();
+    auto const actual = tr::platform::get_download_dir();
     EXPECT_EQ(expected, actual);
 
     unsetenv("XDG_CONFIG_HOME");
@@ -47,7 +47,7 @@ TEST_F(PlatformTest, defaultDownloadDir)
     setenv("HOME", sandboxDir().c_str(), 1);
 
     auto const expected = fmt::format("{:s}/Downloads"sv, sandboxDir());
-    auto const actual = tr_getDefaultDownloadDir();
+    auto const actual = tr::platform::get_download_dir();
     EXPECT_EQ(expected, actual);
 
     unsetenv("HOME");
@@ -59,7 +59,7 @@ TEST_F(PlatformTest, defaultConfigDirEnv)
     setenv("TRANSMISSION_HOME", sandboxDir().c_str(), 1);
 
     auto const expected = sandboxDir();
-    auto const actual = tr_getDefaultConfigDir("appname");
+    auto const actual = tr::platform::get_default_config_dir("appname");
     EXPECT_EQ(expected, actual);
 
     unsetenv("TRANSMISSION_HOME");
@@ -72,7 +72,7 @@ TEST_F(PlatformTest, defaultConfigDirXdgConfig)
     setenv("XDG_CONFIG_HOME", sandboxDir().c_str(), 1);
 
     auto const expected = fmt::format("{:s}/appname", sandboxDir());
-    auto const actual = tr_getDefaultConfigDir("appname");
+    auto const actual = tr::platform::get_default_config_dir("appname");
     EXPECT_EQ(expected, actual);
 
     unsetenv("XDG_CONFIG_HOME");
@@ -86,7 +86,7 @@ TEST_F(PlatformTest, defaultConfigDirXdgConfigHome)
     setenv("HOME", home.c_str(), 1);
 
     auto const expected = fmt::format("{:s}/.config/appname", home.sv());
-    auto const actual = tr_getDefaultConfigDir("appname");
+    auto const actual = tr::platform::get_default_config_dir("appname");
     EXPECT_EQ(expected, actual);
 
     unsetenv("HOME");

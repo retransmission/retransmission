@@ -18,6 +18,8 @@
 
 namespace tr::test
 {
+namespace
+{
 class TimerTest : public TransmissionTest
 {
 protected:
@@ -70,6 +72,7 @@ protected:
 
     evhelpers::evbase_unique_ptr evbase_;
 };
+} // namespace
 
 TEST_F(TimerTest, canInstantiate)
 {

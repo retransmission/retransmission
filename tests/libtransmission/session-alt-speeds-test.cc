@@ -14,6 +14,8 @@
 
 using namespace std::literals;
 
+namespace
+{
 class SessionAltSpeedsTest : public ::tr::test::TransmissionTest
 {
 protected:
@@ -70,6 +72,7 @@ protected:
         return mktime(&tmdate);
     }
 };
+} // namespace
 
 namespace tr::test
 {

@@ -25,9 +25,7 @@
 
 using namespace std::literals;
 
-class TorrentFilesTest : public ::tr::test::SandboxedTest
-{
-};
+using TorrentFilesTest = ::tr::test::SandboxedTest;
 
 TEST_F(TorrentFilesTest, add)
 {

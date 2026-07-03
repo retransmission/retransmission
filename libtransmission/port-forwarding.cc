@@ -22,6 +22,8 @@ struct tr_upnp;
 
 using namespace std::literals;
 
+namespace
+{
 class tr_port_forwarding_impl final : public tr_port_forwarding
 {
 public:
@@ -220,6 +222,7 @@ private:
 
     std::unique_ptr<tr::Timer> timer_;
 };
+} // namespace
 
 std::unique_ptr<tr_port_forwarding> tr_port_forwarding::create(Mediator& mediator)
 {

@@ -799,7 +799,7 @@ void tr_torrent::on_metainfo_updated()
     file_mtimes_.resize(file_count());
     file_priorities_ = tr_file_priorities{ &fpm_ };
     files_wanted_ = tr_files_wanted{ &fpm_ };
-    checked_pieces_ = tr_bitfield{ size_t(piece_count()) };
+    checked_pieces_ = tr_bitfield{ static_cast<size_t>(piece_count()) };
 }
 
 void tr_torrent::on_metainfo_completed()

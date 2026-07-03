@@ -76,7 +76,7 @@ struct Config {
 
         std::array<std::array<char, 32>, 5> display_names_ = {};
         std::array<uint64_t, 5> multipliers_;
-        Base base_ = {};
+        Base base_ = {}; // NOLINT(bugprone-invalid-enum-default-initialization): overwritten by constructor
     };
 
     static Units<MemoryUnits> memory;

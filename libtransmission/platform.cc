@@ -71,7 +71,109 @@ auto win32_get_known_folder(REFKNOWNFOLDERID folder_id)
 }
 #endif
 
-std::string getHomeDir()
+std::string xdgConfigHome()
+{
+    if (auto dir = tr_env_get_string("XDG_CONFIG_HOME"sv); !std::empty(dir)) {
+        return dir;
+    }
+
+    return fmt::format("{:s}/.config"sv, tr::platform::get_home_dir());
+}
+
+std::string getXdgEntryFromUserDirs(std::string_view key)
+{
+    auto content = std::vector<char>{};
+    if (auto const filename = fmt::format("{:s}/{:s}"sv, xdgConfigHome(), "user-dirs.dirs"sv);
+        !tr_sys_path_exists(filename) || !tr_file_read(filename, content) || std::empty(content)) {
+        return {};
+    }
+
+    // search for key="val" and extract val
+    auto const search = fmt::format("{:s}=\"", key);
+    auto const [key_first, key_last] = std::ranges::search(content, search);
+    if (key_first == key_last) {
+        return {};
+    }
+    auto const end = std::find(key_last, content.end(), '"');
+    if (end == content.end()) {
+        return {};
+    }
+    auto val = std::string{ key_last, end };
+
+    // if val contains "$HOME", replace that with tr::platform::get_home_dir()
+    auto constexpr Home = "$HOME"sv;
+    if (auto const [home_first, home_last] = std::ranges::search(val, Home); home_first != home_last) {
+        val.replace(home_first, home_last, tr::platform::get_home_dir());
+    }
+
+    return val;
+}
+
+[[nodiscard]] bool isWebClientDir(std::string_view path)
+{
+    auto const filename = tr_pathbuf{ path, '/', "index.html"sv };
+    bool const found = tr_sys_path_exists(filename);
+    tr_logAddTrace(fmt::format("Searching for web interface file '{:s}'", filename));
+    return found;
+}
+} // namespace
+
+// ---
+
+namespace tr::platform
+{
+std::string get_default_config_dir(std::string_view appname)
+{
+    if (std::empty(appname)) {
+        appname = "Transmission"sv;
+    }
+
+    if (auto dir = tr_env_get_string("TRANSMISSION_HOME"sv); !std::empty(dir)) {
+        return dir;
+    }
+
+#ifdef __APPLE__
+
+    return fmt::format("{:s}/Library/Application Support/{:s}"sv, tr::platform::get_home_dir(), appname);
+
+#elif defined(_WIN32)
+
+    auto const appdata = win32_get_known_folder(FOLDERID_LocalAppData);
+    return fmt::format("{:s}/{:s}"sv, appdata, appname);
+
+#elif defined(__HAIKU__)
+
+    char buf[PATH_MAX];
+    find_directory(B_USER_SETTINGS_DIRECTORY, -1, true, buf, sizeof(buf));
+    return fmt::format("{:s}/{:s}"sv, buf, appname);
+
+#else
+
+    return fmt::format("{:s}/{:s}"sv, xdgConfigHome(), appname);
+
+#endif
+}
+
+std::string get_download_dir()
+{
+    if (auto dir = getXdgEntryFromUserDirs("XDG_DOWNLOAD_DIR"sv); !std::empty(dir)) {
+        return dir;
+    }
+
+#ifdef _WIN32
+    if (auto dir = win32_get_known_folder(FOLDERID_Downloads); !std::empty(dir)) {
+        return dir;
+    }
+#endif
+
+#ifdef __HAIKU__
+    return fmt::format("{:s}/Desktop"sv, tr::platform::get_home_dir());
+#endif
+
+    return fmt::format("{:s}/Downloads"sv, tr::platform::get_home_dir());
+}
+
+std::string get_home_dir()
 {
     if (auto dir = tr_env_get_string("HOME"sv); !std::empty(dir)) {
         return dir;
@@ -97,106 +199,7 @@ std::string getHomeDir()
 
     return {};
 }
-
-std::string xdgConfigHome()
-{
-    if (auto dir = tr_env_get_string("XDG_CONFIG_HOME"sv); !std::empty(dir)) {
-        return dir;
-    }
-
-    return fmt::format("{:s}/.config"sv, getHomeDir());
-}
-
-std::string getXdgEntryFromUserDirs(std::string_view key)
-{
-    auto content = std::vector<char>{};
-    if (auto const filename = fmt::format("{:s}/{:s}"sv, xdgConfigHome(), "user-dirs.dirs"sv);
-        !tr_sys_path_exists(filename) || !tr_file_read(filename, content) || std::empty(content)) {
-        return {};
-    }
-
-    // search for key="val" and extract val
-    auto const search = fmt::format("{:s}=\"", key);
-    auto const [key_first, key_last] = std::ranges::search(content, search);
-    if (key_first == key_last) {
-        return {};
-    }
-    auto const end = std::find(key_last, content.end(), '"');
-    if (end == content.end()) {
-        return {};
-    }
-    auto val = std::string{ key_last, end };
-
-    // if val contains "$HOME", replace that with getHomeDir()
-    auto constexpr Home = "$HOME"sv;
-    if (auto const [home_first, home_last] = std::ranges::search(val, Home); home_first != home_last) {
-        val.replace(home_first, home_last, getHomeDir());
-    }
-
-    return val;
-}
-
-[[nodiscard]] bool isWebClientDir(std::string_view path)
-{
-    auto const filename = tr_pathbuf{ path, '/', "index.html"sv };
-    bool const found = tr_sys_path_exists(filename);
-    tr_logAddTrace(fmt::format("Searching for web interface file '{:s}'", filename));
-    return found;
-}
-} // namespace
-
-// ---
-
-std::string tr_getDefaultConfigDir(std::string_view appname)
-{
-    if (std::empty(appname)) {
-        appname = "Transmission"sv;
-    }
-
-    if (auto dir = tr_env_get_string("TRANSMISSION_HOME"sv); !std::empty(dir)) {
-        return dir;
-    }
-
-#ifdef __APPLE__
-
-    return fmt::format("{:s}/Library/Application Support/{:s}"sv, getHomeDir(), appname);
-
-#elif defined(_WIN32)
-
-    auto const appdata = win32_get_known_folder(FOLDERID_LocalAppData);
-    return fmt::format("{:s}/{:s}"sv, appdata, appname);
-
-#elif defined(__HAIKU__)
-
-    char buf[PATH_MAX];
-    find_directory(B_USER_SETTINGS_DIRECTORY, -1, true, buf, sizeof(buf));
-    return fmt::format("{:s}/{:s}"sv, buf, appname);
-
-#else
-
-    return fmt::format("{:s}/{:s}"sv, xdgConfigHome(), appname);
-
-#endif
-}
-
-std::string tr_getDefaultDownloadDir()
-{
-    if (auto dir = getXdgEntryFromUserDirs("XDG_DOWNLOAD_DIR"sv); !std::empty(dir)) {
-        return dir;
-    }
-
-#ifdef _WIN32
-    if (auto dir = win32_get_known_folder(FOLDERID_Downloads); !std::empty(dir)) {
-        return dir;
-    }
-#endif
-
-#ifdef __HAIKU__
-    return fmt::format("{:s}/Desktop"sv, getHomeDir());
-#endif
-
-    return fmt::format("{:s}/Downloads"sv, getHomeDir());
-}
+} // namespace tr::platform
 
 // ---
 
@@ -268,7 +271,7 @@ std::string tr_getWebClientDir([[maybe_unused]] tr_session const* session)
     if (auto tmp = tr_env_get_string("XDG_DATA_HOME"sv); !std::empty(tmp)) {
         candidates.emplace_back(std::move(tmp));
     } else {
-        candidates.emplace_back(fmt::format("{:s}/.local/share"sv, getHomeDir()));
+        candidates.emplace_back(fmt::format("{:s}/.local/share"sv, tr::platform::get_home_dir()));
     }
 
     /* XDG_DATA_DIRS are the backup directories */

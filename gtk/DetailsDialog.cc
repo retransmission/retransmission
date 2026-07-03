@@ -255,7 +255,7 @@ void set_double_spin_if_different(Gtk::SpinButton* spin, sigc::connection& tag, 
 {
     double const currentValue = spin->get_value();
 
-    if ((int)(currentValue * 100) != (int)(value * 100)) {
+    if (static_cast<int>(currentValue * 100) != static_cast<int>(value * 100)) {
         tag.block();
         spin->set_value(value);
         tag.unblock();
@@ -1875,7 +1875,7 @@ public:
         Glib::RefPtr<Session> const& core,
         tr_torrent const* tor);
 
-private:
+protected:
     void on_response(int response) override;
 
 private:
@@ -1990,7 +1990,7 @@ public:
         Glib::RefPtr<Session> const& core,
         tr_torrent const* tor);
 
-private:
+protected:
     void on_response(int response) override;
 
 private:

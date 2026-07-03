@@ -31,7 +31,8 @@ using namespace std::literals;
 
 namespace tr::test
 {
-
+namespace
+{
 class MakemetaTest : public SandboxedTest
 {
 protected:
@@ -82,6 +83,7 @@ protected:
         return metainfo;
     }
 };
+} // namespace
 
 TEST_F(MakemetaTest, comment)
 {

@@ -910,7 +910,7 @@ if(RUN_CLANG_TIDY)
     tr_get_required_flag(RUN_CLANG_TIDY CLANG_TIDY_IS_REQUIRED)
 
     message(STATUS "Looking for clang-tidy")
-    find_program(CLANG_TIDY NAMES clang-tidy-20 clang-tidy)
+    find_program(CLANG_TIDY NAMES clang-tidy-22 clang-tidy)
     if(CLANG_TIDY STREQUAL "CLANG_TIDY-NOTFOUND")
         message(STATUS "Looking for clang-tidy - not found")
         if(CLANG_TIDY_IS_REQUIRED)

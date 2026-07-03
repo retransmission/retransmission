@@ -443,7 +443,7 @@ std::string tr_urlPercentDecode(std::string_view in)
         if (std::size(in) >= 3 && in[0] == '%' && (std::isxdigit(in[1]) != 0) && (std::isxdigit(in[2]) != 0)) {
             auto hexstr = std::to_array<char>({ in[1], in[2], '\0' });
             auto const hex = strtoul(std::data(hexstr), nullptr, 16);
-            out += char(hex);
+            out += static_cast<char>(hex);
             in.remove_prefix(3);
         } else {
             out += in.front();

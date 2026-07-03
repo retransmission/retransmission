@@ -442,7 +442,7 @@ jobs:
         with:
           build-path: obj
           regex: ${{ matrix.regex }}
-          clang-tidy-binary: clang-tidy-20
+          clang-tidy-binary: clang-tidy-22
           full-run: ${{ needs.what-to-make.outputs.tidy-everything }}
           extra-arg: '-DFMT_USE_CONSTEVAL=0'
 

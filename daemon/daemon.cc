@@ -176,7 +176,7 @@ namespace
 
     tr_optind = ind;
 
-    return tr_getDefaultConfigDir(MyName);
+    return tr::platform::get_default_config_dir(MyName);
 }
 
 auto onFileAdded(tr_session* session, std::string_view dirname, std::string_view basename)

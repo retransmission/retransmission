@@ -42,6 +42,7 @@ namespace
 {
 namespace parse_helpers
 {
+// NOLINTBEGIN(bugprone-derived-method-shadowing-base-method)
 struct json_to_variant_handler : public rapidjson::BaseReaderHandler<> {
     static_assert(std::is_same_v<Ch, char>);
 
@@ -202,6 +203,7 @@ private:
     std::string_view cur_key_;
     std::stack<tr_variant*> stack_;
 };
+// NOLINTEND(bugprone-derived-method-shadowing-base-method)
 } // namespace parse_helpers
 } // namespace
 

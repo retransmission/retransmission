@@ -18,6 +18,8 @@
 
 using namespace std::literals;
 
+namespace
+{
 struct TorrentQueueTest : public tr::test::SandboxedTest {
     class MockMediator final : public tr_torrent_queue::Mediator
     {
@@ -55,6 +57,7 @@ struct TorrentQueueTest : public tr::test::SandboxedTest {
         "ubuntu-20.04.4-desktop-amd64.iso.torrent"sv,
     };
 };
+} // namespace
 
 TEST_F(TorrentQueueTest, addRemoveToFromQueue)
 {

@@ -214,8 +214,8 @@ bool decodeBitCometClient(char* buf, size_t buflen, std::string_view peer_id)
 
     bool const is_bitlord = std::string_view(std::data(peer_id) + 6, 4) == "LORD"sv;
     auto const name = is_bitlord ? "BitLord"sv : "BitComet"sv;
-    int const major = uint8_t(peer_id[4]);
-    int const minor = uint8_t(peer_id[5]);
+    int const major = static_cast<uint8_t>(peer_id[4]);
+    int const minor = static_cast<uint8_t>(peer_id[5]);
 
     std::tie(buf, buflen) = buf_append(buf, buflen, name, ' ', mod, major, '.');
     *fmt::format_to_n(buf, buflen - 1, "{:02d}", minor).out = '\0';
@@ -295,7 +295,7 @@ void bits_on_wheels_formatter(char* buf, size_t buflen, std::string_view name, t
 
 constexpr void blizzard_formatter(char* buf, size_t buflen, std::string_view name, tr_peer_id_t id)
 {
-    buf_append(buf, buflen, name, ' ', int(id[3] + 1), int(id[4]));
+    buf_append(buf, buflen, name, ' ', static_cast<int>(id[3] + 1), static_cast<int>(id[4]));
 }
 
 constexpr void btpd_formatter(char* buf, size_t buflen, std::string_view name, tr_peer_id_t id)
@@ -604,7 +604,7 @@ void tr_clientForId(char* buf, size_t buflen, tr_peer_id_t peer_id)
     }
 
     if (peer_id[0] == '\0' && peer_id[2] == 'B' && peer_id[3] == 'S') {
-        *fmt::format_to_n(buf, buflen - 1, "BitSpirit {:d}", peer_id[1] == '\0' ? 1 : int(peer_id[1])).out = '\0';
+        *fmt::format_to_n(buf, buflen - 1, "BitSpirit {:d}", peer_id[1] == '\0' ? 1 : static_cast<int>(peer_id[1])).out = '\0';
         return;
     }
 
@@ -636,7 +636,7 @@ void tr_clientForId(char* buf, size_t buflen, tr_peer_id_t peer_id)
         for (size_t i = 0; i < 8; ++i) {
             char const c = peer_id[i];
 
-            if (isprint((unsigned char)c) != 0) {
+            if (isprint(static_cast<unsigned char>(c)) != 0) {
                 *walk++ = c;
             } else {
                 walk = fmt::format_to_n(walk, end - walk - 1, "%{:02X}", static_cast<unsigned char>(c)).out;

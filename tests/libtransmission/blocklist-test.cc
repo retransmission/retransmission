@@ -18,7 +18,8 @@
 
 namespace tr::test
 {
-
+namespace
+{
 class BlocklistTest : public SessionTest
 {
 protected:
@@ -64,6 +65,7 @@ protected:
         return !addr || session_->blocklist().contains(*addr);
     }
 };
+} // namespace
 
 TEST_F(BlocklistTest, parsing)
 {

@@ -25,7 +25,6 @@ public:
     static bool isSeparator(QModelIndex const& index);
     static void setSeparator(QAbstractItemModel* model, QModelIndex const& index);
 
-protected:
     // QAbstractItemDelegate
     void paint(QPainter* painter, QStyleOptionViewItem const& option, QModelIndex const& index) const override;
     [[nodiscard]] QSize sizeHint(QStyleOptionViewItem const& option, QModelIndex const& index) const override;

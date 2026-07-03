@@ -60,7 +60,7 @@ public:
         cls->get_property = &DynamicPropertyStore::get_property_vfunc;
 
         g_assert(properties_.size() == properties.size() + 1);
-        std::move(properties.begin(), properties.end(), properties_.begin() + 1);
+        std::move(properties.begin(), properties.end(), std::next(properties_.begin()));
 
         for (auto id = PropertyIdType{ 1 }; id < PropertyCount; ++id) {
             g_assert(id == properties_[id].id);

@@ -49,7 +49,8 @@ using namespace std::literals;
 
 namespace tr::test
 {
-
+namespace
+{
 class FileTest : public SandboxedTest
 {
 protected:
@@ -194,6 +195,7 @@ protected:
         EXPECT_FALSE(err) << err;
     }
 };
+} // namespace
 
 TEST_F(FileTest, getInfo)
 {

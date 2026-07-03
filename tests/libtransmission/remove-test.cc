@@ -23,6 +23,8 @@
 using namespace std::literals;
 using SubpathAndSize = std::pair<std::string_view, uint64_t>;
 
+namespace
+{
 class RemoveTest : public tr::test::SandboxedTest
 {
 protected:
@@ -198,6 +200,7 @@ protected:
         return filenames;
     }
 };
+} // namespace
 
 TEST_F(RemoveTest, RemovesSingleFile)
 {

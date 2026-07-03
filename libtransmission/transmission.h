@@ -30,6 +30,28 @@ struct tr_session;
 struct tr_torrent;
 struct tr_torrent_metainfo;
 
+namespace tr::platform
+{
+
+// return the env var 'TRANSMISSION_HOME' if it is set.
+// otherwise, return `${HOME}/Library/Application Support/${appname}` on macOS
+// otherwise, return `${FOLDERID_LocalAppData}/${appname}` on Windows
+// otherwise, return `${XDG_CONFIG_HOME:-{$HOME}/.config}/${appname}`
+[[nodiscard]] std::string get_default_config_dir(std::string_view appname);
+
+// return the env var 'XDG_DOWNLOAD_DIR' if it is set and exists.
+// otherwise, returns FOLDERID_Downloads if we're on Windows and it's set and exists
+// otherwise, returns `${HOME}/Desktop` if we're on Haiku
+// otherwise, returns `${HOME}/Downloads`
+[[nodiscard]] std::string get_download_dir();
+
+// return the env var 'HOME' if it is set.
+// otherwise, return FOLDERID_Profile if we're on Windows and it's set.
+// otherwise, return getpwuid_r(getuid())
+[[nodiscard]] std::string get_home_dir();
+
+} // namespace tr::platform
+
 // --- Startup & Shutdown
 
 /**
@@ -42,28 +64,6 @@ struct tr_torrent_metainfo;
  *
  * @{
  */
-
-/**
- * @brief get Transmission's default configuration file directory.
- *
- * The default configuration directory is determined this way:
- * -# If the `TRANSMISSION_HOME` environment variable is set, its value is used.
- * -# On Darwin, `"${HOME}/Library/Application Support/${appname}"` is used.
- * -# On Windows, `"${CSIDL_APPDATA}/${appname}"` is used.
- * -# If `XDG_CONFIG_HOME` is set, `"${XDG_CONFIG_HOME}/${appname}"` is used.
- * -# `"${HOME}/.config/${appname}"` is used as a last resort.
- */
-[[nodiscard]] std::string tr_getDefaultConfigDir(std::string_view appname);
-
-/**
- * @brief returns Transmission's default download directory.
- *
- * The default download directory is determined this way:
- * -# If the `HOME` environment variable is set, `"${HOME}/Downloads"` is used.
- * -# On Windows, `"${CSIDL_MYDOCUMENTS}/Downloads"` is used.
- * -# Otherwise, `getpwuid(getuid())->pw_dir + "/Downloads"` is used.
- */
-[[nodiscard]] std::string tr_getDefaultDownloadDir();
 
 // Get a session's default settings
 [[nodiscard]] tr::Settings tr_sessionGetDefaultSettings();

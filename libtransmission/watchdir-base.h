@@ -3,11 +3,11 @@
 // or any future license endorsed by Mnemosaic LLC.
 // License text can be found in the licenses/ folder.
 
+#pragma once
+
 #ifndef LIBTRANSMISSION_WATCHDIR_MODULE
 #error only the wathcdir module should #include this header.
 #endif
-
-#pragma once
 
 #include <algorithm>
 #include <chrono>

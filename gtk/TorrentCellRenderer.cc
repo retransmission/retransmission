@@ -156,8 +156,10 @@ Gtk::Requisition TorrentCellRenderer::Impl::get_size_compact(Gtk::Widget& widget
     *** LAYOUT
     **/
 
-    return { (xpad * 2) + icon_size.width + GUI_PAD + CompactBarWidth + GUI_PAD + stat_size.width,
-             (ypad * 2) + std::max(name_size.height, property_bar_height_.get_value()) };
+    return {
+        .width = (xpad * 2) + icon_size.width + GUI_PAD + CompactBarWidth + GUI_PAD + stat_size.width,
+        .height = (ypad * 2) + std::max(name_size.height, property_bar_height_.get_value()),
+    };
 }
 
 Gtk::Requisition TorrentCellRenderer::Impl::get_size_full(Gtk::Widget& widget) const
@@ -198,9 +200,11 @@ Gtk::Requisition TorrentCellRenderer::Impl::get_size_full(Gtk::Widget& widget) c
     *** LAYOUT
     **/
 
-    return { (xpad * 2) + icon_size.width + GUI_PAD + std::max(prog_size.width, stat_size.width),
-             (ypad * 2) + name_size.height + prog_size.height + GUI_PAD_SMALL + property_bar_height_.get_value() +
-                 GUI_PAD_SMALL + stat_size.height };
+    return {
+        .width = (xpad * 2) + icon_size.width + GUI_PAD + std::max(prog_size.width, stat_size.width),
+        .height = (ypad * 2) + name_size.height + prog_size.height + GUI_PAD_SMALL + property_bar_height_.get_value() +
+            GUI_PAD_SMALL + stat_size.height,
+    };
 }
 
 void TorrentCellRenderer::get_preferred_width_vfunc(Gtk::Widget& widget, int& minimum_width, int& natural_width) const
@@ -238,7 +242,7 @@ void set_error_color(
 
     auto color = Gdk::RGBA();
     if (torrent.get_error_code() != tr_stat::Error::Ok &&
-        (flags & TR_GTK_CELL_RENDERER_STATE(SELECTED)) == Gtk::CellRendererState{} &&
+        (flags & TR_GTK_CELL_RENDERER_STATE(SELECTED)) == static_cast<Gtk::CellRendererState>(0) &&
         widget.get_style_context()->lookup_color(error_color_name, color)) {
         text_renderer.property_foreground_rgba() = color;
     } else {

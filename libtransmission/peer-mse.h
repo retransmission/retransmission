@@ -3,9 +3,7 @@
 // or any future license endorsed by Mnemosaic LLC.
 // License text can be found in the licenses/ folder.
 
-// NB: crypto-test-ref.h needs this, so use it instead of #pragma once
-#ifndef TR_ENCRYPTION_H
-#define TR_ENCRYPTION_H
+#pragma once
 
 #ifndef __TRANSMISSION__
 #error only libtransmission should #include this header.
@@ -132,5 +130,3 @@ private:
 };
 
 } // namespace tr_message_stream_encryption
-
-#endif // TR_ENCRYPTION_H

@@ -45,7 +45,8 @@ static_assert(ProcessEventsTimeout > GenericRescanInterval);
 
 namespace tr::test
 {
-
+namespace
+{
 enum class WatchMode : uint8_t { NATIVE, GENERIC };
 
 class WatchDirTest
@@ -112,6 +113,7 @@ protected:
         event_base_dispatch(ev_base_.get());
     }
 };
+} // namespace
 
 TEST_P(WatchDirTest, construct)
 {

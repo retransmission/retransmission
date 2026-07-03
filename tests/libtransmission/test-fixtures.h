@@ -346,7 +346,7 @@ protected:
         auto const n_previously_verified = std::size(verified_);
 
         ctor->set_verify_done_callback([this](tr_torrent* const tor) {
-            auto lambda_verified_lock = std::lock_guard{ verified_mutex_ };
+            auto lambda_verified_lock = std::scoped_lock{ verified_mutex_ };
             verified_.emplace_back(tor);
             verified_cv_.notify_one();
         });

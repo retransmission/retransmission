@@ -57,9 +57,9 @@ void update_cache_value(T& value, U new_value, T epsilon, Torrent::ChangeFlags& 
 
 unsigned int build_torrent_trackers_hash(tr_torrent const& torrent)
 {
-    auto hash = uint64_t(0);
+    auto hash = uint64_t{};
 
-    for (auto i = size_t(0), n = tr_torrentTrackerCount(&torrent); i < n; ++i) {
+    for (auto i = size_t{}, n = tr_torrentTrackerCount(&torrent); i < n; ++i) {
         for (auto const ch : std::string_view{ tr_torrentTracker(&torrent, i).announce }) {
             hash = (hash << 4U) ^ (hash >> 28U) ^ static_cast<unsigned char>(ch);
         }

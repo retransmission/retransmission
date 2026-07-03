@@ -294,11 +294,11 @@ std::string tr_strpercent(double x)
 
 std::string tr_strratio(double ratio, std::string_view const none, std::string_view const infinity)
 {
-    if ((int)ratio == TR_RATIO_NA) {
+    if (static_cast<int>(ratio) == TR_RATIO_NA) {
         return std::string{ none };
     }
 
-    if ((int)ratio == TR_RATIO_INF) {
+    if (static_cast<int>(ratio) == TR_RATIO_INF) {
         return std::string{ infinity };
     }
 
@@ -343,7 +343,7 @@ uint64_t tr_ntohll(uint64_t netlonglong)
         uint64_t llx;
     } u = {};
     u.llx = netlonglong;
-    return ((uint64_t)ntohl(u.lx[0]) << 32) | (uint64_t)ntohl(u.lx[1]);
+    return (static_cast<uint64_t>(ntohl(u.lx[0])) << 32) | static_cast<uint64_t>(ntohl(u.lx[1]));
 
 #endif
 }

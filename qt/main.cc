@@ -278,7 +278,7 @@ int tr_main(int argc, char** argv)
 
     // set the fallback config dir
     if (config_dir.isNull()) {
-        config_dir = QString::fromStdString(tr_getDefaultConfigDir("transmission"));
+        config_dir = QString::fromStdString(tr::platform::get_default_config_dir("transmission"));
     }
 
     // initialize the prefs

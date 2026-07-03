@@ -28,7 +28,8 @@ using namespace std::literals;
 
 namespace tr::test
 {
-
+namespace
+{
 auto constexpr MaxWaitMsec = 5000;
 
 class IncompleteDirTest
@@ -51,6 +52,7 @@ protected:
 
     static auto constexpr MaxWaitMsec = 3000;
 };
+} // namespace
 
 TEST_P(IncompleteDirTest, incompleteDir)
 {

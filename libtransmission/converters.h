@@ -119,7 +119,7 @@ auto reserve_if_possible(C& c, std::size_t n) -> decltype(c.reserve(n), void())
     c.reserve(n);
 }
 template<typename C>
-void reserve_if_possible(C& /*c*/, ...) // NOLINT(cert-dcl50-cpp)
+void reserve_if_possible(C& /*c*/, ...) // NOLINT(cert-dcl50-cpp, modernize-avoid-variadic-functions)
 {
 }
 
@@ -216,6 +216,7 @@ bool to_value(tr_variant const& src, T* const ptgt)
 template<typename T>
 [[nodiscard]] std::optional<T> to_value(tr_variant const& var)
 {
+    // NOLINTNEXTLINE(bugprone-invalid-enum-default-initialization): for `T{}`
     if (auto ret = T{}; to_value<T>(var, &ret)) {
         return ret;
     }

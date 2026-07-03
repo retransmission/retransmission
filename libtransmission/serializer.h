@@ -272,7 +272,8 @@ void load_one(T& tgt, Fields const& fields, tr_variant::Map const& src, ChangedK
 template<typename ArgTuple, std::size_t... PairIndex>
 [[nodiscard]] consteval std::size_t pair_fields_capacity(std::index_sequence<PairIndex...> /*pairs*/)
 {
-    return (std::size_t{ 0 } + ... + std::tuple_size_v<std::remove_cvref_t<std::tuple_element_t<2 * PairIndex + 1, ArgTuple>>>);
+    return (
+        std::size_t{ 0 } + ... + std::tuple_size_v<std::remove_cvref_t<std::tuple_element_t<(2 * PairIndex) + 1, ArgTuple>>>);
 }
 
 } // namespace detail
@@ -410,7 +411,7 @@ auto load(tr_variant::Map const& src, Args&&... args)
 
     auto changed_keys = small::vector<tr_quark, Capacity>{};
     [&]<std::size_t... PairIndex>(std::index_sequence<PairIndex...> /*pairs*/) {
-        (detail::load_one(std::get<2U * PairIndex>(arg_tuple), std::get<2U * PairIndex + 1U>(arg_tuple), src, changed_keys),
+        (detail::load_one(std::get<2U * PairIndex>(arg_tuple), std::get<(2U * PairIndex) + 1U>(arg_tuple), src, changed_keys),
          ...);
     }(std::make_index_sequence<PairCount>{});
 

@@ -169,7 +169,7 @@ void onTorrentFileDownloaded(tr_web::FetchResponse const& response)
 
     tr_optind = ind;
 
-    return tr_getDefaultConfigDir(MyConfigName);
+    return tr::platform::get_default_config_dir(MyConfigName);
 }
 
 // ---

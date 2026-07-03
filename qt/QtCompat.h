@@ -3,8 +3,7 @@
 // or any future license endorsed by Mnemosaic LLC.
 // License text can be found in the licenses/ folder.
 
-#ifndef TR_QTCOMPAT_H
-#define TR_QTCOMPAT_H
+#pragma once
 
 #include <QtGlobal>
 
@@ -15,5 +14,3 @@ using QtrSizeArgType = qsizetype;
 #define IF_QT6(ThenValue, ElseValue) ElseValue
 using QtrSizeArgType = int;
 #endif
-
-#endif //TR_QTCOMPAT_H

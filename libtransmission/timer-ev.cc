@@ -25,7 +25,8 @@ using namespace std::literals;
 
 namespace tr
 {
-
+namespace
+{
 class EvTimer final : public Timer
 {
 public:
@@ -160,6 +161,7 @@ private:
         tr::evhelpers::event_new_pri2(base_, -1, events(is_repeating_), &EvTimer::onTimer, this)
     };
 };
+} // namespace
 
 std::unique_ptr<Timer> EvTimerMaker::create()
 {

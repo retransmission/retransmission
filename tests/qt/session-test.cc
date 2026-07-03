@@ -51,7 +51,6 @@ namespace
     abort();
     return {};
 }
-} // namespace
 
 class SessionTest
     : public QObject
@@ -106,6 +105,7 @@ private slots:
         QVERIFY(has_session_set);
     }
 };
+} // namespace
 
 int main(int argc, char** argv)
 {

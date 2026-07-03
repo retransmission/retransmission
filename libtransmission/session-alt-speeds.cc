@@ -35,7 +35,7 @@ void tr_session_alt_speeds::update_minutes()
             auto const end = settings_.minute_end > settings_.minute_begin ? settings_.minute_end :
                                                                              settings_.minute_end + MinutesPerDay;
             for (auto i = begin; i < end; ++i) {
-                minutes_.set((i + day * MinutesPerDay) % MinutesPerWeek);
+                minutes_.set((i + (day * MinutesPerDay)) % MinutesPerWeek);
             }
         }
     }

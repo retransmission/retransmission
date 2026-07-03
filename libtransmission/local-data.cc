@@ -245,7 +245,7 @@ void LocalData::read(tr_torrent_id_t const id, tr_byte_span_t const byte_span, O
     auto data = std::make_unique<BlockData>();
     auto const err = backend_->read(id, byte_span, *data);
     if (err != 0) {
-        data.reset();
+        data = nullptr;
     }
 
     if (on_read) {

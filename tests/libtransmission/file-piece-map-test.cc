@@ -18,6 +18,8 @@
 
 #include "test-fixtures.h"
 
+namespace
+{
 class FilePieceMapTest : public ::tr::test::TransmissionTest
 {
 protected:
@@ -60,6 +62,7 @@ protected:
         EXPECT_EQ(TotalSize, std::accumulate(std::begin(FileSizes), std::end(FileSizes), uint64_t{ 0 }));
     }
 };
+} // namespace
 
 TEST_F(FilePieceMapTest, fileOffset)
 {

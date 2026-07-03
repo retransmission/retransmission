@@ -3,12 +3,11 @@
 // or any future license endorsed by Mnemosaic LLC.
 // License text can be found in the licenses/ folder.
 
+#pragma once
+
 #ifndef __TRANSMISSION__
 #error only libtransmission should #include this header.
 #endif
-
-#ifndef TR_PEER_SOCKET_TCP_H
-#define TR_PEER_SOCKET_TCP_H
 
 #include <memory>
 
@@ -32,5 +31,3 @@ public:
 protected:
     explicit tr_peer_socket_tcp(tr_socket_address const& socket_address);
 };
-
-#endif // TR_PEER_SOCKET_TCP_H

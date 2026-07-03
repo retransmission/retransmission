@@ -21,7 +21,8 @@
 
 namespace tr::test
 {
-
+namespace
+{
 class CopyTest : public SandboxedTest
 {
 protected:
@@ -77,6 +78,7 @@ private:
         return tr_file_read(filename1, contents1) && tr_file_read(filename2, contents2) && contents1 == contents2;
     }
 };
+} // namespace
 
 TEST_F(CopyTest, copy)
 {

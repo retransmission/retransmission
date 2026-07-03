@@ -117,13 +117,13 @@ void tr_netSetDiffServ([[maybe_unused]] tr_socket_t s, [[maybe_unused]] int tos,
     if (type == TR_AF_INET) {
 #if defined(IP_TOS) && !defined(_WIN32)
 
-        if (setsockopt(s, IPPROTO_IP, IP_TOS, (void const*)&tos, sizeof(tos)) == -1) {
+        if (setsockopt(s, IPPROTO_IP, IP_TOS, &tos, sizeof(tos)) == -1) {
             tr_logAddDebug(fmt::format("Can't set TOS '{}': {}", tos, tr_net_strerror(sockerrno)));
         }
 #endif
     } else if (type == TR_AF_INET6) {
 #if defined(IPV6_TCLASS) && !defined(_WIN32)
-        if (setsockopt(s, IPPROTO_IPV6, IPV6_TCLASS, (void const*)&tos, sizeof(tos)) == -1) {
+        if (setsockopt(s, IPPROTO_IPV6, IPV6_TCLASS, &tos, sizeof(tos)) == -1) {
             tr_logAddDebug(fmt::format("Can't set IPv6 QoS '{}': {}", tos, tr_net_strerror(sockerrno)));
         }
 #endif

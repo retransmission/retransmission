@@ -3,11 +3,11 @@
 // or any future license endorsed by Mnemosaic LLC.
 // License text can be found in the licenses/ folder.
 
+#pragma once
+
 #ifndef __TRANSMISSION__
 #error only libtransmission should #include this header.
 #endif
-
-#pragma once
 
 #include <memory>
 

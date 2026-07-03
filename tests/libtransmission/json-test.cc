@@ -20,6 +20,8 @@
 
 using namespace std::literals;
 
+namespace
+{
 class JSONTest : public ::testing::TestWithParam<char const*>
 {
 protected:
@@ -51,6 +53,7 @@ protected:
 private:
     std::optional<std::locale> old_locale_;
 };
+} // namespace
 
 TEST_P(JSONTest, testElements)
 {

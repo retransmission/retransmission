@@ -18,6 +18,8 @@
 
 #include "test-fixtures.h"
 
+namespace
+{
 class PeerMgrWishlistTest : public ::tr::test::TransmissionTest
 {
 protected:
@@ -84,6 +86,7 @@ protected:
         return true;
     };
 };
+} // namespace
 
 TEST_F(PeerMgrWishlistTest, doesNotRequestPiecesThatAreNotWanted)
 {

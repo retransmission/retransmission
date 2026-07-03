@@ -45,7 +45,7 @@ struct Handler {
 
         [[nodiscard]] constexpr auto raw() const
         {
-            return std::string_view{ token_begin_, size_t(token_end_ - token_begin_) };
+            return std::string_view{ token_begin_, static_cast<size_t>(token_end_ - token_begin_) };
         }
 
         constexpr void setTokenSpan(char const* a, size_t len)

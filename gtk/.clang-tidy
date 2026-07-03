@@ -14,13 +14,19 @@ Checks:
   - -cppcoreguidelines-avoid-non-const-global-variables
   - -cppcoreguidelines-narrowing-conversions # alias of `bugprone-narrowing-conversions`
   - -cppcoreguidelines-pro-bounds-array-to-pointer-decay
+  - -cppcoreguidelines-pro-bounds-avoid-unchecked-container-access
   - -cppcoreguidelines-pro-bounds-constant-array-index
+  - -cppcoreguidelines-use-enum-class
   - hicpp-*
   - -hicpp-no-array-decay # alias of `cppcoreguidelines-pro-bounds-array-to-pointer-decay`
   - -hicpp-special-member-functions # alias of `cppcoreguidelines-special-member-functions`
+  - -hicpp-use-nullptr # alias of `modernize-use-nullptr`
   - misc-*
+  - -misc-const-correctness # TODO: enable after https://github.com/llvm/llvm-project/issues/206429 is fixed
   - -misc-include-cleaner
+  - -misc-multiple-inheritance
   - modernize-*
+  - -modernize-use-nullptr # TODO: enable after https://github.com/llvm/llvm-project/issues/206245 is fixed
   - -modernize-use-trailing-return-type
   - performance-*
   - readability-*
@@ -29,6 +35,8 @@ Checks:
   - -readability-magic-numbers
   - -readability-qualified-auto
   - -readability-redundant-access-specifiers
+  - -readability-redundant-typename # TODO: enable after https://github.com/llvm/llvm-project/issues/206995 is fixed
+  - -readability-use-concise-preprocessor-directives
 
 CheckOptions:
   - { key: cppcoreguidelines-avoid-do-while.IgnoreMacros, value: true }

@@ -59,7 +59,6 @@ auto constexpr Options = std::to_array<tr_option>({
     { .val = 0, .longName = nullptr, .description = nullptr, .shortName = nullptr, .arg = Arg::None, .argName = nullptr },
 });
 static_assert(Options[std::size(Options) - 2].val != 0);
-} // namespace
 
 class GetoptTest : public ::tr::test::TransmissionTest
 {
@@ -86,6 +85,7 @@ protected:
         EXPECT_EQ(expected_n, n);
     }
 };
+} // namespace
 
 TEST_F(GetoptTest, noOptions)
 {
