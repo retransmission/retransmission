@@ -54,7 +54,7 @@ public:
 signals:
     void changed(tr_quark key);
 
-private:
+protected:
     void on_changed(tr_quark const key) override
     {
         emit changed(key);

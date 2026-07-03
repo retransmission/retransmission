@@ -261,7 +261,7 @@ class Prefs
 {
 public:
     Prefs() = default;
-    explicit Prefs(std::string_view const config_dir);
+    explicit Prefs(std::string_view config_dir);
     explicit Prefs(tr::Settings const& settings);
     Prefs(Prefs&&) = delete;
     Prefs(Prefs const&) = delete;
@@ -269,14 +269,15 @@ public:
     Prefs& operator=(Prefs const&) = delete;
     virtual ~Prefs() = default;
 
-    void set(tr_quark const key, tr_variant const& var);
+    void set(tr_quark key, tr_variant const& var);
     void set(tr_quark /*key*/, char const* /*value*/) = delete;
 
     template<typename T>
     void set(tr_quark const key, T const& val)
     {
-        if (tr::serializer::set(key, val, app_prefs_, session_prefs_))
+        if (tr::serializer::set(key, val, app_prefs_, session_prefs_)) {
             on_changed(key);
+        }
     }
 
     template<typename T>
@@ -289,10 +290,10 @@ public:
         }
     }
 
-    void save(std::string_view const config_dir, std::optional<tr::Settings> const& local_session_settings) const;
+    void save(std::string_view config_dir, std::optional<tr::Settings> const& local_session_settings) const;
 
 protected:
-    virtual void on_changed(tr_quark const key) = 0;
+    virtual void on_changed(tr_quark key) = 0;
 
 private:
     AppPrefs app_prefs_;

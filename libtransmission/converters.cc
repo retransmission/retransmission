@@ -8,6 +8,7 @@
 #include <chrono>
 #include <cstddef> // size_t
 #include <cstdint> // int64_t, uint32_t, uint64_t
+#include <cstdio> // stderr
 #include <limits>
 #include <optional>
 #include <string>
@@ -34,6 +35,44 @@ using namespace std::literals;
 
 namespace tr::serializer
 {
+namespace detail
+{
+void warn_unexpected_coercion(std::string_view const target_category, std::string_view const source_type)
+{
+    fmt::print(
+        stderr,
+        "[transmission] serializer: coerced a '{:s}' value into a '{:s}' during (de)serialization; "
+        "this is not an expected benc/json conversion and may indicate a type-mismatch bug\n",
+        source_type,
+        target_category);
+}
+
+std::string_view variant_type_name(size_t const index) noexcept
+{
+    switch (index) {
+    case tr_variant::NoneIndex:
+        return "empty";
+    case tr_variant::NullIndex:
+        return "null";
+    case tr_variant::BoolIndex:
+        return "bool";
+    case tr_variant::IntIndex:
+        return "int";
+    case tr_variant::DoubleIndex:
+        return "double";
+    case tr_variant::StringIndex:
+    case tr_variant::StringViewIndex:
+        return "string";
+    case tr_variant::VectorIndex:
+        return "list";
+    case tr_variant::MapIndex:
+        return "map";
+    default:
+        return "unknown";
+    }
+}
+} // namespace detail
+
 namespace
 {
 template<typename T, size_t N>

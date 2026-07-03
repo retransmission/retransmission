@@ -155,67 +155,6 @@ bool tryDelegate(QStringList const& filenames)
 
     return delegated;
 }
-
-#if 0
-namespace
-{
-
-[[nodiscard]] std::string get_settings_filename(QString const& config_dir)
-{
-    return fmt::format("{:s}/settings.json", config_dir.toStdString());
-}
-
-[[nodiscard]] auto get_fallback_settings(std::string_view const settings_filename)
-{
-    // get pre-existing settings from the settings config file
-    auto fallbacks = tr::settings::load(settings_filename);
-
-    // fill in any missing values with defaults (eg missing/incomplete config file)
-    fallbacks.merge(tr_sessionGetDefaultSettings());
-
-    return fallbacks;
-}
-
-void remove_transient_keys(tr::Settings& settings)
-{
-    // remove transient keys
-    for (auto const key : { TR_KEY_filter_text })
-        settings.erase(key);
-}
-
-void remove_unrecognized_keys(tr::Settings& settings)
-{
-    settings.erase_if([](auto const& item) {
-        auto const& [key, value] = item;
-        return !tr::app::is_prefs_key(key) && !tr::is_settings_key(key);
-    });
-}
-
-} // namespace
-
-Prefs load_settings(QString const& config_dir)
-{
-    return Prefs{ get_fallback_settings(get_settings_filename(config_dir)) };
-}
-
-void save_settings(QString config_dir, Prefs const& prefs, Application const& app)
-{
-    auto const settings_filename = get_settings_filename(config_dir);
-
-    // get live app settings and (if it's a local session) live session settings
-    auto settings = prefs.app_settings();
-    if (auto val = app.local_session_settings())
-        settings.merge(*val);
-
-    // fill in any missing settings
-    settings.merge(get_fallback_settings(settings_filename));
-
-    remove_transient_keys(settings);
-    remove_unrecognized_keys(settings);
-    tr::settings::save(settings_filename, settings);
-}
-#endif
-
 } // namespace
 
 int tr_main(int argc, char** argv)

@@ -16,6 +16,7 @@
 #include <optional>
 #include <string>
 #include <type_traits>
+#include <typeinfo>
 #include <utility>
 
 #include "libtransmission/types.h"
@@ -163,11 +164,43 @@ concept HasConverter = requires(T const& src, tr_variant const& var, T* tgt) {
     };
 // NOLINTEND(bugprone-macro-parentheses)
 
-/**
- * Compile-time dispatcher: routes `T` -> `tr_variant` conversion to
- * `Converter<T>` if specialized, otherwise to the generic container fallbacks
- * (push-back ranges, insert ranges, std::array, std::optional).
- */
+namespace detail
+{
+
+// Human-readable name for a `tr_variant` alternative, for diagnostics.
+[[nodiscard]] std::string_view variant_type_name(size_t index) noexcept;
+
+// Emit a one-line stderr diagnostic for an unexpected-but-successful coercion.
+void warn_unexpected_coercion(std::string_view target_category, std::string_view source_type);
+
+// True iff decoding a variant of the given alternative into `T` is an
+// *expected* conversion. This whitelists coercions needed by benc/json:
+// benc stores bools as ints (i1e/i0e) and reals as strings. json numbers
+// without a fraction parse as ints.
+template<typename T>
+[[nodiscard]] constexpr bool is_expected_source(size_t const index) noexcept
+{
+    bool const is_string = index == tr_variant::StringIndex || index == tr_variant::StringViewIndex;
+
+    if constexpr (std::is_same_v<T, bool>) {
+        return index == tr_variant::BoolIndex || index == tr_variant::IntIndex || is_string;
+    }
+    if constexpr (std::is_floating_point_v<T>) {
+        return index == tr_variant::DoubleIndex || index == tr_variant::IntIndex || is_string;
+    }
+    if constexpr (std::is_enum_v<T> || std::is_integral_v<T>) {
+        // ints and enums decode from int tokens or string labels/octal --
+        // but *not* from a boolean (benc never produces one for these).
+        return index == tr_variant::IntIndex || is_string;
+    }
+    return true;
+}
+
+} // namespace detail
+
+// Compile-time dispatcher: routes `T` -> `tr_variant` conversion to
+// `Converter<T>` if specialized, otherwise to the generic container fallbacks
+// (push-back ranges, insert ranges, std::array, std::optional).
 template<typename T>
 [[nodiscard]] tr_variant to_variant(T const& src)
 {
@@ -186,30 +219,34 @@ template<typename T>
     }
 }
 
-/**
- * Compile-time dispatcher: routes `tr_variant` -> `T` conversion to
- * `Converter<T>` if specialized, otherwise to the generic container fallbacks
- * (push-back ranges, insert ranges, std::array, std::optional).
- *
- * Returns `true` on success and writes the decoded value to `*ptgt`.
- */
+// Compile-time dispatcher: routes `tr_variant` -> `T` conversion to
+// `Converter<T>` if specialized, otherwise to the generic container fallbacks
+// (push-back ranges, insert ranges, std::array, std::optional).
+// Returns `true` on success and writes the decoded value to `*ptgt`.
 template<typename T>
 bool to_value(tr_variant const& src, T* const ptgt)
 {
+    bool ok = false;
+
     if constexpr (detail::HasConverter<T>) {
-        return Converter<T>::to_value(src, ptgt);
+        ok = Converter<T>::to_value(src, ptgt);
     } else if constexpr (detail::is_push_back_range_v<T>) {
-        return detail::to_push_back_range(src, ptgt);
+        ok = detail::to_push_back_range(src, ptgt);
     } else if constexpr (detail::is_insert_range_v<T>) {
-        return detail::to_insert_range(src, ptgt);
+        ok = detail::to_insert_range(src, ptgt);
     } else if constexpr (detail::is_std_array_v<T>) {
-        return detail::to_array(src, ptgt);
+        ok = detail::to_array(src, ptgt);
     } else if constexpr (detail::is_optional_v<T>) {
-        return detail::to_optional(src, ptgt);
+        ok = detail::to_optional(src, ptgt);
     } else {
         static_assert(detail::HasConverter<T>, "No Converter<T> specialization for this type");
-        return false;
     }
+
+    if (ok && !detail::is_expected_source<T>(src.index())) {
+        detail::warn_unexpected_coercion(typeid(T).name(), detail::variant_type_name(src.index()));
+    }
+
+    return ok;
 }
 
 // Alternate version of `to_value()` that returns a std::optional

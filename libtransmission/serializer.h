@@ -210,32 +210,7 @@ bool set_from_variant_one(S& tgt, tr_quark key, tr_variant const& value, bool& c
 
         matched = true;
         using FieldType = std::remove_cvref_t<decltype(field)>;
-        changed = set(tgt.*(FieldType::MemberPointer), value);
-        return true;
-    };
-
-    std::apply([&](auto const&... field) { (try_field(field) || ...); }, S::Fields);
-    return matched;
-}
-
-// returns `true` iff `key` names a field in `S`; sets `type_ok`/`changed` accordingly
-template<typename T, Serializable S>
-bool set_one(S& tgt, tr_quark key, T& val, bool& type_ok, bool& changed)
-{
-    auto matched = false;
-    auto try_field = [&](auto const& field) {
-        if (field.key != key) {
-            return false;
-        }
-
-        matched = true;
-        using FieldType = std::remove_cvref_t<decltype(field)>;
-        if constexpr (std::is_same_v<T, typename FieldType::value_type>) {
-            changed = set(tgt.*(FieldType::MemberPointer), std::move(val));
-        } else {
-            type_ok = false;
-        }
-
+        changed = set(tgt.*FieldType::MemberPointer, value);
         return true;
     };
 
@@ -345,26 +320,6 @@ constexpr bool set(S& tgt, T val)
 }
 
 /**
- * Set `key` to `val` in whichever of the given Serializables owns it. Returns
- * `true` iff a matching field was found, had the same value type, and changed.
- */
-template<typename T, Serializable S, Serializable... Ss>
-bool set(tr_quark const key, T val, S& tgt, Ss&... tgts)
-{
-    auto type_ok = true;
-    auto changed = false;
-    auto matched = false;
-    auto try_next = [&](auto& obj) {
-        if (!matched) {
-            matched = detail::set_one(obj, key, val, type_ok, changed);
-        }
-    };
-    try_next(tgt);
-    (try_next(tgts), ...);
-    return type_ok && changed;
-}
-
-/**
  * Apply a variant `value` to `key` in whichever of the given Serializables owns
  * it. Returns `true` iff a matching field was found and its value changed.
  */
@@ -385,6 +340,21 @@ bool set_from_variant(tr_quark const key, tr_variant const& value, S& tgt, Ss&..
     try_next(tgt);
     (try_next(tgts), ...);
     return changed;
+}
+
+/**
+ * Set `key` to `val` in whichever of the given Serializables owns it.
+ *
+ * `val` is routed through a `tr_variant`, so any type with a registered
+ * `Converter` (or a supported container) can target a field of a different but
+ * compatible type -- e.g. `QString`/`Glib::ustring` -> `std::string`. A value
+ * type with no converter is a compile-time error (see `to_variant`), never a
+ * silent no-op. Returns `true` iff a matching field was found and changed.
+ */
+template<typename T, Serializable S, Serializable... Ss>
+bool set(tr_quark const key, T const& val, S& tgt, Ss&... tgts)
+{
+    return set_from_variant(key, to_variant(val), tgt, tgts...);
 }
 
 /**

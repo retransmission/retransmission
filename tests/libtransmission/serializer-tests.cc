@@ -524,6 +524,60 @@ TEST_F(SerializerTest, serializableSetByKey)
     EXPECT_EQ(endpoint.port, tr_port::from_host(1234));
 }
 
+TEST_F(SerializerTest, boolToIntCoercionWarnsButSucceeds)
+{
+    // A boolean feeding an integer field is not a benc/json-expected
+    // conversion. It still succeeds (legacy data must keep loading), but emits
+    // a developer-facing stderr warning so the mismatch can be noticed.
+    auto simple = Simple{ .blocks = 5, .enabled = false };
+
+    testing::internal::CaptureStderr();
+    EXPECT_TRUE(set(TR_KEY_blocks, true, simple)); // bool -> int: 5 -> 1
+    auto const warning = testing::internal::GetCapturedStderr();
+    EXPECT_EQ(1, simple.blocks);
+    EXPECT_FALSE(warning.empty());
+
+    // bool -> bool is expected: value applies with no warning.
+    testing::internal::CaptureStderr();
+    EXPECT_TRUE(set(TR_KEY_dht_enabled, true, simple));
+    EXPECT_TRUE(testing::internal::GetCapturedStderr().empty());
+    EXPECT_TRUE(simple.enabled);
+
+    // ...and likewise at the scalar `to_value` boundary.
+    testing::internal::CaptureStderr();
+    auto const as_int = to_value<int>(to_variant(true));
+    EXPECT_FALSE(testing::internal::GetCapturedStderr().empty());
+    ASSERT_TRUE(as_int.has_value());
+    EXPECT_EQ(1, *as_int);
+}
+
+TEST_F(SerializerTest, bencRoundTripPreservesBoolAndDouble)
+{
+    // benc has no boolean or floating-point token: bools serialize as i1e/i0e
+    // and doubles as strings, then recover on read (integer->bool,
+    // string->double). These are *expected* coercions, so the round trip must
+    // preserve the values and emit no warning.
+    auto const src_simple = Simple{ .blocks = 5, .enabled = true };
+    auto const src_floating = Floating{ .ratio = 2.5 };
+
+    auto const benc = tr_variant_serde::benc().to_string(
+        tr_variant{ save(src_simple, Simple::Fields, src_floating, Floating::Fields) });
+
+    auto serde = tr_variant_serde::benc();
+    auto const parsed = serde.parse(benc);
+    ASSERT_TRUE(parsed.has_value());
+
+    auto dst_simple = Simple{};
+    auto dst_floating = Floating{};
+    testing::internal::CaptureStderr();
+    load(*parsed, dst_simple, Simple::Fields, dst_floating, Floating::Fields);
+    EXPECT_TRUE(testing::internal::GetCapturedStderr().empty());
+
+    EXPECT_EQ(5, dst_simple.blocks);
+    EXPECT_TRUE(dst_simple.enabled); // recovered from i1e (integer) -> bool
+    EXPECT_DOUBLE_EQ(2.5, dst_floating.ratio); // recovered from string -> double
+}
+
 TEST_F(SerializerTest, serializableToVariantByKey)
 {
     auto const endpoint = Endpoint{ .address = "localhost", .port = tr_port::from_host(TrDefaultPeerPort) };
