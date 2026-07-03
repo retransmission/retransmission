@@ -29,6 +29,9 @@ Checks:
   - -modernize-use-nullptr # TODO: enable after https://github.com/llvm/llvm-project/issues/206245 is fixed
   - -modernize-use-trailing-return-type
   - performance-*
+  - portability-*
+  - -portability-avoid-pragma-once
+  - -portability-template-virtual-member-function
   - readability-*
   - -readability-function-cognitive-complexity
   - -readability-identifier-length
