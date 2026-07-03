@@ -5,14 +5,17 @@
 
 #include <algorithm>
 #include <array>
+#include <atomic> // [rpc-diag]
 #include <chrono>
 #include <cstdint>
+#include <cstdio> // [rpc-diag]
 #include <cstring> /* for strcspn() */
 #include <ctime>
 #include <memory>
 #include <ranges>
 #include <string>
 #include <string_view>
+#include <thread> // [rpc-diag]
 #include <utility>
 #include <vector>
 
@@ -23,6 +26,10 @@
 #include <sys/stat.h>
 #include <sys/un.h>
 #include <unistd.h>
+#include <signal.h> // [rpc-diag] sigaction()
+#include <execinfo.h> // [rpc-diag] backtrace()
+#include <pthread.h> // [rpc-diag] pthread_kill()
+#include <sys/syscall.h> // [rpc-diag] SYS_gettid
 #endif
 
 #include <event2/buffer.h>
@@ -269,6 +276,130 @@ void on_complete(struct evhttp_request* /*req*/, void* arg)
     delete ctx;
 }
 
+// --- Freeze watchdog (POSIX / Ubuntu-only; throwaway) --------------------------
+// The heartbeat below only *reports* a stall after the loop unblocks. To catch a
+// freeze *while it is happening* -- so we can see the exact blocking call stack --
+// we run an independent watchdog thread that is deliberately NOT on the event
+// loop. It watches `g_last_beat_ns` (bumped by the loop's heartbeat). If the loop
+// goes silent past WatchdogFreezeMs the watchdog (a) prints a loud line to stderr
+// with the pid + the frozen thread's LWP/TID + a ready-to-paste gdb command, and
+// (b) signals the frozen thread so a SIGUSR1 handler dumps its own backtrace
+// in-context (the thread is parked in a blocking syscall, so the signal interrupts
+// it, we unwind, then it resumes). It re-samples every WatchdogRedumpMs so a long
+// freeze yields several stacks -- letting us tell "stuck in one syscall" from
+// "churning through a huge loop". No debugger required, but gdb is there too.
+#ifndef _WIN32
+std::atomic<std::int64_t> g_last_beat_ns{ 0 }; // bumped by the event loop each heartbeat
+std::atomic<std::int64_t> g_last_dump_ns{ 0 }; // last time the watchdog dumped a stack
+std::atomic<unsigned long> g_loop_pthread{ 0UL };
+std::atomic<long> g_loop_tid{ -1 };
+
+auto constexpr WatchdogPollMs = 200;
+auto constexpr WatchdogFreezeMs = 1500; // > heartbeat interval, so healthy beats never trip it
+auto constexpr WatchdogRedumpMs = 3000; // re-sample the stack this often while still frozen
+
+[[nodiscard]] std::int64_t steady_now_ns() noexcept
+{
+    return std::chrono::duration_cast<std::chrono::nanoseconds>(clock::now().time_since_epoch()).count();
+}
+
+// Runs in the *frozen* thread's context (delivered via SIGUSR1 from the watchdog).
+// backtrace_symbols_fd() writes straight to the fd without malloc, so it is safe
+// enough to call from a signal handler for this throwaway diagnostic.
+void sigusr1_dump_backtrace(int /*sig*/)
+{
+    static char const banner[] = "\n=== [rpc-diag] BACKTRACE of frozen event-loop thread ===\n";
+    (void)!::write(STDERR_FILENO, banner, sizeof(banner) - 1U);
+
+    void* frames[96];
+    auto const n = ::backtrace(frames, static_cast<int>(std::size(frames)));
+    ::backtrace_symbols_fd(frames, n, STDERR_FILENO);
+
+    static char const footer[] = "=== [rpc-diag] end backtrace ===\n\n";
+    (void)!::write(STDERR_FILENO, footer, sizeof(footer) - 1U);
+}
+
+// Independent monitor thread -- deliberately NOT on the event loop so it keeps
+// running while the loop is wedged.
+void watchdog_main()
+{
+    auto const pid = static_cast<long>(::getpid());
+    for (;;) {
+        std::this_thread::sleep_for(std::chrono::milliseconds{ WatchdogPollMs });
+
+        auto const last_beat = g_last_beat_ns.load(std::memory_order_relaxed);
+        if (last_beat == 0) {
+            continue; // the event loop hasn't beaten yet
+        }
+
+        auto const now_ns = steady_now_ns();
+        auto const stalled_ms = (now_ns - last_beat) / 1'000'000;
+        if (stalled_ms < WatchdogFreezeMs) {
+            continue; // healthy
+        }
+
+        if ((now_ns - g_last_dump_ns.load()) / 1'000'000 < WatchdogRedumpMs) {
+            continue; // already dumped recently for this freeze
+        }
+        g_last_dump_ns.store(now_ns);
+
+        // fprintf straight to stderr (not tr_logAdd) so it shows even if the log
+        // path itself is stuck behind the frozen thread.
+        std::fprintf(
+            stderr,
+            "\n[rpc-diag] *** EVENT LOOP FROZEN *** no heartbeat for ~%lldms\n"
+            "[rpc-diag]   pid=%ld  frozen-thread-LWP=%ld\n"
+            "[rpc-diag]   manual inspect:  gdb -p %ld -batch -ex 'thread apply all bt'\n"
+            "[rpc-diag]   auto-dumping the frozen thread's backtrace below (via SIGUSR1):\n",
+            static_cast<long long>(stalled_ms),
+            pid,
+            g_loop_tid.load(),
+            pid);
+        std::fflush(stderr);
+
+        if (auto const handle = g_loop_pthread.load(); handle != 0UL) {
+            (void)::pthread_kill(static_cast<pthread_t>(handle), SIGUSR1);
+        }
+    }
+}
+
+// Arm the watchdog once. MUST be called from the event-loop thread so we capture
+// that thread's identity for signalling.
+void start_watchdog_once()
+{
+    static auto started = false;
+    if (started) {
+        return;
+    }
+    started = true;
+
+    g_loop_pthread.store(static_cast<unsigned long>(::pthread_self()));
+    g_loop_tid.store(static_cast<long>(::syscall(SYS_gettid)));
+    g_last_beat_ns.store(steady_now_ns());
+
+    // Pre-load libgcc's unwinder now, on a healthy thread, so backtrace() in the
+    // signal handler doesn't have to dlopen anything at freeze time.
+    auto warm = std::array<void*, 4>{};
+    (void)::backtrace(std::data(warm), static_cast<int>(std::size(warm)));
+
+    struct sigaction sa = {};
+    sa.sa_handler = &sigusr1_dump_backtrace;
+    ::sigemptyset(&sa.sa_mask);
+    sa.sa_flags = SA_RESTART; // resume the interrupted syscall after we unwind
+    (void)::sigaction(SIGUSR1, &sa, nullptr);
+
+    std::thread{ watchdog_main }.detach();
+
+    tr_logAddInfo(
+        fmt::format(
+            "[rpc-diag] freeze watchdog armed: pid={:d}, event-loop LWP={:d}. On a freeze it prints here and "
+            "auto-dumps the stuck backtrace (fallback: gdb -p {:d}).",
+            static_cast<long>(::getpid()),
+            g_loop_tid.load(),
+            static_cast<long>(::getpid())));
+}
+#endif // !_WIN32
+
 // Event-loop stall detector. Updated on each beat; a beat arriving much later than
 // HeartbeatIntervalMs means the single event/session thread was blocked.
 clock::time_point heartbeat_last{};
@@ -276,6 +407,12 @@ clock::time_point heartbeat_last{};
 void heartbeat_tick()
 {
     auto const now = clock::now();
+#ifndef _WIN32
+    // Feed the freeze watchdog: this is the loop's "I'm alive" signal.
+    g_last_beat_ns.store(
+        std::chrono::duration_cast<std::chrono::nanoseconds>(now.time_since_epoch()).count(),
+        std::memory_order_relaxed);
+#endif
     auto const elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(now - heartbeat_last).count();
     heartbeat_last = now;
     if (elapsed >= HeartbeatStallThresholdMs) {
@@ -973,6 +1110,10 @@ void start_server(tr_rpc_server* server)
         rpc_diag::heartbeat_last = rpc_diag::clock::now();
         server->heartbeat_timer = server->session->timerMaker().create([]() { rpc_diag::heartbeat_tick(); });
         server->heartbeat_timer->start_repeating(std::chrono::milliseconds{ rpc_diag::HeartbeatIntervalMs });
+#ifndef _WIN32
+        // [rpc-diag] arm the off-loop freeze watchdog from the event-loop thread.
+        rpc_diag::start_watchdog_once();
+#endif
         tr_logAddInfo(
             "[rpc-diag] instrumentation active: per-request tracing + 500ms event-loop heartbeat. "
             "Run with --log-level=info to see [rpc-diag] lines.");
