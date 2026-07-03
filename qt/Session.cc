@@ -940,8 +940,9 @@ void Session::launchWebInterface() const
 
 std::optional<tr::Settings> Session::local_settings() const
 {
-    if (session_)
+    if (session_) {
         return tr_sessionGetSettings(session_);
+    }
 
     return {};
 }
