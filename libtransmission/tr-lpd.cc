@@ -306,6 +306,9 @@ private:
 
         auto const mcast_sockaddr = tr_socket_address::from_string(McastSockAddr[ip_protocol]);
         TR_ASSERT(mcast_sockaddr);
+        if (!mcast_sockaddr) {
+            return false;
+        }
         auto const [mcast_ss, mcast_sslen] = mcast_sockaddr->to_sockaddr();
 
         auto const [bind_ss, bind_sslen] = tr_socket_address::to_sockaddr(tr_address::any(ip_protocol), mcast_sockaddr->port());
