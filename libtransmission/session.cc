@@ -68,6 +68,8 @@ struct tr_ctor;
 using namespace std::literals;
 using namespace tr::Values;
 
+static_assert(tr::serializer::has_unique_keys<tr::SessionSettings, tr::SessionAltSpeedSettings, tr::RpcServerSettings>());
+
 namespace
 {
 [[nodiscard]] auto get_settings_filename(std::string_view const config_dir)
@@ -426,10 +428,7 @@ tr_address tr_session::bind_address(tr_address_type type) const noexcept
 
 tr::Settings tr_sessionGetDefaultSettings()
 {
-    auto ret = tr::Settings{};
-    ret.merge(tr::SessionSettings{}.save());
-    ret.merge(tr::SessionAltSpeedSettings{}.save());
-    ret.merge(tr::RpcServerSettings{}.save());
+    auto ret = tr::serializer::save(tr::SessionSettings{}, tr::SessionAltSpeedSettings{}, tr::RpcServerSettings{});
 
     // TODO(5.0.0): remove this if block
     // N.B. Because `tr::SessionSettings::load()` calls
@@ -447,10 +446,7 @@ tr::Settings tr_sessionGetDefaultSettings()
 
 tr::Settings tr_sessionGetSettings(tr_session const* session)
 {
-    auto settings = tr::Settings{};
-    settings.merge(session->settings_.save());
-    settings.merge(session->alt_speeds_.settings().save());
-    settings.merge(session->rpc_server_->settings().save());
+    auto settings = tr::serializer::save(session->settings_, session->alt_speeds_.settings(), session->rpc_server_->settings());
     settings.insert_or_assign(TR_KEY_message_level, tr::serializer::to_variant(tr_logGetLevel()));
     return settings;
 }

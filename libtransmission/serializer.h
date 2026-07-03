@@ -6,6 +6,7 @@
 #pragma once
 
 #include <algorithm>
+#include <array>
 #include <concepts>
 #include <cstddef>
 #include <optional>
@@ -116,13 +117,191 @@ concept Serializable = requires {
     { std::tuple_size_v<std::remove_cvref_t<decltype(T::Fields)>> } -> std::convertible_to<std::size_t>;
 } && detail::is_fields_tuple_v<std::remove_cvref_t<decltype(T::Fields)>>;
 
-template<Serializable S>
-[[nodiscard]] std::optional<tr_variant> to_variant(S const& src, tr_quark key);
-
-template<typename T, Serializable S>
-[[nodiscard]] std::optional<T> get(S const& src, tr_quark key)
+/**
+ * Compile-time check that no serialization key is shared between the
+ * given Serializable types' `Fields`. Example:
+ * static_assert(has_unique_keys<SessionSettings, RpcServerSettings>());
+ */
+template<Serializable... S>
+[[nodiscard]] constexpr bool has_unique_keys()
 {
-    if (auto value = to_variant(src, key)) {
+    constexpr auto Total = (std::size_t{ 0 } + ... + std::tuple_size_v<std::remove_cvref_t<decltype(S::Fields)>>);
+
+    auto keys = std::array<tr_quark, Total>{};
+    auto idx = std::size_t{ 0 };
+    auto append_keys = [&keys, &idx](auto const& fields) {
+        std::apply([&keys, &idx](auto const&... field) { ((keys[idx++] = field.key), ...); }, fields);
+    };
+    (append_keys(S::Fields), ...);
+
+    std::ranges::sort(keys);
+    return std::ranges::adjacent_find(keys) == std::end(keys);
+}
+
+/**
+ * Returns `true` iff any of the given Serializables has a field with `key`.
+ * Example: has_key(TR_KEY_peer_port, session_settings, rpc_server_settings)
+ */
+template<Serializable... S>
+[[nodiscard]] bool has_key(tr_quark key, S const&... /*objs*/)
+{
+    auto fields_contain = [key](auto const& fields) {
+        auto found = false;
+        std::apply([key, &found](auto const&... field) { ((found = found || field.key == key), ...); }, fields);
+        return found;
+    };
+    return (fields_contain(S::Fields) || ...);
+}
+
+/**
+ * Compile-time check whether any of the given Serializable types has a
+ * field with `key`. Takes the Serializables as template arguments so it
+ * can be used in constant expressions. Example:
+ * static_assert(has_key<SessionSettings, RpcServerSettings>(TR_KEY_utp_enabled));
+ */
+template<Serializable... S>
+[[nodiscard]] constexpr bool has_key(tr_quark key)
+{
+    auto fields_contain = [key](auto const& fields) {
+        auto found = false;
+        std::apply([key, &found](auto const&... field) { ((found = found || field.key == key), ...); }, fields);
+        return found;
+    };
+    return (fields_contain(S::Fields) || ...);
+}
+
+namespace detail
+{
+
+// --- Group B workers: operate on a single Serializable, keyed by `tr_quark` ---
+
+template<Serializable S>
+[[nodiscard]] std::optional<tr_variant> to_variant_one(S const& src, tr_quark key)
+{
+    auto result = std::optional<tr_variant>{};
+    auto try_field = [&](auto const& field) {
+        if (field.key != key) {
+            return false;
+        }
+
+        auto map = tr_variant::Map{ 1U };
+        field.save(&src, map);
+
+        if (auto const iter = map.find(key); iter != std::end(map)) {
+            result = iter->second.clone();
+        }
+
+        return true;
+    };
+
+    std::apply([&](auto const&... field) { (try_field(field) || ...); }, S::Fields);
+    return result;
+}
+
+// returns `true` iff `key` names a field in `S`; sets `changed` iff its value changed
+template<Serializable S>
+bool set_from_variant_one(S& tgt, tr_quark key, tr_variant const& value, bool& changed)
+{
+    auto matched = false;
+    auto try_field = [&](auto const& field) {
+        if (field.key != key) {
+            return false;
+        }
+
+        matched = true;
+        using FieldType = std::remove_cvref_t<decltype(field)>;
+        changed = set(tgt.*(FieldType::MemberPointer), value);
+        return true;
+    };
+
+    std::apply([&](auto const&... field) { (try_field(field) || ...); }, S::Fields);
+    return matched;
+}
+
+// returns `true` iff `key` names a field in `S`; sets `type_ok`/`changed` accordingly
+template<typename T, Serializable S>
+bool set_one(S& tgt, tr_quark key, T& val, bool& type_ok, bool& changed)
+{
+    auto matched = false;
+    auto try_field = [&](auto const& field) {
+        if (field.key != key) {
+            return false;
+        }
+
+        matched = true;
+        using FieldType = std::remove_cvref_t<decltype(field)>;
+        if constexpr (std::is_same_v<T, typename FieldType::value_type>) {
+            changed = set(tgt.*(FieldType::MemberPointer), std::move(val));
+        } else {
+            type_ok = false;
+        }
+
+        return true;
+    };
+
+    std::apply([&](auto const&... field) { (try_field(field) || ...); }, S::Fields);
+    return matched;
+}
+
+// --- Group A workers: operate on a coupled (object, Fields) pair ---
+
+template<typename T, typename Fields>
+void save_one(T const& src, Fields const& fields, tr_variant::Map& map)
+{
+    std::apply([&src, &map](auto const&... field) { (field.save(&src, map), ...); }, fields);
+}
+
+template<typename T, typename Fields, typename ChangedKeys>
+void load_one(T& tgt, Fields const& fields, tr_variant::Map const& src, ChangedKeys& changed_keys)
+{
+    std::apply(
+        [&tgt, &src, &changed_keys](auto const&... field) {
+            (
+                [&] {
+                    if (field.load(&tgt, src)) {
+                        changed_keys.emplace_back(field.key);
+                    }
+                }(),
+                ...);
+        },
+        fields);
+}
+
+// Sum of `tuple_size` over the `Fields` (odd-indexed) elements of a flattened
+// pack of (object, Fields) pairs.
+template<typename ArgTuple, std::size_t... PairIndex>
+[[nodiscard]] consteval std::size_t pair_fields_capacity(std::index_sequence<PairIndex...> /*pairs*/)
+{
+    return (
+        std::size_t{ 0 } + ... + std::tuple_size_v<std::remove_cvref_t<std::tuple_element_t<(2 * PairIndex) + 1, ArgTuple>>>);
+}
+
+} // namespace detail
+
+/**
+ * Get the value of `key` as a variant, searching one or more Serializables in
+ * order. The first object whose `Fields` contains `key` wins; use
+ * `has_unique_keys()` to guarantee at most one owner.
+ */
+template<Serializable S, Serializable... Ss>
+[[nodiscard]] std::optional<tr_variant> to_variant(tr_quark const key, S const& src, Ss const&... srcs)
+{
+    auto result = detail::to_variant_one(src, key);
+    if constexpr (sizeof...(Ss) != 0U) {
+        auto try_next = [&result, key](auto const& obj) {
+            if (!result) {
+                result = detail::to_variant_one(obj, key);
+            }
+        };
+        (try_next(srcs), ...);
+    }
+    return result;
+}
+
+template<typename T, Serializable S, Serializable... Ss>
+[[nodiscard]] std::optional<T> get(tr_quark const key, S const& src, Ss const&... srcs)
+{
+    if (auto value = to_variant(key, src, srcs...)) {
         return to_value<T>(*value);
     }
 
@@ -165,123 +344,160 @@ constexpr bool set(S& tgt, T val)
     return true;
 }
 
-template<Serializable S>
-[[nodiscard]] std::optional<tr_variant> to_variant(S const& src, tr_quark key)
-{
-    auto result = std::optional<tr_variant>{};
-    auto try_field = [&](auto const& field) {
-        if (field.key != key) {
-            return false;
-        }
-
-        auto map = tr_variant::Map{ 1U };
-        field.save(&src, map);
-
-        if (auto const iter = map.find(key); iter != std::end(map)) {
-            result = iter->second.clone();
-        }
-
-        return true;
-    };
-
-    std::apply([&](auto const&... field) { (try_field(field) || ...); }, S::Fields);
-    return result;
-}
-
-template<Serializable S>
-bool set_from_variant(S& tgt, tr_quark key, tr_variant const& value)
-{
-    auto changed = false;
-    auto try_field = [&](auto const& field) {
-        if (field.key != key) {
-            return false;
-        }
-
-        using FieldType = std::remove_cvref_t<decltype(field)>;
-        changed = set(tgt.*(FieldType::MemberPointer), value);
-        return true;
-    };
-
-    std::apply([&](auto const&... field) { (try_field(field) || ...); }, S::Fields);
-    return changed;
-}
-
-template<typename T, Serializable S>
-bool set(S& tgt, tr_quark key, T val)
+/**
+ * Set `key` to `val` in whichever of the given Serializables owns it. Returns
+ * `true` iff a matching field was found, had the same value type, and changed.
+ */
+template<typename T, Serializable S, Serializable... Ss>
+bool set(tr_quark const key, T val, S& tgt, Ss&... tgts)
 {
     auto type_ok = true;
     auto changed = false;
-
-    auto try_field = [&](auto const& field) {
-        if (field.key != key) {
-            return false;
+    auto matched = false;
+    auto try_next = [&](auto& obj) {
+        if (!matched) {
+            matched = detail::set_one(obj, key, val, type_ok, changed);
         }
-
-        using FieldType = std::remove_cvref_t<decltype(field)>;
-        if constexpr (std::is_same_v<T, typename FieldType::value_type>) {
-            changed = set(tgt.*(FieldType::MemberPointer), std::move(val));
-        } else {
-            type_ok = false;
-        }
-
-        return true;
     };
-
-    std::apply([&](auto const&... field) { (try_field(field) || ...); }, S::Fields);
+    try_next(tgt);
+    (try_next(tgts), ...);
     return type_ok && changed;
 }
 
 /**
- * Load fields from a variant map into a target object.
+ * Apply a variant `value` to `key` in whichever of the given Serializables owns
+ * it. Returns `true` iff a matching field was found and its value changed.
+ */
+template<Serializable S, Serializable... Ss>
+bool set_from_variant(tr_quark const key, tr_variant const& value, S& tgt, Ss&... tgts)
+{
+    auto changed = false;
+    auto matched = false;
+    auto try_next = [&](auto& obj) {
+        if (!matched) {
+            auto obj_changed = false;
+            if (detail::set_from_variant_one(obj, key, value, obj_changed)) {
+                matched = true;
+                changed = obj_changed;
+            }
+        }
+    };
+    try_next(tgt);
+    (try_next(tgts), ...);
+    return changed;
+}
+
+/**
+ * Load a source variant map into one or more coupled (target, Fields) pairs.
  * Missing keys are silently ignored (fields retain their existing values).
  *
- * @param tgt The object to populate
- * @param fields A tuple of Field<> descriptors
- * @param src The source variant (expected to be a Map)
- * @return changed_keys sorted keys of fields that changed
+ * @param src    The source variant map
+ * @param args   One or more (target object, Fields tuple) pairs
+ * @return       sorted keys of fields that changed, across all pairs
+ *
+ * Example: load(src, session_settings, SessionSettings::Fields, rpc, RpcServerSettings::Fields)
  */
-template<typename T, typename Fields>
-auto load(T& tgt, Fields const& fields, tr_variant::Map const& src)
+template<typename... Args>
+auto load(tr_variant::Map const& src, Args&&... args)
 {
-    auto changed_keys = small::vector<tr_quark, std::tuple_size_v<Fields>>{};
-    std::apply(
-        [&tgt, &src, &changed_keys](auto const&... field) {
-            (
-                [&] {
-                    if (field.load(&tgt, src)) {
-                        changed_keys.emplace_back(field.key);
-                    }
-                }(),
-                ...);
-        },
-        fields);
+    static_assert(
+        sizeof...(Args) != 0U && sizeof...(Args) % 2U == 0U,
+        "load() expects a source followed by one or more (target, Fields) pairs");
+
+    constexpr auto PairCount = sizeof...(Args) / 2U;
+    auto arg_tuple = std::forward_as_tuple(std::forward<Args>(args)...);
+    using ArgTuple = std::remove_cvref_t<decltype(arg_tuple)>;
+    constexpr auto Capacity = detail::pair_fields_capacity<ArgTuple>(std::make_index_sequence<PairCount>{});
+
+    auto changed_keys = small::vector<tr_quark, Capacity>{};
+    [&]<std::size_t... PairIndex>(std::index_sequence<PairIndex...> /*pairs*/) {
+        (detail::load_one(std::get<2U * PairIndex>(arg_tuple), std::get<(2U * PairIndex) + 1U>(arg_tuple), src, changed_keys),
+         ...);
+    }(std::make_index_sequence<PairCount>{});
+
     std::ranges::sort(changed_keys);
     return changed_keys;
 }
 
-template<typename T, typename Fields>
-auto load(T& tgt, Fields const& fields, tr_variant const& src)
+template<typename... Args>
+auto load(tr_variant const& src, Args&&... args)
 {
+    static_assert(
+        sizeof...(Args) != 0U && sizeof...(Args) % 2U == 0U,
+        "load() expects a source followed by one or more (target, Fields) pairs");
+
+    constexpr auto PairCount = sizeof...(Args) / 2U;
+    using ArgTuple = std::tuple<Args&&...>;
+    constexpr auto Capacity = detail::pair_fields_capacity<ArgTuple>(std::make_index_sequence<PairCount>{});
+
     if (auto const* const map = src.get_if<tr_variant::Map>()) {
-        return load(tgt, fields, *map);
+        return load(*map, std::forward<Args>(args)...);
     }
 
-    return small::vector<tr_quark, std::tuple_size_v<Fields>>{};
+    return small::vector<tr_quark, Capacity>{};
 }
 
 /**
- * Save an object's fields to a variant map.
+ * Load a source into one or more Serializables, inferring each target's
+ * `Fields`. Delegates to the (target, Fields)-pair overload above.
  *
- * @param src    The object to serialize
- * @param fields A tuple of Field<> descriptors
- * @return       A tr_variant::Map containing the serialized fields
+ * Example: load(src, session_settings, alt_speed_settings, rpc_server_settings)
  */
-template<typename T, typename Fields>
-[[nodiscard]] tr_variant::Map save(T const& src, Fields const& fields)
+template<Serializable S, Serializable... Ss>
+auto load(tr_variant::Map const& src, S& tgt, Ss&... tgts)
 {
-    auto map = tr_variant::Map{ std::tuple_size_v<std::remove_cvref_t<Fields>> };
-    std::apply([&src, &map](auto const&... field) { (field.save(&src, map), ...); }, fields);
+    static_assert(has_unique_keys<S, Ss...>(), "load() requires the objects to have globally unique keys");
+    return std::apply(
+        [&src](auto&&... args) { return load(src, args...); },
+        std::tuple_cat(std::forward_as_tuple(tgt, S::Fields), std::forward_as_tuple(tgts, Ss::Fields)...));
+}
+
+template<Serializable S, Serializable... Ss>
+auto load(tr_variant const& src, S& tgt, Ss&... tgts)
+{
+    static_assert(has_unique_keys<S, Ss...>(), "load() requires the objects to have globally unique keys");
+    return std::apply(
+        [&src](auto&&... args) { return load(src, args...); },
+        std::tuple_cat(std::forward_as_tuple(tgt, S::Fields), std::forward_as_tuple(tgts, Ss::Fields)...));
+}
+
+/**
+ * Save one or more coupled (object, Fields) pairs into a single variant map.
+ *
+ * @param args One or more (source object, Fields tuple) pairs
+ * @return     A tr_variant::Map containing the serialized fields of every pair
+ *
+ * Example: save(session_settings, SessionSettings::Fields, rpc, RpcServerSettings::Fields)
+ */
+template<typename... Args>
+[[nodiscard]] tr_variant::Map save(Args const&... args)
+{
+    static_assert(sizeof...(Args) != 0U && sizeof...(Args) % 2U == 0U, "save() expects one or more (object, Fields) pairs");
+
+    constexpr auto PairCount = sizeof...(Args) / 2U;
+    auto const arg_tuple = std::forward_as_tuple(args...);
+    using ArgTuple = std::remove_cvref_t<decltype(arg_tuple)>;
+
+    auto map = tr_variant::Map{ detail::pair_fields_capacity<ArgTuple>(std::make_index_sequence<PairCount>{}) };
+    [&]<std::size_t... PairIndex>(std::index_sequence<PairIndex...> /*pairs*/) {
+        (detail::save_one(std::get<2U * PairIndex>(arg_tuple), std::get<(2U * PairIndex) + 1U>(arg_tuple), map), ...);
+    }(std::make_index_sequence<PairCount>{});
     return map;
+}
+
+/**
+ * Save one or more Serializables into a single variant map, inferring each
+ * object's `Fields`. Delegates to the (object, Fields)-pair overload above.
+ *
+ * Example: save(session_settings, alt_speed_settings, rpc_server_settings)
+ */
+template<Serializable S, Serializable... Ss>
+[[nodiscard]] tr_variant::Map save(S const& obj, Ss const&... objs)
+{
+    static_assert(has_unique_keys<S, Ss...>(), "save() requires the objects to have globally unique keys");
+    return std::apply(
+        [](auto const&... args) { return save(args...); },
+        std::tuple_cat(std::forward_as_tuple(obj, S::Fields), std::forward_as_tuple(objs, Ss::Fields)...));
 }
 
 } // namespace tr::serializer

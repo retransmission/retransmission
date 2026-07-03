@@ -29,7 +29,7 @@ TEST_F(SettingsTest, canInstantiate)
 {
     auto settings = tr_session::Settings{};
 
-    auto map = settings.save();
+    auto map = tr::serializer::save(settings);
     EXPECT_FALSE(std::empty(map));
 }
 
@@ -55,7 +55,7 @@ TEST_F(SettingsTest, canSaveBools)
     auto const expected_value = !settings.seed_queue_enabled;
     settings.seed_queue_enabled = expected_value;
 
-    auto const map = settings.save();
+    auto const map = tr::serializer::save(settings);
     auto const val = map.value_if<bool>(Key);
     ASSERT_TRUE(val);
     EXPECT_EQ(expected_value, *val);
@@ -83,7 +83,7 @@ TEST_F(SettingsTest, canSaveDoubles)
     auto const expected_value = !default_value;
     settings.seed_queue_enabled = expected_value;
 
-    auto const map = settings.save();
+    auto const map = tr::serializer::save(settings);
     auto const val = map.value_if<bool>(Key);
     ASSERT_TRUE(val);
     EXPECT_EQ(expected_value, *val);
@@ -119,7 +119,7 @@ TEST_F(SettingsTest, canSaveEncryptionMode)
     EXPECT_NE(SourceValue, settings.seed_queue_enabled);
     settings.encryption_mode = SourceValue;
 
-    auto const map = settings.save();
+    auto const map = tr::serializer::save(settings);
     auto const val = map.value_if<std::string_view>(Key);
     ASSERT_TRUE(val);
     EXPECT_EQ(ExpectedValue, *val);
@@ -156,7 +156,7 @@ TEST_F(SettingsTest, canSaveLogLevel)
     ASSERT_NE(ExpectedValue, default_value);
 
     settings.log_level = ExpectedValue;
-    auto const map = settings.save();
+    auto const map = tr::serializer::save(settings);
     auto const val = map.value_if<int64_t>(Key);
     ASSERT_TRUE(val);
     EXPECT_EQ(ExpectedValue, *val);
@@ -193,7 +193,7 @@ TEST_F(SettingsTest, canSaveMode)
     ASSERT_NE(ExpectedValue, default_value);
 
     settings.umask = ExpectedValue;
-    auto const map = settings.save();
+    auto const map = tr::serializer::save(settings);
     auto const val = map.value_if<std::string_view>(Key);
     ASSERT_TRUE(val);
     EXPECT_EQ("0777"sv, *val);
@@ -240,7 +240,7 @@ TEST_F(SettingsTest, canSavePort)
     ASSERT_NE(ExpectedValue, default_value);
 
     settings.peer_port = ExpectedValue;
-    auto const map = settings.save();
+    auto const map = tr::serializer::save(settings);
     auto const val = map.value_if<int64_t>(Key);
     ASSERT_TRUE(val);
     EXPECT_EQ(ExpectedValue.host(), *val);
@@ -277,7 +277,7 @@ TEST_F(SettingsTest, canSavePreallocation)
     ASSERT_NE(ExpectedValue, default_value);
 
     settings.preallocation_mode = ExpectedValue;
-    auto const map = settings.save();
+    auto const map = tr::serializer::save(settings);
     auto const val = map.value_if<int64_t>(Key);
     ASSERT_TRUE(val);
     EXPECT_EQ(static_cast<int64_t>(ExpectedValue), *val);
@@ -314,7 +314,7 @@ TEST_F(SettingsTest, canSaveSizeT)
     auto const expected_value = settings.queue_stalled_minutes + 5U;
 
     settings.queue_stalled_minutes = expected_value;
-    auto const map = settings.save();
+    auto const map = tr::serializer::save(settings);
     auto const val = map.value_if<int64_t>(Key);
     ASSERT_TRUE(val);
     EXPECT_EQ(expected_value, static_cast<size_t>(*val));
@@ -343,7 +343,7 @@ TEST_F(SettingsTest, canSaveString)
     EXPECT_NE(ChangedValue, tr_session::Settings{}.bind_address_ipv4);
 
     settings.bind_address_ipv4 = ChangedValue;
-    auto const map = settings.save();
+    auto const map = tr::serializer::save(settings);
     auto const val = map.value_if<std::string_view>(Key);
     ASSERT_TRUE(val);
     EXPECT_EQ(ChangedValue, *val);
@@ -377,12 +377,12 @@ TEST_F(SettingsTest, canSaveNullableString)
     EXPECT_EQ(std::nullopt, settings.proxy_url);
 
     settings.proxy_url = ChangedValue;
-    auto map = settings.save();
+    auto map = tr::serializer::save(settings);
     auto const sv = map.value_if<std::string_view>(Key);
     EXPECT_EQ(ChangedValue, sv);
 
     settings.proxy_url = std::nullopt;
-    map = settings.save();
+    map = tr::serializer::save(settings);
     auto const null_p = map.value_if<std::nullptr_t>(Key);
     EXPECT_TRUE(null_p);
 }
@@ -417,7 +417,7 @@ TEST_F(SettingsTest, canSaveDiffServ)
     ASSERT_NE(ChangedValue, settings.peer_socket_diffserv);
 
     settings.peer_socket_diffserv = ChangedValue;
-    auto const map = settings.save();
+    auto const map = tr::serializer::save(settings);
     auto const val = map.value_if<std::string_view>(Key);
     ASSERT_TRUE(val);
     EXPECT_EQ("cs1"sv, *val);
@@ -453,7 +453,7 @@ TEST_F(SettingsTest, canSaveVerify)
     ASSERT_NE(ChangedValue, settings.torrent_added_verify_mode);
 
     settings.torrent_added_verify_mode = ChangedValue;
-    auto const map = settings.save();
+    auto const map = tr::serializer::save(settings);
     auto const val = map.value_if<std::string_view>(Key);
     ASSERT_TRUE(val);
     EXPECT_EQ("full"sv, *val);
@@ -520,7 +520,7 @@ TEST_F(SettingsTest, canSavePreferredTransport)
     ASSERT_NE(setting_value, default_value);
 
     settings.preferred_transports = setting_value;
-    auto const map = settings.save();
+    auto const map = tr::serializer::save(settings);
     auto* const l = map.find_if<tr_variant::Vector>(Key);
     ASSERT_NE(l, nullptr);
     ASSERT_EQ(std::size(ExpectedValue), std::size(*l));
@@ -633,7 +633,7 @@ TEST_F(SettingsTest, canSaveSleepPerSecondsDuringVerify)
     ASSERT_NE(ExpectedValue, default_value);
 
     settings.sleep_per_seconds_during_verify = ExpectedValue;
-    auto const map = settings.save();
+    auto const map = tr::serializer::save(settings);
     auto const val_raw = map.value_if<int64_t>(Key);
     ASSERT_TRUE(val_raw);
     EXPECT_EQ(ExpectedValue, std::chrono::milliseconds{ *val_raw });
@@ -643,7 +643,7 @@ TEST_F(SettingsTest, canInstantiateAltSpeedSettings)
 {
     auto settings = tr::SessionAltSpeedSettings{};
 
-    auto map = settings.save();
+    auto map = tr::serializer::save(settings);
     EXPECT_FALSE(std::empty(map));
 }
 
@@ -661,7 +661,7 @@ TEST_F(SettingsTest, canLoadAndSaveAltSpeedSettings)
     EXPECT_TRUE(settings.scheduler_enabled);
     EXPECT_EQ(321U, settings.speed_up_kbyps);
 
-    auto const out = settings.save();
+    auto const out = tr::serializer::save(settings);
     EXPECT_EQ(true, out.value_if<bool>(TR_KEY_alt_speed_enabled));
     EXPECT_EQ(true, out.value_if<bool>(TR_KEY_alt_speed_time_enabled));
     EXPECT_EQ(321, out.value_if<int64_t>(TR_KEY_alt_speed_up));
@@ -671,7 +671,7 @@ TEST_F(SettingsTest, canInstantiateRpcServerSettings)
 {
     auto settings = tr::RpcServerSettings{};
 
-    auto map = settings.save();
+    auto map = tr::serializer::save(settings);
     EXPECT_FALSE(std::empty(map));
 }
 
@@ -691,7 +691,7 @@ TEST_F(SettingsTest, canLoadAndSaveRpcServerSettings)
     EXPECT_EQ("alice"sv, settings.username);
     EXPECT_EQ(9091, settings.port.host());
 
-    auto const out = settings.save();
+    auto const out = tr::serializer::save(settings);
     EXPECT_EQ(true, out.value_if<bool>(TR_KEY_rpc_enabled));
     EXPECT_EQ(true, out.value_if<bool>(TR_KEY_rpc_authentication_required));
     EXPECT_EQ("alice"sv, out.value_if<std::string_view>(TR_KEY_rpc_username));

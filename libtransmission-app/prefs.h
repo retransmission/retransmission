@@ -52,12 +52,12 @@ public:
 
     explicit Prefs(tr::Settings const& settings)
     {
-        tr::serializer::load(*this, Fields, settings);
+        tr::serializer::load(settings, *this, Fields);
     }
 
     explicit Prefs(std::string_view config_dir)
     {
-        tr::serializer::load(*this, Fields, tr_sessionLoadSettings(config_dir));
+        tr::serializer::load(tr_sessionLoadSettings(config_dir), *this, Fields);
     }
 
     Prefs(Prefs&&) = delete;
@@ -68,7 +68,7 @@ public:
 
     [[nodiscard]] std::pair<tr_quark, tr_variant> keyval(tr_quark const key) const
     {
-        if (auto val = tr::serializer::to_variant(*this, key)) {
+        if (auto val = tr::serializer::to_variant(key, *this)) {
             return { key, std::move(*val) };
         }
 
@@ -77,7 +77,7 @@ public:
 
     void set(tr_quark const key, tr_variant const& var)
     {
-        if (tr::serializer::set_from_variant(*this, key, var)) {
+        if (tr::serializer::set_from_variant(key, var, *this)) {
             on_changed(key);
         }
     }
@@ -85,7 +85,7 @@ public:
     template<typename T>
     void set(tr_quark const key, T const& val)
     {
-        if (tr::serializer::set(*this, key, val)) {
+        if (tr::serializer::set(key, val, *this)) {
             on_changed(key);
         }
     }
@@ -95,7 +95,7 @@ public:
     template<typename T>
     [[nodiscard]] T get(tr_quark const key) const
     {
-        auto const val = tr::serializer::get<T>(*this, key);
+        auto const val = tr::serializer::get<T>(key, *this);
         assert(val.has_value());
         return val.value_or(T{});
     }
