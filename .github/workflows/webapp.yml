@@ -14,7 +14,7 @@ on:
       - '.github/**'
 jobs:
   decide-what-jobs-to-run:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
     outputs:
       test-style: ${{ steps.check-diffs.outputs.web-changed == '1' }}
       test-generated-files: ${{ steps.check-diffs.outputs.web-changed == '1' && steps.check-main-push.outputs.is-main-push == '0'}}
@@ -53,16 +53,12 @@ jobs:
           get_changes web CMakeLists.txt web
 
   code-style:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
     needs: [ decide-what-jobs-to-run ]
     if: ${{ needs.decide-what-jobs-to-run.outputs.test-style == 'true' }}
     steps:
       - name: Get source
         uses: actions/checkout@v6
-      - name: Get NPM
-        uses: actions/setup-node@v6
-        with:
-          node-version: lts/*
       - name: Check for style diffs
         id: check-for-diffs
         run: |
@@ -92,7 +88,7 @@ jobs:
           exit 1
 
   test-generated-files:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
     needs: [ decide-what-jobs-to-run ]
     if: ${{ needs.decide-what-jobs-to-run.outputs.test-generated-files == 'true' }}
     steps:
@@ -119,17 +115,13 @@ jobs:
               web/public_html/transmission-app.js.map
 
   update-generated-files:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
     needs: [ decide-what-jobs-to-run ]
     if: ${{ needs.decide-what-jobs-to-run.outputs.update-generated-files == 'true' }}
     steps:
       - name: Show env
         run: |
           env | sort
-      - name: Get NPM
-        uses: actions/setup-node@v6
-        with:
-          node-version: lts/*
       - name: Get source
         uses: actions/checkout@v6
         with:
