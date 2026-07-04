@@ -16,9 +16,6 @@
 #include <openssl/evp.h>
 #include <openssl/opensslv.h>
 #include <openssl/rand.h>
-#include <openssl/ssl.h>
-#include <openssl/x509.h>
-#include <openssl/x509_vfy.h>
 
 #include <fmt/format.h>
 
@@ -157,47 +154,6 @@ tr_sha256_digest_t tr_sha256::finish()
     auto digest = digest_finish<tr_sha256_digest_t>(handle_);
     clear();
     return digest;
-}
-
-// --- x509
-
-tr_x509_store_t tr_ssl_get_x509_store(tr_ssl_ctx_t handle)
-{
-    if (handle == nullptr) {
-        return nullptr;
-    }
-
-    return SSL_CTX_get_cert_store(static_cast<SSL_CTX const*>(handle));
-}
-
-bool tr_x509_store_add(tr_x509_store_t handle, tr_x509_cert_t cert)
-{
-    TR_ASSERT(handle != nullptr);
-    TR_ASSERT(cert != nullptr);
-
-    return check_result(X509_STORE_add_cert(static_cast<X509_STORE*>(handle), static_cast<X509*>(cert)));
-}
-
-tr_x509_cert_t tr_x509_cert_new(void const* der, long der_length)
-{
-    TR_ASSERT(der != nullptr);
-
-    X509* const ret = d2i_X509(nullptr, reinterpret_cast<unsigned char const**>(&der), der_length);
-
-    if (ret == nullptr) {
-        log_error();
-    }
-
-    return ret;
-}
-
-void tr_x509_cert_free(tr_x509_cert_t handle)
-{
-    if (handle == nullptr) {
-        return;
-    }
-
-    X509_free(static_cast<X509*>(handle));
 }
 
 // --- rand

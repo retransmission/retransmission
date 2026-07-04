@@ -20,9 +20,6 @@
 #include "libtransmission/types.h"
 #include "libtransmission/utils.h"
 
-#define TR_CRYPTO_X509_FALLBACK
-#include "libtransmission/crypto-utils-fallback.cc" // NOLINT(bugprone-suspicious-include)
-
 #if !defined(WITH_MBEDTLS)
 #error mbedtls module
 #endif
