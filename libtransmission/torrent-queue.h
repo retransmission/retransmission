@@ -39,7 +39,7 @@ public:
     size_t add(tr_torrent_id_t id);
     void remove(tr_torrent_id_t id);
 
-    [[nodiscard]] size_t get_pos(tr_torrent_id_t id);
+    [[nodiscard]] size_t get_pos(tr_torrent_id_t id) const noexcept;
     [[nodiscard]] std::vector<tr_torrent_id_t> set_pos(tr_torrent_id_t id, size_t new_pos);
 
     [[nodiscard]] TR_CONSTEXPR_VEC auto size() const noexcept
@@ -64,10 +64,25 @@ private:
         is_dirty_ = is_dirty;
     }
 
+    // Records that `id` currently lives at `pos`, growing pos_of_ as needed.
+    void set_pos_of(tr_torrent_id_t id, size_t pos);
+
+    // Rewrites pos_of_ for the ids in queue_[first, last) so it stays in sync
+    // with the queue after a mutation. Both bounds must be <= queue_.size().
+    void reindex(size_t first, size_t last) noexcept;
+
+    // queue_[pos] is the id at queue position `pos`.
     std::vector<tr_torrent_id_t> queue_;
-    std::vector<size_t> pos_cache_;
+
+    // pos_of_[id] is the queue position of `id`, or NotQueued if absent.
+    // Kept eagerly in sync with `queue_` so that `get_pos()` is always O(1).
+    std::vector<size_t> pos_of_;
 
     bool is_dirty_ = false;
 
     Mediator const& mediator_;
+
+    // Sentinel stored in `pos_of_` for ids that are not in the queue.
+    // A real queue position can never reach this value.
+    static auto constexpr NotQueued = MaxQueuePosition;
 };
