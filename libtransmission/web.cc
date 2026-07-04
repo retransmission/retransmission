@@ -4,7 +4,7 @@
 // License text can be found in the licenses/ folder.
 
 #include <algorithm>
-#ifdef _WIN32
+#if defined(_WIN32) && defined(WITH_OPENSSL)
 #include <array>
 #endif
 #include <atomic>
@@ -36,8 +36,27 @@
 
 #include <fmt/format.h>
 
-#ifdef _WIN32
-#include "libtransmission/crypto-utils.h"
+#if defined(_WIN32) && !defined(WITH_OPENSSL)
+#error Windows builds require the OpenSSL crypto backend (WITH_CRYPTO=openssl): \
+    tracker TLS certs are verified against the Windows system certificate store, \
+    which is injected into OpenSSL's trust store by ssl_context_func() below.
+#endif
+
+#if defined(_WIN32) && defined(WITH_OPENSSL)
+// <wincrypt.h> (included above via <windows.h>) defines X509_NAME and several
+// other names as macros that collide with the OpenSSL declarations of the same
+// names. Undefine them before including the OpenSSL headers, as curl does in
+// its own Windows OpenSSL bridge code.
+#undef X509_NAME
+#undef X509_EXTENSIONS
+#undef X509_CERT_PAIR
+#undef PKCS7_ISSUER_AND_SERIAL
+#undef PKCS7_SIGNER_INFO
+#undef OCSP_REQUEST
+#undef OCSP_RESPONSE
+#include <openssl/ssl.h>
+#include <openssl/x509.h>
+#include <openssl/x509_vfy.h>
 #endif
 #include "libtransmission/env.h"
 #include "libtransmission/log.h"
@@ -96,10 +115,10 @@ using easy_unique_ptr = std::unique_ptr<CURL, EasyDeleter>;
 
 } // namespace curl_helpers
 
-#ifdef _WIN32
+#if defined(_WIN32) && defined(WITH_OPENSSL)
 CURLcode ssl_context_func(CURL* /*curl*/, void* ssl_ctx, void* /*user_data*/)
 {
-    auto const cert_store = tr_ssl_get_x509_store(ssl_ctx);
+    auto* const cert_store = SSL_CTX_get_cert_store(static_cast<SSL_CTX*>(ssl_ctx));
     if (cert_store == nullptr) {
         return CURLE_OK;
     }
@@ -128,13 +147,14 @@ CURLcode ssl_context_func(CURL* /*curl*/, void* ssl_ctx, void* /*user_data*/)
                 break;
             }
 
-            auto* const cert = tr_x509_cert_new(sys_cert->pbCertEncoded, static_cast<long>(sys_cert->cbCertEncoded));
+            unsigned char const* der = sys_cert->pbCertEncoded;
+            X509* const cert = d2i_X509(nullptr, &der, static_cast<long>(sys_cert->cbCertEncoded));
             if (cert == nullptr) {
                 continue;
             }
 
-            tr_x509_store_add(cert_store, cert);
-            tr_x509_cert_free(cert);
+            (void)X509_STORE_add_cert(cert_store, cert);
+            X509_free(cert);
         }
 
         CertCloseStore(sys_cert_store, 0);
@@ -560,7 +580,7 @@ public:
         } else if (!std::empty(curl_ca_bundle)) {
             (void)curl_easy_setopt(e, CURLOPT_CAINFO, curl_ca_bundle.c_str());
         } else {
-#ifdef _WIN32
+#if defined(_WIN32) && defined(WITH_OPENSSL)
             (void)curl_easy_setopt(e, CURLOPT_SSL_CTX_FUNCTION, ssl_context_func);
 #endif
         }

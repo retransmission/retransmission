@@ -97,33 +97,6 @@ private:
     tr_sha256_context_t handle_;
 };
 
-/** @brief Opaque SSL context type. */
-using tr_ssl_ctx_t = void*;
-/** @brief Opaque X509 certificate store type. */
-using tr_x509_store_t = void*;
-/** @brief Opaque X509 certificate type. */
-using tr_x509_cert_t = void*;
-
-/**
- * @brief Get X509 certificate store from SSL context.
- */
-tr_x509_store_t tr_ssl_get_x509_store(tr_ssl_ctx_t handle);
-
-/**
- * @brief Add certificate to X509 certificate store.
- */
-bool tr_x509_store_add(tr_x509_store_t handle, tr_x509_cert_t cert);
-
-/**
- * @brief Allocate and initialize new X509 certificate from DER-encoded buffer.
- */
-tr_x509_cert_t tr_x509_cert_new(void const* der, long der_length);
-
-/**
- * @brief Free X509 certificate returned by @ref tr_x509_cert_new.
- */
-void tr_x509_cert_free(tr_x509_cert_t handle);
-
 /**
  * @brief Fill a buffer with random bytes.
  */

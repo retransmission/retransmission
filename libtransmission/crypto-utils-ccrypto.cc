@@ -17,9 +17,6 @@
 #include "libtransmission/types.h"
 #include "libtransmission/utils.h"
 
-#define TR_CRYPTO_X509_FALLBACK
-#include "crypto-utils-fallback.cc" // NOLINT(bugprone-suspicious-include)
-
 // ---
 
 namespace

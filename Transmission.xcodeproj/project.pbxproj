@@ -312,7 +312,6 @@
 		BEFC1E560C07861A00B0BB3C /* completion.cc in Sources */ = {isa = PBXBuildFile; fileRef = BEFC1E1D0C07861A00B0BB3C /* completion.cc */; };
 		BEFC1E570C07861A00B0BB3C /* clients.h in Headers */ = {isa = PBXBuildFile; fileRef = BEFC1E1E0C07861A00B0BB3C /* clients.h */; };
 		BEFC1E580C07861A00B0BB3C /* clients.cc in Sources */ = {isa = PBXBuildFile; fileRef = BEFC1E1F0C07861A00B0BB3C /* clients.cc */; };
-		C1033E071A3279B800EF44D8 /* crypto-utils-fallback.cc in Sources */ = {isa = PBXBuildFile; fileRef = C1033E031A3279B800EF44D8 /* crypto-utils-fallback.cc */; };
 		C1033E081A3279B800EF44D8 /* crypto-utils-ccrypto.cc in Sources */ = {isa = PBXBuildFile; fileRef = C1033E041A3279B800EF44D8 /* crypto-utils-ccrypto.cc */; };
 		C1033E091A3279B800EF44D8 /* crypto-utils.cc in Sources */ = {isa = PBXBuildFile; fileRef = C1033E051A3279B800EF44D8 /* crypto-utils.cc */; };
 		C1033E0A1A3279B800EF44D8 /* crypto-utils.h in Headers */ = {isa = PBXBuildFile; fileRef = C1033E061A3279B800EF44D8 /* crypto-utils.h */; };
@@ -1165,7 +1164,6 @@
 		BEFC1E1D0C07861A00B0BB3C /* completion.cc */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = completion.cc; sourceTree = "<group>"; };
 		BEFC1E1E0C07861A00B0BB3C /* clients.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.h; path = clients.h; sourceTree = "<group>"; };
 		BEFC1E1F0C07861A00B0BB3C /* clients.cc */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = clients.cc; sourceTree = "<group>"; };
-		C1033E031A3279B800EF44D8 /* crypto-utils-fallback.cc */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = "crypto-utils-fallback.cc"; sourceTree = "<group>"; };
 		C1033E041A3279B800EF44D8 /* crypto-utils-ccrypto.cc */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = "crypto-utils-ccrypto.cc"; sourceTree = "<group>"; };
 		C1033E051A3279B800EF44D8 /* crypto-utils.cc */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = "crypto-utils.cc"; sourceTree = "<group>"; };
 		C1033E061A3279B800EF44D8 /* crypto-utils.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.h; path = "crypto-utils.h"; sourceTree = "<group>"; };
@@ -1948,7 +1946,6 @@
 				BEFC1E1D0C07861A00B0BB3C /* completion.cc */,
 				BEFC1E1C0C07861A00B0BB3C /* completion.h */,
 				C1033E041A3279B800EF44D8 /* crypto-utils-ccrypto.cc */,
-				C1033E031A3279B800EF44D8 /* crypto-utils-fallback.cc */,
 				C1033E051A3279B800EF44D8 /* crypto-utils.cc */,
 				C1033E061A3279B800EF44D8 /* crypto-utils.h */,
 				C1077A4A183EB29600634C22 /* error.cc */,
@@ -3427,7 +3424,6 @@
 				4D36BA6F0CA2F00800A63CA5 /* peer-mse.cc in Sources */,
 				4D36BA720CA2F00800A63CA5 /* handshake.cc in Sources */,
 				4D36BA740CA2F00800A63CA5 /* peer-io.cc in Sources */,
-				C1033E071A3279B800EF44D8 /* crypto-utils-fallback.cc in Sources */,
 				C10C644D1D9AF328003C1B4C /* session-id.cc in Sources */,
 				4D36BA770CA2F00800A63CA5 /* peer-mgr.cc in Sources */,
 				C1077A50183EB29600634C22 /* file-posix.cc in Sources */,

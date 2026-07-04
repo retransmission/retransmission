@@ -47,7 +47,6 @@ target_sources(${TR_NAME}
         completion.h
         constants.h
         crypto-utils-ccrypto.cc
-        crypto-utils-fallback.cc
         crypto-utils-mbedtls.cc
         crypto-utils-openssl.cc
         crypto-utils-wolfssl.cc
@@ -203,8 +202,6 @@ target_sources(${TR_NAME}
         ${CMAKE_CURRENT_BINARY_DIR}/version.h)
 
 tr_allow_compile_if(
-    [=[[TRUE]]=]
-        crypto-utils-fallback.cc
     [=[[CRYPTO_PKG STREQUAL "ccrypto"]]=]
         crypto-utils-ccrypto.cc
     [=[[CRYPTO_PKG STREQUAL "mbedtls"]]=]
