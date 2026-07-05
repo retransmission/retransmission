@@ -5,52 +5,34 @@
 
 #pragma once
 
-#include <cstdint> // int64_t
-#include <memory>
-#include <optional>
-#include <string_view>
-#include <unordered_map>
+#include <array>
 
-#include <QFuture>
-#include <QFutureInterface>
-#include <QNetworkRequest>
-#include <QNetworkReply>
 #include <QObject>
+#include <QNetworkReply> // QNetworkReply::NetworkError
 #include <QString>
 #include <QUrl>
 
-#include <libtransmission/transmission.h>
+#include <sigslot/signal.hpp>
 
-#include <libtransmission/api-compat.h>
+#include <libtransmission-app/rpc-client.h>
+
 #include <libtransmission/quark.h>
 #include <libtransmission/variant.h>
 
-class QNetworkAccessManager;
-
-using TrVariantPtr = std::shared_ptr<tr_variant>;
-Q_DECLARE_METATYPE(TrVariantPtr)
-
 struct tr_session;
 
-struct RpcResponse {
-    QString errmsg;
-    TrVariantPtr args;
-    bool success = false;
-    QNetworkReply::NetworkError networkError = QNetworkReply::NoError;
-};
+using RpcResponse = tr::app::RpcResponse;
 
-Q_DECLARE_METATYPE(QFutureInterface<RpcResponse>)
-
-// The response future -- the RPC engine returns one for each request made.
-using RpcResponseFuture = QFuture<RpcResponse>;
-
+// Qt wrapper for tr::app::RpcClient
 class RpcClient : public QObject
 {
     Q_OBJECT
 
 public:
-    explicit RpcClient(QNetworkAccessManager& nam, QObject* parent = nullptr);
-    ~RpcClient() override = default;
+    using ResponseFunc = tr::app::RpcClient::ResponseFunc;
+
+    explicit RpcClient(QObject* parent = nullptr);
+    ~RpcClient() override;
     RpcClient(RpcClient&&) = delete;
     RpcClient(RpcClient const&) = delete;
     RpcClient& operator=(RpcClient&&) = delete;
@@ -61,17 +43,17 @@ public:
         return url_;
     }
 
-    [[nodiscard]] constexpr auto isLocal() const noexcept
+    [[nodiscard]] auto isLocal() const noexcept
     {
-        return session_ != nullptr || url_is_loopback_;
+        return impl_.is_local();
     }
 
     void stop();
     void start(tr_session* session);
     void start(QUrl const& url);
 
-    RpcResponseFuture exec(tr_quark method, tr_variant::Map args = {});
-    RpcResponseFuture exec(tr_quark method, tr_variant* args);
+    void exec(tr_quark method, tr_variant::Map args, ResponseFunc on_done = {});
+    void exec(tr_quark method, tr_variant* args, ResponseFunc on_done = {});
 
 signals:
     void httpAuthenticationRequired();
@@ -79,29 +61,8 @@ signals:
     void dataSendProgress();
     void networkResponse(QNetworkReply::NetworkError code, QString const& message);
 
-private slots:
-    void networkRequestFinished(QNetworkReply* reply);
-    void localRequestFinished(TrVariantPtr response);
-
 private:
-    static inline QByteArray const SessionIdHeaderName = { TrRpcSessionIdHeader.data(),
-                                                           static_cast<qsizetype>(TrRpcSessionIdHeader.size()) };
-    static inline QByteArray const VersionHeaderName = { TrRpcVersionHeader.data(),
-                                                         static_cast<qsizetype>(TrRpcVersionHeader.size()) };
-
-    void connectNetworkAccessManager();
-
-    void sendNetworkRequest(QByteArray const& body, QFutureInterface<RpcResponse> const& promise);
-    void sendLocalRequest(tr_variant&& req, QFutureInterface<RpcResponse> const& promise, int64_t id);
-    [[nodiscard]] int64_t parseResponseId(tr_variant& response) const;
-    [[nodiscard]] RpcResponse parseResponseData(tr_variant& response) const;
-
-    tr::api_compat::Style network_style_ = tr::api_compat::default_style();
-    tr_session* session_ = {};
-    QByteArray session_id_;
     QUrl url_;
-    QNetworkAccessManager* const nam_;
-    std::unordered_map<int64_t, QFutureInterface<RpcResponse>> local_requests_;
-    bool const verbose_ = qEnvironmentVariableIsSet("TR_RPC_VERBOSE");
-    bool url_is_loopback_ = false;
+    tr::app::RpcClient impl_;
+    std::array<sigslot::scoped_connection, 4> connections_;
 };

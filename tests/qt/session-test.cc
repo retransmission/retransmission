@@ -3,17 +3,21 @@
 // or any future license endorsed by Mnemosaic LLC.
 // License text can be found in the licenses/ folder.
 
+// Required by libtransmission public headers in this test TU.
+// NOLINTNEXTLINE(bugprone-reserved-identifier,cert-dcl37-c,cert-dcl51-cpp)
+#define __TRANSMISSION__ // for libtransmission/net.h (via rpc-test-fixtures.h)
+
 #include <algorithm>
-#include <iostream>
+#include <string>
 
 #include <QApplication>
 #include <QDir>
+#include <QElapsedTimer>
 #include <QRegularExpression>
 #include <QTest>
 
 #include <libtransmission/transmission.h>
 #include <libtransmission/api-compat.h>
-#include <libtransmission/env.h>
 
 #include "Prefs.h"
 #include "Session.h"
@@ -52,6 +56,22 @@ namespace
     return {};
 }
 
+// Pump the Qt event loop until `pred` is true or we time out. Returning control
+// to the event loop lets RpcClient deliver its queued-connection continuations.
+template<typename Predicate>
+[[nodiscard]] bool waitUntil(Predicate pred, int const timeout_ms = 10000)
+{
+    auto timer = QElapsedTimer{};
+    timer.start();
+    while (!pred()) {
+        if (timer.elapsed() > timeout_ms) {
+            return false;
+        }
+        QTest::qWait(20);
+    }
+    return true;
+}
+
 class SessionTest
     : public QObject
     , SandboxedTest
@@ -76,33 +96,33 @@ private slots:
         auto const downloads_dir = QDir{ sandbox_dir }.filePath(QStringLiteral("Downloads"));
         QDir{}.mkpath(downloads_dir);
 
-        // setup: make a Prefs that points to a remote session
+        // setup: a loopback RPC server for the session to talk to
+        auto server = MockRpcServer{};
+
+        // setup: make a Prefs that points at the loopback server
         auto prefs = Prefs{};
         prefs.set(TR_KEY_remote_session_enabled, true);
-        prefs.set(TR_KEY_remote_session_host, QStringLiteral("example.invalid"));
-        prefs.set(TR_KEY_remote_session_port, TrDefaultRpcPort);
+        prefs.set(TR_KEY_remote_session_host, QStringLiteral("127.0.0.1"));
+        prefs.set(TR_KEY_remote_session_port, static_cast<int>(server.port()));
         prefs.set(TR_KEY_download_dir, sandbox_dir);
 
         // setup: make a Session
-        auto nam = FakeNetworkAccessManager{};
-        auto rpc = RpcClient{ nam };
+        auto rpc = RpcClient{};
         auto session = Session{ sandbox_dir, prefs, rpc };
         session.restart();
 
         // action: set TR_KEY_download_dir to a new value
-        auto const before = nam.create_count;
         prefs.set(TR_KEY_download_dir, downloads_dir);
 
         // verify that session_set::download_dir was POSTed
-        QVERIFY(nam.create_count > before);
         auto const payload_re = getSessionSetDownloadDirRegEx(initial_style, downloads_dir);
-        auto const has_session_set = std::ranges::any_of(
-            std::as_const(nam.request_bodies),
-            [&payload_re](QByteArray const& body) {
-                auto const str = QString::fromUtf8(body);
-                return payload_re.match(str).hasMatch();
+        auto const has_session_set = [&server, &payload_re]() {
+            auto const bodies = server.request_bodies();
+            return std::ranges::any_of(bodies, [&payload_re](std::string const& body) {
+                return payload_re.match(QString::fromStdString(body)).hasMatch();
             });
-        QVERIFY(has_session_set);
+        };
+        QVERIFY(waitUntil(has_session_set));
     }
 };
 } // namespace

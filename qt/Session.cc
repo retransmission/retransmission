@@ -38,7 +38,6 @@
 #include "AddData.h"
 #include "Filters.h"
 #include "Prefs.h"
-#include "RpcQueue.h"
 #include "SessionDialog.h"
 #include "Torrent.h"
 #include "UserMetaType.h"
@@ -81,9 +80,9 @@ void Session::portTest(Session::PortTestIpProtocol const ip_protocol)
         emit portTested(dictFind<bool>(r.args.get(), TR_KEY_port_is_open), ip_protocol);
     };
 
-    auto* q = new RpcQueue{};
+    auto q = tr::app::RpcQueue::make();
 
-    q->add([this, &args]() { return exec(TR_KEY_port_test, &args); }, response_func);
+    q->add([this, &args](RpcClient::ResponseFunc done) { exec(TR_KEY_port_test, &args, std::move(done)); }, response_func);
 
     q->add(response_func);
 
@@ -103,9 +102,11 @@ void Session::copyMagnetLinkToClipboard(int torrent_id)
     fields.emplace_back(tr_variant::unmanaged_string(TR_KEY_magnet_link));
     params.insert_or_assign(TR_KEY_fields, std::move(fields));
 
-    auto* q = new RpcQueue{};
+    auto q = tr::app::RpcQueue::make();
 
-    q->add([this, params = std::move(params)]() mutable { return exec(TR_KEY_torrent_get, std::move(params)); });
+    q->add([this, params = std::move(params)](RpcClient::ResponseFunc done) mutable {
+        exec(TR_KEY_torrent_get, std::move(params), std::move(done));
+    });
 
     q->add([](RpcResponse const& r) {
         tr_variant* torrents = nullptr;
@@ -337,12 +338,14 @@ tr_variant Session::getTorrentIdsVariant(torrent_ids_t const& torrent_ids)
 
 Session::Tag Session::torrentSetImpl(tr_variant::Map params)
 {
-    auto* const q = new RpcQueue{};
+    auto const q = tr::app::RpcQueue::make();
     auto const tag = q->tag();
 
-    q->add([this, params = std::move(params)]() mutable { return rpc_.exec(TR_KEY_torrent_set, std::move(params)); });
+    q->add([this, params = std::move(params)](RpcClient::ResponseFunc done) mutable {
+        rpc_.exec(TR_KEY_torrent_set, std::move(params), std::move(done));
+    });
     q->add([this, tag]() { emit sessionCalled(tag); });
-    q->setTolerateErrors();
+    q->set_tolerate_errors();
     q->run();
 
     return tag;
@@ -361,11 +364,10 @@ void Session::torrentRenamePath(torrent_ids_t const& torrent_ids, QString const&
         return;
     }
 
-    auto* q = new RpcQueue{};
+    auto q = tr::app::RpcQueue::make();
     q->add(
-        [this, params = makeParams(TR_KEY_ids, torrent_ids, TR_KEY_path, oldpath, TR_KEY_name, newname)]() mutable {
-            return exec(TR_KEY_torrent_rename_path, std::move(params));
-        },
+        [this, params = makeParams(TR_KEY_ids, torrent_ids, TR_KEY_path, oldpath, TR_KEY_name, newname)](
+            RpcClient::ResponseFunc done) mutable { exec(TR_KEY_torrent_rename_path, std::move(params), std::move(done)); },
         [](RpcResponse const& r) {
             auto const path = dictFind<QString>(r.args.get(), TR_KEY_path).value_or(QStringLiteral("(unknown)"));
             auto const name = dictFind<QString>(r.args.get(), TR_KEY_name).value_or(QStringLiteral("(unknown)"));
@@ -376,7 +378,7 @@ void Session::torrentRenamePath(torrent_ids_t const& torrent_ids, QString const&
                 tr(R"(<p><b>Unable to rename "%1" as "%2": %3.</b></p><p>Please correct the errors and try again.</p>)")
                     .arg(path)
                     .arg(name)
-                    .arg(r.errmsg),
+                    .arg(Utils::qstringFromUtf8(r.errmsg)),
                 QMessageBox::Close,
                 QApplication::activeWindow()
             };
@@ -559,10 +561,10 @@ void Session::refreshTorrents(torrent_ids_t const& torrent_ids, TorrentPropertie
     map.try_emplace(TR_KEY_fields, std::move(fields));
     addParamPair(map, TR_KEY_ids, torrent_ids);
 
-    auto* q = new RpcQueue{};
+    auto q = tr::app::RpcQueue::make();
 
     auto args = tr_variant{ std::move(map) };
-    q->add([this, &args]() { return exec(TR_KEY_torrent_get, &args); });
+    q->add([this, &args](RpcClient::ResponseFunc done) { exec(TR_KEY_torrent_get, &args, std::move(done)); });
 
     bool const all_torrents = std::empty(torrent_ids);
 
@@ -593,9 +595,11 @@ void Session::refreshExtraStats(torrent_ids_t const& ids)
 
 void Session::sendTorrentRequest(tr_quark const method, torrent_ids_t const& torrent_ids)
 {
-    auto* q = new RpcQueue{};
+    auto q = tr::app::RpcQueue::make();
 
-    q->add([this, method, params = makeParams(TR_KEY_ids, torrent_ids)]() mutable { return exec(method, std::move(params)); });
+    q->add([this, method, params = makeParams(TR_KEY_ids, torrent_ids)](RpcClient::ResponseFunc done) mutable {
+        exec(method, std::move(params), std::move(done));
+    });
 
     q->add([this, torrent_ids]() { refreshTorrents(torrent_ids, TorrentProperties::MainStats); });
 
@@ -657,9 +661,9 @@ void Session::initTorrents(torrent_ids_t const& ids)
 
 void Session::refreshSessionStats()
 {
-    auto* q = new RpcQueue{};
+    auto q = tr::app::RpcQueue::make();
 
-    q->add([this]() { return exec(TR_KEY_session_stats, nullptr); });
+    q->add([this](RpcClient::ResponseFunc done) { exec(TR_KEY_session_stats, nullptr, std::move(done)); });
 
     q->add([this](RpcResponse const& r) { updateStats(r.args.get()); });
 
@@ -668,9 +672,9 @@ void Session::refreshSessionStats()
 
 void Session::refreshSessionInfo()
 {
-    auto* q = new RpcQueue{};
+    auto q = tr::app::RpcQueue::make();
 
-    q->add([this]() { return exec(TR_KEY_session_get, nullptr); });
+    q->add([this](RpcClient::ResponseFunc done) { exec(TR_KEY_session_get, nullptr, std::move(done)); });
 
     q->add([this](RpcResponse const& r) { updateInfo(r.args.get()); });
 
@@ -679,9 +683,9 @@ void Session::refreshSessionInfo()
 
 void Session::updateBlocklist()
 {
-    auto* q = new RpcQueue{};
+    auto q = tr::app::RpcQueue::make();
 
-    q->add([this]() { return exec(TR_KEY_blocklist_update, nullptr); });
+    q->add([this](RpcClient::ResponseFunc done) { exec(TR_KEY_blocklist_update, nullptr, std::move(done)); });
 
     q->add([this](RpcResponse const& r) {
         if (auto const size = dictFind<int>(r.args.get(), TR_KEY_blocklist_size); size) {
@@ -696,14 +700,14 @@ void Session::updateBlocklist()
 ****
 ***/
 
-RpcResponseFuture Session::exec(tr_quark method, tr_variant* args)
+void Session::exec(tr_quark method, tr_variant* args, RpcClient::ResponseFunc on_done)
 {
-    return rpc_.exec(method, args);
+    rpc_.exec(method, args, std::move(on_done));
 }
 
-RpcResponseFuture Session::exec(tr_quark method, tr_variant::Map params)
+void Session::exec(tr_quark method, tr_variant::Map params, RpcClient::ResponseFunc on_done)
 {
-    return rpc_.exec(method, std::move(params));
+    rpc_.exec(method, std::move(params), std::move(on_done));
 }
 
 void Session::updateStats(tr_variant const& args_dict, tr_session_stats& stats)
@@ -812,16 +816,20 @@ void Session::addTorrent(AddData const& add_me, tr_variant::Map args_dict)
         break;
     }
 
-    auto* q = new RpcQueue{};
+    auto q = tr::app::RpcQueue::make();
 
     q->add(
-        [this, args_dict = std::move(args_dict)]() mutable { return exec(TR_KEY_torrent_add, std::move(args_dict)); },
+        [this, args_dict = std::move(args_dict)](RpcClient::ResponseFunc done) mutable {
+            exec(TR_KEY_torrent_add, std::move(args_dict), std::move(done));
+        },
         [add_me](RpcResponse const& r) {
-            auto* d = new QMessageBox{ QMessageBox::Warning,
-                                       tr("Error Adding Torrent"),
-                                       QStringLiteral("<p><b>%1</b></p><p>%2</p>").arg(r.errmsg).arg(add_me.readableName()),
-                                       QMessageBox::Close,
-                                       QApplication::activeWindow() };
+            auto* d = new QMessageBox{
+                QMessageBox::Warning,
+                tr("Error Adding Torrent"),
+                QStringLiteral("<p><b>%1</b></p><p>%2</p>").arg(Utils::qstringFromUtf8(r.errmsg)).arg(add_me.readableName()),
+                QMessageBox::Close,
+                QApplication::activeWindow()
+            };
             QObject::connect(d, &QMessageBox::rejected, d, &QMessageBox::deleteLater);
             d->show();
         });

@@ -26,7 +26,7 @@
 
 #include "Prefs.h"
 #include "RpcClient.h"
-#include "RpcQueue.h"
+#include <libtransmission-app/rpc-queue.h>
 #include "Torrent.h"
 #include "Typedefs.h"
 
@@ -95,10 +95,10 @@ public:
         return !session_id_.isEmpty() ? is_definitely_local_session_ : rpc_.isLocal();
     }
 
-    RpcResponseFuture exec(tr_quark method, tr_variant* args);
-    RpcResponseFuture exec(tr_quark method, tr_variant::Map params);
+    void exec(tr_quark method, tr_variant* args, RpcClient::ResponseFunc on_done = {});
+    void exec(tr_quark method, tr_variant::Map params, RpcClient::ResponseFunc on_done = {});
 
-    using Tag = RpcQueue::Tag;
+    using Tag = tr::app::RpcQueue::Tag;
 
     template<typename T, typename... Rest>
     Tag torrentSet(torrent_ids_t const& torrent_ids, tr_quark const key1, T const& val1, Rest const&... rest)

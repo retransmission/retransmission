@@ -15,7 +15,10 @@ target_sources(${LIBNAME}
         display-modes.h
         favicon-cache.h
         prefs.cc
-        prefs.h)
+        prefs.h
+        rpc-client.cc
+        rpc-client.h
+        rpc-queue.h)
 
 target_include_directories(${LIBNAME}
     PUBLIC

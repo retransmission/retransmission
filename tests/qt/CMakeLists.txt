@@ -24,13 +24,17 @@ function(add_trqt_test source)
 endfunction()
 
 add_trqt_test(prefs-test.cc)
-add_trqt_test(rpcclient-test.cc)
 add_trqt_test(session-test.cc)
+
+# session-test drives a real loopback HTTP server (evhttp) instead of a fake QNAM
+target_link_libraries(qt-test-session
+    PRIVATE
+        libevent::core
+        libevent::extra)
 
 add_custom_target(qt-tests
     DEPENDS
         qt-test-prefs
-        qt-test-rpcclient
         qt-test-session)
 
 set_property(

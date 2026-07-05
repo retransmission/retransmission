@@ -74,8 +74,6 @@ target_sources(${TR_NAME}-qt-lib
         RelocateDialog.h
         RpcClient.cc
         RpcClient.h
-        RpcQueue.cc
-        RpcQueue.h
         Session.cc
         Session.h
         SessionDialog.cc

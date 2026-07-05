@@ -5,107 +5,137 @@
 
 #pragma once
 
+#ifndef __TRANSMISSION__
+#define __TRANSMISSION__ // for libtransmission/net.h
+#endif
+
+#include <atomic>
+#include <chrono>
+#include <cstdint>
+#include <mutex>
+#include <string>
 #include <string_view>
+#include <thread>
+#include <utility>
+#include <vector>
 
-#include <QByteArray>
-#include <QFutureInterface>
-#include <QNetworkAccessManager>
-#include <QNetworkReply>
-#include <QNetworkRequest>
-#include <QUrl>
-#include <QVariant>
-#include <QVector>
+#include <event2/buffer.h>
+#include <event2/event.h>
+#include <event2/http.h>
 
-#include "QtCompat.h"
-#include "RpcClient.h"
+#include <libtransmission/constants.h> // TrRpcSessionIdHeader
+#include <libtransmission/net.h> // sockaddr_storage, ntohs()
 
-template<typename String>
-[[nodiscard]] QByteArray toQBA(String const& str)
-{
-    auto const sv = std::string_view{ str };
-    return { sv.data(), static_cast<QtrSizeArgType>(sv.size()) };
-}
-
-class FakeReply final : public QNetworkReply
+// A minimal in-process stand-in for transmission-daemon's RPC endpoint. It does
+// just enough to exercise Session's remote transport end to end: the CSRF
+// handshake (reply 409 with an X-Transmission-Session-Id that the client must
+// echo back) followed by a valid, empty success response. Every request body is
+// recorded so tests can assert on the wire format. It never advertises an RPC
+// version, so the client keeps whatever api_compat style it started with.
+// Everything stays on 127.0.0.1, so there's no external dependency to flake.
+class MockRpcServer
 {
 public:
-    [[nodiscard]] static FakeReply* newPostReply(QUrl const& url, QObject* parent = nullptr)
+    MockRpcServer()
+        : base_{ event_base_new() }
+        , http_{ evhttp_new(base_) }
     {
-        return newPostReply(QNetworkRequest{ url }, parent);
+        evhttp_set_allowed_methods(http_, EVHTTP_REQ_GET | EVHTTP_REQ_POST | EVHTTP_REQ_HEAD);
+
+        auto* const handle = evhttp_bind_socket_with_handle(http_, "127.0.0.1", 0);
+        auto ss = sockaddr_storage{};
+        auto sslen = socklen_t{ sizeof(ss) };
+        getsockname(evhttp_bound_socket_get_fd(handle), reinterpret_cast<sockaddr*>(&ss), &sslen);
+        port_ = ntohs(reinterpret_cast<sockaddr_in const*>(&ss)->sin_port);
+
+        evhttp_set_gencb(http_, &MockRpcServer::on_request, this);
+
+        thread_ = std::thread{ [this]() {
+            // Poll instead of a blocking dispatch so teardown doesn't depend on
+            // libevent being built with cross-thread wakeup support.
+            while (!stop_.load(std::memory_order_acquire)) {
+                event_base_loop(base_, EVLOOP_NONBLOCK);
+                std::this_thread::sleep_for(std::chrono::milliseconds{ 1 });
+            }
+        } };
     }
 
-    [[nodiscard]] static FakeReply* newPostReply(QNetworkRequest const& req, QObject* parent = nullptr)
+    ~MockRpcServer()
     {
-        auto reply = new FakeReply{ QNetworkAccessManager::PostOperation, req, parent };
-
-        // networkRequestFinished expects these properties to exist.
-        auto promise = QFutureInterface<RpcResponse>{};
-        promise.reportStarted();
-        reply->setProperty("requestReplyFutureInterface", QVariant::fromValue(promise));
-        reply->setProperty("requestBody", QByteArray{ "{}" });
-
-        return reply;
+        stop_.store(true, std::memory_order_release);
+        if (thread_.joinable()) {
+            thread_.join();
+        }
+        evhttp_free(http_);
+        event_base_free(base_);
     }
 
-    explicit FakeReply(QNetworkAccessManager::Operation op, QNetworkRequest const& req, QObject* parent = nullptr)
-        : QNetworkReply{ parent }
+    MockRpcServer(MockRpcServer const&) = delete;
+    MockRpcServer& operator=(MockRpcServer const&) = delete;
+
+    [[nodiscard]] std::uint16_t port() const noexcept
     {
-        setOperation(op);
-        setRequest(req);
-        setUrl(req.url());
-        open(QIODevice::ReadOnly);
+        return port_;
     }
 
-    void setHttpStatus(int const code)
+    [[nodiscard]] std::vector<std::string> request_bodies() const
     {
-        setAttribute(QNetworkRequest::HttpStatusCodeAttribute, code);
+        auto const lock = std::lock_guard{ mutex_ };
+        return bodies_;
     }
 
-    template<typename StringA, typename StringB>
-    void addRawHeader(StringA const& name, StringB const& value)
+private:
+    static void on_request(evhttp_request* req, void* vself)
     {
-        setRawHeader(toQBA(name), toQBA(value));
+        static_cast<MockRpcServer*>(vself)->handle(req);
     }
 
-    void abort() override
+    void handle(evhttp_request* req)
     {
-    }
+        auto* const in_headers = evhttp_request_get_input_headers(req);
+        auto const* const session_id = evhttp_find_header(in_headers, std::data(TrRpcSessionIdHeader));
 
-protected:
-    qint64 readData(char* /*data*/, qint64 /*maxSize*/) override
-    {
-        return 0;
-    }
-};
+        record_request_body(req);
 
-class FakeNetworkAccessManager final : public QNetworkAccessManager
-{
-public:
-    int create_count = 0;
-    QNetworkAccessManager::Operation last_operation = QNetworkAccessManager::UnknownOperation;
-    QNetworkRequest last_request;
-    QByteArray last_body;
-    QVector<QNetworkAccessManager::Operation> operations;
-    QVector<QNetworkRequest> requests;
-    QVector<QByteArray> request_bodies;
+        auto* const out_headers = evhttp_request_get_output_headers(req);
+        auto* const out = evbuffer_new();
 
-protected:
-    QNetworkReply* createRequest(Operation op, QNetworkRequest const& req, QIODevice* outgoing_data) override
-    {
-        ++create_count;
-        last_operation = op;
-        last_request = req;
-        operations.push_back(op);
-        requests.push_back(req);
-
-        if (outgoing_data != nullptr) {
-            last_body = outgoing_data->readAll();
-            outgoing_data->seek(0);
-            request_bodies.push_back(last_body);
+        if (session_id == nullptr) {
+            // CSRF handshake: reject and hand back a session id to retry with.
+            evhttp_add_header(out_headers, std::data(TrRpcSessionIdHeader), std::string{ SessionId }.c_str());
+            evhttp_send_reply(req, 409, "Conflict", out);
         } else {
-            request_bodies.push_back({});
+            evhttp_add_header(out_headers, "Content-Type", "application/json");
+            static auto constexpr Body = std::string_view{ R"({"result":{}})" };
+            evbuffer_add(out, std::data(Body), std::size(Body));
+            evhttp_send_reply(req, 200, "OK", out);
         }
 
-        return new FakeReply{ op, req, this };
+        evbuffer_free(out);
     }
+
+    void record_request_body(evhttp_request* req)
+    {
+        auto* const in_buf = evhttp_request_get_input_buffer(req);
+        auto const len = evbuffer_get_length(in_buf);
+        auto body = std::string{};
+        if (len > 0) {
+            body.assign(reinterpret_cast<char const*>(evbuffer_pullup(in_buf, -1)), len);
+        }
+
+        auto const lock = std::lock_guard{ mutex_ };
+        bodies_.push_back(std::move(body));
+    }
+
+    static constexpr auto SessionId = std::string_view{ "test-session-id" };
+
+    mutable std::mutex mutex_;
+    std::vector<std::string> bodies_;
+
+    event_base* base_;
+    evhttp* http_;
+    std::uint16_t port_ = 0;
+
+    std::thread thread_;
+    std::atomic<bool> stop_ = false;
 };
