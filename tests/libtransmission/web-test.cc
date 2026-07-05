@@ -68,7 +68,7 @@ public:
         getsockname(evhttp_bound_socket_get_fd(bound), reinterpret_cast<sockaddr*>(&ss), &sslen);
         port_ = ntohs(reinterpret_cast<sockaddr_in const*>(&ss)->sin_port);
 
-        evhttp_set_gencb(http_, &LoopbackServer::on_request, this);
+        evhttp_set_gencb(http_, &LoopbackServer::onRequest, this);
 
         thread_ = std::thread{ [this]() {
             // Poll instead of a blocking dispatch so teardown doesn't depend
@@ -100,20 +100,20 @@ public:
         return fmt::format("http://127.0.0.1:{:d}{:s}", port_, path);
     }
 
-    void set_handler(Handler handler)
+    void setHandler(Handler handler)
     {
-        auto const lock = std::lock_guard{ mutex_ };
+        auto const lock = std::scoped_lock{ mutex_ };
         handler_ = std::move(handler);
     }
 
-    [[nodiscard]] Request last_request() const
+    [[nodiscard]] Request lastRequest() const
     {
-        auto const lock = std::lock_guard{ mutex_ };
+        auto const lock = std::scoped_lock{ mutex_ };
         return request_;
     }
 
 private:
-    static void on_request(evhttp_request* req, void* vself)
+    static void onRequest(evhttp_request* req, void* vself)
     {
         static_cast<LoopbackServer*>(vself)->handle(req);
     }
@@ -121,7 +121,7 @@ private:
     void handle(evhttp_request* req)
     {
         auto request = Request{};
-        request.method = method_name(evhttp_request_get_command(req));
+        request.method = methodName(evhttp_request_get_command(req));
         request.uri = evhttp_request_get_uri(req);
 
         if (auto* const in = evhttp_request_get_input_buffer(req); in != nullptr) {
@@ -136,7 +136,7 @@ private:
 
         auto handler = Handler{};
         {
-            auto const lock = std::lock_guard{ mutex_ };
+            auto const lock = std::scoped_lock{ mutex_ };
             request_ = std::move(request);
             handler = handler_;
         }
@@ -148,7 +148,7 @@ private:
         }
     }
 
-    [[nodiscard]] static char const* method_name(evhttp_cmd_type cmd)
+    [[nodiscard]] static char const* methodName(evhttp_cmd_type cmd)
     {
         switch (cmd) {
         case EVHTTP_REQ_GET:
@@ -217,7 +217,7 @@ protected:
         return fetch(*web_, std::move(options));
     }
 
-    tr_web::FetchResponse fetch(tr_web& web, tr_web::FetchOptions options)
+    static tr_web::FetchResponse fetch(tr_web& web, tr_web::FetchOptions options)
     {
         auto promise = std::make_shared<std::promise<tr_web::FetchResponse>>();
         auto future = promise->get_future();
@@ -246,7 +246,7 @@ protected:
 
 TEST_F(WebTest, getReturnsBody)
 {
-    server_.set_handler([](evhttp_request* req) { LoopbackServer::reply(req, HTTP_OK, "OK", "hello world"sv); });
+    server_.setHandler([](evhttp_request* req) { LoopbackServer::reply(req, HTTP_OK, "OK", "hello world"sv); });
 
     auto const response = fetch(options());
     EXPECT_EQ(200, response.status);
@@ -260,12 +260,12 @@ TEST_F(WebTest, noBodyIsGet)
 {
     auto const response = fetch(options());
     EXPECT_EQ(200, response.status);
-    EXPECT_EQ("GET"sv, server_.last_request().method);
+    EXPECT_EQ("GET"sv, server_.lastRequest().method);
 }
 
 TEST_F(WebTest, httpErrorStatusIsSurfaced)
 {
-    server_.set_handler([](evhttp_request* req) { LoopbackServer::reply(req, 404, "Not Found", "nope"sv); });
+    server_.setHandler([](evhttp_request* req) { LoopbackServer::reply(req, 404, "Not Found", "nope"sv); });
 
     auto const response = fetch(options());
     EXPECT_EQ(404, response.status);
@@ -280,7 +280,7 @@ TEST_F(WebTest, postSendsBody)
     auto const response = fetch(std::move(opts));
     EXPECT_EQ(200, response.status);
 
-    auto const req = server_.last_request();
+    auto const req = server_.lastRequest();
     EXPECT_EQ("POST"sv, req.method);
     EXPECT_EQ("the request body"sv, req.body);
 }
@@ -293,14 +293,14 @@ TEST_F(WebTest, requestHeadersAreSent)
 
     fetch(std::move(opts));
 
-    auto const req = server_.last_request();
+    auto const req = server_.lastRequest();
     EXPECT_EQ("custom-value"sv, req.headers.at("x-custom-header"));
     EXPECT_EQ("application/json"sv, req.headers.at("content-type"));
 }
 
 TEST_F(WebTest, responseHeadersAreCaptured)
 {
-    server_.set_handler([](evhttp_request* req) {
+    server_.setHandler([](evhttp_request* req) {
         auto* const out = evhttp_request_get_output_headers(req);
         evhttp_add_header(out, "X-Reply-Header", "reply-value");
         LoopbackServer::reply(req, HTTP_OK, "OK", "body"sv);
@@ -326,7 +326,7 @@ TEST_F(WebTest, basicAuthSendsCredentials)
     fetch(std::move(opts));
 
     auto const expected = fmt::format("Basic {:s}", tr_base64_encode("aladdin:opensesame"sv));
-    EXPECT_EQ(expected, server_.last_request().headers.at("authorization"));
+    EXPECT_EQ(expected, server_.lastRequest().headers.at("authorization"));
 }
 
 TEST_F(WebTest, basicAuthEmptyPassword)
@@ -338,7 +338,7 @@ TEST_F(WebTest, basicAuthEmptyPassword)
     fetch(std::move(opts));
 
     auto const expected = fmt::format("Basic {:s}", tr_base64_encode("user:"sv));
-    EXPECT_EQ(expected, server_.last_request().headers.at("authorization"));
+    EXPECT_EQ(expected, server_.lastRequest().headers.at("authorization"));
 }
 
 TEST_F(WebTest, netrcCredentialsAreSent)
@@ -352,7 +352,7 @@ TEST_F(WebTest, netrcCredentialsAreSent)
     fetch(std::move(opts));
 
     auto const expected = fmt::format("Basic {:s}", tr_base64_encode("aladdin:opensesame"sv));
-    EXPECT_EQ(expected, server_.last_request().headers.at("authorization"));
+    EXPECT_EQ(expected, server_.lastRequest().headers.at("authorization"));
 }
 
 TEST_F(WebTest, authSchemeAnyDefersCredentials)
@@ -366,13 +366,13 @@ TEST_F(WebTest, authSchemeAnyDefersCredentials)
 
     // Under CURLAUTH_ANY curl waits for a challenge before sending credentials,
     // so a server that answers 200 immediately never sees an Authorization header.
-    auto const& headers = server_.last_request().headers;
+    auto const& headers = server_.lastRequest().headers;
     EXPECT_EQ(headers.end(), headers.find("authorization"));
 }
 
 TEST_F(WebTest, userDataRoundTrips)
 {
-    auto sentinel = int{ 42 };
+    auto sentinel = 42;
     auto const response = fetch(options("/"sv, &sentinel));
     EXPECT_EQ(&sentinel, response.user_data);
 }
@@ -384,7 +384,7 @@ TEST_F(WebTest, rangeRequestSetsHeader)
 
     fetch(std::move(opts));
 
-    EXPECT_EQ("bytes=0-3"sv, server_.last_request().headers.at("range"));
+    EXPECT_EQ("bytes=0-3"sv, server_.lastRequest().headers.at("range"));
 }
 
 TEST_F(WebTest, cookiesAreSent)
@@ -394,7 +394,7 @@ TEST_F(WebTest, cookiesAreSent)
 
     fetch(std::move(opts));
 
-    EXPECT_EQ("a=b; c=d"sv, server_.last_request().headers.at("cookie"));
+    EXPECT_EQ("a=b; c=d"sv, server_.lastRequest().headers.at("cookie"));
 }
 
 TEST_F(WebTest, userAgentFromMediatorIsSent)
@@ -406,13 +406,13 @@ TEST_F(WebTest, userAgentFromMediatorIsSent)
 
     fetch(*web, options());
 
-    EXPECT_EQ("TestAgent/1.0"sv, server_.last_request().headers.at("user-agent"));
+    EXPECT_EQ("TestAgent/1.0"sv, server_.lastRequest().headers.at("user-agent"));
 }
 
 TEST_F(WebTest, onDataReceivedReportsByteCount)
 {
     static auto constexpr Body = "0123456789abcdef"sv;
-    server_.set_handler([](evhttp_request* req) { LoopbackServer::reply(req, HTTP_OK, "OK", Body); });
+    server_.setHandler([](evhttp_request* req) { LoopbackServer::reply(req, HTTP_OK, "OK", Body); });
 
     auto total = std::size_t{ 0 };
     auto opts = options();
@@ -428,7 +428,7 @@ TEST_F(WebTest, onDataReceivedReportsByteCount)
 TEST_F(WebTest, timeoutIsReported)
 {
     // Handler that never replies, so the transfer exceeds the timeout.
-    server_.set_handler([](evhttp_request* /*req*/) {});
+    server_.setHandler([](evhttp_request* /*req*/) {});
 
     auto opts = options();
     opts.timeout_secs = 1s;
