@@ -71,26 +71,11 @@ public:
     void exec(tr_quark method, tr_variant::Map args, ResponseFunc on_done);
     void exec(tr_quark method, tr_variant* args, ResponseFunc on_done);
 
-    [[nodiscard]] sigslot::scoped_connection observe_network_response(
-        std::function<void(long status, std::string const& message)> observer) const
-    {
-        return network_response_.connect_scoped(std::move(observer));
-    }
-
-    [[nodiscard]] sigslot::scoped_connection observe_auth_required(std::function<void()> observer) const
-    {
-        return auth_required_.connect_scoped(std::move(observer));
-    }
-
-    [[nodiscard]] sigslot::scoped_connection observe_data_read_progress(std::function<void()> observer) const
-    {
-        return data_read_progress_.connect_scoped(std::move(observer));
-    }
-
-    [[nodiscard]] sigslot::scoped_connection observe_data_send_progress(std::function<void()> observer) const
-    {
-        return data_send_progress_.connect_scoped(std::move(observer));
-    }
+    // Signals, fired on the UI thread. Connect with connect_scoped().
+    sigslot::signal<long /*http_status*/, std::string const& /*message*/> network_response;
+    sigslot::signal<> auth_required;
+    sigslot::signal<> data_read_progress;
+    sigslot::signal<> data_send_progress;
 
 private:
     void send_local_request(tr_variant&& req, ResponseFunc on_done);
@@ -111,13 +96,8 @@ private:
 
     UiThreadFunc run_on_ui_thread_;
 
-    mutable sigslot::signal<long, std::string const&> network_response_;
-    mutable sigslot::signal<> auth_required_;
-    mutable sigslot::signal<> data_read_progress_;
-    mutable sigslot::signal<> data_send_progress_;
-
-    // tr_web and its mediator are declared after the callbacks so they're
-    // destroyed first, stopping the curl thread before the callbacks.
+    // Declared last so they're destroyed first: the curl thread must stop
+    // before the signals it may fire.
     tr_web::Mediator web_mediator_;
     std::unique_ptr<tr_web> web_;
 };

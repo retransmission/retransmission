@@ -37,13 +37,13 @@ RpcClient::RpcClient(QObject* parent)
     : QObject{ parent }
     , impl_{ makeUiMarshaler() }
 {
-    connections_[0] = impl_.observe_network_response([this](long const status, std::string const& message) {
+    connections_[0] = impl_.network_response.connect_scoped([this](long const status, std::string const& message) {
         auto const code = status == 200 ? QNetworkReply::NoError : QNetworkReply::UnknownNetworkError;
         emit networkResponse(code, Utils::qstringFromUtf8(message));
     });
-    connections_[1] = impl_.observe_auth_required([this]() { emit httpAuthenticationRequired(); });
-    connections_[2] = impl_.observe_data_read_progress([this]() { emit dataReadProgress(); });
-    connections_[3] = impl_.observe_data_send_progress([this]() { emit dataSendProgress(); });
+    connections_[1] = impl_.auth_required.connect_scoped([this]() { emit httpAuthenticationRequired(); });
+    connections_[2] = impl_.data_read_progress.connect_scoped([this]() { emit dataReadProgress(); });
+    connections_[3] = impl_.data_send_progress.connect_scoped([this]() { emit dataSendProgress(); });
 }
 
 RpcClient::~RpcClient() = default;

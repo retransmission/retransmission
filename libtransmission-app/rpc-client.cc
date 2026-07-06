@@ -141,7 +141,7 @@ void RpcClient::send_local_request(tr_variant&& req, ResponseFunc on_done)
 
 void RpcClient::send_remote_request(std::string body, ResponseFunc on_done)
 {
-    data_send_progress_();
+    data_send_progress();
 
     auto options = tr_web::FetchOptions{
         url_,
@@ -181,10 +181,10 @@ void RpcClient::send_remote_request(std::string body, ResponseFunc on_done)
                         return;
                     }
 
-                    data_read_progress_();
+                    data_read_progress();
 
                     if (status == 401) {
-                        auth_required_();
+                        auth_required();
                     }
 
                     auto result = RpcResponse{};
@@ -193,14 +193,14 @@ void RpcClient::send_remote_request(std::string body, ResponseFunc on_done)
                     if (status == 0) {
                         result.network_error = true;
                         result.errmsg = "network error";
-                        network_response_(status, result.errmsg);
+                        network_response(status, result.errmsg);
                     } else if (parsed) {
                         result = parse_response_data(*parsed);
                         result.http_status = status;
-                        network_response_(status, std::string{});
+                        network_response(status, std::string{});
                     } else {
                         result.errmsg = fmt::format("unexpected response (HTTP {:d})", status);
-                        network_response_(status, result.errmsg);
+                        network_response(status, result.errmsg);
                     }
 
                     if (on_done) {
