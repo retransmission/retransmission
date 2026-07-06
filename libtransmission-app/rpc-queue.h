@@ -67,6 +67,15 @@ public:
 
     void run()
     {
+        // hold a reference so an immediate finish() can't destroy us mid-call
+        auto const self = keepalive_;
+
+        if (std::empty(queue_)) {
+            // nothing to do: complete immediately (still runs finally_)
+            finish();
+            return;
+        }
+
         run_next(RpcResponse{});
     }
 
