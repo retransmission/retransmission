@@ -98,7 +98,7 @@ public:
     void exec(tr_quark method, tr_variant* args, RpcClient::ResponseFunc on_done = {});
     void exec(tr_quark method, tr_variant::Map params, RpcClient::ResponseFunc on_done = {});
 
-    using Tag = tr::app::RpcQueue::Tag;
+    using Tag = uint64_t;
 
     template<typename T, typename... Rest>
     Tag torrentSet(torrent_ids_t const& torrent_ids, tr_quark const key1, T const& val1, Rest const&... rest)
@@ -214,6 +214,7 @@ private:
     QString session_id_;
     bool is_definitely_local_session_ = true;
     RpcClient& rpc_;
+    Tag next_tag_ = {};
 
     static inline torrent_ids_t const RecentlyActiveIDs = { -1 };
 

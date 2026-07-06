@@ -338,8 +338,8 @@ tr_variant Session::getTorrentIdsVariant(torrent_ids_t const& torrent_ids)
 
 Session::Tag Session::torrentSetImpl(tr_variant::Map params)
 {
+    auto const tag = next_tag_++;
     auto const q = tr::app::RpcQueue::make();
-    auto const tag = q->tag();
 
     q->add([this, params = std::move(params)](RpcClient::ResponseFunc done) mutable {
         rpc_.exec(TR_KEY_torrent_set, std::move(params), std::move(done));

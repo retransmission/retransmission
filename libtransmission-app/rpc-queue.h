@@ -35,7 +35,6 @@ class RpcQueue : public std::enable_shared_from_this<RpcQueue>
 {
 public:
     using Continue = RpcClient::ResponseFunc; // std::function<void(RpcResponse)>
-    using Tag = uint64_t;
 
     [[nodiscard]] static std::shared_ptr<RpcQueue> make()
     {
@@ -81,11 +80,6 @@ public:
     {
         self_ = shared_from_this();
         run_next(RpcResponse{});
-    }
-
-    [[nodiscard]] constexpr auto tag() const noexcept
-    {
-        return tag_;
     }
 
 private:
@@ -222,9 +216,6 @@ private:
         };
     }
 
-    static inline Tag next_tag = {};
-
-    Tag const tag_ = next_tag++;
     bool tolerate_errors_ = false;
     std::shared_ptr<RpcQueue> self_;
     std::queue<std::pair<QueuedFunction, ErrorHandlerFunction>> queue_;
