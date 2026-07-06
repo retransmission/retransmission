@@ -46,6 +46,7 @@
 
 using namespace std::literals;
 
+using tr::app::RpcQueue;
 using ::trqt::variant_helpers::dictFind;
 
 /***
@@ -80,7 +81,7 @@ void Session::portTest(Session::PortTestIpProtocol const ip_protocol)
         emit portTested(dictFind<bool>(r.args.get(), TR_KEY_port_is_open), ip_protocol);
     };
 
-    tr::app::RpcQueue::create()
+    RpcQueue::create()
         .add(
             [this, args = std::move(args)](RpcClient::ResponseFunc done) mutable {
                 exec(TR_KEY_port_test, std::move(args), std::move(done));
@@ -103,7 +104,7 @@ void Session::copyMagnetLinkToClipboard(int torrent_id)
     fields.emplace_back(tr_variant::unmanaged_string(TR_KEY_magnet_link));
     params.insert_or_assign(TR_KEY_fields, std::move(fields));
 
-    tr::app::RpcQueue::create()
+    RpcQueue::create()
         .add([this, params = std::move(params)](RpcClient::ResponseFunc done) mutable {
             exec(TR_KEY_torrent_get, std::move(params), std::move(done));
         })
@@ -338,7 +339,7 @@ Session::Tag Session::torrentSetImpl(tr_variant::Map params)
 {
     auto const tag = next_tag_++;
 
-    tr::app::RpcQueue::create()
+    RpcQueue::create()
         .add([this, params = std::move(params)](RpcClient::ResponseFunc done) mutable {
             rpc_.exec(TR_KEY_torrent_set, std::move(params), std::move(done));
         })
@@ -361,7 +362,7 @@ void Session::torrentRenamePath(torrent_ids_t const& torrent_ids, QString const&
         return;
     }
 
-    tr::app::RpcQueue::create()
+    RpcQueue::create()
         .add(
             [this, params = makeParams(TR_KEY_ids, torrent_ids, TR_KEY_path, oldpath, TR_KEY_name, newname)](
                 RpcClient::ResponseFunc done) mutable { exec(TR_KEY_torrent_rename_path, std::move(params), std::move(done)); },
@@ -556,7 +557,7 @@ void Session::refreshTorrents(torrent_ids_t const& torrent_ids, TorrentPropertie
     map.try_emplace(TR_KEY_fields, std::move(fields));
     addParamPair(map, TR_KEY_ids, torrent_ids);
 
-    tr::app::RpcQueue::create()
+    RpcQueue::create()
         .add([this, map = std::move(map)](RpcClient::ResponseFunc done) mutable {
             exec(TR_KEY_torrent_get, std::move(map), std::move(done));
         })
@@ -586,7 +587,7 @@ void Session::refreshExtraStats(torrent_ids_t const& ids)
 
 void Session::sendTorrentRequest(tr_quark const method, torrent_ids_t const& torrent_ids)
 {
-    tr::app::RpcQueue::create()
+    RpcQueue::create()
         .add([this, method, params = makeParams(TR_KEY_ids, torrent_ids)](RpcClient::ResponseFunc done) mutable {
             exec(method, std::move(params), std::move(done));
         })
@@ -649,7 +650,7 @@ void Session::initTorrents(torrent_ids_t const& ids)
 
 void Session::refreshSessionStats()
 {
-    tr::app::RpcQueue::create()
+    RpcQueue::create()
         .add([this](RpcClient::ResponseFunc done) { exec(TR_KEY_session_stats, nullptr, std::move(done)); })
         .add([this](RpcResponse const& r) { updateStats(r.args.get()); })
         .run();
@@ -657,7 +658,7 @@ void Session::refreshSessionStats()
 
 void Session::refreshSessionInfo()
 {
-    tr::app::RpcQueue::create()
+    RpcQueue::create()
         .add([this](RpcClient::ResponseFunc done) { exec(TR_KEY_session_get, nullptr, std::move(done)); })
         .add([this](RpcResponse const& r) { updateInfo(r.args.get()); })
         .run();
@@ -665,7 +666,7 @@ void Session::refreshSessionInfo()
 
 void Session::updateBlocklist()
 {
-    tr::app::RpcQueue::create()
+    RpcQueue::create()
         .add([this](RpcClient::ResponseFunc done) { exec(TR_KEY_blocklist_update, nullptr, std::move(done)); })
         .add([this](RpcResponse const& r) {
             if (auto const size = dictFind<int>(r.args.get(), TR_KEY_blocklist_size)) {
@@ -795,7 +796,7 @@ void Session::addTorrent(AddData const& add_me, tr_variant::Map args_dict)
         break;
     }
 
-    tr::app::RpcQueue::create()
+    RpcQueue::create()
         .add(
             [this, args_dict = std::move(args_dict)](RpcClient::ResponseFunc done) mutable {
                 exec(TR_KEY_torrent_add, std::move(args_dict), std::move(done));
