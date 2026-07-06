@@ -17,7 +17,6 @@
 #include <libtransmission/rpcimpl.h> // JsonRpc::Version, tr_rpc_request_exec
 #include <libtransmission/variant.h>
 #include <libtransmission/version.h> // SHORT_VERSION_STRING
-#include <libtransmission/web-utils.h> // tr_urlParse
 
 namespace tr::app
 {
