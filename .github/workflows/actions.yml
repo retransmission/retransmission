@@ -227,7 +227,6 @@ jobs:
             -DUSE_SYSTEM_DEFAULT=ON \
             -DUSE_SYSTEM_DHT=OFF `# Not packaged in Homebrew` \
             -DUSE_SYSTEM_SIGSLOT=OFF `# Not packaged in Homebrew` \
-            -DUSE_SYSTEM_SIMDUTF=ON \
             -DUSE_SYSTEM_SMALL=OFF `# Not packaged in Homebrew` \
             -DUSE_SYSTEM_UTP=OFF `# Not packaged in Homebrew` \
             -DUSE_SYSTEM_WIDE_INTEGER=OFF `# Not packaged in Homebrew`
@@ -629,7 +628,6 @@ jobs:
             -DUSE_SYSTEM_DEFAULT=ON \
             -DUSE_SYSTEM_DHT=OFF `# Not packaged in Homebrew` \
             -DUSE_SYSTEM_SIGSLOT=OFF `# Not packaged in Homebrew` \
-            -DUSE_SYSTEM_SIMDUTF=ON \
             -DUSE_SYSTEM_SMALL=OFF `# Not packaged in Homebrew` \
             -DUSE_SYSTEM_UTP=OFF `# Not packaged in Homebrew` \
             -DUSE_SYSTEM_WIDE_INTEGER=OFF `# Not packaged in Homebrew`
@@ -721,7 +719,6 @@ jobs:
             -DUSE_SYSTEM_DEFAULT=ON \
             -DUSE_SYSTEM_DHT=OFF `# Not packaged in Alpine` \
             -DUSE_SYSTEM_SIGSLOT=OFF `# Not packaged in Alpine` \
-            -DUSE_SYSTEM_SIMDUTF=ON \
             -DUSE_SYSTEM_SMALL=OFF `# Not packaged in Alpine` \
             -DUSE_SYSTEM_UTP=OFF `# Not packaged in Alpine` \
             -DUSE_SYSTEM_WIDE_INTEGER=OFF `# Not packaged in Alpine`
@@ -1120,7 +1117,6 @@ jobs:
             -DUSE_SYSTEM_DEFAULT=ON \
             -DUSE_SYSTEM_DHT=OFF `# Not packaged in Fedora` \
             -DUSE_SYSTEM_SIGSLOT=OFF `# Not packaged in Fedora` \
-            -DUSE_SYSTEM_SIMDUTF=ON \
             -DUSE_SYSTEM_SMALL=OFF `# Not packaged in Fedora` \
             -DUSE_SYSTEM_UTP=OFF `# Not packaged in Fedora` \
             -DUSE_SYSTEM_WIDE_INTEGER=OFF `# Not packaged in Fedora`
@@ -1480,7 +1476,6 @@ jobs:
               -DRUN_CLANG_TIDY=OFF \
               -DUSE_SYSTEM_DEFAULT=ON \
               -DUSE_SYSTEM_SIGSLOT=OFF `# Not packaged in FreeBSD` \
-              -DUSE_SYSTEM_SIMDUTF=ON \
               -DUSE_SYSTEM_SMALL=OFF `# Not packaged in FreeBSD` \
               -DUSE_SYSTEM_UTP=OFF `# Not packaged in FreeBSD` \
               -DUSE_SYSTEM_WIDE_INTEGER=OFF `# Not packaged in FreeBSD` \
@@ -1657,7 +1652,6 @@ jobs:
               -DUSE_SYSTEM_DEFAULT=ON \
               -DUSE_SYSTEM_DHT=OFF `# Not packaged in OpenBSD` \
               -DUSE_SYSTEM_SIGSLOT=OFF `# Not packaged in OpenBSD` \
-              -DUSE_SYSTEM_SIMDUTF=ON \
               -DUSE_SYSTEM_SMALL=OFF `# Not packaged in OpenBSD` \
               -DUSE_SYSTEM_UTP=OFF `# Not packaged in OpenBSD` \
               -DUSE_SYSTEM_WIDE_INTEGER=OFF `# Not packaged in OpenBSD`
