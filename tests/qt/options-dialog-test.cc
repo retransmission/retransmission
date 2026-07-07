@@ -3,12 +3,20 @@
 // or any future license endorsed by Mnemosaic LLC.
 // License text can be found in the licenses/ folder.
 
+// Required by libtransmission public headers in this test TU.
+// NOLINTNEXTLINE(bugprone-reserved-identifier,cert-dcl37-c,cert-dcl51-cpp)
+//#define __TRANSMISSION__ // for libtransmission/net.h (via rpc-test-fixtures.h)
+
+#include <cstdint>
+#include <string_view>
 #include <vector>
 
 #include <QAction>
 #include <QApplication>
 #include <QComboBox>
 #include <QDir>
+#include <QElapsedTimer>
+#include <QFile>
 #include <QMenu>
 #include <QStackedWidget>
 #include <QString>
@@ -19,6 +27,7 @@
 #include <libtransmission/quark.h>
 
 #include "AddData.h"
+#include "FreeSpaceLabel.h"
 #include "OptionsDialog.h"
 #include "PathButton.h"
 #include "Prefs.h"
@@ -31,14 +40,68 @@ namespace
 auto const magnet = QStringLiteral("magnet:?xt=urn:btih:0123456789abcdef0123456789abcdef01234567");
 auto const download_dir = QStringLiteral("/data/downloads");
 
-void setRemotePrefs(Prefs& prefs, QString const& host)
+// Point prefs at a remote RPC server on the loopback `port`. The session stays
+// "remote" (no server-provided local session id), so the dialog shows the combo.
+void setRemotePrefs(Prefs& prefs, std::uint16_t const port)
 {
     prefs.set(TR_KEY_remote_session_enabled, true);
-    prefs.set(TR_KEY_remote_session_host, host);
-    prefs.set(TR_KEY_remote_session_port, TrDefaultRpcPort);
+    prefs.set(TR_KEY_remote_session_host, QStringLiteral("127.0.0.1"));
+    prefs.set(TR_KEY_remote_session_port, static_cast<int>(port));
     prefs.set(TR_KEY_download_dir, download_dir);
 }
-} // namespace
+
+// Point prefs at an in-process session. Such a session reports
+// isLocalFilesystem(), which is what makes the dialog show the path button.
+void setLocalPrefs(Prefs& prefs, QString const& dl_dir)
+{
+    prefs.set(TR_KEY_remote_session_enabled, false);
+    prefs.set(TR_KEY_download_dir, dl_dir);
+}
+
+// Keep an in-process session off the network so the test stays fast and
+// deterministic (mirrors the libtransmission session fixture defaults).
+void writeQuietSettings(QString const& config_dir)
+{
+    static constexpr auto Json = std::string_view{ R"({"dht-enabled":false,"lpd-enabled":false,"pex-enabled":false,)"
+                                                   R"("port-forwarding-enabled":false,"utp-enabled":false})" };
+
+    auto file = QFile{ QDir{ config_dir }.filePath(QStringLiteral("settings.json")) };
+    if (file.open(QIODevice::WriteOnly | QIODevice::Truncate)) {
+        file.write(std::data(Json), static_cast<qint64>(std::size(Json)));
+    }
+}
+
+// Pump the Qt event loop until `pred` is true or we time out. Returning control
+// to the loop lets RpcClient deliver its queued-connection continuations.
+template<typename Predicate>
+[[nodiscard]] bool waitUntil(Predicate const& pred, int const timeout_ms = 10000)
+{
+    auto timer = QElapsedTimer{};
+    timer.start();
+    while (!pred()) {
+        if (timer.elapsed() > timeout_ms) {
+            return false;
+        }
+        QTest::qWait(20);
+    }
+    return true;
+}
+
+// Building the dialog kicks off FreeSpaceLabel's async free-space request, which
+// runs on a tr::app::RpcQueue. That queue keeps a reference to itself until it
+// finishes, so it must run to completion before teardown or the never-finished
+// queue leaks under LSan. A successful reply replaces the label's "Calculating…"
+// placeholder, proving the queue reached its final step and released itself.
+[[nodiscard]] bool drainFreeSpace(OptionsDialog& dialog)
+{
+    auto* const label = dialog.findChild<FreeSpaceLabel*>();
+    if (label == nullptr) {
+        return false;
+    }
+
+    auto const placeholder = label->text();
+    return waitUntil([label, placeholder]() { return label->text() != placeholder; });
+}
 
 class OptionsDialogTest
     : public QObject
@@ -58,17 +121,19 @@ private slots:
     {
         auto const recents = sampleRecents();
 
+        auto server = MockRpcServer{};
+
         auto prefs = Prefs{};
-        setRemotePrefs(prefs, QStringLiteral("example.invalid"));
+        setRemotePrefs(prefs, server.port());
         prefs.set(TR_KEY_recent_download_paths, recents);
 
-        auto nam = FakeNetworkAccessManager{};
-        auto rpc = RpcClient{ nam };
+        auto rpc = RpcClient{};
         auto session = Session{ sandboxDir(), prefs, rpc };
         session.restart();
-        QVERIFY(!session.isLocal());
+        QVERIFY(!session.isLocalFilesystem());
 
         auto dialog = OptionsDialog{ session, prefs, AddData{ magnet } };
+        QVERIFY(drainFreeSpace(dialog));
 
         auto* const stack = dialog.findChild<QStackedWidget*>(QStringLiteral("destinationStack"));
         auto* const combo = dialog.findChild<QComboBox*>(QStringLiteral("destinationCombo"));
@@ -94,17 +159,19 @@ private slots:
     // is then empty but still type-able.
     void remote_session_without_recents_keeps_combo_editable()
     {
+        auto server = MockRpcServer{};
+
         auto prefs = Prefs{};
-        setRemotePrefs(prefs, QStringLiteral("example.invalid"));
+        setRemotePrefs(prefs, server.port());
         prefs.set(TR_KEY_recent_download_paths, std::vector<QString>{});
 
-        auto nam = FakeNetworkAccessManager{};
-        auto rpc = RpcClient{ nam };
+        auto rpc = RpcClient{};
         auto session = Session{ sandboxDir(), prefs, rpc };
         session.restart();
-        QVERIFY(!session.isLocal());
+        QVERIFY(!session.isLocalFilesystem());
 
         auto dialog = OptionsDialog{ session, prefs, AddData{ magnet } };
+        QVERIFY(drainFreeSpace(dialog));
 
         auto* const combo = dialog.findChild<QComboBox*>(QStringLiteral("destinationCombo"));
         QVERIFY(combo != nullptr);
@@ -119,17 +186,21 @@ private slots:
     {
         auto const recents = sampleRecents();
 
+        auto const dl_dir = QDir{ sandboxDir() }.filePath(QStringLiteral("downloads"));
+        QVERIFY(QDir{}.mkpath(dl_dir));
+
         auto prefs = Prefs{};
-        setRemotePrefs(prefs, QStringLiteral("127.0.0.1")); // loopback => isLocal()
+        writeQuietSettings(sandboxDir());
+        setLocalPrefs(prefs, dl_dir);
         prefs.set(TR_KEY_recent_download_paths, recents);
 
-        auto nam = FakeNetworkAccessManager{};
-        auto rpc = RpcClient{ nam };
+        auto rpc = RpcClient{};
         auto session = Session{ sandboxDir(), prefs, rpc };
         session.restart();
-        QVERIFY(session.isLocal());
+        QVERIFY(session.isLocalFilesystem());
 
         auto dialog = OptionsDialog{ session, prefs, AddData{ magnet } };
+        QVERIFY(drainFreeSpace(dialog));
 
         auto* const stack = dialog.findChild<QStackedWidget*>(QStringLiteral("destinationStack"));
         auto* const button = dialog.findChild<PathButton*>(QStringLiteral("destinationButton"));
@@ -138,7 +209,7 @@ private slots:
 
         // local sessions show the path button, not the combo
         QCOMPARE(stack->currentWidget(), static_cast<QWidget*>(button));
-        QCOMPARE(button->path(), QDir::toNativeSeparators(download_dir));
+        QCOMPARE(button->path(), QDir::toNativeSeparators(dl_dir));
 
         auto* const menu = button->menu();
         QVERIFY(menu != nullptr);
@@ -157,17 +228,21 @@ private slots:
     // plain chooser.
     void local_session_without_recents_has_no_menu()
     {
+        auto const dl_dir = QDir{ sandboxDir() }.filePath(QStringLiteral("downloads"));
+        QVERIFY(QDir{}.mkpath(dl_dir));
+
         auto prefs = Prefs{};
-        setRemotePrefs(prefs, QStringLiteral("127.0.0.1")); // loopback => isLocal()
+        writeQuietSettings(sandboxDir());
+        setLocalPrefs(prefs, dl_dir);
         prefs.set(TR_KEY_recent_download_paths, std::vector<QString>{});
 
-        auto nam = FakeNetworkAccessManager{};
-        auto rpc = RpcClient{ nam };
+        auto rpc = RpcClient{};
         auto session = Session{ sandboxDir(), prefs, rpc };
         session.restart();
-        QVERIFY(session.isLocal());
+        QVERIFY(session.isLocalFilesystem());
 
         auto dialog = OptionsDialog{ session, prefs, AddData{ magnet } };
+        QVERIFY(drainFreeSpace(dialog));
 
         auto* const button = dialog.findChild<PathButton*>(QStringLiteral("destinationButton"));
         QVERIFY(button != nullptr);
@@ -175,9 +250,10 @@ private slots:
             return;
         }
         QVERIFY(button->menu() == nullptr);
-        QCOMPARE(button->path(), QDir::toNativeSeparators(download_dir));
+        QCOMPARE(button->path(), QDir::toNativeSeparators(dl_dir));
     }
 };
+} // namespace
 
 int main(int argc, char** argv)
 {

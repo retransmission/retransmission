@@ -27,8 +27,13 @@ add_trqt_test(options-dialog-test.cc)
 add_trqt_test(prefs-test.cc)
 add_trqt_test(session-test.cc)
 
-# session-test drives a real loopback HTTP server (evhttp) instead of a fake QNAM
+# session-test and options-dialog-test drive a real loopback HTTP server (evhttp)
+# instead of a fake QNAM
 target_link_libraries(qt-test-session
+    PRIVATE
+        libevent::core
+        libevent::extra)
+target_link_libraries(qt-test-options-dialog
     PRIVATE
         libevent::core
         libevent::extra)
