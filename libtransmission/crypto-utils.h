@@ -11,6 +11,7 @@
 #include <limits>
 #include <optional>
 #include <random> // for std::uniform_int_distribution<T>
+#include <span>
 #include <string>
 #include <string_view>
 
@@ -100,12 +101,24 @@ private:
 /**
  * @brief Fill a buffer with random bytes.
  */
-void tr_rand_buffer(void* buffer, size_t length);
+void tr_rand_buffer(std::span<std::byte> buffer);
+
+inline void tr_rand_buffer(void* const buffer, size_t length)
+{
+    tr_rand_buffer({ static_cast<std::byte*>(buffer), length });
+}
+
+template<typename R>
+    requires(!requires(R& range) { std::span<std::byte>{ range }; })
+void tr_rand_buffer(R& range)
+{
+    tr_rand_buffer(std::as_writable_bytes(std::span<typename R::value_type>{ range }));
+}
 
 // Client code should use `tr_rand_buffer()`.
 // These helpers are only exposed here to permit open-box tests.
-bool tr_rand_buffer_crypto(void* buffer, size_t length);
-void tr_rand_buffer_std(void* buffer, size_t length);
+bool tr_rand_buffer_crypto(std::span<std::byte> buffer);
+void tr_rand_buffer_std(std::span<std::byte> buffer);
 
 template<typename T>
 T tr_rand_obj()
@@ -184,7 +197,7 @@ public:
         }
 
         if (pos_ == 0U) {
-            tr_rand_buffer(std::data(buf_), std::size(buf_) * sizeof(T));
+            tr_rand_buffer(buf_);
         }
 
         return buf_[pos_++];

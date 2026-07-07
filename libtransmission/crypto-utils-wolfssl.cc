@@ -142,14 +142,12 @@ tr_sha256_digest_t tr_sha256::finish()
 
 // ---
 
-bool tr_rand_buffer_crypto(void* buffer, size_t length)
+bool tr_rand_buffer_crypto(std::span<std::byte> const buffer)
 {
-    if (length == 0) {
+    if (buffer.empty()) {
         return true;
     }
 
-    TR_ASSERT(buffer != nullptr);
-
     auto const lock = std::scoped_lock{ rng_mutex_ };
-    return check_result(wc_RNG_GenerateBlock(get_rng(), static_cast<byte*>(buffer), length));
+    return check_result(wc_RNG_GenerateBlock(get_rng(), reinterpret_cast<byte*>(buffer.data()), buffer.size()));
 }

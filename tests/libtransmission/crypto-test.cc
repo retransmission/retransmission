@@ -238,13 +238,13 @@ TEST_P(CryptoRandBufferTest, randBuf)
     static auto constexpr Iterations = 1000U;
 
     auto const width = GetParam();
-    auto const empty = std::vector<uint8_t>(width, 0);
+    auto const empty = std::vector<std::byte>(width, std::byte{});
 
     auto buf = empty;
 
     for (size_t i = 0; i < Iterations; ++i) {
         auto tmp = buf;
-        tr_rand_buffer(std::data(tmp), std::size(tmp));
+        tr_rand_buffer(tmp);
         EXPECT_NE(tmp, empty);
         EXPECT_NE(tmp, buf);
         buf = tmp;
@@ -252,7 +252,7 @@ TEST_P(CryptoRandBufferTest, randBuf)
 
     for (size_t i = 0; i < Iterations; ++i) {
         auto tmp = buf;
-        EXPECT_TRUE(tr_rand_buffer_crypto(std::data(tmp), std::size(tmp)));
+        EXPECT_TRUE(tr_rand_buffer_crypto(tmp));
         EXPECT_NE(tmp, empty);
         EXPECT_NE(tmp, buf);
         buf = tmp;
@@ -260,7 +260,7 @@ TEST_P(CryptoRandBufferTest, randBuf)
 
     for (size_t i = 0; i < Iterations; ++i) {
         auto tmp = buf;
-        tr_rand_buffer_std(std::data(tmp), std::size(tmp));
+        tr_rand_buffer_std(tmp);
         EXPECT_NE(tmp, empty);
         EXPECT_NE(tmp, buf);
         buf = tmp;

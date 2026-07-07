@@ -154,13 +154,11 @@ tr_sha256_digest_t tr_sha256::finish()
 
 // ---
 
-bool tr_rand_buffer_crypto(void* buffer, size_t length)
+bool tr_rand_buffer_crypto(std::span<std::byte> const buffer)
 {
-    if (length == 0) {
+    if (buffer.empty()) {
         return true;
     }
 
-    TR_ASSERT(buffer != nullptr);
-
-    return check_result(CCRandomGenerateBytes(buffer, length));
+    return check_result(CCRandomGenerateBytes(buffer.data(), buffer.size()));
 }

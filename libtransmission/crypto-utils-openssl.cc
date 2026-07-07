@@ -158,13 +158,11 @@ tr_sha256_digest_t tr_sha256::finish()
 
 // --- rand
 
-bool tr_rand_buffer_crypto(void* buffer, size_t length)
+bool tr_rand_buffer_crypto(std::span<std::byte> const buffer)
 {
-    if (length == 0) {
+    if (buffer.empty()) {
         return true;
     }
 
-    TR_ASSERT(buffer != nullptr);
-
-    return check_result(RAND_bytes(static_cast<unsigned char*>(buffer), (int)length));
+    return check_result(RAND_bytes(reinterpret_cast<unsigned char*>(buffer.data()), static_cast<int>(buffer.size())));
 }
