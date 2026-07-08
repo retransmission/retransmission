@@ -590,7 +590,9 @@ namespace make_torrent_field_helpers
     auto peers_vec = tr_variant::Vector{};
     peers_vec.reserve(std::size(peers));
     for (auto const& peer : peers) {
-        auto peer_map = tr_variant::Map{ 19U };
+        auto peer_map = tr_variant::Map{ 21U };
+        peer_map.try_emplace(TR_KEY_active_reqs_to_client, peer.active_reqs_to_client);
+        peer_map.try_emplace(TR_KEY_active_reqs_to_peer, peer.active_reqs_to_peer);
         peer_map.try_emplace(TR_KEY_address, peer.addr);
         peer_map.try_emplace(TR_KEY_client_is_choked, peer.client_is_choked);
         peer_map.try_emplace(TR_KEY_client_is_interested, peer.client_is_interested);

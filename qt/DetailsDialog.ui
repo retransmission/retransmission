@@ -594,6 +594,13 @@
          </attribute>
         </widget>
        </item>
+       <item>
+        <widget class="QCheckBox" name="showExtraPeerDetailsCheck">
+         <property name="text">
+          <string>Show &amp;more details</string>
+         </property>
+        </widget>
+       </item>
       </layout>
      </widget>
      <widget class="QWidget" name="trackersTab">

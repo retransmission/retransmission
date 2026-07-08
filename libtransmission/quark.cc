@@ -23,6 +23,8 @@ namespace
 auto constexpr MyStatic = std::array<std::string_view, TR_N_KEYS>{
     ""sv,
     "activeTorrentCount"sv, // rpc
+    "active_reqs_to_client"sv, // rpc
+    "active_reqs_to_peer"sv, // rpc
     "active_torrent_count"sv, // rpc
     "activity-date"sv, // .resume
     "activityDate"sv, // rpc

@@ -84,6 +84,9 @@ private slots:
     void onShowBackupTrackersToggled(bool val);
     void onTrackerListEdited(QString const& tracker_list);
 
+    // Peers tab
+    void onShowExtraPeerDetailsToggled(bool val);
+
     // Files tab
     void onFilePriorityChanged(file_indices_t const& file_indices, int priority);
     void onFileWantedChanged(file_indices_t const& file_indices, bool wanted);

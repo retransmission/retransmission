@@ -117,7 +117,9 @@ enum // peer columns
 {
     COL_LOCK,
     COL_UP,
+    COL_UP_REQS,
     COL_DOWN,
+    COL_DOWN_REQS,
     COL_PERCENT,
     COL_STATUS,
     COL_ADDRESS,
@@ -175,8 +177,14 @@ public:
         case COL_UP:
             return peer_.rate_to_peer < i->peer_.rate_to_peer;
 
+        case COL_UP_REQS:
+            return peer_.active_reqs_to_client < i->peer_.active_reqs_to_client;
+
         case COL_DOWN:
             return peer_.rate_to_client < i->peer_.rate_to_client;
+
+        case COL_DOWN_REQS:
+            return peer_.active_reqs_to_peer < i->peer_.active_reqs_to_peer;
 
         case COL_PERCENT:
             return peer_.progress < i->peer_.progress;
@@ -261,9 +269,10 @@ DetailsDialog::DetailsDialog(Session& session, Prefs& prefs, TorrentModel const&
 
     resize(prefs_.get<int>(TR_KEY_details_window_width), prefs_.get<int>(TR_KEY_details_window_height));
 
-    static std::array<tr_quark, 2> constexpr InitKeys = {
+    static std::array<tr_quark, 3> constexpr InitKeys = {
         TR_KEY_show_tracker_scrapes,
         TR_KEY_show_backup_trackers,
+        TR_KEY_show_extra_peer_details,
     };
 
     for (tr_quark const key : InitKeys) {
@@ -330,6 +339,10 @@ void DetailsDialog::refreshPref(tr_quark key)
         selection_model->setCurrentIndex(selection_model->currentIndex(), QItemSelectionModel::NoUpdate);
     } else if (key == TR_KEY_show_backup_trackers) {
         tracker_filter_->setShowBackupTrackers(prefs_.get<bool>(key));
+    } else if (key == TR_KEY_show_extra_peer_details) {
+        bool const show = prefs_.get<bool>(key);
+        ui_.peersView->setColumnHidden(COL_UP_REQS, !show);
+        ui_.peersView->setColumnHidden(COL_DOWN_REQS, !show);
     }
 }
 
@@ -1028,7 +1041,9 @@ void DetailsDialog::refreshUI()
             {
                 item = new PeerItem{ peer };
                 item->setTextAlignment(COL_UP, Qt::AlignRight | Qt::AlignVCenter);
+                item->setTextAlignment(COL_UP_REQS, Qt::AlignRight | Qt::AlignVCenter);
                 item->setTextAlignment(COL_DOWN, Qt::AlignRight | Qt::AlignVCenter);
+                item->setTextAlignment(COL_DOWN_REQS, Qt::AlignRight | Qt::AlignVCenter);
                 item->setTextAlignment(COL_PERCENT, Qt::AlignRight | Qt::AlignVCenter);
                 item->setIcon(COL_LOCK, peer.is_encrypted ? icon_encrypted_ : icon_unencrypted_);
                 item->setToolTip(COL_LOCK, peer.is_encrypted ? tr("Encrypted connection") : QString{});
@@ -1109,7 +1124,11 @@ void DetailsDialog::refreshUI()
             }
 
             item->setText(COL_UP, peer.rate_to_peer.is_zero() ? QString{} : peer.rate_to_peer.to_qstring());
+            item->setText(
+                COL_UP_REQS,
+                peer.active_reqs_to_client > 0 ? QString::number(peer.active_reqs_to_client) : QString{});
             item->setText(COL_DOWN, peer.rate_to_client.is_zero() ? QString{} : peer.rate_to_client.to_qstring());
+            item->setText(COL_DOWN_REQS, peer.active_reqs_to_peer > 0 ? QString::number(peer.active_reqs_to_peer) : QString{});
             item->setText(
                 COL_PERCENT,
                 peer.progress > 0 ? QStringLiteral("%1%").arg(static_cast<int>(peer.progress * 100.0)) : QString{});
@@ -1173,6 +1192,11 @@ void DetailsDialog::onShowTrackerScrapesToggled(bool val)
 void DetailsDialog::onShowBackupTrackersToggled(bool val)
 {
     prefs_.set(TR_KEY_show_backup_trackers, val);
+}
+
+void DetailsDialog::onShowExtraPeerDetailsToggled(bool val)
+{
+    prefs_.set(TR_KEY_show_extra_peer_details, val);
 }
 
 void DetailsDialog::onHonorsSessionLimitsToggled(bool val)
@@ -1426,15 +1450,21 @@ void DetailsDialog::initPeersTab()
 {
     auto const speed_width_str = Speed{ 1024U, Speed::Units::MByps }.to_qstring();
 
-    ui_.peersView->setHeaderLabels({ QString{}, tr("Up"), tr("Down"), tr("%"), tr("Status"), tr("Address"), tr("Client") });
+    ui_.peersView->setHeaderLabels(
+        { QString{}, tr("Up"), tr("Up Reqs"), tr("Down"), tr("Dn Reqs"), tr("%"), tr("Status"), tr("Address"), tr("Client") });
     ui_.peersView->sortByColumn(COL_ADDRESS, Qt::AscendingOrder);
 
     ui_.peersView->setColumnWidth(COL_LOCK, 20);
     ui_.peersView->setColumnWidth(COL_UP, measureViewItem(ui_.peersView, COL_UP, speed_width_str));
+    ui_.peersView->setColumnWidth(COL_UP_REQS, measureViewItem(ui_.peersView, COL_UP_REQS, QStringLiteral("888")));
     ui_.peersView->setColumnWidth(COL_DOWN, measureViewItem(ui_.peersView, COL_DOWN, speed_width_str));
+    ui_.peersView->setColumnWidth(COL_DOWN_REQS, measureViewItem(ui_.peersView, COL_DOWN_REQS, QStringLiteral("888")));
     ui_.peersView->setColumnWidth(COL_PERCENT, measureViewItem(ui_.peersView, COL_PERCENT, QStringLiteral("100%")));
     ui_.peersView->setColumnWidth(COL_STATUS, measureViewItem(ui_.peersView, COL_STATUS, QStringLiteral("ODUK?EXI")));
     ui_.peersView->setColumnWidth(COL_ADDRESS, measureViewItem(ui_.peersView, COL_ADDRESS, QStringLiteral("888.888.888.888")));
+
+    ui_.showExtraPeerDetailsCheck->setChecked(prefs_.get<bool>(TR_KEY_show_extra_peer_details));
+    connect(ui_.showExtraPeerDetailsCheck, &QAbstractButton::clicked, this, &DetailsDialog::onShowExtraPeerDetailsToggled);
 }
 
 // ---

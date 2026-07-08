@@ -43,6 +43,8 @@ struct Peer {
     bool is_uploading_to = {};
     bool peer_is_choked = {};
     bool peer_is_interested = {};
+    size_t active_reqs_to_client = {};
+    size_t active_reqs_to_peer = {};
     QString address;
     QString client_name;
     QString flags;
@@ -55,6 +57,8 @@ struct Peer {
     using Field = tr::serializer::Field<MemberPtr>;
 
     static constexpr auto Fields = std::make_tuple(
+        Field<&Peer::active_reqs_to_client>{ TR_KEY_active_reqs_to_client },
+        Field<&Peer::active_reqs_to_peer>{ TR_KEY_active_reqs_to_peer },
         Field<&Peer::address>{ TR_KEY_address },
         Field<&Peer::client_is_choked>{ TR_KEY_client_is_choked },
         Field<&Peer::client_is_interested>{ TR_KEY_client_is_interested },

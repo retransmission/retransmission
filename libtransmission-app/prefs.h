@@ -72,6 +72,7 @@ struct AppPrefs {
     bool session_remote_auth_ = false;
     bool session_remote_https_ = false;
     bool show_backup_trackers_ = false;
+    bool show_extra_peer_details_ = false;
     bool show_notification_on_add_ = true;
     bool show_notification_on_complete_ = true;
     bool show_tracker_scrapes_ = false;
@@ -113,6 +114,7 @@ struct AppPrefs {
         Field<&AppPrefs::session_remote_url_base_path_>{ TR_KEY_remote_session_url_base_path },
         Field<&AppPrefs::session_remote_username_>{ TR_KEY_remote_session_username },
         Field<&AppPrefs::show_backup_trackers_>{ TR_KEY_show_backup_trackers },
+        Field<&AppPrefs::show_extra_peer_details_>{ TR_KEY_show_extra_peer_details },
         Field<&AppPrefs::show_notification_on_add_>{ TR_KEY_torrent_added_notification_enabled },
         Field<&AppPrefs::show_notification_on_complete_>{ TR_KEY_torrent_complete_notification_enabled },
         Field<&AppPrefs::show_tracker_scrapes_>{ TR_KEY_show_tracker_scrapes },

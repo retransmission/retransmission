@@ -345,25 +345,27 @@ Files are returned in the order they are laid out in the torrent. References to 
 
 | Key | Value Type | transmission.h source
 |:--|:--|:--
-| `address`              | string     | tr_peer_stat
-| `bytes_to_client`      | number     | tr_peer_stat
-| `bytes_to_peer`        | number     | tr_peer_stat
-| `client_is_choked`     | boolean    | tr_peer_stat
-| `client_is_interested` | boolean    | tr_peer_stat
-| `client_name`          | string     | tr_peer_stat
-| `flag_str`             | string     | tr_peer_stat
-| `is_downloading_from`  | boolean    | tr_peer_stat
-| `is_encrypted`         | boolean    | tr_peer_stat
-| `is_incoming`          | boolean    | tr_peer_stat
-| `is_uploading_to`      | boolean    | tr_peer_stat
-| `is_utp`               | boolean    | tr_peer_stat
-| `peer_id`              | string     | tr_peer_stat
-| `peer_is_choked`       | boolean    | tr_peer_stat
-| `peer_is_interested`   | boolean    | tr_peer_stat
-| `port`                 | number     | tr_peer_stat
-| `progress`             | double     | tr_peer_stat
-| `rate_to_client` (B/s) | number     | tr_peer_stat
-| `rate_to_peer` (B/s)   | number     | tr_peer_stat
+| `active_reqs_to_client` | number    | tr_peer_stat
+| `active_reqs_to_peer`   | number     | tr_peer_stat
+| `address`               | string     | tr_peer_stat
+| `bytes_to_client`       | number     | tr_peer_stat
+| `bytes_to_peer`         | number     | tr_peer_stat
+| `client_is_choked`      | boolean    | tr_peer_stat
+| `client_is_interested`  | boolean    | tr_peer_stat
+| `client_name`           | string     | tr_peer_stat
+| `flag_str`              | string     | tr_peer_stat
+| `is_downloading_from`   | boolean    | tr_peer_stat
+| `is_encrypted`          | boolean    | tr_peer_stat
+| `is_incoming`           | boolean    | tr_peer_stat
+| `is_uploading_to`       | boolean    | tr_peer_stat
+| `is_utp`                | boolean    | tr_peer_stat
+| `peer_id`               | string     | tr_peer_stat
+| `peer_is_choked`        | boolean    | tr_peer_stat
+| `peer_is_interested`    | boolean    | tr_peer_stat
+| `port`                  | number     | tr_peer_stat
+| `progress`              | double     | tr_peer_stat
+| `rate_to_client` (B/s)  | number     | tr_peer_stat
+| `rate_to_peer` (B/s)    | number     | tr_peer_stat
 
 `peers_from`: an object containing:
 
@@ -1123,6 +1125,8 @@ Transmission 4.2.0 (`rpc_version_semver` 6.1.0, `rpc_version`: ?)
 
 | Method | Description
 |:---|:---
+| `torrent_get` | new arg `peers.active_reqs_to_client`
+| `torrent_get` | new arg `peers.active_reqs_to_peer`
 | `torrent_get` | new arg `webseeds_ex`
 | `torrent_get` | **DEPRECATED** `webseeds`. Use `webseeds_ex` instead.
 | `session_get` | new arg `recent_download_paths`
