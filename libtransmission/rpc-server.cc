@@ -38,6 +38,7 @@
 #include "libtransmission/error.h"
 #include "libtransmission/file-utils.h"
 #include "libtransmission/log.h"
+#include "libtransmission/macros.h"
 #include "libtransmission/net.h"
 #include "libtransmission/platform.h" /* tr_getWebClientDir() */
 #include "libtransmission/quark.h"

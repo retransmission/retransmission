@@ -34,6 +34,7 @@
 #include <libtransmission/env.h>
 #include <libtransmission/file-utils.h>
 #include <libtransmission/file.h>
+#include <libtransmission/macros.h>
 #include <libtransmission/quark.h>
 #include <libtransmission/rpcimpl.h>
 #include <libtransmission/string-utils.h>
