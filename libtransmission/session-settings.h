@@ -19,6 +19,7 @@
 #include <small/vector.hpp>
 
 #include "libtransmission/constants.h"
+#include "libtransmission/macros.h"
 #include "libtransmission/quark.h"
 #include "libtransmission/serializer.h"
 #include "libtransmission/types.h"
@@ -134,8 +135,8 @@ public:
     std::string script_torrent_added_filename;
     std::string script_torrent_done_filename;
     std::string script_torrent_done_seeding_filename;
-    std::vector<std::string> ip_endpoint_ipv4 = { "https://ip4.transmissiontorrent.com/" };
-    std::vector<std::string> ip_endpoint_ipv6 = { "https://ip6.transmissiontorrent.com/" };
+    std::vector<std::string> ip_endpoint_ipv4 = { TR_PROJ_URL_IPV4 };
+    std::vector<std::string> ip_endpoint_ipv6 = { TR_PROJ_URL_IPV6 };
     std::vector<std::string> recent_download_paths = { download_dir }; // declare after download_dir
     std::vector<std::string> recent_relocate_paths = { download_dir }; // declare after download_dir
 
