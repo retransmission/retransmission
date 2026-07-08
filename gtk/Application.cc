@@ -663,7 +663,7 @@ std::string get_application_id(std::string const& config_dir)
 {
     struct stat sb = {};
     (void)::stat(config_dir.c_str(), &sb);
-    return fmt::format("com.transmissionbt.transmission_{}_{}", sb.st_dev, sb.st_ino);
+    return fmt::format("{:s}_{}_{}", TR_PROJ_APPNAME_RDNS, sb.st_dev, sb.st_ino);
 }
 
 } // namespace
