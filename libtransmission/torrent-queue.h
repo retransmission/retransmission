@@ -13,7 +13,7 @@
 #include <string>
 #include <vector>
 
-#include "libtransmission/tr-macros.h"
+#include "libtransmission/macros.h"
 #include "libtransmission/types.h"
 
 class tr_torrent_queue

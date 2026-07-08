@@ -18,7 +18,7 @@
 #include <libtransmission/file.h>
 #include <libtransmission/torrent-files.h>
 #include <libtransmission/torrent-metainfo.h>
-#include "libtransmission/tr-macros.h"
+#include "libtransmission/macros.h"
 #include <libtransmission/tr-strbuf.h>
 
 #include "test-fixtures.h"

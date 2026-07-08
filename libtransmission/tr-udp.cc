@@ -22,7 +22,7 @@
 #include "libtransmission/session.h"
 #include "libtransmission/string-utils.h"
 #include "libtransmission/tr-assert.h"
-#include "libtransmission/tr-macros.h"
+#include "libtransmission/macros.h"
 #include "libtransmission/tr-utp.h"
 #include "libtransmission/utils.h"
 

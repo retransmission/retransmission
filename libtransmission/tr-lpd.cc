@@ -35,7 +35,7 @@
 #include "libtransmission/timer.h"
 #include "libtransmission/tr-assert.h"
 #include "libtransmission/tr-lpd.h"
-#include "libtransmission/tr-macros.h"
+#include "libtransmission/macros.h"
 #include "libtransmission/types.h"
 #include "libtransmission/utils.h" // for tr_net_init()
 #include "libtransmission/utils-ev.h" // for tr_net_init()

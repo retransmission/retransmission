@@ -327,7 +327,7 @@
 		C12F197B1E1AE4460005E93F /* upnperrors.h in Headers */ = {isa = PBXBuildFile; fileRef = C12F197A1E1AE4460005E93F /* upnperrors.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		C1305EBE186A13B100F03351 /* file.cc in Sources */ = {isa = PBXBuildFile; fileRef = C1305EB8186A134000F03351 /* file.cc */; };
 		C1425B361EE9C605001DB85F /* tr-assert.h in Headers */ = {isa = PBXBuildFile; fileRef = C1425B331EE9C5EA001DB85F /* tr-assert.h */; };
-		C1425B371EE9C705001DB85F /* tr-macros.h in Headers */ = {isa = PBXBuildFile; fileRef = C1425B341EE9C5EA001DB85F /* tr-macros.h */; };
+		C1425B371EE9C705001DB85F /* macros.h in Headers */ = {isa = PBXBuildFile; fileRef = C1425B341EE9C5EA001DB85F /* macros.h */; };
 		C1425B381EE9C805001DB850 /* peer-socket.h in Headers */ = {isa = PBXBuildFile; fileRef = C1425B381EE9C805001DB851 /* peer-socket.h */; };
 		C1425B381EE9C805001DB852 /* peer-socket.cc in Sources */ = {isa = PBXBuildFile; fileRef = C1425B381EE9C805001DB853 /* peer-socket.cc */; };
 		C16089EF1F092A1E00CEFC36 /* utp_api.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C16089E41F092A1E00CEFC36 /* utp_api.cpp */; };
@@ -1182,7 +1182,7 @@
 		C1305EB8186A134000F03351 /* file.cc */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = file.cc; sourceTree = "<group>"; };
 		C1425B321EE9C5EA001DB85F /* tr-assert.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = "tr-assert.cc"; sourceTree = "<group>"; };
 		C1425B331EE9C5EA001DB85F /* tr-assert.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.h; fileEncoding = 4; path = "tr-assert.h"; sourceTree = "<group>"; };
-		C1425B341EE9C5EA001DB85F /* tr-macros.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.h; fileEncoding = 4; path = "tr-macros.h"; sourceTree = "<group>"; };
+		C1425B341EE9C5EA001DB85F /* macros.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.h; fileEncoding = 4; path = "macros.h"; sourceTree = "<group>"; };
 		C1425B381EE9C805001DB851 /* peer-socket.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.h; fileEncoding = 4; path = "peer-socket.h"; sourceTree = "<group>"; };
 		C1425B381EE9C805001DB853 /* peer-socket.cc */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = "peer-socket.cc"; sourceTree = "<group>"; };
 		C16089E41F092A1E00CEFC36 /* utp_api.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = utp_api.cpp; sourceTree = "<group>"; };
@@ -2046,7 +2046,7 @@
 				A25E03E00E4015380086C225 /* tr-getopt.h */,
 				A220EC59118C8A060022B4BE /* tr-lpd.cc */,
 				A220EC5A118C8A060022B4BE /* tr-lpd.h */,
-				C1425B341EE9C5EA001DB85F /* tr-macros.h */,
+				C1425B341EE9C5EA001DB85F /* macros.h */,
 				888A256631B3DE536FEB8B01 /* tr-strbuf.h */,
 				A284214212DA663E00FBDDBB /* tr-udp.cc */,
 				A2679292130E00A000CB7464 /* tr-utp.cc */,
@@ -2560,7 +2560,7 @@
 				BEFC1E350C07861A00B0BB3C /* port-forwarding.h in Headers */,
 				BEFC1E3B0C07861A00B0BB3C /* platform.h in Headers */,
 				C1425B361EE9C605001DB85F /* tr-assert.h in Headers */,
-				C1425B371EE9C705001DB85F /* tr-macros.h in Headers */,
+				C1425B371EE9C705001DB85F /* macros.h in Headers */,
 				888A256631B3DE536FEB8B00 /* tr-strbuf.h in Headers */,
 				C1425B381EE9C805001DB850 /* peer-socket.h in Headers */,
 				BEFC1E450C07861A00B0BB3C /* net.h in Headers */,

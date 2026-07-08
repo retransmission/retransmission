@@ -16,7 +16,7 @@
 
 #include <libtransmission-app/display-modes.h>
 
-#include <libtransmission/tr-macros.h>
+#include <libtransmission/macros.h>
 
 #include <gdkmm/pixbuf.h>
 #include <glibmm/i18n.h>

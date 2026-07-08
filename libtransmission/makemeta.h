@@ -18,7 +18,7 @@
 #include "libtransmission/error.h"
 #include "libtransmission/file.h"
 #include "libtransmission/torrent-files.h"
-#include "libtransmission/tr-macros.h" // TR_CONSTEXPR_VEC
+#include "libtransmission/macros.h" // TR_CONSTEXPR_VEC
 #include "libtransmission/types.h"
 
 class tr_metainfo_builder

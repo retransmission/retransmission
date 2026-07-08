@@ -18,7 +18,7 @@
 #include "libtransmission/crypto-utils.h" // for tr_salt_shaker
 #include "libtransmission/peer-mgr-wishlist.h"
 #include "libtransmission/tr-assert.h"
-#include "libtransmission/tr-macros.h" // TR_CONSTEXPR_VEC
+#include "libtransmission/macros.h" // TR_CONSTEXPR_VEC
 #include "libtransmission/types.h"
 
 namespace

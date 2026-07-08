@@ -13,7 +13,7 @@
 #include <vector>
 
 #include "libtransmission/interned-string.h"
-#include "libtransmission/tr-macros.h" // TR_CONSTEXPR_VEC
+#include "libtransmission/macros.h" // TR_CONSTEXPR_VEC
 #include "libtransmission/types.h"
 #include "libtransmission/variant.h"
 #include "libtransmission/web-utils.h"

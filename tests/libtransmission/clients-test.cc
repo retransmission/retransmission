@@ -12,7 +12,7 @@
 
 #include <libtransmission/crypto-utils.h> // tr_rand_obj()
 #include <libtransmission/clients.h>
-#include <libtransmission/tr-macros.h>
+#include <libtransmission/macros.h>
 
 using namespace std::literals;
 

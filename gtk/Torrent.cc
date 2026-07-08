@@ -11,7 +11,7 @@
 #include "Utils.h"
 
 #include <libtransmission/transmission.h>
-#include <libtransmission/tr-macros.h>
+#include <libtransmission/macros.h>
 #include <libtransmission/utils.h>
 #include <libtransmission/values.h>
 

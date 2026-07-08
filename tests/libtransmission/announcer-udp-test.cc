@@ -39,7 +39,7 @@
 #include "libtransmission/timer.h"
 #include <libtransmission/timer-ev.h>
 #include <libtransmission/tr-buffer.h>
-#include "libtransmission/tr-macros.h" // tr_sha1_digest_t, tr_p...
+#include "libtransmission/macros.h" // tr_sha1_digest_t, tr_p...
 #include "libtransmission/utils.h"
 
 #include "test-fixtures.h"
