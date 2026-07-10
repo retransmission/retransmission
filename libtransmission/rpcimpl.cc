@@ -1083,7 +1083,7 @@ namespace make_torrent_field_helpers
 {
     auto [indices, err, errmsg] = get_file_indices(tor, files_vec);
     if (err == JsonRpc::Error::SUCCESS) {
-        tor->set_file_priorities(std::data(indices), std::size(indices), priority);
+        tor->set_file_priorities(indices, priority);
     }
     return { err, std::move(errmsg) };
 }
@@ -1109,7 +1109,7 @@ namespace make_torrent_field_helpers
 {
     auto [indices, err, errmsg] = get_file_indices(tor, files_vec);
     if (err == JsonRpc::Error::SUCCESS) {
-        tor->set_files_wanted(std::data(indices), std::size(indices), wanted);
+        tor->set_files_wanted(indices, wanted);
     }
     return { err, std::move(errmsg) };
 }

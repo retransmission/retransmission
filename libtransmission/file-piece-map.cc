@@ -23,24 +23,24 @@ tr_file_piece_map::tr_file_piece_map(tr_torrent_metainfo const& tm)
     reset(tm);
 }
 
-tr_file_piece_map::tr_file_piece_map(tr_block_info const& block_info, uint64_t const* const file_sizes, size_t const n_files)
+tr_file_piece_map::tr_file_piece_map(tr_block_info const& block_info, std::span<uint64_t const> const file_sizes)
 {
-    reset(block_info, file_sizes, n_files);
+    reset(block_info, file_sizes);
 }
 
-void tr_file_piece_map::reset(tr_block_info const& block_info, uint64_t const* const file_sizes, size_t const n_files)
+void tr_file_piece_map::reset(tr_block_info const& block_info, std::span<uint64_t const> const file_sizes)
 {
-    file_bytes_.resize(n_files);
+    file_bytes_.resize(file_sizes.size());
     file_bytes_.shrink_to_fit();
 
-    file_pieces_.resize(n_files);
+    file_pieces_.resize(file_sizes.size());
     file_pieces_.shrink_to_fit();
 
     auto edge_pieces = small::set<tr_piece_index_t, 1024U>{};
-    edge_pieces.reserve(n_files * 2U);
+    edge_pieces.reserve(file_sizes.size() * 2U);
 
     uint64_t offset = 0U;
-    for (tr_file_index_t i = 0U; i < n_files; ++i) {
+    for (tr_file_index_t i = 0U; i < file_sizes.size(); ++i) {
         auto const file_size = file_sizes[i];
 
         auto const begin_byte = offset;
@@ -79,7 +79,7 @@ void tr_file_piece_map::reset(tr_torrent_metainfo const& tm)
     for (tr_file_index_t i = 0U; i < n; ++i) {
         file_sizes[i] = tm.file_size(i);
     }
-    reset({ tm.total_size(), tm.piece_size() }, std::data(file_sizes), std::size(file_sizes));
+    reset({ tm.total_size(), tm.piece_size() }, file_sizes);
 }
 
 namespace
@@ -155,10 +155,10 @@ void tr_file_priorities::set(tr_file_index_t const file, tr_priority_t const new
     priorities_[file] = new_priority;
 }
 
-void tr_file_priorities::set(tr_file_index_t const* const files, size_t const n, tr_priority_t const new_priority)
+void tr_file_priorities::set(std::span<tr_file_index_t const> const files, tr_priority_t const new_priority)
 {
-    for (size_t i = 0U; i < n; ++i) {
-        set(files[i], new_priority);
+    for (auto const file : files) {
+        set(file, new_priority);
     }
 }
 
@@ -209,10 +209,10 @@ void tr_files_wanted::set(tr_file_index_t const file, bool const wanted)
     wanted_.set(file, wanted);
 }
 
-void tr_files_wanted::set(tr_file_index_t const* const files, size_t const n_files, bool const wanted)
+void tr_files_wanted::set(std::span<tr_file_index_t const> const files, bool const wanted)
 {
-    for (size_t idx = 0U; idx < n_files; ++idx) {
-        set(files[idx], wanted);
+    for (auto const file : files) {
+        set(file, wanted);
     }
 }
 

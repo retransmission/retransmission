@@ -66,7 +66,7 @@ protected:
 
 TEST_F(FilePieceMapTest, fileOffset)
 {
-    auto const fpm = tr_file_piece_map{ block_info_, std::data(FileSizes), std::size(FileSizes) };
+    auto const fpm = tr_file_piece_map{ block_info_, FileSizes };
 
     // first byte of the first file
     auto file_offset = fpm.file_offset(0U);
@@ -119,7 +119,7 @@ TEST_F(FilePieceMapTest, pieceSpan)
     });
     EXPECT_EQ(std::size(FileSizes), std::size(ExpectedPieceSpans));
 
-    auto const fpm = tr_file_piece_map{ block_info_, std::data(FileSizes), std::size(FileSizes) };
+    auto const fpm = tr_file_piece_map{ block_info_, FileSizes };
     auto const n_files = fpm.file_count();
     EXPECT_EQ(std::size(FileSizes), n_files);
     uint64_t offset = 0U;
@@ -134,7 +134,7 @@ TEST_F(FilePieceMapTest, pieceSpan)
 
 TEST_F(FilePieceMapTest, priorities)
 {
-    auto const fpm = tr_file_piece_map{ block_info_, std::data(FileSizes), std::size(FileSizes) };
+    auto const fpm = tr_file_piece_map{ block_info_, FileSizes };
     auto file_priorities = tr_file_priorities(&fpm);
     tr_file_index_t const n_files = std::size(FileSizes);
 
@@ -271,13 +271,13 @@ TEST_F(FilePieceMapTest, priorities)
     auto file_indices = std::vector<tr_file_index_t>(n_files);
     std::iota(std::begin(file_indices), std::end(file_indices), 0U);
     pri = TR_PRI_HIGH;
-    file_priorities.set(std::data(file_indices), std::size(file_indices), pri);
+    file_priorities.set(file_indices, pri);
     std::ranges::fill(expected_file_priorities, pri);
     std::ranges::fill(expected_piece_priorities, pri);
     mark_file_endpoints_as_high_priority();
     compare_to_expected();
     pri = TR_PRI_LOW;
-    file_priorities.set(std::data(file_indices), std::size(file_indices), pri);
+    file_priorities.set(file_indices, pri);
     std::ranges::fill(expected_file_priorities, pri);
     std::ranges::fill(expected_piece_priorities, pri);
     mark_file_endpoints_as_high_priority();
@@ -286,7 +286,7 @@ TEST_F(FilePieceMapTest, priorities)
 
 TEST_F(FilePieceMapTest, wanted)
 {
-    auto const fpm = tr_file_piece_map{ block_info_, std::data(FileSizes), std::size(FileSizes) };
+    auto const fpm = tr_file_piece_map{ block_info_, FileSizes };
     auto files_wanted = tr_files_wanted(&fpm);
     tr_file_index_t const n_files = std::size(FileSizes);
 
@@ -390,11 +390,11 @@ TEST_F(FilePieceMapTest, wanted)
     // test the batch API
     auto file_indices = std::vector<tr_file_index_t>(n_files);
     std::iota(std::begin(file_indices), std::end(file_indices), 0);
-    files_wanted.set(std::data(file_indices), std::size(file_indices), true);
+    files_wanted.set(file_indices, true);
     expected_files_wanted.set_has_all();
     expected_pieces_wanted.set_has_all();
     compare_to_expected();
-    files_wanted.set(std::data(file_indices), std::size(file_indices), false);
+    files_wanted.set(file_indices, false);
     expected_files_wanted.set_has_none();
     expected_pieces_wanted.set_has_none();
     compare_to_expected();

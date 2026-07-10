@@ -1749,11 +1749,11 @@ void tr_torrent::recheck_completeness()
 
 // --- File DND
 
-void tr_torrentSetFileDLs(tr_torrent* tor, tr_file_index_t const* files, tr_file_index_t n_files, bool wanted)
+void tr_torrentSetFileDLs(tr_torrent* const tor, std::span<tr_file_index_t const> const files, bool const wanted)
 {
     tr_return_if_fail(tr_isTorrent(tor));
 
-    tor->set_files_wanted(files, n_files, wanted);
+    tor->set_files_wanted(files, wanted);
 }
 
 // ---
@@ -1851,13 +1851,13 @@ tr_block_span_t tr_torrent::block_span_for_file(tr_file_index_t const file) cons
 
 // ---
 
-void tr_torrent::set_file_priorities(tr_file_index_t const* files, tr_file_index_t file_count, tr_priority_t priority)
+void tr_torrent::set_file_priorities(std::span<tr_file_index_t const> const files, tr_priority_t priority)
 {
-    if (std::ranges::any_of(files, files + file_count, [this, priority](tr_file_index_t file) {
+    if (std::ranges::any_of(files, [this, priority](tr_file_index_t file) {
             return priority != file_priorities_.file_priority(file);
         })) {
-        file_priorities_.set(files, file_count, priority);
-        priority_changed_(this, files, file_count, priority);
+        file_priorities_.set(files, priority);
+        priority_changed_(this, files, priority);
         set_dirty();
         mark_changed();
     }
@@ -2323,14 +2323,13 @@ void tr_torrentRenamePath(
 // ---
 
 void tr_torrentSetFilePriorities(
-    tr_torrent* tor,
-    tr_file_index_t const* files,
-    tr_file_index_t file_count,
-    tr_priority_t priority)
+    tr_torrent* const tor,
+    std::span<tr_file_index_t const> const files,
+    tr_priority_t const priority)
 {
     tr_return_if_fail(tr_isTorrent(tor));
 
-    tor->set_file_priorities(files, file_count, priority);
+    tor->set_file_priorities(files, priority);
 }
 
 bool tr_torrentHasMetadata(tr_torrent const* tor)

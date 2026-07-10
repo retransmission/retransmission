@@ -408,14 +408,14 @@ struct tr_torrent {
         return files_wanted_.file_wanted(file);
     }
 
-    void init_files_wanted(tr_file_index_t const* files, size_t n_files, bool wanted)
+    void init_files_wanted(std::span<tr_file_index_t const> files, bool wanted)
     {
-        set_files_wanted(files, n_files, wanted, /*is_bootstrapping*/ true);
+        set_files_wanted(files, wanted, /*is_bootstrapping*/ true);
     }
 
-    void set_files_wanted(tr_file_index_t const* files, size_t n_files, bool wanted)
+    void set_files_wanted(std::span<tr_file_index_t const> files, bool wanted)
     {
-        set_files_wanted(files, n_files, wanted, /*is_bootstrapping*/ false);
+        set_files_wanted(files, wanted, /*is_bootstrapping*/ false);
     }
 
     /// PRIORITIES
@@ -425,13 +425,13 @@ struct tr_torrent {
         return file_priorities_.piece_priority(piece);
     }
 
-    void set_file_priorities(tr_file_index_t const* files, tr_file_index_t file_count, tr_priority_t priority);
+    void set_file_priorities(std::span<tr_file_index_t const> files, tr_priority_t priority);
 
     void set_file_priority(tr_file_index_t file, tr_priority_t priority)
     {
         if (priority != file_priorities_.file_priority(file)) {
             file_priorities_.set(file, priority);
-            priority_changed_(this, &file, 1U, priority);
+            priority_changed_(this, std::span{ &file, 1U }, priority);
             set_dirty();
             mark_changed();
         }
@@ -995,8 +995,8 @@ struct tr_torrent {
     sigslot::signal<tr_torrent*> started_;
     sigslot::signal<tr_torrent*> stopped_;
     sigslot::signal<tr_torrent*> swarm_is_all_upload_only_;
-    sigslot::signal<tr_torrent*, tr_file_index_t const*, tr_file_index_t, bool> files_wanted_changed_;
-    sigslot::signal<tr_torrent*, tr_file_index_t const*, tr_file_index_t, tr_priority_t> priority_changed_;
+    sigslot::signal<tr_torrent*, std::span<tr_file_index_t const>, bool> files_wanted_changed_;
+    sigslot::signal<tr_torrent*, std::span<tr_file_index_t const>, tr_priority_t> priority_changed_;
     sigslot::signal<tr_torrent*, bool> sequential_download_changed_;
     sigslot::signal<tr_torrent*, tr_piece_index_t> sequential_download_from_piece_changed_;
 
@@ -1203,13 +1203,13 @@ private:
         needs_completeness_check_ = true;
     }
 
-    void set_files_wanted(tr_file_index_t const* files, size_t n_files, bool wanted, bool is_bootstrapping)
+    void set_files_wanted(std::span<tr_file_index_t const> files, bool wanted, bool is_bootstrapping)
     {
         auto const lock = unique_lock();
 
-        files_wanted_.set(files, n_files, wanted);
+        files_wanted_.set(files, wanted);
         completion_.invalidate_size_when_done();
-        files_wanted_changed_(this, files, n_files, wanted);
+        files_wanted_changed_(this, files, wanted);
 
         if (!is_bootstrapping) {
             set_dirty();

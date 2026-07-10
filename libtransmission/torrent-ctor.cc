@@ -57,15 +57,15 @@ bool tr_ctor::save(std::string_view filename, tr_error* error) const
 
 void tr_ctor::init_torrent_priorities(tr_torrent& tor) const
 {
-    tor.set_file_priorities(std::data(low_), std::size(low_), TR_PRI_LOW);
-    tor.set_file_priorities(std::data(normal_), std::size(normal_), TR_PRI_NORMAL);
-    tor.set_file_priorities(std::data(high_), std::size(high_), TR_PRI_HIGH);
+    tor.set_file_priorities(low_, TR_PRI_LOW);
+    tor.set_file_priorities(normal_, TR_PRI_NORMAL);
+    tor.set_file_priorities(high_, TR_PRI_HIGH);
 }
 
 void tr_ctor::init_torrent_wanted(tr_torrent& tor) const
 {
-    tor.init_files_wanted(std::data(unwanted_), std::size(unwanted_), false);
-    tor.init_files_wanted(std::data(wanted_), std::size(wanted_), true);
+    tor.init_files_wanted(unwanted_, false);
+    tor.init_files_wanted(wanted_, true);
 }
 
 // --- PUBLIC C API

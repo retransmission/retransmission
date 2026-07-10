@@ -144,7 +144,7 @@ TEST_F(TorrentsTest, invalidArgsAreLogged)
     tr_torrentVerify(nullptr);
     ++expected_log_size;
 
-    tr_torrentSetFileDLs(nullptr, nullptr, 0, false);
+    tr_torrentSetFileDLs(nullptr, {}, false);
     ++expected_log_size;
 
     EXPECT_EQ(TR_PRI_NORMAL, tr_torrentGetPriority(nullptr));
@@ -174,7 +174,7 @@ TEST_F(TorrentsTest, invalidArgsAreLogged)
     tr_torrentRenamePath(nullptr, ""sv, ""sv, {});
     ++expected_log_size;
 
-    tr_torrentSetFilePriorities(nullptr, nullptr, 0, TR_PRI_NORMAL);
+    tr_torrentSetFilePriorities(nullptr, {}, TR_PRI_NORMAL);
     ++expected_log_size;
 
     EXPECT_FALSE(tr_torrentHasMetadata(nullptr));

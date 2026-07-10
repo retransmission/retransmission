@@ -1509,11 +1509,10 @@ static tr_torrent_rename_done_func makeRenameDoneCallback(NSDictionary* contextI
 - (void)setFileCheckState:(NSControlStateValue)state forIndexes:(NSIndexSet*)indexSet
 {
     NSUInteger count = indexSet.count;
-    tr_file_index_t* files = static_cast<tr_file_index_t*>(malloc(count * sizeof(tr_file_index_t)));
-    [indexSet getIndexes:files maxCount:count inIndexRange:nil];
+    auto files = std::vector<tr_file_index_t>(count);
+    [indexSet getIndexes:files.data() maxCount:files.size() inIndexRange:nil];
 
-    tr_torrentSetFileDLs(self.fHandle, files, count, state != NSControlStateValueOff);
-    free(files);
+    tr_torrentSetFileDLs(self.fHandle, files, state != NSControlStateValueOff);
 
     [self update];
     [NSNotificationCenter.defaultCenter postNotificationName:@"TorrentFileCheckChange" object:self];
@@ -1528,7 +1527,7 @@ static tr_torrent_rename_done_func makeRenameDoneCallback(NSDictionary* contextI
         files[i] = index;
     }
 
-    tr_torrentSetFilePriorities(self.fHandle, std::data(files), std::size(files), priority);
+    tr_torrentSetFilePriorities(self.fHandle, files, priority);
 }
 
 - (BOOL)hasFilePriority:(tr_priority_t)priority forIndexes:(NSIndexSet*)indexSet

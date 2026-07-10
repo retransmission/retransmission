@@ -702,10 +702,10 @@ bool FileList::Impl::onViewPathToggled(Gtk::TreeViewColumn* col, Gtk::TreeModel:
                 break;
             }
 
-            tr_torrentSetFilePriorities(tor, indexBuf.data(), indexBuf.size(), new_priority);
+            tr_torrentSetFilePriorities(tor, indexBuf, new_priority);
         } else {
             auto const enabled = iter->get_value(file_cols.enabled);
-            tr_torrentSetFileDLs(tor, indexBuf.data(), indexBuf.size(), enabled == static_cast<int>(false));
+            tr_torrentSetFileDLs(tor, indexBuf, enabled == static_cast<int>(false));
         }
 
         refresh();

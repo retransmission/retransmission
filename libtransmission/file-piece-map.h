@@ -12,6 +12,7 @@
 #include <algorithm> // for std::binary_search()
 #include <cstdint> // for uint64_t
 #include <cstddef> // for size_t
+#include <span>
 #include <vector>
 
 #include "libtransmission/bitfield.h"
@@ -40,7 +41,7 @@ public:
 
     using file_offset_t = offset_t<tr_file_index_t>;
     explicit tr_file_piece_map(tr_torrent_metainfo const& tm);
-    tr_file_piece_map(tr_block_info const& block_info, uint64_t const* file_sizes, size_t n_files);
+    tr_file_piece_map(tr_block_info const& block_info, std::span<uint64_t const> file_sizes);
 
     [[nodiscard]] TR_CONSTEXPR_VEC piece_span_t piece_span_for_file(tr_file_index_t const file) const noexcept
     {
@@ -71,7 +72,7 @@ private:
     using byte_span_t = index_span_t<uint64_t>;
 
     void reset(tr_torrent_metainfo const& tm);
-    void reset(tr_block_info const& block_info, uint64_t const* file_sizes, size_t n_files);
+    void reset(tr_block_info const& block_info, std::span<uint64_t const> file_sizes);
 
     std::vector<byte_span_t> file_bytes_;
     std::vector<piece_span_t> file_pieces_;
@@ -87,7 +88,7 @@ public:
     }
 
     void set(tr_file_index_t file, tr_priority_t priority);
-    void set(tr_file_index_t const* files, size_t n, tr_priority_t priority);
+    void set(std::span<tr_file_index_t const> files, tr_priority_t priority);
 
     [[nodiscard]] tr_priority_t file_priority(tr_file_index_t file) const;
     [[nodiscard]] tr_priority_t piece_priority(tr_piece_index_t piece) const;
@@ -103,7 +104,7 @@ public:
     explicit tr_files_wanted(tr_file_piece_map const* fpm);
 
     void set(tr_file_index_t file, bool wanted);
-    void set(tr_file_index_t const* files, size_t n, bool wanted);
+    void set(std::span<tr_file_index_t const> files, bool wanted);
 
     [[nodiscard]] constexpr bool file_wanted(tr_file_index_t file) const
     {

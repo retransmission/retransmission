@@ -354,9 +354,8 @@ public:
             , swarm_{ swarm }
             , wishlist_{ *this }
             , signal_tags_{ {
-                  tor_.files_wanted_changed_.connect_scoped([this](tr_torrent*, tr_file_index_t const*, tr_file_index_t, bool) {
-                      wishlist_.on_files_wanted_changed();
-                  }),
+                  tor_.files_wanted_changed_.connect_scoped(
+                      [this](tr_torrent*, std::span<tr_file_index_t const>, bool) { wishlist_.on_files_wanted_changed(); }),
                   swarm_.peer_disconnect.connect_scoped(
                       [this](tr_torrent*, tr_bitfield const& have, tr_bitfield const& requests) {
                           wishlist_.on_peer_disconnect(have, requests);
@@ -375,10 +374,9 @@ public:
                       [this](tr_torrent*, tr_peer*, tr_block_index_t block) { wishlist_.on_got_reject(block); }),
                   tor_.piece_completed_.connect_scoped(
                       [this](tr_torrent*, tr_piece_index_t piece) { wishlist_.on_piece_completed(piece); }),
-                  tor_.priority_changed_.connect_scoped(
-                      [this](tr_torrent*, tr_file_index_t const*, tr_file_index_t, tr_priority_t) {
-                          wishlist_.on_priority_changed();
-                      }),
+                  tor_.priority_changed_.connect_scoped([this](tr_torrent*, std::span<tr_file_index_t const>, tr_priority_t) {
+                      wishlist_.on_priority_changed();
+                  }),
                   swarm_.sent_cancel.connect_scoped(
                       [this](tr_torrent*, tr_peer*, tr_block_index_t block) { wishlist_.on_sent_cancel(block); }),
                   swarm_.sent_request.connect_scoped(
