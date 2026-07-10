@@ -765,9 +765,7 @@ public:
                 auto const stop_waiting = [this]() {
                     return !is_idle() || !deadline_exists();
                 };
-                if (!stop_waiting()) {
-                    queued_tasks_cv_.wait(lock, stop_waiting);
-                }
+                queued_tasks_cv_.wait(lock, stop_waiting);
 
                 // add queued tasks
                 if (!std::empty(queued_tasks_)) {
