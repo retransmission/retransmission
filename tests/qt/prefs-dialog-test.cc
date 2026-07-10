@@ -90,6 +90,11 @@ class PrefsDialogTest
     Q_OBJECT
 
 private slots:
+    static void initTestCase()
+    {
+        TR_QT_SKIP_UNLESS_SIGNALS_WORK();
+    }
+
     // Toggling the "verify data when download completes" checkbox must flow
     // through PrefsDialog::set() into Prefs, which emits changed(tr_quark). This
     // is the wiring the GUI relies on to persist the preference.

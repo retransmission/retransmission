@@ -40,6 +40,11 @@ class PrefsTest : public QObject
     }
 
 private slots:
+    static void initTestCase()
+    {
+        TR_QT_SKIP_UNLESS_SIGNALS_WORK();
+    }
+
     // QString round-trips exercise the Qt-only Converter in VariantHelpers.
     void handles_qstring()
     {

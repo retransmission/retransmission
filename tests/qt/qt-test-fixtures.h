@@ -7,8 +7,10 @@
 
 #include <type_traits>
 
+#include <QObject>
 #include <QTemporaryDir>
 #include <QTest>
+#include <QTimer>
 
 #include <fmt/format.h>
 
@@ -45,6 +47,34 @@ void trcompare(T const& actual, U const& expected, bool const negate)
 
 #define TRCOMPARE_EQ(actual, expected) trcompare((actual), (expected), false)
 #define TRCOMPARE_NE(actual, expected) trcompare((actual), (expected), true)
+
+// Probes whether this build's Qt can resolve a pointer-to-member signal at
+// runtime. Some prebuilt Qt packages (seen on the netbsd/freebsd CI runners,
+// where a modern Qt is compiled by a compiler too old for it) miscompile the
+// `connect()` machinery, so *every* pointer-to-member connection silently fails
+// with "signal not found" and never delivers. A failed connect returns an
+// invalid QMetaObject::Connection, which we detect here without needing an event
+// loop, moc, or a QApplication. Keying test execution on this capability -- vs a
+// hardcoded platform or compiler-version list -- lets the Qt runtime tests
+// re-enable themselves automatically once the environment can run them.
+[[nodiscard]] inline bool qtPointerConnectWorks()
+{
+    auto timer = QTimer{};
+    auto receiver = QObject{};
+    auto const connection = QObject::connect(&timer, &QTimer::timeout, &receiver, &QObject::deleteLater);
+    return static_cast<bool>(connection);
+}
+
+// Skip the entire test (call from initTestCase) when this build's Qt can't
+// deliver pointer-to-member signals; see qtPointerConnectWorks().
+#define TR_QT_SKIP_UNLESS_SIGNALS_WORK() \
+    do { \
+        if (!qtPointerConnectWorks()) { \
+            QSKIP( \
+                "Qt pointer-to-member connect is non-functional in this build's Qt " \
+                "(likely prebuilt with a compiler too old for it); skipping Qt runtime tests."); \
+        } \
+    } while (false)
 
 class BasicTest
 {
