@@ -726,8 +726,6 @@ jobs:
         run: cmake --build obj --config RelWithDebInfo
       - name: Test
         if: ${{ needs.what-to-make.outputs.make-tests == 'true' }}
-        env:
-          TMPDIR: /private/tmp
         uses: ./.github/actions/run-tests
         with:
           build-dir: obj
@@ -1203,8 +1201,6 @@ jobs:
         run: cmake --build obj --config RelWithDebInfo
       - name: Test
         if: ${{ needs.what-to-make.outputs.make-tests == 'true' }}
-        env:
-          TMPDIR: /private/tmp
         uses: ./.github/actions/run-tests
         with:
           build-dir: obj
