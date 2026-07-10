@@ -9,10 +9,6 @@ inputs:
     description: 'Install clang-tidy-22'
     required: false
     default: 'false'
-  enable-debugging:
-    description: 'Install debugging tools (gdb, lldb, etc.)'
-    required: false
-    default: 'false'
   enable-gtk:
     description: 'Install GTK dependencies (gtk3 or gtk4)'
     required: false
@@ -316,14 +312,5 @@ runs:
         if [[ "${{ inputs.enable-clang-tidy }}" == "true" ]]; then
           echo "Static Analysis:"
           clang-tidy-22 --version 2>/dev/null | head -1 || clang-tidy --version 2>/dev/null | head -1 || echo "clang-tidy: not found"
-          echo ""
-        fi
-
-        if [[ "${{ inputs.enable-debugging }}" == "true" ]]; then
-          echo "Debugging Tools:"
-          gdb --version 2>/dev/null | head -1 || echo "gdb: not found"
-          if [[ "$OS_FAMILY" == "macos" ]]; then
-            lldb --version 2>/dev/null | head -1 || echo "lldb: not found"
-          fi
           echo ""
         fi

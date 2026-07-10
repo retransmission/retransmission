@@ -144,7 +144,6 @@ jobs:
         uses: ./.github/actions/install-deps
         with:
           compiler: clang
-          enable-debugging: true
           enable-qt: qt6
           use-sudo: true
       - name: Configure
