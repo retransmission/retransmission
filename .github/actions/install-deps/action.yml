@@ -144,7 +144,7 @@ runs:
             BASE_PACKAGES+=(mold)
           fi
 
-          $SUDO_CMD apt-get install -y --no-install-recommends "${BASE_PACKAGES[@]}"
+          SUDO_CMD="$SUDO_CMD" bash "$GITHUB_ACTION_PATH/apt-install.sh" "${BASE_PACKAGES[@]}"
 
           # Setup UTF-8 locale for Qt builds
           if [[ "${{ inputs.enable-qt }}" != "false" ]]; then
@@ -179,9 +179,9 @@ runs:
             SUDO_CMD="sudo"
           fi
           if [ '${{ inputs.enable-gtk }}' = 'gtk3' ]; then
-            $SUDO_CMD apt-get install -y --no-install-recommends libgtkmm-3.0-dev
+            SUDO_CMD="$SUDO_CMD" bash "$GITHUB_ACTION_PATH/apt-install.sh" libgtkmm-3.0-dev
           elif [ '${{ inputs.enable-gtk }}' = 'gtk4' ]; then
-            $SUDO_CMD apt-get install -y --no-install-recommends libgtkmm-4.0-dev
+            SUDO_CMD="$SUDO_CMD" bash "$GITHUB_ACTION_PATH/apt-install.sh" libgtkmm-4.0-dev
           fi
         else
           echo "Unsupported package family: $PKG_FAMILY"
@@ -204,9 +204,9 @@ runs:
             SUDO_CMD="sudo"
           fi
           if [[ "${{ inputs.enable-qt }}" == "qt5" ]]; then
-            $SUDO_CMD apt-get install -y --no-install-recommends libxcb-cursor0 qtbase5-dev libqt5svg5-dev qttools5-dev
+            SUDO_CMD="$SUDO_CMD" bash "$GITHUB_ACTION_PATH/apt-install.sh" libxcb-cursor0 qtbase5-dev libqt5svg5-dev qttools5-dev
           elif [[ "${{ inputs.enable-qt }}" == "qt6" ]]; then
-            $SUDO_CMD apt-get install -y --no-install-recommends qt6-base-dev qt6-tools-dev qt6-l10n-tools qt6-svg-dev
+            SUDO_CMD="$SUDO_CMD" bash "$GITHUB_ACTION_PATH/apt-install.sh" qt6-base-dev qt6-tools-dev qt6-l10n-tools qt6-svg-dev
           fi
         else
           echo "Unsupported package family: $PKG_FAMILY"
