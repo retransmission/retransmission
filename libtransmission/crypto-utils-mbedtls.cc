@@ -65,7 +65,7 @@ bool check_mbedtls_result(int result, int expected_result, char const* file, int
 int my_rand(void* /*context*/, unsigned char* buffer, size_t buffer_size)
 {
     // since we're initializing tr_rand_buffer()'s rng, we can't use tr_rand_buffer() here
-    tr_rand_buffer_std(buffer, buffer_size);
+    tr_rand_buffer_std(std::as_writable_bytes(std::span{ buffer, buffer_size }));
     return 0;
 }
 
@@ -191,26 +191,23 @@ tr_sha256_digest_t tr_sha256::finish()
 
 // ---
 
-bool tr_rand_buffer_crypto(void* buffer, size_t length)
+bool tr_rand_buffer_crypto(std::span<std::byte> buffer)
 {
-    if (length == 0) {
+    if (buffer.empty()) {
         return true;
     }
 
-    TR_ASSERT(buffer != nullptr);
-
-    auto constexpr ChunkSize = size_t{ MBEDTLS_CTR_DRBG_MAX_REQUEST };
+    static auto constexpr ChunkSize = size_t{ MBEDTLS_CTR_DRBG_MAX_REQUEST };
     static_assert(ChunkSize > 0U);
 
     auto const lock = std::scoped_lock{ rng_mutex_ };
 
-    for (auto offset = size_t{ 0 }; offset < length; offset += ChunkSize) {
-        if (!check_result(mbedtls_ctr_drbg_random(
-                get_rng(),
-                static_cast<unsigned char*>(buffer) + offset,
-                std::min(ChunkSize, length - offset)))) {
+    while (!buffer.empty()) {
+        auto const chunk_size = std::min(ChunkSize, buffer.size());
+        if (!check_result(mbedtls_ctr_drbg_random(get_rng(), reinterpret_cast<unsigned char*>(buffer.data()), chunk_size))) {
             return false;
         }
+        buffer = buffer.subspan(chunk_size);
     }
 
     return true;

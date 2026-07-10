@@ -203,21 +203,23 @@ uint32_t tr_crc32c(void const* data, size_t count)
 }
 
 // fallback implementation in case the system crypto library's RNG fails
-void tr_rand_buffer_std(void* buffer, size_t length)
+void tr_rand_buffer_std(std::span<std::byte> buffer)
 {
     static thread_local auto gen = std::mt19937{ std::random_device{}() };
     static thread_local auto dist = std::uniform_int_distribution<unsigned long long>{};
 
-    for (auto *walk = static_cast<uint8_t*>(buffer), *end = walk + length; walk < end;) {
-        auto const tmp = dist(gen);
-        auto const step = std::min(sizeof(tmp), static_cast<size_t>(end - walk));
-        walk = std::copy_n(reinterpret_cast<uint8_t const*>(&tmp), step, walk);
+    while (!buffer.empty()) {
+        auto const value = dist(gen);
+        auto const bytes = std::as_bytes(std::span{ &value, 1U });
+        auto const step = std::min(bytes.size(), buffer.size());
+        std::ranges::copy(bytes.first(step), buffer.begin());
+        buffer = buffer.subspan(step);
     }
 }
 
-void tr_rand_buffer(void* buffer, size_t length)
+void tr_rand_buffer(std::span<std::byte> const buffer)
 {
-    if (!tr_rand_buffer_crypto(buffer, length)) {
-        tr_rand_buffer_std(buffer, length);
+    if (!tr_rand_buffer_crypto(buffer)) {
+        tr_rand_buffer_std(buffer);
     }
 }
