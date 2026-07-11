@@ -534,8 +534,12 @@ endif()
 # CMAKE_* variables. Only the tar/zip/raw formats + the gzip (zlib) filter are
 # enabled; everything else is turned off to keep it lean. Its gzip support needs
 # zlib, so forward our prefix path (where the Windows build stages zlib) to the
-# sub-build's find_package(ZLIB).
-string(REPLACE ";" "$<SEMICOLON>" ARCHIVE_CMAKE_PREFIX_PATH "${CMAKE_PREFIX_PATH}")
+# sub-build's find_package(ZLIB). Convert native backslashes to CMake-style
+# forward slashes first, otherwise a Windows path (e.g. D:\x86-prefix) trips
+# cmake_parse_arguments with an "invalid character escape" error; then escape
+# the list separator for ExternalProject.
+string(REPLACE "\\" "/" ARCHIVE_CMAKE_PREFIX_PATH "${CMAKE_PREFIX_PATH}")
+string(REPLACE ";" "$<SEMICOLON>" ARCHIVE_CMAKE_PREFIX_PATH "${ARCHIVE_CMAKE_PREFIX_PATH}")
 tr_add_external_auto_library(ARCHIVE libarchive
     LIBNAME archive
     TARGET libarchive::libarchive
