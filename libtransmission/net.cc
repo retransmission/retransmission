@@ -173,8 +173,9 @@ tr_socket_t tr_netBindTCPImpl(tr_address const& addr, tr_port port, bool suppres
                 fmt::format(
                     fmt::runtime(
                         err == EADDRINUSE ?
-                            _("Couldn't bind port {port} on {address}: {error} ({error_code}) -- Is another copy of Transmission already running?") :
+                            _("Couldn't bind port {port} on {address}: {error} ({error_code}) -- Is another copy of {appname} already running?") :
                             _("Couldn't bind port {port} on {address}: {error} ({error_code})")),
+                    fmt::arg("appname", TR_PROJ_APPNAME_CAPITALIZED),
                     fmt::arg("address", addr.display_name()),
                     fmt::arg("port", port.host()),
                     fmt::arg("error", tr_net_strerror(err)),

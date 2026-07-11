@@ -10,6 +10,8 @@
 #include <QVariant>
 #include <QtDebug>
 
+#include "libtransmission/macros.h"
+
 #include "DBusInteropHelper.h"
 #include "InteropObject.h"
 
@@ -21,9 +23,9 @@ bool DBusInteropHelper::isConnected() const
 QVariant DBusInteropHelper::addMetainfo(QString const& metainfo) const
 {
     auto request = QDBusMessage::createMethodCall(
-        QStringLiteral("com.transmissionbt.Transmission"),
-        QStringLiteral("/com/transmissionbt/Transmission"),
-        QStringLiteral("com.transmissionbt.Transmission"),
+        QStringLiteral(TR_PROJ_DBUS_SERVICE),
+        QStringLiteral(TR_PROJ_DBUS_PATH),
+        QStringLiteral(TR_PROJ_DBUS_INTERFACE),
         QStringLiteral("AddMetainfo"));
     request.setArguments(QVariantList{} << metainfo);
 
@@ -38,11 +40,11 @@ void DBusInteropHelper::registerObject(QObject* parent)
         return;
     }
 
-    if (auto const service_name = QStringLiteral("com.transmissionbt.Transmission"); !bus.registerService(service_name)) {
+    if (auto const service_name = QStringLiteral(TR_PROJ_DBUS_SERVICE); !bus.registerService(service_name)) {
         qWarning() << "couldn't register" << qPrintable(service_name);
     }
 
-    if (auto const object_path = QStringLiteral("/com/transmissionbt/Transmission");
+    if (auto const object_path = QStringLiteral(TR_PROJ_DBUS_PATH);
         !bus.registerObject(object_path, new InteropObject{ parent }, QDBusConnection::ExportAllSlots)) {
         qWarning() << "couldn't register" << qPrintable(object_path);
     }

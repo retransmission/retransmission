@@ -53,7 +53,7 @@
 #include "libtransmission/error.h"
 #include "libtransmission/file.h"
 #include "libtransmission/tr-assert.h"
-#include "libtransmission/tr-macros.h" // TR_UCLIBC_CHECK_VERSION
+#include "libtransmission/macros.h" // TR_UCLIBC_CHECK_VERSION
 #include "libtransmission/tr-strbuf.h"
 
 #ifndef O_LARGEFILE

@@ -22,6 +22,7 @@
 
 #include <fmt/format.h>
 
+#include <libtransmission/macros.h>
 #include <libtransmission/net.h> // sockaddr_storage, ntohs()
 #include <libtransmission/utils.h> // tr_lib_init()
 
@@ -36,9 +37,9 @@ auto constexpr SessionId = "test-session-id"sv;
 
 // A minimal in-process stand-in for transmission-daemon's RPC endpoint. It
 // mimics just enough of the daemon to exercise transmission-remote end to end:
-// the CSRF handshake (reply 409 with an X-Transmission-Session-Id the client
-// must echo back) followed by a valid, empty success response. Everything
-// stays on 127.0.0.1, so there's no external dependency and nothing to flake.
+// the CSRF handshake (reply 409 with an TR_PROJ_RPC_SESSION_ID_HEADER the
+// client must echo back) followed by a valid, empty success response.
+// Everything stays on 127.0.0.1, so there's no external dependency.
 class MockRpcServer
 {
 public:
@@ -105,13 +106,13 @@ private:
         request_count_.fetch_add(1);
 
         auto* const in_headers = evhttp_request_get_input_headers(req);
-        auto const* const session_id = evhttp_find_header(in_headers, "X-Transmission-Session-Id");
+        auto const* const session_id = evhttp_find_header(in_headers, TR_PROJ_RPC_SESSION_ID_HEADER);
         auto* const out_headers = evhttp_request_get_output_headers(req);
         auto* const out = evbuffer_new();
 
         if (session_id == nullptr) {
             // CSRF handshake: reject and hand back a session id to retry with.
-            evhttp_add_header(out_headers, "X-Transmission-Session-Id", std::string{ SessionId }.c_str());
+            evhttp_add_header(out_headers, TR_PROJ_RPC_SESSION_ID_HEADER, std::string{ SessionId }.c_str());
             evhttp_send_reply(req, 409, "Conflict", out);
         } else {
             authenticated_request_seen_.store(std::string_view{ session_id } == SessionId);

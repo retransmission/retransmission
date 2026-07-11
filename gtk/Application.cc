@@ -10,6 +10,7 @@
 #include "FilterBar.h"
 #include "GtkCompat.h"
 #include "HigWorkarea.h" // GUI_PAD, GUI_PAD_BIG
+#include "Macros.h"
 #include "MainWindow.h"
 #include "MakeDialog.h"
 #include "MessageLogWindow.h"
@@ -27,6 +28,7 @@
 #include <libtransmission/transmission.h>
 #include <libtransmission/api-compat.h>
 #include <libtransmission/log.h>
+#include <libtransmission/macros.h>
 #include <libtransmission/quark.h>
 #include <libtransmission/rpcimpl.h>
 #include <libtransmission/utils.h>
@@ -100,12 +102,12 @@ using StringValue = Glib::Value<Glib::ustring>;
 namespace
 {
 
-auto const AppIconName = "transmission"sv; // TODO(C++20): Use ""s
+char const* const AppIconName = TR_PROJ_APPNAME;
 
 char const* const LICENSE =
     "Copyright 2005-2026. All code is copyrighted by the respective authors.\n"
     "\n"
-    "Transmission can be redistributed and/or modified under the terms of the "
+    "This app can be redistributed and/or modified under the terms of the "
     "GNU GPL, versions 2 or 3, or by any future license endorsed by Mnemosaic LLC."
     "\n"
     "In addition, linking to and/or using OpenSSL is allowed.\n"
@@ -114,7 +116,7 @@ char const* const LICENSE =
     "but WITHOUT ANY WARRANTY; without even the implied warranty of "
     "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n"
     "\n"
-    "Some of Transmission's source files have more permissive licenses. "
+    "Some of the project's source files have more permissive licenses. "
     "Those files may, of course, be used on their own under their own terms.\n";
 
 } // namespace
@@ -374,15 +376,13 @@ void register_magnet_link_handler()
     std::string const content_type = "x-scheme-handler/magnet";
 
     try {
-        auto const app = Gio::AppInfo::create_from_commandline(
-            "transmission-gtk",
-            "transmission-gtk",
-            TR_GIO_APP_INFO_CREATE_FLAGS(SUPPORTS_URIS));
+        auto const app = Gio::AppInfo::create_from_commandline(MY_NAME, MY_NAME, TR_GIO_APP_INFO_CREATE_FLAGS(SUPPORTS_URIS));
         app->set_as_default_for_type(content_type);
     } catch (Gio::Error const& e) {
         gtr_warning(
             fmt::format(
-                fmt::runtime(_("Couldn't register Transmission as a {content_type} handler: {error} ({error_code})")),
+                fmt::runtime(_("Couldn't register {appname} as a {content_type} handler: {error} ({error_code})")),
+                fmt::arg("appname", TR_PROJ_APPNAME_CAPITALIZED),
                 fmt::arg("content_type", content_type),
                 fmt::arg("error", e.what()),
                 fmt::arg("error_code", static_cast<int>(e.code()))));
@@ -536,11 +536,11 @@ void Application::Impl::on_startup()
 {
     IF_GTKMM4(Gtk::IconTheme::get_for_display(Gdk::Display::get_default()), Gtk::IconTheme::get_default())
         ->add_resource_path(gtr_get_full_resource_path("icons"s));
-    Gtk::Window::set_default_icon_name(std::string(AppIconName));
+    Gtk::Window::set_default_icon_name(std::string{ AppIconName });
 
     /* Add style provider to the window. */
     auto css_provider = Gtk::CssProvider::create();
-    css_provider->load_from_resource(gtr_get_full_resource_path("transmission-ui.css"));
+    css_provider->load_from_resource(gtr_get_full_resource_path(TR_PROJ_APPNAME "-ui.css"));
     Gtk::StyleContext::IF_GTKMM4(add_provider_for_display, add_provider_for_screen)(
         IF_GTKMM4(Gdk::Display::get_default(), Gdk::Screen::get_default()),
         css_provider,
@@ -573,7 +573,7 @@ void Application::Impl::on_startup()
     core_ = Session::create(session);
 
     /* init the ui manager */
-    ui_builder_ = Gtk::Builder::create_from_resource(gtr_get_full_resource_path("transmission-ui.xml"s));
+    ui_builder_ = Gtk::Builder::create_from_resource(gtr_get_full_resource_path(TR_PROJ_APPNAME "-ui.xml"));
     auto const actions = gtr_actions_init(ui_builder_, this);
 
     auto const main_menu = gtr_action_get_object<Gio::Menu>("main-window-menu");
@@ -662,7 +662,7 @@ std::string get_application_id(std::string const& config_dir)
 {
     struct stat sb = {};
     (void)::stat(config_dir.c_str(), &sb);
-    return fmt::format("com.transmissionbt.transmission_{}_{}", sb.st_dev, sb.st_ino);
+    return fmt::format("{:s}_{}_{}", TR_PROJ_APPNAME_RDNS, sb.st_dev, sb.st_ino);
 }
 
 } // namespace
@@ -1300,7 +1300,7 @@ bool Application::Impl::update_model_loop()
 
 void Application::Impl::show_about_dialog()
 {
-    auto const uri = Glib::ustring("https://transmissiontorrent.com/");
+    auto const uri = Glib::ustring(TR_PROJ_URL_HOMEPAGE);
     auto const authors = std::vector<Glib::ustring>({
         "Charles Kerr (Backend; GTK+)",
         "Mitchell Livingston (Backend; macOS)",
@@ -1310,8 +1310,8 @@ void Application::Impl::show_about_dialog()
     auto d = std::make_shared<Gtk::AboutDialog>();
     d->set_authors(authors);
     d->set_comments(_("A fast and easy BitTorrent client"));
-    d->set_copyright(_("Copyright © The Transmission Project"));
-    d->set_logo_icon_name(std::string(AppIconName));
+    d->set_copyright(_("Copyright © The " TR_PROJ_APPNAME_CAPITALIZED " Project"));
+    d->set_logo_icon_name(std::string{ AppIconName });
     d->set_name(Glib::get_application_name());
     /* Translators: translate "translator-credits" as your name
        to have it appear in the credits in the "About"
@@ -1434,7 +1434,7 @@ void Application::Impl::actions_handler(Glib::ustring const& action_name)
         gtr_window_on_close(*dialog, [dialog]() mutable { dialog.reset(); });
         dialog->show();
     } else if (action_name == "donate") {
-        gtr_open_uri("https://transmissiontorrent.com/donate/");
+        gtr_open_uri(TR_PROJ_URL_DONATE);
     } else if (action_name == "pause-all-torrents") {
         pause_all_torrents();
     } else if (action_name == "start-all-torrents") {

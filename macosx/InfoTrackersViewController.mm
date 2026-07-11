@@ -2,6 +2,8 @@
 // It may be used under the MIT (SPDX: MIT) license.
 // License text can be found in the licenses/ folder.
 
+#include "libtransmission/macros.h"
+
 #import "InfoTrackersViewController.h"
 #import "Torrent.h"
 #import "TrackerCell.h"
@@ -363,13 +365,15 @@ typedef NS_ENUM(NSInteger, TrackerSegmentTag) {
                 localizedStringWithFormat:NSLocalizedString(@"Are you sure you want to remove %lu trackers?", "Remove trackers alert -> title"),
                                           removeTrackerCount];
             alert.informativeText = NSLocalizedString(
-                @"Once removed, Transmission will no longer attempt to contact them."
+                @"Once removed, " TR_PROJ_APPNAME_CAPITALIZED
+                 " will no longer attempt to contact them."
                  " This cannot be undone.",
                 "Remove trackers alert -> message");
         } else {
             alert.messageText = NSLocalizedString(@"Are you sure you want to remove this tracker?", "Remove trackers alert -> title");
             alert.informativeText = NSLocalizedString(
-                @"Once removed, Transmission will no longer attempt to contact it."
+                @"Once removed, " TR_PROJ_APPNAME_CAPITALIZED
+                 " will no longer attempt to contact it."
                  " This cannot be undone.",
                 "Remove trackers alert -> message");
         }

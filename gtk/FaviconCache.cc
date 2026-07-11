@@ -5,6 +5,8 @@
 
 #include <libtransmission-app/favicon-cache.h>
 
+#include <libtransmission/macros.h>
+
 #include <gdkmm/pixbuf.h>
 #include <giomm/memoryinputstream.h>
 #include <glibmm/error.h>
@@ -39,7 +41,7 @@ Icon FaviconCache<Icon>::create_from_data(void const* data, size_t datalen) cons
 template<>
 std::string FaviconCache<Icon>::app_cache_dir() const
 {
-    return fmt::format("{:s}/{:s}", Glib::get_user_cache_dir(), "transmission");
+    return fmt::format("{:s}/{:s}", Glib::get_user_cache_dir(), TR_PROJ_APPNAME);
 }
 
 template<>

@@ -25,6 +25,7 @@
 
 #include <libtransmission/error.h>
 #include <libtransmission/log.h>
+#include <libtransmission/macros.h>
 #include <libtransmission/quark.h>
 #include <libtransmission/string-utils.h>
 #include <libtransmission/torrent-metainfo.h>
@@ -40,12 +41,14 @@
 using namespace std::literals;
 using namespace tr::Values;
 
+#define MY_NAME TR_PROJ_APPNAME "-show"
+
 namespace
 {
 auto constexpr TimeoutSecs = std::chrono::seconds{ 30 };
 
-char constexpr MyName[] = "transmission-show";
-char constexpr Usage[] = "Usage: transmission-show [options] <torrent-file>";
+char constexpr MyName[] = MY_NAME;
+char constexpr Usage[] = "Usage: " MY_NAME " [options] <torrent-file>";
 
 using Arg = tr_option::Arg;
 auto constexpr Options = std::to_array<tr_option>({

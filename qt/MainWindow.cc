@@ -19,8 +19,9 @@
 #include <QProxyStyle>
 #include <QtGui>
 
-#include <libtransmission/transmission.h>
-#include <libtransmission/version.h>
+#include "libtransmission/macros.h"
+#include "libtransmission/transmission.h"
+#include "libtransmission/version.h"
 
 #include "AboutDialog.h"
 #include "AddData.h"
@@ -195,7 +196,7 @@ MainWindow::MainWindow(Session& session, Prefs& prefs, TorrentModel& model, bool
     menu->addSeparator();
     menu->addAction(ui_.action_Quit);
     tray_icon_.setContextMenu(menu);
-    tray_icon_.setIcon(QIcon::fromTheme(QStringLiteral("transmission-tray-icon"), QApplication::windowIcon()));
+    tray_icon_.setIcon(QIcon::fromTheme(QStringLiteral(TR_PROJ_APPNAME "-tray-icon"), QApplication::windowIcon()));
 
     connect(&prefs_, qOverload<tr_quark>(&Prefs::changed), this, &MainWindow::refreshPref);
     connect(ui_.action_ShowMainWindow, &QAction::triggered, this, &MainWindow::toggleWindows);
@@ -603,7 +604,7 @@ void MainWindow::openStats()
 
 void MainWindow::openDonate() const
 {
-    QDesktopServices::openUrl(QUrl{ QStringLiteral("https://transmissiontorrent.com/donate/") });
+    QDesktopServices::openUrl(QUrl{ QStringLiteral(TR_PROJ_URL_DONATE) });
 }
 
 void MainWindow::openAbout()
@@ -614,7 +615,7 @@ void MainWindow::openAbout()
 void MainWindow::openHelp() const
 {
     QDesktopServices::openUrl(
-        QUrl{ QStringLiteral("https://transmissiontorrent.com/help/gtk/%1.%2x").arg(MAJOR_VERSION).arg(MINOR_VERSION / 10) });
+        QUrl{ QStringLiteral(TR_PROJ_URL_HELP "/gtk/%1.%2x").arg(MAJOR_VERSION).arg(MINOR_VERSION / 10) });
 }
 
 /****
@@ -682,7 +683,7 @@ void MainWindow::onRefreshTimer()
 
 void MainWindow::refreshTitle()
 {
-    QString title(QStringLiteral("Transmission"));
+    QString title(QStringLiteral(TR_PROJ_APPNAME_CAPITALIZED));
 
     if (auto const url = QUrl{ session_.getRemoteUrl() }; !url.isEmpty()) {
         //: Second (optional) part of main window title "Transmission - host:port" (added when connected to remote session)
@@ -1411,7 +1412,7 @@ void MainWindow::onNetworkResponse(QNetworkReply::NetworkError code, QString con
     updateNetworkLabel();
 
     // Refresh our model if we've just gotten a clean connection to the session.
-    // That way we can rebuild after a restart of transmission-daemon
+    // That way we can rebuild after restarting the daemon
     if (had_error && !have_error) {
         model_.clear();
     }

@@ -34,6 +34,7 @@
 #include <libtransmission/env.h>
 #include <libtransmission/file-utils.h>
 #include <libtransmission/file.h>
+#include <libtransmission/macros.h>
 #include <libtransmission/quark.h>
 #include <libtransmission/rpcimpl.h>
 #include <libtransmission/string-utils.h>
@@ -52,21 +53,27 @@ using namespace tr::Values;
 
 #define SPEED_K_STR "kB/s"
 #define MEM_M_STR "MiB"
+#define MY_NAME TR_PROJ_APPNAME "-remote"
 
 namespace
 {
-char constexpr MyName[] = "transmission-remote";
-char constexpr Usage[] = "transmission-remote " LONG_VERSION_STRING
-                         "\n"
-                         "A fast and easy BitTorrent client\n"
-                         "https://transmissiontorrent.com/\n"
-                         "\n"
-                         "Usage: transmission-remote [host] [options]\n"
-                         "       transmission-remote [port] [options]\n"
-                         "       transmission-remote [host:port] [options]\n"
-                         "       transmission-remote [http(s?)://host:port/transmission/] [options]\n"
-                         "\n"
-                         "See the man page for detailed explanations and many examples.";
+char constexpr MyName[] = MY_NAME;
+
+char constexpr Usage[] = MY_NAME " " LONG_VERSION_STRING
+                                 "\n"
+                                 "A fast and easy BitTorrent client\n" TR_PROJ_URL_HOMEPAGE
+                                 "\n"
+                                 "\n"
+                                 "Usage: " MY_NAME
+                                 " [host] [options]\n"
+                                 "       " MY_NAME
+                                 " [port] [options]\n"
+                                 "       " MY_NAME
+                                 " [host:port] [options]\n"
+                                 "       " MY_NAME " [http(s?)://host:port" TR_PROJ_WEB_SERVER_BASE_PATH
+                                 "] [options]\n"
+                                 "\n"
+                                 "See the man page for detailed explanations and many examples.";
 
 class RemoteWebMediator final : public tr_web::Mediator
 {
@@ -247,7 +254,7 @@ auto constexpr Options = std::to_array<tr_option>({
     { 910, "encryption-required", "Encrypt all peer connections", "er", Arg::None, nullptr },
     { 911, "encryption-preferred", "Prefer encrypted peer connections", "ep", Arg::None, nullptr },
     { 912, "encryption-tolerated", "Prefer unencrypted peer connections", "et", Arg::None, nullptr },
-    { 850, "exit", "Tell the transmission session to shut down", nullptr, Arg::None, nullptr },
+    { 850, "exit", "Tell the " TR_PROJ_APPNAME " session to shut down", nullptr, Arg::None, nullptr },
     { 940, "files", "List the current torrent(s)' files", "f", Arg::None, nullptr },
     { 'F', "filter", "Filter the current torrent(s)", "F", Arg::Required, "criterion" },
     { 'g', "get", "Mark files for download", "g", Arg::Required, "<files>" },
@@ -265,7 +272,7 @@ auto constexpr Options = std::to_array<tr_option>({
     { 'L', "labels", "Set the current torrents' labels", "L", Arg::Required, "<label[,label...]>" },
     { 960, "move", "Move current torrent's data to a new folder", nullptr, Arg::Required, "<path>" },
     { 968, "unix-socket", "Use a Unix domain socket", nullptr, Arg::Required, "<path>" },
-    { 961, "find", "Tell Transmission where to find a torrent's data", nullptr, Arg::Required, "<path>" },
+    { 961, "find", "Tell " TR_PROJ_APPNAME_CAPITALIZED " where to find a torrent's data", nullptr, Arg::Required, "<path>" },
     { 964, "rename", "Rename torrents root folder or a file", nullptr, Arg::Required, "<name>" },
     { 965, "path", "Provide path for rename functions", nullptr, Arg::Required, "<path>" },
     { 'm', "portmap", "Enable portmapping via NAT-PMP or UPnP", "m", Arg::None, nullptr },

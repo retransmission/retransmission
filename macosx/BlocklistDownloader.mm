@@ -2,6 +2,8 @@
 // It may be used under the MIT (SPDX: MIT) license.
 // License text can be found in the licenses/ folder.
 
+#include "libtransmission/macros.h"
+
 #import "BlocklistDownloader.h"
 #import "BlocklistDownloaderViewController.h"
 #import "BlocklistScheduler.h"
@@ -107,11 +109,11 @@ static BlocklistDownloader* fBLDownloader = nil;
 
     NSString* filename = downloadTask.response.suggestedFilename;
     if (filename == nil) {
-        filename = @"transmission-blocklist.tmp";
+        filename = @TR_PROJ_APPNAME "-blocklist.tmp";
     }
 
     NSString* tempFile = [NSTemporaryDirectory() stringByAppendingPathComponent:filename];
-    NSString* blocklistFile = [NSTemporaryDirectory() stringByAppendingPathComponent:@"transmission-blocklist"];
+    NSString* blocklistFile = [NSTemporaryDirectory() stringByAppendingPathComponent:@TR_PROJ_APPNAME "-blocklist"];
 
     [NSFileManager.defaultManager moveItemAtPath:location.path toPath:tempFile error:nil];
 

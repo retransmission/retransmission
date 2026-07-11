@@ -10,6 +10,7 @@
 #include <QString>
 #include <QTest>
 
+#include <libtransmission/macros.h>
 #include <libtransmission/quark.h>
 
 #include "Prefs.h"
@@ -43,8 +44,8 @@ private slots:
     void handles_qstring()
     {
         auto constexpr Key = TR_KEY_download_dir;
-        auto const val_a = QStringLiteral("/tmp/transmission-test-download-dir");
-        auto const val_b = QStringLiteral("/tmp/transmission-test-download-dir-b");
+        auto const val_a = QStringLiteral("/tmp/" TR_PROJ_APPNAME "-test-download-dir");
+        auto const val_b = QStringLiteral("/tmp/" TR_PROJ_APPNAME "-test-download-dir-b");
 
         auto prefs = Prefs{};
         verify_get_set_by_property(prefs, Key, val_a, val_b);

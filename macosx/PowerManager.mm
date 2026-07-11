@@ -2,6 +2,8 @@
 // It may be used under the MIT (SPDX: MIT) license.
 // License text can be found in the licenses/ folder.
 
+#include "libtransmission/macros.h"
+
 #import "PowerManager.h"
 
 #include <os/log.h>
@@ -36,7 +38,7 @@
 - (instancetype)init
 {
     if ((self = [super init])) {
-        _log = os_log_create("org.transmission", "power");
+        _log = os_log_create(TR_PROJ_DOMAIN_APEX_REVERSED, "power");
         _listening = NO;
     }
 
@@ -70,7 +72,7 @@
     if (self.noNapActivity == nil) {
         os_log_debug(self.log, "Starting no-nap activity");
         self.noNapActivity = [NSProcessInfo.processInfo beginActivityWithOptions:NSActivityUserInitiatedAllowingIdleSystemSleep
-                                                                          reason:@"Transmission: Application is active"];
+                                                                          reason:@TR_PROJ_APPNAME_CAPITALIZED ": Application is active"];
     }
 }
 
@@ -136,7 +138,7 @@
 
         os_log_info(self.log, "Starting no-sleep activity");
         self.noSleepActivity = [NSProcessInfo.processInfo beginActivityWithOptions:NSActivityIdleSystemSleepDisabled
-                                                                            reason:@"Transmission: Active Torrents"];
+                                                                            reason:@TR_PROJ_APPNAME_CAPITALIZED ": Active Torrents"];
     } else {
         if (self.noSleepActivity == nil) {
             return;

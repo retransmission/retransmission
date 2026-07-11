@@ -22,6 +22,7 @@
 #include <small/vector.hpp>
 
 #include "libtransmission/log.h" // for tr_log_level
+#include "libtransmission/macros.h"
 #include "libtransmission/peer-mgr.h" // tr_pex
 #include "libtransmission/converters.h"
 #include "libtransmission/session-settings.h" // Converter<small::max_size_vector<...>>
@@ -41,7 +42,8 @@ void warn_unexpected_coercion(std::string_view const target_category, std::strin
 {
     fmt::print(
         stderr,
-        "[transmission] serializer: coerced a '{:s}' value into a '{:s}' during (de)serialization; "
+        "[" TR_PROJ_APPNAME
+        "] serializer: coerced a '{:s}' value into a '{:s}' during (de)serialization; "
         "this is not an expected benc/json conversion and may indicate a type-mismatch bug\n",
         source_type,
         target_category);

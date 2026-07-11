@@ -27,6 +27,7 @@
 #include <libtransmission/crypto-utils.h> // tr_base64_decode()
 #include <libtransmission/error.h>
 #include <libtransmission/file.h> // tr_sys_file_*()
+#include <libtransmission/macros.h>
 #include <libtransmission/quark.h>
 #include <libtransmission/torrent-ctor.h>
 #include <libtransmission/torrent.h>
@@ -125,7 +126,7 @@ class Sandbox
 public:
     Sandbox()
         : parent_dir_{ getDefaultParentDir() }
-        , sandbox_dir_{ createSandbox(parent_dir_, "transmission-test-XXXXXX") }
+        , sandbox_dir_{ createSandbox(parent_dir_, TR_PROJ_APPNAME "-test-XXXXXX") }
     {
     }
 

@@ -14,6 +14,7 @@
 
 #include <libtransmission/constants.h> // TrRpcSessionIdHeader, TrRpcVersionHeader
 #include <libtransmission/env.h> // tr_env_key_exists
+#include <libtransmission/macros.h>
 #include <libtransmission/rpcimpl.h> // JsonRpc::Version, tr_rpc_request_exec
 #include <libtransmission/variant.h>
 #include <libtransmission/version.h> // SHORT_VERSION_STRING
@@ -222,7 +223,7 @@ void RpcClient::send_remote_request(std::string body, ResponseFunc on_done)
     options.body = body;
     options.auth_scheme = tr_web::FetchOptions::AuthScheme::Any;
     options.headers.insert_or_assign("Content-Type", "application/json; charset=UTF-8");
-    options.headers.insert_or_assign("User-Agent", "Transmission/" SHORT_VERSION_STRING);
+    options.headers.insert_or_assign("User-Agent", TR_PROJ_APPNAME_CAPITALIZED "/" SHORT_VERSION_STRING);
 
     if (!std::empty(session_id_)) {
         options.headers.insert_or_assign(std::string{ TrRpcSessionIdHeader }, session_id_);

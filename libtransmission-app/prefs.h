@@ -17,6 +17,7 @@
 
 #include "libtransmission/constants.h"
 #include "libtransmission/converters.h"
+#include "libtransmission/macros.h"
 #include "libtransmission/quark.h"
 #include "libtransmission/serializer.h"
 #include "libtransmission/transmission.h"
@@ -46,7 +47,7 @@ struct AppPrefs {
     std::string open_dialog_folder_ = tr::platform::get_home_dir();
     std::string session_remote_host_ = "localhost";
     std::string session_remote_password_;
-    std::string session_remote_url_base_path_ = "/transmission/";
+    std::string session_remote_url_base_path_ = TR_PROJ_WEB_SERVER_BASE_PATH;
     std::string session_remote_username_;
     std::vector<std::string> complete_sound_command_;
     int details_window_height_ = 500;

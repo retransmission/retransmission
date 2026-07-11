@@ -163,7 +163,7 @@ target_sources(${TR_NAME}
         tr-getopt.h
         tr-lpd.cc
         tr-lpd.h
-        tr-macros.h
+        macros.h
         tr-strbuf.h
         tr-udp.cc
         tr-utp.cc
@@ -316,7 +316,7 @@ if(INSTALL_LIB)
             tr-assert.h
             tr-buffer.h
             tr-getopt.h
-            tr-macros.h
+            macros.h
             tr-strbuf.h
             transmission.h
             utils.h

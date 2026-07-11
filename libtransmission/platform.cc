@@ -44,6 +44,7 @@
 #include "libtransmission/file-utils.h"
 #include "libtransmission/file.h"
 #include "libtransmission/log.h"
+#include "libtransmission/macros.h"
 #include "libtransmission/platform.h"
 #include "libtransmission/session.h"
 #include "libtransmission/string-utils.h"
@@ -125,7 +126,7 @@ namespace tr::platform
 std::string get_default_config_dir(std::string_view appname)
 {
     if (std::empty(appname)) {
-        appname = "Transmission"sv;
+        appname = TR_PROJ_APPNAME_CAPITALIZED;
     }
 
     if (auto dir = tr_env_get_string("TRANSMISSION_HOME"sv); !std::empty(dir)) {
@@ -248,7 +249,7 @@ std::string tr_getWebClientDir([[maybe_unused]] tr_session const* session)
     for (auto const* const folder_id : KnownFolderIds) {
         auto const dir = win32_get_known_folder(*folder_id);
 
-        if (auto const path = tr_pathbuf{ dir, "/Transmission/public_html"sv }; isWebClientDir(path)) {
+        if (auto const path = tr_pathbuf{ dir, "/" TR_PROJ_APPNAME_CAPITALIZED "/public_html"sv }; isWebClientDir(path)) {
             return std::string{ path };
         }
     }
@@ -292,7 +293,7 @@ std::string tr_getWebClientDir([[maybe_unused]] tr_session const* session)
 
     /* walk through the candidates & look for a match */
     for (auto const& dir : candidates) {
-        if (auto const path = tr_pathbuf{ dir, "/transmission/public_html"sv }; isWebClientDir(path)) {
+        if (auto const path = tr_pathbuf{ dir, "/" TR_PROJ_APPNAME "/public_html"sv }; isWebClientDir(path)) {
             return std::string{ path };
         }
     }
@@ -311,7 +312,7 @@ std::string tr_getSessionIdDir()
 #else
 
     auto const program_data_dir = win32_get_known_folder_ex(FOLDERID_ProgramData, KF_FLAG_CREATE);
-    auto result = fmt::format("{:s}/Transmission"sv, program_data_dir);
+    auto result = fmt::format("{:s}/{:s}"sv, program_data_dir, TR_PROJ_APPNAME_CAPITALIZED);
     tr_sys_dir_create(result, 0, 0);
     return result;
 

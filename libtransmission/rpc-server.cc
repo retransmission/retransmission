@@ -38,6 +38,7 @@
 #include "libtransmission/error.h"
 #include "libtransmission/file-utils.h"
 #include "libtransmission/log.h"
+#include "libtransmission/macros.h"
 #include "libtransmission/net.h"
 #include "libtransmission/platform.h" /* tr_getWebClientDir() */
 #include "libtransmission/quark.h"
@@ -60,7 +61,7 @@ struct evbuffer;
  * http://www.webappsec.org/lists/websecurity/archive/2008-04/msg00037.html */
 #define REQUIRE_SESSION_ID
 
-#define MY_REALM "Transmission"
+#define MY_REALM TR_PROJ_APPNAME_CAPITALIZED
 
 using namespace std::literals;
 
@@ -291,8 +292,10 @@ void handle_web_client(struct evhttp_request* req, tr_rpc_server const* server)
         send_simple_response(
             req,
             HTTP_NOTFOUND,
-            "<p>Couldn't find Transmission's web interface files!</p>"
-            "<p>Users: to tell Transmission where to look, "
+            "<p>Couldn't find " TR_PROJ_APPNAME_CAPITALIZED
+            "'s web interface files!</p>"
+            "<p>Users: to tell " TR_PROJ_APPNAME_CAPITALIZED
+            "  where to look, "
             "set the TRANSMISSION_WEB_HOME environment "
             "variable to the folder where the web interface's "
             "index.html is located.</p>"
@@ -553,7 +556,8 @@ void handle_request(struct evhttp_request* req, void* arg)
         handle_web_client(req, server);
     } else if (!isHostnameAllowed(server, req)) {
         static auto constexpr Body =
-            "<p>Transmission received your request, but the hostname was unrecognized.</p>"
+            "<p>" TR_PROJ_APPNAME_CAPITALIZED
+            " received your request, but the hostname was unrecognized.</p>"
             "<p>To fix this, choose one of the following options:"
             "<ul>"
             "<li>Enable password authentication, then any hostname is allowed.</li>"

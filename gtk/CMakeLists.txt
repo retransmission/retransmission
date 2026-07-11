@@ -31,6 +31,7 @@ target_sources(${TR_NAME}-gtk
         IconCache.h
         ListModelAdapter.cc
         ListModelAdapter.h
+        Macros.h
         main.cc
         MainWindow.cc
         MainWindow.h

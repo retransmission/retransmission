@@ -18,7 +18,7 @@
 #include <libtransmission/file.h>
 #include <libtransmission/string-utils.h>
 #include <libtransmission/subprocess.h>
-#include <libtransmission/tr-macros.h>
+#include <libtransmission/macros.h>
 
 #include "test-fixtures.h"
 

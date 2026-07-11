@@ -14,6 +14,7 @@
 
 #include <libtransmission/file-utils.h>
 #include <libtransmission/file.h>
+#include <libtransmission/macros.h>
 #include <libtransmission/platform.h>
 #include <libtransmission/tr-strbuf.h>
 
@@ -117,7 +118,7 @@ TEST_F(PlatformTest, webClientDirXdgDataHome)
 {
     setenv("XDG_DATA_HOME", sandboxDir().c_str(), 1);
 
-    auto const expected = tr_pathbuf{ sandboxDir(), "/transmission/public_html"sv };
+    auto const expected = tr_pathbuf{ sandboxDir(), "/" TR_PROJ_APPNAME "/public_html"sv };
     auto const index_html = tr_pathbuf{ expected, "/index.html"sv };
     EXPECT_TRUE(tr_sys_dir_create(expected, TR_SYS_DIR_CREATE_PARENTS, 0777));
     EXPECT_TRUE(tr_file_save(index_html, "<html></html>"sv));

@@ -18,6 +18,7 @@
 
 #include <libtransmission/transmission.h>
 
+#include <libtransmission/macros.h>
 #include <libtransmission/string-utils.h>
 #include <libtransmission/torrent-metainfo.h>
 #include <libtransmission/values.h>
@@ -127,10 +128,10 @@ static NSTimeInterval const kUpdateUISeconds = 1.0;
 
 static NSString* const kTransferPlist = @"Transfers.plist";
 
-static NSString* const kWebsiteURL = @"https://transmissiontorrent.com/";
+static NSString* const kWebsiteURL = @TR_PROJ_URL_HOMEPAGE;
 static NSString* const kForumURL = @"https://forum.transmissiontorrent.com";
-static NSString* const kGithubURL = @"https://github.com/torrenttransmission/transmission";
-static NSString* const kDonateURL = @"https://transmissiontorrent.com/donate/";
+static NSString* const kGithubURL = @TR_PROJ_URL_GIT;
+static NSString* const kDonateURL = @TR_PROJ_URL_DONATE;
 
 static NSTimeInterval const kDonateNagTime = 60 * 60 * 24 * 7;
 
@@ -433,12 +434,13 @@ static void removeKeRangerRansomware()
     NSArray* apps = [NSRunningApplication runningApplicationsWithBundleIdentifier:NSBundle.mainBundle.bundleIdentifier];
     if (apps.count > 1) {
         NSAlert* alert = [[NSAlert alloc] init];
-        [alert addButtonWithTitle:NSLocalizedString(@"OK", "Transmission already running alert -> button")];
-        alert.messageText = NSLocalizedString(@"Transmission is already running.", "Transmission already running alert -> title");
+        [alert addButtonWithTitle:NSLocalizedString(@"OK", TR_PROJ_APPNAME_CAPITALIZED " already running alert -> button")];
+        alert.messageText = NSLocalizedString(@TR_PROJ_APPNAME_CAPITALIZED " is already running.", TR_PROJ_APPNAME_CAPITALIZED " already running alert -> title");
         alert.informativeText = NSLocalizedString(
-            @"There is already a copy of Transmission running. "
+            @"There is already a copy of " TR_PROJ_APPNAME_CAPITALIZED
+             " running. "
              "This copy cannot be opened until that instance is quit.",
-            "Transmission already running alert -> message");
+            TR_PROJ_APPNAME_CAPITALIZED " already running alert -> message");
         alert.alertStyle = NSAlertStyleCritical;
 
         [alert runModal];
@@ -481,7 +483,7 @@ static void removeKeRangerRansomware()
 
         initUnits();
 
-        auto const default_config_dir = tr::platform::get_default_config_dir("Transmission");
+        auto const default_config_dir = tr::platform::get_default_config_dir(TR_PROJ_APPNAME_CAPITALIZED);
         _fLib = tr_sessionInit(default_config_dir, YES, settings);
         _fConfigDirectory = @(default_config_dir.c_str());
 
@@ -797,11 +799,12 @@ static void removeKeRangerRansomware()
         NSAlert* alert = [[NSAlert alloc] init];
         [alert addButtonWithTitle:NSLocalizedString(@"I Accept", "Legal alert -> button")];
         [alert addButtonWithTitle:NSLocalizedString(@"Quit", "Legal alert -> button")];
-        alert.messageText = NSLocalizedString(@"Welcome to Transmission", "Legal alert -> title");
+        alert.messageText = NSLocalizedString(@"Welcome to " TR_PROJ_APPNAME_CAPITALIZED, "Legal alert -> title");
         alert.informativeText = NSLocalizedString(
-            @"Transmission is a file-sharing program."
-             " When you run a torrent, its data will be made available to others by means of upload."
-             " You and you alone are fully responsible for exercising proper judgement and abiding by your local laws.",
+            @TR_PROJ_APPNAME_CAPITALIZED
+            " is a file-sharing program."
+            " When you run a torrent, its data will be made available to others by means of upload."
+            " You and you alone are fully responsible for exercising proper judgement and abiding by your local laws.",
             "Legal alert -> message");
         alert.alertStyle = NSAlertStyleInformational;
 
@@ -854,9 +857,9 @@ static void removeKeRangerRansomware()
             NSString* donateMessage = [NSString
                 stringWithFormat:@"%@\n\n%@",
                                  NSLocalizedString(
-                                     @"Transmission is a full-featured torrent application."
-                                      " A lot of time and effort have gone into development, coding, and refinement."
-                                      " If you enjoy using it, please consider showing your love with a donation.",
+                                     @TR_PROJ_APPNAME_CAPITALIZED " is a full-featured torrent application."
+                                                                  " A lot of time and effort have gone into development, coding, and refinement."
+                                                                  " If you enjoy using it, please consider showing your love with a donation.",
                                      "Donation beg -> message"),
                                  NSLocalizedString(@"Donate or not, there will be no difference to your torrenting experience.", "Donation beg -> message")];
 

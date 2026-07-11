@@ -41,6 +41,7 @@
 #include "libtransmission/ip-cache.h"
 #include "libtransmission/interned-string.h"
 #include "libtransmission/log.h"
+#include "libtransmission/macros.h"
 #include "libtransmission/net.h"
 #include "libtransmission/peer-mgr.h"
 #include "libtransmission/peer-socket-tcp.h"
@@ -288,7 +289,7 @@ std::optional<std::string> tr_session::WebMediator::cookieFile() const
 
 std::optional<std::string_view> tr_session::WebMediator::userAgent() const
 {
-    return TR_NAME "/" SHORT_VERSION_STRING;
+    return TR_PROJ_APPNAME_CAPITALIZED "/" SHORT_VERSION_STRING;
 }
 
 std::optional<std::string> tr_session::WebMediator::bind_address_V4() const
@@ -649,7 +650,10 @@ void tr_session::initImpl(init_data& data)
     blocklists_.load(blocklist_dir_, blocklist_enabled());
 
     tr_logAddInfo(
-        fmt::format(fmt::runtime(_("Transmission version {version} starting")), fmt::arg("version", LONG_VERSION_STRING)));
+        fmt::format(
+            fmt::runtime(_("{appname} version {version} starting")),
+            fmt::arg("appname", TR_PROJ_APPNAME_CAPITALIZED),
+            fmt::arg("version", LONG_VERSION_STRING)));
 
     setSettings(settings, true);
 
@@ -1320,7 +1324,10 @@ void tr_sessionClose(tr_session* session, double const timeout_secs)
     TR_ASSERT(!session->am_in_session_thread());
 
     tr_logAddInfo(
-        fmt::format(fmt::runtime(_("Transmission version {version} shutting down")), fmt::arg("version", LONG_VERSION_STRING)));
+        fmt::format(
+            fmt::runtime(_("{appname} version {version} shutting down")),
+            fmt::arg("appname", TR_PROJ_APPNAME_CAPITALIZED),
+            fmt::arg("version", LONG_VERSION_STRING)));
 
     auto closed_promise = std::promise<void>{};
     auto closed_future = closed_promise.get_future();

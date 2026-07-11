@@ -15,7 +15,7 @@
 #include <span>
 #include <vector> // std::vector
 
-#include "libtransmission/tr-macros.h"
+#include "libtransmission/macros.h"
 
 /**
  * @brief Implementation of the BitTorrent spec's Bitfield array of bits.

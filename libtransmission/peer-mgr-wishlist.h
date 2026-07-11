@@ -20,7 +20,7 @@
 
 #include "libtransmission/bitfield.h"
 #include "libtransmission/crypto-utils.h"
-#include "libtransmission/tr-macros.h"
+#include "libtransmission/macros.h"
 #include "libtransmission/types.h"
 
 /**

@@ -14,6 +14,7 @@
 
 #include <libtransmission/error.h>
 #include <libtransmission/log.h>
+#include <libtransmission/macros.h>
 #include <libtransmission/quark.h>
 #include <libtransmission/string-utils.h>
 #include <libtransmission/tr-getopt.h>
@@ -21,10 +22,12 @@
 #include <libtransmission/variant.h>
 #include <libtransmission/version.h>
 
+#define MY_NAME TR_PROJ_APPNAME "-edit"
+
 namespace
 {
-char constexpr MyName[] = "transmission-edit";
-char constexpr Usage[] = "Usage: transmission-edit [options] torrent-file(s)";
+char constexpr MyName[] = MY_NAME;
+char constexpr Usage[] = "Usage: " MY_NAME " [options] torrent-file(s)";
 
 struct app_options {
     std::vector<std::string_view> files;

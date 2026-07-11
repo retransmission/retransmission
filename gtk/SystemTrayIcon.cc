@@ -6,10 +6,12 @@
 #include "SystemTrayIcon.h"
 
 #include "Actions.h"
+#include "Macros.h"
 #include "Session.h"
 #include "Utils.h"
 
 #include <libtransmission/transmission.h>
+#include <libtransmission/macros.h>
 #include <libtransmission/utils.h>
 
 #include <glibmm/i18n.h>
@@ -50,12 +52,12 @@ namespace
 {
 
 #if !defined(TR_SYS_TRAY_IMPL_NONE)
-char const* const TrayIconName = "transmission-tray-icon";
-char const* const AppIconName = "transmission";
+char const* const TrayIconName = TR_PROJ_APPNAME "-tray-icon";
+char const* const AppIconName = TR_PROJ_APPNAME;
 #endif
 
 #if defined(TR_SYS_TRAY_IMPL_APPINDICATOR)
-char const* const AppName = "transmission-gtk";
+char const* const AppName = MY_NAME;
 #endif
 
 } // namespace

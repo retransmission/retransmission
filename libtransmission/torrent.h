@@ -37,7 +37,7 @@
 #include "libtransmission/torrent-magnet.h"
 #include "libtransmission/torrent-metainfo.h"
 #include "libtransmission/tr-assert.h"
-#include "libtransmission/tr-macros.h"
+#include "libtransmission/macros.h"
 #include "libtransmission/types.h"
 #include "libtransmission/verify.h"
 

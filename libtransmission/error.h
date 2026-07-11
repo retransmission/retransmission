@@ -9,7 +9,7 @@
 #include <string_view>
 
 #include "libtransmission/error-types.h"
-#include "libtransmission/tr-macros.h"
+#include "libtransmission/macros.h"
 
 /** @brief Structure holding error information. */
 struct tr_error {

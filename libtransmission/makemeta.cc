@@ -23,9 +23,9 @@
 #include "libtransmission/file.h"
 #include "libtransmission/file-utils.h"
 #include "libtransmission/log.h"
+#include "libtransmission/macros.h"
 #include "libtransmission/makemeta.h"
 #include "libtransmission/quark.h" // TR_KEY_length, TR_KEY_a...
-#include "libtransmission/session.h" // TR_NAME
 #include "libtransmission/string-utils.h"
 #include "libtransmission/torrent-files.h"
 #include "libtransmission/tr-assert.h"
@@ -278,7 +278,7 @@ std::string tr_metainfo_builder::benc(tr_error* error) const
 
     // maybe add some optional metainfo
     if (!anonymize) {
-        top.try_emplace(TR_KEY_created_by, TR_NAME "/" LONG_VERSION_STRING);
+        top.try_emplace(TR_KEY_created_by, TR_PROJ_APPNAME_CAPITALIZED "/" LONG_VERSION_STRING);
         top.try_emplace(TR_KEY_creation_date, time(nullptr));
     }
 

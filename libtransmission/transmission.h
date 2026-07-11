@@ -85,7 +85,7 @@ void tr_sessionSaveSettings(tr_session* session, std::string_view config_dir, tr
  * For example, this will instantiate a session with all the default values:
  * @code
  *     auto settings = tr_sessionGetDefaultSettings();
- *     char const* const configDir = tr_getDefaultConfigDir("Transmission");
+ *     char const* const configDir = tr_getDefaultConfigDir(TR_PROJ_APPNAME_CAPITALIZED);
  *     tr_session* const session = tr_sessionInit(configDir, true, &settings);
  * @endcode
  *

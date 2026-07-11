@@ -190,7 +190,7 @@ public:
                 fmt::format(
                     fmt::runtime(
                         _("curl {curl_version} is prone to an eventfd double close vulnerability that might cause SIGABRT "
-                          "crashes for the transmission-daemon systemd service. {details_url}")),
+                          "crashes for the daemon systemd service. {details_url}")),
                     fmt::arg("curl_version", "8.11.1"),
                     fmt::arg("details_url", "https://curl.se/docs/CVE-2025-0665.html")));
         }

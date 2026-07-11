@@ -17,6 +17,7 @@
 #include <libtransmission/transmission.h>
 #include <libtransmission/env.h>
 #include <libtransmission/log.h>
+#include <libtransmission/macros.h>
 #include <libtransmission/rpcimpl.h>
 #include <libtransmission/string-utils.h>
 #include <libtransmission/torrent-metainfo.h>
@@ -963,8 +964,8 @@ auto const SessionManagerObjectPath = "/org/gnome/SessionManager"sv; // TODO(C++
 bool gtr_inhibit_hibernation(guint32& cookie)
 {
     bool success = false;
-    char const* application = "Transmission BitTorrent Client";
-    char const* reason = "BitTorrent Activity";
+    char const* const app_id = TR_PROJ_APPNAME_RDNS;
+    char const* const reason = "BitTorrent Activity";
     int const toplevel_xid = 0;
     int const flags = 4; /* Inhibit suspending the session or computer */
 
@@ -977,7 +978,7 @@ bool gtr_inhibit_hibernation(guint32& cookie)
             "Inhibit",
             Glib::VariantContainerBase::create_tuple(
                 {
-                    Glib::Variant<Glib::ustring>::create(application),
+                    Glib::Variant<Glib::ustring>::create(app_id),
                     Glib::Variant<guint32>::create(toplevel_xid),
                     Glib::Variant<Glib::ustring>::create(reason),
                     Glib::Variant<guint32>::create(flags),

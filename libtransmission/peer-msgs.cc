@@ -35,6 +35,7 @@
 #include "libtransmission/inout.h"
 #include "libtransmission/interned-string.h"
 #include "libtransmission/log.h"
+#include "libtransmission/macros.h"
 #include "libtransmission/peer-common.h"
 #include "libtransmission/peer-io.h"
 #include "libtransmission/peer-mgr.h"
@@ -1133,7 +1134,7 @@ void tr_peerMsgsImpl::send_ltep_handshake()
     // Client name and version (as a utf-8 string). This is a much more
     // reliable way of identifying the client than relying on the
     // peer id encoding.
-    val.try_emplace(TR_KEY_v, tr_variant::unmanaged_string(TR_NAME " " USERAGENT_PREFIX));
+    val.try_emplace(TR_KEY_v, tr_variant::unmanaged_string(TR_PROJ_APPNAME_CAPITALIZED " " USERAGENT_PREFIX));
 
     // https://www.bittorrent.org/beps/bep_0021.html
     // A peer that is a partial seed SHOULD include an extra header in

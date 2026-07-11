@@ -35,6 +35,7 @@
 #include "libtransmission/file-utils.h"
 #include "libtransmission/file.h"
 #include "libtransmission/log.h"
+#include "libtransmission/macros.h"
 #include "libtransmission/net.h"
 #include "libtransmission/peer-mgr.h"
 #include "libtransmission/api-compat.h"
@@ -1401,7 +1402,7 @@ void portTest(tr_session* session, tr_variant::Map const& args_in, struct tr_rpc
     static auto constexpr TimeoutSecs = 20s;
 
     auto const port = session->advertisedPeerPort();
-    auto const url = fmt::format("https://portcheck.transmissiontorrent.com/{:d}", port.host());
+    auto const url = fmt::format("{:s}/{:d}", TR_PROJ_URL_PORTCHECK, port.host());
     auto ip_proto = std::optional<tr_web::FetchOptions::IPProtocol>{};
 
     if (auto const val = args_in.value_if<std::string_view>(TR_KEY_ip_protocol); val) {

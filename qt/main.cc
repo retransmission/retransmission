@@ -9,6 +9,7 @@
 
 #include <fmt/format.h>
 
+#include "libtransmission/macros.h"
 #include "libtransmission/tr-getopt.h"
 #include "libtransmission/utils.h" // tr_main
 #include "libtransmission/version.h"
@@ -22,10 +23,12 @@
 
 using namespace std::string_view_literals;
 
+#define MY_NAME TR_PROJ_APPNAME "-qt"
+
 namespace
 {
 
-char const* const DisplayName = "transmission-qt";
+char const* const DisplayName = MY_NAME;
 
 auto constexpr FileArgsSeparator = "--"sv;
 auto constexpr QtArgsSeparator = "---"sv;
@@ -105,7 +108,7 @@ namespace
 char const* getUsage()
 {
     return "Usage:\n"
-           "  transmission-qt [options...] [[--] torrent files...] [--- Qt options...]";
+           "  " MY_NAME " [options...] [[--] torrent files...] [--- Qt options...]";
 }
 
 bool tryDelegate(QStringList const& filenames)
@@ -228,15 +231,14 @@ int tr_main(int argc, char** argv)
 
     InteropHelper::initialize();
 
-    // try to delegate the work to an existing copy of Transmission
-    // before starting ourselves...
+    // if there's another copy of the app running, delegate work to it and exit
     if (tryDelegate(filenames)) {
         return 0;
     }
 
     // set the fallback config dir
     if (config_dir.isNull()) {
-        config_dir = QString::fromStdString(tr::platform::get_default_config_dir("transmission"));
+        config_dir = QString::fromStdString(tr::platform::get_default_config_dir(TR_PROJ_APPNAME));
     }
 
     auto prefs = Prefs{ config_dir };

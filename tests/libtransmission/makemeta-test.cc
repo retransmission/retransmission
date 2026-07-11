@@ -17,9 +17,9 @@
 #include <libtransmission/announce-list.h>
 #include <libtransmission/crypto-utils.h>
 #include <libtransmission/file.h>
+#include <libtransmission/macros.h>
 #include <libtransmission/makemeta.h>
 #include <libtransmission/quark.h>
-#include <libtransmission/session.h> // TR_NAME
 #include <libtransmission/string-utils.h>
 #include <libtransmission/torrent-metainfo.h>
 #include <libtransmission/tr-strbuf.h>
@@ -175,7 +175,7 @@ TEST_F(MakemetaTest, anonymizeFalse)
     auto builder = tr_metainfo_builder{ filename };
     builder.set_anonymize(false);
     auto const metainfo = testBuilder(builder);
-    EXPECT_TRUE(tr_strv_contains(metainfo.creator(), TR_NAME)) << metainfo.creator();
+    EXPECT_TRUE(tr_strv_contains(metainfo.creator(), TR_PROJ_APPNAME_CAPITALIZED)) << metainfo.creator();
     auto const now = time(nullptr);
     EXPECT_LE(metainfo.date_created(), now);
     EXPECT_LE(now - 60, metainfo.date_created());

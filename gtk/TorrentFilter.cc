@@ -9,7 +9,7 @@
 #include "Utils.h"
 
 #include <libtransmission/transmission.h>
-#include <libtransmission/tr-macros.h>
+#include <libtransmission/macros.h>
 
 #include <algorithm>
 #include <array>

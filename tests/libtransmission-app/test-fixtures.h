@@ -14,6 +14,7 @@
 #include <gtest/gtest.h>
 
 #include <libtransmission/file.h>
+#include <libtransmission/macros.h>
 
 #include "libtransmission-app/app.h"
 
@@ -33,7 +34,7 @@ class Sandbox
 {
 public:
     Sandbox()
-        : path_{ create_sandbox(get_default_parent_dir(), "transmission-app-test-XXXXXX") }
+        : path_{ create_sandbox(get_default_parent_dir(), TR_PROJ_APPNAME "-app-test-XXXXXX") }
     {
     }
 

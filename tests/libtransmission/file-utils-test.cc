@@ -11,6 +11,7 @@
 #include <libtransmission/error.h>
 #include <libtransmission/file-utils.h>
 #include <libtransmission/file.h>
+#include <libtransmission/macros.h>
 #include <libtransmission/tr-strbuf.h>
 
 #include "test-fixtures.h"
@@ -23,7 +24,7 @@ TEST_F(UtilsTest, saveFile)
     auto filename = tr_pathbuf{};
 
     // save a file to GoogleTest's temp dir
-    auto const sandbox = tr::test::Sandbox::createSandbox(::testing::TempDir(), "transmission-test-XXXXXX");
+    auto const sandbox = tr::test::Sandbox::createSandbox(::testing::TempDir(), TR_PROJ_APPNAME "-test-XXXXXX");
     filename.assign(sandbox, "filename.txt"sv);
     auto contents = "these are the contents"sv;
     auto error = tr_error{};

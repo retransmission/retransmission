@@ -23,6 +23,7 @@
 #include <libtransmission/error.h>
 #include <libtransmission/file.h>
 #include <libtransmission/log.h>
+#include <libtransmission/macros.h>
 #include <libtransmission/makemeta.h>
 #include <libtransmission/torrent-files.h>
 #include <libtransmission/tr-getopt.h>
@@ -34,11 +35,13 @@ using namespace std::literals;
 
 using namespace tr::Values;
 
+#define MY_NAME TR_PROJ_APPNAME "-create"
+
 namespace
 {
 
-char constexpr MyName[] = "transmission-create";
-char constexpr Usage[] = "Usage: transmission-create [options] <file|directory>";
+char constexpr MyName[] = MY_NAME;
+char constexpr Usage[] = "Usage: " MY_NAME " [options] <file|directory>";
 
 uint32_t constexpr KiB = 1024;
 

@@ -8,6 +8,7 @@
 #include <gtest/gtest.h>
 
 #include <libtransmission/api-compat.h>
+#include <libtransmission/macros.h>
 #include <libtransmission/quark.h>
 #include <libtransmission/variant.h>
 
@@ -43,7 +44,7 @@ constexpr std::string_view LegacySessionGetResponseJson = R"json({
         "blocklist-size": 0,
         "blocklist-url": "http://www.example.com/blocklist",
         "cache-size-mb": 4,
-        "config-dir": "/home/user/.config/transmission",
+        "config-dir": "/home/user/.config/gronk",
         "default-trackers": "",
         "dht-enabled": true,
         "download-dir": "/home/user/Downloads",
@@ -142,7 +143,7 @@ constexpr std::string_view CurrentSessionGetResponseJson = R"json({
         "blocklist_size": 0,
         "blocklist_url": "http://www.example.com/blocklist",
         "cache_size_mib": 4,
-        "config_dir": "/home/user/.config/transmission",
+        "config_dir": "/home/user/.config/gronk",
         "default_trackers": "",
         "dht_enabled": true,
         "download_dir": "/home/user/Downloads",
@@ -651,7 +652,7 @@ constexpr std::string_view LegacySettingsJson = R"json({
         "-i",
         "complete-download",
         "-d",
-        "transmission torrent downloaded"
+        "torrent downloaded"
     ],
     "torrent-complete-sound-enabled": true,
     "trash-original-torrent-files": false,
@@ -751,7 +752,7 @@ constexpr std::string_view CurrentSettingsJson = R"json({
         "-i",
         "complete-download",
         "-d",
-        "transmission torrent downloaded"
+        "torrent downloaded"
     ],
     "torrent_complete_sound_enabled": true,
     "trash_original_torrent_files": false,

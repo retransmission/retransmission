@@ -9,8 +9,6 @@
 #error only libtransmission should #include this header.
 #endif
 
-#define TR_NAME "Transmission"
-
 #include <array>
 #include <atomic>
 #include <chrono>
@@ -62,7 +60,7 @@
 #include "libtransmission/tr-assert.h"
 #include "libtransmission/tr-dht.h"
 #include "libtransmission/tr-lpd.h"
-#include "libtransmission/tr-macros.h"
+#include "libtransmission/macros.h"
 #include "libtransmission/types.h"
 #include "libtransmission/utils-ev.h"
 #include "libtransmission/verify.h"

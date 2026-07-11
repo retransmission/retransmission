@@ -7,12 +7,14 @@
 
 #include <QObject>
 
+#include "libtransmission/macros.h"
+
 class InteropObject : public QObject
 {
     Q_OBJECT
 
 #ifdef ENABLE_DBUS_INTEROP
-    Q_CLASSINFO("D-Bus Interface", "com.transmissionbt.Transmission")
+    Q_CLASSINFO("D-Bus Interface", TR_PROJ_DBUS_INTERFACE)
 #endif
 
 #ifdef ENABLE_COM_INTEROP
@@ -20,7 +22,7 @@ class InteropObject : public QObject
     Q_CLASSINFO("InterfaceID", "{9402f54f-4906-4f20-ad73-afcfeb5b228d}")
     Q_CLASSINFO("RegisterObject", "yes")
     Q_CLASSINFO("CoClassAlias", "QtClient")
-    Q_CLASSINFO("Description", "Transmission Qt Client Class")
+    Q_CLASSINFO("Description", TR_PROJ_APPNAME_CAPITALIZED)
 #endif
 
 public:

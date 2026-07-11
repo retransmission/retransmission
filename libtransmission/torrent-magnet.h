@@ -20,7 +20,7 @@
 
 #include <small/vector.hpp>
 
-#include "libtransmission/tr-macros.h"
+#include "libtransmission/macros.h"
 
 // defined by BEP #9
 inline constexpr auto MetadataPieceSize = 1024 * 16;

@@ -20,6 +20,7 @@
 #include <libtransmission/announce-list.h>
 #include <libtransmission/error.h>
 #include <libtransmission/file-utils.h>
+#include <libtransmission/macros.h>
 #include <libtransmission/torrent-metainfo.h>
 #include <libtransmission/tr-strbuf.h>
 
@@ -365,7 +366,7 @@ TEST_F(AnnounceListTest, save)
     // first, set up a scratch torrent
     auto constexpr* const OriginalFile = LIBTRANSMISSION_TEST_ASSETS_DIR "/Android-x86 8.1 r6 iso.torrent";
     auto original_content = std::vector<char>{};
-    auto const sandbox = tr::test::Sandbox::createSandbox(::testing::TempDir(), "transmission-test-XXXXXX");
+    auto const sandbox = tr::test::Sandbox::createSandbox(::testing::TempDir(), TR_PROJ_APPNAME "-test-XXXXXX");
     auto const test_file = tr_pathbuf{ sandbox, "transmission-announce-list-test.torrent"sv };
     auto error = tr_error{};
     EXPECT_TRUE(tr_file_read(OriginalFile, original_content, &error));

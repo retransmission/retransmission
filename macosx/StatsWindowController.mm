@@ -2,6 +2,8 @@
 // It may be used under the MIT (SPDX: MIT) license.
 // License text can be found in the licenses/ folder.
 
+#include "libtransmission/macros.h"
+
 #import "StatsWindowController.h"
 #import "Controller.h"
 #import "NSStringAdditions.h"
@@ -104,7 +106,8 @@ static tr_session* fLib = NULL;
     NSAlert* alert = [[NSAlert alloc] init];
     alert.messageText = NSLocalizedString(@"Are you sure you want to reset usage statistics?", "Stats reset -> title");
     alert.informativeText = NSLocalizedString(
-        @"This will clear the global statistics displayed by Transmission."
+        @"This will clear the global statistics displayed by " TR_PROJ_APPNAME_CAPITALIZED
+         "."
          " Individual transfer statistics will not be affected.",
         "Stats reset -> message");
     alert.alertStyle = NSAlertStyleWarning;

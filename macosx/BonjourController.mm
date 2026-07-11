@@ -2,6 +2,8 @@
 // It may be used under the MIT (SPDX: MIT) license.
 // License text can be found in the licenses/ folder.
 
+#include "libtransmission/macros.h"
+
 #import "BonjourController.h"
 
 static NSUInteger const kBonjourServiceNameMaxLength = 63;
@@ -36,7 +38,7 @@ static BonjourController* fDefaultController = nil;
     [self stop];
 
     NSMutableString* serviceName = [NSMutableString
-        stringWithFormat:@"Transmission (%@ - %@)", NSUserName(), [NSHost currentHost].localizedName];
+        stringWithFormat:@TR_PROJ_APPNAME_CAPITALIZED " (%@ - %@)", NSUserName(), [NSHost currentHost].localizedName];
     if (serviceName.length > kBonjourServiceNameMaxLength) {
         [serviceName deleteCharactersInRange:NSMakeRange(kBonjourServiceNameMaxLength, serviceName.length - kBonjourServiceNameMaxLength)];
     }

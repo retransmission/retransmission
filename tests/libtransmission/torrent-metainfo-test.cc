@@ -18,6 +18,7 @@
 #include <libtransmission/file-utils.h>
 #include <libtransmission/file.h>
 #include <libtransmission/log.h>
+#include <libtransmission/macros.h>
 #include <libtransmission/torrent-metainfo.h>
 #include <libtransmission/torrent.h>
 #include <libtransmission/tr-strbuf.h>
@@ -40,7 +41,7 @@ TEST_F(TorrentMetainfoTest, magnetLink)
         "&dn=ubuntu_12_04_1_desktop_32_bit"
         "&tr=http%3A%2F%2Ftracker.publicbt.com%2Fannounce"
         "&tr=udp%3A%2F%2Ftracker.publicbt.com%3A80"
-        "&ws=http%3A%2F%2Ftransmissiontorrent.com"sv;
+        "&ws=http%3A%2F%2F" TR_PROJ_DOMAIN_APEX;
 
     auto metainfo = tr_torrent_metainfo{};
     EXPECT_TRUE(metainfo.parseMagnet(MagnetLink));
@@ -135,7 +136,7 @@ TEST_F(TorrentMetainfoTest, AndroidTorrent)
 
 TEST_F(TorrentMetainfoTest, ctorSaveContents)
 {
-    auto const sandbox = tr::test::Sandbox::createSandbox(::testing::TempDir(), "transmission-test-XXXXXX");
+    auto const sandbox = tr::test::Sandbox::createSandbox(::testing::TempDir(), TR_PROJ_APPNAME "-test-XXXXXX");
     auto const src_filename = tr_pathbuf{ LIBTRANSMISSION_TEST_ASSETS_DIR, "/Android-x86 8.1 r6 iso.torrent"sv };
     auto const tgt_filename = tr_pathbuf{ sandbox, "save-contents-test.torrent" };
 

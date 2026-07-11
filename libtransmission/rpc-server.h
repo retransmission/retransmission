@@ -16,7 +16,6 @@
 #include <string_view>
 #include <vector>
 
-#include "libtransmission/constants.h" // TrDefaultHttpServerBasePath
 #include "libtransmission/net.h"
 #include "libtransmission/quark.h"
 #include "libtransmission/session-settings.h"

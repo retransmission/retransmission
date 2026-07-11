@@ -11,6 +11,7 @@
 
 #include <libtransmission/transmission.h> /* TR_RATIO_NA, TR_RATIO_INF */
 #include <libtransmission/error.h>
+#include <libtransmission/macros.h>
 #include <libtransmission/string-utils.h>
 #include <libtransmission/torrent-metainfo.h>
 #include <libtransmission/tr-strbuf.h>
@@ -568,7 +569,7 @@ void gtr_object_notify_emit(Glib::ObjectBase& object)
 
 std::string gtr_get_help_uri(std::string_view const relative_path)
 {
-    return fmt::format("https://transmissiontorrent.com/help/gtk/{}.{}x/{}", MAJOR_VERSION, MINOR_VERSION / 10, relative_path);
+    return fmt::format("{:s}/gtk/{}.{}x/{}", TR_PROJ_URL_HELP, MAJOR_VERSION, MINOR_VERSION / 10, relative_path);
 }
 
 void gtr_open_file(std::string_view const base, std::string_view const relative_path)
@@ -813,7 +814,10 @@ void gtr_unrecognized_url_dialog(Gtk::Widget& parent, Glib::ustring const& url)
         TR_GTK_BUTTONS_TYPE(CLOSE),
         true /*modal*/);
 
-    gstr += fmt::format(fmt::runtime(_("Transmission doesn't know how to use '{url}'")), fmt::arg("url", url));
+    gstr += fmt::format(
+        fmt::runtime(_("{:s} doesn't know how to use '{url}'")),
+        fmt::arg("appname", TR_PROJ_APPNAME_CAPITALIZED),
+        fmt::arg("url", url));
 
     if (tr_magnet_metainfo{}.parseMagnet(url.raw())) {
         gstr += "\n \n";
@@ -875,6 +879,5 @@ void gtr_label_set_text(Gtk::Label& lb, Glib::ustring const& text)
 
 std::string gtr_get_full_resource_path(std::string const& rel_path)
 {
-    static auto const BasePath = "/com/transmissionbt/transmission/"s;
-    return BasePath + rel_path;
+    return fmt::format("/{:s}/{:s}/{:s}/{:s}", TR_PROJ_DOMAIN_TLD, TR_PROJ_DOMAIN_SLD, TR_PROJ_APPNAME, rel_path);
 }

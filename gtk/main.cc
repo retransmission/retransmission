@@ -4,6 +4,7 @@
 
 #include "Application.h"
 #include "GtkCompat.h"
+#include "Macros.h"
 #include "Notify.h"
 #include "Prefs.h"
 #include "Utils.h"
@@ -11,6 +12,7 @@
 #include <libtransmission-app/app.h>
 
 #include <libtransmission/transmission.h>
+#include <libtransmission/macros.h>
 #include <libtransmission/utils.h>
 #include <libtransmission/version.h>
 
@@ -34,9 +36,9 @@
 
 namespace
 {
-auto const* const AppConfigDirName = "transmission";
-auto const* const AppTranslationDomainName = "transmission-gtk";
-auto const* const AppName = "transmission-gtk";
+auto const* const AppConfigDirName = TR_PROJ_APPNAME;
+auto const* const AppTranslationDomainName = MY_NAME;
+auto const* const AppName = MY_NAME;
 
 Glib::OptionEntry create_option_entry(Glib::ustring const& long_name, gchar short_name, Glib::ustring const& description)
 {
@@ -61,7 +63,7 @@ int main(int argc, char** argv)
     /* init glib/gtk */
     Gio::init();
     Glib::init();
-    Glib::set_application_name(_("Transmission"));
+    Glib::set_application_name(TR_PROJ_APPNAME_CAPITALIZED);
 
     /* Workaround "..." */
     Gio::File::create_for_path(".");

@@ -9,6 +9,7 @@
 #include <QPushButton>
 
 #include <libtransmission/transmission.h>
+#include <libtransmission/macros.h>
 #include <libtransmission/version.h>
 
 #include "AboutDialog.h"
@@ -24,12 +25,12 @@ AboutDialog::AboutDialog(Session& session, QWidget* parent)
     ui_.iconLabel->setPixmap(QApplication::windowIcon().pixmap(48));
 
     if (session.isServer()) {
-        auto const title = QStringLiteral("<b style='font-size:x-large'>Transmission %1</b>")
+        auto const title = QStringLiteral("<b style='font-size:x-large'>" TR_PROJ_APPNAME_CAPITALIZED " %1</b>")
                                .arg(QStringLiteral(LONG_VERSION_STRING));
         ui_.titleLabel->setText(title);
     } else {
         QString title = QStringLiteral(
-            "<div style='font-size:x-large; font-weight: bold; text-align: center'>Transmission</div>");
+            "<div style='font-size:x-large; font-weight: bold; text-align: center'>" TR_PROJ_APPNAME_CAPITALIZED "</div>");
         title += QStringLiteral("<div style='text-align: center'>%1: %2</div>")
                      .arg(tr("Client"))
                      .arg(QStringLiteral(LONG_VERSION_STRING));

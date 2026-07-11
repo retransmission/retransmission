@@ -10,6 +10,8 @@
 #include <QString>
 #include <QVariant>
 
+#include "libtransmission/macros.h"
+
 #include "ComInteropHelper.h"
 #include "InteropObject.h"
 
@@ -24,7 +26,7 @@ extern wchar_t qAxModuleFilename[MAX_PATH]; // NOLINT
 extern QString qAxInit(); // NOLINT
 
 ComInteropHelper::ComInteropHelper()
-    : client_{ new QAxObject{ QStringLiteral("Transmission.QtClient") } }
+    : client_{ new QAxObject{ QStringLiteral(TR_PROJ_APPNAME_CAPITALIZED ".QtClient") } }
 {
 }
 

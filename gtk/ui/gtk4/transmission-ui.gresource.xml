@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <gresources>
-  <gresource prefix="/com/transmissionbt/transmission">
+  <gresource prefix="/com/transmissiontorrent/transmission">
     <file compressed="true" preprocess="xml-stripblanks">AddTrackerDialog.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">DetailsDialog.ui</file>
     <file compressed="true" preprocess="xml-stripblanks">EditTrackersDialog.ui</file>

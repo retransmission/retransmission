@@ -12,7 +12,7 @@
 
 #include "libtransmission/announce-list.h"
 #include "libtransmission/crypto-utils.h"
-#include "libtransmission/tr-macros.h" // TR_CONSTEXPR_VEC, tr_sha1_digest_t
+#include "libtransmission/macros.h" // TR_CONSTEXPR_VEC, tr_sha1_digest_t
 
 struct tr_error;
 

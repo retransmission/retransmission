@@ -44,7 +44,7 @@
 #include <libtransmission/timer.h>
 #include <libtransmission/timer-ev.h>
 #include <libtransmission/tr-dht.h>
-#include <libtransmission/tr-macros.h>
+#include <libtransmission/macros.h>
 #include <libtransmission/tr-strbuf.h>
 #include <libtransmission/utils.h>
 #include <libtransmission/variant.h>

@@ -4,6 +4,7 @@
 
 #import <Sparkle/Sparkle.h>
 
+#include <libtransmission/macros.h>
 #include <libtransmission/string-utils.h>
 
 #import "VDKQueue.h"
@@ -39,7 +40,7 @@ static ToolbarTab const ToolbarTabPeers = @"TOOLBAR_PEERS";
 static ToolbarTab const ToolbarTabNetwork = @"TOOLBAR_NETWORK";
 static ToolbarTab const ToolbarTabRemote = @"TOOLBAR_REMOTE";
 
-static char const* const kRPCKeychainService = "Transmission:Remote";
+static char const* const kRPCKeychainService = TR_PROJ_APPNAME_CAPITALIZED ":Remote";
 static char const* const kRPCKeychainName = "Remote";
 
 static NSString* const kWebUIURLFormat = @"http://localhost:%ld/";
@@ -136,7 +137,7 @@ static NSString* const kWebUIURLFormat = @"http://localhost:%ld/";
             [_fDefaults removeObjectForKey:@"BlocklistLastUpdate"];
 
             NSURL* blocklistDir = [[NSFileManager.defaultManager URLsForDirectory:NSApplicationDirectory inDomains:NSUserDomainMask][0]
-                URLByAppendingPathComponent:@"Transmission/blocklists/"];
+                URLByAppendingPathComponent:@TR_PROJ_APPNAME_CAPITALIZED "/blocklists/"];
             [NSFileManager.defaultManager
                 moveItemAtURL:[blocklistDir URLByAppendingPathComponent:@"level1.bin"]
                         toURL:[blocklistDir

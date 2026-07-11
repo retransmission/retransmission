@@ -14,7 +14,7 @@
 #include "libtransmission/block-info.h"
 #include "libtransmission/magnet-metainfo.h"
 #include "libtransmission/torrent-files.h"
-#include "libtransmission/tr-macros.h"
+#include "libtransmission/macros.h"
 #include "libtransmission/types.h"
 
 struct tr_error;

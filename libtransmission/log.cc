@@ -30,6 +30,7 @@
 
 #include "libtransmission/file.h"
 #include "libtransmission/log.h"
+#include "libtransmission/macros.h"
 #include "libtransmission/string-utils.h"
 #include "libtransmission/tr-assert.h"
 #include "libtransmission/utils.h"
@@ -106,7 +107,7 @@ void logAddImpl(
 #else
     auto const szmsg = fmt::format("[{:s}:{:d}] {:s}", file, line, msg);
 #endif
-    __android_log_write(prio, "transmission", szmsg.c_str());
+    __android_log_write(prio, TR_PROJ_APPNAME, szmsg.c_str());
 
 #else
 

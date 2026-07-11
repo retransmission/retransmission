@@ -29,6 +29,7 @@
 
 #include <libtransmission/api-compat.h>
 #include <libtransmission/constants.h> // TrRpcSessionIdHeader, TrRpcVersionHeader
+#include <libtransmission/macros.h>
 #include <libtransmission/net.h> // sockaddr_storage, ntohs()
 #include <libtransmission/quark.h>
 #include <libtransmission/rpcimpl.h> // TrRpcVersionSemver
@@ -50,10 +51,10 @@ auto constexpr SessionId = "test-session-id"sv;
 
 // A minimal in-process stand-in for transmission-daemon's RPC endpoint. It does
 // just enough to exercise tr::app::RpcClient's remote transport end to end: the
-// CSRF handshake (reply 409 with an X-Transmission-Session-Id that the client
-// must echo back), optionally advertising the Tr5 RPC version, followed by a
-// valid success response. It records every request body so tests can assert on
-// the wire format. Everything stays on 127.0.0.1, so there's nothing to flake.
+// CSRF handshake (reply 409 with an TR_PROJ_RPC_SESSION_ID_HEADER that the
+// client must echo back), optionally advertising the Tr5 RPC version, followed
+// by a valid success response. It records every request body so tests can assert
+// on the wire format. Everything stays on 127.0.0.1, so there's nothing to flake.
 class MockRpcServer
 {
 public:
@@ -266,7 +267,11 @@ protected:
 
     [[nodiscard]] static std::string url(MockRpcServer const& server)
     {
-        return fmt::format("http://127.0.0.1:{:d}/transmission/rpc", server.port());
+        return fmt::format(
+            "http://127.0.0.1:{:d}{:s}{:s}",
+            server.port(),
+            TrDefaultHttpServerBasePath,
+            TrHttpServerRpcRelativePath);
     }
 
 private:
@@ -293,7 +298,7 @@ TEST_F(AppRpcClientTest, firstPostUsesDefaultStyleTr4)
 
     // headers look right
     EXPECT_NE(std::string::npos, server.last_content_type().find("application/json"));
-    EXPECT_EQ(0U, server.last_user_agent().rfind("Transmission/", 0)); // starts with
+    EXPECT_EQ(0U, server.last_user_agent().rfind(TR_PROJ_APPNAME_CAPITALIZED "/", 0)); // starts with
 }
 
 TEST_F(AppRpcClientTest, firstPostUsesDefaultStyleTr5)

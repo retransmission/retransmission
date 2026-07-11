@@ -22,6 +22,7 @@
 
 #include "libtransmission/constants.h"
 #include "libtransmission/log.h"
+#include "libtransmission/macros.h"
 #include "libtransmission/net.h"
 #include "libtransmission/port-forwarding-upnp.h"
 #include "libtransmission/string-utils.h"
@@ -313,7 +314,7 @@ tr_port_forwarding_state tr_upnpPulse(
         if (handle->urls.controlURL == nullptr) {
             handle->isMapped = false;
         } else {
-            auto const desc = fmt::format("Transmission at {:d}", local_port.host());
+            auto const desc = fmt::format("{:s} at {:d}", TR_PROJ_APPNAME_CAPITALIZED, local_port.host());
             int const err_tcp = upnp_add_port_mapping(handle, "TCP", advertised_port, local_port, desc.c_str());
             int const err_udp = upnp_add_port_mapping(handle, "UDP", advertised_port, local_port, desc.c_str());
 

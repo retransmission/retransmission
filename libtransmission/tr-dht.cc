@@ -37,6 +37,7 @@
 #include "libtransmission/crypto-utils.h"
 #include "libtransmission/file.h"
 #include "libtransmission/log.h"
+#include "libtransmission/macros.h"
 #include "libtransmission/net.h"
 #include "libtransmission/peer-mgr.h" // for tr_peerMgrCompactToPex()
 #include "libtransmission/quark.h"
@@ -104,7 +105,7 @@ int dht_gettimeofday(struct timeval* tv, [[maybe_unused]] struct timezone* tz)
 namespace
 {
 constexpr std::array<std::pair<char const*, uint16_t>, 3> const DefaultBootstraps = { {
-    { "dht.transmissiontorrent.com", 6881 },
+    { TR_PROJ_DOMAIN_DHT, 6881 },
     { "router.bittorrent.com", 6881 },
     { "dht.libtorrent.org", 25401 },
 } };

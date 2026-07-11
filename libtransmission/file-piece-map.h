@@ -16,7 +16,7 @@
 #include <vector>
 
 #include "libtransmission/bitfield.h"
-#include "libtransmission/tr-macros.h" // TR_CONSTEXPR_VEC
+#include "libtransmission/macros.h" // TR_CONSTEXPR_VEC
 #include "libtransmission/types.h"
 
 struct tr_block_info;

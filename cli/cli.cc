@@ -18,6 +18,7 @@
 #include <libtransmission/env.h>
 #include <libtransmission/error.h>
 #include <libtransmission/file.h>
+#include <libtransmission/macros.h>
 #include <libtransmission/tr-getopt.h>
 #include <libtransmission/utils.h> // _()
 #include <libtransmission/values.h>
@@ -30,17 +31,18 @@ using namespace std::literals;
 using namespace tr::Values;
 
 #define SPEED_K_STR "kB/s"
+#define MY_NAME TR_PROJ_APPNAME "-cli"
 
 namespace
 {
 auto constexpr LineWidth = int{ 80 };
 
-char constexpr MyConfigName[] = "transmission";
-char constexpr MyReadableName[] = "transmission-cli";
+char constexpr MyConfigName[] = TR_PROJ_APPNAME;
+char constexpr MyReadableName[] = MY_NAME;
 char constexpr Usage
     [] = "A fast and easy BitTorrent client\n"
          "\n"
-         "Usage: transmission-cli [options] <file|url|magnet>";
+         "Usage: " MY_NAME " [options] <file|url|magnet>";
 
 bool showVersion = false;
 bool verify = false;
@@ -323,7 +325,7 @@ int tr_main(int argc, char* argv[])
         return EXIT_FAILURE;
     }
 
-    /* load the defaults from config file + libtransmission defaults */
+    /* load the defaults from config file + session defaults */
     auto const config_dir = getConfigDir(argc, (char const**)argv);
     auto settings = tr_sessionLoadSettings(config_dir);
 
@@ -359,8 +361,8 @@ int tr_main(int argc, char* argv[])
         }
     } else {
         fprintf(stderr, "ERROR: Unrecognized torrent \"%s\".\n", torrentPath);
-        fprintf(stderr, " * If you're trying to create a torrent, use transmission-create.\n");
-        fprintf(stderr, " * If you're trying to see a torrent's info, use transmission-show.\n");
+        fprintf(stderr, " * If you're trying to create a torrent, use " TR_PROJ_APPNAME "-create.\n");
+        fprintf(stderr, " * If you're trying to see a torrent's info, use " TR_PROJ_APPNAME "-show.\n");
         tr_sessionClose(h);
         return EXIT_FAILURE;
     }
