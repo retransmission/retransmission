@@ -48,7 +48,6 @@
 #import "ShareToolbarItem.h"
 #import "ShareTorrentFileHelper.h"
 #import "Toolbar.h"
-#import "BlocklistDownloader.h"
 #import "StatusBarController.h"
 #import "FilterBarController.h"
 #import "FileRenameSheetController.h"
@@ -203,6 +202,7 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
     if ([defaults objectForKey:@"BlocklistURL"]) {
         settings.insert_or_assign(TR_KEY_blocklist_url, [defaults stringForKey:@"BlocklistURL"].UTF8String);
     }
+    settings.insert_or_assign(TR_KEY_blocklist_updates_enabled, static_cast<bool>([defaults boolForKey:@"BlocklistAutoUpdate"]));
     settings.insert_or_assign(TR_KEY_dht_enabled, static_cast<bool>([defaults boolForKey:@"DHTGlobal"]));
     settings.insert_or_assign(TR_KEY_download_dir, [defaults stringForKey:@"DownloadFolder"].stringByExpandingTildeInPath.UTF8String);
     settings.insert_or_assign(TR_KEY_download_queue_enabled, static_cast<bool>([defaults boolForKey:@"Queue"]));
@@ -958,10 +958,8 @@ static void removeKeRangerRansomware()
         [BonjourController.defaultController stop];
     }
 
-    //stop blocklist download
-    if (BlocklistDownloader.isRunning) {
-        [[BlocklistDownloader downloader] cancelDownload];
-    }
+    //stop any in-flight blocklist download
+    tr_blocklistUpdateCancel(self.fLib);
 
     //stop timers and notification checking
     [NSNotificationCenter.defaultCenter removeObserver:self];

@@ -68,6 +68,7 @@
 		558699602570759F00F77A43 /* libcurl.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 55869925257074EC00F77A43 /* libcurl.tbd */; };
 		5586996C2570759F00F77A43 /* libcurl.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 55869925257074EC00F77A43 /* libcurl.tbd */; };
 		62F644738FE3D8788EBF73A9 /* block-info.cc in Sources */ = {isa = PBXBuildFile; fileRef = A54D44C6A7AAF131D9AE29F5 /* block-info.cc */; };
+		B10CDDA0000000000000CC01 /* blocklist-download.cc in Sources */ = {isa = PBXBuildFile; fileRef = B10CDDA0000000000000CC02 /* blocklist-download.cc */; };
 		66F977825E65AD498C028BB0 /* announce-list.cc in Sources */ = {isa = PBXBuildFile; fileRef = 66F977825E65AD498C028BB1 /* announce-list.cc */; };
 		66F977825E65AD498C028BB2 /* announce-list.h in Headers */ = {isa = PBXBuildFile; fileRef = 66F977825E65AD498C028BB3 /* announce-list.h */; };
 		888A256631B3DE536FEB8B00 /* tr-strbuf.h in Headers */ = {isa = PBXBuildFile; fileRef = 888A256631B3DE536FEB8B01 /* tr-strbuf.h */; };
@@ -127,7 +128,6 @@
 		A22180980D148A71007D09ED /* GroupsPrefsController.mm in Sources */ = {isa = PBXBuildFile; fileRef = A22180970D148A71007D09ED /* GroupsPrefsController.mm */; };
 		A221DCC8104B3660008A642D /* Quartz.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A221DCC7104B3660008A642D /* Quartz.framework */; };
 		A222E9870E6B21D9009FB003 /* BlocklistDownloaderViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = A222E9860E6B21D9009FB003 /* BlocklistDownloaderViewController.mm */; };
-		A222EA7B0E6C32C4009FB003 /* BlocklistScheduler.mm in Sources */ = {isa = PBXBuildFile; fileRef = A222EA7A0E6C32C4009FB003 /* BlocklistScheduler.mm */; };
 		A225A4C0187E369C00CDE823 /* ShareToolbarItem.mm in Sources */ = {isa = PBXBuildFile; fileRef = A225A4BF187E369C00CDE823 /* ShareToolbarItem.mm */; };
 		A226FDAC0D0CDF20005A7F71 /* libnatpmp.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3C7A118D0D0B2EB800B5701F /* libnatpmp.a */; };
 		A22A8D560AEEAFA5007E9CB9 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = A22A8D540AEEAFA5007E9CB9 /* Localizable.strings */; };
@@ -231,7 +231,6 @@
 		A2C89D600CFCBF57004CC2BC /* ButtonToolbarItem.mm in Sources */ = {isa = PBXBuildFile; fileRef = A2C89D5F0CFCBF57004CC2BC /* ButtonToolbarItem.mm */; };
 		A2CB38AF0E1E6896002B514C /* COPYING in Resources */ = {isa = PBXBuildFile; fileRef = A2CB38AE0E1E6896002B514C /* COPYING */; };
 		A2D22A130D65EEE700007D5F /* verify.cc in Sources */ = {isa = PBXBuildFile; fileRef = A2D22A100D65EED100007D5F /* verify.cc */; };
-		A2D307A40D9EC6870051FD27 /* BlocklistDownloader.mm in Sources */ = {isa = PBXBuildFile; fileRef = A2D307A30D9EC6870051FD27 /* BlocklistDownloader.mm */; };
 		A2D307B10D9EC9F50051FD27 /* BlocklistStatusWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = A2D307B00D9EC9F50051FD27 /* BlocklistStatusWindow.xib */; };
 		A2D77451154CC25700A62B93 /* WebSeedTableView.h in Headers */ = {isa = PBXBuildFile; fileRef = A2D7744F154CC25700A62B93 /* WebSeedTableView.h */; };
 		A2D77453154CC72B00A62B93 /* WebSeedTableView.mm in Sources */ = {isa = PBXBuildFile; fileRef = A2D77450154CC25700A62B93 /* WebSeedTableView.mm */; };
@@ -442,6 +441,7 @@
 		EDC749F92D98AE3000A12D0F /* PowerManager.mm in Sources */ = {isa = PBXBuildFile; fileRef = EDC749F82D98AE2900A12D0F /* PowerManager.mm */; };
 		EDD735D62D83087400852628 /* UniformTypeIdentifiers.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EDD735D52D83087400852628 /* UniformTypeIdentifiers.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		F11545ACA7C4D7A464F703AB /* block-info.h in Headers */ = {isa = PBXBuildFile; fileRef = 6A044CBD8C049AFCBD4DB411 /* block-info.h */; settings = {ATTRIBUTES = (Project, ); }; };
+		B10CDDA0000000000000BB01 /* blocklist-download.h in Headers */ = {isa = PBXBuildFile; fileRef = B10CDDA0000000000000BB02 /* blocklist-download.h */; settings = {ATTRIBUTES = (Project, ); }; };
 		F63480631E1D7274005B9E09 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F63480621E1D7274005B9E09 /* Images.xcassets */; };
 		ADD1A0000000000000000200 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = C88771A92803EE42005C7523 /* libz.tbd */; };
 		ADD1A0000000000000000002 /* archive_acl.c in Sources */ = {isa = PBXBuildFile; fileRef = ADD1A0000000000000000001 /* archive_acl.c */; };
@@ -929,6 +929,7 @@
 		66F977825E65AD498C028BB1 /* announce-list.cc */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = "announce-list.cc"; sourceTree = "<group>"; };
 		66F977825E65AD498C028BB3 /* announce-list.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.h; path = "announce-list.h"; sourceTree = "<group>"; };
 		6A044CBD8C049AFCBD4DB411 /* block-info.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.h; path = "block-info.h"; sourceTree = "<group>"; };
+		B10CDDA0000000000000BB02 /* blocklist-download.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.h; path = "blocklist-download.h"; sourceTree = "<group>"; };
 		888A256631B3DE536FEB8B01 /* tr-strbuf.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.h; fileEncoding = 4; path = "tr-strbuf.h"; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8D1107320486CEB800E47090 /* Transmission.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Transmission.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -995,8 +996,6 @@
 		A221DCC7104B3660008A642D /* Quartz.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Quartz.framework; path = System/Library/Frameworks/Quartz.framework; sourceTree = SDKROOT; };
 		A222E9850E6B21D9009FB003 /* BlocklistDownloaderViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BlocklistDownloaderViewController.h; sourceTree = "<group>"; };
 		A222E9860E6B21D9009FB003 /* BlocklistDownloaderViewController.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = BlocklistDownloaderViewController.mm; sourceTree = "<group>"; };
-		A222EA790E6C32C4009FB003 /* BlocklistScheduler.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BlocklistScheduler.h; sourceTree = "<group>"; };
-		A222EA7A0E6C32C4009FB003 /* BlocklistScheduler.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = BlocklistScheduler.mm; sourceTree = "<group>"; };
 		A223AA7E0D220CEB00840069 /* nl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = nl; path = nl.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		A223AA800D220CEB00840069 /* nl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = nl; path = nl.lproj/Localizable.strings; sourceTree = "<group>"; };
 		A225A4BE187E369C00CDE823 /* ShareToolbarItem.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ShareToolbarItem.h; sourceTree = "<group>"; };
@@ -1144,8 +1143,6 @@
 		A2D22A110D65EED100007D5F /* verify.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.h; path = verify.h; sourceTree = "<group>"; };
 		A2D3078E0D9EC45F0051FD27 /* blocklist.cc */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = blocklist.cc; sourceTree = "<group>"; };
 		A2D307930D9EC4860051FD27 /* blocklist.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.h; path = blocklist.h; sourceTree = "<group>"; };
-		A2D307A20D9EC6870051FD27 /* BlocklistDownloader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BlocklistDownloader.h; sourceTree = "<group>"; };
-		A2D307A30D9EC6870051FD27 /* BlocklistDownloader.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = BlocklistDownloader.mm; sourceTree = "<group>"; };
 		A2D307B00D9EC9F50051FD27 /* BlocklistStatusWindow.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = BlocklistStatusWindow.xib; sourceTree = "<group>"; };
 		A2D7744F154CC25700A62B93 /* WebSeedTableView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WebSeedTableView.h; sourceTree = "<group>"; };
 		A2D77450154CC25700A62B93 /* WebSeedTableView.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = WebSeedTableView.mm; sourceTree = "<group>"; };
@@ -1193,6 +1190,7 @@
 		A47A7C87B8B57BE50DF0D411 /* torrent-files.cc */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = "torrent-files.cc"; sourceTree = "<group>"; };
 		A47A7C87B8B57BE50DF0D413 /* torrent-files.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.h; path = "torrent-files.h"; sourceTree = "<group>"; };
 		A54D44C6A7AAF131D9AE29F5 /* block-info.cc */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = "block-info.cc"; sourceTree = "<group>"; };
+		B10CDDA0000000000000CC02 /* blocklist-download.cc */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = "blocklist-download.cc"; sourceTree = "<group>"; };
 		BE1183480CE160960002D0F3 /* libminiupnp.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libminiupnp.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		BE11834E0CE160C50002D0F3 /* miniupnpc_declspec.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = miniupnpc_declspec.h; sourceTree = "<group>"; };
 		BE11834F0CE160C50002D0F3 /* igd_desc_parse.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = igd_desc_parse.h; sourceTree = "<group>"; };
@@ -1946,12 +1944,8 @@
 				A2451E6716ACE4EB00586E0E /* FileRenameSheetController.mm */,
 				A23F526D0F14395900AA02E3 /* PredicateEditorRowTemplateAny.h */,
 				A23F526E0F14395900AA02E3 /* PredicateEditorRowTemplateAny.mm */,
-				A2D307A20D9EC6870051FD27 /* BlocklistDownloader.h */,
-				A2D307A30D9EC6870051FD27 /* BlocklistDownloader.mm */,
 				A222E9850E6B21D9009FB003 /* BlocklistDownloaderViewController.h */,
 				A222E9860E6B21D9009FB003 /* BlocklistDownloaderViewController.mm */,
-				A222EA790E6C32C4009FB003 /* BlocklistScheduler.h */,
-				A222EA7A0E6C32C4009FB003 /* BlocklistScheduler.mm */,
 				ED86936D2ADAE34D00342B1A /* DefaultAppHelper.h */,
 				ED86936E2ADAE34D00342B1A /* DefaultAppHelper.mm */,
 				EDC749F72D98ADE200A12D0F /* PowerManager.h */,
@@ -2103,7 +2097,9 @@
 				0A6169A50FE5C9A200C66CE6 /* bitfield.cc */,
 				0A6169A60FE5C9A200C66CE6 /* bitfield.h */,
 				A54D44C6A7AAF131D9AE29F5 /* block-info.cc */,
+				B10CDDA0000000000000CC02 /* blocklist-download.cc */,
 				6A044CBD8C049AFCBD4DB411 /* block-info.h */,
+				B10CDDA0000000000000BB02 /* blocklist-download.h */,
 				A2D3078E0D9EC45F0051FD27 /* blocklist.cc */,
 				A2D307930D9EC4860051FD27 /* blocklist.h */,
 				BEFC1E1F0C07861A00B0BB3C /* clients.cc */,
@@ -2864,6 +2860,7 @@
 				A2EA52321686AC0D00180493 /* quark.h in Headers */,
 				A2AF23C916B44FA0003BC59E /* log.h in Headers */,
 				F11545ACA7C4D7A464F703AB /* block-info.h in Headers */,
+				B10CDDA0000000000000BB01 /* blocklist-download.h in Headers */,
 				E23B55A5FC3B557F7746D510 /* interned-string.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -3673,6 +3670,7 @@
 				A2EA52311686AC0D00180493 /* quark.cc in Sources */,
 				A2AF23C816B44FA0003BC59E /* log.cc in Sources */,
 				62F644738FE3D8788EBF73A9 /* block-info.cc in Sources */,
+				B10CDDA0000000000000CC01 /* blocklist-download.cc in Sources */,
 				E975121263DD973CAF4AEBA4 /* timer-ev.cc in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -3736,7 +3734,6 @@
 				A26AF2840D2DC27C00FF7140 /* AddWindowController.mm in Sources */,
 				A2FB701C0D95CAEA0001F331 /* GroupsController.mm in Sources */,
 				45A7D3292843B54D00F0C32A /* GroupPopUpButtonCell.mm in Sources */,
-				A2D307A40D9EC6870051FD27 /* BlocklistDownloader.mm in Sources */,
 				A2725B6E0DE5C4F5003445E7 /* FileListNode.mm in Sources */,
 				4559D21629B32623004EFDF0 /* ProgressBarView.mm in Sources */,
 				A2725D5D0DE7507C003445E7 /* TrackerTableView.mm in Sources */,
@@ -3745,7 +3742,6 @@
 				45489C5729AF6FB20098A812 /* TorrentCellControlButton.mm in Sources */,
 				C809AEE7291ECFD000BFDBE1 /* NSDataAdditions.mm in Sources */,
 				A222E9870E6B21D9009FB003 /* BlocklistDownloaderViewController.mm in Sources */,
-				A222EA7B0E6C32C4009FB003 /* BlocklistScheduler.mm in Sources */,
 				A232F07E0EEA034A00041646 /* BonjourController.mm in Sources */,
 				A23F526F0F14395900AA02E3 /* PredicateEditorRowTemplateAny.mm in Sources */,
 				A29D84041049C25600D1987A /* NSApplicationAdditions.mm in Sources */,
@@ -4671,6 +4667,7 @@
 					"third-party/wide-integer",
 					"third-party/wildmat",
 					"third-party/madler-crcany",
+					"third-party/libarchive/libarchive",
 				);
 				USER_HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -4919,6 +4916,7 @@
 					"third-party/wide-integer",
 					"third-party/wildmat",
 					"third-party/madler-crcany",
+					"third-party/libarchive/libarchive",
 				);
 				USER_HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -5247,6 +5245,7 @@
 					"third-party/wide-integer",
 					"third-party/wildmat",
 					"third-party/madler-crcany",
+					"third-party/libarchive/libarchive",
 				);
 				USER_HEADER_SEARCH_PATHS = (
 					"$(inherited)",
