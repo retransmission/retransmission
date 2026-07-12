@@ -50,12 +50,8 @@ target_sources(${TR_NAME}-mac
         BadgeView.mm
         BaseFileNameCellView.h
         BaseFileNameCellView.mm
-        BlocklistDownloader.h
-        BlocklistDownloader.mm
         BlocklistDownloaderViewController.h
         BlocklistDownloaderViewController.mm
-        BlocklistScheduler.h
-        BlocklistScheduler.mm
         BonjourController.h
         BonjourController.mm
         ButtonToolbarItem.h

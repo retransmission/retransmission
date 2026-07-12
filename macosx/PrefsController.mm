@@ -11,7 +11,6 @@
 
 #import "PrefsController.h"
 #import "BlocklistDownloaderViewController.h"
-#import "BlocklistScheduler.h"
 #import "Controller.h"
 #import "DefaultAppHelper.h"
 #import "PortChecker.h"
@@ -157,9 +156,6 @@ static NSString* const kWebUIURLFormat = @"http://localhost:%ld/";
                                                      notifyingAbout:VDKQueueNotifyAboutWrite];
         }
 
-        //set blocklist scheduler
-        [BlocklistScheduler.scheduler updateSchedule];
-
         //set encryption
         [self setEncryptionMode:nil];
 
@@ -275,9 +271,6 @@ static NSString* const kWebUIURLFormat = @"http://localhost:%ld/";
 
     [NSNotificationCenter.defaultCenter addObserver:self selector:@selector(updateLimitStopField)
                                                name:@"UpdateIdleStopValueOutsidePrefs"
-                                             object:nil];
-
-    [NSNotificationCenter.defaultCenter addObserver:self selector:@selector(updateBlocklistFields) name:@"BlocklistUpdated"
                                              object:nil];
 
     [NSNotificationCenter.defaultCenter addObserver:self selector:@selector(updateBlocklistURLField)
@@ -550,8 +543,6 @@ static NSString* const kWebUIURLFormat = @"http://localhost:%ld/";
 {
     tr_blocklistSetEnabled(self.fHandle, [self.fDefaults boolForKey:@"BlocklistNew"]);
 
-    [BlocklistScheduler.scheduler updateSchedule];
-
     [self updateBlocklistButton];
 }
 
@@ -562,7 +553,7 @@ static NSString* const kWebUIURLFormat = @"http://localhost:%ld/";
 
 - (void)setBlocklistAutoUpdate:(id)sender
 {
-    [BlocklistScheduler.scheduler updateSchedule];
+    tr_blocklistSetUpdatesEnabled(self.fHandle, [self.fDefaults boolForKey:@"BlocklistAutoUpdate"]);
 }
 
 - (void)updateBlocklistFields
@@ -579,7 +570,8 @@ static NSString* const kWebUIURLFormat = @"http://localhost:%ld/";
 
     NSString* updatedDateString;
     if (exists) {
-        NSDate* updatedDate = [self.fDefaults objectForKey:@"BlocklistNewLastUpdateSuccess"];
+        time_t const mtime = tr_blocklistGetMTime(self.fHandle);
+        NSDate* updatedDate = mtime > 0 ? [NSDate dateWithTimeIntervalSince1970:mtime] : nil;
 
         if (updatedDate) {
             updatedDateString = [NSDateFormatter localizedStringFromDate:updatedDate dateStyle:NSDateFormatterFullStyle

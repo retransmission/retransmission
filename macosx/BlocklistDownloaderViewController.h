@@ -13,8 +13,6 @@
 - (IBAction)cancelDownload:(id)sender;
 
 - (void)setStatusStarting;
-- (void)setStatusProgressForCurrentSize:(NSUInteger)currentSize expectedSize:(long long)expectedSize;
-- (void)setStatusProcessing;
 
 - (void)setFinished;
 - (void)setFailed:(NSString*)error;
