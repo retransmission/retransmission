@@ -267,6 +267,7 @@ endif()
 target_link_libraries(${TR_NAME}
     PRIVATE
         Threads::Threads
+        libarchive::libarchive
         ZLIB::ZLIB
         CURL::libcurl
         FastFloat::fast_float

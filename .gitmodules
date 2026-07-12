@@ -56,3 +56,6 @@
 	path = third-party/simdutf
 	# synced with https://github.com/simdutf/simdutf.git
 	url = https://github.com/transmissiontorrent/simdutf.git
+[submodule "third-party/libarchive"]
+	path = third-party/libarchive
+	url = https://github.com/transmissiontorrent/libarchive.git

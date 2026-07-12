@@ -50,6 +50,7 @@ runs:
           dnf install -y \
             fast_float-devel \
             fmt-devel \
+            libarchive-devel \
             libcurl-devel \
             libevent-devel \
             libnatpmp-devel \
@@ -97,6 +98,7 @@ runs:
             appstream
             cmake
             gettext
+            libarchive-dev
             libcurl4-openssl-dev
             libevent-dev
             libminiupnpc-dev
@@ -220,6 +222,7 @@ runs:
         BASE_PACKAGES+=(
           fast_float
           fmt
+          libarchive
           libevent
           libnatpmp
           libpsl

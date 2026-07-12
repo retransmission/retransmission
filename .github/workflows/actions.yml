@@ -171,6 +171,7 @@ jobs:
             -DREBUILD_WEB=OFF \
             -DRUN_CLANG_TIDY=OFF \
             -DUSE_SYSTEM_DEFAULT=ON \
+            -DUSE_SYSTEM_ARCHIVE=OFF `# Build vendored libarchive here to exercise its ExternalProject scripts on Linux` \
             -DUSE_SYSTEM_DHT=OFF `# Not packaged in Ubuntu` \
             -DUSE_SYSTEM_SIGSLOT=OFF `# Not packaged in Ubuntu` \
             -DUSE_SYSTEM_SIMDUTF=OFF `# TODO: YES in 26.04` \
@@ -695,6 +696,7 @@ jobs:
             fmt-dev \
             gettext-dev \
             git \
+            libarchive-dev \
             libevent-dev \
             libnatpmp-dev \
             libpsl-dev \
