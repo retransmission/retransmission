@@ -39,6 +39,8 @@ target_sources(${TR_NAME}
         bitfield.h
         block-info.cc
         block-info.h
+        blocklist-download.cc
+        blocklist-download.h
         blocklist.cc
         blocklist.h
         clients.cc

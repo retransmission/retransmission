@@ -33,6 +33,7 @@
 
 #include "libtransmission/api-compat.h"
 #include "libtransmission/bandwidth.h"
+#include "libtransmission/blocklist-download.h"
 #include "libtransmission/blocklist.h"
 #include "libtransmission/constants.h"
 #include "libtransmission/crypto-utils.h"
@@ -692,6 +693,9 @@ void tr_session::initImpl(init_data& data)
 
     blocklists_.load(blocklist_dir_, blocklist_enabled());
 
+    // now that the blocklist is loaded, arm its periodic auto-update timer
+    blocklist_updater_->restart_timer();
+
     tr_logAddInfo(
         fmt::format(
             fmt::runtime(_("{appname} version {version} starting")),
@@ -1289,6 +1293,7 @@ void tr_session::closeImplPart1(std::promise<void>* closed_promise, std::chrono:
     save_timer_.reset();
     queue_timer_.reset();
     now_timer_.reset();
+    blocklist_updater_.reset();
     rpc_server_.reset();
     dht_.reset();
     lpd_.reset();
@@ -2030,6 +2035,8 @@ tr_session::tr_session(std::string_view config_dir, tr::Settings const& settings
     now_timer_->start_repeating(1s);
     queue_timer_->start_repeating(QueueInterval);
     save_timer_->start_repeating(SaveInterval);
+
+    blocklist_updater_ = std::make_unique<tr::blocklist::Updater>(this);
 }
 
 void tr_session::addIncoming(std::shared_ptr<tr_peer_socket> socket)

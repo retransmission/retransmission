@@ -83,6 +83,7 @@ public:
 
     bool announce_ip_enabled = false;
     bool blocklist_enabled = false;
+    bool blocklist_updates_enabled = true;
     bool dht_enabled = true;
     bool download_queue_enabled = true;
     bool idle_seeding_limit_enabled = false;
@@ -164,6 +165,7 @@ public:
         Field<&SessionSettings::bind_address_ipv4>{ TR_KEY_bind_address_ipv4 },
         Field<&SessionSettings::bind_address_ipv6>{ TR_KEY_bind_address_ipv6 },
         Field<&SessionSettings::blocklist_enabled>{ TR_KEY_blocklist_enabled },
+        Field<&SessionSettings::blocklist_updates_enabled>{ TR_KEY_blocklist_updates_enabled },
         Field<&SessionSettings::blocklist_url>{ TR_KEY_blocklist_url },
         Field<&SessionSettings::default_trackers_str>{ TR_KEY_default_trackers },
         Field<&SessionSettings::dht_enabled>{ TR_KEY_dht_enabled },

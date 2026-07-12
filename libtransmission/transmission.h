@@ -497,6 +497,40 @@ void tr_blocklistSetEnabled(tr_session* session, bool is_enabled);
            invokes the "blocklist_update" method */
 void tr_blocklistSetURL(tr_session* session, std::string_view url);
 
+/** @brief How a blocklist update fared. */
+enum class tr_blocklist_update_status : uint8_t { Ok, DownloadError, SaveError, InvalidData };
+
+struct tr_blocklist_update_result {
+    tr_blocklist_update_status status = tr_blocklist_update_status::Ok;
+    size_t n_rules = 0U; // how many rules were installed; only meaningful when status == Ok
+    std::string error; // human-readable detail; empty on success
+};
+
+using tr_blocklist_update_func = std::function<void(tr_blocklist_update_result const&)>;
+
+/**
+ * Download the session's blocklist URL, decompress it (gzip, tar, zip, or
+ * plain text are all handled transparently), install it, and report the
+ * outcome.
+ *
+ * `on_done` is invoked exactly once, on the session thread, when the update
+ * finishes -- unless tr_blocklistUpdateCancel() is called first, in which case
+ * it is not invoked at all.
+ */
+void tr_blocklistUpdate(tr_session* session, tr_blocklist_update_func on_done);
+
+/** @brief Abandon an in-flight tr_blocklistUpdate(): its callback won't fire. */
+void tr_blocklistUpdateCancel(tr_session* session);
+
+/** @brief When the blocklist was last successfully updated (its file's mtime),
+           or 0 if no blocklist has been installed yet. */
+time_t tr_blocklistGetMTime(tr_session const* session);
+
+/** @brief Whether the blocklist is periodically re-downloaded on its own. */
+bool tr_blocklistUpdatesEnabled(tr_session const* session);
+
+void tr_blocklistSetUpdatesEnabled(tr_session* session, bool enabled);
+
 /** @} */
 
 /**

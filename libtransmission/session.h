@@ -81,6 +81,13 @@ class SessionTest;
 
 } // namespace tr::test
 
+namespace tr::blocklist
+{
+
+class Updater;
+
+} // namespace tr::blocklist
+
 /** @brief handle to an active libtransmission session */
 struct tr_session {
     using Memory = tr::Values::Memory;
@@ -577,6 +584,7 @@ public:
     {
         settings_.blocklist_enabled = is_enabled;
         blocklist().set_enabled(is_enabled);
+        on_blocklist_settings_changed();
     }
 
     [[nodiscard]] auto blocklist_enabled() const noexcept
@@ -592,6 +600,29 @@ public:
     void setBlocklistUrl(std::string_view url)
     {
         settings_.blocklist_url = url;
+        on_blocklist_settings_changed();
+    }
+
+    [[nodiscard]] auto blocklist_updates_enabled() const noexcept
+    {
+        return settings().blocklist_updates_enabled;
+    }
+
+    void set_blocklist_updates_enabled(bool enabled)
+    {
+        settings_.blocklist_updates_enabled = enabled;
+        on_blocklist_settings_changed();
+    }
+
+    // When the primary blocklist file was last updated, or 0 if never.
+    [[nodiscard]] time_t blocklist_mtime() const
+    {
+        return blocklists_.mtime();
+    }
+
+    [[nodiscard]] tr::blocklist::Updater* blocklist_updater() noexcept
+    {
+        return blocklist_updater_.get();
     }
 
     // RPC
@@ -1107,6 +1138,9 @@ private:
     // the uncached count behind busy_torrent_count(); session thread only
     [[nodiscard]] size_t compute_busy_torrent_count() const noexcept;
 
+    // (Re)arm or disarm the auto-update timer after a blocklist setting changes.
+    void on_blocklist_settings_changed();
+
     static void onIncomingPeerConnection(tr_socket_t fd, void* vsession);
 
     friend class tr::test::SessionTest;
@@ -1315,6 +1349,12 @@ private:
     // depends-on: settings_, session_thread_, torrents_, global_ip_cache (via tr_session::bind_address())
     WebMediator web_mediator_{ this };
     std::unique_ptr<tr_web> web_ = tr_web::create(this->web_mediator_);
+
+    // depends-on: timer_maker_, blocklists_, web_
+    // Declared after web_ so it's torn down first: an in-flight fetch held by
+    // web_ keeps its request state alive, and the Updater's destruction drops
+    // any pending completion before web_ goes away.
+    std::unique_ptr<tr::blocklist::Updater> blocklist_updater_;
 
     // depends-on: timer_maker_, blocklists_, top_bandwidth_, utp_context, torrents_, web_
     std::unique_ptr<struct tr_peerMgr, void (*)(struct tr_peerMgr*)> peer_mgr_;

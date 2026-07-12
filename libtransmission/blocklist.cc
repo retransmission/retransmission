@@ -548,4 +548,14 @@ std::optional<size_t> Blocklists::update_primary_blocklist(std::string_view cons
     return n_rules;
 }
 
+time_t Blocklists::mtime() const
+{
+    auto const bin_file = tr_pathbuf{ folder_, '/', TrDefaultBlocklistFilename };
+    if (auto const info = tr_sys_path_get_info(bin_file.sv()); info) {
+        return info->last_modified_at;
+    }
+
+    return 0;
+}
+
 } // namespace tr
