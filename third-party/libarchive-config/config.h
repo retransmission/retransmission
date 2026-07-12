@@ -73,6 +73,7 @@
 #define HAVE_SYS_POLL_H 1
 #define HAVE_SYS_SELECT_H 1
 #define HAVE_SYS_STAT_H 1
+#define HAVE_SYS_STATVFS_H 1
 #define HAVE_SYS_TIME_H 1
 #define HAVE_SYS_TYPES_H 1
 #define HAVE_SYS_UTSNAME_H 1
