@@ -575,6 +575,10 @@ tr_add_external_auto_library(ARCHIVE libarchive
         -DENABLE_NETTLE:BOOL=OFF
         -DENABLE_LIBXML2:BOOL=OFF
         -DENABLE_EXPAT:BOOL=OFF
+        # We don't use libarchive's match/regex API; disabling POSIX regex
+        # detection avoids its libgcc-fallback FATAL on MSVC (which has no
+        # libc regex, so AUTO falls through to the PCRE/libgcc path).
+        -DPOSIX_REGEX_LIB:STRING=NONE
         -DENABLE_PCREPOSIX:BOOL=OFF
         -DENABLE_PCRE2POSIX:BOOL=OFF
         -DENABLE_LIBGCC:BOOL=OFF
