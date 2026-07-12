@@ -18,4 +18,6 @@
 
 - (void)rpcUpdatePrefs;
 
+- (void)updateBlocklistFields;
+
 @end
