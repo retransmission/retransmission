@@ -584,6 +584,12 @@ tr_add_external_auto_library(ARCHIVE libarchive
 # expect a DLL (harmless elsewhere; only __declspec on MSVC cares).
 set_property(TARGET libarchive::libarchive APPEND PROPERTY INTERFACE_COMPILE_DEFINITIONS LIBARCHIVE_STATIC)
 
+if(WIN32)
+    # libarchive's archive_util.c seeds its RNG with BCryptGenRandom (bcrypt.h),
+    # so anything linking the static archive.lib must also link bcrypt.
+    set_property(TARGET libarchive::libarchive APPEND PROPERTY INTERFACE_LINK_LIBRARIES bcrypt)
+endif()
+
 tr_add_external_auto_library(EVENT2 Libevent
     SUBPROJECT
     SOURCE_DIR libevent
