@@ -33,14 +33,14 @@ namespace
 // might serve it, using libarchive's write side. `configure` picks the format
 // and filter (tar, zip, or raw + gzip); this exercises the same peel-off logic
 // tr_blocklistUpdate() relies on to read it back.
-[[nodiscard]] std::string make_archive(void (*configure)(archive*), std::string_view name, std::string_view content)
+[[nodiscard]] std::string makeArchive(void (*configure)(archive*), std::string_view name, std::string_view content)
 {
     auto* const arc = archive_write_new();
     configure(arc);
 
     // our fixtures are tiny; this buffer is comfortably large enough
     auto out = std::string{};
-    out.resize(64U * 1024U);
+    out.resize(size_t{ 64U } * 1024U);
     auto used = size_t{};
     archive_write_open_memory(arc, std::data(out), std::size(out), &used);
 
@@ -60,18 +60,18 @@ namespace
     return out;
 }
 
-void as_gzip(archive* arc)
+void asGzip(archive* arc)
 {
     archive_write_set_format_raw(arc);
     archive_write_add_filter_gzip(arc);
 }
 
-void as_tar(archive* arc)
+void asTar(archive* arc)
 {
     archive_write_set_format_ustar(arc);
 }
 
-void as_zip(archive* arc)
+void asZip(archive* arc)
 {
     archive_write_set_format_zip(arc);
 }
@@ -118,7 +118,7 @@ TEST_F(BlocklistDownloadTest, installsPlainText)
 
 TEST_F(BlocklistDownloadTest, installsGzip)
 {
-    static auto const Compressed = make_archive(as_gzip, "blocklist"sv, Rules);
+    static auto const Compressed = makeArchive(asGzip, "blocklist"sv, Rules);
     server_.setHandler([](evhttp_request* req) { LoopbackServer::reply(req, HTTP_OK, "OK", Compressed); });
 
     auto const result = runUpdate();
@@ -129,7 +129,7 @@ TEST_F(BlocklistDownloadTest, installsGzip)
 
 TEST_F(BlocklistDownloadTest, installsTar)
 {
-    static auto const Tarred = make_archive(as_tar, "blocklist"sv, Rules);
+    static auto const Tarred = makeArchive(asTar, "blocklist"sv, Rules);
     server_.setHandler([](evhttp_request* req) { LoopbackServer::reply(req, HTTP_OK, "OK", Tarred); });
 
     auto const result = runUpdate();
@@ -140,7 +140,7 @@ TEST_F(BlocklistDownloadTest, installsTar)
 
 TEST_F(BlocklistDownloadTest, installsZip)
 {
-    static auto const Zipped = make_archive(as_zip, "blocklist"sv, Rules);
+    static auto const Zipped = makeArchive(asZip, "blocklist"sv, Rules);
     server_.setHandler([](evhttp_request* req) { LoopbackServer::reply(req, HTTP_OK, "OK", Zipped); });
 
     auto const result = runUpdate();

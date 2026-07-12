@@ -173,7 +173,8 @@ void Updater::update(tr_blocklist_update_func on_done)
             previous->cancelled = true;
         }
 
-        auto pending = std::make_shared<Pending>(Pending{ session_, std::move(on_done), false });
+        auto pending = std::make_shared<Pending>(
+            Pending{ .session = session_, .on_done = std::move(on_done), .cancelled = false });
         latest_ = pending;
         session_->fetch(
             { std::string{ session_->blocklistUrl() },
