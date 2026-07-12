@@ -506,10 +506,7 @@ TEST_F(SettingsTest, canLoadPreferredTransport)
 TEST_F(SettingsTest, canSavePreferredTransport)
 {
     static auto constexpr Key = TR_KEY_preferred_transports;
-    static auto constexpr ExpectedValue = std::array<int64_t, PreferredTransportCount>{
-        static_cast<int64_t>(tr_preferred_transport::TCP),
-        static_cast<int64_t>(tr_preferred_transport::UTP),
-    };
+    static auto constexpr ExpectedValue = std::array<std::string_view, PreferredTransportCount>{ "tcp"sv, "utp"sv };
     auto const setting_value = small::max_size_vector<tr_preferred_transport, PreferredTransportCount>{
         tr_preferred_transport::TCP,
         tr_preferred_transport::UTP,
@@ -527,8 +524,7 @@ TEST_F(SettingsTest, canSavePreferredTransport)
     for (size_t i = 0, n = std::size(*l); i < n; ++i) {
         auto const expected = ExpectedValue[i];
         auto const& actual = (*l)[i];
-        ASSERT_TRUE(actual.holds_alternative<int64_t>());
-        EXPECT_EQ(expected, actual.value_if<int64_t>());
+        EXPECT_EQ(expected, actual.value_if<std::string_view>());
     }
 }
 
