@@ -125,7 +125,7 @@ CURLcode ssl_context_func(CURL* /*curl*/, void* ssl_ctx, void* /*user_data*/)
     }
 
     curl_version_info_data const* const curl_ver = curl_version_info(CURLVERSION_NOW);
-    if (curl_ver->age >= 0 && strncmp(curl_ver->ssl_version, "Schannel", 8) == 0) {
+    if (curl_ver->age >= 0 && tr_strv_starts_with(curl_ver->ssl_version, "Schannel"sv)) {
         return CURLE_OK;
     }
 
@@ -297,64 +297,11 @@ public:
             return easy_;
         }
 
-        [[nodiscard]] constexpr auto const& speedLimitTag() const
+        // Read-only view of the fetch options. initEasy() and the curl
+        // callbacks read fields (url, body, timeout_secs, ...) directly.
+        [[nodiscard]] constexpr FetchOptions const& options() const
         {
-            return options_.speed_limit_tag;
-        }
-
-        [[nodiscard]] constexpr auto const& url() const
-        {
-            return options_.url;
-        }
-
-        [[nodiscard]] constexpr auto const& range() const
-        {
-            return options_.range;
-        }
-
-        [[nodiscard]] constexpr auto const& cookies() const
-        {
-            return options_.cookies;
-        }
-
-        [[nodiscard]] constexpr auto const& body() const
-        {
-            return options_.body;
-        }
-
-        [[nodiscard]] constexpr auto const& username() const
-        {
-            return options_.username;
-        }
-
-        [[nodiscard]] constexpr auto const& password() const
-        {
-            return options_.password;
-        }
-
-        [[nodiscard]] constexpr auto authScheme() const
-        {
-            return options_.auth_scheme;
-        }
-
-        [[nodiscard]] constexpr auto const& netrcFile() const
-        {
-            return options_.netrc_file;
-        }
-
-        [[nodiscard]] constexpr auto const& unixSocketPath() const
-        {
-            return options_.unix_socket_path;
-        }
-
-        [[nodiscard]] constexpr auto const& sslVerify() const
-        {
-            return options_.ssl_verify;
-        }
-
-        [[nodiscard]] constexpr auto const& verbose() const
-        {
-            return options_.verbose;
+            return options_;
         }
 
         // Build the curl_slist of request headers (owned by this Task) and
@@ -366,21 +313,6 @@ public:
             }
 
             return req_header_slist_;
-        }
-
-        [[nodiscard]] constexpr auto const& sndbuf() const
-        {
-            return options_.sndbuf;
-        }
-
-        [[nodiscard]] constexpr auto const& rcvbuf() const
-        {
-            return options_.rcvbuf;
-        }
-
-        [[nodiscard]] constexpr auto const& timeoutSecs() const
-        {
-            return options_.timeout_secs;
         }
 
         [[nodiscard]] constexpr auto ipProtocol() const
@@ -404,10 +336,9 @@ public:
                 return impl.mediator.bind_address_V6();
             default:
                 auto ip = impl.mediator.bind_address_V4();
-                if (ip == std::nullopt) {
+                if (!ip) {
                     ip = impl.mediator.bind_address_V6();
                 }
-
                 return ip;
             }
         }
@@ -563,7 +494,7 @@ public:
         auto* task = static_cast<Task*>(vtask);
         TR_ASSERT(std::this_thread::get_id() == task->impl.curl_thread->get_id());
 
-        if (auto const range = task->range()) {
+        if (auto const range = task->options().range) {
             // https://curl.se/libcurl/c/CURLINFO_RESPONSE_CODE.html
             // "The stored value will be zero if no server response code has been received"
             static auto constexpr NoResponseCode = 0L;
@@ -577,7 +508,7 @@ public:
                     fmt::format(
                         fmt::runtime(
                             _("Couldn't fetch '{url}': expected HTTP response code {expected_code}, got {actual_code}")),
-                        fmt::arg("url", task->url()),
+                        fmt::arg("url", task->options().url),
                         fmt::arg("expected_code", PartialContentResponseCode),
                         fmt::arg("actual_code", code)));
 
@@ -588,7 +519,7 @@ public:
             }
         }
 
-        if (auto const& tag = task->speedLimitTag(); tag) {
+        if (auto const& tag = task->options().speed_limit_tag; tag) {
             // If this is more bandwidth than is allocated for this tag,
             // then pause the torrent for a tick. curl will deliver `data`
             // again when the transfer is unpaused.
@@ -620,10 +551,10 @@ public:
         // Ignore the sockopt() return values -- these are suggestions
         // rather than hard requirements & it's OK for them to fail
 
-        if (auto const& buf = task->sndbuf(); buf) {
+        if (auto const& buf = task->options().sndbuf; buf) {
             (void)setsockopt(fd, SOL_SOCKET, SO_SNDBUF, reinterpret_cast<char const*>(&*buf), sizeof(*buf));
         }
-        if (auto const& buf = task->rcvbuf(); buf) {
+        if (auto const& buf = task->options().rcvbuf; buf) {
             (void)setsockopt(fd, SOL_SOCKET, SO_RCVBUF, reinterpret_cast<char const*>(&*buf), sizeof(*buf));
         }
 
@@ -649,7 +580,7 @@ public:
         (void)curl_easy_setopt(e, CURLOPT_SOCKOPTDATA, &task);
 
         // per-request override falls back to the env-var-driven default
-        auto const ssl_verify = task.sslVerify().value_or(curl_ssl_verify);
+        auto const ssl_verify = task.options().ssl_verify.value_or(curl_ssl_verify);
         if (!ssl_verify) {
 #if LIBCURL_VERSION_NUM >= 0x073400 /* 7.52.0 */
             (void)curl_easy_setopt(e, CURLOPT_SSL_VERIFYHOST, 0L);
@@ -680,12 +611,12 @@ public:
             (void)curl_easy_setopt(e, CURLOPT_USERAGENT, ua.c_str());
         }
 
-        (void)curl_easy_setopt(e, CURLOPT_TIMEOUT, static_cast<long>(task.timeoutSecs().count()));
-        (void)curl_easy_setopt(e, CURLOPT_URL, task.url().c_str());
-        if (auto const& socket_path = task.unixSocketPath(); socket_path) {
+        (void)curl_easy_setopt(e, CURLOPT_TIMEOUT, static_cast<long>(task.options().timeout_secs.count()));
+        (void)curl_easy_setopt(e, CURLOPT_URL, task.options().url.c_str());
+        if (auto const& socket_path = task.options().unix_socket_path; socket_path) {
             (void)curl_easy_setopt(e, CURLOPT_UNIX_SOCKET_PATH, socket_path->c_str());
         }
-        (void)curl_easy_setopt(e, CURLOPT_VERBOSE, task.verbose().value_or(curl_verbose) ? 1L : 0L);
+        (void)curl_easy_setopt(e, CURLOPT_VERBOSE, task.options().verbose.value_or(curl_verbose) ? 1L : 0L);
         (void)curl_easy_setopt(e, CURLOPT_WRITEDATA, &task);
         (void)curl_easy_setopt(e, CURLOPT_WRITEFUNCTION, &tr_web::Impl::onDataReceived);
 
@@ -693,7 +624,7 @@ public:
             (void)curl_easy_setopt(e, CURLOPT_INTERFACE, addrstr->c_str());
         }
 
-        if (auto const& cookies = task.cookies(); cookies) {
+        if (auto const& cookies = task.options().cookies; cookies) {
             (void)curl_easy_setopt(e, CURLOPT_COOKIE, cookies->c_str());
         }
 
@@ -701,7 +632,7 @@ public:
             (void)curl_easy_setopt(e, CURLOPT_COOKIEFILE, file.c_str());
         }
 
-        if (auto const& body = task.body()) {
+        if (auto const& body = task.options().body) {
             // send the request as an HTTP POST with this body.
             // set CURLOPT_POSTFIELDSIZE before CURLOPT_COPYPOSTFIELDS so that
             // curl copies the body binary-safely rather than via strlen().
@@ -713,21 +644,21 @@ public:
             (void)curl_easy_setopt(e, CURLOPT_HTTPHEADER, headers);
         }
 
-        if (auto const& username = task.username()) {
+        if (auto const& username = task.options().username) {
             (void)curl_easy_setopt(e, CURLOPT_USERNAME, username->c_str());
 
             // curl defaults the password to blank, so only set it when we have one
-            if (auto const& password = task.password()) {
+            if (auto const& password = task.options().password) {
                 (void)curl_easy_setopt(e, CURLOPT_PASSWORD, password->c_str());
             }
         }
 
-        if (task.authScheme() == FetchOptions::AuthScheme::Any) {
+        if (task.options().auth_scheme == FetchOptions::AuthScheme::Any) {
             // negotiate whatever scheme the server offers rather than Basic-only
             (void)curl_easy_setopt(e, CURLOPT_HTTPAUTH, CURLAUTH_ANY);
         }
 
-        if (auto const& netrc = task.netrcFile()) {
+        if (auto const& netrc = task.options().netrc_file) {
             (void)curl_easy_setopt(e, CURLOPT_NETRC, CURL_NETRC_OPTIONAL);
             if (!std::empty(*netrc)) {
                 (void)curl_easy_setopt(e, CURLOPT_NETRC_FILE, netrc->c_str());
@@ -743,7 +674,7 @@ public:
             (void)curl_easy_setopt(e, CURLOPT_PROXY, nullptr);
         }
 
-        if (auto const& range = task.range()) {
+        if (auto const& range = task.options().range) {
             // don't bother asking the server to compress webseed fragments
             (void)curl_easy_setopt(e, CURLOPT_ACCEPT_ENCODING, "identity");
             (void)curl_easy_setopt(e, CURLOPT_HTTP_CONTENT_DECODING, 0L);
@@ -833,9 +764,7 @@ public:
                 auto const stop_waiting = [this]() {
                     return !is_idle() || !deadline_exists();
                 };
-                if (!stop_waiting()) {
-                    queued_tasks_cv_.wait(lock, stop_waiting);
-                }
+                queued_tasks_cv_.wait(lock, stop_waiting);
 
                 // add queued tasks
                 if (!std::empty(queued_tasks_)) {
@@ -896,7 +825,7 @@ public:
                     curl_easy_getinfo(e, CURLINFO_PRIMARY_IP, &primary_ip);
                     task->response.did_connect = task->response.status > 0 || req_bytes_sent > 0;
                     task->response.did_timeout = task->response.status == 0 &&
-                        std::chrono::duration<double>(total_time) >= task->timeoutSecs();
+                        std::chrono::duration<double>(total_time) >= task->options().timeout_secs;
                     task->response.primary_ip = primary_ip;
                     curl_multi_remove_handle(multi.get(), e);
                     remove_task(*task);
