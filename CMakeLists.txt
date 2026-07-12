@@ -584,6 +584,11 @@ tr_add_external_auto_library(ARCHIVE libarchive
         -DENABLE_CNG:BOOL=OFF
         -DENABLE_WIN32_XMLLITE:BOOL=OFF)
 
+# archive.h decorates its API with __declspec(dllimport) on Windows unless this
+# is defined. We always link the static libarchive, so tell consumers not to
+# expect a DLL (harmless elsewhere; only __declspec on MSVC cares).
+set_property(TARGET libarchive::libarchive APPEND PROPERTY INTERFACE_COMPILE_DEFINITIONS LIBARCHIVE_STATIC)
+
 tr_add_external_auto_library(EVENT2 Libevent
     SUBPROJECT
     SOURCE_DIR libevent
