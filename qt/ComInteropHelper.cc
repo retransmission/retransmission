@@ -43,6 +43,8 @@ QVariant ComInteropHelper::addMetainfo(QString const& metainfo) const
 void ComInteropHelper::initialize()
 {
     qAxOutProcServer = true;
+    // GetModuleFileNameW is a Win32 API that writes the module path into the raw buffer.
+    // NOLINTNEXTLINE(cppcoreguidelines-pro-bounds-array-to-pointer-decay,hicpp-no-array-decay)
     ::GetModuleFileNameW(nullptr, qAxModuleFilename, MAX_PATH);
 
     ::CoInitializeEx(nullptr, COINIT_APARTMENTTHREADED);
@@ -52,5 +54,8 @@ void ComInteropHelper::initialize()
 void ComInteropHelper::registerObject(QObject* parent)
 {
     QAxFactory::startServer();
+    // The new object is owned by its QObject parent (Qt parent-child ownership),
+    // which the analyzer can't see, so it is not actually leaked.
+    // NOLINTNEXTLINE(clang-analyzer-cplusplus.NewDeleteLeaks)
     QAxFactory::registerActiveObject(new InteropObject{ parent });
 }
