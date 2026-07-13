@@ -493,7 +493,6 @@ jobs:
         if: matrix.enabled == 'true'
         uses: actions/checkout@v6
         with:
-          fetch-depth: 0
           submodules: false
       - name: Check out submodules (shallow)
         if: matrix.enabled == 'true'
@@ -542,18 +541,48 @@ jobs:
           if ($targets) {
             cmd /c "`"$Env:VCVARSALL`" $Env:VC_ARCH >nul && cmake --build obj --target $($targets -join ' ')"
           }
-      - name: Run clang-tidy
+      # SPIKE (ci/ctcache): replace clang-tidy-diff.py with ctcache-backed
+      # whole-TU clang-tidy. run.sh tidies every matching TU through ctcache,
+      # which skips any TU unchanged since a cached run. The cross-run cache is
+      # stored via actions/cache, so a warm cache should turn the ~70min full
+      # run into roughly the cost of preprocessing (not analysing) every TU.
+      - name: Get ctcache
         if: matrix.enabled == 'true'
-        uses: ./.github/actions/clang-tidy-diff
+        shell: bash
+        run: git clone --depth 1 --branch 1.2.0 https://github.com/matus-chochlik/ctcache ctcache-tool
+      - name: Restore ctcache
+        if: matrix.enabled == 'true'
+        uses: actions/cache/restore@v5
         with:
-          build-path: obj
-          regex: ${{ matrix.regex }}
-          clang-tidy-binary: clang-tidy
-          # MSVC-style compile commands carry flags clang-cl ignores (e.g. /GL),
-          # whose per-TU 'unused argument' driver warning escapes the line
-          # filter; silence it so it is not mistaken for a finding.
-          extra-arg: -Wno-unused-command-line-argument
-          full-run: ${{ needs.what-to-make.outputs.tidy-everything }}
+          path: ${{ runner.temp }}/ctcache-store
+          key: ctcache-${{ github.job }}-${{ matrix.toolkit }}-${{ hashFiles('**/.clang-tidy') }}-${{ github.run_id }}
+          restore-keys: |
+            ctcache-${{ github.job }}-${{ matrix.toolkit }}-${{ hashFiles('**/.clang-tidy') }}-
+      - name: Run clang-tidy (ctcache)
+        if: matrix.enabled == 'true'
+        env:
+          CTCACHE_LOCAL: '1'
+          CTCACHE_DIR: ${{ runner.temp }}/ctcache-store
+          CTCACHE_STRIP: ${{ github.workspace }}
+          CTCACHE_CLIENT: ctcache-tool/src/ctcache/clang_tidy_cache.py
+          TIDY_REGEX: ${{ matrix.regex }}
+          BUILD_PATH: obj
+          CLANG_TIDY: clang-tidy
+          # MSVC-style compile commands carry flags clang-cl ignores (e.g. /GL);
+          # silence the resulting driver diagnostic so -warnings-as-errors=* does
+          # not treat it as a finding.
+          TIDY_EXTRA_ARG: -Wno-unused-command-line-argument
+        run: |
+          # ctcache preprocesses each TU with the compile-DB compiler (cl.exe) to
+          # compute its hash, and cl.exe -E needs the MSVC environment, so run the
+          # bash driver inside vcvarsall.
+          cmd /c "`"$Env:VCVARSALL`" $Env:VC_ARCH >nul && bash .github/actions/clang-tidy-cached/run.sh"
+      - name: Save ctcache
+        if: ${{ always() && matrix.enabled == 'true' }}
+        uses: actions/cache/save@v5
+        with:
+          path: ${{ runner.temp }}/ctcache-store
+          key: ctcache-${{ github.job }}-${{ matrix.toolkit }}-${{ hashFiles('**/.clang-tidy') }}-${{ github.run_id }}
 
   macos-xcodebuild-universal:
     runs-on: macos-26
