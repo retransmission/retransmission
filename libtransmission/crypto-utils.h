@@ -90,7 +90,15 @@ public:
     tr_sha256& operator=(tr_sha256 const&) = delete;
     ~tr_sha256();
 
-    void add(void const* data, size_t data_length);
+    void add(std::span<std::byte const> data);
+
+    template<typename R>
+        requires(!requires(R const& range) { std::span<std::byte const>{ range }; })
+    void add(R const& data)
+    {
+        add(std::as_bytes(std::span<typename R::value_type const>{ data }));
+    }
+
     [[nodiscard]] tr_sha256_digest_t finish();
     void clear();
 
@@ -98,7 +106,7 @@ public:
     [[nodiscard]] static auto digest(T const&... args)
     {
         auto context = tr_sha256{};
-        (context.add(std::data(args), std::size(args)), ...);
+        (context.add(args), ...);
         return context.finish();
     }
 

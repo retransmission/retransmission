@@ -144,9 +144,9 @@ void tr_sha256::clear()
     EVP_DigestInit_ex(handle_, EVP_sha256(), nullptr);
 }
 
-void tr_sha256::add(void const* data, size_t data_length)
+void tr_sha256::add(std::span<std::byte const> const data)
 {
-    digest_add_bytes(handle_, data, data_length);
+    digest_add_bytes(handle_, data.data(), data.size());
 }
 
 tr_sha256_digest_t tr_sha256::finish()

@@ -125,10 +125,10 @@ void tr_sha256::clear()
     wc_InitSha256(&handle_);
 }
 
-void tr_sha256::add(void const* data, size_t data_length)
+void tr_sha256::add(std::span<std::byte const> const data)
 {
-    if (data_length > 0U) {
-        wc_Sha256Update(&handle_, static_cast<byte const*>(data), data_length);
+    if (!data.empty()) {
+        wc_Sha256Update(&handle_, reinterpret_cast<byte const*>(data.data()), data.size());
     }
 }
 
