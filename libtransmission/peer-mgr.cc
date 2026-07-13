@@ -1293,18 +1293,17 @@ void tr_peerMgrAddIncoming(tr_peerMgr* manager, std::shared_ptr<tr_peer_socket> 
     }
 }
 
-// TODO(C++20): convert to std::span
-size_t tr_peerMgrAddPex(tr_torrent* tor, tr_peer_from from, tr_pex const* pex, size_t n_pex)
+size_t tr_peerMgrAddPex(tr_torrent* tor, tr_peer_from from, std::span<tr_pex const> const pex)
 {
     size_t n_used = 0;
     tr_swarm* s = tor->swarm;
     auto const lock = s->manager->unique_lock();
 
-    for (tr_pex const* const end = pex + n_pex; pex != end; ++pex) {
-        if (tr_isPex(pex) && /* safeguard against corrupt data */
-            !s->manager->blocklists_.contains(pex->socket_address.address()) && pex->is_valid_for_peers(from) &&
+    for (auto const& p : pex) {
+        if (p.is_valid() && // safeguard against corrupt data
+            !s->manager->blocklists_.contains(p.socket_address.address()) && p.is_valid_for_peers(from) &&
             from != TR_PEER_FROM_INCOMING) {
-            s->ensure_info_exists(pex->socket_address, pex->flags, from);
+            s->ensure_info_exists(p.socket_address, p.flags, from);
             ++n_used;
         }
     }

@@ -354,7 +354,7 @@ protected:
             return mock_dht_;
         }
 
-        void add_pex(tr_sha1_digest_t const& /*info_hash*/, tr_pex const* /*pex*/, size_t /*n_pex*/) override
+        void add_pex(tr_sha1_digest_t const& /*info_hash*/, std::span<tr_pex const> /*pex*/) override
         {
         }
 

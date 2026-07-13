@@ -11,6 +11,7 @@
 #include <cstddef> // size_t
 #include <ctime>
 #include <memory>
+#include <span>
 #include <string_view>
 #include <vector>
 
@@ -98,7 +99,7 @@ public:
             return api_;
         }
 
-        virtual void add_pex(tr_sha1_digest_t const&, tr_pex const* pex, size_t n_pex) = 0;
+        virtual void add_pex(tr_sha1_digest_t const&, std::span<tr_pex const> pex) = 0;
 
     private:
         API api_;

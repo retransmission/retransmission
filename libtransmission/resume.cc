@@ -67,7 +67,7 @@ size_t add_peers(tr_torrent* tor, tr_variant::Vector const& l)
             pex.emplace_back(std::move(*p));
         }
     }
-    return tr_peerMgrAddPex(tor, TR_PEER_FROM_RESUME, std::data(pex), std::size(pex));
+    return tr_peerMgrAddPex(tor, TR_PEER_FROM_RESUME, pex);
 }
 
 auto load_peers(tr_variant::Map const& map, tr_torrent* tor)
