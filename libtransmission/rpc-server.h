@@ -101,7 +101,7 @@ public:
         return settings_.salted_password;
     }
 
-    void set_password(std::string_view password) noexcept;
+    void set_password(std::string_view password);
 
     [[nodiscard]] constexpr auto is_anti_brute_force_enabled() const noexcept
     {

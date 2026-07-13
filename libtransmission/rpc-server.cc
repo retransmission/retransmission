@@ -877,7 +877,7 @@ void tr_rpc_server::set_username(std::string username) noexcept
     tr_logAddDebug(fmt::format("setting our username to '{:s}'", settings_.username));
 }
 
-void tr_rpc_server::set_password(std::string_view password) noexcept
+void tr_rpc_server::set_password(std::string_view password)
 {
     auto const is_salted = tr_ssha1_test(password);
     settings_.salted_password = is_salted ? password : tr_ssha1(password);
