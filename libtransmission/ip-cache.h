@@ -122,7 +122,7 @@ private:
         upkeep_timers_[type]->stop();
     }
 
-    [[nodiscard]] bool set_is_updating(tr_address_type type, std::span<std::string const> ip_endpoints = {}) noexcept;
+    [[nodiscard]] bool set_is_updating(tr_address_type type, std::vector<std::string> ip_endpoints = {}) noexcept;
     void unset_is_updating(tr_address_type type) noexcept;
 
     Mediator& mediator_;

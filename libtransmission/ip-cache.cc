@@ -221,7 +221,7 @@ void tr_ip_cache::update_global_addr(tr_address_type const type) noexcept
     }
 
     auto const ix_service = ix_service_[type];
-    if (ix_service == 0U && !set_is_updating(type, ip_endpoints)) {
+    if (ix_service == 0U && !set_is_updating(type, { ip_endpoints.begin(), ip_endpoints.end() })) {
         return;
     }
     TR_ASSERT(ix_service < std::size(current_ip_endpoints_[type]));
@@ -365,13 +365,13 @@ void tr_ip_cache::unset_addr(tr_address_type type) noexcept
     unset_global_addr(type);
 }
 
-bool tr_ip_cache::set_is_updating(tr_address_type type, std::span<std::string const> ip_endpoints) noexcept
+bool tr_ip_cache::set_is_updating(tr_address_type type, std::vector<std::string> ip_endpoints) noexcept
 {
     if (is_updating_[type] != is_updating_t::No) {
         return false;
     }
     is_updating_[type] = is_updating_t::Yes;
-    current_ip_endpoints_[type].assign(ip_endpoints.begin(), ip_endpoints.end());
+    current_ip_endpoints_[type] = std::move(ip_endpoints);
     return true;
 }
 
