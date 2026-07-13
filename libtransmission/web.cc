@@ -283,9 +283,9 @@ public:
         Task& operator=(Task&&) = delete;
         Task& operator=(Task const&) = delete;
 
-        // NOLINTNEXTLINE(bugprone-exception-escape): easy_dispose can throw on OOM
-        // while pooling the handle, but a destructor must not propagate; terminating
-        // is the correct behavior here.
+        // easy_dispose can throw on OOM while pooling the handle, but a
+        // destructor must not propagate; terminating is the correct behavior here.
+        // NOLINTNEXTLINE(bugprone-exception-escape)
         ~Task()
         {
             easy_dispose(easy_);
