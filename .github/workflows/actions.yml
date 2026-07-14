@@ -1259,6 +1259,8 @@ jobs:
     runs-on: ubuntu-latest
     env:
       VCPKG_DEFAULT_TRIPLET: arm64-android
+      VCPKG_COMMIT: 389d14fa0e0692f36967e9eb5499e909317644d5 # 2026.01.15
+      VCPKG_DEFAULT_BINARY_CACHE: ${{ github.workspace }}/.vcpkg-binary-cache
     steps:
     - name: Get Dependencies
       run: |
@@ -1292,10 +1294,17 @@ jobs:
     - name: Setup vcpkg
       uses: lukka/run-vcpkg@v11
       with:
-        vcpkgGitCommitId: 389d14fa0e0692f36967e9eb5499e909317644d5 # 2026.01.15
+        vcpkgGitCommitId: ${{ env.VCPKG_COMMIT }}
+
+    - name: Cache vcpkg binaries
+      uses: actions/cache@v5
+      with:
+        path: .vcpkg-binary-cache
+        key: vcpkg-${{ env.VCPKG_DEFAULT_TRIPLET }}-${{ env.VCPKG_COMMIT }}
 
     - name: Install vcpkg packages
       run: |
+        mkdir -p "$VCPKG_DEFAULT_BINARY_CACHE"
         vcpkg install openssl curl
 
     - name: Build Transmission
