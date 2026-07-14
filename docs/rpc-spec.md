@@ -1121,7 +1121,7 @@ Transmission 4.1.1 (`rpc_version_semver` 6.0.1, `rpc_version`: 19)
 | `group_get` | `speed_limit_down` reverted to return an integer
 | `group_get` | `speed_limit_up` reverted to return an integer
 
-Transmission 4.2.0 (`rpc_version_semver` 6.1.0, `rpc_version`: ?)
+Transmission 4.2.0 (`rpc_version_semver` 6.1.0, `rpc_version`: 20)
 
 | Method | Description
 |:---|:---

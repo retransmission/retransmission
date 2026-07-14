@@ -15,6 +15,7 @@ struct tr_variant;
     auto inline constexpr TrRpcVersionSemver = std::string_view{ #major "." #minor "." #patch }; \
     auto inline constexpr TrRpcVersionSemverMajor = major;
 
+// When bumping here, remember to bump `RpcVersion` and maybe `RpcVersionMin`.
 RPC_VERSION_VARS(6, 1, 0)
 
 #undef RPC_VERSION_VARS
