@@ -211,6 +211,11 @@ runs:
           exit 1
         fi
 
+    - name: Remove untrusted pre-tapped Homebrew taps
+      if: env.OS_FAMILY == 'macos'
+      shell: bash
+      run: brew tap | grep -qx 'aws/tap' && brew untap aws/tap || true
+
     - name: Install macOS dependencies
       if: env.OS_FAMILY == 'macos'
       shell: bash

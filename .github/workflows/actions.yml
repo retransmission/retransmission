@@ -616,6 +616,8 @@ jobs:
           echo '${{ toJSON(needs) }}'
           echo '${{ toJSON(runner) }}'
           sw_vers
+      - name: Remove untrusted pre-tapped Homebrew taps
+        run: brew tap | grep -qx 'aws/tap' && brew untap aws/tap || true
       - name: Get Dependencies
         run: brew install --formulae xcbeautify
       - name: Get Source
