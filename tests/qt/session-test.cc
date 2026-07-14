@@ -80,6 +80,11 @@ class SessionTest
     Q_OBJECT
 
 private slots:
+    static void initTestCase()
+    {
+        TR_QT_SKIP_UNLESS_SIGNALS_WORK();
+    }
+
     static void download_dir_change_posts_session_set_data()
     {
         QTest::addColumn<Style>("initial_style");

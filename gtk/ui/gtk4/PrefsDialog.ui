@@ -486,7 +486,7 @@
                             </child>
                             <child>
                               <object class="GtkCheckButton" id="download_done_script_check">
-                                <property name="label" translatable="yes">Call scrip_t when done downloading:</property>
+                                <property name="label" translatable="yes">Call scrip_t when download completes:</property>
                                 <property name="focusable">1</property>
                                 <property name="valign">center</property>
                                 <property name="use-underline">1</property>
@@ -514,6 +514,19 @@
                                 <layout>
                                   <property name="column">1</property>
                                   <property name="row">2</property>
+                                </layout>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="GtkCheckButton" id="download_done_verify_check">
+                                <property name="label" translatable="yes">Verify data when download completes</property>
+                                <property name="focusable">1</property>
+                                <property name="valign">center</property>
+                                <property name="hexpand">1</property>
+                                <layout>
+                                  <property name="column">0</property>
+                                  <property name="row">3</property>
+                                  <property name="column-span">2</property>
                                 </layout>
                               </object>
                             </child>

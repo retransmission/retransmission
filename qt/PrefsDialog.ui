@@ -407,7 +407,7 @@
           <item row="2" column="0">
            <widget class="QCheckBox" name="doneDownloadingScriptCheck">
             <property name="text">
-             <string>Call scrip&amp;t when downloading is completed:</string>
+             <string>Call scrip&amp;t when download completes:</string>
             </property>
             <property name="checked">
              <bool>true</bool>
@@ -424,6 +424,13 @@
             </property>
             <widget class="PathButton" name="doneDownloadingScriptButton"/>
             <widget class="QLineEdit" name="doneDownloadingScriptEdit"/>
+           </widget>
+          </item>
+          <item row="3" column="0" colspan="2">
+           <widget class="QCheckBox" name="downloadDoneVerifyCheck">
+            <property name="text">
+             <string>Verify data when download completes</string>
+            </property>
            </widget>
           </item>
          </layout>

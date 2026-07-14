@@ -631,6 +631,7 @@ Response parameters: `path`, `name`, and `id`, holding the torrent ID integer
 | `speed_limit_up_enabled` | boolean | true means enabled
 | `start_added_torrents` | boolean | true means added torrents will be started right away
 | `tcp_enabled` | boolean | **DEPRECATED** Use `preferred_transports` instead
+| `torrent_complete_verify_enabled` | boolean | true means torrents are re-verified once they finish downloading
 | `trash_original_torrent_files` | boolean | true means the .torrent file of added torrents will be deleted
 | `units` | object | see below
 | `utp_enabled` | boolean | **DEPRECATED** Use `preferred_transports` instead
@@ -1131,4 +1132,6 @@ Transmission 4.2.0 (`rpc_version_semver` 6.1.0, `rpc_version`: 20)
 | `torrent_get` | **DEPRECATED** `webseeds`. Use `webseeds_ex` instead.
 | `session_get` | new arg `recent_download_paths`
 | `session_get` | new arg `recent_relocate_paths`
+| `session_get` | new arg `torrent_complete_verify_enabled`
+| `session_set` | new arg `torrent_complete_verify_enabled`
 | `session_get` | **DEPRECATED** `cache_size_mib`. The memory cache is being removed, making this setting moot. The setting will still be gettable and settable via RPC `session_get` and `session_set` until Transmission 5.0.0 to avoid client breakage, but it will be otherwise unused in libtransmission. Clients should stop using this key.

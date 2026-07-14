@@ -1885,7 +1885,7 @@ using SessionAccessors = std::pair<SessionGetter, SessionSetter>;
 
 [[nodiscard]] auto& session_accessors()
 {
-    static auto map = small::max_size_map<tr_quark, SessionAccessors, 64U>{};
+    static auto map = small::map<tr_quark, SessionAccessors, 64U>{};
 
     if (!std::empty(map)) {
         return map;
@@ -2357,6 +2357,15 @@ using SessionAccessors = std::pair<SessionGetter, SessionSetter>;
         [](tr_session& tgt, tr_variant const& src, ErrorInfo& /*err*/) {
             if (auto const val = src.value_if<bool>()) {
                 tr_sessionSetUTPEnabled(&tgt, *val);
+            }
+        });
+
+    map.try_emplace(
+        TR_KEY_torrent_complete_verify_enabled,
+        [](tr_session const& src) -> tr_variant { return src.shouldFullyVerifyCompleteTorrents(); },
+        [](tr_session& tgt, tr_variant const& src, ErrorInfo& /*err*/) {
+            if (auto const val = src.value_if<bool>()) {
+                tr_sessionSetCompleteVerifyEnabled(&tgt, *val);
             }
         });
 

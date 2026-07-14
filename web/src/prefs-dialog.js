@@ -320,6 +320,14 @@ export class PrefsDialog extends EventTarget {
     PrefsDialog._enableIfChecked(input, cal.check);
     const download_queue_input = input;
 
+    cal = PrefsDialog._createCheckAndLabel(
+      'download-done-verify-div',
+      'Verify data when download completes',
+    );
+    cal.check.dataset.key = 'torrent_complete_verify_enabled';
+    root.append(cal.root);
+    const download_done_verify_check = cal.check;
+
     label = document.createElement('div');
     label.textContent = 'Seeding';
     label.classList.add('section-label');
@@ -373,6 +381,7 @@ export class PrefsDialog extends EventTarget {
     return {
       autostart_check,
       download_dir,
+      download_done_verify_check,
       download_queue_check,
       download_queue_input,
       incomplete_dir_check,

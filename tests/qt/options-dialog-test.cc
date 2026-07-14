@@ -115,6 +115,11 @@ class OptionsDialogTest
     }
 
 private slots:
+    static void initTestCase()
+    {
+        TR_QT_SKIP_UNLESS_SIGNALS_WORK();
+    }
+
     // A remote session can't browse the server's filesystem, so the dialog
     // offers an editable combo box seeded with the server's recent paths.
     void remote_session_uses_editable_combo()

@@ -642,6 +642,7 @@ TEST_F(RpcTest, sessionGet)
         TR_KEY_speed_limit_up_enabled,
         TR_KEY_start_added_torrents,
         TR_KEY_tcp_enabled,
+        TR_KEY_torrent_complete_verify_enabled,
         TR_KEY_trash_original_torrent_files,
         TR_KEY_units,
         TR_KEY_utp_enabled,

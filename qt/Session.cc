@@ -168,6 +168,7 @@ void Session::updatePref(tr_quark key)
         case TR_KEY_speed_limit_up:
         case TR_KEY_speed_limit_up_enabled:
         case TR_KEY_utp_enabled:
+        case TR_KEY_torrent_complete_verify_enabled:
             sessionSet(key, prefs_.get<tr_variant>(key));
             break;
 

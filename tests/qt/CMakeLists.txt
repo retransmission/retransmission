@@ -25,10 +25,11 @@ endfunction()
 
 add_trqt_test(options-dialog-test.cc)
 add_trqt_test(prefs-test.cc)
+add_trqt_test(prefs-dialog-test.cc)
 add_trqt_test(session-test.cc)
 
-# session-test and options-dialog-test drive a real loopback HTTP server (evhttp)
-# instead of a fake QNAM
+# session-test, options-dialog-test and prefs-dialog-test drive a real loopback
+# HTTP server (evhttp) instead of a fake QNAM
 target_link_libraries(qt-test-session
     PRIVATE
         libevent::core
@@ -37,11 +38,16 @@ target_link_libraries(qt-test-options-dialog
     PRIVATE
         libevent::core
         libevent::extra)
+target_link_libraries(qt-test-prefs-dialog
+    PRIVATE
+        libevent::core
+        libevent::extra)
 
 add_custom_target(qt-tests
     DEPENDS
         qt-test-options-dialog
         qt-test-prefs
+        qt-test-prefs-dialog
         qt-test-session)
 
 set_property(

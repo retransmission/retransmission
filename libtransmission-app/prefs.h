@@ -195,6 +195,7 @@ struct SessionPrefs {
     bool script_torrent_done_enabled_ = {};
     bool script_torrent_done_seeding_enabled_ = {};
     bool start_ = {};
+    bool torrent_complete_verify_enabled_ = {};
     bool trash_original_ = {};
     bool uspeed_enabled_ = {};
     bool utp_enabled_ = {};
@@ -251,6 +252,7 @@ struct SessionPrefs {
         Field<&SessionPrefs::script_torrent_done_seeding_filename_>{ TR_KEY_script_torrent_done_seeding_filename },
         Field<&SessionPrefs::socket_diffserv_>{ TR_KEY_peer_socket_diffserv },
         Field<&SessionPrefs::start_>{ TR_KEY_start_added_torrents },
+        Field<&SessionPrefs::torrent_complete_verify_enabled_>{ TR_KEY_torrent_complete_verify_enabled },
         Field<&SessionPrefs::trash_original_>{ TR_KEY_trash_original_torrent_files },
         Field<&SessionPrefs::upload_slots_per_torrent_>{ TR_KEY_upload_slots_per_torrent },
         Field<&SessionPrefs::uspeed_>{ TR_KEY_speed_limit_up },

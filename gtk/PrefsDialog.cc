@@ -440,6 +440,7 @@ DownloadingPage::DownloadingPage(
     init_chooser_button("incomplete_dir_chooser", TR_KEY_incomplete_dir);
     init_check_button("download_done_script_check", TR_KEY_script_torrent_done_enabled);
     init_chooser_button("download_done_script_chooser", TR_KEY_script_torrent_done_filename);
+    init_check_button("download_done_verify_check", TR_KEY_torrent_complete_verify_enabled);
 
     on_core_prefs_changed(TR_KEY_download_dir);
 }

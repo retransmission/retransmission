@@ -513,6 +513,7 @@ void PrefsDialog::initDownloadingTab()
     initWidget(ui_.doneDownloadingScriptCheck, TR_KEY_script_torrent_done_enabled);
     initWidget(ui_.doneDownloadingScriptButton, TR_KEY_script_torrent_done_filename);
     initWidget(ui_.doneDownloadingScriptEdit, TR_KEY_script_torrent_done_filename);
+    initWidget(ui_.downloadDoneVerifyCheck, TR_KEY_torrent_complete_verify_enabled);
 
     auto* cr = new ColumnResizer{ this };
     cr->addLayout(ui_.addingSectionLayout);
