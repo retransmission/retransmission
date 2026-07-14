@@ -94,7 +94,6 @@ public:
     bool remove(std::string_view announce_url);
     bool remove(tr_tracker_id_t id);
     bool replace(tr_tracker_id_t id, std::string_view announce_url_sv);
-    size_t set(char const* const* announce_urls, tr_tracker_tier_t const* tiers, size_t n);
 
     TR_CONSTEXPR_VEC void clear()
     {

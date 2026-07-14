@@ -24,17 +24,6 @@
 
 using namespace std::literals;
 
-size_t tr_announce_list::set(char const* const* announce_urls, tr_tracker_tier_t const* tiers, size_t n)
-{
-    trackers_.clear();
-
-    for (size_t i = 0; i < n; ++i) {
-        add(announce_urls[i], tiers[i]);
-    }
-
-    return size();
-}
-
 bool tr_announce_list::remove(std::string_view announce_url)
 {
     auto const it = find(announce_url);
