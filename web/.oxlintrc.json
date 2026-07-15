@@ -8,7 +8,7 @@
   "env": {
     "es2024": true
   },
-  "ignorePatterns": ["public_html/"],
+  "ignorePatterns": ["public_html/", "src/vendor/"],
   "rules": {
     "no-underscore-dangle": "off",
     "unicorn/consistent-function-scoping": "off"

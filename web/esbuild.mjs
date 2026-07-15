@@ -1,6 +1,5 @@
 import * as esbuild from 'esbuild';
 import * as process from 'node:process';
-import { sassPlugin } from 'esbuild-sass-plugin';
 
 const ctx = await esbuild.context({
   bundle: true,
@@ -12,8 +11,11 @@ const ctx = await esbuild.context({
   },
   minify: true,
   outfile: './public_html/transmission-app.js',
-  plugins: [sassPlugin()],
   sourcemap: true,
+  // the oldest browsers the bundle needs to run in. esbuild transpiles
+  // newer JS syntax and flattens native CSS nesting to fit these targets.
+  // keep in sync with the esbuild command in README.md.
+  target: ['chrome104', 'firefox115', 'safari16.4'],
 });
 
 if (process.env.DEV) {

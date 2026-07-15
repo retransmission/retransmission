@@ -23,10 +23,12 @@ set(WEB_SOURCES
     src/torrent.js
     src/torrent-row.js
     src/transmission.js
-    src/utils.js)
+    src/utils.js
+    src/vendor/clusterize.js
+    src/vendor/fast-deep-equal.js)
 
 set(WEB_STYLES
-    assets/css/transmission-app.scss)
+    assets/css/transmission-app.css)
 
 set(WEB_IMAGES
     assets/img/box.svg

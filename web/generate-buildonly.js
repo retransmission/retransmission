@@ -12,11 +12,8 @@ obj.scripts = (({ build }) => {
   return { build };
 })(obj.scripts);
 
-obj.devDependencies = (({
-  esbuild,
-  'esbuild-sass-plugin': esbuild_saas_plugin,
-}) => {
-  return { esbuild, 'esbuild-sass-plugin': esbuild_saas_plugin };
+obj.devDependencies = (({ esbuild }) => {
+  return { esbuild };
 })(obj.devDependencies);
 
 // the replace() call adds a trailing newline if it doesn't exist

@@ -28,7 +28,7 @@ import {
   setEnabled,
   setTextContent,
 } from './utils.js';
-import Clusterize from 'clusterize.js';
+import Clusterize from './vendor/clusterize.js';
 
 export class Transmission extends EventTarget {
   constructor(action_manager, notifications, prefs) {
