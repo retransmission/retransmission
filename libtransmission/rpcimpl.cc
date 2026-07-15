@@ -1655,27 +1655,27 @@ void torrentAdd(tr_session* session, tr_variant::Map const& args_in, tr_rpc_idle
 
     if (auto const val = args_in.find_if<tr_variant::Vector>(TR_KEY_files_unwanted); val != nullptr) {
         auto const files = file_list_from_list(*val);
-        ctor.set_files_wanted(std::data(files), std::size(files), false);
+        ctor.set_files_wanted(files, false);
     }
 
     if (auto const val = args_in.find_if<tr_variant::Vector>(TR_KEY_files_wanted); val != nullptr) {
         auto const files = file_list_from_list(*val);
-        ctor.set_files_wanted(std::data(files), std::size(files), true);
+        ctor.set_files_wanted(files, true);
     }
 
     if (auto const val = args_in.find_if<tr_variant::Vector>(TR_KEY_priority_low); val != nullptr) {
         auto const files = file_list_from_list(*val);
-        ctor.set_file_priorities(std::data(files), std::size(files), TR_PRI_LOW);
+        ctor.set_file_priorities(files, TR_PRI_LOW);
     }
 
     if (auto const* val = args_in.find_if<tr_variant::Vector>(TR_KEY_priority_normal); val != nullptr) {
         auto const files = file_list_from_list(*val);
-        ctor.set_file_priorities(std::data(files), std::size(files), TR_PRI_NORMAL);
+        ctor.set_file_priorities(files, TR_PRI_NORMAL);
     }
 
     if (auto const* val = args_in.find_if<tr_variant::Vector>(TR_KEY_priority_high); val != nullptr) {
         auto const files = file_list_from_list(*val);
-        ctor.set_file_priorities(std::data(files), std::size(files), TR_PRI_HIGH);
+        ctor.set_file_priorities(files, TR_PRI_HIGH);
     }
 
     if (auto const* val = args_in.find_if<tr_variant::Vector>(TR_KEY_labels); val != nullptr) {

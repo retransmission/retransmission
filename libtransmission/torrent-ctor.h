@@ -16,6 +16,7 @@
 #include <string_view>
 #include <vector>
 
+#include "libtransmission/macros.h"
 #include "libtransmission/torrent-metainfo.h"
 #include "libtransmission/torrent.h"
 #include "libtransmission/types.h"
@@ -72,29 +73,29 @@ public:
 
     // ---
 
-    void set_files_wanted(tr_file_index_t const* files, tr_file_index_t n_files, bool wanted)
+    TR_CONSTEXPR_VEC void set_files_wanted(std::span<tr_file_index_t const> const files, bool wanted)
     {
         auto& indices = wanted ? wanted_ : unwanted_;
-        indices.assign(files, files + n_files);
+        indices.assign(files.begin(), files.end());
     }
 
     void init_torrent_wanted(tr_torrent& tor) const;
 
     // ---
 
-    void set_file_priorities(tr_file_index_t const* const files, tr_file_index_t const n_files, tr_priority_t const priority)
+    TR_CONSTEXPR_VEC void set_file_priorities(std::span<tr_file_index_t const> const files, tr_priority_t const priority)
     {
         switch (priority) {
         case TR_PRI_LOW:
-            low_.assign(files, files + n_files);
+            low_.assign(files.begin(), files.end());
             break;
 
         case TR_PRI_HIGH:
-            high_.assign(files, files + n_files);
+            high_.assign(files.begin(), files.end());
             break;
 
         default: // TR_PRI_NORMAL
-            normal_.assign(files, files + n_files);
+            normal_.assign(files.begin(), files.end());
             break;
         }
     }
