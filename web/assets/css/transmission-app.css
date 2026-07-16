@@ -4,6 +4,7 @@
 
   /* various dimensions */
   --logo-size: 64px;
+  --statusbar-height: 30px;
   --toolbar-height: 50px;
 
   /* colors related to torrent status */
@@ -26,8 +27,11 @@
   --grey-200: #e1e4e8;
   --grey-40: #666;
   --grey-500: #828282;
+  --grey-700: #404040;
   --grey-900: #191919;
+  --lavender-100: #edefff;
   --nice-grey: #f8f8f8;
+  --pink-500: #cf6679;
   --red-500: #d73a49;
   --white: #fff;
   --yellow-300: #ffea7f;
@@ -49,13 +53,20 @@
   --package-image-url: url('../img/package.svg');
   --text-image-url: url('../img/file-text.svg');
   --video-image-url: url('../img/film.svg');
+
+  /* shared effects */
+  --filter-turtle-off: grayscale(100%) brightness(50%);
+  --filter-turtle-on: hue-rotate(120deg) saturate(180%);
+  --popup-shadow:
+    0 3px 6px -4px rgb(0 0 0 / 12%), 0 6px 16px rgb(0 0 0 / 8%),
+    0 9px 28px 8px rgb(0 0 0 / 6%);
+  --progress-bar-shadow: 1px 1px #000;
   --progress: 100%;
   --color-bg-even: var(--default-tinted);
   --color-bg-tabs: var(--default-tinted);
   --color-fg-error: var(--red-500);
   --color-fg-port-closed: var(--red-500);
   --color-fg-port-open: var(--green-100);
-  --color-progressbar-background-2: var(--green-400);
   --color-progressbar-leech: var(--blue-200);
   --color-progressbar-magnet: var(--yellow-300);
   --color-progressbar-paused: var(--grey-200);
@@ -71,7 +82,7 @@
     --color-bg-popup: var(--black);
     --color-bg-primary: var(--black);
     --color-bg-selected: var(--default-accent-color-strong);
-    --color-bg-warn: #cf6679;
+    --color-bg-warn: var(--pink-500);
     --color-border-default: var(--default-border-dark);
     --color-border-stark: var(--dark-mode-white);
     --color-border-starkest: var(--grey-500);
@@ -79,25 +90,24 @@
     --color-fg-on-popup: var(--nice-grey);
     --color-fg-primary: var(--dark-mode-white);
     --color-fg-secondary: var(--nice-grey);
-    --color-fg-selected: #404040;
-    --color-fg-tertiary: var(--grey-500);
+    --color-fg-selected: var(--grey-700);
     --color-fg-warn: var(--dark-mode-black);
-    --color-progressbar-fg-1: #edefff;
-    --color-progressbar-fg-2: #edefff;
-    --color-progressbar-fg-3: #edefff;
+    --color-progressbar-fg-1: var(--lavender-100);
+    --color-progressbar-fg-2: var(--lavender-100);
+    --color-progressbar-fg-3: var(--lavender-100);
     --color-progressbar-paused: var(--grey-500);
     --color-progressbar-seed-1: var(--green-100);
     --color-progressbar-seed-2: var(--green-400);
     --color-progressbar-seed-paused: var(--grey-500);
-    --progress-bar-shadow-1: 1px 1px #000;
-    --progress-bar-shadow-2: 1px 1px #000;
-    --progress-bar-shadow-3: 1px 1px #000;
+    --progress-bar-shadow-1: var(--progress-bar-shadow);
+    --progress-bar-shadow-2: var(--progress-bar-shadow);
+    --progress-bar-shadow-3: var(--progress-bar-shadow);
 
     .contrast-more {
       --color-bg-even: var(--black);
       --color-bg-hover: var(--grey-40);
       --color-bg-tabs: var(--black);
-      --color-bg-warn: #cf6679;
+      --color-bg-warn: var(--pink-500);
       --color-border-default: var(--white);
       --color-border-stark: var(--white);
       --color-border-starkest: var(--white);
@@ -109,13 +119,10 @@
       --color-fg-primary: var(--white);
       --color-fg-secondary: var(--white);
       --color-fg-selected: var(--black);
-      --color-fg-tabs: var(--white);
-      --color-fg-tertiary: var(--white);
       --color-fg-warn: var(--black);
-      --color-progressbar-fg-1: #fff;
-      --color-progressbar-fg-2: #fff;
-      --color-progressbar-fg-3: #000;
-      --color-progressbar-background-2: var(--white);
+      --color-progressbar-fg-1: var(--white);
+      --color-progressbar-fg-2: var(--white);
+      --color-progressbar-fg-3: var(--black);
       --color-progressbar-magnet: var(--yellow-300);
       --color-progressbar-paused: var(--grey-500);
       --color-progressbar-queued: var(--blue-400);
@@ -138,20 +145,18 @@
     --color-border-default: var(--default-border-light);
     --color-border-stark: var(--grey-500);
     --color-border-starkest: #d0d7de;
-    --color-dialog-border: var(--nice-grey);
     --color-fg-disabled: var(--grey);
     --color-fg-error: var(--red-500);
     --color-fg-on-popup: var(--grey-900);
     --color-fg-port-closed: var(--red-500);
     --color-fg-port-open: var(--green-400);
-    --color-fg-primary: #404040;
+    --color-fg-primary: var(--grey-700);
     --color-fg-secondary: var(--grey-500);
-    --color-fg-selected: #404040;
-    --color-fg-tertiary: var(--grey-500);
+    --color-fg-selected: var(--grey-700);
     --color-fg-warn: #cf212e;
     --color-progressbar-fg-1: #303030;
-    --color-progressbar-fg-2: #edefff;
-    --color-progressbar-fg-3: #edefff;
+    --color-progressbar-fg-2: var(--lavender-100);
+    --color-progressbar-fg-3: var(--lavender-100);
     --color-progressbar-leech: var(--blue-100);
     --color-progressbar-magnet: var(--yellow-300);
     --color-progressbar-paused: var(--grey-200);
@@ -161,15 +166,15 @@
     --color-progressbar-seed-paused: var(--grey-200);
     --color-progressbar-verify: var(--yellow-300);
     --progress-bar-shadow-1: 0;
-    --progress-bar-shadow-2: 1px 1px #000;
-    --progress-bar-shadow-3: 1px 1px #000;
+    --progress-bar-shadow-2: var(--progress-bar-shadow);
+    --progress-bar-shadow-3: var(--progress-bar-shadow);
 
     .contrast-more {
       --color-bg-even: var(--white);
       --color-bg-hover: var(--grey-40);
       --color-bg-selected: var(--default-accent-color-strong);
       --color-bg-tabs: var(--white);
-      --color-bg-warn: #cf6679;
+      --color-bg-warn: var(--pink-500);
       --color-border-default: var(--black);
       --color-border-stark: var(--black);
       --color-border-starkest: var(--black);
@@ -181,13 +186,10 @@
       --color-fg-primary: var(--black);
       --color-fg-secondary: var(--black);
       --color-fg-selected: var(--black);
-      --color-fg-tabs: var(--black);
-      --color-fg-tertiary: var(--black);
       --color-fg-warn: var(--white);
-      --color-progressbar-background-2: var(--white);
-      --color-progressbar-fg-1: #fff;
-      --color-progressbar-fg-2: #fff;
-      --color-progressbar-fg-3: #000;
+      --color-progressbar-fg-1: var(--white);
+      --color-progressbar-fg-2: var(--white);
+      --color-progressbar-fg-3: var(--black);
       --color-progressbar-leech: var(--blue-200);
       --color-progressbar-magnet: var(--yellow-300);
       --color-progressbar-paused: var(--grey-500);
@@ -197,7 +199,7 @@
       --color-progressbar-seed-paused: var(--grey-500);
       --color-progressbar-verify: var(--yellow-300);
       --color-toolbar-background: var(--white);
-      --progress-bar-shadow-1: 1px 1px #000;
+      --progress-bar-shadow-1: var(--progress-bar-shadow);
       --progress-bar-shadow-3: 0;
     }
   }
@@ -227,7 +229,7 @@
   :root {
     body:not(.highlight-legacy, .highlight-system) {
       --color-bg-selected: AccentColor;
-      --color-fg-selected: #f8f8f8;
+      --color-fg-selected: var(--nice-grey);
     }
   }
 }
@@ -293,10 +295,7 @@ a {
 
 .popup,
 .tabs-container {
-  box-shadow:
-    0 3px 6px -4px rgb(0 0 0 / 12%),
-    0 6px 16px rgb(0 0 0 / 8%),
-    0 9px 28px 8px rgb(0 0 0 / 6%);
+  box-shadow: var(--popup-shadow);
   position: absolute;
 }
 
@@ -353,10 +352,6 @@ a {
   }
 }
 
-.toolbar-icon {
-  stroke: var(--color-fg-primary);
-}
-
 #toolbar-overflow {
   margin-right: 4px;
 
@@ -375,7 +370,7 @@ a {
   background: var(--color-toolbar-background);
   border-bottom: 1px solid var(--color-border-default);
   display: flex;
-  height: 30px;
+  height: var(--statusbar-height);
   padding-left: 5px;
 
   #torrent-search {
@@ -438,7 +433,7 @@ a {
       background-color: var(--color-bg-selected);
 
       &::before {
-        filter: hue-rotate(120deg) saturate(180%);
+        filter: var(--filter-turtle-on);
       }
     }
 
@@ -446,7 +441,7 @@ a {
       content: '';
       background: var(--image-turtle) no-repeat center;
       left: calc(20% - 5px);
-      filter: grayscale(100%) brightness(50%);
+      filter: var(--filter-turtle-off);
       padding: 9px;
       position: relative;
     }
@@ -469,12 +464,6 @@ a {
   overflow: auto;
   padding: 0;
   right: 0;
-
-  /* Override clusterize default max-height */
-  &.clusterize-scroll {
-    max-height: none;
-    height: 100%;
-  }
 }
 
 #torrent-list {
@@ -503,9 +492,6 @@ a {
     .icon {
       /* color the background svg fill */
       background-color: var(--color-fg-primary);
-      background-position:
-        center,
-        top left;
       grid-area: icon;
       mask-image: var(--mime-icon-url);
       mask-repeat: no-repeat;
@@ -550,8 +536,6 @@ a {
 
     .torrent-name {
       grid-area: name;
-      margin-bottom: 2px;
-      margin-top: 2px;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
@@ -565,8 +549,6 @@ a {
       font-size: 12px;
       font-weight: normal;
       grid-area: labels;
-      margin-bottom: 2px;
-      margin-top: 2px;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
@@ -639,7 +621,6 @@ a {
       padding: 6px 12px;
 
       .icon {
-        background-size: var(--icon-size), calc(var(--icon-size) / 2);
         height: var(--icon-size);
         width: var(--icon-size);
       }
@@ -671,11 +652,6 @@ a {
     }
   }
 
-  .icon {
-    background-position: center;
-    background-repeat: no-repeat;
-  }
-
   .torrent-progress-bar {
     font-size: 14px;
     position: relative;
@@ -705,7 +681,7 @@ a {
 
     &.magnet::before {
       background: var(--color-progressbar-magnet);
-      color: #000;
+      color: var(--black);
     }
 
     &.seed {
@@ -728,21 +704,11 @@ a {
           text-shadow: var(--progress-bar-shadow-3);
         }
       }
-
-      &.queued::before {
-        background-color: var(--color-progressbar-seed-1);
-      }
-
-      &::before {
-        background-color: var(--color-progressbar-seed-1);
-        color: var(--color-progressbar-fg-2);
-        text-shadow: var(--progress-bar-shadow-2);
-      }
     }
 
     &.verify::before {
       background: var(--color-progressbar-verify);
-      color: #000;
+      color: var(--black);
     }
 
     &.paused::before {
@@ -762,20 +728,15 @@ a {
     }
 
     &::before {
-      clip-path: polygon(
-        0 0,
-        var(--progress, 30%) 0,
-        var(--progress, 30%) 100%,
-        0 100%
-      );
+      clip-path: polygon(0 0, var(--progress) 0, var(--progress) 100%, 0 100%);
     }
 
     &::after {
       clip-path: polygon(
-        var(--progress, 30%) 0,
+        var(--progress) 0,
         100% 0,
         100% 100%,
-        var(--progress, 30%) 100%
+        var(--progress) 100%
       );
     }
   }
@@ -814,7 +775,7 @@ a {
   .alt-speed-section-label::before {
     content: '';
     background: var(--image-turtle) no-repeat left / 20px;
-    filter: hue-rotate(120deg) saturate(180%);
+    filter: var(--filter-turtle-on);
     padding: 0 11px;
   }
 
@@ -882,11 +843,6 @@ a {
   }
 }
 
-#prefs-dialog.ui-tabs .ui-tabs-panel {
-  padding: 0;
-  user-select: none;
-}
-
 /* TABS */
 
 .tabs-container {
@@ -895,9 +851,10 @@ a {
   bottom: 0;
   display: flex;
   flex-direction: column;
-  position: absolute;
   right: 0;
-  top: 82px;
+
+  /* 2px = the toolbar and statusbar bottom borders */
+  top: calc(var(--toolbar-height) + var(--statusbar-height) + 2px);
   z-index: var(--z-index-popup);
 
   @media (width < 600px) {
@@ -953,12 +910,10 @@ a {
 
 .tabs-button {
   background: none;
-  border: 1px solid transparent;
   font-size: 14px;
   padding: 3px 8px;
 
   &:active,
-  &:checked,
   &.selected {
     background-color: var(--color-bg-odd);
     border: 1px solid var(--color-fg-primary);
@@ -1004,15 +959,10 @@ a {
 
 .inspector-info-magnet button {
   background-color: var(--color-fg-primary);
-  background-position: top;
-  background-repeat: no-repeat;
   border: 0;
   cursor: pointer;
   height: 1rem;
-  mask-image: var(--image-magnet);
-  mask-position: center;
-  mask-repeat: no-repeat;
-  mask-size: 14px;
+  mask: var(--image-magnet) no-repeat center / 14px;
   vertical-align: middle;
   width: 1rem;
 }
@@ -1088,15 +1038,6 @@ a {
       color: var(--color-fg-selected);
     }
   }
-}
-
-#inspector-header {
-  margin: 8px 0;
-}
-
-#torrent-inspector-name {
-  font-size: large;
-  font-weight: bold;
 }
 
 #inspector-tiers-list {
@@ -1187,10 +1128,7 @@ a {
 
   .encryption[data-encrypted='true'] {
     background-color: var(--color-border-starkest);
-    mask-image: var(--image-lock-fill);
-    mask-position: center;
-    mask-repeat: no-repeat;
-    mask-size: 14px;
+    mask: var(--image-lock-fill) no-repeat center / 14px;
     width: 10px;
   }
 
@@ -1230,12 +1168,6 @@ a {
   .status {
     cursor: pointer;
     width: 10%;
-  }
-
-  .webseed-url {
-    overflow-x: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
   }
 }
 
@@ -1308,10 +1240,7 @@ a {
 
   100% {
     background: rgb(0 0 0 / 4%);
-    box-shadow:
-      0 3px 6px -4px rgb(0 0 0 / 12%),
-      0 6px 16px rgb(0 0 0 / 8%),
-      0 9px 28px 8px rgb(0 0 0 / 6%);
+    box-shadow: var(--popup-shadow);
   }
 }
 
@@ -1340,7 +1269,7 @@ a {
   border-radius: 5px;
   color: var(--color-fg-on-popup);
   padding: 10px 5px;
-  z-index: 2;
+  z-index: var(--z-index-popup);
   user-select: none;
 
   .arrow {
@@ -1360,7 +1289,7 @@ a {
       position: absolute;
       overflow: hidden;
       transform: translate(7px, -18px);
-      z-index: 3;
+      z-index: calc(var(--z-index-popup) + 1);
       border-radius: 5px;
       animation: shadow 200ms ease-in normal forwards;
 
@@ -1427,7 +1356,7 @@ a {
   padding: 10px;
   right: 0;
   margin: 6px;
-  top: 50px;
+  top: var(--toolbar-height);
   z-index: var(--z-index-popup);
 
   fieldset {
@@ -1465,8 +1394,11 @@ a {
   button,
   label {
     color: var(--color-fg-primary);
-    display: inline-flex;
     font-size: 1em;
+  }
+
+  label {
+    display: inline-flex;
     width: 100%;
   }
 
@@ -1479,11 +1411,6 @@ a {
     text-align: left;
     text-decoration: none;
     width: 150px;
-  }
-
-  .input-and-label {
-    align-items: center;
-    display: inline-flex;
   }
 
   #display-options {
@@ -1519,7 +1446,7 @@ a {
       grid-area: check;
 
       &:not(:checked) ~ #alt-speed-image {
-        filter: grayscale(100%) brightness(50%);
+        filter: var(--filter-turtle-off);
       }
     }
 
@@ -1529,7 +1456,7 @@ a {
 
     #alt-speed-image {
       background: var(--image-turtle) no-repeat;
-      filter: hue-rotate(120deg) saturate(180%);
+      filter: var(--filter-turtle-on);
       grid-area: turtle;
       height: 18px;
     }
@@ -1561,10 +1488,6 @@ a {
   }
 }
 
-dialog {
-  border: 0;
-}
-
 .dialog-container {
   max-width: 500px;
   top: 102px;
@@ -1586,8 +1509,9 @@ dialog {
 }
 
 .dialog-logo {
-  background: transparent url('../../public_html/images/favicon.svg') top left
-    no-repeat;
+  /* the icon ships next to the bundled css; esbuild marks it external
+     so the 8 KB svg isn't duplicated here as a data: URI */
+  background: transparent url('./images/favicon.svg') top left no-repeat;
   background-size: contain;
   grid-area: icon;
   height: var(--logo-size);
@@ -1685,12 +1609,6 @@ dialog {
   }
 }
 
-/* SET-LOCATION DIALOG */
-
-#move-container #torrent-path {
-  min-width: 400px;
-}
-
 /* STATISTICS DIALOG */
 
 .tabs-pages,
@@ -1737,11 +1655,6 @@ dialog {
 
 /* CLUSTERIZE */
 
-.clusterize-scroll {
-  max-height: 200px;
-  overflow: auto;
-}
-
 .clusterize-extra-row {
   margin-top: 0 !important;
   margin-bottom: 0 !important;
@@ -1749,9 +1662,4 @@ dialog {
 
 .clusterize-extra-row.clusterize-keep-parity {
   display: none;
-}
-
-.clusterize-content {
-  outline: 0;
-  counter-reset: clusterize-counter;
 }

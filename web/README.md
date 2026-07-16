@@ -17,6 +17,7 @@ third-party modules it uses are vendored in `src/vendor/`.
 $ cd transmission/web/
 $ esbuild \
   --bundle \
+  --external:*/favicon.svg \
   --legal-comments=external \
   --loader:.png=dataurl \
   --loader:.svg=dataurl \

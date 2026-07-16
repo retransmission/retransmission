@@ -4,6 +4,9 @@ import * as process from 'node:process';
 const ctx = await esbuild.context({
   bundle: true,
   entryPoints: ['./src/main.js'],
+  // the dialog logo already ships in public_html/images/; leave its url()
+  // alone rather than inlining a second copy of the svg as a data: URI
+  external: ['*/favicon.svg'],
   legalComments: 'external',
   loader: {
     '.png': 'dataurl',
