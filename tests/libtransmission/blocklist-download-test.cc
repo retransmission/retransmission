@@ -159,7 +159,7 @@ public:
     }
 
     // fire the timer callback as if it had elapsed
-    void fire()
+    void fire() const
     {
         if (callback_) {
             callback_();
@@ -209,7 +209,8 @@ public:
     void fetch(tr_web::FetchOptions&& options) override
     {
         ++fetch_count_;
-        pending_.push_back(std::move(options.done_func));
+        auto opts = std::move(options);
+        pending_.push_back(std::move(opts.done_func));
     }
 
     [[nodiscard]] std::optional<size_t> set_blocklist_content(std::string_view content, std::string& error) override
@@ -245,7 +246,7 @@ public:
     }
 
     // test helpers
-    [[nodiscard]] size_t pending_count() const
+    [[nodiscard]] size_t pendingCount() const
     {
         return std::size(pending_);
     }
@@ -272,7 +273,7 @@ public:
         respond(std::size(pending_) - 1U, status, std::move(body));
     }
 
-    [[nodiscard]] MockTimer* timer()
+    [[nodiscard]] MockTimer* timer() const
     {
         return timer_maker_.last_;
     }
@@ -290,7 +291,7 @@ TEST(BlocklistUpdater, installsDecompressedContent)
     auto result = std::optional<tr_blocklist_update_result>{};
     updater.update([&result](tr_blocklist_update_result const& r) { result = r; });
 
-    ASSERT_EQ(1U, mediator.pending_count());
+    ASSERT_EQ(1U, mediator.pendingCount());
     mediator.respond(200, makeArchive(asZip, "blocklist"sv, Rules));
 
     // the Updater decompressed the body before handing it to the mediator
@@ -373,7 +374,7 @@ TEST(BlocklistUpdater, secondUpdateSupersedesFirst)
     auto second = std::optional<tr_blocklist_update_result>{};
     updater.update([&first_fired](tr_blocklist_update_result const&) { first_fired = true; });
     updater.update([&second](tr_blocklist_update_result const& r) { second = r; });
-    ASSERT_EQ(2U, mediator.pending_count());
+    ASSERT_EQ(2U, mediator.pendingCount());
 
     // even if the superseded (first) request completes, only the second installs
     // a result and fires its callback
