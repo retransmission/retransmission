@@ -232,12 +232,12 @@ std::string tr_session::BlocklistMediator::blocklist_url() const
     return std::string{ session_.blocklistUrl() };
 }
 
-bool tr_session::BlocklistMediator::enabled() const
+bool tr_session::BlocklistMediator::enabled() const noexcept
 {
     return session_.blocklist_enabled();
 }
 
-bool tr_session::BlocklistMediator::updates_enabled() const
+bool tr_session::BlocklistMediator::updates_enabled() const noexcept
 {
     return session_.blocklist_updates_enabled();
 }

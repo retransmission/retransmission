@@ -222,11 +222,11 @@ public:
         return install_result_;
     }
 
-    [[nodiscard]] bool enabled() const override
+    [[nodiscard]] bool enabled() const noexcept override
     {
         return enabled_;
     }
-    [[nodiscard]] bool updates_enabled() const override
+    [[nodiscard]] bool updates_enabled() const noexcept override
     {
         return updates_enabled_;
     }
@@ -235,7 +235,7 @@ public:
         return mtime_;
     }
 
-    [[nodiscard]] tr::TimerMaker& timer_maker() override
+    [[nodiscard]] tr::TimerMaker& timer_maker() noexcept override
     {
         return timer_maker_;
     }

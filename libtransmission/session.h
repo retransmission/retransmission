@@ -379,10 +379,10 @@ private:
         // out-of-line in blocklist-download.cc, alongside the rest of the glue.
         [[nodiscard]] std::string blocklist_url() const override;
         [[nodiscard]] std::optional<size_t> set_blocklist_content(std::string_view content, std::string& error) override;
-        [[nodiscard]] bool enabled() const override;
-        [[nodiscard]] bool updates_enabled() const override;
+        [[nodiscard]] bool enabled() const noexcept override;
+        [[nodiscard]] bool updates_enabled() const noexcept override;
 
-        [[nodiscard]] tr::TimerMaker& timer_maker() override
+        [[nodiscard]] tr::TimerMaker& timer_maker() noexcept override
         {
             return session_.timerMaker();
         }

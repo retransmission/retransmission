@@ -64,13 +64,13 @@ public:
 
         // --- auto-update timer inputs ---
 
-        [[nodiscard]] virtual bool enabled() const = 0;
-        [[nodiscard]] virtual bool updates_enabled() const = 0;
+        [[nodiscard]] virtual bool enabled() const noexcept = 0;
+        [[nodiscard]] virtual bool updates_enabled() const noexcept = 0;
         [[nodiscard]] virtual time_t mtime() const = 0;
 
         // --- threading + timers ---
 
-        [[nodiscard]] virtual tr::TimerMaker& timer_maker() = 0;
+        [[nodiscard]] virtual tr::TimerMaker& timer_maker() noexcept = 0;
         virtual void run_in_session_thread(std::function<void()> func) = 0;
     };
 
