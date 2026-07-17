@@ -90,6 +90,11 @@ void asZip(archive* arc)
     archive_write_set_format_zip(arc);
 }
 
+void asCpio(archive* arc)
+{
+    archive_write_set_format_cpio(arc);
+}
+
 // ---
 // decompress(): the format matrix, tested directly -- no session, no download.
 
@@ -111,6 +116,17 @@ TEST(BlocklistDecompress, unwrapsTar)
 TEST(BlocklistDecompress, unwrapsZip)
 {
     EXPECT_EQ(Rules, tr::blocklist::decompress(makeArchive(asZip, "blocklist"sv, Rules)));
+}
+
+TEST(BlocklistDecompress, doesNotUnwrapDisabledFormats)
+{
+    // Only gzip/tar/zip (+ raw) are enabled -- deliberately not libarchive's full
+    // format set. A cpio archive stands in for the exotic, historically CVE-prone
+    // formats we keep away from attacker-controlled bytes: it is not unpacked,
+    // its bytes just pass through the raw reader unchanged.
+    auto const packed = makeArchive(asCpio, "blocklist"sv, Rules);
+    ASSERT_FALSE(std::empty(packed));
+    EXPECT_NE(Rules, tr::blocklist::decompress(packed));
 }
 
 TEST(BlocklistDecompress, returnsEmptyOnGarbage)

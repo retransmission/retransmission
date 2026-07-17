@@ -55,17 +55,19 @@ auto constexpr StartupDelay = std::chrono::seconds{ 60 };
 auto constexpr MaxDecompressedSize = size_t{ 128U } * 1024U * 1024U;
 } // namespace
 
-// Decompress a downloaded blocklist. Blocklists are distributed either as
-// plain text or wrapped in a container/compressor: gzip, tar (possibly
-// gzipped), or zip. Let libarchive transparently peel off any filter (gzip,
-// xz, ...) and format (tar, zip, ...) and hand back the first regular file's
-// contents. The "raw" format is registered last, so a plain, unwrapped
-// blocklist is read as a single entry rather than rejected.
+// Decompress a downloaded blocklist. Blocklists are distributed either as plain
+// text or wrapped in a container/compressor: gzip, tar (possibly gzipped), or
+// zip. Enable just those, plus "raw" (registered last) so a plain, unwrapped
+// list is read as a single entry rather than rejected. This is deliberately not
+// libarchive's archive_read_support_{filter,format}_all(): a blocklist never
+// needs 7-zip/iso/cab/rar/xz/..., and keeping those historically CVE-prone
+// parsers away from attacker-controlled download bytes is worth the narrow set.
 std::string decompress(std::string_view body)
 {
     auto* const arc = archive_read_new();
-    archive_read_support_filter_all(arc);
-    archive_read_support_format_all(arc);
+    archive_read_support_filter_gzip(arc);
+    archive_read_support_format_tar(arc);
+    archive_read_support_format_zip(arc);
     archive_read_support_format_raw(arc);
 
     auto content = std::string{};
