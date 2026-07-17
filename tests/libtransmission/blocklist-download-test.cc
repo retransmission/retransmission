@@ -122,6 +122,31 @@ TEST(BlocklistDecompress, returnsEmptyOnGarbage)
 }
 
 // ---
+// normalize_blocklist_url(): a bare host gets an https scheme; anything with a
+// scheme is left alone.
+
+TEST(BlocklistNormalizeUrl, prependsHttpsWhenSchemeMissing)
+{
+    EXPECT_EQ("https://list.example.com/blocklist"s, tr::blocklist::normalize_blocklist_url("list.example.com/blocklist"sv));
+}
+
+TEST(BlocklistNormalizeUrl, keepsExistingScheme)
+{
+    EXPECT_EQ("http://list.example.com/bl"s, tr::blocklist::normalize_blocklist_url("http://list.example.com/bl"sv));
+    EXPECT_EQ("https://list.example.com/bl"s, tr::blocklist::normalize_blocklist_url("https://list.example.com/bl"sv));
+}
+
+TEST(BlocklistNormalizeUrl, trimsSurroundingWhitespace)
+{
+    EXPECT_EQ("https://list.example.com"s, tr::blocklist::normalize_blocklist_url("  list.example.com  "sv));
+}
+
+TEST(BlocklistNormalizeUrl, emptyStaysEmpty)
+{
+    EXPECT_EQ(""s, tr::blocklist::normalize_blocklist_url("   "sv));
+}
+
+// ---
 // Updater control flow, driven through a mock Mediator: no real session, no
 // network, no threads, no timers. run_in_session_thread() runs inline, so every
 // test below is deterministic -- fetch responses are delivered explicitly.

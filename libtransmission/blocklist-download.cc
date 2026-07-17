@@ -91,6 +91,21 @@ std::string decompress(std::string_view body)
     return content;
 }
 
+std::string normalize_blocklist_url(std::string_view url)
+{
+    auto const trimmed = tr_strv_strip(url);
+    if (std::empty(trimmed)) {
+        return {};
+    }
+
+    // leave a URL that already carries a scheme (foo://...) alone
+    if (trimmed.find("://"sv) != std::string_view::npos) {
+        return std::string{ trimmed };
+    }
+
+    return fmt::format("https://{:s}", trimmed);
+}
+
 // Per-request state, kept alive by the tr_web fetch callback for the duration
 // of the download. `cancelled` lets Updater::cancel() (and ~Updater) suppress a
 // completion without racing the network thread.
@@ -269,7 +284,7 @@ void Updater::on_auto_update_timer()
 
 std::string tr_session::BlocklistMediator::blocklist_url() const
 {
-    return std::string{ session_.blocklistUrl() };
+    return tr::blocklist::normalize_blocklist_url(session_.blocklistUrl());
 }
 
 bool tr_session::BlocklistMediator::enabled() const noexcept
