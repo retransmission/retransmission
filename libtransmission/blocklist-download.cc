@@ -65,6 +65,9 @@ auto constexpr MaxDecompressedSize = size_t{ 128U } * 1024U * 1024U;
 std::string decompress(std::string_view body)
 {
     auto* const arc = archive_read_new();
+    if (arc == nullptr) {
+        return {};
+    }
     archive_read_support_filter_gzip(arc);
     archive_read_support_format_tar(arc);
     archive_read_support_format_zip(arc);
