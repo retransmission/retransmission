@@ -9,30 +9,72 @@
 #error only libtransmission should #include this header.
 #endif
 
+#include <cstddef> // size_t
+#include <ctime> // time_t
+#include <functional>
 #include <memory>
+#include <optional>
+#include <string>
+#include <string_view>
 
 #include "libtransmission/transmission.h" // tr_blocklist_update_func
-
-struct tr_session;
+#include "libtransmission/web.h" // tr_web::FetchOptions
 
 namespace tr
 {
 class Timer;
-}
+class TimerMaker;
+} // namespace tr
 
 namespace tr::blocklist
 {
 // opaque per-request state; defined in blocklist-download.cc
 struct Pending;
 
-// Downloads the session's blocklist URL, decompresses it (gzip, tar, zip, or
-// plain text -- see decompress()), installs it via tr_blocklistSetContent(),
-// and reports the outcome. Also owns the periodic auto-update timer. One
-// instance is owned by each tr_session.
+// Peel off any container/compressor a blocklist provider might wrap a list in
+// (gzip, tar (possibly gzipped), zip) and return the first regular file's
+// contents; a plain, unwrapped list is returned as-is. Exposed here so the
+// format matrix can be tested directly, without a session or a download.
+[[nodiscard]] std::string decompress(std::string_view body);
+
+// Downloads the blocklist URL, decompresses it (see decompress()), installs the
+// result, and reports the outcome. Also owns the periodic auto-update timer.
+// One instance is owned by each tr_session.
 class Updater
 {
 public:
-    explicit Updater(tr_session* session);
+    // Seam to the outside world. tr_session in production, a mock in tests.
+    struct Mediator {
+        virtual ~Mediator() = default;
+
+        // --- downloading ---
+
+        // The configured blocklist URL to fetch.
+        [[nodiscard]] virtual std::string blocklist_url() const = 0;
+
+        // Fetch over HTTP. The response callback is invoked on the session thread.
+        virtual void fetch(tr_web::FetchOptions&& options) = 0;
+
+        // --- installing ---
+
+        // Install decompressed blocklist content and return the new rule count.
+        // Returns positive on success, 0 for well-formed-but-empty content.
+        // On error, return nullopt and set `error` to a readable string.
+        [[nodiscard]] virtual std::optional<size_t> set_blocklist_content(std::string_view content, std::string& error) = 0;
+
+        // --- auto-update timer inputs ---
+
+        [[nodiscard]] virtual bool enabled() const = 0;
+        [[nodiscard]] virtual bool updates_enabled() const = 0;
+        [[nodiscard]] virtual time_t mtime() const = 0;
+
+        // --- threading + timers ---
+
+        [[nodiscard]] virtual tr::TimerMaker& timer_maker() = 0;
+        virtual void run_in_session_thread(std::function<void()> func) = 0;
+    };
+
+    explicit Updater(Mediator& mediator);
     ~Updater();
 
     Updater(Updater const&) = delete;
@@ -59,7 +101,7 @@ private:
     void arm_timer();
     void on_auto_update_timer();
 
-    tr_session* const session_;
+    Mediator& mediator_;
     std::unique_ptr<tr::Timer> timer_;
     std::weak_ptr<Pending> latest_;
 };

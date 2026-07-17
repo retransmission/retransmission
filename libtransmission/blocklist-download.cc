@@ -8,6 +8,7 @@
 #include <cstddef> // size_t
 #include <ctime> // time_t
 #include <memory>
+#include <optional>
 #include <string>
 #include <string_view>
 #include <utility> // std::move
@@ -46,6 +47,7 @@ auto constexpr UpdateInterval = std::chrono::hours{ 24 * 7 };
 // wait this long after startup before the first auto-update, so we don't
 // hammer the network the instant the app launches
 auto constexpr StartupDelay = std::chrono::seconds{ 60 };
+} // namespace
 
 // Decompress a downloaded blocklist. Blocklists are distributed either as
 // plain text or wrapped in a container/compressor: gzip, tar (possibly
@@ -53,7 +55,7 @@ auto constexpr StartupDelay = std::chrono::seconds{ 60 };
 // xz, ...) and format (tar, zip, ...) and hand back the first regular file's
 // contents. The "raw" format is registered last, so a plain, unwrapped
 // blocklist is read as a single entry rather than rejected.
-[[nodiscard]] std::string decompress(std::string_view body)
+std::string decompress(std::string_view body)
 {
     auto* const arc = archive_read_new();
     archive_read_support_filter_all(arc);
@@ -86,13 +88,12 @@ auto constexpr StartupDelay = std::chrono::seconds{ 60 };
     archive_read_free(arc);
     return content;
 }
-} // namespace
 
 // Per-request state, kept alive by the tr_web fetch callback for the duration
 // of the download. `cancelled` lets Updater::cancel() (and ~Updater) suppress a
 // completion without racing the network thread.
 struct Pending {
-    tr_session* session = nullptr;
+    Updater::Mediator* mediator = nullptr;
     tr_blocklist_update_func on_done;
     bool cancelled = false;
 };
@@ -105,7 +106,6 @@ void finish_request(tr_web::FetchResponse const& response, std::shared_ptr<Pendi
         return;
     }
 
-    auto* const session = pending->session;
     auto result = tr_blocklist_update_result{};
 
     if (response.status != 200) {
@@ -119,24 +119,14 @@ void finish_request(tr_web::FetchResponse const& response, std::shared_ptr<Pendi
         return;
     }
 
-    // tr_blocklistSetContent() needs a source file, so decompress the
-    // download and save it into a tmpfile first
+    // peel off any compression/archive, then hand the plain text to the
+    // mediator to persist and parse
     auto const content = decompress(response.body);
-    auto const filename = tr_pathbuf{ session->configDir(), "/blocklist.tmp"sv };
-    if (auto error = tr_error{}; !tr_file_save(filename, content, &error)) {
+    auto error = std::string{};
+    if (auto const n_rules = pending->mediator->set_blocklist_content(content, error); !n_rules) {
         result.status = tr_blocklist_update_status::SaveError;
-        result.error = fmt::format(
-            fmt::runtime(_("Couldn't save '{path}': {error} ({error_code})")),
-            fmt::arg("path", filename),
-            fmt::arg("error", error.message()),
-            fmt::arg("error_code", error.code()));
-        pending->on_done(result);
-        return;
-    }
-
-    auto const n_rules = tr_blocklistSetContent(session, filename);
-    tr_sys_path_remove(filename);
-    if (!n_rules || *n_rules == 0U) {
+        result.error = std::move(error);
+    } else if (*n_rules == 0U) {
         result.status = tr_blocklist_update_status::InvalidData;
     } else {
         result.status = tr_blocklist_update_status::Ok;
@@ -147,9 +137,9 @@ void finish_request(tr_web::FetchResponse const& response, std::shared_ptr<Pendi
 }
 } // namespace
 
-Updater::Updater(tr_session* session)
-    : session_{ session }
-    , timer_{ session->timerMaker().create([this]() { on_auto_update_timer(); }) }
+Updater::Updater(Mediator& mediator)
+    : mediator_{ mediator }
+    , timer_{ mediator.timer_maker().create([this]() { on_auto_update_timer(); }) }
 {
 }
 
@@ -157,7 +147,7 @@ Updater::~Updater()
 {
     // If a fetch is still in flight (its shared Pending is held alive by the
     // tr_web callback), make sure a late completion becomes a no-op instead of
-    // touching a session that's tearing down.
+    // touching a mediator that's tearing down.
     if (auto pending = latest_.lock()) {
         pending->cancelled = true;
     }
@@ -165,7 +155,7 @@ Updater::~Updater()
 
 void Updater::update(tr_blocklist_update_func on_done)
 {
-    session_->run_in_session_thread([this, on_done = std::move(on_done)]() mutable {
+    mediator_.run_in_session_thread([this, on_done = std::move(on_done)]() mutable {
         // Supersede any still-in-flight update so only the newest one installs a
         // result and fires its callback. (The superseded download may still run
         // to completion internally; tr_web has no per-request abort.)
@@ -174,10 +164,10 @@ void Updater::update(tr_blocklist_update_func on_done)
         }
 
         auto pending = std::make_shared<Pending>(
-            Pending{ .session = session_, .on_done = std::move(on_done), .cancelled = false });
+            Pending{ .mediator = &mediator_, .on_done = std::move(on_done), .cancelled = false });
         latest_ = pending;
-        session_->fetch(
-            { std::string{ session_->blocklistUrl() },
+        mediator_.fetch(
+            { mediator_.blocklist_url(),
               [pending](tr_web::FetchResponse const& response) { finish_request(response, pending); },
               nullptr });
     });
@@ -185,7 +175,7 @@ void Updater::update(tr_blocklist_update_func on_done)
 
 void Updater::cancel()
 {
-    session_->run_in_session_thread([this]() {
+    mediator_.run_in_session_thread([this]() {
         if (auto pending = latest_.lock()) {
             pending->cancelled = true;
         }
@@ -194,12 +184,12 @@ void Updater::cancel()
 
 void Updater::restart_timer()
 {
-    session_->run_in_session_thread([this]() { arm_timer(); });
+    mediator_.run_in_session_thread([this]() { arm_timer(); });
 }
 
 void Updater::arm_timer()
 {
-    if (!session_->blocklist_enabled() || std::empty(session_->blocklistUrl()) || !session_->blocklist_updates_enabled()) {
+    if (!mediator_.enabled() || std::empty(mediator_.blocklist_url()) || !mediator_.updates_enabled()) {
         timer_->stop();
         return;
     }
@@ -207,7 +197,7 @@ void Updater::arm_timer()
     auto const now = tr_time();
     auto const interval_secs = std::chrono::duration_cast<std::chrono::seconds>(UpdateInterval).count();
     auto const startup_secs = std::chrono::duration_cast<std::chrono::seconds>(StartupDelay).count();
-    auto const due = session_->blocklist_mtime() + interval_secs;
+    auto const due = mediator_.mtime() + interval_secs;
     auto const wait_secs = due > now + startup_secs ? due - now : startup_secs;
     timer_->start_single_shot(std::chrono::seconds{ wait_secs });
 }
@@ -236,6 +226,43 @@ void Updater::on_auto_update_timer()
 
 // ---
 // tr_session glue + public C++ API
+
+std::string tr_session::BlocklistMediator::blocklist_url() const
+{
+    return std::string{ session_.blocklistUrl() };
+}
+
+bool tr_session::BlocklistMediator::enabled() const
+{
+    return session_.blocklist_enabled();
+}
+
+bool tr_session::BlocklistMediator::updates_enabled() const
+{
+    return session_.blocklist_updates_enabled();
+}
+
+std::optional<size_t> tr_session::BlocklistMediator::set_blocklist_content(std::string_view content, std::string& error)
+{
+    // tr_blocklistSetContent() needs a source file, so persist the decompressed
+    // content into a tmpfile first, then clean it up.
+    auto const filename = tr_pathbuf{ session_.configDir(), "/blocklist.tmp"sv };
+    if (auto err = tr_error{}; !tr_file_save(filename, content, &err)) {
+        error = fmt::format(
+            fmt::runtime(_("Couldn't save '{path}': {error} ({error_code})")),
+            fmt::arg("path", filename),
+            fmt::arg("error", err.message()),
+            fmt::arg("error_code", err.code()));
+        return std::nullopt;
+    }
+
+    auto const n_rules = tr_blocklistSetContent(&session_, filename);
+    tr_sys_path_remove(filename);
+
+    // nullopt from the parser means "no valid rules"; collapse it to 0 so the
+    // Updater reports InvalidData rather than SaveError.
+    return n_rules.value_or(0U);
+}
 
 void tr_session::on_blocklist_settings_changed()
 {

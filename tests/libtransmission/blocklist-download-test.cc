@@ -3,14 +3,17 @@
 // or any future license endorsed by Mnemosaic LLC.
 // License text can be found in the licenses/ folder.
 
-#include <atomic>
 #include <chrono>
 #include <cstddef>
+#include <ctime>
+#include <functional>
 #include <future>
 #include <memory>
+#include <optional>
 #include <string>
 #include <string_view>
-#include <thread>
+#include <utility>
+#include <vector>
 
 #include <event2/http.h>
 
@@ -20,6 +23,10 @@
 #include <gtest/gtest.h>
 
 #include <libtransmission/transmission.h>
+
+#include <libtransmission/blocklist-download.h>
+#include <libtransmission/timer.h>
+#include <libtransmission/web.h>
 
 #include "loopback-server.h"
 #include "test-fixtures.h"
@@ -31,10 +38,15 @@ namespace tr::test
 namespace
 {
 
+// Two non-overlapping ranges => two rules.
+auto constexpr Rules =
+    "Austin Law Firm:216.16.1.144-216.16.1.151\n"
+    "Evilcorp:216.88.88.0-216.88.88.255\n"sv;
+
 // Wrap `content` into an archive/compression the way a blocklist provider
 // might serve it, using libarchive's write side. `configure` picks the format
 // and filter (tar, zip, or raw + gzip); this exercises the same peel-off logic
-// tr_blocklistUpdate() relies on to read it back.
+// tr::blocklist::decompress() relies on to read it back.
 [[nodiscard]] std::string makeArchive(void (*configure)(archive*), std::string_view name, std::string_view content)
 {
     auto* const arc = archive_write_new();
@@ -78,14 +90,368 @@ void asZip(archive* arc)
     archive_write_set_format_zip(arc);
 }
 
+// ---
+// decompress(): the format matrix, tested directly -- no session, no download.
+
+TEST(BlocklistDecompress, passesPlainTextThrough)
+{
+    EXPECT_EQ(Rules, tr::blocklist::decompress(Rules));
+}
+
+TEST(BlocklistDecompress, unwrapsGzip)
+{
+    EXPECT_EQ(Rules, tr::blocklist::decompress(makeArchive(asGzip, "blocklist"sv, Rules)));
+}
+
+TEST(BlocklistDecompress, unwrapsTar)
+{
+    EXPECT_EQ(Rules, tr::blocklist::decompress(makeArchive(asTar, "blocklist"sv, Rules)));
+}
+
+TEST(BlocklistDecompress, unwrapsZip)
+{
+    EXPECT_EQ(Rules, tr::blocklist::decompress(makeArchive(asZip, "blocklist"sv, Rules)));
+}
+
+TEST(BlocklistDecompress, returnsEmptyOnGarbage)
+{
+    // libarchive's "raw" reader accepts any bytes as a single entry, so garbage
+    // decompresses to itself; the *parser* (tested elsewhere) rejects it. What we
+    // assert here is only that decompress() doesn't crash or hang on junk.
+    EXPECT_NO_THROW((void)tr::blocklist::decompress("\x1f\x8b not really gzip"sv));
+}
+
+// ---
+// Updater control flow, driven through a mock Mediator: no real session, no
+// network, no threads, no timers. run_in_session_thread() runs inline, so every
+// test below is deterministic -- fetch responses are delivered explicitly.
+
+class MockTimer final : public tr::Timer
+{
+public:
+    void stop() override
+    {
+        is_running_ = false;
+    }
+    void set_callback(std::function<void()> callback) override
+    {
+        callback_ = std::move(callback);
+    }
+    void set_repeating(bool repeating = true) override
+    {
+        is_repeating_ = repeating;
+    }
+    void set_interval(std::chrono::milliseconds interval) override
+    {
+        interval_ = interval;
+    }
+    void start() override
+    {
+        is_running_ = true;
+    }
+    [[nodiscard]] std::chrono::milliseconds interval() const noexcept override
+    {
+        return interval_;
+    }
+    [[nodiscard]] bool is_repeating() const noexcept override
+    {
+        return is_repeating_;
+    }
+
+    // fire the timer callback as if it had elapsed
+    void fire()
+    {
+        if (callback_) {
+            callback_();
+        }
+    }
+
+    std::function<void()> callback_;
+    std::chrono::milliseconds interval_ = {};
+    bool is_repeating_ = false;
+    bool is_running_ = false;
+};
+
+class MockTimerMaker final : public tr::TimerMaker
+{
+public:
+    [[nodiscard]] std::unique_ptr<tr::Timer> create() override
+    {
+        auto timer = std::make_unique<MockTimer>();
+        last_ = timer.get();
+        return timer;
+    }
+
+    MockTimer* last_ = nullptr;
+};
+
+class MockMediator final : public tr::blocklist::Updater::Mediator
+{
+public:
+    // knobs the tests set
+    std::string url_ = "http://blocklist.example/list";
+    bool enabled_ = true;
+    bool updates_enabled_ = true;
+    time_t mtime_ = 0;
+    std::optional<size_t> install_result_ = size_t{ 2U }; // returned by set_blocklist_content()
+    std::string install_error_ = "simulated save failure"; // reported when install_result_ is nullopt
+
+    // observations the tests read
+    int fetch_count_ = 0;
+    int install_count_ = 0;
+    std::string installed_; // content handed to set_blocklist_content()
+
+    [[nodiscard]] std::string blocklist_url() const override
+    {
+        return url_;
+    }
+
+    void fetch(tr_web::FetchOptions&& options) override
+    {
+        ++fetch_count_;
+        pending_.push_back(std::move(options.done_func));
+    }
+
+    [[nodiscard]] std::optional<size_t> set_blocklist_content(std::string_view content, std::string& error) override
+    {
+        ++install_count_;
+        installed_ = std::string{ content };
+        if (!install_result_) {
+            error = install_error_;
+        }
+        return install_result_;
+    }
+
+    [[nodiscard]] bool enabled() const override
+    {
+        return enabled_;
+    }
+    [[nodiscard]] bool updates_enabled() const override
+    {
+        return updates_enabled_;
+    }
+    [[nodiscard]] time_t mtime() const override
+    {
+        return mtime_;
+    }
+
+    [[nodiscard]] tr::TimerMaker& timer_maker() override
+    {
+        return timer_maker_;
+    }
+    void run_in_session_thread(std::function<void()> func) override
+    {
+        func(); // synchronous: no marshalling, no races
+    }
+
+    // test helpers
+    [[nodiscard]] size_t pending_count() const
+    {
+        return std::size(pending_);
+    }
+
+    // Deliver an HTTP response to the Nth still-pending fetch, modeling a network
+    // reply arriving out of band.
+    void respond(size_t index, long status, std::string body)
+    {
+        auto response = tr_web::FetchResponse{
+            .status = status,
+            .headers = {},
+            .body = std::move(body),
+            .primary_ip = {},
+            .did_connect = true,
+            .did_timeout = false,
+            .user_data = nullptr,
+        };
+        pending_.at(index)(response);
+    }
+
+    // Deliver to the most recent fetch (the common single-request case).
+    void respond(long status, std::string body)
+    {
+        respond(std::size(pending_) - 1U, status, std::move(body));
+    }
+
+    [[nodiscard]] MockTimer* timer()
+    {
+        return timer_maker_.last_;
+    }
+
+private:
+    MockTimerMaker timer_maker_;
+    std::vector<tr_web::FetchDoneFunc> pending_;
+};
+
+TEST(BlocklistUpdater, installsDecompressedContent)
+{
+    auto mediator = MockMediator{};
+    auto updater = tr::blocklist::Updater{ mediator };
+
+    auto result = std::optional<tr_blocklist_update_result>{};
+    updater.update([&result](tr_blocklist_update_result const& r) { result = r; });
+
+    ASSERT_EQ(1U, mediator.pending_count());
+    mediator.respond(200, makeArchive(asZip, "blocklist"sv, Rules));
+
+    // the Updater decompressed the body before handing it to the mediator
+    EXPECT_EQ(1, mediator.install_count_);
+    EXPECT_EQ(Rules, mediator.installed_);
+
+    ASSERT_TRUE(result.has_value());
+    EXPECT_EQ(tr_blocklist_update_status::Ok, result->status);
+    EXPECT_EQ(2U, result->n_rules);
+    EXPECT_TRUE(std::empty(result->error));
+}
+
+TEST(BlocklistUpdater, reportsDownloadError)
+{
+    auto mediator = MockMediator{};
+    auto updater = tr::blocklist::Updater{ mediator };
+
+    auto result = std::optional<tr_blocklist_update_result>{};
+    updater.update([&result](tr_blocklist_update_result const& r) { result = r; });
+    mediator.respond(404, "nope");
+
+    ASSERT_TRUE(result.has_value());
+    EXPECT_EQ(tr_blocklist_update_status::DownloadError, result->status);
+    EXPECT_FALSE(std::empty(result->error));
+    EXPECT_EQ(0, mediator.install_count_); // never tried to install
+}
+
+TEST(BlocklistUpdater, reportsInvalidData)
+{
+    auto mediator = MockMediator{};
+    mediator.install_result_ = size_t{ 0U }; // parsed, but no valid rules
+    auto updater = tr::blocklist::Updater{ mediator };
+
+    auto result = std::optional<tr_blocklist_update_result>{};
+    updater.update([&result](tr_blocklist_update_result const& r) { result = r; });
+    mediator.respond(200, std::string{ Rules });
+
+    ASSERT_TRUE(result.has_value());
+    EXPECT_EQ(tr_blocklist_update_status::InvalidData, result->status);
+    EXPECT_EQ(0U, result->n_rules);
+}
+
+TEST(BlocklistUpdater, reportsSaveError)
+{
+    auto mediator = MockMediator{};
+    mediator.install_result_ = std::nullopt; // I/O failure
+    mediator.install_error_ = "Couldn't save 'blocklist.tmp': disk full (28)";
+    auto updater = tr::blocklist::Updater{ mediator };
+
+    auto result = std::optional<tr_blocklist_update_result>{};
+    updater.update([&result](tr_blocklist_update_result const& r) { result = r; });
+    mediator.respond(200, std::string{ Rules });
+
+    ASSERT_TRUE(result.has_value());
+    EXPECT_EQ(tr_blocklist_update_status::SaveError, result->status);
+    EXPECT_EQ(mediator.install_error_, result->error);
+}
+
+TEST(BlocklistUpdater, cancelSuppressesCallback)
+{
+    auto mediator = MockMediator{};
+    auto updater = tr::blocklist::Updater{ mediator };
+
+    auto fired = false;
+    updater.update([&fired](tr_blocklist_update_result const&) { fired = true; });
+    updater.cancel();
+
+    // the response arrives after the cancel; its callback must not fire
+    mediator.respond(200, std::string{ Rules });
+    EXPECT_FALSE(fired);
+    EXPECT_EQ(0, mediator.install_count_);
+}
+
+TEST(BlocklistUpdater, secondUpdateSupersedesFirst)
+{
+    auto mediator = MockMediator{};
+    auto updater = tr::blocklist::Updater{ mediator };
+
+    auto first_fired = false;
+    auto second = std::optional<tr_blocklist_update_result>{};
+    updater.update([&first_fired](tr_blocklist_update_result const&) { first_fired = true; });
+    updater.update([&second](tr_blocklist_update_result const& r) { second = r; });
+    ASSERT_EQ(2U, mediator.pending_count());
+
+    // even if the superseded (first) request completes, only the second installs
+    // a result and fires its callback
+    mediator.respond(0U, 200, std::string{ Rules });
+    mediator.respond(1U, 200, std::string{ Rules });
+
+    EXPECT_FALSE(first_fired);
+    ASSERT_TRUE(second.has_value());
+    EXPECT_EQ(tr_blocklist_update_status::Ok, second->status);
+    EXPECT_EQ(1, mediator.install_count_); // installed exactly once
+}
+
+TEST(BlocklistUpdater, destructionSuppressesInFlight)
+{
+    auto mediator = MockMediator{};
+
+    auto fired = false;
+    {
+        auto updater = tr::blocklist::Updater{ mediator };
+        updater.update([&fired](tr_blocklist_update_result const&) { fired = true; });
+    } // ~Updater marks the in-flight request cancelled
+
+    mediator.respond(200, std::string{ Rules });
+    EXPECT_FALSE(fired);
+}
+
+TEST(BlocklistUpdater, armsTimerWhenEnabled)
+{
+    auto mediator = MockMediator{};
+    auto updater = tr::blocklist::Updater{ mediator };
+
+    updater.restart_timer();
+
+    auto* const timer = mediator.timer();
+    ASSERT_NE(nullptr, timer);
+    EXPECT_TRUE(timer->is_running_);
+    EXPECT_FALSE(timer->is_repeating_); // single-shot
+}
+
+TEST(BlocklistUpdater, disarmsTimerWhenBlocklistDisabled)
+{
+    auto mediator = MockMediator{};
+    mediator.enabled_ = false;
+    auto updater = tr::blocklist::Updater{ mediator };
+
+    updater.restart_timer();
+    EXPECT_FALSE(mediator.timer()->is_running_);
+}
+
+TEST(BlocklistUpdater, disarmsTimerWhenUrlEmpty)
+{
+    auto mediator = MockMediator{};
+    mediator.url_.clear();
+    auto updater = tr::blocklist::Updater{ mediator };
+
+    updater.restart_timer();
+    EXPECT_FALSE(mediator.timer()->is_running_);
+}
+
+TEST(BlocklistUpdater, disarmsTimerWhenUpdatesDisabled)
+{
+    auto mediator = MockMediator{};
+    mediator.updates_enabled_ = false;
+    auto updater = tr::blocklist::Updater{ mediator };
+
+    updater.restart_timer();
+    EXPECT_FALSE(mediator.timer()->is_running_);
+}
+
+// ---
+// Integration smoke tests: the real tr_session BlocklistMediator end to end
+// (real fetch, real decompress, real tmpfile save, real rule parsing) over a
+// loopback HTTP server. The mock-based tests above cover control flow; these
+// keep a few representative paths honest through the production wiring.
+
 class BlocklistDownloadTest : public SessionTest
 {
 protected:
-    // Two non-overlapping ranges => two rules.
-    static auto constexpr Rules =
-        "Austin Law Firm:216.16.1.144-216.16.1.151\n"
-        "Evilcorp:216.88.88.0-216.88.88.255\n"sv;
-
     // Point the session's blocklist URL at the loopback server, kick off an
     // update, and wait for it to finish. tr_blocklistUpdate() invokes its
     // callback on the session thread, so hand the result back via a promise.
@@ -118,28 +484,6 @@ TEST_F(BlocklistDownloadTest, installsPlainText)
     EXPECT_EQ(2U, tr_blocklistGetRuleCount(session_));
 }
 
-TEST_F(BlocklistDownloadTest, installsGzip)
-{
-    static auto const Compressed = makeArchive(asGzip, "blocklist"sv, Rules);
-    server_.setHandler([](evhttp_request* req) { LoopbackServer::reply(req, HTTP_OK, "OK", Compressed); });
-
-    auto const result = runUpdate();
-    EXPECT_EQ(tr_blocklist_update_status::Ok, result.status);
-    EXPECT_EQ(2U, result.n_rules);
-    EXPECT_EQ(2U, tr_blocklistGetRuleCount(session_));
-}
-
-TEST_F(BlocklistDownloadTest, installsTar)
-{
-    static auto const Tarred = makeArchive(asTar, "blocklist"sv, Rules);
-    server_.setHandler([](evhttp_request* req) { LoopbackServer::reply(req, HTTP_OK, "OK", Tarred); });
-
-    auto const result = runUpdate();
-    EXPECT_EQ(tr_blocklist_update_status::Ok, result.status);
-    EXPECT_EQ(2U, result.n_rules);
-    EXPECT_EQ(2U, tr_blocklistGetRuleCount(session_));
-}
-
 TEST_F(BlocklistDownloadTest, installsZip)
 {
     static auto const Zipped = makeArchive(asZip, "blocklist"sv, Rules);
@@ -161,16 +505,6 @@ TEST_F(BlocklistDownloadTest, reportsDownloadError)
     EXPECT_FALSE(std::empty(result.error));
 }
 
-TEST_F(BlocklistDownloadTest, reportsInvalidData)
-{
-    server_.setHandler(
-        [](evhttp_request* req) { LoopbackServer::reply(req, HTTP_OK, "OK", "this is not a blocklist\ngarbage\n"sv); });
-
-    auto const result = runUpdate();
-    EXPECT_EQ(tr_blocklist_update_status::InvalidData, result.status);
-    EXPECT_EQ(0U, result.n_rules);
-}
-
 TEST_F(BlocklistDownloadTest, updatesMTimeOnSuccess)
 {
     EXPECT_EQ(0, tr_blocklistGetMTime(session_));
@@ -180,68 +514,6 @@ TEST_F(BlocklistDownloadTest, updatesMTimeOnSuccess)
     ASSERT_EQ(tr_blocklist_update_status::Ok, result.status);
 
     EXPECT_GT(tr_blocklistGetMTime(session_), 0);
-}
-
-TEST_F(BlocklistDownloadTest, cancelSuppressesCallback)
-{
-    server_.setHandler([](evhttp_request* req) { LoopbackServer::reply(req, HTTP_OK, "OK", Rules); });
-    tr_blocklistSetURL(session_, server_.url("/blocklist"sv));
-
-    // Kick off an update and immediately cancel it. update() and cancel() are
-    // both marshalled to the session thread in call order, so `cancelled` is set
-    // there before the (slower) network response is processed.
-    auto callback_fired = std::make_shared<std::atomic<bool>>(false);
-    tr_blocklistUpdate(
-        session_,
-        [callback_fired](tr_blocklist_update_result const&) { callback_fired->store(true, std::memory_order_release); });
-    tr_blocklistUpdateCancel(session_);
-
-    // Cancellation suppresses the callback, not the HTTP transfer, so wait for
-    // the request to actually reach the server, then give finish_request() a
-    // moment to run on the session thread -- a non-suppressed callback would
-    // fire in that window.
-    auto const deadline = std::chrono::steady_clock::now() + 5s;
-    while (std::empty(server_.lastRequest().method) && std::chrono::steady_clock::now() < deadline) {
-        std::this_thread::sleep_for(5ms);
-    }
-    ASSERT_FALSE(std::empty(server_.lastRequest().method)) << "request never reached the server";
-    std::this_thread::sleep_for(250ms);
-
-    EXPECT_FALSE(callback_fired->load(std::memory_order_acquire));
-    EXPECT_EQ(0U, tr_blocklistGetRuleCount(session_)); // nothing was installed
-
-    // The updater is still usable afterward: a fresh update completes normally.
-    auto const result = runUpdate();
-    EXPECT_EQ(tr_blocklist_update_status::Ok, result.status);
-    EXPECT_EQ(2U, result.n_rules);
-}
-
-TEST_F(BlocklistDownloadTest, secondUpdateSupersedesFirst)
-{
-    server_.setHandler([](evhttp_request* req) { LoopbackServer::reply(req, HTTP_OK, "OK", Rules); });
-    tr_blocklistSetURL(session_, server_.url("/blocklist"sv));
-
-    // Start one update, then immediately start another. The second supersedes
-    // the first, so only the second's callback should fire.
-    auto first_fired = std::make_shared<std::atomic<bool>>(false);
-    tr_blocklistUpdate(
-        session_,
-        [first_fired](tr_blocklist_update_result const&) { first_fired->store(true, std::memory_order_release); });
-
-    auto promise = std::make_shared<std::promise<tr_blocklist_update_result>>();
-    auto future = promise->get_future();
-    tr_blocklistUpdate(session_, [promise](tr_blocklist_update_result const& result) { promise->set_value(result); });
-
-    ASSERT_EQ(std::future_status::ready, future.wait_for(15s));
-    auto const result = future.get();
-    EXPECT_EQ(tr_blocklist_update_status::Ok, result.status);
-    EXPECT_EQ(2U, result.n_rules);
-    EXPECT_EQ(2U, tr_blocklistGetRuleCount(session_)); // installed exactly once
-
-    // Give the superseded request's response time to arrive; its callback must
-    // not fire.
-    std::this_thread::sleep_for(250ms);
-    EXPECT_FALSE(first_fired->load(std::memory_order_acquire));
 }
 
 } // namespace

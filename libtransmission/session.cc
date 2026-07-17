@@ -2036,7 +2036,7 @@ tr_session::tr_session(std::string_view config_dir, tr::Settings const& settings
     queue_timer_->start_repeating(QueueInterval);
     save_timer_->start_repeating(SaveInterval);
 
-    blocklist_updater_ = std::make_unique<tr::blocklist::Updater>(this);
+    blocklist_updater_ = std::make_unique<tr::blocklist::Updater>(blocklist_mediator_);
 }
 
 void tr_session::addIncoming(std::shared_ptr<tr_peer_socket> socket)

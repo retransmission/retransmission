@@ -40,6 +40,7 @@
 #include "libtransmission/announcer.h"
 #include "libtransmission/bandwidth.h"
 #include "libtransmission/blocklist.h"
+#include "libtransmission/blocklist-download.h"
 #include "libtransmission/converters.h"
 #include "libtransmission/interned-string.h"
 #include "libtransmission/ip-cache.h"
@@ -80,13 +81,6 @@ namespace tr::test
 class SessionTest;
 
 } // namespace tr::test
-
-namespace tr::blocklist
-{
-
-class Updater;
-
-} // namespace tr::blocklist
 
 /** @brief handle to an active libtransmission session */
 struct tr_session {
@@ -355,6 +349,47 @@ private:
         [[nodiscard]] tr::TimerMaker& timer_maker() override
         {
             return session_.timerMaker();
+        }
+
+    private:
+        tr_session& session_;
+    };
+
+    class BlocklistMediator final : public tr::blocklist::Updater::Mediator
+    {
+    public:
+        explicit BlocklistMediator(tr_session& session) noexcept
+            : session_{ session }
+        {
+        }
+
+        void fetch(tr_web::FetchOptions&& options) override
+        {
+            session_.fetch(std::move(options));
+        }
+
+        [[nodiscard]] time_t mtime() const override
+        {
+            return session_.blocklist_mtime();
+        }
+
+        // These forward to tr_session accessors with deduced (auto) return types,
+        // which can't be named from an inline member defined ahead of them; and
+        // set_blocklist_content needs the file/path helpers. All are defined
+        // out-of-line in blocklist-download.cc, alongside the rest of the glue.
+        [[nodiscard]] std::string blocklist_url() const override;
+        [[nodiscard]] std::optional<size_t> set_blocklist_content(std::string_view content, std::string& error) override;
+        [[nodiscard]] bool enabled() const override;
+        [[nodiscard]] bool updates_enabled() const override;
+
+        [[nodiscard]] tr::TimerMaker& timer_maker() override
+        {
+            return session_.timerMaker();
+        }
+
+        void run_in_session_thread(std::function<void()> func) override
+        {
+            session_.run_in_session_thread(std::move(func));
         }
 
     private:
@@ -1350,10 +1385,14 @@ private:
     WebMediator web_mediator_{ this };
     std::unique_ptr<tr_web> web_ = tr_web::create(this->web_mediator_);
 
-    // depends-on: timer_maker_, blocklists_, web_
+    // depends-on: settings_, session_thread_, timer_maker_, blocklists_, web_, config_dir_
+    BlocklistMediator blocklist_mediator_{ *this };
+
+    // depends-on: blocklist_mediator_
     // Declared after web_ so it's torn down first: an in-flight fetch held by
     // web_ keeps its request state alive, and the Updater's destruction drops
-    // any pending completion before web_ goes away.
+    // any pending completion before web_ goes away. Declared after
+    // blocklist_mediator_ so the mediator outlives the Updater that references it.
     std::unique_ptr<tr::blocklist::Updater> blocklist_updater_;
 
     // depends-on: timer_maker_, blocklists_, top_bandwidth_, utp_context, torrents_, web_
