@@ -83,8 +83,9 @@ public:
     Updater& operator=(Updater&&) = delete;
 
     // Start a one-shot update. `on_done` is invoked exactly once, on the
-    // session thread, when the update finishes -- unless cancel() is called
-    // first, in which case it is not invoked at all.
+    // session thread: with the update's outcome when it finishes, or with a
+    // Superseded status if a newer update() takes over first. It is not invoked
+    // at all if cancel() is called first.
     void update(tr_blocklist_update_func on_done);
 
     // Abandon the most recent in-flight update: its `on_done` will not fire.

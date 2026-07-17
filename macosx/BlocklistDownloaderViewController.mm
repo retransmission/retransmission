@@ -110,18 +110,25 @@ static BlocklistDownloaderViewController* fBLViewController = nil;
     __weak BlocklistDownloaderViewController* weakSelf = self;
     __weak PrefsController* weakPrefsController = self.fPrefsController;
     tr_blocklistUpdate(((Controller*)NSApp.delegate).sessionHandle, [weakSelf, weakPrefsController](tr_blocklist_update_result const& result) {
-        bool const ok = result.status == tr_blocklist_update_status::Ok;
+        tr_blocklist_update_status const status = result.status;
         NSString* const error = result.error.empty() ? nil : @(result.error.c_str());
         dispatch_async(dispatch_get_main_queue(), ^{
             BlocklistDownloaderViewController* const strongSelf = weakSelf;
             if (strongSelf == nil) {
                 return;
             }
-            if (ok) {
+            switch (status) {
+            case tr_blocklist_update_status::Ok:
                 [strongSelf setFinished];
                 [weakPrefsController updateBlocklistFields];
-            } else {
+                break;
+            case tr_blocklist_update_status::Superseded:
+                // a newer update took over; close the sheet quietly, no error
+                [strongSelf setFinished];
+                break;
+            default:
                 [strongSelf setFailed:error ?: NSLocalizedString(@"The blocklist could not be updated.", "Blocklist -> message")];
+                break;
             }
         });
     });

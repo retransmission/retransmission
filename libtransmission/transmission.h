@@ -492,7 +492,13 @@ void tr_blocklistSetEnabled(tr_session* session, bool is_enabled);
 void tr_blocklistSetURL(tr_session* session, std::string_view url);
 
 /** @brief How a blocklist update fared. */
-enum class tr_blocklist_update_status : uint8_t { Ok, DownloadError, SaveError, InvalidData };
+enum class tr_blocklist_update_status : uint8_t {
+    Ok,
+    DownloadError,
+    SaveError,
+    InvalidData,
+    Superseded // a newer tr_blocklistUpdate() replaced this one before it finished
+};
 
 struct tr_blocklist_update_result {
     tr_blocklist_update_status status = tr_blocklist_update_status::Ok;
@@ -507,9 +513,10 @@ using tr_blocklist_update_func = std::function<void(tr_blocklist_update_result c
  * plain text are all handled transparently), install it, and report the
  * outcome.
  *
- * `on_done` is invoked exactly once, on the session thread, when the update
- * finishes -- unless tr_blocklistUpdateCancel() is called first, in which case
- * it is not invoked at all.
+ * `on_done` is invoked exactly once, on the session thread: with the update's
+ * outcome when it finishes, or with a Superseded status if a newer
+ * tr_blocklistUpdate() takes over before it completes. It is not invoked at all
+ * if tr_blocklistUpdateCancel() is called first.
  */
 void tr_blocklistUpdate(tr_session* session, tr_blocklist_update_func on_done);
 

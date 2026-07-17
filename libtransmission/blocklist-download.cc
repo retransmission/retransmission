@@ -192,10 +192,18 @@ void Updater::update(tr_blocklist_update_func on_done)
 {
     mediator_.run_in_session_thread([this, on_done = std::move(on_done)]() mutable {
         // Supersede any still-in-flight update so only the newest one installs a
-        // result and fires its callback. (The superseded download may still run
-        // to completion internally; tr_web has no per-request abort.)
+        // result. Resolve the superseded request now with a Superseded status so
+        // a caller waiting on it isn't left hanging; its own completion later is a
+        // no-op (see finish_request's cancelled check), so on_done fires exactly
+        // once. (The superseded download may still run to completion internally;
+        // tr_web has no per-request abort.)
         if (auto previous = latest_.lock()) {
             previous->cancelled = true;
+            if (previous->on_done) {
+                auto superseded = tr_blocklist_update_result{};
+                superseded.status = tr_blocklist_update_status::Superseded;
+                previous->on_done(superseded);
+            }
         }
 
         auto pending = std::make_shared<Pending>(Pending{ .mediator = &mediator_, .on_done = std::move(on_done) });
