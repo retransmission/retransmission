@@ -48,6 +48,11 @@ auto constexpr UpdateInterval = std::chrono::hours{ 24 * 7 };
 // wait this long after startup before the first auto-update, so we don't
 // hammer the network the instant the app launches
 auto constexpr StartupDelay = std::chrono::seconds{ 60 };
+
+// Refuse to decompress anything absurdly large. Real blocklists are tens of MB,
+// so this bounds a decompression bomb -- a tiny archive that expands to GBs --
+// while leaving genuine lists plenty of headroom.
+auto constexpr MaxDecompressedSize = size_t{ 128U } * 1024U * 1024U;
 } // namespace
 
 // Decompress a downloaded blocklist. Blocklists are distributed either as
@@ -82,6 +87,16 @@ std::string decompress(std::string_view body)
                     break; // 0 == end of entry; < 0 == read error, give up on this entry
                 }
                 content.append(std::data(buf), static_cast<size_t>(n_read));
+                if (std::size(content) > MaxDecompressedSize) {
+                    // likely a decompression bomb; discard it entirely so a
+                    // truncated prefix isn't mistaken for a valid blocklist
+                    tr_logAddWarn(
+                        fmt::format(
+                            fmt::runtime(_("Blocklist is larger than {limit} MiB; ignoring it")),
+                            fmt::arg("limit", MaxDecompressedSize / (1024U * 1024U))));
+                    content.clear();
+                    break;
+                }
             }
             break;
         }
