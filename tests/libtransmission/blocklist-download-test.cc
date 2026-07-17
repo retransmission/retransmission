@@ -3,12 +3,14 @@
 // or any future license endorsed by Mnemosaic LLC.
 // License text can be found in the licenses/ folder.
 
+#include <atomic>
 #include <chrono>
 #include <cstddef>
 #include <future>
 #include <memory>
 #include <string>
 #include <string_view>
+#include <thread>
 
 #include <event2/http.h>
 
@@ -178,6 +180,68 @@ TEST_F(BlocklistDownloadTest, updatesMTimeOnSuccess)
     ASSERT_EQ(tr_blocklist_update_status::Ok, result.status);
 
     EXPECT_GT(tr_blocklistGetMTime(session_), 0);
+}
+
+TEST_F(BlocklistDownloadTest, cancelSuppressesCallback)
+{
+    server_.setHandler([](evhttp_request* req) { LoopbackServer::reply(req, HTTP_OK, "OK", Rules); });
+    tr_blocklistSetURL(session_, server_.url("/blocklist"sv));
+
+    // Kick off an update and immediately cancel it. update() and cancel() are
+    // both marshalled to the session thread in call order, so `cancelled` is set
+    // there before the (slower) network response is processed.
+    auto callback_fired = std::make_shared<std::atomic<bool>>(false);
+    tr_blocklistUpdate(
+        session_,
+        [callback_fired](tr_blocklist_update_result const&) { callback_fired->store(true, std::memory_order_release); });
+    tr_blocklistUpdateCancel(session_);
+
+    // Cancellation suppresses the callback, not the HTTP transfer, so wait for
+    // the request to actually reach the server, then give finish_request() a
+    // moment to run on the session thread -- a non-suppressed callback would
+    // fire in that window.
+    auto const deadline = std::chrono::steady_clock::now() + 5s;
+    while (std::empty(server_.lastRequest().method) && std::chrono::steady_clock::now() < deadline) {
+        std::this_thread::sleep_for(5ms);
+    }
+    ASSERT_FALSE(std::empty(server_.lastRequest().method)) << "request never reached the server";
+    std::this_thread::sleep_for(250ms);
+
+    EXPECT_FALSE(callback_fired->load(std::memory_order_acquire));
+    EXPECT_EQ(0U, tr_blocklistGetRuleCount(session_)); // nothing was installed
+
+    // The updater is still usable afterward: a fresh update completes normally.
+    auto const result = runUpdate();
+    EXPECT_EQ(tr_blocklist_update_status::Ok, result.status);
+    EXPECT_EQ(2U, result.n_rules);
+}
+
+TEST_F(BlocklistDownloadTest, secondUpdateSupersedesFirst)
+{
+    server_.setHandler([](evhttp_request* req) { LoopbackServer::reply(req, HTTP_OK, "OK", Rules); });
+    tr_blocklistSetURL(session_, server_.url("/blocklist"sv));
+
+    // Start one update, then immediately start another. The second supersedes
+    // the first, so only the second's callback should fire.
+    auto first_fired = std::make_shared<std::atomic<bool>>(false);
+    tr_blocklistUpdate(
+        session_,
+        [first_fired](tr_blocklist_update_result const&) { first_fired->store(true, std::memory_order_release); });
+
+    auto promise = std::make_shared<std::promise<tr_blocklist_update_result>>();
+    auto future = promise->get_future();
+    tr_blocklistUpdate(session_, [promise](tr_blocklist_update_result const& result) { promise->set_value(result); });
+
+    ASSERT_EQ(std::future_status::ready, future.wait_for(15s));
+    auto const result = future.get();
+    EXPECT_EQ(tr_blocklist_update_status::Ok, result.status);
+    EXPECT_EQ(2U, result.n_rules);
+    EXPECT_EQ(2U, tr_blocklistGetRuleCount(session_)); // installed exactly once
+
+    // Give the superseded request's response time to arrive; its callback must
+    // not fire.
+    std::this_thread::sleep_for(250ms);
+    EXPECT_FALSE(first_fired->load(std::memory_order_acquire));
 }
 
 } // namespace
