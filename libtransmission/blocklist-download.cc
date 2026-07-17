@@ -63,6 +63,7 @@ std::string decompress(std::string_view body)
     archive_read_support_format_raw(arc);
 
     auto content = std::string{};
+    content.reserve(std::size(body)); // exact for plain text, a lower bound once decompressed
 
     if (archive_read_open_memory(arc, std::data(body), std::size(body)) == ARCHIVE_OK) {
         struct archive_entry* entry = nullptr;
@@ -163,8 +164,7 @@ void Updater::update(tr_blocklist_update_func on_done)
             previous->cancelled = true;
         }
 
-        auto pending = std::make_shared<Pending>(
-            Pending{ .mediator = &mediator_, .on_done = std::move(on_done), .cancelled = false });
+        auto pending = std::make_shared<Pending>(Pending{ .mediator = &mediator_, .on_done = std::move(on_done) });
         latest_ = pending;
         mediator_.fetch(
             { mediator_.blocklist_url(),
@@ -194,12 +194,10 @@ void Updater::arm_timer()
         return;
     }
 
-    auto const now = tr_time();
-    auto const interval_secs = std::chrono::duration_cast<std::chrono::seconds>(UpdateInterval).count();
-    auto const startup_secs = std::chrono::duration_cast<std::chrono::seconds>(StartupDelay).count();
-    auto const due = mediator_.mtime() + interval_secs;
-    auto const wait_secs = due > now + startup_secs ? due - now : startup_secs;
-    timer_->start_single_shot(std::chrono::seconds{ wait_secs });
+    auto const now = std::chrono::seconds{ tr_time() };
+    auto const due = std::chrono::seconds{ mediator_.mtime() } + UpdateInterval;
+    auto const wait = due > now + StartupDelay ? due - now : StartupDelay;
+    timer_->start_single_shot(wait);
 }
 
 void Updater::on_auto_update_timer()
@@ -219,7 +217,7 @@ void Updater::on_auto_update_timer()
 
     // re-arm for the next interval regardless of this attempt's outcome,
     // so a broken URL retries on the normal cadence instead of hot-looping
-    timer_->start_single_shot(std::chrono::duration_cast<std::chrono::milliseconds>(UpdateInterval));
+    timer_->start_single_shot(UpdateInterval);
 }
 
 } // namespace tr::blocklist
