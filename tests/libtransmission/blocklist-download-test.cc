@@ -385,18 +385,27 @@ TEST(BlocklistUpdater, secondUpdateSupersedesFirst)
     auto mediator = MockMediator{};
     auto updater = tr::blocklist::Updater{ mediator };
 
-    auto first_fired = false;
+    auto first_calls = 0;
+    auto first = std::optional<tr_blocklist_update_result>{};
     auto second = std::optional<tr_blocklist_update_result>{};
-    updater.update([&first_fired](tr_blocklist_update_result const&) { first_fired = true; });
+    updater.update([&first_calls, &first](tr_blocklist_update_result const& r) {
+        ++first_calls;
+        first = r;
+    });
     updater.update([&second](tr_blocklist_update_result const& r) { second = r; });
     ASSERT_EQ(2U, mediator.pendingCount());
 
+    // starting the second update resolves the first immediately as superseded
+    ASSERT_EQ(1, first_calls);
+    ASSERT_TRUE(first.has_value());
+    EXPECT_EQ(tr_blocklist_update_status::Superseded, first->status);
+
     // even if the superseded (first) request completes, only the second installs
-    // a result and fires its callback
+    // a result, and the first callback does not fire again
     mediator.respond(0U, 200, std::string{ Rules });
     mediator.respond(1U, 200, std::string{ Rules });
 
-    EXPECT_FALSE(first_fired);
+    EXPECT_EQ(1, first_calls); // fired exactly once, at supersession
     ASSERT_TRUE(second.has_value());
     EXPECT_EQ(tr_blocklist_update_status::Ok, second->status);
     EXPECT_EQ(1, mediator.install_count_); // installed exactly once
