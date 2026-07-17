@@ -37,6 +37,12 @@ struct Pending;
 // format matrix can be tested directly, without a session or a download.
 [[nodiscard]] std::string decompress(std::string_view body);
 
+// Normalize a configured blocklist URL for fetching: trim surrounding
+// whitespace and, when no scheme is present, assume https (a bare host like
+// "list.example.com/bl" would otherwise fail at libcurl). Returns empty for an
+// empty or whitespace-only URL. Exposed here so it can be tested directly.
+[[nodiscard]] std::string normalize_blocklist_url(std::string_view url);
+
 // Downloads the blocklist URL, decompresses it (see decompress()), installs the
 // result, and reports the outcome. Also owns the periodic auto-update timer.
 // One instance is owned by each tr_session.
