@@ -272,7 +272,11 @@ void tr_session::on_blocklist_settings_changed()
 void tr_blocklistUpdate(tr_session* session, tr_blocklist_update_func on_done)
 {
     TR_ASSERT(session != nullptr);
-    session->blocklist_updater()->update(std::move(on_done));
+    // null once the session is tearing down (see closeImplPart1); mirror the
+    // guard in tr_blocklistUpdateCancel() instead of dereferencing blindly.
+    if (auto* const updater = session->blocklist_updater()) {
+        updater->update(std::move(on_done));
+    }
 }
 
 void tr_blocklistUpdateCancel(tr_session* session)
