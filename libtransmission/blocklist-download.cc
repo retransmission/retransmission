@@ -26,6 +26,7 @@
 #include "libtransmission/file.h" // tr_sys_path_remove()
 #include "libtransmission/log.h"
 #include "libtransmission/session.h"
+#include "libtransmission/string-utils.h" // tr_strv_strip()
 #include "libtransmission/timer.h"
 #include "libtransmission/tr-assert.h"
 #include "libtransmission/tr-strbuf.h" // tr_pathbuf
@@ -101,6 +102,27 @@ struct Pending {
 
 namespace
 {
+// True if `text` has at least one line that isn't blank or a comment -- i.e.
+// something the parser could turn into a rule. A download that decompresses to
+// only blanks/comments (or nothing at all) would otherwise replace a good
+// blocklist with an empty one; mirrors parseFile()'s comment handling in
+// blocklist.cc.
+[[nodiscard]] bool has_rule_lines(std::string_view text)
+{
+    for (auto remain = text; !std::empty(remain);) {
+        auto const eol = remain.find('\n');
+        if (auto const line = tr_strv_strip(remain.substr(0U, eol));
+            !std::empty(line) && !tr_strv_starts_with(line, "#"sv) && !tr_strv_starts_with(line, "//"sv)) {
+            return true;
+        }
+        if (eol == std::string_view::npos) {
+            break;
+        }
+        remain.remove_prefix(eol + 1U);
+    }
+    return false;
+}
+
 void finish_request(tr_web::FetchResponse const& response, std::shared_ptr<Pending> const& pending)
 {
     if (pending->cancelled) {
@@ -123,6 +145,18 @@ void finish_request(tr_web::FetchResponse const& response, std::shared_ptr<Pendi
     // peel off any compression/archive, then hand the plain text to the
     // mediator to persist and parse
     auto const content = decompress(response.body);
+
+    // A rule-less response (empty, whitespace, or comments only) would replace a
+    // good blocklist with nothing. Report it as invalid and leave the installed
+    // list untouched rather than silently wiping it -- a provider hiccup (an
+    // empty file or a "temporarily unavailable" placeholder) shouldn't drop the
+    // user's protection to zero on an unattended auto-update.
+    if (!has_rule_lines(content)) {
+        result.status = tr_blocklist_update_status::InvalidData;
+        pending->on_done(result);
+        return;
+    }
+
     auto error = std::string{};
     if (auto const n_rules = pending->mediator->set_blocklist_content(content, error); !n_rules) {
         result.status = tr_blocklist_update_status::SaveError;

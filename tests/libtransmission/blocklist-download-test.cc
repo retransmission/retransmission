@@ -334,6 +334,21 @@ TEST(BlocklistUpdater, reportsInvalidData)
     EXPECT_EQ(0U, result->n_rules);
 }
 
+TEST(BlocklistUpdater, keepsExistingListWhenDownloadHasNoRules)
+{
+    auto mediator = MockMediator{};
+    auto updater = tr::blocklist::Updater{ mediator };
+
+    auto result = std::optional<tr_blocklist_update_result>{};
+    updater.update([&result](tr_blocklist_update_result const& r) { result = r; });
+    // a comment-only body: valid text, but nothing the parser would install
+    mediator.respond(200, "# temporarily unavailable\n");
+
+    ASSERT_TRUE(result.has_value());
+    EXPECT_EQ(tr_blocklist_update_status::InvalidData, result->status);
+    EXPECT_EQ(0, mediator.install_count_); // must not overwrite the installed list
+}
+
 TEST(BlocklistUpdater, reportsSaveError)
 {
     auto mediator = MockMediator{};
@@ -504,6 +519,20 @@ TEST_F(BlocklistDownloadTest, reportsDownloadError)
     EXPECT_EQ(tr_blocklist_update_status::DownloadError, result.status);
     EXPECT_EQ(0U, result.n_rules);
     EXPECT_FALSE(std::empty(result.error));
+}
+
+TEST_F(BlocklistDownloadTest, ruleLessDownloadKeepsExistingBlocklist)
+{
+    // install a good list first
+    server_.setHandler([](evhttp_request* req) { LoopbackServer::reply(req, HTTP_OK, "OK", Rules); });
+    ASSERT_EQ(tr_blocklist_update_status::Ok, runUpdate().status);
+    ASSERT_EQ(2U, tr_blocklistGetRuleCount(session_));
+
+    // a later update that returns only comments must not wipe the installed list
+    server_.setHandler([](evhttp_request* req) { LoopbackServer::reply(req, HTTP_OK, "OK", "# temporarily unavailable\n"sv); });
+    auto const result = runUpdate();
+    EXPECT_EQ(tr_blocklist_update_status::InvalidData, result.status);
+    EXPECT_EQ(2U, tr_blocklistGetRuleCount(session_)); // preserved, not wiped
 }
 
 TEST_F(BlocklistDownloadTest, updatesMTimeOnSuccess)
