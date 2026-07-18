@@ -135,6 +135,57 @@ private slots:
         QCOMPARE(spy.first().at(0).value<tr_quark>(), Key);
         QCOMPARE(prefs.get<bool>(Key), !was_checked);
     }
+
+    // The "automatic updates" checkbox drives blocklist_updates_enabled, which is
+    // now a session-owned pref -- toggling it is how a client asks the session to
+    // turn its periodic blocklist auto-update on or off.
+    void toggling_auto_update_check_emits_prefs_changed()
+    {
+        auto const dl_dir = QDir{ sandboxDir() }.filePath(QStringLiteral("downloads"));
+        QVERIFY(QDir{}.mkpath(dl_dir));
+
+        auto prefs = Prefs{};
+        writeQuietSettings(sandboxDir());
+        setLocalPrefs(prefs, dl_dir);
+
+        auto rpc = RpcClient{};
+        auto session = Session{ sandboxDir(), prefs, rpc };
+        session.restart();
+        QVERIFY(session.isLocalFilesystem());
+
+        auto dialog = PrefsDialog{ session, prefs };
+        QVERIFY(drainFreeSpace(dialog));
+
+        // the auto-update checkbox is only enabled while the blocklist is enabled
+        auto* const enable_check = dialog.findChild<QCheckBox*>(QStringLiteral("blocklistCheck"));
+        QVERIFY(enable_check != nullptr);
+        if (enable_check == nullptr) {
+            return;
+        }
+        if (!enable_check->isChecked()) {
+            enable_check->click();
+        }
+
+        auto* const check = dialog.findChild<QCheckBox*>(QStringLiteral("autoUpdateBlocklistCheck"));
+        QVERIFY(check != nullptr);
+        if (check == nullptr) {
+            return;
+        }
+        QVERIFY(check->isEnabled());
+
+        // Spy after construction: the initial setChecked() runs under a
+        // QSignalBlocker, so only a genuine user toggle reaches Prefs.
+        auto const spy = QSignalSpy{ &prefs, qOverload<tr_quark>(&Prefs::changed) };
+
+        auto const was_checked = check->isChecked();
+        check->click();
+        QCOMPARE(check->isChecked(), !was_checked);
+
+        auto constexpr Key = TR_KEY_blocklist_updates_enabled;
+        QCOMPARE(spy.count(), 1);
+        QCOMPARE(spy.first().at(0).value<tr_quark>(), Key);
+        QCOMPARE(prefs.get<bool>(Key), !was_checked);
+    }
 };
 } // namespace
 
