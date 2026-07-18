@@ -55,13 +55,8 @@ auto constexpr StartupDelay = std::chrono::seconds{ 60 };
 auto constexpr MaxDecompressedSize = size_t{ 128U } * 1024U * 1024U;
 } // namespace
 
-// Decompress a downloaded blocklist. Blocklists are distributed either as plain
-// text or wrapped in a container/compressor: gzip, tar (possibly gzipped), or
-// zip. Enable just those, plus "raw" (registered last) so a plain, unwrapped
-// list is read as a single entry rather than rejected. This is deliberately not
-// libarchive's archive_read_support_{filter,format}_all(): a blocklist never
-// needs 7-zip/iso/cab/rar/xz/..., and keeping those historically CVE-prone
-// parsers away from attacker-controlled download bytes is worth the narrow set.
+// Decompress a downloaded blocklist. We support txt, tar, gz, tgz formats.
+// Omit other libarchive formats for YAGNI. We can others if/when needed.
 std::string decompress(std::string_view body)
 {
     auto* const arc = archive_read_new();
@@ -137,11 +132,9 @@ struct Pending {
 
 namespace
 {
-// True if `text` has at least one line that isn't blank or a comment -- i.e.
-// something the parser could turn into a rule. A download that decompresses to
-// only blanks/comments (or nothing at all) would otherwise replace a good
-// blocklist with an empty one; mirrors parseFile()'s comment handling in
-// blocklist.cc.
+// True if `text` has at least one line that isn't blank or a comment,
+// i.e.  something the parser could turn into a rule. This is to prevent
+// a download with no rules from replacing the previous good blocklist.
 [[nodiscard]] bool has_rule_lines(std::string_view text)
 {
     for (auto remain = text; !std::empty(remain);) {
@@ -181,11 +174,8 @@ void finish_request(tr_web::FetchResponse const& response, std::shared_ptr<Pendi
     // mediator to persist and parse
     auto const content = decompress(response.body);
 
-    // A rule-less response (empty, whitespace, or comments only) would replace a
-    // good blocklist with nothing. Report it as invalid and leave the installed
-    // list untouched rather than silently wiping it -- a provider hiccup (an
-    // empty file or a "temporarily unavailable" placeholder) shouldn't drop the
-    // user's protection to zero on an unattended auto-update.
+    // If the response has no rules, report it as invalid and leave the installed
+    // list untouched instead of wiping it.
     if (!has_rule_lines(content)) {
         result.status = tr_blocklist_update_status::InvalidData;
         pending->on_done(result);
@@ -226,12 +216,10 @@ Updater::~Updater()
 void Updater::update(tr_blocklist_update_func on_done)
 {
     mediator_.run_in_session_thread([this, on_done = std::move(on_done)]() mutable {
-        // Supersede any still-in-flight update so only the newest one installs a
-        // result. Resolve the superseded request now with a Superseded status so
-        // a caller waiting on it isn't left hanging; its own completion later is a
-        // no-op (see finish_request's cancelled check), so on_done fires exactly
-        // once. (The superseded download may still run to completion internally;
-        // tr_web has no per-request abort.)
+        // Supersede any in-flight req so only the newest one updates the list.
+        // Resolve the old request with a Superseded status so its callback
+        // handler isn't left hanging. (The superseded download may still run
+        // to completion internally; tr_web has no per-request abort.)
         if (auto previous = latest_.lock()) {
             previous->cancelled = true;
             if (previous->on_done) {
