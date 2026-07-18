@@ -680,7 +680,12 @@ void Session::updateBlocklist()
             auto* const args = r.args.get();
             auto const status = dictFind<QString>(args, TR_KEY_status).value_or(QString{});
             if (status == QStringLiteral("ok")) {
-                setBlocklistSize(dictFind<int>(args, TR_KEY_blocklist_size).value_or(0));
+                auto const n_rules = dictFind<int>(args, TR_KEY_blocklist_size).value_or(0);
+                setBlocklistSize(n_rules);
+                // Announce success only for this manual update. setBlocklistSize() no longer
+                // emits blocklistUpdated(), so a background session_get refresh can't flash a
+                // spurious "Update succeeded!" in the dialog.
+                emit blocklistUpdated(n_rules);
             } else if (status == QStringLiteral("superseded")) {
                 emit blocklistUpdateSuperseded();
             } else {
@@ -782,8 +787,6 @@ void Session::updateInfo(tr_variant* args_dict)
 void Session::setBlocklistSize(int64_t i)
 {
     blocklist_size_ = i;
-
-    emit blocklistUpdated(i);
 }
 
 void Session::addTorrent(AddData const& add_me, tr_variant::Map args_dict)
