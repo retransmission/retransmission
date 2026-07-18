@@ -6,11 +6,13 @@
 #include "PrefsDialog.h"
 
 #include <cassert>
+#include <chrono>
 #include <optional>
 
 #include <QCheckBox>
 #include <QComboBox>
 #include <QCoreApplication>
+#include <QDateTime>
 #include <QDialogButtonBox>
 #include <QDoubleSpinBox>
 #include <QHBoxLayout>
@@ -397,6 +399,8 @@ void PrefsDialog::onBlocklistDialogDestroyed(QObject* o)
 void PrefsDialog::onUpdateBlocklistCancelled()
 {
     disconnect(&session_, &Session::blocklistUpdated, this, &PrefsDialog::onBlocklistUpdated);
+    disconnect(&session_, &Session::blocklistUpdateFailed, this, &PrefsDialog::onBlocklistUpdateFailed);
+    disconnect(&session_, &Session::blocklistUpdateSuperseded, this, &PrefsDialog::onBlocklistUpdateSuperseded);
     blocklist_dialog_->deleteLater();
 }
 
@@ -404,6 +408,28 @@ void PrefsDialog::onBlocklistUpdated(int64_t n)
 {
     blocklist_dialog_->setText(
         tr("<b>Update succeeded!</b><p>Blocklist now has %Ln rule(s).</p>", nullptr, static_cast<int>(n)));
+    blocklist_dialog_->setTextFormat(Qt::RichText);
+}
+
+void PrefsDialog::onBlocklistUpdateFailed(QString const& message)
+{
+    // Keep markup out of the translatable strings (assemble it here) and match the
+    // macOS client's wording. The detail line is libtransmission's own error text
+    // when present, or a generic fallback otherwise.
+    //
+    // SECURITY: `message` originates from the session -- a remote daemon can be hostile --
+    // and this dialog renders RichText, so toHtmlEscaped() is load-bearing: it stops a
+    // malicious daemon from injecting markup here. Don't drop it.
+    auto const detail = message.isEmpty() ? tr("The blocklist could not be updated.") : message.toHtmlEscaped();
+    blocklist_dialog_->setText(QStringLiteral("<b>%1</b><p>%2</p>").arg(tr("Download of the blocklist failed."), detail));
+    blocklist_dialog_->setTextFormat(Qt::RichText);
+}
+
+void PrefsDialog::onBlocklistUpdateSuperseded()
+{
+    // Our request was overtaken by a newer update (e.g. the session's own auto-update
+    // timer); resolve the dialog with a neutral note instead of leaving it stuck.
+    blocklist_dialog_->setText(QStringLiteral("<b>%1</b>").arg(tr("Another blocklist update is already in progress.")));
     blocklist_dialog_->setTextFormat(Qt::RichText);
 }
 
@@ -416,6 +442,8 @@ void PrefsDialog::onUpdateBlocklistClicked()
                                          this };
     connect(blocklist_dialog_, &QDialog::rejected, this, &PrefsDialog::onUpdateBlocklistCancelled);
     connect(&session_, &Session::blocklistUpdated, this, &PrefsDialog::onBlocklistUpdated);
+    connect(&session_, &Session::blocklistUpdateFailed, this, &PrefsDialog::onBlocklistUpdateFailed);
+    connect(&session_, &Session::blocklistUpdateSuperseded, this, &PrefsDialog::onBlocklistUpdateSuperseded);
     blocklist_dialog_->show();
     session_.updateBlocklist();
 }
@@ -427,7 +455,7 @@ void PrefsDialog::initPrivacyTab()
     initWidget(ui_.blocklistEdit, TR_KEY_blocklist_url);
     initWidget(ui_.autoUpdateBlocklistCheck, TR_KEY_blocklist_updates_enabled);
 
-    block_widgets_ << ui_.blocklistEdit << ui_.blocklistStatusLabel << ui_.updateBlocklistButton
+    block_widgets_ << ui_.blocklistEdit << ui_.blocklistStatusLabel << ui_.blocklistDateLabel << ui_.updateBlocklistButton
                    << ui_.autoUpdateBlocklistCheck;
 
     auto* cr = new ColumnResizer{ this };
@@ -617,6 +645,12 @@ void PrefsDialog::updateBlocklistLabel()
 {
     ui_.blocklistStatusLabel->setText(
         tr("<i>Blocklist contains %Ln rule(s)</i>", nullptr, static_cast<int>(session_.blocklistSize())));
+
+    auto const updated_at = prefs_.get<std::chrono::sys_seconds>(TR_KEY_blocklist_date).time_since_epoch().count();
+    ui_.blocklistDateLabel->setText(
+        updated_at == 0 ?
+            tr("<i>Blocklist has never been updated</i>") :
+            tr("<i>Blocklist last updated %1</i>").arg(QDateTime::fromSecsSinceEpoch(updated_at).toString(Qt::TextDate)));
 }
 
 void PrefsDialog::refreshPref(tr_quark key)
