@@ -43,6 +43,8 @@ private slots:
     void onUpdateBlocklistCancelled();
     void onBlocklistDialogDestroyed(QObject* o);
     void onBlocklistUpdated(int64_t n);
+    void onBlocklistUpdateFailed(QString const& message);
+    void onBlocklistUpdateSuperseded();
 
 private:
     enum class PortTestStatus : uint8_t { Unknown = 0U, Checking, Open, Closed, Error };
