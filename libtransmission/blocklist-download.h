@@ -53,31 +53,14 @@ public:
     struct Mediator {
         virtual ~Mediator() = default;
 
-        // --- downloading ---
-
-        // The configured blocklist URL to fetch.
-        [[nodiscard]] virtual std::string blocklist_url() const = 0;
-
-        // Fetch over HTTP. The response callback is invoked on the session thread.
         virtual void fetch(tr_web::FetchOptions&& options) = 0;
-
-        // --- installing ---
-
-        // Install decompressed blocklist content and return the new rule count.
-        // Returns positive on success, 0 for well-formed-but-empty content.
-        // On error, return nullopt and set `error` to a readable string.
+        virtual void run_in_session_thread(std::function<void()> func) = 0;
+        [[nodiscard]] virtual time_t mtime() const = 0;
+        [[nodiscard]] virtual std::string blocklist_url() const = 0;
         [[nodiscard]] virtual std::optional<size_t> set_blocklist_content(std::string_view content, std::string& error) = 0;
-
-        // --- auto-update timer inputs ---
-
         [[nodiscard]] virtual bool enabled() const noexcept = 0;
         [[nodiscard]] virtual bool updates_enabled() const noexcept = 0;
-        [[nodiscard]] virtual time_t mtime() const = 0;
-
-        // --- threading + timers ---
-
         [[nodiscard]] virtual tr::TimerMaker& timer_maker() noexcept = 0;
-        virtual void run_in_session_thread(std::function<void()> func) = 0;
     };
 
     explicit Updater(Mediator& mediator);
