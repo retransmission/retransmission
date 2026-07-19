@@ -358,39 +358,15 @@ private:
     class BlocklistMediator final : public tr::blocklist::Updater::Mediator
     {
     public:
-        explicit BlocklistMediator(tr_session& session) noexcept
-            : session_{ session }
-        {
-        }
-
-        void fetch(tr_web::FetchOptions&& options) override
-        {
-            session_.fetch(std::move(options));
-        }
-
-        [[nodiscard]] time_t mtime() const override
-        {
-            return session_.blocklist_mtime();
-        }
-
-        // These forward to tr_session accessors with deduced (auto) return types,
-        // which can't be named from an inline member defined ahead of them; and
-        // set_blocklist_content needs the file/path helpers. All are defined
-        // out-of-line in blocklist-download.cc, alongside the rest of the glue.
+        explicit BlocklistMediator(tr_session& session) noexcept;
+        void fetch(tr_web::FetchOptions&& options) override;
+        void run_in_session_thread(std::function<void()> func) override;
+        [[nodiscard]] time_t mtime() const override;
         [[nodiscard]] std::string blocklist_url() const override;
         [[nodiscard]] std::optional<size_t> set_blocklist_content(std::string_view content, std::string& error) override;
         [[nodiscard]] bool enabled() const noexcept override;
         [[nodiscard]] bool updates_enabled() const noexcept override;
-
-        [[nodiscard]] tr::TimerMaker& timer_maker() noexcept override
-        {
-            return session_.timerMaker();
-        }
-
-        void run_in_session_thread(std::function<void()> func) override
-        {
-            session_.run_in_session_thread(std::move(func));
-        }
+        [[nodiscard]] tr::TimerMaker& timer_maker() noexcept override;
 
     private:
         tr_session& session_;
@@ -1162,7 +1138,6 @@ private:
     void on_queue_timer();
     void on_save_timer();
 
-    // (Re)arm or disarm the auto-update timer after a blocklist setting changes.
     void on_blocklist_settings_changed();
 
     static void onIncomingPeerConnection(tr_socket_t fd, void* vsession);
@@ -1378,11 +1353,7 @@ private:
     BlocklistMediator blocklist_mediator_{ *this };
 
     // depends-on: blocklist_mediator_
-    // Declared after web_ so it's torn down first: an in-flight fetch held by
-    // web_ keeps its request state alive, and the Updater's destruction drops
-    // any pending completion before web_ goes away. Declared after
-    // blocklist_mediator_ so the mediator outlives the Updater that references it.
-    std::unique_ptr<tr::blocklist::Updater> blocklist_updater_;
+    std::unique_ptr<tr::blocklist::Updater> blocklist_updater_ = std::make_unique<tr::blocklist::Updater>(blocklist_mediator_);
 
     // depends-on: timer_maker_, blocklists_, top_bandwidth_, utp_context, torrents_, web_
     std::unique_ptr<struct tr_peerMgr, void (*)(struct tr_peerMgr*)> peer_mgr_;

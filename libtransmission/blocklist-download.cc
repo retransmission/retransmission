@@ -49,15 +49,13 @@ auto constexpr UpdateInterval = std::chrono::hours{ 24 * 7 };
 // hammer the network the instant the app launches
 auto constexpr StartupDelay = std::chrono::seconds{ 60 };
 
-// Refuse to decompress anything absurdly large. Real blocklists are tens of MB,
-// so this bounds a decompression bomb -- a tiny archive that expands to GBs --
-// while leaving genuine lists plenty of headroom.
+// Real blocklists are tens of MB, Refuse to block anything >128GB.
 auto constexpr MaxDecompressedSize = size_t{ 128U } * 1024U * 1024U;
 } // namespace
 
-// Decompress a downloaded blocklist. We support txt, tar, gz, tgz formats.
-// Omit other libarchive formats for YAGNI. We can others if/when needed.
-std::string decompress(std::string_view body)
+// Decompress a downloaded blocklist. Supports txt, tar, gz, tgz formats.
+// Omit other libarchive formats for YAGNI, we can add later if/when needed.
+std::string decompress(std::string_view const body)
 {
     auto* const arc = archive_read_new();
     if (arc == nullptr) {
@@ -108,22 +106,20 @@ std::string decompress(std::string_view body)
 
 std::string normalize_blocklist_url(std::string_view url)
 {
-    auto const trimmed = tr_strv_strip(url);
-    if (std::empty(trimmed)) {
+    url = tr_strv_strip(url);
+    if (std::empty(url)) {
         return {};
     }
 
     // leave a URL that already carries a scheme (foo://...) alone
-    if (trimmed.find("://"sv) != std::string_view::npos) {
-        return std::string{ trimmed };
+    if (url.find("://"sv) != std::string_view::npos) {
+        return std::string{ url };
     }
 
-    return fmt::format("https://{:s}", trimmed);
+    return fmt::format("https://{:s}", url);
 }
 
-// Per-request state, kept alive by the tr_web fetch callback for the duration
-// of the download. `cancelled` lets Updater::cancel() (and ~Updater) suppress a
-// completion without racing the network thread.
+// Per-request state, kept alive by the tr_web fetch callback during the fetch.
 struct Pending {
     Updater::Mediator* mediator = nullptr;
     tr_blocklist_update_func on_done;
@@ -132,10 +128,9 @@ struct Pending {
 
 namespace
 {
-// True if `text` has at least one line that isn't blank or a comment,
-// i.e.  something the parser could turn into a rule. This is to prevent
-// a download with no rules from replacing the previous good blocklist.
-[[nodiscard]] bool has_rule_lines(std::string_view text)
+// True if `text` has at least one line that could be parsed as a rule.
+// This is to prevent an empty dl rules from replacing a good blocklist.
+[[nodiscard]] bool has_rule_lines(std::string_view const text)
 {
     for (auto remain = text; !std::empty(remain);) {
         auto const eol = remain.find('\n');
@@ -170,12 +165,9 @@ void finish_request(tr_web::FetchResponse const& response, std::shared_ptr<Pendi
         return;
     }
 
-    // peel off any compression/archive, then hand the plain text to the
-    // mediator to persist and parse
     auto const content = decompress(response.body);
 
-    // If the response has no rules, report it as invalid and leave the installed
-    // list untouched instead of wiping it.
+    // don't use empty responses
     if (!has_rule_lines(content)) {
         result.status = tr_blocklist_update_status::InvalidData;
         pending->on_done(result);
@@ -205,9 +197,7 @@ Updater::Updater(Mediator& mediator)
 
 Updater::~Updater()
 {
-    // If a fetch is still in flight (its shared Pending is held alive by the
-    // tr_web callback), make sure a late completion becomes a no-op instead of
-    // touching a mediator that's tearing down.
+    // If our fetch is still in flight, make its completion callback a no-op
     if (auto pending = latest_.lock()) {
         pending->cancelled = true;
     }
@@ -217,9 +207,7 @@ void Updater::update(tr_blocklist_update_func on_done)
 {
     mediator_.run_in_session_thread([this, on_done = std::move(on_done)]() mutable {
         // Supersede any in-flight req so only the newest one updates the list.
-        // Resolve the old request with a Superseded status so its callback
-        // handler isn't left hanging. (The superseded download may still run
-        // to completion internally; tr_web has no per-request abort.)
+        // The older fetch still runs, since tr_web doesn't have an abort API.
         if (auto previous = latest_.lock()) {
             previous->cancelled = true;
             if (previous->on_done) {
@@ -284,25 +272,38 @@ void Updater::on_auto_update_timer()
     // so a broken URL retries on the normal cadence instead of hot-looping
     timer_->start_single_shot(UpdateInterval);
 }
-
 } // namespace tr::blocklist
 
-// ---
-// tr_session glue + public C++ API
+// --- tr_session's Updater::Mediator
+
+tr_session::BlocklistMediator::BlocklistMediator(tr_session& session) noexcept
+    : session_{ session }
+{
+}
+
+void tr_session::BlocklistMediator::fetch(tr_web::FetchOptions&& options)
+{
+    session_.fetch(std::move(options));
+}
+
+void tr_session::BlocklistMediator::run_in_session_thread(std::function<void()> func)
+{
+    session_.run_in_session_thread(std::move(func));
+}
+
+tr::TimerMaker& tr_session::BlocklistMediator::timer_maker() noexcept
+{
+    return session_.timerMaker();
+}
+
+[[nodiscard]] time_t tr_session::BlocklistMediator::mtime() const
+{
+    return session_.blocklist_mtime();
+}
 
 std::string tr_session::BlocklistMediator::blocklist_url() const
 {
     return tr::blocklist::normalize_blocklist_url(session_.blocklistUrl());
-}
-
-bool tr_session::BlocklistMediator::enabled() const noexcept
-{
-    return session_.blocklist_enabled();
-}
-
-bool tr_session::BlocklistMediator::updates_enabled() const noexcept
-{
-    return session_.blocklist_updates_enabled();
 }
 
 std::optional<size_t> tr_session::BlocklistMediator::set_blocklist_content(std::string_view content, std::string& error)
@@ -322,23 +323,35 @@ std::optional<size_t> tr_session::BlocklistMediator::set_blocklist_content(std::
     auto const n_rules = tr_blocklistSetContent(&session_, filename);
     tr_sys_path_remove(filename);
 
-    // nullopt from the parser means "no valid rules"; collapse it to 0 so the
-    // Updater reports InvalidData rather than SaveError.
+    // edge case: nullopt from the parser means "no valid rules".
+    // Collapse it to 0 so the Updater reports InvalidData
     return n_rules.value_or(0U);
 }
 
+bool tr_session::BlocklistMediator::enabled() const noexcept
+{
+    return session_.blocklist_enabled();
+}
+
+bool tr_session::BlocklistMediator::updates_enabled() const noexcept
+{
+    return session_.blocklist_updates_enabled();
+}
+
+// --- tr_session
+
 void tr_session::on_blocklist_settings_changed()
 {
-    if (blocklist_updater_) {
-        blocklist_updater_->restart_timer();
+    if (auto* const updater = blocklist_updater()) {
+        updater->restart_timer();
     }
 }
+
+// --- C API
 
 void tr_blocklistUpdate(tr_session* session, tr_blocklist_update_func on_done)
 {
     TR_ASSERT(session != nullptr);
-    // null once the session is tearing down (see closeImplPart1); mirror the
-    // guard in tr_blocklistUpdateCancel() instead of dereferencing blindly.
     if (auto* const updater = session->blocklist_updater()) {
         updater->update(std::move(on_done));
     }
