@@ -491,23 +491,6 @@ void tr_blocklistSetEnabled(tr_session* session, bool is_enabled);
            invokes the "blocklist_update" method */
 void tr_blocklistSetURL(tr_session* session, std::string_view url);
 
-/** @brief How a blocklist update fared. */
-enum class tr_blocklist_update_status : uint8_t {
-    Ok,
-    DownloadError,
-    SaveError,
-    InvalidData,
-    Superseded // a newer tr_blocklistUpdate() replaced this one before it finished
-};
-
-struct tr_blocklist_update_result {
-    tr_blocklist_update_status status = tr_blocklist_update_status::Ok;
-    size_t n_rules = 0U; // how many rules were installed; only meaningful when status == Ok
-    std::string error; // human-readable detail; empty on success
-};
-
-using tr_blocklist_update_func = std::function<void(tr_blocklist_update_result const&)>;
-
 /**
  * Download the session's blocklist URL, decompress it (gzip, tar, zip, or
  * plain text are all handled transparently), install it, and report the
