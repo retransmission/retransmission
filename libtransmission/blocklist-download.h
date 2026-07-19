@@ -17,7 +17,7 @@
 #include <string>
 #include <string_view>
 
-#include "libtransmission/transmission.h" // tr_blocklist_update_func
+#include "libtransmission/types.h" // tr_blocklist_update_func
 #include "libtransmission/web.h" // tr_web::FetchOptions
 
 namespace tr
@@ -64,12 +64,11 @@ public:
     };
 
     explicit Updater(Mediator& mediator);
-    ~Updater();
-
     Updater(Updater const&) = delete;
     Updater(Updater&&) = delete;
     Updater& operator=(Updater const&) = delete;
     Updater& operator=(Updater&&) = delete;
+    ~Updater();
 
     // Start a one-shot update. `on_done` is invoked exactly once, on the
     // session thread: with the update's outcome when it finishes, or with a
@@ -78,13 +77,11 @@ public:
     void update(tr_blocklist_update_func on_done);
 
     // Abandon the most recent in-flight update: its `on_done` will not fire.
-    // (The underlying HTTP transfer may still run to completion internally,
-    // since tr_web has no per-request abort.)
     void cancel();
 
-    // (Re)arm or disarm the periodic auto-update timer to match the current
-    // settings (blocklist enabled + URL set + updates enabled). Safe to call
-    // from any thread.
+    // (Re)arm or disarm the periodic auto-update timer to match the
+    // current settings (blocklist enabled + URL set + updates enabled).
+    // Safe to call from any thread.
     void restart_timer();
 
 private:

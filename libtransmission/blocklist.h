@@ -55,8 +55,8 @@ public:
     void set_enabled(bool is_enabled);
     std::optional<size_t> update_primary_blocklist(std::string_view external_file, bool is_enabled);
 
-    // Modification time of the primary blocklist file, i.e. when it was last
-    // updated. Returns 0 if it doesn't exist yet.
+    // Returns when the primary blocklist was last modified, i.e. last updated.
+    // Returns 0 if it doesn't exist yet.
     [[nodiscard]] time_t mtime() const;
 
     template<typename Observer>
