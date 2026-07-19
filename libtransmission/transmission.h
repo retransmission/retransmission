@@ -508,14 +508,12 @@ void tr_blocklistUpdateCancel(tr_session* session);
 
 /** @brief When the blocklist was last successfully updated (its file's mtime),
            or 0 if no blocklist has been installed yet. */
-time_t tr_blocklistGetMTime(tr_session const* session);
+[[nodiscard]] time_t tr_blocklistGetMTime(tr_session const* session);
 
 /** @brief Whether the blocklist is periodically re-downloaded on its own. */
-bool tr_blocklistUpdatesEnabled(tr_session const* session);
+[[nodiscard]] bool tr_blocklistUpdatesEnabled(tr_session const* session);
 
 void tr_blocklistSetUpdatesEnabled(tr_session* session, bool enabled);
-
-/** @} */
 
 /**
  * Instantiating tr_torrents and wrangling torrent file metadata
