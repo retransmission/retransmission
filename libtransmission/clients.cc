@@ -597,6 +597,9 @@ auto constexpr Clients = std::to_array<Client>({
 // the equal_range() lookup below requires this ordering
 static_assert(std::ranges::is_sorted(Clients, {}, &Client::begins_with));
 
+auto constexpr MaxPrefixLen = std::ranges::max(
+    Clients | std::views::transform([](Client const& client) { return std::size(client.begins_with); }));
+
 } // namespace
 
 void tr_clientForId(char* buf, size_t buflen, tr_peer_id_t peer_id)
@@ -614,25 +617,14 @@ void tr_clientForId(char* buf, size_t buflen, tr_peer_id_t peer_id)
         return;
     }
 
-    struct Compare {
-        bool operator()(std::string_view const& key, Client const& client) const
-        {
-            return key.substr(0, std::min(std::size(key), std::size(client.begins_with))) < client.begins_with;
+    // find the longest `begins_with` that starts `key`, e.g. an id matching
+    // both "-WT" and "-WT-" is formatted by the "-WT-" entry
+    for (auto len = MaxPrefixLen; len > 0U; --len) {
+        auto const [eq_begin, eq_end] = std::ranges::equal_range(Clients, key.substr(0, len), {}, &Client::begins_with);
+        if (eq_begin != eq_end) {
+            eq_begin->formatter(buf, buflen, eq_begin->name, peer_id);
+            return;
         }
-        bool operator()(Client const& client, std::string_view const& key) const
-        {
-            return client.begins_with < key.substr(0, std::min(std::size(key), std::size(client.begins_with)));
-        }
-    };
-
-    // NOLINTNEXTLINE(modernize-use-ranges)
-    if (auto const [eq_begin, eq_end] = std::equal_range(std::begin(Clients), std::end(Clients), key, Compare{});
-        eq_begin != eq_end) {
-        // multiple entries can match when one's prefix extends another's,
-        // e.g. "-WT" and "-WT-"; they're sorted, so the longest match is last
-        auto const& client = *std::prev(eq_end);
-        client.formatter(buf, buflen, client.name, peer_id);
-        return;
     }
 
     // no match

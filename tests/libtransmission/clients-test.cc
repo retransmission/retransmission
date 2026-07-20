@@ -63,6 +63,7 @@ TEST(Client, clientForId)
         { .peer_id = "-UW1110Q"sv, .expected_client = "\xc2\xb5Torrent Web 1.1.10"sv }, // wider version
         { .peer_id = "-WS1000-"sv, .expected_client = "HTTP Seed"sv },
         { .peer_id = "-WT-abcd"sv, .expected_client = "BitLet"sv }, // nested prefix: "-WT-" must win over "-WT"
+        { .peer_id = "-WTX250-"sv, .expected_client = "BitLet 33.2.5.0"sv }, // matches "-WT" but sorts after "-WT-"
         { .peer_id = "-XC1230-"sv, .expected_client = "Xtorrent 1.2 (30)"sv },
         { .peer_id = "-WW0007-"sv, .expected_client = "WebTorrent 0.0.0.7"sv },
         { .peer_id = "-XF9990-"sv,
@@ -73,9 +74,11 @@ TEST(Client, clientForId)
         { .peer_id = "FD6k4SYy9BOU4U4rk3-J"sv,
           .expected_client = "Free Download Manager 6"sv }, // Free Download Manager 6.17.0.4792 (9a17ce2)
         { .peer_id = "Mbrst1-1-3"sv, .expected_client = "burst! 1.1.3"sv }, // nested prefix: "Mbrst" must win over "M"
+        { .peer_id = "MzABCDEF"sv, .expected_client = "BitTorrent"sv }, // matches "M" but sorts after "Mbrst"
         { .peer_id = "S58B-----"sv, .expected_client = "Shad0w 5.8.11"sv },
         { .peer_id = "Q1-23-4-"sv, .expected_client = "Queen Bee 1.23.4"sv },
         { .peer_id = "QVOD0054"sv, .expected_client = "QVOD 0.0.5.4"sv }, // nested prefix: "QVOD" must win over "Q"
+        { .peer_id = "QW111111"sv, .expected_client = "Queen Bee"sv }, // matches "Q" but sorts after "QVOD"
         { .peer_id = "TIX0193-"sv, .expected_client = "Tixati 1.93"sv },
         { .peer_id = "\x65\x78\x62\x63\x00\x38\x4C\x4F\x52\x44\x32\x00\x04\x8E\xCE\xD5\x7B\xD7\x10\x28"sv,
           .expected_client = "BitLord 0.56"sv },
