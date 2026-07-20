@@ -29,6 +29,7 @@
 #include "Prefs.h"
 #include "RpcClient.h"
 #include <libtransmission-app/rpc-queue.h>
+#include <libtransmission-app/session.h>
 #include "Torrent.h"
 #include "Typedefs.h"
 
@@ -36,7 +37,9 @@ class AddData;
 
 struct tr_variant;
 
-class Session : public QObject
+class Session
+    : public QObject
+    , public tr::app::Session
 {
     Q_OBJECT
 

@@ -238,7 +238,8 @@ void Session::updatePref(tr_quark key)
 ***/
 
 Session::Session(QString config_dir, Prefs& prefs, RpcClient& rpc)
-    : config_dir_{ std::move(config_dir) }
+    : tr::app::Session{ prefs }
+    , config_dir_{ std::move(config_dir) }
     , prefs_{ prefs }
     , rpc_{ rpc }
 {
@@ -752,6 +753,10 @@ void Session::updateInfo(tr_variant* args_dict)
 
     updateType(dictFind<std::string>(args_dict, TR_KEY_session_id));
 
+    if (auto const active = dictFind<bool>(args_dict, TR_KEY_has_active_torrents); active) {
+        set_has_active_torrents(*active);
+    }
+
     connect(&prefs_, qOverload<tr_quark>(&Prefs::changed), this, &Session::updatePref);
 
     emit sessionUpdated();
@@ -959,4 +964,5 @@ std::optional<Session::Type> computeType(tr_session const* const session, std::o
 void Session::updateType(std::optional<std::string> session_id)
 {
     type_ = computeType(session_, session_id);
+    set_session_is_local(isLocalFilesystem());
 }

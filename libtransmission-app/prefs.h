@@ -67,7 +67,7 @@ struct AppPrefs {
     bool complete_sound_enabled_ = true;
     bool dir_watch_enabled_ = false;
     bool filterbar_ = true;
-    bool inhibit_hibernation_ = false;
+    bool inhibit_hibernation_ = true;
     bool main_window_is_maximized_ = false;
     bool options_prompt_ = true;
     bool read_clipboard_ = false;

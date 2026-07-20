@@ -23,6 +23,8 @@
 
 #include <libtransmission-app/favicon-cache.h>
 
+#include <woke/woke.hpp>
+
 #include "AddData.h"
 #include "Prefs.h"
 #include "Typedefs.h"
@@ -111,6 +113,9 @@ private:
     std::unordered_set<QString> interned_strings_;
 
     Prefs& prefs_;
+
+    woke::NapInhibitor nap_inhibitor_;
+
     std::unique_ptr<Session> session_;
     std::unique_ptr<TorrentModel> model_;
     std::unique_ptr<MainWindow> window_;

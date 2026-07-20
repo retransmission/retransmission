@@ -280,6 +280,10 @@ void PrefsDialog::initDesktopTab()
     initWidget(ui_.notifyOnTorrentAddedCheck, TR_KEY_torrent_added_notification_enabled);
     initWidget(ui_.notifyOnTorrentCompletedCheck, TR_KEY_torrent_complete_notification_enabled);
     initWidget(ui_.playSoundOnTorrentCompletedCheck, TR_KEY_torrent_complete_sound_enabled);
+
+    // inhibiting sleep only makes sense when the session runs on this machine
+    initWidget(ui_.preventSleepCheck, TR_KEY_inhibit_desktop_hibernation);
+    updateDesktopWidgetsLocality();
 }
 
 // ---
@@ -555,6 +559,11 @@ void PrefsDialog::updateSeedingWidgetsLocality()
     ui_.doneSeedingScriptStack->setFixedHeight(ui_.doneSeedingScriptStack->currentWidget()->sizeHint().height());
 }
 
+void PrefsDialog::updateDesktopWidgetsLocality()
+{
+    ui_.preventSleepCheck->setVisible(is_local_fs_);
+}
+
 // ---
 
 PrefsDialog::PrefsDialog(Session& session, Prefs& prefs, QWidget* parent)
@@ -608,6 +617,7 @@ void PrefsDialog::sessionUpdated()
         is_local_fs_ = is_local_fs;
         updateDownloadingWidgetsLocality();
         updateSeedingWidgetsLocality();
+        updateDesktopWidgetsLocality();
     }
 
     updateBlocklistLabel();

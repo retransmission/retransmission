@@ -60,6 +60,7 @@ private:
     void updateDownloadingWidgetsLocality();
     void updatePortStatusLabel();
     void updateSeedingWidgetsLocality();
+    void updateDesktopWidgetsLocality();
     static QString getPortStatusText(PortTestStatus status) noexcept;
 
     template<typename T, size_t N>

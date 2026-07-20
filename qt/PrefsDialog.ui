@@ -873,6 +873,13 @@ To add a new primary URL, add it after a blank line.</string>
             </property>
            </widget>
           </item>
+          <item>
+           <widget class="QCheckBox" name="preventSleepCheck">
+            <property name="text">
+             <string>&amp;Prevent computer from sleeping with active transfers</string>
+            </property>
+           </widget>
+          </item>
          </layout>
         </widget>
        </item>
