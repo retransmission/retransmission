@@ -1407,27 +1407,14 @@ jobs:
             set -ex
             mkdir src && tar xf transmission*.tar.* -C src --strip-components 1
             cmake \
+              --preset ci-freebsd \
               -S src \
               -B obj \
-              -G Ninja \
-              -DCMAKE_BUILD_TYPE=Release \
               -DCMAKE_INSTALL_PREFIX=pfx \
               -DENABLE_CLI=${{ (needs.what-to-make.outputs.make-cli == 'true') && 'ON' || 'OFF' }} \
               -DENABLE_DAEMON=${{ (needs.what-to-make.outputs.make-daemon == 'true') && 'ON' || 'OFF' }} \
-              -DENABLE_GTK=OFF `# GUI clients are covered on non-emulated runners` \
-              -DENABLE_IPO=OFF `# LTO is too slow for a portability smoke test` \
-              -DENABLE_QT=OFF `# GUI clients are covered on non-emulated runners` \
               -DENABLE_TESTS=${{ (needs.what-to-make.outputs.make-tests == 'true') && 'ON' || 'OFF' }} \
-              -DENABLE_UTILS=${{ (needs.what-to-make.outputs.make-utils == 'true') && 'ON' || 'OFF' }} \
-              -DREBUILD_WEB=OFF \
-              -DENABLE_WERROR=ON \
-              -DRUN_CLANG_TIDY=OFF \
-              -DUSE_SYSTEM_DEFAULT=ON \
-              -DUSE_SYSTEM_SIGSLOT=OFF `# Not packaged in FreeBSD` \
-              -DUSE_SYSTEM_SMALL=OFF `# Not packaged in FreeBSD` \
-              -DUSE_SYSTEM_UTP=OFF `# Not packaged in FreeBSD` \
-              -DUSE_SYSTEM_WIDE_INTEGER=OFF `# Not packaged in FreeBSD` \
-              -DWITH_CRYPTO=openssl
+              -DENABLE_UTILS=${{ (needs.what-to-make.outputs.make-utils == 'true') && 'ON' || 'OFF' }}
             cmake --build obj --config Release
             if [ '${{ needs.what-to-make.outputs.make-tests }}' = 'true' ]; then
               cmake -E chdir obj ctest -j `getconf NPROCESSORS_ONLN` --build-config Release --output-on-failure
@@ -1561,27 +1548,14 @@ jobs:
             set -ex
             mkdir src && gtar xf transmission*.tar.* -C src --strip-components 1
             cmake \
+              --preset ci-openbsd \
               -S src \
               -B obj \
-              -G Ninja \
-              -DCMAKE_BUILD_TYPE=Release \
               -DCMAKE_INSTALL_PREFIX=pfx \
               -DENABLE_CLI=${{ (needs.what-to-make.outputs.make-cli == 'true') && 'ON' || 'OFF' }} \
               -DENABLE_DAEMON=${{ (needs.what-to-make.outputs.make-daemon == 'true') && 'ON' || 'OFF' }} \
-              -DENABLE_GTK=OFF `# GUI clients are covered on non-emulated runners` \
-              -DENABLE_IPO=OFF `# LTO is too slow for a portability smoke test` \
-              -DENABLE_QT=OFF `# GUI clients are covered on non-emulated runners` \
               -DENABLE_TESTS=${{ (needs.what-to-make.outputs.make-tests == 'true') && 'ON' || 'OFF' }} \
-              -DENABLE_UTILS=${{ (needs.what-to-make.outputs.make-utils == 'true') && 'ON' || 'OFF' }} \
-              -DREBUILD_WEB=OFF \
-              -DENABLE_WERROR=ON \
-              -DRUN_CLANG_TIDY=OFF \
-              -DUSE_SYSTEM_DEFAULT=ON \
-              -DUSE_SYSTEM_DHT=OFF `# Not packaged in OpenBSD` \
-              -DUSE_SYSTEM_SIGSLOT=OFF `# Not packaged in OpenBSD` \
-              -DUSE_SYSTEM_SMALL=OFF `# Not packaged in OpenBSD` \
-              -DUSE_SYSTEM_UTP=OFF `# Not packaged in OpenBSD` \
-              -DUSE_SYSTEM_WIDE_INTEGER=OFF `# Not packaged in OpenBSD`
+              -DENABLE_UTILS=${{ (needs.what-to-make.outputs.make-utils == 'true') && 'ON' || 'OFF' }}
             cmake --build obj --config Release
             if [ '${{ needs.what-to-make.outputs.make-tests }}' = 'true' ]; then
               cmake -E chdir obj ctest -j `getconf NPROCESSORS_ONLN` --build-config Release --output-on-failure
@@ -1643,33 +1617,14 @@ jobs:
             export PATH="/usr/pkg/bin:/usr/pkg/sbin${PATH:+:${PATH}}"
             mkdir src && tar xf transmission*.tar.* -C src --strip-components 1
             cmake \
+              --preset ci-netbsd \
               -S src \
               -B obj \
-              -G Ninja \
-              -DCMAKE_BUILD_TYPE=Release \
-              -DCMAKE_CXX_COMPILER='/usr/pkg/gcc14/bin/g++' \
-              -DCMAKE_C_COMPILER='/usr/pkg/gcc14/bin/gcc' \
-              -DCMAKE_BUILD_RPATH='/usr/pkg/gcc14/lib' \
               -DCMAKE_INSTALL_PREFIX=pfx \
-              -DCMAKE_PREFIX_PATH='/usr/pkg' \
               -DENABLE_CLI=${{ (needs.what-to-make.outputs.make-cli == 'true') && 'ON' || 'OFF' }} \
               -DENABLE_DAEMON=${{ (needs.what-to-make.outputs.make-daemon == 'true') && 'ON' || 'OFF' }} \
-              -DENABLE_GTK=OFF `# GUI clients are covered on non-emulated runners` \
-              -DENABLE_IPO=OFF `# LTO is too slow for a portability smoke test` \
-              -DENABLE_QT=OFF `# GUI clients are covered on non-emulated runners` \
               -DENABLE_TESTS=${{ (needs.what-to-make.outputs.make-tests == 'true') && 'ON' || 'OFF' }} \
-              -DENABLE_UTILS=${{ (needs.what-to-make.outputs.make-utils == 'true') && 'ON' || 'OFF' }} \
-              -DREBUILD_WEB=OFF \
-              -DENABLE_WERROR=ON \
-              -DRUN_CLANG_TIDY=OFF \
-              -DUSE_SYSTEM_DEFAULT=ON \
-              -DUSE_SYSTEM_DHT=OFF `# Not packaged in NetBSD` \
-              -DUSE_SYSTEM_NATPMP=OFF `# Not packaged in NetBSD` \
-              -DUSE_SYSTEM_SIGSLOT=OFF `# Not packaged in NetBSD` \
-              -DUSE_SYSTEM_SIMDUTF=OFF `# Not packaged in NetBSD` \
-              -DUSE_SYSTEM_SMALL=OFF `# Not packaged in NetBSD` \
-              -DUSE_SYSTEM_UTP=OFF `# Not packaged in NetBSD` \
-              -DUSE_SYSTEM_WIDE_INTEGER=OFF `# Not packaged in NetBSD`
+              -DENABLE_UTILS=${{ (needs.what-to-make.outputs.make-utils == 'true') && 'ON' || 'OFF' }}
             cmake --build obj --config Release
             if [ '${{ needs.what-to-make.outputs.make-tests }}' = 'true' ]; then
               cmake -E chdir obj ctest -j `getconf NPROCESSORS_ONLN` --build-config Release --output-on-failure
