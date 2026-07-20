@@ -945,10 +945,15 @@ public:
     [[nodiscard]] size_t count_queue_free_slots(tr_direction dir) const noexcept;
 
     // True if any torrent is actively transferring -- downloading, seeding, or
-    // verifying -- and is not stalled or locally errored. This is the "should
-    // the desktop stay awake" predicate; the GUI clients read it over RPC (the
-    // has_active_torrents session-get field) or the C API.
-    [[nodiscard]] bool has_active_torrents() const noexcept;
+    // verifying -- and is not stalled or locally errored: the "should the
+    // desktop stay awake" predicate. Reads a cache refreshed on the session
+    // thread (see on_now_timer), so it is safe from any thread; GUI clients read
+    // it over RPC (the has_active_torrents session-get field) or in-process via
+    // tr_sessionHasActiveTorrents().
+    [[nodiscard]] bool has_active_torrents() const noexcept
+    {
+        return has_active_torrents_.load(std::memory_order_relaxed);
+    }
 
     [[nodiscard]] bool has_ip_protocol(tr_address_type type) const noexcept
     {
@@ -1101,6 +1106,9 @@ private:
     void on_now_timer();
     void on_queue_timer();
     void on_save_timer();
+
+    // the uncached predicate behind has_active_torrents(); session thread only
+    [[nodiscard]] bool compute_has_active_torrents() const noexcept;
 
     static void onIncomingPeerConnection(tr_socket_t fd, void* vsession);
 
@@ -1342,6 +1350,10 @@ private:
 
     // depends-on: alt_speeds_, udp_core_, torrents_
     std::unique_ptr<tr::Timer> now_timer_;
+
+    // cached has_active_torrents(), refreshed on the session thread in
+    // on_now_timer() so it is readable from any thread (GUI clients, C API)
+    std::atomic<bool> has_active_torrents_{ false };
 
     // depends-on: torrents_
     std::unique_ptr<tr::Timer> queue_timer_;

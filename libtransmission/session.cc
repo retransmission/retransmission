@@ -525,6 +525,7 @@ void tr_session::on_now_timer()
     // tr_session upkeep tasks to perform once per second
     tr_timeUpdate(std::chrono::system_clock::to_time_t(now));
     alt_speeds_.check_scheduler();
+    has_active_torrents_.store(compute_has_active_torrents(), std::memory_order_relaxed);
 
     // set the timer to kick again right after (10ms after) the next second
     auto const target_time = std::chrono::time_point_cast<std::chrono::seconds>(now) + 1s + 10ms;
@@ -597,7 +598,7 @@ size_t tr_session::count_queue_free_slots(tr_direction dir) const noexcept
     return max - active_count;
 }
 
-bool tr_session::has_active_torrents() const noexcept
+bool tr_session::compute_has_active_torrents() const noexcept
 {
     auto const stalled_enabled = queueStalledEnabled();
     auto const stalled_if_idle_for_n_seconds = static_cast<time_t>(queueStalledMinutes() * 60);
@@ -628,6 +629,13 @@ bool tr_session::has_active_torrents() const noexcept
     }
 
     return false;
+}
+
+bool tr_sessionHasActiveTorrents(tr_session const* session)
+{
+    TR_ASSERT(session != nullptr);
+
+    return session->has_active_torrents();
 }
 
 void tr_session::on_queue_timer()
