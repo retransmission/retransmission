@@ -687,7 +687,7 @@ Response parameters:
 | Key | Value Type | Description
 |:--|:--|:--
 | `active_torrent_count`     | number     | **DEPRECATED** number of running torrents -- use `unpaused_torrent_count`; will be removed in Transmission 5.0.0
-| `busy_torrent_count`       | number     | number of torrents downloading, seeding, or verifying that are not stalled or errored
+| `busy_torrent_count`       | number     | number of torrents downloading, seeding, or verifying that are not stalled or locally errored
 | `download_speed`           | number
 | `paused_torrent_count`     | number     | number of paused (not-running) torrents
 | `torrent_count`            | number     | total number of torrents (`unpaused_torrent_count` + `paused_torrent_count`)
