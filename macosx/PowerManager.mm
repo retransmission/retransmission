@@ -8,13 +8,14 @@
 
 #include <os/log.h>
 
+#include <woke/woke.hpp>
+
 @interface PowerManager ()
 
 @property(nonatomic, readonly) os_log_t log;
 @property(getter=isListening) BOOL listening;
 
 @property(nonatomic) id<NSObject> noNapActivity;
-@property(nonatomic) id<NSObject> noSleepActivity;
 
 - (void)systemWillSleep:(NSNotification*)notification;
 - (void)systemDidWakeUp:(NSNotification*)notification;
@@ -23,7 +24,10 @@
 
 @end
 
-@implementation PowerManager
+@implementation PowerManager {
+    // held while torrents are active and the "prevent sleep" default is on
+    woke::SleepInhibitor _sleepInhibitor;
+}
 
 + (instancetype)shared
 {
@@ -95,11 +99,7 @@
         self.noNapActivity = nil;
     }
 
-    if (self.noSleepActivity != nil) {
-        os_log_debug(self.log, "Ending no-sleep activity");
-        [NSProcessInfo.processInfo endActivity:self.noSleepActivity];
-        self.noSleepActivity = nil;
-    }
+    _sleepInhibitor.uninhibit();
 }
 
 - (void)systemWillSleep:(NSNotification*)notification
@@ -132,27 +132,15 @@
     }
 
     if (shouldPreventSleep) {
-        if (self.noSleepActivity != nil) {
-            return;
-        }
-
-        os_log_info(self.log, "Starting no-sleep activity");
-        self.noSleepActivity = [NSProcessInfo.processInfo beginActivityWithOptions:NSActivityIdleSystemSleepDisabled
-                                                                            reason:@TR_PROJ_APPNAME_CAPITALIZED ": Active Torrents"];
+        _sleepInhibitor.inhibit(TR_PROJ_APPNAME_CAPITALIZED, "Torrents are active");
     } else {
-        if (self.noSleepActivity == nil) {
-            return;
-        }
-
-        os_log_info(self.log, "Ending no-sleep activity");
-        [NSProcessInfo.processInfo endActivity:self.noSleepActivity];
-        self.noSleepActivity = nil;
+        _sleepInhibitor.uninhibit();
     }
 }
 
 - (BOOL)shouldPreventSleep
 {
-    return self.noSleepActivity != nil;
+    return _sleepInhibitor.active();
 }
 
 @end

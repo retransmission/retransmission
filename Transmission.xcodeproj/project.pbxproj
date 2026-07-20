@@ -568,6 +568,12 @@
 		ADD1A00000000000000000F4 /* filter_fork_posix.c in Sources */ = {isa = PBXBuildFile; fileRef = ADD1A00000000000000000F3 /* filter_fork_posix.c */; };
 		ADD1A00000000000000000F6 /* xxhash.c in Sources */ = {isa = PBXBuildFile; fileRef = ADD1A00000000000000000F5 /* xxhash.c */; };
 		ADD1A00000000000000000F8 /* libarchive.a in Frameworks */ = {isa = PBXBuildFile; fileRef = ADD1A00000000000000000F7 /* libarchive.a */; };
+		C0FFEE000000000000000003 /* woke.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C0FFEE000000000000000001 /* woke.cpp */; };
+		C0FFEE000000000000000014 /* backend_sleep_macos.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C0FFEE000000000000000012 /* backend_sleep_macos.cpp */; };
+		C0FFEE000000000000000015 /* backend_nap_macos.mm in Sources */ = {isa = PBXBuildFile; fileRef = C0FFEE000000000000000013 /* backend_nap_macos.mm */; };
+		C0FFEE000000000000000006 /* woke.hpp in Headers */ = {isa = PBXBuildFile; fileRef = C0FFEE000000000000000002 /* woke.hpp */; };
+		C0FFEE00000000000000000F /* libwoke.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C0FFEE000000000000000005 /* libwoke.a */; };
+		C0FFEE000000000000000017 /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C0FFEE000000000000000016 /* IOKit.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -717,6 +723,13 @@
 			proxyType = 1;
 			remoteGlobalIDString = ADD1A00000000000000000FC;
 			remoteInfo = archive;
+		};
+		C0FFEE000000000000000010 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = C0FFEE000000000000000007;
+			remoteInfo = woke;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -1645,6 +1658,12 @@
 		ADD1A00000000000000000F3 /* filter_fork_posix.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = filter_fork_posix.c; path = filter_fork_posix.c; sourceTree = "<group>"; };
 		ADD1A00000000000000000F5 /* xxhash.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = xxhash.c; path = xxhash.c; sourceTree = "<group>"; };
 		ADD1A00000000000000000F7 /* libarchive.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libarchive.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		C0FFEE000000000000000001 /* woke.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = woke.cpp; path = src/woke.cpp; sourceTree = "<group>"; };
+		C0FFEE000000000000000012 /* backend_sleep_macos.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = backend_sleep_macos.cpp; path = src/backend_sleep_macos.cpp; sourceTree = "<group>"; };
+		C0FFEE000000000000000013 /* backend_nap_macos.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = backend_nap_macos.mm; path = src/backend_nap_macos.mm; sourceTree = "<group>"; };
+		C0FFEE000000000000000002 /* woke.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; name = woke.hpp; path = include/woke/woke.hpp; sourceTree = "<group>"; };
+		C0FFEE000000000000000005 /* libwoke.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libwoke.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		C0FFEE000000000000000016 /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = System/Library/Frameworks/IOKit.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1682,6 +1701,7 @@
 				C87369652809984200573C90 /* UserNotifications.framework in Frameworks */,
 				8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */,
 				4D1838DD09DEC0E80047D688 /* libtransmission.a in Frameworks */,
+				C0FFEE000000000000000017 /* IOKit.framework in Frameworks */,
 				A24F19080A3A790800C9C145 /* Sparkle.framework in Frameworks */,
 				C88771B52803EEB1005C7523 /* libiconv.tbd in Frameworks */,
 				55869926257074EC00F77A43 /* libcurl.tbd in Frameworks */,
@@ -1740,6 +1760,7 @@
 			files = (
 				ADD1A00000000000000000F8 /* libarchive.a in Frameworks */,
 				51D0F701000000000000000F /* libsimdutf.a in Frameworks */,
+				C0FFEE00000000000000000F /* libwoke.a in Frameworks */,
 				ED91F3962CBDAAED008388AA /* libmadler-crcany.a in Frameworks */,
 				C1846BA9294F7B5A00A98F30 /* libwildmat.a in Frameworks */,
 				C3D9062F27B7F7E200EF2386 /* libpsl.a in Frameworks */,
@@ -1844,6 +1865,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		ADD1A00000000000000000FB /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C0FFEE00000000000000000A /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -1982,6 +2010,7 @@
 				A22CFCBA0FC24F710009BD3E /* libdht.a */,
 				A2E38544130DFEE3001F501B /* libutp.a */,
 				51D0F7010000000000000005 /* libsimdutf.a */,
+				C0FFEE000000000000000005 /* libwoke.a */,
 				C3D9062127B7E3C900EF2386 /* libpsl.a */,
 				C1846B9E294F7A3400A98F30 /* libwildmat.a */,
 				ED91F00C2CBDA5D3008388AA /* libmadler-crcany.a */,
@@ -2009,6 +2038,7 @@
 				3C7A11880D0B2E6700B5701F /* libnatpmp */,
 				C3D9061627B7E12F00EF2386 /* libpsl */,
 				51D0F7010000000000000004 /* simdutf */,
+				C0FFEE000000000000000004 /* libwoke */,
 				C1846B82294F777000A98F30 /* wildmat */,
 				ED91F2682CBDA72C008388AA /* madler-crcany */,
 				4DDBB71509E16B3F00284745 /* Libraries */,
@@ -2069,6 +2099,7 @@
 				A22CFB810FB66EF30009BD3E /* Carbon.framework */,
 				A221DCC7104B3660008A642D /* Quartz.framework */,
 				A24F19070A3A790800C9C145 /* Sparkle.framework */,
+				C0FFEE000000000000000016 /* IOKit.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -2761,6 +2792,18 @@
 			path = "third-party/libarchive/libarchive";
 			sourceTree = "<group>";
 		};
+		C0FFEE000000000000000004 /* libwoke */ = {
+			isa = PBXGroup;
+			children = (
+				C0FFEE000000000000000001 /* woke.cpp */,
+				C0FFEE000000000000000012 /* backend_sleep_macos.cpp */,
+				C0FFEE000000000000000013 /* backend_nap_macos.mm */,
+				C0FFEE000000000000000002 /* woke.hpp */,
+			);
+			name = libwoke;
+			path = "third-party/libwoke";
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
@@ -2948,6 +2991,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		C0FFEE000000000000000009 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C0FFEE000000000000000006 /* woke.hpp in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
@@ -3000,6 +3051,7 @@
 				ED91F3952CBDA9BD008388AA /* PBXTargetDependency */,
 				ADD1A0000000000000000102 /* PBXTargetDependency */,
 				51D0F7010000000000000011 /* PBXTargetDependency */,
+				C0FFEE000000000000000011 /* PBXTargetDependency */,
 				C1846BA7294F7B1400A98F30 /* PBXTargetDependency */,
 				A226FDB10D0CDF6E005A7F71 /* PBXTargetDependency */,
 				BE1183760CE161040002D0F3 /* PBXTargetDependency */,
@@ -3317,6 +3369,23 @@
 			productReference = ADD1A00000000000000000F7 /* libarchive.a */;
 			productType = "com.apple.product-type.library.static";
 		};
+		C0FFEE000000000000000007 /* woke */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = C0FFEE00000000000000000B /* Build configuration list for PBXNativeTarget "woke" */;
+			buildPhases = (
+				C0FFEE000000000000000009 /* Headers */,
+				C0FFEE000000000000000008 /* Sources */,
+				C0FFEE00000000000000000A /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = woke;
+			productName = woke;
+			productReference = C0FFEE000000000000000005 /* libwoke.a */;
+			productType = "com.apple.product-type.library.static";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -3344,6 +3413,9 @@
 						CreatedOnToolsVersion = 16.0;
 					};
 					51D0F7010000000000000007 = {
+						CreatedOnToolsVersion = 16.0;
+					};
+					C0FFEE000000000000000007 = {
 						CreatedOnToolsVersion = 16.0;
 					};
 				};
@@ -3399,6 +3471,7 @@
 				C1846B96294F7A3400A98F30 /* wildmat */,
 				ED91F00B2CBDA5D3008388AA /* madler-crcany */,
 				51D0F7010000000000000007 /* simdutf */,
+				C0FFEE000000000000000007 /* woke */,
 			);
 		};
 /* End PBXProject section */
@@ -4059,6 +4132,16 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		C0FFEE000000000000000008 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C0FFEE000000000000000003 /* woke.cpp in Sources */,
+				C0FFEE000000000000000014 /* backend_sleep_macos.cpp in Sources */,
+				C0FFEE000000000000000015 /* backend_nap_macos.mm in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -4166,6 +4249,11 @@
 			isa = PBXTargetDependency;
 			target = ADD1A00000000000000000FC /* archive */;
 			targetProxy = ADD1A0000000000000000101 /* PBXContainerItemProxy */;
+		};
+		C0FFEE000000000000000011 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = C0FFEE000000000000000007 /* woke */;
+			targetProxy = C0FFEE000000000000000010 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -4638,6 +4726,7 @@
 					"third-party/fast_float/include",
 					"third-party/wide-integer",
 					"third-party/simdutf/include",
+					"third-party/libwoke/include",
 					"third-party/libpsl/include",
 					"third-party/libutp/include",
 					"third-party/rapidjson/include",
@@ -4663,6 +4752,7 @@
 					"third-party/small/include",
 					"third-party/rapidjson/include",
 					"third-party/simdutf/include",
+					"third-party/libwoke/include",
 					"third-party/libevent/include",
 					"third-party/libnatpmp/*.h",
 					"third-party/libpsl/include",
@@ -4704,6 +4794,7 @@
 					"third-party/fmt/include",
 					"third-party/sigslot/include",
 					"third-party/small/include",
+					"third-party/libwoke/include",
 				);
 				WRAPPER_EXTENSION = app;
 			};
@@ -4886,6 +4977,7 @@
 					"third-party/fast_float/include",
 					"third-party/wide-integer",
 					"third-party/simdutf/include",
+					"third-party/libwoke/include",
 					"third-party/libpsl/include",
 					"third-party/libutp/include",
 					"third-party/rapidjson/include",
@@ -4911,6 +5003,7 @@
 					"third-party/small/include",
 					"third-party/rapidjson/include",
 					"third-party/simdutf/include",
+					"third-party/libwoke/include",
 					"third-party/libevent/include",
 					"third-party/libnatpmp/*.h",
 					"third-party/libpsl/include",
@@ -4971,6 +5064,7 @@
 					"third-party/fmt/include",
 					"third-party/sigslot/include",
 					"third-party/small/include",
+					"third-party/libwoke/include",
 				);
 				WRAPPER_EXTENSION = app;
 			};
@@ -5178,6 +5272,7 @@
 					"third-party/fmt/include",
 					"third-party/sigslot/include",
 					"third-party/small/include",
+					"third-party/libwoke/include",
 				);
 				WRAPPER_EXTENSION = app;
 			};
@@ -5214,6 +5309,7 @@
 					"third-party/fast_float/include",
 					"third-party/wide-integer",
 					"third-party/simdutf/include",
+					"third-party/libwoke/include",
 					"third-party/libpsl/include",
 					"third-party/libutp/include",
 					"third-party/rapidjson/include",
@@ -5239,6 +5335,7 @@
 					"third-party/small/include",
 					"third-party/rapidjson/include",
 					"third-party/simdutf/include",
+					"third-party/libwoke/include",
 					"third-party/libevent/include",
 					"third-party/libnatpmp/*.h",
 					"third-party/libpsl/include",
@@ -5923,6 +6020,63 @@
 			};
 			name = Release;
 		};
+		C0FFEE00000000000000000C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "c++20";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_OBJC_ARC = NO;
+				GCC_TREAT_WARNINGS_AS_ERRORS = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = NO;
+				GENERATE_MASTER_OBJECT_FILE = YES;
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"third-party/libwoke/src",
+					"third-party/libwoke/include",
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WARNING_CFLAGS = "-w";
+			};
+			name = Debug;
+		};
+		C0FFEE00000000000000000D /* Release - Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "c++20";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_OBJC_ARC = NO;
+				GCC_TREAT_WARNINGS_AS_ERRORS = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = NO;
+				GENERATE_MASTER_OBJECT_FILE = YES;
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"third-party/libwoke/src",
+					"third-party/libwoke/include",
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WARNING_CFLAGS = "-w";
+			};
+			name = "Release - Debug";
+		};
+		C0FFEE00000000000000000E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "c++20";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_OBJC_ARC = NO;
+				GCC_TREAT_WARNINGS_AS_ERRORS = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = NO;
+				GENERATE_MASTER_OBJECT_FILE = YES;
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"third-party/libwoke/src",
+					"third-party/libwoke/include",
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WARNING_CFLAGS = "-w";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -6135,6 +6289,16 @@
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
+		};
+		C0FFEE00000000000000000B /* Build configuration list for PBXNativeTarget "woke" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C0FFEE00000000000000000C /* Debug */,
+				C0FFEE00000000000000000D /* Release - Debug */,
+				C0FFEE00000000000000000E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
 		};
 /* End XCConfigurationList section */
 	};

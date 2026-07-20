@@ -405,6 +405,7 @@ find_library(SPARKLE_FRAMEWORK Sparkle
 target_link_libraries(${TR_NAME}-mac
     PRIVATE
         ${TR_NAME}
+        woke::woke
         transmission::fmt-header-only
         vdkqueue
         ${SPARKLE_FRAMEWORK}
