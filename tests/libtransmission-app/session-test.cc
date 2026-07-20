@@ -47,6 +47,11 @@ TEST(AppSessionTest, inhibitsOnlyWhenLocalActiveAndEnabled)
     // a remote session never inhibits, even with active transfers
     session.set_session_is_local(false);
     EXPECT_FALSE(session.should_inhibit_sleep());
+
+    // going non-local also forgets the busy state, so returning to a local
+    // session starts clean instead of inheriting the earlier activity
+    session.set_session_is_local(true);
+    EXPECT_FALSE(session.should_inhibit_sleep());
 }
 
 } // namespace

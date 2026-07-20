@@ -25,6 +25,13 @@ Session::Session(Prefs& prefs)
 
 void Session::set_session_is_local(bool const is_local)
 {
+    // should_inhibit_sleep() ignores the busy count once we're non-local, so a
+    // non-local session's remembered activity is meaningless -- drop it here so
+    // a later switch back to a local session starts from a clean slate.
+    if (!is_local) {
+        has_busy_torrents_ = false;
+    }
+
     if (session_is_local_ != is_local) {
         session_is_local_ = is_local;
         update_sleep_inhibit();
