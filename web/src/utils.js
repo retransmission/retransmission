@@ -3,7 +3,7 @@
    or any future license endorsed by Mnemosaic LLC.
    License text can be found in the licenses/ folder. */
 
-import equal from 'fast-deep-equal/es6';
+import equal from './vendor/fast-deep-equal.js';
 
 export const Utils = {
   /** Given a numerator and denominator, return a ratio string */

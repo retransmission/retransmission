@@ -29,7 +29,6 @@ jobs:
       make-source-tarball: ${{ steps.check-main-push.outputs.is-main-push == '1' || steps.check-diffs.outputs.any-code-changed == '1' || steps.check-diffs.outputs.ci-actions-changed == '1' }}
       make-tests: ${{ steps.check-main-push.outputs.is-main-push == '1' || steps.check-diffs.outputs.tests-changed == '1' || steps.check-diffs.outputs.ci-actions-changed == '1' }}
       make-utils: ${{ steps.check-main-push.outputs.is-main-push == '1' || steps.check-diffs.outputs.utils-changed == '1' || steps.check-diffs.outputs.tests-changed == '1' || steps.check-diffs.outputs.ci-actions-changed == '1' }}
-      make-web: ${{ steps.check-main-push.outputs.is-main-push == '1' || steps.check-diffs.outputs.web-changed == '1' }}
       test-style: ${{ steps.check-main-push.outputs.is-main-push == '1' || steps.check-diffs.outputs.our-code-changed == '1' || steps.check-diffs.outputs.ci-actions-changed == '1' }}
       tidy-core: ${{ steps.check-main-push.outputs.is-main-push == '1' || steps.check-diffs.outputs.tidy-core-src-changed == '1' || steps.check-diffs.outputs.ci-actions-changed == '1' || steps.check-diffs.outputs.tidy-config-changed == '1' }}
       tidy-gtk: ${{ steps.check-main-push.outputs.is-main-push == '1' || steps.check-diffs.outputs.tidy-gtk-src-changed == '1' || steps.check-diffs.outputs.ci-actions-changed == '1' || steps.check-diffs.outputs.tidy-config-changed == '1' }}
@@ -82,7 +81,6 @@ jobs:
           get_changes qt         CMakeLists.txt cmake third-party libtransmission libtransmission-app qt
           get_changes tests      CMakeLists.txt cmake third-party libtransmission libtransmission-app utils tests
           get_changes utils      CMakeLists.txt cmake third-party libtransmission utils
-          get_changes web        CMakeLists.txt cmake web
           get_changes ci-actions .github/workflows/actions.yml .github/actions release
           cat "$GITHUB_OUTPUT"
 
@@ -658,7 +656,7 @@ jobs:
             -DENABLE_QT=${{ (needs.what-to-make.outputs.make-qt == 'true') && 'ON' || 'OFF' }} \
             -DENABLE_TESTS=${{ (needs.what-to-make.outputs.make-tests == 'true') && 'ON' || 'OFF' }} \
             -DENABLE_UTILS=${{ (needs.what-to-make.outputs.make-utils == 'true') && 'ON' || 'OFF' }} \
-            -DREBUILD_WEB=${{ (needs.what-to-make.outputs.make-web == 'true') && 'ON' || 'OFF' }} \
+            -DREBUILD_WEB=OFF \
             -DENABLE_WERROR=ON \
             -DRUN_CLANG_TIDY=OFF \
             -DUSE_SYSTEM_DEFAULT=ON \
@@ -721,7 +719,6 @@ jobs:
             miniupnpc-dev \
             mold \
             ninja \
-            npm \
             pkgconfig \
             simdutf-dev \
             xz \
@@ -751,7 +748,7 @@ jobs:
             -DENABLE_QT=${{ (needs.what-to-make.outputs.make-qt == 'true') && 'ON' || 'OFF' }} \
             -DENABLE_TESTS=${{ (needs.what-to-make.outputs.make-tests == 'true') && 'ON' || 'OFF' }} \
             -DENABLE_UTILS=${{ (needs.what-to-make.outputs.make-utils == 'true') && 'ON' || 'OFF' }} \
-            -DREBUILD_WEB=${{ (needs.what-to-make.outputs.make-web == 'true') && 'ON' || 'OFF' }} \
+            -DREBUILD_WEB=OFF \
             -DENABLE_WERROR=ON \
             -DRUN_CLANG_TIDY=OFF \
             -DCMAKE_EXE_LINKER_FLAGS=-fuse-ld=mold \
@@ -836,7 +833,7 @@ jobs:
             "-DENABLE_QT=${{ (needs.what-to-make.outputs.make-dist == 'true' || needs.what-to-make.outputs.make-qt == 'true') && 'ON' || 'OFF' }}"
             "-DENABLE_TESTS=${{ (needs.what-to-make.outputs.make-tests == 'true') && 'ON' || 'OFF' }}"
             '-DENABLE_UTILS=ON'
-            "-DREBUILD_WEB=${{ (needs.what-to-make.outputs.make-web == 'true') && 'ON' || 'OFF' }}"
+            '-DREBUILD_WEB=OFF'
             '-DENABLE_WERROR=ON'
             '-DRUN_CLANG_TIDY=OFF'
             '-DUSE_SYSTEM_DEFAULT=OFF'
@@ -934,7 +931,7 @@ jobs:
           echo '${{ toJSON(runner) }}'
           sw_vers
       - name: Get Dependencies
-        run: brew install --formulae cmake gettext ninja node pkgconf
+        run: brew install --formulae cmake gettext ninja pkgconf
       - name: Get Dependencies (GTK)
         if: ${{ needs.what-to-make.outputs.make-gtk == 'true' }}
         run: brew install --formula gtkmm3
@@ -978,7 +975,7 @@ jobs:
             -DENABLE_QT=${{ (needs.what-to-make.outputs.make-qt == 'true') && 'ON' || 'OFF' }}  \
             -DENABLE_TESTS=${{ (needs.what-to-make.outputs.make-tests == 'true') && 'ON' || 'OFF' }} \
             -DENABLE_UTILS=${{ (needs.what-to-make.outputs.make-utils == 'true') && 'ON' || 'OFF' }} \
-            -DREBUILD_WEB=${{ (needs.what-to-make.outputs.make-web == 'true') && 'ON' || 'OFF' }} \
+            -DREBUILD_WEB=OFF \
             -DENABLE_WERROR=ON \
             -DRUN_CLANG_TIDY=OFF \
             -DUSE_SYSTEM_DEFAULT=OFF
@@ -1065,11 +1062,6 @@ jobs:
           key: ccache-${{ github.job }}-${{ matrix.version }}-${{ github.run_id }}
           restore-keys: |
             ccache-${{ github.job }}-${{ matrix.version }}-
-      - name: Get NPM
-        if: ${{ needs.what-to-make.outputs.make-web == 'true' }}
-        uses: actions/setup-node@v6
-        with:
-          node-version: lts/*
       - name: Get Source
         uses: actions/download-artifact@v7
         with:
@@ -1093,7 +1085,7 @@ jobs:
             -DENABLE_QT=${{ (needs.what-to-make.outputs.make-qt == 'true') && 'ON' || 'OFF' }} \
             -DENABLE_TESTS=${{ (needs.what-to-make.outputs.make-tests == 'true') && 'ON' || 'OFF' }} \
             -DENABLE_UTILS=${{ (needs.what-to-make.outputs.make-utils == 'true') && 'ON' || 'OFF' }} \
-            -DREBUILD_WEB=${{ (needs.what-to-make.outputs.make-web == 'true') && 'ON' || 'OFF' }} \
+            -DREBUILD_WEB=OFF \
             -DENABLE_WERROR=ON \
             -DRUN_CLANG_TIDY=OFF \
             -DUSE_SYSTEM_GTEST=ON \
@@ -1185,11 +1177,6 @@ jobs:
           key: ccache-${{ github.job }}-${{ matrix.version }}-${{ github.run_id }}
           restore-keys: |
             ccache-${{ github.job }}-${{ matrix.version }}-
-      - name: Get NPM
-        if: ${{ needs.what-to-make.outputs.make-web == 'true' }}
-        uses: actions/setup-node@v6
-        with:
-          node-version: lts/*
       - name: Get Source
         uses: actions/download-artifact@v7
         with:
@@ -1213,7 +1200,7 @@ jobs:
             -DENABLE_QT=${{ (needs.what-to-make.outputs.make-qt == 'true') && 'ON' || 'OFF' }} \
             -DENABLE_TESTS=${{ (needs.what-to-make.outputs.make-tests == 'true') && 'ON' || 'OFF' }} \
             -DENABLE_UTILS=${{ (needs.what-to-make.outputs.make-utils == 'true') && 'ON' || 'OFF' }} \
-            -DREBUILD_WEB=${{ (needs.what-to-make.outputs.make-web == 'true') && 'ON' || 'OFF' }} \
+            -DREBUILD_WEB=OFF \
             -DENABLE_WERROR=OFF \
             -DRUN_CLANG_TIDY=OFF \
             -DCMAKE_EXE_LINKER_FLAGS=-fuse-ld=mold \
@@ -1275,11 +1262,6 @@ jobs:
           compiler: clang # Workaround https://gcc.gnu.org/bugzilla/show_bug.cgi?id=109717
           use-sudo: true
           enable-mold: true
-      - name: Get NPM
-        if: ${{ needs.what-to-make.outputs.make-web == 'true' }}
-        uses: actions/setup-node@v6
-        with:
-          node-version: lts/*
       - name: Get Source
         uses: actions/download-artifact@v7
         with:
@@ -1497,11 +1479,6 @@ jobs:
           enable-qt: ${{ needs.what-to-make.outputs.make-qt == 'true' && 'qt6' || 'false' }}
           use-sudo: true
           enable-mold: true
-      - name: Get NPM
-        if: needs.what-to-make.outputs.make-web == 'true'
-        uses: actions/setup-node@v6
-        with:
-          node-version: lts/*
       - name: Get Source
         uses: actions/download-artifact@v7
         with:
@@ -1535,7 +1512,7 @@ jobs:
             -DENABLE_QT=${{ (needs.what-to-make.outputs.make-qt == 'true') && 'ON' || 'OFF' }} \
             -DENABLE_TESTS=${{ (needs.what-to-make.outputs.make-tests == 'true') && 'ON' || 'OFF' }} \
             -DENABLE_UTILS=${{ (needs.what-to-make.outputs.make-utils == 'true') && 'ON' || 'OFF' }} \
-            -DREBUILD_WEB=${{ (needs.what-to-make.outputs.make-web == 'true') && 'ON' || 'OFF' }} \
+            -DREBUILD_WEB=OFF \
             -DENABLE_WERROR=ON \
             -DRUN_CLANG_TIDY=OFF \
             -DUSE_SYSTEM_DEFAULT=ON \
@@ -1678,11 +1655,6 @@ jobs:
           enable-mold: true
       - name: Install Crypto Library
         run: sudo apt-get install -y --no-install-recommends ${{ matrix.crypto.apt }}
-      - name: Get NPM
-        if: ${{ needs.what-to-make.outputs.make-web == 'true' }}
-        uses: actions/setup-node@v6
-        with:
-          node-version: lts/*
       - name: Get Source
         uses: actions/download-artifact@v7
         with:

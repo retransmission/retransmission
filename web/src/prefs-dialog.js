@@ -5,9 +5,9 @@
 
 import { Formatter } from './formatter.js';
 import {
-  OutsideClickListener,
   createTextualTabsContainer,
   makeUUID,
+  OutsideClickListener,
   setEnabled,
   setTextContent,
 } from './utils.js';

@@ -77,7 +77,7 @@ $ sudo cmake --install .
 
 ### Code Style
 
-You would want to setup your editor to make use of the .clang-format file located in the root of this repository and the oxlint/prettier rules in web/package.json.
+You would want to setup your editor to make use of the .clang-format file located in the root of this repository and the Biome configuration in web/biome.jsonc.
 
 If for some reason you are unwilling or unable to do so, there is a shell script which you can use: `./code_style.sh`
 

@@ -43,7 +43,7 @@ export class Prefs extends EventTarget {
 
   _get(key) {
     const { _cache } = this;
-    if (!Object.prototype.hasOwnProperty.call(_cache, key)) {
+    if (!Object.hasOwn(_cache, key)) {
       throw new Error(key);
     }
     return _cache[key];

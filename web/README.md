@@ -4,32 +4,42 @@ A web interface is built into all Transmission flavors, enabling them to be cont
 
 ## Notes for Packagers
 
-### Building Without Node
+Transmission releases include a prebuilt webapp bundle in
+`web/public_html/`, so most packages don't need to build it themselves.
 
-Transmission includes a prebuilt webapp bundle in its releases. This is
-done because it's not easy to install the bundling tools on all of the
-platforms that Transmission supports. Debian can't use this prebuilt
-bundle due to its (understandable) policies that require building from
-source. Unfortunately, building with `node run build` is also problematic
-because of some of `package.json`'s `devDependencies` aren't available as
-Debian packages.
-
-Follow these steps to build the webapp from source on Debian without Node:
+If your distro's policies require building the bundle from source, the
+only tool needed is [esbuild](https://esbuild.github.io/), which is
+packaged by Debian, Fedora, Homebrew, and others. Neither Node nor npm
+is required: the webapp has no external runtime dependencies — the few
+third-party modules it uses are vendored in `src/vendor/`.
 
 ```sh
-$ sudo apt install rsass perl esbuild
 $ cd transmission/web/
-$ rsass assets/css/transmission-app.scss > assets/css/transmission-app.css
-$ perl -p -i -e 's/transmission-app.scss/transmission-app.css/' src/main.js
 $ esbuild \
-  --allow-overwrite \
   --bundle \
+  --external:*/favicon.svg \
   --legal-comments=external \
   --loader:.png=dataurl \
   --loader:.svg=dataurl \
   --minify \
   --outfile=public_html/transmission-app.js \
+  --sourcemap \
+  --target=chrome104,firefox115,safari16.4 \
   src/main.js
+```
+
+These flags mirror `esbuild.mjs` (what `npm run build` uses to generate
+the official bundle) and `CMakeLists.txt` (what the main build runs when
+configured with `-DREBUILD_WEB=ON`); keep the three in sync.
+
+Instead of running esbuild by hand, you can also let the main build do
+it: configure with `-DREBUILD_WEB=ON` and CMake will find your system
+esbuild and rebuild the bundle as part of the build. To build just the
+webapp this way, point CMake at this directory:
+
+```sh
+$ cmake -S web -B build-web
+$ cmake --build build-web
 ```
 
 ## Notes for Developers
@@ -39,12 +49,18 @@ $ npm install
 $ npm run dev
 ```
 
-Navigate to [localhost:9000](http://localhost:9000/) to run the app.
+`npm run dev` stays running in the background and rebuilds
+`public_html/transmission-app.{js,css}` whenever you change and save a
+source file. It does not run a web server: to see your changes, point a
+running Transmission at your freshly built assets and open its web UI at
+[localhost:9091](http://localhost:9091/):
 
-When you use `npm run dev`, the bundler will stay running in the
-background and will rebuild transmission-app.js whenever you change
-and save a source file. When it's done, you can reload the page in
-your browser to see your changes in action.
+```sh
+$ TRANSMISSION_WEB_HOME="$PWD/public_html" transmission-daemon
+```
+
+Transmission serves these files with long-expiry cache headers, so do a
+hard refresh (e.g. Ctrl+Shift+R) in the browser to pick up a rebuild.
 
 ## Notes for Testers
 

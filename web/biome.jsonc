@@ -1,0 +1,49 @@
+{
+  "$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
+  "files": {
+    // public_html/ is generated output plus static assets, assets/img/
+    // holds decorative svg icons that have never been lint targets, and
+    // src/vendor/ is third-party code kept as shipped upstream
+    "includes": ["**", "!public_html", "!assets/img", "!src/vendor"]
+  },
+  "formatter": {
+    "indentStyle": "space",
+    "indentWidth": 2
+  },
+  "javascript": {
+    "formatter": {
+      "quoteStyle": "single"
+    }
+  },
+  "css": {
+    "formatter": {
+      "quoteStyle": "single"
+    }
+  },
+  "linter": {
+    "rules": {
+      "preset": "recommended",
+      // TODO: the "off" rules below (except noDescendingSpecificity) are
+      // pre-existing findings that were disabled to keep the
+      // oxlint/prettier/stylelint -> biome migration behavior-neutral.
+      // Revisit and fix them one rule at a time.
+      "complexity": {
+        "noThisInStatic": "off",
+        "useOptionalChain": "off"
+      },
+      "correctness": {
+        "noUnusedFunctionParameters": "off"
+      },
+      "style": {
+        // the stylesheet predates this rule; restructuring its cascade
+        // isn't worth the regression risk
+        "noDescendingSpecificity": "off"
+      },
+      "suspicious": {
+        "noAssignInExpressions": "off",
+        "noDocumentCookie": "off",
+        "noDoubleEquals": "off"
+      }
+    }
+  }
+}

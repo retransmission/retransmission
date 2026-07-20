@@ -17,6 +17,7 @@ jobs:
     runs-on: ubuntu-slim
     outputs:
       test-style: ${{ steps.check-diffs.outputs.web-changed == '1' }}
+      test-cmake-build: ${{ steps.check-diffs.outputs.web-changed == '1' }}
       test-generated-files: ${{ steps.check-diffs.outputs.web-changed == '1' && steps.check-main-push.outputs.is-main-push == '0'}}
       update-generated-files: ${{ steps.check-diffs.outputs.web-changed == '1' && steps.check-main-push.outputs.is-main-push == '1'}}
     steps:
@@ -51,6 +52,32 @@ jobs:
             echo "$name-changed=$?" >> "$GITHUB_OUTPUT"
           }
           get_changes web CMakeLists.txt web
+
+  # the platform build jobs in actions.yml all use the prebuilt bundle
+  # (REBUILD_WEB=OFF); this is the one job that checks the bundle can be
+  # rebuilt from source with nothing but cmake and a standalone esbuild
+  # binary -- no node or npm -- which is how distro packagers build it
+  cmake-build:
+    # 26.04 rather than ubuntu-latest: its packaged esbuild (0.27.2) meets
+    # the ESBUILD_MINIMUM in CMakeLists.txt; 24.04's (0.20.1) does not
+    runs-on: ubuntu-26.04
+    needs: [ decide-what-jobs-to-run ]
+    if: ${{ needs.decide-what-jobs-to-run.outputs.test-cmake-build == 'true' }}
+    steps:
+      - name: Get source
+        uses: actions/checkout@v6
+      - name: Get esbuild
+        run: |
+          set -ex # abort if any command fails; echo commands
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends esbuild
+          esbuild --version
+      - name: Build the webapp with CMake and esbuild
+        run: |
+          set -ex # abort if any command fails; echo commands
+          cmake -S web -B obj
+          cmake --build obj
+          ls -l obj/public_html
 
   code-style:
     runs-on: ubuntu-slim
@@ -106,7 +133,6 @@ jobs:
           echo
           echo Please undo your changes to these files:
           git diff --exit-code --name-only --merge-base "origin/$GITHUB_BASE_REF" -- \
-              web/package.json.buildonly \
               web/public_html/transmission-app.css \
               web/public_html/transmission-app.css.LEGAL.txt \
               web/public_html/transmission-app.css.map \
@@ -124,15 +150,12 @@ jobs:
           env | sort
       - name: Get source
         uses: actions/checkout@v6
-        with:
-          fetch-depth: 2 # >1 needed for merge base
       - name: Generate webapp files
         run: |
           set -x # echo all executed commands to the terminal
           set -e # abort if any command fails
           npm --prefix web ci
           npm --prefix web run build
-          npm --prefix web run generate-buildonly
           git diff --name-only
           git add --update web
       - name: Create pull request

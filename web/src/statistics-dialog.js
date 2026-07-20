@@ -5,10 +5,10 @@
 
 import { Formatter } from './formatter.js';
 import {
-  Utils,
-  setTextContent,
   createDialogContainer,
   createInfoSection,
+  setTextContent,
+  Utils,
 } from './utils.js';
 
 export class StatisticsDialog extends EventTarget {

@@ -235,7 +235,7 @@ runs:
       shell: bash
       run: |
         # Base packages for macOS
-        BASE_PACKAGES=(cmake gettext ninja node pkgconf)
+        BASE_PACKAGES=(cmake gettext ninja pkgconf)
 
         # Transmission-specific libraries
         BASE_PACKAGES+=(
