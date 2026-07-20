@@ -451,7 +451,7 @@ constexpr void xfplay_formatter(char* buf, size_t buflen, std::string_view name,
 void xtorrent_formatter(char* buf, size_t buflen, std::string_view name, tr_peer_id_t id)
 {
     std::tie(buf, buflen) = buf_append(buf, buflen, name, ' ', base62str(id[3]), '.', base62str(id[4]), " ("sv);
-    *fmt::format_to_n(buf, buflen - 1, "{:d}", strint(&id[5], 2)).out = '\0';
+    *fmt::format_to_n(buf, buflen - 1, "{:d})", strint(&id[5], 2)).out = '\0';
 }
 
 struct Client {

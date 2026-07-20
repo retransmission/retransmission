@@ -63,6 +63,7 @@ TEST(Client, clientForId)
         { .peer_id = "-UW1110Q"sv, .expected_client = "\xc2\xb5Torrent Web 1.1.10"sv }, // wider version
         { .peer_id = "-WS1000-"sv, .expected_client = "HTTP Seed"sv },
         { .peer_id = "-WT-abcd"sv, .expected_client = "BitLet"sv }, // nested prefix: "-WT-" must win over "-WT"
+        { .peer_id = "-XC1230-"sv, .expected_client = "Xtorrent 1.2 (30)"sv },
         { .peer_id = "-WW0007-"sv, .expected_client = "WebTorrent 0.0.0.7"sv },
         { .peer_id = "-XF9990-"sv,
           .expected_client = "Xfplay 9.9.9"sv }, // Older Xfplay versions have three digit version number
