@@ -33,27 +33,12 @@ using tr::app::StatsMode;
 namespace
 {
 
-// A concrete `tr::app::Prefs` that records the keys passed to `on_changed()`,
+// A concrete `tr::app::Prefs` that records the keys its change signal reports,
 // so tests can assert exactly when (and whether) change notifications fire.
 class TestPrefs final : public tr::app::Prefs
 {
 public:
-    TestPrefs()
-    {
-        record_changes();
-    }
-
-    explicit TestPrefs(tr::Settings const& settings)
-        : tr::app::Prefs{ settings }
-    {
-        record_changes();
-    }
-
-    explicit TestPrefs(std::string_view config_dir)
-        : tr::app::Prefs{ config_dir }
-    {
-        record_changes();
-    }
+    using tr::app::Prefs::Prefs;
 
     [[nodiscard]] std::vector<tr_quark> const& changed_keys() const noexcept
     {
@@ -66,13 +51,9 @@ public:
     }
 
 private:
-    void record_changes()
-    {
-        changed_connection_ = observe_changes([this](tr_quark const key) { changed_keys_.push_back(key); });
-    }
-
     std::vector<tr_quark> changed_keys_;
-    sigslot::scoped_connection changed_connection_;
+    sigslot::scoped_connection changed_connection_ = observe_changes(
+        [this](tr_quark const key) { changed_keys_.push_back(key); });
 };
 
 // Sets `key` to `a` then `b`, asserting the round-trip through get/set for each.
