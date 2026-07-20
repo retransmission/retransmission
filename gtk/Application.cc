@@ -319,7 +319,7 @@ bool Application::Impl::refresh_actions()
 {
     if (!is_closing_) {
         size_t const total = core_->get_torrent_count();
-        size_t const active = core_->get_active_torrent_count();
+        size_t const unpaused = core_->get_unpaused_torrent_count();
         auto const torrent_count = core_->get_model()->get_n_items();
 
         auto const sel_counts = get_selected_torrent_counts();
@@ -327,8 +327,8 @@ bool Application::Impl::refresh_actions()
 
         gtr_action_set_sensitive("select-all", torrent_count != 0);
         gtr_action_set_sensitive("deselect-all", torrent_count != 0);
-        gtr_action_set_sensitive("pause-all-torrents", active != 0);
-        gtr_action_set_sensitive("start-all-torrents", active != total);
+        gtr_action_set_sensitive("pause-all-torrents", unpaused != 0);
+        gtr_action_set_sensitive("start-all-torrents", unpaused != total);
 
         gtr_action_set_sensitive("torrent-stop", (sel_counts.stopped_count < sel_counts.total_count));
         gtr_action_set_sensitive("torrent-start", (sel_counts.stopped_count) > 0);

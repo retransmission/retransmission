@@ -66,7 +66,7 @@ public:
 
     tr_session* get_session() const;
 
-    size_t get_active_torrent_count() const;
+    size_t get_unpaused_torrent_count() const;
 
     size_t get_torrent_count() const;
 

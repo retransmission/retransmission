@@ -83,7 +83,7 @@ public:
 
     std::pair<Glib::RefPtr<Torrent>, guint> find_torrent_by_id(tr_torrent_id_t torrent_id) const;
 
-    size_t get_active_torrent_count() const;
+    size_t get_unpaused_torrent_count() const;
 
     bool get_port_test_pending(PortTestIpProtocol ip_protocol);
     void set_port_test_pending(bool pending, PortTestIpProtocol ip_protocol);
@@ -1183,12 +1183,12 @@ size_t Session::get_torrent_count() const
     return impl_->get_raw_model()->get_n_items();
 }
 
-size_t Session::get_active_torrent_count() const
+size_t Session::get_unpaused_torrent_count() const
 {
-    return impl_->get_active_torrent_count();
+    return impl_->get_unpaused_torrent_count();
 }
 
-size_t Session::Impl::get_active_torrent_count() const
+size_t Session::Impl::get_unpaused_torrent_count() const
 {
     size_t activeCount = 0;
 
