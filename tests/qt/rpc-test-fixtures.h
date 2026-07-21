@@ -84,6 +84,14 @@ public:
         return bodies_;
     }
 
+    // Reply with `body` to any request whose body contains `marker` (e.g. a
+    // method name). Requests matching nothing get the default empty success.
+    void set_reply_for(std::string_view const marker, std::string_view const body)
+    {
+        auto const lock = std::lock_guard{ mutex_ };
+        replies_.emplace_back(std::string{ marker }, std::string{ body });
+    }
+
 private:
     static void on_request(evhttp_request* req, void* vself)
     {
@@ -95,7 +103,11 @@ private:
         auto* const in_headers = evhttp_request_get_input_headers(req);
         auto const* const session_id = evhttp_find_header(in_headers, std::data(TrRpcSessionIdHeader));
 
-        record_request_body(req);
+        auto const request_body = read_request_body(req);
+        {
+            auto const lock = std::lock_guard{ mutex_ };
+            bodies_.push_back(request_body);
+        }
 
         auto* const out_headers = evhttp_request_get_output_headers(req);
         auto* const out = evbuffer_new();
@@ -106,17 +118,17 @@ private:
             evhttp_send_reply(req, 409, "Conflict", out);
         } else {
             evhttp_add_header(out_headers, "Content-Type", "application/json");
-            // A valid, empty legacy success reply. The client normalizes incoming
-            // data to Tr5, so `result:"success"` is what marks it as a success.
-            static auto constexpr Body = std::string_view{ R"({"result":"success","arguments":{}})" };
-            evbuffer_add(out, std::data(Body), std::size(Body));
+            // The client normalizes incoming data to Tr5, so `result:"success"`
+            // is what marks this legacy-shaped reply as a success.
+            auto const reply = reply_for(request_body);
+            evbuffer_add(out, std::data(reply), std::size(reply));
             evhttp_send_reply(req, 200, "OK", out);
         }
 
         evbuffer_free(out);
     }
 
-    void record_request_body(evhttp_request* req)
+    [[nodiscard]] static std::string read_request_body(evhttp_request* req)
     {
         auto* const in_buf = evhttp_request_get_input_buffer(req);
         auto const len = evbuffer_get_length(in_buf);
@@ -124,15 +136,25 @@ private:
         if (len > 0) {
             body.assign(reinterpret_cast<char const*>(evbuffer_pullup(in_buf, -1)), len);
         }
+        return body;
+    }
 
+    [[nodiscard]] std::string reply_for(std::string const& request_body) const
+    {
         auto const lock = std::lock_guard{ mutex_ };
-        bodies_.push_back(std::move(body));
+        for (auto const& [marker, body] : replies_) {
+            if (request_body.find(marker) != std::string::npos) {
+                return body;
+            }
+        }
+        return std::string{ R"({"result":"success","arguments":{}})" };
     }
 
     static constexpr auto SessionId = std::string_view{ "test-session-id" };
 
     mutable std::mutex mutex_;
     std::vector<std::string> bodies_;
+    std::vector<std::pair<std::string, std::string>> replies_;
 
     event_base* base_;
     evhttp* http_;

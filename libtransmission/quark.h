@@ -95,6 +95,7 @@ enum // NOLINT(performance-enum-size)
     TR_KEY_blocklist_enabled,
     TR_KEY_blocklist_size,
     TR_KEY_blocklist_update,
+    TR_KEY_blocklist_update_v2,
     TR_KEY_blocklist_updates_enabled,
     TR_KEY_blocklist_url,
     TR_KEY_blocks,

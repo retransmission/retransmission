@@ -218,8 +218,6 @@ Application::Application(
     timer->setInterval(InternRefreshIntervalMsec);
     timer->start();
 
-    maybeUpdateBlocklist();
-
     if (!first_time) {
         session_->restart();
     } else {
@@ -369,10 +367,6 @@ void Application::saveGeometry() const
 void Application::refreshPref(tr_quark key) const
 {
     switch (key) {
-    case TR_KEY_blocklist_updates_enabled:
-        maybeUpdateBlocklist();
-        break;
-
     case TR_KEY_watch_dir:
     case TR_KEY_watch_dir_enabled:
         watch_dir_->setPath(prefs_.get<QString>(TR_KEY_watch_dir), prefs_.get<bool>(TR_KEY_watch_dir_enabled));
@@ -380,22 +374,6 @@ void Application::refreshPref(tr_quark key) const
 
     default:
         break;
-    }
-}
-
-void Application::maybeUpdateBlocklist() const
-{
-    if (!prefs_.get<bool>(TR_KEY_blocklist_updates_enabled)) {
-        return;
-    }
-
-    auto const last_updated_at = prefs_.get<std::chrono::sys_seconds>(TR_KEY_blocklist_date);
-    auto const next_update_at = last_updated_at + std::chrono::days{ 7 };
-    auto const now = std::chrono::time_point_cast<std::chrono::seconds>(std::chrono::system_clock::now());
-
-    if (now < next_update_at) {
-        session_->updateBlocklist();
-        prefs_.set(TR_KEY_blocklist_date, now);
     }
 }
 

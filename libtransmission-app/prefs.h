@@ -60,7 +60,6 @@ struct AppPrefs {
     ShowMode show_mode_ = DefaultShowMode;
     SortMode sort_mode_ = DefaultSortMode;
     StatsMode statusbar_stats_ = DefaultStatsMode;
-    bool blocklist_updates_enabled_ = true;
     bool compact_view_ = false;
     bool complete_sound_enabled_ = true;
     bool dir_watch_enabled_ = false;
@@ -85,7 +84,6 @@ struct AppPrefs {
 
     static constexpr auto Fields = std::make_tuple(
         Field<&AppPrefs::blocklist_date_>{ TR_KEY_blocklist_date },
-        Field<&AppPrefs::blocklist_updates_enabled_>{ TR_KEY_blocklist_updates_enabled },
         Field<&AppPrefs::compact_view_>{ TR_KEY_compact_view },
         Field<&AppPrefs::complete_sound_command_>{ TR_KEY_torrent_complete_sound_command },
         Field<&AppPrefs::complete_sound_enabled_>{ TR_KEY_torrent_complete_sound_enabled },
@@ -178,6 +176,7 @@ struct SessionPrefs {
     bool alt_speed_limit_enabled_ = {};
     bool alt_speed_limit_time_enabled_ = {};
     bool blocklist_enabled_ = {};
+    bool blocklist_updates_enabled_ = {};
     bool dht_enabled_ = {};
     bool download_queue_enabled_ = {};
     bool dspeed_enabled_ = {};
@@ -209,6 +208,7 @@ struct SessionPrefs {
         Field<&SessionPrefs::alt_speed_limit_time_end_>{ TR_KEY_alt_speed_time_end },
         Field<&SessionPrefs::alt_speed_limit_up_>{ TR_KEY_alt_speed_up },
         Field<&SessionPrefs::blocklist_enabled_>{ TR_KEY_blocklist_enabled },
+        Field<&SessionPrefs::blocklist_updates_enabled_>{ TR_KEY_blocklist_updates_enabled },
         Field<&SessionPrefs::blocklist_url_>{ TR_KEY_blocklist_url },
         Field<&SessionPrefs::default_trackers_>{ TR_KEY_default_trackers },
         Field<&SessionPrefs::dht_enabled_>{ TR_KEY_dht_enabled },

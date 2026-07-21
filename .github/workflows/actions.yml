@@ -1831,8 +1831,9 @@ jobs:
             set -ex
             uname -a
             export PATH="/usr/pkg/bin:/usr/pkg/sbin${PATH:+:${PATH}}"
-            export PKG_PATH="https://cdn.NetBSD.org/pub/pkgsrc/packages/NetBSD/`uname -p`/`uname -r`/All"
-            /usr/sbin/pkg_add -u \
+            export PKG_PATH="https://cdn.NetBSD.org/pub/pkgsrc/packages/NetBSD/`uname -p`/`uname -r`/All;https://ftp.netbsd.org/pub/pkgsrc/packages/NetBSD/`uname -p`/`uname -r`/All"
+            n=0
+            until /usr/sbin/pkg_add -u \
               curl \
               cmake \
               fast_float \
@@ -1843,7 +1844,12 @@ jobs:
               miniupnpc \
               ninja-build \
               pkgconf \
-              rapidjson
+              rapidjson; do
+              n=$((n+1))
+              [ $n -lt 3 ] || exit 1
+              echo "pkg_add attempt $n failed, retrying in 30s..."
+              sleep 30
+            done
           run: |
             set -ex
             export TMPDIR=/var/tmp # gcc's LTO takes up a lot of space in TMPDIR, and /tmp is too small

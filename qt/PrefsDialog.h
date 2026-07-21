@@ -16,7 +16,6 @@
 #include "Session.h"
 #include "ui_PrefsDialog.h"
 
-class QHttp;
 class QMessageBox;
 class QString;
 
@@ -44,6 +43,8 @@ private slots:
     void onUpdateBlocklistCancelled();
     void onBlocklistDialogDestroyed(QObject* o);
     void onBlocklistUpdated(int64_t n);
+    void onBlocklistUpdateFailed(QString const& message);
+    void onBlocklistUpdateSuperseded();
 
 private:
     enum class PortTestStatus : uint8_t { Unknown = 0U, Checking, Open, Closed, Error };
@@ -104,7 +105,5 @@ private:
     QWidgetList block_widgets_;
     QWidgetList unsupported_when_remote_;
 
-    int blocklist_http_tag_ = {};
-    QHttp* blocklist_http_ = {};
     QMessageBox* blocklist_dialog_ = {};
 };

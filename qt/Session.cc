@@ -6,6 +6,7 @@
 #include <algorithm>
 #include <array>
 #include <cassert>
+#include <chrono>
 #include <ranges>
 #include <string_view>
 #include <utility>
@@ -134,8 +135,8 @@ void Session::updatePref(tr_quark key)
         case TR_KEY_alt_speed_time_enabled:
         case TR_KEY_alt_speed_time_end:
         case TR_KEY_alt_speed_up:
-        case TR_KEY_blocklist_date:
         case TR_KEY_blocklist_enabled:
+        case TR_KEY_blocklist_updates_enabled:
         case TR_KEY_blocklist_url:
         case TR_KEY_default_trackers:
         case TR_KEY_dht_enabled:
@@ -667,10 +668,26 @@ void Session::refreshSessionInfo()
 void Session::updateBlocklist()
 {
     RpcQueue::create()
-        .add([this](RpcClient::ResponseFunc done) { exec(TR_KEY_blocklist_update, nullptr, std::move(done)); })
+        .add(
+            [this](RpcClient::ResponseFunc done) { exec(TR_KEY_blocklist_update_v2, nullptr, std::move(done)); },
+            // A JSON-RPC error (e.g. a daemon older than 4.2 that lacks blocklist_update_v2)
+            // aborts the queue before the parse step below, so report it here or the progress
+            // dialog is left with no result.
+            [this](RpcResponse const& r) { emit blocklistUpdateFailed(QString::fromStdString(r.errmsg)); })
         .add([this](RpcResponse const& r) {
-            if (auto const size = dictFind<int>(r.args.get(), TR_KEY_blocklist_size)) {
-                setBlocklistSize(*size);
+            auto* const args = r.args.get();
+            auto const status = dictFind<QString>(args, TR_KEY_status).value_or(QString{});
+            if (status == QStringLiteral("ok")) {
+                auto const n_rules = dictFind<int>(args, TR_KEY_blocklist_size).value_or(0);
+                setBlocklistSize(n_rules);
+                // Announce success only for this manual update. setBlocklistSize() no longer
+                // emits blocklistUpdated(), so a background session_get refresh can't flash a
+                // spurious "Update succeeded!" in the dialog.
+                emit blocklistUpdated(n_rules);
+            } else if (status == QStringLiteral("superseded")) {
+                emit blocklistUpdateSuperseded();
+            } else {
+                emit blocklistUpdateFailed(dictFind<QString>(args, TR_KEY_error).value_or(QString{}));
             }
         })
         .run();
@@ -746,6 +763,10 @@ void Session::updateInfo(tr_variant* args_dict)
         setBlocklistSize(*size);
     }
 
+    if (auto const date = dictFind<int64_t>(args_dict, TR_KEY_blocklist_date); date) {
+        prefs_.set(TR_KEY_blocklist_date, std::chrono::sys_seconds{ std::chrono::seconds{ *date } });
+    }
+
     if (auto const str = dictFind<QString>(args_dict, TR_KEY_version); str) {
         session_version_ = *str;
     }
@@ -760,8 +781,6 @@ void Session::updateInfo(tr_variant* args_dict)
 void Session::setBlocklistSize(int64_t i)
 {
     blocklist_size_ = i;
-
-    emit blocklistUpdated(i);
 }
 
 void Session::addTorrent(AddData const& add_me, tr_variant::Map args_dict)

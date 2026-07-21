@@ -103,7 +103,6 @@ private slots:
 #endif
 
 private:
-    void maybeUpdateBlocklist() const;
     void loadTranslations();
     QStringList getNames(torrent_ids_t const& ids) const;
     void notifyTorrentAdded(Torrent const* tor) const;

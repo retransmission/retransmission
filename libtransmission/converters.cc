@@ -535,6 +535,46 @@ tr_variant from_pex(tr_pex const& val)
 
     return pex;
 }
+
+// ---
+
+auto constexpr BlocklistUpdateStatusKeys = LookupTable<tr_blocklist_update_status, 5U>{ {
+    { "ok", tr_blocklist_update_status::Ok },
+    { "download_error", tr_blocklist_update_status::DownloadError },
+    { "save_error", tr_blocklist_update_status::SaveError },
+    { "invalid_data", tr_blocklist_update_status::InvalidData },
+    { "superseded", tr_blocklist_update_status::Superseded },
+} };
+
+bool to_blocklist_update_result(tr_variant const& src, tr_blocklist_update_result* tgt)
+{
+    auto const* const map = src.get_if<tr_variant::Map>();
+    if (map == nullptr) {
+        return false;
+    }
+
+    // a result object is defined by its status, so require a recognized one
+    auto const status = map->find(TR_KEY_status);
+    if (status == map->end() || !to_enum_or_integral_with_lookup(BlocklistUpdateStatusKeys, status->second, &tgt->status)) {
+        return false;
+    }
+    if (auto const n_rules = map->value_if<int64_t>(TR_KEY_blocklist_size)) {
+        tgt->n_rules = static_cast<size_t>(*n_rules);
+    }
+    if (auto const error = map->value_if<std::string_view>(TR_KEY_error)) {
+        tgt->error = *error;
+    }
+    return true;
+}
+
+tr_variant from_blocklist_update_result(tr_blocklist_update_result const& val)
+{
+    auto map = tr_variant::Map{ 3U };
+    map.try_emplace(TR_KEY_status, from_enum_or_integral_with_lookup(BlocklistUpdateStatusKeys, val.status));
+    map.try_emplace(TR_KEY_blocklist_size, val.n_rules);
+    map.try_emplace(TR_KEY_error, val.error);
+    return map;
+}
 } // unnamed namespace
 
 // ---
@@ -559,6 +599,7 @@ TR_DEFINE_CONVERTER(bool, to_bool, from_bool)
 TR_DEFINE_CONVERTER(double, to_double, from_double)
 TR_DEFINE_CONVERTER(std::string, to_string, from_string)
 TR_DEFINE_CONVERTER(std::chrono::milliseconds, to_msec, from_msec)
+TR_DEFINE_CONVERTER(tr_blocklist_update_result, to_blocklist_update_result, from_blocklist_update_result)
 TR_DEFINE_CONVERTER(tr_diffserv_t, to_diffserv_t, from_diffserv_t)
 TR_DEFINE_CONVERTER(tr_encryption_mode, to_encryption_mode, from_encryption_mode)
 TR_DEFINE_CONVERTER(tr_file_preallocation, to_preallocation_mode, from_preallocation_mode)

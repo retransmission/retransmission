@@ -314,6 +314,7 @@ TR_DECLARE_CONVERTER(double)
 TR_DECLARE_CONVERTER(std::chrono::milliseconds)
 TR_DECLARE_CONVERTER(std::string)
 
+TR_DECLARE_CONVERTER(tr_blocklist_update_result)
 TR_DECLARE_CONVERTER(tr_diffserv_t)
 TR_DECLARE_CONVERTER(tr_encryption_mode)
 TR_DECLARE_CONVERTER(tr_file_preallocation)

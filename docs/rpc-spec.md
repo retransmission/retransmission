@@ -580,8 +580,10 @@ Response parameters: `path`, `name`, and `id`, holding the torrent ID integer
 | `alt_speed_time_end` | number | when to turn off alt speeds (units: same)
 | `alt_speed_up` | number | max global upload speed (kB/s)
 | `anti_brute_force_enabled` | boolean | true means to enable a basic brute force protection for RPC server
+| `blocklist_date` | number | Unix time of the last successful blocklist update, or 0 if never (read-only)
 | `blocklist_enabled` | boolean | true means enabled
 | `blocklist_size` | number | number of rules in the blocklist
+| `blocklist_updates_enabled` | boolean | true means the blocklist is periodically re-downloaded on its own
 | `blocklist_url` | string | location of the blocklist to use for `blocklist_update`
 | `cache_size_mib` | number |**DEPRECATED** This property will be removed in Transmission 5.0.0. Clients should stop using this property now.
 | `config_dir` | string | location of transmission's configuration directory
@@ -655,6 +657,7 @@ Method name: `session_set`
 Request parameters: the mutable properties from 4.1's parameters, i.e. all of them
 except:
 
+* `blocklist_date`
 * `blocklist_size`
 * `config_dir`
 * `recent_download_paths`
@@ -710,6 +713,28 @@ Method name: `blocklist_update`
 Request parameters: none
 
 Response parameters: a number `blocklist_size`
+
+Downloads the blocklist at `blocklist_url`, decompresses it (gzip, tar, and zip
+archives are handled, as is plain text), installs it, and returns the new rule
+count. On failure it returns a JSON-RPC error.
+
+#### 4.3.1 Blocklist update with a structured result
+Method name: `blocklist_update_v2`
+
+Request parameters: none
+
+Response parameters:
+
+| Key | Value Type | Description
+|:--|:--|:--
+| `status` | string | one of `ok`, `download_error`, `save_error`, `invalid_data`, `superseded`
+| `blocklist_size` | number | the new rule count; only meaningful when `status` is `ok`
+| `error` | string | human-readable detail; empty on success
+
+Behaves like `blocklist_update`, but a download or parse failure is reported
+through the `status` field of a normal success response instead of as a JSON-RPC
+error. `superseded` means a newer update request replaced this one before it
+finished.
 
 ### 4.4 Port checking
 This method tests to see if your incoming peer port is accessible
@@ -1135,3 +1160,7 @@ Transmission 4.2.0 (`rpc_version_semver` 6.1.0, `rpc_version`: 20)
 | `session_get` | new arg `torrent_complete_verify_enabled`
 | `session_set` | new arg `torrent_complete_verify_enabled`
 | `session_get` | **DEPRECATED** `cache_size_mib`. The memory cache is being removed, making this setting moot. The setting will still be gettable and settable via RPC `session_get` and `session_set` until Transmission 5.0.0 to avoid client breakage, but it will be otherwise unused in libtransmission. Clients should stop using this key.
+| `blocklist_update_v2` | new method
+| `session_get` | new arg `blocklist_date`
+| `session_get` | new arg `blocklist_updates_enabled`
+| `session_set` | new arg `blocklist_updates_enabled`
