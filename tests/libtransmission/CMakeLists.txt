@@ -65,7 +65,8 @@ target_sources(libtransmission-test
         variant-test.cc
         watchdir-test.cc
         web-test.cc
-        web-utils-test.cc)
+        web-utils-test.cc
+        wildmat-test.cc)
 
 if(APPLE)
     target_sources(libtransmission-test
@@ -93,7 +94,8 @@ target_link_libraries(libtransmission-test
         transmission::fmt-header-only
         libevent::core
         libevent::extra
-        WideInteger::WideInteger)
+        WideInteger::WideInteger
+        wildmat)
 
 tr_setup_gtest_target(libtransmission-test "LT.")
 

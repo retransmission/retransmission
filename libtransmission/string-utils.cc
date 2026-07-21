@@ -26,12 +26,9 @@
 #include "libtransmission/string-utils.h"
 #include "libtransmission/tr-assert.h"
 
-/* User-level routine. returns whether or not 'text' and 'pattern' matched */
-bool tr_wildmat(char const* text, char const* pattern)
+bool tr_wildmat(std::string_view text, std::string_view pattern)
 {
-    // TODO(ckerr): replace wildmat with base/strings/pattern.cc
-    // wildmat wants these to be zero-terminated.
-    return (pattern[0] == '*' && pattern[1] == '\0') || DoMatch(text, pattern) > 0;
+    return wildmat::match(text, pattern);
 }
 
 char const* tr_strerror(int errnum)
