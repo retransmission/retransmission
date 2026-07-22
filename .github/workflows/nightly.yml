@@ -1,0 +1,132 @@
+name: Nightly
+
+# Publishes a single, rolling "nightly" pre-release from the tip of main.
+#
+# It runs after the "Sanity" workflow succeeds on a push to main, pulls the
+# user-facing artifacts from that run, and refreshes the assets on ONE
+# permanent pre-release tagged `nightly` -- so it never clutters the releases
+# list with a new entry per day. Also runnable by hand (workflow_dispatch)
+# against the latest successful main run, for testing.
+
+on:
+  workflow_run:
+    workflows: [ Sanity ]
+    types: [ completed ]
+    branches: [ main ]
+  workflow_dispatch: {}
+
+permissions:
+  contents: write   # create / update the release
+  actions: read     # read + download the source run's artifacts
+
+concurrency:
+  group: nightly
+  cancel-in-progress: false   # let an in-progress publish finish
+
+jobs:
+  publish:
+    name: Publish nightly build
+    runs-on: ubuntu-latest
+    # Only the real repo, and (for workflow_run) only a green push-triggered run.
+    if: >-
+      github.repository == 'retransmission/retransmission' &&
+      (github.event_name == 'workflow_dispatch' ||
+       (github.event.workflow_run.conclusion == 'success' &&
+        github.event.workflow_run.event == 'push'))
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - name: Resolve the source Sanity run
+        id: src
+        run: |
+          set -euo pipefail
+          if [ "${{ github.event_name }}" = "workflow_run" ]; then
+            rid='${{ github.event.workflow_run.id }}'
+            sha='${{ github.event.workflow_run.head_sha }}'
+          else
+            read -r rid sha < <(gh api \
+              "repos/${{ github.repository }}/actions/workflows/actions.yml/runs?branch=main&event=push&status=success&per_page=1" \
+              --jq '.workflow_runs[0] | "\(.id) \(.head_sha)"')
+          fi
+          [ -n "$rid" ] || { echo '::error::no successful Sanity run found'; exit 1; }
+          {
+            echo "rid=$rid"
+            echo "sha=$sha"
+          } >> "$GITHUB_OUTPUT"
+          echo "Using Sanity run $rid @ $sha"
+
+      - name: Download the user-facing artifacts
+        run: |
+          set -euo pipefail
+          rid='${{ steps.src.outputs.rid }}'
+          mkdir -p in
+          dl() {
+            local id
+            id=$(gh api "repos/${{ github.repository }}/actions/runs/$rid/artifacts" \
+                   --jq ".artifacts[] | select(.name==\"$1\") | .id" | head -n1)
+            if [ -z "${id:-}" ]; then
+              echo "::warning::artifact '$1' not found in run $rid; skipping"
+              return 0
+            fi
+            echo "downloading $1 (id=$id)"
+            gh api "repos/${{ github.repository }}/actions/artifacts/$id/zip" > "in/$1.zip"
+          }
+          dl binaries-macos-xcodebuild-universal
+          dl binaries-windows-x64-msi
+          dl binaries-windows-arm64-msi
+          dl binaries-windows-x86-msi
+          dl source-tarball
+
+      - name: Stage clean release assets
+        run: |
+          set -euo pipefail
+          mkdir -p dist work
+          # macOS: repackage the .app in a clean zip (Transmission.app at the root)
+          if [ -f in/binaries-macos-xcodebuild-universal.zip ]; then
+            unzip -q in/binaries-macos-xcodebuild-universal.zip -d work/macos
+            app=$(find work/macos -name Transmission.app -type d | head -n1)
+            if [ -n "$app" ]; then
+              ( cd "$(dirname "$app")" && zip -q -y -r "$GITHUB_WORKSPACE/dist/Retransmission-nightly-macos-universal.zip" Transmission.app )
+            fi
+          fi
+          # Windows: pull the .msi out of each artifact
+          for arch in x64 arm64 x86; do
+            z="in/binaries-windows-$arch-msi.zip"
+            [ -f "$z" ] || continue
+            unzip -q "$z" -d "work/win-$arch"
+            msi=$(find "work/win-$arch" -name '*.msi' | head -n1)
+            [ -n "$msi" ] && cp "$msi" "dist/Retransmission-nightly-$arch.msi"
+          done
+          # Source tarball: keep the semver name, add a -nightly.<date> pre-release tag
+          if [ -f in/source-tarball.zip ]; then
+            unzip -q in/source-tarball.zip -d work/src
+            tb=$(find work/src -name 'transmission*.tar.*' | head -n1)
+            if [ -n "$tb" ]; then
+              base=$(basename "$tb")   # e.g. transmission-4.2.0.tar.xz
+              stem=${base%.tar.*}      # transmission-4.2.0
+              ext=${base#"$stem"}      # .tar.xz
+              cp "$tb" "dist/${stem}-nightly.$(date -u +%Y%m%d)${ext}"
+            fi
+          fi
+          echo 'Staged assets:'
+          ls -l dist
+          [ -n "$(ls -A dist)" ] || { echo '::error::no assets staged'; exit 1; }
+
+      - name: Publish / refresh the rolling nightly pre-release
+        run: |
+          set -euo pipefail
+          repo='${{ github.repository }}'
+          sha='${{ steps.src.outputs.sha }}'
+          notes="$RUNNER_TEMP/notes.md"
+          {
+            printf 'Rolling development build from the tip of main, refreshed on every green push.\n\n'
+            printf 'These are **unsigned** builds -- macOS Gatekeeper and Windows SmartScreen will warn you. '
+            printf 'Prefer the stable downloads at https://retransmission.org/download unless you specifically want to test main.\n\n'
+            printf 'Latest build: %s -- %s UTC\n' "$sha" "$(date -u '+%Y-%m-%d %H:%M')"
+          } > "$notes"
+          if gh release view nightly --repo "$repo" >/dev/null 2>&1; then
+            gh release edit nightly --repo "$repo" --prerelease --notes-file "$notes"
+          else
+            gh release create nightly --repo "$repo" --prerelease --title 'Nightly build' --notes-file "$notes" --target "$sha"
+          fi
+          gh release upload nightly dist/* --repo "$repo" --clobber
