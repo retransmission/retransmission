@@ -45,8 +45,6 @@ using tr_byte_index_t = uint64_t;
 
 using tr_file_index_t = size_t;
 
-using tr_mode_t = uint16_t;
-
 // https://www.bittorrent.org/beps/bep_0003.html
 // A string of length 20 which this downloader uses as its id. Each
 // downloader generates its own id at random at the start of a new
@@ -149,6 +147,35 @@ public:
 private:
     int value_ = 0x04;
 };
+
+// A serializer-friendly wrapper around a Unix-style file mode value.
+// A distinct type rather than a `uint16_t` alias so that its octal-string
+// Converter applies only to modes, not to every `uint16_t`.
+class tr_mode_t
+{
+public:
+    constexpr tr_mode_t() = default;
+
+    constexpr explicit tr_mode_t(uint16_t value) noexcept
+        : value_{ value }
+    {
+    }
+
+    // NOLINTNEXTLINE(google-explicit-constructor)
+    [[nodiscard]] constexpr operator uint16_t() const noexcept
+    {
+        return value_;
+    }
+
+private:
+    uint16_t value_ = 0;
+};
+
+// fmt formats `tr_mode_t` through this ADL opt-in
+[[nodiscard]] constexpr uint16_t format_as(tr_mode_t const mode) noexcept
+{
+    return mode;
+}
 
 using tr_tracker_id_t = uint32_t;
 

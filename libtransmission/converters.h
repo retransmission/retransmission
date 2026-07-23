@@ -296,18 +296,16 @@ bool set(T& tgt, tr_variant const& src)
     return val && set(tgt, std::move(*val));
 }
 
-// Generic integer specialization. Covers int64_t, uint64_t, uint32_t, size_t,
-// time_t, etc. — including platform-dependent aliases (e.g. on Linux
-// int64_t == long == time_t, uint64_t == unsigned long == size_t).
+// Generic integer specialization. Covers int64_t, uint64_t, uint32_t,
+// uint16_t, size_t, time_t, etc. — including platform-dependent aliases
+// (e.g. on Linux int64_t == long == time_t, uint64_t == unsigned long == size_t).
 //
-// `bool` and `uint16_t` are excluded:
-//   - `bool` has its own specialization above.
-//   - `uint16_t` is aliased by `tr_mode_t`, which needs octal-string handling.
+// `bool` is excluded because it has its own specialization.
 template<typename T>
     requires(
-        std::integral<T> && !std::is_same_v<T, bool> && !std::is_same_v<T, uint16_t> && !std::is_same_v<T, char> &&
-        !std::is_same_v<T, signed char> && !std::is_same_v<T, unsigned char> && !std::is_same_v<T, wchar_t> &&
-        !std::is_same_v<T, char16_t> && !std::is_same_v<T, char32_t>)
+        std::integral<T> && !std::is_same_v<T, bool> && !std::is_same_v<T, char> && !std::is_same_v<T, signed char> &&
+        !std::is_same_v<T, unsigned char> && !std::is_same_v<T, wchar_t> && !std::is_same_v<T, char16_t> &&
+        !std::is_same_v<T, char32_t>)
 struct Converter<T> {
     static tr_variant to_variant(T const& src)
     {

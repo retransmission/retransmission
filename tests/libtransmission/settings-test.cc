@@ -198,7 +198,7 @@ TEST_F(SettingsTest, canLoadMode)
     ASSERT_NE(ExpectedValue, default_value);
 
     auto map = tr::Settings{ 1U };
-    map.try_emplace(Key, ExpectedValue);
+    map.try_emplace(Key, 0777);
     settings->load(map);
     EXPECT_EQ(ExpectedValue, settings->umask);
 
@@ -214,7 +214,7 @@ TEST_F(SettingsTest, canSaveMode)
     static auto constexpr Key = TR_KEY_umask;
 
     auto settings = tr_session::Settings{};
-    auto const default_value = settings.log_level;
+    auto const default_value = settings.umask;
     auto constexpr ExpectedValue = tr_mode_t{ 0777 };
     ASSERT_NE(ExpectedValue, default_value);
 
@@ -223,6 +223,25 @@ TEST_F(SettingsTest, canSaveMode)
     auto const val = map.value_if<std::string_view>(Key);
     ASSERT_TRUE(val);
     EXPECT_EQ("0777"sv, *val);
+}
+
+// `idle_seeding_limit_minutes` is a `uint16_t`, so unlike the
+// `tr_mode_t` umask above it must be saved as an int, not an
+// octal string.
+TEST_F(SettingsTest, canSaveIdleSeedingLimit)
+{
+    static auto constexpr Key = TR_KEY_idle_seeding_limit;
+
+    auto settings = tr_session::Settings{};
+    auto const default_value = settings.idle_seeding_limit_minutes;
+    auto constexpr ExpectedValue = uint16_t{ 45U };
+    ASSERT_NE(ExpectedValue, default_value);
+
+    settings.idle_seeding_limit_minutes = ExpectedValue;
+    auto const map = tr::serializer::save(settings);
+    auto const val = map.value_if<int64_t>(Key);
+    ASSERT_TRUE(val);
+    EXPECT_EQ(ExpectedValue, *val);
 }
 
 TEST_F(SettingsTest, canLoadPort)
