@@ -51,11 +51,11 @@ auto constexpr StartupDelay = std::chrono::seconds{ 60 };
 
 // Real blocklists are tens of MB, Refuse to block anything >128GB.
 auto constexpr MaxDecompressedSize = size_t{ 128U } * 1024U * 1024U;
-} // namespace
 
-// Decompress a downloaded blocklist. Supports txt, tar, gz, tgz formats.
-// Omit other libarchive formats for YAGNI, we can add later if/when needed.
-std::string decompress(std::string_view const body)
+// Read the first regular file out of `body`, transparently gunzipping it first,
+// using whichever archive formats `configure` enables. Returns nullopt when
+// `body` is none of those formats, so the caller can try a different format set.
+[[nodiscard]] std::optional<std::string> read_archive(std::string_view const body, void (*configure)(struct archive*))
 {
     auto* const arc = archive_read_new();
     if (arc == nullptr) {
@@ -63,12 +63,7 @@ std::string decompress(std::string_view const body)
     }
     auto const arc_uniq = std::unique_ptr<struct archive, decltype(&archive_read_free)>{ arc, archive_read_free };
     archive_read_support_filter_gzip(arc);
-    archive_read_support_format_tar(arc);
-    archive_read_support_format_zip(arc);
-    archive_read_support_format_raw(arc);
-
-    auto content = std::string{};
-    content.reserve(std::size(body)); // exact for plain text, a lower bound once decompressed
+    configure(arc);
 
     if (archive_read_open_memory(arc, std::data(body), std::size(body)) != ARCHIVE_OK) {
         return {};
@@ -82,6 +77,8 @@ std::string decompress(std::string_view const body)
             continue;
         }
 
+        auto content = std::string{};
+        content.reserve(std::size(body)); // exact for plain text, a lower bound once decompressed
         auto buf = std::array<char, 16U * 1024U>{};
         for (;;) {
             auto const n_read = archive_read_data(arc, std::data(buf), std::size(buf));
@@ -100,10 +97,27 @@ std::string decompress(std::string_view const body)
                 break;
             }
         }
-        break;
+        return content;
     }
 
-    return content;
+    return {};
+}
+} // namespace
+
+// Decompress a downloaded blocklist: txt, gz, tar, tgz, or zip. Other libarchive
+// formats stay disabled -- we don't need them and they widen the attack surface.
+std::string decompress(std::string_view const body)
+{
+    // Container formats first, then raw: libarchive's raw reader can't safely
+    // share a reader with tar/zip, so plain/gzip take a separate fallback pass.
+    auto content = read_archive(body, [](struct archive* arc) {
+        archive_read_support_format_tar(arc);
+        archive_read_support_format_zip(arc);
+    });
+    if (!content) {
+        content = read_archive(body, [](struct archive* arc) { archive_read_support_format_raw(arc); });
+    }
+    return std::move(content).value_or(std::string{});
 }
 
 std::string normalize_blocklist_url(std::string_view url)
