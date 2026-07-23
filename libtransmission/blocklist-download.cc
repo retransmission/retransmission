@@ -144,6 +144,15 @@ struct Pending {
 
 namespace
 {
+// Invoke a request's callback and clear it, so each request delivers at most
+// once even if it completes and is later superseded in the same batch.
+void deliver(Pending& pending, tr_blocklist_update_result const& result)
+{
+    if (pending.on_done) {
+        std::exchange(pending.on_done, {})(result);
+    }
+}
+
 // True if `text` has at least one line that could be parsed as a rule.
 // This is to prevent an empty dl rules from replacing a good blocklist.
 [[nodiscard]] bool has_rule_lines(std::string_view const text)
@@ -177,7 +186,7 @@ void finish_request(tr_web::FetchResponse const& response, std::shared_ptr<Pendi
             fmt::runtime(_("Couldn't fetch blocklist: {error} ({error_code})")),
             fmt::arg("error", tr_webGetResponseStr(response.status)),
             fmt::arg("error_code", response.status));
-        pending->on_done(result);
+        deliver(*pending, result);
         return;
     }
 
@@ -186,7 +195,7 @@ void finish_request(tr_web::FetchResponse const& response, std::shared_ptr<Pendi
     // don't use empty responses
     if (!has_rule_lines(content)) {
         result.status = tr_blocklist_update_status::InvalidData;
-        pending->on_done(result);
+        deliver(*pending, result);
         return;
     }
 
@@ -201,7 +210,7 @@ void finish_request(tr_web::FetchResponse const& response, std::shared_ptr<Pendi
         result.n_rules = *n_rules;
     }
 
-    pending->on_done(result);
+    deliver(*pending, result);
 }
 } // namespace
 
@@ -225,12 +234,14 @@ void Updater::update(tr_blocklist_update_func on_done)
         // Supersede any in-flight req so only the newest one updates the list.
         // The older fetch still runs, since tr_web doesn't have an abort API.
         if (auto previous = latest_.lock()) {
-            previous->cancelled = true;
-            if (previous->on_done) {
+            // Report the superseded request (unless it was cancelled), then mark
+            // it so its still-running fetch installs nothing.
+            if (!previous->cancelled) {
                 auto superseded = tr_blocklist_update_result{};
                 superseded.status = tr_blocklist_update_status::Superseded;
-                previous->on_done(superseded);
+                deliver(*previous, superseded);
             }
+            previous->cancelled = true;
         }
 
         auto pending = std::make_shared<Pending>(Pending{ .mediator = &mediator_, .on_done = std::move(on_done) });

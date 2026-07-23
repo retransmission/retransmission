@@ -452,6 +452,37 @@ TEST(BlocklistUpdater, secondUpdateSupersedesFirst)
     EXPECT_EQ(1, mediator.install_count_); // installed exactly once
 }
 
+TEST(BlocklistUpdater, completedUpdateNotRefiredByLaterUpdate)
+{
+    auto mediator = MockMediator{};
+    auto updater = tr::blocklist::Updater{ mediator };
+
+    auto first_calls = 0;
+    updater.update([&first_calls](tr_blocklist_update_result const&) { ++first_calls; });
+    mediator.respond(200, std::string{ Rules }); // first request completes, callback fires once
+    ASSERT_EQ(1, first_calls);
+
+    // a later update() must not re-deliver the already-finished first request
+    updater.update([](tr_blocklist_update_result const&) {});
+    EXPECT_EQ(1, first_calls);
+}
+
+TEST(BlocklistUpdater, cancelThenUpdateKeepsCallbackSuppressed)
+{
+    auto mediator = MockMediator{};
+    auto updater = tr::blocklist::Updater{ mediator };
+
+    auto first_calls = 0;
+    updater.update([&first_calls](tr_blocklist_update_result const&) { ++first_calls; });
+    updater.cancel();
+
+    // superseding a cancelled request must not resurrect its callback
+    updater.update([](tr_blocklist_update_result const&) {});
+    mediator.respond(0U, 200, std::string{ Rules });
+    mediator.respond(1U, 200, std::string{ Rules });
+    EXPECT_EQ(0, first_calls);
+}
+
 TEST(BlocklistUpdater, destructionSuppressesInFlight)
 {
     auto mediator = MockMediator{};
