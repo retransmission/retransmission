@@ -61,6 +61,7 @@ std::string decompress(std::string_view const body)
     if (arc == nullptr) {
         return {};
     }
+    auto const arc_uniq = std::unique_ptr<struct archive, decltype(&archive_read_free)>{ arc, archive_read_free };
     archive_read_support_filter_gzip(arc);
     archive_read_support_format_tar(arc);
     archive_read_support_format_zip(arc);
@@ -69,38 +70,39 @@ std::string decompress(std::string_view const body)
     auto content = std::string{};
     content.reserve(std::size(body)); // exact for plain text, a lower bound once decompressed
 
-    if (archive_read_open_memory(arc, std::data(body), std::size(body)) == ARCHIVE_OK) {
-        struct archive_entry* entry = nullptr;
-        while (archive_read_next_header(arc, &entry) == ARCHIVE_OK) {
-            // a blocklist is a single file; skip directories and take the
-            // first file we find
-            if (archive_entry_filetype(entry) == AE_IFDIR) {
-                continue;
-            }
-
-            auto buf = std::array<char, 16U * 1024U>{};
-            for (;;) {
-                auto const n_read = archive_read_data(arc, std::data(buf), std::size(buf));
-                if (n_read <= 0) {
-                    break; // 0 == end of entry; < 0 == read error, give up on this entry
-                }
-                content.append(std::data(buf), static_cast<size_t>(n_read));
-                if (std::size(content) > MaxDecompressedSize) {
-                    // likely a decompression bomb; discard it entirely so a
-                    // truncated prefix isn't mistaken for a valid blocklist
-                    tr_logAddWarn(
-                        fmt::format(
-                            fmt::runtime(_("Blocklist is larger than {limit} MiB; ignoring it")),
-                            fmt::arg("limit", MaxDecompressedSize / (1024U * 1024U))));
-                    content.clear();
-                    break;
-                }
-            }
-            break;
-        }
+    if (archive_read_open_memory(arc, std::data(body), std::size(body)) != ARCHIVE_OK) {
+        return {};
     }
 
-    archive_read_free(arc);
+    struct archive_entry* entry = nullptr;
+    while (archive_read_next_header(arc, &entry) == ARCHIVE_OK) {
+        // a blocklist is a single file; skip directories and take the
+        // first file we find
+        if (archive_entry_filetype(entry) == AE_IFDIR) {
+            continue;
+        }
+
+        auto buf = std::array<char, 16U * 1024U>{};
+        for (;;) {
+            auto const n_read = archive_read_data(arc, std::data(buf), std::size(buf));
+            if (n_read <= 0) {
+                break; // 0 == end of entry; < 0 == read error, give up on this entry
+            }
+            content.append(std::data(buf), static_cast<size_t>(n_read));
+            if (std::size(content) > MaxDecompressedSize) {
+                // likely a decompression bomb; discard it entirely so a
+                // truncated prefix isn't mistaken for a valid blocklist
+                tr_logAddWarn(
+                    fmt::format(
+                        fmt::runtime(_("Blocklist is larger than {limit} MiB; ignoring it")),
+                        fmt::arg("limit", MaxDecompressedSize / (1024U * 1024U))));
+                content.clear();
+                break;
+            }
+        }
+        break;
+    }
+
     return content;
 }
 
