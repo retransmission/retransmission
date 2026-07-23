@@ -30,7 +30,9 @@ using tr_quark = size_t;
  *   - `_kebab` means the entry's string is in kebab-case.
  *   - `_APICOMPAT` means the entry is only used in api_compat.
  */
-enum // NOLINT(performance-enum-size)
+// Underlying type pinned to tr_quark: TR_KEY_* values are compared against
+// tr_quark (size_t) containers, which a default (signed) enum type mismatches.
+enum : tr_quark // NOLINT(performance-enum-size)
 {
     TR_KEY_NONE, /* represented as an empty string */
     TR_KEY_active_torrent_count_camel_APICOMPAT,
