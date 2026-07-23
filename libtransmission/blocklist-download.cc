@@ -70,7 +70,12 @@ auto constexpr MaxDecompressedSize = size_t{ 128U } * 1024U * 1024U;
     }
 
     struct archive_entry* entry = nullptr;
-    while (archive_read_next_header(arc, &entry) == ARCHIVE_OK) {
+    for (;;) {
+        // ARCHIVE_WARN still hands back a usable entry; only EOF or a fatal error stops us
+        if (auto const header = archive_read_next_header(arc, &entry); header != ARCHIVE_OK && header != ARCHIVE_WARN) {
+            break;
+        }
+
         // a blocklist is a single file; skip directories and take the
         // first file we find
         if (archive_entry_filetype(entry) == AE_IFDIR) {
@@ -82,8 +87,14 @@ auto constexpr MaxDecompressedSize = size_t{ 128U } * 1024U * 1024U;
         auto buf = std::array<char, 16U * 1024U>{};
         for (;;) {
             auto const n_read = archive_read_data(arc, std::data(buf), std::size(buf));
-            if (n_read <= 0) {
-                break; // 0 == end of entry; < 0 == read error, give up on this entry
+            if (n_read == 0) {
+                break; // clean end of the entry
+            }
+            if (n_read < 0) {
+                // decode error (corrupt or truncated stream): drop it so a
+                // partial list isn't installed as if it were complete
+                content.clear();
+                break;
             }
             content.append(std::data(buf), static_cast<size_t>(n_read));
             if (std::size(content) > MaxDecompressedSize) {

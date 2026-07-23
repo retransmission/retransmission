@@ -137,6 +137,22 @@ TEST(BlocklistDecompress, returnsEmptyOnGarbage)
     EXPECT_NO_THROW((void)tr::blocklist::decompress("\x1f\x8b not really gzip"sv));
 }
 
+TEST(BlocklistDecompress, rejectsCorruptArchive)
+{
+    // a valid gzip stream cut off mid-payload: libarchive returns the partial
+    // prefix and then a decode error, which must yield nothing rather than a
+    // silently-truncated blocklist
+    auto payload = std::string{};
+    while (std::size(payload) < size_t{ 256U } * 1024U) {
+        payload += Rules;
+    }
+    auto corrupt = makeArchive(asGzip, "blocklist"sv, payload);
+    ASSERT_GT(std::size(corrupt), 64U);
+    corrupt.resize(std::size(corrupt) / 2U); // truncate the compressed stream
+
+    EXPECT_TRUE(std::empty(tr::blocklist::decompress(corrupt)));
+}
+
 // ---
 // normalize_blocklist_url(): a bare host gets an https scheme; anything with a
 // scheme is left alone.
