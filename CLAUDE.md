@@ -45,8 +45,7 @@ follows.
 ## Commit messages
 
 Use Conventional Commits (`type: short description`). Follow the 50/72 rule
-as best effort — clarity wins over the character limits. Be succinct and
-omit unnecessary information.
+as best effort — clarity wins over the character limits. Be succinct.
 
 The subject covers everything the commit does; when no honest subject
 can, split the commit. The body adds the why — never a restatement of
@@ -59,8 +58,7 @@ from the diff.
 
 Do not push, and do not open a pull request, until a human has reviewed the
 changes and explicitly vouched for them. Commit locally and report instead.
-An approval covers only the push it was given for; do not reuse it for
-later changes.
+An approval covers only the push it was given for, not later changes.
 
 ## Pull request notes
 
