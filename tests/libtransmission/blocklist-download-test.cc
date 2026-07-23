@@ -178,6 +178,16 @@ TEST(BlocklistNormalizeUrl, emptyStaysEmpty)
     EXPECT_EQ(""s, tr::blocklist::normalize_blocklist_url("   "sv));
 }
 
+TEST(BlocklistNormalizeUrl, addsSchemeToSchemeRelativeUrl)
+{
+    EXPECT_EQ("https://list.example.com/bl"s, tr::blocklist::normalize_blocklist_url("//list.example.com/bl"sv));
+}
+
+TEST(BlocklistNormalizeUrl, ignoresSchemeSeparatorInQuery)
+{
+    EXPECT_EQ("https://dl.example.com/r?u=http://x"s, tr::blocklist::normalize_blocklist_url("dl.example.com/r?u=http://x"sv));
+}
+
 // ---
 // Updater control flow, driven through a mock Mediator: no real session, no
 // network, no threads, no timers. run_in_session_thread() runs inline, so every

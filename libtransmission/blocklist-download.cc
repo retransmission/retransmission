@@ -138,11 +138,16 @@ std::string normalize_blocklist_url(std::string_view url)
         return {};
     }
 
-    // leave a URL that already carries a scheme (foo://...) alone
-    if (url.find("://"sv) != std::string_view::npos) {
+    // a "scheme://" before the path means the URL is already absolute; a "://"
+    // inside the path or query does not count
+    if (auto const scheme = url.find("://"sv); scheme != std::string_view::npos && scheme < url.find_first_of("/?#"sv)) {
         return std::string{ url };
     }
 
+    // otherwise assume https, treating a scheme-relative "//host/path" as "host/path"
+    if (tr_strv_starts_with(url, "//"sv)) {
+        url.remove_prefix(2U);
+    }
     return fmt::format("https://{:s}", url);
 }
 
