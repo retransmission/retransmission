@@ -566,6 +566,26 @@ TEST(BlocklistUpdater, disarmsTimerWhenUpdatesDisabled)
     EXPECT_FALSE(mediator.timer()->is_running_);
 }
 
+TEST(BlocklistUpdater, autoUpdateTimerFetchesAndReArms)
+{
+    auto mediator = MockMediator{};
+    auto updater = tr::blocklist::Updater{ mediator };
+    updater.restart_timer();
+
+    auto* const timer = mediator.timer();
+    ASSERT_NE(nullptr, timer);
+    ASSERT_TRUE(timer->is_running_);
+
+    // firing the timer starts a fetch and re-arms for the next interval
+    timer->fire();
+    EXPECT_EQ(1, mediator.fetch_count_);
+    EXPECT_TRUE(timer->is_running_);
+
+    // and the downloaded list is installed
+    mediator.respond(200, std::string{ Rules });
+    EXPECT_EQ(1, mediator.install_count_);
+}
+
 // ---
 // Integration smoke tests: the real tr_session BlocklistMediator end to end
 // (real fetch, real decompress, real tmpfile save, real rule parsing) over a
