@@ -299,6 +299,8 @@ void Updater::on_auto_update_timer()
                 fmt::format(
                     fmt::runtime(_("Automatically updated blocklist, which now has {count} rules")),
                     fmt::arg("count", result.n_rules)));
+        } else if (result.status == tr_blocklist_update_status::Superseded) {
+            // a newer update took over; not a failure worth logging
         } else if (!std::empty(result.error)) {
             tr_logAddWarn(std::string{ result.error });
         } else {
