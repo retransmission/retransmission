@@ -102,17 +102,16 @@ TEST_F(SettingsTest, canLoadDoubles)
 
 TEST_F(SettingsTest, canSaveDoubles)
 {
-    static auto constexpr Key = TR_KEY_seed_queue_enabled;
+    static auto constexpr Key = TR_KEY_seed_ratio_limit;
 
     auto settings = tr_session::Settings{};
-    auto const default_value = settings.seed_queue_enabled;
-    auto const expected_value = !default_value;
-    settings.seed_queue_enabled = expected_value;
+    auto const expected_value = settings.ratio_limit + 1.0;
+    settings.ratio_limit = expected_value;
 
     auto const map = tr::serializer::save(settings);
-    auto const val = map.value_if<bool>(Key);
+    auto const val = map.value_if<double>(Key);
     ASSERT_TRUE(val);
-    EXPECT_EQ(expected_value, *val);
+    EXPECT_NEAR(expected_value, *val, 0.001);
 }
 
 TEST_F(SettingsTest, canLoadEncryptionMode)
@@ -142,7 +141,7 @@ TEST_F(SettingsTest, canSaveEncryptionMode)
     static auto constexpr ExpectedValue = "required"sv;
 
     auto settings = tr_session::Settings{};
-    EXPECT_NE(SourceValue, settings.seed_queue_enabled);
+    EXPECT_NE(SourceValue, settings.encryption_mode);
     settings.encryption_mode = SourceValue;
 
     auto const map = tr::serializer::save(settings);
