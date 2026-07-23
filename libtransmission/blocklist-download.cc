@@ -49,7 +49,7 @@ auto constexpr UpdateInterval = std::chrono::hours{ 24 * 7 };
 // hammer the network the instant the app launches
 auto constexpr StartupDelay = std::chrono::seconds{ 60 };
 
-// Real blocklists are tens of MB, Refuse to block anything >128GB.
+// Real blocklists are tens of MB; refuse to block anything larger than 128 MiB.
 auto constexpr MaxDecompressedSize = size_t{ 128U } * 1024U * 1024U;
 
 // Read the first regular file out of `body`, transparently gunzipping it first,
