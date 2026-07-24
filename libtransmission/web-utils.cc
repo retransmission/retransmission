@@ -362,6 +362,11 @@ std::optional<tr_url_parsed_t> tr_urlParse(std::string_view url)
 
         parsed.host_wo_brackets = getHostWoBrackets(parsed.host);
         parsed.sitename = getSiteName(parsed.host);
+    } else {
+        // a non-magnet URL must be "scheme://authority..."; reject anything
+        // without it, such as a scheme-less URL, whose missing ":" swept the
+        // whole string into `scheme` (magnet was handled above)
+        return std::nullopt;
     }
 
     //  The path is terminated by the first question mark ("?") or
