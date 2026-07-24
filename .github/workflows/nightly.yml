@@ -146,6 +146,21 @@ jobs:
             gh release create nightly --repo "$repo" --draft --title 'Nightly build' --target "$sha"
           fi
           gh release upload nightly dist/* --repo "$repo" --clobber
+          # Keep one dated source asset so the release page has one current tarball.
+          source_asset=$(find dist -maxdepth 1 -type f -name 'transmission*-nightly.*.tar.*' -printf '%f\n')
+          release_id=$(gh release view nightly --repo "$repo" --json databaseId --jq .databaseId)
+          old_source_ids=()
+          mapfile -t old_source_ids < <(
+            gh api --paginate --slurp "repos/$repo/releases/$release_id/assets?per_page=100" |
+              jq -r --arg keep "$source_asset" '
+                .[][]
+                | select(.name != $keep)
+                | select(.name | test("^transmission.*-nightly\\.[0-9]{8}\\.tar\\."))
+                | .id'
+          )
+          for asset_id in "${old_source_ids[@]}"; do
+            gh api --method DELETE "repos/$repo/releases/assets/$asset_id"
+          done
           # GitHub's generated source archives resolve through the release tag.
           if gh api "repos/$repo/git/ref/tags/nightly" >/dev/null 2>&1; then
             gh api --method PATCH "repos/$repo/git/refs/tags/nightly" \
