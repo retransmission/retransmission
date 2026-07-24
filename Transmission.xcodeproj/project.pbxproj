@@ -346,9 +346,6 @@
 		51D0F701000000000000000F /* libsimdutf.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 51D0F7010000000000000005 /* libsimdutf.a */; };
 		C17740D5273A002C00E455D2 /* web-utils.cc in Sources */ = {isa = PBXBuildFile; fileRef = C17740D3273A002C00E455D2 /* web-utils.cc */; };
 		C17740D6273A002C00E455D2 /* web-utils.h in Headers */ = {isa = PBXBuildFile; fileRef = C17740D4273A002C00E455D2 /* web-utils.h */; };
-		C1846BA2294F7A6800A98F30 /* wildmat.c in Sources */ = {isa = PBXBuildFile; fileRef = C1846B88294F781800A98F30 /* wildmat.c */; };
-		C1846BA3294F7A6800A98F30 /* wildmat.h in Headers */ = {isa = PBXBuildFile; fileRef = C1846B87294F781800A98F30 /* wildmat.h */; };
-		C1846BA9294F7B5A00A98F30 /* libwildmat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C1846B9E294F7A3400A98F30 /* libwildmat.a */; };
 		C1BF7BA81F2A3CB7008E88A7 /* upnpdev.c in Sources */ = {isa = PBXBuildFile; fileRef = C1BF7BA71F2A3CB7008E88A7 /* upnpdev.c */; };
 		C1BF7BAA1F2A3CCE008E88A7 /* upnpdev.h in Headers */ = {isa = PBXBuildFile; fileRef = C1BF7BA91F2A3CCE008E88A7 /* upnpdev.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		C1F690FD1AD0627500D95CF0 /* daemon-posix.cc in Sources */ = {isa = PBXBuildFile; fileRef = C1F690FC1AD0627500D95CF0 /* daemon-posix.cc */; };
@@ -660,13 +657,6 @@
 			proxyType = 1;
 			remoteGlobalIDString = 4D18389609DEC0030047D688;
 			remoteInfo = libtransmission;
-		};
-		C1846BA6294F7B1400A98F30 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = C1846B96294F7A3400A98F30;
-			remoteInfo = wildmat;
 		};
 		C3D9062D27B7F7CE00EF2386 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -1301,8 +1291,6 @@
 		C17740D3273A002C00E455D2 /* web-utils.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = "web-utils.cc"; sourceTree = "<group>"; };
 		C17740D4273A002C00E455D2 /* web-utils.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.h; fileEncoding = 4; path = "web-utils.h"; sourceTree = "<group>"; };
 		C1846B87294F781800A98F30 /* wildmat.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = wildmat.h; sourceTree = "<group>"; };
-		C1846B88294F781800A98F30 /* wildmat.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = wildmat.c; sourceTree = "<group>"; };
-		C1846B9E294F7A3400A98F30 /* libwildmat.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libwildmat.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		C1A6BB3C2B3E69CB00C4A151 /* eu */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = eu; path = eu.lproj/Localizable.strings; sourceTree = "<group>"; };
 		C1A6BB3D2B3E6A0700C4A151 /* he */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = he; path = he.lproj/Localizable.strings; sourceTree = "<group>"; };
 		C1A6BB3E2B3E6A0F00C4A151 /* hu */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = hu; path = hu.lproj/Localizable.strings; sourceTree = "<group>"; };
@@ -1762,7 +1750,6 @@
 				51D0F701000000000000000F /* libsimdutf.a in Frameworks */,
 				C0FFEE00000000000000000F /* libwoke.a in Frameworks */,
 				ED91F3962CBDAAED008388AA /* libmadler-crcany.a in Frameworks */,
-				C1846BA9294F7B5A00A98F30 /* libwildmat.a in Frameworks */,
 				C3D9062F27B7F7E200EF2386 /* libpsl.a in Frameworks */,
 				A22CFCCB0FC24FDA0009BD3E /* libdht.a in Frameworks */,
 				A267927C130DFF2700CB7464 /* libutp.a in Frameworks */,
@@ -1793,13 +1780,6 @@
 				5586996C2570759F00F77A43 /* libcurl.tbd in Frameworks */,
 				C88771B42803EE88005C7523 /* libiconv.tbd in Frameworks */,
 				A25E03D90E4015100086C225 /* Cocoa.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		C1846B99294F7A3400A98F30 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2012,7 +1992,6 @@
 				51D0F7010000000000000005 /* libsimdutf.a */,
 				C0FFEE000000000000000005 /* libwoke.a */,
 				C3D9062127B7E3C900EF2386 /* libpsl.a */,
-				C1846B9E294F7A3400A98F30 /* libwildmat.a */,
 				ED91F00C2CBDA5D3008388AA /* libmadler-crcany.a */,
 				ED5E0E7C2CD30B180071433B /* QuickLookExtension.appex */,
 			);
@@ -2503,7 +2482,6 @@
 		C1846B82294F777000A98F30 /* wildmat */ = {
 			isa = PBXGroup;
 			children = (
-				C1846B88294F781800A98F30 /* wildmat.c */,
 				C1846B87294F781800A98F30 /* wildmat.h */,
 			);
 			name = wildmat;
@@ -2966,14 +2944,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		C1846B97294F7A3400A98F30 /* Headers */ = {
-			isa = PBXHeadersBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				C1846BA3294F7A6800A98F30 /* wildmat.h in Headers */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		C3D9061D27B7E3C900EF2386 /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
@@ -3052,7 +3022,6 @@
 				ADD1A0000000000000000102 /* PBXTargetDependency */,
 				51D0F7010000000000000011 /* PBXTargetDependency */,
 				C0FFEE000000000000000011 /* PBXTargetDependency */,
-				C1846BA7294F7B1400A98F30 /* PBXTargetDependency */,
 				A226FDB10D0CDF6E005A7F71 /* PBXTargetDependency */,
 				BE1183760CE161040002D0F3 /* PBXTargetDependency */,
 				BE75C34F0C729ED300DBEFE0 /* PBXTargetDependency */,
@@ -3229,23 +3198,6 @@
 			productName = "transmission-daemon";
 			productReference = BEFC1CF90C07822400B0BB3C /* transmission-remote */;
 			productType = "com.apple.product-type.tool";
-		};
-		C1846B96294F7A3400A98F30 /* wildmat */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = C1846B9A294F7A3400A98F30 /* Build configuration list for PBXNativeTarget "wildmat" */;
-			buildPhases = (
-				C1846B97294F7A3400A98F30 /* Headers */,
-				C1846B98294F7A3400A98F30 /* Sources */,
-				C1846B99294F7A3400A98F30 /* Frameworks */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			name = wildmat;
-			productName = wildmat;
-			productReference = C1846B9E294F7A3400A98F30 /* libwildmat.a */;
-			productType = "com.apple.product-type.library.static";
 		};
 		C3D9062027B7E3C900EF2386 /* psl */ = {
 			isa = PBXNativeTarget;
@@ -3468,7 +3420,6 @@
 				BE1183470CE160960002D0F3 /* miniupnp */,
 				3C7A118C0D0B2EB800B5701F /* natpmp */,
 				C3D9062027B7E3C900EF2386 /* psl */,
-				C1846B96294F7A3400A98F30 /* wildmat */,
 				ED91F00B2CBDA5D3008388AA /* madler-crcany */,
 				51D0F7010000000000000007 /* simdutf */,
 				C0FFEE000000000000000007 /* woke */,
@@ -3944,14 +3895,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		C1846B98294F7A3400A98F30 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				C1846BA2294F7A6800A98F30 /* wildmat.c in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		C3D9061E27B7E3C900EF2386 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -4204,11 +4147,6 @@
 			isa = PBXTargetDependency;
 			target = 4D18389609DEC0030047D688 /* libtransmission */;
 			targetProxy = BEFC1CEC0C07822400B0BB3C /* PBXContainerItemProxy */;
-		};
-		C1846BA7294F7B1400A98F30 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = C1846B96294F7A3400A98F30 /* wildmat */;
-			targetProxy = C1846BA6294F7B1400A98F30 /* PBXContainerItemProxy */;
 		};
 		C3D9062E27B7F7CE00EF2386 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -5609,33 +5547,6 @@
 			};
 			name = Release;
 		};
-		C1846B9B294F7A3400A98F30 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				GCC_WARN_64_TO_32_BIT_CONVERSION = NO;
-				GENERATE_MASTER_OBJECT_FILE = YES;
-				PRODUCT_NAME = wildmat;
-			};
-			name = Debug;
-		};
-		C1846B9C294F7A3400A98F30 /* Release - Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				GCC_WARN_64_TO_32_BIT_CONVERSION = NO;
-				GENERATE_MASTER_OBJECT_FILE = YES;
-				PRODUCT_NAME = wildmat;
-			};
-			name = "Release - Debug";
-		};
-		C1846B9D294F7A3400A98F30 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				GCC_WARN_64_TO_32_BIT_CONVERSION = NO;
-				GENERATE_MASTER_OBJECT_FILE = YES;
-				PRODUCT_NAME = wildmat;
-			};
-			name = Release;
-		};
 		C3D9062327B7E3C900EF2386 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -6206,16 +6117,6 @@
 				0053D3D80C86774200545606 /* Debug */,
 				A250CFF00CDA19680068B4B6 /* Release - Debug */,
 				BEFC1CF80C07822400B0BB3C /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Debug;
-		};
-		C1846B9A294F7A3400A98F30 /* Build configuration list for PBXNativeTarget "wildmat" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				C1846B9B294F7A3400A98F30 /* Debug */,
-				C1846B9C294F7A3400A98F30 /* Release - Debug */,
-				C1846B9D294F7A3400A98F30 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;

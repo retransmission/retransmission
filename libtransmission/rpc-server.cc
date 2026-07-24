@@ -399,10 +399,10 @@ bool is_address_allowed(tr_rpc_server const* server, char const* address)
             native = addr->display_name();
         }
     }
-    auto const* const addr = std::empty(native) ? address : native.c_str();
+    auto const addr = std::empty(native) ? std::string_view{ address } : std::string_view{ native };
 
     auto const& src = server->whitelist_;
-    return std::ranges::any_of(src, [&addr](auto const& s) { return tr_wildmat(addr, s.c_str()); });
+    return std::ranges::any_of(src, [addr](auto const& s) { return tr_wildmat(addr, s); });
 }
 
 bool isIPAddressWithOptionalPort(char const* host)
@@ -447,8 +447,7 @@ bool isHostnameAllowed(tr_rpc_server const* server, evhttp_request* const req)
     }
 
     auto const& src = server->host_whitelist_;
-    auto const hostname_sz = tr_urlbuf{ hostname };
-    return std::ranges::any_of(src, [&hostname_sz](auto const& str) { return tr_wildmat(hostname_sz.c_str(), str.c_str()); });
+    return std::ranges::any_of(src, [&hostname](auto const& str) { return tr_wildmat(hostname, str); });
 }
 
 bool test_session_id(tr_rpc_server const* server, evhttp_request* const req)
