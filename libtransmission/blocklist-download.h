@@ -83,9 +83,10 @@ public:
     // Abandon the most recent in-flight update: its `on_done` will not fire.
     void cancel();
 
-    // (Re)arm or disarm the periodic auto-update timer to match the
-    // current settings (blocklist enabled + URL set + updates enabled).
-    // Safe to call from any thread.
+    // (Re)arm or disarm the periodic auto-update timer to match the current
+    // settings (blocklist enabled + URL set + updates enabled). Call from the
+    // main thread only: it queues work capturing `this`, which a concurrent
+    // tr_sessionClose() could tear down first.
     void update_timer();
 
 private:
