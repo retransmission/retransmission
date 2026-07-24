@@ -20,9 +20,13 @@ macro(tr_setup_gtest_target TARGET_NAME TEST_PREFIX)
     endif()
 
     if(NOT CMAKE_CROSSCOMPILING OR CMAKE_CROSSCOMPILING_EMULATOR)
+        # PRE_TEST enumerates at ctest time; the POST_BUILD default runs the
+        # fresh binary during the build, where concurrent LTO links can starve
+        # it past DISCOVERY_TIMEOUT.
         gtest_discover_tests(${TARGET_NAME}
             TEST_PREFIX "${TEST_PREFIX}"
-            DISCOVERY_TIMEOUT 15)
+            DISCOVERY_MODE PRE_TEST
+            DISCOVERY_TIMEOUT 60)
     else()
         add_test(
             NAME ${TARGET_NAME}

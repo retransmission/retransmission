@@ -11,7 +11,20 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
+permissions:
+  contents: read
+  # ccache jobs and the cache janitor delete superseded cache entries
+  actions: write
+
 env:
+  # See .github/CACHE_POLICY.md for cache classes, lifecycle, and budget.
+  CACHE_LIMIT_GIB: '10'
+  CACHE_WARNING_GIB: '9'
+  # Bumping CACHE_SCHEMA re-keys every ccache family; the janitor deletes
+  # keys that do not carry the current value.
+  CACHE_SCHEMA: cache-v2
+  CCACHE_COMPRESSLEVEL: '5'
+  CCACHE_DIR: ${{ github.workspace }}/.ccache
   GTEST_OUTPUT: xml:./
 jobs:
   what-to-make:
@@ -141,12 +154,7 @@ jobs:
           enable-qt: qt6
           use-sudo: true
       - name: Setup ccache
-        uses: hendrikmuhs/ccache-action@v1.2.23
-        with:
-          key: ${{ github.job }}
-          # only main's snapshots are saved; PR runs restore them via the
-          # base-branch fallback but must not multiply them per-ref
-          save: ${{ github.event_name == 'push' }}
+        uses: ./.github/actions/setup-ccache
       - name: Configure
         run: |
           cmake \
@@ -190,9 +198,8 @@ jobs:
           # disable container-overflow reports to avoid false errors
           # that are caused by Qt libraries not being asan instrumented
           extra-asan-options: detect_container_overflow=0
-      - name: Trim ccache
-        if: ${{ always() && github.event_name == 'push' }}
-        run: ccache --evict-older-than 7d
+      - name: Finalize ccache
+        uses: ./.github/actions/finalize-ccache
 
   sanitizer-tests-macos:
     runs-on: macos-26
@@ -213,12 +220,7 @@ jobs:
         with:
           compiler: clang
       - name: Setup ccache
-        uses: hendrikmuhs/ccache-action@v1.2.23
-        with:
-          key: ${{ github.job }}
-          # only main's snapshots are saved; PR runs restore them via the
-          # base-branch fallback but must not multiply them per-ref
-          save: ${{ github.event_name == 'push' }}
+        uses: ./.github/actions/setup-ccache
       - name: Configure
         run: |
           cmake \
@@ -255,9 +257,8 @@ jobs:
           build-dir: obj
           build-config: Debug
           enable-sanitizers: true
-      - name: Trim ccache
-        if: ${{ always() && github.event_name == 'push' }}
-        run: ccache --evict-older-than 7d
+      - name: Finalize ccache
+        uses: ./.github/actions/finalize-ccache
 
   sanitizer-tests-windows:
     runs-on: windows-2022
@@ -632,10 +633,9 @@ jobs:
           enable-gtk: ${{ needs.what-to-make.outputs.make-gtk == 'true' && 'gtk4' || 'false' }}
           enable-qt: ${{ needs.what-to-make.outputs.make-qt == 'true' && 'qt6' || 'false' }}
       - name: Setup ccache
-        uses: hendrikmuhs/ccache-action@v1.2.23
+        uses: ./.github/actions/setup-ccache
         with:
-          key: ${{ github.job }}-${{ matrix.os }}
-          save: ${{ github.event_name == 'push' }}
+          key-suffix: ${{ matrix.os }}
       - name: Configure
         run: |
           cmake \
@@ -681,9 +681,10 @@ jobs:
         with:
           name: binaries-${{ matrix.os }}-cmake-universal
           path: pfx/**/*
-      - name: Trim ccache
-        if: ${{ always() && github.event_name == 'push' }}
-        run: ccache --evict-older-than 7d
+      - name: Finalize ccache
+        uses: ./.github/actions/finalize-ccache
+        with:
+          trim-age: 3d
 
   alpine-musl:
     needs: [ what-to-make ]
@@ -779,14 +780,22 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
+        # IPO only on the x64 reference cell: it carries the LTO coverage
+        # and the release-shaped artifacts. The other cells build without
+        # it -- no /LTCG time on throwaway binaries, and since the flag is
+        # the same on push and PR, main's ccache snapshots warm PR builds.
         include:
           - arch: x86
+            ipo: 'OFF'
             runner: windows-2022
           - arch: x64
+            ipo: 'ON'
             runner: windows-2022
           - arch: x64
+            ipo: 'OFF'
             runner: windows-2025-vs2026
           - arch: arm64
+            ipo: 'OFF'
             runner: windows-11-arm
     runs-on: ${{ matrix.runner }}
     env:
@@ -811,11 +820,9 @@ jobs:
         with:
           arch: ${{ matrix.arch }}
       - name: Setup ccache
-        uses: hendrikmuhs/ccache-action@v1.2.23
+        uses: ./.github/actions/setup-ccache
         with:
-          key: ${{ github.job }}-${{ matrix.arch }}-${{ matrix.runner }}
-          max-size: 600M
-          save: ${{ github.event_name == 'push' }}
+          key-suffix: ${{ matrix.arch }}-${{ matrix.runner }}-ipo-${{ matrix.ipo }}
       - name: Configure
         run: |
           $CmakeArgs = @(
@@ -833,6 +840,7 @@ jobs:
             "-DENABLE_CLI=${{ (needs.what-to-make.outputs.make-cli == 'true') && 'ON' || 'OFF' }}"
             "-DENABLE_DAEMON=${{ (needs.what-to-make.outputs.make-daemon == 'true' || needs.what-to-make.outputs.make-dist == 'true') && 'ON' || 'OFF' }}"
             '-DENABLE_GTK=OFF'
+            "-DENABLE_IPO=${{ matrix.ipo }}"
             '-DENABLE_MAC=OFF'
             "-DENABLE_QT=${{ (needs.what-to-make.outputs.make-dist == 'true' || needs.what-to-make.outputs.make-qt == 'true') && 'ON' || 'OFF' }}"
             "-DENABLE_TESTS=${{ (needs.what-to-make.outputs.make-tests == 'true') && 'ON' || 'OFF' }}"
@@ -855,21 +863,27 @@ jobs:
           timeout: 600
       - name: Install
         run: cmake --install obj --config RelWithDebInfo
+      - name: Get Packaging Tools
+        if: ${{ needs.what-to-make.outputs.make-dist == 'true' || (needs.what-to-make.outputs.make-daemon == 'true' && needs.what-to-make.outputs.make-qt == 'true') }}
+        run: |
+          choco install wixtoolset
+          (Join-Path (Get-Item -Path "${Env:ProgramFiles(x86)}\WiX Toolset v3.*")[0].FullName bin) | Out-File $Env:GITHUB_PATH -Append
       - name: Package
         if: ${{ needs.what-to-make.outputs.make-dist == 'true' || (needs.what-to-make.outputs.make-daemon == 'true' && needs.what-to-make.outputs.make-qt == 'true') }}
         run: |
           cmd /c "`"$Env:VCVARSALL`" $Env:VC_ARCH >nul && cmake --build obj --config RelWithDebInfo --target pack-msi"
       - uses: actions/upload-artifact@v6
         with:
-          name: binaries-${{ github.job }}-${{ matrix.arch }}
+          name: binaries-${{ github.job }}-${{ matrix.arch }}-${{ matrix.runner }}
           path: pfx/**/*
       - uses: actions/upload-artifact@v6
         with:
-          name: binaries-${{ github.job }}-${{ matrix.arch }}-msi
+          name: binaries-${{ github.job }}-${{ matrix.arch }}-${{ matrix.runner }}-msi
           path: obj/dist/msi/*.msi
-      - name: Trim ccache
-        if: ${{ always() && github.event_name == 'push' }}
-        run: ccache --evict-older-than 7d
+      - name: Finalize ccache
+        uses: ./.github/actions/finalize-ccache
+        with:
+          trim-age: 3d
 
   make-source-tarball:
     runs-on: ubuntu-latest
@@ -907,18 +921,10 @@ jobs:
           path: obj/transmission*.tar.*
 
   macos:
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [
-          # This is the last and the only macOS Intel runner that GitHub Actions supports.
-          # Xref https://github.com/actions/runner-images/issues/13046
-          macos-15-intel,
-
-          # Tahoe preview. Added Sept 2025.
-          # Xref https://github.com/actions/runner-images/pull/13007
-          macos-26
-        ]
+    # This job covers source tarballs and bundled dependencies on Tahoe
+    # (runner notes: https://github.com/actions/runner-images/pull/13007).
+    # macos-cmake-universal covers Intel with system dependencies; the
+    # Intel/tarball/bundled combination is intentionally omitted.
     needs: [make-source-tarball, what-to-make]
     if: ${{ needs.what-to-make.outputs.make-cli == 'true' ||
             needs.what-to-make.outputs.make-daemon == 'true' ||
@@ -927,7 +933,7 @@ jobs:
             needs.what-to-make.outputs.make-qt == 'true' ||
             needs.what-to-make.outputs.make-tests == 'true' ||
             needs.what-to-make.outputs.make-utils == 'true' }}
-    runs-on: ${{ matrix.os }}
+    runs-on: macos-26
     steps:
       - name: Show Configuration
         run: |
@@ -955,10 +961,7 @@ jobs:
       - name: Extract Source
         run: mkdir src && tar xf transmission*.tar.* -C src --strip-components 1
       - name: Setup ccache
-        uses: hendrikmuhs/ccache-action@v1.2.23
-        with:
-          key: ${{ github.job }}-${{ matrix.os }}
-          save: ${{ github.event_name == 'push' }}
+        uses: ./.github/actions/setup-ccache
       - name: Configure
         run: |
           cmake \
@@ -997,18 +1000,17 @@ jobs:
         run: cmake --install obj --config RelWithDebInfo --strip
       - uses: actions/upload-artifact@v6
         with:
-          name: binaries-${{ matrix.os }}
+          name: binaries-${{ github.job }}
           path: pfx/**/*
-      - name: Trim ccache
-        if: ${{ always() && github.event_name == 'push' }}
-        run: ccache --evict-older-than 7d
+      - name: Finalize ccache
+        uses: ./.github/actions/finalize-ccache
+        with:
+          trim-age: 3d
 
   debian:
     needs: [ make-source-tarball, what-to-make ]
     if: ${{ needs.what-to-make.outputs.make-cli == 'true' || needs.what-to-make.outputs.make-daemon == 'true' || needs.what-to-make.outputs.make-gtk == 'true' || needs.what-to-make.outputs.make-qt == 'true' || needs.what-to-make.outputs.make-tests == 'true' || needs.what-to-make.outputs.make-utils == 'true' }}
     runs-on: ubuntu-latest
-    env:
-      CCACHE_MAXSIZE: 500M
     strategy:
       fail-fast: false
       matrix:
@@ -1057,15 +1059,10 @@ jobs:
           enable-mold: ${{ matrix.use-legacy-packages != true }}
           enable-ccache: true
       - name: Setup ccache
-        # resolve the workspace path from inside the container
-        run: echo "CCACHE_DIR=$GITHUB_WORKSPACE/.ccache" >> "$GITHUB_ENV"
-      - name: Restore ccache
-        uses: actions/cache/restore@v5
+        uses: ./.github/actions/setup-ccache
         with:
-          path: .ccache
-          key: ccache-${{ github.job }}-${{ matrix.version }}-${{ github.run_id }}
-          restore-keys: |
-            ccache-${{ github.job }}-${{ matrix.version }}-
+          in-container: 'true'
+          key-suffix: ${{ matrix.version }}
       - name: Get Source
         uses: actions/download-artifact@v7
         with:
@@ -1124,26 +1121,19 @@ jobs:
         with:
           name: binaries-${{ github.job }}-${{ matrix.version }}
           path: pfx/**/*
-      - name: Trim ccache
-        if: ${{ always() && github.event_name == 'push' }}
-        # `|| true`: Debian 11's ccache predates --evict-older-than
-        run: ccache --evict-older-than 7d || true
+      - name: Finalize ccache
+        uses: ./.github/actions/finalize-ccache
+        with:
+          ignore-trim-errors: ${{ matrix.use-legacy-packages }}
+          trim-age: 3d
       - name: Show ccache stats
         if: always()
         run: ccache --show-stats
-      - name: Save ccache
-        if: ${{ always() && github.event_name == 'push' }}
-        uses: actions/cache/save@v5
-        with:
-          path: .ccache
-          key: ccache-${{ github.job }}-${{ matrix.version }}-${{ github.run_id }}
 
   fedora:
     needs: [ make-source-tarball, what-to-make ]
     if: ${{ needs.what-to-make.outputs.make-cli == 'true' || needs.what-to-make.outputs.make-daemon == 'true' || needs.what-to-make.outputs.make-gtk == 'true' || needs.what-to-make.outputs.make-qt == 'true' || needs.what-to-make.outputs.make-tests == 'true' || needs.what-to-make.outputs.make-utils == 'true' }}
     runs-on: ubuntu-latest
-    env:
-      CCACHE_MAXSIZE: 500M
     strategy:
       fail-fast: false
       matrix:
@@ -1175,15 +1165,10 @@ jobs:
           enable-mold: true
           enable-ccache: true
       - name: Setup ccache
-        # resolve the workspace path from inside the container
-        run: echo "CCACHE_DIR=$GITHUB_WORKSPACE/.ccache" >> "$GITHUB_ENV"
-      - name: Restore ccache
-        uses: actions/cache/restore@v5
+        uses: ./.github/actions/setup-ccache
         with:
-          path: .ccache
-          key: ccache-${{ github.job }}-${{ matrix.version }}-${{ github.run_id }}
-          restore-keys: |
-            ccache-${{ github.job }}-${{ matrix.version }}-
+          in-container: 'true'
+          key-suffix: ${{ matrix.version }}
       - name: Get Source
         uses: actions/download-artifact@v7
         with:
@@ -1231,19 +1216,13 @@ jobs:
         with:
           name: binaries-${{ github.job }}-${{ matrix.version }}
           path: pfx/**/*
-      - name: Trim ccache
-        if: ${{ always() && github.event_name == 'push' }}
-        # `|| true`: Debian 11's ccache predates --evict-older-than
-        run: ccache --evict-older-than 7d || true
+      - name: Finalize ccache
+        uses: ./.github/actions/finalize-ccache
+        with:
+          trim-age: 3d
       - name: Show ccache stats
         if: always()
         run: ccache --show-stats
-      - name: Save ccache
-        if: ${{ always() && github.event_name == 'push' }}
-        uses: actions/cache/save@v5
-        with:
-          path: .ccache
-          key: ccache-${{ github.job }}-${{ matrix.version }}-${{ github.run_id }}
 
   utp-disabled:
     needs: [ make-source-tarball, what-to-make ]
@@ -1276,12 +1255,7 @@ jobs:
       - name: Extract Source
         run: mkdir src && tar xf transmission*.tar.* -C src --strip-components 1
       - name: Setup ccache
-        uses: hendrikmuhs/ccache-action@v1.2.23
-        with:
-          key: ${{ github.job }}
-          # only main's snapshots are saved; PR runs restore them via the
-          # base-branch fallback but must not multiply them per-ref
-          save: ${{ github.event_name == 'push' }}
+        uses: ./.github/actions/setup-ccache
       - name: Configure
         run: |
           cmake \
@@ -1327,9 +1301,8 @@ jobs:
         with:
           name: binaries-${{ github.job }}-without-utp
           path: pfx/**/*
-      - name: Trim ccache
-        if: ${{ always() && github.event_name == 'push' }}
-        run: ccache --evict-older-than 7d
+      - name: Finalize ccache
+        uses: ./.github/actions/finalize-ccache
 
   android:
     needs: [ what-to-make ]
@@ -1413,12 +1386,7 @@ jobs:
           use-sudo: true
           enable-mold: true
       - name: Setup ccache
-        uses: hendrikmuhs/ccache-action@v1.2.23
-        with:
-          key: ${{ github.job }}
-          # only main's snapshots are saved; PR runs restore them via the
-          # base-branch fallback but must not multiply them per-ref
-          save: ${{ github.event_name == 'push' }}
+        uses: ./.github/actions/setup-ccache
       - name: Configure
         run: |
           cmake \
@@ -1452,9 +1420,8 @@ jobs:
             -DUSE_SYSTEM_WIDE_INTEGER=OFF `# Not packaged in Ubuntu`
       - name: Make
         run: cmake --build obj --config Release -- "-k 0"
-      - name: Trim ccache
-        if: ${{ always() && github.event_name == 'push' }}
-        run: ccache --evict-older-than 7d
+      - name: Finalize ccache
+        uses: ./.github/actions/finalize-ccache
 
   ubuntu-24-04-arm64:
     needs: [ make-source-tarball, what-to-make ]
@@ -1493,12 +1460,7 @@ jobs:
       - name: Extract Source
         run: mkdir src && tar xf transmission*.tar.* -C src --strip-components 1
       - name: Setup ccache
-        uses: hendrikmuhs/ccache-action@v1.2.23
-        with:
-          key: ${{ github.job }}
-          # only main's snapshots are saved; PR runs restore them via the
-          # base-branch fallback but must not multiply them per-ref
-          save: ${{ github.event_name == 'push' }}
+        uses: ./.github/actions/setup-ccache
       - name: Configure
         run: |
           cmake \
@@ -1543,9 +1505,8 @@ jobs:
         with:
           name: binaries-${{ github.job }}
           path: pfx/**/*
-      - name: Trim ccache
-        if: ${{ always() && github.event_name == 'push' }}
-        run: ccache --evict-older-than 7d
+      - name: Finalize ccache
+        uses: ./.github/actions/finalize-ccache
 
   freebsd:
     needs: [ make-source-tarball, what-to-make ]
@@ -1669,10 +1630,9 @@ jobs:
       - name: Extract Source
         run: mkdir src && tar xf transmission*.tar.* -C src --strip-components 1
       - name: Setup ccache
-        uses: hendrikmuhs/ccache-action@v1.2.23
+        uses: ./.github/actions/setup-ccache
         with:
-          key: ${{ github.job }}-${{ matrix.crypto.cmake }}
-          save: ${{ github.event_name == 'push' }}
+          key-suffix: ${{ matrix.crypto.cmake }}
       - name: Configure
         run: |
           cmake \
@@ -1717,9 +1677,8 @@ jobs:
         with:
           name: binaries-${{ github.job }}-${{ matrix.crypto.cmake }}
           path: pfx/**/*
-      - name: Trim ccache
-        if: ${{ always() && github.event_name == 'push' }}
-        run: ccache --evict-older-than 7d
+      - name: Finalize ccache
+        uses: ./.github/actions/finalize-ccache
 
   openbsd:
     needs: [ make-source-tarball, what-to-make ]
@@ -1888,31 +1847,59 @@ jobs:
           name: binaries-${{ github.job }}
           path: pfx/**/*
 
-  prune-ccache:
-    # The timestamped ccache keys used above are write-once: every push run
-    # saves a new snapshot, and the one it supersedes is never restored again
-    # but only gets deleted by LRU pressure at the repo's 10 GB cache cap --
-    # evicting still-useful caches (e.g. the prebuilt Windows deps) along the
-    # way. Sweep every ref and keep just the newest snapshot per key prefix.
+  prune-caches:
+    # Build jobs supersede their own snapshots as they save, so this sweep
+    # collects what those steps miss: snapshots orphaned by failed or
+    # cancelled runs, keys from retired schemas, and branch copies shadowed
+    # by main. Families that stop being produced age out through the
+    # provider's 7-day unused-entry eviction.
     # Runs only on pushes to main: PR runs from forks get a read-only token.
-    needs: [ crypto, cxx23, debian, fedora, macos, macos-cmake-universal, sanitizer-tests-linux, sanitizer-tests-macos, ubuntu-24-04-arm64, utp-disabled, windows ]
+    needs: [ android, clang-tidy-linux, clang-tidy-windows, crypto, cxx23, debian, fedora, freebsd, macos, macos-cmake-universal, netbsd, openbsd, sanitizer-tests-linux, sanitizer-tests-macos, sanitizer-tests-windows, ubuntu-24-04-arm64, utp-disabled, windows ]
     if: ${{ always() && github.event_name == 'push' }}
     runs-on: ubuntu-slim
-    permissions:
-      actions: write
+    env:
+      GH_TOKEN: ${{ github.token }}
     steps:
-      - name: Prune superseded ccache snapshots
-        env:
-          GH_TOKEN: ${{ github.token }}
+      - name: Prune redundant cache entries
+        # Selector 1: a "-<run id>" suffix is the only per-run part of a
+        # ccache/ctcache key, so keep just the newest snapshot per
+        # (ref, family). Selector 2: ccache keys lacking the current
+        # CACHE_SCHEMA can never be restored again. Selector 3: the
+        # content-addressed families (win-deps, vcpkg, and vmactions' VM
+        # images, whose freebsd/openbsd/netbsd prefixes are that action's
+        # own naming) are byte-identical per key+version, and every branch
+        # can restore main's copy through the base-branch fallback, so
+        # branch copies are redundant once main holds the key.
         run: |
-          gh api --paginate 'repos/${{ github.repository }}/actions/caches?per_page=100' \
-            --jq '.actions_caches[] | select(.key | startswith("ccache-")) | [.id, .ref, .key, .created_at] | @tsv' |
-            sort -t $'\t' -k 4,4r |
-            awk -F '\t' '{
-              prefix = $3
-              sub(/-[0-9][0-9TZ:.-]*$/, "", prefix) # strip the timestamp / run-id suffix
-              if (seen[$2 "\t" prefix]++) {
-                print $1
-              }
-            }' |
-            xargs --no-run-if-empty -n 1 -I '{}' gh api -X DELETE 'repos/${{ github.repository }}/actions/caches/{}'
+          set -euo pipefail
+          inventory="$RUNNER_TEMP/caches.json"
+          # gh rejects --slurp combined with --jq, so flatten with jq itself
+          gh api --paginate --slurp 'repos/${{ github.repository }}/actions/caches?per_page=100' |
+            jq '[ .[].actions_caches[] ]' > "$inventory"
+          jq -r --arg schema "-${{ env.CACHE_SCHEMA }}-" '
+            . as $inventory
+            | [
+                ($inventory
+                 | map(select(.key | startswith("ccache-") or startswith("ctcache-")))
+                 | group_by([.ref, (.key | sub("-[0-9]+$"; ""))])[]
+                 | sort_by(.created_at) | .[:-1][].id),
+                ($inventory[]
+                 | select((.key | startswith("ccache-")) and ((.key | contains($schema)) | not)).id),
+                ($inventory
+                 | map(select((.key | test("^(win-deps|vcpkg)-")) or (.key | test("^(freebsd|openbsd|netbsd)-"))))
+                 | group_by([.key, .version])[]
+                 | select(any(.[]; .ref == "refs/heads/main"))
+                 | .[] | select(.ref != "refs/heads/main").id)
+              ]
+            | unique[]' "$inventory" |
+            # entries can vanish mid-run (TTL, a re-run's finalize), so a 404
+            # on one id must not abort the sweep
+            xargs --no-run-if-empty -P 4 -I '{}' bash -c 'gh api -X DELETE "repos/${{ github.repository }}/actions/caches/$1" || true' _ '{}'
+      - name: Check cache headroom
+        if: ${{ always() }}
+        run: |
+          bytes=$(gh api 'repos/${{ github.repository }}/actions/cache/usage' --jq '.active_caches_size_in_bytes')
+          if [ "$bytes" -gt $((CACHE_WARNING_GIB * 1024 * 1024 * 1024)) ]; then
+            gib=$(awk -v bytes="$bytes" 'BEGIN { printf "%.2f", bytes / 1024 / 1024 / 1024 }')
+            echo "::warning title=Actions cache near capacity::${gib} GiB of the ${CACHE_LIMIT_GIB} GiB repository limit is in use"
+          fi
