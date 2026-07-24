@@ -142,9 +142,16 @@ jobs:
             printf 'Prefer the stable downloads at https://retransmission.org/download unless you specifically want to test main.\n\n'
             printf 'Latest build: %s -- %s UTC\n' "$sha" "$(date -u '+%Y-%m-%d %H:%M')"
           } > "$notes"
-          if gh release view nightly --repo "$repo" >/dev/null 2>&1; then
-            gh release edit nightly --repo "$repo" --prerelease --notes-file "$notes"
-          else
-            gh release create nightly --repo "$repo" --prerelease --title 'Nightly build' --notes-file "$notes" --target "$sha"
+          if ! gh release view nightly --repo "$repo" >/dev/null 2>&1; then
+            gh release create nightly --repo "$repo" --draft --title 'Nightly build' --target "$sha"
           fi
           gh release upload nightly dist/* --repo "$repo" --clobber
+          # GitHub's generated source archives resolve through the release tag.
+          if gh api "repos/$repo/git/ref/tags/nightly" >/dev/null 2>&1; then
+            gh api --method PATCH "repos/$repo/git/refs/tags/nightly" \
+              -f sha="$sha" -F force=true >/dev/null
+          else
+            gh api --method POST "repos/$repo/git/refs" \
+              -f ref='refs/tags/nightly' -f sha="$sha" >/dev/null
+          fi
+          gh release edit nightly --repo "$repo" --draft=false --prerelease --notes-file "$notes"
