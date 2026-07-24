@@ -26,7 +26,6 @@
 #include "libtransmission/file.h" // tr_sys_path_remove()
 #include "libtransmission/log.h"
 #include "libtransmission/session.h"
-#include "libtransmission/string-utils.h" // tr_strv_strip()
 #include "libtransmission/timer.h"
 #include "libtransmission/tr-assert.h"
 #include "libtransmission/tr-strbuf.h" // tr_pathbuf
@@ -129,26 +128,6 @@ std::string decompress(std::string_view const body)
         content = read_archive(body, [](struct archive* arc) { archive_read_support_format_raw(arc); });
     }
     return std::move(content).value_or(std::string{});
-}
-
-std::string normalize_blocklist_url(std::string_view url)
-{
-    url = tr_strv_strip(url);
-    if (std::empty(url)) {
-        return {};
-    }
-
-    // a "scheme://" before the path means the URL is already absolute; a "://"
-    // inside the path or query does not count
-    if (auto const scheme = url.find("://"sv); scheme != std::string_view::npos && scheme < url.find_first_of("/?#"sv)) {
-        return std::string{ url };
-    }
-
-    // otherwise assume https, treating a scheme-relative "//host/path" as "host/path"
-    if (tr_strv_starts_with(url, "//"sv)) {
-        url.remove_prefix(2U);
-    }
-    return fmt::format("https://{:s}", url);
 }
 
 // Per-request state, kept alive by the tr_web fetch callback during the fetch.
@@ -326,7 +305,7 @@ tr::TimerMaker& tr_session::BlocklistMediator::timer_maker() noexcept
 
 std::string tr_session::BlocklistMediator::blocklist_url() const
 {
-    return tr::blocklist::normalize_blocklist_url(session_.blocklistUrl());
+    return session_.blocklistUrl();
 }
 
 std::optional<size_t> tr_session::BlocklistMediator::set_blocklist_content(std::string_view content, std::string& error)

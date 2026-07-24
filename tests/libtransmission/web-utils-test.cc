@@ -91,6 +91,12 @@ TEST_F(WebUtilsTest, urlParse)
     parsed = tr_urlParse(url);
     EXPECT_FALSE(parsed);
 
+    // a URL is illegal without a scheme; reject scheme-less and scheme-relative
+    // forms rather than guessing one
+    for (auto const* const bad : { "example.org/path", "example.org:80/path", "//example.org/path" }) {
+        EXPECT_FALSE(tr_urlParse(bad)) << bad;
+    }
+
     url =
         "magnet:"
         "?xt=urn:btih:14ffe5dd23188fd5cb53a1d47f1289db70abf31e"
