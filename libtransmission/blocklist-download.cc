@@ -155,7 +155,6 @@ std::string normalize_blocklist_url(std::string_view url)
 struct Pending {
     Updater::Mediator* mediator = nullptr;
     tr_blocklist_update_func on_done;
-    bool cancelled = false;
 };
 
 namespace
@@ -171,7 +170,8 @@ void deliver(Pending& pending, tr_blocklist_update_result const& result)
 
 void finish_request(tr_web::FetchResponse const& response, std::shared_ptr<Pending> const& pending)
 {
-    if (pending->cancelled) {
+    // already delivered, superseded, or cancelled -- nothing left to do
+    if (!pending->on_done) {
         return;
     }
 
@@ -221,7 +221,7 @@ Updater::~Updater()
 {
     // If our fetch is still in flight, make its completion callback a no-op
     if (auto pending = latest_.lock()) {
-        pending->cancelled = true;
+        pending->on_done = {};
     }
 }
 
@@ -231,14 +231,11 @@ void Updater::update(tr_blocklist_update_func on_done)
         // Supersede any in-flight req so only the newest one updates the list.
         // The older fetch still runs, since tr_web doesn't have an abort API.
         if (auto previous = latest_.lock()) {
-            // Report the superseded request (unless it was cancelled), then mark
-            // it so its still-running fetch installs nothing.
-            if (!previous->cancelled) {
-                auto superseded = tr_blocklist_update_result{};
-                superseded.status = tr_blocklist_update_status::Superseded;
-                deliver(*previous, superseded);
-            }
-            previous->cancelled = true;
+            // Report the superseded request; deliver() clears its callback, so
+            // its still-running fetch installs nothing once it completes.
+            auto superseded = tr_blocklist_update_result{};
+            superseded.status = tr_blocklist_update_status::Superseded;
+            deliver(*previous, superseded);
         }
 
         auto pending = std::make_shared<Pending>(Pending{ .mediator = &mediator_, .on_done = std::move(on_done) });
@@ -254,7 +251,7 @@ void Updater::cancel()
 {
     mediator_.run_in_session_thread([this]() {
         if (auto pending = latest_.lock()) {
-            pending->cancelled = true;
+            pending->on_done = {};
         }
     });
 }
