@@ -76,9 +76,9 @@ auto constexpr MaxDecompressedSize = size_t{ 128U } * 1024U * 1024U;
             break;
         }
 
-        // a blocklist is a single file; skip directories and take the
-        // first file we find
-        if (archive_entry_filetype(entry) == AE_IFDIR) {
+        // a blocklist is a single regular file; skip anything that isn't one
+        // (directories, symlinks, ...) and take the first regular file we find
+        if (archive_entry_filetype(entry) != AE_IFREG) {
             continue;
         }
 
