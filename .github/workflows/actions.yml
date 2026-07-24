@@ -867,12 +867,12 @@ jobs:
       - uses: actions/upload-artifact@v6
         if: ${{ matrix.publish }}
         with:
-          name: binaries-${{ github.job }}-${{ matrix.arch }}
+          name: binaries-${{ github.job }}-${{ matrix.arch }}-${{ matrix.runner }}
           path: pfx/**/*
       - uses: actions/upload-artifact@v6
         if: ${{ matrix.publish }}
         with:
-          name: binaries-${{ github.job }}-${{ matrix.arch }}-msi
+          name: binaries-${{ github.job }}-${{ matrix.arch }}-${{ matrix.runner }}-msi
           path: obj/dist/msi/*.msi
       - name: Trim ccache
         if: ${{ always() && github.event_name == 'push' }}

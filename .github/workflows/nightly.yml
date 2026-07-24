@@ -72,9 +72,9 @@ jobs:
             gh api "repos/${{ github.repository }}/actions/artifacts/$id/zip" > "in/$1.zip"
           }
           dl binaries-macos-xcodebuild-universal
-          dl binaries-windows-x64-msi
-          dl binaries-windows-arm64-msi
-          dl binaries-windows-x86-msi
+          dl binaries-windows-x64-windows-2022-msi
+          dl binaries-windows-arm64-windows-11-arm-msi
+          dl binaries-windows-x86-windows-2022-msi
           dl source-tarball
 
       - name: Stage clean release assets
@@ -90,8 +90,10 @@ jobs:
             fi
           fi
           # Windows: pull the .msi out of each artifact
-          for arch in x64 arm64 x86; do
-            z="in/binaries-windows-$arch-msi.zip"
+          for pair in x64:windows-2022 arm64:windows-11-arm x86:windows-2022; do
+            arch=${pair%%:*}
+            runner=${pair#*:}
+            z="in/binaries-windows-$arch-$runner-msi.zip"
             [ -f "$z" ] || continue
             unzip -q "$z" -d "work/win-$arch"
             msi=$(find "work/win-$arch" -name '*.msi' | head -n1)
