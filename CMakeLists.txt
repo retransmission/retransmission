@@ -579,6 +579,21 @@ tr_add_external_auto_library(ARCHIVE libarchive
         -DENABLE_CNG:BOOL=OFF
         -DENABLE_WIN32_XMLLITE:BOOL=OFF)
 
+# archive.h decorates its API with __declspec(dllimport) on Windows unless this
+# is defined. We always link the static libarchive, so tell consumers not to
+# expect a DLL (harmless elsewhere; only __declspec on MSVC cares).
+target_compile_definitions(libarchive::libarchive
+    INTERFACE
+        LIBARCHIVE_STATIC)
+
+if(WIN32)
+    # libarchive's archive_util.c seeds its RNG with BCryptGenRandom (bcrypt.h),
+    # so anything linking the static archive.lib must also link bcrypt.
+    target_link_libraries(libarchive::libarchive
+        INTERFACE
+            bcrypt)
+endif()
+
 tr_add_external_auto_library(EVENT2 Libevent
     SUBPROJECT
     SOURCE_DIR libevent

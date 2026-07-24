@@ -519,11 +519,20 @@ std::vector<Blocklists::Blocklist> Blocklists::load_folder(std::string_view cons
     return ret;
 }
 
+namespace
+{
+// Path of the primary blocklist .bin file within the config folder.
+[[nodiscard]] tr_pathbuf primary_bin_file(std::string_view folder)
+{
+    return tr_pathbuf{ folder, '/', TrDefaultBlocklistFilename };
+}
+} // namespace
+
 std::optional<size_t> Blocklists::update_primary_blocklist(std::string_view const external_file, bool const is_enabled)
 {
     // These rules will replace the default blocklist.
     // Build the path of the default blocklist .bin file where we'll save these rules.
-    auto const bin_file = tr_pathbuf{ folder_, '/', TrDefaultBlocklistFilename };
+    auto const bin_file = primary_bin_file(folder_);
 
     // Try to save it
     auto added = Blocklist::saveNew(external_file, bin_file, is_enabled);
@@ -546,6 +555,16 @@ std::optional<size_t> Blocklists::update_primary_blocklist(std::string_view cons
     changed_();
 
     return n_rules;
+}
+
+time_t Blocklists::mtime() const
+{
+    auto const bin_file = primary_bin_file(folder_);
+    if (auto const info = tr_sys_path_get_info(bin_file.sv()); info) {
+        return info->last_modified_at;
+    }
+
+    return 0;
 }
 
 } // namespace tr

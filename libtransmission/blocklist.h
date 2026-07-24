@@ -11,6 +11,7 @@
 
 #include <algorithm> // std::any_of
 #include <cstddef> // size_t
+#include <ctime> // time_t
 #include <numeric>
 #include <optional>
 #include <string>
@@ -53,6 +54,10 @@ public:
     void load(std::string_view folder, bool is_enabled);
     void set_enabled(bool is_enabled);
     std::optional<size_t> update_primary_blocklist(std::string_view external_file, bool is_enabled);
+
+    // Returns when the primary blocklist was last modified, i.e. last updated.
+    // Returns 0 if it doesn't exist yet.
+    [[nodiscard]] time_t mtime() const;
 
     template<typename Observer>
     [[nodiscard]] sigslot::scoped_connection observe_changes(Observer observer) const

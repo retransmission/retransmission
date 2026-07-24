@@ -497,7 +497,29 @@ void tr_blocklistSetEnabled(tr_session* session, bool is_enabled);
            invokes the "blocklist_update" method */
 void tr_blocklistSetURL(tr_session* session, std::string_view url);
 
-/** @} */
+/**
+ * Download the session's blocklist URL, decompress it (gzip, tar, zip, or
+ * plain text are all handled transparently), install it, and report the
+ * outcome.
+ *
+ * `on_done` is invoked exactly once, on the session thread: with the update's
+ * outcome when it finishes, or with a Superseded status if a newer
+ * tr_blocklistUpdate() takes over before it completes. It is not invoked at all
+ * if tr_blocklistUpdateCancel() is called first.
+ */
+void tr_blocklistUpdate(tr_session* session, tr_blocklist_update_func on_done);
+
+/** @brief Abandon an in-flight tr_blocklistUpdate(): its callback won't fire. */
+void tr_blocklistUpdateCancel(tr_session* session);
+
+/** @brief When the blocklist was last successfully updated (its file's mtime),
+           or 0 if no blocklist has been installed yet. */
+[[nodiscard]] time_t tr_blocklistGetMTime(tr_session const* session);
+
+/** @brief Whether the blocklist is periodically re-downloaded on its own. */
+[[nodiscard]] bool tr_blocklistUpdatesEnabled(tr_session const* session);
+
+void tr_blocklistSetUpdatesEnabled(tr_session* session, bool enabled);
 
 /**
  * Instantiating tr_torrents and wrangling torrent file metadata

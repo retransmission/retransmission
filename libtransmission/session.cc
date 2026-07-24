@@ -33,6 +33,7 @@
 
 #include "libtransmission/api-compat.h"
 #include "libtransmission/bandwidth.h"
+#include "libtransmission/blocklist-download.h"
 #include "libtransmission/blocklist.h"
 #include "libtransmission/constants.h"
 #include "libtransmission/crypto-utils.h"
@@ -691,6 +692,7 @@ void tr_session::initImpl(init_data& data)
     tr_logSetQueueEnabled(data.message_queuing_enabled);
 
     blocklists_.load(blocklist_dir_, blocklist_enabled());
+    blocklist_updater_->update_timer();
 
     tr_logAddInfo(
         fmt::format(
@@ -1290,6 +1292,7 @@ void tr_session::closeImplPart1(std::promise<void>* closed_promise, std::chrono:
     queue_timer_.reset();
     now_timer_.reset();
     rpc_server_.reset();
+    blocklist_updater_.reset();
     dht_.reset();
     lpd_.reset();
 

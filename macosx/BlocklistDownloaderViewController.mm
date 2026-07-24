@@ -2,8 +2,10 @@
 // It may be used under the MIT (SPDX: MIT) license.
 // License text can be found in the licenses/ folder.
 
+#include "libtransmission/transmission.h"
+
 #import "BlocklistDownloaderViewController.h"
-#import "BlocklistDownloader.h"
+#import "Controller.h"
 #import "PrefsController.h"
 #import "NSStringAdditions.h"
 
@@ -47,39 +49,14 @@ static BlocklistDownloaderViewController* fBLViewController = nil;
 
 - (void)cancelDownload:(id)sender
 {
-    [[BlocklistDownloader downloader] cancelDownload];
+    tr_blocklistUpdateCancel(((Controller*)NSApp.delegate).sessionHandle);
+    [self setFinished];
 }
 
 - (void)setStatusStarting
 {
-    self.fTextField.stringValue = [NSLocalizedString(@"Connecting to site", "Blocklist -> message") stringByAppendingEllipsis];
+    self.fTextField.stringValue = [NSLocalizedString(@"Updating blocklist", "Blocklist -> message") stringByAppendingEllipsis];
     self.fProgressBar.indeterminate = YES;
-}
-
-- (void)setStatusProgressForCurrentSize:(NSUInteger)currentSize expectedSize:(long long)expectedSize
-{
-    NSString* string = NSLocalizedString(@"Downloading blocklist", "Blocklist -> message");
-    if (expectedSize != NSURLResponseUnknownLength) {
-        self.fProgressBar.indeterminate = NO;
-
-        NSString* substring = [NSString stringForFilePartialSize:currentSize fullSize:expectedSize];
-        string = [string stringByAppendingFormat:@" (%@)", substring];
-        self.fProgressBar.doubleValue = (double)currentSize / expectedSize;
-    } else {
-        string = [string stringByAppendingFormat:@" (%@)", [NSString stringForFileSize:currentSize]];
-    }
-
-    self.fTextField.stringValue = string;
-}
-
-- (void)setStatusProcessing
-{
-    //change to indeterminate while processing
-    self.fProgressBar.indeterminate = YES;
-    [self.fProgressBar startAnimation:self];
-
-    self.fTextField.stringValue = [NSLocalizedString(@"Processing blocklist", "Blocklist -> message") stringByAppendingEllipsis];
-    self.fButton.enabled = NO;
 }
 
 - (void)setFinished
@@ -121,10 +98,40 @@ static BlocklistDownloaderViewController* fBLViewController = nil;
     //load window and show as sheet
     [NSBundle.mainBundle loadNibNamed:@"BlocklistStatusWindow" owner:self topLevelObjects:NULL];
 
-    BlocklistDownloader* downloader = [BlocklistDownloader downloader];
-    downloader.viewController = self; //do before showing the sheet to ensure it doesn't slide out with placeholder text
+    [self setStatusStarting]; //do before showing the sheet to ensure it doesn't slide out with placeholder text
 
     [self.fPrefsController.window beginSheet:self.fStatusWindow completionHandler:nil];
+
+    // tr_blocklistUpdate() fires its callback on the libtransmission thread, so
+    // hop back to the main queue before touching any UI. Capture weakly: tr_web
+    // holds this callback until the transfer finishes, which can outlive the
+    // sheet (and thus this controller), so it must not keep them alive or touch
+    // them once they're gone.
+    __weak BlocklistDownloaderViewController* weakSelf = self;
+    __weak PrefsController* weakPrefsController = self.fPrefsController;
+    tr_blocklistUpdate(((Controller*)NSApp.delegate).sessionHandle, [weakSelf, weakPrefsController](tr_blocklist_update_result const& result) {
+        tr_blocklist_update_status const status = result.status;
+        NSString* const error = result.error.empty() ? nil : @(result.error.c_str());
+        dispatch_async(dispatch_get_main_queue(), ^{
+            BlocklistDownloaderViewController* const strongSelf = weakSelf;
+            if (strongSelf == nil) {
+                return;
+            }
+            switch (status) {
+            case tr_blocklist_update_status::Ok:
+                [strongSelf setFinished];
+                [weakPrefsController updateBlocklistFields];
+                break;
+            case tr_blocklist_update_status::Superseded:
+                // a newer update took over; close the sheet quietly, no error
+                [strongSelf setFinished];
+                break;
+            default:
+                [strongSelf setFailed:error ?: NSLocalizedString(@"The blocklist could not be updated.", "Blocklist -> message")];
+                break;
+            }
+        });
+    });
 }
 
 @end

@@ -11,6 +11,7 @@ target_sources(libtransmission-test
         benc-test.cc
         bitfield-test.cc
         block-info-test.cc
+        blocklist-download-test.cc
         blocklist-test.cc
         buffer-test.cc
         clients-test.cc
@@ -90,6 +91,7 @@ target_link_libraries(libtransmission-test
         ${TR_NAME}
         GTest::gtest_main
         dht::dht
+        libarchive::libarchive
         transmission::fmt-header-only
         libevent::core
         libevent::extra

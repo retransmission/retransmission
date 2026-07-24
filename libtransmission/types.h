@@ -177,6 +177,14 @@ enum tr_ctorMode : uint8_t {
     TR_FORCE /* indicates the ctor value should be used regardless of what's in the resume settings */
 };
 
+enum class tr_blocklist_update_status : uint8_t {
+    Ok,
+    DownloadError,
+    SaveError,
+    InvalidData,
+    Superseded // a newer tr_blocklistUpdate() replaced this one before it finished
+};
+
 enum class tr_direction : uint8_t {
     ClientToPeer = 0,
     Up = 0,
@@ -664,7 +672,15 @@ struct tr_webseed_view {
     uint64_t download_bytes_per_second = {}; // current download speed
 };
 
+struct tr_blocklist_update_result {
+    tr_blocklist_update_status status = tr_blocklist_update_status::Ok;
+    size_t n_rules = 0U; // how many rules were installed; only meaningful when status == Ok
+    std::string error; // human-readable detail; empty on success
+};
+
 using tr_altSpeedFunc = std::function<void(bool active, bool user_driven)>;
+
+using tr_blocklist_update_func = std::function<void(tr_blocklist_update_result const&)>;
 
 using tr_session_queue_start_func = std::function<void(tr_torrent_id_t)>;
 
