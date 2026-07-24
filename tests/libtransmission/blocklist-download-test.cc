@@ -389,7 +389,8 @@ TEST(BlocklistUpdater, reportsDownloadError)
 TEST(BlocklistUpdater, reportsInvalidData)
 {
     auto mediator = MockMediator{};
-    mediator.install_result_ = size_t{ 0U }; // parsed, but no valid rules
+    mediator.install_result_ = std::nullopt; // the parser rejected the content...
+    mediator.install_error_ = {}; // ...which is distinct from a save failure
     auto updater = tr::blocklist::Updater{ mediator };
 
     auto result = std::optional<tr_blocklist_update_result>{};
@@ -401,19 +402,19 @@ TEST(BlocklistUpdater, reportsInvalidData)
     EXPECT_EQ(0U, result->n_rules);
 }
 
-TEST(BlocklistUpdater, keepsExistingListWhenDownloadHasNoRules)
+TEST(BlocklistUpdater, reportsEmptyListAsOk)
 {
     auto mediator = MockMediator{};
+    mediator.install_result_ = size_t{ 0U }; // a valid, empty blocklist
     auto updater = tr::blocklist::Updater{ mediator };
 
     auto result = std::optional<tr_blocklist_update_result>{};
     updater.update([&result](tr_blocklist_update_result const& r) { result = r; });
-    // a comment-only body: valid text, but nothing the parser would install
-    mediator.respond(200, "# temporarily unavailable\n");
+    mediator.respond(200, std::string{ Rules });
 
     ASSERT_TRUE(result.has_value());
-    EXPECT_EQ(tr_blocklist_update_status::InvalidData, result->status);
-    EXPECT_EQ(0, mediator.install_count_); // must not overwrite the installed list
+    EXPECT_EQ(tr_blocklist_update_status::Ok, result->status);
+    EXPECT_EQ(0U, result->n_rules);
 }
 
 TEST(BlocklistUpdater, reportsSaveError)
@@ -648,15 +649,32 @@ TEST_F(BlocklistDownloadTest, reportsDownloadError)
     EXPECT_FALSE(std::empty(result.error));
 }
 
-TEST_F(BlocklistDownloadTest, ruleLessDownloadKeepsExistingBlocklist)
+TEST_F(BlocklistDownloadTest, emptyDownloadInstallsEmptyList)
 {
     // install a good list first
     server_.setHandler([](evhttp_request* req) { LoopbackServer::reply(req, HTTP_OK, "OK", Rules); });
     ASSERT_EQ(tr_blocklist_update_status::Ok, runUpdate().status);
     ASSERT_EQ(2U, tr_blocklistGetRuleCount(session_));
 
-    // a later update that returns only comments must not wipe the installed list
-    server_.setHandler([](evhttp_request* req) { LoopbackServer::reply(req, HTTP_OK, "OK", "# temporarily unavailable\n"sv); });
+    // an empty but valid list is honored: it replaces the installed list to
+    // unblock every peer (transmission #7942, #8074)
+    server_.setHandler([](evhttp_request* req) { LoopbackServer::reply(req, HTTP_OK, "OK", "# now empty\n"sv); });
+    auto const result = runUpdate();
+    EXPECT_EQ(tr_blocklist_update_status::Ok, result.status);
+    EXPECT_EQ(0U, result.n_rules);
+    EXPECT_EQ(0U, tr_blocklistGetRuleCount(session_));
+}
+
+TEST_F(BlocklistDownloadTest, unparseableDownloadKeepsExistingBlocklist)
+{
+    // install a good list first
+    server_.setHandler([](evhttp_request* req) { LoopbackServer::reply(req, HTTP_OK, "OK", Rules); });
+    ASSERT_EQ(tr_blocklist_update_status::Ok, runUpdate().status);
+    ASSERT_EQ(2U, tr_blocklistGetRuleCount(session_));
+
+    // a body whose content doesn't parse (e.g. a server error page) is
+    // rejected, leaving the installed list untouched
+    server_.setHandler([](evhttp_request* req) { LoopbackServer::reply(req, HTTP_OK, "OK", "<html>503</html>\n"sv); });
     auto const result = runUpdate();
     EXPECT_EQ(tr_blocklist_update_status::InvalidData, result.status);
     EXPECT_EQ(2U, tr_blocklistGetRuleCount(session_)); // preserved, not wiped

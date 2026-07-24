@@ -57,6 +57,10 @@ public:
         virtual void run_in_session_thread(std::function<void()> func) = 0;
         [[nodiscard]] virtual time_t mtime() const = 0;
         [[nodiscard]] virtual std::string blocklist_url() const = 0;
+        // Install `content` as the blocklist and return its rule count; 0 is a
+        // valid result -- an empty list that unblocks every peer. Returns
+        // nullopt on failure: `error` is set when the content couldn't be
+        // saved, and left empty when it held no parseable rules.
         [[nodiscard]] virtual std::optional<size_t> set_blocklist_content(std::string_view content, std::string& error) = 0;
         [[nodiscard]] virtual bool enabled() const noexcept = 0;
         [[nodiscard]] virtual bool updates_enabled() const noexcept = 0;
