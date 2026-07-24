@@ -259,7 +259,7 @@ void Updater::cancel()
     });
 }
 
-void Updater::restart_timer()
+void Updater::update_timer()
 {
     mediator_.run_in_session_thread([this]() { arm_timer(); });
 }
@@ -366,7 +366,7 @@ bool tr_session::BlocklistMediator::updates_enabled() const noexcept
 void tr_session::on_blocklist_settings_changed()
 {
     if (auto* const updater = blocklist_updater()) {
-        updater->restart_timer();
+        updater->update_timer();
     }
 }
 

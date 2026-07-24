@@ -529,7 +529,7 @@ TEST(BlocklistUpdater, armsTimerWhenEnabled)
     auto mediator = MockMediator{};
     auto updater = tr::blocklist::Updater{ mediator };
 
-    updater.restart_timer();
+    updater.update_timer();
 
     auto* const timer = mediator.timer();
     ASSERT_NE(nullptr, timer);
@@ -543,7 +543,7 @@ TEST(BlocklistUpdater, disarmsTimerWhenBlocklistDisabled)
     mediator.enabled_ = false;
     auto updater = tr::blocklist::Updater{ mediator };
 
-    updater.restart_timer();
+    updater.update_timer();
     EXPECT_FALSE(mediator.timer()->is_running_);
 }
 
@@ -553,7 +553,7 @@ TEST(BlocklistUpdater, disarmsTimerWhenUrlEmpty)
     mediator.url_.clear();
     auto updater = tr::blocklist::Updater{ mediator };
 
-    updater.restart_timer();
+    updater.update_timer();
     EXPECT_FALSE(mediator.timer()->is_running_);
 }
 
@@ -563,7 +563,7 @@ TEST(BlocklistUpdater, disarmsTimerWhenUpdatesDisabled)
     mediator.updates_enabled_ = false;
     auto updater = tr::blocklist::Updater{ mediator };
 
-    updater.restart_timer();
+    updater.update_timer();
     EXPECT_FALSE(mediator.timer()->is_running_);
 }
 
@@ -571,7 +571,7 @@ TEST(BlocklistUpdater, autoUpdateTimerFetchesAndReArms)
 {
     auto mediator = MockMediator{};
     auto updater = tr::blocklist::Updater{ mediator };
-    updater.restart_timer();
+    updater.update_timer();
 
     auto* const timer = mediator.timer();
     ASSERT_NE(nullptr, timer);

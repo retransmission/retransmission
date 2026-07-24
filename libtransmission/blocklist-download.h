@@ -86,7 +86,7 @@ public:
     // (Re)arm or disarm the periodic auto-update timer to match the
     // current settings (blocklist enabled + URL set + updates enabled).
     // Safe to call from any thread.
-    void restart_timer();
+    void update_timer();
 
 private:
     void arm_timer();

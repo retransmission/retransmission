@@ -692,7 +692,7 @@ void tr_session::initImpl(init_data& data)
     tr_logSetQueueEnabled(data.message_queuing_enabled);
 
     blocklists_.load(blocklist_dir_, blocklist_enabled());
-    blocklist_updater_->restart_timer();
+    blocklist_updater_->update_timer();
 
     tr_logAddInfo(
         fmt::format(
