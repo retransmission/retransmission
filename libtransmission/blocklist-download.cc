@@ -169,24 +169,6 @@ void deliver(Pending& pending, tr_blocklist_update_result const& result)
     }
 }
 
-// True if `text` has at least one line that could be parsed as a rule.
-// This is to prevent an empty dl rules from replacing a good blocklist.
-[[nodiscard]] bool has_rule_lines(std::string_view const text)
-{
-    for (auto remain = text; !std::empty(remain);) {
-        auto const eol = remain.find('\n');
-        if (auto const line = tr_strv_strip(remain.substr(0U, eol));
-            !std::empty(line) && !tr_strv_starts_with(line, "#"sv) && !tr_strv_starts_with(line, "//"sv)) {
-            return true;
-        }
-        if (eol == std::string_view::npos) {
-            break;
-        }
-        remain.remove_prefix(eol + 1U);
-    }
-    return false;
-}
-
 void finish_request(tr_web::FetchResponse const& response, std::shared_ptr<Pending> const& pending)
 {
     if (pending->cancelled) {
@@ -208,22 +190,21 @@ void finish_request(tr_web::FetchResponse const& response, std::shared_ptr<Pendi
 
     auto const content = decompress(response.body);
 
-    // don't use empty responses
-    if (!has_rule_lines(content)) {
-        result.status = tr_blocklist_update_status::InvalidData;
-        deliver(*pending, result);
-        return;
-    }
-
+    // Defer to the parser for the verdict; the download path deliberately
+    // doesn't inspect the payload itself.
     auto error = std::string{};
-    if (auto const n_rules = pending->mediator->set_blocklist_content(content, error); !n_rules) {
-        result.status = tr_blocklist_update_status::SaveError;
-        result.error = std::move(error);
-    } else if (*n_rules == 0U) {
-        result.status = tr_blocklist_update_status::InvalidData;
-    } else {
+    auto const n_rules = pending->mediator->set_blocklist_content(content, error);
+    if (n_rules) {
+        // a valid list -- possibly empty, which intentionally unblocks every peer
         result.status = tr_blocklist_update_status::Ok;
         result.n_rules = *n_rules;
+    } else if (!std::empty(error)) {
+        // couldn't write the downloaded content to disk
+        result.status = tr_blocklist_update_status::SaveError;
+        result.error = std::move(error);
+    } else {
+        // the content held no parseable rules; leave the existing list in place
+        result.status = tr_blocklist_update_status::InvalidData;
     }
 
     deliver(*pending, result);
@@ -367,10 +348,7 @@ std::optional<size_t> tr_session::BlocklistMediator::set_blocklist_content(std::
 
     auto const n_rules = tr_blocklistSetContent(&session_, filename);
     tr_sys_path_remove(filename);
-
-    // edge case: nullopt from the parser means "no valid rules".
-    // Collapse it to 0 so the Updater reports InvalidData
-    return n_rules.value_or(0U);
+    return n_rules;
 }
 
 bool tr_session::BlocklistMediator::enabled() const noexcept
