@@ -11,7 +11,6 @@
 #include <cstdint> // int64_t
 #include <cstdio>
 #include <cstdlib>
-#include <cstring> /* strcmp */
 #include <ctime>
 #include <future>
 #include <limits>

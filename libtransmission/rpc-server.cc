@@ -7,7 +7,6 @@
 #include <array>
 #include <chrono>
 #include <cstdint>
-#include <cstring> /* for strcspn() */
 #include <ctime>
 #include <memory>
 #include <string>

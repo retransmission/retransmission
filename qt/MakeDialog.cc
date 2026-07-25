@@ -9,7 +9,6 @@
 #include <cmath>
 #include <future>
 #include <utility>
-#include <vector>
 
 #include <QDialogButtonBox>
 #include <QDir>

@@ -6,7 +6,6 @@
 #include <algorithm>
 #include <array>
 #include <cassert>
-#include <ranges>
 #include <string_view>
 #include <utility>
 

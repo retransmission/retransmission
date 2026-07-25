@@ -46,13 +46,11 @@
 
 #include <algorithm>
 #include <array>
-#include <cstring> // strstr
 #include <functional>
 #include <iostream>
 #include <map>
 #include <memory>
 #include <optional>
-#include <ranges>
 #include <string>
 #include <string_view>
 #include <utility>

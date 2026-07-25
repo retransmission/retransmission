@@ -33,7 +33,6 @@
 #include <fmt/format.h>
 
 #include <algorithm> // std::max()
-#include <cstring> // strchr()
 #include <memory>
 #include <optional>
 

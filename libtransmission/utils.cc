@@ -20,8 +20,6 @@
 #include <stdexcept> // std::runtime_error
 #include <string>
 #include <string_view>
-#include <system_error>
-#include <type_traits>
 #include <utility> // std::cmp_equal
 #include <vector>
 

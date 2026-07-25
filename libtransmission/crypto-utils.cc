@@ -13,7 +13,6 @@
 #include <random>
 #include <string>
 #include <string_view>
-#include <vector>
 
 extern "C" {
 #include <crc32iscsi.h>

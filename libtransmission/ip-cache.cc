@@ -10,7 +10,6 @@
 #include <memory>
 #include <mutex>
 #include <optional>
-#include <ranges>
 #include <string_view>
 #include <utility> // std::move
 

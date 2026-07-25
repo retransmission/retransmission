@@ -8,10 +8,8 @@
 #include <cstddef>
 #include <cstdint>
 #include <fstream>
-#include <initializer_list>
 #include <ios>
 #include <optional>
-#include <ranges>
 #include <string> // std::getline()
 #include <string_view>
 #include <utility> // for std::move, std::pair

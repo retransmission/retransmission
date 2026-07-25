@@ -41,7 +41,6 @@
 #include <chrono>
 #include <fstream>
 #include <memory>
-#include <ranges>
 #include <utility>
 
 namespace

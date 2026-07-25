@@ -8,9 +8,7 @@
 #include <cstddef>
 #include <deque>
 #include <initializer_list>
-#include <ranges>
 #include <string_view>
-#include <vector>
 
 #include "libtransmission/api-compat.h"
 #include "libtransmission/converters.h"

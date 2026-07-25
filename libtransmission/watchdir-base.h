@@ -9,7 +9,6 @@
 #error only the watchdir module should #include this header.
 #endif
 
-#include <algorithm>
 #include <chrono>
 #include <cstddef> // for size_t
 #include <map>

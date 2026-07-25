@@ -7,7 +7,6 @@
 #include <cerrno>
 #include <chrono>
 #include <cstddef> // size_t
-#include <deque>
 #include <iterator> // back_insert_iterator, empty
 #include <mutex>
 #include <optional>

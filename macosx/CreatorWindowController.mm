@@ -5,7 +5,6 @@
 #include <chrono>
 #include <cmath>
 #include <future>
-#include <optional>
 #include <utility>
 
 #include <libtransmission/transmission.h>

@@ -13,7 +13,6 @@
 
 #include <algorithm>
 #include <array>
-#include <ranges>
 #include <utility>
 
 TorrentFilter::TorrentFilter()

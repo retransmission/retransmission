@@ -75,7 +75,6 @@
 #include <iterator> // std::back_inserter
 #include <map>
 #include <memory>
-#include <ranges>
 #include <sstream>
 #include <string>
 #include <thread>

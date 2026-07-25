@@ -10,7 +10,6 @@
 #include <cstddef> // size_t
 #include <fstream>
 #include <functional>
-#include <iostream>
 #include <map>
 #include <memory>
 #include <mutex>

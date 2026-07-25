@@ -12,7 +12,6 @@
 #include <climits> /* PATH_MAX */
 #include <cstdint> /* SIZE_MAX */
 #include <cstdio> // remove, rename
-#include <cstdlib> // mkdtemp, mkstemp, realpath
 #include <optional>
 #include <string_view>
 #include <string>

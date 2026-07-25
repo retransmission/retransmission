@@ -8,13 +8,11 @@
 #include <chrono> // operator""ms, literals
 #include <cstddef> // std::byte
 #include <cstdint> // uint32_t, uint64_t
-#include <cstring> // memcpy()
 #include <ctime>
 #include <future>
 #include <list>
 #include <memory>
 #include <optional>
-#include <ranges>
 #include <string>
 #include <string_view>
 #include <type_traits>

@@ -5,7 +5,6 @@
 
 #include "PrefsDialog.h"
 
-#include <cassert>
 #include <optional>
 
 #include <QCheckBox>

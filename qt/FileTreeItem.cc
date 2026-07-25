@@ -6,7 +6,6 @@
 #include <algorithm>
 #include <cassert>
 #include <utility>
-#include <ranges>
 
 #include <small/set.hpp>
 
