@@ -398,11 +398,6 @@ public:
         return date_created_;
     }
 
-    [[nodiscard]] constexpr auto dateEdited() const noexcept
-    {
-        return edit_date_;
-    }
-
     [[nodiscard]] constexpr auto manualAnnounceTime() const noexcept
     {
         return manual_announce_time_;
