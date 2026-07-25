@@ -41,25 +41,26 @@
 
 // ---
 
-#define TR_PROJ_DOMAIN_TLD "com"
-#define TR_PROJ_DOMAIN_SLD "transmissiontorrent"
+#define TR_PROJ_DOMAIN_TLD "org"
+#define TR_PROJ_DOMAIN_SLD "retransmission"
 
-#define TR_PROJ_APPNAME "transmission"
-#define TR_PROJ_APPNAME_CAPITALIZED "Transmission"
+#define TR_PROJ_APPNAME "retransmission"
+#define TR_PROJ_APPNAME_CAPITALIZED "Retransmission"
 #define TR_PROJ_APPNAME_RDNS TR_PROJ_DOMAIN_APEX_REVERSED "." TR_PROJ_APPNAME
 
 #define TR_PROJ_DOMAIN_APEX TR_PROJ_DOMAIN_SLD "." TR_PROJ_DOMAIN_TLD
 #define TR_PROJ_DOMAIN_APEX_REVERSED TR_PROJ_DOMAIN_TLD "." TR_PROJ_DOMAIN_SLD
 #define TR_PROJ_DOMAIN_DHT "dht." TR_PROJ_DOMAIN_APEX
 
-#define TR_PROJ_APPNAME "transmission"
-#define TR_PROJ_APPNAME_CAPITALIZED "Transmission"
+#define TR_PROJ_APPNAME "retransmission"
+#define TR_PROJ_APPNAME_CAPITALIZED "Retransmission"
 #define TR_PROJ_APPNAME_RDNS TR_PROJ_DOMAIN_APEX_REVERSED "." TR_PROJ_APPNAME
 
 #define TR_PROJ_URL_HOMEPAGE "https://" TR_PROJ_DOMAIN_APEX
 #define TR_PROJ_URL_DONATE TR_PROJ_URL_HOMEPAGE "/donate"
 #define TR_PROJ_URL_HELP TR_PROJ_URL_HOMEPAGE "/help"
-#define TR_PROJ_URL_GIT "https://github.com/transmissiontorrent/transmission"
+#define TR_PROJ_URL_GIT "https://github.com/retransmission/retransmission"
+#define TR_PROJ_URL_FORUM "https://forum." TR_PROJ_DOMAIN_APEX
 
 #define TR_PROJ_URL_IPV4 "https://ipv4." TR_PROJ_DOMAIN_APEX
 #define TR_PROJ_URL_IPV6 "https://ipv6." TR_PROJ_DOMAIN_APEX

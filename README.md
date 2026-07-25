@@ -7,7 +7,7 @@ Transmission is a fast, easy, and free BitTorrent client. It comes in several fl
   * A headless daemon for servers and routers
   * A web UI for remote controlling any of the above
   
-Visit https://transmissiontorrent.com/ for more information.
+Visit https://retransmission.org/ for more information.
 
 ## Documentation
 
@@ -44,14 +44,14 @@ $ sudo cmake --install .
 
 ### Building Transmission from the nightly builds
 
-Download a tarball from https://build.transmissiontorrent.com/ and follow the steps from the previous section.
+Download a tarball from https://build.retransmission.org/ and follow the steps from the previous section.
 
 If you're new to building programs from source code, this is typically easier than building from Git.
 
 ### Building Transmission from Git (first time)
 
 ```bash
-$ git clone --recurse-submodules https://github.com/transmissiontorrent/transmission Transmission
+$ git clone --recurse-submodules https://github.com/retransmission/retransmission Transmission
 $ cd Transmission
 # Use -DCMAKE_BUILD_TYPE=RelWithDebInfo to build optimized binary with debug information. (preferred)
 # Use -DCMAKE_BUILD_TYPE=Release to build full optimized binary.

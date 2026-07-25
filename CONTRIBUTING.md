@@ -6,15 +6,15 @@ This page is a list of suggestions and guidelines for contributing. They're not 
 
 # If you've got a change in mind
 
-New people usually start volunteering because they have an itch they want to scratch. If you already know what you want to work on first, please comment in an existing issue, or [file a new issue](https://github.com/transmissiontorrent/transmission/issues/new/choose) or [start a new discussion](https://github.com/transmissiontorrent/transmission/discussions/new)! The maintainers will try to get you the information you need.
+New people usually start volunteering because they have an itch they want to scratch. If you already know what you want to work on first, please comment in an existing issue, or [file a new issue](https://github.com/retransmission/retransmission/issues/new/choose) or [start a new discussion](https://github.com/retransmission/retransmission/discussions/new)! The maintainers will try to get you the information you need.
 
 # If you're looking for ideas
 
 If not, there are three labels in the issues tracker that can help:
 
-- [`help wanted`](https://github.com/transmissiontorrent/transmission/issues?q=is%3Aissue+is%3Aopen+label%3A%22help+wanted%22) indicates that the issue is stuck and needs an outside developer. This is usually because some domain expertise is needed, e.g. for a specific platform or external API.
-- [`good first issue`](https://github.com/transmissiontorrent/transmission/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22) is a `pr-welcome` issue that is probably on the easier side to code.
-- [`pr welcome`](https://github.com/transmissiontorrent/transmission/issues?q=is%3Aissue+is%3Aopen+label%3A%22pr+welcome%22) is for features that have been requested and which that the project doesn't have resources to implement, but would consider adding if a good PR was submitted.
+- [`help wanted`](https://github.com/retransmission/retransmission/issues?q=is%3Aissue+is%3Aopen+label%3A%22help+wanted%22) indicates that the issue is stuck and needs an outside developer. This is usually because some domain expertise is needed, e.g. for a specific platform or external API.
+- [`good first issue`](https://github.com/retransmission/retransmission/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22) is a `pr-welcome` issue that is probably on the easier side to code.
+- [`pr welcome`](https://github.com/retransmission/retransmission/issues?q=is%3Aissue+is%3Aopen+label%3A%22pr+welcome%22) is for features that have been requested and which that the project doesn't have resources to implement, but would consider adding if a good PR was submitted.
 
 The project also welcomes changes that:
 

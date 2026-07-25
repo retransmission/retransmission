@@ -450,7 +450,7 @@ export class OverflowMenu extends EventTarget {
     }
 
     const e = document.createElement('a');
-    e.href = 'https://transmissiontorrent.com/donate.html';
+    e.href = 'https://retransmission.org/donate';
     e.target = '_blank';
     e.textContent = 'Donate';
     options.append(e);

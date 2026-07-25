@@ -30,12 +30,12 @@ Transmission can be set to invoke a script when downloads complete. The environm
  * `TR_TORRENT_PRIORITY` - The priority of the torrent (Low is "-1", Normal is "0", High is "1")
  * `TR_TORRENT_TRACKERS` - A comma-delimited list of the torrent's trackers' announce URLs
 
-[Here is an example script](https://github.com/transmissiontorrent/transmission/blob/main/extras/send-email-when-torrent-done.sh) that sends an email when a torrent finishes.
+[Here is an example script](https://github.com/retransmission/retransmission/blob/main/extras/send-email-when-torrent-done.sh) that sends an email when a torrent finishes.
 
 ### Obsolete
 Functionality of these scripts has been implemented in libtransmission and is thus available in all clients.
 
- * [Email Notification Script](https://github.com/transmissiontorrent/transmission/blob/main/extras/send-email-when-torrent-done.sh)
+ * [Email Notification Script](https://github.com/retransmission/retransmission/blob/main/extras/send-email-when-torrent-done.sh)
 
 ## contrib/scripts
 Tomas Carnecky (aka wereHamster) is maintaining a set of scripts in his [GitHub repository](https://github.com/wereHamster/transmission/tree/master/contrib/scripts/ ).

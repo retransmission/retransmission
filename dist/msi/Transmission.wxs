@@ -99,8 +99,8 @@
     <Icon Id="Tr.ico" SourceFile="transmission.ico" />
     <Property Id="ARPPRODUCTICON" Value="Tr.ico" />
 
-    <Property Id="ARPURLINFOABOUT" Value="https://transmissiontorrent.com/" />
-    <Property Id="ARPHELPLINK" Value="https://forum.transmissiontorrent.com/" />
+    <Property Id="ARPURLINFOABOUT" Value="https://retransmission.org/" />
+    <Property Id="ARPHELPLINK" Value="https://forum.retransmission.org/" />
   </Product>
 
 </Wix>

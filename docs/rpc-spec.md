@@ -4,7 +4,7 @@
 > The old bespoke RPC protocol, and the old mix of kebab-case and camelCase strings, are still supported in Transmission 4 but are deprecated and will be removed in the future. People using the old protocol should update their code!
 >
 > For documentation of the old RPC protocol and strings, please consult documentation from previous versions.
-> https://github.com/transmissiontorrent/transmission/blob/4.0.6/docs/rpc-spec.md
+> https://github.com/retransmission/retransmission/blob/4.0.6/docs/rpc-spec.md
 
 # Transmission's RPC specification
 This document describes a protocol for interacting with Transmission sessions remotely.

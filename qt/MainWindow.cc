@@ -686,7 +686,7 @@ void MainWindow::refreshTitle()
     QString title(QStringLiteral(TR_PROJ_APPNAME_CAPITALIZED));
 
     if (auto const url = QUrl{ session_.getRemoteUrl() }; !url.isEmpty()) {
-        //: Second (optional) part of main window title "Transmission - host:port" (added when connected to remote session)
+        //: Second (optional) part of main window title "Appname - host:port" (added when connected to remote session)
         //: notice that leading space (before the dash) is included here
         title += tr(" - %1:%2").arg(url.host()).arg(url.port());
     }

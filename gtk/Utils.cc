@@ -815,7 +815,7 @@ void gtr_unrecognized_url_dialog(Gtk::Widget& parent, Glib::ustring const& url)
         true /*modal*/);
 
     gstr += fmt::format(
-        fmt::runtime(_("{:s} doesn't know how to use '{url}'")),
+        fmt::runtime(_("{appname} doesn't know how to use '{url}'")),
         fmt::arg("appname", TR_PROJ_APPNAME_CAPITALIZED),
         fmt::arg("url", url));
 

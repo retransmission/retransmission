@@ -84,7 +84,7 @@
 	<key>SUAllowsAutomaticUpdates</key>
 	<false/>
 	<key>SUFeedURL</key>
-	<string>https://update.transmissiontorrent.com/appcast.xml</string>
+	<string>https://update.retransmission.org/appcast.xml</string>
   <key>SUPublicEDKey</key>
   <string>7z50Cf3+j+rhWuwFKn6C5T+SEeZoqoQ3E02Xkj+cyN8=</string>
 	<key>SUScheduledCheckInterval</key>

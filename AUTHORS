@@ -1,30 +1,30 @@
-The Transmission Project
-https://transmissiontorrent.com/
+Retransmission
+https://retransmission.org/
 
 Maintainers
-  Charles Kerr (@ckerr) (libtransmission, Qt client, utils)
-  Mike Gelfand (@mikedld) (GTK client, scripts & tooling)
-  Mitchell Livingston (@livings124) (macOS client)
+  Charles Kerr (@ckerr)
+  Mike Gelfand (@mikedld)
+  Dzmitry Neviadomski (@nevack)
+  Yat Ho (@tearfur)
 
 Contributor Team
-  Derek Reiff (@dareiff) (Web client)
-  Dmitry Serov (@DevilDimon) (macOS client)
-  Dzmitry Neviadomski (@nevack) (macOS client)
-  FX Coudert (@fxcoudert) (macOS client)
+  Derek Reiff (@dareiff)
+  Dmitry Serov (@DevilDimon)
+  FX Coudert (@fxcoudert)
   John Clay (@JohnClay)
-  SweetP Pro (@sweetppro) (macOS client)
-  Yat Ho (@tearfur) (libtransmission)
+  SweetP Pro (@sweetppro)
 
-Hall of Fame
-  Eric Petit (@titer) (Project originator)
-  Josh Elsasser (Daemon, Backend, GTK client)
-  Juliusz Chroboczek (DHT, network code)
-  Bryan Varner (BeOS client)
-  Malcolm Jarvis (Web client)
-  Kendall Hopkins (Web client)
-  Kevin Glowacz (Web client)
+Transmission Emeritus
+  Eric Petit (@titer)
+  Mitchell Livingston (@livings124)
+  Josh Elsasser
+  Juliusz Chroboczek
+  Bryan Varner
+  Malcolm Jarvis
+  Kendall Hopkins
+  Kevin Glowacz
 
-Starting with Transmission 4.0.0, contributors are credited in each
+Starting with ReTransmission 4.0.0, contributors are credited in each
 release's notes so that repeat contributions receive repeat shout-outs.
 Please see news/ for these credits!
 

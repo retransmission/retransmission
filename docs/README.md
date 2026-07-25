@@ -7,7 +7,7 @@ New to Transmission?
   * Using Transmission [from a web browser](./Web-Interface.md)
 
 Want to learn more?
-  * Visit our [forums](https://forum.transmissiontorrent.com/)
+  * Visit our [forums](https://forum.retransmission.org/)
   * Visit our [IRC](https://en.wikipedia.org/wiki/IRC) channel: [#transmission on Libera.Chat](https://web.libera.chat/#transmission)
   * Follow us on [Twitter](https://twitter.com/transmissionbt)
 
@@ -34,8 +34,8 @@ Much of this documentation is out-of-date or could be improved. Pull requests ar
  * [Securing Transmission's RPC interface with an open-source reverse proxy (External Link)](https://www.pomerium.com/docs/guides/transmission)
 
 # 3. Report a problem / request a feature #
-  * [Check](https://github.com/transmissiontorrent/transmission/issues) whether the problem has already been reported.
-  * If you do not see a ticket matching your problem or feature, then [add a new ticket](https://github.com/transmissiontorrent/transmission/issues/new).
+  * [Check](https://github.com/retransmission/retransmission/issues) whether the problem has already been reported.
+  * If you do not see a ticket matching your problem or feature, then [add a new ticket](https://github.com/retransmission/retransmission/issues/new).
   * If you _do_ see an existing ticket, please add a comment there. The more users are interested in a ticket, the higher its priority.
 
 # 4. For contributors #
@@ -47,5 +47,5 @@ Please contact us if you are interested in supporting Transmission in any of the
   * [Language translations](Translating.md)
   * Bug and request management
   * Documentation and Wiki editing
-  * [Donations](https://transmissiontorrent.com/donate/)
-  * If you want to alert us of a security vulnerability, please email security@transmissiontorrent.com. Please note that general support questions belong on the forum, and will be ignored if sent to this email address.
+  * [Donations](https://retransmission.org/donate)
+  * If you want to alert us of a security vulnerability, please email security@retransmission.org. Please note that general support questions belong on the forum, and will be ignored if sent to this email address.

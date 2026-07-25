@@ -42,7 +42,6 @@ public:
     // tgt must hold at least std::size(src) bytes; src and tgt may be equal
     constexpr void process(std::span<std::byte const> src, std::span<std::byte> tgt)
     {
-        // See https://github.com/transmissiontorrent/transmission/pull/109
         // tldr: the compiler thinks the in-loop assignment call could
         // overwrite `i_` or `j_`, so it reloads them each time we loop.
         // Hosting them into locals avoids that work.

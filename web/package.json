@@ -1,7 +1,7 @@
 {
   "name": "transmission-web",
   "main": "index.js",
-  "repository": "https://github.com/transmissiontorrent/transmission",
+  "repository": "https://github.com/retransmission/retransmission",
   "license": "MIT",
   "type": "module",
   "scripts": {
