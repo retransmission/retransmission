@@ -535,11 +535,6 @@ public:
         return queue_position_;
     }
 
-    [[nodiscard]] auto constexpr isStalled() const noexcept
-    {
-        return is_stalled_;
-    }
-
     QString activityString() const;
 
     [[nodiscard]] auto constexpr getActivity() const noexcept
@@ -631,7 +626,6 @@ public:
         ICON,
         IS_FINISHED,
         IS_PRIVATE,
-        IS_STALLED,
         LABELS,
         LEFT_UNTIL_DONE,
         MANUAL_ANNOUNCE_TIME,
@@ -679,7 +673,6 @@ private:
     bool honors_session_limits_ = {};
     bool is_finished_ = {};
     bool is_private_ = {};
-    bool is_stalled_ = {};
     bool upload_limited_ = {};
 
     tr_stat::Error error_ = tr_stat::Error::Ok;

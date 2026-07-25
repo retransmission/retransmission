@@ -191,7 +191,6 @@ Torrent::fields_t Torrent::update(tr_quark const* keys, tr_variant const* const*
             HANDLE_KEY(honors_session_limits, honors_session_limits, HONORS_SESSION_LIMITS)
             HANDLE_KEY(is_finished, is_finished, IS_FINISHED)
             HANDLE_KEY(is_private, is_private, IS_PRIVATE)
-            HANDLE_KEY(is_stalled, is_stalled, IS_STALLED)
             HANDLE_KEY(labels, labels, LABELS)
             HANDLE_KEY(left_until_done, left_until_done, LEFT_UNTIL_DONE)
             HANDLE_KEY(manual_announce_time, manual_announce_time, MANUAL_ANNOUNCE_TIME)
