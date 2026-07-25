@@ -73,9 +73,7 @@ struct TrackerStat {
     bool last_announce_succeeded = {};
     bool last_announce_timed_out = {};
     bool last_scrape_succeeded = {};
-    bool last_scrape_timed_out = {};
     int announce_state = {};
-    int download_count = {};
     int id = {};
     int last_announce_peer_count = {};
     int last_announce_start_time = {};
@@ -99,7 +97,6 @@ struct TrackerStat {
     static constexpr auto Fields = std::make_tuple(
         Field<&TrackerStat::announce>{ TR_KEY_announce },
         Field<&TrackerStat::announce_state>{ TR_KEY_announce_state },
-        Field<&TrackerStat::download_count>{ TR_KEY_download_count },
         Field<&TrackerStat::has_announced>{ TR_KEY_has_announced },
         Field<&TrackerStat::has_scraped>{ TR_KEY_has_scraped },
         Field<&TrackerStat::id>{ TR_KEY_id },
@@ -114,7 +111,6 @@ struct TrackerStat {
         Field<&TrackerStat::last_scrape_start_time>{ TR_KEY_last_scrape_start_time },
         Field<&TrackerStat::last_scrape_succeeded>{ TR_KEY_last_scrape_succeeded },
         Field<&TrackerStat::last_scrape_time>{ TR_KEY_last_scrape_time },
-        Field<&TrackerStat::last_scrape_timed_out>{ TR_KEY_last_scrape_timed_out },
         Field<&TrackerStat::leecher_count>{ TR_KEY_leecher_count },
         Field<&TrackerStat::next_announce_time>{ TR_KEY_next_announce_time },
         Field<&TrackerStat::next_scrape_time>{ TR_KEY_next_scrape_time },
