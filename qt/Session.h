@@ -204,7 +204,6 @@ private:
 
     Tag torrentSetImpl(tr_variant::Map params);
     void sessionSet(tr_quark key, tr_variant val);
-    void pumpRequests();
     void sendTorrentRequest(tr_quark method, torrent_ids_t const& torrent_ids);
     void refreshTorrents(torrent_ids_t const& ids, TorrentProperties props);
 
