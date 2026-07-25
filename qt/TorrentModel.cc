@@ -14,6 +14,8 @@
 #include <string_view>
 #include <vector>
 
+#include <QtCore/QDebug>
+
 #include <libtransmission/quark.h>
 #include <libtransmission/transmission.h>
 #include <libtransmission/variant.h>
@@ -163,14 +165,19 @@ void TorrentModel::updateTorrents(tr_variant* torrent_list, bool is_complete_lis
         return (date != 0) && (difftime(now, date) < MaxAge);
     };
 
-    // build a list of the property keys
     auto* const list = torrent_list->get_if<tr_variant::Vector>();
-    auto* const first_child = list != nullptr && !list->empty() ? &list->front() : nullptr;
+    if (list == nullptr) {
+        return;
+    }
+
+    auto* const first_child = !list->empty() ? &list->front() : nullptr;
+
+    // In 'table' format, the first entry in 'torrents' is an array of keys.
+    // All the other entries are an array of the values for one torrent.
     bool const table = first_child != nullptr && first_child->holds_alternative<tr_variant::Vector>();
+
     std::vector<tr_quark> keys;
     if (table) {
-        // In 'table' format, the first entry in 'torrents' is an array of keys.
-        // All the other entries are an array of the values for one torrent.
         auto const* const key_vec = first_child->get_if<tr_variant::Vector>();
         keys.reserve(key_vec->size());
         for (auto const& key_var : *key_vec) {
@@ -178,55 +185,50 @@ void TorrentModel::updateTorrents(tr_variant* torrent_list, bool is_complete_lis
                 keys.push_back(tr_quark_new(*sv));
             }
         }
-    } else if (auto const* const first_map = first_child != nullptr ? first_child->get_if<tr_variant::Map>() : nullptr) {
-        // In 'object' format, every entry is an object with the same set of properties
-        keys.reserve(first_map->size());
-        for (auto const& [key, value] : *first_map) {
-            keys.push_back(key);
-        }
     }
-
-    // Find the position of TR_KEY_id so we can do torrent lookup
-    auto const id_it = std::ranges::find(keys, TR_KEY_id);
-    if (id_it == std::ranges::end(keys)) // no ids provided; we can't proceed
-    {
-        return;
-    }
-
-    auto const id_pos = std::distance(std::begin(keys), id_it);
 
     // Loop through the torrent records...
-    std::vector<tr_variant*> values;
-    values.reserve(keys.size());
+    std::vector<Torrent::keyval_t> keyvals;
+    keyvals.reserve(keys.size());
     processed.reserve(list->size());
+    auto n_skipped = size_t{};
     for (auto it = std::next(std::begin(*list), table ? 1 : 0); it != std::end(*list); ++it) {
         tr_variant& v = *it;
 
-        // Build an array of values
-        values.clear();
+        // Pair up this torrent's keys and values
+        keyvals.clear();
         if (table) {
-            // In table mode, v is a list of values
-            auto* const row_vec = v.get_if<tr_variant::Vector>();
+            // In table mode, v is a list of values parallel to `keys`
+            auto const* const row_vec = v.get_if<tr_variant::Vector>();
             if (row_vec == nullptr) {
+                ++n_skipped;
                 continue;
             }
-            for (auto& val : *row_vec) {
-                values.push_back(&val);
+            auto const n = std::min(std::size(keys), std::size(*row_vec));
+            for (size_t i = 0; i < n; ++i) {
+                keyvals.emplace_back(keys[i], &(*row_vec)[i]);
             }
         } else {
             // In object mode, v is an object of torrent property key/vals
-            auto* const row_map = v.get_if<tr_variant::Map>();
+            auto const* const row_map = v.get_if<tr_variant::Map>();
             if (row_map == nullptr) {
+                ++n_skipped;
                 continue;
             }
-            for (auto& [key, val] : *row_map) {
-                values.push_back(&val);
+            for (auto const& [key, val] : *row_map) {
+                keyvals.emplace_back(key, &val);
             }
         }
 
         // Find the torrent id
-        auto const id_val = values[id_pos]->value_if<int64_t>();
+        auto const id_it = std::ranges::find(keyvals, TR_KEY_id, &Torrent::keyval_t::first);
+        if (id_it == std::ranges::end(keyvals)) {
+            ++n_skipped;
+            continue;
+        }
+        auto const id_val = id_it->second->value_if<int64_t>();
         if (!id_val) {
+            ++n_skipped;
             continue;
         }
         auto const id = static_cast<int>(*id_val);
@@ -240,7 +242,7 @@ void TorrentModel::updateTorrents(tr_variant* torrent_list, bool is_complete_lis
             is_new = true;
         }
 
-        auto const fields = tor->update(keys.data(), values.data(), keys.size());
+        auto const fields = tor->update(keyvals);
 
         if (fields.any()) {
             changed_fields |= fields;
@@ -265,6 +267,10 @@ void TorrentModel::updateTorrents(tr_variant* torrent_list, bool is_complete_lis
         }
 
         processed.push_back(tor);
+    }
+
+    if (n_skipped != 0U) {
+        qWarning() << "Ignored" << n_skipped << "torrent record(s) that had no usable id";
     }
 
     // model upkeep
@@ -301,7 +307,10 @@ void TorrentModel::updateTorrents(tr_variant* torrent_list, bool is_complete_lis
 
     // model upkeep
 
-    if (is_complete_list) {
+    // Torrents absent from a complete list are gone from the session. A skipped
+    // record defeats that reasoning: it's a torrent we failed to identify, and
+    // removing it here would evict a torrent the session still has.
+    if (is_complete_list && n_skipped == 0U) {
         std::ranges::sort(processed, TorrentIdLessThan);
         torrents_t removed;
         removed.reserve(old.size());

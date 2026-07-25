@@ -11,8 +11,10 @@
 #include <cstdint> // uint64_t
 #include <ctime> // time_t
 #include <optional>
+#include <span>
 #include <string_view>
 #include <tuple>
+#include <utility> // pair
 #include <vector>
 
 #include <QtCore/QMetaType>
@@ -636,7 +638,9 @@ public:
     };
     using fields_t = std::bitset<N_FIELDS>;
 
-    fields_t update(tr_quark const* keys, tr_variant const* const* values, size_t n);
+    using keyval_t = std::pair<tr_quark, tr_variant const*>;
+
+    fields_t update(std::span<keyval_t const> keyvals);
 
 private:
     tr_torrent_id_t const id_;

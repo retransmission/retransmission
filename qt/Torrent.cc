@@ -8,6 +8,7 @@
 #include <algorithm>
 #include <ranges>
 #include <set>
+#include <span>
 
 #include <QtCore/QString>
 
@@ -149,13 +150,11 @@ QIcon Torrent::getMimeTypeIcon() const
 ****
 ***/
 
-Torrent::fields_t Torrent::update(tr_quark const* keys, tr_variant const* const* values, size_t n)
+Torrent::fields_t Torrent::update(std::span<keyval_t const> const keyvals)
 {
     auto changed = fields_t{};
 
-    for (size_t pos = 0; pos < n; ++pos) {
-        tr_quark const key = keys[pos];
-        tr_variant const* child = values[pos];
+    for (auto const& [key, child] : keyvals) {
         bool field_changed = false;
 
         switch (key) {
