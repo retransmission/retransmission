@@ -15,7 +15,6 @@
 #include <QStringList>
 #include <QSystemTrayIcon>
 #include <QTimer>
-#include <QWidgetList>
 
 #include "Filters.h"
 #include "Prefs.h"
@@ -167,7 +166,6 @@ private:
     QAction* ulimit_on_action_ = {};
     QAction* ratio_off_action_ = {};
     QAction* ratio_on_action_ = {};
-    QWidgetList hidden_;
     QWidget* filter_bar_ = {};
     QAction* alt_speed_action_ = {};
     QString error_message_;
