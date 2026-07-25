@@ -659,14 +659,11 @@ static void removeKeRangerRansomware()
     //load previous transfers
     tr_ctor* ctor = tr_ctorNew(session);
     tr_ctorSetPaused(ctor, TR_FORCE, true); // paused by default; unpause below after checking state history
-    auto const n_torrents = tr_sessionLoadTorrents(session, ctor);
+    tr_sessionLoadTorrents(session, ctor);
     tr_ctorFree(ctor);
 
     // process the loaded torrents
-    auto torrents = std::vector<tr_torrent*>{};
-    torrents.resize(n_torrents);
-    tr_sessionGetAllTorrents(session, std::data(torrents), std::size(torrents));
-    for (auto* tor : torrents) {
+    for (auto* tor : tr_sessionGetAllTorrents(session)) {
         NSString* location = tr_strv_to_utf8_nsstring(tr_torrentGetDownloadDir(tor));
         Torrent* torrent = [[Torrent alloc] initWithTorrentStruct:tor location:location lib:self.fLib];
         [self.fTorrents addObject:torrent];

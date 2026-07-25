@@ -1462,16 +1462,10 @@ size_t tr_sessionLoadTorrents(tr_session* session, tr_ctor* ctor)
     return n_torrents;
 }
 
-size_t tr_sessionGetAllTorrents(tr_session* session, tr_torrent** buf, size_t buflen)
+std::vector<tr_torrent*> tr_sessionGetAllTorrents(tr_session* session)
 {
-    auto& torrents = session->torrents();
-    auto const n = std::size(torrents);
-
-    if (buflen >= n) {
-        std::copy_n(std::begin(torrents), n, buf);
-    }
-
-    return n;
+    auto const& torrents = session->torrents();
+    return { std::begin(torrents), std::end(torrents) };
 }
 
 // ---

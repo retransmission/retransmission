@@ -442,13 +442,8 @@ size_t tr_sessionLoadTorrents(tr_session* session, tr_ctor* ctor);
 
 /**
  * Get pointers to all the torrents in a session.
- *
- * Iff `buflen` is large enough to hold the torrents pointers,
- * then all of them are copied into `buf`.
- *
- * @return the number of torrents in the session
  */
-size_t tr_sessionGetAllTorrents(tr_session* session, tr_torrent** buf, size_t buflen);
+[[nodiscard]] std::vector<tr_torrent*> tr_sessionGetAllTorrents(tr_session* session);
 
 // ---
 

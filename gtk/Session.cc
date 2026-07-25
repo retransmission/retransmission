@@ -888,12 +888,10 @@ void Session::load(bool force_paused)
     tr_ctorSetPeerLimit(ctor, TR_FALLBACK, gtr_pref_int_get<size_t>(TR_KEY_peer_limit_per_torrent));
 
     auto* session = impl_->get_session();
-    auto const n_torrents = tr_sessionLoadTorrents(session, ctor);
+    tr_sessionLoadTorrents(session, ctor);
     tr_ctorFree(ctor);
 
-    auto raw_torrents = std::vector<tr_torrent*>{};
-    raw_torrents.resize(n_torrents);
-    tr_sessionGetAllTorrents(session, std::data(raw_torrents), std::size(raw_torrents));
+    auto const raw_torrents = tr_sessionGetAllTorrents(session);
 
     auto torrents = std::vector<Glib::RefPtr<Torrent>>();
     torrents.reserve(raw_torrents.size());
