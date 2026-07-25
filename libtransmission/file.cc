@@ -5,6 +5,7 @@
 
 #include <chrono>
 #include <filesystem>
+#include <ranges>
 #include <system_error>
 #include <string>
 #include <string_view>

@@ -11,6 +11,7 @@
 #include <functional>
 #include <iterator>
 #include <optional>
+#include <ranges> // std::views::keys()
 #include <span>
 #include <string>
 #include <string_view>
