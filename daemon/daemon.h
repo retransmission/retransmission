@@ -13,7 +13,6 @@
 #endif
 
 #include <libtransmission/variant.h>
-#include <libtransmission/quark.h>
 
 struct event_base;
 struct tr_error;
