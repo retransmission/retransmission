@@ -306,9 +306,13 @@ if(INSTALL_LIB)
         DESTINATION ${CMAKE_INSTALL_LIBDIR})
     install(
         FILES
+            announce-list.h
+            block-info.h
+            constants.h
             error-types.h
             error.h
             file.h
+            interned-string.h
             log.h
             makemeta.h
             quark.h
@@ -316,12 +320,13 @@ if(INSTALL_LIB)
             session-id.h
             timer-ev.h
             timer.h
+            torrent-files.h
             tr-assert.h
-            tr-buffer.h
             tr-getopt.h
             macros.h
             tr-strbuf.h
             transmission.h
+            types.h
             utils.h
             values.h
             variant.h
@@ -329,5 +334,5 @@ if(INSTALL_LIB)
             web-utils.h
             web.h
             ${CMAKE_CURRENT_BINARY_DIR}/version.h
-        DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${TR_NAME})
+        DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/libtransmission)
 endif()
