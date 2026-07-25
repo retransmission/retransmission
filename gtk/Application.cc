@@ -31,7 +31,6 @@
 #include <libtransmission/macros.h>
 #include <libtransmission/quark.h>
 #include <libtransmission/rpcimpl.h>
-#include <libtransmission/utils.h>
 #include <libtransmission/version.h>
 
 #include <gdkmm/display.h>

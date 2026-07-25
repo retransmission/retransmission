@@ -17,7 +17,6 @@
 #include <libtransmission/utils.h>
 
 #include <giomm/icon.h>
-#include <glibmm/fileutils.h>
 #include <glibmm/i18n.h>
 #include <glibmm/main.h>
 #include <glibmm/markup.h>
@@ -40,7 +39,6 @@
 #include <memory>
 #include <optional>
 #include <queue>
-#include <ranges>
 #include <stack>
 #include <string>
 #include <string_view>

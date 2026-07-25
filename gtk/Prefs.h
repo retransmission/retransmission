@@ -14,7 +14,6 @@
 #include <glibmm/miscutils.h>
 #include <glibmm/ustring.h>
 
-#include <cstdint> // int64_t
 #include <optional>
 #include <string>
 #include <string_view>

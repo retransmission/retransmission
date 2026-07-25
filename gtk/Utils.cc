@@ -6,7 +6,6 @@
 #include "Utils.h"
 
 #include "Prefs.h"
-#include "PrefsDialog.h"
 #include "Session.h"
 
 #include <libtransmission/transmission.h> /* TR_RATIO_NA, TR_RATIO_INF */
@@ -50,7 +49,6 @@
 #include <functional>
 #include <memory>
 #include <stack>
-#include <stdexcept>
 #include <utility>
 
 #include <gdk/gdk.h>

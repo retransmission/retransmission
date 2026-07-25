@@ -17,10 +17,7 @@
 #include <glibmm/ustring.h>
 #include <gtkmm/treemodelcolumn.h>
 
-#include <algorithm>
-#include <bitset>
 #include <cstdint>
-#include <initializer_list>
 #include <memory>
 
 class Percents;

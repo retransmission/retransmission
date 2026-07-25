@@ -7,11 +7,9 @@
 
 #include "Percents.h"
 #include "SorterBase.hh"
-#include "Utils.h"
 
 #include <libtransmission-app/display-modes.h>
 
-#include <libtransmission/transmission.h>
 #include <libtransmission/macros.h>
 #include <libtransmission/utils.h>
 

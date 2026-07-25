@@ -7,13 +7,11 @@
 #include "Macros.h"
 #include "Notify.h"
 #include "Prefs.h"
-#include "Utils.h"
 
 #include <libtransmission-app/app.h>
 
 #include <libtransmission/transmission.h>
 #include <libtransmission/macros.h>
-#include <libtransmission/utils.h>
 #include <libtransmission/version.h>
 
 #include <giomm/file.h>
@@ -31,7 +29,6 @@
 
 #include <fmt/format.h>
 
-#include <cstdio>
 #include <string>
 
 namespace
