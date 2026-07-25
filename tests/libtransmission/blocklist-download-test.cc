@@ -102,6 +102,13 @@ void asPax(archive* arc)
     archive_write_set_format_pax(arc);
 }
 
+// what `tar czf` produces: a gnutar archive wrapped in gzip
+void asTarGzip(archive* arc)
+{
+    archive_write_set_format_gnutar(arc);
+    archive_write_add_filter_gzip(arc);
+}
+
 void asZip(archive* arc)
 {
     archive_write_set_format_zip(arc);
@@ -145,6 +152,12 @@ TEST(BlocklistDecompress, unwrapsV7Tar)
 TEST(BlocklistDecompress, unwrapsPax)
 {
     EXPECT_EQ(Rules, tr::blocklist::decompress(makeArchive(asPax, "blocklist"sv, Rules)));
+}
+
+TEST(BlocklistDecompress, unwrapsTarGzip)
+{
+    // both layers have to be peeled: the gzip filter, then the tar entry
+    EXPECT_EQ(Rules, tr::blocklist::decompress(makeArchive(asTarGzip, "blocklist"sv, Rules)));
 }
 
 TEST(BlocklistDecompress, unwrapsZip)
