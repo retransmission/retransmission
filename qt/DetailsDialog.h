@@ -17,7 +17,6 @@
 #include "Typedefs.h"
 
 #include "ui_DetailsDialog.h"
-#include "ui_TrackersDialog.h"
 
 class QResizeEvent;
 class QTreeWidgetItem;
@@ -137,7 +136,6 @@ private:
     TorrentModel const& model_;
 
     Ui::DetailsDialog ui_ = {};
-    Ui::TrackersDialog trackers_ui_ = {};
 
     torrent_ids_t ids_;
     QTimer model_timer_;
