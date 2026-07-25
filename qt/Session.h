@@ -17,7 +17,6 @@
 
 #include <QObject>
 #include <QString>
-#include <QStringList>
 #include <QNetworkReply>
 #include <QTimer>
 
@@ -215,7 +214,6 @@ private:
     int64_t blocklist_size_ = -1;
     std::array<bool, NUM_PORT_TEST_IP_PROTOCOL> port_test_pending_ = {};
     tr_session* session_ = {};
-    QStringList idle_json_;
     tr_session_stats stats_ = EmptyStats;
     tr_session_stats cumulative_stats_ = EmptyStats;
     QString session_version_;
