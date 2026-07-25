@@ -11,6 +11,8 @@
 
 #include <memory>
 
+#include <event2/util.h> // evutil_socket_t
+
 struct event;
 struct event_base;
 struct evhttp;

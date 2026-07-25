@@ -16,6 +16,8 @@
 
 #include <string>
 
+#include "libtransmission/types.h" // for tr_port_forwarding_state
+
 class tr_port;
 struct tr_upnp;
 

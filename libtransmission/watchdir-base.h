@@ -6,7 +6,7 @@
 #pragma once
 
 #ifndef LIBTRANSMISSION_WATCHDIR_MODULE
-#error only the wathcdir module should #include this header.
+#error only the watchdir module should #include this header.
 #endif
 
 #include <algorithm>

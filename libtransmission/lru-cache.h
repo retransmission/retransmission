@@ -5,6 +5,7 @@
 
 #pragma once
 
+#include <algorithm> // std::min_element
 #include <array>
 #include <cstddef> // size_t
 #include <cstdint>
