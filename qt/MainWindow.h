@@ -16,7 +16,6 @@
 #include <QSystemTrayIcon>
 #include <QTimer>
 
-#include "Filters.h"
 #include "Prefs.h"
 #include "Speed.h"
 #include "TorrentFilter.h"

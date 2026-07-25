@@ -27,11 +27,9 @@
 #include <libtransmission/transmission.h>
 
 #include "ColumnResizer.h"
-#include "Formatter.h"
 #include "FreeSpaceLabel.h"
 #include "Prefs.h"
 #include "Session.h"
-#include "UserMetaType.h"
 #include "Utils.h"
 
 using namespace tr;

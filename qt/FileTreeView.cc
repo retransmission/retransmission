@@ -6,7 +6,6 @@
 #include <algorithm>
 #include <cassert>
 #include <queue>
-#include <ranges>
 #include <set>
 
 #include <QHeaderView>
@@ -20,7 +19,6 @@
 #include "FileTreeItem.h"
 #include "FileTreeModel.h"
 #include "FileTreeView.h"
-#include "Formatter.h"
 #include "Utils.h"
 
 using namespace tr::Values;

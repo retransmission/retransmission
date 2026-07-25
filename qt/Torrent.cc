@@ -5,7 +5,6 @@
 
 #include <algorithm>
 #include <set>
-#include <ranges>
 
 #include <QApplication>
 #include <QString>

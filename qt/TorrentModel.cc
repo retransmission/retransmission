@@ -5,14 +5,11 @@
 
 #include <algorithm>
 #include <cassert>
-#include <cstddef>
 #include <ctime>
 #include <iterator> // for std::back_inserter
 #include <ranges>
 #include <string_view>
 #include <vector>
-
-#include <libtransmission/transmission.h>
 
 #include <libtransmission/quark.h>
 #include <libtransmission/variant.h>

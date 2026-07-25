@@ -22,7 +22,6 @@
 #include "StyleHelper.h"
 #include "Torrent.h"
 #include "TorrentDelegateMin.h"
-#include "TorrentModel.h"
 #include "Utils.h"
 
 /***

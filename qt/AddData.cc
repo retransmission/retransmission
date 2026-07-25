@@ -9,7 +9,6 @@
 
 #include <libtransmission/transmission.h>
 
-#include <libtransmission/error.h>
 #include <libtransmission/torrent-metainfo.h>
 #include <libtransmission/web-utils.h>
 

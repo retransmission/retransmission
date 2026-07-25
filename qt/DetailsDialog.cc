@@ -5,11 +5,9 @@
 
 #include <algorithm>
 #include <cassert>
-#include <cstring>
 #include <ctime>
 #include <map>
 #include <set>
-#include <ranges>
 #include <utility>
 
 #include <QDateTime>
@@ -39,7 +37,6 @@
 #include "ColumnResizer.h"
 #include "DetailsDialog.h"
 #include "Formatter.h"
-#include "IconCache.h"
 #include "NativeIcon.h"
 #include "Prefs.h"
 #include "QtCompat.h"

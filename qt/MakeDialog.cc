@@ -27,7 +27,6 @@
 #include "Formatter.h"
 #include "QtCompat.h"
 #include "Session.h"
-#include "Utils.h"
 
 #include "ui_MakeProgressDialog.h"
 

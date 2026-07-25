@@ -7,8 +7,6 @@
 #include <compare>
 #include <optional>
 
-#include "libtransmission/utils.h"
-
 #include "Filters.h"
 #include "Prefs.h"
 #include "Torrent.h"

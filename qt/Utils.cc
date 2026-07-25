@@ -24,8 +24,6 @@
 #include <QSpinBox>
 #include <QStyle>
 
-#include <libtransmission/transmission.h>
-
 #include "Utils.h"
 
 #include "QtCompat.h"

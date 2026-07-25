@@ -36,11 +36,9 @@
 #include "Session.h"
 
 #include "AddData.h"
-#include "Filters.h"
 #include "Prefs.h"
 #include "SessionDialog.h"
 #include "Torrent.h"
-#include "UserMetaType.h"
 #include "Utils.h"
 #include "VariantHelpers.h"
 

@@ -7,7 +7,6 @@
 #include <array>
 #include <cassert>
 #include <memory>
-#include <ranges>
 #include <utility>
 
 #include <QCheckBox>
@@ -28,7 +27,6 @@
 #include "Application.h"
 #include "DetailsDialog.h"
 #include "FilterBar.h"
-#include "Filters.h"
 #include "Formatter.h"
 #include "MainWindow.h"
 #include "MakeDialog.h"

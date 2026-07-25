@@ -14,7 +14,6 @@
 
 #include <sigslot/signal.hpp>
 
-#include "UserMetaType.h"
 #include "VariantHelpers.h"
 
 class Prefs final
