@@ -19,6 +19,7 @@
 #include <fmt/format.h>
 
 #include "libtransmission/clients.h"
+#include "libtransmission/string-utils.h"
 #include "libtransmission/types.h"
 #include "libtransmission/utils.h"
 
@@ -461,6 +462,21 @@ struct Client {
 };
 
 auto constexpr Clients = std::to_array<Client>({
+    { .begins_with = "10-------", .name = "JVtorrent", .formatter = no_version_formatter },
+    { .begins_with = "AZ2500BT", .name = "BitTyrant (Azureus Mod)", .formatter = no_version_formatter },
+    { .begins_with = "a00---0", .name = "Swarmy", .formatter = no_version_formatter },
+    { .begins_with = "a02---0", .name = "Swarmy", .formatter = no_version_formatter },
+    { .begins_with = "martini", .name = "Martini Man", .formatter = no_version_formatter },
+    { .begins_with = "aria2-", .name = "aria2", .formatter = no_version_formatter },
+    { .begins_with = "Mbrst", .name = "burst!", .formatter = burst_formatter },
+    { .begins_with = "Pando", .name = "Pando", .formatter = no_version_formatter },
+    { .begins_with = "-BOW", .name = "Bits on Wheels", .formatter = bits_on_wheels_formatter },
+    { .begins_with = "-WT-", .name = "BitLet", .formatter = no_version_formatter },
+    { .begins_with = "346-", .name = "TorrentTopia", .formatter = no_version_formatter },
+    { .begins_with = "LIME", .name = "Limewire", .formatter = no_version_formatter },
+    { .begins_with = "Plus", .name = "Plus!", .formatter = plus_formatter },
+    { .begins_with = "QVOD", .name = "QVOD", .formatter = qvod_formatter },
+    { .begins_with = "btpd", .name = "BT Protocol Daemon", .formatter = btpd_formatter },
     { .begins_with = "-AD", .name = "Advanced Download Manager", .formatter = three_digit_formatter },
     { .begins_with = "-AG", .name = "Ares", .formatter = four_digit_formatter },
     { .begins_with = "-AR", .name = "Arctic", .formatter = four_digit_formatter },
@@ -479,7 +495,6 @@ auto constexpr Clients = std::to_array<Client>({
     { .begins_with = "-BL", .name = "BitLord", .formatter = bitlord_formatter },
     { .begins_with = "-BM", .name = "BitMagnet", .formatter = four_digit_formatter },
     { .begins_with = "-BN", .name = "Baidu Netdisk", .formatter = no_version_formatter },
-    { .begins_with = "-BOW", .name = "Bits on Wheels", .formatter = bits_on_wheels_formatter },
     { .begins_with = "-BP", .name = "BitTorrent Pro (Azureus + Spyware)", .formatter = four_digit_formatter },
     { .begins_with = "-BR", .name = "BitRocket", .formatter = bitrocket_formatter },
     { .begins_with = "-BS", .name = "BTSlave", .formatter = four_digit_formatter },
@@ -552,7 +567,6 @@ auto constexpr Clients = std::to_array<Client>({
     { .begins_with = "-VG", .name = "Vagaa", .formatter = four_digit_formatter },
     { .begins_with = "-WS", .name = "HTTP Seed", .formatter = no_version_formatter },
     { .begins_with = "-WT", .name = "BitLet", .formatter = four_digit_formatter },
-    { .begins_with = "-WT-", .name = "BitLet", .formatter = no_version_formatter },
     { .begins_with = "-WW", .name = "WebTorrent", .formatter = four_digit_formatter },
     { .begins_with = "-WY", .name = "FireTorrent", .formatter = four_digit_formatter },
     { .begins_with = "-XC", .name = "Xtorrent", .formatter = xtorrent_formatter },
@@ -568,37 +582,29 @@ auto constexpr Clients = std::to_array<Client>({
     { .begins_with = "-pb", .name = "pbTorrent", .formatter = three_digit_formatter },
     { .begins_with = "-qB", .name = "qBittorrent", .formatter = three_digit_formatter },
     { .begins_with = "-st", .name = "SharkTorrent", .formatter = four_digit_formatter },
-    { .begins_with = "10-------", .name = "JVtorrent", .formatter = no_version_formatter },
-    { .begins_with = "346-", .name = "TorrentTopia", .formatter = no_version_formatter },
-    { .begins_with = "A2", .name = "aria2", .formatter = aria2_formatter },
-    { .begins_with = "AZ2500BT", .name = "BitTyrant (Azureus Mod)", .formatter = no_version_formatter },
     { .begins_with = "BLZ", .name = "Blizzard Downloader", .formatter = blizzard_formatter },
     { .begins_with = "DNA", .name = "BitTorrent DNA", .formatter = bittorrent_dna_formatter },
     { .begins_with = "FD6", .name = "Free Download Manager 6", .formatter = no_version_formatter },
-    { .begins_with = "LIME", .name = "Limewire", .formatter = no_version_formatter },
-    { .begins_with = "M", .name = "BitTorrent", .formatter = mainline_formatter },
-    { .begins_with = "Mbrst", .name = "burst!", .formatter = burst_formatter },
-    { .begins_with = "OP", .name = "Opera", .formatter = opera_formatter },
-    { .begins_with = "Pando", .name = "Pando", .formatter = no_version_formatter },
-    { .begins_with = "Plus", .name = "Plus!", .formatter = plus_formatter },
-    { .begins_with = "Q", .name = "Queen Bee", .formatter = mainline_formatter },
-    { .begins_with = "QVOD", .name = "QVOD", .formatter = qvod_formatter },
-    { .begins_with = "S3", .name = "Amazon S3", .formatter = amazon_formatter },
     { .begins_with = "TIX", .name = "Tixati", .formatter = two_major_two_minor_formatter },
     { .begins_with = "XBT", .name = "XBT Client", .formatter = xbt_formatter },
-    { .begins_with = "a00---0", .name = "Swarmy", .formatter = no_version_formatter },
-    { .begins_with = "a02---0", .name = "Swarmy", .formatter = no_version_formatter },
-    { .begins_with = "aria2-", .name = "aria2", .formatter = no_version_formatter },
-    { .begins_with = "btpd", .name = "BT Protocol Daemon", .formatter = btpd_formatter },
+    { .begins_with = "A2", .name = "aria2", .formatter = aria2_formatter },
+    { .begins_with = "OP", .name = "Opera", .formatter = opera_formatter },
+    { .begins_with = "S3", .name = "Amazon S3", .formatter = amazon_formatter },
     { .begins_with = "eX", .name = "eXeem", .formatter = no_version_formatter },
-    { .begins_with = "martini", .name = "Martini Man", .formatter = no_version_formatter },
+    { .begins_with = "M", .name = "BitTorrent", .formatter = mainline_formatter },
+    { .begins_with = "Q", .name = "Queen Bee", .formatter = mainline_formatter },
 });
 
-// the equal_range() lookup below requires this ordering
-static_assert(std::ranges::is_sorted(Clients, {}, &Client::begins_with));
+constexpr auto compare_client_prefix(std::string_view const lhs, std::string_view const rhs) noexcept
+{
+    if (lhs.size() != rhs.size()) {
+        return lhs.size() > rhs.size();
+    }
+    return lhs < rhs;
+}
 
-auto constexpr MaxPrefixLen = std::ranges::max(
-    Clients | std::views::transform([](Client const& client) { return std::size(client.begins_with); }));
+// the find_if() lookup below requires begins_with be sorted by size in descending order
+static_assert(std::ranges::is_sorted(Clients, compare_client_prefix, &Client::begins_with));
 
 } // namespace
 
@@ -619,12 +625,12 @@ void tr_clientForId(char* buf, size_t buflen, tr_peer_id_t peer_id)
 
     // find the longest `begins_with` that starts `key`, e.g. an id matching
     // both "-WT" and "-WT-" is formatted by the "-WT-" entry
-    for (auto len = MaxPrefixLen; len > 0U; --len) {
-        auto const [eq_begin, eq_end] = std::ranges::equal_range(Clients, key.substr(0, len), {}, &Client::begins_with);
-        if (eq_begin != eq_end) {
-            eq_begin->formatter(buf, buflen, eq_begin->name, peer_id);
-            return;
-        }
+    if (auto const it = std::ranges::find_if(
+            Clients,
+            [key](Client const& client) { return tr_strv_starts_with(key, client.begins_with); });
+        it != Clients.end()) {
+        it->formatter(buf, buflen, it->name, peer_id);
+        return;
     }
 
     // no match
