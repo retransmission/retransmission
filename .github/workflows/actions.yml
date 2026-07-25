@@ -20,8 +20,8 @@ env:
   # See .github/CACHE_POLICY.md for cache classes, lifecycle, and budget.
   CACHE_LIMIT_GIB: '10'
   CACHE_WARNING_GIB: '9'
-  # Bumping CACHE_SCHEMA re-keys every ccache family; the janitor deletes
-  # keys that do not carry the current value.
+  # Bumping CACHE_SCHEMA re-keys every ccache and win-deps family; the
+  # janitor deletes keys that do not carry the current value.
   CACHE_SCHEMA: cache-v2
   CCACHE_COMPRESSLEVEL: '5'
   CCACHE_DIR: ${{ github.workspace }}/.ccache
@@ -1871,8 +1871,8 @@ jobs:
       - name: Prune redundant cache entries
         # Selector 1: a "-<run id>" suffix is the only per-run part of a
         # ccache/ctcache key, so keep just the newest snapshot per
-        # (ref, family). Selector 2: ccache keys lacking the current
-        # CACHE_SCHEMA can never be restored again. Selector 3: the
+        # (ref, family). Selector 2: ccache and win-deps keys lacking the
+        # current CACHE_SCHEMA can never be restored again. Selector 3: the
         # content-addressed families (win-deps, vcpkg, and vmactions' VM
         # images, whose freebsd/openbsd/netbsd prefixes are that action's
         # own naming) are byte-identical per key+version, and every branch
@@ -1892,7 +1892,7 @@ jobs:
                  | group_by([.ref, (.key | sub("-[0-9]+$"; ""))])[]
                  | sort_by(.created_at) | .[:-1][].id),
                 ($inventory[]
-                 | select((.key | startswith("ccache-")) and ((.key | contains($schema)) | not)).id),
+                 | select((.key | test("^(ccache|win-deps)-")) and ((.key | contains($schema)) | not)).id),
                 ($inventory
                  | map(select((.key | test("^(win-deps|vcpkg)-")) or (.key | test("^(freebsd|openbsd|netbsd)-"))))
                  | group_by([.key, .version])[]

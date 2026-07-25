@@ -36,6 +36,12 @@ copies are deleted once main holds the same key and version; every branch
 can restore main's copy through the base-branch fallback. Gradle's caches
 are excluded: gradle/actions manages its own rotation.
 
+Windows dependency keys also carry `CACHE_SCHEMA`, which is what lets the
+janitor retire them. Content addressing alone retires an entry only when
+its own inputs change, so a change to the key *format* strands the
+previous generation: nothing produces the old key again, and no newer
+sibling supersedes it.
+
 ## Repository maintenance
 
 After all cache producers finish, the janitor (`prune-caches`) removes

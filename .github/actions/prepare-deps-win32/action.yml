@@ -25,9 +25,15 @@ runs:
       id: cache-key
       shell: pwsh
       run: |
+        if (-not $Env:CACHE_SCHEMA) {
+            Write-Output '::error::CACHE_SCHEMA is unset; define it in the workflow env'
+            exit 1
+        }
         try {
             $DepsHash = & (Join-Path $Env:REPO_ROOT release windows main.ps1) -Mode DepsHash -BuildArch ${{ inputs.arch }} -BuildPart ${{ inputs.type }}
-            "hash=${DepsHash}" | Out-File $Env:GITHUB_OUTPUT -Append
+            # The janitor retires old generations by matching "-$CACHE_SCHEMA-",
+            # so the schema needs a dash on either side of it.
+            "key=win-deps-${{ inputs.arch }}-${{ inputs.type }}-${Env:CACHE_SCHEMA}-${DepsHash}" | Out-File $Env:GITHUB_OUTPUT -Append
         } catch {
             Write-Error ("{1}{0}{2}{0}{3}" -f [Environment]::NewLine, $_.ToString(), $_.InvocationInfo.PositionMessage, $_.ScriptStackTrace) -ErrorAction Continue
             exit 1
@@ -37,7 +43,7 @@ runs:
       id: restore-cache
       with:
         path: ${{ env.DEPS_PREFIX }}
-        key: win-deps-${{ inputs.arch }}-${{ inputs.type }}-${{ steps.cache-key.outputs.hash }}
+        key: ${{ steps.cache-key.outputs.key }}
     - name: Build Dependencies
       if: steps.restore-cache.outputs.cache-hit != 'true'
       shell: pwsh
@@ -58,4 +64,4 @@ runs:
       id: cache
       with:
         path: ${{ env.DEPS_PREFIX }}
-        key: win-deps-${{ inputs.arch }}-${{ inputs.type }}-${{ steps.cache-key.outputs.hash }}
+        key: ${{ steps.cache-key.outputs.key }}
