@@ -6,7 +6,6 @@
 #include "libtransmission/env.h"
 
 #include <cstdlib>
-#include <iterator>
 #include <string>
 
 #ifdef _WIN32

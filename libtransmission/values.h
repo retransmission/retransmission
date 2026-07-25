@@ -8,7 +8,6 @@
 #include <array>
 #include <cstddef> // size_t
 #include <cmath> // for std::fabs(), std::floor()
-#include <compare>
 #include <cstdint> // for uint64_t
 #include <string>
 #include <string_view>

@@ -7,8 +7,6 @@
 #include <array>
 #include <cstddef>
 #include <functional>
-#include <ranges>
-#include <utility>
 #include <vector>
 
 #include <small/vector.hpp>

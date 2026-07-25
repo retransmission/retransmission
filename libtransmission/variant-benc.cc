@@ -10,13 +10,11 @@
 #include <cstdint> // int64_t
 #include <deque>
 #include <optional>
-#include <ranges>
 #include <string>
 #include <string_view>
 #include <utility>
 #include <vector>
 
-#include <fmt/compile.h>
 #include <fmt/format.h>
 
 #include <small/vector.hpp>

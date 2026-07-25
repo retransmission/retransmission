@@ -8,8 +8,6 @@
 #include <ctime>
 #include <iterator>
 #include <memory>
-#include <numeric> // std::accumulate()
-#include <ranges>
 #include <set>
 #include <string>
 #include <string_view>

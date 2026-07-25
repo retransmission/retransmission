@@ -3,9 +3,7 @@
 // or any future license endorsed by Mnemosaic LLC.
 // License text can be found in the licenses/ folder.
 
-#include <initializer_list>
 #include <optional>
-#include <utility>
 
 #include <fmt/format.h>
 

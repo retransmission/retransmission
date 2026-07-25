@@ -9,15 +9,12 @@
 #error only libtransmission should #include this header.
 #endif
 
-#include <algorithm>
 #include <cstddef> // size_t
 #include <cstdint> // uintX_t
 #include <deque>
 #include <memory>
 #include <optional>
 #include <utility> // std::pair
-
-#include <event2/util.h> // for evutil_socket_t
 
 #include "libtransmission/bandwidth.h"
 #include "libtransmission/peer-mse.h"

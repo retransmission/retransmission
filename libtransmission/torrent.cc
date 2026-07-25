@@ -6,7 +6,6 @@
 #include <algorithm>
 #include <array>
 #include <cerrno> // EINVAL
-#include <chrono>
 #include <cstddef> // size_t
 #include <ctime>
 #include <map>

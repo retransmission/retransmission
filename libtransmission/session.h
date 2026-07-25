@@ -22,7 +22,6 @@
 #include <span>
 #include <string>
 #include <string_view>
-#include <tuple>
 #include <utility> // for std::pair
 #include <vector>
 
@@ -33,8 +32,6 @@
 #endif
 
 #include <event2/util.h> // for evutil_socket_t
-
-#include <small/vector.hpp>
 
 #include "libtransmission/announce-list.h"
 #include "libtransmission/announcer.h"

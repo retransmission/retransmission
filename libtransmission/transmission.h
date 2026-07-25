@@ -10,11 +10,9 @@
 
 // --- Basic Types
 
-#include <array>
 #include <cstddef>
 #include <cstdint>
 #include <ctime>
-#include <functional>
 #include <optional>
 #include <span>
 #include <string>
@@ -23,7 +21,6 @@
 
 #include "libtransmission/constants.h"
 #include "libtransmission/types.h"
-#include "libtransmission/values.h"
 #include "libtransmission/variant.h"
 
 struct tr_ctor;

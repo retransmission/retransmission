@@ -10,7 +10,6 @@
 #include <cstring> /* for strcspn() */
 #include <ctime>
 #include <memory>
-#include <ranges>
 #include <string>
 #include <string_view>
 #include <utility>
