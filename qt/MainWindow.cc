@@ -868,12 +868,6 @@ void MainWindow::refreshIcons()
 ***
 **/
 
-// NOLINTNEXTLINE(readability-make-member-function-const)
-void MainWindow::clearSelection()
-{
-    ui_.action_DeselectAll->trigger();
-}
-
 torrent_ids_t MainWindow::getSelectedTorrents(bool with_metadata_only) const
 {
     torrent_ids_t ids;

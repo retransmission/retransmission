@@ -128,7 +128,6 @@ private:
     QMenu* createStatsModeMenu();
     void initStatusBar();
 
-    void clearSelection();
     void addTorrentFromClipboard();
     void addTorrent(AddData const& add_me, bool show_options);
 
