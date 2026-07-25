@@ -633,30 +633,6 @@
     <string>Re&amp;verse Sort Order</string>
    </property>
   </action>
-  <action name="action_FilterByName">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>&amp;Name</string>
-   </property>
-  </action>
-  <action name="action_FilterByFiles">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>&amp;Files</string>
-   </property>
-  </action>
-  <action name="action_FilterByTracker">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>&amp;Tracker</string>
-   </property>
-  </action>
   <action name="action_TotalRatio">
    <property name="checkable">
     <bool>true</bool>
