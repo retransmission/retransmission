@@ -50,11 +50,6 @@
 
 #include "SqueezeLabel.h"
 
-SqueezeLabel::SqueezeLabel(QString const& text, QWidget* parent)
-    : QLabel{ text, parent }
-{
-}
-
 SqueezeLabel::SqueezeLabel(QWidget* parent)
     : QLabel{ parent }
 {

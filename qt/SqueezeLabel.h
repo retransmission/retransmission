@@ -49,7 +49,6 @@ class SqueezeLabel : public QLabel
 
 public:
     explicit SqueezeLabel(QWidget* parent = nullptr);
-    explicit SqueezeLabel(QString const& text, QWidget* parent = nullptr);
     ~SqueezeLabel() override = default;
     SqueezeLabel(SqueezeLabel&&) = delete;
     SqueezeLabel(SqueezeLabel const&) = delete;
