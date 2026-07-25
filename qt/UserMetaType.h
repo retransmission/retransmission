@@ -11,14 +11,11 @@
 
 using ShowMode = tr::app::ShowMode;
 Q_DECLARE_METATYPE(ShowMode)
-inline auto constexpr DefaultShowMode = tr::app::DefaultShowMode;
 inline auto constexpr ShowModeCount = tr::app::ShowModeCount;
 
 using SortMode = tr::app::SortMode;
 Q_DECLARE_METATYPE(SortMode)
-inline auto constexpr DefaultSortMode = tr::app::DefaultSortMode;
 
 using StatsMode = tr::app::StatsMode;
 Q_DECLARE_METATYPE(StatsMode)
-inline auto constexpr DefaultStatsMode = tr::app::DefaultStatsMode;
 inline auto constexpr StatsModeCount = tr::app::StatsModeCount;
