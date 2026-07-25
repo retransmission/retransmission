@@ -48,11 +48,6 @@ public:
         return tr("%1 %2").arg(to_qstring()).arg(DownloadSymbol);
     }
 
-    [[nodiscard]] constexpr auto operator+(Speed const& other) const noexcept
-    {
-        return Speed{ base_quantity() + other.base_quantity(), Speed::Units::Byps };
-    }
-
     [[nodiscard]] static auto display_name(Speed::Units const units)
     {
         auto const speed_unit_sv = Speed::units().display_name(units);
