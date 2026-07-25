@@ -418,11 +418,6 @@ public:
         return peers_getting_from_us_;
     }
 
-    [[nodiscard]] constexpr auto isUploading() const noexcept
-    {
-        return peersWeAreUploadingTo() > 0;
-    }
-
     [[nodiscard]] constexpr auto connectedPeers() const noexcept
     {
         return peers_connected_;
