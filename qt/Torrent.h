@@ -595,7 +595,6 @@ public:
         HAVE_UNCHECKED,
         HAVE_VERIFIED,
         HONORS_SESSION_LIMITS,
-        ICON,
         IS_FINISHED,
         IS_PRIVATE,
         LABELS,
