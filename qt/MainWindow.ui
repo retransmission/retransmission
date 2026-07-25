@@ -585,14 +585,6 @@
     <string>Sort by Stat&amp;e</string>
    </property>
   </action>
-  <action name="action_SortByTracker">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>Sort by T&amp;racker</string>
-   </property>
-  </action>
   <action name="action_Statistics">
    <property name="checkable">
     <bool>false</bool>
