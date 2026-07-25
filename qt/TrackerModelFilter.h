@@ -21,11 +21,6 @@ public:
 
     void setShowBackupTrackers(bool b);
 
-    [[nodiscard]] constexpr auto showBackupTrackers() const noexcept
-    {
-        return show_backups_;
-    }
-
 protected:
     // QSortFilterProxyModel
     [[nodiscard]] bool filterAcceptsRow(int source_row, QModelIndex const& source_parent) const override;
