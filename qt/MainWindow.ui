@@ -593,14 +593,6 @@
     <string>Sort by T&amp;racker</string>
    </property>
   </action>
-  <action name="action_ShowMessageLog">
-   <property name="checkable">
-    <bool>false</bool>
-   </property>
-   <property name="text">
-    <string>Message &amp;Log</string>
-   </property>
-  </action>
   <action name="action_Statistics">
    <property name="checkable">
     <bool>false</bool>
