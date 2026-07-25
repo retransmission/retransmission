@@ -80,9 +80,26 @@ void asGzip(archive* arc)
     archive_write_add_filter_gzip(arc);
 }
 
-void asTar(archive* arc)
+// the tar variants a provider might serve: ustar (POSIX.1-1988), gnutar (GNU
+// tar's default), v7tar (the pre-POSIX original), and pax (POSIX.1-2001)
+void asUstar(archive* arc)
 {
     archive_write_set_format_ustar(arc);
+}
+
+void asGnuTar(archive* arc)
+{
+    archive_write_set_format_gnutar(arc);
+}
+
+void asV7Tar(archive* arc)
+{
+    archive_write_set_format_v7tar(arc);
+}
+
+void asPax(archive* arc)
+{
+    archive_write_set_format_pax(arc);
 }
 
 void asZip(archive* arc)
@@ -108,9 +125,26 @@ TEST(BlocklistDecompress, unwrapsGzip)
     EXPECT_EQ(Rules, tr::blocklist::decompress(makeArchive(asGzip, "blocklist"sv, Rules)));
 }
 
-TEST(BlocklistDecompress, unwrapsTar)
+TEST(BlocklistDecompress, unwrapsUstar)
 {
-    EXPECT_EQ(Rules, tr::blocklist::decompress(makeArchive(asTar, "blocklist"sv, Rules)));
+    EXPECT_EQ(Rules, tr::blocklist::decompress(makeArchive(asUstar, "blocklist"sv, Rules)));
+}
+
+TEST(BlocklistDecompress, unwrapsGnuTar)
+{
+    EXPECT_EQ(Rules, tr::blocklist::decompress(makeArchive(asGnuTar, "blocklist"sv, Rules)));
+}
+
+TEST(BlocklistDecompress, unwrapsV7Tar)
+{
+    // v7 marks a regular file with a NUL typeflag rather than '0', so this also
+    // covers the reader's regular-file check accepting the pre-POSIX encoding
+    EXPECT_EQ(Rules, tr::blocklist::decompress(makeArchive(asV7Tar, "blocklist"sv, Rules)));
+}
+
+TEST(BlocklistDecompress, unwrapsPax)
+{
+    EXPECT_EQ(Rules, tr::blocklist::decompress(makeArchive(asPax, "blocklist"sv, Rules)));
 }
 
 TEST(BlocklistDecompress, unwrapsZip)
