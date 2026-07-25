@@ -98,8 +98,6 @@ private:
     QWidgetList web_widgets_;
     QWidgetList web_auth_widgets_;
     QWidgetList web_whitelist_widgets_;
-    QWidgetList proxy_widgets_;
-    QWidgetList proxy_auth_widgets_;
     QWidgetList sched_widgets_;
     QWidgetList block_widgets_;
     QWidgetList unsupported_when_remote_;
