@@ -282,6 +282,8 @@ jobs:
         uses: ./.github/actions/setup-vs-env-win32
         with:
           arch: x64
+      - name: Setup ccache
+        uses: ./.github/actions/setup-ccache
       - name: Configure
         env:
           # MSVC AddressSanitizer is address-only (no leak/undefined sanitizers).
@@ -297,6 +299,11 @@ jobs:
             '-S .'
             '-B obj'
             '-G Ninja'
+            '-DCMAKE_C_COMPILER_LAUNCHER=ccache'
+            '-DCMAKE_CXX_COMPILER_LAUNCHER=ccache'
+            # ccache cannot cache /Zi; store debug info in the objects (/Z7) instead
+            '-DCMAKE_POLICY_DEFAULT_CMP0141=NEW'
+            '-DCMAKE_MSVC_DEBUG_INFORMATION_FORMAT=Embedded'
             # RelWithDebInfo avoids Debug's /RTC1, which is incompatible with ASan.
             '-DCMAKE_BUILD_TYPE=RelWithDebInfo'
             "-DCMAKE_PREFIX_PATH=`"$Env:DEPS_PREFIX`""
@@ -348,6 +355,10 @@ jobs:
           enable-asan: true
           extra-asan-options: allocator_may_return_null=0
           timeout: 600
+      - name: Finalize ccache
+        uses: ./.github/actions/finalize-ccache
+        with:
+          trim-age: 3d
 
   clang-tidy-linux:
     runs-on: ${{ matrix.runner }}
@@ -798,9 +809,6 @@ jobs:
             ipo: 'OFF'
             runner: windows-11-arm
     runs-on: ${{ matrix.runner }}
-    env:
-      # /Z7 debug info compresses well; the default zstd level overflows the cache cap
-      CCACHE_COMPRESSLEVEL: '8'
     steps:
       - name: Show Configuration
         run: |
