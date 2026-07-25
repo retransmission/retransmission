@@ -48,6 +48,13 @@ runs:
         key: ccache-${{ env.CCACHE_KEY }}-
         restore-keys: |
           ccache-${{ env.CCACHE_KEY }}-
+    - name: Zero the restored statistics
+      # ccache keeps its counters inside CCACHE_DIR, so a restored snapshot
+      # arrives carrying its whole lineage's totals. The ccache-action
+      # branch below zeroes them itself.
+      if: ${{ inputs.in-container == 'true' }}
+      shell: bash
+      run: ccache --zero-stats
     - if: ${{ inputs.in-container != 'true' }}
       uses: hendrikmuhs/ccache-action@v1.2.23
       with:
