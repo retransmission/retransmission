@@ -17,7 +17,7 @@
 
 #include <fmt/format.h>
 
-#include <libtransmission/transmission.h>
+#include <libtransmission/types.h>
 
 #include <libtransmission/announce-list.h>
 #include <libtransmission/error.h>

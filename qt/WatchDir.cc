@@ -9,8 +9,6 @@
 #include <QFileSystemWatcher>
 #include <QTimer>
 
-#include <libtransmission/transmission.h>
-
 #include <libtransmission/torrent-metainfo.h>
 
 #include "TorrentModel.h"

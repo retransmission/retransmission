@@ -21,7 +21,7 @@
 
 #include <libtransmission/error.h>
 #include <libtransmission/makemeta.h>
-#include <libtransmission/transmission.h>
+#include <libtransmission/types.h>
 
 #include "ColumnResizer.h"
 #include "Formatter.h"

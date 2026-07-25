@@ -7,8 +7,6 @@
 #include <QFile>
 #include <QFileInfo>
 
-#include <libtransmission/transmission.h>
-
 #include <libtransmission/torrent-metainfo.h>
 #include <libtransmission/web-utils.h>
 

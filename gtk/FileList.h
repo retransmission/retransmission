@@ -5,7 +5,7 @@
 
 #pragma once
 
-#include <libtransmission/transmission.h>
+#include <libtransmission/types.h>
 
 #include <glibmm/refptr.h>
 #include <glibmm/ustring.h>
