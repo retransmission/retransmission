@@ -16,6 +16,10 @@ IncludeCategories:
     Priority: 4
   - Regex: '^<QtGui/'
     Priority: 5
+  # QAction moved from QtWidgets (Qt5) to QtGui (Qt6), so it stays unqualified; group
+  # it with QtGui, where it lives in the Qt version we build against by default.
+  - Regex: '^<QAction>'
+    Priority: 5
   - Regex: '^<QtWidgets/'
     Priority: 6
   - Regex: '^<QtSvg/'

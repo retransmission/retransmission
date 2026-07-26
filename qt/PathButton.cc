@@ -8,7 +8,9 @@
 #include <QtCore/QDir>
 #include <QtCore/QFileInfo>
 
-#include <QtGui/QAction>
+// QAction lives in QtWidgets on Qt5 and QtGui on Qt6, so the module-qualified spelling
+// cannot name both; the bare form resolves under either.
+#include <QAction>
 
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QFileDialog>
