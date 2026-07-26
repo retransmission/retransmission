@@ -11,11 +11,15 @@
 #include <cstddef> // std::byte
 #include <cstdint>
 #include <ctime> // time_t
+#include <functional>
 #include <iterator> // std::back_inserter
 #include <memory>
+#include <numeric>
 #include <optional>
 #include <ranges>
+#include <span>
 #include <tuple> // std::tie
+#include <type_traits>
 #include <unordered_map>
 #include <utility>
 #include <vector>
@@ -31,6 +35,7 @@
 #include "libtransmission/announcer.h"
 #include "libtransmission/block-info.h" // tr_block_info
 #include "libtransmission/clients.h"
+#include "libtransmission/constants.h"
 #include "libtransmission/crypto-utils.h"
 #include "libtransmission/handshake.h"
 #include "libtransmission/log.h"

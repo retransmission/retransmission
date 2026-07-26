@@ -3,6 +3,7 @@
 // or any future license endorsed by Mnemosaic LLC.
 // License text can be found in the licenses/ folder.
 
+#include <algorithm> // std::ranges::find_if_not()
 #include <array>
 #include <cctype>
 #include <cstring>
@@ -10,9 +11,10 @@
 #include <ranges>
 #include <string>
 #include <string_view>
-#include <utility> // std::cmp_equal
 
 #ifdef _WIN32
+#include <utility> // std::cmp_equal
+
 #include <windows.h>
 #endif
 
@@ -23,7 +25,10 @@
 #include <wildmat.h>
 
 #include "libtransmission/string-utils.h"
+
+#ifdef _WIN32
 #include "libtransmission/tr-assert.h"
+#endif
 
 bool tr_wildmat(std::string_view text, std::string_view pattern)
 {

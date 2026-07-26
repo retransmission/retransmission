@@ -5,7 +5,7 @@
 
 #include <gtest/gtest.h>
 
-#include <libtransmission/quark.h>
+#include "libtransmission/quark.h"
 
 #include "libtransmission-app/prefs.h"
 #include "libtransmission-app/session.h"

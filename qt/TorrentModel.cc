@@ -5,18 +5,22 @@
 
 #include <algorithm>
 #include <cassert>
+#include <cstdint>
 #include <ctime>
 #include <iterator> // for std::back_inserter
+#include <optional>
 #include <ranges>
 #include <string_view>
 #include <vector>
 
-#include <libtransmission/quark.h>
-#include <libtransmission/variant.h>
+#include "libtransmission/converters.h"
+#include "libtransmission/quark.h"
+#include "libtransmission/variant.h"
 
 #include "Torrent.h"
 #include "TorrentDelegate.h"
 #include "TorrentModel.h"
+#include "Typedefs.h"
 #include "VariantHelpers.h"
 
 /***

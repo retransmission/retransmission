@@ -7,12 +7,12 @@
 
 #include <cstdlib>
 #include <string>
+#include <string_view>
 
 #ifdef _WIN32
 #include <windows.h>
 #endif
 
-#include "libtransmission/string-utils.h"
 #include "libtransmission/tr-assert.h"
 #include "libtransmission/tr-strbuf.h"
 

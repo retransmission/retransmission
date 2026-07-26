@@ -7,6 +7,7 @@
 #include <chrono>
 #include <cstddef> // size_t
 #include <ctime> // time_t
+#include <functional>
 #include <memory>
 #include <optional>
 #include <string>
@@ -29,6 +30,7 @@
 #include "libtransmission/timer.h"
 #include "libtransmission/tr-assert.h"
 #include "libtransmission/tr-strbuf.h" // tr_pathbuf
+#include "libtransmission/types.h"
 #include "libtransmission/utils.h" // _(), tr_time()
 #include "libtransmission/web-utils.h" // tr_webGetResponseStr()
 #include "libtransmission/web.h"

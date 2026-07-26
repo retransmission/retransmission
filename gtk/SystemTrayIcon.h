@@ -5,8 +5,9 @@
 
 #pragma once
 
-#include <glibmm/refptr.h>
 #include <gtkmm/window.h>
+
+#include <glibmm/refptr.h>
 
 #include <memory>
 

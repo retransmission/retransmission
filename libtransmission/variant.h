@@ -6,6 +6,7 @@
 #pragma once
 
 #include <algorithm> // std::move()
+#include <concepts>
 #include <cstddef> // size_t
 #include <cstdint> // int64_t
 #include <limits>

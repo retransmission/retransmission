@@ -5,13 +5,17 @@
 
 #include <algorithm>
 #include <array>
+#include <cctype> // std::isspace()
 #include <cstddef>
 #include <cstdint>
+#include <ctime> // time_t
 #include <fstream>
 #include <ios>
 #include <optional>
+#include <ranges> // std::ranges::find_if(), all_of(), sort()
 #include <string> // std::getline()
 #include <string_view>
+#include <tuple>
 #include <utility> // for std::move, std::pair
 #include <vector>
 

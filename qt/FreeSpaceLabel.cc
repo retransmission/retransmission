@@ -4,6 +4,7 @@
 // License text can be found in the licenses/ folder.
 
 #include <cstdint>
+#include <utility>
 
 #include <QDir>
 #include <QLabel>
@@ -11,12 +12,15 @@
 #include <QString>
 #include <QWidget>
 
-#include <libtransmission/converters.h>
-#include <libtransmission/quark.h>
-#include <libtransmission/variant.h>
+#include "libtransmission/converters.h"
+#include "libtransmission/quark.h"
+#include "libtransmission/variant.h"
+
+#include "libtransmission-app/rpc-queue.h"
 
 #include "Formatter.h"
 #include "FreeSpaceLabel.h"
+#include "RpcClient.h"
 #include "Session.h"
 #include "VariantHelpers.h"
 

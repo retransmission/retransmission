@@ -10,6 +10,7 @@
 
 #include <array>
 #include <cstddef> // size_t
+#include <span>
 
 #include <openssl/crypto.h>
 #include <openssl/err.h>
@@ -17,6 +18,7 @@
 #include <openssl/opensslv.h>
 #include <openssl/rand.h>
 
+#include <fmt/core.h>
 #include <fmt/format.h>
 
 #include "libtransmission/crypto-utils.h"

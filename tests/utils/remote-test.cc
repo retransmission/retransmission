@@ -22,9 +22,9 @@
 
 #include <fmt/format.h>
 
-#include <libtransmission/macros.h>
-#include <libtransmission/net.h> // sockaddr_storage, ntohs()
-#include <libtransmission/utils.h> // tr_lib_init()
+#include "libtransmission/macros.h"
+#include "libtransmission/net.h" // sockaddr_storage, ntohs()
+#include "libtransmission/utils.h" // tr_lib_init()
 
 #include <gtest/gtest.h>
 

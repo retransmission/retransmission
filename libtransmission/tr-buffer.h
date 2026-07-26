@@ -6,17 +6,22 @@
 #pragma once
 
 #include <algorithm> // for std::copy_n
+#include <concepts>
 #include <cstddef> // size_t
+#include <cstdint>
 #include <memory> // std::allocator
 #include <ratio>
 #include <span>
 #include <string>
 #include <string_view>
+#include <type_traits>
+#include <utility>
 
 #include <small/vector.hpp>
 
 #include "libtransmission/net.h" // tr_port
 #include "libtransmission/tr-assert.h"
+#include "libtransmission/types.h"
 #include "libtransmission/utils.h" // for tr_htonll(), tr_ntohll()
 
 namespace tr

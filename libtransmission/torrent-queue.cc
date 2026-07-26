@@ -4,13 +4,16 @@
 // License text can be found in the licenses/ folder.
 
 #include <algorithm>
+#include <cstddef>
 #include <iterator>
 #include <string>
 #include <string_view>
+#include <utility>
 #include <vector>
 
 #include "libtransmission/torrent-queue.h"
 #include "libtransmission/tr-strbuf.h"
+#include "libtransmission/types.h"
 #include "libtransmission/variant.h"
 
 namespace

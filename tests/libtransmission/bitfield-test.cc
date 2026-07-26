@@ -12,8 +12,8 @@
 
 #include <gtest/gtest.h>
 
-#include <libtransmission/crypto-utils.h>
-#include <libtransmission/bitfield.h>
+#include "libtransmission/crypto-utils.h"
+#include "libtransmission/bitfield.h"
 
 TEST(Bitfield, count)
 {

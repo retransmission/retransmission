@@ -5,6 +5,7 @@
 
 #include <QVariant>
 
+#include "DBusInteropHelper.h"
 #include "InteropHelper.h"
 
 bool InteropHelper::isConnected() const

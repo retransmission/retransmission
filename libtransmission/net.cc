@@ -6,10 +6,12 @@
 #include <array>
 #include <cerrno>
 #include <climits>
+#include <compare>
 #include <cstddef>
 #include <cstdint>
 #include <cstring>
 #include <iterator> // std::back_inserter
+#include <memory>
 #include <optional>
 #include <string>
 #include <string_view>
@@ -28,7 +30,9 @@
 
 #include <fmt/format.h>
 
+#include "libtransmission/constants.h" // TrAddrStrlen
 #include "libtransmission/log.h"
+#include "libtransmission/macros.h"
 #include "libtransmission/net.h"
 #include "libtransmission/peer-socket.h"
 #include "libtransmission/session.h"

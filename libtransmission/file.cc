@@ -5,10 +5,12 @@
 
 #include <chrono>
 #include <filesystem>
+#include <functional>
+#include <optional>
 #include <ranges>
-#include <system_error>
 #include <string>
 #include <string_view>
+#include <system_error>
 #include <vector>
 
 #ifndef _WIN32

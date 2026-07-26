@@ -5,14 +5,15 @@
 
 #pragma once
 
+#include <sigslot/signal.hpp>
+
 #include <QObject>
 #include <QString>
 
-#include <libtransmission/quark.h>
+#include "libtransmission/quark.h"
+#include "libtransmission/variant.h"
 
-#include <libtransmission-app/prefs.h>
-
-#include <sigslot/signal.hpp>
+#include "libtransmission-app/prefs.h"
 
 #include "VariantHelpers.h"
 

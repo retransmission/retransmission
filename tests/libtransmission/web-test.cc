@@ -16,8 +16,8 @@
 
 #include <fmt/format.h>
 
-#include <libtransmission/crypto-utils.h> // tr_base64_encode()
-#include <libtransmission/web.h>
+#include "libtransmission/crypto-utils.h" // tr_base64_encode()
+#include "libtransmission/web.h"
 
 #include "loopback-server.h"
 #include "test-fixtures.h"

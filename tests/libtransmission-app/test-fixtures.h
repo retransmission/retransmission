@@ -13,8 +13,8 @@
 
 #include <gtest/gtest.h>
 
-#include <libtransmission/file.h>
-#include <libtransmission/macros.h>
+#include "libtransmission/file.h"
+#include "libtransmission/macros.h"
 
 #include "libtransmission-app/app.h"
 

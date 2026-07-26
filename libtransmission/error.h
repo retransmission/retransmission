@@ -7,6 +7,7 @@
 
 #include <string>
 #include <string_view>
+#include <utility>
 
 #include "libtransmission/error-types.h"
 #include "libtransmission/macros.h"

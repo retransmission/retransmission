@@ -5,7 +5,7 @@
 
 #include <gtest/gtest.h>
 
-#include <libtransmission/types.h>
+#include "libtransmission/types.h"
 
 TEST(Types, byteSpanHelpers)
 {

@@ -10,17 +10,18 @@
 #include "Session.h"
 #include "Utils.h"
 
-#include <libtransmission/transmission.h>
-#include <libtransmission/macros.h>
+#include "libtransmission/macros.h"
+#include "libtransmission/transmission.h"
 
 #include <glibmm/i18n.h>
 #include <glibmm/ustring.h>
 
 #if !GTKMM_CHECK_VERSION(4, 0, 0)
-#include <giomm/menu.h>
-#include <glibmm/miscutils.h>
 #include <gtkmm/icontheme.h>
 #include <gtkmm/menu.h>
+
+#include <giomm/menu.h>
+#include <glibmm/miscutils.h>
 #if !defined(HAVE_APPINDICATOR)
 #include <gtkmm/statusicon.h>
 #endif

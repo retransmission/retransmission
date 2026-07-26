@@ -12,6 +12,7 @@
 #include <array>
 #include <atomic>
 #include <cstddef> // for size_t
+#include <cstdint>
 #include <memory>
 
 #include "libtransmission/interned-string.h"

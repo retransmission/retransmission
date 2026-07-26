@@ -14,6 +14,8 @@
 #include <cstdint>
 #include <functional>
 #include <optional>
+#include <span>
+#include <utility>
 #include <vector>
 
 #include "libtransmission/block-info.h"

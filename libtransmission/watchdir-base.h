@@ -11,6 +11,7 @@
 
 #include <chrono>
 #include <cstddef> // for size_t
+#include <functional>
 #include <map>
 #include <memory>
 #include <optional>

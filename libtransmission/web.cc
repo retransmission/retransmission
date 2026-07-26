@@ -17,8 +17,11 @@
 #include <map>
 #include <memory>
 #include <mutex>
+#include <optional>
+#include <ranges>
 #include <stack>
 #include <string>
+#include <string_view>
 #include <thread>
 #include <utility>
 

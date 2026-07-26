@@ -5,9 +5,9 @@
 
 #pragma once
 
-#include <libtransmission-app/display-modes.h>
-
 #include <QMetaType>
+
+#include "libtransmission-app/display-modes.h"
 
 using ShowMode = tr::app::ShowMode;
 Q_DECLARE_METATYPE(ShowMode)

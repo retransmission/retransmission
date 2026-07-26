@@ -7,7 +7,9 @@
 
 #include <chrono>
 #include <cmath>
+#include <cstdint>
 #include <future>
+#include <iterator>
 #include <utility>
 
 #include <QDialogButtonBox>
@@ -18,9 +20,10 @@
 #include <QString>
 #include <QTimer>
 
-#include <libtransmission/error.h>
-#include <libtransmission/makemeta.h>
-#include <libtransmission/types.h>
+#include "libtransmission/announce-list.h"
+#include "libtransmission/error.h"
+#include "libtransmission/makemeta.h"
+#include "libtransmission/types.h"
 
 #include "ColumnResizer.h"
 #include "Formatter.h"
@@ -149,7 +152,9 @@ void MakeProgressDialog::onProgress()
     ui_.dialogButtons->button(QDialogButtonBox::Open)->setEnabled(is_done && success);
 }
 
+#include "BaseDialog.h"
 #include "MakeDialog.moc"
+#include "PathButton.h"
 
 /***
 ****

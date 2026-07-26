@@ -7,24 +7,24 @@
 
 #include "GtkCompat.h"
 
-#include <libtransmission/transmission.h>
-#include <libtransmission/values.h>
+#include "libtransmission/transmission.h"
+#include "libtransmission/values.h"
+
+#include <gtkmm/builder.h>
+#include <gtkmm/combobox.h>
+#include <gtkmm/entry.h>
+#include <gtkmm/label.h>
+#if GTKMM_CHECK_VERSION(4, 0, 0)
+#include <gtkmm/listview.h>
+#endif
+#include <gtkmm/treeview.h>
+#include <gtkmm/widget.h>
+#include <gtkmm/window.h>
 
 #include <glibmm/objectbase.h>
 #include <glibmm/refptr.h>
 #include <glibmm/signalproxy.h>
 #include <glibmm/ustring.h>
-#include <gtkmm/builder.h>
-#include <gtkmm/combobox.h>
-#include <gtkmm/entry.h>
-#include <gtkmm/label.h>
-#include <gtkmm/treeview.h>
-#include <gtkmm/widget.h>
-#include <gtkmm/window.h>
-
-#if GTKMM_CHECK_VERSION(4, 0, 0)
-#include <gtkmm/listview.h>
-#endif
 
 #include <fmt/format.h>
 

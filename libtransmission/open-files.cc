@@ -5,7 +5,9 @@
 
 #include <algorithm> // std::min
 #include <array>
+#include <cstddef> // size_t
 #include <cstdint> // uint8_t, uint64_t
+#include <optional>
 #include <span>
 #include <string_view>
 #include <utility>

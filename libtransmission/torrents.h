@@ -19,6 +19,7 @@
 #include <vector>
 
 #include "libtransmission/torrent-metainfo.h"
+#include "libtransmission/types.h"
 
 struct tr_torrent;
 

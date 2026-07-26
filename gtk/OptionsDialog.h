@@ -5,12 +5,13 @@
 
 #pragma once
 
-#include <glibmm/refptr.h>
 #include <gtkmm/builder.h>
 #include <gtkmm/dialog.h>
 #include <gtkmm/entry.h>
 #include <gtkmm/filechoosernative.h>
 #include <gtkmm/window.h>
+
+#include <glibmm/refptr.h>
 
 #include <memory>
 

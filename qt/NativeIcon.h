@@ -5,6 +5,8 @@
 
 #pragma once
 
+#include <cstdint>
+
 #include <QApplication>
 #include <QIcon>
 #include <QStyle>

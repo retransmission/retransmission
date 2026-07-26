@@ -6,6 +6,7 @@
 #include <algorithm> // std::adjacent_find, std::sort
 #include <cstddef>
 #include <functional>
+#include <iterator> // std::back_inserter, std::next
 #include <vector>
 
 #include <small/vector.hpp>

@@ -3,7 +3,11 @@
 // or any future license endorsed by Mnemosaic LLC.
 // License text can be found in the licenses/ folder.
 
+#include <cstdint>
+
 #include "Filters.h"
+#include "Torrent.h"
+#include "UserMetaType.h"
 
 // NOTE: `ShowModeFields` is the set of all Torrent properties
 // needed to correctly run these tests. If you change these tests,

@@ -13,12 +13,14 @@
 #include <QResizeEvent>
 #include <QSortFilterProxyModel>
 
-#include <libtransmission/types.h> // priorities
+#include "libtransmission/types.h" // priorities
+#include "libtransmission/values.h"
 
 #include "FileTreeDelegate.h"
 #include "FileTreeItem.h"
 #include "FileTreeModel.h"
 #include "FileTreeView.h"
+#include "Torrent.h"
 #include "Utils.h"
 
 using namespace tr::Values;

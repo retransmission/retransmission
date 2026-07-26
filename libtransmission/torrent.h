@@ -9,6 +9,7 @@
 #error only libtransmission should #include this header.
 #endif
 
+#include <algorithm>
 #include <cstddef> // size_t
 #include <cstdint> // uint64_t, uint16_t
 #include <ctime>
@@ -28,6 +29,7 @@
 #include "libtransmission/bitfield.h"
 #include "libtransmission/block-info.h"
 #include "libtransmission/completion.h"
+#include "libtransmission/constants.h"
 #include "libtransmission/crypto-utils.h"
 #include "libtransmission/file-piece-map.h"
 #include "libtransmission/interned-string.h"
@@ -39,6 +41,7 @@
 #include "libtransmission/tr-assert.h"
 #include "libtransmission/macros.h"
 #include "libtransmission/types.h"
+#include "libtransmission/values.h"
 #include "libtransmission/verify.h"
 
 struct tr_ctor;

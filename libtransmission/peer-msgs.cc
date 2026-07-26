@@ -16,6 +16,7 @@
 #include <optional>
 #include <queue>
 #include <ratio>
+#include <span>
 #include <string>
 #include <string_view>
 #include <unordered_map>
@@ -29,7 +30,9 @@
 #include "libtransmission/bitfield.h"
 #include "libtransmission/block-info.h"
 #include "libtransmission/clients.h"
+#include "libtransmission/constants.h"
 #include "libtransmission/crypto-utils.h"
+#include "libtransmission/error-types.h"
 #include "libtransmission/inout.h"
 #include "libtransmission/interned-string.h"
 #include "libtransmission/log.h"
@@ -47,6 +50,7 @@
 #include "libtransmission/tr-assert.h"
 #include "libtransmission/tr-buffer.h"
 #include "libtransmission/types.h"
+#include "libtransmission/utils.h"
 #include "libtransmission/variant.h"
 #include "libtransmission/version.h"
 

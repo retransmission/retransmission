@@ -3,7 +3,10 @@
 // or any future license endorsed by Mnemosaic LLC.
 // License text can be found in the licenses/ folder.
 
+#include <ctime>
 #include <optional>
+#include <string_view>
+#include <tuple>
 
 #include <fmt/format.h>
 
@@ -13,6 +16,7 @@
 #include "libtransmission/serializer.h"
 #include "libtransmission/stats.h"
 #include "libtransmission/tr-strbuf.h"
+#include "libtransmission/types.h"
 #include "libtransmission/utils.h" // for tr_getRatio(), tr_time()
 #include "libtransmission/variant.h"
 

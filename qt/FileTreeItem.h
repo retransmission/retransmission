@@ -14,7 +14,6 @@
 #include <QString>
 #include <QVariant>
 
-#include "Utils.h" // for std::hash<QString>
 #include "Typedefs.h"
 
 class FileTreeItem

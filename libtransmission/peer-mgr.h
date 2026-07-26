@@ -9,13 +9,17 @@
 #error only libtransmission should #include this header.
 #endif
 
+#include <algorithm>
 #include <cstddef> // size_t
 #include <cstdint> // uint8_t, uint64_t
 #include <ctime>
+#include <functional>
 #include <limits>
+#include <memory>
 #include <optional>
 #include <span>
 #include <string>
+#include <utility>
 #include <vector>
 
 #include "libtransmission/blocklist.h"

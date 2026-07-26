@@ -39,7 +39,6 @@ Checks:
   - google-explicit-constructor
   - misc-*
   - -misc-const-correctness # TODO: enable after https://github.com/llvm/llvm-project/issues/206429 is fixed
-  - -misc-include-cleaner
   - -misc-multiple-inheritance
   - -misc-no-recursion
   - -misc-non-private-member-variables-in-classes
@@ -62,6 +61,7 @@ CheckOptions:
   - { key: cppcoreguidelines-avoid-do-while.IgnoreMacros,                           value: true       }
   - { key: cppcoreguidelines-rvalue-reference-param-not-moved.IgnoreUnnamedParams,  value: true       }
   - { key: cppcoreguidelines-special-member-functions.AllowSoleDefaultDtor,         value: true       }
+  - { key: misc-include-cleaner.IgnoreHeaders,                                      value: 'arpa/.*;asm-generic/.*;bits/.*;curl/.*;fast_float/.*;fmt/.*;libutp/.*;linux/.*;netinet/.*;signal\.h;simdutf.*;stdio\.h;stdlib\.h;zconf\.h' }
   - { key: performance-move-const-arg.CheckTriviallyCopyableMove,                   value: false      }
   - { key: readability-identifier-naming.ConstexprVariableCase,                     value: CamelCase  }
   - { key: readability-identifier-naming.ParameterCase,                             value: lower_case }

@@ -5,6 +5,7 @@
 
 #include "libtransmission/file-utils.h"
 
+#include <cstdint> // uint64_t
 #include <string_view>
 #include <vector>
 

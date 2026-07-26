@@ -19,6 +19,7 @@
 #include <mutex>
 #include <optional>
 #include <string_view>
+#include <tuple>
 #include <utility>
 
 #include <small/vector.hpp>

@@ -8,12 +8,14 @@
 #include <QMessageBox>
 #include <QPushButton>
 
-#include <libtransmission/transmission.h>
-#include <libtransmission/macros.h>
-#include <libtransmission/version.h>
+#include "libtransmission/macros.h"
+#include "libtransmission/version.h"
 
 #include "AboutDialog.h"
-#include "LicenseDialog.h"
+#include "BaseDialog.h"
+// LicenseDialog is only named via the QPointer<> member deduced by Utils::openDialog(),
+// so the complete type is required here even though the name never appears below
+#include "LicenseDialog.h" // IWYU pragma: keep
 #include "Session.h"
 #include "Utils.h"
 

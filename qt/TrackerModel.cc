@@ -4,12 +4,17 @@
 // License text can be found in the licenses/ folder.
 
 #include <algorithm> // std::sort()
+#include <cstddef>
+#include <utility>
+#include <vector>
 
 #include <QUrl>
 
 #include "Application.h" // Application
+#include "Torrent.h"
 #include "TorrentModel.h"
 #include "TrackerModel.h"
+#include "Typedefs.h"
 
 int TrackerModel::rowCount(QModelIndex const& parent) const
 {

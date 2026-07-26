@@ -14,8 +14,8 @@
 
 #include <fmt/format.h>
 
-#include <libtransmission/converters.h>
-#include <libtransmission/variant.h>
+#include "libtransmission/converters.h"
+#include "libtransmission/variant.h"
 
 #include "TrQtInit.h"
 #include "VariantHelpers.h"

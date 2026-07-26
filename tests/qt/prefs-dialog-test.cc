@@ -11,9 +11,9 @@
 #include <QString>
 #include <QTest>
 
-#include <libtransmission/transmission.h>
-#include <libtransmission/quark.h>
-#include <libtransmission/variant.h>
+#include "libtransmission/quark.h"
+#include "libtransmission/transmission.h"
+#include "libtransmission/variant.h"
 
 #include "FreeSpaceLabel.h"
 #include "Prefs.h"

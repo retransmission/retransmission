@@ -10,8 +10,10 @@
 #include <QSortFilterProxyModel>
 #include <QTimer>
 
-#include "Filters.h"
+#include "libtransmission/quark.h"
+
 #include "Prefs.h"
+#include "UserMetaType.h"
 
 class QString;
 

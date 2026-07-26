@@ -3,10 +3,17 @@
 // or any future license endorsed by Mnemosaic LLC.
 // License text can be found in the licenses/ folder.
 
+#include <algorithm>
+#include <array>
 #include <cerrno>
+#include <chrono>
+#include <cstddef>
 #include <cstdint>
 #include <functional>
+#include <iterator>
+#include <memory>
 #include <type_traits> // std::underlying_type_t
+#include <utility>
 
 #ifdef _WIN32
 #include <ws2tcpip.h>
@@ -18,6 +25,7 @@
 
 #include "libtransmission/bandwidth.h"
 #include "libtransmission/block-info.h" // tr_block_info
+#include "libtransmission/error-types.h"
 #include "libtransmission/error.h"
 #include "libtransmission/log.h"
 #include "libtransmission/net.h"

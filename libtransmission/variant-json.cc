@@ -18,6 +18,8 @@
 
 #include <fmt/format.h>
 
+#include <rapidjson/error/error.h>
+#include <rapidjson/rapidjson.h>
 #include <small/vector.hpp>
 
 #include <rapidjson/encodedstream.h>

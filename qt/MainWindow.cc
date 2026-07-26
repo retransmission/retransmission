@@ -5,6 +5,7 @@
 
 #include <algorithm>
 #include <array>
+#include <ctime>
 #include <memory>
 #include <utility>
 
@@ -18,7 +19,8 @@
 #include <QtGui>
 
 #include "libtransmission/macros.h"
-#include "libtransmission/transmission.h"
+#include "libtransmission/magnet-metainfo.h"
+#include "libtransmission/quark.h"
 #include "libtransmission/version.h"
 
 #include "AboutDialog.h"
@@ -38,10 +40,14 @@
 #include "SessionDialog.h"
 #include "Speed.h"
 #include "StatsDialog.h"
+#include "Torrent.h"
 #include "TorrentDelegate.h"
 #include "TorrentDelegateMin.h"
 #include "TorrentFilter.h"
 #include "TorrentModel.h"
+#include "TorrentView.h"
+#include "Typedefs.h"
+#include "UserMetaType.h"
 #include "Utils.h"
 
 namespace

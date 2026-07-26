@@ -7,10 +7,22 @@
 
 #include <algorithm>
 #include <chrono>
+#include <cstdint>
+#include <ctime>
 #include <iterator>
+#include <memory>
+#include <optional>
 #include <utility>
 #include <vector>
 
+#if QT_CONFIG(accessibility)
+#include <QAccessible>
+#endif
+#ifdef QT_DBUS_LIB
+#include <QDBusConnection>
+#include <QDBusMessage>
+#include <QDBusReply>
+#endif
 #include <QIcon>
 #include <QLibraryInfo>
 #include <QMessageBox>
@@ -18,20 +30,10 @@
 #include <QRect>
 #include <QSystemTrayIcon>
 
-#ifdef QT_DBUS_LIB
-#include <QDBusConnection>
-#include <QDBusMessage>
-#include <QDBusReply>
-#endif
-
-#if QT_CONFIG(accessibility)
-#include <QAccessible>
-#endif
-
-#include <libtransmission/transmission.h>
-
-#include <libtransmission/macros.h>
-#include <libtransmission/values.h>
+#include "libtransmission/macros.h"
+#include "libtransmission/quark.h"
+#include "libtransmission/values.h"
+#include "libtransmission/variant.h"
 
 #include "AccessibleSqueezeLabel.h"
 #include "AddData.h"
@@ -42,6 +44,7 @@
 #include "QtCompat.h"
 #include "Session.h"
 #include "TorrentModel.h"
+#include "Typedefs.h"
 #include "WatchDir.h"
 
 namespace

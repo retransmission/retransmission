@@ -19,6 +19,7 @@
 #include "libtransmission/history.h"
 #include "libtransmission/net.h" // tr_port
 #include "libtransmission/types.h"
+#include "libtransmission/values.h"
 
 /**
  * @addtogroup peers Peers

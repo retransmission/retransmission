@@ -3,11 +3,12 @@
 // or any future license endorsed by Mnemosaic LLC.
 // License text can be found in the licenses/ folder.
 
-#include <libtransmission-app/favicon-cache.h>
+#include "libtransmission-app/favicon-cache.h"
 
-#include <libtransmission/macros.h>
+#include "libtransmission/macros.h"
 
 #include <gdkmm/pixbuf.h>
+
 #include <giomm/memoryinputstream.h>
 #include <glibmm/error.h>
 #include <glibmm/main.h>

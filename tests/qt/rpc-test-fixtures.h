@@ -23,8 +23,8 @@
 #include <event2/event.h>
 #include <event2/http.h>
 
-#include <libtransmission/constants.h> // TrRpcSessionIdHeader
-#include <libtransmission/net.h> // sockaddr_storage, ntohs()
+#include "libtransmission/constants.h" // TrRpcSessionIdHeader
+#include "libtransmission/net.h" // sockaddr_storage, ntohs()
 
 // A minimal in-process stand-in for transmission-daemon's RPC endpoint. It does
 // just enough to exercise Session's remote transport end to end: the CSRF

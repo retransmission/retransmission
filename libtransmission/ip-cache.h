@@ -11,10 +11,13 @@
 
 #include <array>
 #include <chrono> // std::chrono::milliseconds
+#include <cstddef>
+#include <cstdint>
 #include <memory> // std::unique_ptr
 #include <optional>
 #include <shared_mutex>
 #include <span>
+#include <string>
 #include <string_view>
 #include <vector>
 

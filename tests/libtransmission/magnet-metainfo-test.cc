@@ -7,9 +7,9 @@
 #include <cstddef> // size_t, std::byte
 #include <string_view>
 
-#include <libtransmission/crypto-utils.h> // tr_rand_buffer()
-#include <libtransmission/magnet-metainfo.h>
-#include <libtransmission/macros.h>
+#include "libtransmission/crypto-utils.h" // tr_rand_buffer()
+#include "libtransmission/magnet-metainfo.h"
+#include "libtransmission/macros.h"
 
 #include "test-fixtures.h"
 

@@ -5,6 +5,7 @@
 
 #include <algorithm>
 #include <chrono>
+#include <iterator>
 #include <memory>
 
 #include <fmt/format.h>
@@ -16,6 +17,7 @@
 #include "libtransmission/port-forwarding.h"
 #include "libtransmission/timer.h"
 #include "libtransmission/tr-assert.h"
+#include "libtransmission/types.h"
 #include "libtransmission/utils.h" // for _()
 
 struct tr_upnp;

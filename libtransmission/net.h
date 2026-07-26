@@ -13,17 +13,23 @@
 #include <compare>
 #include <cstddef> // size_t
 #include <cstdint> // uint16_t, uint32_t, uint8_t
+#include <functional>
 #include <optional>
 #include <string>
 #include <string_view>
+#include <tuple>
 #include <utility> // std::pair
 
+// This header is libtransmission's portable socket facade: it picks the platform's socket
+// headers and papers over the errno spelling below, so including it is how the rest of the
+// codebase gets sockaddr, htons(), SOL_SOCKET, ECONNREFUSED and friends.
 #ifdef _WIN32
-#include <ws2tcpip.h>
+#include <ws2tcpip.h> // IWYU pragma: export
 #else
-#include <cerrno>
-#include <sys/socket.h>
-#include <netinet/in.h>
+#include <cerrno> // IWYU pragma: export
+#include <sys/socket.h> // IWYU pragma: export
+#include <netinet/in.h> // IWYU pragma: export
+#include <unistd.h> // IWYU pragma: export
 #endif
 
 #ifdef _WIN32

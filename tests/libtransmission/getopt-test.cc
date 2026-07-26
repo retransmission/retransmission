@@ -5,7 +5,7 @@
 
 #include <array>
 
-#include <libtransmission/tr-getopt.h>
+#include "libtransmission/tr-getopt.h"
 
 #include "test-fixtures.h"
 

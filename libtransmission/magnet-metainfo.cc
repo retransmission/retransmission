@@ -5,11 +5,14 @@
 
 #include <algorithm>
 #include <array>
+#include <cstddef> // std::byte, size_t
 #include <cstdint> // uint8_t
 #include <iterator> // back_inserter
 #include <optional>
+#include <span>
 #include <string>
 #include <string_view>
+#include <tuple> // std::tuple_size
 
 #include <fmt/format.h>
 

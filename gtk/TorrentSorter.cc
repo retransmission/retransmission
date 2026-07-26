@@ -8,10 +8,10 @@
 #include "Percents.h"
 #include "SorterBase.hh"
 
-#include <libtransmission-app/display-modes.h>
+#include "libtransmission-app/display-modes.h"
 
-#include <libtransmission/macros.h>
-#include <libtransmission/utils.h>
+#include "libtransmission/macros.h"
+#include "libtransmission/utils.h"
 
 #include <small/map.hpp>
 

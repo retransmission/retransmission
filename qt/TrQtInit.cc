@@ -5,7 +5,7 @@
 
 #include "TrQtInit.h"
 
-#include <libtransmission-app/app.h>
+#include "libtransmission-app/app.h"
 
 namespace trqt
 {

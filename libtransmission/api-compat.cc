@@ -6,9 +6,15 @@
 #include <algorithm>
 #include <array>
 #include <cstddef>
+#include <cstdint>
 #include <deque>
 #include <initializer_list>
+#include <iterator> // std::next()
+#include <optional>
+#include <string>
 #include <string_view>
+#include <type_traits> // remove_cvref_t
+#include <utility> // std::pair
 
 #include "libtransmission/api-compat.h"
 #include "libtransmission/converters.h"

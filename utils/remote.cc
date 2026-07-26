@@ -27,24 +27,24 @@
 #include <fmt/format.h>
 #include <fmt/ranges.h>
 
-#include <libtransmission/transmission.h>
-
-#include <libtransmission/api-compat.h>
-#include <libtransmission/crypto-utils.h>
-#include <libtransmission/env.h>
-#include <libtransmission/file-utils.h>
-#include <libtransmission/file.h>
-#include <libtransmission/macros.h>
-#include <libtransmission/quark.h>
-#include <libtransmission/rpcimpl.h>
-#include <libtransmission/string-utils.h>
-#include <libtransmission/tr-assert.h>
-#include <libtransmission/tr-getopt.h>
-#include <libtransmission/utils.h>
-#include <libtransmission/values.h>
-#include <libtransmission/variant.h>
-#include <libtransmission/version.h>
-#include <libtransmission/web.h>
+#include "libtransmission/api-compat.h"
+#include "libtransmission/constants.h"
+#include "libtransmission/crypto-utils.h"
+#include "libtransmission/env.h"
+#include "libtransmission/file-utils.h"
+#include "libtransmission/file.h"
+#include "libtransmission/macros.h"
+#include "libtransmission/quark.h"
+#include "libtransmission/rpcimpl.h"
+#include "libtransmission/string-utils.h"
+#include "libtransmission/tr-assert.h"
+#include "libtransmission/tr-getopt.h"
+#include "libtransmission/transmission.h"
+#include "libtransmission/utils.h"
+#include "libtransmission/values.h"
+#include "libtransmission/variant.h"
+#include "libtransmission/version.h"
+#include "libtransmission/web.h"
 
 using namespace std::literals;
 

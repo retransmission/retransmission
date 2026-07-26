@@ -27,15 +27,15 @@
 
 #include <fmt/format.h>
 
-#include <libtransmission/api-compat.h>
-#include <libtransmission/constants.h> // TrRpcSessionIdHeader, TrRpcVersionHeader
-#include <libtransmission/macros.h>
-#include <libtransmission/net.h> // sockaddr_storage, ntohs()
-#include <libtransmission/quark.h>
-#include <libtransmission/rpcimpl.h> // TrRpcVersionSemver
-#include <libtransmission/utils.h> // tr_lib_init()
+#include "libtransmission/api-compat.h"
+#include "libtransmission/constants.h" // TrRpcSessionIdHeader, TrRpcVersionHeader
+#include "libtransmission/macros.h"
+#include "libtransmission/net.h" // sockaddr_storage, ntohs()
+#include "libtransmission/quark.h"
+#include "libtransmission/rpcimpl.h" // TrRpcVersionSemver
+#include "libtransmission/utils.h" // tr_lib_init()
 
-#include <libtransmission-app/rpc-client.h>
+#include "libtransmission-app/rpc-client.h"
 
 #include <gtest/gtest.h>
 

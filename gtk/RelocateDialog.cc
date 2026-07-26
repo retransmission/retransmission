@@ -10,11 +10,12 @@
 #include "Session.h"
 #include "Utils.h"
 
+#include <gtkmm/checkbutton.h>
+#include <gtkmm/messagedialog.h>
+
 #include <glibmm/i18n.h>
 #include <glibmm/main.h>
 #include <glibmm/ustring.h>
-#include <gtkmm/checkbutton.h>
-#include <gtkmm/messagedialog.h>
 
 #include <fmt/format.h>
 

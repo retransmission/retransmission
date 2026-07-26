@@ -15,6 +15,7 @@
 #include <cstddef> // size_t
 #include <cstdint> // uintX_t
 #include <ctime> // time_t
+#include <functional>
 #include <future>
 #include <memory>
 #include <mutex>
@@ -50,6 +51,7 @@
 #include "libtransmission/rpc-server.h"
 #include "libtransmission/session-alt-speeds.h"
 #include "libtransmission/session-id.h"
+#include "libtransmission/session-settings.h"
 #include "libtransmission/session-thread.h"
 #include "libtransmission/stats.h"
 #include "libtransmission/timer.h"
@@ -61,6 +63,9 @@
 #include "libtransmission/macros.h"
 #include "libtransmission/types.h"
 #include "libtransmission/utils-ev.h"
+#include "libtransmission/utils.h"
+#include "libtransmission/values.h"
+#include "libtransmission/variant.h"
 #include "libtransmission/verify.h"
 #include "libtransmission/web.h"
 

@@ -7,11 +7,14 @@
 #include <compare>
 #include <optional>
 
+#include "libtransmission/quark.h"
+
 #include "Filters.h"
 #include "Prefs.h"
 #include "Torrent.h"
 #include "TorrentFilter.h"
 #include "TorrentModel.h"
+#include "UserMetaType.h"
 #include "Utils.h"
 
 TorrentFilter::TorrentFilter(Prefs const& prefs)

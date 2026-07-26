@@ -6,6 +6,9 @@
 #pragma once
 
 #include <bitset>
+#include <cstdint>
+
+#include "libtransmission/quark.h"
 
 #include <small/map.hpp>
 

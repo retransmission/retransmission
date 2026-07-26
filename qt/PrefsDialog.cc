@@ -5,7 +5,13 @@
 
 #include "PrefsDialog.h"
 
+#include <array>
+#include <climits>
+#include <cstddef>
+#include <cstdint>
+#include <map>
 #include <optional>
+#include <utility>
 
 #include <QCheckBox>
 #include <QComboBox>
@@ -23,12 +29,16 @@
 #include <QTime>
 #include <QTimeEdit>
 
-#include <libtransmission/transmission.h>
+#include "libtransmission/quark.h"
+#include "libtransmission/types.h"
 
+#include "BaseDialog.h"
 #include "ColumnResizer.h"
 #include "FreeSpaceLabel.h"
+#include "PathButton.h"
 #include "Prefs.h"
 #include "Session.h"
+#include "Speed.h"
 #include "Utils.h"
 
 using namespace tr;

@@ -12,6 +12,8 @@
 #include <QString>
 #include <QTimer>
 
+#include "libtransmission/quark.h"
+
 #include "BaseDialog.h"
 #include "Session.h"
 #include "Typedefs.h"

@@ -9,6 +9,7 @@
 #include <cstdint>
 #include <cstdlib> // for strtoul()
 #include <optional>
+#include <ranges>
 #include <string>
 #include <string_view>
 #include <utility>
@@ -17,6 +18,7 @@
 
 #define PSL_STATIC
 #include <libpsl.h>
+#include <vector>
 
 #include "libtransmission/web-utils.h"
 

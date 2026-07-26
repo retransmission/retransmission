@@ -9,6 +9,7 @@
 #include <memory>
 #include <optional>
 #include <unordered_set>
+#include <utility>
 
 #include <QApplication>
 #include <QPixmap>
@@ -18,15 +19,14 @@
 #include <QTranslator>
 #include <QWeakPointer>
 
-#include <libtransmission/quark.h>
-#include <libtransmission/variant.h>
+#include "libtransmission/quark.h"
+#include "libtransmission/variant.h"
 
-#include <libtransmission-app/favicon-cache.h>
+#include "libtransmission-app/favicon-cache.h"
 
 #include "AddData.h"
 #include "Prefs.h"
 #include "Typedefs.h"
-#include "Utils.h" // std::hash<QString>
 
 class AddData;
 class MainWindow;

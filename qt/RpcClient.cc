@@ -6,12 +6,18 @@
 #include <functional>
 #include <optional>
 #include <string>
+#include <string_view>
 #include <utility>
 
 #include "RpcClient.h"
 
 #include <QCoreApplication>
 #include <QTimer>
+
+#include "libtransmission/quark.h"
+#include "libtransmission/variant.h"
+
+#include "libtransmission-app/rpc-client.h"
 
 #include "Utils.h"
 

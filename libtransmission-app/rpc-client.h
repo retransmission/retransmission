@@ -13,10 +13,10 @@
 
 #include <sigslot/signal.hpp>
 
-#include <libtransmission/api-compat.h>
-#include <libtransmission/quark.h>
-#include <libtransmission/variant.h>
-#include <libtransmission/web.h>
+#include "libtransmission/api-compat.h"
+#include "libtransmission/quark.h"
+#include "libtransmission/variant.h"
+#include "libtransmission/web.h"
 
 struct tr_session;
 

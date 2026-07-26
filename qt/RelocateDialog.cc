@@ -9,13 +9,16 @@
 #include <QDir>
 #include <QLineEdit>
 
-#include <libtransmission/quark.h>
+#include "libtransmission/quark.h"
 
+#include "BaseDialog.h"
+#include "PathButton.h"
 #include "Prefs.h"
 #include "RelocateDialog.h"
 #include "Session.h"
 #include "Torrent.h"
 #include "TorrentModel.h"
+#include "Typedefs.h"
 
 // NOLINTNEXTLINE(cppcoreguidelines-avoid-non-const-global-variables)
 bool RelocateDialog::move_flag = true;

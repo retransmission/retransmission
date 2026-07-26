@@ -11,18 +11,27 @@
 #include <netinet/tcp.h> // TCP_CONGESTION
 #endif
 
-#include <utility> // std::cmp_equal
+#include <algorithm> // std::min()
+#include <cerrno>
+#include <cstring> // strlen()
+#include <iterator>
+#include <memory>
+// std::cmp_equal(): used only inside TR_ASSERT()
+#include <utility> // IWYU pragma: keep
 
 #include <event2/event.h>
+#include <event2/util.h> // evutil_make_socket_nonblocking()
 
 #include <fmt/format.h>
 
 #include "libtransmission/log.h"
+#include "libtransmission/macros.h"
 #include "libtransmission/peer-socket-tcp.h"
 #include "libtransmission/net.h"
 #include "libtransmission/session.h"
 #include "libtransmission/tr-assert.h"
 #include "libtransmission/utils-ev.h"
+#include "libtransmission/utils.h"
 
 #define tr_logAddTraceSock(sock, msg) tr_logAddTrace(msg, (sock)->display_name())
 

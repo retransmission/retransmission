@@ -13,6 +13,7 @@
 #include <string_view>
 
 #include "libtransmission/peer-common.h"
+#include "libtransmission/types.h"
 
 using tr_peer_callback_webseed = tr_peer_callback_generic;
 

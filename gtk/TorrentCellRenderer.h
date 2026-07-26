@@ -7,8 +7,9 @@
 
 #include "GtkCompat.h"
 
-#include <glibmm/propertyproxy.h>
 #include <gtkmm/cellrenderer.h>
+
+#include <glibmm/propertyproxy.h>
 
 #include <memory>
 

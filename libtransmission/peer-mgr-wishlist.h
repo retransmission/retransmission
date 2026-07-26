@@ -13,8 +13,10 @@
 #include <compare>
 #include <cstddef> // size_t
 #include <functional>
+#include <iterator>
 #include <vector>
 
+#include <small/detail/traits/default_inline_storage.hpp>
 #include <small/set.hpp>
 
 #include "libtransmission/bitfield.h"

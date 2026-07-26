@@ -13,10 +13,12 @@
 #include <iterator>
 #include <optional>
 #include <string>
+#include <string_view>
 #include <type_traits>
 #include <typeinfo>
 #include <utility>
 
+#include "libtransmission/quark.h"
 #include "libtransmission/types.h"
 #include "libtransmission/variant.h"
 

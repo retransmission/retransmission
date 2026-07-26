@@ -12,8 +12,11 @@
 #include <QString>
 #include <QUrl>
 
-#include <libtransmission/converters.h>
-#include <libtransmission/web-utils.h>
+#include "libtransmission/converters.h"
+#include "libtransmission/quark.h"
+#include "libtransmission/serializer.h"
+#include "libtransmission/variant.h"
+#include "libtransmission/web-utils.h"
 
 #include "Application.h" // qApp
 #include "QtCompat.h"

@@ -11,17 +11,16 @@
 
 #include <gtest/gtest.h>
 
-#include <libtransmission/transmission.h>
-
-#include <libtransmission/crypto-utils.h>
-#include <libtransmission/error.h>
-#include <libtransmission/file-utils.h>
-#include <libtransmission/file.h>
-#include <libtransmission/log.h>
-#include <libtransmission/macros.h>
-#include <libtransmission/torrent-metainfo.h>
-#include <libtransmission/torrent.h>
-#include <libtransmission/tr-strbuf.h>
+#include "libtransmission/crypto-utils.h"
+#include "libtransmission/error.h"
+#include "libtransmission/file-utils.h"
+#include "libtransmission/file.h"
+#include "libtransmission/log.h"
+#include "libtransmission/macros.h"
+#include "libtransmission/torrent-metainfo.h"
+#include "libtransmission/torrent.h"
+#include "libtransmission/tr-strbuf.h"
+#include "libtransmission/transmission.h"
 
 #include "test-fixtures.h"
 

@@ -9,12 +9,15 @@
 #include <cstdint> // uint16_t
 #include <cstring>
 #include <ctime> // time_t
+#include <functional>
+#include <iterator>
 #include <memory>
 #include <optional>
 #include <ranges>
 #include <string>
 #include <string_view>
 #include <type_traits>
+#include <utility>
 #include <vector>
 
 #ifdef _WIN32
@@ -26,6 +29,7 @@
 
 #include <event2/event.h>
 
+#include <event2/util.h>
 #include <fmt/format.h>
 
 #include "libtransmission/crypto-utils.h" // for tr_rand_obj()

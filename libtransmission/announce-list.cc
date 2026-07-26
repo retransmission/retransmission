@@ -4,6 +4,9 @@
 // License text can be found in the licenses/ folder.
 
 #include <algorithm>
+#include <cstddef> // size_t
+#include <optional>
+#include <ranges> // std::ranges::end()
 #include <string>
 #include <string_view>
 #include <utility>
@@ -13,6 +16,7 @@
 #include "libtransmission/announce-list.h"
 #include "libtransmission/error.h"
 #include "libtransmission/file-utils.h"
+#include "libtransmission/interned-string.h"
 #include "libtransmission/quark.h"
 #include "libtransmission/string-utils.h"
 #include "libtransmission/tr-assert.h"

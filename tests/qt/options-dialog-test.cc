@@ -23,8 +23,8 @@
 #include <QStringList>
 #include <QTest>
 
-#include <libtransmission/transmission.h>
-#include <libtransmission/quark.h>
+#include "libtransmission/transmission.h"
+#include "libtransmission/quark.h"
 
 #include "AddData.h"
 #include "FreeSpaceLabel.h"

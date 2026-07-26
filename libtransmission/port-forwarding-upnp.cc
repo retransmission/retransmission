@@ -15,8 +15,10 @@
 
 #include <fmt/format.h>
 
+#include <miniupnpc/igd_desc_parse.h>
 #include <miniupnpc/miniupnpc.h>
 #include <miniupnpc/upnpcommands.h>
+#include <miniupnpc/upnpdev.h>
 
 #define LIBTRANSMISSION_PORT_FORWARDING_MODULE
 

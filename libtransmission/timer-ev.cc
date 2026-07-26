@@ -10,11 +10,10 @@
 
 #ifdef _WIN32
 #include <ws2tcpip.h>
-#else
-#include <sys/time.h>
 #endif
 
 #include <event2/event.h>
+#include <event2/util.h>
 
 #include "libtransmission/timer.h"
 #include "libtransmission/timer-ev.h"

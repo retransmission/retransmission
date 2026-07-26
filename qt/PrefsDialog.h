@@ -6,12 +6,18 @@
 #pragma once
 
 #include <array>
+#include <cstddef>
+#include <cstdint>
 #include <functional>
 #include <map>
 #include <optional>
 #include <utility>
 
+#include "libtransmission/quark.h"
+
 #include "BaseDialog.h"
+#include "FreeSpaceLabel.h"
+#include "PathButton.h"
 #include "Prefs.h"
 #include "Session.h"
 #include "ui_PrefsDialog.h"

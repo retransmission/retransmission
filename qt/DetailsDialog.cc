@@ -4,11 +4,15 @@
 // License text can be found in the licenses/ folder.
 
 #include <algorithm>
+#include <array>
 #include <cassert>
+#include <cstdint>
 #include <ctime>
+#include <iterator>
 #include <map>
 #include <set>
 #include <utility>
+#include <vector>
 
 #include <QDateTime>
 #include <QDesktopServices>
@@ -29,9 +33,10 @@
 #include <QStyle>
 #include <QTreeWidgetItem>
 
-#include <libtransmission/transmission.h>
-#include <libtransmission/announce-list.h>
-#include <libtransmission/utils.h> // tr_getRatio()
+#include "libtransmission/announce-list.h"
+#include "libtransmission/quark.h"
+#include "libtransmission/types.h"
+#include "libtransmission/utils.h" // tr_getRatio()
 
 #include "BaseDialog.h"
 #include "ColumnResizer.h"
@@ -1516,3 +1521,5 @@ void DetailsDialog::onOpenRequested(QString const& path) const
 }
 
 #include "DetailsDialog.moc"
+#include "FileTreeView.h"
+#include "Typedefs.h"

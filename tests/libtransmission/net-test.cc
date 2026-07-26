@@ -18,8 +18,8 @@
 #include <sys/socket.h>
 #endif
 
-#include <libtransmission/net.h>
-#include <libtransmission/peer-mgr.h>
+#include "libtransmission/net.h"
+#include "libtransmission/peer-mgr.h"
 
 #include "test-fixtures.h"
 

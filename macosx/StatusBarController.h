@@ -4,7 +4,7 @@
 
 #import <AppKit/AppKit.h>
 
-#include <libtransmission/transmission.h>
+#include "libtransmission/transmission.h"
 
 @interface StatusBarController : NSTitlebarAccessoryViewController<NSMenuItemValidation>
 

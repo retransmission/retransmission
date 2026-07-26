@@ -9,6 +9,7 @@
 #include <cstdint>
 #include <limits>
 #include <memory>
+#include <ranges> // std::ranges::end()
 #include <utility> // for std::swap()
 #include <vector>
 

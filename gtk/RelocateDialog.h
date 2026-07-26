@@ -5,12 +5,13 @@
 
 #pragma once
 
-#include <libtransmission/types.h>
+#include "libtransmission/types.h"
 
-#include <glibmm/refptr.h>
 #include <gtkmm/builder.h>
 #include <gtkmm/dialog.h>
 #include <gtkmm/window.h>
+
+#include <glibmm/refptr.h>
 
 #include <memory>
 #include <vector>

@@ -11,7 +11,7 @@
 
 #include <small/map.hpp>
 
-#include <libtransmission/types.h> // priorities
+#include "libtransmission/types.h"
 
 #include <QAbstractItemModel>
 #include <QMutableListIterator>
@@ -19,6 +19,7 @@
 #include "FileTreeItem.h"
 #include "FileTreeModel.h"
 #include "QtCompat.h"
+#include "Typedefs.h"
 
 namespace
 {

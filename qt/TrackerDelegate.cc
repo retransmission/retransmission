@@ -3,15 +3,18 @@
 // or any future license endorsed by Mnemosaic LLC.
 // License text can be found in the licenses/ folder.
 
+#include <ctime>
+
 #include <QAbstractTextDocumentLayout>
 #include <QApplication>
 #include <QPainter>
 #include <QPixmap>
 #include <QTextDocument>
 
-#include <libtransmission/web-utils.h>
+#include "libtransmission/types.h"
+#include "libtransmission/web-utils.h"
 
-#include <libtransmission-app/favicon-cache.h>
+#include "libtransmission-app/favicon-cache.h"
 
 #include "Formatter.h"
 #include "Torrent.h"
@@ -20,10 +23,6 @@
 #include "Utils.h"
 
 using namespace tr::app;
-
-/***
-****
-***/
 
 namespace
 {

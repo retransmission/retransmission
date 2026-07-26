@@ -16,6 +16,7 @@
 #include <memory>
 #include <optional>
 #include <string_view>
+#include <unistd.h>
 #include <vector>
 
 #ifdef _WIN32
@@ -26,6 +27,7 @@
 
 #include "libtransmission/interned-string.h"
 #include "libtransmission/peer-mgr.h"
+#include "libtransmission/types.h"
 
 struct tr_address;
 class tr_announcer_udp;

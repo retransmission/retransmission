@@ -10,6 +10,8 @@
 #include <cstdint> // uint64_t, uint32_t
 #include <memory>
 #include <mutex>
+#include <ranges>
+#include <span>
 #include <thread>
 #include <utility> // for std::move()
 #include <vector>

@@ -4,27 +4,34 @@
 // License text can be found in the licenses/ folder.
 
 #include <algorithm>
+#include <cstddef>
+#include <iterator>
 #include <utility>
+#include <vector>
 
 #include <QComboBox>
 #include <QFileInfo>
 #include <QLineEdit>
 #include <QPushButton>
 
-#include <libtransmission/transmission.h>
-
-#include <libtransmission/converters.h>
-#include <libtransmission/quark.h>
-#include <libtransmission/torrent-metainfo.h>
-#include <libtransmission/variant.h>
+#include "libtransmission/converters.h"
+#include "libtransmission/quark.h"
+#include "libtransmission/torrent-metainfo.h"
+#include "libtransmission/transmission.h"
+#include "libtransmission/types.h"
+#include "libtransmission/variant.h"
 
 #include "AddData.h"
+#include "BaseDialog.h"
 #include "FileTreeModel.h"
+#include "FileTreeView.h"
 #include "FreeSpaceLabel.h"
 #include "OptionsDialog.h"
+#include "PathButton.h"
 #include "Prefs.h"
 #include "Session.h"
 #include "Torrent.h"
+#include "Typedefs.h"
 #include "Utils.h"
 
 /***

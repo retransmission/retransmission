@@ -8,6 +8,7 @@
 #include <algorithm>
 #include <array>
 #include <cctype> /* isprint() */
+#include <cstddef>
 #include <cstdint> // uint8_t
 #include <optional>
 #include <ranges>

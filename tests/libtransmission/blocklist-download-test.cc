@@ -22,11 +22,11 @@
 
 #include <gtest/gtest.h>
 
-#include <libtransmission/transmission.h>
+#include "libtransmission/transmission.h"
 
-#include <libtransmission/blocklist-download.h>
-#include <libtransmission/timer.h>
-#include <libtransmission/web.h>
+#include "libtransmission/blocklist-download.h"
+#include "libtransmission/timer.h"
+#include "libtransmission/web.h"
 
 #include "loopback-server.h"
 #include "test-fixtures.h"

@@ -7,7 +7,7 @@
 
 #include <QObject>
 
-#include "libtransmission/macros.h"
+#include "libtransmission/macros.h" // IWYU pragma: keep
 
 class InteropObject : public QObject
 {

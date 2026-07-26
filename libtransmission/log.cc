@@ -7,6 +7,7 @@
 #include <cerrno>
 #include <chrono>
 #include <cstddef> // size_t
+#include <ctime> // std::localtime()
 #include <iterator> // back_insert_iterator, empty
 #include <mutex>
 #include <optional>
@@ -29,9 +30,9 @@
 
 #include "libtransmission/file.h"
 #include "libtransmission/log.h"
-#include "libtransmission/macros.h"
 #include "libtransmission/string-utils.h"
 #include "libtransmission/tr-assert.h"
+#include "libtransmission/types.h"
 #include "libtransmission/utils.h"
 
 using namespace std::literals;

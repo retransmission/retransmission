@@ -6,6 +6,8 @@
 #include <algorithm>
 #include <cerrno> // for ENOENT
 #include <cmath>
+#include <cstddef> // std::byte
+#include <cstdint> // uint32_t, uint64_t
 #include <ctime> // time()
 #include <iterator>
 #include <set>

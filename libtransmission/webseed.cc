@@ -4,14 +4,17 @@
 // License text can be found in the licenses/ folder.
 
 #include <algorithm>
+#include <cstddef> // std::byte
 #include <cstdint> // uint64_t, uint32_t
 #include <ctime>
 #include <iterator>
 #include <memory>
+#include <ratio> // std::milli
 #include <set>
 #include <string>
 #include <string_view>
 #include <utility>
+#include <vector>
 
 #include <fmt/format.h>
 
@@ -29,6 +32,7 @@
 #include "libtransmission/tr-buffer.h"
 #include "libtransmission/tr-strbuf.h"
 #include "libtransmission/types.h"
+#include "libtransmission/utils.h" // tr_time_msec()
 #include "libtransmission/web-utils.h"
 #include "libtransmission/web.h"
 #include "libtransmission/webseed.h"

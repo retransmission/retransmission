@@ -7,7 +7,10 @@
 #include <cerrno> // ECONNREFUSED, ETIMEDOUT
 #include <cstddef>
 #include <cstdint>
+#include <memory> // std::shared_ptr
+#include <span>
 #include <string_view>
+#include <tuple> // std::tuple_size
 #include <utility>
 
 #include <fmt/format.h>

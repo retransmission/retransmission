@@ -14,10 +14,10 @@
 
 #include <gtest/gtest.h>
 
-#include <libtransmission/quark.h>
-#include <libtransmission/session-settings.h> // tr::is_settings_key()
-#include <libtransmission/transmission.h> // tr_encryption_mode, tr_sessionGetDefaultSettings()
-#include <libtransmission/variant.h>
+#include "libtransmission/quark.h"
+#include "libtransmission/session-settings.h" // tr::is_settings_key()
+#include "libtransmission/transmission.h" // tr_encryption_mode, tr_sessionGetDefaultSettings()
+#include "libtransmission/variant.h"
 
 #include "libtransmission-app/display-modes.h"
 #include "libtransmission-app/prefs.h"

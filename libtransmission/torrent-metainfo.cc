@@ -9,11 +9,13 @@
 #include <cstdint>
 #include <string>
 #include <string_view>
+#include <tuple>
 #include <vector>
 
 #include <fmt/format.h>
 
 #include "libtransmission/benc.h"
+#include "libtransmission/block-info.h"
 #include "libtransmission/crypto-utils.h"
 #include "libtransmission/error.h"
 #include "libtransmission/file-utils.h"

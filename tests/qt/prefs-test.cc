@@ -10,8 +10,8 @@
 #include <QString>
 #include <QTest>
 
-#include <libtransmission/macros.h>
-#include <libtransmission/quark.h>
+#include "libtransmission/macros.h"
+#include "libtransmission/quark.h"
 
 #include "Prefs.h"
 #include "TrQtInit.h"

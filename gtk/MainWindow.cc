@@ -17,13 +17,23 @@
 #include "TorrentCellRenderer.h"
 #endif
 
-#include <libtransmission-app/display-modes.h>
+#include "libtransmission-app/display-modes.h"
 
-#include <libtransmission/transmission.h>
-#include <libtransmission/values.h>
+#include "libtransmission/transmission.h"
+#include "libtransmission/values.h"
 
 #include <gdkmm/cursor.h>
 #include <gdkmm/rectangle.h>
+#include <gtkmm/image.h>
+#include <gtkmm/label.h>
+#include <gtkmm/menubutton.h>
+#include <gtkmm/scrolledwindow.h>
+#include <gtkmm/togglebutton.h>
+#include <gtkmm/treemodel.h>
+#include <gtkmm/treeview.h>
+#include <gtkmm/widget.h>
+#include <gtkmm/window.h>
+
 #include <giomm/menu.h>
 #include <giomm/menuitem.h>
 #include <giomm/menumodel.h>
@@ -34,15 +44,6 @@
 #include <glibmm/miscutils.h>
 #include <glibmm/ustring.h>
 #include <glibmm/variant.h>
-#include <gtkmm/image.h>
-#include <gtkmm/label.h>
-#include <gtkmm/menubutton.h>
-#include <gtkmm/scrolledwindow.h>
-#include <gtkmm/togglebutton.h>
-#include <gtkmm/treemodel.h>
-#include <gtkmm/treeview.h>
-#include <gtkmm/widget.h>
-#include <gtkmm/window.h>
 
 #if GTKMM_CHECK_VERSION(4, 0, 0)
 #include <gtkmm/listitemfactory.h>

@@ -11,7 +11,7 @@
 #include "Session.h"
 #include "Utils.h"
 
-#include <libtransmission/macros.h>
+#include "libtransmission/macros.h"
 
 #include <giomm/asyncresult.h>
 #include <giomm/dbusproxy.h>

@@ -12,7 +12,7 @@
 #include <unistd.h>
 #endif
 
-#include <libtransmission/variant.h>
+#include "libtransmission/variant.h"
 
 struct event_base;
 struct tr_error;

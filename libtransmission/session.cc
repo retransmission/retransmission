@@ -4,8 +4,9 @@
 // License text can be found in the licenses/ folder.
 
 #include <algorithm> // std::partial_sort(), std::min(), std::max()
-#include <condition_variable>
+#include <atomic>
 #include <chrono>
+#include <condition_variable>
 #include <csignal>
 #include <cstddef> // size_t
 #include <cstdint>
@@ -15,6 +16,7 @@
 #include <limits> // std::numeric_limits
 #include <memory>
 #include <optional>
+#include <span>
 #include <string>
 #include <string_view>
 #include <utility>
@@ -26,20 +28,21 @@
 
 #include <event2/event.h>
 
+#include <event2/util.h>
 #include <fmt/format.h> // fmt::ptr
 
 #include "libtransmission/transmission.h"
 
-#include "libtransmission/api-compat.h"
 #include "libtransmission/bandwidth.h"
 #include "libtransmission/blocklist-download.h"
 #include "libtransmission/blocklist.h"
 #include "libtransmission/constants.h"
+#include "libtransmission/converters.h"
 #include "libtransmission/crypto-utils.h"
 #include "libtransmission/file-utils.h"
 #include "libtransmission/file.h"
-#include "libtransmission/ip-cache.h"
 #include "libtransmission/interned-string.h"
+#include "libtransmission/ip-cache.h"
 #include "libtransmission/log.h"
 #include "libtransmission/macros.h"
 #include "libtransmission/net.h"
@@ -49,18 +52,22 @@
 #include "libtransmission/port-forwarding.h"
 #include "libtransmission/quark.h"
 #include "libtransmission/rpc-server.h"
+#include "libtransmission/serializer.h"
 #include "libtransmission/session-alt-speeds.h"
+#include "libtransmission/session-settings.h"
 #include "libtransmission/session.h"
 #include "libtransmission/string-utils.h"
 #include "libtransmission/timer-ev.h"
-#include "libtransmission/torrent.h"
 #include "libtransmission/torrent-ctor.h"
+#include "libtransmission/torrent.h"
 #include "libtransmission/tr-assert.h"
 #include "libtransmission/tr-dht.h"
 #include "libtransmission/tr-lpd.h"
 #include "libtransmission/tr-strbuf.h"
 #include "libtransmission/tr-utp.h"
 #include "libtransmission/types.h"
+#include "libtransmission/utils.h" // tr_time()
+#include "libtransmission/values.h"
 #include "libtransmission/variant.h"
 #include "libtransmission/version.h"
 #include "libtransmission/web.h"

@@ -13,15 +13,15 @@
 #include "TorrentSorter.h"
 #include "Utils.h"
 
-#include <libtransmission/transmission.h>
-#include <libtransmission/env.h>
-#include <libtransmission/macros.h>
-#include <libtransmission/rpcimpl.h>
-#include <libtransmission/string-utils.h>
-#include <libtransmission/torrent-metainfo.h>
-#include <libtransmission/utils.h> // tr_time()
-#include <libtransmission/variant.h>
-#include <libtransmission/web-utils.h> // tr_urlIsValid()
+#include "libtransmission/env.h"
+#include "libtransmission/macros.h"
+#include "libtransmission/rpcimpl.h"
+#include "libtransmission/string-utils.h"
+#include "libtransmission/torrent-metainfo.h"
+#include "libtransmission/transmission.h"
+#include "libtransmission/utils.h" // tr_time()
+#include "libtransmission/variant.h"
+#include "libtransmission/web-utils.h" // tr_urlIsValid()
 
 #include <giomm/asyncresult.h>
 #include <giomm/fileinfo.h>
@@ -34,8 +34,6 @@
 #include <glibmm/miscutils.h>
 #include <glibmm/stringutils.h>
 
-#include <woke/woke.hpp>
-
 #if GTKMM_CHECK_VERSION(4, 0, 0)
 #include <gtkmm/sortlistmodel.h>
 #else
@@ -43,6 +41,7 @@
 #endif
 
 #include <fmt/format.h>
+#include <woke/woke.hpp>
 
 #include <algorithm>
 #include <array>

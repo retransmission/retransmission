@@ -8,7 +8,7 @@
 #import <AppKit/AppKit.h>
 #endif
 
-#include <libtransmission/utils.h>
+#include "libtransmission/utils.h"
 
 int main(int argc, char** argv)
 {

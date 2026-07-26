@@ -14,12 +14,11 @@
 
 #include <gtest/gtest.h>
 
-#include <libtransmission/transmission.h>
-
-#include <libtransmission/error.h>
-#include <libtransmission/file.h>
-#include <libtransmission/open-files.h>
-#include <libtransmission/tr-strbuf.h>
+#include "libtransmission/error.h"
+#include "libtransmission/file.h"
+#include "libtransmission/open-files.h"
+#include "libtransmission/tr-strbuf.h"
+#include "libtransmission/transmission.h"
 
 #include "test-fixtures.h"
 

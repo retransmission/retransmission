@@ -21,10 +21,11 @@
 #include <QString>
 #include <QStringList>
 
-#include <libtransmission/crypto-utils.h>
-#include <libtransmission/quark.h>
-#include <libtransmission/serializer.h>
-#include <libtransmission/types.h>
+#include "libtransmission/crypto-utils.h"
+#include "libtransmission/quark.h"
+#include "libtransmission/serializer.h"
+#include "libtransmission/types.h"
+#include "libtransmission/variant.h"
 
 #include "IconCache.h"
 #include "Speed.h"

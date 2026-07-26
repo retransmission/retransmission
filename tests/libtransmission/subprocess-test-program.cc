@@ -3,8 +3,8 @@
 // or any future license endorsed by Mnemosaic LLC.
 // License text can be found in the licenses/ folder.
 
-#include <libtransmission/env.h>
-#include <libtransmission/file.h> // tr_sys_dir_get_current()
+#include "libtransmission/env.h"
+#include "libtransmission/file.h" // tr_sys_dir_get_current()
 
 #include <fmt/format.h>
 #include <fmt/ostream.h>

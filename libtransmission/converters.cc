@@ -20,15 +20,16 @@
 #include <small/set.hpp>
 #include <small/vector.hpp>
 
+#include "libtransmission/converters.h"
 #include "libtransmission/log.h" // for tr_log_level
 #include "libtransmission/macros.h"
 #include "libtransmission/peer-mgr.h" // tr_pex
-#include "libtransmission/converters.h"
+#include "libtransmission/quark.h"
 #include "libtransmission/session-settings.h" // Converter<small::max_size_vector<...>>
 #include "libtransmission/string-utils.h"
+#include "libtransmission/types.h"
 #include "libtransmission/utils.h" // for tr_strv_strip(), tr_strlower()
 #include "libtransmission/variant.h"
-#include "libtransmission/types.h"
 
 using namespace std::literals;
 

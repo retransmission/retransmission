@@ -16,9 +16,9 @@
 #define unsetenv(key) SetEnvironmentVariableA(key, nullptr)
 #endif
 
-#include <libtransmission/crypto-utils.h>
-#include <libtransmission/macros.h>
-#include <libtransmission/web-utils.h>
+#include "libtransmission/crypto-utils.h"
+#include "libtransmission/macros.h"
+#include "libtransmission/web-utils.h"
 
 #include "test-fixtures.h"
 

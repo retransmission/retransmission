@@ -7,6 +7,7 @@
 #include <array>
 #include <chrono>
 #include <cstdint>
+#include <cstring>
 #include <ctime>
 #include <memory>
 #include <string>
@@ -24,15 +25,18 @@
 #endif
 
 #include <event2/buffer.h>
+#include <event2/event.h>
 #include <event2/http.h>
 #include <event2/listener.h>
 
+#include <event2/util.h>
 #include <fmt/chrono.h>
 #include <fmt/format.h>
 
 #define ZLIB_CONST
 #include <zlib.h>
 
+#include "libtransmission/constants.h"
 #include "libtransmission/crypto-utils.h" /* tr_ssha1_matches() */
 #include "libtransmission/error.h"
 #include "libtransmission/file-utils.h"
@@ -48,6 +52,7 @@
 #include "libtransmission/timer.h"
 #include "libtransmission/tr-strbuf.h"
 #include "libtransmission/types.h"
+#include "libtransmission/utils.h"
 #include "libtransmission/variant.h"
 #include "libtransmission/web-utils.h"
 

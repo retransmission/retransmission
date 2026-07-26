@@ -11,6 +11,7 @@
 #include <iterator>
 #include <optional>
 #include <random>
+#include <span>
 #include <string>
 #include <string_view>
 
@@ -24,6 +25,7 @@ extern "C" {
 #include "libtransmission/crypto-utils.h"
 #include "libtransmission/string-utils.h"
 #include "libtransmission/tr-assert.h"
+#include "libtransmission/types.h"
 
 using namespace std::literals;
 

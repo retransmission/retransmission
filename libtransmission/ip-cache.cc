@@ -5,19 +5,23 @@
 
 #include <algorithm> // std::all_of
 #include <array>
+#include <chrono>
 #include <cstddef>
 #include <functional>
 #include <memory>
 #include <mutex>
 #include <optional>
+#include <string>
 #include <string_view>
 #include <utility> // std::move
+#include <vector>
 
 #ifdef _WIN32
 #include <ws2tcpip.h>
 #else
 #include <cerrno>
 #include <sys/socket.h>
+#include <unistd.h> // socklen_t
 #endif
 
 #include <fmt/format.h>
@@ -26,6 +30,7 @@
 #include "libtransmission/log.h"
 #include "libtransmission/string-utils.h"
 #include "libtransmission/tr-assert.h"
+#include "libtransmission/types.h"
 #include "libtransmission/utils.h" // for _()
 #include "libtransmission/web.h"
 
@@ -37,8 +42,8 @@ using namespace std::literals;
 static_assert(TR_AF_INET == 0);
 static_assert(TR_AF_INET6 == 1);
 
-auto constexpr UpkeepInterval = 30min;
-auto constexpr RetryUpkeepInterval = 30s;
+auto constexpr UpkeepInterval = std::chrono::minutes{ 30 };
+auto constexpr RetryUpkeepInterval = std::chrono::seconds{ 30 };
 
 } // namespace
 

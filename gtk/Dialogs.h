@@ -4,10 +4,11 @@
 
 #pragma once
 
-#include <libtransmission/types.h>
+#include "libtransmission/types.h"
+
+#include <gtkmm/window.h>
 
 #include <glibmm/refptr.h>
-#include <gtkmm/window.h>
 
 #include <vector>
 

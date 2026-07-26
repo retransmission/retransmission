@@ -14,6 +14,7 @@
 #include <span>
 #include <string>
 #include <string_view>
+#include <type_traits>
 
 #include "libtransmission/tr-strbuf.h"
 #include "libtransmission/types.h" // tr_sha1_digest_t, tr_sha256_d...

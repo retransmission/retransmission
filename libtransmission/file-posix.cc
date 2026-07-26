@@ -9,9 +9,11 @@
 #include <algorithm>
 #include <array>
 #include <cerrno>
-#include <climits> /* PATH_MAX */
-#include <cstdint> /* SIZE_MAX */
-#include <cstdio> // remove, rename
+// PATH_MAX: resolves to the kernel headers, which we do not include directly
+#include <climits> // IWYU pragma: keep
+#include <cstdint> // SIZE_MAX, SSIZE_MAX
+#include <cstdio> // remove(), rename()
+#include <cstdlib> // mkstemp(), mkdtemp()
 #include <optional>
 #include <string_view>
 #include <string>
@@ -19,12 +21,14 @@
 
 #include <dirent.h>
 #include <fcntl.h> /* O_LARGEFILE, posix_fadvise(), [posix_]fallocate(), fcntl() */
-#include <sys/stat.h>
+#include <sys/stat.h> // IWYU pragma: keep
 #include <unistd.h> /* lseek(), write(), ftruncate(), pread(), pwrite(), pathconf(), etc */
 
 #ifdef HAVE_FLOCK
-#include <sys/file.h> /* flock() */
+#include <sys/file.h> // IWYU pragma: keep
 #endif
+
+#include <sys/types.h> // off64_t
 
 /* OS-specific file copy (copy_file_range, sendfile64, or copyfile). */
 #if defined(__linux__)

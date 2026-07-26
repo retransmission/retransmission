@@ -5,6 +5,9 @@
 
 #include <QTimer>
 
+#include "libtransmission/types.h"
+
+#include "BaseDialog.h"
 #include "ColumnResizer.h"
 #include "Formatter.h"
 #include "Session.h"

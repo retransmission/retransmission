@@ -7,7 +7,7 @@
 
 #import <Sparkle/SPUUpdaterDelegate.h>
 
-#include <libtransmission/transmission.h>
+#include "libtransmission/transmission.h"
 
 #import "VDKQueue.h"
 

@@ -5,14 +5,20 @@
 
 #include "FilterBar.h"
 
+#include <cstddef>
 #include <cstdint> // uint64_t
+#include <optional>
 #include <unordered_map>
 #include <utility>
+
+#include <small/map.hpp>
 
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QLineEdit>
 #include <QStandardItemModel>
+
+#include "libtransmission/quark.h"
 
 #include "Application.h"
 #include "FilterBarComboBox.h"
@@ -24,6 +30,8 @@
 #include "Torrent.h"
 #include "TorrentFilter.h"
 #include "TorrentModel.h"
+#include "Typedefs.h"
+#include "UserMetaType.h"
 #include "Utils.h"
 
 // NOLINTNEXTLINE(performance-enum-size)

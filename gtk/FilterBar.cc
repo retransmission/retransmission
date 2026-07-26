@@ -13,19 +13,23 @@
 #include "TorrentFilter.h"
 #include "Utils.h"
 
-#include <libtransmission-app/display-modes.h>
+#include "libtransmission-app/display-modes.h"
 
-#include <libtransmission/macros.h>
+#include "libtransmission/macros.h"
 
 #include <gdkmm/pixbuf.h>
-#include <glibmm/i18n.h>
-#include <glibmm/main.h>
-#include <glibmm/unicode.h>
-#include <glibmm/ustring.h>
 #include <gtkmm/cellrendererpixbuf.h>
 #include <gtkmm/cellrenderertext.h>
 #include <gtkmm/combobox.h>
 #include <gtkmm/entry.h>
+
+#include <glibmm/i18n.h>
+#include <glibmm/main.h>
+#include <glibmm/unicode.h>
+#include <glibmm/ustring.h>
+#if GTKMM_CHECK_VERSION(4, 0, 0)
+#include <gtkmm/filterlistmodel.h>
+#endif
 #include <gtkmm/label.h>
 #include <gtkmm/liststore.h>
 #include <gtkmm/treemodel.h>
@@ -33,10 +37,6 @@
 #include <gtkmm/treemodelfilter.h>
 #include <gtkmm/treerowreference.h>
 #include <gtkmm/treestore.h>
-
-#if GTKMM_CHECK_VERSION(4, 0, 0)
-#include <gtkmm/filterlistmodel.h>
-#endif
 
 #include <fmt/format.h>
 

@@ -5,6 +5,7 @@
 
 #pragma once
 
+#include <concepts>
 #include <cstdint> // uint8_t, uint32_t, uint64_t
 #include <ctime> // time_t
 #include <locale>
@@ -19,7 +20,7 @@
  */
 
 #ifdef ENABLE_GETTEXT
-#include <libintl.h>
+#include <libintl.h> // IWYU pragma: keep
 #define _ gettext
 #define tr_ngettext ngettext
 #else

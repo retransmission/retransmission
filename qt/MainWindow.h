@@ -16,6 +16,8 @@
 #include <QSystemTrayIcon>
 #include <QTimer>
 
+#include "libtransmission/quark.h"
+
 #include "Prefs.h"
 #include "Speed.h"
 #include "TorrentFilter.h"

@@ -6,7 +6,12 @@
 #include <algorithm>
 #include <array>
 #include <cassert>
+#include <cstdint>
+#include <iterator>
+#include <optional>
+#include <string>
 #include <string_view>
+#include <tuple>
 #include <utility>
 
 #include <QApplication>
@@ -24,20 +29,27 @@
 
 #include <small/vector.hpp>
 
-#include <libtransmission/transmission.h>
+#include "libtransmission/constants.h"
+#include "libtransmission/converters.h"
+#include "libtransmission/quark.h"
+#include "libtransmission/serializer.h"
+#include "libtransmission/session-id.h"
+#include "libtransmission/transmission.h"
+#include "libtransmission/types.h"
+#include "libtransmission/utils.h"
+#include "libtransmission/variant.h"
 
-#include <libtransmission/quark.h>
-#include <libtransmission/serializer.h>
-#include <libtransmission/session-id.h>
-#include <libtransmission/utils.h>
-#include <libtransmission/variant.h>
+#include "libtransmission-app/rpc-queue.h"
+#include "libtransmission-app/session.h"
 
 #include "Session.h"
 
 #include "AddData.h"
 #include "Prefs.h"
+#include "RpcClient.h"
 #include "SessionDialog.h"
 #include "Torrent.h"
+#include "Typedefs.h"
 #include "Utils.h"
 #include "VariantHelpers.h"
 

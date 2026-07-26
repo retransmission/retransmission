@@ -7,12 +7,11 @@
 #include <future>
 #include <utility>
 
-#include <libtransmission/transmission.h>
-
-#include <libtransmission/error.h>
-#include <libtransmission/makemeta.h>
-#include <libtransmission/string-utils.h>
-#include <libtransmission/web-utils.h> // tr_urlIsValidTracker()
+#include "libtransmission/error.h"
+#include "libtransmission/makemeta.h"
+#include "libtransmission/string-utils.h"
+#include "libtransmission/transmission.h"
+#include "libtransmission/web-utils.h" // tr_urlIsValidTracker()
 
 #import "CreatorWindowController.h"
 #import "Controller.h"

@@ -3,6 +3,13 @@
 // or any future license endorsed by Mnemosaic LLC.
 // License text can be found in the licenses/ folder.
 
+#include <algorithm>
+#include <chrono>
+#include <cstddef>
+#include <iterator>
+#include <memory>
+#include <utility>
+
 #ifdef _WIN32
 #include <ws2tcpip.h>
 #else
@@ -22,6 +29,7 @@
 #include "libtransmission/timer.h"
 #include "libtransmission/tr-assert.h"
 #include "libtransmission/tr-buffer.h"
+#include "libtransmission/utils.h"
 
 #define tr_logAddErrorSock(sock, msg) tr_logAddError(msg, (sock)->display_name())
 #define tr_logAddTraceSock(sock, msg) tr_logAddTrace(msg, (sock)->display_name())

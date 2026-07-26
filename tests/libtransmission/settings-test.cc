@@ -10,15 +10,14 @@
 
 #include <small/vector.hpp>
 
-#include <libtransmission/transmission.h>
-
-#include <libtransmission/net.h>
-#include <libtransmission/open-files.h>
-#include <libtransmission/peer-io.h>
-#include <libtransmission/quark.h>
-#include <libtransmission/session.h>
-#include <libtransmission/session-settings.h>
-#include <libtransmission/variant.h>
+#include "libtransmission/net.h"
+#include "libtransmission/open-files.h"
+#include "libtransmission/peer-io.h"
+#include "libtransmission/quark.h"
+#include "libtransmission/session-settings.h"
+#include "libtransmission/session.h"
+#include "libtransmission/transmission.h"
+#include "libtransmission/variant.h"
 
 #include "test-fixtures.h"
 

@@ -11,13 +11,16 @@
 
 #include <atomic>
 #include <cstddef> // size_t
+#include <cstdint>
 #include <functional>
+#include <ratio>
 #include <string>
 #include <utility> // for std::make_pair()
 
 #include "libtransmission/constants.h"
 #include "libtransmission/net.h"
 #include "libtransmission/tr-buffer.h"
+#include "libtransmission/types.h"
 
 struct UTPSocket;
 struct tr_session;

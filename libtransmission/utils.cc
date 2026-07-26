@@ -8,7 +8,9 @@
 #include <cfloat> // DBL_DIG
 #include <charconv> // std::from_chars()
 #include <chrono>
+#include <concepts> // std::integral
 #include <cstdint> // SIZE_MAX
+#include <cstring>
 #include <ctime>
 #include <exception>
 #include <iostream>
@@ -20,7 +22,9 @@
 #include <stdexcept> // std::runtime_error
 #include <string>
 #include <string_view>
-#include <utility> // std::cmp_equal
+#include <system_error>
+// std::move(), std::cmp_equal(): used only in the _WIN32 branch
+#include <utility> // IWYU pragma: keep
 #include <vector>
 
 #ifdef _WIN32

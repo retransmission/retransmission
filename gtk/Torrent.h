@@ -7,15 +7,16 @@
 
 #include "Flags.h"
 
-#include <libtransmission/transmission.h>
-#include <libtransmission/values.h>
+#include "libtransmission/transmission.h"
+#include "libtransmission/values.h"
+
+#include <gtkmm/treemodelcolumn.h>
 
 #include <giomm/icon.h>
 #include <glibmm/extraclassinit.h>
 #include <glibmm/object.h>
 #include <glibmm/refptr.h>
 #include <glibmm/ustring.h>
-#include <gtkmm/treemodelcolumn.h>
 
 #include <cstdint>
 #include <memory>

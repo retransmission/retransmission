@@ -17,8 +17,8 @@
 #include <QSignalSpy>
 #include <QTest>
 
-#include <libtransmission/transmission.h>
-#include <libtransmission/api-compat.h>
+#include "libtransmission/transmission.h"
+#include "libtransmission/api-compat.h"
 
 #include "Prefs.h"
 #include "Session.h"

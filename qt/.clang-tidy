@@ -36,7 +36,6 @@ Checks:
   - -hicpp-use-nullptr # alias of `modernize-use-nullptr`
   - misc-*
   - -misc-const-correctness # TODO: enable after https://github.com/llvm/llvm-project/issues/206429 is fixed
-  - -misc-include-cleaner
   - -misc-multiple-inheritance
   - -misc-no-recursion
   - -misc-non-private-member-variables-in-classes
@@ -59,6 +58,15 @@ Checks:
 
 CheckOptions:
   - { key: cppcoreguidelines-avoid-do-while.IgnoreMacros,                   value: true       }
+  # Qt's documented spelling is the CamelCase forwarding header (<QWidget>), but the declarations
+  # live in the lowercase ones it forwards to, so misc-include-cleaner would have us write
+  # <qwidget.h> -- and pull in internals like <qswap.h>. The capital Q is what keeps this from
+  # matching our own qt/ directory. fmt declares fmt::format_to and friends in fmt/base.h rather
+  # than the fmt/format.h we include.
+  # bits/ is libstdc++'s internals: it has no `IWYU pragma: private` markers, so e.g. `20s`
+  # resolves to bits/chrono.h rather than the <chrono> we include.
+  # Note each pattern is anchored at the end, so a trailing `.*` is required to match a directory.
+  - { key: misc-include-cleaner.IgnoreHeaders,                              value: '/Qt[A-Za-z]+/.*;bits/.*;fmt/.*' }
   - { key: readability-identifier-naming.ClassCase,                         value: CamelCase  }
 #  - { key: readability-identifier-naming.ClassMethodCase,                   value: lower_case } TODO: enable later
   - { key: readability-identifier-naming.ConstexprVariableCase,             value: CamelCase  }

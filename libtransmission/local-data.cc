@@ -4,7 +4,10 @@
 // License text can be found in the licenses/ folder.
 
 #include <cerrno>
+#include <cstddef> // size_t
+#include <cstdint> // int64_t
 #include <memory>
+#include <optional>
 #include <span>
 #include <string_view>
 #include <utility>
@@ -12,12 +15,16 @@
 #include "libtransmission/local-data.h"
 
 #include "libtransmission/crypto-utils.h"
+#include "libtransmission/error-types.h"
 #include "libtransmission/error.h"
+#include "libtransmission/file.h" // tr_sys_path_remove()
 #include "libtransmission/inout.h"
 #include "libtransmission/open-files.h"
 #include "libtransmission/torrent.h"
 #include "libtransmission/torrents.h"
+#include "libtransmission/tr-assert.h"
 #include "libtransmission/transmission.h"
+#include "libtransmission/types.h"
 
 namespace tr
 {

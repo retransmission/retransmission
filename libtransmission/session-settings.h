@@ -16,6 +16,7 @@
 #include <small/vector.hpp>
 
 #include "libtransmission/constants.h"
+#include "libtransmission/converters.h"
 #include "libtransmission/macros.h"
 #include "libtransmission/quark.h"
 #include "libtransmission/serializer.h"

@@ -15,16 +15,15 @@
 
 #include <gtest/gtest.h>
 
-#include <libtransmission/transmission.h>
-
-#include <libtransmission/constants.h>
-#include <libtransmission/crypto-utils.h>
-#include <libtransmission/quark.h>
-#include <libtransmission/session-id.h>
-#include <libtransmission/session.h>
-#include <libtransmission/tr-strbuf.h>
-#include <libtransmission/variant.h>
-#include <libtransmission/version.h>
+#include "libtransmission/constants.h"
+#include "libtransmission/crypto-utils.h"
+#include "libtransmission/quark.h"
+#include "libtransmission/session-id.h"
+#include "libtransmission/session.h"
+#include "libtransmission/tr-strbuf.h"
+#include "libtransmission/transmission.h"
+#include "libtransmission/variant.h"
+#include "libtransmission/version.h"
 
 #include "test-fixtures.h"
 

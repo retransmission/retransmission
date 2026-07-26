@@ -21,6 +21,7 @@
 
 #include <event2/event.h>
 #include <event2/thread.h>
+#include <event2/util.h>
 
 #include "libtransmission/session-thread.h"
 #include "libtransmission/tr-assert.h"

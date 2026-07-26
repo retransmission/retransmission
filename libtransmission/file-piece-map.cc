@@ -6,6 +6,7 @@
 #include <algorithm>
 #include <cstdint>
 #include <iterator>
+#include <span>
 #include <vector>
 
 #include <small/set.hpp>

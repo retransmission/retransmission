@@ -23,8 +23,8 @@
 
 #include <fmt/format.h>
 
-#include <libtransmission/net.h> // sockaddr_in, getsockname(), ntohs()
-#include <libtransmission/string-utils.h> // tr_strlower()
+#include "libtransmission/net.h" // sockaddr_in, getsockname(), ntohs()
+#include "libtransmission/string-utils.h" // tr_strlower()
 
 namespace tr::test
 {

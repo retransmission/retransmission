@@ -12,16 +12,10 @@
 #include "Session.h"
 #include "Utils.h"
 
-#include <libtransmission/file-utils.h>
-#include <libtransmission/string-utils.h>
-#include <libtransmission/utils.h>
+#include "libtransmission/file-utils.h"
+#include "libtransmission/string-utils.h"
+#include "libtransmission/utils.h"
 
-#include <giomm/icon.h>
-#include <glibmm/i18n.h>
-#include <glibmm/main.h>
-#include <glibmm/markup.h>
-#include <glibmm/miscutils.h>
-#include <glibmm/nodetree.h>
 #include <gtkmm/cellrendererpixbuf.h>
 #include <gtkmm/cellrendererprogress.h>
 #include <gtkmm/cellrenderertext.h>
@@ -32,6 +26,13 @@
 #include <gtkmm/treeselection.h>
 #include <gtkmm/treestore.h>
 #include <gtkmm/treeview.h>
+
+#include <giomm/icon.h>
+#include <glibmm/i18n.h>
+#include <glibmm/main.h>
+#include <glibmm/markup.h>
+#include <glibmm/miscutils.h>
+#include <glibmm/nodetree.h>
 
 #include <fmt/format.h>
 

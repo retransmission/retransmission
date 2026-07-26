@@ -10,11 +10,13 @@
 #include <fmt/format.h>
 
 #include "libtransmission/macros.h"
+#include "libtransmission/quark.h"
 #include "libtransmission/tr-getopt.h"
+#include "libtransmission/transmission.h"
 #include "libtransmission/utils.h" // tr_main
 #include "libtransmission/version.h"
 
-#include <libtransmission-app/app.h>
+#include "libtransmission-app/app.h"
 
 #include "Application.h"
 #include "InteropHelper.h"

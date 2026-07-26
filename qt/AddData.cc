@@ -3,12 +3,16 @@
 // or any future license endorsed by Mnemosaic LLC.
 // License text can be found in the licenses/ folder.
 
+#include <cstddef>
+#include <iterator>
+
 #include <QDir>
 #include <QFile>
 #include <QFileInfo>
 
-#include <libtransmission/torrent-metainfo.h>
-#include <libtransmission/web-utils.h>
+#include "libtransmission/magnet-metainfo.h"
+#include "libtransmission/torrent-metainfo.h"
+#include "libtransmission/web-utils.h"
 
 #include "AddData.h"
 #include "Utils.h"

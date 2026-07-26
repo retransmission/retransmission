@@ -10,10 +10,10 @@
 #include "Percents.h"
 #include "Utils.h"
 
-#include <libtransmission/transmission.h>
-#include <libtransmission/macros.h>
-#include <libtransmission/utils.h>
-#include <libtransmission/values.h>
+#include "libtransmission/macros.h"
+#include "libtransmission/transmission.h"
+#include "libtransmission/utils.h"
+#include "libtransmission/values.h"
 
 #include <glibmm/i18n.h>
 #include <glibmm/value.h>

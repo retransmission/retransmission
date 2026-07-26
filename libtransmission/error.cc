@@ -3,6 +3,7 @@
 // or any future license endorsed by Mnemosaic LLC.
 // License text can be found in the licenses/ folder.
 
+#include "libtransmission/error-types.h"
 #include "libtransmission/error.h"
 #include "libtransmission/string-utils.h"
 

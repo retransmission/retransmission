@@ -18,6 +18,7 @@
 #include "libtransmission/tr-strbuf.h"
 #include "libtransmission/utils.h" // for _()
 #include "libtransmission/watchdir-base.h"
+#include "libtransmission/watchdir.h"
 
 using namespace std::literals;
 

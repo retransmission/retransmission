@@ -9,8 +9,9 @@
 #include <optional>
 #include <vector>
 
-#include <libtransmission/converters.h>
-#include <libtransmission/variant.h>
+#include "libtransmission/converters.h"
+#include "libtransmission/quark.h"
+#include "libtransmission/variant.h"
 
 class QString;
 

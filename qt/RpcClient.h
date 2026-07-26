@@ -14,10 +14,10 @@
 
 #include <sigslot/signal.hpp>
 
-#include <libtransmission-app/rpc-client.h>
+#include "libtransmission-app/rpc-client.h"
 
-#include <libtransmission/quark.h>
-#include <libtransmission/variant.h>
+#include "libtransmission/quark.h"
+#include "libtransmission/variant.h"
 
 struct tr_session;
 

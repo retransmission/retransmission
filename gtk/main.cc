@@ -8,11 +8,13 @@
 #include "Notify.h"
 #include "Prefs.h"
 
-#include <libtransmission-app/app.h>
+#include "libtransmission-app/app.h"
 
-#include <libtransmission/transmission.h>
-#include <libtransmission/macros.h>
-#include <libtransmission/version.h>
+#include "libtransmission/macros.h"
+#include "libtransmission/transmission.h"
+#include "libtransmission/version.h"
+
+#include <gtkmm.h>
 
 #include <giomm/file.h>
 #include <giomm/init.h>
@@ -25,7 +27,6 @@
 #include <glibmm/optiongroup.h>
 #include <glibmm/ustring.h>
 #include <glibmm/wrap.h>
-#include <gtkmm.h>
 
 #include <fmt/format.h>
 

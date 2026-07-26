@@ -8,8 +8,8 @@
 #include <unordered_map>
 #include <vector>
 
-#include <libtransmission/string-utils.h>
-#include <libtransmission/torrent-metainfo.h>
+#include "libtransmission/string-utils.h"
+#include "libtransmission/torrent-metainfo.h"
 
 #import "NSStringAdditions.h"
 

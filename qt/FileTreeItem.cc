@@ -5,16 +5,21 @@
 
 #include <algorithm>
 #include <cassert>
+#include <cstdint>
+#include <iterator>
+#include <ranges>
+#include <unordered_map>
 #include <utility>
 
 #include <small/set.hpp>
 
-#include <libtransmission/types.h> // priorities
+#include "libtransmission/types.h"
 
 #include "FileTreeItem.h"
 #include "FileTreeModel.h"
 #include "Formatter.h"
 #include "IconCache.h"
+#include "Typedefs.h"
 
 std::unordered_map<QString, int> const& FileTreeItem::getMyChildRows() const
 {

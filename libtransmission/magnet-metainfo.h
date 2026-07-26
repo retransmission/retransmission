@@ -13,6 +13,7 @@
 #include "libtransmission/announce-list.h"
 #include "libtransmission/crypto-utils.h"
 #include "libtransmission/macros.h" // TR_CONSTEXPR_VEC, tr_sha1_digest_t
+#include "libtransmission/types.h"
 
 struct tr_error;
 

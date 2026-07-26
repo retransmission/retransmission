@@ -15,8 +15,10 @@
 
 #include <event2/event.h>
 
+#include <event2/util.h>
 #include <fmt/format.h>
 
+#include "libtransmission/crypto-utils.h"
 #include "libtransmission/log.h"
 #include "libtransmission/net.h"
 #include "libtransmission/session.h"
@@ -24,6 +26,7 @@
 #include "libtransmission/tr-assert.h"
 #include "libtransmission/macros.h"
 #include "libtransmission/tr-utp.h"
+#include "libtransmission/types.h"
 #include "libtransmission/utils.h"
 
 namespace

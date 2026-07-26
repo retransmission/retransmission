@@ -9,7 +9,6 @@
 
 #include "libtransmission/log.h"
 #include "libtransmission/session-alt-speeds.h"
-#include "libtransmission/variant.h"
 #include "libtransmission/utils.h" // for _()
 
 using namespace std::literals;
