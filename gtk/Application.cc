@@ -25,36 +25,46 @@
 #include "Torrent.h"
 #include "Utils.h"
 
-#include "libtransmission/api-compat.h"
 #include "libtransmission/log.h"
 #include "libtransmission/macros.h"
 #include "libtransmission/quark.h"
 #include "libtransmission/rpcimpl.h"
 #include "libtransmission/transmission.h"
+#include "libtransmission/types.h"
+#include "libtransmission/variant.h"
 #include "libtransmission/version.h"
 
 #include <gdkmm/display.h>
+#include <gdkmm/enums.h>
 #include <gtkmm/aboutdialog.h>
 #include <gtkmm/builder.h>
 #include <gtkmm/button.h>
 #include <gtkmm/cssprovider.h>
+#include <gtkmm/enums.h>
 #include <gtkmm/grid.h>
 #include <gtkmm/icontheme.h>
 #include <gtkmm/image.h>
 #include <gtkmm/label.h>
 #include <gtkmm/messagedialog.h>
+#include <gtkmm/object.h>
 #include <gtkmm/stylecontext.h>
 #include <gtkmm/window.h>
 
 #include <giomm/appinfo.h>
 #include <giomm/error.h>
 #include <giomm/menu.h>
+#include <glibmm/containerhandle_shared.h>
 #include <glibmm/i18n.h>
 #include <glibmm/main.h>
 #include <glibmm/miscutils.h>
+#include <glibmm/refptr.h>
+#include <glibmm/ustring.h>
 #include <glibmm/value.h>
 #include <glibmm/vectorutils.h>
 
+#include <sigc++/adaptors/bind_return.h>
+#include <sigc++/connection.h>
+#include <sigc++/functors/mem_fun.h>
 #include <small/set.hpp>
 #include <woke/woke.hpp>
 
@@ -66,23 +76,33 @@
 #include <gdkmm/dragcontext.h>
 #include <gtkmm/selectiondata.h>
 #endif
-
 #include <fmt/format.h>
 
 #include <algorithm>
 #include <csignal>
+#include <cstdint>
 #include <cstdlib> // exit()
 #include <ctime>
 #include <iterator> // std::back_inserter
 #include <map>
 #include <memory>
+#include <optional>
 #include <sstream>
 #include <string>
+#include <string_view>
 #include <thread>
+#include <unordered_set>
 #include <utility>
 #include <vector>
 
+#include <gdk/gdk.h>
+#include <gtk/gtk.h>
+
+#include <glib-object.h>
+#include <glib.h>
 #include <glib/gmessages.h>
+
+#include <sys/stat.h>
 
 #ifdef G_OS_UNIX
 #include <glib-unix.h>

@@ -13,58 +13,83 @@
 #include "PrefsDialog.h"
 #include "Session.h"
 #include "Utils.h"
+#include <netinet/in.h>
 
+#include "libtransmission/quark.h"
 #include "libtransmission/string-utils.h"
+#include "libtransmission/transmission.h"
+#include "libtransmission/types.h"
 #include "libtransmission/utils.h"
 #include "libtransmission/values.h"
+#include "libtransmission/variant.h"
 #include "libtransmission/web-utils.h"
 
 #include <gdkmm/pixbuf.h>
 #include <gtkmm/adjustment.h>
+#include <gtkmm/builder.h>
 #include <gtkmm/button.h>
 #include <gtkmm/cellrendererpixbuf.h>
 #include <gtkmm/cellrendererprogress.h>
 #include <gtkmm/cellrenderertext.h>
 #include <gtkmm/checkbutton.h>
 #include <gtkmm/combobox.h>
+#include <gtkmm/dialog.h>
 #include <gtkmm/entry.h>
+#include <gtkmm/enums.h>
 #include <gtkmm/label.h>
 #include <gtkmm/liststore.h>
 #include <gtkmm/messagedialog.h>
 #include <gtkmm/notebook.h>
+#include <gtkmm/object.h>
 #include <gtkmm/scrolledwindow.h>
 #include <gtkmm/spinbutton.h>
 #include <gtkmm/textbuffer.h>
 #include <gtkmm/textview.h>
 #include <gtkmm/tooltip.h>
 #include <gtkmm/treemodel.h>
+#include <gtkmm/treemodelcolumn.h>
 #include <gtkmm/treemodelfilter.h>
 #include <gtkmm/treemodelsort.h>
 #include <gtkmm/treerowreference.h>
 #include <gtkmm/treeview.h>
+#include <gtkmm/treeviewcolumn.h>
+#include <gtkmm/widget.h>
+#include <gtkmm/window.h>
 
 #include <glibmm/i18n.h>
 #include <glibmm/main.h>
 #include <glibmm/markup.h>
 #include <glibmm/quark.h>
+#include <glibmm/refptr.h>
 #include <glibmm/ustring.h>
 
 #include <fmt/chrono.h>
 #include <fmt/format.h>
 #include <fmt/ranges.h>
+#include <sigc++/adaptors/hide.h>
+#include <sigc++/connection.h>
+#include <sigc++/functors/mem_fun.h>
 
 #include <algorithm>
 #include <array>
 #include <cstddef>
+#include <cstdint>
 #include <cstdlib> // abort()
+#include <ctime>
 #include <iterator>
 #include <limits>
+#include <map>
 #include <memory>
 #include <numeric>
+#include <ostream>
 #include <sstream>
 #include <string>
 #include <string_view>
 #include <unordered_map>
+#include <utility>
+#include <vector>
+
+#include <glib.h>
 
 #ifdef _WIN32
 #include <winsock2.h>

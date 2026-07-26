@@ -6,14 +6,16 @@
 #include "Utils.h"
 
 #include "Prefs.h"
-#include "Session.h"
 
 #include "libtransmission/error.h"
 #include "libtransmission/macros.h"
+#include "libtransmission/magnet-metainfo.h"
+#include "libtransmission/quark.h"
 #include "libtransmission/string-utils.h"
 #include "libtransmission/torrent-metainfo.h"
 #include "libtransmission/tr-strbuf.h"
 #include "libtransmission/transmission.h" // TR_RATIO_NA, TR_RATIO_INF
+#include "libtransmission/types.h"
 #include "libtransmission/utils.h" // tr_strratio()
 #include "libtransmission/values.h"
 #include "libtransmission/version.h" // SHORT_VERSION_STRING
@@ -21,10 +23,18 @@
 
 #include <gdkmm/display.h>
 #include <gtkmm/cellrenderertext.h>
+#include <gtkmm/combobox.h>
+#include <gtkmm/entry.h>
+#include <gtkmm/label.h>
 #include <gtkmm/liststore.h>
+#include <gtkmm/listview.h>
 #include <gtkmm/messagedialog.h>
+#include <gtkmm/object.h>
 #include <gtkmm/treemodel.h>
 #include <gtkmm/treemodelcolumn.h>
+#include <gtkmm/treeview.h>
+#include <gtkmm/widget.h>
+#include <gtkmm/window.h>
 
 #include <giomm/appinfo.h>
 #include <giomm/asyncresult.h>
@@ -32,8 +42,14 @@
 #include <glibmm/convert.h>
 #include <glibmm/error.h>
 #include <glibmm/i18n.h>
+#include <glibmm/object.h>
+#include <glibmm/objectbase.h>
 #include <glibmm/quark.h>
+#include <glibmm/refptr.h>
+#include <glibmm/signalproxy.h>
 #include <glibmm/spawn.h>
+#include <glibmm/ustring.h>
+#include <glibmm/wrap.h>
 
 #if GTKMM_CHECK_VERSION(4, 0, 0)
 #include <gdkmm/clipboard.h>
@@ -45,15 +61,26 @@
 #include <gtkmm/clipboard.h>
 #endif
 
-#include <fmt/format.h>
+#include "gtk/GtkCompat.h"
 
+#include <fmt/format.h>
+#include <sigc++/functors/slot.h>
+
+#include <ctime>
 #include <functional>
+#include <iterator>
 #include <memory>
 #include <stack>
+#include <string>
+#include <string_view>
 #include <utility>
+#include <vector>
 
 #include <gdk/gdk.h>
 #include <gtk/gtk.h>
+
+#include <glib-object.h>
+#include <glib.h>
 
 #if GTK_CHECK_VERSION(4, 0, 0) && defined(GDK_WINDOWING_X11)
 #include <optional>

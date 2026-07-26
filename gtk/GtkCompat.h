@@ -11,8 +11,6 @@
 
 #include <glibmmconfig.h>
 
-#include <cstddef>
-
 // NOLINTBEGIN(cppcoreguidelines-macro-usage)
 
 #ifndef GTKMM_CHECK_VERSION

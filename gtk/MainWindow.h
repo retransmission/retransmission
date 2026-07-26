@@ -11,6 +11,9 @@
 #include <giomm/actiongroup.h>
 #include <glibmm/refptr.h>
 
+#include <sigc++/signal.h>
+
+#include <functional>
 #include <memory>
 
 class Session;

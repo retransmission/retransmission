@@ -8,6 +8,7 @@
 #include "GtkCompat.h"
 
 #include <giomm/listmodel.h>
+#include <glibmm/refptr.h>
 
 #if GTKMM_CHECK_VERSION(4, 0, 0)
 #include <gtkmm/sortlistmodel.h>

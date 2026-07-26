@@ -11,26 +11,33 @@
 #include "Session.h"
 #include "Utils.h"
 
+#include "libtransmission/announce-list.h"
 #include "libtransmission/error.h"
 #include "libtransmission/makemeta.h"
 #include "libtransmission/transmission.h"
+#include "libtransmission/types.h"
 #include "libtransmission/values.h"
 
+#include <gdkmm/enums.h>
 #include <gtkmm/adjustment.h>
+#include <gtkmm/builder.h>
 #include <gtkmm/checkbutton.h>
+#include <gtkmm/dialog.h>
 #include <gtkmm/entry.h>
 #include <gtkmm/label.h>
 #include <gtkmm/progressbar.h>
 #include <gtkmm/scale.h>
 #include <gtkmm/textbuffer.h>
 #include <gtkmm/textview.h>
+#include <gtkmm/window.h>
 
 #include <giomm/file.h>
-#include <glibmm/convert.h>
+#include <glibmm/containerhandle_shared.h>
 #include <glibmm/fileutils.h>
 #include <glibmm/i18n.h>
 #include <glibmm/main.h>
 #include <glibmm/miscutils.h>
+#include <glibmm/refptr.h>
 #include <glibmm/ustring.h>
 #include <glibmm/value.h>
 #include <glibmm/vectorutils.h>
@@ -43,13 +50,23 @@
 #endif
 
 #include <fmt/format.h>
+#include <sigc++/connection.h>
+#include <sigc++/functors/mem_fun.h>
 
 #include <chrono>
+#include <cmath>
+#include <cstdint>
 #include <future>
 #include <memory>
+#include <optional>
 #include <string>
 #include <string_view>
 #include <utility>
+
+#include <gdk/gdk.h>
+
+#include <glib-object.h>
+#include <glib.h>
 
 using namespace std::literals;
 using namespace tr::Values;

@@ -10,11 +10,13 @@
 #include <cstddef> // size_t
 #include <fstream>
 #include <functional>
+#include <ios>
 #include <map>
 #include <memory>
 #include <mutex>
 #include <string>
 #include <string_view>
+#include <utility>
 #include <vector>
 
 #include <fmt/format.h>

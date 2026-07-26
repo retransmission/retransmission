@@ -11,10 +11,12 @@
 #include "libtransmission-app/app.h"
 
 #include "libtransmission/macros.h"
+#include "libtransmission/quark.h"
 #include "libtransmission/transmission.h"
+#include "libtransmission/values.h"
 #include "libtransmission/version.h"
 
-#include <gtkmm.h>
+#include <gtkmm/version.h>
 
 #include <giomm/file.h>
 #include <giomm/init.h>
@@ -31,6 +33,10 @@
 #include <fmt/format.h>
 
 #include <string>
+
+#include <gio/gio.h>
+#include <glib-object.h>
+#include <glib.h>
 
 namespace
 {

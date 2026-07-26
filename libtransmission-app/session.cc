@@ -5,6 +5,8 @@
 
 #include "libtransmission-app/session.h"
 
+#include <optional>
+
 #include "libtransmission/macros.h"
 #include "libtransmission/quark.h"
 

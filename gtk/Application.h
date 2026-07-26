@@ -14,6 +14,8 @@
 #include <string>
 #include <vector>
 
+#include <glib.h>
+
 class Application : public Gtk::Application
 {
 public:

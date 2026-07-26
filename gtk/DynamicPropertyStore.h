@@ -13,7 +13,11 @@
 
 #include <array>
 #include <functional>
+#include <initializer_list>
 #include <type_traits>
+
+#include <glib-object.h>
+#include <glib.h>
 
 template<typename ObjectT, typename PropertyT>
 class DynamicPropertyStore

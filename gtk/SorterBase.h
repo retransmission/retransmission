@@ -7,6 +7,10 @@
 
 #include "GtkCompat.h"
 
+#include <gtkmm/enums.h>
+
+#include <glib.h>
+
 #if GTKMM_CHECK_VERSION(4, 0, 0)
 #include <gtkmm/sorter.h>
 #else

@@ -5,7 +5,8 @@
 
 #include "FilterBar.h"
 
-#include "FilterListModel.hh"
+// out-of-line template definitions for FilterListModel<>
+#include "FilterListModel.hh" // IWYU pragma: keep
 #include "HigWorkarea.h" // GUI_PAD
 #include "Prefs.h"
 #include "Session.h" // torrent_cols
@@ -16,6 +17,8 @@
 #include "libtransmission-app/display-modes.h"
 
 #include "libtransmission/macros.h"
+#include "libtransmission/quark.h"
+#include "libtransmission/transmission.h"
 
 #include <gdkmm/pixbuf.h>
 #include <gtkmm/cellrendererpixbuf.h>
@@ -23,15 +26,25 @@
 #include <gtkmm/combobox.h>
 #include <gtkmm/entry.h>
 
+#include <glibmm/extraclassinit.h>
 #include <glibmm/i18n.h>
 #include <glibmm/main.h>
+#include <glibmm/objectbase.h>
+#include <glibmm/refptr.h>
 #include <glibmm/unicode.h>
 #include <glibmm/ustring.h>
+#include <glibmm/utility.h>
 #if GTKMM_CHECK_VERSION(4, 0, 0)
 #include <gtkmm/filterlistmodel.h>
 #endif
+#include "gtk/FilterListModel.h"
+#include "gtk/GtkCompat.h"
+
+#include <gtkmm/box.h>
+#include <gtkmm/builder.h>
 #include <gtkmm/label.h>
 #include <gtkmm/liststore.h>
+#include <gtkmm/object.h>
 #include <gtkmm/treemodel.h>
 #include <gtkmm/treemodelcolumn.h>
 #include <gtkmm/treemodelfilter.h>
@@ -39,13 +52,24 @@
 #include <gtkmm/treestore.h>
 
 #include <fmt/format.h>
+#include <sigc++/adaptors/hide.h>
+#include <sigc++/connection.h>
+#include <sigc++/functors/mem_fun.h>
 
 #include <algorithm> // std::transform()
 #include <array>
+#include <cstddef>
 #include <map>
 #include <memory>
 #include <string>
 #include <unordered_map>
+#include <utility>
+#include <vector>
+
+#include <gtk/gtk.h>
+
+#include <glib-object.h>
+#include <glib.h>
 
 using namespace tr::app;
 

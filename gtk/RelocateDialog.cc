@@ -10,14 +10,23 @@
 #include "Session.h"
 #include "Utils.h"
 
+#include "libtransmission/transmission.h"
+#include "libtransmission/types.h"
+
+#include <gtkmm/builder.h>
 #include <gtkmm/checkbutton.h>
+#include <gtkmm/dialog.h>
 #include <gtkmm/messagedialog.h>
+#include <gtkmm/window.h>
 
 #include <glibmm/i18n.h>
 #include <glibmm/main.h>
+#include <glibmm/refptr.h>
 #include <glibmm/ustring.h>
 
 #include <fmt/format.h>
+#include <sigc++/connection.h>
+#include <sigc++/functors/mem_fun.h>
 
 #include <memory>
 #include <string>

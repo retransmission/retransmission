@@ -7,13 +7,14 @@
 
 #include "GtkCompat.h"
 
+#include <glibmm/objectbase.h>
+#include <glibmm/refptr.h>
+
 #if GTKMM_CHECK_VERSION(4, 0, 0)
 #include <gtkmm/filter.h>
 #else
 #include <glibmm/object.h>
 #endif
-
-#include <cstdint>
 
 template<typename T>
 class FilterBase : public IF_GTKMM4(Gtk::Filter, Glib::Object)

@@ -12,11 +12,15 @@
 #include "Utils.h"
 
 #include "libtransmission/macros.h"
+#include "libtransmission/quark.h"
+#include "libtransmission/transmission.h"
+#include "libtransmission/types.h"
 
 #include <giomm/asyncresult.h>
 #include <giomm/dbusproxy.h>
 #include <glibmm/error.h>
 #include <glibmm/i18n.h>
+#include <glibmm/refptr.h>
 #include <glibmm/spawn.h>
 #include <glibmm/ustring.h>
 #include <glibmm/variant.h>
@@ -25,8 +29,13 @@
 #include <fmt/ranges.h>
 
 #include <map>
+#include <string>
+#include <string_view>
+#include <type_traits>
 #include <utility>
 #include <vector>
+
+#include <glib.h>
 
 using namespace std::literals;
 

@@ -6,23 +6,42 @@
 #include "Torrent.h"
 
 #include "DynamicPropertyStore.h"
+#include "gtk/GtkCompat.h"
 #include "IconCache.h"
 #include "Percents.h"
 #include "Utils.h"
 
 #include "libtransmission/macros.h"
 #include "libtransmission/transmission.h"
+#include "libtransmission/types.h"
 #include "libtransmission/utils.h"
 #include "libtransmission/values.h"
 
+#include <gtkmm/treemodelcolumn.h>
+
+#include <giomm/icon.h>
+#include <glibmm/extraclassinit.h>
 #include <glibmm/i18n.h>
+#include <glibmm/refptr.h>
+#include <glibmm/ustring.h>
 #include <glibmm/value.h>
 
 #include <fmt/format.h>
 
+#include <algorithm>
 #include <array>
 #include <cmath>
+#include <concepts>
+#include <cstddef>
+#include <cstdint>
+#include <ctime>
+#include <memory>
+#include <string_view>
 #include <utility>
+#include <vector>
+
+#include <glib-object.h>
+#include <glib.h>
 
 using namespace std::string_view_literals;
 

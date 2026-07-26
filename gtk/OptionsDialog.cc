@@ -7,6 +7,7 @@
 
 #include "FileList.h"
 #include "FreeSpaceLabel.h"
+#include "gtk/Torrent.h"
 #include "GtkCompat.h"
 #include "PathButton.h"
 #include "Prefs.h"
@@ -15,17 +16,31 @@
 #include "Utils.h"
 
 #include "libtransmission/file.h" // tr_sys_path_is_same()
+#include "libtransmission/quark.h"
 #include "libtransmission/transmission.h"
+#include "libtransmission/types.h"
 
+#include <gtkmm/builder.h>
 #include <gtkmm/checkbutton.h>
 #include <gtkmm/combobox.h>
+#include <gtkmm/dialog.h>
+#include <gtkmm/entry.h>
+#include <gtkmm/filechoosernative.h>
 #include <gtkmm/filefilter.h>
+#include <gtkmm/window.h>
 
 #include <giomm/file.h>
 #include <glibmm/i18n.h>
+#include <glibmm/refptr.h>
+
+#include <sigc++/functors/mem_fun.h>
 
 #include <memory>
+#include <string>
+#include <string_view>
 #include <utility>
+
+#include <glib.h>
 
 using namespace std::literals;
 

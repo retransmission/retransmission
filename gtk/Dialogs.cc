@@ -8,13 +8,19 @@
 #include "Session.h"
 #include "Utils.h"
 
+#include "libtransmission/transmission.h"
+#include "libtransmission/types.h"
+
 #include <gtkmm/messagedialog.h>
+#include <gtkmm/window.h>
 
 #include <glibmm/i18n.h>
+#include <glibmm/refptr.h>
 #include <glibmm/ustring.h>
 
 #include <fmt/format.h>
 
+#include <cstddef>
 #include <memory>
 #include <vector>
 

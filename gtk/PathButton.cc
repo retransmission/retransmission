@@ -9,25 +9,33 @@
 #include "Utils.h"
 
 #include <gtkmm/box.h>
+#include <gtkmm/builder.h>
 #include <gtkmm/button.h>
-#include <gtkmm/dialog.h>
+// Gtk::ResponseType, selected via the IF_GTKMM4() macro below
+#include <gtkmm/dialog.h> // IWYU pragma: keep
 #include <gtkmm/filechooser.h>
 #include <gtkmm/filechoosernative.h>
+#include <gtkmm/filefilter.h>
 #include <gtkmm/image.h>
 #include <gtkmm/label.h>
+#include <gtkmm/object.h>
 #include <gtkmm/popover.h>
 #include <gtkmm/separator.h>
+#include <gtkmm/widget.h>
 
 #include <giomm/file.h>
 #include <giomm/icon.h>
 #include <glibmm/error.h>
 #include <glibmm/i18n.h>
+#include <glibmm/objectbase.h>
 #include <glibmm/property.h>
 #include <glibmm/refptr.h>
 #include <glibmm/ustring.h>
 
+#include <sigc++/functors/mem_fun.h>
 #include <sigc++/signal.h>
 
+#include <memory>
 #include <string>
 #include <vector>
 

@@ -10,10 +10,16 @@
 
 #include "libtransmission/file.h"
 
+#include <gtkmm/builder.h>
+#include <gtkmm/label.h>
+
 #include <glibmm/i18n.h>
 #include <glibmm/main.h>
+#include <glibmm/refptr.h>
 
 #include <fmt/format.h>
+#include <sigc++/connection.h>
+#include <sigc++/functors/mem_fun.h>
 
 #include <memory>
 #include <string>

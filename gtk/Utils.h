@@ -7,6 +7,7 @@
 
 #include "GtkCompat.h"
 
+#include "libtransmission/error.h"
 #include "libtransmission/transmission.h"
 #include "libtransmission/values.h"
 
@@ -17,6 +18,7 @@
 #if GTKMM_CHECK_VERSION(4, 0, 0)
 #include <gtkmm/listview.h>
 #endif
+#include <gdkmm/enums.h>
 #include <gtkmm/treeview.h>
 #include <gtkmm/widget.h>
 #include <gtkmm/window.h>
@@ -25,6 +27,7 @@
 #include <glibmm/refptr.h>
 #include <glibmm/signalproxy.h>
 #include <glibmm/ustring.h>
+#include <glibmm/value.h>
 
 #include <fmt/format.h>
 
@@ -37,6 +40,9 @@
 #include <type_traits>
 #include <utility>
 #include <vector>
+
+#include <glib-object.h>
+#include <glib.h>
 
 /***
 ****

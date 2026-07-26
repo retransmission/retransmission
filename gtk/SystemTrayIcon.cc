@@ -6,15 +6,21 @@
 #include "SystemTrayIcon.h"
 
 #include "Actions.h"
-#include "Macros.h"
+// MY_NAME, used only when a tray implementation is available
+#include "Macros.h" // IWYU pragma: keep
 #include "Session.h"
 #include "Utils.h"
 
-#include "libtransmission/macros.h"
+// TR_PROJ_APPNAME, used only when a tray implementation is available
+#include "libtransmission/macros.h" // IWYU pragma: keep
 #include "libtransmission/transmission.h"
+#include "libtransmission/types.h"
+#include "libtransmission/values.h"
+
+#include <gtkmm/window.h>
 
 #include <glibmm/i18n.h>
-#include <glibmm/ustring.h>
+#include <glibmm/refptr.h>
 
 #if !GTKMM_CHECK_VERSION(4, 0, 0)
 #include <gtkmm/icontheme.h>
@@ -27,7 +33,12 @@
 #endif
 #endif
 
+#include "gtk/GtkCompat.h"
+
+#include <memory>
 #include <string>
+
+#include <glib.h>
 
 #ifdef HAVE_APPINDICATOR
 #ifdef APPINDICATOR_IS_AYATANA

@@ -19,21 +19,28 @@
 
 #include "libtransmission-app/display-modes.h"
 
+#include "libtransmission/quark.h"
 #include "libtransmission/transmission.h"
+#include "libtransmission/types.h"
 #include "libtransmission/values.h"
 
 #include <gdkmm/cursor.h>
 #include <gdkmm/rectangle.h>
+#include <gtkmm/applicationwindow.h>
+#include <gtkmm/builder.h>
+#include <gtkmm/enums.h>
 #include <gtkmm/image.h>
 #include <gtkmm/label.h>
+#include <gtkmm/listview.h>
 #include <gtkmm/menubutton.h>
+#include <gtkmm/object.h>
+#include <gtkmm/popover.h>
 #include <gtkmm/scrolledwindow.h>
 #include <gtkmm/togglebutton.h>
-#include <gtkmm/treemodel.h>
-#include <gtkmm/treeview.h>
 #include <gtkmm/widget.h>
 #include <gtkmm/window.h>
 
+#include <giomm/actiongroup.h>
 #include <giomm/menu.h>
 #include <giomm/menuitem.h>
 #include <giomm/menumodel.h>
@@ -42,8 +49,11 @@
 #include <glibmm/i18n.h>
 #include <glibmm/main.h>
 #include <glibmm/miscutils.h>
+#include <glibmm/object.h>
+#include <glibmm/refptr.h>
 #include <glibmm/ustring.h>
 #include <glibmm/variant.h>
+#include <glibmm/wrap.h>
 
 #if GTKMM_CHECK_VERSION(4, 0, 0)
 #include <gtkmm/listitemfactory.h>
@@ -57,9 +67,24 @@
 #include <gtkmm/treeviewcolumn.h>
 #endif
 
+#include <sigc++/adaptors/bind_return.h>
+#include <sigc++/connection.h>
+#include <sigc++/functors/mem_fun.h>
+#include <sigc++/signal.h>
+
 #include <array>
+#include <cstddef>
+#include <cstdint>
+#include <functional>
 #include <memory>
 #include <string>
+#include <string_view>
+#include <utility>
+
+#include <gtk/gtk.h>
+
+#include <glib-object.h>
+#include <glib.h>
 
 using namespace std::string_literals;
 using namespace std::string_view_literals;

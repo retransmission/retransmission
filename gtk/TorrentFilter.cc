@@ -5,15 +5,26 @@
 
 #include "TorrentFilter.h"
 
-#include "FilterBase.hh"
+// out-of-line template definitions for FilterBase<>
+#include "FilterBase.hh" // IWYU pragma: keep
+#include "gtk/Torrent.h"
 #include "Utils.h"
 
 #include "libtransmission/macros.h"
 #include "libtransmission/transmission.h"
+#include "libtransmission/types.h"
+
+#include <glibmm/objectbase.h>
+#include <glibmm/refptr.h>
+#include <glibmm/ustring.h>
 
 #include <algorithm>
 #include <array>
+#include <cstddef>
+#include <ranges>
 #include <utility>
+
+#include <glib.h>
 
 TorrentFilter::TorrentFilter()
     : Glib::ObjectBase(typeid(TorrentFilter))

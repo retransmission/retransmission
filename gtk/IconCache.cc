@@ -7,9 +7,9 @@
 
 #include "IconCache.h"
 
-#include "GtkCompat.h"
-
 #include <giomm/contenttype.h>
+#include <giomm/icon.h>
+#include <glibmm/refptr.h>
 
 #include <functional> // for std::less<>
 #include <map>

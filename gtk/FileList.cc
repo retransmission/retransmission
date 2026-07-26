@@ -14,29 +14,46 @@
 
 #include "libtransmission/file-utils.h"
 #include "libtransmission/string-utils.h"
+#include "libtransmission/transmission.h"
+#include "libtransmission/types.h"
 #include "libtransmission/utils.h"
 
+#include <gtkmm/builder.h>
+#include <gtkmm/cellrenderer.h>
 #include <gtkmm/cellrendererpixbuf.h>
 #include <gtkmm/cellrendererprogress.h>
 #include <gtkmm/cellrenderertext.h>
 #include <gtkmm/cellrenderertoggle.h>
+#include <gtkmm/enums.h>
 #include <gtkmm/messagedialog.h>
+#include <gtkmm/object.h>
+#include <gtkmm/scrolledwindow.h>
 #include <gtkmm/treemodel.h>
 #include <gtkmm/treemodelcolumn.h>
 #include <gtkmm/treeselection.h>
 #include <gtkmm/treestore.h>
 #include <gtkmm/treeview.h>
+#include <gtkmm/treeviewcolumn.h>
+#include <gtkmm/widget.h>
 
+#include <giomm/file.h>
 #include <giomm/icon.h>
 #include <glibmm/i18n.h>
 #include <glibmm/main.h>
 #include <glibmm/markup.h>
 #include <glibmm/miscutils.h>
 #include <glibmm/nodetree.h>
+#include <glibmm/refptr.h>
+#include <glibmm/ustring.h>
 
 #include <fmt/format.h>
+#include <sigc++/connection.h>
+#include <sigc++/functors/mem_fun.h>
+#include <sigc++/functors/ptr_fun.h>
 
 #include <algorithm>
+#include <cstdint>
+#include <functional>
 #include <memory>
 #include <optional>
 #include <queue>
@@ -45,6 +62,12 @@
 #include <string_view>
 #include <unordered_map>
 #include <utility>
+#include <vector>
+
+#include <gdk/gdk.h>
+#include <gtk/gtk.h>
+
+#include <glib.h>
 
 using namespace std::literals;
 

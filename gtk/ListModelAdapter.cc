@@ -5,7 +5,25 @@
 
 #include "ListModelAdapter.h"
 
+#include "gtk/GtkCompat.h"
 #include "Utils.h"
+
+#include <gtkmm/treemodel.h>
+#include <gtkmm/treemodelcolumn.h>
+
+#include <giomm/listmodel.h>
+#include <glibmm/objectbase.h>
+#include <glibmm/refptr.h>
+#include <glibmm/value.h>
+
+#include <sigc++/functors/mem_fun.h>
+
+#include <iterator> // std::next()
+#include <optional> // std::nullopt
+#include <utility> // std::move()
+
+#include <glib-object.h>
+#include <glib.h>
 
 namespace
 {

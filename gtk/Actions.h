@@ -17,6 +17,8 @@
 #include <glibmm/refptr.h>
 #include <glibmm/ustring.h>
 
+#include <glib.h>
+
 class Session;
 
 Glib::RefPtr<Gio::SimpleActionGroup> gtr_actions_init(Glib::RefPtr<Gtk::Builder> const& builder, gpointer callback_user_data);

@@ -13,36 +13,53 @@
 #include "Utils.h"
 
 #include "libtransmission/log.h"
+#include "libtransmission/quark.h"
+#include "libtransmission/types.h"
 
+#include <gtkmm/builder.h>
 #include <gtkmm/cellrenderertext.h>
 #include <gtkmm/combobox.h>
 #include <gtkmm/filechoosernative.h>
 #include <gtkmm/liststore.h>
 #include <gtkmm/messagedialog.h>
+#include <gtkmm/object.h>
 #include <gtkmm/treemodel.h>
 #include <gtkmm/treemodelcolumn.h>
 #include <gtkmm/treemodelfilter.h>
 #include <gtkmm/treemodelsort.h>
 #include <gtkmm/treeview.h>
+#include <gtkmm/treeviewcolumn.h>
 
 #include <giomm/simpleaction.h>
+#include <giomm/simpleactiongroup.h>
 #include <glibmm/convert.h>
 #include <glibmm/datetime.h>
 #include <glibmm/i18n.h>
 #include <glibmm/main.h>
 #include <glibmm/miscutils.h>
+#include <glibmm/refptr.h>
 #include <glibmm/ustring.h>
 #include <glibmm/variant.h>
 
 #include <fmt/format.h>
 #include <fmt/ostream.h>
+#include <sigc++/connection.h>
+#include <sigc++/functors/mem_fun.h>
 
 #include <algorithm>
 #include <array>
 #include <chrono>
+#include <cstddef>
 #include <fstream>
+#include <ios>
+#include <iterator>
 #include <memory>
+#include <ranges>
+#include <string>
 #include <utility>
+#include <vector>
+
+#include <glib.h>
 
 namespace
 {

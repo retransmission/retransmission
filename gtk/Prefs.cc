@@ -9,6 +9,7 @@
 #include "libtransmission-app/display-modes.h"
 
 #include "libtransmission/converters.h"
+#include "libtransmission/quark.h"
 #include "libtransmission/transmission.h"
 #include "libtransmission/variant.h"
 
@@ -16,6 +17,8 @@
 
 #include <string>
 #include <string_view>
+#include <utility>
+#include <vector>
 
 using namespace std::literals;
 using namespace tr::app;

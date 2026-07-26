@@ -3,8 +3,11 @@
 // or any future license endorsed by Mnemosaic LLC.
 // License text can be found in the licenses/ folder.
 
+#include "libtransmission/converters.h"
+
 #include <array>
 #include <chrono>
+#include <cstdint>
 #include <ctime>
 #include <optional>
 #include <string>
@@ -14,7 +17,6 @@
 #include <fmt/chrono.h>
 #include <fmt/format.h>
 
-#include "libtransmission/converters.h"
 #include "libtransmission/string-utils.h"
 #include "libtransmission/utils.h"
 #include "libtransmission/variant.h"

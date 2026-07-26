@@ -3,6 +3,8 @@
 // or any future license endorsed by Mnemosaic LLC.
 // License text can be found in the licenses/ folder.
 
+#include "libtransmission-app/prefs.h"
+
 #include <string>
 #include <string_view>
 #include <optional>
@@ -10,10 +12,9 @@
 #include <fmt/format.h>
 
 #include "libtransmission/quark.h"
-#include "libtransmission/session-settings.h"
+#include "libtransmission/serializer.h"
 #include "libtransmission/transmission.h"
-
-#include "libtransmission-app/prefs.h"
+#include "libtransmission/variant.h"
 
 namespace tr::app
 {

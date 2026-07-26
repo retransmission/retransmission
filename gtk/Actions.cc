@@ -5,6 +5,7 @@
 
 #include "Actions.h"
 
+#include "gtk/GtkCompat.h"
 #include "Prefs.h"
 #include "PrefsDialog.h"
 #include "Session.h"
@@ -12,8 +13,15 @@
 
 #include "libtransmission/quark.h"
 
+#include <gtkmm/builder.h>
+
+#include <giomm/listmodel.h>
 #include <giomm/simpleaction.h>
+#include <giomm/simpleactiongroup.h>
 #include <glibmm/i18n.h>
+#include <glibmm/object.h>
+#include <glibmm/refptr.h>
+#include <glibmm/ustring.h>
 #include <glibmm/variant.h>
 
 #include <array>
@@ -21,13 +29,17 @@
 #include <string_view>
 #include <unordered_map>
 
+#include <glib.h>
+
 #if GTKMM_CHECK_VERSION(4, 0, 0)
 #include <gtkmm/shortcut.h>
 #include <gtkmm/shortcutaction.h>
 #include <gtkmm/shortcuttrigger.h>
 
 #include <giomm/liststore.h>
-#include <giomm/menuattributeiter.h>
+// Gio::MenuAttributeIter is reached through Glib::RefPtr<>::operator->, so the complete type
+// is needed even though the name is never written here
+#include <giomm/menuattributeiter.h> // IWYU pragma: keep
 #include <giomm/menulinkiter.h>
 
 #include <stack>

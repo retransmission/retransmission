@@ -5,18 +5,27 @@
 
 #include "TorrentSorter.h"
 
-#include "Percents.h"
-#include "SorterBase.hh"
+// out-of-line template definitions for SorterBase<>
+#include "SorterBase.hh" // IWYU pragma: keep
+// Percents is returned by value from Torrent accessors and only forward-declared in Torrent.h
+#include "gtk/Torrent.h"
+#include "Percents.h" // IWYU pragma: keep
 
 #include "libtransmission-app/display-modes.h"
 
 #include "libtransmission/macros.h"
+#include "libtransmission/types.h"
 #include "libtransmission/utils.h"
+
+#include <glibmm/objectbase.h>
+#include <glibmm/refptr.h>
 
 #include <small/map.hpp>
 
 #include <algorithm>
 #include <array>
+#include <ctime>
+#include <ranges>
 #include <utility>
 
 using namespace std::string_view_literals;

@@ -8,6 +8,7 @@
 #include "Flags.h"
 
 #include "libtransmission/transmission.h"
+#include "libtransmission/types.h"
 #include "libtransmission/values.h"
 
 #include <gtkmm/treemodelcolumn.h>
@@ -15,11 +16,16 @@
 #include <giomm/icon.h>
 #include <glibmm/extraclassinit.h>
 #include <glibmm/object.h>
+#include <glibmm/objectbase.h>
 #include <glibmm/refptr.h>
 #include <glibmm/ustring.h>
+#include <glibmm/value.h>
 
+#include <cstddef>
 #include <cstdint>
+#include <ctime>
 #include <memory>
+#include <vector>
 
 class Percents;
 

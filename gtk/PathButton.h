@@ -5,14 +5,14 @@
 
 #pragma once
 
-#include "GtkCompat.h"
-
 #include <gtkmm/builder.h>
 #include <gtkmm/button.h>
 #include <gtkmm/filefilter.h>
 
 #include <glibmm/refptr.h>
 #include <glibmm/ustring.h>
+
+#include <sigc++/signal.h>
 
 #include <memory>
 #include <string>

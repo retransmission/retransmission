@@ -8,51 +8,76 @@
 #include "Notify.h"
 #include "Prefs.h"
 #include "PrefsDialog.h"
-#include "SortListModel.hh"
+// out-of-line template definitions for SortListModel<>
+#include "SortListModel.hh" // IWYU pragma: keep
 #include "Torrent.h"
 #include "TorrentSorter.h"
 #include "Utils.h"
 
+#include "libtransmission-app/favicon-cache.h"
+
 #include "libtransmission/env.h"
 #include "libtransmission/macros.h"
+#include "libtransmission/quark.h"
 #include "libtransmission/rpcimpl.h"
 #include "libtransmission/string-utils.h"
 #include "libtransmission/torrent-metainfo.h"
 #include "libtransmission/transmission.h"
+#include "libtransmission/types.h"
 #include "libtransmission/utils.h" // tr_time()
 #include "libtransmission/variant.h"
 #include "libtransmission/web-utils.h" // tr_urlIsValid()
 
+#include <gdkmm/pixbuf.h>
+
 #include <giomm/asyncresult.h>
 #include <giomm/fileinfo.h>
 #include <giomm/filemonitor.h>
+#include <giomm/listmodel.h>
 #include <giomm/liststore.h>
 #include <glibmm/error.h>
 #include <glibmm/fileutils.h>
 #include <glibmm/i18n.h>
 #include <glibmm/main.h>
 #include <glibmm/miscutils.h>
+#include <glibmm/objectbase.h>
+#include <glibmm/refptr.h>
 #include <glibmm/stringutils.h>
+#include <glibmm/ustring.h>
 
 #if GTKMM_CHECK_VERSION(4, 0, 0)
-#include <gtkmm/sortlistmodel.h>
+#include "gtk/GtkCompat.h"
+#include "gtk/SortListModel.h"
 #else
 #include <gtkmm/treemodelsort.h>
 #endif
 
 #include <fmt/format.h>
+#include <sigc++/adaptors/hide.h>
+#include <sigc++/connection.h>
+#include <sigc++/functors/mem_fun.h>
+#include <sigc++/signal.h>
 #include <woke/woke.hpp>
 
 #include <algorithm>
 #include <array>
+#include <cstddef>
+#include <cstdint>
+#include <ctime>
 #include <functional>
 #include <iostream>
+#include <iterator>
 #include <map>
 #include <memory>
 #include <optional>
 #include <string>
 #include <string_view>
+#include <unordered_set>
 #include <utility>
+#include <vector>
+
+#include <gio/gio.h>
+#include <glib.h>
 
 using namespace std::literals;
 using namespace tr::app;

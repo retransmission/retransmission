@@ -13,7 +13,10 @@
 #include "SystemTrayIcon.h"
 #include "Utils.h"
 
+#include "libtransmission/quark.h"
 #include "libtransmission/transmission.h"
+#include "libtransmission/types.h"
+#include "libtransmission/values.h"
 #include "libtransmission/web-utils.h"
 
 #include <gtkmm/adjustment.h>
@@ -27,22 +30,32 @@
 #if GTKMM_CHECK_VERSION(4, 0, 0)
 #include <gtkmm/eventcontrollerfocus.h>
 #endif
+#include <gtkmm/builder.h>
+#include <gtkmm/dialog.h>
 #include <gtkmm/label.h>
 #include <gtkmm/liststore.h>
+#include <gtkmm/object.h>
 #include <gtkmm/spinbutton.h>
 #include <gtkmm/textview.h>
 #include <gtkmm/treemodelcolumn.h>
+#include <gtkmm/treeview.h>
+#include <gtkmm/treeviewcolumn.h>
 #include <gtkmm/widget.h>
 
 #include <glibmm/date.h>
 #include <glibmm/i18n.h>
 #include <glibmm/main.h>
+#include <glibmm/refptr.h>
 #include <glibmm/timer.h>
 #include <glibmm/ustring.h>
 
 #include <fmt/format.h>
+#include <sigc++/adaptors/bind_return.h>
+#include <sigc++/connection.h>
+#include <sigc++/functors/mem_fun.h>
 
 #include <array>
+#include <cstdint>
 #include <limits>
 #include <map>
 #include <memory>
@@ -51,6 +64,10 @@
 #include <string>
 #include <string_view>
 #include <type_traits>
+#include <utility>
+#include <vector>
+
+#include <glib.h>
 
 using namespace tr::Values;
 

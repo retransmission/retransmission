@@ -13,6 +13,13 @@
 #include <glibmm/error.h>
 #include <glibmm/main.h>
 #include <glibmm/miscutils.h>
+#include <glibmm/refptr.h>
+
+#include <cstddef>
+#include <functional>
+#include <string>
+#include <string_view>
+#include <utility>
 
 using namespace tr::app;
 using Icon = Glib::RefPtr<Gdk::Pixbuf>;

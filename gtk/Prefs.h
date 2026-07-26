@@ -4,7 +4,9 @@
 
 #pragma once
 
-#include "libtransmission-app/converters.h"
+// Converter<> specializations for the app-level enums stored in Prefs (StatsMode et al);
+// found by template instantiation, so no symbol from this header is named directly
+#include "libtransmission-app/converters.h" // IWYU pragma: keep
 
 #include "libtransmission/converters.h"
 #include "libtransmission/quark.h"
@@ -14,6 +16,7 @@
 #include <glibmm/miscutils.h>
 #include <glibmm/ustring.h>
 
+#include <concepts>
 #include <optional>
 #include <string>
 #include <string_view>

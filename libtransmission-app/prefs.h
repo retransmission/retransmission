@@ -8,6 +8,7 @@
 #include <chrono>
 #include <cstddef>
 #include <cstdint>
+#include <optional>
 #include <string>
 #include <string_view>
 #include <tuple>
@@ -25,7 +26,9 @@
 #include "libtransmission/types.h"
 #include "libtransmission/variant.h"
 
-#include "libtransmission-app/converters.h"
+// Converter<> specializations for the app-level types stored here; they are found by
+// template instantiation, so no symbol from this header is named directly
+#include "libtransmission-app/converters.h" // IWYU pragma: keep
 #include "libtransmission-app/display-modes.h"
 
 namespace tr::app

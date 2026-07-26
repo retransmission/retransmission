@@ -15,10 +15,16 @@
 #include <glibmm/refptr.h>
 #include <glibmm/value.h>
 
+#include <sigc++/connection.h>
+
 #include <cstdint>
+#include <functional>
 #include <optional>
 #include <unordered_map>
 #include <vector>
+
+#include <glib-object.h>
+#include <glib.h>
 
 class ListModelAdapter
     : public Gtk::TreeModel
