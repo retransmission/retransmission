@@ -8,6 +8,9 @@
 #include "IconCache.h"
 
 #include <giomm/contenttype.h>
+// RefPtr comparison shims for glibmm < 2.68, used by `icon != nullptr` below
+#include "GtkCompat.h" // IWYU pragma: keep
+
 #include <giomm/icon.h>
 #include <glibmm/refptr.h>
 

@@ -27,7 +27,9 @@
 #include <gtkmm/entry.h>
 #include <gtkmm/label.h>
 #include <gtkmm/liststore.h>
+#if GTKMM_CHECK_VERSION(4, 0, 0)
 #include <gtkmm/listview.h>
+#endif
 #include <gtkmm/messagedialog.h>
 #include <gtkmm/object.h>
 #include <gtkmm/treemodel.h>

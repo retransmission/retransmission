@@ -5,10 +5,13 @@
 
 #pragma once
 
+// uint8_t: underlying type of the gtkmm3-only Change enum below
 #include "GtkCompat.h"
 
 #include <glibmm/objectbase.h>
 #include <glibmm/refptr.h>
+
+#include <cstdint> // IWYU pragma: keep
 
 #if GTKMM_CHECK_VERSION(4, 0, 0)
 #include <gtkmm/filter.h>

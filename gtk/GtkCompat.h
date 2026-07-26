@@ -5,11 +5,14 @@
 
 #pragma once
 
+// std::nullptr_t, used by the pre-glibmm-2.68 RefPtr comparison shims below
 #include <cairommconfig.h>
 #include <gtkmmconfig.h>
 #include <pangommconfig.h>
 
 #include <glibmmconfig.h>
+
+#include <cstddef> // IWYU pragma: keep
 
 // NOLINTBEGIN(cppcoreguidelines-macro-usage)
 

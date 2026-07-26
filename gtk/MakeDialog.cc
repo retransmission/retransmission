@@ -18,7 +18,9 @@
 #include "libtransmission/types.h"
 #include "libtransmission/values.h"
 
+#if GTKMM_CHECK_VERSION(4, 0, 0)
 #include <gdkmm/enums.h>
+#endif
 #include <gtkmm/adjustment.h>
 #include <gtkmm/builder.h>
 #include <gtkmm/checkbutton.h>
@@ -32,7 +34,9 @@
 #include <gtkmm/window.h>
 
 #include <giomm/file.h>
+// Glib::filename_from_uri(), declared here on glibmm 2.4
 #include <glibmm/containerhandle_shared.h>
+#include <glibmm/convert.h> // IWYU pragma: keep
 #include <glibmm/fileutils.h>
 #include <glibmm/i18n.h>
 #include <glibmm/main.h>

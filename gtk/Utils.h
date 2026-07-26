@@ -16,9 +16,9 @@
 #include <gtkmm/entry.h>
 #include <gtkmm/label.h>
 #if GTKMM_CHECK_VERSION(4, 0, 0)
+#include <gdkmm/enums.h> // Gdk::ModifierType
 #include <gtkmm/listview.h>
 #endif
-#include <gdkmm/enums.h>
 #include <gtkmm/treeview.h>
 #include <gtkmm/widget.h>
 #include <gtkmm/window.h>

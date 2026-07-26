@@ -16,13 +16,13 @@
 #include <memory>
 #include <optional>
 #include <string_view>
-#include <unistd.h>
 #include <vector>
 
 #ifdef _WIN32
 #include <ws2tcpip.h>
 #else
 #include <sys/socket.h> // socklen_t
+#include <unistd.h> // socklen_t on glibc
 #endif
 
 #include "libtransmission/interned-string.h"

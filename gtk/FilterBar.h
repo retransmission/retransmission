@@ -7,8 +7,10 @@
 
 #include "GtkCompat.h"
 
+// Gtk::TreeModel, the gtkmm3 branch of the IF_GTKMM4() alias below
 #include <gtkmm/box.h>
 #include <gtkmm/builder.h>
+#include <gtkmm/treemodel.h> // IWYU pragma: keep
 
 #include <giomm/listmodel.h>
 #include <glibmm/extraclassinit.h>

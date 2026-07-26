@@ -35,7 +35,9 @@
 #include "libtransmission/version.h"
 
 #include <gdkmm/display.h>
+#if GTKMM_CHECK_VERSION(4, 0, 0)
 #include <gdkmm/enums.h>
+#endif
 #include <gtkmm/aboutdialog.h>
 #include <gtkmm/builder.h>
 #include <gtkmm/button.h>

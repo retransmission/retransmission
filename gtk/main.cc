@@ -16,7 +16,11 @@
 #include "libtransmission/values.h"
 #include "libtransmission/version.h"
 
+#if GTKMM_CHECK_VERSION(4, 0, 0)
 #include <gtkmm/version.h>
+#else
+#include <gtkmm/main.h> // Gtk::Main
+#endif
 
 #include <giomm/file.h>
 #include <giomm/init.h>

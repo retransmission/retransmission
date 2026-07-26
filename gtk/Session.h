@@ -16,7 +16,9 @@
 #include "libtransmission/types.h"
 #include "libtransmission/variant.h"
 
+// Gtk::TreeModel, the gtkmm3 branch of the IF_GTKMM4() alias below
 #include <gdkmm/pixbuf.h>
+#include <gtkmm/treemodel.h> // IWYU pragma: keep
 
 #include <giomm/file.h>
 #include <giomm/listmodel.h>

@@ -31,7 +31,9 @@
 #include <gtkmm/enums.h>
 #include <gtkmm/image.h>
 #include <gtkmm/label.h>
+#if GTKMM_CHECK_VERSION(4, 0, 0)
 #include <gtkmm/listview.h>
+#endif
 #include <gtkmm/menubutton.h>
 #include <gtkmm/object.h>
 #include <gtkmm/popover.h>

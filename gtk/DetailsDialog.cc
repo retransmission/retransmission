@@ -13,7 +13,6 @@
 #include "PrefsDialog.h"
 #include "Session.h"
 #include "Utils.h"
-#include <netinet/in.h>
 
 #include "libtransmission/quark.h"
 #include "libtransmission/string-utils.h"
@@ -95,6 +94,8 @@
 #include <winsock2.h>
 #include <ws2tcpip.h>
 #else
+#include <netinet/in.h> // in_addr
+
 #include <arpa/inet.h>
 #include <sys/socket.h>
 #endif
