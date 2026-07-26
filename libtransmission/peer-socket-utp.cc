@@ -4,6 +4,7 @@
 // License text can be found in the licenses/ folder.
 
 #include <algorithm>
+#include <cerrno> // ENOTCONN, ECONNRESET
 #include <chrono>
 #include <cstddef>
 #include <iterator>

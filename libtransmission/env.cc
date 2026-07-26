@@ -6,6 +6,9 @@
 #include "libtransmission/env.h"
 
 #include <cstdlib>
+#ifdef _WIN32
+#include <iterator> // std::empty()
+#endif
 #include <string>
 #include <string_view>
 
@@ -13,10 +16,11 @@
 #include <windows.h>
 
 #include "libtransmission/string-utils.h" // tr_win32_native_to_utf8()
+#else
+#include "libtransmission/tr-strbuf.h" // tr_strbuf
 #endif
 
 #include "libtransmission/tr-assert.h"
-#include "libtransmission/tr-strbuf.h"
 
 bool tr_env_key_exists(char const* key) noexcept
 {

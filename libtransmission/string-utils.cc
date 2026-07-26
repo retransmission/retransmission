@@ -6,6 +6,9 @@
 #include <algorithm> // std::ranges::find_if_not()
 #include <array>
 #include <cctype>
+#ifdef _WIN32
+#include <cstdint> // uint32_t
+#endif
 #include <cstring>
 #include <iterator>
 #include <ranges>

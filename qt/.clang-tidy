@@ -63,10 +63,12 @@ CheckOptions:
   # <qwidget.h> -- and pull in internals like <qswap.h>. The capital Q is what keeps this from
   # matching our own qt/ directory. fmt declares fmt::format_to and friends in fmt/base.h rather
   # than the fmt/format.h we include.
-  # bits/ is libstdc++'s internals: it has no `IWYU pragma: private` markers, so e.g. `20s`
+  # bits/ is libstdc++'s internals (xstring is MSVC's equivalent): it has no `IWYU pragma: private` markers, so e.g. `20s`
   # resolves to bits/chrono.h rather than the <chrono> we include.
   # Note each pattern is anchored at the end, so a trailing `.*` is required to match a directory.
-  - { key: misc-include-cleaner.IgnoreHeaders,                              value: '/Qt[A-Za-z]+/.*;bits/.*;fmt/.*' }
+  # <windows.h> is the documented Win32 entry point, but its symbols are declared in the SDK's
+  # own headers (winuser.h, winnt.h, ...) that no program includes directly.
+  - { key: misc-include-cleaner.IgnoreHeaders,                              value: '[/\\]Qt[A-Za-z]+[/\\].*;bits[/\\].*;corecrt.*;fmt[/\\].*;VC[/\\]Tools[/\\]MSVC[/\\].*;vcruntime.*;Windows Kits[/\\].*;xstring;xutility' }
   - { key: readability-identifier-naming.ClassCase,                         value: CamelCase  }
 #  - { key: readability-identifier-naming.ClassMethodCase,                   value: lower_case } TODO: enable later
   - { key: readability-identifier-naming.ConstexprVariableCase,             value: CamelCase  }

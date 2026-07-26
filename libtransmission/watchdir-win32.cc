@@ -6,8 +6,11 @@
 #include <array>
 #include <cerrno>
 #include <cstddef> // for offsetof
+#include <iterator> // std::empty()
 #include <memory>
+#include <string_view> // std::string_view
 #include <utility>
+#include <vector> // std::vector
 
 #include <process.h> // for _beginthreadex()
 
@@ -23,10 +26,11 @@
 #include "libtransmission/log.h"
 #include "libtransmission/net.h"
 #include "libtransmission/string-utils.h"
+#include "libtransmission/timer.h" // tr::TimerMaker
 #include "libtransmission/tr-assert.h"
-#include "libtransmission/types.h"
 #include "libtransmission/utils.h"
 #include "libtransmission/watchdir-base.h"
+#include "libtransmission/watchdir.h" // tr::Watchdir
 
 namespace tr
 {

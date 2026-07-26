@@ -25,11 +25,20 @@
 #if !GTKMM_CHECK_VERSION(4, 0, 0)
 #include <gtkmm/icontheme.h>
 #include <gtkmm/menu.h>
+#include <gtkmm/object.h>
 
 #include <giomm/menu.h>
-#include <glibmm/miscutils.h>
-#if !defined(HAVE_APPINDICATOR)
+#include <glibmm/ustring.h>
+
+#if defined(HAVE_APPINDICATOR)
+#include <glibmm/miscutils.h> // Glib::get_application_name()
+#include <glibmm/wrap.h> // Glib::wrap()
+
+#include <glib-object.h>
+#else
 #include <gtkmm/statusicon.h>
+
+#include <sigc++/functors/mem_fun.h> // sigc::mem_fun()
 #endif
 #endif
 
@@ -45,15 +54,6 @@
 #include <libayatana-appindicator/app-indicator.h>
 #else
 #include <libappindicator/app-indicator.h>
-
-#if !GTKMM_CHECK_VERSION(4, 0, 0)
-#include <gtkmm/object.h>
-
-#include <glibmm/ustring.h>
-#include <glibmm/wrap.h>
-
-#include <glib-object.h>
-#endif
 #endif
 #endif
 

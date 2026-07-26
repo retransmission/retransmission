@@ -61,7 +61,9 @@ CheckOptions:
   - { key: cppcoreguidelines-avoid-do-while.IgnoreMacros,                           value: true       }
   - { key: cppcoreguidelines-rvalue-reference-param-not-moved.IgnoreUnnamedParams,  value: true       }
   - { key: cppcoreguidelines-special-member-functions.AllowSoleDefaultDtor,         value: true       }
-  - { key: misc-include-cleaner.IgnoreHeaders,                                      value: 'arpa/.*;asm-generic/.*;bits/.*;curl/.*;fast_float/.*;fmt/.*;libutp/.*;linux/.*;netinet/.*;openssl/ossl_typ\.h;openssl/types\.h;signal\.h;simdutf.*;stdio\.h;stdlib\.h;zconf\.h' }
+  # <windows.h> is the documented Win32 entry point, but its symbols are declared in the SDK's
+  # own headers (winuser.h, winnt.h, ...) that no program includes directly.
+  - { key: misc-include-cleaner.IgnoreHeaders,                                      value: 'arpa[/\\].*;asm-generic[/\\].*;bits[/\\].*;corecrt.*;curl[/\\].*;fast_float[/\\].*;fmt[/\\].*;libutp[/\\].*;linux[/\\].*;netinet[/\\].*;openssl[/\\].*;signal\.h;simdutf.*;stdio\.h;stdlib\.h;VC[/\\]Tools[/\\]MSVC[/\\].*;vcruntime.*;Windows Kits[/\\].*;xstring;xutility;zconf\.h' }
   - { key: performance-move-const-arg.CheckTriviallyCopyableMove,                   value: false      }
   - { key: readability-identifier-naming.ConstexprVariableCase,                     value: CamelCase  }
   - { key: readability-identifier-naming.ParameterCase,                             value: lower_case }

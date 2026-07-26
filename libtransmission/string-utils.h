@@ -8,6 +8,9 @@
 #include <algorithm>
 #include <cctype>
 #include <iterator>
+#ifdef _WIN32
+#include <cstdint> // uint32_t
+#endif
 #include <string>
 #include <string_view>
 #include <utility>

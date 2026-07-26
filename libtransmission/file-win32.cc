@@ -5,10 +5,13 @@
 
 #include <algorithm>
 #include <cctype> // for isalpha()
+#include <cstddef> // size_t
+#include <cstdint> // uint64_t
 #include <cstring>
 #include <iterator> // for std::back_inserter
 #include <string>
 #include <string_view>
+#include <utility> // std::move()
 
 #include <shlobj.h> /* SHCreateDirectoryEx() */
 #include <winioctl.h> /* FSCTL_SET_SPARSE */

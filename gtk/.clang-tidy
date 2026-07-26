@@ -42,7 +42,7 @@ Checks:
 
 CheckOptions:
   - { key: cppcoreguidelines-avoid-do-while.IgnoreMacros, value: true }
-  - { key: misc-include-cleaner.IgnoreHeaders, value: 'bits/.*;fmt/.*;glib/gi18n\.h;glibconfig\.h;glibmm/i18n\.h;libintl\.h' }
+  - { key: misc-include-cleaner.IgnoreHeaders, value: 'bits[/\\].*;corecrt.*;fmt[/\\].*;glib[/\\]gi18n\.h;glibconfig\.h;glibmm[/\\]i18n\.h;libintl\.h;VC[/\\]Tools[/\\]MSVC[/\\].*;vcruntime.*;xstring;xutility' }
   - { key: misc-non-private-member-variables-in-classes.IgnoreClassesWithAllMemberVariablesBeingPublic, value: true }
   - { key: modernize-pass-by-value.ValuesOnly, value: true }
   - { key: readability-implicit-bool-conversion.UseUpperCaseLiteralSuffix, value: true }

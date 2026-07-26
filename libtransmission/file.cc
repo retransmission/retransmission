@@ -4,8 +4,14 @@
 // License text can be found in the licenses/ folder.
 
 #include <chrono>
+#ifdef _WIN32
+#include <cctype> // std::isalpha()
+#endif
 #include <filesystem>
 #include <functional>
+#ifdef _WIN32
+#include <iterator> // std::size()
+#endif
 #include <optional>
 #include <ranges>
 #include <string>

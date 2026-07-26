@@ -4,11 +4,15 @@
 // License text can be found in the licenses/ folder.
 
 #include <algorithm>
+#include <cstddef> // size_t
+#include <cstdint> // uint8_t
+#include <cstring> // strpbrk()
 #include <cwchar>
 #include <map>
 #include <iterator>
 #include <string>
 #include <string_view>
+#include <vector> // std::vector
 
 #include <fmt/format.h>
 #include <fmt/xchar.h> // for wchar_t support

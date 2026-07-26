@@ -4,6 +4,7 @@
 // License text can be found in the licenses/ folder.
 
 #include <array>
+#include <cstdio> // IWYU pragma: keep
 #include <string_view>
 #include <vector>
 

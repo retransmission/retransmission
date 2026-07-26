@@ -7,6 +7,7 @@
 #include <cerrno>
 #include <chrono>
 #include <cstddef> // size_t
+#include <cstdio> // stderr
 #include <ctime> // std::localtime()
 #include <iterator> // back_insert_iterator, empty
 #include <mutex>
@@ -21,6 +22,8 @@
 
 #ifdef __ANDROID__
 #include <android/log.h>
+
+#include "libtransmission/macros.h" // TR_PROJ_APPNAME
 #endif
 
 #include <fmt/chrono.h>
@@ -83,6 +86,8 @@ void logAddImpl(
     int prio;
 
     switch (level) {
+    case TR_LOG_OFF:
+        return;
     case TR_LOG_CRITICAL:
         prio = ANDROID_LOG_FATAL;
         break;

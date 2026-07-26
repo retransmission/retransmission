@@ -18,6 +18,8 @@
 #include <utility> // std::pair
 
 #ifdef _WIN32
+#include <new> // std::nothrow
+
 #include <winsock2.h> // must come before iphlpapi.h
 #include <iphlpapi.h>
 #include <ws2tcpip.h>

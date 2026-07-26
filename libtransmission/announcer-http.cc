@@ -7,6 +7,7 @@
 #include <cctype>
 #include <cstddef> // std::byte, size_t
 #include <cstdint> // int64_t, uint8_t, uint...
+#include <cstdio> // stderr
 #include <ctime>
 #include <iterator>
 #include <optional>
