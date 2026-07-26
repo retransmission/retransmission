@@ -55,14 +55,20 @@
 #include <giomm/appinfo.h>
 #include <giomm/error.h>
 #include <giomm/menu.h>
+#if GTKMM_CHECK_VERSION(4, 0, 0)
 #include <glibmm/containerhandle_shared.h>
+#endif
 #include <glibmm/i18n.h>
 #include <glibmm/main.h>
 #include <glibmm/miscutils.h>
 #include <glibmm/refptr.h>
 #include <glibmm/ustring.h>
+#if GTKMM_CHECK_VERSION(4, 0, 0)
 #include <glibmm/value.h>
+#endif
+#if GTKMM_CHECK_VERSION(4, 0, 0)
 #include <glibmm/vectorutils.h>
+#endif
 
 #include <sigc++/adaptors/bind_return.h>
 #include <sigc++/connection.h>
@@ -100,7 +106,9 @@
 #include <gdk/gdk.h>
 #include <gtk/gtk.h>
 
+#if GTKMM_CHECK_VERSION(4, 0, 0)
 #include <glib-object.h>
+#endif
 #include <glib.h>
 #include <glib/gmessages.h>
 
@@ -108,6 +116,15 @@
 
 #ifdef G_OS_UNIX
 #include <glib-unix.h>
+
+#if !GTKMM_CHECK_VERSION(4, 0, 0)
+#include <gdkmm/screen.h>
+#include <gdkmm/window.h>
+#include <gtkmm/clipboard.h>
+#include <gtkmm/widget.h>
+
+#include <sigc++/adaptors/hide.h>
+#endif
 #endif
 
 using namespace std::literals;

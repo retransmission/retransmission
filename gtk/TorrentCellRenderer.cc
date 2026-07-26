@@ -10,7 +10,6 @@
 #include "Torrent.h"
 
 #include "libtransmission/types.h"
-#include "libtransmission/utils.h" // tr_truncd()
 
 #include <cairomm/context.h>
 #include <cairomm/refptr.h>
@@ -22,8 +21,6 @@
 #include <gtkmm/cellrenderertext.h>
 #include <gtkmm/requisition.h>
 
-#include <giomm/icon.h>
-#include <glibmm.h>
 #include <glibmm/i18n.h>
 #include <glibmm/property.h>
 
@@ -31,11 +28,25 @@
 #include <gtkmm/snapshot.h>
 #endif
 
+#include "GtkCompat.h"
+
+#include <cairomm/enums.h>
+#include <gtkmm/cellrenderer.h>
+#include <gtkmm/enums.h>
+#include <gtkmm/object.h>
+#include <gtkmm/widget.h>
+
+#include <glibmm/objectbase.h>
+#include <glibmm/propertyproxy.h>
+#include <glibmm/ustring.h>
+
 #include <fmt/format.h>
 
 #include <algorithm> // std::max()
 #include <memory>
 #include <optional>
+
+#include <cairo.h>
 
 /* #define TEST_RTL */
 

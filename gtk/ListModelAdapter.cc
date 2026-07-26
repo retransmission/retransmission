@@ -5,7 +5,7 @@
 
 #include "ListModelAdapter.h"
 
-#include "gtk/GtkCompat.h"
+#include "GtkCompat.h"
 #include "Utils.h"
 
 #include <gtkmm/treemodel.h>

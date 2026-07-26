@@ -37,8 +37,8 @@
 #if GTKMM_CHECK_VERSION(4, 0, 0)
 #include <gtkmm/filterlistmodel.h>
 #endif
-#include "gtk/FilterListModel.h"
-#include "gtk/GtkCompat.h"
+#include "FilterListModel.h"
+#include "GtkCompat.h"
 
 #include <gtkmm/box.h>
 #include <gtkmm/builder.h>

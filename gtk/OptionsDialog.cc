@@ -7,12 +7,12 @@
 
 #include "FileList.h"
 #include "FreeSpaceLabel.h"
-#include "gtk/Torrent.h"
 #include "GtkCompat.h"
 #include "PathButton.h"
 #include "Prefs.h"
 #include "PrefsDialog.h"
 #include "Session.h"
+#include "Torrent.h"
 #include "Utils.h"
 
 #include "libtransmission/file.h" // tr_sys_path_is_same()

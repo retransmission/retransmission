@@ -9,6 +9,8 @@
 #include "Prefs.h"
 #include "PrefsDialog.h"
 // out-of-line template definitions for SortListModel<>
+#include "GtkCompat.h"
+#include "SortListModel.h"
 #include "SortListModel.hh" // IWYU pragma: keep
 #include "Torrent.h"
 #include "TorrentSorter.h"
@@ -44,13 +46,6 @@
 #include <glibmm/refptr.h>
 #include <glibmm/stringutils.h>
 #include <glibmm/ustring.h>
-
-#if GTKMM_CHECK_VERSION(4, 0, 0)
-#include "gtk/GtkCompat.h"
-#include "gtk/SortListModel.h"
-#else
-#include <gtkmm/treemodelsort.h>
-#endif
 
 #include <fmt/format.h>
 #include <sigc++/adaptors/hide.h>

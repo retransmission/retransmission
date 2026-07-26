@@ -6,9 +6,11 @@
 #include "TorrentSorter.h"
 
 // out-of-line template definitions for SorterBase<>
+// defines GTKMM_CHECK_VERSION on gtkmm3, where gtkmm does not provide it itself
+#include "GtkCompat.h" // IWYU pragma: keep
 #include "SorterBase.hh" // IWYU pragma: keep
+#include "Torrent.h"
 // Percents is returned by value from Torrent accessors and only forward-declared in Torrent.h
-#include "gtk/Torrent.h"
 #include "Percents.h" // IWYU pragma: keep
 
 #include "libtransmission-app/display-modes.h"

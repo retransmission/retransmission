@@ -25,10 +25,14 @@
 #include "libtransmission/values.h"
 
 #include <gdkmm/cursor.h>
+#if GTKMM_CHECK_VERSION(4, 0, 0)
 #include <gdkmm/rectangle.h>
+#endif
 #include <gtkmm/applicationwindow.h>
 #include <gtkmm/builder.h>
+#if GTKMM_CHECK_VERSION(4, 0, 0)
 #include <gtkmm/enums.h>
+#endif
 #include <gtkmm/image.h>
 #include <gtkmm/label.h>
 #if GTKMM_CHECK_VERSION(4, 0, 0)
@@ -36,7 +40,9 @@
 #endif
 #include <gtkmm/menubutton.h>
 #include <gtkmm/object.h>
+#if GTKMM_CHECK_VERSION(4, 0, 0)
 #include <gtkmm/popover.h>
+#endif
 #include <gtkmm/scrolledwindow.h>
 #include <gtkmm/togglebutton.h>
 #include <gtkmm/widget.h>
@@ -51,11 +57,15 @@
 #include <glibmm/i18n.h>
 #include <glibmm/main.h>
 #include <glibmm/miscutils.h>
+#if GTKMM_CHECK_VERSION(4, 0, 0)
 #include <glibmm/object.h>
+#endif
 #include <glibmm/refptr.h>
 #include <glibmm/ustring.h>
 #include <glibmm/variant.h>
+#if GTKMM_CHECK_VERSION(4, 0, 0)
 #include <glibmm/wrap.h>
+#endif
 
 #if GTKMM_CHECK_VERSION(4, 0, 0)
 #include <gtkmm/listitemfactory.h>
@@ -85,8 +95,14 @@
 
 #include <gtk/gtk.h>
 
+#if GTKMM_CHECK_VERSION(4, 0, 0)
 #include <glib-object.h>
+#endif
 #include <glib.h>
+
+#if !GTKMM_CHECK_VERSION(4, 0, 0)
+#include <gdk/gdk.h>
+#endif
 
 using namespace std::string_literals;
 using namespace std::string_view_literals;

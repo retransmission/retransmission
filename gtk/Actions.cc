@@ -5,7 +5,7 @@
 
 #include "Actions.h"
 
-#include "gtk/GtkCompat.h"
+#include "GtkCompat.h"
 #include "Prefs.h"
 #include "PrefsDialog.h"
 #include "Session.h"
@@ -15,7 +15,9 @@
 
 #include <gtkmm/builder.h>
 
+#if GTKMM_CHECK_VERSION(4, 0, 0)
 #include <giomm/listmodel.h>
+#endif
 #include <giomm/simpleaction.h>
 #include <giomm/simpleactiongroup.h>
 #include <glibmm/i18n.h>
@@ -44,6 +46,10 @@
 
 #include <stack>
 #include <utility>
+
+#if !GTKMM_CHECK_VERSION(4, 0, 0)
+#include <utility>
+#endif
 #endif
 
 using namespace std::string_view_literals;

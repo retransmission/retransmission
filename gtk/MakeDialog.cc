@@ -33,9 +33,13 @@
 #include <gtkmm/textview.h>
 #include <gtkmm/window.h>
 
+#if GTKMM_CHECK_VERSION(4, 0, 0)
 #include <giomm/file.h>
+#endif
 // Glib::filename_from_uri(), declared here on glibmm 2.4
+#if GTKMM_CHECK_VERSION(4, 0, 0)
 #include <glibmm/containerhandle_shared.h>
+#endif
 #include <glibmm/convert.h> // IWYU pragma: keep
 #include <glibmm/fileutils.h>
 #include <glibmm/i18n.h>
@@ -43,8 +47,12 @@
 #include <glibmm/miscutils.h>
 #include <glibmm/refptr.h>
 #include <glibmm/ustring.h>
+#if GTKMM_CHECK_VERSION(4, 0, 0)
 #include <glibmm/value.h>
+#endif
+#if GTKMM_CHECK_VERSION(4, 0, 0)
 #include <glibmm/vectorutils.h>
+#endif
 
 #if GTKMM_CHECK_VERSION(4, 0, 0)
 #include <gtkmm/droptarget.h>
@@ -67,10 +75,18 @@
 #include <string_view>
 #include <utility>
 
+#if GTKMM_CHECK_VERSION(4, 0, 0)
 #include <gdk/gdk.h>
+#endif
 
+#if GTKMM_CHECK_VERSION(4, 0, 0)
 #include <glib-object.h>
+#endif
 #include <glib.h>
+
+#if !GTKMM_CHECK_VERSION(4, 0, 0)
+#include <gtkmm/widget.h>
+#endif
 
 using namespace std::literals;
 using namespace tr::Values;

@@ -39,7 +39,9 @@
 #include <gtkmm/window.h>
 
 #include <giomm/appinfo.h>
+#if GTKMM_CHECK_VERSION(4, 0, 0)
 #include <giomm/asyncresult.h>
+#endif
 #include <giomm/file.h>
 #include <glibmm/convert.h>
 #include <glibmm/error.h>
@@ -63,7 +65,7 @@
 #include <gtkmm/clipboard.h>
 #endif
 
-#include "gtk/GtkCompat.h"
+#include "GtkCompat.h"
 
 #include <fmt/format.h>
 #include <sigc++/functors/slot.h>
@@ -88,6 +90,10 @@
 #include <optional>
 
 #include <gdk/x11/gdkx.h>
+
+#if !GTKMM_CHECK_VERSION(4, 0, 0)
+#include <gtkmm/enums.h>
+#endif
 #endif
 
 using namespace std::literals;

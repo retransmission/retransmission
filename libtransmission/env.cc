@@ -11,6 +11,8 @@
 
 #ifdef _WIN32
 #include <windows.h>
+
+#include "libtransmission/string-utils.h" // tr_win32_native_to_utf8()
 #endif
 
 #include "libtransmission/tr-assert.h"

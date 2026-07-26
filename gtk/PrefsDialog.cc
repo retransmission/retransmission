@@ -69,6 +69,12 @@
 
 #include <glib.h>
 
+#if !GTKMM_CHECK_VERSION(4, 0, 0)
+#include <gdkmm/device.h>
+
+#include <sigc++/adaptors/hide.h>
+#endif
+
 using namespace tr::Values;
 
 /**

@@ -39,6 +39,10 @@
 #include <string>
 #include <vector>
 
+#if !GTKMM_CHECK_VERSION(4, 0, 0)
+#include <gtkmm/enums.h>
+#endif
+
 namespace
 {
 

@@ -6,8 +6,10 @@
 #include "TorrentFilter.h"
 
 // out-of-line template definitions for FilterBase<>
+// defines GTKMM_CHECK_VERSION on gtkmm3, where gtkmm does not provide it itself
 #include "FilterBase.hh" // IWYU pragma: keep
-#include "gtk/Torrent.h"
+#include "GtkCompat.h" // IWYU pragma: keep
+#include "Torrent.h"
 #include "Utils.h"
 
 #include "libtransmission/macros.h"

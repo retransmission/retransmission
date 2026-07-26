@@ -33,7 +33,7 @@
 #endif
 #endif
 
-#include "gtk/GtkCompat.h"
+#include "GtkCompat.h"
 
 #include <memory>
 #include <string>
@@ -45,6 +45,15 @@
 #include <libayatana-appindicator/app-indicator.h>
 #else
 #include <libappindicator/app-indicator.h>
+
+#if !GTKMM_CHECK_VERSION(4, 0, 0)
+#include <gtkmm/object.h>
+
+#include <glibmm/ustring.h>
+#include <glibmm/wrap.h>
+
+#include <glib-object.h>
+#endif
 #endif
 #endif
 

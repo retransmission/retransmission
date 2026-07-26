@@ -6,12 +6,14 @@
 #include "Torrent.h"
 
 #include "DynamicPropertyStore.h"
-#include "gtk/GtkCompat.h"
+#include "GtkCompat.h"
 #include "IconCache.h"
 #include "Percents.h"
 #include "Utils.h"
 
+#if GTKMM_CHECK_VERSION(4, 0, 0)
 #include "libtransmission/macros.h"
+#endif
 #include "libtransmission/transmission.h"
 #include "libtransmission/types.h"
 #include "libtransmission/utils.h"
