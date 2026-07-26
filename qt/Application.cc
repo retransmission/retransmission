@@ -16,8 +16,10 @@
 #include <vector>
 
 #include <QtCore/QLibraryInfo>
+#include <QtCore/QPointer>
 #include <QtCore/QProcess>
 #include <QtCore/QRect>
+#include <QtCore/QRegularExpression>
 
 #if QT_CONFIG(accessibility)
 #include <QtGui/QAccessible>
@@ -467,6 +469,26 @@ void Application::addTorrent(AddData addme) const
 std::optional<tr::Settings> Application::local_session_settings() const
 {
     return session_->local_settings();
+}
+
+// ---
+
+QPixmap Application::find_favicon(QString const& sitename) const
+{
+    auto const key = sitename.toStdString();
+    auto const* const icon = favicon_cache_.find(key);
+    return icon != nullptr ? *icon : QPixmap{};
+}
+
+void Application::load_favicon(QString const& url)
+{
+    auto weak_self = QPointer<Application>{ this };
+
+    favicon_cache_.load(url.toStdString(), [weak_self = std::move(weak_self)](QPixmap const* /*favicon_or_nullptr*/) {
+        if (!weak_self.isNull()) {
+            weak_self.data()->faviconsChanged();
+        }
+    });
 }
 
 // ---

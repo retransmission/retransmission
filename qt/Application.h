@@ -9,10 +9,9 @@
 #include <memory>
 #include <optional>
 #include <unordered_set>
-#include <utility>
 
-#include <QtCore/QPointer>
-#include <QtCore/QRegularExpression>
+#include <QtCore/QString>
+#include <QtCore/QStringList>
 #include <QtCore/QTimer>
 #include <QtCore/QTranslator>
 #include <QtCore/QWeakPointer>
@@ -65,23 +64,9 @@ public:
 
     [[nodiscard]] std::optional<tr::Settings> local_session_settings() const;
 
-    [[nodiscard]] QPixmap find_favicon(QString const& sitename) const
-    {
-        auto const key = sitename.toStdString();
-        auto const* const icon = favicon_cache_.find(key);
-        return icon != nullptr ? *icon : QPixmap{};
-    }
+    [[nodiscard]] QPixmap find_favicon(QString const& sitename) const;
 
-    void load_favicon(QString const& url)
-    {
-        auto weak_self = QPointer<Application>{ this };
-
-        favicon_cache_.load(url.toStdString(), [weak_self = std::move(weak_self)](QPixmap const* /*favicon_or_nullptr*/) {
-            if (!weak_self.isNull()) {
-                weak_self.data()->faviconsChanged();
-            }
-        });
-    }
+    void load_favicon(QString const& url);
 
 signals:
     void faviconsChanged();
