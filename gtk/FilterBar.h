@@ -13,6 +13,7 @@
 #include <gtkmm/treemodel.h> // IWYU pragma: keep
 
 #include <giomm/listmodel.h>
+
 #include <glibmm/extraclassinit.h>
 #include <glibmm/refptr.h>
 

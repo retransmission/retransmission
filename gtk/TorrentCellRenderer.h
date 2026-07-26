@@ -7,11 +7,12 @@
 
 #include "GtkCompat.h"
 
-#include <cairomm/context.h>
-#include <cairomm/refptr.h>
 #include <gdkmm/rectangle.h>
 #include <gtkmm/cellrenderer.h>
 #include <gtkmm/widget.h>
+
+#include <cairomm/context.h>
+#include <cairomm/refptr.h>
 
 #include <glibmm/propertyproxy.h>
 

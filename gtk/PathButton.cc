@@ -25,6 +25,7 @@
 
 #include <giomm/file.h>
 #include <giomm/icon.h>
+
 #include <glibmm/error.h>
 #include <glibmm/i18n.h>
 #include <glibmm/objectbase.h>

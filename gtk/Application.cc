@@ -73,6 +73,7 @@
 #include <sigc++/adaptors/bind_return.h>
 #include <sigc++/connection.h>
 #include <sigc++/functors/mem_fun.h>
+
 #include <small/set.hpp>
 #include <woke/woke.hpp>
 
@@ -103,8 +104,9 @@
 #include <utility>
 #include <vector>
 
-#include <gdk/gdk.h>
 #include <gtk/gtk.h>
+
+#include <gdk/gdk.h>
 
 #if GTKMM_CHECK_VERSION(4, 0, 0)
 #include <glib-object.h>

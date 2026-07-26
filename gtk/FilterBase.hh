@@ -37,13 +37,11 @@ bool FilterBase<T>::match_vfunc(Glib::RefPtr<Glib::ObjectBase> const& object)
 template<typename T>
 typename FilterBase<T>::Match FilterBase<T>::get_strictness_vfunc()
 {
-    if (matches_all())
-    {
+    if (matches_all()) {
         return Match::ALL;
     }
 
-    if (matches_none())
-    {
+    if (matches_none()) {
         return Match::NONE;
     }
 

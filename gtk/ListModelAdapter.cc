@@ -12,6 +12,7 @@
 #include <gtkmm/treemodelcolumn.h>
 
 #include <giomm/listmodel.h>
+
 #include <glibmm/objectbase.h>
 #include <glibmm/refptr.h>
 #include <glibmm/value.h>

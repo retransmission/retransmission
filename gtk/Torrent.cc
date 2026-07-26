@@ -22,6 +22,7 @@
 #include <gtkmm/treemodelcolumn.h>
 
 #include <giomm/icon.h>
+
 #include <glibmm/extraclassinit.h>
 #include <glibmm/i18n.h>
 #include <glibmm/refptr.h>

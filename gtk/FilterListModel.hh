@@ -30,25 +30,20 @@ FilterListModel<ItemT>::FilterListModel(Glib::RefPtr<Gtk::TreeModel> const& mode
     : Gtk::TreeModelFilter(model)
     , matches_all_(filter->matches_all())
     , matches_none_(filter->matches_none())
-    , signal_changed_tag_{ filter->signal_changed().connect(
-          [this, filter](auto /*changes*/)
-          {
-              matches_all_ = filter->matches_all();
-              matches_none_ = filter->matches_none();
-              refilter();
-          }) }
+    , signal_changed_tag_{ filter->signal_changed().connect([this, filter](auto /*changes*/) {
+        matches_all_ = filter->matches_all();
+        matches_none_ = filter->matches_none();
+        refilter();
+    }) }
 {
     static auto const& self_col = ItemT::get_columns().self;
 
-    auto const filter_func = [this, filter](const_iterator const& iter)
-    {
-        if (matches_all_)
-        {
+    auto const filter_func = [this, filter](const_iterator const& iter) {
+        if (matches_all_) {
             return true;
         }
 
-        if (matches_none_)
-        {
+        if (matches_none_) {
             return false;
         }
 
@@ -60,8 +55,8 @@ FilterListModel<ItemT>::FilterListModel(Glib::RefPtr<Gtk::TreeModel> const& mode
 
     set_visible_func(filter_func);
 
-    signal_row_inserted().connect([this](auto const& path, auto const& /*iter*/)
-                                  { signal_items_changed_.emit(path.front(), 0, 1); });
+    signal_row_inserted().connect(
+        [this](auto const& path, auto const& /*iter*/) { signal_items_changed_.emit(path.front(), 0, 1); });
     signal_row_deleted().connect([this](auto const& path) { signal_items_changed_.emit(path.front(), 1, 0); });
 }
 

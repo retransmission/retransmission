@@ -28,6 +28,7 @@
 #include <gtkmm/object.h>
 
 #include <giomm/menu.h>
+
 #include <glibmm/ustring.h>
 
 #if defined(HAVE_APPINDICATOR)

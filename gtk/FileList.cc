@@ -38,6 +38,7 @@
 
 #include <giomm/file.h>
 #include <giomm/icon.h>
+
 #include <glibmm/i18n.h>
 #include <glibmm/main.h>
 #include <glibmm/markup.h>
@@ -46,10 +47,11 @@
 #include <glibmm/refptr.h>
 #include <glibmm/ustring.h>
 
-#include <fmt/format.h>
 #include <sigc++/connection.h>
 #include <sigc++/functors/mem_fun.h>
 #include <sigc++/functors/ptr_fun.h>
+
+#include <fmt/format.h>
 
 #include <algorithm>
 #include <cstdint>
@@ -64,8 +66,9 @@
 #include <utility>
 #include <vector>
 
-#include <gdk/gdk.h>
 #include <gtk/gtk.h>
+
+#include <gdk/gdk.h>
 
 #include <glib.h>
 

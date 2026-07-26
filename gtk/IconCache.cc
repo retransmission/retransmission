@@ -12,6 +12,7 @@
 #include "GtkCompat.h" // IWYU pragma: keep
 
 #include <giomm/icon.h>
+
 #include <glibmm/refptr.h>
 
 #include <functional> // for std::less<>

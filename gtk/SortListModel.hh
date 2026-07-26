@@ -31,13 +31,11 @@ SortListModel<ItemT>::SortListModel(Glib::RefPtr<Gtk::TreeModel> const& model, G
 {
     static auto const& self_col = ItemT::get_columns().self;
 
-    auto const sort_func = [sorter](const_iterator const& lhs, const_iterator const& rhs)
-    {
+    auto const sort_func = [sorter](const_iterator const& lhs, const_iterator const& rhs) {
         auto const* const lhs_self = lhs->get_value(self_col);
         auto const* const rhs_self = rhs->get_value(self_col);
 
-        if (lhs_self == nullptr && rhs_self == nullptr)
-        {
+        if (lhs_self == nullptr && rhs_self == nullptr) {
             g_return_val_if_reached(0);
         }
 
@@ -49,8 +47,8 @@ SortListModel<ItemT>::SortListModel(Glib::RefPtr<Gtk::TreeModel> const& model, G
 
     set_default_sort_func(sort_func);
 
-    signal_changed_tag_ = sorter->signal_changed().connect([this, sort_func](auto /*changes*/)
-                                                           { set_default_sort_func(sort_func); });
+    signal_changed_tag_ = sorter->signal_changed().connect(
+        [this, sort_func](auto /*changes*/) { set_default_sort_func(sort_func); });
 }
 
 template<typename ItemT>

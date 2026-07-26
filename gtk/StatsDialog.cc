@@ -23,9 +23,10 @@
 #include <glibmm/refptr.h>
 #include <glibmm/ustring.h>
 
-#include <fmt/format.h>
 #include <sigc++/connection.h>
 #include <sigc++/functors/mem_fun.h>
+
+#include <fmt/format.h>
 
 #include <cstdint>
 #include <memory>

@@ -11,15 +11,16 @@
 
 #include "libtransmission/types.h"
 
-#include <cairomm/context.h>
-#include <cairomm/refptr.h>
-#include <cairomm/surface.h>
 #include <gdkmm/rectangle.h>
 #include <gdkmm/rgba.h>
 #include <gtkmm/cellrendererpixbuf.h>
 #include <gtkmm/cellrendererprogress.h>
 #include <gtkmm/cellrenderertext.h>
 #include <gtkmm/requisition.h>
+
+#include <cairomm/context.h>
+#include <cairomm/refptr.h>
+#include <cairomm/surface.h>
 
 #include <glibmm/i18n.h>
 #include <glibmm/property.h>
@@ -30,11 +31,12 @@
 
 #include "GtkCompat.h"
 
-#include <cairomm/enums.h>
 #include <gtkmm/cellrenderer.h>
 #include <gtkmm/enums.h>
 #include <gtkmm/object.h>
 #include <gtkmm/widget.h>
+
+#include <cairomm/enums.h>
 
 #include <glibmm/objectbase.h>
 #include <glibmm/propertyproxy.h>

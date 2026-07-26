@@ -14,6 +14,7 @@
 #include <gtkmm/treemodelcolumn.h>
 
 #include <giomm/icon.h>
+
 #include <glibmm/extraclassinit.h>
 #include <glibmm/object.h>
 #include <glibmm/objectbase.h>

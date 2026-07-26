@@ -22,6 +22,7 @@
 
 #include <giomm/file.h>
 #include <giomm/listmodel.h>
+
 #include <glibmm/object.h>
 #include <glibmm/refptr.h>
 #include <glibmm/ustring.h>

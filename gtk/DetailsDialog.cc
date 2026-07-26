@@ -62,12 +62,13 @@
 #include <glibmm/refptr.h>
 #include <glibmm/ustring.h>
 
-#include <fmt/chrono.h>
-#include <fmt/format.h>
-#include <fmt/ranges.h>
 #include <sigc++/adaptors/hide.h>
 #include <sigc++/connection.h>
 #include <sigc++/functors/mem_fun.h>
+
+#include <fmt/chrono.h>
+#include <fmt/format.h>
+#include <fmt/ranges.h>
 
 #include <algorithm>
 #include <array>

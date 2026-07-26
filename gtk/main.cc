@@ -24,6 +24,7 @@
 
 #include <giomm/file.h>
 #include <giomm/init.h>
+
 #include <glibmm/i18n.h>
 #include <glibmm/init.h>
 #include <glibmm/miscutils.h>
@@ -39,6 +40,7 @@
 #include <string>
 
 #include <gio/gio.h>
+
 #include <glib-object.h>
 #include <glib.h>
 

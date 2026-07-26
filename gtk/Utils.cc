@@ -43,6 +43,7 @@
 #include <giomm/asyncresult.h>
 #endif
 #include <giomm/file.h>
+
 #include <glibmm/convert.h>
 #include <glibmm/error.h>
 #include <glibmm/i18n.h>
@@ -67,8 +68,9 @@
 
 #include "GtkCompat.h"
 
-#include <fmt/format.h>
 #include <sigc++/functors/slot.h>
+
+#include <fmt/format.h>
 
 #include <ctime>
 #include <functional>
@@ -80,8 +82,9 @@
 #include <utility>
 #include <vector>
 
-#include <gdk/gdk.h>
 #include <gtk/gtk.h>
+
+#include <gdk/gdk.h>
 
 #include <glib-object.h>
 #include <glib.h>

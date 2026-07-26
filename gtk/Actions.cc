@@ -20,6 +20,7 @@
 #endif
 #include <giomm/simpleaction.h>
 #include <giomm/simpleactiongroup.h>
+
 #include <glibmm/i18n.h>
 #include <glibmm/object.h>
 #include <glibmm/refptr.h>

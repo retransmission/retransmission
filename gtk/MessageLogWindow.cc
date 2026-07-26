@@ -32,6 +32,7 @@
 
 #include <giomm/simpleaction.h>
 #include <giomm/simpleactiongroup.h>
+
 #include <glibmm/convert.h>
 #include <glibmm/datetime.h>
 #include <glibmm/i18n.h>
@@ -41,10 +42,11 @@
 #include <glibmm/ustring.h>
 #include <glibmm/variant.h>
 
-#include <fmt/format.h>
-#include <fmt/ostream.h>
 #include <sigc++/connection.h>
 #include <sigc++/functors/mem_fun.h>
+
+#include <fmt/format.h>
+#include <fmt/ostream.h>
 
 #include <algorithm>
 #include <array>

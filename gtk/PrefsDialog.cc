@@ -49,10 +49,11 @@
 #include <glibmm/timer.h>
 #include <glibmm/ustring.h>
 
-#include <fmt/format.h>
 #include <sigc++/adaptors/bind_return.h>
 #include <sigc++/connection.h>
 #include <sigc++/functors/mem_fun.h>
+
+#include <fmt/format.h>
 
 #include <array>
 #include <cstdint>

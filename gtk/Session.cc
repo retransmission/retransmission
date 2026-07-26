@@ -37,6 +37,7 @@
 #include <giomm/filemonitor.h>
 #include <giomm/listmodel.h>
 #include <giomm/liststore.h>
+
 #include <glibmm/error.h>
 #include <glibmm/fileutils.h>
 #include <glibmm/i18n.h>
@@ -47,11 +48,12 @@
 #include <glibmm/stringutils.h>
 #include <glibmm/ustring.h>
 
-#include <fmt/format.h>
 #include <sigc++/adaptors/hide.h>
 #include <sigc++/connection.h>
 #include <sigc++/functors/mem_fun.h>
 #include <sigc++/signal.h>
+
+#include <fmt/format.h>
 #include <woke/woke.hpp>
 
 #include <algorithm>
@@ -72,6 +74,7 @@
 #include <vector>
 
 #include <gio/gio.h>
+
 #include <glib.h>
 
 using namespace std::literals;

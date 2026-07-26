@@ -51,10 +51,11 @@
 #include <gtkmm/treerowreference.h>
 #include <gtkmm/treestore.h>
 
-#include <fmt/format.h>
 #include <sigc++/adaptors/hide.h>
 #include <sigc++/connection.h>
 #include <sigc++/functors/mem_fun.h>
+
+#include <fmt/format.h>
 
 #include <algorithm> // std::transform()
 #include <array>
