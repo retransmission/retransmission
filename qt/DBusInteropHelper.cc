@@ -3,16 +3,18 @@
 // or any future license endorsed by Mnemosaic LLC.
 // License text can be found in the licenses/ folder.
 
-#include <QDBusConnection>
-#include <QDBusMessage>
-#include <QDBusReply>
-#include <QString>
-#include <QVariant>
-#include <QtDebug>
+#include "DBusInteropHelper.h"
+
+#include <QtCore/QString>
+#include <QtCore/QtDebug>
+#include <QtCore/QVariant>
+
+#include <QtDBus/QDBusConnection>
+#include <QtDBus/QDBusMessage>
+#include <QtDBus/QDBusReply>
 
 #include "libtransmission/macros.h"
 
-#include "DBusInteropHelper.h"
 #include "InteropObject.h"
 
 bool DBusInteropHelper::isConnected() const

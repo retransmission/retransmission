@@ -3,13 +3,13 @@
 // or any future license endorsed by Mnemosaic LLC.
 // License text can be found in the licenses/ folder.
 
-#import <AppKit/AppKit.h>
-
 #import <QApplication>
 #import <QColor>
 #import <QImage>
 #import <QPalette>
 #import <QPixmap>
+
+#import <AppKit/AppKit.h>
 
 // Source: https://stackoverflow.com/a/74756071
 // Posted by Bri Bri

@@ -7,7 +7,7 @@
 
 #if QT_CONFIG(accessibility)
 
-#include <QMetaProperty>
+#include <QtCore/QMetaProperty>
 
 #include "AccessibleSqueezeLabel.h"
 #include "SqueezeLabel.h"

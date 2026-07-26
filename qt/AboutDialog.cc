@@ -3,15 +3,17 @@
 // or any future license endorsed by Mnemosaic LLC.
 // License text can be found in the licenses/ folder.
 
-#include <QApplication>
-#include <QIcon>
-#include <QMessageBox>
-#include <QPushButton>
+#include "AboutDialog.h"
+
+#include <QtGui/QIcon>
+
+#include <QtWidgets/QApplication>
+#include <QtWidgets/QMessageBox>
+#include <QtWidgets/QPushButton>
 
 #include "libtransmission/macros.h"
 #include "libtransmission/version.h"
 
-#include "AboutDialog.h"
 #include "BaseDialog.h"
 // LicenseDialog is only named via the QPointer<> member deduced by Utils::openDialog(),
 // so the complete type is required here even though the name never appears below

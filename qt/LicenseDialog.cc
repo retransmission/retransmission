@@ -3,10 +3,11 @@
 // or any future license endorsed by Mnemosaic LLC.
 // License text can be found in the licenses/ folder.
 
-#include <QWidget>
+#include "LicenseDialog.h"
+
+#include <QtWidgets/QWidget>
 
 #include "BaseDialog.h"
-#include "LicenseDialog.h"
 
 LicenseDialog::LicenseDialog(QWidget* parent)
     : BaseDialog{ parent }

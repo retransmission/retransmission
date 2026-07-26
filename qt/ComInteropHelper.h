@@ -7,7 +7,7 @@
 
 #include <memory>
 
-#include <QAxObject>
+#include <QtAxContainer/QAxObject>
 
 class QObject;
 class QString;

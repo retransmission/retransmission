@@ -7,8 +7,8 @@
 
 #include <sigslot/signal.hpp>
 
-#include <QObject>
-#include <QString>
+#include <QtCore/QObject>
+#include <QtCore/QString>
 
 #include "libtransmission/quark.h"
 #include "libtransmission/variant.h"

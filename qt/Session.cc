@@ -3,6 +3,8 @@
 // or any future license endorsed by Mnemosaic LLC.
 // License text can be found in the licenses/ folder.
 
+#include "libtransmission-app/session.h"
+
 #include <algorithm>
 #include <array>
 #include <cassert>
@@ -14,20 +16,22 @@
 #include <tuple>
 #include <utility>
 
-#include <QApplication>
-#include <QByteArray>
-#include <QClipboard>
-#include <QCoreApplication>
-#include <QDebug>
-#include <QDesktopServices>
-#include <QFile>
-#include <QFileInfo>
-#include <QMessageBox>
-#include <QStyle>
-#include <QTextStream>
-#include <QtDebug>
-
 #include <small/vector.hpp>
+
+#include <QtCore/QByteArray>
+#include <QtCore/QCoreApplication>
+#include <QtCore/QDebug>
+#include <QtCore/QFile>
+#include <QtCore/QFileInfo>
+#include <QtCore/QtDebug>
+#include <QtCore/QTextStream>
+
+#include <QtGui/QClipboard>
+#include <QtGui/QDesktopServices>
+
+#include <QtWidgets/QApplication>
+#include <QtWidgets/QMessageBox>
+#include <QtWidgets/QStyle>
 
 #include "libtransmission/constants.h"
 #include "libtransmission/converters.h"
@@ -40,13 +44,11 @@
 #include "libtransmission/variant.h"
 
 #include "libtransmission-app/rpc-queue.h"
-#include "libtransmission-app/session.h"
-
-#include "Session.h"
 
 #include "AddData.h"
 #include "Prefs.h"
 #include "RpcClient.h"
+#include "Session.h"
 #include "SessionDialog.h"
 #include "Torrent.h"
 #include "Typedefs.h"

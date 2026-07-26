@@ -5,7 +5,7 @@
 
 #pragma once
 
-#include <QSortFilterProxyModel>
+#include <QtCore/QSortFilterProxyModel>
 
 class TrackerModelFilter : public QSortFilterProxyModel
 {

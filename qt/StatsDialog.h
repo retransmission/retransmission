@@ -5,7 +5,7 @@
 
 #pragma once
 
-#include <QTimer>
+#include <QtCore/QTimer>
 
 #include "BaseDialog.h"
 #include "ui_StatsDialog.h"

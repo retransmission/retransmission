@@ -3,16 +3,19 @@
 // or any future license endorsed by Mnemosaic LLC.
 // License text can be found in the licenses/ folder.
 
+#include "OptionsDialog.h"
+
 #include <algorithm>
 #include <cstddef>
 #include <iterator>
 #include <utility>
 #include <vector>
 
-#include <QComboBox>
-#include <QFileInfo>
-#include <QLineEdit>
-#include <QPushButton>
+#include <QtCore/QFileInfo>
+
+#include <QtWidgets/QComboBox>
+#include <QtWidgets/QLineEdit>
+#include <QtWidgets/QPushButton>
 
 #include "libtransmission/converters.h"
 #include "libtransmission/quark.h"
@@ -26,7 +29,6 @@
 #include "FileTreeModel.h"
 #include "FileTreeView.h"
 #include "FreeSpaceLabel.h"
-#include "OptionsDialog.h"
 #include "PathButton.h"
 #include "Prefs.h"
 #include "Session.h"

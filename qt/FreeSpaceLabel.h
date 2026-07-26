@@ -5,9 +5,10 @@
 
 #pragma once
 
-#include <QLabel>
-#include <QString>
-#include <QTimer>
+#include <QtCore/QString>
+#include <QtCore/QTimer>
+
+#include <QtWidgets/QLabel>
 
 class Session;
 

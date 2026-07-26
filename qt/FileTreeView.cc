@@ -3,15 +3,19 @@
 // or any future license endorsed by Mnemosaic LLC.
 // License text can be found in the licenses/ folder.
 
+#include "FileTreeView.h"
+
 #include <algorithm>
 #include <cassert>
 #include <queue>
 #include <set>
 
-#include <QHeaderView>
-#include <QMenu>
-#include <QResizeEvent>
-#include <QSortFilterProxyModel>
+#include <QtCore/QSortFilterProxyModel>
+
+#include <QtGui/QResizeEvent>
+
+#include <QtWidgets/QHeaderView>
+#include <QtWidgets/QMenu>
 
 #include "libtransmission/types.h" // priorities
 #include "libtransmission/values.h"
@@ -19,7 +23,6 @@
 #include "FileTreeDelegate.h"
 #include "FileTreeItem.h"
 #include "FileTreeModel.h"
-#include "FileTreeView.h"
 #include "Torrent.h"
 #include "Utils.h"
 

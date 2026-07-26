@@ -3,28 +3,30 @@
 // or any future license endorsed by Mnemosaic LLC.
 // License text can be found in the licenses/ folder.
 
+#include "Utils.h"
+
 #include <string_view>
 
-#include <QAbstractItemView>
-#include <QApplication>
-#include <QColor>
-#include <QCoreApplication>
-#include <QDataStream>
-#include <QFile>
-#include <QFileIconProvider>
-#include <QFileInfo>
-#include <QHeaderView>
-#include <QIcon>
-#include <QInputDialog>
-#include <QMimeDatabase>
-#include <QMimeType>
-#include <QObject>
-#include <QPixmapCache>
-#include <QRect>
-#include <QSpinBox>
-#include <QStyle>
+#include <QtCore/QCoreApplication>
+#include <QtCore/QDataStream>
+#include <QtCore/QFile>
+#include <QtCore/QFileInfo>
+#include <QtCore/QMimeDatabase>
+#include <QtCore/QMimeType>
+#include <QtCore/QObject>
+#include <QtCore/QRect>
 
-#include "Utils.h"
+#include <QtGui/QColor>
+#include <QtGui/QIcon>
+#include <QtGui/QPixmapCache>
+
+#include <QtWidgets/QAbstractItemView>
+#include <QtWidgets/QApplication>
+#include <QtWidgets/QFileIconProvider>
+#include <QtWidgets/QHeaderView>
+#include <QtWidgets/QInputDialog>
+#include <QtWidgets/QSpinBox>
+#include <QtWidgets/QStyle>
 
 #include "QtCompat.h"
 

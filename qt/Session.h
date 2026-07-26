@@ -14,10 +14,11 @@
 #include <string>
 #include <type_traits>
 
-#include <QObject>
-#include <QString>
-#include <QNetworkReply>
-#include <QTimer>
+#include <QtCore/QObject>
+#include <QtCore/QString>
+#include <QtCore/QTimer>
+
+#include <QtNetwork/QNetworkReply>
 
 #include "libtransmission/converters.h"
 #include "libtransmission/quark.h"

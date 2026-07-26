@@ -13,10 +13,11 @@
 
 #include <small/map.hpp>
 
-#include <QHBoxLayout>
-#include <QLabel>
-#include <QLineEdit>
-#include <QStandardItemModel>
+#include <QtGui/QStandardItemModel>
+
+#include <QtWidgets/QHBoxLayout>
+#include <QtWidgets/QLabel>
+#include <QtWidgets/QLineEdit>
 
 #include "libtransmission/quark.h"
 

@@ -3,6 +3,8 @@
 // or any future license endorsed by Mnemosaic LLC.
 // License text can be found in the licenses/ folder.
 
+#include "DetailsDialog.h"
+
 #include <algorithm>
 #include <array>
 #include <cassert>
@@ -14,24 +16,27 @@
 #include <utility>
 #include <vector>
 
-#include <QDateTime>
-#include <QDesktopServices>
-#include <QEvent>
-#include <QFont>
-#include <QFontMetrics>
-#include <QHeaderView>
-#include <QHostAddress>
-#include <QInputDialog>
-#include <QItemSelectionModel>
-#include <QLabel>
-#include <QList>
-#include <QMessageBox>
-#include <QResizeEvent>
-#include <QRegularExpression>
-#include <QStringList>
-#include <QString>
-#include <QStyle>
-#include <QTreeWidgetItem>
+#include <QtCore/QDateTime>
+#include <QtCore/QEvent>
+#include <QtCore/QItemSelectionModel>
+#include <QtCore/QList>
+#include <QtCore/QRegularExpression>
+#include <QtCore/QString>
+#include <QtCore/QStringList>
+
+#include <QtGui/QDesktopServices>
+#include <QtGui/QFont>
+#include <QtGui/QFontMetrics>
+#include <QtGui/QResizeEvent>
+
+#include <QtWidgets/QHeaderView>
+#include <QtWidgets/QInputDialog>
+#include <QtWidgets/QLabel>
+#include <QtWidgets/QMessageBox>
+#include <QtWidgets/QStyle>
+#include <QtWidgets/QTreeWidgetItem>
+
+#include <QtNetwork/QHostAddress>
 
 #include "libtransmission/announce-list.h"
 #include "libtransmission/quark.h"
@@ -40,7 +45,6 @@
 
 #include "BaseDialog.h"
 #include "ColumnResizer.h"
-#include "DetailsDialog.h"
 #include "Formatter.h"
 #include "NativeIcon.h"
 #include "Prefs.h"
@@ -52,9 +56,8 @@
 #include "TrackerDelegate.h"
 #include "TrackerModel.h"
 #include "TrackerModelFilter.h"
-#include "Utils.h"
-
 #include "ui_TrackersDialog.h"
+#include "Utils.h"
 
 class Prefs;
 class Session;

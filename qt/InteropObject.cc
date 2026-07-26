@@ -3,9 +3,10 @@
 // or any future license endorsed by Mnemosaic LLC.
 // License text can be found in the licenses/ folder.
 
+#include "InteropObject.h"
+
 #include "AddData.h"
 #include "Application.h"
-#include "InteropObject.h"
 
 InteropObject::InteropObject(QObject* parent)
     : QObject{ parent }

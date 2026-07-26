@@ -5,7 +5,7 @@
 
 #pragma once
 
-#include <QtGlobal>
+#include <QtCore/QtGlobal>
 
 #if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
 #define IF_QT6(ThenValue, ElseValue) ThenValue

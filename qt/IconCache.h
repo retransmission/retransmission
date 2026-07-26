@@ -12,10 +12,12 @@
 #include <optional>
 #include <unordered_map>
 
-#include <QFileIconProvider>
-#include <QIcon>
-#include <QString>
-#include <QStyle>
+#include <QtCore/QString>
+
+#include <QtGui/QIcon>
+
+#include <QtWidgets/QFileIconProvider>
+#include <QtWidgets/QStyle>
 
 #include "Utils.h" // std::hash<QString>()
 

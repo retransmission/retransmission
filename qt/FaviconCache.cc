@@ -10,9 +10,11 @@
 #include <string_view>
 #include <utility>
 
-#include <QApplication>
-#include <QPixmap>
-#include <QStandardPaths>
+#include <QtCore/QStandardPaths>
+
+#include <QtGui/QPixmap>
+
+#include <QtWidgets/QApplication>
 
 #include "libtransmission-app/favicon-cache.h"
 

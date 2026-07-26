@@ -7,7 +7,7 @@
 
 #include <optional>
 
-#include <QStyledItemDelegate>
+#include <QtWidgets/QStyledItemDelegate>
 
 #include "NativeIcon.h"
 

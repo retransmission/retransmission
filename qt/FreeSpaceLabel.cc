@@ -3,14 +3,17 @@
 // or any future license endorsed by Mnemosaic LLC.
 // License text can be found in the licenses/ folder.
 
+#include "FreeSpaceLabel.h"
+
 #include <cstdint>
 #include <utility>
 
-#include <QDir>
-#include <QLabel>
-#include <QPointer>
-#include <QString>
-#include <QWidget>
+#include <QtCore/QDir>
+#include <QtCore/QPointer>
+#include <QtCore/QString>
+
+#include <QtWidgets/QLabel>
+#include <QtWidgets/QWidget>
 
 #include "libtransmission/converters.h"
 #include "libtransmission/quark.h"
@@ -19,7 +22,6 @@
 #include "libtransmission-app/rpc-queue.h"
 
 #include "Formatter.h"
-#include "FreeSpaceLabel.h"
 #include "RpcClient.h"
 #include "Session.h"
 #include "VariantHelpers.h"

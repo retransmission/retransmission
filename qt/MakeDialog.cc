@@ -12,13 +12,14 @@
 #include <iterator>
 #include <utility>
 
-#include <QDialogButtonBox>
-#include <QDir>
-#include <QFileInfo>
-#include <QMimeData>
-#include <QPushButton>
-#include <QString>
-#include <QTimer>
+#include <QtCore/QDir>
+#include <QtCore/QFileInfo>
+#include <QtCore/QMimeData>
+#include <QtCore/QString>
+#include <QtCore/QTimer>
+
+#include <QtWidgets/QDialogButtonBox>
+#include <QtWidgets/QPushButton>
 
 #include "libtransmission/announce-list.h"
 #include "libtransmission/error.h"
@@ -29,7 +30,6 @@
 #include "Formatter.h"
 #include "QtCompat.h"
 #include "Session.h"
-
 #include "ui_MakeProgressDialog.h"
 
 namespace

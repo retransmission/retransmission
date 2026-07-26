@@ -5,7 +5,7 @@
 
 #pragma once
 
-#include <QItemDelegate>
+#include <QtWidgets/QItemDelegate>
 
 class QAbstractItemModel;
 class QComboBox;

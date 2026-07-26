@@ -3,16 +3,19 @@
 // or any future license endorsed by Mnemosaic LLC.
 // License text can be found in the licenses/ folder.
 
+#include "FilterBarComboBox.h"
+
 #include <algorithm>
 
-#include <QApplication>
-#include <QComboBox>
-#include <QPen>
-#include <QRect>
-#include <QStyle>
-#include <QStylePainter>
+#include <QtCore/QRect>
 
-#include "FilterBarComboBox.h"
+#include <QtGui/QPen>
+
+#include <QtWidgets/QApplication>
+#include <QtWidgets/QComboBox>
+#include <QtWidgets/QStyle>
+#include <QtWidgets/QStylePainter>
+
 #include "StyleHelper.h"
 #include "Utils.h"
 

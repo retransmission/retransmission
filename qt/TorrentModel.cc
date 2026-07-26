@@ -3,6 +3,8 @@
 // or any future license endorsed by Mnemosaic LLC.
 // License text can be found in the licenses/ folder.
 
+#include "TorrentModel.h"
+
 #include <algorithm>
 #include <cassert>
 #include <cstdint>
@@ -19,7 +21,6 @@
 
 #include "Torrent.h"
 #include "TorrentDelegate.h"
-#include "TorrentModel.h"
 #include "Typedefs.h"
 #include "VariantHelpers.h"
 

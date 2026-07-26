@@ -3,13 +3,14 @@
 // or any future license endorsed by Mnemosaic LLC.
 // License text can be found in the licenses/ folder.
 
+#include "StyleHelper.h"
+
 #include <algorithm>
 
-#include <QPainter>
-#include <QStaticText>
-#include <QStyleOptionProgressBar>
+#include <QtGui/QPainter>
+#include <QtGui/QStaticText>
 
-#include "StyleHelper.h"
+#include <QtWidgets/QStyleOptionProgressBar>
 
 QIcon::Mode StyleHelper::getIconMode(QStyle::State const& state)
 {

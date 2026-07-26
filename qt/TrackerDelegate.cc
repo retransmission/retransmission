@@ -3,13 +3,16 @@
 // or any future license endorsed by Mnemosaic LLC.
 // License text can be found in the licenses/ folder.
 
+#include "TrackerDelegate.h"
+
 #include <ctime>
 
-#include <QAbstractTextDocumentLayout>
-#include <QApplication>
-#include <QPainter>
-#include <QPixmap>
-#include <QTextDocument>
+#include <QtGui/QAbstractTextDocumentLayout>
+#include <QtGui/QPainter>
+#include <QtGui/QPixmap>
+#include <QtGui/QTextDocument>
+
+#include <QtWidgets/QApplication>
 
 #include "libtransmission/types.h"
 #include "libtransmission/web-utils.h"
@@ -18,7 +21,6 @@
 
 #include "Formatter.h"
 #include "Torrent.h"
-#include "TrackerDelegate.h"
 #include "TrackerModel.h"
 #include "Utils.h"
 

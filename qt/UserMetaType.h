@@ -5,7 +5,7 @@
 
 #pragma once
 
-#include <QMetaType>
+#include <QtCore/QMetaType>
 
 #include "libtransmission-app/display-modes.h"
 

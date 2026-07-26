@@ -15,20 +15,23 @@
 #include <utility>
 #include <vector>
 
+#include <QtCore/QLibraryInfo>
+#include <QtCore/QProcess>
+#include <QtCore/QRect>
+
 #if QT_CONFIG(accessibility)
-#include <QAccessible>
+#include <QtGui/QAccessible>
 #endif
+#include <QtGui/QIcon>
+
+#include <QtWidgets/QMessageBox>
+#include <QtWidgets/QSystemTrayIcon>
+
 #ifdef QT_DBUS_LIB
-#include <QDBusConnection>
-#include <QDBusMessage>
-#include <QDBusReply>
+#include <QtDBus/QDBusConnection>
+#include <QtDBus/QDBusMessage>
+#include <QtDBus/QDBusReply>
 #endif
-#include <QIcon>
-#include <QLibraryInfo>
-#include <QMessageBox>
-#include <QProcess>
-#include <QRect>
-#include <QSystemTrayIcon>
 
 #include "libtransmission/macros.h"
 #include "libtransmission/quark.h"

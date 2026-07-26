@@ -10,7 +10,7 @@
 #include <memory>
 #include <set>
 
-#include <QAbstractItemModel>
+#include <QtCore/QAbstractItemModel>
 
 #include "Typedefs.h" // file_indices_t
 

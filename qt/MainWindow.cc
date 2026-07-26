@@ -3,20 +3,23 @@
 // or any future license endorsed by Mnemosaic LLC.
 // License text can be found in the licenses/ folder.
 
+#include "MainWindow.h"
+
 #include <algorithm>
 #include <array>
 #include <ctime>
 #include <memory>
 #include <utility>
 
-#include <QCheckBox>
-#include <QFileDialog>
-#include <QIcon>
-#include <QLabel>
-#include <QMessageBox>
-#include <QPainter>
-#include <QProxyStyle>
-#include <QtGui>
+#include <QtGui/QIcon>
+#include <QtGui/QPainter>
+#include <QtGui/QtGui>
+
+#include <QtWidgets/QCheckBox>
+#include <QtWidgets/QFileDialog>
+#include <QtWidgets/QLabel>
+#include <QtWidgets/QMessageBox>
+#include <QtWidgets/QProxyStyle>
 
 #include "libtransmission/macros.h"
 #include "libtransmission/magnet-metainfo.h"
@@ -29,7 +32,6 @@
 #include "DetailsDialog.h"
 #include "FilterBar.h"
 #include "Formatter.h"
-#include "MainWindow.h"
 #include "MakeDialog.h"
 #include "NativeIcon.h"
 #include "OptionsDialog.h"

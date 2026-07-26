@@ -8,9 +8,9 @@
 #include <cstdint>
 #include <optional>
 
-#include <QByteArray>
-#include <QString>
-#include <QUrl>
+#include <QtCore/QByteArray>
+#include <QtCore/QString>
+#include <QtCore/QUrl>
 
 class AddData
 {

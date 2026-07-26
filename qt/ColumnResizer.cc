@@ -3,10 +3,11 @@
 // or any future license endorsed by Mnemosaic LLC.
 // License text can be found in the licenses/ folder.
 
-#include <QEvent>
-#include <QGridLayout>
-
 #include "ColumnResizer.h"
+
+#include <QtCore/QEvent>
+
+#include <QtWidgets/QGridLayout>
 
 namespace
 {

@@ -3,14 +3,14 @@
 // or any future license endorsed by Mnemosaic LLC.
 // License text can be found in the licenses/ folder.
 
-#include "libtransmission/utils.h"
-#include "libtransmission/values.h"
-
 #include "Formatter.h"
 
 #include <algorithm>
 #include <cstdint>
 #include <string_view>
+
+#include "libtransmission/utils.h"
+#include "libtransmission/values.h"
 
 using namespace std::literals;
 using namespace tr::Values;

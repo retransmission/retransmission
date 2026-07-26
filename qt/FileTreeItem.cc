@@ -3,6 +3,8 @@
 // or any future license endorsed by Mnemosaic LLC.
 // License text can be found in the licenses/ folder.
 
+#include "FileTreeItem.h"
+
 #include <algorithm>
 #include <cassert>
 #include <cstdint>
@@ -15,7 +17,6 @@
 
 #include "libtransmission/types.h"
 
-#include "FileTreeItem.h"
 #include "FileTreeModel.h"
 #include "Formatter.h"
 #include "IconCache.h"

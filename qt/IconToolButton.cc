@@ -3,12 +3,12 @@
 // or any future license endorsed by Mnemosaic LLC.
 // License text can be found in the licenses/ folder.
 
-#include <QStyle>
-#include <QStyleOption>
-#include <QStyleOptionToolButton>
-#include <QStylePainter>
-
 #include "IconToolButton.h"
+
+#include <QtWidgets/QStyle>
+#include <QtWidgets/QStyleOption>
+#include <QtWidgets/QStyleOptionToolButton>
+#include <QtWidgets/QStylePainter>
 
 IconToolButton::IconToolButton(QWidget* parent)
     : QToolButton{ parent }

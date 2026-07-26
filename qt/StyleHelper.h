@@ -5,8 +5,9 @@
 
 #pragma once
 
-#include <QIcon>
-#include <QStyle>
+#include <QtGui/QIcon>
+
+#include <QtWidgets/QStyle>
 
 class QPainter;
 class QStyleOptionProgressBar;

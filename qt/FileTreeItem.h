@@ -10,9 +10,9 @@
 #include <utility>
 #include <vector>
 
-#include <QCoreApplication>
-#include <QString>
-#include <QVariant>
+#include <QtCore/QCoreApplication>
+#include <QtCore/QString>
+#include <QtCore/QVariant>
 
 #include "Typedefs.h"
 

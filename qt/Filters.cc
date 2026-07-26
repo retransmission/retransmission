@@ -3,9 +3,10 @@
 // or any future license endorsed by Mnemosaic LLC.
 // License text can be found in the licenses/ folder.
 
+#include "Filters.h"
+
 #include <cstdint>
 
-#include "Filters.h"
 #include "Torrent.h"
 #include "UserMetaType.h"
 

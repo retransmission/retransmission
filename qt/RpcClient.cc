@@ -3,16 +3,16 @@
 // or any future license endorsed by Mnemosaic LLC.
 // License text can be found in the licenses/ folder.
 
+#include "RpcClient.h"
+
 #include <functional>
 #include <optional>
 #include <string>
 #include <string_view>
 #include <utility>
 
-#include "RpcClient.h"
-
-#include <QCoreApplication>
-#include <QTimer>
+#include <QtCore/QCoreApplication>
+#include <QtCore/QTimer>
 
 #include "libtransmission/quark.h"
 #include "libtransmission/variant.h"
