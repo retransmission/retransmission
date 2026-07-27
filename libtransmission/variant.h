@@ -8,7 +8,6 @@
 #include <algorithm> // std::move()
 #include <cstddef> // size_t
 #include <cstdint> // int64_t
-#include <functional> // std::invoke
 #include <limits>
 #include <optional>
 #include <string>
