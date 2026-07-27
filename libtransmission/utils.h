@@ -5,13 +5,13 @@
 
 #pragma once
 
+#include <concepts>
 #include <cstdint> // uint8_t, uint32_t, uint64_t
 #include <ctime> // time_t
 #include <locale>
 #include <optional>
 #include <string>
 #include <string_view>
-#include <type_traits>
 #include <vector>
 
 /**

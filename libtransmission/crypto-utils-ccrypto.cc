@@ -4,7 +4,6 @@
 // License text can be found in the licenses/ folder.
 
 #include <memory>
-#include <type_traits>
 
 #include <CommonCrypto/CommonDigest.h>
 #include <CommonCrypto/CommonRandom.h>
