@@ -5,7 +5,7 @@
 
 #pragma once
 
-#include <QListView>
+#include <QtWidgets/QListView>
 
 class TorrentView : public QListView
 {

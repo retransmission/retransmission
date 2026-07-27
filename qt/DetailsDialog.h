@@ -9,13 +9,12 @@
 #include <memory>
 #include <unordered_set>
 
-#include <QString>
-#include <QTimer>
+#include <QtCore/QString>
+#include <QtCore/QTimer>
 
 #include "BaseDialog.h"
 #include "Session.h"
 #include "Typedefs.h"
-
 #include "ui_DetailsDialog.h"
 
 class QResizeEvent;

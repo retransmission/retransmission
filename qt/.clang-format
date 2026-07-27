@@ -1,0 +1,67 @@
+---
+BasedOnStyle: InheritParentConfig
+
+IncludeBlocks: Regroup
+IncludeCategories:
+  # The Windows SDK headers form one block (a single Priority) whose order within the
+  # block is pinned by SortPriority: the SDK does not include its own prerequisites,
+  # so winsock2.h and windows.h have to precede the headers that use their macros.
+  # Every SortPriority below is lower than any other category's Priority, which is
+  # what keeps this block ahead of the rest.
+  - Regex: '^<winsock2\.h>'
+    Priority: 1
+    SortPriority: 1
+  - Regex: '^<windows\.h>'
+    Priority: 1
+    SortPriority: 2
+  - Regex: '^<(objbase|shellapi|ws2tcpip)\.h>'
+    Priority: 1
+    SortPriority: 3
+  # CaseSensitive keeps this off the unqualified Qt headers below: these regexes are
+  # matched case-insensitively by default, and the first match wins.
+  - Regex: '^<[a-z_]+>'
+    Priority: 4
+    CaseSensitive: true
+  - Regex: '^<(fmt|sigslot|small|woke)/'
+    Priority: 5
+  # The Qt stack, lowest layer first: each tier only depends on the ones above it.
+  # QtCore -> QtGui -> QtWidgets is the spine; QtNetwork and QtDBus sit on QtCore
+  # alone, and the ActiveQt/WinExtras modules are Windows-only leaves.
+  - Regex: '^<QtCore/'
+    Priority: 6
+  - Regex: '^<QtGui/'
+    Priority: 7
+  # QAction and QActionGroup moved from QtWidgets (Qt5) to QtGui (Qt6), so they stay
+  # unqualified; group them with QtGui, where they live in the Qt version we build
+  # against by default.
+  - Regex: '^<QAction(Group)?>'
+    Priority: 7
+  - Regex: '^<QtWidgets/'
+    Priority: 8
+  - Regex: '^<QtSvg/'
+    Priority: 9
+  - Regex: '^<QtNetwork/'
+    Priority: 10
+  - Regex: '^<QtDBus/'
+    Priority: 11
+  - Regex: '^<Qt(AxContainer|AxServer|WinExtras)/'
+    Priority: 12
+  - Regex: '^[<"]libtransmission/'
+    Priority: 13
+  - Regex: '^[<"]libtransmission-app/'
+    Priority: 14
+  - Regex: '.*'
+    Priority: 16
+SortIncludes:
+  Enabled: true
+  IgnoreCase: true
+
+# Workaround. Needed until we adopt a version that includes https://github.com/llvm/llvm-project/pull/192283
+BreakAfterOpenBracketFunction: true
+BreakAfterOpenBracketIf: true
+BreakAfterOpenBracketLoop: true
+BreakAfterOpenBracketSwitch: true
+BreakBeforeCloseBracketFunction: false
+BreakBeforeCloseBracketIf: false
+BreakBeforeCloseBracketLoop: false
+BreakBeforeCloseBracketSwitch: false

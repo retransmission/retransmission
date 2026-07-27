@@ -3,6 +3,8 @@
 // or any future license endorsed by Mnemosaic LLC.
 // License text can be found in the licenses/ folder.
 
+#include "MainWindow.h"
+
 #include <algorithm>
 #include <array>
 #include <cassert>
@@ -10,14 +12,20 @@
 #include <ranges>
 #include <utility>
 
-#include <QCheckBox>
-#include <QFileDialog>
-#include <QIcon>
-#include <QLabel>
-#include <QMessageBox>
-#include <QPainter>
-#include <QProxyStyle>
-#include <QtGui>
+#include <QtCore/QMimeData>
+#include <QtCore/QProcess> // openSelect() on Windows and macOS
+
+#include <QActionGroup> // unqualified: QtWidgets on Qt5, QtGui on Qt6
+#include <QtGui/QClipboard>
+#include <QtGui/QDesktopServices>
+#include <QtGui/QIcon>
+#include <QtGui/QPainter>
+
+#include <QtWidgets/QCheckBox>
+#include <QtWidgets/QFileDialog>
+#include <QtWidgets/QLabel>
+#include <QtWidgets/QMessageBox>
+#include <QtWidgets/QProxyStyle>
 
 #include "libtransmission/macros.h"
 #include "libtransmission/magnet-metainfo.h"
@@ -30,7 +38,6 @@
 #include "FilterBar.h"
 #include "Filters.h"
 #include "Formatter.h"
-#include "MainWindow.h"
 #include "MakeDialog.h"
 #include "NativeIcon.h"
 #include "OptionsDialog.h"

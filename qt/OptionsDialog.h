@@ -8,18 +8,19 @@
 #include <optional>
 #include <vector>
 
-#include <QDir>
-#include <QFile>
-#include <QString>
-#include <QTimer>
+#include <QtCore/QDir>
+#include <QtCore/QFile>
+#include <QtCore/QString>
+#include <QtCore/QTimer>
+
+#include <libtransmission/torrent-metainfo.h>
+#include <libtransmission/transmission.h>
 
 #include "AddData.h" // AddData
 #include "BaseDialog.h"
 #include "Torrent.h" // FileList
 #include "Typedefs.h" // file_indices_t
 #include "ui_OptionsDialog.h"
-
-#include <libtransmission/torrent-metainfo.h>
 
 class Prefs;
 class Session;

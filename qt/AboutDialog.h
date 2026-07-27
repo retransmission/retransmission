@@ -5,7 +5,7 @@
 
 #pragma once
 
-#include <QPointer>
+#include <QtCore/QPointer>
 
 #include "BaseDialog.h"
 #include "ui_AboutDialog.h"

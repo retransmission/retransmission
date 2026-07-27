@@ -3,18 +3,18 @@
 // or any future license endorsed by Mnemosaic LLC.
 // License text can be found in the licenses/ folder.
 
+#include "WatchDir.h"
+
 #include <memory>
 
-#include <QDir>
-#include <QFileSystemWatcher>
-#include <QTimer>
-
-#include <libtransmission/transmission.h>
+#include <QtCore/QDir>
+#include <QtCore/QFileSystemWatcher>
+#include <QtCore/QTimer>
 
 #include <libtransmission/torrent-metainfo.h>
+#include <libtransmission/transmission.h>
 
 #include "TorrentModel.h"
-#include "WatchDir.h"
 
 // ---
 

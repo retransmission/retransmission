@@ -3,8 +3,9 @@
 // or any future license endorsed by Mnemosaic LLC.
 // License text can be found in the licenses/ folder.
 
-#include "TrackerModel.h"
 #include "TrackerModelFilter.h"
+
+#include "TrackerModel.h"
 
 TrackerModelFilter::TrackerModelFilter(QObject* parent)
     : QSortFilterProxyModel{ parent }

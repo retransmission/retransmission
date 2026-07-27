@@ -9,12 +9,14 @@
 #include <ctime>
 #include <memory>
 
-#include <QMainWindow>
-#include <QNetworkReply>
-#include <QPointer>
-#include <QStringList>
-#include <QSystemTrayIcon>
-#include <QTimer>
+#include <QtCore/QPointer>
+#include <QtCore/QStringList>
+#include <QtCore/QTimer>
+
+#include <QtWidgets/QMainWindow>
+#include <QtWidgets/QSystemTrayIcon>
+
+#include <QtNetwork/QNetworkReply>
 
 #include "Filters.h"
 #include "Prefs.h"

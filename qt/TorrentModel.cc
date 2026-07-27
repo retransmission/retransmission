@@ -3,6 +3,8 @@
 // or any future license endorsed by Mnemosaic LLC.
 // License text can be found in the licenses/ folder.
 
+#include "TorrentModel.h"
+
 #include <algorithm>
 #include <cassert>
 #include <cstddef>
@@ -13,11 +15,11 @@
 #include <vector>
 
 #include <libtransmission/quark.h>
+#include <libtransmission/transmission.h>
 #include <libtransmission/variant.h>
 
 #include "Torrent.h"
 #include "TorrentDelegate.h"
-#include "TorrentModel.h"
 #include "VariantHelpers.h"
 
 /***

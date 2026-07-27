@@ -10,13 +10,15 @@
 #include <optional>
 #include <unordered_set>
 
-#include <QApplication>
-#include <QPixmap>
-#include <QPointer>
-#include <QRegularExpression>
-#include <QTimer>
-#include <QTranslator>
-#include <QWeakPointer>
+#include <QtCore/QPointer>
+#include <QtCore/QRegularExpression>
+#include <QtCore/QTimer>
+#include <QtCore/QTranslator>
+#include <QtCore/QWeakPointer>
+
+#include <QtGui/QPixmap>
+
+#include <QtWidgets/QApplication>
 
 #include <libtransmission/quark.h>
 

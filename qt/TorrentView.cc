@@ -3,11 +3,11 @@
 // or any future license endorsed by Mnemosaic LLC.
 // License text can be found in the licenses/ folder.
 
-#include <QApplication>
-#include <QStyleOptionHeader>
-#include <QStylePainter>
-
 #include "TorrentView.h"
+
+#include <QtWidgets/QApplication>
+#include <QtWidgets/QStyleOptionHeader>
+#include <QtWidgets/QStylePainter>
 
 class TorrentView::HeaderWidget : public QWidget
 {

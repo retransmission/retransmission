@@ -8,9 +8,9 @@
 #include <memory>
 #include <set>
 
-#include <QObject>
-#include <QFileSystemWatcher>
-#include <QString>
+#include <QtCore/QFileSystemWatcher>
+#include <QtCore/QObject>
+#include <QtCore/QString>
 
 class TorrentModel;
 

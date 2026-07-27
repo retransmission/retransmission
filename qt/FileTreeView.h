@@ -5,7 +5,7 @@
 
 #pragma once
 
-#include <QTreeView>
+#include <QtWidgets/QTreeView>
 
 #include "Torrent.h" // FileList
 #include "Typedefs.h" // file_indices_t

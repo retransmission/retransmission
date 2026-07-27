@@ -11,8 +11,8 @@
 #include <limits>
 #include <string_view>
 
-#include <QString>
-#include <QUrl>
+#include <QtCore/QString>
+#include <QtCore/QUrl>
 
 #include <libtransmission/converters.h>
 #include <libtransmission/web-utils.h>

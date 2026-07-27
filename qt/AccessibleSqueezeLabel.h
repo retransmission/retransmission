@@ -9,7 +9,7 @@
 
 #if QT_CONFIG(accessibility)
 
-#include <QAccessibleWidget>
+#include <QtWidgets/QAccessibleWidget>
 
 class SqueezeLabel;
 

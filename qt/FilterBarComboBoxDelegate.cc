@@ -3,13 +3,15 @@
 // or any future license endorsed by Mnemosaic LLC.
 // License text can be found in the licenses/ folder.
 
-#include <QAbstractItemView>
-#include <QComboBox>
-#include <QStandardItemModel>
-#include <QStyle>
+#include "FilterBarComboBoxDelegate.h"
+
+#include <QtGui/QStandardItemModel>
+
+#include <QtWidgets/QAbstractItemView>
+#include <QtWidgets/QComboBox>
+#include <QtWidgets/QStyle>
 
 #include "FilterBarComboBox.h"
-#include "FilterBarComboBoxDelegate.h"
 #include "StyleHelper.h"
 #include "Utils.h"
 

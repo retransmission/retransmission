@@ -4,23 +4,26 @@
 // License text can be found in the licenses/ folder.
 
 #include "NativeIcon.h"
-#include "Utils.h"
 
 #include <optional>
 #include <string_view>
 
-#include <QChar>
-#include <QFontDatabase>
-#include <QOperatingSystemVersion>
-#include <QStyle>
+#include <small/set.hpp>
+
+#include <QtCore/QChar>
+#include <QtCore/QOperatingSystemVersion>
+
 #include <QtGui/QFont>
+#include <QtGui/QFontDatabase>
 #include <QtGui/QGuiApplication> // qApp
 #include <QtGui/QIcon>
 #include <QtGui/QPainter>
 #include <QtGui/QPalette>
 #include <QtGui/QPixmap>
 
-#include <small/set.hpp>
+#include <QtWidgets/QStyle>
+
+#include "Utils.h"
 
 #if defined(Q_OS_MAC)
 extern QPixmap loadSFSymbol(QString symbol_name, int pixel_size);

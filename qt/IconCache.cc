@@ -10,23 +10,25 @@
 #include <shellapi.h>
 #endif
 
-#include <QApplication>
-#include <QFile>
-#include <QFileIconProvider>
-#include <QFileInfo>
-#include <QIcon>
-#include <QMimeDatabase>
-#include <QObject>
-#include <QPainter>
-#include <QPixmap>
-#include <QStyle>
+#include <QtCore/QFile>
+#include <QtCore/QFileInfo>
+#include <QtCore/QMimeDatabase>
+#include <QtCore/QObject>
+
+#include <QtGui/QIcon>
+#include <QtGui/QPainter>
+#include <QtGui/QPixmap>
+
+#include <QtWidgets/QApplication>
+#include <QtWidgets/QFileIconProvider>
+#include <QtWidgets/QStyle>
 
 #ifdef _WIN32
-#include <QPixmapCache>
+#include <QtGui/QPixmapCache>
 #if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
-#include <QImage>
+#include <QtGui/QImage>
 #else
-#include <QtWin>
+#include <QtWinExtras/QtWin>
 #endif
 
 #include "QtCompat.h"

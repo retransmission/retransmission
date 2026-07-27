@@ -3,17 +3,17 @@
 // or any future license endorsed by Mnemosaic LLC.
 // License text can be found in the licenses/ folder.
 
-#include <QDir>
-#include <QFile>
-#include <QFileInfo>
+#include "AddData.h"
 
-#include <libtransmission/transmission.h>
+#include <QtCore/QDir>
+#include <QtCore/QFile>
+#include <QtCore/QFileInfo>
 
 #include <libtransmission/error.h>
 #include <libtransmission/torrent-metainfo.h>
+#include <libtransmission/transmission.h>
 #include <libtransmission/web-utils.h>
 
-#include "AddData.h"
 #include "Utils.h"
 
 namespace

@@ -3,18 +3,21 @@
 // or any future license endorsed by Mnemosaic LLC.
 // License text can be found in the licenses/ folder.
 
-#include <QAction>
-#include <QApplication>
-#include <QDir>
-#include <QFileDialog>
-#include <QFileIconProvider>
-#include <QFileInfo>
-#include <QMenu>
-#include <QStyle>
-#include <QStyleOptionToolButton>
-#include <QStylePainter>
-
 #include "PathButton.h"
+
+#include <QtCore/QDir>
+#include <QtCore/QFileInfo>
+
+#include <QAction> // unqualified: QtWidgets on Qt5, QtGui on Qt6
+
+#include <QtWidgets/QApplication>
+#include <QtWidgets/QFileDialog>
+#include <QtWidgets/QFileIconProvider>
+#include <QtWidgets/QMenu>
+#include <QtWidgets/QStyle>
+#include <QtWidgets/QStyleOptionToolButton>
+#include <QtWidgets/QStylePainter>
+
 #include "Utils.h"
 
 PathButton::PathButton(QWidget* parent)

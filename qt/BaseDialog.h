@@ -5,7 +5,7 @@
 
 #pragma once
 
-#include <QDialog>
+#include <QtWidgets/QDialog>
 
 class BaseDialog : public QDialog
 {

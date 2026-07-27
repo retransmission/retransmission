@@ -3,12 +3,13 @@
 // or any future license endorsed by Mnemosaic LLC.
 // License text can be found in the licenses/ folder.
 
-#include <QTimer>
+#include "StatsDialog.h"
+
+#include <QtCore/QTimer>
 
 #include "ColumnResizer.h"
 #include "Formatter.h"
 #include "Session.h"
-#include "StatsDialog.h"
 
 namespace
 {

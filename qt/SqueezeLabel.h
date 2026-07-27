@@ -41,7 +41,7 @@
 
 #pragma once
 
-#include <QLabel>
+#include <QtWidgets/QLabel>
 
 class SqueezeLabel : public QLabel
 {

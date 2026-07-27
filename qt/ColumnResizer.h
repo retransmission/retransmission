@@ -7,8 +7,8 @@
 
 #include <set>
 
-#include <QObject>
-#include <QTimer>
+#include <QtCore/QObject>
+#include <QtCore/QTimer>
 
 class QGridLayout;
 

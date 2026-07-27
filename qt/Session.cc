@@ -3,6 +3,8 @@
 // or any future license endorsed by Mnemosaic LLC.
 // License text can be found in the licenses/ folder.
 
+#include "Session.h"
+
 #include <algorithm>
 #include <array>
 #include <cassert>
@@ -10,30 +12,29 @@
 #include <string_view>
 #include <utility>
 
-#include <QApplication>
-#include <QByteArray>
-#include <QClipboard>
-#include <QCoreApplication>
-#include <QDebug>
-#include <QDesktopServices>
-#include <QFile>
-#include <QFileInfo>
-#include <QMessageBox>
-#include <QStyle>
-#include <QTextStream>
-#include <QtDebug>
-
 #include <small/vector.hpp>
 
-#include <libtransmission/transmission.h>
+#include <QtCore/QByteArray>
+#include <QtCore/QCoreApplication>
+#include <QtCore/QDebug>
+#include <QtCore/QFile>
+#include <QtCore/QFileInfo>
+#include <QtCore/QtDebug>
+#include <QtCore/QTextStream>
+
+#include <QtGui/QClipboard>
+#include <QtGui/QDesktopServices>
+
+#include <QtWidgets/QApplication>
+#include <QtWidgets/QMessageBox>
+#include <QtWidgets/QStyle>
 
 #include <libtransmission/quark.h>
 #include <libtransmission/serializer.h>
 #include <libtransmission/session-id.h>
+#include <libtransmission/transmission.h>
 #include <libtransmission/utils.h>
 #include <libtransmission/variant.h>
-
-#include "Session.h"
 
 #include "AddData.h"
 #include "Filters.h"

@@ -4,11 +4,13 @@
 // or any future license endorsed by Mnemosaic LLC.
 // License text can be found in the licenses/ folder.
 
-#include <libtransmission-app/favicon-cache.h>
+#include <QtCore/QStandardPaths>
 
-#include <QApplication>
-#include <QPixmap>
-#include <QStandardPaths>
+#include <QtGui/QPixmap>
+
+#include <QtWidgets/QApplication>
+
+#include <libtransmission-app/favicon-cache.h>
 
 #include "Utils.h"
 

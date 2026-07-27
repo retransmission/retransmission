@@ -3,9 +3,9 @@
 // or any future license endorsed by Mnemosaic LLC.
 // License text can be found in the licenses/ folder.
 
-#include <QVariant>
-
 #include "InteropHelper.h"
+
+#include <QtCore/QVariant>
 
 bool InteropHelper::isConnected() const
 {

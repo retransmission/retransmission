@@ -9,10 +9,12 @@
 
 #include <small/map.hpp>
 
-#include <QLineEdit>
-#include <QStandardItemModel>
-#include <QTimer>
-#include <QWidget>
+#include <QtCore/QTimer>
+
+#include <QtGui/QStandardItemModel>
+
+#include <QtWidgets/QLineEdit>
+#include <QtWidgets/QWidget>
 
 #include "Prefs.h"
 #include "Torrent.h"

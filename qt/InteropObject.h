@@ -5,7 +5,7 @@
 
 #pragma once
 
-#include <QObject>
+#include <QtCore/QObject>
 
 #include "libtransmission/macros.h"
 

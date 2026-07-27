@@ -7,8 +7,8 @@
 
 #include <array>
 
-#include <QSortFilterProxyModel>
-#include <QTimer>
+#include <QtCore/QSortFilterProxyModel>
+#include <QtCore/QTimer>
 
 #include "Filters.h"
 #include "Prefs.h"

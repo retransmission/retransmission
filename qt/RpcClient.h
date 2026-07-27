@@ -7,17 +7,18 @@
 
 #include <array>
 
-#include <QObject>
-#include <QNetworkReply> // QNetworkReply::NetworkError
-#include <QString>
-#include <QUrl>
-
 #include <sigslot/signal.hpp>
 
-#include <libtransmission-app/rpc-client.h>
+#include <QtCore/QObject>
+#include <QtCore/QString>
+#include <QtCore/QUrl>
+
+#include <QtNetwork/QNetworkReply> // QNetworkReply::NetworkError
 
 #include <libtransmission/quark.h>
 #include <libtransmission/variant.h>
+
+#include <libtransmission-app/rpc-client.h>
 
 struct tr_session;
 

@@ -3,9 +3,10 @@
 // or any future license endorsed by Mnemosaic LLC.
 // License text can be found in the licenses/ folder.
 
+#include "SessionDialog.h"
+
 #include "Prefs.h"
 #include "Session.h"
-#include "SessionDialog.h"
 
 /***
 ****

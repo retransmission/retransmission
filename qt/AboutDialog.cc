@@ -3,15 +3,18 @@
 // or any future license endorsed by Mnemosaic LLC.
 // License text can be found in the licenses/ folder.
 
-#include <QApplication>
-#include <QIcon>
-#include <QMessageBox>
-#include <QPushButton>
+#include "AboutDialog.h"
+
+#include <QtGui/QIcon>
+
+#include <QtWidgets/QApplication>
+#include <QtWidgets/QMessageBox>
+#include <QtWidgets/QPushButton>
 
 #include <libtransmission/macros.h>
+#include <libtransmission/transmission.h>
 #include <libtransmission/version.h>
 
-#include "AboutDialog.h"
 #include "LicenseDialog.h"
 #include "Session.h"
 #include "Utils.h"

@@ -5,8 +5,8 @@
 
 #pragma once
 
-#include "UserMetaType.h"
 #include "Torrent.h"
+#include "UserMetaType.h"
 
 // The Torrent properties that can affect ShowMode filtering.
 // When one of these changes, it's time to refilter.

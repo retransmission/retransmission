@@ -8,21 +8,22 @@
 #include <cassert>
 #include <optional>
 
-#include <QCheckBox>
-#include <QComboBox>
-#include <QCoreApplication>
-#include <QDialogButtonBox>
-#include <QDoubleSpinBox>
-#include <QHBoxLayout>
-#include <QLabel>
-#include <QLineEdit>
-#include <QMessageBox>
-#include <QPlainTextEdit>
-#include <QPushButton>
-#include <QSignalBlocker>
-#include <QSpinBox>
-#include <QTime>
-#include <QTimeEdit>
+#include <QtCore/QCoreApplication>
+#include <QtCore/QSignalBlocker>
+#include <QtCore/QTime>
+
+#include <QtWidgets/QCheckBox>
+#include <QtWidgets/QComboBox>
+#include <QtWidgets/QDialogButtonBox>
+#include <QtWidgets/QDoubleSpinBox>
+#include <QtWidgets/QHBoxLayout>
+#include <QtWidgets/QLabel>
+#include <QtWidgets/QLineEdit>
+#include <QtWidgets/QMessageBox>
+#include <QtWidgets/QPlainTextEdit>
+#include <QtWidgets/QPushButton>
+#include <QtWidgets/QSpinBox>
+#include <QtWidgets/QTimeEdit>
 
 #include <libtransmission/quark.h>
 #include <libtransmission/types.h>

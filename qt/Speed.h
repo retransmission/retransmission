@@ -5,8 +5,8 @@
 
 #pragma once
 
-#include <QCoreApplication> // Q_DECLARE_TR_FUNCTIONS
-#include <QString>
+#include <QtCore/QCoreApplication> // Q_DECLARE_TR_FUNCTIONS
+#include <QtCore/QString>
 
 #include <libtransmission/values.h>
 

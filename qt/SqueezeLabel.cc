@@ -39,13 +39,15 @@
 **
 ****************************************************************************/
 
-#include <QPainter>
-#include <QStyle>
-#include <QStyleOption>
-#include <QTimer>
+#include <QtCore/QTimer>
+
+#include <QtGui/QPainter>
+
+#include <QtWidgets/QStyle>
+#include <QtWidgets/QStyleOption>
 
 #if QT_CONFIG(accessibility)
-#include <QAccessible>
+#include <QtGui/QAccessible>
 #endif
 
 #include "SqueezeLabel.h"

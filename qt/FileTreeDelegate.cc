@@ -3,10 +3,12 @@
 // or any future license endorsed by Mnemosaic LLC.
 // License text can be found in the licenses/ folder.
 
-#include <QApplication>
-#include <QPainter>
-
 #include "FileTreeDelegate.h"
+
+#include <QtGui/QPainter>
+
+#include <QtWidgets/QApplication>
+
 #include "FileTreeModel.h"
 #include "StyleHelper.h"
 

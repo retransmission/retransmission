@@ -3,6 +3,8 @@
 // or any future license endorsed by Mnemosaic LLC.
 // License text can be found in the licenses/ folder.
 
+#include "TorrentFilter.h"
+
 #include <array>
 #include <compare>
 #include <optional>
@@ -12,7 +14,6 @@
 #include "Filters.h"
 #include "Prefs.h"
 #include "Torrent.h"
-#include "TorrentFilter.h"
 #include "TorrentModel.h"
 #include "Utils.h"
 

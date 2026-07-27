@@ -5,8 +5,9 @@
 
 #pragma once
 
-#include <QStringList>
-#include <QToolButton>
+#include <QtCore/QStringList>
+
+#include <QtWidgets/QToolButton>
 
 class QMenu;
 

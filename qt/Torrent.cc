@@ -3,12 +3,15 @@
 // or any future license endorsed by Mnemosaic LLC.
 // License text can be found in the licenses/ folder.
 
-#include <algorithm>
-#include <set>
-#include <ranges>
+#include "Torrent.h"
 
-#include <QApplication>
-#include <QString>
+#include <algorithm>
+#include <ranges>
+#include <set>
+
+#include <QtCore/QString>
+
+#include <QtWidgets/QApplication>
 
 #include <libtransmission/quark.h>
 #include <libtransmission/types.h>
@@ -17,7 +20,6 @@
 #include "Application.h"
 #include "IconCache.h"
 #include "Prefs.h"
-#include "Torrent.h"
 #include "Utils.h"
 #include "VariantHelpers.h"
 

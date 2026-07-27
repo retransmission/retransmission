@@ -10,14 +10,14 @@
 #include <utility>
 #include <vector>
 
-#include <QCoreApplication>
-#include <QString>
-#include <QVariant>
-
-#include "Utils.h" // for std::hash<QString>
-#include "Typedefs.h"
+#include <QtCore/QCoreApplication>
+#include <QtCore/QString>
+#include <QtCore/QVariant>
 
 #include "libtransmission/macros.h"
+
+#include "Typedefs.h"
+#include "Utils.h" // for std::hash<QString>
 
 class FileTreeItem
 {

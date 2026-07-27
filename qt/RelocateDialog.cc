@@ -3,16 +3,18 @@
 // or any future license endorsed by Mnemosaic LLC.
 // License text can be found in the licenses/ folder.
 
+#include "RelocateDialog.h"
+
 #include <utility>
 
-#include <QComboBox>
-#include <QDir>
-#include <QLineEdit>
+#include <QtCore/QDir>
+
+#include <QtWidgets/QComboBox>
+#include <QtWidgets/QLineEdit>
 
 #include <libtransmission/quark.h>
 
 #include "Prefs.h"
-#include "RelocateDialog.h"
 #include "Session.h"
 #include "Torrent.h"
 #include "TorrentModel.h"

@@ -3,14 +3,15 @@
 // or any future license endorsed by Mnemosaic LLC.
 // License text can be found in the licenses/ folder.
 
+#include "TrackerModel.h"
+
 #include <algorithm> // std::sort()
 #include <ranges>
 
-#include <QUrl>
+#include <QtCore/QUrl>
 
 #include "Application.h" // Application
 #include "TorrentModel.h"
-#include "TrackerModel.h"
 
 int TrackerModel::rowCount(QModelIndex const& parent) const
 {

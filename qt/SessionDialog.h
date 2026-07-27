@@ -5,7 +5,7 @@
 
 #pragma once
 
-#include <QWidgetList>
+#include <QtGui/QWidgetList>
 
 #include "BaseDialog.h"
 #include "ui_SessionDialog.h"

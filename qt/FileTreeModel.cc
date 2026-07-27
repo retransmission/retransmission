@@ -3,6 +3,8 @@
 // or any future license endorsed by Mnemosaic LLC.
 // License text can be found in the licenses/ folder.
 
+#include "FileTreeModel.h"
+
 #include <algorithm>
 #include <cassert>
 #include <cstddef>
@@ -13,13 +15,12 @@
 
 #include <small/map.hpp>
 
+#include <QtCore/QAbstractItemModel>
+#include <QtCore/QMutableListIterator>
+
 #include <libtransmission/types.h> // priorities
 
-#include <QAbstractItemModel>
-#include <QMutableListIterator>
-
 #include "FileTreeItem.h"
-#include "FileTreeModel.h"
 #include "QtCompat.h"
 
 namespace

@@ -9,10 +9,11 @@
 #include <unordered_map>
 #include <utility>
 
-#include <QHBoxLayout>
-#include <QLabel>
-#include <QLineEdit>
-#include <QStandardItemModel>
+#include <QtGui/QStandardItemModel>
+
+#include <QtWidgets/QHBoxLayout>
+#include <QtWidgets/QLabel>
+#include <QtWidgets/QLineEdit>
 
 #include "Application.h"
 #include "FilterBarComboBox.h"

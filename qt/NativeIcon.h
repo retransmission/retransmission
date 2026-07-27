@@ -5,9 +5,10 @@
 
 #pragma once
 
-#include <QApplication>
-#include <QIcon>
-#include <QStyle>
+#include <QtGui/QIcon>
+
+#include <QtWidgets/QApplication>
+#include <QtWidgets/QStyle>
 
 namespace icons
 {

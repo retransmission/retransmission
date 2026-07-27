@@ -15,11 +15,12 @@
 #include <tuple>
 #include <vector>
 
-#include <QIcon>
-#include <QMetaType>
-#include <QObject>
-#include <QString>
-#include <QStringList>
+#include <QtCore/QMetaType>
+#include <QtCore/QObject>
+#include <QtCore/QString>
+#include <QtCore/QStringList>
+
+#include <QtGui/QIcon>
 
 #include <libtransmission/crypto-utils.h>
 #include <libtransmission/quark.h>

@@ -7,7 +7,7 @@
 
 #include <vector>
 
-#include <QAbstractListModel>
+#include <QtCore/QAbstractListModel>
 
 #include "Torrent.h"
 #include "Typedefs.h"

@@ -5,7 +5,7 @@
 
 #pragma once
 
-#include <QToolButton>
+#include <QtWidgets/QToolButton>
 
 class IconToolButton : public QToolButton
 {

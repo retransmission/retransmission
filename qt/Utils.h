@@ -8,8 +8,8 @@
 #include <string_view>
 #include <utility>
 
-#include <QPointer>
-#include <QString>
+#include <QtCore/QPointer>
+#include <QtCore/QString>
 
 class QAbstractItemView;
 class QColor;

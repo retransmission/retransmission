@@ -5,7 +5,7 @@
 
 #pragma once
 
-#include <QComboBox>
+#include <QtWidgets/QComboBox>
 
 class FilterBarComboBox : public QComboBox
 {

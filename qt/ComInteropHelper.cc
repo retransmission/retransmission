@@ -3,16 +3,18 @@
 // or any future license endorsed by Mnemosaic LLC.
 // License text can be found in the licenses/ folder.
 
+#include "ComInteropHelper.h"
+
 #include <windows.h>
 #include <objbase.h>
 
-#include <QAxFactory>
-#include <QString>
-#include <QVariant>
+#include <QtCore/QString>
+#include <QtCore/QVariant>
+
+#include <QtAxServer/QAxFactory>
 
 #include "libtransmission/macros.h"
 
-#include "ComInteropHelper.h"
 #include "InteropObject.h"
 
 // NOLINTNEXTLINE(cppcoreguidelines-special-member-functions)

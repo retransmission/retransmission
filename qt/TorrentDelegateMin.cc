@@ -3,25 +3,28 @@
 // or any future license endorsed by Mnemosaic LLC.
 // License text can be found in the licenses/ folder.
 
+#include "TorrentDelegateMin.h"
+
 #include <algorithm>
 #include <utility>
 
-#include <QApplication>
-#include <QBrush>
-#include <QFont>
-#include <QFontMetrics>
-#include <QIcon>
-#include <QModelIndex>
-#include <QPainter>
-#include <QPixmap>
-#include <QPixmapCache>
-#include <QStyleOptionProgressBar>
+#include <QtCore/QModelIndex>
+
+#include <QtGui/QBrush>
+#include <QtGui/QFont>
+#include <QtGui/QFontMetrics>
+#include <QtGui/QIcon>
+#include <QtGui/QPainter>
+#include <QtGui/QPixmap>
+#include <QtGui/QPixmapCache>
+
+#include <QtWidgets/QApplication>
+#include <QtWidgets/QStyleOptionProgressBar>
 
 #include <libtransmission/utils.h>
 
 #include "StyleHelper.h"
 #include "Torrent.h"
-#include "TorrentDelegateMin.h"
 #include "TorrentModel.h"
 #include "Utils.h"
 

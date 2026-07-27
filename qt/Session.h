@@ -14,20 +14,22 @@
 #include <type_traits>
 #include <vector>
 
-#include <QObject>
-#include <QString>
-#include <QNetworkReply>
-#include <QTimer>
+#include <QtCore/QObject>
+#include <QtCore/QString>
+#include <QtCore/QTimer>
+
+#include <QtNetwork/QNetworkReply>
 
 #include <libtransmission/converters.h>
 #include <libtransmission/quark.h>
 #include <libtransmission/types.h>
 #include <libtransmission/variant.h>
 
-#include "Prefs.h"
-#include "RpcClient.h"
 #include <libtransmission-app/rpc-queue.h>
 #include <libtransmission-app/session.h>
+
+#include "Prefs.h"
+#include "RpcClient.h"
 #include "Torrent.h"
 #include "Typedefs.h"
 
