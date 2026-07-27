@@ -121,21 +121,6 @@ void merge_variant(tr_variant& dest, tr_variant&& src)
 }
 
 template<typename T>
-[[nodiscard]] bool value_if(tr_variant const* const var, T* const setme)
-{
-    if (var != nullptr) {
-        if (auto val = var->value_if<T>()) {
-            if (setme) {
-                *setme = *val;
-            }
-            return true;
-        }
-    }
-
-    return false;
-}
-
-template<typename T>
 [[nodiscard]] tr_variant* dict_set(tr_variant* const var, tr_quark const key, T&& val)
 {
     TR_ASSERT(var != nullptr);
@@ -252,12 +237,6 @@ tr_variant* tr_variantListChild(tr_variant* const var, size_t pos)
     return {};
 }
 
-bool tr_variantDictFindInt(tr_variant* const var, tr_quark key, int64_t* setme)
-{
-    auto const* const child = tr_variantDictFind(var, key);
-    return value_if(child, setme);
-}
-
 bool tr_variantDictFindList(tr_variant* const var, tr_quark key, tr_variant** setme)
 {
     if (auto* const res = tr_variantDictFind(var, key); res != nullptr && res->holds_alternative<tr_variant::Vector>()) {
@@ -303,23 +282,6 @@ tr_variant* tr_variantDictAddDict(tr_variant* const var, tr_quark key, size_t n_
 }
 
 // ---
-
-bool tr_variantDictChild(tr_variant* const var, size_t pos, tr_quark* key, tr_variant** setme_value)
-{
-    TR_ASSERT(var != nullptr);
-    TR_ASSERT(var->holds_alternative<tr_variant::Map>());
-
-    if (auto* const map = var != nullptr ? var->get_if<tr_variant::MapIndex>() : nullptr;
-        map != nullptr && pos < std::size(*map)) {
-        auto iter = std::begin(*map);
-        std::advance(iter, pos);
-        *key = iter->first;
-        *setme_value = &iter->second;
-        return true;
-    }
-
-    return false;
-}
 
 void tr_variantMergeDicts(tr_variant* const tgt, tr_variant const* const src)
 {

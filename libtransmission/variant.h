@@ -566,9 +566,7 @@ bool save(std::string_view filename, Settings const& settings);
 } // namespace tr
 
 // Deprecated C API. Do not use.
-bool tr_variantDictChild(tr_variant* var, size_t pos, tr_quark* setme_key, tr_variant** setme_value);
 bool tr_variantDictFindDict(tr_variant* var, tr_quark key, tr_variant** setme_value);
-bool tr_variantDictFindInt(tr_variant* var, tr_quark key, int64_t* setme);
 bool tr_variantDictFindList(tr_variant* var, tr_quark key, tr_variant** setme);
 tr_variant* tr_variantDictAdd(tr_variant* var, tr_quark key);
 tr_variant* tr_variantDictAddDict(tr_variant* var, tr_quark key, size_t n_reserve);
