@@ -6,8 +6,8 @@
 #include <algorithm>
 #include <array>
 #include <cctype> // isspace
-#include <cmath> // floor
 #include <chrono>
+#include <cmath> // floor
 #include <cstdint> // int64_t
 #include <cstdio>
 #include <cstdlib>
@@ -17,6 +17,7 @@
 #include <limits>
 #include <memory>
 #include <optional>
+#include <ranges>
 #include <set>
 #include <string>
 #include <string_view>

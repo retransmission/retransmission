@@ -9,7 +9,6 @@
 #include <ctime> // time_t
 #include <functional>
 #include <optional>
-#include <ranges>
 #include <string>
 #include <string_view>
 #include <vector>
