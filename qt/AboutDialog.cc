@@ -8,7 +8,6 @@
 #include <QMessageBox>
 #include <QPushButton>
 
-#include <libtransmission/transmission.h>
 #include <libtransmission/macros.h>
 #include <libtransmission/version.h>
 

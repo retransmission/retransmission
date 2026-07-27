@@ -31,8 +31,9 @@
 #include <QStyle>
 #include <QTreeWidgetItem>
 
-#include <libtransmission/transmission.h>
 #include <libtransmission/announce-list.h>
+#include <libtransmission/quark.h>
+#include <libtransmission/types.h>
 #include <libtransmission/utils.h> // tr_getRatio()
 
 #include "BaseDialog.h"

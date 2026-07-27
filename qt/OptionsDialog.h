@@ -19,8 +19,6 @@
 #include "Typedefs.h" // file_indices_t
 #include "ui_OptionsDialog.h"
 
-#include <libtransmission/transmission.h>
-
 #include <libtransmission/torrent-metainfo.h>
 
 class Prefs;

@@ -11,8 +11,8 @@
 
 #include <libtransmission-app/display-modes.h>
 
-#include <libtransmission/transmission.h>
 #include <libtransmission/macros.h>
+#include <libtransmission/types.h>
 #include <libtransmission/utils.h>
 
 #include <small/map.hpp>

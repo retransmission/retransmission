@@ -20,7 +20,7 @@
 #include <QtGui>
 
 #include "libtransmission/macros.h"
-#include "libtransmission/transmission.h"
+#include "libtransmission/magnet-metainfo.h"
 #include "libtransmission/version.h"
 
 #include "AboutDialog.h"

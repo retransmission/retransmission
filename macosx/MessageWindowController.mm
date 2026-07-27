@@ -2,10 +2,10 @@
 // It may be used under the MIT (SPDX: MIT) license.
 // License text can be found in the licenses/ folder.
 
-#include <libtransmission/transmission.h>
 #include <libtransmission/log.h>
 #include <libtransmission/file.h>
 #include <libtransmission/string-utils.h>
+#include <libtransmission/types.h>
 
 #import "MessageWindowController.h"
 #import "Controller.h"

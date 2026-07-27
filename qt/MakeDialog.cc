@@ -19,9 +19,9 @@
 #include <QString>
 #include <QTimer>
 
+#include <libtransmission/announce-list.h>
 #include <libtransmission/error.h>
 #include <libtransmission/makemeta.h>
-#include <libtransmission/transmission.h>
 
 #include "ColumnResizer.h"
 #include "Formatter.h"

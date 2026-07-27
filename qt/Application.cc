@@ -28,9 +28,8 @@
 #include <QAccessible>
 #endif
 
-#include <libtransmission/transmission.h>
-
 #include <libtransmission/macros.h>
+#include <libtransmission/quark.h>
 #include <libtransmission/values.h>
 
 #include "AccessibleSqueezeLabel.h"

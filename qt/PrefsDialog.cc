@@ -24,7 +24,8 @@
 #include <QTime>
 #include <QTimeEdit>
 
-#include <libtransmission/transmission.h>
+#include <libtransmission/quark.h>
+#include <libtransmission/types.h>
 
 #include "ColumnResizer.h"
 #include "Formatter.h"
