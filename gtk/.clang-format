@@ -3,30 +3,44 @@ BasedOnStyle: InheritParentConfig
 
 IncludeBlocks: Regroup
 IncludeCategories:
-  - Regex: '^<libtransmission-app/'
+  - Regex: '^[<"]libtransmission-app/'
     Priority: 3
-  - Regex: '^<libtransmission/transmission.h>'
+  - Regex: '^[<"]libtransmission/'
     Priority: 4
-    SortPriority: 3
-  - Regex: '^<libtransmission/'
-    Priority: 4
-    SortPriority: 4
-  - Regex: '^<(cairo|gdk|gio|glib|gtk|pango)mm([-./]|config)'
+  - Regex: '^<(gtk|gdk)mm([-./]|config)'
     Priority: 5
-  - Regex: '^<sigc\+\+([-./]|config)'
+  - Regex: '^<pangomm([-./]|config)'
     Priority: 6
-  - Regex: '^<(fmt|small|woke)/'
-    Priority: 6
-  - Regex: '^<(cairo|gdk|gio|glib|gtk|pango)[-./]'
+  - Regex: '^<cairomm([-./]|config)'
+    Priority: 7
+  - Regex: '^<giomm([-./]|config)'
     Priority: 8
-  - Regex: '^<(libappindicator|libayatana-appindicator)/'
+  - Regex: '^<glibmm([-./]|config)'
     Priority: 9
-  - Regex: '^<(winsock2|ws2tcpip)\.h>'
+  - Regex: '^<sigc\+\+([-./]|config)'
     Priority: 10
-  - Regex: '^<(arpa|sys)/'
+  - Regex: '^<(fmt|small|woke)/'
     Priority: 11
   - Regex: '^<[a-z_]+>'
-    Priority: 7
+    Priority: 12
+  - Regex: '^<(libappindicator|libayatana-appindicator)/'
+    Priority: 13
+  - Regex: '^<gtk[-./]'
+    Priority: 14
+  - Regex: '^<gdk[-./]'
+    Priority: 15
+  - Regex: '^<pango[-./]'
+    Priority: 16
+  - Regex: '^<cairo[-./]'
+    Priority: 17
+  - Regex: '^<gio[-./]'
+    Priority: 18
+  - Regex: '^<glib[-./]'
+    Priority: 19
+  - Regex: '^<(winsock2|ws2tcpip)\.h>'
+    Priority: 20
+  - Regex: '^<(arpa|sys)/'
+    Priority: 21
   - Regex: '.*'
     Priority: 2
 SortIncludes:

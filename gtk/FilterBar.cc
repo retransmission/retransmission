@@ -19,10 +19,6 @@
 #include <libtransmission/macros.h>
 
 #include <gdkmm/pixbuf.h>
-#include <glibmm/i18n.h>
-#include <glibmm/main.h>
-#include <glibmm/unicode.h>
-#include <glibmm/ustring.h>
 #include <gtkmm/cellrendererpixbuf.h>
 #include <gtkmm/cellrenderertext.h>
 #include <gtkmm/combobox.h>
@@ -34,6 +30,11 @@
 #include <gtkmm/treemodelfilter.h>
 #include <gtkmm/treerowreference.h>
 #include <gtkmm/treestore.h>
+
+#include <glibmm/i18n.h>
+#include <glibmm/main.h>
+#include <glibmm/unicode.h>
+#include <glibmm/ustring.h>
 
 #if GTKMM_CHECK_VERSION(4, 0, 0)
 #include <gtkmm/filterlistmodel.h>

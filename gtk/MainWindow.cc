@@ -25,16 +25,6 @@
 
 #include <gdkmm/cursor.h>
 #include <gdkmm/rectangle.h>
-#include <giomm/menu.h>
-#include <giomm/menuitem.h>
-#include <giomm/menumodel.h>
-#include <giomm/simpleaction.h>
-#include <giomm/simpleactiongroup.h>
-#include <glibmm/i18n.h>
-#include <glibmm/main.h>
-#include <glibmm/miscutils.h>
-#include <glibmm/ustring.h>
-#include <glibmm/variant.h>
 #include <gtkmm/image.h>
 #include <gtkmm/label.h>
 #include <gtkmm/menubutton.h>
@@ -44,6 +34,18 @@
 #include <gtkmm/treeview.h>
 #include <gtkmm/widget.h>
 #include <gtkmm/window.h>
+
+#include <giomm/menu.h>
+#include <giomm/menuitem.h>
+#include <giomm/menumodel.h>
+#include <giomm/simpleaction.h>
+#include <giomm/simpleactiongroup.h>
+
+#include <glibmm/i18n.h>
+#include <glibmm/main.h>
+#include <glibmm/miscutils.h>
+#include <glibmm/ustring.h>
+#include <glibmm/variant.h>
 
 #if GTKMM_CHECK_VERSION(4, 0, 0)
 #include <gtkmm/listitemfactory.h>

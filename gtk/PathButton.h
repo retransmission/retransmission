@@ -7,11 +7,12 @@
 
 #include "GtkCompat.h"
 
-#include <glibmm/refptr.h>
-#include <glibmm/ustring.h>
 #include <gtkmm/builder.h>
 #include <gtkmm/button.h>
 #include <gtkmm/filefilter.h>
+
+#include <glibmm/refptr.h>
+#include <glibmm/ustring.h>
 
 #include <memory>
 #include <string>

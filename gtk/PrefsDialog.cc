@@ -16,11 +16,6 @@
 #include <libtransmission/transmission.h>
 #include <libtransmission/web-utils.h>
 
-#include <glibmm/date.h>
-#include <glibmm/i18n.h>
-#include <glibmm/main.h>
-#include <glibmm/timer.h>
-#include <glibmm/ustring.h>
 #include <gtkmm/adjustment.h>
 #include <gtkmm/box.h>
 #include <gtkmm/button.h>
@@ -35,6 +30,12 @@
 #include <gtkmm/textview.h>
 #include <gtkmm/treemodelcolumn.h>
 #include <gtkmm/widget.h>
+
+#include <glibmm/date.h>
+#include <glibmm/i18n.h>
+#include <glibmm/main.h>
+#include <glibmm/timer.h>
+#include <glibmm/ustring.h>
 
 #if GTKMM_CHECK_VERSION(4, 0, 0)
 #include <gtkmm/eventcontrollerfocus.h>

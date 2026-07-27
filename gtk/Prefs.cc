@@ -9,8 +9,8 @@
 
 #include <libtransmission-app/display-modes.h>
 
-#include <libtransmission/transmission.h>
 #include <libtransmission/converters.h>
+#include <libtransmission/transmission.h>
 #include <libtransmission/variant.h>
 
 #include <glibmm/miscutils.h>

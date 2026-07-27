@@ -5,10 +5,13 @@
 
 #pragma once
 
-#include <cairommconfig.h>
-#include <glibmmconfig.h>
 #include <gtkmmconfig.h>
+
 #include <pangommconfig.h>
+
+#include <cairommconfig.h>
+
+#include <glibmmconfig.h>
 
 #include <cstddef>
 

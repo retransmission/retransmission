@@ -8,7 +8,9 @@
 #include <libtransmission/macros.h>
 
 #include <gdkmm/pixbuf.h>
+
 #include <giomm/memoryinputstream.h>
+
 #include <glibmm/error.h>
 #include <glibmm/main.h>
 #include <glibmm/miscutils.h>

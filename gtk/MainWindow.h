@@ -4,11 +4,13 @@
 
 #pragma once
 
-#include <giomm/actiongroup.h>
-#include <glibmm/refptr.h>
 #include <gtkmm/application.h>
 #include <gtkmm/applicationwindow.h>
 #include <gtkmm/builder.h>
+
+#include <giomm/actiongroup.h>
+
+#include <glibmm/refptr.h>
 
 #include <memory>
 

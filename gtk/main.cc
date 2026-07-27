@@ -11,13 +11,16 @@
 
 #include <libtransmission-app/app.h>
 
-#include <libtransmission/transmission.h>
 #include <libtransmission/macros.h>
+#include <libtransmission/transmission.h>
 #include <libtransmission/utils.h>
 #include <libtransmission/version.h>
 
+#include <gtkmm.h>
+
 #include <giomm/file.h>
 #include <giomm/init.h>
+
 #include <glibmm/i18n.h>
 #include <glibmm/init.h>
 #include <glibmm/miscutils.h>
@@ -27,7 +30,6 @@
 #include <glibmm/optiongroup.h>
 #include <glibmm/ustring.h>
 #include <glibmm/wrap.h>
-#include <gtkmm.h>
 
 #include <fmt/format.h>
 

@@ -9,31 +9,33 @@
 #include "PrefsDialog.h"
 #include "Session.h"
 
-#include <libtransmission/transmission.h> /* TR_RATIO_NA, TR_RATIO_INF */
 #include <libtransmission/error.h>
 #include <libtransmission/macros.h>
 #include <libtransmission/string-utils.h>
 #include <libtransmission/torrent-metainfo.h>
 #include <libtransmission/tr-strbuf.h>
+#include <libtransmission/transmission.h> /* TR_RATIO_NA, TR_RATIO_INF */
 #include <libtransmission/utils.h> /* tr_strratio() */
 #include <libtransmission/values.h>
 #include <libtransmission/version.h> /* SHORT_VERSION_STRING */
 #include <libtransmission/web-utils.h>
 
 #include <gdkmm/display.h>
-#include <giomm/appinfo.h>
-#include <giomm/asyncresult.h>
-#include <giomm/file.h>
-#include <glibmm/convert.h>
-#include <glibmm/error.h>
-#include <glibmm/i18n.h>
-#include <glibmm/quark.h>
-#include <glibmm/spawn.h>
 #include <gtkmm/cellrenderertext.h>
 #include <gtkmm/liststore.h>
 #include <gtkmm/messagedialog.h>
 #include <gtkmm/treemodel.h>
 #include <gtkmm/treemodelcolumn.h>
+
+#include <giomm/appinfo.h>
+#include <giomm/asyncresult.h>
+#include <giomm/file.h>
+
+#include <glibmm/convert.h>
+#include <glibmm/error.h>
+#include <glibmm/i18n.h>
+#include <glibmm/quark.h>
+#include <glibmm/spawn.h>
 
 #if GTKMM_CHECK_VERSION(4, 0, 0)
 #include <gdkmm/clipboard.h>
@@ -53,8 +55,9 @@
 #include <stdexcept>
 #include <utility>
 
-#include <gdk/gdk.h>
 #include <gtk/gtk.h>
+
+#include <gdk/gdk.h>
 
 #if GTK_CHECK_VERSION(4, 0, 0) && defined(GDK_WINDOWING_X11)
 #include <optional>

@@ -14,13 +14,13 @@
 #include "TorrentSorter.h"
 #include "Utils.h"
 
-#include <libtransmission/transmission.h>
 #include <libtransmission/env.h>
 #include <libtransmission/log.h>
 #include <libtransmission/macros.h>
 #include <libtransmission/rpcimpl.h>
 #include <libtransmission/string-utils.h>
 #include <libtransmission/torrent-metainfo.h>
+#include <libtransmission/transmission.h>
 #include <libtransmission/utils.h> // tr_time()
 #include <libtransmission/variant.h>
 #include <libtransmission/web-utils.h> // tr_urlIsValid()
@@ -29,6 +29,7 @@
 #include <giomm/fileinfo.h>
 #include <giomm/filemonitor.h>
 #include <giomm/liststore.h>
+
 #include <glibmm/error.h>
 #include <glibmm/fileutils.h>
 #include <glibmm/i18n.h>

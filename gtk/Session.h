@@ -10,17 +10,19 @@
 
 #include <libtransmission-app/favicon-cache.h>
 
-#include <libtransmission/transmission.h>
 #include <libtransmission/converters.h>
+#include <libtransmission/transmission.h>
 #include <libtransmission/variant.h>
 
 #include <gdkmm/pixbuf.h>
+#include <gtkmm/treemodel.h>
+
 #include <giomm/file.h>
 #include <giomm/listmodel.h>
+
 #include <glibmm/object.h>
 #include <glibmm/refptr.h>
 #include <glibmm/ustring.h>
-#include <gtkmm/treemodel.h>
 
 #include <cstddef>
 #include <cstdint>

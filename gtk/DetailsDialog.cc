@@ -21,11 +21,6 @@
 #include <libtransmission/web-utils.h>
 
 #include <gdkmm/pixbuf.h>
-#include <glibmm/i18n.h>
-#include <glibmm/main.h>
-#include <glibmm/markup.h>
-#include <glibmm/quark.h>
-#include <glibmm/ustring.h>
 #include <gtkmm/adjustment.h>
 #include <gtkmm/button.h>
 #include <gtkmm/cellrendererpixbuf.h>
@@ -48,6 +43,12 @@
 #include <gtkmm/treemodelsort.h>
 #include <gtkmm/treerowreference.h>
 #include <gtkmm/treeview.h>
+
+#include <glibmm/i18n.h>
+#include <glibmm/main.h>
+#include <glibmm/markup.h>
+#include <glibmm/quark.h>
+#include <glibmm/ustring.h>
 
 #include <fmt/chrono.h>
 #include <fmt/format.h>

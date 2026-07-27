@@ -8,9 +8,10 @@
 #include "Session.h"
 #include "Utils.h"
 
+#include <gtkmm/messagedialog.h>
+
 #include <glibmm/i18n.h>
 #include <glibmm/ustring.h>
-#include <gtkmm/messagedialog.h>
 
 #include <fmt/format.h>
 

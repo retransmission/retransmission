@@ -8,13 +8,6 @@
 #include "GtkCompat.h"
 #include "Utils.h"
 
-#include <giomm/file.h>
-#include <giomm/icon.h>
-#include <glibmm/error.h>
-#include <glibmm/i18n.h>
-#include <glibmm/property.h>
-#include <glibmm/refptr.h>
-#include <glibmm/ustring.h>
 #include <gtkmm/box.h>
 #include <gtkmm/button.h>
 #include <gtkmm/dialog.h>
@@ -24,6 +17,15 @@
 #include <gtkmm/label.h>
 #include <gtkmm/popover.h>
 #include <gtkmm/separator.h>
+
+#include <giomm/file.h>
+#include <giomm/icon.h>
+
+#include <glibmm/error.h>
+#include <glibmm/i18n.h>
+#include <glibmm/property.h>
+#include <glibmm/refptr.h>
+#include <glibmm/ustring.h>
 
 #include <sigc++/signal.h>
 

@@ -8,8 +8,8 @@
 #include "FilterBase.hh"
 #include "Utils.h"
 
-#include <libtransmission/transmission.h>
 #include <libtransmission/macros.h>
+#include <libtransmission/transmission.h>
 
 #include <algorithm>
 #include <array>

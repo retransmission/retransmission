@@ -14,14 +14,16 @@
 #include "Session.h"
 #include "Utils.h"
 
-#include <libtransmission/transmission.h>
 #include <libtransmission/file.h> /* tr_sys_path_is_same() */
+#include <libtransmission/transmission.h>
 
-#include <giomm/file.h>
-#include <glibmm/i18n.h>
 #include <gtkmm/checkbutton.h>
 #include <gtkmm/combobox.h>
 #include <gtkmm/filefilter.h>
+
+#include <giomm/file.h>
+
+#include <glibmm/i18n.h>
 
 #include <memory>
 #include <utility>

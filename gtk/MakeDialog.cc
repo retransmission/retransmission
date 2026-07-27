@@ -11,20 +11,11 @@
 #include "Session.h"
 #include "Utils.h"
 
-#include <libtransmission/transmission.h>
 #include <libtransmission/error.h>
 #include <libtransmission/makemeta.h>
+#include <libtransmission/transmission.h>
 #include <libtransmission/values.h>
 
-#include <giomm/file.h>
-#include <glibmm/convert.h>
-#include <glibmm/fileutils.h>
-#include <glibmm/i18n.h>
-#include <glibmm/main.h>
-#include <glibmm/miscutils.h>
-#include <glibmm/ustring.h>
-#include <glibmm/value.h>
-#include <glibmm/vectorutils.h>
 #include <gtkmm/adjustment.h>
 #include <gtkmm/checkbutton.h>
 #include <gtkmm/entry.h>
@@ -33,6 +24,17 @@
 #include <gtkmm/scale.h>
 #include <gtkmm/textbuffer.h>
 #include <gtkmm/textview.h>
+
+#include <giomm/file.h>
+
+#include <glibmm/convert.h>
+#include <glibmm/fileutils.h>
+#include <glibmm/i18n.h>
+#include <glibmm/main.h>
+#include <glibmm/miscutils.h>
+#include <glibmm/ustring.h>
+#include <glibmm/value.h>
+#include <glibmm/vectorutils.h>
 
 #if GTKMM_CHECK_VERSION(4, 0, 0)
 #include <gtkmm/droptarget.h>

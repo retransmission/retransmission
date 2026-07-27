@@ -25,23 +25,16 @@
 #include "Torrent.h"
 #include "Utils.h"
 
-#include <libtransmission/transmission.h>
+#include <libtransmission/api-compat.h>
 #include <libtransmission/log.h>
 #include <libtransmission/macros.h>
 #include <libtransmission/quark.h>
 #include <libtransmission/rpcimpl.h>
+#include <libtransmission/transmission.h>
 #include <libtransmission/utils.h>
 #include <libtransmission/version.h>
 
 #include <gdkmm/display.h>
-#include <giomm/appinfo.h>
-#include <giomm/error.h>
-#include <giomm/menu.h>
-#include <glibmm/i18n.h>
-#include <glibmm/main.h>
-#include <glibmm/miscutils.h>
-#include <glibmm/value.h>
-#include <glibmm/vectorutils.h>
 #include <gtkmm/aboutdialog.h>
 #include <gtkmm/builder.h>
 #include <gtkmm/button.h>
@@ -53,6 +46,16 @@
 #include <gtkmm/messagedialog.h>
 #include <gtkmm/stylecontext.h>
 #include <gtkmm/window.h>
+
+#include <giomm/appinfo.h>
+#include <giomm/error.h>
+#include <giomm/menu.h>
+
+#include <glibmm/i18n.h>
+#include <glibmm/main.h>
+#include <glibmm/miscutils.h>
+#include <glibmm/value.h>
+#include <glibmm/vectorutils.h>
 
 #include <small/set.hpp>
 #include <woke/woke.hpp>
