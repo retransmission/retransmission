@@ -41,7 +41,6 @@
 
 #include <fast_float/fast_float.h>
 
-#include "libtransmission/env.h"
 #include "libtransmission/mime-types.h"
 #include "libtransmission/string-utils.h"
 #include "libtransmission/tr-assert.h"

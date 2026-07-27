@@ -15,7 +15,6 @@
 
 #include <libtransmission/transmission.h>
 
-#include <libtransmission/env.h>
 #include <libtransmission/error.h>
 #include <libtransmission/file.h>
 #include <libtransmission/macros.h>
