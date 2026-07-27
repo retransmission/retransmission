@@ -4,7 +4,6 @@
 // License text can be found in the licenses/ folder.
 
 #include <algorithm> // std::min
-#include <array>
 #include <cstdint>
 #include <cstring>
 #include <ctime>

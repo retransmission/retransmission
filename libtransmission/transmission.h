@@ -10,7 +10,6 @@
 
 // --- Basic Types
 
-#include <array>
 #include <cstddef>
 #include <cstdint>
 #include <ctime>

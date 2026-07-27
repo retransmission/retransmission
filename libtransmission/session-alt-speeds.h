@@ -9,7 +9,6 @@
 #error only libtransmission should #include this header.
 #endif
 
-#include <array>
 #include <bitset>
 #include <cstddef> // size_t
 #include <ctime> // for time_t
