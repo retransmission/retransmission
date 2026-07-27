@@ -9,7 +9,6 @@
 #error only libtransmission should #include this header.
 #endif
 
-#include <algorithm>
 #include <cstddef> // size_t
 #include <cstdint> // uintX_t
 #include <deque>
