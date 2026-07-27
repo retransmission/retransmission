@@ -31,7 +31,6 @@
 
 #include "libtransmission/transmission.h"
 
-#include "libtransmission/api-compat.h"
 #include "libtransmission/bandwidth.h"
 #include "libtransmission/blocklist-download.h"
 #include "libtransmission/blocklist.h"

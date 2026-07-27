@@ -26,7 +26,6 @@
 #include "Utils.h"
 
 #include <libtransmission/transmission.h>
-#include <libtransmission/api-compat.h>
 #include <libtransmission/log.h>
 #include <libtransmission/macros.h>
 #include <libtransmission/quark.h>
