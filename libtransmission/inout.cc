@@ -25,7 +25,6 @@
 #include "libtransmission/tr-assert.h"
 #include "libtransmission/tr-strbuf.h" // tr_pathbuf
 #include "libtransmission/types.h"
-#include "libtransmission/utils.h"
 
 using namespace std::literals;
 

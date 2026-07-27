@@ -11,8 +11,6 @@
 
 class Session;
 
-struct tr_variant;
-
 class FreeSpaceLabel : public QLabel
 {
     Q_OBJECT

@@ -19,7 +19,6 @@
 #include <QWeakPointer>
 
 #include <libtransmission/quark.h>
-#include <libtransmission/variant.h>
 
 #include <libtransmission-app/favicon-cache.h>
 

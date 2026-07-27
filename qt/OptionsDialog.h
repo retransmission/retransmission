@@ -26,8 +26,6 @@
 class Prefs;
 class Session;
 
-struct tr_variant;
-
 class OptionsDialog : public BaseDialog
 {
     Q_OBJECT

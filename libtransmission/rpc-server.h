@@ -24,7 +24,6 @@
 
 class tr_rpc_address;
 struct tr_session;
-struct tr_variant;
 
 namespace tr
 {

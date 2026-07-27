@@ -20,8 +20,6 @@
 #include "libtransmission/types.h" // for TR_SCHED_ALL
 #include "libtransmission/values.h"
 
-struct tr_variant;
-
 /** Manages alternate speed limits and a scheduler to auto-toggle them. */
 class tr_session_alt_speeds
 {
