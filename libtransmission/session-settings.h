@@ -13,7 +13,6 @@
 #include <string>
 #include <tuple>
 #include <type_traits>
-#include <utility>
 #include <vector>
 
 #include <small/vector.hpp>
