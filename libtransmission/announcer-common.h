@@ -24,7 +24,6 @@
 #include "libtransmission/net.h"
 #include "libtransmission/peer-mgr.h" // tr_pex
 #include "libtransmission/types.h" // tr_peer_id_t
-#include "libtransmission/utils.h"
 
 struct tr_url_parsed_t;
 

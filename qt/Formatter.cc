@@ -3,14 +3,21 @@
 // or any future license endorsed by Mnemosaic LLC.
 // License text can be found in the licenses/ folder.
 
-#include <libtransmission/values.h>
-
 #include "Formatter.h"
 
 #include <algorithm>
 
+#include <libtransmission/utils.h>
+#include <libtransmission/values.h>
+
 using namespace std::literals;
 using namespace tr::Values;
+
+// static
+QString Formatter::percent_to_string(double const x)
+{
+    return QString::fromStdString(tr_strpercent(x));
+}
 
 QString Formatter::memory_to_string(int64_t const bytes)
 {

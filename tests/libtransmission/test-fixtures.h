@@ -31,7 +31,6 @@
 #include <libtransmission/quark.h>
 #include <libtransmission/torrent-ctor.h>
 #include <libtransmission/torrent.h>
-#include <libtransmission/utils.h>
 #include <libtransmission/variant.h>
 
 using namespace std::literals;

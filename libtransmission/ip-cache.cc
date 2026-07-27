@@ -27,6 +27,7 @@
 #include "libtransmission/log.h"
 #include "libtransmission/string-utils.h"
 #include "libtransmission/tr-assert.h"
+#include "libtransmission/utils.h"
 #include "libtransmission/web.h"
 
 namespace

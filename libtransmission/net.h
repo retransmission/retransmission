@@ -68,7 +68,6 @@ using tr_socket_t = int;
 
 #include "libtransmission/tr-assert.h"
 #include "libtransmission/types.h"
-#include "libtransmission/utils.h" // for tr_compare_3way()
 
 enum tr_address_type : uint8_t { TR_AF_INET = 0, TR_AF_INET6, NUM_TR_AF_INET_TYPES };
 

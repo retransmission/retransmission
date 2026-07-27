@@ -11,8 +11,6 @@
 #include <QCoreApplication> // Q_DECLARE_TR_FUNCTIONS
 #include <QString>
 
-#include <libtransmission/utils.h>
-
 #include "Speed.h"
 
 class Formatter
@@ -23,16 +21,9 @@ public:
     Formatter() = delete;
 
     [[nodiscard]] static QString memory_to_string(int64_t bytes);
-
-    [[nodiscard]] static auto percent_to_string(double x)
-    {
-        return QString::fromStdString(tr_strpercent(x));
-    }
-
+    [[nodiscard]] static QString percent_to_string(double x);
     [[nodiscard]] static QString ratio_to_string(double ratio);
-
     [[nodiscard]] static QString storage_to_string(int64_t bytes);
     [[nodiscard]] static QString storage_to_string(uint64_t bytes);
-
     [[nodiscard]] static QString time_to_string(int seconds);
 };
