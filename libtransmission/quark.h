@@ -766,6 +766,8 @@ enum // NOLINT(performance-enum-size)
  * Get the string view that corresponds to the specified quark.
  *
  * Note: this view is guaranteed to be zero-terminated at view[std::size(view)]
+ *
+ * Note: the returned string is not guaranteed to be utf8
  */
 [[nodiscard]] std::string_view tr_quark_get_string_view(tr_quark quark);
 

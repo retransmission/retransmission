@@ -12,7 +12,6 @@
 #include <vector>
 
 #include "libtransmission/quark.h"
-#include "libtransmission/string-utils.h"
 #include "libtransmission/tr-assert.h"
 
 using namespace std::literals;
@@ -781,17 +780,16 @@ std::optional<tr_quark> tr_quark_lookup(std::string_view key)
     return {};
 }
 
-tr_quark tr_quark_new(std::string_view str)
+tr_quark tr_quark_new(std::string_view const str)
 {
-    auto const utf8 = tr_strv_to_utf8_string(str);
-    if (auto const prior = tr_quark_lookup(utf8); prior) {
+    if (auto const prior = tr_quark_lookup(str)) {
         return *prior;
     }
 
     auto const ret = TR_N_KEYS + std::size(my_runtime);
-    auto const len = std::size(utf8);
+    auto const len = std::size(str);
     auto* perma = new char[len + 1];
-    std::copy_n(std::begin(utf8), len, perma);
+    std::copy_n(std::begin(str), len, perma);
     perma[len] = '\0';
     my_runtime.emplace_back(perma);
     return ret;

@@ -1027,7 +1027,7 @@ namespace make_torrent_field_helpers
                 return { tr_torrent::labels_t{}, Error::INVALID_PARAMS, "labels cannot contain comma (,) character"s };
             }
 
-            labels.emplace_back(label);
+            labels.emplace_back(tr_strv_to_utf8_string(label));
         }
     }
 

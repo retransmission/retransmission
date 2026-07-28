@@ -33,6 +33,7 @@
 
 #include "libtransmission/error.h"
 #include "libtransmission/quark.h"
+#include "libtransmission/string-utils.h"
 #include "libtransmission/tr-assert.h"
 #include "libtransmission/utils.h"
 #include "libtransmission/variant.h"
@@ -295,6 +296,14 @@ template<typename WriterT>
 struct JsonWriter {
     WriterT& writer;
 
+    using StringWriteFunc = bool (WriterT::*)(typename WriterT::Ch const*, rapidjson::SizeType, bool);
+
+    void WriteString(StringWriteFunc const func, std::string_view sv) const
+    {
+        auto const utf8 = tr_strv_to_utf8_string(sv);
+        (writer.*func)(std::data(utf8), std::size(utf8), false);
+    }
+
     void operator()(std::monostate /*unused*/) const
     {
     }
@@ -321,14 +330,7 @@ struct JsonWriter {
 
     void operator()(std::string_view const val) const
     {
-        // workaround for this issue: in Writer::String() at
-        // rapidjson/writer.h:205: `RAPIDJSON_ASSERT(str != 0);`
-        // that fails when val.data() is nullptr when val.empty()
-        if (std::empty(val)) {
-            writer.String("", 0U);
-        } else {
-            writer.String(std::data(val), std::size(val));
-        }
+        WriteString(&WriterT::String, val);
     }
 
     void operator()(tr_variant::Vector const& val) const
@@ -344,7 +346,7 @@ struct JsonWriter {
     {
         writer.StartObject();
         for (auto const& [key, child] : sorted_entries(val)) {
-            writer.Key(std::data(key), std::size(key));
+            WriteString(&WriterT::Key, key);
             child->visit(*this);
         }
         writer.EndObject();
