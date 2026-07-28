@@ -5,14 +5,13 @@
 
 #include <algorithm>
 #include <array>
-#include <condition_variable>
 #include <cstdint> // int64_t
 #include <cstdio>
 #include <cstdlib>
 #include <ctime>
 #include <chrono>
+#include <future>
 #include <iterator> // std::back_inserter
-#include <mutex>
 #include <optional>
 #include <string>
 #include <string_view>
@@ -275,20 +274,17 @@ void doScrape(tr_torrent_metainfo const& metainfo)
         fmt::print("{:s} ... ", scrape_url);
         fflush(stdout);
 
-        // execute the http scrape
-        auto response = tr_web::FetchResponse{};
-        auto response_mutex = std::mutex{};
-        auto response_cv = std::condition_variable{};
-        auto lock = std::unique_lock(response_mutex);
+        // execute the http scrape.
+        // the callback runs on tr_web's own thread;
+        // the promise hands the response back to this one.
+        auto response_promise = std::promise<tr_web::FetchResponse>{};
+        auto response_future = response_promise.get_future();
         web->fetch(
             { scrape_url,
-              [&response, &response_cv](tr_web::FetchResponse const& resp) {
-                  response = resp;
-                  response_cv.notify_one();
-              },
+              [&response_promise](tr_web::FetchResponse const& resp) { response_promise.set_value(resp); },
               nullptr,
               TimeoutSecs });
-        response_cv.wait(lock);
+        auto const response = response_future.get();
 
         // check the response code
         if (auto const code = response.status; code != 200 /*HTTP OK*/) {
