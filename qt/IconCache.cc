@@ -174,24 +174,19 @@ QIcon IconCache::getMimeIcon(QString const& filename) const
         return {};
     }
 
-    QIcon& icon = ext_to_icon_[ext];
-    if (icon.isNull()) // cache miss
-    {
-        QMimeDatabase const mime_db;
-        auto const type = mime_db.mimeTypeForFile(filename, QMimeDatabase::MatchExtension);
-        if (icon.isNull()) {
-            icon = getThemeIcon(type.iconName());
-        }
-
-        if (icon.isNull()) {
-            icon = getThemeIcon(type.genericIconName());
-        }
-
-        if (icon.isNull()) {
-            icon = {};
-        }
+    if (auto const iter = ext_to_icon_.find(ext); iter != ext_to_icon_.end()) {
+        return iter->second;
     }
 
+    QMimeDatabase const mime_db;
+    auto const type = mime_db.mimeTypeForFile(filename, QMimeDatabase::MatchExtension);
+    auto icon = getThemeIcon(type.iconName());
+
+    if (icon.isNull()) {
+        icon = getThemeIcon(type.genericIconName());
+    }
+
+    ext_to_icon_.emplace(ext, icon);
     return icon;
 }
 
