@@ -68,6 +68,7 @@ struct tr_torrent;
 #endif
 
 #define MY_NAME TR_PROJ_APPNAME "-daemon"
+#define MY_CONFIG_DIRNAME TR_PROJ_CONFIG_DIRNAME "-daemon"
 
 using namespace std::literals;
 using tr::Watchdir;
@@ -181,7 +182,7 @@ namespace
 
     tr_optind = ind;
 
-    return tr::platform::get_default_config_dir(MyName);
+    return tr::platform::get_default_config_dir(MY_CONFIG_DIRNAME);
 }
 
 auto onFileAdded(tr_session* session, std::string_view dirname, std::string_view basename)

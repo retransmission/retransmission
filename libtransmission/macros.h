@@ -44,10 +44,6 @@
 #define TR_PROJ_DOMAIN_TLD "org"
 #define TR_PROJ_DOMAIN_SLD "retransmission"
 
-#define TR_PROJ_APPNAME "retransmission"
-#define TR_PROJ_APPNAME_CAPITALIZED "Retransmission"
-#define TR_PROJ_APPNAME_RDNS TR_PROJ_DOMAIN_APEX_REVERSED "." TR_PROJ_APPNAME
-
 #define TR_PROJ_DOMAIN_APEX TR_PROJ_DOMAIN_SLD "." TR_PROJ_DOMAIN_TLD
 #define TR_PROJ_DOMAIN_APEX_REVERSED TR_PROJ_DOMAIN_TLD "." TR_PROJ_DOMAIN_SLD
 #define TR_PROJ_DOMAIN_DHT "dht." TR_PROJ_DOMAIN_APEX
@@ -55,6 +51,10 @@
 #define TR_PROJ_APPNAME "retransmission"
 #define TR_PROJ_APPNAME_CAPITALIZED "Retransmission"
 #define TR_PROJ_APPNAME_RDNS TR_PROJ_DOMAIN_APEX_REVERSED "." TR_PROJ_APPNAME
+
+// Config dirs keep the old name for compatibility.
+// Everything else uses TR_PROJ_APPNAME.
+#define TR_PROJ_CONFIG_DIRNAME "transmission"
 
 #define TR_PROJ_URL_HOMEPAGE "https://" TR_PROJ_DOMAIN_APEX
 #define TR_PROJ_URL_DONATE TR_PROJ_URL_HOMEPAGE "/donate"
