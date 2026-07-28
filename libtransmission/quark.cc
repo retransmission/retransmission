@@ -274,6 +274,7 @@ auto constexpr MyStatic = std::array<std::string_view, TR_N_KEYS>{
     "is_downloading_from"sv, // rpc
     "is_encrypted"sv, // rpc
     "is_finished"sv, // rpc
+    "is_folder"sv, // rpc
     "is_incoming"sv, // rpc
     "is_private"sv, // rpc
     "is_stalled"sv, // rpc

@@ -144,7 +144,7 @@ QIcon Torrent::getMimeTypeIcon() const
     }
 
     if (icon_.isNull()) {
-        icon_ = IconCache::get().getMimeTypeIcon(primary_mime_type_, file_count_ > 1);
+        icon_ = IconCache::get().getMimeTypeIcon(primary_mime_type_, is_folder_);
     }
 
     return icon_;
@@ -196,6 +196,7 @@ Torrent::fields_t Torrent::update(std::span<keyval_t const> const keyvals)
             HANDLE_KEY(have_valid, have_verified, HAVE_VERIFIED)
             HANDLE_KEY(honors_session_limits, honors_session_limits, HONORS_SESSION_LIMITS)
             HANDLE_KEY(is_finished, is_finished, IS_FINISHED)
+            HANDLE_KEY(is_folder, is_folder, IS_FOLDER)
             HANDLE_KEY(is_private, is_private, IS_PRIVATE)
             HANDLE_KEY(labels, labels, LABELS)
             HANDLE_KEY(left_until_done, left_until_done, LEFT_UNTIL_DONE)
@@ -256,6 +257,7 @@ Torrent::fields_t Torrent::update(std::span<keyval_t const> const keyvals)
         if (field_changed) {
             switch (key) {
             case TR_KEY_file_count:
+            case TR_KEY_is_folder:
             case TR_KEY_primary_mime_type:
                 icon_ = {};
                 break;

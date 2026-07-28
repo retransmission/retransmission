@@ -74,23 +74,6 @@ size_t build_torrent_trackers_hash(tr_torrent const& torrent)
     return hash;
 }
 
-std::string_view get_mime_type(tr_torrent const& torrent)
-{
-    auto const n_files = tr_torrentFileCount(&torrent);
-
-    if (n_files == 0) {
-        return UnknownMimeType;
-    }
-
-    if (n_files > 1) {
-        return DirectoryMimeType;
-    }
-
-    auto const name = std::string_view(tr_torrentFile(&torrent, 0).name);
-
-    return name.find('/') != std::string_view::npos ? DirectoryMimeType : tr_get_mime_type_for_filename(name);
-}
-
 std::string_view get_activity_direction(tr_torrent_activity activity)
 {
     switch (activity) {
@@ -135,7 +118,7 @@ public:
         Glib::ustring name;
         Glib::ustring name_collated;
 
-        std::string_view mime_type;
+        std::string_view primary_mime_type;
 
         Storage have_unchecked;
         Storage have_valid;
@@ -180,6 +163,7 @@ public:
 
         bool active = {};
         bool finished = {};
+        bool is_folder = {};
         bool has_metadata = {};
         bool has_seed_ratio = {};
         bool stalled = {};
@@ -204,7 +188,7 @@ public:
 
     void get_value(int column, Glib::ValueBase& value) const;
 
-    [[nodiscard]] Glib::RefPtr<Gio::Icon> get_icon() const;
+    [[nodiscard]] Glib::RefPtr<TorrentIconType> get_icon() const;
     [[nodiscard]] Glib::ustring get_short_status_text() const;
     [[nodiscard]] Glib::ustring get_long_progress_text() const;
     [[nodiscard]] Glib::ustring get_long_status_text() const;
@@ -279,8 +263,18 @@ Torrent::ChangeFlags Torrent::Impl::update_cache()
         stats.peers_sending_to_us + stats.peers_getting_from_us + stats.webseeds_sending_to_us,
         result,
         ChangeFlag::ACTIVE_PEER_COUNT);
-    update_cache_value(cache_.mime_type, get_mime_type(*raw_torrent_), result, ChangeFlag::MIME_TYPE);
+    update_cache_value(cache_.is_folder, view.is_folder, result, ChangeFlag::IS_FOLDER);
     update_cache_value(cache_.has_metadata, tr_torrentHasMetadata(raw_torrent_), result, ChangeFlag::HAS_METADATA);
+    // tr_torrentPrimaryMimeType() walks every file, so ask only when the answer can
+    // have changed: when metadata brings the file list. A rename that swaps a
+    // file's suffix therefore won't update the icon.
+    if (result.test(ChangeFlag::HAS_METADATA)) {
+        update_cache_value(
+            cache_.primary_mime_type,
+            tr_torrentPrimaryMimeType(raw_torrent_),
+            result,
+            ChangeFlag::PRIMARY_MIME_TYPE);
+    }
     update_cache_value(cache_.stalled, stats.is_stalled, result, ChangeFlag::STALLED);
     update_cache_value(cache_.ratio, stats.upload_ratio, 0.01F, result, ChangeFlag::RATIO);
 
@@ -351,7 +345,7 @@ void Torrent::Impl::notify_property_changes(ChangeFlags changes) const
 
     static auto TR_CONSTEXPR23
         properties_flags = std::array<std::pair<Property, ChangeFlags>, PropertyStore::PropertyCount - 1>({ {
-            { Property::ICON, ChangeFlag::HAS_METADATA | ChangeFlag::MIME_TYPE },
+            { Property::ICON, ChangeFlag::HAS_METADATA | ChangeFlag::IS_FOLDER | ChangeFlag::PRIMARY_MIME_TYPE },
             { Property::NAME, ChangeFlag::NAME },
             { Property::PERCENT_DONE, ChangeFlag::PERCENT_DONE },
             { Property::SHORT_STATUS,
@@ -395,9 +389,9 @@ void Torrent::Impl::get_value(int column, Glib::ValueBase& value) const
     }
 }
 
-Glib::RefPtr<Gio::Icon> Torrent::Impl::get_icon() const
+Glib::RefPtr<TorrentIconType> Torrent::Impl::get_icon() const
 {
-    return cache_.has_metadata ? gtr_get_mime_type_icon(cache_.mime_type) : gtr_get_magnet_icon();
+    return cache_.has_metadata ? gtr_get_torrent_icon(cache_.primary_mime_type, cache_.is_folder) : gtr_get_magnet_icon();
 }
 
 Glib::ustring Torrent::Impl::get_short_status_text() const
@@ -811,7 +805,7 @@ Percents Torrent::get_seed_ratio_percent_done() const
     return impl_->get_cache().seed_ratio_percent_done;
 }
 
-Glib::RefPtr<Gio::Icon> Torrent::get_icon() const
+Glib::RefPtr<TorrentIconType> Torrent::get_icon() const
 {
     return impl_->get_icon();
 }

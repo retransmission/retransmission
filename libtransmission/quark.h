@@ -285,6 +285,7 @@ enum // NOLINT(performance-enum-size)
     TR_KEY_is_downloading_from,
     TR_KEY_is_encrypted,
     TR_KEY_is_finished,
+    TR_KEY_is_folder,
     TR_KEY_is_incoming,
     TR_KEY_is_private,
     TR_KEY_is_stalled,

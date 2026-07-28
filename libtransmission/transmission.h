@@ -882,6 +882,8 @@ tr_file_view tr_torrentFile(tr_torrent const* torrent, tr_file_index_t file);
 
 size_t tr_torrentFileCount(tr_torrent const* torrent);
 
+[[nodiscard]] std::string_view tr_torrentPrimaryMimeType(tr_torrent const* torrent);
+
 struct tr_webseed_view tr_torrentWebseed(tr_torrent const* torrent, size_t nth);
 
 size_t tr_torrentWebseedCount(tr_torrent const* torrent);

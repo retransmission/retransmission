@@ -22,9 +22,11 @@
         <child>
           <object class="GtkImage">
             <property name="pixel-size">32</property>
+            <property name="margin-start">3</property>
+            <property name="margin-end">3</property>
             <property name="valign">0.5</property>
             <property name="vexpand">1</property>
-            <binding name="gicon">
+            <binding name="paintable">
               <lookup name="icon" type="gtkmm__CustomObject_7Torrent">
                 <lookup name="item">GtkListItem</lookup>
               </lookup>

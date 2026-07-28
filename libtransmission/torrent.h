@@ -473,6 +473,11 @@ struct tr_torrent {
         return metainfo_.file_count();
     }
 
+    /** Whether the torrent's content lands in a directory of its own, either
+        because it holds more than one file or because its one file sits in a
+        subdirectory. */
+    [[nodiscard]] bool is_folder() const;
+
     [[nodiscard]] TR_CONSTEXPR_VEC auto const& file_subpath(tr_file_index_t i) const
     {
         return metainfo_.file_subpath(i);

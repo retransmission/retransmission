@@ -683,6 +683,7 @@ namespace make_torrent_field_helpers
     case TR_KEY_honors_session_limits:
     case TR_KEY_id:
     case TR_KEY_is_finished:
+    case TR_KEY_is_folder:
     case TR_KEY_is_private:
     case TR_KEY_is_stalled:
     case TR_KEY_labels:
@@ -808,6 +809,8 @@ namespace make_torrent_field_helpers
         return st.id;
     case TR_KEY_is_finished:
         return st.finished;
+    case TR_KEY_is_folder:
+        return tor.is_folder();
     case TR_KEY_is_private:
         return tor.is_private();
     case TR_KEY_is_stalled:

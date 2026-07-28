@@ -1358,6 +1358,13 @@ size_t tr_torrentFileCount(tr_torrent const* tor)
     return tor->file_count();
 }
 
+std::string_view tr_torrentPrimaryMimeType(tr_torrent const* tor)
+{
+    tr_return_val_if_fail(tr_isTorrent(tor), {});
+
+    return tor->primary_mime_type();
+}
+
 tr_webseed_view tr_torrentWebseed(tr_torrent const* tor, size_t nth)
 {
     tr_return_val_if_fail(tr_isTorrent(tor), {});
@@ -1401,7 +1408,7 @@ tr_torrent_view tr_torrentView(tr_torrent const* tor)
         .piece_size = tor->piece_size(),
         .n_pieces = tor->piece_count(),
         .is_private = tor->is_private(),
-        .is_folder = tor->file_count() > 1 || (tor->file_count() == 1 && tr_strv_contains(tor->file_subpath(0), '/')),
+        .is_folder = tor->is_folder(),
     };
 }
 
@@ -2005,6 +2012,12 @@ uint64_t tr_torrentGetBytesLeftToAllocate(tr_torrent const* tor)
 std::string_view tr_torrent::primary_mime_type() const
 {
     return files().primary_mime_type();
+}
+
+bool tr_torrent::is_folder() const
+{
+    auto const n_files = file_count();
+    return n_files > 1U || (n_files == 1U && tr_strv_contains(file_subpath(0), '/'));
 }
 
 // ---

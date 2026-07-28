@@ -48,7 +48,7 @@ public:
     }
 
     QIcon guessMimeIcon(QString const& filename, QIcon fallback = {}) const;
-    QIcon getMimeTypeIcon(QString const& mime_type, bool multifile) const;
+    QIcon getMimeTypeIcon(QString const& mime_type, bool is_folder) const;
 
 protected:
     IconCache() = default;

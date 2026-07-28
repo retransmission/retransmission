@@ -599,6 +599,7 @@ public:
         HAVE_VERIFIED,
         HONORS_SESSION_LIMITS,
         IS_FINISHED,
+        IS_FOLDER,
         IS_PRIVATE,
         LABELS,
         LEFT_UNTIL_DONE,
@@ -648,6 +649,7 @@ private:
     bool download_limited_ = {};
     bool honors_session_limits_ = {};
     bool is_finished_ = {};
+    bool is_folder_ = {};
     bool is_private_ = {};
     bool upload_limited_ = {};
 

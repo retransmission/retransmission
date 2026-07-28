@@ -6,13 +6,12 @@
 #pragma once
 
 #include "Flags.h"
+#include "IconCache.h"
 
 #include <libtransmission/transmission.h>
 #include <libtransmission/values.h>
 
 #include <gtkmm/treemodelcolumn.h>
-
-#include <giomm/icon.h>
 
 #include <glibmm/extraclassinit.h>
 #include <glibmm/object.h>
@@ -50,12 +49,13 @@ public:
         ETA,
         FINISHED,
         HAS_METADATA,
+        IS_FOLDER,
         LONG_PROGRESS,
         LONG_STATUS,
-        MIME_TYPE,
         NAME,
         PERCENT_COMPLETE,
         PERCENT_DONE,
+        PRIMARY_MIME_TYPE,
         PRIORITY,
         QUEUE_POSITION,
         RATIO,
@@ -102,7 +102,7 @@ public:
     Storage get_total_size() const;
     size_t get_trackers() const;
 
-    Glib::RefPtr<Gio::Icon> get_icon() const;
+    Glib::RefPtr<TorrentIconType> get_icon() const;
     Glib::ustring get_short_status_text() const;
     Glib::ustring get_long_progress_text() const;
     Glib::ustring get_long_status_text() const;

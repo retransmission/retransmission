@@ -709,6 +709,45 @@ TEST_F(RpcTest, torrentGet)
     tr_torrentRemove(tor, false);
 }
 
+TEST_F(RpcTest, torrentGetIsFolder)
+{
+    // the zero torrent holds three files, so its content lands in a directory
+    auto* tor = zeroTorrentInit(ZeroTorrentState::NoFiles);
+    EXPECT_NE(nullptr, tor);
+
+    auto params = tr_variant::Map{ 1U };
+    auto fields = tr_variant::Vector{};
+    fields.emplace_back(tr_quark_get_string_view(TR_KEY_is_folder));
+    params.try_emplace(TR_KEY_fields, std::move(fields));
+
+    auto request = tr_variant::Map{ 4U };
+    request.try_emplace(TR_KEY_id, 12345);
+    request.try_emplace(TR_KEY_jsonrpc, JsonRpc::Version);
+    request.try_emplace(TR_KEY_method, tr_variant::unmanaged_string(TR_KEY_torrent_get));
+    request.try_emplace(TR_KEY_params, std::move(params));
+
+    auto response = tr_variant{};
+    tr_rpc_request_exec(session_, std::move(request), [&response](tr_variant&& resp) { response = std::move(resp); });
+
+    auto* response_map = response.get_if<tr_variant::Map>();
+    ASSERT_NE(response_map, nullptr);
+    auto* result = response_map->find_if<tr_variant::Map>(TR_KEY_result);
+    ASSERT_NE(result, nullptr);
+
+    auto* torrents = result->find_if<tr_variant::Vector>(TR_KEY_torrents);
+    ASSERT_NE(torrents, nullptr);
+    ASSERT_EQ(1UL, std::size(*torrents));
+
+    auto* first_torrent = (*torrents)[0].get_if<tr_variant::Map>();
+    ASSERT_NE(first_torrent, nullptr);
+    auto const is_folder = first_torrent->value_if<bool>(TR_KEY_is_folder);
+    ASSERT_TRUE(is_folder);
+    EXPECT_TRUE(*is_folder);
+
+    // cleanup
+    tr_torrentRemove(tor, false);
+}
+
 TEST_F(RpcTest, recentlyActiveEmptyOnStartup)
 {
     static auto constexpr TorrentFile = LIBTRANSMISSION_TEST_ASSETS_DIR "/debian-11.2.0-amd64-DVD-1.iso.torrent"sv;

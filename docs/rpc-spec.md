@@ -266,6 +266,7 @@ The 'source' column here corresponds to the data structure there.
 | `honors_session_limits`| boolean| tr_torrent
 | `id` | integer | tr_torrent
 | `is_finished` | boolean| tr_stat
+| `is_folder` | boolean| tr_torrent_view
 | `is_private` | boolean| tr_torrent
 | `is_stalled` | boolean| tr_stat
 | `labels` | array of strings | tr_torrent
@@ -1138,6 +1139,7 @@ Transmission 4.2.0 (`rpc_version_semver` 6.1.0, `rpc_version`: 20)
 
 | Method | Description
 |:---|:---
+| `torrent_get` | new arg `is_folder`
 | `torrent_get` | new arg `peers.active_reqs_to_client`
 | `torrent_get` | new arg `peers.active_reqs_to_peer`
 | `torrent_get` | new arg `webseeds_ex`

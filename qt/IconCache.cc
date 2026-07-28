@@ -5,6 +5,8 @@
 
 #include "IconCache.h"
 
+#include <libtransmission-app/torrent-icon.h>
+
 #ifdef _WIN32
 #include <windows.h>
 #include <shellapi.h>
@@ -75,15 +77,15 @@ QIcon IconCache::guessMimeIcon(QString const& filename, QIcon fallback) const
     return icon;
 }
 
-QIcon IconCache::getMimeTypeIcon(QString const& mime_type_name, bool multifile) const
+QIcon IconCache::getMimeTypeIcon(QString const& mime_type_name, bool const is_folder) const
 {
-    auto& icon = (multifile ? name_to_emblem_icon_ : name_to_icon_)[mime_type_name];
+    auto& icon = (is_folder ? name_to_emblem_icon_ : name_to_icon_)[mime_type_name];
 
     if (!icon.isNull()) {
         return icon;
     }
 
-    if (!multifile) {
+    if (!is_folder) {
         static auto const MimeDb = QMimeDatabase{};
         auto const type = MimeDb.mimeTypeForName(mime_type_name);
         auto const filename = QStringLiteral("filename.%1").arg(type.preferredSuffix());
@@ -94,12 +96,14 @@ QIcon IconCache::getMimeTypeIcon(QString const& mime_type_name, bool multifile) 
     auto const mime_icon = getMimeTypeIcon(mime_type_name, false);
     for (auto const& size : { QSize{ 24, 24 }, QSize{ 32, 32 }, QSize{ 48, 48 } }) {
         // upper left corner
-        auto const folder_size = size / 2;
+        auto const folder_size = size * tr::app::FolderIconScale;
         auto const folder_rect = QRect{ QPoint{}, folder_size };
 
-        // fullsize
-        auto const mime_size = size;
-        auto const mime_rect = QRect{ QPoint{}, mime_size };
+        // down and to the right, leaving the folder visible behind it
+        auto const mime_size = size * tr::app::MimeIconScale;
+        auto const mime_origin = QPoint{ qRound(size.width() * tr::app::MimeIconOffset),
+                                         qRound(size.height() * tr::app::MimeIconOffset) };
+        auto const mime_rect = QRect{ mime_origin, mime_size };
 
         // build the icon
         auto pixmap = QPixmap{ size };

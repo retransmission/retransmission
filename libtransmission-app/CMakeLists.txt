@@ -20,7 +20,8 @@ target_sources(${LIBNAME}
         rpc-client.h
         rpc-queue.h
         session.cc
-        session.h)
+        session.h
+        torrent-icon.h)
 
 target_include_directories(${LIBNAME}
     PUBLIC
