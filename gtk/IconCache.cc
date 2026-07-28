@@ -10,6 +10,7 @@
 #include "GtkCompat.h"
 
 #include <giomm/contenttype.h>
+#include <giomm/themedicon.h>
 
 #include <functional> // for std::less<>
 #include <map>
@@ -38,5 +39,11 @@ Glib::RefPtr<Gio::Icon> gtr_get_mime_type_icon(std::string_view mime_type)
         cache.try_emplace(std::move(mime_type_str), icon);
     }
 
+    return icon;
+}
+
+Glib::RefPtr<Gio::Icon> gtr_get_magnet_icon()
+{
+    static auto const icon = Gio::ThemedIcon::create("magnet");
     return icon;
 }

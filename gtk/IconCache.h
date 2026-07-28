@@ -17,3 +17,5 @@ extern std::string_view const DirectoryMimeType;
 extern std::string_view const UnknownMimeType;
 
 Glib::RefPtr<Gio::Icon> gtr_get_mime_type_icon(std::string_view mime_type);
+
+Glib::RefPtr<Gio::Icon> gtr_get_magnet_icon();

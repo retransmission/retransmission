@@ -139,6 +139,10 @@ std::strong_ordering Torrent::compareETA(Torrent const& that) const
 
 QIcon Torrent::getMimeTypeIcon() const
 {
+    if (file_count_ == 0) {
+        return IconCache::get().magnetIcon();
+    }
+
     if (icon_.isNull()) {
         icon_ = IconCache::get().getMimeTypeIcon(primary_mime_type_, file_count_ > 1);
     }

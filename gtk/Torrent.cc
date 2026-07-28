@@ -345,7 +345,7 @@ void Torrent::Impl::notify_property_changes(ChangeFlags changes) const
 
     static auto TR_CONSTEXPR23
         properties_flags = std::array<std::pair<Property, ChangeFlags>, PropertyStore::PropertyCount - 1>({ {
-            { Property::ICON, ChangeFlag::MIME_TYPE },
+            { Property::ICON, ChangeFlag::HAS_METADATA | ChangeFlag::MIME_TYPE },
             { Property::NAME, ChangeFlag::NAME },
             { Property::PERCENT_DONE, ChangeFlag::PERCENT_DONE },
             { Property::SHORT_STATUS,
@@ -391,7 +391,7 @@ void Torrent::Impl::get_value(int column, Glib::ValueBase& value) const
 
 Glib::RefPtr<Gio::Icon> Torrent::Impl::get_icon() const
 {
-    return gtr_get_mime_type_icon(cache_.mime_type);
+    return cache_.has_metadata ? gtr_get_mime_type_icon(cache_.mime_type) : gtr_get_magnet_icon();
 }
 
 Glib::ustring Torrent::Impl::get_short_status_text() const
@@ -540,7 +540,7 @@ void Torrent::Impl::class_init(void* cls, void* /*user_data*/)
     PropertyStore::get().install(
         G_OBJECT_CLASS(cls),
         {
-            { Property::ICON, "icon", "Icon", "Icon based on torrent's likely MIME type", &Torrent::get_icon },
+            { Property::ICON, "icon", "Icon", "Icon for the torrent's likely contents", &Torrent::get_icon },
             { Property::NAME, "name", "Name", "Torrent name / title", &Torrent::get_name },
             { Property::PERCENT_DONE,
               "percent-done",

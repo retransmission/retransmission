@@ -42,6 +42,11 @@ public:
         return file_icon_;
     }
 
+    [[nodiscard]] constexpr auto const& magnetIcon() const noexcept
+    {
+        return magnet_icon_;
+    }
+
     QIcon guessMimeIcon(QString const& filename, QIcon fallback = {}) const;
     QIcon getMimeTypeIcon(QString const& mime_type, bool multifile) const;
 
@@ -51,6 +56,7 @@ protected:
 private:
     QIcon const folder_icon_ = QFileIconProvider().icon(QFileIconProvider::Folder);
     QIcon const file_icon_ = QFileIconProvider().icon(QFileIconProvider::File);
+    QIcon const magnet_icon_ = QIcon{ QStringLiteral(":/icons/magnet.svg") };
 
     mutable std::unordered_map<QString, QIcon> name_to_icon_;
     mutable std::unordered_map<QString, QIcon> name_to_emblem_icon_;
