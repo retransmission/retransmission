@@ -543,7 +543,7 @@ void Application::Impl::on_startup()
 
     /* Add style provider to the window. */
     auto css_provider = Gtk::CssProvider::create();
-    css_provider->load_from_resource(gtr_get_full_resource_path(TR_PROJ_APPNAME "-ui.css"));
+    css_provider->load_from_resource(gtr_get_full_resource_path("transmission-ui.css"));
     Gtk::StyleContext::IF_GTKMM4(add_provider_for_display, add_provider_for_screen)(
         IF_GTKMM4(Gdk::Display::get_default(), Gdk::Screen::get_default()),
         css_provider,
@@ -576,7 +576,7 @@ void Application::Impl::on_startup()
     core_ = Session::create(session);
 
     /* init the ui manager */
-    ui_builder_ = Gtk::Builder::create_from_resource(gtr_get_full_resource_path(TR_PROJ_APPNAME "-ui.xml"));
+    ui_builder_ = Gtk::Builder::create_from_resource(gtr_get_full_resource_path("transmission-ui.xml"));
     auto const actions = gtr_actions_init(ui_builder_, this);
 
     auto const main_menu = gtr_action_get_object<Gio::Menu>("main-window-menu");
