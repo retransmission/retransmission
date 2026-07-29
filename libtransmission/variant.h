@@ -568,9 +568,7 @@ bool save(std::string_view filename, Settings const& settings);
 // Deprecated C API. Do not use.
 bool tr_variantDictFindDict(tr_variant* var, tr_quark key, tr_variant** setme_value);
 bool tr_variantDictFindList(tr_variant* var, tr_quark key, tr_variant** setme);
-tr_variant* tr_variantDictAdd(tr_variant* var, tr_quark key);
 tr_variant* tr_variantDictAddDict(tr_variant* var, tr_quark key, size_t n_reserve);
-tr_variant* tr_variantDictAddStrView(tr_variant* var, tr_quark key, std::string_view value);
 tr_variant* tr_variantDictFind(tr_variant* var, tr_quark key);
 tr_variant* tr_variantListChild(tr_variant* var, size_t pos);
 void tr_variantMergeDicts(tr_variant* tgt, tr_variant const* src);
