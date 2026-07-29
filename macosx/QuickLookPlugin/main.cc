@@ -204,7 +204,7 @@ ULONG QuickLookGeneratorPluginRelease(void* thisInstance)
 // -----------------------------------------------------------------------------
 //  QuickLookGeneratorPluginFactory
 // -----------------------------------------------------------------------------
-void* QuickLookGeneratorPluginFactory(CFAllocatorRef allocator, CFUUIDRef typeID)
+void* QuickLookGeneratorPluginFactory(CFAllocatorRef /*allocator*/, CFUUIDRef typeID)
 {
     QuickLookGeneratorPluginType* result;
     CFUUIDRef uuid;

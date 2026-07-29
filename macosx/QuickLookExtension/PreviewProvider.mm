@@ -70,7 +70,7 @@ NSString* generateIconData(UTType* type, NSUInteger width, NSMutableDictionary<N
     QLPreviewReply* reply = [[QLPreviewReply alloc]
         initWithDataOfContentType:UTTypeHTML
                       contentSize:CGSizeMake(1200, 800)
-                dataCreationBlock:^NSData* _Nullable(QLPreviewReply* _Nonnull replyToUpdate, NSError* __autoreleasing _Nullable* _Nullable error) {
+                dataCreationBlock:^NSData* _Nullable(QLPreviewReply* _Nonnull replyToUpdate, NSError* __autoreleasing _Nullable* _Nullable /*error*/) {
                     NSString* previewHTML = [self generateHTMLPreviewFor:request.fileURL andReply:replyToUpdate];
 
                     return [previewHTML dataUsingEncoding:NSUTF8StringEncoding];

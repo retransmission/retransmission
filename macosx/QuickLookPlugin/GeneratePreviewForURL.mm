@@ -74,7 +74,7 @@ NSString* generateIconData(NSString* fileExtension, NSUInteger width, NSMutableD
     return [@"cid:" stringByAppendingString:iconFileName];
 }
 
-OSStatus GeneratePreviewForURL(void* /*thisInterface*/, QLPreviewRequestRef preview, CFURLRef url, CFStringRef contentTypeUTI, CFDictionaryRef options)
+OSStatus GeneratePreviewForURL(void* /*thisInterface*/, QLPreviewRequestRef preview, CFURLRef url, CFStringRef /*contentTypeUTI*/, CFDictionaryRef /*options*/)
 {
     // Before proceeding make sure the user didn't cancel the request
     if (QLPreviewRequestIsCancelled(preview)) {
@@ -281,7 +281,7 @@ OSStatus GeneratePreviewForURL(void* /*thisInterface*/, QLPreviewRequestRef prev
     return noErr;
 }
 
-void CancelPreviewGeneration(void* /*thisInterface*/, QLPreviewRequestRef preview)
+void CancelPreviewGeneration(void* /*thisInterface*/, QLPreviewRequestRef /*preview*/)
 {
     // Implement only if supported
 }
