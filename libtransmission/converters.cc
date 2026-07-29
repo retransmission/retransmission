@@ -80,6 +80,14 @@ namespace
 template<typename T, size_t N>
 using LookupTable = std::array<std::pair<std::string_view, T>, N>;
 
+// NOLINTBEGIN(modernize-avoid-c-arrays)
+template<typename T, size_t N>
+consteval LookupTable<std::remove_cv_t<T>, N> to_lookup(std::pair<std::string_view, T> (&&a)[N])
+{
+    return std::to_array(std::move(a));
+}
+// NOLINTEND(modernize-avoid-c-arrays)
+
 template<typename T, size_t N>
 [[nodiscard]] tr_variant from_enum_or_integral_with_lookup(LookupTable<T, N> const& rows, T const src)
 {
@@ -166,11 +174,11 @@ tr_variant from_double(double const& val)
 
 // ---
 
-auto constexpr EncryptionKeys = LookupTable<tr_encryption_mode, 3U>{ {
+auto constexpr EncryptionKeys = to_lookup<tr_encryption_mode>({
     { "required", TR_ENCRYPTION_REQUIRED },
     { "preferred", TR_ENCRYPTION_PREFERRED },
     { "allowed", TR_CLEAR_PREFERRED },
-} };
+});
 
 bool to_encryption_mode(tr_variant const& src, tr_encryption_mode* tgt)
 {
@@ -184,7 +192,7 @@ tr_variant from_encryption_mode(tr_encryption_mode const& val)
 
 // ---
 
-auto constexpr LogKeys = LookupTable<tr_log_level, 7U>{ {
+auto constexpr LogKeys = to_lookup<tr_log_level>({
     { "critical", TR_LOG_CRITICAL },
     { "debug", TR_LOG_DEBUG },
     { "error", TR_LOG_ERROR },
@@ -192,7 +200,7 @@ auto constexpr LogKeys = LookupTable<tr_log_level, 7U>{ {
     { "off", TR_LOG_OFF },
     { "trace", TR_LOG_TRACE },
     { "warn", TR_LOG_WARN },
-} };
+});
 
 bool to_log_level(tr_variant const& src, tr_log_level* tgt)
 {
@@ -324,13 +332,13 @@ tr_variant from_port(tr_port const& val)
 
 // ---
 
-auto constexpr PreallocationKeys = LookupTable<tr_file_preallocation, 5U>{ {
+auto constexpr PreallocationKeys = to_lookup<tr_file_preallocation>({
     { "off", tr_file_preallocation::None },
     { "none", tr_file_preallocation::None },
     { "fast", tr_file_preallocation::Sparse },
     { "sparse", tr_file_preallocation::Sparse },
     { "full", tr_file_preallocation::Full },
-} };
+});
 
 bool to_preallocation_mode(tr_variant const& src, tr_file_preallocation* tgt)
 {
@@ -344,10 +352,10 @@ tr_variant from_preallocation_mode(tr_file_preallocation const& val)
 
 // ---
 
-auto constexpr PreferredTransportKeys = LookupTable<tr_preferred_transport, PreferredTransportCount>{ {
+auto constexpr PreferredTransportKeys = to_lookup<tr_preferred_transport>({
     { "utp", tr_preferred_transport::UTP },
     { "tcp", tr_preferred_transport::TCP },
-} };
+});
 
 bool to_preferred_transport(tr_variant const& src, small::max_size_vector<tr_preferred_transport, PreferredTransportCount>* tgt)
 {
@@ -419,7 +427,7 @@ tr_variant from_string(std::string const& val)
 // RFCs 2474, 3246, 4594 & 8622
 // Service class names are defined in RFC 4594, RFC 5865, and RFC 8622.
 // Not all platforms have these IPTOS_ definitions, so hardcode them here
-auto constexpr DiffServKeys = LookupTable<int, 28U>{ {
+auto constexpr DiffServKeys = to_lookup<int>({
     { "cs0", 0x00 }, // IPTOS_CLASS_CS0
     { "le", 0x04 },
     { "cs1", 0x20 }, // IPTOS_CLASS_CS1
@@ -451,7 +459,7 @@ auto constexpr DiffServKeys = LookupTable<int, 28U>{ {
     { "reliable", 0x04 }, // IPTOS_RELIABILITY
     { "throughput", 0x08 }, // IPTOS_THROUGHPUT
     { "lowdelay", 0x10 }, // IPTOS_LOWDELAY
-} };
+});
 
 bool to_diffserv_t(tr_variant const& src, tr_diffserv_t* tgt)
 {
@@ -471,10 +479,10 @@ tr_variant from_diffserv_t(tr_diffserv_t const& val)
 
 // ---
 
-auto constexpr VerifyModeKeys = LookupTable<tr_verify_added_mode, 2U>{ {
+auto constexpr VerifyModeKeys = to_lookup<tr_verify_added_mode>({
     { "fast", TR_VERIFY_ADDED_FAST },
     { "full", TR_VERIFY_ADDED_FULL },
-} };
+});
 
 bool to_verify_added_mode(tr_variant const& src, tr_verify_added_mode* tgt)
 {
