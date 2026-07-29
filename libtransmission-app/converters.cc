@@ -32,7 +32,15 @@ template<typename T>
 inline constexpr bool HasTmGmtoffV = requires(T t) { t.tm_gmtoff; };
 
 template<typename T, size_t N>
-using Lookup = std::array<std::pair<std::string_view, T>, N>;
+using LookupTable = std::array<std::pair<std::string_view, T>, N>;
+
+// NOLINTBEGIN(modernize-avoid-c-arrays)
+template<typename T, size_t N>
+consteval LookupTable<std::remove_cv_t<T>, N> to_lookup(std::pair<std::string_view, T> (&&a)[N])
+{
+    return std::to_array(std::move(a));
+}
+// NOLINTEND(modernize-avoid-c-arrays)
 
 // ---
 
@@ -105,7 +113,7 @@ struct TrYearMonthDay {
     return std::chrono::sys_days{ std::chrono::days{ days_from_civil(ymd.year, ymd.month, ymd.day) } };
 }
 
-auto constexpr ShowKeys = std::array<std::pair<std::string_view, ShowMode>, ShowModeCount>{ {
+auto constexpr ShowKeys = to_lookup<ShowMode>({
     { "show_active", ShowMode::ShowActive },
     { "show_all", ShowMode::ShowAll },
     { "show_downloading", ShowMode::ShowDownloading },
@@ -114,7 +122,7 @@ auto constexpr ShowKeys = std::array<std::pair<std::string_view, ShowMode>, Show
     { "show_paused", ShowMode::ShowPaused },
     { "show_seeding", ShowMode::ShowSeeding },
     { "show_verifying", ShowMode::ShowVerifying },
-} };
+});
 
 bool to_show_mode(tr_variant const& src, ShowMode* tgt)
 {
@@ -147,7 +155,7 @@ tr_variant from_show_mode(ShowMode const& src)
 
 // ---
 
-auto constexpr SortKeys = std::array<std::pair<std::string_view, SortMode>, SortModeCount>{ {
+auto constexpr SortKeys = to_lookup<SortMode>({
     { "sort_by_activity", SortMode::SortByActivity },
     { "sort_by_age", SortMode::SortByAge },
     { "sort_by_eta", SortMode::SortByEta },
@@ -158,7 +166,7 @@ auto constexpr SortKeys = std::array<std::pair<std::string_view, SortMode>, Sort
     { "sort_by_ratio", SortMode::SortByRatio },
     { "sort_by_size", SortMode::SortBySize },
     { "sort_by_state", SortMode::SortByState },
-} };
+});
 
 bool to_sort_mode(tr_variant const& src, SortMode* tgt)
 {
@@ -191,12 +199,12 @@ tr_variant from_sort_mode(SortMode const& src)
 
 // ---
 
-auto constexpr StatsKeys = std::array<std::pair<std::string_view, StatsMode>, StatsModeCount>{ {
+auto constexpr StatsKeys = to_lookup<StatsMode>({
     { "session_ratio", StatsMode::SessionRatio },
     { "session_transfer", StatsMode::SessionTransfer },
     { "total_ratio", StatsMode::TotalRatio },
     { "total_transfer", StatsMode::TotalTransfer },
-} };
+});
 
 bool to_stats_mode(tr_variant const& src, StatsMode* tgt)
 {

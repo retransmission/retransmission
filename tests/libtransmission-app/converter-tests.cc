@@ -68,7 +68,7 @@ void testModeRoundtrip(std::array<std::pair<std::string_view, T>, N> const& item
 
 TEST_F(ConverterTest, showModeStringsRoundtrip)
 {
-    auto constexpr Items = std::array<std::pair<std::string_view, tr::app::ShowMode>, tr::app::ShowModeCount>{ {
+    auto constexpr Items = std::to_array<std::pair<std::string_view, tr::app::ShowMode>>({
         { "show_active", tr::app::ShowMode::ShowActive },
         { "show_all", tr::app::ShowMode::ShowAll },
         { "show_downloading", tr::app::ShowMode::ShowDownloading },
@@ -77,14 +77,14 @@ TEST_F(ConverterTest, showModeStringsRoundtrip)
         { "show_paused", tr::app::ShowMode::ShowPaused },
         { "show_seeding", tr::app::ShowMode::ShowSeeding },
         { "show_verifying", tr::app::ShowMode::ShowVerifying },
-    } };
+    });
 
     testModeRoundtrip(Items);
 }
 
 TEST_F(ConverterTest, sortModeStringsRoundtrip)
 {
-    auto constexpr Items = std::array<std::pair<std::string_view, tr::app::SortMode>, tr::app::SortModeCount>{ {
+    auto constexpr Items = std::to_array<std::pair<std::string_view, tr::app::SortMode>>({
         { "sort_by_activity", tr::app::SortMode::SortByActivity },
         { "sort_by_age", tr::app::SortMode::SortByAge },
         { "sort_by_eta", tr::app::SortMode::SortByEta },
@@ -95,19 +95,19 @@ TEST_F(ConverterTest, sortModeStringsRoundtrip)
         { "sort_by_ratio", tr::app::SortMode::SortByRatio },
         { "sort_by_size", tr::app::SortMode::SortBySize },
         { "sort_by_state", tr::app::SortMode::SortByState },
-    } };
+    });
 
     testModeRoundtrip(Items);
 }
 
 TEST_F(ConverterTest, statsModeStringsRoundtrip)
 {
-    auto constexpr Items = std::array<std::pair<std::string_view, tr::app::StatsMode>, tr::app::StatsModeCount>{ {
+    auto constexpr Items = std::to_array<std::pair<std::string_view, tr::app::StatsMode>>({
         { "total_ratio", tr::app::StatsMode::TotalRatio },
         { "total_transfer", tr::app::StatsMode::TotalTransfer },
         { "session_ratio", tr::app::StatsMode::SessionRatio },
         { "session_transfer", tr::app::StatsMode::SessionTransfer },
-    } };
+    });
 
     testModeRoundtrip(Items);
 }
