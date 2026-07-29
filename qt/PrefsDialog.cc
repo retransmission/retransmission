@@ -406,7 +406,6 @@ void PrefsDialog::onUpdateBlocklistCancelled()
 {
     disconnect(&session_, &Session::blocklistUpdated, this, &PrefsDialog::onBlocklistUpdated);
     disconnect(&session_, &Session::blocklistUpdateFailed, this, &PrefsDialog::onBlocklistUpdateFailed);
-    disconnect(&session_, &Session::blocklistUpdateSuperseded, this, &PrefsDialog::onBlocklistUpdateSuperseded);
     blocklist_dialog_->deleteLater();
 }
 
@@ -431,14 +430,6 @@ void PrefsDialog::onBlocklistUpdateFailed(QString const& message)
     blocklist_dialog_->setTextFormat(Qt::RichText);
 }
 
-void PrefsDialog::onBlocklistUpdateSuperseded()
-{
-    // Our request was overtaken by a newer update (e.g. the session's own auto-update
-    // timer); resolve the dialog with a neutral note instead of leaving it stuck.
-    blocklist_dialog_->setText(QStringLiteral("<b>%1</b>").arg(tr("Another blocklist update is already in progress.")));
-    blocklist_dialog_->setTextFormat(Qt::RichText);
-}
-
 void PrefsDialog::onUpdateBlocklistClicked()
 {
     blocklist_dialog_ = new QMessageBox{ QMessageBox::Information,
@@ -449,7 +440,6 @@ void PrefsDialog::onUpdateBlocklistClicked()
     connect(blocklist_dialog_, &QDialog::rejected, this, &PrefsDialog::onUpdateBlocklistCancelled);
     connect(&session_, &Session::blocklistUpdated, this, &PrefsDialog::onBlocklistUpdated);
     connect(&session_, &Session::blocklistUpdateFailed, this, &PrefsDialog::onBlocklistUpdateFailed);
-    connect(&session_, &Session::blocklistUpdateSuperseded, this, &PrefsDialog::onBlocklistUpdateSuperseded);
     blocklist_dialog_->show();
     session_.updateBlocklist();
 }

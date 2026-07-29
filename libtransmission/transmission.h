@@ -495,10 +495,10 @@ void tr_blocklistSetURL(tr_session* session, std::string_view url);
  * plain text are all handled transparently), install it, and report the
  * outcome.
  *
- * `on_done` is invoked exactly once, on the session thread: with the update's
- * outcome when it finishes, or with a Superseded status if a newer
- * tr_blocklistUpdate() takes over before it completes. It is not invoked at all
- * if tr_blocklistUpdateCancel() is called first.
+ * `on_done` is invoked exactly once, on the session thread, with the outcome of
+ * the update that installs a list: if a newer tr_blocklistUpdate() takes over
+ * before this one completes, `on_done` waits for that one instead. It is not
+ * invoked at all if tr_blocklistUpdateCancel() is called first.
  */
 void tr_blocklistUpdate(tr_session* session, tr_blocklist_update_func on_done);
 

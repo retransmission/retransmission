@@ -177,13 +177,7 @@ enum tr_ctorMode : uint8_t {
     TR_FORCE /* indicates the ctor value should be used regardless of what's in the resume settings */
 };
 
-enum class tr_blocklist_update_status : uint8_t {
-    Ok,
-    DownloadError,
-    SaveError,
-    InvalidData,
-    Superseded // a newer tr_blocklistUpdate() replaced this one before it finished
-};
+enum class tr_blocklist_update_status : uint8_t { Ok, DownloadError, SaveError, InvalidData };
 
 enum class tr_direction : uint8_t {
     ClientToPeer = 0,

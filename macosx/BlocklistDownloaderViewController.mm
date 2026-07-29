@@ -122,10 +122,6 @@ static BlocklistDownloaderViewController* fBLViewController = nil;
                 [strongSelf setFinished];
                 [weakPrefsController updateBlocklistFields];
                 break;
-            case tr_blocklist_update_status::Superseded:
-                // a newer update took over; close the sheet quietly, no error
-                [strongSelf setFinished];
-                break;
             default:
                 [strongSelf setFailed:error ?: NSLocalizedString(@"The blocklist could not be updated.", "Blocklist -> message")];
                 break;

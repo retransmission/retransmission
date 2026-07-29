@@ -671,26 +671,17 @@ void Session::updateBlocklist()
 {
     RpcQueue::create()
         .add(
-            [this](RpcClient::ResponseFunc done) { exec(TR_KEY_blocklist_update_v2, nullptr, std::move(done)); },
-            // A JSON-RPC error (e.g. a daemon older than 4.2 that lacks blocklist_update_v2)
-            // aborts the queue before the parse step below, so report it here or the progress
-            // dialog is left with no result.
+            [this](RpcClient::ResponseFunc done) { exec(TR_KEY_blocklist_update, nullptr, std::move(done)); },
+            // A JSON-RPC error aborts the queue before the step below, so report the
+            // failure here or the progress dialog is left with no result.
             [this](RpcResponse const& r) { emit blocklistUpdateFailed(QString::fromStdString(r.errmsg)); })
         .add([this](RpcResponse const& r) {
-            auto* const args = r.args.get();
-            auto const status = dictFind<QString>(args, TR_KEY_status).value_or(QString{});
-            if (status == QStringLiteral("ok")) {
-                auto const n_rules = dictFind<int>(args, TR_KEY_blocklist_size).value_or(0);
-                setBlocklistSize(n_rules);
-                // Announce success only for this manual update. setBlocklistSize() no longer
-                // emits blocklistUpdated(), so a background session_get refresh can't flash a
-                // spurious "Update succeeded!" in the dialog.
-                emit blocklistUpdated(n_rules);
-            } else if (status == QStringLiteral("superseded")) {
-                emit blocklistUpdateSuperseded();
-            } else {
-                emit blocklistUpdateFailed(dictFind<QString>(args, TR_KEY_error).value_or(QString{}));
-            }
+            auto const n_rules = dictFind<int>(r.args.get(), TR_KEY_blocklist_size).value_or(0);
+            setBlocklistSize(n_rules);
+            // Announce success only for this manual update. setBlocklistSize() no longer
+            // emits blocklistUpdated(), so a background session_get refresh can't flash a
+            // spurious "Update succeeded!" in the dialog.
+            emit blocklistUpdated(n_rules);
         })
         .run();
 }

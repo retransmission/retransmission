@@ -170,24 +170,25 @@ private slots:
         QVERIFY(waitUntil(has_session_set));
     }
 
-    // A blocklist_update_v2 reply maps to the right signal: an "ok" status reports
-    // the new rule count via blocklistUpdated(); any other status reports the error
-    // string via blocklistUpdateFailed(). The two signals never both fire.
-    static void blocklist_update_v2_reports_result_data()
+    // A blocklist_update reply maps to the right signal: a success reports the new
+    // rule count via blocklistUpdated(); a JSON-RPC error reports its message via
+    // blocklistUpdateFailed(). The two signals never both fire.
+    static void blocklist_update_reports_result_data()
     {
         QTest::addColumn<QString>("reply");
         QTest::addColumn<qlonglong>("expect_size"); // < 0 means expect the failure signal instead
         QTest::addColumn<QString>("expect_error");
 
-        QTest::newRow("ok") << QStringLiteral(
-                                   R"({"result":"success","arguments":{"status":"ok","blocklist_size":42,"error":""}})")
-                            << 42LL << QString{};
-        QTest::newRow("download_error")
-            << QStringLiteral(
-                   R"({"result":"success","arguments":{"status":"download_error","blocklist_size":0,"error":"boom"}})")
-            << -1LL << QStringLiteral("boom");
+        QTest::newRow("ok") << QStringLiteral(R"({"result":"success","arguments":{"blocklist_size":42}})") << 42LL << QString{};
+        // An error must resolve via the queue's error handler, or the caller waits
+        // forever for a reply that maps to no signal. Escaped literals, not raw
+        // ones: moc mis-lexes an apostrophe inside a raw string and then silently
+        // emits no metaobject for this class.
+        QTest::newRow("download_error") << QStringLiteral(
+                                               "{\"result\":\"Couldn\'t fetch blocklist: Not Found\",\"arguments\":{}}")
+                                        << -1LL << QStringLiteral("Couldn\'t fetch blocklist: Not Found");
     }
-    void blocklist_update_v2_reports_result()
+    void blocklist_update_reports_result()
     {
         QFETCH(QString const, reply);
         QFETCH(qlonglong const, expect_size);
@@ -196,7 +197,8 @@ private slots:
         api_compat::set_default_style(Style::Tr5);
 
         auto server = MockRpcServer{};
-        server.set_reply_for("blocklist_update_v2", reply.toStdString());
+        // quoted, so the marker can't also match a `blocklist_updates_enabled` request
+        server.set_reply_for(R"("blocklist_update")", reply.toStdString());
 
         auto prefs = Prefs{};
         prefs.set(TR_KEY_remote_session_enabled, true);
@@ -220,34 +222,6 @@ private slots:
             QCOMPARE(failed.first().at(0).toString(), expect_error);
             QVERIFY(updated.isEmpty());
         }
-    }
-
-    // A JSON-RPC error (e.g. a daemon that doesn't implement blocklist_update_v2)
-    // must resolve to the failure signal via the queue's error handler, not leave
-    // the caller waiting for a reply that never maps to a signal.
-    void blocklist_update_v2_rpc_error_reports_failure()
-    {
-        api_compat::set_default_style(Style::Tr5);
-
-        auto server = MockRpcServer{};
-        // "no method name" is the legacy errmsg that maps to METHOD_NOT_FOUND.
-        server.set_reply_for("blocklist_update_v2", R"({"result":"no method name","arguments":{}})");
-
-        auto prefs = Prefs{};
-        prefs.set(TR_KEY_remote_session_enabled, true);
-        prefs.set(TR_KEY_remote_session_host, QStringLiteral("127.0.0.1"));
-        prefs.set(TR_KEY_remote_session_port, static_cast<int>(server.port()));
-
-        auto rpc = RpcClient{};
-        auto session = Session{ sandboxDir(), prefs, rpc };
-        session.restart();
-
-        auto updated = QSignalSpy{ &session, &Session::blocklistUpdated };
-        auto failed = QSignalSpy{ &session, &Session::blocklistUpdateFailed };
-        session.updateBlocklist();
-
-        QVERIFY(waitUntil([&failed]() { return !failed.isEmpty(); }));
-        QVERIFY(updated.isEmpty());
     }
 };
 } // namespace

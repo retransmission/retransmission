@@ -720,23 +720,8 @@ Downloads the blocklist at `blocklist_url`, decompresses it (gzip, tar, and zip
 archives are handled, as is plain text), installs it, and returns the new rule
 count. On failure it returns a JSON-RPC error.
 
-#### 4.3.1 Blocklist update with a structured result
-Method name: `blocklist_update_v2`
-
-Request parameters: none
-
-Response parameters:
-
-| Key | Value Type | Description
-|:--|:--|:--
-| `status` | string | one of `ok`, `download_error`, `save_error`, `invalid_data`, `superseded`
-| `blocklist_size` | number | the new rule count; only meaningful when `status` is `ok`
-| `error` | string | human-readable detail; empty on success
-
-Behaves like `blocklist_update`, but a download or parse failure is reported
-through the `status` field of a normal success response instead of as a JSON-RPC
-error. `superseded` means a newer update request replaced this one before it
-finished.
+When requests overlap, only the newest download is installed, and every request
+still waiting is answered with that download's outcome.
 
 ### 4.4 Port checking
 This method tests to see if your incoming peer port is accessible
@@ -1163,7 +1148,6 @@ Transmission 4.2.0 (`rpc_version_semver` 6.1.0, `rpc_version`: 20)
 | `session_set` | new arg `torrent_complete_verify_enabled`
 | `session_stats` | new arg `busy_torrent_count`
 | `session_stats` | new arg `unpaused_torrent_count`
-| `blocklist_update_v2` | new method
 | `session_get` | new arg `blocklist_date`
 | `session_get` | new arg `blocklist_updates_enabled`
 | `session_set` | new arg `blocklist_updates_enabled`

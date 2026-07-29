@@ -12,6 +12,7 @@
 #include <string>
 #include <string_view>
 #include <utility> // std::move
+#include <vector>
 
 #include <fmt/format.h>
 
@@ -131,26 +132,29 @@ std::string decompress(std::string_view const body)
 }
 
 // Per-request state, kept alive by the tr_web fetch callback during the fetch.
+// Its waiters are the callers this fetch answers: whoever started it, plus any
+// inherited from a request it superseded.
 struct Pending {
     Updater::Mediator* mediator = nullptr;
-    tr_blocklist_update_func on_done;
+    std::vector<tr_blocklist_update_func> waiters;
 };
 
 namespace
 {
-// Invoke a request's callback and clear it, so each request delivers at most
-// once even if it completes and is later superseded in the same batch.
+// Answer a request's waiters and clear them, so no caller is answered twice.
 void deliver(Pending& pending, tr_blocklist_update_result const& result)
 {
-    if (pending.on_done) {
-        std::exchange(pending.on_done, {})(result);
+    for (auto const& on_done : std::exchange(pending.waiters, {})) {
+        if (on_done) {
+            on_done(result);
+        }
     }
 }
 
 void finish_request(tr_web::FetchResponse const& response, std::shared_ptr<Pending> const& pending)
 {
     // already delivered, superseded, or cancelled -- nothing left to do
-    if (!pending->on_done) {
+    if (std::empty(pending->waiters)) {
         return;
     }
 
@@ -200,24 +204,24 @@ Updater::~Updater()
 {
     // If our fetch is still in flight, make its completion callback a no-op
     if (auto pending = latest_.lock()) {
-        pending->on_done = {};
+        pending->waiters.clear();
     }
 }
 
 void Updater::update(tr_blocklist_update_func on_done)
 {
     mediator_.run_in_session_thread([this, on_done = std::move(on_done)]() mutable {
-        // Supersede any in-flight req so only the newest one updates the list.
-        // The older fetch still runs, since tr_web doesn't have an abort API.
+        // Supersede any in-flight request so only the newest one updates the
+        // list. The older fetch still runs, since tr_web doesn't have an abort
+        // API, but taking its waiters both silences it and moves those callers
+        // onto the update that wins.
+        auto waiters = std::vector<tr_blocklist_update_func>{};
         if (auto previous = latest_.lock()) {
-            // Report the superseded request; deliver() clears its callback, so
-            // its still-running fetch installs nothing once it completes.
-            auto superseded = tr_blocklist_update_result{};
-            superseded.status = tr_blocklist_update_status::Superseded;
-            deliver(*previous, superseded);
+            waiters = std::exchange(previous->waiters, {});
         }
+        waiters.push_back(std::move(on_done));
 
-        auto pending = std::make_shared<Pending>(Pending{ .mediator = &mediator_, .on_done = std::move(on_done) });
+        auto pending = std::make_shared<Pending>(Pending{ .mediator = &mediator_, .waiters = std::move(waiters) });
         latest_ = pending;
         mediator_.fetch(
             { mediator_.blocklist_url(),
@@ -230,7 +234,7 @@ void Updater::cancel()
 {
     mediator_.run_in_session_thread([this]() {
         if (auto pending = latest_.lock()) {
-            pending->on_done = {};
+            pending->waiters.clear();
         }
     });
 }
@@ -261,8 +265,6 @@ void Updater::on_auto_update_timer()
                 fmt::format(
                     fmt::runtime(_("Automatically updated blocklist, which now has {count} rules")),
                     fmt::arg("count", result.n_rules)));
-        } else if (result.status == tr_blocklist_update_status::Superseded) {
-            // a newer update took over; not a failure worth logging
         } else if (!std::empty(result.error)) {
             tr_logAddWarn(std::string{ result.error });
         } else {

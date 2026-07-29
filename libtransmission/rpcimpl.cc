@@ -1441,12 +1441,6 @@ void blocklistUpdate(tr_session* session, tr_variant::Map const& /*args_in*/, st
             tr_rpc_idle_done(idle_data, Error::SUCCESS, {});
             break;
 
-        case tr_blocklist_update_status::Superseded:
-            // a newer update took over; report the list we currently have
-            idle_data->args_out.try_emplace(TR_KEY_blocklist_size, tr_blocklistGetRuleCount(idle_data->session));
-            tr_rpc_idle_done(idle_data, Error::SUCCESS, {});
-            break;
-
         case tr_blocklist_update_status::DownloadError:
             tr_rpc_idle_done(idle_data, Error::HTTP_ERROR, result.error);
             break;
@@ -1459,22 +1453,6 @@ void blocklistUpdate(tr_session* session, tr_variant::Map const& /*args_in*/, st
             tr_rpc_idle_done(idle_data, Error::INVALID_BLOCKLIST_DATA, result.error);
             break;
         }
-    });
-}
-
-// Like `blocklist_update`, but reports the outcome as a structured object (see
-// tr_blocklist_update_result) rather than a bare size or a JSON-RPC error, so a
-// download/parse failure still comes back as a success envelope.
-void blocklistUpdateV2(tr_session* session, tr_variant::Map const& /*args_in*/, struct tr_rpc_idle_data* idle_data)
-{
-    using namespace JsonRpc;
-
-    tr_blocklistUpdate(session, [idle_data](tr_blocklist_update_result const& result) {
-        auto out = tr::serializer::Converter<tr_blocklist_update_result>::to_variant(result);
-        if (auto* const map = out.get_if<tr_variant::Map>(); map != nullptr) {
-            idle_data->args_out = std::move(*map);
-        }
-        tr_rpc_idle_done(idle_data, Error::SUCCESS, {});
     });
 }
 
@@ -2516,9 +2494,8 @@ auto const sync_handlers = small::max_size_map<tr_quark, std::pair<SyncHandler, 
 
 using AsyncHandler = void (*)(tr_session*, tr_variant::Map const&, tr_rpc_idle_data*);
 
-auto const async_handlers = small::max_size_map<tr_quark, std::pair<AsyncHandler, bool /*has_side_effects*/>, 5U>{ {
+auto const async_handlers = small::max_size_map<tr_quark, std::pair<AsyncHandler, bool /*has_side_effects*/>, 4U>{ {
     { TR_KEY_blocklist_update, { blocklistUpdate, true } },
-    { TR_KEY_blocklist_update_v2, { blocklistUpdateV2, true } },
     { TR_KEY_port_test, { portTest, false } },
     { TR_KEY_torrent_add, { torrentAdd, true } },
     { TR_KEY_torrent_rename_path, { torrentRenamePath, true } },

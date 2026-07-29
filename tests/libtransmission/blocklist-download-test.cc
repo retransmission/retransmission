@@ -460,7 +460,7 @@ TEST(BlocklistUpdater, cancelSuppressesCallback)
     EXPECT_EQ(0, mediator.install_count_);
 }
 
-TEST(BlocklistUpdater, secondUpdateSupersedesFirst)
+TEST(BlocklistUpdater, supersededRequestWaitsForTheWinner)
 {
     auto mediator = MockMediator{};
     auto updater = tr::blocklist::Updater{ mediator };
@@ -475,20 +475,23 @@ TEST(BlocklistUpdater, secondUpdateSupersedesFirst)
     updater.update([&second](tr_blocklist_update_result const& r) { second = r; });
     ASSERT_EQ(2U, mediator.pendingCount());
 
-    // starting the second update resolves the first immediately as superseded
-    ASSERT_EQ(1, first_calls);
-    ASSERT_TRUE(first.has_value());
-    EXPECT_EQ(tr_blocklist_update_status::Superseded, first->status);
+    // the first caller now rides on the second request, so it's still waiting
+    ASSERT_EQ(0, first_calls);
 
-    // even if the superseded (first) request completes, only the second installs
-    // a result, and the first callback does not fire again
+    // the superseded fetch finishes first; it installs nothing and answers nobody
     mediator.respond(0U, 200, std::string{ Rules });
-    mediator.respond(1U, 200, std::string{ Rules });
+    EXPECT_EQ(0, first_calls);
+    EXPECT_FALSE(second.has_value());
+    EXPECT_EQ(0, mediator.install_count_);
 
-    EXPECT_EQ(1, first_calls); // fired exactly once, at supersession
+    // the winning fetch installs once and answers both callers with its outcome
+    mediator.respond(1U, 200, std::string{ Rules });
+    EXPECT_EQ(1, first_calls);
+    ASSERT_TRUE(first.has_value());
+    EXPECT_EQ(tr_blocklist_update_status::Ok, first->status);
     ASSERT_TRUE(second.has_value());
     EXPECT_EQ(tr_blocklist_update_status::Ok, second->status);
-    EXPECT_EQ(1, mediator.install_count_); // installed exactly once
+    EXPECT_EQ(1, mediator.install_count_);
 }
 
 TEST(BlocklistUpdater, completedUpdateNotRefiredByLaterUpdate)
