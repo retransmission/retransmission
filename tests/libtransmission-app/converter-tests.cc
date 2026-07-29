@@ -78,6 +78,7 @@ TEST_F(ConverterTest, showModeStringsRoundtrip)
         { "show_seeding", tr::app::ShowMode::ShowSeeding },
         { "show_verifying", tr::app::ShowMode::ShowVerifying },
     });
+    static_assert(Items.size() == tr::app::ShowModeCount);
 
     testModeRoundtrip(Items);
 }
@@ -96,6 +97,7 @@ TEST_F(ConverterTest, sortModeStringsRoundtrip)
         { "sort_by_size", tr::app::SortMode::SortBySize },
         { "sort_by_state", tr::app::SortMode::SortByState },
     });
+    static_assert(Items.size() == tr::app::SortModeCount);
 
     testModeRoundtrip(Items);
 }
@@ -108,6 +110,7 @@ TEST_F(ConverterTest, statsModeStringsRoundtrip)
         { "session_ratio", tr::app::StatsMode::SessionRatio },
         { "session_transfer", tr::app::StatsMode::SessionTransfer },
     });
+    static_assert(Items.size() == tr::app::StatsModeCount);
 
     testModeRoundtrip(Items);
 }

@@ -123,6 +123,7 @@ auto constexpr ShowKeys = to_lookup<ShowMode>({
     { "show_seeding", ShowMode::ShowSeeding },
     { "show_verifying", ShowMode::ShowVerifying },
 });
+static_assert(ShowKeys.size() == ShowModeCount);
 
 bool to_show_mode(tr_variant const& src, ShowMode* tgt)
 {
@@ -167,6 +168,7 @@ auto constexpr SortKeys = to_lookup<SortMode>({
     { "sort_by_size", SortMode::SortBySize },
     { "sort_by_state", SortMode::SortByState },
 });
+static_assert(SortKeys.size() == SortModeCount);
 
 bool to_sort_mode(tr_variant const& src, SortMode* tgt)
 {
@@ -205,6 +207,7 @@ auto constexpr StatsKeys = to_lookup<StatsMode>({
     { "total_ratio", StatsMode::TotalRatio },
     { "total_transfer", StatsMode::TotalTransfer },
 });
+static_assert(StatsKeys.size() == StatsModeCount);
 
 bool to_stats_mode(tr_variant const& src, StatsMode* tgt)
 {

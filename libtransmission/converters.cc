@@ -356,6 +356,7 @@ auto constexpr PreferredTransportKeys = to_lookup<tr_preferred_transport>({
     { "utp", tr_preferred_transport::UTP },
     { "tcp", tr_preferred_transport::TCP },
 });
+static_assert(PreferredTransportKeys.size() == PreferredTransportCount);
 
 bool to_preferred_transport(tr_variant const& src, small::max_size_vector<tr_preferred_transport, PreferredTransportCount>* tgt)
 {
