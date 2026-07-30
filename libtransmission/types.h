@@ -53,10 +53,6 @@ using tr_peer_id_t = std::array<char, 20>;
 
 using tr_piece_index_t = uint32_t;
 
-using tr_sha1_digest_t = std::array<std::byte, 20>;
-
-using tr_sha256_digest_t = std::array<std::byte, 32>;
-
 using tr_torrent_id_t = int;
 
 enum class tr_preferred_transport : uint8_t {

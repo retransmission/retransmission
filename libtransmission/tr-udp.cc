@@ -17,6 +17,7 @@
 
 #include <fmt/format.h>
 
+#include "libtransmission/crypto-utils.h" // tr_base64_encode()
 #include "libtransmission/log.h"
 #include "libtransmission/net.h"
 #include "libtransmission/session.h"

@@ -18,6 +18,7 @@
 
 #include "libtransmission/bandwidth.h"
 #include "libtransmission/block-info.h" // tr_block_info
+#include "libtransmission/digest.h"
 #include "libtransmission/error.h"
 #include "libtransmission/log.h"
 #include "libtransmission/net.h"

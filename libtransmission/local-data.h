@@ -19,6 +19,7 @@
 #include <small/vector.hpp>
 
 #include "libtransmission/constants.h"
+#include "libtransmission/digest.h"
 #include "libtransmission/error-types.h"
 #include "libtransmission/types.h"
 

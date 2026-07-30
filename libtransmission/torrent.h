@@ -28,6 +28,7 @@
 #include "libtransmission/bitfield.h"
 #include "libtransmission/block-info.h"
 #include "libtransmission/completion.h"
+#include "libtransmission/crypto-utils.h" // tr_rand_obj()
 #include "libtransmission/file-piece-map.h"
 #include "libtransmission/interned-string.h"
 #include "libtransmission/log.h"

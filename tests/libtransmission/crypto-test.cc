@@ -171,6 +171,25 @@ TEST(Crypto, ssha1)
     EXPECT_TRUE(tr_ssha1_matches("{d209a21d3bc4f8fc4f8faf347e69f3def597eb170pySy4ai1ZPMjeU1", "test"));
 }
 
+TEST(Crypto, hashString)
+{
+    // a default-constructed instance is the empty "no digest yet" state
+    auto const empty = tr_sha1_string{};
+    EXPECT_TRUE(empty.empty());
+    EXPECT_EQ(0U, std::size(empty));
+    EXPECT_EQ(""sv, empty.sv());
+    EXPECT_EQ('\0', *empty.c_str());
+    EXPECT_EQ(empty, tr_sha1_string{});
+
+    auto const full = tr_sha1_string{ tr_sha1::digest("test"sv) };
+    EXPECT_FALSE(full.empty());
+    EXPECT_EQ(tr_sha1_string::Strlen, std::size(full));
+    EXPECT_EQ("a94a8fe5ccb19ba61c4c0873d391e987982fbbd3"sv, full);
+
+    // an empty instance sorts before any complete one, as an empty string would
+    EXPECT_LT(empty, full);
+}
+
 TEST(Crypto, sha1FromString)
 {
     // bad lengths

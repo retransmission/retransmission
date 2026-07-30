@@ -41,6 +41,7 @@
 #include "libtransmission/blocklist.h"
 #include "libtransmission/blocklist-download.h"
 #include "libtransmission/converters.h"
+#include "libtransmission/digest.h"
 #include "libtransmission/interned-string.h"
 #include "libtransmission/ip-cache.h"
 #include "libtransmission/local-data.h"

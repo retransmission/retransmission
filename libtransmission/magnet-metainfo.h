@@ -11,8 +11,8 @@
 #include <vector>
 
 #include "libtransmission/announce-list.h"
-#include "libtransmission/crypto-utils.h"
-#include "libtransmission/macros.h" // TR_CONSTEXPR_VEC, tr_sha1_digest_t
+#include "libtransmission/digest.h" // tr_sha1_digest_t, tr_sha1_string, ...
+#include "libtransmission/macros.h" // TR_CONSTEXPR_VEC
 
 struct tr_error;
 

@@ -23,6 +23,7 @@
 
 #include <small/vector.hpp>
 
+#include "libtransmission/digest.h"
 #include "libtransmission/peer-mse.h" // tr_message_stream_encryption::DH
 #include "libtransmission/peer-io.h"
 #include "libtransmission/timer.h"

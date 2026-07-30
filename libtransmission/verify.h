@@ -19,6 +19,7 @@
 #include <thread>
 #include <utility> // std::move
 
+#include "libtransmission/digest.h"
 #include "libtransmission/torrent-metainfo.h"
 #include "libtransmission/types.h"
 

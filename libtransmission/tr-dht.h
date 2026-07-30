@@ -23,6 +23,7 @@
 
 #include <dht/dht.h>
 
+#include "libtransmission/digest.h"
 #include "libtransmission/net.h" // tr_port
 #include "libtransmission/types.h"
 

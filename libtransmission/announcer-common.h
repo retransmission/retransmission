@@ -20,6 +20,7 @@
 #include <vector>
 
 #include "libtransmission/announcer.h"
+#include "libtransmission/digest.h"
 #include "libtransmission/interned-string.h"
 #include "libtransmission/net.h"
 #include "libtransmission/peer-mgr.h" // tr_pex

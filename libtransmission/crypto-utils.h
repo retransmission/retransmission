@@ -15,8 +15,7 @@
 #include <string>
 #include <string_view>
 
-#include "libtransmission/tr-strbuf.h"
-#include "libtransmission/types.h" // tr_sha1_digest_t, tr_sha256_d...
+#include "libtransmission/digest.h" // tr_sha1_digest_t, tr_sha1_string, ...
 
 #if defined(WITH_CCRYPTO)
 #include <CommonCrypto/CommonDigest.h>
@@ -171,8 +170,6 @@ T tr_rand_obj()
  */
 [[nodiscard]] std::string tr_base64_decode(std::string_view input);
 
-using tr_sha1_string = tr_strbuf<char, (sizeof(tr_sha1_digest_t) * 2U) + 1U>;
-
 /**
  * @brief Generate an ascii hex string for a sha1 digest.
  */
@@ -182,8 +179,6 @@ using tr_sha1_string = tr_strbuf<char, (sizeof(tr_sha1_digest_t) * 2U) + 1U>;
  * @brief Generate a sha1 digest from a hex string.
  */
 [[nodiscard]] std::optional<tr_sha1_digest_t> tr_sha1_from_string(std::string_view hex);
-
-using tr_sha256_string = tr_strbuf<char, (sizeof(tr_sha256_digest_t) * 2U) + 1U>;
 
 /**
  * @brief Generate an ascii hex string for a sha256 digest.

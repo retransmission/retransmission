@@ -15,6 +15,7 @@
 
 #include <fmt/core.h>
 
+#include <libtransmission/crypto-utils.h> // tr_rand_int()
 #include <libtransmission/net.h>
 #include <libtransmission/log.h>
 #include <libtransmission/quark.h>

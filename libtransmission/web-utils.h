@@ -14,7 +14,7 @@
 
 #include <fmt/format.h>
 
-#include "libtransmission/types.h" // tr_sha1_digest_t
+#include "libtransmission/digest.h"
 
 /** @brief convenience function to determine if an address is an IP address (IPv4 or IPv6) */
 bool tr_addressIsIP(char const* address);

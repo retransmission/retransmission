@@ -8,7 +8,6 @@
 #include <cctype>
 #include <cstddef>
 #include <cstdint>
-#include <iterator>
 #include <optional>
 #include <ranges>
 #include <random>
@@ -25,7 +24,6 @@ extern "C" {
 
 #include "libtransmission/crypto-utils.h"
 #include "libtransmission/string-utils.h"
-#include "libtransmission/tr-assert.h"
 
 using namespace std::literals;
 
@@ -115,18 +113,6 @@ namespace
 namespace hex_impl
 {
 
-template<typename InIt, typename OutIt>
-constexpr void tr_binary_to_hex(InIt begin, InIt end, OutIt out)
-{
-    auto constexpr Hex = "0123456789abcdef"sv;
-
-    while (begin != end) {
-        auto const val = static_cast<unsigned int>(*begin++);
-        *out++ = Hex[val >> 4];
-        *out++ = Hex[val & 0xF];
-    }
-}
-
 constexpr void tr_hex_to_binary(char const* input, void* voutput, size_t byte_length)
 {
     auto constexpr Hex = "0123456789abcdef"sv;
@@ -145,22 +131,14 @@ constexpr void tr_hex_to_binary(char const* input, void* voutput, size_t byte_le
 
 tr_sha1_string tr_sha1_to_string(tr_sha1_digest_t const& digest)
 {
-    using namespace hex_impl;
-
-    auto str = tr_sha1_string{};
-    tr_binary_to_hex(std::begin(digest), std::end(digest), std::back_inserter(str));
-    TR_ASSERT(std::size(str) == TrSha1DigestStrlen);
-    return str;
+    static_assert(tr_sha1_string::Strlen == TrSha1DigestStrlen);
+    return tr_sha1_string{ digest };
 }
 
 tr_sha256_string tr_sha256_to_string(tr_sha256_digest_t const& digest)
 {
-    using namespace hex_impl;
-
-    auto str = tr_sha256_string{};
-    tr_binary_to_hex(std::begin(digest), std::end(digest), std::back_inserter(str));
-    TR_ASSERT(std::size(str) == TrSha256DigestStrlen);
-    return str;
+    static_assert(tr_sha256_string::Strlen == TrSha256DigestStrlen);
+    return tr_sha256_string{ digest };
 }
 
 std::optional<tr_sha1_digest_t> tr_sha1_from_string(std::string_view hex)

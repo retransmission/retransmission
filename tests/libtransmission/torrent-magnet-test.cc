@@ -9,6 +9,7 @@
 
 #include <gtest/gtest.h>
 
+#include <libtransmission/crypto-utils.h> // tr_base64_decode()
 #include <libtransmission/error.h>
 #include <libtransmission/torrent-magnet.h>
 #include <libtransmission/torrent-metainfo.h>
