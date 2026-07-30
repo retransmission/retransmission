@@ -1230,7 +1230,7 @@ FaviconCache<Glib::RefPtr<Gdk::Pixbuf>>& Session::favicon_cache() const
 void Session::open_folder(tr_torrent_id_t torrent_id) const
 {
     if (auto const* tor = find_torrent(torrent_id); tor != nullptr) {
-        std::string_view const current_dir = tr_torrentGetCurrentDir(tor);
+        auto const current_dir = tr_torrentGetCurrentDir(tor);
 
         if (tr_torrentFileCount(tor) == 1) {
             gtr_open_file(current_dir);

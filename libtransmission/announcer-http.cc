@@ -182,7 +182,7 @@ void announce_url_new(tr_urlbuf& url, tr_session const* session, tr_announce_req
         "&key={key:08X}"
         "&compact=1"
         "&supportcrypto=1",
-        fmt::arg("url", req.announce_url),
+        fmt::arg("url", req.announce_url.sv()),
         fmt::arg("sep", tr_strv_contains(req.announce_url.sv(), '?') ? '&' : '?'),
         fmt::arg("info_hash", std::data(escaped_info_hash)),
         fmt::arg("peer_id", std::string_view{ std::data(req.peer_id), std::size(req.peer_id) }),

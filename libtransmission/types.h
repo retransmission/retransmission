@@ -16,6 +16,7 @@
 #include <string_view>
 #include <utility>
 
+#include "libtransmission/shared-string.h"
 #include "libtransmission/values.h"
 
 struct tr_error;
@@ -606,11 +607,12 @@ struct tr_torrent_view {
 // NOLINTBEGIN(modernize-avoid-c-arrays)
 /*
  * Unlike other _view structs, it is safe to keep a tr_tracker_view copy.
- * The announce and scrape strings are interned & never go out-of-scope.
+ * The announce and scrape strings keep the text alive for as long as the
+ * copy exists; the remaining fields are values.
  */
 struct tr_tracker_view {
-    char const* announce = ""; // full announce URL
-    char const* scrape = ""; // full scrape URL
+    tr::shared_string announce; // full announce URL
+    tr::shared_string scrape; // full scrape URL
     char host_and_port[72] = {}; // uniquely-identifying tracker name (`${host}:${port}`)
 
     // The tracker site's name. Uses the first label before the public suffix

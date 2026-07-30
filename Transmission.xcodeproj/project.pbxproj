@@ -18,6 +18,7 @@
 		9F0B1F342E4D1A0100A1B2C3 /* file-utils.cc in Sources */ = {isa = PBXBuildFile; fileRef = 9F0B1F2D2E4D1A0100A1B2C3 /* file-utils.cc */; };
 		9F0B1F352E4D1A0100A1B2C3 /* string-utils.cc in Sources */ = {isa = PBXBuildFile; fileRef = 9F0B1F2F2E4D1A0100A1B2C3 /* string-utils.cc */; };
 		9F0B1F372E4D1A0100A1B2C3 /* values.cc in Sources */ = {isa = PBXBuildFile; fileRef = 9F0B1F362E4D1A0100A1B2C3 /* values.cc */; };
+		9F0B1F3D2E4D1A0100A1B2C3 /* shared-string.cc in Sources */ = {isa = PBXBuildFile; fileRef = 9F0B1F3C2E4D1A0100A1B2C3 /* shared-string.cc */; };
 		1BB44E07B1B52E28291B4E32 /* file-piece-map.cc in Sources */ = {isa = PBXBuildFile; fileRef = 1BB44E07B1B52E28291B4E30 /* file-piece-map.cc */; };
 		1BB44E07B1B52E28291B4E33 /* file-piece-map.h in Headers */ = {isa = PBXBuildFile; fileRef = 1BB44E07B1B52E28291B4E31 /* file-piece-map.h */; };
 		2856E0656A49F2665D69E760 /* benc.h in Headers */ = {isa = PBXBuildFile; fileRef = 2856E0656A49F2665D69E761 /* benc.h */; };
@@ -400,7 +401,7 @@
 		CCEBA596277340F6DF9F4482 /* session-alt-speeds.h in Headers */ = {isa = PBXBuildFile; fileRef = CCEBA596277340F6DF9F4483 /* session-alt-speeds.h */; };
 		F0A1B2C32F1A2B3C00445566 /* session-settings.h in Headers */ = {isa = PBXBuildFile; fileRef = F0A1B2C42F1A2B3C00445566 /* session-settings.h */; };
 		E138A9780C04D88F00C5426C /* ProgressGradients.mm in Sources */ = {isa = PBXBuildFile; fileRef = E138A9760C04D88F00C5426C /* ProgressGradients.mm */; };
-		E23B55A5FC3B557F7746D510 /* interned-string.h in Headers */ = {isa = PBXBuildFile; fileRef = E23B55A5FC3B557F7746D511 /* interned-string.h */; settings = {ATTRIBUTES = (Project, ); }; };
+		9F0B1F3B2E4D1A0100A1B2C3 /* shared-string.h in Headers */ = {isa = PBXBuildFile; fileRef = 9F0B1F3A2E4D1A0100A1B2C3 /* shared-string.h */; settings = {ATTRIBUTES = (Project, ); }; };
 		E975121263DD973CAF4AEBA0 /* timer.h in Headers */ = {isa = PBXBuildFile; fileRef = E975121263DD973CAF4AEBA1 /* timer.h */; };
 		E975121263DD973CAF4AEBA2 /* timer-ev.h in Headers */ = {isa = PBXBuildFile; fileRef = E975121263DD973CAF4AEBA3 /* timer-ev.h */; };
 		E975121263DD973CAF4AEBA4 /* timer-ev.cc in Sources */ = {isa = PBXBuildFile; fileRef = E975121263DD973CAF4AEBA5 /* timer-ev.cc */; };
@@ -1458,7 +1459,8 @@
 		F0A1B2C42F1A2B3C00445566 /* session-settings.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.h; path = "session-settings.h"; sourceTree = "<group>"; };
 		E138A9750C04D88F00C5426C /* ProgressGradients.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ProgressGradients.h; sourceTree = "<group>"; };
 		E138A9760C04D88F00C5426C /* ProgressGradients.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = ProgressGradients.mm; sourceTree = "<group>"; };
-		E23B55A5FC3B557F7746D511 /* interned-string.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.h; path = "interned-string.h"; sourceTree = "<group>"; };
+		9F0B1F3C2E4D1A0100A1B2C3 /* shared-string.cc */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = "shared-string.cc"; sourceTree = "<group>"; };
+		9F0B1F3A2E4D1A0100A1B2C3 /* shared-string.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.h; path = "shared-string.h"; sourceTree = "<group>"; };
 		E975121263DD973CAF4AEBA1 /* timer.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.h; fileEncoding = 4; path = timer.h; sourceTree = "<group>"; };
 		E975121263DD973CAF4AEBA3 /* timer-ev.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.h; fileEncoding = 4; path = "timer-ev.h"; sourceTree = "<group>"; };
 		E975121263DD973CAF4AEBA5 /* timer-ev.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = "timer-ev.cc"; sourceTree = "<group>"; };
@@ -2137,7 +2139,8 @@
 				A209EE5B1144B51E002B02D1 /* history.h */,
 				BEFC1E160C07861A00B0BB3C /* inout.cc */,
 				BEFC1E150C07861A00B0BB3C /* inout.h */,
-				E23B55A5FC3B557F7746D511 /* interned-string.h */,
+				9F0B1F3C2E4D1A0100A1B2C3 /* shared-string.cc */,
+				9F0B1F3A2E4D1A0100A1B2C3 /* shared-string.h */,
 				EDBAAC8D29E486C200D9495F /* ip-cache.cc */,
 				EDBAAC8B29E486BC00D9495F /* ip-cache.h */,
 				A2AF23C616B44FA0003BC59E /* log.cc */,
@@ -2885,7 +2888,7 @@
 				A2AF23C916B44FA0003BC59E /* log.h in Headers */,
 				F11545ACA7C4D7A464F703AB /* block-info.h in Headers */,
 				B10CDDA0000000000000BB01 /* blocklist-download.h in Headers */,
-				E23B55A5FC3B557F7746D510 /* interned-string.h in Headers */,
+				9F0B1F3B2E4D1A0100A1B2C3 /* shared-string.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3624,6 +3627,7 @@
 				9F0B1F342E4D1A0100A1B2C3 /* file-utils.cc in Sources */,
 				9F0B1F352E4D1A0100A1B2C3 /* string-utils.cc in Sources */,
 				9F0B1F372E4D1A0100A1B2C3 /* values.cc in Sources */,
+				9F0B1F3D2E4D1A0100A1B2C3 /* shared-string.cc in Sources */,
 				EDBBE7692F0FF05500E90EA1 /* peer-socket-tcp.cc in Sources */,
 				EDBBE76A2F0FF05500E90EA1 /* peer-socket-utp.cc in Sources */,
 				A2AAB65F0DE0CF6200E04DDA /* rpcimpl.cc in Sources */,

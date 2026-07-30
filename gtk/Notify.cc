@@ -113,7 +113,7 @@ void g_signal_callback(
         if (action == "folder") {
             n.core->open_folder(n.torrent_id);
         } else if (action == "file") {
-            std::string_view const base_dir = tr_torrentGetDownloadDir(tor);
+            auto const base_dir = tr_torrentGetDownloadDir(tor);
             std::string_view const relative_path = tr_torrentFile(tor, 0).name;
             gtr_open_file(base_dir, relative_path);
         } else if (action == "start-now") {

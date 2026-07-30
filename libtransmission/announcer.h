@@ -24,8 +24,8 @@
 #include <sys/socket.h> // socklen_t
 #endif
 
-#include "libtransmission/interned-string.h"
 #include "libtransmission/peer-mgr.h"
+#include "libtransmission/shared-string.h"
 
 struct tr_address;
 class tr_announcer_udp;
@@ -50,7 +50,7 @@ struct tr_tracker_event {
 
     // for Warning and Error events
     std::string_view text;
-    tr_interned_string announce_url;
+    tr::shared_string announce_url;
 
     // for Peers events
     std::vector<tr_pex> pex;

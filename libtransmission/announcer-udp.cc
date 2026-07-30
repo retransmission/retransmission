@@ -37,10 +37,10 @@
 #include "libtransmission/announcer.h"
 #include "libtransmission/announcer-common.h"
 #include "libtransmission/crypto-utils.h" // for tr_rand_obj()
-#include "libtransmission/interned-string.h"
 #include "libtransmission/log.h"
 #include "libtransmission/net.h"
 #include "libtransmission/peer-mgr.h" // for tr_pex::fromCompact4()
+#include "libtransmission/shared-string.h"
 #include "libtransmission/tr-assert.h"
 #include "libtransmission/tr-buffer.h"
 #include "libtransmission/tr-strbuf.h"
@@ -345,11 +345,9 @@ struct tau_tracker {
     tau_tracker(
         Mediator& mediator,
         std::string_view const authority_in,
-        std::string_view const host_in,
         std::string_view const host_lookup_in,
         tr_port const port_in)
         : authority{ authority_in }
-        , host{ host_in }
         , host_lookup{ host_lookup_in }
         , port{ port_in }
         , mediator_{ mediator }
@@ -591,14 +589,13 @@ private:
     }
 
 public:
-    [[nodiscard]] constexpr std::string_view log_name() const noexcept
+    [[nodiscard]] std::string_view log_name() const noexcept
     {
         return authority;
     }
 
-    std::string_view const authority;
-    std::string_view const host;
-    std::string_view const host_lookup;
+    std::string const authority;
+    std::string const host_lookup;
     tr_port const port;
 
     std::array<time_t, NUM_TR_AF_INET_TYPES> connecting_at = {};
@@ -733,10 +730,10 @@ public:
 private:
     // Finds the tau_tracker struct that corresponds to this url.
     // If it doesn't exist yet, create one.
-    tau_tracker* get_tracker_from_url(tr_interned_string const announce_url)
+    tau_tracker* get_tracker_from_url(tr::shared_string const& announce_url)
     {
         // build a lookup key for this tracker
-        auto const parsed = tr_urlParseTracker(announce_url);
+        auto const parsed = tr_urlParseTracker(announce_url.sv());
         TR_ASSERT(parsed);
         if (!parsed) {
             return nullptr;
@@ -751,12 +748,8 @@ private:
         }
 
         // we don't have it -- build a new one
-        auto& tracker = trackers_.emplace_back(
-            mediator_,
-            authority,
-            parsed->host,
-            parsed->host_wo_brackets,
-            tr_port::from_host(parsed->port));
+        auto const port = tr_port::from_host(parsed->port);
+        auto& tracker = trackers_.emplace_back(mediator_, authority, parsed->host_wo_brackets, port);
         logtrace(tracker.log_name(), "New tau_tracker created");
         return &tracker;
     }

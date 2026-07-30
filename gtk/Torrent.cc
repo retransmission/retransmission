@@ -60,7 +60,9 @@ unsigned int build_torrent_trackers_hash(tr_torrent const& torrent)
     auto hash = uint64_t{};
 
     for (auto i = size_t{}, n = tr_torrentTrackerCount(&torrent); i < n; ++i) {
-        for (auto const ch : std::string_view{ tr_torrentTracker(&torrent, i).announce }) {
+        // the view has to outlive the loop below: it owns the text being hashed
+        auto const view = tr_torrentTracker(&torrent, i);
+        for (auto const ch : view.announce.sv()) {
             hash = (hash << 4U) ^ (hash >> 28U) ^ static_cast<unsigned char>(ch);
         }
     }

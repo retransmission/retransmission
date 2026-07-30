@@ -59,18 +59,19 @@ TEST_F(AnnounceListTest, groupsSiblingsIntoSameTier)
     EXPECT_TRUE(announce_list.add(Announce2, Tier2));
     EXPECT_TRUE(announce_list.add(Announce3, Tier3));
 
+    // entries are kept sorted by tier, then by announce URL
     EXPECT_EQ(3U, std::size(announce_list));
     EXPECT_EQ(Tier1, announce_list.at(0).tier);
     EXPECT_EQ(Tier1, announce_list.at(1).tier);
     EXPECT_EQ(Tier1, announce_list.at(2).tier);
-    EXPECT_EQ(Announce1, announce_list.at(0).announce.sv());
-    EXPECT_EQ(Announce2, announce_list.at(1).announce.sv());
+    EXPECT_EQ(Announce2, announce_list.at(0).announce.sv());
+    EXPECT_EQ(Announce1, announce_list.at(1).announce.sv());
     EXPECT_EQ(Announce3, announce_list.at(2).announce.sv());
     EXPECT_EQ("example.org"sv, announce_list.at(0).announce_parsed.host);
     EXPECT_EQ("example.org"sv, announce_list.at(1).announce_parsed.host);
     EXPECT_EQ("example.org"sv, announce_list.at(2).announce_parsed.host);
-    EXPECT_EQ(443, announce_list.at(0).announce_parsed.port);
-    EXPECT_EQ(80, announce_list.at(1).announce_parsed.port);
+    EXPECT_EQ(80, announce_list.at(0).announce_parsed.port);
+    EXPECT_EQ(443, announce_list.at(1).announce_parsed.port);
     EXPECT_EQ(999, announce_list.at(2).announce_parsed.port);
     EXPECT_EQ("example.org"sv, announce_list.at(0).announce_parsed.authority);
     EXPECT_EQ("example.org"sv, announce_list.at(1).announce_parsed.authority);

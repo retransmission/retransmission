@@ -36,13 +36,13 @@
 #include "libtransmission/announce-list.h"
 #include "libtransmission/announcer.h"
 #include "libtransmission/bandwidth.h"
-#include "libtransmission/blocklist.h"
 #include "libtransmission/blocklist-download.h"
+#include "libtransmission/blocklist.h"
 #include "libtransmission/converters.h"
 #include "libtransmission/digest.h"
-#include "libtransmission/interned-string.h"
 #include "libtransmission/ip-cache.h"
 #include "libtransmission/local-data.h"
+#include "libtransmission/macros.h"
 #include "libtransmission/net.h" // for tr_port, tr_tos_t
 #include "libtransmission/open-files.h"
 #include "libtransmission/platform.h"
@@ -59,7 +59,6 @@
 #include "libtransmission/tr-assert.h"
 #include "libtransmission/tr-dht.h"
 #include "libtransmission/tr-lpd.h"
-#include "libtransmission/macros.h"
 #include "libtransmission/types.h"
 #include "libtransmission/utils-ev.h"
 #include "libtransmission/verify.h"
@@ -1328,7 +1327,7 @@ public:
 
 private:
     // depends-on: top_bandwidth_
-    std::vector<std::pair<tr_interned_string, std::unique_ptr<tr_bandwidth>>> bandwidth_groups_;
+    std::vector<std::pair<tr::shared_string, std::unique_ptr<tr_bandwidth>>> bandwidth_groups_;
 
     // depends-on: timer_maker_, settings_, local_peer_port_
     PortForwardingMediator port_forwarding_mediator_{ *this };

@@ -132,6 +132,8 @@ target_sources(${TR_NAME}
         session-thread.h
         session.cc
         session.h
+        shared-string.cc
+        shared-string.h
         stats.cc
         stats.h
         string-utils.cc

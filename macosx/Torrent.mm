@@ -671,7 +671,7 @@ static tr_torrent_rename_done_func makeRenameDoneCallback(NSDictionary* contextI
     NSMutableArray* allTrackers = [NSMutableArray arrayWithCapacity:n];
 
     for (size_t i = 0; i < n; ++i) {
-        [allTrackers addObject:@(tr_torrentTracker(self.fHandle, i).announce)];
+        [allTrackers addObject:@(tr_torrentTracker(self.fHandle, i).announce.c_str())];
     }
 
     return allTrackers;
@@ -699,7 +699,7 @@ static tr_torrent_rename_done_func makeRenameDoneCallback(NSDictionary* contextI
     for (size_t i = 0, n = tr_torrentTrackerCount(self.fHandle); i < n; ++i) {
         auto const tracker = tr_torrentTracker(self.fHandle, i);
 
-        if ([trackers containsObject:@(tracker.announce)]) {
+        if ([trackers containsObject:@(tracker.announce.c_str())]) {
             continue;
         }
 
@@ -707,7 +707,7 @@ static tr_torrent_rename_done_func makeRenameDoneCallback(NSDictionary* contextI
             new_list += '\n';
         }
 
-        new_list += tracker.announce;
+        new_list += tracker.announce.sv();
         new_list += '\n';
 
         current_tier = tracker.tier;

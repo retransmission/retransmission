@@ -72,16 +72,16 @@ using namespace tr::Values;
 
 // ---
 
-void tr_torrent::Error::set_tracker_warning(tr_interned_string announce_url, std::string_view errmsg)
+void tr_torrent::Error::set_tracker_warning(tr::shared_string announce_url, std::string_view errmsg)
 {
-    announce_url_ = announce_url;
+    announce_url_ = std::move(announce_url);
     errmsg_.assign(errmsg);
     error_type_ = tr_stat::Error::TrackerWarning;
 }
 
-void tr_torrent::Error::set_tracker_error(tr_interned_string announce_url, std::string_view errmsg)
+void tr_torrent::Error::set_tracker_error(tr::shared_string announce_url, std::string_view errmsg)
 {
-    announce_url_ = announce_url;
+    announce_url_ = std::move(announce_url);
     errmsg_.assign(errmsg);
     error_type_ = tr_stat::Error::TrackerError;
 }
@@ -380,7 +380,7 @@ void torrentCallScript(tr_torrent const* tor, std::string const& script)
 
     auto const now = tr_time();
 
-    auto torrent_dir = tr_pathbuf{ tor->current_dir() };
+    auto torrent_dir = tr_pathbuf{ tor->current_dir().sv() };
     tr_sys_path_native_separators(std::data(torrent_dir));
 
     auto const cmd = std::to_array<char const*>({ script.c_str(), nullptr });
@@ -693,7 +693,7 @@ void tr_torrentRemoveInSessionThread(
         }
 
         auto error = tr_error{};
-        tor->files().remove(tor->current_dir(), tor->name(), remove_func, &error);
+        tor->files().remove(tor->current_dir().sv(), tor->name(), remove_func, &error);
         if (error) {
             tr_logAddWarnTor(
                 tor,
@@ -1017,12 +1017,12 @@ void tr_torrent::set_location_in_session_thread(std::string_view const path, boo
         session->verify_remove(this);
 
         auto error = tr_error{};
-        ok = files().move(current_dir(), path, name(), &error);
+        ok = files().move(current_dir().sv(), path, name(), &error);
         if (error) {
             this->error().set_local_error(
                 fmt::format(
                     fmt::runtime(_("Couldn't move '{old_path}' to '{path}': {error} ({error_code})")),
-                    fmt::arg("old_path", current_dir()),
+                    fmt::arg("old_path", current_dir().sv()),
                     fmt::arg("path", path),
                     fmt::arg("error", error.message()),
                     fmt::arg("error_code", error.code())));
@@ -1117,18 +1117,18 @@ void tr_torrentSetDownloadDir(tr_torrent* tor, std::string_view const path)
     }
 }
 
-std::string_view tr_torrentGetDownloadDir(tr_torrent const* tor)
+std::string tr_torrentGetDownloadDir(tr_torrent const* tor)
 {
     tr_return_val_if_fail(tr_isTorrent(tor), "");
 
-    return tor->download_dir().sv();
+    return std::string{ tor->download_dir().sv() };
 }
 
-std::string_view tr_torrentGetCurrentDir(tr_torrent const* tor)
+std::string tr_torrentGetCurrentDir(tr_torrent const* tor)
 {
     tr_return_val_if_fail(tr_isTorrent(tor), "");
 
-    return tor->current_dir().sv();
+    return std::string{ tor->current_dir().sv() };
 }
 
 void tr_torrentChangeMyPort(tr_torrent* tor)
@@ -1657,7 +1657,7 @@ namespace completeness_helpers
 
 void tr_torrent::create_empty_files() const
 {
-    auto const base = current_dir();
+    auto const base = current_dir().sv();
     TR_ASSERT(!std::empty(base));
     if (!has_metainfo() || std::empty(base)) {
         return;
@@ -1724,7 +1724,7 @@ void tr_torrent::recheck_completeness()
             date_done_ = tr_time();
 
             if (current_dir() == incomplete_dir()) {
-                set_location(download_dir(), true, nullptr);
+                set_location(download_dir().sv(), true, nullptr);
             }
 
             done_(this, recent_change);
@@ -1758,7 +1758,7 @@ void tr_torrent::set_labels(labels_t const& new_labels)
     auto const lock = unique_lock();
     labels_.clear();
 
-    for (auto label : new_labels) {
+    for (auto const& label : new_labels) {
         if (std::ranges::find(labels_, label) == std::ranges::end(labels_)) {
             labels_.push_back(label);
         }
@@ -1777,7 +1777,7 @@ void tr_torrent::set_bandwidth_group(std::string_view group_name)
     auto const lock = this->unique_lock();
 
     if (std::empty(group_name)) {
-        this->bandwidth_group_ = tr_interned_string{};
+        this->bandwidth_group_.clear();
         this->bandwidth().set_parent(&this->session->top_bandwidth_);
     } else {
         this->bandwidth_group_ = group_name;
@@ -1947,7 +1947,7 @@ void tr_torrent::on_tracker_response(tr_tracker_event const* event)
             fmt::format(
                 fmt::runtime(_("Tracker warning: '{warning}' ({url})")),
                 fmt::arg("warning", event->text),
-                fmt::arg("url", tr_urlTrackerLogName(event->announce_url))));
+                fmt::arg("url", tr_urlTrackerLogName(event->announce_url.sv()))));
         error_.set_tracker_warning(event->announce_url, event->text);
         break;
 
@@ -2115,7 +2115,7 @@ void tr_torrent::set_download_dir(std::string_view path, bool is_new_torrent)
 // decide whether we should be looking for files in downloadDir or incompleteDir
 void tr_torrent::refresh_current_dir()
 {
-    auto dir = tr_interned_string{};
+    auto dir = tr::shared_string{};
 
     if (std::empty(incomplete_dir())) {
         dir = download_dir();
@@ -2124,7 +2124,7 @@ void tr_torrent::refresh_current_dir()
         dir = incomplete_dir();
     } else {
         auto const found = find_file(0);
-        dir = found ? tr_interned_string{ found->base() } : incomplete_dir();
+        dir = found ? tr::shared_string{ found->base() } : incomplete_dir();
     }
 
     TR_ASSERT(!std::empty(dir));
@@ -2185,7 +2185,7 @@ auto renamePath(tr_torrent const* tor, std::string_view oldpath, std::string_vie
 {
     tr_error_code_t err = 0;
 
-    auto const base = tor->is_done() || std::empty(tor->incomplete_dir()) ? tor->download_dir() : tor->incomplete_dir();
+    auto const base = (tor->is_done() || std::empty(tor->incomplete_dir()) ? tor->download_dir() : tor->incomplete_dir()).sv();
 
     auto src = tr_pathbuf{ base, '/', oldpath };
 

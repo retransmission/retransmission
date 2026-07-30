@@ -183,7 +183,7 @@ public:
         }
 
         auto error = tr_error{};
-        tor->files().remove(tor->current_dir(), tor->name(), remove_func, &error);
+        tor->files().remove(tor->current_dir().sv(), tor->name(), remove_func, &error);
         return error ? error.code() : 0;
     }
 

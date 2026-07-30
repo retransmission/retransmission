@@ -30,9 +30,9 @@
 #include "libtransmission/announcer-common.h"
 #include "libtransmission/announcer.h"
 #include "libtransmission/crypto-utils.h" /* tr_rand_int() */
-#include "libtransmission/interned-string.h" // tr_interned_string
 #include "libtransmission/log.h"
 #include "libtransmission/session.h"
+#include "libtransmission/shared-string.h"
 #include "libtransmission/string-utils.h"
 #include "libtransmission/timer.h"
 #include "libtransmission/torrent.h"
@@ -98,11 +98,11 @@ struct StopsCompare {
 struct tr_scrape_info {
     size_t multiscrape_max;
 
-    tr_interned_string scrape_url;
+    tr::shared_string scrape_url;
 
-    constexpr tr_scrape_info(tr_interned_string scrape_url_in, size_t const multiscrape_max_in)
+    tr_scrape_info(tr::shared_string scrape_url_in, size_t const multiscrape_max_in)
         : multiscrape_max{ multiscrape_max_in }
-        , scrape_url{ scrape_url_in }
+        , scrape_url{ std::move(scrape_url_in) }
     {
     }
 };
@@ -153,7 +153,7 @@ public:
         tr_announce_response const& response);
     void onScrapeDone(tr_scrape_response const& response);
 
-    [[nodiscard]] tr_scrape_info* scrape_info(tr_interned_string url)
+    [[nodiscard]] tr_scrape_info* scrape_info(tr::shared_string url)
     {
         if (std::empty(url)) {
             return nullptr;
@@ -207,7 +207,7 @@ private:
 
     tr_announcer_udp& announcer_udp_;
 
-    std::map<tr_interned_string, tr_scrape_info> scrape_info_;
+    std::map<tr::shared_string, tr_scrape_info> scrape_info_;
 
     std::unique_ptr<tr::Timer> const upkeep_timer_;
 
@@ -319,7 +319,7 @@ struct tr_tracker {
         return false;
     }
 
-    tr_interned_string const announce_url;
+    tr::shared_string const announce_url;
     tr_url_parsed_t const announce_parsed;
     tr_scrape_info* const scrape_info;
 
@@ -413,7 +413,7 @@ struct tr_tier {
         return currentTracker();
     }
 
-    [[nodiscard]] std::optional<size_t> indexOf(tr_interned_string announce_url) const
+    [[nodiscard]] std::optional<size_t> indexOf(tr::shared_string const& announce_url) const
     {
         for (size_t i = 0, n = std::size(trackers); i < n; ++i) {
             if (announce_url == trackers[i].announce_url) {
@@ -558,7 +558,7 @@ struct tr_torrent_announcer {
         return nullptr;
     }
 
-    tr_tier* getTierFromScrape(tr_interned_string scrape_url)
+    tr_tier* getTierFromScrape(tr::shared_string const& scrape_url)
     {
         for (auto& tier : tiers) {
             auto const* const tracker = tier.currentTracker();
@@ -577,7 +577,7 @@ struct tr_torrent_announcer {
     }
 
     [[nodiscard]] bool findTracker(
-        tr_interned_string announce_url,
+        tr::shared_string const& announce_url,
         tr_tier const** setme_tier,
         tr_tracker const** setme_tracker) const
     {
@@ -820,7 +820,8 @@ void on_announce_error(tr_tier* tier, std::string_view err, tr_announce_event e,
     using namespace announce_helpers;
 
     auto* current_tracker = tier->currentTracker();
-    auto const announce_url = current_tracker != nullptr ? tr_urlTrackerLogName(current_tracker->announce_url) : "nullptr"s;
+    auto const announce_url = current_tracker != nullptr ? tr_urlTrackerLogName(current_tracker->announce_url.sv()) :
+                                                           "nullptr"s;
 
     /* increment the error count */
     if (current_tracker != nullptr) {
@@ -1201,7 +1202,7 @@ void checkMultiscrapeMax(tr_announcer_impl* announcer, tr_scrape_response const&
     auto const n = multiscrape_max > TrMultiscrapeStep ? multiscrape_max - TrMultiscrapeStep : 1U;
     if (multiscrape_max != n) {
         // don't log the full URL, since that might have a personal announce id
-        tr_logAddDebug(fmt::format("Reducing multiscrape max to {:d}", n), tr_urlTrackerLogName(url));
+        tr_logAddDebug(fmt::format("Reducing multiscrape max to {:d}", n), tr_urlTrackerLogName(url.sv()));
 
         multiscrape_max = n;
     }
@@ -1503,8 +1504,8 @@ namespace tracker_view_helpers
          announce.port)
          .out = '\0';
     *fmt::format_to_n(std::data(view.sitename), std::size(view.sitename) - 1U, "{:s}", announce.sitename).out = '\0';
-    view.announce = tracker.announce_url.c_str();
-    view.scrape = tracker.scrape_info == nullptr ? "" : tracker.scrape_info->scrape_url.c_str();
+    view.announce = tracker.announce_url;
+    view.scrape = tracker.scrape_info == nullptr ? tr::shared_string{} : tracker.scrape_info->scrape_url;
     view.id = tracker.id;
     view.tier = tier_index;
     view.isBackup = &tracker != tier.currentTracker();

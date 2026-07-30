@@ -434,7 +434,7 @@ namespace make_torrent_field_helpers
     auto vec = tr_variant::Vector{};
     vec.reserve(n_labels);
     for (auto const& label : labels) {
-        vec.emplace_back(tr_variant::unmanaged_string(label.sv()));
+        vec.emplace_back(label.sv());
     }
     return tr_variant{ std::move(vec) };
 }
@@ -530,10 +530,10 @@ namespace make_torrent_field_helpers
     vec.reserve(n_trackers);
     for (auto const& tracker : trackers) {
         auto tracker_map = tr_variant::Map{ 5U };
-        tracker_map.try_emplace(TR_KEY_announce, tr_variant::unmanaged_string(tracker.announce.sv()));
+        tracker_map.try_emplace(TR_KEY_announce, tracker.announce.sv());
         tracker_map.try_emplace(TR_KEY_id, tracker.id);
-        tracker_map.try_emplace(TR_KEY_scrape, tr_variant::unmanaged_string(tracker.scrape.sv()));
-        tracker_map.try_emplace(TR_KEY_sitename, tr_variant::unmanaged_string(tracker.announce_parsed.sitename));
+        tracker_map.try_emplace(TR_KEY_scrape, tracker.scrape.sv());
+        tracker_map.try_emplace(TR_KEY_sitename, tracker.announce_parsed.sitename);
         tracker_map.try_emplace(TR_KEY_tier, tracker.tier);
         vec.emplace_back(std::move(tracker_map));
     }
@@ -548,7 +548,7 @@ namespace make_torrent_field_helpers
     for (size_t idx = 0U; idx != n_trackers; ++idx) {
         auto const tracker = tr_torrentTracker(&tor, idx);
         auto stats_map = tr_variant::Map{ 28U };
-        stats_map.try_emplace(TR_KEY_announce, tracker.announce);
+        stats_map.try_emplace(TR_KEY_announce, tracker.announce.sv());
         stats_map.try_emplace(TR_KEY_announce_state, tracker.announceState);
         stats_map.try_emplace(TR_KEY_download_count, tracker.downloadCount);
         stats_map.try_emplace(TR_KEY_downloader_count, tracker.downloader_count);
@@ -571,7 +571,7 @@ namespace make_torrent_field_helpers
         stats_map.try_emplace(TR_KEY_leecher_count, tracker.leecherCount);
         stats_map.try_emplace(TR_KEY_next_announce_time, tracker.nextAnnounceTime);
         stats_map.try_emplace(TR_KEY_next_scrape_time, tracker.nextScrapeTime);
-        stats_map.try_emplace(TR_KEY_scrape, tracker.scrape);
+        stats_map.try_emplace(TR_KEY_scrape, tracker.scrape.sv());
         stats_map.try_emplace(TR_KEY_scrape_state, tracker.scrapeState);
         stats_map.try_emplace(TR_KEY_seeder_count, tracker.seederCount);
         stats_map.try_emplace(TR_KEY_sitename, tracker.sitename);
@@ -771,7 +771,7 @@ namespace make_torrent_field_helpers
     case TR_KEY_done_date:
         return st.done_date;
     case TR_KEY_download_dir:
-        return tr_variant::unmanaged_string(tor.download_dir().sv());
+        return tor.download_dir().sv();
     case TR_KEY_download_limit:
         return tr_torrentGetSpeedLimit_KBps(&tor, tr_direction::Down);
     case TR_KEY_download_limited:
@@ -795,7 +795,7 @@ namespace make_torrent_field_helpers
     case TR_KEY_files:
         return make_file_vec(tor);
     case TR_KEY_group:
-        return tr_variant::unmanaged_string(tor.bandwidth_group().sv());
+        return tor.bandwidth_group().sv();
     case TR_KEY_hash_string:
         return tr_variant::unmanaged_string(tor.info_hash_string().sv());
     case TR_KEY_have_unchecked:
@@ -1027,7 +1027,7 @@ namespace make_torrent_field_helpers
                 return { tr_torrent::labels_t{}, Error::INVALID_PARAMS, "labels cannot contain comma (,) character"s };
             }
 
-            labels.emplace_back(tr_quark_new(label));
+            labels.emplace_back(label);
         }
     }
 

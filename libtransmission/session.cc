@@ -39,7 +39,6 @@
 #include "libtransmission/file-utils.h"
 #include "libtransmission/file.h"
 #include "libtransmission/ip-cache.h"
-#include "libtransmission/interned-string.h"
 #include "libtransmission/log.h"
 #include "libtransmission/macros.h"
 #include "libtransmission/net.h"
@@ -90,7 +89,7 @@ void bandwidthGroupRead(tr_session* session, std::string_view const config_dir)
 {
     for (auto const& [key, group_var] : tr::settings::load(get_bandwidth_filename(config_dir))) {
         if (auto const* const group_map = group_var.get_if<tr_variant::Map>()) {
-            auto& group = session->getBandwidthGroup(tr_interned_string{ key });
+            auto& group = session->getBandwidthGroup(tr_quark_get_string_view(key));
             auto limits = tr_bandwidth_limits{};
 
             if (auto const val = group_map->value_if<bool>(TR_KEY_upload_limited); val) {
@@ -132,7 +131,7 @@ void bandwidthGroupWrite(tr_session const* session, std::string_view const confi
         group_map.try_emplace(TR_KEY_name, name.sv());
         group_map.try_emplace(TR_KEY_upload_limit, limits.up_limit.count(Speed::Units::KByps));
         group_map.try_emplace(TR_KEY_upload_limited, limits.up_limited);
-        groups_map.try_emplace(name.quark(), std::move(group_map));
+        groups_map.try_emplace(tr_quark_new(name.sv()), std::move(group_map));
     }
 
     tr::settings::save(get_bandwidth_filename(config_dir), groups_map);

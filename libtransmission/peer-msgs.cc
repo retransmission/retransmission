@@ -32,7 +32,7 @@
 #include "libtransmission/clients.h"
 #include "libtransmission/crypto-utils.h"
 #include "libtransmission/inout.h"
-#include "libtransmission/interned-string.h"
+#include "libtransmission/shared-string.h"
 #include "libtransmission/log.h"
 #include "libtransmission/macros.h"
 #include "libtransmission/peer-common.h"
@@ -1228,7 +1228,7 @@ void tr_peerMsgsImpl::parse_ltep_handshake(MessageReader& payload)
     // reliable way of identifying the client than relying on the
     // peer id encoding.
     if (auto const sv = map->value_if<std::string_view>(TR_KEY_v)) {
-        set_user_agent(tr_interned_string{ tr_strv_to_utf8_string(*sv) });
+        set_user_agent(tr::shared_string{ tr_strv_to_utf8_string(*sv) });
     }
 
     // https://www.bittorrent.org/beps/bep_0010.html
@@ -2054,13 +2054,13 @@ tr_peerMsgs::tr_peerMsgs(
     , connection_is_incoming_{ connection_is_incoming }
     , connection_is_utp_{ connection_is_utp }
 {
-    auto client = tr_interned_string{};
+    auto client = tr::shared_string{};
     if (peer_id != tr_peer_id_t{}) {
         auto buf = std::array<char, 128>{};
         tr_clientForId(std::data(buf), sizeof(buf), peer_id);
-        client = tr_interned_string{ tr_quark_new(std::data(buf)) };
+        client = tr::shared_string{ std::data(buf) };
     }
-    set_user_agent(client);
+    set_user_agent(std::move(client));
     peer_info->set_connected(tr_time());
     ++n_peers;
 }

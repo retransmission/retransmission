@@ -183,7 +183,7 @@ TEST_F(RenameTest, singleFilenameTorrent)
     ****  Now try a rename that should succeed
     ***/
 
-    auto tmpstr = tr_pathbuf{ tor->current_dir(), "/hello-world.txt" };
+    auto tmpstr = tr_pathbuf{ tor->current_dir().sv(), "/hello-world.txt" };
     EXPECT_TRUE(tr_sys_path_exists(tmpstr));
     EXPECT_EQ("hello-world.txt", tr_torrentName(tor));
     EXPECT_EQ(0, torrentRenameAndWait(tor, tr_torrentName(tor), "foobar"));
@@ -192,7 +192,7 @@ TEST_F(RenameTest, singleFilenameTorrent)
     EXPECT_STREQ("foobar", tr_torrentFile(tor, 0).name); // confirm the file's name is now 'foobar'
     auto const torrent_filename = tr_torrentFilename(tor);
     EXPECT_EQ(std::string::npos, torrent_filename.find("foobar")); // confirm torrent file hasn't changed
-    tmpstr.assign(tor->current_dir(), "/foobar");
+    tmpstr.assign(tor->current_dir().sv(), "/foobar");
     EXPECT_TRUE(tr_sys_path_exists(tmpstr)); // confirm the file's name is now 'foobar' on the disk
     EXPECT_TRUE(testFileExistsAndConsistsOfThisString(tor, 0, "hello, world!\n")); // confirm the contents are right
 
@@ -208,7 +208,7 @@ TEST_F(RenameTest, singleFilenameTorrent)
     ****  ...and rename it back again
     ***/
 
-    tmpstr.assign(tor->current_dir(), "/foobar");
+    tmpstr.assign(tor->current_dir().sv(), "/foobar");
     EXPECT_TRUE(tr_sys_path_exists(tmpstr));
     EXPECT_EQ(0, torrentRenameAndWait(tor, "foobar", "hello-world.txt"));
     EXPECT_FALSE(tr_sys_path_exists(tmpstr));
@@ -479,7 +479,7 @@ TEST_F(RenameTest, partialFile)
     strings[0] = "foo/bar.part";
 
     for (tr_file_index_t i = 0; i < 3; ++i) {
-        auto const expected = tr_pathbuf{ tor->current_dir(), '/', strings[i] };
+        auto const expected = tr_pathbuf{ tor->current_dir().sv(), '/', strings[i] };
         auto const actual = tr_torrentFindFile(tor, i);
         EXPECT_EQ(expected, actual);
     }

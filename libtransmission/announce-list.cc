@@ -71,7 +71,7 @@ bool tr_announce_list::add(std::string_view announce_url, tr_tracker_tier_t tier
     // Parse again with the interned string so that `parsed` fields all
     // point to the interned addresses. This second call should never
     // fail, but check anyway to make the linter happy.
-    auto const announce_interned = tr_interned_string{ announce_url };
+    auto const announce_interned = tr::shared_string{ announce_url };
     auto const parsed = tr_urlParseTracker(announce_interned.sv());
     if (!parsed) {
         return false;

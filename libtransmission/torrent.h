@@ -30,9 +30,9 @@
 #include "libtransmission/completion.h"
 #include "libtransmission/crypto-utils.h" // tr_rand_obj()
 #include "libtransmission/file-piece-map.h"
-#include "libtransmission/interned-string.h"
 #include "libtransmission/log.h"
 #include "libtransmission/session.h"
+#include "libtransmission/shared-string.h"
 #include "libtransmission/torrent-files.h"
 #include "libtransmission/torrent-magnet.h"
 #include "libtransmission/torrent-metainfo.h"
@@ -143,7 +143,7 @@ struct tr_torrent {
         uint64_t cur_ = {};
     };
 
-    using labels_t = std::vector<tr_interned_string>;
+    using labels_t = std::vector<tr::shared_string>;
 
     using VerifyDoneCallback = std::function<void(tr_torrent*)>;
 
@@ -439,17 +439,17 @@ struct tr_torrent {
 
     /// LOCATION
 
-    [[nodiscard]] constexpr tr_interned_string current_dir() const noexcept
+    [[nodiscard]] constexpr auto const& current_dir() const noexcept
     {
         return current_dir_;
     }
 
-    [[nodiscard]] constexpr tr_interned_string download_dir() const noexcept
+    [[nodiscard]] constexpr auto const& download_dir() const noexcept
     {
         return download_dir_;
     }
 
-    [[nodiscard]] constexpr tr_interned_string incomplete_dir() const noexcept
+    [[nodiscard]] constexpr auto const& incomplete_dir() const noexcept
     {
         return incomplete_dir_;
     }
@@ -1067,15 +1067,15 @@ private:
             return errmsg_;
         }
 
-        void set_tracker_warning(tr_interned_string announce_url, std::string_view errmsg);
-        void set_tracker_error(tr_interned_string announce_url, std::string_view errmsg);
+        void set_tracker_warning(tr::shared_string announce_url, std::string_view errmsg);
+        void set_tracker_error(tr::shared_string announce_url, std::string_view errmsg);
         void set_local_error(std::string_view errmsg);
 
         void clear() noexcept;
         void clear_if_tracker() noexcept;
 
     private:
-        tr_interned_string announce_url_; // the source for tracker errors/warnings
+        tr::shared_string announce_url_; // the source for tracker errors/warnings
         std::string errmsg_;
         tr_stat::Error error_type_ = tr_stat::Error::Ok;
     };
@@ -1328,18 +1328,18 @@ private:
     // when Transmission thinks the torrent's files were last changed
     std::vector<time_t> file_mtimes_;
 
-    tr_interned_string bandwidth_group_;
+    tr::shared_string bandwidth_group_;
 
     // Where the files are when the torrent is complete.
-    tr_interned_string download_dir_;
+    tr::shared_string download_dir_;
 
     // Where the files are when the torrent is incomplete.
-    // a value of TR_KEY_NONE indicates the 'incomplete_dir' feature is unused
-    tr_interned_string incomplete_dir_;
+    // An empty value indicates the 'incomplete_dir' feature is unused.
+    tr::shared_string incomplete_dir_;
 
     // Where the files are now.
     // Will equal either download_dir or incomplete_dir
-    tr_interned_string current_dir_;
+    tr::shared_string current_dir_;
 
     tr_sha1_digest_t obfuscated_hash_ = {};
 

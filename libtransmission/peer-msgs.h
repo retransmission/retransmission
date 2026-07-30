@@ -14,7 +14,7 @@
 #include <cstddef> // for size_t
 #include <memory>
 
-#include "libtransmission/interned-string.h"
+#include "libtransmission/shared-string.h"
 #include "libtransmission/net.h" // tr_socket_address
 #include "libtransmission/peer-common.h" // for tr_peer
 #include "libtransmission/types.h"
@@ -159,9 +159,9 @@ protected:
         is_active_[static_cast<uint8_t>(direction)] = active;
     }
 
-    constexpr void set_user_agent(tr_interned_string val) noexcept
+    void set_user_agent(tr::shared_string val) noexcept
     {
-        user_agent_ = val;
+        user_agent_ = std::move(val);
     }
 
     constexpr void set_peer_id(tr_peer_id_t val) noexcept
@@ -177,7 +177,7 @@ private:
 
     // What software the peer is running.
     // Derived from the `v` string in LTEP's handshake dictionary, when available.
-    tr_interned_string user_agent_;
+    tr::shared_string user_agent_;
 
     tr_peer_id_t peer_id_;
 

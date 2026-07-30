@@ -225,7 +225,7 @@ bool FilterBar::Impl::tracker_filter_model_update()
         auto site_to_host_and_announce = std::map<std::string, std::pair<std::string, std::string>>{};
         for (size_t j = 0, n = tr_torrentTrackerCount(&raw_torrent); j < n; ++j) {
             auto const view = tr_torrentTracker(&raw_torrent, j);
-            site_to_host_and_announce.try_emplace(std::data(view.sitename), view.host_and_port, view.announce);
+            site_to_host_and_announce.try_emplace(std::data(view.sitename), view.host_and_port, view.announce.sv());
         }
 
         for (auto const& [sitename, host_and_announce] : site_to_host_and_announce) {

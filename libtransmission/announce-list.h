@@ -12,8 +12,8 @@
 #include <string_view>
 #include <vector>
 
-#include "libtransmission/interned-string.h"
 #include "libtransmission/macros.h" // TR_CONSTEXPR_VEC
+#include "libtransmission/shared-string.h"
 #include "libtransmission/types.h"
 #include "libtransmission/variant.h"
 #include "libtransmission/web-utils.h"
@@ -25,13 +25,13 @@ class tr_announce_list
 {
 public:
     struct tracker_info {
-        tr_interned_string announce;
-        tr_interned_string scrape;
+        tr::shared_string announce;
+        tr::shared_string scrape;
         tr_url_parsed_t announce_parsed;
         tr_tracker_tier_t tier = 0;
         tr_tracker_id_t id = 0;
 
-        [[nodiscard]] constexpr auto operator<=>(tracker_info const& that) const noexcept
+        [[nodiscard]] auto operator<=>(tracker_info const& that) const noexcept
         {
             if (auto const res = this->tier <=> that.tier; res != 0) {
                 return res;
@@ -40,7 +40,7 @@ public:
             return this->announce <=> that.announce;
         }
 
-        [[nodiscard]] constexpr bool operator==(tracker_info const& that) const noexcept
+        [[nodiscard]] bool operator==(tracker_info const& that) const noexcept
         {
             return (*this <=> that) == 0;
         }

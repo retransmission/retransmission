@@ -42,6 +42,7 @@
 #include "libtransmission/peer-msgs.h"
 #include "libtransmission/peer-socket.h"
 #include "libtransmission/session.h"
+#include "libtransmission/shared-string.h"
 #include "libtransmission/string-utils.h"
 #include "libtransmission/timer.h"
 #include "libtransmission/torrent-magnet.h"
@@ -1562,7 +1563,7 @@ namespace peer_stat_helpers
     auto const [addr, port] = peer->socket_address();
 
     stats.addr = addr.display_name();
-    stats.user_agent = peer->user_agent();
+    stats.user_agent = peer->user_agent().sv();
     stats.peer_id = peer->peer_id();
     stats.port = port.host();
     stats.from = peer->peer_info->from_first();

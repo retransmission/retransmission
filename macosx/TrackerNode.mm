@@ -73,7 +73,7 @@
 
 - (NSString*)fullAnnounceAddress
 {
-    return @(self.fStat.announce);
+    return @(self.fStat.announce.c_str());
 }
 
 - (NSInteger)tier

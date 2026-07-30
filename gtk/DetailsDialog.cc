@@ -631,12 +631,12 @@ void DetailsDialog::Impl::refreshInfo(std::vector<tr_torrent*> const& torrents)
     if (torrents.empty()) {
         str = no_torrent;
     } else {
-        std::string_view const baseline = tr_torrentGetDownloadDir(torrents.front());
+        auto const baseline = tr_torrentGetDownloadDir(torrents.front());
         bool const is_uniform = std::ranges::all_of(torrents, [&baseline](auto const* torrent) {
             return baseline == tr_torrentGetDownloadDir(torrent);
         });
 
-        str = is_uniform ? Glib::ustring{ baseline.data(), baseline.size() } : mixed;
+        str = is_uniform ? Glib::ustring{ baseline } : mixed;
     }
 
     destination_lb_->set_text(str);
@@ -1701,7 +1701,7 @@ void DetailsDialog::Impl::refreshTracker(std::vector<tr_torrent*> const& torrent
 
         // build the key to find the row
         gstr.str({});
-        gstr << torrent_id << '\t' << tracker.tier << '\t' << tracker.announce;
+        gstr << torrent_id << '\t' << tracker.tier << '\t' << tracker.announce.sv();
         if (!hash.contains(gstr.str())) {
             // if we didn't have that row, add it
             auto const iter = store->append();
@@ -1712,7 +1712,7 @@ void DetailsDialog::Impl::refreshTracker(std::vector<tr_torrent*> const& torrent
             auto const p = store->get_path(iter);
             hash.try_emplace(gstr.str(), Gtk::TreeRowReference(store, p));
             core_->favicon_cache().load(
-                tracker.announce,
+                tracker.announce.sv(),
                 [ref = Gtk::TreeRowReference(store, p)](auto const* pixbuf_refptr) mutable {
                     favicon_ready_cb(pixbuf_refptr, ref);
                 });
@@ -1726,7 +1726,7 @@ void DetailsDialog::Impl::refreshTracker(std::vector<tr_torrent*> const& torrent
 
         // build the key to find the row
         gstr.str({});
-        gstr << torrent_id << '\t' << tracker.tier << '\t' << tracker.announce;
+        gstr << torrent_id << '\t' << tracker.tier << '\t' << tracker.announce.sv();
         auto const iter = store->get_iter(hash.at(gstr.str()).get_path());
 
         // update the row

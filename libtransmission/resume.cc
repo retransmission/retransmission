@@ -123,7 +123,7 @@ tr_resume::fields_t load_labels(tr_variant::Map const& map, tr_torrent* tor)
 
 void save_group(tr_variant::Map& map, tr_torrent const* tor)
 {
-    map.insert_or_assign(TR_KEY_group, tr_variant::unmanaged_string(tor->bandwidth_group()));
+    map.insert_or_assign(TR_KEY_group, tr_variant::unmanaged_string(tor->bandwidth_group().sv()));
 }
 
 tr_resume::fields_t load_group(tr_variant::Map const& map, tr_torrent* tor)
