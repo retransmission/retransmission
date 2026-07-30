@@ -15,7 +15,7 @@ env:
 
 jobs:
   expire-label:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
     steps:
       - uses: actions/github-script@v9
         with:
