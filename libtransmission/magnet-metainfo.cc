@@ -196,7 +196,7 @@ bool tr_magnet_metainfo::parseMagnet(std::string_view magnet_link, tr_error* err
 {
     magnet_link = tr_strv_strip(magnet_link);
     if (auto const hash = parseHash(magnet_link); hash) {
-        return parseMagnet(fmt::format("magnet:?xt=urn:btih:{:s}", tr_sha1_to_string(*hash)));
+        return parseMagnet(fmt::format("magnet:?xt=urn:btih:{:s}", tr_sha1_string{ *hash }));
     }
 
     auto const parsed = tr_urlParse(magnet_link);
@@ -242,7 +242,7 @@ bool tr_magnet_metainfo::parseMagnet(std::string_view magnet_link, tr_error* err
         }
     }
 
-    info_hash_str_ = tr_sha1_to_string(this->info_hash());
+    info_hash_str_ = tr_sha1_string{ this->info_hash() };
 
     if (std::empty(name())) {
         this->set_name(info_hash_str_);

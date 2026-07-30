@@ -117,13 +117,13 @@ TEST(Crypto, sha1)
             std::size(hash1)));
 
     auto const hash3 = tr_sha1::digest("test"sv);
-    EXPECT_EQ("a94a8fe5ccb19ba61c4c0873d391e987982fbbd3"sv, tr_sha1_to_string(hash3));
+    EXPECT_EQ("a94a8fe5ccb19ba61c4c0873d391e987982fbbd3"sv, tr_sha1_string{ hash3 });
 
     auto const hash4 = tr_sha1::digest("te"sv, "st"sv);
-    EXPECT_EQ("a94a8fe5ccb19ba61c4c0873d391e987982fbbd3"sv, tr_sha1_to_string(hash4));
+    EXPECT_EQ("a94a8fe5ccb19ba61c4c0873d391e987982fbbd3"sv, tr_sha1_string{ hash4 });
 
     auto const hash5 = tr_sha1::digest("t"sv, "e"sv, std::string{ "s" }, std::to_array<char>({ 't' }));
-    EXPECT_EQ("a94a8fe5ccb19ba61c4c0873d391e987982fbbd3"sv, tr_sha1_to_string(hash5));
+    EXPECT_EQ("a94a8fe5ccb19ba61c4c0873d391e987982fbbd3"sv, tr_sha1_string{ hash5 });
 }
 
 TEST(Crypto, ssha1)
@@ -205,7 +205,7 @@ TEST(Crypto, sha1FromString)
     auto const lc = tr_sha1_from_string(baseline);
     EXPECT_TRUE(lc.has_value());
     assert(lc.has_value());
-    EXPECT_EQ(baseline, tr_sha1_to_string(*lc));
+    EXPECT_EQ(baseline, tr_sha1_string{ *lc });
 
     // uppercase hex should yield the same result
     auto const uc = tr_sha1_from_string(tr_strupper(baseline));
@@ -231,7 +231,7 @@ TEST(Crypto, sha256FromString)
     auto const lc = tr_sha256_from_string(baseline);
     EXPECT_TRUE(lc.has_value());
     assert(lc.has_value());
-    EXPECT_EQ(baseline, tr_sha256_to_string(*lc));
+    EXPECT_EQ(baseline, tr_sha256_string{ *lc });
 
     // uppercase hex should yield the same result
     auto const uc = tr_sha256_from_string(tr_strupper(baseline));

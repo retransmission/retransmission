@@ -31,14 +31,10 @@ using namespace std::literals;
 
 namespace
 {
-constexpr auto TrSha1DigestStrlen = size_t{ 40 };
-
-constexpr auto TrSha256DigestStrlen = size_t{ 64 };
-
 namespace ssha1_impl
 {
 
-auto constexpr DigestStringSize = TrSha1DigestStrlen;
+auto constexpr DigestStringSize = tr_sha1_string::Strlen;
 auto constexpr SaltedPrefix = "{"sv;
 
 std::string tr_salt(std::string_view plaintext, std::string_view salt)
@@ -50,7 +46,7 @@ std::string tr_salt(std::string_view plaintext, std::string_view salt)
 
     // convert it to a string. string holds three parts:
     // DigestPrefix, stringified digest of plaintext + salt, and the salt.
-    return fmt::format("{:s}{:s}{:s}", SaltedPrefix, tr_sha1_to_string(digest), salt);
+    return fmt::format("{:s}{:s}{:s}", SaltedPrefix, tr_sha1_string{ digest }, salt);
 }
 
 } // namespace ssha1_impl
@@ -129,23 +125,11 @@ constexpr void tr_hex_to_binary(char const* input, void* voutput, size_t byte_le
 } // namespace hex_impl
 } // namespace
 
-tr_sha1_string tr_sha1_to_string(tr_sha1_digest_t const& digest)
-{
-    static_assert(tr_sha1_string::Strlen == TrSha1DigestStrlen);
-    return tr_sha1_string{ digest };
-}
-
-tr_sha256_string tr_sha256_to_string(tr_sha256_digest_t const& digest)
-{
-    static_assert(tr_sha256_string::Strlen == TrSha256DigestStrlen);
-    return tr_sha256_string{ digest };
-}
-
 std::optional<tr_sha1_digest_t> tr_sha1_from_string(std::string_view hex)
 {
     using namespace hex_impl;
 
-    if (std::size(hex) != TrSha1DigestStrlen) {
+    if (std::size(hex) != tr_sha1_string::Strlen) {
         return {};
     }
 
@@ -162,7 +146,7 @@ std::optional<tr_sha256_digest_t> tr_sha256_from_string(std::string_view hex)
 {
     using namespace hex_impl;
 
-    if (std::size(hex) != TrSha256DigestStrlen) {
+    if (std::size(hex) != tr_sha256_string::Strlen) {
         return {};
     }
 

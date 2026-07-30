@@ -319,7 +319,7 @@ struct MetainfoHandler final : public tr::benc::BasicHandler<MaxBencDepth> {
             // compatibility with Transmission <= 3.0
             if (value.length() == sizeof(tr_sha1_digest_t)) {
                 std::copy_n(std::data(value), sizeof(tr_sha1_digest_t), reinterpret_cast<char*>(std::data(tm_.info_hash_)));
-                tm_.info_hash_str_ = tr_sha1_to_string(tm_.info_hash_);
+                tm_.info_hash_str_ = tr_sha1_string{ tm_.info_hash_ };
                 tm_.has_magnet_info_hash_ = true;
             }
         } else if (
@@ -417,9 +417,9 @@ private:
         auto const hash2 = tr_sha256::digest(info_dict_benc);
 
         tm_.info_hash_ = hash;
-        tm_.info_hash_str_ = tr_sha1_to_string(tm_.info_hash_);
+        tm_.info_hash_str_ = tr_sha1_string{ tm_.info_hash_ };
         tm_.info_hash2_ = hash2;
-        tm_.info_hash2_str_ = tr_sha256_to_string(tm_.info_hash2_);
+        tm_.info_hash2_str_ = tr_sha256_string{ tm_.info_hash2_ };
         tm_.info_dict_size_ = std::size(info_dict_benc);
         return true;
     }

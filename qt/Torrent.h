@@ -158,7 +158,7 @@ public:
     explicit TorrentHash(tr_sha1_digest_t const& data)
         : data_{ data }
     {
-        auto const hashstr = tr_sha1_to_string(data_);
+        auto const hashstr = tr_sha1_string{ data_ };
         data_str_ = Utils::qstringFromUtf8(hashstr);
     }
 

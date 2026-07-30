@@ -27,7 +27,7 @@
 
 #include <libtransmission/transmission.h>
 
-#include <libtransmission/crypto-utils.h> // tr_sha1_to_string, tr_base...
+#include <libtransmission/crypto-utils.h> // tr_sha1, tr_sha1_from_string, tr_base...
 #include <libtransmission/handshake.h>
 #include <libtransmission/net.h>
 #include <libtransmission/peer-io.h>
@@ -309,7 +309,7 @@ TEST_F(HandshakeTest, outgoingPlaintext)
     EXPECT_TRUE(res->peer_id);
     EXPECT_EQ(peer_id, res->peer_id);
     EXPECT_EQ(UbuntuTorrent.info_hash, io->torrent_hash());
-    EXPECT_EQ(tr_sha1_to_string(UbuntuTorrent.info_hash), tr_sha1_to_string(io->torrent_hash()));
+    EXPECT_EQ(tr_sha1_string{ UbuntuTorrent.info_hash }, tr_sha1_string{ io->torrent_hash() });
 
     tr_net_close_socket(sock);
 }
@@ -364,7 +364,7 @@ TEST_F(HandshakeTest, incomingEncrypted)
     EXPECT_TRUE(res->peer_id);
     EXPECT_EQ(ExpectedPeerId, res->peer_id);
     EXPECT_EQ(UbuntuTorrent.info_hash, io->torrent_hash());
-    EXPECT_EQ(tr_sha1_to_string(UbuntuTorrent.info_hash), tr_sha1_to_string(io->torrent_hash()));
+    EXPECT_EQ(tr_sha1_string{ UbuntuTorrent.info_hash }, tr_sha1_string{ io->torrent_hash() });
 
     tr_net_close_socket(sock);
 }
@@ -502,7 +502,7 @@ TEST_F(HandshakeTest, outgoingEncrypted)
     EXPECT_TRUE(res->peer_id);
     EXPECT_EQ(ExpectedPeerId, res->peer_id);
     EXPECT_EQ(UbuntuTorrent.info_hash, io->torrent_hash());
-    EXPECT_EQ(tr_sha1_to_string(UbuntuTorrent.info_hash), tr_sha1_to_string(io->torrent_hash()));
+    EXPECT_EQ(tr_sha1_string{ UbuntuTorrent.info_hash }, tr_sha1_string{ io->torrent_hash() });
 
     tr_net_close_socket(sock);
 }

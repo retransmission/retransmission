@@ -100,7 +100,7 @@ auto makeRandomHash()
 
 auto makeRandomHashString()
 {
-    return tr_strupper(tr_sha1_to_string(makeRandomHash()));
+    return tr_strupper(tr_sha1_string{ makeRandomHash() });
 }
 
 } // namespace
