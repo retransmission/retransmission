@@ -7,13 +7,10 @@
 
 #include <array>
 #include <cstddef> // size_t
-#include <cmath> // for std::fabs(), std::floor()
 #include <compare>
 #include <cstdint> // for uint64_t
 #include <string>
 #include <string_view>
-
-#include <fmt/format.h>
 
 namespace tr::Values
 {
@@ -26,17 +23,12 @@ enum class SpeedUnits : uint8_t { Byps, KByps, MByps, GByps, TByps };
 struct Config {
     enum class Base : uint16_t { Kilo = 1000U, Kibi = 1024U };
 
-    template<typename UnitsEnum>
-    struct Units {
-        template<typename... Names> // NOLINTNEXTLINE(google-explicit-constructor, cppcoreguidelines-pro-type-member-init)
-        Units(Base base, Names... names)
-        {
-            set_base(base);
-
-            auto idx = size_t{ 0U };
-            (set_name(idx++, names), ...);
-        }
-
+    // The parts of Units that don't vary with UnitsEnum. Code that needs
+    // only the names and multipliers takes this instead, so that it can
+    // live in values.cc rather than being instantiated per enum.
+    class UnitsBase
+    {
+    public:
         [[nodiscard]] constexpr auto base() const noexcept
         {
             return static_cast<size_t>(base_);
@@ -47,17 +39,7 @@ struct Config {
             return std::string_view{ units < std::size(display_names_) ? std::data(display_names_[units]) : "" };
         }
 
-        [[nodiscard]] constexpr auto display_name(UnitsEnum multiplier) const noexcept
-        {
-            return display_name(static_cast<size_t>(multiplier));
-        }
-
-        [[nodiscard]] constexpr auto multiplier(UnitsEnum multiplier) const noexcept
-        {
-            return multipliers_[static_cast<int>(multiplier)];
-        }
-
-    private:
+    protected:
         constexpr void set_base(Base base) noexcept
         {
             base_ = base;
@@ -69,20 +51,49 @@ struct Config {
             }
         }
 
-        void set_name(size_t idx, std::string_view name)
-        {
-            *fmt::format_to_n(std::data(display_names_[idx]), std::size(display_names_[idx]) - 1, "{:s}", name).out = '\0';
-        }
+        // Copies as much of `name` as fits, truncating the rest.
+        void set_name(size_t idx, std::string_view name);
 
         std::array<std::array<char, 32>, 5> display_names_ = {};
-        std::array<uint64_t, 5> multipliers_;
-        Base base_ = {}; // NOLINT(bugprone-invalid-enum-default-initialization): overwritten by constructor
+        std::array<uint64_t, 5> multipliers_ = {};
+        Base base_ = {}; // NOLINT(bugprone-invalid-enum-default-initialization): overwritten by set_base()
+    };
+
+    template<typename UnitsEnum>
+    struct Units : UnitsBase {
+        template<typename... Names> // NOLINTNEXTLINE(google-explicit-constructor)
+        Units(Base base, Names... names)
+        {
+            set_base(base);
+
+            auto idx = size_t{ 0U };
+            (set_name(idx++, names), ...);
+        }
+
+        using UnitsBase::display_name;
+
+        [[nodiscard]] constexpr auto display_name(UnitsEnum multiplier) const noexcept
+        {
+            return UnitsBase::display_name(static_cast<size_t>(multiplier));
+        }
+
+        [[nodiscard]] constexpr auto multiplier(UnitsEnum multiplier) const noexcept
+        {
+            return multipliers_[static_cast<int>(multiplier)];
+        }
     };
 
     static Units<MemoryUnits> memory;
     static Units<SpeedUnits> speed;
     static Units<StorageUnits> storage;
 };
+
+namespace detail
+{
+// Renders `quantity` in the largest unit that keeps it readable,
+// e.g. 1'500'000 with Config::storage -> "1.50 MB".
+[[nodiscard]] std::string to_string(uint64_t quantity, Config::UnitsBase const& units);
+} // namespace detail
 
 template<typename UnitsEnum, Config::Units<UnitsEnum> const& units_>
 class Value
@@ -158,37 +169,9 @@ public:
 
     [[nodiscard]] constexpr bool operator==(Value const& that) const noexcept = default;
 
-    std::string_view to_string(char* buf, size_t buflen) const
-    {
-        auto idx = size_t{ 0 };
-        auto val = 1.0 * base_quantity_;
-        for (;;) {
-            if (std::fabs(val - std::floor(val)) < 0.001 && (val < 999.5 || std::empty(units_.display_name(idx + 1)))) {
-                *fmt::format_to_n(buf, buflen - 1, "{:.0Lf} {:s}", val, units_.display_name(idx)).out = '\0';
-                return buf;
-            }
-
-            if (val < 99.995) // 0.98 to 99.99
-            {
-                *fmt::format_to_n(buf, buflen - 1, "{:.2Lf} {:s}", val, units_.display_name(idx)).out = '\0';
-                return buf;
-            }
-
-            if (val < 999.95 || std::empty(units_.display_name(idx + 1))) // 100.0 to 999.9
-            {
-                *fmt::format_to_n(buf, buflen - 1, "{:.1Lf} {:s}", val, units_.display_name(idx)).out = '\0';
-                return buf;
-            }
-
-            val /= units_.base();
-            ++idx;
-        }
-    }
-
     [[nodiscard]] std::string to_string() const
     {
-        auto buf = std::array<char, 64>{};
-        return std::string{ to_string(std::data(buf), std::size(buf)) };
+        return detail::to_string(base_quantity_, units_);
     }
 
     [[nodiscard]] static constexpr auto const& units() noexcept

@@ -17,6 +17,7 @@
 		9F0B1F332E4D1A0100A1B2C3 /* env.cc in Sources */ = {isa = PBXBuildFile; fileRef = 9F0B1F2B2E4D1A0100A1B2C3 /* env.cc */; };
 		9F0B1F342E4D1A0100A1B2C3 /* file-utils.cc in Sources */ = {isa = PBXBuildFile; fileRef = 9F0B1F2D2E4D1A0100A1B2C3 /* file-utils.cc */; };
 		9F0B1F352E4D1A0100A1B2C3 /* string-utils.cc in Sources */ = {isa = PBXBuildFile; fileRef = 9F0B1F2F2E4D1A0100A1B2C3 /* string-utils.cc */; };
+		9F0B1F372E4D1A0100A1B2C3 /* values.cc in Sources */ = {isa = PBXBuildFile; fileRef = 9F0B1F362E4D1A0100A1B2C3 /* values.cc */; };
 		1BB44E07B1B52E28291B4E32 /* file-piece-map.cc in Sources */ = {isa = PBXBuildFile; fileRef = 1BB44E07B1B52E28291B4E30 /* file-piece-map.cc */; };
 		1BB44E07B1B52E28291B4E33 /* file-piece-map.h in Headers */ = {isa = PBXBuildFile; fileRef = 1BB44E07B1B52E28291B4E31 /* file-piece-map.h */; };
 		2856E0656A49F2665D69E760 /* benc.h in Headers */ = {isa = PBXBuildFile; fileRef = 2856E0656A49F2665D69E761 /* benc.h */; };
@@ -1050,6 +1051,7 @@
 		A25964A5106D73A800453B31 /* announcer.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.h; path = announcer.h; sourceTree = "<group>"; };
 		A25BFD63167BED3B0039D1AA /* variant-benc.cc */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = "variant-benc.cc"; sourceTree = "<group>"; };
 		A25BFD65167BED3B0039D1AA /* variant-json.cc */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = "variant-json.cc"; sourceTree = "<group>"; };
+		9F0B1F362E4D1A0100A1B2C3 /* values.cc */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = values.cc; sourceTree = "<group>"; };
 		A25BFD67167BED3B0039D1AA /* variant.cc */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = variant.cc; sourceTree = "<group>"; };
 		A25BFD68167BED3B0039D1AA /* variant.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.h; path = variant.h; sourceTree = "<group>"; };
 		A25D2CBA0CF4C7190096A262 /* stats.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.h; path = stats.h; sourceTree = "<group>"; };
@@ -2240,6 +2242,7 @@
 				9F0B1F2F2E4D1A0100A1B2C3 /* string-utils.cc */,
 				9F0B1F2E2E4D1A0100A1B2C3 /* string-utils.h */,
 				C843FC8329C51B9400491854 /* string-utils.mm */,
+				9F0B1F362E4D1A0100A1B2C3 /* values.cc */,
 				A25BFD63167BED3B0039D1AA /* variant-benc.cc */,
 				A25BFD65167BED3B0039D1AA /* variant-json.cc */,
 				A25BFD67167BED3B0039D1AA /* variant.cc */,
@@ -3620,6 +3623,7 @@
 				9F0B1F332E4D1A0100A1B2C3 /* env.cc in Sources */,
 				9F0B1F342E4D1A0100A1B2C3 /* file-utils.cc in Sources */,
 				9F0B1F352E4D1A0100A1B2C3 /* string-utils.cc in Sources */,
+				9F0B1F372E4D1A0100A1B2C3 /* values.cc in Sources */,
 				EDBBE7692F0FF05500E90EA1 /* peer-socket-tcp.cc in Sources */,
 				EDBBE76A2F0FF05500E90EA1 /* peer-socket-utp.cc in Sources */,
 				A2AAB65F0DE0CF6200E04DDA /* rpcimpl.cc in Sources */,

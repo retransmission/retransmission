@@ -48,6 +48,17 @@ template<typename T>
 // NOLINTBEGIN(readability-identifier-naming)
 // use std-style naming for these traits
 
+// Type trait: is C a std::basic_string?
+// Matches the specialization rather than comparing C against
+// `std::basic_string<typename C::value_type>`: naming that type instantiates the
+// deprecated `std::char_traits<T>` primary template whenever C's elements aren't
+// characters, e.g. for a std::vector<std::string>.
+template<typename C>
+inline constexpr bool is_basic_string_v = false;
+
+template<typename CharT, typename Traits, typename Alloc>
+inline constexpr bool is_basic_string_v<std::basic_string<CharT, Traits, Alloc>> = true;
+
 // Type trait: is C a container with push_back (but not a string)?
 template<typename C, typename = void>
 inline constexpr bool is_push_back_range_v = false;
@@ -59,8 +70,7 @@ inline constexpr bool is_push_back_range_v<
         typename C::value_type,
         decltype(std::begin(std::declval<C const&>())),
         decltype(std::end(std::declval<C const&>())),
-        decltype(std::declval<C&>().push_back(
-            std::declval<typename C::value_type const&>()))>> = !std::is_same_v<C, std::basic_string<typename C::value_type>>;
+        decltype(std::declval<C&>().push_back(std::declval<typename C::value_type const&>()))>> = !is_basic_string_v<C>;
 
 // Type trait: is C a container with insert (like std::set)?
 template<typename C, typename = void>

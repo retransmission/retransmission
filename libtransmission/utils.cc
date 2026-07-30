@@ -47,24 +47,10 @@
 #include "libtransmission/tr-strbuf.h"
 #include "libtransmission/types.h"
 #include "libtransmission/utils.h"
-#include "libtransmission/values.h"
 
 using namespace std::literals;
-using namespace tr::Values;
 
 time_t tr::detail::tr_time::current_time = {};
-
-// ---
-
-namespace tr::Values
-{
-
-// default values; can be overridden by client apps
-Config::Units<MemoryUnits> Config::memory{ Config::Base::Kibi, "B"sv, "KiB"sv, "MiB"sv, "GiB"sv, "TiB"sv };
-Config::Units<SpeedUnits> Config::speed{ Config::Base::Kilo, "B/s"sv, "kB/s"sv, "MB/s"sv, "GB/s"sv, "TB/s"sv };
-Config::Units<StorageUnits> Config::storage{ Config::Base::Kilo, "B"sv, "kB"sv, "MB"sv, "GB"sv, "TB"sv };
-
-} // namespace tr::Values
 
 // ---
 

@@ -176,6 +176,8 @@ target_sources(${TR_NAME}
         utils-ev.h
         utils.cc
         utils.h
+        values.cc
+        values.h
         variant-benc.cc
         variant-json.cc
         variant.cc
