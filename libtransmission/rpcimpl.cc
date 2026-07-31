@@ -1793,26 +1793,15 @@ void add_strings_from_var(std::set<std::string_view>& strings, tr_variant const&
 [[nodiscard]] auto values_get_units()
 {
     using namespace tr::Values;
-
-    auto const make_units_vec = [](auto const& units) {
-        auto units_vec = tr_variant::Vector{};
-        for (size_t i = 0;; ++i) {
-            auto const display_name = units.display_name(i);
-            if (std::empty(display_name)) {
-                break;
-            }
-            units_vec.emplace_back(tr_variant::unmanaged_string(display_name));
-        }
-        return units_vec;
-    };
+    using namespace tr::serializer;
 
     auto units_map = tr_variant::Map{ 6U };
     units_map.try_emplace(TR_KEY_memory_bytes, Memory::units().base());
-    units_map.try_emplace(TR_KEY_memory_units, make_units_vec(Memory::units()));
+    units_map.try_emplace(TR_KEY_memory_units, to_variant(Memory::units().display_names()));
     units_map.try_emplace(TR_KEY_size_bytes, Storage::units().base());
-    units_map.try_emplace(TR_KEY_size_units, make_units_vec(Storage::units()));
+    units_map.try_emplace(TR_KEY_size_units, to_variant(Storage::units().display_names()));
     units_map.try_emplace(TR_KEY_speed_bytes, Speed::units().base());
-    units_map.try_emplace(TR_KEY_speed_units, make_units_vec(Speed::units()));
+    units_map.try_emplace(TR_KEY_speed_units, to_variant(Speed::units().display_names()));
     return tr_variant{ std::move(units_map) };
 }
 

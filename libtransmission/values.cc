@@ -11,6 +11,7 @@
 #include <iterator> // std::begin(), std::size()
 #include <string>
 #include <string_view>
+#include <vector>
 
 #include <fmt/format.h>
 
@@ -25,6 +26,18 @@ namespace tr::Values
 Config::Units<MemoryUnits> Config::memory{ Config::Base::Kibi, "B"sv, "KiB"sv, "MiB"sv, "GiB"sv, "TiB"sv };
 Config::Units<SpeedUnits> Config::speed{ Config::Base::Kilo, "B/s"sv, "kB/s"sv, "MB/s"sv, "GB/s"sv, "TB/s"sv };
 Config::Units<StorageUnits> Config::storage{ Config::Base::Kilo, "B"sv, "kB"sv, "MB"sv, "GB"sv, "TB"sv };
+
+std::vector<std::string> Config::UnitsBase::display_names() const
+{
+    auto names = std::vector<std::string>{};
+    names.reserve(display_names_.size());
+
+    for (auto const& name : display_names_) {
+        names.emplace_back(std::data(name));
+    }
+
+    return names;
+}
 
 void Config::UnitsBase::set_name(size_t idx, std::string_view name)
 {

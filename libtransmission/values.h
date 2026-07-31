@@ -12,6 +12,7 @@
 #include <string>
 #include <string_view>
 #include <tuple>
+#include <vector>
 
 namespace tr::Values
 {
@@ -36,6 +37,8 @@ struct Config {
         {
             return std::string_view{ units < std::size(display_names_) ? std::data(display_names_[units]) : "" };
         }
+
+        [[nodiscard]] std::vector<std::string> display_names() const;
 
     protected:
         constexpr void set_base(Base base) noexcept
@@ -68,8 +71,6 @@ struct Config {
             auto idx = size_t{ 0U };
             (set_name(idx++, names), ...);
         }
-
-        using UnitsBase::display_name;
 
         [[nodiscard]] constexpr auto display_name(UnitsEnum multiplier) const noexcept
         {
