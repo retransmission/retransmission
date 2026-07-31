@@ -11,6 +11,7 @@
 #include <cstdint> // for uint64_t
 #include <string>
 #include <string_view>
+#include <tuple>
 
 namespace tr::Values
 {
@@ -23,9 +24,6 @@ enum class SpeedUnits : uint8_t { Byps, KByps, MByps, GByps, TByps };
 struct Config {
     enum class Base : uint16_t { Kilo = 1000U, Kibi = 1024U };
 
-    // The parts of Units that don't vary with UnitsEnum. Code that needs
-    // only the names and multipliers takes this instead, so that it can
-    // live in values.cc rather than being instantiated per enum.
     class UnitsBase
     {
     public:
@@ -34,7 +32,7 @@ struct Config {
             return static_cast<size_t>(base_);
         }
 
-        [[nodiscard]] constexpr auto display_name(size_t units) const noexcept
+        [[nodiscard]] constexpr auto display_name(size_t const units) const noexcept
         {
             return std::string_view{ units < std::size(display_names_) ? std::data(display_names_[units]) : "" };
         }
@@ -64,6 +62,7 @@ struct Config {
         template<typename... Names> // NOLINTNEXTLINE(google-explicit-constructor)
         Units(Base base, Names... names)
         {
+            static_assert(sizeof...(Names) == std::tuple_size_v<decltype(display_names_)>);
             set_base(base);
 
             auto idx = size_t{ 0U };
@@ -79,7 +78,7 @@ struct Config {
 
         [[nodiscard]] constexpr auto multiplier(UnitsEnum multiplier) const noexcept
         {
-            return multipliers_[static_cast<int>(multiplier)];
+            return multipliers_[static_cast<size_t>(multiplier)];
         }
     };
 
