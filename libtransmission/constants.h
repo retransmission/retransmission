@@ -27,7 +27,7 @@ inline auto constexpr TrMaxRecentDirs = 6U;
 
 inline auto constexpr TrHttpServerRpcRelativePath = std::string_view{ "rpc" };
 inline auto constexpr TrHttpServerWebRelativePath = std::string_view{ "web/" };
-inline auto constexpr TrRpcSessionIdHeader = std::string_view{ TR_PROJ_RPC_SESSION_ID_HEADER };
-inline auto constexpr TrRpcVersionHeader = std::string_view{ TR_PROJ_RPC_VERSION_HEADER };
+inline auto constexpr TrRpcSessionIdHeader = std::string_view{ TR_PROJ_SHARED_RPC_SESSION_ID_HEADER };
+inline auto constexpr TrRpcVersionHeader = std::string_view{ TR_PROJ_SHARED_RPC_VERSION_HEADER };
 
 inline auto constexpr TrBlockSize = uint32_t{ 1024U * 16U };

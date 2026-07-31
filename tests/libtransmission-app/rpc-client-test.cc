@@ -51,7 +51,7 @@ auto constexpr SessionId = "test-session-id"sv;
 
 // A minimal in-process stand-in for transmission-daemon's RPC endpoint. It does
 // just enough to exercise tr::app::RpcClient's remote transport end to end: the
-// CSRF handshake (reply 409 with an TR_PROJ_RPC_SESSION_ID_HEADER that the
+// CSRF handshake (reply 409 with an TR_PROJ_SHARED_RPC_SESSION_ID_HEADER that the
 // client must echo back), optionally advertising the Tr5 RPC version, followed
 // by a valid success response. It records every request body so tests can assert
 // on the wire format. Everything stays on 127.0.0.1, so there's nothing to flake.

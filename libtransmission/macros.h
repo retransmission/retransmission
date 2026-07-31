@@ -52,10 +52,6 @@
 #define TR_PROJ_APPNAME_CAPITALIZED "Retransmission"
 #define TR_PROJ_APPNAME_RDNS TR_PROJ_DOMAIN_APEX_REVERSED "." TR_PROJ_APPNAME
 
-// Config dirs keep the old name for compatibility.
-// Everything else uses TR_PROJ_APPNAME.
-#define TR_PROJ_CONFIG_DIRNAME "transmission"
-
 #define TR_PROJ_URL_HOMEPAGE "https://" TR_PROJ_DOMAIN_APEX
 #define TR_PROJ_URL_DONATE TR_PROJ_URL_HOMEPAGE "/donate"
 #define TR_PROJ_URL_HELP TR_PROJ_URL_HOMEPAGE "/help"
@@ -71,5 +67,8 @@
 #define TR_PROJ_DBUS_INTERFACE TR_PROJ_DBUS_SERVICE
 
 #define TR_PROJ_WEB_SERVER_BASE_PATH "/" TR_PROJ_APPNAME "/"
-#define TR_PROJ_RPC_SESSION_ID_HEADER "X-" TR_PROJ_APPNAME_CAPITALIZED "-Session-Id"
-#define TR_PROJ_RPC_VERSION_HEADER "X-" TR_PROJ_APPNAME_CAPITALIZED "-Rpc-Version"
+
+// Places where we keep the 'transmission' name for compatibility
+#define TR_PROJ_SHARED_CONFIG_DIRNAME "transmission"
+#define TR_PROJ_SHARED_RPC_SESSION_ID_HEADER "X-Transmission-Session-Id"
+#define TR_PROJ_SHARED_RPC_VERSION_HEADER "X-Transmission-Rpc-Version"

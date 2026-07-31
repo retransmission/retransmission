@@ -68,7 +68,7 @@ struct tr_torrent;
 #endif
 
 #define MY_NAME TR_PROJ_APPNAME "-daemon"
-#define MY_CONFIG_DIRNAME TR_PROJ_CONFIG_DIRNAME "-daemon"
+#define MY_CONFIG_DIRNAME TR_PROJ_SHARED_CONFIG_DIRNAME "-daemon"
 
 using namespace std::literals;
 using tr::Watchdir;

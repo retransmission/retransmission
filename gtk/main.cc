@@ -38,7 +38,7 @@
 
 namespace
 {
-auto const* const AppConfigDirName = TR_PROJ_CONFIG_DIRNAME;
+auto const* const AppConfigDirName = TR_PROJ_SHARED_CONFIG_DIRNAME;
 auto const* const AppTranslationDomainName = MY_NAME;
 auto const* const AppName = MY_NAME;
 

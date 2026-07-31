@@ -28,7 +28,7 @@
 
 // A minimal in-process stand-in for transmission-daemon's RPC endpoint. It does
 // just enough to exercise Session's remote transport end to end: the CSRF
-// handshake (reply 409 with an TR_PROJ_RPC_SESSION_ID_HEADER that the client
+// handshake (reply 409 with an TR_PROJ_SHARED_RPC_SESSION_ID_HEADER that the client
 // must echo back) followed by a valid, empty success response. Every request
 // body is recorded so tests can assert on the wire format. It never advertises
 // an RPC version, so the client keeps its original api_compats style.

@@ -238,7 +238,7 @@ int tr_main(int argc, char** argv)
 
     // set the fallback config dir
     if (config_dir.isNull()) {
-        config_dir = QString::fromStdString(tr::platform::get_default_config_dir(TR_PROJ_CONFIG_DIRNAME));
+        config_dir = QString::fromStdString(tr::platform::get_default_config_dir(TR_PROJ_SHARED_CONFIG_DIRNAME));
     }
 
     auto prefs = Prefs{ config_dir };
