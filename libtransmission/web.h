@@ -53,11 +53,11 @@ public:
         };
 
         FetchOptions(
-            std::string_view url_in,
+            std::string url_in,
             FetchDoneFunc&& done_func_in,
             void* done_func_user_data_in,
             std::chrono::seconds timeout_secs_in = DefaultTimeoutSecs)
-            : url{ url_in }
+            : url{ std::move(url_in) }
             , done_func{ std::move(done_func_in) }
             , done_func_user_data{ done_func_user_data_in }
             , timeout_secs{ timeout_secs_in }

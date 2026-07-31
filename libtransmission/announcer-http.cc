@@ -34,7 +34,6 @@
 #include "libtransmission/session.h"
 #include "libtransmission/string-utils.h"
 #include "libtransmission/tr-assert.h"
-#include "libtransmission/tr-strbuf.h" // tr_strbuf, tr_urlbuf
 #include "libtransmission/types.h"
 #include "libtransmission/utils.h"
 #include "libtransmission/web-utils.h"
@@ -161,18 +160,26 @@ void onAnnounceDone(tr_web::FetchResponse const& web_response)
     }
 }
 
-void announce_url_new(tr_urlbuf& url, tr_session const* session, tr_announce_request const& req)
+[[nodiscard]] std::string announce_url_new(tr_session const* session, tr_announce_request const& req)
 {
-    url.clear();
+    // Enough for the query fields below in all but pathological cases,
+    // e.g. an unusually long tracker id. Overshooting is cheap: `url` is
+    // moved into the FetchOptions, and copies of it are sized to fit.
+    static auto constexpr TypicalQueryLen = 512U;
+
+    auto url = std::string{};
+    url.reserve(std::size(req.announce_url.sv()) + TypicalQueryLen);
+
+    // the info_hash is appended rather than formatted in so that it
+    // needs no intermediate buffer of its own
+    url += req.announce_url.sv();
+    url += tr_strv_contains(req.announce_url.sv(), '?') ? '&' : '?';
+    url += "info_hash="sv;
+    tr_urlPercentEncode(url, req.info_hash);
+
     auto out = std::back_inserter(url);
-
-    auto escaped_info_hash = tr_urlbuf{};
-    tr_urlPercentEncode(std::back_inserter(escaped_info_hash), req.info_hash);
-
     fmt::format_to(
         out,
-        "{url}"
-        "{sep}info_hash={info_hash}"
         "&peer_id={peer_id}"
         "&port={port}"
         "&uploaded={uploaded}"
@@ -182,9 +189,6 @@ void announce_url_new(tr_urlbuf& url, tr_session const* session, tr_announce_req
         "&key={key:08X}"
         "&compact=1"
         "&supportcrypto=1",
-        fmt::arg("url", req.announce_url.sv()),
-        fmt::arg("sep", tr_strv_contains(req.announce_url.sv(), '?') ? '&' : '?'),
-        fmt::arg("info_hash", std::data(escaped_info_hash)),
         fmt::arg("peer_id", std::string_view{ std::data(req.peer_id), std::size(req.peer_id) }),
         fmt::arg("port", req.port.host()),
         fmt::arg("uploaded", req.up),
@@ -210,16 +214,16 @@ void announce_url_new(tr_urlbuf& url, tr_session const* session, tr_announce_req
     }
 
     if (auto ipv4_addr = session->global_address(TR_AF_INET); ipv4_addr) {
-        auto const display_name = ipv4_addr->display_name();
-        fmt::format_to(out, "&ipv4=");
-        tr_urlPercentEncode(out, display_name);
+        url += "&ipv4="sv;
+        tr_urlPercentEncode(url, ipv4_addr->display_name());
     }
 
     if (auto ipv6_addr = session->global_address(TR_AF_INET6); ipv6_addr) {
-        auto const display_name = ipv6_addr->display_name();
-        fmt::format_to(out, "&ipv6=");
-        tr_urlPercentEncode(out, display_name);
+        url += "&ipv6="sv;
+        tr_urlPercentEncode(url, ipv6_addr->display_name());
     }
+
+    return url;
 }
 
 [[nodiscard]] std::string format_ip_arg(std::string_view ip)
@@ -249,9 +253,7 @@ void tr_tracker_http_announce(
        and to be safe we also add the "ipv4=" and "ipv6=" parameters, if
        we already have them.
      */
-    auto url = tr_urlbuf{};
-    announce_url_new(url, session, request);
-    auto options = tr_web::FetchOptions{ url.sv(), onAnnounceDone, d };
+    auto options = tr_web::FetchOptions{ announce_url_new(session, request), onAnnounceDone, d };
     options.timeout_secs = TrAnnounceTimeoutSec;
     options.sndbuf = 4096;
     options.rcvbuf = 4096;
@@ -453,16 +455,24 @@ void onScrapeDone(tr_web::FetchResponse const& web_response)
     delete data;
 }
 
-void scrape_url_new(tr_pathbuf& scrape_url, tr_scrape_request const& req)
+[[nodiscard]] std::string scrape_url_new(tr_scrape_request const& req)
 {
-    scrape_url = req.scrape_url.sv();
+    // a delimiter, "info_hash=", and a percent-encoded digest
+    static auto constexpr MaxCharsPerHash = 1U + 10U + (3U * std::tuple_size_v<tr_sha1_digest_t>);
+
+    auto scrape_url = std::string{};
+    scrape_url.reserve(std::size(req.scrape_url.sv()) + (req.info_hash_count * MaxCharsPerHash));
+    scrape_url += req.scrape_url.sv();
     char delimiter = tr_strv_contains(scrape_url, '?') ? '&' : '?';
 
     for (size_t i = 0; i < req.info_hash_count; ++i) {
-        scrape_url.append(delimiter, "info_hash=");
-        tr_urlPercentEncode(std::back_inserter(scrape_url), req.info_hash[i]);
+        scrape_url += delimiter;
+        scrape_url += "info_hash="sv;
+        tr_urlPercentEncode(scrape_url, req.info_hash[i]);
         delimiter = '&';
     }
+
+    return scrape_url;
 }
 } // namespace scrape_helpers
 } // namespace
@@ -480,10 +490,9 @@ void tr_tracker_http_scrape(tr_session const* session, tr_scrape_request const& 
         response.rows[i].info_hash = request.info_hash[i];
     }
 
-    auto scrape_url = tr_pathbuf{};
-    scrape_url_new(scrape_url, request);
+    auto scrape_url = scrape_url_new(request);
     tr_logAddTrace(fmt::format("Sending scrape to libcurl: '{}'", scrape_url), request.log_name);
-    auto options = tr_web::FetchOptions{ scrape_url, onScrapeDone, d };
+    auto options = tr_web::FetchOptions{ std::move(scrape_url), onScrapeDone, d };
     options.timeout_secs = TrScrapeTimeoutSec;
     options.sndbuf = 4096;
     options.rcvbuf = 4096;

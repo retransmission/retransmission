@@ -290,8 +290,8 @@ TEST_F(WebUtilsTest, urlPercentEncode)
     });
 
     for (auto const& [decoded, encoded, escape_reserved] : Tests) {
-        auto buf = tr_urlbuf{};
-        tr_urlPercentEncode(std::back_inserter(buf), decoded, escape_reserved);
+        auto buf = std::string{};
+        tr_urlPercentEncode(buf, decoded, escape_reserved);
         EXPECT_EQ(encoded, buf);
     }
 }

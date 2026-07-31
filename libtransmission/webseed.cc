@@ -27,7 +27,6 @@
 #include "libtransmission/torrent.h"
 #include "libtransmission/tr-assert.h"
 #include "libtransmission/tr-buffer.h"
-#include "libtransmission/tr-strbuf.h"
 #include "libtransmission/types.h"
 #include "libtransmission/web-utils.h"
 #include "libtransmission/web.h"
@@ -437,16 +436,22 @@ void tr_webseed_task::on_partial_data_fetched(tr_web::FetchResponse const& web_r
     webseed->on_idle();
 }
 
-template<typename OutputIt>
-void makeUrl(tr_webseed_impl const* const webseed, std::string_view name, OutputIt out)
+[[nodiscard]] std::string makeUrl(tr_webseed_impl const* const webseed, std::string_view name)
 {
+    // slack for the chars that percent-encoding expands
+    static auto constexpr Slack = 32U;
+
     auto const& url = webseed->base_url;
 
-    out = std::copy(std::begin(url), std::end(url), out);
+    auto ret = std::string{};
+    ret.reserve(std::size(url) + std::size(name) + Slack);
+    ret += url;
 
     if (tr_strv_ends_with(url, "/"sv) && !std::empty(name)) {
-        tr_urlPercentEncode(out, name, false);
+        tr_urlPercentEncode(ret, name, false);
     }
+
+    return ret;
 }
 
 void tr_webseed_task::request_next_chunk()
@@ -463,9 +468,7 @@ void tr_webseed_task::request_next_chunk()
 
     webseed_->connection_limiter.task_started();
 
-    auto url = tr_urlbuf{};
-    makeUrl(webseed_, tor.file_subpath(file_index), std::back_inserter(url));
-    auto options = tr_web::FetchOptions{ url.sv(), on_partial_data_fetched, this };
+    auto options = tr_web::FetchOptions{ makeUrl(webseed_, tor.file_subpath(file_index)), on_partial_data_fetched, this };
     options.range.emplace(file_offset, file_offset + this_chunk - 1);
     options.speed_limit_tag = tor.id();
     options.on_data_received = [this](size_t const n_bytes) {

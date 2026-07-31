@@ -11,10 +11,11 @@
 #include <ctime>
 #include <chrono>
 #include <future>
-#include <iterator> // std::back_inserter
+#include <iterator> // std::size()
 #include <optional>
 #include <string>
 #include <string_view>
+#include <utility> // std::move()
 #include <vector>
 
 #include <fmt/chrono.h>
@@ -29,7 +30,6 @@
 #include <libtransmission/string-utils.h>
 #include <libtransmission/torrent-metainfo.h>
 #include <libtransmission/tr-getopt.h>
-#include <libtransmission/tr-strbuf.h>
 #include <libtransmission/utils.h>
 #include <libtransmission/values.h>
 #include <libtransmission/variant.h>
@@ -267,10 +267,10 @@ void doScrape(tr_torrent_metainfo const& metainfo)
         }
 
         // build the full scrape URL
-        auto scrape_url = tr_urlbuf{ tracker.scrape.sv() };
-        auto delimiter = tr_strv_contains(scrape_url, '?') ? '&' : '?';
-        scrape_url.append(delimiter, "info_hash=");
-        tr_urlPercentEncode(std::back_inserter(scrape_url), hash);
+        auto scrape_url = std::string{ tracker.scrape.sv() };
+        scrape_url += tr_strv_contains(scrape_url, '?') ? '&' : '?';
+        scrape_url += "info_hash="sv;
+        tr_urlPercentEncode(scrape_url, hash);
         fmt::print("{:s} ... ", scrape_url);
         fflush(stdout);
 
@@ -280,7 +280,7 @@ void doScrape(tr_torrent_metainfo const& metainfo)
         auto response_promise = std::promise<tr_web::FetchResponse>{};
         auto response_future = response_promise.get_future();
         web->fetch(
-            { scrape_url,
+            { std::move(scrape_url),
               [&response_promise](tr_web::FetchResponse const& resp) { response_promise.set_value(resp); },
               nullptr,
               TimeoutSecs });

@@ -7,7 +7,6 @@
 #include <array>
 #include <cstdint> // uint8_t
 #include <cstring>
-#include <iterator> // back_inserter
 #include <optional>
 #include <ranges>
 #include <string>
@@ -20,7 +19,6 @@
 #include "libtransmission/error.h"
 #include "libtransmission/magnet-metainfo.h"
 #include "libtransmission/string-utils.h"
-#include "libtransmission/tr-strbuf.h" // for tr_urlbuf
 #include "libtransmission/types.h" // for tr_sha1_digest_t
 #include "libtransmission/web-utils.h"
 
@@ -152,24 +150,25 @@ std::optional<tr_sha256_digest_t> parseHash2(std::string_view sv)
 
 std::string tr_magnet_metainfo::magnet() const
 {
-    auto buf = tr_urlbuf{ "magnet:?xt=urn:btih:"sv, info_hash_string() };
+    auto buf = std::string{ "magnet:?xt=urn:btih:"sv };
+    buf += info_hash_string();
 
     if (!std::empty(name_)) {
         buf += "&dn="sv;
-        tr_urlPercentEncode(std::back_inserter(buf), name_);
+        tr_urlPercentEncode(buf, name_);
     }
 
     for (auto const& tracker : this->announce_list()) {
         buf += "&tr="sv;
-        tr_urlPercentEncode(std::back_inserter(buf), tracker.announce.sv());
+        tr_urlPercentEncode(buf, tracker.announce.sv());
     }
 
     for (auto const& webseed : webseed_urls_) {
         buf += "&ws="sv;
-        tr_urlPercentEncode(std::back_inserter(buf), webseed);
+        tr_urlPercentEncode(buf, webseed);
     }
 
-    return std::string{ buf.sv() };
+    return buf;
 }
 
 void tr_magnet_metainfo::set_name(std::string_view name)

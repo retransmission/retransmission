@@ -1398,7 +1398,7 @@ void portTest(tr_session* session, tr_variant::Map const& args_in, struct tr_rpc
     static auto constexpr TimeoutSecs = 20s;
 
     auto const port = session->advertisedPeerPort();
-    auto const url = fmt::format("{:s}/{:d}", TR_PROJ_URL_PORTCHECK, port.host());
+    auto url = fmt::format("{:s}/{:d}", TR_PROJ_URL_PORTCHECK, port.host());
     auto ip_proto = std::optional<tr_web::FetchOptions::IPProtocol>{};
 
     if (auto const val = args_in.value_if<std::string_view>(TR_KEY_ip_protocol); val) {
@@ -1415,7 +1415,7 @@ void portTest(tr_session* session, tr_variant::Map const& args_in, struct tr_rpc
     }
 
     auto options = tr_web::FetchOptions{
-        url,
+        std::move(url),
         [](tr_web::FetchResponse const& r) { onPortTested(r); },
         idle_data,
     };
@@ -1638,7 +1638,7 @@ void torrentAdd(tr_session* session, tr_variant::Map const& args_in, tr_rpc_idle
     if (isCurlURL(filename)) {
         auto* const d = new add_torrent_idle_data{ idle_data, std::move(ctor) };
         auto options = tr_web::FetchOptions{
-            filename,
+            std::string{ filename },
             [](tr_web::FetchResponse const& r) { onMetadataFetched(r); },
             d,
         };

@@ -12,8 +12,6 @@
 #include <utility>
 #include <vector>
 
-#include <fmt/format.h>
-
 #include "libtransmission/digest.h"
 
 /** @brief convenience function to determine if an address is an IP address (IPv4 or IPv6) */
@@ -54,34 +52,15 @@ struct tr_url_parsed_t {
 // This is to avoid logging sensitive info, e.g. a personal announcer id in the URL.
 [[nodiscard]] std::string tr_urlTrackerLogName(std::string_view url);
 
-template<typename BackInsertIter>
-constexpr void tr_urlPercentEncode(BackInsertIter out, std::string_view input, bool escape_reserved = true)
-{
-    auto constexpr IsUnreserved = [](unsigned char ch) {
-        return ('0' <= ch && ch <= '9') || ('a' <= ch && ch <= 'z') || ('A' <= ch && ch <= 'Z') || ch == '-' || ch == '_' ||
-            ch == '.' || ch == '~';
-    };
+// Appends the percent-encoded form of `input` to `appendme`.
+// When `escape_reserved` is false, the RFC 3986 reserved characters are
+// passed through as-is; use that when encoding a URL rather than a single
+// URL component, e.g. so that a webseed URL keeps its '/' separators.
+void tr_urlPercentEncode(std::string& appendme, std::string_view input, bool escape_reserved = true);
 
-    auto constexpr IsReserved = [](unsigned char ch) {
-        return ch == '!' || ch == '*' || ch == '(' || ch == ')' || ch == ';' || ch == ':' || ch == '@' || ch == '&' ||
-            ch == '=' || ch == '+' || ch == '$' || ch == ',' || ch == '/' || ch == '?' || ch == '%' || ch == '#' || ch == '[' ||
-            ch == ']' || ch == '\'';
-    };
-
-    for (unsigned char ch : input) {
-        if (IsUnreserved(ch) || (!escape_reserved && IsReserved(ch))) {
-            out = ch;
-        } else {
-            fmt::format_to(out, "%{:02X}", ch);
-        }
-    }
-}
-
-template<typename BackInsertIter>
-constexpr void tr_urlPercentEncode(BackInsertIter out, tr_sha1_digest_t const& digest)
-{
-    tr_urlPercentEncode(out, std::string_view{ reinterpret_cast<char const*>(digest.data()), std::size(digest) });
-}
+// Appends the percent-encoded form of `digest`'s bytes to `appendme`.
+// Appends at most `3 * std::size(digest)` chars.
+void tr_urlPercentEncode(std::string& appendme, tr_sha1_digest_t const& digest);
 
 [[nodiscard]] char const* tr_webGetResponseStr(long response_code);
 
