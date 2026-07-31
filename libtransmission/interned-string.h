@@ -82,7 +82,7 @@ public:
         return std::size(sv());
     }
 
-    constexpr void clear()
+    constexpr void clear() noexcept
     {
         *this = tr_interned_string{};
     }

@@ -843,7 +843,7 @@ void tr_rpc_server::set_enabled(bool is_enabled)
     });
 }
 
-void tr_rpc_server::set_port(tr_port port) noexcept
+void tr_rpc_server::set_port(tr_port port)
 {
     if (settings_.port == port) {
         return;
@@ -870,7 +870,7 @@ void tr_rpc_server::set_whitelist(std::string_view whitelist)
 
 // --- PASSWORD
 
-void tr_rpc_server::set_username(std::string username) noexcept
+void tr_rpc_server::set_username(std::string username)
 {
     settings_.username = std::move(username);
     tr_logAddDebug(fmt::format("setting our username to '{:s}'", settings_.username));

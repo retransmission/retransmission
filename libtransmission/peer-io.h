@@ -70,7 +70,7 @@ public:
         tr_bandwidth* parent,
         std::shared_ptr<tr_peer_socket> socket);
 
-    constexpr void set_callbacks(CanRead can_read, DidWrite did_write, GotError got_error, void* user_data)
+    constexpr void set_callbacks(CanRead can_read, DidWrite did_write, GotError got_error, void* user_data) noexcept
     {
         can_read_ = can_read;
         did_write_ = did_write;
@@ -232,7 +232,7 @@ public:
         return priority_;
     }
 
-    constexpr void set_priority(tr_priority_t priority)
+    constexpr void set_priority(tr_priority_t priority) noexcept
     {
         priority_ = priority;
     }

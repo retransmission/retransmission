@@ -74,7 +74,7 @@ private:
             return (*this <=> that) == 0;
         }
 
-        [[nodiscard]] constexpr auto block_belongs(tr_block_index_t const block) const
+        [[nodiscard]] constexpr auto block_belongs(tr_block_index_t const block) const noexcept
         {
             return block_span.begin <= block && block < block_span.end;
         }

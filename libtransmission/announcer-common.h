@@ -35,7 +35,7 @@ void tr_announcerParseHttpAnnounceResponse(tr_announce_response& response, std::
 
 void tr_announcerParseHttpScrapeResponse(tr_scrape_response& response, std::string_view benc, std::string_view log_name);
 
-[[nodiscard]] constexpr std::string_view tr_announce_event_get_string(tr_announce_event e)
+[[nodiscard]] constexpr std::string_view tr_announce_event_get_string(tr_announce_event e) noexcept
 {
     switch (e) {
     case TR_ANNOUNCE_EVENT_COMPLETED:

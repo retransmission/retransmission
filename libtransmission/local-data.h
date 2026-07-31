@@ -98,7 +98,7 @@ public:
     void remove(tr_torrent_id_t id, tr_torrent_remove_func remove_func);
     void rename(tr_torrent_id_t id, std::string_view oldpath, std::string_view newname, tr_torrent_rename_done_func callback);
     void shutdown();
-    [[nodiscard]] static uint64_t enqueued_write_bytes();
+    [[nodiscard]] static uint64_t enqueued_write_bytes() noexcept;
 
 private:
     std::unique_ptr<Backend> backend_;

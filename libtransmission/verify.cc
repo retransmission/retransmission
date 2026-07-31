@@ -183,7 +183,8 @@ tr_verify_worker::~tr_verify_worker()
     }
 }
 
-void tr_verify_worker::set_sleep_per_seconds_during_verify(std::chrono::milliseconds const sleep_per_seconds_during_verify)
+void tr_verify_worker::set_sleep_per_seconds_during_verify(
+    std::chrono::milliseconds const sleep_per_seconds_during_verify) noexcept
 {
     sleep_per_seconds_during_verify_ = sleep_per_seconds_during_verify;
 }

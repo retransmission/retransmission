@@ -118,7 +118,7 @@ private:
     [[nodiscard]] tr_tracker_tier_t get_tier(tr_tracker_tier_t tier, tr_url_parsed_t const& announce) const;
 
     [[nodiscard]] bool can_add(tr_url_parsed_t const& announce) const noexcept;
-    static tr_tracker_id_t next_unique_id();
+    static tr_tracker_id_t next_unique_id() noexcept;
     trackers_t::iterator find(std::string_view announce);
     trackers_t::iterator find(tr_tracker_id_t id);
 

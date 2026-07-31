@@ -71,7 +71,7 @@ tr_metadata_download::tr_metadata_download(std::string_view log_name, int64_t co
     create_all_needed(n);
 }
 
-void tr_torrent::maybe_start_metadata_transfer(int64_t const size) noexcept
+void tr_torrent::maybe_start_metadata_transfer(int64_t const size)
 {
     if (has_metainfo() || metadata_download_) {
         return;

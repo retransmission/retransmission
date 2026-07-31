@@ -144,7 +144,7 @@ private:
             responses_.emplace_back(std::move(contents), code);
         }
 
-        [[nodiscard]] auto& web()
+        [[nodiscard]] auto& web() noexcept
         {
             return *web_;
         }

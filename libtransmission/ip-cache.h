@@ -88,11 +88,11 @@ public:
 
     [[nodiscard]] tr_address bind_addr(tr_address_type type) const noexcept;
 
-    bool set_global_addr(tr_address const& addr_new) noexcept;
+    bool set_global_addr(tr_address const& addr_new);
 
     void update_addr(tr_address_type type);
     void update_global_addr(tr_address_type type);
-    void update_source_addr(tr_address_type type) noexcept;
+    void update_source_addr(tr_address_type type);
 
     // Only use as a callback for web_->fetch()
     void on_response_ip_query(tr_address_type type, tr_web::FetchResponse const& response);
@@ -108,9 +108,9 @@ private:
 
     explicit tr_ip_cache(Mediator& mediator_in);
 
-    void unset_global_addr(tr_address_type type) noexcept;
-    void set_source_addr(tr_address const& addr_new) noexcept;
-    void unset_addr(tr_address_type type) noexcept;
+    void unset_global_addr(tr_address_type type);
+    void set_source_addr(tr_address const& addr_new);
+    void unset_addr(tr_address_type type);
 
     void start_timer(tr_address_type type, std::chrono::milliseconds msec) noexcept
     {

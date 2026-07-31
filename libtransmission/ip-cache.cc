@@ -190,7 +190,7 @@ tr_address tr_ip_cache::bind_addr(tr_address_type type) const noexcept
     return {};
 }
 
-bool tr_ip_cache::set_global_addr(tr_address const& addr_new) noexcept
+bool tr_ip_cache::set_global_addr(tr_address const& addr_new)
 {
     if (addr_new.is_global_unicast()) {
         auto const lock = std::scoped_lock{ global_addr_mutex_[addr_new.type] };
@@ -248,7 +248,7 @@ void tr_ip_cache::update_global_addr(tr_address_type const type)
     mediator_.fetch(std::move(options));
 }
 
-void tr_ip_cache::update_source_addr(tr_address_type type) noexcept
+void tr_ip_cache::update_source_addr(tr_address_type type)
 {
     using namespace global_source_ip_helpers;
 
@@ -340,14 +340,14 @@ void tr_ip_cache::on_response_ip_query(tr_address_type const type, tr_web::Fetch
     unset_is_updating(type);
 }
 
-void tr_ip_cache::unset_global_addr(tr_address_type type) noexcept
+void tr_ip_cache::unset_global_addr(tr_address_type type)
 {
     auto const lock = std::scoped_lock{ global_addr_mutex_[type] };
     global_addr_[type].reset();
     tr_logAddTrace(fmt::format("Unset {} global address cache", tr_ip_protocol_to_sv(type)));
 }
 
-void tr_ip_cache::set_source_addr(tr_address const& addr_new) noexcept
+void tr_ip_cache::set_source_addr(tr_address const& addr_new)
 {
     auto const lock = std::scoped_lock{ source_addr_mutex_[addr_new.type] };
     if (auto& addr = source_addr_[addr_new.type]; addr != addr_new) {
@@ -356,7 +356,7 @@ void tr_ip_cache::set_source_addr(tr_address const& addr_new) noexcept
     }
 }
 
-void tr_ip_cache::unset_addr(tr_address_type type) noexcept
+void tr_ip_cache::unset_addr(tr_address_type type)
 {
     auto const lock = std::scoped_lock{ source_addr_mutex_[type] };
     source_addr_[type].reset();

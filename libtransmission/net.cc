@@ -362,7 +362,7 @@ std::pair<tr_address, std::byte const*> tr_address::from_compact_ipv6(std::byte 
     return { address, compact };
 }
 
-std::optional<unsigned> tr_address::to_interface_index() const noexcept
+std::optional<unsigned> tr_address::to_interface_index() const
 {
     if (!is_valid()) {
         tr_logAddDebug("Invalid target address to find interface index");

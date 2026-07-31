@@ -55,7 +55,7 @@ public:
     RpcClient& operator=(RpcClient const&) = delete;
 
     // Use an in-process session
-    void start(tr_session* session);
+    void start(tr_session* session) noexcept;
 
     // Use the remote server at `url` (scheme://host:port/path).
     void start(std::string url, std::optional<std::string> username = {}, std::optional<std::string> password = {});

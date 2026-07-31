@@ -177,7 +177,7 @@ public:
 
     [[nodiscard]] static uint32_t default_piece_size(uint64_t total_size) noexcept;
 
-    [[nodiscard]] constexpr static bool is_legal_piece_size(uint32_t x)
+    [[nodiscard]] constexpr static bool is_legal_piece_size(uint32_t x) noexcept
     {
         // It must be a power of two and at least 16KiB
         auto constexpr MinSize = uint32_t{ 1024U * 16U };

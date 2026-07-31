@@ -130,7 +130,7 @@ public:
         return is_private_;
     }
 
-    [[nodiscard]] TR_CONSTEXPR_VEC tr_sha1_digest_t const& piece_hash(tr_piece_index_t piece) const
+    [[nodiscard]] TR_CONSTEXPR_VEC tr_sha1_digest_t const& piece_hash(tr_piece_index_t piece) const noexcept
     {
         return pieces_[piece];
     }

@@ -839,7 +839,7 @@ std::string tr::SessionSettings::get_default_download_dir()
     return tr::platform::get_download_dir();
 }
 
-void tr::SessionSettings::fixup_from_preferred_transports()
+void tr::SessionSettings::fixup_from_preferred_transports() noexcept
 {
     utp_enabled = false;
     tcp_enabled = false;

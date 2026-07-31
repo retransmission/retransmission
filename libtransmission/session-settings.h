@@ -60,7 +60,7 @@ public:
         load(src);
     }
 
-    void fixup_from_preferred_transports();
+    void fixup_from_preferred_transports() noexcept;
     void fixup_to_preferred_transports();
 
     void load(tr::Settings const& src)

@@ -109,7 +109,7 @@ public:
         return priority_;
     }
 
-    constexpr void set_bandwidth_priority(tr_priority_t priority)
+    constexpr void set_bandwidth_priority(tr_priority_t priority) noexcept
     {
         if (priority == TR_PRI_LOW || priority == TR_PRI_NORMAL || priority == TR_PRI_HIGH) {
             priority_ = priority;
@@ -159,7 +159,7 @@ public:
         return optional_args_[mode].paused_;
     }
 
-    constexpr void set_paused(tr_ctorMode const mode, bool const paused)
+    constexpr void set_paused(tr_ctorMode const mode, bool const paused) noexcept
     {
         optional_args_[mode].paused_ = paused;
     }
@@ -171,7 +171,7 @@ public:
         return optional_args_[mode].peer_limit_;
     }
 
-    constexpr void set_peer_limit(tr_ctorMode const mode, uint16_t const peer_limit)
+    constexpr void set_peer_limit(tr_ctorMode const mode, uint16_t const peer_limit) noexcept
     {
         optional_args_[mode].peer_limit_ = peer_limit;
     }
@@ -183,7 +183,7 @@ public:
         return should_delete_source_file_;
     }
 
-    constexpr void set_should_delete_source_file(bool should)
+    constexpr void set_should_delete_source_file(bool should) noexcept
     {
         should_delete_source_file_ = should;
     }

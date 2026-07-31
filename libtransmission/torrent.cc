@@ -1771,7 +1771,7 @@ void tr_torrent::set_labels(labels_t const& new_labels)
 
 // ---
 
-void tr_torrent::set_bandwidth_group(std::string_view group_name) noexcept
+void tr_torrent::set_bandwidth_group(std::string_view group_name)
 {
     group_name = tr_strv_strip(group_name);
 

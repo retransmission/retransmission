@@ -44,7 +44,7 @@ public:
 
     void load(Settings&& settings);
 
-    [[nodiscard]] constexpr Settings const& settings() const
+    [[nodiscard]] constexpr Settings const& settings() const noexcept
     {
         return settings_;
     }
@@ -54,7 +54,7 @@ public:
         return settings_.port;
     }
 
-    void set_port(tr_port port) noexcept;
+    void set_port(tr_port port);
 
     [[nodiscard]] constexpr auto is_enabled() const noexcept
     {
@@ -85,7 +85,7 @@ public:
         return settings_.username;
     }
 
-    void set_username(std::string username) noexcept;
+    void set_username(std::string username);
 
     [[nodiscard]] constexpr auto is_password_enabled() const noexcept
     {

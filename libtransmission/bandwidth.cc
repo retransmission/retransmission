@@ -57,7 +57,7 @@ Speed tr_bandwidth::get_speed(RateControl& r, unsigned int interval_msec, uint64
     return r.cache_val_;
 }
 
-void tr_bandwidth::notify_bandwidth_consumed_bytes(uint64_t const now, RateControl& r, size_t size)
+void tr_bandwidth::notify_bandwidth_consumed_bytes(uint64_t const now, RateControl& r, size_t size) noexcept
 {
     if (r.date_[r.newest_] + GranularityMSec >= now) {
         r.size_[r.newest_] += size;

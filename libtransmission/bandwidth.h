@@ -152,7 +152,7 @@ public:
      * @see `tr_bandwidth::allocate`
      * @see `tr_bandwidth::getDesiredSpeed`
      */
-    constexpr bool set_desired_speed(tr_direction dir, Speed desired_speed)
+    constexpr bool set_desired_speed(tr_direction dir, Speed desired_speed) noexcept
     {
         auto& value = band_[static_cast<uint8_t>(dir)].desired_speed_;
         auto const did_change = desired_speed != value;
@@ -164,7 +164,7 @@ public:
      * @brief Get the desired speed for the bandwidth subtree.
      * @see `tr_bandwidth::setDesiredSpeed`
      */
-    [[nodiscard]] constexpr auto get_desired_speed(tr_direction dir) const
+    [[nodiscard]] constexpr auto get_desired_speed(tr_direction dir) const noexcept
     {
         return band_[static_cast<uint8_t>(dir)].desired_speed_;
     }
@@ -183,7 +183,7 @@ public:
     /**
      * @brief Set whether or not this bandwidth should throttle its peer-io's speeds
      */
-    constexpr bool set_limited(tr_direction dir, bool is_limited)
+    constexpr bool set_limited(tr_direction dir, bool is_limited) noexcept
     {
         auto& value = band_[static_cast<uint8_t>(dir)].is_limited_;
         auto const did_change = is_limited != value;
@@ -205,7 +205,7 @@ public:
      * But when we set a torrent's speed mode to `TR_SPEEDLIMIT_UNLIMITED`, then
      * in that particular case we want to ignore the global speed limit...
      */
-    constexpr bool honor_parent_limits(tr_direction direction, bool is_enabled)
+    constexpr bool honor_parent_limits(tr_direction direction, bool is_enabled) noexcept
     {
         auto& value = band_[static_cast<uint8_t>(direction)].honor_parent_limits_;
         auto const did_change = is_enabled != value;
@@ -213,7 +213,7 @@ public:
         return did_change;
     }
 
-    [[nodiscard]] constexpr bool are_parent_limits_honored(tr_direction direction) const
+    [[nodiscard]] constexpr bool are_parent_limits_honored(tr_direction direction) const noexcept
     {
         return band_[static_cast<uint8_t>(direction)].honor_parent_limits_;
     }
@@ -249,7 +249,7 @@ private:
 
     void deparent() noexcept;
 
-    static void notify_bandwidth_consumed_bytes(uint64_t now, RateControl& r, size_t size);
+    static void notify_bandwidth_consumed_bytes(uint64_t now, RateControl& r, size_t size) noexcept;
 
     static void phase_one(std::vector<tr_peerIo*>& peers, tr_direction dir);
 
@@ -267,7 +267,7 @@ private:
 
 /* @} */
 
-constexpr auto tr_isPriority(tr_priority_t p)
+constexpr auto tr_isPriority(tr_priority_t p) noexcept
 {
     return p == TR_PRI_LOW || p == TR_PRI_NORMAL || p == TR_PRI_HIGH;
 }

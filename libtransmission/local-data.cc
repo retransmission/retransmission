@@ -326,7 +326,7 @@ void LocalData::shutdown()
 {
 }
 
-uint64_t LocalData::enqueued_write_bytes()
+uint64_t LocalData::enqueued_write_bytes() noexcept
 {
     return 0U;
 }

@@ -53,7 +53,7 @@ RpcClient::RpcClient(UiThreadFunc run_on_ui_thread)
 
 RpcClient::~RpcClient() = default;
 
-void RpcClient::start(tr_session* session)
+void RpcClient::start(tr_session* session) noexcept
 {
     session_ = session;
 }

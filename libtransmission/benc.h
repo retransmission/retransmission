@@ -38,17 +38,17 @@ struct Handler {
         {
         }
 
-        [[nodiscard]] constexpr std::pair<long, long> tokenSpan() const
+        [[nodiscard]] constexpr std::pair<long, long> tokenSpan() const noexcept
         {
             return { token_begin_ - stream_begin_, token_end_ - stream_begin_ };
         }
 
-        [[nodiscard]] constexpr auto raw() const
+        [[nodiscard]] constexpr auto raw() const noexcept
         {
             return std::string_view{ token_begin_, static_cast<size_t>(token_end_ - token_begin_) };
         }
 
-        constexpr void setTokenSpan(char const* a, size_t len)
+        constexpr void setTokenSpan(char const* a, size_t len) noexcept
         {
             token_begin_ = a;
             token_end_ = token_begin_ + len;
@@ -117,12 +117,12 @@ struct BasicHandler : public Handler {
         return true;
     }
 
-    [[nodiscard]] constexpr auto key(size_t i) const
+    [[nodiscard]] constexpr auto key(size_t i) const noexcept
     {
         return keys_[i];
     }
 
-    [[nodiscard]] constexpr auto depth() const
+    [[nodiscard]] constexpr auto depth() const noexcept
     {
         return depth_;
     }
@@ -196,22 +196,22 @@ struct ParserStack {
         return depth == 0;
     }
 
-    constexpr void tokenWalked()
+    constexpr void tokenWalked() noexcept
     {
         ++stack[depth].n_children_walked;
     }
 
-    [[nodiscard]] constexpr Node& current()
+    [[nodiscard]] constexpr Node& current() noexcept
     {
         return stack[depth];
     }
 
-    [[nodiscard]] constexpr Node& current() const
+    [[nodiscard]] constexpr Node& current() const noexcept
     {
         return stack[depth];
     }
 
-    [[nodiscard]] constexpr bool expectingDictKey() const
+    [[nodiscard]] constexpr bool expectingDictKey() const noexcept
     {
         return depth > 0 && stack[depth].parent_type == ParentType::Dict && (stack[depth].n_children_walked % 2) == 0;
     }

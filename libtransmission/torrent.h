@@ -627,7 +627,7 @@ struct tr_torrent {
 
     /// METAINFO - MAGNET
 
-    void maybe_start_metadata_transfer(int64_t size) noexcept;
+    void maybe_start_metadata_transfer(int64_t size);
 
     [[nodiscard]] std::optional<tr_metadata_piece> get_metadata_piece(int64_t piece) const;
 
@@ -694,7 +694,7 @@ struct tr_torrent {
         return unique_id_;
     }
 
-    void init_id(tr_torrent_id_t id)
+    void init_id(tr_torrent_id_t id) noexcept
     {
         TR_ASSERT(unique_id_ == tr_torrent_id_t{});
         TR_ASSERT(id != tr_torrent_id_t{});
@@ -797,7 +797,7 @@ struct tr_torrent {
         return date_changed_ > when;
     }
 
-    void set_bandwidth_group(std::string_view group_name) noexcept;
+    void set_bandwidth_group(std::string_view group_name);
 
     [[nodiscard]] constexpr auto get_priority() const noexcept
     {
@@ -1084,7 +1084,7 @@ private:
     class SimpleSmoothedSpeed
     {
     public:
-        constexpr auto update(uint64_t time_msec, Speed speed)
+        constexpr auto update(uint64_t time_msec, Speed speed) noexcept
         {
             // If the old speed is too old, just replace it
             if (timestamp_msec_ + MaxAgeMSec <= time_msec) {
@@ -1406,7 +1406,7 @@ private:
 
 // ---
 
-constexpr bool tr_isTorrent(tr_torrent const* tor)
+constexpr bool tr_isTorrent(tr_torrent const* tor) noexcept
 {
     return tor != nullptr && tor->session != nullptr;
 }

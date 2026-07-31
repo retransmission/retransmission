@@ -141,7 +141,7 @@ tr_tracker_tier_t tr_announce_list::nextTier() const
     return std::empty(trackers_) ? 0 : trackers_.back().tier + 1;
 }
 
-tr_tracker_id_t tr_announce_list::next_unique_id()
+tr_tracker_id_t tr_announce_list::next_unique_id() noexcept
 {
     static tr_tracker_id_t id = 0;
     return id++;

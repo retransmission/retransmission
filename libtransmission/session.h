@@ -441,22 +441,22 @@ public:
         return session_thread_->event_base();
     }
 
-    [[nodiscard]] constexpr tr_torrents& torrents()
+    [[nodiscard]] constexpr tr_torrents& torrents() noexcept
     {
         return torrents_;
     }
 
-    [[nodiscard]] constexpr tr_torrents const& torrents() const
+    [[nodiscard]] constexpr tr_torrents const& torrents() const noexcept
     {
         return torrents_;
     }
 
-    [[nodiscard]] constexpr auto& torrent_queue()
+    [[nodiscard]] constexpr auto& torrent_queue() noexcept
     {
         return torrent_queue_;
     }
 
-    [[nodiscard]] constexpr auto const& torrent_queue() const
+    [[nodiscard]] constexpr auto const& torrent_queue() const noexcept
     {
         return torrent_queue_;
     }
@@ -1095,13 +1095,13 @@ public:
         return settings().unused_cache_size_mbytes;
     }
 
-    constexpr void set_unused_cache_size_mbytes(size_t const mbytes)
+    constexpr void set_unused_cache_size_mbytes(size_t const mbytes) noexcept
     {
         settings_.unused_cache_size_mbytes = mbytes;
     }
 
 private:
-    constexpr bool& scriptEnabledFlag(TrScript i)
+    constexpr bool& scriptEnabledFlag(TrScript i) noexcept
     {
         if (i == TR_SCRIPT_ON_TORRENT_ADDED) {
             return settings_.script_torrent_added_enabled;
@@ -1114,7 +1114,7 @@ private:
         return settings_.script_torrent_done_seeding_enabled;
     }
 
-    constexpr std::string& scriptFilename(TrScript i)
+    constexpr std::string& scriptFilename(TrScript i) noexcept
     {
         if (i == TR_SCRIPT_ON_TORRENT_ADDED) {
             return settings_.script_torrent_added_filename;
