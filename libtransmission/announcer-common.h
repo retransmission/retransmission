@@ -12,6 +12,7 @@
 #include <array>
 #include <chrono>
 #include <compare>
+#include <cstddef> // size_t
 #include <cstdint> // uint64_t
 #include <ctime>
 #include <optional>
@@ -156,6 +157,38 @@ struct tr_announce_response {
         // Non-empty error message most likely means we reached the tracker
         return static_cast<int>(std::empty(rhs.errmsg)) <=> static_cast<int>(std::empty(lhs.errmsg));
     }
+};
+
+// --- TRYING ORDER
+
+/**
+ * The order in which a tier's trackers are tried, per BEP 12:
+ * shuffled once when built, then stepped through in order, and a
+ * tracker that responds to an announce moves to the front.
+ * Holds indices into the tier's tracker list so that list can keep
+ * its display order. https://www.bittorrent.org/beps/bep_0012.html
+ */
+class tr_tracker_trying_order
+{
+public:
+    explicit tr_tracker_trying_order(size_t tracker_count);
+
+    // index of the tracker now being tried, or nullopt if none is
+    [[nodiscard]] std::optional<size_t> current() const;
+
+    // step to the next tracker in the trying order, wrapping around
+    std::optional<size_t> advance();
+
+    // move the current tracker to the front of the trying order
+    void promote_current();
+
+    // make `index` the tracker now being tried, or nullopt for none;
+    // the trying order itself is unchanged
+    void set_current(std::optional<size_t> index);
+
+private:
+    std::vector<size_t> order_;
+    std::optional<size_t> pos_;
 };
 
 // --- SCRAPE

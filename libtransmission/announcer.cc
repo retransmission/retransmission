@@ -341,7 +341,8 @@ private:
 /** @brief A group of trackers in a single tier, as per the multitracker spec */
 struct tr_tier {
     tr_tier(tr_announcer_impl* announcer, tr_torrent* tor_in, std::vector<tr_announce_list::tracker_info const*> const& infos)
-        : tor{ tor_in }
+        : trying_order_{ std::size(infos) }
+        , tor{ tor_in }
     {
         trackers.reserve(std::size(infos));
         for (auto const* info : infos) {
@@ -353,22 +354,17 @@ struct tr_tier {
 
     [[nodiscard]] tr_tracker* currentTracker()
     {
-        if (!current_tracker_index_) {
-            return nullptr;
-        }
-
-        TR_ASSERT(*current_tracker_index_ < std::size(trackers));
-        return &trackers[*current_tracker_index_];
+        return const_cast<tr_tracker*>(std::as_const(*this).currentTracker());
     }
 
     [[nodiscard]] tr_tracker const* currentTracker() const
     {
-        if (!current_tracker_index_) {
-            return nullptr;
+        if (auto const idx = trying_order_.current()) {
+            TR_ASSERT(*idx < std::size(trackers));
+            return &trackers[*idx];
         }
 
-        TR_ASSERT(*current_tracker_index_ < std::size(trackers));
-        return &trackers[*current_tracker_index_];
+        return {};
     }
 
     [[nodiscard]] constexpr bool needsToAnnounce(time_t now) const
@@ -392,14 +388,8 @@ struct tr_tier {
 
     tr_tracker* useNextTracker()
     {
-        // move our index to the next tracker in the tier
-        if (std::empty(trackers)) {
-            current_tracker_index_ = std::nullopt;
-        } else if (!current_tracker_index_) {
-            current_tracker_index_ = 0;
-        } else {
-            current_tracker_index_ = (*current_tracker_index_ + 1) % std::size(trackers);
-        }
+        // move to the next tracker in the tier's trying order
+        trying_order_.advance();
 
         // reset some of the tier's fields
         scrapeIntervalSec = DefaultScrapeIntervalSec;
@@ -463,7 +453,7 @@ struct tr_tier {
 
     std::vector<tr_tracker> trackers;
 
-    std::optional<size_t> current_tracker_index_;
+    tr_tracker_trying_order trying_order_;
 
     tr_torrent* const tor;
 
@@ -1001,6 +991,7 @@ void tr_announcer_impl::onAnnounceDone(
 
         auto* const tracker = tier->currentTracker();
         if (tracker != nullptr) {
+            tier->trying_order_.promote_current();
             tracker->consecutive_failures = 0;
 
             if (tracker->set_seeder_count(response.seeders)) {
@@ -1635,8 +1626,8 @@ void tr_announcer_impl::resetTorrent(tr_torrent* tor)
                     new_tier.announce_event_priority = old_tier->announce_event_priority;
 
                     auto const* const old_current = old_tier->currentTracker();
-                    new_tier.current_tracker_index_ = old_current == nullptr ? std::nullopt :
-                                                                               new_tier.indexOf(old_current->announce_url);
+                    new_tier.trying_order_.set_current(
+                        old_current == nullptr ? std::nullopt : new_tier.indexOf(old_current->announce_url));
                 }
             }
         }
@@ -1648,7 +1639,7 @@ void tr_announcer_impl::resetTorrent(tr_torrent* tor)
     auto const is_running = tor->is_running();
     auto const now = tr_time();
     for (auto& tier : newer->tiers) {
-        if (!tier.current_tracker_index_) {
+        if (tier.currentTracker() == nullptr) {
             tier.useNextTracker();
 
             if (is_running) {

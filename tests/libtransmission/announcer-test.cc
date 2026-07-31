@@ -6,9 +6,11 @@
 #include <algorithm>
 #include <array>
 #include <cassert>
-#include <cstddef> // std::byte
+#include <cstddef> // std::byte, size_t
 #include <optional>
+#include <set>
 #include <string_view>
+#include <vector>
 
 #define LIBTRANSMISSION_ANNOUNCER_MODULE
 
@@ -304,4 +306,109 @@ TEST_F(AnnouncerTest, parseHttpScrapeResponseMultiWithMissing)
     EXPECT_EQ(7, response.rows[2].seeders);
     EXPECT_EQ(8, response.rows[2].leechers);
     EXPECT_EQ(9, response.rows[2].downloads);
+}
+
+// --- TRYING ORDER
+
+namespace
+{
+// advancing a fresh tr_tracker_trying_order n_trackers times walks the
+// full trying order once; collect it for asserting on later laps
+[[nodiscard]] std::vector<size_t> advanceFullLap(tr_tracker_trying_order& order, size_t n_trackers)
+{
+    auto lap = std::vector<size_t>{};
+    lap.reserve(n_trackers);
+
+    for (size_t i = 0; i < n_trackers; ++i) {
+        auto const current = order.advance();
+        assert(current.has_value());
+        lap.push_back(*current);
+    }
+
+    return lap;
+}
+} // namespace
+
+TEST_F(AnnouncerTest, tryingOrderVisitsEveryTrackerOncePerLap)
+{
+    static auto constexpr TrackerCount = size_t{ 5 };
+    auto order = tr_tracker_trying_order{ TrackerCount };
+
+    // no tracker is current until the first advance()
+    EXPECT_EQ(std::nullopt, order.current());
+
+    // one lap visits each tracker exactly once...
+    auto const lap = advanceFullLap(order, TrackerCount);
+    EXPECT_EQ(TrackerCount, std::size(std::set<size_t>{ std::begin(lap), std::end(lap) }));
+    for (auto const idx : lap) {
+        EXPECT_LT(idx, TrackerCount);
+    }
+
+    // ...and the next lap repeats the same order
+    EXPECT_EQ(lap, advanceFullLap(order, TrackerCount));
+}
+
+TEST_F(AnnouncerTest, tryingOrderIsShuffled)
+{
+    static auto constexpr TrackerCount = size_t{ 6 };
+
+    auto distinct_orders = std::set<std::vector<size_t>>{};
+    for (auto i = 0U; i < 32U; ++i) {
+        auto order = tr_tracker_trying_order{ TrackerCount };
+        distinct_orders.insert(advanceFullLap(order, TrackerCount));
+    }
+
+    // a fixed start-at-the-first-tracker order would collapse
+    // all 32 orders into a single entry
+    EXPECT_GT(std::size(distinct_orders), 1U);
+}
+
+TEST_F(AnnouncerTest, tryingOrderPromoteMovesCurrentToFront)
+{
+    static auto constexpr TrackerCount = size_t{ 5 };
+    auto order = tr_tracker_trying_order{ TrackerCount };
+    auto const lap = advanceFullLap(order, TrackerCount);
+
+    // walk into the second lap, to the second tracker in the order
+    order.advance();
+    order.advance();
+    EXPECT_EQ(lap[1], order.current());
+
+    // promoting keeps it current...
+    order.promote_current();
+    EXPECT_EQ(lap[1], order.current());
+
+    // ...and the rest of the order now follows it
+    auto const expected = std::vector<size_t>{ lap[0], lap[2], lap[3], lap[4], lap[1] };
+    EXPECT_EQ(expected, advanceFullLap(order, TrackerCount));
+}
+
+TEST_F(AnnouncerTest, tryingOrderSetCurrent)
+{
+    static auto constexpr TrackerCount = size_t{ 4 };
+    auto order = tr_tracker_trying_order{ TrackerCount };
+    auto const lap = advanceFullLap(order, TrackerCount);
+
+    // selecting a tracker by index leaves the trying order unchanged
+    order.set_current(lap[2]);
+    EXPECT_EQ(lap[2], order.current());
+    EXPECT_EQ(lap[3], order.advance());
+
+    // nullopt unsets the current tracker, and advancing
+    // from there restarts at the front of the order
+    order.set_current(std::nullopt);
+    EXPECT_EQ(std::nullopt, order.current());
+    EXPECT_EQ(lap[0], order.advance());
+}
+
+TEST_F(AnnouncerTest, tryingOrderEmpty)
+{
+    auto order = tr_tracker_trying_order{ 0U };
+
+    EXPECT_EQ(std::nullopt, order.current());
+    EXPECT_EQ(std::nullopt, order.advance());
+
+    order.promote_current();
+    order.set_current(std::nullopt);
+    EXPECT_EQ(std::nullopt, order.current());
 }

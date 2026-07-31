@@ -11,6 +11,7 @@
 		0A6169A80FE5C9A200C66CE6 /* bitfield.h in Headers */ = {isa = PBXBuildFile; fileRef = 0A6169A60FE5C9A200C66CE6 /* bitfield.h */; };
 		0A89346B736DBCF81F3A4850 /* torrent-metainfo.cc in Sources */ = {isa = PBXBuildFile; fileRef = 0A89346B736DBCF81F3A4851 /* torrent-metainfo.cc */; };
 		0A89346B736DBCF81F3A4852 /* torrent-metainfo.h in Headers */ = {isa = PBXBuildFile; fileRef = 0A89346B736DBCF81F3A4853 /* torrent-metainfo.h */; };
+		4D1A996DF3E6096A0EC5969E /* announcer-common.cc in Sources */ = {isa = PBXBuildFile; fileRef = 10D3CB271270C579F589D5A8 /* announcer-common.cc */; };
 		9F0B1F302E4D1A0100A1B2C3 /* env.h in Headers */ = {isa = PBXBuildFile; fileRef = 9F0B1F2A2E4D1A0100A1B2C3 /* env.h */; };
 		9F0B1F312E4D1A0100A1B2C3 /* file-utils.h in Headers */ = {isa = PBXBuildFile; fileRef = 9F0B1F2C2E4D1A0100A1B2C3 /* file-utils.h */; };
 		9F0B1F322E4D1A0100A1B2C3 /* string-utils.h in Headers */ = {isa = PBXBuildFile; fileRef = 9F0B1F2E2E4D1A0100A1B2C3 /* string-utils.h */; };
@@ -767,6 +768,7 @@
 		0A89346B736DBCF81F3A4851 /* torrent-metainfo.cc */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = "torrent-metainfo.cc"; sourceTree = "<group>"; };
 		0A89346B736DBCF81F3A4853 /* torrent-metainfo.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.h; path = "torrent-metainfo.h"; sourceTree = "<group>"; };
 		1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
+		10D3CB271270C579F589D5A8 /* announcer-common.cc */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = "announcer-common.cc"; sourceTree = "<group>"; };
 		1BB44E07B1B52E28291B4E30 /* file-piece-map.cc */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = "file-piece-map.cc"; sourceTree = "<group>"; };
 		1BB44E07B1B52E28291B4E31 /* file-piece-map.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.h; path = "file-piece-map.h"; sourceTree = "<group>"; };
 		2856E0656A49F2665D69E761 /* benc.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.h; fileEncoding = 4; path = benc.h; sourceTree = "<group>"; };
@@ -2100,6 +2102,7 @@
 				EDC37BCC2EE9C2AD001E2612 /* api-compat.cc */,
 				66F977825E65AD498C028BB1 /* announce-list.cc */,
 				66F977825E65AD498C028BB3 /* announce-list.h */,
+				10D3CB271270C579F589D5A8 /* announcer-common.cc */,
 				A23F299F132A447400E9A83B /* announcer-common.h */,
 				A23F29A0132A447400E9A83B /* announcer-http.cc */,
 				A2AA9BE0132CAC8D00FA131E /* announcer-udp.cc */,
@@ -3692,6 +3695,7 @@
 				A284214412DA663E00FBDDBB /* tr-udp.cc in Sources */,
 				C17740D5273A002C00E455D2 /* web-utils.cc in Sources */,
 				A2679294130E00A000CB7464 /* tr-utp.cc in Sources */,
+				4D1A996DF3E6096A0EC5969E /* announcer-common.cc in Sources */,
 				A23F29A2132A447400E9A83B /* announcer-http.cc in Sources */,
 				EDBA62002D4180D5001470F8 /* torrent-queue.cc in Sources */,
 				C1FEE5791C3223CC00D62832 /* watchdir-kqueue.cc in Sources */,
