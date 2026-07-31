@@ -15,7 +15,7 @@
 
 #include <libtransmission/transmission.h>
 
-#include <libtransmission/error.h>
+#include <libtransmission/constants.h>
 #include <libtransmission/file.h>
 #include <libtransmission/macros.h>
 #include <libtransmission/tr-getopt.h>

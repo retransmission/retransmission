@@ -25,7 +25,6 @@
 
 #include "StyleHelper.h"
 #include "Torrent.h"
-#include "TorrentModel.h"
 #include "Utils.h"
 
 /***

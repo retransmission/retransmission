@@ -6,7 +6,6 @@
 #include <algorithm> // std::adjacent_find, std::sort
 #include <cstddef>
 #include <functional>
-#include <ranges>
 #include <vector>
 
 #include <small/vector.hpp>

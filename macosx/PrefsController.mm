@@ -4,6 +4,7 @@
 
 #import <Sparkle/Sparkle.h>
 
+#include <libtransmission/constants.h>
 #include <libtransmission/macros.h>
 #include <libtransmission/string-utils.h>
 

@@ -7,7 +7,6 @@
 
 #include "FilterListModel.hh"
 #include "HigWorkarea.h" // GUI_PAD
-#include "ListModelAdapter.h"
 #include "Prefs.h"
 #include "Session.h" // torrent_cols
 #include "Torrent.h"

@@ -36,7 +36,6 @@
 #include "Application.h"
 #include "DetailsDialog.h"
 #include "FilterBar.h"
-#include "Filters.h"
 #include "Formatter.h"
 #include "MakeDialog.h"
 #include "NativeIcon.h"

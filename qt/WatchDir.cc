@@ -12,7 +12,6 @@
 #include <QtCore/QTimer>
 
 #include <libtransmission/torrent-metainfo.h>
-#include <libtransmission/transmission.h>
 
 #include "TorrentModel.h"
 

@@ -31,6 +31,7 @@
 
 #include <libtransmission/transmission.h>
 
+#include <libtransmission/constants.h>
 #include <libtransmission/error.h>
 #include <libtransmission/file-utils.h>
 #include <libtransmission/file.h>

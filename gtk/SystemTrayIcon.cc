@@ -12,7 +12,6 @@
 
 #include <libtransmission/macros.h>
 #include <libtransmission/transmission.h>
-#include <libtransmission/utils.h>
 
 #include <glibmm/i18n.h>
 #include <glibmm/ustring.h>

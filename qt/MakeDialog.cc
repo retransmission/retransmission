@@ -29,7 +29,6 @@
 #include "QtCompat.h"
 #include "Session.h"
 #include "ui_MakeProgressDialog.h"
-#include "Utils.h"
 
 namespace
 {

@@ -33,8 +33,6 @@
 
 #include <event2/util.h> // for evutil_socket_t
 
-#include <small/vector.hpp>
-
 #include "libtransmission/announce-list.h"
 #include "libtransmission/announcer.h"
 #include "libtransmission/bandwidth.h"

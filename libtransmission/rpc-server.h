@@ -16,7 +16,6 @@
 #include <vector>
 
 #include "libtransmission/net.h"
-#include "libtransmission/quark.h"
 #include "libtransmission/session-settings.h"
 #include "libtransmission/types.h"
 #include "libtransmission/utils-ev.h"

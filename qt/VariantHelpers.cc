@@ -6,9 +6,7 @@
 #include "VariantHelpers.h"
 
 #include <algorithm>
-#include <cmath>
 #include <cstdint>
-#include <limits>
 #include <string_view>
 
 #include <QtCore/QString>

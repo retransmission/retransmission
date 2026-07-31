@@ -8,7 +8,6 @@
 #include <algorithm>
 #include <cassert>
 #include <queue>
-#include <ranges>
 #include <set>
 
 #include <QtCore/QSortFilterProxyModel>
@@ -23,7 +22,6 @@
 #include "FileTreeDelegate.h"
 #include "FileTreeItem.h"
 #include "FileTreeModel.h"
-#include "Formatter.h"
 #include "Utils.h"
 
 using namespace tr::Values;

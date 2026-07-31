@@ -5,8 +5,6 @@
 
 #pragma once
 
-#include <qtguiglobal.h>
-
 #if QT_CONFIG(accessibility)
 
 #include <QtWidgets/QAccessibleWidget>

@@ -8,7 +8,6 @@
 #include <cctype>
 #include <cstdint>
 #include <cstdlib> // for strtoul()
-#include <limits>
 #include <optional>
 #include <ranges>
 #include <string>

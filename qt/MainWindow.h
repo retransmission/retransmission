@@ -18,7 +18,6 @@
 
 #include <QtNetwork/QNetworkReply>
 
-#include "Filters.h"
 #include "Prefs.h"
 #include "Speed.h"
 #include "TorrentFilter.h"

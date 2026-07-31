@@ -14,8 +14,6 @@
 #include <QtCore/QString>
 #include <QtCore/QVariant>
 
-#include "libtransmission/macros.h"
-
 #include "Typedefs.h"
 #include "Utils.h" // for std::hash<QString>
 

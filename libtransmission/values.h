@@ -7,7 +7,6 @@
 
 #include <array>
 #include <cstddef> // size_t
-#include <compare>
 #include <cstdint> // for uint64_t
 #include <string>
 #include <string_view>

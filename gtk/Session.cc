@@ -4,8 +4,6 @@
 
 #include "Session.h"
 
-#include "Actions.h"
-#include "ListModelAdapter.h"
 #include "Notify.h"
 #include "Prefs.h"
 #include "PrefsDialog.h"
@@ -15,7 +13,6 @@
 #include "Utils.h"
 
 #include <libtransmission/env.h>
-#include <libtransmission/log.h>
 #include <libtransmission/macros.h>
 #include <libtransmission/rpcimpl.h>
 #include <libtransmission/string-utils.h>
@@ -49,7 +46,6 @@
 
 #include <algorithm>
 #include <array>
-#include <cinttypes> // PRId64
 #include <cstring> // strstr
 #include <functional>
 #include <iostream>

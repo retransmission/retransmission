@@ -14,7 +14,6 @@
 #include <ctime> // for time_t
 #include <optional>
 
-#include "libtransmission/quark.h"
 #include "libtransmission/session-settings.h"
 #include "libtransmission/types.h" // for TR_SCHED_ALL
 #include "libtransmission/values.h"

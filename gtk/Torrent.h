@@ -19,10 +19,7 @@
 #include <glibmm/refptr.h>
 #include <glibmm/ustring.h>
 
-#include <algorithm>
-#include <bitset>
 #include <cstdint>
-#include <initializer_list>
 #include <memory>
 
 class Percents;

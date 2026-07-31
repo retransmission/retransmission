@@ -6,14 +6,12 @@
 #include "Application.h"
 
 #include <algorithm>
-#include <chrono>
 #include <iterator>
 #include <utility>
 #include <vector>
 
 #include <QtCore/QLibraryInfo>
 #include <QtCore/QProcess>
-#include <QtCore/QRect>
 
 #include <QtGui/QIcon>
 

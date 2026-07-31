@@ -8,7 +8,6 @@
 #include <cstddef>
 #include <cstdint>
 #include <fstream>
-#include <initializer_list>
 #include <ios>
 #include <optional>
 #include <ranges>

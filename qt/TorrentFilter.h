@@ -10,8 +10,8 @@
 #include <QtCore/QSortFilterProxyModel>
 #include <QtCore/QTimer>
 
-#include "Filters.h"
 #include "Prefs.h"
+#include "UserMetaType.h"
 
 class QString;
 

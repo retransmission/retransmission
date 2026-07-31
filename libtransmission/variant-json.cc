@@ -27,7 +27,6 @@
 #include <rapidjson/memorystream.h>
 #include <rapidjson/prettywriter.h>
 #include <rapidjson/reader.h>
-#include <rapidjson/stringbuffer.h>
 #include <rapidjson/writer.h>
 
 #define LIBTRANSMISSION_VARIANT_MODULE

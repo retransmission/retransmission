@@ -7,7 +7,6 @@
 
 #include <algorithm>
 #include <cassert>
-#include <cstring>
 #include <ctime>
 #include <map>
 #include <ranges>
@@ -15,7 +14,6 @@
 #include <utility>
 
 #include <QtCore/QDateTime>
-#include <QtCore/QEvent>
 #include <QtCore/QItemSelectionModel>
 #include <QtCore/QList>
 #include <QtCore/QRegularExpression>
@@ -44,7 +42,6 @@
 #include "BaseDialog.h"
 #include "ColumnResizer.h"
 #include "Formatter.h"
-#include "IconCache.h"
 #include "NativeIcon.h"
 #include "Prefs.h"
 #include "QtCompat.h"

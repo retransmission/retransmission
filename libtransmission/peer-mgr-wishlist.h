@@ -13,7 +13,6 @@
 #include <compare>
 #include <cstddef> // size_t
 #include <functional>
-#include <memory>
 #include <vector>
 
 #include <small/set.hpp>

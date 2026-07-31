@@ -5,13 +5,10 @@
 
 #pragma once
 
-#include <array>
 #include <cstdint> // int64_t
 
 #include <QtCore/QCoreApplication> // Q_DECLARE_TR_FUNCTIONS
 #include <QtCore/QString>
-
-#include "Speed.h"
 
 class Formatter
 {

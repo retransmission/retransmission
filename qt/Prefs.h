@@ -14,7 +14,6 @@
 
 #include <libtransmission-app/prefs.h>
 
-#include "UserMetaType.h"
 #include "VariantHelpers.h"
 
 class Prefs final

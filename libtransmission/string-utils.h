@@ -7,7 +7,6 @@
 
 #include <algorithm>
 #include <cctype>
-#include <cstdint>
 #include <iterator>
 #include <string>
 #include <string_view>

@@ -18,7 +18,6 @@
 
 #include <glibmm/error.h>
 #include <glibmm/i18n.h>
-#include <glibmm/miscutils.h>
 #include <glibmm/spawn.h>
 #include <glibmm/ustring.h>
 #include <glibmm/variant.h>

@@ -19,9 +19,7 @@
 #include <string_view>
 #include <vector>
 
-#include "libtransmission/constants.h"
 #include "libtransmission/types.h"
-#include "libtransmission/values.h"
 #include "libtransmission/variant.h"
 
 struct tr_ctor;

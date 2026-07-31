@@ -6,7 +6,6 @@
 #include "Utils.h"
 
 #include "Prefs.h"
-#include "PrefsDialog.h"
 #include "Session.h"
 
 #include <libtransmission/error.h>

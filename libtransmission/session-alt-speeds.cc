@@ -3,17 +3,12 @@
 // or any future license endorsed by Mnemosaic LLC.
 // License text can be found in the licenses/ folder.
 
-#include <chrono>
 #include <cstddef> // size_t
 #include <ctime>
 #include <utility>
 
-#include <fmt/chrono.h>
-
 #include "libtransmission/log.h"
 #include "libtransmission/session-alt-speeds.h"
-#include "libtransmission/types.h"
-#include "libtransmission/variant.h"
 #include "libtransmission/utils.h" // for _()
 
 using namespace std::literals;

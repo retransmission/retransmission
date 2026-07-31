@@ -5,7 +5,6 @@
 #include "Prefs.h"
 
 #include "GtkCompat.h"
-#include "PrefsDialog.h"
 
 #include <libtransmission-app/display-modes.h>
 

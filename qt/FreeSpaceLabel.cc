@@ -16,7 +16,6 @@
 
 #include <libtransmission/converters.h>
 #include <libtransmission/quark.h>
-#include <libtransmission/types.h>
 #include <libtransmission/variant.h>
 
 #include "Formatter.h"

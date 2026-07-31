@@ -12,7 +12,6 @@
 #include <optional>
 #include <string>
 #include <type_traits>
-#include <vector>
 
 #include <QtCore/QObject>
 #include <QtCore/QString>

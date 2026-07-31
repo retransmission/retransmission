@@ -9,7 +9,6 @@
 #include <cstddef> // size_t
 #include <cstdint> // int64_t, uint32_t, uint64_t
 #include <cstdio> // stderr
-#include <limits>
 #include <optional>
 #include <string>
 #include <string_view>
@@ -29,7 +28,6 @@
 #include "libtransmission/string-utils.h"
 #include "libtransmission/utils.h" // for tr_strv_strip(), tr_strlower()
 #include "libtransmission/variant.h"
-#include "libtransmission/tr-assert.h"
 #include "libtransmission/types.h"
 
 using namespace std::literals;

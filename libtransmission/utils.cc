@@ -10,7 +10,6 @@
 #include <chrono>
 #include <concepts>
 #include <cstdint> // SIZE_MAX
-#include <cstdlib> // getenv()
 #include <ctime>
 #include <exception>
 #include <iostream>
@@ -43,8 +42,6 @@
 
 #include "libtransmission/mime-types.h"
 #include "libtransmission/string-utils.h"
-#include "libtransmission/tr-assert.h"
-#include "libtransmission/tr-strbuf.h"
 #include "libtransmission/types.h"
 #include "libtransmission/utils.h"
 

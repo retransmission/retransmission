@@ -31,7 +31,6 @@
 #include <libtransmission/quark.h>
 #include <libtransmission/rpcimpl.h>
 #include <libtransmission/transmission.h>
-#include <libtransmission/utils.h>
 #include <libtransmission/version.h>
 
 #include <gdkmm/display.h>
@@ -84,8 +83,6 @@
 #include <thread>
 #include <utility>
 #include <vector>
-
-#include <glib/gmessages.h>
 
 #ifdef G_OS_UNIX
 #include <glib-unix.h>

@@ -24,7 +24,6 @@
 #include "libtransmission/tr-assert.h"
 #include "libtransmission/types.h"
 #include "libtransmission/utils.h" /* tr_compare_3way */
-#include "libtransmission/variant.h"
 
 /**
  * @addtogroup peers Peers
