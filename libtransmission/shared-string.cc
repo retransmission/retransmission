@@ -7,7 +7,7 @@
 #include <compare>
 #include <cstddef> // size_t
 #include <mutex>
-#include <string>
+#include <new> // placement new, ::operator new()
 #include <string_view>
 #include <unordered_map>
 #include <utility> // std::exchange()
@@ -17,15 +17,53 @@
 namespace tr::detail
 {
 
-/** One pooled string, and the references to it that keep it alive. */
+/**
+ * One pooled string, and the references to it that keep it alive.
+ *
+ * The characters sit right after this header in the same heap block —
+ * create() over-allocates to make room — so a pooled string costs one
+ * allocation, not a node plus a separate string buffer, and readers
+ * dereference a single heap region.
+ */
 struct string_pool_node {
-    explicit string_pool_node(std::string_view const key)
-        : value{ key }
+    [[nodiscard]] static string_pool_node* create(std::string_view const key)
     {
+        return new (::operator new(sizeof(string_pool_node) + std::size(key) + 1U)) string_pool_node{ key };
+    }
+
+    static void destroy(string_pool_node* const node) noexcept
+    {
+        node->~string_pool_node();
+        ::operator delete(node);
+    }
+
+    [[nodiscard]] std::string_view sv() const noexcept
+    {
+        return { c_str(), size_ };
+    }
+
+    [[nodiscard]] char const* c_str() const noexcept
+    {
+        return reinterpret_cast<char const*>(this + 1);
     }
 
     std::atomic<size_t> refcount = 1U;
-    std::string value;
+
+private:
+    explicit string_pool_node(std::string_view const key)
+        : size_{ std::size(key) }
+    {
+        auto* const chars = reinterpret_cast<char*>(this + 1);
+        key.copy(chars, size_);
+        chars[size_] = '\0'; // so c_str() can return the buffer as-is
+    }
+
+    // Private so a stray `delete`, which would not know about the
+    // trailing characters, cannot compile; destroy() is the only
+    // teardown path.
+    ~string_pool_node() = default;
+
+    size_t size_;
 };
 
 } // namespace tr::detail
@@ -84,8 +122,8 @@ struct string_pool {
         pool.nodes.erase(iter);
     }
 
-    auto* const node = new Node{ key };
-    pool.nodes.emplace(std::string_view{ node->value }, node);
+    auto* const node = Node::create(key);
+    pool.nodes.emplace(node->sv(), node);
     return node;
 }
 
@@ -113,12 +151,12 @@ void remove_ref(Node* const node) noexcept
     auto& pool = string_pool::instance();
     {
         auto const lock = std::scoped_lock{ pool.mutex };
-        if (auto const iter = pool.nodes.find(node->value); iter != std::end(pool.nodes) && iter->second == node) {
+        if (auto const iter = pool.nodes.find(node->sv()); iter != std::end(pool.nodes) && iter->second == node) {
             pool.nodes.erase(iter);
         }
     }
 
-    delete node;
+    Node::destroy(node);
 }
 
 } // namespace
@@ -196,12 +234,12 @@ void shared_string::clear() noexcept
 
 std::string_view shared_string::sv() const noexcept
 {
-    return node_ != nullptr ? std::string_view{ node_->value } : std::string_view{};
+    return node_ != nullptr ? node_->sv() : std::string_view{};
 }
 
 char const* shared_string::c_str() const noexcept
 {
-    return node_ != nullptr ? node_->value.c_str() : "";
+    return node_ != nullptr ? node_->c_str() : "";
 }
 
 bool shared_string::empty() const noexcept
