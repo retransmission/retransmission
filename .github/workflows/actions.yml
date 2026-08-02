@@ -23,6 +23,10 @@ env:
   # Bumping CACHE_SCHEMA re-keys every ccache and win-deps family; the
   # janitor deletes keys that do not carry the current value.
   CACHE_SCHEMA: cache-v2
+  # Identify the compiler by its contents. Runner images are respun more
+  # often than the compilers they ship, and the mtime default counts a
+  # reinstalled but unchanged compiler as a different one.
+  CCACHE_COMPILERCHECK: content
   CCACHE_COMPRESSLEVEL: '5'
   CCACHE_DIR: ${{ github.workspace }}/.ccache
   GTEST_OUTPUT: xml:./
