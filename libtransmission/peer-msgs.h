@@ -14,9 +14,9 @@
 #include <cstddef> // for size_t
 #include <memory>
 
-#include "libtransmission/shared-string.h"
 #include "libtransmission/net.h" // tr_socket_address
 #include "libtransmission/peer-common.h" // for tr_peer
+#include "libtransmission/shared-string.h"
 #include "libtransmission/types.h"
 
 class tr_peerIo;
