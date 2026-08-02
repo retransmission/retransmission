@@ -159,6 +159,32 @@ TEST_F(SharedStringTest, cStrIsNulTerminated)
     EXPECT_EQ('\0', c_str[std::size(str.sv())]);
 }
 
+TEST_F(SharedStringTest, longStringRoundTrips)
+{
+    // Everything else in this suite interns short literals, so this is
+    // the only test that sizes a node past a few dozen characters.
+    auto const text = std::string(1000U, 'x') + "-end";
+
+    auto const str = shared_string{ text };
+    EXPECT_EQ(text, str.sv());
+    EXPECT_STREQ(text.c_str(), str.c_str());
+    EXPECT_EQ(str, shared_string{ text });
+}
+
+TEST_F(SharedStringTest, embeddedNulRoundTrips)
+{
+    auto const text = "abc\0def"sv;
+
+    auto const str = shared_string{ text };
+    EXPECT_EQ(text, str.sv());
+
+    // pooling keys on the whole span, not the leading C string
+    EXPECT_NE(str, shared_string{ "abc"sv });
+
+    // c_str() reads as a C string, so it stops at the embedded NUL
+    EXPECT_STREQ("abc", str.c_str());
+}
+
 TEST_F(SharedStringTest, concurrentInternAndRelease)
 {
     static auto constexpr NumThreads = size_t{ 8U };
