@@ -28,6 +28,11 @@ namespace tr::detail
 struct string_pool_node {
     [[nodiscard]] static string_pool_node* create(std::string_view const key)
     {
+        // The plain ::operator new() / ::operator delete() pair used here and
+        // in destroy() is only correct up to this alignment; anything stricter
+        // needs the std::align_val_t overloads.
+        static_assert(alignof(string_pool_node) <= __STDCPP_DEFAULT_NEW_ALIGNMENT__);
+
         return new (::operator new(sizeof(string_pool_node) + std::size(key) + 1U)) string_pool_node{ key };
     }
 
