@@ -6,6 +6,7 @@
 #pragma once
 
 #include <concepts>
+#include <cstddef> // size_t
 #include <cstdint> // uint8_t, uint32_t, uint64_t
 #include <ctime> // time_t
 #include <locale>
@@ -71,6 +72,19 @@ template<typename T>
     }
 
     return 0;
+}
+
+// ---
+
+/**
+ * Folds `b` into the running hash `a`, so a sequence of values can be
+ * hashed one at a time. Order-sensitive: the same values in a different
+ * order give a different hash.
+ */
+// https://stackoverflow.com/a/27952689/11390656
+[[nodiscard]] constexpr size_t tr_hash_combine(size_t const a, size_t const b) noexcept
+{
+    return a ^ (b + 0x9e3779b9U + (a << 6U) + (a >> 2U));
 }
 
 // ---

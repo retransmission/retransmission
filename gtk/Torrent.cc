@@ -11,6 +11,7 @@
 #include "Utils.h"
 
 #include <libtransmission/macros.h>
+#include <libtransmission/shared-string.h>
 #include <libtransmission/transmission.h>
 #include <libtransmission/utils.h>
 #include <libtransmission/values.h>
@@ -22,6 +23,8 @@
 
 #include <array>
 #include <cmath>
+#include <cstddef> // size_t
+#include <functional> // std::hash
 #include <utility>
 
 using namespace std::string_view_literals;
@@ -55,16 +58,17 @@ void update_cache_value(T& value, U new_value, T epsilon, Torrent::ChangeFlags& 
     }
 }
 
-unsigned int build_torrent_trackers_hash(tr_torrent const& torrent)
+// A digest of the torrent's announce URLs, in order, for spotting changes
+// to the tracker list. Only ever compared against another value from this
+// same process, so std::hash's lack of cross-process stability is fine.
+size_t build_torrent_trackers_hash(tr_torrent const& torrent)
 {
-    auto hash = uint64_t{};
+    static auto constexpr Hasher = std::hash<tr::shared_string>{};
+
+    auto hash = size_t{};
 
     for (auto i = size_t{}, n = tr_torrentTrackerCount(&torrent); i < n; ++i) {
-        // the view has to outlive the loop below: it owns the text being hashed
-        auto const view = tr_torrentTracker(&torrent, i);
-        for (auto const ch : view.announce.sv()) {
-            hash = (hash << 4U) ^ (hash >> 28U) ^ static_cast<unsigned char>(ch);
-        }
+        hash = tr_hash_combine(hash, Hasher(tr_torrentTracker(&torrent, i).announce));
     }
 
     return hash;
@@ -150,7 +154,7 @@ public:
 
         tr_torrent_activity activity = {};
 
-        unsigned int trackers = {};
+        size_t trackers = {};
         int active_peer_count = {};
         int active_peers_down = {};
         int active_peers_up = {};
@@ -757,7 +761,7 @@ size_t Torrent::get_queue_position() const
     return impl_->get_cache().queue_position;
 }
 
-unsigned int Torrent::get_trackers() const
+size_t Torrent::get_trackers() const
 {
     return impl_->get_cache().trackers;
 }

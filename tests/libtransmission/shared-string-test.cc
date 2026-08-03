@@ -5,9 +5,11 @@
 
 #include <algorithm>
 #include <cstddef> // size_t
+#include <functional> // std::hash
 #include <string>
 #include <string_view>
 #include <thread>
+#include <unordered_set>
 #include <vector>
 
 #include <fmt/format.h>
@@ -149,6 +151,20 @@ TEST_F(SharedStringTest, comparesWithStringView)
     auto const str = shared_string{ "value"sv };
     EXPECT_EQ("value"sv, str);
     EXPECT_NE("other"sv, str);
+}
+
+TEST_F(SharedStringTest, hashesAsItsText)
+{
+    static auto constexpr Text = "value"sv;
+
+    // hashing the text, not the pooled address, is what lets a
+    // shared_string key be looked up by an equal std::string_view
+    EXPECT_EQ(std::hash<std::string_view>{}(Text), std::hash<shared_string>{}(shared_string{ Text }));
+    EXPECT_EQ(std::hash<std::string_view>{}(""sv), std::hash<shared_string>{}(shared_string{}));
+
+    auto set = std::unordered_set<shared_string>{};
+    set.insert(shared_string{ Text });
+    EXPECT_EQ(1U, set.count(shared_string{ Text }));
 }
 
 TEST_F(SharedStringTest, cStrIsNulTerminated)

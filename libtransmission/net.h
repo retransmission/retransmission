@@ -68,6 +68,7 @@ using tr_socket_t = int;
 
 #include "libtransmission/tr-assert.h"
 #include "libtransmission/types.h"
+#include "libtransmission/utils.h" // tr_hash_combine()
 
 enum tr_address_type : uint8_t { TR_AF_INET = 0, TR_AF_INET6, NUM_TR_AF_INET_TYPES };
 
@@ -473,16 +474,10 @@ public:
     std::size_t operator()(tr_socket_address const& socket_address) const noexcept
     {
         auto const& [addr, port] = socket_address;
-        return hash_combine(ip_hash(addr), PortHasher(port.host()));
+        return tr_hash_combine(ip_hash(addr), PortHasher(port.host()));
     }
 
 private:
-    // https://stackoverflow.com/a/27952689/11390656
-    [[nodiscard]] static constexpr std::size_t hash_combine(std::size_t const a, std::size_t const b) noexcept
-    {
-        return a ^ (b + 0x9e3779b9U + (a << 6U) + (a >> 2U));
-    }
-
     [[nodiscard]] static std::size_t ip_hash(tr_address const& addr) noexcept
     {
         switch (addr.type) {

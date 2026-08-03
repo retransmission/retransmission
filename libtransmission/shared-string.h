@@ -7,6 +7,7 @@
 
 #include <compare>
 #include <cstddef> // size_t
+#include <functional> // std::hash
 #include <string_view>
 
 namespace tr
@@ -54,3 +55,13 @@ private:
 };
 
 } // namespace tr
+
+template<>
+struct std::hash<tr::shared_string> {
+    // Hashes the text, matching std::hash<std::string_view>, so a
+    // shared_string and the equal std::string_view agree on their bucket.
+    [[nodiscard]] std::size_t operator()(tr::shared_string const& str) const noexcept
+    {
+        return std::hash<std::string_view>{}(str.sv());
+    }
+};

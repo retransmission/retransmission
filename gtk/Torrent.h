@@ -100,7 +100,7 @@ public:
     Speed get_speed_up() const;
     tr_torrent& get_underlying() const;
     Storage get_total_size() const;
-    unsigned int get_trackers() const;
+    size_t get_trackers() const;
 
     Glib::RefPtr<Gio::Icon> get_icon() const;
     Glib::ustring get_short_status_text() const;
