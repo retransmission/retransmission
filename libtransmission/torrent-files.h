@@ -19,7 +19,6 @@
 
 #include "libtransmission/file.h"
 #include "libtransmission/macros.h"
-#include "libtransmission/tr-strbuf.h"
 #include "libtransmission/types.h"
 
 struct tr_error;
@@ -61,10 +60,11 @@ public:
 
     void insert_subpath_prefix(std::string_view path)
     {
-        auto const buf = tr_pathbuf{ path, '/' };
+        auto prefix = std::string{ path };
+        prefix += '/';
 
         for (auto& file : files_) {
-            file.path_.insert(0, buf.sv());
+            file.path_.insert(0, prefix);
             file.path_.shrink_to_fit();
         }
     }
@@ -118,57 +118,72 @@ public:
         tr_torrent_remove_func const& func,
         tr_error* error = nullptr) const;
 
+    static constexpr std::string_view PartialFileSuffix = ".part";
+
+    /**
+     * A file located on disk.
+     *
+     * `base` views the same storage as the matching entry of the `paths` span
+     * passed into `find()`; `subpath` views the `tr_torrent_files`.
+     * A FoundFile is valid only as long as both of those outlive it.
+     *
+     * filename() builds the name in whichever buffer the caller names, so
+     * callers on hot paths can use a stack buffer, e.g. filename<tr_pathbuf>().
+     */
     struct FoundFile : public tr_sys_path_info {
-    public:
-        FoundFile(tr_sys_path_info info, tr_pathbuf&& filename_in, size_t base_len_in)
-            : tr_sys_path_info{ info }
-            , filename_{ std::move(filename_in) }
-            , base_len_{ base_len_in }
+        // "/home/foo/Downloads"
+        std::string_view base;
+
+        // "torrent/01-file-one.txt"
+        std::string_view subpath;
+
+        // whether the file is an incomplete download
+        bool is_partial = false;
+
+        // what `subpath` needs appended to name the file on disk
+        [[nodiscard]] constexpr std::string_view suffix() const noexcept
         {
+            return is_partial ? PartialFileSuffix : std::string_view{};
         }
 
-        [[nodiscard]] constexpr auto const& filename() const noexcept
+        // "/home/foo/Downloads/torrent/01-file-one.txt"
+        template<typename Buf = std::string>
+        [[nodiscard]] Buf filename() const
         {
-            // /home/foo/Downloads/torrent/01-file-one.txt
-            return filename_;
+            return filename_under<Buf>(base);
         }
 
-        [[nodiscard]] constexpr auto base() const noexcept
+        // what this file would be named if it lived under `parent` instead of `base`
+        template<typename Buf = std::string>
+        [[nodiscard]] Buf filename_under(std::string_view parent) const
         {
-            // /home/foo/Downloads
-            return filename_.sv().substr(0, base_len_);
+            auto buf = Buf{};
+            buf += parent;
+            buf += '/';
+            buf += subpath;
+            buf += suffix();
+            return buf;
         }
-
-        [[nodiscard]] constexpr auto subpath() const noexcept
-        {
-            // torrent/01-file-one.txt
-            return filename_.sv().substr(base_len_ + 1);
-        }
-
-    private:
-        tr_pathbuf filename_;
-        size_t base_len_;
     };
 
     [[nodiscard]] std::optional<FoundFile> find(tr_file_index_t file_index, std::span<std::string_view const> paths) const;
     [[nodiscard]] bool has_any_local_data(std::span<std::string_view const> paths) const;
     [[nodiscard]] std::string_view primary_mime_type() const;
 
-    static void sanitize_subpath(std::string_view path, tr_pathbuf& append_me, bool os_specific = true);
+    static void sanitize_subpath(std::string_view path, std::string& append_me, bool os_specific = true);
 
-    [[nodiscard]] static auto sanitize_subpath(std::string_view path, bool os_specific = true)
+    [[nodiscard]] static std::string sanitize_subpath(std::string_view path, bool os_specific = true)
     {
-        auto tmp = tr_pathbuf{};
-        sanitize_subpath(path, tmp, os_specific);
-        return std::string{ tmp.sv() };
+        auto ret = std::string{};
+        ret.reserve(std::size(path));
+        sanitize_subpath(path, ret, os_specific);
+        return ret;
     }
 
     [[nodiscard]] static bool is_subpath_sanitized(std::string_view path, bool os_specific = true)
     {
         return sanitize_subpath(path, os_specific) == path;
     }
-
-    static constexpr std::string_view PartialFileSuffix = ".part";
 
 private:
     struct file_t {

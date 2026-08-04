@@ -65,7 +65,7 @@ struct MetainfoHandler final : public tr::benc::BasicHandler<MaxBencDepth> {
     std::string encoding_ = "UTF-8";
     std::string_view info_dict_begin_;
     tr_tracker_tier_t tier_ = 0;
-    tr_pathbuf file_subpath_;
+    std::string file_subpath_;
     int64_t file_length_ = 0;
 
     enum class State : uint8_t {
@@ -402,9 +402,7 @@ private:
             return false;
         }
 
-        auto root = tr_pathbuf{};
-        tr_torrent_files::sanitize_subpath(tm_.name_, root);
-        if (!std::empty(root)) {
+        if (auto const root = tr_torrent_files::sanitize_subpath(tm_.name_); !std::empty(root)) {
             tm_.files_.insert_subpath_prefix(root);
         }
 

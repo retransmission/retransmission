@@ -119,12 +119,12 @@ std::optional<tr_torrent_files::FoundFile> tr_torrent_files::find(
     for (auto const base : paths) {
         filename.assign(base, '/', subpath);
         if (auto const info = tr_sys_path_get_info(filename); info) {
-            return FoundFile{ *info, std::move(filename), std::size(base) };
+            return FoundFile{ *info, base, subpath, false };
         }
 
-        filename.assign(base, '/', subpath, PartialFileSuffix);
+        filename.append(PartialFileSuffix);
         if (auto const info = tr_sys_path_get_info(filename); info) {
-            return FoundFile{ *info, std::move(filename), std::size(base) };
+            return FoundFile{ *info, base, subpath, true };
         }
     }
 
@@ -195,8 +195,8 @@ bool tr_torrent_files::move(
             continue;
         }
 
-        auto const& old_path = found->filename();
-        auto const path = tr_pathbuf{ parent, '/', found->subpath() };
+        auto const old_path = found->filename<tr_pathbuf>();
+        auto const path = found->filename_under<tr_pathbuf>(parent);
         tr_logAddTrace(fmt::format("Found file #{:d} '{:s}'", i, old_path), parent_name);
 
         if (tr_sys_path_is_same(old_path, path)) {
@@ -271,7 +271,9 @@ void tr_torrent_files::remove(
     for (tr_file_index_t idx = 0, n_files = file_count(); idx < n_files; ++idx) {
         if (auto const found = find(idx, paths); found) {
             // if moving a file fails, give up and let the error propagate
-            if (!tr_file_move(found->filename(), tr_pathbuf{ tmpdir, '/', found->subpath() }, false, error)) {
+            auto const from = found->filename<tr_pathbuf>();
+            auto const to = found->filename_under<tr_pathbuf>(tmpdir);
+            if (!tr_file_move(from, to, false, error)) {
                 return;
             }
         }
@@ -436,7 +438,7 @@ namespace
 }
 
 // https://en.wikipedia.org/wiki/Filename#Comparison_of_filename_limitations
-void append_sanitized_component(std::string_view in, tr_pathbuf& out, bool os_specific)
+void append_sanitized_component(std::string_view in, std::string& out, bool os_specific)
 {
 #ifdef _WIN32
     // remove leading and trailing spaces
@@ -450,7 +452,7 @@ void append_sanitized_component(std::string_view in, tr_pathbuf& out, bool os_sp
 
     // replace reserved filenames with an underscore
     if (is_reserved_file(in, os_specific)) {
-        out.append('_');
+        out += '_';
     }
 
     // replace reserved characters with an underscore
@@ -462,12 +464,12 @@ void append_sanitized_component(std::string_view in, tr_pathbuf& out, bool os_sp
 
 } // namespace
 
-void tr_torrent_files::sanitize_subpath(std::string_view path, tr_pathbuf& append_me, bool os_specific)
+void tr_torrent_files::sanitize_subpath(std::string_view path, std::string& append_me, bool os_specific)
 {
     auto segment = std::string_view{};
     while (tr_strv_sep(&path, &segment, '/')) {
         append_sanitized_component(segment, append_me, os_specific);
-        append_me.append('/');
+        append_me += '/';
     }
 
     if (auto const n = std::size(append_me); n > 0) {

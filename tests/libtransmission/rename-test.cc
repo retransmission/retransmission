@@ -89,10 +89,10 @@ protected:
     static bool testFileExistsAndConsistsOfThisString(tr_torrent const* tor, tr_file_index_t file_index, std::string_view str)
     {
         if (auto const found = tor->find_file(file_index); found) {
-            EXPECT_TRUE(tr_sys_path_exists(found->filename()));
+            auto const filename = found->filename();
+            EXPECT_TRUE(tr_sys_path_exists(filename));
             auto contents = std::vector<char>{};
-            return tr_file_read(found->filename(), contents) &&
-                std::string_view{ std::data(contents), std::size(contents) } == str;
+            return tr_file_read(filename, contents) && std::string_view{ std::data(contents), std::size(contents) } == str;
         }
 
         return false;

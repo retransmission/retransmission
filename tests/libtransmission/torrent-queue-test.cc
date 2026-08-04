@@ -14,6 +14,7 @@
 
 #include <libtransmission/torrent-queue.h>
 #include <libtransmission/torrent.h>
+#include <libtransmission/tr-strbuf.h>
 
 #include "test-fixtures.h"
 

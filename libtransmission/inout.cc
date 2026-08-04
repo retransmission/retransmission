@@ -83,7 +83,8 @@ bool write_entire_buf(tr_sys_file_t const fd, uint64_t file_offset, std::span<ui
     auto const prealloc = writable && tor.file_is_wanted(file_index) ? session.preallocationMode() :
                                                                        tr_file_preallocation::None;
     if (auto const found = tor.find_file(file_index); found) {
-        return open_files.get(tor_id, file_index, writable, found->filename(), prealloc, file_size);
+        auto const filename = found->filename<tr_pathbuf>();
+        return open_files.get(tor_id, file_index, writable, filename, prealloc, file_size);
     }
 
     // do we want to create it?

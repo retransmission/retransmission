@@ -94,6 +94,9 @@ TEST_F(TorrentFilesTest, find)
     EXPECT_TRUE(found.has_value());
     assert(found.has_value());
     EXPECT_EQ(filename, found->filename());
+    EXPECT_EQ(search_path_1, found->base);
+    EXPECT_EQ("first_dir/hello.txt"sv, found->subpath);
+    EXPECT_FALSE(found->is_partial);
 
     // same search, but with the search paths reversed
     search_path = std::vector<std::string_view>{ search_path_2.sv(), search_path_1.sv() };
@@ -110,6 +113,9 @@ TEST_F(TorrentFilesTest, find)
     EXPECT_TRUE(found.has_value());
     assert(found.has_value());
     EXPECT_EQ(partial_filename, found->filename());
+    EXPECT_EQ(search_path_1, found->base);
+    EXPECT_EQ("first_dir/hello.txt"sv, found->subpath);
+    EXPECT_TRUE(found->is_partial);
 
     // same search, but with the search paths reversed
     search_path = std::vector<std::string_view>{ search_path_2.sv(), search_path_1.sv() };

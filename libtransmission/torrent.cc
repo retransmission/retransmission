@@ -771,7 +771,7 @@ bool tr_torrent::is_new_torrent_a_seed()
         }
 
         // it's not a new seed if a file is partial
-        if (tr_strv_ends_with(found->filename(), tr_torrent_files::PartialFileSuffix)) {
+        if (found->is_partial) {
             return false;
         }
 
@@ -1514,7 +1514,7 @@ tr_torrent_metainfo const& tr_torrent::VerifyMediator::metainfo() const
 std::optional<std::string> tr_torrent::VerifyMediator::find_file(tr_file_index_t const file_index) const
 {
     if (auto const found = tor_->find_file(file_index); found) {
-        return std::string{ found->filename().sv() };
+        return found->filename();
     }
 
     return {};
@@ -1529,10 +1529,11 @@ void tr_torrent::update_file_path(tr_file_index_t file, std::optional<bool> has_
 
     auto const has = has_file ? *has_file : this->has_file(file);
     auto const needs_suffix = session->isIncompleteFileNamingEnabled() && !has;
-    auto const oldpath = found->filename();
-    auto const newpath = needs_suffix ?
-        tr_pathbuf{ found->base(), '/', file_subpath(file), tr_torrent_files::PartialFileSuffix } :
-        tr_pathbuf{ found->base(), '/', file_subpath(file) };
+    auto const oldpath = found->filename<tr_pathbuf>();
+    auto const newpath = tr_pathbuf{ found->base,
+                                     '/',
+                                     found->subpath,
+                                     needs_suffix ? tr_torrent_files::PartialFileSuffix : ""sv };
 
     if (tr_sys_path_is_same(oldpath, newpath)) {
         return;
@@ -2099,8 +2100,11 @@ std::string tr_torrentFindFile(tr_torrent const* tor, tr_file_index_t file_num)
 {
     tr_return_val_if_fail(tr_isTorrent(tor), {});
 
-    auto const found = tor->find_file(file_num);
-    return std::string{ found ? found->filename().sv() : ""sv };
+    if (auto const found = tor->find_file(file_num); found) {
+        return found->filename();
+    }
+
+    return {};
 }
 
 void tr_torrent::set_download_dir(std::string_view path, bool is_new_torrent)
@@ -2137,7 +2141,7 @@ void tr_torrent::refresh_current_dir()
         dir = incomplete_dir();
     } else {
         auto const found = find_file(0);
-        dir = found ? tr::shared_string{ found->base() } : incomplete_dir();
+        dir = found ? tr::shared_string{ found->base } : incomplete_dir();
     }
 
     TR_ASSERT(!std::empty(dir));
