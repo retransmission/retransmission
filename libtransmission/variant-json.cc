@@ -301,7 +301,7 @@ struct JsonWriter {
     void WriteString(StringWriteFunc const func, std::string_view sv) const
     {
         auto const utf8 = tr_strv_to_utf8_string(sv);
-        (writer.*func)(std::data(utf8), std::size(utf8), false);
+        (writer.*func)(std::data(utf8), std::size(utf8), true);
     }
 
     void operator()(std::monostate /*unused*/) const
