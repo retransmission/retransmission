@@ -50,7 +50,6 @@
 #include "libtransmission/error.h"
 #include "libtransmission/file.h"
 #include "libtransmission/tr-assert.h"
-#include "libtransmission/macros.h" // TR_UCLIBC_CHECK_VERSION
 #include "libtransmission/tr-strbuf.h"
 
 #ifndef O_LARGEFILE
@@ -68,12 +67,6 @@
 
 #ifndef PATH_MAX
 #define PATH_MAX 4096
-#endif
-
-// don't use pread/pwrite on old versions of uClibc because they're buggy.
-#if defined(__UCLIBC__) && !TR_UCLIBC_CHECK_VERSION(0, 9, 28)
-#undef HAVE_PREAD
-#undef HAVE_PWRITE
 #endif
 
 #ifdef __APPLE__
