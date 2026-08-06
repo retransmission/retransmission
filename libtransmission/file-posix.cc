@@ -69,15 +69,6 @@
 #define PATH_MAX 4096
 #endif
 
-#ifdef __APPLE__
-#ifndef HAVE_PREAD
-#define HAVE_PREAD
-#endif
-#ifndef HAVE_PWRITE
-#define HAVE_PWRITE
-#endif
-#endif
-
 using namespace std::literals;
 
 namespace
@@ -514,16 +505,7 @@ bool tr_sys_file_read_at(
 
     bool ret = false;
 
-#ifdef HAVE_PREAD
-
     auto const my_bytes_read = pread(handle, buffer, size, static_cast<off_t>(offset));
-
-#else
-
-    ssize_t const my_bytes_read = lseek(handle, static_cast<off_t>(offset), SEEK_SET) == -1 ? -1 : read(handle, buffer, size);
-
-#endif
-
     static_assert(sizeof(*bytes_read) >= sizeof(my_bytes_read));
 
     if (my_bytes_read > 0) {
@@ -577,16 +559,7 @@ bool tr_sys_file_write_at(
 
     bool ret = false;
 
-#ifdef HAVE_PWRITE
-
     auto const my_bytes_written = pwrite(handle, buffer, size, static_cast<off_t>(offset));
-
-#else
-
-    ssize_t const my_bytes_written = lseek(handle, static_cast<off_t>(offset), SEEK_SET) == -1 ? -1 :
-                                                                                                 write(handle, buffer, size);
-
-#endif
 
     static_assert(sizeof(*bytes_written) >= sizeof(my_bytes_written));
 
