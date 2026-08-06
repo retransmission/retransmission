@@ -84,9 +84,6 @@
 #ifndef HAVE_PWRITE
 #define HAVE_PWRITE
 #endif
-#ifndef HAVE_MKDTEMP
-#define HAVE_MKDTEMP
-#endif
 #endif
 
 using namespace std::literals;
@@ -822,15 +819,7 @@ bool tr_sys_dir_create_temp(char* path_template, tr_error* error)
 {
     TR_ASSERT(path_template != nullptr);
 
-#ifdef HAVE_MKDTEMP
-
     bool const ret = mkdtemp(path_template) != nullptr;
-
-#else
-
-    bool const ret = mktemp(path_template) != nullptr && mkdir(path_template, 0700) != -1;
-
-#endif
 
     if (error != nullptr && !ret) {
         error->set_from_errno(errno);

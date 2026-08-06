@@ -253,7 +253,6 @@ tr_target_compile_definitions_for_functions(${TR_NAME}
         fallocate64
         flock
         htonll
-        mkdtemp
         ntohll
         posix_fadvise
         posix_fallocate
