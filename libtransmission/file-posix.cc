@@ -18,7 +18,6 @@
 #include <string>
 #include <vector>
 
-#include <dirent.h>
 #include <fcntl.h> /* O_LARGEFILE, posix_fadvise(), [posix_]fallocate(), fcntl() */
 #include <sys/stat.h>
 #include <unistd.h> /* lseek(), write(), ftruncate(), pread(), pwrite(), pathconf(), etc */
@@ -826,49 +825,4 @@ bool tr_sys_dir_create_temp(char* path_template, tr_error* error)
     }
 
     return ret;
-}
-
-tr_sys_dir_t tr_sys_dir_open(std::string_view path, tr_error* error)
-{
-    if (auto* const ret = opendir(tr_pathbuf{ path }.c_str()); ret != nullptr) {
-        return ret;
-    }
-
-    if (error != nullptr) {
-        error->set_from_errno(errno);
-    }
-
-    return TR_BAD_SYS_DIR;
-}
-
-char const* tr_sys_dir_read_name(tr_sys_dir_t handle, tr_error* error)
-{
-    TR_ASSERT(handle != TR_BAD_SYS_DIR);
-
-    errno = 0;
-
-    if (auto const* const entry = readdir(static_cast<DIR*>(handle)); entry != nullptr) {
-        return entry->d_name;
-    }
-
-    if (error != nullptr && errno != 0) {
-        error->set_from_errno(errno);
-    }
-
-    return {};
-}
-
-bool tr_sys_dir_close(tr_sys_dir_t handle, tr_error* error)
-{
-    TR_ASSERT(handle != TR_BAD_SYS_DIR);
-
-    if (auto const ret = closedir(static_cast<DIR*>(handle)) != -1; ret) {
-        return ret;
-    }
-
-    if (error != nullptr) {
-        error->set_from_errno(errno);
-    }
-
-    return {};
 }

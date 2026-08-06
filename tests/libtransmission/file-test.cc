@@ -159,40 +159,15 @@ protected:
         }
     }
 
-    static void testDirReadImpl(tr_pathbuf const& path, bool* have1, bool* have2)
+    // tr_sys_dir_get_files() in unspecified order, as a set, expecting no error
+    [[nodiscard]] static std::set<std::string> getFiles(
+        std::string_view path,
+        bool (*test)(std::string_view) = tr_basename_accept_all)
     {
-        *have1 = *have2 = false;
-
-        auto err = tr_error{};
-        auto dd = tr_sys_dir_open(path, &err);
-        EXPECT_NE(TR_BAD_SYS_DIR, dd);
-        EXPECT_FALSE(err) << err;
-
-        for (;;) {
-            char const* name = tr_sys_dir_read_name(dd, &err);
-            if (name == nullptr) {
-                break;
-            }
-
-            EXPECT_FALSE(err) << err;
-
-            if (strcmp(name, ".") == 0 || strcmp(name, "..") == 0) {
-                continue;
-            }
-
-            if (strcmp(name, "a") == 0) {
-                *have1 = true;
-            } else if (strcmp(name, "b") == 0) {
-                *have2 = true;
-            } else {
-                FAIL();
-            }
-        }
-
-        EXPECT_FALSE(err) << err;
-
-        EXPECT_TRUE(tr_sys_dir_close(dd, &err));
-        EXPECT_FALSE(err) << err;
+        auto error = tr_error{};
+        auto const files = tr_sys_dir_get_files(path, test, &error);
+        EXPECT_FALSE(error) << error;
+        return { std::begin(files), std::end(files) };
     }
 };
 } // namespace
@@ -1274,72 +1249,99 @@ TEST_F(FileTest, dirCreateTemp)
     EXPECT_TRUE(error);
 }
 
-TEST_F(FileTest, dirRead)
+TEST_F(FileTest, dirGetFiles)
 {
     auto const test_dir = createTestDir(currentTestName());
 
     auto const path1 = tr_pathbuf{ test_dir, "/a"sv };
     auto const path2 = tr_pathbuf{ test_dir, "/b"sv };
+    auto const path3 = tr_pathbuf{ test_dir, "/c"sv };
 
-    auto have1 = bool{};
-    auto have2 = bool{};
-    testDirReadImpl(test_dir, &have1, &have2);
-    EXPECT_FALSE(have1);
-    EXPECT_FALSE(have2);
+    // an empty folder lists nothing -- not even the `.` and `..` entries
+    EXPECT_EQ(std::set<std::string>{}, getFiles(test_dir));
 
     createFileWithContents(path1, "test");
-    testDirReadImpl(test_dir, &have1, &have2);
-    EXPECT_TRUE(have1);
-    EXPECT_FALSE(have2);
+    EXPECT_EQ(std::set<std::string>({ "a" }), getFiles(test_dir));
 
     createFileWithContents(path2, "test");
-    testDirReadImpl(test_dir, &have1, &have2);
-    EXPECT_TRUE(have1);
-    EXPECT_TRUE(have2);
+    EXPECT_EQ(std::set<std::string>({ "a", "b" }), getFiles(test_dir));
+
+    // subfolders are listed, as base names like everything else
+    tr_sys_dir_create(path3, 0, 0700);
+    createFileWithContents(tr_pathbuf{ path3, "/d"sv }, "test");
+    EXPECT_EQ(std::set<std::string>({ "a", "b", "c" }), getFiles(test_dir));
 
     tr_sys_path_remove(path1);
-    testDirReadImpl(test_dir, &have1, &have2);
-    EXPECT_FALSE(have1);
-    EXPECT_TRUE(have2);
+    EXPECT_EQ(std::set<std::string>({ "b", "c" }), getFiles(test_dir));
 }
 
-TEST_F(FileTest, dirOpen)
+TEST_F(FileTest, dirGetFilesPredicate)
 {
     auto const test_dir = createTestDir(currentTestName());
 
-    auto const file = tr_pathbuf{ test_dir, "/foo.fxt" };
-    auto constexpr Contents = "hello, world!"sv;
-    createFileWithContents(file, std::data(Contents), std::size(Contents));
+    createFileWithContents(tr_pathbuf{ test_dir, "/visible"sv }, "test");
+    createFileWithContents(tr_pathbuf{ test_dir, "/.hidden"sv }, "test");
+
+    auto error = tr_error{};
+    auto const defaulted = tr_sys_dir_get_files(test_dir, tr_basename_is_not_dotfile, &error);
+    EXPECT_FALSE(error) << error;
+    EXPECT_EQ(std::vector<std::string>({ "visible" }), defaulted);
+
+    EXPECT_EQ(std::set<std::string>({ "visible" }), getFiles(test_dir, tr_basename_is_not_dotfile));
+    EXPECT_EQ(std::set<std::string>({ ".hidden", "visible" }), getFiles(test_dir, tr_basename_accept_all));
+}
+
+TEST_F(FileTest, dirGetFilesUtf8)
+{
+    auto const test_dir = createTestDir(currentTestName());
+
+    // hiragana has no decomposed form, so this name survives the
+    // NFD normalization that some filesystems apply to what they store
+    auto constexpr Name = "こんにちは.txt"sv;
+    createFileWithContents(tr_pathbuf{ test_dir, '/', Name }, "test");
+
+    EXPECT_EQ(std::set<std::string>({ std::string{ Name } }), getFiles(test_dir));
+}
+
+// A folder that isn't there is "no files", not an error: callers watch
+// folders that may not exist yet and would otherwise log on every poll.
+TEST_F(FileTest, dirGetFilesNotAFolder)
+{
+    auto const test_dir = createTestDir(currentTestName());
+
+    auto const file = tr_pathbuf{ test_dir, "/foo.fxt"sv };
+    createFileWithContents(file, "test");
 
     // path does not exist
-    auto err = tr_error{};
-    auto odir = tr_sys_dir_open("/no/such/path", &err);
-    EXPECT_EQ(TR_BAD_SYS_DIR, odir);
-    EXPECT_TRUE(err);
-    err = {};
+    auto error = tr_error{};
+    EXPECT_EQ(std::vector<std::string>{}, tr_sys_dir_get_files("/no/such/path", tr_basename_accept_all, &error));
+    EXPECT_FALSE(error) << error;
 
-    // path is not a directory
-    odir = tr_sys_dir_open(file, &err);
-    EXPECT_EQ(TR_BAD_SYS_DIR, odir);
-    EXPECT_TRUE(err);
-    err = {};
-
-    // path exists and is readable
-    odir = tr_sys_dir_open(test_dir, &err);
-    EXPECT_NE(TR_BAD_SYS_DIR, odir);
-    EXPECT_FALSE(err);
-    auto files = std::set<std::string>{};
-    for (;;) {
-        char const* const filename = tr_sys_dir_read_name(odir, &err);
-        if (filename == nullptr) {
-            break;
-        }
-        files.insert(filename);
-    }
-    EXPECT_EQ(3U, std::size(files));
-    EXPECT_FALSE(err) << err;
-    EXPECT_TRUE(tr_sys_dir_close(odir, &err));
-    EXPECT_FALSE(err) << err;
+    // path is a file
+    EXPECT_EQ(std::vector<std::string>{}, tr_sys_dir_get_files(file, tr_basename_accept_all, &error));
+    EXPECT_FALSE(error) << error;
 }
+
+#ifndef _WIN32
+TEST_F(FileTest, dirGetFilesUnreadable)
+{
+    if (getuid() == 0) {
+        GTEST_SKIP() << "root can read a folder regardless of its permissions";
+    }
+
+    auto const test_dir = createTestDir(currentTestName());
+    auto const unreadable = tr_pathbuf{ test_dir, "/unreadable"sv };
+    tr_sys_dir_create(unreadable, 0, 0700);
+    createFileWithContents(tr_pathbuf{ unreadable, "/a"sv }, "test");
+    ASSERT_EQ(0, chmod(unreadable.c_str(), 0));
+
+    auto error = tr_error{};
+    EXPECT_EQ(std::vector<std::string>{}, tr_sys_dir_get_files(unreadable, tr_basename_accept_all, &error));
+    EXPECT_TRUE(error);
+
+    // let the sandbox clean up after itself
+    EXPECT_EQ(0, chmod(unreadable.c_str(), 0700));
+}
+#endif
 
 } // namespace tr::test

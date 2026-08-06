@@ -45,40 +45,14 @@ using file_func_t = std::function<void(std::string_view filename)>;
 
 [[nodiscard]] bool is_empty_folder(std::string_view const path)
 {
-    if (!is_folder(path)) {
-        return false;
-    }
-
-    if (auto const odir = tr_sys_dir_open(path); odir != TR_BAD_SYS_DIR) {
-        char const* name_cstr = nullptr;
-        while ((name_cstr = tr_sys_dir_read_name(odir)) != nullptr) {
-            auto const name = std::string_view{ name_cstr };
-            if (name != "." && name != "..") {
-                tr_sys_dir_close(odir);
-                return false;
-            }
-        }
-        tr_sys_dir_close(odir);
-    }
-
-    return true;
+    return is_folder(path) && std::empty(tr_sys_dir_get_files(path, tr_basename_accept_all));
 }
 
 void depth_first_walk(std::string_view const path, file_func_t const& func, std::optional<int> max_depth = {})
 {
     if (is_folder(path) && (!max_depth || *max_depth > 0)) {
-        if (auto const odir = tr_sys_dir_open(path); odir != TR_BAD_SYS_DIR) {
-            char const* name_cstr = nullptr;
-            while ((name_cstr = tr_sys_dir_read_name(odir)) != nullptr) {
-                auto const name = std::string_view{ name_cstr };
-                if (name == "." || name == "..") {
-                    continue;
-                }
-
-                depth_first_walk(tr_pathbuf{ path, '/', name }, func, max_depth ? *max_depth - 1 : max_depth);
-            }
-
-            tr_sys_dir_close(odir);
+        for (auto const& name : tr_sys_dir_get_files(path, tr_basename_accept_all)) {
+            depth_first_walk(tr_pathbuf{ path, '/', name }, func, max_depth ? *max_depth - 1 : max_depth);
         }
     }
 

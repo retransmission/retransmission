@@ -41,6 +41,13 @@ template<typename InputIt>
     return tr_u8path(path.begin(), path.end());
 }
 
+// Inverse of tr_u8path(): a UTF-8 std::string holding `path`'s native representation.
+[[nodiscard]] std::string tr_u8string(std::filesystem::path const& path)
+{
+    auto const u8_path = path.u8string();
+    return { std::begin(u8_path), std::end(u8_path) };
+}
+
 } // namespace
 
 std::string tr_sys_path_resolve(std::string_view path, tr_error* error)
@@ -53,8 +60,7 @@ std::string tr_sys_path_resolve(std::string_view path, tr_error* error)
         return {};
     }
 
-    auto const u8_path = canonical_path.u8string();
-    return { std::begin(u8_path), std::end(u8_path) };
+    return tr_u8string(canonical_path);
 }
 
 bool tr_sys_path_is_relative(std::string_view path)
@@ -239,28 +245,33 @@ std::vector<std::string> tr_sys_dir_get_files(
     std::function<bool(std::string_view)> const& test,
     tr_error* error)
 {
+    // Callers point this at folders that may legitimately not exist yet,
+    // e.g. a config folder before its first write, and read that as "no files".
     if (auto const info = tr_sys_path_get_info(folder); !info || !info->isFolder()) {
         return {};
     }
 
-    auto const odir = tr_sys_dir_open(folder, error);
-    if (odir == TR_BAD_SYS_DIR) {
+    auto ec = std::error_code{};
+    auto iter = std::filesystem::directory_iterator{ tr_u8path(folder), ec };
+    if (ec) {
+        maybe_set_error(error, ec);
         return {};
     }
 
     auto filenames = std::vector<std::string>{};
-    for (;;) {
-        char const* const name = tr_sys_dir_read_name(odir, error);
-
-        if (name == nullptr) {
-            tr_sys_dir_close(odir, error);
-            return filenames;
+    for (auto const end = std::filesystem::directory_iterator{}; iter != end;) {
+        if (auto name = tr_u8string(iter->path().filename()); test(name)) {
+            filenames.emplace_back(std::move(name));
         }
 
-        if (test(name)) {
-            filenames.emplace_back(name);
+        // operator++() reports failure by throwing; this API reports it in `error`
+        if (iter.increment(ec); ec) {
+            maybe_set_error(error, ec);
+            break;
         }
     }
+
+    return filenames;
 }
 
 std::optional<tr_sys_path_capacity> tr_sys_path_get_capacity(std::string_view const path, tr_error* error)

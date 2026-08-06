@@ -74,13 +74,8 @@ private:
     static void rimraf(std::string_view const path)
     {
         if (auto const info = tr_sys_path_get_info(path); info && info->isFolder()) {
-            if (auto const dir = tr_sys_dir_open(path); dir != TR_BAD_SYS_DIR) {
-                for (char const* name = nullptr; (name = tr_sys_dir_read_name(dir)) != nullptr;) {
-                    if (auto const name_sv = std::string_view{ name }; name_sv != "." && name_sv != "..") {
-                        rimraf(fmt::format("{:s}/{:s}", path, name));
-                    }
-                }
-                tr_sys_dir_close(dir);
+            for (auto const& name : tr_sys_dir_get_files(path, tr_basename_accept_all)) {
+                rimraf(fmt::format("{:s}/{:s}", path, name));
             }
         }
 

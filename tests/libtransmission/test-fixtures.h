@@ -50,20 +50,8 @@ using file_func_t = std::function<void(std::string_view filename)>;
 static void depthFirstWalk(std::string_view const path, file_func_t const& func)
 {
     if (auto const info = tr_sys_path_get_info(path); info && info->isFolder()) {
-        if (auto const odir = tr_sys_dir_open(path); odir != TR_BAD_SYS_DIR) {
-            for (;;) {
-                char const* const name = tr_sys_dir_read_name(odir);
-                if (name == nullptr) {
-                    break;
-                }
-
-                if ("."sv != name && ".."sv != name) {
-                    auto const child = fmt::format("{:s}/{:s}"sv, path, name);
-                    depthFirstWalk(child, func);
-                }
-            }
-
-            tr_sys_dir_close(odir);
+        for (auto const& name : tr_sys_dir_get_files(path, tr_basename_accept_all)) {
+            depthFirstWalk(fmt::format("{:s}/{:s}"sv, path, name), func);
         }
     }
 

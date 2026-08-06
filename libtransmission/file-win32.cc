@@ -24,13 +24,6 @@
 
 using namespace std::literals;
 
-struct tr_sys_dir_win32 {
-    std::wstring pattern;
-    HANDLE find_handle = INVALID_HANDLE_VALUE;
-    WIN32_FIND_DATAW find_data = {};
-    std::string utf8_name;
-};
-
 namespace
 {
 auto constexpr NativeLocalPathPrefix = L"\\\\?\\"sv;
@@ -41,13 +34,6 @@ void set_system_error(tr_error* error, DWORD code)
     if (error != nullptr) {
         auto const message = tr_win32_format_message(code);
         error->set(code, !std::empty(message) ? message : fmt::format("Unknown error: {:#08x}", code));
-    }
-}
-
-void set_system_error_if_file_found(tr_error* error, DWORD code)
-{
-    if (code != ERROR_FILE_NOT_FOUND && code != ERROR_PATH_NOT_FOUND && code != ERROR_NO_MORE_FILES) {
-        set_system_error(error, code);
     }
 }
 
@@ -733,74 +719,6 @@ bool tr_sys_dir_create_temp(char* path_template, tr_error* error)
         path_template,
         [&ret](char const* path, tr_error* error) { ret = create_dir(path, 0, 0, false, error); },
         error);
-
-    return ret;
-}
-
-tr_sys_dir_t tr_sys_dir_open(std::string_view path, tr_error* error)
-{
-    TR_ASSERT(!std::empty(path));
-
-    if (auto const info = tr_sys_path_get_info(path, 0); !info || !info->isFolder()) {
-        set_system_error(error, ERROR_DIRECTORY);
-        return TR_BAD_SYS_DIR;
-    }
-
-    auto const pattern = path_to_native_path(path);
-    if (std::empty(pattern)) {
-        set_system_error(error, GetLastError());
-        return TR_BAD_SYS_DIR;
-    }
-
-    auto* const ret = new tr_sys_dir_win32{};
-    ret->pattern = pattern;
-    ret->pattern.append(L"\\*");
-    return ret;
-}
-
-char const* tr_sys_dir_read_name(tr_sys_dir_t handle, tr_error* error)
-{
-    TR_ASSERT(handle != TR_BAD_SYS_DIR);
-
-    DWORD error_code = ERROR_SUCCESS;
-
-    if (handle->find_handle == INVALID_HANDLE_VALUE) {
-        handle->find_handle = FindFirstFileW(handle->pattern.c_str(), &handle->find_data);
-
-        if (handle->find_handle == INVALID_HANDLE_VALUE) {
-            error_code = GetLastError();
-        }
-    } else {
-        if (!to_bool(FindNextFileW(handle->find_handle, &handle->find_data))) {
-            error_code = GetLastError();
-        }
-    }
-
-    if (error_code != ERROR_SUCCESS) {
-        set_system_error_if_file_found(error, error_code);
-        return nullptr;
-    }
-
-    if (auto const utf8 = tr_win32_native_to_utf8(handle->find_data.cFileName); !std::empty(utf8)) {
-        handle->utf8_name = utf8;
-        return handle->utf8_name.c_str();
-    }
-
-    set_system_error(error, GetLastError());
-    return nullptr;
-}
-
-bool tr_sys_dir_close(tr_sys_dir_t handle, tr_error* error)
-{
-    TR_ASSERT(handle != TR_BAD_SYS_DIR);
-
-    bool const ret = to_bool(FindClose(handle->find_handle));
-
-    if (!ret) {
-        set_system_error(error, GetLastError());
-    }
-
-    delete handle;
 
     return ret;
 }

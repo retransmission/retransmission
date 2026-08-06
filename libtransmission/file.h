@@ -30,20 +30,13 @@ struct tr_error;
 using tr_sys_file_t = int;
 /** @brief Platform-specific invalid file descriptor constant. */
 #define TR_BAD_SYS_FILE (-1)
-/** @brief Platform-specific directory descriptor type. */
-using tr_sys_dir_t = void*;
 
 #else
 
 using tr_sys_file_t = HANDLE;
 #define TR_BAD_SYS_FILE INVALID_HANDLE_VALUE
-struct tr_sys_dir_win32;
-using tr_sys_dir_t = tr_sys_dir_win32*;
 
 #endif
-
-/** @brief Platform-specific invalid directory descriptor constant. */
-#define TR_BAD_SYS_DIR ((tr_sys_dir_t) nullptr)
 
 enum tr_sys_file_open_flags_t : uint8_t {
     TR_SYS_FILE_READ = (1 << 0),
@@ -93,9 +86,9 @@ struct tr_sys_path_capacity {
  *
  * Following functions accept paths in UTF-8 encoding and convert them to native
  * encoding internally if needed.
- * Descriptors returned (@ref tr_sys_file_t and @ref tr_sys_dir_t) may have
- * different type depending on platform and should generally not be passed to
- * native functions, but to wrapper functions instead.
+ * Descriptors returned (@ref tr_sys_file_t) may have different type depending
+ * on platform and should generally not be passed to native functions, but to
+ * wrapper functions instead.
  *
  * @{
  */
@@ -455,49 +448,30 @@ bool tr_sys_dir_create(std::string_view path, int flags, int permissions, tr_err
  */
 bool tr_sys_dir_create_temp(char* path_template, tr_error* error = nullptr);
 
-/**
- * @brief Portability wrapper for `opendir()`.
- *
- * @param[in]  path  Path to directory.
- * @param[out] error Pointer to error object. Optional, pass `nullptr` if you are
- *                   not interested in error details.
- *
- * @return Opened directory descriptor on success, `TR_BAD_SYS_DIR` otherwise
- *         (with `error` set accordingly).
- */
-tr_sys_dir_t tr_sys_dir_open(std::string_view path, tr_error* error = nullptr);
-
-/**
- * @brief Portability wrapper for `readdir()`.
- *
- * @param[in]  handle Valid directory descriptor.
- * @param[out] error  Pointer to error object. Optional, pass `nullptr` if you
- *                    are not interested in error details.
- *
- * @return Pointer to next directory entry name (stored internally, DO NOT free
- *         it) on success, `nullptr` otherwise (with `error` set accordingly).
- *         Note that `nullptr` will also be returned in case of end of directory.
- *         If you need to distinguish the two, check if `error` is `nullptr`
- *         afterwards.
- */
-char const* tr_sys_dir_read_name(tr_sys_dir_t handle, tr_error* error = nullptr);
-
-/**
- * @brief Portability wrapper for `closedir()`.
- *
- * @param[in]  handle Valid directory descriptor.
- * @param[out] error  Pointer to error object. Optional, pass `nullptr` if you
- *                    are not interested in error details.
- *
- * @return `True` on success, `false` otherwise (with `error` set accordingly).
- */
-bool tr_sys_dir_close(tr_sys_dir_t handle, tr_error* error = nullptr);
-
 [[nodiscard]] constexpr bool tr_basename_is_not_dotfile(std::string_view sv)
 {
     return std::empty(sv) || sv.front() != '.';
 }
 
+[[nodiscard]] constexpr bool tr_basename_accept_all(std::string_view /*sv*/) noexcept
+{
+    return true;
+}
+
+/**
+ * @brief List the entries of a directory.
+ *
+ * @param[in]  folder Path to directory.
+ * @param[in]  test   Predicate deciding which entry names to keep.
+ * @param[out] error  Pointer to error object. Optional, pass `nullptr` if you
+ *                    are not interested in error details.
+ *
+ * @return Names of the matching entries -- base names, not paths -- in
+ *         unspecified order. The `.` and `..` entries are never included.
+ *         A `folder` that is not a directory yields an empty result and leaves
+ *         `error` unset; callers read that as "no files". Any other failure
+ *         sets `error` and returns the names read before it, if any.
+ */
 [[nodiscard]] std::vector<std::string> tr_sys_dir_get_files(
     std::string_view folder,
     std::function<bool(std::string_view name)> const& test = tr_basename_is_not_dotfile,
