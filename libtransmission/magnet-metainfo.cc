@@ -150,7 +150,7 @@ std::optional<tr_sha256_digest_t> parseHash2(std::string_view sv)
 
 std::string tr_magnet_metainfo::magnet() const
 {
-    auto buf = std::string{ "magnet:?xt=urn:btih:"sv };
+    auto buf = "magnet:?xt=urn:btih:"s;
     buf += info_hash_string();
 
     if (!std::empty(name_)) {
