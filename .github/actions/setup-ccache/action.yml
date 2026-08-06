@@ -15,12 +15,15 @@ inputs:
     default: ''
   max-size:
     description: >
-      Local ccache size limit. This is build-time headroom, not the
-      persisted size -- finalize-ccache's trim governs what a snapshot
-      keeps. A limit under the working set makes ccache clean mid-build,
-      and mid-build cleanup cannot tell dead churn from entries the build
-      has not reached yet.
-    default: 1G
+      Local ccache size limit, and the ceiling on the saved snapshot: a
+      full build's objects are the most recently used entries, so LRU
+      eviction at this limit discards superseded generations and keeps
+      the live set. Size it at roughly twice the job's cold-build
+      footprint -- enough for the previous generation to serve hits plus
+      this build's writes. Below one full build the cache evicts entries
+      the build has not reached yet; far above two, it hoards
+      generations that will never be hit again.
+    default: 400M
 runs:
   using: composite
   steps:

@@ -11,10 +11,15 @@ the replacements briefly coexisting with it stays under that limit.
 `setup-ccache` derives one key per job from the job name, an optional
 matrix suffix, and the workflow-level `CACHE_SCHEMA`; `finalize-ccache`
 trims, saves, verifies, and deletes the snapshots it supersedes. Pull
-requests restore main's newest snapshot and never save. Jobs whose working
-set outgrows the trim window pass a shorter `trim-age`; the local size
-limit is deliberately generous because trimming, not the limit, governs
-persisted size.
+requests restore main's newest snapshot and never save.
+
+`max-size` is what governs a snapshot's size, so each job sets its own at
+roughly twice its cold-build footprint. A full build's objects are the
+most recently used entries, so LRU eviction at that limit drops
+superseded generations and keeps the live set; a larger limit only hoards
+generations that will never be hit again. `trim-age` bounds how long an
+untouched entry survives, and binds only on jobs that stay under their
+limit.
 
 Jobs delete their own superseded snapshots rather than leaving them all to
 the janitor so that, within a push, the cache never holds much more than
@@ -58,3 +63,6 @@ When adding a cache:
 3. Use `setup-ccache`/`finalize-ccache` for evolving compiler output.
 4. Add the producing job to the janitor's `needs` list.
 5. Account for its steady-state size within the 9 GiB warning threshold.
+   For ccache, read the cold-build footprint off a run that follows a
+   `CACHE_SCHEMA` bump -- every family starts empty there, so the size
+   ccache reports at the end of the build is one generation.

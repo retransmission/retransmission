@@ -639,6 +639,8 @@ jobs:
           enable-qt: ${{ needs.what-to-make.outputs.make-qt == 'true' && 'qt6' || 'false' }}
       - name: Setup ccache
         uses: ./.github/actions/setup-ccache
+        with:
+          max-size: 600M
       - name: Configure
         run: |
           cmake \
@@ -827,6 +829,8 @@ jobs:
       - name: Setup ccache
         uses: ./.github/actions/setup-ccache
         with:
+          # IPO's /GL objects carry IL, so this cell's build is ~2.5x the others
+          max-size: ${{ matrix.ipo == 'ON' && '1G' || '400M' }}
           key-suffix: ${{ matrix.arch }}-${{ matrix.runner }}-ipo-${{ matrix.ipo }}
       - name: Configure
         run: |
@@ -969,6 +973,8 @@ jobs:
         run: mkdir src && tar xf transmission*.tar.* -C src --strip-components 1
       - name: Setup ccache
         uses: ./.github/actions/setup-ccache
+        with:
+          max-size: 600M
       - name: Configure
         run: |
           cmake \
@@ -1256,6 +1262,8 @@ jobs:
         run: mkdir src && tar xf transmission*.tar.* -C src --strip-components 1
       - name: Setup ccache
         uses: ./.github/actions/setup-ccache
+        with:
+          max-size: 60M
       - name: Configure
         run: |
           cmake \
@@ -1387,6 +1395,8 @@ jobs:
           enable-mold: true
       - name: Setup ccache
         uses: ./.github/actions/setup-ccache
+        with:
+          max-size: 100M
       - name: Configure
         run: |
           cmake \
@@ -1461,6 +1471,8 @@ jobs:
         run: mkdir src && tar xf transmission*.tar.* -C src --strip-components 1
       - name: Setup ccache
         uses: ./.github/actions/setup-ccache
+        with:
+          max-size: 150M
       - name: Configure
         run: |
           cmake \
@@ -1634,6 +1646,7 @@ jobs:
       - name: Setup ccache
         uses: ./.github/actions/setup-ccache
         with:
+          max-size: 100M
           key-suffix: ${{ matrix.crypto.cmake }}
       - name: Configure
         run: |
