@@ -162,9 +162,3 @@ std::string tr_win32_format_message(uint32_t code)
 }
 
 #endif
-
-std::string_view::size_type tr_strv_find_invalid_utf8(std::string_view const sv)
-{
-    auto const result = simdutf::validate_utf8_with_errors(std::data(sv), std::size(sv));
-    return result.error == simdutf::error_code::SUCCESS ? std::string_view::npos : result.count;
-}
