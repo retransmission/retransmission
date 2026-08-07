@@ -1576,15 +1576,15 @@ void torrentAdd(tr_session* session, tr_variant::Map const& args_in, tr_rpc_idle
     auto const cookies = args_in.value_if<std::string_view>(TR_KEY_cookies).value_or(""sv);
 
     if (download_dir && !std::empty(*download_dir)) {
-        ctor.set_download_dir(TR_FORCE, *download_dir);
+        ctor.set_download_dir(*download_dir);
     }
 
     if (auto const val = args_in.value_if<bool>(TR_KEY_paused)) {
-        ctor.set_paused(TR_FORCE, *val);
+        ctor.set_paused(*val);
     }
 
     if (auto const val = args_in.value_if<int64_t>(TR_KEY_peer_limit); val) {
-        ctor.set_peer_limit(TR_FORCE, static_cast<uint16_t>(*val));
+        ctor.set_peer_limit(static_cast<uint16_t>(*val));
     }
 
     if (auto const val = args_in.value_if<int64_t>(TR_KEY_bandwidth_priority); val) {
@@ -1628,11 +1628,11 @@ void torrentAdd(tr_session* session, tr_variant::Map const& args_in, tr_rpc_idle
     }
 
     if (auto const val = args_in.value_if<bool>(TR_KEY_sequential_download); val) {
-        ctor.set_sequential_download(TR_FORCE, *val);
+        ctor.set_sequential_download(*val);
     }
 
     if (auto const val = args_in.value_if<int64_t>(TR_KEY_sequential_download_from_piece); val) {
-        ctor.set_sequential_download_from_piece(TR_FORCE, *val);
+        ctor.set_sequential_download_from_piece(*val);
     }
 
     tr_logAddTrace(fmt::format("torrentAdd: filename is '{}'", filename));

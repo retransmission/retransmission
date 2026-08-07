@@ -346,7 +346,7 @@ int tr_main(int argc, char* argv[])
     auto* const h = tr_sessionInit(config_dir, false, settings);
     auto* const ctor = tr_ctorNew(h);
 
-    tr_ctorSetPaused(ctor, TR_FORCE, false);
+    tr_ctorSetPaused(ctor, false);
 
     if (tr_sys_path_exists(torrentPath) ? tr_ctorSetMetainfoFromFile(ctor, torrentPath) :
                                           tr_ctorSetMetainfoFromMagnetLink(ctor, torrentPath)) {

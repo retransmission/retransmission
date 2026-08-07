@@ -158,8 +158,8 @@ void OptionsDialog::Impl::sourceChanged(PathButton* b)
             new_file = true;
         }
 
-        tr_ctorSetDownloadDir(ctor_.get(), TR_FORCE, downloadDir_);
-        tr_ctorSetPaused(ctor_.get(), TR_FORCE, true);
+        tr_ctorSetDownloadDir(ctor_.get(), downloadDir_);
+        tr_ctorSetPaused(ctor_.get(), true);
         tr_ctorSetDeleteSource(ctor_.get(), false);
 
         tr_torrent* duplicate_of = nullptr;
@@ -242,7 +242,7 @@ OptionsDialog::Impl::Impl(
     , core_(core)
     , ctor_(std::move(ctor))
     , filename_{ tr_ctorGetSourceFile(ctor_.get()).value_or(""s) }
-    , downloadDir_{ tr_ctorGetDownloadDir(ctor_.get(), TR_FORCE).value_or(""s) }
+    , downloadDir_{ tr_ctorGetDownloadDir(ctor_.get()).value_or(""s) }
     , file_list_(gtr_get_widget_derived<FileList>(builder, "files_view_scroll", "files_view", core_, 0))
     , run_check_(gtr_get_widget<Gtk::CheckButton>(builder, "start_check"))
     , trash_check_(gtr_get_widget<Gtk::CheckButton>(builder, "trash_check"))
@@ -267,7 +267,7 @@ OptionsDialog::Impl::Impl(
         [this, destination_chooser]() { downloadDirChanged(destination_chooser); });
 
     bool flag = false;
-    if (!tr_ctorGetPaused(ctor_.get(), TR_FORCE, &flag)) {
+    if (!tr_ctorGetPaused(ctor_.get(), &flag)) {
         g_assert_not_reached();
     }
 

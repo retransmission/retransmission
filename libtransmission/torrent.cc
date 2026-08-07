@@ -836,12 +836,6 @@ void tr_torrent::init(tr_ctor const& ctor)
 
     on_metainfo_updated();
 
-    if (auto dir = ctor.download_dir(TR_FORCE); !std::empty(dir)) {
-        download_dir_ = dir;
-    } else if (dir = ctor.download_dir(TR_FALLBACK); !std::empty(dir)) {
-        download_dir_ = dir;
-    }
-
     if (tr_sessionIsIncompleteDirEnabled(session)) {
         auto const& dir = ctor.incomplete_dir();
         incomplete_dir_ = !std::empty(dir) ? dir : session->incompleteDir();
@@ -863,6 +857,8 @@ void tr_torrent::init(tr_ctor const& ctor)
 
     // these are defaults that will be overwritten by the resume file
     date_added_ = now_sec;
+    download_dir_ = session->downloadDir();
+    start_when_stable_ = !session->shouldPauseAddedTorrents();
     set_sequential_download(session->sequential_download());
 
     tr_resume::fields_t loaded = {};
@@ -874,6 +870,8 @@ void tr_torrent::init(tr_ctor const& ctor)
         // affect the 'is dirty' flag.
         auto const was_dirty = is_dirty();
         auto resume_helper = ResumeHelper{ *this };
+        // another default for the resume file to overwrite; it sits inside this guard because it dirties the torrent
+        set_peer_limit(static_cast<uint16_t>(session->peerLimitPerTorrent()));
         loaded = tr_resume::load(this, resume_helper, tr_resume::All, ctor);
         set_dirty(was_dirty);
         tr_torrent_metainfo::migrate_file(session->torrentDir(), name(), info_hash_string(), ".torrent"sv);

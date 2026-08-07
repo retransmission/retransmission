@@ -382,7 +382,7 @@ protected:
         auto error = tr_error{};
         EXPECT_TRUE(tr_ctorSetMetainfo(ctor, std::data(benc), std::size(benc), &error));
         EXPECT_FALSE(error) << error;
-        tr_ctorSetPaused(ctor, TR_FORCE, true);
+        tr_ctorSetPaused(ctor, true);
 
         // maybe create the files
         if (state != ZeroTorrentState::NoFiles) {
@@ -428,7 +428,7 @@ protected:
 
         auto ctor = tr_ctorNew(session_);
         ctor->set_metainfo_from_magnet_link(V1Hash);
-        tr_ctorSetPaused(ctor, TR_FORCE, true);
+        tr_ctorSetPaused(ctor, true);
 
         auto* const tor = tr_torrentNew(ctor, nullptr);
         EXPECT_NE(nullptr, tor);

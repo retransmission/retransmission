@@ -552,17 +552,17 @@ bool tr_ctorSetMetainfo(tr_ctor* ctor, char const* metainfo, size_t len, tr_erro
 bool tr_ctorSetMetainfoFromFile(tr_ctor* ctor, std::string_view filename, tr_error* error = nullptr);
 
 /** @brief Get this peer constructor's peer limit */
-[[nodiscard]] bool tr_ctorGetPeerLimit(tr_ctor const* ctor, tr_ctorMode mode, uint16_t* setme_count);
+[[nodiscard]] bool tr_ctorGetPeerLimit(tr_ctor const* ctor, uint16_t* setme_count);
 
 /** @brief Set how many peers this torrent can connect to. (Default: 50) */
-void tr_ctorSetPeerLimit(tr_ctor* ctor, tr_ctorMode mode, uint16_t limit);
+void tr_ctorSetPeerLimit(tr_ctor* ctor, uint16_t limit);
 
 /** @brief Get the download path from this peer constructor */
-[[nodiscard]] std::optional<std::string> tr_ctorGetDownloadDir(tr_ctor const* ctor, tr_ctorMode mode);
+[[nodiscard]] std::optional<std::string> tr_ctorGetDownloadDir(tr_ctor const* ctor);
 
 /** @brief Set the download folder for the torrent being added with this ctor.
     @see `tr_sessionInit()` */
-void tr_ctorSetDownloadDir(tr_ctor* ctor, tr_ctorMode mode, std::string_view dir);
+void tr_ctorSetDownloadDir(tr_ctor* ctor, std::string_view dir);
 
 /**
  * @brief Set the incompleteDir for this torrent.
@@ -575,11 +575,11 @@ void tr_ctorSetDownloadDir(tr_ctor* ctor, tr_ctorMode mode, std::string_view dir
 void tr_ctorSetIncompleteDir(tr_ctor* ctor, std::string_view dir);
 
 /** @brief Get the "isPaused" flag from this peer constructor */
-bool tr_ctorGetPaused(tr_ctor const* ctor, tr_ctorMode mode, bool* setme_is_paused);
+bool tr_ctorGetPaused(tr_ctor const* ctor, bool* setme_is_paused);
 
 /** Set whether or not the torrent begins downloading/seeding when created.
   (Default: not paused) */
-void tr_ctorSetPaused(tr_ctor* ctor, tr_ctorMode mode, bool is_paused);
+void tr_ctorSetPaused(tr_ctor* ctor, bool is_paused);
 
 /** @brief Get the torrent file that this ctor's metainfo came from,
            or empty if `tr_ctorSetMetainfoFromFile()` wasn't used */

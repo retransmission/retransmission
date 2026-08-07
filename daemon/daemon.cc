@@ -858,7 +858,7 @@ int tr_daemon::start([[maybe_unused]] bool foreground)
         tr_ctor* ctor = tr_ctorNew(my_session_);
 
         if (map.value_if<bool>(TR_KEY_start_paused).value_or(false)) {
-            tr_ctorSetPaused(ctor, TR_FORCE, true);
+            tr_ctorSetPaused(ctor, true);
         }
 
         tr_sessionLoadTorrents(my_session_, ctor);

@@ -658,7 +658,7 @@ static void removeKeRangerRansomware()
 
     //load previous transfers
     tr_ctor* ctor = tr_ctorNew(session);
-    tr_ctorSetPaused(ctor, TR_FORCE, true); // paused by default; unpause below after checking state history
+    tr_ctorSetPaused(ctor, true); // paused by default; unpause below after checking state history
     tr_sessionLoadTorrents(session, ctor);
     tr_ctorFree(ctor);
 

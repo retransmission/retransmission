@@ -767,7 +767,7 @@ TEST_F(RpcTest, recentlyActiveEmptyOnStartup)
     }
 
     auto* const ctor = tr_ctorNew(session_);
-    ctor->set_paused(TR_FORCE, false);
+    ctor->set_paused(false);
     EXPECT_EQ(tr_sessionLoadTorrents(session_, ctor), 1U);
     tr_ctorFree(ctor);
 

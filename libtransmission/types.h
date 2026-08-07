@@ -169,11 +169,6 @@ enum tr_completeness : uint8_t {
     TR_PARTIAL_SEED /* has the desired pieces, but not the entire torrent */
 };
 
-enum tr_ctorMode : uint8_t {
-    TR_FALLBACK, /* indicates the ctor value should be used only in case of missing resume settings */
-    TR_FORCE /* indicates the ctor value should be used regardless of what's in the resume settings */
-};
-
 enum class tr_blocklist_update_status : uint8_t { Ok, DownloadError, SaveError, InvalidData };
 
 enum class tr_direction : uint8_t {

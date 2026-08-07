@@ -15,9 +15,6 @@ using namespace std::literals;
 tr_ctor::tr_ctor(tr_session* const session)
     : session_{ session }
 {
-    set_download_dir(TR_FALLBACK, session->downloadDir());
-    set_paused(TR_FALLBACK, session->shouldPauseAddedTorrents());
-    set_peer_limit(TR_FALLBACK, session->peerLimitPerTorrent());
     set_should_delete_source_file(session->shouldDeleteSource());
 }
 
@@ -123,19 +120,19 @@ bool tr_ctorGetDeleteSource(tr_ctor const* const ctor, bool* const setme)
     return false;
 }
 
-void tr_ctorSetPaused(tr_ctor* const ctor, tr_ctorMode const mode, bool const paused)
+void tr_ctorSetPaused(tr_ctor* const ctor, bool const paused)
 {
-    ctor->set_paused(mode, paused);
+    ctor->set_paused(paused);
 }
 
-void tr_ctorSetPeerLimit(tr_ctor* const ctor, tr_ctorMode const mode, uint16_t const peer_limit)
+void tr_ctorSetPeerLimit(tr_ctor* const ctor, uint16_t const peer_limit)
 {
-    ctor->set_peer_limit(mode, peer_limit);
+    ctor->set_peer_limit(peer_limit);
 }
 
-void tr_ctorSetDownloadDir(tr_ctor* const ctor, tr_ctorMode const mode, std::string_view const dir)
+void tr_ctorSetDownloadDir(tr_ctor* const ctor, std::string_view const dir)
 {
-    ctor->set_download_dir(mode, dir);
+    ctor->set_download_dir(dir);
 }
 
 void tr_ctorSetIncompleteDir(tr_ctor* const ctor, std::string_view const dir)
@@ -143,9 +140,9 @@ void tr_ctorSetIncompleteDir(tr_ctor* const ctor, std::string_view const dir)
     ctor->set_incomplete_dir(dir);
 }
 
-bool tr_ctorGetPeerLimit(tr_ctor const* const ctor, tr_ctorMode const mode, uint16_t* const setme)
+bool tr_ctorGetPeerLimit(tr_ctor const* const ctor, uint16_t* const setme)
 {
-    if (auto const val = ctor->peer_limit(mode); val) {
+    if (auto const val = ctor->peer_limit(); val) {
         if (setme != nullptr) {
             *setme = *val;
         }
@@ -156,9 +153,9 @@ bool tr_ctorGetPeerLimit(tr_ctor const* const ctor, tr_ctorMode const mode, uint
     return false;
 }
 
-bool tr_ctorGetPaused(tr_ctor const* const ctor, tr_ctorMode const mode, bool* const setme)
+bool tr_ctorGetPaused(tr_ctor const* const ctor, bool* const setme)
 {
-    if (auto const val = ctor->paused(mode); val) {
+    if (auto const val = ctor->paused(); val) {
         if (setme != nullptr) {
             *setme = *val;
         }
@@ -169,9 +166,9 @@ bool tr_ctorGetPaused(tr_ctor const* const ctor, tr_ctorMode const mode, bool* c
     return false;
 }
 
-std::optional<std::string> tr_ctorGetDownloadDir(tr_ctor const* const ctor, tr_ctorMode const mode)
+std::optional<std::string> tr_ctorGetDownloadDir(tr_ctor const* const ctor)
 {
-    if (auto const& dir = ctor->download_dir(mode); !std::empty(dir)) {
+    if (auto const& dir = ctor->download_dir(); !std::empty(dir)) {
         return dir;
     }
 

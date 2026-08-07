@@ -739,45 +739,40 @@ tr_resume::fields_t load_from_file(tr_torrent* tor, tr_torrent::ResumeHelper& he
     return fields_loaded;
 }
 
-auto set_from_ctor(
-    tr_torrent* tor,
-    tr_torrent::ResumeHelper& helper,
-    tr_resume::fields_t const fields,
-    tr_ctor const& ctor,
-    tr_ctorMode const mode)
+auto set_from_ctor(tr_torrent* tor, tr_torrent::ResumeHelper& helper, tr_resume::fields_t const fields, tr_ctor const& ctor)
 {
     auto ret = tr_resume::fields_t{};
 
     if ((fields & tr_resume::Run) != 0) {
-        if (auto const val = ctor.paused(mode); val) {
+        if (auto const val = ctor.paused(); val) {
             helper.load_start_when_stable(!*val);
             ret |= tr_resume::Run;
         }
     }
 
     if ((fields & tr_resume::MaxPeers) != 0) {
-        if (auto const val = ctor.peer_limit(mode); val) {
+        if (auto const val = ctor.peer_limit(); val) {
             tor->set_peer_limit(*val);
             ret |= tr_resume::MaxPeers;
         }
     }
 
     if ((fields & tr_resume::DownloadDir) != 0) {
-        if (auto const& val = ctor.download_dir(mode); !std::empty(val)) {
+        if (auto const& val = ctor.download_dir(); !std::empty(val)) {
             helper.load_download_dir(val);
             ret |= tr_resume::DownloadDir;
         }
     }
 
     if ((fields & tr_resume::SequentialDownload) != 0) {
-        if (auto const& val = ctor.sequential_download(mode); val) {
+        if (auto const& val = ctor.sequential_download(); val) {
             tor->set_sequential_download(*val);
             ret |= tr_resume::SequentialDownload;
         }
     }
 
     if ((fields & tr_resume::SequentialDownloadFromPiece) != 0) {
-        if (auto const& val = ctor.sequential_download_from_piece(mode); val) {
+        if (auto const& val = ctor.sequential_download_from_piece(); val) {
             tor->set_sequential_download_from_piece(*val);
             ret |= tr_resume::SequentialDownloadFromPiece;
         }
@@ -786,36 +781,15 @@ auto set_from_ctor(
     return ret;
 }
 
-auto use_mandatory_fields(
-    tr_torrent* const tor,
-    tr_torrent::ResumeHelper& helper,
-    tr_resume::fields_t const fields,
-    tr_ctor const& ctor)
-{
-    return set_from_ctor(tor, helper, fields, ctor, TR_FORCE);
-}
-
-auto use_fallback_fields(
-    tr_torrent* const tor,
-    tr_torrent::ResumeHelper& helper,
-    tr_resume::fields_t const fields,
-    tr_ctor const& ctor)
-{
-    return set_from_ctor(tor, helper, fields, ctor, TR_FALLBACK);
-}
 } // namespace
 
 fields_t load(tr_torrent* tor, tr_torrent::ResumeHelper& helper, fields_t fields_to_load, tr_ctor const& ctor)
 {
     TR_ASSERT(tr_isTorrent(tor));
 
-    auto ret = fields_t{};
-
-    ret |= use_mandatory_fields(tor, helper, fields_to_load, ctor);
+    auto ret = set_from_ctor(tor, helper, fields_to_load, ctor);
     fields_to_load &= ~ret;
     ret |= load_from_file(tor, helper, fields_to_load);
-    fields_to_load &= ~ret;
-    ret |= use_fallback_fields(tor, helper, fields_to_load, ctor);
 
     return ret;
 }

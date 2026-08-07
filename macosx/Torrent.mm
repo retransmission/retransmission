@@ -1714,9 +1714,9 @@ static tr_torrent_rename_done_func makeRenameDoneCallback(NSDictionary* contextI
         //set libtransmission settings for initialization
         tr_ctor* ctor = tr_ctorNew(lib);
 
-        tr_ctorSetPaused(ctor, TR_FORCE, YES);
+        tr_ctorSetPaused(ctor, YES);
         if (downloadFolder) {
-            tr_ctorSetDownloadDir(ctor, TR_FORCE, downloadFolder.UTF8String);
+            tr_ctorSetDownloadDir(ctor, downloadFolder.UTF8String);
         }
         if (incompleteFolder) {
             tr_ctorSetIncompleteDir(ctor, incompleteFolder.UTF8String);

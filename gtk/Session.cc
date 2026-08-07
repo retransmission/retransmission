@@ -695,20 +695,20 @@ namespace
 
 void core_apply_defaults(tr_ctor* ctor)
 {
-    if (!tr_ctorGetPaused(ctor, TR_FORCE, nullptr)) {
-        tr_ctorSetPaused(ctor, TR_FORCE, !gtr_pref_flag_get(TR_KEY_start_added_torrents));
+    if (!tr_ctorGetPaused(ctor, nullptr)) {
+        tr_ctorSetPaused(ctor, !gtr_pref_flag_get(TR_KEY_start_added_torrents));
     }
 
     if (!tr_ctorGetDeleteSource(ctor, nullptr)) {
         tr_ctorSetDeleteSource(ctor, gtr_pref_flag_get(TR_KEY_trash_original_torrent_files));
     }
 
-    if (!tr_ctorGetPeerLimit(ctor, TR_FORCE, nullptr)) {
-        tr_ctorSetPeerLimit(ctor, TR_FORCE, gtr_pref_int_get<size_t>(TR_KEY_peer_limit_per_torrent));
+    if (!tr_ctorGetPeerLimit(ctor, nullptr)) {
+        tr_ctorSetPeerLimit(ctor, gtr_pref_int_get<size_t>(TR_KEY_peer_limit_per_torrent));
     }
 
-    if (!tr_ctorGetDownloadDir(ctor, TR_FORCE).has_value()) {
-        tr_ctorSetDownloadDir(ctor, TR_FORCE, gtr_pref_string_get(TR_KEY_download_dir));
+    if (!tr_ctorGetDownloadDir(ctor).has_value()) {
+        tr_ctorSetDownloadDir(ctor, gtr_pref_string_get(TR_KEY_download_dir));
     }
 }
 
@@ -776,7 +776,7 @@ bool Session::Impl::add(Glib::ustring const& name_in, bool const do_start, bool 
     bool handled = false;
     auto* ctor = tr_ctorNew(session);
     core_apply_defaults(ctor);
-    tr_ctorSetPaused(ctor, TR_FORCE, !do_start);
+    tr_ctorSetPaused(ctor, !do_start);
 
     bool loaded = false;
     auto file = Gio::File::create_for_parse_name(name);
@@ -879,10 +879,8 @@ void Session::load(bool force_paused)
     auto* const ctor = tr_ctorNew(impl_->get_session());
 
     if (force_paused) {
-        tr_ctorSetPaused(ctor, TR_FORCE, true);
+        tr_ctorSetPaused(ctor, true);
     }
-
-    tr_ctorSetPeerLimit(ctor, TR_FALLBACK, gtr_pref_int_get<size_t>(TR_KEY_peer_limit_per_torrent));
 
     auto* session = impl_->get_session();
     tr_sessionLoadTorrents(session, ctor);

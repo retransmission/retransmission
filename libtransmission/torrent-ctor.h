@@ -9,7 +9,6 @@
 #error only libtransmission should #include this header.
 #endif
 
-#include <array>
 #include <cstdint> // uint16_t
 #include <optional>
 #include <string>
@@ -118,14 +117,14 @@ public:
 
     // ---
 
-    [[nodiscard]] constexpr auto const& download_dir(tr_ctorMode const mode) const noexcept
+    [[nodiscard]] constexpr auto const& download_dir() const noexcept
     {
-        return optional_args_[mode].download_dir_;
+        return download_dir_;
     }
 
-    TR_CONSTEXPR_STR void set_download_dir(tr_ctorMode const mode, std::string_view const dir)
+    TR_CONSTEXPR_STR void set_download_dir(std::string_view const dir)
     {
-        optional_args_[mode].download_dir_.assign(dir);
+        download_dir_.assign(dir);
     }
 
     // ---
@@ -154,26 +153,26 @@ public:
 
     // --
 
-    [[nodiscard]] constexpr auto paused(tr_ctorMode const mode) const noexcept
+    [[nodiscard]] constexpr auto paused() const noexcept
     {
-        return optional_args_[mode].paused_;
+        return paused_;
     }
 
-    constexpr void set_paused(tr_ctorMode const mode, bool const paused) noexcept
+    constexpr void set_paused(bool const paused) noexcept
     {
-        optional_args_[mode].paused_ = paused;
+        paused_ = paused;
     }
 
     // --
 
-    [[nodiscard]] constexpr auto peer_limit(tr_ctorMode const mode) const noexcept
+    [[nodiscard]] constexpr auto peer_limit() const noexcept
     {
-        return optional_args_[mode].peer_limit_;
+        return peer_limit_;
     }
 
-    constexpr void set_peer_limit(tr_ctorMode const mode, uint16_t const peer_limit) noexcept
+    constexpr void set_peer_limit(uint16_t const peer_limit) noexcept
     {
-        optional_args_[mode].peer_limit_ = peer_limit;
+        peer_limit_ = peer_limit;
     }
 
     // ---
@@ -204,38 +203,34 @@ public:
 
     // ---
 
-    [[nodiscard]] constexpr auto const& sequential_download(tr_ctorMode const mode) const noexcept
+    [[nodiscard]] constexpr auto const& sequential_download() const noexcept
     {
-        return optional_args_[mode].sequential_download_;
+        return sequential_download_;
     }
 
-    constexpr void set_sequential_download(tr_ctorMode const mode, bool const seq) noexcept
+    constexpr void set_sequential_download(bool const seq) noexcept
     {
-        optional_args_[mode].sequential_download_ = seq;
+        sequential_download_ = seq;
     }
 
-    [[nodiscard]] constexpr auto const& sequential_download_from_piece(tr_ctorMode const mode) const noexcept
+    [[nodiscard]] constexpr auto const& sequential_download_from_piece() const noexcept
     {
-        return optional_args_[mode].sequential_download_from_piece_;
+        return sequential_download_from_piece_;
     }
 
-    constexpr void set_sequential_download_from_piece(tr_ctorMode const mode, tr_piece_index_t const piece) noexcept
+    constexpr void set_sequential_download_from_piece(tr_piece_index_t const piece) noexcept
     {
-        optional_args_[mode].sequential_download_from_piece_ = piece;
+        sequential_download_from_piece_ = piece;
     }
 
 private:
-    struct OptionalArgs {
-        std::optional<bool> paused_;
-        std::optional<bool> sequential_download_;
-        std::optional<tr_piece_index_t> sequential_download_from_piece_;
-        std::optional<uint16_t> peer_limit_;
-        std::string download_dir_;
-    };
-
     tr_torrent_metainfo metainfo_ = {};
 
-    std::array<OptionalArgs, 2> optional_args_{};
+    std::optional<bool> paused_;
+    std::optional<bool> sequential_download_;
+    std::optional<tr_piece_index_t> sequential_download_from_piece_;
+    std::optional<uint16_t> peer_limit_;
+    std::string download_dir_;
 
     tr_torrent::VerifyDoneCallback verify_done_callback_;
 

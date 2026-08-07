@@ -78,7 +78,7 @@ protected:
         auto error = tr_error{};
         EXPECT_TRUE(tr_ctorSetMetainfo(ctor, std::data(benc), std::size(benc), &error));
         EXPECT_FALSE(error) << error;
-        tr_ctorSetPaused(ctor, TR_FORCE, true);
+        tr_ctorSetPaused(ctor, true);
 
         // create the torrent
         auto* const tor = createTorrentAndWaitForVerifyDone(ctor);
