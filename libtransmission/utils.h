@@ -96,15 +96,6 @@ template<std::floating_point T>
 [[nodiscard]] std::optional<T> tr_num_parse(std::string_view str, std::string_view* setme_remainder = nullptr);
 
 /**
- * @brief Given a string like "1-4" or "1-4,6,9,14-51", this returns a
- *        vector of all the integers in the set.
- * @return a vector of integers, which is empty if the string can't be parsed.
- *
- * For example, "5-8" will return [ 5, 6, 7, 8 ].
- */
-[[nodiscard]] std::vector<int> tr_num_parse_range(std::string_view str);
-
-/**
  * @brief truncate a double value at a given number of decimal places.
  *
  * this can be used to prevent a `printf()` call from rounding up:

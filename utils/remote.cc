@@ -396,6 +396,69 @@ auto constexpr Options = std::to_array<tr_option>({
     { 0, nullptr, nullptr, nullptr, Arg::None, nullptr },
 });
 static_assert(Options[std::size(Options) - 2].val != 0);
+
+namespace tr_num_parse_range_detail
+{
+
+struct number_range {
+    int low;
+    int high;
+};
+
+/**
+ * This should be a single number (ex. "6") or a range (ex. "6-9").
+ * Anything else is an error and will return failure.
+ */
+bool parseNumberSection(std::string_view str, number_range& range)
+{
+    auto constexpr Delimiter = "-"sv;
+
+    auto const first = tr_num_parse<int>(str, &str);
+    if (!first) {
+        return false;
+    }
+
+    range.low = range.high = *first;
+    if (std::empty(str)) {
+        return true;
+    }
+
+    if (!tr_strv_starts_with(str, Delimiter)) {
+        return false;
+    }
+
+    str.remove_prefix(std::size(Delimiter));
+    auto const second = tr_num_parse<int>(str);
+    if (!second) {
+        return false;
+    }
+
+    range.high = *second;
+    return true;
+}
+
+} // namespace tr_num_parse_range_detail
+
+// Returns a vector of ints for an string like like "1-4" or "1-4,6,9,14-51",
+// For example, "5-8" returns { 5, 6, 7, 8 }.
+std::vector<int> tr_num_parse_range(std::string_view str)
+{
+    using namespace tr_num_parse_range_detail;
+
+    auto values = std::vector<int>{};
+    auto token = std::string_view{};
+    auto range = number_range{};
+    while (tr_strv_sep(&str, &token, ',') && parseNumberSection(token, range)) {
+        for (auto i = range.low; i <= range.high; ++i) {
+            values.emplace_back(i);
+        }
+    }
+
+    std::ranges::sort(values);
+    auto const [erase_first, erase_last] = std::ranges::unique(values);
+    values.erase(erase_first, erase_last);
+    return values;
+}
 } // namespace
 
 namespace

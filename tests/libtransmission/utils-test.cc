@@ -25,33 +25,6 @@
 using UtilsTest = ::tr::test::TransmissionTest;
 using namespace std::literals;
 
-TEST_F(UtilsTest, trParseNumberRange)
-{
-    auto const tostring = [](std::vector<int> const& v) {
-        std::stringstream ss;
-        for (auto const& i : v) {
-            ss << i << ' ';
-        }
-        return ss.str();
-    };
-
-    auto numbers = tr_num_parse_range("1-10,13,16-19"sv);
-    EXPECT_EQ(std::string("1 2 3 4 5 6 7 8 9 10 13 16 17 18 19 "), tostring(numbers));
-
-    numbers = tr_num_parse_range("1-5,3-7,2-6"sv);
-    EXPECT_EQ(std::string("1 2 3 4 5 6 7 "), tostring(numbers));
-
-    numbers = tr_num_parse_range("1-Hello"sv);
-    auto const empty_string = std::string{};
-    EXPECT_EQ(empty_string, tostring(numbers));
-
-    numbers = tr_num_parse_range("1-"sv);
-    EXPECT_EQ(empty_string, tostring(numbers));
-
-    numbers = tr_num_parse_range("Hello"sv);
-    EXPECT_EQ(empty_string, tostring(numbers));
-}
-
 TEST_F(UtilsTest, truncd)
 {
     EXPECT_EQ("100.00%"sv, fmt::format("{:.2f}%", 99.999));
