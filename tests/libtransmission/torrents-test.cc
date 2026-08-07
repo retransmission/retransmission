@@ -99,28 +99,28 @@ TEST_F(TorrentsTest, invalidArgsAreLogged)
     tr_torrentManualUpdate(nullptr);
     ++expected_log_size;
 
-    tr_torrentStat(nullptr);
+    (void)tr_torrentStat(nullptr);
     ++expected_log_size;
 
-    tr_torrentFile(nullptr, 0);
+    (void)tr_torrentFile(nullptr, 0);
     ++expected_log_size;
 
     EXPECT_EQ(0, tr_torrentFileCount(nullptr));
     ++expected_log_size;
 
-    tr_torrentWebseed(nullptr, 0);
+    (void)tr_torrentWebseed(nullptr, 0);
     ++expected_log_size;
 
     EXPECT_EQ(0, tr_torrentWebseedCount(nullptr));
     ++expected_log_size;
 
-    tr_torrentTracker(nullptr, 0);
+    (void)tr_torrentTracker(nullptr, 0);
     ++expected_log_size;
 
     EXPECT_EQ(0, tr_torrentTrackerCount(nullptr));
     ++expected_log_size;
 
-    tr_torrentView(nullptr);
+    (void)tr_torrentView(nullptr);
     ++expected_log_size;
 
     EXPECT_EQ(""s, tr_torrentFilename(nullptr));

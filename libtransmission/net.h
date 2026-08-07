@@ -72,9 +72,9 @@ using tr_socket_t = int;
 
 enum tr_address_type : uint8_t { TR_AF_INET = 0, TR_AF_INET6, NUM_TR_AF_INET_TYPES };
 
-std::string_view tr_ip_protocol_to_sv(tr_address_type type);
-int tr_ip_protocol_to_af(tr_address_type type);
-tr_address_type tr_af_to_ip_protocol(int af);
+[[nodiscard]] std::string_view tr_ip_protocol_to_sv(tr_address_type type);
+[[nodiscard]] int tr_ip_protocol_to_af(tr_address_type type);
+[[nodiscard]] tr_address_type tr_af_to_ip_protocol(int af);
 
 struct tr_address {
     [[nodiscard]] static std::optional<tr_address> from_string(std::string_view address_sv);

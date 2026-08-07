@@ -15,13 +15,13 @@
 #include "libtransmission/digest.h"
 
 /** @brief convenience function to determine if an address is an IP address (IPv4 or IPv6) */
-bool tr_addressIsIP(char const* address);
+[[nodiscard]] bool tr_addressIsIP(char const* address);
 
 /** @brief return true if the url is a http or https or UDP url that Transmission understands */
-bool tr_urlIsValidTracker(std::string_view url);
+[[nodiscard]] bool tr_urlIsValidTracker(std::string_view url);
 
 /** @brief return true if the url is a [ http, https, ftp, sftp ] url that Transmission understands */
-bool tr_urlIsValid(std::string_view url);
+[[nodiscard]] bool tr_urlIsValid(std::string_view url);
 
 struct tr_url_parsed_t {
     // http://example.com:80/over/there?name=ferret#nose

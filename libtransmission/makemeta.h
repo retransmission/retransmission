@@ -38,7 +38,7 @@ public:
     // - Runs in a worker thread because it can be time-consuming.
     // - Can be cancelled with `cancelChecksums()` and polled with `checksumStatus()`
     // - Resolves with a `tr_error` which is set on failure or empty on success.
-    std::future<tr_error> make_checksums()
+    [[nodiscard]] std::future<tr_error> make_checksums()
     {
         return std::async(std::launch::async, [this]() {
             auto error = tr_error{};

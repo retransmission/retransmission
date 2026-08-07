@@ -143,7 +143,7 @@ bool tr_sys_path_copy(std::string_view src_path, std::string_view dst_path, tr_e
  *         be returned in case of error; if you need to distinguish the two,
  *         check if `error` is `nullptr` afterwards.
  */
-bool tr_sys_path_exists(std::string_view path, tr_error* error = nullptr);
+[[nodiscard]] bool tr_sys_path_exists(std::string_view path, tr_error* error = nullptr);
 
 /**
  * @brief Check whether path is relative.
@@ -154,7 +154,7 @@ bool tr_sys_path_exists(std::string_view path, tr_error* error = nullptr);
  *
  * @return `True` if path is relative, `false` otherwise
  */
-bool tr_sys_path_is_relative(std::string_view path);
+[[nodiscard]] bool tr_sys_path_is_relative(std::string_view path);
 
 /**
  * @brief Test to see if the two filenames point to the same file.
@@ -169,7 +169,7 @@ bool tr_sys_path_is_relative(std::string_view path);
  *         if you need to distinguish the two, check if `error` is `nullptr`
  *         afterwards.
  */
-bool tr_sys_path_is_same(std::string_view path1, std::string_view path2, tr_error* error = nullptr);
+[[nodiscard]] bool tr_sys_path_is_same(std::string_view path1, std::string_view path2, tr_error* error = nullptr);
 
 /**
  * @brief Portability wrapper for `realpath()`.
@@ -181,7 +181,7 @@ bool tr_sys_path_is_same(std::string_view path1, std::string_view path2, tr_erro
  * @return Full path with symbolic links, `.` and `..` resolved on success,
  *         or an empty string otherwise (with `error` set accordingly).
  */
-std::string tr_sys_path_resolve(std::string_view path, tr_error* error = nullptr);
+[[nodiscard]] std::string tr_sys_path_resolve(std::string_view path, tr_error* error = nullptr);
 
 /**
  * @brief Portability wrapper for `basename()`.
@@ -193,7 +193,7 @@ std::string tr_sys_path_resolve(std::string_view path, tr_error* error = nullptr
  * @return base name (last path component; parent path removed) on success,
  *         or empty string otherwise (with `error` set accordingly).
  */
-std::string_view tr_sys_path_basename(std::string_view path, tr_error* error = nullptr);
+[[nodiscard]] std::string_view tr_sys_path_basename(std::string_view path, tr_error* error = nullptr);
 
 /**
  * @brief Portability wrapper for `dirname()`.
@@ -203,7 +203,7 @@ std::string_view tr_sys_path_basename(std::string_view path, tr_error* error = n
  * @return parent path substring of `path` (last path component removed) on
  *         success, or empty string otherwise with `error` set accordingly).
  */
-std::string_view tr_sys_path_dirname(std::string_view path);
+[[nodiscard]] std::string_view tr_sys_path_dirname(std::string_view path);
 
 /**
  * @brief Portability wrapper for `rename()`.
@@ -256,7 +256,7 @@ char* tr_sys_path_native_separators(char* path);
  * @return Opened file descriptor on success, `TR_BAD_SYS_FILE` otherwise (with
  *         `error` set accordingly).
  */
-tr_sys_file_t tr_sys_file_open(std::string_view path, int flags, int permissions, tr_error* error = nullptr);
+[[nodiscard]] tr_sys_file_t tr_sys_file_open(std::string_view path, int flags, int permissions, tr_error* error = nullptr);
 
 /**
  * @brief Portability wrapper for `mkstemp()`.
@@ -272,7 +272,7 @@ tr_sys_file_t tr_sys_file_open(std::string_view path, int flags, int permissions
  * @return Opened file descriptor on success, `TR_BAD_SYS_FILE` otherwise (with
  *         `error` set accordingly).
  */
-tr_sys_file_t tr_sys_file_open_temp(char* path_template, tr_error* error = nullptr);
+[[nodiscard]] tr_sys_file_t tr_sys_file_open_temp(char* path_template, tr_error* error = nullptr);
 
 /**
  * @brief Portability wrapper for `close()`.
@@ -417,7 +417,7 @@ bool tr_sys_file_lock(tr_sys_file_t handle, int operation, tr_error* error = nul
  * @return current directory on success, or an empty string otherwise
  *         (with `error` set accordingly).
  */
-std::string tr_sys_dir_get_current(tr_error* error = nullptr);
+[[nodiscard]] std::string tr_sys_dir_get_current(tr_error* error = nullptr);
 
 /**
  * @brief Like `mkdir()`, but makes parent directories if needed.
