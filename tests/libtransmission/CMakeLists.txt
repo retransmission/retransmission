@@ -54,6 +54,7 @@ target_sources(libtransmission-test
         subprocess-test.cc
         test-fixtures.h
         timer-test.cc
+        torrent-builder-test.cc
         torrent-files-test.cc
         torrent-magnet-test.cc
         torrent-metainfo-test.cc
