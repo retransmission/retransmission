@@ -40,7 +40,7 @@
 #include "libtransmission/types.h"
 #include "libtransmission/verify.h"
 
-struct tr_ctor;
+struct tr_torrent_builder;
 class tr_swarm;
 struct tr_error;
 struct tr_torrent;
@@ -1017,7 +1017,7 @@ private:
     friend tr_file_view tr_torrentFile(tr_torrent const* tor, tr_file_index_t file);
     friend tr_stat tr_torrentStat(tr_torrent* tor);
     friend std::vector<tr_stat> tr_torrentStat(std::span<tr_torrent* const> torrents);
-    friend tr_torrent* tr_torrentNew(tr_ctor* ctor, tr_torrent** setme_duplicate_of);
+    friend tr_torrent* tr_torrentNew(tr_torrent_builder* ctor, tr_torrent** setme_duplicate_of);
     friend uint64_t tr_torrentGetBytesLeftToAllocate(tr_torrent const* tor);
     friend void tr_torrentFreeInSessionThread(tr_torrent* tor);
     friend void tr_torrentRemoveInSessionThread(tr_torrent* tor, bool delete_flag, tr_torrent_remove_func remove_func);
@@ -1269,7 +1269,7 @@ private:
         return is_dirty_;
     }
 
-    void init(tr_ctor const& ctor);
+    void init(tr_torrent_builder const& ctor);
 
     void on_metainfo_updated();
     void on_metainfo_completed();

@@ -146,8 +146,8 @@ target_sources(${TR_NAME}
         timer-ev.cc
         timer-ev.h
         timer.h
-        torrent-ctor.cc
-        torrent-ctor.h
+        torrent-builder.cc
+        torrent-builder.h
         torrent-files.cc
         torrent-files.h
         torrent-magnet.cc

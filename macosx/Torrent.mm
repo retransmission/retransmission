@@ -1712,7 +1712,7 @@ static tr_torrent_rename_done_func makeRenameDoneCallback(NSDictionary* contextI
         _fHandle = torrentStruct;
     } else {
         //set libtransmission settings for initialization
-        tr_ctor* ctor = tr_ctorNew(lib);
+        tr_torrent_builder* ctor = tr_ctorNew(lib);
 
         tr_ctorSetPaused(ctor, YES);
         if (downloadFolder) {

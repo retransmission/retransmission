@@ -25,7 +25,7 @@
 
 #include "test-fixtures.h"
 
-struct tr_ctor;
+struct tr_torrent_builder;
 
 using namespace std::literals;
 
@@ -70,7 +70,7 @@ protected:
         sync();
     }
 
-    tr_torrent* createTorrentFromBase64Metainfo(tr_ctor* ctor, char const* benc_base64)
+    tr_torrent* createTorrentFromBase64Metainfo(tr_torrent_builder* ctor, char const* benc_base64)
     {
         // create the torrent ctor
         auto const benc = tr_base64_decode(benc_base64);

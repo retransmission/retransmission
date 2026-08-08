@@ -39,7 +39,7 @@
 #include "libtransmission/rpcimpl.h"
 #include "libtransmission/session.h"
 #include "libtransmission/string-utils.h"
-#include "libtransmission/torrent-ctor.h"
+#include "libtransmission/torrent-builder.h"
 #include "libtransmission/torrent.h"
 #include "libtransmission/tr-assert.h"
 #include "libtransmission/types.h"
@@ -1457,7 +1457,7 @@ void blocklistUpdate(tr_session* session, tr_variant::Map const& /*args_in*/, st
 
 // ---
 
-void add_torrent_impl(struct tr_rpc_idle_data* data, tr_ctor& ctor)
+void add_torrent_impl(struct tr_rpc_idle_data* data, tr_torrent_builder& ctor)
 {
     using namespace JsonRpc;
 
@@ -1490,14 +1490,14 @@ void add_torrent_impl(struct tr_rpc_idle_data* data, tr_ctor& ctor)
 }
 
 struct add_torrent_idle_data {
-    add_torrent_idle_data(tr_rpc_idle_data* data_in, tr_ctor&& ctor_in)
+    add_torrent_idle_data(tr_rpc_idle_data* data_in, tr_torrent_builder&& ctor_in)
         : data{ data_in }
         , ctor{ std::move(ctor_in) }
     {
     }
 
     tr_rpc_idle_data* data;
-    tr_ctor ctor;
+    tr_torrent_builder ctor;
 };
 
 void onMetadataFetched(tr_web::FetchResponse const& web_response)
@@ -1568,7 +1568,7 @@ void torrentAdd(tr_session* session, tr_variant::Map const& args_in, tr_rpc_idle
         return;
     }
 
-    auto ctor = tr_ctor{ session };
+    auto ctor = tr_torrent_builder{ session };
 
     // set the optional parameters
 

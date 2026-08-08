@@ -25,7 +25,7 @@
 #include "libtransmission/resume.h"
 #include "libtransmission/session.h"
 #include "libtransmission/string-utils.h"
-#include "libtransmission/torrent-ctor.h"
+#include "libtransmission/torrent-builder.h"
 #include "libtransmission/torrent-metainfo.h"
 #include "libtransmission/torrent.h"
 #include "libtransmission/tr-assert.h"
@@ -739,7 +739,11 @@ tr_resume::fields_t load_from_file(tr_torrent* tor, tr_torrent::ResumeHelper& he
     return fields_loaded;
 }
 
-auto set_from_ctor(tr_torrent* tor, tr_torrent::ResumeHelper& helper, tr_resume::fields_t const fields, tr_ctor const& ctor)
+auto set_from_ctor(
+    tr_torrent* tor,
+    tr_torrent::ResumeHelper& helper,
+    tr_resume::fields_t const fields,
+    tr_torrent_builder const& ctor)
 {
     auto ret = tr_resume::fields_t{};
 
@@ -783,7 +787,7 @@ auto set_from_ctor(tr_torrent* tor, tr_torrent::ResumeHelper& helper, tr_resume:
 
 } // namespace
 
-fields_t load(tr_torrent* tor, tr_torrent::ResumeHelper& helper, fields_t fields_to_load, tr_ctor const& ctor)
+fields_t load(tr_torrent* tor, tr_torrent::ResumeHelper& helper, fields_t fields_to_load, tr_torrent_builder const& ctor)
 {
     TR_ASSERT(tr_isTorrent(tor));
 

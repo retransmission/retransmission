@@ -52,7 +52,7 @@ public:
         OptionsDialog& dialog,
         Glib::RefPtr<Gtk::Builder> const& builder,
         Glib::RefPtr<Session> const& core,
-        std::unique_ptr<tr_ctor, void (*)(tr_ctor*)> ctor);
+        std::unique_ptr<tr_torrent_builder, void (*)(tr_torrent_builder*)> ctor);
     Impl(Impl&&) = delete;
     Impl(Impl const&) = delete;
     Impl& operator=(Impl&&) = delete;
@@ -71,7 +71,7 @@ private:
 private:
     OptionsDialog& dialog_;
     Glib::RefPtr<Session> const core_;
-    std::unique_ptr<tr_ctor, void (*)(tr_ctor*)> ctor_;
+    std::unique_ptr<tr_torrent_builder, void (*)(tr_torrent_builder*)> ctor_;
 
     std::string filename_;
     std::string downloadDir_;
@@ -214,7 +214,7 @@ OptionsDialog::OptionsDialog(
     Glib::RefPtr<Gtk::Builder> const& builder,
     Gtk::Window& parent,
     Glib::RefPtr<Session> const& core,
-    std::unique_ptr<tr_ctor, void (*)(tr_ctor*)> ctor)
+    std::unique_ptr<tr_torrent_builder, void (*)(tr_torrent_builder*)> ctor)
     : Gtk::Dialog(cast_item)
     , impl_(std::make_unique<Impl>(*this, builder, core, std::move(ctor)))
 {
@@ -226,7 +226,7 @@ OptionsDialog::~OptionsDialog() = default;
 std::unique_ptr<OptionsDialog> OptionsDialog::create(
     Gtk::Window& parent,
     Glib::RefPtr<Session> const& core,
-    std::unique_ptr<tr_ctor, void (*)(tr_ctor*)> ctor)
+    std::unique_ptr<tr_torrent_builder, void (*)(tr_torrent_builder*)> ctor)
 {
     auto const builder = Gtk::Builder::create_from_resource(gtr_get_full_resource_path("OptionsDialog.ui"));
     return std::unique_ptr<OptionsDialog>(
@@ -237,7 +237,7 @@ OptionsDialog::Impl::Impl(
     OptionsDialog& dialog,
     Glib::RefPtr<Gtk::Builder> const& builder,
     Glib::RefPtr<Session> const& core,
-    std::unique_ptr<tr_ctor, void (*)(tr_ctor*)> ctor)
+    std::unique_ptr<tr_torrent_builder, void (*)(tr_torrent_builder*)> ctor)
     : dialog_(dialog)
     , core_(core)
     , ctor_(std::move(ctor))

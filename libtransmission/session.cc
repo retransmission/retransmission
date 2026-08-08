@@ -53,7 +53,7 @@
 #include "libtransmission/string-utils.h"
 #include "libtransmission/timer-ev.h"
 #include "libtransmission/torrent.h"
-#include "libtransmission/torrent-ctor.h"
+#include "libtransmission/torrent-builder.h"
 #include "libtransmission/tr-assert.h"
 #include "libtransmission/tr-dht.h"
 #include "libtransmission/tr-lpd.h"
@@ -64,7 +64,7 @@
 #include "libtransmission/version.h"
 #include "libtransmission/web.h"
 
-struct tr_ctor;
+struct tr_torrent_builder;
 
 using namespace std::literals;
 using namespace tr::Values;
@@ -1405,7 +1405,7 @@ auto get_remaining_files(std::string_view folder, std::vector<std::string>& queu
     return ret;
 }
 
-void session_load_torrents(tr_session* session, tr_ctor* ctor, std::promise<size_t>* loaded_promise)
+void session_load_torrents(tr_session* session, tr_torrent_builder* ctor, std::promise<size_t>* loaded_promise)
 {
     auto n_torrents = size_t{};
     auto const& folder = session->torrentDir();
@@ -1447,7 +1447,7 @@ void session_load_torrents(tr_session* session, tr_ctor* ctor, std::promise<size
 } // namespace load_torrents_helpers
 } // namespace
 
-size_t tr_sessionLoadTorrents(tr_session* session, tr_ctor* ctor)
+size_t tr_sessionLoadTorrents(tr_session* session, tr_torrent_builder* ctor)
 {
     using namespace load_torrents_helpers;
 

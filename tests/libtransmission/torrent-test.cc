@@ -26,7 +26,7 @@ auto constexpr TorFilenames = std::array{
 TEST_F(TorrentTest, queueMoveUp)
 {
     static constexpr auto ExpectedQueuePosition = std::array{ 0, 1, 3, 2 };
-    auto ctor = tr_ctor{ session_ };
+    auto ctor = tr_torrent_builder{ session_ };
     auto torrents = std::array<tr_torrent*, TorFilenames.size()>{};
     std::ranges::transform(TorFilenames, torrents.begin(), [this](auto const filename) {
         return torrentInitFromFile(filename);
@@ -49,7 +49,7 @@ TEST_F(TorrentTest, queueMoveUp)
 TEST_F(TorrentTest, queueMoveDown)
 {
     static constexpr auto ExpectedQueuePosition = std::array{ 1, 0, 2, 3 };
-    auto ctor = tr_ctor{ session_ };
+    auto ctor = tr_torrent_builder{ session_ };
     auto torrents = std::array<tr_torrent*, TorFilenames.size()>{};
     std::ranges::transform(TorFilenames, torrents.begin(), [this](auto const filename) {
         return torrentInitFromFile(filename);
@@ -72,7 +72,7 @@ TEST_F(TorrentTest, queueMoveDown)
 TEST_F(TorrentTest, queueMoveTop)
 {
     static constexpr auto ExpectedQueuePosition = std::array{ 0, 3, 1, 2 };
-    auto ctor = tr_ctor{ session_ };
+    auto ctor = tr_torrent_builder{ session_ };
     auto torrents = std::array<tr_torrent*, TorFilenames.size()>{};
     std::ranges::transform(TorFilenames, torrents.begin(), [this](auto const filename) {
         return torrentInitFromFile(filename);
@@ -95,7 +95,7 @@ TEST_F(TorrentTest, queueMoveTop)
 TEST_F(TorrentTest, queueMoveBottom)
 {
     static constexpr auto ExpectedQueuePosition = std::array{ 1, 2, 0, 3 };
-    auto ctor = tr_ctor{ session_ };
+    auto ctor = tr_torrent_builder{ session_ };
     auto torrents = std::array<tr_torrent*, TorFilenames.size()>{};
     std::ranges::transform(TorFilenames, torrents.begin(), [this](auto const filename) {
         return torrentInitFromFile(filename);

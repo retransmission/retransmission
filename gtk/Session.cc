@@ -87,7 +87,7 @@ public:
     void torrents_added();
 
     void add_files(std::vector<Glib::RefPtr<Gio::File>> const& files, bool do_start, bool do_prompt, bool do_notify);
-    void add_ctor(tr_ctor* ctor, bool do_prompt, bool do_notify);
+    void add_ctor(tr_torrent_builder* ctor, bool do_prompt, bool do_notify);
     void add_torrent(Glib::RefPtr<Torrent> const& torrent, bool do_notify);
     bool add_from_url(Glib::ustring const& url);
 
@@ -149,11 +149,11 @@ private:
     void add_file_async_callback(
         Glib::RefPtr<Gio::File> const& file,
         Glib::RefPtr<Gio::AsyncResult>& result,
-        tr_ctor* ctor,
+        tr_torrent_builder* ctor,
         bool do_prompt,
         bool do_notify);
 
-    Glib::RefPtr<Torrent> create_new_torrent(tr_ctor* ctor);
+    Glib::RefPtr<Torrent> create_new_torrent(tr_torrent_builder* ctor);
 
     void update_sleep_inhibitor();
 
@@ -175,7 +175,7 @@ private:
     Session& core_;
 
     sigc::signal<void(ErrorCode, Glib::ustring const&)> signal_add_error_;
-    sigc::signal<void(tr_ctor*)> signal_add_prompt_;
+    sigc::signal<void(tr_torrent_builder*)> signal_add_prompt_;
     sigc::signal<void(bool)> signal_blocklist_updated_;
     sigc::signal<void(bool)> signal_busy_;
     sigc::signal<void(tr_quark)> signal_prefs_changed_;
@@ -638,7 +638,7 @@ void Session::Impl::add_torrent(Glib::RefPtr<Torrent> const& torrent, bool do_no
     }
 }
 
-Glib::RefPtr<Torrent> Session::Impl::create_new_torrent(tr_ctor* ctor)
+Glib::RefPtr<Torrent> Session::Impl::create_new_torrent(tr_torrent_builder* ctor)
 {
     bool do_trash = false;
 
@@ -662,7 +662,7 @@ Glib::RefPtr<Torrent> Session::Impl::create_new_torrent(tr_ctor* ctor)
     return Torrent::create(tor);
 }
 
-void Session::Impl::add_ctor(tr_ctor* ctor, bool do_prompt, bool do_notify)
+void Session::Impl::add_ctor(tr_torrent_builder* ctor, bool do_prompt, bool do_notify)
 {
     auto const* metainfo = tr_ctorGetMetainfo(ctor);
     if (metainfo == nullptr) {
@@ -693,7 +693,7 @@ void Session::Impl::add_ctor(tr_ctor* ctor, bool do_prompt, bool do_notify)
 namespace
 {
 
-void core_apply_defaults(tr_ctor* ctor)
+void core_apply_defaults(tr_torrent_builder* ctor)
 {
     if (!tr_ctorGetPaused(ctor, nullptr)) {
         tr_ctorSetPaused(ctor, !gtr_pref_flag_get(TR_KEY_start_added_torrents));
@@ -714,7 +714,7 @@ void core_apply_defaults(tr_ctor* ctor)
 
 } // namespace
 
-void Session::add_ctor(tr_ctor* ctor)
+void Session::add_ctor(tr_torrent_builder* ctor)
 {
     bool const do_notify = false;
     bool const do_prompt = gtr_pref_flag_get(TR_KEY_show_options_window);
@@ -729,7 +729,7 @@ void Session::add_ctor(tr_ctor* ctor)
 void Session::Impl::add_file_async_callback(
     Glib::RefPtr<Gio::File> const& file,
     Glib::RefPtr<Gio::AsyncResult>& result,
-    tr_ctor* ctor,
+    tr_torrent_builder* ctor,
     bool do_prompt,
     bool do_notify)
 {
@@ -1243,7 +1243,7 @@ sigc::signal<void(Session::ErrorCode, Glib::ustring const&)>& Session::signal_ad
     return impl_->signal_add_error();
 }
 
-sigc::signal<void(tr_ctor*)>& Session::signal_add_prompt()
+sigc::signal<void(tr_torrent_builder*)>& Session::signal_add_prompt()
 {
     return impl_->signal_add_prompt();
 }

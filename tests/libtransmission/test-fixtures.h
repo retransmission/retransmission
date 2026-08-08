@@ -31,7 +31,7 @@
 #include <libtransmission/file.h> // tr_sys_file_*()
 #include <libtransmission/macros.h>
 #include <libtransmission/quark.h>
-#include <libtransmission/torrent-ctor.h>
+#include <libtransmission/torrent-builder.h>
 #include <libtransmission/torrent.h>
 #include <libtransmission/tr-strbuf.h>
 #include <libtransmission/variant.h>
@@ -331,7 +331,7 @@ private:
 protected:
     enum class ZeroTorrentState : uint8_t { NoFiles, Partial, Complete };
 
-    [[nodiscard]] tr_torrent* createTorrentAndWaitForVerifyDone(tr_ctor* ctor)
+    [[nodiscard]] tr_torrent* createTorrentAndWaitForVerifyDone(tr_torrent_builder* ctor)
     {
         auto verified_lock = std::unique_lock(verified_mutex_);
         auto const n_previously_verified = std::size(verified_);

@@ -37,7 +37,7 @@
 #include "libtransmission/session.h"
 #include "libtransmission/string-utils.h"
 #include "libtransmission/subprocess.h"
-#include "libtransmission/torrent-ctor.h"
+#include "libtransmission/torrent-builder.h"
 #include "libtransmission/torrent-magnet.h"
 #include "libtransmission/torrent-metainfo.h"
 #include "libtransmission/torrent.h"
@@ -48,7 +48,7 @@
 #include "libtransmission/version.h"
 #include "libtransmission/web-utils.h"
 
-struct tr_ctor;
+struct tr_torrent_builder;
 
 using namespace std::literals;
 using namespace tr::Values;
@@ -826,7 +826,7 @@ void tr_torrent::on_metainfo_completed()
     }
 }
 
-void tr_torrent::init(tr_ctor const& ctor)
+void tr_torrent::init(tr_torrent_builder const& ctor)
 {
     session = ctor.session();
     TR_ASSERT(session != nullptr);
@@ -971,7 +971,7 @@ void tr_torrent::set_metainfo(tr_torrent_metainfo tm)
     this->on_announce_list_changed();
 }
 
-tr_torrent* tr_torrentNew(tr_ctor* ctor, tr_torrent** setme_duplicate_of)
+tr_torrent* tr_torrentNew(tr_torrent_builder* ctor, tr_torrent** setme_duplicate_of)
 {
     TR_ASSERT(ctor != nullptr);
     auto* const session = ctor->session();

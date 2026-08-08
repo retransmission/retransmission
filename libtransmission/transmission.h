@@ -22,7 +22,7 @@
 #include "libtransmission/types.h"
 #include "libtransmission/variant.h"
 
-struct tr_ctor;
+struct tr_torrent_builder;
 struct tr_session;
 struct tr_torrent;
 struct tr_torrent_metainfo;
@@ -437,7 +437,7 @@ void tr_sessionSetCompleteVerifyEnabled(tr_session* session, bool enabled);
  *
  * @return the number of torrents in the session
  */
-size_t tr_sessionLoadTorrents(tr_session* session, tr_ctor* ctor);
+size_t tr_sessionLoadTorrents(tr_session* session, tr_torrent_builder* ctor);
 
 /**
  * Get pointers to all the torrents in a session.
@@ -520,7 +520,7 @@ void tr_blocklistSetUpdatesEnabled(tr_session* session, bool enabled);
  *
  * 1. Torrent metadata is handled in the `tr_torrent_metadata` class.
  *
- * 2. Torrents should be instantiated using a torrent builder (`tr_ctor`).
+ * 2. Torrents should be instantiated using a torrent builder (`tr_torrent_builder`).
  * Calling one of the `tr_ctorSetMetainfo*()` functions is required.
  * Other settings, e.g. torrent priority, are optional.
  * When ready, pass the builder object to `tr_torrentNew()`.
@@ -528,41 +528,41 @@ void tr_blocklistSetUpdatesEnabled(tr_session* session, bool enabled);
 
 /** @brief Create a torrent constructor object used to instantiate a `tr_torrent`
     @param session the tr_session. */
-[[nodiscard]] tr_ctor* tr_ctorNew(tr_session* session);
+[[nodiscard]] tr_torrent_builder* tr_ctorNew(tr_session* session);
 
 /** @brief Free a torrent constructor object */
-void tr_ctorFree(tr_ctor* ctor);
+void tr_ctorFree(tr_torrent_builder* ctor);
 
 /** @brief Get the "delete torrent file" flag from this peer constructor */
-bool tr_ctorGetDeleteSource(tr_ctor const* ctor, bool* setme_do_delete);
+bool tr_ctorGetDeleteSource(tr_torrent_builder const* ctor, bool* setme_do_delete);
 
 /** @brief Set whether or not to delete the source torrent file
            when the torrent is added. (Default: False) */
-void tr_ctorSetDeleteSource(tr_ctor* ctor, bool delete_source);
+void tr_ctorSetDeleteSource(tr_torrent_builder* ctor, bool delete_source);
 
 /** @brief Set the constructor's metainfo from a magnet link */
-bool tr_ctorSetMetainfoFromMagnetLink(tr_ctor* ctor, std::string_view magnet, tr_error* error = nullptr);
+bool tr_ctorSetMetainfoFromMagnetLink(tr_torrent_builder* ctor, std::string_view magnet, tr_error* error = nullptr);
 
-[[nodiscard]] tr_torrent_metainfo const* tr_ctorGetMetainfo(tr_ctor const* ctor);
+[[nodiscard]] tr_torrent_metainfo const* tr_ctorGetMetainfo(tr_torrent_builder const* ctor);
 
 /** @brief Set the constructor's metainfo from a raw benc already in memory */
-bool tr_ctorSetMetainfo(tr_ctor* ctor, char const* metainfo, size_t len, tr_error* error);
+bool tr_ctorSetMetainfo(tr_torrent_builder* ctor, char const* metainfo, size_t len, tr_error* error);
 
 /** @brief Set the constructor's metainfo from a local torrent file */
-bool tr_ctorSetMetainfoFromFile(tr_ctor* ctor, std::string_view filename, tr_error* error = nullptr);
+bool tr_ctorSetMetainfoFromFile(tr_torrent_builder* ctor, std::string_view filename, tr_error* error = nullptr);
 
 /** @brief Get this peer constructor's peer limit */
-[[nodiscard]] bool tr_ctorGetPeerLimit(tr_ctor const* ctor, uint16_t* setme_count);
+[[nodiscard]] bool tr_ctorGetPeerLimit(tr_torrent_builder const* ctor, uint16_t* setme_count);
 
 /** @brief Set how many peers this torrent can connect to. (Default: 50) */
-void tr_ctorSetPeerLimit(tr_ctor* ctor, uint16_t limit);
+void tr_ctorSetPeerLimit(tr_torrent_builder* ctor, uint16_t limit);
 
 /** @brief Get the download path from this peer constructor */
-[[nodiscard]] std::optional<std::string> tr_ctorGetDownloadDir(tr_ctor const* ctor);
+[[nodiscard]] std::optional<std::string> tr_ctorGetDownloadDir(tr_torrent_builder const* ctor);
 
 /** @brief Set the download folder for the torrent being added with this ctor.
     @see `tr_sessionInit()` */
-void tr_ctorSetDownloadDir(tr_ctor* ctor, std::string_view dir);
+void tr_ctorSetDownloadDir(tr_torrent_builder* ctor, std::string_view dir);
 
 /**
  * @brief Set the incompleteDir for this torrent.
@@ -572,18 +572,18 @@ void tr_ctorSetDownloadDir(tr_ctor* ctor, std::string_view dir);
  * its older incompleteDir settings, and that's
  * the only place where it should be used.
  */
-void tr_ctorSetIncompleteDir(tr_ctor* ctor, std::string_view dir);
+void tr_ctorSetIncompleteDir(tr_torrent_builder* ctor, std::string_view dir);
 
 /** @brief Get the "isPaused" flag from this peer constructor */
-bool tr_ctorGetPaused(tr_ctor const* ctor, bool* setme_is_paused);
+bool tr_ctorGetPaused(tr_torrent_builder const* ctor, bool* setme_is_paused);
 
 /** Set whether or not the torrent begins downloading/seeding when created.
   (Default: not paused) */
-void tr_ctorSetPaused(tr_ctor* ctor, bool is_paused);
+void tr_ctorSetPaused(tr_torrent_builder* ctor, bool is_paused);
 
 /** @brief Get the torrent file that this ctor's metainfo came from,
            or empty if `tr_ctorSetMetainfoFromFile()` wasn't used */
-[[nodiscard]] std::optional<std::string> tr_ctorGetSourceFile(tr_ctor const* ctor);
+[[nodiscard]] std::optional<std::string> tr_ctorGetSourceFile(tr_torrent_builder const* ctor);
 
 /**
  * Instantiate a single torrent.
@@ -594,7 +594,7 @@ void tr_ctorSetPaused(tr_ctor* ctor, bool is_paused);
  * @param setme_duplicate_of If the torrent couldn't be created because it's a duplicate,
  *                           this is set to point to the original torrent.
  */
-[[nodiscard]] tr_torrent* tr_torrentNew(tr_ctor* ctor, tr_torrent** setme_duplicate_of);
+[[nodiscard]] tr_torrent* tr_torrentNew(tr_torrent_builder* ctor, tr_torrent** setme_duplicate_of);
 
 /** @} */
 

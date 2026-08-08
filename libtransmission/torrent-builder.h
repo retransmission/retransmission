@@ -19,9 +19,9 @@ struct tr_error;
 struct tr_session;
 struct tr_torrent;
 
-struct tr_ctor {
+struct tr_torrent_builder {
 public:
-    explicit tr_ctor(tr_session* session);
+    explicit tr_torrent_builder(tr_session* session);
 
     bool set_metainfo(std::string_view contents, tr_error* error = nullptr);
     bool set_metainfo_from_file(std::string_view filename, tr_error* error = nullptr);

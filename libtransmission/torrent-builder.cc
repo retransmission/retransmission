@@ -13,7 +13,7 @@
 #include <string_view>
 #include <utility>
 
-#include "libtransmission/torrent-ctor.h"
+#include "libtransmission/torrent-builder.h"
 
 #include "libtransmission/error.h"
 #include "libtransmission/file-utils.h"
@@ -23,20 +23,20 @@
 
 using namespace std::literals;
 
-tr_ctor::tr_ctor(tr_session* const session)
+tr_torrent_builder::tr_torrent_builder(tr_session* const session)
     : session_{ session }
 {
     set_should_delete_source_file(session->shouldDeleteSource());
 }
 
-tr_session* tr_ctor::session() const noexcept
+tr_session* tr_torrent_builder::session() const noexcept
 {
     return session_;
 }
 
 // ---
 
-bool tr_ctor::set_metainfo_from_file(std::string_view const filename, tr_error* const error)
+bool tr_torrent_builder::set_metainfo_from_file(std::string_view const filename, tr_error* const error)
 {
     if (std::empty(filename)) {
         if (error != nullptr) {
@@ -55,38 +55,38 @@ bool tr_ctor::set_metainfo_from_file(std::string_view const filename, tr_error* 
     return metainfo_.parse_benc(contents_sv, error);
 }
 
-std::string const& tr_ctor::torrent_filename() const noexcept
+std::string const& tr_torrent_builder::torrent_filename() const noexcept
 {
     return torrent_filename_;
 }
 
-bool tr_ctor::set_metainfo(std::string_view const contents, tr_error* const error)
+bool tr_torrent_builder::set_metainfo(std::string_view const contents, tr_error* const error)
 {
     torrent_filename_.clear();
     contents_.assign(std::begin(contents), std::end(contents));
     return metainfo_.parse_benc(contents, error);
 }
 
-bool tr_ctor::set_metainfo_from_magnet_link(std::string_view const magnet_link, tr_error* const error)
+bool tr_torrent_builder::set_metainfo_from_magnet_link(std::string_view const magnet_link, tr_error* const error)
 {
     torrent_filename_.clear();
     metainfo_ = {};
     return metainfo_.parseMagnet(magnet_link, error);
 }
 
-tr_torrent_metainfo const& tr_ctor::metainfo() const noexcept
+tr_torrent_metainfo const& tr_torrent_builder::metainfo() const noexcept
 {
     return metainfo_;
 }
 
-tr_torrent_metainfo tr_ctor::steal_metainfo()
+tr_torrent_metainfo tr_torrent_builder::steal_metainfo()
 {
     auto tmp = tr_torrent_metainfo{};
     std::swap(metainfo_, tmp);
     return tmp;
 }
 
-bool tr_ctor::save(std::string_view const filename, tr_error* const error) const
+bool tr_torrent_builder::save(std::string_view const filename, tr_error* const error) const
 {
     TR_ASSERT(!std::empty(filename));
 
@@ -103,13 +103,13 @@ bool tr_ctor::save(std::string_view const filename, tr_error* const error) const
 
 // ---
 
-void tr_ctor::set_files_wanted(std::span<tr_file_index_t const> const files, bool const wanted)
+void tr_torrent_builder::set_files_wanted(std::span<tr_file_index_t const> const files, bool const wanted)
 {
     auto& indices = wanted ? wanted_ : unwanted_;
     indices.assign(files.begin(), files.end());
 }
 
-void tr_ctor::init_torrent_wanted(tr_torrent& tor) const
+void tr_torrent_builder::init_torrent_wanted(tr_torrent& tor) const
 {
     tor.init_files_wanted(unwanted_, false);
     tor.init_files_wanted(wanted_, true);
@@ -117,7 +117,7 @@ void tr_ctor::init_torrent_wanted(tr_torrent& tor) const
 
 // ---
 
-void tr_ctor::set_file_priorities(std::span<tr_file_index_t const> const files, tr_priority_t const priority)
+void tr_torrent_builder::set_file_priorities(std::span<tr_file_index_t const> const files, tr_priority_t const priority)
 {
     switch (priority) {
     case TR_PRI_LOW:
@@ -134,7 +134,7 @@ void tr_ctor::set_file_priorities(std::span<tr_file_index_t const> const files, 
     }
 }
 
-void tr_ctor::init_torrent_priorities(tr_torrent& tor) const
+void tr_torrent_builder::init_torrent_priorities(tr_torrent& tor) const
 {
     tor.set_file_priorities(low_, TR_PRI_LOW);
     tor.set_file_priorities(normal_, TR_PRI_NORMAL);
@@ -143,12 +143,12 @@ void tr_ctor::init_torrent_priorities(tr_torrent& tor) const
 
 // ---
 
-tr_priority_t tr_ctor::bandwidth_priority() const noexcept
+tr_priority_t tr_torrent_builder::bandwidth_priority() const noexcept
 {
     return priority_;
 }
 
-void tr_ctor::set_bandwidth_priority(tr_priority_t const priority) noexcept
+void tr_torrent_builder::set_bandwidth_priority(tr_priority_t const priority) noexcept
 {
     if (priority == TR_PRI_LOW || priority == TR_PRI_NORMAL || priority == TR_PRI_HIGH) {
         priority_ = priority;
@@ -157,127 +157,127 @@ void tr_ctor::set_bandwidth_priority(tr_priority_t const priority) noexcept
 
 // ---
 
-std::string const& tr_ctor::download_dir() const noexcept
+std::string const& tr_torrent_builder::download_dir() const noexcept
 {
     return download_dir_;
 }
 
-void tr_ctor::set_download_dir(std::string_view const dir)
+void tr_torrent_builder::set_download_dir(std::string_view const dir)
 {
     download_dir_.assign(dir);
 }
 
 // ---
 
-std::string const& tr_ctor::incomplete_dir() const noexcept
+std::string const& tr_torrent_builder::incomplete_dir() const noexcept
 {
     return incomplete_dir_;
 }
 
-void tr_ctor::set_incomplete_dir(std::string_view const dir)
+void tr_torrent_builder::set_incomplete_dir(std::string_view const dir)
 {
     incomplete_dir_.assign(dir);
 }
 
 // ---
 
-tr_labels_t const& tr_ctor::labels() const noexcept
+tr_labels_t const& tr_torrent_builder::labels() const noexcept
 {
     return labels_;
 }
 
-void tr_ctor::set_labels(tr_labels_t&& labels)
+void tr_torrent_builder::set_labels(tr_labels_t&& labels)
 {
     labels_ = std::move(labels);
 }
 
 // --
 
-std::optional<bool> tr_ctor::paused() const noexcept
+std::optional<bool> tr_torrent_builder::paused() const noexcept
 {
     return paused_;
 }
 
-void tr_ctor::set_paused(bool const paused) noexcept
+void tr_torrent_builder::set_paused(bool const paused) noexcept
 {
     paused_ = paused;
 }
 
 // --
 
-std::optional<uint16_t> tr_ctor::peer_limit() const noexcept
+std::optional<uint16_t> tr_torrent_builder::peer_limit() const noexcept
 {
     return peer_limit_;
 }
 
-void tr_ctor::set_peer_limit(uint16_t const peer_limit) noexcept
+void tr_torrent_builder::set_peer_limit(uint16_t const peer_limit) noexcept
 {
     peer_limit_ = peer_limit;
 }
 
 // ---
 
-bool tr_ctor::should_delete_source_file() const noexcept
+bool tr_torrent_builder::should_delete_source_file() const noexcept
 {
     return should_delete_source_file_;
 }
 
-void tr_ctor::set_should_delete_source_file(bool const should) noexcept
+void tr_torrent_builder::set_should_delete_source_file(bool const should) noexcept
 {
     should_delete_source_file_ = should;
 }
 
 // ---
 
-std::optional<bool> const& tr_ctor::sequential_download() const noexcept
+std::optional<bool> const& tr_torrent_builder::sequential_download() const noexcept
 {
     return sequential_download_;
 }
 
-void tr_ctor::set_sequential_download(bool const seq) noexcept
+void tr_torrent_builder::set_sequential_download(bool const seq) noexcept
 {
     sequential_download_ = seq;
 }
 
-std::optional<tr_piece_index_t> const& tr_ctor::sequential_download_from_piece() const noexcept
+std::optional<tr_piece_index_t> const& tr_torrent_builder::sequential_download_from_piece() const noexcept
 {
     return sequential_download_from_piece_;
 }
 
-void tr_ctor::set_sequential_download_from_piece(tr_piece_index_t const piece) noexcept
+void tr_torrent_builder::set_sequential_download_from_piece(tr_piece_index_t const piece) noexcept
 {
     sequential_download_from_piece_ = piece;
 }
 
 // --- PUBLIC C API
 
-tr_ctor* tr_ctorNew(tr_session* session)
+tr_torrent_builder* tr_ctorNew(tr_session* session)
 {
-    return new tr_ctor{ session };
+    return new tr_torrent_builder{ session };
 }
 
-void tr_ctorFree(tr_ctor* ctor)
+void tr_ctorFree(tr_torrent_builder* ctor)
 {
     delete ctor;
 }
 
-bool tr_ctorSetMetainfoFromFile(tr_ctor* const ctor, std::string_view const filename, tr_error* const error)
+bool tr_ctorSetMetainfoFromFile(tr_torrent_builder* const ctor, std::string_view const filename, tr_error* const error)
 {
     return ctor->set_metainfo_from_file(filename, error);
 }
 
-bool tr_ctorSetMetainfo(tr_ctor* const ctor, char const* const metainfo, size_t len, tr_error* const error)
+bool tr_ctorSetMetainfo(tr_torrent_builder* const ctor, char const* const metainfo, size_t len, tr_error* const error)
 {
     auto const metainfo_sv = len == 0 || metainfo == nullptr ? ""sv : std::string_view{ metainfo, len };
     return ctor->set_metainfo(metainfo_sv, error);
 }
 
-bool tr_ctorSetMetainfoFromMagnetLink(tr_ctor* const ctor, std::string_view const magnet, tr_error* const error)
+bool tr_ctorSetMetainfoFromMagnetLink(tr_torrent_builder* const ctor, std::string_view const magnet, tr_error* const error)
 {
     return ctor->set_metainfo_from_magnet_link(magnet, error);
 }
 
-std::optional<std::string> tr_ctorGetSourceFile(tr_ctor const* const ctor)
+std::optional<std::string> tr_ctorGetSourceFile(tr_torrent_builder const* const ctor)
 {
     if (auto const& filename = ctor->torrent_filename(); !std::empty(filename)) {
         return filename;
@@ -286,12 +286,12 @@ std::optional<std::string> tr_ctorGetSourceFile(tr_ctor const* const ctor)
     return {};
 }
 
-void tr_ctorSetDeleteSource(tr_ctor* const ctor, bool const delete_source)
+void tr_ctorSetDeleteSource(tr_torrent_builder* const ctor, bool const delete_source)
 {
     ctor->set_should_delete_source_file(delete_source);
 }
 
-bool tr_ctorGetDeleteSource(tr_ctor const* const ctor, bool* const setme)
+bool tr_ctorGetDeleteSource(tr_torrent_builder const* const ctor, bool* const setme)
 {
     if (ctor != nullptr) {
         if (setme != nullptr) {
@@ -304,27 +304,27 @@ bool tr_ctorGetDeleteSource(tr_ctor const* const ctor, bool* const setme)
     return false;
 }
 
-void tr_ctorSetPaused(tr_ctor* const ctor, bool const paused)
+void tr_ctorSetPaused(tr_torrent_builder* const ctor, bool const paused)
 {
     ctor->set_paused(paused);
 }
 
-void tr_ctorSetPeerLimit(tr_ctor* const ctor, uint16_t const peer_limit)
+void tr_ctorSetPeerLimit(tr_torrent_builder* const ctor, uint16_t const peer_limit)
 {
     ctor->set_peer_limit(peer_limit);
 }
 
-void tr_ctorSetDownloadDir(tr_ctor* const ctor, std::string_view const dir)
+void tr_ctorSetDownloadDir(tr_torrent_builder* const ctor, std::string_view const dir)
 {
     ctor->set_download_dir(dir);
 }
 
-void tr_ctorSetIncompleteDir(tr_ctor* const ctor, std::string_view const dir)
+void tr_ctorSetIncompleteDir(tr_torrent_builder* const ctor, std::string_view const dir)
 {
     ctor->set_incomplete_dir(dir);
 }
 
-bool tr_ctorGetPeerLimit(tr_ctor const* const ctor, uint16_t* const setme)
+bool tr_ctorGetPeerLimit(tr_torrent_builder const* const ctor, uint16_t* const setme)
 {
     if (auto const val = ctor->peer_limit(); val) {
         if (setme != nullptr) {
@@ -337,7 +337,7 @@ bool tr_ctorGetPeerLimit(tr_ctor const* const ctor, uint16_t* const setme)
     return false;
 }
 
-bool tr_ctorGetPaused(tr_ctor const* const ctor, bool* const setme)
+bool tr_ctorGetPaused(tr_torrent_builder const* const ctor, bool* const setme)
 {
     if (auto const val = ctor->paused(); val) {
         if (setme != nullptr) {
@@ -350,7 +350,7 @@ bool tr_ctorGetPaused(tr_ctor const* const ctor, bool* const setme)
     return false;
 }
 
-std::optional<std::string> tr_ctorGetDownloadDir(tr_ctor const* const ctor)
+std::optional<std::string> tr_ctorGetDownloadDir(tr_torrent_builder const* const ctor)
 {
     if (auto const& dir = ctor->download_dir(); !std::empty(dir)) {
         return dir;
@@ -359,7 +359,7 @@ std::optional<std::string> tr_ctorGetDownloadDir(tr_ctor const* const ctor)
     return {};
 }
 
-tr_torrent_metainfo const* tr_ctorGetMetainfo(tr_ctor const* const ctor)
+tr_torrent_metainfo const* tr_ctorGetMetainfo(tr_torrent_builder const* const ctor)
 {
     auto const& metainfo = ctor->metainfo();
     return std::empty(metainfo.info_hash_string()) ? nullptr : &metainfo;

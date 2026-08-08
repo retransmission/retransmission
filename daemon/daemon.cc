@@ -49,7 +49,7 @@
 
 #include "daemon.h"
 
-struct tr_ctor;
+struct tr_torrent_builder;
 struct tr_session;
 struct tr_torrent;
 
@@ -197,7 +197,7 @@ auto onFileAdded(tr_session* session, std::string_view dirname, std::string_view
     }
 
     auto const filename = tr_pathbuf{ dirname, '/', basename };
-    tr_ctor* const ctor = tr_ctorNew(session);
+    tr_torrent_builder* const ctor = tr_ctorNew(session);
 
     bool retry = false;
 
@@ -855,7 +855,7 @@ int tr_daemon::start([[maybe_unused]] bool foreground)
 
     /* load the torrents */
     {
-        tr_ctor* ctor = tr_ctorNew(my_session_);
+        tr_torrent_builder* ctor = tr_ctorNew(my_session_);
 
         if (map.value_if<bool>(TR_KEY_start_paused).value_or(false)) {
             tr_ctorSetPaused(ctor, true);
