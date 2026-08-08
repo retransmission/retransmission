@@ -47,7 +47,7 @@ auto inline constexpr SequentialDownloadFromPiece = fields_t{ 1 << 25 };
 
 auto inline constexpr All = ~fields_t{ 0 };
 
-fields_t load(tr_torrent* tor, tr_torrent::ResumeHelper& helper, fields_t fields_to_load, tr_torrent_builder const& ctor);
+fields_t load(tr_torrent* tor, tr_torrent::ResumeHelper& helper, fields_t fields_to_load);
 
 void save(tr_torrent* tor, tr_torrent::ResumeHelper const& helper);
 

@@ -25,7 +25,6 @@
 #include "libtransmission/resume.h"
 #include "libtransmission/session.h"
 #include "libtransmission/string-utils.h"
-#include "libtransmission/torrent-builder.h"
 #include "libtransmission/torrent-metainfo.h"
 #include "libtransmission/torrent.h"
 #include "libtransmission/tr-assert.h"
@@ -739,63 +738,13 @@ tr_resume::fields_t load_from_file(tr_torrent* tor, tr_torrent::ResumeHelper& he
     return fields_loaded;
 }
 
-auto set_from_ctor(
-    tr_torrent* tor,
-    tr_torrent::ResumeHelper& helper,
-    tr_resume::fields_t const fields,
-    tr_torrent_builder const& ctor)
-{
-    auto ret = tr_resume::fields_t{};
-
-    if ((fields & tr_resume::Run) != 0) {
-        if (auto const val = ctor.paused(); val) {
-            helper.load_start_when_stable(!*val);
-            ret |= tr_resume::Run;
-        }
-    }
-
-    if ((fields & tr_resume::MaxPeers) != 0) {
-        if (auto const val = ctor.peer_limit(); val) {
-            tor->set_peer_limit(*val);
-            ret |= tr_resume::MaxPeers;
-        }
-    }
-
-    if ((fields & tr_resume::DownloadDir) != 0) {
-        if (auto const& val = ctor.download_dir(); !std::empty(val)) {
-            helper.load_download_dir(val);
-            ret |= tr_resume::DownloadDir;
-        }
-    }
-
-    if ((fields & tr_resume::SequentialDownload) != 0) {
-        if (auto const& val = ctor.sequential_download(); val) {
-            tor->set_sequential_download(*val);
-            ret |= tr_resume::SequentialDownload;
-        }
-    }
-
-    if ((fields & tr_resume::SequentialDownloadFromPiece) != 0) {
-        if (auto const& val = ctor.sequential_download_from_piece(); val) {
-            tor->set_sequential_download_from_piece(*val);
-            ret |= tr_resume::SequentialDownloadFromPiece;
-        }
-    }
-
-    return ret;
-}
-
 } // namespace
 
-fields_t load(tr_torrent* tor, tr_torrent::ResumeHelper& helper, fields_t fields_to_load, tr_torrent_builder const& ctor)
+fields_t load(tr_torrent* tor, tr_torrent::ResumeHelper& helper, fields_t const fields_to_load)
 {
     TR_ASSERT(tr_isTorrent(tor));
 
-    auto ret = set_from_ctor(tor, helper, fields_to_load, ctor);
-    fields_to_load &= ~ret;
-    ret |= load_from_file(tor, helper, fields_to_load);
-
-    return ret;
+    return load_from_file(tor, helper, fields_to_load);
 }
 
 void save(tr_torrent* const tor, tr_torrent::ResumeHelper const& helper)

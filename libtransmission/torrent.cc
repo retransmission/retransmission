@@ -826,6 +826,57 @@ void tr_torrent::on_metainfo_completed()
     }
 }
 
+namespace
+{
+// Applies what the caller set on the builder and returns the resume fields it covered,
+// so that tr_resume::load() can leave those alone.
+[[nodiscard]] tr_resume::fields_t apply_builder(
+    tr_torrent* const tor,
+    tr_torrent::ResumeHelper& helper,
+    tr_resume::fields_t const fields,
+    tr_torrent_builder const& builder)
+{
+    auto ret = tr_resume::fields_t{};
+
+    if ((fields & tr_resume::Run) != 0) {
+        if (auto const val = builder.paused(); val) {
+            helper.load_start_when_stable(!*val);
+            ret |= tr_resume::Run;
+        }
+    }
+
+    if ((fields & tr_resume::MaxPeers) != 0) {
+        if (auto const val = builder.peer_limit(); val) {
+            tor->set_peer_limit(*val);
+            ret |= tr_resume::MaxPeers;
+        }
+    }
+
+    if ((fields & tr_resume::DownloadDir) != 0) {
+        if (auto const& val = builder.download_dir(); !std::empty(val)) {
+            helper.load_download_dir(val);
+            ret |= tr_resume::DownloadDir;
+        }
+    }
+
+    if ((fields & tr_resume::SequentialDownload) != 0) {
+        if (auto const val = builder.sequential_download(); val) {
+            tor->set_sequential_download(*val);
+            ret |= tr_resume::SequentialDownload;
+        }
+    }
+
+    if ((fields & tr_resume::SequentialDownloadFromPiece) != 0) {
+        if (auto const val = builder.sequential_download_from_piece(); val) {
+            tor->set_sequential_download_from_piece(*val);
+            ret |= tr_resume::SequentialDownloadFromPiece;
+        }
+    }
+
+    return ret;
+}
+} // namespace
+
 void tr_torrent::init(tr_torrent_builder const& ctor)
 {
     session = ctor.session();
@@ -872,7 +923,12 @@ void tr_torrent::init(tr_torrent_builder const& ctor)
         auto resume_helper = ResumeHelper{ *this };
         // another default for the resume file to overwrite; it sits inside this guard because it dirties the torrent
         set_peer_limit(static_cast<uint16_t>(session->peerLimitPerTorrent()));
-        loaded = tr_resume::load(this, resume_helper, tr_resume::All, ctor);
+
+        // Settings arrive in three layers, each overwriting the one before it:
+        // the session defaults above, then what the caller asked for, then the
+        // resume file for whatever the caller left unset.
+        auto const from_builder = apply_builder(this, resume_helper, tr_resume::All, ctor);
+        loaded = from_builder | tr_resume::load(this, resume_helper, tr_resume::All & ~from_builder);
         set_dirty(was_dirty);
         tr_torrent_metainfo::migrate_file(session->torrentDir(), name(), info_hash_string(), ".torrent"sv);
     }
