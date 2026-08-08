@@ -66,9 +66,6 @@ struct tr_torrent_builder {
     [[nodiscard]] std::optional<bool> sequential_download() const noexcept;
     [[nodiscard]] std::optional<tr_piece_index_t> sequential_download_from_piece() const noexcept;
 
-    void set_should_delete_source_file(bool should) noexcept;
-    [[nodiscard]] bool should_delete_source_file() const noexcept;
-
     bool save(std::string_view filename, tr_error* error = nullptr) const;
 
 private:
@@ -108,6 +105,4 @@ private:
     tr_session* session_;
 
     tr_priority_t priority_ = TR_PRI_NORMAL;
-
-    bool should_delete_source_file_ = false;
 };

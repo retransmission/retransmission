@@ -641,12 +641,9 @@ void Session::Impl::add_torrent(Glib::RefPtr<Torrent> const& torrent, bool do_no
 
 Glib::RefPtr<Torrent> Session::Impl::create_new_torrent(tr_torrent_builder* ctor)
 {
-    bool do_trash = false;
-
     // let the gtk client handle the removal, since libT
     // doesn't have any concept of the glib trash API
-    do_trash = ctor->should_delete_source_file();
-    ctor->set_should_delete_source_file(false);
+    auto const do_trash = tr_sessionGetDeleteSource(session_);
     tr_torrent* const tor = tr_torrentNew(ctor, nullptr);
 
     if (tor != nullptr && do_trash) {

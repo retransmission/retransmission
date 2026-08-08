@@ -357,6 +357,7 @@ void tr_sessionSetPeerLimitPerTorrent(tr_session* session, uint16_t max_peers);
 [[nodiscard]] bool tr_sessionGetPaused(tr_session const* session);
 void tr_sessionSetPaused(tr_session* session, bool is_paused);
 
+[[nodiscard]] bool tr_sessionGetDeleteSource(tr_session const* session);
 void tr_sessionSetDeleteSource(tr_session* session, bool delete_source);
 
 [[nodiscard]] tr_priority_t tr_torrentGetPriority(tr_torrent const* tor);

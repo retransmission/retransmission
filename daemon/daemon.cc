@@ -233,7 +233,7 @@ auto onFileAdded(tr_session* session, std::string_view dirname, std::string_view
     if (tr_torrentNew(&builder, nullptr) == nullptr) {
         tr_logAddError(fmt::format(fmt::runtime(_("Couldn't add torrent file '{path}'")), fmt::arg("path", basename)));
     } else {
-        if (builder.should_delete_source_file()) {
+        if (tr_sessionGetDeleteSource(session)) {
             tr_logAddInfo(fmt::format(fmt::runtime(_("Removing torrent file '{path}'")), fmt::arg("path", basename)));
 
             if (auto error = tr_error{}; !tr_sys_path_remove(filename, &error)) {

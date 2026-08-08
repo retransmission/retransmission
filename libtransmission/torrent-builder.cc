@@ -27,7 +27,6 @@ using namespace std::literals;
 tr_torrent_builder::tr_torrent_builder(tr_session* const session)
     : session_{ session }
 {
-    set_should_delete_source_file(session->shouldDeleteSource());
 }
 
 tr_session* tr_torrent_builder::session() const noexcept
@@ -212,18 +211,6 @@ std::optional<uint16_t> tr_torrent_builder::peer_limit() const noexcept
 void tr_torrent_builder::set_peer_limit(uint16_t const peer_limit) noexcept
 {
     peer_limit_ = peer_limit;
-}
-
-// ---
-
-bool tr_torrent_builder::should_delete_source_file() const noexcept
-{
-    return should_delete_source_file_;
-}
-
-void tr_torrent_builder::set_should_delete_source_file(bool const should) noexcept
-{
-    should_delete_source_file_ = should;
 }
 
 // ---

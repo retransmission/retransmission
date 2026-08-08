@@ -161,7 +161,6 @@ void OptionsDialog::Impl::sourceChanged(PathButton* b)
 
         ctor_->set_download_dir(downloadDir_);
         ctor_->set_paused(true);
-        ctor_->set_should_delete_source_file(false);
 
         tr_torrent* duplicate_of = nullptr;
         if (tr_torrent* const torrent = tr_torrentNew(ctor_.get(), &duplicate_of); torrent != nullptr) {
@@ -273,7 +272,7 @@ OptionsDialog::Impl::Impl(
     }
 
     run_check_->set_active(!paused.value_or(false));
-    trash_check_->set_active(ctor_->should_delete_source_file());
+    trash_check_->set_active(tr_sessionGetDeleteSource(core_->get_session()));
 
     /* trigger sourceChanged, either directly or indirectly,
      * so that it creates the tor/gtor objects */
