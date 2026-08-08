@@ -65,7 +65,7 @@ public:
         Glib::RefPtr<Gtk::Builder> const& builder,
         Gtk::Window& parent,
         Glib::RefPtr<Session> const& core,
-        std::unique_ptr<tr_torrent_builder, void (*)(tr_torrent_builder*)> ctor);
+        std::unique_ptr<tr_torrent_builder> ctor);
     OptionsDialog(OptionsDialog&&) = delete;
     OptionsDialog(OptionsDialog const&) = delete;
     OptionsDialog& operator=(OptionsDialog&&) = delete;
@@ -75,7 +75,7 @@ public:
     static std::unique_ptr<OptionsDialog> create(
         Gtk::Window& parent,
         Glib::RefPtr<Session> const& core,
-        std::unique_ptr<tr_torrent_builder, void (*)(tr_torrent_builder*)> ctor);
+        std::unique_ptr<tr_torrent_builder> ctor);
 
 private:
     class Impl;

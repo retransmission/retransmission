@@ -33,6 +33,7 @@
 #include <libtransmission/quark.h>
 #include <libtransmission/serializer.h>
 #include <libtransmission/session-id.h>
+#include <libtransmission/torrent-builder.h>
 #include <libtransmission/transmission.h>
 #include <libtransmission/utils.h>
 #include <libtransmission/variant.h>
@@ -310,9 +311,8 @@ void Session::start()
 
         rpc_.start(session_);
 
-        auto* const ctor = tr_ctorNew(session_);
-        tr_sessionLoadTorrents(session_, ctor);
-        tr_ctorFree(ctor);
+        auto builder = tr_torrent_builder{ session_ };
+        tr_sessionLoadTorrents(session_, &builder);
     }
 
     emit sourceChanged();

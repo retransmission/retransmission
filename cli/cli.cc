@@ -18,6 +18,7 @@
 #include <libtransmission/constants.h>
 #include <libtransmission/file.h>
 #include <libtransmission/macros.h>
+#include <libtransmission/torrent-builder.h>
 #include <libtransmission/tr-getopt.h>
 #include <libtransmission/utils.h> // _()
 #include <libtransmission/values.h>
@@ -113,8 +114,8 @@ bool waitingOnWeb;
 
 void onTorrentFileDownloaded(tr_web::FetchResponse const& response)
 {
-    auto* ctor = static_cast<tr_torrent_builder*>(response.user_data);
-    tr_ctorSetMetainfo(ctor, std::data(response.body), std::size(response.body), nullptr);
+    auto* builder = static_cast<tr_torrent_builder*>(response.user_data);
+    builder->set_metainfo(response.body);
     waitingOnWeb = false;
 }
 
@@ -344,16 +345,16 @@ int tr_main(int argc, char* argv[])
     }
 
     auto* const h = tr_sessionInit(config_dir, false, settings);
-    auto* const ctor = tr_ctorNew(h);
+    auto builder = tr_torrent_builder{ h };
 
-    tr_ctorSetPaused(ctor, false);
+    builder.set_paused(false);
 
-    if (tr_sys_path_exists(torrentPath) ? tr_ctorSetMetainfoFromFile(ctor, torrentPath) :
-                                          tr_ctorSetMetainfoFromMagnetLink(ctor, torrentPath)) {
+    if (tr_sys_path_exists(torrentPath) ? builder.set_metainfo_from_file(torrentPath) :
+                                          builder.set_metainfo_from_magnet_link(torrentPath)) {
         // all good
     } else if (tr_urlIsValid(torrentPath)) {
         // fetch it
-        tr_sessionFetch(h, { torrentPath, onTorrentFileDownloaded, ctor });
+        tr_sessionFetch(h, { torrentPath, onTorrentFileDownloaded, &builder });
         waitingOnWeb = true;
         while (waitingOnWeb) {
             std::this_thread::sleep_for(1s);
@@ -366,8 +367,7 @@ int tr_main(int argc, char* argv[])
         return EXIT_FAILURE;
     }
 
-    tr_torrent* tor = tr_torrentNew(ctor, nullptr);
-    tr_ctorFree(ctor);
+    tr_torrent* tor = tr_torrentNew(&builder, nullptr);
     if (tor == nullptr) {
         fprintf(stderr, "Failed opening torrent file `%s'\n", torrentPath);
         tr_sessionClose(h);

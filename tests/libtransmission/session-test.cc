@@ -402,10 +402,9 @@ TEST_F(SessionTest, loadTorrentsThenMagnets)
         GTEST_SKIP() << fmt::format("Failed to setup torrents dir: {} ({})", error.message(), error.code());
     }
 
-    auto* const ctor = tr_ctorNew(session_);
-    ctor->set_paused(false);
-    EXPECT_EQ(tr_sessionLoadTorrents(session_, ctor), 1U);
-    tr_ctorFree(ctor);
+    auto builder = tr_torrent_builder{ session_ };
+    builder.set_paused(false);
+    EXPECT_EQ(tr_sessionLoadTorrents(session_, &builder), 1U);
 
     auto* const tor = session_->torrents().get(1U);
     ASSERT_NE(tor, nullptr);

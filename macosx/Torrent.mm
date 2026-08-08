@@ -12,6 +12,7 @@
 #include <libtransmission/error.h>
 #include <libtransmission/log.h>
 #include <libtransmission/string-utils.h>
+#include <libtransmission/torrent-builder.h>
 
 #import "Torrent.h"
 #import "GroupsController.h"
@@ -1712,31 +1713,29 @@ static tr_torrent_rename_done_func makeRenameDoneCallback(NSDictionary* contextI
         _fHandle = torrentStruct;
     } else {
         //set libtransmission settings for initialization
-        tr_torrent_builder* ctor = tr_ctorNew(lib);
+        auto builder = tr_torrent_builder{ lib };
 
-        tr_ctorSetPaused(ctor, YES);
+        builder.set_paused(YES);
         if (downloadFolder) {
-            tr_ctorSetDownloadDir(ctor, downloadFolder.UTF8String);
+            builder.set_download_dir(downloadFolder.UTF8String);
         }
         if (incompleteFolder) {
-            tr_ctorSetIncompleteDir(ctor, incompleteFolder.UTF8String);
+            builder.set_incomplete_dir(incompleteFolder.UTF8String);
         }
 
         bool loaded = false;
 
         if (path) {
-            loaded = tr_ctorSetMetainfoFromFile(ctor, path.UTF8String);
+            loaded = builder.set_metainfo_from_file(path.UTF8String);
         }
 
         if (!loaded && magnetAddress) {
-            loaded = tr_ctorSetMetainfoFromMagnetLink(ctor, magnetAddress.UTF8String);
+            loaded = builder.set_metainfo_from_magnet_link(magnetAddress.UTF8String);
         }
 
         if (loaded) {
-            _fHandle = tr_torrentNew(ctor, NULL);
+            _fHandle = tr_torrentNew(&builder, NULL);
         }
-
-        tr_ctorFree(ctor);
 
         if (!_fHandle) {
             return nil;

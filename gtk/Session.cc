@@ -16,6 +16,7 @@
 #include <libtransmission/macros.h>
 #include <libtransmission/rpcimpl.h>
 #include <libtransmission/string-utils.h>
+#include <libtransmission/torrent-builder.h>
 #include <libtransmission/torrent-metainfo.h>
 #include <libtransmission/transmission.h>
 #include <libtransmission/utils.h> // tr_time()
@@ -644,17 +645,17 @@ Glib::RefPtr<Torrent> Session::Impl::create_new_torrent(tr_torrent_builder* ctor
 
     // let the gtk client handle the removal, since libT
     // doesn't have any concept of the glib trash API
-    tr_ctorGetDeleteSource(ctor, &do_trash);
-    tr_ctorSetDeleteSource(ctor, false);
+    do_trash = ctor->should_delete_source_file();
+    ctor->set_should_delete_source_file(false);
     tr_torrent* const tor = tr_torrentNew(ctor, nullptr);
 
     if (tor != nullptr && do_trash) {
-        if (std::optional<std::string> const source = tr_ctorGetSourceFile(ctor)) {
+        if (auto const& source = ctor->torrent_filename(); !std::empty(source)) {
             // #1294: don't delete the .torrent file if it's our internal copy
             std::string const config_dir = tr_sessionGetConfigDir(session_);
-            bool const is_internal = source && source->starts_with(config_dir);
+            bool const is_internal = source.starts_with(config_dir);
             if (!is_internal) {
-                gtr_file_trash_or_remove(*source);
+                gtr_file_trash_or_remove(source);
             }
         }
     }
@@ -664,26 +665,26 @@ Glib::RefPtr<Torrent> Session::Impl::create_new_torrent(tr_torrent_builder* ctor
 
 void Session::Impl::add_ctor(tr_torrent_builder* ctor, bool do_prompt, bool do_notify)
 {
-    auto const* metainfo = tr_ctorGetMetainfo(ctor);
-    if (metainfo == nullptr) {
+    auto const& metainfo = ctor->metainfo();
+    if (std::empty(metainfo.info_hash_string())) {
         return;
     }
 
-    if (tr_torrentFindFromMetainfo(get_session(), metainfo) != nullptr) {
+    if (tr_torrentFindFromMetainfo(get_session(), &metainfo) != nullptr) {
         /* don't complain about torrent files in the watch directory
          * that have already been added... that gets annoying and we
          * don't want to be nagging users to clean up their watch dirs */
-        if (!tr_ctorGetSourceFile(ctor).has_value() || !adding_from_watch_dir_) {
-            signal_add_error_.emit(ERR_ADD_TORRENT_DUP, metainfo->name().c_str());
+        if (std::empty(ctor->torrent_filename()) || !adding_from_watch_dir_) {
+            signal_add_error_.emit(ERR_ADD_TORRENT_DUP, metainfo.name().c_str());
         }
 
-        tr_ctorFree(ctor);
+        delete ctor;
         return;
     }
 
     if (!do_prompt) {
         add_torrent(create_new_torrent(ctor), do_notify);
-        tr_ctorFree(ctor);
+        delete ctor;
         return;
     }
 
@@ -695,20 +696,16 @@ namespace
 
 void core_apply_defaults(tr_torrent_builder* ctor)
 {
-    if (!tr_ctorGetPaused(ctor, nullptr)) {
-        tr_ctorSetPaused(ctor, !gtr_pref_flag_get(TR_KEY_start_added_torrents));
+    if (!ctor->paused()) {
+        ctor->set_paused(!gtr_pref_flag_get(TR_KEY_start_added_torrents));
     }
 
-    if (!tr_ctorGetDeleteSource(ctor, nullptr)) {
-        tr_ctorSetDeleteSource(ctor, gtr_pref_flag_get(TR_KEY_trash_original_torrent_files));
+    if (!ctor->peer_limit()) {
+        ctor->set_peer_limit(gtr_pref_int_get<size_t>(TR_KEY_peer_limit_per_torrent));
     }
 
-    if (!tr_ctorGetPeerLimit(ctor, nullptr)) {
-        tr_ctorSetPeerLimit(ctor, gtr_pref_int_get<size_t>(TR_KEY_peer_limit_per_torrent));
-    }
-
-    if (!tr_ctorGetDownloadDir(ctor).has_value()) {
-        tr_ctorSetDownloadDir(ctor, gtr_pref_string_get(TR_KEY_download_dir));
+    if (std::empty(ctor->download_dir())) {
+        ctor->set_download_dir(gtr_pref_string_get(TR_KEY_download_dir));
     }
 }
 
@@ -739,10 +736,10 @@ void Session::Impl::add_file_async_callback(
 
         if (!file->load_contents_finish(result, contents, length)) {
             gtr_message(fmt::format(fmt::runtime(_("Couldn't read '{path}'")), fmt::arg("path", file->get_parse_name())));
-        } else if (tr_ctorSetMetainfo(ctor, contents, length, nullptr)) {
+        } else if (ctor->set_metainfo(contents != nullptr ? std::string_view{ contents, length } : std::string_view{})) {
             add_ctor(ctor, do_prompt, do_notify);
         } else {
-            tr_ctorFree(ctor);
+            delete ctor;
         }
     } catch (Glib::Error const& e) {
         gtr_message(
@@ -774,20 +771,20 @@ bool Session::Impl::add(Glib::ustring const& name_in, bool const do_start, bool 
     }
 
     bool handled = false;
-    auto* ctor = tr_ctorNew(session);
+    auto* ctor = new tr_torrent_builder{ session };
     core_apply_defaults(ctor);
-    tr_ctorSetPaused(ctor, !do_start);
+    ctor->set_paused(!do_start);
 
     bool loaded = false;
     auto file = Gio::File::create_for_parse_name(name);
     if (auto const path = file->get_path(); !std::empty(path)) {
         // try to treat it as a file...
-        loaded = tr_ctorSetMetainfoFromFile(ctor, path);
+        loaded = ctor->set_metainfo_from_file(path);
     }
 
     if (!loaded) {
         // try to treat it as a magnet link...
-        loaded = tr_ctorSetMetainfoFromMagnetLink(ctor, name.raw(), nullptr);
+        loaded = ctor->set_metainfo_from_magnet_link(name.raw());
     }
 
     // if we could make sense of it, add it
@@ -801,7 +798,7 @@ bool Session::Impl::add(Glib::ustring const& name_in, bool const do_start, bool 
             add_file_async_callback(file, result, ctor, do_prompt, do_notify);
         });
     } else {
-        tr_ctorFree(ctor);
+        delete ctor;
         std::cerr << fmt::format(
                          fmt::runtime(_("Couldn't add torrent file '{path}'")),
                          fmt::arg("path", file->get_parse_name()))
@@ -876,15 +873,14 @@ void Session::Impl::remove_torrent(tr_torrent_id_t const id, bool const delete_f
 
 void Session::load(bool force_paused)
 {
-    auto* const ctor = tr_ctorNew(impl_->get_session());
+    auto builder = tr_torrent_builder{ impl_->get_session() };
 
     if (force_paused) {
-        tr_ctorSetPaused(ctor, true);
+        builder.set_paused(true);
     }
 
     auto* session = impl_->get_session();
-    tr_sessionLoadTorrents(session, ctor);
-    tr_ctorFree(ctor);
+    tr_sessionLoadTorrents(session, &builder);
 
     auto const raw_torrents = tr_sessionGetAllTorrents(session);
 

@@ -70,18 +70,17 @@ protected:
         sync();
     }
 
-    tr_torrent* createTorrentFromBase64Metainfo(tr_torrent_builder* ctor, char const* benc_base64)
+    tr_torrent* createTorrentFromBase64Metainfo(tr_torrent_builder& builder, char const* benc_base64)
     {
-        // create the torrent ctor
         auto const benc = tr_base64_decode(benc_base64);
         EXPECT_LT(0U, std::size(benc));
         auto error = tr_error{};
-        EXPECT_TRUE(tr_ctorSetMetainfo(ctor, std::data(benc), std::size(benc), &error));
+        EXPECT_TRUE(builder.set_metainfo(std::string_view{ std::data(benc), std::size(benc) }, &error));
         EXPECT_FALSE(error) << error;
-        tr_ctorSetPaused(ctor, true);
+        builder.set_paused(true);
 
         // create the torrent
-        auto* const tor = createTorrentAndWaitForVerifyDone(ctor);
+        auto* const tor = createTorrentAndWaitForVerifyDone(&builder);
         EXPECT_NE(nullptr, tor);
         return tor;
     }
@@ -135,9 +134,9 @@ TEST_F(RenameTest, singleFilenameTorrent)
     static auto constexpr TotalSize = size_t{ 14 };
 
     // this is a single-file torrent whose file is hello-world.txt, holding the string "hello, world!"
-    auto* ctor = tr_ctorNew(session_);
+    auto builder = tr_torrent_builder{ session_ };
     auto* tor = createTorrentFromBase64Metainfo(
-        ctor,
+        builder,
         "ZDEwOmNyZWF0ZWQgYnkyNTpUcmFuc21pc3Npb24vMi42MSAoMTM0MDcpMTM6Y3JlYXRpb24gZGF0"
         "ZWkxMzU4NTQ5MDk4ZTg6ZW5jb2Rpbmc1OlVURi04NDppbmZvZDY6bGVuZ3RoaTE0ZTQ6bmFtZTE1"
         "OmhlbGxvLXdvcmxkLnR4dDEyOnBpZWNlIGxlbmd0aGkzMjc2OGU2OnBpZWNlczIwOukboJcrkFUY"
@@ -200,7 +199,7 @@ TEST_F(RenameTest, singleFilenameTorrent)
     auto resume_helper = tr_torrent::ResumeHelper{ *tor };
     tr_resume::save(tor, resume_helper);
     sync();
-    auto const loaded = tr_resume::load(tor, resume_helper, tr_resume::All, *ctor);
+    auto const loaded = tr_resume::load(tor, resume_helper, tr_resume::All, builder);
     EXPECT_EQ("foobar", tr_torrentName(tor));
     EXPECT_NE(decltype(loaded){ 0 }, (loaded & tr_resume::Name));
 
@@ -217,7 +216,6 @@ TEST_F(RenameTest, singleFilenameTorrent)
     EXPECT_TRUE(testFileExistsAndConsistsOfThisString(tor, 0, "hello, world!\n"));
 
     // cleanup
-    tr_ctorFree(ctor);
     torrentRemoveAndWait(tor, 0);
 }
 
@@ -243,9 +241,9 @@ TEST_F(RenameTest, multifileTorrent)
         "They’re Grrrrreat!\n"sv,
     });
 
-    auto* ctor = tr_ctorNew(session_);
+    auto builder = tr_torrent_builder{ session_ };
     auto* tor = createTorrentFromBase64Metainfo(
-        ctor,
+        builder,
         "ZDEwOmNyZWF0ZWQgYnkyNTpUcmFuc21pc3Npb24vMi42MSAoMTM0MDcpMTM6Y3JlYXRpb24gZGF0"
         "ZWkxMzU4NTU1NDIwZTg6ZW5jb2Rpbmc1OlVURi04NDppbmZvZDU6ZmlsZXNsZDY6bGVuZ3RoaTI4"
         "ZTQ6cGF0aGw3OkZlbGluYWU4OkFjaW5vbnl4NzpDaGVldGFoNzpDaGVzdGVyZWVkNjpsZW5ndGhp"
@@ -311,7 +309,7 @@ TEST_F(RenameTest, multifileTorrent)
     tr_resume::save(tor, resume_helper);
     // this is a bit dodgy code-wise, but let's make sure the .resume file got the name
     tor->set_file_subpath(1, "gabba gabba hey"sv);
-    auto const loaded = tr_resume::load(tor, resume_helper, tr_resume::All, *ctor);
+    auto const loaded = tr_resume::load(tor, resume_helper, tr_resume::All, builder);
     EXPECT_NE(decltype(loaded){ 0 }, (loaded & tr_resume::Filenames));
     EXPECT_EQ(ExpectedFiles[0], tr_torrentFile(tor, 0).name);
     EXPECT_STREQ("Felidae/Felinae/Felis/placeholder/Kyphi", tr_torrentFile(tor, 1).name);
@@ -389,16 +387,15 @@ TEST_F(RenameTest, multifileTorrent)
         testFileExistsAndConsistsOfThisString(tor, i, ExpectedContents[i]);
     }
 
-    tr_ctorFree(ctor);
     torrentRemoveAndWait(tor, 0);
 
     /**
     ***  Test renaming prefixes (shouldn't work)
     **/
 
-    ctor = tr_ctorNew(session_);
+    auto builder2 = tr_torrent_builder{ session_ };
     tor = createTorrentFromBase64Metainfo(
-        ctor,
+        builder2,
         "ZDEwOmNyZWF0ZWQgYnkyNTpUcmFuc21pc3Npb24vMi42MSAoMTM0MDcpMTM6Y3JlYXRpb24gZGF0"
         "ZWkxMzU4NTU1NDIwZTg6ZW5jb2Rpbmc1OlVURi04NDppbmZvZDU6ZmlsZXNsZDY6bGVuZ3RoaTI4"
         "ZTQ6cGF0aGw3OkZlbGluYWU4OkFjaW5vbnl4NzpDaGVldGFoNzpDaGVzdGVyZWVkNjpsZW5ndGhp"
@@ -425,7 +422,6 @@ TEST_F(RenameTest, multifileTorrent)
     ***/
 
     // cleanup
-    tr_ctorFree(ctor);
     torrentRemoveAndWait(tor, 0);
 }
 

@@ -123,15 +123,13 @@ TEST_F(TorrentMetainfoTest, AndroidTorrent)
 {
     auto const filename = tr_pathbuf{ LIBTRANSMISSION_TEST_ASSETS_DIR, "/Android-x86 8.1 r6 iso.torrent"sv };
 
-    auto* ctor = tr_ctorNew(session_);
+    auto builder = tr_torrent_builder{ session_ };
     auto error = tr_error{};
-    EXPECT_TRUE(tr_ctorSetMetainfoFromFile(ctor, filename, &error));
+    EXPECT_TRUE(builder.set_metainfo_from_file(filename, &error));
     EXPECT_FALSE(error) << error;
-    auto const* const metainfo = tr_ctorGetMetainfo(ctor);
-    EXPECT_NE(nullptr, metainfo);
-    EXPECT_EQ(336, metainfo->info_dict_offset());
-    EXPECT_EQ(26583, metainfo->info_dict_size());
-    tr_ctorFree(ctor);
+    auto const& metainfo = builder.metainfo();
+    EXPECT_EQ(336, metainfo.info_dict_offset());
+    EXPECT_EQ(26583, metainfo.info_dict_size());
 }
 
 TEST_F(TorrentMetainfoTest, ctorSaveContents)
@@ -141,17 +139,17 @@ TEST_F(TorrentMetainfoTest, ctorSaveContents)
     auto const tgt_filename = tr_pathbuf{ sandbox, "save-contents-test.torrent" };
 
     // try saving without passing any metainfo.
-    auto* ctor = tr_ctorNew(session_);
+    auto builder = tr_torrent_builder{ session_ };
     auto error = tr_error{};
-    EXPECT_FALSE(ctor->save(tgt_filename, &error));
+    EXPECT_FALSE(builder.save(tgt_filename, &error));
     EXPECT_TRUE(error);
     EXPECT_EQ(EINVAL, error.code());
     error = {};
 
     // now try saving _with_ metainfo
-    EXPECT_TRUE(tr_ctorSetMetainfoFromFile(ctor, src_filename, &error));
+    EXPECT_TRUE(builder.set_metainfo_from_file(src_filename, &error));
     EXPECT_FALSE(error) << error;
-    EXPECT_TRUE(ctor->save(tgt_filename, &error));
+    EXPECT_TRUE(builder.save(tgt_filename, &error));
     EXPECT_FALSE(error) << error;
 
     // the saved contents should match the source file's contents
@@ -164,7 +162,6 @@ TEST_F(TorrentMetainfoTest, ctorSaveContents)
     // cleanup
     EXPECT_TRUE(tr_sys_path_remove(tgt_filename, &error));
     EXPECT_FALSE(error) << error;
-    tr_ctorFree(ctor);
 }
 
 TEST_F(TorrentMetainfoTest, magnetInfoHash)

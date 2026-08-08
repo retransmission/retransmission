@@ -40,6 +40,7 @@
 #include <libtransmission/quark.h>
 #include <libtransmission/string-utils.h>
 #include <libtransmission/timer-ev.h>
+#include <libtransmission/torrent-builder.h>
 #include <libtransmission/tr-getopt.h>
 #include <libtransmission/tr-strbuf.h>
 #include <libtransmission/utils.h>
@@ -197,12 +198,12 @@ auto onFileAdded(tr_session* session, std::string_view dirname, std::string_view
     }
 
     auto const filename = tr_pathbuf{ dirname, '/', basename };
-    tr_torrent_builder* const ctor = tr_ctorNew(session);
+    auto builder = tr_torrent_builder{ session };
 
     bool retry = false;
 
     if (is_torrent) {
-        if (!tr_ctorSetMetainfoFromFile(ctor, filename)) {
+        if (!builder.set_metainfo_from_file(filename)) {
             retry = true;
         }
     } else // is_magnet
@@ -219,24 +220,20 @@ auto onFileAdded(tr_session* session, std::string_view dirname, std::string_view
             retry = true;
         } else {
             auto const content_sv = std::string_view{ content.data(), content.size() };
-            if (!tr_ctorSetMetainfoFromMagnetLink(ctor, content_sv)) {
+            if (!builder.set_metainfo_from_magnet_link(content_sv)) {
                 retry = true;
             }
         }
     }
 
     if (retry) {
-        tr_ctorFree(ctor);
         return Watchdir::Action::Retry;
     }
 
-    if (tr_torrentNew(ctor, nullptr) == nullptr) {
+    if (tr_torrentNew(&builder, nullptr) == nullptr) {
         tr_logAddError(fmt::format(fmt::runtime(_("Couldn't add torrent file '{path}'")), fmt::arg("path", basename)));
     } else {
-        bool trash = false;
-        bool const test = tr_ctorGetDeleteSource(ctor, &trash);
-
-        if (test && trash) {
+        if (builder.should_delete_source_file()) {
             tr_logAddInfo(fmt::format(fmt::runtime(_("Removing torrent file '{path}'")), fmt::arg("path", basename)));
 
             if (auto error = tr_error{}; !tr_sys_path_remove(filename, &error)) {
@@ -252,7 +249,6 @@ auto onFileAdded(tr_session* session, std::string_view dirname, std::string_view
         }
     }
 
-    tr_ctorFree(ctor);
     return Watchdir::Action::Done;
 }
 
@@ -855,14 +851,13 @@ int tr_daemon::start([[maybe_unused]] bool foreground)
 
     /* load the torrents */
     {
-        tr_torrent_builder* ctor = tr_ctorNew(my_session_);
+        auto builder = tr_torrent_builder{ my_session_ };
 
         if (map.value_if<bool>(TR_KEY_start_paused).value_or(false)) {
-            tr_ctorSetPaused(ctor, true);
+            builder.set_paused(true);
         }
 
-        tr_sessionLoadTorrents(my_session_, ctor);
-        tr_ctorFree(ctor);
+        tr_sessionLoadTorrents(my_session_, &builder);
     }
 
 #ifdef HAVE_SYSLOG

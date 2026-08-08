@@ -30,6 +30,7 @@
 #include <libtransmission/macros.h>
 #include <libtransmission/quark.h>
 #include <libtransmission/rpcimpl.h>
+#include <libtransmission/torrent-builder.h>
 #include <libtransmission/transmission.h>
 #include <libtransmission/version.h>
 
@@ -1031,8 +1032,7 @@ void Application::Impl::on_main_window_focus_in()
 
 void Application::Impl::on_add_torrent(tr_torrent_builder* ctor)
 {
-    auto w = std::shared_ptr<OptionsDialog>(
-        OptionsDialog::create(*wind_, core_, std::unique_ptr<tr_torrent_builder, decltype(&tr_ctorFree)>(ctor, &tr_ctorFree)));
+    auto w = std::shared_ptr<OptionsDialog>(OptionsDialog::create(*wind_, core_, std::unique_ptr<tr_torrent_builder>(ctor)));
 
     gtr_window_on_close(*w, [w]() mutable { w.reset(); });
 

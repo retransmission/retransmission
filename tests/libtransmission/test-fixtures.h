@@ -377,15 +377,15 @@ protected:
         // create the torrent ctor
         auto const benc = tr_base64_decode(BencBase64);
         EXPECT_LT(0U, std::size(benc));
-        auto* ctor = tr_ctorNew(session_);
+        auto builder = tr_torrent_builder{ session_ };
         auto error = tr_error{};
-        EXPECT_TRUE(tr_ctorSetMetainfo(ctor, std::data(benc), std::size(benc), &error));
+        EXPECT_TRUE(builder.set_metainfo(std::string_view{ std::data(benc), std::size(benc) }, &error));
         EXPECT_FALSE(error) << error;
-        tr_ctorSetPaused(ctor, true);
+        builder.set_paused(true);
 
         // maybe create the files
         if (state != ZeroTorrentState::NoFiles) {
-            auto const* const metainfo = tr_ctorGetMetainfo(ctor);
+            auto const* const metainfo = &builder.metainfo();
             for (tr_file_index_t i = 0, n = metainfo->file_count(); i < n; ++i) {
                 auto const base = state == ZeroTorrentState::Partial && tr_sessionIsIncompleteDirEnabled(session_) ?
                     tr_sessionGetIncompleteDir(session_) :
@@ -416,35 +416,30 @@ protected:
             }
         }
 
-        auto* const tor = createTorrentAndWaitForVerifyDone(ctor);
-        tr_ctorFree(ctor);
-        return tor;
+        return createTorrentAndWaitForVerifyDone(&builder);
     }
 
     [[nodiscard]] tr_torrent* zeroTorrentMagnetInit()
     {
         static auto constexpr V1Hash = "fa5794674a18241bec985ddc3390e3cb171345e4";
 
-        auto ctor = tr_ctorNew(session_);
-        ctor->set_metainfo_from_magnet_link(V1Hash);
-        tr_ctorSetPaused(ctor, true);
+        auto builder = tr_torrent_builder{ session_ };
+        builder.set_metainfo_from_magnet_link(V1Hash);
+        builder.set_paused(true);
 
-        auto* const tor = tr_torrentNew(ctor, nullptr);
+        auto* const tor = tr_torrentNew(&builder, nullptr);
         EXPECT_NE(nullptr, tor);
-        tr_ctorFree(ctor);
         return tor;
     }
 
     [[nodiscard]] tr_torrent* torrentInitFromFile(std::string_view filename)
     {
-        auto* const ctor = tr_ctorNew(session_);
+        auto builder = tr_torrent_builder{ session_ };
 
         auto const path = tr_pathbuf{ LIBTRANSMISSION_TEST_ASSETS_DIR, '/', filename };
-        EXPECT_TRUE(ctor->set_metainfo_from_file(path));
+        EXPECT_TRUE(builder.set_metainfo_from_file(path));
 
-        auto* const tor = createTorrentAndWaitForVerifyDone(ctor);
-        tr_ctorFree(ctor);
-        return tor;
+        return createTorrentAndWaitForVerifyDone(&builder);
     }
 
     void blockingTorrentVerify(tr_torrent* tor)

@@ -15,6 +15,7 @@
 #include "Utils.h"
 
 #include <libtransmission/file.h> /* tr_sys_path_is_same() */
+#include <libtransmission/torrent-builder.h>
 #include <libtransmission/transmission.h>
 
 #include <gtkmm/checkbutton.h>
@@ -52,7 +53,7 @@ public:
         OptionsDialog& dialog,
         Glib::RefPtr<Gtk::Builder> const& builder,
         Glib::RefPtr<Session> const& core,
-        std::unique_ptr<tr_torrent_builder, void (*)(tr_torrent_builder*)> ctor);
+        std::unique_ptr<tr_torrent_builder> ctor);
     Impl(Impl&&) = delete;
     Impl(Impl const&) = delete;
     Impl& operator=(Impl&&) = delete;
@@ -71,7 +72,7 @@ private:
 private:
     OptionsDialog& dialog_;
     Glib::RefPtr<Session> const core_;
-    std::unique_ptr<tr_torrent_builder, void (*)(tr_torrent_builder*)> ctor_;
+    std::unique_ptr<tr_torrent_builder> ctor_;
 
     std::string filename_;
     std::string downloadDir_;
@@ -123,7 +124,7 @@ void OptionsDialog::Impl::addResponseCB(int response)
 
 void OptionsDialog::Impl::updateTorrent()
 {
-    bool const isLocalFile = tr_ctorGetSourceFile(ctor_.get()).has_value();
+    bool const isLocalFile = !std::empty(ctor_->torrent_filename());
     trash_check_->set_sensitive(isLocalFile);
 
     if (tor_ == nullptr) {
@@ -154,13 +155,13 @@ void OptionsDialog::Impl::sourceChanged(PathButton* b)
 
         if (!filename.empty() && (filename_.empty() || !tr_sys_path_is_same(filename, filename_))) {
             filename_ = filename;
-            tr_ctorSetMetainfoFromFile(ctor_.get(), filename_);
+            ctor_->set_metainfo_from_file(filename_);
             new_file = true;
         }
 
-        tr_ctorSetDownloadDir(ctor_.get(), downloadDir_);
-        tr_ctorSetPaused(ctor_.get(), true);
-        tr_ctorSetDeleteSource(ctor_.get(), false);
+        ctor_->set_download_dir(downloadDir_);
+        ctor_->set_paused(true);
+        ctor_->set_should_delete_source_file(false);
 
         tr_torrent* duplicate_of = nullptr;
         if (tr_torrent* const torrent = tr_torrentNew(ctor_.get(), &duplicate_of); torrent != nullptr) {
@@ -214,7 +215,7 @@ OptionsDialog::OptionsDialog(
     Glib::RefPtr<Gtk::Builder> const& builder,
     Gtk::Window& parent,
     Glib::RefPtr<Session> const& core,
-    std::unique_ptr<tr_torrent_builder, void (*)(tr_torrent_builder*)> ctor)
+    std::unique_ptr<tr_torrent_builder> ctor)
     : Gtk::Dialog(cast_item)
     , impl_(std::make_unique<Impl>(*this, builder, core, std::move(ctor)))
 {
@@ -226,7 +227,7 @@ OptionsDialog::~OptionsDialog() = default;
 std::unique_ptr<OptionsDialog> OptionsDialog::create(
     Gtk::Window& parent,
     Glib::RefPtr<Session> const& core,
-    std::unique_ptr<tr_torrent_builder, void (*)(tr_torrent_builder*)> ctor)
+    std::unique_ptr<tr_torrent_builder> ctor)
 {
     auto const builder = Gtk::Builder::create_from_resource(gtr_get_full_resource_path("OptionsDialog.ui"));
     return std::unique_ptr<OptionsDialog>(
@@ -237,12 +238,12 @@ OptionsDialog::Impl::Impl(
     OptionsDialog& dialog,
     Glib::RefPtr<Gtk::Builder> const& builder,
     Glib::RefPtr<Session> const& core,
-    std::unique_ptr<tr_torrent_builder, void (*)(tr_torrent_builder*)> ctor)
+    std::unique_ptr<tr_torrent_builder> ctor)
     : dialog_(dialog)
     , core_(core)
     , ctor_(std::move(ctor))
-    , filename_{ tr_ctorGetSourceFile(ctor_.get()).value_or(""s) }
-    , downloadDir_{ tr_ctorGetDownloadDir(ctor_.get()).value_or(""s) }
+    , filename_{ ctor_->torrent_filename() }
+    , downloadDir_{ ctor_->download_dir() }
     , file_list_(gtr_get_widget_derived<FileList>(builder, "files_view_scroll", "files_view", core_, 0))
     , run_check_(gtr_get_widget<Gtk::CheckButton>(builder, "start_check"))
     , trash_check_(gtr_get_widget<Gtk::CheckButton>(builder, "trash_check"))
@@ -266,18 +267,13 @@ OptionsDialog::Impl::Impl(
     destination_chooser->signal_selection_changed().connect(
         [this, destination_chooser]() { downloadDirChanged(destination_chooser); });
 
-    bool flag = false;
-    if (!tr_ctorGetPaused(ctor_.get(), &flag)) {
+    auto const paused = ctor_->paused();
+    if (!paused) {
         g_assert_not_reached();
     }
 
-    run_check_->set_active(!flag);
-
-    if (!tr_ctorGetDeleteSource(ctor_.get(), &flag)) {
-        g_assert_not_reached();
-    }
-
-    trash_check_->set_active(flag);
+    run_check_->set_active(!paused.value_or(false));
+    trash_check_->set_active(ctor_->should_delete_source_file());
 
     /* trigger sourceChanged, either directly or indirectly,
      * so that it creates the tor/gtor objects */

@@ -20,6 +20,7 @@
 
 #include <libtransmission/macros.h>
 #include <libtransmission/string-utils.h>
+#include <libtransmission/torrent-builder.h>
 #include <libtransmission/torrent-metainfo.h>
 #include <libtransmission/values.h>
 #include <libtransmission/variant.h>
@@ -657,10 +658,9 @@ static void removeKeRangerRansomware()
     auto* const session = self.fLib;
 
     //load previous transfers
-    tr_torrent_builder* ctor = tr_ctorNew(session);
-    tr_ctorSetPaused(ctor, true); // paused by default; unpause below after checking state history
-    tr_sessionLoadTorrents(session, ctor);
-    tr_ctorFree(ctor);
+    auto builder = tr_torrent_builder{ session };
+    builder.set_paused(true); // paused by default; unpause below after checking state history
+    tr_sessionLoadTorrents(session, &builder);
 
     // process the loaded torrents
     for (auto* tor : tr_sessionGetAllTorrents(session)) {

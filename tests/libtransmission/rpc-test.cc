@@ -766,10 +766,9 @@ TEST_F(RpcTest, recentlyActiveEmptyOnStartup)
         GTEST_SKIP() << fmt::format("Failed to setup torrents and resume dir: {} ({})", error.message(), error.code());
     }
 
-    auto* const ctor = tr_ctorNew(session_);
-    ctor->set_paused(false);
-    EXPECT_EQ(tr_sessionLoadTorrents(session_, ctor), 1U);
-    tr_ctorFree(ctor);
+    auto builder = tr_torrent_builder{ session_ };
+    builder.set_paused(false);
+    EXPECT_EQ(tr_sessionLoadTorrents(session_, &builder), 1U);
 
     // Query recently_active. Should be empty
     auto fields = tr_variant::Vector{};
