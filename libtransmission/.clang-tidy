@@ -1,8 +1,6 @@
 ---
 HeaderFilterRegex: .*/libtransmission/.*
 
-# TODO: Enable `cppcoreguidelines-pro-bounds-pointer-arithmetic` after converting all pointers to std::span
-#
 # PRs welcome to fix & re-enable any of these explicitly-disabled checks
 Checks:
   - bugprone-*
@@ -11,7 +9,7 @@ Checks:
   - -bugprone-implicit-widening-of-multiplication-result
   - -bugprone-throwing-static-initialization
   - cert-*
-  - -cert-err58-cpp # alias of `bugprone-throwing-static-initialization
+  - -cert-err58-cpp # alias of `bugprone-throwing-static-initialization`
   - -cert-int09-c # alias of `readability-enum-initial-value`
   - clang-analyzer-*
   # -clang-analyzer-optin.core.EnumCastOutOfRange: disabled due false <filesystem> warning in file.cc calling
