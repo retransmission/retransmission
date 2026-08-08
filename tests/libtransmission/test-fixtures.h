@@ -22,6 +22,8 @@
 
 #include <gtest/gtest.h>
 
+#include <sigslot/signal.hpp>
+
 #include <libtransmission/transmission.h>
 
 #include <libtransmission/crypto-utils.h> // tr_base64_decode()
@@ -334,18 +336,15 @@ protected:
         auto verified_lock = std::unique_lock(verified_mutex_);
         auto const n_previously_verified = std::size(verified_);
 
-        ctor->set_verify_done_callback([this](tr_torrent* const tor) {
-            auto lambda_verified_lock = std::scoped_lock{ verified_mutex_ };
-            verified_.emplace_back(tor);
-            verified_cv_.notify_one();
-        });
-
         auto* const tor = tr_torrentNew(ctor, nullptr);
-        auto const stop_waiting = [this, tor, n_previously_verified]() {
-            return std::size(verified_) > n_previously_verified && verified_.back() == tor;
-        };
-
         EXPECT_NE(nullptr, tor);
+        if (tor == nullptr) {
+            return nullptr;
+        }
+
+        auto const stop_waiting = [this, tor_id = tor->id(), n_previously_verified]() {
+            return std::size(verified_) > n_previously_verified && verified_.back() == tor_id;
+        };
         verified_cv_.wait_for(verified_lock, 20s, stop_waiting);
         return tor;
     }
@@ -456,8 +455,8 @@ protected:
         auto verified_lock = std::unique_lock(verified_mutex_);
 
         auto const n_previously_verified = std::size(verified_);
-        auto const stop_waiting = [this, tor, n_previously_verified]() {
-            return std::size(verified_) > n_previously_verified && verified_.back() == tor;
+        auto const stop_waiting = [this, tor_id = tor->id(), n_previously_verified]() {
+            return std::size(verified_) > n_previously_verified && verified_.back() == tor_id;
         };
         tr_torrentVerify(tor);
         verified_cv_.wait_for(verified_lock, 20s, stop_waiting);
@@ -479,10 +478,19 @@ protected:
         SandboxedTest::SetUp();
 
         session_ = sessionInit(settings());
+
+        // Every torrent in this session reports here when it finishes verifying,
+        // so blockingTorrentVerify() can wait on any of them.
+        verify_done_tag_ = session_->verify_done_.connect_scoped([this](tr_torrent_id_t const tor_id) {
+            auto const lock = std::scoped_lock{ verified_mutex_ };
+            verified_.emplace_back(tor_id);
+            verified_cv_.notify_one();
+        });
     }
 
     void TearDown() override
     {
+        verify_done_tag_.disconnect();
         sessionClose(session_);
         session_ = nullptr;
         settings_.reset();
@@ -491,9 +499,10 @@ protected:
     }
 
 private:
+    sigslot::scoped_connection verify_done_tag_;
     std::mutex verified_mutex_;
     std::condition_variable verified_cv_;
-    std::vector<tr_torrent*> verified_;
+    std::vector<tr_torrent_id_t> verified_;
 };
 
 } // namespace tr::test

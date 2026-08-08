@@ -993,7 +993,6 @@ tr_torrent* tr_torrentNew(tr_ctor* ctor, tr_torrent** setme_duplicate_of)
     }
 
     auto* const tor = new tr_torrent{ std::move(metainfo) };
-    tor->verify_done_callback_ = ctor->steal_verify_done_callback();
     tor->init(*ctor);
     return tor;
 }
@@ -1610,9 +1609,7 @@ void tr_torrent::VerifyMediator::on_verify_done(bool const aborted)
 
                 tor->recheck_completeness();
 
-                if (tor->verify_done_callback_) {
-                    tor->verify_done_callback_(tor);
-                }
+                session->verify_done_(tor_id);
 
                 if (tor->start_when_stable_) {
                     tor->start(false, !tor->checked_pieces_.has_none());

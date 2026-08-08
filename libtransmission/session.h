@@ -33,6 +33,8 @@
 
 #include <event2/util.h> // for evutil_socket_t
 
+#include <sigslot/signal.hpp>
+
 #include "libtransmission/announce-list.h"
 #include "libtransmission/announcer.h"
 #include "libtransmission/bandwidth.h"
@@ -458,6 +460,9 @@ public:
     {
         return torrent_queue_;
     }
+
+    // We fire this on the session thread after recheck_completeness(), so listeners see the torrent's final state.
+    sigslot::signal<tr_torrent_id_t> verify_done_;
 
     [[nodiscard]] auto unique_lock() const
     {

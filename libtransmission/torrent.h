@@ -12,7 +12,6 @@
 #include <cstddef> // size_t
 #include <cstdint> // uint64_t, uint16_t
 #include <ctime>
-#include <functional>
 #include <memory>
 #include <optional>
 #include <span>
@@ -144,8 +143,6 @@ struct tr_torrent {
     };
 
     using labels_t = std::vector<tr::shared_string>;
-
-    using VerifyDoneCallback = std::function<void(tr_torrent*)>;
 
     class VerifyMediator : public tr_verify_worker::Mediator
     {
@@ -1307,8 +1304,6 @@ private:
     //tr_stat stats_ = {};
 
     Error error_;
-
-    VerifyDoneCallback verify_done_callback_;
 
     // true iff the piece was verified more recently than any of the piece's
     // files' mtimes (file_mtimes_). If checked_pieces_.test(piece) is false,

@@ -187,20 +187,6 @@ public:
         should_delete_source_file_ = should;
     }
 
-    // --
-
-    [[nodiscard]] auto steal_verify_done_callback() noexcept
-    {
-        auto tmp = tr_torrent::VerifyDoneCallback{};
-        std::swap(verify_done_callback_, tmp);
-        return tmp;
-    }
-
-    void set_verify_done_callback(tr_torrent::VerifyDoneCallback&& callback) noexcept
-    {
-        verify_done_callback_ = std::move(callback);
-    }
-
     // ---
 
     [[nodiscard]] constexpr auto const& sequential_download() const noexcept
@@ -231,8 +217,6 @@ private:
     std::optional<tr_piece_index_t> sequential_download_from_piece_;
     std::optional<uint16_t> peer_limit_;
     std::string download_dir_;
-
-    tr_torrent::VerifyDoneCallback verify_done_callback_;
 
     tr_torrent::labels_t labels_;
 
