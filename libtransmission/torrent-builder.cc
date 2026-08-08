@@ -14,10 +14,12 @@
 
 #include "libtransmission/torrent-builder.h"
 
+#include "libtransmission/bandwidth.h" // tr_isPriority()
 #include "libtransmission/error.h"
 #include "libtransmission/file-utils.h"
 #include "libtransmission/session.h"
 #include "libtransmission/torrent.h"
+#include "libtransmission/tr-assert.h"
 #include "libtransmission/types.h"
 
 using namespace std::literals;
@@ -45,16 +47,15 @@ bool tr_torrent_builder::set_metainfo_from_file(std::string_view const filename,
         return false;
     }
 
-    if (!tr_file_read(filename, contents_, error)) {
+    if (!metainfo_.parse_torrent_file(filename, &contents_, error)) {
         return false;
     }
 
     torrent_filename_ = filename;
-    auto const contents_sv = std::string_view{ std::data(contents_), std::size(contents_) };
-    return metainfo_.parse_benc(contents_sv, error);
+    return true;
 }
 
-std::string const& tr_torrent_builder::torrent_filename() const noexcept
+std::string const& tr_torrent_builder::source_filename() const noexcept
 {
     return torrent_filename_;
 }
@@ -69,6 +70,7 @@ bool tr_torrent_builder::set_metainfo(std::string_view const contents, tr_error*
 bool tr_torrent_builder::set_metainfo_from_magnet_link(std::string_view const magnet_link, tr_error* const error)
 {
     torrent_filename_.clear();
+    contents_.clear();
     metainfo_ = {};
     return metainfo_.parseMagnet(magnet_link, error);
 }
@@ -78,11 +80,9 @@ tr_torrent_metainfo const& tr_torrent_builder::metainfo() const noexcept
     return metainfo_;
 }
 
-tr_torrent_metainfo tr_torrent_builder::steal_metainfo()
+tr_torrent_metainfo tr_torrent_builder::steal_metainfo() noexcept
 {
-    auto tmp = tr_torrent_metainfo{};
-    std::swap(metainfo_, tmp);
-    return tmp;
+    return std::exchange(metainfo_, {});
 }
 
 bool tr_torrent_builder::save(std::string_view const filename, tr_error* const error) const
@@ -91,7 +91,7 @@ bool tr_torrent_builder::save(std::string_view const filename, tr_error* const e
 
     if (std::empty(contents_)) {
         if (error != nullptr) {
-            error->set(EINVAL, "torrent ctor has no contents to save"sv);
+            error->set(EINVAL, "torrent builder has no contents to save"sv);
         }
 
         return false;
@@ -149,7 +149,7 @@ tr_priority_t tr_torrent_builder::bandwidth_priority() const noexcept
 
 void tr_torrent_builder::set_bandwidth_priority(tr_priority_t const priority) noexcept
 {
-    if (priority == TR_PRI_LOW || priority == TR_PRI_NORMAL || priority == TR_PRI_HIGH) {
+    if (tr_isPriority(priority)) {
         priority_ = priority;
     }
 }
@@ -185,7 +185,7 @@ tr_labels_t const& tr_torrent_builder::labels() const noexcept
     return labels_;
 }
 
-void tr_torrent_builder::set_labels(tr_labels_t&& labels)
+void tr_torrent_builder::set_labels(tr_labels_t&& labels) noexcept
 {
     labels_ = std::move(labels);
 }
@@ -228,7 +228,7 @@ void tr_torrent_builder::set_should_delete_source_file(bool const should) noexce
 
 // ---
 
-std::optional<bool> const& tr_torrent_builder::sequential_download() const noexcept
+std::optional<bool> tr_torrent_builder::sequential_download() const noexcept
 {
     return sequential_download_;
 }
@@ -238,7 +238,7 @@ void tr_torrent_builder::set_sequential_download(bool const seq) noexcept
     sequential_download_ = seq;
 }
 
-std::optional<tr_piece_index_t> const& tr_torrent_builder::sequential_download_from_piece() const noexcept
+std::optional<tr_piece_index_t> tr_torrent_builder::sequential_download_from_piece() const noexcept
 {
     return sequential_download_from_piece_;
 }

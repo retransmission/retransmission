@@ -124,7 +124,7 @@ void OptionsDialog::Impl::addResponseCB(int response)
 
 void OptionsDialog::Impl::updateTorrent()
 {
-    bool const isLocalFile = !std::empty(ctor_->torrent_filename());
+    bool const isLocalFile = !std::empty(ctor_->source_filename());
     trash_check_->set_sensitive(isLocalFile);
 
     if (tor_ == nullptr) {
@@ -242,7 +242,7 @@ OptionsDialog::Impl::Impl(
     : dialog_(dialog)
     , core_(core)
     , ctor_(std::move(ctor))
-    , filename_{ ctor_->torrent_filename() }
+    , filename_{ ctor_->source_filename() }
     , downloadDir_{ ctor_->download_dir() }
     , file_list_(gtr_get_widget_derived<FileList>(builder, "files_view_scroll", "files_view", core_, 0))
     , run_check_(gtr_get_widget<Gtk::CheckButton>(builder, "start_check"))

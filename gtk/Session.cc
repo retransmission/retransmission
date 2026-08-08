@@ -650,7 +650,7 @@ Glib::RefPtr<Torrent> Session::Impl::create_new_torrent(tr_torrent_builder* ctor
     tr_torrent* const tor = tr_torrentNew(ctor, nullptr);
 
     if (tor != nullptr && do_trash) {
-        if (auto const& source = ctor->torrent_filename(); !std::empty(source)) {
+        if (auto const& source = ctor->source_filename(); !std::empty(source)) {
             // #1294: don't delete the .torrent file if it's our internal copy
             std::string const config_dir = tr_sessionGetConfigDir(session_);
             bool const is_internal = source.starts_with(config_dir);
@@ -674,7 +674,7 @@ void Session::Impl::add_ctor(tr_torrent_builder* ctor, bool do_prompt, bool do_n
         /* don't complain about torrent files in the watch directory
          * that have already been added... that gets annoying and we
          * don't want to be nagging users to clean up their watch dirs */
-        if (std::empty(ctor->torrent_filename()) || !adding_from_watch_dir_) {
+        if (std::empty(ctor->source_filename()) || !adding_from_watch_dir_) {
             signal_add_error_.emit(ERR_ADD_TORRENT_DUP, metainfo.name().c_str());
         }
 
