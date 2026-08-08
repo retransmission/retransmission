@@ -193,7 +193,7 @@ private:
 
     void on_core_busy(bool busy);
     void on_core_error(Session::ErrorCode code, Glib::ustring const& msg);
-    void on_add_torrent(tr_torrent_builder* ctor);
+    void on_add_torrent(tr_torrent_builder* builder);
     void on_prefs_changed(tr_quark key);
 
     [[nodiscard]] std::vector<tr_torrent_id_t> get_selected_torrent_ids() const;
@@ -1030,9 +1030,9 @@ void Application::Impl::on_main_window_focus_in()
     }
 }
 
-void Application::Impl::on_add_torrent(tr_torrent_builder* ctor)
+void Application::Impl::on_add_torrent(tr_torrent_builder* builder)
 {
-    auto w = std::shared_ptr<OptionsDialog>(OptionsDialog::create(*wind_, core_, std::unique_ptr<tr_torrent_builder>(ctor)));
+    auto w = std::shared_ptr<OptionsDialog>(OptionsDialog::create(*wind_, core_, std::unique_ptr<tr_torrent_builder>(builder)));
 
     gtr_window_on_close(*w, [w]() mutable { w.reset(); });
 

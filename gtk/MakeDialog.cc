@@ -242,10 +242,10 @@ MakeProgressDialog::~MakeProgressDialog()
 
 void MakeProgressDialog::addTorrent()
 {
-    auto* const ctor = new tr_torrent_builder{ core_->get_session() };
-    ctor->set_metainfo_from_file(target_);
-    ctor->set_download_dir(Glib::path_get_dirname(builder_.top()));
-    core_->add_ctor(ctor);
+    auto* const torrent_builder = new tr_torrent_builder{ core_->get_session() };
+    torrent_builder->set_metainfo_from_file(target_);
+    torrent_builder->set_download_dir(Glib::path_get_dirname(builder_.top()));
+    core_->add_builder(torrent_builder);
 }
 
 void MakeProgressDialog::onProgressDialogResponse(int response)

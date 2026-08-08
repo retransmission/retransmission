@@ -53,7 +53,7 @@ public:
         OptionsDialog& dialog,
         Glib::RefPtr<Gtk::Builder> const& builder,
         Glib::RefPtr<Session> const& core,
-        std::unique_ptr<tr_torrent_builder> ctor);
+        std::unique_ptr<tr_torrent_builder> torrent_builder);
     Impl(Impl&&) = delete;
     Impl(Impl const&) = delete;
     Impl& operator=(Impl&&) = delete;
@@ -72,7 +72,7 @@ private:
 private:
     OptionsDialog& dialog_;
     Glib::RefPtr<Session> const core_;
-    std::unique_ptr<tr_torrent_builder> ctor_;
+    std::unique_ptr<tr_torrent_builder> torrent_builder_;
 
     std::string filename_;
     std::string downloadDir_;
@@ -124,7 +124,7 @@ void OptionsDialog::Impl::addResponseCB(int response)
 
 void OptionsDialog::Impl::updateTorrent()
 {
-    bool const isLocalFile = !std::empty(ctor_->source_filename());
+    bool const isLocalFile = !std::empty(torrent_builder_->source_filename());
     trash_check_->set_sensitive(isLocalFile);
 
     if (tor_ == nullptr) {
@@ -155,15 +155,15 @@ void OptionsDialog::Impl::sourceChanged(PathButton* b)
 
         if (!filename.empty() && (filename_.empty() || !tr_sys_path_is_same(filename, filename_))) {
             filename_ = filename;
-            ctor_->set_metainfo_from_file(filename_);
+            torrent_builder_->set_metainfo_from_file(filename_);
             new_file = true;
         }
 
-        ctor_->set_download_dir(downloadDir_);
-        ctor_->set_paused(true);
+        torrent_builder_->set_download_dir(downloadDir_);
+        torrent_builder_->set_paused(true);
 
         tr_torrent* duplicate_of = nullptr;
-        if (tr_torrent* const torrent = tr_torrentNew(ctor_.get(), &duplicate_of); torrent != nullptr) {
+        if (tr_torrent* const torrent = tr_torrentNew(torrent_builder_.get(), &duplicate_of); torrent != nullptr) {
             removeOldTorrent();
             tor_ = torrent;
         } else if (new_file) {
@@ -214,9 +214,9 @@ OptionsDialog::OptionsDialog(
     Glib::RefPtr<Gtk::Builder> const& builder,
     Gtk::Window& parent,
     Glib::RefPtr<Session> const& core,
-    std::unique_ptr<tr_torrent_builder> ctor)
+    std::unique_ptr<tr_torrent_builder> torrent_builder)
     : Gtk::Dialog(cast_item)
-    , impl_(std::make_unique<Impl>(*this, builder, core, std::move(ctor)))
+    , impl_(std::make_unique<Impl>(*this, builder, core, std::move(torrent_builder)))
 {
     set_transient_for(parent);
 }
@@ -226,23 +226,23 @@ OptionsDialog::~OptionsDialog() = default;
 std::unique_ptr<OptionsDialog> OptionsDialog::create(
     Gtk::Window& parent,
     Glib::RefPtr<Session> const& core,
-    std::unique_ptr<tr_torrent_builder> ctor)
+    std::unique_ptr<tr_torrent_builder> torrent_builder)
 {
     auto const builder = Gtk::Builder::create_from_resource(gtr_get_full_resource_path("OptionsDialog.ui"));
     return std::unique_ptr<OptionsDialog>(
-        gtr_get_widget_derived<OptionsDialog>(builder, "OptionsDialog", parent, core, std::move(ctor)));
+        gtr_get_widget_derived<OptionsDialog>(builder, "OptionsDialog", parent, core, std::move(torrent_builder)));
 }
 
 OptionsDialog::Impl::Impl(
     OptionsDialog& dialog,
     Glib::RefPtr<Gtk::Builder> const& builder,
     Glib::RefPtr<Session> const& core,
-    std::unique_ptr<tr_torrent_builder> ctor)
+    std::unique_ptr<tr_torrent_builder> torrent_builder)
     : dialog_(dialog)
     , core_(core)
-    , ctor_(std::move(ctor))
-    , filename_{ ctor_->source_filename() }
-    , downloadDir_{ ctor_->download_dir() }
+    , torrent_builder_(std::move(torrent_builder))
+    , filename_{ torrent_builder_->source_filename() }
+    , downloadDir_{ torrent_builder_->download_dir() }
     , file_list_(gtr_get_widget_derived<FileList>(builder, "files_view_scroll", "files_view", core_, 0))
     , run_check_(gtr_get_widget<Gtk::CheckButton>(builder, "start_check"))
     , trash_check_(gtr_get_widget<Gtk::CheckButton>(builder, "trash_check"))
@@ -266,7 +266,7 @@ OptionsDialog::Impl::Impl(
     destination_chooser->signal_selection_changed().connect(
         [this, destination_chooser]() { downloadDirChanged(destination_chooser); });
 
-    auto const paused = ctor_->paused();
+    auto const paused = torrent_builder_->paused();
     if (!paused) {
         g_assert_not_reached();
     }

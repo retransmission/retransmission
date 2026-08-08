@@ -1457,12 +1457,12 @@ void blocklistUpdate(tr_session* session, tr_variant::Map const& /*args_in*/, st
 
 // ---
 
-void add_torrent_impl(struct tr_rpc_idle_data* data, tr_torrent_builder& ctor)
+void add_torrent_impl(struct tr_rpc_idle_data* data, tr_torrent_builder& builder)
 {
     using namespace JsonRpc;
 
     tr_torrent* duplicate_of = nullptr;
-    tr_torrent* tor = tr_torrentNew(&ctor, &duplicate_of);
+    tr_torrent* tor = tr_torrentNew(&builder, &duplicate_of);
 
     if (tor == nullptr && duplicate_of == nullptr) {
         tr_rpc_idle_done(data, Error::CORRUPT_TORRENT, {});
@@ -1492,12 +1492,12 @@ void add_torrent_impl(struct tr_rpc_idle_data* data, tr_torrent_builder& ctor)
 struct add_torrent_idle_data {
     add_torrent_idle_data(tr_rpc_idle_data* data_in, tr_torrent_builder&& ctor_in)
         : data{ data_in }
-        , ctor{ std::move(ctor_in) }
+        , builder{ std::move(ctor_in) }
     {
     }
 
     tr_rpc_idle_data* data;
-    tr_torrent_builder ctor;
+    tr_torrent_builder builder;
 };
 
 void onMetadataFetched(tr_web::FetchResponse const& web_response)
@@ -1514,8 +1514,8 @@ void onMetadataFetched(tr_web::FetchResponse const& web_response)
 
     if (status == 200 || status == 221) /* http or ftp success.. */
     {
-        data->ctor.set_metainfo(body);
-        add_torrent_impl(data->data, data->ctor);
+        data->builder.set_metainfo(body);
+        add_torrent_impl(data->data, data->builder);
     } else {
         tr_rpc_idle_done(
             data->data,
@@ -1568,51 +1568,51 @@ void torrentAdd(tr_session* session, tr_variant::Map const& args_in, tr_rpc_idle
         return;
     }
 
-    auto ctor = tr_torrent_builder{ session };
+    auto builder = tr_torrent_builder{ session };
 
     // set the optional parameters
 
     auto const cookies = args_in.value_if<std::string_view>(TR_KEY_cookies).value_or(""sv);
 
     if (download_dir && !std::empty(*download_dir)) {
-        ctor.set_download_dir(*download_dir);
+        builder.set_download_dir(*download_dir);
     }
 
     if (auto const val = args_in.value_if<bool>(TR_KEY_paused)) {
-        ctor.set_paused(*val);
+        builder.set_paused(*val);
     }
 
     if (auto const val = args_in.value_if<int64_t>(TR_KEY_peer_limit); val) {
-        ctor.set_peer_limit(static_cast<uint16_t>(*val));
+        builder.set_peer_limit(static_cast<uint16_t>(*val));
     }
 
     if (auto const val = args_in.value_if<int64_t>(TR_KEY_bandwidth_priority); val) {
-        ctor.set_bandwidth_priority(static_cast<tr_priority_t>(*val));
+        builder.set_bandwidth_priority(static_cast<tr_priority_t>(*val));
     }
 
     if (auto const val = args_in.find_if<tr_variant::Vector>(TR_KEY_files_unwanted); val != nullptr) {
         auto const files = file_list_from_list(*val);
-        ctor.set_files_wanted(files, false);
+        builder.set_files_wanted(files, false);
     }
 
     if (auto const val = args_in.find_if<tr_variant::Vector>(TR_KEY_files_wanted); val != nullptr) {
         auto const files = file_list_from_list(*val);
-        ctor.set_files_wanted(files, true);
+        builder.set_files_wanted(files, true);
     }
 
     if (auto const val = args_in.find_if<tr_variant::Vector>(TR_KEY_priority_low); val != nullptr) {
         auto const files = file_list_from_list(*val);
-        ctor.set_file_priorities(files, TR_PRI_LOW);
+        builder.set_file_priorities(files, TR_PRI_LOW);
     }
 
     if (auto const* val = args_in.find_if<tr_variant::Vector>(TR_KEY_priority_normal); val != nullptr) {
         auto const files = file_list_from_list(*val);
-        ctor.set_file_priorities(files, TR_PRI_NORMAL);
+        builder.set_file_priorities(files, TR_PRI_NORMAL);
     }
 
     if (auto const* val = args_in.find_if<tr_variant::Vector>(TR_KEY_priority_high); val != nullptr) {
         auto const files = file_list_from_list(*val);
-        ctor.set_file_priorities(files, TR_PRI_HIGH);
+        builder.set_file_priorities(files, TR_PRI_HIGH);
     }
 
     if (auto const* val = args_in.find_if<tr_variant::Vector>(TR_KEY_labels); val != nullptr) {
@@ -1623,21 +1623,21 @@ void torrentAdd(tr_session* session, tr_variant::Map const& args_in, tr_rpc_idle
             return;
         }
 
-        ctor.set_labels(std::move(labels));
+        builder.set_labels(std::move(labels));
     }
 
     if (auto const val = args_in.value_if<bool>(TR_KEY_sequential_download); val) {
-        ctor.set_sequential_download(*val);
+        builder.set_sequential_download(*val);
     }
 
     if (auto const val = args_in.value_if<int64_t>(TR_KEY_sequential_download_from_piece); val) {
-        ctor.set_sequential_download_from_piece(*val);
+        builder.set_sequential_download_from_piece(*val);
     }
 
     tr_logAddTrace(fmt::format("torrentAdd: filename is '{}'", filename));
 
     if (isCurlURL(filename)) {
-        auto* const d = new add_torrent_idle_data{ idle_data, std::move(ctor) };
+        auto* const d = new add_torrent_idle_data{ idle_data, std::move(builder) };
         auto options = tr_web::FetchOptions{
             std::string{ filename },
             [](tr_web::FetchResponse const& r) { onMetadataFetched(r); },
@@ -1651,11 +1651,11 @@ void torrentAdd(tr_session* session, tr_variant::Map const& args_in, tr_rpc_idle
     auto ok = false;
 
     if (std::empty(filename)) {
-        ok = ctor.set_metainfo(tr_base64_decode(metainfo_base64));
+        ok = builder.set_metainfo(tr_base64_decode(metainfo_base64));
     } else if (tr_sys_path_exists(filename)) {
-        ok = ctor.set_metainfo_from_file(filename);
+        ok = builder.set_metainfo_from_file(filename);
     } else {
-        ok = ctor.set_metainfo_from_magnet_link(filename);
+        ok = builder.set_metainfo_from_magnet_link(filename);
     }
 
     if (!ok) {
@@ -1663,7 +1663,7 @@ void torrentAdd(tr_session* session, tr_variant::Map const& args_in, tr_rpc_idle
         return;
     }
 
-    add_torrent_impl(idle_data, ctor);
+    add_torrent_impl(idle_data, builder);
 }
 
 // ---

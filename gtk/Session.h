@@ -102,8 +102,8 @@ public:
     bool add_from_url(Glib::ustring const& url);
 
     /** @brief Add a torrent.
-        @param ctor this function assumes ownership of the ctor */
-    void add_ctor(tr_torrent_builder* ctor);
+        @param builder this function assumes ownership of the builder */
+    void add_builder(tr_torrent_builder* builder);
 
     /** Add a torrent. */
     void add_torrent(Glib::RefPtr<Torrent> const& torrent, bool do_notify);

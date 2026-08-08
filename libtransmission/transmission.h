@@ -438,7 +438,7 @@ void tr_sessionSetCompleteVerifyEnabled(tr_session* session, bool enabled);
  *
  * @return the number of torrents in the session
  */
-size_t tr_sessionLoadTorrents(tr_session* session, tr_torrent_builder* ctor);
+size_t tr_sessionLoadTorrents(tr_session* session, tr_torrent_builder* builder);
 
 /**
  * Get pointers to all the torrents in a session.
@@ -532,11 +532,11 @@ void tr_blocklistSetUpdatesEnabled(tr_session* session, bool enabled);
  *
  * Returns a pointer to the torrent on success, or nullptr on failure.
  *
- * @param ctor               the builder struct
+ * @param builder               the builder struct
  * @param setme_duplicate_of If the torrent couldn't be created because it's a duplicate,
  *                           this is set to point to the original torrent.
  */
-[[nodiscard]] tr_torrent* tr_torrentNew(tr_torrent_builder* ctor, tr_torrent** setme_duplicate_of);
+[[nodiscard]] tr_torrent* tr_torrentNew(tr_torrent_builder* builder, tr_torrent** setme_duplicate_of);
 
 /** @} */
 

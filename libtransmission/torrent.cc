@@ -877,9 +877,9 @@ namespace
 }
 } // namespace
 
-void tr_torrent::init(tr_torrent_builder const& ctor)
+void tr_torrent::init(tr_torrent_builder const& builder)
 {
-    session = ctor.session();
+    session = builder.session();
     TR_ASSERT(session != nullptr);
     auto const lock = unique_lock();
 
@@ -888,16 +888,16 @@ void tr_torrent::init(tr_torrent_builder const& ctor)
     on_metainfo_updated();
 
     if (tr_sessionIsIncompleteDirEnabled(session)) {
-        auto const& dir = ctor.incomplete_dir();
+        auto const& dir = builder.incomplete_dir();
         incomplete_dir_ = !std::empty(dir) ? dir : session->incompleteDir();
     }
 
     bandwidth().set_parent(&session->top_bandwidth_);
-    bandwidth().set_priority(ctor.bandwidth_priority());
+    bandwidth().set_priority(builder.bandwidth_priority());
     error().clear();
     finished_seeding_by_idle_ = false;
 
-    set_labels(ctor.labels());
+    set_labels(builder.labels());
 
     session->addTorrent(this);
 
@@ -927,7 +927,7 @@ void tr_torrent::init(tr_torrent_builder const& ctor)
         // Settings arrive in three layers, each overwriting the one before it:
         // the session defaults above, then what the caller asked for, then the
         // resume file for whatever the caller left unset.
-        auto const from_builder = apply_builder(this, resume_helper, tr_resume::All, ctor);
+        auto const from_builder = apply_builder(this, resume_helper, tr_resume::All, builder);
         loaded = from_builder | tr_resume::load(this, resume_helper, tr_resume::All & ~from_builder);
         set_dirty(was_dirty);
         tr_torrent_metainfo::migrate_file(session->torrentDir(), name(), info_hash_string(), ".torrent"sv);
@@ -935,8 +935,8 @@ void tr_torrent::init(tr_torrent_builder const& ctor)
 
     completeness_ = completion_.status();
 
-    ctor.init_torrent_priorities(*this);
-    ctor.init_torrent_wanted(*this);
+    builder.init_torrent_priorities(*this);
+    builder.init_torrent_wanted(*this);
 
     refresh_current_dir();
 
@@ -978,7 +978,7 @@ void tr_torrent::init(tr_torrent_builder const& ctor)
 
         if (has_metainfo()) // torrent file
         {
-            ctor.save(file_path, &error);
+            builder.save(file_path, &error);
         } else // magnet link
         {
             auto const magnet_link = magnet();
@@ -1027,14 +1027,14 @@ void tr_torrent::set_metainfo(tr_torrent_metainfo tm)
     this->on_announce_list_changed();
 }
 
-tr_torrent* tr_torrentNew(tr_torrent_builder* ctor, tr_torrent** setme_duplicate_of)
+tr_torrent* tr_torrentNew(tr_torrent_builder* builder, tr_torrent** setme_duplicate_of)
 {
-    TR_ASSERT(ctor != nullptr);
-    auto* const session = ctor->session();
+    TR_ASSERT(builder != nullptr);
+    auto* const session = builder->session();
     TR_ASSERT(session != nullptr);
 
     // is the metainfo valid?
-    auto metainfo = ctor->steal_metainfo();
+    auto metainfo = builder->steal_metainfo();
     if (std::empty(metainfo.info_hash_string())) {
         return nullptr;
     }
@@ -1049,7 +1049,7 @@ tr_torrent* tr_torrentNew(tr_torrent_builder* ctor, tr_torrent** setme_duplicate
     }
 
     auto* const tor = new tr_torrent{ std::move(metainfo) };
-    tor->init(*ctor);
+    tor->init(*builder);
     return tor;
 }
 

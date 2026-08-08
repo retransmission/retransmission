@@ -331,12 +331,12 @@ private:
 protected:
     enum class ZeroTorrentState : uint8_t { NoFiles, Partial, Complete };
 
-    [[nodiscard]] tr_torrent* createTorrentAndWaitForVerifyDone(tr_torrent_builder* ctor)
+    [[nodiscard]] tr_torrent* createTorrentAndWaitForVerifyDone(tr_torrent_builder* builder)
     {
         auto verified_lock = std::unique_lock(verified_mutex_);
         auto const n_previously_verified = std::size(verified_);
 
-        auto* const tor = tr_torrentNew(ctor, nullptr);
+        auto* const tor = tr_torrentNew(builder, nullptr);
         EXPECT_NE(nullptr, tor);
         if (tor == nullptr) {
             return nullptr;
@@ -374,7 +374,7 @@ protected:
             "SbRhMVL9e9umo/8KT9ZCS1GIQxhJtGExUv1726aj/wpP1kJLOlf5A+Tz30nMBVuNM2hpV3wg/103"
             "OnByaXZhdGVpMGVlZQ==";
 
-        // create the torrent ctor
+        // create the torrent builder
         auto const benc = tr_base64_decode(BencBase64);
         EXPECT_LT(0U, std::size(benc));
         auto builder = tr_torrent_builder{ session_ };

@@ -88,7 +88,7 @@ public:
     void torrents_added();
 
     void add_files(std::vector<Glib::RefPtr<Gio::File>> const& files, bool do_start, bool do_prompt, bool do_notify);
-    void add_ctor(tr_torrent_builder* ctor, bool do_prompt, bool do_notify);
+    void add_builder(tr_torrent_builder* builder, bool do_prompt, bool do_notify);
     void add_torrent(Glib::RefPtr<Torrent> const& torrent, bool do_notify);
     bool add_from_url(Glib::ustring const& url);
 
@@ -150,11 +150,11 @@ private:
     void add_file_async_callback(
         Glib::RefPtr<Gio::File> const& file,
         Glib::RefPtr<Gio::AsyncResult>& result,
-        tr_torrent_builder* ctor,
+        tr_torrent_builder* builder,
         bool do_prompt,
         bool do_notify);
 
-    Glib::RefPtr<Torrent> create_new_torrent(tr_torrent_builder* ctor);
+    Glib::RefPtr<Torrent> create_new_torrent(tr_torrent_builder* builder);
 
     void update_sleep_inhibitor();
 
@@ -639,15 +639,15 @@ void Session::Impl::add_torrent(Glib::RefPtr<Torrent> const& torrent, bool do_no
     }
 }
 
-Glib::RefPtr<Torrent> Session::Impl::create_new_torrent(tr_torrent_builder* ctor)
+Glib::RefPtr<Torrent> Session::Impl::create_new_torrent(tr_torrent_builder* builder)
 {
     // let the gtk client handle the removal, since libT
     // doesn't have any concept of the glib trash API
     auto const do_trash = tr_sessionGetDeleteSource(session_);
-    tr_torrent* const tor = tr_torrentNew(ctor, nullptr);
+    tr_torrent* const tor = tr_torrentNew(builder, nullptr);
 
     if (tor != nullptr && do_trash) {
-        if (auto const& source = ctor->source_filename(); !std::empty(source)) {
+        if (auto const& source = builder->source_filename(); !std::empty(source)) {
             // #1294: don't delete the .torrent file if it's our internal copy
             std::string const config_dir = tr_sessionGetConfigDir(session_);
             bool const is_internal = source.starts_with(config_dir);
@@ -660,9 +660,9 @@ Glib::RefPtr<Torrent> Session::Impl::create_new_torrent(tr_torrent_builder* ctor
     return Torrent::create(tor);
 }
 
-void Session::Impl::add_ctor(tr_torrent_builder* ctor, bool do_prompt, bool do_notify)
+void Session::Impl::add_builder(tr_torrent_builder* builder, bool do_prompt, bool do_notify)
 {
-    auto const& metainfo = ctor->metainfo();
+    auto const& metainfo = builder->metainfo();
     if (std::empty(metainfo.info_hash_string())) {
         return;
     }
@@ -671,49 +671,49 @@ void Session::Impl::add_ctor(tr_torrent_builder* ctor, bool do_prompt, bool do_n
         /* don't complain about torrent files in the watch directory
          * that have already been added... that gets annoying and we
          * don't want to be nagging users to clean up their watch dirs */
-        if (std::empty(ctor->source_filename()) || !adding_from_watch_dir_) {
+        if (std::empty(builder->source_filename()) || !adding_from_watch_dir_) {
             signal_add_error_.emit(ERR_ADD_TORRENT_DUP, metainfo.name().c_str());
         }
 
-        delete ctor;
+        delete builder;
         return;
     }
 
     if (!do_prompt) {
-        add_torrent(create_new_torrent(ctor), do_notify);
-        delete ctor;
+        add_torrent(create_new_torrent(builder), do_notify);
+        delete builder;
         return;
     }
 
-    signal_add_prompt_.emit(ctor);
+    signal_add_prompt_.emit(builder);
 }
 
 namespace
 {
 
-void core_apply_defaults(tr_torrent_builder* ctor)
+void core_apply_defaults(tr_torrent_builder* builder)
 {
-    if (!ctor->paused()) {
-        ctor->set_paused(!gtr_pref_flag_get(TR_KEY_start_added_torrents));
+    if (!builder->paused()) {
+        builder->set_paused(!gtr_pref_flag_get(TR_KEY_start_added_torrents));
     }
 
-    if (!ctor->peer_limit()) {
-        ctor->set_peer_limit(gtr_pref_int_get<size_t>(TR_KEY_peer_limit_per_torrent));
+    if (!builder->peer_limit()) {
+        builder->set_peer_limit(gtr_pref_int_get<size_t>(TR_KEY_peer_limit_per_torrent));
     }
 
-    if (std::empty(ctor->download_dir())) {
-        ctor->set_download_dir(gtr_pref_string_get(TR_KEY_download_dir));
+    if (std::empty(builder->download_dir())) {
+        builder->set_download_dir(gtr_pref_string_get(TR_KEY_download_dir));
     }
 }
 
 } // namespace
 
-void Session::add_ctor(tr_torrent_builder* ctor)
+void Session::add_builder(tr_torrent_builder* builder)
 {
     bool const do_notify = false;
     bool const do_prompt = gtr_pref_flag_get(TR_KEY_show_options_window);
-    core_apply_defaults(ctor);
-    impl_->add_ctor(ctor, do_prompt, do_notify);
+    core_apply_defaults(builder);
+    impl_->add_builder(builder, do_prompt, do_notify);
 }
 
 /***
@@ -723,7 +723,7 @@ void Session::add_ctor(tr_torrent_builder* ctor)
 void Session::Impl::add_file_async_callback(
     Glib::RefPtr<Gio::File> const& file,
     Glib::RefPtr<Gio::AsyncResult>& result,
-    tr_torrent_builder* ctor,
+    tr_torrent_builder* builder,
     bool do_prompt,
     bool do_notify)
 {
@@ -733,10 +733,10 @@ void Session::Impl::add_file_async_callback(
 
         if (!file->load_contents_finish(result, contents, length)) {
             gtr_message(fmt::format(fmt::runtime(_("Couldn't read '{path}'")), fmt::arg("path", file->get_parse_name())));
-        } else if (ctor->set_metainfo(contents != nullptr ? std::string_view{ contents, length } : std::string_view{})) {
-            add_ctor(ctor, do_prompt, do_notify);
+        } else if (builder->set_metainfo(contents != nullptr ? std::string_view{ contents, length } : std::string_view{})) {
+            add_builder(builder, do_prompt, do_notify);
         } else {
-            delete ctor;
+            delete builder;
         }
     } catch (Glib::Error const& e) {
         gtr_message(
@@ -768,34 +768,34 @@ bool Session::Impl::add(Glib::ustring const& name_in, bool const do_start, bool 
     }
 
     bool handled = false;
-    auto* ctor = new tr_torrent_builder{ session };
-    core_apply_defaults(ctor);
-    ctor->set_paused(!do_start);
+    auto* builder = new tr_torrent_builder{ session };
+    core_apply_defaults(builder);
+    builder->set_paused(!do_start);
 
     bool loaded = false;
     auto file = Gio::File::create_for_parse_name(name);
     if (auto const path = file->get_path(); !std::empty(path)) {
         // try to treat it as a file...
-        loaded = ctor->set_metainfo_from_file(path);
+        loaded = builder->set_metainfo_from_file(path);
     }
 
     if (!loaded) {
         // try to treat it as a magnet link...
-        loaded = ctor->set_metainfo_from_magnet_link(name.raw());
+        loaded = builder->set_metainfo_from_magnet_link(name.raw());
     }
 
     // if we could make sense of it, add it
     if (loaded) {
         handled = true;
-        add_ctor(ctor, do_prompt, do_notify);
+        add_builder(builder, do_prompt, do_notify);
     } else if (tr_urlIsValid(file->get_uri())) {
         handled = true;
         inc_busy();
-        file->load_contents_async([this, file, ctor, do_prompt, do_notify](auto& result) {
-            add_file_async_callback(file, result, ctor, do_prompt, do_notify);
+        file->load_contents_async([this, file, builder, do_prompt, do_notify](auto& result) {
+            add_file_async_callback(file, result, builder, do_prompt, do_notify);
         });
     } else {
-        delete ctor;
+        delete builder;
         std::cerr << fmt::format(
                          fmt::runtime(_("Couldn't add torrent file '{path}'")),
                          fmt::arg("path", file->get_parse_name()))

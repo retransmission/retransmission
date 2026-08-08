@@ -132,7 +132,7 @@ TEST_F(TorrentMetainfoTest, AndroidTorrent)
     EXPECT_EQ(26583, metainfo.info_dict_size());
 }
 
-TEST_F(TorrentMetainfoTest, ctorSaveContents)
+TEST_F(TorrentMetainfoTest, builderSaveContents)
 {
     auto const sandbox = tr::test::Sandbox::createSandbox(::testing::TempDir(), TR_PROJ_APPNAME "-test-XXXXXX");
     auto const src_filename = tr_pathbuf{ LIBTRANSMISSION_TEST_ASSETS_DIR, "/Android-x86 8.1 r6 iso.torrent"sv };
