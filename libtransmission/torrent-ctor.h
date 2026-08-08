@@ -17,7 +17,6 @@
 
 #include "libtransmission/macros.h"
 #include "libtransmission/torrent-metainfo.h"
-#include "libtransmission/torrent.h"
 #include "libtransmission/types.h"
 
 struct tr_error;

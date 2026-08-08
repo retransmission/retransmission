@@ -3,11 +3,12 @@
 // or any future license endorsed by Mnemosaic LLC.
 // License text can be found in the licenses/ folder.
 
-#include "libtransmission/transmission.h"
-
 #include "libtransmission/torrent-ctor.h"
+
 #include "libtransmission/error.h"
 #include "libtransmission/file-utils.h"
+#include "libtransmission/session.h"
+#include "libtransmission/torrent.h"
 #include "libtransmission/types.h"
 
 using namespace std::literals;
