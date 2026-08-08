@@ -342,7 +342,7 @@ namespace
 {
 namespace script_helpers
 {
-[[nodiscard]] std::string build_labels_string(tr_torrent::labels_t const& labels)
+[[nodiscard]] std::string build_labels_string(tr_labels_t const& labels)
 {
     auto buf = std::stringstream{};
 
@@ -1756,7 +1756,7 @@ void tr_torrentSetFileDLs(tr_torrent* const tor, std::span<tr_file_index_t const
 
 // ---
 
-void tr_torrent::set_labels(labels_t const& new_labels)
+void tr_torrent::set_labels(tr_labels_t const& new_labels)
 {
     auto const lock = unique_lock();
     labels_.clear();

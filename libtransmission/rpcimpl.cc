@@ -1008,25 +1008,24 @@ namespace make_torrent_field_helpers
 
 // ---
 
-[[nodiscard]] std::tuple<tr_torrent::labels_t, JsonRpc::Error::Code, std::string> make_labels(
-    tr_variant::Vector const& labels_vec)
+[[nodiscard]] std::tuple<tr_labels_t, JsonRpc::Error::Code, std::string> make_labels(tr_variant::Vector const& labels_vec)
 {
     using namespace JsonRpc;
 
     auto const n_labels = std::size(labels_vec);
 
-    auto labels = tr_torrent::labels_t{};
+    auto labels = tr_labels_t{};
     labels.reserve(n_labels);
     for (auto const& label_var : labels_vec) {
         if (auto const value = label_var.value_if<std::string_view>()) {
             auto const label = tr_strv_strip(*value);
 
             if (std::empty(label)) {
-                return { tr_torrent::labels_t{}, Error::INVALID_PARAMS, "labels cannot be empty"s };
+                return { tr_labels_t{}, Error::INVALID_PARAMS, "labels cannot be empty"s };
             }
 
             if (tr_strv_contains(label, ',')) {
-                return { tr_torrent::labels_t{}, Error::INVALID_PARAMS, "labels cannot contain comma (,) character"s };
+                return { tr_labels_t{}, Error::INVALID_PARAMS, "labels cannot contain comma (,) character"s };
             }
 
             labels.emplace_back(tr_strv_to_utf8_string(label));

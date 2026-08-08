@@ -142,8 +142,6 @@ struct tr_torrent {
         uint64_t cur_ = {};
     };
 
-    using labels_t = std::vector<tr::shared_string>;
-
     class VerifyMediator : public tr_verify_worker::Mediator
     {
     public:
@@ -742,7 +740,7 @@ struct tr_torrent {
         return labels_;
     }
 
-    void set_labels(labels_t const& new_labels);
+    void set_labels(tr_labels_t const& new_labels);
 
     /** Return the mime-type (e.g. "audio/x-flac") that matches more of the
         torrent's content than any other mime-type. */
@@ -1310,7 +1308,7 @@ private:
     // it means that piece needs to be checked before its data is used.
     tr_bitfield checked_pieces_ = tr_bitfield{ 0 };
 
-    labels_t labels_;
+    tr_labels_t labels_;
 
     tr_torrent_metainfo metainfo_;
 

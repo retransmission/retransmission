@@ -107,7 +107,7 @@ tr_resume::fields_t load_labels(tr_variant::Map const& map, tr_torrent* tor)
         return {};
     }
 
-    auto labels = tr_torrent::labels_t{};
+    auto labels = tr_labels_t{};
     labels.reserve(std::size(*list));
     for (auto const& var : *list) {
         if (auto sv = var.value_if<std::string_view>(); sv && !std::empty(*sv)) {

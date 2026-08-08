@@ -146,7 +146,7 @@ public:
         return labels_;
     }
 
-    TR_CONSTEXPR_VEC void set_labels(tr_torrent::labels_t&& labels)
+    TR_CONSTEXPR_VEC void set_labels(tr_labels_t&& labels)
     {
         labels_ = std::move(labels);
     }
@@ -218,7 +218,7 @@ private:
     std::optional<uint16_t> peer_limit_;
     std::string download_dir_;
 
-    tr_torrent::labels_t labels_;
+    tr_labels_t labels_;
 
     std::vector<tr_file_index_t> wanted_;
     std::vector<tr_file_index_t> unwanted_;
