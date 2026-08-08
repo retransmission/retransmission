@@ -5,17 +5,13 @@
 
 #pragma once
 
-#ifndef __TRANSMISSION__
-#error only libtransmission should #include this header.
-#endif
-
 #include <cstdint> // uint16_t
 #include <optional>
+#include <span>
 #include <string>
 #include <string_view>
 #include <vector>
 
-#include "libtransmission/macros.h"
 #include "libtransmission/torrent-metainfo.h"
 #include "libtransmission/types.h"
 
@@ -27,186 +23,47 @@ struct tr_ctor {
 public:
     explicit tr_ctor(tr_session* session);
 
-    [[nodiscard]] constexpr auto* session() const noexcept
-    {
-        return session_;
-    }
-
-    // ---
-
+    bool set_metainfo(std::string_view contents, tr_error* error = nullptr);
     bool set_metainfo_from_file(std::string_view filename, tr_error* error = nullptr);
+    bool set_metainfo_from_magnet_link(std::string_view magnet_link, tr_error* error = nullptr);
+    [[nodiscard]] std::string const& torrent_filename() const noexcept;
+    [[nodiscard]] tr_torrent_metainfo const& metainfo() const noexcept;
+    [[nodiscard]] tr_torrent_metainfo steal_metainfo();
 
-    [[nodiscard]] auto const& torrent_filename() const noexcept
-    {
-        return torrent_filename_;
-    }
+    void set_bandwidth_priority(tr_priority_t priority) noexcept;
+    [[nodiscard]] tr_priority_t bandwidth_priority() const noexcept;
 
-    bool set_metainfo(std::string_view contents, tr_error* error = nullptr)
-    {
-        torrent_filename_.clear();
-        contents_.assign(std::begin(contents), std::end(contents));
-        return metainfo_.parse_benc(contents, error);
-    }
+    void set_download_dir(std::string_view dir);
+    [[nodiscard]] std::string const& download_dir() const noexcept;
 
-    bool set_metainfo_from_magnet_link(std::string_view magnet_link, tr_error* error = nullptr)
-    {
-        torrent_filename_.clear();
-        metainfo_ = {};
-        return metainfo_.parseMagnet(magnet_link, error);
-    }
+    void set_file_priorities(std::span<tr_file_index_t const> files, tr_priority_t priority);
+    void set_files_wanted(std::span<tr_file_index_t const> files, bool wanted);
+    void init_torrent_priorities(tr_torrent& tor) const;
+    void init_torrent_wanted(tr_torrent& tor) const;
 
-    [[nodiscard]] constexpr auto const& metainfo() const noexcept
-    {
-        return metainfo_;
-    }
+    void set_incomplete_dir(std::string_view dir);
+    [[nodiscard]] std::string const& incomplete_dir() const noexcept;
 
-    [[nodiscard]] auto steal_metainfo()
-    {
-        auto tmp = tr_torrent_metainfo{};
-        std::swap(metainfo_, tmp);
-        return tmp;
-    }
+    void set_labels(tr_labels_t&& labels);
+    [[nodiscard]] tr_labels_t const& labels() const noexcept;
+
+    void set_paused(bool paused) noexcept;
+    [[nodiscard]] std::optional<bool> paused() const noexcept;
+
+    void set_peer_limit(uint16_t peer_limit) noexcept;
+    [[nodiscard]] std::optional<uint16_t> peer_limit() const noexcept;
+
+    void set_sequential_download(bool seq) noexcept;
+    void set_sequential_download_from_piece(tr_piece_index_t piece) noexcept;
+    [[nodiscard]] std::optional<bool> const& sequential_download() const noexcept;
+    [[nodiscard]] std::optional<tr_piece_index_t> const& sequential_download_from_piece() const noexcept;
+
+    void set_should_delete_source_file(bool should) noexcept;
+    [[nodiscard]] bool should_delete_source_file() const noexcept;
 
     bool save(std::string_view filename, tr_error* error = nullptr) const;
 
-    // ---
-
-    TR_CONSTEXPR_VEC void set_files_wanted(std::span<tr_file_index_t const> const files, bool wanted)
-    {
-        auto& indices = wanted ? wanted_ : unwanted_;
-        indices.assign(files.begin(), files.end());
-    }
-
-    void init_torrent_wanted(tr_torrent& tor) const;
-
-    // ---
-
-    TR_CONSTEXPR_VEC void set_file_priorities(std::span<tr_file_index_t const> const files, tr_priority_t const priority)
-    {
-        switch (priority) {
-        case TR_PRI_LOW:
-            low_.assign(files.begin(), files.end());
-            break;
-
-        case TR_PRI_HIGH:
-            high_.assign(files.begin(), files.end());
-            break;
-
-        default: // TR_PRI_NORMAL
-            normal_.assign(files.begin(), files.end());
-            break;
-        }
-    }
-
-    void init_torrent_priorities(tr_torrent& tor) const;
-
-    // ---
-
-    [[nodiscard]] constexpr auto bandwidth_priority() const noexcept
-    {
-        return priority_;
-    }
-
-    constexpr void set_bandwidth_priority(tr_priority_t priority) noexcept
-    {
-        if (priority == TR_PRI_LOW || priority == TR_PRI_NORMAL || priority == TR_PRI_HIGH) {
-            priority_ = priority;
-        }
-    }
-
-    // ---
-
-    [[nodiscard]] constexpr auto const& download_dir() const noexcept
-    {
-        return download_dir_;
-    }
-
-    TR_CONSTEXPR_STR void set_download_dir(std::string_view const dir)
-    {
-        download_dir_.assign(dir);
-    }
-
-    // ---
-
-    [[nodiscard]] constexpr auto const& incomplete_dir() const noexcept
-    {
-        return incomplete_dir_;
-    }
-
-    TR_CONSTEXPR_STR void set_incomplete_dir(std::string_view const dir)
-    {
-        incomplete_dir_.assign(dir);
-    }
-
-    // ---
-
-    [[nodiscard]] constexpr auto const& labels() const noexcept
-    {
-        return labels_;
-    }
-
-    TR_CONSTEXPR_VEC void set_labels(tr_labels_t&& labels)
-    {
-        labels_ = std::move(labels);
-    }
-
-    // --
-
-    [[nodiscard]] constexpr auto paused() const noexcept
-    {
-        return paused_;
-    }
-
-    constexpr void set_paused(bool const paused) noexcept
-    {
-        paused_ = paused;
-    }
-
-    // --
-
-    [[nodiscard]] constexpr auto peer_limit() const noexcept
-    {
-        return peer_limit_;
-    }
-
-    constexpr void set_peer_limit(uint16_t const peer_limit) noexcept
-    {
-        peer_limit_ = peer_limit;
-    }
-
-    // ---
-
-    [[nodiscard]] constexpr auto should_delete_source_file() const noexcept
-    {
-        return should_delete_source_file_;
-    }
-
-    constexpr void set_should_delete_source_file(bool should) noexcept
-    {
-        should_delete_source_file_ = should;
-    }
-
-    // ---
-
-    [[nodiscard]] constexpr auto const& sequential_download() const noexcept
-    {
-        return sequential_download_;
-    }
-
-    constexpr void set_sequential_download(bool const seq) noexcept
-    {
-        sequential_download_ = seq;
-    }
-
-    [[nodiscard]] constexpr auto const& sequential_download_from_piece() const noexcept
-    {
-        return sequential_download_from_piece_;
-    }
-
-    constexpr void set_sequential_download_from_piece(tr_piece_index_t const piece) noexcept
-    {
-        sequential_download_from_piece_ = piece;
-    }
+    [[nodiscard]] tr_session* session() const noexcept;
 
 private:
     tr_torrent_metainfo metainfo_ = {};
