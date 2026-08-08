@@ -548,19 +548,19 @@ void DetailsDialog::refreshUI()
         double const d = size_when_done == 0 ?
             100.0 :
             100.0 * static_cast<double>(size_when_done - left_until_done) / static_cast<double>(size_when_done);
-        auto const pct = Formatter::percent_to_string(d);
-        auto const size_when_done_str = Formatter::storage_to_string(size_when_done);
+        auto const pct = Formatter::percentToString(d);
+        auto const size_when_done_str = Formatter::storageToString(size_when_done);
 
         if (have_unverified == 0U && left_until_done == 0U) {
             //: Text following the "Have:" label in torrent properties dialog;
             //: %1 is amount of downloaded and verified data
-            string = tr("%1 (100%)").arg(Formatter::storage_to_string(have_verified));
+            string = tr("%1 (100%)").arg(Formatter::storageToString(have_verified));
         } else if (have_unverified == 0U) {
             //: Text following the "Have:" label in torrent properties dialog;
             //: %1 is amount of downloaded and verified data,
             //: %2 is overall size of torrent data,
             //: %3 is percentage (%1/%2*100)
-            string = tr("%1 of %2 (%3%)").arg(Formatter::storage_to_string(have_verified)).arg(size_when_done_str).arg(pct);
+            string = tr("%1 of %2 (%3%)").arg(Formatter::storageToString(have_verified)).arg(size_when_done_str).arg(pct);
         } else {
             //: Text following the "Have:" label in torrent properties dialog;
             //: %1 is amount of downloaded data (both verified and unverified),
@@ -568,10 +568,10 @@ void DetailsDialog::refreshUI()
             //: %3 is percentage (%1/%2*100),
             //: %4 is amount of downloaded but not yet verified data
             string = tr("%1 of %2 (%3%), %4 Unverified")
-                         .arg(Formatter::storage_to_string(have_verified + have_unverified))
+                         .arg(Formatter::storageToString(have_verified + have_unverified))
                          .arg(size_when_done_str)
                          .arg(pct)
-                         .arg(Formatter::storage_to_string(have_unverified));
+                         .arg(Formatter::storageToString(have_unverified));
         }
     }
 
@@ -582,7 +582,7 @@ void DetailsDialog::refreshUI()
         string = none;
     } else {
         auto const percent = 100.0 * static_cast<double>(available) / static_cast<double>(size_when_done);
-        string = QStringLiteral("%1%").arg(Formatter::percent_to_string(percent));
+        string = QStringLiteral("%1%").arg(Formatter::percentToString(percent));
     }
 
     ui_.availabilityValueLabel->setText(string);
@@ -599,8 +599,8 @@ void DetailsDialog::refreshUI()
             f += t->failedEver();
         }
 
-        auto const dstr = Formatter::storage_to_string(d);
-        auto const fstr = Formatter::storage_to_string(f);
+        auto const dstr = Formatter::storageToString(d);
+        auto const fstr = Formatter::storageToString(f);
 
         if (f != 0) {
             string = tr("%1 (+%2 discarded after failed checksum)").arg(dstr).arg(fstr);
@@ -624,8 +624,8 @@ void DetailsDialog::refreshUI()
         }
 
         string = tr("%1 (Ratio: %2)")
-                     .arg(Formatter::storage_to_string(uploaded))
-                     .arg(Formatter::ratio_to_string(tr_getRatio(uploaded, denominator)));
+                     .arg(Formatter::storageToString(uploaded))
+                     .arg(Formatter::ratioToString(tr_getRatio(uploaded, denominator)));
     }
 
     ui_.uploadedValueLabel->setText(string);
@@ -653,7 +653,7 @@ void DetailsDialog::refreshUI()
             string = mixed;
         } else {
             auto const seconds = static_cast<int>(std::difftime(now, baseline));
-            string = Formatter::time_to_string(seconds);
+            string = Formatter::timeToString(seconds);
         }
     }
 
@@ -678,7 +678,7 @@ void DetailsDialog::refreshUI()
             if (baseline < 0) {
                 string = tr("Unknown");
             } else {
-                string = Formatter::time_to_string(baseline);
+                string = Formatter::timeToString(baseline);
             }
         }
     }
@@ -702,7 +702,7 @@ void DetailsDialog::refreshUI()
         } else if (seconds < 5) {
             string = tr("Active now");
         } else {
-            string = tr("%1 ago").arg(Formatter::time_to_string(seconds));
+            string = tr("%1 ago").arg(Formatter::timeToString(seconds));
         }
     }
 
@@ -752,10 +752,10 @@ void DetailsDialog::refreshUI()
             string = none;
         } else if (piece_size > 0) {
             string = tr("%1 (%Ln pieces @ %2)", "", pieces)
-                         .arg(Formatter::storage_to_string(size))
-                         .arg(Formatter::memory_to_string(piece_size));
+                         .arg(Formatter::storageToString(size))
+                         .arg(Formatter::memoryToString(piece_size));
         } else {
-            string = tr("%1 (%Ln pieces)", "", pieces).arg(Formatter::storage_to_string(size));
+            string = tr("%1 (%Ln pieces)", "", pieces).arg(Formatter::storageToString(size));
         }
     }
 
@@ -1124,11 +1124,11 @@ void DetailsDialog::refreshUI()
                 code_tip.resize(code_tip.size() - 1); // eat the trailing linefeed
             }
 
-            item->setText(COL_UP, peer.rate_to_peer.is_zero() ? QString{} : peer.rate_to_peer.to_qstring());
+            item->setText(COL_UP, peer.rate_to_peer.is_zero() ? QString{} : peer.rate_to_peer.toQstring());
             item->setText(
                 COL_UP_REQS,
                 peer.active_reqs_to_client > 0 ? QString::number(peer.active_reqs_to_client) : QString{});
-            item->setText(COL_DOWN, peer.rate_to_client.is_zero() ? QString{} : peer.rate_to_client.to_qstring());
+            item->setText(COL_DOWN, peer.rate_to_client.is_zero() ? QString{} : peer.rate_to_client.toQstring());
             item->setText(COL_DOWN_REQS, peer.active_reqs_to_peer > 0 ? QString::number(peer.active_reqs_to_peer) : QString{});
             item->setText(
                 COL_PERCENT,
@@ -1359,7 +1359,7 @@ void DetailsDialog::onRemoveTrackerClicked()
 
 void DetailsDialog::initOptionsTab()
 {
-    auto const speed_unit_suffix = QStringLiteral(" %1").arg(Speed::display_name(Speed::Units::KByps));
+    auto const speed_unit_suffix = QStringLiteral(" %1").arg(Speed::displayName(Speed::Units::KByps));
     ui_.singleDownSpin->setSuffix(speed_unit_suffix);
     ui_.singleUpSpin->setSuffix(speed_unit_suffix);
 
@@ -1449,7 +1449,7 @@ void DetailsDialog::initTrackerTab()
 
 void DetailsDialog::initPeersTab()
 {
-    auto const speed_width_str = Speed{ 1024U, Speed::Units::MByps }.to_qstring();
+    auto const speed_width_str = Speed{ 1024U, Speed::Units::MByps }.toQstring();
 
     ui_.peersView->setHeaderLabels(
         { QString{}, tr("Up"), tr("Up Reqs"), tr("Down"), tr("Dn Reqs"), tr("%"), tr("Status"), tr("Address"), tr("Client") });

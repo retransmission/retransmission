@@ -31,24 +31,24 @@ public:
     {
     }
 
-    [[nodiscard]] auto to_qstring() const noexcept
+    [[nodiscard]] auto toQstring() const noexcept
     {
         return QString::fromStdString(to_string());
     }
 
-    [[nodiscard]] auto to_upload_qstring() const
+    [[nodiscard]] auto toUploadQstring() const
     {
         static auto constexpr UploadSymbol = QChar{ 0x25B4 };
-        return tr("%1 %2").arg(to_qstring()).arg(UploadSymbol);
+        return tr("%1 %2").arg(toQstring()).arg(UploadSymbol);
     }
 
-    [[nodiscard]] auto to_download_qstring() const
+    [[nodiscard]] auto toDownloadQstring() const
     {
         static auto constexpr DownloadSymbol = QChar{ 0x25BE };
-        return tr("%1 %2").arg(to_qstring()).arg(DownloadSymbol);
+        return tr("%1 %2").arg(toQstring()).arg(DownloadSymbol);
     }
 
-    [[nodiscard]] static auto display_name(Speed::Units const units)
+    [[nodiscard]] static auto displayName(Speed::Units const units)
     {
         auto const speed_unit_sv = Speed::units().display_name(units);
         return Utils::qstringFromUtf8(speed_unit_sv);

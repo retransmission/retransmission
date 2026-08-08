@@ -246,7 +246,7 @@ void PrefsDialog::initRemoteTab()
 
 void PrefsDialog::initSpeedTab()
 {
-    auto const suffix = QStringLiteral(" %1").arg(Speed::display_name(Speed::Units::KByps));
+    auto const suffix = QStringLiteral(" %1").arg(Speed::displayName(Speed::Units::KByps));
 
     ui_.uploadSpeedLimitSpin->setSuffix(suffix);
     ui_.downloadSpeedLimitSpin->setSuffix(suffix);

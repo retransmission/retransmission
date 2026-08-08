@@ -288,7 +288,7 @@ void MainWindow::initStatusBar()
     ui_.optionsButton->setMenu(createOptionsMenu());
 
     int const minimum_speed_width = ui_.downloadSpeedLabel->fontMetrics()
-                                        .size(0, Speed{ 999.99, Speed::Units::KByps }.to_qstring())
+                                        .size(0, Speed{ 999.99, Speed::Units::KByps }.toQstring())
                                         .width();
     ui_.downloadSpeedLabel->setMinimumWidth(minimum_speed_width);
     ui_.uploadSpeedLabel->setMinimumWidth(minimum_speed_width);
@@ -323,7 +323,7 @@ QMenu* MainWindow::createOptionsMenu()
                 }
             });
 
-            on_action = menu->addAction(tr("Limited at %1").arg(Speed{ current_value, Speed::Units::KByps }.to_qstring()));
+            on_action = menu->addAction(tr("Limited at %1").arg(Speed{ current_value, Speed::Units::KByps }.toQstring()));
             on_action->setCheckable(true);
             action_group->addAction(on_action);
             connect(on_action, &QAction::triggered, this, [set_limit, current_value](bool is_checked) {
@@ -335,7 +335,7 @@ QMenu* MainWindow::createOptionsMenu()
             menu->addSeparator();
 
             for (auto const kbyps : { 50, 100, 250, 500, 1000, 2500, 5000, 10000 }) {
-                auto* const action = menu->addAction(Speed{ kbyps, Speed::Units::KByps }.to_qstring());
+                auto* const action = menu->addAction(Speed{ kbyps, Speed::Units::KByps }.toQstring());
                 connect(action, &QAction::triggered, this, [set_limit, kbyps]() { set_limit(kbyps); });
             }
         };
@@ -363,7 +363,7 @@ QMenu* MainWindow::createOptionsMenu()
                 }
             });
 
-            on_action = menu->addAction(tr("Stop at Ratio (%1)").arg(Formatter::ratio_to_string(current_value)));
+            on_action = menu->addAction(tr("Stop at Ratio (%1)").arg(Formatter::ratioToString(current_value)));
             on_action->setCheckable(true);
             action_group->addAction(on_action);
             connect(on_action, &QAction::triggered, this, [set_ratio, current_value](bool is_checked) {
@@ -375,7 +375,7 @@ QMenu* MainWindow::createOptionsMenu()
             menu->addSeparator();
 
             for (double const i : StockRatios) {
-                QAction* action = menu->addAction(Formatter::ratio_to_string(i));
+                QAction* action = menu->addAction(Formatter::ratioToString(i));
                 connect(action, &QAction::triggered, this, [set_ratio, i]() { set_ratio(i); });
             }
         };
@@ -709,9 +709,9 @@ void MainWindow::refreshTrayIcon(TransferStats const& stats)
     } else if (stats.peers_sending == 0 && stats.peers_receiving == 0) {
         tip = tr("Idle");
     } else if (stats.peers_sending != 0) {
-        tip = stats.speed_down.to_download_qstring() + QStringLiteral("   ") + stats.speed_up.to_upload_qstring();
+        tip = stats.speed_down.toDownloadQstring() + QStringLiteral("   ") + stats.speed_up.toUploadQstring();
     } else if (stats.peers_receiving != 0) {
-        tip = stats.speed_up.to_upload_qstring();
+        tip = stats.speed_up.toUploadQstring();
     }
 
     tray_icon_.setToolTip(tip);
@@ -719,9 +719,9 @@ void MainWindow::refreshTrayIcon(TransferStats const& stats)
 
 void MainWindow::refreshStatusBar(TransferStats const& stats)
 {
-    ui_.uploadSpeedLabel->setText(stats.speed_up.to_upload_qstring());
+    ui_.uploadSpeedLabel->setText(stats.speed_up.toUploadQstring());
     ui_.uploadSpeedLabel->setVisible(stats.peers_sending || stats.peers_receiving);
-    ui_.downloadSpeedLabel->setText(stats.speed_down.to_download_qstring());
+    ui_.downloadSpeedLabel->setText(stats.speed_down.toDownloadQstring());
     ui_.downloadSpeedLabel->setVisible(stats.peers_sending);
 
     static_assert(StatsModeCount == 4U && "StatsMode changed: update this code");
@@ -731,9 +731,9 @@ void MainWindow::refreshStatusBar(TransferStats const& stats)
     ui_.statsLabel->setText(
         mode == StatsMode::SessionTransfer || mode == StatsMode::TotalTransfer ?
             tr("Down: %1, Up: %2")
-                .arg(Formatter::storage_to_string(st.downloadedBytes))
-                .arg(Formatter::storage_to_string(st.uploadedBytes)) :
-            tr("Ratio: %1").arg(Formatter::ratio_to_string(st.ratio)));
+                .arg(Formatter::storageToString(st.downloadedBytes))
+                .arg(Formatter::storageToString(st.uploadedBytes)) :
+            tr("Ratio: %1").arg(Formatter::ratioToString(st.ratio)));
 }
 
 void MainWindow::refreshTorrentViewHeader()
@@ -1069,7 +1069,7 @@ void MainWindow::refreshPref(tr_quark const key)
         break;
 
     case TR_KEY_speed_limit_down:
-        dlimit_on_action_->setText(tr("Limited at %1").arg(Speed{ prefs_.get<int>(key), Speed::Units::KByps }.to_qstring()));
+        dlimit_on_action_->setText(tr("Limited at %1").arg(Speed{ prefs_.get<int>(key), Speed::Units::KByps }.toQstring()));
         break;
 
     case TR_KEY_speed_limit_up_enabled:
@@ -1077,7 +1077,7 @@ void MainWindow::refreshPref(tr_quark const key)
         break;
 
     case TR_KEY_speed_limit_up:
-        ulimit_on_action_->setText(tr("Limited at %1").arg(Speed{ prefs_.get<int>(key), Speed::Units::KByps }.to_qstring()));
+        ulimit_on_action_->setText(tr("Limited at %1").arg(Speed{ prefs_.get<int>(key), Speed::Units::KByps }.toQstring()));
         break;
 
     case TR_KEY_seed_ratio_limited:
@@ -1085,7 +1085,7 @@ void MainWindow::refreshPref(tr_quark const key)
         break;
 
     case TR_KEY_seed_ratio_limit:
-        ratio_on_action_->setText(tr("Stop at Ratio (%1)").arg(Formatter::ratio_to_string(prefs_.get<double>(key))));
+        ratio_on_action_->setText(tr("Stop at Ratio (%1)").arg(Formatter::ratioToString(prefs_.get<double>(key))));
         break;
 
     case TR_KEY_show_filterbar:
@@ -1151,7 +1151,7 @@ void MainWindow::refreshPref(tr_quark const key)
                                  tr("Click to enable Temporary Speed Limits\n (%1 down, %2 up)");
             auto const d = Speed{ prefs_.get<int>(TR_KEY_alt_speed_down), Speed::Units::KByps };
             auto const u = Speed{ prefs_.get<int>(TR_KEY_alt_speed_up), Speed::Units::KByps };
-            ui_.altSpeedButton->setToolTip(fmt.arg(d.to_qstring()).arg(u.to_qstring()));
+            ui_.altSpeedButton->setToolTip(fmt.arg(d.toQstring()).arg(u.toQstring()));
             break;
         }
 
@@ -1380,7 +1380,7 @@ void MainWindow::updateNetworkLabel()
     } else if (seconds_since_last_read < 30) {
         tip = tr("%1 is responding").arg(url);
     } else if (seconds_since_last_read < 120) {
-        tip = tr("%1 last responded %2 ago").arg(url).arg(Formatter::time_to_string(static_cast<int>(seconds_since_last_read)));
+        tip = tr("%1 last responded %2 ago").arg(url).arg(Formatter::timeToString(static_cast<int>(seconds_since_last_read)));
     } else {
         tip = tr("%1 is not responding").arg(url);
     }

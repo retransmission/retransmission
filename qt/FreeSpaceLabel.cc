@@ -95,7 +95,7 @@ void FreeSpaceLabel::onTimer()
 
             // update the label
             if (auto const bytes = dictFind<int64_t>(r.args.get(), TR_KEY_size_bytes); bytes && *bytes > 1) {
-                self->setText(tr("%1 free").arg(Formatter::storage_to_string(*bytes)));
+                self->setText(tr("%1 free").arg(Formatter::storageToString(*bytes)));
             } else {
                 self->setText(QString{});
             }

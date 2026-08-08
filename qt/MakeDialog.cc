@@ -290,10 +290,10 @@ void MakeDialog::updatePiecesLabel()
         auto const files = tr("%Ln File(s)", nullptr, static_cast<int>(builder_->file_count()));
         auto const pieces = tr("%Ln Piece(s)", nullptr, static_cast<int>(builder_->piece_count()));
         text = tr("%1 in %2; %3 @ %4")
-                   .arg(Formatter::storage_to_string(builder_->total_size()))
+                   .arg(Formatter::storageToString(builder_->total_size()))
                    .arg(files)
                    .arg(pieces)
-                   .arg(Formatter::memory_to_string(builder_->piece_size()));
+                   .arg(Formatter::memoryToString(builder_->piece_size()));
         ui_.pieceSizeSlider->setEnabled(true);
     }
 

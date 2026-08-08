@@ -17,10 +17,10 @@ class Formatter
 public:
     Formatter() = delete;
 
-    [[nodiscard]] static QString memory_to_string(int64_t bytes);
-    [[nodiscard]] static QString percent_to_string(double x);
-    [[nodiscard]] static QString ratio_to_string(double ratio);
-    [[nodiscard]] static QString storage_to_string(int64_t bytes);
-    [[nodiscard]] static QString storage_to_string(uint64_t bytes);
-    [[nodiscard]] static QString time_to_string(int seconds);
+    [[nodiscard]] static QString memoryToString(int64_t bytes);
+    [[nodiscard]] static QString percentToString(double x);
+    [[nodiscard]] static QString ratioToString(double ratio);
+    [[nodiscard]] static QString storageToString(int64_t bytes);
+    [[nodiscard]] static QString storageToString(uint64_t bytes);
+    [[nodiscard]] static QString timeToString(int seconds);
 };

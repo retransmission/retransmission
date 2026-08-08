@@ -169,7 +169,7 @@ QString timeToRoundedString(int seconds)
         seconds -= seconds % 60;
     }
 
-    return Formatter::time_to_string(seconds);
+    return Formatter::timeToString(seconds);
 }
 } // namespace
 
