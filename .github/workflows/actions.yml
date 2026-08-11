@@ -1816,7 +1816,6 @@ jobs:
               cmake \
               fast_float \
               fmtlib \
-              gcc14 \
               libevent \
               libpsl \
               miniupnpc \
@@ -1838,9 +1837,6 @@ jobs:
               -B obj \
               -G Ninja \
               -DCMAKE_BUILD_TYPE=Release \
-              -DCMAKE_CXX_COMPILER='/usr/pkg/gcc14/bin/g++' \
-              -DCMAKE_C_COMPILER='/usr/pkg/gcc14/bin/gcc' \
-              -DCMAKE_BUILD_RPATH='/usr/pkg/gcc14/lib' \
               -DCMAKE_INSTALL_PREFIX=pfx \
               -DCMAKE_PREFIX_PATH='/usr/pkg' \
               -DENABLE_CLI=${{ (needs.what-to-make.outputs.make-cli == 'true') && 'ON' || 'OFF' }} \
