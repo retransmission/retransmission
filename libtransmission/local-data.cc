@@ -217,7 +217,7 @@ public:
             return;
         }
 
-        tor->rename_path_in_session_thread(oldpath, newname, std::move(callback));
+        tor->rename_path_in_session_thread(oldpath, newname, callback);
     }
 
     void close_all() override
@@ -308,29 +308,29 @@ public:
     void read(tr_torrent_id_t const id, tr_byte_span_t const span, OnRead on_read)
     {
         if (auto& gate = gates_[id]; is_blocked(gate)) {
-            gate.queue.emplace_back(ReadOp{ span, std::move(on_read) });
+            gate.queue.emplace_back(ReadOp{ .span = span, .on_read = std::move(on_read) });
         } else {
-            admit_read(id, ReadOp{ span, std::move(on_read) });
+            admit_read(id, ReadOp{ .span = span, .on_read = std::move(on_read) });
         }
     }
 
     void test_piece(tr_torrent_id_t const id, tr_piece_index_t const piece, OnTest on_test)
     {
         if (auto& gate = gates_[id]; is_blocked(gate)) {
-            gate.queue.emplace_back(TestOp{ piece, std::move(on_test) });
+            gate.queue.emplace_back(TestOp{ .piece = piece, .on_test = std::move(on_test) });
         } else {
-            admit_test(id, TestOp{ piece, std::move(on_test) });
+            admit_test(id, TestOp{ .piece = piece, .on_test = std::move(on_test) });
         }
     }
 
     void write(tr_torrent_id_t const id, tr_byte_span_t const span, std::unique_ptr<BlockData> data, OnWrite on_write)
     {
         if (auto& gate = gates_[id]; is_blocked(gate)) {
-            gate.queue.emplace_back(WriteOp{ span, std::move(data), std::move(on_write) });
+            gate.queue.emplace_back(WriteOp{ .span = span, .data = std::move(data), .on_write = std::move(on_write) });
             return;
         }
 
-        exec_write(id, WriteOp{ span, std::move(data), std::move(on_write) });
+        exec_write(id, WriteOp{ .span = span, .data = std::move(data), .on_write = std::move(on_write) });
 
         // the write's completion may have enqueued a barrier
         advance(id);
@@ -449,13 +449,10 @@ private:
             return false;
         }
 
-        for (auto const& [id, gate] : gates_) {
-            if (gate.barrier_running || !std::empty(gate.queue)) {
-                return false;
-            }
-        }
-
-        return true;
+        return std::ranges::all_of(gates_, [](auto const& id_and_gate) {
+            auto const& gate = id_and_gate.second;
+            return !gate.barrier_running && std::empty(gate.queue);
+        });
     }
 
     // Run queued ops that the gate now allows.
@@ -555,7 +552,14 @@ private:
         ++gates_[id].n_running;
         ++n_running_total_;
         register_running_span(id, span);
-        staged_.emplace_back(StagedRead{ id, desc, span, std::move(op.on_read), file, file_offset, single_file });
+        staged_.emplace_back(
+            StagedRead{ .tor_id = id,
+                        .desc = desc,
+                        .span = span,
+                        .on_read = std::move(op.on_read),
+                        .file = file,
+                        .file_offset = file_offset,
+                        .single_file = single_file });
         schedule_flush();
     }
 
@@ -702,7 +706,14 @@ private:
                 continue;
             }
 
-            auto& run = runs.emplace_back(Run{ op.tor_id, op.desc, op.file, op.file_offset, len, op.single_file, {} });
+            auto& run = runs.emplace_back(
+                Run{ .tor_id = op.tor_id,
+                     .desc = op.desc,
+                     .file = op.file,
+                     .offset = op.file_offset,
+                     .length = len,
+                     .coalesced = op.single_file,
+                     .ops = {} });
             run.ops.emplace_back(std::move(op));
         }
 
