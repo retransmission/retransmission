@@ -571,6 +571,17 @@ bool tr_sys_file_read_at(
     return ret;
 }
 
+std::optional<uint64_t> tr_sys_file_read_at_nowait(
+    tr_sys_file_t const /*handle*/,
+    void* const /*buffer*/,
+    uint64_t const /*size*/,
+    uint64_t const /*offset*/)
+{
+    // Windows has no page-cache-only read; callers fall back to
+    // tr_sys_file_read_at().
+    return {};
+}
+
 bool tr_sys_file_write(tr_sys_file_t handle, void const* buffer, uint64_t size, uint64_t* bytes_written, tr_error* error)
 {
     TR_ASSERT(handle != TR_BAD_SYS_FILE);

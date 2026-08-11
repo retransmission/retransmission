@@ -324,6 +324,22 @@ bool tr_sys_file_read_at(
     tr_error* error = nullptr);
 
 /**
+ * @brief Like tr_sys_file_read_at(), but never waits on the disk.
+ *
+ * Reads only data that is already in the page cache.
+ *
+ * @return The number of bytes read, which may be less than `size`.
+ *         No value if the data isn't cached, the read failed, or the
+ *         platform has no nonblocking read. The caller should fall
+ *         back to tr_sys_file_read_at() in every one of those cases.
+ */
+[[nodiscard]] std::optional<uint64_t> tr_sys_file_read_at_nowait(
+    tr_sys_file_t handle,
+    void* buffer,
+    uint64_t size,
+    uint64_t offset);
+
+/**
  * @brief Portability wrapper for `write()`.
  *
  * @param[in]  handle        Valid file descriptor.

@@ -107,6 +107,9 @@ public:
     bool utp_enabled = true;
     double ratio_limit = 2.0;
     size_t unused_cache_size_mbytes = 4U; // TODO(TR5): remove
+    // Disk-IO worker threads. 0 keeps the synchronous backend, where
+    // every disk op runs inline on the session thread.
+    size_t disk_io_workers = 0U;
     size_t download_queue_size = 5U;
     size_t peer_limit_global = TrDefaultPeerLimitGlobal;
     size_t peer_limit_per_torrent = TrDefaultPeerLimitTorrent;
@@ -166,6 +169,7 @@ public:
         Field<&SessionSettings::blocklist_url>{ TR_KEY_blocklist_url },
         Field<&SessionSettings::default_trackers_str>{ TR_KEY_default_trackers },
         Field<&SessionSettings::dht_enabled>{ TR_KEY_dht_enabled },
+        Field<&SessionSettings::disk_io_workers>{ TR_KEY_disk_io_workers },
         Field<&SessionSettings::download_dir>{ TR_KEY_download_dir },
         Field<&SessionSettings::download_queue_enabled>{ TR_KEY_download_queue_enabled },
         Field<&SessionSettings::download_queue_size>{ TR_KEY_download_queue_size },

@@ -117,6 +117,17 @@ if(NOT CMAKE_CROSSCOMPILING OR CMAKE_CROSSCOMPILING_EMULATOR)
     set_tests_properties(LT.ShuffledDiskIo
         PROPERTIES
             ENVIRONMENT TR_LOCAL_DATA_SHUFFLE=1)
+
+    # ...and a third time on the threaded backend, where reads and piece
+    # hashes really do run concurrently on worker threads.
+    add_test(
+        NAME LT.ThreadedDiskIo
+        COMMAND libtransmission-test
+            --gtest_filter=LocalData.*:*IncompleteDirTest.*:MoveTest.*:RenameTest.*:RemoveTest.*)
+
+    set_tests_properties(LT.ThreadedDiskIo
+        PROPERTIES
+            ENVIRONMENT TR_LOCAL_DATA_WORKERS=2)
 endif()
 
 add_custom_command(

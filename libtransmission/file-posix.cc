@@ -20,6 +20,7 @@
 
 #include <fcntl.h> /* O_LARGEFILE, posix_fadvise(), [posix_]fallocate(), fcntl() */
 #include <sys/stat.h>
+#include <sys/uio.h> /* preadv2() */
 #include <unistd.h> /* lseek(), write(), ftruncate(), pread(), pwrite(), pathconf(), etc */
 
 #ifdef HAVE_FLOCK
@@ -519,6 +520,25 @@ bool tr_sys_file_read_at(
     }
 
     return ret;
+}
+
+std::optional<uint64_t> tr_sys_file_read_at_nowait(
+    tr_sys_file_t const handle,
+    void* const buffer,
+    uint64_t const size,
+    uint64_t const offset)
+{
+    TR_ASSERT(handle != TR_BAD_SYS_FILE);
+    TR_ASSERT(buffer != nullptr || size == 0);
+
+#if defined(__linux__) && defined(RWF_NOWAIT)
+    auto iov = iovec{ .iov_base = buffer, .iov_len = size };
+    if (auto const n = preadv2(handle, &iov, 1, static_cast<off_t>(offset), RWF_NOWAIT); n >= 0) {
+        return static_cast<uint64_t>(n);
+    }
+#endif
+
+    return {};
 }
 
 bool tr_sys_file_write(tr_sys_file_t handle, void const* buffer, uint64_t size, uint64_t* bytes_written, tr_error* error)

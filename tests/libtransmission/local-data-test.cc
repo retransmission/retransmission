@@ -4,17 +4,36 @@
 // License text can be found in the licenses/ folder.
 
 #include <algorithm>
+#include <array>
+#include <chrono>
+#include <condition_variable>
+#include <cstddef> // size_t
+#include <cstdint> // uintX_t
+#include <deque>
+#include <functional>
 #include <memory>
+#include <mutex>
 #include <optional>
+#include <string>
 #include <string_view>
 #include <utility>
 #include <vector>
 
 #include <gtest/gtest.h>
 
+#include <libtransmission/block-info.h>
 #include <libtransmission/crypto-utils.h>
 #include <libtransmission/error.h>
+#include <libtransmission/file-piece-map.h>
+#include <libtransmission/file.h>
 #include <libtransmission/local-data.h>
+#include <libtransmission/open-files.h>
+#include <libtransmission/storage-descriptor.h>
+#include <libtransmission/torrent-files.h>
+#include <libtransmission/torrents.h>
+#include <libtransmission/tr-strbuf.h>
+
+#include "test-fixtures.h"
 
 using namespace std::literals;
 
@@ -318,3 +337,303 @@ TEST(LocalData, ShutdownDeliversParkedCompletions)
     local_data.shutdown();
     EXPECT_EQ(1, n_called);
 }
+// ---
+
+// Exercises the threaded backend against real files in a sandbox.
+// The test thread doubles as the session thread: marshaled functions
+// queue up and run from pump_until().
+class LocalDataWorkersTest : public tr::test::SandboxedTest
+{
+protected:
+    static auto constexpr TorId = tr_torrent_id_t{ 7 };
+
+    [[nodiscard]] tr::LocalData::Marshal marshal()
+    {
+        return [this](std::function<void()> fn) {
+            {
+                auto const lock = std::scoped_lock{ marshal_mutex_ };
+                marshaled_.emplace_back(std::move(fn));
+            }
+            marshal_cv_.notify_all();
+        };
+    }
+
+    // Run marshaled functions until `pred()` holds. False on timeout.
+    template<typename Pred>
+    bool pump_until(Pred const& pred)
+    {
+        auto const deadline = std::chrono::steady_clock::now() + std::chrono::seconds{ 5 };
+
+        for (;;) {
+            for (;;) {
+                auto fn = std::function<void()>{};
+                {
+                    auto const lock = std::scoped_lock{ marshal_mutex_ };
+                    if (std::empty(marshaled_)) {
+                        break;
+                    }
+                    fn = std::move(marshaled_.front());
+                    marshaled_.pop_front();
+                }
+                fn();
+            }
+
+            if (pred()) {
+                return true;
+            }
+
+            auto lock = std::unique_lock{ marshal_mutex_ };
+            if (!marshal_cv_.wait_until(lock, deadline, [this]() { return !std::empty(marshaled_); })) {
+                return pred();
+            }
+        }
+    }
+
+    [[nodiscard]] static bool matches(tr::LocalData::BlockData const& data, std::string_view const expected)
+    {
+        return std::size(data) == std::size(expected) &&
+            std::equal(
+                   std::begin(data),
+                   std::end(data),
+                   std::begin(expected),
+                   std::end(expected),
+                   [](uint8_t const x, char const y) { return x == static_cast<uint8_t>(y); });
+    }
+
+    // One file whose byte i holds a deterministic pattern.
+    [[nodiscard]] static uint8_t pattern_byte(size_t const i) noexcept
+    {
+        return static_cast<uint8_t>((i * 31U + 7U) & 0xFFU);
+    }
+
+    [[nodiscard]] std::string make_pattern_file(std::string_view const subpath, size_t const size, size_t const salt = 0U)
+    {
+        auto contents = std::string{};
+        contents.reserve(size);
+        for (auto i = size_t{}; i < size; ++i) {
+            contents.push_back(static_cast<char>(pattern_byte(i + salt)));
+        }
+
+        createFileWithContents(tr_pathbuf{ sandboxDir(), '/', subpath }, contents);
+        return contents;
+    }
+
+    // A one- or multi-file descriptor whose files live in the sandbox.
+    [[nodiscard]] std::shared_ptr<tr::StorageDescriptor const> make_descriptor(
+        std::vector<std::pair<std::string_view, uint64_t>> const& files,
+        uint32_t const piece_size) const
+    {
+        auto tf = tr_torrent_files{};
+        auto sizes = std::vector<uint64_t>{};
+        auto total = uint64_t{};
+        for (auto const& [subpath, size] : files) {
+            tf.add(subpath, size);
+            sizes.push_back(size);
+            total += size;
+        }
+
+        auto const block_info = tr_block_info{ total, piece_size };
+        auto fpm = tr_file_piece_map{ block_info, sizes };
+        return std::make_shared<tr::StorageDescriptor const>(
+            tr::StorageDescriptor{ 0U, block_info, std::move(tf), std::move(fpm), sandboxDir(), std::string{} });
+    }
+
+    [[nodiscard]] auto make_local_data(std::shared_ptr<tr::StorageDescriptor const> desc, size_t const n_workers = 2U)
+    {
+        auto local_data = std::make_unique<tr::LocalData>(torrents_, open_files_);
+        local_data->start_workers(n_workers, marshal(), [desc = std::move(desc)](tr_torrent_id_t const id) {
+            return id == TorId ? desc : nullptr;
+        });
+        return local_data;
+    }
+
+    tr_torrents torrents_;
+    tr_open_files open_files_;
+
+private:
+    std::mutex marshal_mutex_;
+    std::condition_variable marshal_cv_;
+    std::deque<std::function<void()>> marshaled_;
+};
+
+TEST_F(LocalDataWorkersTest, readsCompleteWithTheRightData)
+{
+    static auto constexpr FileSize = size_t{ 65536U };
+    auto const contents = make_pattern_file("data.bin", FileSize);
+    auto const local_data = make_local_data(make_descriptor({ { "data.bin", FileSize } }, 32768U));
+
+    // read every 16 KiB block; contiguous spans coalesce into runs
+    static auto constexpr NumBlocks = size_t{ 4U };
+    auto n_done = size_t{};
+    auto ok = std::array<bool, NumBlocks>{};
+    for (auto block = size_t{}; block < NumBlocks; ++block) {
+        auto const begin = uint64_t{ block * TrBlockSize };
+        local_data->read(
+            TorId,
+            { .begin = begin, .end = begin + TrBlockSize },
+            [&n_done, &ok, &contents, block](tr_torrent_id_t, tr_byte_span_t const span, tr_error const& error, auto data) {
+                ++n_done;
+                if (!error && data != nullptr) {
+                    auto const expected = std::string_view{ contents }.substr(static_cast<size_t>(span.begin), TrBlockSize);
+                    ok[block] = matches(*data, expected);
+                }
+            });
+    }
+
+    EXPECT_TRUE(pump_until([&n_done]() { return n_done == NumBlocks; }));
+    EXPECT_TRUE(std::ranges::all_of(ok, [](bool const b) { return b; }));
+
+    local_data->shutdown();
+}
+
+TEST_F(LocalDataWorkersTest, readsCrossFileBoundaries)
+{
+    static auto constexpr FileASize = size_t{ 10000U };
+    static auto constexpr FileBSize = size_t{ 55536U };
+    auto const a = make_pattern_file("a.bin", FileASize);
+    auto const b = make_pattern_file("b.bin", FileBSize, 1U);
+    auto const local_data = make_local_data(make_descriptor({ { "a.bin", FileASize }, { "b.bin", FileBSize } }, 32768U));
+
+    // a 16 KiB read straddling the file boundary
+    auto done = false;
+    auto matched = false;
+    auto const expected = a.substr(FileASize - 5000U) + b.substr(0U, TrBlockSize - 5000U);
+    local_data->read(
+        TorId,
+        { .begin = FileASize - 5000U, .end = FileASize - 5000U + TrBlockSize },
+        [&done, &matched, &expected](tr_torrent_id_t, tr_byte_span_t, tr_error const& error, auto data) {
+            done = true;
+            matched = !error && data != nullptr && matches(*data, expected);
+        });
+
+    EXPECT_TRUE(pump_until([&done]() { return done; }));
+    EXPECT_TRUE(matched);
+
+    local_data->shutdown();
+}
+
+TEST_F(LocalDataWorkersTest, testPieceHashesFromWorkers)
+{
+    static auto constexpr FileSize = size_t{ 65536U };
+    static auto constexpr PieceSize = uint32_t{ 32768U };
+    auto const contents = make_pattern_file("data.bin", FileSize);
+    auto const local_data = make_local_data(make_descriptor({ { "data.bin", FileSize } }, PieceSize));
+
+    auto done = false;
+    auto hash = std::optional<tr_sha1_digest_t>{};
+    local_data->test_piece(TorId, 1U, [&done, &hash](tr_torrent_id_t, tr_piece_index_t, tr_error const&, auto found) {
+        done = true;
+        hash = found;
+    });
+
+    EXPECT_TRUE(pump_until([&done]() { return done; }));
+    ASSERT_TRUE(hash.has_value());
+    EXPECT_EQ(tr_sha1::digest(std::string_view{ contents }.substr(PieceSize)), *hash);
+
+    local_data->shutdown();
+}
+
+TEST_F(LocalDataWorkersTest, barriersWaitForReadsAndBlockLaterOps)
+{
+    static auto constexpr FileSize = size_t{ 65536U };
+    make_pattern_file("data.bin", FileSize);
+    auto const local_data = make_local_data(make_descriptor({ { "data.bin", FileSize } }, 32768U));
+
+    // rule 3: the barrier waits for these...
+    auto order = std::vector<std::string>{};
+    for (auto block = size_t{}; block < 2U; ++block) {
+        auto const begin = uint64_t{ block * TrBlockSize };
+        local_data->read(TorId, { .begin = begin, .end = begin + TrBlockSize }, [&order](auto, auto, auto const&, auto) {
+            order.emplace_back("read-before");
+        });
+    }
+
+    // (the move itself fails since there's no real torrent; only the
+    // ordering of the completions matters here)
+    local_data->move(TorId, "/old", "/new", "name", [&order](auto, auto const&) { order.emplace_back("move"); });
+
+    // ...and this read waits for the barrier
+    local_data->read(TorId, { .begin = 0U, .end = TrBlockSize }, [&order](auto, auto, auto const&, auto) {
+        order.emplace_back("read-after");
+    });
+
+    EXPECT_TRUE(pump_until([&order]() { return std::size(order) == 4U; }));
+    auto const expected = std::vector<std::string>{ "read-before", "read-before", "move", "read-after" };
+    EXPECT_EQ(expected, order);
+
+    local_data->shutdown();
+}
+
+TEST_F(LocalDataWorkersTest, shutdownDeliversEveryCallback)
+{
+    static auto constexpr FileSize = size_t{ 65536U };
+    make_pattern_file("data.bin", FileSize);
+    auto const local_data = make_local_data(make_descriptor({ { "data.bin", FileSize } }, 32768U));
+
+    auto n_done = size_t{};
+    for (auto block = size_t{}; block < 4U; ++block) {
+        auto const begin = uint64_t{ block * TrBlockSize };
+        local_data->read(TorId, { .begin = begin, .end = begin + TrBlockSize }, [&n_done](auto, auto, auto const&, auto) {
+            ++n_done;
+        });
+    }
+
+    // exactly-once even without a pump: shutdown() drains inline
+    local_data->shutdown();
+    EXPECT_EQ(4U, n_done);
+}
+
+TEST_F(LocalDataWorkersTest, missingTorrentReadFailsCleanly)
+{
+    auto const local_data = make_local_data(nullptr);
+
+    auto done = false;
+    auto failed = false;
+    local_data->read(3, { .begin = 0U, .end = TrBlockSize }, [&done, &failed](auto, auto, tr_error const& error, auto data) {
+        done = true;
+        failed = error && data == nullptr;
+    });
+
+    EXPECT_TRUE(pump_until([&done]() { return done; }));
+    EXPECT_TRUE(failed);
+
+    local_data->shutdown();
+}
+
+#ifdef __linux__
+TEST_F(LocalDataWorkersTest, cachedReadsCompleteInline)
+{
+    static auto constexpr FileSize = size_t{ 65536U };
+    auto const contents = make_pattern_file("data.bin", FileSize);
+    auto const local_data = make_local_data(make_descriptor({ { "data.bin", FileSize } }, 32768U));
+
+    // warm the fd pool; the just-written data is in the page cache
+    auto const filename = tr_pathbuf{ sandboxDir(), "/data.bin" };
+    auto const pin = open_files_.get(TorId, 0U, false, filename, tr_file_preallocation::None, FileSize);
+    ASSERT_TRUE(pin);
+
+    // some filesystems (e.g. tmpfs) don't support nonblocking reads at
+    // all; the engine falls back to the cold path there, so there's no
+    // inline completion to observe
+    auto probe = std::array<uint8_t, 16U>{};
+    if (!tr_sys_file_read_at_nowait(*pin, std::data(probe), std::size(probe), 0U)) {
+        GTEST_SKIP() << "nonblocking reads unsupported on this filesystem";
+    }
+
+    auto done = false;
+    auto matched = false;
+    local_data->read(
+        TorId,
+        { .begin = 0U, .end = TrBlockSize },
+        [&done, &matched, &contents](tr_torrent_id_t, tr_byte_span_t, tr_error const& error, auto data) {
+            done = true;
+            matched = !error && data != nullptr && matches(*data, std::string_view{ contents }.substr(0U, TrBlockSize));
+        });
+
+    // no pump: the hot path serves page-cache hits inline (rule 4)
+    EXPECT_TRUE(done);
+    EXPECT_TRUE(matched);
+
+    local_data->shutdown();
+}
+#endif

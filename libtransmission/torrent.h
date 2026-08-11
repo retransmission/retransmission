@@ -46,6 +46,11 @@ struct tr_error;
 struct tr_torrent;
 struct tr_torrent_announcer;
 
+namespace tr
+{
+struct StorageDescriptor;
+}
+
 // --- Package-visible
 
 void tr_torrentFreeInSessionThread(tr_torrent* tor);
@@ -504,9 +509,22 @@ struct tr_torrent {
     void set_file_subpath(tr_file_index_t i, std::string_view subpath)
     {
         metainfo_.set_file_subpath(i, subpath);
+        invalidate_storage_descriptor();
     }
 
     [[nodiscard]] std::optional<tr_torrent_files::FoundFile> find_file(tr_file_index_t file_index) const;
+
+    // A snapshot of this torrent's on-disk layout for disk workers.
+    // Cached until the next invalidate_storage_descriptor() call.
+    [[nodiscard]] std::shared_ptr<tr::StorageDescriptor const> storage_descriptor() const;
+
+    // Call after changing anything that affects where this torrent's
+    // data lives on disk: dirs, file subpaths, or the metainfo.
+    void invalidate_storage_descriptor() noexcept
+    {
+        storage_descriptor_.reset();
+        ++storage_generation_;
+    }
 
     [[nodiscard]] bool has_any_local_data() const;
 
@@ -1354,6 +1372,10 @@ private:
     tr_completion completion_;
 
     tr_file_piece_map fpm_ = tr_file_piece_map{ metainfo_ };
+
+    // see storage_descriptor()
+    mutable std::shared_ptr<tr::StorageDescriptor const> storage_descriptor_;
+    uint64_t storage_generation_ = 0U;
 
     // when Transmission thinks the torrent's files were last changed
     std::vector<time_t> file_mtimes_;

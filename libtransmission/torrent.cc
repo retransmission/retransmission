@@ -35,6 +35,7 @@
 #include "libtransmission/peer-mgr.h"
 #include "libtransmission/resume.h"
 #include "libtransmission/session.h"
+#include "libtransmission/storage-descriptor.h"
 #include "libtransmission/string-utils.h"
 #include "libtransmission/subprocess.h"
 #include "libtransmission/torrent-ctor.h"
@@ -812,6 +813,7 @@ void tr_torrent::on_metainfo_updated()
     files_wanted_ = tr_files_wanted{ &fpm_ };
     checked_pieces_ = tr_bitfield{ static_cast<size_t>(piece_count()) };
     blocks_pending_write_ = tr_bitfield{ static_cast<size_t>(block_count()) };
+    invalidate_storage_descriptor();
 }
 
 void tr_torrent::on_metainfo_completed()
@@ -852,6 +854,7 @@ void tr_torrent::init(tr_ctor const& ctor)
     if (tr_sessionIsIncompleteDirEnabled(session)) {
         auto const& dir = ctor.incomplete_dir();
         incomplete_dir_ = !std::empty(dir) ? dir : session->incompleteDir();
+        invalidate_storage_descriptor();
     }
 
     bandwidth().set_parent(&session->top_bandwidth_);
@@ -1063,6 +1066,7 @@ void tr_torrent::set_location_in_session_thread(std::string_view const path, boo
                 session->add_recent_relocate_dir(path);
                 tor->incomplete_dir_.clear();
                 tor->current_dir_ = tor->download_dir();
+                tor->invalidate_storage_descriptor();
             }
 
             if (setme_state != nullptr) {
@@ -1122,6 +1126,23 @@ std::optional<tr_torrent_files::FoundFile> tr_torrent::find_file(tr_file_index_t
     auto paths = std::array<std::string_view, 4>{};
     auto const n_paths = buildSearchPathArray(this, std::data(paths));
     return files().find(file_index, { paths.data(), n_paths });
+}
+
+std::shared_ptr<tr::StorageDescriptor const> tr_torrent::storage_descriptor() const
+{
+    TR_ASSERT(session->am_in_session_thread());
+
+    if (!storage_descriptor_) {
+        storage_descriptor_ = std::make_shared<tr::StorageDescriptor const>(
+            storage_generation_,
+            block_info(),
+            files(),
+            fpm_,
+            std::string{ download_dir().sv() },
+            std::string{ incomplete_dir().sv() });
+    }
+
+    return storage_descriptor_;
 }
 
 bool tr_torrent::has_any_local_data() const
@@ -2230,6 +2251,7 @@ void tr_torrent::refresh_current_dir()
     TR_ASSERT(dir == download_dir() || dir == incomplete_dir());
 
     current_dir_ = dir;
+    invalidate_storage_descriptor();
 }
 
 // --- RENAME
@@ -2566,6 +2588,8 @@ void tr_torrent::ResumeHelper::load_download_dir(std::string_view const dir) noe
     if (is_current_dir) {
         tor_.current_dir_ = tor_.download_dir_;
     }
+
+    tor_.invalidate_storage_descriptor();
 }
 
 void tr_torrent::ResumeHelper::load_incomplete_dir(std::string_view const dir) noexcept
@@ -2575,6 +2599,8 @@ void tr_torrent::ResumeHelper::load_incomplete_dir(std::string_view const dir) n
     if (is_current_dir) {
         tor_.current_dir_ = tor_.incomplete_dir_;
     }
+
+    tor_.invalidate_storage_descriptor();
 }
 
 // ---

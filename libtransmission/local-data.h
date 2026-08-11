@@ -34,6 +34,8 @@ class tr_torrents;
 namespace tr
 {
 
+struct StorageDescriptor;
+
 /**
  * The gateway for all torrent local-data IO.
  *
@@ -216,8 +218,8 @@ public:
      */
     enum class Completions : uint8_t { Inline, Shuffled };
 
-    explicit LocalData(tr_torrents const& torrents, tr_open_files& open_files, size_t worker_count = {});
-    explicit LocalData(std::unique_ptr<Backend> backend, size_t worker_count = {});
+    explicit LocalData(tr_torrents const& torrents, tr_open_files& open_files);
+    explicit LocalData(std::unique_ptr<Backend> backend);
 
     LocalData(LocalData const&) = delete;
     LocalData(LocalData&&) = delete;
@@ -249,6 +251,33 @@ public:
 
     // Deliver the parked completions in a random order.
     void pump();
+
+    // Runs a function on the session thread. Must be callable from any
+    // thread; the calls may come from disk workers.
+    using Marshal = std::function<void(std::function<void()>)>;
+
+    // Returns the torrent's current storage descriptor, or nullptr if
+    // the torrent is gone. Called on the session thread when an op is
+    // admitted.
+    using DescriptorProvider = std::function<std::shared_ptr<StorageDescriptor const>(tr_torrent_id_t)>;
+
+    /**
+     * Switch to the threaded backend.
+     *
+     * Reads and piece hashes run on `worker_count` worker threads and
+     * complete later, from the session thread. Writes still run inline
+     * on the session thread. Admin ops become real barriers: they wait
+     * for the ops in flight, and ops enqueued behind them wait for
+     * them. Everything the rules above allow can now actually happen.
+     *
+     * Workers resolve torrent data through `provider` and never touch
+     * `tr_torrent` or `tr_session`. Leave `provider` unset to snapshot
+     * descriptors from the torrents passed to the constructor; tests
+     * pass their own.
+     *
+     * Call at most once, before any ops are enqueued.
+     */
+    void start_workers(size_t worker_count, Marshal marshal, DescriptorProvider provider = {});
 
 private:
     // A completion waiting to be delivered.
@@ -297,7 +326,15 @@ private:
     // Deliver every parked completion, including ones parked along the way.
     void drain();
 
+    // The threaded backend. See start_workers().
+    class Threaded;
+
     std::unique_ptr<Backend> backend_;
+
+    tr_torrents const* torrents_ = nullptr;
+    tr_open_files* open_files_ = nullptr;
+
+    std::shared_ptr<Threaded> threaded_;
 
     std::vector<std::unique_ptr<Parked>> parked_;
     std::function<void()> wake_;

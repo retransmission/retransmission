@@ -36,6 +36,7 @@
 #include <libtransmission/torrent-ctor.h>
 #include <libtransmission/torrent.h>
 #include <libtransmission/tr-strbuf.h>
+#include <libtransmission/utils.h> // tr_num_parse()
 #include <libtransmission/variant.h>
 
 using namespace std::literals;
@@ -487,6 +488,14 @@ protected:
         if (tr_env_key_exists("TR_LOCAL_DATA_SHUFFLE")) {
             session_->local_data.set_completions(tr::LocalData::Completions::Shuffled, [this]() {
                 session_->queue_session_thread([this]() { session_->local_data.pump(); });
+            });
+        }
+
+        // Set TR_LOCAL_DATA_WORKERS to run the disk IO on the
+        // threaded backend instead of the synchronous one.
+        if (auto const workers = tr_env_get_string("TR_LOCAL_DATA_WORKERS"); !std::empty(workers)) {
+            session_->local_data.start_workers(tr_num_parse<size_t>(workers).value_or(2U), [this](std::function<void()> fn) {
+                session_->queue_session_thread(std::move(fn));
             });
         }
 
