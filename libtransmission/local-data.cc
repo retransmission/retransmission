@@ -406,6 +406,10 @@ private:
         size_t n_running = 0U;
         bool barrier_running = false;
         std::deque<Queued> queue;
+#ifdef TR_ENABLE_ASSERTS
+        // spans being read by ops in flight, for the S6 overlap assert
+        std::vector<tr_byte_span_t> running_read_spans;
+#endif
     };
 
     // A staged cold read, resolved and waiting for the batch flush.
@@ -511,6 +515,25 @@ private:
         advance(id);
     }
 
+    void register_running_span([[maybe_unused]] tr_torrent_id_t const id, [[maybe_unused]] tr_byte_span_t const span)
+    {
+#ifdef TR_ENABLE_ASSERTS
+        gates_[id].running_read_spans.push_back(span);
+#endif
+    }
+
+    void unregister_running_span([[maybe_unused]] tr_torrent_id_t const id, [[maybe_unused]] tr_byte_span_t const span)
+    {
+#ifdef TR_ENABLE_ASSERTS
+        auto& spans = gates_[id].running_read_spans;
+        auto const it = std::ranges::find_if(spans, [&span](tr_byte_span_t const& running) {
+            return running.begin == span.begin && running.end == span.end;
+        });
+        TR_ASSERT(it != std::end(spans));
+        spans.erase(it);
+#endif
+    }
+
     void admit_read(tr_torrent_id_t const id, ReadOp op)
     {
         auto const span = op.span;
@@ -531,6 +554,7 @@ private:
 
         ++gates_[id].n_running;
         ++n_running_total_;
+        register_running_span(id, span);
         staged_.emplace_back(StagedRead{ id, desc, span, std::move(op.on_read), file, file_offset, single_file });
         schedule_flush();
     }
@@ -575,17 +599,20 @@ private:
             return;
         }
 
+        auto const piece_span = desc->block_info.byte_span_for_piece(op.piece);
         ++gates_[id].n_running;
         ++n_running_total_;
+        register_running_span(id, piece_span);
 
-        push_work([this, id, desc, piece = op.piece, on_test = std::move(op.on_test)]() mutable {
+        push_work([this, id, desc, piece = op.piece, piece_span, on_test = std::move(op.on_test)]() mutable {
             auto hash = tr_sha1_digest_t{};
             auto const err = hash_piece(id, *desc, piece, hash);
-            post_completion([this, id, piece, err, hash, on_test = std::move(on_test)]() mutable {
+            post_completion([this, id, piece, piece_span, err, hash, on_test = std::move(on_test)]() mutable {
                 if (on_test) {
                     std::move(
                         on_test)(id, piece, make_error(err), err == 0 ? std::optional<tr_sha1_digest_t>{ hash } : std::nullopt);
                 }
+                unregister_running_span(id, piece_span);
                 release(id);
             });
         });
@@ -599,6 +626,16 @@ private:
         // swarm outrun the disk unboundedly. They still count as
         // running while their completion runs, so a completion that
         // enqueues a barrier can't have it jump the queue.
+#ifdef TR_ENABLE_ASSERTS
+        // S6: a write must never overlap an op that's reading. The
+        // protocol already guarantees it - we write only blocks we
+        // lack, and read or hash only pieces we have - so a failure
+        // here is a caller bug, not a backend race.
+        for (auto const& read_span : gates_[id].running_read_spans) {
+            TR_ASSERT(op.span.end <= read_span.begin || read_span.end <= op.span.begin);
+        }
+#endif
+
         auto err = tr_error_code_t{ TR_ERROR_EINVAL };
         if (op.data != nullptr) {
             err = write_exec_(id, op.span, *op.data);
@@ -875,6 +912,7 @@ private:
             if (on_read) {
                 std::move(on_read)(id, span, make_error(err), std::move(data));
             }
+            unregister_running_span(id, span);
             release(id);
         });
     }
