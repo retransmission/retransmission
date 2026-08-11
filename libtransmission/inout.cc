@@ -18,6 +18,7 @@
 #include "libtransmission/error.h"
 #include "libtransmission/file.h"
 #include "libtransmission/inout.h"
+#include "libtransmission/open-files.h"
 #include "libtransmission/session.h"
 #include "libtransmission/string-utils.h"
 #include "libtransmission/torrent-files.h"
@@ -63,7 +64,7 @@ bool write_entire_buf(tr_sys_file_t const fd, uint64_t file_offset, std::span<ui
     return true;
 }
 
-[[nodiscard]] std::optional<tr_sys_file_t> get_fd(
+[[nodiscard]] tr_open_files::Pinned get_fd(
     tr_session& session,
     tr_open_files& open_files,
     tr_torrent const& tor,

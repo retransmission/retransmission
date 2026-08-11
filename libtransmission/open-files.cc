@@ -5,6 +5,8 @@
 
 #include <algorithm> // std::min
 #include <cstdint> // uint8_t, uint64_t
+#include <memory>
+#include <mutex>
 #include <span>
 #include <string_view>
 #include <utility>
@@ -115,20 +117,22 @@ bool preallocate_file_full(tr_sys_file_t fd, uint64_t length, tr_error* error)
 
 // ---
 
-std::optional<tr_sys_file_t> tr_open_files::get(tr_torrent_id_t tor_id, tr_file_index_t file_num, bool writable)
+tr_open_files::Pinned tr_open_files::get(tr_torrent_id_t tor_id, tr_file_index_t file_num, bool writable)
 {
+    auto const lock = std::scoped_lock{ mutex_ };
+
     if (auto* const found = pool_.get(make_key(tor_id, file_num)); found != nullptr) {
-        if (writable && !found->writable_) {
+        if (writable && !(*found)->writable_) {
             return {};
         }
 
-        return found->fd_;
+        return Pinned{ *found };
     }
 
     return {};
 }
 
-std::optional<tr_sys_file_t> tr_open_files::get(
+tr_open_files::Pinned tr_open_files::get(
     tr_torrent_id_t tor_id,
     tr_file_index_t file_num,
     bool writable,
@@ -136,15 +140,23 @@ std::optional<tr_sys_file_t> tr_open_files::get(
     tr_file_preallocation allocation,
     uint64_t file_size)
 {
-    // is there already an entry
     auto key = make_key(tor_id, file_num);
-    if (auto* const found = pool_.get(key); found != nullptr) {
-        if (!writable || found->writable_) {
-            return found->fd_;
-        }
 
-        pool_.erase(key); // close so we can re-open as writable
+    {
+        auto const lock = std::scoped_lock{ mutex_ };
+        if (auto* const found = pool_.get(key); found != nullptr) {
+            if (!writable || (*found)->writable_) {
+                return Pinned{ *found };
+            }
+
+            pool_.erase(key); // close so we can re-open as writable
+        }
     }
+
+    // Open without holding the mutex: opening can block on disk, and
+    // preallocation can block for a long time. If two threads race to
+    // open the same file, both fds are valid; the loser's entry is
+    // replaced in the pool and its fd closes when its pins drop.
 
     // create subfolders, if any
     auto error = tr_error{};
@@ -225,31 +237,26 @@ std::optional<tr_sys_file_t> tr_open_files::get(
     }
 
     // cache it
-    auto& entry = pool_.add(std::move(key));
-    entry.fd_ = fd;
-    entry.writable_ = writable;
-
-    return fd;
+    auto file = std::make_shared<File const>(fd, writable);
+    auto const lock = std::scoped_lock{ mutex_ };
+    pool_.add(std::move(key)) = file;
+    return Pinned{ std::move(file) };
 }
 
 void tr_open_files::close_all()
 {
+    auto const lock = std::scoped_lock{ mutex_ };
     pool_.clear();
 }
 
 void tr_open_files::close_torrent(tr_torrent_id_t tor_id)
 {
-    pool_.erase_if([&tor_id](Key const& key, Val const& /*unused*/) { return key.first == tor_id; });
+    auto const lock = std::scoped_lock{ mutex_ };
+    pool_.erase_if([&tor_id](Key const& key, std::shared_ptr<File const> const& /*unused*/) { return key.first == tor_id; });
 }
 
 void tr_open_files::close_file(tr_torrent_id_t tor_id, tr_file_index_t file_num)
 {
+    auto const lock = std::scoped_lock{ mutex_ };
     pool_.erase(make_key(tor_id, file_num));
-}
-
-tr_open_files::Val::~Val()
-{
-    if (is_open(fd_)) {
-        tr_sys_file_close(fd_);
-    }
 }

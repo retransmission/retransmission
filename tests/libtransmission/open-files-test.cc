@@ -58,6 +58,28 @@ TEST_F(OpenFilesTest, getOpensIfNotCached)
     EXPECT_EQ(Contents, contents);
 }
 
+TEST_F(OpenFilesTest, pinKeepsFdOpenAfterClose)
+{
+    static auto constexpr Contents = "Hello, World!\n"sv;
+    auto filename = tr_pathbuf{ sandboxDir(), "/test-file.txt" };
+    createFileWithContents(filename, Contents);
+
+    auto const fd = session_->openFiles().get(0, 0, false, filename, PreallocateFull, std::size(Contents));
+    EXPECT_TRUE(fd.has_value());
+    assert(fd.has_value());
+
+    // closing the entry only unpins it from the pool...
+    session_->openFiles().close_file(0, 0);
+    EXPECT_FALSE(session_->openFiles().get(0, 0, false));
+
+    // ...the fd itself stays open for as long as we hold the pin
+    auto buf = std::array<char, std::size(Contents) + 1>{};
+    auto bytes_read = uint64_t{};
+    EXPECT_TRUE(tr_sys_file_read_at(*fd, std::data(buf), std::size(Contents), 0, &bytes_read));
+    auto const contents = std::string_view{ std::data(buf), static_cast<size_t>(bytes_read) };
+    EXPECT_EQ(Contents, contents);
+}
+
 TEST_F(OpenFilesTest, getCacheSucceedsIfCached)
 {
     static auto constexpr Contents = "Hello, World!\n"sv;
