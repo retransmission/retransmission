@@ -7,6 +7,7 @@ target_sources(libtransmission-app-test
 		converter-tests.cc
 		prefs-test.cc
 		rpc-client-test.cc
+		rpc-queue-test.cc
 		session-test.cc
 		test-fixtures.h)
 
