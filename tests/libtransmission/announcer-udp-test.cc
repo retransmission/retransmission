@@ -285,6 +285,35 @@ protected:
         return connection_id;
     }
 
+    [[nodiscard]] static auto establishDualStackConnections(tr_announcer_udp& announcer, MockMediator& mediator)
+    {
+        auto connection_ids = std::array<tau_connection_t, NUM_TR_AF_INET_TYPES>{};
+        auto connection_transaction_ids = std::array<tau_transaction_t, NUM_TR_AF_INET_TYPES>{};
+        auto connection_addresses = std::array<sockaddr_storage, NUM_TR_AF_INET_TYPES>{};
+        auto connection_address_lens = std::array<socklen_t, NUM_TR_AF_INET_TYPES>{};
+        auto from = sockaddr_storage{};
+        auto* const from_ptr = reinterpret_cast<sockaddr*>(&from);
+        auto fromlen = socklen_t{};
+
+        for (uint8_t i = 0U; i < NUM_TR_AF_INET_TYPES; ++i) {
+            auto const transaction_id = parseConnectionRequest(waitForAnnouncerToSendMessage(mediator, from_ptr, &fromlen));
+            auto const ipp = tr_af_to_ip_protocol(from_ptr->sa_family);
+            connection_transaction_ids[ipp] = transaction_id;
+            std::memcpy(&connection_addresses[ipp], from_ptr, fromlen);
+            connection_address_lens[ipp] = fromlen;
+        }
+        for (uint8_t i = 0U; i < NUM_TR_AF_INET_TYPES; ++i) {
+            auto const ipp = static_cast<tr_address_type>(i);
+            connection_ids[ipp] = sendConnectionResponse(
+                announcer,
+                connection_transaction_ids[ipp],
+                reinterpret_cast<sockaddr const*>(&connection_addresses[ipp]),
+                connection_address_lens[ipp]);
+        }
+
+        return connection_ids;
+    }
+
     struct UdpAnnounceReq {
         uint64_t connection_id = 0;
         uint32_t action = 0; // 1: announce
@@ -914,13 +943,7 @@ TEST_F(AnnouncerUdpTest, canAnnounceDualStack)
     auto* const from_ptr = reinterpret_cast<struct sockaddr*>(&from);
     auto fromlen = socklen_t{};
 
-    auto connection_ids = std::array<tau_connection_t, NUM_TR_AF_INET_TYPES>{};
-    for (uint8_t i = 0U; i < NUM_TR_AF_INET_TYPES; ++i) {
-        // Announcer will request a connection. Verify and grant the request
-        auto const connect_transaction_id = parseConnectionRequest(waitForAnnouncerToSendMessage(mediator, from_ptr, &fromlen));
-        auto const ipp = tr_af_to_ip_protocol(from_ptr->sa_family);
-        connection_ids[ipp] = sendConnectionResponse(*announcer, connect_transaction_id, from_ptr, fromlen);
-    }
+    auto const connection_ids = establishDualStackConnections(*announcer, mediator);
 
     for (uint8_t i = 0U; i < NUM_TR_AF_INET_TYPES; ++i) {
         response.reset();
@@ -1013,13 +1036,7 @@ TEST_F(AnnouncerUdpTest, announceDualStackOnlyIPv4Successful)
     auto* const from_ptr = reinterpret_cast<struct sockaddr*>(&from);
     auto fromlen = socklen_t{};
 
-    auto connection_ids = std::array<tau_connection_t, NUM_TR_AF_INET_TYPES>{};
-    for (uint8_t i = 0U; i < NUM_TR_AF_INET_TYPES; ++i) {
-        // Announcer will request a connection. Verify and grant the request
-        auto const connect_transaction_id = parseConnectionRequest(waitForAnnouncerToSendMessage(mediator, from_ptr, &fromlen));
-        auto const ipp = tr_af_to_ip_protocol(from_ptr->sa_family);
-        connection_ids[ipp] = sendConnectionResponse(*announcer, connect_transaction_id, from_ptr, fromlen);
-    }
+    auto const connection_ids = establishDualStackConnections(*announcer, mediator);
 
     for (uint8_t i = 0U; i < NUM_TR_AF_INET_TYPES; ++i) {
         response.reset();
@@ -1112,13 +1129,7 @@ TEST_F(AnnouncerUdpTest, announceDualStackOnlyIPv6Successful)
     auto* const from_ptr = reinterpret_cast<struct sockaddr*>(&from);
     auto fromlen = socklen_t{};
 
-    auto connection_ids = std::array<tau_connection_t, NUM_TR_AF_INET_TYPES>{};
-    for (uint8_t i = 0U; i < NUM_TR_AF_INET_TYPES; ++i) {
-        // Announcer will request a connection. Verify and grant the request
-        auto const connect_transaction_id = parseConnectionRequest(waitForAnnouncerToSendMessage(mediator, from_ptr, &fromlen));
-        auto const ipp = tr_af_to_ip_protocol(from_ptr->sa_family);
-        connection_ids[ipp] = sendConnectionResponse(*announcer, connect_transaction_id, from_ptr, fromlen);
-    }
+    auto const connection_ids = establishDualStackConnections(*announcer, mediator);
 
     for (uint8_t i = 0U; i < NUM_TR_AF_INET_TYPES; ++i) {
         response.reset();
@@ -1202,13 +1213,7 @@ TEST_F(AnnouncerUdpTest, announceDualStackNoneSuccessful)
     auto* const from_ptr = reinterpret_cast<struct sockaddr*>(&from);
     auto fromlen = socklen_t{};
 
-    auto connection_ids = std::array<tau_connection_t, NUM_TR_AF_INET_TYPES>{};
-    for (uint8_t i = 0U; i < NUM_TR_AF_INET_TYPES; ++i) {
-        // Announcer will request a connection. Verify and grant the request
-        auto const connect_transaction_id = parseConnectionRequest(waitForAnnouncerToSendMessage(mediator, from_ptr, &fromlen));
-        auto const ipp = tr_af_to_ip_protocol(from_ptr->sa_family);
-        connection_ids[ipp] = sendConnectionResponse(*announcer, connect_transaction_id, from_ptr, fromlen);
-    }
+    auto const connection_ids = establishDualStackConnections(*announcer, mediator);
 
     for (uint8_t i = 0U; i < NUM_TR_AF_INET_TYPES; ++i) {
         auto const received_response = response.has_value();
