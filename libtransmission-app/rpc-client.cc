@@ -89,7 +89,7 @@ void RpcClient::exec(tr_quark const method, tr_variant::Map args, ResponseFunc o
     auto req = build_request(method, std::move(args));
 
     if (session_ != nullptr) {
-        send_local_request(std::move(req), std::move(on_done));
+        send_embedded_request(std::move(req), std::move(on_done));
     } else if (!std::empty(url_)) {
         api_compat::convert(req, network_style_);
         auto body = tr_variant_serde::json().compact().to_string(req);
@@ -109,7 +109,7 @@ void RpcClient::exec(tr_quark const method, tr_variant* args, ResponseFunc on_do
     exec(method, tr_variant::Map{}, std::move(on_done));
 }
 
-void RpcClient::send_local_request(tr_variant&& req, ResponseFunc on_done)
+void RpcClient::send_embedded_request(tr_variant&& req, ResponseFunc on_done)
 {
     if (verbose_) {
         fmt::print("{:s}:{:d} sending req:\n{:s}\n", __FILE__, __LINE__, tr_variant_serde::json().to_string(req));

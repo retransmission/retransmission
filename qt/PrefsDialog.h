@@ -90,7 +90,7 @@ private:
 
     Ui::PrefsDialog ui_ = {};
 
-    bool const is_server_;
+    bool const is_embedded_;
     bool is_local_fs_ = {};
     std::array<PortTestStatus, Session::NUM_PORT_TEST_IP_PROTOCOL> port_test_status_ = {};
 

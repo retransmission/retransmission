@@ -44,6 +44,11 @@ public:
         return url_;
     }
 
+    [[nodiscard]] constexpr tr::app::RpcClient& impl() noexcept
+    {
+        return impl_;
+    }
+
     void stop();
     void start(tr_session* session);
     void start(QUrl const& url);

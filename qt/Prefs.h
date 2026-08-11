@@ -41,11 +41,6 @@ public:
     Prefs& operator=(Prefs const&) = delete;
     ~Prefs() override = default;
 
-    [[nodiscard]] static constexpr bool isCore(tr_quark const key)
-    {
-        return tr::app::prefs_is_core(key);
-    }
-
 signals:
     void changed(tr_quark key);
 

@@ -284,7 +284,7 @@ int tr_main(int argc, char** argv)
     auto const ret = QApplication::exec();
 
     // save prefs before exiting
-    prefs.save(config_dir.toStdString(), app.local_session_settings());
+    prefs.save(config_dir.toStdString(), app.embedded_session_settings());
 
     return ret;
 }

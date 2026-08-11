@@ -53,13 +53,6 @@ using ::trqt::variant_helpers::dictFind;
 ****
 ***/
 
-void Session::sessionSet(tr_quark const key, tr_variant val)
-{
-    auto params = tr_variant::Map{ 1U };
-    params.insert_or_assign(key, std::move(val));
-    exec(TR_KEY_session_set, std::move(params));
-}
-
 void Session::portTest(Session::PortTestIpProtocol const ip_protocol)
 {
     static auto constexpr IpStr = std::array{ "ipv4"sv, "ipv6"sv };
@@ -123,127 +116,17 @@ void Session::copyMagnetLinkToClipboard(int torrent_id)
         .run();
 }
 
-void Session::updatePref(tr_quark key)
-{
-    if (Prefs::isCore(key)) {
-        switch (key) {
-        case TR_KEY_alt_speed_down:
-        case TR_KEY_alt_speed_enabled:
-        case TR_KEY_alt_speed_time_begin:
-        case TR_KEY_alt_speed_time_day:
-        case TR_KEY_alt_speed_time_enabled:
-        case TR_KEY_alt_speed_time_end:
-        case TR_KEY_alt_speed_up:
-        case TR_KEY_blocklist_enabled:
-        case TR_KEY_blocklist_updates_enabled:
-        case TR_KEY_blocklist_url:
-        case TR_KEY_default_trackers:
-        case TR_KEY_dht_enabled:
-        case TR_KEY_download_queue_enabled:
-        case TR_KEY_download_queue_size:
-        case TR_KEY_speed_limit_down:
-        case TR_KEY_speed_limit_down_enabled:
-        case TR_KEY_encryption:
-        case TR_KEY_idle_seeding_limit:
-        case TR_KEY_idle_seeding_limit_enabled:
-        case TR_KEY_incomplete_dir:
-        case TR_KEY_incomplete_dir_enabled:
-        case TR_KEY_lpd_enabled:
-        case TR_KEY_peer_limit_global:
-        case TR_KEY_peer_limit_per_torrent:
-        case TR_KEY_peer_port:
-        case TR_KEY_peer_port_random_on_start:
-        case TR_KEY_queue_stalled_minutes:
-        case TR_KEY_pex_enabled:
-        case TR_KEY_port_forwarding_enabled:
-        case TR_KEY_rename_partial_files:
-        case TR_KEY_script_torrent_done_enabled:
-        case TR_KEY_script_torrent_done_filename:
-        case TR_KEY_script_torrent_done_seeding_enabled:
-        case TR_KEY_script_torrent_done_seeding_filename:
-        case TR_KEY_start_added_torrents:
-        case TR_KEY_trash_original_torrent_files:
-        case TR_KEY_seed_ratio_limit:
-        case TR_KEY_seed_ratio_limited:
-        case TR_KEY_speed_limit_up:
-        case TR_KEY_speed_limit_up_enabled:
-        case TR_KEY_utp_enabled:
-        case TR_KEY_torrent_complete_verify_enabled:
-            sessionSet(key, prefs_.get<tr_variant>(key));
-            break;
-
-        case TR_KEY_download_dir:
-            // this will change the 'freespace' argument, so refresh
-            sessionSet(key, prefs_.get<tr_variant>(key));
-            refreshSessionInfo();
-            break;
-
-        case TR_KEY_rpc_authentication_required:
-            if (session_ != nullptr) {
-                tr_sessionSetRPCPasswordEnabled(session_, prefs_.get<bool>(key));
-            }
-
-            break;
-
-        case TR_KEY_rpc_enabled:
-            if (session_ != nullptr) {
-                tr_sessionSetRPCEnabled(session_, prefs_.get<bool>(key));
-            }
-
-            break;
-
-        case TR_KEY_rpc_password:
-            if (session_ != nullptr) {
-                tr_sessionSetRPCPassword(session_, prefs_.get<QString>(key).toStdString());
-            }
-
-            break;
-
-        case TR_KEY_rpc_port:
-            if (session_ != nullptr) {
-                tr_sessionSetRPCPort(session_, static_cast<uint16_t>(prefs_.get<int>(key)));
-            }
-
-            break;
-
-        case TR_KEY_rpc_username:
-            if (session_ != nullptr) {
-                tr_sessionSetRPCUsername(session_, prefs_.get<QString>(key).toStdString());
-            }
-
-            break;
-
-        case TR_KEY_rpc_whitelist_enabled:
-            if (session_ != nullptr) {
-                tr_sessionSetRPCWhitelistEnabled(session_, prefs_.get<bool>(key));
-            }
-
-            break;
-
-        case TR_KEY_rpc_whitelist:
-            if (session_ != nullptr) {
-                tr_sessionSetRPCWhitelist(session_, prefs_.get<QString>(key).toStdString());
-            }
-
-            break;
-
-        default:
-            qWarning() << "unhandled pref:" << static_cast<int>(key);
-        }
-    }
-}
-
 /***
 ****
 ***/
 
 Session::Session(QString config_dir, Prefs& prefs, RpcClient& rpc)
-    : tr::app::Session{ prefs }
+    : tr::app::Session{ prefs, rpc.impl() }
     , config_dir_{ std::move(config_dir) }
     , prefs_{ prefs }
     , rpc_{ rpc }
 {
-    connect(&prefs_, qOverload<tr_quark>(&Prefs::changed), this, &Session::updatePref);
+    session_refresh_tag_ = session_refresh_needed.connect_scoped([this]() { refreshSessionInfo(); });
     connect(&rpc_, &RpcClient::httpAuthenticationRequired, this, &Session::httpAuthenticationRequired);
     connect(&rpc_, &RpcClient::dataReadProgress, this, &Session::dataReadProgress);
     connect(&rpc_, &RpcClient::dataSendProgress, this, &Session::dataSendProgress);
@@ -267,6 +150,7 @@ void Session::stop()
     rpc_.stop();
 
     if (session_ != nullptr) {
+        set_embedded_session(nullptr);
         tr_sessionClose(session_);
         session_ = nullptr;
     }
@@ -306,6 +190,7 @@ void Session::start()
         auto config_dir = config_dir_.toStdString();
         auto const settings = tr_sessionLoadSettings(config_dir);
         session_ = tr_sessionInit(config_dir, true, settings);
+        set_embedded_session(session_);
         updateType();
 
         rpc_.start(session_);
@@ -733,27 +618,8 @@ void Session::updateStats(tr_variant* dict)
 
 void Session::updateInfo(tr_variant* args_dict)
 {
-    disconnect(&prefs_, qOverload<tr_quark>(&Prefs::changed), this, &Session::updatePref);
-
     if (auto const* const settings = args_dict->get_if<tr_variant::Map>(); settings != nullptr) {
-        for (auto const& [key, value] : *settings) {
-            if (!Prefs::isCore(key)) {
-                continue;
-            }
-
-            prefs_.set(key, value);
-        }
-    }
-
-    /* Use the C API to get settings that, for security reasons, aren't supported by RPC */
-    if (session_ != nullptr) {
-        prefs_.set(TR_KEY_rpc_enabled, tr_sessionIsRPCEnabled(session_));
-        prefs_.set(TR_KEY_rpc_authentication_required, tr_sessionIsRPCPasswordEnabled(session_));
-        prefs_.set(TR_KEY_rpc_password, QString::fromStdString(tr_sessionGetRPCPassword(session_)));
-        prefs_.set(TR_KEY_rpc_port, tr_sessionGetRPCPort(session_));
-        prefs_.set(TR_KEY_rpc_username, QString::fromStdString(tr_sessionGetRPCUsername(session_)));
-        prefs_.set(TR_KEY_rpc_whitelist_enabled, tr_sessionGetRPCWhitelistEnabled(session_));
-        prefs_.set(TR_KEY_rpc_whitelist, QString::fromStdString(tr_sessionGetRPCWhitelist(session_)));
+        import_session_settings(*settings);
     }
 
     if (auto const size = dictFind<int>(args_dict, TR_KEY_blocklist_size); size && *size != blocklistSize()) {
@@ -769,8 +635,6 @@ void Session::updateInfo(tr_variant* args_dict)
     }
 
     updateType(dictFind<std::string>(args_dict, TR_KEY_session_id));
-
-    connect(&prefs_, qOverload<tr_quark>(&Prefs::changed), this, &Session::updatePref);
 
     emit sessionUpdated();
 }
@@ -930,7 +794,7 @@ void Session::launchWebInterface() const
         auto const root_path = prefs_.get<QString>(TR_KEY_remote_session_url_base_path);
         auto const relative_path = TrHttpServerWebRelativePath;
         url.setPath(root_path + Utils::qstringFromUtf8(relative_path));
-    } else // local session
+    } else // embedded session
     {
         url.setScheme(QStringLiteral("http"));
         url.setHost(QStringLiteral("localhost"));
@@ -938,17 +802,6 @@ void Session::launchWebInterface() const
     }
 
     QDesktopServices::openUrl(url);
-}
-
-// ---
-
-std::optional<tr::Settings> Session::local_settings() const
-{
-    if (session_) {
-        return tr_sessionGetSettings(session_);
-    }
-
-    return {};
 }
 
 /// ---
@@ -959,7 +812,7 @@ namespace
 std::optional<Session::Type> computeType(tr_session const* const session, std::optional<std::string> const& session_id)
 {
     if (session != nullptr) {
-        return Session::Type::InProcess;
+        return Session::Type::Embedded;
     }
 
     if (session_id) {

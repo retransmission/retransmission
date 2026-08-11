@@ -9,8 +9,10 @@
 
 #include <fmt/format.h>
 
+#include "libtransmission/log.h"
 #include "libtransmission/quark.h"
 #include "libtransmission/session-settings.h"
+#include "libtransmission/tr-assert.h"
 #include "libtransmission/transmission.h"
 
 #include "libtransmission-app/prefs.h"
@@ -85,8 +87,20 @@ void Prefs::save(std::string_view const config_dir, std::optional<tr::Settings> 
 
 void Prefs::set(tr_quark const key, tr_variant const& var)
 {
+    warn_if_unregistered(key);
+
     if (tr::serializer::set_from_variant(key, var, app_prefs_, session_prefs_)) {
         changed_(key);
     }
+}
+
+void Prefs::warn_if_unregistered(tr_quark const key)
+{
+    if (tr::serializer::has_key<AppPrefs>(key) || tr::serializer::has_key<SessionPrefs>(key)) {
+        return;
+    }
+
+    tr_logAddWarn(fmt::format("No pref is registered for key '{:s}'", tr_quark_get_string_view(key)));
+    TR_ASSERT_MSG(false, "no pref is registered for this key");
 }
 } // namespace tr::app

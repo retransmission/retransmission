@@ -269,7 +269,7 @@ void MainWindow::onSessionSourceChanged()
 {
     model_.clear();
 
-    if (session_.isServer()) {
+    if (session_.is_embedded()) {
         updateNetworkLabel();
         ui_.networkLabel->show();
         network_timer_.start(1000);

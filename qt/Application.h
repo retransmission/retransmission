@@ -62,7 +62,7 @@ public:
 
     QString intern(QString const& in);
 
-    [[nodiscard]] std::optional<tr::Settings> local_session_settings() const;
+    [[nodiscard]] std::optional<tr::Settings> embedded_session_settings() const;
 
     [[nodiscard]] QPixmap find_favicon(QString const& sitename) const
     {

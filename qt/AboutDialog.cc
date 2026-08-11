@@ -26,7 +26,7 @@ AboutDialog::AboutDialog(Session& session, QWidget* parent)
 
     ui_.iconLabel->setPixmap(QApplication::windowIcon().pixmap(48));
 
-    if (session.isServer()) {
+    if (session.is_embedded()) {
         auto const title = QStringLiteral("<b style='font-size:x-large'>" TR_PROJ_APPNAME_CAPITALIZED " %1</b>")
                                .arg(QStringLiteral(LONG_VERSION_STRING));
         ui_.titleLabel->setText(title);

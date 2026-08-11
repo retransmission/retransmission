@@ -13,6 +13,8 @@
 #include <string>
 #include <type_traits>
 
+#include <sigslot/signal.hpp>
+
 #include <QtCore/QObject>
 #include <QtCore/QString>
 #include <QtCore/QTimer>
@@ -53,8 +55,6 @@ public:
     void stop();
     void restart();
 
-    [[nodiscard]] std::optional<tr::Settings> local_settings() const;
-
     [[nodiscard]] constexpr auto const& getRemoteUrl() const noexcept
     {
         return rpc_.url();
@@ -89,13 +89,7 @@ public:
 
     [[nodiscard]] bool portTestPending(PortTestIpProtocol ip_protocol) const noexcept;
 
-    // returns true iff the session is in-process
-    [[nodiscard]] constexpr bool isServer() const noexcept
-    {
-        return type() == Type::InProcess;
-    }
-
-    // returns true iff the session is in-process or known to be on this system
+    // returns true iff the session is embedded or known to be on this system
     [[nodiscard]] constexpr bool isLocalFilesystem() const noexcept
     {
         return type().value_or(Type::Remote) != Type::Remote;
@@ -139,7 +133,6 @@ public slots:
     void refreshSessionInfo();
     void refreshSessionStats();
     void removeTorrents(torrent_ids_t const& torrent_ids, bool delete_files = false);
-    void updatePref(tr_quark key);
 
 signals:
     void sourceChanged();
@@ -203,7 +196,6 @@ private:
     void updateType(std::optional<std::string> session_id = {});
 
     Tag torrentSetImpl(tr_variant::Map params);
-    void sessionSet(tr_quark key, tr_variant val);
     void sendTorrentRequest(tr_quark method, torrent_ids_t const& torrent_ids);
     void refreshTorrents(torrent_ids_t const& ids, TorrentProperties props);
 
@@ -220,6 +212,9 @@ private:
     QString session_version_;
     RpcClient& rpc_;
     Tag next_tag_ = {};
+
+    // changing some prefs (eg download_dir) invalidates cached session info
+    sigslot::scoped_connection session_refresh_tag_;
 
     static inline torrent_ids_t const RecentlyActiveIDs = { -1 };
 

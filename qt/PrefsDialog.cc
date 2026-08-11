@@ -588,7 +588,7 @@ PrefsDialog::PrefsDialog(Session& session, Prefs& prefs, QWidget* parent)
     : BaseDialog{ parent }
     , session_{ session }
     , prefs_{ prefs }
-    , is_server_{ session.isServer() }
+    , is_embedded_{ session.is_embedded() }
     , is_local_fs_{ session_.isLocalFilesystem() }
 {
     ui_.setupUi(this);
@@ -617,7 +617,7 @@ PrefsDialog::PrefsDialog(Session& session, Prefs& prefs, QWidget* parent)
 
     // if it's a remote session, disable the preferences
     // that don't work in remote sessions
-    if (!is_server_) {
+    if (!is_embedded_) {
         for (QWidget* const w : unsupported_when_remote_) {
             w->setToolTip(tr("Not supported by remote sessions"));
             w->setEnabled(false);

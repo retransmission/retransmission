@@ -16,6 +16,7 @@
 
 #include <libtransmission/quark.h>
 #include <libtransmission/session-settings.h> // tr::is_settings_key()
+#include <libtransmission/tr-assert.h> // TR_ENABLE_ASSERTS
 #include <libtransmission/transmission.h> // tr_encryption_mode, tr_sessionGetDefaultSettings()
 #include <libtransmission/variant.h>
 
@@ -211,14 +212,19 @@ TEST_F(PrefsTest, getSetRoundTripsDate)
     expect_sys_seconds_eq(prefs.get<std::chrono::sys_seconds>(TR_KEY_blocklist_date), b);
 }
 
-TEST_F(PrefsTest, getReturnsDefaultForUnknownKey)
+TEST_F(PrefsTest, getFailsLoudlyForUnregisteredKey)
 {
     auto const prefs = TestPrefs{};
 
-    // TR_KEY_reqq is a session-settings key but not a `Prefs` field, so it is
-    // absent and `get()` should fall back to a value-initialized result.
+    // TR_KEY_reqq is a session-settings key but not a `Prefs` field, so
+    // using it is a programming error: fatal in debug builds, a logged
+    // warning plus a value-initialized fallback otherwise.
+#ifdef TR_ENABLE_ASSERTS
+    EXPECT_DEATH((void)prefs.get<int>(TR_KEY_reqq), "registered");
+#else
     EXPECT_EQ(prefs.get<int>(TR_KEY_reqq), 0);
     EXPECT_EQ(prefs.get<std::string>(TR_KEY_reqq), std::string{});
+#endif
 }
 
 TEST_F(PrefsTest, getAsVariantReturnsUnderlyingValue)

@@ -28,11 +28,11 @@ struct RpcResponse {
     std::shared_ptr<tr_variant> args;
     bool success = false;
     bool network_error = false; // true if no valid HTTP response
-    long http_status = 0; // HTTP status, or 0 for no response, or 200 for local
+    long http_status = 0; // HTTP status, or 0 for no response, or 200 for embedded
 };
 
-// RPC client which speaks either to in-process session (tr_rpc_request_exec)
-// or to a remote (tr_web). Every response callback and signal is delivered
+// RPC client which speaks either to an embedded (in-process) session
+// (tr_rpc_request_exec) or to a remote one (tr_web). Every response callback and signal is delivered
 // on the UI thread by way of the injected `run_on_ui_thread` hook,
 // so callers never see the libtransmission or curl worker threads.
 class RpcClient
@@ -53,7 +53,7 @@ public:
     RpcClient& operator=(RpcClient&&) = delete;
     RpcClient& operator=(RpcClient const&) = delete;
 
-    // Use an in-process session
+    // Use an embedded session
     void start(tr_session* session) noexcept;
 
     // Use the remote server at `url` (scheme://host:port/path).
@@ -73,7 +73,7 @@ public:
     sigslot::signal<> data_send_progress;
 
 private:
-    void send_local_request(tr_variant&& req, ResponseFunc on_done);
+    void send_embedded_request(tr_variant&& req, ResponseFunc on_done);
     void send_remote_request(std::string body, ResponseFunc on_done);
 
     [[nodiscard]] tr_web& web();

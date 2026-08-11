@@ -35,7 +35,7 @@ namespace tr::app
  * Local application preferences
  *
  * These belong to this client and are always meaningful,
- * whether we run an in-process session or are connected to a remote one.
+ * whether the session is embedded or remote.
  */
 struct AppPrefs {
     template<auto MemberPtr>
@@ -285,6 +285,8 @@ public:
     template<typename T>
     void set(tr_quark const key, T const& val)
     {
+        warn_if_unregistered(key);
+
         if (tr::serializer::set(key, val, app_prefs_, session_prefs_)) {
             changed_(key);
         }
@@ -293,6 +295,8 @@ public:
     template<typename T>
     [[nodiscard]] T get(tr_quark const key) const
     {
+        warn_if_unregistered(key);
+
         if constexpr (std::is_same_v<T, tr_variant>) {
             return tr::serializer::to_variant(key, app_prefs_, session_prefs_).value_or(T{});
         } else {
@@ -312,6 +316,11 @@ public:
     }
 
 private:
+    // Getting a key with no field in AppPrefs or SessionPrefs yields a
+    // default-constructed value, and setting one is ignored; warn (and in
+    // debug builds, assert) so those calls surface as programming errors.
+    static void warn_if_unregistered(tr_quark key);
+
     mutable sigslot::signal<tr_quark> changed_;
     AppPrefs app_prefs_;
     SessionPrefs session_prefs_;
