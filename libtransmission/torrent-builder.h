@@ -18,9 +18,6 @@
 struct tr_error;
 struct tr_session;
 struct tr_torrent;
-struct tr_torrent_builder;
-
-[[nodiscard]] tr_torrent* tr_torrentNew(tr_torrent_builder* builder, tr_torrent** setme_duplicate_of);
 
 struct tr_torrent_builder {
     explicit tr_torrent_builder(tr_session* session);

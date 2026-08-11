@@ -88,7 +88,7 @@ public:
     void torrents_added();
 
     void add_files(std::vector<Glib::RefPtr<Gio::File>> const& files, bool do_start, bool do_prompt, bool do_notify);
-    void add_builder(tr_torrent_builder* builder, bool do_prompt, bool do_notify);
+    void add_builder(std::unique_ptr<tr_torrent_builder> builder, bool do_prompt, bool do_notify);
     void add_torrent(Glib::RefPtr<Torrent> const& torrent, bool do_notify);
     bool add_from_url(Glib::ustring const& url);
 
@@ -150,7 +150,7 @@ private:
     void add_file_async_callback(
         Glib::RefPtr<Gio::File> const& file,
         Glib::RefPtr<Gio::AsyncResult>& result,
-        tr_torrent_builder* builder,
+        std::unique_ptr<tr_torrent_builder> builder,
         bool do_prompt,
         bool do_notify);
 
@@ -660,7 +660,7 @@ Glib::RefPtr<Torrent> Session::Impl::create_new_torrent(tr_torrent_builder* buil
     return Torrent::create(tor);
 }
 
-void Session::Impl::add_builder(tr_torrent_builder* builder, bool do_prompt, bool do_notify)
+void Session::Impl::add_builder(std::unique_ptr<tr_torrent_builder> builder, bool const do_prompt, bool const do_notify)
 {
     auto const& metainfo = builder->metainfo();
     if (std::empty(metainfo.info_hash_string())) {
@@ -675,17 +675,16 @@ void Session::Impl::add_builder(tr_torrent_builder* builder, bool do_prompt, boo
             signal_add_error_.emit(ERR_ADD_TORRENT_DUP, metainfo.name().c_str());
         }
 
-        delete builder;
         return;
     }
 
     if (!do_prompt) {
-        add_torrent(create_new_torrent(builder), do_notify);
-        delete builder;
+        add_torrent(create_new_torrent(builder.get()), do_notify);
         return;
     }
 
-    signal_add_prompt_.emit(builder);
+    // the receiver wraps the pointer back up; see Application::Impl::on_add_torrent()
+    signal_add_prompt_.emit(builder.release());
 }
 
 namespace
@@ -708,12 +707,12 @@ void core_apply_defaults(tr_torrent_builder* builder)
 
 } // namespace
 
-void Session::add_builder(tr_torrent_builder* builder)
+void Session::add_builder(std::unique_ptr<tr_torrent_builder> builder)
 {
     bool const do_notify = false;
     bool const do_prompt = gtr_pref_flag_get(TR_KEY_show_options_window);
-    core_apply_defaults(builder);
-    impl_->add_builder(builder, do_prompt, do_notify);
+    core_apply_defaults(builder.get());
+    impl_->add_builder(std::move(builder), do_prompt, do_notify);
 }
 
 /***
@@ -723,9 +722,9 @@ void Session::add_builder(tr_torrent_builder* builder)
 void Session::Impl::add_file_async_callback(
     Glib::RefPtr<Gio::File> const& file,
     Glib::RefPtr<Gio::AsyncResult>& result,
-    tr_torrent_builder* builder,
-    bool do_prompt,
-    bool do_notify)
+    std::unique_ptr<tr_torrent_builder> builder,
+    bool const do_prompt,
+    bool const do_notify)
 {
     try {
         gsize length = 0;
@@ -734,9 +733,7 @@ void Session::Impl::add_file_async_callback(
         if (!file->load_contents_finish(result, contents, length)) {
             gtr_message(fmt::format(fmt::runtime(_("Couldn't read '{path}'")), fmt::arg("path", file->get_parse_name())));
         } else if (builder->set_metainfo(contents != nullptr ? std::string_view{ contents, length } : std::string_view{})) {
-            add_builder(builder, do_prompt, do_notify);
-        } else {
-            delete builder;
+            add_builder(std::move(builder), do_prompt, do_notify);
         }
     } catch (Glib::Error const& e) {
         gtr_message(
@@ -768,8 +765,8 @@ bool Session::Impl::add(Glib::ustring const& name_in, bool const do_start, bool 
     }
 
     bool handled = false;
-    auto* builder = new tr_torrent_builder{ session };
-    core_apply_defaults(builder);
+    auto builder = std::make_unique<tr_torrent_builder>(session);
+    core_apply_defaults(builder.get());
     builder->set_paused(!do_start);
 
     bool loaded = false;
@@ -787,15 +784,15 @@ bool Session::Impl::add(Glib::ustring const& name_in, bool const do_start, bool 
     // if we could make sense of it, add it
     if (loaded) {
         handled = true;
-        add_builder(builder, do_prompt, do_notify);
+        add_builder(std::move(builder), do_prompt, do_notify);
     } else if (tr_urlIsValid(file->get_uri())) {
         handled = true;
         inc_busy();
-        file->load_contents_async([this, file, builder, do_prompt, do_notify](auto& result) {
-            add_file_async_callback(file, result, builder, do_prompt, do_notify);
+        // released because the slot must be copyable; the callback re-owns it
+        file->load_contents_async([this, file, builder = builder.release(), do_prompt, do_notify](auto& result) {
+            add_file_async_callback(file, result, std::unique_ptr<tr_torrent_builder>{ builder }, do_prompt, do_notify);
         });
     } else {
-        delete builder;
         std::cerr << fmt::format(
                          fmt::runtime(_("Couldn't add torrent file '{path}'")),
                          fmt::arg("path", file->get_parse_name()))

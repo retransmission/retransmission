@@ -73,7 +73,9 @@ TEST_F(TorrentBuilderTest, settingsReachTheTorrent)
     builder.set_sequential_download(true);
     builder.set_sequential_download_from_piece(FromPiece);
 
-    auto* const tor = tr_torrentNew(&builder, nullptr);
+    // a fresh add is briefly TR_STATUS_CHECK_WAIT / TR_STATUS_CHECK while its
+    // initial verify runs, so wait that out before checking the activity
+    auto* const tor = createTorrentAndWaitForVerifyDone(&builder);
     ASSERT_NE(nullptr, tor);
 
     EXPECT_EQ(TR_STATUS_STOPPED, tr_torrentStat(tor).activity);
@@ -213,6 +215,7 @@ TEST_F(TorrentBuilderTest, bandwidthPriorityIgnoresOutOfRangeValues)
     ASSERT_TRUE(builder.set_metainfo_from_file(TorrentFile));
     builder.set_paused(true);
     builder.set_bandwidth_priority(TR_PRI_HIGH);
+    // NOLINTNEXTLINE(clang-analyzer-optin.core.EnumCastOutOfRange) the out-of-range value is the point of the test
     builder.set_bandwidth_priority(static_cast<tr_priority_t>(42));
 
     auto* const tor = tr_torrentNew(&builder, nullptr);
