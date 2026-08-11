@@ -179,6 +179,14 @@ struct tr_torrent {
 
     void rename_path(std::string_view oldpath, std::string_view newname, tr_torrent_rename_done_func&& callback);
 
+    // The synchronous half of rename_path(), run under the disk-IO
+    // barrier. Call rename_path() instead unless you are the backend
+    // of tr::LocalData.
+    void rename_path_in_session_thread(
+        std::string_view oldpath,
+        std::string_view newname,
+        tr_torrent_rename_done_func const& callback);
+
     // these functions should become private when possible,
     // but more refactoring is needed before that can happen
     // because much of tr_torrent's impl is in the non-member C bindings
@@ -1312,11 +1320,6 @@ private:
     void update_file_path(tr_file_index_t file, std::optional<bool> has_file) const;
 
     void set_location_in_session_thread(std::string_view path, bool move_from_old_path, int volatile* setme_state);
-
-    void rename_path_in_session_thread(
-        std::string_view oldpath,
-        std::string_view newname,
-        tr_torrent_rename_done_func const& callback);
 
     void start_in_session_thread();
 
