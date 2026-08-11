@@ -660,7 +660,25 @@ struct tr_torrent {
 
     /// METAINFO - PIECE CHECKSUMS
 
+    [[nodiscard]] constexpr bool is_piece_checked(tr_piece_index_t const piece) const
+    {
+        return checked_pieces_.test(piece);
+    }
+
     [[nodiscard]] bool ensure_piece_is_checked(tr_piece_index_t piece);
+
+    // The async flavor of ensure_piece_is_checked(), for the upload
+    // path: hashes the piece off the session thread instead of
+    // blocking it. A no-op if the piece is checked or being checked.
+    // While the check runs, callers leave their requests queued and
+    // retry; is_piece_checked() or is_lazy_check_failed() flips first.
+    void start_lazy_piece_check(tr_piece_index_t piece);
+
+    // True if a lazy check found this piece corrupt on disk.
+    [[nodiscard]] constexpr bool is_lazy_check_failed(tr_piece_index_t const piece) const
+    {
+        return pieces_check_failed_.test(piece);
+    }
 
     /// METAINFO - MAGNET
 
@@ -1187,11 +1205,6 @@ private:
         return n_secs;
     }
 
-    [[nodiscard]] constexpr bool is_piece_checked(tr_piece_index_t piece) const
-    {
-        return checked_pieces_.test(piece);
-    }
-
     [[nodiscard]] bool check_piece(tr_piece_index_t piece) const;
 
     // Hashes a piece we just finished downloading and records the result.
@@ -1357,6 +1370,13 @@ private:
     // blocks we've received and are writing to disk.
     // A block leaves this set when its write finishes.
     tr_bitfield blocks_pending_write_ = tr_bitfield{ 0 };
+
+    // pieces being hashed by a lazy check. see start_lazy_piece_check()
+    tr_bitfield pieces_checking_ = tr_bitfield{ 0 };
+
+    // pieces whose lazy check failed. Requests for them are rejected
+    // outright instead of re-hashing the piece on every request.
+    tr_bitfield pieces_check_failed_ = tr_bitfield{ 0 };
 
     labels_t labels_;
 

@@ -813,6 +813,8 @@ void tr_torrent::on_metainfo_updated()
     files_wanted_ = tr_files_wanted{ &fpm_ };
     checked_pieces_ = tr_bitfield{ static_cast<size_t>(piece_count()) };
     blocks_pending_write_ = tr_bitfield{ static_cast<size_t>(block_count()) };
+    pieces_checking_ = tr_bitfield{ static_cast<size_t>(piece_count()) };
+    pieces_check_failed_ = tr_bitfield{ static_cast<size_t>(piece_count()) };
     invalidate_storage_descriptor();
 }
 
@@ -2481,6 +2483,44 @@ void tr_torrent::mark_changed()
 
     checked_pieces_.set(piece, checked);
     return checked;
+}
+
+void tr_torrent::start_lazy_piece_check(tr_piece_index_t const piece)
+{
+    TR_ASSERT(session->am_in_session_thread());
+    TR_ASSERT(piece < piece_count());
+
+    if (is_piece_checked(piece) || pieces_checking_.test(piece)) {
+        return;
+    }
+
+    pieces_checking_.set(piece);
+
+    session->local_data.test_piece(
+        id(),
+        piece,
+        [session = this->session](
+            tr_torrent_id_t const tor_id,
+            tr_piece_index_t const tested,
+            tr_error const&,
+            auto const hash) {
+            auto* const tor = session->torrents().get(tor_id);
+            if (tor == nullptr || !tor->pieces_checking_.test(tested)) {
+                return; // the check was reset while we were hashing
+            }
+
+            tor->pieces_checking_.unset(tested);
+
+            bool const passed = hash && *hash == tor->piece_hash(tested);
+            tr_logAddTraceTor(tor, fmt::format("[LAZY] async checked piece {}, pass=={}", tested, passed));
+            tor->checked_pieces_.set(tested, passed);
+            if (!passed) {
+                tor->pieces_check_failed_.set(tested);
+            }
+
+            tor->mark_changed();
+            tor->set_dirty();
+        });
 }
 
 // --- RESUME HELPER

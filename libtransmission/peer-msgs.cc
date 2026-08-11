@@ -176,6 +176,12 @@ auto constexpr KeepaliveIntervalSecs = time_t{ 100 };
 
 auto constexpr MetadataReqQ = size_t{ 64U };
 
+// Upload reads kept in flight with the disk at once, per peer.
+// Deep enough to keep the disk busy while earlier reads are sent;
+// shallow enough that reordered completions can't starve one peer
+// behind another for long.
+auto constexpr UploadReadAhead = size_t{ 4U };
+
 auto constexpr PeerReqQDefault = 500U;
 
 // when we're making requests from another peer,
@@ -617,8 +623,14 @@ private:
     [[nodiscard]] size_t fill_output_buffer_impl(time_t now_sec, uint64_t now_msec);
     void fill_output_buffer(time_t now_sec, uint64_t now_msec)
     {
+        if (is_filling_) {
+            return; // an inline read completion looped back here
+        }
+
+        is_filling_ = true;
         while (fill_output_buffer_impl(now_sec, now_msec) != 0U) {
         }
+        is_filling_ = false;
     }
 
     // ---
@@ -731,6 +743,12 @@ private:
     // bytes queued in answer to this peer's requests.
     // add_next_block() watches this to see whether its read finished inline.
     size_t n_reply_bytes_queued_ = 0U;
+
+    // whether we're inside fill_output_buffer().
+    // An upload read can complete inline, and its completion refills
+    // the pipeline; when the fill loop itself started that read, the
+    // loop is already doing the refilling.
+    bool is_filling_ = false;
 
     std::array<std::vector<tr_pex>, NUM_TR_AF_INET_TYPES> pex_;
 
@@ -1897,11 +1915,14 @@ void tr_peerMsgsImpl::check_request_timeout(time_t const now)
         }
     }
 
-    // fulfill piece requests
+    // fulfill piece requests.
+    // Starting a read is progress too: a deferred read queues no bytes
+    // now, but the pipeline should still fill up to its cap.
     for (;;) {
         auto const old_len = n_bytes_written;
+        auto const n_reading_before = std::size(reading_);
         n_bytes_written += add_next_block(now_msec);
-        if (old_len == n_bytes_written) {
+        if (old_len == n_bytes_written && std::size(reading_) == n_reading_before) {
             break;
         }
     }
@@ -1941,22 +1962,28 @@ void tr_peerMsgsImpl::check_request_timeout(time_t const now)
 
 [[nodiscard]] size_t tr_peerMsgsImpl::add_next_block(uint64_t const now_msec)
 {
-    if (std::empty(peer_requested_) || io_->get_write_buffer_space(now_msec) == 0U) {
+    if (std::empty(peer_requested_) || io_->get_write_buffer_space(now_msec) == 0U || std::size(reading_) >= UploadReadAhead) {
         return {};
     }
 
     auto const req = peer_requested_.front();
-    peer_requested_.pop_front();
 
     auto ok = is_valid_request(req) && tor_.has_piece(req.index);
 
-    if (ok) {
-        ok = tor_.ensure_piece_is_checked(req.index);
-
-        if (!ok) {
-            tor_.error().set_local_error(fmt::format("Please Verify Local Data! Piece #{:d} is corrupt.", req.index));
+    // The piece may need its first-use hash check before we serve it.
+    // The check hashes the piece off the session thread; leave the
+    // request queued while it runs and retry on a later pass.
+    if (ok && !tor_.is_piece_checked(req.index)) {
+        if (!tor_.is_lazy_check_failed(req.index)) {
+            tor_.start_lazy_piece_check(req.index);
+            return {};
         }
+
+        tor_.error().set_local_error(fmt::format("Please Verify Local Data! Piece #{:d} is corrupt.", req.index));
+        ok = false;
     }
+
+    peer_requested_.pop_front();
 
     if (!ok) {
         return io_->supports_fext() ? protocol_send_reject(req) : size_t{};
@@ -1998,11 +2025,14 @@ void tr_peerMsgsImpl::on_upload_read(
         if (io_->supports_fext()) {
             n_reply_bytes_queued_ += protocol_send_reject(req);
         }
-        return;
+    } else {
+        auto const piece_data = std::string_view{ reinterpret_cast<char const*>(data->data()), req.length };
+        n_reply_bytes_queued_ += protocol_send_message(BtPeerMsgs::Piece, req.index, req.offset, piece_data);
     }
 
-    auto const piece_data = std::string_view{ reinterpret_cast<char const*>(data->data()), req.length };
-    n_reply_bytes_queued_ += protocol_send_message(BtPeerMsgs::Piece, req.index, req.offset, piece_data);
+    // this read's pipeline slot is free again; start the next read.
+    // A no-op when the fill loop is what completed this read inline.
+    fill_output_buffer(tr_time(), tr_time_msec());
 }
 
 // ---
