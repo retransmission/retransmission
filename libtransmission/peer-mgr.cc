@@ -895,12 +895,13 @@ private:
 
         case tr_peer_event::Type::ClientGotBlock:
             {
+                // Stop asking peers for this block. It doesn't count as
+                // data we have until tr_torrent::on_block_written() runs.
                 auto* const tor = s->tor;
                 auto const loc = tor->piece_loc(event.pieceIndex, event.offset);
                 s->cancel_all_requests_for_block(loc.block, peer);
                 peer->blame.set(loc.piece);
-                s->got_block(tor, loc.block); // put this line before calling tr_torrent callback
-                tor->on_block_received(loc.block);
+                s->got_block(tor, loc.block);
             }
             break;
 

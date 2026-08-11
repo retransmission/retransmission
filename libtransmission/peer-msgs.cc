@@ -31,7 +31,7 @@
 #include "libtransmission/block-info.h"
 #include "libtransmission/clients.h"
 #include "libtransmission/crypto-utils.h"
-#include "libtransmission/inout.h"
+#include "libtransmission/local-data.h"
 #include "libtransmission/log.h"
 #include "libtransmission/macros.h"
 #include "libtransmission/peer-common.h"
@@ -348,7 +348,7 @@ public:
             return active_requests.count();
 
         case tr_direction::PeerToClient: // requests they sent
-            return std::size(peer_requested_);
+            return std::size(peer_requested_) + std::size(reading_);
 
         default:
             TR_ASSERT(0);
@@ -527,16 +527,39 @@ private:
 
     void reject_all_requests()
     {
-        auto& queue = peer_requested_;
-
         if (auto const must_send_rej = io_->supports_fext(); must_send_rej) {
-            std::ranges::for_each(queue, [this](peer_request const& req) { protocol_send_reject(req); });
+            std::ranges::for_each(peer_requested_, [this](peer_request const& req) { protocol_send_reject(req); });
+            std::ranges::for_each(reading_, [this](peer_request const& req) { protocol_send_reject(req); });
         }
 
-        queue.clear();
+        // In-flight reads will find their request gone and drop their data.
+        peer_requested_.clear();
+        reading_.clear();
     }
 
     [[nodiscard]] bool can_add_request_from_peer(peer_request const& req);
+
+    void on_peer_cancelled_request(peer_request const& req)
+    {
+        // bep6: "Even when a request is cancelled, the peer receiving the
+        // cancel should respond with either the corresponding reject or the
+        // corresponding piece".
+        //
+        // We drop the request either way, so a reject is the only answer
+        // we can still send.
+        auto const queued = std::ranges::find(peer_requested_, req);
+        if (queued != std::ranges::end(peer_requested_)) {
+            peer_requested_.erase(queued);
+        } else if (auto const reading = std::ranges::find(reading_, req); reading != std::ranges::end(reading_)) {
+            reading_.erase(reading);
+        } else {
+            return;
+        }
+
+        if (io_->supports_fext()) {
+            protocol_send_reject(req);
+        }
+    }
 
     void on_peer_made_request(peer_request const& req)
     {
@@ -589,6 +612,7 @@ private:
     void maybe_send_metadata_requests(time_t now) const;
     [[nodiscard]] size_t add_next_metadata_piece();
     [[nodiscard]] size_t add_next_block(uint64_t now_msec);
+    void on_upload_read(peer_request const& req, tr_error const& error, std::unique_ptr<tr::LocalData::BlockData> data);
 
     [[nodiscard]] size_t fill_output_buffer_impl(time_t now_sec, uint64_t now_msec);
     void fill_output_buffer(time_t now_sec, uint64_t now_msec)
@@ -613,7 +637,7 @@ private:
 
     void send_ut_pex();
 
-    tr_error_code_t client_got_block(std::span<uint8_t const> block_data, tr_block_index_t block);
+    bool client_got_block(std::unique_ptr<tr::LocalData::BlockData> block_data, tr_block_index_t block);
     ReadResult read_piece_data(MessageReader& payload);
     ReadResult process_peer_message(uint8_t id, MessageReader& payload);
 
@@ -696,7 +720,17 @@ private:
 
     std::shared_ptr<tr_peerIo> const io_;
 
+    // requests from this peer that we haven't started reading yet
     std::deque<peer_request> peer_requested_;
+
+    // requests from this peer whose read is in flight.
+    // A read completion looks for its request here. If it's gone, the
+    // request was cancelled or rejected, so the data is dropped.
+    std::vector<peer_request> reading_;
+
+    // bytes queued in answer to this peer's requests.
+    // add_next_block() watches this to see whether its read finished inline.
+    size_t n_reply_bytes_queued_ = 0U;
 
     std::array<std::vector<tr_pex>, NUM_TR_AF_INET_TYPES> pex_;
 
@@ -1452,17 +1486,7 @@ ReadResult tr_peerMsgsImpl::process_peer_message(uint8_t id, MessageReader& payl
             r.length = payload.to_uint32();
             logtrace(this, fmt::format("got a Cancel {:d}:{:d}->{:d}", r.index, r.offset, r.length));
 
-            auto& requests = peer_requested_;
-            if (auto iter = std::ranges::find(requests, r); iter != std::ranges::end(requests)) {
-                requests.erase(iter);
-
-                // bep6: "Even when a request is cancelled, the peer
-                // receiving the cancel should respond with either the
-                // corresponding reject or the corresponding piece"
-                if (fext) {
-                    protocol_send_reject(r);
-                }
-            }
+            on_peer_cancelled_request(r);
             break;
         }
 
@@ -1602,7 +1626,7 @@ ReadResult tr_peerMsgsImpl::read_piece_data(MessageReader& payload)
         return { ReadState::Err, len };
     }
 
-    if (tor_.has_block(block)) {
+    if (tor_.has_block_or_pending(block)) {
         logtrace(this, fmt::format("got completed block {:d} ({:d}:{:d}->{:d})", block, piece, offset, len));
         return { ReadState::Err, len };
     }
@@ -1621,10 +1645,10 @@ ReadResult tr_peerMsgsImpl::read_piece_data(MessageReader& payload)
 
     if (loc.block_offset == 0U && len == block_size) // simple case: one message has entire block
     {
-        auto buf = std::array<uint8_t, tr_block_info::BlockSize>{};
-        auto const content = std::span{ buf }.first(block_size);
-        payload.to_buf(content);
-        auto const ok = client_got_block(content, block) == 0;
+        auto buf = std::make_unique<tr::LocalData::BlockData>();
+        buf->resize(block_size);
+        payload.to_buf(std::span{ buf->data(), block_size });
+        auto const ok = client_got_block(std::move(buf), block);
         return { ok ? ReadState::Now : ReadState::Err, len };
     }
 
@@ -1640,34 +1664,35 @@ ReadResult tr_peerMsgsImpl::read_piece_data(MessageReader& payload)
         return { ReadState::Later, len }; // we don't have the full block yet
     }
 
-    auto block_buf = std::move(incoming_block.buf);
+    auto block_buf = std::make_unique<tr::LocalData::BlockData>(incoming_block.buf);
     blocks.erase(block); // note: invalidates `incoming_block` local
-    auto const ok = client_got_block(block_buf, block) == 0;
+    auto const ok = client_got_block(std::move(block_buf), block);
     return { ok ? ReadState::Now : ReadState::Err, len };
 }
 
-// returns 0 on success, or an errno on failure
-tr_error_code_t tr_peerMsgsImpl::client_got_block(std::span<uint8_t const> block_data, tr_block_index_t const block)
+// returns false if we couldn't use the block and should stop reading from this peer
+bool tr_peerMsgsImpl::client_got_block(std::unique_ptr<tr::LocalData::BlockData> block_data, tr_block_index_t const block)
 {
     auto const n_expected = tor_.block_size(block);
-    auto const n_actual = std::size(block_data);
+    auto const n_actual = std::size(*block_data);
     if (n_actual != n_expected) {
         logdbg(this, fmt::format("wrong block size: expected {:d}, got {:d}", n_expected, n_actual));
-        return EMSGSIZE;
+        return false;
     }
 
     logtrace(this, fmt::format("got block {:d}", block));
 
-    // NB: if writeBlock() fails the torrent may be paused.
-    // If this happens, `this` will be destructed and must no longer be used.
-    if (auto const err = tr_ioWrite(tor_, session->openFiles(), tor_.block_loc(block), block_data); err != 0) {
-        return err;
+    if (!tor_.on_block_received(block)) {
+        return false; // another peer beat us to it
     }
 
     active_requests.unset(block);
     publish(tr_peer_event::GotBlock(tor_.block_info(), block));
 
-    return 0;
+    // A failed write can pause the torrent, which destroys `this`.
+    // Don't touch any member after this call.
+    tor_.save_block(block, std::move(block_data));
+    return true;
 }
 
 // ---
@@ -1923,7 +1948,6 @@ void tr_peerMsgsImpl::check_request_timeout(time_t const now)
     auto const req = peer_requested_.front();
     peer_requested_.pop_front();
 
-    auto buf = std::array<uint8_t, tr_block_info::BlockSize>{};
     auto ok = is_valid_request(req) && tor_.has_piece(req.index);
 
     if (ok) {
@@ -1934,24 +1958,51 @@ void tr_peerMsgsImpl::check_request_timeout(time_t const now)
         }
     }
 
-    if (ok) {
-        ok = tr_ioRead(
-                 tor_,
-                 session->openFiles(),
-                 tor_.piece_loc(req.index, req.offset),
-                 std::span{ std::data(buf), req.length }) == 0;
+    if (!ok) {
+        return io_->supports_fext() ? protocol_send_reject(req) : size_t{};
     }
 
-    if (ok) {
-        auto const piece_data = std::string_view{ reinterpret_cast<char const*>(std::data(buf)), req.length };
-        return protocol_send_message(BtPeerMsgs::Piece, req.index, req.offset, piece_data);
+    reading_.push_back(req);
+
+    auto const loc = tor_.piece_loc(req.index, req.offset);
+    auto const n_reply_bytes_before = n_reply_bytes_queued_;
+    session->local_data.read(
+        tor_.id(),
+        { .begin = loc.byte, .end = loc.byte + req.length },
+        [weak = weak_from_this(), req](tr_torrent_id_t, tr_byte_span_t, tr_error const& error, auto data) {
+            if (auto const self = weak.lock(); self) {
+                self->on_upload_read(req, error, std::move(data));
+            }
+        });
+
+    // Nonzero only if the read finished inline. Returning zero for a
+    // deferred read stops the caller's send loop until the data arrives.
+    return n_reply_bytes_queued_ - n_reply_bytes_before;
+}
+
+void tr_peerMsgsImpl::on_upload_read(
+    peer_request const& req,
+    tr_error const& error,
+    std::unique_ptr<tr::LocalData::BlockData> data)
+{
+    // Look the request up by value, not by position. Reads finish in
+    // whatever order the disk answers them, and this one may have been
+    // cancelled while we waited.
+    auto const iter = std::ranges::find(reading_, req);
+    if (iter == std::ranges::end(reading_)) {
+        return;
+    }
+    reading_.erase(iter);
+
+    if (error || data == nullptr || std::size(*data) < req.length) {
+        if (io_->supports_fext()) {
+            n_reply_bytes_queued_ += protocol_send_reject(req);
+        }
+        return;
     }
 
-    if (io_->supports_fext()) {
-        return protocol_send_reject(req);
-    }
-
-    return {};
+    auto const piece_data = std::string_view{ reinterpret_cast<char const*>(data->data()), req.length };
+    n_reply_bytes_queued_ += protocol_send_message(BtPeerMsgs::Piece, req.index, req.offset, piece_data);
 }
 
 // ---

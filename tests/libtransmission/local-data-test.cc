@@ -4,9 +4,11 @@
 // License text can be found in the licenses/ folder.
 
 #include <algorithm>
+#include <memory>
 #include <optional>
 #include <string_view>
 #include <utility>
+#include <vector>
 
 #include <gtest/gtest.h>
 
@@ -238,4 +240,81 @@ TEST(LocalData, AdminOperationsDelegate)
     EXPECT_TRUE(raw_backend->close_all_called);
 
     local_data.shutdown();
+}
+
+TEST(LocalData, ShuffledCompletionsWaitForPump)
+{
+    auto local_data = tr::LocalData{ std::make_unique<StubBackend>() };
+    local_data.set_completions(tr::LocalData::Completions::Shuffled);
+
+    auto n_called = 0;
+    for (auto i = 0; i < 4; ++i) {
+        local_data.read(7, { .begin = 0U, .end = 3U }, [&n_called](auto, auto, auto const&, auto) { ++n_called; });
+    }
+
+    EXPECT_EQ(0, n_called);
+    local_data.pump();
+    EXPECT_EQ(4, n_called);
+}
+
+TEST(LocalData, ShuffledCompletionsArriveOutOfOrder)
+{
+    // With this many ops and this many runs, staying in order every time
+    // would be a wild coincidence.
+    static auto constexpr NumOps = 8;
+    static auto constexpr NumRuns = 16;
+
+    auto local_data = tr::LocalData{ std::make_unique<StubBackend>() };
+    local_data.set_completions(tr::LocalData::Completions::Shuffled);
+
+    auto reordered = false;
+    for (auto run = 0; !reordered && run < NumRuns; ++run) {
+        auto order = std::vector<tr_piece_index_t>{};
+        for (tr_piece_index_t piece = 0; piece < NumOps; ++piece) {
+            local_data.test_piece(7, piece, [&order](auto, tr_piece_index_t const tested, auto const&, auto) {
+                order.push_back(tested);
+            });
+        }
+
+        local_data.pump();
+        ASSERT_EQ(NumOps, std::size(order));
+        reordered = !std::ranges::is_sorted(order);
+    }
+
+    EXPECT_TRUE(reordered);
+}
+
+TEST(LocalData, AdminOpsDrainParkedCompletions)
+{
+    auto backend = std::make_unique<StubBackend>();
+    auto* raw_backend = backend.get();
+    auto local_data = tr::LocalData{ std::move(backend) };
+    local_data.set_completions(tr::LocalData::Completions::Shuffled);
+
+    auto read_finished = false;
+    local_data.read(7, { .begin = 0U, .end = 3U }, [&read_finished](auto, auto, auto const&, auto) { read_finished = true; });
+
+    // rule 3: a barrier waits for the ops enqueued before it
+    auto move_finished = false;
+    local_data.move(7, "/old", "/new", "name", [&read_finished, &move_finished](auto, auto const&) {
+        EXPECT_TRUE(read_finished);
+        move_finished = true;
+    });
+
+    EXPECT_TRUE(move_finished);
+    EXPECT_EQ("/old", raw_backend->moved_from);
+}
+
+TEST(LocalData, ShutdownDeliversParkedCompletions)
+{
+    auto local_data = tr::LocalData{ std::make_unique<StubBackend>() };
+    local_data.set_completions(tr::LocalData::Completions::Shuffled);
+
+    auto n_called = 0;
+    auto data = std::make_unique<tr::LocalData::BlockData>();
+    data->assign({ uint8_t{ 4U } });
+    local_data.write(11, { .begin = 0U, .end = 1U }, std::move(data), [&n_called](auto, auto, auto const&) { ++n_called; });
+
+    local_data.shutdown();
+    EXPECT_EQ(1, n_called);
 }

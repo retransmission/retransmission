@@ -102,6 +102,23 @@ target_link_libraries(libtransmission-test
 
 tr_setup_gtest_target(libtransmission-test "LT.")
 
+# Re-run the disk-IO tests with tr::LocalData delivering its completions
+# late and out of order, which its ordering contract allows.
+#
+# Add a suite here when it reads, writes, hashes, or relocates torrent
+# data. The other suites never touch local data, so running them this way
+# would test nothing new.
+if(NOT CMAKE_CROSSCOMPILING OR CMAKE_CROSSCOMPILING_EMULATOR)
+    add_test(
+        NAME LT.ShuffledDiskIo
+        COMMAND libtransmission-test
+            --gtest_filter=LocalData.*:*IncompleteDirTest.*:MoveTest.*:RenameTest.*:RemoveTest.*)
+
+    set_tests_properties(LT.ShuffledDiskIo
+        PROPERTIES
+            ENVIRONMENT TR_LOCAL_DATA_SHUFFLE=1)
+endif()
+
 add_custom_command(
     TARGET libtransmission-test
     PRE_BUILD
