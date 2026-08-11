@@ -757,29 +757,6 @@ bool tr_sys_file_lock([[maybe_unused]] tr_sys_file_t handle, [[maybe_unused]] in
     return *result;
 }
 
-std::string tr_sys_dir_get_current(tr_error* error)
-{
-    auto buf = std::vector<char>{};
-    buf.resize(PATH_MAX);
-
-    for (;;) {
-        if (char const* const ret = getcwd(std::data(buf), std::size(buf)); ret != nullptr) {
-            return ret;
-        }
-
-        if (errno == ERANGE) {
-            buf.resize(std::size(buf) * 2U);
-            continue;
-        }
-
-        if (error != nullptr) {
-            error->set_from_errno(errno);
-        }
-
-        return {};
-    }
-}
-
 bool tr_sys_dir_create_temp(char* path_template, tr_error* error)
 {
     TR_ASSERT(path_template != nullptr);

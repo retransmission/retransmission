@@ -693,22 +693,6 @@ bool tr_sys_file_lock(tr_sys_file_t handle, int operation, tr_error* error)
     return ret;
 }
 
-std::string tr_sys_dir_get_current(tr_error* error)
-{
-    if (auto const size = GetCurrentDirectoryW(0, nullptr); size != 0) {
-        auto wide_ret = std::wstring{};
-        wide_ret.resize(size);
-        if (GetCurrentDirectoryW(std::size(wide_ret), std::data(wide_ret)) != 0) {
-            // `size` includes the terminating '\0'; remove it from `wide_ret`
-            wide_ret.resize(std::size(wide_ret) - 1);
-            return tr_win32_native_to_utf8(wide_ret);
-        }
-    }
-
-    set_system_error(error, GetLastError());
-    return {};
-}
-
 bool tr_sys_dir_create_temp(char* path_template, tr_error* error)
 {
     TR_ASSERT(path_template != nullptr);

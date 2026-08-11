@@ -285,3 +285,15 @@ std::optional<tr_sys_path_capacity> tr_sys_path_get_capacity(std::string_view co
     maybe_set_error(error, ec);
     return {};
 }
+
+std::string tr_sys_dir_get_current(tr_error* error)
+{
+    auto ec = std::error_code{};
+    auto const current_path = std::filesystem::current_path(ec);
+    if (!ec) {
+        return tr_u8string(current_path);
+    }
+
+    maybe_set_error(error, ec);
+    return {};
+}
