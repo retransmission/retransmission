@@ -4,11 +4,11 @@
 // License text can be found in the licenses/ folder.
 
 #include <algorithm> // std::min
-#include <array>
 #include <cstdint> // uint8_t, uint64_t
 #include <span>
 #include <string_view>
 #include <utility>
+#include <vector>
 
 #include <fmt/format.h>
 
@@ -79,7 +79,11 @@ bool preallocate_file_full(tr_sys_file_t fd, uint64_t length, tr_error* error)
     tr_logAddDebug(fmt::format("Full preallocation failed: {} ({})", local_error.message(), local_error.code()));
 
     if (!tr_error_is_enospc(local_error.code())) {
-        auto buf = std::array<uint8_t, 4096>{};
+        // This fallback writes out the whole file.
+        // It runs on FAT and exFAT, which are usually slow external
+        // drives, so write in big chunks.
+        static auto constexpr ChunkSize = size_t{ 1024U * 1024U };
+        auto const buf = std::vector<uint8_t>(static_cast<size_t>(std::min<uint64_t>(length, ChunkSize)));
         bool success = true;
 
         local_error = {};

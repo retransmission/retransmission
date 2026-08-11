@@ -799,6 +799,7 @@ void tr_torrent::on_metainfo_updated()
     file_priorities_ = tr_file_priorities{ &fpm_ };
     files_wanted_ = tr_files_wanted{ &fpm_ };
     checked_pieces_ = tr_bitfield{ static_cast<size_t>(piece_count()) };
+    blocks_pending_write_ = tr_bitfield{ static_cast<size_t>(block_count()) };
 }
 
 void tr_torrent::on_metainfo_completed()
@@ -2115,13 +2116,78 @@ void tr_torrent::on_piece_failed(tr_piece_index_t const piece)
     got_bad_piece_(this, piece);
 }
 
-void tr_torrent::on_block_received(tr_block_index_t const block)
+void tr_torrent::test_piece(tr_piece_index_t const piece)
+{
+    auto const token = ++next_hash_token_;
+    hash_tokens_.insert_or_assign(piece, token);
+
+    session->local_data.test_piece(
+        id(),
+        piece,
+        [session = this->session,
+         token](tr_torrent_id_t const tor_id, tr_piece_index_t const tested, tr_error const&, auto const hash) {
+            auto* const tor = session->torrents().get(tor_id);
+            if (tor == nullptr) {
+                return;
+            }
+
+            // Drop the result unless the piece is still the one we hashed.
+            auto const iter = tor->hash_tokens_.find(tested);
+            if (iter == std::end(tor->hash_tokens_) || iter->second != token) {
+                return;
+            }
+            tor->hash_tokens_.erase(iter);
+
+            if (hash && *hash == tor->piece_hash(tested)) {
+                tor->on_piece_completed(tested);
+            } else {
+                tor->on_piece_failed(tested);
+            }
+        });
+}
+
+bool tr_torrent::on_block_received(tr_block_index_t const block)
 {
     TR_ASSERT(session->am_in_session_thread());
 
-    if (has_block(block)) {
+    if (has_block_or_pending(block)) {
         tr_logAddDebugTor(this, "we have this block already...");
         bytes_downloaded_.reduce(block_size(block));
+        return false;
+    }
+
+    return true;
+}
+
+void tr_torrent::save_block(tr_block_index_t const block, std::unique_ptr<tr::LocalData::BlockData> data)
+{
+    TR_ASSERT(session->am_in_session_thread());
+    TR_ASSERT(!has_block_or_pending(block));
+
+    blocks_pending_write_.set(block);
+
+    session->local_data.write(
+        id(),
+        block_info().byte_span_for_block(block),
+        std::move(data),
+        [session = this->session, block](tr_torrent_id_t const tor_id, tr_byte_span_t, tr_error const& error) {
+            if (auto* const tor = session->torrents().get(tor_id); tor != nullptr) {
+                tor->on_block_written(block, error);
+            }
+        });
+}
+
+void tr_torrent::on_block_written(tr_block_index_t const block, tr_error const& error)
+{
+    TR_ASSERT(session->am_in_session_thread());
+
+    blocks_pending_write_.unset(block);
+
+    if (error) {
+        if (!error_.is_local_error()) {
+            error_.set_local_error(error.message());
+            tr_torrentStop(this);
+        }
         return;
     }
 
@@ -2133,14 +2199,8 @@ void tr_torrent::on_block_received(tr_block_index_t const block)
     auto const first_piece = block_loc.piece;
     auto const last_piece = byte_loc(block_loc.byte + block_size(block) - 1).piece;
     for (auto piece = first_piece; piece <= last_piece; ++piece) {
-        if (!has_piece(piece)) {
-            continue;
-        }
-
-        if (check_piece(piece)) {
-            on_piece_completed(piece);
-        } else {
-            on_piece_failed(piece);
+        if (has_piece(piece)) {
+            test_piece(piece);
         }
     }
 }

@@ -29,6 +29,8 @@ class Wishlist
 {
 public:
     struct Mediator {
+        // True if we already have the block, or are writing it now.
+        // Either way it is not worth requesting.
         [[nodiscard]] virtual bool client_has_block(tr_block_index_t block) const = 0;
         [[nodiscard]] virtual bool client_has_piece(tr_piece_index_t piece) const = 0;
         [[nodiscard]] virtual bool client_wants_piece(tr_piece_index_t piece) const = 0;
