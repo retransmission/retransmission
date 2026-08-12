@@ -7,6 +7,7 @@
 #include <array>
 #include <cstddef> // size_t
 #include <cstdint> // uint64_t
+#include <limits>
 #include <numeric>
 #include <vector>
 
@@ -348,7 +349,7 @@ TEST_F(FilePieceMapTest, wanted)
     // since this begins and ends on a piece boundary,
     // this shouldn't affect any other files' pieces
     bool const wanted = false;
-    files_wanted.set(0U, wanted);
+    EXPECT_TRUE(files_wanted.set(0U, wanted));
     expected_files_wanted.set(0U, wanted);
     expected_pieces_wanted.set_span(0U, 5U, wanted);
     compare_to_expected();
@@ -363,33 +364,33 @@ TEST_F(FilePieceMapTest, wanted)
     // file #6: byte [5.5P, 6.5P) piece [5, 7)
     //
     // first test setting file #5...
-    files_wanted.set(5U, false);
+    EXPECT_TRUE(files_wanted.set(5U, false));
     expected_files_wanted.unset(5U);
     compare_to_expected();
     // marking all the files in the piece as unwanted
     // should cause the piece to become unwanted
-    files_wanted.set(1U, false);
-    files_wanted.set(2U, false);
-    files_wanted.set(3U, false);
-    files_wanted.set(4U, false);
-    files_wanted.set(5U, false);
-    files_wanted.set(6U, false);
+    EXPECT_TRUE(files_wanted.set(1U, false));
+    EXPECT_TRUE(files_wanted.set(2U, false));
+    EXPECT_TRUE(files_wanted.set(3U, false));
+    EXPECT_TRUE(files_wanted.set(4U, false));
+    EXPECT_FALSE(files_wanted.set(5U, false));
+    EXPECT_TRUE(files_wanted.set(6U, false));
     expected_files_wanted.set_span(1U, 7U, false);
     expected_pieces_wanted.unset(5U);
     compare_to_expected();
     // but as soon as any of them is turned back to wanted,
     // the piece should pop back.
-    files_wanted.set(6U, true);
+    EXPECT_TRUE(files_wanted.set(6U, true));
     expected_files_wanted.set(6U, true);
     expected_pieces_wanted.set(5U);
     compare_to_expected();
-    files_wanted.set(5U, true);
-    files_wanted.set(6U, false);
+    EXPECT_TRUE(files_wanted.set(5U, true));
+    EXPECT_TRUE(files_wanted.set(6U, false));
     expected_files_wanted.set(5U);
     expected_files_wanted.unset(6U);
     compare_to_expected();
-    files_wanted.set(4U, true);
-    files_wanted.set(5U, false);
+    EXPECT_TRUE(files_wanted.set(4U, true));
+    EXPECT_TRUE(files_wanted.set(5U, false));
     expected_files_wanted.set(4U);
     expected_files_wanted.unset(5U);
     compare_to_expected();
@@ -409,13 +410,13 @@ TEST_F(FilePieceMapTest, wanted)
     //
     // Check that even zero-sized files can change a file's 'wanted' state
     // file #1: byte [5P, 5P) piece [5, 6)
-    files_wanted.set(1U, true);
+    EXPECT_TRUE(files_wanted.set(1U, true));
     expected_files_wanted.set(1U);
     expected_pieces_wanted.set(5U);
     compare_to_expected();
     // Check that zero-sized files at the end of a torrent change the last piece's state.
     // file #16 byte [10P, 10P) piece [9, 10)
-    files_wanted.set(16U, true);
+    EXPECT_TRUE(files_wanted.set(16U, true));
     expected_files_wanted.set(16U);
     expected_pieces_wanted.set(9U);
     compare_to_expected();
@@ -423,12 +424,36 @@ TEST_F(FilePieceMapTest, wanted)
     // test the batch API
     auto file_indices = std::vector<tr_file_index_t>(n_files);
     std::iota(std::begin(file_indices), std::end(file_indices), 0);
-    files_wanted.set(file_indices, true);
+    EXPECT_TRUE(files_wanted.set(file_indices, true));
     expected_files_wanted.set_has_all();
     expected_pieces_wanted.set_has_all();
     compare_to_expected();
-    files_wanted.set(file_indices, false);
+    EXPECT_TRUE(files_wanted.set(file_indices, false));
     expected_files_wanted.set_has_none();
     expected_pieces_wanted.set_has_none();
     compare_to_expected();
+}
+
+TEST_F(FilePieceMapTest, wantedBounds)
+{
+    auto const fpm = tr_file_piece_map{ block_info_, FileSizes };
+    auto files_wanted = tr_files_wanted(&fpm);
+    tr_file_index_t const n_files = fpm.file_count();
+
+    EXPECT_TRUE(files_wanted.set(0U, false));
+    EXPECT_FALSE(files_wanted.set(0U, false));
+    EXPECT_FALSE(files_wanted.set(n_files, false));
+    EXPECT_FALSE(files_wanted.set(std::numeric_limits<tr_file_index_t>::max(), false));
+    EXPECT_FALSE(files_wanted.file_wanted(0U));
+    EXPECT_FALSE(files_wanted.file_wanted(n_files));
+
+    auto const invalid_files = std::to_array<tr_file_index_t>({ 1U, std::numeric_limits<tr_file_index_t>::max() });
+    EXPECT_FALSE(files_wanted.set(invalid_files, false));
+    EXPECT_TRUE(files_wanted.file_wanted(1U));
+
+    constexpr auto Files = std::to_array<tr_file_index_t>({ 1U, 2U });
+    EXPECT_TRUE(files_wanted.set(Files, false));
+    EXPECT_FALSE(files_wanted.set(Files, false));
+    EXPECT_FALSE(files_wanted.file_wanted(1U));
+    EXPECT_FALSE(files_wanted.file_wanted(2U));
 }

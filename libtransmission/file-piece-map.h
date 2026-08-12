@@ -104,8 +104,8 @@ class tr_files_wanted
 public:
     explicit tr_files_wanted(tr_file_piece_map const* fpm);
 
-    void set(tr_file_index_t file, bool wanted);
-    void set(std::span<tr_file_index_t const> files, bool wanted);
+    bool set(tr_file_index_t file, bool wanted);
+    bool set(std::span<tr_file_index_t const> files, bool wanted);
 
     [[nodiscard]] constexpr bool file_wanted(tr_file_index_t file) const
     {

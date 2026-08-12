@@ -1198,19 +1198,7 @@ private:
         needs_completeness_check_ = true;
     }
 
-    void set_files_wanted(std::span<tr_file_index_t const> files, bool wanted, bool is_bootstrapping)
-    {
-        auto const lock = unique_lock();
-
-        files_wanted_.set(files, wanted);
-        completion_.invalidate_size_when_done();
-        files_wanted_changed_(this, files, wanted);
-
-        if (!is_bootstrapping) {
-            set_dirty();
-            recheck_completeness();
-        }
-    }
+    void set_files_wanted(std::span<tr_file_index_t const> files, bool wanted, bool is_bootstrapping);
 
     void set_verify_state(VerifyState state);
 

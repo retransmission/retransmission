@@ -212,16 +212,22 @@ tr_files_wanted::tr_files_wanted(tr_file_piece_map const* const fpm)
     wanted_.set_has_all(); // by default we want all files
 }
 
-void tr_files_wanted::set(tr_file_index_t const file, bool const wanted)
+bool tr_files_wanted::set(tr_file_index_t const file, bool const wanted)
 {
-    wanted_.set(file, wanted);
+    return wanted_.set(file, wanted);
 }
 
-void tr_files_wanted::set(std::span<tr_file_index_t const> const files, bool const wanted)
+bool tr_files_wanted::set(std::span<tr_file_index_t const> const files, bool const wanted)
 {
-    for (auto const file : files) {
-        set(file, wanted);
+    if (std::ranges::any_of(files, [this](tr_file_index_t const file) { return file >= fpm_->file_count(); })) {
+        return false;
     }
+
+    auto ret = false;
+    for (auto const file : files) {
+        ret |= set(file, wanted);
+    }
+    return ret;
 }
 
 bool tr_files_wanted::piece_wanted(tr_piece_index_t const piece) const

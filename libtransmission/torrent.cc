@@ -1905,6 +1905,23 @@ tr_block_span_t tr_torrent::block_span_for_file(tr_file_index_t const file) cons
 
 // ---
 
+void tr_torrent::set_files_wanted(std::span<tr_file_index_t const> files, bool wanted, bool is_bootstrapping)
+{
+    auto const lock = unique_lock();
+
+    if (files_wanted_.set(files, wanted)) {
+        completion_.invalidate_size_when_done();
+        files_wanted_changed_(this, files, wanted);
+
+        if (!is_bootstrapping) {
+            set_dirty();
+            recheck_completeness();
+        }
+    }
+}
+
+// ---
+
 void tr_torrent::set_file_priorities(std::span<tr_file_index_t const> const files, tr_priority_t priority)
 {
     auto const lock = unique_lock();
