@@ -270,8 +270,7 @@ void tr_bitfield::set_from_bools(std::span<bool const> const flags)
 {
     size_t true_count = 0;
 
-    free_array();
-    flags_.resize(getBytesNeeded(flags.size()));
+    flags_.assign(getBytesNeeded(flags.size()), {});
 
     for (size_t i = 0; i < flags.size(); ++i) {
         if (flags[i]) {
