@@ -57,8 +57,16 @@ void setAllTrue(std::span<std::byte> const bytes, size_t const bit_count)
 
 // ---
 
-size_t tr_bitfield::count_flags(size_t begin, size_t end) const noexcept
+size_t tr_bitfield::count(size_t begin, size_t end) const
 {
+    if (has_all()) {
+        return end - begin;
+    }
+
+    if (has_none()) {
+        return 0;
+    }
+
     auto ret = size_t{};
     size_t const first_byte = begin >> 3U;
     size_t const last_byte = (end - 1) >> 3U;
@@ -123,19 +131,6 @@ size_t tr_bitfield::count_flags(size_t begin, size_t end) const noexcept
 
     TR_ASSERT(ret <= (begin - end));
     return ret;
-}
-
-size_t tr_bitfield::count(size_t begin, size_t end) const
-{
-    if (has_all()) {
-        return end - begin;
-    }
-
-    if (has_none()) {
-        return 0;
-    }
-
-    return count_flags(begin, end);
 }
 
 // ---

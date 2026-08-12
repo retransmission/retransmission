@@ -132,7 +132,6 @@ private:
         }
         return ret;
     }
-    [[nodiscard]] size_t count_flags(size_t begin, size_t end) const noexcept;
 
     [[nodiscard]] constexpr bool test_flag(size_t n) const
     {
