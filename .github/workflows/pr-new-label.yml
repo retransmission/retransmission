@@ -1,7 +1,9 @@
 name: Label new pull requests
 
-# Adds a `new` label when a PR is opened, and removes it once the PR is approved.
-# The label is also removed on a timer by pr-new-label-expiry.yml.
+# Adds a `new` label when a PR is opened.
+# The label is removed on approval by pr-new-label-approved.yml — which
+# subscribes to this workflow by the `name:` above — and on a timer by
+# pr-new-label-expiry.yml.
 
 on:
   # `pull_request_target` (rather than `pull_request`) so the GITHUB_TOKEN has
@@ -50,25 +52,15 @@ jobs:
               labels: [label],
             });
 
-  remove-on-approval:
+  # For PRs from forks, `pull_request_review` runs with a read-only token that
+  # cannot change labels, and no `permissions:` key can raise it. So this job
+  # only *reports* the approval: it runs for approvals and nothing else, which
+  # makes "this run succeeded" the signal pr-new-label-approved.yml acts on.
+  signal-approval:
     if: >-
       github.event_name == 'pull_request_review' &&
       github.event.review.state == 'approved'
     runs-on: ubuntu-slim
+    permissions: {}
     steps:
-      - uses: actions/github-script@v9
-        with:
-          script: |
-            const label = process.env.LABEL;
-            const { owner, repo } = context.repo;
-            try {
-              await github.rest.issues.removeLabel({
-                owner,
-                repo,
-                issue_number: context.payload.pull_request.number,
-                name: label,
-              });
-            } catch (error) {
-              // 404 just means the label was already gone; anything else is real.
-              if (error.status !== 404) throw error;
-            }
+      - run: 'true'

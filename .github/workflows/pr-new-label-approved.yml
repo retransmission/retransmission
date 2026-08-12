@@ -1,0 +1,62 @@
+name: Remove the "new" label on approval
+
+# Removes the `new` label once a PR has been approved.
+#
+# The approval is detected by the `signal-approval` job in pr-new-label.yml,
+# which cannot remove the label itself: it sees the review event, but for PRs
+# from forks it runs with a read-only token. `workflow_run` is what carries
+# the news across that boundary, since it runs in the base repository's
+# context with a write-capable token.
+
+on:
+  workflow_run:
+    workflows: ['Label new pull requests']
+    types: [completed]
+
+permissions:
+  pull-requests: write
+
+env:
+  LABEL: new
+
+jobs:
+  remove-label:
+    # `signal-approval` is the only job that runs for a review, so a review-
+    # triggered run succeeds if and only if the review was an approval.
+    if: >-
+      github.event.workflow_run.event == 'pull_request_review' &&
+      github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-slim
+    steps:
+      - uses: actions/github-script@v9
+        with:
+          script: |
+            const label = process.env.LABEL;
+            const { owner, repo } = context.repo;
+            const { head_sha } = context.payload.workflow_run;
+
+            // The triggering run carries no PR number: `workflow_run`
+            // populates `pull_requests` only for same-repo branches.
+            const { data: associated } =
+              await github.rest.repos.listPullRequestsAssociatedWithCommit({
+                owner,
+                repo,
+                commit_sha: head_sha,
+              });
+            const pr = associated.find((pr) => pr.head.sha === head_sha);
+            if (!pr) {
+              core.setFailed(`No pull request has ${head_sha} as its head.`);
+              return;
+            }
+
+            try {
+              await github.rest.issues.removeLabel({
+                owner,
+                repo,
+                issue_number: pr.number,
+                name: label,
+              });
+            } catch (error) {
+              // 404 just means the label was already gone; anything else is real.
+              if (error.status !== 404) throw error;
+            }
