@@ -85,6 +85,23 @@ TEST(Bitfield, ctorFromFlagArray)
     }
 }
 
+TEST(Bitfield, setFromBoolsAfterHaveAll)
+{
+    auto constexpr Flags = std::to_array<bool>({ true, false, true, false, false, true, false, true, false, false });
+
+    auto bf = tr_bitfield(std::size(Flags));
+    bf.set_has_all();
+    bf.set_from_bools(Flags);
+
+    EXPECT_FALSE(bf.has_all());
+    EXPECT_FALSE(bf.has_none());
+    EXPECT_EQ(4U, bf.count());
+
+    for (size_t i = 0; i < std::size(Flags); ++i) {
+        EXPECT_EQ(Flags[i], bf.test(i));
+    }
+}
+
 TEST(Bitfield, setRaw)
 {
     auto constexpr TestByte = std::byte{ 10 };
