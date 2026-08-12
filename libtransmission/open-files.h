@@ -22,8 +22,8 @@
 
 // A pool of open files that are cached while reading / writing torrents' data.
 //
-// The pool is thread-safe, and hands out files pinned: the fd stays open
-// for as long as any pin to it exists, even if the pool evicts or closes
+// The pool is thread-safe and hands out files pinned. A pinned fd stays
+// open while any pin to it exists, even if the pool evicts or closes
 // the entry in the meantime. Whichever thread drops the last pin closes
 // the fd.
 class tr_open_files

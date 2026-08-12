@@ -153,10 +153,10 @@ tr_open_files::Pinned tr_open_files::get(
         }
     }
 
-    // Open without holding the mutex: opening can block on disk, and
-    // preallocation can block for a long time. If two threads race to
-    // open the same file, both fds are valid; the loser's entry is
-    // replaced in the pool and its fd closes when its pins drop.
+    // Open without holding the mutex. Opening can block on disk, and
+    // preallocation can block for a long time. Two threads may race to
+    // open the same file. Both fds stay valid. The pool keeps whichever
+    // entry lands last, and the other fd closes when its pins drop.
 
     // create subfolders, if any
     auto error = tr_error{};

@@ -247,31 +247,32 @@ private:
  *
  * Threading model:
  *
- * - Every public method runs on the session thread, and so does all of
- *   the gate state: `gates_`, `staged_`, and `n_running_total_` need no
- *   locks.
+ * - Every public method runs on the session thread. Only the session
+ *   thread touches the gate state (`gates_`, `staged_`,
+ *   `n_running_total_`), so that state needs no locks.
  * - `work_` and `done_` are the only structures shared with workers,
  *   each behind its own mutex. Workers pop work items, execute them,
- *   and post completion closures to `done_`; the session thread
+ *   and post completion closures to `done_`. The session thread
  *   delivers those from pump_done().
  *
- * The admission gate: data ops on a torrent are admitted freely and run
+ * The admission gate implements rule 3 of the ordering contract in
+ * local-data.h. Data ops on a torrent are admitted freely and run
  * concurrently. An admin op waits in the torrent's queue until every
- * admitted op's completion has been delivered, then runs exclusively on
- * the session thread; ops enqueued behind it wait in the queue until it
- * finishes. That is rule 3, and it is the whole story for move / rename
- * / remove / close safety.
+ * admitted op's completion has been delivered, and then runs
+ * exclusively on the session thread. Ops enqueued behind it wait in
+ * the queue until it finishes. This gate is what makes move, rename,
+ * remove, and close safe against in-flight reads.
  *
  * The read scheduler:
  *
  * - Hot path: a read whose fd is already pooled is tried with a
- *   nonblocking page-cache read and completes inline on a hit — no
- *   thread hop, no queueing (legal under rule 4).
+ *   nonblocking page-cache read. On a hit it completes inline, with no
+ *   thread hop and no queueing. Rule 4 allows the inline delivery.
  * - Cold path: misses are staged, and flushed to the workers once per
  *   session-thread pass. A flush sorts the batch by disk position and
- *   merges contiguous reads into runs of up to MaxCoalescedRunBytes,
- *   so seeding many peers turns into long sequential reads instead of
- *   16 KiB seeks. Workers consume runs in the sorted (elevator) order.
+ *   merges contiguous reads into sequential runs of up to
+ *   MaxCoalescedRunBytes. Workers consume the runs in that sorted
+ *   (elevator) order.
  */
 class LocalData::Threaded final : public std::enable_shared_from_this<LocalData::Threaded>
 {
@@ -345,9 +346,9 @@ public:
         advance(id);
     }
 
-    // Forget a torrent whose files are closed. A no-op if ops for the
-    // torrent arrived in the meantime; the state just gets rebuilt.
-    // Call from inside a close_torrent or remove barrier.
+    // Forget a torrent whose files are closed.
+    // Call from inside a close_torrent or remove barrier. Ops enqueued
+    // behind the barrier keep the gate alive, and this becomes a no-op.
     void forget(tr_torrent_id_t const id)
     {
         if (auto const it = gates_.find(id);
@@ -407,7 +408,8 @@ private:
         bool barrier_running = false;
         std::deque<Queued> queue;
 #ifdef TR_ENABLE_ASSERTS
-        // spans being read by ops in flight, for the S6 overlap assert
+        // spans being read by ops in flight.
+        // exec_write() asserts that writes never overlap them.
         std::vector<tr_byte_span_t> running_read_spans;
 #endif
     };
@@ -423,7 +425,7 @@ private:
         bool single_file;
     };
 
-    // A batch of coalesced reads: `ops` covers `length` contiguous
+    // A batch of coalesced reads. `ops` covers `length` contiguous
     // bytes of one file, read with a single pread into one buffer.
     // A run that isn't `coalesced` holds one op that may span files.
     struct Run {
@@ -564,7 +566,8 @@ private:
     }
 
     // Serve a read from the page cache, inline, if the file is already
-    // open and the data is resident. Rule 4 allows the inline delivery.
+    // open and the data is resident. Rule 4 of the ordering contract in
+    // local-data.h allows the inline delivery.
     [[nodiscard]] bool try_read_hot(
         tr_torrent_id_t const id,
         tr_byte_span_t const span,
@@ -624,17 +627,17 @@ private:
 
     void exec_write(tr_torrent_id_t const id, WriteOp op)
     {
-        // Writes stay synchronous on the session thread for now: the
-        // blocking write is what throttles intake on a slow disk, and
-        // making writes async without a memory budget would let a fast
-        // swarm outrun the disk unboundedly. They still count as
-        // running while their completion runs, so a completion that
-        // enqueues a barrier can't have it jump the queue.
+        // Writes run synchronously on the session thread. The blocking
+        // write is what throttles intake when the disk is slower than
+        // the swarm. Running writes on the workers would need a memory
+        // budget to keep that bound, and no budget exists. Writes
+        // still count as running while their completion runs, so a
+        // barrier enqueued by the completion cannot overtake it.
 #ifdef TR_ENABLE_ASSERTS
-        // S6: a write must never overlap an op that's reading. The
-        // protocol already guarantees it - we write only blocks we
-        // lack, and read or hash only pieces we have - so a failure
-        // here is a caller bug, not a backend race.
+        // A write must never overlap an op that's reading. The
+        // protocol already guarantees it, because we write only blocks
+        // we lack and read or hash only pieces we have. A failure here
+        // is a caller bug, not a backend race.
         for (auto const& read_span : gates_[id].running_read_spans) {
             TR_ASSERT(op.span.end <= read_span.begin || read_span.end <= op.span.begin);
         }

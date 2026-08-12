@@ -340,7 +340,7 @@ TEST(LocalData, ShutdownDeliversParkedCompletions)
 // ---
 
 // Exercises the threaded backend against real files in a sandbox.
-// The test thread doubles as the session thread: marshaled functions
+// The test thread doubles as the session thread. Marshaled functions
 // queue up and run from pump_until().
 class LocalDataWorkersTest : public tr::test::SandboxedTest
 {
@@ -462,7 +462,7 @@ TEST_F(LocalDataWorkersTest, readsCompleteWithTheRightData)
     auto const contents = make_pattern_file("data.bin", FileSize);
     auto const local_data = make_local_data(make_descriptor({ { "data.bin", FileSize } }, 32768U));
 
-    // read every 16 KiB block; contiguous spans coalesce into runs
+    // read every 16 KiB block. Contiguous spans coalesce into runs.
     static auto constexpr NumBlocks = size_t{ 4U };
     auto n_done = size_t{};
     auto ok = std::array<bool, NumBlocks>{};
@@ -548,8 +548,8 @@ TEST_F(LocalDataWorkersTest, barriersWaitForReadsAndBlockLaterOps)
         });
     }
 
-    // (the move itself fails since there's no real torrent; only the
-    // ordering of the completions matters here)
+    // (the move itself fails since there's no real torrent, and only
+    // the ordering of the completions matters here)
     local_data->move(TorId, "/old", "/new", "name", [&order](auto, auto const&) { order.emplace_back("move"); });
 
     // ...and this read waits for the barrier
@@ -578,7 +578,7 @@ TEST_F(LocalDataWorkersTest, shutdownDeliversEveryCallback)
         });
     }
 
-    // exactly-once even without a pump: shutdown() drains inline
+    // shutdown() delivers the callbacks inline, without a pump
     local_data->shutdown();
     EXPECT_EQ(4U, n_done);
 }
@@ -607,14 +607,14 @@ TEST_F(LocalDataWorkersTest, cachedReadsCompleteInline)
     auto const contents = make_pattern_file("data.bin", FileSize);
     auto const local_data = make_local_data(make_descriptor({ { "data.bin", FileSize } }, 32768U));
 
-    // warm the fd pool; the just-written data is in the page cache
+    // warm the fd pool. The just-written data is in the page cache.
     auto const filename = tr_pathbuf{ sandboxDir(), "/data.bin" };
     auto const pin = open_files_.get(TorId, 0U, false, filename, tr_file_preallocation::None, FileSize);
     ASSERT_TRUE(pin);
 
     // some filesystems (e.g. tmpfs) don't support nonblocking reads at
-    // all; the engine falls back to the cold path there, so there's no
-    // inline completion to observe
+    // all. The engine falls back to the cold path there, and the cold
+    // path has no inline completion to observe.
     auto probe = std::array<uint8_t, 16U>{};
     if (!tr_sys_file_read_at_nowait(*pin, std::data(probe), std::size(probe), 0U)) {
         GTEST_SKIP() << "nonblocking reads unsupported on this filesystem";
@@ -630,7 +630,7 @@ TEST_F(LocalDataWorkersTest, cachedReadsCompleteInline)
             matched = !error && data != nullptr && matches(*data, std::string_view{ contents }.substr(0U, TrBlockSize));
         });
 
-    // no pump: the hot path serves page-cache hits inline (rule 4)
+    // no pump is needed. The hot path serves page-cache hits inline.
     EXPECT_TRUE(done);
     EXPECT_TRUE(matched);
 

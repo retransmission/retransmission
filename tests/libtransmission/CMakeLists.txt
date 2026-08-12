@@ -119,7 +119,7 @@ if(NOT CMAKE_CROSSCOMPILING OR CMAKE_CROSSCOMPILING_EMULATOR)
             ENVIRONMENT TR_LOCAL_DATA_SHUFFLE=1)
 
     # ...and a third time on the threaded backend, where reads and piece
-    # hashes really do run concurrently on worker threads.
+    # hashes run concurrently on worker threads.
     add_test(
         NAME LT.ThreadedDiskIo
         COMMAND libtransmission-test

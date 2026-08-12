@@ -177,9 +177,9 @@ auto constexpr KeepaliveIntervalSecs = time_t{ 100 };
 auto constexpr MetadataReqQ = size_t{ 64U };
 
 // Upload reads kept in flight with the disk at once, per peer.
-// Deep enough to keep the disk busy while earlier reads are sent;
-// shallow enough that reordered completions can't starve one peer
-// behind another for long.
+// Deep enough to keep the disk busy while earlier reads are sent.
+// Shallow enough that reordering in the read scheduler can't hold any
+// one peer back for long.
 auto constexpr UploadReadAhead = size_t{ 4U };
 
 auto constexpr PeerReqQDefault = 500U;
@@ -746,8 +746,8 @@ private:
 
     // whether we're inside fill_output_buffer().
     // An upload read can complete inline, and its completion refills
-    // the pipeline; when the fill loop itself started that read, the
-    // loop is already doing the refilling.
+    // the pipeline. When the fill loop itself started that read, the
+    // loop is already doing the refilling, so the completion skips it.
     bool is_filling_ = false;
 
     std::array<std::vector<tr_pex>, NUM_TR_AF_INET_TYPES> pex_;
@@ -1916,8 +1916,8 @@ void tr_peerMsgsImpl::check_request_timeout(time_t const now)
     }
 
     // fulfill piece requests.
-    // Starting a read is progress too: a deferred read queues no bytes
-    // now, but the pipeline should still fill up to its cap.
+    // A deferred read queues no bytes yet. Starting one still counts
+    // as progress, so that the loop fills the pipeline to its cap.
     for (;;) {
         auto const old_len = n_bytes_written;
         auto const n_reading_before = std::size(reading_);
@@ -1971,8 +1971,8 @@ void tr_peerMsgsImpl::check_request_timeout(time_t const now)
     auto ok = is_valid_request(req) && tor_.has_piece(req.index);
 
     // The piece may need its first-use hash check before we serve it.
-    // The check hashes the piece off the session thread; leave the
-    // request queued while it runs and retry on a later pass.
+    // The check hashes the piece off the session thread. Leave the
+    // request queued while it runs, and retry on a later pass.
     if (ok && !tor_.is_piece_checked(req.index)) {
         if (!tor_.is_lazy_check_failed(req.index)) {
             tor_.start_lazy_piece_check(req.index);
@@ -2030,7 +2030,7 @@ void tr_peerMsgsImpl::on_upload_read(
         n_reply_bytes_queued_ += protocol_send_message(BtPeerMsgs::Piece, req.index, req.offset, piece_data);
     }
 
-    // this read's pipeline slot is free again; start the next read.
+    // this read's pipeline slot is free again, so start the next read.
     // A no-op when the fill loop is what completed this read inline.
     fill_output_buffer(tr_time(), tr_time_msec());
 }

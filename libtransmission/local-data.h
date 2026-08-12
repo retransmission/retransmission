@@ -253,7 +253,7 @@ public:
     void pump();
 
     // Runs a function on the session thread. Must be callable from any
-    // thread; the calls may come from disk workers.
+    // thread. Disk workers call it to deliver completions.
     using Marshal = std::function<void(std::function<void()>)>;
 
     // Returns the torrent's current storage descriptor, or nullptr if
@@ -266,13 +266,12 @@ public:
      *
      * Reads and piece hashes run on `worker_count` worker threads and
      * complete later, from the session thread. Writes still run inline
-     * on the session thread. Admin ops become real barriers: they wait
-     * for the ops in flight, and ops enqueued behind them wait for
-     * them. Everything the rules above allow can now actually happen.
+     * on the session thread. An admin op waits for the ops in flight,
+     * and ops enqueued behind an admin op wait for it.
      *
      * Workers resolve torrent data through `provider` and never touch
      * `tr_torrent` or `tr_session`. Leave `provider` unset to snapshot
-     * descriptors from the torrents passed to the constructor; tests
+     * descriptors from the torrents passed to the constructor. Tests
      * pass their own.
      *
      * Call at most once, before any ops are enqueued.

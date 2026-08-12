@@ -33,7 +33,7 @@ namespace tr
  */
 struct StorageDescriptor {
     // Which snapshot of the torrent's storage state this is.
-    // Bumped every time the torrent invalidates its descriptor.
+    // tr_torrent bumps it whenever dirs, subpaths, or metainfo change.
     uint64_t generation = 0U;
 
     tr_block_info block_info;

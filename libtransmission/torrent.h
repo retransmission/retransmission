@@ -668,10 +668,11 @@ struct tr_torrent {
     [[nodiscard]] bool ensure_piece_is_checked(tr_piece_index_t piece);
 
     // The async flavor of ensure_piece_is_checked(), for the upload
-    // path: hashes the piece off the session thread instead of
+    // path. Hashes the piece off the session thread instead of
     // blocking it. A no-op if the piece is checked or being checked.
-    // While the check runs, callers leave their requests queued and
-    // retry; is_piece_checked() or is_lazy_check_failed() flips first.
+    // Callers leave their requests queued while the check runs. When
+    // it finishes, is_piece_checked() or is_lazy_check_failed() turns
+    // true.
     void start_lazy_piece_check(tr_piece_index_t piece);
 
     // True if a lazy check found this piece corrupt on disk.
@@ -1374,8 +1375,9 @@ private:
     // pieces being hashed by a lazy check. see start_lazy_piece_check()
     tr_bitfield pieces_checking_ = tr_bitfield{ 0 };
 
-    // pieces whose lazy check failed. Requests for them are rejected
-    // outright instead of re-hashing the piece on every request.
+    // pieces whose lazy check failed.
+    // Remembering them lets add_next_block() reject their requests
+    // without re-running the check.
     tr_bitfield pieces_check_failed_ = tr_bitfield{ 0 };
 
     labels_t labels_;

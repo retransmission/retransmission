@@ -577,7 +577,7 @@ std::optional<uint64_t> tr_sys_file_read_at_nowait(
     uint64_t const /*size*/,
     uint64_t const /*offset*/)
 {
-    // Windows has no page-cache-only read; callers fall back to
+    // Windows has no page-cache-only read. Callers fall back to
     // tr_sys_file_read_at().
     return {};
 }
