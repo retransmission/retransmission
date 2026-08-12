@@ -1422,7 +1422,7 @@ ReadResult tr_peerMsgsImpl::process_peer_message(uint8_t id, MessageReader& payl
 
     case BtPeerMsgs::Bitfield:
         logtrace(this, "got a bitfield");
-        have_ = tr_bitfield{ tor_.has_metainfo() ? tor_.piece_count() : std::size(payload) * 8 };
+        have_.init_size(std::size(payload) * 8);
         have_.set_raw(payload);
         peer_info->set_seed(is_seed());
         publish(tr_peer_event::GotBitfield(&have_));
