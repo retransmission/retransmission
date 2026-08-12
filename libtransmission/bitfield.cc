@@ -19,23 +19,13 @@ namespace
 
 [[nodiscard]] constexpr size_t getBytesNeeded(size_t const bit_count) noexcept
 {
-    /* NB: If can guarantee bit_count <= SIZE_MAX - 8 then faster logic
-       is ((bit_count + 7) >> 3). */
     return (bit_count >> 3) + ((bit_count & 7) != 0 ? 1 : 0);
-}
-
-/* Used only in cases where it can be guaranteed bit_count <= SIZE_MAX - 8 */
-[[nodiscard]] constexpr size_t getBytesNeededSafe(size_t const bit_count) noexcept
-{
-    return ((bit_count + 7) >> 3);
 }
 
 void setAllTrue(std::span<std::byte> bytes, size_t const bit_count)
 {
     static auto constexpr Val = std::byte{ 0xFF };
-    // Only ever called internally with in-use bit counts. Impossible
-    // for bitcount > SIZE_MAX - 8.
-    auto const n = getBytesNeededSafe(bit_count);
+    auto const n = getBytesNeeded(bit_count);
 
     TR_ASSERT(bytes.size() >= n);
     if (n <= 0U || bytes.size() < n) {
@@ -145,7 +135,7 @@ bool tr_bitfield::is_valid() const
         return std::empty(flags_) && true_count_ == 0U;
     }
 
-    auto const bytes_needed = getBytesNeededSafe(bit_count_);
+    auto const bytes_needed = getBytesNeeded(bit_count_);
     return true_count_ <= bit_count_ && std::size(flags_) <= bytes_needed &&
         (std::empty(flags_) || true_count_ == count_flags());
 }
@@ -156,8 +146,7 @@ std::vector<std::byte> tr_bitfield::raw() const
         return flags_;
     }
 
-    /* Impossible for bit_count_ to exceed SIZE_MAX - 8 */
-    auto const n = getBytesNeededSafe(bit_count_);
+    auto const n = getBytesNeeded(bit_count_);
 
     auto raw = std::vector<std::byte>(n);
 
@@ -273,14 +262,14 @@ bool tr_bitfield::set_raw(std::span<std::byte const> const raw)
         return false;
     }
 
-    if (auto const bytes_needed = getBytesNeededSafe(bit_count_); std::size(raw) > bytes_needed) {
+    if (auto const bytes_needed = getBytesNeeded(bit_count_); std::size(raw) > bytes_needed) {
         return false;
     }
 
     flags_.assign(raw.begin(), raw.end());
 
     // ensure any excess bits at the end of the array are set to '0'.
-    if (raw.size() == getBytesNeededSafe(bit_count_)) {
+    if (raw.size() == getBytesNeeded(bit_count_)) {
         auto const excess_bit_count = (raw.size() * 8) - bit_count_;
 
         TR_ASSERT(excess_bit_count <= 7);
