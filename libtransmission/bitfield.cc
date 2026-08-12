@@ -17,7 +17,7 @@
 namespace
 {
 
-[[nodiscard]] constexpr size_t getBytesNeeded(size_t bit_count) noexcept
+[[nodiscard]] constexpr size_t getBytesNeeded(size_t const bit_count) noexcept
 {
     /* NB: If can guarantee bit_count <= SIZE_MAX - 8 then faster logic
        is ((bit_count + 7) >> 3). */
@@ -25,12 +25,12 @@ namespace
 }
 
 /* Used only in cases where it can be guaranteed bit_count <= SIZE_MAX - 8 */
-[[nodiscard]] constexpr size_t getBytesNeededSafe(size_t bit_count) noexcept
+[[nodiscard]] constexpr size_t getBytesNeededSafe(size_t const bit_count) noexcept
 {
     return ((bit_count + 7) >> 3);
 }
 
-void setAllTrue(std::span<std::byte> const bytes, size_t const bit_count)
+void setAllTrue(std::span<std::byte> bytes, size_t const bit_count)
 {
     static auto constexpr Val = std::byte{ 0xFF };
     // Only ever called internally with in-use bit counts. Impossible
@@ -42,24 +42,28 @@ void setAllTrue(std::span<std::byte> const bytes, size_t const bit_count)
         return;
     }
 
-    auto const used = bytes.first(n);
-    std::ranges::fill(used, Val);
+    bytes = bytes.first(n);
+    std::ranges::fill(bytes, Val);
 
     // -bit_count & 7U. Since bitcount is unsigned do ~bitcount +
     // 1 to replace -bitcount as linters warn about negating
     // unsigned types. Any compiler will optimize ~x + 1 to -x in
     // the backend.
     uint32_t const shift = ((~bit_count) + 1) & 7U;
-    used.back() = Val << shift;
+    bytes.back() = Val << shift;
 }
 
 } // namespace
 
 // ---
 
-size_t tr_bitfield::count(size_t begin, size_t end) const
+size_t tr_bitfield::count(size_t const begin, size_t end) const
 {
-    TR_ASSERT(begin < end);
+    if (has_none()) {
+        return 0;
+    }
+
+    end = std::min(end, bit_count_);
     if (begin >= end) {
         return 0;
     }
@@ -68,11 +72,7 @@ size_t tr_bitfield::count(size_t begin, size_t end) const
         return end - begin;
     }
 
-    if (has_none()) {
-        return 0;
-    }
-
-    if (empty()) {
+    if (!is_size_known()) [[unlikely]] {
         return 0;
     }
 
@@ -140,17 +140,24 @@ size_t tr_bitfield::count(size_t begin, size_t end) const
 
 bool tr_bitfield::is_valid() const
 {
-    return std::empty(flags_) || true_count_ == count_flags();
+    if (!is_size_known()) {
+        // When the size is unknown, the only valid states are "have all" or "have none"
+        return std::empty(flags_) && true_count_ == 0U;
+    }
+
+    auto const bytes_needed = getBytesNeededSafe(bit_count_);
+    return true_count_ <= bit_count_ && std::size(flags_) <= bytes_needed &&
+        (std::empty(flags_) || true_count_ == count_flags());
 }
 
 std::vector<std::byte> tr_bitfield::raw() const
 {
-    /* Impossible for bit_count_ to exceed SIZE_MAX - 8 */
-    auto const n = getBytesNeededSafe(bit_count_);
-
     if (!std::empty(flags_)) {
         return flags_;
     }
+
+    /* Impossible for bit_count_ to exceed SIZE_MAX - 8 */
+    auto const n = getBytesNeededSafe(bit_count_);
 
     auto raw = std::vector<std::byte>(n);
 
@@ -161,12 +168,16 @@ std::vector<std::byte> tr_bitfield::raw() const
     return raw;
 }
 
-void tr_bitfield::ensure_bits_alloced(size_t n)
+bool tr_bitfield::ensure_bits_alloced(size_t const n)
 {
-    bool const has_all = this->has_all();
+    if (!is_size_known() || n > size()) [[unlikely]] {
+        return false;
+    }
+
+    auto const has_all = this->has_all();
 
     /* Can't use getBytesNeededSafe as n can be > SIZE_MAX - 8. */
-    size_t const bytes_needed = has_all ? getBytesNeeded(std::max(n, true_count_)) : getBytesNeeded(n);
+    auto const bytes_needed = getBytesNeeded(has_all ? std::max(n, true_count_) : n);
 
     if (std::size(flags_) < bytes_needed) {
         flags_.resize(bytes_needed);
@@ -174,22 +185,19 @@ void tr_bitfield::ensure_bits_alloced(size_t n)
             setAllTrue(flags_, true_count_);
         }
     }
-}
 
-bool tr_bitfield::ensure_nth_bit_alloced(size_t nth)
-{
-    // count is zero-based, so we need to allocate nth+1 bits before setting the nth */
-    if (nth == SIZE_MAX) {
-        return false;
-    }
-
-    ensure_bits_alloced(nth + 1);
     return true;
 }
 
-void tr_bitfield::set_true_count(size_t n) noexcept
+bool tr_bitfield::ensure_nth_bit_alloced(size_t const nth)
 {
-    TR_ASSERT(bit_count_ == 0 || n <= bit_count_);
+    // count is zero-based, so we need to allocate nth+1 bits before setting the nth
+    return ensure_bits_alloced(nth + 1U);
+}
+
+void tr_bitfield::set_true_count(size_t const n) noexcept
+{
+    TR_ASSERT(!is_size_known() || n <= size());
 
     true_count_ = n;
     have_all_hint_ = n == bit_count_;
@@ -204,18 +212,31 @@ void tr_bitfield::set_true_count(size_t n) noexcept
 
 void tr_bitfield::increment_true_count(size_t inc) noexcept
 {
-    TR_ASSERT(bit_count_ == 0 || inc <= bit_count_);
-    TR_ASSERT(bit_count_ == 0 || true_count_ <= bit_count_ - inc);
+    TR_ASSERT(!is_size_known() || inc <= size());
+    TR_ASSERT(!is_size_known() || true_count_ <= size() - inc);
 
     set_true_count(true_count_ + inc);
 }
 
 void tr_bitfield::decrement_true_count(size_t dec) noexcept
 {
-    TR_ASSERT(bit_count_ == 0 || dec <= bit_count_);
-    TR_ASSERT(bit_count_ == 0 || true_count_ >= dec);
+    TR_ASSERT(!is_size_known() || dec <= size());
+    TR_ASSERT(!is_size_known() || true_count_ >= dec);
 
     set_true_count(true_count_ - dec);
+}
+
+void tr_bitfield::init_size(size_t const bit_count) noexcept
+{
+    if (bit_count == 0U || bit_count_ != 0U) {
+        return;
+    }
+
+    bit_count_ = bit_count;
+
+    if (has_all()) {
+        set_has_all(); // update true_count_
+    }
 }
 
 // ---
@@ -246,8 +267,16 @@ void tr_bitfield::set_has_all() noexcept
     TR_ASSERT(is_valid());
 }
 
-void tr_bitfield::set_raw(std::span<std::byte const> const raw)
+bool tr_bitfield::set_raw(std::span<std::byte const> const raw)
 {
+    if (!is_size_known()) {
+        return false;
+    }
+
+    if (auto const bytes_needed = getBytesNeededSafe(bit_count_); std::size(raw) > bytes_needed) {
+        return false;
+    }
+
     flags_.assign(raw.begin(), raw.end());
 
     // ensure any excess bits at the end of the array are set to '0'.
@@ -262,14 +291,18 @@ void tr_bitfield::set_raw(std::span<std::byte const> const raw)
     }
 
     rebuild_true_count();
+    return true;
 }
 
-void tr_bitfield::set_from_bools(std::span<bool const> const flags)
+bool tr_bitfield::set_from_bools(std::span<bool const> const flags)
 {
-    size_t true_count = 0;
+    if (!is_size_known() || std::size(flags) > size()) {
+        return false;
+    }
 
     flags_.assign(getBytesNeeded(flags.size()), {});
 
+    size_t true_count = 0;
     for (size_t i = 0; i < flags.size(); ++i) {
         if (flags[i]) {
             ++true_count;
@@ -278,16 +311,21 @@ void tr_bitfield::set_from_bools(std::span<bool const> const flags)
     }
 
     set_true_count(true_count);
+    return true;
 }
 
-void tr_bitfield::set(size_t nth, bool value)
+bool tr_bitfield::set(size_t const nth, bool const value)
 {
+    if (!is_size_known() || nth >= size()) {
+        return false;
+    }
+
     if (test(nth) == value) {
-        return;
+        return false;
     }
 
     if (!ensure_nth_bit_alloced(nth)) {
-        return;
+        return false;
     }
 
     /* Already tested that val != nth bit so just swap */
@@ -309,15 +347,17 @@ void tr_bitfield::set(size_t nth, bool value)
     }
     have_all_hint_ = true_count_ == bit_count_;
     have_none_hint_ = true_count_ == 0;
+
+    return true;
 }
 
 /* Sets bit range [begin, end) to 1 */
-void tr_bitfield::set_span(size_t begin, size_t end, bool value)
+bool tr_bitfield::set_span(size_t const begin, size_t end, bool const value)
 {
     // bounds check
     end = std::min(end, bit_count_);
-    if (end == 0 || begin >= end) {
-        return;
+    if (!is_size_known() || end > size() || begin >= end) {
+        return false;
     }
 
     // NB: count(begin, end) can be quite expensive. Might be worth it
@@ -326,12 +366,12 @@ void tr_bitfield::set_span(size_t begin, size_t end, bool value)
     size_t const new_count = value ? (end - begin) : 0;
     // did anything change?
     if (old_count == new_count) {
-        return;
+        return false;
     }
 
     --end;
     if (!ensure_nth_bit_alloced(end)) {
-        return;
+        return false;
     }
 
     auto walk = begin >> 3;
@@ -370,6 +410,8 @@ void tr_bitfield::set_span(size_t begin, size_t end, bool value)
 
         decrement_true_count(old_count);
     }
+
+    return true;
 }
 
 tr_bitfield& tr_bitfield::operator|=(tr_bitfield const& that)
@@ -383,6 +425,7 @@ tr_bitfield& tr_bitfield::operator|=(tr_bitfield const& that)
         return *this;
     }
 
+    bit_count_ = std::max(bit_count_, that.bit_count_);
     flags_.resize(std::max(std::size(flags_), std::size(that.flags_)));
 
     for (size_t i = 0, n = std::size(that.flags_); i < n; ++i) {

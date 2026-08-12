@@ -481,12 +481,12 @@ tr_resume::fields_t load_filenames(tr_variant::Map const& map, tr_torrent* tor)
 
 tr_variant bitfield_to_raw(tr_bitfield const& b)
 {
-    if (b.has_none() || std::empty(b)) {
-        return tr_variant::unmanaged_string("none"sv);
-    }
-
     if (b.has_all()) {
         return tr_variant::unmanaged_string("all"sv);
+    }
+
+    if (b.has_none() || !b.is_size_known()) {
+        return tr_variant::unmanaged_string("none"sv);
     }
 
     return tr_variant::make_raw(b.raw());

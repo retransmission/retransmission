@@ -47,8 +47,8 @@ public:
     void set_has_none() noexcept;
 
     // set one or more bits
-    void set(size_t nth, bool value = true);
-    void set_span(size_t begin, size_t end, bool value = true);
+    bool set(size_t nth, bool value = true);
+    bool set_span(size_t begin, size_t end, bool value = true);
     void unset(size_t bit)
     {
         set(bit, false);
@@ -57,12 +57,12 @@ public:
     {
         set_span(begin, end, false);
     }
-    void set_from_bools(std::span<bool const> flags);
+    bool set_from_bools(std::span<bool const> flags);
 
     // "raw" here is in BEP0003 format: "The first byte of the bitfield
     // corresponds to indices 0 - 7 from high bit to low bit, respectively.
     // The next one 8-15, etc. Spare bits at the end are set to zero."
-    void set_raw(std::span<std::byte const> raw);
+    bool set_raw(std::span<std::byte const> raw);
     [[nodiscard]] std::vector<std::byte> raw() const;
 
     template<typename R>
@@ -99,9 +99,15 @@ public:
         return bit_count_;
     }
 
-    [[nodiscard]] constexpr bool empty() const noexcept
+    // This class is sometimes constructed before the size is known,
+    // for example, when a peer is connected for a magnet link,
+    // and we don't know the number of pieces yet.
+    // Use this method to set the size after construction.
+    void init_size(size_t bit_count) noexcept;
+
+    [[nodiscard]] constexpr bool is_size_known() const noexcept
     {
-        return size() == 0;
+        return size() != 0;
     }
 
     [[nodiscard]] bool is_valid() const;
@@ -112,7 +118,7 @@ public:
             return 1.0F;
         }
 
-        if (has_none() || empty()) {
+        if (has_none() || !is_size_known()) {
             return 0.0F;
         }
 
@@ -142,7 +148,7 @@ private:
         return (flags_[n >> 3U] << (n & 7U) & std::byte{ 0x80 }) != std::byte{};
     }
 
-    void ensure_bits_alloced(size_t n);
+    [[nodiscard]] bool ensure_bits_alloced(size_t n);
     [[nodiscard]] bool ensure_nth_bit_alloced(size_t nth);
 
     void free_array() noexcept
@@ -169,8 +175,8 @@ private:
     size_t bit_count_ = 0;
     size_t true_count_ = 0;
 
-    /* Special cases for when full or empty but we don't know the bitCount.
+    /* Special cases for when full or empty but we don't know the bit_count_.
        This occurs when a magnet link's peers send have all / have none */
     bool have_all_hint_ = false;
-    bool have_none_hint_ = false;
+    bool have_none_hint_ = true;
 };

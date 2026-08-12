@@ -152,7 +152,7 @@ struct tr_completion {
 
     [[nodiscard]] constexpr bool has_metainfo() const noexcept
     {
-        return !std::empty(blocks_);
+        return blocks_.is_size_known();
     }
 
 private:

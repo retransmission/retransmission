@@ -293,7 +293,7 @@ TEST(Bitfield, hasAllNone)
         tr_bitfield field(0);
 
         EXPECT_TRUE(!field.has_all());
-        EXPECT_TRUE(!field.has_none());
+        EXPECT_TRUE(field.has_none());
 
         field.set_has_none();
         EXPECT_TRUE(!field.has_all());
