@@ -429,8 +429,7 @@ struct tr_torrent {
 
     void set_file_priority(tr_file_index_t file, tr_priority_t priority)
     {
-        if (priority != file_priorities_.file_priority(file)) {
-            file_priorities_.set(file, priority);
+        if (file_priorities_.set(file, priority)) {
             priority_changed_(this, std::span{ &file, 1U }, priority);
             set_dirty();
             mark_changed();
