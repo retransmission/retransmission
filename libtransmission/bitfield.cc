@@ -285,7 +285,7 @@ void tr_bitfield::set_has_all() noexcept
 bool tr_bitfield::set_raw(std::span<std::byte const> const raw)
 {
     if (!is_size_known()) {
-        return false;
+        return std::empty(raw);
     }
 
     if (auto const bytes_needed = tr_bytes_needed(bit_count_); std::size(raw) > bytes_needed) {

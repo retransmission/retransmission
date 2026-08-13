@@ -492,15 +492,17 @@ tr_variant bitfield_to_raw(tr_bitfield const& b)
     return tr_variant::make_raw(b.raw());
 }
 
-void raw_to_bitfield(tr_bitfield& bitfield, std::string_view const raw)
+[[nodiscard]] bool raw_to_bitfield(tr_bitfield& bitfield, std::string_view const raw)
 {
     if (std::empty(raw) || raw == "none"sv) {
         bitfield.set_has_none();
     } else if (raw == "all"sv) {
         bitfield.set_has_all();
     } else {
-        bitfield.set_raw(raw);
+        return bitfield.set_raw(raw);
     }
+
+    return true;
 }
 
 void save_progress(tr_variant::Map& map, tr_torrent::ResumeHelper const& helper)
@@ -573,8 +575,8 @@ tr_resume::fields_t load_progress(tr_variant::Map const& map, tr_torrent* tor, t
     }
 
     // try to load the piece-checked bitfield
-    if (auto const sv = prog->value_if<std::string_view>(TR_KEY_pieces); sv) {
-        raw_to_bitfield(checked, *sv);
+    if (auto const sv = prog->value_if<std::string_view>(TR_KEY_pieces); sv && !raw_to_bitfield(checked, *sv)) {
+        tr_logAddDebugTor(tor, fmt::format("Couldn't load checked pieces: invalid value for 'pieces'"));
     }
 
     // maybe it's a .resume file from [2.20 - 3.00] with the per-piece mtimes
@@ -645,13 +647,13 @@ tr_resume::fields_t load_progress(tr_variant::Map const& map, tr_torrent* tor, t
     auto blocks = tr_bitfield{ tor->block_count() };
     char const* err = nullptr;
     if (auto const b = prog->find(TR_KEY_blocks); b != std::end(*prog)) {
-        if (auto const sv = b->second.value_if<std::string_view>(); sv) {
-            raw_to_bitfield(blocks, *sv);
-        } else {
+        if (auto const sv = b->second.value_if<std::string_view>(); sv && !raw_to_bitfield(blocks, *sv)) {
             err = "Invalid value for 'blocks'";
         }
     } else if (auto const raw = prog->value_if<std::string_view>(TR_KEY_bitfield); raw) {
-        blocks.set_raw(*raw);
+        if (!blocks.set_raw(*raw)) {
+            err = "Invalid value for 'bitfield'";
+        }
     } else {
         err = "Couldn't find 'blocks' or 'bitfield'";
     }
