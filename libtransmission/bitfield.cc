@@ -11,16 +11,12 @@
 
 #include "libtransmission/bitfield.h"
 #include "libtransmission/tr-assert.h" // TR_ASSERT, TR_ENABLE_ASSERTS
+#include "libtransmission/utils.h"
 
 // ---
 
 namespace
 {
-
-[[nodiscard]] constexpr size_t getBytesNeeded(size_t const bit_count) noexcept
-{
-    return (bit_count >> 3) + ((bit_count & 7) != 0 ? 1 : 0);
-}
 
 [[nodiscard]] constexpr uint8_t calc_excess_bits(size_t const bit_count) noexcept
 {
@@ -34,7 +30,7 @@ namespace
 void setAllTrue(std::span<std::byte> bytes, size_t const bit_count)
 {
     static auto constexpr Val = std::byte{ 0xFF };
-    auto const n = getBytesNeeded(bit_count);
+    auto const n = tr_bytes_needed(bit_count);
 
     TR_ASSERT(bytes.size() >= n);
     if (n <= 0U || bytes.size() < n) {
@@ -134,7 +130,7 @@ bool tr_bitfield::is_valid() const
         return std::empty(flags_) && true_count_ == 0U && have_all_hint_ != have_none_hint_;
     }
 
-    auto const bytes_needed = getBytesNeeded(bit_count_);
+    auto const bytes_needed = tr_bytes_needed(bit_count_);
     auto const flags_size = std::size(flags_);
     auto const excess_bits_mask = ~(std::byte{ 0xFFU } << calc_excess_bits(bit_count_));
     return true_count_ <= bit_count_ &&
@@ -144,7 +140,7 @@ bool tr_bitfield::is_valid() const
 
 std::vector<std::byte> tr_bitfield::raw() const
 {
-    auto const n = getBytesNeeded(bit_count_);
+    auto const n = tr_bytes_needed(bit_count_);
     auto raw = std::vector<std::byte>(n);
 
     if (has_all()) {
@@ -168,7 +164,7 @@ bool tr_bitfield::ensure_bits_alloced(size_t const n)
     }
 
     auto const has_all = this->has_all();
-    auto const bytes_needed = getBytesNeeded(has_all ? std::max(n, true_count_) : n);
+    auto const bytes_needed = tr_bytes_needed(has_all ? std::max(n, true_count_) : n);
 
     if (std::size(flags_) < bytes_needed) {
         flags_.resize(bytes_needed);
@@ -252,14 +248,14 @@ bool tr_bitfield::set_raw(std::span<std::byte const> const raw)
         return false;
     }
 
-    if (auto const bytes_needed = getBytesNeeded(bit_count_); std::size(raw) > bytes_needed) {
+    if (auto const bytes_needed = tr_bytes_needed(bit_count_); std::size(raw) > bytes_needed) {
         return false;
     }
 
     flags_.assign(raw.begin(), raw.end());
 
     // ensure any excess bits at the end of the array are set to '0'.
-    if (raw.size() == getBytesNeeded(bit_count_)) {
+    if (raw.size() == tr_bytes_needed(bit_count_)) {
         auto const excess_bit_count = (raw.size() * 8) - bit_count_;
 
         TR_ASSERT(excess_bit_count <= 7);
@@ -280,7 +276,7 @@ bool tr_bitfield::set_from_bools(std::span<bool const> const flags)
         return false;
     }
 
-    flags_.assign(getBytesNeeded(flags.size()), {});
+    flags_.assign(tr_bytes_needed(flags.size()), {});
 
     size_t true_count = 0;
     for (size_t i = 0; i < flags.size(); ++i) {

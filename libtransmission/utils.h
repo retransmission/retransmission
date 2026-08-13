@@ -77,6 +77,16 @@ template<typename T>
 // ---
 
 /**
+ * Calculates the number of bytes needed to store `bit_count` bits.
+ */
+[[nodiscard]] constexpr size_t tr_bytes_needed(size_t const bit_count) noexcept
+{
+    return (bit_count >> 3U) + ((bit_count & 7U) != 0U ? 1U : 0U);
+}
+
+// ---
+
+/**
  * Folds `b` into the running hash `a`, so a sequence of values can be
  * hashed one at a time. Order-sensitive: the same values in a different
  * order give a different hash.
