@@ -57,6 +57,27 @@ TEST(Bitfield, count)
     EXPECT_EQ(100U, bf.count(0, 100));
 }
 
+TEST(Bitfield, countBounds)
+{
+    auto constexpr Raw = std::to_array<std::byte>({ std::byte{ 0xa0 } });
+
+    auto bf = tr_bitfield{ 17 };
+    ASSERT_TRUE(bf.set_raw(Raw));
+    EXPECT_TRUE(bf.is_valid());
+
+    EXPECT_EQ(2U, bf.count(0U, bf.size()));
+    EXPECT_EQ(2U, bf.count(0U, std::numeric_limits<size_t>::max()));
+    EXPECT_EQ(1U, bf.count(0U, 1U));
+    EXPECT_EQ(1U, bf.count(1U, 3U));
+    EXPECT_EQ(0U, bf.count(8U, bf.size()));
+    EXPECT_EQ(0U, bf.count(bf.size(), std::numeric_limits<size_t>::max()));
+    EXPECT_EQ(0U, bf.count(5U, 4U));
+
+    bf.set_has_all();
+    EXPECT_EQ(bf.size(), bf.count(0U, std::numeric_limits<size_t>::max()));
+    EXPECT_EQ(bf.size() - 1U, bf.count(1U, std::numeric_limits<size_t>::max()));
+}
+
 TEST(Bitfield, ctorFromFlagArray)
 {
     auto constexpr Tests = std::to_array<std::array<bool, 10>>({
@@ -72,7 +93,7 @@ TEST(Bitfield, ctorFromFlagArray)
         bool const have_none = true_count == 0;
 
         auto bf = tr_bitfield(n);
-        bf.set_from_bools(flags);
+        EXPECT_TRUE(bf.set_from_bools(flags));
 
         EXPECT_EQ(n, bf.size());
         EXPECT_EQ(have_all, bf.has_all());
@@ -91,7 +112,7 @@ TEST(Bitfield, setFromBoolsAfterHaveAll)
 
     auto bf = tr_bitfield(std::size(Flags));
     bf.set_has_all();
-    bf.set_from_bools(Flags);
+    ASSERT_TRUE(bf.set_from_bools(Flags));
 
     EXPECT_FALSE(bf.has_all());
     EXPECT_FALSE(bf.has_none());
@@ -110,7 +131,7 @@ TEST(Bitfield, setRaw)
     auto raw = std::vector(100, TestByte);
 
     auto bf = tr_bitfield(std::size(raw) * 8);
-    bf.set_raw(raw);
+    ASSERT_TRUE(bf.set_raw(raw));
     EXPECT_EQ(TestByteTrueBits * std::size(raw), bf.count());
 
     // The first byte of the bitfield corresponds to indices 0 - 7
@@ -135,13 +156,93 @@ TEST(Bitfield, setRaw)
     // check that the spare bits t the end are zero
     bf = tr_bitfield{ 1 };
     static constexpr auto By = std::byte{ 0xFF };
-    bf.set_raw({ &By, 1U });
+    ASSERT_TRUE(bf.set_raw({ &By, 1U }));
     EXPECT_TRUE(bf.has_all());
     EXPECT_FALSE(bf.has_none());
     EXPECT_EQ(1U, bf.count());
     raw = bf.raw();
     EXPECT_EQ(1U, std::size(raw));
     EXPECT_EQ(std::byte{ 1 } << 7, raw[0]);
+}
+
+TEST(Bitfield, acceptsPartialInput)
+{
+    auto constexpr Flags = std::to_array<bool>({ true, false, true });
+    auto constexpr Raw = std::to_array<std::byte>({ std::byte{ 0xa0 } });
+    auto constexpr ByteRaw = std::to_array<uint8_t>({ 0x80U });
+
+    auto from_bools = tr_bitfield{ 10 };
+    ASSERT_TRUE(from_bools.set_from_bools(Flags));
+    EXPECT_TRUE(from_bools.is_valid());
+    EXPECT_EQ(2U, from_bools.count());
+    EXPECT_EQ((std::vector<std::byte>{ std::byte{ 0xa0 } }), from_bools.raw());
+
+    auto from_raw = tr_bitfield{ 10 };
+    ASSERT_TRUE(from_raw.set_raw(Raw));
+    EXPECT_TRUE(from_raw.is_valid());
+    EXPECT_EQ(2U, from_raw.count());
+    EXPECT_EQ((std::vector<std::byte>{ std::byte{ 0xa0 } }), from_raw.raw());
+
+    auto from_byte_raw = tr_bitfield{ 8 };
+    ASSERT_TRUE(from_byte_raw.set_raw(ByteRaw));
+    EXPECT_TRUE(from_byte_raw.is_valid());
+    EXPECT_TRUE(from_byte_raw.test(0U));
+    EXPECT_EQ((std::vector<std::byte>{ std::byte{ 0x80 } }), from_byte_raw.raw());
+}
+
+TEST(Bitfield, rejectsOversizedInput)
+{
+    auto constexpr Raw = std::to_array<std::byte>({ std::byte{ 0xa0 } });
+    auto constexpr OversizedRaw = std::to_array<std::byte>({ std::byte{ 0xff }, std::byte{ 0xff }, std::byte{ 0xff } });
+    auto constexpr OversizedFlags = std::to_array<bool>({ true, true, true, true, true, true, true, true, true, true, true });
+
+    auto bf = tr_bitfield{ 10 };
+    ASSERT_TRUE(bf.set_raw(Raw));
+    auto const expected_raw = bf.raw();
+    auto const expected_count = bf.count();
+
+    EXPECT_FALSE(bf.set_raw(OversizedRaw));
+    EXPECT_FALSE(bf.set_from_bools(OversizedFlags));
+    EXPECT_TRUE(bf.is_valid());
+    EXPECT_EQ(expected_count, bf.count());
+    EXPECT_EQ(expected_raw, bf.raw());
+}
+
+TEST(Bitfield, mutationResultsAndBounds)
+{
+    auto bf = tr_bitfield{ 5 };
+
+    EXPECT_FALSE(bf.set(0U, false));
+    EXPECT_TRUE(bf.set(0U));
+    EXPECT_FALSE(bf.set(0U));
+    EXPECT_FALSE(bf.set(bf.size()));
+    EXPECT_FALSE(bf.set(std::numeric_limits<size_t>::max()));
+
+    EXPECT_TRUE(bf.set_span(1U, std::numeric_limits<size_t>::max()));
+    EXPECT_TRUE(bf.has_all());
+    EXPECT_FALSE(bf.set_span(1U, std::numeric_limits<size_t>::max()));
+    EXPECT_TRUE(bf.set_span(1U, std::numeric_limits<size_t>::max(), false));
+    EXPECT_EQ(1U, bf.count());
+    EXPECT_FALSE(bf.set_span(1U, std::numeric_limits<size_t>::max(), false));
+    EXPECT_TRUE(bf.set(0U, false));
+    EXPECT_TRUE(bf.has_none());
+
+    EXPECT_FALSE(bf.set_span(0U, 0U));
+    EXPECT_FALSE(bf.set_span(5U, std::numeric_limits<size_t>::max()));
+    EXPECT_FALSE(bf.set_span(4U, 2U));
+    EXPECT_TRUE(bf.is_valid());
+}
+
+TEST(Bitfield, supportsLargestSize)
+{
+    auto bf = tr_bitfield{ std::numeric_limits<size_t>::max() };
+
+    EXPECT_TRUE(bf.is_size_known());
+    EXPECT_TRUE(bf.has_none());
+    EXPECT_TRUE(bf.is_valid());
+    EXPECT_FALSE(bf.set(bf.size()));
+    EXPECT_FALSE(bf.set_span(bf.size(), bf.size()));
+    EXPECT_EQ(0U, bf.count(bf.size(), bf.size()));
 }
 
 TEST(Bitfield, bitfields)
@@ -305,6 +406,55 @@ TEST(Bitfield, hasAllNone)
     }
 }
 
+TEST(Bitfield, deferredSize)
+{
+    auto constexpr Raw = std::to_array<std::byte>({ std::byte{ 0x80 } });
+    auto constexpr Flags = std::to_array<bool>({ true });
+
+    auto have_none = tr_bitfield{ 0 };
+    EXPECT_FALSE(have_none.is_size_known());
+    EXPECT_TRUE(have_none.has_none());
+    EXPECT_FALSE(have_none.has_all());
+    EXPECT_TRUE(have_none.is_valid());
+    EXPECT_EQ(0U, have_none.count(0U, 1U));
+    EXPECT_FLOAT_EQ(0.0F, have_none.percent());
+    EXPECT_FALSE(have_none.set(0U));
+    EXPECT_FALSE(have_none.set_span(0U, 1U));
+    EXPECT_FALSE(have_none.set_raw(Raw));
+    EXPECT_FALSE(have_none.set_from_bools(Flags));
+
+    have_none.init_size(0U);
+    EXPECT_FALSE(have_none.is_size_known());
+    have_none.init_size(10U);
+    EXPECT_TRUE(have_none.is_size_known());
+    EXPECT_TRUE(have_none.has_none());
+    EXPECT_EQ(10U, have_none.size());
+    EXPECT_EQ(0U, have_none.count());
+    EXPECT_TRUE(have_none.is_valid());
+
+    auto have_all = tr_bitfield{ 0 };
+    have_all.set_has_all();
+    EXPECT_FALSE(have_all.is_size_known());
+    EXPECT_TRUE(have_all.has_all());
+    EXPECT_FALSE(have_all.has_none());
+    EXPECT_TRUE(have_all.is_valid());
+    EXPECT_EQ(0U, have_all.count(0U, 10U));
+    EXPECT_FLOAT_EQ(1.0F, have_all.percent());
+
+    have_all.init_size(10U);
+    EXPECT_TRUE(have_all.is_size_known());
+    EXPECT_TRUE(have_all.has_all());
+    EXPECT_EQ(10U, have_all.count());
+    EXPECT_EQ((std::vector<std::byte>{ std::byte{ 0xff }, std::byte{ 0xc0 } }), have_all.raw());
+    for (size_t i = 0U; i < have_all.size(); ++i) {
+        EXPECT_TRUE(have_all.test(i));
+    }
+
+    have_all.init_size(20U);
+    EXPECT_EQ(10U, have_all.size());
+    EXPECT_TRUE(have_all.is_valid());
+}
+
 TEST(Bitfield, percent)
 {
     auto field = tr_bitfield{ 100 };
@@ -421,6 +571,42 @@ TEST(Bitfield, bitwiseAnd)
     b.set_span(0U, std::size(a) / 20U);
     b &= a;
     EXPECT_NEAR(0.1F, a.percent(), 0.01);
+}
+
+TEST(Bitfield, bitwiseOperationsWithDifferentSizes)
+{
+    auto smaller = tr_bitfield{ 4 };
+    auto larger = tr_bitfield{ 12 };
+
+    ASSERT_TRUE(smaller.set(0U));
+    ASSERT_TRUE(larger.set(4U));
+    ASSERT_TRUE(larger.set(11U));
+    smaller |= larger;
+
+    EXPECT_EQ(12U, smaller.size());
+    EXPECT_EQ(3U, smaller.count());
+    EXPECT_TRUE(smaller.test(0U));
+    EXPECT_TRUE(smaller.test(4U));
+    EXPECT_TRUE(smaller.test(11U));
+    EXPECT_TRUE(smaller.is_valid());
+
+    auto left = tr_bitfield{ 12 };
+    auto right = tr_bitfield{ 4 };
+    ASSERT_TRUE(left.set(0U));
+    ASSERT_TRUE(left.set(3U));
+    ASSERT_TRUE(left.set(4U));
+    ASSERT_TRUE(left.set(11U));
+    ASSERT_TRUE(right.set(0U));
+    ASSERT_TRUE(right.set(3U));
+    left &= right;
+
+    EXPECT_EQ(12U, left.size());
+    EXPECT_EQ(2U, left.count());
+    EXPECT_TRUE(left.test(0U));
+    EXPECT_TRUE(left.test(3U));
+    EXPECT_FALSE(left.test(4U));
+    EXPECT_FALSE(left.test(11U));
+    EXPECT_TRUE(left.is_valid());
 }
 
 TEST(Bitfield, intersects)

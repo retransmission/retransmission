@@ -67,9 +67,9 @@ public:
 
     template<typename R>
         requires(!requires(R const& range) { std::span<std::byte const>{ range }; })
-    void set_raw(R const& raw)
+    bool set_raw(R const& raw)
     {
-        set_raw(std::as_bytes(std::span<typename R::value_type const>{ raw }));
+        return set_raw(std::as_bytes(std::span<typename R::value_type const>{ raw }));
     }
 
     [[nodiscard]] constexpr bool has_all() const noexcept
