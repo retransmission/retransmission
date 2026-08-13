@@ -175,6 +175,7 @@ bool tr_bitfield::ensure_bits_alloced(size_t const n)
         }
     }
 
+    TR_ASSERT(is_valid());
     return true;
 }
 
@@ -280,6 +281,7 @@ bool tr_bitfield::set_raw(std::span<std::byte const> const raw)
     }
 
     rebuild_true_count();
+    TR_ASSERT(is_valid());
     return true;
 }
 
@@ -300,6 +302,7 @@ bool tr_bitfield::set_from_bools(std::span<bool const> const flags)
     }
 
     set_true_count(true_count);
+    TR_ASSERT(is_valid());
     return true;
 }
 
@@ -337,6 +340,7 @@ bool tr_bitfield::set(size_t const nth, bool const value)
     have_all_hint_ = true_count_ == bit_count_;
     have_none_hint_ = true_count_ == 0;
 
+    TR_ASSERT(is_valid());
     return true;
 }
 
@@ -400,6 +404,7 @@ bool tr_bitfield::set_span(size_t const begin, size_t end, bool const value)
         decrement_true_count(old_count);
     }
 
+    TR_ASSERT(is_valid());
     return true;
 }
 
@@ -422,6 +427,7 @@ tr_bitfield& tr_bitfield::operator|=(tr_bitfield const& that)
     }
 
     rebuild_true_count();
+    TR_ASSERT(is_valid());
     return *this;
 }
 
@@ -443,6 +449,7 @@ tr_bitfield& tr_bitfield::operator&=(tr_bitfield const& that)
     }
 
     rebuild_true_count();
+    TR_ASSERT(is_valid());
     return *this;
 }
 
