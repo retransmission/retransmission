@@ -62,12 +62,12 @@ public:
     // "raw" here is in BEP0003 format: "The first byte of the bitfield
     // corresponds to indices 0 - 7 from high bit to low bit, respectively.
     // The next one 8-15, etc. Spare bits at the end are set to zero."
-    bool set_raw(std::span<std::byte const> raw);
+    [[nodiscard]] bool set_raw(std::span<std::byte const> raw);
     [[nodiscard]] std::vector<std::byte> raw() const;
 
     template<typename R>
         requires(!requires(R const& range) { std::span<std::byte const>{ range }; })
-    bool set_raw(R const& raw)
+    [[nodiscard]] bool set_raw(R const& raw)
     {
         return set_raw(std::as_bytes(std::span<typename R::value_type const>{ raw }));
     }
