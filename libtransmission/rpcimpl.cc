@@ -1538,17 +1538,22 @@ bool isCurlURL(std::string_view url)
     return parsed && std::ranges::find(Schemes, parsed->scheme) != std::ranges::end(Schemes);
 }
 
-[[nodiscard]] auto file_list_from_list(tr_variant::Vector const& idx_vec)
+[[nodiscard]] std::tuple<std::vector<tr_file_index_t>, JsonRpc::Error::Code, std::string> file_list_from_list(
+    tr_variant::Vector const& idx_vec)
 {
     auto const n_files = std::size(idx_vec);
     auto files = std::vector<tr_file_index_t>{};
     files.reserve(n_files);
     for (auto const& idx_var : idx_vec) {
-        if (auto const val = idx_var.value_if<tr_file_index_t>()) {
+        if (auto const val = idx_var.value_if<tr_file_index_t>()) [[likely]] {
             files.emplace_back(*val);
+        } else if (idx_var.holds_alternative<int64_t>()) {
+            return { std::vector<tr_file_index_t>{}, JsonRpc::Error::FILE_IDX_OOR, "file index is out of the valid range"s };
+        } else {
+            return { std::vector<tr_file_index_t>{}, JsonRpc::Error::INVALID_PARAMS, "file index is not an integer"s };
         }
     }
-    return files;
+    return { std::move(files), JsonRpc::Error::SUCCESS, std::string{} };
 }
 
 void torrentAdd(tr_session* session, tr_variant::Map const& args_in, tr_rpc_idle_data* idle_data)
@@ -1593,27 +1598,52 @@ void torrentAdd(tr_session* session, tr_variant::Map const& args_in, tr_rpc_idle
     }
 
     if (auto const val = args_in.find_if<tr_variant::Vector>(TR_KEY_files_unwanted); val != nullptr) {
-        auto const files = file_list_from_list(*val);
+        auto const [files, err, errmsg] = file_list_from_list(*val);
+        if (err != Error::SUCCESS) {
+            tr_rpc_idle_done(idle_data, err, errmsg);
+            return;
+        }
+
         builder.set_files_wanted(files, false);
     }
 
     if (auto const val = args_in.find_if<tr_variant::Vector>(TR_KEY_files_wanted); val != nullptr) {
-        auto const files = file_list_from_list(*val);
+        auto const [files, err, errmsg] = file_list_from_list(*val);
+        if (err != Error::SUCCESS) {
+            tr_rpc_idle_done(idle_data, err, errmsg);
+            return;
+        }
+
         builder.set_files_wanted(files, true);
     }
 
     if (auto const val = args_in.find_if<tr_variant::Vector>(TR_KEY_priority_low); val != nullptr) {
-        auto const files = file_list_from_list(*val);
+        auto const [files, err, errmsg] = file_list_from_list(*val);
+        if (err != Error::SUCCESS) {
+            tr_rpc_idle_done(idle_data, err, errmsg);
+            return;
+        }
+
         builder.set_file_priorities(files, TR_PRI_LOW);
     }
 
     if (auto const* val = args_in.find_if<tr_variant::Vector>(TR_KEY_priority_normal); val != nullptr) {
-        auto const files = file_list_from_list(*val);
+        auto const [files, err, errmsg] = file_list_from_list(*val);
+        if (err != Error::SUCCESS) {
+            tr_rpc_idle_done(idle_data, err, errmsg);
+            return;
+        }
+
         builder.set_file_priorities(files, TR_PRI_NORMAL);
     }
 
     if (auto const* val = args_in.find_if<tr_variant::Vector>(TR_KEY_priority_high); val != nullptr) {
-        auto const files = file_list_from_list(*val);
+        auto const [files, err, errmsg] = file_list_from_list(*val);
+        if (err != Error::SUCCESS) {
+            tr_rpc_idle_done(idle_data, err, errmsg);
+            return;
+        }
+
         builder.set_file_priorities(files, TR_PRI_HIGH);
     }
 
