@@ -87,7 +87,6 @@
              revealButton,
          ]) {
         view.translatesAutoresizingMaskIntoConstraints = NO;
-        [self addSubview:view];
     }
 
     self.fGroupIndicatorView = groupIndicatorView;
@@ -154,6 +153,20 @@
     auto torrentProgressBarView = self.fTorrentProgressBarView;
     auto controlButton = self.fControlButton;
     auto revealButton = self.fRevealButton;
+
+    for (NSView* view in @[
+             groupIndicatorView,
+             iconView,
+             actionButton,
+             stackView,
+             torrentProgressField,
+             torrentStatusField,
+             torrentProgressBarView,
+             controlButton,
+             revealButton,
+         ]) {
+        [self addSubview:view];
+    }
 
     [NSLayoutConstraint activateConstraints:@[
         // groupIndicatorView

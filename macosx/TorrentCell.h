@@ -26,4 +26,7 @@
 
 @property(nonatomic, weak) TorrentTableView* fTorrentTableView;
 
+- (void)configurePriorities;
+- (void)setupConstraints;
+
 @end
