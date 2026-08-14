@@ -776,7 +776,7 @@ private:
         return len == 5U;
 
     case BtPeerMsgs::Bitfield:
-        return !tor.has_metainfo() || len == 1 + ((tor.piece_count() + 7U) / 8U);
+        return !tor.has_metainfo() || len == 1 + tr_bytes_needed(tor.piece_count());
 
     case BtPeerMsgs::Request:
     case BtPeerMsgs::Cancel:
