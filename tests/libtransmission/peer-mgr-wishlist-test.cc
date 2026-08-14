@@ -719,6 +719,74 @@ TEST_F(PeerMgrWishlistTest, gotBitfieldIncrementsReplication)
     }
 }
 
+TEST_F(PeerMgrWishlistTest, staleBitfieldDecrementsReplication)
+{
+    auto const get_spans = [](size_t n_wanted) {
+        auto mediator = MockMediator{};
+
+        // setup: three pieces, all missing
+        mediator.block_span_[0] = { .begin = 0, .end = 100 };
+        mediator.block_span_[1] = { .begin = 100, .end = 200 };
+        mediator.block_span_[2] = { .begin = 200, .end = 300 };
+
+        // and we want everything
+        for (tr_piece_index_t i = 0; i < mediator.piece_count(); ++i) {
+            mediator.client_wants_piece_.insert(i);
+        }
+
+        // all pieces had the same rarity
+        mediator.piece_replication_[0] = 2;
+        mediator.piece_replication_[1] = 2;
+        mediator.piece_replication_[2] = 2;
+
+        // allow the wishlist to build its cache
+        auto wishlist = Wishlist{ mediator };
+
+        // a peer that has only the first piece sent a duplicated
+        // bitfield message. We need to undo the bookkeeping from
+        // the previous bitfield message.
+        auto have = tr_bitfield{ 3 };
+        have.set(0);
+        wishlist.on_stale_bitfield(have);
+
+        // this is what a real mediator should return at this point:
+        // mediator.piece_replication_[0] = 1;
+
+        return wishlist.next(n_wanted, PeerHasAllPieces);
+    };
+
+    // wishlist prefers to request rarer pieces, so it
+    // should pick the ones with the smallest replication.
+    // NB: when all other things are equal in the wishlist, pieces are
+    // picked at random so this test -could- pass even if there's a bug.
+    // So test several times to shake out any randomness
+    static auto constexpr NumRuns = 1000;
+    for (int run = 0; run < NumRuns; ++run) {
+        auto const spans = get_spans(100);
+        auto requested = tr_bitfield{ 300 };
+        for (auto const& [begin, end] : spans) {
+            requested.set_span(begin, end);
+        }
+        EXPECT_EQ(100U, requested.count());
+        EXPECT_EQ(100U, requested.count(0, 100));
+        EXPECT_EQ(0U, requested.count(100, 300));
+    }
+
+    // Same premise as previous test, but ask for more blocks.
+    // Since the second and third piece are the second-rarest,
+    // those blocks should be next in line.
+    for (int run = 0; run < NumRuns; ++run) {
+        auto const spans = get_spans(150);
+        auto requested = tr_bitfield{ 300 };
+        for (auto const& [begin, end] : spans) {
+            requested.set_span(begin, end);
+        }
+        EXPECT_EQ(150U, requested.count());
+        EXPECT_EQ(100U, requested.count(0, 100));
+        EXPECT_EQ(50U, requested.count(100, 300));
+    }
+}
+
 TEST_F(PeerMgrWishlistTest, sentRequestsResortsPiece)
 {
     auto const get_spans = [](size_t n_wanted) {

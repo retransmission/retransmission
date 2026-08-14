@@ -386,6 +386,8 @@ public:
                       [this](tr_torrent*, tr_peer*, tr_block_index_t block) { wishlist_.on_sent_cancel(block); }),
                   swarm_.sent_request.connect_scoped(
                       [this](tr_torrent*, tr_peer*, tr_block_span_t block_span) { wishlist_.on_sent_request(block_span); }),
+                  swarm_.stale_bitfield.connect_scoped(
+                      [this](tr_torrent*, tr_bitfield const& bitfield) { wishlist_.on_stale_bitfield(bitfield); }),
                   tor_.sequential_download_changed_.connect_scoped(
                       [this](tr_torrent*, bool) { wishlist_.on_sequential_download_changed(); }),
                   tor_.sequential_download_from_piece_changed_.connect_scoped(
@@ -452,7 +454,7 @@ public:
         tr_torrent& tor_;
         tr_swarm& swarm_;
         Wishlist wishlist_;
-        std::array<sigslot::scoped_connection, 15U> signal_tags_; // depends-on: wishlist_
+        std::array<sigslot::scoped_connection, 16U> signal_tags_; // depends-on: wishlist_
     };
 
     [[nodiscard]] auto unique_lock() const
@@ -638,6 +640,10 @@ public:
             s->mark_all_upload_only_flag_dirty();
             break;
 
+        case tr_peer_event::Type::ClientStaleBitfield:
+            s->stale_bitfield(s->tor, msgs->has());
+            break;
+
         case tr_peer_event::Type::ClientGotChoke:
             s->got_choke(s->tor, msgs->active_requests);
             break;
@@ -700,6 +706,7 @@ public:
     sigslot::signal<tr_torrent*, tr_peer*, tr_block_index_t> got_reject;
     sigslot::signal<tr_torrent*, tr_peer*, tr_block_index_t> sent_cancel;
     sigslot::signal<tr_torrent*, tr_peer*, tr_block_span_t> sent_request;
+    sigslot::signal<tr_torrent*, tr_bitfield const&> stale_bitfield;
 
     mutable tr_swarm_stats stats = {};
 

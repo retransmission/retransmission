@@ -1551,6 +1551,9 @@ ReadResult tr_peerMsgsImpl::process_peer_message(uint8_t id, MessageReader& payl
 
     case BtPeerMsgs::Bitfield:
         logtrace(this, "got a bitfield");
+        if (!have_.has_none()) {
+            publish(tr_peer_event::StaleBitfield(&have_));
+        }
         have_ = tr_bitfield{ tor_.has_metainfo() ? tor_.piece_count() : std::size(payload) * 8 };
         {
             [[maybe_unused]] auto const set_raw_res = have_.set_raw(payload);
@@ -1649,6 +1652,9 @@ ReadResult tr_peerMsgsImpl::process_peer_message(uint8_t id, MessageReader& payl
         logtrace(this, "Got a BtPeerMsgs::FextHaveAll");
 
         if (fext) {
+            if (!have_.has_none()) {
+                publish(tr_peer_event::StaleBitfield(&have_));
+            }
             have_.set_has_all();
             peer_info->set_seed();
             publish(tr_peer_event::GotHaveAll());
@@ -1668,6 +1674,9 @@ ReadResult tr_peerMsgsImpl::process_peer_message(uint8_t id, MessageReader& payl
         logtrace(this, "Got a BtPeerMsgs::FextHaveNone");
 
         if (fext) {
+            if (!have_.has_none()) {
+                publish(tr_peer_event::StaleBitfield(&have_));
+            }
             have_.set_has_none();
             peer_info->set_seed(false);
             publish(tr_peer_event::GotHaveNone());
