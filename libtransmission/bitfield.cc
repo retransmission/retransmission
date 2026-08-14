@@ -214,6 +214,57 @@ void tr_bitfield::decrement_true_count(size_t dec) noexcept
     set_true_count(true_count_ - dec);
 }
 
+void tr_bitfield::unset_excess_bits() noexcept
+{
+    if (std::empty(flags_) || std::size(flags_) != tr_bytes_needed(bit_count_)) {
+        return;
+    }
+
+    auto const excess_bit_count = calc_excess_bits(bit_count_);
+    TR_ASSERT(excess_bit_count <= 7U);
+    flags_.back() &= std::byte{ 0xff } << excess_bit_count;
+}
+
+bool tr_bitfield::init_size(size_t const bit_count) noexcept
+{
+    if (bit_count == 0U || bit_count_ != 0U) {
+        return false;
+    }
+
+    bit_count_ = bit_count;
+
+    if (have_all_hint_) {
+        set_has_all(); // update true_count_
+    }
+
+    TR_ASSERT(is_valid());
+    return true;
+}
+
+bool tr_bitfield::shrink_to(size_t const bit_count) noexcept
+{
+    if (bit_count == 0U || !is_size_known() || bit_count > size()) {
+        return false;
+    }
+
+    if (bit_count == size()) {
+        return true;
+    }
+
+    bit_count_ = bit_count;
+
+    if (have_all_hint_) {
+        set_has_all(); // update true_count_
+    } else if (!has_none()) {
+        flags_.resize(std::min(std::size(flags_), tr_bytes_needed(bit_count_)));
+        unset_excess_bits();
+        rebuild_true_count();
+    }
+
+    TR_ASSERT(is_valid());
+    return true;
+}
+
 // ---
 
 tr_bitfield::tr_bitfield(size_t bit_count)
@@ -255,15 +306,7 @@ bool tr_bitfield::set_raw(std::span<std::byte const> const raw)
     flags_.assign(raw.begin(), raw.end());
 
     // ensure any excess bits at the end of the array are set to '0'.
-    if (raw.size() == tr_bytes_needed(bit_count_)) {
-        auto const excess_bit_count = (raw.size() * 8) - bit_count_;
-
-        TR_ASSERT(excess_bit_count <= 7);
-
-        if (excess_bit_count != 0) {
-            flags_.back() &= std::byte{ 0xff } << excess_bit_count;
-        }
-    }
+    unset_excess_bits();
 
     rebuild_true_count();
     // rebuild_true_count() already asserts is_valid(), so we don't need it here
@@ -316,16 +359,14 @@ bool tr_bitfield::set(size_t const nth, bool const value)
 #endif
 
     if (value) {
-        ++true_count_;
+        increment_true_count(1);
         TR_ASSERT(old_byte_pop + 1 == new_byte_pop);
     } else {
-        --true_count_;
+        decrement_true_count(1);
         TR_ASSERT(new_byte_pop + 1 == old_byte_pop);
     }
-    have_all_hint_ = true_count_ == bit_count_;
-    have_none_hint_ = true_count_ == 0;
 
-    TR_ASSERT(is_valid());
+    // (de|in)crement_true_count() already asserts is_valid(), so we don't need it here
     return true;
 }
 
