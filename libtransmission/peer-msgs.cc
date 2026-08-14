@@ -802,7 +802,7 @@ private:
         return false;
     }
 
-    return len <= MaxIncomingMsgBytes;
+    return len >= sizeof(id) && len <= MaxIncomingMsgBytes;
 }
 
 namespace protocol_send_message_helpers
