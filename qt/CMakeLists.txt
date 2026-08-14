@@ -1,8 +1,5 @@
 set_property(GLOBAL PROPERTY AUTOGEN_SOURCE_GROUP "Generated Files")
 
-# https://doc.qt.io/qt-6/macos.html#supported-versions
-set(CMAKE_OSX_DEPLOYMENT_TARGET 11)
-
 add_library(${TR_NAME}-qt-lib STATIC)
 
 target_sources(${TR_NAME}-qt-lib

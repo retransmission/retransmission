@@ -7,7 +7,9 @@ if(POLICY CMP0114)
 endif()
 
 # Value should follow latest stable Xcode's RECOMMENDED_MACOSX_DEPLOYMENT_TARGET
-set(MACOS_SUPPORT_MINIMUM 11.0)
+# As of Xcode 27.0 RECOMMENDED_MACOSX_DEPLOYMENT_TARGET value is set to 12.0
+# Also consult Qt docs for supported macOS versions: https://doc.qt.io/qt-6/macos.html#supported-versions
+set(MACOS_SUPPORT_MINIMUM 12.0)
 
 # The value of this variable should be set prior to the first project() command invocation.
 # See: https://cmake.org/cmake/help/latest/variable/CMAKE_OSX_DEPLOYMENT_TARGET.html
