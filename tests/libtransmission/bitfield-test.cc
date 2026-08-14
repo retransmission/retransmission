@@ -165,6 +165,21 @@ TEST(Bitfield, setRaw)
     EXPECT_EQ(std::byte{ 1 } << 7, raw[0]);
 }
 
+TEST(Bitfield, finalBytePadding)
+{
+    auto const input = std::vector<std::byte>{ std::byte{}, std::byte{ 0xff } };
+
+    auto byte_aligned = tr_bitfield{ std::size(input) * 8U };
+    ASSERT_TRUE(byte_aligned.set_raw(input));
+    EXPECT_TRUE(byte_aligned.is_valid());
+    EXPECT_EQ(input, byte_aligned.raw());
+
+    auto partial_byte = tr_bitfield{ 10 };
+    ASSERT_TRUE(partial_byte.set_raw(input));
+    EXPECT_TRUE(partial_byte.is_valid());
+    EXPECT_EQ((std::vector<std::byte>{ std::byte{}, std::byte{ 0xc0 } }), partial_byte.raw());
+}
+
 TEST(Bitfield, acceptsPartialInput)
 {
     auto constexpr Flags = std::to_array<bool>({ true, false, true });

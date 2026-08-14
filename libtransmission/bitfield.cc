@@ -22,6 +22,15 @@ namespace
     return (bit_count >> 3) + ((bit_count & 7) != 0 ? 1 : 0);
 }
 
+[[nodiscard]] constexpr uint8_t calc_excess_bits(size_t const bit_count) noexcept
+{
+    // -bit_count & 7U. Since bit_count is unsigned do ~bit_count +
+    // 1 to replace -bit_count as linters warn about negating
+    // unsigned types. Any compiler will optimize ~x + 1 to -x in
+    // the backend.
+    return (~bit_count + 1U) & 7U;
+}
+
 void setAllTrue(std::span<std::byte> bytes, size_t const bit_count)
 {
     static auto constexpr Val = std::byte{ 0xFF };
@@ -35,12 +44,7 @@ void setAllTrue(std::span<std::byte> bytes, size_t const bit_count)
     bytes = bytes.first(n);
     std::ranges::fill(bytes, Val);
 
-    // -bit_count & 7U. Since bitcount is unsigned do ~bitcount +
-    // 1 to replace -bitcount as linters warn about negating
-    // unsigned types. Any compiler will optimize ~x + 1 to -x in
-    // the backend.
-    uint32_t const shift = ((~bit_count) + 1) & 7U;
-    bytes.back() = Val << shift;
+    bytes.back() = Val << calc_excess_bits(bit_count);
 }
 
 } // namespace
@@ -110,11 +114,7 @@ size_t tr_bitfield::count(size_t const begin, size_t end) const
 
         /* last byte */
         if (last_byte < std::size(flags_)) {
-            /* -end & 7U. Since bitcount is unsigned do ~end + 1 to
-               replace -end as linters warn about negating unsigned
-               types. Any compiler will optimize ~x + 1 to -x in the
-               backend. */
-            uint32_t const last_shift = (~end + 1) & 7U;
+            auto const last_shift = calc_excess_bits(end);
             val = flags_[last_byte];
             val >>= last_shift;
             /* No need to shift back val for correct popcount. */
@@ -136,7 +136,10 @@ bool tr_bitfield::is_valid() const
     }
 
     auto const bytes_needed = getBytesNeeded(bit_count_);
-    return true_count_ <= bit_count_ && std::size(flags_) <= bytes_needed &&
+    auto const flags_size = std::size(flags_);
+    auto const excess_bits_mask = ~(std::byte{ 0xFFU } << calc_excess_bits(bit_count_));
+    return true_count_ <= bit_count_ &&
+        (flags_size < bytes_needed || (flags_size == bytes_needed && (flags_.back() & excess_bits_mask) == std::byte{})) &&
         (std::empty(flags_) || true_count_ == count_flags());
 }
 
