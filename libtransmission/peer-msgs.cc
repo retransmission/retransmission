@@ -169,6 +169,9 @@ auto constexpr Reject = 2;
 
 } // namespace MetadataMsgType
 
+// Arbitrary upper size limit to avoid memory exhaustion attacks.
+auto constexpr MaxIncomingMsgBytes = size_t{ 4U * 1024U * 1024U };
+
 auto constexpr MinChokePeriodSec = time_t{ 10 };
 
 // idle seconds before we send a keepalive
@@ -776,7 +779,10 @@ private:
         return len == 5U;
 
     case BtPeerMsgs::Bitfield:
-        return !tor.has_metainfo() || len == 1 + tr_bytes_needed(tor.piece_count());
+        if (tor.has_metainfo()) {
+            return len == sizeof(id) + tr_bytes_needed(tor.piece_count());
+        }
+        break;
 
     case BtPeerMsgs::Request:
     case BtPeerMsgs::Cancel:
@@ -796,6 +802,8 @@ private:
     default: // unrecognized message
         return false;
     }
+
+    return len <= MaxIncomingMsgBytes;
 }
 
 namespace protocol_send_message_helpers
