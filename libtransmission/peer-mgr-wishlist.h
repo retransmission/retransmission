@@ -120,6 +120,11 @@ public:
         inc_replication_bitfield(bitfield);
     }
 
+    constexpr void on_stale_bitfield(tr_bitfield const& bitfield)
+    {
+        dec_replication_bitfield(bitfield);
+    }
+
     constexpr void on_got_block(tr_block_index_t const block)
     {
         if (auto const iter = find_by_block(block); iter != std::end(candidates_)) {
