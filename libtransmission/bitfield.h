@@ -99,12 +99,6 @@ public:
         return bit_count_;
     }
 
-    // This class is sometimes constructed before the size is known,
-    // for example, when a peer is connected for a magnet link,
-    // and we don't know the number of pieces yet.
-    // Use this method to set the size after construction.
-    void init_size(size_t bit_count) noexcept;
-
     [[nodiscard]] constexpr bool is_size_known() const noexcept
     {
         return size() != 0;

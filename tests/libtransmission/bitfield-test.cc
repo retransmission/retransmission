@@ -422,37 +422,6 @@ TEST(Bitfield, deferredSize)
     EXPECT_FALSE(have_none.set_span(0U, 1U));
     EXPECT_FALSE(have_none.set_raw(Raw));
     EXPECT_FALSE(have_none.set_from_bools(Flags));
-
-    have_none.init_size(0U);
-    EXPECT_FALSE(have_none.is_size_known());
-    have_none.init_size(10U);
-    EXPECT_TRUE(have_none.is_size_known());
-    EXPECT_TRUE(have_none.has_none());
-    EXPECT_EQ(10U, have_none.size());
-    EXPECT_EQ(0U, have_none.count());
-    EXPECT_TRUE(have_none.is_valid());
-
-    auto have_all = tr_bitfield{ 0 };
-    have_all.set_has_all();
-    EXPECT_FALSE(have_all.is_size_known());
-    EXPECT_TRUE(have_all.has_all());
-    EXPECT_FALSE(have_all.has_none());
-    EXPECT_TRUE(have_all.is_valid());
-    EXPECT_EQ(0U, have_all.count(0U, 10U));
-    EXPECT_FLOAT_EQ(1.0F, have_all.percent());
-
-    have_all.init_size(10U);
-    EXPECT_TRUE(have_all.is_size_known());
-    EXPECT_TRUE(have_all.has_all());
-    EXPECT_EQ(10U, have_all.count());
-    EXPECT_EQ((std::vector<std::byte>{ std::byte{ 0xff }, std::byte{ 0xc0 } }), have_all.raw());
-    for (size_t i = 0U; i < have_all.size(); ++i) {
-        EXPECT_TRUE(have_all.test(i));
-    }
-
-    have_all.init_size(20U);
-    EXPECT_EQ(10U, have_all.size());
-    EXPECT_TRUE(have_all.is_valid());
 }
 
 TEST(Bitfield, percent)

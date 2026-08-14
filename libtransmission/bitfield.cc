@@ -216,19 +216,6 @@ void tr_bitfield::decrement_true_count(size_t dec) noexcept
     set_true_count(true_count_ - dec);
 }
 
-void tr_bitfield::init_size(size_t const bit_count) noexcept
-{
-    if (bit_count == 0U || bit_count_ != 0U) {
-        return;
-    }
-
-    bit_count_ = bit_count;
-
-    if (has_all()) {
-        set_has_all(); // update true_count_
-    }
-}
-
 // ---
 
 tr_bitfield::tr_bitfield(size_t bit_count)
