@@ -1388,17 +1388,7 @@ ReadResult tr_peerMsgsImpl::process_peer_message(uint8_t id, MessageReader& payl
             static_cast<int>(id),
             std::size(payload)));
 
-    if (!is_message_length_correct(tor_, id, sizeof(id) + std::size(payload))) {
-        logdbg(
-            this,
-            fmt::format(
-                "bad msg: '{:s}' ({:d}) with payload len {:d}",
-                BtPeerMsgs::debug_name(id),
-                static_cast<int>(id),
-                std::size(payload)));
-        publish(tr_peer_event::GotError(EMSGSIZE));
-        return { ReadState::Err, {} };
-    }
+    TR_ASSERT(is_message_length_correct(tor_, id, sizeof(id) + std::size(payload)));
 
     switch (id) {
     case BtPeerMsgs::Choke:
@@ -1764,6 +1754,18 @@ ReadResult tr_peerMsgsImpl::can_read_impl(tr_peerIo* io)
 
         io->read_uint8(&message_type);
         current_message_type = message_type;
+    }
+
+    if (!is_message_length_correct(tor_, *current_message_type, *current_message_len)) {
+        logdbg(
+            this,
+            fmt::format(
+                "bad msg: '{:s}' ({:d}) with len {:d}, disconnecting",
+                BtPeerMsgs::debug_name(*current_message_type),
+                static_cast<int>(*current_message_type),
+                *current_message_len));
+        disconnect_soon();
+        return { ReadState::Err, {} };
     }
 
     // read <payload>
