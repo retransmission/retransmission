@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 77;
+	objectVersion = 90;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -729,36 +729,30 @@
 /* Begin PBXCopyFilesBuildPhase section */
 		A24F191B0A3A792300C9C145 /* Copy Files to Frameworks */ = {
 			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
 			dstPath = "";
-			dstSubfolderSpec = 10;
+			dstSubfolder = Frameworks;
 			files = (
 				A24F19210A3A796800C9C145 /* Sparkle.framework in Copy Files to Frameworks */,
 			);
 			name = "Copy Files to Frameworks";
-			runOnlyForDeploymentPostprocessing = 0;
 		};
 		A2EB2E7615C8CF1C00FBD5B4 /* Copy Files to Wrapper */ = {
 			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
 			dstPath = Contents/Library/QuickLook;
-			dstSubfolderSpec = 1;
+			dstSubfolder = Wrapper;
 			files = (
 				A2EB2E7715C8CF2C00FBD5B4 /* QuickLookPlugin.qlgenerator in Copy Files to Wrapper */,
 			);
 			name = "Copy Files to Wrapper";
-			runOnlyForDeploymentPostprocessing = 0;
 		};
 		ED5E0E8E2CD30B180071433B /* Embed Foundation Extensions */ = {
 			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
 			dstPath = "";
-			dstSubfolderSpec = 13;
+			dstSubfolder = PlugIns;
 			files = (
 				ED5E0E8D2CD30B180071433B /* QuickLookExtension.appex in Embed Foundation Extensions */,
 			);
 			name = "Embed Foundation Extensions";
-			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXCopyFilesBuildPhase section */
 
@@ -1661,14 +1655,11 @@
 /* Begin PBXFrameworksBuildPhase section */
 		3C7A118B0D0B2EB800B5701F /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 		};
 		4DDBB71709E16BAE00284745 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
 				4D9A2BF009E16D21002D0FF9 /* libtransmission.a in Frameworks */,
 				C88771AE2803EE7C005C7523 /* libz.tbd in Frameworks */,
@@ -1676,18 +1667,14 @@
 				C88771B22803EE87005C7523 /* libiconv.tbd in Frameworks */,
 				A2B3FB4C0E59023000FF78FB /* Cocoa.framework in Frameworks */,
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 		};
 		51D0F701000000000000000A /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 		};
 		8D11072E0486CEB800E47090 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
 				EDD735D62D83087400852628 /* UniformTypeIdentifiers.framework in Frameworks */,
 				C87369652809984200573C90 /* UserNotifications.framework in Frameworks */,
@@ -1702,26 +1689,20 @@
 				A221DCC8104B3660008A642D /* Quartz.framework in Frameworks */,
 				C88771B62803EEB5005C7523 /* libz.tbd in Frameworks */,
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 		};
 		A22CFCB80FC24F710009BD3E /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
 				A22CFCCD0FC250480009BD3E /* libevent.a in Frameworks */,
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 		};
 		A2E384CC130DFB1D001F501B /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 		};
 		A2F35BB415C5A0A100EBF632 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
 				37D5E15E2AEFE47B00D1ADB3 /* Cocoa.framework in Frameworks */,
 				A2F35BBC15C5A0A100EBF632 /* QuickLook.framework in Frameworks */,
@@ -1730,32 +1711,24 @@
 				C88771B12803EE86005C7523 /* libiconv.tbd in Frameworks */,
 				55869932257074FE00F77A43 /* libcurl.tbd in Frameworks */,
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 		};
 		ADD1A00000000000000000FB /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 		};
 		BE1183460CE160960002D0F3 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 		};
 		BE75C3470C729E9500DBEFE0 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 		};
 		BE75C3860C72A1D300DBEFE0 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
 				ADD1A00000000000000000F8 /* libarchive.a in Frameworks */,
 				51D0F701000000000000000F /* libsimdutf.a in Frameworks */,
@@ -1768,11 +1741,9 @@
 				BE1183780CE161390002D0F3 /* libminiupnp.a in Frameworks */,
 				A226FDAC0D0CDF20005A7F71 /* libnatpmp.a in Frameworks */,
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 		};
 		BEFC1BFE0C07750000B0BB3C /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
 				BEFC1C050C07753500B0BB3C /* libtransmission.a in Frameworks */,
 				C88771AF2803EE7D005C7523 /* libz.tbd in Frameworks */,
@@ -1780,11 +1751,9 @@
 				C88771B32803EE88005C7523 /* libiconv.tbd in Frameworks */,
 				A2B3FB530E59027100FF78FB /* Cocoa.framework in Frameworks */,
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 		};
 		BEFC1CF30C07822400B0BB3C /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
 				BEFC1D2D0C0783D900B0BB3C /* libtransmission.a in Frameworks */,
 				C88771B02803EE7D005C7523 /* libz.tbd in Frameworks */,
@@ -1792,25 +1761,19 @@
 				C88771B42803EE88005C7523 /* libiconv.tbd in Frameworks */,
 				A25E03D90E4015100086C225 /* Cocoa.framework in Frameworks */,
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 		};
 		C0FFEE00000000000000000A /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 		};
 		C3D9061F27B7E3C900EF2386 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 		};
 		C8B27B7528153F2B00A22B5D /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
 				C8B27B7628153F2B00A22B5D /* libtransmission.a in Frameworks */,
 				C8B27B7728153F2B00A22B5D /* libz.tbd in Frameworks */,
@@ -1818,11 +1781,9 @@
 				C8B27B7928153F2B00A22B5D /* libiconv.tbd in Frameworks */,
 				C8B27B7A28153F2B00A22B5D /* Cocoa.framework in Frameworks */,
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 		};
 		C8B27B8628153F3100A22B5D /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
 				C8B27B8728153F3100A22B5D /* libtransmission.a in Frameworks */,
 				C8B27B8828153F3100A22B5D /* libz.tbd in Frameworks */,
@@ -1830,11 +1791,9 @@
 				C8B27B8A28153F3100A22B5D /* libiconv.tbd in Frameworks */,
 				C8B27B8B28153F3100A22B5D /* Cocoa.framework in Frameworks */,
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 		};
 		C8B27B9728153F3400A22B5D /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
 				C8B27B9828153F3400A22B5D /* libtransmission.a in Frameworks */,
 				C8B27B9928153F3400A22B5D /* libz.tbd in Frameworks */,
@@ -1842,25 +1801,20 @@
 				C8B27B9B28153F3400A22B5D /* libiconv.tbd in Frameworks */,
 				C8B27B9C28153F3400A22B5D /* Cocoa.framework in Frameworks */,
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 		};
 		ED5E0E792CD30B180071433B /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
 				ED5E0E7E2CD30B180071433B /* Quartz.framework in Frameworks */,
 				ED5E0E9D2CD3134B0071433B /* libtransmission.a in Frameworks */,
 				ADD1A0000000000000000200 /* libz.tbd in Frameworks */,
 				ED5E0EA02CD3147B0071433B /* libcurl.tbd in Frameworks */,
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 		};
 		ED91F00A2CBDA5D3008388AA /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
@@ -2792,16 +2746,13 @@
 /* Begin PBXHeadersBuildPhase section */
 		3C7A11890D0B2EB800B5701F /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
 				3C7A11980D0B2EE300B5701F /* getgateway.h in Headers */,
 				3C7A119A0D0B2EE300B5701F /* natpmp.h in Headers */,
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 		};
 		4D18389309DEC0030047D688 /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
 				C1077A51183EB29600634C22 /* file.h in Headers */,
 				EDC37BCE2EE9C2AD001E2612 /* api-compat.h in Headers */,
@@ -2885,27 +2836,21 @@
 				B10CDDA0000000000000BB01 /* blocklist-download.h in Headers */,
 				9F0B1F3B2E4D1A0100A1B2C3 /* shared-string.h in Headers */,
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 		};
 		51D0F7010000000000000009 /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
 				51D0F7010000000000000006 /* simdutf.h in Headers */,
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 		};
 		A22CFCB60FC24F710009BD3E /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
 				A22CFCC20FC24F890009BD3E /* dht.h in Headers */,
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 		};
 		A2E384CA130DFB1D001F501B /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
 				C16089F31F092A1E00CEFC36 /* utp_hash.h in Headers */,
 				C16089F51F092A1E00CEFC36 /* utp_internal.h in Headers */,
@@ -2916,11 +2861,9 @@
 				C16089F91F092A1E00CEFC36 /* utp_types.h in Headers */,
 				C16089F11F092A1E00CEFC36 /* utp_callbacks.h in Headers */,
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 		};
 		BE1183440CE160960002D0F3 /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
 				BE11835F0CE160C50002D0F3 /* miniupnpc.h in Headers */,
 				BE11835E0CE160C50002D0F3 /* upnpcommands.h in Headers */,
@@ -2941,39 +2884,30 @@
 				A20162CE13DE497000E15488 /* portlistingparse.h in Headers */,
 				A20162D013DE49E500E15488 /* miniupnpctypes.h in Headers */,
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 		};
 		BE75C3450C729E9500DBEFE0 /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 		};
 		C0FFEE000000000000000009 /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
 				C0FFEE000000000000000006 /* woke.hpp in Headers */,
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 		};
 		C3D9061D27B7E3C900EF2386 /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
 				C3D9062A27B7EAC600EF2386 /* libpsl.h in Headers */,
 				C8748D8A29891EA100D9E979 /* suffixes_dafsa.h in Headers */,
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 		};
 		ED91F0082CBDA5D3008388AA /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
 				ED91F35A2CBDA72C008388AA /* crc32iscsi.h in Headers */,
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXHeadersBuildPhase section */
 
@@ -2987,8 +2921,6 @@
 				3C7A118B0D0B2EB800B5701F /* Frameworks */,
 			);
 			buildRules = (
-			);
-			dependencies = (
 			);
 			name = natpmp;
 			productName = natpmp;
@@ -3050,8 +2982,6 @@
 			);
 			buildRules = (
 			);
-			dependencies = (
-			);
 			name = simdutf;
 			productName = simdutf;
 			productReference = 51D0F7010000000000000005 /* libsimdutf.a */;
@@ -3092,8 +3022,6 @@
 			);
 			buildRules = (
 			);
-			dependencies = (
-			);
 			name = dht;
 			productName = DHT;
 			productReference = A22CFCBA0FC24F710009BD3E /* libdht.a */;
@@ -3108,8 +3036,6 @@
 				A2E384CC130DFB1D001F501B /* Frameworks */,
 			);
 			buildRules = (
-			);
-			dependencies = (
 			);
 			name = utp;
 			productName = libutp;
@@ -3143,8 +3069,6 @@
 			);
 			buildRules = (
 			);
-			dependencies = (
-			);
 			name = archive;
 			productName = archive;
 			productReference = ADD1A00000000000000000F7 /* libarchive.a */;
@@ -3162,8 +3086,6 @@
 			);
 			buildRules = (
 			);
-			dependencies = (
-			);
 			name = miniupnp;
 			productName = miniupnp;
 			productReference = BE1183480CE160960002D0F3 /* libminiupnp.a */;
@@ -3179,8 +3101,6 @@
 				BE75C3470C729E9500DBEFE0 /* Frameworks */,
 			);
 			buildRules = (
-			);
-			dependencies = (
 			);
 			name = event;
 			productName = event;
@@ -3231,8 +3151,6 @@
 			);
 			buildRules = (
 			);
-			dependencies = (
-			);
 			name = woke;
 			productName = woke;
 			productReference = C0FFEE000000000000000005 /* libwoke.a */;
@@ -3248,8 +3166,6 @@
 				C3D9061F27B7E3C900EF2386 /* Frameworks */,
 			);
 			buildRules = (
-			);
-			dependencies = (
 			);
 			name = psl;
 			productName = libpsl;
@@ -3321,8 +3237,6 @@
 				ED5E0E9F2CD3134B0071433B /* PBXTargetDependency */,
 			);
 			name = QuickLookExtension;
-			packageProductDependencies = (
-			);
 			productName = QuickLookExtension;
 			productReference = ED5E0E7C2CD30B180071433B /* QuickLookExtension.appex */;
 			productType = "com.apple.product-type.app-extension";
@@ -3336,8 +3250,6 @@
 				ED91F00A2CBDA5D3008388AA /* Frameworks */,
 			);
 			buildRules = (
-			);
-			dependencies = (
 			);
 			name = "madler-crcany";
 			productName = "madler-crcany";
@@ -3405,7 +3317,7 @@
 				"zh-TW",
 			);
 			mainGroup = 29B97314FDCFA39411CA2CEA /* Transmission */;
-			preferredProjectObjectVersion = 77;
+			preferredProjectObjectVersion = 90;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
@@ -3436,7 +3348,6 @@
 /* Begin PBXResourcesBuildPhase section */
 		8D1107290486CEB800E47090 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
 				8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */,
 				4D043A7F090AE979009FEDA8 /* TransmissionDocument.icns in Resources */,
@@ -3471,26 +3382,21 @@
 				A2795C5928EFC6700002C8D9 /* public_html in Resources */,
 				A2451E6A16ACE4EB00586E0E /* FileRenameSheetController.xib in Resources */,
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 		};
 		A2F35BB615C5A0A100EBF632 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
 				A2F35BC815C5A0A100EBF632 /* InfoPlist.strings in Resources */,
 				A29304ED15D7465100B1F726 /* style.css in Resources */,
 				A242AD9315F05D23002B3A6C /* Localizable.strings in Resources */,
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 		};
 		ED5E0E7A2CD30B180071433B /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
 				ED5E0EFA2CD315720071433B /* Localizable.strings in Resources */,
 				ED5E0EA22CD314FE0071433B /* style.css in Resources */,
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
 
@@ -3498,9 +3404,6 @@
 		4DC4AA3D0B05673D0005DB76 /* Generate version file */ = {
 			isa = PBXShellScriptBuildPhase;
 			alwaysOutOfDate = 1;
-			buildActionMask = 2147483647;
-			files = (
-			);
 			inputPaths = (
 				"update-version-h.sh",
 				CMakeLists.txt,
@@ -3510,15 +3413,14 @@
 				"$(SRCROOT)/libtransmission/version.h",
 				"$(SRCROOT)/libtransmission/version.h.new",
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "sh update-version-h.sh\n";
+			shellScript = (
+				"sh update-version-h.sh",
+				"",
+			);
 		};
 		A2305097100C0293003FDB0C /* updateminiupnpcstrings */ = {
 			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
 			inputPaths = (
 				"third-party/miniupnp/miniupnpc/VERSION",
 				"third-party/miniupnp/miniupnpc/miniupnpcstrings.h.in",
@@ -3528,15 +3430,15 @@
 			outputPaths = (
 				"third-party/miniupnp/miniupnpc/miniupnpcstrings.h",
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cd third-party/miniupnp/miniupnpc\nsh updateminiupnpcstrings.sh\n";
+			shellScript = (
+				"cd third-party/miniupnp/miniupnpc",
+				"sh updateminiupnpcstrings.sh",
+				"",
+			);
 		};
 		BE75C3510C729EE100DBEFE0 /* Copy libevent headers */ = {
 			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
 			inputPaths = (
 				"$(SRCROOT)/third-party/macosx-libevent-evconfig-private.h",
 				"$(SRCROOT)/third-party/macosx-libevent-event-config.h",
@@ -3546,76 +3448,77 @@
 				"$(SRCROOT)/third-party/libevent/include/evconfig-private.h",
 				"$(SRCROOT)/third-party/libevent/include/event2/event-config.h",
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/bash;
-			shellScript = "cd third-party/libevent/include/event2\n\nif [ ! -e event-config.h -a ! ../../../macosx-libevent-event-config.h -ef event-config.h ]; then\n    ln -s ../../../macosx-libevent-event-config.h event-config.h;\nfi\n\nif [ ! -e ../evconfig-private.h -a ! ../../macosx-libevent-evconfig-private.h -ef ../evconfig-private.h ]; then\n    ln -s ../../macosx-libevent-evconfig-private.h ../evconfig-private.h;\nfi\n";
+			shellScript = (
+				"cd third-party/libevent/include/event2",
+				"",
+				"if [ ! -e event-config.h -a ! ../../../macosx-libevent-event-config.h -ef event-config.h ]; then",
+				"    ln -s ../../../macosx-libevent-event-config.h event-config.h;",
+				"fi",
+				"",
+				"if [ ! -e ../evconfig-private.h -a ! ../../macosx-libevent-evconfig-private.h -ef ../evconfig-private.h ]; then",
+				"    ln -s ../../macosx-libevent-evconfig-private.h ../evconfig-private.h;",
+				"fi",
+				"",
+			);
 		};
 		C12F197C1E1AE55A0005E93F /* symlinks */ = {
 			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
 			name = symlinks;
 			outputPaths = (
 				"third-party/miniupnp/miniupnpc/include/miniupnpc",
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cd third-party/miniupnp/miniupnpc\nln -snf . include/miniupnpc\n";
+			shellScript = (
+				"cd third-party/miniupnp/miniupnpc",
+				"ln -snf . include/miniupnpc",
+				"",
+			);
 		};
 		C12F197E1E1AE6D50005E93F /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
 			outputPaths = (
 				"third-party/dht/dht",
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cd third-party/dht && rm -f dht && ln -s . dht\n";
+			shellScript = (
+				"cd third-party/dht && rm -f dht && ln -s . dht",
+				"",
+			);
 		};
 		C3D9062C27B7F4FE00EF2386 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
 			inputPaths = (
 				"third-party/libpsl/include/libpsl.h.in",
 				"third-party/libpsl/src/psl-make-dafsa",
 				"third-party/libpsl/list/public_suffix_list.dat",
 			);
-			outputFileListPaths = (
-			);
 			outputPaths = (
 				"third-party/libpsl/include/libpsl.h",
 				"third-party/suffixes_dafsa.h",
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "sed 's|@LIBPSL_[A-Z_]*@|0|' < third-party/libpsl/include/libpsl.h.in > third-party/libpsl/include/libpsl.h\n\n# Generate files to be included\nPYTHON=$( command -v python3 ) || PYTHON=$( command -v python3.7 ) || PYTHON=$( command -v python2 )\n\"${PYTHON}\" \"third-party/libpsl/src/psl-make-dafsa\" --output-format=cxx+ \"third-party/libpsl/list/public_suffix_list.dat\" \"third-party/suffixes_dafsa.h\"\n";
+			shellScript = (
+				"sed 's|@LIBPSL_[A-Z_]*@|0|' < third-party/libpsl/include/libpsl.h.in > third-party/libpsl/include/libpsl.h",
+				"",
+				"# Generate files to be included",
+				"PYTHON=$( command -v python3 ) || PYTHON=$( command -v python3.7 ) || PYTHON=$( command -v python2 )",
+				"\"${PYTHON}\" \"third-party/libpsl/src/psl-make-dafsa\" --output-format=cxx+ \"third-party/libpsl/list/public_suffix_list.dat\" \"third-party/suffixes_dafsa.h\"",
+				"",
+			);
 		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		3C7A118A0D0B2EB800B5701F /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
 				3C7A11970D0B2EE300B5701F /* getgateway.c in Sources */,
 				3C7A11990D0B2EE300B5701F /* natpmp.c in Sources */,
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 		};
 		4D18389409DEC0030047D688 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
 				BEFC1E2B0C07861A00B0BB3C /* utils.cc in Sources */,
 				9F0B1F332E4D1A0100A1B2C3 /* env.cc in Sources */,
@@ -3701,27 +3604,21 @@
 				B10CDDA0000000000000CC01 /* blocklist-download.cc in Sources */,
 				E975121263DD973CAF4AEBA4 /* timer-ev.cc in Sources */,
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 		};
 		4DDBB71609E16BAE00284745 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
 				A2B3FB460E5901E700FF78FB /* cli.cc in Sources */,
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 		};
 		51D0F7010000000000000008 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
 				51D0F7010000000000000003 /* simdutf.cpp in Sources */,
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 		};
 		8D11072C0486CEB800E47090 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
 				C86BCD9928228A9600F45599 /* SparkleProxy.mm in Sources */,
 				ED86936F2ADAE34D00342B1A /* DefaultAppHelper.mm in Sources */,
@@ -3803,19 +3700,15 @@
 				4534164229B0EA8600F544C9 /* SmallTorrentCell.mm in Sources */,
 				A2451E6916ACE4EB00586E0E /* FileRenameSheetController.mm in Sources */,
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 		};
 		A22CFCB70FC24F710009BD3E /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
 				A22CFCC30FC24F890009BD3E /* dht.c in Sources */,
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 		};
 		A2E384CB130DFB1D001F501B /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
 				C16089F61F092A1E00CEFC36 /* utp_packedsockaddr.cpp in Sources */,
 				C16089EF1F092A1E00CEFC36 /* utp_api.cpp in Sources */,
@@ -3824,11 +3717,9 @@
 				C16089F41F092A1E00CEFC36 /* utp_internal.cpp in Sources */,
 				A2E384DD130DFB3A001F501B /* utp_utils.cpp in Sources */,
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 		};
 		A2F35BB315C5A0A100EBF632 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
 				C82B30312953337B0001BD6E /* NSDataAdditions.mm in Sources */,
 				A29304EE15D7497C00B1F726 /* main.cc in Sources */,
@@ -3836,11 +3727,9 @@
 				A2F35BCA15C5A0A100EBF632 /* GenerateThumbnailForURL.mm in Sources */,
 				A2F35BCC15C5A0A100EBF632 /* GeneratePreviewForURL.mm in Sources */,
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 		};
 		ADD1A00000000000000000FA /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
 				ADD1A0000000000000000002 /* archive_acl.c in Sources */,
 				ADD1A0000000000000000004 /* archive_blake2s_ref.c in Sources */,
@@ -3966,11 +3855,9 @@
 				ADD1A00000000000000000F4 /* filter_fork_posix.c in Sources */,
 				ADD1A00000000000000000F6 /* xxhash.c in Sources */,
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 		};
 		BE1183450CE160960002D0F3 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
 				BE1183690CE160D50002D0F3 /* igd_desc_parse.c in Sources */,
 				BE11836A0CE160D50002D0F3 /* minixml.c in Sources */,
@@ -3987,11 +3874,9 @@
 				A20162C913DE48BF00E15488 /* receivedata.c in Sources */,
 				A20162CD13DE497000E15488 /* portlistingparse.c in Sources */,
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 		};
 		BE75C3460C729E9500DBEFE0 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
 				A2074F4C12BEA8CE00F70985 /* buffer.c in Sources */,
 				A2074F5912BEA8E000F70985 /* bufferevent_filter.c in Sources */,
@@ -4014,84 +3899,65 @@
 				A2AA9BE3132CAE2000FA131E /* evdns.c in Sources */,
 				A29E653613F1603100048D71 /* evutil_rand.c in Sources */,
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 		};
 		BEFC1BFD0C07750000B0BB3C /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
 				BEFC1C1A0C07756200B0BB3C /* daemon.cc in Sources */,
 				C1F690FD1AD0627500D95CF0 /* daemon-posix.cc in Sources */,
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 		};
 		BEFC1CED0C07822400B0BB3C /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
 				BEFC1D050C07825A00B0BB3C /* remote.cc in Sources */,
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 		};
 		C0FFEE000000000000000008 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
 				C0FFEE000000000000000003 /* woke.cpp in Sources */,
 				C0FFEE000000000000000014 /* backend_sleep_macos.cpp in Sources */,
 				C0FFEE000000000000000015 /* backend_nap_macos.mm in Sources */,
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 		};
 		C3D9061E27B7E3C900EF2386 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
 				C3D9062627B7E3E200EF2386 /* lookup_string_in_fixed_set.c in Sources */,
 				C3D9062727B7E3E800EF2386 /* psl.c in Sources */,
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 		};
 		C8B27B7328153F2B00A22B5D /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
 				C8B27BA328153F6300A22B5D /* create.cc in Sources */,
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 		};
 		C8B27B8428153F3100A22B5D /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
 				C8B27BA428153F6600A22B5D /* edit.cc in Sources */,
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 		};
 		C8B27B9528153F3400A22B5D /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
 				C8B27BA528153F6900A22B5D /* show.cc in Sources */,
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 		};
 		ED5E0E782CD30B180071433B /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
 				ED5E0F0F2CD31BC20071433B /* NSStringAdditions.mm in Sources */,
 				ED5E0E9C2CD30E8F0071433B /* PreviewProvider.mm in Sources */,
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 		};
 		ED91F0092CBDA5D3008388AA /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
 				ED91F28B2CBDA72C008388AA /* crc32iscsi.c in Sources */,
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
@@ -4593,7 +4459,7 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
-		0053D3D30C86774200545606 /* Debug */ = {
+		0053D3D30C86774200545606 /* Debug configuration for PBXNativeTarget "event" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_WARN_UNREACHABLE_CODE = NO;
@@ -4606,7 +4472,7 @@
 			};
 			name = Debug;
 		};
-		0053D3D40C86774200545606 /* Debug */ = {
+		0053D3D40C86774200545606 /* Debug configuration for PBXNativeTarget "libtransmission" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_CXX_LIBRARY = "libc++";
@@ -4662,7 +4528,7 @@
 			};
 			name = Debug;
 		};
-		0053D3D50C86774200545606 /* Debug */ = {
+		0053D3D50C86774200545606 /* Debug configuration for PBXNativeTarget "Transmission" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = Transmission_Tahoe;
@@ -4693,7 +4559,7 @@
 			};
 			name = Debug;
 		};
-		0053D3D60C86774200545606 /* Debug */ = {
+		0053D3D60C86774200545606 /* Debug configuration for PBXNativeTarget "transmissioncli" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_CXX_LIBRARY = "libc++";
@@ -4712,7 +4578,7 @@
 			};
 			name = Debug;
 		};
-		0053D3D70C86774200545606 /* Debug */ = {
+		0053D3D70C86774200545606 /* Debug configuration for PBXNativeTarget "transmission-daemon" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_CXX_LIBRARY = "libc++";
@@ -4735,7 +4601,7 @@
 			};
 			name = Debug;
 		};
-		0053D3D80C86774200545606 /* Debug */ = {
+		0053D3D80C86774200545606 /* Debug configuration for PBXNativeTarget "transmission-remote" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_CXX_LIBRARY = "libc++";
@@ -4754,7 +4620,7 @@
 			};
 			name = Debug;
 		};
-		0053D3DA0C86774200545606 /* Debug */ = {
+		0053D3DA0C86774200545606 /* Debug configuration for PBXProject "Transmission" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -4828,7 +4694,7 @@
 			};
 			name = Debug;
 		};
-		3C7A118E0D0B2EB800B5701F /* Release */ = {
+		3C7A118E0D0B2EB800B5701F /* Release configuration for PBXNativeTarget "natpmp" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				GCC_WARN_64_TO_32_BIT_CONVERSION = NO;
@@ -4838,7 +4704,7 @@
 			};
 			name = Release;
 		};
-		3C7A118F0D0B2EB800B5701F /* Release - Debug */ = {
+		3C7A118F0D0B2EB800B5701F /* Release - Debug configuration for PBXNativeTarget "natpmp" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				GCC_WARN_64_TO_32_BIT_CONVERSION = NO;
@@ -4848,7 +4714,7 @@
 			};
 			name = "Release - Debug";
 		};
-		3C7A11900D0B2EB800B5701F /* Debug */ = {
+		3C7A11900D0B2EB800B5701F /* Debug configuration for PBXNativeTarget "natpmp" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				GCC_WARN_64_TO_32_BIT_CONVERSION = NO;
@@ -4858,7 +4724,7 @@
 			};
 			name = Debug;
 		};
-		4D18389C09DEC01E0047D688 /* Release */ = {
+		4D18389C09DEC01E0047D688 /* Release configuration for PBXNativeTarget "libtransmission" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_CXX_LIBRARY = "libc++";
@@ -4914,7 +4780,7 @@
 			};
 			name = Release;
 		};
-		4DDBB71E09E16BF100284745 /* Release */ = {
+		4DDBB71E09E16BF100284745 /* Release configuration for PBXNativeTarget "transmissioncli" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_CXX_LIBRARY = "libc++";
@@ -4933,7 +4799,7 @@
 			};
 			name = Release;
 		};
-		4DF0C599089918A300DD8943 /* Release */ = {
+		4DF0C599089918A300DD8943 /* Release configuration for PBXNativeTarget "Transmission" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = Transmission_Tahoe;
@@ -4964,7 +4830,7 @@
 			};
 			name = Release;
 		};
-		4DF0C59D089918A300DD8943 /* Release */ = {
+		4DF0C59D089918A300DD8943 /* Release configuration for PBXProject "Transmission" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -5037,7 +4903,7 @@
 			};
 			name = Release;
 		};
-		51D0F701000000000000000C /* Debug */ = {
+		51D0F701000000000000000C /* Debug configuration for PBXNativeTarget "simdutf" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_CXX_LANGUAGE_STANDARD = "c++20";
@@ -5055,7 +4921,7 @@
 			};
 			name = Debug;
 		};
-		51D0F701000000000000000D /* Release - Debug */ = {
+		51D0F701000000000000000D /* Release - Debug configuration for PBXNativeTarget "simdutf" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_CXX_LANGUAGE_STANDARD = "c++20";
@@ -5073,7 +4939,7 @@
 			};
 			name = "Release - Debug";
 		};
-		51D0F701000000000000000E /* Release */ = {
+		51D0F701000000000000000E /* Release configuration for PBXNativeTarget "simdutf" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_CXX_LANGUAGE_STANDARD = "c++20";
@@ -5091,7 +4957,7 @@
 			};
 			name = Release;
 		};
-		A22CFCBB0FC24F720009BD3E /* Debug */ = {
+		A22CFCBB0FC24F720009BD3E /* Debug configuration for PBXNativeTarget "dht" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_WARN_STRICT_PROTOTYPES = NO;
@@ -5101,7 +4967,7 @@
 			};
 			name = Debug;
 		};
-		A22CFCBC0FC24F720009BD3E /* Release - Debug */ = {
+		A22CFCBC0FC24F720009BD3E /* Release - Debug configuration for PBXNativeTarget "dht" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_WARN_STRICT_PROTOTYPES = NO;
@@ -5111,7 +4977,7 @@
 			};
 			name = "Release - Debug";
 		};
-		A22CFCBD0FC24F720009BD3E /* Release */ = {
+		A22CFCBD0FC24F720009BD3E /* Release configuration for PBXNativeTarget "dht" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_WARN_STRICT_PROTOTYPES = NO;
@@ -5121,7 +4987,7 @@
 			};
 			name = Release;
 		};
-		A250CFEB0CDA19680068B4B6 /* Release - Debug */ = {
+		A250CFEB0CDA19680068B4B6 /* Release - Debug configuration for PBXProject "Transmission" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -5195,7 +5061,7 @@
 			};
 			name = "Release - Debug";
 		};
-		A250CFEC0CDA19680068B4B6 /* Release - Debug */ = {
+		A250CFEC0CDA19680068B4B6 /* Release - Debug configuration for PBXNativeTarget "Transmission" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = Transmission_Tahoe;
@@ -5226,7 +5092,7 @@
 			};
 			name = "Release - Debug";
 		};
-		A250CFED0CDA19680068B4B6 /* Release - Debug */ = {
+		A250CFED0CDA19680068B4B6 /* Release - Debug configuration for PBXNativeTarget "transmissioncli" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_CXX_LIBRARY = "libc++";
@@ -5245,7 +5111,7 @@
 			};
 			name = "Release - Debug";
 		};
-		A250CFEE0CDA19680068B4B6 /* Release - Debug */ = {
+		A250CFEE0CDA19680068B4B6 /* Release - Debug configuration for PBXNativeTarget "libtransmission" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_CXX_LIBRARY = "libc++";
@@ -5301,7 +5167,7 @@
 			};
 			name = "Release - Debug";
 		};
-		A250CFEF0CDA19680068B4B6 /* Release - Debug */ = {
+		A250CFEF0CDA19680068B4B6 /* Release - Debug configuration for PBXNativeTarget "transmission-daemon" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_CXX_LIBRARY = "libc++";
@@ -5324,7 +5190,7 @@
 			};
 			name = "Release - Debug";
 		};
-		A250CFF00CDA19680068B4B6 /* Release - Debug */ = {
+		A250CFF00CDA19680068B4B6 /* Release - Debug configuration for PBXNativeTarget "transmission-remote" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_CXX_LIBRARY = "libc++";
@@ -5343,7 +5209,7 @@
 			};
 			name = "Release - Debug";
 		};
-		A250CFF20CDA19680068B4B6 /* Release - Debug */ = {
+		A250CFF20CDA19680068B4B6 /* Release - Debug configuration for PBXNativeTarget "event" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_WARN_UNREACHABLE_CODE = NO;
@@ -5356,7 +5222,7 @@
 			};
 			name = "Release - Debug";
 		};
-		A2E384CF130DFB1D001F501B /* Debug */ = {
+		A2E384CF130DFB1D001F501B /* Debug configuration for PBXNativeTarget "utp" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				GCC_PREPROCESSOR_DEFINITIONS = POSIX;
@@ -5366,7 +5232,7 @@
 			};
 			name = Debug;
 		};
-		A2E384D0130DFB1D001F501B /* Release - Debug */ = {
+		A2E384D0130DFB1D001F501B /* Release - Debug configuration for PBXNativeTarget "utp" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				GCC_PREPROCESSOR_DEFINITIONS = POSIX;
@@ -5376,7 +5242,7 @@
 			};
 			name = "Release - Debug";
 		};
-		A2E384D1130DFB1D001F501B /* Release */ = {
+		A2E384D1130DFB1D001F501B /* Release configuration for PBXNativeTarget "utp" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				GCC_PREPROCESSOR_DEFINITIONS = (
@@ -5389,7 +5255,7 @@
 			};
 			name = Release;
 		};
-		A2F35BD115C5A0A100EBF632 /* Debug */ = {
+		A2F35BD115C5A0A100EBF632 /* Debug configuration for PBXNativeTarget "QuickLookPlugin" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_CXX_LIBRARY = "libc++";
@@ -5418,7 +5284,7 @@
 			};
 			name = Debug;
 		};
-		A2F35BD215C5A0A100EBF632 /* Release - Debug */ = {
+		A2F35BD215C5A0A100EBF632 /* Release - Debug configuration for PBXNativeTarget "QuickLookPlugin" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_CXX_LIBRARY = "libc++";
@@ -5447,7 +5313,7 @@
 			};
 			name = "Release - Debug";
 		};
-		A2F35BD315C5A0A100EBF632 /* Release */ = {
+		A2F35BD315C5A0A100EBF632 /* Release configuration for PBXNativeTarget "QuickLookPlugin" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_CXX_LIBRARY = "libc++";
@@ -5476,7 +5342,7 @@
 			};
 			name = Release;
 		};
-		ADD1A00000000000000000FE /* Debug */ = {
+		ADD1A00000000000000000FE /* Debug configuration for PBXNativeTarget "archive" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_WARN_UNREACHABLE_CODE = NO;
@@ -5491,7 +5357,7 @@
 			};
 			name = Debug;
 		};
-		ADD1A00000000000000000FF /* Release - Debug */ = {
+		ADD1A00000000000000000FF /* Release - Debug configuration for PBXNativeTarget "archive" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_WARN_UNREACHABLE_CODE = NO;
@@ -5506,7 +5372,7 @@
 			};
 			name = "Release - Debug";
 		};
-		ADD1A0000000000000000100 /* Release */ = {
+		ADD1A0000000000000000100 /* Release configuration for PBXNativeTarget "archive" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_WARN_UNREACHABLE_CODE = NO;
@@ -5521,7 +5387,7 @@
 			};
 			name = Release;
 		};
-		BE1183490CE160960002D0F3 /* Release */ = {
+		BE1183490CE160960002D0F3 /* Release configuration for PBXNativeTarget "miniupnp" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				GCC_WARN_64_TO_32_BIT_CONVERSION = NO;
@@ -5530,7 +5396,7 @@
 			};
 			name = Release;
 		};
-		BE11834A0CE160960002D0F3 /* Release - Debug */ = {
+		BE11834A0CE160960002D0F3 /* Release - Debug configuration for PBXNativeTarget "miniupnp" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				GCC_WARN_64_TO_32_BIT_CONVERSION = NO;
@@ -5539,7 +5405,7 @@
 			};
 			name = "Release - Debug";
 		};
-		BE11834B0CE160960002D0F3 /* Debug */ = {
+		BE11834B0CE160960002D0F3 /* Debug configuration for PBXNativeTarget "miniupnp" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				GCC_WARN_64_TO_32_BIT_CONVERSION = NO;
@@ -5548,7 +5414,7 @@
 			};
 			name = Debug;
 		};
-		BE75C34B0C729EB600DBEFE0 /* Release */ = {
+		BE75C34B0C729EB600DBEFE0 /* Release configuration for PBXNativeTarget "event" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_WARN_UNREACHABLE_CODE = NO;
@@ -5561,7 +5427,7 @@
 			};
 			name = Release;
 		};
-		BEFC1C0A0C07753800B0BB3C /* Release */ = {
+		BEFC1C0A0C07753800B0BB3C /* Release configuration for PBXNativeTarget "transmission-daemon" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_CXX_LIBRARY = "libc++";
@@ -5584,7 +5450,7 @@
 			};
 			name = Release;
 		};
-		BEFC1CF80C07822400B0BB3C /* Release */ = {
+		BEFC1CF80C07822400B0BB3C /* Release configuration for PBXNativeTarget "transmission-remote" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_CXX_LIBRARY = "libc++";
@@ -5603,7 +5469,7 @@
 			};
 			name = Release;
 		};
-		C0FFEE00000000000000000C /* Debug */ = {
+		C0FFEE00000000000000000C /* Debug configuration for PBXNativeTarget "woke" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_CXX_LANGUAGE_STANDARD = "c++20";
@@ -5622,7 +5488,7 @@
 			};
 			name = Debug;
 		};
-		C0FFEE00000000000000000D /* Release - Debug */ = {
+		C0FFEE00000000000000000D /* Release - Debug configuration for PBXNativeTarget "woke" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_CXX_LANGUAGE_STANDARD = "c++20";
@@ -5641,7 +5507,7 @@
 			};
 			name = "Release - Debug";
 		};
-		C0FFEE00000000000000000E /* Release */ = {
+		C0FFEE00000000000000000E /* Release configuration for PBXNativeTarget "woke" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_CXX_LANGUAGE_STANDARD = "c++20";
@@ -5660,7 +5526,7 @@
 			};
 			name = Release;
 		};
-		C3D9062327B7E3C900EF2386 /* Debug */ = {
+		C3D9062327B7E3C900EF2386 /* Debug configuration for PBXNativeTarget "psl" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_WARN_COMMA = NO;
@@ -5675,7 +5541,7 @@
 			};
 			name = Debug;
 		};
-		C3D9062427B7E3C900EF2386 /* Release - Debug */ = {
+		C3D9062427B7E3C900EF2386 /* Release - Debug configuration for PBXNativeTarget "psl" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_WARN_COMMA = NO;
@@ -5690,7 +5556,7 @@
 			};
 			name = "Release - Debug";
 		};
-		C3D9062527B7E3C900EF2386 /* Release */ = {
+		C3D9062527B7E3C900EF2386 /* Release configuration for PBXNativeTarget "psl" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_WARN_COMMA = NO;
@@ -5705,7 +5571,7 @@
 			};
 			name = Release;
 		};
-		C8B27B7C28153F2B00A22B5D /* Debug */ = {
+		C8B27B7C28153F2B00A22B5D /* Debug configuration for PBXNativeTarget "transmission-create" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_CXX_LIBRARY = "libc++";
@@ -5724,7 +5590,7 @@
 			};
 			name = Debug;
 		};
-		C8B27B7D28153F2B00A22B5D /* Release - Debug */ = {
+		C8B27B7D28153F2B00A22B5D /* Release - Debug configuration for PBXNativeTarget "transmission-create" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_CXX_LIBRARY = "libc++";
@@ -5743,7 +5609,7 @@
 			};
 			name = "Release - Debug";
 		};
-		C8B27B7E28153F2B00A22B5D /* Release */ = {
+		C8B27B7E28153F2B00A22B5D /* Release configuration for PBXNativeTarget "transmission-create" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_CXX_LIBRARY = "libc++";
@@ -5762,7 +5628,7 @@
 			};
 			name = Release;
 		};
-		C8B27B8D28153F3100A22B5D /* Debug */ = {
+		C8B27B8D28153F3100A22B5D /* Debug configuration for PBXNativeTarget "transmission-edit" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_CXX_LIBRARY = "libc++";
@@ -5781,7 +5647,7 @@
 			};
 			name = Debug;
 		};
-		C8B27B8E28153F3100A22B5D /* Release - Debug */ = {
+		C8B27B8E28153F3100A22B5D /* Release - Debug configuration for PBXNativeTarget "transmission-edit" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_CXX_LIBRARY = "libc++";
@@ -5800,7 +5666,7 @@
 			};
 			name = "Release - Debug";
 		};
-		C8B27B8F28153F3100A22B5D /* Release */ = {
+		C8B27B8F28153F3100A22B5D /* Release configuration for PBXNativeTarget "transmission-edit" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_CXX_LIBRARY = "libc++";
@@ -5819,7 +5685,7 @@
 			};
 			name = Release;
 		};
-		C8B27B9E28153F3400A22B5D /* Debug */ = {
+		C8B27B9E28153F3400A22B5D /* Debug configuration for PBXNativeTarget "transmission-show" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_CXX_LIBRARY = "libc++";
@@ -5838,7 +5704,7 @@
 			};
 			name = Debug;
 		};
-		C8B27B9F28153F3400A22B5D /* Release - Debug */ = {
+		C8B27B9F28153F3400A22B5D /* Release - Debug configuration for PBXNativeTarget "transmission-show" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_CXX_LIBRARY = "libc++";
@@ -5857,7 +5723,7 @@
 			};
 			name = "Release - Debug";
 		};
-		C8B27BA028153F3400A22B5D /* Release */ = {
+		C8B27BA028153F3400A22B5D /* Release configuration for PBXNativeTarget "transmission-show" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_CXX_LIBRARY = "libc++";
@@ -5876,7 +5742,7 @@
 			};
 			name = Release;
 		};
-		ED5E0E8F2CD30B180071433B /* Debug */ = {
+		ED5E0E8F2CD30B180071433B /* Debug configuration for PBXNativeTarget "QuickLookExtension" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = macosx/QuickLookExtension/QuickLookExtension.entitlements;
@@ -5909,7 +5775,7 @@
 			};
 			name = Debug;
 		};
-		ED5E0E902CD30B180071433B /* Release - Debug */ = {
+		ED5E0E902CD30B180071433B /* Release - Debug configuration for PBXNativeTarget "QuickLookExtension" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = macosx/QuickLookExtension/QuickLookExtension.entitlements;
@@ -5942,7 +5808,7 @@
 			};
 			name = "Release - Debug";
 		};
-		ED5E0E912CD30B180071433B /* Release */ = {
+		ED5E0E912CD30B180071433B /* Release configuration for PBXNativeTarget "QuickLookExtension" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = macosx/QuickLookExtension/QuickLookExtension.entitlements;
@@ -5975,7 +5841,7 @@
 			};
 			name = Release;
 		};
-		ED91F0142CBDA5D3008388AA /* Debug */ = {
+		ED91F0142CBDA5D3008388AA /* Debug configuration for PBXNativeTarget "madler-crcany" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				GENERATE_MASTER_OBJECT_FILE = YES;
@@ -5983,7 +5849,7 @@
 			};
 			name = Debug;
 		};
-		ED91F0152CBDA5D3008388AA /* Release - Debug */ = {
+		ED91F0152CBDA5D3008388AA /* Release - Debug configuration for PBXNativeTarget "madler-crcany" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				GENERATE_MASTER_OBJECT_FILE = YES;
@@ -5991,7 +5857,7 @@
 			};
 			name = "Release - Debug";
 		};
-		ED91F0162CBDA5D3008388AA /* Release */ = {
+		ED91F0162CBDA5D3008388AA /* Release configuration for PBXNativeTarget "madler-crcany" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				GENERATE_MASTER_OBJECT_FILE = YES;
@@ -6005,211 +5871,190 @@
 		3C7A119B0D0B2EE300B5701F /* Build configuration list for PBXNativeTarget "natpmp" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				3C7A11900D0B2EB800B5701F /* Debug */,
-				3C7A118F0D0B2EB800B5701F /* Release - Debug */,
-				3C7A118E0D0B2EB800B5701F /* Release */,
+				3C7A11900D0B2EB800B5701F /* Debug configuration for PBXNativeTarget "natpmp" */,
+				3C7A118F0D0B2EB800B5701F /* Release - Debug configuration for PBXNativeTarget "natpmp" */,
+				3C7A118E0D0B2EB800B5701F /* Release configuration for PBXNativeTarget "natpmp" */,
 			);
-			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
 		};
 		4D18389B09DEC01E0047D688 /* Build configuration list for PBXNativeTarget "libtransmission" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				0053D3D40C86774200545606 /* Debug */,
-				A250CFEE0CDA19680068B4B6 /* Release - Debug */,
-				4D18389C09DEC01E0047D688 /* Release */,
+				0053D3D40C86774200545606 /* Debug configuration for PBXNativeTarget "libtransmission" */,
+				A250CFEE0CDA19680068B4B6 /* Release - Debug configuration for PBXNativeTarget "libtransmission" */,
+				4D18389C09DEC01E0047D688 /* Release configuration for PBXNativeTarget "libtransmission" */,
 			);
-			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
 		};
 		4DDBB71D09E16BF100284745 /* Build configuration list for PBXNativeTarget "transmissioncli" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				0053D3D60C86774200545606 /* Debug */,
-				A250CFED0CDA19680068B4B6 /* Release - Debug */,
-				4DDBB71E09E16BF100284745 /* Release */,
+				0053D3D60C86774200545606 /* Debug configuration for PBXNativeTarget "transmissioncli" */,
+				A250CFED0CDA19680068B4B6 /* Release - Debug configuration for PBXNativeTarget "transmissioncli" */,
+				4DDBB71E09E16BF100284745 /* Release configuration for PBXNativeTarget "transmissioncli" */,
 			);
-			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
 		};
 		4DF0C596089918A300DD8943 /* Build configuration list for PBXNativeTarget "Transmission" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				0053D3D50C86774200545606 /* Debug */,
-				A250CFEC0CDA19680068B4B6 /* Release - Debug */,
-				4DF0C599089918A300DD8943 /* Release */,
+				0053D3D50C86774200545606 /* Debug configuration for PBXNativeTarget "Transmission" */,
+				A250CFEC0CDA19680068B4B6 /* Release - Debug configuration for PBXNativeTarget "Transmission" */,
+				4DF0C599089918A300DD8943 /* Release configuration for PBXNativeTarget "Transmission" */,
 			);
-			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
 		};
 		4DF0C59A089918A300DD8943 /* Build configuration list for PBXProject "Transmission" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				0053D3DA0C86774200545606 /* Debug */,
-				A250CFEB0CDA19680068B4B6 /* Release - Debug */,
-				4DF0C59D089918A300DD8943 /* Release */,
+				0053D3DA0C86774200545606 /* Debug configuration for PBXProject "Transmission" */,
+				A250CFEB0CDA19680068B4B6 /* Release - Debug configuration for PBXProject "Transmission" */,
+				4DF0C59D089918A300DD8943 /* Release configuration for PBXProject "Transmission" */,
 			);
-			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
 		};
 		51D0F701000000000000000B /* Build configuration list for PBXNativeTarget "simdutf" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				51D0F701000000000000000C /* Debug */,
-				51D0F701000000000000000D /* Release - Debug */,
-				51D0F701000000000000000E /* Release */,
+				51D0F701000000000000000C /* Debug configuration for PBXNativeTarget "simdutf" */,
+				51D0F701000000000000000D /* Release - Debug configuration for PBXNativeTarget "simdutf" */,
+				51D0F701000000000000000E /* Release configuration for PBXNativeTarget "simdutf" */,
 			);
-			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
 		};
 		A22CFCC40FC24F8A0009BD3E /* Build configuration list for PBXNativeTarget "dht" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				A22CFCBB0FC24F720009BD3E /* Debug */,
-				A22CFCBC0FC24F720009BD3E /* Release - Debug */,
-				A22CFCBD0FC24F720009BD3E /* Release */,
+				A22CFCBB0FC24F720009BD3E /* Debug configuration for PBXNativeTarget "dht" */,
+				A22CFCBC0FC24F720009BD3E /* Release - Debug configuration for PBXNativeTarget "dht" */,
+				A22CFCBD0FC24F720009BD3E /* Release configuration for PBXNativeTarget "dht" */,
 			);
-			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
 		};
 		A2E384E2130DFB3A001F501B /* Build configuration list for PBXNativeTarget "utp" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				A2E384CF130DFB1D001F501B /* Debug */,
-				A2E384D0130DFB1D001F501B /* Release - Debug */,
-				A2E384D1130DFB1D001F501B /* Release */,
+				A2E384CF130DFB1D001F501B /* Debug configuration for PBXNativeTarget "utp" */,
+				A2E384D0130DFB1D001F501B /* Release - Debug configuration for PBXNativeTarget "utp" */,
+				A2E384D1130DFB1D001F501B /* Release configuration for PBXNativeTarget "utp" */,
 			);
-			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
 		};
 		A2F35BD015C5A0A100EBF632 /* Build configuration list for PBXNativeTarget "QuickLookPlugin" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				A2F35BD115C5A0A100EBF632 /* Debug */,
-				A2F35BD215C5A0A100EBF632 /* Release - Debug */,
-				A2F35BD315C5A0A100EBF632 /* Release */,
+				A2F35BD115C5A0A100EBF632 /* Debug configuration for PBXNativeTarget "QuickLookPlugin" */,
+				A2F35BD215C5A0A100EBF632 /* Release - Debug configuration for PBXNativeTarget "QuickLookPlugin" */,
+				A2F35BD315C5A0A100EBF632 /* Release configuration for PBXNativeTarget "QuickLookPlugin" */,
 			);
-			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
 		};
 		ADD1A00000000000000000FD /* Build configuration list for PBXNativeTarget "archive" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				ADD1A00000000000000000FE /* Debug */,
-				ADD1A00000000000000000FF /* Release - Debug */,
-				ADD1A0000000000000000100 /* Release */,
+				ADD1A00000000000000000FE /* Debug configuration for PBXNativeTarget "archive" */,
+				ADD1A00000000000000000FF /* Release - Debug configuration for PBXNativeTarget "archive" */,
+				ADD1A0000000000000000100 /* Release configuration for PBXNativeTarget "archive" */,
 			);
-			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
 		BE11834C0CE160A80002D0F3 /* Build configuration list for PBXNativeTarget "miniupnp" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				BE11834B0CE160960002D0F3 /* Debug */,
-				BE11834A0CE160960002D0F3 /* Release - Debug */,
-				BE1183490CE160960002D0F3 /* Release */,
+				BE11834B0CE160960002D0F3 /* Debug configuration for PBXNativeTarget "miniupnp" */,
+				BE11834A0CE160960002D0F3 /* Release - Debug configuration for PBXNativeTarget "miniupnp" */,
+				BE1183490CE160960002D0F3 /* Release configuration for PBXNativeTarget "miniupnp" */,
 			);
-			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
 		};
 		BE75C34A0C729EB600DBEFE0 /* Build configuration list for PBXNativeTarget "event" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				0053D3D30C86774200545606 /* Debug */,
-				A250CFF20CDA19680068B4B6 /* Release - Debug */,
-				BE75C34B0C729EB600DBEFE0 /* Release */,
+				0053D3D30C86774200545606 /* Debug configuration for PBXNativeTarget "event" */,
+				A250CFF20CDA19680068B4B6 /* Release - Debug configuration for PBXNativeTarget "event" */,
+				BE75C34B0C729EB600DBEFE0 /* Release configuration for PBXNativeTarget "event" */,
 			);
-			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
 		};
 		BEFC1C090C07753800B0BB3C /* Build configuration list for PBXNativeTarget "transmission-daemon" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				0053D3D70C86774200545606 /* Debug */,
-				A250CFEF0CDA19680068B4B6 /* Release - Debug */,
-				BEFC1C0A0C07753800B0BB3C /* Release */,
+				0053D3D70C86774200545606 /* Debug configuration for PBXNativeTarget "transmission-daemon" */,
+				A250CFEF0CDA19680068B4B6 /* Release - Debug configuration for PBXNativeTarget "transmission-daemon" */,
+				BEFC1C0A0C07753800B0BB3C /* Release configuration for PBXNativeTarget "transmission-daemon" */,
 			);
-			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
 		};
 		BEFC1CF70C07822400B0BB3C /* Build configuration list for PBXNativeTarget "transmission-remote" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				0053D3D80C86774200545606 /* Debug */,
-				A250CFF00CDA19680068B4B6 /* Release - Debug */,
-				BEFC1CF80C07822400B0BB3C /* Release */,
+				0053D3D80C86774200545606 /* Debug configuration for PBXNativeTarget "transmission-remote" */,
+				A250CFF00CDA19680068B4B6 /* Release - Debug configuration for PBXNativeTarget "transmission-remote" */,
+				BEFC1CF80C07822400B0BB3C /* Release configuration for PBXNativeTarget "transmission-remote" */,
 			);
-			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
 		};
 		C0FFEE00000000000000000B /* Build configuration list for PBXNativeTarget "woke" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				C0FFEE00000000000000000C /* Debug */,
-				C0FFEE00000000000000000D /* Release - Debug */,
-				C0FFEE00000000000000000E /* Release */,
+				C0FFEE00000000000000000C /* Debug configuration for PBXNativeTarget "woke" */,
+				C0FFEE00000000000000000D /* Release - Debug configuration for PBXNativeTarget "woke" */,
+				C0FFEE00000000000000000E /* Release configuration for PBXNativeTarget "woke" */,
 			);
-			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
 		};
 		C3D9062227B7E3C900EF2386 /* Build configuration list for PBXNativeTarget "psl" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				C3D9062327B7E3C900EF2386 /* Debug */,
-				C3D9062427B7E3C900EF2386 /* Release - Debug */,
-				C3D9062527B7E3C900EF2386 /* Release */,
+				C3D9062327B7E3C900EF2386 /* Debug configuration for PBXNativeTarget "psl" */,
+				C3D9062427B7E3C900EF2386 /* Release - Debug configuration for PBXNativeTarget "psl" */,
+				C3D9062527B7E3C900EF2386 /* Release configuration for PBXNativeTarget "psl" */,
 			);
-			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
 		};
 		C8B27B7B28153F2B00A22B5D /* Build configuration list for PBXNativeTarget "transmission-create" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				C8B27B7C28153F2B00A22B5D /* Debug */,
-				C8B27B7D28153F2B00A22B5D /* Release - Debug */,
-				C8B27B7E28153F2B00A22B5D /* Release */,
+				C8B27B7C28153F2B00A22B5D /* Debug configuration for PBXNativeTarget "transmission-create" */,
+				C8B27B7D28153F2B00A22B5D /* Release - Debug configuration for PBXNativeTarget "transmission-create" */,
+				C8B27B7E28153F2B00A22B5D /* Release configuration for PBXNativeTarget "transmission-create" */,
 			);
-			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
 		};
 		C8B27B8C28153F3100A22B5D /* Build configuration list for PBXNativeTarget "transmission-edit" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				C8B27B8D28153F3100A22B5D /* Debug */,
-				C8B27B8E28153F3100A22B5D /* Release - Debug */,
-				C8B27B8F28153F3100A22B5D /* Release */,
+				C8B27B8D28153F3100A22B5D /* Debug configuration for PBXNativeTarget "transmission-edit" */,
+				C8B27B8E28153F3100A22B5D /* Release - Debug configuration for PBXNativeTarget "transmission-edit" */,
+				C8B27B8F28153F3100A22B5D /* Release configuration for PBXNativeTarget "transmission-edit" */,
 			);
-			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
 		};
 		C8B27B9D28153F3400A22B5D /* Build configuration list for PBXNativeTarget "transmission-show" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				C8B27B9E28153F3400A22B5D /* Debug */,
-				C8B27B9F28153F3400A22B5D /* Release - Debug */,
-				C8B27BA028153F3400A22B5D /* Release */,
+				C8B27B9E28153F3400A22B5D /* Debug configuration for PBXNativeTarget "transmission-show" */,
+				C8B27B9F28153F3400A22B5D /* Release - Debug configuration for PBXNativeTarget "transmission-show" */,
+				C8B27BA028153F3400A22B5D /* Release configuration for PBXNativeTarget "transmission-show" */,
 			);
-			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
 		};
 		ED5E0E932CD30B180071433B /* Build configuration list for PBXNativeTarget "QuickLookExtension" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				ED5E0E8F2CD30B180071433B /* Debug */,
-				ED5E0E902CD30B180071433B /* Release - Debug */,
-				ED5E0E912CD30B180071433B /* Release */,
+				ED5E0E8F2CD30B180071433B /* Debug configuration for PBXNativeTarget "QuickLookExtension" */,
+				ED5E0E902CD30B180071433B /* Release - Debug configuration for PBXNativeTarget "QuickLookExtension" */,
+				ED5E0E912CD30B180071433B /* Release configuration for PBXNativeTarget "QuickLookExtension" */,
 			);
-			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
 		};
 		ED91F0172CBDA5D3008388AA /* Build configuration list for PBXNativeTarget "madler-crcany" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				ED91F0142CBDA5D3008388AA /* Debug */,
-				ED91F0152CBDA5D3008388AA /* Release - Debug */,
-				ED91F0162CBDA5D3008388AA /* Release */,
+				ED91F0142CBDA5D3008388AA /* Debug configuration for PBXNativeTarget "madler-crcany" */,
+				ED91F0152CBDA5D3008388AA /* Release - Debug configuration for PBXNativeTarget "madler-crcany" */,
+				ED91F0162CBDA5D3008388AA /* Release configuration for PBXNativeTarget "madler-crcany" */,
 			);
-			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
 		};
 /* End XCConfigurationList section */
