@@ -186,17 +186,20 @@ TEST(Bitfield, acceptsPartialInput)
     auto constexpr Raw = std::to_array<std::byte>({ std::byte{ 0xa0 } });
     auto constexpr ByteRaw = std::to_array<uint8_t>({ 0x80U });
 
+    auto empty = tr_bitfield{ 10 };
+    EXPECT_EQ((std::vector<std::byte>{ std::byte{}, std::byte{} }), empty.raw());
+
     auto from_bools = tr_bitfield{ 10 };
     ASSERT_TRUE(from_bools.set_from_bools(Flags));
     EXPECT_TRUE(from_bools.is_valid());
     EXPECT_EQ(2U, from_bools.count());
-    EXPECT_EQ((std::vector<std::byte>{ std::byte{ 0xa0 } }), from_bools.raw());
+    EXPECT_EQ((std::vector<std::byte>{ std::byte{ 0xa0 }, std::byte{} }), from_bools.raw());
 
     auto from_raw = tr_bitfield{ 10 };
     ASSERT_TRUE(from_raw.set_raw(Raw));
     EXPECT_TRUE(from_raw.is_valid());
     EXPECT_EQ(2U, from_raw.count());
-    EXPECT_EQ((std::vector<std::byte>{ std::byte{ 0xa0 } }), from_raw.raw());
+    EXPECT_EQ((std::vector<std::byte>{ std::byte{ 0xa0 }, std::byte{} }), from_raw.raw());
 
     auto from_byte_raw = tr_bitfield{ 8 };
     ASSERT_TRUE(from_byte_raw.set_raw(ByteRaw));

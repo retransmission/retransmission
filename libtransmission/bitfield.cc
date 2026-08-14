@@ -145,16 +145,15 @@ bool tr_bitfield::is_valid() const
 
 std::vector<std::byte> tr_bitfield::raw() const
 {
-    if (!std::empty(flags_)) {
-        return flags_;
-    }
-
     auto const n = getBytesNeeded(bit_count_);
-
     auto raw = std::vector<std::byte>(n);
 
     if (has_all()) {
         setAllTrue(raw, bit_count_);
+    } else if (!std::empty(flags_)) {
+        // flags_ does not always contain all bit_count_ bits.
+        // E.g. After `set_raw()` was called with a smaller vector.
+        std::ranges::copy(flags_, raw.begin());
     }
 
     return raw;
