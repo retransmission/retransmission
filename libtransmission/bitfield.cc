@@ -132,7 +132,7 @@ bool tr_bitfield::is_valid() const
 {
     if (!is_size_known()) {
         // When the size is unknown, the only valid states are "have all" or "have none"
-        return std::empty(flags_) && true_count_ == 0U;
+        return std::empty(flags_) && true_count_ == 0U && have_all_hint_ != have_none_hint_;
     }
 
     auto const bytes_needed = getBytesNeeded(bit_count_);
