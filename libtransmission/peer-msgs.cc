@@ -762,7 +762,7 @@ private:
 
 // ---
 
-[[nodiscard]] constexpr bool is_message_length_correct(tr_torrent const& tor, uint8_t id, uint32_t len)
+[[nodiscard]] constexpr bool is_message_length_correct(tr_torrent const& tor, uint8_t const id, uint32_t const len)
 {
     switch (id) {
     case BtPeerMsgs::Choke:
@@ -771,12 +771,12 @@ private:
     case BtPeerMsgs::NotInterested:
     case BtPeerMsgs::FextHaveAll:
     case BtPeerMsgs::FextHaveNone:
-        return len == 1U;
+        return len == sizeof(id);
 
     case BtPeerMsgs::Have:
     case BtPeerMsgs::FextSuggest:
     case BtPeerMsgs::FextAllowedFast:
-        return len == 5U;
+        return len == sizeof(id) + sizeof(uint32_t /*piece*/);
 
     case BtPeerMsgs::Bitfield:
         if (tor.has_metainfo()) {
@@ -787,16 +787,16 @@ private:
     case BtPeerMsgs::Request:
     case BtPeerMsgs::Cancel:
     case BtPeerMsgs::FextReject:
-        return len == 13U;
+        return len == sizeof(id) + sizeof(uint32_t /*piece*/) + sizeof(uint32_t /*offset*/) + sizeof(uint32_t /*length*/);
 
     case BtPeerMsgs::Piece:
         return len <= sizeof(id) + sizeof(uint32_t /*piece*/) + sizeof(uint32_t /*offset*/) + tr_block_info::BlockSize;
 
     case BtPeerMsgs::DhtPort:
-        return len == 3U;
+        return len == sizeof(id) + sizeof(uint16_t /*port*/);
 
     case BtPeerMsgs::Ltep:
-        return len >= 2U;
+        return len >= sizeof(id) + sizeof(uint8_t /*ltep_msgid*/);
 
     default: // unrecognized message
         return false;
