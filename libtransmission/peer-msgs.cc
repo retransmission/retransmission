@@ -790,8 +790,7 @@ private:
         return len == 13U;
 
     case BtPeerMsgs::Piece:
-        len -= sizeof(id) + sizeof(uint32_t /*piece*/) + sizeof(uint32_t /*offset*/);
-        return len <= tr_block_info::BlockSize;
+        return len <= sizeof(id) + sizeof(uint32_t /*piece*/) + sizeof(uint32_t /*offset*/) + tr_block_info::BlockSize;
 
     case BtPeerMsgs::DhtPort:
         return len == 3U;
