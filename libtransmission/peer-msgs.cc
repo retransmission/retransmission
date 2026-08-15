@@ -1532,7 +1532,8 @@ ReadResult tr_peerMsgsImpl::process_peer_message(uint8_t id, MessageReader& payl
         logtrace(this, fmt::format("got Have: {:d}", ui32));
 
         if (tor_.has_metainfo() && ui32 >= tor_.piece_count()) {
-            publish(tr_peer_event::GotError(ERANGE));
+            logdbg(this, fmt::format("got Have: {} but torrent only has {} pieces, disconnecting", ui32, tor_.piece_count()));
+            disconnect_soon();
             return { ReadState::Err, {} };
         }
 
@@ -1626,7 +1627,8 @@ ReadResult tr_peerMsgsImpl::process_peer_message(uint8_t id, MessageReader& payl
             auto const piece = payload.to_uint32();
             publish(tr_peer_event::GotSuggest(piece));
         } else {
-            publish(tr_peer_event::GotError(EMSGSIZE));
+            logdbg(this, "got a FextSuggest message, but peer did not indicate fast extensions support, disconnecting");
+            disconnect_soon();
             return { ReadState::Err, {} };
         }
 
@@ -1639,7 +1641,8 @@ ReadResult tr_peerMsgsImpl::process_peer_message(uint8_t id, MessageReader& payl
             auto const piece = payload.to_uint32();
             publish(tr_peer_event::GotAllowedFast(piece));
         } else {
-            publish(tr_peer_event::GotError(EMSGSIZE));
+            logdbg(this, "got a FextAllowedFast message, but peer did not indicate fast extensions support, disconnecting");
+            disconnect_soon();
             return { ReadState::Err, {} };
         }
 
@@ -1658,7 +1661,8 @@ ReadResult tr_peerMsgsImpl::process_peer_message(uint8_t id, MessageReader& payl
             update_desired_request_count();
             maybe_send_block_requests();
         } else {
-            publish(tr_peer_event::GotError(EMSGSIZE));
+            logdbg(this, "got a FextHaveAll message, but peer did not indicate fast extensions support, disconnecting");
+            disconnect_soon();
             return { ReadState::Err, {} };
         }
 
@@ -1672,7 +1676,8 @@ ReadResult tr_peerMsgsImpl::process_peer_message(uint8_t id, MessageReader& payl
             peer_info->set_seed(false);
             publish(tr_peer_event::GotHaveNone());
         } else {
-            publish(tr_peer_event::GotError(EMSGSIZE));
+            logdbg(this, "got a FextHaveNone message, but peer did not indicate fast extensions support, disconnecting");
+            disconnect_soon();
             return { ReadState::Err, {} };
         }
 
@@ -1696,7 +1701,8 @@ ReadResult tr_peerMsgsImpl::process_peer_message(uint8_t id, MessageReader& payl
                     publish(tr_peer_event::GotRejected(tor_.block_info(), block));
                 }
             } else {
-                publish(tr_peer_event::GotError(EMSGSIZE));
+                logdbg(this, "got a FextReject message, but peer did not indicate fast extensions support, disconnecting");
+                disconnect_soon();
                 return { ReadState::Err, {} };
             }
 
@@ -1932,9 +1938,11 @@ ReadState tr_peerMsgsImpl::can_read(tr_peerIo* io, void* vmsgs, size_t* piece)
     return ret;
 }
 
-void tr_peerMsgsImpl::got_error(tr_peerIo* /*io*/, tr_error const& /*error*/, void* vmsgs)
+void tr_peerMsgsImpl::got_error(tr_peerIo* /*io*/, tr_error const& error, void* vmsgs)
 {
-    static_cast<tr_peerMsgsImpl*>(vmsgs)->publish(tr_peer_event::GotError(ENOTCONN));
+    auto* const msgs = static_cast<tr_peerMsgsImpl*>(vmsgs);
+    logdbg(msgs, fmt::format("peer I/O error, disconnecting: {} ({})", error.message(), error.code()));
+    msgs->disconnect_soon();
 }
 
 // ---
