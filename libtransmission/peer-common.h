@@ -103,14 +103,6 @@ public:
         return event;
     }
 
-    [[nodiscard]] constexpr static auto GotError(int err) noexcept
-    {
-        auto event = tr_peer_event{};
-        event.type = Type::Error;
-        event.err = err;
-        return event;
-    }
-
     [[nodiscard]] constexpr static auto GotHave(tr_piece_index_t piece) noexcept
     {
         auto event = tr_peer_event{};
