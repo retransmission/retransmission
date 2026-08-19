@@ -14,6 +14,13 @@
 
 @implementation SmallTorrentCell
 
+- (void)configureViews
+{
+    [super configureViews];
+    // also set alignment as part of priorities ( text inside a textLabel ).
+    self.fTorrentStatusField.alignment = NSTextAlignmentRight;
+}
+
 // Layout
 - (void)configurePriorities
 {
@@ -46,6 +53,7 @@
     auto groupIndicatorView = self.fGroupIndicatorView;
     auto iconView = self.fIconView;
     auto actionButton = self.fActionButton;
+    auto torrentPriorityView = self.fTorrentPriorityView;
     auto stackView = self.fStackView;
     auto torrentStatusField = self.fTorrentStatusField;
     auto torrentProgressBarView = self.fTorrentProgressBarView;
@@ -90,13 +98,17 @@
         [torrentProgressBarView.centerYAnchor constraintEqualToAnchor:self.centerYAnchor],
         [torrentProgressBarView.heightAnchor constraintEqualToConstant:18],
 
+        // torrentPriorityView
+        [torrentPriorityView.heightAnchor constraintEqualToConstant:12],
+        [torrentPriorityView.widthAnchor constraintEqualToConstant:12],
+
         // stackView
         [stackView.leadingAnchor constraintEqualToAnchor:torrentProgressBarView.leadingAnchor],
         [stackView.topAnchor constraintEqualToAnchor:torrentProgressBarView.topAnchor],
         [stackView.bottomAnchor constraintEqualToAnchor:torrentProgressBarView.bottomAnchor],
 
         // torrentStatusField
-        [torrentStatusField.leadingAnchor constraintEqualToAnchor:stackView.trailingAnchor],
+        [torrentStatusField.leadingAnchor constraintEqualToAnchor:stackView.trailingAnchor constant:4],
         [torrentStatusField.trailingAnchor constraintEqualToAnchor:torrentProgressBarView.trailingAnchor constant:-3],
         [torrentStatusField.centerYAnchor constraintEqualToAnchor:torrentProgressBarView.centerYAnchor],
 
