@@ -338,7 +338,7 @@ bool tr_bitfield::set_span(size_t const begin, size_t end, bool const value)
 {
     // bounds check
     end = std::min(end, bit_count_);
-    if (!is_size_known() || end > size() || begin >= end) {
+    if (!is_size_known() || begin >= end) {
         return false;
     }
 
