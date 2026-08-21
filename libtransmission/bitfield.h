@@ -120,7 +120,6 @@ public:
     }
 
     tr_bitfield& operator|=(tr_bitfield const& that);
-    tr_bitfield& operator&=(tr_bitfield const& that);
     [[nodiscard]] bool intersects(tr_bitfield const& that) const noexcept;
 
 private:

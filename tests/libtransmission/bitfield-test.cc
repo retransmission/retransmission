@@ -513,62 +513,6 @@ TEST(Bitfield, bitwiseOr)
     EXPECT_TRUE(a.has_all());
 }
 
-TEST(Bitfield, bitwiseAnd)
-{
-    auto a = tr_bitfield{ 100 };
-    auto b = tr_bitfield{ 100 };
-
-    a.set_has_all();
-    b.set_has_none();
-    a &= b;
-    EXPECT_TRUE(a.has_none());
-
-    a.set_has_none();
-    b.set_has_all();
-    a &= b;
-    EXPECT_TRUE(a.has_none());
-
-    a.set_has_all();
-    b.set_has_all();
-    a &= b;
-    EXPECT_TRUE(a.has_all());
-
-    a.set_has_none();
-    b.set_has_none();
-    a.set_span(0, std::size(a) / 2U);
-    b.set_span(std::size(a) / 2U, std::size(a));
-    EXPECT_EQ(0.5, a.percent());
-    EXPECT_EQ(0.5, b.percent());
-    a &= b;
-    EXPECT_TRUE(a.has_none());
-
-    a.set_has_none();
-    b.set_has_none();
-    for (size_t i = 0; i < std::size(a); ++i) {
-        if ((i % 2U) != 0U) {
-            a.set(i);
-        } else {
-            b.set(i);
-        }
-    }
-    a &= b;
-    EXPECT_TRUE(a.has_none());
-
-    a.set_has_none();
-    a.set_span(0U, std::size(a) / 10U);
-    b.set_has_none();
-    b.set_span(0U, std::size(a) / 20U);
-    a &= b;
-    EXPECT_NEAR(0.05F, a.percent(), 0.01);
-
-    a.set_has_none();
-    a.set_span(0U, std::size(a) / 10U);
-    b.set_has_none();
-    b.set_span(0U, std::size(a) / 20U);
-    b &= a;
-    EXPECT_NEAR(0.1F, a.percent(), 0.01);
-}
-
 TEST(Bitfield, bitwiseOperationsWithDifferentSizes)
 {
     auto smaller = tr_bitfield{ 4 };
@@ -585,24 +529,6 @@ TEST(Bitfield, bitwiseOperationsWithDifferentSizes)
     EXPECT_TRUE(smaller.test(4U));
     EXPECT_TRUE(smaller.test(11U));
     EXPECT_TRUE(smaller.is_valid());
-
-    auto left = tr_bitfield{ 12 };
-    auto right = tr_bitfield{ 4 };
-    ASSERT_TRUE(left.set(0U));
-    ASSERT_TRUE(left.set(3U));
-    ASSERT_TRUE(left.set(4U));
-    ASSERT_TRUE(left.set(11U));
-    ASSERT_TRUE(right.set(0U));
-    ASSERT_TRUE(right.set(3U));
-    left &= right;
-
-    EXPECT_EQ(12U, left.size());
-    EXPECT_EQ(2U, left.count());
-    EXPECT_TRUE(left.test(0U));
-    EXPECT_TRUE(left.test(3U));
-    EXPECT_FALSE(left.test(4U));
-    EXPECT_FALSE(left.test(11U));
-    EXPECT_TRUE(left.is_valid());
 }
 
 TEST(Bitfield, intersects)

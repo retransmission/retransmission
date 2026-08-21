@@ -420,28 +420,6 @@ tr_bitfield& tr_bitfield::operator|=(tr_bitfield const& that)
     return *this;
 }
 
-tr_bitfield& tr_bitfield::operator&=(tr_bitfield const& that)
-{
-    if (has_none() || that.has_all()) {
-        return *this;
-    }
-
-    if (that.has_none() || has_all()) {
-        *this = that;
-        return *this;
-    }
-
-    flags_.resize(std::min(std::size(flags_), std::size(that.flags_)));
-
-    for (size_t i = 0, n = std::size(flags_); i < n; ++i) {
-        flags_[i] &= that.flags_[i];
-    }
-
-    rebuild_true_count();
-    // rebuild_true_count() already asserts is_valid(), so we don't need it here
-    return *this;
-}
-
 bool tr_bitfield::intersects(tr_bitfield const& that) const noexcept
 {
     if (has_none() || that.has_none()) {
