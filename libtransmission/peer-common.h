@@ -60,6 +60,7 @@ public:
         ClientSentCancel,
         ClientSentPieceData,
         ClientSentRequest,
+        ClientStaleBitfield,
         Error // generic
     };
 
@@ -187,6 +188,14 @@ public:
         event.pieceIndex = loc_begin.piece;
         event.offset = loc_begin.piece_offset;
         event.length = loc_end.byte - loc_begin.byte;
+        return event;
+    }
+
+    [[nodiscard]] constexpr static auto StaleBitfield(tr_bitfield* bitfield) noexcept
+    {
+        auto event = tr_peer_event{};
+        event.type = Type::ClientStaleBitfield;
+        event.bitfield = bitfield;
         return event;
     }
 };
