@@ -57,17 +57,16 @@ size_t tr_bitfield::count(size_t const begin, size_t end) const
         return 0;
     }
 
-    end = std::min(end, bit_count_);
+    if (is_size_known()) {
+        end = std::min(end, bit_count_);
+    }
+
     if (begin >= end) {
         return 0;
     }
 
     if (has_all()) {
         return end - begin;
-    }
-
-    if (!is_size_known()) [[unlikely]] {
-        return 0;
     }
 
     auto ret = size_t{};

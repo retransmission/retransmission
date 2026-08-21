@@ -45,8 +45,16 @@ TEST(Bitfield, count)
     }
 
     auto bf = tr_bitfield{ 0 };
+    EXPECT_TRUE(bf.has_none());
     EXPECT_EQ(0U, bf.count(0, 0));
     EXPECT_EQ(0U, bf.count(0, 1));
+
+    bf.set_has_all();
+    EXPECT_FALSE(bf.has_none());
+    EXPECT_TRUE(bf.has_all());
+    EXPECT_EQ(0U, bf.count(0, 0));
+    EXPECT_EQ(10U, bf.count(0, 10));
+    EXPECT_EQ(13U, bf.count(11, 24));
 
     bf = tr_bitfield{ 100 };
     EXPECT_EQ(0U, bf.count(0, 0));
@@ -55,6 +63,7 @@ TEST(Bitfield, count)
     EXPECT_EQ(0U, bf.count(0, 0));
     EXPECT_EQ(1U, bf.count(0, 1));
     EXPECT_EQ(100U, bf.count(0, 100));
+    EXPECT_EQ(100U, bf.count(0, 1000));
 }
 
 TEST(Bitfield, countBounds)
