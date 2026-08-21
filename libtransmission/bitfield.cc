@@ -150,9 +150,12 @@ std::vector<std::byte> tr_bitfield::raw() const
     if (has_all()) {
         setAllTrue(raw, bit_count_);
     } else if (!std::empty(flags_)) {
-        // flags_ does not always contain all bit_count_ bits.
-        // E.g. After `set_raw()` was called with a smaller vector.
-        std::ranges::copy(flags_, raw.begin());
+        // N.B.
+        // - flags_ does not always contain all bit_count_ bits.
+        //   E.g. After `set_raw()` was called with a smaller vector.
+        // - std::size(flags_) is supposed to be <= n, but just in case, we use std::min() here.
+        auto const n_copy = static_cast<decltype(flags_)::difference_type>(std::min(std::size(flags_), n));
+        std::ranges::copy_n(flags_.begin(), n_copy, raw.begin());
     }
 
     return raw;
