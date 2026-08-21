@@ -1838,6 +1838,13 @@ ReadState tr_peerMsgsImpl::can_read(tr_peerIo* io, void* vmsgs, size_t* piece)
 void tr_peerMsgsImpl::got_error(tr_peerIo* /*io*/, tr_error const& error, void* vmsgs)
 {
     auto* const msgs = static_cast<tr_peerMsgsImpl*>(vmsgs);
+    if (msgs->is_disconnecting()) {
+        logdbg(
+            msgs,
+            fmt::format("ignoring peer I/O error as peer is disconnecting anyway: {} ({})", error.message(), error.code()));
+        return;
+    }
+
     logdbg(msgs, fmt::format("peer I/O error, disconnecting: {} ({})", error.message(), error.code()));
     msgs->disconnect_soon();
 }
