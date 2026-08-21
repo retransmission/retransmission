@@ -169,6 +169,9 @@ auto constexpr Reject = 2;
 
 } // namespace MetadataMsgType
 
+// Arbitrary upper size limit to avoid memory exhaustion attacks.
+auto constexpr MaxIncomingMsgBytes = size_t{ 4U * 1024U * 1024U };
+
 auto constexpr MinChokePeriodSec = time_t{ 10 };
 
 // idle seconds before we send a keepalive
@@ -759,7 +762,7 @@ private:
 
 // ---
 
-[[nodiscard]] constexpr bool is_message_length_correct(tr_torrent const& tor, uint8_t id, uint32_t len)
+[[nodiscard]] constexpr bool is_message_length_correct(tr_torrent const& tor, uint8_t const id, uint32_t const len)
 {
     switch (id) {
     case BtPeerMsgs::Choke:
@@ -768,34 +771,38 @@ private:
     case BtPeerMsgs::NotInterested:
     case BtPeerMsgs::FextHaveAll:
     case BtPeerMsgs::FextHaveNone:
-        return len == 1U;
+        return len == sizeof(id);
 
     case BtPeerMsgs::Have:
     case BtPeerMsgs::FextSuggest:
     case BtPeerMsgs::FextAllowedFast:
-        return len == 5U;
+        return len == sizeof(id) + sizeof(uint32_t /*piece*/);
 
     case BtPeerMsgs::Bitfield:
-        return !tor.has_metainfo() || len == 1 + ((tor.piece_count() + 7U) / 8U);
+        if (tor.has_metainfo()) {
+            return len == sizeof(id) + tr_bytes_needed(tor.piece_count());
+        }
+        break;
 
     case BtPeerMsgs::Request:
     case BtPeerMsgs::Cancel:
     case BtPeerMsgs::FextReject:
-        return len == 13U;
+        return len == sizeof(id) + sizeof(uint32_t /*piece*/) + sizeof(uint32_t /*offset*/) + sizeof(uint32_t /*length*/);
 
     case BtPeerMsgs::Piece:
-        len -= sizeof(id) + sizeof(uint32_t /*piece*/) + sizeof(uint32_t /*offset*/);
-        return len <= tr_block_info::BlockSize;
+        return len <= sizeof(id) + sizeof(uint32_t /*piece*/) + sizeof(uint32_t /*offset*/) + tr_block_info::BlockSize;
 
     case BtPeerMsgs::DhtPort:
-        return len == 3U;
+        return len == sizeof(id) + sizeof(uint16_t /*port*/);
 
     case BtPeerMsgs::Ltep:
-        return len >= 2U;
+        return len >= sizeof(id) + sizeof(uint8_t /*ltep_msgid*/);
 
     default: // unrecognized message
         return false;
     }
+
+    return len >= sizeof(id) && len <= MaxIncomingMsgBytes;
 }
 
 namespace protocol_send_message_helpers
@@ -1380,17 +1387,7 @@ ReadResult tr_peerMsgsImpl::process_peer_message(uint8_t id, MessageReader& payl
             static_cast<int>(id),
             std::size(payload)));
 
-    if (!is_message_length_correct(tor_, id, sizeof(id) + std::size(payload))) {
-        logdbg(
-            this,
-            fmt::format(
-                "bad msg: '{:s}' ({:d}) with payload len {:d}",
-                BtPeerMsgs::debug_name(id),
-                static_cast<int>(id),
-                std::size(payload)));
-        publish(tr_peer_event::GotError(EMSGSIZE));
-        return { ReadState::Err, {} };
-    }
+    TR_ASSERT(is_message_length_correct(tor_, id, sizeof(id) + std::size(payload)));
 
     switch (id) {
     case BtPeerMsgs::Choke:
@@ -1756,6 +1753,18 @@ ReadResult tr_peerMsgsImpl::can_read_impl(tr_peerIo* io)
 
         io->read_uint8(&message_type);
         current_message_type = message_type;
+    }
+
+    if (!is_message_length_correct(tor_, *current_message_type, *current_message_len)) {
+        logdbg(
+            this,
+            fmt::format(
+                "bad msg: '{:s}' ({:d}) with len {:d}, disconnecting",
+                BtPeerMsgs::debug_name(*current_message_type),
+                static_cast<int>(*current_message_type),
+                *current_message_len));
+        disconnect_soon();
+        return { ReadState::Err, {} };
     }
 
     // read <payload>
