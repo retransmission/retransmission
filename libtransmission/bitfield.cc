@@ -270,7 +270,7 @@ bool tr_bitfield::set_raw(std::span<std::byte const> const raw)
     }
 
     rebuild_true_count();
-    TR_ASSERT(is_valid());
+    // rebuild_true_count() already asserts is_valid(), so we don't need it here
     return true;
 }
 
@@ -291,7 +291,7 @@ bool tr_bitfield::set_from_bools(std::span<bool const> const flags)
     }
 
     set_true_count(true_count);
-    TR_ASSERT(is_valid());
+    // set_true_count() already asserts is_valid(), so we don't need it here
     return true;
 }
 
@@ -393,7 +393,7 @@ bool tr_bitfield::set_span(size_t const begin, size_t end, bool const value)
         decrement_true_count(old_count);
     }
 
-    TR_ASSERT(is_valid());
+    // (de|in)crement_true_count() already asserts is_valid(), so we don't need it here
     return true;
 }
 
@@ -416,7 +416,7 @@ tr_bitfield& tr_bitfield::operator|=(tr_bitfield const& that)
     }
 
     rebuild_true_count();
-    TR_ASSERT(is_valid());
+    // rebuild_true_count() already asserts is_valid(), so we don't need it here
     return *this;
 }
 
@@ -438,7 +438,7 @@ tr_bitfield& tr_bitfield::operator&=(tr_bitfield const& that)
     }
 
     rebuild_true_count();
-    TR_ASSERT(is_valid());
+    // rebuild_true_count() already asserts is_valid(), so we don't need it here
     return *this;
 }
 
