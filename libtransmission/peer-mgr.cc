@@ -658,23 +658,6 @@ public:
             // not currently supported
             break;
 
-        case tr_peer_event::Type::Error:
-            if (event.err == ERANGE || event.err == EMSGSIZE || event.err == ENOTCONN) {
-                // some protocol error from the peer
-                msgs->disconnect_soon();
-                tr_logAddDebugSwarm(
-                    s,
-                    fmt::format(
-                        "setting {} is_disconnecting_ flag because we got [({}) {}]",
-                        msgs->display_name(),
-                        event.err,
-                        tr_strerror(event.err)));
-            } else {
-                tr_logAddDebugSwarm(s, fmt::format("unhandled error: ({}) {}", event.err, tr_strerror(event.err)));
-            }
-
-            break;
-
         default:
             peer_callback_common(msgs, event, s);
             break;
