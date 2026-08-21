@@ -184,7 +184,7 @@ bool tr_bitfield::ensure_bits_alloced(size_t const n)
 bool tr_bitfield::ensure_nth_bit_alloced(size_t const nth)
 {
     // count is zero-based, so we need to allocate nth+1 bits before setting the nth
-    return ensure_bits_alloced(nth + 1U);
+    return nth != SIZE_MAX && ensure_bits_alloced(nth + 1U);
 }
 
 void tr_bitfield::set_true_count(size_t const n) noexcept
