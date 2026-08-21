@@ -120,7 +120,6 @@ public:
     }
 
     tr_bitfield& operator|=(tr_bitfield const& that);
-    [[nodiscard]] bool intersects(tr_bitfield const& that) const noexcept;
 
 private:
     [[nodiscard]] TR_CONSTEXPR_VEC size_t count_flags() const noexcept
