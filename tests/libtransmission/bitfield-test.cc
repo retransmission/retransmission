@@ -260,7 +260,7 @@ TEST(Bitfield, mutationResultsAndBounds)
     EXPECT_TRUE(bf.is_valid());
 }
 
-TEST(Bitfield, supportsLargestSize)
+TEST(Bitfield, rejectsOutOfBoundsAtLargestSize)
 {
     auto bf = tr_bitfield{ std::numeric_limits<size_t>::max() };
 
