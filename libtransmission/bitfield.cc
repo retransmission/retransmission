@@ -168,8 +168,6 @@ bool tr_bitfield::ensure_bits_alloced(size_t const n)
     }
 
     auto const has_all = this->has_all();
-
-    /* Can't use getBytesNeededSafe as n can be > SIZE_MAX - 8. */
     auto const bytes_needed = getBytesNeeded(has_all ? std::max(n, true_count_) : n);
 
     if (std::size(flags_) < bytes_needed) {
