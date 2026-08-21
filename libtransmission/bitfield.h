@@ -57,7 +57,7 @@ public:
     {
         set_span(begin, end, false);
     }
-    bool set_from_bools(std::span<bool const> flags);
+    [[nodiscard]] bool set_from_bools(std::span<bool const> flags);
 
     // "raw" here is in BEP0003 format: "The first byte of the bitfield
     // corresponds to indices 0 - 7 from high bit to low bit, respectively.

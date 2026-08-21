@@ -101,7 +101,8 @@ std::vector<std::byte> tr_completion::create_piece_bitfield() const
     for (tr_piece_index_t piece = 0; piece < n; ++piece) {
         flags[piece] = has_piece(piece);
     }
-    pieces.set_from_bools({ flags.get(), n });
+    [[maybe_unused]] auto const set_res = pieces.set_from_bools({ flags.get(), n });
+    TR_ASSERT(set_res);
 
     return pieces.raw();
 }
