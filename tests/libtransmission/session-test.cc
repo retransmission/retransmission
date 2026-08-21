@@ -412,23 +412,21 @@ TEST_F(SessionTest, loadTorrentsThenMagnets)
     EXPECT_TRUE(tor->has_metainfo());
 }
 
-TEST_F(SessionTest, busyTorrentCount)
+TEST_F(SessionTest, activityDate)
 {
-    // no torrents -> none busy
-    EXPECT_EQ(0U, session_->busy_torrent_count());
+    // nothing has happened yet
+    EXPECT_EQ(time_t{ 0 }, session_->activity_date());
 
-    // a complete torrent added paused -> still none busy
+    // verifying a newly-added torrent is activity, even though it moves no piece data
+    auto const before_add = tr_time();
     auto* const tor = zeroTorrentInit(ZeroTorrentState::Complete);
     ASSERT_NE(nullptr, tor);
-    EXPECT_EQ(0U, session_->busy_torrent_count());
+    EXPECT_GE(session_->activity_date(), before_add);
 
-    // once started it seeds (the seed queue is off by default) -> one busy
+    // so is starting one, with no peer to transfer with
+    session_->set_activity_date(0);
     tr_torrentStart(tor);
-    EXPECT_TRUE(waitFor([this]() { return session_->busy_torrent_count() == 1U; }, 5s));
-
-    // stopping it -> none busy again
-    tr_torrentStop(tor);
-    EXPECT_TRUE(waitFor([this]() { return session_->busy_torrent_count() == 0U; }, 5s));
+    EXPECT_TRUE(waitFor([this]() { return session_->activity_date() != 0; }, 5s));
 }
 
 } // namespace tr::test

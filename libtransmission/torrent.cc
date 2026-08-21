@@ -631,6 +631,7 @@ void tr_torrent::start_in_session_thread()
     is_running_ = true;
     date_started_ = now;
     mark_changed();
+    session->set_activity_date(now);
     error().clear();
     finished_seeding_by_idle_ = false;
 
@@ -1626,6 +1627,7 @@ void tr_torrent::VerifyMediator::on_piece_checked(tr_piece_index_t const piece, 
 
     tor_->checked_pieces_.set(piece, true);
     tor_->mark_changed();
+    tor_->session->set_activity_date(tr_time());
     tor_->verify_progress_ = std::clamp(
         static_cast<float>(piece + 1U) / static_cast<float>(tor_->metainfo_.piece_count()),
         0.0F,

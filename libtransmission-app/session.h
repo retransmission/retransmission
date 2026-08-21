@@ -6,6 +6,7 @@
 #pragma once
 
 #include <cstdint>
+#include <ctime>
 #include <optional>
 
 #include <sigslot/signal.hpp>
@@ -76,7 +77,7 @@ public:
 
 protected:
     void set_session_type(std::optional<Type> type);
-    void set_has_busy_torrents(bool has_busy);
+    void set_activity_date(time_t when);
 
     // The embedded session, or nullptr when there isn't one. Some settings,
     // e.g. the RPC server's, can only be applied to an embedded session.
@@ -101,7 +102,7 @@ private:
     woke::SleepInhibitor sleep_inhibitor_;
     woke::NapInhibitor nap_inhibitor_;
     std::optional<Type> session_type_;
-    bool has_busy_torrents_ = false;
+    time_t activity_date_ = 0;
     bool importing_settings_ = false;
     sigslot::scoped_connection prefs_connection_;
 };

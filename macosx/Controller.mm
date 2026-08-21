@@ -15,6 +15,7 @@
 #endif
 
 #include <atomic> /* atomic, atomic_fetch_add_explicit, memory_order_relaxed */
+#include <ctime>
 
 #include <libtransmission/transmission.h>
 
@@ -24,6 +25,8 @@
 #include <libtransmission/torrent-metainfo.h>
 #include <libtransmission/values.h>
 #include <libtransmission/variant.h>
+
+#include <libtransmission-app/app.h>
 
 #import "VDKQueue.h"
 
@@ -2141,7 +2144,7 @@ static void removeKeRangerRansomware()
         anyCompleted |= torrent.finishedSeeding;
     }
 
-    BOOL anyActive = tr_sessionGetBusyTorrentCount(self.fLib) != 0;
+    BOOL const anyActive = tr::app::is_recently_active(tr_sessionActivityDate(self.fLib), std::time(nullptr));
     PowerManager.shared.shouldPreventSleep = anyActive && [self.fDefaults boolForKey:@"SleepPrevent"];
 
     if (!NSApp.hidden) {

@@ -786,15 +786,8 @@ public:
         return session_stats_;
     }
 
-    constexpr void add_uploaded(uint32_t n_bytes) noexcept
-    {
-        stats().add_uploaded(n_bytes);
-    }
-
-    constexpr void add_downloaded(uint32_t n_bytes) noexcept
-    {
-        stats().add_downloaded(n_bytes);
-    }
+    void add_uploaded(uint32_t n_bytes) noexcept;
+    void add_downloaded(uint32_t n_bytes) noexcept;
 
     constexpr void add_file_created() noexcept
     {
@@ -988,12 +981,16 @@ public:
 
     [[nodiscard]] size_t count_queue_free_slots(tr_direction dir) const noexcept;
 
-    // Number of torrents actively downloading, seeding, verifying, and which
-    // are not stalled or locally errored: the "should desktop stay awake" count.
-    // Safe to call from any thread.
-    [[nodiscard]] size_t busy_torrent_count() const noexcept
+    // The last time a torrent moved piece data, verified a piece, or was started;
+    // zero if none of that has happened yet. Safe to call from any thread.
+    [[nodiscard]] time_t activity_date() const noexcept
     {
-        return busy_torrent_count_.load(std::memory_order_relaxed);
+        return date_active_.load(std::memory_order_relaxed);
+    }
+
+    void set_activity_date(time_t when) noexcept
+    {
+        date_active_.store(when, std::memory_order_relaxed);
     }
 
     [[nodiscard]] bool has_ip_protocol(tr_address_type type) const noexcept
@@ -1147,9 +1144,6 @@ private:
     void on_now_timer();
     void on_queue_timer();
     void on_save_timer();
-
-    // the uncached count behind busy_torrent_count(); session thread only
-    [[nodiscard]] size_t compute_busy_torrent_count() const noexcept;
 
     // (Re)arm or disarm the auto-update timer after a blocklist setting changes.
     void on_blocklist_settings_changed();
@@ -1401,9 +1395,8 @@ private:
     // depends-on: alt_speeds_, udp_core_, torrents_
     std::unique_ptr<tr::Timer> now_timer_;
 
-    // cached busy_torrent_count(), refreshed on the session thread in
-    // on_now_timer() so it is readable from any thread (GUI clients, C API)
-    std::atomic<size_t> busy_torrent_count_{ 0U };
+    // activity_date(). Written by the peer, verify, and session threads.
+    std::atomic<time_t> date_active_{ 0 };
 
     // depends-on: torrents_
     std::unique_ptr<tr::Timer> queue_timer_;

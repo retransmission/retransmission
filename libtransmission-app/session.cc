@@ -5,12 +5,15 @@
 
 #include "libtransmission-app/session.h"
 
+#include <ctime>
+
 #include "libtransmission/log.h"
 #include "libtransmission/macros.h"
 #include "libtransmission/quark.h"
 #include "libtransmission/transmission.h"
 #include "libtransmission/variant.h"
 
+#include "libtransmission-app/app.h" // is_recently_active()
 #include "libtransmission-app/prefs.h"
 #include "libtransmission-app/rpc-client.h"
 
@@ -139,11 +142,11 @@ std::optional<tr::Settings> Session::embedded_settings() const
 
 void Session::set_session_type(std::optional<Type> const type)
 {
-    // should_inhibit_sleep() ignores the busy count once we're non-local, so a
-    // non-local session's remembered activity is meaningless -- drop it here so
-    // a later switch back to a local session starts from a clean slate.
+    // should_inhibit_sleep() ignores activity once we're non-local, so a non-local
+    // session's remembered activity is meaningless -- drop it here so a later
+    // switch back to a local session starts from a clean slate.
     if (type.value_or(Type::Remote) == Type::Remote) {
-        has_busy_torrents_ = false;
+        activity_date_ = 0;
     }
 
     if (session_type_ != type) {
@@ -153,17 +156,16 @@ void Session::set_session_type(std::optional<Type> const type)
     }
 }
 
-void Session::set_has_busy_torrents(bool const has_busy)
+void Session::set_activity_date(time_t const when)
 {
-    if (has_busy_torrents_ != has_busy) {
-        has_busy_torrents_ = has_busy;
-        update_sleep_inhibit();
-    }
+    activity_date_ = when;
+    update_sleep_inhibit();
 }
 
 bool Session::should_inhibit_sleep() const
 {
-    return is_local_filesystem() && has_busy_torrents_ && prefs_.get<bool>(TR_KEY_inhibit_desktop_hibernation);
+    return is_local_filesystem() && is_recently_active(activity_date_, std::time(nullptr)) &&
+        prefs_.get<bool>(TR_KEY_inhibit_desktop_hibernation);
 }
 
 void Session::update_sleep_inhibit()
