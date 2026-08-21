@@ -1796,7 +1796,7 @@ static tr_torrent_rename_done_func makeRenameDoneCallback(NSDictionary* contextI
             }
 
             if (!tempNode) {
-                tempNode = [[FileListNode alloc] initWithFolderName:pathComponents[0] path:@"" torrent:self];
+                tempNode = [FileListNode createWithFolderName:pathComponents[0] path:@"" torrent:self];
             }
 
             [self insertPathForComponents:pathComponents //
@@ -1813,7 +1813,7 @@ static tr_torrent_rename_done_func makeRenameDoneCallback(NSDictionary* contextI
         self.fileList = [[NSArray alloc] initWithArray:tempNode.children];
         self.flatFileList = [[NSArray alloc] initWithArray:flatFileList];
     } else {
-        FileListNode* node = [[FileListNode alloc] initWithFileName:self.name path:@"" size:self.size index:0 torrent:self];
+        FileListNode* node = [FileListNode createWithFileName:self.name path:@"" size:self.size index:0 torrent:self];
         self.fileList = @[ node ];
         self.flatFileList = self.fileList;
     }
@@ -1848,9 +1848,9 @@ static tr_torrent_rename_done_func makeRenameDoneCallback(NSDictionary* contextI
     if (!node) {
         NSString* path = [parent.path stringByAppendingPathComponent:parent.name];
         if (isFolder) {
-            node = [[FileListNode alloc] initWithFolderName:name path:path torrent:self];
+            node = [FileListNode createWithFolderName:name path:path torrent:self];
         } else {
-            node = [[FileListNode alloc] initWithFileName:name path:path size:size index:index torrent:self];
+            node = [FileListNode createWithFileName:name path:path size:size index:index torrent:self];
             [flatFileList addObject:node];
         }
 
