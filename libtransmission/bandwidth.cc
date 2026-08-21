@@ -246,7 +246,7 @@ void tr_bandwidth::allocate(uint64_t period_msec)
     // or (2) the next tr_bandwidth::allocate () call, when we start over again.
     for (auto const& io : refs) {
         io->set_enabled(tr_direction::Up, io->has_bandwidth_left(tr_direction::Up));
-        io->set_enabled(tr_direction::Down, io->has_bandwidth_left(tr_direction::Down));
+        io->update_read_enabled();
     }
 }
 

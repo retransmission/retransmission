@@ -17,6 +17,7 @@
 #include <span>
 #include <string>
 #include <string_view>
+#include <unordered_map>
 #include <utility>
 #include <vector>
 
@@ -59,6 +60,7 @@ namespace tr::test
 
 class RenameTest_multifileTorrent_Test;
 class RenameTest_singleFilenameTorrent_Test;
+class TorrentDiskIoTest_hashResultForInvalidatedPieceIsDropped_Test;
 
 } // namespace tr::test
 
@@ -337,6 +339,14 @@ struct tr_torrent {
     [[nodiscard]] constexpr auto has_block(tr_block_index_t block) const
     {
         return completion_.has_block(block);
+    }
+
+    // True if the block is on disk, or if we're writing it now.
+    // Peers use this instead of has_block() to tell whether they still
+    // need a block.
+    [[nodiscard]] constexpr auto has_block_or_pending(tr_block_index_t const block) const
+    {
+        return has_block(block) || blocks_pending_write_.test(block);
     }
 
     [[nodiscard]] auto has_blocks(tr_block_span_t span) const
@@ -940,7 +950,17 @@ struct tr_torrent {
         return peer_id_;
     }
 
-    void on_block_received(tr_block_index_t block);
+    // Call this when a block arrives from a peer.
+    // Returns false if we already have the block, or are already saving
+    // it. Discard the data in that case.
+    [[nodiscard]] bool on_block_received(tr_block_index_t block);
+
+    // Writes a block that on_block_received() accepted.
+    // The block doesn't count as ours until the write finishes.
+    // See on_block_written().
+    void save_block(tr_block_index_t block, std::unique_ptr<tr::LocalData::BlockData> data);
+
+    void on_block_written(tr_block_index_t block, tr_error const& error);
 
     [[nodiscard]] constexpr auto& error() noexcept
     {
@@ -1018,6 +1038,7 @@ struct tr_torrent {
     time_t lpdAnnounceAt = 0;
 
 private:
+    friend class tr::test::TorrentDiskIoTest_hashResultForInvalidatedPieceIsDropped_Test;
     friend bool tr_torrentSetMetainfoFromFile(tr_torrent* tor, tr_torrent_metainfo const* metainfo, char const* filename);
     friend tr_file_view tr_torrentFile(tr_torrent const* tor, tr_file_index_t file);
     friend tr_stat tr_torrentStat(tr_torrent* tor);
@@ -1148,6 +1169,12 @@ private:
 
     [[nodiscard]] bool check_piece(tr_piece_index_t piece) const;
 
+    // Hashes a piece we just finished downloading and records the result.
+    // The answer arrives later, by which time the piece may have been
+    // invalidated and downloaded again. A token identifies which
+    // incarnation was hashed, so a hash of an older one is dropped.
+    void test_piece(tr_piece_index_t piece);
+
     [[nodiscard]] constexpr std::optional<uint16_t> effective_idle_limit_minutes() const noexcept
     {
         auto const mode = idle_limit_mode();
@@ -1242,6 +1269,12 @@ private:
 
     void set_has_piece(tr_piece_index_t piece, bool has)
     {
+        if (!has) {
+            // Any hash of this piece is now about an incarnation of it
+            // that no longer exists. See test_piece().
+            hash_tokens_.erase(piece);
+        }
+
         completion_.set_has_piece(piece, has);
     }
 
@@ -1307,6 +1340,15 @@ private:
     // files' mtimes (file_mtimes_). If checked_pieces_.test(piece) is false,
     // it means that piece needs to be checked before its data is used.
     tr_bitfield checked_pieces_ = tr_bitfield{ 0 };
+
+    // blocks we've received and are writing to disk.
+    // A block leaves this set when its write finishes.
+    tr_bitfield blocks_pending_write_ = tr_bitfield{ 0 };
+
+    // the piece incarnation each in-flight hash was started on.
+    // Holds only the pieces being hashed right now.
+    std::unordered_map<tr_piece_index_t, uint64_t> hash_tokens_;
+    uint64_t next_hash_token_ = 0U;
 
     tr_labels_t labels_;
 

@@ -95,6 +95,11 @@ public:
 
     void set_enabled(tr_direction dir, bool is_enabled);
 
+    // Reads are on when we have bandwidth to spend and room to put the
+    // bytes. Leaving them on without both spins the event loop, because
+    // the socket stays readable either way.
+    void update_read_enabled();
+
     ///
 
     [[nodiscard]] constexpr auto read_buffer_size() const noexcept

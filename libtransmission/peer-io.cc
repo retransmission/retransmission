@@ -365,22 +365,25 @@ void tr_peerIo::can_read_wrapper(size_t bytes_transferred)
             break;
         }
     }
+
+    // The callbacks may have made room in inbuf_.
+    if (!err) {
+        update_read_enabled();
+    }
 }
 
 size_t tr_peerIo::try_read(size_t max)
 {
     static auto constexpr Dir = tr_direction::Down;
 
-    if (max == 0U) {
-        return {};
-    }
-
     if (!socket_) {
         return {};
     }
 
     // Do not read more than the bandwidth allows.
-    // If there is no bandwidth left available, disable reads.
+    // If we can't take any bytes at all, disable reads. The socket is
+    // still readable, so leaving them on would spin the event loop.
+    // tr_bandwidth::allocate() and can_read_wrapper() turn them back on.
     max = bandwidth().clamp(Dir, max);
     if (max == 0U) {
         set_enabled(Dir, false);
@@ -416,6 +419,11 @@ void tr_peerIo::read_cb()
 }
 
 // ---
+
+void tr_peerIo::update_read_enabled()
+{
+    set_enabled(tr_direction::Down, read_buffer_size() < RcvBuf && has_bandwidth_left(tr_direction::Down));
+}
 
 void tr_peerIo::set_enabled(tr_direction dir, bool is_enabled)
 {

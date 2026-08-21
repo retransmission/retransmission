@@ -1307,6 +1307,9 @@ void tr_session::closeImplPart1(std::promise<void>* closed_promise, std::chrono:
 
     torrent_queue().to_file();
 
+    // Deliver any pending completions while their torrents still exist.
+    local_data.shutdown();
+
     // Close the torrents in order of most active to least active
     // so that the most important announce=stopped events are
     // fired out first...

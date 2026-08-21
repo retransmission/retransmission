@@ -56,14 +56,15 @@ target_sources(libtransmission-test
         test-fixtures.h
         timer-test.cc
         torrent-builder-test.cc
+        torrent-disk-io-test.cc
         torrent-files-test.cc
         torrent-magnet-test.cc
         torrent-metainfo-test.cc
         torrent-queue-test.cc
         torrent-test.cc
         torrents-test.cc
-        types-test.cc
         tr-peer-info-test.cc
+        types-test.cc
         utils-test.cc
         values-test.cc
         variant-test.cc
@@ -103,6 +104,23 @@ target_link_libraries(libtransmission-test
         wildmat)
 
 tr_setup_gtest_target(libtransmission-test "LT.")
+
+# Re-run the disk-IO tests with tr::LocalData delivering its completions
+# late and out of order, which its ordering contract allows.
+#
+# A suite belongs here only if it drives a tr::LocalData op through a
+# tr_session. A suite that issues no such op re-runs byte-identical, and
+# the LocalData unit tests select the mode themselves, so neither would
+# gain anything from being listed.
+if(NOT CMAKE_CROSSCOMPILING OR CMAKE_CROSSCOMPILING_EMULATOR)
+    add_test(
+        NAME LT.ShuffledDiskIo
+        COMMAND libtransmission-test --gtest_filter=*IncompleteDirTest.*)
+
+    set_tests_properties(LT.ShuffledDiskIo
+        PROPERTIES
+            ENVIRONMENT TR_LOCAL_DATA_SHUFFLE=1)
+endif()
 
 add_custom_command(
     TARGET libtransmission-test
