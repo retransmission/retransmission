@@ -48,6 +48,7 @@
 #include "libtransmission/tr-assert.h"
 #include "libtransmission/tr-buffer.h"
 #include "libtransmission/types.h"
+#include "libtransmission/utils.h"
 #include "libtransmission/variant.h"
 #include "libtransmission/version.h"
 
@@ -384,6 +385,37 @@ public:
         // A peer may not be interesting to us anymore after
         // sending us metadata, so do a status update
         update_active();
+
+        TR_ASSERT(tor_.has_metainfo());
+
+        // Torrent piece count was not known before this point,
+        // and this sets the bitfield size to the piece count.
+        // - If the peer sent "have all", then this line will preserve
+        //   the "have all".
+        // - If the peer sent "bitfield", then `have_.init_size()` is no-op,
+        //   and `have_.shrink_to()` will adjust the bitfield size instead.
+        if (!have_.init_size(tor_.piece_count())) {
+            // If the peer sent us a bitfield msg, then have_'s size is already initialized.
+            // Check if the bitfield's size is valid.
+            auto const peer_bitfield_bytes = tr_bytes_needed(have_.size());
+            auto const actual_bitfield_bytes = tr_bytes_needed(tor_.piece_count());
+            if (peer_bitfield_bytes != actual_bitfield_bytes) {
+                logdbg(
+                    this,
+                    fmt::format(
+                        "peer sent bitfield with {} bytes, but a valid bitfield should take {} bytes, disconnecting",
+                        peer_bitfield_bytes,
+                        actual_bitfield_bytes));
+                disconnect_soon();
+                return;
+            }
+
+            // Now that we know the exact piece count, we need to shrink the bitfield to the correct size.
+            [[maybe_unused]] auto const shrink_to_res = have_.shrink_to(tor_.piece_count());
+            TR_ASSERT(shrink_to_res);
+        }
+
+        peer_info->set_seed(is_seed());
     }
 
     void cancel_block_request(tr_block_index_t block)
@@ -747,7 +779,7 @@ private:
         return len == 5U;
 
     case BtPeerMsgs::Bitfield:
-        return !tor.has_metainfo() || len == 1 + ((tor.piece_count() + 7U) / 8U);
+        return !tor.has_metainfo() || len == 1 + tr_bytes_needed(tor.piece_count());
 
     case BtPeerMsgs::Request:
     case BtPeerMsgs::Cancel:

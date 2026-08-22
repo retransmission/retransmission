@@ -449,6 +449,144 @@ TEST(Bitfield, deferredSize)
     EXPECT_FALSE(have_none.set_span(0U, 1U));
     EXPECT_FALSE(have_none.set_raw(Raw));
     EXPECT_FALSE(have_none.set_from_bools(Flags));
+
+    EXPECT_FALSE(have_none.init_size(0U));
+    EXPECT_FALSE(have_none.is_size_known());
+    EXPECT_TRUE(have_none.init_size(10U));
+    EXPECT_TRUE(have_none.is_size_known());
+    EXPECT_TRUE(have_none.has_none());
+    EXPECT_EQ(10U, have_none.size());
+    EXPECT_EQ(0U, have_none.count());
+    EXPECT_TRUE(have_none.is_valid());
+
+    auto have_all = tr_bitfield{ 0 };
+    have_all.set_has_all();
+    EXPECT_FALSE(have_all.is_size_known());
+    EXPECT_TRUE(have_all.has_all());
+    EXPECT_FALSE(have_all.has_none());
+    EXPECT_TRUE(have_all.is_valid());
+    EXPECT_EQ(10U, have_all.count(0U, 10U));
+    EXPECT_EQ(15U, have_all.count(5U, 20U));
+    EXPECT_FLOAT_EQ(1.0F, have_all.percent());
+
+    EXPECT_TRUE(have_all.init_size(10U));
+    EXPECT_TRUE(have_all.is_size_known());
+    EXPECT_TRUE(have_all.has_all());
+    EXPECT_EQ(10U, have_all.count());
+    EXPECT_EQ(5U, have_all.count(5U, 20U));
+    EXPECT_EQ((std::vector<std::byte>{ std::byte{ 0xff }, std::byte{ 0xc0 } }), have_all.raw());
+    for (size_t i = 0U; i < have_all.size(); ++i) {
+        EXPECT_TRUE(have_all.test(i));
+    }
+
+    EXPECT_FALSE(have_all.init_size(20U));
+    EXPECT_EQ(10U, have_all.size());
+    EXPECT_TRUE(have_all.is_valid());
+}
+
+TEST(Bitfield, shrinkTo)
+{
+    // shrinking an "unknown size" bitfield is never allowed
+    auto unknown_size = tr_bitfield{ 0 };
+    EXPECT_FALSE(unknown_size.shrink_to(0U));
+    EXPECT_FALSE(unknown_size.shrink_to(1U));
+
+    auto bf = tr_bitfield{ 20 };
+    ASSERT_TRUE(bf.set_span(4U, 16U)); // bits [4,16) true, count == 12
+
+    // growing is not allowed
+    EXPECT_FALSE(bf.shrink_to(21U));
+    EXPECT_EQ(20U, bf.size());
+
+    // 0 is reserved for "unknown size", so shrinking to it fails even for a
+    // bitfield with a known size and some true bits
+    EXPECT_FALSE(bf.shrink_to(0U));
+    EXPECT_EQ(20U, bf.size());
+    EXPECT_TRUE(bf.is_valid());
+
+    // shrinking to the current size is a no-op success
+    EXPECT_TRUE(bf.shrink_to(20U));
+    EXPECT_EQ(20U, bf.size());
+    EXPECT_EQ(12U, bf.count());
+
+    // shrinking drops bits beyond the new size and keeps the rest
+    EXPECT_TRUE(bf.shrink_to(10U));
+    EXPECT_EQ(10U, bf.size());
+    EXPECT_EQ(6U, bf.count()); // bits [4,10) remain true; [10,16) are dropped
+    for (size_t i = 0U; i < 10U; ++i) {
+        EXPECT_EQ(i >= 4U, bf.test(i));
+    }
+    EXPECT_TRUE(bf.is_valid());
+
+    // shrinking a have-all bitfield stays have-all at the new size
+    auto have_all = tr_bitfield{ 20 };
+    have_all.set_has_all();
+    EXPECT_TRUE(have_all.shrink_to(10U));
+    EXPECT_EQ(10U, have_all.size());
+    EXPECT_TRUE(have_all.has_all());
+    EXPECT_EQ(10U, have_all.count());
+    EXPECT_TRUE(have_all.is_valid());
+
+    // shrinking a have-none bitfield stays have-none at the new size
+    auto have_none = tr_bitfield{ 20 };
+    have_none.set_has_none();
+    EXPECT_TRUE(have_none.shrink_to(10U));
+    EXPECT_EQ(10U, have_none.size());
+    EXPECT_TRUE(have_none.has_none());
+    EXPECT_EQ(0U, have_none.count());
+    EXPECT_TRUE(have_none.is_valid());
+
+    // shrinking a partially set bitfield to a size that includes all the true bits makes it have-all
+    bf = tr_bitfield{ 20 };
+    ASSERT_TRUE(bf.set_span(0U, 15U));
+    EXPECT_EQ(15U, bf.count());
+    EXPECT_FALSE(bf.has_all());
+    EXPECT_TRUE(bf.shrink_to(15U));
+    EXPECT_EQ(15U, bf.size());
+    EXPECT_EQ(15U, bf.count());
+    EXPECT_TRUE(bf.has_all());
+}
+
+TEST(Bitfield, shrinkToRecomputesTrueCount)
+{
+    // The true count after shrink_to() must reflect only the bits that
+    // remain in the new, smaller range -- even when the pre-shrink count
+    // happens to equal the new size, as it does here (count == 8, new
+    // size == 8) while none of the surviving bits [0,8) are actually set.
+    auto bf = tr_bitfield{ 16 };
+    ASSERT_TRUE(bf.set_span(8U, 16U)); // bits [8,16) true, count == 8
+    ASSERT_EQ(8U, bf.count());
+
+    ASSERT_TRUE(bf.shrink_to(8U));
+    EXPECT_EQ(8U, bf.size());
+    EXPECT_FALSE(bf.has_all());
+    EXPECT_TRUE(bf.has_none());
+    EXPECT_EQ(0U, bf.count());
+    for (size_t i = 0U; i < 8U; ++i) {
+        EXPECT_FALSE(bf.test(i));
+    }
+    EXPECT_TRUE(bf.is_valid());
+}
+
+TEST(Bitfield, shrinkToAfterIndividualUnset)
+{
+    // has_none() can become true either via set_has_none() or by set()
+    // clearing the last true bit. shrink_to() must produce a correctly
+    // sized buffer either way.
+    auto bf = tr_bitfield{ 16 };
+    ASSERT_TRUE(bf.set(15U));
+    ASSERT_TRUE(bf.set(15U, false));
+    ASSERT_TRUE(bf.has_none());
+
+    ASSERT_TRUE(bf.shrink_to(8U));
+    EXPECT_EQ(8U, bf.size());
+    EXPECT_TRUE(bf.has_none());
+    EXPECT_EQ(0U, bf.count());
+    EXPECT_TRUE(bf.is_valid());
+
+    auto const raw = bf.raw();
+    EXPECT_EQ(1U, std::size(raw)); // sized for the new bit count, not the old one
+    EXPECT_EQ(std::byte{}, raw[0]);
 }
 
 TEST(Bitfield, percent)

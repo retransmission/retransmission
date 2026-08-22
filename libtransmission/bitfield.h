@@ -104,6 +104,15 @@ public:
         return size() != 0;
     }
 
+    [[nodiscard]] bool init_size(size_t const bit_count) noexcept
+    {
+        return !is_size_known() && set_size(bit_count);
+    }
+    [[nodiscard]] bool shrink_to(size_t const bit_count) noexcept
+    {
+        return is_size_known() && set_size(bit_count);
+    }
+
     [[nodiscard]] bool is_valid() const;
 
     [[nodiscard]] constexpr auto percent() const noexcept
@@ -148,6 +157,9 @@ private:
         // move-assign to ensure the reserve memory is cleared
         flags_ = std::vector<std::byte>{};
     }
+
+    void unset_excess_bits() noexcept;
+    [[nodiscard]] bool set_size(size_t bit_count) noexcept;
 
     void increment_true_count(size_t inc) noexcept;
     void decrement_true_count(size_t dec) noexcept;
