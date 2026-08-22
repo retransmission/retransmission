@@ -1542,8 +1542,8 @@ bool isCurlURL(std::string_view url)
     auto files = std::vector<tr_file_index_t>{};
     files.reserve(n_files);
     for (auto const& idx_var : idx_vec) {
-        if (auto const val = idx_var.value_if<int64_t>()) {
-            files.emplace_back(static_cast<tr_file_index_t>(*val));
+        if (auto const val = idx_var.value_if<tr_file_index_t>()) {
+            files.emplace_back(*val);
         }
     }
     return files;

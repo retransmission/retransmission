@@ -172,7 +172,7 @@ TEST_F(FilePieceMapTest, priorities)
     // since this begins and ends on a piece boundary,
     // this shouldn't affect any other files' pieces
     auto pri = TR_PRI_HIGH;
-    file_priorities.set(0U, pri);
+    EXPECT_TRUE(file_priorities.set(0U, pri));
     expected_file_priorities[0] = pri;
     for (size_t i = 0U; i < 5U; ++i) {
         expected_piece_priorities[i] = pri;
@@ -187,13 +187,13 @@ TEST_F(FilePieceMapTest, priorities)
     //
     // first test setting file #5...
     pri = TR_PRI_HIGH;
-    file_priorities.set(5U, pri);
+    EXPECT_TRUE(file_priorities.set(5U, pri));
     expected_file_priorities[5] = pri;
     expected_piece_priorities[5] = pri;
     mark_file_endpoints_as_high_priority();
     compare_to_expected();
     // ...and that shared piece should still be the same when both are high...
-    file_priorities.set(6U, pri);
+    EXPECT_TRUE(file_priorities.set(6U, pri));
     expected_file_priorities[6] = pri;
     expected_piece_priorities[5] = pri;
     expected_piece_priorities[6] = pri;
@@ -201,7 +201,7 @@ TEST_F(FilePieceMapTest, priorities)
     compare_to_expected();
     // ...and that shared piece should still be the same when only 6 is high...
     pri = TR_PRI_NORMAL;
-    file_priorities.set(5U, pri);
+    EXPECT_TRUE(file_priorities.set(5U, pri));
     expected_file_priorities[5] = pri;
     mark_file_endpoints_as_high_priority();
     compare_to_expected();
@@ -209,7 +209,7 @@ TEST_F(FilePieceMapTest, priorities)
     // setup for the next test: set all files to low priority
     pri = TR_PRI_LOW;
     for (tr_file_index_t i = 0U; i < n_files; ++i) {
-        file_priorities.set(i, pri);
+        EXPECT_TRUE(file_priorities.set(i, pri));
     }
     std::ranges::fill(expected_file_priorities, pri);
     std::ranges::fill(expected_piece_priorities, pri);
@@ -220,7 +220,7 @@ TEST_F(FilePieceMapTest, priorities)
     // Since it's the highest priority in the piece, piecePriority() should return its value.
     // file #8: byte [6.5P+10, 6.5P+19) piece [6, 7)
     pri = TR_PRI_NORMAL;
-    file_priorities.set(8U, pri);
+    EXPECT_TRUE(file_priorities.set(8U, pri));
     expected_file_priorities[8] = pri;
     expected_piece_priorities[6] = pri;
     mark_file_endpoints_as_high_priority();
@@ -229,7 +229,7 @@ TEST_F(FilePieceMapTest, priorities)
     // Since _it_ now has the highest priority in the piece, piecePriority should return _its_ value.
     // file #9: byte [6.5P+19, 6.5P+27) piece [6, 7)
     pri = TR_PRI_HIGH;
-    file_priorities.set(9U, pri);
+    EXPECT_TRUE(file_priorities.set(9U, pri));
     expected_file_priorities[9] = pri;
     expected_piece_priorities[6] = pri;
     mark_file_endpoints_as_high_priority();
@@ -238,7 +238,7 @@ TEST_F(FilePieceMapTest, priorities)
     // Prep for the next test: set all files to normal priority
     pri = TR_PRI_NORMAL;
     for (tr_file_index_t i = 0U; i < n_files; ++i) {
-        file_priorities.set(i, pri);
+        EXPECT_EQ(i != 8U, file_priorities.set(i, pri));
     }
     std::ranges::fill(expected_file_priorities, pri);
     std::ranges::fill(expected_piece_priorities, pri);
@@ -254,14 +254,14 @@ TEST_F(FilePieceMapTest, priorities)
     // Check that even zero-sized files can change a piece's priority
     // file #1: byte [5P, 5P) piece [5, 6)
     pri = TR_PRI_HIGH;
-    file_priorities.set(1U, pri);
+    EXPECT_TRUE(file_priorities.set(1U, pri));
     expected_file_priorities[1] = pri;
     expected_piece_priorities[5] = pri;
     mark_file_endpoints_as_high_priority();
     compare_to_expected();
     // Check that zero-sized files at the end of a torrent change the last piece's priority.
     // file #16 byte [10P, 10P) piece [9, 10)
-    file_priorities.set(16U, pri);
+    EXPECT_TRUE(file_priorities.set(16U, pri));
     expected_file_priorities[16] = pri;
     expected_piece_priorities[9] = pri;
     mark_file_endpoints_as_high_priority();
@@ -271,17 +271,42 @@ TEST_F(FilePieceMapTest, priorities)
     auto file_indices = std::vector<tr_file_index_t>(n_files);
     std::iota(std::begin(file_indices), std::end(file_indices), 0U);
     pri = TR_PRI_HIGH;
-    file_priorities.set(file_indices, pri);
+    EXPECT_TRUE(file_priorities.set(file_indices, pri));
     std::ranges::fill(expected_file_priorities, pri);
     std::ranges::fill(expected_piece_priorities, pri);
     mark_file_endpoints_as_high_priority();
     compare_to_expected();
     pri = TR_PRI_LOW;
-    file_priorities.set(file_indices, pri);
+    EXPECT_TRUE(file_priorities.set(file_indices, pri));
     std::ranges::fill(expected_file_priorities, pri);
     std::ranges::fill(expected_piece_priorities, pri);
     mark_file_endpoints_as_high_priority();
     compare_to_expected();
+}
+
+TEST_F(FilePieceMapTest, priorityBounds)
+{
+    auto const fpm = tr_file_piece_map{ block_info_, FileSizes };
+    auto file_priorities = tr_file_priorities(&fpm);
+    tr_file_index_t const n_files = fpm.file_count();
+
+    EXPECT_EQ(TR_PRI_NORMAL, file_priorities.file_priority(n_files));
+
+    EXPECT_TRUE(file_priorities.set(0U, TR_PRI_HIGH));
+    EXPECT_FALSE(file_priorities.set(0U, TR_PRI_HIGH));
+    EXPECT_FALSE(file_priorities.set(n_files, TR_PRI_LOW));
+    EXPECT_EQ(TR_PRI_HIGH, file_priorities.file_priority(0U));
+    EXPECT_EQ(TR_PRI_NORMAL, file_priorities.file_priority(n_files));
+
+    auto const invalid_files = std::to_array<tr_file_index_t>({ 1U, n_files });
+    EXPECT_FALSE(file_priorities.set(invalid_files, TR_PRI_LOW));
+    EXPECT_EQ(TR_PRI_NORMAL, file_priorities.file_priority(1U));
+
+    constexpr auto Files = std::to_array<tr_file_index_t>({ 1U, 2U });
+    EXPECT_TRUE(file_priorities.set(Files, TR_PRI_LOW));
+    EXPECT_FALSE(file_priorities.set(Files, TR_PRI_LOW));
+    EXPECT_EQ(TR_PRI_LOW, file_priorities.file_priority(1U));
+    EXPECT_EQ(TR_PRI_LOW, file_priorities.file_priority(2U));
 }
 
 TEST_F(FilePieceMapTest, wanted)
