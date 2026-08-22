@@ -48,6 +48,7 @@
 #include "libtransmission/tr-assert.h"
 #include "libtransmission/tr-buffer.h"
 #include "libtransmission/types.h"
+#include "libtransmission/utils.h"
 #include "libtransmission/variant.h"
 #include "libtransmission/version.h"
 
