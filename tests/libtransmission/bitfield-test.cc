@@ -534,6 +534,16 @@ TEST(Bitfield, shrinkTo)
     EXPECT_TRUE(have_none.has_none());
     EXPECT_EQ(0U, have_none.count());
     EXPECT_TRUE(have_none.is_valid());
+
+    // shrinking a partially set bitfield to a size that includes all the true bits makes it have-all
+    bf = tr_bitfield{ 20 };
+    ASSERT_TRUE(bf.set_span(0U, 15U));
+    EXPECT_EQ(15U, bf.count());
+    EXPECT_FALSE(bf.has_all());
+    EXPECT_TRUE(bf.shrink_to(15U));
+    EXPECT_EQ(15U, bf.size());
+    EXPECT_EQ(15U, bf.count());
+    EXPECT_TRUE(bf.has_all());
 }
 
 TEST(Bitfield, shrinkToRecomputesTrueCount)
