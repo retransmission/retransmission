@@ -486,9 +486,10 @@ TEST(Bitfield, deferredSize)
 
 TEST(Bitfield, shrinkTo)
 {
-    // 0 is reserved for "unknown size", so shrinking to it always fails
+    // shrinking an "unknown size" bitfield is never allowed
     auto unknown_size = tr_bitfield{ 0 };
     EXPECT_FALSE(unknown_size.shrink_to(0U));
+    EXPECT_FALSE(unknown_size.shrink_to(1U));
 
     auto bf = tr_bitfield{ 20 };
     ASSERT_TRUE(bf.set_span(4U, 16U)); // bits [4,16) true, count == 12
