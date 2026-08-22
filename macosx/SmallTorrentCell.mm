@@ -14,6 +14,118 @@
 
 @implementation SmallTorrentCell
 
+- (void)configureViews
+{
+    [super configureViews];
+    // also set alignment as part of priorities ( text inside a textLabel ).
+    self.fTorrentStatusField.alignment = NSTextAlignmentRight;
+}
+
+// Layout
+- (void)configurePriorities
+{
+    auto groupIndicatorView = self.fGroupIndicatorView;
+    auto iconView = self.fIconView;
+    auto torrentTitleField = self.fTorrentTitleField;
+    auto torrentPriorityView = self.fTorrentPriorityView;
+    auto torrentStatusField = self.fTorrentStatusField;
+
+    // left items
+    for (NSView* leftView in @[ groupIndicatorView, iconView ]) {
+        [leftView setContentHuggingPriority:NSLayoutPriorityDefaultLow + 1 forOrientation:NSLayoutConstraintOrientationHorizontal];
+        [leftView setContentHuggingPriority:NSLayoutPriorityDefaultLow + 1 forOrientation:NSLayoutConstraintOrientationVertical];
+    }
+
+    /// middle items
+    [torrentTitleField setContentHuggingPriority:NSLayoutPriorityRequired forOrientation:NSLayoutConstraintOrientationHorizontal];
+    [torrentTitleField setContentHuggingPriority:NSLayoutPriorityDefaultHigh forOrientation:NSLayoutConstraintOrientationVertical];
+    [torrentPriorityView setContentHuggingPriority:NSLayoutPriorityRequired forOrientation:NSLayoutConstraintOrientationHorizontal];
+    [torrentPriorityView setContentHuggingPriority:NSLayoutPriorityDefaultLow + 1 forOrientation:NSLayoutConstraintOrientationVertical];
+
+    [torrentStatusField setContentHuggingPriority:NSLayoutPriorityDefaultLow + 1 forOrientation:NSLayoutConstraintOrientationHorizontal];
+    [torrentStatusField setContentHuggingPriority:NSLayoutPriorityDefaultHigh forOrientation:NSLayoutConstraintOrientationVertical];
+    [torrentStatusField setContentCompressionResistancePriority:NSLayoutPriorityRequired
+                                                 forOrientation:NSLayoutConstraintOrientationHorizontal];
+}
+
+- (void)setupConstraints
+{
+    auto groupIndicatorView = self.fGroupIndicatorView;
+    auto iconView = self.fIconView;
+    auto actionButton = self.fActionButton;
+    auto torrentPriorityView = self.fTorrentPriorityView;
+    auto stackView = self.fStackView;
+    auto torrentStatusField = self.fTorrentStatusField;
+    auto torrentProgressBarView = self.fTorrentProgressBarView;
+    auto controlButton = self.fControlButton;
+    auto revealButton = self.fRevealButton;
+
+    for (NSView* view in @[
+             groupIndicatorView,
+             iconView,
+             actionButton,
+             torrentProgressBarView,
+             stackView,
+             torrentStatusField,
+             controlButton,
+             revealButton,
+         ]) {
+        [self addSubview:view];
+    }
+
+    [NSLayoutConstraint activateConstraints:@[
+        // groupIndicatorView
+        [groupIndicatorView.leadingAnchor constraintEqualToAnchor:self.leadingAnchor],
+        [groupIndicatorView.centerYAnchor constraintEqualToAnchor:self.centerYAnchor],
+        [groupIndicatorView.widthAnchor constraintEqualToConstant:6],
+        [groupIndicatorView.heightAnchor constraintEqualToConstant:6],
+
+        // iconView
+        [iconView.leadingAnchor constraintEqualToAnchor:groupIndicatorView.trailingAnchor constant:8],
+        [iconView.centerYAnchor constraintEqualToAnchor:self.centerYAnchor],
+        [iconView.widthAnchor constraintEqualToConstant:16],
+        [iconView.heightAnchor constraintEqualToConstant:16],
+
+        // actionButton
+        [actionButton.centerXAnchor constraintEqualToAnchor:iconView.centerXAnchor],
+        [actionButton.centerYAnchor constraintEqualToAnchor:iconView.centerYAnchor],
+        [actionButton.widthAnchor constraintEqualToConstant:16],
+        [actionButton.heightAnchor constraintEqualToConstant:16],
+
+        // torrentProgressBarView
+        [torrentProgressBarView.leadingAnchor constraintEqualToAnchor:iconView.trailingAnchor constant:15],
+        [torrentProgressBarView.trailingAnchor constraintEqualToAnchor:self.trailingAnchor constant:-5],
+        [torrentProgressBarView.centerYAnchor constraintEqualToAnchor:self.centerYAnchor],
+        [torrentProgressBarView.heightAnchor constraintEqualToConstant:18],
+
+        // torrentPriorityView
+        [torrentPriorityView.heightAnchor constraintEqualToConstant:12],
+        [torrentPriorityView.widthAnchor constraintEqualToConstant:12],
+
+        // stackView
+        [stackView.leadingAnchor constraintEqualToAnchor:torrentProgressBarView.leadingAnchor],
+        [stackView.topAnchor constraintEqualToAnchor:torrentProgressBarView.topAnchor],
+        [stackView.bottomAnchor constraintEqualToAnchor:torrentProgressBarView.bottomAnchor],
+
+        // torrentStatusField
+        [torrentStatusField.leadingAnchor constraintEqualToAnchor:stackView.trailingAnchor constant:4],
+        [torrentStatusField.trailingAnchor constraintEqualToAnchor:torrentProgressBarView.trailingAnchor constant:-3],
+        [torrentStatusField.centerYAnchor constraintEqualToAnchor:torrentProgressBarView.centerYAnchor],
+
+        // controlButton
+        [controlButton.centerYAnchor constraintEqualToAnchor:torrentProgressBarView.centerYAnchor],
+        [controlButton.widthAnchor constraintEqualToConstant:14],
+        [controlButton.heightAnchor constraintEqualToConstant:14],
+
+        // revealButton
+        [revealButton.leadingAnchor constraintEqualToAnchor:controlButton.trailingAnchor constant:3],
+        [revealButton.trailingAnchor constraintEqualToAnchor:torrentProgressBarView.trailingAnchor constant:-3],
+        [revealButton.centerYAnchor constraintEqualToAnchor:controlButton.centerYAnchor],
+        [revealButton.widthAnchor constraintEqualToConstant:14],
+        [revealButton.heightAnchor constraintEqualToConstant:14],
+    ]];
+}
+
 // show fControlButton and fRevealButton
 - (void)mouseEntered:(NSEvent*)event
 {

@@ -87,7 +87,6 @@
              revealButton,
          ]) {
         view.translatesAutoresizingMaskIntoConstraints = NO;
-        [self addSubview:view];
     }
 
     self.fGroupIndicatorView = groupIndicatorView;
@@ -148,12 +147,27 @@
     auto groupIndicatorView = self.fGroupIndicatorView;
     auto iconView = self.fIconView;
     auto actionButton = self.fActionButton;
+    auto torrentPriorityView = self.fTorrentPriorityView;
     auto stackView = self.fStackView;
     auto torrentProgressField = self.fTorrentProgressField;
     auto torrentStatusField = self.fTorrentStatusField;
     auto torrentProgressBarView = self.fTorrentProgressBarView;
     auto controlButton = self.fControlButton;
     auto revealButton = self.fRevealButton;
+
+    for (NSView* view in @[
+             groupIndicatorView,
+             iconView,
+             actionButton,
+             stackView,
+             torrentProgressField,
+             torrentStatusField,
+             torrentProgressBarView,
+             controlButton,
+             revealButton,
+         ]) {
+        [self addSubview:view];
+    }
 
     [NSLayoutConstraint activateConstraints:@[
         // groupIndicatorView
@@ -173,6 +187,10 @@
         [actionButton.centerYAnchor constraintEqualToAnchor:iconView.centerYAnchor],
         [actionButton.widthAnchor constraintEqualToConstant:16],
         [actionButton.heightAnchor constraintEqualToConstant:16],
+
+        // torrentPriorityView
+        [torrentPriorityView.heightAnchor constraintEqualToConstant:12],
+        [torrentPriorityView.widthAnchor constraintEqualToConstant:12],
 
         // stackView
         [stackView.leadingAnchor constraintEqualToAnchor:iconView.trailingAnchor constant:16],

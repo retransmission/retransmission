@@ -205,7 +205,17 @@ static NSTimeInterval const kToggleProgressSeconds = 0.175;
 
         TorrentCell* torrentCell;
         if (minimal) {
-            torrentCell = [outlineView makeViewWithIdentifier:@"SmallTorrentCell" owner:self];
+            // TODO(lolgear): Remove small torrent cell from xib.
+            torrentCell = [outlineView makeViewWithIdentifier:@"NewSmallTorrentCell" owner:self];
+            if (!torrentCell) {
+                torrentCell = [[SmallTorrentCell alloc] initWithFrame:NSMakeRect(0, 0, NSWidth(outlineView.bounds), self.rowHeight)];
+                torrentCell.identifier = @"NewSmallTorrentCell";
+                [torrentCell layoutSubtreeIfNeeded];
+            }
+
+            ((TorrentCellControlButton*)torrentCell.fControlButton).torrentCell = torrentCell;
+            ((TorrentCellRevealButton*)torrentCell.fRevealButton).torrentCell = torrentCell;
+            ((TorrentCellActionButton*)torrentCell.fActionButton).torrentCell = torrentCell;
 
             // set torrent icon or error badge
             torrentCell.fIconView.image = error ? [NSImage imageNamed:NSImageNameCaution] : torrent.icon;
