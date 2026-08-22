@@ -605,6 +605,7 @@ size_t tr_session::compute_busy_torrent_count() const noexcept
     auto const now = tr_time();
 
     auto count = size_t{ 0U };
+    auto const lock = unique_lock();
     for (auto const* const tor : torrents()) {
         switch (tor->activity()) {
         case TR_STATUS_DOWNLOAD:
