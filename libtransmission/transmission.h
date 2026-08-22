@@ -417,10 +417,9 @@ void tr_sessionSetQueueStalledMinutes(tr_session* session, size_t minutes);
 /** @brief Set whether or not to count torrents idle for over N minutes as 'stalled' */
 void tr_sessionSetQueueStalledEnabled(tr_session* session, bool enabled);
 
-/** @return the number of torrents actively transferring -- downloading, seeding,
-    or verifying -- that are not stalled or locally errored. Cached and safe to call
-    from any thread. GUI clients use this to decide whether to inhibit desktop sleep. */
-[[nodiscard]] size_t tr_sessionGetBusyTorrentCount(tr_session const* session);
+/** @return the last time a torrent moved piece data, verified a piece, or was
+    started; zero if none of that has happened yet. Safe to call from any thread. */
+[[nodiscard]] time_t tr_sessionActivityDate(tr_session const* session);
 
 /** @brief Set a callback that is invoked when the queue starts a torrent */
 void tr_sessionSetQueueStartCallback(tr_session* session, tr_session_queue_start_func callback);

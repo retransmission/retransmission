@@ -12,6 +12,8 @@
 #include "TorrentSorter.h"
 #include "Utils.h"
 
+#include <libtransmission-app/app.h> // tr::app::is_recently_active()
+
 #include <libtransmission/env.h>
 #include <libtransmission/macros.h>
 #include <libtransmission/rpcimpl.h>
@@ -48,6 +50,7 @@
 #include <algorithm>
 #include <array>
 #include <cstring> // strstr
+#include <ctime>
 #include <functional>
 #include <iostream>
 #include <map>
@@ -935,7 +938,8 @@ void Session::Impl::update()
 
 void Session::Impl::update_sleep_inhibitor()
 {
-    if (gtr_pref_flag_get(TR_KEY_inhibit_desktop_hibernation) && tr_sessionGetBusyTorrentCount(session_) != 0) {
+    if (gtr_pref_flag_get(TR_KEY_inhibit_desktop_hibernation) &&
+        tr::app::is_recently_active(tr_sessionActivityDate(session_), std::time(nullptr))) {
         sleep_inhibitor_.inhibit(TR_PROJ_APPNAME_CAPITALIZED, "Torrents are active");
     } else {
         sleep_inhibitor_.uninhibit();
