@@ -392,8 +392,8 @@ public:
         // and this sets the bitfield size to the piece count.
         // - If the peer sent "have all", then this line will preserve
         //   the "have all".
-        // - If the peer sent "bitfield", then this line is a no-op,
-        //   since the bitfield size was already initialized.
+        // - If the peer sent "bitfield", then `have_.init_size()` is no-op,
+        //   and `have_.shrink_to()` will adjust the bitfield size instead.
         if (!have_.init_size(tor_.piece_count())) {
             // If the peer sent us a bitfield msg, then have_'s size is already initialized.
             // Check if the bitfield's size is valid.
