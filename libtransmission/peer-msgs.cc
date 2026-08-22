@@ -414,6 +414,8 @@ public:
             [[maybe_unused]] auto const shrink_to_res = have_.shrink_to(tor_.piece_count());
             TR_ASSERT(shrink_to_res);
         }
+
+        peer_info->set_seed(is_seed());
     }
 
     void cancel_block_request(tr_block_index_t block)
