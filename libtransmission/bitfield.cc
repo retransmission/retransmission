@@ -225,29 +225,15 @@ void tr_bitfield::unset_excess_bits() noexcept
     flags_.back() &= std::byte{ 0xff } << excess_bit_count;
 }
 
-bool tr_bitfield::init_size(size_t const bit_count) noexcept
+bool tr_bitfield::set_size(size_t const bit_count) noexcept
 {
-    if (bit_count == 0U || bit_count_ != 0U) {
+    // 0 is reserved for "unknown size", so it is never a valid destination.
+    // Once the size is known it can only narrow.
+    if (bit_count == 0U || (is_size_known() && bit_count > bit_count_)) {
         return false;
     }
 
-    bit_count_ = bit_count;
-
-    if (have_all_hint_) {
-        set_has_all(); // update true_count_
-    }
-
-    TR_ASSERT(is_valid());
-    return true;
-}
-
-bool tr_bitfield::shrink_to(size_t const bit_count) noexcept
-{
-    if (bit_count == 0U || !is_size_known() || bit_count > size()) {
-        return false;
-    }
-
-    if (bit_count == size()) {
+    if (bit_count == bit_count_) {
         return true;
     }
 

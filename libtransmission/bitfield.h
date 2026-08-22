@@ -99,12 +99,18 @@ public:
         return bit_count_;
     }
 
-    bool init_size(size_t bit_count) noexcept;
-    bool shrink_to(size_t bit_count) noexcept;
-
     [[nodiscard]] constexpr bool is_size_known() const noexcept
     {
         return size() != 0;
+    }
+
+    [[nodiscard]] bool init_size(size_t const bit_count) noexcept
+    {
+        return !is_size_known() && set_size(bit_count);
+    }
+    [[nodiscard]] bool shrink_to(size_t const bit_count) noexcept
+    {
+        return is_size_known() && set_size(bit_count);
     }
 
     [[nodiscard]] bool is_valid() const;
@@ -153,6 +159,7 @@ private:
     }
 
     void unset_excess_bits() noexcept;
+    [[nodiscard]] bool set_size(size_t bit_count) noexcept;
 
     void increment_true_count(size_t inc) noexcept;
     void decrement_true_count(size_t dec) noexcept;
