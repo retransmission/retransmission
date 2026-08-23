@@ -37,7 +37,7 @@ namespace
 {
 auto constexpr LineWidth = int{ 80 };
 
-char constexpr MyConfigName[] = TR_PROJ_APPNAME;
+char constexpr MyConfigName[] = TR_PROJ_SHARED_CONFIG_DIRNAME;
 char constexpr MyReadableName[] = MY_NAME;
 char constexpr Usage
     [] = "A fast and easy BitTorrent client\n"
@@ -345,6 +345,16 @@ int tr_main(int argc, char* argv[])
     }
 
     auto* const h = tr_sessionInit(config_dir, false, settings);
+
+    if (tr_sessionConfigDirIsContended(h)) {
+        fmt::print(
+            stderr,
+            "{:s}\n",
+            fmt::format(fmt::runtime(_("Another process is already using '{path}'.")), fmt::arg("path", config_dir)));
+        tr_sessionClose(h);
+        return EXIT_FAILURE;
+    }
+
     auto builder = tr_torrent_builder{ h };
 
     builder.set_paused(false);

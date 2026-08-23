@@ -8,6 +8,8 @@
 #include <ctime>
 #include <memory>
 #include <optional>
+#include <string>
+#include <string_view>
 #include <unordered_set>
 
 #include <QtCore/QPointer>
@@ -23,11 +25,17 @@
 #include <libtransmission/quark.h>
 
 #include <libtransmission-app/favicon-cache.h>
+#include <libtransmission-app/interop.h>
 
 #include "AddData.h"
 #include "Prefs.h"
 #include "Typedefs.h"
 #include "Utils.h" // std::hash<QString>
+
+namespace tr::interop
+{
+class StartupCoordinator;
+}
 
 class AddData;
 class MainWindow;
@@ -46,6 +54,7 @@ public:
     Application(
         Prefs& prefs,
         RpcClient& rpc,
+        std::unique_ptr<tr::interop::StartupCoordinator> startup_coordinator,
         bool minimized,
         QString const& config_dir,
         QStringList const& filenames,
@@ -59,6 +68,10 @@ public:
 
     void raise() const;
     bool notifyApp(QString const& title, QString const& body, QStringList const& actions = {}) const;
+
+    // True when this launch found the config dir held by another session.
+    // We give way rather than write over the files that session owns.
+    [[nodiscard]] bool configDirIsContended() const noexcept;
 
     QString intern(QString const& in);
 
@@ -90,6 +103,7 @@ public slots:
     void addWatchdirTorrent(QString const& filename) const;
 
 private slots:
+    void onConfigDirContended();
     void onSessionSourceChanged() const;
     void onTorrentsAdded(torrent_ids_t const& torrent_ids) const;
     void onTorrentsCompleted(torrent_ids_t const& torrent_ids) const;
@@ -104,6 +118,25 @@ private slots:
 #endif
 
 private:
+    // Every method here is one call into something Application already does.
+    // Decisions belong in tr::interop::StartupCoordinator, not here.
+    class LocalInstance final : public tr::interop::Instance
+    {
+    public:
+        explicit LocalInstance(Application& app) noexcept
+            : app_{ app }
+        {
+        }
+
+        [[nodiscard]] tr::interop::Reply present_window(std::string_view activation_token) override;
+        [[nodiscard]] tr::interop::Reply add_metainfo(std::string_view metainfo) override;
+        [[nodiscard]] std::string config_dir() override;
+        [[nodiscard]] std::string description() const override;
+
+    private:
+        Application& app_;
+    };
+
     void loadTranslations();
     QStringList getNames(torrent_ids_t const& ids) const;
     void notifyTorrentAdded(Torrent const* tor) const;
@@ -111,6 +144,7 @@ private:
     std::unordered_set<QString> interned_strings_;
 
     Prefs& prefs_;
+    QString const config_dir_;
 
     std::unique_ptr<Session> session_;
     std::unique_ptr<TorrentModel> model_;
@@ -125,6 +159,10 @@ private:
     QTranslator app_translator_;
 
     tr::app::FaviconCache<QPixmap> favicon_cache_;
+
+    LocalInstance interop_instance_{ *this };
+    std::unique_ptr<tr::interop::StartupCoordinator> const startup_coordinator_;
+    bool config_dir_contended_ = false;
 };
 
 #define trApp (dynamic_cast<Application*>(Application::instance()))

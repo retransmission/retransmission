@@ -51,6 +51,8 @@ target_sources(${TR_NAME}
         clients.h
         completion.cc
         completion.h
+        config-dir-lock.cc
+        config-dir-lock.h
         constants.h
         crypto-utils-ccrypto.cc
         crypto-utils-mbedtls.cc
@@ -81,6 +83,8 @@ target_sources(${TR_NAME}
         inout.h
         ip-cache.cc
         ip-cache.h
+        lock-file.cc
+        lock-file.h
         log.cc
         log.h
         lru-cache.h

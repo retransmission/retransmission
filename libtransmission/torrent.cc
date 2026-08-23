@@ -974,7 +974,11 @@ void tr_torrent::init(tr_torrent_builder const& builder)
 
     if (is_new_torrent) {
         session->add_recent_download_dir(download_dir_.sv());
+    }
 
+    // The copy lands in the config dir, so leave it to the session that holds the dir.
+    // is_new_torrent still stands. It describes the torrent, not what this session may write.
+    if (is_new_torrent && session->mayWriteConfigDir()) {
         auto error = tr_error{};
 
         if (has_metainfo()) // torrent file
@@ -1679,7 +1683,8 @@ void tr_torrent::VerifyMediator::on_verify_done(bool const aborted)
 
 void tr_torrent::save_resume_file()
 {
-    if (!is_dirty()) {
+    // Resume files belong to the session that holds the config dir.
+    if (!is_dirty() || !session->mayWriteConfigDir()) {
         return;
     }
 

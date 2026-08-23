@@ -693,6 +693,11 @@ bool tr_sys_file_lock(tr_sys_file_t handle, int operation, tr_error* error)
     return ret;
 }
 
+bool tr_sys_file_lock_error_is_contended(tr_error const& error) noexcept
+{
+    return error.code() == ERROR_LOCK_VIOLATION;
+}
+
 bool tr_sys_dir_create_temp(char* path_template, tr_error* error)
 {
     TR_ASSERT(path_template != nullptr);

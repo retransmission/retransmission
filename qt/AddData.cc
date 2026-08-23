@@ -12,6 +12,8 @@
 #include <libtransmission/torrent-metainfo.h>
 #include <libtransmission/web-utils.h>
 
+#include <libtransmission-app/interop.h> // is_metainfo_link()
+
 #include "Utils.h"
 
 namespace
@@ -69,6 +71,25 @@ AddData::Type AddData::set(QString const& key)
     }
 
     return this->type;
+}
+
+std::optional<AddData> AddData::fromWireMetainfo(std::string_view const metainfo)
+{
+    // The sending end classified with is_metainfo_link() too,
+    // so the same argument cannot be a link there and a torrent here.
+    if (tr::interop::is_metainfo_link(metainfo)) {
+        return create(Utils::qstringFromUtf8(metainfo));
+    }
+
+    auto const contents = tr::interop::decode_metainfo_torrent(metainfo);
+    if (!contents) {
+        return {};
+    }
+
+    auto ret = AddData{};
+    ret.type = METAINFO;
+    ret.metainfo = QByteArray{ std::data(*contents), static_cast<int>(std::size(*contents)) };
+    return ret;
 }
 
 QByteArray AddData::toBase64() const

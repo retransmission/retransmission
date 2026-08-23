@@ -60,6 +60,10 @@ tr_session_stats tr_stats::load_old_stats(std::string_view const config_dir)
 
 void tr_stats::save() const
 {
+    if (!persist_) {
+        return;
+    }
+
     tr::settings::save(get_stats_json_filename(config_dir_), serializer::save(cumulative(), Fields));
 }
 

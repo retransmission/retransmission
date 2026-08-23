@@ -15,10 +15,8 @@ target_sources(${TR_NAME}-qt-lib
         BaseDialog.h
         ColumnResizer.cc
         ColumnResizer.h
-        ComInteropHelper.cc
-        ComInteropHelper.h
-        DBusInteropHelper.cc
-        DBusInteropHelper.h
+        ComTransport.cc
+        DBusTransport.cc
         DetailsDialog.cc
         DetailsDialog.h
         FaviconCache.cc
@@ -46,8 +44,6 @@ target_sources(${TR_NAME}-qt-lib
         IconCache.h
         IconToolButton.cc
         IconToolButton.h
-        InteropHelper.cc
-        InteropHelper.h
         InteropObject.cc
         InteropObject.h
         LicenseDialog.cc
@@ -100,6 +96,7 @@ target_sources(${TR_NAME}-qt-lib
         TrackerModel.h
         TrackerModelFilter.cc
         TrackerModelFilter.h
+        Transports.h
         TrQtInit.cc
         TrQtInit.h
         Typedefs.h
@@ -113,9 +110,9 @@ target_sources(${TR_NAME}-qt-lib
 
 tr_allow_compile_if(
     [=[[ENABLE_QT_COM_INTEROP]]=]
-        ComInteropHelper.cc
+        ComTransport.cc
     [=[[ENABLE_QT_DBUS_INTEROP]]=]
-        DBusInteropHelper.cc)
+        DBusTransport.cc)
 
 target_sources(${TR_NAME}-qt-lib
     PRIVATE
@@ -134,10 +131,6 @@ target_sources(${TR_NAME}-qt-lib
 
 source_group(Ui
     REGULAR_EXPRESSION [[.*\.ui$]])
-
-target_sources(${TR_NAME}-qt-lib
-    PRIVATE
-        application.qrc)
 
 source_group(Resources
     REGULAR_EXPRESSION [[.*\.qrc$]])
@@ -196,11 +189,6 @@ target_sources(${TR_NAME}-qt-lib
     PRIVATE
         ${QM_FILES})
 
-if(ENABLE_QT_COM_INTEROP)
-    tr_target_idl_files(${TR_NAME}-qt-lib
-        transmission-qt.idl)
-endif()
-
 target_include_directories(${TR_NAME}-qt-lib
     PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR})
@@ -246,6 +234,14 @@ set_target_properties(
 
 if(MSVC)
     tr_append_target_property(${TR_NAME}-qt LINK_FLAGS "/ENTRY:mainCRTStartup")
+endif()
+
+if(ENABLE_QT_COM_INTEROP)
+    # The type library rides in as a resource, and a resource in a static
+    # library does not reach the executable that links it. A caller whose
+    # QAxBase finds no interface information cannot resolve a method by name.
+    tr_target_idl_files(${TR_NAME}-qt
+        transmission-qt.idl)
 endif()
 
 tr_win32_app_info(${TR_NAME}-qt

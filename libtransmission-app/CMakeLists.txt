@@ -12,8 +12,13 @@ target_sources(${LIBNAME}
         app.h
         converters.cc
         converters.h
+        dbus-peer-record.cc
+        dbus-peer-record.h
         display-modes.h
         favicon-cache.h
+        interop-names.h
+        interop.cc
+        interop.h
         prefs.cc
         prefs.h
         rpc-client.cc
@@ -21,6 +26,8 @@ target_sources(${LIBNAME}
         rpc-queue.h
         session.cc
         session.h
+        startup-coordinator.cc
+        startup-coordinator.h
         torrent-icon.h)
 
 target_include_directories(${LIBNAME}
@@ -30,6 +37,7 @@ target_include_directories(${LIBNAME}
 
 target_link_libraries(${LIBNAME}
     PUBLIC
+        ${TR_NAME}
         transmission::fmt-header-only
         Pal::Sigslot
         transmission::small

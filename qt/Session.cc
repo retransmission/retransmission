@@ -30,6 +30,7 @@
 #include <QtWidgets/QMessageBox>
 #include <QtWidgets/QStyle>
 
+#include <libtransmission/log.h>
 #include <libtransmission/quark.h>
 #include <libtransmission/serializer.h>
 #include <libtransmission/session-id.h>
@@ -193,6 +194,11 @@ void Session::start()
         session_ = tr_sessionInit(config_dir, true, settings);
         set_embedded_session(session_);
         updateType();
+
+        if (tr_sessionConfigDirIsContended(session_)) {
+            emit configDirContended();
+            return;
+        }
 
         rpc_.start(session_);
 

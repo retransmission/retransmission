@@ -870,6 +870,19 @@ jobs:
           build-dir: obj
           build-config: RelWithDebInfo
           timeout: 600
+      # ctest prints a failing test's output but not its exit status, so a test
+      # that dies before it can say anything leaves no trace on the console.
+      - name: Show Test Log
+        if: ${{ failure() }}
+        run: |
+          Get-Content obj/Testing/Temporary/LastTest.log -ErrorAction SilentlyContinue
+          Get-ChildItem -Recurse -Filter qt-test-*.exe obj/tests -ErrorAction SilentlyContinue | ForEach-Object {
+            Write-Host "--- $($_.FullName) ---"
+            $log = "$($_.FullName).log"
+            & $_.FullName -o "$log,txt"
+            Write-Host "exit=$LASTEXITCODE"
+            Get-Content $log -ErrorAction SilentlyContinue
+          }
       - name: Install
         run: cmake --install obj --config RelWithDebInfo
       - name: Get Packaging Tools
@@ -1416,7 +1429,7 @@ jobs:
             -DENABLE_GTK=${{ (needs.what-to-make.outputs.make-gtk == 'true') && 'ON' || 'OFF' }} \
             -DENABLE_MAC=OFF \
             -DENABLE_QT=${{ (needs.what-to-make.outputs.make-qt == 'true') && 'ON' || 'OFF' }} \
-            -DENABLE_TESTS=OFF \
+            -DENABLE_TESTS=${{ (needs.what-to-make.outputs.make-tests == 'true') && 'ON' || 'OFF' }} \
             -DENABLE_UTILS=${{ (needs.what-to-make.outputs.make-utils == 'true') && 'ON' || 'OFF' }} \
             -DREBUILD_WEB=OFF \
             -DENABLE_WERROR=ON \

@@ -9,6 +9,9 @@ Checks:
   - -bugprone-easily-swappable-parameters
   - -bugprone-implicit-widening-of-multiplication-result
   - -bugprone-narrowing-conversions
+  # a test asserts an optional holds a value and then reads it, which the check
+  # cannot follow across an assertion macro (off in tests/libtransmission for the same reason)
+  - -bugprone-unchecked-optional-access
   - -bugprone-throwing-static-initialization
   - cert-*
   - -cert-err58-cpp # alias of `bugprone-throwing-static-initialization`
@@ -48,6 +51,11 @@ Checks:
   - -portability-avoid-pragma-once
   - -portability-template-virtual-member-function
   - readability-*
+  # QTest's test functions are private slots, and moc does not accept a static slot
+  - -readability-convert-member-functions-to-static
+  # `public:` and `public slots:` read as one access level to this check,
+  # but they are different sections to moc
+  - -readability-redundant-access-specifiers
   - -readability-function-cognitive-complexity
   - -readability-identifier-length
   - -readability-magic-numbers
@@ -60,6 +68,8 @@ CheckOptions:
   - { key: cppcoreguidelines-rvalue-reference-param-not-moved.IgnoreUnnamedParams,  value: true       }
   - { key: cppcoreguidelines-special-member-functions.AllowSoleDefaultDtor,         value: true       }
   - { key: readability-identifier-naming.ConstexprVariableCase,                     value: CamelCase  }
+  - { key: readability-identifier-naming.GlobalConstantCase,                        value: CamelCase  }
+  - { key: readability-identifier-naming.StaticConstantCase,                        value: CamelCase  }
   - { key: readability-identifier-naming.ParameterCase,                             value: lower_case }
   - { key: readability-identifier-naming.PrivateMemberSuffix,                       value: _          }
   - { key: readability-identifier-naming.ProtectedMemberSuffix,                     value: _          }

@@ -9,9 +9,11 @@
 #include <cstring>
 #include <ctime>
 #include <initializer_list>
+#include <map>
 #include <memory>
 #include <string>
 #include <string_view>
+#include <vector>
 
 #include <gtest/gtest.h>
 
@@ -19,10 +21,13 @@
 
 #include <libtransmission/constants.h>
 #include <libtransmission/crypto-utils.h>
+#include <libtransmission/file-utils.h> // tr_file_read()
+#include <libtransmission/file.h>
 #include <libtransmission/quark.h>
 #include <libtransmission/session-id.h>
 #include <libtransmission/session.h>
 #include <libtransmission/tr-strbuf.h>
+#include <libtransmission/utils.h>
 #include <libtransmission/variant.h>
 #include <libtransmission/version.h>
 
@@ -429,6 +434,96 @@ TEST_F(SessionTest, busyTorrentCount)
     // stopping it -> none busy again
     tr_torrentStop(tor);
     EXPECT_TRUE(waitFor([this]() { return session_->busy_torrent_count() == 0U; }, 5s));
+}
+
+namespace
+{
+[[nodiscard]] bool configDirIsContended(std::string_view const config_dir, tr::Settings const& settings)
+{
+    auto* const session = tr_sessionInit(config_dir, false, settings);
+    auto const is_contended = tr_sessionConfigDirIsContended(session);
+    tr_sessionClose(session, 1);
+    return is_contended;
+}
+
+// Every regular file under `dir` and what is in it, so a later snapshot says what changed.
+void snapshotDir(std::string const& dir, std::map<std::string, std::string>& out)
+{
+    depthFirstWalk(dir, [&out](std::string_view const path) {
+        if (auto const info = tr_sys_path_get_info(path); !info || !info->isFile()) {
+            return;
+        }
+
+        auto contents = std::vector<char>{};
+        tr_file_read(path, contents);
+        out.try_emplace(std::string{ path }, std::data(contents), std::size(contents));
+    });
+}
+} // namespace
+
+// The second session still starts. It takes the lock to find out the dir is not its own.
+// `session_` already holds this dir.
+TEST_F(SessionTest, doesNotOwnAConfigDirAnotherSessionHolds)
+{
+    EXPECT_TRUE(configDirIsContended(sandboxDir(), quietSettings()));
+}
+
+// A session that found the config dir contended must not write there at all.
+// Its settings, stats, resume data and queue would all clobber the owner's copies.
+// `session_` already holds this dir.
+TEST_F(SessionTest, doesNotWriteToAConfigDirAnotherSessionHolds)
+{
+    auto before = std::map<std::string, std::string>{};
+    snapshotDir(sandboxDir(), before);
+
+    auto const settings = quietSettings();
+    auto* const session = tr_sessionInit(sandboxDir(), false, settings);
+    ASSERT_TRUE(tr_sessionConfigDirIsContended(session));
+    tr_sessionSaveSettings(session, sandboxDir(), settings);
+    tr_sessionClose(session, 1);
+
+    auto after = std::map<std::string, std::string>{};
+    snapshotDir(sandboxDir(), after);
+
+    for (auto const& [path, contents] : after) {
+        if (auto const it = before.find(path); it == std::end(before)) {
+            ADD_FAILURE() << "created " << path;
+        } else if (it->second != contents) {
+            ADD_FAILURE() << "modified " << path;
+        }
+    }
+
+    for (auto const& [path, contents] : before) {
+        if (!after.contains(path)) {
+            ADD_FAILURE() << "removed " << path;
+        }
+    }
+}
+
+TEST_F(SessionTest, releasesTheConfigDirWhenItCloses)
+{
+    closeSession();
+
+    EXPECT_FALSE(configDirIsContended(sandboxDir(), quietSettings()));
+}
+
+TEST_F(SessionTest, claimsAConfigDirItHadToCreate)
+{
+    EXPECT_FALSE(configDirIsContended(sandboxDir() + "/brand-new", quietSettings()));
+}
+
+TEST_F(SessionTest, startsOnAConfigDirItCannotLock)
+{
+    // A lock that is a directory can never be opened as a file.
+    // Every real "could not be locked at all" behaves the same way.
+    auto const dir = sandboxDir() + "/unlockable";
+    ASSERT_TRUE(tr_sys_dir_create(dir, TR_SYS_DIR_CREATE_PARENTS, 0700));
+    ASSERT_TRUE(tr_sys_dir_create(dir + "/lock", TR_SYS_DIR_CREATE_PARENTS, 0700));
+
+    auto* const session = tr_sessionInit(dir, false, quietSettings());
+    EXPECT_EQ(tr_config_dir_lock::Status::Unavailable, session->configDirLockStatus());
+    EXPECT_FALSE(tr_sessionConfigDirIsContended(session));
+    tr_sessionClose(session, 1);
 }
 
 } // namespace tr::test

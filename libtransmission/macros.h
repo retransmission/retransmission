@@ -54,13 +54,20 @@
 #define TR_PROJ_URL_IPV6 "https://ipv6." TR_PROJ_DOMAIN_APEX
 #define TR_PROJ_URL_PORTCHECK "https://portcheck." TR_PROJ_DOMAIN_APEX
 
-#define TR_PROJ_DBUS_SERVICE TR_PROJ_DOMAIN_TLD "." TR_PROJ_DOMAIN_SLD "." TR_PROJ_APPNAME_CAPITALIZED
-#define TR_PROJ_DBUS_PATH "/" TR_PROJ_DOMAIN_TLD "/" TR_PROJ_DOMAIN_SLD "/" TR_PROJ_APPNAME_CAPITALIZED
-#define TR_PROJ_DBUS_INTERFACE TR_PROJ_DBUS_SERVICE
+// The D-Bus names live in `libtransmission-app/interop-names.h` as literal strings,
+// where the interop tests can read them out at configure time.
 
 #define TR_PROJ_WEB_SERVER_BASE_PATH "/" TR_PROJ_APPNAME "/"
 
-// Places where we keep the 'transmission' name for compatibility
+// Interop contract, shared with separately-built clients.
+// `libtransmission-app/interop-names.h` inventories every such name.
+
+// The appname the interactive clients pass to `tr::platform::get_default_config_dir()`.
+// It lets a user's settings and torrents survive replacing one client with another.
+// The daemon deliberately does not use it, and defaults to its own dir.
 #define TR_PROJ_SHARED_CONFIG_DIRNAME "transmission"
+
+// A third-party RPC client works against every such client
+// only while they all spell these headers the same way.
 #define TR_PROJ_SHARED_RPC_SESSION_ID_HEADER "X-Transmission-Session-Id"
 #define TR_PROJ_SHARED_RPC_VERSION_HEADER "X-Transmission-Rpc-Version"

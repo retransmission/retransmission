@@ -2,12 +2,15 @@ include(TrGTest)
 
 add_subdirectory(libtransmission)
 add_subdirectory(libtransmission-app)
-if(ENABLE_UTILS)
-    add_subdirectory(utils)
+if(ENABLE_GTK)
+    add_subdirectory(gtk)
 endif()
-
 if(ENABLE_QT)
     add_subdirectory(qt)
+endif()
+add_subdirectory(interop)
+if(ENABLE_UTILS)
+    add_subdirectory(utils)
 endif()
 
 add_custom_target(all-tests)

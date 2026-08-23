@@ -12,6 +12,7 @@
 #include <iterator> /* std::back_inserter */
 #include <memory>
 #include <string_view>
+#include <thread>
 #include <vector>
 
 #ifdef HAVE_SYSLOG
@@ -782,7 +783,44 @@ int tr_daemon::start([[maybe_unused]] bool foreground)
     }
 
     /* start the session */
+
+    // If the lock is held by another instance, we should wait for it.
+    // The kernel drops the lock unconditionally when the other instance exits,
+    // so never get stuck waiting on a dead process' lock.
+    static auto constexpr LockPatience = std::chrono::seconds{ 15 };
+    static auto constexpr LockRetryInterval = std::chrono::seconds{ 1 };
+
+    if (auto const deadline = std::chrono::steady_clock::now() + LockPatience; tr_configDirIsContended(config_dir_)) {
+        // printMessage rather than the log, which is not routed anywhere this early.
+        // A start that pauses for fifteen seconds has to say why while it happens.
+        printMessage(
+            log_stream_,
+            TR_LOG_INFO,
+            MyName,
+            fmt::format(fmt::runtime(_("Waiting for another process to release '{path}'")), fmt::arg("path", config_dir_)),
+            __FILE__,
+            __LINE__);
+
+        do {
+            std::this_thread::sleep_for(LockRetryInterval);
+        } while (tr_configDirIsContended(config_dir_) && std::chrono::steady_clock::now() < deadline);
+    }
+
     auto* session = tr_sessionInit(config_dir_, true, settings_);
+    tr_logAddInfo(fmt::format(fmt::runtime(_("Loading settings from '{path}'")), fmt::arg("path", config_dir_)));
+
+    // The session's own lock is the one that decides. Each probe above released the lock
+    // it took to ask, so a free answer only ever described that moment.
+    if (tr_sessionConfigDirIsContended(session)) {
+        auto const errmsg = fmt::format(
+            fmt::runtime(_("Another process is already using '{path}'.")),
+            fmt::arg("path", config_dir_));
+        printMessage(log_stream_, TR_LOG_ERROR, MyName, errmsg, __FILE__, __LINE__);
+        tr_sessionClose(session, 1);
+        cleanup_signals(sig_ev);
+        return 1;
+    }
+
     tr_sessionSetRPCCallback(session, [this](tr_rpc_callback_type const type, std::optional<tr_torrent_id_t> const /*tor_id*/) {
         if (type == TR_RPC_SESSION_CLOSE) {
             stop();
@@ -790,7 +828,7 @@ int tr_daemon::start([[maybe_unused]] bool foreground)
 
         return TR_RPC_OK;
     });
-    tr_logAddInfo(fmt::format(fmt::runtime(_("Loading settings from '{path}'")), fmt::arg("path", config_dir_)));
+
     tr_sessionSaveSettings(session, config_dir_, settings_);
 
     auto const& map = settings_;
