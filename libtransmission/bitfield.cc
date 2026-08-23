@@ -133,7 +133,8 @@ bool tr_bitfield::is_valid() const
     auto const bytes_needed = tr_bytes_needed(bit_count_);
     auto const flags_size = std::size(flags_);
     auto const excess_bits_mask = ~(std::byte{ 0xFFU } << calc_excess_bits(bit_count_));
-    return true_count_ <= bit_count_ &&
+    return true_count_ <= bit_count_ && have_all_hint_ == (true_count_ == bit_count_) &&
+        have_none_hint_ == (true_count_ == 0U) &&
         (flags_size < bytes_needed || (flags_size == bytes_needed && (flags_.back() & excess_bits_mask) == std::byte{})) &&
         (std::empty(flags_) || true_count_ == count_flags());
 }
