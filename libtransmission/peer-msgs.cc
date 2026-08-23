@@ -415,7 +415,11 @@ public:
             TR_ASSERT(shrink_to_res);
         }
 
-        peer_info->set_seed(is_seed());
+        // Neither init_size() nor shrink_to() can turn "have all" off, so writing
+        // `false` here could only discard what an earlier connection told us.
+        if (is_seed()) {
+            peer_info->set_seed();
+        }
     }
 
     void cancel_block_request(tr_block_index_t block)
