@@ -1235,6 +1235,10 @@ bool DetailsDialog::Impl::onPeerViewQueryTooltip(int x, int y, bool keyboard_tip
                 s = _("Peer is connected over µTP");
                 break;
 
+            case 'h':
+                s = _("Peer supports holepunch (BEP 55)");
+                break;
+
             default:
                 g_assert_not_reached();
             }

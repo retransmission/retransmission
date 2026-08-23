@@ -367,6 +367,7 @@ Files are returned in the order they are laid out in the torrent. References to 
 | `progress`              | double     | tr_peer_stat
 | `rate_to_client` (B/s)  | number     | tr_peer_stat
 | `rate_to_peer` (B/s)    | number     | tr_peer_stat
+| `supports_holepunch`    | boolean    | tr_peer_stat
 
 `peers_from`: an object containing:
 
@@ -374,6 +375,7 @@ Files are returned in the order they are laid out in the torrent. References to 
 |:--|:--|:--
 | `from_cache`    | number     | tr_stat
 | `from_dht`      | number     | tr_stat
+| `from_holepunch` | number   | tr_stat
 | `from_incoming` | number     | tr_stat
 | `from_lpd`      | number     | tr_stat
 | `from_ltep`     | number     | tr_stat
@@ -1142,6 +1144,8 @@ Transmission 4.2.0 (`rpc_version_semver` 6.1.0, `rpc_version`: 20)
 | `torrent_get` | new arg `is_folder`
 | `torrent_get` | new arg `peers.active_reqs_to_client`
 | `torrent_get` | new arg `peers.active_reqs_to_peer`
+| `torrent_get` | new arg `peers.supports_holepunch`
+| `torrent_get` | new arg `peers_from.from_holepunch`
 | `torrent_get` | new arg `webseeds_ex`
 | `torrent_get` | :warning: **DEPRECATED** `webseeds`. Use `webseeds_ex` instead.
 | `session_get` | new arg `recent_download_paths`

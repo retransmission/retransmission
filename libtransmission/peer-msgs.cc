@@ -27,6 +27,7 @@
 
 #include <small/vector.hpp>
 
+#include "libtransmission/bep55-holepunch.h"
 #include "libtransmission/bitfield.h"
 #include "libtransmission/block-info.h"
 #include "libtransmission/clients.h"
@@ -153,6 +154,10 @@ enum LtepMessageIds : uint8_t {
     // we support peer exchange (bep 11)
     // https://www.bittorrent.org/beps/bep_0011.html
     UT_PEX_ID = 1,
+
+    // we support holepunch (bep 55)
+    // https://www.bittorrent.org/beps/bep_0055.html
+    UT_HOLEPUNCH_ID = bep55::LtepExtensionId,
 
     // we support sending metadata files (bep 9)
     // https://www.bittorrent.org/beps/bep_0009.html
@@ -538,6 +543,20 @@ public:
         return active;
     }
 
+    [[nodiscard]] bool can_ut_holepunch() const noexcept override
+    {
+        return tor_.allows_holepunch() && ut_holepunch_id_ != 0U;
+    }
+
+    void send_ut_holepunch(bep55::MsgType const msg_type, tr_socket_address const& addr, bep55::ErrorCode const err_code)
+        override
+    {
+        auto payload = tr::StackBuffer<bep55::PayloadFullIPv6>{};
+        if (can_ut_holepunch() && bep55::encode(payload, msg_type, addr, err_code)) {
+            protocol_send_message(BtPeerMsgs::Ltep, ut_holepunch_id_, payload);
+        }
+    }
+
 private:
     // ---
 
@@ -632,6 +651,7 @@ private:
     void parse_ltep_handshake(MessageReader& payload);
     void parse_ut_metadata(MessageReader& payload_in);
     void parse_ut_pex(MessageReader& payload);
+    void parse_ut_holepunch(MessageReader& payload);
     void parse_ltep(MessageReader& payload);
 
     [[nodiscard]] constexpr bool can_send_ut_pex() const noexcept
@@ -718,6 +738,7 @@ private:
 
     uint8_t ut_pex_id_ = 0;
     uint8_t ut_metadata_id_ = 0;
+    uint8_t ut_holepunch_id_ = 0;
 
     tr_port dht_port_;
 
@@ -956,6 +977,8 @@ void tr_peerMsgsImpl::parse_ltep(MessageReader& payload)
         parse_ut_pex(payload);
     } else if (ltep_msgid == UT_METADATA_ID) {
         parse_ut_metadata(payload);
+    } else if (ltep_msgid == UT_HOLEPUNCH_ID) {
+        parse_ut_holepunch(payload);
     } else {
         logtrace(this, fmt::format("skipping unknown ltep message ({:d})", static_cast<int>(ltep_msgid)));
     }
@@ -987,6 +1010,7 @@ void tr_peerMsgsImpl::parse_ut_pex(MessageReader& payload)
         auto pex = tr_pex::from_compact_ipv4(*added, added_f.value_or(""sv));
         pex.resize(std::min(MaxPexPeerCount, std::size(pex)));
         tr_peerMgrAddPex(&tor_, TR_PEER_FROM_PEX, pex);
+        tr_peerMgrRecordPexIntroducers(&tor_, io_->socket_address(), pex);
     }
 
     if (auto const added = map->value_if<std::string_view>(TR_KEY_added6)) {
@@ -994,6 +1018,69 @@ void tr_peerMsgsImpl::parse_ut_pex(MessageReader& payload)
         auto pex = tr_pex::from_compact_ipv6(*added, added_f.value_or(""sv));
         pex.resize(std::min(MaxPexPeerCount, std::size(pex)));
         tr_peerMgrAddPex(&tor_, TR_PEER_FROM_PEX, pex);
+        tr_peerMgrRecordPexIntroducers(&tor_, io_->socket_address(), pex);
+    }
+}
+
+[[nodiscard]] constexpr std::string_view get_bep55_error_name(uint32_t const c) noexcept
+{
+    switch (c) {
+    case bep55::ErrNoSuchPeer:
+        return "NoSuchPeer";
+    case bep55::ErrNotConnected:
+        return "NotConnected";
+    case bep55::ErrNoSupport:
+        return "NoSupport";
+    case bep55::ErrNoSelf:
+        return "NoSelf";
+    default:
+        return "Unknown";
+    }
+}
+
+void tr_peerMsgsImpl::parse_ut_holepunch(MessageReader& payload)
+{
+    if (!can_ut_holepunch()) {
+        return;
+    }
+
+    auto const msg = bep55::decode(payload);
+    if (!msg) {
+        logdbg(this, "got malformed ut_holepunch message");
+        return;
+    }
+
+    switch (msg->msg_type) {
+    case bep55::MsgRendezvous:
+        logdbg(
+            this,
+            fmt::format("got ut_holepunch rendezvous from {} -> {}", io_->display_name(), msg->socket_address.display_name()));
+        tr_peerMgrHandleHolepunchRendezvous(&tor_, *this, msg->socket_address);
+        break;
+
+    case bep55::MsgConnect:
+        logdbg(
+            this,
+            fmt::format("got ut_holepunch connect from {} -> {}", io_->display_name(), msg->socket_address.display_name()));
+        tr_peerMgrConnectHolepunch(&tor_, msg->socket_address);
+        break;
+
+    case bep55::MsgError:
+        // Intentionally dropping MsgError instead of failing the peer to prevent
+        // spoofing attacks. Failed attempts will naturally clean themselves up via
+        // standard connection timeouts. Matches libtorrent behavior.
+        logdbg(
+            this,
+            fmt::format(
+                "got ut_holepunch error {} ({}) from {}",
+                msg->err_code,
+                get_bep55_error_name(msg->err_code),
+                io_->display_name()));
+        break;
+
+    default:
+        logdbg(this, fmt::format("got unknown ut_holepunch message type {:d}", static_cast<int>(msg->msg_type)));
+        break;
     }
 }
 
@@ -1097,6 +1184,9 @@ void tr_peerMsgsImpl::send_ltep_handshake()
     /* decide if we want to advertise pex support */
     bool const allow_pex = tor_.allows_pex();
 
+    /* decide if we want to advertise holepunch support (bep 55) */
+    bool const allow_holepunch = tor_.allows_holepunch();
+
     auto val = tr_variant::Map{ 8U };
     val.try_emplace(TR_KEY_e, session->encryptionMode() != TR_CLEAR_PREFERRED);
 
@@ -1165,8 +1255,8 @@ void tr_peerMsgsImpl::send_ltep_handshake()
     // anything.
     val.try_emplace(TR_KEY_upload_only, tor_.is_done());
 
-    if (allow_metadata_xfer || allow_pex) {
-        auto m = tr_variant::Map{ 2U };
+    if (allow_metadata_xfer || allow_pex || allow_holepunch) {
+        auto m = tr_variant::Map{ 3U };
 
         if (allow_metadata_xfer) {
             m.try_emplace(TR_KEY_ut_metadata, UT_METADATA_ID);
@@ -1174,6 +1264,10 @@ void tr_peerMsgsImpl::send_ltep_handshake()
 
         if (allow_pex) {
             m.try_emplace(TR_KEY_ut_pex, UT_PEX_ID);
+        }
+
+        if (allow_holepunch) {
+            m.try_emplace(TR_KEY_ut_holepunch, UT_HOLEPUNCH_ID);
         }
 
         val.try_emplace(TR_KEY_m, std::move(m));
@@ -1221,19 +1315,15 @@ void tr_peerMsgsImpl::parse_ltep_handshake(MessageReader& payload)
             }
         }
 
-        if (auto const ut_holepunch = sub->value_if<int64_t>(TR_KEY_ut_holepunch)) {
+        if (auto const ut_holepunch = sub->value_if<uint8_t>(TR_KEY_ut_holepunch)) {
+            ut_holepunch_id_ = *ut_holepunch;
             holepunch_supported = *ut_holepunch != 0;
         }
     }
 
-    // Transmission doesn't support this extension yet.
-    // But its presence does indicate µTP support,
-    // which we do care about...
     if (holepunch_supported) {
         peer_info->set_utp_supported();
     }
-    // Even though we don't support it, no reason not to
-    // help pass this flag to other peers who do.
     peer_info->set_holepunch_supported(holepunch_supported);
 
     // look for metainfo size (BEP 9)
