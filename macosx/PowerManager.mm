@@ -66,11 +66,9 @@
         [NSWorkspace.sharedWorkspace.notificationCenter addObserver:self selector:@selector(systemDidWakeUp:)
                                                                name:NSWorkspaceDidWakeNotification
                                                              object:nil];
-        if (@available(macOS 12.0, *)) {
-            [NSNotificationCenter.defaultCenter addObserver:self selector:@selector(powerStateDidChange:)
-                                                       name:NSProcessInfoPowerStateDidChangeNotification
-                                                     object:nil];
-        }
+        [NSNotificationCenter.defaultCenter addObserver:self selector:@selector(powerStateDidChange:)
+                                                   name:NSProcessInfoPowerStateDidChangeNotification
+                                                 object:nil];
         self.listening = YES;
     }
 
@@ -84,9 +82,7 @@
         os_log_debug(self.log, "Unregistering sleep/wake/low power mode notifications");
         [NSWorkspace.sharedWorkspace.notificationCenter removeObserver:self name:NSWorkspaceWillSleepNotification object:nil];
         [NSWorkspace.sharedWorkspace.notificationCenter removeObserver:self name:NSWorkspaceDidWakeNotification object:nil];
-        if (@available(macOS 12.0, *)) {
-            [NSNotificationCenter.defaultCenter removeObserver:self name:NSProcessInfoPowerStateDidChangeNotification object:nil];
-        }
+        [NSNotificationCenter.defaultCenter removeObserver:self name:NSProcessInfoPowerStateDidChangeNotification object:nil];
         self.listening = NO;
     }
 
@@ -117,10 +113,8 @@
 
 - (void)setShouldPreventSleep:(BOOL)shouldPreventSleep
 {
-    if (@available(macOS 12.0, *)) {
-        if (shouldPreventSleep && NSProcessInfo.processInfo.lowPowerModeEnabled) {
-            return;
-        }
+    if (shouldPreventSleep && NSProcessInfo.processInfo.lowPowerModeEnabled) {
+        return;
     }
 
     if (shouldPreventSleep) {

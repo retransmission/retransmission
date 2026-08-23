@@ -5,15 +5,12 @@
 #import "DefaultAppHelper.h"
 
 #import <AppKit/AppKit.h>
-#ifdef __MAC_12_0
 #import <UniformTypeIdentifiers/UniformTypeIdentifiers.h>
-#endif
 
 static NSString* const kMagnetURLScheme = @"magnet";
 static NSString* const kTorrentFileType = @"org.bittorrent.torrent";
 
-#ifdef __MAC_12_0
-UTType* GetTorrentFileType(void) API_AVAILABLE(macos(11.0))
+UTType* GetTorrentFileType(void)
 {
     static UTType* result = nil;
 
@@ -24,7 +21,6 @@ UTType* GetTorrentFileType(void) API_AVAILABLE(macos(11.0))
 
     return result;
 }
-#endif
 
 @interface DefaultAppHelper ()
 
@@ -44,30 +40,16 @@ UTType* GetTorrentFileType(void) API_AVAILABLE(macos(11.0))
 
 - (BOOL)isDefaultForTorrentFiles
 {
-#ifdef __MAC_12_0
-    if (@available(macOS 12, *)) {
-        UTType* fileType = GetTorrentFileType();
-        NSURL* appUrl = [NSWorkspace.sharedWorkspace URLForApplicationToOpenContentType:fileType];
-        if (!appUrl) {
-            return NO;
-        }
+    UTType* fileType = GetTorrentFileType();
+    NSURL* appUrl = [NSWorkspace.sharedWorkspace URLForApplicationToOpenContentType:fileType];
+    if (!appUrl) {
+        return NO;
+    }
 
-        NSString* bundleId = [NSBundle bundleWithURL:appUrl].bundleIdentifier;
+    NSString* bundleId = [NSBundle bundleWithURL:appUrl].bundleIdentifier;
 
-        if ([self.bundleIdentifier isEqualToString:bundleId]) {
-            return YES;
-        }
-    } else
-#endif
-    {
-        NSString* bundleId = (__bridge_transfer NSString*)LSCopyDefaultRoleHandlerForContentType((__bridge CFStringRef)kTorrentFileType, kLSRolesViewer);
-        if (!bundleId) {
-            return NO;
-        }
-
-        if ([self.bundleIdentifier isEqualToString:bundleId]) {
-            return YES;
-        }
+    if ([self.bundleIdentifier isEqualToString:bundleId]) {
+        return YES;
     }
 
     return NO;
@@ -75,34 +57,18 @@ UTType* GetTorrentFileType(void) API_AVAILABLE(macos(11.0))
 
 - (void)setDefaultForTorrentFiles:(void (^_Nullable)())completionHandler
 {
-#ifdef __MAC_12_0
-    if (@available(macOS 12, *)) {
-        UTType* fileType = GetTorrentFileType();
-        NSURL* appUrl = [NSWorkspace.sharedWorkspace URLForApplicationWithBundleIdentifier:self.bundleIdentifier];
-        [NSWorkspace.sharedWorkspace setDefaultApplicationAtURL:appUrl toOpenContentType:fileType completionHandler:^(NSError* error) {
-            if (error) {
-                NSLog(@"Failed setting default torrent file handler: %@", error.localizedDescription);
-            }
-            if (completionHandler != nil) {
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    completionHandler();
-                });
-            }
-        }];
-    } else
-#endif
-    {
-        OSStatus const result = LSSetDefaultRoleHandlerForContentType(
-            (__bridge CFStringRef)kTorrentFileType,
-            kLSRolesViewer,
-            (__bridge CFStringRef)self.bundleIdentifier);
-        if (result != noErr) {
-            NSLog(@"Failed setting default torrent file handler");
+    UTType* fileType = GetTorrentFileType();
+    NSURL* appUrl = [NSWorkspace.sharedWorkspace URLForApplicationWithBundleIdentifier:self.bundleIdentifier];
+    [NSWorkspace.sharedWorkspace setDefaultApplicationAtURL:appUrl toOpenContentType:fileType completionHandler:^(NSError* error) {
+        if (error) {
+            NSLog(@"Failed setting default torrent file handler: %@", error.localizedDescription);
         }
         if (completionHandler != nil) {
-            completionHandler();
+            dispatch_async(dispatch_get_main_queue(), ^{
+                completionHandler();
+            });
         }
-    }
+    }];
 }
 
 - (BOOL)isDefaultForMagnetURLs
@@ -124,33 +90,18 @@ UTType* GetTorrentFileType(void) API_AVAILABLE(macos(11.0))
 
 - (void)setDefaultForMagnetURLs:(void (^_Nullable)())completionHandler
 {
-#ifdef __MAC_12_0
-    if (@available(macOS 12, *)) {
-        NSURL* appUrl = [NSWorkspace.sharedWorkspace URLForApplicationWithBundleIdentifier:self.bundleIdentifier];
-        [NSWorkspace.sharedWorkspace setDefaultApplicationAtURL:appUrl toOpenURLsWithScheme:kMagnetURLScheme
-                                              completionHandler:^(NSError* error) {
-                                                  if (error) {
-                                                      NSLog(@"Failed setting default magnet link handler: %@", error.localizedDescription);
-                                                  }
-                                                  if (completionHandler != nil) {
-                                                      dispatch_async(dispatch_get_main_queue(), ^{
-                                                          completionHandler();
-                                                      });
-                                                  }
-                                              }];
-    } else
-#endif
-    {
-        OSStatus const result = LSSetDefaultHandlerForURLScheme(
-            (__bridge CFStringRef)kMagnetURLScheme,
-            (__bridge CFStringRef)self.bundleIdentifier);
-        if (result != noErr) {
-            NSLog(@"Failed setting default magnet link handler");
-        }
-        if (completionHandler != nil) {
-            completionHandler();
-        }
-    }
+    NSURL* appUrl = [NSWorkspace.sharedWorkspace URLForApplicationWithBundleIdentifier:self.bundleIdentifier];
+    [NSWorkspace.sharedWorkspace setDefaultApplicationAtURL:appUrl toOpenURLsWithScheme:kMagnetURLScheme
+                                          completionHandler:^(NSError* error) {
+                                              if (error) {
+                                                  NSLog(@"Failed setting default magnet link handler: %@", error.localizedDescription);
+                                              }
+                                              if (completionHandler != nil) {
+                                                  dispatch_async(dispatch_get_main_queue(), ^{
+                                                      completionHandler();
+                                                  });
+                                              }
+                                          }];
 }
 
 @end
