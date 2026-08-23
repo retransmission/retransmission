@@ -537,14 +537,16 @@ TEST(Bitfield, shrinkTo)
     EXPECT_TRUE(have_none.is_valid());
 
     // shrinking a partially set bitfield to a size that includes all the true bits makes it have-all
-    bf = tr_bitfield{ 20 };
-    ASSERT_TRUE(bf.set_span(0U, 15U));
-    EXPECT_EQ(15U, bf.count());
-    EXPECT_FALSE(bf.has_all());
-    EXPECT_TRUE(bf.shrink_to(15U));
-    EXPECT_EQ(15U, bf.size());
-    EXPECT_EQ(15U, bf.count());
-    EXPECT_TRUE(bf.has_all());
+    auto promoted = tr_bitfield{ 20 };
+    ASSERT_TRUE(promoted.set_span(0U, 15U));
+    EXPECT_EQ(15U, promoted.count());
+    EXPECT_FALSE(promoted.has_all());
+    EXPECT_TRUE(promoted.shrink_to(15U));
+    EXPECT_EQ(15U, promoted.size());
+    EXPECT_EQ(15U, promoted.count());
+    EXPECT_TRUE(promoted.has_all());
+    EXPECT_EQ((std::vector<std::byte>{ std::byte{ 0xff }, std::byte{ 0xfe } }), promoted.raw());
+    EXPECT_TRUE(promoted.is_valid());
 }
 
 TEST(Bitfield, shrinkToRecomputesTrueCount)
