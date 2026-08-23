@@ -246,6 +246,8 @@ bool tr_bitfield::set_size(size_t const bit_count) noexcept
         flags_.resize(std::min(std::size(flags_), tr_bytes_needed(bit_count_)));
         unset_excess_bits();
         rebuild_true_count();
+    } else {
+        TR_ASSERT(std::empty(flags_));
     }
 
     TR_ASSERT(is_valid());
