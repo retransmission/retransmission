@@ -1907,6 +1907,8 @@ tr_block_span_t tr_torrent::block_span_for_file(tr_file_index_t const file) cons
 
 void tr_torrent::set_file_priorities(std::span<tr_file_index_t const> const files, tr_priority_t priority)
 {
+    auto const lock = unique_lock();
+
     if (file_priorities_.set(files, priority)) {
         priority_changed_(this, files, priority);
         set_dirty();
