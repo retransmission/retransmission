@@ -47,6 +47,14 @@ Note that Transmission existed in C for over a decade and those idioms don't cha
 
 ## Pull Requests
 
+### Use of AI
+
+- AI-assisted PRs are accepted, but slop is not. We *encourage* you to write your PR. We *require* you to read, understand, and test your PR.
+- PRs will always be reviewed by a human and usually also by AI.
+- Human time is scarcer than AI time. If you submit a mostly-AI PR, expect the initial review turns to be mostly-AI as well.
+
+### Release Notes
+
 When submitting a pull request, please add a one-sentence paragraph that begins with `Notes: ` for the release notes script.
 
 - If this is a change that a user wouldn't care about -- say, a fix to a CI script -- use "Notes: none"
