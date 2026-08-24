@@ -417,23 +417,23 @@ TEST_F(SessionTest, loadTorrentsThenMagnets)
     EXPECT_TRUE(tor->has_metainfo());
 }
 
-TEST_F(SessionTest, busyTorrentCount)
+TEST_F(SessionTest, isBusy)
 {
-    // no torrents -> none busy
-    EXPECT_EQ(0U, session_->busy_torrent_count());
+    // no torrents -> not busy
+    EXPECT_FALSE(session_->is_busy(tr_time()));
 
-    // a complete torrent added paused -> still none busy
+    // a complete torrent added paused -> not busy once its add-time verify finishes
     auto* const tor = zeroTorrentInit(ZeroTorrentState::Complete);
     ASSERT_NE(nullptr, tor);
-    EXPECT_EQ(0U, session_->busy_torrent_count());
+    EXPECT_TRUE(waitFor([this]() { return !session_->is_busy(tr_time()); }, 5s));
 
-    // once started it seeds (the seed queue is off by default) -> one busy
+    // starting it counts as busy, even with no peer to transfer with
     tr_torrentStart(tor);
-    EXPECT_TRUE(waitFor([this]() { return session_->busy_torrent_count() == 1U; }, 5s));
+    EXPECT_TRUE(waitFor([this]() { return session_->is_busy(tr_time()); }, 5s));
 
-    // stopping it -> none busy again
+    // stopping it -> not busy again, without waiting for the activity to go stale
     tr_torrentStop(tor);
-    EXPECT_TRUE(waitFor([this]() { return session_->busy_torrent_count() == 0U; }, 5s));
+    EXPECT_TRUE(waitFor([this]() { return !session_->is_busy(tr_time()); }, 5s));
 }
 
 namespace

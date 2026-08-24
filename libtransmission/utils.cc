@@ -47,7 +47,7 @@
 
 using namespace std::literals;
 
-time_t tr::detail::tr_time::current_time = {};
+std::atomic<time_t> tr::detail::tr_time::current_time = {};
 
 // ---
 

@@ -693,7 +693,7 @@ Response parameters:
 | Key | Value Type | Description
 |:--|:--|:--
 | `active_torrent_count`     | number     | **DEPRECATED** number of running torrents -- use `unpaused_torrent_count`; will be removed in Transmission 5.0.0
-| `busy_torrent_count`       | number     | number of torrents downloading, seeding, or verifying that are not stalled or locally errored
+| `busy`                     | boolean    | true while torrents are running or verifying and any has been active recently, where "recently" honors the `queue_stalled_minutes` setting; clients use this to decide whether to inhibit desktop sleep
 | `download_speed`           | number
 | `paused_torrent_count`     | number     | number of paused (not-running) torrents
 | `torrent_count`            | number     | total number of torrents (`unpaused_torrent_count` + `paused_torrent_count`)
@@ -1152,7 +1152,7 @@ Transmission 4.2.0 (`rpc_version_semver` 6.1.0, `rpc_version`: 20)
 | `session_get` | new arg `recent_relocate_paths`
 | `session_get` | new arg `torrent_complete_verify_enabled`
 | `session_set` | new arg `torrent_complete_verify_enabled`
-| `session_stats` | new arg `busy_torrent_count`
+| `session_stats` | new arg `busy`
 | `session_stats` | new arg `unpaused_torrent_count`
 | `session_get` | new arg `blocklist_date`
 | `session_get` | new arg `blocklist_updates_enabled`

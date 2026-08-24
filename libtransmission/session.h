@@ -16,6 +16,7 @@
 #include <cstdint> // uintX_t
 #include <ctime> // time_t
 #include <future>
+#include <limits>
 #include <memory>
 #include <mutex>
 #include <optional>
@@ -800,6 +801,49 @@ public:
         }
     }
 
+    /// busyness
+
+    // Whether any started torrent or running verify job has been active
+    // recently, where "recently" honors the queue-stalled settings.
+    // GUI clients use this to decide whether to inhibit desktop sleep.
+    // Lock-free and safe to call from any thread.
+    [[nodiscard]] bool is_busy(time_t const now) const noexcept
+    {
+        if (n_started_torrents_.load(std::memory_order_relaxed) == 0U && n_verify_jobs_.load(std::memory_order_relaxed) == 0U) {
+            return false;
+        }
+
+        // a date in the future means the clock stepped backwards;
+        // treat that as not busy until the next stamp lands
+        auto const active_at = date_active_.load(std::memory_order_relaxed);
+        return active_at != 0 && active_at <= now && now - active_at < busy_window_.load(std::memory_order_relaxed);
+    }
+
+    void set_date_active(time_t const when) noexcept
+    {
+        date_active_.store(when, std::memory_order_relaxed);
+    }
+
+    void add_started_torrent() noexcept
+    {
+        n_started_torrents_.fetch_add(1U, std::memory_order_relaxed);
+    }
+
+    void remove_started_torrent() noexcept
+    {
+        n_started_torrents_.fetch_sub(1U, std::memory_order_relaxed);
+    }
+
+    void add_verify_job() noexcept
+    {
+        n_verify_jobs_.fetch_add(1U, std::memory_order_relaxed);
+    }
+
+    void remove_verify_job() noexcept
+    {
+        n_verify_jobs_.fetch_sub(1U, std::memory_order_relaxed);
+    }
+
     /// stats
 
     [[nodiscard]] constexpr auto& stats() noexcept
@@ -812,14 +856,16 @@ public:
         return session_stats_;
     }
 
-    constexpr void add_uploaded(uint32_t n_bytes) noexcept
+    void add_uploaded(uint32_t const n_bytes, time_t const now) noexcept
     {
         stats().add_uploaded(n_bytes);
+        set_date_active(now);
     }
 
-    constexpr void add_downloaded(uint32_t n_bytes) noexcept
+    void add_downloaded(uint32_t const n_bytes, time_t const now) noexcept
     {
         stats().add_downloaded(n_bytes);
+        set_date_active(now);
     }
 
     constexpr void add_file_created() noexcept
@@ -1014,14 +1060,6 @@ public:
 
     [[nodiscard]] size_t count_queue_free_slots(tr_direction dir) const noexcept;
 
-    // Number of torrents actively downloading, seeding, verifying, and which
-    // are not stalled or locally errored: the "should desktop stay awake" count.
-    // Safe to call from any thread.
-    [[nodiscard]] size_t busy_torrent_count() const noexcept
-    {
-        return busy_torrent_count_.load(std::memory_order_relaxed);
-    }
-
     [[nodiscard]] bool has_ip_protocol(tr_address_type type) const noexcept
     {
         TR_ASSERT(tr_address::is_valid(type));
@@ -1174,8 +1212,12 @@ private:
     void on_queue_timer();
     void on_save_timer();
 
-    // the uncached count behind busy_torrent_count(); session thread only
-    [[nodiscard]] size_t compute_busy_torrent_count() const noexcept;
+    // How long after its last activity the session still counts as busy.
+    // Session thread only: reads the queue-stalled settings.
+    [[nodiscard]] time_t compute_busy_window() const noexcept
+    {
+        return queueStalledEnabled() ? static_cast<time_t>(queueStalledMinutes()) * 60 : std::numeric_limits<time_t>::max();
+    }
 
     // (Re)arm or disarm the auto-update timer after a blocklist setting changes.
     void on_blocklist_settings_changed();
@@ -1431,9 +1473,16 @@ private:
     // depends-on: alt_speeds_, udp_core_, torrents_
     std::unique_ptr<tr::Timer> now_timer_;
 
-    // cached busy_torrent_count(), refreshed on the session thread in
-    // on_now_timer() so it is readable from any thread (GUI clients, C API)
-    std::atomic<size_t> busy_torrent_count_{ 0U };
+    // is_busy() state, readable lock-free from any thread.
+    // The counts are maintained by the torrent start/stop and verify flows;
+    // date_active_ is stamped by transfers (session and web threads),
+    // verified pieces (verify thread), and torrent starts (session thread);
+    // busy_window_ mirrors the queue-stalled settings and is refreshed
+    // once per second in on_now_timer().
+    std::atomic<size_t> n_started_torrents_{};
+    std::atomic<size_t> n_verify_jobs_{};
+    std::atomic<time_t> date_active_{ 0 };
+    std::atomic<time_t> busy_window_{ 0 };
 
     // depends-on: torrents_
     std::unique_ptr<tr::Timer> queue_timer_;
