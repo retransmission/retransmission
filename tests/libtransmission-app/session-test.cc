@@ -206,7 +206,7 @@ TEST_F(AppSessionSyncTest, syncsCorePrefsToTheSessionOverRpc)
     ASSERT_NE(new_limit, tr_sessionGetPeerLimit(session_));
 
     prefs.set(TR_KEY_peer_limit_global, new_limit);
-    EXPECT_TRUE(wait_for([this, new_limit]() { return tr_sessionGetPeerLimit(session_) == new_limit; }));
+    EXPECT_TRUE(wait_for([this]() { return tr_sessionGetPeerLimit(session_) == new_limit; }));
 }
 
 TEST_F(AppSessionSyncTest, appliesRpcServerPrefsWithTheCApi)
@@ -221,7 +221,7 @@ TEST_F(AppSessionSyncTest, appliesRpcServerPrefsWithTheCApi)
     auto const new_port = 54321;
     ASSERT_NE(new_port, tr_sessionGetRPCPort(session_));
     prefs.set(TR_KEY_rpc_port, new_port);
-    EXPECT_TRUE(wait_for([this, new_port]() { return tr_sessionGetRPCPort(session_) == new_port; }));
+    EXPECT_TRUE(wait_for([this]() { return tr_sessionGetRPCPort(session_) == new_port; }));
 
     prefs.set(TR_KEY_rpc_username, "alice"s);
     EXPECT_TRUE(wait_for([this]() { return tr_sessionGetRPCUsername(session_) == "alice"; }));
@@ -238,7 +238,7 @@ TEST_F(AppSessionSyncTest, importingSettingsDoesNotEchoBackToTheSession)
 
     auto const session_limit = uint16_t{ 99 };
     tr_sessionSetPeerLimit(session_, session_limit);
-    ASSERT_TRUE(wait_for([this, session_limit]() { return tr_sessionGetPeerLimit(session_) == session_limit; }));
+    ASSERT_TRUE(wait_for([this]() { return tr_sessionGetPeerLimit(session_) == session_limit; }));
 
     // an imported value lands in prefs but must not be pushed to the session
     auto settings = tr_variant::Map{ 1U };
