@@ -79,7 +79,7 @@ void tr_file_piece_map::reset(tr_torrent_metainfo const& tm)
     for (tr_file_index_t i = 0U; i < n; ++i) {
         file_sizes[i] = tm.file_size(i);
     }
-    reset({ tm.total_size(), tm.piece_size() }, file_sizes);
+    reset(tm.block_info(), file_sizes);
 }
 
 namespace
