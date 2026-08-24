@@ -1479,8 +1479,8 @@ private:
     // verified pieces (verify thread), and torrent starts (session thread);
     // busy_window_ mirrors the queue-stalled settings and is refreshed
     // once per second in on_now_timer().
-    std::atomic<size_t> n_started_torrents_{};
-    std::atomic<size_t> n_verify_jobs_{};
+    std::atomic<size_t> n_started_torrents_;
+    std::atomic<size_t> n_verify_jobs_;
     std::atomic<time_t> date_active_{ 0 };
     std::atomic<time_t> busy_window_{ 0 };
 
