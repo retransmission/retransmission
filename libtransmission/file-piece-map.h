@@ -87,6 +87,7 @@ public:
     {
     }
 
+    // returns true if any file's priority changed.
     [[nodiscard]] bool set(tr_file_index_t file, tr_priority_t priority);
     [[nodiscard]] bool set(std::span<tr_file_index_t const> files, tr_priority_t priority);
 
