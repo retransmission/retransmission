@@ -26,6 +26,7 @@ protected:
     static constexpr size_t PieceSize{ tr_block_info::BlockSize };
     static constexpr size_t TotalSize{ 10 * PieceSize };
     tr_block_info const block_info_{ TotalSize, PieceSize };
+    tr_block_info const magnet_block_info_{ 0, 0 };
 
     static constexpr std::array<uint64_t, 17> FileSizes{
         5U * PieceSize, // [offset 0] begins and ends on a piece boundary
@@ -286,6 +287,13 @@ TEST_F(FilePieceMapTest, priorities)
 
 TEST_F(FilePieceMapTest, priorityBounds)
 {
+    // A torrent with no files yet -- a magnet before its metadata arrives --
+    // must reject every index rather than index an empty vector.
+    auto const empty_fpm = tr_file_piece_map{ magnet_block_info_, {} };
+    auto empty_priorities = tr_file_priorities(&empty_fpm);
+    EXPECT_FALSE(empty_priorities.set(0U, TR_PRI_HIGH));
+    EXPECT_EQ(TR_PRI_NORMAL, empty_priorities.file_priority(0U));
+
     auto const fpm = tr_file_piece_map{ block_info_, FileSizes };
     auto file_priorities = tr_file_priorities(&fpm);
     tr_file_index_t const n_files = fpm.file_count();
