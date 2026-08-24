@@ -65,14 +65,17 @@ set(INTEROP_NAME_ENV
     "TR_INTEROP_METHOD_CONFIG_DIR=${INTEROP_METHOD_CONFIG_DIR}"
     "TR_INTEROP_PEER_RECORD_FILENAME=${INTEROP_PEER_RECORD_FILENAME}")
 
+# The tests run the real launcher binaries, so `all-tests` must build them.
 set(QT_LAUNCHER -)
 if(ENABLE_QT AND ENABLE_QT_DBUS_INTEROP)
     set(QT_LAUNCHER $<TARGET_FILE:${TR_NAME}-qt>)
+    add_dependencies(all-tests ${TR_NAME}-qt)
 endif()
 
 set(GTK_LAUNCHER -)
 if(ENABLE_GTK)
     set(GTK_LAUNCHER $<TARGET_FILE:${TR_NAME}-gtk>)
+    add_dependencies(all-tests ${TR_NAME}-gtk)
 endif()
 
 add_test(
@@ -98,6 +101,7 @@ if(ENABLE_DAEMON AND ENABLE_QT AND ENABLE_QT_DBUS_INTEROP)
             bash ${CMAKE_CURRENT_SOURCE_DIR}/busy-test.sh
             $<TARGET_FILE:${TR_NAME}-daemon>
             ${QT_LAUNCHER})
+    add_dependencies(all-tests ${TR_NAME}-daemon)
 
     set_tests_properties(interop-busy
         PROPERTIES
