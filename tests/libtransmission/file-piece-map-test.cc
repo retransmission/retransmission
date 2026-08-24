@@ -238,7 +238,7 @@ TEST_F(FilePieceMapTest, priorities)
     // Prep for the next test: set all files to normal priority
     pri = TR_PRI_NORMAL;
     for (tr_file_index_t i = 0U; i < n_files; ++i) {
-        EXPECT_EQ(i != 8U, file_priorities.set(i, pri));
+        EXPECT_EQ(expected_file_priorities[i] != pri, file_priorities.set(i, pri));
     }
     std::ranges::fill(expected_file_priorities, pri);
     std::ranges::fill(expected_piece_priorities, pri);
