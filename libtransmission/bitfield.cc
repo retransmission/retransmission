@@ -226,6 +226,9 @@ void tr_bitfield::unset_excess_bits() noexcept
     flags_.back() &= std::byte{ 0xff } << excess_bit_count;
 }
 
+// The resize() below only ever shrinks, which cannot allocate or throw,
+// but the check only sees resize()'s throwing grow path.
+// NOLINTNEXTLINE(bugprone-exception-escape)
 bool tr_bitfield::set_size(size_t const bit_count) noexcept
 {
     // 0 is reserved for "unknown size", so it is never a valid destination.
