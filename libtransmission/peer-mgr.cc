@@ -2506,7 +2506,11 @@ namespace connect_helpers
 }
 
 /* smaller value is better */
-[[nodiscard]] uint64_t getPeerCandidateScore(tr_torrent const* tor, tr_peer_info const& peer_info, uint8_t salt)
+[[nodiscard]] uint64_t getPeerCandidateScore(
+    tr_torrent const* tor,
+    tr_peer_info const& peer_info,
+    uint8_t salt,
+    time_t const now)
 {
     auto i = uint64_t{};
     auto score = uint64_t{};
@@ -2541,7 +2545,7 @@ namespace connect_helpers
     score = addValToKey(score, 2U, i);
 
     // prefer recently-started torrents
-    i = tor->started_recently(tr_time()) ? 0 : 1;
+    i = tor->started_recently(now) ? 0 : 1;
     score = addValToKey(score, 1U, i);
 
     /* prefer torrents we're downloading with */
@@ -2625,7 +2629,7 @@ void get_peer_candidates(size_t global_peer_limit, tr_torrents& torrents, tr_pee
 
         for (auto const& peer_info : std::views::values(swarm->connectable_pool)) {
             if (is_peer_candidate(tor, *peer_info, now)) {
-                candidates.emplace_back(getPeerCandidateScore(tor, *peer_info, salter()), tor, peer_info.get());
+                candidates.emplace_back(getPeerCandidateScore(tor, *peer_info, salter(), now), tor, peer_info.get());
             }
         }
     }
