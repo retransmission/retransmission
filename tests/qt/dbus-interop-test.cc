@@ -22,6 +22,7 @@
 #include <QMutex>
 #include <QMutexLocker>
 #include <QObject>
+#include <QSemaphore>
 #include <QString>
 #include <QStringList>
 #include <QTemporaryDir>
@@ -149,29 +150,18 @@ public:
 // Puts a fake client on its own bus connection in its own thread.
 // The fake needs that thread to answer at all. The transport under test calls over D-Bus
 // and blocks for the reply, so a client sharing the calling thread could never run.
-class ClientThread
+class ClientThread final : QThread
 {
 public:
     ClientThread(QString connection_name, QObject* const client, bool const own_service_name, QString path = ObjectPath)
         : connection_name_{ std::move(connection_name) }
+        , client_{ client }
+        , path_{ std::move(path) }
+        , own_service_name_{ own_service_name }
     {
-        client->moveToThread(&thread_);
-        thread_.start();
-
-        // Connect from inside the thread that will dispatch it.
-        QMetaObject::invokeMethod(
-            client,
-            [this, client, own_service_name, path = std::move(path)]() {
-                auto bus = QDBusConnection::connectToBus(QDBusConnection::SessionBus, connection_name_);
-                bus.registerObject(path, client, QDBusConnection::ExportAllSlots);
-
-                if (own_service_name) {
-                    bus.registerService(ServiceName);
-                }
-
-                unique_name_ = bus.baseService();
-            },
-            Qt::BlockingQueuedConnection);
+        client->moveToThread(this);
+        start();
+        connected_.acquire();
     }
 
     ClientThread(ClientThread&&) = delete;
@@ -179,10 +169,10 @@ public:
     ClientThread& operator=(ClientThread&&) = delete;
     ClientThread& operator=(ClientThread const&) = delete;
 
-    ~ClientThread()
+    ~ClientThread() override
     {
-        thread_.quit();
-        thread_.wait();
+        quit();
+        wait();
         QDBusConnection::disconnectFromBus(connection_name_);
     }
 
@@ -192,9 +182,28 @@ public:
     }
 
 private:
+    // Connect from inside the thread that will dispatch the calls.
+    void run() override
+    {
+        auto bus = QDBusConnection::connectToBus(QDBusConnection::SessionBus, connection_name_);
+        bus.registerObject(path_, client_, QDBusConnection::ExportAllSlots);
+
+        if (own_service_name_) {
+            bus.registerService(ServiceName);
+        }
+
+        unique_name_ = bus.baseService();
+        connected_.release();
+
+        exec();
+    }
+
     QString const connection_name_;
+    QObject* const client_;
+    QString const path_;
+    bool const own_service_name_;
+    QSemaphore connected_;
     QString unique_name_;
-    QThread thread_;
 };
 
 // This process's Instance for the publish cases. It records what a caller asked of it,

@@ -6,6 +6,7 @@
 #include <windows.h>
 #include <objbase.h>
 
+#include <iterator> // std::data
 #include <memory>
 #include <string>
 #include <string_view>
@@ -49,6 +50,12 @@ public:
     // COM and the ActiveQt out-of-process machinery are initialized here,
     // so build the transport before QApplication.
     explicit ComTransport(QString const& config_dir);
+
+    ComTransport(ComTransport&&) = delete;
+    ComTransport(ComTransport const&) = delete;
+    ComTransport& operator=(ComTransport&&) = delete;
+    ComTransport& operator=(ComTransport const&) = delete;
+
     ~ComTransport() override;
 
     void publish(tr::interop::Instance& self) override;
@@ -64,7 +71,7 @@ private:
 {
     static auto const Result = [] {
         qAxOutProcServer = true;
-        ::GetModuleFileNameW(nullptr, qAxModuleFilename, MAX_PATH);
+        ::GetModuleFileNameW(nullptr, std::data(qAxModuleFilename), MAX_PATH);
 
         auto const result = ::CoInitializeEx(nullptr, COINIT_APARTMENTTHREADED);
         if (SUCCEEDED(result)) {
@@ -97,7 +104,7 @@ private:
 [[nodiscard]] IMoniker* createConfigMoniker(QString const& item)
 {
     auto* moniker = static_cast<IMoniker*>(nullptr);
-    return SUCCEEDED(::CreateItemMoniker(L"!", reinterpret_cast<LPCOLESTR>(item.utf16()), &moniker)) ? moniker : nullptr;
+    return SUCCEEDED(::CreateItemMoniker(L"!", item.toStdWString().c_str(), &moniker)) ? moniker : nullptr;
 }
 
 // Returns the object registered for this exact config dir.
@@ -144,11 +151,11 @@ private:
 // The client's IDispatch, or nullptr. The caller owns the reference and must Release() it.
 [[nodiscard]] IDispatch* dispatchOf(QAxObject& client)
 {
-    auto* dispatch = static_cast<IDispatch*>(nullptr);
+    auto* dispatch = static_cast<void*>(nullptr);
     client.queryInterface(
         QUuid{ QStringLiteral("{00020400-0000-0000-C000-000000000046}") }, // IID_IDispatch
-        reinterpret_cast<void**>(&dispatch));
-    return dispatch;
+        &dispatch);
+    return static_cast<IDispatch*>(dispatch);
 }
 
 class RemoteInstance final : public tr::interop::Instance
@@ -248,6 +255,11 @@ public:
         , co_initialize_result_{ initializeActiveQt() }
     {
     }
+
+    Impl(Impl&&) = delete;
+    Impl(Impl const&) = delete;
+    Impl& operator=(Impl&&) = delete;
+    Impl& operator=(Impl const&) = delete;
 
     ~Impl()
     {

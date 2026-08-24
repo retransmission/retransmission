@@ -37,8 +37,8 @@
 
 namespace
 {
-auto const magnet = QStringLiteral("magnet:?xt=urn:btih:0123456789abcdef0123456789abcdef01234567");
-auto const download_dir = QStringLiteral("/data/downloads");
+auto const Magnet = QStringLiteral("magnet:?xt=urn:btih:0123456789abcdef0123456789abcdef01234567");
+auto const DownloadDir = QStringLiteral("/data/downloads");
 
 // Point prefs at a remote RPC server on the loopback `port`. The session stays
 // "remote" (no server-provided local session id), so the dialog shows the combo.
@@ -47,7 +47,7 @@ void setRemotePrefs(Prefs& prefs, std::uint16_t const port)
     prefs.set(TR_KEY_remote_session_enabled, true);
     prefs.set(TR_KEY_remote_session_host, QStringLiteral("127.0.0.1"));
     prefs.set(TR_KEY_remote_session_port, static_cast<int>(port));
-    prefs.set(TR_KEY_download_dir, download_dir);
+    prefs.set(TR_KEY_download_dir, DownloadDir);
 }
 
 // Point prefs at an in-process session. Such a session reports
@@ -137,7 +137,7 @@ private slots:
         session.restart();
         QVERIFY(!session.isLocalFilesystem());
 
-        auto dialog = OptionsDialog{ session, prefs, AddData{ magnet } };
+        auto dialog = OptionsDialog{ session, prefs, AddData{ Magnet } };
         QVERIFY(drainFreeSpace(dialog));
 
         auto* const stack = dialog.findChild<QStackedWidget*>(QStringLiteral("destinationStack"));
@@ -157,7 +157,7 @@ private slots:
         for (auto i = 0U; i < recents.size(); ++i) {
             QCOMPARE(combo->itemText(static_cast<int>(i)), recents.at(i));
         }
-        QCOMPARE(combo->currentText(), download_dir);
+        QCOMPARE(combo->currentText(), DownloadDir);
     }
 
     // A server without the recent-paths feature reports an empty list; the combo
@@ -175,14 +175,14 @@ private slots:
         session.restart();
         QVERIFY(!session.isLocalFilesystem());
 
-        auto dialog = OptionsDialog{ session, prefs, AddData{ magnet } };
+        auto dialog = OptionsDialog{ session, prefs, AddData{ Magnet } };
         QVERIFY(drainFreeSpace(dialog));
 
         auto* const combo = dialog.findChild<QComboBox*>(QStringLiteral("destinationCombo"));
         QVERIFY(combo != nullptr);
         QCOMPARE(combo->count(), 0);
         QVERIFY(combo->isEditable());
-        QCOMPARE(combo->currentText(), download_dir);
+        QCOMPARE(combo->currentText(), DownloadDir);
     }
 
     // A local session can browse the filesystem, so it shows the path button,
@@ -204,7 +204,7 @@ private slots:
         session.restart();
         QVERIFY(session.isLocalFilesystem());
 
-        auto dialog = OptionsDialog{ session, prefs, AddData{ magnet } };
+        auto dialog = OptionsDialog{ session, prefs, AddData{ Magnet } };
         QVERIFY(drainFreeSpace(dialog));
 
         auto* const stack = dialog.findChild<QStackedWidget*>(QStringLiteral("destinationStack"));
@@ -246,7 +246,7 @@ private slots:
         session.restart();
         QVERIFY(session.isLocalFilesystem());
 
-        auto dialog = OptionsDialog{ session, prefs, AddData{ magnet } };
+        auto dialog = OptionsDialog{ session, prefs, AddData{ Magnet } };
         QVERIFY(drainFreeSpace(dialog));
 
         auto* const button = dialog.findChild<PathButton*>(QStringLiteral("destinationButton"));
