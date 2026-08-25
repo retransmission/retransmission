@@ -43,6 +43,25 @@ namespace
 template<typename T>
 inline constexpr bool HasTmGmtoffV = requires(T t) { t.tm_gmtoff; };
 
+class errno_saver
+{
+    errno_saver() noexcept
+        : errno_{ errno }
+    {
+    }
+
+    ~errno_saver()
+    {
+        errno = errno_;
+    }
+
+    errno_saver(errno_saver const&) = delete;
+    errno_saver& operator=(errno_saver const&) = delete;
+
+private:
+    int const errno_;
+};
+
 class tr_log_state
 {
 public:
@@ -233,12 +252,10 @@ void tr_logAddMessage(char const* file, long line, tr_log_level level, std::stri
         name = name_fallback;
     }
 
-    // message logging shouldn't affect errno
-    int const err = errno;
+    auto const errno_lock = errno_saver{};
 
     // skip unwanted messages
     if (!tr_logLevelIsActive(level)) {
-        errno = err;
         return;
     }
 
@@ -253,7 +270,6 @@ void tr_logAddMessage(char const* file, long line, tr_log_level level, std::stri
         ++count;
         last_one = count == MaxRepeat;
         if (count > MaxRepeat) {
-            errno = err;
             return;
         }
     }
@@ -264,8 +280,6 @@ void tr_logAddMessage(char const* file, long line, tr_log_level level, std::stri
         char const* final_msg = _("Too many messages like this! I won't log this message anymore this session.");
         logAddImpl(filename, line, level, final_msg, name);
     }
-
-    errno = err;
 }
 
 // ---
