@@ -808,7 +808,11 @@ private:
         return false;
     }
 
-    return len >= sizeof(id) && len <= MaxIncomingMsgBytes;
+    // IMPORTANT: Any branches with no upper bound checks MUST NOT
+    // return early in order for program execution to reach this line.
+    // N.B. Every caller ensures len >= sizeof(id), so we don't need
+    // to check that here.
+    return len <= MaxIncomingMsgBytes;
 }
 
 namespace protocol_send_message_helpers
