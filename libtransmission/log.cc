@@ -43,6 +43,8 @@ namespace
 template<typename T>
 inline constexpr bool HasTmGmtoffV = requires(T t) { t.tm_gmtoff; };
 
+tr_log_level log_level_ = TR_LOG_ERROR;
+
 class errno_saver
 {
     errno_saver() noexcept
@@ -81,8 +83,6 @@ public:
             queue_.pop_front();
         }
     }
-
-    tr_log_level level = TR_LOG_ERROR;
 
     bool queue_enabled_ = false;
 
@@ -172,17 +172,17 @@ void logAddImpl(
 
 tr_log_level tr_logGetLevel()
 {
-    return log_state.level;
+    return log_level_;
 }
 
-bool tr_logLevelIsActive(tr_log_level level)
+bool tr_logLevelIsActive(tr_log_level const level)
 {
-    return tr_logGetLevel() >= level;
+    return log_level_ >= level;
 }
 
-void tr_logSetLevel(tr_log_level level)
+void tr_logSetLevel(tr_log_level const level)
 {
-    log_state.level = level;
+    log_level_ = level;
 }
 
 void tr_logSetQueueEnabled(bool is_enabled)
