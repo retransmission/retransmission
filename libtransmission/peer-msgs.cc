@@ -799,7 +799,10 @@ private:
         return len == sizeof(id) + sizeof(uint16_t /*port*/);
 
     case BtPeerMsgs::Ltep:
-        return len >= sizeof(id) + sizeof(uint8_t /*ltep_msgid*/);
+        if (len < sizeof(id) + sizeof(uint8_t /*ltep_msgid*/)) {
+            return false;
+        }
+        break;
 
     default: // unrecognized message
         return false;
