@@ -1762,19 +1762,22 @@ ReadResult tr_peerMsgsImpl::can_read_impl(tr_peerIo* io)
         }
 
         io->read_uint8(&message_type);
-        current_message_type = message_type;
-    }
 
-    if (!is_message_length_correct(tor_, *current_message_type, *current_message_len)) {
-        logdbg(
-            this,
-            fmt::format(
-                "bad msg: '{:s}' ({:d}) with len {:d}, disconnecting",
-                BtPeerMsgs::debug_name(*current_message_type),
-                static_cast<int>(*current_message_type),
-                *current_message_len));
-        disconnect_soon();
-        return { ReadState::Err, {} };
+        // The header is complete, so the length can be checked
+        // before any payload is buffered.
+        if (!is_message_length_correct(tor_, message_type, *current_message_len)) {
+            logdbg(
+                this,
+                fmt::format(
+                    "bad msg: '{:s}' ({:d}) with len {:d}, disconnecting",
+                    BtPeerMsgs::debug_name(message_type),
+                    static_cast<int>(message_type),
+                    *current_message_len));
+            disconnect_soon();
+            return { ReadState::Err, {} };
+        }
+
+        current_message_type = message_type;
     }
 
     // read <payload>
