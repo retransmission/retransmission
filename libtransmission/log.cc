@@ -39,8 +39,6 @@ using namespace std::literals;
 
 namespace
 {
-inline constexpr auto MaxQueueLength = 10000U;
-
 // TODO(c++20): switch to std::chrono::zoned_time, GCC 13.1, clang 19 (or clang 21 with std::format), fmt 11.2
 template<typename T>
 inline constexpr bool HasTmGmtoffV = requires(T t) { t.tm_gmtoff; };
@@ -48,18 +46,33 @@ inline constexpr bool HasTmGmtoffV = requires(T t) { t.tm_gmtoff; };
 class tr_log_state
 {
 public:
-    [[nodiscard]] auto unique_lock()
+    [[nodiscard]] tr_log_messages take_queue()
     {
-        return std::unique_lock(message_mutex_);
+        auto const lock = std::scoped_lock{ queue_mutex_ };
+
+        return std::exchange(queue_, {});
+    }
+
+    void append_to_queue(tr_log_message&& message)
+    {
+        auto const lock = std::scoped_lock{ queue_mutex_ };
+
+        queue_.push_back(std::move(message));
+        if (std::size(queue_) > MaxQueueLength) {
+            queue_.pop_front();
+        }
     }
 
     tr_log_level level = TR_LOG_ERROR;
 
     bool queue_enabled_ = false;
 
-    tr_log_messages queue_;
+private:
+    static constexpr auto MaxQueueLength = 10000U;
 
-    std::recursive_mutex message_mutex_;
+    std::mutex queue_mutex_;
+
+    tr_log_messages queue_;
 };
 
 auto log_state = tr_log_state{};
@@ -67,17 +80,15 @@ auto log_state = tr_log_state{};
 // ---
 
 void logAddImpl(
-    [[maybe_unused]] std::string_view file,
-    [[maybe_unused]] long line,
-    [[maybe_unused]] tr_log_level level,
+    [[maybe_unused]] std::string_view const file,
+    [[maybe_unused]] long const line,
+    [[maybe_unused]] tr_log_level const level,
     std::string&& msg,
-    [[maybe_unused]] std::string_view name)
+    [[maybe_unused]] std::string_view const name)
 {
     if (std::empty(msg)) {
         return;
     }
-
-    auto const lock = log_state.unique_lock();
 
 #if defined(__ANDROID__)
 
@@ -113,17 +124,15 @@ void logAddImpl(
 #else
 
     if (log_state.queue_enabled_) {
-        auto& newmsg = log_state.queue_.emplace_back();
-        newmsg.level = level;
-        newmsg.when = std::chrono::system_clock::now();
-        newmsg.message = std::move(msg);
-        newmsg.file = file;
-        newmsg.line = line;
-        newmsg.name = name;
-
-        if (std::size(log_state.queue_) > MaxQueueLength) {
-            log_state.queue_.pop_front();
-        }
+        log_state.append_to_queue(
+            {
+                .level = level,
+                .file = file,
+                .line = line,
+                .when = std::chrono::system_clock::now(),
+                .name = std::string{ name },
+                .message = std::move(msg),
+            });
     } else {
         auto buf = std::array<char, 64U>{};
         auto const timestr = tr_logGetTimeStr(std::data(buf), std::size(buf));
@@ -161,9 +170,7 @@ void tr_logSetQueueEnabled(bool is_enabled)
 
 tr_log_messages tr_logGetQueue()
 {
-    auto const lock = log_state.unique_lock();
-
-    return std::exchange(log_state.queue_, {});
+    return log_state.take_queue();
 }
 
 void tr_logClearQueue()
@@ -231,8 +238,6 @@ void tr_logAddMessage(char const* file, long line, tr_log_level level, std::stri
         errno = err;
         return;
     }
-
-    auto const lock = log_state.unique_lock();
 
     // don't log the same warning ad infinitum.
     // at some point, it stops being useful.
