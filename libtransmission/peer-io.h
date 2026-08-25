@@ -113,6 +113,11 @@ public:
         read_bytes(nullptr, n_bytes);
     }
 
+    void read_buffer_discard()
+    {
+        read_buffer_discard(std::size(inbuf_));
+    }
+
     void read_bytes(void* bytes, size_t n_bytes);
 
     void read_uint8(uint8_t* setme)

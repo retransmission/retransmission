@@ -1809,9 +1809,15 @@ ReadResult tr_peerMsgsImpl::can_read_impl(tr_peerIo* io)
 
 ReadState tr_peerMsgsImpl::can_read(tr_peerIo* io, void* vmsgs, size_t* piece)
 {
+    auto const msgs = static_cast<tr_peerMsgsImpl*>(vmsgs);
+    if (msgs->is_disconnecting()) {
+        io->read_buffer_discard();
+        return ReadState::Err;
+    }
+
     // Some errors (e.g. disk IO error) can immediately remove this peer from the peer mgr,
     // which will destroy this object if we don't keep it alive
-    auto const msgs = static_cast<tr_peerMsgsImpl*>(vmsgs)->shared_from_this();
+    auto const keep_alive = msgs->shared_from_this();
 
     auto ret = ReadState::Now;
     *piece = 0U;
