@@ -762,7 +762,7 @@ private:
 
 // ---
 
-[[nodiscard]] constexpr bool is_message_length_correct(tr_torrent const& tor, uint8_t const id, uint32_t const len)
+[[nodiscard]] constexpr bool is_message_length_correct(tr_torrent const& tor, uint8_t const id, uint32_t const len) noexcept
 {
     switch (id) {
     case BtPeerMsgs::Choke:
