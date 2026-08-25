@@ -790,7 +790,10 @@ private:
         return len == sizeof(id) + sizeof(uint32_t /*piece*/) + sizeof(uint32_t /*offset*/) + sizeof(uint32_t /*length*/);
 
     case BtPeerMsgs::Piece:
-        return len <= sizeof(id) + sizeof(uint32_t /*piece*/) + sizeof(uint32_t /*offset*/) + tr_block_info::BlockSize;
+        {
+            auto constexpr HeaderLen = sizeof(id) + sizeof(uint32_t /*piece*/) + sizeof(uint32_t /*offset*/);
+            return len >= HeaderLen && len <= HeaderLen + tr_block_info::BlockSize;
+        }
 
     case BtPeerMsgs::DhtPort:
         return len == sizeof(id) + sizeof(uint16_t /*port*/);
