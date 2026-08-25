@@ -95,6 +95,9 @@ void logAddImpl(
     int prio;
 
     switch (level) {
+    case TR_LOG_OFF:
+        prio = ANDROID_LOG_SILENT;
+        break;
     case TR_LOG_CRITICAL:
         prio = ANDROID_LOG_FATAL;
         break;
