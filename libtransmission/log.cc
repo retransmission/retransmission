@@ -43,10 +43,11 @@ namespace
 template<typename T>
 inline constexpr bool HasTmGmtoffV = requires(T t) { t.tm_gmtoff; };
 
-tr_log_level log_level_ = TR_LOG_ERROR;
+tr_log_level log_level = TR_LOG_ERROR;
 
 class errno_saver
 {
+public:
     errno_saver() noexcept
         : errno_{ errno }
     {
@@ -57,24 +58,26 @@ class errno_saver
         errno = errno_;
     }
 
+    errno_saver(errno_saver&&) = delete;
     errno_saver(errno_saver const&) = delete;
+    errno_saver& operator=(errno_saver&&) = delete;
     errno_saver& operator=(errno_saver const&) = delete;
 
 private:
     int const errno_;
 };
 
-class tr_log_state
+class tr_log_queue
 {
 public:
-    [[nodiscard]] tr_log_messages take_queue()
+    [[nodiscard]] tr_log_messages take()
     {
         auto const lock = std::scoped_lock{ queue_mutex_ };
 
         return std::exchange(queue_, {});
     }
 
-    void append_to_queue(tr_log_message&& message)
+    void append(tr_log_message&& message)
     {
         auto const lock = std::scoped_lock{ queue_mutex_ };
 
@@ -84,7 +87,15 @@ public:
         }
     }
 
-    bool queue_enabled_ = false;
+    constexpr void set_enabled(bool const is_enabled) noexcept
+    {
+        is_enabled_ = is_enabled;
+    }
+
+    [[nodiscard]] constexpr bool is_enabled() const noexcept
+    {
+        return is_enabled_;
+    }
 
 private:
     static constexpr auto MaxQueueLength = 10000U;
@@ -92,9 +103,11 @@ private:
     std::mutex queue_mutex_;
 
     tr_log_messages queue_;
+
+    bool is_enabled_ = false;
 };
 
-auto log_state = tr_log_state{};
+auto log_queue = tr_log_queue{};
 
 // ---
 
@@ -145,8 +158,8 @@ void logAddImpl(
 
 #else
 
-    if (log_state.queue_enabled_) {
-        log_state.append_to_queue(
+    if (log_queue.is_enabled()) {
+        log_queue.append(
             {
                 .level = level,
                 .file = file,
@@ -172,27 +185,27 @@ void logAddImpl(
 
 tr_log_level tr_logGetLevel()
 {
-    return log_level_;
+    return log_level;
 }
 
 bool tr_logLevelIsActive(tr_log_level const level)
 {
-    return log_level_ >= level;
+    return log_level >= level;
 }
 
 void tr_logSetLevel(tr_log_level const level)
 {
-    log_level_ = level;
+    log_level = level;
 }
 
-void tr_logSetQueueEnabled(bool is_enabled)
+void tr_logSetQueueEnabled(bool const is_enabled)
 {
-    log_state.queue_enabled_ = is_enabled;
+    log_queue.set_enabled(is_enabled);
 }
 
 tr_log_messages tr_logGetQueue()
 {
-    return log_state.take_queue();
+    return log_queue.take();
 }
 
 void tr_logClearQueue()
