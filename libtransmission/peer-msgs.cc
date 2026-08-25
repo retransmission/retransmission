@@ -647,6 +647,9 @@ private:
 
     tr_error_code_t client_got_block(std::span<uint8_t const> block_data, tr_block_index_t block);
     ReadResult read_piece_data(MessageReader& payload);
+
+    // Precondition: `payload` is a complete message body whose length
+    // can_read_impl() has already accepted for `id`.
     ReadResult process_peer_message(uint8_t id, MessageReader& payload);
 
     // ---
