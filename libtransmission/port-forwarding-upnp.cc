@@ -39,6 +39,7 @@
 namespace
 {
 // miniupnpc added named IGD statuses in 2.3.0. Keep supported 2.2.x system builds compatible.
+// NOLINTBEGIN(readability-identifier-naming)
 #if !defined(UPNP_NO_IGD)
 inline constexpr auto UPNP_NO_IGD = 0;
 inline constexpr auto UPNP_CONNECTED_IGD = 1;
@@ -51,6 +52,7 @@ inline constexpr auto UPNP_DISCONNECTED_IGD = 2;
 inline constexpr auto UPNP_UNKNOWN_DEVICE = 3;
 #endif
 #endif
+// NOLINTEND(readability-identifier-naming)
 
 enum class UpnpState : uint8_t {
     Idle,
