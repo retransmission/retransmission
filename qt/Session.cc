@@ -561,12 +561,14 @@ void Session::updateBlocklist()
             // failure here or the progress dialog is left with no result.
             [this](RpcResponse const& r) { emit blocklistUpdateFailed(QString::fromStdString(r.errmsg)); })
         .add([this](RpcResponse const& r) {
-            auto const n_rules = dictFind<int>(r.args.get(), TR_KEY_blocklist_size).value_or(0);
-            setBlocklistSize(n_rules);
-            // Announce success only for this manual update. setBlocklistSize() no longer
-            // emits blocklistUpdated(), so a background session_get refresh can't flash a
-            // spurious "Update succeeded!" in the dialog.
-            emit blocklistUpdated(n_rules);
+            if (auto const* const map = r.args->get_if<tr_variant::Map>()) {
+                auto const n_rules = map->value_if<int64_t>(TR_KEY_blocklist_size).value_or(0);
+                setBlocklistSize(n_rules);
+                // Announce success only for this manual update. setBlocklistSize() no longer
+                // emits blocklistUpdated(), so a background session_get refresh can't flash a
+                // spurious "Update succeeded!" in the dialog.
+                emit blocklistUpdated(n_rules);
+            }
         })
         .run();
 }
