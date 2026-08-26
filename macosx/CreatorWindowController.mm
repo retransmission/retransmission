@@ -44,7 +44,7 @@ typedef NS_ENUM(NSUInteger, TrackerSegmentTag) {
 
 @property(nonatomic, readonly) std::shared_ptr<tr_metainfo_builder> fBuilder;
 @property(nonatomic, readonly) NSURL* fPath;
-@property(nonatomic) std::shared_future<tr_error> fFuture;
+@property(nonatomic) std::shared_future<tr_metainfo_builder::Checksums> fFuture;
 @property(nonatomic) NSURL* fLocation; // path to new torrent file
 @property(nonatomic) NSMutableArray<NSString*>* fTrackers;
 
@@ -624,8 +624,10 @@ static NSMutableSet* creatorWindowControllerSet;
     [self.fTimer invalidate];
     self.fTimer = nil;
 
-    auto error = self.fFuture.get();
+    auto checksums = self.fFuture.get();
+    auto error = std::move(checksums.error);
     if (!error) {
+        self.fBuilder->set_piece_hashes(std::move(checksums.piece_hashes));
         self.fBuilder->save(self.fLocation.path.UTF8String, &error);
     }
 

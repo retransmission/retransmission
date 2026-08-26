@@ -260,10 +260,13 @@ int tr_main(int argc, char* argv[])
 
     fmt::print(" ");
 
-    if (auto error = future.get(); error) {
+    auto checksums = future.get();
+    if (auto const& error = checksums.error; error) {
         fmt::print("ERROR: {:s} {:d}\n", error.message(), error.code());
         return EXIT_FAILURE;
     }
+
+    builder.set_piece_hashes(std::move(checksums.piece_hashes));
 
     if (auto error = tr_error{}; !builder.save(options.outfile, &error)) {
         auto const errmsg = fmt::format(
