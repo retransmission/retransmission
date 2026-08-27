@@ -817,8 +817,7 @@ bool MainWindow::for_each_selected_torrent_until(std::function<bool(Glib::RefPtr
     bool result = false;
 
 #if GTKMM_CHECK_VERSION(4, 0, 0)
-    auto const selected_items = selection->get_selection(); // TODO(C++20): Move into the `for`
-    for (auto const position : *selected_items) {
+    for (auto const selected_items = selection->get_selection(); auto const position : *selected_items) {
         if (callback(gtr_ptr_dynamic_cast<Torrent>(model->get_object(position)))) {
             result = true;
             break;
