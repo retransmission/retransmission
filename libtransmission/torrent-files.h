@@ -38,7 +38,7 @@ public:
         return std::size(files_);
     }
 
-    [[nodiscard]] TR_CONSTEXPR_VEC uint64_t file_size(tr_file_index_t file_index) const
+    [[nodiscard]] constexpr uint64_t file_size(tr_file_index_t file_index) const
     {
         return files_.at(file_index).size_;
     }
@@ -48,7 +48,7 @@ public:
         return total_size_;
     }
 
-    [[nodiscard]] TR_CONSTEXPR_VEC std::string const& path(tr_file_index_t file_index) const
+    [[nodiscard]] constexpr std::string const& path(tr_file_index_t file_index) const
     {
         return files_.at(file_index).path_;
     }
@@ -69,17 +69,17 @@ public:
         }
     }
 
-    TR_CONSTEXPR_VEC void reserve(size_t n_files)
+    constexpr void reserve(size_t n_files)
     {
         files_.reserve(n_files);
     }
 
-    TR_CONSTEXPR_VEC void shrink_to_fit()
+    constexpr void shrink_to_fit()
     {
         files_.shrink_to_fit();
     }
 
-    TR_CONSTEXPR_VEC void clear() noexcept
+    constexpr void clear() noexcept
     {
         files_.clear();
         total_size_ = uint64_t{};
@@ -98,7 +98,7 @@ public:
         return ret;
     }
 
-    TR_CONSTEXPR_VEC tr_file_index_t add(std::string_view path, uint64_t file_size)
+    constexpr tr_file_index_t add(std::string_view path, uint64_t file_size)
     {
         auto const ret = static_cast<tr_file_index_t>(std::size(files_));
         files_.emplace_back(path, file_size);

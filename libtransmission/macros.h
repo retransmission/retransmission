@@ -5,12 +5,6 @@
 
 #pragma once
 
-#if __cpp_lib_constexpr_vector >= 201907L
-#define TR_CONSTEXPR_VEC constexpr
-#else
-#define TR_CONSTEXPR_VEC
-#endif
-
 #if __cpp_lib_constexpr_string >= 201907L
 #define TR_CONSTEXPR_STR constexpr
 #else

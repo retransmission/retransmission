@@ -15,12 +15,11 @@
 #include "libtransmission/crypto-utils.h" // for tr_salt_shaker
 #include "libtransmission/peer-mgr-wishlist.h"
 #include "libtransmission/tr-assert.h"
-#include "libtransmission/macros.h" // TR_CONSTEXPR_VEC
 #include "libtransmission/types.h"
 
 namespace
 {
-[[nodiscard]] TR_CONSTEXPR_VEC std::vector<tr_block_span_t> make_spans(small::vector<tr_block_index_t> const& blocks)
+[[nodiscard]] constexpr std::vector<tr_block_span_t> make_spans(small::vector<tr_block_index_t> const& blocks)
 {
     if (std::empty(blocks)) {
         return {};
