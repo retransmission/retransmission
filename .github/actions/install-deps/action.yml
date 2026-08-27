@@ -52,7 +52,6 @@ runs:
 
           # Transmission-specific libraries with Fedora names
           dnf install -y \
-            fast_float-devel \
             fmt-devel \
             libarchive-devel \
             libcurl-devel \
@@ -129,7 +128,6 @@ runs:
 
           if [ ! "$DISTRO" = 'debian' ] || [ ! "$DISTRO_VERSION" = '11' ]; then
             BASE_PACKAGES+=(
-              libfast-float-dev
               libfmt-dev
             )
           fi
@@ -239,7 +237,6 @@ runs:
 
         # Transmission-specific libraries
         BASE_PACKAGES+=(
-          fast_float
           fmt
           libarchive
           libevent

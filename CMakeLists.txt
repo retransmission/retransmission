@@ -52,9 +52,6 @@ set(CURL_MINIMUM 7.28.0)
 set(ZLIB_MINIMUM 1.2.1)
 set(WOLFSSL_MINIMUM 3.4)
 set(EVENT2_MINIMUM 2.1.0)
-# fast_float's version file is configured with `COMPATIBILITY SameMajorVersion`
-# The version range currently distributed varies greatly (e.g. Debian Trixie -> 8.0.0, Ubuntu 24.04 -> 3.9.0)
-# set(FAST_FLOAT_MINIMUM 3...8)
 set(FMT_MINIMUM 8.0.1)
 set(GIOMM_MINIMUM 2.26.0)
 set(GLIBMM_MINIMUM 2.60.0)
@@ -91,7 +88,6 @@ tr_auto_option(RUN_CLANG_TIDY "Run clang-tidy on the code" ${USE_SYSTEM_DEFAULT}
 tr_auto_option(USE_SYSTEM_ARCHIVE "Use system libarchive library" ${USE_SYSTEM_DEFAULT})
 tr_auto_option(USE_SYSTEM_EVENT2 "Use system event2 library" ${USE_SYSTEM_DEFAULT})
 tr_auto_option(USE_SYSTEM_DHT "Use system dht library" ${USE_SYSTEM_DEFAULT})
-tr_auto_option(USE_SYSTEM_FAST_FLOAT "Use system fast_float library" ${USE_SYSTEM_DEFAULT})
 tr_auto_option(USE_SYSTEM_FMT "Use system fmt library" ${USE_SYSTEM_DEFAULT})
 tr_auto_option(USE_SYSTEM_MINIUPNPC "Use system miniupnpc library" ${USE_SYSTEM_DEFAULT})
 tr_auto_option(USE_SYSTEM_NATPMP "Use system natpmp library" ${USE_SYSTEM_DEFAULT})
@@ -662,15 +658,6 @@ if(ENABLE_UTP)
         CMAKE_ARGS
             -DLIBUTP_SHARED:BOOL=OFF)
 endif()
-
-tr_add_external_auto_library(FAST_FLOAT FastFloat
-    SUBPROJECT
-    SOURCE_DIR fast_float
-    CMAKE_ARGS
-        -DFASTFLOAT_INSTALL=OFF
-        -DFASTFLOAT_TEST=OFF
-        -DFASTFLOAT_SANITIZE=OFF
-        -DFASTFLOAT_CXX_STANDARD=${CMAKE_CXX_STANDARD})
 
 tr_add_external_auto_library(FMT fmt
     SUBPROJECT

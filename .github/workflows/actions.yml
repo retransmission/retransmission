@@ -713,7 +713,6 @@ jobs:
             build-base \
             cmake \
             curl-dev \
-            fast_float \
             fmt-dev \
             gettext-dev \
             git \
@@ -1122,7 +1121,6 @@ jobs:
 
           if [ '${{ matrix.use-legacy-packages }}' = 'true' ]; then
             set -- "$@" \
-              -DUSE_SYSTEM_FAST_FLOAT=OFF \
               -DUSE_SYSTEM_FMT=OFF
           else
             set -- "$@" -DCMAKE_EXE_LINKER_FLAGS=-fuse-ld=mold
@@ -1570,7 +1568,6 @@ jobs:
               curl \
               cmake \
               dht \
-              fast_float \
               libevent \
               libfmt \
               libnatpmp \
@@ -1743,7 +1740,6 @@ jobs:
             pkg_add -I -v \
               curl \
               cmake \
-              fast-float \
               fmt \
               gtar-- \
               libevent \
@@ -1827,7 +1823,6 @@ jobs:
             until /usr/sbin/pkg_add -u \
               curl \
               cmake \
-              fast_float \
               fmtlib \
               libevent \
               libpsl \

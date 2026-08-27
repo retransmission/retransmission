@@ -28,10 +28,6 @@
 	path = third-party/fmt
 	# synced with https://github.com/fmtlib/fmt.git
 	url = https://github.com/transmissiontorrent/fmt.git
-[submodule "third-party/fast_float"]
-	path = third-party/fast_float
-	# synced with https://github.com/fastfloat/fast_float.git
-	url = https://github.com/transmissiontorrent/fast_float.git
 [submodule "third-party/wide-integer"]
 	path = third-party/wide-integer
 	# synced with https://github.com/ckormanyos/wide-integer.git

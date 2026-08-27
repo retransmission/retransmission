@@ -38,8 +38,6 @@
 
 #include <fmt/format.h>
 
-#include <fast_float/fast_float.h>
-
 #include "libtransmission/mime-types.h"
 #include "libtransmission/string-utils.h"
 #include "libtransmission/types.h"
@@ -376,7 +374,7 @@ template<std::floating_point T>
     auto const* const begin_ch = std::data(str);
     auto const* const end_ch = begin_ch + std::size(str);
     auto val = T{};
-    auto const result = fast_float::from_chars(begin_ch, end_ch, val);
+    auto const result = std::from_chars(begin_ch, end_ch, val);
     if (result.ec != std::errc{}) {
         return std::nullopt;
     }
