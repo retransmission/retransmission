@@ -52,6 +52,7 @@ runs:
 
           # Transmission-specific libraries with Fedora names
           dnf install -y \
+            fast_float-devel \
             fmt-devel \
             libarchive-devel \
             libcurl-devel \
@@ -109,6 +110,7 @@ runs:
             libarchive-dev
             libcurl4-openssl-dev
             libevent-dev
+            libfast-float-dev
             libfmt-dev
             libminiupnpc-dev
             libnatpmp-dev
@@ -232,6 +234,7 @@ runs:
 
         # Transmission-specific libraries
         BASE_PACKAGES+=(
+          fast_float
           fmt
           libarchive
           libevent

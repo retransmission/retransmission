@@ -4693,6 +4693,7 @@
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"third-party/dht",
+					"third-party/fast_float/include",
 					"third-party/wide-integer",
 					"third-party/simdutf/include",
 					"third-party/libwoke/include",
@@ -4715,6 +4716,7 @@
 				SYSTEM_HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"third-party/dht",
+					"third-party/fast_float/include",
 					"third-party/fmt/include",
 					"third-party/sigslot/include",
 					"third-party/small/include",
@@ -4943,6 +4945,7 @@
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"third-party/dht",
+					"third-party/fast_float/include",
 					"third-party/wide-integer",
 					"third-party/simdutf/include",
 					"third-party/libwoke/include",
@@ -4965,6 +4968,7 @@
 				SYSTEM_HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"third-party/dht",
+					"third-party/fast_float/include",
 					"third-party/fmt/include",
 					"third-party/sigslot/include",
 					"third-party/small/include",
@@ -5274,6 +5278,7 @@
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"third-party/dht",
+					"third-party/fast_float/include",
 					"third-party/wide-integer",
 					"third-party/simdutf/include",
 					"third-party/libwoke/include",
@@ -5296,6 +5301,7 @@
 				SYSTEM_HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"third-party/dht",
+					"third-party/fast_float/include",
 					"third-party/fmt/include",
 					"third-party/sigslot/include",
 					"third-party/small/include",
