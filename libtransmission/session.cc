@@ -1393,7 +1393,7 @@ auto get_remaining_files(std::string_view folder, std::vector<std::string>& queu
 
     // Read .torrent first if somehow a .magnet of the same hash exists
     // Example of possible cause: https://github.com/transmission/transmission/issues/5007
-    std::ranges::stable_partition(ret, [](std::string_view name) { return tr_strv_ends_with(name, ".torrent"sv); });
+    std::ranges::stable_partition(ret, [](std::string_view name) { return name.ends_with(".torrent"sv); });
 
     return ret;
 }
@@ -1404,12 +1404,12 @@ void session_load_torrents(tr_session* session, tr_torrent_builder* builder, std
     auto const& folder = session->torrentDir();
 
     auto load_func = [&folder, &n_torrents, builder, buf = std::vector<char>{}](std::string_view name) mutable {
-        if (tr_strv_ends_with(name, ".torrent"sv)) {
+        if (name.ends_with(".torrent"sv)) {
             auto const path = tr_pathbuf{ folder, '/', name };
             if (builder->set_metainfo_from_file(path.sv()) && tr_torrentNew(builder, nullptr) != nullptr) {
                 ++n_torrents;
             }
-        } else if (tr_strv_ends_with(name, ".magnet"sv)) {
+        } else if (name.ends_with(".magnet"sv)) {
             auto const path = tr_pathbuf{ folder, '/', name };
             if (tr_file_read(path, buf) &&
                 builder->set_metainfo_from_magnet_link(std::string_view{ std::data(buf), std::size(buf) }, nullptr) &&

@@ -417,7 +417,7 @@ void append_sanitized_component(std::string_view in, std::string& out, bool os_s
     in = tr_strv_strip(in);
 
     // remove trailing periods
-    while (tr_strv_ends_with(in, '.')) {
+    while (in.ends_with('.')) {
         in.remove_suffix(1);
     }
 #endif

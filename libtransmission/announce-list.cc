@@ -275,7 +275,7 @@ bool tr_announce_list::parse(std::string_view text)
     auto current_tier_size = size_t{ 0 };
     auto line = std::string_view{};
     while (tr_strv_sep(&text, &line, '\n')) {
-        if (tr_strv_ends_with(line, '\r')) {
+        if (line.ends_with('\r')) {
             line = line.substr(0, std::size(line) - 1);
         }
 

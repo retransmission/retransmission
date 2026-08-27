@@ -210,7 +210,7 @@ void send_simple_response(struct evhttp_request* req, int code, char const* text
     });
 
     for (auto const& [suffix, mime_type] : Types) {
-        if (tr_strv_ends_with(path, suffix)) {
+        if (path.ends_with(suffix)) {
             return mime_type;
         }
     }
@@ -916,7 +916,7 @@ void tr_rpc_server::load(Settings&& settings)
 {
     settings_ = std::move(settings);
 
-    if (std::string& path = settings_.url; !tr_strv_ends_with(path, '/')) {
+    if (std::string& path = settings_.url; !path.ends_with('/')) {
         path = fmt::format("{:s}/", path);
     }
 
