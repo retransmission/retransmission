@@ -26,20 +26,12 @@ using tr::serializer::to_variant;
 
 namespace
 {
-constexpr int64_t days_from_civil(int year, unsigned month, unsigned day)
+constexpr std::chrono::sys_seconds make_sys_seconds(int year, unsigned month, unsigned day, int hour, int minute, int second)
 {
-    year -= month <= 2;
-    auto const era = (year >= 0 ? year : year - 399) / 400;
-    auto const yoe = static_cast<unsigned>(year - era * 400);
-    auto const doy = (153 * (month + (month > 2 ? -3 : 9)) + 2) / 5 + day - 1;
-    auto const doe = yoe * 365 + yoe / 4 - yoe / 100 + doy;
-    return static_cast<int64_t>(era) * 146097 + static_cast<int64_t>(doe) - 719468;
-}
-
-constexpr std::chrono::sys_seconds make_sys_seconds(int year, int month, int day, int hour, int minute, int second)
-{
-    return std::chrono::sys_seconds{ std::chrono::seconds{ days_from_civil(year, month, day) * 86400 } } +
-        std::chrono::hours{ hour } + std::chrono::minutes{ minute } + std::chrono::seconds{ second };
+    return std::chrono::sys_days{
+        std::chrono::year_month_day{ std::chrono::year{ year }, std::chrono::month{ month }, std::chrono::day{ day } }
+    } + std::chrono::hours{ hour } +
+        std::chrono::minutes{ minute } + std::chrono::seconds{ second };
 }
 
 void expect_sys_seconds_eq(std::optional<std::chrono::sys_seconds> const& actual, std::chrono::sys_seconds expected)

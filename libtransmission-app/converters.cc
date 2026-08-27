@@ -45,75 +45,6 @@ consteval LookupTable<std::remove_cv_t<T>, N> to_lookup(std::pair<std::string_vi
 
 // ---
 
-struct TrYearMonthDay {
-    int year = 0;
-    unsigned month = 0;
-    unsigned day = 0;
-    bool valid = false;
-
-    [[nodiscard]] constexpr bool ok() const noexcept
-    {
-        return valid;
-    }
-};
-
-// c++20 (P0355) replace with std::chrono::year_month_day() after Debian 11 is EOL
-[[nodiscard]] constexpr TrYearMonthDay tr_year_month_day(int year, unsigned month, unsigned day)
-{
-    auto const is_leap_year = [](int y) constexpr {
-        return (y % 4 == 0) && ((y % 100) != 0 || (y % 400) == 0);
-    };
-
-    auto const days_in_month = [&](int y, unsigned m) constexpr {
-        switch (m) {
-        case 1:
-        case 3:
-        case 5:
-        case 7:
-        case 8:
-        case 10:
-        case 12:
-            return 31;
-        case 4:
-        case 6:
-        case 9:
-        case 11:
-            return 30;
-        case 2:
-            return is_leap_year(y) ? 29 : 28;
-        default:
-            return 0;
-        }
-    };
-
-    auto const is_valid_ymd = [&](int y, unsigned m, unsigned d) constexpr {
-        if (m < 1 || m > 12) {
-            return false;
-        }
-
-        auto const dim = days_in_month(y, m);
-        return d >= 1 && std::cmp_less_equal(d, dim);
-    };
-
-    return TrYearMonthDay{ .year = year, .month = month, .day = day, .valid = is_valid_ymd(year, month, day) };
-}
-
-// c++20 (P0355) replace with std::chrono::sys_days{} after Debian 11 is EOL
-// Returns days since 1970-01-01. Based on Howard Hinnant's civil calendar algorithms.
-[[nodiscard]] constexpr std::chrono::sys_days tr_sys_days(TrYearMonthDay const& ymd)
-{
-    auto const days_from_civil = [](int year, unsigned month, unsigned day) constexpr {
-        year -= static_cast<int>(month <= 2);
-        auto const era = (year >= 0 ? year : year - 399) / 400;
-        auto const yoe = static_cast<unsigned>(year - (era * 400));
-        auto const doy = (((153 * (month + (month > 2 ? -3 : 9))) + 2) / 5) + day - 1;
-        auto const doe = (yoe * 365) + (yoe / 4) - (yoe / 100) + doy;
-        return (static_cast<int64_t>(era) * 146097) + static_cast<int64_t>(doe) - 719468;
-    };
-
-    return std::chrono::sys_days{ std::chrono::days{ days_from_civil(ymd.year, ymd.month, ymd.day) } };
-}
-
 auto constexpr ShowKeys = to_lookup<ShowMode>({
     { "show_active", ShowMode::ShowActive },
     { "show_all", ShowMode::ShowAll },
@@ -241,7 +172,7 @@ tr_variant from_stats_mode(StatsMode const& src)
 
 // ---
 
-// c++20(P0355): use std::chrono::parse if/when it's ever available
+// c++20(P0355): use std::chrono::parse, GCC 14.1, clang https://github.com/llvm/llvm-project/issues/166051
 [[nodiscard]] std::optional<std::chrono::sys_seconds> parse_sys_seconds(std::string_view str)
 {
     auto const sv = tr_strv_strip(str);
@@ -272,13 +203,16 @@ tr_variant from_stats_mode(StatsMode const& src)
         return {};
     }
 
-    auto const ymd = tr_year_month_day(year, static_cast<unsigned>(month), static_cast<unsigned>(day));
+    auto const ymd = std::chrono::year_month_day{
+        std::chrono::year{ year },
+        std::chrono::month{ static_cast<unsigned>(month) },
+        std::chrono::day{ static_cast<unsigned>(day) },
+    };
     if (!ymd.ok()) {
         return {};
     }
 
-    auto const day_point = std::chrono::time_point_cast<std::chrono::seconds>(tr_sys_days(ymd));
-    auto const local_tp = day_point + std::chrono::hours{ hour } + std::chrono::minutes{ minute } +
+    auto const local_tp = std::chrono::sys_days{ ymd } + std::chrono::hours{ hour } + std::chrono::minutes{ minute } +
         std::chrono::seconds{ second };
 
     if (std::size(sv) == 20U) {
@@ -317,6 +251,7 @@ tr_variant from_stats_mode(StatsMode const& src)
     auto const tp = std::chrono::time_point_cast<std::chrono::seconds>(src);
     auto const tt = std::chrono::system_clock::to_time_t(tp);
 
+    // TODO(c++20): switch to std::chrono::zoned_time, GCC 13.1, clang 19 (or clang 21 with std::format), fmt 11.2
     // prefer localtime with TZ offset data when we can get it.
     if constexpr (HasTmGmtoffV<std::tm>) {
         if (auto const* local = std::localtime(&tt)) {
