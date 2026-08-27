@@ -34,7 +34,7 @@ public:
 
     [[nodiscard]] static constexpr auto is_valid_metadata_size(int64_t const size) noexcept
     {
-        return size > 0 && size <= MaxMetadataSize;
+        return 0 < size && size <= MaxMetadataSize;
     }
 
     bool set_metadata_piece(int64_t piece, void const* data, size_t len);
