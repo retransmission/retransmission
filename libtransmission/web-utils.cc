@@ -274,7 +274,7 @@ std::string_view getSiteName(std::string_view host)
 // strings that are wrapped in square brackets (e.g. inet_pton())
 std::string_view getHostWoBrackets(std::string_view host)
 {
-    if (tr_strv_starts_with(host, '[')) {
+    if (host.starts_with('[')) {
         host.remove_prefix(1);
         host.remove_suffix(1);
     }
@@ -292,7 +292,7 @@ std::optional<tr_url_parsed_t> tr_urlParse(std::string_view url)
     // So many magnet links are malformed, e.g. not escaping text
     // in the display name, that we're better off handling magnets
     // as a special case before even scanning for invalid chars.
-    if (auto constexpr MagnetStart = "magnet:?"sv; tr_strv_starts_with(url, MagnetStart)) {
+    if (auto constexpr MagnetStart = "magnet:?"sv; url.starts_with(MagnetStart)) {
         parsed.scheme = "magnet"sv;
         parsed.query = url.substr(std::size(MagnetStart));
         return parsed;
@@ -312,7 +312,7 @@ std::optional<tr_url_parsed_t> tr_urlParse(std::string_view url)
     // The authority component is preceded by a double slash ("//") and is
     // terminated by the next slash ("/"), question mark ("?"), or number
     // sign ("#") character, or by the end of the URI.
-    if (auto key = "//"sv; tr_strv_starts_with(url, key)) {
+    if (auto key = "//"sv; url.starts_with(key)) {
         url.remove_prefix(std::size(key));
         auto pos = url.find_first_of("/?#");
         parsed.authority = url.substr(0, pos);
@@ -323,7 +323,7 @@ std::optional<tr_url_parsed_t> tr_urlParse(std::string_view url)
         // within square brackets ("[" and "]").  This is the only place where
         // square bracket characters are allowed in the URI syntax.
         auto remain = parsed.authority;
-        if (tr_strv_starts_with(remain, '[')) {
+        if (remain.starts_with('[')) {
             pos = remain.find(']');
             if (pos == std::string_view::npos) {
                 return std::nullopt;
@@ -348,7 +348,7 @@ std::optional<tr_url_parsed_t> tr_urlParse(std::string_view url)
                 return std::nullopt;
             }
             parsed.port = *port;
-        } else if (tr_strv_starts_with(remain, ':')) {
+        } else if (remain.starts_with(':')) {
             remain.remove_prefix(1);
             auto const port = tr_num_parse<uint16_t>(remain);
             if (!port || *port == 0U) {
@@ -375,7 +375,7 @@ std::optional<tr_url_parsed_t> tr_urlParse(std::string_view url)
     url = pos == std::string_view::npos ? ""sv : url.substr(pos);
 
     // query
-    if (tr_strv_starts_with(url, '?')) {
+    if (url.starts_with('?')) {
         url.remove_prefix(1);
         pos = url.find('#');
         parsed.query = url.substr(0, pos);
@@ -383,7 +383,7 @@ std::optional<tr_url_parsed_t> tr_urlParse(std::string_view url)
     }
 
     // fragment
-    if (tr_strv_starts_with(url, '#')) {
+    if (url.starts_with('#')) {
         parsed.fragment = url.substr(1);
     }
 

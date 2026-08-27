@@ -16,7 +16,6 @@
 #include <libtransmission/file-utils.h> // tr_file_read()
 #include <libtransmission/file.h> // tr_sys_path_resolve()
 #include <libtransmission/magnet-metainfo.h>
-#include <libtransmission/string-utils.h> // tr_strv_starts_with()
 #include <libtransmission/torrent-metainfo.h> // tr_torrent_metainfo
 #include <libtransmission/tr-strbuf.h>
 #include <libtransmission/web-utils.h> // tr_urlIsValid()
@@ -79,7 +78,7 @@ namespace
 [[nodiscard]] std::string local_filename(std::string_view const arg)
 {
     auto constexpr Scheme = "file://"sv;
-    if (!tr_strv_starts_with(arg, Scheme)) {
+    if (!arg.starts_with(Scheme)) {
         return std::string{ arg };
     }
 

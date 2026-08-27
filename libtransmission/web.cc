@@ -124,7 +124,7 @@ CURLcode ssl_context_func(CURL* /*curl*/, void* ssl_ctx, void* /*user_data*/)
     }
 
     curl_version_info_data const* const curl_ver = curl_version_info(CURLVERSION_NOW);
-    if (curl_ver->age >= 0 && tr_strv_starts_with(curl_ver->ssl_version, "Schannel"sv)) {
+    if (curl_ver->age >= 0 && std::string_view{ curl_ver->ssl_version }.starts_with("Schannel"sv)) {
         return CURLE_OK;
     }
 

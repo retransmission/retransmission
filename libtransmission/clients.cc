@@ -627,7 +627,7 @@ void tr_clientForId(char* buf, size_t buflen, tr_peer_id_t peer_id)
     // both "-WT" and "-WT-" is formatted by the "-WT-" entry
     if (auto const it = std::ranges::find_if(
             Clients,
-            [key](Client const& client) { return tr_strv_starts_with(key, client.begins_with); });
+            [key](Client const& client) { return key.starts_with(client.begins_with); });
         it != Clients.end()) {
         it->formatter(buf, buflen, it->name, peer_id);
         return;

@@ -236,7 +236,7 @@ std::optional<std::vector<address_range_t>> parseFile(std::string_view filename)
         }
 
         // ignore comments
-        if (tr_strv_starts_with(line, "//"sv) || tr_strv_starts_with(line, "#"sv)) {
+        if (line.starts_with("//"sv) || line.starts_with("#"sv)) {
             continue;
         }
 
