@@ -6,9 +6,6 @@ inputs:
   trim-age:
     description: Age passed to ccache --evict-older-than
     default: 7d
-  ignore-trim-errors:
-    description: Continue saving when the installed ccache cannot trim by age
-    default: 'false'
 runs:
   using: composite
   steps:
@@ -22,9 +19,8 @@ runs:
       if: ${{ github.ref == 'refs/heads/main' }}
       shell: bash
       env:
-        IGNORE_TRIM_ERRORS: ${{ inputs.ignore-trim-errors }}
         TRIM_AGE: ${{ inputs.trim-age }}
-      run: ccache --evict-older-than "$TRIM_AGE" || [ "$IGNORE_TRIM_ERRORS" = 'true' ]
+      run: ccache --evict-older-than "$TRIM_AGE"
     - name: Save replacement snapshot
       if: ${{ github.ref == 'refs/heads/main' }}
       uses: actions/cache/save@v5
