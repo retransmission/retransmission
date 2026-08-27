@@ -18,7 +18,6 @@
 #include <vector>
 
 #include "libtransmission/file.h"
-#include "libtransmission/macros.h"
 #include "libtransmission/types.h"
 
 struct tr_error;
@@ -188,7 +187,7 @@ public:
 private:
     struct file_t {
     public:
-        TR_CONSTEXPR_STR void set_path(std::string_view subpath)
+        constexpr void set_path(std::string_view subpath)
         {
             if (path_ != subpath) {
                 path_ = subpath;
@@ -196,7 +195,7 @@ private:
             }
         }
 
-        TR_CONSTEXPR_STR file_t(std::string_view path, uint64_t size)
+        constexpr file_t(std::string_view path, uint64_t size)
             : path_{ path }
             , size_{ size }
         {

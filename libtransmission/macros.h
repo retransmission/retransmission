@@ -5,12 +5,6 @@
 
 #pragma once
 
-#if __cpp_lib_constexpr_string >= 201907L
-#define TR_CONSTEXPR_STR constexpr
-#else
-#define TR_CONSTEXPR_STR
-#endif
-
 #if __cplusplus >= 202302L // _MSVC_LANG value for C++23 not available yet
 #define TR_CONSTEXPR23 constexpr
 #else

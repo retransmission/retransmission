@@ -20,8 +20,6 @@
 
 #include <small/vector.hpp>
 
-#include "libtransmission/macros.h"
-
 // defined by BEP #9
 inline constexpr auto MetadataPieceSize = 1024 * 16;
 
@@ -48,7 +46,7 @@ public:
         return metadata_;
     }
 
-    [[nodiscard]] TR_CONSTEXPR_STR std::string_view log_name() const noexcept
+    [[nodiscard]] constexpr std::string_view log_name() const noexcept
     {
         return log_name_;
     }
