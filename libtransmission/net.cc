@@ -110,12 +110,12 @@ int tr_make_listen_socket_ipv6only(tr_socket_t const sock)
 bool tr_net_interface_is_default(std::string_view const bind_interface)
 {
     auto const name = tr_strv_strip(bind_interface);
-    return std::empty(name) || name == TR_BIND_INTERFACE_DEFAULT;
+    return std::empty(name) || name == TrBindInterfaceDefault;
 }
 
 bool tr_net_interface_is_blocked(std::string_view const bind_interface)
 {
-    return tr_strv_strip(bind_interface) == TR_BIND_INTERFACE_BLOCKED;
+    return tr_strv_strip(bind_interface) == TrBindInterfaceBlocked;
 }
 
 std::string_view tr_net_effective_bind_interface(std::string_view const bind_interface)

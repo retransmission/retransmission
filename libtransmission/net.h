@@ -500,10 +500,10 @@ private:
 
 struct tr_session;
 
-// true for the values that mean "normal OS routing": empty or TR_BIND_INTERFACE_DEFAULT
+// true for the values that mean "normal OS routing": empty or TrBindInterfaceDefault
 [[nodiscard]] bool tr_net_interface_is_default(std::string_view bind_interface);
 
-// true for TR_BIND_INTERFACE_BLOCKED, the value that refuses every socket
+// true for TrBindInterfaceBlocked, the value that refuses every socket
 [[nodiscard]] bool tr_net_interface_is_blocked(std::string_view bind_interface);
 
 // the interface name to bind to, or empty when `bind_interface` means normal OS routing
