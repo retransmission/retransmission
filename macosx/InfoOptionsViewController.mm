@@ -386,7 +386,7 @@ static CGFloat const kStackViewSpacing = 8.0;
         }
     }
 
-    TRPopulateBindInterfacePopUp(self.fBindInterfacePopUp, multipleBindInterfaces ? nil : bindInterface, YES, @"default");
+    TRPopulateBindInterfacePopUp(self.fBindInterfacePopUp, multipleBindInterfaces ? nil : bindInterface, YES, TRDefaultRouteBindInterfaceName);
     if (multipleBindInterfaces) {
         [self.fBindInterfacePopUp addItemWithTitle:NSLocalizedString(@"Mixed", "Inspector options -> bind interface mixed value")];
         self.fBindInterfacePopUp.lastItem.representedObject = nil;

@@ -320,13 +320,31 @@ private:
             return false;
         }
 
+        // multicast picks its own egress interface, so IP_BOUND_IF alone isn't
+        // enough: the group join and IP_MULTICAST_IF must name the bound interface too
+        auto const if_index = tr_net_interface_index(mediator_.bind_interface());
+
         if constexpr (ip_protocol == TR_AF_INET) {
             std::memcpy(&mcast_addr_, &mcast_ss, mcast_sslen);
 
             // we want to join that LPD multicast group
+#ifdef _WIN32
+            // ip_mreq can only select the interface by address.
+            // Interface binding fails closed before reaching here on Windows.
             struct ip_mreq mcast_req = {};
             mcast_req.imr_multiaddr = mcast_addr_.sin_addr;
             mcast_req.imr_interface = mediator_.bind_address(ip_protocol).addr.addr4;
+            auto const* const mcast_if = reinterpret_cast<char const*>(&mcast_req.imr_interface);
+            auto const mcast_if_len = sizeof(mcast_req.imr_interface);
+#else
+            // ip_mreqn selects by index when one is set, falling back to the address
+            struct ip_mreqn mcast_req = {};
+            mcast_req.imr_multiaddr = mcast_addr_.sin_addr;
+            mcast_req.imr_address = mediator_.bind_address(ip_protocol).addr.addr4;
+            mcast_req.imr_ifindex = static_cast<int>(if_index);
+            auto const* const mcast_if = reinterpret_cast<char const*>(&mcast_req);
+            auto const mcast_if_len = sizeof(mcast_req);
+#endif
 
             if (setsockopt(sock, IPPROTO_IP, IP_ADD_MEMBERSHIP, reinterpret_cast<char const*>(&mcast_req), sizeof(mcast_req)) ==
                 -1) {
@@ -343,12 +361,7 @@ private:
                 return false;
             }
 
-            if (setsockopt(
-                    sock,
-                    IPPROTO_IP,
-                    IP_MULTICAST_IF,
-                    reinterpret_cast<char const*>(&mcast_req.imr_interface),
-                    sizeof(mcast_req.imr_interface)) == -1) {
+            if (setsockopt(sock, IPPROTO_IP, IP_MULTICAST_IF, mcast_if, mcast_if_len) == -1) {
                 return false;
             }
 
@@ -363,7 +376,10 @@ private:
             // we want to join that LPD multicast group
             struct ipv6_mreq mcast_req = {};
             mcast_req.ipv6mr_multiaddr = mcast6_addr_.sin6_addr;
-            mcast_req.ipv6mr_interface = mediator_.bind_address(ip_protocol).to_interface_index().value_or(0);
+            mcast_req.ipv6mr_interface = if_index;
+            if (if_index == 0U) {
+                mcast_req.ipv6mr_interface = mediator_.bind_address(ip_protocol).to_interface_index().value_or(0);
+            }
 
             if (setsockopt(sock, IPPROTO_IPV6, IPV6_JOIN_GROUP, reinterpret_cast<char const*>(&mcast_req), sizeof(mcast_req)) ==
                 -1) {

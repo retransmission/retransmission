@@ -12,12 +12,15 @@
 #import <AppKit/AppKit.h>
 #import <SystemConfiguration/SystemConfiguration.h>
 
+#include <libtransmission/transmission.h>
+
 #import "Utils.h"
 
 NSString* const TRBindInterfaceModeLiteral = @"literal";
 NSString* const TRBindInterfaceModeActiveVPN = @"active-vpn";
 NSString* const TRBindInterfaceActiveVPNMenuValue = @"__transmission_active_vpn__";
-NSString* const TRNoActiveVPNBindInterfaceName = @"tr-vpn-none";
+NSString* const TRDefaultRouteBindInterfaceName = @TR_BIND_INTERFACE_DEFAULT_STR;
+NSString* const TRBlockedBindInterfaceName = @TR_BIND_INTERFACE_BLOCKED_STR;
 NSString* const TRActiveVPNBindInterfaceDidChangeNotification = @"TRActiveVPNBindInterfaceDidChangeNotification";
 NSString* const TRBindInterfaceServiceNameDefaultsKey = @"BindInterfaceServiceName";
 NSString* const TRBindInterfaceProviderIdentifierDefaultsKey = @"BindInterfaceProviderIdentifier";
@@ -125,10 +128,11 @@ NSString* TRVPNProviderIdentifierForService(SCNetworkServiceRef service)
     return nil;
 }
 
-NSDictionary<NSString*, NSDictionary<NSString*, NSString*>*>* TRVPNServiceInfoByInterfaceName()
+// `userDefinedNames` is TRUserDefinedNamesByInterfaceName(), passed in because
+// callers already hold it and each lookup is a round of synchronous configd IPC
+NSDictionary<NSString*, NSDictionary<NSString*, NSString*>*>* TRVPNServiceInfoByInterfaceName(NSDictionary<NSString*, NSString*>* userDefinedNames)
 {
     NSMutableDictionary<NSString*, NSDictionary<NSString*, NSString*>*>* serviceInfo = [NSMutableDictionary dictionary];
-    NSDictionary<NSString*, NSString*>* userDefinedNames = TRUserDefinedNamesByInterfaceName();
 
     SCPreferencesRef prefs = SCPreferencesCreate(kCFAllocatorDefault, CFSTR("Transmission"), nullptr);
     if (prefs == nullptr) {
@@ -248,9 +252,10 @@ NSDictionary<NSString*, NSString*>* TRNetworkServiceNamesByInterfaceName()
         CFRelease(prefs);
     }
 
-    [names addEntriesFromDictionary:TRUserDefinedNamesByInterfaceName()];
+    NSDictionary<NSString*, NSString*>* userDefinedNames = TRUserDefinedNamesByInterfaceName();
+    [names addEntriesFromDictionary:userDefinedNames];
 
-    NSDictionary<NSString*, NSDictionary<NSString*, NSString*>*>* vpnServices = TRVPNServiceInfoByInterfaceName();
+    NSDictionary<NSString*, NSDictionary<NSString*, NSString*>*>* vpnServices = TRVPNServiceInfoByInterfaceName(userDefinedNames);
     for (NSString* interfaceName in vpnServices) {
         NSString* serviceName = vpnServices[interfaceName][TRActiveVPNResolutionServiceNameKey];
         if (serviceName.length > 0) {
@@ -449,7 +454,8 @@ NSDictionary<NSString*, id>* TRResolveActiveVPNInterfaceMatchingIdentity(NSStrin
     }
 
     NSArray<NSString*>* sortedCandidates = [[candidates array] sortedArrayUsingSelector:@selector(localizedStandardCompare:)];
-    NSDictionary<NSString*, NSDictionary<NSString*, NSString*>*>* vpnServices = TRVPNServiceInfoByInterfaceName();
+    NSDictionary<NSString*, NSDictionary<NSString*, NSString*>*>* vpnServices = TRVPNServiceInfoByInterfaceName(
+        TRUserDefinedNamesByInterfaceName());
 
     NSString* preferredInterface = nil;
     NSMutableArray<NSString*>* identityMatches = [NSMutableArray array];

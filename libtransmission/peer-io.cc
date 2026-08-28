@@ -94,12 +94,15 @@ std::shared_ptr<tr_peerIo> tr_peerIo::create(
     tr_bandwidth* parent,
     tr_sha1_digest_t const* info_hash,
     bool is_incoming,
-    bool is_seed)
+    bool is_seed,
+    std::string_view bind_interface)
 {
     TR_ASSERT(session != nullptr);
     auto lock = session->unique_lock();
 
-    auto const io = std::shared_ptr<tr_peerIo>{ new tr_peerIo{ session, parent, info_hash, is_incoming, is_seed, {} } };
+    auto const io = std::shared_ptr<tr_peerIo>{
+        new tr_peerIo{ session, parent, info_hash, is_incoming, is_seed, bind_interface }
+    };
     io->set_socket(std::move(socket));
     io->bandwidth().set_peer(io);
     io->flush_outbuf_trigger_->set_callback([weak = io->weak_from_this()] {
@@ -154,9 +157,7 @@ std::shared_ptr<tr_peerIo> tr_peerIo::new_outgoing(
     for (auto const& transport : session->preferred_transports()) {
         auto const transport_index = static_cast<std::underlying_type_t<tr_preferred_transport>>(transport);
         if (auto sock = get_socket[transport_index]()) {
-            auto io = tr_peerIo::create(session, std::move(sock), parent, &info_hash, false, client_is_seed);
-            io->bind_interface_ = bind_interface;
-            return io;
+            return tr_peerIo::create(session, std::move(sock), parent, &info_hash, false, client_is_seed, bind_interface);
         }
     }
 
@@ -168,7 +169,8 @@ std::shared_ptr<tr_peerIo> tr_peerIo::new_outgoing_utp(
     tr_bandwidth* parent,
     tr_socket_address const& socket_address,
     tr_sha1_digest_t const& info_hash,
-    bool client_is_seed)
+    bool client_is_seed,
+    std::string_view bind_interface)
 {
     TR_ASSERT(session != nullptr);
     TR_ASSERT(socket_address.is_valid());
@@ -182,7 +184,8 @@ std::shared_ptr<tr_peerIo> tr_peerIo::new_outgoing_utp(
         return {};
     }
 
-    return tr_peerIo::create(session, std::move(socket), parent, &info_hash, false, client_is_seed);
+    // the binding is kept so that reconnect() can re-open over TCP on the same interface
+    return tr_peerIo::create(session, std::move(socket), parent, &info_hash, false, client_is_seed, bind_interface);
 }
 
 tr_peerIo::~tr_peerIo()

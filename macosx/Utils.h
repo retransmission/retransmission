@@ -9,7 +9,9 @@
 extern NSString* const TRBindInterfaceModeLiteral;
 extern NSString* const TRBindInterfaceModeActiveVPN;
 extern NSString* const TRBindInterfaceActiveVPNMenuValue;
-extern NSString* const TRNoActiveVPNBindInterfaceName;
+// libtransmission's reserved bind_interface values: normal OS routing, and refuse all traffic
+extern NSString* const TRDefaultRouteBindInterfaceName;
+extern NSString* const TRBlockedBindInterfaceName;
 extern NSString* const TRActiveVPNBindInterfaceDidChangeNotification;
 extern NSString* const TRBindInterfaceServiceNameDefaultsKey;
 extern NSString* const TRBindInterfaceProviderIdentifierDefaultsKey;
