@@ -67,6 +67,7 @@ TEST_F(TorrentBuilderTest, settingsReachTheTorrent)
     ASSERT_TRUE(builder.set_metainfo_from_file(TorrentFile));
     builder.set_paused(true);
     builder.set_peer_limit(PeerLimit);
+    builder.set_bind_interface("utun4"sv);
     builder.set_download_dir(download_dir.sv());
     builder.set_labels(tr_labels_t{ labels });
     builder.set_bandwidth_priority(TR_PRI_HIGH);
@@ -80,6 +81,7 @@ TEST_F(TorrentBuilderTest, settingsReachTheTorrent)
 
     EXPECT_EQ(TR_STATUS_STOPPED, tr_torrentStat(tor).activity);
     EXPECT_EQ(PeerLimit, tor->peer_limit());
+    EXPECT_EQ("utun4"sv, tor->bind_interface());
     EXPECT_EQ(download_dir.sv(), tor->download_dir().sv());
     EXPECT_EQ(labels, tor->labels());
     EXPECT_EQ(TR_PRI_HIGH, tor->get_priority());
@@ -155,6 +157,58 @@ TEST_F(TorrentBuilderTest, resumeFileBeatsBuilderForDownloadDir)
     auto* const tor = session_->torrents().get(1U);
     ASSERT_NE(nullptr, tor);
     EXPECT_EQ(resumed_dir, tor->download_dir().sv());
+}
+
+TEST_F(TorrentBuilderTest, bindInterfaceRoundTripsThroughResumeFile)
+{
+    if (!installFixture(false)) {
+        GTEST_SKIP() << "Failed to set up the torrent dir";
+    }
+
+    auto map = tr_variant::Map{ 1U };
+    map.try_emplace(TR_KEY_bind_interface, "utun4"sv);
+    auto out = tr_variant{ std::move(map) };
+    auto serde = tr_variant_serde::benc();
+    auto const resume_path = tr_pathbuf{ session_->resumeDir(), '/', InfoHashStr, ".resume"sv };
+    ASSERT_TRUE(serde.to_file(out, resume_path));
+
+    auto builder = tr_torrent_builder{ session_ };
+    builder.set_paused(true);
+    ASSERT_EQ(1U, tr_sessionLoadTorrents(session_, &builder));
+
+    auto* const tor = session_->torrents().get(1U);
+    ASSERT_NE(nullptr, tor);
+    EXPECT_EQ("utun4"sv, tor->bind_interface());
+
+    // and the value makes it back out when the torrent saves its resume data
+    tor->save_resume_file();
+    auto const reloaded = serde.parse_file(resume_path);
+    ASSERT_TRUE(reloaded);
+    auto const* const reloaded_map = reloaded->get_if<tr_variant::Map>();
+    ASSERT_NE(nullptr, reloaded_map);
+    EXPECT_EQ("utun4"sv, reloaded_map->value_if<std::string_view>(TR_KEY_bind_interface));
+}
+
+TEST_F(TorrentBuilderTest, bindInterfaceFromBuilderBeatsResumeFile)
+{
+    if (!installFixture(false)) {
+        GTEST_SKIP() << "Failed to set up the torrent dir";
+    }
+
+    auto map = tr_variant::Map{ 1U };
+    map.try_emplace(TR_KEY_bind_interface, "utun9"sv);
+    auto out = tr_variant{ std::move(map) };
+    auto serde = tr_variant_serde::benc();
+    ASSERT_TRUE(serde.to_file(out, tr_pathbuf{ session_->resumeDir(), '/', InfoHashStr, ".resume"sv }));
+
+    auto builder = tr_torrent_builder{ session_ };
+    builder.set_paused(true);
+    builder.set_bind_interface("utun4"sv);
+    ASSERT_EQ(1U, tr_sessionLoadTorrents(session_, &builder));
+
+    auto* const tor = session_->torrents().get(1U);
+    ASSERT_NE(nullptr, tor);
+    EXPECT_EQ("utun4"sv, tor->bind_interface());
 }
 
 TEST_F(TorrentBuilderTest, sessionDefaultsWhenBuilderIsSilent)
