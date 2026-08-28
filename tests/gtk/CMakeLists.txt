@@ -1,5 +1,8 @@
 find_program(DESKTOP_FILE_VALIDATE desktop-file-validate)
 
+# Gettext builds the desktop file as part of the client, so `all-tests` must build it.
+add_dependencies(all-tests ${TR_NAME}-gtk)
+
 # The desktop file is data a desktop reads, so no client test can reach it.
 add_test(
     NAME GTK.desktop-file
