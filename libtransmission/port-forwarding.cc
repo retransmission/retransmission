@@ -174,8 +174,12 @@ private:
         auto const bind_interface = mediator_.bind_interface();
         auto const is_interface_bound = !tr_net_interface_is_default(bind_interface);
 
-        // NAT-PMP has no per-interface control, so skip it when bound to an interface
-        if (!is_interface_bound && !natpmp_) {
+        // NAT-PMP has no per-interface control, so it can't run while bound to an interface.
+        // Dropping it rather than unmapping leaves any existing lease to expire on its own,
+        // since the unmap request itself would go out over the default route.
+        if (is_interface_bound) {
+            natpmp_.reset();
+        } else if (!natpmp_) {
             natpmp_ = std::make_unique<tr_natpmp>();
         }
 
@@ -186,7 +190,7 @@ private:
         auto const old_state = state();
 
         if (natpmp_) {
-            auto const result = natpmp_->pulse(mediator_.local_peer_port(), is_enabled && !is_interface_bound);
+            auto const result = natpmp_->pulse(mediator_.local_peer_port(), is_enabled);
             natpmp_state_ = result.state;
             if (!std::empty(result.local_port) && !std::empty(result.advertised_port)) {
                 mediator_.on_port_forwarded(result.advertised_port);
@@ -200,14 +204,16 @@ private:
             natpmp_state_ = TR_PORT_UNMAPPED;
         }
 
-        // miniupnpc's multicastif accepts an interface name in place of an address
+        // miniupnpc's multicastif accepts an interface name in place of an address.
+        // A blocked binding has no interface to give it, and miniupnpc would fall
+        // back to the default route rather than fail, so UPnP stays off in that case.
         auto const upnp_bindaddr = is_interface_bound ? std::string{ bind_interface } :
                                                         mediator_.incoming_peer_address().display_name();
         upnp_state_ = tr_upnpPulse(
             upnp_,
             mediator_.advertised_peer_port(),
             mediator_.local_peer_port(),
-            is_enabled,
+            is_enabled && !tr_net_interface_is_blocked(bind_interface),
             do_check,
             upnp_bindaddr);
 

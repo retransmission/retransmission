@@ -2238,6 +2238,11 @@ void close_torrent_connections_impl(tr_torrent const* const tor)
 
     auto peers = tor->swarm->peers;
     std::ranges::for_each(peers, close_peer);
+
+    // outgoing handshakes still in flight were opened on the old interface
+    for (auto& [sockaddr, peer_info] : tor->swarm->connectable_pool) {
+        peer_info->destroy_handshake();
+    }
 }
 
 constexpr struct {
@@ -2342,6 +2347,9 @@ void tr_peerMgr::close_connections()
     auto const lock = unique_lock();
     outbound_candidates_.clear();
 
+    // handshakes still in flight were accepted or opened on the old sockets too
+    incoming_handshakes.clear();
+
     for (auto* const tor : torrents_) {
         close_torrent_connections_impl(tor);
     }
@@ -2352,6 +2360,13 @@ void tr_peerMgr::close_torrent_connections(tr_torrent const* const tor)
     using namespace disconnect_helpers;
 
     auto const lock = unique_lock();
+
+    // handshakes that haven't named a torrent yet stay; the handshake
+    // mediator rejects them once they do if the interface doesn't match
+    std::erase_if(incoming_handshakes, [&info_hash = tor->info_hash()](auto const& handshake) {
+        return handshake.second.torrent_hash() == info_hash;
+    });
+
     close_torrent_connections_impl(tor);
 }
 
@@ -2848,7 +2863,13 @@ void tr_peerMgrConnectHolepunch(tr_torrent* tor, tr_socket_address const& endpoi
     // blocklist, and peer-limit checks.
     tr_logAddDebugTor(tor, fmt::format("BEP 55: initiating uTP holepunch connect to {}", endpoint.display_name()));
 
-    auto peer_io = tr_peerIo::new_outgoing_utp(session, &session->top_bandwidth_, endpoint, tor->info_hash(), tor->is_seed());
+    auto peer_io = tr_peerIo::new_outgoing_utp(
+        session,
+        &session->top_bandwidth_,
+        endpoint,
+        tor->info_hash(),
+        tor->is_seed(),
+        tor->effective_bind_interface());
 
     if (!peer_io) {
         tr_logAddDebugTor(tor, fmt::format("BEP 55: peerIo not created for {}, skipping", endpoint.display_name()));

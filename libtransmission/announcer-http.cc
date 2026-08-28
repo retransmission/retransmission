@@ -499,6 +499,9 @@ void tr_tracker_http_scrape(tr_session const* session, tr_scrape_request const& 
     options.timeout_secs = TrScrapeTimeoutSec;
     options.sndbuf = 4096;
     options.rcvbuf = 4096;
+    if (!std::empty(request.bind_interface)) {
+        options.bind_interface = request.bind_interface;
+    }
     session->fetch(std::move(options));
 }
 

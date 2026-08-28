@@ -1009,3 +1009,103 @@ TEST_F(NetTest, IPv4MappedAddress)
         EXPECT_EQ(native_sv, native->display_name());
     }
 }
+
+TEST_F(NetTest, bindInterfaceIsDefault)
+{
+    static auto constexpr Tests = std::to_array<std::pair<std::string_view, bool>>({
+        { ""sv, true },
+        { "  "sv, true },
+        { "default"sv, true },
+        { " default "sv, true },
+        { "utun4"sv, false },
+        { " utun4 "sv, false },
+        { "blocked"sv, false },
+    });
+
+    for (auto const& [name, expected] : Tests) {
+        EXPECT_EQ(expected, tr_net_interface_is_default(name)) << '"' << name << '"';
+    }
+}
+
+TEST_F(NetTest, bindInterfaceIsBlocked)
+{
+    static auto constexpr Tests = std::to_array<std::pair<std::string_view, bool>>({
+        { "blocked"sv, true },
+        { " blocked "sv, true },
+        { ""sv, false },
+        { "default"sv, false },
+        { "utun4"sv, false },
+    });
+
+    for (auto const& [name, expected] : Tests) {
+        EXPECT_EQ(expected, tr_net_interface_is_blocked(name)) << '"' << name << '"';
+    }
+}
+
+TEST_F(NetTest, effectiveBindInterface)
+{
+    static auto constexpr Tests = std::to_array<std::pair<std::string_view, std::string_view>>({
+        { ""sv, ""sv },
+        { "  "sv, ""sv },
+        { "default"sv, ""sv },
+        { " utun4 "sv, "utun4"sv },
+        { "blocked"sv, "blocked"sv },
+    });
+
+    for (auto const& [name, expected] : Tests) {
+        EXPECT_EQ(expected, tr_net_effective_bind_interface(name)) << '"' << name << '"';
+    }
+}
+
+TEST_F(NetTest, curlInterfaceString)
+{
+    EXPECT_FALSE(tr_netCurlInterfaceString(""sv));
+    EXPECT_FALSE(tr_netCurlInterfaceString("  "sv));
+    EXPECT_FALSE(tr_netCurlInterfaceString("default"sv));
+
+    auto const bound = tr_netCurlInterfaceString(" utun4 "sv);
+    ASSERT_TRUE(bound);
+    EXPECT_EQ("if!utun4"sv, *bound);
+
+    // the blocked value names an interface that can't exist, so curl fails closed
+    auto const blocked = tr_netCurlInterfaceString("blocked"sv);
+    ASSERT_TRUE(blocked);
+    EXPECT_EQ("if!blocked"sv, *blocked);
+}
+
+TEST_F(NetTest, bindInterfaceMatches)
+{
+    // torrent value, session value, expected
+    static auto constexpr Tests = std::to_array<std::tuple<std::string_view, std::string_view, bool>>({
+        { ""sv, ""sv, true },
+        { ""sv, "utun4"sv, true }, // empty inherits the session's
+        { ""sv, "blocked"sv, true },
+        { "default"sv, ""sv, true },
+        { "default"sv, "utun4"sv, false },
+        { "utun4"sv, "utun4"sv, true },
+        { " utun4 "sv, "utun4"sv, true },
+        { "utun4"sv, ""sv, false },
+        { "utun4"sv, "en0"sv, false },
+        { "blocked"sv, "utun4"sv, false },
+        { "blocked"sv, "blocked"sv, true },
+    });
+
+    for (auto const& [torrent_bind, session_bind, expected] : Tests) {
+        EXPECT_EQ(expected, tr_net_bind_interface_matches(torrent_bind, session_bind))
+            << '"' << torrent_bind << "\" vs session \"" << session_bind << '"';
+    }
+}
+
+TEST_F(NetTest, interfaceIndex)
+{
+    EXPECT_EQ(0U, tr_net_interface_index(""sv));
+    EXPECT_EQ(0U, tr_net_interface_index("default"sv));
+    EXPECT_EQ(0U, tr_net_interface_index("blocked"sv));
+    EXPECT_EQ(0U, tr_net_interface_index("tr-no-such-interface"sv));
+
+#if defined(__APPLE__)
+    EXPECT_NE(0U, tr_net_interface_index(" lo0 "sv));
+#elif defined(__linux__)
+    EXPECT_NE(0U, tr_net_interface_index(" lo "sv));
+#endif
+}

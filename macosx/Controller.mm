@@ -436,7 +436,7 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
                 [_fDefaults setObject:bindInterface forKey:@"BindInterface"];
                 [self saveActiveVPNBindInterfaceIdentity:resolution];
             } else {
-                bindInterface = TRNoActiveVPNBindInterfaceName;
+                bindInterface = TRBlockedBindInterfaceName;
             }
 
             _fActiveVPNBindInterfaceStatus = resolution;
@@ -650,7 +650,7 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
             [self.fDefaults setObject:bindInterface forKey:@"BindInterface"];
             [self saveActiveVPNBindInterfaceIdentity:resolution];
         } else {
-            bindInterface = TRNoActiveVPNBindInterfaceName;
+            bindInterface = TRBlockedBindInterfaceName;
         }
 
         NSString* currentInterface = tr_strv_to_utf8_nsstring(tr_sessionGetBindInterface(self.fLib));

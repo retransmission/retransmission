@@ -1875,23 +1875,23 @@ void tr_torrent::set_bind_interface(std::string_view bind_interface)
     set_dirty();
     mark_changed();
 
-    session->closeTorrentPeerConnections(this);
+    // peer teardown touches libevent state owned by the session thread.
+    // Look the torrent up by id in case it was removed before this runs.
+    session->run_in_session_thread([session = this->session, tor_id = id()]() {
+        if (auto* const tor = session->torrents().get(tor_id); tor != nullptr) {
+            session->closeTorrentPeerConnections(tor);
+        }
+    });
 }
 
 std::string_view tr_torrent::effective_bind_interface() const noexcept
 {
-    if (std::empty(bind_interface_)) {
-        return session->bind_interface();
-    }
-
-    return tr_net_interface_is_default(bind_interface_) ? std::string_view{} : std::string_view{ bind_interface_ };
+    return tr_net_effective_bind_interface(std::empty(bind_interface_) ? session->bind_interface() : bind_interface_);
 }
 
 bool tr_torrent::bind_interface_matches_session() const noexcept
 {
-    auto const torrent_bind = tr_net_effective_bind_interface(effective_bind_interface());
-    auto const session_bind = tr_net_effective_bind_interface(session->bind_interface());
-    return torrent_bind == session_bind;
+    return tr_net_bind_interface_matches(bind_interface_, session->bind_interface());
 }
 
 // ---

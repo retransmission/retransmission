@@ -423,10 +423,12 @@ tr_address tr_session::bind_address(tr_address_type type) const noexcept
     }
 
     if (type == TR_AF_INET6) {
-        // if user provided an address, use it.
-        if (!std::empty(settings_.bind_address_ipv6)) {
-            return tr_address::from_string(settings_.bind_address_ipv6).value_or(tr_address::any(TR_AF_INET6));
+        // if user provided a valid address, use it.
+        if (auto const addr = tr_address::from_string(settings_.bind_address_ipv6); addr) {
+            return *addr;
         }
+
+        // when bound to an interface, let that binding choose the source address
         if (!tr_net_interface_is_default(settings_.bind_interface)) {
             return tr_address::any(TR_AF_INET6);
         }
@@ -764,6 +766,22 @@ void tr_session::setSettings(tr_session::Settings&& settings_in, bool force)
 #endif
 
     bool const interface_changed = new_settings.bind_interface != old_settings.bind_interface;
+
+    // the binding policy is logged once here; the sockets it refuses stay quiet
+    if (force || interface_changed) {
+        if (tr_net_interface_is_blocked(new_settings.bind_interface)) {
+            tr_logAddInfo(_("Network interface binding is 'blocked': refusing all peer, tracker, and discovery traffic"));
+        }
+#ifndef __APPLE__
+        else if (!tr_net_interface_is_default(new_settings.bind_interface)) {
+            tr_logAddWarn(
+                fmt::format(
+                    fmt::runtime(_(
+                        "Binding to network interface '{interface}' is not supported on this platform; all its sockets will fail")),
+                    fmt::arg("interface", new_settings.bind_interface)));
+        }
+#endif
+    }
 
     if (auto const& val = new_settings.bind_address_ipv4; force || interface_changed || val != old_settings.bind_address_ipv4) {
         ip_cache_->update_addr(TR_AF_INET);

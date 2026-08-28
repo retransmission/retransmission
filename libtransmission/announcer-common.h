@@ -222,6 +222,9 @@ struct tr_scrape_request {
 
     /* how many hashes to use in the info_hash field */
     size_t info_hash_count = 0U;
+
+    /* bind interface shared by every torrent in this request; empty means inherit session */
+    std::string bind_interface;
 };
 
 struct tr_scrape_response_row {

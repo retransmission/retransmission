@@ -35,6 +35,7 @@
 #include "libtransmission/string-utils.h"
 #include "libtransmission/tr-assert.h"
 #include "libtransmission/tr-strbuf.h"
+#include "libtransmission/transmission.h"
 #include "libtransmission/types.h"
 #include "libtransmission/utils.h"
 
@@ -109,7 +110,12 @@ int tr_make_listen_socket_ipv6only(tr_socket_t const sock)
 bool tr_net_interface_is_default(std::string_view const bind_interface)
 {
     auto const name = tr_strv_strip(bind_interface);
-    return std::empty(name) || name == "default"sv;
+    return std::empty(name) || name == TR_BIND_INTERFACE_DEFAULT;
+}
+
+bool tr_net_interface_is_blocked(std::string_view const bind_interface)
+{
+    return tr_strv_strip(bind_interface) == TR_BIND_INTERFACE_BLOCKED;
 }
 
 std::string_view tr_net_effective_bind_interface(std::string_view const bind_interface)
@@ -118,9 +124,26 @@ std::string_view tr_net_effective_bind_interface(std::string_view const bind_int
     return tr_net_interface_is_default(name) ? std::string_view{} : name;
 }
 
+bool tr_net_bind_interface_matches(std::string_view const torrent_bind, std::string_view const session_bind)
+{
+    auto const torrent_name = tr_strv_strip(torrent_bind);
+    auto const torrent_effective = tr_net_effective_bind_interface(std::empty(torrent_name) ? session_bind : torrent_name);
+    return torrent_effective == tr_net_effective_bind_interface(session_bind);
+}
+
+unsigned tr_net_interface_index(std::string_view const bind_interface)
+{
+    auto const name = tr_net_effective_bind_interface(bind_interface);
+    if (std::empty(name) || tr_net_interface_is_blocked(name)) {
+        return 0U;
+    }
+
+    return if_nametoindex(std::string{ name }.c_str());
+}
+
 bool tr_netSetSocketInterface(
     tr_socket_t const sock,
-    tr_address_type const type,
+    [[maybe_unused]] tr_address_type const type,
     std::string_view const bind_interface,
     bool const suppress_msgs)
 {
@@ -129,9 +152,16 @@ bool tr_netSetSocketInterface(
         return true;
     }
 
+    // a deliberate "bind to nothing" setting: refuse quietly, since
+    // the session logs the policy once when the setting changes
+    if (tr_net_interface_is_blocked(name)) {
+        set_sockerrno(ENETDOWN);
+        tr_logAddTrace(fmt::format("Refusing socket {}: interface binding is '{}'", sock, name));
+        return false;
+    }
+
 #ifdef __APPLE__
-    auto const ifname = std::string{ name };
-    auto const if_index = if_nametoindex(ifname.c_str());
+    auto const if_index = tr_net_interface_index(name);
     if (if_index == 0U) {
         set_sockerrno(ENXIO);
         if (!suppress_msgs) {
@@ -154,8 +184,10 @@ bool tr_netSetSocketInterface(
     tr_logAddTrace(fmt::format("Bound socket {} to interface '{}'", sock, name));
     return true;
 #else
+    // the session warns once when the setting changes; per-socket failures stay quiet
+    set_sockerrno(ENXIO);
     if (!suppress_msgs) {
-        tr_logAddWarn(fmt::format("Interface binding is not supported on this platform: '{}'", name));
+        tr_logAddDebug(fmt::format("Interface binding is not supported on this platform: '{}'", name));
     }
     return false;
 #endif
