@@ -308,8 +308,8 @@ void tr_sessionSetLPDEnabled(tr_session* session, bool is_enabled);
 // The `_STR` macros exist so Objective-C can spell them as `@TR_BIND_INTERFACE_..._STR`.
 #define TR_BIND_INTERFACE_DEFAULT_STR "default" // normal OS routing
 #define TR_BIND_INTERFACE_BLOCKED_STR "blocked" // refuse every socket
-inline constexpr std::string_view TR_BIND_INTERFACE_DEFAULT = TR_BIND_INTERFACE_DEFAULT_STR;
-inline constexpr std::string_view TR_BIND_INTERFACE_BLOCKED = TR_BIND_INTERFACE_BLOCKED_STR;
+inline constexpr std::string_view TrBindInterfaceDefault = TR_BIND_INTERFACE_DEFAULT_STR;
+inline constexpr std::string_view TrBindInterfaceBlocked = TR_BIND_INTERFACE_BLOCKED_STR;
 
 [[nodiscard]] std::string tr_sessionGetBindInterface(tr_session const* session);
 void tr_sessionSetBindInterface(tr_session* session, std::string_view bind_interface);

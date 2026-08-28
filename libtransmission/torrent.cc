@@ -2606,7 +2606,7 @@ void tr_torrent::ResumeHelper::load_seconds_seeding_before_current_start(time_t 
 
 // ---
 
-void tr_torrent::ResumeHelper::load_bind_interface(std::string_view const bind_interface) noexcept
+void tr_torrent::ResumeHelper::load_bind_interface(std::string_view const bind_interface)
 {
     tor_.bind_interface_ = tr_strv_strip(bind_interface);
 }
