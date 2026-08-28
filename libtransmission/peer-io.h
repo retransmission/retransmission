@@ -14,6 +14,8 @@
 #include <deque>
 #include <memory>
 #include <optional>
+#include <string>
+#include <string_view>
 #include <utility> // std::pair
 
 #include "libtransmission/bandwidth.h"
@@ -62,7 +64,8 @@ public:
         tr_socket_address const& socket_address,
         tr_sha1_digest_t const& info_hash,
         bool client_is_seed,
-        bool utp);
+        bool utp,
+        std::string_view bind_interface);
 
     static std::shared_ptr<tr_peerIo> new_outgoing_utp(
         tr_session* session,
@@ -316,7 +319,8 @@ private:
         tr_bandwidth* parent_bandwidth,
         tr_sha1_digest_t const* info_hash,
         bool is_incoming,
-        bool client_is_seed);
+        bool client_is_seed,
+        std::string_view bind_interface);
 
     [[nodiscard]] constexpr auto client_is_seed() const noexcept
     {
@@ -362,6 +366,8 @@ private:
     tr_bandwidth bandwidth_;
 
     tr_sha1_digest_t info_hash_;
+
+    std::string bind_interface_;
 
     PeerBuffer inbuf_;
     PeerBuffer outbuf_;

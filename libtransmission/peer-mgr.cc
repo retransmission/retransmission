@@ -81,6 +81,8 @@ private:
             .id = tor->id(),
             .is_done = tor->is_done(),
             .is_running = tor->is_running(),
+            .allows_dht = tor->bind_interface_matches_session(),
+            .allows_incoming_peer = tor->bind_interface_matches_session(),
         };
     }
 
@@ -1045,6 +1047,9 @@ public:
         peer_info_timer_->start_repeating(PeerInfoPeriod);
         rechoke_timer_->start_repeating(RechokePeriod);
     }
+
+    void close_connections();
+    void close_torrent_connections(tr_torrent const* tor);
 
     tr_peerMgr(tr_peerMgr&&) = delete;
     tr_peerMgr(tr_peerMgr const&) = delete;
@@ -2225,6 +2230,16 @@ void close_peer(std::shared_ptr<tr_peerMsgs> const& peer)
     peer->swarm->remove_peer(peer);
 }
 
+void close_torrent_connections_impl(tr_torrent const* const tor)
+{
+    if (tor == nullptr || tor->swarm == nullptr) {
+        return;
+    }
+
+    auto peers = tor->swarm->peers;
+    std::ranges::for_each(peers, close_peer);
+}
+
 constexpr struct {
     [[nodiscard]] static int compare(std::shared_ptr<tr_peerMsgs> const& a, std::shared_ptr<tr_peerMsgs> const& b) // <=>
     {
@@ -2319,6 +2334,40 @@ void enforceSessionPeerLimit(size_t global_peer_limit, tr_torrents& torrents)
 }
 } // namespace disconnect_helpers
 } // namespace
+
+void tr_peerMgr::close_connections()
+{
+    using namespace disconnect_helpers;
+
+    auto const lock = unique_lock();
+    outbound_candidates_.clear();
+
+    for (auto* const tor : torrents_) {
+        close_torrent_connections_impl(tor);
+    }
+}
+
+void tr_peerMgr::close_torrent_connections(tr_torrent const* const tor)
+{
+    using namespace disconnect_helpers;
+
+    auto const lock = unique_lock();
+    close_torrent_connections_impl(tor);
+}
+
+void tr_peerMgrCloseConnections(tr_peerMgr* manager)
+{
+    if (manager != nullptr) {
+        manager->close_connections();
+    }
+}
+
+void tr_peerMgrCloseTorrentConnections(tr_peerMgr* manager, tr_torrent* tor)
+{
+    if (manager != nullptr) {
+        manager->close_torrent_connections(tor);
+    }
+}
 
 void tr_peerMgr::reconnect_pulse()
 {
@@ -2665,6 +2714,8 @@ void initiate_connection(tr_peerMgr* mgr, tr_swarm* s, tr_peer_info& peer_info)
     auto const now = tr_time();
     auto* const session = mgr->session;
     auto const peer_supports_utp = peer_info.supports_utp().value_or(true);
+    auto const can_use_shared_udp = s->tor->bind_interface_matches_session();
+    auto const bind_interface = s->tor->effective_bind_interface();
 
     peer_info.reset_holepunch_attempts();
 
@@ -2679,7 +2730,8 @@ void initiate_connection(tr_peerMgr* mgr, tr_swarm* s, tr_peer_info& peer_info)
         peer_info.listen_socket_address(),
         s->tor->info_hash(),
         s->tor->is_seed(),
-        peer_supports_utp);
+        peer_supports_utp && can_use_shared_udp,
+        bind_interface);
 
     if (!peer_io) {
         tr_logAddTraceSwarm(s, fmt::format("peerIo not created; marking peer {} as unreachable", peer_info.display_name()));
@@ -2781,6 +2833,13 @@ void tr_peerMgrConnectHolepunch(tr_torrent* tor, tr_socket_address const& endpoi
 
     if (peer_info->has_handshake()) {
         tr_logAddDebugTor(tor, fmt::format("BEP 55: handshake already in progress for {}, skipping", endpoint.display_name()));
+        return;
+    }
+
+    // the shared UDP socket is bound to the session's interface,
+    // so a torrent bound to a different interface can't use it
+    if (!tor->bind_interface_matches_session()) {
+        tr_logAddDebugTor(tor, fmt::format("BEP 55: torrent bind-interface differs from session, skipping holepunch"));
         return;
     }
 

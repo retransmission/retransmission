@@ -183,6 +183,21 @@ tr_resume::fields_t load_group(tr_variant::Map const& map, tr_torrent* tor)
     return {};
 }
 
+void save_bind_interface(tr_variant::Map& map, tr_torrent const* tor)
+{
+    map.insert_or_assign(TR_KEY_bind_interface, tr_variant::unmanaged_string(tor->bind_interface()));
+}
+
+tr_resume::fields_t load_bind_interface(tr_variant::Map const& map, tr_torrent::ResumeHelper& helper)
+{
+    if (auto const sv = map.value_if<std::string_view>(TR_KEY_bind_interface); sv && !std::empty(*sv)) {
+        helper.load_bind_interface(*sv);
+        return tr_resume::BindInterface;
+    }
+
+    return {};
+}
+
 // ---
 
 void save_dnd(tr_variant::Map& map, tr_torrent const* tor)
@@ -855,6 +870,10 @@ tr_resume::fields_t load_from_file(tr_torrent* tor, tr_torrent::ResumeHelper& he
         fields_loaded |= load_group(map, tor);
     }
 
+    if ((fields_to_load & tr_resume::BindInterface) != 0) {
+        fields_loaded |= load_bind_interface(map, helper);
+    }
+
     return fields_loaded;
 }
 
@@ -909,6 +928,7 @@ void save(tr_torrent* const tor, tr_torrent::ResumeHelper const& helper)
     save_name(map, tor);
     save_labels(map, tor);
     save_group(map, tor);
+    save_bind_interface(map, tor);
 
     auto out = tr_variant{ std::move(map) };
     tr::api_compat::convert_outgoing_data(out);

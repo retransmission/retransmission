@@ -304,6 +304,9 @@ void tr_sessionSetUTPEnabled(tr_session* session, bool is_enabled);
 [[nodiscard]] bool tr_sessionIsLPDEnabled(tr_session const* session);
 void tr_sessionSetLPDEnabled(tr_session* session, bool is_enabled);
 
+[[nodiscard]] std::string tr_sessionGetBindInterface(tr_session const* session);
+void tr_sessionSetBindInterface(tr_session* session, std::string_view bind_interface);
+
 [[nodiscard]] tr_encryption_mode tr_sessionGetEncryption(tr_session const* session);
 void tr_sessionSetEncryption(tr_session* session, tr_encryption_mode mode);
 
@@ -708,6 +711,9 @@ void tr_torrentSetIdleLimit(tr_torrent* tor, uint16_t idle_minutes);
 
 [[nodiscard]] uint16_t tr_torrentGetPeerLimit(tr_torrent const* tor);
 void tr_torrentSetPeerLimit(tr_torrent* tor, uint16_t max_connected_peers);
+
+[[nodiscard]] std::string tr_torrentGetBindInterface(tr_torrent const* tor);
+void tr_torrentSetBindInterface(tr_torrent* tor, std::string_view bind_interface);
 
 // --- File Priorities
 
