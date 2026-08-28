@@ -150,6 +150,9 @@ public:
         // Set to 0 to disable the limit.
         size_t max_file_size = DefaultMaxFileSize;
 
+        // If set, overrides the session interface binding for this request.
+        std::optional<std::string> bind_interface;
+
         static auto constexpr DefaultTimeoutSecs = std::chrono::seconds{ 120 };
         static auto constexpr DefaultMaxFileSize = 10U * 1024U * 1024U;
     };
@@ -198,6 +201,11 @@ public:
 
         // Return IPv6 user public address string, or nullopt to not use one
         [[nodiscard]] virtual std::optional<std::string> bind_address_V6() const
+        {
+            return std::nullopt;
+        }
+
+        [[nodiscard]] virtual std::optional<std::string> bind_interface() const
         {
             return std::nullopt;
         }

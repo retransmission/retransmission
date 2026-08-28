@@ -40,6 +40,9 @@ struct tr_torrent_builder {
 
     void set_bandwidth_priority(tr_priority_t priority) noexcept;
 
+    void set_bind_interface(std::string_view bind_interface);
+    [[nodiscard]] std::optional<std::string> const& bind_interface() const noexcept;
+
     void set_download_dir(std::string_view dir);
     [[nodiscard]] std::string const& download_dir() const noexcept;
 
@@ -84,6 +87,7 @@ private:
     std::optional<bool> sequential_download_;
     std::optional<tr_piece_index_t> sequential_download_from_piece_;
     std::optional<uint16_t> peer_limit_;
+    std::optional<std::string> bind_interface_;
     std::string download_dir_;
 
     tr_labels_t labels_;
