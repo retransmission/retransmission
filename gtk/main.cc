@@ -164,8 +164,12 @@ int main(int argc, char** argv)
     // A launch whose torrent arguments were all unreadable must report that, not present
     // someone else's window. It reports on stderr and exits when an instance is there,
     // and in the client it goes on to start when none is.
-    // A launch asked to start iconified does not want a window raised, so it hands nothing over.
-    auto const intent = tr::interop::intent_of(start_iconified, argc > 1);
+    //
+    // No option this client takes asks for something a running instance cannot give, so no
+    // launch here is standalone. `start_iconified` chooses how our own window opens, which
+    // is moot once another instance takes the launch.
+    auto constexpr Standalone = false;
+    auto const intent = tr::interop::intent_of(Standalone, argc > 1);
 
     // Only a Present handoff spends the token, and gtr_activation_token()'s GTK4
     // recovery builds a throwaway GtkApplication, so look it up only when it is wanted.

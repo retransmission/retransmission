@@ -223,9 +223,10 @@ int tr_main(int argc, char** argv)
         config_dir_str,
         tr::interop::make_transport(config_dir));
     // -r/-p/-u/-w name a session on another host, which is not this config dir's instance at all.
-    // -m asks for a window that opens minimized, and presenting one would do the opposite.
     // These are read into prefs further down, past the point a handed-over launch returns from.
-    auto const standalone = minimized || !host.isNull() || !port.isNull() || !username.isNull() || !password.isNull();
+    // `minimized` is not among them. It chooses how our own window opens, which is moot
+    // once another instance takes the launch, and a torrent still belongs in that instance.
+    auto const standalone = !host.isNull() || !port.isNull() || !username.isNull() || !password.isNull();
 
     auto const intent = tr::interop::intent_of(standalone, !filenames.isEmpty());
 

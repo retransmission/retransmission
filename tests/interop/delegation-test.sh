@@ -155,6 +155,20 @@ run_launcher_cases() {
     }
     expect_one_new_call "$label hands a file URI to the running instance" "$call" "$before"
 
+    # -m chooses how this launch's own window would open, which is moot once the running
+    # instance takes the launch. A torrent still belongs there, so -m must not hold it back:
+    # starting instead would end on the instance's config dir lock, with the torrent
+    # delivered nowhere.
+    call="AddMetainfo $magnet"
+    before="$(call_count "$call")"
+    launch "$bin" -m "$magnet" > /dev/null 2>&1
+    rc=$?
+    [ "$rc" -eq 0 ] || {
+        echo "FAIL: $label minimized torrent launch exited $rc"
+        failures=$((failures + 1))
+    }
+    expect_one_new_call "$label hands its magnet over when also asked to start minimized" "$call" "$before"
+
     # A launch whose only argument names nothing exits on the argument error.
     # Falling through to start would end on the running instance's config dir lock,
     # blaming the dir for what is an argument problem.
