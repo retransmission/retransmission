@@ -47,12 +47,12 @@ static NSString* const kWebUIURLFormat = @"http://localhost:%ld/";
 
 static NSString* TRDisplayableBindInterface(NSString* bindInterface)
 {
-    return [bindInterface isEqualToString:TRNoActiveVPNBindInterfaceName] ? @"" : (bindInterface ?: @"");
+    return [bindInterface isEqualToString:TRBlockedBindInterfaceName] ? @"" : (bindInterface ?: @"");
 }
 
 static NSString* TRDisplayableSessionBindInterface(NSString* bindInterface)
 {
-    if ([bindInterface isEqualToString:TRNoActiveVPNBindInterfaceName]) {
+    if ([bindInterface isEqualToString:TRBlockedBindInterfaceName]) {
         return NSLocalizedString(@"No active VPN; traffic blocked", "Preferences -> Network -> bind interface info");
     }
 
@@ -113,8 +113,8 @@ static NSString* TRDisplayableSessionBindInterface(NSString* bindInterface)
 @property(nonatomic) IBOutlet NSImageView* fPortStatusImage;
 @property(nonatomic) IBOutlet NSProgressIndicator* fPortStatusProgress;
 @property(nonatomic) IBOutlet NSPopUpButton* fBindInterfacePopUp;
-@property(nonatomic) NSTextField* fBindInterfaceStatusField;
-@property(nonatomic) NSButton* fBindInterfaceInfoButton;
+@property(nonatomic) IBOutlet NSTextField* fBindInterfaceStatusField;
+@property(nonatomic) IBOutlet NSButton* fBindInterfaceInfoButton;
 @property(nonatomic) NSPopover* fBindInterfaceInfoPopover;
 @property(nonatomic, copy) NSString* fActiveVPNPortProbeBindInterface;
 @property(nonatomic) NSTimer* fPortStatusTimer;
@@ -259,9 +259,7 @@ static NSString* TRDisplayableSessionBindInterface(NSString* bindInterface)
     self.fPortField.intValue = static_cast<int>([self.fDefaults integerForKey:@"BindPort"]);
     self.fNatStatus = -1;
 
-    [self setupBindInterfaceStatusControls];
     [self updateBindInterfaceMenu];
-    [self updateBindInterfaceStatus];
 
     [self updatePortStatus];
 
@@ -447,65 +445,6 @@ static NSString* TRDisplayableSessionBindInterface(NSString* bindInterface)
     [self updatePortStatus];
 }
 
-- (void)setupBindInterfaceStatusControls
-{
-    if (self.fBindInterfaceStatusField != nil || self.fBindInterfacePopUp.superview == nil) {
-        return;
-    }
-
-    NSView* container = self.fBindInterfacePopUp.superview;
-    NSButton* peerCommunicationButton = nil;
-    for (NSView* view in container.subviews) {
-        if ([view isKindOfClass:NSButton.class] && [(NSButton*)view action] == @selector(setUTP:)) {
-            peerCommunicationButton = (NSButton*)view;
-            break;
-        }
-    }
-
-    NSMutableArray<NSLayoutConstraint*>* constraintsToDeactivate = [NSMutableArray array];
-    for (NSLayoutConstraint* constraint in container.constraints) {
-        if (constraint.firstItem == peerCommunicationButton && constraint.secondItem == self.fBindInterfacePopUp) {
-            [constraintsToDeactivate addObject:constraint];
-        }
-    }
-    [NSLayoutConstraint deactivateConstraints:constraintsToDeactivate];
-
-    self.fBindInterfaceStatusField = [NSTextField labelWithString:@""];
-    self.fBindInterfaceStatusField.font = [NSFont systemFontOfSize:NSFont.smallSystemFontSize];
-    self.fBindInterfaceStatusField.textColor = NSColor.secondaryLabelColor;
-    self.fBindInterfaceStatusField.lineBreakMode = NSLineBreakByTruncatingTail;
-    self.fBindInterfaceStatusField.translatesAutoresizingMaskIntoConstraints = NO;
-
-    self.fBindInterfaceInfoButton = [NSButton buttonWithImage:[NSImage imageWithSystemSymbolName:@"info.circle"
-                                                                        accessibilityDescription:nil]
-                                                       target:self
-                                                       action:@selector(showBindInterfaceInfo:)];
-    self.fBindInterfaceInfoButton.bezelStyle = NSBezelStyleInline;
-    self.fBindInterfaceInfoButton.bordered = NO;
-    self.fBindInterfaceInfoButton.toolTip = NSLocalizedString(
-        @"Show details about the current bind connection.",
-        "Preferences -> Network -> bind interface info tooltip");
-    self.fBindInterfaceInfoButton.translatesAutoresizingMaskIntoConstraints = NO;
-
-    [container addSubview:self.fBindInterfaceStatusField];
-    [container addSubview:self.fBindInterfaceInfoButton];
-
-    NSMutableArray<NSLayoutConstraint*>* constraints = [@[
-        [self.fBindInterfaceStatusField.leadingAnchor constraintEqualToAnchor:self.fBindInterfacePopUp.leadingAnchor],
-        [self.fBindInterfaceStatusField.topAnchor constraintEqualToAnchor:self.fBindInterfacePopUp.bottomAnchor constant:2.0],
-        [self.fBindInterfaceInfoButton.leadingAnchor constraintEqualToAnchor:self.fBindInterfaceStatusField.trailingAnchor constant:4.0],
-        [self.fBindInterfaceInfoButton.trailingAnchor constraintEqualToAnchor:self.fBindInterfacePopUp.trailingAnchor],
-        [self.fBindInterfaceInfoButton.centerYAnchor constraintEqualToAnchor:self.fBindInterfaceStatusField.centerYAnchor],
-        [self.fBindInterfaceInfoButton.widthAnchor constraintEqualToConstant:16.0],
-        [self.fBindInterfaceInfoButton.heightAnchor constraintEqualToConstant:16.0],
-    ] mutableCopy];
-    if (peerCommunicationButton != nil) {
-        [constraints addObject:[peerCommunicationButton.topAnchor constraintEqualToAnchor:self.fBindInterfaceStatusField.bottomAnchor
-                                                                                 constant:9.0]];
-    }
-    [NSLayoutConstraint activateConstraints:constraints];
-}
-
 - (BOOL)usesActiveVPNBindInterface
 {
     return [[self.fDefaults stringForKey:@"BindInterfaceMode"] isEqualToString:TRBindInterfaceModeActiveVPN];
@@ -582,7 +521,7 @@ static NSString* TRDisplayableSessionBindInterface(NSString* bindInterface)
 {
     NSDictionary<NSString*, id>* status = [notification.userInfo isKindOfClass:NSDictionary.class] ? notification.userInfo : @{};
     NSString* resolvedInterface = status[TRActiveVPNResolutionInterfaceKey];
-    NSString* activeVPNBindInterface = resolvedInterface.length > 0 ? resolvedInterface : TRNoActiveVPNBindInterfaceName;
+    NSString* activeVPNBindInterface = resolvedInterface.length > 0 ? resolvedInterface : TRBlockedBindInterfaceName;
     BOOL const probeBindChanged = ![self.fActiveVPNPortProbeBindInterface isEqualToString:activeVPNBindInterface];
 
     [self updateBindInterfaceMenu];
@@ -1687,7 +1626,6 @@ static NSString* TRDisplayableSessionBindInterface(NSString* bindInterface)
     } else if ([identifier isEqualToString:ToolbarTabNetwork]) {
         view = self.fNetworkView;
         [self updateBindInterfaceMenu];
-        [self updateBindInterfaceStatus];
     } else if ([identifier isEqualToString:ToolbarTabRemote]) {
         view = self.fRemoteView;
     } else {

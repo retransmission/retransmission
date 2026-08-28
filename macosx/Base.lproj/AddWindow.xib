@@ -8,6 +8,7 @@
     <objects>
         <customObject id="-2" userLabel="File's Owner" customClass="AddWindowController">
             <connections>
+                <outlet property="fBindInterfacePopUp" destination="Wm8-bX-p3E" id="Xh4-lN-c5F"/>
                 <outlet property="fCheckAllButton" destination="103" id="108"/>
                 <outlet property="fDeleteCheck" destination="58" id="60"/>
                 <outlet property="fFileController" destination="53" id="57"/>
@@ -190,13 +191,13 @@ Gw
                         </buttonCell>
                     </button>
                     <box autoresizesSubviews="NO" borderType="line" titlePosition="noTitle" translatesAutoresizingMaskIntoConstraints="NO" id="100">
-                        <rect key="frame" x="20" y="66" width="505" height="96"/>
+                        <rect key="frame" x="20" y="38" width="505" height="124"/>
                         <view key="contentView" id="BWp-dg-kNL">
-                            <rect key="frame" x="0.0" y="0.0" width="505" height="96"/>
+                            <rect key="frame" x="0.0" y="0.0" width="505" height="124"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
                                 <popUpButton translatesAutoresizingMaskIntoConstraints="NO" id="85">
-                                    <rect key="frame" x="403" y="8" width="90" height="24"/>
+                                    <rect key="frame" x="403" y="36" width="90" height="24"/>
                                     <popUpButtonCell key="cell" type="push" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" borderStyle="borderAndBezel" inset="2" id="86" customClass="PriorityPopUpButtonCell">
                                         <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
                                         <font key="font" metaFont="message"/>
@@ -219,7 +220,7 @@ Gw
                                     </connections>
                                 </popUpButton>
                                 <textField focusRingType="none" verticalHuggingPriority="1000" horizontalCompressionResistancePriority="250" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="40">
-                                    <rect key="frame" x="351" y="40" width="46" height="16"/>
+                                    <rect key="frame" x="351" y="68" width="46" height="16"/>
                                     <textFieldCell key="cell" sendsActionOnEndEditing="YES" title="Group:" id="41">
                                         <font key="font" metaFont="system"/>
                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -227,7 +228,7 @@ Gw
                                     </textFieldCell>
                                 </textField>
                                 <popUpButton translatesAutoresizingMaskIntoConstraints="NO" id="33">
-                                    <rect key="frame" x="403" y="36" width="90" height="24"/>
+                                    <rect key="frame" x="403" y="64" width="90" height="24"/>
                                     <popUpButtonCell key="cell" type="push" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" borderStyle="borderAndBezel" inset="2" id="34" customClass="GroupPopUpButtonCell">
                                         <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
                                         <font key="font" metaFont="message"/>
@@ -235,18 +236,37 @@ Gw
                                     </popUpButtonCell>
                                 </popUpButton>
                                 <progressIndicator wantsLayer="YES" verticalHuggingPriority="750" maxValue="1" displayedWhenStopped="NO" bezeled="NO" indeterminate="YES" controlSize="small" style="bar" translatesAutoresizingMaskIntoConstraints="NO" id="68">
-                                    <rect key="frame" x="12" y="16" width="127" height="12"/>
+                                    <rect key="frame" x="12" y="44" width="127" height="12"/>
                                 </progressIndicator>
                                 <textField focusRingType="none" verticalHuggingPriority="1000" horizontalCompressionResistancePriority="250" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="84">
-                                    <rect key="frame" x="345" y="12" width="52" height="16"/>
+                                    <rect key="frame" x="345" y="40" width="52" height="16"/>
                                     <textFieldCell key="cell" sendsActionOnEndEditing="YES" title="Priority:" id="91">
                                         <font key="font" metaFont="system"/>
                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                                     </textFieldCell>
                                 </textField>
+                                <textField focusRingType="none" verticalHuggingPriority="1000" horizontalCompressionResistancePriority="250" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Ju2-Dk-w9L">
+                                    <rect key="frame" x="323" y="12" width="74" height="16"/>
+                                    <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="right" title="Connection:" id="Fv4-Hs-n1Q">
+                                        <font key="font" metaFont="system"/>
+                                        <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
+                                        <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
+                                    </textFieldCell>
+                                </textField>
+                                <popUpButton translatesAutoresizingMaskIntoConstraints="NO" id="Wm8-bX-p3E">
+                                    <rect key="frame" x="403" y="8" width="90" height="24"/>
+                                    <popUpButtonCell key="cell" type="push" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" borderStyle="borderAndBezel" inset="2" id="Ry6-cN-z5K">
+                                        <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>
+                                        <font key="font" metaFont="message"/>
+                                        <menu key="menu" id="Tq1-eG-m7V"/>
+                                    </popUpButtonCell>
+                                    <connections>
+                                        <action selector="changeBindInterface:" target="-2" id="Ab9-fP-k2S"/>
+                                    </connections>
+                                </popUpButton>
                                 <button horizontalHuggingPriority="750" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="65">
-                                    <rect key="frame" x="12" y="36" width="127" height="24"/>
+                                    <rect key="frame" x="12" y="64" width="127" height="24"/>
                                     <buttonCell key="cell" type="push" title="Verify Local Data" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="66">
                                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                         <font key="font" metaFont="system"/>
@@ -256,7 +276,7 @@ Gw
                                     </connections>
                                 </button>
                                 <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="9">
-                                    <rect key="frame" x="424" y="66" width="69" height="20"/>
+                                    <rect key="frame" x="424" y="94" width="69" height="20"/>
                                     <buttonCell key="cell" type="push" title="Change…" bezelStyle="rounded" alignment="center" controlSize="small" borderStyle="border" inset="2" id="16">
                                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                         <font key="font" metaFont="smallSystem"/>
@@ -266,7 +286,7 @@ Gw
                                     </connections>
                                 </button>
                                 <textField focusRingType="none" verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="10">
-                                    <rect key="frame" x="10" y="68" width="84" height="16"/>
+                                    <rect key="frame" x="10" y="96" width="84" height="16"/>
                                     <textFieldCell key="cell" sendsActionOnEndEditing="YES" title="Download to:" id="15">
                                         <font key="font" metaFont="system"/>
                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
@@ -274,7 +294,7 @@ Gw
                                     </textFieldCell>
                                 </textField>
                                 <box autoresizesSubviews="NO" borderType="line" titlePosition="noTitle" translatesAutoresizingMaskIntoConstraints="NO" id="101">
-                                    <rect key="frame" x="100" y="64" width="316" height="24"/>
+                                    <rect key="frame" x="100" y="92" width="316" height="24"/>
                                     <view key="contentView" id="Ohb-uc-hyr">
                                         <rect key="frame" x="0.0" y="0.0" width="316" height="24"/>
                                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -321,7 +341,12 @@ Gw
                                 <constraint firstItem="85" firstAttribute="width" secondItem="33" secondAttribute="width" id="Uwt-PB-Hn3"/>
                                 <constraint firstItem="101" firstAttribute="leading" secondItem="10" secondAttribute="trailing" constant="8" symbolic="YES" id="X5Q-sU-PJ3"/>
                                 <constraint firstItem="85" firstAttribute="centerY" secondItem="84" secondAttribute="centerY" id="XTo-dG-psl"/>
-                                <constraint firstAttribute="bottom" secondItem="85" secondAttribute="bottom" constant="8" id="c3n-Se-S88"/>
+                                <constraint firstAttribute="bottom" secondItem="Wm8-bX-p3E" secondAttribute="bottom" constant="8" id="c3n-Se-S88"/>
+                                <constraint firstItem="Ju2-Dk-w9L" firstAttribute="trailing" secondItem="84" secondAttribute="trailing" id="Nc3-gH-x4U"/>
+                                <constraint firstItem="Ju2-Dk-w9L" firstAttribute="centerY" secondItem="Wm8-bX-p3E" secondAttribute="centerY" id="Pd5-hJ-y6W"/>
+                                <constraint firstItem="Wm8-bX-p3E" firstAttribute="leading" secondItem="85" secondAttribute="leading" id="Qe7-iK-z8Y"/>
+                                <constraint firstItem="Wm8-bX-p3E" firstAttribute="width" secondItem="85" secondAttribute="width" id="Sf9-jL-a1B"/>
+                                <constraint firstItem="Wm8-bX-p3E" firstAttribute="top" secondItem="85" secondAttribute="bottom" constant="4" id="Ug2-kM-b3D"/>
                                 <constraint firstItem="85" firstAttribute="trailing" secondItem="33" secondAttribute="trailing" id="eID-kT-ygD"/>
                                 <constraint firstItem="33" firstAttribute="leading" secondItem="40" secondAttribute="trailing" constant="8" symbolic="YES" id="gLD-n8-vGM"/>
                                 <constraint firstItem="85" firstAttribute="top" secondItem="33" secondAttribute="bottom" constant="4" id="kik-KL-BLp"/>
@@ -340,7 +365,7 @@ Gw
                             </constraints>
                         </view>
                         <constraints>
-                            <constraint firstAttribute="height" constant="96" id="t7f-gh-h0k"/>
+                            <constraint firstAttribute="height" constant="124" id="t7f-gh-h0k"/>
                         </constraints>
                     </box>
                     <searchField wantsLayer="YES" focusRingType="none" verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="112">

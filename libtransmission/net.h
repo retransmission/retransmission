@@ -500,9 +500,22 @@ private:
 
 struct tr_session;
 
+// true for the values that mean "normal OS routing": empty or TR_BIND_INTERFACE_DEFAULT
 [[nodiscard]] bool tr_net_interface_is_default(std::string_view bind_interface);
 
+// true for TR_BIND_INTERFACE_BLOCKED, the value that refuses every socket
+[[nodiscard]] bool tr_net_interface_is_blocked(std::string_view bind_interface);
+
+// the interface name to bind to, or empty when `bind_interface` means normal OS routing
 [[nodiscard]] std::string_view tr_net_effective_bind_interface(std::string_view bind_interface);
+
+// true when a torrent's value resolves to the same interface as the session's.
+// An empty torrent value inherits the session's.
+[[nodiscard]] bool tr_net_bind_interface_matches(std::string_view torrent_bind, std::string_view session_bind);
+
+// the OS index of the named interface, or 0 when `bind_interface` is
+// default, blocked, or names an interface that doesn't exist
+[[nodiscard]] unsigned tr_net_interface_index(std::string_view bind_interface);
 
 [[nodiscard]] bool tr_netSetSocketInterface(
     tr_socket_t sock,
