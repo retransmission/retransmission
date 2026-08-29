@@ -17,8 +17,8 @@ set_property(
 	TARGET libtransmission-app-test
 	PROPERTY FOLDER "tests")
 
-# interop-test and dbus-peer-record-test use the heavier sandbox fixture from
-# tests/libtransmission/, which reaches libtransmission internals.
+# These tests reach libtransmission internals: the heavier sandbox fixture from
+# tests/libtransmission/, and headers such as net.h that guard on this macro.
 target_compile_definitions(libtransmission-app-test
 	PRIVATE
 		-DLIBTRANSMISSION_TEST_ASSETS_DIR="${CMAKE_CURRENT_SOURCE_DIR}/../libtransmission/assets"

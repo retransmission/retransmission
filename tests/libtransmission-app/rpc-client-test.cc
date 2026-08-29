@@ -3,8 +3,6 @@
 // or any future license endorsed by Mnemosaic LLC.
 // License text can be found in the licenses/ folder.
 
-#define __TRANSMISSION__ // for libtransmission/net.h
-
 #include <atomic>
 #include <chrono>
 #include <condition_variable>
