@@ -1040,7 +1040,11 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - version: oldoldstable
+          # Debian _typically_ releases every 2 years, and each has 5 years of support+LTS.
+          # So the `oldstable` tag is the oldest Docker tag we can use without ever ending up
+          # testing on an EOL release, while not needing periodic updates to the workflow.
+          # Ref: https://wiki.debian.org/DebianReleases
+          - version: oldstable
             gtk: gtk3
             qt: qt5
             use-legacy-packages: true
