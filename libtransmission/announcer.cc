@@ -1320,6 +1320,7 @@ namespace
 void multiscrape(tr_announcer_impl* announcer, std::vector<tr_tier*> const& tiers)
 {
     auto const now = tr_time();
+    auto const& session_bind = announcer->session->bind_interface();
     auto requests = std::array<tr_scrape_request, MaxScrapesPerUpkeep>{};
     auto request_count = size_t{};
 
@@ -1351,8 +1352,11 @@ void multiscrape(tr_announcer_impl* announcer, std::vector<tr_tier*> const& tier
                 continue;
             }
 
-            // a request goes out on one interface, so it can only carry torrents bound to that interface
-            if (req->bind_interface != tier->tor->bind_interface()) {
+            // a request goes out on one interface, so it can only carry torrents
+            // bound to that interface. Compare what the values resolve to, since
+            // "" and "default" on the default route, or "" and the session's own
+            // interface name, are the same interface spelled differently.
+            if (tr_net_effective_bind_interface(req->bind_interface, session_bind) != tier->tor->effective_bind_interface()) {
                 continue;
             }
 

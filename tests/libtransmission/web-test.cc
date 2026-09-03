@@ -44,8 +44,9 @@ TEST(FetchOptionsTest, effectiveMaxFileSize)
     EXPECT_EQ(100U, options.effective_max_file_size());
 }
 
-// tr_web needs a Mediator; this one only overrides the user-agent so a test
-// can confirm the header reaches the server.
+// tr_web needs a Mediator; this one overrides only what tests set:
+// the user-agent so a test can confirm the header reaches the server,
+// and the session-level bind interface.
 class TestMediator final : public tr_web::Mediator
 {
 public:
@@ -57,7 +58,13 @@ public:
         return std::nullopt;
     }
 
+    [[nodiscard]] std::optional<std::string> bind_interface() const override
+    {
+        return bind_interface_;
+    }
+
     std::optional<std::string> user_agent_;
+    std::optional<std::string> bind_interface_;
 };
 
 class WebTest : public ::tr::test::SandboxedTest
@@ -375,6 +382,33 @@ TEST_F(WebTest, timeoutIsReported)
     EXPECT_TRUE(response.did_timeout);
     ASSERT_TRUE(response.errmsg);
     EXPECT_NE(std::string::npos, response.errmsg->find("curl error: "));
+}
+
+TEST_F(WebTest, blockedInterfaceIsRefused)
+{
+    // a per-request "blocked" binding completes the fetch as a failed
+    // connection without a request ever reaching the server
+    auto user_data = int{};
+    auto opts = options("/"sv, &user_data);
+    opts.bind_interface = "blocked";
+
+    auto const response = fetch(std::move(opts));
+    EXPECT_EQ(0, response.status);
+    EXPECT_FALSE(response.did_connect);
+    EXPECT_FALSE(response.did_timeout);
+    EXPECT_EQ(&user_data, response.user_data);
+    EXPECT_TRUE(std::empty(server_.lastRequest().method));
+}
+
+TEST_F(WebTest, blockedSessionInterfaceIsRefused)
+{
+    // the session-level binding is refused the same way when the request has no override
+    mediator_.bind_interface_ = "blocked";
+
+    auto const response = fetch(options());
+    EXPECT_EQ(0, response.status);
+    EXPECT_FALSE(response.did_connect);
+    EXPECT_TRUE(std::empty(server_.lastRequest().method));
 }
 
 TEST_F(WebTest, destroyRightAfterFetchDoesNotHang)

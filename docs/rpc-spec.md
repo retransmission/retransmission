@@ -586,7 +586,7 @@ Response parameters: `path`, `name`, and `id`, holding the torrent ID integer
 | `alt_speed_time_end` | number | when to turn off alt speeds (units: same)
 | `alt_speed_up` | number | max global upload speed (kB/s)
 | `anti_brute_force_enabled` | boolean | true means to enable a basic brute force protection for RPC server
-| `bind_interface` | string | session network interface binding; empty or `default` means normal OS routing; `blocked` refuses all traffic
+| `bind_interface` | string | session network interface binding; empty or `default` means normal OS routing; `blocked` refuses all traffic. DNS lookups for HTTP trackers and webseeds use the system resolver and are not bound
 | `blocklist_date` | number | Unix time of the last successful blocklist update, or 0 if never (read-only)
 | `blocklist_enabled` | boolean | true means enabled
 | `blocklist_size` | number | number of rules in the blocklist
