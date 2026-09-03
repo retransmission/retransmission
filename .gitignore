@@ -35,3 +35,6 @@ compile_commands.json
 
 # CMake user presets
 CMakeUserPresets.json
+
+# Cache
+.cache
