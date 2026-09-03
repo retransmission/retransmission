@@ -9,6 +9,7 @@
 #include <string_view>
 #include <tuple>
 
+#include <libtransmission/string-utils.h>
 #include <libtransmission/torrent.h>
 #include <libtransmission/transmission.h>
 #include <libtransmission/types.h>
@@ -140,12 +141,18 @@ TEST_F(TorrentTest, bindInterfaceMatchesSession)
 {
     auto* const tor = torrentInitFromFile(TorFilenames[0]);
 
+    // the setter applies on the session thread, so wait for the stripped value to land
+    auto const set_bind_interface = [tor](std::string_view value) {
+        tr_torrentSetBindInterface(tor, value);
+        return tr::test::waitFor([tor, expected = tr_strv_strip(value)] { return tor->bind_interface() == expected; }, 5s);
+    };
+
     // on the default route, a torrent inherits it unless it names something else
     EXPECT_EQ(""sv, tor->effective_bind_interface());
     EXPECT_TRUE(tor->bind_interface_matches_session());
-    tr_torrentSetBindInterface(tor, "blocked"sv);
+    ASSERT_TRUE(set_bind_interface("blocked"sv));
     EXPECT_FALSE(tor->bind_interface_matches_session());
-    tr_torrentSetBindInterface(tor, ""sv);
+    ASSERT_TRUE(set_bind_interface(""sv));
 
     tr_sessionSetBindInterface(session_, "lo0"sv);
     ASSERT_TRUE(tr::test::waitFor([this] { return tr_sessionGetBindInterface(session_) == "lo0"sv; }, 5s));
@@ -161,7 +168,7 @@ TEST_F(TorrentTest, bindInterfaceMatchesSession)
     });
 
     for (auto const& [value, effective, matches] : Tests) {
-        tr_torrentSetBindInterface(tor, value);
+        ASSERT_TRUE(set_bind_interface(value)) << '"' << value << '"';
         EXPECT_EQ(effective, tor->effective_bind_interface()) << '"' << value << '"';
         EXPECT_EQ(matches, tor->bind_interface_matches_session()) << '"' << value << '"';
     }

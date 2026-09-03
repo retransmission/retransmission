@@ -2167,7 +2167,7 @@
                                 <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                             </textFieldCell>
                         </textField>
-                        <textField toolTip="Choose which network connection Transmission may use. Automatic uses the normal system connection. Active VPN Tunnel only allows traffic through the detected VPN and blocks traffic if the VPN is unavailable." focusRingType="none" verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="BIf-Lb-001">
+                        <textField toolTip="Choose which network connection Transmission may use. Automatic uses the normal system connection. Active VPN Tunnel only allows traffic through the detected VPN and blocks traffic if the VPN is unavailable. Name lookups for trackers and web seeds use the system resolver and are not routed through the selected connection." focusRingType="none" verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="BIf-Lb-001">
                             <rect key="frame" x="18" y="124" width="132" height="16"/>
                             <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="right" title="Bind Connection:" usesSingleLineMode="YES" id="BIf-LbCell-001">
                                 <font key="font" metaFont="system"/>
@@ -2175,7 +2175,7 @@
                                 <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
                             </textFieldCell>
                         </textField>
-                        <popUpButton toolTip="Choose which network connection Transmission may use. Automatic uses the normal system connection. Active VPN Tunnel only allows traffic through the detected VPN and blocks traffic if the VPN is unavailable." verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="BIf-Pu-001">
+                        <popUpButton toolTip="Choose which network connection Transmission may use. Automatic uses the normal system connection. Active VPN Tunnel only allows traffic through the detected VPN and blocks traffic if the VPN is unavailable. Name lookups for trackers and web seeds use the system resolver and are not routed through the selected connection." verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="BIf-Pu-001">
                             <rect key="frame" x="152" y="119" width="385" height="26"/>
                             <popUpButtonCell key="cell" type="push" title="Automatic (Default Connection)" bezelStyle="rounded" alignment="left" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" inset="2" arrowPosition="arrowAtCenter" preferredEdge="maxY" selectedItem="BIf-Mi-001" id="BIf-PuCell-001">
                                 <behavior key="behavior" lightByBackground="YES" lightByGray="YES"/>

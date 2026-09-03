@@ -816,7 +816,7 @@ struct tr_torrent {
         return bandwidth_group_;
     }
 
-    void set_bind_interface(std::string_view bind_interface);
+    void set_bind_interface(std::string_view bind_interface) const;
 
     [[nodiscard]] auto const& bind_interface() const noexcept
     {

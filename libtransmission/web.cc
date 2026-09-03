@@ -248,6 +248,22 @@ public:
 
     void fetch(FetchOptions&& options)
     {
+        // A deliberate "bind to nothing" setting is refused here, before
+        // curl sees the request. This runs before tasks_mutex_ is taken
+        // because the mediator may invoke the callback inline, and a
+        // callback that fetches again would deadlock on the mutex.
+        if (auto const bind_interface = options.bind_interface ? *options.bind_interface :
+                                                                 mediator.bind_interface().value_or(std::string{});
+            tr_net_interface_is_blocked(bind_interface)) {
+            tr_logAddTrace(fmt::format("Refusing fetch of '{}': interface binding is '{}'", options.url, bind_interface));
+            if (options.done_func) {
+                auto response = FetchResponse{};
+                response.user_data = options.done_func_user_data;
+                mediator.run(std::move(options.done_func), std::move(response));
+            }
+            return;
+        }
+
         auto const lock = std::unique_lock{ tasks_mutex_ };
 
         if (deadline_exists()) { // no new tasks once shutdown has begun

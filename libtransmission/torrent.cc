@@ -1861,32 +1861,33 @@ void tr_torrent::set_bandwidth_group(std::string_view group_name)
 
 // ---
 
-void tr_torrent::set_bind_interface(std::string_view bind_interface)
+void tr_torrent::set_bind_interface(std::string_view bind_interface) const
 {
-    bind_interface = tr_strv_strip(bind_interface);
-
-    auto const lock = this->unique_lock();
-
-    if (bind_interface_ == bind_interface) {
-        return;
-    }
-
-    bind_interface_ = bind_interface;
-    set_dirty();
-    mark_changed();
-
-    // peer teardown touches libevent state owned by the session thread.
+    // The announcer and the handshake mediator read bind_interface_ from
+    // the session thread without a lock, so it is written only there.
     // Look the torrent up by id in case it was removed before this runs.
-    session->run_in_session_thread([session = this->session, tor_id = id()]() {
-        if (auto* const tor = session->torrents().get(tor_id); tor != nullptr) {
+    session->run_in_session_thread(
+        [session = this->session, tor_id = id(), name = std::string{ tr_strv_strip(bind_interface) }]() {
+            auto* const tor = session->torrents().get(tor_id);
+            if (tor == nullptr || tor->bind_interface_ == name) {
+                return;
+            }
+
+            {
+                auto const lock = tor->unique_lock();
+                tor->bind_interface_ = name;
+                tor->set_dirty();
+                tor->mark_changed();
+            }
+
+            // peer teardown touches libevent state owned by the session thread
             session->closeTorrentPeerConnections(tor);
-        }
-    });
+        });
 }
 
 std::string_view tr_torrent::effective_bind_interface() const noexcept
 {
-    return tr_net_effective_bind_interface(std::empty(bind_interface_) ? session->bind_interface() : bind_interface_);
+    return tr_net_effective_bind_interface(bind_interface_, session->bind_interface());
 }
 
 bool tr_torrent::bind_interface_matches_session() const noexcept

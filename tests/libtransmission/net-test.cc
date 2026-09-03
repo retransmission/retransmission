@@ -1057,6 +1057,26 @@ TEST_F(NetTest, effectiveBindInterface)
     }
 }
 
+TEST_F(NetTest, effectiveBindInterfaceForTorrent)
+{
+    // torrent value, session value, expected
+    static auto constexpr Tests = std::to_array<std::tuple<std::string_view, std::string_view, std::string_view>>({
+        { ""sv, ""sv, ""sv },
+        { ""sv, "utun4"sv, "utun4"sv }, // empty inherits the session's
+        { "  "sv, "utun4"sv, "utun4"sv },
+        { ""sv, "blocked"sv, "blocked"sv },
+        { "default"sv, "utun4"sv, ""sv },
+        { " utun4 "sv, ""sv, "utun4"sv },
+        { "en0"sv, "utun4"sv, "en0"sv },
+        { "blocked"sv, "utun4"sv, "blocked"sv },
+    });
+
+    for (auto const& [torrent_bind, session_bind, expected] : Tests) {
+        EXPECT_EQ(expected, tr_net_effective_bind_interface(torrent_bind, session_bind))
+            << '"' << torrent_bind << "\" with session \"" << session_bind << '"';
+    }
+}
+
 TEST_F(NetTest, curlInterfaceString)
 {
     EXPECT_FALSE(tr_netCurlInterfaceString(""sv));
@@ -1067,10 +1087,8 @@ TEST_F(NetTest, curlInterfaceString)
     ASSERT_TRUE(bound);
     EXPECT_EQ("if!utun4"sv, *bound);
 
-    // the blocked value names an interface that can't exist, so curl fails closed
-    auto const blocked = tr_netCurlInterfaceString("blocked"sv);
-    ASSERT_TRUE(blocked);
-    EXPECT_EQ("if!blocked"sv, *blocked);
+    // blocked is refused before the request reaches curl, so it gets no interface string
+    EXPECT_FALSE(tr_netCurlInterfaceString("blocked"sv));
 }
 
 TEST_F(NetTest, bindInterfaceMatches)
@@ -1108,4 +1126,27 @@ TEST_F(NetTest, interfaceIndex)
 #elif defined(__linux__)
     EXPECT_NE(0U, tr_net_interface_index(" lo "sv));
 #endif
+}
+
+TEST_F(NetTest, interfaceAddress)
+{
+    EXPECT_FALSE(tr_net_interface_address(""sv, TR_AF_INET));
+    EXPECT_FALSE(tr_net_interface_address("default"sv, TR_AF_INET));
+    EXPECT_FALSE(tr_net_interface_address("blocked"sv, TR_AF_INET));
+    EXPECT_FALSE(tr_net_interface_address("tr-no-such-interface"sv, TR_AF_INET));
+
+#if defined(__APPLE__)
+    auto constexpr Loopback = " lo0 "sv;
+#elif defined(__linux__)
+    auto constexpr Loopback = " lo "sv;
+#else
+    auto constexpr Loopback = ""sv;
+#endif
+
+    if constexpr (!std::empty(Loopback)) {
+        auto const addr = tr_net_interface_address(Loopback, TR_AF_INET);
+        ASSERT_TRUE(addr);
+        EXPECT_EQ(TR_AF_INET, addr->type);
+        EXPECT_EQ("127.0.0.1"sv, addr->display_name());
+    }
 }

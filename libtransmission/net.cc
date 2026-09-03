@@ -10,6 +10,7 @@
 #include <cstdint>
 #include <cstring>
 #include <iterator> // std::back_inserter
+#include <memory>
 #include <optional>
 #include <string>
 #include <string_view>
@@ -124,11 +125,15 @@ std::string_view tr_net_effective_bind_interface(std::string_view const bind_int
     return tr_net_interface_is_default(name) ? std::string_view{} : name;
 }
 
-bool tr_net_bind_interface_matches(std::string_view const torrent_bind, std::string_view const session_bind)
+std::string_view tr_net_effective_bind_interface(std::string_view const torrent_bind, std::string_view const session_bind)
 {
     auto const torrent_name = tr_strv_strip(torrent_bind);
-    auto const torrent_effective = tr_net_effective_bind_interface(std::empty(torrent_name) ? session_bind : torrent_name);
-    return torrent_effective == tr_net_effective_bind_interface(session_bind);
+    return tr_net_effective_bind_interface(std::empty(torrent_name) ? session_bind : torrent_name);
+}
+
+bool tr_net_bind_interface_matches(std::string_view const torrent_bind, std::string_view const session_bind)
+{
+    return tr_net_effective_bind_interface(torrent_bind, session_bind) == tr_net_effective_bind_interface(session_bind);
 }
 
 unsigned tr_net_interface_index(std::string_view const bind_interface)
@@ -139,6 +144,42 @@ unsigned tr_net_interface_index(std::string_view const bind_interface)
     }
 
     return if_nametoindex(std::string{ name }.c_str());
+}
+
+std::optional<tr_address> tr_net_interface_address(
+    std::string_view const bind_interface,
+    [[maybe_unused]] tr_address_type const type)
+{
+    auto const name = tr_net_effective_bind_interface(bind_interface);
+    if (std::empty(name) || tr_net_interface_is_blocked(name)) {
+        return {};
+    }
+
+#ifdef _WIN32
+    // interface binding is unsupported on Windows: tr_netSetSocketInterface
+    // fails closed there, so no caller gets as far as needing an address
+    return {};
+#else
+    struct ifaddrs* ifa = nullptr;
+    if (getifaddrs(&ifa) != 0) {
+        auto const err = errno;
+        tr_logAddDebug(fmt::format("Failed to retrieve interface list: {} ({})", err, tr_strerror(err)));
+        return {};
+    }
+    auto const ifa_uniq = std::unique_ptr<ifaddrs, void (*)(struct ifaddrs*)>{ ifa, freeifaddrs };
+
+    for (; ifa != nullptr; ifa = ifa->ifa_next) {
+        if (ifa->ifa_addr == nullptr || (ifa->ifa_flags & IFF_UP) == 0U || name != ifa->ifa_name) {
+            continue;
+        }
+
+        if (auto const if_addr = tr_socket_address::from_sockaddr(ifa->ifa_addr); if_addr && if_addr->address().type == type) {
+            return if_addr->address();
+        }
+    }
+
+    return {};
+#endif
 }
 
 bool tr_netSetSocketInterface(
@@ -195,8 +236,10 @@ bool tr_netSetSocketInterface(
 
 std::optional<std::string> tr_netCurlInterfaceString(std::string_view const bind_interface)
 {
+    // blocked gets no interface string: tr_web refuses the fetch before
+    // curl is involved, rather than naming an interface that can't exist
     auto const name = tr_net_effective_bind_interface(bind_interface);
-    if (std::empty(name)) {
+    if (std::empty(name) || tr_net_interface_is_blocked(name)) {
         return {};
     }
 

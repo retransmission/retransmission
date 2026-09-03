@@ -118,7 +118,7 @@ Here is a sample of the three basic types: respectively Boolean, Number and Stri
 #### Peers
  * **bind_address_ipv4:** String (default = "") Where to listen for peer connections. When no valid IPv4 address is provided, Transmission will bind to "0.0.0.0".
  * **bind_address_ipv6:** String (default = "") Where to listen for peer connections. When no valid IPv6 address is provided, Transmission will try to bind to your default global IPv6 address. If that didn't work, then Transmission will bind to "::".
- * **bind_interface:** String (default = "") Network interface name to route peer, tracker, DHT, LPD, and port-mapping traffic through on supported platforms (currently macOS), such as `utun4`. Empty or `default` means normal OS routing; `blocked` refuses all traffic. If a configured interface is unavailable, Transmission fails closed instead of falling back to the default route.
+ * **bind_interface:** String (default = "") Network interface name to route peer, tracker, DHT, LPD, and port-mapping traffic through on supported platforms (currently macOS), such as `utun4`. Empty or `default` means normal OS routing; `blocked` refuses all traffic. If a configured interface is unavailable, Transmission fails closed instead of falling back to the default route. Note that DNS lookups for HTTP trackers and webseeds are made by the system resolver and are not bound to the interface.
  * **peer_congestion_algorithm:** String. This is documented on https://www.pps.jussieu.fr/~jch/software/bittorrent/tcp-congestion-control.html.
  * **peer_limit_global:** Number (default = 200)
  * **peer_limit_per_torrent:** Number (default = 50)
