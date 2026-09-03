@@ -5,9 +5,11 @@
 
 #pragma once
 
+#include <atomic>
 #include <cstddef> // std::byte
 #include <cstdint>
 #include <future>
+#include <memory> // std::shared_ptr
 #include <string>
 #include <string_view>
 #include <utility> // std::pair
@@ -33,31 +35,43 @@ public:
     tr_metainfo_builder& operator=(tr_metainfo_builder&&) = delete;
     tr_metainfo_builder& operator=(tr_metainfo_builder const&) = delete;
 
+    // The result of a `make_checksums()` run:
+    // on failure, `error` is set.
+    // on success, `error` is empty and `piece_hashes` has the piece checksums.
+    struct Checksums {
+        tr_error error;
+        std::vector<std::byte> piece_hashes;
+    };
+
     // Generate piece checksums asynchronously.
-    // - This must be done before calling `benc()` or `save()`.
     // - Runs in a worker thread because it can be time-consuming.
-    // - Can be cancelled with `cancelChecksums()` and polled with `checksumStatus()`
-    // - Resolves with a `tr_error` which is set on failure or empty on success.
-    [[nodiscard]] std::future<tr_error> make_checksums()
+    // - The worker owns copies of the builder's state, so the builder
+    //   may safely be destroyed while the worker is still running.
+    // - Can be cancelled with `cancel_checksums()` and polled with `checksum_status()`.
+    // - On success, pass the result to `set_piece_hashes()` before calling `benc()` or `save()`.
+    [[nodiscard]] std::future<Checksums> make_checksums()
     {
-        return std::async(std::launch::async, [this]() {
-            auto error = tr_error{};
-            blocking_make_checksums(&error);
-            return error;
-        });
+        checksums_state_ = std::make_shared<ChecksumsState>();
+        return std::async(
+            std::launch::async,
+            blocking_make_checksums,
+            std::string{ tr_sys_path_dirname(top_) },
+            files_,
+            block_info_,
+            checksums_state_);
     }
 
-    // Returns the status of a `makeChecksums()` call:
+    // Returns the status of a `make_checksums()` run:
     // The current piece being tested and the total number of pieces in the torrent.
-    [[nodiscard]] constexpr std::pair<tr_piece_index_t, tr_piece_index_t> checksum_status() const noexcept
+    [[nodiscard]] std::pair<tr_piece_index_t, tr_piece_index_t> checksum_status() const noexcept
     {
-        return std::make_pair(checksum_piece_, block_info_.piece_count());
+        return std::make_pair(checksums_state_->current_piece.load(), block_info_.piece_count());
     }
 
-    // Tell the `makeChecksums()` worker thread to cleanly exit ASAP.
-    constexpr void cancel_checksums() noexcept
+    // Tell the `make_checksums()` worker thread to cleanly exit ASAP.
+    void cancel_checksums() noexcept
     {
-        cancel_ = true;
+        checksums_state_->cancel = true;
     }
 
     // generate the metainfo
@@ -82,6 +96,13 @@ public:
     void set_comment(std::string_view comment)
     {
         comment_ = comment;
+    }
+
+    // Store the piece checksums from a successful `make_checksums()` run
+    // for `benc()` and `save()` to use.
+    void set_piece_hashes(std::vector<std::byte> piece_hashes)
+    {
+        piece_hashes_ = std::move(piece_hashes);
     }
 
     bool set_piece_size(uint32_t piece_size) noexcept;
@@ -186,7 +207,20 @@ public:
     }
 
 private:
-    bool blocking_make_checksums(tr_error* error = nullptr);
+    // Cancellation flag and progress shared between a `make_checksums()`
+    // worker and the builder that launched it. Shared ownership is what
+    // lets the worker outlive the builder: the worker holds the block and
+    // copies of everything else it reads.
+    struct ChecksumsState {
+        std::atomic<tr_piece_index_t> current_piece = 0;
+        std::atomic<bool> cancel = false;
+    };
+
+    [[nodiscard]] static Checksums blocking_make_checksums(
+        std::string parent_dir,
+        tr_torrent_files files,
+        tr_block_info block_info,
+        std::shared_ptr<ChecksumsState> state);
 
     std::string top_;
     tr_torrent_files files_;
@@ -198,9 +232,8 @@ private:
     std::string comment_;
     std::string source_;
 
-    tr_piece_index_t checksum_piece_ = 0;
+    std::shared_ptr<ChecksumsState> checksums_state_ = std::make_shared<ChecksumsState>();
 
     bool is_private_ = false;
     bool anonymize_ = false;
-    bool cancel_ = false;
 };

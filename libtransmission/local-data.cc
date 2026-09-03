@@ -3,11 +3,14 @@
 // or any future license endorsed by Mnemosaic LLC.
 // License text can be found in the licenses/ folder.
 
+#include <algorithm> // std::ranges::shuffle
 #include <cerrno>
+#include <functional>
 #include <memory>
 #include <span>
 #include <string_view>
 #include <utility>
+#include <vector>
 
 #include "libtransmission/local-data.h"
 
@@ -55,7 +58,6 @@ struct HashResult {
     for (auto block = begin_block; block < end_block; ++block) {
         auto const byte_span = block_info.byte_span_for_block(block);
 
-        buffer.clear();
         if (auto const err = backend.read(id, byte_span, buffer); err != 0) {
             return { .error = err, .hash = {} };
         }
@@ -248,7 +250,9 @@ void LocalData::read(tr_torrent_id_t const id, tr_byte_span_t const byte_span, O
     }
 
     if (on_read) {
-        std::move(on_read)(id, byte_span, make_error(err), std::move(data));
+        finish([id, byte_span, err, data = std::move(data), on_read = std::move(on_read)]() mutable {
+            std::move(on_read)(id, byte_span, make_error(err), std::move(data));
+        });
     }
 }
 
@@ -259,7 +263,9 @@ void LocalData::test_piece(tr_torrent_id_t const id, tr_piece_index_t const piec
     auto const err = backend_->test_piece(id, piece, hash);
 
     if (on_test) {
-        std::move(on_test)(id, piece, make_error(err), err == 0 ? std::optional<tr_sha1_digest_t>{ hash } : std::nullopt);
+        finish([id, piece, err, hash, on_test = std::move(on_test)]() mutable {
+            std::move(on_test)(id, piece, make_error(err), err == 0 ? std::optional<tr_sha1_digest_t>{ hash } : std::nullopt);
+        });
     }
 }
 
@@ -275,22 +281,27 @@ void LocalData::write(
     }
 
     if (on_write) {
-        std::move(on_write)(id, byte_span, make_error(err));
+        finish([id, byte_span, err, on_write = std::move(on_write)]() mutable {
+            std::move(on_write)(id, byte_span, make_error(err));
+        });
     }
 }
 
 void LocalData::close_torrent(tr_torrent_id_t const tor_id)
 {
+    drain();
     backend_->close_torrent(tor_id);
 }
 
 void LocalData::close_file(tr_torrent_id_t const tor_id, tr_file_index_t const file_num)
 {
+    drain();
     backend_->close_file(tor_id, file_num);
 }
 
 void LocalData::close_all()
 {
+    drain();
     backend_->close_all();
 }
 
@@ -301,6 +312,7 @@ void LocalData::move(
     std::string_view const parent_name,
     OnMove on_move) // NOLINT(performance-unnecessary-value-param)
 {
+    drain();
     auto const err = backend_->move(id, old_parent, parent, parent_name);
 
     if (on_move) {
@@ -310,6 +322,7 @@ void LocalData::move(
 
 void LocalData::remove(tr_torrent_id_t const id, tr_torrent_remove_func remove_func)
 {
+    drain();
     static_cast<void>(backend_->remove(id, std::move(remove_func)));
 }
 
@@ -319,11 +332,69 @@ void LocalData::rename(
     std::string_view const newname,
     tr_torrent_rename_done_func callback)
 {
+    drain();
     backend_->rename(id, oldpath, newname, std::move(callback));
 }
 
 void LocalData::shutdown()
 {
+    drain();
+}
+
+void LocalData::set_wake(std::function<void()> wake)
+{
+    wake_ = std::move(wake);
+}
+
+void LocalData::set_completions(Completions const completions, uint32_t const seed)
+{
+    drain();
+    completions_ = completions;
+    rng_.seed(seed);
+}
+
+bool LocalData::defer_next() noexcept
+{
+    switch (completions_) {
+    case Completions::Deferred:
+        return true;
+
+    case Completions::Shuffled:
+        return (rng_() & 1U) != 0U;
+
+    default:
+        return false;
+    }
+}
+
+void LocalData::park(std::unique_ptr<Parked> completion)
+{
+    auto const was_idle = std::empty(parked_);
+    parked_.emplace_back(std::move(completion));
+    if (was_idle && wake_) {
+        wake_();
+    }
+}
+
+void LocalData::pump()
+{
+    // Take the whole queue up front. A completion can park more work,
+    // and that work belongs to the next pump, not this one.
+    auto parked = std::vector<std::unique_ptr<Parked>>{};
+    std::swap(parked, parked_);
+
+    std::ranges::shuffle(parked, rng_);
+
+    for (auto& completion : parked) {
+        completion->deliver();
+    }
+}
+
+void LocalData::drain()
+{
+    while (!std::empty(parked_)) {
+        pump();
+    }
 }
 
 uint64_t LocalData::enqueued_write_bytes() noexcept

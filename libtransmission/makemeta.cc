@@ -8,6 +8,7 @@
 #include <cmath>
 #include <ctime> // time()
 #include <iterator>
+#include <memory> // std::shared_ptr
 #include <set>
 #include <string>
 #include <string_view>
@@ -139,72 +140,75 @@ bool tr_metainfo_builder::set_piece_size(uint32_t piece_size) noexcept
     return true;
 }
 
-bool tr_metainfo_builder::blocking_make_checksums(tr_error* error)
+// Args are taken by value so the worker owns them:
+// it can keep running after the builder that launched it is gone.
+// NOLINTBEGIN(performance-unnecessary-value-param)
+tr_metainfo_builder::Checksums tr_metainfo_builder::blocking_make_checksums(
+    std::string const parent_dir,
+    tr_torrent_files const files,
+    tr_block_info const block_info,
+    std::shared_ptr<ChecksumsState> const state)
+// NOLINTEND(performance-unnecessary-value-param)
 {
-    checksum_piece_ = 0;
-    cancel_ = false;
+    auto result = Checksums{};
 
-    if (total_size() == 0U) {
-        if (error != nullptr) {
-            error->set(ENOENT, "zero-length torrents are not allowed"sv);
-        }
-
-        return false;
+    if (files.total_size() == 0U) {
+        result.error.set(ENOENT, "zero-length torrents are not allowed"sv);
+        return result;
     }
 
-    auto hashes = std::vector<std::byte>(std::size(tr_sha1_digest_t{}) * piece_count());
+    auto hashes = std::vector<std::byte>(std::size(tr_sha1_digest_t{}) * block_info.piece_count());
     auto* walk = std::data(hashes);
     auto sha = tr_sha1{};
 
     auto file_index = tr_file_index_t{ 0U };
     auto piece_index = tr_piece_index_t{ 0U };
-    auto total_remain = total_size();
+    auto total_remain = files.total_size();
     auto off = uint64_t{ 0U };
 
-    auto buf = std::vector<char>(piece_size());
+    auto buf = std::vector<char>(block_info.piece_size());
 
-    auto const parent = tr_sys_path_dirname(top_);
     auto fd = tr_sys_file_open(
-        tr_pathbuf{ parent, '/', path(file_index) },
+        tr_pathbuf{ parent_dir, '/', files.path(file_index) },
         TR_SYS_FILE_READ | TR_SYS_FILE_SEQUENTIAL,
         0,
-        error);
+        &result.error);
     if (fd == TR_BAD_SYS_FILE) {
-        return false;
+        return result;
     }
 
-    while (!cancel_ && (total_remain > 0U)) {
-        checksum_piece_ = piece_index;
+    while (!state->cancel && (total_remain > 0U)) {
+        state->current_piece = piece_index;
 
-        TR_ASSERT(piece_index < piece_count());
+        TR_ASSERT(piece_index < block_info.piece_count());
 
-        auto const piece_size = block_info_.piece_size(piece_index);
+        auto const piece_size = block_info.piece_size(piece_index);
         buf.resize(piece_size);
         auto* bufptr = std::data(buf);
 
         auto left_in_piece = piece_size;
         while (left_in_piece > 0U) {
-            auto const n_this_pass = std::min(file_size(file_index) - off, uint64_t{ left_in_piece });
+            auto const n_this_pass = std::min(files.file_size(file_index) - off, uint64_t{ left_in_piece });
             auto n_read = uint64_t{};
 
-            (void)tr_sys_file_read(fd, bufptr, n_this_pass, &n_read, error);
+            (void)tr_sys_file_read(fd, bufptr, n_this_pass, &n_read, &result.error);
             bufptr += n_read;
             off += n_read;
             left_in_piece -= n_read;
 
-            if (off == file_size(file_index)) {
+            if (off == files.file_size(file_index)) {
                 off = 0;
                 tr_sys_file_close(fd);
                 fd = TR_BAD_SYS_FILE;
 
-                if (++file_index < file_count()) {
+                if (++file_index < files.file_count()) {
                     fd = tr_sys_file_open(
-                        tr_pathbuf{ parent, '/', path(file_index) },
+                        tr_pathbuf{ parent_dir, '/', files.path(file_index) },
                         TR_SYS_FILE_READ | TR_SYS_FILE_SEQUENTIAL,
                         0,
-                        error);
+                        &result.error);
                     if (fd == TR_BAD_SYS_FILE) {
-                        return false;
+                        return result;
                     }
                 }
             }
@@ -221,28 +225,25 @@ bool tr_metainfo_builder::blocking_make_checksums(tr_error* error)
         ++piece_index;
     }
 
-    TR_ASSERT(cancel_ || size_t(walk - std::data(hashes)) == std::size(hashes));
-    TR_ASSERT(cancel_ || total_remain == 0U);
+    TR_ASSERT(state->cancel || size_t(walk - std::data(hashes)) == std::size(hashes));
+    TR_ASSERT(state->cancel || total_remain == 0U);
 
     if (fd != TR_BAD_SYS_FILE) {
         tr_sys_file_close(fd);
     }
 
-    if (cancel_) {
-        if (error != nullptr) {
-            error->set_from_errno(ECANCELED);
-        }
-
-        return false;
+    if (state->cancel) {
+        result.error.set_from_errno(ECANCELED);
+        return result;
     }
 
-    piece_hashes_ = std::move(hashes);
-    return true;
+    result.piece_hashes = std::move(hashes);
+    return result;
 }
 
 std::string tr_metainfo_builder::benc(tr_error* error) const
 {
-    TR_ASSERT_MSG(!std::empty(piece_hashes_), "did you forget to call makeChecksums() first?");
+    TR_ASSERT_MSG(!std::empty(piece_hashes_), "did you forget to call make_checksums() and set_piece_hashes() first?");
 
     auto const anonymize = this->anonymize();
     auto const& comment = this->comment();

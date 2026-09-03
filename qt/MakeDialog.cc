@@ -41,7 +41,7 @@ public:
     MakeProgressDialog(
         Session& session,
         tr_metainfo_builder& builder,
-        std::future<tr_error> future,
+        std::future<tr_metainfo_builder::Checksums> future,
         QString outfile,
         QWidget* parent = nullptr);
 
@@ -52,7 +52,7 @@ private slots:
 private:
     Session& session_;
     tr_metainfo_builder& builder_;
-    std::future<tr_error> future_;
+    std::future<tr_metainfo_builder::Checksums> future_;
     QString const outfile_;
     Ui::MakeProgressDialog ui_ = {};
     QTimer timer_;
@@ -63,7 +63,7 @@ private:
 MakeProgressDialog::MakeProgressDialog(
     Session& session,
     tr_metainfo_builder& builder,
-    std::future<tr_error> future,
+    std::future<tr_metainfo_builder::Checksums> future,
     QString outfile,
     QWidget* parent)
     : BaseDialog{ parent }
@@ -125,9 +125,11 @@ void MakeProgressDialog::onProgress()
     if (!is_done) {
         str = tr("Creating \"%1\"").arg(base);
     } else {
-        auto error = future_.get();
+        auto checksums = future_.get();
+        auto error = std::move(checksums.error);
 
         if (!error) {
+            builder_.set_piece_hashes(std::move(checksums.piece_hashes));
             builder_.save(outfile_.toStdString(), &error);
         }
 

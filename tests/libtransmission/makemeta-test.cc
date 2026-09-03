@@ -63,8 +63,9 @@ protected:
 
     static auto testBuilder(tr_metainfo_builder& builder)
     {
-        auto error = builder.make_checksums().get();
-        EXPECT_FALSE(error) << error;
+        auto checksums = builder.make_checksums().get();
+        EXPECT_FALSE(checksums.error) << checksums.error;
+        builder.set_piece_hashes(std::move(checksums.piece_hashes));
 
         auto metainfo = tr_torrent_metainfo{};
         EXPECT_TRUE(metainfo.parse_benc(builder.benc()));
@@ -225,7 +226,9 @@ TEST_F(MakemetaTest, announceSingleTracker)
     builder.set_announce_list(std::move(trackers));
 
     // generate the torrent and parse it as a variant
-    EXPECT_FALSE(builder.make_checksums().get().has_value());
+    auto checksums = builder.make_checksums().get();
+    EXPECT_FALSE(checksums.error.has_value());
+    builder.set_piece_hashes(std::move(checksums.piece_hashes));
     auto top = tr_variant_serde::benc().parse(builder.benc());
     ASSERT_TRUE(top);
     auto* map = top->get_if<tr_variant::Map>();
@@ -253,7 +256,9 @@ TEST_F(MakemetaTest, announceMultiTracker)
     builder.set_announce_list(std::move(trackers));
 
     // generate the torrent and parse it as a variant
-    EXPECT_FALSE(builder.make_checksums().get().has_value());
+    auto checksums = builder.make_checksums().get();
+    EXPECT_FALSE(checksums.error.has_value());
+    builder.set_piece_hashes(std::move(checksums.piece_hashes));
     auto top = tr_variant_serde::benc().parse(builder.benc());
     ASSERT_TRUE(top);
     auto* map = top->get_if<tr_variant::Map>();

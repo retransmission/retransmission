@@ -71,7 +71,7 @@ public:
         BaseObjectType* cast_item,
         Glib::RefPtr<Gtk::Builder> const& builder,
         tr_metainfo_builder& metainfo_builder,
-        std::future<tr_error> future,
+        std::future<tr_metainfo_builder::Checksums> future,
         std::string_view target,
         Glib::RefPtr<Session> const& core);
     MakeProgressDialog(MakeProgressDialog&&) = delete;
@@ -83,7 +83,7 @@ public:
     static std::unique_ptr<MakeProgressDialog> create(
         std::string_view target,
         tr_metainfo_builder& metainfo_builder,
-        std::future<tr_error> future,
+        std::future<tr_metainfo_builder::Checksums> future,
         Glib::RefPtr<Session> const& core);
 
     [[nodiscard]] bool success() const
@@ -99,7 +99,7 @@ private:
 
 private:
     tr_metainfo_builder& builder_;
-    std::future<tr_error> future_;
+    std::future<tr_metainfo_builder::Checksums> future_;
     std::string const target_;
     Glib::RefPtr<Session> const core_;
     bool success_ = false;
@@ -193,9 +193,11 @@ bool MakeProgressDialog::onProgressDialogRefresh()
     if (!is_done) {
         str = fmt::format(fmt::runtime(_("Creating '{path}'")), fmt::arg("path", base));
     } else {
-        auto error = future_.get();
+        auto checksums = future_.get();
+        auto error = std::move(checksums.error);
 
         if (!error) {
+            builder_.set_piece_hashes(std::move(checksums.piece_hashes));
             builder_.save(target_, &error);
         }
 
@@ -274,7 +276,7 @@ MakeProgressDialog::MakeProgressDialog(
     BaseObjectType* cast_item,
     Glib::RefPtr<Gtk::Builder> const& builder,
     tr_metainfo_builder& metainfo_builder,
-    std::future<tr_error> future,
+    std::future<tr_metainfo_builder::Checksums> future,
     std::string_view target,
     Glib::RefPtr<Session> const& core)
     : Gtk::Dialog(cast_item)
@@ -296,7 +298,7 @@ MakeProgressDialog::MakeProgressDialog(
 std::unique_ptr<MakeProgressDialog> MakeProgressDialog::create(
     std::string_view target,
     tr_metainfo_builder& metainfo_builder,
-    std::future<tr_error> future,
+    std::future<tr_metainfo_builder::Checksums> future,
     Glib::RefPtr<Session> const& core)
 {
     auto const builder = Gtk::Builder::create_from_resource(gtr_get_full_resource_path("MakeProgressDialog.ui"));

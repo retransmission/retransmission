@@ -18,7 +18,7 @@
 #include "libtransmission/bandwidth.h"
 #include "libtransmission/bitfield.h"
 #include "libtransmission/block-info.h"
-#include "libtransmission/inout.h"
+#include "libtransmission/local-data.h"
 #include "libtransmission/peer-common.h"
 #include "libtransmission/peer-mgr.h"
 #include "libtransmission/session.h"
@@ -357,7 +357,7 @@ void tr_webseed_task::use_fetched_blocks()
             break;
         }
 
-        if (tor.has_block(loc_.block)) {
+        if (tor.has_block_or_pending(loc_.block)) {
             content_.drain(block_size);
         } else {
             auto block_buf = std::vector<uint8_t>{};
@@ -366,13 +366,18 @@ void tr_webseed_task::use_fetched_blocks()
 
             session_->run_in_session_thread(
                 [buf = std::move(block_buf), loc = loc_, session = session_, tor_id = tor.id(), webseed = webseed_]() {
-                    if (auto* const torrent = session->torrents().get(tor_id)) {
-                        webseed->active_requests.unset(loc.block);
-                        if (tr_ioWrite(*torrent, session->openFiles(), loc, buf) != 0) {
-                            return;
-                        }
-                        webseed->publish(tr_peer_event::GotBlock(torrent->block_info(), loc.block));
+                    auto* const torrent = session->torrents().get(tor_id);
+                    if (torrent == nullptr) {
+                        return;
                     }
+
+                    webseed->active_requests.unset(loc.block);
+                    if (!torrent->on_block_received(loc.block)) {
+                        return;
+                    }
+
+                    webseed->publish(tr_peer_event::GotBlock(torrent->block_info(), loc.block));
+                    torrent->save_block(loc.block, std::make_unique<tr::LocalData::BlockData>(buf));
                 });
         }
 

@@ -36,16 +36,23 @@ jobs:
             const { head_sha } = context.payload.workflow_run;
 
             // The triggering run carries no PR number: `workflow_run`
-            // populates `pull_requests` only for same-repo branches.
-            const { data: associated } =
-              await github.rest.repos.listPullRequestsAssociatedWithCommit({
-                owner,
-                repo,
-                commit_sha: head_sha,
-              });
-            const pr = associated.find((pr) => pr.head.sha === head_sha);
+            // populates `pull_requests` only for same-repo branches. Nor can
+            // the head SHA be looked up: a fork PR's head commit is not an
+            // object in this repository, so it has no commit-to-PR
+            // association. The open PR list is the one place a fork's head
+            // SHA is visible from here.
+            const prs = await github.paginate(github.rest.pulls.list, {
+              owner,
+              repo,
+              state: 'open',
+              per_page: 100,
+            });
+            const pr = prs.find((pr) => pr.head.sha === head_sha);
             if (!pr) {
-              core.setFailed(`No pull request has ${head_sha} as its head.`);
+              // Merged, closed, or pushed to between the approval and this
+              // run. The label only marks open PRs awaiting review, so there
+              // is nothing to do.
+              core.warning(`No open pull request has ${head_sha} as its head.`);
               return;
             }
 

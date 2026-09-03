@@ -27,8 +27,10 @@
 #include <libtransmission/transmission.h>
 
 #include <libtransmission/crypto-utils.h> // tr_base64_decode()
+#include <libtransmission/env.h> // tr_env_key_exists()
 #include <libtransmission/error.h>
 #include <libtransmission/file.h> // tr_sys_file_*()
+#include <libtransmission/local-data.h>
 #include <libtransmission/macros.h>
 #include <libtransmission/quark.h>
 #include <libtransmission/torrent-builder.h>
@@ -498,6 +500,16 @@ protected:
         SandboxedTest::SetUp();
 
         session_ = sessionInit(settings());
+
+        // Pump parked completions from the session thread.
+        session_->local_data.set_wake([this]() { session_->queue_session_thread([this]() { session_->local_data.pump(); }); });
+
+        // tr::LocalData may deliver completions late and out of order.
+        // TR_LOCAL_DATA_SHUFFLE makes it do so, so code that assumes
+        // otherwise fails here.
+        if (tr_env_key_exists("TR_LOCAL_DATA_SHUFFLE")) {
+            session_->local_data.set_completions(tr::LocalData::Completions::Shuffled);
+        }
 
         // Every torrent in this session reports here when it finishes verifying,
         // so blockingTorrentVerify() can wait on any of them.

@@ -31,10 +31,14 @@ struct tr_torrent;
 
 /**
  * Writes the block specified by the piece index, offset, and length.
+ *
+ * Does no error handling of its own. The caller decides what to do with
+ * the returned code.
+ *
  * @return 0 on success, or an errno value on failure.
  */
 [[nodiscard]] tr_error_code_t tr_ioWrite(
-    tr_torrent& tor,
+    tr_torrent const& tor,
     tr_open_files& open_files,
     tr_block_info::Location const& loc,
     std::span<uint8_t const> writeme);

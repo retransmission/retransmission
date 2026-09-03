@@ -38,22 +38,27 @@ rpc_port=$((20000 + (RANDOM % 20000)))
 "$DAEMON_BIN" -f -g "$config_dir" --port "$rpc_port" --no-portmap > "$workdir/daemon.log" 2>&1 &
 daemon_pid=$!
 
-# A session takes the config dir lock before it creates the directories it
-# resumes from, so waiting for one of those is waiting for the lock. Asking
-# for the lock here would answer nothing. It is an open-file-description lock,
-# which a separate open in this shell does not contend with.
-held=0
+# settings.json is proof the daemon owns the dir: only a session that owns one
+# saves settings there. Asking for the lock here would answer nothing. It is an
+# open-file-description lock, which a separate open in this shell does not
+# contend with.
+#
+# The launch reads settings.json too. Without one it opens the connection dialog
+# and waits for a user instead of starting the session that finds the dir held.
+# bandwidth-groups.json is the rest of that same save, so waiting for it leaves
+# no startup write to land between the snapshot below and the comparison after.
+ready=0
 for _ in $(seq 1 300); do
-    if [ -d "$config_dir/resume" ]; then
-        held=1
+    if [ -f "$config_dir/settings.json" ] && [ -f "$config_dir/bandwidth-groups.json" ]; then
+        ready=1
         break
     fi
     kill -0 "$daemon_pid" 2> /dev/null || break
     sleep 0.1
 done
 
-if [ "$held" -ne 1 ]; then
-    echo "FAIL: the daemon never took '$config_dir'"
+if [ "$ready" -ne 1 ]; then
+    echo "FAIL: the daemon never settled on '$config_dir'"
     sed -n '1,10p' "$workdir/daemon.log"
     exit 1
 fi
