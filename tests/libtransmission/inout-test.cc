@@ -31,7 +31,7 @@ TEST_F(InOutTest, writeFailsWhenExistingFileCannotBeOpened)
     auto const path = tr_torrentFindFile(tor, 0U);
     ASSERT_FALSE(std::empty(path));
 
-    // tr_ioWrite() must run in the session thread; block until it's done
+    // the storage descriptor must be read in the session thread; block until the write is done
     auto const run_in_session_thread = [this, MaxWaitMsec](std::function<void()> fn) {
         auto const promise = std::make_shared<std::promise<void>>();
         auto future = promise->get_future();
@@ -45,7 +45,7 @@ TEST_F(InOutTest, writeFailsWhenExistingFileCannotBeOpened)
     auto err = tr_error_code_t{};
     auto const write_block = [session = session_, tor, &err]() {
         auto const buf = std::vector<uint8_t>(tr_block_info::BlockSize);
-        err = tr_ioWrite(*tor, session->openFiles(), tor->block_loc(0U), buf);
+        err = tr_ioWrite(*tor->storage_descriptor(), session->openFiles(), tor->block_loc(0U).byte, buf).error;
     };
 
     // Neither the fixture nor verify go through the fd pool, so warm it
