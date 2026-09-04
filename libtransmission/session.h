@@ -727,7 +727,6 @@ public:
     }
 
     void close_torrent_files(tr_torrent_id_t tor_id) noexcept;
-    void close_torrent_file(tr_torrent const& tor, tr_file_index_t file_num) noexcept;
 
     // Call after changing a setting that every torrent's storage
     // descriptor snapshots: the preallocation mode, or whether new
