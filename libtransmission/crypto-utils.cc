@@ -22,7 +22,6 @@ extern "C" {
 #include <simdutf.h>
 
 #include "libtransmission/crypto-utils.h"
-#include "libtransmission/string-utils.h"
 
 using namespace std::literals;
 

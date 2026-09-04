@@ -23,7 +23,6 @@
 
 #include "libtransmission/benc.h"
 #include "libtransmission/quark.h"
-#include "libtransmission/string-utils.h"
 #include "libtransmission/utils.h"
 #include "libtransmission/variant.h"
 

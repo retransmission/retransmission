@@ -15,7 +15,6 @@
 #include <libtransmission/env.h>
 #include <libtransmission/macros.h>
 #include <libtransmission/rpcimpl.h>
-#include <libtransmission/string-utils.h>
 #include <libtransmission/torrent-builder.h>
 #include <libtransmission/torrent-metainfo.h>
 #include <libtransmission/transmission.h>
