@@ -166,7 +166,35 @@ TEST_F(TorrentDiskIoTest, hashResultForInvalidatedPieceIsDropped)
     });
 }
 
+TEST_F(TorrentDiskIoTest, requestBudgetIsUnboundedOnTheSynchronousBackend)
+{
+    EXPECT_FALSE(session_->spare_request_blocks().has_value());
+}
+
 // ---
+
+TEST_F(TorrentDiskIoWorkersTest, queuedWritesConsumeTheRequestBudget)
+{
+    auto* const tor = zeroTorrentInit(ZeroTorrentState::Partial);
+    auto const block = tor->block_span_for_piece(0).begin;
+
+    auto budget = std::optional<size_t>{};
+    inSessionThread([this, &budget]() { budget = session_->spare_request_blocks(); });
+    ASSERT_TRUE(budget.has_value());
+    EXPECT_GT(*budget, 0U);
+
+    // a queued write takes its block out of the budget until it lands
+    session_->local_data.set_workers_paused(true);
+    inSessionThread([this, tor, block, &budget]() {
+        ASSERT_TRUE(tor->on_block_received(block));
+        tor->save_block(block, zeroBlock(tor, block));
+        EXPECT_EQ(*budget - 1U, session_->spare_request_blocks());
+    });
+
+    session_->local_data.set_workers_paused(false);
+    EXPECT_TRUE(waitFor([tor, block]() { return tor->has_block(block); }, MaxWaitMsec));
+    inSessionThread([this, &budget]() { EXPECT_EQ(budget, session_->spare_request_blocks()); });
+}
 
 TEST_F(TorrentDiskIoWorkersTest, blockCountsOnlyAfterItsWriteFinishes)
 {

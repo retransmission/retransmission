@@ -2276,7 +2276,16 @@ size_t tr_peerMsgsImpl::max_available_reqs() const
 
     // - Don't use std::clamp as `ceil` can be smaller than `Floor`
     // - Peer-supplied ReqQ should take the highest priority
-    return std::min(ceil, std::max(estimated_blocks_in_period, Floor));
+    auto n_reqs = std::min(ceil, std::max(estimated_blocks_in_period, Floor));
+
+    // Keep the session's in-flight data under its disk budget.
+    // The blocks already requested from this peer stay counted, so
+    // only new requests are clamped.
+    if (auto const spare = session->spare_request_blocks(); spare) {
+        n_reqs = std::min(n_reqs, active_req_count(tr_direction::ClientToPeer) + *spare);
+    }
+
+    return n_reqs;
 }
 
 } // namespace
