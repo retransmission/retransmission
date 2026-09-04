@@ -733,6 +733,17 @@ public:
     // files get the partial-file suffix.
     void invalidate_storage_descriptors();
 
+    // How many more blocks the swarms may request from peers and webseeds.
+    //
+    // Data in flight toward the disk is bounded: blocks requested but
+    // not yet received, plus blocks received but not yet written. That
+    // keeps a disk slower than the swarm from buffering without limit.
+    //
+    // No value means no bound. The synchronous disk backend writes a
+    // block before it reads the next one off the wire, so nothing
+    // buffers there.
+    [[nodiscard]] std::optional<size_t> spare_request_blocks() const noexcept;
+
     // announce ip
 
     [[nodiscard]] constexpr std::string const& announceIP() const noexcept
