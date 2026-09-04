@@ -302,7 +302,12 @@ bool tr_sys_file_read(tr_sys_file_t handle, void* buffer, uint64_t size, uint64_
 
 /**
  * @brief Like `pread()`, except that the position is undefined afterwards.
- *        Not thread-safe.
+ *        On POSIX this is `pread()`, so concurrent calls on one handle
+ *        are safe. On Windows it is `ReadFile()` with an `OVERLAPPED`,
+ *        which moves the handle's file pointer, so concurrent calls on
+ *        one handle read through each other. Callers that share a handle
+ *        across threads serialize themselves: see
+ *        `tr_open_files::OpenFile::io_lock()`.
  *
  * @param[in]  handle     Valid file descriptor.
  * @param[out] buffer     Buffer to store read data to.
@@ -345,7 +350,8 @@ bool tr_sys_file_write(
 
 /**
  * @brief Like `pwrite()`, except that the position is undefined afterwards.
- *        Not thread-safe.
+ *        Sharing one handle across threads has the same rules as
+ *        `tr_sys_file_read_at()`.
  *
  * @param[in]  handle        Valid file descriptor.
  * @param[in]  buffer        Buffer to get data being written from.

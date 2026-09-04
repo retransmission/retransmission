@@ -63,7 +63,8 @@ bool write_entire_buf(tr_sys_file_t const fd, uint64_t file_offset, std::span<ui
     return true;
 }
 
-[[nodiscard]] std::optional<tr_sys_file_t> get_fd(
+// Returns a RAII reference to the open file
+[[nodiscard]] tr_open_files::Handle get_file(
     tr_session& session,
     tr_open_files& open_files,
     tr_torrent const& tor,
@@ -74,15 +75,15 @@ bool write_entire_buf(tr_sys_file_t const fd, uint64_t file_offset, std::span<ui
     auto const tor_id = tor.id();
 
     // is the file already open in the fd pool?
-    if (auto const fd = open_files.get(tor_id, file_index, writable); fd) {
-        return fd;
+    if (auto file = open_files.get(tor_id, file_index, writable)) {
+        return file;
     }
 
     // does the file exist?
     auto const file_size = tor.file_size(file_index);
     auto const prealloc = writable && tor.file_is_wanted(file_index) ? session.preallocationMode() :
                                                                        tr_file_preallocation::None;
-    if (auto const found = tor.find_file(file_index); found) {
+    if (auto const found = tor.find_file(file_index)) {
         auto const filename = found->filename<tr_pathbuf>();
         return open_files.get(tor_id, file_index, writable, filename, prealloc, file_size);
     }
@@ -93,10 +94,10 @@ bool write_entire_buf(tr_sys_file_t const fd, uint64_t file_offset, std::span<ui
         auto const base = tor.current_dir().sv();
         auto const suffix = session.isIncompleteFileNamingEnabled() ? tr_torrent_files::PartialFileSuffix : ""sv;
         auto const filename = tr_pathbuf{ base, '/', tor.file_subpath(file_index), suffix };
-        if (auto const fd = open_files.get(tor_id, file_index, writable, filename, prealloc, file_size); fd) {
+        if (auto file = open_files.get(tor_id, file_index, writable, filename, prealloc, file_size); file) {
             // make a note that we just created a file
             session.add_file_created();
-            return fd;
+            return file;
         }
 
         err = errno;
@@ -129,12 +130,13 @@ void read_bytes(
         return;
     }
 
-    auto const fd = get_fd(session, open_files, tor, false, file_index, error);
-    if (!fd || error) {
+    auto const file = get_file(session, open_files, tor, false, file_index, error);
+    if (!file || error) {
         return;
     }
 
-    read_entire_buf(*fd, file_offset, buf, error);
+    auto const io_lock = file->io_lock();
+    read_entire_buf(file->fd(), file_offset, buf, error);
 
     if (error) {
         tr_logAddErrorTor(
@@ -164,12 +166,13 @@ void write_bytes(
         return;
     }
 
-    auto const fd = get_fd(session, open_files, tor, true, file_index, error);
-    if (!fd || error) {
+    auto const file = get_file(session, open_files, tor, true, file_index, error);
+    if (!file || error) {
         return;
     }
 
-    write_entire_buf(*fd, file_offset, buf, error);
+    auto const io_lock = file->io_lock();
+    write_entire_buf(file->fd(), file_offset, buf, error);
 
     if (error) {
         tr_logAddErrorTor(

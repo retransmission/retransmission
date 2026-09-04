@@ -11,7 +11,8 @@
 
 #include <cstddef> // for size_t
 #include <cstdint> // for uintX_t
-#include <optional>
+#include <memory>
+#include <mutex>
 #include <string_view>
 #include <utility>
 
@@ -23,9 +24,71 @@
 class tr_open_files
 {
 public:
-    [[nodiscard]] std::optional<tr_sys_file_t> get(tr_torrent_id_t tor_id, tr_file_index_t file_num, bool writable);
+    // An open descriptor, shared by everyone using the file.
+    //
+    // The pool holds one reference and hands out more. Evicting the entry
+    // or closing the file drops the pool's reference only: the descriptor
+    // survives until its last user is done with it. That is what lets a
+    // caller keep reading through a descriptor that close_torrent() or an
+    // LRU eviction has already removed from the pool, without the read
+    // landing on a descriptor the kernel has since reassigned.
+    class OpenFile
+    {
+    public:
+        OpenFile(tr_sys_file_t fd, bool writable) noexcept
+            : fd_{ fd }
+            , writable_{ writable }
+        {
+        }
 
-    [[nodiscard]] std::optional<tr_sys_file_t> get(
+        OpenFile(OpenFile const&) = delete;
+        OpenFile(OpenFile&&) = delete;
+        OpenFile& operator=(OpenFile const&) = delete;
+        OpenFile& operator=(OpenFile&&) = delete;
+        ~OpenFile();
+
+        [[nodiscard]] constexpr auto fd() const noexcept
+        {
+            return fd_;
+        }
+
+        [[nodiscard]] constexpr auto is_writable() const noexcept
+        {
+            return writable_;
+        }
+
+        // Hold this around positioned reads and writes.
+        //
+        // Everyone using a file shares one descriptor, and on Windows
+        // positioned IO moves that descriptor's file pointer, so two
+        // threads issuing it at once read or write through each other.
+        // POSIX pread and pwrite take the offset per call and don't, so
+        // the lock is absent there and reads stay parallel.
+        // NOLINTNEXTLINE(readability-convert-member-functions-to-static): locks io_mutex_ on Windows
+        [[nodiscard]] std::unique_lock<std::mutex> io_lock() const
+        {
+#ifdef _WIN32
+            return std::unique_lock{ io_mutex_ };
+#else
+            return {};
+#endif
+        }
+
+    private:
+        tr_sys_file_t fd_ = TR_BAD_SYS_FILE;
+        bool writable_ = false;
+
+#ifdef _WIN32
+        mutable std::mutex io_mutex_;
+#endif
+    };
+
+    // A reference to a pooled descriptor. Empty if the file isn't available.
+    using Handle = std::shared_ptr<OpenFile const>;
+
+    [[nodiscard]] Handle get(tr_torrent_id_t tor_id, tr_file_index_t file_num, bool writable);
+
+    [[nodiscard]] Handle get(
         tr_torrent_id_t tor_id,
         tr_file_index_t file_num,
         bool writable,
@@ -45,26 +108,9 @@ private:
         return std::make_pair(tor_id, file_num);
     }
 
-    struct Val {
-        Val() noexcept = default;
-        Val(Val const&) = delete;
-        Val& operator=(Val const&) = delete;
-        Val(Val&& that) noexcept
-        {
-            *this = std::move(that);
-        }
-        Val& operator=(Val&& that) noexcept
-        {
-            std::swap(this->fd_, that.fd_);
-            std::swap(this->writable_, that.writable_);
-            return *this;
-        }
-        ~Val();
-
-        tr_sys_file_t fd_ = TR_BAD_SYS_FILE;
-        bool writable_ = false;
-    };
-
     static constexpr size_t MaxOpenFiles = 32U;
-    tr_lru_cache<Key, Val, MaxOpenFiles> pool_;
+
+    // Guards pool_ only. Files are opened outside it: see get().
+    std::mutex mutex_;
+    tr_lru_cache<Key, Handle, MaxOpenFiles> pool_;
 };
