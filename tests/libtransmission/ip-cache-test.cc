@@ -221,6 +221,7 @@ TEST_F(IPCacheTest, onResponseIPQuery)
         {
             auto response = tr_web::FetchResponse{
                 .request_url = options.url,
+                .errmsg = {},
                 .status = http_code,
                 .headers = {},
                 .body = std::string{ AddrStr[k_] },

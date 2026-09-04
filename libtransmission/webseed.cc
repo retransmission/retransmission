@@ -401,8 +401,8 @@ void tr_webseed_task::on_data_received(size_t const n_bytes)
 
 void tr_webseed_task::on_partial_data_fetched(tr_web::FetchResponse const& web_response)
 {
-    auto const& [url, status, headers, body, primary_ip, did_connect, did_timeout, vtask] = web_response;
-    auto const success = status == 206;
+    auto const& [url, errmsg, status, headers, body, primary_ip, did_connect, did_timeout, vtask] = web_response;
+    auto const success = !errmsg && status == 206;
 
     auto* const task = static_cast<tr_webseed_task*>(vtask);
 

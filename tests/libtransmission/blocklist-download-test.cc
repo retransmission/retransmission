@@ -336,6 +336,7 @@ public:
     {
         auto response = tr_web::FetchResponse{
             .request_url = "https://example.com/blocklist"s,
+            .errmsg = {},
             .status = status,
             .headers = {},
             .body = std::move(body),

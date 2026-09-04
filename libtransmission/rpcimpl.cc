@@ -1370,12 +1370,24 @@ void onPortTested(tr_web::FetchResponse const& web_response)
 {
     using namespace JsonRpc;
 
-    auto const& [url, status, headers, body, primary_ip, did_connect, did_timeout, user_data] = web_response;
+    auto const& [url, errmsg, status, headers, body, primary_ip, did_connect, did_timeout, user_data] = web_response;
     auto* data = static_cast<tr_rpc_idle_data*>(user_data);
 
     if (auto const addr = tr_address::from_string(primary_ip);
         !data->args_out.value_if<std::string_view>(TR_KEY_ip_protocol).has_value() && addr && addr->is_valid()) {
         data->args_out.try_emplace(TR_KEY_ip_protocol, addr->is_ipv4() ? "ipv4"sv : "ipv6"sv);
+    }
+
+    if (errmsg) {
+        tr_rpc_idle_done(
+            data,
+            Error::FETCH_ERROR,
+            fmt::format(
+                fmt::runtime(_("Couldn't test port: {errmsg}, response code: {error} ({error_code})")),
+                fmt::arg("errmsg", *errmsg),
+                fmt::arg("error", tr_webGetResponseStr(status)),
+                fmt::arg("error_code", status)));
+        return;
     }
 
     if (status != 200) {
@@ -1504,7 +1516,7 @@ struct add_torrent_idle_data {
 
 void onMetadataFetched(tr_web::FetchResponse const& web_response)
 {
-    auto const& [url, status, headers, body, primary_ip, did_connect, did_timeout, user_data] = web_response;
+    auto const& [url, errmsg, status, headers, body, primary_ip, did_connect, did_timeout, user_data] = web_response;
     auto* data = static_cast<struct add_torrent_idle_data*>(user_data);
 
     auto const parsed_url = tr_urlParse(url);
@@ -1520,18 +1532,22 @@ void onMetadataFetched(tr_web::FetchResponse const& web_response)
             status,
             std::size(body)));
 
-    if (status == 200 || status == 221) // http or ftp success..
-    {
-        data->builder.set_metainfo(body);
-        add_torrent_impl(data->data, data->builder);
-    } else {
+    if (errmsg) {
         tr_rpc_idle_done(
             data->data,
             JsonRpc::Error::FETCH_ERROR,
             fmt::format(
-                fmt::runtime(_("Couldn't fetch torrent: {error} ({error_code})")),
-                fmt::arg("error", response_str),
+                fmt::runtime(_("Couldn't fetch torrent: {errmsg}, Response code: ({error_code})")),
+                fmt::arg("errmsg", *errmsg),
                 fmt::arg("error_code", status)));
+    } else if (status != 200 && status != 221) /* not http or ftp success.. */ {
+        tr_rpc_idle_done(
+            data->data,
+            JsonRpc::Error::FETCH_ERROR,
+            fmt::format(fmt::runtime(_("Couldn't fetch torrent: ({error_code})")), fmt::arg("error_code", status)));
+    } else {
+        data->builder.set_metainfo(body);
+        add_torrent_impl(data->data, data->builder);
     }
 
     delete data;
