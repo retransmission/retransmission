@@ -281,8 +281,6 @@ typedef NS_ENUM(NSInteger, TrackerSegmentTag) {
 
 - (void)addTrackers
 {
-    [self.view.window makeKeyWindow];
-
     NSAssert1(self.fTorrents.count == 1, @"Attempting to add tracker with %ld transfers selected", self.fTorrents.count);
 
     [self.fTrackers addObject:@{ @"Tier" : @-1 }];

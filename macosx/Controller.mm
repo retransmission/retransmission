@@ -821,8 +821,6 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
 
     [nc addObserver:self selector:@selector(updateForExpandCollapse) name:@"OutlineExpandCollapse" object:nil];
 
-    [nc addObserver:self.fWindow selector:@selector(makeKeyWindow) name:@"MakeWindowKey" object:nil];
-
     [nc addObserver:self selector:@selector(fullUpdateUI) name:@"UpdateTorrentsState" object:nil];
 
     [nc addObserver:self selector:@selector(applyFilter) name:@"ApplyFilter" object:nil];

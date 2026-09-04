@@ -6,12 +6,6 @@
 
 @implementation WebSeedTableView
 
-- (void)mouseDown:(NSEvent*)event
-{
-    [self.window makeKeyWindow];
-    [super mouseDown:event];
-}
-
 - (void)copy:(id)sender
 {
     NSIndexSet* indexes = self.selectedRowIndexes;

@@ -2,11 +2,8 @@
 // It may be used under the MIT (SPDX: MIT) license.
 // License text can be found in the licenses/ folder.
 
-#import "InfoWindowController.h"
-#import "FileListNode.h"
 #import "BaseFileNameCellView.h"
 #import "FileOutlineView.h"
-#import "Torrent.h"
 
 @interface FileOutlineView ()
 
@@ -20,12 +17,6 @@
 
     self.autoresizesOutlineColumn = NO;
     self.indentationPerLevel = 14.0;
-}
-
-- (void)mouseDown:(NSEvent*)event
-{
-    [self.window makeKeyWindow];
-    [super mouseDown:event];
 }
 
 - (NSMenu*)menuForEvent:(NSEvent*)event

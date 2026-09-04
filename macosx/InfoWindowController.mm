@@ -89,7 +89,9 @@ typedef NS_ENUM(NSUInteger, TabTag) {
     windowRect.size.height = windowHeight;
     [window setFrame:windowRect display:NO];
 
-    // Let inspector gain keyboard focus when clicked on non-interactive areas
+    // Any click makes the inspector the key window.
+    // Table views return NO from needsPanelToBecomeKey.
+    // Without this, the file, tracker and web seed lists would not focus it.
     window.becomesKeyOnlyIfNeeded = NO;
 
     //disable green maximise window button

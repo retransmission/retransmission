@@ -8,12 +8,6 @@
 
 @implementation TrackerTableView
 
-- (void)mouseDown:(NSEvent*)event
-{
-    [self.window makeKeyWindow];
-    [super mouseDown:event];
-}
-
 - (void)copy:(id)sender
 {
     NSMutableArray* addresses = [NSMutableArray arrayWithCapacity:self.trackers.count];
