@@ -39,6 +39,7 @@ TEST_F(OpenFilesTest, getCachedFailsIfNotCached)
 
 TEST_F(OpenFilesTest, getOpensIfNotCached)
 {
+    auto error = tr_error{};
     static auto constexpr Contents = "Hello, World!\n"sv;
     auto filename = tr_pathbuf{ sandboxDir(), "/test-file.txt" };
     createFileWithContents(filename, Contents);
@@ -47,7 +48,7 @@ TEST_F(OpenFilesTest, getOpensIfNotCached)
     EXPECT_FALSE(session_->openFiles().get(0, 0, false));
 
     // confirm that we can cache the file
-    auto const file = session_->openFiles().get(0, 0, false, filename, PreallocateFull, std::size(Contents));
+    auto const file = session_->openFiles().get(0, 0, false, filename, PreallocateFull, std::size(Contents), error);
     ASSERT_TRUE(file);
     EXPECT_NE(TR_BAD_SYS_FILE, file->fd());
 
@@ -61,23 +62,25 @@ TEST_F(OpenFilesTest, getOpensIfNotCached)
 
 TEST_F(OpenFilesTest, getCacheSucceedsIfCached)
 {
+    auto error = tr_error{};
     static auto constexpr Contents = "Hello, World!\n"sv;
     auto filename = tr_pathbuf{ sandboxDir(), "/test-file.txt" };
     createFileWithContents(filename, Contents);
 
     EXPECT_FALSE(session_->openFiles().get(0, 0, false));
-    EXPECT_TRUE(session_->openFiles().get(0, 0, false, filename, PreallocateFull, std::size(Contents)));
+    EXPECT_TRUE(session_->openFiles().get(0, 0, false, filename, PreallocateFull, std::size(Contents), error));
     EXPECT_TRUE(session_->openFiles().get(0, 0, false));
 }
 
 TEST_F(OpenFilesTest, getCachedReturnsTheSameFd)
 {
+    auto error = tr_error{};
     static auto constexpr Contents = "Hello, World!\n"sv;
     auto filename = tr_pathbuf{ sandboxDir(), "/test-file.txt" };
     createFileWithContents(filename, Contents);
 
     EXPECT_FALSE(session_->openFiles().get(0, 0, false));
-    auto const file1 = session_->openFiles().get(0, 0, false, filename, PreallocateFull, std::size(Contents));
+    auto const file1 = session_->openFiles().get(0, 0, false, filename, PreallocateFull, std::size(Contents), error);
     auto const file2 = session_->openFiles().get(0, 0, false);
     ASSERT_TRUE(file1);
     ASSERT_TRUE(file2);
@@ -87,13 +90,14 @@ TEST_F(OpenFilesTest, getCachedReturnsTheSameFd)
 
 TEST_F(OpenFilesTest, getCachedFailsIfWrongPermissions)
 {
+    auto error = tr_error{};
     static auto constexpr Contents = "Hello, World!\n"sv;
     auto filename = tr_pathbuf{ sandboxDir(), "/test-file.txt" };
     createFileWithContents(filename, Contents);
 
     // cache it in ro mode
     EXPECT_FALSE(session_->openFiles().get(0, 0, false));
-    EXPECT_TRUE(session_->openFiles().get(0, 0, false, filename, PreallocateFull, std::size(Contents)));
+    EXPECT_TRUE(session_->openFiles().get(0, 0, false, filename, PreallocateFull, std::size(Contents), error));
 
     // now try to get it in r/w mode
     EXPECT_TRUE(session_->openFiles().get(0, 0, false));
@@ -102,22 +106,23 @@ TEST_F(OpenFilesTest, getCachedFailsIfWrongPermissions)
 
 TEST_F(OpenFilesTest, opensInReadOnlyUnlessWritableIsRequested)
 {
+    auto error = tr_error{};
     static auto constexpr Contents = "Hello, World!\n"sv;
     auto filename = tr_pathbuf{ sandboxDir(), "/test-file.txt" };
     createFileWithContents(filename, Contents);
 
     // cache a file read-only mode
-    auto const file = session_->openFiles().get(0, 0, false, filename, PreallocateFull, std::size(Contents));
+    auto const file = session_->openFiles().get(0, 0, false, filename, PreallocateFull, std::size(Contents), error);
     ASSERT_TRUE(file);
 
     // confirm that writing to it fails
-    auto error = tr_error{};
     EXPECT_FALSE(tr_sys_file_write(file->fd(), std::data(Contents), std::size(Contents), nullptr, &error));
     EXPECT_TRUE(error);
 }
 
 TEST_F(OpenFilesTest, createsMissingFileIfWriteRequested)
 {
+    auto error = tr_error{};
     static auto constexpr Contents = "Hello, World!\n"sv;
     auto filename = tr_pathbuf{ sandboxDir(), "/test-file.txt" };
     EXPECT_FALSE(tr_sys_path_exists(filename));
@@ -126,7 +131,7 @@ TEST_F(OpenFilesTest, createsMissingFileIfWriteRequested)
     EXPECT_FALSE(file);
     EXPECT_FALSE(tr_sys_path_exists(filename));
 
-    file = session_->openFiles().get(0, 0, true, filename, PreallocateFull, std::size(Contents));
+    file = session_->openFiles().get(0, 0, true, filename, PreallocateFull, std::size(Contents), error);
     ASSERT_TRUE(file);
     EXPECT_NE(TR_BAD_SYS_FILE, file->fd());
     EXPECT_TRUE(tr_sys_path_exists(filename));
@@ -134,12 +139,13 @@ TEST_F(OpenFilesTest, createsMissingFileIfWriteRequested)
 
 TEST_F(OpenFilesTest, closeFileClosesTheFile)
 {
+    auto error = tr_error{};
     static auto constexpr Contents = "Hello, World!\n"sv;
     auto filename = tr_pathbuf{ sandboxDir(), "/test-file.txt" };
     createFileWithContents(filename, Contents);
 
     // cache a file read-only mode
-    EXPECT_TRUE(session_->openFiles().get(0, 0, false, filename, PreallocateFull, std::size(Contents)));
+    EXPECT_TRUE(session_->openFiles().get(0, 0, false, filename, PreallocateFull, std::size(Contents), error));
     EXPECT_TRUE(session_->openFiles().get(0, 0, false));
 
     // close the file
@@ -151,11 +157,12 @@ TEST_F(OpenFilesTest, closeFileClosesTheFile)
 
 TEST_F(OpenFilesTest, closingAFileLeavesItReadableForItsHolders)
 {
+    auto error = tr_error{};
     static auto constexpr Contents = "Hello, World!\n"sv;
     auto filename = tr_pathbuf{ sandboxDir(), "/test-file.txt" };
     createFileWithContents(filename, Contents);
 
-    auto const file = session_->openFiles().get(0, 0, false, filename, PreallocateFull, std::size(Contents));
+    auto const file = session_->openFiles().get(0, 0, false, filename, PreallocateFull, std::size(Contents), error);
     ASSERT_TRUE(file);
 
     // Uncache it while we're still holding it. An LRU eviction and a
@@ -172,15 +179,16 @@ TEST_F(OpenFilesTest, closingAFileLeavesItReadableForItsHolders)
 
 TEST_F(OpenFilesTest, reopeningWritableLeavesTheReadOnlyHolderAlone)
 {
+    auto error = tr_error{};
     static auto constexpr Contents = "Hello, World!\n"sv;
     auto filename = tr_pathbuf{ sandboxDir(), "/test-file.txt" };
     createFileWithContents(filename, Contents);
 
-    auto const ro = session_->openFiles().get(0, 0, false, filename, PreallocateFull, std::size(Contents));
+    auto const ro = session_->openFiles().get(0, 0, false, filename, PreallocateFull, std::size(Contents), error);
     ASSERT_TRUE(ro);
 
     // asking for write access drops the read-only entry and opens a new one
-    auto const rw = session_->openFiles().get(0, 0, true, filename, PreallocateFull, std::size(Contents));
+    auto const rw = session_->openFiles().get(0, 0, true, filename, PreallocateFull, std::size(Contents), error);
     ASSERT_TRUE(rw);
     EXPECT_NE(ro, rw);
 
@@ -193,16 +201,17 @@ TEST_F(OpenFilesTest, reopeningWritableLeavesTheReadOnlyHolderAlone)
 
 TEST_F(OpenFilesTest, closeTorrentClosesTheTorrentFiles)
 {
+    auto error = tr_error{};
     static auto constexpr Contents = "Hello, World!\n"sv;
     static auto constexpr TorId = tr_torrent_id_t{ 0 };
 
     auto filename = tr_pathbuf{ sandboxDir(), "/a.txt" };
     createFileWithContents(filename, Contents);
-    EXPECT_TRUE(session_->openFiles().get(TorId, 1, false, filename, PreallocateFull, std::size(Contents)));
+    EXPECT_TRUE(session_->openFiles().get(TorId, 1, false, filename, PreallocateFull, std::size(Contents), error));
 
     filename.assign(sandboxDir(), "/b.txt");
     createFileWithContents(filename, Contents);
-    EXPECT_TRUE(session_->openFiles().get(TorId, 3, false, filename, PreallocateFull, std::size(Contents)));
+    EXPECT_TRUE(session_->openFiles().get(TorId, 3, false, filename, PreallocateFull, std::size(Contents), error));
 
     // confirm that closing a different torrent does not affect these files
     session_->openFiles().close_torrent(TorId + 1);
@@ -238,8 +247,9 @@ TEST_F(OpenFilesTest, servesConcurrentCallersWhileFilesAreClosed)
             for (auto pass = 0; pass < NumPasses; ++pass) {
                 auto const file_num = (reader + pass) % NumFiles;
                 auto const filename = tr_pathbuf{ sandboxDir(), fmt::format("/file-{:d}.txt"sv, file_num) };
+                auto error = tr_error{};
                 auto const file = session_->openFiles()
-                                      .get(TorId, file_num, false, filename, PreallocateFull, std::size(Contents));
+                                      .get(TorId, file_num, false, filename, PreallocateFull, std::size(Contents), error);
                 if (!file) {
                     ++bad_reads;
                     continue;
@@ -272,6 +282,7 @@ TEST_F(OpenFilesTest, servesConcurrentCallersWhileFilesAreClosed)
 
 TEST_F(OpenFilesTest, closesLeastRecentlyUsedFile)
 {
+    auto error = tr_error{};
     static auto constexpr Contents = "Hello, World!\n"sv;
     static auto constexpr TorId = tr_torrent_id_t{ 0 };
     static auto constexpr LargerThanCacheLimit = 100;
@@ -281,7 +292,7 @@ TEST_F(OpenFilesTest, closesLeastRecentlyUsedFile)
     // supplant older ones.
     for (int i = 0; i < LargerThanCacheLimit; ++i) {
         auto filename = tr_pathbuf{ sandboxDir(), fmt::format("/file-{:d}.txt"sv, i) };
-        EXPECT_TRUE(session_->openFiles().get(TorId, i, true, filename, PreallocateFull, std::size(Contents)));
+        EXPECT_TRUE(session_->openFiles().get(TorId, i, true, filename, PreallocateFull, std::size(Contents), error));
     }
 
     // Do a lookup-only for the files again *in the same order*. By following the
