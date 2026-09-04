@@ -699,6 +699,7 @@ TEST_F(AnnouncerUdpTest, canAnnounceIPv4)
         .peer_id = tr_peerIdInit(),
         .info_hash = tr_rand_obj<tr_sha1_digest_t>(),
         .log_name = {},
+        .bind_interface = {},
     };
 
     auto const expected_response = tr_announce_response{
@@ -784,6 +785,7 @@ TEST_F(AnnouncerUdpTest, canAnnounceIPv6)
         .peer_id = tr_peerIdInit(),
         .info_hash = tr_rand_obj<tr_sha1_digest_t>(),
         .log_name = {},
+        .bind_interface = {},
     };
 
     auto const expected_response = tr_announce_response{

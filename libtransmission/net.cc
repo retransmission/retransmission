@@ -10,6 +10,7 @@
 #include <cstdint>
 #include <cstring>
 #include <iterator> // std::back_inserter
+#include <memory>
 #include <optional>
 #include <string>
 #include <string_view>
@@ -35,6 +36,7 @@
 #include "libtransmission/string-utils.h"
 #include "libtransmission/tr-assert.h"
 #include "libtransmission/tr-strbuf.h"
+#include "libtransmission/transmission.h"
 #include "libtransmission/types.h"
 #include "libtransmission/utils.h"
 
@@ -106,6 +108,144 @@ int tr_make_listen_socket_ipv6only(tr_socket_t const sock)
 #endif
 }
 
+bool tr_net_interface_is_default(std::string_view const bind_interface)
+{
+    auto const name = tr_strv_strip(bind_interface);
+    return std::empty(name) || name == TrBindInterfaceDefault;
+}
+
+bool tr_net_interface_is_blocked(std::string_view const bind_interface)
+{
+    return tr_strv_strip(bind_interface) == TrBindInterfaceBlocked;
+}
+
+std::string_view tr_net_effective_bind_interface(std::string_view const bind_interface)
+{
+    auto const name = tr_strv_strip(bind_interface);
+    return tr_net_interface_is_default(name) ? std::string_view{} : name;
+}
+
+std::string_view tr_net_effective_bind_interface(std::string_view const torrent_bind, std::string_view const session_bind)
+{
+    auto const torrent_name = tr_strv_strip(torrent_bind);
+    return tr_net_effective_bind_interface(std::empty(torrent_name) ? session_bind : torrent_name);
+}
+
+bool tr_net_bind_interface_matches(std::string_view const torrent_bind, std::string_view const session_bind)
+{
+    return tr_net_effective_bind_interface(torrent_bind, session_bind) == tr_net_effective_bind_interface(session_bind);
+}
+
+unsigned tr_net_interface_index(std::string_view const bind_interface)
+{
+    auto const name = tr_net_effective_bind_interface(bind_interface);
+    if (std::empty(name) || tr_net_interface_is_blocked(name)) {
+        return 0U;
+    }
+
+    return if_nametoindex(std::string{ name }.c_str());
+}
+
+std::optional<tr_address> tr_net_interface_address(
+    std::string_view const bind_interface,
+    [[maybe_unused]] tr_address_type const type)
+{
+    auto const name = tr_net_effective_bind_interface(bind_interface);
+    if (std::empty(name) || tr_net_interface_is_blocked(name)) {
+        return {};
+    }
+
+#ifdef _WIN32
+    // interface binding is unsupported on Windows: tr_netSetSocketInterface
+    // fails closed there, so no caller gets as far as needing an address
+    return {};
+#else
+    struct ifaddrs* ifa = nullptr;
+    if (getifaddrs(&ifa) != 0) {
+        auto const err = errno;
+        tr_logAddDebug(fmt::format("Failed to retrieve interface list: {} ({})", err, tr_strerror(err)));
+        return {};
+    }
+    auto const ifa_uniq = std::unique_ptr<ifaddrs, void (*)(struct ifaddrs*)>{ ifa, freeifaddrs };
+
+    for (; ifa != nullptr; ifa = ifa->ifa_next) {
+        if (ifa->ifa_addr == nullptr || (ifa->ifa_flags & IFF_UP) == 0U || name != ifa->ifa_name) {
+            continue;
+        }
+
+        if (auto const if_addr = tr_socket_address::from_sockaddr(ifa->ifa_addr); if_addr && if_addr->address().type == type) {
+            return if_addr->address();
+        }
+    }
+
+    return {};
+#endif
+}
+
+bool tr_netSetSocketInterface(
+    tr_socket_t const sock,
+    [[maybe_unused]] tr_address_type const type,
+    std::string_view const bind_interface,
+    bool const suppress_msgs)
+{
+    auto const name = tr_net_effective_bind_interface(bind_interface);
+    if (std::empty(name)) {
+        return true;
+    }
+
+    // a deliberate "bind to nothing" setting: refuse quietly, since
+    // the session logs the policy once when the setting changes
+    if (tr_net_interface_is_blocked(name)) {
+        set_sockerrno(ENETDOWN);
+        tr_logAddTrace(fmt::format("Refusing socket {}: interface binding is '{}'", sock, name));
+        return false;
+    }
+
+#ifdef __APPLE__
+    auto const if_index = tr_net_interface_index(name);
+    if (if_index == 0U) {
+        set_sockerrno(ENXIO);
+        if (!suppress_msgs) {
+            tr_logAddWarn(fmt::format("Couldn't bind socket to interface '{}': interface not found", name));
+        }
+        return false;
+    }
+
+    auto const level = type == TR_AF_INET ? IPPROTO_IP : IPPROTO_IPV6;
+    auto const option = type == TR_AF_INET ? IP_BOUND_IF : IPV6_BOUND_IF;
+    auto const index = static_cast<int>(if_index);
+    if (setsockopt(sock, level, option, reinterpret_cast<char const*>(&index), sizeof(index)) == -1) {
+        if (!suppress_msgs) {
+            tr_logAddWarn(
+                fmt::format("Couldn't bind socket to interface '{}': {} ({})", name, tr_net_strerror(sockerrno), sockerrno));
+        }
+        return false;
+    }
+
+    tr_logAddTrace(fmt::format("Bound socket {} to interface '{}'", sock, name));
+    return true;
+#else
+    // the session warns once when the setting changes; per-socket failures stay quiet
+    set_sockerrno(ENXIO);
+    if (!suppress_msgs) {
+        tr_logAddDebug(fmt::format("Interface binding is not supported on this platform: '{}'", name));
+    }
+    return false;
+#endif
+}
+
+std::optional<std::string> tr_netCurlInterfaceString(std::string_view const bind_interface)
+{
+    // blocked gets no interface string: tr_web refuses the fetch before
+    // curl is involved, rather than naming an interface that can't exist
+    auto const name = tr_net_effective_bind_interface(bind_interface);
+    if (std::empty(name) || tr_net_interface_is_blocked(name)) {
+        return {};
+    }
+
+    return fmt::format("if!{}", name);
+}
+
 // - TCP Sockets
 
 void tr_netSetDiffServ([[maybe_unused]] tr_socket_t s, [[maybe_unused]] int tos, tr_address_type type)
@@ -135,7 +275,12 @@ void tr_netSetDiffServ([[maybe_unused]] tr_socket_t s, [[maybe_unused]] int tos,
 
 namespace
 {
-tr_socket_t tr_netBindTCPImpl(tr_address const& addr, tr_port port, bool suppress_msgs, int* err_out)
+tr_socket_t tr_netBindTCPImpl(
+    tr_address const& addr,
+    tr_port port,
+    bool suppress_msgs,
+    int* err_out,
+    std::string_view bind_interface)
 {
     TR_ASSERT(addr.is_valid());
 
@@ -158,6 +303,12 @@ tr_socket_t tr_netBindTCPImpl(tr_address const& addr, tr_port port, bool suppres
     if (addr.is_ipv6() && tr_make_listen_socket_ipv6only(fd) == -1 &&
         sockerrno != ENOPROTOOPT) // if the kernel doesn't support it, ignore it
     {
+        *err_out = sockerrno;
+        tr_net_close_socket(fd);
+        return TR_BAD_SOCKET;
+    }
+
+    if (!tr_netSetSocketInterface(fd, addr.type, bind_interface, suppress_msgs)) {
         *err_out = sockerrno;
         tr_net_close_socket(fd);
         return TR_BAD_SOCKET;
@@ -218,10 +369,10 @@ tr_socket_t tr_netBindTCPImpl(tr_address const& addr, tr_port port, bool suppres
 }
 } // namespace
 
-tr_socket_t tr_netBindTCP(tr_address const& addr, tr_port port, bool suppress_msgs)
+tr_socket_t tr_netBindTCP(tr_address const& addr, tr_port port, bool suppress_msgs, std::string_view bind_interface)
 {
     int unused = 0;
-    return tr_netBindTCPImpl(addr, port, suppress_msgs, &unused);
+    return tr_netBindTCPImpl(addr, port, suppress_msgs, &unused, bind_interface);
 }
 
 std::optional<std::pair<tr_socket_address, tr_socket_t>> tr_netAccept(tr_session* session, tr_socket_t listening_sockfd)

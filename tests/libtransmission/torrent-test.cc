@@ -6,8 +6,12 @@
 #include <array>
 #include <cstddef>
 #include <ranges>
+#include <string_view>
+#include <tuple>
 
+#include <libtransmission/string-utils.h>
 #include <libtransmission/torrent.h>
+#include <libtransmission/transmission.h>
 #include <libtransmission/types.h>
 
 #include "test-fixtures.h"
@@ -130,5 +134,42 @@ TEST_F(TorrentTest, queueMoveBottom)
 
     for (size_t i = 0; i < ExpectedQueuePosition.size(); ++i) {
         EXPECT_EQ(ExpectedQueuePosition[i], torrents[i]->queue_position()) << i;
+    }
+}
+
+TEST_F(TorrentTest, bindInterfaceMatchesSession)
+{
+    auto* const tor = torrentInitFromFile(TorFilenames[0]);
+
+    // the setter applies on the session thread, so wait for the stripped value to land
+    auto const set_bind_interface = [tor](std::string_view value) {
+        tr_torrentSetBindInterface(tor, value);
+        return tr::test::waitFor([tor, expected = tr_strv_strip(value)] { return tor->bind_interface() == expected; }, 5s);
+    };
+
+    // on the default route, a torrent inherits it unless it names something else
+    EXPECT_EQ(""sv, tor->effective_bind_interface());
+    EXPECT_TRUE(tor->bind_interface_matches_session());
+    ASSERT_TRUE(set_bind_interface("blocked"sv));
+    EXPECT_FALSE(tor->bind_interface_matches_session());
+    ASSERT_TRUE(set_bind_interface(""sv));
+
+    tr_sessionSetBindInterface(session_, "lo0"sv);
+    ASSERT_TRUE(tr::test::waitFor([this] { return tr_sessionGetBindInterface(session_) == "lo0"sv; }, 5s));
+
+    // torrent value, effective interface, matches session
+    static auto constexpr Tests = std::to_array<std::tuple<std::string_view, std::string_view, bool>>({
+        { ""sv, "lo0"sv, true },
+        { "default"sv, ""sv, false },
+        { "lo0"sv, "lo0"sv, true },
+        { " lo0 "sv, "lo0"sv, true },
+        { "en0"sv, "en0"sv, false },
+        { "blocked"sv, "blocked"sv, false },
+    });
+
+    for (auto const& [value, effective, matches] : Tests) {
+        ASSERT_TRUE(set_bind_interface(value)) << '"' << value << '"';
+        EXPECT_EQ(effective, tor->effective_bind_interface()) << '"' << value << '"';
+        EXPECT_EQ(matches, tor->bind_interface_matches_session()) << '"' << value << '"';
     }
 }

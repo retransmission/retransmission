@@ -861,6 +861,13 @@ namespace
         }
     }
 
+    if ((fields & tr_resume::BindInterface) != 0) {
+        if (auto const& val = builder.bind_interface(); val) {
+            helper.load_bind_interface(*val);
+            ret |= tr_resume::BindInterface;
+        }
+    }
+
     if ((fields & tr_resume::SequentialDownload) != 0) {
         if (auto const val = builder.sequential_download(); val) {
             tor->set_sequential_download(*val);
@@ -1855,6 +1862,42 @@ void tr_torrent::set_bandwidth_group(std::string_view group_name)
 
 // ---
 
+void tr_torrent::set_bind_interface(std::string_view bind_interface) const
+{
+    // The announcer and the handshake mediator read bind_interface_ from
+    // the session thread without a lock, so it is written only there.
+    // Look the torrent up by id in case it was removed before this runs.
+    session->run_in_session_thread(
+        [session = this->session, tor_id = id(), name = std::string{ tr_strv_strip(bind_interface) }]() {
+            auto* const tor = session->torrents().get(tor_id);
+            if (tor == nullptr || tor->bind_interface_ == name) {
+                return;
+            }
+
+            {
+                auto const lock = tor->unique_lock();
+                tor->bind_interface_ = name;
+                tor->set_dirty();
+                tor->mark_changed();
+            }
+
+            // peer teardown touches libevent state owned by the session thread
+            session->closeTorrentPeerConnections(tor);
+        });
+}
+
+std::string_view tr_torrent::effective_bind_interface() const noexcept
+{
+    return tr_net_effective_bind_interface(bind_interface_, session->bind_interface());
+}
+
+bool tr_torrent::bind_interface_matches_session() const noexcept
+{
+    return tr_net_bind_interface_matches(bind_interface_, session->bind_interface());
+}
+
+// ---
+
 tr_priority_t tr_torrentGetPriority(tr_torrent const* tor)
 {
     tr_return_val_if_fail(tr_isTorrent(tor), {});
@@ -1888,6 +1931,20 @@ uint16_t tr_torrentGetPeerLimit(tr_torrent const* tor)
     tr_return_val_if_fail(tr_isTorrent(tor), {});
 
     return tor->peer_limit();
+}
+
+std::string tr_torrentGetBindInterface(tr_torrent const* tor)
+{
+    tr_return_val_if_fail(tr_isTorrent(tor), {});
+
+    return tor->bind_interface();
+}
+
+void tr_torrentSetBindInterface(tr_torrent* tor, std::string_view bind_interface)
+{
+    tr_return_if_fail(tr_isTorrent(tor));
+
+    tor->set_bind_interface(bind_interface);
 }
 
 // ---
@@ -2606,6 +2663,13 @@ time_t tr_torrent::ResumeHelper::seconds_seeding(time_t now) const noexcept
 void tr_torrent::ResumeHelper::load_seconds_seeding_before_current_start(time_t when) noexcept
 {
     tor_.seconds_seeding_before_current_start_ = when;
+}
+
+// ---
+
+void tr_torrent::ResumeHelper::load_bind_interface(std::string_view const bind_interface)
+{
+    tor_.bind_interface_ = tr_strv_strip(bind_interface);
 }
 
 // ---

@@ -72,6 +72,7 @@ struct tr_torrent {
     {
     public:
         void load_checked_pieces(tr_bitfield const& checked, time_t const* mtimes /*file_count()*/);
+        void load_bind_interface(std::string_view bind_interface);
         void load_blocks(tr_bitfield blocks);
         void load_date_added(time_t when) noexcept;
         void load_date_done(time_t when) noexcept;
@@ -825,6 +826,17 @@ struct tr_torrent {
         return bandwidth_group_;
     }
 
+    void set_bind_interface(std::string_view bind_interface) const;
+
+    [[nodiscard]] auto const& bind_interface() const noexcept
+    {
+        return bind_interface_;
+    }
+
+    [[nodiscard]] std::string_view effective_bind_interface() const noexcept;
+
+    [[nodiscard]] bool bind_interface_matches_session() const noexcept;
+
     [[nodiscard]] constexpr auto peer_limit() const noexcept
     {
         return max_connected_peers_;
@@ -1357,6 +1369,8 @@ private:
     std::vector<time_t> file_mtimes_;
 
     tr::shared_string bandwidth_group_;
+
+    std::string bind_interface_;
 
     // Where the files are when the torrent is complete.
     tr::shared_string download_dir_;

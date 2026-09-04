@@ -61,6 +61,18 @@ TEST_F(SessionTest, propertiesApi)
         EXPECT_EQ(value, tr_sessionGetDownloadDir(session));
     }
 
+    // bind interface
+
+    {
+        auto constexpr Value = "lo0"sv;
+        EXPECT_EQ(""sv, tr_sessionGetBindInterface(session));
+        tr_sessionSetBindInterface(session, Value);
+        EXPECT_TRUE(waitFor([session, Value] { return tr_sessionGetBindInterface(session) == Value; }, 5s));
+        EXPECT_EQ(Value, tr_sessionGetBindInterface(session));
+        tr_sessionSetBindInterface(session, ""sv);
+        EXPECT_TRUE(waitFor([session] { return tr_sessionGetBindInterface(session).empty(); }, 5s));
+    }
+
     // incomplete dir
 
     for (auto const& value : { "foo"sv, "bar"sv, ""sv }) {

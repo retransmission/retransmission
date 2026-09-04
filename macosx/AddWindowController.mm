@@ -9,6 +9,7 @@
 #import "GroupsController.h"
 #import "NSStringAdditions.h"
 #import "Torrent.h"
+#import "Utils.h"
 
 static NSTimeInterval const kUpdateSeconds = 1.0;
 
@@ -29,6 +30,7 @@ typedef NS_ENUM(NSUInteger, PopupPriority) {
 @property(nonatomic) IBOutlet NSButton* fDeleteCheck;
 @property(nonatomic) IBOutlet NSPopUpButton* fGroupPopUp;
 @property(nonatomic) IBOutlet NSPopUpButton* fPriorityPopUp;
+@property(nonatomic) IBOutlet NSPopUpButton* fBindInterfacePopUp;
 @property(nonatomic) IBOutlet NSProgressIndicator* fVerifyIndicator;
 
 @property(nonatomic) IBOutlet NSTextField* fFileFilterField;
@@ -120,6 +122,7 @@ typedef NS_ENUM(NSUInteger, PopupPriority) {
 
     [self setGroupsMenu];
     [self.fGroupPopUp selectItemWithTag:self.fGroupValue];
+    TRPopulateBindInterfacePopUp(self.fBindInterfacePopUp, self.torrent.bindInterface, YES, TRDefaultRouteBindInterfaceName);
 
     PopupPriority priorityIndex;
     switch (self.torrent.priority) {
@@ -198,6 +201,11 @@ typedef NS_ENUM(NSUInteger, PopupPriority) {
             }
         }
     }];
+}
+
+- (void)changeBindInterface:(id)sender
+{
+    self.torrent.bindInterface = TRBindInterfacePopUpValue(self.fBindInterfacePopUp);
 }
 
 - (void)add:(id)sender

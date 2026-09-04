@@ -10,6 +10,7 @@
 #endif
 
 #include <memory>
+#include <string_view>
 
 #include "libtransmission/peer-socket.h"
 
@@ -22,7 +23,8 @@ public:
     [[nodiscard]] static std::unique_ptr<tr_peer_socket_tcp> create(
         tr_session& session,
         tr_socket_address const& socket_address,
-        bool client_is_seed);
+        bool client_is_seed,
+        std::string_view bind_interface = {});
     [[nodiscard]] static std::unique_ptr<tr_peer_socket_tcp> create(
         tr_session& session,
         tr_socket_address const& socket_address,
