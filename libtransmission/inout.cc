@@ -86,14 +86,18 @@ bool write_entire_buf(tr_sys_file_t const fd, uint64_t file_offset, std::span<ui
     // does the file exist?
     auto const file_size = desc.files.file_size(file_index);
     auto const prealloc = writable && desc.files_wanted.test(file_index) ? desc.preallocation : tr_file_preallocation::None;
+    auto err = ENOENT;
     if (auto const found = desc.find(file_index)) {
         auto const filename = found->filename<tr_pathbuf>();
-        return open_files.get(tor_id, file_index, writable, filename, prealloc, file_size);
-    }
+        if (auto file = open_files.get(tor_id, file_index, writable, filename, prealloc, file_size); file) {
+            return file;
+        }
 
-    // do we want to create it?
-    auto err = ENOENT;
-    if (writable) {
+        // The file exists but can't be opened, e.g. its permissions
+        // changed. Report that rather than letting the caller mistake
+        // an empty handle for success.
+        err = errno != 0 ? errno : EIO;
+    } else if (writable) { // do we want to create it?
         auto const suffix = desc.partial_file_naming ? tr_torrent_files::PartialFileSuffix : ""sv;
         auto const filename = tr_pathbuf{ desc.current_dir, '/', desc.files.path(file_index), suffix };
         if (auto file = open_files.get(tor_id, file_index, writable, filename, prealloc, file_size); file) {
