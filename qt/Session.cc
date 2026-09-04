@@ -617,8 +617,8 @@ void Session::updateStats(tr_variant* dict)
         updateStats(*var, cumulative_stats_);
     }
 
-    if (auto const busy = dictFind<int64_t>(dict, TR_KEY_busy_torrent_count); busy) {
-        set_has_busy_torrents(*busy > 0);
+    if (auto const busy = dictFind<bool>(dict, TR_KEY_busy)) {
+        set_busy(*busy);
     }
 
     emit statsUpdated();

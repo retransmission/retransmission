@@ -5,6 +5,7 @@
 
 #pragma once
 
+#include <atomic>
 #include <concepts>
 #include <cstddef> // size_t
 #include <cstdint> // uint8_t, uint32_t, uint64_t
@@ -136,8 +137,11 @@ template<std::floating_point T>
 
 namespace tr::detail::tr_time
 {
-extern time_t current_time;
-}
+// atomic so that readers on other threads, e.g. the verify and web
+// threads, get a coherent value without synchronizing with the session
+// thread's once-per-second update
+extern std::atomic<time_t> current_time;
+} // namespace tr::detail::tr_time
 
 /**
  * @brief very inexpensive form of time(nullptr)
@@ -151,13 +155,13 @@ extern time_t current_time;
  */
 [[nodiscard]] static inline time_t tr_time() noexcept
 {
-    return tr::detail::tr_time::current_time;
+    return tr::detail::tr_time::current_time.load(std::memory_order_relaxed);
 }
 
 /** @brief Private libtransmission function to update `tr_time()`'s counter */
-constexpr void tr_timeUpdate(time_t now) noexcept
+inline void tr_timeUpdate(time_t now) noexcept
 {
-    tr::detail::tr_time::current_time = now;
+    tr::detail::tr_time::current_time.store(now, std::memory_order_relaxed);
 }
 
 /** @brief Portability wrapper for `htonll()` that uses the system implementation if available */

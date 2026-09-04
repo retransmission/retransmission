@@ -41,8 +41,8 @@ class TestSession : public Session
 {
 public:
     using Session::Session;
+    using Session::set_busy;
     using Session::set_embedded_session;
-    using Session::set_has_busy_torrents;
     using Session::set_session_type;
 };
 
@@ -78,8 +78,8 @@ TEST(AppSessionTest, inhibitsSleepOnlyWhenLocalActiveAndEnabled)
     session.set_session_type(Session::Type::Local); // a local daemon
     EXPECT_FALSE(session.should_inhibit_sleep()); // still nothing active
 
-    session.set_has_busy_torrents(true);
-    EXPECT_TRUE(session.should_inhibit_sleep()); // local + active + enabled
+    session.set_busy(true);
+    EXPECT_TRUE(session.should_inhibit_sleep()); // local + busy + enabled
 
     // toggling the preference is honored immediately
     prefs.set(TR_KEY_inhibit_desktop_hibernation, false);

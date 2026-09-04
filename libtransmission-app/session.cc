@@ -139,11 +139,12 @@ std::optional<tr::Settings> Session::embedded_settings() const
 
 void Session::set_session_type(std::optional<Type> const type)
 {
-    // should_inhibit_sleep() ignores the busy count once we're non-local, so a
-    // non-local session's remembered activity is meaningless -- drop it here so
-    // a later switch back to a local session starts from a clean slate.
+    // should_inhibit_sleep() ignores busyness once we're non-local,
+    // so a non-local session's remembered busyness is meaningless --
+    // drop it here so a later switch back to a local session
+    // starts from a clean slate.
     if (type.value_or(Type::Remote) == Type::Remote) {
-        has_busy_torrents_ = false;
+        busy_ = false;
     }
 
     if (session_type_ != type) {
@@ -153,17 +154,17 @@ void Session::set_session_type(std::optional<Type> const type)
     }
 }
 
-void Session::set_has_busy_torrents(bool const has_busy)
+void Session::set_busy(bool const busy)
 {
-    if (has_busy_torrents_ != has_busy) {
-        has_busy_torrents_ = has_busy;
+    if (busy_ != busy) {
+        busy_ = busy;
         update_sleep_inhibit();
     }
 }
 
 bool Session::should_inhibit_sleep() const
 {
-    return is_local_filesystem() && has_busy_torrents_ && prefs_.get<bool>(TR_KEY_inhibit_desktop_hibernation);
+    return is_local_filesystem() && busy_ && prefs_.get<bool>(TR_KEY_inhibit_desktop_hibernation);
 }
 
 void Session::update_sleep_inhibit()

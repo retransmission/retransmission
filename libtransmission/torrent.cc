@@ -608,7 +608,9 @@ void tr_torrent::start(bool bypass_queue, std::optional<bool> has_any_local_data
         set_seed_ratio_mode(TR_RATIOLIMIT_UNLIMITED);
     }
 
+    TR_ASSERT(!is_running_); // every running activity() returns early above, keeping add_started_torrent() balanced
     is_running_ = true;
+    session->add_started_torrent();
     set_dirty();
     session->run_in_session_thread([this]() { start_in_session_thread(); });
 }
@@ -632,6 +634,7 @@ void tr_torrent::start_in_session_thread()
     is_running_ = true;
     date_started_ = now;
     mark_changed();
+    session->set_date_active(now);
     error().clear();
     finished_seeding_by_idle_ = false;
 
@@ -653,6 +656,11 @@ void tr_torrent::stop_now()
     auto const now = tr_time();
     seconds_downloading_before_current_start_ = seconds_downloading(now);
     seconds_seeding_before_current_start_ = seconds_seeding(now);
+
+    // guarded: stop_now() is also called on torrents that are not running
+    if (is_running_) {
+        session->remove_started_torrent();
+    }
 
     is_running_ = false;
     is_stopping_ = false;
@@ -1620,6 +1628,7 @@ void tr_torrent::VerifyMediator::on_verify_started()
 {
     tr_logAddDebugTor(tor_, "Verifying torrent");
     time_started_ = tr_time();
+    tor_->session->add_verify_job();
     tor_->set_verify_state(VerifyState::Active);
 }
 
@@ -1632,6 +1641,7 @@ void tr_torrent::VerifyMediator::on_piece_checked(tr_piece_index_t const piece, 
 
     tor_->checked_pieces_.set(piece, true);
     tor_->mark_changed();
+    tor_->session->set_date_active(tr_time());
     tor_->verify_progress_ = std::clamp(
         static_cast<float>(piece + 1U) / static_cast<float>(tor_->metainfo_.piece_count()),
         0.0F,
@@ -1641,7 +1651,10 @@ void tr_torrent::VerifyMediator::on_piece_checked(tr_piece_index_t const piece, 
 // (usually called from tr_verify_worker's thread)
 void tr_torrent::VerifyMediator::on_verify_done(bool const aborted)
 {
+    // guarded: aborted jobs may finish without ever having started
     if (time_started_.has_value()) {
+        tor_->session->remove_verify_job();
+
         auto const total_size = tor_->total_size();
         auto const duration_secs = tr_time() - *time_started_;
         tr_logAddDebugTor(

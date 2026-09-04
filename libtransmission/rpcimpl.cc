@@ -1809,7 +1809,7 @@ void add_strings_from_var(std::set<std::string_view>& strings, tr_variant const&
 
     args_out.reserve(std::size(args_out) + 9U);
     args_out.try_emplace(TR_KEY_active_torrent_count, n_running);
-    args_out.try_emplace(TR_KEY_busy_torrent_count, static_cast<int64_t>(session->busy_torrent_count()));
+    args_out.try_emplace(TR_KEY_busy, session->is_busy(tr_time()));
     args_out.try_emplace(TR_KEY_unpaused_torrent_count, n_running);
     args_out.try_emplace(TR_KEY_cumulative_stats, make_stats_map(session->stats().cumulative()));
     args_out.try_emplace(TR_KEY_current_stats, make_stats_map(session->stats().current()));

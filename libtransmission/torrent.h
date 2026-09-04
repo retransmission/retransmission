@@ -725,6 +725,20 @@ struct tr_torrent {
         set_dirty();
     }
 
+    void add_uploaded(uint32_t const n_bytes, time_t const now) noexcept
+    {
+        bytes_uploaded_ += n_bytes;
+        set_date_active(now);
+        session->add_uploaded(n_bytes, now);
+    }
+
+    void add_downloaded(uint32_t const n_bytes, time_t const now) noexcept
+    {
+        bytes_downloaded_ += n_bytes;
+        set_date_active(now);
+        session->add_downloaded(n_bytes, now);
+    }
+
     [[nodiscard]] constexpr auto activity() const noexcept
     {
         if (verify_state_ == VerifyState::Active) {
