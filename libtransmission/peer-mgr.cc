@@ -1058,6 +1058,28 @@ public:
         rechoke_timer_->set_interval(100ms);
     }
 
+    [[nodiscard]] size_t active_request_count() const noexcept
+    {
+        auto n_reqs = size_t{};
+
+        for (auto const* const tor : torrents_) {
+            auto const* const swarm = tor->swarm;
+            if (swarm == nullptr) {
+                continue;
+            }
+
+            for (auto const& peer : swarm->peers) {
+                n_reqs += peer->active_req_count(tr_direction::ClientToPeer);
+            }
+
+            for (auto const& webseed : swarm->webseeds) {
+                n_reqs += webseed->active_req_count(tr_direction::ClientToPeer);
+            }
+        }
+
+        return n_reqs;
+    }
+
     [[nodiscard]] tr_swarm* get_existing_swarm(tr_sha1_digest_t const& hash) const
     {
         auto* const tor = torrents_.get(hash);
@@ -1150,6 +1172,11 @@ void tr_peerMgrFree(tr_peerMgr* manager)
  *    request. It's used to decide which blocks to return next when
  *    tr_peerMgrGetNextRequests() is called.
  */
+
+size_t tr_peerMgrActiveRequestCount(tr_peerMgr const* const manager) noexcept
+{
+    return manager != nullptr ? manager->active_request_count() : size_t{};
+}
 
 std::vector<tr_block_span_t> tr_peerMgrGetNextRequests(tr_torrent* torrent, tr_peer const* peer, size_t numwant)
 {
