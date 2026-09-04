@@ -14,6 +14,7 @@
 #include <cstdint> // for uint64_t
 #include <functional> // for std::less()
 #include <list>
+#include <limits>
 #include <map>
 #include <memory>
 #include <ranges>
@@ -352,14 +353,25 @@ public:
             }
         }
 
-        void add_data(void const* data, size_t const n_bytes)
+        [[nodiscard]] bool add_data(void const* data, size_t const n_bytes)
         {
+            // Needed for curl < 8.4.0, newer versions handles this for us
+            if (auto const max = options().effective_max_file_size(); response.body.size() + n_bytes > max) {
+                tr_logAddWarn(
+                    fmt::format(
+                        fmt::runtime(_("Aborting request: response body exceeded max size of {max_file_size} bytes")),
+                        fmt::arg("max_file_size", max)));
+                return false;
+            }
+
             response.body.append(static_cast<char const*>(data), n_bytes);
             tr_logAddTrace(fmt::format("wrote {} bytes to task {}'s buffer", n_bytes, fmt::ptr(this)));
 
             if (options_.on_data_received) {
                 options_.on_data_received(n_bytes);
             }
+
+            return true;
         }
 
         void add_response_header(std::string_view line)
@@ -504,7 +516,7 @@ public:
         auto* task = static_cast<Task*>(vtask);
         TR_ASSERT(std::this_thread::get_id() == task->impl.curl_thread->get_id());
 
-        if (auto const range = task->options().range) {
+        if (task->options().range) {
             // https://curl.se/libcurl/c/CURLINFO_RESPONSE_CODE.html
             // "The stored value will be zero if no server response code has been received"
             static auto constexpr NoResponseCode = 0L;
@@ -539,7 +551,11 @@ public:
             }
         }
 
-        task->add_data(data, bytes_used);
+        if (!task->add_data(data, bytes_used)) {
+            // Tell curl to error out. Failed to add data to the buffer
+            return bytes_used + 1;
+        }
+
         return bytes_used;
     }
 
@@ -582,6 +598,12 @@ public:
         (void)curl_easy_setopt(e, CURLOPT_AUTOREFERER, 1L);
         (void)curl_easy_setopt(e, CURLOPT_ACCEPT_ENCODING, "");
         (void)curl_easy_setopt(e, CURLOPT_FOLLOWLOCATION, 1L);
+        (void)curl_easy_setopt(
+            e,
+            CURLOPT_MAXFILESIZE_LARGE,
+            static_cast<curl_off_t>(std::min(
+                task.options().effective_max_file_size(),
+                static_cast<uint64_t>(std::numeric_limits<curl_off_t>::max()))));
 #if LIBCURL_VERSION_NUM >= 0x075000 /* 7.80.0 */
         (void)curl_easy_setopt(e, CURLOPT_MAXLIFETIME_CONN, MaxlifetimeConn);
 #endif
