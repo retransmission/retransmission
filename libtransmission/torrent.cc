@@ -698,20 +698,28 @@ void tr_torrentRemoveInSessionThread(
         tor->session->close_torrent_files(tor->id());
         tor->session->verify_remove(tor);
 
-        if (!remove_func) {
-            remove_func = tr_sys_path_remove;
-        }
+        tor->session->local_data.remove(
+            tor->id(),
+            std::move(remove_func),
+            [session = tor->session](tr_torrent_id_t const tor_id, tr_error const& error) {
+                auto* const tor2 = session->torrents().get(tor_id);
+                if (tor2 == nullptr) {
+                    return;
+                }
 
-        auto error = tr_error{};
-        tor->files().remove(tor->current_dir().sv(), tor->name(), remove_func, &error);
-        if (error) {
-            tr_logAddWarnTor(
-                tor,
-                fmt::format(
-                    fmt::runtime(_("Couldn't remove all torrent files: {error} ({error_code})")),
-                    fmt::arg("error", error.message()),
-                    fmt::arg("error_code", error.code())));
-        }
+                if (error) {
+                    tr_logAddWarnTor(
+                        tor2,
+                        fmt::format(
+                            fmt::runtime(_("Couldn't remove all torrent files: {error} ({error_code})")),
+                            fmt::arg("error", error.message()),
+                            fmt::arg("error_code", error.code())));
+                }
+
+                auto const lock2 = tor2->unique_lock();
+                tr_torrentFreeInSessionThread(tor2);
+            });
+        return;
     }
 
     tr_torrentFreeInSessionThread(tor);
@@ -1071,49 +1079,77 @@ tr_torrent* tr_torrentNew(tr_torrent_builder* builder, tr_torrent** setme_duplic
 
 // --- Location
 
-void tr_torrent::set_location_in_session_thread(std::string_view const path, bool move_from_old_path, int volatile* setme_state)
+void tr_torrent::set_location_in_session_thread(
+    std::string_view const path,
+    bool const move_from_old_path,
+    int volatile* setme_state) const
 {
     TR_ASSERT(session->am_in_session_thread());
 
-    auto ok = true;
-    if (move_from_old_path) {
-        if (setme_state != nullptr) {
-            *setme_state = TR_LOC_MOVING;
-        }
+    if (!move_from_old_path) {
+        // The files already live under `path`, but changing the dirs
+        // still changes where ops resolve their paths. Wait for the
+        // ops in flight like any other storage change, and let the
+        // now-stale fds close with them.
+        session->local_data.close_torrent(
+            id(),
+            [session = this->session, path = std::string{ path }, setme_state](tr_torrent_id_t const tor_id) {
+                if (auto* const tor = session->torrents().get(tor_id); tor != nullptr) {
+                    // tell the torrent where the files are
+                    tor->set_download_dir(path);
+                    session->add_recent_relocate_dir(path);
+                }
 
-        // ensure the files are all closed and idle before moving
-        session->close_torrent_files(id());
-        session->verify_remove(this);
+                if (setme_state != nullptr) {
+                    *setme_state = TR_LOC_DONE;
+                }
+            });
 
-        auto error = tr_error{};
-        ok = files().move(current_dir().sv(), path, name(), &error);
-        if (error) {
-            this->error().set_local_error(
-                fmt::format(
-                    fmt::runtime(_("Couldn't move '{old_path}' to '{path}': {error} ({error_code})")),
-                    fmt::arg("old_path", current_dir().sv()),
-                    fmt::arg("path", path),
-                    fmt::arg("error", error.message()),
-                    fmt::arg("error_code", error.code())));
-            tr_torrentStop(this);
-        }
-    }
-
-    // tell the torrent where the files are
-    if (ok) {
-        set_download_dir(path);
-        session->add_recent_relocate_dir(path);
-
-        if (move_from_old_path) {
-            incomplete_dir_.clear();
-            current_dir_ = download_dir();
-            invalidate_storage_descriptor();
-        }
+        return;
     }
 
     if (setme_state != nullptr) {
-        *setme_state = ok ? TR_LOC_DONE : TR_LOC_ERROR;
+        *setme_state = TR_LOC_MOVING;
     }
+
+    // ensure the files are all closed and idle before moving
+    session->close_torrent_files(id());
+    session->verify_remove(this);
+
+    session->local_data.move(
+        id(),
+        current_dir().sv(),
+        path,
+        name(),
+        [session = this->session, path = std::string{ path }, old_dir = std::string{ current_dir().sv() }, setme_state](
+            tr_torrent_id_t const tor_id,
+            tr_error const& error) {
+            auto* const tor = session->torrents().get(tor_id);
+
+            if (tor != nullptr && error) {
+                tor->error().set_local_error(
+                    fmt::format(
+                        fmt::runtime(_("Couldn't move '{old_path}' to '{path}': {error} ({error_code})")),
+                        fmt::arg("old_path", old_dir),
+                        fmt::arg("path", path),
+                        fmt::arg("error", error.message()),
+                        fmt::arg("error_code", error.code())));
+                tr_torrentStop(tor);
+            }
+
+            if (tor != nullptr && !error) {
+                // tell the torrent where the files are
+                tor->set_download_dir(path);
+                session->add_recent_relocate_dir(path);
+                tor->incomplete_dir_.clear();
+                tor->current_dir_ = tor->download_dir();
+                tor->invalidate_storage_descriptor();
+            }
+
+            if (setme_state != nullptr) {
+                *setme_state = !error ? TR_LOC_DONE : TR_LOC_ERROR;
+            }
+        });
 }
 
 namespace
@@ -2136,19 +2172,26 @@ bool tr_torrent::is_folder() const
 
 // ---
 
-void tr_torrent::on_file_completed(tr_file_index_t const file)
+void tr_torrent::on_file_completed(tr_file_index_t const file) const
 {
-    /* close the file so that we can reopen in read-only mode as needed */
-    session->close_torrent_file(*this, file);
+    // Close the file so that we can reopen in read-only mode as needed.
+    // The close is a barrier, so the bookkeeping below runs only after
+    // the in-flight IO on this torrent has drained.
+    session->local_data.close_file(id(), file, [session = this->session, file](tr_torrent_id_t const tor_id) {
+        auto* const tor = session->torrents().get(tor_id);
+        if (tor == nullptr) {
+            return;
+        }
 
-    /* now that the file is complete and closed, we can start watching its
-     * mtime timestamp for changes to know if we need to reverify pieces */
-    file_mtimes_[file] = tr_time();
+        /* now that the file is complete and closed, we can start watching its
+         * mtime timestamp for changes to know if we need to reverify pieces */
+        tor->file_mtimes_[file] = tr_time();
 
-    /* if the torrent's current filename isn't the same as the one in the
-     * metadata -- for example, if it had the ".part" suffix appended to
-     * it until now -- then rename it to match the one in the metadata */
-    update_file_path(file, true);
+        /* if the torrent's current filename isn't the same as the one in the
+         * metadata -- for example, if it had the ".part" suffix appended to
+         * it until now -- then rename it to match the one in the metadata */
+        tor->update_file_path(file, true);
+    });
 }
 
 void tr_torrent::on_piece_completed(tr_piece_index_t const piece)
@@ -2489,8 +2532,8 @@ void tr_torrent::rename_path_in_session_thread(
 void tr_torrent::rename_path(std::string_view oldpath, std::string_view newname, tr_torrent_rename_done_func&& callback)
 {
     this->session->run_in_session_thread(
-        [this, oldpath = std::string(oldpath), newname = std::string(newname), cb = std::move(callback)] {
-            rename_path_in_session_thread(oldpath, newname, cb);
+        [this, oldpath = std::string(oldpath), newname = std::string(newname), cb = std::move(callback)]() mutable {
+            session->local_data.rename(id(), oldpath, newname, std::move(cb));
         });
 }
 
