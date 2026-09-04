@@ -150,11 +150,12 @@ void RpcClient::send_remote_request(std::string body, ResponseFunc on_done)
             auto const is_tr5 = response.header(TrRpcVersionHeader).has_value();
 
             // captured for a human-readable message when the transport failed
+            // and no error message was provided
             auto const did_timeout = response.did_timeout;
             auto const did_connect = response.did_connect;
 
             auto parsed = std::shared_ptr<tr_variant>{};
-            if (status == 200) {
+            if (!response.errmsg && status == 200) {
                 if (auto var = tr_variant_serde::json().parse(response.body); var) {
                     api_compat::convert_incoming_data(*var);
                     parsed = std::make_shared<tr_variant>(std::move(*var));
@@ -164,6 +165,7 @@ void RpcClient::send_remote_request(std::string body, ResponseFunc on_done)
             run_on_ui_thread_([this,
                                body = std::move(body),
                                on_done = std::move(on_done),
+                               errmsg = response.errmsg,
                                new_session_id,
                                is_tr5,
                                did_timeout,
@@ -193,7 +195,11 @@ void RpcClient::send_remote_request(std::string body, ResponseFunc on_done)
                 auto result = RpcResponse{};
                 result.http_status = status;
 
-                if (status == 0) {
+                if (errmsg) {
+                    result.network_error = true;
+                    result.errmsg = *errmsg;
+                    network_response(false, result.errmsg);
+                } else if (status == 0) {
                     result.network_error = true;
                     if (did_timeout) {
                         result.errmsg = "connection timed out";
@@ -202,14 +208,14 @@ void RpcClient::send_remote_request(std::string body, ResponseFunc on_done)
                     } else {
                         result.errmsg = "the connection was lost";
                     }
-                    network_response(status, result.errmsg);
+                    network_response(false, result.errmsg);
                 } else if (parsed) {
                     result = parse_response_data(*parsed);
                     result.http_status = status;
-                    network_response(status, std::string_view{});
+                    network_response(true, std::string_view{});
                 } else {
                     result.errmsg = fmt::format("unexpected response (HTTP {:d})", status);
-                    network_response(status, result.errmsg);
+                    network_response(false, result.errmsg);
                 }
 
                 if (on_done) {

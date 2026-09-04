@@ -21,6 +21,7 @@
 #include <stack>
 #include <string>
 #include <thread>
+#include <type_traits>
 #include <utility>
 
 #ifdef _WIN32
@@ -824,11 +825,16 @@ public:
             CURLMsg* msg = nullptr;
             auto unused = int{};
             while ((msg = curl_multi_info_read(multi.get(), &unused)) != nullptr) {
-                if (msg->msg == CURLMSG_DONE && msg->easy_handle != nullptr) {
-                    auto* const e = msg->easy_handle;
-
+                if (auto* const e = msg->easy_handle; msg->msg == CURLMSG_DONE && e != nullptr) {
                     Task* task = nullptr;
                     curl_easy_getinfo(e, CURLINFO_PRIVATE, &task);
+
+                    if (msg->data.result != CURLE_OK) {
+                        task->response.errmsg = fmt::format(
+                            "curl error: {} ({})",
+                            curl_easy_strerror(msg->data.result),
+                            static_cast<std::underlying_type_t<CURLcode>>(msg->data.result));
+                    }
 
                     auto req_bytes_sent = long{};
                     auto total_time = double{};

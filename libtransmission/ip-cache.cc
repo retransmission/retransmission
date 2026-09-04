@@ -28,6 +28,7 @@
 #include "libtransmission/string-utils.h"
 #include "libtransmission/tr-assert.h"
 #include "libtransmission/utils.h"
+#include "libtransmission/web-utils.h"
 #include "libtransmission/web.h"
 
 namespace
@@ -302,7 +303,26 @@ void tr_ip_cache::on_response_ip_query(tr_address_type const type, tr_web::Fetch
     auto const protocol = tr_ip_protocol_to_sv(type);
     auto success = false;
 
-    if (response.status == 200 /* HTTP_OK */) {
+    if (response.errmsg) {
+        tr_logAddDebug(
+            fmt::format(
+                "Couldn't fetch global {} address: {}, response code: {} ({}), did_connect: {}, did_timeout: {}",
+                protocol,
+                *response.errmsg,
+                tr_webGetResponseStr(response.status),
+                response.status,
+                response.did_connect,
+                response.did_timeout));
+    } else if (response.status != 200 /* HTTP_OK */) {
+        tr_logAddDebug(
+            fmt::format(
+                "Couldn't fetch global {} address: {} ({}), did_connect: {}, did_timeout: {}",
+                protocol,
+                tr_webGetResponseStr(response.status),
+                response.status,
+                response.did_connect,
+                response.did_timeout));
+    } else {
         // Update member
         if (auto const addr = tr_address::from_string(tr_strv_strip(response.body));
             addr && type == addr->type && set_global_addr(*addr)) {
@@ -325,13 +345,6 @@ void tr_ip_cache::on_response_ip_query(tr_address_type const type, tr_web::Fetch
             return;
         }
 
-        tr_logAddDebug(
-            fmt::format(
-                "Couldn't obtain global {} address, HTTP status = {}, did_connect = {}, did_timeout = {}",
-                protocol,
-                response.status,
-                response.did_connect,
-                response.did_timeout));
         unset_global_addr(type);
         upkeep_timers_[type]->set_interval(RetryUpkeepInterval);
     }

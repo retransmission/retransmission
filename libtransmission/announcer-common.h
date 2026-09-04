@@ -150,12 +150,7 @@ struct tr_announce_response {
             return val;
         }
 
-        if (auto const val = static_cast<int>(rhs.did_timeout) <=> static_cast<int>(lhs.did_timeout); val != 0) {
-            return val;
-        }
-
-        // Non-empty error message most likely means we reached the tracker
-        return static_cast<int>(std::empty(rhs.errmsg)) <=> static_cast<int>(std::empty(lhs.errmsg));
+        return static_cast<int>(rhs.did_timeout) <=> static_cast<int>(lhs.did_timeout);
     }
 };
 
