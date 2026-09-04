@@ -437,6 +437,7 @@ public:
     static auto constexpr MaxHostConnections = long{ 16 };
     static auto constexpr MaxTotalConnections = long{ 96 };
     static auto constexpr MaxCachedConnections = MaxTotalConnections;
+    static auto constexpr MaxlifetimeConn = long{ 24 * 60 * 60 }; // default since curl 8.17.0, disabled by default before
 
     bool const curl_verbose = tr_env_key_exists("TR_CURL_VERBOSE");
     bool const curl_ssl_verify = !tr_env_key_exists("TR_CURL_SSL_NO_VERIFY");
@@ -580,6 +581,9 @@ public:
         (void)curl_easy_setopt(e, CURLOPT_AUTOREFERER, 1L);
         (void)curl_easy_setopt(e, CURLOPT_ACCEPT_ENCODING, "");
         (void)curl_easy_setopt(e, CURLOPT_FOLLOWLOCATION, 1L);
+#if LIBCURL_VERSION_NUM >= 0x075000 /* 7.80.0 */
+        (void)curl_easy_setopt(e, CURLOPT_MAXLIFETIME_CONN, MaxlifetimeConn);
+#endif
         (void)curl_easy_setopt(e, CURLOPT_MAXREDIRS, MaxRedirects);
         (void)curl_easy_setopt(e, CURLOPT_NOSIGNAL, 1L);
         (void)curl_easy_setopt(e, CURLOPT_PRIVATE, &task);
