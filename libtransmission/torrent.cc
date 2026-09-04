@@ -608,6 +608,7 @@ void tr_torrent::start(bool bypass_queue, std::optional<bool> has_any_local_data
         set_seed_ratio_mode(TR_RATIOLIMIT_UNLIMITED);
     }
 
+    TR_ASSERT(!is_running_); // every running activity() returns early above, keeping add_started_torrent() balanced
     is_running_ = true;
     session->add_started_torrent();
     set_dirty();
