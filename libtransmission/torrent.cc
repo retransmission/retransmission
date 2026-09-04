@@ -2359,7 +2359,7 @@ auto renamePath(tr_torrent const* tor, std::string_view oldpath, std::string_vie
 
     if (tr_sys_path_exists(src)) {
         auto const parent = tr_sys_path_dirname(src);
-        auto const tgt = src.ends_with(tr_torrent_files::PartialFileSuffix) ?
+        auto const tgt = src.sv().ends_with(tr_torrent_files::PartialFileSuffix) ?
             tr_pathbuf{ parent, '/', newname, tr_torrent_files::PartialFileSuffix } :
             tr_pathbuf{ parent, '/', newname };
 

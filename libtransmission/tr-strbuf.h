@@ -138,46 +138,6 @@ public:
 
     ///
 
-    [[nodiscard]] constexpr bool ends_with(Char const& x) const noexcept
-    {
-        auto const n = size();
-        return n != 0 && data()[n - 1] == x;
-    }
-
-    template<typename ContiguousRange>
-    [[nodiscard]] constexpr bool ends_with(ContiguousRange const& x) const noexcept
-    {
-        auto const x_len = std::size(x);
-        auto const len = size();
-        return len >= x_len && this->sv().substr(len - x_len) == x;
-    }
-
-    [[nodiscard]] constexpr bool ends_with(Char const* x) const noexcept
-    {
-        return x != nullptr && ends_with(std::basic_string_view<Char>(x));
-    }
-
-    ///
-
-    [[nodiscard]] constexpr bool starts_with(Char const& x) const noexcept
-    {
-        return !empty() && *data() == x;
-    }
-
-    template<typename ContiguousRange>
-    [[nodiscard]] constexpr bool starts_with(ContiguousRange const& x) const noexcept
-    {
-        auto const x_len = std::size(x);
-        return size() >= x_len && this->sv().substr(0, x_len) == x;
-    }
-
-    [[nodiscard]] constexpr bool starts_with(Char const* x) const noexcept
-    {
-        return x != nullptr && starts_with(std::basic_string_view<Char>(x));
-    }
-
-    ///
-
     void clear()
     {
         buffer_.clear();
