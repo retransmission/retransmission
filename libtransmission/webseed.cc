@@ -452,7 +452,7 @@ void tr_webseed_task::on_partial_data_fetched(tr_web::FetchResponse const& web_r
     ret.reserve(std::size(url) + std::size(name) + Slack);
     ret += url;
 
-    if (tr_strv_ends_with(url, "/"sv) && !std::empty(name)) {
+    if (url.ends_with("/"sv) && !std::empty(name)) {
         tr_urlPercentEncode(ret, name, false);
     }
 

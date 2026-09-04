@@ -41,6 +41,7 @@ namespace
 {
 inline constexpr auto MaxQueueLength = 10000U;
 
+// TODO(c++20): switch to std::chrono::zoned_time, GCC 13.1, clang 19 (or clang 21 with std::format), fmt 11.2
 template<typename T>
 inline constexpr bool HasTmGmtoffV = requires(T t) { t.tm_gmtoff; };
 

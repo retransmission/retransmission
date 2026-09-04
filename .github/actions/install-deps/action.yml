@@ -110,6 +110,8 @@ runs:
             libarchive-dev
             libcurl4-openssl-dev
             libevent-dev
+            libfast-float-dev
+            libfmt-dev
             libminiupnpc-dev
             libnatpmp-dev
             libpsl-dev
@@ -125,13 +127,6 @@ runs:
           # https://github.com/transmission/transmission/pull/6900
           if [ "$DISTRO" = 'debian' ]; then
             BASE_PACKAGES+=(libgtest-dev)
-          fi
-
-          if [ ! "$DISTRO" = 'debian' ] || [ ! "$DISTRO_VERSION" = '11' ]; then
-            BASE_PACKAGES+=(
-              libfast-float-dev
-              libfmt-dev
-            )
           fi
 
           # Compiler packages

@@ -211,7 +211,7 @@ bool tr_magnet_metainfo::parseMagnet(std::string_view magnet_link, tr_error* err
     for (auto const& [key, value] : parsed->query_entries()) {
         if (key == "dn"sv) {
             this->set_name(tr_urlPercentDecode(value));
-        } else if (key == "tr"sv || tr_strv_starts_with(key, "tr."sv)) {
+        } else if (key == "tr"sv || key.starts_with("tr."sv)) {
             // some magnet links have tracker notation like this:
             // tr.1=http://sometracker/announce&tr.2=http://someothertracker/announce
             // The dot-number notation differs from BEP 9, which specifies:
@@ -225,14 +225,13 @@ bool tr_magnet_metainfo::parseMagnet(std::string_view magnet_link, tr_error* err
             if (tr_urlIsValid(url_sv)) {
                 this->webseed_urls_.emplace_back(url_sv);
             }
-        } else if (static auto constexpr ValPrefix = "urn:btih:"sv; key == "xt"sv && tr_strv_starts_with(value, ValPrefix)) {
+        } else if (static auto constexpr ValPrefix = "urn:btih:"sv; key == "xt"sv && value.starts_with(ValPrefix)) {
             // v1 info-hash
             if (auto const hash = parseHash(value.substr(std::size(ValPrefix))); hash) {
                 this->info_hash_ = *hash;
                 got_hash = true;
             }
-        } else if (
-            static auto constexpr ValPrefix2 = "urn:btmh:1220"sv; key == "xt"sv && tr_strv_starts_with(value, ValPrefix2)) {
+        } else if (static auto constexpr ValPrefix2 = "urn:btmh:1220"sv; key == "xt"sv && value.starts_with(ValPrefix2)) {
             // v2 info-hash
             // The 1220 tag identifies the hash as sha256, removing tag before sending to parseHash2
             if (auto const hash = parseHash2(value.substr(std::size(ValPrefix2))); hash) {

@@ -236,7 +236,7 @@ std::optional<std::vector<address_range_t>> parseFile(std::string_view filename)
         }
 
         // ignore comments
-        if (tr_strv_starts_with(line, "//"sv) || tr_strv_starts_with(line, "#"sv)) {
+        if (line.starts_with("//"sv) || line.starts_with("#"sv)) {
             continue;
         }
 
@@ -493,7 +493,7 @@ std::vector<Blocklists::Blocklist> Blocklists::load_folder(std::string_view cons
 {
     // check for files that need to be updated
     for (auto const& src_file : getFilenamesInDir(folder)) {
-        if (tr_strv_ends_with(src_file, BinFileSuffix)) {
+        if (src_file.ends_with(BinFileSuffix)) {
             continue;
         }
 
@@ -511,7 +511,7 @@ std::vector<Blocklists::Blocklist> Blocklists::load_folder(std::string_view cons
 
     auto ret = std::vector<Blocklist>{};
     for (auto const& bin_file : getFilenamesInDir(folder)) {
-        if (tr_strv_ends_with(bin_file, BinFileSuffix)) {
+        if (bin_file.ends_with(BinFileSuffix)) {
             ret.emplace_back(bin_file, is_enabled);
         }
     }

@@ -12,7 +12,6 @@
 
 #include "libtransmission/announce-list.h"
 #include "libtransmission/digest.h" // tr_sha1_digest_t, tr_sha1_string, ...
-#include "libtransmission/macros.h" // TR_CONSTEXPR_VEC
 
 struct tr_error;
 
@@ -40,7 +39,7 @@ public:
         return std::size(webseed_urls_);
     }
 
-    [[nodiscard]] TR_CONSTEXPR_VEC auto const& webseed(size_t i) const
+    [[nodiscard]] constexpr auto const& webseed(size_t i) const
     {
         return webseed_urls_.at(i);
     }

@@ -131,7 +131,7 @@ public:
     tr_bitfield& operator|=(tr_bitfield const& that);
 
 private:
-    [[nodiscard]] TR_CONSTEXPR_VEC size_t count_flags() const noexcept
+    [[nodiscard]] constexpr size_t count_flags() const noexcept
     {
         auto ret = size_t{};
         for (auto const flag : flags_) {

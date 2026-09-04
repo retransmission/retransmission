@@ -16,7 +16,6 @@
 #include <vector>
 
 #include "libtransmission/bitfield.h"
-#include "libtransmission/macros.h" // TR_CONSTEXPR_VEC
 #include "libtransmission/types.h"
 
 struct tr_block_info;
@@ -43,7 +42,7 @@ public:
     explicit tr_file_piece_map(tr_torrent_metainfo const& tm);
     tr_file_piece_map(tr_block_info const& block_info, std::span<uint64_t const> file_sizes);
 
-    [[nodiscard]] TR_CONSTEXPR_VEC piece_span_t piece_span_for_file(tr_file_index_t const file) const noexcept
+    [[nodiscard]] constexpr piece_span_t piece_span_for_file(tr_file_index_t const file) const noexcept
     {
         return file_pieces_[file];
     }
@@ -57,7 +56,7 @@ public:
         return std::size(file_pieces_);
     }
 
-    [[nodiscard]] TR_CONSTEXPR_VEC auto byte_span_for_file(tr_file_index_t const file) const noexcept
+    [[nodiscard]] constexpr auto byte_span_for_file(tr_file_index_t const file) const noexcept
     {
         auto const& span = file_bytes_[file];
         return tr_byte_span_t{ .begin = span.begin, .end = span.end };
@@ -82,7 +81,7 @@ private:
 class tr_file_priorities
 {
 public:
-    TR_CONSTEXPR_VEC explicit tr_file_priorities(tr_file_piece_map const* fpm) noexcept
+    constexpr explicit tr_file_priorities(tr_file_piece_map const* fpm) noexcept
         : fpm_{ fpm }
     {
     }

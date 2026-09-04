@@ -135,7 +135,7 @@ public:
         }
     }
 
-    TR_CONSTEXPR_VEC void on_got_choke(tr_bitfield const& requests)
+    constexpr void on_got_choke(tr_bitfield const& requests)
     {
         reset_blocks_bitfield(requests);
     }
@@ -158,7 +158,7 @@ public:
         reset_block(block);
     }
 
-    TR_CONSTEXPR_VEC void on_peer_disconnect(tr_bitfield const& have, tr_bitfield const& requests)
+    constexpr void on_peer_disconnect(tr_bitfield const& have, tr_bitfield const& requests)
     {
         dec_replication_bitfield(have);
         reset_blocks_bitfield(requests);
@@ -282,7 +282,7 @@ private:
         }
     }
 
-    TR_CONSTEXPR_VEC void reset_blocks_bitfield(tr_bitfield const& requests)
+    constexpr void reset_blocks_bitfield(tr_bitfield const& requests)
     {
         for (auto& candidate : candidates_) {
             auto const [begin, end] = candidate.block_span;

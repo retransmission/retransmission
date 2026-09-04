@@ -196,12 +196,12 @@ bool FilterBar::Impl::tracker_filter_model_update()
         std::string sitename;
         std::string announce_url;
 
-        TR_CONSTEXPR_STR auto operator<=>(site_info const& that) const noexcept
+        constexpr auto operator<=>(site_info const& that) const noexcept
         {
             return sitename <=> that.sitename;
         }
 
-        TR_CONSTEXPR_STR auto operator==(site_info const& that) const
+        constexpr auto operator==(site_info const& that) const
         {
             return sitename == that.sitename;
         }

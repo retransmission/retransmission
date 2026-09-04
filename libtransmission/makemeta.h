@@ -20,7 +20,6 @@
 #include "libtransmission/error.h"
 #include "libtransmission/file.h"
 #include "libtransmission/torrent-files.h"
-#include "libtransmission/macros.h" // TR_CONSTEXPR_VEC
 #include "libtransmission/types.h"
 
 class tr_metainfo_builder
@@ -144,7 +143,7 @@ public:
         return files_.file_count();
     }
 
-    [[nodiscard]] TR_CONSTEXPR_VEC auto file_size(tr_file_index_t i) const noexcept
+    [[nodiscard]] constexpr auto file_size(tr_file_index_t i) const noexcept
     {
         return files_.file_size(i);
     }
@@ -159,7 +158,7 @@ public:
         return tr_sys_path_basename(top_);
     }
 
-    [[nodiscard]] TR_CONSTEXPR_VEC auto const& path(tr_file_index_t i) const noexcept
+    [[nodiscard]] constexpr auto const& path(tr_file_index_t i) const noexcept
     {
         return files_.path(i);
     }

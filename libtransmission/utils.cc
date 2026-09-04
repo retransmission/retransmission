@@ -376,6 +376,7 @@ template<std::floating_point T>
     auto const* const begin_ch = std::data(str);
     auto const* const end_ch = begin_ch + std::size(str);
     auto val = T{};
+    // TODO(c++17): switch to std::from_chars, GCC 11, clang 20, macOS 26
     auto const result = fast_float::from_chars(begin_ch, end_ch, val);
     if (result.ec != std::errc{}) {
         return std::nullopt;

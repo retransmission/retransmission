@@ -763,7 +763,7 @@ bool Session::Impl::add(Glib::ustring const& name_in, bool const do_start, bool 
     // `gio::File` doesn't seem to know how to stringify magnet links correctly.
     // Unfortunately there are some code paths that unavoidably use `gio::File`
     // e.g. Gtk::Application::on_open() so we have to do this:
-    if (auto constexpr BrokenMagnetLinkPrefix = "magnet:///?"sv; tr_strv_starts_with(name.raw(), BrokenMagnetLinkPrefix)) {
+    if (auto constexpr BrokenMagnetLinkPrefix = "magnet:///?"sv; name.raw().starts_with(BrokenMagnetLinkPrefix)) {
         name.replace(0, std::size(BrokenMagnetLinkPrefix), "magnet:?");
     }
 

@@ -42,7 +42,7 @@ public:
     [[nodiscard]] size_t get_pos(tr_torrent_id_t id) const noexcept;
     [[nodiscard]] std::vector<tr_torrent_id_t> set_pos(tr_torrent_id_t id, size_t new_pos);
 
-    [[nodiscard]] TR_CONSTEXPR_VEC auto size() const noexcept
+    [[nodiscard]] constexpr auto size() const noexcept
     {
         return queue_.size();
     }

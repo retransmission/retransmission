@@ -6,6 +6,7 @@
 #include "DetailsDialog.h"
 
 #include <algorithm>
+#include <bit>
 #include <cassert>
 #include <ctime>
 #include <map>
@@ -228,8 +229,7 @@ private:
                 QByteArray tmp(16, '\0');
 
                 for (int i = 0; i < 16; ++i) {
-                    // NOLINTNEXTLINE(bugprone-narrowing-conversions): TODO(c++20): use std::bit_cast after gcc 11.1
-                    tmp[i] = ipv6_address[i];
+                    tmp[i] = std::bit_cast<char>(ipv6_address[i]);
                 }
 
                 collated = QStringLiteral("2-") + QString::fromUtf8(tmp.toHex());
