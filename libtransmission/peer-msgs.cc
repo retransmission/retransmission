@@ -1788,8 +1788,9 @@ ReadResult tr_peerMsgsImpl::read_piece_data(MessageReader& payload)
         }
     }
 
-    peer_info->set_latest_piece_data_time(tr_time());
-    bytes_sent_to_client.add(tr_time(), len);
+    auto const now = tr_time();
+    peer_info->set_latest_piece_data_time(now);
+    bytes_sent_to_client.add(now, len);
     publish(tr_peer_event::GotPieceData(len));
 
     if (loc.block_offset == 0U && len == block_size) // simple case: one message has entire block
@@ -1853,9 +1854,10 @@ void tr_peerMsgsImpl::did_write(tr_peerIo* /*io*/, size_t bytes_written, bool wa
     auto const msgs = static_cast<tr_peerMsgsImpl*>(vmsgs)->shared_from_this();
 
     if (was_piece_data) {
-        msgs->peer_info->set_latest_piece_data_time(tr_time());
+        auto const now = tr_time();
+        msgs->peer_info->set_latest_piece_data_time(now);
         msgs->publish(tr_peer_event::SentPieceData(bytes_written));
-        msgs->bytes_sent_to_peer.add(tr_time(), bytes_written);
+        msgs->bytes_sent_to_peer.add(now, bytes_written);
     }
 }
 

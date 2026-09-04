@@ -83,6 +83,7 @@ private slots:
     static void initTestCase()
     {
         TR_QT_SKIP_UNLESS_SIGNALS_WORK();
+        qRegisterMetaType<int64_t>("int64_t");
     }
 
     static void download_dir_change_posts_session_set_data()
