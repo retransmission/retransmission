@@ -17,14 +17,6 @@
 #include "libtransmission/tr-arc4.h"
 #include "libtransmission/types.h" // tr_sha1_digest_t
 
-// workaround bug in GCC < 10.4
-// https://gcc.gnu.org/bugzilla/show_bug.cgi?id=99859
-#if __GNUC__ < 10 || (__GNUC__ == 10 && __GNUC_MINOR__ < 4)
-#define PRIME_CONSTEXPR const
-#else
-#define PRIME_CONSTEXPR constexpr
-#endif
-
 using namespace std::literals;
 
 namespace
@@ -71,11 +63,9 @@ auto export_bits(UIntWide i)
 }
 
 auto constexpr Generator = wi::key_t{ 2U };
-// NOLINTBEGIN(readability-identifier-naming)
-auto PRIME_CONSTEXPR Prime = wi::key_t{
+auto constexpr Prime = wi::key_t{
     "0xFFFFFFFFFFFFFFFFC90FDAA22168C234C4C6628B80DC1CD129024E088A67CC74020BBEA63B139B22514A08798E3404DDEF9519B3CD3A431B302B0A6DF25F14374FE1356D6D51C245E485B576625E7EC6F44C42E9A63A36210000000000090563"
 };
-// NOLINTEND(readability-identifier-naming)
 
 } // namespace wi
 } // namespace

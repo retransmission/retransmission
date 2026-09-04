@@ -19,7 +19,6 @@
 #include <fmt/format.h>
 
 #include "libtransmission/clients.h"
-#include "libtransmission/string-utils.h"
 #include "libtransmission/types.h"
 #include "libtransmission/utils.h"
 

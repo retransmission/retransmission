@@ -131,6 +131,10 @@ TEST_F(ConverterTest, sysSecondsRoundtrip)
     actual = to_value<std::chrono::sys_seconds>(tr_variant{ "2024-02-03T04:05:06+02:30"sv });
     expect_sys_seconds_eq(actual, Expected - (hours{ 2 } + minutes{ 30 }));
 
+    EXPECT_FALSE(to_value<std::chrono::sys_seconds>(tr_variant{ "2023-02-29T00:00:00Z"sv }).has_value());
+    EXPECT_FALSE(to_value<std::chrono::sys_seconds>(tr_variant{ "2024-04-31T00:00:00Z"sv }).has_value());
+    EXPECT_TRUE(to_value<std::chrono::sys_seconds>(tr_variant{ "2024-02-29T00:00:00Z"sv }).has_value());
+
     auto constexpr Epoch = int64_t{ 1700000000 };
     auto const epoch_seconds = time_point_cast<seconds>(system_clock::from_time_t(static_cast<time_t>(Epoch)));
     actual = to_value<std::chrono::sys_seconds>(tr_variant{ Epoch });

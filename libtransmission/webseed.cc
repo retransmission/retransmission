@@ -22,7 +22,6 @@
 #include "libtransmission/peer-common.h"
 #include "libtransmission/peer-mgr.h"
 #include "libtransmission/session.h"
-#include "libtransmission/string-utils.h"
 #include "libtransmission/timer.h"
 #include "libtransmission/torrent.h"
 #include "libtransmission/tr-assert.h"

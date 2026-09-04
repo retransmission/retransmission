@@ -201,7 +201,7 @@ bool FilterBar::Impl::tracker_filter_model_update()
             return sitename <=> that.sitename;
         }
 
-        constexpr auto operator==(site_info const& that) const
+        constexpr auto operator==(site_info const& that) const noexcept
         {
             return sitename == that.sitename;
         }
