@@ -615,7 +615,7 @@ public:
             break;
 
         case tr_peer_event::Type::ClientGotPieceData:
-            on_client_got_piece_data(s->tor, event.length, tr_time());
+            s->tor->add_downloaded(event.length, tr_time());
             break;
 
         case tr_peer_event::Type::ClientGotHave:
@@ -866,7 +866,7 @@ private:
 
         switch (event.type) {
         case tr_peer_event::Type::ClientGotPieceData:
-            on_client_got_piece_data(s->tor, event.length, tr_time());
+            s->tor->add_downloaded(event.length, tr_time());
             break;
 
         default:
@@ -912,11 +912,6 @@ private:
             TR_ASSERT_MSG(false, "This should be unreachable code");
             break;
         }
-    }
-
-    static void on_client_got_piece_data(tr_torrent* const tor, uint32_t const sent_length, time_t const now)
-    {
-        tor->add_downloaded(sent_length, now);
     }
 
     void on_got_port(tr_peerMsgs* const msgs, tr_peer_event const& event)
