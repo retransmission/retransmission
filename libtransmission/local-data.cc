@@ -161,7 +161,7 @@ public:
             return;
         }
 
-        tr_torrentRenamePath(tor, oldpath, newname, std::move(callback));
+        tor->rename_path_in_session_thread(oldpath, newname, callback);
     }
 
     void close_all() override
@@ -245,16 +245,27 @@ void LocalData::write(
     }
 }
 
-void LocalData::close_torrent(tr_torrent_id_t const tor_id)
+void LocalData::close_torrent(tr_torrent_id_t const tor_id, OnClose on_close) // NOLINT(performance-unnecessary-value-param)
 {
     drain();
     backend_->close_torrent(tor_id);
+
+    if (on_close) {
+        std::move(on_close)(tor_id);
+    }
 }
 
-void LocalData::close_file(tr_torrent_id_t const tor_id, tr_file_index_t const file_num)
+void LocalData::close_file(
+    tr_torrent_id_t const tor_id,
+    tr_file_index_t const file_num,
+    OnClose on_close) // NOLINT(performance-unnecessary-value-param)
 {
     drain();
     backend_->close_file(tor_id, file_num);
+
+    if (on_close) {
+        std::move(on_close)(tor_id);
+    }
 }
 
 void LocalData::close_all()
@@ -278,10 +289,17 @@ void LocalData::move(
     }
 }
 
-void LocalData::remove(tr_torrent_id_t const id, tr_torrent_remove_func remove_func)
+void LocalData::remove(
+    tr_torrent_id_t const id,
+    tr_torrent_remove_func remove_func,
+    OnRemove on_remove) // NOLINT(performance-unnecessary-value-param)
 {
     drain();
-    static_cast<void>(backend_->remove(id, std::move(remove_func)));
+    auto const err = backend_->remove(id, std::move(remove_func));
+
+    if (on_remove) {
+        std::move(on_remove)(id, make_error(err));
+    }
 }
 
 void LocalData::rename(

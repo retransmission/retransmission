@@ -225,15 +225,31 @@ TEST(LocalData, AdminOperationsDelegate)
         });
     EXPECT_TRUE(rename_called);
 
-    local_data.remove(12, {});
+    auto remove_called = false;
+    local_data.remove(12, {}, [&remove_called](tr_torrent_id_t tor_id, tr_error const& error) {
+        remove_called = true;
+        EXPECT_EQ(12, tor_id);
+        EXPECT_FALSE(error);
+    });
+    EXPECT_TRUE(remove_called);
     EXPECT_TRUE(raw_backend->remove_called);
 
-    local_data.close_file(13, 2);
+    auto close_file_called = false;
+    local_data.close_file(13, 2, [&close_file_called](tr_torrent_id_t tor_id) {
+        close_file_called = true;
+        EXPECT_EQ(13, tor_id);
+    });
+    EXPECT_TRUE(close_file_called);
     ASSERT_TRUE(raw_backend->closed_file.has_value());
     EXPECT_EQ(13, raw_backend->closed_file->first);
     EXPECT_EQ(2, raw_backend->closed_file->second);
 
-    local_data.close_torrent(14);
+    auto close_torrent_called = false;
+    local_data.close_torrent(14, [&close_torrent_called](tr_torrent_id_t tor_id) {
+        close_torrent_called = true;
+        EXPECT_EQ(14, tor_id);
+    });
+    EXPECT_TRUE(close_torrent_called);
     EXPECT_EQ(14, raw_backend->closed_torrent);
 
     local_data.close_all();
