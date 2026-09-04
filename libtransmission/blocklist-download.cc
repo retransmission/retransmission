@@ -50,7 +50,7 @@ auto constexpr UpdateInterval = std::chrono::hours{ 24 * 7 };
 auto constexpr StartupDelay = std::chrono::seconds{ 60 };
 
 // Real blocklists are tens of MB; refuse to block anything larger than 128 MiB.
-auto constexpr MaxDecompressedSize = size_t{ 128U } * 1024U * 1024U;
+auto constexpr MaxBlocklistSize = 128U * 1024U * 1024U;
 
 // Read the first regular file out of `body`, transparently gunzipping it first,
 // using whichever archive formats `configure` enables. Returns nullopt when
@@ -97,13 +97,13 @@ auto constexpr MaxDecompressedSize = size_t{ 128U } * 1024U * 1024U;
                 break;
             }
             content.append(std::data(buf), static_cast<size_t>(n_read));
-            if (std::size(content) > MaxDecompressedSize) {
+            if (std::size(content) > MaxBlocklistSize) {
                 // likely a decompression bomb; discard it entirely so a
                 // truncated prefix isn't mistaken for a valid blocklist
                 tr_logAddWarn(
                     fmt::format(
                         fmt::runtime(_("Blocklist is larger than {limit} MiB; ignoring it")),
-                        fmt::arg("limit", MaxDecompressedSize / (1024U * 1024U))));
+                        fmt::arg("limit", MaxBlocklistSize / (1024U * 1024U))));
                 content.clear();
                 break;
             }
@@ -234,10 +234,13 @@ void Updater::update(tr_blocklist_update_func on_done)
 
         auto pending = std::make_shared<Pending>(Pending{ .mediator = &mediator_, .waiters = std::move(waiters) });
         latest_ = pending;
-        mediator_.fetch(
-            { mediator_.blocklist_url(),
-              [pending](tr_web::FetchResponse const& response) { finish_request(response, pending); },
-              nullptr });
+        auto options = tr_web::FetchOptions{
+            mediator_.blocklist_url(),
+            [pending](tr_web::FetchResponse const& response) { finish_request(response, pending); },
+            nullptr,
+        };
+        options.max_file_size = MaxBlocklistSize;
+        mediator_.fetch(std::move(options));
     });
 }
 
