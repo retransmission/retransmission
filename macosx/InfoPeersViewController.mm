@@ -87,6 +87,27 @@ static NSString* const kWebSeedAnimationId = @"webSeed";
     self.fWebSeedTableTopConstraint.animations = @{ @"constant" : webSeedTableAnimation };
 
     [self setWebSeedTableHidden:YES animate:NO];
+
+    self.fPeerTable.target = self;
+    self.fPeerTable.action = @selector(tableViewDidClick:);
+}
+
+- (void)tableViewDidClick:(NSTableView*)sender
+{
+    auto row = sender.clickedRow;
+    auto column = sender.clickedColumn;
+
+    NSLog(@"row: %@ column: %@", @(row), @(column));
+
+    if ((row != -1) && (column == [sender columnWithIdentifier:@"Progress"])) {
+        [NSUserDefaults.standardUserDefaults setBool:![NSUserDefaults.standardUserDefaults boolForKey:@"DisplayPeerProgressBarNumber"]
+                                              forKey:@"DisplayPeerProgressBarNumber"];
+
+        NSRange rows = [sender rowsInRect:sender.visibleRect];
+        NSIndexSet* rowIndexes = [NSIndexSet indexSetWithIndexesInRange:rows];
+        NSIndexSet* columnIndexes = [NSIndexSet indexSetWithIndex:column];
+        [sender reloadDataForRowIndexes:rowIndexes columnIndexes:columnIndexes];
+    }
 }
 
 - (void)setInfoForTorrents:(NSArray<Torrent*>*)torrents
