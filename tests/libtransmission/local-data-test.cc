@@ -459,7 +459,7 @@ protected:
     {
         auto const block = uint64_t{ byte / BlockSize };
         auto const shift = (byte % sizeof(block)) * 8U;
-        return static_cast<uint8_t>((byte * 31U + 7U) ^ (block >> shift));
+        return static_cast<uint8_t>(((byte * 31U) + 7U) ^ (block >> shift));
     }
 
     [[nodiscard]] static std::string patternString(size_t const begin, size_t const len)
@@ -616,7 +616,7 @@ TEST_F(LocalDataWorkersTest, fileInitializationParksDependentWorkWithoutOccupyin
         local_data.start_workers(
             2U,
             marshal(),
-            [desc](tr_torrent_id_t) { return desc; },
+            [desc](tr_torrent_id_t) { return std::shared_ptr<tr::StorageDescriptor const>{ desc }; },
             [&](tr_torrent_id_t, size_t const count) { n_created += count; });
         auto first_done = false;
         auto dependent_done = false;
@@ -674,7 +674,7 @@ TEST_F(LocalDataWorkersTest, blockPatternsAreDistinct)
 
 TEST_F(LocalDataWorkersTest, outOfOrderWritesPreserveBlockContents)
 {
-    static auto constexpr FileSize = 5U * BlockSize + 127U;
+    static auto constexpr FileSize = (5U * BlockSize) + 127U;
     auto const local_data = makeLocalData(makeDescriptor({ { "data.bin", FileSize } }, 32768U));
     auto const order = std::vector<size_t>{ 4U, 1U, 5U, 0U, 3U, 2U };
     auto n_done = size_t{};

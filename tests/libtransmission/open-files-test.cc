@@ -292,7 +292,7 @@ TEST_F(OpenFilesTest, servesConcurrentCallersWhileFilesAreClosed)
 TEST_F(OpenFilesTest, concurrentWritersShareTheInitializedFile)
 {
     static auto constexpr NumWriters = size_t{ 8U };
-    static auto constexpr FileSize = uint64_t{ 1024U * 1024U };
+    static auto constexpr FileSize = uint64_t{ 1024U } * 1024U;
     auto const filename = tr_pathbuf{ sandboxDir(), "/concurrent.bin" };
     auto ready = std::barrier{ static_cast<std::ptrdiff_t>(NumWriters) };
     auto handles = std::array<tr_open_files::Handle, NumWriters>{};
@@ -318,16 +318,21 @@ TEST_F(OpenFilesTest, concurrentWritersShareTheInitializedFile)
     EXPECT_EQ(FileSize, info->size);
 }
 
+namespace
+{
+
 class OpenFilesPreallocationTest
     : public tr::test::SandboxedTest
     , public ::testing::WithParamInterface<bool>
 {
 };
 
+} // namespace
+
 TEST_P(OpenFilesPreallocationTest, serializesWritersUntilInitializationFinishes)
 {
-    static auto constexpr FileSize = uint64_t{ 2U * 1024U * 1024U + 17U };
-    static auto constexpr Offset = uint64_t{ 1024U * 1024U + 13U };
+    static auto constexpr FileSize = (uint64_t{ 2U } * 1024U * 1024U) + 17U;
+    static auto constexpr Offset = (uint64_t{ 1024U } * 1024U) + 13U;
     static auto constexpr Payload = "second writer's data"sv;
     auto const fail = GetParam();
     auto const filename = tr_pathbuf{ sandboxDir(), "/preallocated.bin" };
