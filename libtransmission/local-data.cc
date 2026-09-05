@@ -513,7 +513,7 @@ private:
         tr_byte_span_t span;
         std::unique_ptr<BlockData> data;
         OnWrite on_write;
-        std::shared_ptr<bool> ready = {};
+        std::shared_ptr<bool> ready = nullptr;
         size_t n_files_created = 0U;
     };
 
@@ -523,7 +523,7 @@ private:
         std::shared_ptr<StorageDescriptor const> desc;
         tr_piece_index_t piece;
         OnTest on_test;
-        std::shared_ptr<bool> ready = {};
+        std::shared_ptr<bool> ready = nullptr;
     };
 
     struct WriteKey {

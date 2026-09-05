@@ -121,10 +121,26 @@ public:
 private:
     using Key = std::pair<tr_torrent_id_t, tr_file_index_t>;
 
-    struct Opening {
-        tr_open_files& owner;
-        Key key;
+    // Marks a file as being opened for as long as it lives.
+    // Same-file callers wait until it's gone.
+    class Opening
+    {
+    public:
+        Opening(tr_open_files& owner, Key const key) noexcept
+            : owner_{ owner }
+            , key_{ key }
+        {
+        }
+
+        Opening(Opening const&) = delete;
+        Opening(Opening&&) = delete;
+        Opening& operator=(Opening const&) = delete;
+        Opening& operator=(Opening&&) = delete;
         ~Opening();
+
+    private:
+        tr_open_files& owner_;
+        Key key_;
     };
 
     [[nodiscard]] static Key make_key(tr_torrent_id_t tor_id, tr_file_index_t file_num) noexcept

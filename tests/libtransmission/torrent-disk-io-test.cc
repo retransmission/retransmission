@@ -6,13 +6,17 @@
 #include <algorithm>
 #include <array>
 #include <atomic>
+#include <cerrno>
 #include <charconv>
+#include <chrono>
 #include <cstdint>
 #include <cstring>
 #include <functional>
 #include <future>
 #include <memory>
+#include <span>
 #include <string>
+#include <thread>
 #include <vector>
 
 #include <event2/util.h>
@@ -50,7 +54,7 @@ class RequestBudgetPeer final : public tr_peer
 public:
     using tr_peer::tr_peer;
 
-    [[nodiscard]] Speed get_piece_speed(uint64_t, tr_direction) const override
+    [[nodiscard]] Speed get_piece_speed(uint64_t /*now*/, tr_direction /*direction*/) const override
     {
         return {};
     }
@@ -149,7 +153,7 @@ class RequestBudgetTest : public TorrentDiskIoWorkersTest
 {
 protected:
     static auto constexpr BudgetBlocks = size_t{ 64U };
-    static auto constexpr TorrentSize = uint64_t{ 4U * 1024U * 1024U };
+    static auto constexpr TorrentSize = uint64_t{ 4U } * 1024U * 1024U;
 
     struct Request {
         uint32_t piece;
@@ -158,18 +162,30 @@ protected:
     };
 
     struct ConnectedPeer {
-        evutil_socket_t remote = EVUTIL_INVALID_SOCKET;
+        // On Windows, EVUTIL_INVALID_SOCKET is an unsigned SOCKET while
+        // evutil_socket_t is signed, so spell the conversion out once.
+        static auto constexpr InvalidSocket = TR_IF_WIN32(
+            static_cast<evutil_socket_t>(EVUTIL_INVALID_SOCKET),
+            evutil_socket_t{ EVUTIL_INVALID_SOCKET });
+
+        ConnectedPeer() = default;
+        ConnectedPeer(ConnectedPeer const&) = delete;
+        ConnectedPeer(ConnectedPeer&&) = delete;
+        ConnectedPeer& operator=(ConnectedPeer const&) = delete;
+        ConnectedPeer& operator=(ConnectedPeer&&) = delete;
+
+        ~ConnectedPeer()
+        {
+            if (remote != InvalidSocket) {
+                evutil_closesocket(remote);
+            }
+        }
+
+        evutil_socket_t remote = InvalidSocket;
         std::vector<uint8_t> input;
         std::vector<Request> requests;
         bool handshaken = false;
         bool interested = false;
-
-        ~ConnectedPeer()
-        {
-            if (remote != EVUTIL_INVALID_SOCKET) {
-                evutil_closesocket(remote);
-            }
-        }
     };
 
     void SetUp() override
@@ -189,7 +205,7 @@ protected:
     [[nodiscard]] ConnectedPeer& addPeer(tr_torrent& tor)
     {
         auto peer = std::make_unique<ConnectedPeer>();
-        auto sockets = std::array<evutil_socket_t, 2>{ EVUTIL_INVALID_SOCKET, EVUTIL_INVALID_SOCKET };
+        auto sockets = std::array<evutil_socket_t, 2>{ ConnectedPeer::InvalidSocket, ConnectedPeer::InvalidSocket };
         EXPECT_EQ(0, evutil_socketpair(TR_IF_WIN32(AF_INET, AF_UNIX), SOCK_STREAM, 0, sockets.data()));
         EXPECT_EQ(0, evutil_make_socket_nonblocking(sockets[0]));
         EXPECT_EQ(0, evutil_make_socket_nonblocking(sockets[1]));
@@ -239,10 +255,27 @@ protected:
         return createTorrentAndWaitForVerifyDone(&builder);
     }
 
+    // The remote socket is nonblocking and its send buffer may be smaller
+    // than a block message (8 KiB on macOS), so send in as many passes
+    // as it takes. The session thread drains the other end meanwhile.
     static void receive(ConnectedPeer const& peer, std::vector<uint8_t> const& message)
     {
-        auto const sent = send(peer.remote, reinterpret_cast<char const*>(message.data()), message.size(), 0);
-        ASSERT_EQ(message.size(), static_cast<size_t>(sent));
+        auto const deadline = std::chrono::steady_clock::now() + std::chrono::milliseconds{ MaxWaitMsec };
+        auto remaining = std::span<uint8_t const>{ message };
+        while (!std::empty(remaining)) {
+            auto const sent = send(peer.remote, reinterpret_cast<char const*>(std::data(remaining)), std::size(remaining), 0);
+            if (sent > 0) {
+                remaining = remaining.subspan(static_cast<size_t>(sent));
+                continue;
+            }
+
+            auto const err = EVUTIL_SOCKET_ERROR();
+            ASSERT_TRUE(
+                sent < 0 && (err == TR_IF_WIN32(WSAEWOULDBLOCK, EAGAIN) || err == TR_IF_WIN32(WSAEWOULDBLOCK, EWOULDBLOCK)))
+                << err;
+            ASSERT_TRUE(std::chrono::steady_clock::now() < deadline) << "the peer never drained its socket";
+            std::this_thread::sleep_for(std::chrono::milliseconds{ 1 });
+        }
     }
 
     [[nodiscard]] static uint32_t readUint32(uint8_t const* const bytes) noexcept
@@ -277,9 +310,9 @@ protected:
             }
             if (length == 13U && peer.input[4] == 6U) {
                 peer.requests.push_back(
-                    { readUint32(peer.input.data() + 5U),
-                      readUint32(peer.input.data() + 9U),
-                      readUint32(peer.input.data() + 13U) });
+                    Request{ .piece = readUint32(peer.input.data() + 5U),
+                             .offset = readUint32(peer.input.data() + 9U),
+                             .length = readUint32(peer.input.data() + 13U) });
             } else if (length == 1U && peer.input[4] == 2U) {
                 peer.interested = true;
             }

@@ -274,11 +274,11 @@ tr_open_files::Opening::~Opening()
 {
     auto callbacks = std::vector<std::function<void()>>{};
     {
-        auto const lock = std::scoped_lock{ owner.mutex_ };
-        callbacks = std::move(owner.opening_.at(key));
-        owner.opening_.erase(key);
+        auto const lock = std::scoped_lock{ owner_.mutex_ };
+        callbacks = std::move(owner_.opening_.at(key_));
+        owner_.opening_.erase(key_);
     }
-    owner.opening_cv_.notify_all();
+    owner_.opening_cv_.notify_all();
     for (auto& callback : callbacks) {
         callback();
     }
