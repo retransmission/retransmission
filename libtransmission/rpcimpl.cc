@@ -1537,14 +1537,18 @@ void onMetadataFetched(tr_web::FetchResponse const& web_response)
             data->data,
             JsonRpc::Error::FETCH_ERROR,
             fmt::format(
-                fmt::runtime(_("Couldn't fetch torrent: {errmsg}, Response code: ({error_code})")),
+                fmt::runtime(_("Couldn't fetch torrent: {errmsg}, Response code: {error} ({error_code})")),
                 fmt::arg("errmsg", *errmsg),
+                fmt::arg("error", response_str),
                 fmt::arg("error_code", status)));
     } else if (status != 200 && status != 221) /* not http or ftp success.. */ {
         tr_rpc_idle_done(
             data->data,
             JsonRpc::Error::FETCH_ERROR,
-            fmt::format(fmt::runtime(_("Couldn't fetch torrent: ({error_code})")), fmt::arg("error_code", status)));
+            fmt::format(
+                fmt::runtime(_("Couldn't fetch torrent: {error} ({error_code})")),
+                fmt::arg("error", response_str),
+                fmt::arg("error_code", status)));
     } else {
         data->builder.set_metainfo(body);
         add_torrent_impl(data->data, data->builder);
