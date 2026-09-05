@@ -142,29 +142,22 @@ std::string_view tr_torrent_files::primary_mime_type() const
 // ---
 
 bool tr_torrent_files::move(
-    std::string_view old_parent_in,
+    std::span<std::string_view const> old_parents,
     std::string_view parent_in,
     std::string_view parent_name,
     tr_error* error) const
 {
-    auto const old_parent = tr_pathbuf{ old_parent_in };
     auto const parent = tr_pathbuf{ parent_in };
-    tr_logAddTrace(fmt::format("Moving files from '{:s}' to '{:s}'", old_parent, parent), parent_name);
-
-    if (tr_sys_path_is_same(old_parent, parent)) {
-        return true;
-    }
+    tr_logAddTrace(fmt::format("Moving files to '{:s}'", parent), parent_name);
 
     if (!tr_sys_dir_create(parent, TR_SYS_DIR_CREATE_PARENTS, 0777, error)) {
         return false;
     }
 
-    auto const paths = std::to_array<std::string_view>({ old_parent.sv() });
-
     auto err = bool{};
 
     for (tr_file_index_t i = 0, n = file_count(); i < n; ++i) {
-        auto const found = find(i, paths);
+        auto const found = find(i, old_parents);
         if (!found) {
             continue;
         }
@@ -204,7 +197,18 @@ bool tr_torrent_files::move(
             return true;
         };
 
-        remove(old_parent, parent_name, remove_empty_directories);
+        for (auto i = size_t{}; i < old_parents.size(); ++i) {
+            auto const is_duplicate = std::ranges::find(old_parents.first(i), old_parents[i]) != old_parents.first(i).end();
+            if (is_duplicate || tr_sys_path_is_same(tr_pathbuf{ old_parents[i] }, parent)) {
+                continue;
+            }
+
+            // A matching file may exist under more than one source. Do not let
+            // remove() move an unselected duplicate into a temporary directory.
+            if (!has_any_local_data(old_parents.subspan(i, 1))) {
+                remove(old_parents[i], parent_name, remove_empty_directories);
+            }
+        }
     }
 
     return !err;

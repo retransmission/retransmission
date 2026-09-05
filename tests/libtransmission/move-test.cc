@@ -133,6 +133,93 @@ TEST_P(IncompleteDirTest, incompleteDir)
     tr_torrentRemove(tor, true);
 }
 
+TEST_P(IncompleteDirTest, setLocationFindsFilesOutsideCurrentDir)
+{
+    std::string const download_dir = tr_sessionGetDownloadDir(session_);
+    std::string const incomplete_dir = tr_sessionGetIncompleteDir(session_);
+    auto const target_dir = tr_pathbuf{ session_->configDir(), "/target"sv };
+
+    // With file #0 absent, current_dir falls back to incompleteDir even when
+    // the torrent's other files are present in downloadDir.
+    auto* const tor = zeroTorrentInit(ZeroTorrentState::NoFiles);
+    EXPECT_EQ(std::string_view{ incomplete_dir }, tor->current_dir().sv());
+
+    auto const n = tr_torrentFileCount(tor);
+    for (tr_file_index_t i = 1; i < n; ++i) {
+        auto const file = tr_torrentFile(tor, i);
+        auto const filename = tr_pathbuf{ download_dir, '/', file.name };
+        createFileWithContents(filename, std::string(static_cast<size_t>(file.length), '\0'));
+    }
+
+    auto state = -1;
+    tr_torrentSetLocation(tor, target_dir, true, &state);
+    EXPECT_TRUE(waitFor([&state]() { return state == TR_LOC_DONE; }, MaxWaitMsec));
+    EXPECT_EQ(TR_LOC_DONE, state);
+
+    // The absent file remains absent, while every existing file is moved from
+    // downloadDir even though it was not the torrent-wide current_dir.
+    EXPECT_EQ(""s, tr_torrentFindFile(tor, 0));
+    for (tr_file_index_t i = 1; i < n; ++i) {
+        auto const expected = tr_pathbuf{ target_dir, '/', tr_torrentFile(tor, i).name };
+        EXPECT_EQ(expected, tr_torrentFindFile(tor, i));
+    }
+
+    tr_torrentRemove(tor, true);
+}
+
+TEST_P(IncompleteDirTest, setLocationMovesFromIncompleteDirToDownloadDir)
+{
+    std::string const download_dir = tr_sessionGetDownloadDir(session_);
+    auto* const tor = zeroTorrentInit(ZeroTorrentState::Partial);
+
+    // The destination is also one of the source directories. Cleanup must not
+    // remove files after moving them there from incompleteDir.
+    auto state = -1;
+    tr_torrentSetLocation(tor, download_dir, true, &state);
+    EXPECT_TRUE(waitFor([&state]() { return state == TR_LOC_DONE; }, MaxWaitMsec));
+    EXPECT_EQ(TR_LOC_DONE, state);
+
+    auto const n = tr_torrentFileCount(tor);
+    for (tr_file_index_t i = 0; i < n; ++i) {
+        auto const file = tr_torrentFile(tor, i);
+        auto expected = tr_pathbuf{ download_dir, '/', file.name };
+        if (file.have < file.length) {
+            expected += tr_torrent_files::PartialFileSuffix;
+        }
+
+        EXPECT_EQ(expected, tr_torrentFindFile(tor, i));
+    }
+
+    tr_torrentRemove(tor, true);
+}
+
+TEST_P(IncompleteDirTest, setLocationLeavesDuplicateSourceFileInPlace)
+{
+    std::string const download_dir = tr_sessionGetDownloadDir(session_);
+    std::string const incomplete_dir = tr_sessionGetIncompleteDir(session_);
+    auto const target_dir = tr_pathbuf{ session_->configDir(), "/target"sv };
+    auto* const tor = zeroTorrentInit(ZeroTorrentState::NoFiles);
+
+    auto const file = tr_torrentFile(tor, 1);
+    auto const download_file = tr_pathbuf{ download_dir, '/', file.name };
+    auto const incomplete_file = tr_pathbuf{ incomplete_dir, '/', file.name };
+    auto const contents = std::string(static_cast<size_t>(file.length), '\0');
+    createFileWithContents(download_file, contents);
+    createFileWithContents(incomplete_file, contents);
+
+    auto state = -1;
+    tr_torrentSetLocation(tor, target_dir, true, &state);
+    EXPECT_TRUE(waitFor([&state]() { return state == TR_LOC_DONE; }, MaxWaitMsec));
+    EXPECT_EQ(TR_LOC_DONE, state);
+
+    auto const expected = tr_pathbuf{ target_dir, '/', file.name };
+    EXPECT_EQ(expected, tr_torrentFindFile(tor, 1));
+    EXPECT_TRUE(tr_sys_path_exists(incomplete_file));
+
+    tr_sys_path_remove(incomplete_file);
+    tr_torrentRemove(tor, true);
+}
+
 INSTANTIATE_TEST_SUITE_P(
     IncompleteDir,
     IncompleteDirTest,

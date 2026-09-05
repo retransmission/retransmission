@@ -4,6 +4,7 @@
 // License text can be found in the licenses/ folder.
 
 #include <algorithm> // std::ranges::shuffle
+#include <array>
 #include <cerrno>
 #include <functional>
 #include <memory>
@@ -165,8 +166,9 @@ public:
             return TR_ERROR_EINVAL;
         }
 
+        auto const old_parents = std::array<std::string_view, 1>{ old_parent };
         auto error = tr_error{};
-        if (tor->files().move(old_parent, parent, parent_name, &error)) {
+        if (tor->files().move(old_parents, parent, parent_name, &error)) {
             return 0;
         }
 
