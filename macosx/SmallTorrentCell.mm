@@ -44,6 +44,10 @@ static CGFloat const kButtonsSpacing = 3.0;
     [super configureViews];
     // also set alignment as part of priorities ( text inside a textLabel ).
     self.fTorrentStatusField.alignment = NSTextAlignmentRight;
+
+    // initially we set buttons hidden and reveal them on hover.
+    self.fControlButton.hidden = YES;
+    self.fRevealButton.hidden = YES;
 }
 
 // Layout
@@ -152,30 +156,25 @@ static CGFloat const kButtonsSpacing = 3.0;
 }
 
 // show fControlButton and fRevealButton
+- (void)handleIsHovering:(BOOL)isHovering
+{
+    self.fControlButton.hidden = !isHovering;
+    self.fRevealButton.hidden = !isHovering;
+    self.fTorrentStatusField.hidden = isHovering;
+}
+
 - (void)mouseEntered:(NSEvent*)event
 {
     [super mouseEntered:event];
 
-    NSPoint mouseLocation = [self convertPoint:[event locationInWindow] fromView:nil];
-    if (NSPointInRect(mouseLocation, self.fTrackingArea.rect)) {
-        [self.fTorrentTableView hoverEventBeganForView:self];
-    }
+    [self handleIsHovering:YES];
 }
 
 - (void)mouseExited:(NSEvent*)event
 {
     [super mouseExited:event];
 
-    NSPoint mouseLocation = [self convertPoint:[event locationInWindow] fromView:nil];
-    if (!NSPointInRect(mouseLocation, self.fTrackingArea.rect)) {
-        [self.fTorrentTableView hoverEventEndedForView:self];
-    }
-}
-
-- (void)mouseUp:(NSEvent*)event
-{
-    [super mouseUp:event];
-    [self updateTrackingAreas];
+    [self handleIsHovering:NO];
 }
 
 - (void)updateTrackingAreas
@@ -188,19 +187,20 @@ static CGFloat const kButtonsSpacing = 3.0;
 
     NSRect rect = self.bounds;
 
-    NSTrackingAreaOptions opts = (NSTrackingMouseEnteredAndExited | NSTrackingActiveInKeyWindow);
-    self.fTrackingArea = [[NSTrackingArea alloc] initWithRect:rect options:opts owner:self userInfo:nil];
-    [self addTrackingArea:self.fTrackingArea];
+    NSTrackingAreaOptions options = (NSTrackingMouseEnteredAndExited | NSTrackingActiveInKeyWindow);
 
-    //check to see if mouse is already within rect
+    // Check if mouse is currently inside the bounds
     NSPoint mouseLocation = [self.window mouseLocationOutsideOfEventStream];
-    mouseLocation = [self.superview convertPoint:mouseLocation fromView:nil];
-
-    if (NSPointInRect(mouseLocation, rect)) {
-        [self mouseEntered:[[NSEvent alloc] init]];
+    NSPoint localPoint = [self convertPoint:mouseLocation fromView:nil];
+    if (NSPointInRect(localPoint, self.bounds)) {
+        options |= NSTrackingAssumeInside;
+        [self handleIsHovering:YES];
     } else {
-        [self mouseExited:[[NSEvent alloc] init]];
+        [self handleIsHovering:NO];
     }
+
+    self.fTrackingArea = [[NSTrackingArea alloc] initWithRect:rect options:options owner:self userInfo:nil];
+    [self addTrackingArea:self.fTrackingArea];
 }
 
 @end
