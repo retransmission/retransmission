@@ -143,7 +143,7 @@ protected:
             auto result = std::make_shared<std::promise<tr_error_code_t>>();
             auto ready = result->get_future();
             session_->run_in_session_thread([session = session_, tor, target = std::string{ target_dir.sv() }, result]() {
-                session->local_data.move(tor->id(), target, tor->name(), [result](auto, tr_error const& error) {
+                session->local_data.move(tor->id(), target, [result](auto, tr_error const& error) {
                     result->set_value(error ? error.code() : 0);
                 });
             });

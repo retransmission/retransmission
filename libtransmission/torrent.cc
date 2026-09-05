@@ -693,11 +693,9 @@ void tr_torrentRemoveInSessionThread(
 {
     auto const lock = tor->unique_lock();
 
-    if (delete_flag && tor->has_metainfo()) {
-        // ensure the files are all closed and idle before moving
-        tor->session->close_torrent_files(tor->id());
-        tor->session->verify_remove(tor);
+    tor->stop_now();
 
+    if (delete_flag && tor->has_metainfo()) {
         tor->session->local_data.remove(
             tor->id(),
             std::move(remove_func),
@@ -722,7 +720,11 @@ void tr_torrentRemoveInSessionThread(
         return;
     }
 
-    tr_torrentFreeInSessionThread(tor);
+    tor->session->local_data.close_torrent(tor->id(), [session = tor->session](tr_torrent_id_t const id) {
+        if (auto* const torrent = session->torrents().get(id); torrent != nullptr) {
+            tr_torrentFreeInSessionThread(torrent);
+        }
+    });
 }
 
 void tr_torrentStop(tr_torrent* tor)
@@ -1082,7 +1084,7 @@ tr_torrent* tr_torrentNew(tr_torrent_builder* builder, tr_torrent** setme_duplic
 void tr_torrent::set_location_in_session_thread(
     std::string_view const path,
     bool const move_from_old_path,
-    int volatile* setme_state) const
+    int volatile* setme_state)
 {
     TR_ASSERT(session->am_in_session_thread());
 
@@ -1119,8 +1121,9 @@ void tr_torrent::set_location_in_session_thread(
     session->local_data.move(
         id(),
         path,
-        name(),
-        [session = this->session, path = std::string{ path }, setme_state](tr_torrent_id_t const tor_id, tr_error const& error) {
+        [session = this->session,
+         path = std::string{ path },
+         setme_state](tr_torrent_id_t const tor_id, tr_error const& error) {
             auto* const tor = session->torrents().get(tor_id);
 
             if (tor != nullptr && error) {
@@ -1596,15 +1599,39 @@ void tr_torrentVerify(tr_torrent* tor)
             tor->stop_now();
         }
 
-        if (did_files_disappear(tor)) {
-            tor->error().set_local_error(
-                _("Paused torrent as no data was found! Ensure your drives are connected or use \"Set Location\", "
-                  "then use \"Verify Local Data\" again. To re-download, start the torrent."));
-            tor->start_when_stable_ = false;
-        }
+        tor->set_verify_state(tr_torrent::VerifyState::Queued);
+        auto const token = ++tor->verify_token_;
+        session->local_data.close_torrent(tor_id, [session, token](tr_torrent_id_t const id) {
+            auto* const torrent = session->torrents().get(id);
+            if (torrent == nullptr || torrent->is_deleting_ || torrent->verify_token_ != token) {
+                return;
+            }
 
-        session->verify_add(tor);
+            if (did_files_disappear(torrent)) {
+                torrent->error().set_local_error(
+                    _("Paused torrent as no data was found! Ensure your drives are connected or use \"Set Location\", "
+                      "then use \"Verify Local Data\" again. To re-download, start the torrent."));
+                torrent->start_when_stable_ = false;
+            }
+
+            torrent->hash_tokens_.clear();
+            session->verify_add(torrent);
+        });
     });
+}
+
+void tr_torrent::cancel_pending_verify()
+{
+    ++verify_token_;
+    if (verify_state_ == VerifyState::Queued) {
+        set_verify_state(VerifyState::None);
+        auto const pending = std::exchange(hash_tokens_, {});
+        for (auto const& [piece, token] : pending) {
+            if (has_blocks(block_span_for_piece(piece))) {
+                test_piece(piece);
+            }
+        }
+    }
 }
 
 void tr_torrent::set_verify_state(VerifyState const state)
@@ -2208,13 +2235,17 @@ void tr_torrent::test_piece(tr_piece_index_t const piece)
     auto const token = ++next_hash_token_;
     hash_tokens_.insert_or_assign(piece, token);
 
+    if (verify_state_ != VerifyState::None) {
+        return;
+    }
+
     session->local_data.test_piece(
         id(),
         piece,
         [session = this->session,
          token](tr_torrent_id_t const tor_id, tr_piece_index_t const tested, tr_error const&, auto const hash) {
             auto* const tor = session->torrents().get(tor_id);
-            if (tor == nullptr) {
+            if (tor == nullptr || tor->verify_state_ != VerifyState::None) {
                 return;
             }
 
@@ -2226,6 +2257,7 @@ void tr_torrent::test_piece(tr_piece_index_t const piece)
             tor->hash_tokens_.erase(iter);
 
             if (hash && *hash == tor->piece_hash(tested)) {
+                tor->checked_pieces_.set(tested);
                 tor->on_piece_completed(tested);
             } else {
                 tor->on_piece_failed(tested);
@@ -2236,6 +2268,10 @@ void tr_torrent::test_piece(tr_piece_index_t const piece)
 bool tr_torrent::on_block_received(tr_block_index_t const block)
 {
     TR_ASSERT(session->am_in_session_thread());
+
+    if (is_deleting_) {
+        return false;
+    }
 
     if (has_block_or_pending(block)) {
         tr_logAddDebugTor(this, "we have this block already...");
@@ -2286,7 +2322,7 @@ void tr_torrent::on_block_written(tr_block_index_t const block, tr_error const& 
     auto const first_piece = block_loc.piece;
     auto const last_piece = byte_loc(block_loc.byte + block_size(block) - 1).piece;
     for (auto piece = first_piece; piece <= last_piece; ++piece) {
-        if (has_piece(piece)) {
+        if (has_blocks(block_span_for_piece(piece))) {
             test_piece(piece);
         }
     }
