@@ -94,7 +94,8 @@ public:
         bool writable,
         std::string_view filename,
         tr_file_preallocation allocation,
-        uint64_t file_size);
+        uint64_t file_size,
+        tr_error& error);
 
     void close_all();
     void close_torrent(tr_torrent_id_t tor_id);

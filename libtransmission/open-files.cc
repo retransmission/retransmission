@@ -138,7 +138,8 @@ tr_open_files::Handle tr_open_files::get(
     bool writable,
     std::string_view const filename,
     tr_file_preallocation allocation,
-    uint64_t file_size)
+    uint64_t file_size,
+    tr_error& error)
 {
     // is there already an entry
     auto key = make_key(tor_id, file_num);
@@ -163,7 +164,6 @@ tr_open_files::Handle tr_open_files::get(
     // holds it is done.
 
     // create subfolders, if any
-    auto error = tr_error{};
     if (writable) {
         if (auto const dir = tr_sys_path_dirname(filename); !tr_sys_dir_create(dir, TR_SYS_DIR_CREATE_PARENTS, 0777, &error)) {
             tr_logAddError(
@@ -232,7 +232,7 @@ tr_open_files::Handle tr_open_files::get(
     // and one of the updated torrent's files is smaller.
     // https://bugs.launchpad.net/ubuntu/+source/transmission/+bug/318249
     if (resize_needed && !tr_sys_file_truncate(fd, file_size, &error)) {
-        tr_logAddWarn(
+        tr_logAddError(
             fmt::format(
                 fmt::runtime(_("Couldn't truncate '{path}': {error} ({error_code})")),
                 fmt::arg("path", filename),
