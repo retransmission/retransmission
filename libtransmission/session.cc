@@ -673,6 +673,20 @@ void tr_session::initImpl(init_data& data)
 
     setSettings(settings, true);
 
+    // Runtime changes to disk_io_workers take effect on restart.
+    // Stopping a running worker pool safely isn't worth the
+    // complexity of a live switch.
+    try {
+        local_data.start_workers(settings_.disk_io_workers, [this](std::function<void()> fn) {
+            queue_session_thread(std::move(fn));
+        });
+    } catch (std::exception const& e) {
+        tr_logAddError(
+            fmt::format(
+                fmt::runtime(_("Couldn't start disk IO workers, continuing without them: {error}")),
+                fmt::arg("error", e.what())));
+    }
+
     tr_utp_init(this);
 
     /* cleanup */
@@ -786,6 +800,11 @@ void tr_session::setSettings(tr_session::Settings&& settings_in, bool force)
         verifier_->set_sleep_per_seconds_during_verify(val);
     }
 
+    if (new_settings.preallocation_mode != old_settings.preallocation_mode ||
+        new_settings.is_incomplete_file_naming_enabled != old_settings.is_incomplete_file_naming_enabled) {
+        invalidate_storage_descriptors();
+    }
+
     // We need to update bandwidth if speed settings changed.
     // It's a harmless call, so just call it instead of checking for settings changes
     update_bandwidth(tr_direction::Up);
@@ -885,6 +904,7 @@ void tr_sessionSetIncompleteFileNamingEnabled(tr_session* session, bool enabled)
     TR_ASSERT(session != nullptr);
 
     session->settings_.is_incomplete_file_naming_enabled = enabled;
+    session->run_in_session_thread([session]() { session->invalidate_storage_descriptors(); });
 }
 
 bool tr_sessionIsIncompleteFileNamingEnabled(tr_session const* session)
@@ -1346,7 +1366,7 @@ void tr_session::closeImplPart2(std::promise<void>* closed_promise, std::chrono:
 
     stats().save();
     peer_mgr_.reset();
-    openFiles().close_all();
+    local_data.close_all();
     tr_utp_close(this);
     this->udp_core_.reset();
 
@@ -1893,8 +1913,9 @@ size_t tr_sessionGetQueueStalledMinutes(tr_session const* session)
 
 // ---
 
-void tr_session::verify_remove(tr_torrent const* const tor)
+void tr_session::verify_remove(tr_torrent* const tor)
 {
+    tor->cancel_pending_verify();
     if (verifier_) {
         verifier_->remove(tor->info_hash());
     }
@@ -1909,14 +1930,30 @@ void tr_session::verify_add(tr_torrent* const tor)
 
 // ---
 
-void tr_session::close_torrent_files(tr_torrent_id_t const tor_id) noexcept
+std::optional<size_t> tr_session::spare_request_blocks() const noexcept
 {
-    openFiles().close_torrent(tor_id);
+    if (!local_data.is_threaded()) {
+        return {};
+    }
+
+    auto const budget = uint64_t{ settings_.disk_write_budget_mib } * 1024U * 1024U;
+    auto const requested = uint64_t{ active_request_count_ } * TrBlockSize;
+    auto const in_flight = local_data.enqueued_write_bytes() + requested;
+    return in_flight >= budget ? size_t{} : static_cast<size_t>((budget - in_flight) / TrBlockSize);
 }
 
-void tr_session::close_torrent_file(tr_torrent const& tor, tr_file_index_t file_num) noexcept
+void tr_session::invalidate_storage_descriptors()
 {
-    openFiles().close_file(tor.id(), file_num);
+    TR_ASSERT(am_in_session_thread());
+
+    for (auto* const tor : torrents_) {
+        tor->invalidate_storage_descriptor();
+    }
+}
+
+void tr_session::close_torrent_files(tr_torrent_id_t const tor_id) noexcept
+{
+    local_data.close_torrent(tor_id);
 }
 
 // ---

@@ -513,7 +513,7 @@ public:
     {
         auto const lock = unique_lock();
 
-        peer_disconnect(tor, peer->has(), peer->active_requests);
+        peer_disconnect(tor, peer->has(), peer->active_requests());
 
         auto const& peer_info = peer->peer_info;
         TR_ASSERT(peer_info);
@@ -642,7 +642,7 @@ public:
             break;
 
         case tr_peer_event::Type::ClientGotChoke:
-            s->got_choke(s->tor, msgs->active_requests);
+            s->got_choke(s->tor, msgs->active_requests());
             break;
 
         case tr_peer_event::Type::ClientGotPort:
@@ -1117,9 +1117,27 @@ private:
 tr_peer::tr_peer(tr_torrent const& tor)
     : session{ tor.session }
     , swarm{ tor.swarm }
-    , active_requests{ tor.block_count() }
     , blame{ tor.piece_count() }
+    , active_requests_{ tor.block_count() }
 {
+}
+
+tr_peer::~tr_peer()
+{
+    clear_active_requests();
+}
+
+void tr_peer::set_active_requests(tr_block_span_t const span, bool const requested)
+{
+    auto const previous = active_requests_.count();
+    active_requests_.set_span(span.begin, span.end, requested);
+    session->update_active_request_count(previous, active_requests_.count());
+}
+
+void tr_peer::clear_active_requests() noexcept
+{
+    session->update_active_request_count(active_requests_.count(), 0U);
+    active_requests_.set_has_none();
 }
 
 // ---

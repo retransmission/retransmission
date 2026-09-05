@@ -46,6 +46,11 @@ struct tr_error;
 struct tr_torrent;
 struct tr_torrent_announcer;
 
+namespace tr
+{
+struct StorageDescriptor;
+}
+
 // --- Package-visible
 
 void tr_torrentFreeInSessionThread(tr_torrent* tor);
@@ -178,6 +183,14 @@ struct tr_torrent {
 
     void rename_path(std::string_view oldpath, std::string_view newname, tr_torrent_rename_done_func&& callback);
 
+    // The synchronous half of rename_path(), run under the disk-IO
+    // barrier. Call rename_path() instead unless you are the backend
+    // of tr::LocalData.
+    void rename_path_in_session_thread(
+        std::string_view oldpath,
+        std::string_view newname,
+        tr_torrent_rename_done_func const& callback);
+
     // these functions should become private when possible,
     // but more refactoring is needed before that can happen
     // because much of tr_torrent's impl is in the non-member C bindings
@@ -309,9 +322,9 @@ struct tr_torrent {
         return completion_.has_metainfo();
     }
 
-    [[nodiscard]] constexpr auto has_all() const noexcept
+    [[nodiscard]] auto has_all() const noexcept
     {
-        return completion_.has_all();
+        return completion_.has_all() && std::empty(hash_tokens_);
     }
 
     [[nodiscard]] constexpr auto has_none() const noexcept
@@ -327,7 +340,7 @@ struct tr_torrent {
 
     [[nodiscard]] auto has_piece(tr_piece_index_t piece) const
     {
-        return completion_.has_piece(piece);
+        return completion_.has_piece(piece) && !hash_tokens_.contains(piece);
     }
 
     [[nodiscard]] constexpr bool is_piece_checked(tr_piece_index_t const piece) const
@@ -370,7 +383,11 @@ struct tr_torrent {
 
     [[nodiscard]] auto create_piece_bitfield() const
     {
-        return completion_.create_piece_bitfield();
+        auto pieces = tr_bitfield{ piece_count() };
+        for (auto piece = tr_piece_index_t{}; piece < piece_count(); ++piece) {
+            pieces.set(piece, has_piece(piece));
+        }
+        return pieces.raw();
     }
 
     [[nodiscard]] constexpr bool is_done() const noexcept
@@ -495,9 +512,22 @@ struct tr_torrent {
     void set_file_subpath(tr_file_index_t i, std::string_view subpath)
     {
         metainfo_.set_file_subpath(i, subpath);
+        invalidate_storage_descriptor();
     }
 
     [[nodiscard]] std::optional<tr_torrent_files::FoundFile> find_file(tr_file_index_t file_index) const;
+
+    // A snapshot of this torrent's on-disk layout for disk IO.
+    // Cached until the next invalidate_storage_descriptor() call.
+    [[nodiscard]] std::shared_ptr<tr::StorageDescriptor const> storage_descriptor() const;
+
+    // Call after changing anything that affects where this torrent's
+    // data lives on disk: dirs, file subpaths, wanted files, or the
+    // metainfo.
+    void invalidate_storage_descriptor() noexcept
+    {
+        storage_descriptor_.reset();
+    }
 
     [[nodiscard]] bool has_any_local_data() const;
 
@@ -634,6 +664,8 @@ struct tr_torrent {
     /// METAINFO - PIECE CHECKSUMS
 
     [[nodiscard]] bool ensure_piece_is_checked(tr_piece_index_t piece);
+
+    void cancel_pending_verify();
 
     /// METAINFO - MAGNET
 
@@ -1310,7 +1342,7 @@ private:
     void on_have_all_metainfo();
     void on_piece_completed(tr_piece_index_t piece);
     void on_piece_failed(tr_piece_index_t piece);
-    void on_file_completed(tr_file_index_t file);
+    void on_file_completed(tr_file_index_t file) const;
     void on_tracker_response(tr_tracker_event const* event);
 
     void create_empty_files() const;
@@ -1321,11 +1353,6 @@ private:
     void update_file_path(tr_file_index_t file, std::optional<bool> has_file) const;
 
     void set_location_in_session_thread(std::string_view path, bool move_from_old_path, int volatile* setme_state);
-
-    void rename_path_in_session_thread(
-        std::string_view oldpath,
-        std::string_view newname,
-        tr_torrent_rename_done_func const& callback);
 
     void start_in_session_thread();
 
@@ -1365,6 +1392,9 @@ private:
     tr_completion completion_;
 
     tr_file_piece_map fpm_ = tr_file_piece_map{ metainfo_ };
+
+    // see storage_descriptor()
+    mutable std::shared_ptr<tr::StorageDescriptor const> storage_descriptor_;
 
     // when Transmission thinks the torrent's files were last changed
     std::vector<time_t> file_mtimes_;
@@ -1420,6 +1450,7 @@ private:
     tr_idlelimit idle_limit_mode_ = TR_IDLELIMIT_GLOBAL;
 
     VerifyState verify_state_ = VerifyState::None;
+    uint64_t verify_token_ = 0U;
 
     tr_completeness completeness_ = TR_LEECH;
 

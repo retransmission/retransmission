@@ -36,6 +36,8 @@ class tr_torrents;
 namespace tr
 {
 
+struct StorageDescriptor;
+
 /**
  * All torrent local-data IO goes through here.
  *
@@ -71,6 +73,15 @@ namespace tr
  * promises no such thing. That works because we don't start the second
  * op until the write's callback has run. A piece is hashed from its last
  * write completion, and we only read pieces we already have.
+ *
+ * # Backends
+ *
+ * The synchronous backend runs every op on the session thread before
+ * the enqueue call returns. It is the default.
+ *
+ * start_workers() switches to the threaded backend. Writes and piece
+ * hashes then run on worker threads and complete later, from the
+ * session thread. Reads still run on the session thread.
  */
 class LocalData
 {
@@ -172,6 +183,10 @@ public:
 
     using OnMove = std::function<void(tr_torrent_id_t, tr_error const& error)>;
 
+    using OnRemove = std::function<void(tr_torrent_id_t, tr_error const& error)>;
+
+    using OnClose = std::function<void(tr_torrent_id_t)>;
+
     class Backend
     {
     public:
@@ -186,11 +201,7 @@ public:
             tr_torrent_id_t tor_id,
             tr_byte_span_t byte_span,
             BlockData const& data) = 0;
-        [[nodiscard]] virtual tr_error_code_t move(
-            tr_torrent_id_t id,
-            std::string_view old_parent,
-            std::string_view parent,
-            std::string_view parent_name) = 0;
+        [[nodiscard]] virtual tr_error_code_t move(tr_torrent_id_t id, std::string_view parent) = 0;
         [[nodiscard]] virtual tr_error_code_t remove(tr_torrent_id_t id, tr_torrent_remove_func remove_func) = 0;
         virtual void rename(
             tr_torrent_id_t id,
@@ -203,7 +214,7 @@ public:
     };
 
     /**
-     * How completions are delivered. See rule 4.
+     * How the synchronous backend delivers completions. See rule 4.
      *
      * `Inline` runs every callback before the enqueue call returns.
      *
@@ -214,15 +225,38 @@ public:
      * in.
      *
      * The rules above allow all of this, so a caller that breaks under
-     * these modes would also break under a threaded backend.
+     * these modes would also break under the threaded backend.
      */
     enum class Completions : uint8_t { Inline, Deferred, Shuffled };
 
     // The same seed replays the same shuffled run.
     static auto constexpr DefaultShuffleSeed = uint32_t{ 20260812U };
 
-    explicit LocalData(tr_torrents const& torrents, tr_open_files& open_files, size_t worker_count = {});
-    explicit LocalData(std::unique_ptr<Backend> backend, size_t worker_count = {});
+    // Runs a function on the session thread. Must be callable from any
+    // thread. Disk workers call it to deliver completions.
+    using Marshal = std::function<void(std::function<void()>)>;
+
+    // Returns the torrent's current storage descriptor, or nullptr if
+    // the torrent is gone. Called on the session thread when an op is
+    // admitted.
+    using DescriptorProvider = std::function<std::shared_ptr<StorageDescriptor const>(tr_torrent_id_t)>;
+
+    // Called on the session thread when a write created files on disk.
+    using OnFilesCreated = std::function<void(tr_torrent_id_t, size_t n_files)>;
+
+    // Counters for tests and diagnostics.
+    struct Stats {
+        // disk writes issued, after adjacent blocks were combined
+        uint64_t write_runs = 0U;
+        uint64_t blocks_written = 0U;
+        // piece hashes computed from still-buffered block data
+        uint64_t hashes_from_buffers = 0U;
+        // piece hashes that read the piece back from disk
+        uint64_t hashes_from_disk = 0U;
+    };
+
+    explicit LocalData(tr_torrents const& torrents, tr_open_files& open_files);
+    explicit LocalData(std::unique_ptr<Backend> backend);
 
     LocalData(LocalData const&) = delete;
     LocalData(LocalData&&) = delete;
@@ -231,22 +265,53 @@ public:
 
     ~LocalData();
 
+    /**
+     * Switch to the threaded backend.
+     *
+     * Workers resolve torrent data through `provider` and never touch
+     * `tr_torrent` or `tr_session`. Leave `provider` and
+     * `on_files_created` unset to use the torrents passed to the
+     * constructor. Tests pass their own.
+     *
+     * Call at most once, before any ops are enqueued. A `worker_count`
+     * of zero keeps the synchronous backend.
+     *
+     * Throws if the worker threads can't be spawned. The synchronous
+     * backend stays in place when it does.
+     */
+    void start_workers(
+        size_t worker_count,
+        Marshal marshal,
+        DescriptorProvider provider = {},
+        OnFilesCreated on_files_created = {});
+
+    [[nodiscard]] bool is_threaded() const noexcept
+    {
+        return threaded_ != nullptr;
+    }
+
     void read(tr_torrent_id_t id, tr_byte_span_t byte_span, OnRead on_read);
     void test_piece(tr_torrent_id_t id, tr_piece_index_t piece, OnTest on_test);
     void write(tr_torrent_id_t id, tr_byte_span_t byte_span, std::unique_ptr<BlockData> data, OnWrite on_write);
-    void close_torrent(tr_torrent_id_t tor_id);
-    void close_file(tr_torrent_id_t tor_id, tr_file_index_t file_num);
+    void close_torrent(tr_torrent_id_t tor_id, OnClose on_close = {});
+    void close_file(tr_torrent_id_t tor_id, tr_file_index_t file_num, OnClose on_close = {});
     void close_all();
-    void move(
-        tr_torrent_id_t id,
-        std::string_view old_parent,
-        std::string_view parent,
-        std::string_view parent_name,
-        OnMove on_move);
-    void remove(tr_torrent_id_t id, tr_torrent_remove_func remove_func);
+    void move(tr_torrent_id_t id, std::string_view parent, OnMove on_move);
+    void remove(tr_torrent_id_t id, tr_torrent_remove_func remove_func, OnRemove on_remove = {});
     void rename(tr_torrent_id_t id, std::string_view oldpath, std::string_view newname, tr_torrent_rename_done_func callback);
+
+    // Deliver every outstanding completion and stop the workers.
+    // Later ops run on the synchronous backend.
     void shutdown();
-    [[nodiscard]] static uint64_t enqueued_write_bytes() noexcept;
+
+    // Bytes of block data waiting to be written, or being written now.
+    // Always zero on the synchronous backend.
+    [[nodiscard]] uint64_t enqueued_write_bytes() const noexcept;
+
+    [[nodiscard]] Stats stats() const noexcept;
+
+    // For tests. Paused workers take no new ops.
+    void set_workers_paused(bool paused);
 
     // LocalData calls `wake` when it parks the first completion. The owner
     // answers by calling pump() from the session thread. That thread is the
@@ -303,12 +368,23 @@ private:
     // True if this completion should wait for pump() instead of firing now.
     [[nodiscard]] bool defer_next() noexcept;
 
+    // Run an admin op as a barrier. See the definition.
+    void admin(tr_torrent_id_t id, std::function<void()> body);
+
     void park(std::unique_ptr<Parked> completion);
 
     // Deliver every parked completion, including ones parked along the way.
     void drain();
 
+    // The threaded backend. See start_workers().
+    class Threaded;
+
     std::unique_ptr<Backend> backend_;
+
+    tr_torrents const* torrents_ = nullptr;
+    tr_open_files* open_files_ = nullptr;
+
+    std::shared_ptr<Threaded> threaded_;
 
     std::vector<std::unique_ptr<Parked>> parked_;
     std::function<void()> wake_;

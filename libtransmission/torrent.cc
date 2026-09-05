@@ -35,6 +35,7 @@
 #include "libtransmission/peer-mgr.h"
 #include "libtransmission/resume.h"
 #include "libtransmission/session.h"
+#include "libtransmission/storage-descriptor.h"
 #include "libtransmission/string-utils.h"
 #include "libtransmission/subprocess.h"
 #include "libtransmission/torrent-builder.h"
@@ -692,28 +693,38 @@ void tr_torrentRemoveInSessionThread(
 {
     auto const lock = tor->unique_lock();
 
+    tor->stop_now();
+
     if (delete_flag && tor->has_metainfo()) {
-        // ensure the files are all closed and idle before moving
-        tor->session->close_torrent_files(tor->id());
-        tor->session->verify_remove(tor);
+        tor->session->local_data.remove(
+            tor->id(),
+            std::move(remove_func),
+            [session = tor->session](tr_torrent_id_t const tor_id, tr_error const& error) {
+                auto* const tor2 = session->torrents().get(tor_id);
+                if (tor2 == nullptr) {
+                    return;
+                }
 
-        if (!remove_func) {
-            remove_func = tr_sys_path_remove;
-        }
+                if (error) {
+                    tr_logAddWarnTor(
+                        tor2,
+                        fmt::format(
+                            fmt::runtime(_("Couldn't remove all torrent files: {error} ({error_code})")),
+                            fmt::arg("error", error.message()),
+                            fmt::arg("error_code", error.code())));
+                }
 
-        auto error = tr_error{};
-        tor->files().remove(tor->current_dir().sv(), tor->name(), remove_func, &error);
-        if (error) {
-            tr_logAddWarnTor(
-                tor,
-                fmt::format(
-                    fmt::runtime(_("Couldn't remove all torrent files: {error} ({error_code})")),
-                    fmt::arg("error", error.message()),
-                    fmt::arg("error_code", error.code())));
-        }
+                auto const lock2 = tor2->unique_lock();
+                tr_torrentFreeInSessionThread(tor2);
+            });
+        return;
     }
 
-    tr_torrentFreeInSessionThread(tor);
+    tor->session->local_data.close_torrent(tor->id(), [session = tor->session](tr_torrent_id_t const id) {
+        if (auto* const torrent = session->torrents().get(id); torrent != nullptr) {
+            tr_torrentFreeInSessionThread(torrent);
+        }
+    });
 }
 
 void tr_torrentStop(tr_torrent* tor)
@@ -809,6 +820,7 @@ void tr_torrent::on_metainfo_updated()
     files_wanted_ = tr_files_wanted{ &fpm_ };
     checked_pieces_ = tr_bitfield{ static_cast<size_t>(piece_count()) };
     blocks_pending_write_ = tr_bitfield{ static_cast<size_t>(block_count()) };
+    invalidate_storage_descriptor();
 }
 
 void tr_torrent::on_metainfo_completed()
@@ -1069,48 +1081,75 @@ tr_torrent* tr_torrentNew(tr_torrent_builder* builder, tr_torrent** setme_duplic
 
 // --- Location
 
-void tr_torrent::set_location_in_session_thread(std::string_view const path, bool move_from_old_path, int volatile* setme_state)
+void tr_torrent::set_location_in_session_thread(
+    std::string_view const path,
+    bool const move_from_old_path,
+    int volatile* setme_state)
 {
     TR_ASSERT(session->am_in_session_thread());
 
-    auto ok = true;
-    if (move_from_old_path) {
-        if (setme_state != nullptr) {
-            *setme_state = TR_LOC_MOVING;
-        }
+    if (!move_from_old_path) {
+        // The files already live under `path`, but changing the dirs
+        // still changes where ops resolve their paths. Wait for the
+        // ops in flight like any other storage change, and let the
+        // now-stale fds close with them.
+        session->local_data.close_torrent(
+            id(),
+            [session = this->session, path = std::string{ path }, setme_state](tr_torrent_id_t const tor_id) {
+                if (auto* const tor = session->torrents().get(tor_id); tor != nullptr) {
+                    // tell the torrent where the files are
+                    tor->set_download_dir(path);
+                    session->add_recent_relocate_dir(path);
+                }
 
-        // ensure the files are all closed and idle before moving
-        session->close_torrent_files(id());
-        session->verify_remove(this);
+                if (setme_state != nullptr) {
+                    *setme_state = TR_LOC_DONE;
+                }
+            });
 
-        auto error = tr_error{};
-        ok = files().move(current_dir().sv(), path, name(), &error);
-        if (error) {
-            this->error().set_local_error(
-                fmt::format(
-                    fmt::runtime(_("Couldn't move '{old_path}' to '{path}': {error} ({error_code})")),
-                    fmt::arg("old_path", current_dir().sv()),
-                    fmt::arg("path", path),
-                    fmt::arg("error", error.message()),
-                    fmt::arg("error_code", error.code())));
-            tr_torrentStop(this);
-        }
-    }
-
-    // tell the torrent where the files are
-    if (ok) {
-        set_download_dir(path);
-        session->add_recent_relocate_dir(path);
-
-        if (move_from_old_path) {
-            incomplete_dir_.clear();
-            current_dir_ = download_dir();
-        }
+        return;
     }
 
     if (setme_state != nullptr) {
-        *setme_state = ok ? TR_LOC_DONE : TR_LOC_ERROR;
+        *setme_state = TR_LOC_MOVING;
     }
+
+    // ensure the files are all closed and idle before moving
+    session->close_torrent_files(id());
+    session->verify_remove(this);
+
+    session->local_data.move(
+        id(),
+        path,
+        [session = this->session,
+         path = std::string{ path },
+         setme_state](tr_torrent_id_t const tor_id, tr_error const& error) {
+            auto* const tor = session->torrents().get(tor_id);
+
+            if (tor != nullptr && error) {
+                tor->error().set_local_error(
+                    fmt::format(
+                        fmt::runtime(_("Couldn't move '{old_path}' to '{path}': {error} ({error_code})")),
+                        fmt::arg("old_path", tor->current_dir().sv()),
+                        fmt::arg("path", path),
+                        fmt::arg("error", error.message()),
+                        fmt::arg("error_code", error.code())));
+                tr_torrentStop(tor);
+            }
+
+            if (tor != nullptr && !error) {
+                // tell the torrent where the files are
+                tor->set_download_dir(path);
+                session->add_recent_relocate_dir(path);
+                tor->incomplete_dir_.clear();
+                tor->current_dir_ = tor->download_dir();
+                tor->invalidate_storage_descriptor();
+            }
+
+            if (setme_state != nullptr) {
+                *setme_state = !error ? TR_LOC_DONE : TR_LOC_ERROR;
+            }
+        });
 }
 
 namespace
@@ -1164,6 +1203,28 @@ std::optional<tr_torrent_files::FoundFile> tr_torrent::find_file(tr_file_index_t
     auto paths = std::array<std::string_view, 4>{};
     auto const n_paths = buildSearchPathArray(this, std::data(paths));
     return files().find(file_index, { paths.data(), n_paths });
+}
+
+std::shared_ptr<tr::StorageDescriptor const> tr_torrent::storage_descriptor() const
+{
+    TR_ASSERT(session->am_in_session_thread());
+
+    if (!storage_descriptor_) {
+        storage_descriptor_ = std::make_shared<tr::StorageDescriptor const>(
+            tr::StorageDescriptor{ .id = id(),
+                                   .block_info = block_info(),
+                                   .files = files(),
+                                   .fpm = fpm_,
+                                   .files_wanted = files_wanted_.wanted_files(),
+                                   .name = std::string{ std::string_view{ name() } },
+                                   .download_dir = std::string{ download_dir().sv() },
+                                   .incomplete_dir = std::string{ incomplete_dir().sv() },
+                                   .current_dir = std::string{ current_dir().sv() },
+                                   .preallocation = session->preallocationMode(),
+                                   .partial_file_naming = session->isIncompleteFileNamingEnabled() });
+    }
+
+    return storage_descriptor_;
 }
 
 bool tr_torrent::has_any_local_data() const
@@ -1553,15 +1614,39 @@ void tr_torrentVerify(tr_torrent* tor)
             tor->stop_now();
         }
 
-        if (did_files_disappear(tor)) {
-            tor->error().set_local_error(
-                _("Paused torrent as no data was found! Ensure your drives are connected or use \"Set Location\", "
-                  "then use \"Verify Local Data\" again. To re-download, start the torrent."));
-            tor->start_when_stable_ = false;
-        }
+        tor->set_verify_state(tr_torrent::VerifyState::Queued);
+        auto const token = ++tor->verify_token_;
+        session->local_data.close_torrent(tor_id, [session, token](tr_torrent_id_t const id) {
+            auto* const torrent = session->torrents().get(id);
+            if (torrent == nullptr || torrent->is_deleting_ || torrent->verify_token_ != token) {
+                return;
+            }
 
-        session->verify_add(tor);
+            if (did_files_disappear(torrent)) {
+                torrent->error().set_local_error(
+                    _("Paused torrent as no data was found! Ensure your drives are connected or use \"Set Location\", "
+                      "then use \"Verify Local Data\" again. To re-download, start the torrent."));
+                torrent->start_when_stable_ = false;
+            }
+
+            torrent->hash_tokens_.clear();
+            session->verify_add(torrent);
+        });
     });
+}
+
+void tr_torrent::cancel_pending_verify()
+{
+    ++verify_token_;
+    if (verify_state_ == VerifyState::Queued) {
+        set_verify_state(VerifyState::None);
+        auto const pending = std::exchange(hash_tokens_, {});
+        for (auto const& [piece, token] : pending) {
+            if (has_blocks(block_span_for_piece(piece))) {
+                test_piece(piece);
+            }
+        }
+    }
 }
 
 void tr_torrent::set_verify_state(VerifyState const state)
@@ -1930,6 +2015,7 @@ void tr_torrent::set_files_wanted(std::span<tr_file_index_t const> files, bool w
     auto const lock = unique_lock();
 
     if (files_wanted_.set(files, wanted)) {
+        invalidate_storage_descriptor();
         completion_.invalidate_size_when_done();
         files_wanted_changed_(this, files, wanted);
 
@@ -2110,19 +2196,26 @@ bool tr_torrent::is_folder() const
 
 // ---
 
-void tr_torrent::on_file_completed(tr_file_index_t const file)
+void tr_torrent::on_file_completed(tr_file_index_t const file) const
 {
-    /* close the file so that we can reopen in read-only mode as needed */
-    session->close_torrent_file(*this, file);
+    // Close the file so that we can reopen in read-only mode as needed.
+    // The close is a barrier, so the bookkeeping below runs only after
+    // the in-flight IO on this torrent has drained.
+    session->local_data.close_file(id(), file, [session = this->session, file](tr_torrent_id_t const tor_id) {
+        auto* const tor = session->torrents().get(tor_id);
+        if (tor == nullptr) {
+            return;
+        }
 
-    /* now that the file is complete and closed, we can start watching its
-     * mtime timestamp for changes to know if we need to reverify pieces */
-    file_mtimes_[file] = tr_time();
+        /* now that the file is complete and closed, we can start watching its
+         * mtime timestamp for changes to know if we need to reverify pieces */
+        tor->file_mtimes_[file] = tr_time();
 
-    /* if the torrent's current filename isn't the same as the one in the
-     * metadata -- for example, if it had the ".part" suffix appended to
-     * it until now -- then rename it to match the one in the metadata */
-    update_file_path(file, true);
+        /* if the torrent's current filename isn't the same as the one in the
+         * metadata -- for example, if it had the ".part" suffix appended to
+         * it until now -- then rename it to match the one in the metadata */
+        tor->update_file_path(file, true);
+    });
 }
 
 void tr_torrent::on_piece_completed(tr_piece_index_t const piece)
@@ -2156,13 +2249,17 @@ void tr_torrent::test_piece(tr_piece_index_t const piece)
     auto const token = ++next_hash_token_;
     hash_tokens_.insert_or_assign(piece, token);
 
+    if (verify_state_ != VerifyState::None) {
+        return;
+    }
+
     session->local_data.test_piece(
         id(),
         piece,
         [session = this->session,
          token](tr_torrent_id_t const tor_id, tr_piece_index_t const tested, tr_error const&, auto const hash) {
             auto* const tor = session->torrents().get(tor_id);
-            if (tor == nullptr) {
+            if (tor == nullptr || tor->verify_state_ != VerifyState::None) {
                 return;
             }
 
@@ -2174,6 +2271,7 @@ void tr_torrent::test_piece(tr_piece_index_t const piece)
             tor->hash_tokens_.erase(iter);
 
             if (hash && *hash == tor->piece_hash(tested)) {
+                tor->checked_pieces_.set(tested);
                 tor->on_piece_completed(tested);
             } else {
                 tor->on_piece_failed(tested);
@@ -2184,6 +2282,10 @@ void tr_torrent::test_piece(tr_piece_index_t const piece)
 bool tr_torrent::on_block_received(tr_block_index_t const block)
 {
     TR_ASSERT(session->am_in_session_thread());
+
+    if (is_deleting_) {
+        return false;
+    }
 
     if (has_block_or_pending(block)) {
         tr_logAddDebugTor(this, "we have this block already...");
@@ -2234,7 +2336,7 @@ void tr_torrent::on_block_written(tr_block_index_t const block, tr_error const& 
     auto const first_piece = block_loc.piece;
     auto const last_piece = byte_loc(block_loc.byte + block_size(block) - 1).piece;
     for (auto piece = first_piece; piece <= last_piece; ++piece) {
-        if (has_piece(piece)) {
+        if (has_blocks(block_span_for_piece(piece))) {
             test_piece(piece);
         }
     }
@@ -2294,6 +2396,7 @@ void tr_torrent::refresh_current_dir()
     TR_ASSERT(dir == download_dir() || dir == incomplete_dir());
 
     current_dir_ = dir;
+    invalidate_storage_descriptor();
 }
 
 // --- RENAME
@@ -2462,8 +2565,8 @@ void tr_torrent::rename_path_in_session_thread(
 void tr_torrent::rename_path(std::string_view oldpath, std::string_view newname, tr_torrent_rename_done_func&& callback)
 {
     this->session->run_in_session_thread(
-        [this, oldpath = std::string(oldpath), newname = std::string(newname), cb = std::move(callback)] {
-            rename_path_in_session_thread(oldpath, newname, cb);
+        [this, oldpath = std::string(oldpath), newname = std::string(newname), cb = std::move(callback)]() mutable {
+            session->local_data.rename(id(), oldpath, newname, std::move(cb));
         });
 }
 
@@ -2630,6 +2733,8 @@ void tr_torrent::ResumeHelper::load_download_dir(std::string_view const dir) noe
     if (is_current_dir) {
         tor_.current_dir_ = tor_.download_dir_;
     }
+
+    tor_.invalidate_storage_descriptor();
 }
 
 void tr_torrent::ResumeHelper::load_incomplete_dir(std::string_view const dir) noexcept
@@ -2639,6 +2744,8 @@ void tr_torrent::ResumeHelper::load_incomplete_dir(std::string_view const dir) n
     if (is_current_dir) {
         tor_.current_dir_ = tor_.incomplete_dir_;
     }
+
+    tor_.invalidate_storage_descriptor();
 }
 
 // ---

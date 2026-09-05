@@ -4,17 +4,46 @@
 // License text can be found in the licenses/ folder.
 
 #include <algorithm>
+#include <chrono>
+#include <condition_variable>
+#include <cstddef> // size_t
+#include <cstdint> // uintX_t
+#include <deque>
+#include <fstream>
+#include <functional>
+#include <future>
+#include <iterator>
 #include <memory>
+#include <mutex>
 #include <optional>
+#include <string>
 #include <string_view>
 #include <utility>
 #include <vector>
 
+#ifndef _WIN32
+#include <sys/stat.h> // chmod()
+#include <unistd.h> // geteuid()
+#endif
+
 #include <gtest/gtest.h>
 
+#include <libtransmission/transmission.h>
+
+#include <libtransmission/bitfield.h>
+#include <libtransmission/block-info.h>
 #include <libtransmission/crypto-utils.h>
 #include <libtransmission/error.h>
+#include <libtransmission/file-piece-map.h>
+#include <libtransmission/file.h>
 #include <libtransmission/local-data.h>
+#include <libtransmission/open-files.h>
+#include <libtransmission/storage-descriptor.h>
+#include <libtransmission/torrent-files.h>
+#include <libtransmission/torrents.h>
+#include <libtransmission/types.h>
+
+#include "test-fixtures.h"
 
 using namespace std::literals;
 
@@ -54,15 +83,9 @@ public:
         return write_err;
     }
 
-    [[nodiscard]] tr_error_code_t move(
-        [[maybe_unused]] tr_torrent_id_t id,
-        std::string_view old_parent,
-        std::string_view parent,
-        std::string_view parent_name) override
+    [[nodiscard]] tr_error_code_t move([[maybe_unused]] tr_torrent_id_t id, std::string_view const parent) override
     {
-        moved_from = std::string{ old_parent };
         moved_to = std::string{ parent };
-        moved_name = std::string{ parent_name };
         return move_err;
     }
 
@@ -111,9 +134,7 @@ public:
     tr_piece_index_t tested_piece = 0;
     tr_sha1_digest_t hash = tr_sha1::digest("local-data-test"sv);
     std::vector<uint8_t> last_write;
-    std::string moved_from;
     std::string moved_to;
-    std::string moved_name;
     std::string renamed_from;
     std::string renamed_to;
     tr_torrent_id_t closed_torrent = -1;
@@ -201,15 +222,13 @@ TEST(LocalData, AdminOperationsDelegate)
     auto local_data = tr::LocalData{ std::move(backend) };
 
     auto move_called = false;
-    local_data.move(5, "/old", "/new", "name", [&move_called](tr_torrent_id_t tor_id, tr_error const& error) {
+    local_data.move(5, "/new", [&move_called](tr_torrent_id_t tor_id, tr_error const& error) {
         move_called = true;
         EXPECT_EQ(5, tor_id);
         EXPECT_FALSE(error);
     });
     EXPECT_TRUE(move_called);
-    EXPECT_EQ("/old", raw_backend->moved_from);
     EXPECT_EQ("/new", raw_backend->moved_to);
-    EXPECT_EQ("name", raw_backend->moved_name);
 
     auto rename_called = false;
     local_data.rename(
@@ -225,15 +244,31 @@ TEST(LocalData, AdminOperationsDelegate)
         });
     EXPECT_TRUE(rename_called);
 
-    local_data.remove(12, {});
+    auto remove_called = false;
+    local_data.remove(12, {}, [&remove_called](tr_torrent_id_t tor_id, tr_error const& error) {
+        remove_called = true;
+        EXPECT_EQ(12, tor_id);
+        EXPECT_FALSE(error);
+    });
+    EXPECT_TRUE(remove_called);
     EXPECT_TRUE(raw_backend->remove_called);
 
-    local_data.close_file(13, 2);
+    auto close_file_called = false;
+    local_data.close_file(13, 2, [&close_file_called](tr_torrent_id_t tor_id) {
+        close_file_called = true;
+        EXPECT_EQ(13, tor_id);
+    });
+    EXPECT_TRUE(close_file_called);
     ASSERT_TRUE(raw_backend->closed_file.has_value());
     EXPECT_EQ(13, raw_backend->closed_file->first);
     EXPECT_EQ(2, raw_backend->closed_file->second);
 
-    local_data.close_torrent(14);
+    auto close_torrent_called = false;
+    local_data.close_torrent(14, [&close_torrent_called](tr_torrent_id_t tor_id) {
+        close_torrent_called = true;
+        EXPECT_EQ(14, tor_id);
+    });
+    EXPECT_TRUE(close_torrent_called);
     EXPECT_EQ(14, raw_backend->closed_torrent);
 
     local_data.close_all();
@@ -296,13 +331,13 @@ TEST(LocalData, AdminOpsDrainParkedCompletions)
 
     // rule 3: a barrier waits for the ops enqueued before it
     auto move_finished = false;
-    local_data.move(7, "/old", "/new", "name", [&read_finished, &move_finished](auto, auto const&) {
+    local_data.move(7, "/new", [&read_finished, &move_finished](auto, auto const&) {
         EXPECT_TRUE(read_finished);
         move_finished = true;
     });
 
     EXPECT_TRUE(move_finished);
-    EXPECT_EQ("/old", raw_backend->moved_from);
+    EXPECT_EQ("/new", raw_backend->moved_to);
 }
 
 TEST(LocalData, ShutdownDeliversParkedCompletions)
@@ -362,3 +397,548 @@ TEST(LocalData, ShuffledCompletionsReplayFromSeed)
 
     EXPECT_EQ(run_once(), run_once());
 }
+
+// ---
+
+namespace
+{
+
+// Exercises the threaded backend against real files in a sandbox.
+// The test thread doubles as the session thread: marshaled functions
+// queue up and run from pumpUntil().
+class LocalDataWorkersTest : public tr::test::SandboxedTest
+{
+protected:
+    static auto constexpr TorId = tr_torrent_id_t{ 7 };
+    static auto constexpr BlockSize = size_t{ TrBlockSize };
+
+    [[nodiscard]] tr::LocalData::Marshal marshal()
+    {
+        return [this](std::function<void()> fn) {
+            {
+                auto const lock = std::scoped_lock{ marshal_mutex_ };
+                marshaled_.emplace_back(std::move(fn));
+            }
+            marshal_cv_.notify_all();
+        };
+    }
+
+    // Run marshaled functions until `pred()` holds. False on timeout.
+    template<typename Pred>
+    bool pumpUntil(Pred const& pred)
+    {
+        auto const deadline = std::chrono::steady_clock::now() + std::chrono::seconds{ 5 };
+
+        for (;;) {
+            for (;;) {
+                auto fn = std::function<void()>{};
+                {
+                    auto const lock = std::scoped_lock{ marshal_mutex_ };
+                    if (std::empty(marshaled_)) {
+                        break;
+                    }
+                    fn = std::move(marshaled_.front());
+                    marshaled_.pop_front();
+                }
+                fn();
+            }
+
+            if (pred()) {
+                return true;
+            }
+
+            auto lock = std::unique_lock{ marshal_mutex_ };
+            if (!marshal_cv_.wait_until(lock, deadline, [this]() { return !std::empty(marshaled_); })) {
+                return pred();
+            }
+        }
+    }
+
+    // Include every byte of the block index so misplaced blocks change the contents.
+    [[nodiscard]] static uint8_t patternByte(size_t const byte) noexcept
+    {
+        auto const block = uint64_t{ byte / BlockSize };
+        auto const shift = (byte % sizeof(block)) * 8U;
+        return static_cast<uint8_t>((byte * 31U + 7U) ^ (block >> shift));
+    }
+
+    [[nodiscard]] static std::string patternString(size_t const begin, size_t const len)
+    {
+        auto str = std::string{};
+        str.reserve(len);
+        for (auto i = size_t{}; i < len; ++i) {
+            str.push_back(static_cast<char>(patternByte(begin + i)));
+        }
+        return str;
+    }
+
+    // The block of pattern bytes that belongs at torrent byte `begin`.
+    [[nodiscard]] static std::unique_ptr<tr::LocalData::BlockData> patternBlock(
+        size_t const begin,
+        size_t const len = BlockSize)
+    {
+        auto data = std::make_unique<tr::LocalData::BlockData>();
+        data->resize(len);
+        for (auto i = size_t{}; i < len; ++i) {
+            data->data()[i] = patternByte(begin + i);
+        }
+        return data;
+    }
+
+    [[nodiscard]] std::string pathOf(std::string_view const subpath) const
+    {
+        return std::string{ sandboxDir() } + '/' + std::string{ subpath };
+    }
+
+    [[nodiscard]] std::string readFile(std::string_view const subpath) const
+    {
+        auto in = std::ifstream{ pathOf(subpath), std::ios::binary };
+        return std::string{ std::istreambuf_iterator<char>{ in }, std::istreambuf_iterator<char>{} };
+    }
+
+    // A descriptor whose files live in the sandbox. The files
+    // themselves are created by whoever writes to them.
+    [[nodiscard]] std::shared_ptr<tr::StorageDescriptor const> makeDescriptor(
+        std::vector<std::pair<std::string_view, uint64_t>> const& files,
+        uint32_t const piece_size) const
+    {
+        auto tf = tr_torrent_files{};
+        auto sizes = std::vector<uint64_t>{};
+        auto total = uint64_t{};
+        for (auto const& [subpath, size] : files) {
+            tf.add(subpath, size);
+            sizes.push_back(size);
+            total += size;
+        }
+
+        auto const block_info = tr_block_info{ total, piece_size };
+        auto fpm = tr_file_piece_map{ block_info, sizes };
+        auto wanted = tr_bitfield{ std::size(files) };
+        wanted.set_has_all();
+
+        return std::make_shared<tr::StorageDescriptor const>(
+            tr::StorageDescriptor{ .id = TorId,
+                                   .block_info = block_info,
+                                   .files = std::move(tf),
+                                   .fpm = std::move(fpm),
+                                   .files_wanted = std::move(wanted),
+                                   .name = "test",
+                                   .download_dir = sandboxDir(),
+                                   .incomplete_dir = {},
+                                   .current_dir = sandboxDir(),
+                                   .preallocation = tr_file_preallocation::None,
+                                   .partial_file_naming = false });
+    }
+
+    [[nodiscard]] auto makeLocalData(std::shared_ptr<tr::StorageDescriptor const> desc, size_t const n_workers = 2U)
+    {
+        auto local_data = std::make_unique<tr::LocalData>(torrents_, open_files_);
+        local_data->start_workers(
+            n_workers,
+            marshal(),
+            [desc = std::move(desc)](tr_torrent_id_t const id) { return id == TorId ? desc : nullptr; },
+            [this](tr_torrent_id_t const id, size_t const n_files) {
+                if (id == TorId) {
+                    files_created_ += n_files;
+                }
+            });
+        return local_data;
+    }
+
+    // Write the blocks covering torrent bytes [begin, end).
+    // Returns how many writes were issued.
+    static size_t writeBlocks(
+        tr::LocalData& local_data,
+        size_t const begin,
+        size_t const end,
+        std::function<void()> const& on_done)
+    {
+        auto n_writes = size_t{};
+        for (auto byte = begin; byte < end; byte += BlockSize) {
+            auto const len = std::min(BlockSize, end - byte);
+            local_data.write(
+                TorId,
+                { .begin = byte, .end = byte + len },
+                patternBlock(byte, len),
+                [on_done](tr_torrent_id_t, tr_byte_span_t, tr_error const& error) {
+                    EXPECT_FALSE(error) << error;
+                    on_done();
+                });
+            ++n_writes;
+        }
+        return n_writes;
+    }
+
+    size_t files_created_ = 0U;
+    tr_torrents torrents_;
+    tr_open_files open_files_;
+
+private:
+    std::mutex marshal_mutex_;
+    std::condition_variable marshal_cv_;
+    std::deque<std::function<void()>> marshaled_;
+};
+
+} // namespace
+
+TEST_F(LocalDataWorkersTest, fileInitializationParksDependentWorkWithoutOccupyingWorkers)
+{
+    for (auto const fail : { false, true }) {
+        SCOPED_TRACE(fail);
+        auto const desc = std::make_shared<tr::StorageDescriptor>(*makeDescriptor(
+            { { fail ? "prefix-failed.bin" : "prefix.bin", BlockSize / 2U },
+              { fail ? "failed.bin" : "slow.bin", 4U * BlockSize },
+              { fail ? "other-failed.bin" : "other.bin", BlockSize } },
+            BlockSize));
+        desc->preallocation = tr_file_preallocation::Full;
+        auto entered = std::promise<void>{};
+        auto prefix_created = std::promise<void>{};
+        auto resume = std::promise<void>{};
+        auto const resumed = resume.get_future().share();
+        auto files = tr_open_files{ [&](tr_sys_file_t, uint64_t const size, int, tr_error* const error) {
+            if (size == 4U * BlockSize) {
+                entered.set_value();
+                EXPECT_EQ(std::future_status::ready, resumed.wait_for(5s));
+#ifdef _WIN32
+                error->set(fail ? ERROR_DISK_FULL : ERROR_NOT_SUPPORTED, "injected preallocation error");
+#else
+                error->set(fail ? ENOSPC : ENOSYS, "injected preallocation error");
+#endif
+                return false;
+            }
+            if (size == BlockSize / 2U) {
+                prefix_created.set_value();
+            }
+            return true;
+        } };
+        auto local_data = tr::LocalData{ torrents_, files };
+        auto n_created = size_t{};
+        local_data.start_workers(
+            2U,
+            marshal(),
+            [desc](tr_torrent_id_t) { return desc; },
+            [&](tr_torrent_id_t, size_t const count) { n_created += count; });
+        auto first_done = false;
+        auto dependent_done = false;
+        auto hash_done = false;
+        auto independent_done = false;
+        auto closed = false;
+        local_data.write(
+            TorId,
+            { .begin = BlockSize, .end = 2U * BlockSize },
+            patternBlock(BlockSize, BlockSize),
+            [&](tr_torrent_id_t, tr_byte_span_t, tr_error const& error) {
+                EXPECT_EQ(fail, static_cast<bool>(error));
+                first_done = true;
+            });
+        EXPECT_EQ(std::future_status::ready, entered.get_future().wait_for(5s));
+        writeBlocks(local_data, 0U, BlockSize, [&]() { dependent_done = true; });
+        EXPECT_EQ(std::future_status::ready, prefix_created.get_future().wait_for(5s));
+        local_data.test_piece(TorId, 3U, [&](tr_torrent_id_t, tr_piece_index_t, tr_error const& error, auto hash) {
+            if (!fail) {
+                EXPECT_FALSE(error);
+                EXPECT_EQ(tr_sha1::digest(std::string(BlockSize, '\0')), hash);
+            }
+            hash_done = true;
+        });
+        writeBlocks(local_data, 9U * BlockSize / 2U, 11U * BlockSize / 2U, [&]() { independent_done = true; });
+        local_data.close_torrent(TorId, [&](tr_torrent_id_t) { closed = true; });
+
+        pumpUntil([&]() { return independent_done; });
+        EXPECT_FALSE(first_done);
+        EXPECT_FALSE(dependent_done);
+        EXPECT_FALSE(hash_done);
+        EXPECT_FALSE(closed);
+        EXPECT_EQ(2U * BlockSize, local_data.enqueued_write_bytes());
+
+        resume.set_value();
+        pumpUntil([&]() { return closed; });
+        EXPECT_TRUE(first_done);
+        EXPECT_TRUE(dependent_done);
+        EXPECT_TRUE(hash_done);
+        EXPECT_EQ(0U, local_data.enqueued_write_bytes());
+        EXPECT_EQ(fail ? 2U : 3U, n_created);
+        EXPECT_EQ(patternString(0U, BlockSize / 2U), readFile(fail ? "prefix-failed.bin" : "prefix.bin"));
+        EXPECT_EQ(
+            patternString(BlockSize / 2U, BlockSize / 2U),
+            readFile(fail ? "failed.bin" : "slow.bin").substr(0U, BlockSize / 2U));
+        EXPECT_EQ(patternString(9U * BlockSize / 2U, BlockSize), readFile(fail ? "other-failed.bin" : "other.bin"));
+    }
+}
+
+TEST_F(LocalDataWorkersTest, blockPatternsAreDistinct)
+{
+    EXPECT_NE(patternString(0U, BlockSize), patternString(BlockSize, BlockSize));
+    EXPECT_NE(patternString(0U, BlockSize), patternString(256U * BlockSize, BlockSize));
+}
+
+TEST_F(LocalDataWorkersTest, outOfOrderWritesPreserveBlockContents)
+{
+    static auto constexpr FileSize = 5U * BlockSize + 127U;
+    auto const local_data = makeLocalData(makeDescriptor({ { "data.bin", FileSize } }, 32768U));
+    auto const order = std::vector<size_t>{ 4U, 1U, 5U, 0U, 3U, 2U };
+    auto n_done = size_t{};
+
+    local_data->set_workers_paused(true);
+    for (auto const block : order) {
+        auto const begin = block * BlockSize;
+        writeBlocks(*local_data, begin, std::min(begin + BlockSize, FileSize), [&n_done]() { ++n_done; });
+    }
+    local_data->set_workers_paused(false);
+
+    EXPECT_TRUE(pumpUntil([&n_done, &order]() { return n_done == std::size(order); }));
+    EXPECT_EQ(patternString(0U, FileSize), readFile("data.bin"));
+    EXPECT_EQ(0U, local_data->enqueued_write_bytes());
+    local_data->shutdown();
+}
+
+TEST_F(LocalDataWorkersTest, writesLandOnDisk)
+{
+    static auto constexpr FileSize = size_t{ 65536U };
+    auto const local_data = makeLocalData(makeDescriptor({ { "data.bin", FileSize } }, 32768U));
+
+    auto n_done = size_t{};
+    auto const n_writes = writeBlocks(*local_data, 0U, FileSize, [&n_done]() { ++n_done; });
+
+    EXPECT_TRUE(pumpUntil([&n_done, n_writes]() { return n_done == n_writes; }));
+    EXPECT_EQ(patternString(0U, FileSize), readFile("data.bin"));
+    EXPECT_EQ(0U, local_data->enqueued_write_bytes());
+    EXPECT_EQ(n_writes, local_data->stats().blocks_written);
+
+    local_data->shutdown();
+}
+
+TEST_F(LocalDataWorkersTest, adjacentWritesAreCombined)
+{
+    static auto constexpr FileSize = size_t{ 65536U };
+    auto const local_data = makeLocalData(makeDescriptor({ { "data.bin", FileSize } }, 32768U));
+
+    // Hold the workers so that every block is queued before any is taken.
+    local_data->set_workers_paused(true);
+    auto n_done = size_t{};
+    auto const n_writes = writeBlocks(*local_data, 0U, FileSize, [&n_done]() { ++n_done; });
+    EXPECT_EQ(FileSize, local_data->enqueued_write_bytes());
+
+    local_data->set_workers_paused(false);
+    EXPECT_TRUE(pumpUntil([&n_done, n_writes]() { return n_done == n_writes; }));
+
+    // one write covered them all
+    auto const stats = local_data->stats();
+    EXPECT_EQ(1U, stats.write_runs);
+    EXPECT_EQ(n_writes, stats.blocks_written);
+    EXPECT_EQ(0U, local_data->enqueued_write_bytes());
+    EXPECT_EQ(patternString(0U, FileSize), readFile("data.bin"));
+
+    local_data->shutdown();
+}
+
+TEST_F(LocalDataWorkersTest, writesCrossFileBoundaries)
+{
+    static auto constexpr FileASize = size_t{ 10000U };
+    static auto constexpr FileBSize = size_t{ 55536U };
+    auto const local_data = makeLocalData(makeDescriptor({ { "a.bin", FileASize }, { "b.bin", FileBSize } }, 32768U));
+
+    // the first block straddles the two files
+    auto n_done = size_t{};
+    writeBlocks(*local_data, 0U, BlockSize, [&n_done]() { ++n_done; });
+
+    EXPECT_TRUE(pumpUntil([&n_done]() { return n_done == 1U; }));
+    EXPECT_EQ(patternString(0U, FileASize), readFile("a.bin"));
+    EXPECT_EQ(patternString(FileASize, BlockSize - FileASize), readFile("b.bin"));
+
+    local_data->shutdown();
+}
+
+TEST_F(LocalDataWorkersTest, writeCreatesTheFileAndItsDirs)
+{
+    static auto constexpr FileSize = size_t{ 65536U };
+    auto const local_data = makeLocalData(makeDescriptor({ { "sub/dir/data.bin", FileSize } }, 32768U));
+
+    auto n_done = size_t{};
+    writeBlocks(*local_data, 0U, BlockSize, [&n_done]() { ++n_done; });
+
+    EXPECT_TRUE(pumpUntil([&n_done]() { return n_done == 1U; }));
+    EXPECT_EQ(1U, files_created_);
+    EXPECT_EQ(patternString(0U, BlockSize), readFile("sub/dir/data.bin"));
+
+    local_data->shutdown();
+}
+
+TEST_F(LocalDataWorkersTest, pieceIsHashedFromBufferedBlocks)
+{
+    static auto constexpr FileSize = size_t{ 65536U };
+    static auto constexpr PieceSize = uint32_t{ 32768U };
+    auto const local_data = makeLocalData(makeDescriptor({ { "data.bin", FileSize } }, PieceSize));
+
+    auto n_done = size_t{};
+    auto const n_writes = writeBlocks(*local_data, 0U, PieceSize, [&n_done]() { ++n_done; });
+    EXPECT_TRUE(pumpUntil([&n_done, n_writes]() { return n_done == n_writes; }));
+
+    // Corrupt the piece on disk. A hash that read it back would notice.
+    auto const zeroes = std::string(PieceSize, '\0');
+    createFileWithContents(pathOf("data.bin"), zeroes);
+
+    auto hash = std::optional<tr_sha1_digest_t>{};
+    local_data->test_piece(TorId, 0U, [&hash](tr_torrent_id_t, tr_piece_index_t, tr_error const&, auto found) {
+        hash = found;
+    });
+
+    EXPECT_TRUE(pumpUntil([&hash]() { return hash.has_value(); }));
+    ASSERT_TRUE(hash.has_value());
+    EXPECT_EQ(tr_sha1::digest(patternString(0U, PieceSize)), *hash);
+
+    auto const stats = local_data->stats();
+    EXPECT_EQ(1U, stats.hashes_from_buffers);
+    EXPECT_EQ(0U, stats.hashes_from_disk);
+
+    local_data->shutdown();
+}
+
+TEST_F(LocalDataWorkersTest, pieceIsReadBackWhenItsBuffersAreGone)
+{
+    static auto constexpr FileSize = size_t{ 65536U };
+    static auto constexpr PieceSize = uint32_t{ 32768U };
+    auto const local_data = makeLocalData(makeDescriptor({ { "data.bin", FileSize } }, PieceSize));
+
+    auto n_done = size_t{};
+    auto const n_writes = writeBlocks(*local_data, 0U, PieceSize, [&n_done]() { ++n_done; });
+    EXPECT_TRUE(pumpUntil([&n_done, n_writes]() { return n_done == n_writes; }));
+
+    // closing the torrent drops its buffered blocks
+    auto closed = false;
+    local_data->close_torrent(TorId, [&closed](tr_torrent_id_t) { closed = true; });
+    EXPECT_TRUE(pumpUntil([&closed]() { return closed; }));
+
+    auto hash = std::optional<tr_sha1_digest_t>{};
+    local_data->test_piece(TorId, 0U, [&hash](tr_torrent_id_t, tr_piece_index_t, tr_error const&, auto found) {
+        hash = found;
+    });
+
+    EXPECT_TRUE(pumpUntil([&hash]() { return hash.has_value(); }));
+    ASSERT_TRUE(hash.has_value());
+    EXPECT_EQ(tr_sha1::digest(patternString(0U, PieceSize)), *hash);
+
+    auto const stats = local_data->stats();
+    EXPECT_EQ(0U, stats.hashes_from_buffers);
+    EXPECT_EQ(1U, stats.hashes_from_disk);
+
+    local_data->shutdown();
+}
+
+TEST_F(LocalDataWorkersTest, barriersWaitForWritesAndBlockLaterOps)
+{
+    static auto constexpr FileSize = size_t{ 65536U };
+    auto const local_data = makeLocalData(makeDescriptor({ { "data.bin", FileSize } }, 32768U));
+
+    // rule 3: the barrier waits for these...
+    local_data->set_workers_paused(true);
+    auto order = std::vector<std::string>{};
+    writeBlocks(*local_data, 0U, 2U * BlockSize, [&order]() { order.emplace_back("write"); });
+
+    // (the move itself fails since there's no real torrent, and only
+    // the ordering of the completions matters here)
+    local_data->move(TorId, "/new", [&order](auto, auto const&) { order.emplace_back("move"); });
+
+    // ...and this read waits for the barrier
+    local_data->read(TorId, { .begin = 0U, .end = BlockSize }, [&order](auto, auto, auto const&, auto) {
+        order.emplace_back("read");
+    });
+
+    // nothing has finished while the workers are held
+    EXPECT_TRUE(std::empty(order));
+    EXPECT_EQ(2U * BlockSize, local_data->enqueued_write_bytes());
+
+    local_data->set_workers_paused(false);
+    EXPECT_TRUE(pumpUntil([&order]() { return std::size(order) == 4U; }));
+    auto const expected = std::vector<std::string>{ "write", "write", "move", "read" };
+    EXPECT_EQ(expected, order);
+
+    local_data->shutdown();
+}
+
+TEST_F(LocalDataWorkersTest, shutdownDeliversEveryCallback)
+{
+    static auto constexpr FileSize = size_t{ 65536U };
+    auto const local_data = makeLocalData(makeDescriptor({ { "data.bin", FileSize } }, 32768U));
+
+    auto n_done = size_t{};
+    auto const n_writes = writeBlocks(*local_data, 0U, FileSize, [&n_done]() { ++n_done; });
+
+    // shutdown() delivers the callbacks inline, without a pump
+    local_data->shutdown();
+    EXPECT_EQ(n_writes, n_done);
+    EXPECT_EQ(patternString(0U, FileSize), readFile("data.bin"));
+}
+
+TEST_F(LocalDataWorkersTest, missingTorrentWriteFailsCleanly)
+{
+    auto const local_data = makeLocalData(nullptr);
+
+    auto done = false;
+    auto failed = false;
+    local_data
+        ->write(3, { .begin = 0U, .end = BlockSize }, patternBlock(0U), [&done, &failed](auto, auto, tr_error const& error) {
+            done = true;
+            failed = !!error;
+        });
+
+    EXPECT_TRUE(pumpUntil([&done]() { return done; }));
+    EXPECT_TRUE(failed);
+
+    local_data->shutdown();
+}
+
+TEST_F(LocalDataWorkersTest, writePastTheTorrentFailsCleanly)
+{
+    static auto constexpr FileSize = size_t{ 65536U };
+    auto const local_data = makeLocalData(makeDescriptor({ { "data.bin", FileSize } }, 32768U));
+
+    auto done = false;
+    auto failed = false;
+    local_data->write(
+        TorId,
+        { .begin = FileSize - 100U, .end = FileSize - 100U + BlockSize },
+        patternBlock(FileSize - 100U),
+        [&done, &failed](auto, auto, tr_error const& error) {
+            done = true;
+            failed = !!error;
+        });
+
+    EXPECT_TRUE(pumpUntil([&done]() { return done; }));
+    EXPECT_TRUE(failed);
+    EXPECT_FALSE(tr_sys_path_exists(pathOf("data.bin")));
+
+    local_data->shutdown();
+}
+
+#ifndef _WIN32
+TEST_F(LocalDataWorkersTest, unwritableFileFailsTheWrite)
+{
+    if (geteuid() == 0) {
+        GTEST_SKIP() << "root ignores file permissions";
+    }
+
+    static auto constexpr FileSize = size_t{ 65536U };
+    auto const local_data = makeLocalData(makeDescriptor({ { "data.bin", FileSize } }, 32768U));
+
+    createFileWithContents(pathOf("data.bin"), std::string(FileSize, '\0'));
+    ASSERT_EQ(0, chmod(pathOf("data.bin").c_str(), 0444));
+
+    auto done = false;
+    auto failed = false;
+    local_data->write(
+        TorId,
+        { .begin = 0U, .end = BlockSize },
+        patternBlock(0U),
+        [&done, &failed](auto, auto, tr_error const& error) {
+            done = true;
+            failed = !!error;
+        });
+
+    EXPECT_TRUE(pumpUntil([&done]() { return done; }));
+    EXPECT_TRUE(failed);
+
+    local_data->shutdown();
+    chmod(pathOf("data.bin").c_str(), 0644);
+}
+#endif
