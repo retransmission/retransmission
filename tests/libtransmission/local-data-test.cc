@@ -938,6 +938,11 @@ TEST_F(LocalDataWorkersTest, unwritableFileFailsTheWrite)
     EXPECT_TRUE(pumpUntil([&done]() { return done; }));
     EXPECT_TRUE(failed);
 
+    // a failed write counts for nothing
+    auto const stats = local_data->stats();
+    EXPECT_EQ(0U, stats.write_runs);
+    EXPECT_EQ(0U, stats.blocks_written);
+
     local_data->shutdown();
     chmod(pathOf("data.bin").c_str(), 0644);
 }
