@@ -452,7 +452,7 @@ void onScrapeDone(tr_web::FetchResponse const& web_response)
 
     if (errmsg) {
         response.errmsg = fmt::format(
-            "Tracker scrape failed: {}, response code: {:s} ({:d})",
+            "Tracker scrape failed: {:s}, response code: {:s} ({:d})",
             *errmsg,
             tr_webGetResponseStr(status),
             status);
