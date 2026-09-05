@@ -95,6 +95,14 @@ TEST_F(WebTest, getReturnsBody)
     EXPECT_EQ("127.0.0.1"sv, response.primary_ip);
 }
 
+TEST_F(WebTest, requestUrlIsCaptured)
+{
+    static constexpr auto Path = "/request-url"sv;
+    auto const response = fetch(options(Path));
+
+    EXPECT_EQ(server_.url(Path), response.request_url);
+}
+
 TEST_F(WebTest, noBodyIsGet)
 {
     auto const response = fetch(options());
