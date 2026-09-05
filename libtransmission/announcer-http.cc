@@ -97,17 +97,24 @@ struct http_announce_data {
 
 bool handleAnnounceResponse(tr_web::FetchResponse const& web_response, tr_announce_response& response)
 {
-    auto const& [status, headers, body, primary_ip, did_connect, did_timeout, vdata] = web_response;
+    auto const& [errmsg, status, headers, body, primary_ip, did_connect, did_timeout, vdata] = web_response;
     auto const& log_name = static_cast<http_announce_data const*>(vdata)->log_name;
 
     response.did_connect = did_connect;
     response.did_timeout = did_timeout;
     tr_logAddTrace("Got announce response", log_name);
 
-    if (status != HTTP_OK) {
-        auto const* const response_str = tr_webGetResponseStr(status);
-        response.errmsg = fmt::format("Tracker HTTP response {:d} ({:s})", status, response_str);
+    if (errmsg) {
+        response.errmsg = fmt::format(
+            "Tracker announce failed: {:s}, response code: {:s} ({:d})",
+            *errmsg,
+            tr_webGetResponseStr(status),
+            status);
+        return false;
+    }
 
+    if (status != HTTP_OK) {
+        response.errmsg = fmt::format("Tracker HTTP response {:s} ({:d})", tr_webGetResponseStr(status), status);
         return false;
     }
 
@@ -130,8 +137,7 @@ bool handleAnnounceResponse(tr_web::FetchResponse const& web_response, tr_announ
 
 void onAnnounceDone(tr_web::FetchResponse const& web_response)
 {
-    auto const& [status, headers, body, primary_ip, did_connect, did_timeout, vdata] = web_response;
-    auto* const data = static_cast<http_announce_data*>(vdata);
+    auto* const data = static_cast<http_announce_data*>(web_response.user_data);
 
     auto const got_all_responses = ++data->requests_answered_count == data->requests_sent_count;
 
@@ -434,7 +440,7 @@ private:
 
 void onScrapeDone(tr_web::FetchResponse const& web_response)
 {
-    auto const& [status, headers, body, primary_ip, did_connect, did_timeout, vdata] = web_response;
+    auto const& [errmsg, status, headers, body, primary_ip, did_connect, did_timeout, vdata] = web_response;
     auto* const data = static_cast<scrape_data*>(vdata);
 
     auto& response = data->response();
@@ -444,9 +450,14 @@ void onScrapeDone(tr_web::FetchResponse const& web_response)
     auto const scrape_url_sv = response.scrape_url.sv();
     tr_logAddTrace(fmt::format("Got scrape response for '{}'", scrape_url_sv), data->log_name());
 
-    if (status != HTTP_OK) {
-        auto const* const response_str = tr_webGetResponseStr(status);
-        response.errmsg = fmt::format("Tracker HTTP response {:d} ({:s})", status, response_str);
+    if (errmsg) {
+        response.errmsg = fmt::format(
+            "Tracker scrape failed: {}, response code: {:s} ({:d})",
+            *errmsg,
+            tr_webGetResponseStr(status),
+            status);
+    } else if (status != HTTP_OK) {
+        response.errmsg = fmt::format("Tracker HTTP response {:s} ({:d})", tr_webGetResponseStr(status), status);
     } else if (!std::empty(body)) {
         tr_announcerParseHttpScrapeResponse(response, body, data->log_name());
     }

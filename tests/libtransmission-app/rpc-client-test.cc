@@ -396,10 +396,10 @@ TEST_F(AppRpcClientTest, reportsNetworkErrorWhenServerIsUnreachable)
     auto client = RpcClient{ loop.marshaler() };
     client.start(url_str);
 
-    auto network_response_status = long{ -1 };
+    auto network_response_success = false;
     auto network_response_message = std::string{};
-    auto const tag = client.network_response.connect_scoped([&](long const status, std::string_view const message) {
-        network_response_status = status;
+    auto const tag = client.network_response.connect_scoped([&](bool const is_success, std::string_view const message) {
+        network_response_success = is_success;
         network_response_message = std::string{ message };
     });
 
@@ -409,7 +409,7 @@ TEST_F(AppRpcClientTest, reportsNetworkErrorWhenServerIsUnreachable)
     EXPECT_EQ(0, response.http_status);
     EXPECT_FALSE(std::empty(response.errmsg));
 
-    EXPECT_EQ(0, network_response_status);
+    EXPECT_FALSE(network_response_success);
     EXPECT_EQ(response.errmsg, network_response_message);
 }
 

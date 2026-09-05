@@ -22,6 +22,7 @@ public:
     // The response struct passed to the user's FetchDoneFunc callback
     // when a fetch() finishes.
     struct FetchResponse {
+        std::optional<std::string> errmsg; // empty if no error
         long status = 0; // http server response, e.g. 200
         std::map<std::string, std::string> headers; // keys are lowercased
         std::string body;
