@@ -43,5 +43,10 @@ public:
     [[nodiscard]] virtual tr_port_forwarding_state state() const = 0;
 
     virtual void local_port_changed() = 0;
+
+    // Forget the gateways and mappings found over the old interface and
+    // start over. Nothing is unmapped: those requests would leave over
+    // the old route, which is exactly what a binding change forbids.
+    virtual void bind_interface_changed() = 0;
     virtual void set_enabled(bool enabled) = 0;
 };
