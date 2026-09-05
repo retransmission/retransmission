@@ -87,8 +87,8 @@ namespace Error
         return "file index out of range"sv;
     case PIECE_IDX_OOR:
         return "piece index out of range"sv;
-    case HTTP_ERROR:
-        return "HTTP error from backend service"sv;
+    case FETCH_ERROR:
+        return "error when fetching from remote service"sv;
     case CORRUPT_TORRENT:
         return "invalid or corrupt torrent file"sv;
     case INVALID_BLOCKLIST_DATA:
@@ -1381,7 +1381,7 @@ void onPortTested(tr_web::FetchResponse const& web_response)
     if (status != 200) {
         tr_rpc_idle_done(
             data,
-            Error::HTTP_ERROR,
+            Error::FETCH_ERROR,
             fmt::format(
                 fmt::runtime(_("Couldn't test port: {error} ({error_code})")),
                 fmt::arg("error", tr_webGetResponseStr(status)),
@@ -1443,7 +1443,7 @@ void blocklistUpdate(tr_session* session, tr_variant::Map const& /*args_in*/, st
             break;
 
         case tr_blocklist_update_status::DownloadError:
-            tr_rpc_idle_done(idle_data, Error::HTTP_ERROR, result.error);
+            tr_rpc_idle_done(idle_data, Error::FETCH_ERROR, result.error);
             break;
 
         case tr_blocklist_update_status::SaveError:
@@ -1521,7 +1521,7 @@ void onMetadataFetched(tr_web::FetchResponse const& web_response)
     } else {
         tr_rpc_idle_done(
             data->data,
-            JsonRpc::Error::HTTP_ERROR,
+            JsonRpc::Error::FETCH_ERROR,
             fmt::format(
                 fmt::runtime(_("Couldn't fetch torrent: {error} ({error_code})")),
                 fmt::arg("error", tr_webGetResponseStr(status)),

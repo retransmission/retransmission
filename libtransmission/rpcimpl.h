@@ -40,7 +40,7 @@ enum Code : int16_t {
     SYSTEM_ERROR = 5,
     FILE_IDX_OOR = 6,
     PIECE_IDX_OOR = 7,
-    HTTP_ERROR = 8,
+    FETCH_ERROR = 8,
     CORRUPT_TORRENT = 9,
     INVALID_BLOCKLIST_DATA = 10,
 };

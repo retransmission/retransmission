@@ -433,7 +433,7 @@ constexpr std::string_view CurrentPortTestErrorResponse = R"json({
                 "ip_protocol": "ipv6"
             }
         },
-        "message": "HTTP error from backend service"
+        "message": "error when fetching from remote service"
     },
     "id": 9,
     "jsonrpc": "2.0"
