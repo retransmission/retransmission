@@ -371,6 +371,16 @@ class TorrentRemovalTest
 {
 };
 
+class ZeroBudgetTest : public TorrentDiskIoWorkersTest
+{
+protected:
+    void SetUp() override
+    {
+        settings().insert_or_assign(TR_KEY_disk_write_budget_mib, int64_t{ 0 });
+        TorrentDiskIoWorkersTest::SetUp();
+    }
+};
+
 } // namespace
 
 TEST_F(TorrentDiskIoTest, blockIsNotOursUntilItsWriteFinishes)
@@ -493,6 +503,14 @@ TEST_F(TorrentDiskIoTest, hashResultForInvalidatedPieceIsDropped)
 TEST_F(TorrentDiskIoTest, requestBudgetIsUnboundedOnTheSynchronousBackend)
 {
     EXPECT_FALSE(session_->spare_request_blocks().has_value());
+}
+
+TEST_F(ZeroBudgetTest, zeroBudgetFloorsAtOneWriteRun)
+{
+    // 1 MiB of 16 KiB blocks. A budget that admits nothing would stall
+    // every download.
+    static auto constexpr MinBudgetBlocks = size_t{ 64U };
+    inSessionThread([this]() { EXPECT_EQ(MinBudgetBlocks, session_->spare_request_blocks()); });
 }
 
 // ---
