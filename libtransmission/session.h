@@ -1175,8 +1175,6 @@ public:
 
     void addIncoming(std::shared_ptr<tr_peer_socket> socket);
 
-    void closeTorrentPeerConnections(tr_torrent* tor);
-
     void addTorrent(tr_torrent* tor);
 
     // NOLINTNEXTLINE(readability-make-member-function-const)
