@@ -266,20 +266,33 @@ static CGFloat const kRevealButtonTrailingOffset = -8.0; // inverted for constra
         // draw progress bar
         NSRect barRect = self.fTorrentProgressBarView.frame;
         [ProgressBarView.sharedInstance drawBarInRect:barRect forTableView:self.fTorrentTableView withTorrent:torrent];
-
-        // set priority icon
-        if (torrent.priority != TR_PRI_NORMAL) {
-            NSImage* priorityImage = [NSImage imageNamed:(torrent.priority == TR_PRI_HIGH ? @"PriorityHighTemplate" : @"PriorityLowTemplate")];
-
-            self.fTorrentPriorityView.image = priorityImage;
-
-            [self.fStackView setVisibilityPriority:NSStackViewVisibilityPriorityMustHold forView:self.fTorrentPriorityView];
-        } else {
-            [self.fStackView setVisibilityPriority:NSStackViewVisibilityPriorityNotVisible forView:self.fTorrentPriorityView];
-        }
     }
 
     [super drawRect:dirtyRect];
+}
+
+- (void)setObjectValue:(id)objectValue
+{
+    [super setObjectValue:objectValue];
+    [self setTorrentPriority:[(Torrent*)objectValue priority]];
+}
+
+- (void)setTorrentPriority:(tr_priority_t)priority
+{
+    BOOL const hasPriority = priority != TR_PRI_NORMAL;
+
+    NSImage* const image = hasPriority ?
+        [NSImage imageNamed:(priority == TR_PRI_HIGH ? @"PriorityHighTemplate" : @"PriorityLowTemplate")] :
+        nil;
+
+    NSStackViewVisibilityPriority const visibility = hasPriority ? NSStackViewVisibilityPriorityMustHold : NSStackViewVisibilityPriorityNotVisible;
+
+    if (self.fTorrentPriorityView.image == image && [self.fStackView visibilityPriorityForView:self.fTorrentPriorityView] == visibility) {
+        return;
+    }
+
+    self.fTorrentPriorityView.image = image;
+    [self.fStackView setVisibilityPriority:visibility forView:self.fTorrentPriorityView];
 }
 
 // otherwise progress bar is inverted
