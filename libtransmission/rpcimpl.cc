@@ -1508,13 +1508,9 @@ void onMetadataFetched(tr_web::FetchResponse const& web_response)
     auto* data = static_cast<struct add_torrent_idle_data*>(user_data);
 
     tr_logAddTrace(
-        fmt::format(
-            "torrentAdd: HTTP response code was {} ({}); response length was {} bytes",
-            status,
-            tr_webGetResponseStr(status),
-            std::size(body)));
+        fmt::format("torrentAdd: fetch response code was ({}); response length was {} bytes", status, std::size(body)));
 
-    if (status == 200 || status == 221) /* http or ftp success.. */
+    if (status == 200 || status == 221) // http or ftp success..
     {
         data->builder.set_metainfo(body);
         add_torrent_impl(data->data, data->builder);
@@ -1522,10 +1518,7 @@ void onMetadataFetched(tr_web::FetchResponse const& web_response)
         tr_rpc_idle_done(
             data->data,
             JsonRpc::Error::FETCH_ERROR,
-            fmt::format(
-                fmt::runtime(_("Couldn't fetch torrent: {error} ({error_code})")),
-                fmt::arg("error", tr_webGetResponseStr(status)),
-                fmt::arg("error_code", status)));
+            fmt::format(fmt::runtime(_("Couldn't fetch torrent: ({error_code})")), fmt::arg("error_code", status)));
     }
 
     delete data;
