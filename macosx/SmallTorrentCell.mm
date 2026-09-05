@@ -151,6 +151,11 @@ static CGFloat const kButtonsSpacing = 3.0;
     ]];
 }
 
+- (void)setAnyErrorOrWarning:(BOOL)errorOrWarning
+{
+    // nothing to do. we use iconView for error status.
+}
+
 // show fControlButton and fRevealButton
 - (void)mouseEntered:(NSEvent*)event
 {
