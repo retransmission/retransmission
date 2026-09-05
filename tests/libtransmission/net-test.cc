@@ -1057,26 +1057,6 @@ TEST_F(NetTest, effectiveBindInterface)
     }
 }
 
-TEST_F(NetTest, effectiveBindInterfaceForTorrent)
-{
-    // torrent value, session value, expected
-    static auto constexpr Tests = std::to_array<std::tuple<std::string_view, std::string_view, std::string_view>>({
-        { ""sv, ""sv, ""sv },
-        { ""sv, "utun4"sv, "utun4"sv }, // empty inherits the session's
-        { "  "sv, "utun4"sv, "utun4"sv },
-        { ""sv, "blocked"sv, "blocked"sv },
-        { "default"sv, "utun4"sv, ""sv },
-        { " utun4 "sv, ""sv, "utun4"sv },
-        { "en0"sv, "utun4"sv, "en0"sv },
-        { "blocked"sv, "utun4"sv, "blocked"sv },
-    });
-
-    for (auto const& [torrent_bind, session_bind, expected] : Tests) {
-        EXPECT_EQ(expected, tr_net_effective_bind_interface(torrent_bind, session_bind))
-            << '"' << torrent_bind << "\" with session \"" << session_bind << '"';
-    }
-}
-
 TEST_F(NetTest, curlInterfaceString)
 {
     EXPECT_FALSE(tr_netCurlInterfaceString(""sv));
@@ -1089,29 +1069,6 @@ TEST_F(NetTest, curlInterfaceString)
 
     // blocked is refused before the request reaches curl, so it gets no interface string
     EXPECT_FALSE(tr_netCurlInterfaceString("blocked"sv));
-}
-
-TEST_F(NetTest, bindInterfaceMatches)
-{
-    // torrent value, session value, expected
-    static auto constexpr Tests = std::to_array<std::tuple<std::string_view, std::string_view, bool>>({
-        { ""sv, ""sv, true },
-        { ""sv, "utun4"sv, true }, // empty inherits the session's
-        { ""sv, "blocked"sv, true },
-        { "default"sv, ""sv, true },
-        { "default"sv, "utun4"sv, false },
-        { "utun4"sv, "utun4"sv, true },
-        { " utun4 "sv, "utun4"sv, true },
-        { "utun4"sv, ""sv, false },
-        { "utun4"sv, "en0"sv, false },
-        { "blocked"sv, "utun4"sv, false },
-        { "blocked"sv, "blocked"sv, true },
-    });
-
-    for (auto const& [torrent_bind, session_bind, expected] : Tests) {
-        EXPECT_EQ(expected, tr_net_bind_interface_matches(torrent_bind, session_bind))
-            << '"' << torrent_bind << "\" vs session \"" << session_bind << '"';
-    }
 }
 
 TEST_F(NetTest, interfaceIndex)

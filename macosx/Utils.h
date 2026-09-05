@@ -9,8 +9,7 @@
 extern NSString* const TRBindInterfaceModeLiteral;
 extern NSString* const TRBindInterfaceModeActiveVPN;
 extern NSString* const TRBindInterfaceActiveVPNMenuValue;
-// libtransmission's reserved bind_interface values: normal OS routing, and refuse all traffic
-extern NSString* const TRDefaultRouteBindInterfaceName;
+// libtransmission's reserved bind_interface value that refuses all traffic
 extern NSString* const TRBlockedBindInterfaceName;
 extern NSString* const TRActiveVPNBindInterfaceDidChangeNotification;
 extern NSString* const TRBindInterfaceServiceNameDefaultsKey;
@@ -32,7 +31,7 @@ bool isRatioEqual(CGFloat old_ratio, CGFloat new_ratio);
 NSArray<NSString*>* TRActiveNetworkInterfaceNames(void);
 NSDictionary<NSString*, id>* TRResolveActiveVPNInterface(void);
 NSDictionary<NSString*, id>* TRResolveActiveVPNInterfaceMatchingIdentity(NSString* serviceName, NSString* providerIdentifier);
-void TRPopulateBindInterfacePopUp(NSPopUpButton* popUp, NSString* selectedInterface, BOOL includeInherit, NSString* defaultRouteValue);
+void TRPopulateBindInterfacePopUp(NSPopUpButton* popUp, NSString* selectedInterface);
 void TRPopulateAppBindInterfacePopUp(NSPopUpButton* popUp, NSString* selectedInterface, NSString* selectedMode);
 NSString* TRBindInterfacePopUpValue(NSPopUpButton* popUp);
 NSString* TRBindInterfacePopUpModeValue(NSPopUpButton* popUp);

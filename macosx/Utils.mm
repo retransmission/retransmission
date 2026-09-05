@@ -19,7 +19,6 @@
 NSString* const TRBindInterfaceModeLiteral = @"literal";
 NSString* const TRBindInterfaceModeActiveVPN = @"active-vpn";
 NSString* const TRBindInterfaceActiveVPNMenuValue = @"__transmission_active_vpn__";
-NSString* const TRDefaultRouteBindInterfaceName = @TR_BIND_INTERFACE_DEFAULT_STR;
 NSString* const TRBlockedBindInterfaceName = @TR_BIND_INTERFACE_BLOCKED_STR;
 NSString* const TRActiveVPNBindInterfaceDidChangeNotification = @"TRActiveVPNBindInterfaceDidChangeNotification";
 NSString* const TRBindInterfaceServiceNameDefaultsKey = @"BindInterfaceServiceName";
@@ -509,21 +508,15 @@ NSDictionary<NSString*, id>* TRResolveActiveVPNInterface(void)
     return TRResolveActiveVPNInterfaceMatchingIdentity(@"", @"");
 }
 
-void TRPopulateBindInterfacePopUp(NSPopUpButton* popUp, NSString* selectedInterface, BOOL includeInherit, NSString* defaultRouteValue)
+void TRPopulateBindInterfacePopUp(NSPopUpButton* popUp, NSString* selectedInterface)
 {
     selectedInterface = selectedInterface ?: @"";
-    defaultRouteValue = defaultRouteValue ?: @"";
 
     [popUp removeAllItems];
 
-    if (includeInherit) {
-        [popUp addItemWithTitle:NSLocalizedString(@"Use App Default", "Network interface binding menu item")];
-        popUp.lastItem.representedObject = @"";
-        popUp.lastItem.toolTip = NSLocalizedString(@"Use the Network preference setting.", "Network interface binding menu tooltip");
-    }
-
+    // an empty value is normal OS routing
     [popUp addItemWithTitle:NSLocalizedString(@"Automatic (Default Connection)", "Network interface binding menu item")];
-    popUp.lastItem.representedObject = defaultRouteValue;
+    popUp.lastItem.representedObject = @"";
     popUp.lastItem.toolTip = NSLocalizedString(@"Let macOS choose the connection for each transfer.", "Network interface binding menu tooltip");
 
     NSArray<NSDictionary<NSString*, id>*>* activeInterfaces = TRActiveNetworkInterfaceInfo();
@@ -537,11 +530,9 @@ void TRPopulateBindInterfacePopUp(NSPopUpButton* popUp, NSString* selectedInterf
         popUp.lastItem.toolTip = interfaceInfo[@"detail"];
     }
 
-    BOOL selectedIsInherit = selectedInterface.length == 0 && includeInherit;
-    BOOL selectedIsDefaultRoute = [selectedInterface isEqualToString:defaultRouteValue] || (selectedInterface.length == 0 && !includeInherit);
-    BOOL selectedActiveInterface = selectedInterface.length > 0 && !selectedIsDefaultRoute && [activeNames containsObject:selectedInterface];
+    BOOL selectedActiveInterface = selectedInterface.length > 0 && [activeNames containsObject:selectedInterface];
 
-    if (selectedInterface.length > 0 && !selectedIsDefaultRoute && !selectedActiveInterface) {
+    if (selectedInterface.length > 0 && !selectedActiveInterface) {
         NSString* title = [NSString
             stringWithFormat:NSLocalizedString(@"Unavailable Interface (%@)", "Network interface binding menu item"), selectedInterface];
         [popUp addItemWithTitle:title];
@@ -551,9 +542,8 @@ void TRPopulateBindInterfacePopUp(NSPopUpButton* popUp, NSString* selectedInterf
             "Network interface binding menu tooltip");
     }
 
-    NSString* selectedValue = selectedIsInherit ? @"" : (selectedIsDefaultRoute ? defaultRouteValue : selectedInterface);
     for (NSMenuItem* item in popUp.itemArray) {
-        if ([item.representedObject isKindOfClass:NSString.class] && [item.representedObject isEqualToString:selectedValue]) {
+        if ([item.representedObject isKindOfClass:NSString.class] && [item.representedObject isEqualToString:selectedInterface]) {
             [popUp selectItem:item];
             return;
         }
@@ -564,7 +554,7 @@ void TRPopulateBindInterfacePopUp(NSPopUpButton* popUp, NSString* selectedInterf
 
 void TRPopulateAppBindInterfacePopUp(NSPopUpButton* popUp, NSString* selectedInterface, NSString* selectedMode)
 {
-    TRPopulateBindInterfacePopUp(popUp, selectedInterface, NO, @"");
+    TRPopulateBindInterfacePopUp(popUp, selectedInterface);
 
     NSMenuItem* activeVPNItem = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Active VPN Tunnel", "Network interface binding menu item")
                                                            action:nil

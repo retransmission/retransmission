@@ -31,7 +31,6 @@
 #include "libtransmission/announcer.h"
 #include "libtransmission/crypto-utils.h" /* tr_rand_int() */
 #include "libtransmission/log.h"
-#include "libtransmission/net.h"
 #include "libtransmission/session.h"
 #include "libtransmission/shared-string.h"
 #include "libtransmission/string-utils.h"
@@ -172,26 +171,6 @@ public:
             tr_strv_starts_with(scrape_sv, "http://"sv) || tr_strv_starts_with(scrape_sv, "https://"sv)) {
             tr_tracker_http_scrape(session, request, std::move(on_response));
         } else if (tr_strv_starts_with(scrape_sv, "udp://"sv)) {
-            if (!tr_net_bind_interface_matches(request.bind_interface, session->bind_interface())) {
-                tr_logAddWarn(
-                    fmt::format(
-                        fmt::runtime(_(
-                            "Skipping UDP tracker scrape for '{torrent}' because its bind interface cannot be enforced on the shared UDP socket")),
-                        fmt::arg("torrent", request.log_name)));
-
-                // every row needs an info_hash so onScrapeDone() clears each tier's isScraping flag
-                auto response = tr_scrape_response{};
-                response.did_connect = true;
-                response.scrape_url = request.scrape_url;
-                response.row_count = request.info_hash_count;
-                for (size_t i = 0; i < response.row_count; ++i) {
-                    response.rows[i].info_hash = request.info_hash[i];
-                }
-                response.errmsg = _("UDP tracker disabled by torrent bind_interface override");
-                on_response(response);
-                return;
-            }
-
             announcer_udp_.scrape(request, std::move(on_response));
         } else {
             tr_logAddError(fmt::format(fmt::runtime(_("Unsupported URL: '{url}'")), fmt::arg("url", scrape_sv)));
@@ -206,22 +185,6 @@ public:
             tr_strv_starts_with(announce_sv, "http://"sv) || tr_strv_starts_with(announce_sv, "https://"sv)) {
             tr_tracker_http_announce(session, request, std::move(on_response));
         } else if (tr_strv_starts_with(announce_sv, "udp://"sv)) {
-            if (!tr_net_bind_interface_matches(request.bind_interface, session->bind_interface())) {
-                tr_logAddWarn(
-                    fmt::format(
-                        fmt::runtime(_(
-                            "Skipping UDP tracker announce for '{torrent}' because its bind interface cannot be enforced on the shared UDP socket")),
-                        fmt::arg("torrent", request.log_name)));
-
-                // did_connect must be set or onAnnounceDone() reports a generic connection failure instead of errmsg
-                auto response = tr_announce_response{};
-                response.info_hash = request.info_hash;
-                response.did_connect = true;
-                response.errmsg = _("UDP tracker disabled by torrent bind_interface override");
-                on_response(response);
-                return;
-            }
-
             announcer_udp_.announce(request, std::move(on_response));
         } else {
             tr_logAddWarn(fmt::format(fmt::runtime(_("Unsupported URL: '{url}'")), fmt::arg("url", announce_sv)));
@@ -909,7 +872,6 @@ void on_announce_error(tr_tier* tier, std::string_view err, tr_announce_event e,
         .peer_id = tor->peer_id(),
         .info_hash = tor->info_hash(),
         .log_name = tier->buildLogName(),
-        .bind_interface = tor->bind_interface(),
     };
 }
 
@@ -1320,7 +1282,6 @@ namespace
 void multiscrape(tr_announcer_impl* announcer, std::vector<tr_tier*> const& tiers)
 {
     auto const now = tr_time();
-    auto const& session_bind = announcer->session->bind_interface();
     auto requests = std::array<tr_scrape_request, MaxScrapesPerUpkeep>{};
     auto request_count = size_t{};
 
@@ -1352,14 +1313,6 @@ void multiscrape(tr_announcer_impl* announcer, std::vector<tr_tier*> const& tier
                 continue;
             }
 
-            // a request goes out on one interface, so it can only carry torrents
-            // bound to that interface. Compare what the values resolve to, since
-            // "" and "default" on the default route, or "" and the session's own
-            // interface name, are the same interface spelled differently.
-            if (tr_net_effective_bind_interface(req->bind_interface, session_bind) != tier->tor->effective_bind_interface()) {
-                continue;
-            }
-
             req->info_hash[req->info_hash_count] = tier->tor->info_hash();
             ++req->info_hash_count;
             tier->isScraping = true;
@@ -1372,7 +1325,6 @@ void multiscrape(tr_announcer_impl* announcer, std::vector<tr_tier*> const& tier
             auto* const req = &requests[request_count];
             req->scrape_url = scrape_info->scrape_url;
             req->log_name = tier->buildLogName();
-            req->bind_interface = tier->tor->bind_interface();
 
             req->info_hash[req->info_hash_count] = tier->tor->info_hash();
             ++req->info_hash_count;

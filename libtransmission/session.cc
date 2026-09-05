@@ -195,7 +195,7 @@ std::vector<tr_torrent_id_t> tr_session::DhtMediator::torrents_allowing_dht() co
 
     ids.reserve(std::size(torrents));
     for (auto const* const tor : torrents) {
-        if (tor->is_running() && tor->allows_dht() && tor->bind_interface_matches_session()) {
+        if (tor->is_running() && tor->allows_dht()) {
             ids.push_back(tor->id());
         }
     }
@@ -214,7 +214,7 @@ tr_sha1_digest_t tr_session::DhtMediator::torrent_info_hash(tr_torrent_id_t id) 
 
 void tr_session::DhtMediator::add_pex(tr_sha1_digest_t const& info_hash, std::span<tr_pex const> const pex)
 {
-    if (auto* const tor = session_.torrents().get(info_hash); tor != nullptr && tor->bind_interface_matches_session()) {
+    if (auto* const tor = session_.torrents().get(info_hash); tor != nullptr) {
         tr_peerMgrAddPex(tor, TR_PEER_FROM_DHT, pex);
     }
 }
@@ -237,7 +237,7 @@ bool tr_session::LpdMediator::onPeerFound(std::string_view info_hash_str, tr_add
     }
 
     tr_torrent* const tor = session_.torrents_.get(*digest);
-    if (!tr_isTorrent(tor) || !tor->allows_lpd() || !tor->bind_interface_matches_session()) {
+    if (!tr_isTorrent(tor) || !tor->allows_lpd()) {
         return false;
     }
 
@@ -257,7 +257,7 @@ std::vector<tr_lpd::Mediator::TorrentInfo> tr_session::LpdMediator::torrents() c
         auto info = tr_lpd::Mediator::TorrentInfo{};
         info.info_hash_str = tor->info_hash_string();
         info.activity = tor->activity();
-        info.allows_lpd = tor->allows_lpd() && tor->bind_interface_matches_session();
+        info.allows_lpd = tor->allows_lpd();
         info.announce_after = tor->lpdAnnounceAt;
         ret.emplace_back(info);
     }
@@ -2154,11 +2154,6 @@ tr_session::tr_session(std::string_view config_dir, tr::Settings const& settings
 void tr_session::addIncoming(std::shared_ptr<tr_peer_socket> socket)
 {
     tr_peerMgrAddIncoming(peer_mgr_.get(), std::move(socket));
-}
-
-void tr_session::closeTorrentPeerConnections(tr_torrent* tor)
-{
-    tr_peerMgrCloseTorrentConnections(peer_mgr_.get(), tor);
 }
 
 void tr_session::addTorrent(tr_torrent* tor)

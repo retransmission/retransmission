@@ -57,13 +57,11 @@ public:
     {
     public:
         struct TorrentInfo {
-            tr_sha1_digest_t info_hash = {};
-            tr_peer_id_t client_peer_id = {};
-            tr_torrent_id_t id = {};
-            bool is_done = false;
-            bool is_running = false;
-            bool allows_dht = true;
-            bool allows_incoming_peer = true;
+            tr_sha1_digest_t info_hash;
+            tr_peer_id_t client_peer_id;
+            tr_torrent_id_t id;
+            bool is_done;
+            bool is_running;
         };
 
         virtual ~Mediator() = default;
@@ -92,12 +90,6 @@ public:
     tr_handshake(tr_handshake&&) = delete;
     tr_handshake& operator=(tr_handshake const&) = delete;
     tr_handshake& operator=(tr_handshake&&) = delete;
-
-    // all-zero until an incoming peer has told us which torrent it wants
-    [[nodiscard]] auto const& torrent_hash() const noexcept
-    {
-        return peer_io_->torrent_hash();
-    }
 
     // bittorrent handshake constants
     // https://www.bittorrent.org/beps/bep_0003.html#peer-protocol

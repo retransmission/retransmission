@@ -658,7 +658,6 @@ namespace make_torrent_field_helpers
     case TR_KEY_added_date:
     case TR_KEY_availability:
     case TR_KEY_bandwidth_priority:
-    case TR_KEY_bind_interface:
     case TR_KEY_bytes_completed:
     case TR_KEY_comment:
     case TR_KEY_corrupt_ever:
@@ -759,8 +758,6 @@ namespace make_torrent_field_helpers
         return make_piece_availability_vec(tor);
     case TR_KEY_bandwidth_priority:
         return tor.get_priority();
-    case TR_KEY_bind_interface:
-        return tor.bind_interface();
     case TR_KEY_bytes_completed:
         return make_bytes_completed_vec(tor);
     case TR_KEY_comment:
@@ -1207,10 +1204,6 @@ namespace make_torrent_field_helpers
             tor->set_bandwidth_group(*val);
         }
 
-        if (auto const val = args_in.value_if<std::string_view>(TR_KEY_bind_interface)) {
-            tor->set_bind_interface(*val);
-        }
-
         if (auto const* val = args_in.find_if<tr_variant::Vector>(TR_KEY_labels); val != nullptr && err == Error::SUCCESS) {
             std::tie(err, errmsg) = set_labels(tor, *val);
         }
@@ -1598,10 +1591,6 @@ void torrentAdd(tr_session* session, tr_variant::Map const& args_in, tr_rpc_idle
 
     if (auto const val = args_in.value_if<int64_t>(TR_KEY_peer_limit); val) {
         builder.set_peer_limit(static_cast<uint16_t>(*val));
-    }
-
-    if (auto const val = args_in.value_if<std::string_view>(TR_KEY_bind_interface); val) {
-        builder.set_bind_interface(*val);
     }
 
     if (auto const val = args_in.value_if<int64_t>(TR_KEY_bandwidth_priority); val) {

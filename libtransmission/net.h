@@ -509,14 +509,6 @@ struct tr_session;
 // the interface name to bind to, or empty when `bind_interface` means normal OS routing
 [[nodiscard]] std::string_view tr_net_effective_bind_interface(std::string_view bind_interface);
 
-// the interface name a torrent binds to given the session's value.
-// An empty torrent value inherits the session's; empty means normal OS routing.
-[[nodiscard]] std::string_view tr_net_effective_bind_interface(std::string_view torrent_bind, std::string_view session_bind);
-
-// true when a torrent's value resolves to the same interface as the session's.
-// An empty torrent value inherits the session's.
-[[nodiscard]] bool tr_net_bind_interface_matches(std::string_view torrent_bind, std::string_view session_bind);
-
 // the OS index of the named interface, or 0 when `bind_interface` is
 // default, blocked, or names an interface that doesn't exist
 [[nodiscard]] unsigned tr_net_interface_index(std::string_view bind_interface);

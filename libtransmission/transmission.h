@@ -305,10 +305,9 @@ void tr_sessionSetUTPEnabled(tr_session* session, bool is_enabled);
 void tr_sessionSetLPDEnabled(tr_session* session, bool is_enabled);
 
 // Reserved `bind_interface` values; any other non-empty value is an interface name.
-// The `_STR` macros exist so Objective-C can spell them as `@TR_BIND_INTERFACE_..._STR`.
-#define TR_BIND_INTERFACE_DEFAULT_STR "default" // normal OS routing
+// The blocked value is a macro so Objective-C can spell it as `@TR_BIND_INTERFACE_BLOCKED_STR`.
 #define TR_BIND_INTERFACE_BLOCKED_STR "blocked" // refuse every socket
-inline constexpr std::string_view TrBindInterfaceDefault = TR_BIND_INTERFACE_DEFAULT_STR;
+inline constexpr std::string_view TrBindInterfaceDefault = "default"; // normal OS routing
 inline constexpr std::string_view TrBindInterfaceBlocked = TR_BIND_INTERFACE_BLOCKED_STR;
 
 [[nodiscard]] std::string tr_sessionGetBindInterface(tr_session const* session);
@@ -718,9 +717,6 @@ void tr_torrentSetIdleLimit(tr_torrent* tor, uint16_t idle_minutes);
 
 [[nodiscard]] uint16_t tr_torrentGetPeerLimit(tr_torrent const* tor);
 void tr_torrentSetPeerLimit(tr_torrent* tor, uint16_t max_connected_peers);
-
-[[nodiscard]] std::string tr_torrentGetBindInterface(tr_torrent const* tor);
-void tr_torrentSetBindInterface(tr_torrent* tor, std::string_view bind_interface);
 
 // --- File Priorities
 

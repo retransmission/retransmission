@@ -79,8 +79,6 @@ extern NSString* const kTorrentDidChangeGroupNotification;
 
 @property(nonatomic) uint16_t maxPeerConnect;
 
-@property(nonatomic, copy) NSString* bindInterface;
-
 @property(nonatomic) BOOL removeWhenFinishSeeding;
 
 @property(nonatomic, readonly) BOOL waitingToStart;
