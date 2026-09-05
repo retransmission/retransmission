@@ -160,6 +160,17 @@ void finish_request(tr_web::FetchResponse const& response, std::shared_ptr<Pendi
 
     auto result = tr_blocklist_update_result{};
 
+    if (response.errmsg) {
+        result.status = tr_blocklist_update_status::DownloadError;
+        result.error = fmt::format(
+            fmt::runtime(_("Couldn't fetch blocklist: {errmsg}, response code: {error} ({error_code})")),
+            fmt::arg("errmsg", *response.errmsg),
+            fmt::arg("error", tr_webGetResponseStr(response.status)),
+            fmt::arg("error_code", response.status));
+        deliver(*pending, result);
+        return;
+    }
+
     if (response.status != 200) {
         // we failed to download the blocklist...
         result.status = tr_blocklist_update_status::DownloadError;

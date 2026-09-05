@@ -67,7 +67,7 @@ public:
     void exec(tr_quark method, tr_variant* args, ResponseFunc on_done);
 
     // Signals, fired on the UI thread. Connect with connect_scoped().
-    sigslot::signal<long /*http_status*/, std::string_view /*message*/> network_response;
+    sigslot::signal<bool /*is_success*/, std::string_view /*message*/> network_response;
     sigslot::signal<> auth_required;
     sigslot::signal<> data_read_progress;
     sigslot::signal<> data_send_progress;

@@ -23,6 +23,7 @@ public:
     // when a fetch() finishes.
     struct FetchResponse {
         std::string request_url;
+        std::optional<std::string> errmsg; // empty if no error
 
         long status = 0; // http server response, e.g. 200
         std::map<std::string, std::string> headers; // keys are lowercased
