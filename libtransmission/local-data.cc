@@ -710,11 +710,7 @@ private:
     {
         auto const span = op.span;
         auto desc = provider_(id);
-        if (desc && span.end > desc->block_info.total_size()) {
-            desc = nullptr;
-        }
-
-        if (!desc) {
+        if (!desc || span.end > desc->block_info.total_size()) {
             enqueued_write_bytes_.fetch_sub(span.size(), std::memory_order_relaxed);
             if (op.on_write) {
                 std::move(op.on_write)(id, span, make_error(TR_ERROR_EINVAL));
@@ -788,32 +784,33 @@ private:
 
             {
                 auto lock = std::unique_lock{ work_mutex_ };
-                work_cv_.wait(lock, [this]() { return has_work() || (stopping_ && !paused_); });
+                work_cv_.wait(lock, [this, &test, &run]() {
+                    if (paused_) {
+                        return false;
+                    }
 
-                auto const next_test = std::ranges::find_if(pending_tests_, [](auto const& op) { return is_ready(op.ready); });
-                if (next_test != std::end(pending_tests_) && !paused_) {
-                    test = std::move(*next_test);
-                    pending_tests_.erase(next_test);
-                } else if (!std::empty(pending_writes_) && !paused_) {
+                    auto const next_test = std::ranges::find_if(pending_tests_, [](auto const& op) {
+                        return is_ready(op.ready);
+                    });
+                    if (next_test != std::end(pending_tests_)) {
+                        test = std::move(*next_test);
+                        pending_tests_.erase(next_test);
+                        return true;
+                    }
+
                     run = take_write_run();
-                } else {
-                    return; // stopping
-                }
+                    return !std::empty(run) || stopping_;
+                });
             }
 
             if (test) {
                 exec_test(std::move(*test));
-            } else {
+            } else if (!std::empty(run)) {
                 exec_write_run(std::move(run));
+            } else {
+                return;
             }
         }
-    }
-
-    [[nodiscard]] bool has_work() const noexcept
-    {
-        return !paused_ &&
-            (std::ranges::any_of(pending_tests_, [](auto const& op) { return is_ready(op.ready); }) ||
-             std::ranges::any_of(pending_writes_, [](auto const& entry) { return is_ready(entry.second.ready); }));
     }
 
     [[nodiscard]] static bool is_ready(std::shared_ptr<bool> const& ready) noexcept
@@ -833,15 +830,19 @@ private:
     }
 
     // Take the next write past the cursor, plus the writes contiguous
-    // with it. Call with work_mutex_ held and pending_writes_ nonempty.
+    // with it. Call with work_mutex_ held.
     [[nodiscard]] std::vector<PendingWrite> take_write_run()
     {
         auto const runnable = [](auto const& entry) {
             return is_ready(entry.second.ready);
         };
-        auto it = std::find_if(pending_writes_.lower_bound(cursor_), std::end(pending_writes_), runnable);
+        auto const start = pending_writes_.lower_bound(cursor_);
+        auto it = std::find_if(start, std::end(pending_writes_), runnable);
         if (it == std::end(pending_writes_)) {
-            it = std::find_if(std::begin(pending_writes_), std::end(pending_writes_), runnable);
+            it = std::find_if(std::begin(pending_writes_), start, runnable);
+            if (it == start) {
+                return {};
+            }
         }
 
         auto const tor_id = it->second.tor_id;
@@ -895,10 +896,8 @@ private:
 
         auto const ready = std::make_shared<bool>(false);
         auto waiter = make_waiter(ready);
-        auto result = tr_io_write_result{};
-        if (std::size(run) == 1U) {
-            result = tr_ioWrite(desc, open_files_, begin, { std::data(*run.front().data), n_bytes }, &waiter);
-        } else {
+        auto writeme = std::span<uint8_t const>{ *run.front().data }.first(run.front().span.size());
+        if (std::size(run) > 1U) {
             // Adjacent blocks go to the disk as one write.
             thread_local auto buf = std::vector<uint8_t>{};
             buf.resize(n_bytes);
@@ -906,9 +905,10 @@ private:
                 std::copy_n(std::data(*op.data), op.span.size(), std::data(buf) + (op.span.begin - begin));
             }
 
-            result = tr_ioWrite(desc, open_files_, begin, buf, &waiter);
+            writeme = buf;
         }
 
+        auto result = tr_ioWrite(desc, open_files_, begin, writeme, &waiter);
         for (auto const& op : run) {
             result.n_files_created += op.n_files_created;
         }
@@ -928,10 +928,9 @@ private:
 
         write_runs_.fetch_add(1U, std::memory_order_relaxed);
         blocks_written_.fetch_add(std::size(run), std::memory_order_relaxed);
+        enqueued_write_bytes_.fetch_sub(n_bytes, std::memory_order_relaxed);
 
         for (auto& op : run) {
-            enqueued_write_bytes_.fetch_sub(op.span.size(), std::memory_order_relaxed);
-
             // Keep the block for its piece's hash. Only whole blocks
             // are kept, since that's the unit the hash pulls.
             auto const block = desc.block_info.byte_loc(op.span.begin).block;
