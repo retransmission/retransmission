@@ -20,6 +20,7 @@
 #import "NSStringAdditions.h"
 #import "TrackerNode.h"
 #import "Utils.h"
+#import "DefaultAppHelper.h"
 
 using tr::Values::Speed;
 
@@ -618,8 +619,8 @@ static tr_torrent_rename_done_func makeRenameDoneCallback(NSDictionary* contextI
     }
 
     if (!self.fIcon) {
-        self.fIcon = self.folder ? [NSImage imageNamed:NSImageNameFolder] :
-                                   [NSWorkspace.sharedWorkspace iconForFileType:self.name.pathExtension];
+        auto contentType = [UTType contentTypeForFilenameExtension:self.name.pathExtension isFolder:self.folder];
+        self.fIcon = [NSWorkspace.sharedWorkspace iconForContentType:contentType];
     }
     return self.fIcon;
 }

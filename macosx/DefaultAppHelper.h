@@ -3,6 +3,18 @@
 // License text can be found in the licenses/ folder.
 
 #import <Foundation/Foundation.h>
+#import <UniformTypeIdentifiers/UniformTypeIdentifiers.h>
+
+NS_ASSUME_NONNULL_BEGIN
+
+@interface UTType (Torrent)
+@property(class, readonly, strong, nonnull) UTType* torrent;
++ (UTType*)contentTypeForFilenameExtension:(NSString*)fileExtension isFolder:(BOOL)isFolder;
+@end
+
+@interface NSURL (Torrent)
+@property(nonatomic, readonly) BOOL isTorrentFile;
+@end
 
 @interface DefaultAppHelper : NSObject
 
@@ -13,3 +25,5 @@
 - (void)setDefaultForMagnetURLs:(void (^_Nullable)())completionHandler;
 
 @end
+
+NS_ASSUME_NONNULL_END
