@@ -321,53 +321,19 @@ static NSTimeInterval const kToggleProgressSeconds = 0.175;
 
         NSColor* groupColor = groupIndex != -1 ? [GroupsController.groups colorForIndex:groupIndex] :
                                                  [NSColor colorWithWhite:1.0 alpha:0];
-        groupCell.fGroupIndicatorView.image = [NSImage discIconWithColor:groupColor insetFactor:0];
+        [groupCell updateImage:[NSImage discIconWithColor:groupColor insetFactor:0]];
 
         NSString* groupName = groupIndex != -1 ? [GroupsController.groups nameForIndex:groupIndex] :
                                                  NSLocalizedString(@"No Group", "Group table row");
+        [groupCell updateTitle:groupName];
 
-        groupCell.fGroupTitleField.stringValue = groupName;
-
-        groupCell.fGroupDownloadField.stringValue = [NSString stringForSpeed:group.downloadRate];
-        groupCell.fGroupDownloadView.image = [NSImage imageNamed:@"DownArrowGroupTemplate"];
-
-        NSString* tooltipDownload = NSLocalizedString(@"Download speed", "Torrent table -> group row -> tooltip");
-        groupCell.fGroupDownloadField.toolTip = tooltipDownload;
-        groupCell.fGroupDownloadView.toolTip = tooltipDownload;
+        auto aggregatedData = group.aggregatedData;
+        [groupCell updateDownloadSpeed:aggregatedData.downloadRate uploadSpeed:aggregatedData.uploadRate ratio:aggregatedData.ratio];
 
         BOOL displayGroupRowRatio = [self.fDefaults boolForKey:@"DisplayGroupRowRatio"];
-        groupCell.fGroupDownloadField.hidden = displayGroupRowRatio;
-        groupCell.fGroupDownloadView.hidden = displayGroupRowRatio;
+        [groupCell updateDisplayRatio:displayGroupRowRatio];
 
-        if (displayGroupRowRatio) {
-            groupCell.fGroupUploadAndRatioView.image = [NSImage imageNamed:@"YingYangGroupTemplate"];
-            groupCell.fGroupUploadAndRatioView.image.accessibilityDescription = NSLocalizedString(@"Ratio", "Torrent -> status image");
-
-            groupCell.fGroupUploadAndRatioField.stringValue = [NSString stringForRatio:group.ratio];
-
-            NSString* tooltipRatio = NSLocalizedString(@"Ratio", "Torrent table -> group row -> tooltip");
-            groupCell.fGroupUploadAndRatioField.toolTip = tooltipRatio;
-            groupCell.fGroupUploadAndRatioView.toolTip = tooltipRatio;
-        } else {
-            groupCell.fGroupUploadAndRatioView.image = [NSImage imageNamed:@"UpArrowGroupTemplate"];
-            groupCell.fGroupUploadAndRatioView.image.accessibilityDescription = NSLocalizedString(@"UL", "Torrent -> status image");
-
-            groupCell.fGroupUploadAndRatioField.stringValue = [NSString stringForSpeed:group.uploadRate];
-
-            NSString* tooltipUpload = NSLocalizedString(@"Upload speed", "Torrent table -> group row -> tooltip");
-            groupCell.fGroupUploadAndRatioField.toolTip = tooltipUpload;
-            groupCell.fGroupUploadAndRatioView.toolTip = tooltipUpload;
-        }
-
-        NSString* tooltipGroup;
-        NSUInteger count = group.torrents.count;
-        if (count == 1) {
-            tooltipGroup = NSLocalizedString(@"1 transfer", "Torrent table -> group row -> tooltip");
-        } else {
-            tooltipGroup = NSLocalizedString(@"%lu transfers", "Torrent table -> group row -> tooltip");
-            tooltipGroup = [NSString localizedStringWithFormat:tooltipGroup, count];
-        }
-        groupCell.toolTip = tooltipGroup;
+        [groupCell updateTooltipForTorrentsCount:group.torrents.count];
 
         return groupCell;
     }
@@ -785,7 +751,7 @@ static NSTimeInterval const kToggleProgressSeconds = 0.175;
 
     //check if click is within the status/ratio rect
     GroupCell* groupCell = [self viewAtColumn:0 row:row makeIfNecessary:NO];
-    NSRect titleRect = groupCell.fGroupTitleField.frame;
+    NSRect titleRect = groupCell.frameForTitle;
     CGFloat maxX = NSMaxX(titleRect);
 
     return point.x > maxX;

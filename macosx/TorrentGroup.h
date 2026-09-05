@@ -6,6 +6,12 @@
 
 @class Torrent;
 
+@interface TorrentGroupData : NSObject
+@property(nonatomic, readonly) CGFloat ratio;
+@property(nonatomic, readonly) CGFloat uploadRate;
+@property(nonatomic, readonly) CGFloat downloadRate;
+@end
+
 @interface TorrentGroup : NSObject
 
 - (instancetype)initWithGroup:(NSInteger)group;
@@ -17,5 +23,7 @@
 @property(nonatomic, readonly) CGFloat ratio;
 @property(nonatomic, readonly) CGFloat uploadRate;
 @property(nonatomic, readonly) CGFloat downloadRate;
+
+@property(nonatomic, readonly) TorrentGroupData* aggregatedData;
 
 @end
