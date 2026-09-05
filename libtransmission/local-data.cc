@@ -126,11 +126,7 @@ public:
         return result.error;
     }
 
-    [[nodiscard]] tr_error_code_t move(
-        tr_torrent_id_t const id,
-        std::string_view const old_parent,
-        std::string_view const parent,
-        std::string_view const parent_name) override
+    [[nodiscard]] tr_error_code_t move(tr_torrent_id_t const id, std::string_view const parent) override
     {
         auto* const tor = torrents_.get(id);
         if (tor == nullptr) {
@@ -138,7 +134,7 @@ public:
         }
 
         auto error = tr_error{};
-        if (tor->files().move(old_parent, parent, parent_name, &error)) {
+        if (tor->files().move(tor->current_dir().sv(), parent, tor->name(), &error)) {
             return 0;
         }
 
@@ -407,6 +403,14 @@ public:
 
     void write(tr_torrent_id_t const id, tr_byte_span_t const span, std::unique_ptr<BlockData> data, OnWrite on_write)
     {
+        if (!span.is_valid() || data == nullptr || span.size() > std::size(*data)) {
+            if (on_write) {
+                std::move(on_write)(id, span, make_error(TR_ERROR_EINVAL));
+            }
+            return;
+        }
+
+        enqueued_write_bytes_.fetch_add(span.size(), std::memory_order_relaxed);
         submit(id, WriteOp{ .span = span, .data = std::move(data), .on_write = std::move(on_write) });
     }
 
@@ -509,6 +513,8 @@ private:
         tr_byte_span_t span;
         std::unique_ptr<BlockData> data;
         OnWrite on_write;
+        std::shared_ptr<bool> ready = {};
+        size_t n_files_created = 0U;
     };
 
     // A piece hash the gate admitted, waiting for a worker.
@@ -517,6 +523,7 @@ private:
         std::shared_ptr<StorageDescriptor const> desc;
         tr_piece_index_t piece;
         OnTest on_test;
+        std::shared_ptr<bool> ready = {};
     };
 
     struct WriteKey {
@@ -702,16 +709,13 @@ private:
     void admit_write(tr_torrent_id_t const id, Gate& gate, WriteOp op)
     {
         auto const span = op.span;
-        auto desc = std::shared_ptr<StorageDescriptor const>{};
-        if (span.is_valid() && op.data != nullptr && span.size() <= std::size(*op.data)) {
-            desc = provider_(id);
-        }
-
+        auto desc = provider_(id);
         if (desc && span.end > desc->block_info.total_size()) {
             desc = nullptr;
         }
 
         if (!desc) {
+            enqueued_write_bytes_.fetch_sub(span.size(), std::memory_order_relaxed);
             if (op.on_write) {
                 std::move(op.on_write)(id, span, make_error(TR_ERROR_EINVAL));
             }
@@ -720,7 +724,6 @@ private:
 
         ++gate.n_running;
         register_running_span(gate, span, true);
-        enqueued_write_bytes_.fetch_add(span.size(), std::memory_order_relaxed);
 
         {
             auto const lock = std::scoped_lock{ work_mutex_ };
@@ -787,9 +790,10 @@ private:
                 auto lock = std::unique_lock{ work_mutex_ };
                 work_cv_.wait(lock, [this]() { return has_work() || (stopping_ && !paused_); });
 
-                if (!std::empty(pending_tests_) && !paused_) {
-                    test = std::move(pending_tests_.front());
-                    pending_tests_.pop_front();
+                auto const next_test = std::ranges::find_if(pending_tests_, [](auto const& op) { return is_ready(op.ready); });
+                if (next_test != std::end(pending_tests_) && !paused_) {
+                    test = std::move(*next_test);
+                    pending_tests_.erase(next_test);
                 } else if (!std::empty(pending_writes_) && !paused_) {
                     run = take_write_run();
                 } else {
@@ -807,16 +811,37 @@ private:
 
     [[nodiscard]] bool has_work() const noexcept
     {
-        return !paused_ && (!std::empty(pending_tests_) || !std::empty(pending_writes_));
+        return !paused_ &&
+            (std::ranges::any_of(pending_tests_, [](auto const& op) { return is_ready(op.ready); }) ||
+             std::ranges::any_of(pending_writes_, [](auto const& entry) { return is_ready(entry.second.ready); }));
+    }
+
+    [[nodiscard]] static bool is_ready(std::shared_ptr<bool> const& ready) noexcept
+    {
+        return !ready || *ready;
+    }
+
+    [[nodiscard]] tr_open_files::Waiter make_waiter(std::shared_ptr<bool> const& ready)
+    {
+        return { .on_ready = [this, ready]() {
+            {
+                auto const lock = std::scoped_lock{ work_mutex_ };
+                *ready = true;
+            }
+            work_cv_.notify_all();
+        } };
     }
 
     // Take the next write past the cursor, plus the writes contiguous
     // with it. Call with work_mutex_ held and pending_writes_ nonempty.
     [[nodiscard]] std::vector<PendingWrite> take_write_run()
     {
-        auto it = pending_writes_.lower_bound(cursor_);
+        auto const runnable = [](auto const& entry) {
+            return is_ready(entry.second.ready);
+        };
+        auto it = std::find_if(pending_writes_.lower_bound(cursor_), std::end(pending_writes_), runnable);
         if (it == std::end(pending_writes_)) {
-            it = std::begin(pending_writes_);
+            it = std::find_if(std::begin(pending_writes_), std::end(pending_writes_), runnable);
         }
 
         auto const tor_id = it->second.tor_id;
@@ -827,7 +852,7 @@ private:
         auto run = std::vector<PendingWrite>{};
         while (it != std::end(pending_writes_)) {
             auto const& op = it->second;
-            if (op.tor_id != tor_id || op.desc != desc || op.span.begin != next_byte ||
+            if (!is_ready(op.ready) || op.tor_id != tor_id || op.desc != desc || op.span.begin != next_byte ||
                 n_bytes + op.span.size() > MaxRunBytes) {
                 break;
             }
@@ -868,9 +893,11 @@ private:
         auto const begin = run.front().span.begin;
         auto const n_bytes = static_cast<size_t>(run.back().span.end - begin);
 
+        auto const ready = std::make_shared<bool>(false);
+        auto waiter = make_waiter(ready);
         auto result = tr_io_write_result{};
         if (std::size(run) == 1U) {
-            result = tr_ioWrite(desc, open_files_, begin, { std::data(*run.front().data), n_bytes });
+            result = tr_ioWrite(desc, open_files_, begin, { std::data(*run.front().data), n_bytes }, &waiter);
         } else {
             // Adjacent blocks go to the disk as one write.
             thread_local auto buf = std::vector<uint8_t>{};
@@ -879,7 +906,24 @@ private:
                 std::copy_n(std::data(*op.data), op.span.size(), std::data(buf) + (op.span.begin - begin));
             }
 
-            result = tr_ioWrite(desc, open_files_, begin, buf);
+            result = tr_ioWrite(desc, open_files_, begin, buf, &waiter);
+        }
+
+        for (auto const& op : run) {
+            result.n_files_created += op.n_files_created;
+        }
+        if (waiter.blocked) {
+            {
+                auto const lock = std::scoped_lock{ work_mutex_ };
+                for (auto& op : run) {
+                    op.ready = ready;
+                    op.n_files_created = std::exchange(result.n_files_created, 0U);
+                    auto const key = WriteKey{ .tor_id = op.tor_id, .begin = op.span.begin };
+                    pending_writes_.emplace(key, std::move(op));
+                }
+            }
+            work_cv_.notify_all();
+            return;
         }
 
         write_runs_.fetch_add(1U, std::memory_order_relaxed);
@@ -940,7 +984,18 @@ private:
             err = found ? 0 : EIO;
             hashes_from_buffers_.fetch_add(1U, std::memory_order_relaxed);
         } else {
-            err = tr_ioRecalculateHash(*op.desc, open_files_, op.piece, hash);
+            auto const ready = std::make_shared<bool>(false);
+            auto waiter = make_waiter(ready);
+            err = tr_ioRecalculateHash(*op.desc, open_files_, op.piece, hash, &waiter);
+            if (waiter.blocked) {
+                {
+                    auto const lock = std::scoped_lock{ work_mutex_ };
+                    op.ready = ready;
+                    pending_tests_.push_back(std::move(op));
+                }
+                work_cv_.notify_all();
+                return;
+            }
             hashes_from_disk_.fetch_add(1U, std::memory_order_relaxed);
         }
 
@@ -1176,24 +1231,15 @@ void LocalData::close_all()
 
 void LocalData::move(
     tr_torrent_id_t const id,
-    std::string_view const old_parent,
     std::string_view const parent,
-    std::string_view const parent_name,
     OnMove on_move) // NOLINT(performance-unnecessary-value-param)
 {
-    admin(
-        id,
-        [this,
-         id,
-         old_parent = std::string{ old_parent },
-         parent = std::string{ parent },
-         parent_name = std::string{ parent_name },
-         on_move = std::move(on_move)]() mutable {
-            auto const err = backend_->move(id, old_parent, parent, parent_name);
-            if (on_move) {
-                std::move(on_move)(id, make_error(err));
-            }
-        });
+    admin(id, [this, id, parent = std::string{ parent }, on_move = std::move(on_move)]() mutable {
+        auto const err = backend_->move(id, parent);
+        if (on_move) {
+            std::move(on_move)(id, make_error(err));
+        }
+    });
 }
 
 void LocalData::remove(

@@ -744,6 +744,12 @@ public:
     // buffers there.
     [[nodiscard]] std::optional<size_t> spare_request_blocks() const noexcept;
 
+    void update_active_request_count(size_t const previous, size_t const current) noexcept
+    {
+        TR_ASSERT(active_request_count_ >= previous);
+        active_request_count_ = active_request_count_ - previous + current;
+    }
+
     // announce ip
 
     [[nodiscard]] constexpr std::string const& announceIP() const noexcept
@@ -1146,7 +1152,7 @@ public:
     }
 
     void verify_add(tr_torrent* tor);
-    void verify_remove(tr_torrent const* tor);
+    void verify_remove(tr_torrent* tor);
 
     void fetch(tr_web::FetchOptions&& options) const
     {
@@ -1495,6 +1501,7 @@ private:
     // busy_window_ mirrors the queue-stalled settings and is refreshed
     // once per second in on_now_timer().
     std::atomic<size_t> n_started_torrents_;
+    size_t active_request_count_ = 0U;
     std::atomic<size_t> n_verify_jobs_;
     std::atomic<time_t> date_active_{ 0 };
     std::atomic<time_t> busy_window_{ 0 };
