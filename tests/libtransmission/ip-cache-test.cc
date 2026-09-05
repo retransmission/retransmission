@@ -220,6 +220,7 @@ TEST_F(IPCacheTest, onResponseIPQuery)
         void fetch(tr_web::FetchOptions&& options) override // NOLINT(cppcoreguidelines-rvalue-reference-param-not-moved)
         {
             auto response = tr_web::FetchResponse{
+                .request_url = options.url,
                 .status = http_code,
                 .headers = {},
                 .body = std::string{ AddrStr[k_] },
