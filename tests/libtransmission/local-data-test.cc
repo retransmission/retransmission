@@ -11,6 +11,7 @@
 #include <deque>
 #include <fstream>
 #include <functional>
+#include <future>
 #include <iterator>
 #include <memory>
 #include <mutex>
@@ -82,15 +83,9 @@ public:
         return write_err;
     }
 
-    [[nodiscard]] tr_error_code_t move(
-        [[maybe_unused]] tr_torrent_id_t id,
-        std::string_view old_parent,
-        std::string_view parent,
-        std::string_view parent_name) override
+    [[nodiscard]] tr_error_code_t move([[maybe_unused]] tr_torrent_id_t id, std::string_view const parent) override
     {
-        moved_from = std::string{ old_parent };
         moved_to = std::string{ parent };
-        moved_name = std::string{ parent_name };
         return move_err;
     }
 
@@ -139,9 +134,7 @@ public:
     tr_piece_index_t tested_piece = 0;
     tr_sha1_digest_t hash = tr_sha1::digest("local-data-test"sv);
     std::vector<uint8_t> last_write;
-    std::string moved_from;
     std::string moved_to;
-    std::string moved_name;
     std::string renamed_from;
     std::string renamed_to;
     tr_torrent_id_t closed_torrent = -1;
@@ -229,15 +222,13 @@ TEST(LocalData, AdminOperationsDelegate)
     auto local_data = tr::LocalData{ std::move(backend) };
 
     auto move_called = false;
-    local_data.move(5, "/old", "/new", "name", [&move_called](tr_torrent_id_t tor_id, tr_error const& error) {
+    local_data.move(5, "/new", [&move_called](tr_torrent_id_t tor_id, tr_error const& error) {
         move_called = true;
         EXPECT_EQ(5, tor_id);
         EXPECT_FALSE(error);
     });
     EXPECT_TRUE(move_called);
-    EXPECT_EQ("/old", raw_backend->moved_from);
     EXPECT_EQ("/new", raw_backend->moved_to);
-    EXPECT_EQ("name", raw_backend->moved_name);
 
     auto rename_called = false;
     local_data.rename(
@@ -340,13 +331,13 @@ TEST(LocalData, AdminOpsDrainParkedCompletions)
 
     // rule 3: a barrier waits for the ops enqueued before it
     auto move_finished = false;
-    local_data.move(7, "/old", "/new", "name", [&read_finished, &move_finished](auto, auto const&) {
+    local_data.move(7, "/new", [&read_finished, &move_finished](auto, auto const&) {
         EXPECT_TRUE(read_finished);
         move_finished = true;
     });
 
     EXPECT_TRUE(move_finished);
-    EXPECT_EQ("/old", raw_backend->moved_from);
+    EXPECT_EQ("/new", raw_backend->moved_to);
 }
 
 TEST(LocalData, ShutdownDeliversParkedCompletions)
@@ -463,10 +454,12 @@ protected:
         }
     }
 
-    // Byte `i` of the torrent holds a deterministic pattern.
-    [[nodiscard]] static uint8_t patternByte(size_t const i) noexcept
+    // Include every byte of the block index so misplaced blocks change the contents.
+    [[nodiscard]] static uint8_t patternByte(size_t const byte) noexcept
     {
-        return static_cast<uint8_t>(((i * 31U) + 7U) & 0xFFU);
+        auto const block = uint64_t{ byte / BlockSize };
+        auto const shift = (byte % sizeof(block)) * 8U;
+        return static_cast<uint8_t>((byte * 31U + 7U) ^ (block >> shift));
     }
 
     [[nodiscard]] static std::string patternString(size_t const begin, size_t const len)
@@ -587,6 +580,117 @@ private:
 };
 
 } // namespace
+
+TEST_F(LocalDataWorkersTest, fileInitializationParksDependentWorkWithoutOccupyingWorkers)
+{
+    for (auto const fail : { false, true }) {
+        SCOPED_TRACE(fail);
+        auto const desc = std::make_shared<tr::StorageDescriptor>(*makeDescriptor(
+            { { fail ? "prefix-failed.bin" : "prefix.bin", BlockSize / 2U },
+              { fail ? "failed.bin" : "slow.bin", 4U * BlockSize },
+              { fail ? "other-failed.bin" : "other.bin", BlockSize } },
+            BlockSize));
+        desc->preallocation = tr_file_preallocation::Full;
+        auto entered = std::promise<void>{};
+        auto prefix_created = std::promise<void>{};
+        auto resume = std::promise<void>{};
+        auto const resumed = resume.get_future().share();
+        auto files = tr_open_files{ [&](tr_sys_file_t, uint64_t const size, int, tr_error* const error) {
+            if (size == 4U * BlockSize) {
+                entered.set_value();
+                EXPECT_EQ(std::future_status::ready, resumed.wait_for(5s));
+#ifdef _WIN32
+                error->set(fail ? ERROR_DISK_FULL : ERROR_NOT_SUPPORTED, "injected preallocation error");
+#else
+                error->set(fail ? ENOSPC : ENOSYS, "injected preallocation error");
+#endif
+                return false;
+            }
+            if (size == BlockSize / 2U) {
+                prefix_created.set_value();
+            }
+            return true;
+        } };
+        auto local_data = tr::LocalData{ torrents_, files };
+        auto n_created = size_t{};
+        local_data.start_workers(
+            2U,
+            marshal(),
+            [desc](tr_torrent_id_t) { return desc; },
+            [&](tr_torrent_id_t, size_t const count) { n_created += count; });
+        auto first_done = false;
+        auto dependent_done = false;
+        auto hash_done = false;
+        auto independent_done = false;
+        auto closed = false;
+        local_data.write(
+            TorId,
+            { .begin = BlockSize, .end = 2U * BlockSize },
+            patternBlock(BlockSize, BlockSize),
+            [&](tr_torrent_id_t, tr_byte_span_t, tr_error const& error) {
+                EXPECT_EQ(fail, static_cast<bool>(error));
+                first_done = true;
+            });
+        EXPECT_EQ(std::future_status::ready, entered.get_future().wait_for(5s));
+        writeBlocks(local_data, 0U, BlockSize, [&]() { dependent_done = true; });
+        EXPECT_EQ(std::future_status::ready, prefix_created.get_future().wait_for(5s));
+        local_data.test_piece(TorId, 3U, [&](tr_torrent_id_t, tr_piece_index_t, tr_error const& error, auto hash) {
+            if (!fail) {
+                EXPECT_FALSE(error);
+                EXPECT_EQ(tr_sha1::digest(std::string(BlockSize, '\0')), hash);
+            }
+            hash_done = true;
+        });
+        writeBlocks(local_data, 9U * BlockSize / 2U, 11U * BlockSize / 2U, [&]() { independent_done = true; });
+        local_data.close_torrent(TorId, [&](tr_torrent_id_t) { closed = true; });
+
+        pumpUntil([&]() { return independent_done; });
+        EXPECT_FALSE(first_done);
+        EXPECT_FALSE(dependent_done);
+        EXPECT_FALSE(hash_done);
+        EXPECT_FALSE(closed);
+        EXPECT_EQ(2U * BlockSize, local_data.enqueued_write_bytes());
+
+        resume.set_value();
+        pumpUntil([&]() { return closed; });
+        EXPECT_TRUE(first_done);
+        EXPECT_TRUE(dependent_done);
+        EXPECT_TRUE(hash_done);
+        EXPECT_EQ(0U, local_data.enqueued_write_bytes());
+        EXPECT_EQ(fail ? 2U : 3U, n_created);
+        EXPECT_EQ(patternString(0U, BlockSize / 2U), readFile(fail ? "prefix-failed.bin" : "prefix.bin"));
+        EXPECT_EQ(
+            patternString(BlockSize / 2U, BlockSize / 2U),
+            readFile(fail ? "failed.bin" : "slow.bin").substr(0U, BlockSize / 2U));
+        EXPECT_EQ(patternString(9U * BlockSize / 2U, BlockSize), readFile(fail ? "other-failed.bin" : "other.bin"));
+    }
+}
+
+TEST_F(LocalDataWorkersTest, blockPatternsAreDistinct)
+{
+    EXPECT_NE(patternString(0U, BlockSize), patternString(BlockSize, BlockSize));
+    EXPECT_NE(patternString(0U, BlockSize), patternString(256U * BlockSize, BlockSize));
+}
+
+TEST_F(LocalDataWorkersTest, outOfOrderWritesPreserveBlockContents)
+{
+    static auto constexpr FileSize = 5U * BlockSize + 127U;
+    auto const local_data = makeLocalData(makeDescriptor({ { "data.bin", FileSize } }, 32768U));
+    auto const order = std::vector<size_t>{ 4U, 1U, 5U, 0U, 3U, 2U };
+    auto n_done = size_t{};
+
+    local_data->set_workers_paused(true);
+    for (auto const block : order) {
+        auto const begin = block * BlockSize;
+        writeBlocks(*local_data, begin, std::min(begin + BlockSize, FileSize), [&n_done]() { ++n_done; });
+    }
+    local_data->set_workers_paused(false);
+
+    EXPECT_TRUE(pumpUntil([&n_done, &order]() { return n_done == std::size(order); }));
+    EXPECT_EQ(patternString(0U, FileSize), readFile("data.bin"));
+    EXPECT_EQ(0U, local_data->enqueued_write_bytes());
+    local_data->shutdown();
+}
 
 TEST_F(LocalDataWorkersTest, writesLandOnDisk)
 {
@@ -733,7 +837,7 @@ TEST_F(LocalDataWorkersTest, barriersWaitForWritesAndBlockLaterOps)
 
     // (the move itself fails since there's no real torrent, and only
     // the ordering of the completions matters here)
-    local_data->move(TorId, "/old", "/new", "name", [&order](auto, auto const&) { order.emplace_back("move"); });
+    local_data->move(TorId, "/new", [&order](auto, auto const&) { order.emplace_back("move"); });
 
     // ...and this read waits for the barrier
     local_data->read(TorId, { .begin = 0U, .end = BlockSize }, [&order](auto, auto, auto const&, auto) {

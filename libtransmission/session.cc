@@ -1914,8 +1914,9 @@ size_t tr_sessionGetQueueStalledMinutes(tr_session const* session)
 
 // ---
 
-void tr_session::verify_remove(tr_torrent const* const tor)
+void tr_session::verify_remove(tr_torrent* const tor)
 {
+    tor->cancel_pending_verify();
     if (verifier_) {
         verifier_->remove(tor->info_hash());
     }
@@ -1937,7 +1938,7 @@ std::optional<size_t> tr_session::spare_request_blocks() const noexcept
     }
 
     auto const budget = uint64_t{ settings_.disk_write_budget_mib } * 1024U * 1024U;
-    auto const requested = uint64_t{ tr_peerMgrActiveRequestCount(peer_mgr_.get()) } * TrBlockSize;
+    auto const requested = uint64_t{ active_request_count_ } * TrBlockSize;
     auto const in_flight = local_data.enqueued_write_bytes() + requested;
     return in_flight >= budget ? size_t{} : static_cast<size_t>((budget - in_flight) / TrBlockSize);
 }

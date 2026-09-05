@@ -320,6 +320,11 @@ private:
 protected:
     enum class ZeroTorrentState : uint8_t { NoFiles, Partial, Complete };
 
+    [[nodiscard]] tr_peerMgr* peerManager() const noexcept
+    {
+        return session_->peer_mgr_.get();
+    }
+
     [[nodiscard]] tr_torrent* createTorrentAndWaitForVerifyDone(tr_torrent_builder* builder)
     {
         auto verified_lock = std::unique_lock(verified_mutex_);

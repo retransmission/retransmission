@@ -323,9 +323,9 @@ struct tr_torrent {
         return completion_.has_metainfo();
     }
 
-    [[nodiscard]] constexpr auto has_all() const noexcept
+    [[nodiscard]] auto has_all() const noexcept
     {
-        return completion_.has_all();
+        return completion_.has_all() && std::empty(hash_tokens_);
     }
 
     [[nodiscard]] constexpr auto has_none() const noexcept
@@ -341,7 +341,7 @@ struct tr_torrent {
 
     [[nodiscard]] auto has_piece(tr_piece_index_t piece) const
     {
-        return completion_.has_piece(piece);
+        return completion_.has_piece(piece) && !hash_tokens_.contains(piece);
     }
 
     [[nodiscard]] constexpr bool is_piece_checked(tr_piece_index_t const piece) const
@@ -384,7 +384,11 @@ struct tr_torrent {
 
     [[nodiscard]] auto create_piece_bitfield() const
     {
-        return completion_.create_piece_bitfield();
+        auto pieces = tr_bitfield{ piece_count() };
+        for (auto piece = tr_piece_index_t{}; piece < piece_count(); ++piece) {
+            pieces.set(piece, has_piece(piece));
+        }
+        return pieces.raw();
     }
 
     [[nodiscard]] constexpr bool is_done() const noexcept
@@ -661,6 +665,8 @@ struct tr_torrent {
     /// METAINFO - PIECE CHECKSUMS
 
     [[nodiscard]] bool ensure_piece_is_checked(tr_piece_index_t piece);
+
+    void cancel_pending_verify();
 
     /// METAINFO - MAGNET
 
@@ -1347,7 +1353,7 @@ private:
 
     void update_file_path(tr_file_index_t file, std::optional<bool> has_file) const;
 
-    void set_location_in_session_thread(std::string_view path, bool move_from_old_path, int volatile* setme_state) const;
+    void set_location_in_session_thread(std::string_view path, bool move_from_old_path, int volatile* setme_state);
 
     void start_in_session_thread();
 
@@ -1445,6 +1451,7 @@ private:
     tr_idlelimit idle_limit_mode_ = TR_IDLELIMIT_GLOBAL;
 
     VerifyState verify_state_ = VerifyState::None;
+    uint64_t verify_token_ = 0U;
 
     tr_completeness completeness_ = TR_LEECH;
 

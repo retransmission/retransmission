@@ -205,7 +205,7 @@ public:
     {
         if (dir == tr_direction::ClientToPeer) // blocks we've requested
         {
-            return active_requests.count();
+            return active_requests().count();
         }
 
         // webseed will never request blocks from us
@@ -233,6 +233,7 @@ public:
         // flag all the pending tasks as dead
         std::ranges::for_each(tasks, [](auto* task) { task->dead = true; });
         tasks.clear();
+        clear_active_requests();
     }
 
     void ban() override
@@ -253,11 +254,11 @@ public:
     void on_rejection(tr_block_span_t block_span)
     {
         for (auto block = block_span.begin; block < block_span.end; ++block) {
-            if (active_requests.test(block)) {
+            if (active_requests().test(block)) {
                 publish(tr_peer_event::GotRejected(tor.block_info(), block));
             }
         }
-        active_requests.unset_span(block_span.begin, block_span.end);
+        set_active_requests(block_span, false);
     }
 
     void request_blocks(tr_block_span_t const* block_spans, size_t n_spans) override
@@ -271,7 +272,7 @@ public:
             tasks.insert(task);
             task->request_next_chunk();
 
-            active_requests.set_span(span->begin, span->end);
+            set_active_requests(*span);
             publish(tr_peer_event::SentRequest(tor.block_info(), *span));
         }
     }
@@ -369,6 +370,7 @@ void tr_webseed_task::use_fetched_blocks()
         }
 
         if (tor.has_block_or_pending(loc_.block)) {
+            webseed_->unset_active_request(loc_.block);
             content_.drain(block_size);
         } else {
             auto block_buf = std::vector<uint8_t>{};
@@ -382,7 +384,7 @@ void tr_webseed_task::use_fetched_blocks()
                         return;
                     }
 
-                    webseed->active_requests.unset(loc.block);
+                    webseed->unset_active_request(loc.block);
                     if (!torrent->on_block_received(loc.block)) {
                         return;
                     }

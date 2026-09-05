@@ -677,10 +677,6 @@ void tr_peerMgrFree(tr_peerMgr* manager);
 
 [[nodiscard]] std::vector<tr_block_span_t> tr_peerMgrGetNextRequests(tr_torrent* torrent, tr_peer const* peer, size_t numwant);
 
-// How many blocks have been requested from peers and webseeds,
-// across every torrent, and not yet received.
-[[nodiscard]] size_t tr_peerMgrActiveRequestCount(tr_peerMgr const* manager) noexcept;
-
 void tr_peerMgrAddIncoming(tr_peerMgr* manager, std::shared_ptr<tr_peer_socket> socket);
 
 size_t tr_peerMgrAddPex(tr_torrent* tor, tr_peer_from from, std::span<tr_pex const> pex);

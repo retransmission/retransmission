@@ -9,12 +9,16 @@
 #error only libtransmission should #include this header.
 #endif
 
+#include <condition_variable>
 #include <cstddef> // for size_t
 #include <cstdint> // for uintX_t
+#include <functional>
+#include <map>
 #include <memory>
 #include <mutex>
 #include <string_view>
 #include <utility>
+#include <vector>
 
 #include "libtransmission/file.h" // tr_sys_file_t
 #include "libtransmission/lru-cache.h"
@@ -86,7 +90,19 @@ public:
     // A reference to a pooled descriptor. Empty if the file isn't available.
     using Handle = std::shared_ptr<OpenFile const>;
 
-    [[nodiscard]] Handle get(tr_torrent_id_t tor_id, tr_file_index_t file_num, bool writable);
+    using Preallocate = std::function<bool(tr_sys_file_t, uint64_t, int, tr_error*)>;
+
+    explicit tr_open_files(Preallocate preallocate = tr_sys_file_preallocate)
+        : preallocate_{ std::move(preallocate) }
+    {
+    }
+
+    struct Waiter {
+        std::function<void()> on_ready;
+        bool blocked = false;
+    };
+
+    [[nodiscard]] Handle get(tr_torrent_id_t tor_id, tr_file_index_t file_num, bool writable, Waiter* waiter = nullptr);
 
     [[nodiscard]] Handle get(
         tr_torrent_id_t tor_id,
@@ -94,7 +110,8 @@ public:
         bool writable,
         std::string_view filename,
         tr_file_preallocation allocation,
-        uint64_t file_size);
+        uint64_t file_size,
+        Waiter* waiter = nullptr);
 
     void close_all();
     void close_torrent(tr_torrent_id_t tor_id);
@@ -103,6 +120,12 @@ public:
 private:
     using Key = std::pair<tr_torrent_id_t, tr_file_index_t>;
 
+    struct Opening {
+        tr_open_files& owner;
+        Key key;
+        ~Opening();
+    };
+
     [[nodiscard]] static Key make_key(tr_torrent_id_t tor_id, tr_file_index_t file_num) noexcept
     {
         return std::make_pair(tor_id, file_num);
@@ -110,7 +133,11 @@ private:
 
     static constexpr size_t MaxOpenFiles = 32U;
 
-    // Guards pool_ only. Files are opened outside it: see get().
+    Preallocate const preallocate_;
+
+    // Guards pool_ and opening_. File initialization runs outside the lock.
     std::mutex mutex_;
+    std::condition_variable opening_cv_;
+    std::map<Key, std::vector<std::function<void()>>> opening_;
     tr_lru_cache<Key, Handle, MaxOpenFiles> pool_;
 };

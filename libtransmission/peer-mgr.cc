@@ -513,7 +513,7 @@ public:
     {
         auto const lock = unique_lock();
 
-        peer_disconnect(tor, peer->has(), peer->active_requests);
+        peer_disconnect(tor, peer->has(), peer->active_requests());
 
         auto const& peer_info = peer->peer_info;
         TR_ASSERT(peer_info);
@@ -642,7 +642,7 @@ public:
             break;
 
         case tr_peer_event::Type::ClientGotChoke:
-            s->got_choke(s->tor, msgs->active_requests);
+            s->got_choke(s->tor, msgs->active_requests());
             break;
 
         case tr_peer_event::Type::ClientGotPort:
@@ -1058,28 +1058,6 @@ public:
         rechoke_timer_->set_interval(100ms);
     }
 
-    [[nodiscard]] size_t active_request_count() const noexcept
-    {
-        auto n_reqs = size_t{};
-
-        for (auto const* const tor : torrents_) {
-            auto const* const swarm = tor->swarm;
-            if (swarm == nullptr) {
-                continue;
-            }
-
-            for (auto const& peer : swarm->peers) {
-                n_reqs += peer->active_req_count(tr_direction::ClientToPeer);
-            }
-
-            for (auto const& webseed : swarm->webseeds) {
-                n_reqs += webseed->active_req_count(tr_direction::ClientToPeer);
-            }
-        }
-
-        return n_reqs;
-    }
-
     [[nodiscard]] tr_swarm* get_existing_swarm(tr_sha1_digest_t const& hash) const
     {
         auto* const tor = torrents_.get(hash);
@@ -1139,9 +1117,27 @@ private:
 tr_peer::tr_peer(tr_torrent const& tor)
     : session{ tor.session }
     , swarm{ tor.swarm }
-    , active_requests{ tor.block_count() }
     , blame{ tor.piece_count() }
+    , active_requests_{ tor.block_count() }
 {
+}
+
+tr_peer::~tr_peer()
+{
+    clear_active_requests();
+}
+
+void tr_peer::set_active_requests(tr_block_span_t const span, bool const requested)
+{
+    auto const previous = active_requests_.count();
+    active_requests_.set_span(span.begin, span.end, requested);
+    session->update_active_request_count(previous, active_requests_.count());
+}
+
+void tr_peer::clear_active_requests() noexcept
+{
+    session->update_active_request_count(active_requests_.count(), 0U);
+    active_requests_.set_has_none();
 }
 
 // ---
@@ -1172,11 +1168,6 @@ void tr_peerMgrFree(tr_peerMgr* manager)
  *    request. It's used to decide which blocks to return next when
  *    tr_peerMgrGetNextRequests() is called.
  */
-
-size_t tr_peerMgrActiveRequestCount(tr_peerMgr const* const manager) noexcept
-{
-    return manager != nullptr ? manager->active_request_count() : size_t{};
-}
 
 std::vector<tr_block_span_t> tr_peerMgrGetNextRequests(tr_torrent* torrent, tr_peer const* peer, size_t numwant)
 {
