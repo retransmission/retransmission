@@ -312,6 +312,20 @@ void tr_upnpClose(tr_upnp* handle)
     delete handle;
 }
 
+void tr_upnpDiscard(tr_upnp* handle)
+{
+    if (handle == nullptr) {
+        return;
+    }
+
+    // A discovery thread may still be running; dropping its future just
+    // discards the gateway it finds, which was reached over the old route.
+    handle->discover_future.reset();
+    handle->isMapped = false;
+    handle->state = UpnpState::WillDiscover;
+    delete handle;
+}
+
 tr_port_forwarding_state tr_upnpPulse(
     tr_upnp* handle,
     tr_port advertised_port,

@@ -11,6 +11,7 @@
 
 #include <array>
 #include <chrono> // std::chrono::milliseconds
+#include <cstdint> // uint64_t
 #include <memory> // std::unique_ptr
 #include <optional>
 #include <shared_mutex>
@@ -99,8 +100,15 @@ public:
     void update_global_addr(tr_address_type type);
     void update_source_addr(tr_address_type type);
 
-    // Only use as a callback for web_->fetch()
-    void on_response_ip_query(tr_address_type type, tr_web::FetchResponse const& response);
+    // Forget the cached addresses and abandon any probe in flight. Call
+    // when the binding changes: the cached addresses belong to the old
+    // route, and a probe started on it must not refill the cache.
+    void invalidate(tr_address_type type);
+
+    // Only use as a callback for web_->fetch(). `generation` is the value
+    // of generation_[type] when the query was sent; a response from an
+    // invalidated generation is ignored.
+    void on_response_ip_query(tr_address_type type, uint64_t generation, tr_web::FetchResponse const& response);
 
     [[nodiscard]] constexpr auto has_ip_protocol(tr_address_type type) const noexcept
     {
@@ -153,4 +161,7 @@ private:
     array_ip_t<bool> has_ip_protocol_ = { true, true };
 
     array_ip_t<size_t> ix_service_ = {};
+
+    // bumped by invalidate(); responses to older queries are ignored
+    array_ip_t<uint64_t> generation_ = {};
 };

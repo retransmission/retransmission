@@ -55,6 +55,24 @@ public:
         startTimer();
     }
 
+    void bind_interface_changed() override
+    {
+        natpmp_.reset(); // its destructor only closes the library handle
+        natpmp_state_ = TR_PORT_UNMAPPED;
+
+        tr_upnpDiscard(upnp_);
+        upnp_ = nullptr;
+        upnp_state_ = TR_PORT_UNMAPPED;
+
+        if (!is_enabled_) {
+            return;
+        }
+
+        stopTimer();
+        natPulse(false);
+        startTimer();
+    }
+
     void set_enabled(bool enabled) override
     {
         if (enabled) {
