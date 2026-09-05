@@ -14,7 +14,7 @@
 static NSString* const kAnimationIdKey = @"animationId";
 static NSString* const kWebSeedAnimationId = @"webSeed";
 
-@interface InfoPeersViewController ()<CAAnimationDelegate>
+@interface InfoPeersViewController ()<CAAnimationDelegate, NSTableViewDataSource, NSTableViewDelegate, NSMenuItemValidation>
 
 @property(nonatomic, copy) NSArray<Torrent*>* fTorrents;
 
@@ -24,7 +24,7 @@ static NSString* const kWebSeedAnimationId = @"webSeed";
 @property(nonatomic) NSMutableArray<NSDictionary*>* fWebSeeds;
 
 @property(nonatomic) IBOutlet NSTableView* fPeerTable;
-@property(nonatomic) IBOutlet WebSeedTableView* fWebSeedTable;
+@property(nonatomic) IBOutlet NSTableView* fWebSeedTable;
 
 @property(nonatomic) IBOutlet NSTextField* fConnectedPeersField;
 
@@ -87,6 +87,27 @@ static NSString* const kWebSeedAnimationId = @"webSeed";
     self.fWebSeedTableTopConstraint.animations = @{ @"constant" : webSeedTableAnimation };
 
     [self setWebSeedTableHidden:YES animate:NO];
+
+    self.fPeerTable.target = self;
+    self.fPeerTable.action = @selector(tableViewDidClick:);
+}
+
+- (void)tableViewDidClick:(NSTableView*)sender
+{
+    auto row = sender.clickedRow;
+    auto column = sender.clickedColumn;
+
+    NSLog(@"row: %@ column: %@", @(row), @(column));
+
+    if ((row != -1) && (column == [sender columnWithIdentifier:@"Progress"])) {
+        [NSUserDefaults.standardUserDefaults setBool:![NSUserDefaults.standardUserDefaults boolForKey:@"DisplayPeerProgressBarNumber"]
+                                              forKey:@"DisplayPeerProgressBarNumber"];
+
+        NSRange rows = [sender rowsInRect:sender.visibleRect];
+        NSIndexSet* rowIndexes = [NSIndexSet indexSetWithIndexesInRange:rows];
+        NSIndexSet* columnIndexes = [NSIndexSet indexSetWithIndex:column];
+        [sender reloadDataForRowIndexes:rowIndexes columnIndexes:columnIndexes];
+    }
 }
 
 - (void)setInfoForTorrents:(NSArray<Torrent*>*)torrents
@@ -175,7 +196,6 @@ static NSString* const kWebSeedAnimationId = @"webSeed";
 
     [self.fWebSeeds sortUsingDescriptors:self.fWebSeedTable.sortDescriptors];
     [self.fWebSeedTable reloadData];
-    self.fWebSeedTable.webSeeds = self.fWebSeeds;
 
     if (anyActive) {
         NSString* connectedText;
@@ -286,6 +306,23 @@ static NSString* const kWebSeedAnimationId = @"webSeed";
     } else {
         return self.fPeers ? self.fPeers.count : 0;
     }
+}
+
+- (id<NSPasteboardWriting>)tableView:(NSTableView*)tableView pasteboardWriterForRow:(NSInteger)row
+{
+    if (row < 0 || row > tableView.numberOfRows) {
+        return nil;
+    }
+
+    if (tableView == self.fWebSeedTable) {
+        return self.fWebSeeds[row][@"Address"];
+    }
+
+    else if (tableView == self.fPeerTable) {
+        return nil; // look at tableView:(NSTableView*)tableView shouldSelectRow:(NSInteger)row
+    }
+
+    return nil;
 }
 
 - (id)tableView:(NSTableView*)tableView objectValueForTableColumn:(NSTableColumn*)column row:(NSInteger)row
@@ -549,6 +586,41 @@ static NSString* const kWebSeedAnimationId = @"webSeed";
     }
 
     return descriptors;
+}
+
+- (void)copy:(id)sender
+{
+    if ([sender isKindOfClass:NSTableView.class]) {
+        auto tableView = (NSTableView*)sender;
+
+        NSIndexSet* indexes = tableView.selectedRowIndexes;
+        NSMutableArray* results = [NSMutableArray arrayWithCapacity:indexes.count];
+
+        [indexes enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL* _Nonnull stop) {
+            auto result = [self tableView:sender pasteboardWriterForRow:idx];
+            if (result != nil) {
+                [results addObject:result];
+            }
+        }];
+
+        NSString* text = [results componentsJoinedByString:@"\n"];
+
+        NSPasteboard* pb = NSPasteboard.generalPasteboard;
+        [pb clearContents];
+        [pb writeObjects:@[ text ]];
+    }
+}
+
+- (BOOL)validateMenuItem:(NSMenuItem*)menuItem
+{
+    SEL const action = menuItem.action;
+    id target = menuItem.target;
+
+    if (action == @selector(copy:) && [target isKindOfClass:NSTableView.class]) {
+        return ((NSTableView*)target).numberOfSelectedRows > 0;
+    }
+
+    return YES;
 }
 
 @end
