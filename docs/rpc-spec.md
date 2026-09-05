@@ -74,8 +74,8 @@ In Transmission, this key is an Object that includes:
 {
    "jsonrpc": "2.0",
    "error": {
-      "code": 7,
-      "message": "HTTP error from backend service",
+      "code": 8,
+      "message": "error when fetching from remote service",
       "data": {
          "error_string": "Couldn't test port: No Response (0)",
          "result": {

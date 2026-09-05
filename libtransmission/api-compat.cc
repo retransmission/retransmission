@@ -523,9 +523,9 @@ auto constexpr PreferClearLegacy = std::string_view{ "tolerated" };
 
     static auto constexpr Phrases = std::to_array<std::pair<std::string_view, Error::Code>>({
         { "absolute", Error::PATH_NOT_ABSOLUTE },
-        { "couldn't fetch blocklist", Error::HTTP_ERROR },
+        { "couldn't fetch blocklist", Error::FETCH_ERROR },
         { "couldn't save", Error::SYSTEM_ERROR },
-        { "couldn't test port", Error::HTTP_ERROR },
+        { "couldn't test port", Error::FETCH_ERROR },
         { "file index out of range", Error::FILE_IDX_OOR },
         { "invalid ip protocol", Error::INVALID_PARAMS },
         { "invalid or corrupt torrent", Error::CORRUPT_TORRENT },
