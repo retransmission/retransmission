@@ -18,7 +18,6 @@
 #include "libtransmission/error.h"
 #include "libtransmission/file-utils.h"
 #include "libtransmission/session.h"
-#include "libtransmission/string-utils.h" // tr_strv_strip()
 #include "libtransmission/torrent.h"
 #include "libtransmission/tr-assert.h"
 #include "libtransmission/types.h"
@@ -164,18 +163,6 @@ std::string const& tr_torrent_builder::download_dir() const noexcept
 void tr_torrent_builder::set_download_dir(std::string_view const dir)
 {
     download_dir_.assign(dir);
-}
-
-// ---
-
-std::optional<std::string> const& tr_torrent_builder::bind_interface() const noexcept
-{
-    return bind_interface_;
-}
-
-void tr_torrent_builder::set_bind_interface(std::string_view const bind_interface)
-{
-    bind_interface_ = std::string{ tr_strv_strip(bind_interface) };
 }
 
 // ---

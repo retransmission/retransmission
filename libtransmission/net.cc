@@ -125,17 +125,6 @@ std::string_view tr_net_effective_bind_interface(std::string_view const bind_int
     return tr_net_interface_is_default(name) ? std::string_view{} : name;
 }
 
-std::string_view tr_net_effective_bind_interface(std::string_view const torrent_bind, std::string_view const session_bind)
-{
-    auto const torrent_name = tr_strv_strip(torrent_bind);
-    return tr_net_effective_bind_interface(std::empty(torrent_name) ? session_bind : torrent_name);
-}
-
-bool tr_net_bind_interface_matches(std::string_view const torrent_bind, std::string_view const session_bind)
-{
-    return tr_net_effective_bind_interface(torrent_bind, session_bind) == tr_net_effective_bind_interface(session_bind);
-}
-
 unsigned tr_net_interface_index(std::string_view const bind_interface)
 {
     auto const name = tr_net_effective_bind_interface(bind_interface);

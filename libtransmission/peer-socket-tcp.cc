@@ -68,11 +68,7 @@ tr_socket_t create_socket(int const domain)
     return sockfd;
 }
 
-tr_socket_t open_peer_socket(
-    tr_session const& session,
-    tr_socket_address const& socket_address,
-    bool const client_is_seed,
-    std::string_view const bind_interface)
+tr_socket_t open_peer_socket(tr_session const& session, tr_socket_address const& socket_address, bool const client_is_seed)
 {
     auto const& [addr, port] = socket_address;
 
@@ -87,7 +83,7 @@ tr_socket_t open_peer_socket(
         return TR_BAD_SOCKET;
     }
 
-    if (!tr_netSetSocketInterface(s, addr.type, bind_interface)) {
+    if (!tr_netSetSocketInterface(s, addr.type, session.bind_interface())) {
         tr_net_close_socket(s);
         return TR_BAD_SOCKET;
     }
@@ -338,10 +334,9 @@ tr_peer_socket_tcp::tr_peer_socket_tcp(tr_socket_address const& socket_address)
 std::unique_ptr<tr_peer_socket_tcp> tr_peer_socket_tcp::create(
     tr_session& session,
     tr_socket_address const& socket_address,
-    bool const client_is_seed,
-    std::string_view const bind_interface)
+    bool const client_is_seed)
 {
-    if (auto const sock = open_peer_socket(session, socket_address, client_is_seed, bind_interface); is_valid_socket(sock)) {
+    if (auto const sock = open_peer_socket(session, socket_address, client_is_seed); is_valid_socket(sock)) {
         return create(session, socket_address, sock);
     }
     return {};
