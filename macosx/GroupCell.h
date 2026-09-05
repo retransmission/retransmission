@@ -7,12 +7,11 @@
 
 @interface GroupCell : NSTableCellView
 
-@property(nonatomic) NSImageView* fGroupIndicatorView;
-@property(nonatomic) NSTextField* fGroupTitleField;
+@property(nonatomic) NSImageView* indicatorView;
+@property(nonatomic) NSTextField* titleField;
 
-@property(nonatomic) NSImageView* fGroupDownloadView;
-@property(nonatomic) NSImageView* fGroupUploadAndRatioView;
-@property(nonatomic) NSTextField* fGroupDownloadField;
-@property(nonatomic) NSTextField* fGroupUploadAndRatioField;
+- (void)setDownloadSpeed:(CGFloat)downloadSpeed uploadSpeed:(CGFloat)uploadSpeed ratio:(CGFloat)ratio;
+- (void)setDisplayRatio:(BOOL)displayRatio;
+- (void)setTooltipForTorrentsCount:(NSUInteger)count;
 
 @end
