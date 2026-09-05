@@ -926,9 +926,11 @@ private:
             return;
         }
 
-        write_runs_.fetch_add(1U, std::memory_order_relaxed);
-        blocks_written_.fetch_add(std::size(run), std::memory_order_relaxed);
         enqueued_write_bytes_.fetch_sub(n_bytes, std::memory_order_relaxed);
+        if (result.error == 0) {
+            write_runs_.fetch_add(1U, std::memory_order_relaxed);
+            blocks_written_.fetch_add(std::size(run), std::memory_order_relaxed);
+        }
 
         for (auto& op : run) {
             // Keep the block for its piece's hash. Only whole blocks

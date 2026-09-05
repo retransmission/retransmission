@@ -246,8 +246,9 @@ public:
 
     // Counters for tests and diagnostics.
     struct Stats {
-        // disk writes issued, after adjacent blocks were combined
+        // disk writes that succeeded, after adjacent blocks were combined
         uint64_t write_runs = 0U;
+        // blocks those writes put on disk
         uint64_t blocks_written = 0U;
         // piece hashes computed from still-buffered block data
         uint64_t hashes_from_buffers = 0U;
