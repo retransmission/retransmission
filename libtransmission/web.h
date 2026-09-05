@@ -65,6 +65,15 @@ public:
         {
         }
 
+        [[nodiscard]] constexpr uint64_t effective_max_file_size() const noexcept
+        {
+            if (range) {
+                auto const [first, last] = *range;
+                return last + 1U - first;
+            }
+            return max_file_size;
+        }
+
         // the URL to fetch
         std::string url;
 
@@ -134,7 +143,12 @@ public:
         // IP protocol to use when making the request
         IPProtocol ip_proto = IPProtocol::ANY;
 
+        // Maximum size of the response body to accept before aborting the request.
+        // Use `effective_max_file_size` instead of reading this value directly
+        size_t max_file_size = DefaultMaxFileSize;
+
         static auto constexpr DefaultTimeoutSecs = std::chrono::seconds{ 120 };
+        static auto constexpr DefaultMaxFileSize = 10U * 1024U * 1024U;
     };
 
     void fetch(FetchOptions&& options);

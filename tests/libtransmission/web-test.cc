@@ -30,6 +30,19 @@ namespace
 // LoopbackServer is shared via loopback-server.h.
 using tr::test::LoopbackServer;
 
+TEST(FetchOptionsTest, effectiveMaxFileSize)
+{
+    auto options = tr_web::FetchOptions{ "http://example.invalid/"s, nullptr, nullptr };
+
+    EXPECT_EQ(tr_web::FetchOptions::DefaultMaxFileSize, options.effective_max_file_size());
+
+    options.max_file_size = 123U;
+    EXPECT_EQ(123U, options.effective_max_file_size());
+
+    options.range = std::make_pair(uint64_t{ 100 }, uint64_t{ 199 });
+    EXPECT_EQ(100U, options.effective_max_file_size());
+}
+
 // tr_web needs a Mediator; this one only overrides the user-agent so a test
 // can confirm the header reaches the server.
 class TestMediator final : public tr_web::Mediator
@@ -92,6 +105,7 @@ TEST_F(WebTest, getReturnsBody)
     EXPECT_EQ("hello world"sv, response.body);
     EXPECT_TRUE(response.did_connect);
     EXPECT_FALSE(response.did_timeout);
+    EXPECT_FALSE(response.errmsg);
     EXPECT_EQ("127.0.0.1"sv, response.primary_ip);
 }
 
@@ -109,6 +123,7 @@ TEST_F(WebTest, httpErrorStatusIsSurfaced)
     auto const response = fetch(options());
     EXPECT_EQ(404, response.status);
     EXPECT_TRUE(response.did_connect);
+    EXPECT_FALSE(response.errmsg);
 }
 
 TEST_F(WebTest, postSendsBody)
@@ -218,11 +233,16 @@ TEST_F(WebTest, userDataRoundTrips)
 
 TEST_F(WebTest, rangeRequestSetsHeader)
 {
+    server_.setHandler([](evhttp_request* req) { LoopbackServer::reply(req, 206, "Partial Content", "data"sv); });
+
     auto opts = options();
     opts.range = std::make_pair(uint64_t{ 0 }, uint64_t{ 3 });
 
-    fetch(std::move(opts));
+    auto const response = fetch(std::move(opts));
 
+    EXPECT_EQ(206, response.status);
+    EXPECT_FALSE(response.errmsg);
+    EXPECT_EQ("data"sv, response.body);
     EXPECT_EQ("bytes=0-3"sv, server_.lastRequest().headers.at("range"));
 }
 
@@ -262,6 +282,37 @@ TEST_F(WebTest, onDataReceivedReportsByteCount)
     auto const response = fetch(std::move(opts));
     EXPECT_EQ(std::size(Body), std::size(response.body));
     EXPECT_EQ(std::size(Body), total);
+}
+
+TEST_F(WebTest, responseBodyLimitReportsCurlError)
+{
+    static auto constexpr Body = "0123456789"sv;
+    static auto constexpr MaxFileSize = std::size_t{ 4 };
+    server_.setHandler([](evhttp_request* req) { LoopbackServer::reply(req, HTTP_OK, "OK", Body); });
+
+    auto opts = options();
+    opts.max_file_size = MaxFileSize;
+
+    auto const response = fetch(std::move(opts));
+    EXPECT_EQ(200, response.status);
+    EXPECT_TRUE(response.did_connect);
+    ASSERT_TRUE(response.errmsg);
+    EXPECT_FALSE(std::empty(*response.errmsg));
+    EXPECT_LT(std::size(response.body), std::size(Body));
+    EXPECT_LE(std::size(response.body), MaxFileSize);
+}
+
+TEST_F(WebTest, defaultResponseBodyLimitReportsCurlError)
+{
+    auto body = std::string(tr_web::FetchOptions::DefaultMaxFileSize + 1U, 'x');
+    server_.setHandler([&body](evhttp_request* req) { LoopbackServer::reply(req, HTTP_OK, "OK", body); });
+
+    auto const response = fetch(options());
+    EXPECT_EQ(200, response.status);
+    EXPECT_TRUE(response.did_connect);
+    ASSERT_TRUE(response.errmsg);
+    EXPECT_FALSE(std::empty(*response.errmsg));
+    EXPECT_LE(std::size(response.body), tr_web::FetchOptions::DefaultMaxFileSize);
 }
 
 TEST_F(WebTest, timeoutIsReported)
