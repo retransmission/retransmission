@@ -1936,7 +1936,11 @@ std::optional<size_t> tr_session::spare_request_blocks() const noexcept
         return {};
     }
 
-    auto const budget = uint64_t{ settings_.disk_write_budget_mib } * 1024U * 1024U;
+    // Floor the budget at one write run. Below that nothing is ever
+    // spare, so no peer could add a request and every download would
+    // stall.
+    static auto constexpr MinBudget = uint64_t{ 1024U } * 1024U;
+    auto const budget = std::max(uint64_t{ settings_.disk_write_budget_mib } * 1024U * 1024U, MinBudget);
     auto const requested = uint64_t{ active_request_count_ } * TrBlockSize;
     auto const in_flight = local_data.enqueued_write_bytes() + requested;
     return in_flight >= budget ? size_t{} : static_cast<size_t>((budget - in_flight) / TrBlockSize);
