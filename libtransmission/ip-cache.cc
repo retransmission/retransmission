@@ -241,9 +241,9 @@ void tr_ip_cache::update_global_addr(tr_address_type const type)
     };
     auto options = tr_web::FetchOptions{
         current_ip_endpoints_[type][ix_service],
-        [weak = weak_from_this(), type](tr_web::FetchResponse const& response) {
+        [weak = weak_from_this(), type, generation = generation_[type]](tr_web::FetchResponse const& response) {
             if (auto const ptr = weak.lock()) {
-                ptr->on_response_ip_query(type, response);
+                ptr->on_response_ip_query(type, generation, response);
             }
         },
         nullptr,
@@ -302,8 +302,32 @@ void tr_ip_cache::update_source_addr(tr_address_type type)
     unset_is_updating(type);
 }
 
-void tr_ip_cache::on_response_ip_query(tr_address_type const type, tr_web::FetchResponse const& response)
+void tr_ip_cache::invalidate(tr_address_type const type)
 {
+    ++generation_[type];
+    ix_service_[type] = 0U;
+
+    // Abandon a probe in flight so a new one can start now. Its response
+    // will carry the old generation and be ignored. Abort is left alone:
+    // it means try_shutdown() ran, and nothing may restart after that.
+    if (is_updating_[type] == is_updating_t::Yes) {
+        is_updating_[type] = is_updating_t::No;
+    }
+
+    unset_addr(type);
+}
+
+void tr_ip_cache::on_response_ip_query(
+    tr_address_type const type,
+    uint64_t const generation,
+    tr_web::FetchResponse const& response)
+{
+    if (generation != generation_[type]) {
+        tr_logAddTrace(
+            fmt::format("Ignoring {} address query response from before a binding change", tr_ip_protocol_to_sv(type)));
+        return;
+    }
+
     auto& ix_service = ix_service_[type];
     auto const& ip_endpoints = current_ip_endpoints_[type];
     TR_ASSERT(is_updating_[type] == is_updating_t::Yes);

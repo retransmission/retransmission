@@ -697,9 +697,18 @@ public:
 
     // peer networking
 
+    // session thread only; other threads use bind_interface_snapshot()
     [[nodiscard]] constexpr auto const& bind_interface() const noexcept
     {
         return settings().bind_interface;
+    }
+
+    // A copy of the bind_interface setting that any thread may read.
+    // setSettings() refreshes it under bind_interface_mutex_.
+    [[nodiscard]] std::string bind_interface_snapshot() const
+    {
+        auto const lock = std::scoped_lock{ bind_interface_mutex_ };
+        return bind_interface_snapshot_;
     }
 
     [[nodiscard]] constexpr auto const& peerCongestionAlgorithm() const noexcept
@@ -1195,6 +1204,17 @@ private:
     void setSettings(tr::Settings const& settings_map, bool force);
     void setSettings(Settings&& settings, bool force);
 
+    // Rebuild the sockets and services that depend on the peer port and
+    // the bind address/interface settings. The flags say what changed
+    // since `old_settings`; setSettings() computes them from its diff, and
+    // on_now_timer() passes interface_changed to retry a failed binding.
+    void apply_network_bindings(
+        bool force,
+        bool interface_changed,
+        bool port_changed,
+        bool utp_changed,
+        Settings const& old_settings);
+
     void closeImplPart1(std::promise<void>* closed_promise, std::chrono::time_point<std::chrono::steady_clock> deadline);
     void closeImplPart2(std::promise<void>* closed_promise, std::chrono::time_point<std::chrono::steady_clock> deadline);
 
@@ -1357,6 +1377,17 @@ private:
     /// but are self-contained / don't hold references to others
 
     mutable std::recursive_mutex session_mutex_;
+
+    // Guards bind_interface_snapshot_ only. It is always the innermost
+    // lock: the curl thread takes it while holding tr_web's task mutex,
+    // and the session thread takes it while holding session_mutex_.
+    mutable std::mutex bind_interface_mutex_;
+    std::string bind_interface_snapshot_;
+
+    // The OS index the bound sockets were given for settings_.bind_interface,
+    // or 0 when the setting is default/blocked or the interface was absent.
+    // on_now_timer() rebinds when the live index no longer matches.
+    unsigned bound_interface_index_ = 0U;
 
     tr_stats session_stats_{ config_dir_, time(nullptr), mayWriteConfigDir() };
 

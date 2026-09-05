@@ -311,6 +311,61 @@ TEST_F(WebTest, blockedSessionInterfaceIsRefused)
     EXPECT_TRUE(std::empty(server_.lastRequest().method));
 }
 
+TEST_F(WebTest, cancelAllCompletesRunningFetch)
+{
+    // a handler that never replies keeps the fetch running until it is cancelled
+    server_.setHandler([](evhttp_request* /*req*/) {});
+
+    auto promise = std::promise<tr_web::FetchResponse>{};
+    auto future = promise.get_future();
+    auto user_data = int{};
+    auto opts = options("/"sv, &user_data);
+    opts.done_func = [&promise](tr_web::FetchResponse const& response) {
+        promise.set_value(response);
+    };
+    web_->fetch(std::move(opts));
+
+    // once the server has the request, the task is running rather than queued
+    ASSERT_TRUE(tr::test::waitFor([this]() { return !std::empty(server_.lastRequest().method); }, 5s));
+    EXPECT_EQ(std::future_status::timeout, future.wait_for(100ms));
+
+    web_->cancel_all();
+
+    // the curl thread notices within its wait interval, at most a second
+    ASSERT_EQ(std::future_status::ready, future.wait_for(5s));
+    auto const response = future.get();
+    EXPECT_EQ(0, response.status);
+    EXPECT_FALSE(response.did_connect);
+    EXPECT_FALSE(response.did_timeout);
+    EXPECT_EQ(&user_data, response.user_data);
+}
+
+TEST_F(WebTest, cancelAllLeavesLaterFetchesAlone)
+{
+    server_.setHandler([](evhttp_request* /*req*/) {});
+
+    auto promise = std::promise<tr_web::FetchResponse>{};
+    auto future = promise.get_future();
+    auto opts = options("/before"sv);
+    opts.done_func = [&promise](tr_web::FetchResponse const& response) {
+        promise.set_value(response);
+    };
+    web_->fetch(std::move(opts));
+    ASSERT_TRUE(tr::test::waitFor([this]() { return !std::empty(server_.lastRequest().method); }, 5s));
+
+    web_->cancel_all();
+
+    // a fetch made after the cancel runs normally
+    server_.setHandler([](evhttp_request* req) { LoopbackServer::reply(req, HTTP_OK, "OK", "after"sv); });
+    auto const after = fetch(options("/after"sv));
+    EXPECT_EQ(200, after.status);
+    EXPECT_EQ("after"sv, after.body);
+
+    // while the one made before it was cancelled
+    ASSERT_EQ(std::future_status::ready, future.wait_for(5s));
+    EXPECT_EQ(0, future.get().status);
+}
+
 TEST_F(WebTest, destroyRightAfterFetchDoesNotHang)
 {
     // Stress the shutdown path: destroying a tr_web immediately after a

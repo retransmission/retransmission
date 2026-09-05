@@ -311,7 +311,8 @@ std::optional<std::string> tr_session::WebMediator::bind_address_V6() const
 
 std::optional<std::string> tr_session::WebMediator::bind_interface() const
 {
-    if (auto const& bind_interface = session_->bind_interface(); !tr_net_interface_is_default(bind_interface)) {
+    // runs on the curl thread, so it may not read settings_ directly
+    if (auto bind_interface = session_->bind_interface_snapshot(); !tr_net_interface_is_default(bind_interface)) {
         return bind_interface;
     }
 
@@ -550,6 +551,19 @@ void tr_session::on_now_timer()
     alt_speeds_.check_scheduler();
     busy_torrent_count_.store(compute_busy_torrent_count(), std::memory_order_relaxed);
 
+    // A named interface can be absent when its sockets are bound (a VPN
+    // not yet connected) or be recreated under a new index later. Either
+    // leaves every bound socket useless, so rebind when the index moves.
+    if (auto const& name = settings_.bind_interface; !tr_net_interface_is_default(name) && !tr_net_interface_is_blocked(name) &&
+        tr_net_interface_index(name) != bound_interface_index_) {
+        auto const lock = unique_lock();
+        tr_logAddInfo(
+            fmt::format(
+                fmt::runtime(_("Network interface '{interface}' changed; rebinding its sockets")),
+                fmt::arg("interface", name)));
+        apply_network_bindings(false, true, false, false, settings_);
+    }
+
     // set the timer to kick again right after (10ms after) the next second
     auto const target_time = std::chrono::time_point_cast<std::chrono::seconds>(now) + 1s + 10ms;
     auto target_interval = target_time - now;
@@ -753,6 +767,14 @@ void tr_session::setSettings(tr_session::Settings&& settings_in, bool force)
     auto const& new_settings = settings_;
     auto const& old_settings = settings_in;
 
+    // Publish the binding for other threads before anything below acts on
+    // it, so that work cancelled by apply_network_bindings() cannot be
+    // replaced by work that still reads the old value.
+    {
+        auto const snapshot_lock = std::scoped_lock{ bind_interface_mutex_ };
+        bind_interface_snapshot_ = new_settings.bind_interface;
+    }
+
     // the rest of the func is session_ responding to settings changes
 
     if (auto const& val = new_settings.log_level; force || val != old_settings.log_level) {
@@ -783,13 +805,6 @@ void tr_session::setSettings(tr_session::Settings&& settings_in, bool force)
 #endif
     }
 
-    if (auto const& val = new_settings.bind_address_ipv4; force || interface_changed || val != old_settings.bind_address_ipv4) {
-        ip_cache_->update_addr(TR_AF_INET);
-    }
-    if (auto const& val = new_settings.bind_address_ipv6; force || interface_changed || val != old_settings.bind_address_ipv6) {
-        ip_cache_->update_addr(TR_AF_INET6);
-    }
-
     if (auto const& val = new_settings.default_trackers_str; force || val != old_settings.default_trackers_str) {
         setDefaultTrackers(val);
     }
@@ -804,6 +819,43 @@ void tr_session::setSettings(tr_session::Settings&& settings_in, bool force)
         local_peer_port_ = local_peer_port;
         advertised_peer_port_ = local_peer_port;
         port_changed = true;
+    }
+
+    apply_network_bindings(force, interface_changed, port_changed, utp_changed, old_settings);
+
+    if (auto const& val = new_settings.sleep_per_seconds_during_verify;
+        force || val != old_settings.sleep_per_seconds_during_verify) {
+        verifier_->set_sleep_per_seconds_during_verify(val);
+    }
+
+    // We need to update bandwidth if speed settings changed.
+    // It's a harmless call, so just call it instead of checking for settings changes
+    update_bandwidth(tr_direction::Up);
+    update_bandwidth(tr_direction::Down);
+}
+
+void tr_session::apply_network_bindings(
+    bool const force,
+    bool const interface_changed,
+    bool const port_changed,
+    bool const utp_changed,
+    Settings const& old_settings)
+{
+    auto const& new_settings = settings_;
+
+    // HTTP work in flight was started on the old route. Cancel it before
+    // the IP cache is refreshed below, so the new probe is not cancelled too.
+    if (interface_changed) {
+        web_->cancel_all();
+    }
+
+    if (auto const& val = new_settings.bind_address_ipv4; force || interface_changed || val != old_settings.bind_address_ipv4) {
+        ip_cache_->invalidate(TR_AF_INET);
+        ip_cache_->update_addr(TR_AF_INET);
+    }
+    if (auto const& val = new_settings.bind_address_ipv6; force || interface_changed || val != old_settings.bind_address_ipv6) {
+        ip_cache_->invalidate(TR_AF_INET6);
+        ip_cache_->update_addr(TR_AF_INET6);
     }
 
     bool addr_changed = false;
@@ -839,11 +891,15 @@ void tr_session::setSettings(tr_session::Settings&& settings_in, bool force)
         addr_changed = true;
     }
 
+    bound_interface_index_ = tr_net_interface_index(new_settings.bind_interface);
+
     if (auto const& val = new_settings.port_forwarding_enabled; force || val != old_settings.port_forwarding_enabled) {
         tr_sessionSetPortForwardingEnabled(this, val);
     }
 
-    if (port_changed || interface_changed) {
+    if (interface_changed) {
+        port_forwarding_->bind_interface_changed();
+    } else if (port_changed) {
         port_forwarding_->local_port_changed();
     }
 
@@ -872,16 +928,6 @@ void tr_session::setSettings(tr_session::Settings&& settings_in, bool force)
     if (interface_changed) {
         tr_peerMgrCloseConnections(peer_mgr_.get());
     }
-
-    if (auto const& val = new_settings.sleep_per_seconds_during_verify;
-        force || val != old_settings.sleep_per_seconds_during_verify) {
-        verifier_->set_sleep_per_seconds_during_verify(val);
-    }
-
-    // We need to update bandwidth if speed settings changed.
-    // It's a harmless call, so just call it instead of checking for settings changes
-    update_bandwidth(tr_direction::Up);
-    update_bandwidth(tr_direction::Down);
 }
 
 void tr_sessionSet(tr_session* session, tr::Settings const& settings)
@@ -1644,7 +1690,8 @@ std::string tr_sessionGetBindInterface(tr_session const* session)
 {
     TR_ASSERT(session != nullptr);
 
-    return session != nullptr ? session->bind_interface() : std::string{};
+    // callable from any thread, e.g. a GUI's main thread
+    return session != nullptr ? session->bind_interface_snapshot() : std::string{};
 }
 
 void tr_sessionSetBindInterface(tr_session* session, std::string_view bind_interface)
