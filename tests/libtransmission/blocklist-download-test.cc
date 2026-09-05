@@ -335,6 +335,7 @@ public:
     void respond(size_t index, long status, std::string body)
     {
         auto response = tr_web::FetchResponse{
+            .request_url = "https://example.com/blocklist"s,
             .status = status,
             .headers = {},
             .body = std::move(body),

@@ -1370,7 +1370,7 @@ void onPortTested(tr_web::FetchResponse const& web_response)
 {
     using namespace JsonRpc;
 
-    auto const& [status, headers, body, primary_ip, did_connect, did_timeout, user_data] = web_response;
+    auto const& [url, status, headers, body, primary_ip, did_connect, did_timeout, user_data] = web_response;
     auto* data = static_cast<tr_rpc_idle_data*>(user_data);
 
     if (auto const addr = tr_address::from_string(primary_ip);
@@ -1504,17 +1504,23 @@ struct add_torrent_idle_data {
 
 void onMetadataFetched(tr_web::FetchResponse const& web_response)
 {
-    auto const& [status, headers, body, primary_ip, did_connect, did_timeout, user_data] = web_response;
+    auto const& [url, status, headers, body, primary_ip, did_connect, did_timeout, user_data] = web_response;
     auto* data = static_cast<struct add_torrent_idle_data*>(user_data);
+
+    auto const parsed_url = tr_urlParse(url);
+    auto response_str = std::string{};
+    if (parsed_url && (parsed_url->scheme == "https"sv || parsed_url->scheme == "http"sv)) {
+        response_str = tr_webGetResponseStr(status);
+    }
 
     tr_logAddTrace(
         fmt::format(
-            "torrentAdd: HTTP response code was {} ({}); response length was {} bytes",
+            "torrentAdd: fetch response code was {} ({}); response length was {} bytes",
+            response_str,
             status,
-            tr_webGetResponseStr(status),
             std::size(body)));
 
-    if (status == 200 || status == 221) /* http or ftp success.. */
+    if (status == 200 || status == 221) // http or ftp success..
     {
         data->builder.set_metainfo(body);
         add_torrent_impl(data->data, data->builder);
@@ -1524,7 +1530,7 @@ void onMetadataFetched(tr_web::FetchResponse const& web_response)
             JsonRpc::Error::FETCH_ERROR,
             fmt::format(
                 fmt::runtime(_("Couldn't fetch torrent: {error} ({error_code})")),
-                fmt::arg("error", tr_webGetResponseStr(status)),
+                fmt::arg("error", response_str),
                 fmt::arg("error_code", status)));
     }
 
