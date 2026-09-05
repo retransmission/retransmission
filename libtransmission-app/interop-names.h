@@ -11,17 +11,14 @@
 // Transmission builds clients that use these too, so treat them as a wire contract.
 // Change a value here and those clients can no longer find us.
 //
-// Three more shared names live in `libtransmission/macros.h`, because
+// Four more shared names live in `libtransmission/macros.h`, because
 // `transmission-cli` and `transmission-daemon` need them and do not link
 // libtransmission-app:
 //
+//   TR_PROJ_WEB_SERVER_BASE_PATH          the default RPC and web URL prefix
 //   TR_PROJ_SHARED_CONFIG_DIRNAME         the default config dir the clients share
 //   TR_PROJ_SHARED_RPC_SESSION_ID_HEADER  the CSRF header a third-party RPC client sends
 //   TR_PROJ_SHARED_RPC_VERSION_HEADER     the version header it reads back
-//
-// The RPC URL's base path is not one of them. TR_PROJ_WEB_SERVER_BASE_PATH spells ours
-// `/retransmission/` where Transmission spells it `/transmission/`, so a third-party RPC
-// client set up against one needs a new URL for the other.
 //
 // The config dir lock filename lives in `libtransmission/config-dir-lock.cc` for the
 // same reason. Those three files hold every shared name we have.

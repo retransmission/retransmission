@@ -45,7 +45,7 @@
 // The D-Bus names live in `libtransmission-app/interop-names.h` as literal strings,
 // where the interop tests can read them out at configure time.
 
-#define TR_PROJ_WEB_SERVER_BASE_PATH "/" TR_PROJ_APPNAME "/"
+#define TR_PROJ_WEB_SERVER_BASE_PATH "/transmission/"
 
 // Interop contract, shared with separately-built clients.
 // `libtransmission-app/interop-names.h` inventories every such name.

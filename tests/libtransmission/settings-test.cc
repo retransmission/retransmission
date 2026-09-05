@@ -12,6 +12,7 @@
 
 #include <libtransmission/transmission.h>
 
+#include <libtransmission/constants.h>
 #include <libtransmission/net.h>
 #include <libtransmission/open-files.h>
 #include <libtransmission/peer-io.h>
@@ -31,6 +32,31 @@ TEST_F(SettingsTest, canInstantiate)
 
     auto map = tr::serializer::save(settings);
     EXPECT_FALSE(std::empty(map));
+}
+
+TEST_F(SettingsTest, defaultRpcUrlIsCompatibleWithTransmission)
+{
+    EXPECT_EQ("/transmission/"sv, TrDefaultHttpServerBasePath);
+
+    auto const settings = tr::RpcServerSettings{};
+    EXPECT_EQ("/transmission/"sv, settings.url);
+
+    auto const map = tr::serializer::save(settings);
+    EXPECT_EQ("/transmission/"sv, map.value_if<std::string_view>(TR_KEY_rpc_url));
+}
+
+TEST_F(SettingsTest, preservesConfiguredRpcUrl)
+{
+    for (auto const url : { "/transmission/"sv, "/retransmission/"sv, "/custom/"sv }) {
+        auto map = tr::Settings{ 1U };
+        map.try_emplace(TR_KEY_rpc_url, url);
+
+        auto const settings = tr::RpcServerSettings{ map };
+        EXPECT_EQ(url, settings.url);
+
+        auto const saved = tr::serializer::save(settings);
+        EXPECT_EQ(url, saved.value_if<std::string_view>(TR_KEY_rpc_url));
+    }
 }
 
 TEST_F(SettingsTest, canLoadBools)
