@@ -715,6 +715,12 @@ void tr_session::setSettings(tr_session::Settings&& settings_in, bool force)
 
     // the rest of the func is session_ responding to settings changes
 
+    if (force || new_settings.disk_write_budget_mib != old_settings.disk_write_budget_mib) {
+        auto const retained_bytes = static_cast<size_t>(
+            std::min<uint64_t>(tr::LocalData::MaxRetainedBytes, effective_write_budget_bytes() / 2U));
+        local_data.set_retained_bytes(retained_bytes);
+    }
+
     if (auto const& val = new_settings.log_level; force || val != old_settings.log_level) {
         tr_logSetLevel(val);
     }
@@ -1936,14 +1942,19 @@ std::optional<size_t> tr_session::spare_request_blocks() const noexcept
         return {};
     }
 
+    auto const budget = effective_write_budget_bytes();
+    auto const requested = uint64_t{ active_request_count_ } * TrBlockSize;
+    auto const in_flight = local_data.enqueued_write_bytes() + requested;
+    return in_flight >= budget ? size_t{} : static_cast<size_t>((budget - in_flight) / TrBlockSize);
+}
+
+uint64_t tr_session::effective_write_budget_bytes() const noexcept
+{
     // Floor the budget at one write run. Below that nothing is ever
     // spare, so no peer could add a request and every download would
     // stall.
     static auto constexpr MinBudget = uint64_t{ 1024U } * 1024U;
-    auto const budget = std::max(uint64_t{ settings_.disk_write_budget_mib } * 1024U * 1024U, MinBudget);
-    auto const requested = uint64_t{ active_request_count_ } * TrBlockSize;
-    auto const in_flight = local_data.enqueued_write_bytes() + requested;
-    return in_flight >= budget ? size_t{} : static_cast<size_t>((budget - in_flight) / TrBlockSize);
+    return std::max(uint64_t{ settings_.disk_write_budget_mib } * 1024U * 1024U, MinBudget);
 }
 
 void tr_session::invalidate_storage_descriptors()

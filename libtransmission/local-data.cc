@@ -246,9 +246,14 @@ public:
             slot = data;
         }
 
-        while (bytes_ > max_bytes_ && !std::empty(lru_)) {
-            erase(entries_.find(lru_.front()));
-        }
+        trim();
+    }
+
+    void set_capacity(size_t const max_bytes)
+    {
+        auto const lock = std::scoped_lock{ mutex_ };
+        max_bytes_ = max_bytes;
+        trim();
     }
 
     // Takes the piece's blocks. Empty unless every one of them is here.
@@ -298,6 +303,13 @@ private:
 
     using Entries = std::map<Key, Entry>;
 
+    void trim()
+    {
+        while (bytes_ > max_bytes_ && !std::empty(lru_)) {
+            erase(entries_.find(lru_.front()));
+        }
+    }
+
     Entries::iterator erase(Entries::iterator const it)
     {
         bytes_ -= it->second.bytes;
@@ -309,7 +321,7 @@ private:
     Entries entries_;
     std::list<Key> lru_;
     size_t bytes_ = 0U;
-    size_t const max_bytes_;
+    size_t max_bytes_;
 };
 
 } // namespace
@@ -359,12 +371,14 @@ public:
         Marshal marshal,
         ReadExec read_exec,
         OnFilesCreated on_files_created,
-        size_t const n_workers)
+        size_t const n_workers,
+        size_t const retained_bytes)
         : open_files_{ open_files }
         , provider_{ std::move(provider) }
         , marshal_{ std::move(marshal) }
         , read_exec_{ std::move(read_exec) }
         , on_files_created_{ std::move(on_files_created) }
+        , retained_{ retained_bytes }
     {
         workers_.reserve(n_workers);
 
@@ -472,6 +486,11 @@ public:
         work_cv_.notify_all();
     }
 
+    void set_retained_bytes(size_t const max_bytes)
+    {
+        retained_.set_capacity(max_bytes);
+    }
+
 private:
     struct ReadOp {
         tr_byte_span_t span;
@@ -536,9 +555,6 @@ private:
     // Adjacent pending writes are combined into runs of up to this many
     // bytes and written with one call.
     static auto constexpr MaxRunBytes = uint64_t{ 1024U * 1024U };
-
-    // How much written block data to keep around for piece hashes.
-    static auto constexpr MaxRetainedBytes = size_t{ 32U * 1024U * 1024U };
 
     // --- the admission gate. Session thread only.
 
@@ -1039,7 +1055,7 @@ private:
     std::deque<std::unique_ptr<Parked>> done_;
     bool pump_scheduled_ = false;
 
-    RetainedBlocks retained_{ MaxRetainedBytes };
+    RetainedBlocks retained_;
 
     std::atomic<uint64_t> enqueued_write_bytes_ = 0U;
     std::atomic<uint64_t> write_runs_ = 0U;
@@ -1110,7 +1126,8 @@ void LocalData::start_workers(
             return backend_->read(id, span, setme);
         },
         std::move(on_files_created),
-        worker_count);
+        worker_count,
+        retained_bytes_);
 }
 
 void LocalData::read(tr_torrent_id_t const id, tr_byte_span_t const byte_span, OnRead on_read)
@@ -1292,6 +1309,14 @@ uint64_t LocalData::enqueued_write_bytes() const noexcept
 LocalData::Stats LocalData::stats() const noexcept
 {
     return threaded_ ? threaded_->stats() : Stats{};
+}
+
+void LocalData::set_retained_bytes(size_t const max_bytes)
+{
+    retained_bytes_ = max_bytes;
+    if (threaded_) {
+        threaded_->set_retained_bytes(max_bytes);
+    }
 }
 
 void LocalData::set_workers_paused(bool const paused)
