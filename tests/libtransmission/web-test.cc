@@ -135,6 +135,15 @@ TEST_F(WebTest, httpErrorStatusIsSurfaced)
     EXPECT_FALSE(response.errmsg);
 }
 
+TEST_F(WebTest, curlErrorIsReported)
+{
+    auto const response = fetch(tr_web::FetchOptions{ "http://example.invalid", nullptr, nullptr });
+    EXPECT_EQ(0, response.status);
+    EXPECT_FALSE(response.did_timeout);
+    ASSERT_TRUE(response.errmsg);
+    EXPECT_NE(std::string::npos, response.errmsg->find("curl error: "));
+}
+
 TEST_F(WebTest, postSendsBody)
 {
     auto opts = options();
@@ -255,6 +264,21 @@ TEST_F(WebTest, rangeRequestSetsHeader)
     EXPECT_EQ("bytes=0-3"sv, server_.lastRequest().headers.at("range"));
 }
 
+TEST_F(WebTest, rangeLengthTakesPrecedenceOverMaxFileSize)
+{
+    static auto constexpr Body = "data"sv;
+    server_.setHandler([](evhttp_request* req) { LoopbackServer::reply(req, 206, "Partial Content", Body); });
+
+    auto opts = options();
+    opts.max_file_size = 1U;
+    opts.range = std::make_pair(uint64_t{ 0 }, uint64_t{ 3 });
+
+    auto const response = fetch(std::move(opts));
+    EXPECT_EQ(206, response.status);
+    EXPECT_FALSE(response.errmsg);
+    EXPECT_EQ(Body, response.body);
+}
+
 TEST_F(WebTest, cookiesAreSent)
 {
     auto opts = options();
@@ -324,6 +348,20 @@ TEST_F(WebTest, defaultResponseBodyLimitReportsCurlError)
     EXPECT_LE(std::size(response.body), tr_web::FetchOptions::DefaultMaxFileSize);
 }
 
+TEST_F(WebTest, zeroMaxFileSizeDisablesLimit)
+{
+    auto body = std::string(tr_web::FetchOptions::DefaultMaxFileSize + 1U, 'x');
+    server_.setHandler([&body](evhttp_request* req) { LoopbackServer::reply(req, HTTP_OK, "OK", body); });
+
+    auto opts = options();
+    opts.max_file_size = 0U;
+
+    auto const response = fetch(std::move(opts));
+    EXPECT_EQ(200, response.status);
+    EXPECT_FALSE(response.errmsg);
+    EXPECT_EQ(std::size(body), std::size(response.body));
+}
+
 TEST_F(WebTest, timeoutIsReported)
 {
     // Handler that never replies, so the transfer exceeds the timeout.
@@ -335,6 +373,8 @@ TEST_F(WebTest, timeoutIsReported)
     auto const response = fetch(std::move(opts));
     EXPECT_EQ(0, response.status);
     EXPECT_TRUE(response.did_timeout);
+    ASSERT_TRUE(response.errmsg);
+    EXPECT_NE(std::string::npos, response.errmsg->find("curl error: "));
 }
 
 TEST_F(WebTest, destroyRightAfterFetchDoesNotHang)
