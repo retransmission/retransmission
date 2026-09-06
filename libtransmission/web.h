@@ -146,7 +146,8 @@ public:
         IPProtocol ip_proto = IPProtocol::ANY;
 
         // Maximum size of the response body to accept before aborting the request.
-        // Use `effective_max_file_size` instead of reading this value directly
+        // Use `effective_max_file_size` instead of reading this value directly.
+        // Set to 0 to disable the limit.
         size_t max_file_size = DefaultMaxFileSize;
 
         static auto constexpr DefaultTimeoutSecs = std::chrono::seconds{ 120 };

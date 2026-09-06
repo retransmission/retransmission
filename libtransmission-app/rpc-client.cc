@@ -230,6 +230,7 @@ void RpcClient::send_remote_request(std::string body, ResponseFunc on_done)
     options.auth_scheme = tr_web::FetchOptions::AuthScheme::Any;
     options.headers.insert_or_assign("Content-Type", "application/json; charset=UTF-8");
     options.headers.insert_or_assign("User-Agent", TR_PROJ_APPNAME_CAPITALIZED "/" SHORT_VERSION_STRING);
+    options.max_file_size = 0U;
 
     if (!std::empty(session_id_)) {
         options.headers.insert_or_assign(std::string{ TrRpcSessionIdHeader }, session_id_);

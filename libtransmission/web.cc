@@ -357,7 +357,7 @@ public:
         [[nodiscard]] bool add_data(void const* data, size_t const n_bytes)
         {
             // Needed for curl < 8.4.0, newer versions handles this for us
-            if (auto const max = options().effective_max_file_size(); response.body.size() + n_bytes > max) {
+            if (auto const max = options().effective_max_file_size(); max != 0U && response.body.size() + n_bytes > max) {
                 tr_logAddWarn(
                     fmt::format(
                         fmt::runtime(_("Aborting request: response body exceeded max size of {max_file_size} bytes")),
