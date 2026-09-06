@@ -744,6 +744,8 @@ public:
     // buffers there.
     [[nodiscard]] std::optional<size_t> spare_request_blocks() const noexcept;
 
+    [[nodiscard]] uint64_t effective_write_budget_bytes() const noexcept;
+
     void update_active_request_count(size_t const previous, size_t const current) noexcept
     {
         TR_ASSERT(active_request_count_ >= previous);
