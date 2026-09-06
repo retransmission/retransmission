@@ -136,19 +136,20 @@ void logAddImpl(
 
 #else
 
+    auto const now = std::chrono::system_clock::now();
     if (log_queue.is_enabled()) {
         log_queue.append(
             {
                 .level = level,
                 .file = file,
                 .line = line,
-                .when = std::chrono::system_clock::now(),
+                .when = now,
                 .name = std::string{ name },
                 .message = std::move(msg),
             });
     } else {
         auto buf = std::array<char, 64U>{};
-        auto const timestr = tr_logGetTimeStr(std::data(buf), std::size(buf));
+        auto const timestr = tr_logGetTimeStr(now, std::data(buf), std::size(buf));
 
         if (std::empty(name)) {
             fmt::print(stderr, "[{:s}] {:s}\n", timestr, msg);
@@ -219,12 +220,6 @@ std::string_view tr_logGetTimeStr(std::chrono::system_clock::time_point const no
     }
 #endif
     return { buf, static_cast<size_t>(walk - buf) };
-}
-
-std::string_view tr_logGetTimeStr(char* buf, size_t buflen)
-{
-    auto const a = std::chrono::system_clock::now();
-    return tr_logGetTimeStr(a, buf, buflen);
 }
 
 void tr_logAddMessage(char const* file, long line, tr_log_level level, std::string&& msg, std::string_view name)
