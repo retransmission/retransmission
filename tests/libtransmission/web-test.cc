@@ -4,6 +4,7 @@
 // License text can be found in the licenses/ folder.
 
 #include <chrono>
+#include <cinttypes>
 #include <cstdint>
 #include <future>
 #include <memory>
@@ -346,6 +347,43 @@ TEST_F(WebTest, destroyRightAfterFetchDoesNotHang)
         auto web = tr_web::create(mediator_);
         fetch(*web, options());
     }
+}
+
+TEST_F(WebTest, redirectBodyBiggerThanRangeDoesNotAbort)
+{
+    static auto constexpr Body = "0123456789"sv;
+    static auto constexpr First = uint64_t{ 0 };
+    static auto constexpr Last = uint64_t{ 3 };
+
+    server_.setHandler([this](evhttp_request* req) {
+        if (auto const& path = server_.lastRequest().uri; path.ends_with("/redirect"sv)) {
+            static auto constexpr RedirectBody = "Moved permanently to /bigfile"sv;
+            static_assert(std::size(RedirectBody) > Last + 1U - First);
+            LoopbackServer::reply(
+                req,
+                HTTP_MOVEPERM,
+                "Moved Permanently",
+                RedirectBody,
+                { { { "Location", server_.url("/bigfile") } } });
+        } else if (path.ends_with("/bigfile"sv)) {
+            auto const range = server_.lastRequest().headers.at("range");
+            auto first = uint64_t{};
+            auto last = uint64_t{};
+            std::sscanf(range.c_str(), "bytes=%" SCNu64 "-%" SCNu64, &first, &last);
+            LoopbackServer::reply(req, 206, "Partial Content", Body.substr(first, last + 1U - first));
+        } else {
+            LoopbackServer::reply(req, HTTP_NOTFOUND, "Not Found", ""sv);
+        }
+    });
+
+    auto opts = options("/redirect");
+    opts.range = std::make_pair(First, Last);
+
+    auto const response = fetch(std::move(opts));
+    EXPECT_EQ(206, response.status);
+    EXPECT_TRUE(response.did_connect);
+    EXPECT_FALSE(response.errmsg);
+    EXPECT_EQ(Body.substr(First, Last + 1U - First), response.body);
 }
 
 } // namespace

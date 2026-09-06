@@ -107,10 +107,21 @@ public:
     }
 
     // Convenience: send a reply with the given status, reason and body.
-    static void reply(evhttp_request* req, int code, char const* reason, std::string_view body)
+    static void reply(
+        evhttp_request* const req,
+        int const code,
+        char const* const reason,
+        std::string_view const body,
+        std::span<std::pair<std::string, std::string> const> headers = {})
     {
         auto* const out = evbuffer_new();
         evbuffer_add(out, std::data(body), std::size(body));
+        if (!headers.empty()) {
+            auto* const output_headers = evhttp_request_get_output_headers(req);
+            for (auto const& [key, value] : headers) {
+                evhttp_add_header(output_headers, key.c_str(), value.c_str());
+            }
+        }
         evhttp_send_reply(req, code, reason, out);
         evbuffer_free(out);
     }
