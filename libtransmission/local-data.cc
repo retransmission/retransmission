@@ -363,20 +363,18 @@ private:
 class LocalData::Threaded final : public std::enable_shared_from_this<LocalData::Threaded>
 {
 public:
-    using ReadExec = std::function<tr_error_code_t(tr_torrent_id_t, tr_byte_span_t, BlockData&)>;
-
     Threaded(
         tr_open_files& open_files,
         DescriptorProvider provider,
         Marshal marshal,
-        ReadExec read_exec,
+        Backend& backend,
         OnFilesCreated on_files_created,
         size_t const n_workers,
         size_t const retained_bytes)
         : open_files_{ open_files }
         , provider_{ std::move(provider) }
         , marshal_{ std::move(marshal) }
-        , read_exec_{ std::move(read_exec) }
+        , backend_{ backend }
         , on_files_created_{ std::move(on_files_created) }
         , retained_{ retained_bytes }
     {
@@ -645,13 +643,13 @@ private:
         }
     }
 
-    void release(tr_torrent_id_t const id)
+    void release(tr_torrent_id_t const id, size_t const n_ops = 1U)
     {
         auto const it = gates_.find(id);
         TR_ASSERT(it != std::end(gates_));
-        TR_ASSERT(it->second.n_running > 0U);
+        TR_ASSERT(it->second.n_running >= n_ops);
 
-        --it->second.n_running;
+        it->second.n_running -= n_ops;
         advance(id);
     }
 
@@ -691,7 +689,7 @@ private:
     void exec_read(tr_torrent_id_t const id, ReadOp const& op)
     {
         auto data = std::make_unique<BlockData>();
-        auto const err = read_exec_(id, op.span, *data);
+        auto const err = backend_.read(id, op.span, *data);
         if (err != 0) {
             data = nullptr;
         }
@@ -975,9 +973,7 @@ private:
                     std::move(op.on_write)(id, op.span, make_error(err));
                 }
             }
-            for (auto i = size_t{}; i < std::size(run); ++i) {
-                release(id);
-            }
+            release(id, std::size(run));
         });
     }
 
@@ -1035,7 +1031,7 @@ private:
     tr_open_files& open_files_;
     DescriptorProvider provider_;
     Marshal marshal_;
-    ReadExec read_exec_;
+    Backend& backend_;
     OnFilesCreated on_files_created_;
 
     std::map<tr_torrent_id_t, Gate> gates_;
@@ -1122,9 +1118,7 @@ void LocalData::start_workers(
         *open_files_,
         std::move(provider),
         std::move(marshal),
-        [this](tr_torrent_id_t const id, tr_byte_span_t const span, BlockData& setme) {
-            return backend_->read(id, span, setme);
-        },
+        *backend_,
         std::move(on_files_created),
         worker_count,
         retained_bytes_);
