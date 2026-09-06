@@ -826,7 +826,7 @@ TEST_F(LocalDataWorkersTest, retainedCapacityControlsBufferedHashing)
 
 TEST_F(LocalDataWorkersTest, resizingRetainedCapacityEvictsOldestPiecesAndAllowsGrowth)
 {
-    static auto constexpr PieceSize = uint32_t{ 32768U };
+    static auto constexpr PieceSize = size_t{ 32768U };
     auto const local_data = makeLocalData(makeDescriptor({ { "data.bin", 2U * PieceSize } }, PieceSize), 1U);
     auto const write_pieces = [&]() {
         auto n_done = size_t{};

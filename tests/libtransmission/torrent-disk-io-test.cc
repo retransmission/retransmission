@@ -415,10 +415,10 @@ TEST_P(RetainedBudgetTest, cacheSizeFollowsStartupAndRuntimeBudget)
         int64_t hashing;
     };
     auto const cases = std::array<Budgets, 4>{ {
-        { GetParam(), GetParam() },
-        { 64, 1 },
-        { 64, 64 },
-        { 64, 0 },
+        { .writing = GetParam(), .hashing = GetParam() },
+        { .writing = 64, .hashing = 1 },
+        { .writing = 64, .hashing = 64 },
+        { .writing = 64, .hashing = 0 },
     } };
     for (auto const [writing_budget, hashing_budget] : cases) {
         SCOPED_TRACE(writing_budget);
