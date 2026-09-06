@@ -629,6 +629,9 @@ TEST_F(LocalDataWorkersTest, fileInitializationParksDependentWorkWithoutOccupyin
             patternBlock(BlockSize, BlockSize),
             [&](tr_torrent_id_t, tr_byte_span_t, tr_error const& error) {
                 EXPECT_EQ(fail, static_cast<bool>(error));
+                if (fail) {
+                    EXPECT_TRUE(tr_error_is_enospc(error.code())) << error;
+                }
                 first_done = true;
             });
         EXPECT_EQ(std::future_status::ready, entered.get_future().wait_for(5s));

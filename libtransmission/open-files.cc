@@ -151,12 +151,12 @@ tr_open_files::Handle tr_open_files::get(
 }
 
 tr_open_files::Handle tr_open_files::get(
-    tr_torrent_id_t tor_id,
-    tr_file_index_t file_num,
+    tr_torrent_id_t const tor_id,
+    tr_file_index_t const file_num,
     bool writable,
     std::string_view const filename,
-    tr_file_preallocation allocation,
-    uint64_t file_size,
+    tr_file_preallocation const allocation,
+    uint64_t const file_size,
     tr_error& error,
     Waiter* const waiter)
 {
