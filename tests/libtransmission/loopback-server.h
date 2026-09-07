@@ -8,6 +8,9 @@
 #include <atomic>
 #include <chrono>
 #include <cstdint>
+#ifndef _WIN32
+#include <csignal>
+#endif
 #include <functional>
 #include <map>
 #include <mutex>
@@ -51,6 +54,11 @@ public:
         : base_{ event_base_new() }
         , http_{ evhttp_new(base_) }
     {
+#ifndef _WIN32
+        // The client may close a response-limited connection while libevent is still writing.
+        (void)signal(SIGPIPE, SIG_IGN);
+#endif
+
         evhttp_set_allowed_methods(
             http_,
             EVHTTP_REQ_GET | EVHTTP_REQ_POST | EVHTTP_REQ_HEAD | EVHTTP_REQ_PUT | EVHTTP_REQ_DELETE | EVHTTP_REQ_OPTIONS);
