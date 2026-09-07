@@ -7,8 +7,7 @@ tr_add_external_auto_library(GTEST GTest
     SOURCE_DIR googletest
     CMAKE_ARGS
         -DBUILD_GMOCK=OFF
-        -DINSTALL_GTEST=OFF
-        -DBUILD_SHARED_LIBS=ON)
+        -DINSTALL_GTEST=OFF)
 
 # The GTest::gtest_main target is new in CMake 3.20
 if(NOT TARGET GTest::gtest_main)

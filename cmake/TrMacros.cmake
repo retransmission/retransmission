@@ -2,23 +2,6 @@ include(CheckFunctionExists)
 include(CheckIncludeFile)
 
 macro(tr_setup_gtest_target TARGET_NAME TEST_PREFIX)
-    if(WIN32)
-        cmake_policy(PUSH)
-        cmake_minimum_required(VERSION 3.21 FATAL_ERROR)
-
-        add_custom_command(
-            TARGET ${TARGET_NAME} POST_BUILD
-            COMMAND
-                ${CMAKE_COMMAND}
-                -E copy_if_different
-                $<TARGET_RUNTIME_DLLS:${TARGET_NAME}>
-                $<TARGET_FILE_DIR:${TARGET_NAME}>
-            COMMAND_EXPAND_LISTS
-        )
-
-        cmake_policy(POP)
-    endif()
-
     if(NOT CMAKE_CROSSCOMPILING OR CMAKE_CROSSCOMPILING_EMULATOR)
         # PRE_TEST enumerates at ctest time; the POST_BUILD default runs the
         # fresh binary during the build, where concurrent LTO links can starve
