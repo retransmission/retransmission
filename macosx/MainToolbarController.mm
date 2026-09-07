@@ -42,8 +42,7 @@ typedef NS_ENUM(NSUInteger, ToolbarGroupTag) { //
 
 - (instancetype)initWithDelegate:(id<MainToolbarControllerDelegate>)delegate
 {
-    if ((self = [super init]))
-    {
+    if ((self = [super init])) {
         _delegate = delegate;
     }
 
@@ -82,8 +81,7 @@ typedef NS_ENUM(NSUInteger, ToolbarGroupTag) { //
 
 - (NSToolbarItem*)toolbar:(NSToolbar*)toolbar itemForItemIdentifier:(NSString*)ident willBeInsertedIntoToolbar:(BOOL)flag
 {
-    if ([ident isEqualToString:ToolbarItemIdentifierCreate])
-    {
+    if ([ident isEqualToString:ToolbarItemIdentifierCreate]) {
         ButtonToolbarItem* item = [self standardToolbarButtonWithIdentifier:ident];
 
         item.label = NSLocalizedString(@"Create", "Create toolbar item -> label");
@@ -94,9 +92,7 @@ typedef NS_ENUM(NSUInteger, ToolbarGroupTag) { //
         item.autovalidates = NO;
 
         return item;
-    }
-    else if ([ident isEqualToString:ToolbarItemIdentifierOpenFile])
-    {
+    } else if ([ident isEqualToString:ToolbarItemIdentifierOpenFile]) {
         ButtonToolbarItem* item = [self standardToolbarButtonWithIdentifier:ident];
 
         item.label = NSLocalizedString(@"Open", "Open toolbar item -> label");
@@ -107,9 +103,7 @@ typedef NS_ENUM(NSUInteger, ToolbarGroupTag) { //
         item.autovalidates = NO;
 
         return item;
-    }
-    else if ([ident isEqualToString:ToolbarItemIdentifierOpenWeb])
-    {
+    } else if ([ident isEqualToString:ToolbarItemIdentifierOpenWeb]) {
         ButtonToolbarItem* item = [self standardToolbarButtonWithIdentifier:ident];
 
         item.label = NSLocalizedString(@"Open Address", "Open address toolbar item -> label");
@@ -120,9 +114,7 @@ typedef NS_ENUM(NSUInteger, ToolbarGroupTag) { //
         item.autovalidates = NO;
 
         return item;
-    }
-    else if ([ident isEqualToString:ToolbarItemIdentifierRemove])
-    {
+    } else if ([ident isEqualToString:ToolbarItemIdentifierRemove]) {
         ButtonToolbarItem* item = [self standardToolbarButtonWithIdentifier:ident];
 
         item.label = NSLocalizedString(@"Remove", "Remove toolbar item -> label");
@@ -133,9 +125,7 @@ typedef NS_ENUM(NSUInteger, ToolbarGroupTag) { //
         item.visibilityPriority = NSToolbarItemVisibilityPriorityHigh;
 
         return item;
-    }
-    else if ([ident isEqualToString:ToolbarItemIdentifierInfo])
-    {
+    } else if ([ident isEqualToString:ToolbarItemIdentifierInfo]) {
         ButtonToolbarItem* item = [self standardToolbarButtonWithIdentifier:ident];
         ((NSButtonCell*)((NSButton*)item.view).cell).showsStateBy = NSContentsCellMask; // blue when enabled
 
@@ -146,9 +136,7 @@ typedef NS_ENUM(NSUInteger, ToolbarGroupTag) { //
         item.action = @selector(showInfo:);
 
         return item;
-    }
-    else if ([ident isEqualToString:ToolbarItemIdentifierPauseResumeAll])
-    {
+    } else if ([ident isEqualToString:ToolbarItemIdentifierPauseResumeAll]) {
         GroupToolbarItem* groupItem = [[GroupToolbarItem alloc] initWithItemIdentifier:ident];
 
         NSToolbarItem* itemPause = [self standardToolbarButtonWithIdentifier:ToolbarItemIdentifierPauseAll];
@@ -170,8 +158,7 @@ typedef NS_ENUM(NSUInteger, ToolbarGroupTag) { //
                         forSegment:ToolbarGroupTagResume];
         [segmentedControl setToolTip:NSLocalizedString(@"Resume all transfers", "All toolbar item -> tooltip")
                           forSegment:ToolbarGroupTagResume];
-        if ([toolbar isKindOfClass:Toolbar.class] && ((Toolbar*)toolbar).isRunningCustomizationPalette)
-        {
+        if ([toolbar isKindOfClass:Toolbar.class] && ((Toolbar*)toolbar).isRunningCustomizationPalette) {
             // On macOS 13.2, the palette autolayout will hang unless the segmentedControl width is longer than the groupItem paletteLabel (matters especially in Russian and French).
             [segmentedControl setWidth:64 forSegment:ToolbarGroupTagPause];
             [segmentedControl setWidth:64 forSegment:ToolbarGroupTagResume];
@@ -191,9 +178,7 @@ typedef NS_ENUM(NSUInteger, ToolbarGroupTag) { //
         ]];
 
         return groupItem;
-    }
-    else if ([ident isEqualToString:ToolbarItemIdentifierPauseResumeSelected])
-    {
+    } else if ([ident isEqualToString:ToolbarItemIdentifierPauseResumeSelected]) {
         GroupToolbarItem* groupItem = [[GroupToolbarItem alloc] initWithItemIdentifier:ident];
 
         NSToolbarItem* itemPause = [self standardToolbarButtonWithIdentifier:ToolbarItemIdentifierPauseSelected];
@@ -215,8 +200,7 @@ typedef NS_ENUM(NSUInteger, ToolbarGroupTag) { //
                         forSegment:ToolbarGroupTagResume];
         [segmentedControl setToolTip:NSLocalizedString(@"Resume selected transfers", "Selected toolbar item -> tooltip")
                           forSegment:ToolbarGroupTagResume];
-        if ([toolbar isKindOfClass:Toolbar.class] && ((Toolbar*)toolbar).isRunningCustomizationPalette)
-        {
+        if ([toolbar isKindOfClass:Toolbar.class] && ((Toolbar*)toolbar).isRunningCustomizationPalette) {
             // On macOS 13.2, the palette autolayout will hang unless the segmentedControl width is longer than the groupItem paletteLabel (matters especially in Russian and French).
             [segmentedControl setWidth:64 forSegment:ToolbarGroupTagPause];
             [segmentedControl setWidth:64 forSegment:ToolbarGroupTagResume];
@@ -236,9 +220,7 @@ typedef NS_ENUM(NSUInteger, ToolbarGroupTag) { //
         ]];
 
         return groupItem;
-    }
-    else if ([ident isEqualToString:ToolbarItemIdentifierFilter])
-    {
+    } else if ([ident isEqualToString:ToolbarItemIdentifierFilter]) {
         ButtonToolbarItem* item = [self standardToolbarButtonWithIdentifier:ident];
         ((NSButtonCell*)((NSButton*)item.view).cell).showsStateBy = NSContentsCellMask; // blue when enabled
 
@@ -249,9 +231,7 @@ typedef NS_ENUM(NSUInteger, ToolbarGroupTag) { //
         item.action = @selector(toggleFilterBar:);
 
         return item;
-    }
-    else if ([ident isEqualToString:ToolbarItemIdentifierQuickLook])
-    {
+    } else if ([ident isEqualToString:ToolbarItemIdentifierQuickLook]) {
         ButtonToolbarItem* item = [self standardToolbarButtonWithIdentifier:ident];
         ((NSButtonCell*)((NSButton*)item.view).cell).showsStateBy = NSContentsCellMask; // blue when enabled
 
@@ -263,9 +243,7 @@ typedef NS_ENUM(NSUInteger, ToolbarGroupTag) { //
         item.visibilityPriority = NSToolbarItemVisibilityPriorityLow;
 
         return item;
-    }
-    else if ([ident isEqualToString:ToolbarItemIdentifierShare])
-    {
+    } else if ([ident isEqualToString:ToolbarItemIdentifierShare]) {
         ShareToolbarItem* item = [self toolbarButtonWithIdentifier:ident forToolbarButtonClass:[ShareToolbarItem class]];
 
         item.label = NSLocalizedString(@"Share", "Share toolbar item -> label");
@@ -280,9 +258,7 @@ typedef NS_ENUM(NSUInteger, ToolbarGroupTag) { //
         [itemButton sendActionOn:NSEventMaskLeftMouseDown];
 
         return item;
-    }
-    else
-    {
+    } else {
         return nil;
     }
 }
@@ -291,8 +267,7 @@ typedef NS_ENUM(NSUInteger, ToolbarGroupTag) { //
 {
     NSInteger tagValue = [sender isKindOfClass:[NSSegmentedControl class]] ? [(NSSegmentedControl*)sender selectedTag] :
                                                                              ((NSControl*)sender).tag;
-    switch (tagValue)
-    {
+    switch (tagValue) {
     case ToolbarGroupTagPause:
         [self.delegate mainToolbarStopAllTorrents:sender];
         break;
@@ -306,8 +281,7 @@ typedef NS_ENUM(NSUInteger, ToolbarGroupTag) { //
 {
     NSInteger tagValue = [sender isKindOfClass:[NSSegmentedControl class]] ? [(NSSegmentedControl*)sender selectedTag] :
                                                                              ((NSControl*)sender).tag;
-    switch (tagValue)
-    {
+    switch (tagValue) {
     case ToolbarGroupTagPause:
         [self.delegate mainToolbarStopSelectedTorrents:sender];
         break;
@@ -356,18 +330,14 @@ typedef NS_ENUM(NSUInteger, ToolbarGroupTag) { //
     NSString* ident = toolbarItem.itemIdentifier;
 
     // enable remove item
-    if ([ident isEqualToString:ToolbarItemIdentifierRemove])
-    {
+    if ([ident isEqualToString:ToolbarItemIdentifierRemove]) {
         return [self.delegate mainToolbarSelectedTorrentCount] > 0;
     }
 
     // enable pause all item
-    if ([ident isEqualToString:ToolbarItemIdentifierPauseAll])
-    {
-        for (Torrent* torrent in [self.delegate mainToolbarAllTorrents])
-        {
-            if (torrent.active || torrent.waitingToStart)
-            {
+    if ([ident isEqualToString:ToolbarItemIdentifierPauseAll]) {
+        for (Torrent* torrent in [self.delegate mainToolbarAllTorrents]) {
+            if (torrent.active || torrent.waitingToStart) {
                 return YES;
             }
         }
@@ -375,12 +345,9 @@ typedef NS_ENUM(NSUInteger, ToolbarGroupTag) { //
     }
 
     // enable resume all item
-    if ([ident isEqualToString:ToolbarItemIdentifierResumeAll])
-    {
-        for (Torrent* torrent in [self.delegate mainToolbarAllTorrents])
-        {
-            if (!torrent.active && !torrent.waitingToStart && !torrent.finishedSeeding)
-            {
+    if ([ident isEqualToString:ToolbarItemIdentifierResumeAll]) {
+        for (Torrent* torrent in [self.delegate mainToolbarAllTorrents]) {
+            if (!torrent.active && !torrent.waitingToStart && !torrent.finishedSeeding) {
                 return YES;
             }
         }
@@ -388,12 +355,9 @@ typedef NS_ENUM(NSUInteger, ToolbarGroupTag) { //
     }
 
     // enable pause item
-    if ([ident isEqualToString:ToolbarItemIdentifierPauseSelected])
-    {
-        for (Torrent* torrent in [self.delegate mainToolbarSelectedTorrents])
-        {
-            if (torrent.active || torrent.waitingToStart)
-            {
+    if ([ident isEqualToString:ToolbarItemIdentifierPauseSelected]) {
+        for (Torrent* torrent in [self.delegate mainToolbarSelectedTorrents]) {
+            if (torrent.active || torrent.waitingToStart) {
                 return YES;
             }
         }
@@ -401,12 +365,9 @@ typedef NS_ENUM(NSUInteger, ToolbarGroupTag) { //
     }
 
     // enable resume item
-    if ([ident isEqualToString:ToolbarItemIdentifierResumeSelected])
-    {
-        for (Torrent* torrent in [self.delegate mainToolbarSelectedTorrents])
-        {
-            if (!torrent.active && !torrent.waitingToStart)
-            {
+    if ([ident isEqualToString:ToolbarItemIdentifierResumeSelected]) {
+        for (Torrent* torrent in [self.delegate mainToolbarSelectedTorrents]) {
+            if (!torrent.active && !torrent.waitingToStart) {
                 return YES;
             }
         }
@@ -414,29 +375,25 @@ typedef NS_ENUM(NSUInteger, ToolbarGroupTag) { //
     }
 
     // set info item
-    if ([ident isEqualToString:ToolbarItemIdentifierInfo])
-    {
+    if ([ident isEqualToString:ToolbarItemIdentifierInfo]) {
         ((NSButton*)toolbarItem.view).state = [self.delegate mainToolbarInfoVisible];
         return YES;
     }
 
     // set filter item
-    if ([ident isEqualToString:ToolbarItemIdentifierFilter])
-    {
+    if ([ident isEqualToString:ToolbarItemIdentifierFilter]) {
         ((NSButton*)toolbarItem.view).state = [self.delegate mainToolbarFilterBarVisible] ? NSControlStateValueOn : NSControlStateValueOff;
         return YES;
     }
 
     // set quick look item
-    if ([ident isEqualToString:ToolbarItemIdentifierQuickLook])
-    {
+    if ([ident isEqualToString:ToolbarItemIdentifierQuickLook]) {
         ((NSButton*)toolbarItem.view).state = [self.delegate mainToolbarQuickLookVisible];
         return [self.delegate mainToolbarSelectedTorrentCount] > 0;
     }
 
     // enable share item
-    if ([ident isEqualToString:ToolbarItemIdentifierShare])
-    {
+    if ([ident isEqualToString:ToolbarItemIdentifierShare]) {
         return [self.delegate mainToolbarSelectedTorrentCount] > 0;
     }
 
