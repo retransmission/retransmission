@@ -446,6 +446,13 @@ public:
         return in_range;
     }
 
+    // https://github.com/curl/curl/issues/14899
+    [[nodiscard]] static bool check_curl_gh14899() noexcept
+    {
+        static bool const in_range = get_curl_version() < 0x080a01 /* 8.10.1 */;
+        return in_range;
+    }
+
     static auto constexpr BandwidthPauseMsec = long{ 500 };
     static auto constexpr DnsCacheTimeoutSecs = long{ 60 * 60 };
     static auto constexpr MaxRedirects = long{ 10 };
@@ -458,6 +465,7 @@ public:
     bool const curl_ssl_verify = !tr_env_key_exists("TR_CURL_SSL_NO_VERIFY");
     bool const curl_proxy_ssl_verify = !tr_env_key_exists("TR_CURL_PROXY_SSL_NO_VERIFY");
     bool const curl_avoid_http2 = check_curl_gh10936() || check_curl_gh6312(); // both related to curl http2 bugs
+    bool const curl_dont_limit_range_requests = check_curl_gh14899();
 
     Mediator& mediator;
 
@@ -600,12 +608,6 @@ public:
         (void)curl_easy_setopt(e, CURLOPT_AUTOREFERER, 1L);
         (void)curl_easy_setopt(e, CURLOPT_ACCEPT_ENCODING, "");
         (void)curl_easy_setopt(e, CURLOPT_FOLLOWLOCATION, 1L);
-        (void)curl_easy_setopt(
-            e,
-            CURLOPT_MAXFILESIZE_LARGE,
-            static_cast<curl_off_t>(std::min(
-                task.options().effective_max_file_size(),
-                static_cast<uint64_t>(std::numeric_limits<curl_off_t>::max()))));
 #if LIBCURL_VERSION_NUM >= 0x075000 /* 7.80.0 */
         (void)curl_easy_setopt(e, CURLOPT_MAXLIFETIME_CONN, MaxlifetimeConn);
 #endif
@@ -724,6 +726,17 @@ public:
 
         if (curl_avoid_http2) {
             (void)curl_easy_setopt(e, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_1);
+        }
+
+        if (!curl_dont_limit_range_requests || !task.options().range) {
+            (void)curl_easy_setopt(
+                e,
+                CURLOPT_MAXFILESIZE_LARGE,
+                static_cast<curl_off_t>(std::min(
+                    task.options().effective_max_file_size(),
+                    static_cast<uint64_t>(std::numeric_limits<curl_off_t>::max()))));
+        } else {
+            // Rely on the write function to limit the size of range requests as a workaround for curl bug #14899.
         }
     }
 
