@@ -533,6 +533,7 @@
 		ED67FB422B70FCE400D8A037 /* converters.cc in Sources */ = {isa = PBXBuildFile; fileRef = ED67FB402B70FCE400D8A037 /* converters.cc */; };
 		ED67FB432B70FCE400D8A037 /* serializer.h in Headers */ = {isa = PBXBuildFile; fileRef = ED67FB412B70FCE400D8A037 /* serializer.h */; };
 		ED67FB452B70FCE400D8A037 /* converters.h in Headers */ = {isa = PBXBuildFile; fileRef = ED67FB442B70FCE400D8A037 /* converters.h */; };
+		ED68C992304EDAE7005FD4B5 /* MainToolbarController.mm in Sources */ = {isa = PBXBuildFile; fileRef = ED68C991304EDAE7005FD4B5 /* MainToolbarController.mm */; };
 		ED6F16B52EB8F1EB007CD864 /* BaseFileNameCellView.mm in Sources */ = {isa = PBXBuildFile; fileRef = ED6F16B22EB8F1EB007CD864 /* BaseFileNameCellView.mm */; };
 		ED6F16B62EB8F1EB007CD864 /* FilePriorityCellView.mm in Sources */ = {isa = PBXBuildFile; fileRef = ED6F16B42EB8F1EB007CD864 /* FilePriorityCellView.mm */; };
 		ED6F16B72EB8F1EB007CD864 /* FileCheckCellView.mm in Sources */ = {isa = PBXBuildFile; fileRef = ED6F16B02EB8F1EB007CD864 /* FileCheckCellView.mm */; };
@@ -1572,6 +1573,8 @@
 		ED67FB402B70FCE400D8A037 /* converters.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = converters.cc; sourceTree = "<group>"; };
 		ED67FB412B70FCE400D8A037 /* serializer.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.h; fileEncoding = 4; path = serializer.h; sourceTree = "<group>"; };
 		ED67FB442B70FCE400D8A037 /* converters.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.h; fileEncoding = 4; path = converters.h; sourceTree = "<group>"; };
+		ED68C990304EDAE7005FD4B5 /* MainToolbarController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MainToolbarController.h; sourceTree = "<group>"; };
+		ED68C991304EDAE7005FD4B5 /* MainToolbarController.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = MainToolbarController.mm; sourceTree = "<group>"; };
 		ED6F16AF2EB8F1EB007CD864 /* FileCheckCellView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FileCheckCellView.h; sourceTree = "<group>"; };
 		ED6F16B02EB8F1EB007CD864 /* FileCheckCellView.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = FileCheckCellView.mm; sourceTree = "<group>"; };
 		ED6F16B12EB8F1EB007CD864 /* BaseFileNameCellView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BaseFileNameCellView.h; sourceTree = "<group>"; };
@@ -1809,6 +1812,8 @@
 		080E96DDFE201D6D7F000001 /* Sources */ = {
 			isa = PBXGroup;
 			children = (
+				ED68C990304EDAE7005FD4B5 /* MainToolbarController.h */,
+				ED68C991304EDAE7005FD4B5 /* MainToolbarController.mm */,
 				29B97316FDCFA39411CA2CEA /* main.mm */,
 				C86BCD9828228A9600F45599 /* SparkleProxy.mm */,
 				4DF0C5AA0899190500DD8943 /* Controller.h */,
@@ -3696,6 +3701,7 @@
 				A22BAE281388040500FB022F /* NSMutableArrayAdditions.mm in Sources */,
 				A2966E8713DAF74C007B52DF /* GlobalOptionsPopoverViewController.mm in Sources */,
 				A234EA541453563B000F3E97 /* NSImageAdditions.mm in Sources */,
+				ED68C992304EDAE7005FD4B5 /* MainToolbarController.mm in Sources */,
 				A2AB883E16A399A6008FAD50 /* VDKQueue.mm in Sources */,
 				4534164229B0EA8600F544C9 /* SmallTorrentCell.mm in Sources */,
 				A2451E6916ACE4EB00586E0E /* FileRenameSheetController.mm in Sources */,
