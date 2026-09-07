@@ -4,7 +4,6 @@
 // License text can be found in the licenses/ folder.
 
 #include <chrono>
-#include <cinttypes>
 #include <cstdint>
 #include <future>
 #include <memory>
@@ -18,6 +17,7 @@
 #include <fmt/format.h>
 
 #include <libtransmission/crypto-utils.h> // tr_base64_encode()
+#include <libtransmission/utils.h> // tr_num_parse()
 #include <libtransmission/web.h>
 
 #include "loopback-server.h"
@@ -407,10 +407,29 @@ TEST_F(WebTest, redirectBodyBiggerThanRangeDoesNotAbort)
                 { { { "Location", server_.url("/bigfile") } } });
         } else if (path.ends_with("/bigfile"sv)) {
             auto const range = server_.lastRequest().headers.at("range");
-            auto first = uint64_t{};
-            auto last = uint64_t{};
-            std::sscanf(range.c_str(), "bytes=%" SCNu64 "-%" SCNu64, &first, &last);
-            LoopbackServer::reply(req, 206, "Partial Content", Body.substr(first, last + 1U - first));
+            auto constexpr Prefix = "bytes="sv;
+            if (!range.starts_with(Prefix)) {
+                LoopbackServer::reply(req, HTTP_BADREQUEST, "Bad Request", {});
+                return;
+            }
+
+            auto const range_values = std::string_view{ range }.substr(Prefix.size());
+            auto const separator = range_values.find('-');
+            if (separator == std::string_view::npos) {
+                LoopbackServer::reply(req, HTTP_BADREQUEST, "Bad Request", {});
+                return;
+            }
+
+            auto first_remainder = std::string_view{};
+            auto const first = tr_num_parse<uint64_t>(range_values.substr(0, separator), &first_remainder);
+            auto last_remainder = std::string_view{};
+            auto const last = tr_num_parse<uint64_t>(range_values.substr(separator + 1U), &last_remainder);
+            if (!first || !last || !first_remainder.empty() || !last_remainder.empty() || *last < *first) {
+                LoopbackServer::reply(req, HTTP_BADREQUEST, "Bad Request", {});
+                return;
+            }
+
+            LoopbackServer::reply(req, 206, "Partial Content", Body.substr(*first, *last + 1U - *first));
         } else {
             LoopbackServer::reply(req, HTTP_NOTFOUND, "Not Found", ""sv);
         }

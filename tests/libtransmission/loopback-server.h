@@ -106,7 +106,7 @@ public:
         return request_;
     }
 
-    // Convenience: send a reply with the given status, reason and body.
+    // Convenience: send a reply with the given status, reason, body, and headers.
     static void reply(
         evhttp_request* const req,
         int const code,
