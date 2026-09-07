@@ -441,7 +441,7 @@ TEST_F(WebTest, redirectBodyBiggerThanRangeDoesNotAbort)
     auto const response = fetch(std::move(opts));
     EXPECT_EQ(206, response.status);
     EXPECT_TRUE(response.did_connect);
-    EXPECT_FALSE(response.errmsg);
+    EXPECT_FALSE(response.errmsg) << *response.errmsg;
     EXPECT_EQ(Body.substr(First, Last + 1U - First), response.body);
 }
 
