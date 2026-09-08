@@ -617,6 +617,9 @@ auto constexpr ServerStartRetryCount = 10;
 auto constexpr ServerStartRetryDelayIncrement = 5s;
 auto constexpr ServerStartRetryMaxDelay = 60s;
 
+// Arbitrary limit to prevent DoS attacks
+auto constexpr ServerMaxRequestBodyBytes = 10 * 1024 * 1024;
+
 bool bindUnixSocket(
     [[maybe_unused]] struct event_base* base,
     [[maybe_unused]] struct evhttp* httpd,
@@ -767,6 +770,13 @@ void start_server(tr_rpc_server* server)
                 fmt::arg("count", ServerStartRetryCount)));
     } else {
         evhttp_set_gencb(httpd, handle_request, server);
+
+        // N.B. https://github.com/libevent/libevent/issues/321
+        // Some browsers cannot handle HTTP 413 responses unless the server reads
+        // the entire request, which is what EVHTTP_SERVER_LINGERING_CLOSE does.
+        evhttp_set_max_body_size(httpd, ServerMaxRequestBodyBytes);
+        evhttp_set_flags(httpd, EVHTTP_SERVER_LINGERING_CLOSE);
+
         server->httpd.reset(httpd);
 
         tr_logAddInfo(
