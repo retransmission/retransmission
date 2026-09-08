@@ -35,6 +35,13 @@ static CGFloat const kButtonSize = 14.0;
 static CGFloat const kButtonsSpacing = 3.0;
 static CGFloat const kRevealButtonTrailingOffset = -8.0; // inverted for constraints.
 
+// Error status
+static CGFloat const kErrorImageSize = 20.0;
+
+@interface TorrentCell ()
+@property(nonatomic, readonly) NSImageView* errorImageView;
+@end
+
 @implementation TorrentCell
 
 - (instancetype)initWithFrame:(NSRect)frameRect
@@ -307,6 +314,28 @@ static CGFloat const kRevealButtonTrailingOffset = -8.0; // inverted for constra
 
     NSColor* priorityColor = backgroundStyle == NSBackgroundStyleEmphasized ? NSColor.whiteColor : NSColor.labelColor;
     self.fTorrentPriorityView.contentTintColor = priorityColor;
+}
+
+- (void)setAnyErrorOrWarning:(BOOL)errorOrWarning
+{
+    if (errorOrWarning) {
+        if (_errorImageView == nil) {
+            _errorImageView = [[NSImageView alloc] init];
+            _errorImageView.imageScaling = NSImageScaleProportionallyDown;
+            _errorImageView.image = [NSImage imageNamed:NSImageNameCaution];
+            [self.fIconView addSubview:_errorImageView];
+            _errorImageView.translatesAutoresizingMaskIntoConstraints = NO;
+
+            [NSLayoutConstraint activateConstraints:@[
+                [_errorImageView.leadingAnchor constraintEqualToAnchor:self.fIconView.centerXAnchor],
+                [_errorImageView.topAnchor constraintEqualToAnchor:self.fIconView.centerYAnchor],
+                [_errorImageView.widthAnchor constraintEqualToConstant:kErrorImageSize],
+                [_errorImageView.heightAnchor constraintEqualToConstant:kErrorImageSize],
+            ]];
+        }
+    }
+
+    _errorImageView.hidden = !errorOrWarning;
 }
 
 @end
