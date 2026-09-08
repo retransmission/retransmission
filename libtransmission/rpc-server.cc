@@ -34,6 +34,7 @@
 #define ZLIB_CONST
 #include <zlib.h>
 
+#include "libtransmission/constants.h"
 #include "libtransmission/crypto-utils.h" /* tr_ssha1_matches() */
 #include "libtransmission/error.h"
 #include "libtransmission/file-utils.h"
@@ -617,9 +618,6 @@ auto constexpr ServerStartRetryCount = 10;
 auto constexpr ServerStartRetryDelayIncrement = 5s;
 auto constexpr ServerStartRetryMaxDelay = 60s;
 
-// Arbitrary limit to prevent DoS attacks
-auto constexpr ServerMaxRequestBodyBytes = 10 * 1024 * 1024;
-
 bool bindUnixSocket(
     [[maybe_unused]] struct event_base* base,
     [[maybe_unused]] struct evhttp* httpd,
@@ -774,7 +772,7 @@ void start_server(tr_rpc_server* server)
         // N.B. https://github.com/libevent/libevent/issues/321
         // Some browsers cannot handle HTTP 413 responses unless the server reads
         // the entire request, which is what EVHTTP_SERVER_LINGERING_CLOSE does.
-        evhttp_set_max_body_size(httpd, ServerMaxRequestBodyBytes);
+        evhttp_set_max_body_size(httpd, static_cast<ev_ssize_t>(TrWebMaxBodyBytes));
         evhttp_set_flags(httpd, EVHTTP_SERVER_LINGERING_CLOSE);
 
         server->httpd.reset(httpd);

@@ -16,6 +16,7 @@
 
 #include <fmt/format.h>
 
+#include <libtransmission/constants.h> // tr_base64_encode()
 #include <libtransmission/crypto-utils.h> // tr_base64_encode()
 #include <libtransmission/utils.h> // tr_num_parse()
 #include <libtransmission/web.h>
@@ -35,7 +36,7 @@ TEST(FetchOptionsTest, effectiveMaxFileSize)
 {
     auto options = tr_web::FetchOptions{ "http://example.invalid/"s, nullptr, nullptr };
 
-    EXPECT_EQ(tr_web::FetchOptions::DefaultMaxFileSize, options.effective_max_file_size());
+    EXPECT_EQ(TrWebMaxBodyBytes, options.effective_max_file_size());
 
     options.max_file_size = 123U;
     EXPECT_EQ(123U, options.effective_max_file_size());
@@ -337,7 +338,7 @@ TEST_F(WebTest, responseBodyLimitReportsCurlError)
 
 TEST_F(WebTest, defaultResponseBodyLimitReportsCurlError)
 {
-    auto body = std::string(tr_web::FetchOptions::DefaultMaxFileSize + 1U, 'x');
+    auto body = std::string(TrWebMaxBodyBytes + 1U, 'x');
     server_.setHandler([&body](evhttp_request* req) { LoopbackServer::reply(req, HTTP_OK, "OK", body); });
 
     auto const response = fetch(options());
@@ -345,12 +346,12 @@ TEST_F(WebTest, defaultResponseBodyLimitReportsCurlError)
     EXPECT_TRUE(response.did_connect);
     ASSERT_TRUE(response.errmsg);
     EXPECT_FALSE(std::empty(*response.errmsg));
-    EXPECT_LE(std::size(response.body), tr_web::FetchOptions::DefaultMaxFileSize);
+    EXPECT_LE(std::size(response.body), TrWebMaxBodyBytes);
 }
 
 TEST_F(WebTest, zeroMaxFileSizeDisablesLimit)
 {
-    auto body = std::string(tr_web::FetchOptions::DefaultMaxFileSize + 1U, 'x');
+    auto body = std::string(TrWebMaxBodyBytes, 'x');
     server_.setHandler([&body](evhttp_request* req) { LoopbackServer::reply(req, HTTP_OK, "OK", body); });
 
     auto opts = options();
