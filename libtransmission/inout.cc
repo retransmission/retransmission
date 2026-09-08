@@ -9,6 +9,7 @@
 #include <cstdint>
 #include <span>
 #include <string_view>
+#include <utility> // std::move
 
 #include <fmt/format.h>
 
@@ -66,22 +67,27 @@ bool write_entire_buf(tr_sys_file_t const fd, uint64_t file_offset, std::span<ui
     return true;
 }
 
+struct GotFile {
+    tr_open_files::Handle file;
+
+    // The file did not exist and get_file() created it.
+    bool created = false;
+};
+
 // Returns a RAII reference to the open file.
-// Sets `setme_created` if the file had to be created.
-[[nodiscard]] tr_open_files::Handle get_file(
+[[nodiscard]] GotFile get_file(
     tr::StorageDescriptor const& desc,
     tr_open_files& open_files,
     bool const writable,
     tr_file_index_t const file_index,
     tr_error& error,
-    bool& setme_created,
     tr_open_files::Waiter* const waiter)
 {
     auto const tor_id = desc.id;
 
     // is the file already open in the fd pool?
     if (auto file = open_files.get(tor_id, file_index, writable, waiter)) {
-        return file;
+        return { .file = std::move(file) };
     }
     if (waiter != nullptr && waiter->blocked) {
         error.set(EAGAIN, "File initialization pending");
@@ -94,7 +100,7 @@ bool write_entire_buf(tr_sys_file_t const fd, uint64_t file_offset, std::span<ui
     if (auto const found = desc.find(file_index)) {
         auto const filename = found->filename<tr_pathbuf>();
         if (auto file = open_files.get(tor_id, file_index, writable, filename, prealloc, file_size, error, waiter); file) {
-            return file;
+            return { .file = std::move(file) };
         }
 
         // The file exists but can't be opened, e.g. no file descriptors
@@ -107,8 +113,7 @@ bool write_entire_buf(tr_sys_file_t const fd, uint64_t file_offset, std::span<ui
         auto const suffix = desc.partial_file_naming ? tr_torrent_files::PartialFileSuffix : ""sv;
         auto const filename = tr_pathbuf{ desc.current_dir, '/', desc.files.path(file_index), suffix };
         if (auto file = open_files.get(tor_id, file_index, writable, filename, prealloc, file_size, error, waiter); file) {
-            setme_created = true;
-            return file;
+            return { .file = std::move(file), .created = true };
         }
     }
 
@@ -152,8 +157,7 @@ void read_bytes(
         return;
     }
 
-    auto created = false;
-    auto const file = get_file(desc, open_files, false, file_index, error, created, waiter);
+    auto const file = get_file(desc, open_files, false, file_index, error, waiter).file;
     if (!file || error) {
         return;
     }
@@ -190,8 +194,7 @@ void write_bytes(
         return;
     }
 
-    auto created = false;
-    auto const file = get_file(desc, open_files, true, file_index, error, created, waiter);
+    auto const [file, created] = get_file(desc, open_files, true, file_index, error, waiter);
     if (created) {
         ++n_files_created;
     }
