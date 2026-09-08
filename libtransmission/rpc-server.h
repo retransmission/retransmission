@@ -117,6 +117,13 @@ public:
         settings_.anti_brute_force_limit = limit;
     }
 
+    [[nodiscard]] constexpr auto get_max_request_body_size() const noexcept
+    {
+        return settings_.max_request_body_size;
+    }
+
+    void set_max_request_body_size(size_t max_request_body_size);
+
     [[nodiscard]] constexpr auto const& url() const noexcept
     {
         return settings_.url;

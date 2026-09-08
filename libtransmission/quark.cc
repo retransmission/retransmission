@@ -508,6 +508,7 @@ auto constexpr MyStatic = std::array<std::string_view, TR_N_KEYS>{
     "rpc_enabled"sv, // daemon, rpc server settings
     "rpc_host_whitelist"sv, // rpc, rpc server settings
     "rpc_host_whitelist_enabled"sv, // rpc, rpc server settings
+    "rpc_max_request_body_size", // rpc server settings
     "rpc_password"sv, // daemon, rpc server settings
     "rpc_port"sv, // daemon, gtk app, rpc server settings
     "rpc_socket_mode"sv, // rpc server settings
