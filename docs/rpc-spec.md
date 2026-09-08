@@ -615,6 +615,7 @@ Response parameters: `path`, `name`, and `id`, holding the torrent ID integer
 | `recent_relocate_paths` | string[] | recently-used relocation (move) destinations, most recent first *read-only*
 | `rename_partial_files` | boolean | true means append `.part` to incomplete files
 | `reqq` | number | the number of outstanding block requests a peer is allowed to queue in the client
+| `rpc_max_request_body_size` | number | maximum RPC request body size in bytes allowed
 | `rpc_version_minimum` | number | **DEPRECATED** the minimum RPC API version supported
 | `rpc_version_semver` | string | the current RPC API version in a [semver](https://semver.org)-compatible string
 | `rpc_version` | number | **DEPRECATED** the current RPC API version
@@ -1150,6 +1151,8 @@ Transmission 4.2.0 (`rpc_version_semver` 6.1.0, `rpc_version`: 20)
 | `torrent_get` | :warning: **DEPRECATED** `webseeds`. Use `webseeds_ex` instead.
 | `session_get` | new arg `recent_download_paths`
 | `session_get` | new arg `recent_relocate_paths`
+| `session_get` | new arg `rpc_max_request_body_size`
+| `session_set` | new arg `rpc_max_request_body_size`
 | `session_get` | new arg `torrent_complete_verify_enabled`
 | `session_set` | new arg `torrent_complete_verify_enabled`
 | `session_stats` | new arg `busy`
