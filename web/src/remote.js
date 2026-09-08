@@ -9,6 +9,7 @@ export const RPC = {
   _DownSpeedLimit: 'speed_limit_down',
   _DownSpeedLimited: 'speed_limit_down_enabled',
   _JsonRpcVersion: '2.0',
+  _MaxRequestBodySize: 'rpc_max_request_body_size',
   _QueueMoveBottom: 'queue_move_bottom',
   _QueueMoveDown: 'queue_move_down',
   _QueueMoveTop: 'queue_move_top',
@@ -57,6 +58,8 @@ export class Remote {
             error.header = response.headers.get(Remote._SessionHeader);
             throw error;
           }
+          case 413:
+            throw new Error(Remote._RequestBodyTooLarge);
           case 204:
             return null;
           default:
@@ -75,12 +78,21 @@ export class Remote {
         }
       })
       .catch((error) => {
-        if (error.message === Remote._SessionHeader) {
-          // copy the session header and try again
-          this._session_id = error.header;
-          this.sendRequest(data, callback, context);
-          return;
+        switch (error.message) {
+          case Remote._SessionHeader:
+            // copy the session header and try again
+            this._session_id = error.header;
+            this.sendRequest(data, callback, context);
+            return;
+          case Remote._RequestBodyTooLarge:
+            this._connection_alert = new AlertDialog({
+              heading: Remote._RequestBodyTooLarge,
+              message: `Consider raising '${RPC._MaxRequestBodySize}' in the server settings.`,
+            });
+            this._controller.setCurrentPopup(this._connection_alert);
+            return;
         }
+
         console.trace(error);
         this._controller.togglePeriodicSessionRefresh(false);
 
@@ -352,3 +364,4 @@ export class Remote {
 }
 
 Remote._SessionHeader = 'X-Transmission-Session-Id';
+Remote._RequestBodyTooLarge = 'Request body larger than configured limit';
