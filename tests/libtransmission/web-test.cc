@@ -40,9 +40,11 @@ TEST(FetchOptionsTest, effectiveMaxFileSize)
 
     options.max_file_size = 123U;
     EXPECT_EQ(123U, options.effective_max_file_size());
+    EXPECT_NE(TrWebMaxBodyBytes, options.effective_max_file_size());
 
     options.range = std::make_pair(uint64_t{ 100 }, uint64_t{ 199 });
     EXPECT_EQ(100U, options.effective_max_file_size());
+    EXPECT_NE(TrWebMaxBodyBytes, options.effective_max_file_size());
 }
 
 // tr_web needs a Mediator; this one only overrides the user-agent so a test
