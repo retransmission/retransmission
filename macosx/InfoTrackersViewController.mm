@@ -17,7 +17,7 @@ typedef NS_ENUM(NSInteger, TrackerSegmentTag) {
     TrackerSegmentTagRemove = 1,
 };
 
-@interface InfoTrackersViewController ()
+@interface InfoTrackersViewController ()<NSTableViewDataSource, NSMenuItemValidation>
 
 @property(nonatomic, copy) NSArray<Torrent*>* fTorrents;
 
@@ -25,7 +25,7 @@ typedef NS_ENUM(NSInteger, TrackerSegmentTag) {
 
 @property(nonatomic) NSMutableArray* fTrackers;
 
-@property(nonatomic) IBOutlet TrackerTableView* fTrackerTable;
+@property(nonatomic) IBOutlet NSTableView* fTrackerTable;
 @property(nonatomic, readonly) TrackerCell* fTrackerCell;
 
 @property(nonatomic) IBOutlet NSSegmentedControl* fTrackerAddRemoveControl;
@@ -92,8 +92,6 @@ typedef NS_ENUM(NSInteger, TrackerSegmentTag) {
             }
         }
 
-        self.fTrackerTable.trackers = self.fTrackers;
-
         if (oldTrackers && [self.fTrackers isEqualToArray:oldTrackers]) {
             self.fTrackerTable.needsDisplay = YES;
         } else {
@@ -107,8 +105,6 @@ typedef NS_ENUM(NSInteger, TrackerSegmentTag) {
 
         self.fTrackers = self.fTorrents[0].allTrackerStats;
         [self.fTrackers addObjectsFromArray:tierAndTrackerBeingAdded];
-
-        self.fTrackerTable.trackers = self.fTrackers;
 
         NSIndexSet *updateIndexes = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, self.fTrackers.count - 2)],
                    *columnIndexes = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, self.fTrackerTable.tableColumns.count)];
@@ -129,6 +125,17 @@ typedef NS_ENUM(NSInteger, TrackerSegmentTag) {
 - (NSInteger)numberOfRowsInTableView:(NSTableView*)tableView
 {
     return self.fTrackers ? self.fTrackers.count : 0;
+}
+
+- (id<NSPasteboardWriting>)tableView:(NSTableView*)tableView pasteboardWriterForRow:(NSInteger)row
+{
+    id item = self.fTrackers[row];
+
+    if ([item isKindOfClass:[NSDictionary class]]) {
+        return nil;
+    } else {
+        return [(TrackerNode*)item fullAnnounceAddress];
+    }
 }
 
 - (id)tableView:(NSTableView*)tableView objectValueForTableColumn:(NSTableColumn*)column row:(NSInteger)row
@@ -227,7 +234,6 @@ typedef NS_ENUM(NSInteger, TrackerSegmentTag) {
     //reset table with either new or old value
     self.fTrackers = torrent.allTrackerStats;
 
-    self.fTrackerTable.trackers = self.fTrackers;
     [self.fTrackerTable reloadData];
     [self.fTrackerTable deselectAll:self];
 
@@ -259,17 +265,12 @@ typedef NS_ENUM(NSInteger, TrackerSegmentTag) {
         if (numberSelected == 0) {
             self.fTrackers = nil;
 
-            self.fTrackerTable.trackers = nil;
             [self.fTrackerTable reloadData];
         }
-
-        self.fTrackerTable.torrent = nil;
 
         [self.fTrackerAddRemoveControl setEnabled:NO forSegment:TrackerSegmentTagAdd];
         [self.fTrackerAddRemoveControl setEnabled:NO forSegment:TrackerSegmentTagRemove];
     } else {
-        self.fTrackerTable.torrent = self.fTorrents[0];
-
         [self.fTrackerAddRemoveControl setEnabled:YES forSegment:TrackerSegmentTagAdd];
         [self.fTrackerAddRemoveControl setEnabled:NO forSegment:TrackerSegmentTagRemove];
     }
@@ -286,7 +287,6 @@ typedef NS_ENUM(NSInteger, TrackerSegmentTag) {
     [self.fTrackers addObject:@{ @"Tier" : @-1 }];
     [self.fTrackers addObject:@""];
 
-    self.fTrackerTable.trackers = self.fTrackers;
     [self.fTrackerTable reloadData];
     [self.fTrackerTable selectRowIndexes:[NSIndexSet indexSetWithIndex:self.fTrackers.count - 1] byExtendingSelection:NO];
     [self.fTrackerTable editColumn:[self.fTrackerTable columnWithIdentifier:@"Tracker"] row:self.fTrackers.count - 1
@@ -405,11 +405,67 @@ typedef NS_ENUM(NSInteger, TrackerSegmentTag) {
 
     [self.fTrackerTable removeRowsAtIndexes:removeIndexes withAnimation:NSTableViewAnimationSlideLeft];
 
-    self.fTrackerTable.trackers = self.fTrackers;
-
     [self.fTrackerTable endUpdates];
 
     [NSNotificationCenter.defaultCenter postNotificationName:@"UpdateUI" object:nil]; //in case sort by tracker
+}
+
+- (void)copy:(id)sender
+{
+    NSMutableArray* addresses = [NSMutableArray arrayWithCapacity:self.fTrackers.count];
+    NSIndexSet* indexes = self.fTrackerTable.selectedRowIndexes;
+
+    [indexes enumerateIndexesUsingBlock:^(NSUInteger idx, BOOL* _Nonnull stop) {
+        [addresses addObject:[self tableView:self.fTrackerTable pasteboardWriterForRow:idx]];
+    }];
+
+    NSString* text = [addresses componentsJoinedByString:@"\n"];
+
+    NSPasteboard* pb = NSPasteboard.generalPasteboard;
+    [pb clearContents];
+    [pb writeObjects:@[ text ]];
+}
+
+- (void)paste:(id)sender
+{
+    NSAssert(self.fTorrents.count == 1, @"no torrent but trying to paste; should not be able to call this method");
+
+    if (self.fTorrents.count != 1)
+        return;
+    Torrent* torrent = self.fTorrents[0];
+
+    BOOL added = NO;
+
+    NSArray* items = [NSPasteboard.generalPasteboard readObjectsForClasses:@[ [NSString class] ] options:nil];
+    NSAssert(items != nil, @"no string items to paste; should not be able to call this method");
+
+    for (NSString* pbItem in items) {
+        for (NSString* item in [pbItem componentsSeparatedByString:@"\n"]) {
+            if ([torrent addTrackerToNewTier:item]) {
+                added = YES;
+            }
+        }
+    }
+
+    //none added
+    if (!added) {
+        NSBeep();
+    }
+}
+
+- (BOOL)validateMenuItem:(NSMenuItem*)menuItem
+{
+    SEL const action = menuItem.action;
+
+    if (action == @selector(copy:)) {
+        return self.fTrackerTable.numberOfSelectedRows > 0;
+    }
+
+    if (action == @selector(paste:)) {
+        return self.fTorrents.count == 1 && [NSPasteboard.generalPasteboard canReadObjectForClasses:@[ [NSString class] ] options:nil];
+    }
+
+    return YES;
 }
 
 @end
