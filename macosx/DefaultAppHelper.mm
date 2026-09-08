@@ -10,7 +10,8 @@
 static NSString* const kMagnetURLScheme = @"magnet";
 static NSString* const kTorrentFileType = @"org.bittorrent.torrent";
 
-UTType* GetTorrentFileType(void)
+@implementation UTType (Torrent)
++ (UTType*)torrent
 {
     static UTType* result = nil;
 
@@ -21,6 +22,36 @@ UTType* GetTorrentFileType(void)
 
     return result;
 }
+
++ (UTType*)contentTypeForFilenameExtension:(NSString*)fileExtension isFolder:(BOOL)isFolder
+{
+    if (isFolder) {
+        return UTTypeFolder;
+    }
+
+    UTType* fileType = nil;
+    if (fileExtension.length > 0) {
+        fileType = [UTType typeWithFilenameExtension:fileExtension];
+    }
+
+    return fileType ?: UTTypeData;
+}
+@end
+
+@implementation NSURL (Torrent)
+- (BOOL)isTorrentFile
+{
+    UTType* contentType = nil;
+    if ([self getResourceValue:&contentType forKey:NSURLContentTypeKey error:NULL] && contentType) {
+        return [contentType conformsToType:UTType.torrent];
+    }
+
+    // LaunchServices resolves .torrent to another declared type when a different
+    // client owns it, and to a dynamic UTI when nothing is registered yet,
+    // so the extension stays authoritative.
+    return [self.pathExtension caseInsensitiveCompare:@"torrent"] == NSOrderedSame;
+}
+@end
 
 @interface DefaultAppHelper ()
 
@@ -40,7 +71,7 @@ UTType* GetTorrentFileType(void)
 
 - (BOOL)isDefaultForTorrentFiles
 {
-    UTType* fileType = GetTorrentFileType();
+    auto fileType = UTType.torrent;
     NSURL* appUrl = [NSWorkspace.sharedWorkspace URLForApplicationToOpenContentType:fileType];
     if (!appUrl) {
         return NO;
@@ -57,7 +88,7 @@ UTType* GetTorrentFileType(void)
 
 - (void)setDefaultForTorrentFiles:(void (^_Nullable)())completionHandler
 {
-    UTType* fileType = GetTorrentFileType();
+    auto fileType = UTType.torrent;
     NSURL* appUrl = [NSWorkspace.sharedWorkspace URLForApplicationWithBundleIdentifier:self.bundleIdentifier];
     [NSWorkspace.sharedWorkspace setDefaultApplicationAtURL:appUrl toOpenContentType:fileType completionHandler:^(NSError* error) {
         if (error) {

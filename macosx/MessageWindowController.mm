@@ -2,6 +2,8 @@
 // It may be used under the MIT (SPDX: MIT) license.
 // License text can be found in the licenses/ folder.
 
+#import <UniformTypeIdentifiers/UniformTypeIdentifiers.h>
+
 #include <libtransmission/log.h>
 #include <libtransmission/file.h>
 #include <libtransmission/string-utils.h>
@@ -433,7 +435,7 @@ static NSUInteger const kMaxQueueLength = 10000U;
 - (void)writeToFile:(id)sender
 {
     NSSavePanel* panel = [NSSavePanel savePanel];
-    panel.allowedFileTypes = @[ @"txt" ];
+    panel.allowedContentTypes = @[ UTTypePlainText ];
     panel.canSelectHiddenExtension = YES;
 
     panel.nameFieldStringValue = NSLocalizedString(@"untitled", "Save log panel -> default file name");
