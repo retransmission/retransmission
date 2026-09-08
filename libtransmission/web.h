@@ -16,6 +16,8 @@
 #include <string_view>
 #include <utility>
 
+#include "libtransmission/constants.h"
+
 class tr_web
 {
 public:
@@ -148,10 +150,9 @@ public:
         // Maximum size of the response body to accept before aborting the request.
         // Use `effective_max_file_size` instead of reading this value directly.
         // Set to 0 to disable the limit.
-        size_t max_file_size = DefaultMaxFileSize;
+        size_t max_file_size = TrWebMaxBodyBytes;
 
         static auto constexpr DefaultTimeoutSecs = std::chrono::seconds{ 120 };
-        static auto constexpr DefaultMaxFileSize = 10U * 1024U * 1024U;
     };
 
     void fetch(FetchOptions&& options);
