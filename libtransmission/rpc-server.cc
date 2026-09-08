@@ -769,13 +769,11 @@ void start_server(tr_rpc_server* server)
     } else {
         evhttp_set_gencb(httpd, handle_request, server);
 
-        // N.B. https://github.com/libevent/libevent/issues/321
-        // Some browsers cannot handle HTTP 413 responses unless the server reads
-        // the entire request, which is what EVHTTP_SERVER_LINGERING_CLOSE does.
         evhttp_set_max_body_size(httpd, static_cast<ev_ssize_t>(server->get_max_request_body_size()));
-#ifdef EVHTTP_SERVER_LINGERING_CLOSE
-        evhttp_set_flags(httpd, EVHTTP_SERVER_LINGERING_CLOSE);
-#endif
+        // N.B. One may be tempted to set EVHTTP_SERVER_LINGERING_CLOSE so that browsers display the
+        // HTTP 413 page properly. DO NOT set this as it opens the door to DoS attacks that keeps
+        // the connection alive indefinitely. Setting timeouts using evhttp_set_timeout or its siblings
+        // only partially mitigates the attack.
 
         server->httpd.reset(httpd);
 
