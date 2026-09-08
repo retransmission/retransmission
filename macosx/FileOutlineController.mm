@@ -59,14 +59,33 @@ typedef NS_ENUM(NSUInteger, FilePriorityMenuTag) { //
 
 - (void)setTorrent:(Torrent*)torrent
 {
-    _torrent = torrent;
-
-    [self.fFileList setArray:torrent.fileList ?: @[]];
-
+    // 1. Clear filter and perform necessary updates.
     self.filterText = nil;
 
-    [self.fOutline reloadData];
-    [self.fOutline deselectAll:nil]; //do this after reloading the data #4575
+    // 2. Clear selection before mutating the layout to prevent selection artifacts
+    [self.fOutline deselectAll:nil];
+
+    // 3. Remember old number of top items.
+    NSUInteger const oldRootCount = self.fFileList.count;
+    auto oldIndexes = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, oldRootCount)];
+
+    // 4. Set new dataSource
+    _torrent = torrent;
+    [self.fFileList setArray:torrent.fileList ?: @[]];
+
+    NSUInteger const newRowCount = self.fFileList.count;
+    auto newIndexes = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, newRowCount)];
+
+    // 5. Perform a safe batch update to preserve view hierarchy and reuse NSViews
+    [self.fOutline beginUpdates];
+
+    // Remove the old rows from the root (parent: nil)
+    [self.fOutline removeItemsAtIndexes:oldIndexes inParent:nil withAnimation:NSTableViewAnimationEffectNone];
+
+    // Insert the new rows.
+    [self.fOutline insertItemsAtIndexes:newIndexes inParent:nil withAnimation:NSTableViewAnimationEffectNone];
+
+    [self.fOutline endUpdates];
 }
 
 - (void)setFilterText:(NSString*)text
