@@ -16,7 +16,7 @@
 
 #include <fmt/format.h>
 
-#include <libtransmission/constants.h> // tr_base64_encode()
+#include <libtransmission/constants.h> // TrWebMaxBodyBytes
 #include <libtransmission/crypto-utils.h> // tr_base64_encode()
 #include <libtransmission/utils.h> // tr_num_parse()
 #include <libtransmission/web.h>
@@ -351,7 +351,7 @@ TEST_F(WebTest, defaultResponseBodyLimitReportsCurlError)
 
 TEST_F(WebTest, zeroMaxFileSizeDisablesLimit)
 {
-    auto body = std::string(TrWebMaxBodyBytes, 'x');
+    auto body = std::string(TrWebMaxBodyBytes + 1U, 'x');
     server_.setHandler([&body](evhttp_request* req) { LoopbackServer::reply(req, HTTP_OK, "OK", body); });
 
     auto opts = options();
