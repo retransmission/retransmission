@@ -150,7 +150,7 @@ public:
         // Maximum size of the response body to accept before aborting the request.
         // Use `effective_max_file_size` instead of reading this value directly.
         // Set to 0 to disable the limit.
-        size_t max_file_size = TrWebMaxBodyBytes;
+        size_t max_file_size = TrWebDefaultMaxBodyBytes;
 
         static auto constexpr DefaultTimeoutSecs = std::chrono::seconds{ 120 };
     };

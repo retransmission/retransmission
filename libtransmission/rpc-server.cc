@@ -772,7 +772,7 @@ void start_server(tr_rpc_server* server)
         // N.B. https://github.com/libevent/libevent/issues/321
         // Some browsers cannot handle HTTP 413 responses unless the server reads
         // the entire request, which is what EVHTTP_SERVER_LINGERING_CLOSE does.
-        evhttp_set_max_body_size(httpd, static_cast<ev_ssize_t>(TrWebMaxBodyBytes));
+        evhttp_set_max_body_size(httpd, static_cast<ev_ssize_t>(TrWebDefaultMaxBodyBytes));
 #ifdef EVHTTP_SERVER_LINGERING_CLOSE
         evhttp_set_flags(httpd, EVHTTP_SERVER_LINGERING_CLOSE);
 #endif
