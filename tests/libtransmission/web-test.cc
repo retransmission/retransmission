@@ -16,7 +16,7 @@
 
 #include <fmt/format.h>
 
-#include <libtransmission/constants.h> // TrWebMaxBodyBytes
+#include <libtransmission/constants.h>
 #include <libtransmission/crypto-utils.h> // tr_base64_encode()
 #include <libtransmission/utils.h> // tr_num_parse()
 #include <libtransmission/web.h>
@@ -36,15 +36,15 @@ TEST(FetchOptionsTest, effectiveMaxFileSize)
 {
     auto options = tr_web::FetchOptions{ "http://example.invalid/"s, nullptr, nullptr };
 
-    EXPECT_EQ(TrWebMaxBodyBytes, options.effective_max_file_size());
+    EXPECT_EQ(TrWebDefaultMaxBodyBytes, options.effective_max_file_size());
 
     options.max_file_size = 123U;
     EXPECT_EQ(123U, options.effective_max_file_size());
-    EXPECT_NE(TrWebMaxBodyBytes, options.effective_max_file_size());
+    EXPECT_NE(TrWebDefaultMaxBodyBytes, options.effective_max_file_size());
 
     options.range = std::make_pair(uint64_t{ 100 }, uint64_t{ 199 });
     EXPECT_EQ(100U, options.effective_max_file_size());
-    EXPECT_NE(TrWebMaxBodyBytes, options.effective_max_file_size());
+    EXPECT_NE(TrWebDefaultMaxBodyBytes, options.effective_max_file_size());
 }
 
 // tr_web needs a Mediator; this one only overrides the user-agent so a test

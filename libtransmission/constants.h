@@ -29,6 +29,6 @@ inline auto constexpr TrHttpServerRpcRelativePath = std::string_view{ "rpc" };
 inline auto constexpr TrHttpServerWebRelativePath = std::string_view{ "web/" };
 inline auto constexpr TrRpcSessionIdHeader = std::string_view{ TR_PROJ_SHARED_RPC_SESSION_ID_HEADER };
 inline auto constexpr TrRpcVersionHeader = std::string_view{ TR_PROJ_SHARED_RPC_VERSION_HEADER };
-inline auto constexpr TrWebMaxBodyBytes = 10U * 1024U * 1024U;
+inline auto constexpr TrWebDefaultMaxBodyBytes = 16U * 1024U * 1024U;
 
 inline auto constexpr TrBlockSize = uint32_t{ 1024U * 16U };
