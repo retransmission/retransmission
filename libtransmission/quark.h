@@ -520,6 +520,7 @@ enum // NOLINT(performance-enum-size)
     TR_KEY_rpc_enabled,
     TR_KEY_rpc_host_whitelist,
     TR_KEY_rpc_host_whitelist_enabled,
+    TR_KEY_rpc_max_request_body_size,
     TR_KEY_rpc_password,
     TR_KEY_rpc_port,
     TR_KEY_rpc_socket_mode,

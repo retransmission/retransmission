@@ -148,6 +148,7 @@ Here is a sample of the three basic types: respectively Boolean, Number and Stri
  * **rpc_enabled:** Boolean (default = true \[transmission-daemon\], false \[others\])
  * **rpc_host_whitelist:** String (Comma-delimited list of domain names. Wildcards allowed using '\*'. Example: "*.foo.org,example.com", Default: "", Always allowed: "localhost", "localhost.", all the IP addresses. Added in v2.93)
  * **rpc_host_whitelist_enabled:** Boolean (default = true. Added in v2.93)
+ * **rpc_max_request_body_size:** Number (default = 16777216, 16 MiB) Respond with HTTP 413 if the request body is larger than this number in bytes.
  * **rpc_password:** String. You can enter this in as plaintext when Transmission is not running, and then Transmission will salt the value on startup and re-save the salted version as a security measure. **Note:** Transmission treats passwords starting with the character `{` as salted, so when you first create your password, the plaintext password you enter must not begin with `{`.
  * **rpc_port:** Number (default = 9091)
  * **rpc_socket_mode:** String UNIX filesystem mode for the RPC UNIX socket (default: 0750; used when `rpc_bind_address` is a UNIX socket)

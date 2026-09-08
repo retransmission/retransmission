@@ -292,6 +292,7 @@ public:
     bool is_host_whitelist_enabled = true;
     bool is_whitelist_enabled = true;
     size_t anti_brute_force_limit = 100U;
+    size_t max_request_body_size = TrWebDefaultMaxBodyBytes;
     std::string bind_address_str = "0.0.0.0";
     std::string host_whitelist_str;
     std::string salted_password;
@@ -314,6 +315,7 @@ public:
         Field<&RpcServerSettings::is_enabled>{ TR_KEY_rpc_enabled },
         Field<&RpcServerSettings::host_whitelist_str>{ TR_KEY_rpc_host_whitelist },
         Field<&RpcServerSettings::is_host_whitelist_enabled>{ TR_KEY_rpc_host_whitelist_enabled },
+        Field<&RpcServerSettings::max_request_body_size>{ TR_KEY_rpc_max_request_body_size },
         Field<&RpcServerSettings::port>{ TR_KEY_rpc_port },
         Field<&RpcServerSettings::salted_password>{ TR_KEY_rpc_password },
         Field<&RpcServerSettings::socket_mode>{ TR_KEY_rpc_socket_mode },
