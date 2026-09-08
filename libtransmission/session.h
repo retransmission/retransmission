@@ -1058,6 +1058,16 @@ public:
         rpc_server_->set_anti_brute_force_enabled(enabled);
     }
 
+    [[nodiscard]] TR_CONSTEXPR23 auto get_max_request_body_size() const noexcept
+    {
+        return rpc_server_->get_max_request_body_size();
+    }
+
+    void set_max_request_body_size(size_t const max_request_body_size)
+    {
+        rpc_server_->set_max_request_body_size(max_request_body_size);
+    }
+
     [[nodiscard]] size_t count_queue_free_slots(tr_direction dir) const noexcept;
 
     [[nodiscard]] bool has_ip_protocol(tr_address_type type) const noexcept
