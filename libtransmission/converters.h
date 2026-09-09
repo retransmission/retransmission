@@ -13,6 +13,7 @@
 #include <cstdint>
 #include <iterator>
 #include <optional>
+#include <ranges>
 #include <string>
 #include <type_traits>
 #include <typeinfo>
@@ -205,7 +206,7 @@ template<typename T>
 {
     if constexpr (detail::HasConverter<T>) {
         return Converter<T>::to_variant(src);
-    } else if constexpr (detail::is_push_back_range_v<T> || detail::is_insert_range_v<T> || detail::is_std_array_v<T>) {
+    } else if constexpr (std::ranges::range<T>) {
         return detail::from_range(src);
     } else if constexpr (detail::is_optional_v<T>) {
         return detail::from_optional(src);
