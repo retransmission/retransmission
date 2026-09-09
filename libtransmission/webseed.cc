@@ -403,10 +403,9 @@ void tr_webseed_task::on_partial_data_fetched(tr_web::FetchResponse const& web_r
 {
     auto const& [url, errmsg, status, headers, body, primary_ip, did_connect, did_timeout, vtask] = web_response;
 
-    // We could check curl error codes here, but this code has been working fine
-    // without it for years. The piece hash verifier will catch any corrupt data.
-    // Let's keep it this way until we see a problem.
-    auto const success = status == 206;
+    // We don't care about curl error codes here as long as there is data
+    // coming in. The piece hash verifier will catch any corrupt data.
+    auto const success = !body.empty() && status == 206;
 
     auto* const task = static_cast<tr_webseed_task*>(vtask);
 
