@@ -34,6 +34,7 @@
 #include <libtransmission/macros.h>
 #include <libtransmission/quark.h>
 #include <libtransmission/rpcimpl.h>
+#include <libtransmission/serializer.h>
 #include <libtransmission/torrent-builder.h>
 #include <libtransmission/transmission.h>
 #include <libtransmission/version.h>
@@ -1404,7 +1405,7 @@ bool Application::Impl::call_rpc_for_selected_torrents(tr_quark const method)
     }
 
     auto params = tr_variant::Map{ 1U };
-    params.try_emplace(TR_KEY_ids, Session::to_variant(ids));
+    params.try_emplace(TR_KEY_ids, tr::serializer::to_variant(ids));
     core_->exec(method, std::move(params));
     return true;
 }

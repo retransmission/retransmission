@@ -14,6 +14,7 @@
 #include "Session.h"
 #include "Utils.h"
 
+#include <libtransmission/serializer.h>
 #include <libtransmission/string-utils.h>
 #include <libtransmission/utils.h>
 #include <libtransmission/values.h>
@@ -62,6 +63,7 @@
 #include <memory>
 #include <numeric>
 #include <ranges>
+#include <span>
 #include <sstream>
 #include <string>
 #include <string_view>
@@ -117,7 +119,7 @@ private:
     {
         auto params = tr_variant::Map{ 2U };
         params.try_emplace(key, std::forward<T>(value));
-        params.try_emplace(TR_KEY_ids, Session::to_variant(ids_));
+        params.try_emplace(TR_KEY_ids, tr::serializer::to_variant(ids_));
         core_->exec(TR_KEY_torrent_set, std::move(params));
     }
 
@@ -1981,8 +1983,8 @@ void AddTrackerDialog::on_response(int response)
             if (tr_urlIsValidTracker(url.c_str())) {
                 // TODO(ckerr) migrate to `TR_KEY_tracker_list`
                 auto params = tr_variant::Map{ 2U };
-                params.try_emplace(TR_KEY_ids, Session::to_variant({ torrent_id_ }));
-                params.try_emplace(TR_KEY_tracker_add, Session::to_variant({ url.raw() }));
+                params.try_emplace(TR_KEY_ids, tr::serializer::to_variant(torrent_id_));
+                params.try_emplace(TR_KEY_tracker_add, tr::serializer::to_variant(std::span{ &url.raw(), 1U }));
                 core_->exec(TR_KEY_torrent_set, std::move(params));
                 parent_.refresh();
             } else {
@@ -2019,8 +2021,8 @@ void DetailsDialog::Impl::on_tracker_list_remove_button_clicked()
 
         // TODO(ckerr): migrate to `TR_KEY_tracker_list`
         auto params = tr_variant::Map{ 2U };
-        params.try_emplace(TR_KEY_ids, Session::to_variant({ torrent_id }));
-        params.try_emplace(TR_KEY_tracker_remove, Session::to_variant({ tracker_id }));
+        params.try_emplace(TR_KEY_ids, tr::serializer::to_variant(torrent_id));
+        params.try_emplace(TR_KEY_tracker_remove, tr::serializer::to_variant(std::span{ &tracker_id, 1U }));
         core_->exec(TR_KEY_torrent_set, std::move(params));
         refresh();
     }
