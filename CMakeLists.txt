@@ -43,12 +43,18 @@ include(ExternalProject)
 include(GNUInstallDirs)
 include(TrMacros)
 
+set(CURL_MINIMUM_MAJOR 7)
+set(CURL_MINIMUM_MINOR 28)
+set(CURL_MINIMUM_PATCH 0)
+set(CURL_MINIMUM ${CURL_MINIMUM_MAJOR}.${CURL_MINIMUM_MINOR}.${CURL_MINIMUM_PATCH})
+math(EXPR CURL_MINIMUM_VERSION_NUM "(${CURL_MINIMUM_MAJOR} << 16) | (${CURL_MINIMUM_MINOR} << 8) | ${CURL_MINIMUM_PATCH}"
+    OUTPUT_FORMAT HEXADECIMAL)
+
 # Vendored copy is pinned to the latest stable; accept an older system
 # libarchive so distros that package 3.4+ (Debian/Ubuntu/Fedora/Alpine ship
 # 3.6/3.7) can be used instead of building our bundled copy. We only need its
 # stable read-side tar/zip/gzip API.
 set(ARCHIVE_MINIMUM 3.4)
-set(CURL_MINIMUM 7.28.0)
 set(ZLIB_MINIMUM 1.2.1)
 set(WOLFSSL_MINIMUM 3.4)
 set(EVENT2_MINIMUM 2.1.0)

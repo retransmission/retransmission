@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Generate files to be included: only overwrite them if changed so make
 # won't rebuild everything unless necessary
@@ -83,6 +83,12 @@ fi
 
 vcs_revision=$(echo $vcs_revision | head -c10)
 
+curl_minimum_major=$(sed -E -n 's/set\(CURL_MINIMUM_MAJOR ([[:digit:]]+)\)/\1/p' CMakeLists.txt)
+curl_minimum_minor=$(sed -E -n 's/set\(CURL_MINIMUM_MINOR ([[:digit:]]+)\)/\1/p' CMakeLists.txt)
+curl_minimum_patch=$(sed -E -n 's/set\(CURL_MINIMUM_PATCH ([[:digit:]]+)\)/\1/p' CMakeLists.txt)
+curl_minimum="${curl_minimum_major}.${curl_minimum_minor}.${curl_minimum_patch}"
+curl_minimum_version_num=$(printf '%#x' $((${curl_minimum_major} << 16 | ${curl_minimum_minor} << 8 | ${curl_minimum_patch})))
+
 cat > libtransmission/version.h.new << EOF
 #pragma once
 
@@ -97,6 +103,9 @@ cat > libtransmission/version.h.new << EOF
 #define MAJOR_VERSION             ${major_version}
 #define MINOR_VERSION             ${minor_version}
 #define PATCH_VERSION             ${patch_version}
+
+#define TR_CURL_MINIMUM_VERSION      "${curl_minimum}"
+#define TR_CURL_MINIMUM_VERSION_NUM  ${curl_minimum_version_num}
 EOF
 
 # Add a release definition

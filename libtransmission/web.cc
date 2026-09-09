@@ -64,6 +64,7 @@
 #include "libtransmission/string-utils.h"
 #include "libtransmission/tr-assert.h"
 #include "libtransmission/utils.h"
+#include "libtransmission/version.h"
 #include "libtransmission/web.h"
 #include "libtransmission/web-utils.h"
 
@@ -176,6 +177,14 @@ public:
         : mediator{ mediator_in }
     {
         auto const curl_version_num = get_curl_version();
+        if (curl_version_num < TR_CURL_MINIMUM_VERSION_NUM) {
+            tr_logAddWarn(_("Consider upgrading your curl installation."));
+            tr_logAddWarn(
+                fmt::format(
+                    fmt::runtime(_("The minimum supported version is {curl_version}, you might face unexpected behaviour.")),
+                    fmt::arg("curl_version", TR_CURL_MINIMUM_VERSION)));
+        }
+
         if (curl_version_num == 0x080901) {
             tr_logAddWarn(_("Consider upgrading your curl installation."));
             tr_logAddWarn(
