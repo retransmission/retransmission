@@ -342,7 +342,7 @@ void printMessage(
 void pumpLogMessages(FILE* log_stream)
 {
     for (auto const& l : tr_logGetQueue()) {
-        printMessage(log_stream, l.when, l.level, l.name, l.message, l.file, l.line);
+        printMessage(log_stream, l.when, l.level, l.name.sv(), l.message, l.file, l.line);
     }
 
     // two reasons to not flush stderr:

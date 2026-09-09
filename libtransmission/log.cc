@@ -144,7 +144,7 @@ void logAddImpl(
                 .file = file,
                 .line = line,
                 .when = now,
-                .name = std::string{ name },
+                .name = tr::shared_string{ name },
                 .message = std::move(msg),
             });
     } else {

@@ -12,6 +12,7 @@
 #include <string>
 #include <string_view>
 
+#include "libtransmission/shared-string.h"
 #include "libtransmission/types.h"
 
 // ---
@@ -29,7 +30,7 @@ struct tr_log_message {
     std::chrono::system_clock::time_point when;
 
     // torrent name or code module name associated with the message
-    std::string name;
+    tr::shared_string name;
 
     // the message
     std::string message;

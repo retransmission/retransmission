@@ -234,7 +234,7 @@ void MessageLogWindow::Impl::doSave(std::string const& filename)
                 Glib::ustring(g_dpgettext2(nullptr, "Logging level", iter->second)) :
                 Glib::ustring("???");
 
-            fmt::print(stream, "{}\t{}\t{}\t{}\n", date, level_str, node->name, node->message);
+            fmt::print(stream, "{}\t{}\t{}\t{}\n", date, level_str, node->name.sv(), node->message);
         }
     } catch (std::ios_base::failure const& e) {
         auto w = std::make_shared<Gtk::MessageDialog>(
