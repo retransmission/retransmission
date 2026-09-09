@@ -445,7 +445,7 @@ struct tr_tier {
     std::deque<tr_announce_event> announce_events;
 
     tr::shared_string last_announce_str;
-    std::string last_scrape_str;
+    tr::shared_string last_scrape_str;
 
     /* number of up/down/corrupt bytes since the last time we sent an
      * "event=stopped" message that was acknowledged by the tracker */
@@ -1518,7 +1518,7 @@ namespace tracker_view_helpers
             view.lastScrapeSucceeded = tier.lastScrapeSucceeded;
             view.lastScrapeTimedOut = tier.lastScrapeTimedOut;
             auto& buf = view.lastScrapeResult;
-            *fmt::format_to_n(buf, sizeof(buf) - 1, "{:s}", tier.last_scrape_str).out = '\0';
+            *fmt::format_to_n(buf, sizeof(buf) - 1, "{:s}", tier.last_scrape_str.sv()).out = '\0';
         }
 
         if (tier.isScraping) {
