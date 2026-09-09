@@ -155,7 +155,7 @@ tr_variant build_metainfo_except_info_dict(tr_torrent_metainfo const& tm)
     }
 
     if (auto const& val = tm.source(); !std::empty(val)) {
-        top.try_emplace(TR_KEY_source, val);
+        top.try_emplace(TR_KEY_source, val.sv());
     }
 
     if (auto const& val = tm.creator(); !std::empty(val)) {

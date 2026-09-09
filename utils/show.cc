@@ -177,7 +177,7 @@ void showInfo(app_opts const& opts, tr_torrent_metainfo const& metainfo)
         }
 
         if (!std::empty(metainfo.source())) {
-            fmt::print("  Source: {:s}\n", metainfo.source());
+            fmt::print("  Source: {:s}\n", metainfo.source().sv());
         }
 
         fmt::print("  Piece Count: {:d}\n", metainfo.piece_count());

@@ -883,7 +883,7 @@ namespace make_torrent_field_helpers
     case TR_KEY_size_when_done:
         return st.size_when_done;
     case TR_KEY_source:
-        return tor.source();
+        return tor.source().sv();
     case TR_KEY_start_date:
         return st.start_date;
     case TR_KEY_status:

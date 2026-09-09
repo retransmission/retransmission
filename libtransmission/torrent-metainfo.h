@@ -13,6 +13,7 @@
 
 #include "libtransmission/block-info.h"
 #include "libtransmission/magnet-metainfo.h"
+#include "libtransmission/shared-string.h"
 #include "libtransmission/torrent-files.h"
 #include "libtransmission/types.h"
 
@@ -217,7 +218,7 @@ private:
 
     std::string comment_;
     std::string creator_;
-    std::string source_;
+    tr::shared_string source_;
 
     time_t date_created_ = 0;
 
