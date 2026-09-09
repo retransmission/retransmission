@@ -159,7 +159,7 @@ tr_variant build_metainfo_except_info_dict(tr_torrent_metainfo const& tm)
     }
 
     if (auto const& val = tm.creator(); !std::empty(val)) {
-        top.try_emplace(TR_KEY_created_by, val);
+        top.try_emplace(TR_KEY_created_by, val.sv());
     }
 
     if (auto const val = tm.date_created(); val != 0) {

@@ -169,7 +169,7 @@ void showInfo(app_opts const& opts, tr_torrent_metainfo const& metainfo)
         if (metainfo.has_v2_metadata()) {
             fmt::print("  Hash v2: {:s}\n", metainfo.info_hash2_string());
         }
-        fmt::print("  Created by: {:s}\n", std::empty(metainfo.creator()) ? "Unknown" : metainfo.creator());
+        fmt::print("  Created by: {:s}\n", std::empty(metainfo.creator()) ? "Unknown"sv : metainfo.creator().sv());
         fmt::print("  Created on: {:s}\n\n", toString(metainfo.date_created()));
 
         if (!std::empty(metainfo.comment())) {

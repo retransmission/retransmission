@@ -765,7 +765,7 @@ namespace make_torrent_field_helpers
     case TR_KEY_corrupt_ever:
         return st.corrupt_ever;
     case TR_KEY_creator:
-        return tor.creator();
+        return tor.creator().sv();
     case TR_KEY_date_created:
         return tor.date_created();
     case TR_KEY_desired_available:

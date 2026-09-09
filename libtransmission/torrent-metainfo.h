@@ -217,7 +217,7 @@ private:
     std::vector<tr_sha1_digest_t> pieces_;
 
     std::string comment_;
-    std::string creator_;
+    tr::shared_string creator_;
     tr::shared_string source_;
 
     time_t date_created_ = 0;
