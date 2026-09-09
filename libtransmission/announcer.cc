@@ -444,7 +444,7 @@ struct tr_tier {
 
     std::deque<tr_announce_event> announce_events;
 
-    std::string last_announce_str;
+    tr::shared_string last_announce_str;
     std::string last_scrape_str;
 
     /* number of up/down/corrupt bytes since the last time we sent an
@@ -1541,7 +1541,7 @@ namespace tracker_view_helpers
             view.lastAnnounceTimedOut = tier.lastAnnounceTimedOut;
             view.lastAnnouncePeerCount = tier.lastAnnouncePeerCount;
             auto& buf = view.lastAnnounceResult;
-            *fmt::format_to_n(buf, sizeof(buf) - 1, "{:s}", tier.last_announce_str).out = '\0';
+            *fmt::format_to_n(buf, sizeof(buf) - 1, "{:s}", tier.last_announce_str.sv()).out = '\0';
         }
 
         if (tier.isAnnouncing) {
