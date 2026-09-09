@@ -96,28 +96,6 @@ function(tr_string_unindent RESULT_VAR TEXT)
     set(${RESULT_VAR} "${TEXT}" PARENT_SCOPE)
 endfunction()
 
-macro(tr_eval SCRIPT)
-    if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.18)
-        cmake_language(EVAL CODE "${SCRIPT}")
-    else()
-        tr_string_unindent(_TR_EVAL_SCRIPT "${SCRIPT}")
-
-        string(SHA1 _TR_EVAL_TMP_FILE "${_TR_EVAL_SCRIPT}")
-        string(SUBSTRING "${_TR_EVAL_TMP_FILE}" 0 10 _TR_EVAL_TMP_FILE)
-        set(_TR_EVAL_TMP_FILE "${PROJECT_BINARY_DIR}/.tr-cache/tr_eval.${_TR_EVAL_TMP_FILE}.cmake")
-
-        if(NOT EXISTS "${_TR_EVAL_TMP_FILE}")
-            file(MAKE_DIRECTORY "${PROJECT_BINARY_DIR}/.tr-cache")
-            file(WRITE "${_TR_EVAL_TMP_FILE}" "${_TR_EVAL_SCRIPT}")
-        endif()
-
-        include("${_TR_EVAL_TMP_FILE}")
-
-        unset(_TR_EVAL_TMP_FILE)
-        unset(_TR_EVAL_SCRIPT)
-    endif()
-endmacro()
-
 function(tr_process_list_conditions VAR_PREFIX)
     set(ALLOWED_ITEMS)
     set(DISALLOWED_ITEMS)
@@ -127,7 +105,7 @@ function(tr_process_list_conditions VAR_PREFIX)
         if(ARG MATCHES [==[^\[(.+)\]$]==])
             set(COND "${CMAKE_MATCH_1}")
             string(STRIP "${COND}" COND)
-            tr_eval("\
+            cmake_language(EVAL CODE "\
                 if(${COND})
                     set(ALLOW TRUE)
                 else()
@@ -537,10 +515,8 @@ endfunction()
 macro(tr_qt_add_translation OUTPUT_FILES_VAR)
     if(Qt_VERSION_MAJOR EQUAL 6)
         qt6_add_translation(${OUTPUT_FILES_VAR} ${ARGN} OPTIONS -silent)
-    elseif(Qt_VERSION GREATER_EQUAL 5.11)
-        qt5_add_translation(${OUTPUT_FILES_VAR} ${ARGN} OPTIONS -silent)
     else()
-        qt5_add_translation(${OUTPUT_FILES_VAR} ${ARGN})
+        qt5_add_translation(${OUTPUT_FILES_VAR} ${ARGN} OPTIONS -silent)
     endif()
 
     source_group("Generated Files"
