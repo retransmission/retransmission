@@ -216,7 +216,7 @@ private:
 
     std::vector<tr_sha1_digest_t> pieces_;
 
-    std::string comment_;
+    tr::shared_string comment_;
     tr::shared_string creator_;
     tr::shared_string source_;
 

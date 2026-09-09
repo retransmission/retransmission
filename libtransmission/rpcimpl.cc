@@ -761,7 +761,7 @@ namespace make_torrent_field_helpers
     case TR_KEY_bytes_completed:
         return make_bytes_completed_vec(tor);
     case TR_KEY_comment:
-        return tor.comment();
+        return tor.comment().sv();
     case TR_KEY_corrupt_ever:
         return st.corrupt_ever;
     case TR_KEY_creator:

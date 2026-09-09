@@ -173,7 +173,7 @@ void showInfo(app_opts const& opts, tr_torrent_metainfo const& metainfo)
         fmt::print("  Created on: {:s}\n\n", toString(metainfo.date_created()));
 
         if (!std::empty(metainfo.comment())) {
-            fmt::print("  Comment: {:s}\n", metainfo.comment());
+            fmt::print("  Comment: {:s}\n", metainfo.comment().sv());
         }
 
         if (!std::empty(metainfo.source())) {
