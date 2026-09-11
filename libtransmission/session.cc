@@ -1965,11 +1965,6 @@ void tr_session::invalidate_storage_descriptors()
     }
 }
 
-void tr_session::close_torrent_files(tr_torrent_id_t const tor_id) noexcept
-{
-    local_data.close_torrent(tor_id);
-}
-
 // ---
 
 void tr_sessionSetQueueStartCallback(tr_session* session, tr_session_queue_start_func callback)

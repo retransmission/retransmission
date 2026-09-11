@@ -680,7 +680,7 @@ void tr_torrent::stop_now()
     stopped_(this);
     session->announcer_->stopTorrent(this);
 
-    session->close_torrent_files(id());
+    session->local_data.close_torrent(id());
 
     if (!is_deleting_) {
         save_resume_file();
@@ -1142,7 +1142,7 @@ void tr_torrent::set_location_in_session_thread(
     // Cancel a pending verify first. Cancelling re-hashes pieces, and
     // those hashes must run before the files close and move.
     session->verify_remove(this);
-    session->close_torrent_files(id());
+    session->local_data.close_torrent(id());
     session->local_data.move(id(), path, std::move(on_done));
 }
 
@@ -1885,7 +1885,7 @@ void tr_torrent::recheck_completeness()
         completeness_ = new_completeness;
 
         if (is_done()) {
-            session->close_torrent_files(id());
+            session->local_data.close_torrent(id());
 
             if (recent_change) {
                 // https://www.bittorrent.org/beps/bep_0003.html
