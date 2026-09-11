@@ -28,8 +28,8 @@ struct tr_pex;
 namespace tr::serializer
 {
 
-// These type traits are used by `to_variant()` and `to_value()` to sniff
-// out containers that support `push_back()`, `insert()`, `reserve()`, etc.
+// These type traits are used by `to_value()` to sniff out containers that
+// support `push_back()`, `insert()`, `reserve()`, etc.
 // Example uses: (de)serializing std::vector<T>, QStringList, small::set<T>
 namespace detail
 {
@@ -206,7 +206,7 @@ template<typename T>
 
 // Compile-time dispatcher: routes `T` -> `tr_variant` conversion to
 // `Converter<T>` if specialized, otherwise to the generic container fallbacks
-// (push-back ranges, insert ranges, std::array, std::optional).
+// (sized ranges except for string types, std::optional).
 template<typename T>
 [[nodiscard]] tr_variant to_variant(T const& src)
 {
