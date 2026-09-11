@@ -516,11 +516,9 @@ private:
         size_t n_running = 0U;
         bool barrier_running = false;
         std::deque<Queued> queue;
-#ifdef TR_ENABLE_ASSERTS
         // The byte spans of the data ops in flight, and whether each
-        // one is a write. New ops assert that they don't overlap them.
+        // one is a write.
         std::vector<std::pair<tr_byte_span_t, bool>> running_spans;
-#endif
     };
 
     // A write the gate admitted, waiting for a worker.
@@ -653,15 +651,21 @@ private:
         advance(id);
     }
 
+    // True if a write in flight covers any byte of `span`.
+    [[nodiscard]] static bool overlaps_running_write(Gate const& gate, tr_byte_span_t const span) noexcept
+    {
+        return std::ranges::any_of(gate.running_spans, [span](auto const& running) {
+            return running.second && span.begin < running.first.end && running.first.begin < span.end;
+        });
+    }
+
     // A write must never overlap an op in flight, and a hash must never
     // overlap a write in flight. The protocol already guarantees both:
     // we write only blocks we lack, and hash or read only pieces whose
-    // writes have all completed. A failure here is a caller bug, not a
+    // writes have all completed. admit_write() rejects a write that
+    // overlaps a write in flight; a failure here is a caller bug, not a
     // backend race.
-    static void register_running_span(
-        [[maybe_unused]] Gate& gate,
-        [[maybe_unused]] tr_byte_span_t const span,
-        [[maybe_unused]] bool const is_write)
+    static void register_running_span(Gate& gate, tr_byte_span_t const span, bool const is_write)
     {
 #ifdef TR_ENABLE_ASSERTS
         for (auto const& [running, running_is_write] : gate.running_spans) {
@@ -669,21 +673,19 @@ private:
                 TR_ASSERT(span.end <= running.begin || running.end <= span.begin);
             }
         }
+#endif
 
         gate.running_spans.emplace_back(span, is_write);
-#endif
     }
 
-    void unregister_running_span([[maybe_unused]] tr_torrent_id_t const id, [[maybe_unused]] tr_byte_span_t const span)
+    void unregister_running_span(tr_torrent_id_t const id, tr_byte_span_t const span)
     {
-#ifdef TR_ENABLE_ASSERTS
         auto& spans = gates_[id].running_spans;
         auto const it = std::ranges::find_if(spans, [&span](auto const& running) {
             return running.first.begin == span.begin && running.first.end == span.end;
         });
         TR_ASSERT(it != std::end(spans));
         spans.erase(it);
-#endif
     }
 
     void exec_read(tr_torrent_id_t const id, ReadOp const& op)
@@ -725,6 +727,17 @@ private:
         auto const span = op.span;
         auto desc = provider_(id);
         if (!desc || span.end > desc->block_info.total_size()) {
+            enqueued_write_bytes_.fetch_sub(span.size(), std::memory_order_relaxed);
+            if (op.on_write) {
+                std::move(op.on_write)(id, span, make_error(TR_ERROR_EINVAL));
+            }
+            return;
+        }
+
+        // The caller wrote a block that is still being written. Fail
+        // this copy. Queuing it under the same key would drop it, and a
+        // dropped op holds the gate open forever.
+        if (overlaps_running_write(gate, span)) {
             enqueued_write_bytes_.fetch_sub(span.size(), std::memory_order_relaxed);
             if (op.on_write) {
                 std::move(op.on_write)(id, span, make_error(TR_ERROR_EINVAL));
@@ -933,7 +946,9 @@ private:
                     op.ready = ready;
                     op.n_files_created = std::exchange(result.n_files_created, 0U);
                     auto const key = WriteKey{ .tor_id = op.tor_id, .begin = op.span.begin };
-                    pending_writes_.emplace(key, std::move(op));
+                    // the key is free: admit_write() rejects a second write for a block in flight
+                    [[maybe_unused]] auto const inserted = pending_writes_.emplace(key, std::move(op)).second;
+                    TR_ASSERT(inserted);
                 }
             }
             work_cv_.notify_all();
