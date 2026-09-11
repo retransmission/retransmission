@@ -13,6 +13,7 @@
 #include <cstdint> // uint64_t, uint16_t
 #include <ctime>
 #include <memory>
+#include <mutex>
 #include <optional>
 #include <span>
 #include <string>
@@ -526,6 +527,8 @@ struct tr_torrent {
 
     // A snapshot of this torrent's on-disk layout for disk IO.
     // Cached until the next invalidate_storage_descriptor() call.
+    // Safe to call from any thread: tr_torrentNew() checks the first
+    // piece on the caller's thread.
     [[nodiscard]] std::shared_ptr<tr::StorageDescriptor const> storage_descriptor() const;
 
     // Call after changing anything that affects where this torrent's
@@ -533,6 +536,7 @@ struct tr_torrent {
     // metainfo.
     void invalidate_storage_descriptor() noexcept
     {
+        auto const lock = std::scoped_lock{ storage_descriptor_mutex_ };
         storage_descriptor_.reset();
     }
 
@@ -1402,6 +1406,7 @@ private:
     tr_file_piece_map fpm_ = tr_file_piece_map{ metainfo_ };
 
     // see storage_descriptor()
+    mutable std::mutex storage_descriptor_mutex_;
     mutable std::shared_ptr<tr::StorageDescriptor const> storage_descriptor_;
 
     // when Transmission thinks the torrent's files were last changed
