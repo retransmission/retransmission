@@ -932,7 +932,7 @@ TEST_F(LocalDataWorkersTest, closingAFileWaitsOnlyForOpsThatTouchIt)
     EXPECT_FALSE(a_closed);
 
     // ...and the queued close of a.bin does not hold back a read of b.bin
-    // (the read itself fails since there's no real torrent)
+    // (the read fails since b.bin does not exist yet)
     auto read_done = false;
     local_data->read(TorId, { .begin = BlockSize, .end = 2U * BlockSize }, [&read_done](auto, auto, auto const&, auto) {
         read_done = true;

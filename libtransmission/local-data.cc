@@ -373,14 +373,12 @@ public:
         tr_open_files& open_files,
         DescriptorProvider provider,
         Marshal marshal,
-        Backend& backend,
         OnFilesCreated const& on_files_created,
         size_t const n_workers,
         size_t const retained_bytes)
         : open_files_{ open_files }
         , provider_{ std::move(provider) }
         , marshal_{ std::move(marshal) }
-        , backend_{ backend }
         , on_files_created_{ on_files_created }
         , retained_{ retained_bytes }
     {
@@ -769,7 +767,15 @@ private:
     void exec_read(tr_torrent_id_t const id, ReadOp const& op)
     {
         auto data = std::make_unique<BlockData>();
-        auto const err = backend_.read(id, op.span, *data);
+        auto err = tr_error_code_t{ TR_ERROR_EINVAL };
+
+        auto const span = op.span;
+        if (auto const desc = provider_(id); desc && span.is_valid() && span.size() <= tr_block_info::BlockSize) {
+            auto const len = static_cast<size_t>(span.size());
+            data->resize(len);
+            err = tr_ioRead(*desc, open_files_, span.begin, std::span{ std::data(*data), len });
+        }
+
         if (err != 0) {
             data = nullptr;
         }
@@ -1120,7 +1126,6 @@ private:
     tr_open_files& open_files_;
     DescriptorProvider provider_;
     Marshal marshal_;
-    Backend& backend_;
     OnFilesCreated const& on_files_created_; // the facade's
 
     std::map<tr_torrent_id_t, Gate> gates_;
@@ -1182,7 +1187,6 @@ void LocalData::start_workers(size_t worker_count, tr_open_files& open_files, Ma
         open_files,
         std::move(provider),
         std::move(marshal),
-        *backend_,
         on_files_created_,
         worker_count,
         retained_bytes_);
