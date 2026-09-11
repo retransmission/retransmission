@@ -1258,21 +1258,12 @@ void LocalData::write(
     std::unique_ptr<BlockData> data,
     OnWrite on_write) // NOLINT(performance-unnecessary-value-param)
 {
-    if (data == nullptr) {
-        if (on_write) {
-            finish([id, byte_span, on_write = std::move(on_write)]() mutable {
-                std::move(on_write)(id, byte_span, make_error(TR_ERROR_EINVAL));
-            });
-        }
-        return;
-    }
-
     if (threaded_) {
         threaded_->write(id, byte_span, std::move(data), std::move(on_write));
         return;
     }
 
-    auto const err = backend_->write(id, byte_span, *data);
+    auto const err = data != nullptr ? backend_->write(id, byte_span, *data) : tr_error_code_t{ TR_ERROR_EINVAL };
 
     if (on_write) {
         finish([id, byte_span, err, on_write = std::move(on_write)]() mutable {
