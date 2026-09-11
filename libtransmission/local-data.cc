@@ -549,7 +549,6 @@ private:
         std::unique_ptr<BlockData> data;
         OnWrite on_write;
         std::shared_ptr<bool> ready = nullptr;
-        size_t n_files_created = 0U;
     };
 
     // A piece hash the gate admitted, waiting for a worker.
@@ -1009,16 +1008,22 @@ private:
             writeme = buf;
         }
 
-        auto result = tr_ioWrite(desc, open_files_, begin, writeme, &waiter);
-        for (auto const& op : run) {
-            result.n_files_created += op.n_files_created;
+        auto const result = tr_ioWrite(desc, open_files_, begin, writeme, &waiter);
+
+        // A blocked run is retried, but the files it created exist now.
+        if (result.n_files_created > 0U) {
+            post_completion([this, id = run.front().tor_id, n = result.n_files_created]() {
+                if (on_files_created_) {
+                    on_files_created_(id, n);
+                }
+            });
         }
+
         if (waiter.blocked) {
             {
                 auto const lock = std::scoped_lock{ work_mutex_ };
                 for (auto& op : run) {
                     op.ready = ready;
-                    op.n_files_created = std::exchange(result.n_files_created, 0U);
                     auto const key = WriteKey{ .tor_id = op.tor_id, .begin = op.span.begin };
                     // the key is free: admit_write() rejects a second write for a block in flight
                     [[maybe_unused]] auto const inserted = pending_writes_.emplace(key, std::move(op)).second;
@@ -1045,12 +1050,8 @@ private:
             }
         }
 
-        post_completion([this, run = std::move(run), err = result.error, n_created = result.n_files_created]() mutable {
+        post_completion([this, run = std::move(run), err = result.error]() mutable {
             auto const id = run.front().tor_id;
-
-            if (n_created > 0U && on_files_created_) {
-                on_files_created_(id, n_created);
-            }
 
             // Every callback runs before any release, so a barrier
             // enqueued by one of them can't overtake the rest of the run.
