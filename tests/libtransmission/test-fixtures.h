@@ -105,6 +105,18 @@ inline bool waitFor(
     }
 }
 
+// Fails a preallocation the way a full disk (`disk_full`) or a
+// filesystem without preallocation (`!disk_full`) would.
+inline bool failPreallocation(tr_error* const error, bool const disk_full)
+{
+#ifdef _WIN32
+    error->set(disk_full ? ERROR_DISK_FULL : ERROR_NOT_SUPPORTED, "injected preallocation error");
+#else
+    error->set(disk_full ? ENOSPC : ENOSYS, "injected preallocation error");
+#endif
+    return false;
+}
+
 class TransmissionTest : public ::testing::Test
 {
 protected:
