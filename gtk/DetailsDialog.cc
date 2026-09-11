@@ -2022,7 +2022,7 @@ void DetailsDialog::Impl::on_tracker_list_remove_button_clicked()
         // TODO(ckerr): migrate to `TR_KEY_tracker_list`
         auto params = tr_variant::Map{ 2U };
         params.try_emplace(TR_KEY_ids, tr::serializer::to_variant(torrent_id));
-        params.try_emplace(TR_KEY_tracker_remove, tr::serializer::to_variant(std::span{ &tracker_id, 1U }));
+        params.try_emplace(TR_KEY_tracker_remove, tr::serializer::to_variant(std::array{ tracker_id }));
         core_->exec(TR_KEY_torrent_set, std::move(params));
         refresh();
     }
