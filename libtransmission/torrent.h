@@ -1306,12 +1306,6 @@ private:
 
     void set_has_piece(tr_piece_index_t piece, bool has)
     {
-        if (!has) {
-            // Any hash in flight for this piece is about a version of it
-            // that no longer exists. See test_piece().
-            hash_tokens_.erase(piece);
-        }
-
         completion_.set_has_piece(piece, has);
     }
 
@@ -1378,7 +1372,8 @@ private:
     tr_bitfield blocks_pending_write_ = tr_bitfield{ 0 };
 
     // which version of a piece each in-flight hash is checking.
-    // An entry lives only as long as its hash.
+    // An entry lives only as long as its hash. Session thread only:
+    // the verify thread must not touch this map.
     std::unordered_map<tr_piece_index_t, uint64_t> hash_tokens_;
     uint64_t next_hash_token_ = 0U;
 

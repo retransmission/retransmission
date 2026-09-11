@@ -1719,7 +1719,10 @@ void tr_torrent::VerifyMediator::on_verify_started()
 
 void tr_torrent::VerifyMediator::on_piece_checked(tr_piece_index_t const piece, bool const has_piece)
 {
-    if (auto const had_piece = tor_->has_piece(piece); !has_piece || !had_piece) {
+    // This runs on the verify thread. Read completion_ directly:
+    // has_piece() also reads hash_tokens_, which belongs to the
+    // session thread.
+    if (auto const had_piece = tor_->completion_.has_piece(piece); !has_piece || !had_piece) {
         tor_->set_has_piece(piece, has_piece);
         tor_->set_dirty();
     }
