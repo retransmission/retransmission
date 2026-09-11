@@ -198,10 +198,12 @@ public:
             tr_torrent_id_t tor_id,
             tr_piece_index_t piece,
             tr_sha1_digest_t& setme_hash) = 0;
+        // Adds the files the write created on disk to `n_files_created`.
         [[nodiscard]] virtual tr_error_code_t write(
             tr_torrent_id_t tor_id,
             tr_byte_span_t byte_span,
-            BlockData const& data) = 0;
+            BlockData const& data,
+            size_t& n_files_created) = 0;
         [[nodiscard]] virtual tr_error_code_t move(tr_torrent_id_t id, std::string_view parent) = 0;
         [[nodiscard]] virtual tr_error_code_t remove(tr_torrent_id_t id, tr_torrent_remove_func remove_func) = 0;
         virtual void rename(
@@ -273,9 +275,7 @@ public:
      * Switch to the threaded backend.
      *
      * Workers resolve torrent data through `provider` and never touch
-     * `tr_torrent` or `tr_session`. Leave `provider` and
-     * `on_files_created` unset to use the torrents passed to the
-     * constructor. Tests pass their own.
+     * `tr_torrent` or `tr_session`.
      *
      * Call at most once, before any ops are enqueued. A `worker_count`
      * of zero keeps the synchronous backend.
@@ -283,11 +283,7 @@ public:
      * Throws if the worker threads can't be spawned. The synchronous
      * backend stays in place when it does.
      */
-    void start_workers(
-        size_t worker_count,
-        Marshal marshal,
-        DescriptorProvider provider = {},
-        OnFilesCreated on_files_created = {});
+    void start_workers(size_t worker_count, tr_open_files& open_files, Marshal marshal, DescriptorProvider provider);
 
     [[nodiscard]] bool is_threaded() const noexcept
     {
@@ -315,6 +311,9 @@ public:
     [[nodiscard]] Stats stats() const noexcept;
 
     void set_retained_bytes(size_t max_bytes);
+
+    // Both backends report created files through this.
+    void set_on_files_created(OnFilesCreated on_files_created);
 
     // For tests. Paused workers take no new ops.
     void set_workers_paused(bool paused);
@@ -387,9 +386,7 @@ private:
     class Threaded;
 
     std::unique_ptr<Backend> backend_;
-
-    tr_torrents const* torrents_ = nullptr;
-    tr_open_files* open_files_ = nullptr;
+    OnFilesCreated on_files_created_;
 
     std::shared_ptr<Threaded> threaded_;
     size_t retained_bytes_ = MaxRetainedBytes;

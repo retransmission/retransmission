@@ -98,7 +98,8 @@ public:
     [[nodiscard]] tr_error_code_t write(
         tr_torrent_id_t const id,
         tr_byte_span_t const byte_span,
-        LocalData::BlockData const& data) override
+        LocalData::BlockData const& data,
+        size_t& n_files_created) override
     {
         if (!byte_span.is_valid()) {
             return TR_ERROR_EINVAL;
@@ -120,10 +121,7 @@ public:
             open_files_,
             byte_span.begin,
             std::span{ std::data(data), span_size });
-        for (auto i = size_t{}; i < result.n_files_created; ++i) {
-            tor->session->add_file_created();
-        }
-
+        n_files_created += result.n_files_created;
         return result.error;
     }
 
@@ -376,14 +374,14 @@ public:
         DescriptorProvider provider,
         Marshal marshal,
         Backend& backend,
-        OnFilesCreated on_files_created,
+        OnFilesCreated const& on_files_created,
         size_t const n_workers,
         size_t const retained_bytes)
         : open_files_{ open_files }
         , provider_{ std::move(provider) }
         , marshal_{ std::move(marshal) }
         , backend_{ backend }
-        , on_files_created_{ std::move(on_files_created) }
+        , on_files_created_{ on_files_created }
         , retained_{ retained_bytes }
     {
         workers_.reserve(n_workers);
@@ -1123,7 +1121,7 @@ private:
     DescriptorProvider provider_;
     Marshal marshal_;
     Backend& backend_;
-    OnFilesCreated on_files_created_;
+    OnFilesCreated const& on_files_created_; // the facade's
 
     std::map<tr_torrent_id_t, Gate> gates_;
 
@@ -1155,8 +1153,6 @@ private:
 
 LocalData::LocalData(tr_torrents const& torrents, tr_open_files& open_files)
     : backend_{ std::make_unique<DefaultBackend>(torrents, open_files) }
-    , torrents_{ &torrents }
-    , open_files_{ &open_files }
 {
 }
 
@@ -1167,11 +1163,7 @@ LocalData::LocalData(std::unique_ptr<Backend> backend)
 
 LocalData::~LocalData() = default;
 
-void LocalData::start_workers(
-    size_t worker_count,
-    Marshal marshal,
-    DescriptorProvider provider,
-    OnFilesCreated on_files_created)
+void LocalData::start_workers(size_t worker_count, tr_open_files& open_files, Marshal marshal, DescriptorProvider provider)
 {
     TR_ASSERT(!threaded_);
     TR_ASSERT(completions_ == Completions::Inline); // see set_completions()
@@ -1186,31 +1178,12 @@ void LocalData::start_workers(
     static auto constexpr MaxWorkerCount = size_t{ 64U };
     worker_count = std::min(worker_count, MaxWorkerCount);
 
-    if (!provider) {
-        TR_ASSERT(torrents_ != nullptr);
-        provider = [torrents = torrents_](tr_torrent_id_t const id) -> std::shared_ptr<StorageDescriptor const> {
-            auto const* const tor = torrents->get(id);
-            return tor != nullptr ? tor->storage_descriptor() : nullptr;
-        };
-    }
-
-    if (!on_files_created && torrents_ != nullptr) {
-        on_files_created = [torrents = torrents_](tr_torrent_id_t const id, size_t const n_files) {
-            if (auto const* const tor = torrents->get(id); tor != nullptr) {
-                for (auto i = size_t{}; i < n_files; ++i) {
-                    tor->session->add_file_created();
-                }
-            }
-        };
-    }
-
-    TR_ASSERT(open_files_ != nullptr);
     threaded_ = std::make_shared<Threaded>(
-        *open_files_,
+        open_files,
         std::move(provider),
         std::move(marshal),
         *backend_,
-        std::move(on_files_created),
+        on_files_created_,
         worker_count,
         retained_bytes_);
 }
@@ -1263,7 +1236,12 @@ void LocalData::write(
         return;
     }
 
-    auto const err = data != nullptr ? backend_->write(id, byte_span, *data) : tr_error_code_t{ TR_ERROR_EINVAL };
+    auto n_files_created = size_t{};
+    auto const err = data != nullptr ? backend_->write(id, byte_span, *data, n_files_created) :
+                                       tr_error_code_t{ TR_ERROR_EINVAL };
+    if (n_files_created > 0U && on_files_created_) {
+        on_files_created_(id, n_files_created);
+    }
 
     if (on_write) {
         finish([id, byte_span, err, on_write = std::move(on_write)]() mutable {
@@ -1396,6 +1374,11 @@ void LocalData::set_retained_bytes(size_t const max_bytes)
     if (threaded_) {
         threaded_->set_retained_bytes(max_bytes);
     }
+}
+
+void LocalData::set_on_files_created(OnFilesCreated on_files_created)
+{
+    on_files_created_ = std::move(on_files_created);
 }
 
 void LocalData::set_workers_paused(bool const paused)

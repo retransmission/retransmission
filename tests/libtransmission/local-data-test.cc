@@ -75,7 +75,8 @@ public:
     [[nodiscard]] tr_error_code_t write(
         [[maybe_unused]] tr_torrent_id_t tor_id,
         tr_byte_span_t byte_span,
-        tr::LocalData::BlockData const& data) override
+        tr::LocalData::BlockData const& data,
+        [[maybe_unused]] size_t& n_files_created) override
     {
         write_span = byte_span;
         last_write.assign(std::begin(data), std::end(data));
@@ -537,15 +538,14 @@ protected:
     {
         auto local_data = std::make_unique<tr::LocalData>(torrents_, open_files_);
         local_data->set_retained_bytes(retained_bytes);
-        local_data->start_workers(
-            n_workers,
-            marshal(),
-            [desc = std::move(desc)](tr_torrent_id_t const id) { return id == TorId ? desc : nullptr; },
-            [this](tr_torrent_id_t const id, size_t const n_files) {
-                if (id == TorId) {
-                    files_created_ += n_files;
-                }
-            });
+        local_data->set_on_files_created([this](tr_torrent_id_t const id, size_t const n_files) {
+            if (id == TorId) {
+                files_created_ += n_files;
+            }
+        });
+        local_data->start_workers(n_workers, open_files_, marshal(), [desc = std::move(desc)](tr_torrent_id_t const id) {
+            return id == TorId ? desc : nullptr;
+        });
         return local_data;
     }
 
@@ -612,11 +612,10 @@ TEST_F(LocalDataWorkersTest, fileInitializationParksDependentWorkWithoutOccupyin
         } };
         auto local_data = tr::LocalData{ torrents_, files };
         auto n_created = size_t{};
-        local_data.start_workers(
-            2U,
-            marshal(),
-            [desc](tr_torrent_id_t) { return std::shared_ptr<tr::StorageDescriptor const>{ desc }; },
-            [&](tr_torrent_id_t, size_t const count) { n_created += count; });
+        local_data.set_on_files_created([&](tr_torrent_id_t, size_t const count) { n_created += count; });
+        local_data.start_workers(2U, files, marshal(), [desc](tr_torrent_id_t) {
+            return std::shared_ptr<tr::StorageDescriptor const>{ desc };
+        });
         auto first_done = false;
         auto dependent_done = false;
         auto hash_done = false;
