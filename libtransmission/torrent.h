@@ -1475,6 +1475,10 @@ private:
     bool is_running_ = false;
     bool is_stopping_ = false;
 
+    // set-location calls queued behind disk IO. Until they land,
+    // current_dir() is stale.
+    size_t relocations_pending_ = 0U;
+
     bool finished_seeding_by_idle_ = false;
 
     bool needs_completeness_check_ = true;
