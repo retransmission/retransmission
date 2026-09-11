@@ -9,10 +9,8 @@
 #include <cstddef> // size_t
 #include <cstdint> // uintX_t
 #include <deque>
-#include <fstream>
 #include <functional>
 #include <future>
-#include <iterator>
 #include <memory>
 #include <mutex>
 #include <optional>
@@ -35,6 +33,7 @@
 #include <libtransmission/crypto-utils.h>
 #include <libtransmission/error.h>
 #include <libtransmission/file-piece-map.h>
+#include <libtransmission/file-utils.h>
 #include <libtransmission/file.h>
 #include <libtransmission/local-data.h>
 #include <libtransmission/open-files.h>
@@ -492,8 +491,9 @@ protected:
 
     [[nodiscard]] std::string readFile(std::string_view const subpath) const
     {
-        auto in = std::ifstream{ pathOf(subpath), std::ios::binary };
-        return std::string{ std::istreambuf_iterator<char>{ in }, std::istreambuf_iterator<char>{} };
+        auto contents = std::vector<char>{};
+        EXPECT_TRUE(tr_file_read(pathOf(subpath), contents));
+        return { std::data(contents), std::size(contents) };
     }
 
     // A descriptor whose files live in the sandbox. The files
