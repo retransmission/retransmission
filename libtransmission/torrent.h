@@ -9,6 +9,7 @@
 #error only libtransmission should #include this header.
 #endif
 
+#include <algorithm>
 #include <cstddef> // size_t
 #include <cstdint> // uint64_t, uint16_t
 #include <ctime>
@@ -336,7 +337,16 @@ struct tr_torrent {
     [[nodiscard]] auto has_file(tr_file_index_t file) const
     {
         auto const span = byte_span_for_file(file);
-        return completion_.count_has_bytes_in_span(span) == span.end - span.begin;
+        if (completion_.count_has_bytes_in_span(span) != span.end - span.begin) {
+            return false;
+        }
+
+        // A piece with a hash in flight is not had yet. See has_piece().
+        auto const [begin, end] = fpm_.piece_span_for_file(file);
+        return std::ranges::none_of(hash_tokens_, [begin, end](auto const& piece_and_token) {
+            auto const piece = piece_and_token.first;
+            return begin <= piece && piece < end;
+        });
     }
 
     [[nodiscard]] auto has_piece(tr_piece_index_t piece) const
