@@ -9,8 +9,12 @@
 #error only libtransmission should #include this header.
 #endif
 
+#include <array>
+#include <cstddef> // size_t
 #include <optional>
+#include <span>
 #include <string>
+#include <string_view>
 
 #include "libtransmission/bitfield.h"
 #include "libtransmission/block-info.h"
@@ -20,6 +24,23 @@
 
 namespace tr
 {
+
+// Where a torrent's files may live, in search order: the download dir,
+// then the incomplete dir, skipping either that is unset.
+class SearchPaths
+{
+public:
+    SearchPaths(std::string_view download_dir, std::string_view incomplete_dir) noexcept;
+
+    [[nodiscard]] std::span<std::string_view const> span() const noexcept
+    {
+        return { std::data(paths_), n_paths_ };
+    }
+
+private:
+    std::array<std::string_view, 2U> paths_;
+    size_t n_paths_ = 0U;
+};
 
 /**
  * An immutable snapshot of everything disk IO needs to know about one

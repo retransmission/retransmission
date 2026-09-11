@@ -1149,23 +1149,6 @@ void tr_torrent::set_location_in_session_thread(
 
 namespace
 {
-namespace location_helpers
-{
-size_t buildSearchPathArray(tr_torrent const* tor, std::string_view* paths)
-{
-    auto* walk = paths;
-
-    if (auto const& path = tor->download_dir(); !std::empty(path)) {
-        *walk++ = path.sv();
-    }
-
-    if (auto const& path = tor->incomplete_dir(); !std::empty(path)) {
-        *walk++ = path.sv();
-    }
-
-    return walk - paths;
-}
-} // namespace location_helpers
 } // namespace
 
 void tr_torrent::set_location(std::string_view location, bool move_from_old_path, int volatile* setme_state)
@@ -1193,11 +1176,7 @@ void tr_torrentSetLocation(
 
 std::optional<tr_torrent_files::FoundFile> tr_torrent::find_file(tr_file_index_t file_index) const
 {
-    using namespace location_helpers;
-
-    auto paths = std::array<std::string_view, 4>{};
-    auto const n_paths = buildSearchPathArray(this, std::data(paths));
-    return files().find(file_index, { paths.data(), n_paths });
+    return files().find(file_index, tr::SearchPaths{ download_dir().sv(), incomplete_dir().sv() }.span());
 }
 
 std::shared_ptr<tr::StorageDescriptor const> tr_torrent::storage_descriptor() const
@@ -1224,11 +1203,7 @@ std::shared_ptr<tr::StorageDescriptor const> tr_torrent::storage_descriptor() co
 
 bool tr_torrent::has_any_local_data() const
 {
-    using namespace location_helpers;
-
-    auto paths = std::array<std::string_view, 4>{};
-    auto const n_paths = buildSearchPathArray(this, std::data(paths));
-    return files().has_any_local_data({ paths.data(), n_paths });
+    return files().has_any_local_data(tr::SearchPaths{ download_dir().sv(), incomplete_dir().sv() }.span());
 }
 
 void tr_torrentSetDownloadDir(tr_torrent* tor, std::string_view const path)

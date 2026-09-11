@@ -15,20 +15,20 @@
 namespace tr
 {
 
-std::optional<tr_torrent_files::FoundFile> StorageDescriptor::find(tr_file_index_t const file_index) const
+SearchPaths::SearchPaths(std::string_view const download_dir, std::string_view const incomplete_dir) noexcept
 {
-    auto paths = std::array<std::string_view, 2U>{};
-    auto n_paths = size_t{};
-
     if (!std::empty(download_dir)) {
-        paths[n_paths++] = download_dir;
+        paths_[n_paths_++] = download_dir;
     }
 
     if (!std::empty(incomplete_dir)) {
-        paths[n_paths++] = incomplete_dir;
+        paths_[n_paths_++] = incomplete_dir;
     }
+}
 
-    return files.find(file_index, { std::data(paths), n_paths });
+std::optional<tr_torrent_files::FoundFile> StorageDescriptor::find(tr_file_index_t const file_index) const
+{
+    return files.find(file_index, SearchPaths{ download_dir, incomplete_dir }.span());
 }
 
 } // namespace tr
