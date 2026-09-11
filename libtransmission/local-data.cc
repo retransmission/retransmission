@@ -345,7 +345,9 @@ private:
  * admitted op's completion has been delivered, and then runs
  * exclusively on the session thread. Ops enqueued behind it wait in
  * the queue until it finishes. This gate is what makes move, rename,
- * remove, and close safe against in-flight writes.
+ * remove, and close safe against in-flight writes. A file close is a
+ * barrier on its file alone: it waits only for the ops that touch the
+ * file, and holds back only those.
  *
  * Reads run on the session thread the moment the gate admits them, so
  * a read completes before the enqueue call returns unless a barrier
@@ -427,11 +429,19 @@ public:
     }
 
     // Enqueue an admin op. `body` runs exclusively on the session
-    // thread once the ops in flight have drained. It must deliver its
-    // own completion.
-    void barrier(tr_torrent_id_t const id, std::function<void()> body)
+    // thread once the ops in flight have drained: every op on the
+    // torrent, or with `file`, every op that touches that file. It
+    // must deliver its own completion.
+    void barrier(tr_torrent_id_t const id, std::function<void()> body, std::optional<tr_file_index_t> const file = {})
     {
-        submit(id, BarrierOp{ .body = std::move(body) });
+        auto span = std::optional<tr_byte_span_t>{};
+        if (file) {
+            if (auto const desc = provider_(id); desc && *file < desc->files.file_count()) {
+                span = desc->fpm.byte_span_for_file(*file);
+            }
+        }
+
+        submit(id, BarrierOp{ .body = std::move(body), .span = span });
     }
 
     // Drop the buffers kept for a torrent whose files are closed.
@@ -508,6 +518,8 @@ private:
 
     struct BarrierOp {
         std::function<void()> body;
+        // The bytes the op touches. Absent, it touches the whole torrent.
+        std::optional<tr_byte_span_t> span;
     };
 
     using Queued = std::variant<ReadOp, TestOp, WriteOp, BarrierOp>;
@@ -515,6 +527,7 @@ private:
     struct Gate {
         size_t n_running = 0U;
         bool barrier_running = false;
+        std::optional<tr_byte_span_t> barrier_span; // the running barrier's
         std::deque<Queued> queue;
         // The byte spans of the data ops in flight, and whether each
         // one is a write.
@@ -554,9 +567,55 @@ private:
 
     // --- the admission gate. Session thread only.
 
-    [[nodiscard]] static bool is_blocked(Gate const& gate) noexcept
+    [[nodiscard]] static bool touches(std::optional<tr_byte_span_t> const& barrier, tr_byte_span_t const span) noexcept
     {
-        return gate.barrier_running || !std::empty(gate.queue);
+        return !barrier || (span.begin < barrier->end && barrier->begin < span.end);
+    }
+
+    // True if a running or queued barrier holds back an op on `span`.
+    [[nodiscard]] static bool is_blocked(Gate const& gate, tr_byte_span_t const span) noexcept
+    {
+        if (gate.barrier_running && touches(gate.barrier_span, span)) {
+            return true;
+        }
+
+        return std::ranges::any_of(gate.queue, [span](auto const& queued) {
+            auto const* const barrier = std::get_if<BarrierOp>(&queued);
+            return barrier != nullptr && touches(barrier->span, span);
+        });
+    }
+
+    // True if no op in flight touches the barrier's span.
+    [[nodiscard]] static bool can_run(Gate const& gate, BarrierOp const& barrier) noexcept
+    {
+        if (!barrier.span) {
+            return gate.n_running == 0U;
+        }
+
+        return std::ranges::none_of(gate.running_spans, [&barrier](auto const& running) {
+            return touches(barrier.span, running.first);
+        });
+    }
+
+    // The bytes a data op touches. Nothing for a barrier, or for a hash
+    // whose torrent is gone.
+    [[nodiscard]] std::optional<tr_byte_span_t> span_of(tr_torrent_id_t const id, Queued const& op) const
+    {
+        if (auto const* const read = std::get_if<ReadOp>(&op); read != nullptr) {
+            return read->span;
+        }
+
+        if (auto const* const write = std::get_if<WriteOp>(&op); write != nullptr) {
+            return write->span;
+        }
+
+        if (auto const* const test = std::get_if<TestOp>(&op); test != nullptr) {
+            if (auto const desc = provider_(id); desc && test->piece < desc->block_info.piece_count()) {
+                return desc->block_info.byte_span_for_piece(test->piece);
+            }
+        }
+
+        return {};
     }
 
     // Every pending or running op holds its gate's n_running, and idle
@@ -570,12 +629,14 @@ private:
         });
     }
 
-    // Queue the op if the gate blocks it, else run it, then run
+    // Queue the op if a barrier blocks it, else run it, then run
     // whatever the gate allows next. Barriers always queue; advance()
     // is what grants them.
     void submit(tr_torrent_id_t const id, Queued&& op)
     {
-        if (auto& gate = gates_[id]; std::holds_alternative<BarrierOp>(op) || is_blocked(gate)) {
+        auto& gate = gates_[id];
+        auto const span = span_of(id, op);
+        if (std::holds_alternative<BarrierOp>(op) || (span && is_blocked(gate, *span))) {
             gate.queue.emplace_back(std::move(op));
         } else {
             dispatch(id, gate, std::move(op));
@@ -617,19 +678,21 @@ private:
                 return;
             }
 
-            if (std::holds_alternative<BarrierOp>(gate.queue.front())) {
-                if (gate.n_running != 0U) {
+            if (auto* const barrier = std::get_if<BarrierOp>(&gate.queue.front()); barrier != nullptr) {
+                if (!can_run(gate, *barrier)) {
                     return; // still draining
                 }
 
-                auto op = std::get<BarrierOp>(std::move(gate.queue.front()));
+                auto op = std::move(*barrier);
                 gate.queue.pop_front();
                 gate.barrier_running = true;
+                gate.barrier_span = op.span;
                 op.body();
 
                 // the body may have added or erased gates
                 if (auto const it2 = gates_.find(id); it2 != std::end(gates_)) {
                     it2->second.barrier_running = false;
+                    it2->second.barrier_span.reset();
                 }
 
                 continue;
@@ -1212,12 +1275,12 @@ void LocalData::write(
 
 // Run an admin op as a barrier: wait for the ops in flight, run
 // exclusively, and hold back the ops enqueued behind it (rule 3).
-// `body` is the whole op. It calls the backend and delivers its own
-// completion.
-void LocalData::admin(tr_torrent_id_t const id, std::function<void()> body)
+// With `file`, only the ops that touch that file count. `body` is the
+// whole op. It calls the backend and delivers its own completion.
+void LocalData::admin(tr_torrent_id_t const id, std::function<void()> body, std::optional<tr_file_index_t> const file)
 {
     if (threaded_) {
-        threaded_->barrier(id, std::move(body));
+        threaded_->barrier(id, std::move(body), file);
         return;
     }
 
@@ -1243,12 +1306,15 @@ void LocalData::close_file(
     tr_file_index_t const file_num,
     OnClose on_close) // NOLINT(performance-unnecessary-value-param)
 {
-    admin(tor_id, [this, tor_id, file_num, on_close = std::move(on_close)]() mutable {
-        backend_->close_file(tor_id, file_num);
-        if (on_close) {
-            std::move(on_close)(tor_id);
-        }
-    });
+    admin(
+        tor_id,
+        [this, tor_id, file_num, on_close = std::move(on_close)]() mutable {
+            backend_->close_file(tor_id, file_num);
+            if (on_close) {
+                std::move(on_close)(tor_id);
+            }
+        },
+        file_num);
 }
 
 void LocalData::close_all()

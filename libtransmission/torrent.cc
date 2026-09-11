@@ -2228,8 +2228,9 @@ bool tr_torrent::is_folder() const
 void tr_torrent::on_file_completed(tr_file_index_t const file) const
 {
     // Close the file so that we can reopen in read-only mode as needed.
-    // The close is a barrier, so the bookkeeping below runs only after
-    // the in-flight IO on this torrent has drained.
+    // The close is a barrier on this file, so the bookkeeping below
+    // runs only after the in-flight IO on the file has drained. IO on
+    // the torrent's other files keeps flowing.
     session->local_data.close_file(id(), file, [session = this->session, file](tr_torrent_id_t const tor_id) {
         auto* const tor = session->torrents().get(tor_id);
         if (tor == nullptr) {
