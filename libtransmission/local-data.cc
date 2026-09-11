@@ -227,6 +227,12 @@ public:
 
         // A block that straddles two pieces belongs to both entries.
         for (auto piece = first_piece; piece <= last_piece; ++piece) {
+            // An entry pays off only once the whole piece is here. One
+            // that can never fit would only evict entries that can.
+            if (block_info.piece_size(piece) > max_bytes_) {
+                continue;
+            }
+
             auto const key = Key{ .tor_id = id, .piece = piece };
             auto& entry = entries_[key];
             if (std::empty(entry.blocks)) {
