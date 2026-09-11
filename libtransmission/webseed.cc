@@ -312,18 +312,7 @@ public:
         // The actual value of '64' is arbitrary here;
         // we could probably be smarter about this.
         static auto constexpr PreferredBlocksPerTask = size_t{ 64 };
-        auto max_blocks = n_slots * PreferredBlocksPerTask;
-
-        // Keep the session's in-flight data under its disk budget.
-        if (auto const spare = tor.session->spare_request_blocks(); spare) {
-            max_blocks = std::min(max_blocks, *spare);
-        }
-
-        if (max_blocks == 0U) {
-            return {};
-        }
-
-        return { .max_spans = n_slots, .max_blocks = max_blocks };
+        return { .max_spans = n_slots, .max_blocks = n_slots * PreferredBlocksPerTask };
     }
 
     void publish(tr_peer_event const& peer_event)
