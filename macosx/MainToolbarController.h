@@ -33,7 +33,8 @@
 
 @interface MainToolbarController : NSObject<NSToolbarDelegate, NSToolbarItemValidation>
 
-- (instancetype)initWithDelegate:(id<MainToolbarControllerDelegate>)delegate;
+- (instancetype)init NS_UNAVAILABLE;
+- (instancetype)initWithDelegate:(id<MainToolbarControllerDelegate>)delegate NS_DESIGNATED_INITIALIZER;
 - (NSToolbar*)createToolbar;
 
 @end
