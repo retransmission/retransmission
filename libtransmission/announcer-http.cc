@@ -15,8 +15,6 @@
 #include <string_view>
 #include <utility>
 
-#include <curl/curl.h>
-
 #include <event2/http.h> /* for HTTP_OK */
 
 #include <fmt/format.h>
@@ -269,18 +267,8 @@ void tr_tracker_http_announce(
         session->fetch(std::move(opt));
     };
 
-    /*
-     * Before Curl 7.77.0, if we explicitly choose the IP version we want
-     * to use, it is still possible that the wrong one is used. The workaround
-     * is expensive (disabling DNS cache), so instead we have to make do with
-     * a request that we don't know whether it will go through IPv6 or IPv4.
-     */
-    static auto const use_curl_workaround = curl_version_info(CURLVERSION_NOW)->version_num < 0x074D00 /* 7.77.0 */;
-    if (use_curl_workaround || session->useAnnounceIP()) {
-        if (session->useAnnounceIP()) {
-            options.url += format_ip_arg(session->announceIP());
-        }
-
+    if (session->useAnnounceIP()) {
+        options.url += format_ip_arg(session->announceIP());
         d->requests_sent_count = 1;
         do_make_request(""sv, std::move(options));
     } else {

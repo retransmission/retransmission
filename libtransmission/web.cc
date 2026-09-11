@@ -448,13 +448,6 @@ public:
         return in_range;
     }
 
-    // https://github.com/curl/curl/issues/6312
-    [[nodiscard]] static bool check_curl_gh6312() noexcept
-    {
-        static bool const in_range = 0x074700 /* 7.71.0 */ <= get_curl_version() && get_curl_version() <= 0x074a00 /* 7.74.0 */;
-        return in_range;
-    }
-
     // https://github.com/curl/curl/issues/14899
     [[nodiscard]] static bool check_curl_gh14899() noexcept
     {
@@ -473,7 +466,7 @@ public:
     bool const curl_verbose = tr_env_key_exists("TR_CURL_VERBOSE");
     bool const curl_ssl_verify = !tr_env_key_exists("TR_CURL_SSL_NO_VERIFY");
     bool const curl_proxy_ssl_verify = !tr_env_key_exists("TR_CURL_PROXY_SSL_NO_VERIFY");
-    bool const curl_avoid_http2 = check_curl_gh10936() || check_curl_gh6312(); // both related to curl http2 bugs
+    bool const curl_avoid_http2 = check_curl_gh10936();
     bool const curl_dont_limit_range_requests = check_curl_gh14899();
 
     Mediator& mediator;
@@ -617,9 +610,7 @@ public:
         (void)curl_easy_setopt(e, CURLOPT_AUTOREFERER, 1L);
         (void)curl_easy_setopt(e, CURLOPT_ACCEPT_ENCODING, "");
         (void)curl_easy_setopt(e, CURLOPT_FOLLOWLOCATION, 1L);
-#if LIBCURL_VERSION_NUM >= 0x075000 /* 7.80.0 */
         (void)curl_easy_setopt(e, CURLOPT_MAXLIFETIME_CONN, MaxlifetimeConn);
-#endif
         (void)curl_easy_setopt(e, CURLOPT_MAXREDIRS, MaxRedirects);
         (void)curl_easy_setopt(e, CURLOPT_NOSIGNAL, 1L);
         (void)curl_easy_setopt(e, CURLOPT_PRIVATE, &task);
@@ -630,10 +621,8 @@ public:
         // per-request override falls back to the env-var-driven default
         auto const ssl_verify = task.options().ssl_verify.value_or(curl_ssl_verify);
         if (!ssl_verify) {
-#if LIBCURL_VERSION_NUM >= 0x073400 /* 7.52.0 */
             (void)curl_easy_setopt(e, CURLOPT_SSL_VERIFYHOST, 0L);
             (void)curl_easy_setopt(e, CURLOPT_SSL_VERIFYPEER, 0L);
-#endif
         } else if (!std::empty(curl_ca_bundle)) {
             (void)curl_easy_setopt(e, CURLOPT_CAINFO, curl_ca_bundle.c_str());
         } else {
@@ -645,14 +634,10 @@ public:
         if (!curl_proxy_ssl_verify) {
             (void)curl_easy_setopt(e, CURLOPT_CAINFO, NULL);
             (void)curl_easy_setopt(e, CURLOPT_CAPATH, NULL);
-#if LIBCURL_VERSION_NUM >= 0x073400 /* 7.52.0 */
             (void)curl_easy_setopt(e, CURLOPT_PROXY_SSL_VERIFYHOST, 0L);
             (void)curl_easy_setopt(e, CURLOPT_PROXY_SSL_VERIFYPEER, 0L);
-#endif
         } else if (!std::empty(curl_ca_bundle)) {
-#if LIBCURL_VERSION_NUM >= 0x073400 /* 7.52.0 */
             (void)curl_easy_setopt(e, CURLOPT_PROXY_CAINFO, curl_ca_bundle.c_str());
-#endif
         }
 
         if (auto const& ua = user_agent; !std::empty(ua)) {
@@ -795,13 +780,9 @@ public:
     void curlThreadFunc()
     {
         auto const multi = curl_helpers::multi_unique_ptr{ curl_multi_init() };
-#if LIBCURL_VERSION_NUM >= 0x071003 /* 7.16.3 */
         (void)curl_multi_setopt(multi.get(), CURLMOPT_MAXCONNECTS, MaxCachedConnections);
-#endif
-#if LIBCURL_VERSION_NUM >= 0x071E00 /* 7.30.0 */
         (void)curl_multi_setopt(multi.get(), CURLMOPT_MAX_TOTAL_CONNECTIONS, MaxTotalConnections);
         (void)curl_multi_setopt(multi.get(), CURLMOPT_MAX_HOST_CONNECTIONS, MaxHostConnections);
-#endif
         auto const start_time = mediator.now();
 
         auto repeats = unsigned{};
@@ -922,15 +903,9 @@ public:
         auto* const sh = shared();
         curl_share_setopt(sh, CURLSHOPT_SHARE, CURL_LOCK_DATA_COOKIE);
         curl_share_setopt(sh, CURLSHOPT_SHARE, CURL_LOCK_DATA_DNS);
-#if LIBCURL_VERSION_NUM >= 0x071700 /* 7.23.0 */
         curl_share_setopt(sh, CURLSHOPT_SHARE, CURL_LOCK_DATA_SSL_SESSION);
-#endif
-#if LIBCURL_VERSION_NUM >= 0x073900 /* 7.57.0 */
         curl_share_setopt(sh, CURLSHOPT_SHARE, CURL_LOCK_DATA_CONNECT);
-#endif
-#if LIBCURL_VERSION_NUM >= 0x073D00 /* 7.61.0 */
         curl_share_setopt(sh, CURLSHOPT_SHARE, CURL_LOCK_DATA_PSL);
-#endif
     }
 
     std::map<CURL*, uint64_t /*tr_time_msec()*/> paused_easy_handles;
