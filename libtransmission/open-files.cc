@@ -125,6 +125,18 @@ bool preallocate_file_full(
 
 // ---
 
+bool tr_open_files::park_if_opening(Key const& key, Waiter* const waiter)
+{
+    auto const it = opening_.find(key);
+    if (waiter == nullptr || it == std::end(opening_)) {
+        return false;
+    }
+
+    it->second.push_back(waiter->on_ready);
+    waiter->blocked = true;
+    return true;
+}
+
 tr_open_files::Handle tr_open_files::get(
     tr_torrent_id_t const tor_id,
     tr_file_index_t const file_num,
@@ -133,9 +145,7 @@ tr_open_files::Handle tr_open_files::get(
 {
     auto const lock = std::scoped_lock{ mutex_ };
 
-    if (auto const it = opening_.find(make_key(tor_id, file_num)); it != opening_.end() && waiter != nullptr) {
-        it->second.push_back(waiter->on_ready);
-        waiter->blocked = true;
+    if (park_if_opening(make_key(tor_id, file_num), waiter)) {
         return {};
     }
 
@@ -164,9 +174,7 @@ tr_open_files::Handle tr_open_files::get(
     auto const key = make_key(tor_id, file_num);
     {
         auto lock = std::unique_lock{ mutex_ };
-        if (auto const it = opening_.find(key); it != opening_.end() && waiter != nullptr) {
-            it->second.push_back(waiter->on_ready);
-            waiter->blocked = true;
+        if (park_if_opening(key, waiter)) {
             return {};
         }
         opening_cv_.wait(lock, [this, key]() { return !opening_.contains(key); });
