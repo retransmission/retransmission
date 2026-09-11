@@ -11,6 +11,7 @@
 #include <cstdint> // uintX_t
 #include <deque>
 #include <functional>
+#include <iterator> // std::prev
 #include <list>
 #include <map>
 #include <memory>
@@ -526,12 +527,13 @@ private:
 
     struct Gate {
         size_t n_running = 0U;
-        bool barrier_running = false;
-        std::optional<tr_byte_span_t> barrier_span; // the running barrier's
+        std::optional<BarrierOp> running_barrier;
         std::deque<Queued> queue;
-        // The byte spans of the data ops in flight, and whether each
-        // one is a write.
-        std::vector<std::pair<tr_byte_span_t, bool>> running_spans;
+        // The data ops in flight. Writes never overlap one another, so
+        // an ordered map keyed by begin finds an overlap in two lookups.
+        // Hashes are few, and may overlap writes.
+        std::map<uint64_t, uint64_t> running_writes; // begin -> end
+        std::vector<tr_byte_span_t> running_hashes;
     };
 
     // A write the gate admitted, waiting for a worker.
@@ -567,15 +569,37 @@ private:
 
     // --- the admission gate. Session thread only.
 
+    [[nodiscard]] static constexpr bool overlaps(tr_byte_span_t const a, tr_byte_span_t const b) noexcept
+    {
+        return a.begin < b.end && b.begin < a.end;
+    }
+
+    // True if the barrier's span covers any byte of `span`. A barrier
+    // without a span covers the whole torrent.
     [[nodiscard]] static bool touches(std::optional<tr_byte_span_t> const& barrier, tr_byte_span_t const span) noexcept
     {
-        return !barrier || (span.begin < barrier->end && barrier->begin < span.end);
+        return !barrier || overlaps(*barrier, span);
+    }
+
+    // True if a write in flight covers any byte of `span`.
+    [[nodiscard]] static bool overlaps_running_write(Gate const& gate, tr_byte_span_t const span) noexcept
+    {
+        auto const& writes = gate.running_writes;
+        auto const it = writes.lower_bound(span.begin);
+        return (it != std::end(writes) && it->first < span.end) ||
+            (it != std::begin(writes) && std::prev(it)->second > span.begin);
+    }
+
+    // True if a hash in flight covers any byte of `span`.
+    [[nodiscard]] static bool overlaps_running_hash(Gate const& gate, tr_byte_span_t const span) noexcept
+    {
+        return std::ranges::any_of(gate.running_hashes, [span](auto const& hash) { return overlaps(hash, span); });
     }
 
     // True if a running or queued barrier holds back an op on `span`.
     [[nodiscard]] static bool is_blocked(Gate const& gate, tr_byte_span_t const span) noexcept
     {
-        if (gate.barrier_running && touches(gate.barrier_span, span)) {
+        if (gate.running_barrier && touches(gate.running_barrier->span, span)) {
             return true;
         }
 
@@ -592,9 +616,7 @@ private:
             return gate.n_running == 0U;
         }
 
-        return std::ranges::none_of(gate.running_spans, [&barrier](auto const& running) {
-            return touches(barrier.span, running.first);
-        });
+        return !overlaps_running_write(gate, *barrier.span) && !overlaps_running_hash(gate, *barrier.span);
     }
 
     // The bytes a data op touches. Nothing for a barrier, or for a hash
@@ -618,15 +640,12 @@ private:
         return {};
     }
 
-    // Every pending or running op holds its gate's n_running, and idle
-    // gates are erased, so the map alone says whether anything is in
-    // flight.
+    // Every pending or running op holds its gate's n_running, and
+    // advance() erases a gate once nothing is in flight or queued, so
+    // an empty map means idle.
     [[nodiscard]] bool idle() const noexcept
     {
-        return std::ranges::all_of(gates_, [](auto const& id_and_gate) {
-            auto const& gate = id_and_gate.second;
-            return gate.n_running == 0U && !gate.barrier_running && std::empty(gate.queue);
-        });
+        return std::empty(gates_);
     }
 
     // Queue the op if a barrier blocks it, else run it, then run
@@ -667,7 +686,7 @@ private:
             }
 
             auto& gate = it->second;
-            if (gate.barrier_running) {
+            if (gate.running_barrier) {
                 return;
             }
 
@@ -683,18 +702,12 @@ private:
                     return; // still draining
                 }
 
-                auto op = std::move(*barrier);
+                // Ops the body submits queue behind it and run once it
+                // returns, so nothing erases `gate` under it.
+                gate.running_barrier = std::move(*barrier);
                 gate.queue.pop_front();
-                gate.barrier_running = true;
-                gate.barrier_span = op.span;
-                op.body();
-
-                // the body may have added or erased gates
-                if (auto const it2 = gates_.find(id); it2 != std::end(gates_)) {
-                    it2->second.barrier_running = false;
-                    it2->second.barrier_span.reset();
-                }
-
+                gate.running_barrier->body();
+                gate.running_barrier.reset();
                 continue;
             }
 
@@ -706,54 +719,49 @@ private:
 
     void release(tr_torrent_id_t const id, size_t const n_ops = 1U)
     {
-        auto const it = gates_.find(id);
-        TR_ASSERT(it != std::end(gates_));
-        TR_ASSERT(it->second.n_running >= n_ops);
-
-        it->second.n_running -= n_ops;
+        auto& gate = gate_of(id);
+        TR_ASSERT(gate.n_running >= n_ops);
+        gate.n_running -= n_ops;
         advance(id);
     }
 
-    // True if a write in flight covers any byte of `span`.
-    [[nodiscard]] static bool overlaps_running_write(Gate const& gate, tr_byte_span_t const span) noexcept
+    [[nodiscard]] Gate& gate_of(tr_torrent_id_t const id)
     {
-        return std::ranges::any_of(gate.running_spans, [span](auto const& running) {
-            return running.second && span.begin < running.first.end && running.first.begin < span.end;
-        });
+        auto const it = gates_.find(id);
+        TR_ASSERT(it != std::end(gates_));
+        return it->second;
     }
 
-    // A write must never overlap a write in flight, and a hash must
-    // never overlap a write in flight: we write only blocks we lack,
-    // and we hash a piece only after its writes complete. admit_write()
-    // rejects the first case; a failure here is a caller bug, not a
-    // backend race.
-    //
-    // A write may overlap a hash in flight. When a piece fails its
-    // hash, a block it shares with a neighbor is downloaded again while
-    // the neighbor's hash may still be running. That hash sees stale or
-    // torn data, and the torrent hashes the neighbor again once the new
-    // block lands.
-    static void register_running_span(Gate& gate, tr_byte_span_t const span, bool const is_write)
+    static void register_running_write(Gate& gate, tr_byte_span_t const span)
     {
-#ifdef TR_ENABLE_ASSERTS
-        for (auto const& [running, running_is_write] : gate.running_spans) {
-            if (running_is_write) {
-                TR_ASSERT(span.end <= running.begin || running.end <= span.begin);
-            }
-        }
-#endif
-
-        gate.running_spans.emplace_back(span, is_write);
+        gate.running_writes.emplace(span.begin, span.end);
     }
 
-    void unregister_running_span(tr_torrent_id_t const id, tr_byte_span_t const span)
+    static void unregister_running_write(Gate& gate, tr_byte_span_t const span)
     {
-        auto& spans = gates_[id].running_spans;
-        auto const it = std::ranges::find_if(spans, [&span](auto const& running) {
-            return running.first.begin == span.begin && running.first.end == span.end;
-        });
-        TR_ASSERT(it != std::end(spans));
-        spans.erase(it);
+        [[maybe_unused]] auto const n_erased = gate.running_writes.erase(span.begin);
+        TR_ASSERT(n_erased == 1U);
+    }
+
+    // A hash must never overlap a write in flight: we hash a piece only
+    // after its writes complete, so a failure here is a caller bug, not
+    // a backend race. A write may overlap a hash in flight. When a piece
+    // fails its hash, a block it shares with a neighbor is downloaded
+    // again while the neighbor's hash may still be running. That hash
+    // sees stale or torn data, and the torrent hashes the neighbor
+    // again once the new block lands.
+    static void register_running_hash(Gate& gate, tr_byte_span_t const span)
+    {
+        TR_ASSERT(!overlaps_running_write(gate, span));
+        gate.running_hashes.emplace_back(span);
+    }
+
+    static void unregister_running_hash(Gate& gate, tr_byte_span_t const span)
+    {
+        auto& hashes = gate.running_hashes;
+        auto const it = std::ranges::find(hashes, span);
+        TR_ASSERT(it != std::end(hashes));
+        hashes.erase(it);
     }
 
     void exec_read(tr_torrent_id_t const id, ReadOp const& op)
@@ -780,7 +788,7 @@ private:
         }
 
         ++gate.n_running;
-        register_running_span(gate, desc->block_info.byte_span_for_piece(op.piece), false);
+        register_running_hash(gate, desc->block_info.byte_span_for_piece(op.piece));
 
         {
             auto const lock = std::scoped_lock{ work_mutex_ };
@@ -794,18 +802,11 @@ private:
     {
         auto const span = op.span;
         auto desc = provider_(id);
-        if (!desc || span.end > desc->block_info.total_size()) {
-            enqueued_write_bytes_.fetch_sub(span.size(), std::memory_order_relaxed);
-            if (op.on_write) {
-                std::move(op.on_write)(id, span, make_error(TR_ERROR_EINVAL));
-            }
-            return;
-        }
 
-        // The caller wrote a block that is still being written. Fail
-        // this copy. Queuing it under the same key would drop it, and a
-        // dropped op holds the gate open forever.
-        if (overlaps_running_write(gate, span)) {
+        // A write for a block still being written fails rather than
+        // queuing under the same key: a dropped op would hold the gate
+        // open forever.
+        if (!desc || span.end > desc->block_info.total_size() || overlaps_running_write(gate, span)) {
             enqueued_write_bytes_.fetch_sub(span.size(), std::memory_order_relaxed);
             if (op.on_write) {
                 std::move(op.on_write)(id, span, make_error(TR_ERROR_EINVAL));
@@ -814,7 +815,7 @@ private:
         }
 
         ++gate.n_running;
-        register_running_span(gate, span, true);
+        register_running_write(gate, span);
 
         {
             auto const lock = std::scoped_lock{ work_mutex_ };
@@ -1048,8 +1049,9 @@ private:
 
             // Every callback runs before any release, so a barrier
             // enqueued by one of them can't overtake the rest of the run.
+            auto& gate = gate_of(id);
             for (auto const& op : run) {
-                unregister_running_span(id, op.span);
+                unregister_running_write(gate, op.span);
             }
             for (auto& op : run) {
                 if (op.on_write) {
@@ -1097,7 +1099,7 @@ private:
 
         post_completion([this, op = std::move(op), err, hash]() mutable {
             auto const id = op.tor_id;
-            unregister_running_span(id, op.desc->block_info.byte_span_for_piece(op.piece));
+            unregister_running_hash(gate_of(id), op.desc->block_info.byte_span_for_piece(op.piece));
             if (op.on_test) {
                 std::move(op.on_test)(
                     id,

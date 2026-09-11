@@ -344,6 +344,8 @@ struct tr_byte_span_t {
         return end - begin;
     }
 
+    [[nodiscard]] constexpr bool operator==(tr_byte_span_t const&) const noexcept = default;
+
     uint64_t begin;
     uint64_t end;
 };
