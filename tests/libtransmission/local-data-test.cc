@@ -603,12 +603,7 @@ TEST_F(LocalDataWorkersTest, fileInitializationParksDependentWorkWithoutOccupyin
             if (size == 4U * BlockSize) {
                 entered.set_value();
                 EXPECT_EQ(std::future_status::ready, resumed.wait_for(5s));
-#ifdef _WIN32
-                error->set(fail ? ERROR_DISK_FULL : ERROR_NOT_SUPPORTED, "injected preallocation error");
-#else
-                error->set(fail ? ENOSPC : ENOSYS, "injected preallocation error");
-#endif
-                return false;
+                return tr::test::failPreallocation(error, fail);
             }
             if (size == BlockSize / 2U) {
                 prefix_created.set_value();

@@ -347,12 +347,7 @@ TEST_P(OpenFilesPreallocationTest, serializesWritersUntilInitializationFinishes)
         EXPECT_EQ(0, flags);
         entered.set_value();
         EXPECT_EQ(std::future_status::ready, resumed.wait_for(5s));
-#ifdef _WIN32
-        error->set(fail ? ERROR_DISK_FULL : ERROR_NOT_SUPPORTED, "injected preallocation error");
-#else
-        error->set(fail ? ENOSPC : ENOSYS, "injected preallocation error");
-#endif
-        return false;
+        return tr::test::failPreallocation(error, fail);
     } };
 
     auto first = std::async(std::launch::async, [&]() {
