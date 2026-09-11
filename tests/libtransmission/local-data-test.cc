@@ -920,6 +920,36 @@ TEST_F(LocalDataWorkersTest, barriersWaitForWritesAndBlockLaterOps)
     local_data->shutdown();
 }
 
+TEST_F(LocalDataWorkersTest, secondWriteOfABlockInFlightFails)
+{
+    auto const local_data = makeLocalData(makeDescriptor({ { "data.bin", 2U * BlockSize } }, 32768U));
+
+    local_data->set_workers_paused(true);
+    auto n_written = size_t{};
+    writeBlocks(*local_data, 0U, BlockSize, [&n_written]() { ++n_written; });
+
+    // the copy fails at once and does not join the queue
+    auto code = std::optional<tr_error_code_t>{};
+    local_data->write(
+        TorId,
+        { .begin = 0U, .end = BlockSize },
+        patternBlock(0U),
+        [&code](tr_torrent_id_t, tr_byte_span_t, tr_error const& error) { code = error.code(); });
+    EXPECT_EQ(TR_ERROR_EINVAL, code);
+    EXPECT_EQ(BlockSize, local_data->enqueued_write_bytes());
+
+    // the first write still lands, and the gate still drains
+    local_data->set_workers_paused(false);
+    EXPECT_TRUE(pumpUntil([&n_written]() { return n_written == 1U; }));
+    EXPECT_EQ(0U, local_data->enqueued_write_bytes());
+    auto closed = false;
+    local_data->close_torrent(TorId, [&closed](tr_torrent_id_t) { closed = true; });
+    EXPECT_TRUE(pumpUntil([&closed]() { return closed; }));
+    EXPECT_EQ(patternString(0U, BlockSize), readFile("data.bin").substr(0U, BlockSize));
+
+    local_data->shutdown();
+}
+
 TEST_F(LocalDataWorkersTest, combinedWritesDeliverEveryCallbackBeforeAQueuedBarrier)
 {
     auto const local_data = makeLocalData(makeDescriptor({ { "data.bin", 2U * BlockSize } }, 32768U), 1U);
