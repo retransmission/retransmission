@@ -570,6 +570,10 @@ void tr_torrent::start(bool bypass_queue, std::optional<bool> has_any_local_data
 
     auto const lock = unique_lock();
 
+    if (is_deleting_) {
+        return; // a torrent being removed stays stopped
+    }
+
     switch (activity()) {
     case TR_STATUS_SEED:
     case TR_STATUS_DOWNLOAD:
