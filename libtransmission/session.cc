@@ -1950,9 +1950,8 @@ std::optional<size_t> tr_session::spare_request_blocks() const noexcept
 
 uint64_t tr_session::effective_write_budget_bytes() const noexcept
 {
-    // Floor the budget at one write run. Below that nothing is ever
-    // spare, so no peer could add a request and every download would
-    // stall.
+    // The setting is in MiB, so zero is the only value below one MiB.
+    // A budget of zero admits no requests. Treat it as one MiB.
     static auto constexpr MinBudget = uint64_t{ 1024U } * 1024U;
     return std::max(uint64_t{ settings_.disk_write_budget_mib } * 1024U * 1024U, MinBudget);
 }
