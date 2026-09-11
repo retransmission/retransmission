@@ -726,8 +726,6 @@ public:
         return open_files_;
     }
 
-    void close_torrent_files(tr_torrent_id_t tor_id) noexcept;
-
     // Call after changing a setting that every torrent's storage
     // descriptor snapshots: the preallocation mode, or whether new
     // files get the partial-file suffix.
