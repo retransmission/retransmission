@@ -13,6 +13,7 @@
 #include <libtransmission/variant.h>
 
 #include <glibmm/miscutils.h>
+#include <glibmm/ustring.h>
 
 #include <string>
 #include <string_view>
@@ -147,3 +148,25 @@ void gtr_pref_save(tr_session* session)
 {
     tr_sessionSaveSettings(session, gl_confdir, gtr_pref_get_all());
 }
+
+// ---
+
+namespace tr::serializer
+{
+
+tr_variant Converter<Glib::ustring>::to_variant(Glib::ustring const& src)
+{
+    return src.raw();
+}
+
+bool Converter<Glib::ustring>::to_value(tr_variant const& src, Glib::ustring* const tgt)
+{
+    if (auto const val = src.value_if<std::string_view>()) {
+        *tgt = Glib::ustring{ std::string{ *val } };
+        return true;
+    }
+
+    return false;
+}
+
+} // namespace tr::serializer

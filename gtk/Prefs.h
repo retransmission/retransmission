@@ -39,6 +39,11 @@ struct PrefsStringTraits<Glib::ustring> {
 };
 } // namespace tr::app
 
+namespace tr::serializer
+{
+TR_DECLARE_CONVERTER(Glib::ustring)
+} // namespace tr::serializer
+
 // FIXME(ckerr) remove annoying pragma
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wnull-dereference"
