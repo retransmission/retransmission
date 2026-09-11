@@ -702,7 +702,7 @@ void tr_torrentRemoveInSessionThread(
         }
 
         auto error = tr_error{};
-        tor->files().remove(tor->current_dir().sv(), tor->name(), remove_func, &error);
+        tor->files().remove(tor->search_paths(), tor->name(), remove_func, &error);
         if (error) {
             tr_logAddWarnTor(
                 tor,
@@ -1084,12 +1084,11 @@ void tr_torrent::set_location_in_session_thread(std::string_view const path, boo
         session->verify_remove(this);
 
         auto error = tr_error{};
-        ok = files().move(current_dir().sv(), path, name(), &error);
+        ok = files().move(search_paths(), path, name(), &error);
         if (error) {
             this->error().set_local_error(
                 fmt::format(
-                    fmt::runtime(_("Couldn't move '{old_path}' to '{path}': {error} ({error_code})")),
-                    fmt::arg("old_path", current_dir().sv()),
+                    fmt::runtime(_("Couldn't move torrent files to '{path}': {error} ({error_code})")),
                     fmt::arg("path", path),
                     fmt::arg("error", error.message()),
                     fmt::arg("error_code", error.code())));
@@ -1113,26 +1112,20 @@ void tr_torrent::set_location_in_session_thread(std::string_view const path, boo
     }
 }
 
-namespace
+small::max_size_vector<std::string_view, 2> tr_torrent::search_paths() const
 {
-namespace location_helpers
-{
-size_t buildSearchPathArray(tr_torrent const* tor, std::string_view* paths)
-{
-    auto* walk = paths;
+    auto paths = small::max_size_vector<std::string_view, 2>{};
 
-    if (auto const& path = tor->download_dir(); !std::empty(path)) {
-        *walk++ = path.sv();
+    if (!std::empty(download_dir())) {
+        paths.push_back(download_dir().sv());
     }
 
-    if (auto const& path = tor->incomplete_dir(); !std::empty(path)) {
-        *walk++ = path.sv();
+    if (!std::empty(incomplete_dir()) && incomplete_dir() != download_dir()) {
+        paths.push_back(incomplete_dir().sv());
     }
 
-    return walk - paths;
+    return paths;
 }
-} // namespace location_helpers
-} // namespace
 
 void tr_torrent::set_location(std::string_view location, bool move_from_old_path, int volatile* setme_state)
 {
@@ -1159,20 +1152,12 @@ void tr_torrentSetLocation(
 
 std::optional<tr_torrent_files::FoundFile> tr_torrent::find_file(tr_file_index_t file_index) const
 {
-    using namespace location_helpers;
-
-    auto paths = std::array<std::string_view, 4>{};
-    auto const n_paths = buildSearchPathArray(this, std::data(paths));
-    return files().find(file_index, { paths.data(), n_paths });
+    return files().find(file_index, search_paths());
 }
 
 bool tr_torrent::has_any_local_data() const
 {
-    using namespace location_helpers;
-
-    auto paths = std::array<std::string_view, 4>{};
-    auto const n_paths = buildSearchPathArray(this, std::data(paths));
-    return files().has_any_local_data({ paths.data(), n_paths });
+    return files().has_any_local_data(search_paths());
 }
 
 void tr_torrentSetDownloadDir(tr_torrent* tor, std::string_view const path)
@@ -1802,7 +1787,8 @@ void tr_torrent::recheck_completeness()
             }
             date_done_ = tr_time();
 
-            if (current_dir() == incomplete_dir()) {
+            auto const incomplete = incomplete_dir().sv();
+            if (!std::empty(incomplete) && files().has_any_local_data(std::span{ &incomplete, 1U })) {
                 set_location(download_dir().sv(), true, nullptr);
             }
 
