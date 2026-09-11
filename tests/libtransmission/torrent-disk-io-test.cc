@@ -588,10 +588,9 @@ TEST_F(TorrentDiskIoTest, requestBudgetIsUnboundedOnTheSynchronousBackend)
     EXPECT_FALSE(session_->spare_request_blocks().has_value());
 }
 
-TEST_F(ZeroBudgetTest, zeroBudgetFloorsAtOneWriteRun)
+TEST_F(ZeroBudgetTest, zeroBudgetIsTreatedAsOneMiB)
 {
-    // 1 MiB of 16 KiB blocks. A budget that admits nothing would stall
-    // every download.
+    // 1 MiB of 16 KiB blocks. A budget of zero would admit no requests.
     static auto constexpr MinBudgetBlocks = size_t{ 64U };
     inSessionThread([this]() { EXPECT_EQ(MinBudgetBlocks, session_->spare_request_blocks()); });
 }
