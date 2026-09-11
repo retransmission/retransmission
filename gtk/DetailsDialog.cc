@@ -1983,7 +1983,7 @@ void AddTrackerDialog::on_response(int response)
             if (tr_urlIsValidTracker(url.c_str())) {
                 // TODO(ckerr) migrate to `TR_KEY_tracker_list`
                 auto params = tr_variant::Map{ 2U };
-                params.try_emplace(TR_KEY_ids, tr::serializer::to_variant(torrent_id_));
+                params.try_emplace(TR_KEY_ids, tr::serializer::to_variant(std::array{ torrent_id_ }));
                 params.try_emplace(TR_KEY_tracker_add, tr::serializer::to_variant(std::span{ &url.raw(), 1U }));
                 core_->exec(TR_KEY_torrent_set, std::move(params));
                 parent_.refresh();
@@ -2021,7 +2021,7 @@ void DetailsDialog::Impl::on_tracker_list_remove_button_clicked()
 
         // TODO(ckerr): migrate to `TR_KEY_tracker_list`
         auto params = tr_variant::Map{ 2U };
-        params.try_emplace(TR_KEY_ids, tr::serializer::to_variant(torrent_id));
+        params.try_emplace(TR_KEY_ids, tr::serializer::to_variant(std::array{ torrent_id }));
         params.try_emplace(TR_KEY_tracker_remove, tr::serializer::to_variant(std::array{ tracker_id }));
         core_->exec(TR_KEY_torrent_set, std::move(params));
         refresh();
