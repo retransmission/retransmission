@@ -659,17 +659,22 @@ private:
         });
     }
 
-    // A write must never overlap an op in flight, and a hash must never
-    // overlap a write in flight. The protocol already guarantees both:
-    // we write only blocks we lack, and hash or read only pieces whose
-    // writes have all completed. admit_write() rejects a write that
-    // overlaps a write in flight; a failure here is a caller bug, not a
+    // A write must never overlap a write in flight, and a hash must
+    // never overlap a write in flight: we write only blocks we lack,
+    // and we hash a piece only after its writes complete. admit_write()
+    // rejects the first case; a failure here is a caller bug, not a
     // backend race.
+    //
+    // A write may overlap a hash in flight. When a piece fails its
+    // hash, a block it shares with a neighbor is downloaded again while
+    // the neighbor's hash may still be running. That hash sees stale or
+    // torn data, and the torrent hashes the neighbor again once the new
+    // block lands.
     static void register_running_span(Gate& gate, tr_byte_span_t const span, bool const is_write)
     {
 #ifdef TR_ENABLE_ASSERTS
         for (auto const& [running, running_is_write] : gate.running_spans) {
-            if (is_write || running_is_write) {
+            if (running_is_write) {
                 TR_ASSERT(span.end <= running.begin || running.end <= span.begin);
             }
         }
