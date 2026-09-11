@@ -29,12 +29,12 @@
 #include <libtransmission-app/startup-coordinator.h>
 
 #include <libtransmission/api-compat.h>
+#include <libtransmission/converters.h>
 #include <libtransmission/crypto-utils.h> // tr_base64_decode()
 #include <libtransmission/log.h>
 #include <libtransmission/macros.h>
 #include <libtransmission/quark.h>
 #include <libtransmission/rpcimpl.h>
-#include <libtransmission/serializer.h>
 #include <libtransmission/torrent-builder.h>
 #include <libtransmission/transmission.h>
 #include <libtransmission/version.h>

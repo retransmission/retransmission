@@ -12,10 +12,10 @@
 #include "TorrentSorter.h"
 #include "Utils.h"
 
+#include <libtransmission/converters.h>
 #include <libtransmission/env.h>
 #include <libtransmission/macros.h>
 #include <libtransmission/rpcimpl.h>
-#include <libtransmission/serializer.h>
 #include <libtransmission/torrent-builder.h>
 #include <libtransmission/torrent-metainfo.h>
 #include <libtransmission/transmission.h>

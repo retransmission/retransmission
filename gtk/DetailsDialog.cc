@@ -14,7 +14,7 @@
 #include "Session.h"
 #include "Utils.h"
 
-#include <libtransmission/serializer.h>
+#include <libtransmission/converters.h>
 #include <libtransmission/string-utils.h>
 #include <libtransmission/utils.h>
 #include <libtransmission/values.h>
