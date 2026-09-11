@@ -2345,9 +2345,8 @@ void tr_torrent::on_block_written(tr_block_index_t const block, tr_error const& 
 
     completion_.add_block(block);
 
-    auto const block_loc = this->block_loc(block);
-    auto const first_piece = block_loc.piece;
-    auto const last_piece = byte_loc(block_loc.byte + block_size(block) - 1).piece;
+    auto const first_piece = block_loc(block).piece;
+    auto const last_piece = block_last_loc(block).piece;
     for (auto piece = first_piece; piece <= last_piece; ++piece) {
         if (has_blocks(block_span_for_piece(piece))) {
             test_piece(piece);

@@ -218,9 +218,8 @@ public:
 
     void stash(tr_torrent_id_t const id, tr_block_info const& block_info, tr_block_index_t const block, Block const& data)
     {
-        auto const [begin_byte, end_byte] = block_info.byte_span_for_block(block);
-        auto const first_piece = block_info.byte_loc(begin_byte).piece;
-        auto const last_piece = block_info.byte_loc(end_byte - 1U).piece;
+        auto const first_piece = block_info.block_loc(block).piece;
+        auto const last_piece = block_info.block_last_loc(block).piece;
         auto const n_bytes = std::size(*data);
 
         auto const lock = std::scoped_lock{ mutex_ };
