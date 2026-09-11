@@ -1173,6 +1173,12 @@ std::vector<tr_block_span_t> tr_peerMgrGetNextRequests(tr_torrent* torrent, tr_p
 {
     TR_ASSERT(!torrent->is_done());
 
+    // Keep the session's in-flight data under its disk budget. Every
+    // requester comes through here, so this is the one place to clamp.
+    if (auto const spare = torrent->session->spare_request_blocks(); spare) {
+        numwant = std::min(numwant, *spare);
+    }
+
     if (auto& controller = torrent->swarm->wishlist_controller) {
         return controller->next(numwant, [peer](tr_piece_index_t p) { return peer->has_piece(p); });
     }
