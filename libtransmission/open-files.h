@@ -148,6 +148,10 @@ private:
         return std::make_pair(tor_id, file_num);
     }
 
+    // Call with mutex_ held. True if another caller is initializing
+    // the file and `waiter` is now parked on it.
+    [[nodiscard]] bool park_if_opening(Key const& key, Waiter* waiter);
+
     static constexpr size_t MaxOpenFiles = 32U;
 
     Preallocate const preallocate_;
