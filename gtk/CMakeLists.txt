@@ -1,8 +1,10 @@
 find_program(APPSTREAM appstreamcli)
 
-add_executable(${TR_NAME}-gtk WIN32)
+# Everything but main() is a library so that tests/gtk can link the client's
+# code without launching it.
+add_library(${TR_NAME}-gtk-lib STATIC)
 
-target_sources(${TR_NAME}-gtk
+target_sources(${TR_NAME}-gtk-lib
     PRIVATE
         Actions.cc
         Actions.h
@@ -33,7 +35,6 @@ target_sources(${TR_NAME}-gtk
         ListModelAdapter.cc
         ListModelAdapter.h
         Macros.h
-        main.cc
         MainWindow.cc
         MainWindow.h
         MakeDialog.cc
@@ -80,7 +81,7 @@ tr_allow_compile_if(
     [=[[GTK_VERSION EQUAL 3]]=]
         TorrentCellRenderer.cc)
 
-target_sources(${TR_NAME}-gtk
+target_sources(${TR_NAME}-gtk-lib
     PRIVATE
         ui/gtk3/AddTrackerDialog.ui
         ui/gtk3/DetailsDialog.ui
@@ -99,7 +100,7 @@ target_sources(${TR_NAME}-gtk
 source_group(Ui/GTK3
     REGULAR_EXPRESSION [[ui/gtk3/.*\.ui$]])
 
-target_sources(${TR_NAME}-gtk
+target_sources(${TR_NAME}-gtk-lib
     PRIVATE
         ui/gtk4/AddTrackerDialog.ui
         ui/gtk4/DetailsDialog.ui
@@ -141,6 +142,15 @@ else()
     set(UI_SUBDIR ui/gtk3)
 endif()
 
+add_executable(${TR_NAME}-gtk WIN32)
+
+target_sources(${TR_NAME}-gtk
+    PRIVATE
+        main.cc)
+
+# The generated resource file registers itself from a static constructor,
+# which a static library would drop as unreferenced. A test that loads the
+# client's UI adds the same resources to its own executable.
 tr_target_glib_resources(${TR_NAME}-gtk
     transmission.gresource.xml
     ${UI_SUBDIR}/transmission-ui.gresource.xml)
@@ -179,34 +189,41 @@ if(ENABLE_NLS)
             ${METAINFO_FILE})
 endif()
 
-target_compile_definitions(${TR_NAME}-gtk
-    PRIVATE
+target_compile_definitions(${TR_NAME}-gtk-lib
+    PUBLIC
         "TR_GTK_APP_ID=\"${TR_GTK_APP_ID}\""
         TRANSMISSIONLOCALEDIR="${CMAKE_INSTALL_FULL_LOCALEDIR}"
         GETTEXT_PACKAGE="${TR_NAME}-gtk"
         $<$<BOOL:${ENABLE_UTP}>:WITH_UTP>)
 
-target_compile_options(${TR_NAME}-gtk
-    PRIVATE
-        $<$<BOOL:${ENABLE_WERROR}>:$<IF:$<CXX_COMPILER_ID:MSVC>,/WX,-Werror>>
-        $<$<NOT:$<CXX_COMPILER_ID:MSVC>>:-Wno-exit-time-destructors>)
+foreach(TGT ${TR_NAME}-gtk-lib ${TR_NAME}-gtk)
+    target_compile_options(${TGT}
+        PRIVATE
+            $<$<BOOL:${ENABLE_WERROR}>:$<IF:$<CXX_COMPILER_ID:MSVC>,/WX,-Werror>>
+            $<$<NOT:$<CXX_COMPILER_ID:MSVC>>:-Wno-exit-time-destructors>)
+endforeach()
 
-target_include_directories(${TR_NAME}-gtk
-    PRIVATE
+target_include_directories(${TR_NAME}-gtk-lib
+    PUBLIC
+        ${CMAKE_CURRENT_SOURCE_DIR}
         ${CMAKE_CURRENT_BINARY_DIR})
 
-target_include_directories(${TR_NAME}-gtk SYSTEM
+target_include_directories(${TR_NAME}-gtk-lib SYSTEM
     PRIVATE
         $<$<BOOL:${WITH_APPINDICATOR}>:${APPINDICATOR_INCLUDE_DIRS}>)
 
-target_link_libraries(${TR_NAME}-gtk
-    PRIVATE
+target_link_libraries(${TR_NAME}-gtk-lib
+    PUBLIC
         ${TR_NAME}-app
         ${TR_NAME}
         woke::woke
         transmission::gtk_impl
         transmission::fmt-header-only
         $<$<BOOL:${WITH_APPINDICATOR}>:${APPINDICATOR_LIBRARIES}>)
+
+target_link_libraries(${TR_NAME}-gtk
+    PRIVATE
+        ${TR_NAME}-gtk-lib)
 
 if(MSVC)
     tr_append_target_property(${TR_NAME}-gtk LINK_FLAGS "/ENTRY:mainCRTStartup")
