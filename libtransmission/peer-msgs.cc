@@ -24,6 +24,7 @@
 #include <vector>
 
 #include <fmt/core.h>
+#include <fmt/chrono.h>
 
 #include <small/vector.hpp>
 
@@ -1794,6 +1795,7 @@ void tr_peerMsgsImpl::got_error(tr_peerIo* /*io*/, tr_error const& /*error*/, vo
 void tr_peerMsgsImpl::pulse()
 {
     auto const now_sec = tr_time();
+    auto const now = std::chrono::steady_clock::now();
     auto const now_msec = tr_time_msec();
 
     update_desired_request_count();
@@ -1807,10 +1809,10 @@ void tr_peerMsgsImpl::pulse()
         output += this_loop;
         if (this_loop == 0U)
         {
-            loginfo(this, fmt::format("wrote {:d} bytes this pulse", output));
             break;
         }
     }
+    loginfo(this, fmt::format("wrote {:d} bytes this pulse, took {:%S}", output, std::chrono::steady_clock::now() - now));
 }
 
 void tr_peerMsgsImpl::update_metadata_requests(time_t now) const
