@@ -1114,9 +1114,10 @@ void tr_torrent::set_location_in_session_thread(
         *setme_state = TR_LOC_MOVING;
     }
 
-    // ensure the files are all closed and idle before moving
-    session->close_torrent_files(id());
+    // Cancel a pending verify first. Cancelling re-hashes pieces, and
+    // those hashes must run before the files close and move.
     session->verify_remove(this);
+    session->close_torrent_files(id());
 
     session->local_data.move(
         id(),
