@@ -1770,6 +1770,9 @@ void tr_torrent::VerifyMediator::on_verify_done(bool const aborted)
                     tor->update_file_path(file, {});
                 }
 
+                // The verifier settled every piece. Any hash token left
+                // over is stale and would hold up the completeness check.
+                tor->hash_tokens_.clear();
                 tor->recheck_completeness();
 
                 session->verify_done_(tor_id);
@@ -1858,6 +1861,14 @@ void tr_torrent::recheck_completeness()
     using namespace completeness_helpers;
 
     auto const lock = unique_lock();
+
+    // completion_ counts a piece as soon as its blocks are written, but
+    // the piece is had only once its hash passes. Wait for the hashes
+    // in flight; each one asks for another check when it finishes.
+    if (!std::empty(hash_tokens_)) {
+        needs_completeness_check_ = true;
+        return;
+    }
 
     needs_completeness_check_ = false;
 
@@ -2244,6 +2255,7 @@ void tr_torrent::on_piece_failed(tr_piece_index_t const piece)
     bytes_corrupt_ += n;
     bytes_downloaded_.reduce(n);
     set_has_piece(piece, false);
+    set_needs_completeness_check();
     got_bad_piece_(this, piece);
 }
 
