@@ -395,10 +395,13 @@ struct tr_torrent {
 
     [[nodiscard]] auto create_piece_bitfield() const
     {
-        auto pieces = tr_bitfield{ piece_count() };
-        for (auto piece = tr_piece_index_t{}; piece < piece_count(); ++piece) {
-            pieces.set(piece, has_piece(piece));
+        auto pieces = completion_.create_piece_bitfield();
+
+        // a piece with a hash in flight is not had yet; see has_piece()
+        for (auto const& [piece, token] : hash_tokens_) {
+            pieces.unset(piece);
         }
+
         return pieces.raw();
     }
 
