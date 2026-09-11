@@ -920,6 +920,38 @@ TEST_F(LocalDataWorkersTest, barriersWaitForWritesAndBlockLaterOps)
     local_data->shutdown();
 }
 
+TEST_F(LocalDataWorkersTest, closingAFileWaitsOnlyForOpsThatTouchIt)
+{
+    auto const local_data = makeLocalData(makeDescriptor({ { "a.bin", BlockSize }, { "b.bin", BlockSize } }, BlockSize));
+
+    // a write to a.bin is in flight...
+    local_data->set_workers_paused(true);
+    auto n_written = size_t{};
+    writeBlocks(*local_data, 0U, BlockSize, [&n_written]() { ++n_written; });
+
+    // ...so closing b.bin runs at once, while closing a.bin waits
+    auto b_closed = false;
+    local_data->close_file(TorId, 1U, [&b_closed](tr_torrent_id_t) { b_closed = true; });
+    EXPECT_TRUE(b_closed);
+    auto a_closed = false;
+    local_data->close_file(TorId, 0U, [&a_closed](tr_torrent_id_t) { a_closed = true; });
+    EXPECT_FALSE(a_closed);
+
+    // ...and the queued close of a.bin does not hold back a read of b.bin
+    // (the read itself fails since there's no real torrent)
+    auto read_done = false;
+    local_data->read(TorId, { .begin = BlockSize, .end = 2U * BlockSize }, [&read_done](auto, auto, auto const&, auto) {
+        read_done = true;
+    });
+    EXPECT_TRUE(read_done);
+
+    local_data->set_workers_paused(false);
+    EXPECT_TRUE(pumpUntil([&a_closed]() { return a_closed; }));
+    EXPECT_EQ(1U, n_written);
+
+    local_data->shutdown();
+}
+
 TEST_F(LocalDataWorkersTest, secondWriteOfABlockInFlightFails)
 {
     auto const local_data = makeLocalData(makeDescriptor({ { "data.bin", 2U * BlockSize } }, 32768U));

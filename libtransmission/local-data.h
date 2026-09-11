@@ -56,9 +56,10 @@ struct StorageDescriptor;
  *    in any order. If op B needs to see op A's result, wait for A's
  *    callback before starting B.
  *
- * 3. Admin ops are barriers on their torrent. `move`, `rename`,
- *    `remove`, `close_file`, `close_torrent`, and `close_all` wait for
- *    the ops already in flight. Ops started later wait for them.
+ * 3. Admin ops are barriers. `move`, `rename`, `remove`,
+ *    `close_torrent`, and `close_all` wait for the ops already in
+ *    flight on their torrent, and ops started later wait for them.
+ *    `close_file` does the same for the ops that touch its file.
  *
  * 4. Every callback fires exactly once. It may fire before the enqueue
  *    call returns, or long afterwards from the session thread. Callers
@@ -373,8 +374,9 @@ private:
     // True if this completion should wait for pump() instead of firing now.
     [[nodiscard]] bool defer_next() noexcept;
 
-    // Run an admin op as a barrier. See the definition.
-    void admin(tr_torrent_id_t id, std::function<void()> body);
+    // Run an admin op as a barrier on the torrent, or with `file`, on
+    // that file alone. See the definition.
+    void admin(tr_torrent_id_t id, std::function<void()> body, std::optional<tr_file_index_t> file = {});
 
     void park(std::unique_ptr<Parked> completion);
 
