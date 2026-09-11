@@ -285,11 +285,6 @@ public:
      */
     void start_workers(size_t worker_count, tr_open_files& open_files, Marshal marshal, DescriptorProvider provider);
 
-    [[nodiscard]] bool is_threaded() const noexcept
-    {
-        return threaded_ != nullptr;
-    }
-
     void read(tr_torrent_id_t id, tr_byte_span_t byte_span, OnRead on_read);
     void test_piece(tr_torrent_id_t id, tr_piece_index_t piece, OnTest on_test);
     void write(tr_torrent_id_t id, tr_byte_span_t byte_span, std::unique_ptr<BlockData> data, OnWrite on_write);
@@ -311,6 +306,17 @@ public:
     [[nodiscard]] Stats stats() const noexcept;
 
     void set_retained_bytes(size_t max_bytes);
+
+    // The most bytes that may wait for the disk, counting blocks
+    // requested from peers as well as blocks received. Also sizes the
+    // retained-block cache.
+    void set_write_budget(uint64_t bytes);
+
+    // Bytes still spare under the write budget once `requested` bytes
+    // join what waits for the disk. No value means no bound: the
+    // synchronous backend writes a block before it reads the next one
+    // off the wire, so nothing buffers there.
+    [[nodiscard]] std::optional<uint64_t> spare_write_bytes(uint64_t requested) const noexcept;
 
     // Both backends report created files through this.
     void set_on_files_created(OnFilesCreated on_files_created);
@@ -390,6 +396,7 @@ private:
 
     std::shared_ptr<Threaded> threaded_;
     size_t retained_bytes_ = MaxRetainedBytes;
+    std::optional<uint64_t> write_budget_;
 
     std::vector<std::unique_ptr<Parked>> parked_;
     std::function<void()> wake_;
