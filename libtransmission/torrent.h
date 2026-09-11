@@ -87,7 +87,8 @@ struct tr_torrent {
         void load_seconds_seeding_before_current_start(time_t when) noexcept;
         void load_start_when_stable(bool val) noexcept;
 
-        [[nodiscard]] tr_bitfield const& blocks() const noexcept;
+        // The blocks on disk, minus the pieces whose hash is in flight.
+        [[nodiscard]] tr_bitfield blocks() const;
         [[nodiscard]] tr_bitfield const& checked_pieces() const noexcept;
         [[nodiscard]] std::vector<time_t> const& file_mtimes() const noexcept;
         [[nodiscard]] time_t date_active() const noexcept;

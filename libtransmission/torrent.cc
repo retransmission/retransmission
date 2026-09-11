@@ -2255,6 +2255,7 @@ void tr_torrent::on_piece_failed(tr_piece_index_t const piece)
     bytes_corrupt_ += n;
     bytes_downloaded_.reduce(n);
     set_has_piece(piece, false);
+    set_dirty(); // the resume file lists this piece's blocks
     set_needs_completeness_check();
     got_bad_piece_(this, piece);
 }
@@ -2674,9 +2675,19 @@ void tr_torrent::ResumeHelper::load_checked_pieces(tr_bitfield const& checked, t
 
 // ---
 
-tr_bitfield const& tr_torrent::ResumeHelper::blocks() const noexcept
+tr_bitfield tr_torrent::ResumeHelper::blocks() const
 {
-    return tor_.completion_.blocks();
+    auto blocks = tor_.completion_.blocks();
+
+    // A piece whose hash is in flight may still fail. Leave its blocks
+    // out so the next session downloads them again rather than trusting
+    // them.
+    for (auto const& [piece, token] : tor_.hash_tokens_) {
+        auto const [begin, end] = tor_.block_span_for_piece(piece);
+        blocks.unset_span(begin, end);
+    }
+
+    return blocks;
 }
 
 void tr_torrent::ResumeHelper::load_blocks(tr_bitfield blocks)
