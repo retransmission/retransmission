@@ -553,7 +553,7 @@ private:
         if (can_add_request_from_peer(req))
         {
             peer_requested_.emplace_back(req);
-            loginfo(this, fmt::format("pushed {:d}:{:d}->{:d} to queue, size {:d}", req.index, req.offset, req.length, peer_requested_.size()));
+            loginfo(this, fmt::format("pushed {:d}:{:d}->{:d} to queue, reqq {:d}", req.index, req.offset, req.length, peer_requested_.size()));
         }
         else if (io_->supports_fext())
         {
@@ -1800,9 +1800,12 @@ void tr_peerMsgsImpl::pulse()
     update_block_requests();
     update_metadata_requests(now_sec);
 
+    auto output = size_t{};
     for (;;)
     {
-        if (auto output = fill_output_buffer(now_sec, now_msec); output == 0U)
+        auto const this_loop = fill_output_buffer(now_sec, now_msec);
+        output += this_loop;
+        if (this_loop == 0U)
         {
             loginfo(this, fmt::format("wrote {:d} bytes this pulse", output));
             break;

@@ -7,6 +7,8 @@ if(POLICY CMP0114)
     cmake_policy(SET CMP0114 NEW)
 endif()
 
+set(CMAKE_POLICY_VERSION_MINIMUM 3.5 CACHE STRING "" FORCE)
+
 # Value should follow latest stable Xcode's RECOMMENDED_MACOSX_DEPLOYMENT_TARGET
 set(MACOS_SUPPORT_MINIMUM 11.0)
 
