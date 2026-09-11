@@ -409,7 +409,16 @@ public:
 
     void read(tr_torrent_id_t const id, tr_byte_span_t const span, OnRead on_read)
     {
-        submit(id, ReadOp{ .span = span, .on_read = std::move(on_read) });
+        auto op = ReadOp{ .span = span, .on_read = std::move(on_read) };
+
+        // A torrent with nothing in flight has no gate, and a read runs
+        // inline anyway. Skip creating and erasing one per read.
+        if (!gates_.contains(id)) {
+            exec_read(id, op);
+            return;
+        }
+
+        submit(id, std::move(op));
     }
 
     void test_piece(tr_torrent_id_t const id, tr_piece_index_t const piece, OnTest on_test)
