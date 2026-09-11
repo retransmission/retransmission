@@ -1097,10 +1097,13 @@ void tr_torrent::set_location_in_session_thread(
         // still changes where ops resolve their paths. Wait for the
         // ops in flight like any other storage change, and let the
         // now-stale fds close with them.
+        ++relocations_pending_;
         session->local_data.close_torrent(
             id(),
             [session = this->session, path = std::string{ path }, setme_state](tr_torrent_id_t const tor_id) {
                 if (auto* const tor = session->torrents().get(tor_id); tor != nullptr) {
+                    --tor->relocations_pending_;
+
                     // tell the torrent where the files are
                     tor->set_download_dir(path);
                     session->add_recent_relocate_dir(path);
@@ -1118,6 +1121,8 @@ void tr_torrent::set_location_in_session_thread(
         *setme_state = TR_LOC_MOVING;
     }
 
+    ++relocations_pending_;
+
     // Cancel a pending verify first. Cancelling re-hashes pieces, and
     // those hashes must run before the files close and move.
     session->verify_remove(this);
@@ -1130,6 +1135,9 @@ void tr_torrent::set_location_in_session_thread(
          path = std::string{ path },
          setme_state](tr_torrent_id_t const tor_id, tr_error const& error) {
             auto* const tor = session->torrents().get(tor_id);
+            if (tor != nullptr) {
+                --tor->relocations_pending_;
+            }
 
             if (tor != nullptr && error) {
                 tor->error().set_local_error(
@@ -1891,8 +1899,11 @@ void tr_torrent::recheck_completeness()
             }
             date_done_ = tr_time();
 
-            if (auto const incomplete = incomplete_dir().sv(); current_dir() == incomplete ||
-                (!std::empty(incomplete) && files().has_any_local_data(std::span{ &incomplete, 1U }))) {
+            // Move out of the incomplete dir unless a set-location is
+            // already queued; that one decides where the files end up.
+            if (auto const incomplete = incomplete_dir().sv(); relocations_pending_ == 0U &&
+                (current_dir() == incomplete ||
+                 (!std::empty(incomplete) && files().has_any_local_data(std::span{ &incomplete, 1U })))) {
                 set_location(download_dir().sv(), true, nullptr);
             }
 
