@@ -1118,6 +1118,7 @@ void tr_torrent::set_location_in_session_thread(
                 // tell the torrent where the files are
                 tor->set_download_dir(path);
                 session->add_recent_relocate_dir(path);
+                tor->maybe_leave_incomplete_dir();
             }
         }
 
@@ -1850,6 +1851,13 @@ void tr_torrent::create_empty_files() const
     }
 }
 
+void tr_torrent::maybe_leave_incomplete_dir()
+{
+    if (is_done() && relocations_pending_ == 0U && current_dir() == incomplete_dir()) {
+        set_location(download_dir().sv(), true, nullptr);
+    }
+}
+
 void tr_torrent::recheck_completeness()
 {
     using namespace completeness_helpers;
@@ -1895,11 +1903,7 @@ void tr_torrent::recheck_completeness()
             }
             date_done_ = tr_time();
 
-            // Move out of the incomplete dir unless a set-location is
-            // already queued; that one decides where the files end up.
-            if (current_dir() == incomplete_dir() && relocations_pending_ == 0U) {
-                set_location(download_dir().sv(), true, nullptr);
-            }
+            maybe_leave_incomplete_dir();
 
             done_(this, recent_change);
         }

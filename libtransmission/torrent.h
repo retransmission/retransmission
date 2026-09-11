@@ -1366,6 +1366,10 @@ private:
 
     void set_location_in_session_thread(std::string_view path, bool move_from_old_path, int volatile* setme_state);
 
+    // Once done, move out of the incomplete dir. Defers to a queued
+    // set-location, which decides where the files end up.
+    void maybe_leave_incomplete_dir();
+
     void start_in_session_thread();
 
     void stop_now();
