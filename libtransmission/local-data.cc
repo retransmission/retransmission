@@ -1385,6 +1385,22 @@ void LocalData::set_on_files_created(OnFilesCreated on_files_created)
     on_files_created_ = std::move(on_files_created);
 }
 
+void LocalData::set_write_budget(uint64_t const bytes)
+{
+    write_budget_ = bytes;
+    set_retained_bytes(static_cast<size_t>(std::min<uint64_t>(MaxRetainedBytes, bytes / 2U)));
+}
+
+std::optional<uint64_t> LocalData::spare_write_bytes(uint64_t const requested) const noexcept
+{
+    if (!threaded_ || !write_budget_) {
+        return {};
+    }
+
+    auto const in_flight = threaded_->enqueued_write_bytes() + requested;
+    return *write_budget_ - std::min(*write_budget_, in_flight);
+}
+
 void LocalData::set_workers_paused(bool const paused)
 {
     if (threaded_) {

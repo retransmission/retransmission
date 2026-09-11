@@ -722,9 +722,7 @@ void tr_session::setSettings(tr_session::Settings&& settings_in, bool force)
     // the rest of the func is session_ responding to settings changes
 
     if (force || new_settings.disk_write_budget_mib != old_settings.disk_write_budget_mib) {
-        auto const retained_bytes = static_cast<size_t>(
-            std::min<uint64_t>(tr::LocalData::MaxRetainedBytes, effective_write_budget_bytes() / 2U));
-        local_data.set_retained_bytes(retained_bytes);
+        local_data.set_write_budget(effective_write_budget_bytes());
     }
 
     if (auto const& val = new_settings.log_level; force || val != old_settings.log_level) {
@@ -1944,14 +1942,12 @@ void tr_session::verify_add(tr_torrent* const tor)
 
 std::optional<size_t> tr_session::spare_request_blocks() const noexcept
 {
-    if (!local_data.is_threaded()) {
-        return {};
+    auto const requested = uint64_t{ active_request_count_ } * TrBlockSize;
+    if (auto const spare = local_data.spare_write_bytes(requested); spare) {
+        return static_cast<size_t>(*spare / TrBlockSize);
     }
 
-    auto const budget = effective_write_budget_bytes();
-    auto const requested = uint64_t{ active_request_count_ } * TrBlockSize;
-    auto const in_flight = local_data.enqueued_write_bytes() + requested;
-    return in_flight >= budget ? size_t{} : static_cast<size_t>((budget - in_flight) / TrBlockSize);
+    return {};
 }
 
 uint64_t tr_session::effective_write_budget_bytes() const noexcept
