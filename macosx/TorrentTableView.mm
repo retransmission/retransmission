@@ -28,7 +28,7 @@ static CGFloat const kErrorImageSize = 20.0;
 
 static NSTimeInterval const kToggleProgressSeconds = 0.175;
 
-@interface TorrentTableView ()
+@interface TorrentTableView ()<NSPopoverDelegate>
 
 @property(nonatomic) IBOutlet Controller* fController;
 
@@ -42,7 +42,7 @@ static NSTimeInterval const kToggleProgressSeconds = 0.175;
 @property(nonatomic) CGFloat piecesBarPercent;
 @property(nonatomic) NSAnimation* fPiecesBarAnimation;
 
-@property(nonatomic) BOOL fActionPopoverShown;
+@property(nonatomic) NSPopover* fActionPopover;
 @property(nonatomic) NSView* fPositioningView;
 
 @property(nonatomic) NSDictionary* fHoverEventDict;
@@ -68,8 +68,6 @@ static NSTimeInterval const kToggleProgressSeconds = 0.175;
         if (_fCollapsedGroups == nil) {
             _fCollapsedGroups = [[NSMutableIndexSet alloc] init];
         }
-
-        _fActionPopoverShown = NO;
 
         self.delegate = self;
         self.indentationPerLevel = 0;
@@ -675,48 +673,33 @@ static NSTimeInterval const kToggleProgressSeconds = 0.175;
 
 - (IBAction)displayTorrentActionPopover:(id)sender
 {
-    if (self.fActionPopoverShown) {
+    if (self.fActionPopover.isShown) {
+        [self.fActionPopover close];
+        self.fActionPopover = nil;
         return;
     }
 
     Torrent* torrent = [self itemAtRow:[self rowForView:[sender superview]]];
-    NSRect rect = [sender bounds];
+
+    InfoOptionsViewController* infoViewController = [[InfoOptionsViewController alloc] init];
 
     NSPopover* popover = [[NSPopover alloc] init];
     popover.behavior = NSPopoverBehaviorTransient;
-    InfoOptionsViewController* infoViewController = [[InfoOptionsViewController alloc] init];
     popover.contentViewController = infoViewController;
     popover.delegate = self;
 
+    self.fActionPopover = popover;
+
+    NSRect rect = [sender bounds];
     [popover showRelativeToRect:rect ofView:sender preferredEdge:NSMaxYEdge];
+
     [infoViewController setInfoForTorrents:@[ torrent ]];
     [infoViewController updateInfo];
-
-    CGFloat width = NSWidth(rect);
-
-    if (NSMinX(self.window.frame) < width || NSMaxX(self.window.screen.visibleFrame) - NSMinX(self.window.frame) < 72) {
-        // Ugly hack to hide NSPopover arrow.
-        self.fPositioningView = [[NSView alloc] initWithFrame:rect];
-        self.fPositioningView.identifier = @"positioningView";
-        [self addSubview:self.fPositioningView];
-        [popover showRelativeToRect:self.fPositioningView.bounds ofView:self.fPositioningView preferredEdge:NSMaxYEdge];
-        self.fPositioningView.bounds = NSOffsetRect(self.fPositioningView.bounds, 0, NSHeight(self.fPositioningView.bounds));
-    } else {
-        [popover showRelativeToRect:rect ofView:sender preferredEdge:NSMaxYEdge];
-    }
 }
 
-//don't show multiple popovers when clicking the gear button repeatedly
-- (void)popoverWillShow:(NSNotification*)notification
+- (void)popoverWillClose:(NSNotification*)notification
 {
-    self.fActionPopoverShown = YES;
-}
-
-- (void)popoverDidClose:(NSNotification*)notification
-{
-    [self.fPositioningView removeFromSuperview];
-    self.fPositioningView = nil;
-    self.fActionPopoverShown = NO;
+    self.fActionPopover = nil;
 }
 
 - (void)togglePiecesBar
