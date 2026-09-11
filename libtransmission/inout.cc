@@ -74,6 +74,18 @@ struct GotFile {
     bool created = false;
 };
 
+// True if the pool parked the waiter behind another caller's open of
+// the same file. The caller tries again when the waiter fires.
+[[nodiscard]] bool parked(tr_open_files::Waiter const* const waiter, tr_error& error)
+{
+    if (waiter == nullptr || !waiter->blocked) {
+        return false;
+    }
+
+    error.set(EAGAIN, "File initialization pending");
+    return true;
+}
+
 // Returns a RAII reference to the open file.
 [[nodiscard]] GotFile get_file(
     tr::StorageDescriptor const& desc,
@@ -89,8 +101,7 @@ struct GotFile {
     if (auto file = open_files.get(tor_id, file_index, writable, waiter)) {
         return { .file = std::move(file) };
     }
-    if (waiter != nullptr && waiter->blocked) {
-        error.set(EAGAIN, "File initialization pending");
+    if (parked(waiter, error)) {
         return {};
     }
 
@@ -117,8 +128,7 @@ struct GotFile {
         }
     }
 
-    if (waiter != nullptr && waiter->blocked) {
-        error.set(EAGAIN, "File initialization pending");
+    if (parked(waiter, error)) {
         return {};
     }
 
