@@ -15,6 +15,7 @@
 #include <optional>
 #include <ranges>
 #include <string>
+#include <string_view>
 #include <type_traits>
 #include <typeinfo>
 #include <utility>
@@ -48,6 +49,11 @@ template<typename T>
 
 // NOLINTBEGIN(readability-identifier-naming)
 // use std-style naming for these traits
+template<typename C>
+inline constexpr bool is_basic_string_view_v = false;
+
+template<typename CharT, typename Traits>
+inline constexpr bool is_basic_string_view_v<std::basic_string_view<CharT, Traits>> = true;
 
 // Type trait: is C a std::basic_string?
 // Matches the specialization rather than comparing C against
@@ -206,7 +212,7 @@ template<typename T>
 {
     if constexpr (detail::HasConverter<T>) {
         return Converter<T>::to_variant(src);
-    } else if constexpr (std::ranges::range<T>) {
+    } else if constexpr (std::ranges::sized_range<T> && !detail::is_basic_string_v<T> && !detail::is_basic_string_view_v<T>) {
         return detail::from_range(src);
     } else if constexpr (detail::is_optional_v<T>) {
         return detail::from_optional(src);
