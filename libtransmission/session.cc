@@ -676,10 +676,16 @@ void tr_session::initImpl(init_data& data)
     // Runtime changes to disk_io_workers take effect on restart.
     // Stopping a running worker pool safely isn't worth the
     // complexity of a live switch.
+    local_data.set_on_files_created([this](tr_torrent_id_t, size_t const n_files) { add_files_created(n_files); });
     try {
-        local_data.start_workers(settings_.disk_io_workers, [this](std::function<void()> fn) {
-            queue_session_thread(std::move(fn));
-        });
+        local_data.start_workers(
+            settings_.disk_io_workers,
+            open_files_,
+            [this](std::function<void()> fn) { queue_session_thread(std::move(fn)); },
+            [this](tr_torrent_id_t const id) -> std::shared_ptr<tr::StorageDescriptor const> {
+                auto const* const tor = torrents_.get(id);
+                return tor != nullptr ? tor->storage_descriptor() : nullptr;
+            });
     } catch (std::exception const& e) {
         tr_logAddError(
             fmt::format(

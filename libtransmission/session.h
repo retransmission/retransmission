@@ -889,9 +889,9 @@ public:
         set_date_active(now);
     }
 
-    constexpr void add_file_created() noexcept
+    constexpr void add_files_created(size_t const n) noexcept
     {
-        stats().add_file_created();
+        stats().add_files_created(n);
     }
 
     // The incoming peer port that's been opened on the local machine
