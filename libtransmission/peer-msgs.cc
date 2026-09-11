@@ -858,7 +858,10 @@ size_t tr_peerMsgsImpl::protocol_send_message(uint8_t type, Args const&... args)
 {
     using namespace protocol_send_message_helpers;
 
-    loginfo(this, build_log_message(type, args...));
+    if (type == BtPeerMsgs::Ltep)
+    {
+        loginfo(this, build_log_message(type, args...));
+    }
 
     auto out = MessageBuffer{};
     [[maybe_unused]] auto const msg_len = build_peer_message(out, type, args...);
@@ -1812,7 +1815,7 @@ void tr_peerMsgsImpl::pulse()
             break;
         }
     }
-    loginfo(this, fmt::format("wrote {:d} bytes this pulse, took {:%S}", output, std::chrono::steady_clock::now() - now));
+    loginfo(this, fmt::format("sent {:d} bytes this pulse, took {:%S}, write buf size {:d}, write info size {:d}", output, std::chrono::steady_clock::now() - now, io_->write_buffer_size(), io_->write_info_size()));
 }
 
 void tr_peerMsgsImpl::update_metadata_requests(time_t now) const

@@ -115,6 +115,16 @@ public:
         return std::size(inbuf_);
     }
 
+    [[nodiscard]] TR_CONSTEXPR20 auto write_buffer_size() const noexcept
+    {
+        return std::size(outbuf_);
+    }
+
+    [[nodiscard]] TR_CONSTEXPR20 auto write_info_size() const noexcept
+    {
+        return std::size(outbuf_info_);
+    }
+
     template<typename T>
     [[nodiscard]] auto read_buffer_starts_with(T const& t) const noexcept
     {
