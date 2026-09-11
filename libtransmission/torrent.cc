@@ -1092,54 +1092,15 @@ void tr_torrent::set_location_in_session_thread(
 {
     TR_ASSERT(session->am_in_session_thread());
 
-    if (!move_from_old_path) {
-        // The files already live under `path`, but changing the dirs
-        // still changes where ops resolve their paths. Wait for the
-        // ops in flight like any other storage change, and let the
-        // now-stale fds close with them.
-        ++relocations_pending_;
-        session->local_data.close_torrent(
-            id(),
-            [session = this->session, path = std::string{ path }, setme_state](tr_torrent_id_t const tor_id) {
-                if (auto* const tor = session->torrents().get(tor_id); tor != nullptr) {
-                    --tor->relocations_pending_;
-
-                    // tell the torrent where the files are
-                    tor->set_download_dir(path);
-                    session->add_recent_relocate_dir(path);
-                }
-
-                if (setme_state != nullptr) {
-                    *setme_state = TR_LOC_DONE;
-                }
-            });
-
-        return;
-    }
-
-    if (setme_state != nullptr) {
-        *setme_state = TR_LOC_MOVING;
-    }
-
     ++relocations_pending_;
 
-    // Cancel a pending verify first. Cancelling re-hashes pieces, and
-    // those hashes must run before the files close and move.
-    session->verify_remove(this);
-    session->close_torrent_files(id());
+    auto on_done = [session = this->session, path = std::string{ path }, move_from_old_path, setme_state](
+                       tr_torrent_id_t const tor_id,
+                       tr_error const& error) {
+        if (auto* const tor = session->torrents().get(tor_id); tor != nullptr) {
+            --tor->relocations_pending_;
 
-    session->local_data.move(
-        id(),
-        path,
-        [session = this->session,
-         path = std::string{ path },
-         setme_state](tr_torrent_id_t const tor_id, tr_error const& error) {
-            auto* const tor = session->torrents().get(tor_id);
-            if (tor != nullptr) {
-                --tor->relocations_pending_;
-            }
-
-            if (tor != nullptr && error) {
+            if (error) {
                 tor->error().set_local_error(
                     fmt::format(
                         fmt::runtime(_("Couldn't move '{old_path}' to '{path}': {error} ({error_code})")),
@@ -1148,21 +1109,41 @@ void tr_torrent::set_location_in_session_thread(
                         fmt::arg("error", error.message()),
                         fmt::arg("error_code", error.code())));
                 tr_torrentStop(tor);
-            }
+            } else {
+                if (move_from_old_path) {
+                    // set_download_dir() then makes `path` the current dir
+                    tor->incomplete_dir_.clear();
+                }
 
-            if (tor != nullptr && !error) {
                 // tell the torrent where the files are
                 tor->set_download_dir(path);
                 session->add_recent_relocate_dir(path);
-                tor->incomplete_dir_.clear();
-                tor->current_dir_ = tor->download_dir();
-                tor->invalidate_storage_descriptor();
             }
+        }
 
-            if (setme_state != nullptr) {
-                *setme_state = !error ? TR_LOC_DONE : TR_LOC_ERROR;
-            }
-        });
+        if (setme_state != nullptr) {
+            *setme_state = error ? TR_LOC_ERROR : TR_LOC_DONE;
+        }
+    };
+
+    if (!move_from_old_path) {
+        // The files already live under `path`, but changing the dirs
+        // still changes where ops resolve their paths. Wait for the
+        // ops in flight like any other storage change, and let the
+        // now-stale fds close with them.
+        session->local_data.close_torrent(id(), [on_done](tr_torrent_id_t const tor_id) { on_done(tor_id, {}); });
+        return;
+    }
+
+    if (setme_state != nullptr) {
+        *setme_state = TR_LOC_MOVING;
+    }
+
+    // Cancel a pending verify first. Cancelling re-hashes pieces, and
+    // those hashes must run before the files close and move.
+    session->verify_remove(this);
+    session->close_torrent_files(id());
+    session->local_data.move(id(), path, std::move(on_done));
 }
 
 namespace
