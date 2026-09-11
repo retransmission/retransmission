@@ -1207,7 +1207,7 @@ std::optional<tr_torrent_files::FoundFile> tr_torrent::find_file(tr_file_index_t
 
 std::shared_ptr<tr::StorageDescriptor const> tr_torrent::storage_descriptor() const
 {
-    TR_ASSERT(session->am_in_session_thread());
+    auto const lock = std::scoped_lock{ storage_descriptor_mutex_ };
 
     if (!storage_descriptor_) {
         storage_descriptor_ = std::make_shared<tr::StorageDescriptor const>(
