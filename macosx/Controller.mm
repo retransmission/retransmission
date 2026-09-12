@@ -336,6 +336,7 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
 
 @property(nonatomic) NSMutableSet<NSWindowController*>* fAddWindows;
 @property(nonatomic) URLSheetWindowController* fUrlSheetController;
+@property(nonatomic) BonjourController* bonjourController;
 
 @property(nonatomic) BOOL fGlobalPopoverShown;
 @property(nonatomic) NSView* fPositioningView;
@@ -467,6 +468,7 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
         _fileWatcherQueue.delegate = self;
 
         _prefsController = [[PrefsController alloc] initWithHandle:_fLib];
+        _bonjourController = [[BonjourController alloc] init];
 
         _fQuitting = NO;
         _fGlobalPopoverShown = NO;
@@ -753,7 +755,7 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
 
     //registering the Web UI to Bonjour
     if ([self.fDefaults boolForKey:@"RPC"] && [self.fDefaults boolForKey:@"RPCWebDiscovery"]) {
-        [BonjourController.defaultController startWithPort:static_cast<int>([self.fDefaults integerForKey:@"RPCPort"])];
+        [self.bonjourController startWithPort:static_cast<int>([self.fDefaults integerForKey:@"RPCPort"])];
     }
 
     //shamelessly ask for donations
@@ -870,9 +872,7 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
     [PowerManager.shared stop];
 
     //stop the Bonjour service
-    if (BonjourController.defaultControllerExists) {
-        [BonjourController.defaultController stop];
-    }
+    [self.bonjourController stop];
 
     //stop any in-flight blocklist download
     tr_blocklistUpdateCancel(self.fLib);

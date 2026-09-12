@@ -4,10 +4,7 @@
 
 #import <Foundation/Foundation.h>
 
-@interface BonjourController : NSObject<NSNetServiceDelegate>
-
-@property(nonatomic, class, readonly) BonjourController* defaultController;
-@property(nonatomic, class, readonly) BOOL defaultControllerExists;
+@interface BonjourController : NSObject
 
 - (void)startWithPort:(int)port;
 - (void)stop;
