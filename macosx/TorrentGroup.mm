@@ -29,35 +29,27 @@
     return [GroupsController.groups rowValueForIndex:self.groupIndex];
 }
 
-- (CGFloat)ratio
+- (TorrentGroupData)aggregatedData
 {
-    uint64_t uploaded = 0, total_size = 0;
+    uint64_t uploaded = 0;
+    uint64_t total_size = 0;
+
+    CGFloat uploadRate = 0.0;
+
+    CGFloat downloadRate = 0.0;
+
     for (Torrent* torrent in self.torrents) {
         uploaded += torrent.uploadedTotal;
         total_size += torrent.totalSizeSelected;
+
+        downloadRate += torrent.downloadRate;
+        uploadRate += torrent.uploadRate;
     }
 
-    return tr_getRatio(uploaded, total_size);
-}
+    CGFloat ratio = tr_getRatio(uploaded, total_size);
 
-- (CGFloat)uploadRate
-{
-    CGFloat rate = 0.0;
-    for (Torrent* torrent in self.torrents) {
-        rate += torrent.uploadRate;
-    }
-
-    return rate;
-}
-
-- (CGFloat)downloadRate
-{
-    CGFloat rate = 0.0;
-    for (Torrent* torrent in self.torrents) {
-        rate += torrent.downloadRate;
-    }
-
-    return rate;
+    auto result = (TorrentGroupData){ ratio, uploadRate, downloadRate };
+    return result;
 }
 
 @end
