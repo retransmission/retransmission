@@ -106,13 +106,21 @@ public:
     }
 
     bool move(
-        std::string_view old_parent_in,
+        std::span<std::string_view const> old_parents,
         std::string_view parent_in,
         std::string_view parent_name = "",
         tr_error* error = nullptr) const;
 
     void remove(
         std::string_view parent_in,
+        std::string_view tmpdir_prefix,
+        tr_torrent_remove_func const& func,
+        tr_error* error = nullptr) const;
+
+    // Remove a matching copy from each root using the single-root deletion
+    // path and its callback. Roots without matching files are left alone.
+    void remove(
+        std::span<std::string_view const> parents,
         std::string_view tmpdir_prefix,
         tr_torrent_remove_func const& func,
         tr_error* error = nullptr) const;

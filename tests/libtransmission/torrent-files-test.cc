@@ -15,6 +15,8 @@
 
 #include <libtransmission/transmission.h>
 
+#include <libtransmission/error.h>
+#include <libtransmission/file-utils.h>
 #include <libtransmission/file.h>
 #include <libtransmission/torrent-files.h>
 #include <libtransmission/torrent-metainfo.h>
@@ -26,6 +28,109 @@
 using namespace std::literals;
 
 using TorrentFilesTest = ::tr::test::SandboxedTest;
+
+namespace
+{
+class TorrentFilesMoveTest : public ::tr::test::SandboxedTest
+{
+protected:
+    static void expectContents(std::string_view path, std::string_view expected)
+    {
+        auto contents = std::vector<char>{};
+        ASSERT_TRUE(tr_file_read(path, contents));
+        EXPECT_EQ(expected, (std::string_view{ contents.data(), contents.size() }));
+    }
+};
+} // namespace
+
+TEST_F(TorrentFilesMoveTest, consolidatesIntoSourceRoot)
+{
+    auto const download = tr_pathbuf{ sandboxDir(), "/download"sv };
+    auto const incomplete = tr_pathbuf{ sandboxDir(), "/incomplete"sv };
+    auto const roots = std::array<std::string_view, 2>{ download.sv(), incomplete.sv() };
+    auto files = tr_torrent_files{};
+    files.add("name/first", 1);
+    files.add("name/second", 1);
+    createFileWithContents(tr_pathbuf{ download, "/name/first"sv }, "first"sv);
+    createFileWithContents(tr_pathbuf{ incomplete, "/name/second.part"sv }, "second"sv);
+    // A normal source leaves a stale .part destination untouched.
+    createFileWithContents(tr_pathbuf{ incomplete, "/name/first.part"sv }, "stale"sv);
+
+    ASSERT_TRUE(files.move(roots, incomplete, "name"));
+    expectContents(tr_pathbuf{ incomplete, "/name/first"sv }, "first"sv);
+    expectContents(tr_pathbuf{ incomplete, "/name/first.part"sv }, "stale"sv);
+    expectContents(tr_pathbuf{ incomplete, "/name/second.part"sv }, "second"sv);
+    EXPECT_FALSE(tr_sys_path_exists(tr_pathbuf{ download, "/name"sv }));
+}
+
+TEST_F(TorrentFilesMoveTest, cleanupPreservesNestedRootAndDestination)
+{
+    for (auto const destination_is_nested : { false, true }) {
+        SCOPED_TRACE(destination_is_nested);
+        auto const base = tr_pathbuf{ sandboxDir(), destination_is_nested ? "/destination"sv : "/source"sv };
+        auto const download = tr_pathbuf{ base, "/download"sv };
+        auto const nested = tr_pathbuf{ download, "/name/nested"sv };
+        auto const target = destination_is_nested ? nested : tr_pathbuf{ base, "/target"sv };
+        auto const incomplete = destination_is_nested ? tr_pathbuf{ base, "/incomplete"sv } : nested;
+        auto const roots = std::array<std::string_view, 2>{ download.sv(), incomplete.sv() };
+        auto files = tr_torrent_files{};
+        files.add("name/data", 1);
+        createFileWithContents(tr_pathbuf{ download, "/name/data"sv }, "data"sv);
+        // Even junk inside a protected root must survive.
+        createFileWithContents(tr_pathbuf{ nested, "/desktop.ini"sv }, "protected"sv);
+
+        ASSERT_TRUE(files.move(roots, target, "name"));
+        expectContents(tr_pathbuf{ nested, "/desktop.ini"sv }, "protected"sv);
+        expectContents(tr_pathbuf{ target, "/name/data"sv }, "data"sv);
+        EXPECT_FALSE(tr_sys_path_exists(tr_pathbuf{ download, "/name/data"sv }));
+    }
+}
+
+TEST_F(TorrentFilesMoveTest, cleanupRemovesJunkAndPreservesOrdinaryEntries)
+{
+    auto const download = tr_pathbuf{ sandboxDir(), "/download"sv };
+    auto const target = tr_pathbuf{ sandboxDir(), "/target"sv };
+    auto const unused = tr_pathbuf{ sandboxDir(), "/unused"sv };
+    auto const roots = std::array<std::string_view, 2>{ download.sv(), unused.sv() };
+    auto files = tr_torrent_files{};
+    files.add("name/data", 1);
+    files.add("name/nested/data", 1);
+    createFileWithContents(tr_pathbuf{ download, "/name/data"sv }, "first"sv);
+    createFileWithContents(tr_pathbuf{ download, "/name/nested/data"sv }, "second"sv);
+    // The nested tree becomes empty; notes.txt keeps its parent alive.
+    createFileWithContents(tr_pathbuf{ download, "/name/nested/.DS_Store"sv }, "junk"sv);
+    createFileWithContents(tr_pathbuf{ download, "/name/notes.txt"sv }, "notes"sv);
+    createFileWithContents(tr_pathbuf{ unused, "/name/desktop.ini"sv }, "unused root"sv);
+    ASSERT_TRUE(files.move(roots, target, "name"));
+    expectContents(tr_pathbuf{ target, "/name/data"sv }, "first"sv);
+    expectContents(tr_pathbuf{ target, "/name/nested/data"sv }, "second"sv);
+    EXPECT_FALSE(tr_sys_path_exists(tr_pathbuf{ download, "/name/data"sv }));
+    EXPECT_FALSE(tr_sys_path_exists(tr_pathbuf{ download, "/name/nested"sv }));
+    expectContents(tr_pathbuf{ download, "/name/notes.txt"sv }, "notes"sv);
+    expectContents(tr_pathbuf{ unused, "/name/desktop.ini"sv }, "unused root"sv);
+}
+
+TEST_F(TorrentFilesTest, removePreservesUnusedRoot)
+{
+    auto const used = tr_pathbuf{ sandboxDir(), "/used"sv };
+    auto const unused = tr_pathbuf{ sandboxDir(), "/unused"sv };
+    auto const roots = std::array<std::string_view, 2>{ used.sv(), unused.sv() };
+    auto files = tr_torrent_files{};
+    files.add("name/data", 1);
+    createFileWithContents(tr_pathbuf{ used, "/name/data"sv }, "data"sv);
+    auto const junk = tr_pathbuf{ unused, "/name/desktop.ini"sv };
+    auto const empty = tr_pathbuf{ unused, "/name/empty"sv };
+    createFileWithContents(junk, "foreign"sv);
+    ASSERT_TRUE(tr_sys_dir_create(empty, TR_SYS_DIR_CREATE_PARENTS, 0700));
+
+    files.remove(roots, "name", tr_sys_path_remove);
+
+    EXPECT_FALSE(tr_sys_path_exists(tr_pathbuf{ used, "/name"sv }));
+    auto contents = std::vector<char>{};
+    ASSERT_TRUE(tr_file_read(junk, contents));
+    EXPECT_EQ("foreign"sv, (std::string_view{ contents.data(), contents.size() }));
+    EXPECT_TRUE(tr_sys_path_exists(empty));
+}
 
 TEST_F(TorrentFilesTest, add)
 {
