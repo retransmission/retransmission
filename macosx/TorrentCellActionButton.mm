@@ -38,11 +38,16 @@
     return self;
 }
 
+- (void)handleIsHovering:(BOOL)isHovering
+{
+    self.image = isHovering ? self.fImage : self.fAlternativeImage;
+}
+
 - (void)mouseEntered:(NSEvent*)event
 {
     [super mouseEntered:event];
 
-    self.image = self.fImage;
+    [self handleIsHovering:YES];
 
     [self.torrentTableView hoverEventBeganForView:self];
 }
@@ -51,7 +56,7 @@
 {
     [super mouseExited:event];
 
-    self.image = self.fAlternativeImage;
+    [self handleIsHovering:NO];
 
     [self.torrentTableView hoverEventEndedForView:self];
 }
@@ -71,12 +76,25 @@
 
 - (void)updateTrackingAreas
 {
+    [super updateTrackingAreas];
+
     if (self.fTrackingArea != nil) {
         [self removeTrackingArea:self.fTrackingArea];
     }
 
-    NSTrackingAreaOptions opts = (NSTrackingMouseEnteredAndExited | NSTrackingActiveAlways);
-    self.fTrackingArea = [[NSTrackingArea alloc] initWithRect:self.bounds options:opts owner:self userInfo:nil];
+    NSTrackingAreaOptions options = (NSTrackingMouseEnteredAndExited | NSTrackingActiveAlways);
+
+    // Check if mouse is currently inside the bounds
+    NSPoint mouseLocation = [self.window mouseLocationOutsideOfEventStream];
+    NSPoint localPoint = [self convertPoint:mouseLocation fromView:nil];
+    if (NSPointInRect(localPoint, self.bounds)) {
+        options |= NSTrackingAssumeInside;
+        [self handleIsHovering:YES];
+    } else {
+        [self handleIsHovering:NO];
+    }
+
+    self.fTrackingArea = [[NSTrackingArea alloc] initWithRect:self.bounds options:options owner:self userInfo:nil];
     [self addTrackingArea:self.fTrackingArea];
 }
 
