@@ -546,6 +546,7 @@
 		EDB550032F55000100B05501 /* bep55-holepunch.cc in Sources */ = {isa = PBXBuildFile; fileRef = EDB550012F55000100B05501 /* bep55-holepunch.cc */; };
 		EDB550042F55000100B05501 /* bep55-holepunch.h in Headers */ = {isa = PBXBuildFile; fileRef = EDB550022F55000100B05501 /* bep55-holepunch.h */; };
 		EDB550062F55000100B05501 /* bep55-introducer-store.h in Headers */ = {isa = PBXBuildFile; fileRef = EDB550052F55000100B05501 /* bep55-introducer-store.h */; };
+		EDB64CB63055775000BBA0C2 /* AutoImportController.mm in Sources */ = {isa = PBXBuildFile; fileRef = EDB64CB53055775000BBA0C2 /* AutoImportController.mm */; };
 		EDBA61FF2D4180D5001470F8 /* torrent-queue.h in Headers */ = {isa = PBXBuildFile; fileRef = EDBA61FD2D4180D5001470F8 /* torrent-queue.h */; };
 		EDBA62002D4180D5001470F8 /* torrent-queue.cc in Sources */ = {isa = PBXBuildFile; fileRef = EDBA61FE2D4180D5001470F8 /* torrent-queue.cc */; };
 		EDBAAC8C29E486BC00D9495F /* ip-cache.h in Headers */ = {isa = PBXBuildFile; fileRef = EDBAAC8B29E486BC00D9495F /* ip-cache.h */; };
@@ -1590,6 +1591,8 @@
 		EDB550012F55000100B05501 /* bep55-holepunch.cc */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = "bep55-holepunch.cc"; sourceTree = "<group>"; };
 		EDB550022F55000100B05501 /* bep55-holepunch.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.h; path = "bep55-holepunch.h"; sourceTree = "<group>"; };
 		EDB550052F55000100B05501 /* bep55-introducer-store.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.h; path = "bep55-introducer-store.h"; sourceTree = "<group>"; };
+		EDB64CB43055775000BBA0C2 /* AutoImportController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AutoImportController.h; sourceTree = "<group>"; };
+		EDB64CB53055775000BBA0C2 /* AutoImportController.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = AutoImportController.mm; sourceTree = "<group>"; };
 		EDBA61FD2D4180D5001470F8 /* torrent-queue.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "torrent-queue.h"; sourceTree = "<group>"; };
 		EDBA61FE2D4180D5001470F8 /* torrent-queue.cc */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = "torrent-queue.cc"; sourceTree = "<group>"; };
 		EDBAAC8B29E486BC00D9495F /* ip-cache.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.h; fileEncoding = 4; path = "ip-cache.h"; sourceTree = "<group>"; };
@@ -1809,6 +1812,8 @@
 		080E96DDFE201D6D7F000001 /* Sources */ = {
 			isa = PBXGroup;
 			children = (
+				EDB64CB43055775000BBA0C2 /* AutoImportController.h */,
+				EDB64CB53055775000BBA0C2 /* AutoImportController.mm */,
 				29B97316FDCFA39411CA2CEA /* main.mm */,
 				C86BCD9828228A9600F45599 /* SparkleProxy.mm */,
 				4DF0C5AA0899190500DD8943 /* Controller.h */,
@@ -3659,6 +3664,7 @@
 				A25892640CF1F7E800CCCDDF /* StatsWindowController.mm in Sources */,
 				EDC749F92D98AE3000A12D0F /* PowerManager.mm in Sources */,
 				A2C89D600CFCBF57004CC2BC /* ButtonToolbarItem.mm in Sources */,
+				EDB64CB63055775000BBA0C2 /* AutoImportController.mm in Sources */,
 				A219798B0D07B78400438EA7 /* GroupToolbarItem.mm in Sources */,
 				4521532B29AF891F009331B0 /* GroupCell.mm in Sources */,
 				C841A28129197724009F18E8 /* NSKeyedUnarchiverAdditions.mm in Sources */,

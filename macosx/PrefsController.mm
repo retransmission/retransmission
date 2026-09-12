@@ -8,8 +8,6 @@
 #include <libtransmission/macros.h>
 #include <libtransmission/string-utils.h>
 
-#import "VDKQueue.h"
-
 #import "PrefsController.h"
 #import "BlocklistDownloaderViewController.h"
 #import "Controller.h"
@@ -148,13 +146,6 @@ static NSString* const kWebUIURLFormat = @"http://localhost:%ld/";
         //save a new random port
         if ([_fDefaults boolForKey:@"RandomPort"]) {
             [_fDefaults setInteger:tr_sessionGetPeerPort(_fHandle) forKey:@"BindPort"];
-        }
-
-        //set auto import
-        NSString* autoPath;
-        if ([_fDefaults boolForKey:@"AutoImport"] && (autoPath = [_fDefaults stringForKey:@"AutoImportDirectory"])) {
-            [((Controller*)NSApp.delegate).fileWatcherQueue addPath:autoPath.stringByExpandingTildeInPath
-                                                     notifyingAbout:VDKQueueNotifyAboutWrite];
         }
 
         //set encryption
@@ -991,16 +982,7 @@ static NSString* const kWebUIURLFormat = @"http://localhost:%ld/";
 
 - (void)setAutoImport:(id)sender
 {
-    NSString* path;
-    if ((path = [self.fDefaults stringForKey:@"AutoImportDirectory"])) {
-        VDKQueue* watcherQueue = ((Controller*)NSApp.delegate).fileWatcherQueue;
-        if ([self.fDefaults boolForKey:@"AutoImport"]) {
-            path = path.stringByExpandingTildeInPath;
-            [watcherQueue addPath:path notifyingAbout:VDKQueueNotifyAboutWrite];
-        } else {
-            [watcherQueue removeAllPaths];
-        }
-
+    if ([self.fDefaults stringForKey:@"AutoImportDirectory"]) {
         [NSNotificationCenter.defaultCenter postNotificationName:@"AutoImportSettingChange" object:self];
     } else {
         [self importFolderSheetShow:nil];
@@ -1019,12 +1001,8 @@ static NSString* const kWebUIURLFormat = @"http://localhost:%ld/";
 
     [panel beginSheetModalForWindow:self.window completionHandler:^(NSInteger result) {
         if (result == NSModalResponseOK) {
-            VDKQueue* watcherQueue = ((Controller*)NSApp.delegate).fileWatcherQueue;
-            [watcherQueue removeAllPaths];
-
             NSString* path = (panel.URLs[0]).path;
             [self.fDefaults setObject:path forKey:@"AutoImportDirectory"];
-            [watcherQueue addPath:path.stringByExpandingTildeInPath notifyingAbout:VDKQueueNotifyAboutWrite];
 
             [NSNotificationCenter.defaultCenter postNotificationName:@"AutoImportSettingChange" object:self];
         } else {

@@ -25,8 +25,6 @@
 #include <libtransmission/values.h>
 #include <libtransmission/variant.h>
 
-#import "VDKQueue.h"
-
 #import "CocoaCompatibility.h"
 
 #import "Controller.h"
@@ -42,6 +40,7 @@
 #import "URLSheetWindowController.h"
 #import "AddWindowController.h"
 #import "AddMagnetWindowController.h"
+#import "AutoImportController.h"
 #import "MessageWindowController.h"
 #import "GlobalOptionsPopoverViewController.h"
 #import "ButtonToolbarItem.h"
@@ -273,7 +272,7 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
     return settings;
 }
 
-@interface Controller ()<UNUserNotificationCenterDelegate, NSURLSessionDataDelegate, NSURLSessionDownloadDelegate, PowerManagerDelegate>
+@interface Controller ()<AutoImportControllerDelegate, UNUserNotificationCenterDelegate, NSURLSessionDataDelegate, NSURLSessionDownloadDelegate, PowerManagerDelegate>
 
 @property(nonatomic) IBOutlet NSWindow* fWindow;
 @property(nonatomic) IBOutlet SPUStandardUpdaterController* fUpdaterController;
@@ -327,8 +326,7 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
 
 @property(nonatomic) Badger* fBadger;
 
-@property(nonatomic) NSMutableArray<NSString*>* fAutoImportedNames;
-@property(nonatomic) NSTimer* fAutoImportTimer;
+@property(nonatomic) AutoImportController* fAutoImportController;
 
 @property(nonatomic) NSURLSession* fSession;
 
@@ -462,9 +460,8 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
 
         _fInfoController = [[InfoWindowController alloc] init];
 
-        //needs to be done before init-ing the prefs controller
-        _fileWatcherQueue = [[VDKQueue alloc] init];
-        _fileWatcherQueue.delegate = self;
+        // Needs to be done before init-ing the prefs controller.
+        _fAutoImportController = [[AutoImportController alloc] initWithDefaults:_fDefaults delegate:self];
 
         _prefsController = [[PrefsController alloc] initWithHandle:_fLib];
 
@@ -647,8 +644,6 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
                name:NSOutlineViewSelectionDidChangeNotification
              object:self.fTableView];
 
-    [nc addObserver:self selector:@selector(changeAutoImport) name:@"AutoImportSettingChange" object:nil];
-
     [nc addObserver:self selector:@selector(updateForAutoSize) name:@"AutoSizeSettingChange" object:nil];
 
     [nc addObserver:self selector:@selector(updateForExpandCollapse) name:@"OutlineExpandCollapse" object:nil];
@@ -656,9 +651,6 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
     [nc addObserver:self selector:@selector(fullUpdateUI) name:@"UpdateTorrentsState" object:nil];
 
     [nc addObserver:self selector:@selector(applyFilter) name:@"ApplyFilter" object:nil];
-
-    //open newly created torrent file
-    [nc addObserver:self selector:@selector(beginCreateFile:) name:@"BeginCreateTorrentFile" object:nil];
 
     //open newly created torrent file
     [nc addObserver:self selector:@selector(openCreatedFile:) name:@"OpenCreatedTorrentFile" object:nil];
@@ -749,7 +741,7 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
     }
 
     //auto importing
-    [self checkAutoImportDirectory];
+    [self.fAutoImportController checkAutoImportDirectory];
 
     //registering the Web UI to Bonjour
     if ([self.fDefaults boolForKey:@"RPC"] && [self.fDefaults boolForKey:@"RPCWebDiscovery"]) {
@@ -882,12 +874,6 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
 
     [self.fTimer invalidate];
 
-    if (self.fAutoImportTimer) {
-        if (self.fAutoImportTimer.valid) {
-            [self.fAutoImportTimer invalidate];
-        }
-    }
-
     //remove all torrent downloads
     [self.fSession invalidateAndCancel];
 
@@ -910,7 +896,7 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
     [self updateTorrentHistory];
     [self.fTableView saveCollapsedGroups];
 
-    _fileWatcherQueue = nil;
+    self.fAutoImportController = nil;
 
     //complete cleanup: this can take many seconds
     tr_sessionClose(self.fLib);
@@ -3065,114 +3051,9 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
     self.fSoundPlaying = NO;
 }
 
-- (void)VDKQueue:(VDKQueue*)queue receivedNotification:(NSString*)notification forPath:(NSString*)fpath
+- (void)autoImportController:(AutoImportController*)controller openTorrentFile:(NSString*)path
 {
-    //don't assume that just because we're watching for write notification, we'll only receive write notifications
-
-    if (![self.fDefaults boolForKey:@"AutoImport"] || ![self.fDefaults stringForKey:@"AutoImportDirectory"]) {
-        return;
-    }
-
-    if (self.fAutoImportTimer.valid) {
-        [self.fAutoImportTimer invalidate];
-    }
-
-    //check again in 10 seconds in case torrent file wasn't complete
-    __weak __auto_type weakSelf = self;
-    self.fAutoImportTimer = [NSTimer scheduledTimerWithTimeInterval:10.0 repeats:NO block:^(NSTimer* _Nonnull) {
-        [weakSelf checkAutoImportDirectory];
-    }];
-
-    [self checkAutoImportDirectory];
-}
-
-- (void)changeAutoImport
-{
-    if (self.fAutoImportTimer.valid) {
-        [self.fAutoImportTimer invalidate];
-    }
-    self.fAutoImportTimer = nil;
-
-    self.fAutoImportedNames = nil;
-
-    [self checkAutoImportDirectory];
-}
-
-- (void)checkAutoImportDirectory
-{
-    NSString* path;
-    if (![self.fDefaults boolForKey:@"AutoImport"] || !(path = [self.fDefaults stringForKey:@"AutoImportDirectory"])) {
-        return;
-    }
-
-    path = path.stringByExpandingTildeInPath;
-
-    NSArray<NSString*>* importedNames;
-    if (!(importedNames = [NSFileManager.defaultManager contentsOfDirectoryAtPath:path error:NULL])) {
-        return;
-    }
-
-    //only check files that have not been checked yet
-    NSMutableArray* newNames = [importedNames mutableCopy];
-
-    if (self.fAutoImportedNames) {
-        [newNames removeObjectsInArray:self.fAutoImportedNames];
-    } else {
-        self.fAutoImportedNames = [[NSMutableArray alloc] init];
-    }
-    [self.fAutoImportedNames setArray:importedNames];
-
-    for (NSString* file in newNames) {
-        if ([file hasPrefix:@"."]) {
-            continue;
-        }
-
-        NSString* fullFile = [path stringByAppendingPathComponent:file];
-
-        if (!([[NSWorkspace.sharedWorkspace typeOfFile:fullFile error:NULL] isEqualToString:@"org.bittorrent.torrent"] ||
-              [fullFile.pathExtension caseInsensitiveCompare:@"torrent"] == NSOrderedSame)) {
-            continue;
-        }
-
-        NSDictionary<NSFileAttributeKey, id>* fileAttributes = [NSFileManager.defaultManager attributesOfItemAtPath:fullFile
-                                                                                                              error:nil];
-        if (fileAttributes.fileSize == 0) {
-            // Workaround for Firefox downloads happening in two steps: first time being an empty file
-            [self.fAutoImportedNames removeObject:file];
-            continue;
-        }
-
-        auto metainfo = tr_torrent_metainfo{};
-        if (!metainfo.parse_torrent_file(fullFile.UTF8String)) {
-            continue;
-        }
-
-        [self openFiles:@[ fullFile ] addType:AddTypeAuto forcePath:nil];
-
-        NSString* notificationTitle = NSLocalizedString(@"Torrent File Auto Added", "notification title");
-
-        NSString* identifier = [@"Torrent File Auto Added " stringByAppendingString:file];
-        UNMutableNotificationContent* content = [UNMutableNotificationContent new];
-        content.title = notificationTitle;
-        content.body = file;
-
-        UNNotificationRequest* request = [UNNotificationRequest requestWithIdentifier:identifier content:content trigger:nil];
-        [UNUserNotificationCenter.currentNotificationCenter addNotificationRequest:request withCompletionHandler:nil];
-    }
-}
-
-- (void)beginCreateFile:(NSNotification*)notification
-{
-    if (![self.fDefaults boolForKey:@"AutoImport"]) {
-        return;
-    }
-
-    NSString *location = ((NSURL*)notification.object).path, *path = [self.fDefaults stringForKey:@"AutoImportDirectory"];
-
-    if (location && path &&
-        [location.stringByDeletingLastPathComponent.stringByExpandingTildeInPath isEqualToString:path.stringByExpandingTildeInPath]) {
-        [self.fAutoImportedNames addObject:location.lastPathComponent];
-    }
+    [self openFiles:@[ path ] addType:AddTypeAuto forcePath:nil];
 }
 
 - (NSInteger)outlineView:(NSOutlineView*)outlineView numberOfChildrenOfItem:(id)item
