@@ -43,43 +43,53 @@ runs:
 
         if [[ "$PKG_FAMILY" == "dnf" ]]; then
           # Fedora/DNF-based installation
-          dnf install -y \
-            cmake \
-            gettext \
-            ninja-build \
-            pkgconf-pkg-config \
+          BASE_PACKAGES=(
+            cmake
+            gettext
+            ninja-build
+            pkgconf-pkg-config
             xz
+          )
 
           # Transmission-specific libraries with Fedora names
-          dnf install -y \
-            fast_float-devel \
-            fmt-devel \
-            libarchive-devel \
-            libcurl-devel \
-            libevent-devel \
-            libnatpmp-devel \
-            libpsl-devel \
-            miniupnpc-devel \
-            openssl-devel \
-            simdutf-devel \
+          BASE_PACKAGES+=(
+            fast_float-devel
+            fmt-devel
+            libarchive-devel
+            libcurl-devel
+            libevent-devel
+            libnatpmp-devel
+            libpsl-devel
+            miniupnpc-devel
+            openssl-devel
             zlib-devel
+          )
 
           # Compiler packages
           if [[ "${{ inputs.compiler }}" == "clang" ]]; then
-            dnf install -y clang
+            BASE_PACKAGES+=(clang)
           elif [[ "${{ inputs.compiler }}" == "gcc" ]]; then
-            dnf install -y gcc-c++
+            BASE_PACKAGES+=(gcc-c++)
           fi
 
           # Faster linker
           if [[ "${{ inputs.enable-mold }}" == "true" ]]; then
-            dnf install -y mold
+            BASE_PACKAGES+=(mold)
           fi
 
           # Compiler cache
           if [[ "${{ inputs.enable-ccache }}" == "true" ]]; then
-            dnf install -y ccache
+            BASE_PACKAGES+=(ccache)
           fi
+
+          if [ "$DISTRO" = 'fedora' ]; then
+            BASE_PACKAGES+=(simdutf-devel)
+          else
+            dnf install -y epel-release
+            dnf config-manager --set-enabled crb
+          fi
+
+          dnf install -y "${BASE_PACKAGES[@]}"
 
         elif [[ "$PKG_FAMILY" == "apt" ]]; then
           # Debian/Ubuntu/APT-based installation
