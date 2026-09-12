@@ -111,6 +111,11 @@ public:
         return wanted_.test(file);
     }
 
+    [[nodiscard]] constexpr auto const& wanted_files() const noexcept
+    {
+        return wanted_;
+    }
+
     [[nodiscard]] bool piece_wanted(tr_piece_index_t piece) const;
 
 private:

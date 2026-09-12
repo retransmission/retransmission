@@ -205,7 +205,11 @@ struct tr_peer {
     using Speed = tr::Values::Speed;
 
     explicit tr_peer(tr_torrent const& tor);
-    virtual ~tr_peer() = default;
+    tr_peer(tr_peer const&) = delete;
+    tr_peer(tr_peer&&) = delete;
+    tr_peer& operator=(tr_peer const&) = delete;
+    tr_peer& operator=(tr_peer&&) = delete;
+    virtual ~tr_peer();
 
     [[nodiscard]] virtual Speed get_piece_speed(uint64_t now, tr_direction direction) const = 0;
 
@@ -243,7 +247,18 @@ struct tr_peer {
 
     tr_swarm* const swarm;
 
-    tr_bitfield active_requests;
+    [[nodiscard]] constexpr tr_bitfield const& active_requests() const noexcept
+    {
+        return active_requests_;
+    }
+
+    void set_active_requests(tr_block_span_t span, bool requested = true);
+    void clear_active_requests() noexcept;
+
+    void unset_active_request(tr_block_index_t const block)
+    {
+        set_active_requests({ .begin = block, .end = block + 1U }, false);
+    }
 
     /// The following fields are only to be used in peer-mgr.cc.
     /// TODO(ckerr): refactor them out of `tr_peer`
@@ -256,6 +271,9 @@ struct tr_peer {
 
     tr_recentHistory<size_t> bytes_sent_to_client;
     tr_recentHistory<size_t> bytes_sent_to_peer;
+
+private:
+    tr_bitfield active_requests_;
 };
 
 // ---
