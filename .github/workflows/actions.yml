@@ -80,7 +80,8 @@ jobs:
           }
           get_changes core       CMakeLists.txt cmake third-party libtransmission libtransmission-app
           get_changes android    CMakeLists.txt cmake third-party libtransmission android
-          get_changes cli        CMakeLists.txt cmake Transmission.xcodeproj third-party libtransmission cli
+          get_changes cli        CMakeLists.txt cmake third-party libtransmission cli
+          get_changes daemon     CMakeLists.txt cmake third-party libtransmission daemon
           get_changes any-code   CMakeLists.txt cmake Transmission.xcodeproj libtransmission libtransmission-app cli daemon gtk macosx qt utils tests web third-party
           get_changes our-code   CMakeLists.txt cmake Transmission.xcodeproj libtransmission libtransmission-app cli daemon gtk macosx qt utils tests web
           get_changes tidy-config libtransmission/.clang-tidy libtransmission-app/.clang-tidy gtk/.clang-tidy qt/.clang-tidy tests/libtransmission/.clang-tidy tests/qt/.clang-tidy
@@ -90,7 +91,6 @@ jobs:
           get_changes tidy-core-src libtransmission libtransmission-app tests/libtransmission
           get_changes tidy-gtk-src  gtk
           get_changes tidy-qt-src   qt tests/qt
-          get_changes daemon     CMakeLists.txt cmake Transmission.xcodeproj third-party libtransmission daemon
           get_changes dist       dist release
           get_changes docs       docs
           get_changes gtk        CMakeLists.txt cmake third-party libtransmission libtransmission-app gtk
