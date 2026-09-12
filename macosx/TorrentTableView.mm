@@ -245,28 +245,8 @@ static NSTimeInterval const kToggleProgressSeconds = 0.175;
             torrentCell.fTorrentProgressField.stringValue = torrent.progressString;
 
             // set torrent icon and error badge
-            NSImage* fileImage = torrent.icon;
-            if (error) {
-                NSRect frame = torrentCell.fIconView.frame;
-                NSImage* resultImage = [[NSImage alloc] initWithSize:frame.size];
-                [resultImage lockFocus];
-
-                // draw fileImage
-                [fileImage drawAtPoint:NSZeroPoint fromRect:NSZeroRect operation:NSCompositingOperationSourceOver fraction:1.0];
-
-                // overlay error badge
-                NSImage* errorImage = [NSImage imageNamed:NSImageNameCaution];
-                NSRect const errorRect = NSMakeRect(frame.origin.x, 0, kErrorImageSize, kErrorImageSize);
-                [errorImage drawInRect:errorRect fromRect:NSZeroRect operation:NSCompositingOperationSourceOver fraction:1.0
-                        respectFlipped:YES
-                                 hints:nil];
-
-                [resultImage unlockFocus];
-
-                torrentCell.fIconView.image = resultImage;
-            } else {
-                torrentCell.fIconView.image = fileImage;
-            }
+            [torrentCell setAnyErrorOrWarning:error];
+            torrentCell.fIconView.image = torrent.icon;
 
             // set torrent status
             NSString* status;
