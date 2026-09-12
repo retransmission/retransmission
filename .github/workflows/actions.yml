@@ -1136,16 +1136,20 @@ jobs:
         if: always()
         run: ccache --show-stats
 
-  fedora:
+  rhel-family:
     needs: [ make-source-tarball, what-to-make ]
     if: ${{ needs.what-to-make.outputs.make-cli == 'true' || needs.what-to-make.outputs.make-daemon == 'true' || needs.what-to-make.outputs.make-gtk == 'true' || needs.what-to-make.outputs.make-qt == 'true' || needs.what-to-make.outputs.make-tests == 'true' || needs.what-to-make.outputs.make-utils == 'true' }}
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
-        version: [ latest ]
+        include:
+          - docker-image: fedora
+            version: latest
+          - docker-image: almalinux
+            version: latest
     container:
-      image: fedora:${{ matrix.version }}
+      image: ${{matrix.docker-image}}:${{ matrix.version }}
     steps:
       - name: Show Configuration
         run: |
@@ -1200,11 +1204,106 @@ jobs:
             -DRUN_CLANG_TIDY=OFF \
             -DCMAKE_EXE_LINKER_FLAGS=-fuse-ld=mold \
             -DUSE_SYSTEM_DEFAULT=ON \
-            -DUSE_SYSTEM_DHT=OFF `# Not packaged in Fedora` \
-            -DUSE_SYSTEM_SIGSLOT=OFF `# Not packaged in Fedora` \
-            -DUSE_SYSTEM_SMALL=OFF `# Not packaged in Fedora` \
-            -DUSE_SYSTEM_UTP=OFF `# Not packaged in Fedora` \
-            -DUSE_SYSTEM_WIDE_INTEGER=OFF `# Not packaged in Fedora`
+            -DUSE_SYSTEM_SIMDUTF=AUTO `# Available on Fedora but not on RHEL/EPEL` \
+            -DUSE_SYSTEM_DHT=OFF `# Not packaged in RHEL/Fedora` \
+            -DUSE_SYSTEM_SIGSLOT=OFF `# Not packaged in RHEL/Fedora` \
+            -DUSE_SYSTEM_SMALL=OFF `# Not packaged in RHEL/Fedora` \
+            -DUSE_SYSTEM_UTP=OFF `# Not packaged in RHEL/Fedora` \
+            -DUSE_SYSTEM_WIDE_INTEGER=OFF `# Not packaged in RHEL/Fedora`
+      - name: Build
+        run: cmake --build obj --config Release
+      - name: Test
+        if: ${{ needs.what-to-make.outputs.make-tests == 'true' }}
+        uses: ./.github/actions/run-tests
+        with:
+          build-dir: obj
+          build-config: Release
+      - name: Install
+        run: cmake --install obj --config Release --strip
+      - uses: actions/upload-artifact@v6
+        with:
+          name: binaries-${{ github.job }}-${{ matrix.version }}
+          path: pfx/**/*
+      - name: Finalize ccache
+        uses: ./.github/actions/finalize-ccache
+        with:
+          trim-age: 3d
+      - name: Show ccache stats
+        if: always()
+        run: ccache --show-stats
+
+  # RHEL/AlmaLinux 9's compiler and library versions are very awkward to fit in rhel-family,
+  # so split it into a separate job, and once it goes EOL, drop this job and keep
+  # rhel-family only. https://wiki.almalinux.org/release-notes/
+  almalinux-9:
+    needs: [ make-source-tarball, what-to-make ]
+    if: ${{ needs.what-to-make.outputs.make-cli == 'true' || needs.what-to-make.outputs.make-daemon == 'true' || needs.what-to-make.outputs.make-gtk == 'true' || needs.what-to-make.outputs.make-qt == 'true' || needs.what-to-make.outputs.make-tests == 'true' || needs.what-to-make.outputs.make-utils == 'true' }}
+    runs-on: ubuntu-latest
+    container:
+      image: almalinux:9
+    steps:
+      - name: Show Configuration
+        run: |
+          echo '${{ toJSON(needs) }}'
+          echo '${{ toJSON(runner) }}'
+          cat /etc/os-release
+      - name: Get Composite Actions
+        uses: actions/checkout@v6
+        with:
+          sparse-checkout: |
+            .github/actions
+          sparse-checkout-cone-mode: false
+      - name: Get Dependencies
+        uses: ./.github/actions/install-deps
+        with:
+          compiler: clang
+          enable-gtk: ${{ needs.what-to-make.outputs.make-gtk == 'true' && 'gtk3' || 'false' }}
+          enable-qt: ${{ needs.what-to-make.outputs.make-qt == 'true' && 'qt6' || 'false' }}
+          use-sudo: false
+          enable-mold: true
+          enable-ccache: true
+      - name: Setup ccache
+        uses: ./.github/actions/setup-ccache
+        with:
+          in-container: 'true'
+          key-suffix: ${{ matrix.version }}
+      - name: Get Source
+        uses: actions/download-artifact@v7
+        with:
+          name: source-tarball
+      - name: Extract Source
+        run: mkdir src && tar xf transmission*.tar.* -C src --strip-components 1
+      - name: Configure
+        run: |
+          cmake \
+            -S src \
+            -B obj \
+            -G Ninja \
+            -DCMAKE_C_COMPILER=clang \
+            -DCMAKE_CXX_COMPILER=clang++ \
+            -DCMAKE_C_COMPILER_LAUNCHER=ccache \
+            -DCMAKE_CXX_COMPILER_LAUNCHER=ccache \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DCMAKE_INSTALL_PREFIX=pfx \
+            -DENABLE_CLI=${{ (needs.what-to-make.outputs.make-cli == 'true') && 'ON' || 'OFF' }} \
+            -DENABLE_DAEMON=${{ (needs.what-to-make.outputs.make-daemon == 'true') && 'ON' || 'OFF' }} \
+            -DENABLE_GTK=${{ (needs.what-to-make.outputs.make-gtk == 'true') && 'ON' || 'OFF' }} \
+            -DENABLE_MAC=OFF \
+            -DENABLE_QT=${{ (needs.what-to-make.outputs.make-qt == 'true') && 'ON' || 'OFF' }} \
+            -DENABLE_TESTS=${{ (needs.what-to-make.outputs.make-tests == 'true') && 'ON' || 'OFF' }} \
+            -DENABLE_UTILS=${{ (needs.what-to-make.outputs.make-utils == 'true') && 'ON' || 'OFF' }} \
+            -DREBUILD_WEB=OFF \
+            -DENABLE_WERROR=OFF \
+            -DRUN_CLANG_TIDY=OFF \
+            -DCMAKE_EXE_LINKER_FLAGS=-fuse-ld=mold \
+            -DUSE_SYSTEM_DEFAULT=ON \
+            -DUSE_SYSTEM_DHT=OFF `# Not packaged in RHEL` \
+            -DUSE_SYSTEM_FMT=OFF `# FTBFS on clang` \
+            -DUSE_SYSTEM_SIGSLOT=OFF `# Not packaged in RHEL` \
+            -DUSE_SYSTEM_SIMDUTF=OFF `# Not packaged in RHEL` \
+            -DUSE_SYSTEM_SMALL=OFF `# Not packaged in RHEL` \
+            -DUSE_SYSTEM_UTP=OFF `# Not packaged in RHEL` \
+            -DUSE_SYSTEM_WIDE_INTEGER=OFF `# Not packaged in RHEL`
       - name: Build
         run: cmake --build obj --config Release
       - name: Test
@@ -1871,7 +1970,7 @@ jobs:
     # by main. Families that stop being produced age out through the
     # provider's 7-day unused-entry eviction.
     # Runs only on pushes to main: PR runs from forks get a read-only token.
-    needs: [ android, clang-tidy-linux, clang-tidy-windows, crypto, cxx23, debian, fedora, freebsd, macos-cmake-arm64-tar-26, macos-cmake-intel-git-15, netbsd, openbsd, sanitizer-tests-linux, sanitizer-tests-macos-26, sanitizer-tests-windows, ubuntu-24-04-arm64, utp-disabled, windows ]
+    needs: [ almalinux-9, android, clang-tidy-linux, clang-tidy-windows, crypto, cxx23, debian, freebsd, macos-cmake-arm64-tar-26, macos-cmake-intel-git-15, netbsd, openbsd, rhel-family, sanitizer-tests-linux, sanitizer-tests-macos-26, sanitizer-tests-windows, ubuntu-24-04-arm64, utp-disabled, windows ]
     if: ${{ always() && github.event_name == 'push' }}
     runs-on: ubuntu-slim
     env:
