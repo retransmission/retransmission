@@ -3,6 +3,14 @@
 // License text can be found in the licenses/ folder.
 
 #import "GroupCell.h"
+#import "NSStringAdditions.h"
+
+@interface GroupCell ()
+@property(nonatomic, readonly) NSStackView* stackView;
+@property(nonatomic, readonly) NSButton* downloadButton;
+@property(nonatomic, readonly) NSButton* uploadButton;
+@property(nonatomic, readonly) NSButton* ratioButton;
+@end
 
 @implementation GroupCell
 
@@ -20,90 +28,78 @@
 {
     auto indicatorView = [[NSImageView alloc] init];
     indicatorView.imageScaling = NSImageScaleProportionallyDown;
-    self.fGroupIndicatorView = indicatorView;
 
     auto titleField = [[NSTextField alloc] init];
+    titleField.editable = NO;
+    titleField.selectable = NO;
+    titleField.bordered = NO;
+    titleField.font = [NSFont boldSystemFontOfSize:NSFont.smallSystemFontSize];
+    titleField.drawsBackground = NO;
     titleField.textColor = NSColor.secondaryLabelColor;
     titleField.lineBreakMode = NSLineBreakByTruncatingMiddle;
-    self.fGroupTitleField = titleField;
     titleField.allowsExpansionToolTips = YES;
 
-    auto downloadView = [[NSImageView alloc] init];
-    downloadView.imageScaling = NSImageScaleProportionallyDown;
-    self.fGroupDownloadView = downloadView;
+    auto downloadButton = [NSButton buttonWithTitle:@"" image:[NSImage imageNamed:@"DownArrowGroupTemplate"] target:nil action:nil];
+    downloadButton.toolTip = NSLocalizedString(@"Download speed", "Torrent table -> group row -> tooltip");
 
-    auto downloadField = [[NSTextField alloc] init];
-    downloadField.textColor = NSColor.secondaryLabelColor;
-    downloadField.lineBreakMode = NSLineBreakByClipping;
-    self.fGroupDownloadField = downloadField;
+    auto uploadButton = [NSButton buttonWithTitle:@"" image:[NSImage imageNamed:@"UpArrowGroupTemplate"] target:nil action:nil];
+    uploadButton.toolTip = NSLocalizedString(@"Upload speed", "Torrent table -> group row -> tooltip");
+    uploadButton.image.accessibilityDescription = NSLocalizedString(@"UL", "Torrent -> status image");
 
-    auto uploadAndRatioView = [[NSImageView alloc] init];
-    uploadAndRatioView.imageScaling = NSImageScaleProportionallyDown;
-    self.fGroupUploadAndRatioView = uploadAndRatioView;
+    auto ratioButton = [NSButton buttonWithTitle:@"" image:[NSImage imageNamed:@"YingYangGroupTemplate"] target:nil action:nil];
+    ratioButton.toolTip = NSLocalizedString(@"Ratio", "Torrent table -> group row -> tooltip");
+    ratioButton.image.accessibilityDescription = NSLocalizedString(@"Ratio", "Torrent -> status image");
 
-    auto uploadAndRatioField = [[NSTextField alloc] init];
-    uploadAndRatioField.textColor = NSColor.secondaryLabelColor;
-    uploadAndRatioField.lineBreakMode = NSLineBreakByClipping;
-    self.fGroupUploadAndRatioField = uploadAndRatioField;
-
-    for (NSTextField* view in @[ titleField, downloadField, uploadAndRatioField ]) {
-        view.editable = NO;
-        view.selectable = NO;
-        view.bordered = NO;
-        view.font = [NSFont boldSystemFontOfSize:NSFont.smallSystemFontSize];
-        view.drawsBackground = NO;
+    for (NSButton* button in @[ downloadButton, uploadButton, ratioButton ]) {
+        button.imageScaling = NSImageScaleProportionallyDown;
+        button.imagePosition = NSImageLeft;
+        button.bordered = NO;
+        button.font = [NSFont boldSystemFontOfSize:NSFont.smallSystemFontSize];
+        button.contentTintColor = NSColor.secondaryLabelColor;
+        button.lineBreakMode = NSLineBreakByClipping;
     }
 
-    for (NSView* view in @[ indicatorView, titleField, downloadView, downloadField, uploadAndRatioView, uploadAndRatioField ]) {
+    auto stackView = [[NSStackView alloc] initWithFrame:NSZeroRect];
+
+    [stackView addArrangedSubview:downloadButton];
+    [stackView addArrangedSubview:uploadButton];
+    [stackView addArrangedSubview:ratioButton];
+
+    for (NSView* view in @[ indicatorView, titleField, stackView ]) {
         view.translatesAutoresizingMaskIntoConstraints = NO;
         [self addSubview:view];
     }
+
+    _indicatorView = indicatorView;
+    _titleField = titleField;
+    _downloadButton = downloadButton;
+    _uploadButton = uploadButton;
+    _ratioButton = ratioButton;
+    _stackView = stackView;
 }
 
 - (void)setupConstraints
 {
     [NSLayoutConstraint activateConstraints:@[
         // IndicatorView
-        [self.fGroupIndicatorView.leadingAnchor constraintEqualToAnchor:self.leadingAnchor constant:11],
-        [self.fGroupIndicatorView.centerYAnchor constraintEqualToAnchor:self.centerYAnchor],
-        [self.fGroupIndicatorView.widthAnchor constraintEqualToConstant:14],
-        [self.fGroupIndicatorView.heightAnchor constraintEqualToConstant:14],
+        [self.indicatorView.leadingAnchor constraintEqualToAnchor:self.leadingAnchor constant:11],
+        [self.indicatorView.centerYAnchor constraintEqualToAnchor:self.centerYAnchor],
+        [self.indicatorView.widthAnchor constraintEqualToConstant:14],
+        [self.indicatorView.heightAnchor constraintEqualToConstant:14],
 
         // TitleField
-        [self.fGroupTitleField.leadingAnchor constraintEqualToAnchor:self.fGroupIndicatorView.trailingAnchor constant:5],
-        [self.fGroupTitleField.centerYAnchor constraintEqualToAnchor:self.centerYAnchor],
+        [self.titleField.leadingAnchor constraintEqualToAnchor:self.indicatorView.trailingAnchor constant:5],
+        [self.titleField.centerYAnchor constraintEqualToAnchor:self.centerYAnchor],
 
-        // DownloadView
-        [self.fGroupTitleField.trailingAnchor constraintEqualToAnchor:self.fGroupDownloadView.leadingAnchor],
-        [self.fGroupDownloadView.centerYAnchor constraintEqualToAnchor:self.centerYAnchor],
-        [self.fGroupDownloadView.widthAnchor constraintEqualToConstant:16],
-        [self.fGroupDownloadView.heightAnchor constraintEqualToConstant:16],
-
-        // DownloadField
-        [self.fGroupDownloadView.trailingAnchor constraintEqualToAnchor:self.fGroupDownloadField.leadingAnchor],
-        [self.fGroupDownloadField.centerYAnchor constraintEqualToAnchor:self.centerYAnchor],
-        [self.fGroupDownloadField.widthAnchor constraintGreaterThanOrEqualToConstant:60],
-
-        // UploadAndRatioView
-        [self.fGroupUploadAndRatioView.leadingAnchor constraintEqualToAnchor:self.fGroupDownloadField.trailingAnchor constant:8],
-        [self.fGroupUploadAndRatioView.centerYAnchor constraintEqualToAnchor:self.centerYAnchor],
-        [self.fGroupUploadAndRatioView.widthAnchor constraintEqualToConstant:16],
-        [self.fGroupUploadAndRatioView.heightAnchor constraintEqualToConstant:16],
-
-        // UploadAndRatioField
-        [self.fGroupUploadAndRatioField.leadingAnchor constraintEqualToAnchor:self.fGroupUploadAndRatioView.trailingAnchor],
-        [self.fGroupUploadAndRatioField.trailingAnchor constraintEqualToAnchor:self.trailingAnchor constant:-5],
-        [self.fGroupUploadAndRatioField.centerYAnchor constraintEqualToAnchor:self.centerYAnchor],
-        [self.fGroupUploadAndRatioField.widthAnchor constraintGreaterThanOrEqualToConstant:60],
+        // StackView
+        [self.stackView.leadingAnchor constraintGreaterThanOrEqualToAnchor:self.titleField.trailingAnchor],
+        [self.stackView.trailingAnchor constraintEqualToAnchor:self.trailingAnchor constant:-5],
+        [self.stackView.centerYAnchor constraintEqualToAnchor:self.centerYAnchor],
+        [self.stackView.heightAnchor constraintEqualToConstant:16],
     ]];
 
-    [self.fGroupTitleField setContentCompressionResistancePriority:NSLayoutPriorityDefaultLow
-                                                    forOrientation:NSLayoutConstraintOrientationHorizontal];
-
-    [self.fGroupDownloadField setContentHuggingPriority:NSLayoutPriorityDefaultLow + 1
-                                         forOrientation:NSLayoutConstraintOrientationHorizontal];
-    [self.fGroupUploadAndRatioField setContentHuggingPriority:NSLayoutPriorityDefaultLow + 1
-                                               forOrientation:NSLayoutConstraintOrientationHorizontal];
+    [self.titleField setContentCompressionResistancePriority:NSLayoutPriorityDefaultLow
+                                              forOrientation:NSLayoutConstraintOrientationHorizontal];
 }
 
 - (void)setBackgroundStyle:(NSBackgroundStyle)backgroundStyle
@@ -111,7 +107,33 @@
     [super setBackgroundStyle:backgroundStyle];
 
     auto isEmphasized = backgroundStyle == NSBackgroundStyleEmphasized;
-    self.fGroupTitleField.textColor = isEmphasized ? NSColor.labelColor : NSColor.secondaryLabelColor;
+    self.titleField.textColor = isEmphasized ? NSColor.labelColor : NSColor.secondaryLabelColor;
+}
+
+- (void)setDownloadSpeed:(CGFloat)downloadSpeed uploadSpeed:(CGFloat)uploadSpeed ratio:(CGFloat)ratio
+{
+    _downloadButton.title = [NSString stringForSpeed:downloadSpeed];
+    _uploadButton.title = [NSString stringForSpeed:uploadSpeed];
+    _ratioButton.title = [NSString stringForRatio:ratio];
+}
+
+- (void)setDisplayRatio:(BOOL)displayRatio
+{
+    _downloadButton.hidden = displayRatio;
+    _uploadButton.hidden = displayRatio;
+    _ratioButton.hidden = !displayRatio;
+}
+
+- (void)setTooltipForTorrentsCount:(NSUInteger)count
+{
+    NSString* tooltipGroup;
+    if (count == 1) {
+        tooltipGroup = NSLocalizedString(@"1 transfer", "Torrent table -> group row -> tooltip");
+    } else {
+        tooltipGroup = NSLocalizedString(@"%lu transfers", "Torrent table -> group row -> tooltip");
+        tooltipGroup = [NSString localizedStringWithFormat:tooltipGroup, count];
+    }
+    self.toolTip = tooltipGroup;
 }
 
 @end
