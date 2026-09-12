@@ -191,14 +191,6 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
     settings.insert_or_assign(TR_KEY_speed_limit_up, [defaults integerForKey:@"UploadLimit"]);
     settings.insert_or_assign(TR_KEY_speed_limit_up_enabled, static_cast<bool>([defaults boolForKey:@"CheckUpload"]));
 
-    //hidden prefs
-    if ([defaults objectForKey:@"BindAddressIPv4"]) {
-        settings.insert_or_assign(TR_KEY_bind_address_ipv4, [defaults stringForKey:@"BindAddressIPv4"].UTF8String);
-    }
-    if ([defaults objectForKey:@"BindAddressIPv6"]) {
-        settings.insert_or_assign(TR_KEY_bind_address_ipv6, [defaults stringForKey:@"BindAddressIPv6"].UTF8String);
-    }
-
     settings.insert_or_assign(TR_KEY_blocklist_enabled, static_cast<bool>([defaults boolForKey:@"BlocklistNew"]));
     if ([defaults objectForKey:@"BlocklistURL"]) {
         settings.insert_or_assign(TR_KEY_blocklist_url, [defaults stringForKey:@"BlocklistURL"].UTF8String);
@@ -234,11 +226,6 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
     settings.insert_or_assign(TR_KEY_peer_port_random_on_start, randomPort);
     if (!randomPort) {
         settings.insert_or_assign(TR_KEY_peer_port, [defaults integerForKey:@"BindPort"]);
-    }
-
-    //hidden pref
-    if ([defaults objectForKey:@"PeerSocketTOS"]) {
-        settings.insert_or_assign(TR_KEY_peer_socket_diffserv, [defaults stringForKey:@"PeerSocketTOS"].UTF8String);
     }
 
     settings.insert_or_assign(TR_KEY_pex_enabled, static_cast<bool>([defaults boolForKey:@"PEXGlobal"]));
@@ -386,19 +373,6 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
 {
     if ((self = [super init])) {
         _fDefaults = NSUserDefaults.standardUserDefaults;
-
-        //checks for old version speeds of -1
-        if ([_fDefaults integerForKey:@"UploadLimit"] < 0) {
-            [_fDefaults removeObjectForKey:@"UploadLimit"];
-            [_fDefaults setBool:NO forKey:@"CheckUpload"];
-        }
-        if ([_fDefaults integerForKey:@"DownloadLimit"] < 0) {
-            [_fDefaults removeObjectForKey:@"DownloadLimit"];
-            [_fDefaults setBool:NO forKey:@"CheckDownload"];
-        }
-
-        //upgrading from versions < 2.40: clear recent items
-        [NSDocumentController.sharedDocumentController clearRecentDocuments:nil];
 
         auto settings = getSettingsFromNSUserDefaults(_fDefaults);
         settings.merge(tr_sessionGetDefaultSettings());
@@ -595,12 +569,6 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
     //and comparing to torrents already loaded via tr_sessionLoadTorrents
     NSString* historyFile = [self.fConfigDirectory stringByAppendingPathComponent:kTransferPlist];
     NSArray* history = [NSArray arrayWithContentsOfFile:historyFile];
-    if (!history) {
-        //old version saved transfer info in prefs file
-        if ((history = [self.fDefaults arrayForKey:@"History"])) {
-            [self.fDefaults removeObjectForKey:@"History"];
-        }
-    }
 
     if (history) {
         // theoretical max without doing a lot of work
