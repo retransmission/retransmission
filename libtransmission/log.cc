@@ -120,16 +120,6 @@ void logAddImpl(
         *log_state.queue_tail_ = newmsg;
         log_state.queue_tail_ = &newmsg->next;
         ++log_state.queue_length_;
-
-        if (log_state.queue_length_ > TR_LOG_MAX_QUEUE_LENGTH)
-        {
-            tr_log_message* old = log_state.queue_;
-            log_state.queue_ = old->next;
-            old->next = nullptr;
-            tr_logFreeQueue(old);
-            --log_state.queue_length_;
-            TR_ASSERT(log_state.queue_length_ == TR_LOG_MAX_QUEUE_LENGTH);
-        }
     }
     else
     {
