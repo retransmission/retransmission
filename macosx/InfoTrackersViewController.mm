@@ -234,7 +234,7 @@ typedef NS_ENUM(NSInteger, TrackerSegmentTag) {
     [NSNotificationCenter.defaultCenter postNotificationName:@"UpdateUI" object:nil]; //in case sort by tracker
 }
 
-- (void)addRemoveTracker:(id)sender
+- (IBAction)addRemoveTracker:(id)sender
 {
     //don't allow add/remove when currently adding - it leads to weird results
     if (self.fTrackerTable.editedRow != -1) {

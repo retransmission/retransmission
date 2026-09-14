@@ -47,7 +47,7 @@ static BlocklistDownloaderViewController* fBLViewController = nil;
     [self.fProgressBar startAnimation:self];
 }
 
-- (void)cancelDownload:(id)sender
+- (IBAction)cancelDownload:(id)sender
 {
     tr_blocklistUpdateCancel(((Controller*)NSApp.delegate).sessionHandle);
     [self setFinished];

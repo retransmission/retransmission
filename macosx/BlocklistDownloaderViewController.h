@@ -10,8 +10,6 @@
 
 + (void)downloadWithPrefsController:(PrefsController*)prefsController;
 
-- (IBAction)cancelDownload:(id)sender;
-
 - (void)setStatusStarting;
 
 - (void)setFinished;

@@ -124,7 +124,7 @@ typedef NS_ENUM(NSInteger, FilterTypeTag) {
     self.fSearchField.delegate = self;
 }
 
-- (void)setFilter:(id)sender
+- (IBAction)setFilter:(id)sender
 {
     NSString* oldFilterType = [NSUserDefaults.standardUserDefaults stringForKey:@"Filter"];
 
@@ -194,7 +194,7 @@ typedef NS_ENUM(NSInteger, FilterTypeTag) {
     [self setFilter:button];
 }
 
-- (void)setSearchText:(id)sender
+- (IBAction)setSearchText:(id)sender
 {
     [NSUserDefaults.standardUserDefaults setObject:self.fSearchField.stringValue forKey:@"FilterSearchString"];
     [NSNotificationCenter.defaultCenter postNotificationName:@"ApplyFilter" object:nil];
@@ -222,7 +222,7 @@ typedef NS_ENUM(NSInteger, FilterTypeTag) {
     [self.fSearchFieldMinWidthConstraint animator].constant = 48;
 }
 
-- (void)setSearchType:(id)sender
+- (IBAction)setSearchType:(id)sender
 {
     NSString* oldFilterType = [NSUserDefaults.standardUserDefaults stringForKey:@"FilterSearchType"];
 
@@ -249,7 +249,7 @@ typedef NS_ENUM(NSInteger, FilterTypeTag) {
     [NSNotificationCenter.defaultCenter postNotificationName:@"ApplyFilter" object:nil];
 }
 
-- (void)setGroupFilter:(id)sender
+- (IBAction)setGroupFilter:(id)sender
 {
     [NSUserDefaults.standardUserDefaults setInteger:[sender tag] forKey:@"FilterGroup"];
     [self updateGroupsButton];
