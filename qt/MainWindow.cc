@@ -1413,19 +1413,18 @@ void MainWindow::dataSendProgress()
     last_send_time_ = time(nullptr);
 }
 
-void MainWindow::onNetworkResponse(QNetworkReply::NetworkError code, QString const& message)
+void MainWindow::onNetworkResponse(bool const is_network_error, QString const& message)
 {
-    bool const had_error = network_error_;
-    bool const have_error = code != QNetworkReply::NoError && code != QNetworkReply::UnknownContentError;
+    auto const was_network_error = network_error_;
 
-    network_error_ = have_error;
+    network_error_ = is_network_error;
     error_message_ = message;
     refreshSoon(RefreshTrayIcon);
     updateNetworkLabel();
 
     // Refresh our model if we've just gotten a clean connection to the session.
     // That way we can rebuild after restarting the daemon
-    if (had_error && !have_error) {
+    if (was_network_error && !is_network_error) {
         model_.clear();
     }
 }

@@ -198,7 +198,7 @@ void RpcClient::send_remote_request(std::string body, ResponseFunc on_done)
                 if (errmsg) {
                     result.network_error = true;
                     result.errmsg = *errmsg;
-                    network_response(false, result.errmsg);
+                    network_response(true, result.errmsg);
                 } else if (status == 0) {
                     result.network_error = true;
                     if (did_timeout) {
@@ -208,14 +208,14 @@ void RpcClient::send_remote_request(std::string body, ResponseFunc on_done)
                     } else {
                         result.errmsg = "the connection was lost";
                     }
-                    network_response(false, result.errmsg);
+                    network_response(true, result.errmsg);
                 } else if (parsed) {
                     result = parse_response_data(*parsed);
                     result.http_status = status;
-                    network_response(true, std::string_view{});
+                    network_response(false, std::string_view{});
                 } else {
                     result.errmsg = fmt::format("unexpected response (HTTP {:d})", status);
-                    network_response(false, result.errmsg);
+                    network_response(true, result.errmsg);
                 }
 
                 if (on_done) {

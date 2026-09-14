@@ -13,8 +13,6 @@
 #include <QtCore/QString>
 #include <QtCore/QUrl>
 
-#include <QtNetwork/QNetworkReply> // QNetworkReply::NetworkError
-
 #include <libtransmission/quark.h>
 #include <libtransmission/variant.h>
 
@@ -60,7 +58,7 @@ signals:
     void httpAuthenticationRequired();
     void dataReadProgress();
     void dataSendProgress();
-    void networkResponse(QNetworkReply::NetworkError code, QString const& message);
+    void networkResponse(bool is_network_error, QString const& message);
 
 private:
     QUrl url_;
