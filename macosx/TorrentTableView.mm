@@ -91,7 +91,7 @@ static NSTimeInterval const kToggleProgressSeconds = 0.175;
 
 - (void)refreshTorrentTable
 {
-    self.needsDisplay = YES;
+    [self reloadVisibleRows];
 }
 
 //make sure we don't lose selection on manual reloads
@@ -487,7 +487,7 @@ static NSTimeInterval const kToggleProgressSeconds = 0.175;
 //make sure that the pause buttons become orange when holding down the option key
 - (void)flagsChanged:(NSEvent*)event
 {
-    [self display];
+    [self reloadVisibleRows];
     [super flagsChanged:event];
 }
 
@@ -727,7 +727,7 @@ static NSTimeInterval const kToggleProgressSeconds = 0.175;
     }
 
     //this stops a previous animation
-    self.fPiecesBarAnimation = [[NSAnimation alloc] initWithDuration:kToggleProgressSeconds animationCurve:NSAnimationEaseIn];
+    self.fPiecesBarAnimation = [[NSAnimation alloc] initWithDuration:kToggleProgressSeconds animationCurve:NSAnimationEaseInOut];
     self.fPiecesBarAnimation.animationBlockingMode = NSAnimationNonblocking;
     self.fPiecesBarAnimation.progressMarks = progressMarks;
     self.fPiecesBarAnimation.delegate = self;
