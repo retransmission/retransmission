@@ -59,8 +59,6 @@ static NSString* const kWebUIURLFormat = @"http://localhost:%ld/";
 @property(nonatomic) IBOutlet NSView* fRemoteView;
 @property(nonatomic) IBOutlet NSView* fGroupsView;
 
-@property(nonatomic, copy) NSString* fInitialString;
-
 @property(nonatomic) IBOutlet NSButton* fSystemPreferencesButton;
 @property(nonatomic) IBOutlet NSButton* fSetDefaultForMagnetButton;
 @property(nonatomic) IBOutlet NSButton* fSetDefaultForTorrentButton;
@@ -655,13 +653,6 @@ static NSString* const kWebUIURLFormat = @"http://localhost:%ld/";
     }
 }
 
-- (void)updateRatioStopFieldOld
-{
-    [self updateRatioStopField];
-
-    [self applyRatioSetting:nil];
-}
-
 - (void)applyIdleStopSetting:(id)sender
 {
     tr_sessionSetIdleLimited(self.fHandle, [self.fDefaults boolForKey:@"IdleLimitCheck"]);
@@ -741,23 +732,6 @@ static NSString* const kWebUIURLFormat = @"http://localhost:%ld/";
     comps.minute = sum % 60;
 
     return [NSCalendar.currentCalendar dateFromComponents:comps];
-}
-
-- (BOOL)control:(NSControl*)control textShouldBeginEditing:(NSText*)fieldEditor
-{
-    self.fInitialString = control.stringValue;
-
-    return YES;
-}
-
-- (BOOL)control:(NSControl*)control didFailToFormatString:(NSString*)string errorDescription:(NSString*)error
-{
-    NSBeep();
-    if (self.fInitialString) {
-        control.stringValue = self.fInitialString;
-        self.fInitialString = nil;
-    }
-    return NO;
 }
 
 - (void)setBadge:(id)sender

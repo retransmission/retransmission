@@ -15,8 +15,6 @@
 @property(nonatomic) IBOutlet NSTextField* fRatioStopField;
 @property(nonatomic) IBOutlet NSTextField* fIdleStopField;
 
-@property(nonatomic, copy) NSString* fInitialString;
-
 @end
 
 @implementation GlobalOptionsPopoverViewController
@@ -133,23 +131,6 @@
 
     //reload global settings in inspector
     [NSNotificationCenter.defaultCenter postNotificationName:@"UpdateGlobalOptions" object:nil];
-}
-
-- (BOOL)control:(NSControl*)control textShouldBeginEditing:(NSText*)fieldEditor
-{
-    self.fInitialString = control.stringValue;
-
-    return YES;
-}
-
-- (BOOL)control:(NSControl*)control didFailToFormatString:(NSString*)string errorDescription:(NSString*)error
-{
-    NSBeep();
-    if (self.fInitialString) {
-        control.stringValue = self.fInitialString;
-        self.fInitialString = nil;
-    }
-    return NO;
 }
 
 @end
