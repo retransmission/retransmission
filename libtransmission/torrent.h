@@ -23,6 +23,8 @@
 
 #include <sigslot/signal.hpp>
 
+#include <small/vector.hpp>
+
 #include "libtransmission/announce-list.h"
 #include "libtransmission/bandwidth.h"
 #include "libtransmission/bitfield.h"
@@ -496,6 +498,9 @@ struct tr_torrent {
     {
         metainfo_.set_file_subpath(i, subpath);
     }
+
+    // The views refer to the torrent's directories, not to the returned container.
+    [[nodiscard]] small::max_size_vector<std::string_view, 2> search_paths() const;
 
     [[nodiscard]] std::optional<tr_torrent_files::FoundFile> find_file(tr_file_index_t file_index) const;
 
