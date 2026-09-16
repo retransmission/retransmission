@@ -19,13 +19,10 @@ elif [[ -f /etc/os-release ]]; then
   DISTRO_VERSION="$VERSION_ID"
 
   case "$ID" in
-    ubuntu)
+    ubuntu | debian)
       PKG_FAMILY="apt"
       ;;
-    debian)
-      PKG_FAMILY="apt"
-      ;;
-    fedora)
+    fedora | almalinux)
       PKG_FAMILY="dnf"
       ;;
     *)
