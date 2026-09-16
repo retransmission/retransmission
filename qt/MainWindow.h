@@ -16,8 +16,6 @@
 #include <QtWidgets/QMainWindow>
 #include <QtWidgets/QSystemTrayIcon>
 
-#include <QtNetwork/QNetworkReply>
-
 #include "Prefs.h"
 #include "Speed.h"
 #include "TorrentFilter.h"
@@ -101,7 +99,7 @@ private slots:
     void dataReadProgress();
     void dataSendProgress();
     void newTorrent();
-    void onNetworkResponse(QNetworkReply::NetworkError code, QString const& message);
+    void onNetworkResponse(bool is_network_error, QString const& message);
     void onRefreshTimer();
     void onSessionSourceChanged();
     void onSortModeChanged(QAction const* action);

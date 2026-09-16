@@ -12,6 +12,7 @@
 #include <future>
 #include <memory>
 #include <mutex>
+#include <optional>
 #include <stdexcept>
 #include <string>
 #include <string_view>
@@ -396,10 +397,10 @@ TEST_F(AppRpcClientTest, reportsNetworkErrorWhenServerIsUnreachable)
     auto client = RpcClient{ loop.marshaler() };
     client.start(url_str);
 
-    auto network_response_success = false;
+    auto network_error = std::optional<bool>{};
     auto network_response_message = std::string{};
-    auto const tag = client.network_response.connect_scoped([&](bool const is_success, std::string_view const message) {
-        network_response_success = is_success;
+    auto const tag = client.network_response.connect_scoped([&](bool const is_network_error, std::string_view const message) {
+        network_error = is_network_error;
         network_response_message = std::string{ message };
     });
 
@@ -409,7 +410,7 @@ TEST_F(AppRpcClientTest, reportsNetworkErrorWhenServerIsUnreachable)
     EXPECT_EQ(0, response.http_status);
     EXPECT_FALSE(std::empty(response.errmsg));
 
-    EXPECT_FALSE(network_response_success);
+    EXPECT_TRUE(network_error.value_or(false));
     EXPECT_EQ(response.errmsg, network_response_message);
 }
 

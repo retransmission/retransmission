@@ -19,8 +19,6 @@
 #include <QtCore/QString>
 #include <QtCore/QTimer>
 
-#include <QtNetwork/QNetworkReply>
-
 #include <libtransmission/converters.h>
 #include <libtransmission/quark.h>
 #include <libtransmission/types.h>
@@ -151,7 +149,7 @@ signals:
     void sessionCalled(Tag);
     void dataReadProgress();
     void dataSendProgress();
-    void networkResponse(QNetworkReply::NetworkError code, QString const& message);
+    void networkResponse(bool is_network_error, QString const& message);
     void httpAuthenticationRequired();
 
 private slots:
