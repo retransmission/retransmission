@@ -36,6 +36,7 @@
 #include <libtransmission/torrent-builder.h>
 #include <libtransmission/torrent.h>
 #include <libtransmission/tr-strbuf.h>
+#include <libtransmission/utils.h> // tr_num_parse()
 #include <libtransmission/variant.h>
 
 using namespace std::literals;
@@ -102,6 +103,18 @@ inline bool waitFor(
 
         event_base_loop(evb, EVLOOP_ONCE | EVLOOP_NONBLOCK);
     }
+}
+
+// Fails a preallocation the way a full disk (`disk_full`) or a
+// filesystem without preallocation (`!disk_full`) would.
+inline bool failPreallocation(tr_error* const error, bool const disk_full)
+{
+#ifdef _WIN32
+    error->set(disk_full ? ERROR_DISK_FULL : ERROR_NOT_SUPPORTED, "injected preallocation error");
+#else
+    error->set(disk_full ? ENOSPC : ENOSYS, "injected preallocation error");
+#endif
+    return false;
 }
 
 class TransmissionTest : public ::testing::Test
@@ -319,6 +332,11 @@ private:
 protected:
     enum class ZeroTorrentState : uint8_t { NoFiles, Partial, Complete };
 
+    [[nodiscard]] tr_peerMgr* peerManager() const noexcept
+    {
+        return session_->peer_mgr_.get();
+    }
+
     [[nodiscard]] tr_torrent* createTorrentAndWaitForVerifyDone(tr_torrent_builder* builder)
     {
         auto verified_lock = std::unique_lock(verified_mutex_);
@@ -495,9 +513,24 @@ protected:
         tr_logClearQueue();
     }
 
+    // A suite that scripts completion delivery itself returns false.
+    // The parked-completion modes only hold on the synchronous backend,
+    // where nothing completes off the session thread.
+    [[nodiscard]] virtual bool useLocalDataWorkersFromEnv() const
+    {
+        return true;
+    }
+
     void SetUp() override
     {
         SandboxedTest::SetUp();
+
+        // TR_LOCAL_DATA_WORKERS runs the disk IO on the threaded backend
+        // instead of the synchronous one.
+        auto const workers = useLocalDataWorkersFromEnv() ? tr_env_get_string("TR_LOCAL_DATA_WORKERS") : std::string{};
+        if (!std::empty(workers)) {
+            settings().insert_or_assign(TR_KEY_disk_io_workers, tr_num_parse<int64_t>(workers).value_or(2));
+        }
 
         session_ = sessionInit(settings());
 
@@ -507,7 +540,7 @@ protected:
         // tr::LocalData may deliver completions late and out of order.
         // TR_LOCAL_DATA_SHUFFLE makes it do so, so code that assumes
         // otherwise fails here.
-        if (tr_env_key_exists("TR_LOCAL_DATA_SHUFFLE")) {
+        if (std::empty(workers) && tr_env_key_exists("TR_LOCAL_DATA_SHUFFLE")) {
             session_->local_data.set_completions(tr::LocalData::Completions::Shuffled);
         }
 

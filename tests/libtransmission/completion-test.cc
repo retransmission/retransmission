@@ -340,7 +340,7 @@ TEST_F(CompletionTest, createPieceBitfield)
 
     // serialize it to a raw bitfield, read it back into a bitfield,
     // and test that the new bitfield matches
-    auto const pieces_raw_bitfield = completion.create_piece_bitfield();
+    auto const pieces_raw_bitfield = completion.create_piece_bitfield().raw();
     tr_bitfield pieces{ size_t{ block_info.piece_count() } };
     ASSERT_TRUE(pieces.set_raw(pieces_raw_bitfield));
     for (uint64_t i = 0; i < block_info.piece_count(); ++i) {

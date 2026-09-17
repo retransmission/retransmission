@@ -355,7 +355,7 @@ public:
     {
         switch (dir) {
         case tr_direction::ClientToPeer: // requests we sent
-            return active_requests.count();
+            return active_requests().count();
 
         case tr_direction::PeerToClient: // requests they sent
             return std::size(peer_requested_) + std::size(reading_);
@@ -426,14 +426,14 @@ public:
 
     void cancel_block_request(tr_block_index_t block)
     {
-        active_requests.unset(block);
+        unset_active_request(block);
         publish(tr_peer_event::SentCancel(tor_.block_info(), block));
         protocol_send_cancel(peer_request::from_block(tor_, block));
     }
 
     void maybe_cancel_block_request(tr_block_index_t block) override
     {
-        if (active_requests.test(block)) {
+        if (active_requests().test(block)) {
             cancel_block_request(block);
         }
     }
@@ -514,7 +514,7 @@ public:
                 request_timeouts_.emplace_back(block, timeout);
             }
 
-            active_requests.set_span(block_begin, block_end);
+            set_active_requests({ .begin = block_begin, .end = block_end });
             publish(tr_peer_event::SentRequest(tor_.block_info(), *span));
         }
     }
@@ -1535,7 +1535,7 @@ ReadResult tr_peerMsgsImpl::process_peer_message(uint8_t id, MessageReader& payl
 
         if (!fext) {
             publish(tr_peer_event::GotChoke());
-            active_requests.set_has_none();
+            clear_active_requests();
             request_timeouts_.clear();
         }
 
@@ -1726,8 +1726,8 @@ ReadResult tr_peerMsgsImpl::process_peer_message(uint8_t id, MessageReader& payl
             r.length = payload.to_uint32();
 
             if (fext) {
-                if (auto const block = tor_.piece_loc(r.index, r.offset).block; active_requests.test(block)) {
-                    active_requests.unset(block);
+                if (auto const block = tor_.piece_loc(r.index, r.offset).block; active_requests().test(block)) {
+                    unset_active_request(block);
 
                     // Make sure maybe_send_block_requests() is called before removing the request
                     // from the wishlist, so that it will choose a block other than the rejected block.
@@ -1838,7 +1838,7 @@ bool tr_peerMsgsImpl::client_got_block(std::unique_ptr<tr::LocalData::BlockData>
         return false; // another peer beat us to it
     }
 
-    active_requests.unset(block);
+    unset_active_request(block);
     publish(tr_peer_event::GotBlock(tor_.block_info(), block));
 
     // A failed write can pause the torrent, which destroys `this`.
@@ -2050,7 +2050,7 @@ void tr_peerMsgsImpl::check_request_timeout(time_t const now)
             continue;
         }
 
-        if (!active_requests.test(block)) {
+        if (!active_requests().test(block)) {
             // request no longer active, discard
             it = request_timeouts_.erase(it);
             continue;
