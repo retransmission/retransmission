@@ -162,16 +162,6 @@ typedef NS_ENUM(NSUInteger, AddType) { //
 
 - (void)updateMainWindow;
 
-- (void)setWindowSizeToFit;
-- (void)updateForAutoSize;
-- (void)updateWindowAfterToolbarChange;
-- (void)removeHeightConstraints;
-@property(nonatomic, readonly) CGFloat minScrollViewHeightAllowed;
-@property(nonatomic, readonly) CGFloat toolbarHeight;
-@property(nonatomic, readonly) CGFloat mainWindowComponentHeight;
-@property(nonatomic, readonly) CGFloat scrollViewHeight;
-@property(nonatomic, getter=isFullScreen, readonly) BOOL fullScreen;
-
 - (void)updateForExpandCollapse;
 
 - (IBAction)showMainWindow:(id)sender;

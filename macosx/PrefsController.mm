@@ -1037,9 +1037,9 @@ static NSString* const kWebUIURLFormat = @"http://localhost:%ld/";
     }];
 }
 
+#warning delete method and related component (AutoSize) from XIB
 - (void)setAutoSize:(id)sender
 {
-    [NSNotificationCenter.defaultCenter postNotificationName:@"AutoSizeSettingChange" object:self];
 }
 
 - (IBAction)setRPCEnabled:(id)sender
