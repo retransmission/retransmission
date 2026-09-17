@@ -495,6 +495,8 @@ public:
     // When set, assumes that the `input` passed to parse() is valid
     // for the lifespan of the variant and we can use string_views of
     // `input` instead of cloning new strings.
+    // Only the benc parser can do this; the JSON parser always copies
+    // because it unescapes strings into a scratch buffer.
     constexpr tr_variant_serde& inplace() noexcept
     {
         parse_inplace_ = true;
