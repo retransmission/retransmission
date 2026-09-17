@@ -5,9 +5,9 @@
 
 #include <algorithm>
 #include <array>
-#include <cerrno> /* EILSEQ, EINVAL */
-#include <cstddef> // std::byte
-#include <cstdint> // uint16_t
+#include <cerrno> // E2BIG, EILSEQ, EINVAL
+#include <cstddef> // size_t
+#include <cstdint> // int64_t, uint64_t
 #include <optional>
 #include <string>
 #include <string_view>
