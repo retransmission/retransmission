@@ -104,7 +104,7 @@ struct json_to_variant_handler : public rapidjson::BaseReaderHandler<> {
     bool StartObject()
     {
         if (auto* node = push_stack()) {
-            *node = tr_variant::Map{ prealloc_guess() };
+            *node = tr_variant::make_map(prealloc_guess());
             return true;
         }
 
