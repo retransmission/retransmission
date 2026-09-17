@@ -446,12 +446,6 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
 
         NSApp.delegate = self;
 
-        //register for magnet URLs (has to be in init)
-        [[NSAppleEventManager sharedAppleEventManager] setEventHandler:self
-                                                           andSelector:@selector(handleOpenContentsEvent:replyEvent:)
-                                                         forEventClass:kInternetEventClass
-                                                            andEventID:kAEGetURL];
-
         _fTorrents = [[NSMutableArray alloc] init];
         _fDisplayedTorrents = [[NSMutableArray alloc] init];
         _fTorrentHashes = [[NSMutableDictionary alloc] init];
@@ -735,11 +729,6 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
     [PowerManager.shared setDelegate:self];
     [PowerManager.shared start];
 
-    //register for dock icon drags (has to be in applicationDidFinishLaunching: to work)
-    [[NSAppleEventManager sharedAppleEventManager] setEventHandler:self andSelector:@selector(handleOpenContentsEvent:replyEvent:)
-                                                     forEventClass:kCoreEventClass
-                                                        andEventID:kAEOpenContents];
-
     //if we were opened from a user notification, do the corresponding action
     UNNotificationResponse* launchNotification = notification.userInfo[NSApplicationLaunchUserNotificationKey];
     if (launchNotification) {
@@ -916,6 +905,13 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
     tr_sessionClose(self.fLib);
 }
 
+- (void)application:(NSApplication*)application openURLs:(NSArray<NSURL*>*)urls
+{
+    for (NSURL* url in urls) {
+        [self openURL:url.absoluteString];
+    }
+}
+
 - (BOOL)applicationSupportsSecureRestorableState:(NSApplication*)app
 {
     return YES;
@@ -926,26 +922,6 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
 - (tr_session*)sessionHandle
 {
     return self.fLib;
-}
-
-- (void)handleOpenContentsEvent:(NSAppleEventDescriptor*)event replyEvent:(NSAppleEventDescriptor*)replyEvent
-{
-    NSString* urlString = nil;
-
-    NSAppleEventDescriptor* directObject = [event paramDescriptorForKeyword:keyDirectObject];
-    if (directObject.descriptorType == typeAEList) {
-        for (NSInteger i = 1; i <= directObject.numberOfItems; i++) {
-            if ((urlString = [directObject descriptorAtIndex:i].stringValue)) {
-                break;
-            }
-        }
-    } else {
-        urlString = directObject.stringValue;
-    }
-
-    if (urlString) {
-        [self openURL:urlString];
-    }
 }
 
 #pragma mark - NSURLSessionDelegate
@@ -1263,15 +1239,6 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
 - (void)openFilesWithDict:(NSDictionary*)dictionary
 {
     [self openFiles:dictionary[@"Filenames"] addType:static_cast<AddType>([dictionary[@"AddType"] intValue]) forcePath:nil];
-}
-
-//called on by applescript
-- (void)open:(NSArray*)files
-{
-    NSDictionary* dict = @{ @"Filenames" : files, @"AddType" : @(AddTypeManual) };
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [self openFilesWithDict:dict];
-    });
 }
 
 - (void)openShowSheet:(id)sender
