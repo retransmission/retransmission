@@ -93,9 +93,12 @@ struct json_to_variant_handler : public rapidjson::BaseReaderHandler<> {
         return true;
     }
 
-    bool String(Ch const* const str, rapidjson::SizeType const len, bool const copy)
+    // `str` points into RapidJSON's scratch buffer, which is reused for
+    // the next string, so the variant must own a copy even when
+    // tr_variant_serde::inplace() was requested.
+    bool String(Ch const* const str, rapidjson::SizeType const len, bool /*copy*/)
     {
-        *get_leaf() = copy ? tr_variant{ std::string_view{ str, len } } : tr_variant::unmanaged_string({ str, len });
+        *get_leaf() = std::string_view{ str, len };
         return true;
     }
 
