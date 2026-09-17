@@ -9,7 +9,6 @@
 #include <cstddef> // std::byte
 #include <cstdint> // uint16_t
 #include <optional>
-#include <stack>
 #include <string>
 #include <string_view>
 #include <type_traits>
@@ -48,7 +47,7 @@ struct json_to_variant_handler : public rapidjson::BaseReaderHandler<> {
 
     explicit json_to_variant_handler(tr_variant* const top)
     {
-        stack_.emplace(top);
+        stack_.push_back(top);
     }
 
     bool Null()
@@ -149,13 +148,13 @@ private:
 
     tr_variant* push_stack()
     {
-        return std::size(stack_) < MaxDepth ? stack_.emplace(get_leaf()) : nullptr;
+        return std::size(stack_) < MaxDepth ? stack_.emplace_back(get_leaf()) : nullptr;
     }
 
     void pop_stack(rapidjson::SizeType const len) noexcept
     {
         auto const depth = std::size(stack_);
-        stack_.pop();
+        stack_.pop_back();
         TR_ASSERT(!std::empty(stack_));
         if (depth < MaxDepth) {
             prealloc_guess_[depth] = len;
@@ -164,7 +163,7 @@ private:
 
     [[nodiscard]] tr_variant* get_leaf()
     {
-        auto* const parent = stack_.top();
+        auto* const parent = stack_.back();
         TR_ASSERT(parent != nullptr);
 
         if (auto* const vec = parent->get_if<tr_variant::Vector>()) {
@@ -190,7 +189,7 @@ private:
     // so this is current whenever get_leaf() finds a map on the stack.
     tr_quark key_ = TR_KEY_NONE;
 
-    std::stack<tr_variant*> stack_;
+    small::max_size_vector<tr_variant*, MaxDepth> stack_;
 };
 // NOLINTEND(bugprone-derived-method-shadowing-base-method)
 } // namespace parse_helpers
