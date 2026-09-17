@@ -197,7 +197,9 @@ std::optional<tr_variant> tr_variant_serde::parse_json(std::string_view input)
     auto* begin = std::data(input);
     auto size = std::size(input);
     if (begin == nullptr) {
-        // RapidJSON will dereference a nullptr otherwise
+        // clang-analyzer does not know a null string_view is empty and
+        // reports MemoryStream reading through it. Give it an empty
+        // buffer instead.
         begin = "";
         size = 0;
     }
