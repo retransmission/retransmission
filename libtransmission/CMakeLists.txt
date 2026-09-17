@@ -190,6 +190,7 @@ target_sources(${TR_NAME}
         values.cc
         values.h
         variant-benc.cc
+        variant-common.h
         variant-json.cc
         variant.cc
         variant.h
