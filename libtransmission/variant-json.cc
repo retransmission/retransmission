@@ -142,8 +142,7 @@ struct json_to_variant_handler : public rapidjson::BaseReaderHandler<> {
 private:
     [[nodiscard]] size_t prealloc_guess() const noexcept
     {
-        auto const depth = std::size(stack_);
-        return depth < MaxDepth ? prealloc_guess_[depth] : 0;
+        return prealloc_guess_[std::size(stack_)];
     }
 
     tr_variant* push_stack()
@@ -153,12 +152,9 @@ private:
 
     void pop_stack(rapidjson::SizeType const len) noexcept
     {
-        auto const depth = std::size(stack_);
+        prealloc_guess_[std::size(stack_)] = len;
         stack_.pop_back();
         TR_ASSERT(!std::empty(stack_));
-        if (depth < MaxDepth) {
-            prealloc_guess_[depth] = len;
-        }
     }
 
     [[nodiscard]] tr_variant* get_leaf()
@@ -182,8 +178,9 @@ private:
     /* A very common pattern is for a container's children to be similar,
      * e.g. they may all be objects with the same set of keys. So when
      * a container is popped off the stack, remember its size to use as
-     * a preallocation heuristic for the next container at that depth. */
-    std::array<size_t, MaxDepth> prealloc_guess_{};
+     * a preallocation heuristic for the next container at that depth.
+     * Indexed by the stack size, which push_stack() caps at MaxDepth. */
+    std::array<size_t, MaxDepth + 1> prealloc_guess_{};
 
     // RapidJSON reports each member's key right before its value,
     // so this is current whenever get_leaf() finds a map on the stack.
