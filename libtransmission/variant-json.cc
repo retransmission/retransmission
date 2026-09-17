@@ -156,14 +156,6 @@ private:
 
     void pop_stack(rapidjson::SizeType const len) noexcept
     {
-#ifdef TR_ENABLE_ASSERTS
-        if (auto* top = stack_.top(); top->holds_alternative<tr_variant::Vector>()) {
-            TR_ASSERT(std::size(*top->get_if<tr_variant::Vector>()) == len);
-        } else if (top->holds_alternative<tr_variant::Map>()) {
-            TR_ASSERT(std::size(*top->get_if<tr_variant::Map>()) == len);
-        }
-#endif
-
         auto const depth = std::size(stack_);
         stack_.pop();
         TR_ASSERT(!std::empty(stack_));
