@@ -1315,7 +1315,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       VCPKG_DEFAULT_TRIPLET: arm64-android
-      VCPKG_COMMIT: 389d14fa0e0692f36967e9eb5499e909317644d5 # 2026.01.15
+      VCPKG_COMMIT: 9e593bb18ea69cc5095e012465dcd675a822ed0d # 2026-07-27
       VCPKG_DEFAULT_BINARY_CACHE: ${{ github.workspace }}/.vcpkg-binary-cache
     steps:
     - name: Get Dependencies
