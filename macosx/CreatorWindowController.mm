@@ -122,16 +122,6 @@ static NSMutableSet* creatorWindowControllerSet;
         //get list of trackers
         if (!(_fTrackers = [[_fDefaults arrayForKey:@"CreatorTrackers"] mutableCopy])) {
             _fTrackers = [[NSMutableArray alloc] init];
-
-            //check for single tracker from versions before 1.3
-            NSString* tracker;
-            if ((tracker = [_fDefaults stringForKey:@"CreatorTracker"])) {
-                [_fDefaults removeObjectForKey:@"CreatorTracker"];
-                if (![tracker isEqualToString:@""]) {
-                    [_fTrackers addObject:tracker];
-                    [_fDefaults setObject:_fTrackers forKey:@"CreatorTrackers"];
-                }
-            }
         }
 
         //remove potentially invalid addresses
@@ -179,18 +169,15 @@ static NSMutableSet* creatorWindowControllerSet;
     self.fStatusField.stringValue = status_string;
 
     [self updatePiecesField];
+
     self.fPieceSizeStepper.intValue = static_cast<int>(log2(self.fBuilder->piece_size()));
 
-    self.fLocation = [[self.fDefaults URLForKey:@"CreatorLocationURL"]
-        URLByAppendingPathComponent:[name stringByAppendingPathExtension:@"torrent"]];
-    if (!self.fLocation) {
-        //Compatibility with Transmission 2.5 and earlier,
-        //when it was "CreatorLocation" and not "CreatorLocationURL"
-        NSString* location = [self.fDefaults stringForKey:@"CreatorLocation"];
-        self.fLocation = [[NSURL alloc]
-            initFileURLWithPath:[location.stringByExpandingTildeInPath
-                                    stringByAppendingPathComponent:[name stringByAppendingPathExtension:@"torrent"]]];
+    NSURL* locationDirectory = [self.fDefaults URLForKey:@"CreatorLocationURL"];
+    if (!locationDirectory) {
+        locationDirectory = [NSFileManager.defaultManager URLsForDirectory:NSDesktopDirectory inDomains:NSUserDomainMask].firstObject;
     }
+    self.fLocation = [locationDirectory URLByAppendingPathComponent:[name stringByAppendingPathExtension:@"torrent"]];
+
     [self updateLocationField];
 
     //set previously saved values
