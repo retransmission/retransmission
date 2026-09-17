@@ -333,7 +333,13 @@ struct JsonWriter {
 };
 
 template<typename WriterT>
-JsonWriter(WriterT&) -> JsonWriter<WriterT>;
+[[nodiscard]] std::string to_json(tr_variant const& var)
+{
+    auto buf = FmtOutputStream{};
+    auto writer = WriterT{ buf };
+    var.visit(JsonWriter<WriterT>{ writer });
+    return buf.to_string();
+}
 
 } // namespace to_string_helpers
 } // namespace
@@ -341,16 +347,7 @@ JsonWriter(WriterT&) -> JsonWriter<WriterT>;
 std::string tr_variant_serde::to_json_string(tr_variant const& var) const
 {
     using namespace to_string_helpers;
+    using Out = FmtOutputStream;
 
-    auto buf = FmtOutputStream{};
-    if (compact_) {
-        auto writer = rapidjson::Writer{ buf };
-        var.visit(JsonWriter{ writer });
-    } else {
-        // Explicitly specify template parameter to workaround
-        // https://gcc.gnu.org/bugzilla/show_bug.cgi?id=85790
-        auto writer = rapidjson::PrettyWriter<FmtOutputStream>{ buf };
-        var.visit(JsonWriter{ writer });
-    }
-    return buf.to_string();
+    return compact_ ? to_json<rapidjson::Writer<Out>>(var) : to_json<rapidjson::PrettyWriter<Out>>(var);
 }
