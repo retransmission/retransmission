@@ -546,6 +546,7 @@
 		EDB550032F55000100B05501 /* bep55-holepunch.cc in Sources */ = {isa = PBXBuildFile; fileRef = EDB550012F55000100B05501 /* bep55-holepunch.cc */; };
 		EDB550042F55000100B05501 /* bep55-holepunch.h in Headers */ = {isa = PBXBuildFile; fileRef = EDB550022F55000100B05501 /* bep55-holepunch.h */; };
 		EDB550062F55000100B05501 /* bep55-introducer-store.h in Headers */ = {isa = PBXBuildFile; fileRef = EDB550052F55000100B05501 /* bep55-introducer-store.h */; };
+		EDB64CB33055712D00BBA0C2 /* RpcController.mm in Sources */ = {isa = PBXBuildFile; fileRef = EDB64CB23055712D00BBA0C2 /* RpcController.mm */; };
 		EDBA61FF2D4180D5001470F8 /* torrent-queue.h in Headers */ = {isa = PBXBuildFile; fileRef = EDBA61FD2D4180D5001470F8 /* torrent-queue.h */; };
 		EDBA62002D4180D5001470F8 /* torrent-queue.cc in Sources */ = {isa = PBXBuildFile; fileRef = EDBA61FE2D4180D5001470F8 /* torrent-queue.cc */; };
 		EDBAAC8C29E486BC00D9495F /* ip-cache.h in Headers */ = {isa = PBXBuildFile; fileRef = EDBAAC8B29E486BC00D9495F /* ip-cache.h */; };
@@ -1590,6 +1591,8 @@
 		EDB550012F55000100B05501 /* bep55-holepunch.cc */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = "bep55-holepunch.cc"; sourceTree = "<group>"; };
 		EDB550022F55000100B05501 /* bep55-holepunch.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.h; path = "bep55-holepunch.h"; sourceTree = "<group>"; };
 		EDB550052F55000100B05501 /* bep55-introducer-store.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.h; path = "bep55-introducer-store.h"; sourceTree = "<group>"; };
+		EDB64CB13055712D00BBA0C2 /* RpcController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RpcController.h; sourceTree = "<group>"; };
+		EDB64CB23055712D00BBA0C2 /* RpcController.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = RpcController.mm; sourceTree = "<group>"; };
 		EDBA61FD2D4180D5001470F8 /* torrent-queue.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "torrent-queue.h"; sourceTree = "<group>"; };
 		EDBA61FE2D4180D5001470F8 /* torrent-queue.cc */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = "torrent-queue.cc"; sourceTree = "<group>"; };
 		EDBAAC8B29E486BC00D9495F /* ip-cache.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.h; fileEncoding = 4; path = "ip-cache.h"; sourceTree = "<group>"; };
@@ -1809,6 +1812,8 @@
 		080E96DDFE201D6D7F000001 /* Sources */ = {
 			isa = PBXGroup;
 			children = (
+				EDB64CB13055712D00BBA0C2 /* RpcController.h */,
+				EDB64CB23055712D00BBA0C2 /* RpcController.mm */,
 				29B97316FDCFA39411CA2CEA /* main.mm */,
 				C86BCD9828228A9600F45599 /* SparkleProxy.mm */,
 				4DF0C5AA0899190500DD8943 /* Controller.h */,
@@ -3621,6 +3626,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				C86BCD9928228A9600F45599 /* SparkleProxy.mm in Sources */,
+				EDB64CB33055712D00BBA0C2 /* RpcController.mm in Sources */,
 				ED86936F2ADAE34D00342B1A /* DefaultAppHelper.mm in Sources */,
 				A225A4C0187E369C00CDE823 /* ShareToolbarItem.mm in Sources */,
 				A2D77453154CC72B00A62B93 /* WebSeedTableView.mm in Sources */,
