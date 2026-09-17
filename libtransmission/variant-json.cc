@@ -3,7 +3,6 @@
 // or any future license endorsed by Mnemosaic LLC.
 // License text can be found in the licenses/ folder.
 
-#include <algorithm>
 #include <array>
 #include <cerrno> // E2BIG, EILSEQ, EINVAL
 #include <cstddef> // size_t
@@ -35,6 +34,7 @@
 #include "libtransmission/string-utils.h"
 #include "libtransmission/tr-assert.h"
 #include "libtransmission/utils.h"
+#include "libtransmission/variant-common.h"
 #include "libtransmission/variant.h"
 
 namespace
@@ -267,18 +267,6 @@ private:
     fmt::memory_buffer buf_;
 };
 
-[[nodiscard]] auto sorted_entries(tr_variant::Map const& map)
-{
-    static auto constexpr N = 32U;
-    auto entries = small::vector<std::pair<std::string_view, tr_variant const*>, N>{};
-    entries.reserve(map.size());
-    for (auto const& [key, child] : map) {
-        entries.emplace_back(tr_quark_get_string_view(key), &child);
-    }
-    std::ranges::sort(entries);
-    return entries;
-}
-
 template<typename WriterT>
 struct JsonWriter {
     WriterT& writer;
@@ -324,7 +312,7 @@ struct JsonWriter {
     void operator()(tr_variant::Map const& val) const
     {
         writer.StartObject();
-        for (auto const& [key, child] : sorted_entries(val)) {
+        for (auto const& [key, child] : tr::variant::detail::sorted_entries(val)) {
             writer.Key(tr_strv_to_utf8_string(key));
             child->visit(*this);
         }
