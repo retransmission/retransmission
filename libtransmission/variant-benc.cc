@@ -17,13 +17,12 @@
 
 #include <fmt/format.h>
 
-#include <small/vector.hpp>
-
 #define LIBTRANSMISSION_VARIANT_MODULE
 
 #include "libtransmission/benc.h"
 #include "libtransmission/quark.h"
 #include "libtransmission/utils.h"
+#include "libtransmission/variant-common.h"
 #include "libtransmission/variant.h"
 
 using namespace std::literals;
@@ -260,19 +259,6 @@ namespace to_string_helpers
 {
 using OutBuf = fmt::memory_buffer;
 
-[[nodiscard]] auto sorted_entries(tr_variant::Map const& map)
-{
-    static auto constexpr N = 32U;
-    auto entries = small::vector<std::pair<std::string_view, tr_variant const*>, N>{};
-    entries.reserve(map.size());
-    for (auto const& [key, child] : map) {
-        entries.emplace_back(tr_quark_get_string_view(key), &child);
-    }
-
-    std::ranges::sort(entries);
-    return entries;
-}
-
 struct BencWriter {
     void operator()(std::monostate /*unused*/) const
     {
@@ -315,8 +301,7 @@ struct BencWriter {
     void operator()(tr_variant::Map const& map) const
     {
         out_.push_back('d');
-        auto entries = sorted_entries(map);
-        for (auto const& [key, child] : entries) {
+        for (auto const& [key, child] : tr::variant::detail::sorted_entries(map)) {
             write_string(key);
             child->visit(*this);
         }
