@@ -3,8 +3,6 @@
 // or any future license endorsed by Mnemosaic LLC.
 // License text can be found in the licenses/ folder.
 
-#define LIBTRANSMISSION_VARIANT_MODULE
-
 #include <cstdint> // int64_t
 #include <locale>
 #include <optional>

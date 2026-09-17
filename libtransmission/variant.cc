@@ -20,8 +20,6 @@
 
 #include <fmt/format.h>
 
-#define LIBTRANSMISSION_VARIANT_MODULE
-
 #include "libtransmission/api-compat.h"
 #include "libtransmission/error.h"
 #include "libtransmission/file.h"

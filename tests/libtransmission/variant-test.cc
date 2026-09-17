@@ -17,8 +17,6 @@
 
 #include <gtest/gtest.h>
 
-#define LIBTRANSMISSION_VARIANT_MODULE
-
 #include <libtransmission/benc.h>
 #include <libtransmission/crypto-utils.h> // tr_rand_buffer(), tr_rand_int()
 #include <libtransmission/error.h>
