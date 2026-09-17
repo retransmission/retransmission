@@ -66,6 +66,9 @@ static CGFloat const kStackViewVerticalSpacing = 8.0;
 {
     [super awakeFromNib];
     [self checkWindowSize];
+
+    auto gestureRecognizer = [[NSClickGestureRecognizer alloc] initWithTarget:self action:@selector(togglePiecesViewAvailability:)];
+    [self.fPiecesView addGestureRecognizer:gestureRecognizer];
 }
 
 - (CGFloat)fHorizLayoutHeight
@@ -236,21 +239,40 @@ static CGFloat const kStackViewVerticalSpacing = 8.0;
     }
 }
 
-- (void)setPiecesView:(id)sender
+- (BOOL)shouldTogglePiecesViewAvailability
 {
-    BOOL const availability = [sender selectedSegment] == PiecesControlSegmentAvailable;
-    [NSUserDefaults.standardUserDefaults setBool:availability forKey:@"PiecesViewShowAvailability"];
-    [self updatePiecesView:nil];
+    return self.fPiecesView.torrent != nil;
 }
 
-- (void)updatePiecesView:(id)sender
+- (void)setPiecesViewAvailability:(BOOL)piecesAvailableSegment
 {
-    BOOL const piecesAvailableSegment = [NSUserDefaults.standardUserDefaults boolForKey:@"PiecesViewShowAvailability"];
+    [NSUserDefaults.standardUserDefaults setBool:piecesAvailableSegment forKey:@"PiecesViewShowAvailability"];
 
-    [self.fPiecesControl setSelected:piecesAvailableSegment forSegment:PiecesControlSegmentAvailable];
-    [self.fPiecesControl setSelected:!piecesAvailableSegment forSegment:PiecesControlSegmentProgress];
+    [self syncPiecesControl:piecesAvailableSegment];
 
     [self.fPiecesView updateView];
+}
+
+- (void)syncPiecesControl:(BOOL)piecesAvailableSegment
+{
+    [self.fPiecesControl setSelected:piecesAvailableSegment forSegment:PiecesControlSegmentAvailable];
+    [self.fPiecesControl setSelected:!piecesAvailableSegment forSegment:PiecesControlSegmentProgress];
+}
+
+- (IBAction)setPiecesView:(id)sender
+{
+    if (self.shouldTogglePiecesViewAvailability) {
+        BOOL const availability = [sender selectedSegment] == PiecesControlSegmentAvailable;
+        [self setPiecesViewAvailability:availability];
+    }
+}
+
+- (void)togglePiecesViewAvailability:(id)sender
+{
+    if (self.shouldTogglePiecesViewAvailability) {
+        BOOL const availability = [NSUserDefaults.standardUserDefaults boolForKey:@"PiecesViewShowAvailability"];
+        [self setPiecesViewAvailability:!availability];
+    }
 }
 
 - (void)clearView
@@ -287,17 +309,17 @@ static CGFloat const kStackViewVerticalSpacing = 8.0;
 
         [self.fPiecesControl setSelected:NO forSegment:PiecesControlSegmentAvailable];
         [self.fPiecesControl setSelected:NO forSegment:PiecesControlSegmentProgress];
-        self.fPiecesControl.enabled = NO;
         self.fPiecesView.torrent = nil;
+
+        self.fPiecesControl.enabled = self.shouldTogglePiecesViewAvailability;
     } else {
         Torrent* torrent = self.fTorrents[0];
 
         BOOL const piecesAvailableSegment = [NSUserDefaults.standardUserDefaults boolForKey:@"PiecesViewShowAvailability"];
-        [self.fPiecesControl setSelected:piecesAvailableSegment forSegment:PiecesControlSegmentAvailable];
-        [self.fPiecesControl setSelected:!piecesAvailableSegment forSegment:PiecesControlSegmentProgress];
-        self.fPiecesControl.enabled = YES;
-
+        [self syncPiecesControl:piecesAvailableSegment];
         self.fPiecesView.torrent = torrent;
+
+        self.fPiecesControl.enabled = self.shouldTogglePiecesViewAvailability;
     }
 
     self.fSet = YES;
