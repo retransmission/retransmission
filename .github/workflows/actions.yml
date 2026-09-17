@@ -62,7 +62,7 @@ jobs:
           fi
       - name: Get Source
         id: get-source
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           fetch-depth: 0
           path: src
@@ -112,7 +112,7 @@ jobs:
           echo '${{ toJSON(runner) }}'
           cat /etc/os-release
       - name: Get Source
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
       - name: Check for style diffs
         id: check-for-diffs
         working-directory: .
@@ -124,7 +124,7 @@ jobs:
           cat style.diff
           set -e
       - name: Upload Diffs
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         if: ${{ steps.check-for-diffs.outputs.differs == '1' }}
         with:
           name: code-style.diff
@@ -148,7 +148,7 @@ jobs:
           echo '${{ toJSON(runner) }}'
           cat /etc/os-release
       - name: Get Source
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           submodules: recursive
       - name: Get Dependencies
@@ -216,7 +216,7 @@ jobs:
           echo '${{ toJSON(runner) }}'
           sw_vers
       - name: Get Source
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           submodules: recursive
       - name: Get Dependencies
@@ -274,7 +274,7 @@ jobs:
           echo '${{ toJSON(needs) }}'
           echo '${{ toJSON(runner) }}'
       - name: Get Source
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           submodules: recursive
       - name: Prepare Build Deps
@@ -424,7 +424,7 @@ jobs:
           cat /etc/os-release
       - name: Get Source
         if: matrix.enabled == 'true'
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           submodules: false
       - name: Check out submodules (shallow)
@@ -517,7 +517,7 @@ jobs:
           echo '${{ toJSON(runner) }}'
       - name: Get Source
         if: matrix.enabled == 'true'
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           submodules: false
       - name: Check out submodules (shallow)
@@ -598,13 +598,13 @@ jobs:
       - name: Get Dependencies
         run: brew install --formulae xcbeautify
       - name: Get Source
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           path: src
           submodules: recursive
       - name: Build
         run: set -o pipefail && xcodebuild -project src/Transmission.xcodeproj -scheme Transmission -configuration 'Release - Debug' -derivedDataPath pfx ONLY_ACTIVE_ARCH=NO build | xcbeautify --renderer github-actions
-      - uses: actions/upload-artifact@v6
+      - uses: actions/upload-artifact@v7
         with:
           name: binaries-${{ github.job }}
           path: pfx/Build/Products/**/Transmission.app*
@@ -628,7 +628,7 @@ jobs:
           echo '${{ toJSON(runner) }}'
           sw_vers
       - name: Get Source
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           submodules: recursive
       - name: Get Dependencies
@@ -682,7 +682,7 @@ jobs:
           build-config: RelWithDebInfo
       - name: Install
         run: cmake --install obj --config RelWithDebInfo --strip
-      - uses: actions/upload-artifact@v6
+      - uses: actions/upload-artifact@v7
         with:
           name: binaries-${{ github.job }}
           path: pfx/**/*
@@ -736,7 +736,7 @@ jobs:
         if: ${{ needs.what-to-make.outputs.make-qt == 'true' }}
         run: apk add --upgrade qt6-qtbase-dev qt6-qttools-dev qt6-qtsvg-dev xcb-util-cursor
       - name: Get Source
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           submodules: recursive
       - name: Configure
@@ -774,7 +774,7 @@ jobs:
           build-config: Release
       - name: Install
         run: cmake --install obj --config Release --strip
-      - uses: actions/upload-artifact@v6
+      - uses: actions/upload-artifact@v7
         with:
           name: binaries-${{ github.job }}
           path: pfx/**/*
@@ -814,7 +814,7 @@ jobs:
           echo '${{ toJSON(needs) }}'
           echo '${{ toJSON(runner) }}'
       - name: Get Source
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           submodules: recursive
       - name: Prepare Build Deps
@@ -894,12 +894,12 @@ jobs:
         if: ${{ matrix.publish && (needs.what-to-make.outputs.make-dist == 'true' || (needs.what-to-make.outputs.make-daemon == 'true' && needs.what-to-make.outputs.make-qt == 'true')) }}
         run: |
           cmd /c "`"$Env:VCVARSALL`" $Env:VC_ARCH >nul && cmake --build obj --config RelWithDebInfo --target pack-msi"
-      - uses: actions/upload-artifact@v6
+      - uses: actions/upload-artifact@v7
         if: ${{ matrix.publish }}
         with:
           name: binaries-${{ github.job }}-${{ matrix.arch }}-${{ matrix.runner }}
           path: pfx/**/*
-      - uses: actions/upload-artifact@v6
+      - uses: actions/upload-artifact@v7
         if: ${{ matrix.publish }}
         with:
           name: binaries-${{ github.job }}-${{ matrix.arch }}-${{ matrix.runner }}-msi
@@ -927,7 +927,7 @@ jobs:
             libcurl4-openssl-dev \
             libssl-dev
       - name: Get Source
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           path: src
           submodules: recursive
@@ -939,7 +939,7 @@ jobs:
             -G Ninja
       - name: Create source tarball
         run: cmake --build obj --target package_source
-      - uses: actions/upload-artifact@v6
+      - uses: actions/upload-artifact@v7
         with:
           name: source-tarball
           path: obj/transmission*.tar.*
@@ -973,13 +973,13 @@ jobs:
         if: ${{ needs.what-to-make.outputs.make-qt == 'true' }}
         run: brew install --formula qt
       - name: Get Composite Actions
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           sparse-checkout: |
             .github/actions
           sparse-checkout-cone-mode: false
       - name: Get Source
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           name: source-tarball
       - name: Extract Source
@@ -1024,7 +1024,7 @@ jobs:
           build-config: RelWithDebInfo
       - name: Install
         run: cmake --install obj --config RelWithDebInfo --strip
-      - uses: actions/upload-artifact@v6
+      - uses: actions/upload-artifact@v7
         with:
           name: binaries-${{ github.job }}
           path: pfx/**/*
@@ -1060,7 +1060,7 @@ jobs:
           echo '${{ toJSON(runner) }}'
           cat /etc/os-release
       - name: Get Composite Actions
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           sparse-checkout: |
             .github/actions
@@ -1080,7 +1080,7 @@ jobs:
           in-container: 'true'
           key-suffix: ${{ matrix.version }}
       - name: Get Source
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           name: source-tarball
       - name: Extract Source
@@ -1124,7 +1124,7 @@ jobs:
           build-config: Release
       - name: Install
         run: cmake --install obj --config Release --strip
-      - uses: actions/upload-artifact@v6
+      - uses: actions/upload-artifact@v7
         with:
           name: binaries-${{ github.job }}-${{ matrix.version }}
           path: pfx/**/*
@@ -1153,7 +1153,7 @@ jobs:
           echo '${{ toJSON(runner) }}'
           cat /etc/os-release
       - name: Get Composite Actions
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           sparse-checkout: |
             .github/actions
@@ -1173,7 +1173,7 @@ jobs:
           in-container: 'true'
           key-suffix: ${{ matrix.version }}
       - name: Get Source
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           name: source-tarball
       - name: Extract Source
@@ -1215,7 +1215,7 @@ jobs:
           build-config: Release
       - name: Install
         run: cmake --install obj --config Release --strip
-      - uses: actions/upload-artifact@v6
+      - uses: actions/upload-artifact@v7
         with:
           name: binaries-${{ github.job }}-${{ matrix.version }}
           path: pfx/**/*
@@ -1239,7 +1239,7 @@ jobs:
           cat /etc/os-release
 
       - name: Get Composite Actions
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           sparse-checkout: |
             .github/actions
@@ -1252,7 +1252,7 @@ jobs:
           use-sudo: true
           enable-mold: true
       - name: Get Source
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           name: source-tarball
       - name: Extract Source
@@ -1302,7 +1302,7 @@ jobs:
           build-config: Release
       - name: Install
         run: cmake --install obj --config Release --strip
-      - uses: actions/upload-artifact@v6
+      - uses: actions/upload-artifact@v7
         with:
           name: binaries-${{ github.job }}-without-utp
           path: pfx/**/*
@@ -1326,23 +1326,23 @@ jobs:
           ninja-build
 
     - name: Get Source
-      uses: actions/checkout@v6
+      uses: actions/checkout@v7
       with:
         submodules: recursive
 
     - name: Set up JDK 17
-      uses: actions/setup-java@v5
+      uses: actions/setup-java@v6
       with:
         java-version: '17'
         distribution: 'temurin'
 
     - name: Setup Gradle
-      uses: gradle/actions/setup-gradle@v5
+      uses: gradle/actions/setup-gradle@v6
       with:
         gradle-version: 8.13
 
     - name: Setup Android SDK
-      uses: android-actions/setup-android@v3
+      uses: android-actions/setup-android@v4
 
     - name: Install NDK
       run: sdkmanager "ndk;27.3.13750724"
@@ -1353,7 +1353,7 @@ jobs:
         vcpkgGitCommitId: ${{ env.VCPKG_COMMIT }}
 
     - name: Cache vcpkg binaries
-      uses: actions/cache@v5
+      uses: actions/cache@v6
       with:
         path: .vcpkg-binary-cache
         key: vcpkg-${{ env.VCPKG_DEFAULT_TRIPLET }}-${{ env.VCPKG_COMMIT }}
@@ -1379,7 +1379,7 @@ jobs:
           echo '${{ toJSON(runner) }}'
           cat /etc/os-release
       - name: Get Source
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           submodules: recursive
       - name: Get Dependencies
@@ -1447,7 +1447,7 @@ jobs:
           echo '${{ toJSON(runner) }}'
           cat /etc/os-release
       - name: Get Composite Actions
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           sparse-checkout: |
             .github/actions
@@ -1461,7 +1461,7 @@ jobs:
           use-sudo: true
           enable-mold: true
       - name: Get Source
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           name: source-tarball
       - name: Extract Source
@@ -1510,7 +1510,7 @@ jobs:
           build-config: Release
       - name: Install
         run: cmake --install obj --config Release --strip
-      - uses: actions/upload-artifact@v6
+      - uses: actions/upload-artifact@v7
         with:
           name: binaries-${{ github.job }}
           path: pfx/**/*
@@ -1536,7 +1536,7 @@ jobs:
           sudo udevadm control --reload-rules
           sudo udevadm trigger --name-match=kvm
       - name: Get Source
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           name: source-tarball
       - name: Extract, Build, Test and Install
@@ -1595,7 +1595,7 @@ jobs:
             fi
             cmake --install obj --config Release --strip
             rm -rf obj src
-      - uses: actions/upload-artifact@v6
+      - uses: actions/upload-artifact@v7
         with:
           name: binaries-${{ github.job }}
           path: pfx/**/*
@@ -1621,7 +1621,7 @@ jobs:
           echo '${{ toJSON(runner) }}'
           cat /etc/os-release
       - name: Get Composite Actions
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           sparse-checkout: |
             .github/actions
@@ -1635,7 +1635,7 @@ jobs:
       - name: Install Crypto Library
         run: sudo apt-get install -y --no-install-recommends ${{ matrix.crypto.apt }}
       - name: Get Source
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           name: source-tarball
       - name: Extract Source
@@ -1685,7 +1685,7 @@ jobs:
           build-config: Release
       - name: Install
         run: cmake --install obj --config Release --strip
-      - uses: actions/upload-artifact@v6
+      - uses: actions/upload-artifact@v7
         with:
           name: binaries-${{ github.job }}-${{ matrix.crypto.cmake }}
           path: pfx/**/*
@@ -1711,7 +1711,7 @@ jobs:
           sudo udevadm control --reload-rules
           sudo udevadm trigger --name-match=kvm
       - name: Get Source
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           name: source-tarball
       - name: Extract, Build, Test and Install
@@ -1768,7 +1768,7 @@ jobs:
             fi
             cmake --install obj --config Release --strip
             rm -rf obj src
-      - uses: actions/upload-artifact@v6
+      - uses: actions/upload-artifact@v7
         with:
           name: binaries-${{ github.job }}
           path: pfx/**/*
@@ -1792,7 +1792,7 @@ jobs:
           sudo udevadm control --reload-rules
           sudo udevadm trigger --name-match=kvm
       - name: Get Source
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           name: source-tarball
       - name: Extract, Build, Test and Install
@@ -1859,7 +1859,7 @@ jobs:
             fi
             cmake --install obj --config Release --strip
             rm -rf obj src
-      - uses: actions/upload-artifact@v6
+      - uses: actions/upload-artifact@v7
         with:
           name: binaries-${{ github.job }}
           path: pfx/**/*

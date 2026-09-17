@@ -22,7 +22,7 @@ jobs:
       update-generated-files: ${{ steps.check-diffs.outputs.web-changed == '1' && steps.check-main-push.outputs.is-main-push == '1'}}
     steps:
       - name: Get source
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           fetch-depth: 2 # >1 needed for merge base
       - name: Check push-to-main
@@ -65,7 +65,7 @@ jobs:
     if: ${{ needs.decide-what-jobs-to-run.outputs.test-cmake-build == 'true' }}
     steps:
       - name: Get source
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
       - name: Get esbuild
         run: |
           set -ex # abort if any command fails; echo commands
@@ -85,7 +85,7 @@ jobs:
     if: ${{ needs.decide-what-jobs-to-run.outputs.test-style == 'true' }}
     steps:
       - name: Get source
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
       - name: Check for style diffs
         id: check-for-diffs
         run: |
@@ -101,7 +101,7 @@ jobs:
           echo ===
           set -e # undo set +e
       - name: Upload diffs
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         if: ${{ steps.check-for-diffs.outputs.differs == '1' }}
         with:
           name: code-style.diff
@@ -120,7 +120,7 @@ jobs:
     if: ${{ needs.decide-what-jobs-to-run.outputs.test-generated-files == 'true' }}
     steps:
       - name: Get source
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           fetch-depth: 2 # >1 needed for merge base
       - name: Check for changes to generated files
@@ -149,7 +149,7 @@ jobs:
         run: |
           env | sort
       - name: Get source
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
       - name: Generate webapp files
         run: |
           set -x # echo all executed commands to the terminal
