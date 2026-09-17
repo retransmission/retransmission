@@ -283,14 +283,6 @@ template<typename WriterT>
 struct JsonWriter {
     WriterT& writer;
 
-    using StringWriteFunc = bool (WriterT::*)(typename WriterT::Ch const*, rapidjson::SizeType, bool);
-
-    void WriteString(StringWriteFunc const func, std::string_view sv) const
-    {
-        auto const utf8 = tr_strv_to_utf8_string(sv);
-        (writer.*func)(std::data(utf8), std::size(utf8), true);
-    }
-
     void operator()(std::monostate /*unused*/) const
     {
     }
@@ -317,7 +309,7 @@ struct JsonWriter {
 
     void operator()(std::string_view const val) const
     {
-        WriteString(&WriterT::String, val);
+        writer.String(tr_strv_to_utf8_string(val));
     }
 
     void operator()(tr_variant::Vector const& val) const
@@ -333,7 +325,7 @@ struct JsonWriter {
     {
         writer.StartObject();
         for (auto const& [key, child] : sorted_entries(val)) {
-            WriteString(&WriterT::Key, key);
+            writer.Key(tr_strv_to_utf8_string(key));
             child->visit(*this);
         }
         writer.EndObject();
