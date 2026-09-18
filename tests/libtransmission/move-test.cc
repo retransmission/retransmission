@@ -37,10 +37,49 @@ class IncompleteDirTest
     , public ::testing::WithParamInterface<std::pair<std::string, std::string>>
 {
 protected:
+    struct TestIncompleteDirData {
+        tr_session* session = {};
+        tr_torrent* tor = {};
+        tr_block_index_t block = {};
+        std::vector<uint8_t> buf;
+    };
+
+    [[nodiscard]] TestIncompleteDirData makeTestIncompleteDirData(tr_torrent* const tor) const
+    {
+        auto data = TestIncompleteDirData{};
+        data.session = session_;
+        data.tor = tor;
+        data.buf.resize(tr_block_info::BlockSize);
+        std::ranges::fill(data.buf, '\0');
+        return data;
+    }
+
+    void completeBlockSpan(tr_torrent* const tor, tr_block_span_t const span)
+    {
+        static auto constexpr test_incomplete_dir_threadfunc = [](TestIncompleteDirData& data) noexcept {
+            if (data.tor->on_block_received(data.block)) {
+                data.tor->save_block(data.block, std::make_unique<tr::LocalData::BlockData>(data.buf));
+            }
+        };
+
+        auto data = makeTestIncompleteDirData(tor);
+
+        auto const [begin, end] = span;
+        for (tr_block_index_t block_index = begin; block_index < end; ++block_index) {
+            data.block = block_index;
+            session_->run_in_session_thread(test_incomplete_dir_threadfunc, data);
+
+            // save_block() may return before the write finishes
+            auto const test = [tor, block_index]() {
+                return tor->has_block(block_index);
+            };
+            EXPECT_TRUE(waitFor(test, MaxWaitMsec));
+        }
+    }
+
     void SetUp() override
     {
-        auto const download_dir = GetParam().second;
-        auto const incomplete_dir = GetParam().first;
+        auto const& [incomplete_dir, download_dir] = GetParam();
 
         auto& map = settings();
         map.insert_or_assign(TR_KEY_download_dir, download_dir);
@@ -78,41 +117,8 @@ TEST_P(IncompleteDirTest, incompleteDir)
             completeness = c;
         });
 
-    struct TestIncompleteDirData {
-        tr_session* session = {};
-        tr_torrent* tor = {};
-        tr_block_index_t block = {};
-        tr_piece_index_t pieceIndex = {};
-        std::vector<uint8_t> buf;
-    };
-
-    auto const test_incomplete_dir_threadfunc = [](TestIncompleteDirData* data) noexcept {
-        if (data->tor->on_block_received(data->block)) {
-            data->tor->save_block(data->block, std::make_unique<tr::LocalData::BlockData>(data->buf));
-        }
-    };
-
     // now finish writing it
-    {
-        auto data = TestIncompleteDirData{};
-        data.session = session_;
-        data.tor = tor;
-
-        auto const [begin, end] = tor->block_span_for_piece(data.pieceIndex);
-
-        for (tr_block_index_t block_index = begin; block_index < end; ++block_index) {
-            data.buf.resize(tr_block_info::BlockSize);
-            std::ranges::fill(data.buf, '\0');
-            data.block = block_index;
-            session_->run_in_session_thread(test_incomplete_dir_threadfunc, &data);
-
-            // save_block() may return before the write finishes
-            auto const test = [tor, block_index]() {
-                return tor->has_block(block_index);
-            };
-            EXPECT_TRUE(waitFor(test, MaxWaitMsec));
-        }
-    }
+    completeBlockSpan(tor, tor->block_span_for_piece(0));
 
     blockingTorrentVerify(tor);
     EXPECT_EQ(0, tr_torrentStat(tor).left_until_done);
