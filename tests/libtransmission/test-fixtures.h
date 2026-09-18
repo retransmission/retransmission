@@ -9,6 +9,7 @@
 #include <condition_variable>
 #include <cstdlib> // getenv()
 #include <cstring> // strlen()
+#include <future>
 #include <iostream>
 #include <memory>
 #include <mutex> // std::once_flag()
@@ -79,7 +80,7 @@ inline bool waitFor(std::function<bool()> const& test, std::chrono::milliseconds
     }
 }
 
-inline bool waitFor(std::function<bool()> const& test, int msec)
+inline bool waitFor(std::function<bool()> const& test, std::chrono::milliseconds::rep const msec)
 {
     return waitFor(test, std::chrono::milliseconds{ msec });
 }
@@ -443,6 +444,23 @@ protected:
         };
         tr_torrentVerify(tor);
         verified_cv_.wait_for(verified_lock, 20s, stop_waiting);
+    }
+
+    // Runs `func` on the session thread and waits for it to finish.
+    void blockingRunInSessionThread(std::function<void()> const& func, std::chrono::milliseconds const msec)
+    {
+        auto promise = std::promise<void>{};
+        auto const future = promise.get_future();
+        session_->run_in_session_thread([&func, &promise]() {
+            func();
+            promise.set_value();
+        });
+        ASSERT_EQ(future.wait_for(msec), std::future_status::ready);
+    }
+
+    void blockingRunInSessionThread(std::function<void()> const& func, std::chrono::milliseconds::rep const msec)
+    {
+        blockingRunInSessionThread(func, std::chrono::milliseconds{ msec });
     }
 
     tr_session* session_ = nullptr;

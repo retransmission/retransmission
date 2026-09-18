@@ -44,12 +44,7 @@ protected:
     // Runs `func` on the session thread and waits for it to finish.
     void inSessionThread(std::function<void()> const& func)
     {
-        auto done = false;
-        session_->run_in_session_thread([&func, &done]() {
-            func();
-            done = true;
-        });
-        ASSERT_TRUE(waitFor([&done]() { return done; }, MaxWaitMsec));
+        blockingRunInSessionThread(func, MaxWaitMsec);
     }
 };
 
