@@ -434,6 +434,36 @@ TEST_F(FilePieceMapTest, wanted)
     compare_to_expected();
 }
 
+TEST_F(FilePieceMapTest, firstWantedFile)
+{
+    auto const fpm = tr_file_piece_map{ block_info_, FileSizes };
+    auto files_wanted = tr_files_wanted(&fpm);
+    auto const n_files = fpm.file_count();
+
+    EXPECT_EQ(0U, files_wanted.first_wanted_file());
+
+    EXPECT_TRUE(files_wanted.set(0U, false));
+    EXPECT_EQ(1U, files_wanted.first_wanted_file());
+
+    EXPECT_TRUE(files_wanted.set(1U, false));
+    EXPECT_EQ(2U, files_wanted.first_wanted_file());
+
+    for (tr_file_index_t file = 2U; file < n_files; ++file) {
+        EXPECT_TRUE(files_wanted.set(file, false));
+    }
+    EXPECT_EQ(n_files, files_wanted.first_wanted_file());
+
+    EXPECT_TRUE(files_wanted.set(n_files - 1U, true));
+    EXPECT_EQ(n_files - 1U, files_wanted.first_wanted_file());
+
+    EXPECT_TRUE(files_wanted.set(0U, true));
+    EXPECT_EQ(0U, files_wanted.first_wanted_file());
+
+    auto const empty_fpm = tr_file_piece_map{ magnet_block_info_, {} };
+    auto empty_files_wanted = tr_files_wanted(&empty_fpm);
+    EXPECT_EQ(0U, empty_files_wanted.first_wanted_file());
+}
+
 TEST_F(FilePieceMapTest, wantedBounds)
 {
     auto const fpm = tr_file_piece_map{ block_info_, FileSizes };

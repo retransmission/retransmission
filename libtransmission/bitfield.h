@@ -92,6 +92,28 @@ public:
 
     [[nodiscard]] size_t count(size_t begin, size_t end) const;
 
+    [[nodiscard]] constexpr size_t countl_zero() const noexcept
+    {
+        if (has_none()) {
+            return is_size_known() ? size() : ~size_t{};
+        }
+
+        if (has_all()) {
+            return 0;
+        }
+
+        auto ret = size_t{};
+        for (auto const flag : flags_) {
+            if (flag != std::byte{}) {
+                ret += std::countl_zero(std::to_integer<unsigned char>(flag));
+                break;
+            }
+            ret += 8U;
+        }
+
+        return ret;
+    }
+
     [[nodiscard]] constexpr size_t size() const noexcept
     {
         return bit_count_;
@@ -169,7 +191,7 @@ private:
 
     [[nodiscard]] static constexpr int popcount(std::byte const value) noexcept
     {
-        return std::popcount(std::to_integer<uint8_t>(value));
+        return std::popcount(std::to_integer<unsigned char>(value));
     }
 
     std::vector<std::byte> flags_;

@@ -1935,6 +1935,13 @@ void tr_torrent::set_files_wanted(std::span<tr_file_index_t const> files, bool w
 
         if (!is_bootstrapping) {
             set_dirty();
+
+            // N.B. One might be tempted to call `refresh_current_dir` here, but we don't
+            // need to. Going from `incomplete_dir` to `download_dir` case is handled in
+            // `recheck_completeness`, which also clears `incomplete_dir`, and therefore
+            // `current_dir` won't ever go from `download_dir` to `incomplete_dir` in this
+            // code path.
+
             recheck_completeness();
         }
     }
@@ -2282,12 +2289,13 @@ void tr_torrent::refresh_current_dir()
 
     if (std::empty(incomplete_dir())) {
         dir = download_dir();
-    } else if (!has_metainfo()) // no files to find
-    {
+    } else if (!has_metainfo()) /* no files to find */ {
         dir = incomplete_dir();
-    } else {
-        auto const found = find_file(0);
+    } else if (auto const first_file = files_wanted_.first_wanted_file(); first_file < file_count()) {
+        auto const found = find_file(first_file);
         dir = found ? tr::shared_string{ found->base } : incomplete_dir();
+    } else /* no files selected for download */ {
+        dir = download_dir();
     }
 
     TR_ASSERT(!std::empty(dir));

@@ -87,6 +87,30 @@ TEST(Bitfield, countBounds)
     EXPECT_EQ(bf.size() - 1U, bf.count(1U, std::numeric_limits<size_t>::max()));
 }
 
+TEST(Bitfield, countLeftZeroes)
+{
+    auto bf = tr_bitfield{ 17 };
+    EXPECT_EQ(bf.size(), bf.countl_zero());
+
+    ASSERT_TRUE(bf.set(9U));
+    EXPECT_EQ(9U, bf.countl_zero());
+
+    ASSERT_TRUE(bf.set(0U));
+    EXPECT_EQ(0U, bf.countl_zero());
+
+    bf.set_has_none();
+    EXPECT_EQ(bf.size(), bf.countl_zero());
+
+    bf.set_has_all();
+    EXPECT_EQ(0U, bf.countl_zero());
+
+    auto unknown_size = tr_bitfield{ 0 };
+    EXPECT_EQ(std::numeric_limits<size_t>::max(), unknown_size.countl_zero());
+
+    unknown_size.set_has_all();
+    EXPECT_EQ(0U, unknown_size.countl_zero());
+}
+
 TEST(Bitfield, ctorFromFlagArray)
 {
     auto constexpr Tests = std::to_array<std::array<bool, 10>>({
