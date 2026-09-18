@@ -89,7 +89,7 @@
                         <rect key="frame" x="1" y="1" width="298" height="148"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <tableView allowsExpansionToolTips="YES" alternatingRowBackgroundColors="YES" multipleSelection="NO" typeSelect="NO" autosaveName="InspectorTable" rowHeight="16" headerView="6" id="9" customClass="PeerTableView">
+                            <tableView allowsExpansionToolTips="YES" alternatingRowBackgroundColors="YES" multipleSelection="NO" typeSelect="NO" autosaveName="InspectorTable" rowHeight="16" headerView="6" id="9">
                                 <rect key="frame" x="0.0" y="0.0" width="298" height="125"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <size key="intercellSpacing" width="3" height="2"/>
