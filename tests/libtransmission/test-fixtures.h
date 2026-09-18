@@ -445,6 +445,18 @@ protected:
         verified_cv_.wait_for(verified_lock, 20s, stop_waiting);
     }
 
+    // Runs `func` on the session thread and waits for it to finish.
+    template<typename Msec>
+    void blockingRunInSessionThread(std::function<void()> const& func, Msec&& msec)
+    {
+        auto done = false;
+        session_->run_in_session_thread([&func, &done]() {
+            func();
+            done = true;
+        });
+        ASSERT_TRUE(waitFor([&done]() { return done; }, std::forward<Msec>(msec)));
+    }
+
     tr_session* session_ = nullptr;
 
     tr::Settings& settings()
