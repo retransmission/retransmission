@@ -425,7 +425,7 @@ static NSTimeInterval const kToggleProgressSeconds = 0.175;
     if (event.clickCount == 2) //double click
     {
         if (!item || [item isKindOfClass:[Torrent class]]) {
-            [self.fController showInfo:nil];
+            [self.fController showInfo];
         } else {
             if ([self isItemExpanded:item]) {
                 [self collapseItem:item];
@@ -499,7 +499,7 @@ static NSTimeInterval const kToggleProgressSeconds = 0.175;
     if (firstChar == 'f' && event.modifierFlags & NSEventModifierFlagOption && event.modifierFlags & NSEventModifierFlagCommand) {
         [self.fController focusFilterField];
     } else if (firstChar == ' ') {
-        [self.fController toggleQuickLook:nil];
+        [self.fController toggleQuickLook];
     } else if (event.keyCode == 53) //esc key
     {
         [self deselectAll:nil];

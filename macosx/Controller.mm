@@ -1274,7 +1274,7 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
     });
 }
 
-- (void)openShowSheet:(id)sender
+- (IBAction)openShowSheet:(id)sender
 {
     NSOpenPanel* panel = [NSOpenPanel openPanel];
 
@@ -1434,7 +1434,7 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
     }
 }
 
-- (void)openURLShowSheet:(id)sender
+- (IBAction)openURLShowSheet:(id)sender
 {
     if (!self.fUrlSheetController) {
         self.fUrlSheetController = [[URLSheetWindowController alloc] init];
@@ -1495,17 +1495,17 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
     }
 }
 
-- (void)createFile:(id)sender
+- (IBAction)createFile:(id)sender
 {
     [CreatorWindowController createTorrentFile:self.fLib];
 }
 
-- (void)resumeSelectedTorrents:(id)sender
+- (IBAction)resumeSelectedTorrents:(id)sender
 {
     [self resumeTorrents:self.fTableView.selectedTorrents];
 }
 
-- (void)resumeAllTorrents:(id)sender
+- (IBAction)resumeAllTorrents:(id)sender
 {
     NSMutableArray<Torrent*>* torrents = [NSMutableArray arrayWithCapacity:self.fTorrents.count];
 
@@ -1527,12 +1527,12 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
     [self fullUpdateUI];
 }
 
-- (void)resumeSelectedTorrentsNoWait:(id)sender
+- (IBAction)resumeSelectedTorrentsNoWait:(id)sender
 {
     [self resumeTorrentsNoWait:self.fTableView.selectedTorrents];
 }
 
-- (void)resumeWaitingTorrents:(id)sender
+- (IBAction)resumeWaitingTorrents:(id)sender
 {
     NSMutableArray<Torrent*>* torrents = [NSMutableArray arrayWithCapacity:self.fTorrents.count];
 
@@ -1555,12 +1555,12 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
     [self fullUpdateUI];
 }
 
-- (void)stopSelectedTorrents:(id)sender
+- (IBAction)stopSelectedTorrents:(id)sender
 {
     [self stopTorrents:self.fTableView.selectedTorrents];
 }
 
-- (void)stopAllTorrents:(id)sender
+- (IBAction)stopAllTorrents:(id)sender
 {
     [self stopTorrents:self.fTorrents];
 }
@@ -1761,17 +1761,17 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
     }
 }
 
-- (void)removeNoDelete:(id)sender
+- (IBAction)removeNoDelete:(id)sender
 {
     [self removeTorrents:self.fTableView.selectedTorrents deleteData:NO];
 }
 
-- (void)removeDeleteData:(id)sender
+- (IBAction)removeDeleteData:(id)sender
 {
     [self removeTorrents:self.fTableView.selectedTorrents deleteData:YES];
 }
 
-- (void)clearCompleted:(id)sender
+- (IBAction)clearCompleted:(id)sender
 {
     NSMutableArray<Torrent*>* torrents = [NSMutableArray array];
 
@@ -1824,7 +1824,7 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
     [self confirmRemoveTorrents:torrents deleteData:NO];
 }
 
-- (void)moveDataFilesSelected:(id)sender
+- (IBAction)moveDataFilesSelected:(id)sender
 {
     [self moveDataFiles:self.fTableView.selectedTorrents];
 }
@@ -1858,7 +1858,7 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
     }];
 }
 
-- (void)copyTorrentFiles:(id)sender
+- (IBAction)copyTorrentFiles:(id)sender
 {
     [self copyTorrentFileForTorrents:[[NSMutableArray alloc] initWithArray:self.fTableView.selectedTorrents]];
 }
@@ -1909,12 +1909,12 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
     }
 }
 
-- (void)copyMagnetLinks:(id)sender
+- (IBAction)copyMagnetLinks:(id)sender
 {
     [self.fTableView copy:sender];
 }
 
-- (void)revealFile:(id)sender
+- (IBAction)revealFile:(id)sender
 {
     NSArray* selected = self.fTableView.selectedTorrents;
     NSMutableArray* paths = [NSMutableArray arrayWithCapacity:selected.count];
@@ -1948,7 +1948,7 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
     }];
 }
 
-- (void)announceSelectedTorrents:(id)sender
+- (IBAction)announceSelectedTorrents:(id)sender
 {
     for (Torrent* torrent in self.fTableView.selectedTorrents) {
         if (torrent.canManualAnnounce) {
@@ -1957,7 +1957,7 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
     }
 }
 
-- (void)verifySelectedTorrents:(id)sender
+- (IBAction)verifySelectedTorrents:(id)sender
 {
     [self verifyTorrents:self.fTableView.selectedTorrents];
 }
@@ -1976,7 +1976,7 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
     return self.fTableView.selectedTorrents;
 }
 
-- (void)showPreferenceWindow:(id)sender
+- (IBAction)showPreferenceWindow:(id)sender
 {
     NSWindow* window = _prefsController.window;
     if (!window.visible) {
@@ -1986,12 +1986,17 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
     [window makeKeyAndOrderFront:nil];
 }
 
-- (void)showAboutWindow:(id)sender
+- (IBAction)showAboutWindow:(id)sender
 {
     [AboutWindowController.aboutController showWindow:nil];
 }
 
-- (void)showInfo:(id)sender
+- (void)showInfo
+{
+    [self showInfo:nil];
+}
+
+- (IBAction)showInfo:(id)sender
 {
     if (self.fInfoController.window.visible) {
         [self.fInfoController close];
@@ -2017,7 +2022,7 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
     }
 }
 
-- (void)setInfoTab:(id)sender
+- (IBAction)setInfoTab:(id)sender
 {
     if (sender == self.fNextInfoTabItem) {
         [self.fInfoController setNextTab];
@@ -2035,12 +2040,12 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
     return self.fMessageController;
 }
 
-- (void)showMessageWindow:(id)sender
+- (IBAction)showMessageWindow:(id)sender
 {
     [self.messageWindowController showWindow:nil];
 }
 
-- (void)showStatsWindow:(id)sender
+- (IBAction)showStatsWindow:(id)sender
 {
     [StatsWindowController.statsWindow showWindow:nil];
 }
@@ -2349,7 +2354,7 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
     [history writeToFile:historyFile atomically:YES];
 }
 
-- (void)setSort:(id)sender
+- (IBAction)setSort:(id)sender
 {
     SortType sortType;
     NSMenuItem* senderMenuItem = sender;
@@ -2392,7 +2397,7 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
     [self sortTorrentsAndIncludeQueueOrder:YES];
 }
 
-- (void)setSortByGroup:(id)sender
+- (IBAction)setSortByGroup:(id)sender
 {
     BOOL sortByGroup = ![self.fDefaults boolForKey:@"SortByGroup"];
     [self.fDefaults setBool:sortByGroup forKey:@"SortByGroup"];
@@ -2400,7 +2405,7 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
     [self applyFilter];
 }
 
-- (void)setSortReverse:(id)sender
+- (IBAction)setSortReverse:(id)sender
 {
     BOOL const setReverse = ((NSMenuItem*)sender).tag == SortOrderTagDescending;
     if (setReverse != [self.fDefaults boolForKey:@"SortReverse"]) {
@@ -2947,7 +2952,7 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
     }
 }
 
-- (void)switchFilter:(id)sender
+- (IBAction)switchFilter:(id)sender
 {
     [self.fFilterBar switchFilter:sender == self.fNextFilterItem];
 }
@@ -3026,13 +3031,13 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
     [self updateTorrentHistory];
 }
 
-- (void)toggleSpeedLimit:(id)sender
+- (IBAction)toggleSpeedLimit:(id)sender
 {
     [self.fDefaults setBool:![self.fDefaults boolForKey:@"SpeedLimit"] forKey:@"SpeedLimit"];
     [self speedLimitChanged:sender];
 }
 
-- (void)speedLimitChanged:(id)sender
+- (IBAction)speedLimitChanged:(id)sender
 {
     tr_sessionUseAltSpeed(self.fLib, [self.fDefaults boolForKey:@"SpeedLimit"]);
     [self.fStatusBar updateSpeedFieldsToolTips];
@@ -3461,7 +3466,7 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
     return NO;
 }
 
-- (void)toggleSmallView:(id)sender
+- (IBAction)toggleSmallView:(id)sender
 {
     BOOL makeSmall = ![self.fDefaults boolForKey:@"SmallView"];
     [self.fDefaults setBool:makeSmall forKey:@"SmallView"];
@@ -3480,26 +3485,26 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
     [self updateForAutoSize];
 }
 
-- (void)togglePiecesBar:(id)sender
+- (IBAction)togglePiecesBar:(id)sender
 {
     [self.fDefaults setBool:![self.fDefaults boolForKey:@"PiecesBar"] forKey:@"PiecesBar"];
     [self.fTableView togglePiecesBar];
 }
 
-- (void)toggleAvailabilityBar:(id)sender
+- (IBAction)toggleAvailabilityBar:(id)sender
 {
     [self.fDefaults setBool:![self.fDefaults boolForKey:@"DisplayProgressBarAvailable"] forKey:@"DisplayProgressBarAvailable"];
     [self.fTableView display];
 }
 
-- (void)toggleStatusBar:(id)sender
+- (IBAction)toggleStatusBar:(id)sender
 {
     BOOL const show = self.fStatusBar == nil || self.fStatusBar.isHidden;
     [self.fDefaults setBool:show forKey:@"StatusBar"];
     [self updateMainWindow];
 }
 
-- (void)toggleFilterBar:(id)sender
+- (IBAction)toggleFilterBar:(id)sender
 {
     BOOL const show = self.fFilterBar == nil || self.fFilterBar.isHidden;
 
@@ -4618,7 +4623,7 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
     [self setBottomCountText:YES];
 }
 
-- (void)showMainWindow:(id)sender
+- (IBAction)showMainWindow:(id)sender
 {
     [self.fWindow makeKeyAndOrderFront:nil];
 }
@@ -4634,7 +4639,12 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
     [self updateUI];
 }
 
-- (void)toggleQuickLook:(id)sender
+- (void)toggleQuickLook
+{
+    [self toggleQuickLook:nil];
+}
+
+- (IBAction)toggleQuickLook:(id)sender
 {
     if ([QLPreviewPanel sharedPreviewPanel].visible) {
         [[QLPreviewPanel sharedPreviewPanel] orderOut:nil];
@@ -4643,22 +4653,22 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
     }
 }
 
-- (void)linkHomepage:(id)sender
+- (IBAction)linkHomepage:(id)sender
 {
     [NSWorkspace.sharedWorkspace openURL:[NSURL URLWithString:kWebsiteURL]];
 }
 
-- (void)linkForums:(id)sender
+- (IBAction)linkForums:(id)sender
 {
     [NSWorkspace.sharedWorkspace openURL:[NSURL URLWithString:kForumURL]];
 }
 
-- (void)linkGitHub:(id)sender
+- (IBAction)linkGitHub:(id)sender
 {
     [NSWorkspace.sharedWorkspace openURL:[NSURL URLWithString:kGithubURL]];
 }
 
-- (void)linkDonate:(id)sender
+- (IBAction)linkDonate:(id)sender
 {
     [NSWorkspace.sharedWorkspace openURL:[NSURL URLWithString:kDonateURL]];
 }

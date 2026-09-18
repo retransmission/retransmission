@@ -236,14 +236,14 @@ static CGFloat const kStackViewVerticalSpacing = 8.0;
     }
 }
 
-- (void)setPiecesView:(id)sender
+- (IBAction)setPiecesView:(id)sender
 {
     BOOL const availability = [sender selectedSegment] == PiecesControlSegmentAvailable;
     [NSUserDefaults.standardUserDefaults setBool:availability forKey:@"PiecesViewShowAvailability"];
     [self updatePiecesView:nil];
 }
 
-- (void)updatePiecesView:(id)sender
+- (IBAction)updatePiecesView:(id)sender
 {
     BOOL const piecesAvailableSegment = [NSUserDefaults.standardUserDefaults boolForKey:@"PiecesViewShowAvailability"];
 

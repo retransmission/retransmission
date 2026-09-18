@@ -6,10 +6,4 @@
 
 @interface MessageWindowController : NSWindowController
 
-- (IBAction)changeLevel:(id)sender;
-- (IBAction)changeFilter:(id)sender;
-- (IBAction)clearLog:(id)sender;
-
-- (IBAction)writeToFile:(id)sender;
-
 @end

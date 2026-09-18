@@ -72,7 +72,7 @@
     self.fRevealDataButton.hidden = location ? NO : YES;
 }
 
-- (void)revealDataFile:(id)sender
+- (IBAction)revealDataFile:(id)sender
 {
     Torrent* torrent = self.fTorrents[0];
     NSString* location = torrent.dataLocation;

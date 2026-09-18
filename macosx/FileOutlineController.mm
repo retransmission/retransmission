@@ -352,7 +352,7 @@ typedef NS_ENUM(NSUInteger, FilePriorityMenuTag) { //
     [self reloadVisibleRows];
 }
 
-- (void)revealFile:(id)sender
+- (IBAction)revealFile:(id)sender
 {
     NSIndexSet* indexes = self.fOutline.selectedRowIndexes;
     NSMutableArray* paths = [NSMutableArray arrayWithCapacity:indexes.count];

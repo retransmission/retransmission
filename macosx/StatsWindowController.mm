@@ -96,7 +96,7 @@ static tr_session* fLib = NULL;
     completionHandler(StatsWindowController.statsWindow.window, nil);
 }
 
-- (void)resetStats:(id)sender
+- (IBAction)resetStats:(id)sender
 {
     if (![NSUserDefaults.standardUserDefaults boolForKey:@"WarningResetStats"]) {
         [self performResetStats];
