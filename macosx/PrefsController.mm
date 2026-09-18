@@ -120,31 +120,6 @@ static NSString* const kWebUIURLFormat = @"http://localhost:%ld/";
 
         _fDefaults = NSUserDefaults.standardUserDefaults;
 
-        //check for old version download location (before 1.1)
-        NSString* choice;
-        if ((choice = [_fDefaults stringForKey:@"DownloadChoice"])) {
-            [_fDefaults setBool:[choice isEqualToString:@"Constant"] forKey:@"DownloadLocationConstant"];
-            [_fDefaults setBool:YES forKey:@"DownloadAsk"];
-
-            [_fDefaults removeObjectForKey:@"DownloadChoice"];
-        }
-
-        //check for old version blocklist (before 2.12)
-        NSDate* blocklistDate;
-        if ((blocklistDate = [_fDefaults objectForKey:@"BlocklistLastUpdate"])) {
-            [_fDefaults setObject:blocklistDate forKey:@"BlocklistNewLastUpdateSuccess"];
-            [_fDefaults setObject:blocklistDate forKey:@"BlocklistNewLastUpdate"];
-            [_fDefaults removeObjectForKey:@"BlocklistLastUpdate"];
-
-            NSURL* blocklistDir = [[NSFileManager.defaultManager URLsForDirectory:NSApplicationDirectory inDomains:NSUserDomainMask][0]
-                URLByAppendingPathComponent:@TR_PROJ_APPNAME_CAPITALIZED "/blocklists/"];
-            [NSFileManager.defaultManager
-                moveItemAtURL:[blocklistDir URLByAppendingPathComponent:@"level1.bin"]
-                        toURL:[blocklistDir
-                                  URLByAppendingPathComponent:[NSString stringWithUTF8String:TrDefaultBlocklistFilename.data()]]
-                        error:nil];
-        }
-
         //save a new random port
         if ([_fDefaults boolForKey:@"RandomPort"]) {
             [_fDefaults setInteger:tr_sessionGetPeerPort(_fHandle) forKey:@"BindPort"];
@@ -166,13 +141,6 @@ static NSString* const kWebUIURLFormat = @"http://localhost:%ld/";
         //update rpc whitelist
         _fRPCWhitelistArray = [NSMutableArray arrayWithArray:[self.fDefaults arrayForKey:@"RPCWhitelist"] ?: @[ @"127.0.0.1" ]];
         [self updateRPCWhitelist];
-
-        //reset old Sparkle settings from previous versions
-        [_fDefaults removeObjectForKey:@"SUScheduledCheckInterval"];
-        if ([_fDefaults objectForKey:@"CheckForUpdates"]) {
-            //[[SUUpdater sharedUpdater] setAutomaticallyChecksForUpdates:[fDefaults boolForKey:@"CheckForUpdates"]];
-            [_fDefaults removeObjectForKey:@"CheckForUpdates"];
-        }
 
         _fDefaultAppHelper = [[DefaultAppHelper alloc] init];
     }
