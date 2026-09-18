@@ -3,12 +3,10 @@
 // License text can be found in the licenses/ folder.
 
 #if __has_feature(modules)
-@import Carbon;
 @import UserNotifications;
 
 @import Sparkle;
 #else
-#import <Carbon/Carbon.h>
 #import <UserNotifications/UserNotifications.h>
 
 #import <Sparkle/Sparkle.h>
@@ -339,7 +337,6 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
 
 @property(nonatomic) BOOL fGlobalPopoverShown;
 @property(nonatomic) NSView* fPositioningView;
-@property(nonatomic) BOOL fSoundPlaying;
 
 - (void)removeTorrentsImpl:(NSArray<Torrent*>*)torrents deleteData:(BOOL)deleteData;
 
@@ -446,12 +443,6 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
 
         NSApp.delegate = self;
 
-        //register for magnet URLs (has to be in init)
-        [[NSAppleEventManager sharedAppleEventManager] setEventHandler:self
-                                                           andSelector:@selector(handleOpenContentsEvent:replyEvent:)
-                                                         forEventClass:kInternetEventClass
-                                                            andEventID:kAEGetURL];
-
         _fTorrents = [[NSMutableArray alloc] init];
         _fDisplayedTorrents = [[NSMutableArray alloc] init];
         _fTorrentHashes = [[NSMutableDictionary alloc] init];
@@ -470,7 +461,6 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
 
         _fQuitting = NO;
         _fGlobalPopoverShown = NO;
-        _fSoundPlaying = NO;
 
         tr_sessionSetAltSpeedFunc(_fLib, [controller = self](bool const active, bool const by_user) {
             NSDictionary* const dict = @{ @"Active" : @(active), @"ByUser" : @(by_user) };
@@ -490,7 +480,7 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
 
         _fQuitRequested = NO;
 
-        _fPauseOnLaunch = (GetCurrentKeyModifiers() & (optionKey | rightOptionKey)) != 0;
+        _fPauseOnLaunch = (NSEvent.modifierFlags & NSEventModifierFlagOption) != 0;
     }
     return self;
 }
@@ -735,11 +725,6 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
     [PowerManager.shared setDelegate:self];
     [PowerManager.shared start];
 
-    //register for dock icon drags (has to be in applicationDidFinishLaunching: to work)
-    [[NSAppleEventManager sharedAppleEventManager] setEventHandler:self andSelector:@selector(handleOpenContentsEvent:replyEvent:)
-                                                     forEventClass:kCoreEventClass
-                                                        andEventID:kAEOpenContents];
-
     //if we were opened from a user notification, do the corresponding action
     UNNotificationResponse* launchNotification = notification.userInfo[NSApplicationLaunchUserNotificationKey];
     if (launchNotification) {
@@ -916,6 +901,13 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
     tr_sessionClose(self.fLib);
 }
 
+- (void)application:(NSApplication*)application openURLs:(NSArray<NSURL*>*)urls
+{
+    for (NSURL* url in urls) {
+        [self openURL:url.absoluteString];
+    }
+}
+
 - (BOOL)applicationSupportsSecureRestorableState:(NSApplication*)app
 {
     return YES;
@@ -926,26 +918,6 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
 - (tr_session*)sessionHandle
 {
     return self.fLib;
-}
-
-- (void)handleOpenContentsEvent:(NSAppleEventDescriptor*)event replyEvent:(NSAppleEventDescriptor*)replyEvent
-{
-    NSString* urlString = nil;
-
-    NSAppleEventDescriptor* directObject = [event paramDescriptorForKeyword:keyDirectObject];
-    if (directObject.descriptorType == typeAEList) {
-        for (NSInteger i = 1; i <= directObject.numberOfItems; i++) {
-            if ((urlString = [directObject descriptorAtIndex:i].stringValue)) {
-                break;
-            }
-        }
-    } else {
-        urlString = directObject.stringValue;
-    }
-
-    if (urlString) {
-        [self openURL:urlString];
-    }
 }
 
 #pragma mark - NSURLSessionDelegate
@@ -1263,15 +1235,6 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
 - (void)openFilesWithDict:(NSDictionary*)dictionary
 {
     [self openFiles:dictionary[@"Filenames"] addType:static_cast<AddType>([dictionary[@"AddType"] intValue]) forcePath:nil];
-}
-
-//called on by applescript
-- (void)open:(NSArray*)files
-{
-    NSDictionary* dict = @{ @"Filenames" : files, @"AddType" : @(AddTypeManual) };
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [self openFilesWithDict:dict];
-    });
 }
 
 - (void)openShowSheet:(id)sender
@@ -2244,11 +2207,9 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
     Torrent* torrent = notification.object;
 
     if ([notification.userInfo[@"WasRunning"] boolValue]) {
-        if (!self.fSoundPlaying && [self.fDefaults boolForKey:@"PlayDownloadSound"]) {
-            NSSound* sound;
-            if ((sound = [NSSound soundNamed:[self.fDefaults stringForKey:@"DownloadSound"]])) {
-                sound.delegate = self;
-                self.fSoundPlaying = YES;
+        if ([self.fDefaults boolForKey:@"PlayDownloadSound"]) {
+            NSSound* sound = [NSSound soundNamed:[self.fDefaults stringForKey:@"DownloadSound"]];
+            if (sound && !sound.isPlaying) {
                 [sound play];
             }
         }
@@ -2293,10 +2254,8 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
     Torrent* torrent = notification.object;
 
     if (!self.fSoundPlaying && [self.fDefaults boolForKey:@"PlaySeedingSound"]) {
-        NSSound* sound;
-        if ((sound = [NSSound soundNamed:[self.fDefaults stringForKey:@"SeedingSound"]])) {
-            sound.delegate = self;
-            self.fSoundPlaying = YES;
+        NSSound* sound = [NSSound soundNamed:[self.fDefaults stringForKey:@"SeedingSound"]];
+        if (sound && !sound.isPlaying) {
             [sound play];
         }
     }
@@ -3058,11 +3017,6 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
         UNNotificationRequest* request = [UNNotificationRequest requestWithIdentifier:identifier content:content trigger:nil];
         [UNUserNotificationCenter.currentNotificationCenter addNotificationRequest:request withCompletionHandler:nil];
     }
-}
-
-- (void)sound:(NSSound*)sound didFinishPlaying:(BOOL)finishedPlaying
-{
-    self.fSoundPlaying = NO;
 }
 
 - (void)VDKQueue:(VDKQueue*)queue receivedNotification:(NSString*)notification forPath:(NSString*)fpath
