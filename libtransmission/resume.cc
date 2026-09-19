@@ -405,29 +405,31 @@ void save_filenames(tr_variant::Map& map, tr_torrent const* const tor)
         return {};
     }
 
-    // The pathname each file would end up with. The mapping is built in full
-    // before any of it is applied, since a duplicate can turn up at any
-    // position and the entries before it would already be on their files.
-    auto const n_files = tor->file_count();
-    auto subpaths = std::vector<std::string_view>{};
-    subpaths.reserve(n_files);
+    // The saved pathnames that differ from the ones the files have now.
+    // They're collected in full before any of them is applied,
+    // since a duplicate can turn up at any position
+    // and the entries before it would already be on their files.
+    auto renames = std::vector<std::pair<tr_file_index_t, std::string_view>>{};
 
     // A file with no entry, or whose entry isn't a usable pathname,
-    // keeps the pathname its metainfo gave it.
-    auto const add_subpath = [tor, &subpaths](tr_file_index_t const i, tr_variant const* const entry) {
-        auto subpath = std::string_view{ tor->file_subpath(i) };
-
-        if (entry != nullptr) {
-            if (auto const sv = nonempty(entry->value_if<std::string_view>())) {
-                subpath = *sv;
-            }
+    // keeps the pathname it has.
+    auto const add_rename = [tor, &renames](tr_file_index_t const i, tr_variant const* const entry) {
+        if (entry == nullptr) {
+            return;
         }
 
-        subpaths.push_back(subpath);
+        if (auto const sv = nonempty(entry->value_if<std::string_view>()); sv && *sv != tor->file_subpath(i)) {
+            renames.emplace_back(i, *sv);
+        }
     };
 
-    if (!for_each_file_entry(tor, *list, add_subpath)) {
+    if (!for_each_file_entry(tor, *list, add_rename)) {
         return {};
+    }
+
+    // The common case: nothing was renamed, so there's nothing to vet or apply.
+    if (std::empty(renames)) {
+        return Filenames;
     }
 
     // Two files sharing a pathname share one file on disk, but the open-file
@@ -435,9 +437,17 @@ void save_filenames(tr_variant::Map& map, tr_torrent const* const tor)
     // write over each other. A torrent's own file list can't name a file
     // twice, so a duplicate is the saved list's, and the rest of that list is
     // no more trustworthy than the part that collided.
-    auto sorted = subpaths;
-    std::ranges::sort(sorted);
-    if (auto const dupe = std::ranges::adjacent_find(sorted); dupe != std::end(sorted)) {
+    auto const n_files = tor->file_count();
+    auto subpaths = std::vector<std::string_view>{};
+    subpaths.reserve(n_files);
+    for (tr_file_index_t i = 0; i < n_files; ++i) {
+        subpaths.emplace_back(tor->file_subpath(i));
+    }
+    for (auto const& [i, subpath] : renames) {
+        subpaths[i] = subpath;
+    }
+    std::ranges::sort(subpaths);
+    if (auto const dupe = std::ranges::adjacent_find(subpaths); dupe != std::end(subpaths)) {
         tr_logAddWarnTor(
             tor,
             fmt::format(
@@ -448,10 +458,8 @@ void save_filenames(tr_variant::Map& map, tr_torrent const* const tor)
         return {};
     }
 
-    for (tr_file_index_t i = 0; i < n_files; ++i) {
-        if (auto const subpath = subpaths[i]; subpath != tor->file_subpath(i)) {
-            tor->set_file_subpath(i, subpath);
-        }
+    for (auto const& [i, subpath] : renames) {
+        tor->set_file_subpath(i, subpath);
     }
 
     return Filenames;
