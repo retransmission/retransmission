@@ -4,21 +4,23 @@
 // License text can be found in the licenses/ folder.
 
 #include <algorithm> // std::min, std::ranges::adjacent_find, std::ranges::sort
+#include <cstddef> // size_t
 #include <cstdint>
-#include <cstring>
 #include <ctime>
 #include <optional>
 #include <string_view>
+#include <utility> // std::move, std::pair
 #include <vector>
 
 #include <fmt/format.h>
 
 #include "libtransmission/api-compat.h"
+#include "libtransmission/bandwidth.h" // tr_isPriority
 #include "libtransmission/bitfield.h"
 #include "libtransmission/converters.h"
-#include "libtransmission/error.h"
 #include "libtransmission/file-utils.h"
 #include "libtransmission/file.h"
+#include "libtransmission/log.h"
 #include "libtransmission/net.h"
 #include "libtransmission/peer-mgr.h" /* pex */
 #include "libtransmission/quark.h"
@@ -30,6 +32,7 @@
 #include "libtransmission/tr-assert.h"
 #include "libtransmission/types.h"
 #include "libtransmission/utils.h"
+#include "libtransmission/values.h"
 #include "libtransmission/variant.h"
 
 using namespace std::literals;
