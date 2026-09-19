@@ -49,6 +49,19 @@ constexpr auto MaxRememberedPeers = 200U;
 
 // ---
 
+// Builds a list with one entry, `fn(file_index)`, per file.
+template<typename Fn>
+[[nodiscard]] tr_variant::Vector per_file_list(tr_torrent const* const tor, Fn const& fn)
+{
+    auto const n_files = tor->file_count();
+    auto list = tr_variant::Vector{};
+    list.reserve(n_files);
+    for (tr_file_index_t i = 0; i < n_files; ++i) {
+        list.emplace_back(fn(i));
+    }
+    return list;
+}
+
 // How a saved per-file list's entries line up with a torrent's files.
 enum class FileListAlignment : uint8_t {
     ByIndex, // one entry per file, in file order
@@ -193,13 +206,7 @@ void save_group(tr_variant::Map& map, tr_torrent const* const tor)
 
 void save_dnd(tr_variant::Map& map, tr_torrent const* const tor)
 {
-    auto const n = tor->file_count();
-    auto list = tr_variant::Vector{};
-    list.reserve(n);
-    for (tr_file_index_t i = 0; i < n; ++i) {
-        list.emplace_back(!tor->file_is_wanted(i));
-    }
-    map.insert_or_assign(TR_KEY_dnd, std::move(list));
+    map.insert_or_assign(TR_KEY_dnd, per_file_list(tor, [tor](tr_file_index_t const i) { return !tor->file_is_wanted(i); }));
 }
 
 [[nodiscard]] fields_t load_dnd(tr_variant::Map const& map, tr_torrent* const tor)
@@ -244,13 +251,7 @@ void save_dnd(tr_variant::Map& map, tr_torrent const* const tor)
 
 void save_file_priorities(tr_variant::Map& map, tr_torrent const* const tor)
 {
-    auto const n = tor->file_count();
-    auto list = tr_variant::Vector{};
-    list.reserve(n);
-    for (tr_file_index_t i = 0; i < n; ++i) {
-        list.emplace_back(tor->file_priority(i));
-    }
-    map.insert_or_assign(TR_KEY_priority, std::move(list));
+    map.insert_or_assign(TR_KEY_priority, per_file_list(tor, [tor](tr_file_index_t const i) { return tor->file_priority(i); }));
 }
 
 [[nodiscard]] fields_t load_file_priorities(tr_variant::Map const& map, tr_torrent* const tor)
@@ -413,13 +414,9 @@ void save_name(tr_variant::Map& map, tr_torrent const* const tor)
 
 void save_filenames(tr_variant::Map& map, tr_torrent const* const tor)
 {
-    auto const n = tor->file_count();
-    auto list = tr_variant::Vector{};
-    list.reserve(n);
-    for (tr_file_index_t i = 0; i < n; ++i) {
-        list.emplace_back(tr_variant::unmanaged_string(tor->file_subpath(i)));
-    }
-    map.insert_or_assign(TR_KEY_files, std::move(list));
+    map.insert_or_assign(TR_KEY_files, per_file_list(tor, [tor](tr_file_index_t const i) {
+                             return tr_variant::unmanaged_string(tor->file_subpath(i));
+                         }));
 }
 
 [[nodiscard]] fields_t load_filenames(tr_variant::Map const& map, tr_torrent* const tor)
