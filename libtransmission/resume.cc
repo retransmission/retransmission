@@ -667,9 +667,9 @@ void save_progress(tr_variant::Map& map, tr_torrent::ResumeHelper const& helper)
     return Progress;
 }
 
-// ---
+} // namespace
 
-[[nodiscard]] fields_t load_from_file(tr_torrent* const tor, tr_torrent::ResumeHelper& helper, fields_t const fields_to_load)
+fields_t load(tr_torrent* const tor, tr_torrent::ResumeHelper& helper, fields_t const fields_to_load)
 {
     TR_ASSERT(tr_isTorrent(tor));
 
@@ -856,15 +856,6 @@ void save_progress(tr_variant::Map& map, tr_torrent::ResumeHelper const& helper)
     }
 
     return fields_loaded;
-}
-
-} // namespace
-
-fields_t load(tr_torrent* const tor, tr_torrent::ResumeHelper& helper, fields_t const fields_to_load)
-{
-    TR_ASSERT(tr_isTorrent(tor));
-
-    return load_from_file(tor, helper, fields_to_load);
 }
 
 void save(tr_torrent* const tor, tr_torrent::ResumeHelper const& helper)
