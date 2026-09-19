@@ -511,23 +511,9 @@ void save_filenames(tr_variant::Map& map, tr_torrent const* const tor)
 void save_progress(tr_variant::Map& map, tr_torrent::ResumeHelper const& helper)
 {
     auto prog = tr_variant::Map{ 3 };
-
-    // add the mtimes
-    auto const& mtimes = helper.file_mtimes();
-    auto const n = std::size(mtimes);
-    auto l = tr_variant::Vector{};
-    l.reserve(n);
-    for (auto const& mtime : mtimes) {
-        l.emplace_back(mtime);
-    }
-    prog.try_emplace(TR_KEY_mtimes, std::move(l));
-
-    // add the 'checked pieces' bitfield
+    prog.try_emplace(TR_KEY_mtimes, tr::serializer::to_variant(helper.file_mtimes()));
     prog.try_emplace(TR_KEY_pieces, bitfield_to_raw(helper.checked_pieces()));
-
-    // add the blocks bitfield
     prog.try_emplace(TR_KEY_blocks, bitfield_to_raw(helper.blocks()));
-
     map.insert_or_assign(TR_KEY_progress, std::move(prog));
 }
 
