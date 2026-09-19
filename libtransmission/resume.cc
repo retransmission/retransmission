@@ -91,7 +91,7 @@ enum class FileListAlignment : uint8_t {
 
 // ---
 
-void save_peers(tr_variant::Map& map, tr_torrent const* tor)
+void save_peers(tr_variant::Map& map, tr_torrent const* const tor)
 {
     if (auto const pex = tr_peerMgrGetPeers(tor, TR_AF_INET, TR_PEERS_INTERESTING, MaxRememberedPeers); !std::empty(pex)) {
         map.insert_or_assign(TR_KEY_peers2, tr::serializer::to_variant(pex));
@@ -102,7 +102,7 @@ void save_peers(tr_variant::Map& map, tr_torrent const* tor)
     }
 }
 
-size_t add_peers(tr_torrent* tor, tr_variant::Vector const& l)
+size_t add_peers(tr_torrent* const tor, tr_variant::Vector const& l)
 {
     auto const n_pex = std::min(std::size(l), size_t{ MaxRememberedPeers });
     auto pex = std::vector<tr_pex>{};
@@ -115,7 +115,7 @@ size_t add_peers(tr_torrent* tor, tr_variant::Vector const& l)
     return tr_peerMgrAddPex(tor, TR_PEER_FROM_RESUME, pex);
 }
 
-auto load_peers(tr_variant::Map const& map, tr_torrent* tor)
+[[nodiscard]] fields_t load_peers(tr_variant::Map const& map, tr_torrent* const tor)
 {
     auto ret = fields_t{};
 
@@ -136,7 +136,7 @@ auto load_peers(tr_variant::Map const& map, tr_torrent* tor)
 
 // ---
 
-void save_labels(tr_variant::Map& map, tr_torrent const* tor)
+void save_labels(tr_variant::Map& map, tr_torrent const* const tor)
 {
     auto const& labels = tor->labels();
     auto list = tr_variant::Vector{};
@@ -147,7 +147,7 @@ void save_labels(tr_variant::Map& map, tr_torrent const* tor)
     map.insert_or_assign(TR_KEY_labels, std::move(list));
 }
 
-fields_t load_labels(tr_variant::Map const& map, tr_torrent* tor)
+[[nodiscard]] fields_t load_labels(tr_variant::Map const& map, tr_torrent* const tor)
 {
     auto const* const list = map.find_if<tr_variant::Vector>(TR_KEY_labels);
     if (list == nullptr) {
@@ -168,12 +168,12 @@ fields_t load_labels(tr_variant::Map const& map, tr_torrent* tor)
 
 // ---
 
-void save_group(tr_variant::Map& map, tr_torrent const* tor)
+void save_group(tr_variant::Map& map, tr_torrent const* const tor)
 {
     map.insert_or_assign(TR_KEY_group, tr_variant::unmanaged_string(tor->bandwidth_group().sv()));
 }
 
-fields_t load_group(tr_variant::Map const& map, tr_torrent* tor)
+[[nodiscard]] fields_t load_group(tr_variant::Map const& map, tr_torrent* const tor)
 {
     if (auto const sv = map.value_if<std::string_view>(TR_KEY_group); sv && !std::empty(*sv)) {
         tor->set_bandwidth_group(*sv);
@@ -185,7 +185,7 @@ fields_t load_group(tr_variant::Map const& map, tr_torrent* tor)
 
 // ---
 
-void save_dnd(tr_variant::Map& map, tr_torrent const* tor)
+void save_dnd(tr_variant::Map& map, tr_torrent const* const tor)
 {
     auto const n = tor->file_count();
     auto list = tr_variant::Vector{};
@@ -196,7 +196,7 @@ void save_dnd(tr_variant::Map& map, tr_torrent const* tor)
     map.insert_or_assign(TR_KEY_dnd, std::move(list));
 }
 
-fields_t load_dnd(tr_variant::Map const& map, tr_torrent* tor)
+[[nodiscard]] fields_t load_dnd(tr_variant::Map const& map, tr_torrent* const tor)
 {
     auto const* const list = map.find_if<tr_variant::Vector>(TR_KEY_dnd);
     if (list == nullptr) {
@@ -236,7 +236,7 @@ fields_t load_dnd(tr_variant::Map const& map, tr_torrent* tor)
 
 // ---
 
-void save_file_priorities(tr_variant::Map& map, tr_torrent const* tor)
+void save_file_priorities(tr_variant::Map& map, tr_torrent const* const tor)
 {
     auto const n = tor->file_count();
     auto list = tr_variant::Vector{};
@@ -247,7 +247,7 @@ void save_file_priorities(tr_variant::Map& map, tr_torrent const* tor)
     map.insert_or_assign(TR_KEY_priority, std::move(list));
 }
 
-fields_t load_file_priorities(tr_variant::Map const& map, tr_torrent* tor)
+[[nodiscard]] fields_t load_file_priorities(tr_variant::Map const& map, tr_torrent* const tor)
 {
     auto const* const list = map.find_if<tr_variant::Vector>(TR_KEY_priority);
     if (list == nullptr) {
@@ -278,7 +278,7 @@ fields_t load_file_priorities(tr_variant::Map const& map, tr_torrent* tor)
 
 // ---
 
-tr_variant::Map save_single_speed_limit(tr_torrent const* tor, tr_direction dir)
+[[nodiscard]] tr_variant::Map save_single_speed_limit(tr_torrent const* const tor, tr_direction const dir)
 {
     auto map = tr_variant::Map{ 3 };
     map.try_emplace(TR_KEY_speed_Bps, tor->speed_limit(dir).base_quantity());
@@ -287,13 +287,13 @@ tr_variant::Map save_single_speed_limit(tr_torrent const* tor, tr_direction dir)
     return map;
 }
 
-void save_speed_limits(tr_variant::Map& map, tr_torrent const* tor)
+void save_speed_limits(tr_variant::Map& map, tr_torrent const* const tor)
 {
     map.insert_or_assign(TR_KEY_speed_limit_down, save_single_speed_limit(tor, tr_direction::Down));
     map.insert_or_assign(TR_KEY_speed_limit_up, save_single_speed_limit(tor, tr_direction::Up));
 }
 
-void save_ratio_limits(tr_variant::Map& map, tr_torrent const* tor)
+void save_ratio_limits(tr_variant::Map& map, tr_torrent const* const tor)
 {
     auto d = tr_variant::Map{ 2 };
     d.try_emplace(TR_KEY_seed_ratio_limit, tor->seed_ratio());
@@ -301,7 +301,7 @@ void save_ratio_limits(tr_variant::Map& map, tr_torrent const* tor)
     map.insert_or_assign(TR_KEY_seed_ratio_limit, std::move(d));
 }
 
-void save_idle_limits(tr_variant::Map& map, tr_torrent const* tor)
+void save_idle_limits(tr_variant::Map& map, tr_torrent const* const tor)
 {
     auto d = tr_variant::Map{ 2 };
     d.try_emplace(TR_KEY_idle_limit, tor->idle_limit_minutes());
@@ -309,7 +309,7 @@ void save_idle_limits(tr_variant::Map& map, tr_torrent const* tor)
     map.insert_or_assign(TR_KEY_idle_limit, std::move(d));
 }
 
-void load_single_speed_limit(tr_variant::Map const& map, tr_direction dir, tr_torrent* tor)
+void load_single_speed_limit(tr_variant::Map const& map, tr_direction const dir, tr_torrent* const tor)
 {
     if (auto const i = map.value_if<int64_t>(TR_KEY_speed_Bps)) {
         tor->set_speed_limit(dir, Speed{ *i, Speed::Units::Byps });
@@ -326,7 +326,7 @@ void load_single_speed_limit(tr_variant::Map const& map, tr_direction dir, tr_to
     }
 }
 
-auto load_speed_limits(tr_variant::Map const& map, tr_torrent* tor)
+[[nodiscard]] fields_t load_speed_limits(tr_variant::Map const& map, tr_torrent* const tor)
 {
     auto ret = fields_t{};
 
@@ -343,7 +343,7 @@ auto load_speed_limits(tr_variant::Map const& map, tr_torrent* tor)
     return ret;
 }
 
-fields_t load_ratio_limits(tr_variant::Map const& map, tr_torrent* tor)
+[[nodiscard]] fields_t load_ratio_limits(tr_variant::Map const& map, tr_torrent* const tor)
 {
     auto const* const d = map.find_if<tr_variant::Map>(TR_KEY_seed_ratio_limit);
     if (d == nullptr) {
@@ -361,7 +361,7 @@ fields_t load_ratio_limits(tr_variant::Map const& map, tr_torrent* tor)
     return Ratiolimit;
 }
 
-fields_t load_idle_limits(tr_variant::Map const& map, tr_torrent* tor)
+[[nodiscard]] fields_t load_idle_limits(tr_variant::Map const& map, tr_torrent* const tor)
 {
     auto const* const d = map.find_if<tr_variant::Map>(TR_KEY_idle_limit);
     if (d == nullptr) {
@@ -381,12 +381,12 @@ fields_t load_idle_limits(tr_variant::Map const& map, tr_torrent* tor)
 
 // ---
 
-void save_name(tr_variant::Map& map, tr_torrent const* tor)
+void save_name(tr_variant::Map& map, tr_torrent const* const tor)
 {
     map.insert_or_assign(TR_KEY_name, tr_variant::unmanaged_string(tor->name()));
 }
 
-fields_t load_name(tr_variant::Map const& map, tr_torrent* tor)
+[[nodiscard]] fields_t load_name(tr_variant::Map const& map, tr_torrent* const tor)
 {
     auto const o_name = map.value_if<std::string_view>(TR_KEY_name);
     if (!o_name) {
@@ -405,7 +405,7 @@ fields_t load_name(tr_variant::Map const& map, tr_torrent* tor)
 
 // ---
 
-void save_filenames(tr_variant::Map& map, tr_torrent const* tor)
+void save_filenames(tr_variant::Map& map, tr_torrent const* const tor)
 {
     auto const n = tor->file_count();
     auto list = tr_variant::Vector{};
@@ -416,7 +416,7 @@ void save_filenames(tr_variant::Map& map, tr_torrent const* tor)
     map.insert_or_assign(TR_KEY_files, std::move(list));
 }
 
-fields_t load_filenames(tr_variant::Map const& map, tr_torrent* tor)
+[[nodiscard]] fields_t load_filenames(tr_variant::Map const& map, tr_torrent* const tor)
 {
     auto const* const list = map.find_if<tr_variant::Vector>(TR_KEY_files);
     if (list == nullptr) {
@@ -479,7 +479,7 @@ fields_t load_filenames(tr_variant::Map const& map, tr_torrent* tor)
 
 // ---
 
-tr_variant bitfield_to_raw(tr_bitfield const& b)
+[[nodiscard]] tr_variant bitfield_to_raw(tr_bitfield const& b)
 {
     if (b.has_all()) {
         return tr_variant::unmanaged_string("all"sv);
@@ -548,7 +548,7 @@ void save_progress(tr_variant::Map& map, tr_torrent::ResumeHelper const& helper)
  * First approach (pre-2.20) had an "mtimes" list identical to
  * the current approach, but not the 'pieces' bitfield.
  */
-fields_t load_progress(tr_variant::Map const& map, tr_torrent* tor, tr_torrent::ResumeHelper& helper)
+[[nodiscard]] fields_t load_progress(tr_variant::Map const& map, tr_torrent* const tor, tr_torrent::ResumeHelper& helper)
 {
     auto const* const prog = map.find_if<tr_variant::Map>(TR_KEY_progress);
     if (prog == nullptr) {
@@ -669,7 +669,7 @@ fields_t load_progress(tr_variant::Map const& map, tr_torrent* tor, tr_torrent::
 
 // ---
 
-fields_t load_from_file(tr_torrent* tor, tr_torrent::ResumeHelper& helper, fields_t fields_to_load)
+[[nodiscard]] fields_t load_from_file(tr_torrent* const tor, tr_torrent::ResumeHelper& helper, fields_t const fields_to_load)
 {
     TR_ASSERT(tr_isTorrent(tor));
 
@@ -860,7 +860,7 @@ fields_t load_from_file(tr_torrent* tor, tr_torrent::ResumeHelper& helper, field
 
 } // namespace
 
-fields_t load(tr_torrent* tor, tr_torrent::ResumeHelper& helper, fields_t const fields_to_load)
+fields_t load(tr_torrent* const tor, tr_torrent::ResumeHelper& helper, fields_t const fields_to_load)
 {
     TR_ASSERT(tr_isTorrent(tor));
 
