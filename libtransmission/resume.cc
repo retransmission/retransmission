@@ -641,9 +641,7 @@ fields_t load(tr_torrent* const tor, tr_torrent::ResumeHelper& helper, fields_t 
     load_field(Uploaded, map.value_if<int64_t>(TR_KEY_uploaded), [tor](int64_t const val) {
         tor->bytes_uploaded_.set_prev(val);
     });
-    load_field(MaxPeers, map.value_if<int64_t>(TR_KEY_max_peers), [tor](int64_t const val) {
-        tor->set_peer_limit(static_cast<uint16_t>(val));
-    });
+    load_field(MaxPeers, map.value_if<uint16_t>(TR_KEY_max_peers), [tor](uint16_t const val) { tor->set_peer_limit(val); });
     load_field(Run, map.value_if<bool>(TR_KEY_paused), [&helper](bool const val) { helper.load_start_when_stable(!val); });
     load_field(AddedDate, map.value_if<int64_t>(TR_KEY_added_date), [&helper](int64_t const val) {
         helper.load_date_added(static_cast<time_t>(val));
