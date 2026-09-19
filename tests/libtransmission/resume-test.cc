@@ -421,6 +421,34 @@ TEST_F(ResumeTest, savedDndAndPrioritiesListsOfUnusableLength)
         { TR_PRI_NORMAL, TR_PRI_NORMAL, TR_PRI_NORMAL, TR_PRI_NORMAL });
 }
 
+TEST_F(ResumeTest, currentDirectoryUsesFirstFileFoundWhileLoadingProgress)
+{
+    auto const file_sizes = std::vector<uint64_t>{ 1U, 1U, 1U };
+    auto const incomplete = tr_pathbuf{ sandboxDir(), "/incomplete"sv };
+    // File #0 is absent. The first match is partial and in downloadDir;
+    // the later match in incompleteDir must not replace it.
+    createFileWithContents(tr_pathbuf{ session_->downloadDir(), "/root/f1.part"sv }, "x"sv);
+    createFileWithContents(tr_pathbuf{ incomplete, "/root/f2"sv }, "x"sv);
+
+    auto mtimes = tr_variant::Vector{};
+    for (size_t i = 0; i < std::size(file_sizes); ++i) {
+        mtimes.emplace_back(int64_t{});
+    }
+    auto progress = tr_variant::Map{ 3U };
+    progress.try_emplace(TR_KEY_mtimes, std::move(mtimes));
+    progress.try_emplace(TR_KEY_pieces, tr_variant::unmanaged_string("none"sv));
+    progress.try_emplace(TR_KEY_blocks, tr_variant::unmanaged_string("none"sv));
+
+    auto map = savedFilenames(canonicalSubpaths(std::size(file_sizes)));
+    map.try_emplace(TR_KEY_incomplete_dir, incomplete.sv());
+    map.try_emplace(TR_KEY_progress, std::move(progress));
+    auto builder = tr_torrent_builder{ session_ };
+    auto const* const tor = torrentInit(builder, file_sizes, std::move(map));
+    ASSERT_NE(nullptr, tor);
+    EXPECT_EQ(incomplete.sv(), tor->incomplete_dir().sv());
+    EXPECT_EQ(session_->downloadDir(), tor->current_dir().sv());
+}
+
 // The mtimes list in a resume file written without zero-length files realigns
 // like the others. A file checked against another file's mtime looks changed,
 // so applying such a list by position throws away the checked state of every

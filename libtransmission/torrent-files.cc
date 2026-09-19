@@ -15,8 +15,10 @@
 #include <string>
 #include <string_view>
 #include <utility>
+#include <vector>
 
 #include <fmt/format.h>
+#include <fmt/ranges.h>
 
 #include <small/map.hpp>
 
@@ -35,7 +37,8 @@ using namespace std::literals;
 namespace
 {
 
-using file_func_t = std::function<void(std::string_view filename)>;
+using path_func_t = std::function<void(std::string_view path)>;
+using directory_filter_t = std::function<bool(std::string_view directory)>;
 
 [[nodiscard]] bool is_folder(std::string_view const path)
 {
@@ -48,11 +51,21 @@ using file_func_t = std::function<void(std::string_view filename)>;
     return is_folder(path) && std::empty(tr_sys_dir_get_files(path, tr_basename_accept_all));
 }
 
-void depth_first_walk(std::string_view const path, file_func_t const& func, std::optional<int> max_depth = {})
+void depth_first_walk(
+    std::string_view const path,
+    path_func_t const& func,
+    std::optional<int> max_depth = {},
+    directory_filter_t const& skip_directory = {})
 {
-    if (is_folder(path) && (!max_depth || *max_depth > 0)) {
-        for (auto const& name : tr_sys_dir_get_files(path, tr_basename_accept_all)) {
-            depth_first_walk(tr_pathbuf{ path, '/', name }, func, max_depth ? *max_depth - 1 : max_depth);
+    if (is_folder(path)) {
+        // A skipped directory is neither traversed nor passed to func.
+        if (skip_directory && skip_directory(path)) {
+            return;
+        }
+        if (!max_depth || *max_depth > 0) {
+            for (auto const& name : tr_sys_dir_get_files(path, tr_basename_accept_all)) {
+                depth_first_walk(tr_pathbuf{ path, '/', name }, func, max_depth ? *max_depth - 1 : max_depth, skip_directory);
+            }
         }
     }
 
@@ -77,6 +90,13 @@ bool is_junk_file(std::string_view filename)
     });
 
     return std::ranges::find(Files, base) != std::ranges::end(Files);
+}
+
+void remove_junk(std::string_view const filename)
+{
+    if (is_empty_folder(filename) || is_junk_file(filename)) {
+        tr_sys_path_remove(filename);
+    }
 }
 
 } // unnamed namespace
@@ -142,75 +162,132 @@ std::string_view tr_torrent_files::primary_mime_type() const
 // ---
 
 bool tr_torrent_files::move(
-    std::string_view old_parent_in,
-    std::string_view parent_in,
-    std::string_view parent_name,
+    std::span<std::string_view const> const old_parents,
+    std::string_view const parent_in,
+    std::string_view const parent_name,
     tr_error* error) const
 {
-    auto const old_parent = tr_pathbuf{ old_parent_in };
     auto const parent = tr_pathbuf{ parent_in };
-    tr_logAddTrace(fmt::format("Moving files from '{:s}' to '{:s}'", old_parent, parent), parent_name);
+    tr_logAddTrace(fmt::format("Moving files from [{}] to '{:s}'", fmt::join(old_parents, ", "), parent.sv()), parent_name);
 
-    if (tr_sys_path_is_same(old_parent, parent)) {
+    if (std::ranges::all_of(old_parents, [&parent](auto old_parent) { return tr_sys_path_is_same(old_parent, parent); })) {
         return true;
     }
 
-    if (!tr_sys_dir_create(parent, TR_SYS_DIR_CREATE_PARENTS, 0777, error)) {
-        return false;
-    }
+    auto local_error = tr_error{};
+    error = error != nullptr ? error : &local_error;
 
-    auto const paths = std::to_array<std::string_view>({ old_parent.sv() });
-
-    auto err = bool{};
-
-    for (tr_file_index_t i = 0, n = file_count(); i < n; ++i) {
-        auto const found = find(i, paths);
+    // Select sources before moving files; retain them to identify cleanup trees.
+    auto const n = file_count();
+    auto moves = std::vector<std::pair<tr_file_index_t, FoundFile>>{};
+    moves.reserve(n);
+    for (tr_file_index_t i = 0; i < n; ++i) {
+        auto const found = find(i, old_parents);
         if (!found) {
             continue;
         }
 
         auto const old_path = found->filename<tr_pathbuf>();
         auto const path = found->filename_under<tr_pathbuf>(parent);
-        tr_logAddTrace(fmt::format("Found file #{:d} '{:s}'", i, old_path), parent_name);
+        tr_logAddTrace(fmt::format("Found file #{:d} '{:s}'", i, old_path.sv()), parent_name);
 
         if (tr_sys_path_is_same(old_path, path)) {
             continue;
         }
 
-        tr_logAddTrace(fmt::format("Moving file #{:d} to '{:s}'", i, old_path, path), parent_name);
+        moves.emplace_back(i, *found);
+    }
+
+    if (!tr_sys_dir_create(parent, TR_SYS_DIR_CREATE_PARENTS, 0777, error)) {
+        return false;
+    }
+
+    for (auto const& [i, found] : moves) {
+        auto const old_path = found.filename<tr_pathbuf>();
+        auto const path = found.filename_under<tr_pathbuf>(parent);
+        if (tr_sys_path_exists(path)) {
+            tr_logAddWarn(
+                fmt::format(
+                    fmt::runtime(_("Moving '{source}' will overwrite '{path}'")),
+                    fmt::arg("source", old_path.sv()),
+                    fmt::arg("path", path.sv())),
+                parent_name);
+        }
+        tr_logAddTrace(fmt::format("Moving file #{:d} from '{:s}' to '{:s}'", i, old_path.sv(), path.sv()), parent_name);
         if (!tr_file_move(old_path, path, true, error)) {
-            err = true;
-            break;
+            error->prefix_message(fmt::format("'{:s}': ", old_path.sv()));
+            return false;
         }
     }
 
-    // after moving the files, remove any leftover empty directories
-    if (!err) {
-        auto const remove_empty_directories = [](std::string_view const path, tr_error* /*err*/) {
-            if (is_empty_folder(path)) {
-                // Since the files have already been moved, errors in this step
-                // are considered secondary and aren't propagated back in `err`.
-                // Log them instead.
-                if (auto log_error = tr_error{}; !tr_sys_path_remove(path, &log_error)) {
-                    tr_logAddWarn(
-                        fmt::format(
-                            fmt::runtime(_("Couldn't remove '{path}': {error} ({error_code})")),
-                            fmt::arg("path", path),
-                            fmt::arg("error", log_error.message()),
-                            fmt::arg("error_code", log_error.code())));
-                }
+    // Protect the roots themselves while still cleaning their siblings and ancestors.
+    // If identity cannot be checked, leave the directory alone.
+    auto const skip_directory = [&parent, old_parents, parent_name](std::string_view directory) {
+        auto const is_root = [directory, parent_name](auto root) {
+            auto path_error = tr_error{};
+            if (!tr_sys_path_is_same(directory, root, &path_error) && !path_error) {
+                return false;
             }
-
+            tr_logAddDebug(
+                path_error ? fmt::format("Skipping cleanup of '{:s}': {:s}", directory, path_error.message()) :
+                             fmt::format("Skipping cleanup of '{:s}': configured root '{:s}'", directory, root),
+                parent_name);
             return true;
         };
+        return is_root(parent.sv()) || std::ranges::any_of(old_parents, is_root);
+    };
 
-        remove(old_parent, parent_name, remove_empty_directories);
+    for (auto const old_parent : old_parents) {
+        if (tr_sys_path_is_same(old_parent, parent)) {
+            continue;
+        }
+
+        // Derive each tree from a moved file, not the torrent name.
+        // Scan it once and leave unused trees alone.
+        auto trees = std::set<std::string_view>{};
+        for (auto const& found : moves | std::views::values) {
+            auto const slash = found.subpath.find('/');
+            if (found.base == old_parent && slash != std::string_view::npos) {
+                trees.emplace(found.subpath.substr(0, slash));
+            }
+        }
+        for (auto const top : trees) {
+            auto const tree = tr_pathbuf{ old_parent, '/', top };
+            depth_first_walk(tree, remove_junk, {}, skip_directory);
+        }
     }
 
-    return !err;
+    return true;
 }
 
 // ---
+
+void tr_torrent_files::remove(
+    std::span<std::string_view const> const parents,
+    std::string_view const tmpdir_prefix,
+    tr_torrent_remove_func const& func,
+    tr_error* error) const
+{
+    auto local_error = tr_error{};
+    error = error != nullptr ? error : &local_error;
+
+    for (auto const parent : parents) {
+        // The single-root remove() also cleans junk and empty directories.
+        // Only run that cleanup when matching torrent files are found.
+        // This deliberately leaves empty directories and junk after manual data deletion;
+        // without matching files, we cannot distinguish them from unrelated directories.
+        if (!has_any_local_data(std::span{ &parent, 1U })) {
+            continue;
+        }
+        auto root_error = tr_error{};
+        remove(parent, tmpdir_prefix, func, &root_error);
+        // Process independent roots even when an earlier root reported an error,
+        // and preserve the first error for the caller.
+        if (root_error && !*error) {
+            *error = std::move(root_error);
+        }
+    }
+}
 
 /**
  * This convoluted code does something (seemingly) simple:
@@ -284,11 +361,6 @@ void tr_torrent_files::remove(
     // OK we've removed the local data.
     // What's left are empty folders, junk, and user-generated files.
     // Remove the first two categories and leave the third alone.
-    auto const remove_junk = [](std::string_view const filename) {
-        if (is_empty_folder(filename) || is_junk_file(filename)) {
-            tr_sys_path_remove(filename);
-        }
-    };
     for (auto const& filename : top_files) {
         depth_first_walk(filename, remove_junk);
     }
