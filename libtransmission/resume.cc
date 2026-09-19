@@ -197,7 +197,7 @@ void save_dnd(tr_variant::Map& map, tr_torrent const* const tor)
     auto list = tr_variant::Vector{};
     list.reserve(n);
     for (tr_file_index_t i = 0; i < n; ++i) {
-        list.emplace_back(!tr_torrentFile(tor, i).wanted);
+        list.emplace_back(!tor->file_is_wanted(i));
     }
     map.insert_or_assign(TR_KEY_dnd, std::move(list));
 }
@@ -248,7 +248,7 @@ void save_file_priorities(tr_variant::Map& map, tr_torrent const* const tor)
     auto list = tr_variant::Vector{};
     list.reserve(n);
     for (tr_file_index_t i = 0; i < n; ++i) {
-        list.emplace_back(tr_torrentFile(tor, i).priority);
+        list.emplace_back(tor->file_priority(i));
     }
     map.insert_or_assign(TR_KEY_priority, std::move(list));
 }

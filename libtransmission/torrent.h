@@ -438,6 +438,11 @@ struct tr_torrent {
         return file_priorities_.piece_priority(piece);
     }
 
+    [[nodiscard]] tr_priority_t file_priority(tr_file_index_t const file) const
+    {
+        return file_priorities_.file_priority(file);
+    }
+
     void set_file_priorities(std::span<tr_file_index_t const> files, tr_priority_t priority);
 
     void set_file_priority(tr_file_index_t file, tr_priority_t priority)
