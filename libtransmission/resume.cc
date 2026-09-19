@@ -8,6 +8,7 @@
 #include <cstring>
 #include <ctime>
 #include <limits>
+#include <optional>
 #include <string_view>
 #include <vector>
 
@@ -40,6 +41,11 @@ namespace tr_resume
 namespace
 {
 constexpr auto MaxRememberedPeers = 200U;
+
+[[nodiscard]] std::optional<std::string_view> nonempty(std::optional<std::string_view> const sv)
+{
+    return sv && !std::empty(*sv) ? sv : std::nullopt;
+}
 
 // ---
 
@@ -157,7 +163,7 @@ void save_labels(tr_variant::Map& map, tr_torrent const* const tor)
     auto labels = tr_labels_t{};
     labels.reserve(std::size(*list));
     for (auto const& var : *list) {
-        if (auto sv = var.value_if<std::string_view>(); sv && !std::empty(*sv)) {
+        if (auto const sv = nonempty(var.value_if<std::string_view>())) {
             labels.emplace_back(*sv);
         }
     }
@@ -175,7 +181,7 @@ void save_group(tr_variant::Map& map, tr_torrent const* const tor)
 
 [[nodiscard]] fields_t load_group(tr_variant::Map const& map, tr_torrent* const tor)
 {
-    if (auto const sv = map.value_if<std::string_view>(TR_KEY_group); sv && !std::empty(*sv)) {
+    if (auto const sv = nonempty(map.value_if<std::string_view>(TR_KEY_group))) {
         tor->set_bandwidth_group(*sv);
         return Group;
     }
@@ -442,7 +448,7 @@ void save_filenames(tr_variant::Map& map, tr_torrent const* const tor)
         auto subpath = std::string_view{ tor->file_subpath(i) };
 
         if (file_has_list_entry(tor, alignment, i)) {
-            if (auto const sv = (*list)[pos++].value_if<std::string_view>(); sv && !std::empty(*sv)) {
+            if (auto const sv = nonempty((*list)[pos++].value_if<std::string_view>())) {
                 subpath = *sv;
             }
         }
@@ -707,14 +713,14 @@ fields_t load(tr_torrent* const tor, tr_torrent::ResumeHelper& helper, fields_t 
     }
 
     if ((fields_to_load & (Progress | DownloadDir)) != 0) {
-        if (auto sv = map.value_if<std::string_view>(TR_KEY_destination); sv && !std::empty(*sv)) {
+        if (auto const sv = nonempty(map.value_if<std::string_view>(TR_KEY_destination))) {
             helper.load_download_dir(*sv);
             fields_loaded |= DownloadDir;
         }
     }
 
     if ((fields_to_load & (Progress | IncompleteDir)) != 0) {
-        if (auto sv = map.value_if<std::string_view>(TR_KEY_incomplete_dir); sv && !std::empty(*sv)) {
+        if (auto const sv = nonempty(map.value_if<std::string_view>(TR_KEY_incomplete_dir))) {
             helper.load_incomplete_dir(*sv);
             fields_loaded |= IncompleteDir;
         }
