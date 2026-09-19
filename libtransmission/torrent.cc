@@ -2282,12 +2282,16 @@ void tr_torrent::refresh_current_dir()
 
     if (std::empty(incomplete_dir())) {
         dir = download_dir();
-    } else if (!has_metainfo()) // no files to find
-    {
+    } else if (!has_metainfo()) /* no files to find */ {
         dir = incomplete_dir();
     } else {
-        auto const found = find_file(0);
-        dir = found ? tr::shared_string{ found->base } : incomplete_dir();
+        dir = incomplete_dir();
+        for (tr_file_index_t file = 0U, n = file_count(); file < n; ++file) {
+            if (auto const found = find_file(file)) {
+                dir = found->base;
+                break;
+            }
+        }
     }
 
     TR_ASSERT(!std::empty(dir));
