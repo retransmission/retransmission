@@ -583,7 +583,7 @@ void save_progress(tr_variant::Map& map, tr_torrent::ResumeHelper const& helper)
 
 } // namespace
 
-fields_t load(tr_torrent* const tor, tr_torrent::ResumeHelper& helper, fields_t const fields_to_load)
+fields_t load(tr_torrent* const tor, tr_torrent::ResumeHelper& helper, fields_t fields_to_load)
 {
     TR_ASSERT(tr_isTorrent(tor));
 
@@ -613,109 +613,66 @@ fields_t load(tr_torrent* const tor, tr_torrent::ResumeHelper& helper, fields_t 
     tr_logAddDebugTor(tor, fmt::format("Read resume file '{}'", filename));
     auto fields_loaded = fields_t{};
 
-    if ((fields_to_load & Corrupt) != 0) {
-        if (auto const i = map.value_if<int64_t>(TR_KEY_corrupt)) {
-            tor->bytes_corrupt_.set_prev(*i);
-            fields_loaded |= Corrupt;
-        }
+    // Progress can't be loaded without knowing where the files are.
+    if ((fields_to_load & Progress) != 0) {
+        fields_to_load |= DownloadDir | IncompleteDir;
     }
 
-    if ((fields_to_load & (Progress | DownloadDir)) != 0) {
-        if (auto const sv = nonempty(map.value_if<std::string_view>(TR_KEY_destination))) {
-            helper.load_download_dir(*sv);
-            fields_loaded |= DownloadDir;
+    // If `field` was asked for and the resume file has a `value` for it, use it.
+    auto const load_field = [fields_to_load, &fields_loaded](fields_t const field, auto const& value, auto const& setter) {
+        if ((fields_to_load & field) != 0 && value) {
+            setter(*value);
+            fields_loaded |= field;
         }
-    }
+    };
 
-    if ((fields_to_load & (Progress | IncompleteDir)) != 0) {
-        if (auto const sv = nonempty(map.value_if<std::string_view>(TR_KEY_incomplete_dir))) {
-            helper.load_incomplete_dir(*sv);
-            fields_loaded |= IncompleteDir;
-        }
-    }
-
-    if ((fields_to_load & Downloaded) != 0) {
-        if (auto const i = map.value_if<int64_t>(TR_KEY_downloaded)) {
-            tor->bytes_downloaded_.set_prev(*i);
-            fields_loaded |= Downloaded;
-        }
-    }
-
-    if ((fields_to_load & Uploaded) != 0) {
-        if (auto const i = map.value_if<int64_t>(TR_KEY_uploaded)) {
-            tor->bytes_uploaded_.set_prev(*i);
-            fields_loaded |= Uploaded;
-        }
-    }
-
-    if ((fields_to_load & MaxPeers) != 0) {
-        if (auto const i = map.value_if<int64_t>(TR_KEY_max_peers)) {
-            tor->set_peer_limit(static_cast<uint16_t>(*i));
-            fields_loaded |= MaxPeers;
-        }
-    }
-
-    if ((fields_to_load & Run) != 0) {
-        if (auto const b = map.value_if<bool>(TR_KEY_paused)) {
-            helper.load_start_when_stable(!*b);
-            fields_loaded |= Run;
-        }
-    }
-
-    if ((fields_to_load & AddedDate) != 0) {
-        if (auto const i = map.value_if<int64_t>(TR_KEY_added_date)) {
-            helper.load_date_added(static_cast<time_t>(*i));
-            fields_loaded |= AddedDate;
-        }
-    }
-
-    if ((fields_to_load & DoneDate) != 0) {
-        if (auto const i = map.value_if<int64_t>(TR_KEY_done_date)) {
-            helper.load_date_done(static_cast<time_t>(*i));
-            fields_loaded |= DoneDate;
-        }
-    }
-
-    if ((fields_to_load & ActivityDate) != 0) {
-        if (auto const i = map.value_if<int64_t>(TR_KEY_activity_date)) {
-            tor->set_date_active(*i);
-            fields_loaded |= ActivityDate;
-        }
-    }
-
-    if ((fields_to_load & TimeSeeding) != 0) {
-        if (auto const i = map.value_if<int64_t>(TR_KEY_seeding_time_seconds)) {
-            helper.load_seconds_seeding_before_current_start(*i);
-            fields_loaded |= TimeSeeding;
-        }
-    }
-
-    if ((fields_to_load & TimeDownloading) != 0) {
-        if (auto const i = map.value_if<int64_t>(TR_KEY_downloading_time_seconds)) {
-            helper.load_seconds_downloading_before_current_start(*i);
-            fields_loaded |= TimeDownloading;
-        }
-    }
+    load_field(Corrupt, map.value_if<int64_t>(TR_KEY_corrupt), [tor](int64_t const val) { tor->bytes_corrupt_.set_prev(val); });
+    load_field(
+        DownloadDir,
+        nonempty(map.value_if<std::string_view>(TR_KEY_destination)),
+        [&helper](std::string_view const val) { helper.load_download_dir(val); });
+    load_field(
+        IncompleteDir,
+        nonempty(map.value_if<std::string_view>(TR_KEY_incomplete_dir)),
+        [&helper](std::string_view const val) { helper.load_incomplete_dir(val); });
+    load_field(Downloaded, map.value_if<int64_t>(TR_KEY_downloaded), [tor](int64_t const val) {
+        tor->bytes_downloaded_.set_prev(val);
+    });
+    load_field(Uploaded, map.value_if<int64_t>(TR_KEY_uploaded), [tor](int64_t const val) {
+        tor->bytes_uploaded_.set_prev(val);
+    });
+    load_field(MaxPeers, map.value_if<int64_t>(TR_KEY_max_peers), [tor](int64_t const val) {
+        tor->set_peer_limit(static_cast<uint16_t>(val));
+    });
+    load_field(Run, map.value_if<bool>(TR_KEY_paused), [&helper](bool const val) { helper.load_start_when_stable(!val); });
+    load_field(AddedDate, map.value_if<int64_t>(TR_KEY_added_date), [&helper](int64_t const val) {
+        helper.load_date_added(static_cast<time_t>(val));
+    });
+    load_field(DoneDate, map.value_if<int64_t>(TR_KEY_done_date), [&helper](int64_t const val) {
+        helper.load_date_done(static_cast<time_t>(val));
+    });
+    load_field(ActivityDate, map.value_if<int64_t>(TR_KEY_activity_date), [tor](int64_t const val) {
+        tor->set_date_active(val);
+    });
+    load_field(TimeSeeding, map.value_if<int64_t>(TR_KEY_seeding_time_seconds), [&helper](int64_t const val) {
+        helper.load_seconds_seeding_before_current_start(val);
+    });
+    load_field(TimeDownloading, map.value_if<int64_t>(TR_KEY_downloading_time_seconds), [&helper](int64_t const val) {
+        helper.load_seconds_downloading_before_current_start(val);
+    });
+    load_field(SequentialDownload, map.value_if<bool>(TR_KEY_sequential_download), [tor](bool const val) {
+        tor->set_sequential_download(val);
+    });
+    load_field(
+        SequentialDownloadFromPiece,
+        map.value_if<int64_t>(TR_KEY_sequential_download_from_piece),
+        [tor](int64_t const val) { tor->set_sequential_download_from_piece(val); });
 
     if ((fields_to_load & BandwidthPriority) != 0) {
         if (auto const i = map.value_if<int64_t>(TR_KEY_bandwidth_priority);
             i && tr_isPriority(static_cast<tr_priority_t>(*i))) {
             tr_torrentSetPriority(tor, static_cast<tr_priority_t>(*i));
             fields_loaded |= BandwidthPriority;
-        }
-    }
-
-    if ((fields_to_load & SequentialDownload) != 0) {
-        if (auto const b = map.value_if<bool>(TR_KEY_sequential_download)) {
-            tor->set_sequential_download(*b);
-            fields_loaded |= SequentialDownload;
-        }
-    }
-
-    if ((fields_to_load & SequentialDownloadFromPiece) != 0) {
-        if (auto const i = map.value_if<int64_t>(TR_KEY_sequential_download_from_piece)) {
-            tor->set_sequential_download_from_piece(*i);
-            fields_loaded |= SequentialDownloadFromPiece;
         }
     }
 
