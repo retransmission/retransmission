@@ -7,7 +7,6 @@
 #include <cstdint>
 #include <cstring>
 #include <ctime>
-#include <limits>
 #include <optional>
 #include <string_view>
 #include <vector>
@@ -518,24 +517,17 @@ void save_progress(tr_variant::Map& map, tr_torrent::ResumeHelper const& helper)
 }
 
 /*
- * Transmission has iterated through a few strategies here, so the
- * code has some added complexity to support older approaches.
- *
- * Current approach: 'progress' is a dict with two entries:
- * - 'pieces' a bitfield for whether each piece has been checked.
+ * 'progress' is a dict with three entries:
+ * - 'blocks', a bitfield for whether we have each block.
+ * - 'pieces', a bitfield for whether each piece has been checked.
  * - 'mtimes', an array of per-file timestamps
  * On startup, 'pieces' is loaded. Then we check to see if the disk
  * mtimes differ from the 'mtimes' list. Changed files have their
  * pieces cleared from the bitset.
  *
- * Second approach (2.20 - 3.00): the 'progress' dict had a
- * 'time_checked' entry which was a list with file_count items.
- * Each item was either a list of per-piece timestamps, or a
- * single timestamp if either all or none of the pieces had been
- * tested more recently than the file's mtime.
- *
- * First approach (pre-2.20) had an "mtimes" list identical to
- * the current approach, but not the 'pieces' bitfield.
+ * Resume files from 3.00 and earlier have no 'pieces' entry,
+ * so all of their pieces load as unchecked.
+ * Older ones still name the blocks bitfield 'bitfield'.
  */
 [[nodiscard]] fields_t load_progress(tr_variant::Map const& map, tr_torrent* const tor, tr_torrent::ResumeHelper& helper)
 {
@@ -566,43 +558,6 @@ void save_progress(tr_variant::Map& map, tr_torrent::ResumeHelper const& helper)
     // try to load the piece-checked bitfield
     if (auto const sv = prog->value_if<std::string_view>(TR_KEY_pieces); sv && !raw_to_bitfield(checked, *sv)) {
         tr_logAddDebugTor(tor, "Couldn't load checked pieces: invalid value for 'pieces'");
-    }
-
-    // maybe it's a .resume file from [2.20 - 3.00] with the per-piece mtimes
-    if (auto const* const l = prog->find_if<tr_variant::Vector>(TR_KEY_time_checked)) {
-        for (tr_file_index_t fi = 0, n_l = std::min(n_files, std::size(*l)); fi < n_l; ++fi) {
-            auto const& b = (*l)[fi];
-            auto time_checked = time_t{};
-
-            if (auto const t = b.value_if<int64_t>()) {
-                time_checked = static_cast<time_t>(*t);
-            } else if (auto const* const ll = b.get_if<tr_variant::Vector>()) {
-                // The first element (idx 0) stores a base value for all piece timestamps,
-                // which would be the value of the smallest piece timestamp minus 1.
-                //
-                // The rest of the elements are the timestamp of each piece, stored as
-                // an offset to the base value.
-                // i.e. idx 1 <-> piece 0, idx 2 <-> piece 1, ...
-                //      timestamp of piece n = idx 0 + idx n+1
-                //
-                // Pieces that haven't been checked will have a timestamp offset of 0.
-                // They can be differentiated from the oldest checked piece(s) since the
-                // offset for any checked pieces will be at least 1.
-
-                auto const base = (*ll)[0].value_if<int64_t>().value_or(0);
-
-                auto const [piece_begin, piece_end] = tor->piece_span_for_file(fi);
-                auto const n_ll = std::size(*ll);
-                auto const n_pieces = piece_end - piece_begin;
-                time_checked = std::numeric_limits<time_t>::max();
-                for (tr_piece_index_t i = 1; time_checked > time_t{} && i <= n_pieces && i < n_ll; ++i) {
-                    auto const offset = (*ll)[i].value_if<int64_t>().value_or(0);
-                    time_checked = std::min(time_checked, offset != 0 ? static_cast<time_t>(base + offset) : time_t{});
-                }
-            }
-
-            mtimes.push_back(time_checked);
-        }
     }
 
     // A file whose mtime we take from the entry saved for some other file
