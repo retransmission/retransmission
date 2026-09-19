@@ -61,50 +61,45 @@ template<typename Fn>
     return list;
 }
 
-// How a saved per-file list's entries line up with a torrent's files.
-enum class FileListAlignment : uint8_t {
-    ByIndex, // one entry per file, in file order
-    SkipEmptyFiles, // one entry per nonempty file, in file order
-    Unusable, // no reading pairs the entries up with the files
-};
-
-[[nodiscard]] FileListAlignment file_list_alignment(tr_torrent const* const tor, size_t const n_list)
+// Calls `fn(file_index, entry)` for each of the torrent's files, in file order.
+// `entry` points to the file's entry in the saved per-file `list`,
+// or is nullptr if the list has no entry for that file.
+// Returns false, without calling `fn`, if the list can't be paired up with the files.
+template<typename List, typename Fn>
+[[nodiscard]] bool for_each_file_entry(tr_torrent const* const tor, List const& list, Fn const& fn)
 {
     auto const n_files = tor->file_count();
-
-    if (n_list == n_files) {
-        return FileListAlignment::ByIndex;
-    }
+    auto const n_list = std::size(list);
 
     // Resume files written before zero-length files were part of a torrent's
     // file list are short by exactly those files, so each entry after an
     // omitted one sits at a lower position in the list than its file index.
     // Skipping the zero-length files while walking the list realigns them.
-    auto n_empty_files = size_t{};
-    for (tr_file_index_t i = 0; i < n_files; ++i) {
-        if (tor->file_size(i) == 0U) {
-            ++n_empty_files;
+    auto const skip_empty_files = n_list != n_files;
+
+    if (skip_empty_files) {
+        auto n_empty_files = size_t{};
+        for (tr_file_index_t i = 0; i < n_files; ++i) {
+            if (tor->file_size(i) == 0U) {
+                ++n_empty_files;
+            }
+        }
+
+        // A list of any other length can't be paired up with the files, so none
+        // of it can be applied: a partial mapping would give file indices other
+        // files' settings.
+        if (n_list + n_empty_files != n_files) {
+            return false;
         }
     }
 
-    if (n_list + n_empty_files == n_files) {
-        return FileListAlignment::SkipEmptyFiles;
+    auto pos = size_t{};
+    for (tr_file_index_t i = 0; i < n_files; ++i) {
+        auto const has_entry = !skip_empty_files || tor->file_size(i) != 0U;
+        fn(i, has_entry ? &list[pos++] : nullptr);
     }
 
-    // A list of any other length can't be paired up with the files, so none
-    // of it can be applied: a partial mapping would give file indices other
-    // files' settings.
-    return FileListAlignment::Unusable;
-}
-
-// Whether a list with this alignment has an entry for this file. Zero-length
-// files have none in a list that was written without them.
-[[nodiscard]] bool file_has_list_entry(
-    tr_torrent const* const tor,
-    FileListAlignment const alignment,
-    tr_file_index_t const file_index)
-{
-    return alignment != FileListAlignment::SkipEmptyFiles || tor->file_size(file_index) != 0U;
+    return true;
 }
 
 // ---
@@ -216,28 +211,21 @@ void save_dnd(tr_variant::Map& map, tr_torrent const* const tor)
         return {};
     }
 
-    auto const n = tor->file_count();
-    auto const n_list = std::size(*list);
-    auto const alignment = file_list_alignment(tor, n_list);
-
-    if (alignment == FileListAlignment::Unusable) {
-        return {};
-    }
-
+    auto const n_files = tor->file_count();
     auto wanted = std::vector<tr_file_index_t>{};
     auto unwanted = std::vector<tr_file_index_t>{};
-    wanted.reserve(n);
-    unwanted.reserve(n);
+    wanted.reserve(n_files);
+    unwanted.reserve(n_files);
 
-    for (tr_file_index_t i = 0, pos = 0; i < n; ++i) {
-        // A file with no entry is wanted: it is zero-length, so there is no
-        // download to opt out of, and that is what a fresh torrent gives it.
-        auto dnd = false;
-        if (file_has_list_entry(tor, alignment, i)) {
-            dnd = (*list)[pos++].value_if<bool>().value_or(false);
-        }
-
+    // A file with no entry is wanted: it is zero-length, so there is no
+    // download to opt out of, and that is what a fresh torrent gives it.
+    auto const sort_file = [&wanted, &unwanted](tr_file_index_t const i, tr_variant const* const entry) {
+        auto const dnd = entry != nullptr && entry->value_if<bool>().value_or(false);
         (dnd ? unwanted : wanted).push_back(i);
+    };
+
+    if (!for_each_file_entry(tor, *list, sort_file)) {
+        return {};
     }
 
     tor->init_files_wanted(unwanted, false);
@@ -260,26 +248,18 @@ void save_file_priorities(tr_variant::Map& map, tr_torrent const* const tor)
         return {};
     }
 
-    auto const n = tor->file_count();
-    auto const n_list = std::size(*list);
-    auto const alignment = file_list_alignment(tor, n_list);
-
-    if (alignment == FileListAlignment::Unusable) {
-        return {};
-    }
-
     // A file with no entry keeps the priority a fresh torrent gives it.
-    for (tr_file_index_t i = 0, pos = 0; i < n; ++i) {
-        if (!file_has_list_entry(tor, alignment, i)) {
-            continue;
+    auto const set_priority = [tor](tr_file_index_t const i, tr_variant const* const entry) {
+        if (entry == nullptr) {
+            return;
         }
 
-        if (auto const priority = (*list)[pos++].value_if<int64_t>()) {
+        if (auto const priority = entry->value_if<int64_t>()) {
             tor->set_file_priority(i, static_cast<tr_priority_t>(*priority));
         }
-    }
+    };
 
-    return FilePriorities;
+    return for_each_file_entry(tor, *list, set_priority) ? FilePriorities : fields_t{};
 }
 
 // ---
@@ -425,31 +405,29 @@ void save_filenames(tr_variant::Map& map, tr_torrent const* const tor)
         return {};
     }
 
-    auto const n_files = tor->file_count();
-    auto const n_list = std::size(*list);
-    auto const alignment = file_list_alignment(tor, n_list);
-
-    if (alignment == FileListAlignment::Unusable) {
-        return {};
-    }
-
     // The pathname each file would end up with. The mapping is built in full
     // before any of it is applied, since a duplicate can turn up at any
     // position and the entries before it would already be on their files.
+    auto const n_files = tor->file_count();
     auto subpaths = std::vector<std::string_view>{};
     subpaths.reserve(n_files);
-    for (tr_file_index_t i = 0, pos = 0; i < n_files; ++i) {
-        // A file with no entry, or whose entry isn't a usable pathname,
-        // keeps the pathname its metainfo gave it.
+
+    // A file with no entry, or whose entry isn't a usable pathname,
+    // keeps the pathname its metainfo gave it.
+    auto const add_subpath = [tor, &subpaths](tr_file_index_t const i, tr_variant const* const entry) {
         auto subpath = std::string_view{ tor->file_subpath(i) };
 
-        if (file_has_list_entry(tor, alignment, i)) {
-            if (auto const sv = nonempty((*list)[pos++].value_if<std::string_view>())) {
+        if (entry != nullptr) {
+            if (auto const sv = nonempty(entry->value_if<std::string_view>())) {
                 subpath = *sv;
             }
         }
 
         subpaths.push_back(subpath);
+    };
+
+    if (!for_each_file_entry(tor, *list, add_subpath)) {
+        return {};
     }
 
     // Two files sharing a pathname share one file on disk, but the open-file
@@ -564,16 +542,19 @@ void save_progress(tr_variant::Map& map, tr_torrent::ResumeHelper const& helper)
     // has its pieces dropped from the checked set, so a legacy-length list
     // costs a rehash of everything after its first zero-length file unless
     // its entries are moved back to their own files first.
-    if (auto const alignment = file_list_alignment(tor, std::size(mtimes)); alignment == FileListAlignment::SkipEmptyFiles) {
+    if (std::size(mtimes) != n_files) {
         // Zero-length files get 0, marking their pieces untested: their
         // entries are the ones the saved list left out.
-        auto aligned = std::vector<time_t>(n_files, time_t{});
-        for (tr_file_index_t i = 0, pos = 0; i < n_files; ++i) {
-            if (file_has_list_entry(tor, alignment, i)) {
-                aligned[i] = mtimes[pos++];
+        auto aligned = std::vector<time_t>(n_files);
+        auto const set_mtime = [&aligned](tr_file_index_t const i, time_t const* const entry) {
+            if (entry != nullptr) {
+                aligned[i] = *entry;
             }
+        };
+
+        if (for_each_file_entry(tor, mtimes, set_mtime)) {
+            mtimes = std::move(aligned);
         }
-        mtimes = std::move(aligned);
     }
 
     if (std::size(mtimes) != n_files) {
