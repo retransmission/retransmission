@@ -575,7 +575,7 @@ void save_progress(tr_variant::Map& map, tr_torrent::ResumeHelper const& helper)
     if (err != nullptr) {
         tr_logAddDebugTor(tor, fmt::format("Torrent needs to be verified - {}", err));
     } else {
-        helper.load_blocks(blocks);
+        helper.load_blocks(std::move(blocks));
     }
 
     return Progress;
