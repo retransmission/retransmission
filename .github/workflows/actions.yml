@@ -186,6 +186,7 @@ jobs:
             -DUSE_SYSTEM_DEFAULT=ON \
             -DUSE_SYSTEM_ARCHIVE=OFF `# Build vendored libarchive here to exercise its ExternalProject scripts on Linux` \
             -DUSE_SYSTEM_DHT=OFF `# Not packaged in Ubuntu` \
+            -DUSE_SYSTEM_FMT=AUTO `# distro may not have fmt >= FMT_MINIMUM` \
             -DUSE_SYSTEM_SIGSLOT=OFF `# Not packaged in Ubuntu` \
             -DUSE_SYSTEM_SIMDUTF=OFF `# TODO: YES in 26.04` \
             -DUSE_SYSTEM_SMALL=OFF `# Not packaged in Ubuntu` \
@@ -456,8 +457,8 @@ jobs:
             -DENABLE_TESTS=${{ matrix.enable-tests && 'ON' || 'OFF' }} \
             -DRUN_CLANG_TIDY=OFF \
             -DUSE_SYSTEM_DEFAULT=ON \
-            -DUSE_SYSTEM_FMT=${{ matrix.toolkit == 'gtk4' && 'OFF' || 'ON' }} `# TODO: remove this line when fmt>10 or clang>20` \
             -DUSE_SYSTEM_DHT=OFF `# Not packaged in Ubuntu` \
+            -DUSE_SYSTEM_FMT=AUTO `# distro may not have fmt >= FMT_MINIMUM` \
             -DUSE_SYSTEM_SIGSLOT=OFF `# Not packaged in Ubuntu` \
             -DUSE_SYSTEM_SIMDUTF=OFF `# TODO: YES in 26.04` \
             -DUSE_SYSTEM_SMALL=OFF `# Not packaged in Ubuntu` \
@@ -1109,6 +1110,7 @@ jobs:
             -DUSE_SYSTEM_GTEST=ON \
             -DUSE_SYSTEM_DEFAULT=ON \
             -DUSE_SYSTEM_DHT=OFF \
+            -DUSE_SYSTEM_FMT=AUTO `# distro may not have fmt >= FMT_MINIMUM` \
             -DUSE_SYSTEM_SIGSLOT=OFF \
             -DUSE_SYSTEM_SIMDUTF=OFF `# TODO: YES in sid` \
             -DUSE_SYSTEM_SMALL=OFF \
@@ -1287,6 +1289,7 @@ jobs:
             -DCMAKE_EXE_LINKER_FLAGS=-fuse-ld=mold \
             -DUSE_SYSTEM_DEFAULT=ON \
             -DUSE_SYSTEM_DHT=OFF `# Not packaged in Ubuntu` \
+            -DUSE_SYSTEM_FMT=AUTO `# distro may not have fmt >= FMT_MINIMUM` \
             -DUSE_SYSTEM_SIGSLOT=OFF `# Not packaged in Ubuntu` \
             -DUSE_SYSTEM_SIMDUTF=OFF `# TODO: YES in 26.04` \
             -DUSE_SYSTEM_SMALL=OFF `# Not packaged in Ubuntu` \
@@ -1427,6 +1430,7 @@ jobs:
             -DRUN_CLANG_TIDY=OFF \
             -DUSE_SYSTEM_DEFAULT=ON \
             -DUSE_SYSTEM_DHT=OFF `# Not packaged in Ubuntu` \
+            -DUSE_SYSTEM_FMT=AUTO `# distro may not have fmt >= FMT_MINIMUM` \
             -DUSE_SYSTEM_SIGSLOT=OFF `# Not packaged in Ubuntu` \
             -DUSE_SYSTEM_SIMDUTF=OFF `# TODO: YES in 26.04` \
             -DUSE_SYSTEM_SMALL=OFF `# Not packaged in Ubuntu` \
@@ -1502,6 +1506,7 @@ jobs:
             -DRUN_CLANG_TIDY=OFF \
             -DUSE_SYSTEM_DEFAULT=ON \
             -DUSE_SYSTEM_DHT=OFF `# Not packaged in Ubuntu` \
+            -DUSE_SYSTEM_FMT=AUTO `# distro may not have fmt >= FMT_MINIMUM` \
             -DUSE_SYSTEM_SIGSLOT=OFF `# Not packaged in Ubuntu` \
             -DUSE_SYSTEM_SIMDUTF=OFF `# TODO: YES in 26.04` \
             -DUSE_SYSTEM_SMALL=OFF `# Not packaged in Ubuntu` \
@@ -1677,6 +1682,7 @@ jobs:
             -DCMAKE_EXE_LINKER_FLAGS=-fuse-ld=mold \
             -DUSE_SYSTEM_DEFAULT=ON \
             -DUSE_SYSTEM_DHT=OFF `# Not packaged in Ubuntu` \
+            -DUSE_SYSTEM_FMT=AUTO `# distro may not have fmt >= FMT_MINIMUM` \
             -DUSE_SYSTEM_SIGSLOT=OFF `# Not packaged in Ubuntu` \
             -DUSE_SYSTEM_SIMDUTF=OFF `# TODO: YES in 26.04` \
             -DUSE_SYSTEM_SMALL=OFF `# Not packaged in Ubuntu` \
