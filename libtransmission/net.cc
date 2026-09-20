@@ -268,12 +268,10 @@ uint16_t tr_port::network() const noexcept
 
 std::pair<tr_port, std::byte const*> tr_port::from_compact(std::byte const* compact) noexcept
 {
-    static auto constexpr PortLen = size_t{ 2 };
-
-    static_assert(PortLen == sizeof(uint16_t));
     auto nport = uint16_t{};
-    std::copy_n(compact, PortLen, reinterpret_cast<std::byte*>(&nport));
-    compact += PortLen;
+    static_assert(sizeof(nport) == CompactPortBytes);
+    std::copy_n(compact, CompactPortBytes, reinterpret_cast<std::byte*>(&nport));
+    compact += CompactPortBytes;
 
     return std::make_pair(tr_port::from_network(nport), compact);
 }

@@ -327,7 +327,6 @@ if(INSTALL_LIB)
             log.h
             macros.h
             makemeta.h
-            net.h
             quark.h
             rpcimpl.h
             session-id.h
