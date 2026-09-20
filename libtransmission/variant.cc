@@ -226,27 +226,6 @@ tr_variant* tr_variantDictFind(tr_variant* const var, tr_quark key)
     return {};
 }
 
-tr_variant* tr_variantListChild(tr_variant* const var, size_t pos)
-{
-    if (auto* const vec = var != nullptr ? var->get_if<tr_variant::VectorIndex>() : nullptr; vec != nullptr) {
-        if (pos < std::size(*vec)) {
-            return &vec->at(pos);
-        }
-    }
-
-    return {};
-}
-
-bool tr_variantDictFindList(tr_variant* const var, tr_quark key, tr_variant** setme)
-{
-    if (auto* const res = tr_variantDictFind(var, key); res != nullptr && res->holds_alternative<tr_variant::Vector>()) {
-        *setme = res;
-        return true;
-    }
-
-    return false;
-}
-
 bool tr_variantDictFindDict(tr_variant* const var, tr_quark key, tr_variant** setme)
 {
     if (auto* const res = tr_variantDictFind(var, key); res != nullptr && res->holds_alternative<tr_variant::Map>()) {

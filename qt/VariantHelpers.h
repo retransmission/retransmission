@@ -67,7 +67,7 @@ bool change(std::vector<T>& setme, tr_variant const* value)
 ///
 
 template<typename T>
-std::optional<T> dictFind(tr_variant* dict, tr_quark key)
+std::optional<T> dictFind(tr_variant const* dict, tr_quark key)
 {
     if (dict) {
         if (auto const* const map = dict->get_if<tr_variant::Map>()) {

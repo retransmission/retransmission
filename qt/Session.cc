@@ -104,15 +104,14 @@ void Session::copyMagnetLinkToClipboard(int torrent_id)
             exec(TR_KEY_torrent_get, std::move(params), std::move(done));
         })
         .add([](RpcResponse const& r) {
-            tr_variant* torrents = nullptr;
-            if (!tr_variantDictFindList(r.args.get(), TR_KEY_torrents, &torrents)) {
+            auto const* const args = r.args->get_if<tr_variant::Map>();
+            auto const* const torrents = args != nullptr ? args->find_if<tr_variant::Vector>(TR_KEY_torrents) : nullptr;
+            if (torrents == nullptr || std::empty(*torrents)) {
                 return;
             }
 
-            if (tr_variant* const child = tr_variantListChild(torrents, 0)) {
-                if (auto const link = dictFind<QString>(child, TR_KEY_magnet_link)) {
-                    QApplication::clipboard()->setText(*link);
-                }
+            if (auto const link = dictFind<QString>(&torrents->front(), TR_KEY_magnet_link)) {
+                QApplication::clipboard()->setText(*link);
             }
         })
         .run();
@@ -455,14 +454,17 @@ void Session::refreshTorrents(torrent_ids_t const& torrent_ids, TorrentPropertie
             exec(TR_KEY_torrent_get, std::move(map), std::move(done));
         })
         .add([this, all_torrents](RpcResponse const& r) {
-            tr_variant* torrents = nullptr;
-
-            if (tr_variantDictFindList(r.args.get(), TR_KEY_torrents, &torrents)) {
-                emit torrentsUpdated(torrents, all_torrents);
+            auto const* const args = r.args->get_if<tr_variant::Map>();
+            if (args == nullptr) {
+                return;
             }
 
-            if (tr_variantDictFindList(r.args.get(), TR_KEY_removed, &torrents)) {
-                emit torrentsRemoved(torrents);
+            if (auto const* const torrents = args->find_if<tr_variant::Vector>(TR_KEY_torrents)) {
+                emit torrentsUpdated(*torrents, all_torrents);
+            }
+
+            if (auto const* const removed = args->find_if<tr_variant::Vector>(TR_KEY_removed)) {
+                emit torrentsRemoved(*removed);
             }
         })
         .run();

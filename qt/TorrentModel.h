@@ -6,6 +6,7 @@
 #pragma once
 
 #include <optional>
+#include <span>
 #include <utility>
 #include <vector>
 
@@ -52,8 +53,8 @@ public:
     QVariant data(QModelIndex const& index, int role = Qt::DisplayRole) const override;
 
 public slots:
-    void updateTorrents(tr_variant* torrent_list, bool is_complete_list);
-    void removeTorrents(tr_variant* torrent_list);
+    void updateTorrents(std::span<tr_variant const> torrent_list, bool is_complete_list);
+    void removeTorrents(std::span<tr_variant const> torrent_ids);
 
 signals:
     void torrentsAdded(torrent_ids_t const&);
