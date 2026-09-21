@@ -5,7 +5,6 @@
 
 #include <cstddef> // size_t, std::byte
 #include <cstdint> // int64_t
-#include <deque>
 #include <optional>
 #include <string>
 #include <string_view>
@@ -14,10 +13,13 @@
 
 #include <fmt/format.h>
 
+#include <small/vector.hpp>
+
 #define LIBTRANSMISSION_VARIANT_MODULE
 
 #include "libtransmission/benc.h"
 #include "libtransmission/quark.h"
+#include "libtransmission/tr-assert.h"
 #include "libtransmission/utils.h"
 #include "libtransmission/variant-common.h"
 #include "libtransmission/variant.h"
@@ -111,129 +113,122 @@ namespace
 {
 namespace parse_helpers
 {
-struct MyHandler : public tr::benc::Handler {
-    tr_variant* const top_;
-    bool inplace_;
-    std::deque<tr_variant*> stack_;
-    std::optional<tr_quark> key_;
-
-    MyHandler(tr_variant* top, bool inplace)
-        : top_{ top }
-        , inplace_{ inplace }
+struct VariantBuilder : public tr::benc::Handler {
+    VariantBuilder(tr_variant* const top, bool const inplace)
+        : inplace_{ inplace }
     {
+        stack_.push_back(top);
     }
 
-    MyHandler(MyHandler&&) = delete;
-    MyHandler(MyHandler const&) = delete;
-    MyHandler& operator=(MyHandler&&) = delete;
-    MyHandler& operator=(MyHandler const&) = delete;
-
-    ~MyHandler() override = default;
-
-    bool Int64(int64_t value, Context const& /*context*/) final
+    bool Int64(int64_t const value, Context const& /*context*/) final
     {
-        auto* const variant = get_node();
-        if (variant == nullptr) {
-            return false;
-        }
-
-        *variant = value;
-        return true;
+        return add(value) != nullptr;
     }
 
-    bool String(std::string_view sv, Context const& /*context*/) final
+    bool String(std::string_view const sv, Context const& /*context*/) final
     {
-        if (auto* const variant = get_node(); variant != nullptr) {
-            *variant = inplace_ ? tr_variant::unmanaged_string(sv) : tr_variant{ sv };
-            return true;
-        }
-
-        return false;
+        return add(inplace_ ? tr_variant::unmanaged_string(sv) : tr_variant{ sv }) != nullptr;
     }
 
     bool StartDict(Context const& /*context*/) final
     {
-        if (auto* const var = get_node()) {
-            *var = tr_variant::Map{};
-            stack_.push_back(var);
-            return true;
-        }
-
-        return false;
+        return push(tr_variant::Map{});
     }
 
-    bool Key(std::string_view sv, Context const& /*context*/) final
+    bool Key(std::string_view const sv, Context const& /*context*/) final
     {
         key_ = tr_quark_new(sv);
-
         return true;
     }
 
     bool EndDict(Context const& /*context*/) final
     {
-        if (std::empty(stack_)) {
-            return false;
-        }
-
-        stack_.pop_back();
+        pop();
         return true;
     }
 
     bool StartArray(Context const& /*context*/) final
     {
-        if (auto* const var = get_node()) {
-            *var = tr_variant::Vector{};
-            stack_.push_back(var);
-            return true;
-        }
-
-        return false;
+        return push(tr_variant::Vector{});
     }
 
     bool EndArray(Context const& /*context*/) final
     {
-        if (std::empty(stack_)) {
-            return false;
-        }
-
-        stack_.pop_back();
+        pop();
         return true;
     }
 
 private:
+    template<typename Val>
+    [[nodiscard]] tr_variant* add(Val val)
+    {
+        auto* const node = get_node();
+        if (node != nullptr) {
+            *node = std::move(val);
+        }
+        return node;
+    }
+
+    template<typename Container>
+    [[nodiscard]] bool push(Container container)
+    {
+        auto* const node = add(std::move(container));
+        if (node != nullptr) {
+            stack_.push_back(node);
+        }
+        return node != nullptr;
+    }
+
+    void pop()
+    {
+        // `tr::benc::parse()` rejects an unbalanced 'e' before calling End*()
+        TR_ASSERT(std::size(stack_) > 1U);
+        stack_.pop_back();
+    }
+
+    // Returns where the next value goes, or nullptr if it has no place.
     [[nodiscard]] tr_variant* get_node()
     {
-        if (std::empty(stack_)) {
-            return top_;
+        auto* const parent = stack_.back();
+
+        if (auto* const vec = parent->get_if<tr_variant::Vector>()) {
+            return &vec->emplace_back();
         }
 
-        if (auto* parent = stack_.back()) {
-            if (auto* const vec = parent->get_if<tr_variant::Vector>()) {
-                return &vec->emplace_back();
+        if (auto* const map = parent->get_if<tr_variant::Map>()) {
+            // `tr::benc::parse()` only calls Key() for strings,
+            // so a non-string in the key position, e.g. `di1ei2ee`,
+            // arrives here with no key.
+            if (!key_) {
+                return nullptr;
             }
 
-            if (auto* const map = parent->get_if<tr_variant::Map>(); key_ && map != nullptr) {
-                auto& entry = (*map)[*key_];
-                key_.reset();
-                return &entry;
-            }
+            auto const key = *key_;
+            key_.reset();
+            return &(*map)[key];
         }
 
-        return {};
+        // `parent` is the still-empty top
+        return parent;
     }
+
+    static auto constexpr TypicalMaxDepth = 16U;
+
+    bool const inplace_;
+    std::optional<tr_quark> key_;
+
+    // The open containers, innermost last, atop the top-level variant.
+    small::vector<tr_variant*, TypicalMaxDepth> stack_;
 };
 } // namespace parse_helpers
 } // namespace
 
 std::optional<tr_variant> tr_variant_serde::parse_benc(std::string_view input)
 {
-    using namespace parse_helpers;
-    using Stack = tr::benc::ParserStack<512>;
-
     auto top = tr_variant{};
-    auto stack = Stack{};
-    auto handler = MyHandler{ &top, parse_inplace_ };
-    if (tr::benc::parse(input, stack, handler, &end_, &error_) && std::empty(stack)) {
+    auto stack = tr::benc::ParserStack<512>{};
+    auto handler = parse_helpers::VariantBuilder{ &top, parse_inplace_ };
+    if (tr::benc::parse(input, stack, handler, &end_, &error_)) {
         return std::optional<tr_variant>{ std::move(top) };
     }
 
