@@ -376,7 +376,6 @@ jobs:
     # clang-tidy can parse every TU, but never compiles the whole target;
     # ctcache caches per-TU results across runs. The matrix.enabled flag (wired
     # to the what-to-make tidy-* outputs) skips cells whose area did not change.
-    # TODO: try removing '-DFMT_USE_CONSTEVAL=0' either when upgrading clang or fmt
     strategy:
       fail-fast: false
       matrix:
@@ -485,7 +484,6 @@ jobs:
           regex: ${{ matrix.regex }}
           cache-key: ${{ github.job }}-${{ matrix.toolkit }}
           clang-tidy-binary: clang-tidy-22
-          extra-arg: '-DFMT_USE_CONSTEVAL=0'
 
   clang-tidy-windows:
     runs-on: windows-2025
