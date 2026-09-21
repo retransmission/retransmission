@@ -3,8 +3,6 @@
 // or any future license endorsed by Mnemosaic LLC.
 // License text can be found in the licenses/ folder.
 
-#include <algorithm>
-#include <cctype> /* isdigit() */
 #include <cstddef> // size_t, std::byte
 #include <cstdint> // int64_t
 #include <deque>
@@ -26,8 +24,6 @@
 
 using namespace std::literals;
 
-auto constexpr MaxBencStrLength = size_t{ 128 * 1024 * 1024 }; // arbitrary
-
 // ---
 
 namespace tr::benc::impl
@@ -45,34 +41,30 @@ namespace tr::benc::impl
  */
 std::optional<int64_t> ParseInt(std::string_view* benc)
 {
-    auto constexpr Prefix = "i"sv;
-    auto constexpr Suffix = "e"sv;
-
-    // find the beginning delimiter
+    // skip the beginning delimiter
     auto walk = *benc;
-    if (std::size(walk) < 3 || !walk.starts_with(Prefix)) {
+    if (!walk.starts_with('i')) {
         return {};
     }
+    walk.remove_prefix(1);
 
-    // find the ending delimiter
-    walk.remove_prefix(std::size(Prefix));
-    if (auto const pos = walk.find(Suffix); pos == std::string_view::npos) {
+    // parse the number and make sure the ending delimiter follows it
+    auto const number_begin = walk;
+    auto const value = tr_num_parse<int64_t>(walk, &walk);
+    if (!value || !walk.starts_with('e')) {
         return {};
     }
 
     // leading zeroes are not allowed
-    if ((walk[0] == '0' && (isdigit(static_cast<unsigned char>(walk[1])) != 0)) ||
-        (walk[0] == '-' && walk[1] == '0' && (isdigit(static_cast<unsigned char>(walk[2])) != 0))) {
+    auto digits = number_begin.substr(0, std::size(number_begin) - std::size(walk));
+    if (digits.starts_with('-')) {
+        digits.remove_prefix(1);
+    }
+    if (std::size(digits) > 1 && digits.front() == '0') {
         return {};
     }
 
-    // parse the string and make sure the next char is `Suffix`
-    auto value = tr_num_parse<int64_t>(walk, &walk);
-    if (!value || !walk.starts_with(Suffix)) {
-        return {};
-    }
-
-    walk.remove_prefix(std::size(Suffix));
+    walk.remove_prefix(1);
     *benc = walk;
     return value;
 }
@@ -85,32 +77,30 @@ std::optional<int64_t> ParseInt(std::string_view* benc)
  */
 std::optional<std::string_view> ParseString(std::string_view* benc)
 {
-    // find the ':' delimiter
-    auto const colon_pos = benc->find(':');
-    if (colon_pos == std::string_view::npos) {
+    static auto constexpr MaxLength = size_t{ 128 * 1024 * 1024 }; // arbitrary
+
+    // get the string length.
+    // Parsing as unsigned rejects signs and whitespace,
+    // so anything but a digit run ends the number.
+    auto walk = *benc;
+    auto const len = tr_num_parse<size_t>(walk, &walk);
+    if (!len || *len >= MaxLength) {
         return {};
     }
 
-    // get the string length
-    auto svtmp = benc->substr(0, colon_pos);
-    if (!std::ranges::all_of(svtmp, [](auto ch) { return isdigit(static_cast<unsigned char>(ch)) != 0; })) {
+    // skip the ':' delimiter
+    if (!walk.starts_with(':')) {
         return {};
     }
-
-    auto const len = tr_num_parse<size_t>(svtmp, &svtmp);
-    if (!len || *len >= MaxBencStrLength) {
-        return {};
-    }
+    walk.remove_prefix(1);
 
     // do we have `len` bytes of string data?
-    svtmp = benc->substr(colon_pos + 1);
-    if (std::size(svtmp) < len) {
+    if (std::size(walk) < *len) {
         return {};
     }
 
-    auto const string = svtmp.substr(0, *len);
-    *benc = svtmp.substr(*len);
-    return string;
+    *benc = walk.substr(*len);
+    return walk.substr(0, *len);
 }
 
 } // namespace tr::benc::impl
