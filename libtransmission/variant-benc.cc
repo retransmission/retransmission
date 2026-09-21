@@ -3,12 +3,13 @@
 // or any future license endorsed by Mnemosaic LLC.
 // License text can be found in the licenses/ folder.
 
-#include <cstddef> // size_t, std::byte
+#include <cstddef> // size_t, std::nullptr_t
 #include <cstdint> // int64_t
 #include <optional>
 #include <string>
 #include <string_view>
 #include <utility>
+#include <variant> // std::monostate
 #include <vector>
 
 #include <fmt/format.h>
@@ -241,9 +242,9 @@ namespace
 {
 namespace to_string_helpers
 {
-using OutBuf = fmt::memory_buffer;
-
 struct BencWriter {
+    fmt::memory_buffer& out_;
+
     void operator()(std::monostate /*unused*/) const
     {
     }
@@ -253,22 +254,26 @@ struct BencWriter {
         write_string(""sv);
     }
 
-    void operator()(bool val) const
+    void operator()(bool const val) const
     {
-        append_literal(val ? "i1e"sv : "i0e"sv);
+        out_.append(val ? "i1e"sv : "i0e"sv);
     }
 
-    void operator()(int64_t val) const
+    void operator()(int64_t const val) const
     {
-        write_int(val);
+        out_.push_back('i');
+        out_.append(fmt::format_int{ val });
+        out_.push_back('e');
     }
 
-    void operator()(double val) const
+    void operator()(double const val) const
     {
-        write_real(val);
+        auto buf = fmt::memory_buffer{};
+        fmt::format_to(fmt::appender(buf), "{:f}", val);
+        write_string({ std::data(buf), std::size(buf) });
     }
 
-    void operator()(std::string_view sv) const
+    void operator()(std::string_view const sv) const
     {
         write_string(sv);
     }
@@ -292,29 +297,12 @@ struct BencWriter {
         out_.push_back('e');
     }
 
-    OutBuf& out_;
-
 private:
-    void write_string(std::string_view sv) const
+    void write_string(std::string_view const sv) const
     {
-        fmt::format_to(fmt::appender(out_), "{:d}:{:s}", std::size(sv), sv);
-    }
-
-    void write_int(int64_t val) const
-    {
-        fmt::format_to(fmt::appender(out_), "i{:d}e", val);
-    }
-
-    void write_real(double val) const
-    {
-        auto buf = fmt::memory_buffer{};
-        fmt::format_to(fmt::appender(buf), "{:f}", val);
-        write_string({ std::data(buf), std::size(buf) });
-    }
-
-    void append_literal(std::string_view literal) const
-    {
-        out_.append(std::data(literal), std::data(literal) + std::size(literal));
+        out_.append(fmt::format_int{ std::size(sv) });
+        out_.push_back(':');
+        out_.append(sv);
     }
 };
 
@@ -323,9 +311,7 @@ private:
 
 std::string tr_variant_serde::to_benc_string(tr_variant const& var)
 {
-    using namespace to_string_helpers;
-
-    auto buf = OutBuf{};
-    var.visit(BencWriter{ buf });
+    auto buf = fmt::memory_buffer{};
+    var.visit(to_string_helpers::BencWriter{ buf });
     return fmt::to_string(buf);
 }
