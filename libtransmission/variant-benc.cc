@@ -4,7 +4,6 @@
 // License text can be found in the licenses/ folder.
 
 #include <algorithm>
-#include <array>
 #include <cctype> /* isdigit() */
 #include <cstddef> // size_t, std::byte
 #include <cstdint> // int64_t
@@ -323,9 +322,9 @@ private:
 
     void write_real(double val) const
     {
-        auto buf = std::array<char, 64>{};
-        auto const* const out_ptr = fmt::format_to(std::data(buf), "{:f}", val);
-        write_string({ std::data(buf), static_cast<size_t>(out_ptr - std::data(buf)) });
+        auto buf = fmt::memory_buffer{};
+        fmt::format_to(fmt::appender(buf), "{:f}", val);
+        write_string({ std::data(buf), std::size(buf) });
     }
 
     void append_literal(std::string_view literal) const
