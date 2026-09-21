@@ -19,16 +19,7 @@
 
 namespace
 {
-auto constexpr MaxWaitMsec = 5000;
-
-class InOutTest : public tr::test::SessionTest
-{
-protected:
-    void inSessionThread(std::function<void()> const& func)
-    {
-        blockingRunInSessionThread(func, MaxWaitMsec);
-    }
-};
+using InOutTest = tr::test::SessionTest;
 
 TEST_F(InOutTest, writeFailsWhenExistingFileCannotBeOpened)
 {
@@ -47,12 +38,12 @@ TEST_F(InOutTest, writeFailsWhenExistingFileCannotBeOpened)
     // Neither the fixture nor verify go through the fd pool, so warm it
     // with a write that succeeds: this is the steady state of a torrent
     // that's been receiving blocks from peers.
-    inSessionThread(write_block);
+    blockingRunInSessionThread(write_block);
     ASSERT_EQ(0, err);
 
     // Evict the pooled fd, then make the path unopenable by replacing
     // the file with a directory.
-    inSessionThread([session = session_, tor]() { session->openFiles().close_torrent(tor->id()); });
+    blockingRunInSessionThread([session = session_, tor]() { session->openFiles().close_torrent(tor->id()); });
     ASSERT_TRUE(tr_sys_path_remove(path));
     ASSERT_TRUE(tr_sys_dir_create(path, 0, 0700));
 
@@ -61,7 +52,7 @@ TEST_F(InOutTest, writeFailsWhenExistingFileCannotBeOpened)
     // data, leaving pieces that later fail verification. Turning that
     // into the torrent's local error is on_block_written()'s job, which
     // TorrentDiskIoTest.failedWriteStopsTorrent covers.
-    inSessionThread(write_block);
+    blockingRunInSessionThread(write_block);
     EXPECT_NE(0, err);
 }
 } // namespace

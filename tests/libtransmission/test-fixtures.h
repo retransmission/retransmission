@@ -447,7 +447,7 @@ protected:
     }
 
     // Runs `func` on the session thread and waits for it to finish.
-    void blockingRunInSessionThread(std::function<void()> const& func, std::chrono::milliseconds const msec)
+    void blockingRunInSessionThread(std::function<void()> const& func, std::chrono::milliseconds const msec = 5s)
     {
         auto promise = std::promise<void>{};
         auto const future = promise.get_future();

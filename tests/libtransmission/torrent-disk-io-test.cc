@@ -19,8 +19,6 @@ namespace tr::test
 {
 namespace
 {
-auto constexpr MaxWaitMsec = 5000;
-
 // Covers the torrent call sites that read and write through tr::LocalData.
 // The fixture parks completions instead of shuffling them, so each test
 // decides when they arrive.
@@ -40,12 +38,6 @@ protected:
         std::ranges::fill(*data, uint8_t{ 0U });
         return data;
     }
-
-    // Runs `func` on the session thread and waits for it to finish.
-    void inSessionThread(std::function<void()> const& func)
-    {
-        blockingRunInSessionThread(func, MaxWaitMsec);
-    }
 };
 
 } // namespace
@@ -55,7 +47,7 @@ TEST_F(TorrentDiskIoTest, blockIsNotOursUntilItsWriteFinishes)
     auto* const tor = zeroTorrentInit(ZeroTorrentState::Partial);
     auto const block = tor->block_span_for_piece(0).begin;
 
-    inSessionThread([this, tor, block]() {
+    blockingRunInSessionThread([this, tor, block]() {
         ASSERT_TRUE(tor->on_block_received(block));
         tor->save_block(block, zeroBlock(tor, block));
 
@@ -79,7 +71,7 @@ TEST_F(TorrentDiskIoTest, failedWriteStopsTorrent)
     auto* const tor = zeroTorrentInit(ZeroTorrentState::Partial);
     auto const block = tor->block_span_for_piece(0).begin;
 
-    inSessionThread([tor, block]() {
+    blockingRunInSessionThread([tor, block]() {
         ASSERT_TRUE(tor->on_block_received(block));
         EXPECT_FALSE(tor->error().is_local_error());
 
@@ -101,7 +93,7 @@ TEST_F(TorrentDiskIoTest, hashResultForInvalidatedPieceIsDropped)
     auto* const tor = zeroTorrentInit(ZeroTorrentState::Partial);
     auto const span = tor->block_span_for_piece(0);
 
-    inSessionThread([this, tor, span]() {
+    blockingRunInSessionThread([this, tor, span]() {
         for (auto block = span.begin; block < span.end; ++block) {
             ASSERT_TRUE(tor->on_block_received(block));
             tor->save_block(block, zeroBlock(tor, block));
