@@ -17,6 +17,7 @@
 #include <string>
 #include <string_view>
 #include <thread>
+#include <utility>
 #include <vector>
 
 #include <event2/event.h>
@@ -446,21 +447,27 @@ protected:
         verified_cv_.wait_for(verified_lock, 20s, stop_waiting);
     }
 
-    // Runs `func` on the session thread and waits for it to finish.
-    void blockingRunInSessionThread(std::function<void()> func, std::chrono::milliseconds const msec = 5s)
+    // Runs `func` on the session thread and waits for it to finish and returns the result.
+    template<typename Func>
+    auto blockingRunInSessionThread(Func&& func, std::chrono::milliseconds const msec = 5s)
     {
-        auto promise = std::make_shared<std::promise<void>>();
-        auto const future = promise->get_future();
-        session_->run_in_session_thread([f = std::move(func), promise]() {
-            f();
-            promise->set_value();
-        });
-        ASSERT_EQ(future.wait_for(msec), std::future_status::ready);
+        using Result = decltype(func());
+
+        auto task = std::make_shared<std::packaged_task<Result()>>(std::forward<Func>(func));
+        auto future = task->get_future();
+        session_->run_in_session_thread([task]() { (*task)(); });
+        auto const status = future.wait_for(msec);
+        EXPECT_EQ(status, std::future_status::ready);
+        if (status != std::future_status::ready) {
+            return Result();
+        }
+        return future.get();
     }
 
-    void blockingRunInSessionThread(std::function<void()> func, std::chrono::milliseconds::rep const msec)
+    template<typename Func>
+    auto blockingRunInSessionThread(Func&& func, std::chrono::milliseconds::rep const msec)
     {
-        blockingRunInSessionThread(std::move(func), std::chrono::milliseconds{ msec });
+        return blockingRunInSessionThread(std::forward<Func>(func), std::chrono::milliseconds{ msec });
     }
 
     tr_session* session_ = nullptr;
