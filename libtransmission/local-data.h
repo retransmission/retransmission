@@ -188,7 +188,6 @@ public:
             BlockData const& data) = 0;
         [[nodiscard]] virtual tr_error_code_t move(
             tr_torrent_id_t id,
-            std::string_view old_parent,
             std::string_view parent,
             std::string_view parent_name) = 0;
         [[nodiscard]] virtual tr_error_code_t remove(tr_torrent_id_t id, tr_torrent_remove_func remove_func) = 0;
@@ -237,12 +236,7 @@ public:
     void close_torrent(tr_torrent_id_t tor_id);
     void close_file(tr_torrent_id_t tor_id, tr_file_index_t file_num);
     void close_all();
-    void move(
-        tr_torrent_id_t id,
-        std::string_view old_parent,
-        std::string_view parent,
-        std::string_view parent_name,
-        OnMove on_move);
+    void move(tr_torrent_id_t id, std::string_view parent, std::string_view parent_name, OnMove on_move);
     void remove(tr_torrent_id_t id, tr_torrent_remove_func remove_func);
     void rename(tr_torrent_id_t id, std::string_view oldpath, std::string_view newname, tr_torrent_rename_done_func callback);
     void shutdown();
