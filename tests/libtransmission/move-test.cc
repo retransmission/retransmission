@@ -13,7 +13,7 @@
 
 #include <libtransmission/transmission.h>
 
-#include <libtransmission/block-info.h>
+#include <libtransmission/constants.h>
 #include <libtransmission/file.h> // tr_sys_path_*()
 #include <libtransmission/local-data.h>
 #include <libtransmission/quark.h>
@@ -37,38 +37,17 @@ class IncompleteDirTest
     , public ::testing::WithParamInterface<std::pair<std::string, std::string>>
 {
 protected:
-    struct TestIncompleteDirData {
-        tr_session* session = {};
-        tr_torrent* tor = {};
-        tr_block_index_t block = {};
-        std::vector<uint8_t> buf;
-    };
-
-    [[nodiscard]] TestIncompleteDirData makeTestIncompleteDirData(tr_torrent* const tor) const
-    {
-        auto data = TestIncompleteDirData{};
-        data.session = session_;
-        data.tor = tor;
-        data.buf.resize(tr_block_info::BlockSize);
-        std::ranges::fill(data.buf, '\0');
-        return data;
-    }
-
     void completeBlockSpan(tr_torrent* const tor, tr_block_span_t const span)
     {
-        static auto constexpr TestIncompleteDirThreadfunc = [](TestIncompleteDirData& data) noexcept {
-            if (data.tor->on_block_received(data.block)) {
-                data.tor->save_block(data.block, std::make_unique<tr::LocalData::BlockData>(data.buf));
-            }
-        };
-
-        auto data = makeTestIncompleteDirData(tor);
-
         auto const [begin, end] = span;
-        for (tr_block_index_t block_index = begin; block_index < end; ++block_index) {
-            data.block = block_index;
-            session_->run_in_session_thread(TestIncompleteDirThreadfunc, data);
-
+        for (auto block_index = begin; block_index < end; ++block_index) {
+            auto const save_zeroes = [tor, block_index]() {
+                if (tor->on_block_received(block_index)) {
+                    auto const zeroes = std::vector<uint8_t>(TrBlockSize);
+                    tor->save_block(block_index, std::make_unique<tr::LocalData::BlockData>(zeroes));
+                }
+            };
+            session_->run_in_session_thread(save_zeroes);
             // save_block() may return before the write finishes
             auto const test = [tor, block_index]() {
                 return tor->has_block(block_index);
