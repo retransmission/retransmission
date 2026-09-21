@@ -255,7 +255,8 @@ tr_variant from_stats_mode(StatsMode const& src)
     // prefer localtime with TZ offset data when we can get it.
     if constexpr (HasTmGmtoffV<std::tm>) {
         if (auto const* local = std::localtime(&tt)) {
-            return fmt::format("{:%FT%T%z}", *local);
+            // fmt::runtime to workaround FTBFS in clang
+            return fmt::format(fmt::runtime("{:%FT%T%z}"), *local);
         }
     }
 
