@@ -119,19 +119,6 @@ void merge_variant(tr_variant& dest, tr_variant&& src)
 }
 
 template<typename T>
-[[nodiscard]] tr_variant* dict_set(tr_variant* const var, tr_quark const key, T&& val)
-{
-    TR_ASSERT(var != nullptr);
-    TR_ASSERT(var->holds_alternative<tr_variant::Map>());
-
-    if (auto* const map = var != nullptr ? var->get_if<tr_variant::MapIndex>() : nullptr; map != nullptr) {
-        return &map->insert_or_assign(key, std::forward<T>(val)).first;
-    }
-
-    return {};
-}
-
-template<typename T>
 [[nodiscard]] tr_variant* vec_add(tr_variant* const var, T&& val)
 {
     TR_ASSERT(var != nullptr);
@@ -232,13 +219,6 @@ bool tr_variantDictFindDict(tr_variant* const var, tr_quark key, tr_variant** se
     }
 
     return false;
-}
-
-// ---
-
-tr_variant* tr_variantDictAddDict(tr_variant* const var, tr_quark key, size_t n_reserve)
-{
-    return dict_set(var, key, tr_variant::make_map(n_reserve));
 }
 
 // ---
