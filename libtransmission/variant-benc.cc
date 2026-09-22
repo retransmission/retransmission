@@ -200,13 +200,12 @@ private:
             // `tr::benc::parse()` only calls Key() for strings,
             // so a non-string in the key position, e.g. `di1ei2ee`,
             // arrives here with no key.
-            if (!key_) {
+            auto const key = std::exchange(key_, {});
+            if (!key) {
                 return nullptr;
             }
 
-            auto const key = *key_;
-            key_.reset();
-            return &(*map)[key];
+            return &(*map)[*key];
         }
 
         // `parent` is the still-empty top
