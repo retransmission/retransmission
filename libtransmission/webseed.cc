@@ -18,6 +18,7 @@
 #include "libtransmission/bandwidth.h"
 #include "libtransmission/bitfield.h"
 #include "libtransmission/block-info.h"
+#include "libtransmission/constants.h"
 #include "libtransmission/local-data.h"
 #include "libtransmission/peer-common.h"
 #include "libtransmission/peer-mgr.h"
@@ -68,7 +69,7 @@ private:
     // the current position in the task; i.e., the next block to save
     tr_block_info::Location loc_;
 
-    tr::StackBuffer<tr_block_info::BlockSize, std::byte, std::ratio<5, 1>> content_;
+    tr::StackBuffer<TrBlockSize, std::byte, std::ratio<5, 1>> content_;
 };
 
 /**

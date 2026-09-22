@@ -10,7 +10,7 @@
 
 #include <libtransmission/transmission.h>
 
-#include <libtransmission/block-info.h>
+#include <libtransmission/constants.h>
 #include <libtransmission/file.h>
 #include <libtransmission/inout.h>
 #include <libtransmission/torrent.h>
@@ -31,7 +31,7 @@ TEST_F(InOutTest, writeFailsWhenExistingFileCannotBeOpened)
     auto err = tr_error_code_t{};
     // tr_ioWrite() must run in the session thread; block until it's done
     auto const write_block = [session = session_, tor, &err]() {
-        auto const buf = std::vector<uint8_t>(tr_block_info::BlockSize);
+        auto const buf = std::vector<uint8_t>(TrBlockSize);
         err = tr_ioWrite(*tor, session->openFiles(), tor->block_loc(0U), buf);
     };
 

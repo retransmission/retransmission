@@ -201,7 +201,7 @@ std::optional<tr_sha1_digest_t> recalculate_hash(tr_torrent const& tor, tr_piece
     TR_ASSERT(piece < tor.piece_count());
 
     auto sha = tr_sha1{};
-    auto buffer = std::array<uint8_t, tr_block_info::BlockSize>{};
+    auto buffer = std::array<uint8_t, TrBlockSize>{};
     auto& open_files = tor.session->openFiles();
 
     auto const [begin_byte, end_byte] = tor.block_info().byte_span_for_piece(piece);

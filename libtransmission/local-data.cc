@@ -14,6 +14,7 @@
 
 #include "libtransmission/local-data.h"
 
+#include "libtransmission/constants.h"
 #include "libtransmission/crypto-utils.h"
 #include "libtransmission/error.h"
 #include "libtransmission/inout.h"
@@ -96,7 +97,7 @@ public:
         }
 
         auto const len = byte_span.size();
-        if (len > tr_block_info::BlockSize) {
+        if (len > TrBlockSize) {
             return TR_ERROR_EINVAL;
         }
         auto const span_size = static_cast<size_t>(len);

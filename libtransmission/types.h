@@ -36,7 +36,7 @@ struct tr_error;
 // care about accurate statistics-keeping can match the two announces."
 using tr_announce_key_t = uint32_t;
 
-// Assuming a 16 KiB block (tr_block_info::BlockSize), a 32-bit block
+// Assuming a 16 KiB block (TrBlockSize), a 32-bit block
 // index gives us a maximum torrent size of 64 TiB. When we ever need to
 // grow past that, change tr_block_index_t and  tr_piece_index_t to uint64_t.
 using tr_block_index_t = uint32_t;

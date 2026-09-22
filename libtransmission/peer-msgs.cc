@@ -31,6 +31,7 @@
 #include "libtransmission/bitfield.h"
 #include "libtransmission/block-info.h"
 #include "libtransmission/clients.h"
+#include "libtransmission/constants.h"
 #include "libtransmission/crypto-utils.h"
 #include "libtransmission/local-data.h"
 #include "libtransmission/log.h"
@@ -64,7 +65,7 @@ using namespace std::literals;
 namespace
 {
 // initial capacity is big enough to hold a BtPeerMsgs::Piece message
-using MessageBuffer = tr::StackBuffer<tr_block_info::BlockSize + 16U, std::byte, std::ratio<5, 1>>;
+using MessageBuffer = tr::StackBuffer<TrBlockSize + 16U, std::byte, std::ratio<5, 1>>;
 using MessageReader = tr::BufferReader<std::byte>;
 using MessageWriter = tr::BufferWriter<std::byte>;
 
@@ -253,7 +254,7 @@ struct tr_incoming {
         std::unique_ptr<tr::LocalData::BlockData> buf;
 
     private:
-        std::bitset<tr_block_info::BlockSize> have_;
+        std::bitset<TrBlockSize> have_;
         uint32_t const block_size_;
     };
 
@@ -852,7 +853,7 @@ private:
     case BtPeerMsgs::Piece:
         {
             auto constexpr HeaderLen = sizeof(id) + sizeof(uint32_t /*piece*/) + sizeof(uint32_t /*offset*/);
-            return len >= HeaderLen && len <= HeaderLen + tr_block_info::BlockSize;
+            return len >= HeaderLen && len <= HeaderLen + TrBlockSize;
         }
 
     case BtPeerMsgs::DhtPort:
@@ -2207,7 +2208,7 @@ bool tr_peerMsgsImpl::is_valid_request(peer_request const& req) const
         err = 2;
     } else if (req.offset + req.length > tor_.piece_size(req.index)) {
         err = 3;
-    } else if (req.length > tr_block_info::BlockSize) {
+    } else if (req.length > TrBlockSize) {
         err = 4;
     } else if (tor_.piece_loc(req.index, req.offset, req.length).byte > tor_.total_size()) {
         err = 5;
@@ -2271,7 +2272,7 @@ size_t tr_peerMsgsImpl::max_available_reqs() const
     // many requests we should send to this peer
     static auto constexpr Floor = size_t{ 32 };
     static size_t constexpr Seconds = RequestBufSecs;
-    size_t const estimated_blocks_in_period = (rate.base_quantity() * Seconds) / tr_block_info::BlockSize;
+    size_t const estimated_blocks_in_period = (rate.base_quantity() * Seconds) / TrBlockSize;
     auto const ceil = peer_reqq_.value_or(PeerReqQDefault);
 
     // - Don't use std::clamp as `ceil` can be smaller than `Floor`
