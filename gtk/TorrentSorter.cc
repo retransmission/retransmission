@@ -10,7 +10,6 @@
 
 #include <libtransmission-app/display-modes.h>
 
-#include <libtransmission/macros.h>
 #include <libtransmission/types.h>
 #include <libtransmission/utils.h>
 
@@ -219,7 +218,7 @@ int TorrentSorter::compare(Torrent const& lhs, Torrent const& rhs) const
 void TorrentSorter::update(Torrent::ChangeFlags changes)
 {
     using Flag = Torrent::ChangeFlag;
-    static auto TR_CONSTEXPR23 CompareFlags = std::to_array<std::pair<CompareFunc, Torrent::ChangeFlags>>({
+    static auto constexpr CompareFlags = std::to_array<std::pair<CompareFunc, Torrent::ChangeFlags>>({
         { &compare_by_activity, Flag::ACTIVE_PEER_COUNT | Flag::QUEUE_POSITION | Flag::SPEED_DOWN | Flag::SPEED_UP },
         { &compare_by_age, Flag::ADDED_DATE | Flag::NAME },
         { &compare_by_eta, Flag::ETA | Flag::NAME },

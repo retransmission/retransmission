@@ -71,6 +71,11 @@ public:
 
     using ChangeFlags = Flags<ChangeFlag>;
 
+    [[nodiscard]] friend constexpr ChangeFlags operator|(ChangeFlag const lhs, ChangeFlag const rhs) noexcept
+    {
+        return ChangeFlags{ lhs } | rhs;
+    }
+
 public:
     using Speed = tr::Values::Speed;
     using Storage = tr::Values::Storage;
@@ -129,5 +134,3 @@ private:
     class Impl;
     std::unique_ptr<Impl> const impl_;
 };
-
-DEFINE_FLAGS_OPERATORS(Torrent::ChangeFlag)

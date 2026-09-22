@@ -15,8 +15,6 @@
 
 #include <libtransmission-app/display-modes.h>
 
-#include <libtransmission/macros.h>
-
 #include <gdkmm/pixbuf.h>
 #include <gtkmm/cellrendererpixbuf.h>
 #include <gtkmm/cellrenderertext.h>
@@ -581,7 +579,7 @@ void FilterBar::Impl::update_count_label_idle()
 
 void FilterBar::Impl::update_filter_models(Torrent::ChangeFlags changes)
 {
-    static auto TR_CONSTEXPR23 show_mode_flags = Torrent::ChangeFlag::ACTIVE_PEERS_DOWN | Torrent::ChangeFlag::ACTIVE_PEERS_UP |
+    static auto constexpr show_mode_flags = Torrent::ChangeFlag::ACTIVE_PEERS_DOWN | Torrent::ChangeFlag::ACTIVE_PEERS_UP |
         Torrent::ChangeFlag::ACTIVE | Torrent::ChangeFlag::ACTIVITY | Torrent::ChangeFlag::ERROR_CODE |
         Torrent::ChangeFlag::FINISHED;
     static auto constexpr tracker_flags = Torrent::ChangeFlag::TRACKERS;
