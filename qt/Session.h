@@ -203,7 +203,7 @@ private:
     void sendTorrentRequest(tr_quark method, torrent_ids_t const& torrent_ids);
     void refreshTorrents(torrent_ids_t const& ids, TorrentProperties props);
 
-    static void updateStats(tr_variant const& args_dict, tr_session_stats& stats);
+    static void updateStats(tr_variant::Map const& args_dict, tr_session_stats& stats);
 
     QString const config_dir_;
     Prefs& prefs_;

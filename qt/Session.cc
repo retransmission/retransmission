@@ -595,7 +595,7 @@ void Session::exec(tr_quark method, tr_variant::Map params, RpcClient::ResponseF
     rpc_.exec(method, std::move(params), std::move(on_done));
 }
 
-void Session::updateStats(tr_variant const& args_dict, tr_session_stats& stats)
+void Session::updateStats(tr_variant::Map const& args_dict, tr_session_stats& stats)
 {
     static constexpr auto Fields = std::tuple{
         tr::serializer::Field<&tr_session_stats::downloadedBytes>{ TR_KEY_downloaded_bytes },
@@ -611,12 +611,14 @@ void Session::updateStats(tr_variant const& args_dict, tr_session_stats& stats)
 
 void Session::updateStats(tr_variant* dict)
 {
-    if (tr_variant* var = nullptr; tr_variantDictFindDict(dict, TR_KEY_current_stats, &var)) {
-        updateStats(*var, stats_);
-    }
+    if (auto const* const map = dict != nullptr ? dict->get_if<tr_variant::Map>() : nullptr; map != nullptr) {
+        if (auto const* const current = map->find_if<tr_variant::Map>(TR_KEY_current_stats); current != nullptr) {
+            updateStats(*current, stats_);
+        }
 
-    if (tr_variant* var = nullptr; tr_variantDictFindDict(dict, TR_KEY_cumulative_stats, &var)) {
-        updateStats(*var, cumulative_stats_);
+        if (auto const* const cumulative = map->find_if<tr_variant::Map>(TR_KEY_cumulative_stats); cumulative != nullptr) {
+            updateStats(*cumulative, cumulative_stats_);
+        }
     }
 
     if (auto const busy = dictFind<bool>(dict, TR_KEY_busy)) {

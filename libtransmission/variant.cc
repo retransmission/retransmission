@@ -187,20 +187,6 @@ tr_variant& tr_variant::merge(tr_variant&& that)
 
 // ---
 
-bool tr_variantDictFindDict(tr_variant* const var, tr_quark key, tr_variant** setme)
-{
-    if (auto* const map = var != nullptr ? var->get_if<tr_variant::MapIndex>() : nullptr; map != nullptr) {
-        if (auto const iter = map->find(key); iter != std::end(*map) && iter->second.holds_alternative<tr_variant::Map>()) {
-            *setme = &iter->second;
-            return true;
-        }
-    }
-
-    return false;
-}
-
-// ---
-
 std::optional<tr_variant> tr_variant_serde::parse(std::string_view input)
 {
     error_ = {};

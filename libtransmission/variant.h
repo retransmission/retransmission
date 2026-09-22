@@ -567,6 +567,3 @@ namespace settings
 bool save(std::string_view filename, Settings const& settings);
 } // namespace settings
 } // namespace tr
-
-// Deprecated C API. Do not use.
-bool tr_variantDictFindDict(tr_variant* var, tr_quark key, tr_variant** setme_value);
