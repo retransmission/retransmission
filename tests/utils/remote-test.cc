@@ -8,6 +8,7 @@
 #include <chrono>
 #include <cstdint>
 #include <cstdio>
+#include <optional>
 #include <string>
 #include <string_view>
 #include <thread>
@@ -24,7 +25,10 @@
 
 #include <libtransmission/macros.h>
 #include <libtransmission/net.h> // sockaddr_storage, ntohs()
+#include <libtransmission/quark.h>
+#include <libtransmission/rpcimpl.h> // TrRpcVersionSemver
 #include <libtransmission/utils.h> // tr_lib_init()
+#include <libtransmission/variant.h>
 
 #include <gtest/gtest.h>
 
@@ -38,13 +42,15 @@ auto constexpr SessionId = "test-session-id"sv;
 // A minimal in-process stand-in for transmission-daemon's RPC endpoint. It
 // mimics just enough of the daemon to exercise transmission-remote end to end:
 // the CSRF handshake (reply 409 with an TR_PROJ_SHARED_RPC_SESSION_ID_HEADER the
-// client must echo back) followed by a valid, empty success response.
+// client must echo back) followed by a JSON-RPC 2.0 success response that
+// echoes the request's id and carries the `result` object given at construction.
 // Everything stays on 127.0.0.1, so there's no external dependency.
 class MockRpcServer
 {
 public:
-    MockRpcServer()
-        : base_{ event_base_new() }
+    explicit MockRpcServer(std::string_view result_json = "{}"sv)
+        : result_json_{ result_json }
+        , base_{ event_base_new() }
         , http_{ evhttp_new(base_) }
     {
         evhttp_set_allowed_methods(http_, EVHTTP_REQ_GET | EVHTTP_REQ_POST | EVHTTP_REQ_HEAD);
@@ -101,6 +107,22 @@ private:
         static_cast<MockRpcServer*>(vself)->handle(req);
     }
 
+    // The client dispatches on the response's id, so reply with the request's.
+    [[nodiscard]] static std::string request_id(evhttp_request* req)
+    {
+        auto* const in = evhttp_request_get_input_buffer(req);
+        auto const len = evbuffer_get_length(in);
+        auto const body = std::string_view{ reinterpret_cast<char const*>(evbuffer_pullup(in, -1)), len };
+        if (auto const parsed = tr_variant_serde::json().parse(body); parsed) {
+            if (auto const* const map = parsed->get_if<tr_variant::Map>(); map != nullptr) {
+                if (auto const id = map->value_if<int64_t>(TR_KEY_id); id) {
+                    return std::to_string(*id);
+                }
+            }
+        }
+        return "null";
+    }
+
     void handle(evhttp_request* req)
     {
         request_count_.fetch_add(1);
@@ -110,6 +132,10 @@ private:
         auto* const out_headers = evhttp_request_get_output_headers(req);
         auto* const out = evbuffer_new();
 
+        // The client speaks legacy RPC until a response advertises the
+        // JSON-RPC 2.0 version, so send it on every reply as the daemon does.
+        evhttp_add_header(out_headers, TR_PROJ_SHARED_RPC_VERSION_HEADER, std::data(TrRpcVersionSemver));
+
         if (session_id == nullptr) {
             // CSRF handshake: reject and hand back a session id to retry with.
             evhttp_add_header(out_headers, TR_PROJ_SHARED_RPC_SESSION_ID_HEADER, std::string{ SessionId }.c_str());
@@ -117,14 +143,15 @@ private:
         } else {
             authenticated_request_seen_.store(std::string_view{ session_id } == SessionId);
             evhttp_add_header(out_headers, "Content-Type", "application/json");
-            static auto constexpr Body = R"({"result":"success","arguments":{}})"sv;
-            evbuffer_add(out, std::data(Body), std::size(Body));
+            auto const body = fmt::format(R"({{"jsonrpc":"2.0","id":{:s},"result":{:s}}})", request_id(req), result_json_);
+            evbuffer_add(out, std::data(body), std::size(body));
             evhttp_send_reply(req, 200, "OK", out);
         }
 
         evbuffer_free(out);
     }
 
+    std::string result_json_;
     event_base* base_;
     evhttp* http_;
     uint16_t port_ = 0;
@@ -178,6 +205,29 @@ TEST(RemoteLoopback, performsSessionHandshakeAndSucceeds)
     EXPECT_EQ(0, result.exit_code) << result.output;
     EXPECT_EQ(2, server.request_count()) << "expected a 409 handshake followed by an authenticated retry";
     EXPECT_TRUE(server.authenticated_request_seen());
+}
+
+TEST(RemoteLoopback, listGroupsPrintsEveryGroup)
+{
+    tr_lib_init();
+
+    // a group_get result as the daemon sends it, per rpc-spec section 4.8.2
+    static auto constexpr Result = R"({"group":[)"
+                                   R"({"honors_session_limits":false,"name":"foo","speed_limit_down":100,)"
+                                   R"("speed_limit_down_enabled":true,"speed_limit_up":50,"speed_limit_up_enabled":true},)"
+                                   R"({"honors_session_limits":true,"name":"bar","speed_limit_down":0,)"
+                                   R"("speed_limit_down_enabled":false,"speed_limit_up":0,"speed_limit_up_enabled":false})"
+                                   R"(]})"sv;
+    auto server = MockRpcServer{ Result };
+
+    auto const command = fmt::format(R"("{:s}" 127.0.0.1:{:d} --list-groups 2>&1)", TR_REMOTE_EXE, server.port());
+    auto const result = run(command);
+
+    EXPECT_EQ(0, result.exit_code) << result.output;
+    EXPECT_EQ(
+        "foo: Upload speed limit: 50 kB/s, Download speed limit: 100 kB/s, does not honor session bandwidth limits\n"
+        "bar: Upload speed limit: unlimited, Download speed limit: unlimited, honors session bandwidth limits\n",
+        result.output);
 }
 
 } // namespace
