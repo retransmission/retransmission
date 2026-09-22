@@ -76,18 +76,13 @@ protected:
 
     static auto constexpr MaxWaitMsec = 3000;
 
-    int setLocation(tr_torrent* tor, std::string_view path, bool move = true)
+    auto setLocation(tr_torrent* tor, std::string_view path, bool move = true)
     {
-        auto result = std::make_shared<std::promise<int>>();
-        auto ready = result->get_future();
-        session_->run_in_session_thread([tor, path = std::string{ path }, move, result]() {
+        return blockingRunInSessionThread([tor, path = std::string{ path }, move]() {
             auto state = -1;
             tr_torrentSetLocation(tor, path, move, &state);
-            result->set_value(state);
+            return state;
         });
-        auto const status = ready.wait_for(5s);
-        EXPECT_EQ(std::future_status::ready, status);
-        return status == std::future_status::ready ? ready.get() : -1;
     }
 
     void checkRemoveLocalData(bool via_backend)
@@ -106,16 +101,12 @@ protected:
         auto const download_tree = tr_pathbuf{ download_dir, '/', tor->name() };
         auto const incomplete_tree = tr_pathbuf{ incomplete_dir, '/', tor->name() };
 
-        auto result = std::make_shared<std::promise<void>>();
-        auto ready = result->get_future();
-        session_->run_in_session_thread([session = session_, tor, via_backend, result]() {
+        blockingRunInSessionThread([session = session_, tor, via_backend]() {
             if (via_backend) {
                 session->local_data.remove(tor->id(), {});
             }
             tr_torrentRemove(tor, !via_backend);
-            result->set_value();
         });
-        ASSERT_EQ(std::future_status::ready, ready.wait_for(5s));
 
         EXPECT_FALSE(tr_sys_path_exists(download_tree));
         EXPECT_FALSE(tr_sys_path_exists(incomplete_tree));
