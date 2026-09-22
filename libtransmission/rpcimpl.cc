@@ -1959,6 +1959,15 @@ using SessionAccessors = std::pair<SessionGetter, SessionSetter>;
         });
 
     map.try_emplace(
+        TR_KEY_bind_interface,
+        [](tr_session const& src) -> tr_variant { return src.bind_interface(); },
+        [](tr_session& tgt, tr_variant const& src, ErrorInfo& /*err*/) {
+            if (auto const val = src.value_if<std::string_view>()) {
+                tr_sessionSetBindInterface(&tgt, *val);
+            }
+        });
+
+    map.try_emplace(
         TR_KEY_blocklist_date,
         [](tr_session const& src) -> tr_variant { return static_cast<int64_t>(tr_blocklistGetMTime(&src)); },
         nullptr);

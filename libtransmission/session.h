@@ -54,6 +54,7 @@
 #include "libtransmission/quark.h"
 #include "libtransmission/rpc-server.h"
 #include "libtransmission/session-alt-speeds.h"
+#include "libtransmission/session-settings.h"
 #include "libtransmission/session-id.h"
 #include "libtransmission/session-thread.h"
 #include "libtransmission/stats.h"
@@ -93,7 +94,13 @@ private:
     {
     public:
         using IncomingCallback = void (*)(tr_socket_t, void*);
-        BoundSocket(struct event_base* base, tr_address const& addr, tr_port port, IncomingCallback cb, void* cb_data);
+        BoundSocket(
+            struct event_base* base,
+            tr_address const& addr,
+            tr_port port,
+            std::string_view bind_interface,
+            IncomingCallback cb,
+            void* cb_data);
         BoundSocket(BoundSocket&&) = delete;
         BoundSocket(BoundSocket const&) = delete;
         BoundSocket operator=(BoundSocket&&) = delete;
@@ -207,6 +214,11 @@ private:
             return session_.bind_address(TR_AF_INET);
         }
 
+        [[nodiscard]] std::string_view bind_interface() const override
+        {
+            return session_.settings_.bind_interface;
+        }
+
         [[nodiscard]] tr_port advertised_peer_port() const override
         {
             return session_.advertisedPeerPort();
@@ -264,6 +276,7 @@ private:
         [[nodiscard]] std::optional<std::string> cookieFile() const override;
         [[nodiscard]] std::optional<std::string> bind_address_V4() const override;
         [[nodiscard]] std::optional<std::string> bind_address_V6() const override;
+        [[nodiscard]] std::optional<std::string> bind_interface() const override;
         [[nodiscard]] std::optional<std::string_view> userAgent() const override;
         [[nodiscard]] size_t clamp(int torrent_id, size_t byte_count) const override;
         [[nodiscard]] std::optional<std::string> proxyUrl() const override;
@@ -286,6 +299,11 @@ private:
         [[nodiscard]] tr_address bind_address(tr_address_type type) const override
         {
             return session_.bind_address(type);
+        }
+
+        [[nodiscard]] std::string_view bind_interface() const override
+        {
+            return session_.settings_.bind_interface;
         }
 
         [[nodiscard]] tr_port port() const override
@@ -337,6 +355,11 @@ private:
                 TR_ASSERT_MSG(false, "Invalid type");
                 return {};
             }
+        }
+
+        [[nodiscard]] std::string_view settings_bind_interface() override
+        {
+            return session_.settings_.bind_interface;
         }
 
         [[nodiscard]] std::span<std::string const> settings_ip_endpoint(tr_address_type type) noexcept override
@@ -674,6 +697,20 @@ public:
     [[nodiscard]] bool useRpcWhitelist() const;
 
     // peer networking
+
+    // session thread only; other threads use bind_interface_snapshot()
+    [[nodiscard]] constexpr auto const& bind_interface() const noexcept
+    {
+        return settings().bind_interface;
+    }
+
+    // A copy of the bind_interface setting that any thread may read.
+    // setSettings() refreshes it under bind_interface_mutex_.
+    [[nodiscard]] std::string bind_interface_snapshot() const
+    {
+        auto const lock = std::scoped_lock{ bind_interface_mutex_ };
+        return bind_interface_snapshot_;
+    }
 
     [[nodiscard]] constexpr auto const& peerCongestionAlgorithm() const noexcept
     {
@@ -1205,6 +1242,17 @@ private:
     void setSettings(tr::Settings const& settings_map, bool force);
     void setSettings(Settings&& settings, bool force);
 
+    // Rebuild the sockets and services that depend on the peer port and
+    // the bind address/interface settings. The flags say what changed
+    // since `old_settings`; setSettings() computes them from its diff, and
+    // on_now_timer() passes interface_changed to retry a failed binding.
+    void apply_network_bindings(
+        bool force,
+        bool interface_changed,
+        bool port_changed,
+        bool utp_changed,
+        Settings const& old_settings);
+
     void closeImplPart1(std::promise<void>* closed_promise, std::chrono::time_point<std::chrono::steady_clock> deadline);
     void closeImplPart2(std::promise<void>* closed_promise, std::chrono::time_point<std::chrono::steady_clock> deadline);
 
@@ -1259,6 +1307,7 @@ private:
     friend void tr_sessionSetAltSpeedEnd(tr_session* session, size_t minutes_since_midnight);
     friend void tr_sessionSetAltSpeedFunc(tr_session* session, tr_altSpeedFunc func);
     friend void tr_sessionSetAltSpeed_KBps(tr_session* session, tr_direction dir, size_t limit_kbyps);
+    friend void tr_sessionSetBindInterface(tr_session* session, std::string_view bind_interface);
     friend void tr_sessionSetCompleteVerifyEnabled(tr_session* session, bool enabled);
     friend void tr_sessionSetDHTEnabled(tr_session* session, bool enabled);
     friend void tr_sessionSetDeleteSource(tr_session* session, bool delete_source);
@@ -1370,6 +1419,17 @@ private:
     /// but are self-contained / don't hold references to others
 
     mutable std::recursive_mutex session_mutex_;
+
+    // Guards bind_interface_snapshot_ only. It is always the innermost
+    // lock: the curl thread takes it while holding tr_web's task mutex,
+    // and the session thread takes it while holding session_mutex_.
+    mutable std::mutex bind_interface_mutex_;
+    std::string bind_interface_snapshot_;
+
+    // The OS index the bound sockets were given for settings_.bind_interface,
+    // or 0 when the setting is default/blocked or the interface was absent.
+    // on_now_timer() rebinds when the live index no longer matches.
+    unsigned bound_interface_index_ = 0U;
 
     tr_stats session_stats_{ config_dir_, time(nullptr), mayWriteConfigDir() };
 

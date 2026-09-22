@@ -698,6 +698,8 @@ enum : uint8_t { TR_PEERS_CONNECTED, TR_PEERS_INTERESTING };
 
 void tr_peerMgrAddTorrent(tr_peerMgr* manager, struct tr_torrent* tor);
 
+void tr_peerMgrCloseConnections(tr_peerMgr* manager);
+
 // return the number of connected peers that have `piece`, or -1 if we already have it
 [[nodiscard]] int8_t tr_peerMgrPieceAvailability(tr_torrent const* tor, tr_piece_index_t piece);
 

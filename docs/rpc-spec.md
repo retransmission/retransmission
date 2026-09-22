@@ -583,6 +583,7 @@ Response parameters: `path`, `name`, and `id`, holding the torrent ID integer
 | `alt_speed_time_end` | number | when to turn off alt speeds (units: same)
 | `alt_speed_up` | number | max global upload speed (kB/s)
 | `anti_brute_force_enabled` | boolean | true means to enable a basic brute force protection for RPC server
+| `bind_interface` | string | session network interface binding; empty or `default` means normal OS routing; `blocked` refuses all traffic. DNS lookups for HTTP trackers and webseeds use the system resolver and are not bound
 | `blocklist_date` | number | Unix time of the last successful blocklist update, or 0 if never (read-only)
 | `blocklist_enabled` | boolean | true means enabled
 | `blocklist_size` | number | number of rules in the blocklist
@@ -1157,5 +1158,7 @@ Transmission 4.2.0 (`rpc_version_semver` 6.1.0, `rpc_version`: 20)
 | `session_get` | new arg `blocklist_date`
 | `session_get` | new arg `blocklist_updates_enabled`
 | `session_set` | new arg `blocklist_updates_enabled`
+| `session_get` | new arg `bind_interface`
+| `session_set` | new arg `bind_interface`
 | `session_stats` | :warning: **DEPRECATED** `active_torrent_count`. Use `unpaused_torrent_count` instead; it will be removed in Transmission 5.0.0.
 | `session_get` | :warning: **DEPRECATED** `cache_size_mib`. The memory cache is being removed, making this setting moot. The setting will still be gettable and settable via RPC `session_get` and `session_set` until Transmission 5.0.0 to avoid client breakage, but it will be otherwise unused in libtransmission. Clients should stop using this key.

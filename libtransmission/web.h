@@ -150,11 +150,21 @@ public:
         // Set to 0 to disable the limit.
         size_t max_file_size = DefaultMaxFileSize;
 
+        // If set, overrides the session interface binding for this request.
+        std::optional<std::string> bind_interface;
+
         static auto constexpr DefaultTimeoutSecs = std::chrono::seconds{ 120 };
         static auto constexpr DefaultMaxFileSize = 10U * 1024U * 1024U;
     };
 
     void fetch(FetchOptions&& options);
+
+    // Cancel every task queued or running at the time of the call.
+    // Each one completes through its done_func with status 0 and
+    // did_connect false. Cancellation is asynchronous: the curl thread
+    // may be blocked waiting on sockets for up to a second before it
+    // notices. Tasks fetched after this call are unaffected.
+    void cancel_all();
 
     // Notify tr_web that it's going to be destroyed soon.
     // New fetch() tasks will be rejected, but already-running tasks
@@ -198,6 +208,11 @@ public:
 
         // Return IPv6 user public address string, or nullopt to not use one
         [[nodiscard]] virtual std::optional<std::string> bind_address_V6() const
+        {
+            return std::nullopt;
+        }
+
+        [[nodiscard]] virtual std::optional<std::string> bind_interface() const
         {
             return std::nullopt;
         }
