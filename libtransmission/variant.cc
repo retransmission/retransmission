@@ -223,15 +223,6 @@ bool tr_variantDictFindDict(tr_variant* const var, tr_quark key, tr_variant** se
 
 // ---
 
-void tr_variantMergeDicts(tr_variant* const tgt, tr_variant const* const src)
-{
-    TR_ASSERT(tgt != nullptr);
-    TR_ASSERT(src != nullptr);
-    tgt->merge(*src);
-}
-
-// ---
-
 std::optional<tr_variant> tr_variant_serde::parse(std::string_view input)
 {
     error_ = {};
