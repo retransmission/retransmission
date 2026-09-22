@@ -570,4 +570,3 @@ bool save(std::string_view filename, Settings const& settings);
 
 // Deprecated C API. Do not use.
 bool tr_variantDictFindDict(tr_variant* var, tr_quark key, tr_variant** setme_value);
-tr_variant* tr_variantDictFind(tr_variant* var, tr_quark key);
