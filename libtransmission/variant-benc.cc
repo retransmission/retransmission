@@ -171,9 +171,9 @@ private:
     }
 
     template<typename Container>
-    [[nodiscard]] bool push(Container container)
+    [[nodiscard]] bool push(Container&& container)
     {
-        auto* const node = add(std::move(container));
+        auto* const node = add(std::forward<Container>(container));
         if (node != nullptr) {
             stack_.push_back(node);
         }
