@@ -161,11 +161,11 @@ struct VariantBuilder : public tr::benc::Handler {
 
 private:
     template<typename Val>
-    [[nodiscard]] tr_variant* add(Val val)
+    [[nodiscard]] tr_variant* add(Val&& val)
     {
         auto* const node = get_node();
         if (node != nullptr) {
-            *node = std::move(val);
+            *node = std::forward<Val>(val);
         }
         return node;
     }
