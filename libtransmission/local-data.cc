@@ -6,6 +6,7 @@
 #include <algorithm> // std::ranges::shuffle
 #include <atomic>
 #include <cerrno>
+#include <chrono>
 #include <condition_variable>
 #include <cstddef> // size_t
 #include <cstdint> // uintX_t
@@ -25,18 +26,22 @@
 #include <variant>
 #include <vector>
 
+#include <fmt/format.h>
+
 #include "libtransmission/local-data.h"
 
 #include "libtransmission/block-info.h"
 #include "libtransmission/constants.h"
 #include "libtransmission/error.h"
 #include "libtransmission/inout.h"
+#include "libtransmission/log.h"
 #include "libtransmission/open-files.h"
 #include "libtransmission/storage-descriptor.h"
 #include "libtransmission/torrent.h"
 #include "libtransmission/torrents.h"
 #include "libtransmission/tr-assert.h"
 #include "libtransmission/transmission.h"
+#include "libtransmission/utils.h" // _()
 
 namespace tr
 {
@@ -478,6 +483,10 @@ public:
     // enqueue, has been delivered. On return the gates are idle.
     void drain_all()
     {
+        // A lost callback would hang this forever. Say what is still busy.
+        static auto constexpr WarnInterval = std::chrono::seconds{ 10 };
+        auto next_warning = std::chrono::steady_clock::now() + WarnInterval;
+
         for (;;) {
             pump_done();
 
@@ -485,8 +494,25 @@ public:
                 return;
             }
 
+            if (auto const now = std::chrono::steady_clock::now(); now >= next_warning) {
+                log_busy_gates();
+                next_warning = now + WarnInterval;
+            }
+
             auto lock = std::unique_lock{ done_mutex_ };
-            done_cv_.wait(lock, [this]() { return !std::empty(done_); });
+            done_cv_.wait_until(lock, next_warning, [this]() { return !std::empty(done_); });
+        }
+    }
+
+    void log_busy_gates() const
+    {
+        for (auto const& [id, gate] : gates_) {
+            tr_logAddWarn(
+                fmt::format(
+                    fmt::runtime(_("Still waiting for disk IO on torrent {id}: {running} running, {queued} queued")),
+                    fmt::arg("id", id),
+                    fmt::arg("running", gate.n_running),
+                    fmt::arg("queued", std::size(gate.queue))));
         }
     }
 
