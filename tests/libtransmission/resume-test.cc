@@ -130,6 +130,30 @@ struct Layout {
     };
 }
 
+[[nodiscard]] tr_variant::Vector mtimeList(std::vector<time_t> const& mtimes)
+{
+    auto ret = tr_variant::Vector{};
+    ret.reserve(std::size(mtimes));
+    for (auto const mtime : mtimes) {
+        ret.emplace_back(int64_t{ mtime });
+    }
+    return ret;
+}
+
+// A resume file whose 'progress' has every block and every piece checked,
+// so that only the mtimes decide which pieces stay checked.
+[[nodiscard]] tr_variant::Map checkedProgress(tr_variant::Vector&& mtimes)
+{
+    auto progress = tr_variant::Map{ 3U };
+    progress.try_emplace(TR_KEY_mtimes, std::move(mtimes));
+    progress.try_emplace(TR_KEY_pieces, tr_variant::unmanaged_string("all"sv));
+    progress.try_emplace(TR_KEY_blocks, tr_variant::unmanaged_string("all"sv));
+
+    auto map = tr_variant::Map{ 1U };
+    map.try_emplace(TR_KEY_progress, std::move(progress));
+    return map;
+}
+
 [[nodiscard]] tr_variant::Vector priorityList(std::vector<tr_priority_t> const& priorities)
 {
     auto ret = tr_variant::Vector{};
@@ -486,6 +510,55 @@ TEST_F(ResumeTest, savedMtimesListWrittenWithoutZeroLengthFiles)
     EXPECT_FALSE(tor->is_piece_checked(1)); // f1 and f2
     EXPECT_FALSE(tor->is_piece_checked(2)); // f3
     EXPECT_TRUE(tor->is_piece_checked(3)); // f4
+}
+
+// An mtimes list short by more than the zero-length files can't be paired up
+// with the files, so none of it is applied and every piece loads as unchecked.
+// Applied by position, it would leave f0's and f1's pieces checked.
+TEST_F(ResumeTest, savedMtimesListOfUnusableLength)
+{
+    auto const file_sizes = std::vector<uint64_t>{ PieceSize, PieceSize, PieceSize };
+    auto mtimes = createFiles(file_sizes);
+    mtimes.pop_back();
+
+    auto builder = tr_torrent_builder{ session_ };
+    auto const* const tor = torrentInit(builder, file_sizes, checkedProgress(mtimeList(mtimes)));
+    ASSERT_NE(nullptr, tor);
+    EXPECT_FALSE(tor->is_piece_checked(0));
+    EXPECT_FALSE(tor->is_piece_checked(1));
+    EXPECT_FALSE(tor->is_piece_checked(2));
+}
+
+// An mtimes list longer than the file count is unusable too.
+TEST_F(ResumeTest, savedMtimesListLongerThanFileCount)
+{
+    auto const file_sizes = std::vector<uint64_t>{ PieceSize, PieceSize };
+    auto mtimes = createFiles(file_sizes);
+    mtimes.push_back(mtimes.back());
+
+    auto builder = tr_torrent_builder{ session_ };
+    auto const* const tor = torrentInit(builder, file_sizes, checkedProgress(mtimeList(mtimes)));
+    ASSERT_NE(nullptr, tor);
+    EXPECT_FALSE(tor->is_piece_checked(0));
+    EXPECT_FALSE(tor->is_piece_checked(1));
+}
+
+// An mtimes entry that isn't an integer leaves only its own file unchecked.
+// It still holds a position, so the entries after it keep their alignment.
+TEST_F(ResumeTest, savedMtimesUnusableEntry)
+{
+    auto const file_sizes = std::vector<uint64_t>{ PieceSize, PieceSize, PieceSize };
+    auto const mtimes = createFiles(file_sizes);
+
+    auto mtime_list = mtimeList(mtimes);
+    mtime_list[1] = tr_variant{ "not a time"sv };
+
+    auto builder = tr_torrent_builder{ session_ };
+    auto const* const tor = torrentInit(builder, file_sizes, checkedProgress(std::move(mtime_list)));
+    ASSERT_NE(nullptr, tor);
+    EXPECT_TRUE(tor->is_piece_checked(0));
+    EXPECT_FALSE(tor->is_piece_checked(1));
+    EXPECT_TRUE(tor->is_piece_checked(2));
 }
 
 // A saved file priority that isn't a valid priority leaves that one file alone.
