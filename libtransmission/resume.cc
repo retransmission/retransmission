@@ -44,7 +44,7 @@ namespace
 {
 constexpr auto MaxRememberedPeers = 200U;
 
-[[nodiscard]] std::optional<std::string_view> nonempty(std::optional<std::string_view> const sv)
+[[nodiscard]] constexpr std::optional<std::string_view> nonempty(std::optional<std::string_view> const sv) noexcept
 {
     return sv && !std::empty(*sv) ? sv : std::nullopt;
 }
