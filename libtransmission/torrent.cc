@@ -2312,6 +2312,7 @@ void tr_torrent::test_piece(tr_piece_index_t const piece)
 
             if (hash && *hash == tor->piece_hash(tested)) {
                 tor->checked_pieces_.set(tested);
+                tor->set_dirty(); // the resume file lists the piece's blocks now
                 tor->on_piece_completed(tested);
             } else {
                 tor->on_piece_failed(tested);
