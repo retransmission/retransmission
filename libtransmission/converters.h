@@ -167,7 +167,7 @@ concept HasConverter = requires(T const& src, tr_variant const& var, T* tgt) {
 // every value of the shared underlying type. Types that need custom
 // serialization must be distinct wrapper classes (e.g. `tr_mode_t`).
 template<typename T>
-concept HasGenericIntegralConverter = requires { requires Converter<T>::is_generic_integral; };
+concept HasGenericIntegralConverter = requires { requires Converter<T>::IsGenericIntegral; };
 
 } // namespace detail
 
@@ -322,7 +322,7 @@ template<typename T>
         !std::is_same_v<T, unsigned char> && !std::is_same_v<T, wchar_t> && !std::is_same_v<T, char16_t> &&
         !std::is_same_v<T, char32_t>)
 struct Converter<T> {
-    static constexpr bool is_generic_integral = true;
+    static constexpr bool IsGenericIntegral = true;
 
     static tr_variant to_variant(T const& src)
     {
