@@ -3,11 +3,13 @@
 // or any future license endorsed by Mnemosaic LLC.
 // License text can be found in the licenses/ folder.
 
-#include <array>
 #include <atomic>
 #include <chrono>
 #include <cstdint>
-#include <cstdio>
+#include <cstdlib> // std::system()
+#include <filesystem>
+#include <fstream>
+#include <iterator> // std::istreambuf_iterator
 #include <optional>
 #include <string>
 #include <string_view>
@@ -23,6 +25,7 @@
 
 #include <fmt/format.h>
 
+#include <libtransmission/file.h> // tr_sys_file_open_temp()
 #include <libtransmission/macros.h>
 #include <libtransmission/net.h> // sockaddr_storage, ntohs()
 #include <libtransmission/quark.h>
@@ -167,30 +170,36 @@ struct CommandResult {
     std::string output;
 };
 
-// Run a command, capturing its combined stdout+stderr and exit code.
+// Run a command and return its exit code and combined stdout+stderr.
+// The output goes through a file that is read back after the process
+// exits, so the capture doesn't depend on when a pipe reports EOF.
 CommandResult run(std::string const& command)
 {
-#ifdef _WIN32
-    auto* const pipe = _popen(command.c_str(), "r");
-#else
-    auto* const pipe = popen(command.c_str(), "r");
-#endif
-    if (pipe == nullptr) {
-        return {};
+    auto path = (std::filesystem::temp_directory_path() / "transmission-remote-test-XXXXXX").string();
+    if (auto const fd = tr_sys_file_open_temp(std::data(path)); fd != TR_BAD_SYS_FILE) {
+        tr_sys_file_close(fd);
     }
+
+    auto shell_command = fmt::format(R"({:s} > "{:s}" 2>&1)", command, path);
+#ifdef _WIN32
+    // cmd.exe strips the first and last quote from a /c command line that
+    // has more than one quoted token; the extra pair keeps the inner ones.
+    shell_command = fmt::format(R"("{:s}")", shell_command);
+#endif
+    auto const rc = std::system(shell_command.c_str());
+#ifdef _WIN32
+    auto const exit_code = rc;
+#else
+    auto const exit_code = WIFEXITED(rc) ? WEXITSTATUS(rc) : -1;
+#endif
 
     auto output = std::string{};
-    auto buffer = std::array<char, 4096>{};
-    while (std::fgets(std::data(buffer), std::size(buffer), pipe) != nullptr) {
-        output += std::data(buffer);
+    if (auto in = std::ifstream{ path }; in) {
+        output.assign(std::istreambuf_iterator<char>{ in }, std::istreambuf_iterator<char>{});
     }
+    tr_sys_path_remove(path);
 
-#ifdef _WIN32
-    return { _pclose(pipe), output };
-#else
-    auto const rc = pclose(pipe);
-    return { WIFEXITED(rc) ? WEXITSTATUS(rc) : -1, output };
-#endif
+    return { exit_code, output };
 }
 
 TEST(RemoteLoopback, performsSessionHandshakeAndSucceeds)
@@ -199,7 +208,7 @@ TEST(RemoteLoopback, performsSessionHandshakeAndSucceeds)
 
     auto server = MockRpcServer{};
 
-    auto const command = fmt::format(R"("{:s}" 127.0.0.1:{:d} -l 2>&1)", TR_REMOTE_EXE, server.port());
+    auto const command = fmt::format(R"("{:s}" 127.0.0.1:{:d} -l)", TR_REMOTE_EXE, server.port());
     auto const result = run(command);
 
     EXPECT_EQ(0, result.exit_code) << result.output;
@@ -220,14 +229,15 @@ TEST(RemoteLoopback, listGroupsPrintsEveryGroup)
                                    R"(]})"sv;
     auto server = MockRpcServer{ Result };
 
-    auto const command = fmt::format(R"("{:s}" 127.0.0.1:{:d} --list-groups 2>&1)", TR_REMOTE_EXE, server.port());
+    auto const command = fmt::format(R"("{:s}" 127.0.0.1:{:d} --list-groups)", TR_REMOTE_EXE, server.port());
     auto const result = run(command);
 
     EXPECT_EQ(0, result.exit_code) << result.output;
     EXPECT_EQ(
         "foo: Upload speed limit: 50 kB/s, Download speed limit: 100 kB/s, does not honor session bandwidth limits\n"
         "bar: Upload speed limit: unlimited, Download speed limit: unlimited, honors session bandwidth limits\n",
-        result.output);
+        result.output)
+        << "requests seen: " << server.request_count() << ", authenticated: " << server.authenticated_request_seen();
 }
 
 } // namespace
