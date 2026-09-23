@@ -868,9 +868,8 @@ private:
         auto need_wake = bool{};
         {
             auto const lock = std::scoped_lock{ done_mutex_ };
+            need_wake = std::empty(done_);
             done_.emplace_back(std::move(completion));
-            need_wake = !pump_scheduled_;
-            pump_scheduled_ = true;
         }
 
         done_cv_.notify_all();
@@ -890,7 +889,6 @@ private:
         {
             auto const lock = std::scoped_lock{ done_mutex_ };
             std::swap(done, done_);
-            pump_scheduled_ = false;
         }
 
         for (auto& completion : done) {
@@ -1163,7 +1161,6 @@ private:
     std::mutex done_mutex_;
     std::condition_variable done_cv_;
     std::deque<std::unique_ptr<Parked>> done_;
-    bool pump_scheduled_ = false;
 
     RetainedBlocks retained_;
 
