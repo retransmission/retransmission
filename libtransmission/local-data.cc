@@ -1061,7 +1061,7 @@ private:
             // are kept, since that's the unit the hash pulls.
             auto const block = desc.block_info.byte_loc(op.span.begin).block;
             auto const block_span = desc.block_info.byte_span_for_block(block);
-            if (result.error == 0 && op.span.begin == block_span.begin && op.span.end == block_span.end) {
+            if (result.error == 0 && op.span == block_span) {
                 retained_.stash(op.tor_id, desc.block_info, block, std::move(op.data));
             }
         }
