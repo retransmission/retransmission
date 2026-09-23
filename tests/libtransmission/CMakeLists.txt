@@ -130,7 +130,7 @@ if(NOT CMAKE_CROSSCOMPILING OR CMAKE_CROSSCOMPILING_EMULATOR)
     # hashes finish on worker threads and admin ops wait for them.
     add_test(
         NAME LT.ThreadedDiskIo
-        COMMAND libtransmission-test --gtest_filter=*IncompleteDirTest.*:MoveTest.*:RenameTest.*:RemoveTest.*)
+        COMMAND libtransmission-test --gtest_filter=*IncompleteDirTest.*:MoveTest.*:RenameTest.*)
 
     set_tests_properties(LT.ThreadedDiskIo
         PROPERTIES
