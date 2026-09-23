@@ -155,7 +155,7 @@ public:
                 return { iter->second, false };
             }
 
-            return { vec_.emplace_back(key, tr_variant{ std::forward<Val>(val) }).second, true };
+            return { vec_.emplace_back(key, std::forward<Val>(val)).second, true };
         }
 
         template<typename Val>
