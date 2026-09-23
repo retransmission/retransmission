@@ -14,6 +14,7 @@
 #include <functional>
 #include <future>
 #include <memory>
+#include <optional>
 #include <span>
 #include <string>
 #include <thread>
@@ -662,6 +663,59 @@ TEST_F(RequestBudgetTest, peersResumeOnlyAfterReceivedDataIsWritten)
     EXPECT_EQ(0U, spareBlocks());
     peers_.clear();
     EXPECT_TRUE(waitFor([this]() { return spareBlocks() == BudgetBlocks; }, MaxWaitMsec));
+}
+
+TEST_F(RequestBudgetTest, unrequestedBlockIsRefusedWhileTheBudgetIsSpent)
+{
+    auto* const tor = zeroTorrentInit(ZeroTorrentState::NoFiles);
+    tr_torrentStart(tor);
+    ASSERT_TRUE(waitFor(
+        [tor]() {
+            auto const lock = tor->unique_lock();
+            return tor->is_running();
+        },
+        MaxWaitMsec));
+    session_->local_data.set_workers_paused(true);
+    auto& first = addPeer(*tor);
+    ASSERT_TRUE(waitFor([this]() { return requestCount() >= 32U; }, 15000));
+    auto& second = addPeer(*tor);
+    ASSERT_TRUE(waitFor([this]() { return requestCount() >= BudgetBlocks; }, 15000));
+    EXPECT_EQ(0U, spareBlocks());
+
+    auto const was_requested = [&first, &second](tr_block_info::Location const& loc) {
+        return std::ranges::any_of(std::array{ &first, &second }, [&loc](ConnectedPeer const* const peer) {
+            return std::ranges::any_of(peer->requests, [&loc](Request const& request) {
+                return request.piece == loc.piece && request.offset == loc.piece_offset;
+            });
+        });
+    };
+    auto unrequested = std::optional<tr_block_index_t>{};
+    for (auto block = tr_block_index_t{}; block < tor->block_count(); ++block) {
+        if (!was_requested(tor->block_loc(block))) {
+            unrequested = block;
+            break;
+        }
+    }
+    ASSERT_TRUE(unrequested.has_value());
+    auto const requested = std::ranges::find_if(first.requests, [](Request const& item) { return item.length == TrBlockSize; });
+    ASSERT_NE(first.requests.end(), requested);
+    auto const requested_block = tor->piece_loc(requested->piece, requested->offset).block;
+
+    // A peer can send a block we never asked it for. With the budget
+    // spent, that block is refused. The requested block sent after it on
+    // the same connection shows when the peer's messages were read.
+    auto const loc = tor->block_loc(*unrequested);
+    receiveBlock(first, Request{ .piece = loc.piece, .offset = loc.piece_offset, .length = tor->block_size(*unrequested) });
+    receiveBlock(first, *requested);
+    ASSERT_TRUE(waitFor(
+        [tor, requested_block]() {
+            auto const lock = tor->unique_lock();
+            return tor->has_block_or_pending(requested_block);
+        },
+        MaxWaitMsec));
+    auto const lock = tor->unique_lock();
+    EXPECT_FALSE(tor->has_block_or_pending(*unrequested));
+    EXPECT_EQ(TrBlockSize, session_->local_data.enqueued_write_bytes());
 }
 
 TEST_F(RequestBudgetTest, duplicateWebseedResponseReleasesItsReservation)

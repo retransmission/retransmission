@@ -1789,6 +1789,17 @@ ReadResult tr_peerMsgsImpl::read_piece_data(MessageReader& payload)
         }
     }
 
+    // The disk write budget counts our requests, so a block we didn't
+    // request (e.g. one we cancelled) takes budget no request reserved.
+    // Accept one only while the budget has room for it. Dropping it
+    // is no error, so keep reading this peer's other messages.
+    if (!active_requests().test(block)) {
+        if (auto const spare = session->spare_request_blocks(); spare && *spare == 0U) {
+            logtrace(this, fmt::format("got unrequested block {:d} with the disk write budget spent", block));
+            return { ReadState::Now, len };
+        }
+    }
+
     auto const now = tr_time();
     peer_info->set_latest_piece_data_time(now);
     bytes_sent_to_client.add(now, len);
