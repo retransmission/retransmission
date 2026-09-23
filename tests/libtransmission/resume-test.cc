@@ -508,6 +508,19 @@ TEST_F(ResumeTest, savedFilePrioritiesOutOfRange)
         { TR_PRI_NORMAL, TR_PRI_NORMAL, TR_PRI_HIGH });
 }
 
+// A saved sequential-download start piece that doesn't fit in tr_piece_index_t
+// is ignored. Truncated to 32 bits, 2^32 + 1 would pass for piece 1.
+TEST_F(ResumeTest, savedSequentialDownloadFromPieceOutOfRange)
+{
+    auto map = tr_variant::Map{ 1U };
+    map.try_emplace(TR_KEY_sequential_download_from_piece, int64_t{ 0x1'0000'0001 });
+
+    auto builder = tr_torrent_builder{ session_ };
+    auto const* const tor = torrentInit(builder, { PieceSize, PieceSize }, std::move(map));
+    ASSERT_NE(nullptr, tor);
+    EXPECT_EQ(0U, tor->sequential_download_from_piece());
+}
+
 // A saved bandwidth priority that doesn't fit in tr_priority_t is ignored.
 // Truncated to int8_t, 257 would pass for TR_PRI_HIGH.
 TEST_F(ResumeTest, savedBandwidthPriorityOutOfRange)

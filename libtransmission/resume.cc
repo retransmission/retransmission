@@ -676,8 +676,8 @@ fields_t load(tr_torrent* const tor, tr_torrent::ResumeHelper& helper, fields_t 
     });
     load_field(
         SequentialDownloadFromPiece,
-        map.value_if<int64_t>(TR_KEY_sequential_download_from_piece),
-        [tor](int64_t const val) { tor->set_sequential_download_from_piece(val); });
+        map.value_if<tr_piece_index_t>(TR_KEY_sequential_download_from_piece),
+        [tor](tr_piece_index_t const val) { tor->set_sequential_download_from_piece(val); });
     load_field(
         BandwidthPriority,
         valid_priority(map.value_if<int8_t>(TR_KEY_bandwidth_priority)),
