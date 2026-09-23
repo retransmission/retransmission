@@ -303,6 +303,9 @@ public:
     // retained-block cache.
     void set_write_budget(uint64_t bytes);
 
+    // The retained-block cache's size: half the write budget, up to 32 MiB.
+    [[nodiscard]] size_t retained_bytes() const noexcept;
+
     // Bytes still spare under the write budget once `requested` bytes
     // join what waits for the disk. No value means no bound: the
     // synchronous backend writes a block before it reads the next one
@@ -380,9 +383,6 @@ private:
     class Threaded;
 
     static auto constexpr MaxRetainedBytes = size_t{ 32U * 1024U * 1024U };
-
-    // Half the write budget, up to MaxRetainedBytes.
-    [[nodiscard]] size_t retained_bytes() const noexcept;
 
     std::unique_ptr<Backend> backend_;
 

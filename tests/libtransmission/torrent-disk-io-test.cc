@@ -356,7 +356,7 @@ class TorrentRemovalTest
 {
 };
 
-class RetainedBudgetTest
+class WriteBudgetTest
     : public TorrentDiskIoWorkersTest
     , public ::testing::WithParamInterface<int64_t>
 {
@@ -368,88 +368,31 @@ protected:
     }
 };
 
-class ZeroBudgetTest : public TorrentDiskIoWorkersTest
-{
-protected:
-    void SetUp() override
-    {
-        settings().insert_or_assign(TR_KEY_disk_write_budget_mib, int64_t{ 0 });
-        TorrentDiskIoWorkersTest::SetUp();
-    }
-};
-
 } // namespace
 
-TEST_P(RetainedBudgetTest, cacheSizeFollowsStartupAndRuntimeBudget)
+TEST_P(WriteBudgetTest, followsTheSettingAtStartupAndRuntime)
 {
     static auto constexpr MiB = uint64_t{ 1024U } * 1024U;
-    static auto constexpr BlocksWritten = MiB / TrBlockSize;
-    auto* const tor = zeroTorrentInit(ZeroTorrentState::Complete);
-    auto const pieces_written = tor->byte_loc(MiB - 1U).piece + 1U;
-    auto writes_done = std::atomic<size_t>{};
-    auto const set_budget = [this](int64_t const budget) {
-        auto config = tr_sessionGetSettings(session_);
-        config.insert_or_assign(TR_KEY_disk_write_budget_mib, budget);
-        tr_sessionSet(session_, config);
-        auto const effective_bytes = static_cast<uint64_t>(std::max(int64_t{ 1 }, budget)) * MiB;
-        EXPECT_EQ(effective_bytes, session_->effective_write_budget_bytes());
-        EXPECT_EQ(effective_bytes / TrBlockSize, session_->spare_request_blocks().value());
+    auto const check = [this](int64_t const budget_mib) {
+        // A budget of zero would admit no requests, so it counts as 1 MiB.
+        auto const bytes = static_cast<uint64_t>(std::max(int64_t{ 1 }, budget_mib)) * MiB;
+        EXPECT_EQ(bytes, session_->effective_write_budget_bytes());
+        EXPECT_EQ(bytes / TrBlockSize, session_->spare_request_blocks().value());
+        EXPECT_EQ(std::min(bytes / 2U, 32U * MiB), session_->local_data.retained_bytes());
     };
-    struct Budgets {
-        int64_t writing;
-        int64_t hashing;
-    };
-    auto const cases = std::array<Budgets, 4>{ {
-        { .writing = GetParam(), .hashing = GetParam() },
-        { .writing = 64, .hashing = 1 },
-        { .writing = 64, .hashing = 64 },
-        { .writing = 64, .hashing = 0 },
-    } };
-    for (auto const [writing_budget, hashing_budget] : cases) {
-        SCOPED_TRACE(writing_budget);
-        SCOPED_TRACE(hashing_budget);
-        writes_done = 0U;
-        blockingRunInSessionThread([&]() {
-            set_budget(writing_budget);
-            session_->local_data.set_workers_paused(true);
-            for (auto block = tr_block_index_t{}; block < BlocksWritten; ++block) {
-                session_->local_data.write(
-                    tor->id(),
-                    tor->block_info().byte_span_for_block(block),
-                    zeroBlock(tor, block),
-                    [&writes_done](tr_torrent_id_t, tr_byte_span_t, tr_error const& error) {
-                        EXPECT_FALSE(error);
-                        ++writes_done;
-                    });
-            }
-            session_->local_data.set_workers_paused(false);
-        });
-        ASSERT_TRUE(waitFor([&writes_done]() { return writes_done.load() == BlocksWritten; }, MaxWaitMsec));
-        blockingRunInSessionThread([&]() { set_budget(hashing_budget); });
 
-        auto const before = session_->local_data.stats();
-        for (auto piece = tr_piece_index_t{}; piece < pieces_written; ++piece) {
-            auto hash_done = std::atomic<bool>{};
-            blockingRunInSessionThread([&]() {
-                session_->local_data.test_piece(
-                    tor->id(),
-                    piece,
-                    [tor, &hash_done](tr_torrent_id_t, tr_piece_index_t const hashed_piece, tr_error const& error, auto hash) {
-                        EXPECT_FALSE(error);
-                        EXPECT_EQ(tor->piece_hash(hashed_piece), hash);
-                        hash_done = true;
-                    });
-            });
-            ASSERT_TRUE(waitFor([&hash_done]() { return hash_done.load(); }, MaxWaitMsec));
-        }
-        auto const after = session_->local_data.stats();
-        auto const from_disk = std::min(writing_budget, hashing_budget) <= 1 ? pieces_written / 2U : 0U;
-        EXPECT_EQ(from_disk, after.hashes_from_disk - before.hashes_from_disk);
-        EXPECT_EQ(pieces_written - from_disk, after.hashes_from_buffers - before.hashes_from_buffers);
+    blockingRunInSessionThread([&]() { check(GetParam()); });
+
+    for (auto const budget_mib : { int64_t{ 0 }, int64_t{ 1 }, int64_t{ 64 }, int64_t{ 128 } }) {
+        SCOPED_TRACE(budget_mib);
+        auto config = tr_sessionGetSettings(session_);
+        config.insert_or_assign(TR_KEY_disk_write_budget_mib, budget_mib);
+        tr_sessionSet(session_, config);
+        blockingRunInSessionThread([&]() { check(budget_mib); });
     }
 }
 
-INSTANTIATE_TEST_SUITE_P(WriteBudget, RetainedBudgetTest, ::testing::Values(int64_t{ 0 }, int64_t{ 1 }, int64_t{ 64 }));
+INSTANTIATE_TEST_SUITE_P(WriteBudget, WriteBudgetTest, ::testing::Values(int64_t{ 0 }, int64_t{ 1 }, int64_t{ 64 }));
 
 TEST_F(TorrentDiskIoTest, blockIsNotOursUntilItsWriteFinishes)
 {
@@ -593,13 +536,6 @@ TEST_F(TorrentDiskIoTest, blockArrivingDuringVerificationIsRefused)
 TEST_F(TorrentDiskIoTest, requestBudgetIsUnboundedOnTheSynchronousBackend)
 {
     EXPECT_FALSE(session_->spare_request_blocks().has_value());
-}
-
-TEST_F(ZeroBudgetTest, zeroBudgetIsTreatedAsOneMiB)
-{
-    // 1 MiB of 16 KiB blocks. A budget of zero would admit no requests.
-    static auto constexpr MinBudgetBlocks = size_t{ 64U };
-    blockingRunInSessionThread([this]() { EXPECT_EQ(MinBudgetBlocks, session_->spare_request_blocks()); });
 }
 
 // ---

@@ -731,30 +731,41 @@ TEST_F(LocalDataWorkersTest, pieceIsHashedFromBufferedBlocks)
     local_data->shutdown();
 }
 
-TEST_F(LocalDataWorkersTest, retainedCapacityControlsBufferedHashing)
+TEST_F(LocalDataWorkersTest, retainedCacheIsHalfTheWriteBudgetUpTo32MiB)
+{
+    static auto constexpr MiB = size_t{ 1024U } * 1024U;
+    auto local_data = tr::LocalData{ torrents_, open_files_ };
+
+    // with no budget set, the cache takes the cap
+    EXPECT_EQ(32U * MiB, local_data.retained_bytes());
+
+    local_data.set_write_budget(0U);
+    EXPECT_EQ(0U, local_data.retained_bytes());
+    local_data.set_write_budget(MiB);
+    EXPECT_EQ(MiB / 2U, local_data.retained_bytes());
+    local_data.set_write_budget(uint64_t{ 128U } * MiB);
+    EXPECT_EQ(32U * MiB, local_data.retained_bytes());
+}
+
+TEST_F(LocalDataWorkersTest, pieceLargerThanTheRetainedCacheIsReadBack)
 {
     static auto constexpr PieceSize = uint32_t{ 32768U };
-    for (auto const retained_bytes : { size_t{}, BlockSize, size_t{ PieceSize } }) {
-        SCOPED_TRACE(retained_bytes);
-        auto const local_data = makeLocalData(
-            makeDescriptor({ { "data.bin", PieceSize } }, PieceSize),
-            1U,
-            2U * retained_bytes);
-        auto n_done = size_t{};
-        auto const n_writes = writeBlocks(*local_data, 0U, PieceSize, [&n_done]() { ++n_done; });
-        ASSERT_TRUE(pumpUntil([&n_done, n_writes]() { return n_done == n_writes; }));
+    // a cache of one block can't hold a whole piece, so it keeps none of it
+    auto const local_data = makeLocalData(makeDescriptor({ { "data.bin", PieceSize } }, PieceSize), 1U, 2U * BlockSize);
+    auto n_done = size_t{};
+    auto const n_writes = writeBlocks(*local_data, 0U, PieceSize, [&n_done]() { ++n_done; });
+    ASSERT_TRUE(pumpUntil([&n_done, n_writes]() { return n_done == n_writes; }));
 
-        auto hash = std::optional<tr_sha1_digest_t>{};
-        local_data->test_piece(TorId, 0U, [&hash](tr_torrent_id_t, tr_piece_index_t, tr_error const& error, auto found) {
-            EXPECT_FALSE(error);
-            hash = found;
-        });
-        ASSERT_TRUE(pumpUntil([&hash]() { return hash.has_value(); }));
-        EXPECT_EQ(tr_sha1::digest(patternString(0U, PieceSize)), *hash);
-        EXPECT_EQ(retained_bytes >= PieceSize ? 1U : 0U, local_data->stats().hashes_from_buffers);
-        EXPECT_EQ(retained_bytes < PieceSize ? 1U : 0U, local_data->stats().hashes_from_disk);
-        local_data->shutdown();
-    }
+    auto hash = std::optional<tr_sha1_digest_t>{};
+    local_data->test_piece(TorId, 0U, [&hash](tr_torrent_id_t, tr_piece_index_t, tr_error const& error, auto found) {
+        EXPECT_FALSE(error);
+        hash = found;
+    });
+    ASSERT_TRUE(pumpUntil([&hash]() { return hash.has_value(); }));
+    EXPECT_EQ(tr_sha1::digest(patternString(0U, PieceSize)), *hash);
+    EXPECT_EQ(0U, local_data->stats().hashes_from_buffers);
+    EXPECT_EQ(1U, local_data->stats().hashes_from_disk);
+    local_data->shutdown();
 }
 
 TEST_F(LocalDataWorkersTest, resizingRetainedCapacityEvictsOldestPiecesAndAllowsGrowth)
