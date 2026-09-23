@@ -1152,11 +1152,12 @@ jobs:
             version: latest
             compiler: gcc
             gtk: gtk4
-          # Drop this matrix entry when AlmaLinux 9 reaches EOL: https://wiki.almalinux.org/release-notes/
+          # Drop this matrix entry when AlmaLinux 9 reaches
           - docker-image: almalinux
             version: 9
             compiler: clang # AlmaLinux 9 needs clang instead of GCC, since its GCC 11 is older than our GCC 12 minimum
             gtk: gtk3 # AlmaLinux 9 only has gtk3
+            eol: 2027-05-31 # https://wiki.almalinux.org/release-notes/
     container:
       image: ${{matrix.docker-image}}:${{ matrix.version }}
     steps:
@@ -1165,6 +1166,14 @@ jobs:
           echo '${{ toJSON(needs) }}'
           echo '${{ toJSON(runner) }}'
           cat /etc/os-release
+      - name: Check End-of-Life
+        if: ${{ matrix.eol != '' }}
+        run: |
+          now=$(date +%s)
+          eol=$(date -d '${{ matrix.eol }}T00:00:00Z + 1 day' +%s)
+          if [ "$now" -gt "$eol" ]; then
+            echo '::warning title=${{ matrix.docker-image }}:${{ matrix.version}} reached EOL::Update or remove this runner.'
+          fi
       - name: Get Composite Actions
         uses: actions/checkout@v7
         with:
