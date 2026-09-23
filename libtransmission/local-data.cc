@@ -1200,7 +1200,7 @@ void LocalData::start_workers(size_t worker_count, tr_open_files& open_files, Ma
         std::move(marshal),
         on_files_created_,
         worker_count,
-        retained_bytes_);
+        retained_bytes());
 }
 
 void LocalData::read(tr_torrent_id_t const id, tr_byte_span_t const byte_span, OnRead on_read)
@@ -1383,14 +1383,6 @@ LocalData::Stats LocalData::stats() const noexcept
     return threaded_ ? threaded_->stats() : Stats{};
 }
 
-void LocalData::set_retained_bytes(size_t const max_bytes)
-{
-    retained_bytes_ = max_bytes;
-    if (threaded_) {
-        threaded_->set_retained_bytes(max_bytes);
-    }
-}
-
 void LocalData::set_on_files_created(OnFilesCreated on_files_created)
 {
     on_files_created_ = std::move(on_files_created);
@@ -1399,7 +1391,14 @@ void LocalData::set_on_files_created(OnFilesCreated on_files_created)
 void LocalData::set_write_budget(uint64_t const bytes)
 {
     write_budget_ = bytes;
-    set_retained_bytes(static_cast<size_t>(std::min<uint64_t>(MaxRetainedBytes, bytes / 2U)));
+    if (threaded_) {
+        threaded_->set_retained_bytes(retained_bytes());
+    }
+}
+
+size_t LocalData::retained_bytes() const noexcept
+{
+    return write_budget_ ? static_cast<size_t>(std::min<uint64_t>(MaxRetainedBytes, *write_budget_ / 2U)) : MaxRetainedBytes;
 }
 
 std::optional<uint64_t> LocalData::spare_write_bytes(uint64_t const requested) const noexcept

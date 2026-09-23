@@ -526,13 +526,16 @@ protected:
                                    .partial_file_naming = false });
     }
 
+    // The write budget also sizes the retained-block cache, at half the budget.
     [[nodiscard]] auto makeLocalData(
         std::shared_ptr<tr::StorageDescriptor const> desc,
         size_t const n_workers = 2U,
-        size_t const retained_bytes = tr::LocalData::MaxRetainedBytes)
+        std::optional<uint64_t> const write_budget = {})
     {
         auto local_data = std::make_unique<tr::LocalData>(torrents_, open_files_);
-        local_data->set_retained_bytes(retained_bytes);
+        if (write_budget) {
+            local_data->set_write_budget(*write_budget);
+        }
         local_data->set_on_files_created([this](tr_torrent_id_t const id, size_t const n_files) {
             if (id == TorId) {
                 files_created_ += n_files;
@@ -795,7 +798,10 @@ TEST_F(LocalDataWorkersTest, retainedCapacityControlsBufferedHashing)
     static auto constexpr PieceSize = uint32_t{ 32768U };
     for (auto const retained_bytes : { size_t{}, BlockSize, size_t{ PieceSize } }) {
         SCOPED_TRACE(retained_bytes);
-        auto const local_data = makeLocalData(makeDescriptor({ { "data.bin", PieceSize } }, PieceSize), 1U, retained_bytes);
+        auto const local_data = makeLocalData(
+            makeDescriptor({ { "data.bin", PieceSize } }, PieceSize),
+            1U,
+            2U * retained_bytes);
         auto n_done = size_t{};
         auto const n_writes = writeBlocks(*local_data, 0U, PieceSize, [&n_done]() { ++n_done; });
         ASSERT_TRUE(pumpUntil([&n_done, n_writes]() { return n_done == n_writes; }));
@@ -836,11 +842,11 @@ TEST_F(LocalDataWorkersTest, resizingRetainedCapacityEvictsOldestPiecesAndAllows
     };
 
     write_pieces();
-    local_data->set_retained_bytes(PieceSize);
+    local_data->set_write_budget(2U * PieceSize);
     hash_pieces();
     EXPECT_EQ(1U, local_data->stats().hashes_from_buffers);
 
-    local_data->set_retained_bytes(2U * PieceSize);
+    local_data->set_write_budget(4U * PieceSize);
     write_pieces();
     hash_pieces();
     EXPECT_EQ(3U, local_data->stats().hashes_from_buffers);

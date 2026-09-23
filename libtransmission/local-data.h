@@ -259,8 +259,6 @@ public:
         uint64_t hashes_from_disk = 0U;
     };
 
-    static auto constexpr MaxRetainedBytes = size_t{ 32U * 1024U * 1024U };
-
     explicit LocalData(tr_torrents const& torrents, tr_open_files& open_files);
     explicit LocalData(std::unique_ptr<Backend> backend);
 
@@ -304,8 +302,6 @@ public:
     [[nodiscard]] uint64_t enqueued_write_bytes() const noexcept;
 
     [[nodiscard]] Stats stats() const noexcept;
-
-    void set_retained_bytes(size_t max_bytes);
 
     // The most bytes that may wait for the disk, counting blocks
     // requested from peers as well as blocks received. Also sizes the
@@ -391,11 +387,15 @@ private:
     // The threaded backend. See start_workers().
     class Threaded;
 
+    static auto constexpr MaxRetainedBytes = size_t{ 32U * 1024U * 1024U };
+
+    // Half the write budget, up to MaxRetainedBytes.
+    [[nodiscard]] size_t retained_bytes() const noexcept;
+
     std::unique_ptr<Backend> backend_;
     OnFilesCreated on_files_created_;
 
     std::shared_ptr<Threaded> threaded_;
-    size_t retained_bytes_ = MaxRetainedBytes;
     std::optional<uint64_t> write_budget_;
 
     std::vector<std::unique_ptr<Parked>> parked_;
