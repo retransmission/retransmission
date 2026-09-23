@@ -210,6 +210,22 @@ TEST_F(AppSessionSyncTest, syncsCorePrefsToTheSessionOverRpc)
     EXPECT_TRUE(wait_for([this]() { return tr_sessionGetPeerLimit(session_) == new_limit; }));
 }
 
+// session_set ignores a `uint16_t` setting unless it arrives as an int.
+TEST_F(AppSessionSyncTest, syncsUint16PrefsToTheSessionOverRpc)
+{
+    auto rpc = RpcClient{ inline_marshaler() };
+    rpc.start(session_);
+
+    auto prefs = Prefs{};
+    auto session = TestSession{ prefs, rpc };
+
+    auto const new_limit = uint16_t{ 45 };
+    ASSERT_NE(new_limit, tr_sessionGetIdleLimit(session_));
+
+    prefs.set(TR_KEY_idle_seeding_limit, new_limit);
+    EXPECT_TRUE(wait_for([this]() { return tr_sessionGetIdleLimit(session_) == new_limit; }));
+}
+
 TEST_F(AppSessionSyncTest, appliesRpcServerPrefsWithTheCApi)
 {
     auto rpc = RpcClient{ inline_marshaler() };

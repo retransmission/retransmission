@@ -153,6 +153,17 @@ TEST_F(PrefsTest, getSetRoundTripsInt)
     expect_get_set_roundtrip(prefs, TR_KEY_main_window_height, 4242, 2323);
 }
 
+// Clients read and write the `uint16_t` idle limit as an int.
+// The session sync sends `get<tr_variant>()`, so that must be an int too.
+TEST_F(PrefsTest, getSetRoundTripsUint16AsInt)
+{
+    static auto constexpr Key = TR_KEY_idle_seeding_limit;
+
+    auto prefs = TestPrefs{};
+    expect_get_set_roundtrip(prefs, Key, 45, 90);
+    EXPECT_EQ(prefs.get<tr_variant>(Key).value_if<int64_t>(), 90);
+}
+
 TEST_F(PrefsTest, getSetRoundTripsDouble)
 {
     auto prefs = TestPrefs{};
