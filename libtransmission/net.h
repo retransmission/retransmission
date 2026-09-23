@@ -67,7 +67,6 @@ using tr_socket_t = int;
 }
 
 #include "libtransmission/tr-assert.h"
-#include "libtransmission/tr-buffer.h"
 #include "libtransmission/types.h"
 #include "libtransmission/utils.h" // tr_hash_combine()
 
@@ -127,8 +126,8 @@ struct tr_address {
         }
     }
 
-    template<typename value_type>
-    tr::BufferWriter<value_type>& to_compact_buf(tr::BufferWriter<value_type>& buf) const
+    template<typename TrBuffer>
+    TrBuffer& to_compact_buf(TrBuffer& buf) const
     {
         auto const [ptr, len] = buf.reserve_space(CompactAddrBytes[type]);
         to_compact(ptr);
