@@ -548,6 +548,12 @@ struct tr_torrent {
     // Call after changing anything that affects where this torrent's
     // data lives on disk: dirs, file subpaths, wanted files, or the
     // metainfo.
+    //
+    // Dirs and file subpaths change inside disk-IO barriers, so no op in
+    // flight holds a stale layout. Wanted files, the preallocation mode,
+    // and the partial-file suffix may change at any time. They only decide
+    // how a missing file gets created, and an op in flight at worst
+    // creates it the old way.
     void invalidate_storage_descriptor() noexcept
     {
         auto const lock = std::scoped_lock{ storage_descriptor_mutex_ };
