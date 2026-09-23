@@ -260,14 +260,15 @@ void save_file_priorities(tr_variant::Map& map, tr_torrent const* const tor)
         return {};
     }
 
-    // A file with no entry keeps the priority a fresh torrent gives it.
+    // A file with no entry, or whose entry isn't a valid priority,
+    // keeps the priority a fresh torrent gives it.
     auto const set_priority = [tor](tr_file_index_t const i, tr_variant const* const entry) {
         if (entry == nullptr) {
             return;
         }
 
-        if (auto const priority = entry->value_if<int64_t>()) {
-            tor->set_file_priority(i, static_cast<tr_priority_t>(*priority));
+        if (auto const priority = valid_priority(entry->value_if<int8_t>())) {
+            tor->set_file_priority(i, *priority);
         }
     };
 

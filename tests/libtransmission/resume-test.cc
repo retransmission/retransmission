@@ -487,6 +487,27 @@ TEST_F(ResumeTest, savedMtimesListWrittenWithoutZeroLengthFiles)
     EXPECT_TRUE(tor->is_piece_checked(3)); // f4
 }
 
+// A saved file priority that isn't a valid priority leaves that one file alone.
+// 2 is out of range, and 257 would pass for TR_PRI_HIGH if truncated to int8_t.
+TEST_F(ResumeTest, savedFilePrioritiesOutOfRange)
+{
+    auto const file_sizes = std::vector<uint64_t>{ 1U, 1U, 1U };
+
+    auto priorities = tr_variant::Vector{};
+    priorities.emplace_back(int64_t{ 2 });
+    priorities.emplace_back(int64_t{ 257 });
+    priorities.emplace_back(int64_t{ TR_PRI_HIGH });
+
+    auto map = savedFilenames(canonicalSubpaths(std::size(file_sizes)));
+    map.try_emplace(TR_KEY_priority, std::move(priorities));
+
+    auto builder = tr_torrent_builder{ session_ };
+    expectWantedAndPriorities(
+        torrentInit(builder, file_sizes, std::move(map)),
+        { true, true, true },
+        { TR_PRI_NORMAL, TR_PRI_NORMAL, TR_PRI_HIGH });
+}
+
 // A saved bandwidth priority that doesn't fit in tr_priority_t is ignored.
 // Truncated to int8_t, 257 would pass for TR_PRI_HIGH.
 TEST_F(ResumeTest, savedBandwidthPriorityOutOfRange)
