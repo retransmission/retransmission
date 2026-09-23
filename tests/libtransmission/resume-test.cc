@@ -3,6 +3,7 @@
 // or any future license endorsed by Mnemosaic LLC.
 // License text can be found in the licenses/ folder.
 
+#include <array>
 #include <cstddef> // size_t
 #include <cstdint> // int64_t, uint32_t, uint64_t
 #include <ctime> // time_t
@@ -519,6 +520,27 @@ TEST_F(ResumeTest, savedSequentialDownloadFromPieceOutOfRange)
     auto const* const tor = torrentInit(builder, { PieceSize, PieceSize }, std::move(map));
     ASSERT_NE(nullptr, tor);
     EXPECT_EQ(0U, tor->sequential_download_from_piece());
+}
+
+// A saved peer limit that doesn't fit in uint16_t is ignored, so the torrent
+// keeps the session's default. Truncated to 16 bits, 70000 would load as 4464
+// and -1 as 65535.
+TEST_F(ResumeTest, savedMaxPeersOutOfRange)
+{
+    auto const saved_values = std::array{ int64_t{ 70000 }, int64_t{ -1 } };
+
+    for (size_t i = 0; i < std::size(saved_values); ++i) {
+        SCOPED_TRACE(saved_values[i]);
+
+        auto map = tr_variant::Map{ 1U };
+        map.try_emplace(TR_KEY_max_peers, saved_values[i]);
+
+        // The file size sets the info hash, so each value gets a torrent of its own.
+        auto builder = tr_torrent_builder{ session_ };
+        auto const* const tor = torrentInit(builder, { i + 1U }, std::move(map));
+        ASSERT_NE(nullptr, tor);
+        EXPECT_EQ(session_->peerLimitPerTorrent(), tor->peer_limit());
+    }
 }
 
 // A saved bandwidth priority that doesn't fit in tr_priority_t is ignored.
