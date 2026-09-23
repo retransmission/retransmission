@@ -119,13 +119,13 @@ size_t add_peers(tr_torrent* const tor, tr_variant::Vector const& l)
 {
     auto ret = fields_t{};
 
-    if (auto const* l = map.find_if<tr_variant::Vector>(TR_KEY_peers2); l != nullptr) {
+    if (auto const* const l = map.find_if<tr_variant::Vector>(TR_KEY_peers2)) {
         auto const num_added = add_peers(tor, *l);
         tr_logAddTraceTor(tor, fmt::format("Loaded {} IPv4 peers from resume file", num_added));
         ret = Peers;
     }
 
-    if (auto const* l = map.find_if<tr_variant::Vector>(TR_KEY_peers2_6)) {
+    if (auto const* const l = map.find_if<tr_variant::Vector>(TR_KEY_peers2_6)) {
         auto const num_added = add_peers(tor, *l);
         tr_logAddTraceTor(tor, fmt::format("Loaded {} IPv6 peers from resume file", num_added));
         ret = Peers;
@@ -268,7 +268,7 @@ void save_file_priorities(tr_variant::Map& map, tr_torrent const* const tor)
             continue;
         }
 
-        if (auto const priority = (*list)[pos++].value_if<int64_t>(); priority) {
+        if (auto const priority = (*list)[pos++].value_if<int64_t>()) {
             tor->set_file_priority(i, static_cast<tr_priority_t>(*priority));
         }
     }
@@ -313,7 +313,7 @@ void load_single_speed_limit(tr_variant::Map const& map, tr_direction const dir,
 {
     if (auto const i = map.value_if<int64_t>(TR_KEY_speed_Bps)) {
         tor->set_speed_limit(dir, Speed{ *i, Speed::Units::Byps });
-    } else if (auto const i2 = map.value_if<int64_t>(TR_KEY_speed); i2) {
+    } else if (auto const i2 = map.value_if<int64_t>(TR_KEY_speed)) {
         tor->set_speed_limit(dir, Speed{ *i2, Speed::Units::KByps });
     }
 
@@ -330,12 +330,12 @@ void load_single_speed_limit(tr_variant::Map const& map, tr_direction const dir,
 {
     auto ret = fields_t{};
 
-    if (auto const* child = map.find_if<tr_variant::Map>(TR_KEY_speed_limit_up)) {
+    if (auto const* const child = map.find_if<tr_variant::Map>(TR_KEY_speed_limit_up)) {
         load_single_speed_limit(*child, tr_direction::Up, tor);
         ret = Speedlimit;
     }
 
-    if (auto const* child = map.find_if<tr_variant::Map>(TR_KEY_speed_limit_down)) {
+    if (auto const* const child = map.find_if<tr_variant::Map>(TR_KEY_speed_limit_down)) {
         load_single_speed_limit(*child, tr_direction::Down, tor);
         ret = Speedlimit;
     }
@@ -563,7 +563,7 @@ void save_progress(tr_variant::Map& map, tr_torrent::ResumeHelper const& helper)
     mtimes.reserve(n_files);
 
     // try to load mtimes
-    if (auto const* l = prog->find_if<tr_variant::Vector>(TR_KEY_mtimes); l != nullptr) {
+    if (auto const* const l = prog->find_if<tr_variant::Vector>(TR_KEY_mtimes)) {
         for (auto const& var : *l) {
             auto const t = var.value_if<int64_t>();
             if (!t) {
@@ -580,14 +580,14 @@ void save_progress(tr_variant::Map& map, tr_torrent::ResumeHelper const& helper)
     }
 
     // maybe it's a .resume file from [2.20 - 3.00] with the per-piece mtimes
-    if (auto const* l = prog->find_if<tr_variant::Vector>(TR_KEY_time_checked); l != nullptr) {
+    if (auto const* const l = prog->find_if<tr_variant::Vector>(TR_KEY_time_checked)) {
         for (tr_file_index_t fi = 0, n_l = std::min(n_files, std::size(*l)); fi < n_l; ++fi) {
             auto const& b = (*l)[fi];
             auto time_checked = time_t{};
 
-            if (auto const t = b.value_if<int64_t>(); t) {
+            if (auto const t = b.value_if<int64_t>()) {
                 time_checked = static_cast<time_t>(*t);
-            } else if (auto const* ll = b.get_if<tr_variant::Vector>(); ll != nullptr) {
+            } else if (auto const* const ll = b.get_if<tr_variant::Vector>()) {
                 // The first element (idx 0) stores a base value for all piece timestamps,
                 // which would be the value of the smallest piece timestamp minus 1.
                 //
@@ -650,7 +650,7 @@ void save_progress(tr_variant::Map& map, tr_torrent::ResumeHelper const& helper)
         if (auto const sv = b->second.value_if<std::string_view>(); sv && !raw_to_bitfield(blocks, *sv)) {
             err = "Invalid value for 'blocks'";
         }
-    } else if (auto const raw = prog->value_if<std::string_view>(TR_KEY_bitfield); raw) {
+    } else if (auto const raw = prog->value_if<std::string_view>(TR_KEY_bitfield)) {
         if (!blocks.set_raw(*raw)) {
             err = "Invalid value for 'bitfield'";
         }
@@ -700,7 +700,7 @@ void save_progress(tr_variant::Map& map, tr_torrent::ResumeHelper const& helper)
     auto fields_loaded = fields_t{};
 
     if ((fields_to_load & Corrupt) != 0) {
-        if (auto i = map.value_if<int64_t>(TR_KEY_corrupt); i) {
+        if (auto const i = map.value_if<int64_t>(TR_KEY_corrupt)) {
             tor->bytes_corrupt_.set_prev(*i);
             fields_loaded |= Corrupt;
         }
@@ -721,14 +721,14 @@ void save_progress(tr_variant::Map& map, tr_torrent::ResumeHelper const& helper)
     }
 
     if ((fields_to_load & Downloaded) != 0) {
-        if (auto i = map.value_if<int64_t>(TR_KEY_downloaded); i) {
+        if (auto const i = map.value_if<int64_t>(TR_KEY_downloaded)) {
             tor->bytes_downloaded_.set_prev(*i);
             fields_loaded |= Downloaded;
         }
     }
 
     if ((fields_to_load & Uploaded) != 0) {
-        if (auto i = map.value_if<int64_t>(TR_KEY_uploaded); i) {
+        if (auto const i = map.value_if<int64_t>(TR_KEY_uploaded)) {
             tor->bytes_uploaded_.set_prev(*i);
             fields_loaded |= Uploaded;
         }
@@ -742,7 +742,7 @@ void save_progress(tr_variant::Map& map, tr_torrent::ResumeHelper const& helper)
     }
 
     if ((fields_to_load & Run) != 0) {
-        if (auto b = map.value_if<bool>(TR_KEY_paused); b) {
+        if (auto const b = map.value_if<bool>(TR_KEY_paused)) {
             helper.load_start_when_stable(!*b);
             fields_loaded |= Run;
         }
@@ -792,14 +792,14 @@ void save_progress(tr_variant::Map& map, tr_torrent::ResumeHelper const& helper)
     }
 
     if ((fields_to_load & SequentialDownload) != 0) {
-        if (auto b = map.value_if<bool>(TR_KEY_sequential_download); b) {
+        if (auto const b = map.value_if<bool>(TR_KEY_sequential_download)) {
             tor->set_sequential_download(*b);
             fields_loaded |= SequentialDownload;
         }
     }
 
     if ((fields_to_load & SequentialDownloadFromPiece) != 0) {
-        if (auto i = map.value_if<int64_t>(TR_KEY_sequential_download_from_piece); i) {
+        if (auto const i = map.value_if<int64_t>(TR_KEY_sequential_download_from_piece)) {
             tor->set_sequential_download_from_piece(*i);
             fields_loaded |= SequentialDownloadFromPiece;
         }
