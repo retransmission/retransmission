@@ -129,6 +129,11 @@ struct tr_address {
     template<typename TrBuffer>
     TrBuffer& to_compact_buf(TrBuffer& buf) const
     {
+        if (!is_valid()) {
+            TR_ASSERT_MSG(false, "invalid address type");
+            return buf;
+        }
+
         auto const [ptr, len] = buf.reserve_space(CompactAddrBytes[type]);
         to_compact(ptr);
         buf.commit_space(len);
@@ -342,17 +347,17 @@ struct tr_address {
         }
     }
 
-    [[nodiscard]] static constexpr auto is_valid(tr_address_type type) noexcept
+    [[nodiscard]] static constexpr bool is_valid(tr_address_type type) noexcept
     {
         return type == TR_AF_INET || type == TR_AF_INET6;
     }
 
-    [[nodiscard]] constexpr auto is_valid() const noexcept
+    [[nodiscard]] constexpr bool is_valid() const noexcept
     {
         return is_valid(type);
     }
 
-    [[nodiscard]] auto is_any() const noexcept
+    [[nodiscard]] bool is_any() const noexcept
     {
         return is_valid() && *this == any(type);
     }
