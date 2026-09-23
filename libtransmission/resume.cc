@@ -353,8 +353,10 @@ void load_single_speed_limit(tr_variant::Map const& map, tr_direction const dir,
         tor->set_seed_ratio(*dratio);
     }
 
+    // A mode that isn't a tr_ratiolimit follows the session's settings.
     if (auto const i = d->value_if<int64_t>(TR_KEY_ratio_mode)) {
-        tor->set_seed_ratio_mode(static_cast<tr_ratiolimit>(*i));
+        auto const is_valid = *i == TR_RATIOLIMIT_GLOBAL || *i == TR_RATIOLIMIT_SINGLE || *i == TR_RATIOLIMIT_UNLIMITED;
+        tor->set_seed_ratio_mode(is_valid ? static_cast<tr_ratiolimit>(*i) : TR_RATIOLIMIT_GLOBAL);
     }
 
     return Ratiolimit;

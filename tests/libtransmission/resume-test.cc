@@ -629,4 +629,26 @@ TEST_F(ResumeTest, savedBandwidthPriorityOutOfRange)
     EXPECT_EQ(TR_PRI_NORMAL, tor->get_priority());
 }
 
+// A saved ratio mode that isn't a tr_ratiolimit loads as TR_RATIOLIMIT_GLOBAL.
+// Truncated to uint8_t, 257 would pass for TR_RATIOLIMIT_SINGLE.
+TEST_F(ResumeTest, savedRatioModeOutOfRange)
+{
+    auto const saved_values = std::array{ int64_t{ 7 }, int64_t{ 257 } };
+
+    for (size_t i = 0; i < std::size(saved_values); ++i) {
+        SCOPED_TRACE(saved_values[i]);
+
+        auto ratio = tr_variant::Map{ 1U };
+        ratio.try_emplace(TR_KEY_ratio_mode, saved_values[i]);
+        auto map = tr_variant::Map{ 1U };
+        map.try_emplace(TR_KEY_seed_ratio_limit, std::move(ratio));
+
+        // The file size sets the info hash, so each value gets a torrent of its own.
+        auto builder = tr_torrent_builder{ session_ };
+        auto const* const tor = torrentInit(builder, { i + 1U }, std::move(map));
+        ASSERT_NE(nullptr, tor);
+        EXPECT_EQ(TR_RATIOLIMIT_GLOBAL, tor->seed_ratio_mode());
+    }
+}
+
 } // namespace tr::test
