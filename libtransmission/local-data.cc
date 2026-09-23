@@ -689,6 +689,8 @@ private:
     void dispatch(tr_torrent_id_t const id, Gate& gate, Queued&& op)
     {
         if (auto* const read = std::get_if<ReadOp>(&op); read != nullptr) {
+            // We read only pieces we have, and we never write those.
+            TR_ASSERT(!overlaps_running_write(gate, read->span));
             exec_read(id, *read);
         } else if (auto* const test = std::get_if<TestOp>(&op); test != nullptr) {
             admit_test(id, gate, std::move(*test));
