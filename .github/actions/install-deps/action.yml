@@ -42,7 +42,7 @@ runs:
         set -ex
 
         if [[ "$PKG_FAMILY" == "dnf" ]]; then
-          # Fedora/DNF-based installation
+          # Fedora and RHEL-family (DNF) installation
           BASE_PACKAGES=(
             cmake
             gettext
