@@ -4,6 +4,7 @@
 // License text can be found in the licenses/ folder.
 
 #include <chrono>
+#include <cstdint>
 #include <functional>
 #include <string>
 #include <thread>
@@ -282,10 +283,15 @@ TEST_F(AppSessionSyncTest, importingSettingsReadsRpcServerSettingsWhenEmbedded)
     tr_sessionSetRPCUsername(session_, "alice");
     ASSERT_TRUE(wait_for([this]() { return tr_sessionGetRPCUsername(session_) == "alice"; }));
 
+    auto const rpc_port = uint16_t{ 54321 };
+    tr_sessionSetRPCPort(session_, rpc_port);
+    ASSERT_TRUE(wait_for([this]() { return tr_sessionGetRPCPort(session_) == rpc_port; }));
+
     // session_get responses omit the RPC server's settings,
     // so import must read them from the session directly
     session.import_session_settings(tr_variant::Map{});
     EXPECT_EQ("alice", prefs.get<std::string>(TR_KEY_rpc_username));
+    EXPECT_EQ(rpc_port, prefs.get<uint16_t>(TR_KEY_rpc_port));
 }
 
 } // namespace

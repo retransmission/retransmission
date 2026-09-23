@@ -203,7 +203,7 @@ template<typename T>
     } else if constexpr (std::is_floating_point_v<T>) {
         return index == tr_variant::DoubleIndex || index == tr_variant::IntIndex || is_string;
     } else if constexpr (std::is_enum_v<T> || std::is_integral_v<T>) {
-        // ints and enums decode from int tokens or string labels/octal --
+        // ints and enums decode from int tokens or string labels --
         // but *not* from a boolean (benc never produces one for these).
         return index == tr_variant::IntIndex || is_string;
     } else {
