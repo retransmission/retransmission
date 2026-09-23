@@ -1873,7 +1873,10 @@ void tr_torrent::recheck_completeness()
         completeness_ = new_completeness;
 
         if (is_done()) {
-            session->local_data.close_torrent(id());
+            // Clients call this on their own threads too, but disk ops
+            // must be enqueued from the session thread.
+            session->run_in_session_thread(
+                [session = this->session, tor_id = id()]() { session->local_data.close_torrent(tor_id); });
 
             if (recent_change) {
                 // https://www.bittorrent.org/beps/bep_0003.html
