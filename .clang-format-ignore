@@ -14,4 +14,4 @@ android/*
 third-party/*
 
 # maintained at https://github.com/sparkle-project/Sparkle
-macosx/Sparkle.framework/*
+macosx/Transmission/Sparkle.framework/*

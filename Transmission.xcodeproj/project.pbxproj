@@ -717,10 +717,10 @@
 		A25964A4106D73A800453B31 /* announcer.cc */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = announcer.cc; sourceTree = "<group>"; };
 		A25964A5106D73A800453B31 /* announcer.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.h; path = announcer.h; sourceTree = "<group>"; };
 		A25BFD63167BED3B0039D1AA /* variant-benc.cc */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = "variant-benc.cc"; sourceTree = "<group>"; };
-		A25BFD70167BED3B0039D1AA /* variant-common.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.h; path = "variant-common.h"; sourceTree = "<group>"; };
 		A25BFD65167BED3B0039D1AA /* variant-json.cc */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = "variant-json.cc"; sourceTree = "<group>"; };
 		A25BFD67167BED3B0039D1AA /* variant.cc */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = variant.cc; sourceTree = "<group>"; };
 		A25BFD68167BED3B0039D1AA /* variant.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.h; path = variant.h; sourceTree = "<group>"; };
+		A25BFD70167BED3B0039D1AA /* variant-common.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.h; path = "variant-common.h"; sourceTree = "<group>"; };
 		A25D2CBA0CF4C7190096A262 /* stats.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.h; path = stats.h; sourceTree = "<group>"; };
 		A25D2CBB0CF4C7190096A262 /* stats.cc */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = stats.cc; sourceTree = "<group>"; };
 		A25E03E00E4015380086C225 /* tr-getopt.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.h; path = "tr-getopt.h"; sourceTree = "<group>"; };
@@ -1054,20 +1054,18 @@
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
 		0AD81F53304EC83D00C22874 /* Exceptions for "macosx" folder in "Transmission" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			attributesByRelativePath = {
-				Sparkle.framework = (Weak, );
-			};
 			membershipExceptions = (
 				"/Localized: QuickLookExtension/Localizable.strings",
 				CMakeLists.txt,
-				Info.plist,
-				Info.plist.in,
 				QuickLookExtension/CMakeLists.txt,
 				QuickLookExtension/Info.plist,
 				QuickLookExtension/Info.plist.in,
 				QuickLookExtension/PreviewProvider.mm,
 				QuickLookExtension/style.css,
-				VDKQueue/CMakeLists.txt,
+				Transmission/CMakeLists.txt,
+				Transmission/Info.plist,
+				Transmission/Info.plist.in,
+				Transmission/VDKQueue/CMakeLists.txt,
 			);
 			target = 8D1107260486CEB800E47090 /* Transmission */;
 		};
@@ -1075,23 +1073,23 @@
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				"/Localized: QuickLookExtension/Localizable.strings",
-				NSStringAdditions.mm,
 				QuickLookExtension/PreviewProvider.mm,
 				QuickLookExtension/style.css,
+				Transmission/NSStringAdditions.mm,
 			);
 			target = ED5E0E7B2CD30B180071433B /* QuickLookExtension */;
 		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet section */
-		0AD81F54304EC83D00C22874 /* Exceptions for "macosx" folder in "Copy Files to Frameworks" phase from "Transmission" target */ = {
+		0AFD929730648B1F00848CD4 /* Exceptions for "macosx" folder in "Copy Files to Frameworks" phase from "Transmission" target */ = {
 			isa = PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet;
 			attributesByRelativePath = {
-				Sparkle.framework = (CodeSignOnCopy, );
+				Transmission/Sparkle.framework = (CodeSignOnCopy, RemoveHeadersOnCopy, );
 			};
 			buildPhase = A24F191B0A3A792300C9C145 /* Copy Files to Frameworks */;
 			membershipExceptions = (
-				Sparkle.framework,
+				Transmission/Sparkle.framework,
 			);
 		};
 /* End PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet section */
@@ -1101,11 +1099,11 @@
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
 				0AD81F53304EC83D00C22874 /* Exceptions for "macosx" folder in "Transmission" target */,
-				0AD81F54304EC83D00C22874 /* Exceptions for "macosx" folder in "Copy Files to Frameworks" phase from "Transmission" target */,
+				0AFD929730648B1F00848CD4 /* Exceptions for "macosx" folder in "Copy Files to Frameworks" phase from "Transmission" target */,
 				0AD81F55304EC83D00C22874 /* Exceptions for "macosx" folder in "QuickLookExtension" target */,
 			);
 			explicitFolders = (
-				TransmissionHelp,
+				Transmission/TransmissionHelp,
 			);
 			path = macosx;
 			sourceTree = "<group>";
@@ -3265,16 +3263,17 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = Transmission_Tahoe;
 				CLANG_CXX_LIBRARY = "libc++";
-				CODE_SIGN_ENTITLEMENTS = macosx/Transmission.entitlements;
+				CODE_SIGN_ENTITLEMENTS = macosx/Transmission/Transmission.entitlements;
 				ENABLE_HARDENED_RUNTIME = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(PROJECT_DIR)/macosx",
+					"$(PROJECT_DIR)/macosx/Transmission",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					.,
 				);
+				INFOPLIST_FILE = macosx/Transmission/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/../Frameworks";
 				OTHER_CPLUSPLUSFLAGS = (
 					"$(inherited)",
@@ -3539,16 +3538,17 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = Transmission_Tahoe;
 				CLANG_CXX_LIBRARY = "libc++";
-				CODE_SIGN_ENTITLEMENTS = macosx/Transmission.entitlements;
+				CODE_SIGN_ENTITLEMENTS = macosx/Transmission/Transmission.entitlements;
 				ENABLE_HARDENED_RUNTIME = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(PROJECT_DIR)/macosx",
+					"$(PROJECT_DIR)/macosx/Transmission",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					.,
 				);
+				INFOPLIST_FILE = macosx/Transmission/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/../Frameworks";
 				OTHER_CPLUSPLUSFLAGS = (
 					"$(inherited)",
@@ -3804,16 +3804,17 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = Transmission_Tahoe;
 				CLANG_CXX_LIBRARY = "libc++";
-				CODE_SIGN_ENTITLEMENTS = macosx/Transmission.entitlements;
+				CODE_SIGN_ENTITLEMENTS = macosx/Transmission/Transmission.entitlements;
 				ENABLE_HARDENED_RUNTIME = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(PROJECT_DIR)/macosx",
+					"$(PROJECT_DIR)/macosx/Transmission",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					.,
 				);
+				INFOPLIST_FILE = macosx/Transmission/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/../Frameworks";
 				OTHER_CPLUSPLUSFLAGS = (
 					"$(inherited)",
