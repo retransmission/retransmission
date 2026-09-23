@@ -583,6 +583,25 @@ TEST_F(TorrentDiskIoTest, hashResultForInvalidatedPieceIsDropped)
     });
 }
 
+TEST_F(TorrentDiskIoTest, blockArrivingDuringVerificationIsRefused)
+{
+    auto* const tor = zeroTorrentInit(ZeroTorrentState::Partial);
+    auto const block = tor->block_span_for_piece(0).begin;
+    auto verified = std::atomic<bool>{ false };
+    auto const tag = session_->verify_done_.connect_scoped([&verified](tr_torrent_id_t) { verified = true; });
+
+    blockingRunInSessionThread([tor, block]() {
+        tr_torrentVerify(tor);
+
+        // Stopping the torrent doesn't stop a webseed fetch, so its block
+        // can still arrive. The verify may have scanned the piece already.
+        EXPECT_FALSE(tor->on_block_received(block));
+        EXPECT_FALSE(tor->has_block_or_pending(block));
+    });
+
+    EXPECT_TRUE(waitFor([&verified]() { return verified.load(); }, MaxWaitMsec));
+}
+
 TEST_F(TorrentDiskIoTest, requestBudgetIsUnboundedOnTheSynchronousBackend)
 {
     EXPECT_FALSE(session_->spare_request_blocks().has_value());

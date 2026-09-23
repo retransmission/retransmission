@@ -1741,9 +1741,6 @@ void tr_torrent::VerifyMediator::on_verify_done(bool const aborted)
                     tor->update_file_path(file, {});
                 }
 
-                // The verifier settled every piece. Any hash token left
-                // over is stale and would hold up the completeness check.
-                tor->hash_tokens_.clear();
                 tor->recheck_completeness();
 
                 session->verify_done_(tor_id);
@@ -2285,6 +2282,14 @@ bool tr_torrent::on_block_received(tr_block_index_t const block)
     TR_ASSERT(session->am_in_session_thread());
 
     if (is_deleting_) {
+        return false;
+    }
+
+    // A verify scans each piece once, so a block written during one could
+    // complete a piece it already scanned, and nothing would hash that piece.
+    // Stopping the torrent doesn't stop webseed fetches, so their blocks still land.
+    if (verify_state_ != VerifyState::None) {
+        bytes_downloaded_.reduce(block_size(block));
         return false;
     }
 
