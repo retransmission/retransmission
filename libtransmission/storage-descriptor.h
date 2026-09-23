@@ -11,6 +11,9 @@
 
 #include <optional>
 #include <string>
+#include <string_view>
+
+#include <small/vector.hpp>
 
 #include "libtransmission/bitfield.h"
 #include "libtransmission/block-info.h"
@@ -20,6 +23,13 @@
 
 namespace tr
 {
+
+// Where a torrent's files may live, in search order: the download dir,
+// then the incomplete dir. A dir that is unset or repeats the first is skipped.
+// The views refer to the arguments, not to the returned container.
+[[nodiscard]] small::max_size_vector<std::string_view, 2> search_paths(
+    std::string_view download_dir,
+    std::string_view incomplete_dir);
 
 /**
  * An immutable snapshot of everything disk IO needs to know about one

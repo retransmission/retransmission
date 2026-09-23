@@ -1148,17 +1148,7 @@ void tr_torrent::set_location_in_session_thread(
 
 small::max_size_vector<std::string_view, 2> tr_torrent::search_paths() const
 {
-    auto paths = small::max_size_vector<std::string_view, 2>{};
-
-    if (!std::empty(download_dir())) {
-        paths.push_back(download_dir().sv());
-    }
-
-    if (!std::empty(incomplete_dir()) && incomplete_dir() != download_dir()) {
-        paths.push_back(incomplete_dir().sv());
-    }
-
-    return paths;
+    return tr::search_paths(download_dir().sv(), incomplete_dir().sv());
 }
 
 void tr_torrent::set_location(std::string_view location, bool move_from_old_path, int volatile* setme_state)
@@ -1842,8 +1832,8 @@ void tr_torrent::maybe_leave_incomplete_dir()
         return;
     }
 
-    if (auto const incomplete = incomplete_dir().sv(); current_dir() == incomplete ||
-        (!std::empty(incomplete) && files().has_any_local_data(std::span{ &incomplete, 1U }))) {
+    if (auto const incomplete = incomplete_dir().sv();
+        current_dir() == incomplete || (!std::empty(incomplete) && files().has_any_local_data(std::span{ &incomplete, 1U }))) {
         set_location(download_dir().sv(), true, nullptr);
     }
 }
