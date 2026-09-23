@@ -55,4 +55,23 @@ TEST_F(InOutTest, writeFailsWhenExistingFileCannotBeOpened)
     blockingRunInSessionThread(write_block);
     EXPECT_NE(0, err);
 }
+TEST_F(InOutTest, readFailsWhenFileIsShorterThanExpected)
+{
+    auto* const tor = zeroTorrentInit(ZeroTorrentState::Complete);
+
+    auto const path = tr_torrentFindFile(tor, 0U);
+    ASSERT_FALSE(std::empty(path));
+
+    // Something outside Transmission empties the file.
+    createFileWithContents(path, ""sv);
+
+    // The read must fail. Reporting success would hand the caller a
+    // buffer whose bytes past the end of the file were never written.
+    auto err = tr_error_code_t{};
+    blockingRunInSessionThread([session = session_, tor, &err]() {
+        auto buf = std::vector<uint8_t>(TrBlockSize);
+        err = tr_ioRead(*tor->storage_descriptor(), session->openFiles(), 0U, buf);
+    });
+    EXPECT_NE(0, err);
+}
 } // namespace

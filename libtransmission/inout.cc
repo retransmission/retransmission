@@ -41,6 +41,11 @@ bool read_entire_buf(tr_sys_file_t const fd, uint64_t file_offset, std::span<uin
         auto n_read = uint64_t{};
 
         if (!tr_sys_file_read_at(fd, std::data(buf), std::size(buf), file_offset, &n_read, &error)) {
+            // On POSIX, a read at the end of the file fails without an
+            // error. The file is shorter than the torrent says it is.
+            if (!error) {
+                error.set_from_errno(EIO);
+            }
             return false;
         }
 
