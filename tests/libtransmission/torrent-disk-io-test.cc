@@ -845,13 +845,7 @@ TEST_P(TorrentRemovalTest, waitsForWritesAndHashesBeforeUnregistering)
     });
     session_->local_data.set_workers_paused(false);
 
-    EXPECT_TRUE(waitFor(
-        [this, id]() {
-            auto removed = false;
-            blockingRunInSessionThread([this, id, &removed]() { removed = session_->torrents().get(id) == nullptr; });
-            return removed;
-        },
-        MaxWaitMsec));
+    EXPECT_TRUE(waitForInSessionThread([this, id]() { return session_->torrents().get(id) == nullptr; }, MaxWaitMsec));
     blockingRunInSessionThread([this, &hash_completed]() {
         EXPECT_TRUE(hash_completed);
         EXPECT_EQ(0U, session_->local_data.enqueued_write_bytes());
@@ -908,7 +902,7 @@ TEST_F(TorrentDiskIoWorkersTest, queuedWritesConsumeTheRequestBudget)
     });
 
     session_->local_data.set_workers_paused(false);
-    EXPECT_TRUE(waitFor([tor, block]() { return tor->has_block(block); }, MaxWaitMsec));
+    EXPECT_TRUE(waitForInSessionThread([tor, block]() { return tor->has_block(block); }, MaxWaitMsec));
     blockingRunInSessionThread([this, &budget]() { EXPECT_EQ(budget, session_->spare_request_blocks()); });
 }
 
@@ -928,7 +922,8 @@ TEST_F(TorrentDiskIoWorkersTest, writesBehindBarriersConsumeTheRequestBudget)
     });
 
     session_->local_data.set_workers_paused(false);
-    EXPECT_TRUE(waitFor([tor, block]() { return tor->has_block(block) && tor->has_block(block + 1U); }, MaxWaitMsec));
+    EXPECT_TRUE(
+        waitForInSessionThread([tor, block]() { return tor->has_block(block) && tor->has_block(block + 1U); }, MaxWaitMsec));
     EXPECT_EQ(0U, session_->local_data.enqueued_write_bytes());
 }
 
@@ -946,7 +941,7 @@ TEST_F(TorrentDiskIoWorkersTest, blockCountsOnlyAfterItsWriteFinishes)
         EXPECT_FALSE(tor->on_block_received(block));
     });
 
-    EXPECT_TRUE(waitFor([tor, block]() { return tor->has_block(block); }, MaxWaitMsec));
+    EXPECT_TRUE(waitForInSessionThread([tor, block]() { return tor->has_block(block); }, MaxWaitMsec));
     EXPECT_EQ(0U, session_->local_data.enqueued_write_bytes());
 }
 
@@ -1099,11 +1094,13 @@ TEST_F(TorrentDiskIoWorkersTest, failedWriteSetsLocalError)
         tor->save_block(block, zeroBlock(tor, block));
     });
 
-    EXPECT_TRUE(waitFor([tor]() { return tor->error().is_local_error(); }, MaxWaitMsec));
+    EXPECT_TRUE(waitForInSessionThread([tor]() { return tor->error().is_local_error(); }, MaxWaitMsec));
 
     // the block was not counted, and is no longer pending
-    EXPECT_FALSE(tor->has_block(block));
-    EXPECT_FALSE(tor->has_block_or_pending(block));
+    blockingRunInSessionThread([tor, block]() {
+        EXPECT_FALSE(tor->has_block(block));
+        EXPECT_FALSE(tor->has_block_or_pending(block));
+    });
 }
 
 TEST_F(IncompleteDirWorkersTest, doneCallbackWaitsForTheMoveOut)

@@ -58,7 +58,7 @@ protected:
             auto const test = [tor, block_index]() {
                 return tor->has_block(block_index);
             };
-            EXPECT_TRUE(waitFor(test, MaxWaitMsec));
+            EXPECT_TRUE(waitForInSessionThread(test, MaxWaitMsec));
         }
     }
 

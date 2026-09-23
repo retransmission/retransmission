@@ -488,6 +488,13 @@ protected:
         return blockingRunInSessionThread(std::forward<Func>(func), std::chrono::milliseconds{ msec });
     }
 
+    // Waits for `test` to hold, checking it on the session thread,
+    // which owns the torrent state that tests wait on.
+    [[nodiscard]] bool waitForInSessionThread(std::function<bool()> const& test, std::chrono::milliseconds::rep const msec)
+    {
+        return waitFor([this, &test]() { return blockingRunInSessionThread(test); }, msec);
+    }
+
     tr_session* session_ = nullptr;
 
     tr::Settings& settings()
