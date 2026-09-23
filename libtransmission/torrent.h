@@ -445,11 +445,6 @@ struct tr_torrent {
 
     void set_file_priorities(std::span<tr_file_index_t const> files, tr_priority_t priority);
 
-    void set_file_priority(tr_file_index_t file, tr_priority_t priority)
-    {
-        set_file_priorities(std::span{ &file, 1U }, priority);
-    }
-
     /// LOCATION
 
     [[nodiscard]] constexpr auto const& current_dir() const noexcept
