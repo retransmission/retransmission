@@ -680,11 +680,12 @@ void tr_torrent::stop_now()
     stopped_(this);
     session->announcer_->stopTorrent(this);
 
-    session->local_data.close_torrent(id());
-
-    if (!is_deleting_) {
-        save_resume_file();
-    }
+    // Save once the writes in flight land, so the resume file lists them.
+    session->local_data.close_torrent(id(), [session = this->session](tr_torrent_id_t const tor_id) {
+        if (auto* const tor = session->torrents().get(tor_id); tor != nullptr && !tor->is_deleting_) {
+            tor->save_resume_file();
+        }
+    });
 
     set_is_queued(false);
 }
