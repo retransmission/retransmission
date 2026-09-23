@@ -576,7 +576,7 @@ void save_progress(tr_variant::Map& map, tr_torrent::ResumeHelper const& helper)
 
     // try to load the piece-checked bitfield
     if (auto const sv = prog->value_if<std::string_view>(TR_KEY_pieces); sv && !raw_to_bitfield(checked, *sv)) {
-        tr_logAddDebugTor(tor, fmt::format("Couldn't load checked pieces: invalid value for 'pieces'"));
+        tr_logAddDebugTor(tor, "Couldn't load checked pieces: invalid value for 'pieces'");
     }
 
     // maybe it's a .resume file from [2.20 - 3.00] with the per-piece mtimes
