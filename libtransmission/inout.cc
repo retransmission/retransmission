@@ -4,6 +4,7 @@
 // License text can be found in the licenses/ folder.
 
 #include <algorithm>
+#include <array>
 #include <cerrno>
 #include <cstddef>
 #include <cstdint>
@@ -14,10 +15,10 @@
 #include <fmt/format.h>
 
 #include "libtransmission/block-info.h" // tr_block_info
+#include "libtransmission/constants.h" // TrBlockSize
 #include "libtransmission/error.h"
 #include "libtransmission/file.h"
 #include "libtransmission/inout.h"
-#include "libtransmission/local-data.h" // tr::LocalData::BlockData
 #include "libtransmission/log.h"
 #include "libtransmission/open-files.h"
 #include "libtransmission/session.h"
@@ -318,17 +319,16 @@ tr_error_code_t tr_ioRecalculateHash(
         return TR_ERROR_EINVAL;
     }
 
-    auto buffer = tr::LocalData::BlockData{};
+    auto buffer = std::array<uint8_t, TrBlockSize>{};
     auto err = tr_error_code_t{};
     auto const hash = tr_ioHashPiece(
         block_info,
         piece,
         [&desc, &open_files, &block_info, &buffer, &err, waiter](tr_block_index_t const block) -> std::span<uint8_t const> {
             auto const byte_span = block_info.byte_span_for_block(block);
-            auto const len = static_cast<size_t>(byte_span.size());
-            buffer.resize(len);
-            err = tr_ioRead(desc, open_files, byte_span.begin, { std::data(buffer), len }, waiter);
-            return err == 0 ? std::span<uint8_t const>{ std::data(buffer), len } : std::span<uint8_t const>{};
+            auto const data = std::span{ buffer }.first(static_cast<size_t>(byte_span.size()));
+            err = tr_ioRead(desc, open_files, byte_span.begin, data, waiter);
+            return err == 0 ? data : std::span<uint8_t>{};
         });
 
     if (!hash) {
