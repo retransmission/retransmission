@@ -5,7 +5,7 @@
 
 #pragma once
 
-#include <algorithm> // std::move()
+#include <algorithm> // std::max, std::ranges::find
 #include <concepts> // std::integral
 #include <cstddef> // size_t
 #include <cstdint> // int64_t
@@ -86,15 +86,12 @@ public:
 
         [[nodiscard]] constexpr auto find(tr_quark const key) noexcept
         {
-            auto const predicate = [key](auto const& item) {
-                return item.first == key;
-            };
-            return std::ranges::find_if(vec_, predicate);
+            return std::ranges::find(vec_, key, &Vector::value_type::first);
         }
 
         [[nodiscard]] constexpr auto find(tr_quark const key) const noexcept
         {
-            return Vector::const_iterator{ const_cast<Map*>(this)->find(key) };
+            return std::ranges::find(vec_, key, &Vector::value_type::first);
         }
 
         [[nodiscard]] constexpr auto contains(tr_quark const key) const noexcept
