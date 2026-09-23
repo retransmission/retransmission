@@ -393,7 +393,7 @@ void save_name(tr_variant::Map& map, tr_torrent const* const tor)
         return {};
     }
 
-    auto const& name = tr_strv_strip(*o_name);
+    auto const name = tr_strv_strip(*o_name);
     if (std::empty(name)) {
         return {};
     }
