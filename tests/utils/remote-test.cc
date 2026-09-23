@@ -7,9 +7,6 @@
 #include <chrono>
 #include <cstdint>
 #include <cstdlib> // std::system()
-#include <filesystem>
-#include <fstream>
-#include <iterator> // std::istreambuf_iterator
 #include <optional>
 #include <string>
 #include <string_view>
@@ -25,7 +22,6 @@
 
 #include <fmt/format.h>
 
-#include <libtransmission/file.h> // tr_sys_file_open_temp()
 #include <libtransmission/macros.h>
 #include <libtransmission/net.h> // sockaddr_storage, ntohs()
 #include <libtransmission/quark.h>
@@ -170,36 +166,21 @@ struct CommandResult {
     std::string output;
 };
 
-// Run a command and return its exit code and combined stdout+stderr.
-// The output goes through a file that is read back after the process
-// exits, so the capture doesn't depend on when a pipe reports EOF.
+// Run a command and return its exit code and stdout.
+// gtest points this process's stdout at a temp file, and the child inherits it.
+// Reading that file after the child exits doesn't depend on when a popen() pipe reports EOF.
 CommandResult run(std::string const& command)
 {
-    auto path = (std::filesystem::temp_directory_path() / "transmission-remote-test-XXXXXX").string();
-    if (auto const fd = tr_sys_file_open_temp(std::data(path)); fd != TR_BAD_SYS_FILE) {
-        tr_sys_file_close(fd);
-    }
-
-    auto shell_command = fmt::format(R"({:s} > "{:s}" 2>&1)", command, path);
+    testing::internal::CaptureStdout();
 #ifdef _WIN32
-    // cmd.exe strips the first and last quote from a /c command line that
-    // has more than one quoted token; the extra pair keeps the inner ones.
-    shell_command = fmt::format(R"("{:s}")", shell_command);
-#endif
-    auto const rc = std::system(shell_command.c_str());
-#ifdef _WIN32
-    auto const exit_code = rc;
+    // cmd.exe /c strips the first and last quote from a command line that starts with a quote and has more than two.
+    // It strips this extra pair instead of the inner quotes.
+    auto const exit_code = std::system(fmt::format(R"("{:s}")", command).c_str());
 #else
+    auto const rc = std::system(command.c_str());
     auto const exit_code = WIFEXITED(rc) ? WEXITSTATUS(rc) : -1;
 #endif
-
-    auto output = std::string{};
-    if (auto in = std::ifstream{ path }; in) {
-        output.assign(std::istreambuf_iterator<char>{ in }, std::istreambuf_iterator<char>{});
-    }
-    tr_sys_path_remove(path);
-
-    return { exit_code, output };
+    return { exit_code, testing::internal::GetCapturedStdout() };
 }
 
 TEST(RemoteLoopback, performsSessionHandshakeAndSucceeds)
@@ -208,7 +189,7 @@ TEST(RemoteLoopback, performsSessionHandshakeAndSucceeds)
 
     auto server = MockRpcServer{};
 
-    auto const command = fmt::format(R"("{:s}" 127.0.0.1:{:d} -l)", TR_REMOTE_EXE, server.port());
+    auto const command = fmt::format(R"("{:s}" 127.0.0.1:{:d} -l 2>&1)", TR_REMOTE_EXE, server.port());
     auto const result = run(command);
 
     EXPECT_EQ(0, result.exit_code) << result.output;
@@ -229,7 +210,7 @@ TEST(RemoteLoopback, listGroupsPrintsEveryGroup)
                                    R"(]})"sv;
     auto server = MockRpcServer{ Result };
 
-    auto const command = fmt::format(R"("{:s}" 127.0.0.1:{:d} --list-groups)", TR_REMOTE_EXE, server.port());
+    auto const command = fmt::format(R"("{:s}" 127.0.0.1:{:d} --list-groups 2>&1)", TR_REMOTE_EXE, server.port());
     auto const result = run(command);
 
     EXPECT_EQ(0, result.exit_code) << result.output;
