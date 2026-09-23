@@ -86,12 +86,12 @@ public:
 
         [[nodiscard]] constexpr auto find(tr_quark const key) noexcept
         {
-            return std::ranges::find(vec_, key, &Vector::value_type::first);
+            return std::ranges::find(vec_, key, &Entry::first);
         }
 
         [[nodiscard]] constexpr auto find(tr_quark const key) const noexcept
         {
-            return std::ranges::find(vec_, key, &Vector::value_type::first);
+            return std::ranges::find(vec_, key, &Entry::first);
         }
 
         [[nodiscard]] constexpr auto contains(tr_quark const key) const noexcept
@@ -170,24 +170,24 @@ public:
 
         // --- custom functions
 
-        template<typename Type>
+        template<typename Val>
         [[nodiscard]] constexpr auto* find_if(tr_quark const key) noexcept
         {
             auto const iter = find(key);
-            return iter != end() ? iter->second.get_if<Type>() : nullptr;
+            return iter != end() ? iter->second.get_if<Val>() : nullptr;
         }
 
-        template<typename Type>
+        template<typename Val>
         [[nodiscard]] constexpr auto const* find_if(tr_quark const key) const noexcept
         {
-            return const_cast<Map*>(this)->find_if<Type>(key);
+            return const_cast<Map*>(this)->find_if<Val>(key);
         }
 
-        template<typename Type>
-        [[nodiscard]] std::optional<Type> value_if(tr_quark const key) const noexcept
+        template<typename Val>
+        [[nodiscard]] std::optional<Val> value_if(tr_quark const key) const noexcept
         {
             if (auto it = find(key); it != end()) {
-                return it->second.value_if<Type>();
+                return it->second.value_if<Val>();
             }
 
             return std::nullopt;
@@ -198,8 +198,8 @@ public:
         [[nodiscard]] Map clone() const;
 
     private:
-        using Vector = std::vector<std::pair<tr_quark, tr_variant>>;
-        Vector vec_;
+        using Entry = std::pair<tr_quark, tr_variant>;
+        std::vector<Entry> vec_;
     };
 
     constexpr tr_variant() noexcept = default;
