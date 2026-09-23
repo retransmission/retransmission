@@ -1494,6 +1494,9 @@ private:
     // current_dir() is stale.
     size_t relocations_pending_ = 0U;
 
+    // A move out of the incomplete dir that waits for a queued set-location.
+    bool leave_deferred_ = false;
+
     bool finished_seeding_by_idle_ = false;
 
     bool needs_completeness_check_ = true;

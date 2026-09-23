@@ -1109,6 +1109,13 @@ void tr_torrent::set_location_in_session_thread(
                         fmt::arg("error", error.message()),
                         fmt::arg("error_code", error.code())));
                 tr_torrentStop(tor);
+
+                // A leave deferred to this set-location still has to happen.
+                // The flag is clear when this was that leave, so a failing
+                // leave doesn't retry itself.
+                if (tor->leave_deferred_) {
+                    tor->maybe_leave_incomplete_dir();
+                }
             } else {
                 if (move_from_old_path) {
                     // set_download_dir() then makes `path` the current dir
@@ -1826,7 +1833,16 @@ void tr_torrent::create_empty_files() const
 
 void tr_torrent::maybe_leave_incomplete_dir()
 {
-    if (!is_done() || relocations_pending_ != 0U) {
+    leave_deferred_ = false;
+
+    if (!is_done()) {
+        return;
+    }
+
+    // A queued set-location decides where the files end up.
+    // Its completion asks again, whether or not it moves them.
+    if (relocations_pending_ != 0U) {
+        leave_deferred_ = true;
         return;
     }
 
