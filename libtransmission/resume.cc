@@ -65,8 +65,8 @@ template<typename Fn>
 // `entry` points to the file's entry in the saved per-file `list`,
 // or is nullptr if the list has no entry for that file.
 // Returns false, without calling `fn`, if the list can't be paired up with the files.
-template<typename List, typename Fn>
-[[nodiscard]] bool for_each_file_entry(tr_torrent const* const tor, List const& list, Fn const& fn)
+template<typename Fn>
+[[nodiscard]] bool for_each_file_entry(tr_torrent const* const tor, tr_variant::Vector const& list, Fn const& fn)
 {
     auto const n_files = tor->file_count();
     auto const n_list = std::size(list);
@@ -494,6 +494,30 @@ void save_progress(tr_variant::Map& map, tr_torrent::ResumeHelper const& helper)
     map.insert_or_assign(TR_KEY_progress, std::move(prog));
 }
 
+[[nodiscard]] std::vector<time_t> load_mtimes(tr_variant::Map const& prog, tr_torrent const* const tor)
+{
+    // A file with no usable entry gets 0, marking its pieces untested.
+    auto mtimes = std::vector<time_t>(tor->file_count());
+
+    // A file whose mtime we take from the entry saved for some other file
+    // has its pieces dropped from the checked set, so a legacy-length list
+    // costs a rehash of everything after its first zero-length file unless
+    // its entries are paired with their own files.
+    auto const set_mtime = [&mtimes](tr_file_index_t const i, tr_variant const* const entry) {
+        if (entry != nullptr) {
+            mtimes[i] = static_cast<time_t>(entry->value_if<int64_t>().value_or(0));
+        }
+    };
+
+    auto const* const list = prog.find_if<tr_variant::Vector>(TR_KEY_mtimes);
+    if (list == nullptr || !for_each_file_entry(tor, *list, set_mtime)) {
+        auto const n_list = list != nullptr ? std::size(*list) : size_t{};
+        tr_logAddDebugTor(tor, fmt::format("Couldn't load mtimes: expected {} got {}", std::size(mtimes), n_list));
+    }
+
+    return mtimes;
+}
+
 /*
  * 'progress' is a dict with three entries:
  * - 'blocks', a bitfield for whether we have each block.
@@ -517,54 +541,11 @@ void save_progress(tr_variant::Map& map, tr_torrent::ResumeHelper const& helper)
     /// CHECKED PIECES
 
     auto checked = tr_bitfield{ tor->piece_count() };
-    auto mtimes = std::vector<time_t>{};
-    auto const n_files = tor->file_count();
-    mtimes.reserve(n_files);
-
-    // try to load mtimes
-    if (auto const* const l = prog->find_if<tr_variant::Vector>(TR_KEY_mtimes)) {
-        for (auto const& var : *l) {
-            auto const t = var.value_if<int64_t>();
-            if (!t) {
-                break;
-            }
-
-            mtimes.push_back(*t);
-        }
-    }
-
-    // try to load the piece-checked bitfield
     if (auto const sv = prog->value_if<std::string_view>(TR_KEY_pieces); sv && !raw_to_bitfield(checked, *sv)) {
         tr_logAddDebugTor(tor, "Couldn't load checked pieces: invalid value for 'pieces'");
     }
 
-    // A file whose mtime we take from the entry saved for some other file
-    // has its pieces dropped from the checked set, so a legacy-length list
-    // costs a rehash of everything after its first zero-length file unless
-    // its entries are moved back to their own files first.
-    if (std::size(mtimes) != n_files) {
-        // Zero-length files get 0, marking their pieces untested: their
-        // entries are the ones the saved list left out.
-        auto aligned = std::vector<time_t>(n_files);
-        auto const set_mtime = [&aligned](tr_file_index_t const i, time_t const* const entry) {
-            if (entry != nullptr) {
-                aligned[i] = *entry;
-            }
-        };
-
-        if (for_each_file_entry(tor, mtimes, set_mtime)) {
-            mtimes = std::move(aligned);
-        }
-    }
-
-    if (std::size(mtimes) != n_files) {
-        tr_logAddDebugTor(tor, fmt::format("Couldn't load mtimes: expected {} got {}", n_files, std::size(mtimes)));
-        // if resizing grows the vector, we'll get 0 mtimes for the
-        // new items which is exactly what we want since the pieces
-        // in an unknown state should be treated as untested
-        mtimes.resize(n_files);
-    }
-
+    auto const mtimes = load_mtimes(*prog, tor);
     helper.load_checked_pieces(checked, std::data(mtimes));
 
     /// COMPLETION
