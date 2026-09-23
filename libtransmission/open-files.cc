@@ -168,8 +168,13 @@ tr_open_files::Handle tr_open_files::get(
     tr_file_preallocation const allocation,
     uint64_t const file_size,
     tr_error& error,
-    Waiter* const waiter)
+    Waiter* const waiter,
+    bool* const setme_created)
 {
+    if (setme_created != nullptr) {
+        *setme_created = false;
+    }
+
     // is there already an entry
     auto const key = make_key(tor_id, file_num);
     {
@@ -270,6 +275,10 @@ tr_open_files::Handle tr_open_files::get(
                 fmt::arg("error", error.message()),
                 fmt::arg("error_code", error.code())));
         return {};
+    }
+
+    if (setme_created != nullptr) {
+        *setme_created = !already_existed;
     }
 
     // cache it

@@ -128,8 +128,11 @@ struct GotFile {
     else if (writable) {
         auto const suffix = desc.partial_file_naming ? tr_torrent_files::PartialFileSuffix : ""sv;
         auto const filename = tr_pathbuf{ desc.current_dir, '/', desc.files.path(file_index), suffix };
-        if (auto file = open_files.get(tor_id, file_index, writable, filename, prealloc, file_size, error, waiter); file) {
-            return { .file = std::move(file), .created = true };
+        auto created = false;
+        if (auto file = open_files.get(tor_id, file_index, writable, filename, prealloc, file_size, error, waiter, &created);
+            file) {
+            // Another worker may have created the file since find() looked.
+            return { .file = std::move(file), .created = created };
         }
     }
 

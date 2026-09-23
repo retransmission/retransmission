@@ -104,6 +104,7 @@ public:
 
     [[nodiscard]] Handle get(tr_torrent_id_t tor_id, tr_file_index_t file_num, bool writable, Waiter* waiter = nullptr);
 
+    // Sets `setme_created` to whether this call created the file on disk.
     [[nodiscard]] Handle get(
         tr_torrent_id_t tor_id,
         tr_file_index_t file_num,
@@ -112,7 +113,8 @@ public:
         tr_file_preallocation allocation,
         uint64_t file_size,
         tr_error& error,
-        Waiter* waiter = nullptr);
+        Waiter* waiter = nullptr,
+        bool* setme_created = nullptr);
 
     void close_all();
     void close_torrent(tr_torrent_id_t tor_id);

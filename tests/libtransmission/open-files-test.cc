@@ -69,6 +69,27 @@ TEST_F(OpenFilesTest, getOpensIfNotCached)
     EXPECT_EQ(Contents, contents);
 }
 
+TEST_F(OpenFilesTest, getReportsWhetherItCreatedTheFile)
+{
+    auto error = tr_error{};
+    auto const filename = tr_pathbuf{ sandboxDir(), "/new-file.bin" };
+    auto created = true;
+
+    // the first writable get() creates the file
+    EXPECT_TRUE(session_->openFiles().get(0, 0, true, filename, tr_file_preallocation::None, 1U, error, nullptr, &created));
+    EXPECT_TRUE(created);
+
+    // the second one finds it in the pool
+    EXPECT_TRUE(session_->openFiles().get(0, 0, true, filename, tr_file_preallocation::None, 1U, error, nullptr, &created));
+    EXPECT_FALSE(created);
+
+    // and after a close, it finds it on disk
+    session_->openFiles().close_file(0, 0);
+    EXPECT_TRUE(session_->openFiles().get(0, 0, true, filename, tr_file_preallocation::None, 1U, error, nullptr, &created));
+    EXPECT_FALSE(created);
+    EXPECT_FALSE(error) << error;
+}
+
 TEST_F(OpenFilesTest, getCacheSucceedsIfCached)
 {
     auto error = tr_error{};
