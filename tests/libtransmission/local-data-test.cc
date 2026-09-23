@@ -19,11 +19,6 @@
 #include <utility>
 #include <vector>
 
-#ifndef _WIN32
-#include <sys/stat.h> // chmod()
-#include <unistd.h> // geteuid()
-#endif
-
 #include <gtest/gtest.h>
 
 #include <libtransmission/transmission.h>
@@ -1105,18 +1100,13 @@ TEST_F(LocalDataWorkersTest, writePastTheTorrentFailsCleanly)
     local_data->shutdown();
 }
 
-#ifndef _WIN32
 TEST_F(LocalDataWorkersTest, unwritableFileFailsTheWrite)
 {
-    if (geteuid() == 0) {
-        GTEST_SKIP() << "root ignores file permissions";
-    }
-
     static auto constexpr FileSize = size_t{ 65536U };
     auto const local_data = makeLocalData(makeDescriptor({ { "data.bin", FileSize } }, 32768U));
 
-    createFileWithContents(pathOf("data.bin"), std::string(FileSize, '\0'));
-    ASSERT_EQ(0, chmod(pathOf("data.bin").c_str(), 0444));
+    // Nobody can open a directory for writing, on any platform or as root.
+    ASSERT_TRUE(tr_sys_dir_create(pathOf("data.bin"), 0, 0700));
 
     auto done = false;
     auto failed = false;
@@ -1138,6 +1128,4 @@ TEST_F(LocalDataWorkersTest, unwritableFileFailsTheWrite)
     EXPECT_EQ(0U, stats.blocks_written);
 
     local_data->shutdown();
-    chmod(pathOf("data.bin").c_str(), 0644);
 }
-#endif

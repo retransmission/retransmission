@@ -22,16 +22,12 @@
 
 #include <event2/util.h>
 
-#ifndef _WIN32
-#include <sys/stat.h> // chmod()
-#include <unistd.h> // geteuid()
-#endif
-
 #include <gtest/gtest.h>
 
 #include <libtransmission/transmission.h>
 
 #include <libtransmission/error.h>
+#include <libtransmission/file.h>
 #include <libtransmission/local-data.h>
 #include <libtransmission/peer-common.h>
 #include <libtransmission/peer-mgr.h>
@@ -1104,20 +1100,17 @@ TEST_F(TorrentDiskIoWorkersTest, completedPieceIsHashedFromBufferedBlocks)
     EXPECT_EQ(0U, stats.hashes_from_disk);
 }
 
-#ifndef _WIN32
 TEST_F(TorrentDiskIoWorkersTest, failedWriteSetsLocalError)
 {
-    if (geteuid() == 0) {
-        GTEST_SKIP() << "root ignores file permissions";
-    }
-
     auto* const tor = zeroTorrentInit(ZeroTorrentState::Partial);
     auto const block = tor->block_span_for_piece(0).begin;
 
-    // the block's file can't be opened for writing
+    // Replace the block's file with a directory. Nobody can open that
+    // for writing, on any platform or as root.
     auto const filename = tr_torrentFindFile(tor, 0);
     ASSERT_FALSE(std::empty(filename));
-    ASSERT_EQ(0, chmod(filename.c_str(), 0444));
+    ASSERT_TRUE(tr_sys_path_remove(filename));
+    ASSERT_TRUE(tr_sys_dir_create(filename, 0, 0700));
 
     inSessionThread([tor, block]() {
         ASSERT_TRUE(tor->on_block_received(block));
@@ -1129,9 +1122,6 @@ TEST_F(TorrentDiskIoWorkersTest, failedWriteSetsLocalError)
     // the block was not counted, and is no longer pending
     EXPECT_FALSE(tor->has_block(block));
     EXPECT_FALSE(tor->has_block_or_pending(block));
-
-    chmod(filename.c_str(), 0644);
 }
-#endif
 
 } // namespace tr::test
