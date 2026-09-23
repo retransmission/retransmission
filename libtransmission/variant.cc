@@ -117,19 +117,6 @@ void merge_variant(tr_variant& dest, tr_variant&& src)
     auto moved_src = std::move(src);
     merge_variant_impl<true>(dest, moved_src);
 }
-
-template<typename T>
-[[nodiscard]] tr_variant* vec_add(tr_variant* const var, T&& val)
-{
-    TR_ASSERT(var != nullptr);
-    TR_ASSERT(var->holds_alternative<tr_variant::Vector>());
-
-    if (auto* const vec = var != nullptr ? var->get_if<tr_variant::VectorIndex>() : nullptr; vec != nullptr) {
-        return &vec->emplace_back(std::forward<T>(val));
-    }
-
-    return {};
-}
 } // namespace
 
 // ---
