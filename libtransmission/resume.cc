@@ -49,6 +49,15 @@ constexpr auto MaxRememberedPeers = 200U;
     return sv && !std::empty(*sv) ? sv : std::nullopt;
 }
 
+[[nodiscard]] constexpr std::optional<tr_priority_t> valid_priority(std::optional<int8_t> const val) noexcept
+{
+    if (val && tr_isPriority(static_cast<tr_priority_t>(*val))) {
+        return static_cast<tr_priority_t>(*val);
+    }
+
+    return {};
+}
+
 // ---
 
 // Builds a list with one entry, `fn(file_index)`, per file.
@@ -668,14 +677,10 @@ fields_t load(tr_torrent* const tor, tr_torrent::ResumeHelper& helper, fields_t 
         SequentialDownloadFromPiece,
         map.value_if<int64_t>(TR_KEY_sequential_download_from_piece),
         [tor](int64_t const val) { tor->set_sequential_download_from_piece(val); });
-
-    if ((fields_to_load & BandwidthPriority) != 0) {
-        if (auto const i = map.value_if<int64_t>(TR_KEY_bandwidth_priority);
-            i && tr_isPriority(static_cast<tr_priority_t>(*i))) {
-            tr_torrentSetPriority(tor, static_cast<tr_priority_t>(*i));
-            fields_loaded |= BandwidthPriority;
-        }
-    }
+    load_field(
+        BandwidthPriority,
+        valid_priority(map.value_if<int8_t>(TR_KEY_bandwidth_priority)),
+        [tor](tr_priority_t const val) { tr_torrentSetPriority(tor, val); });
 
     if ((fields_to_load & Peers) != 0) {
         fields_loaded |= load_peers(map, tor);

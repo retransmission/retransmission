@@ -487,4 +487,17 @@ TEST_F(ResumeTest, savedMtimesListWrittenWithoutZeroLengthFiles)
     EXPECT_TRUE(tor->is_piece_checked(3)); // f4
 }
 
+// A saved bandwidth priority that doesn't fit in tr_priority_t is ignored.
+// Truncated to int8_t, 257 would pass for TR_PRI_HIGH.
+TEST_F(ResumeTest, savedBandwidthPriorityOutOfRange)
+{
+    auto map = tr_variant::Map{ 1U };
+    map.try_emplace(TR_KEY_bandwidth_priority, int64_t{ 257 });
+
+    auto builder = tr_torrent_builder{ session_ };
+    auto const* const tor = torrentInit(builder, { 1U }, std::move(map));
+    ASSERT_NE(nullptr, tor);
+    EXPECT_EQ(TR_PRI_NORMAL, tor->get_priority());
+}
+
 } // namespace tr::test
