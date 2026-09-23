@@ -1742,7 +1742,10 @@ int8_t tr_peerMgrPieceAvailability(tr_torrent const* tor, tr_piece_index_t piece
         return 0;
     }
 
-    if (tor->is_seed() || tor->has_piece(piece)) {
+    // Clients call this without the session lock. has_piece() would
+    // also read hash_tokens_, which the session thread changes for every
+    // piece it hashes, so look at the blocks alone.
+    if (tor->is_seed() || tor->has_blocks(tor->block_span_for_piece(piece))) {
         return -1;
     }
 
