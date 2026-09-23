@@ -1223,7 +1223,7 @@ jobs:
         run: cmake --install obj --config Release --strip
       - uses: actions/upload-artifact@v6
         with:
-          name: binaries-${{ github.job }}-${{ matrix.version }}
+          name: binaries-${{ github.job }}-${{ matrix.docker-image }}-${{ matrix.version }}
           path: pfx/**/*
       - name: Finalize ccache
         uses: ./.github/actions/finalize-ccache
