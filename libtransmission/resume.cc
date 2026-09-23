@@ -260,19 +260,32 @@ void save_file_priorities(tr_variant::Map& map, tr_torrent const* const tor)
         return {};
     }
 
+    auto low = std::vector<tr_file_index_t>{};
+    auto normal = std::vector<tr_file_index_t>{};
+    auto high = std::vector<tr_file_index_t>{};
+
     // A file with no entry, or whose entry isn't a valid priority,
     // keeps the priority a fresh torrent gives it.
-    auto const set_priority = [tor](tr_file_index_t const i, tr_variant const* const entry) {
-        if (entry == nullptr) {
-            return;
-        }
-
-        if (auto const priority = valid_priority(entry->value_if<int8_t>())) {
-            tor->set_file_priority(i, *priority);
+    auto const sort_file = [&low, &normal, &high](tr_file_index_t const i, tr_variant const* const entry) {
+        auto const priority = entry != nullptr ? valid_priority(entry->value_if<int8_t>()) : std::nullopt;
+        if (priority == TR_PRI_LOW) {
+            low.push_back(i);
+        } else if (priority == TR_PRI_NORMAL) {
+            normal.push_back(i);
+        } else if (priority == TR_PRI_HIGH) {
+            high.push_back(i);
         }
     };
 
-    return for_each_file_entry(tor, *list, set_priority) ? FilePriorities : fields_t{};
+    if (!for_each_file_entry(tor, *list, sort_file)) {
+        return {};
+    }
+
+    tor->set_file_priorities(low, TR_PRI_LOW);
+    tor->set_file_priorities(normal, TR_PRI_NORMAL);
+    tor->set_file_priorities(high, TR_PRI_HIGH);
+
+    return FilePriorities;
 }
 
 // ---
