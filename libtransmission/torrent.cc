@@ -1091,6 +1091,7 @@ void tr_torrent::set_location_in_session_thread(
     int volatile* setme_state)
 {
     TR_ASSERT(session->am_in_session_thread());
+    auto const lock = unique_lock();
 
     ++relocations_pending_;
 
