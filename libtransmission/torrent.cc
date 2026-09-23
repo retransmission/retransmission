@@ -1346,7 +1346,13 @@ tr_stat tr_torrent::stats() const
     stats.corrupt_ever = this->bytes_corrupt_.ever();
     stats.downloaded_ever = this->bytes_downloaded_.ever();
     stats.uploaded_ever = this->bytes_uploaded_.ever();
+    // A piece whose hash is still running may yet fail.
     stats.have_valid = this->completion_.has_valid();
+    for (auto const& [piece, token] : hash_tokens_) {
+        if (completion_.has_piece(piece)) {
+            stats.have_valid -= piece_size(piece);
+        }
+    }
     stats.have_unchecked = this->has_total() - stats.have_valid;
     stats.desired_available = tr_peerMgrGetDesiredAvailable(this);
 
