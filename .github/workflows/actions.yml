@@ -1205,9 +1205,9 @@ jobs:
             -DCMAKE_EXE_LINKER_FLAGS=-fuse-ld=mold \
             -DUSE_SYSTEM_DEFAULT=ON \
             -DUSE_SYSTEM_FMT=AUTO `# distro may not have fmt >= FMT_MINIMUM` \
-            -DUSE_SYSTEM_SIMDUTF=AUTO `# Available on Fedora but not on RHEL/EPEL` \
             -DUSE_SYSTEM_DHT=OFF `# Not packaged in RHEL/Fedora` \
             -DUSE_SYSTEM_SIGSLOT=OFF `# Not packaged in RHEL/Fedora` \
+            -DUSE_SYSTEM_SIMDUTF=${{ matrix.docker-image == 'fedora' && 'ON' || 'OFF' }} `# Not packaged in RHEL/EPEL` \
             -DUSE_SYSTEM_SMALL=OFF `# Not packaged in RHEL/Fedora` \
             -DUSE_SYSTEM_UTP=OFF `# Not packaged in RHEL/Fedora` \
             -DUSE_SYSTEM_WIDE_INTEGER=OFF `# Not packaged in RHEL/Fedora`
