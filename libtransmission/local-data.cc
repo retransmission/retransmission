@@ -1067,13 +1067,13 @@ private:
         post_completion([this, run = std::move(run), err = result.error]() mutable {
             auto const id = run.front().tor_id;
 
-            // Every callback runs before any release, so a barrier
-            // enqueued by one of them can't overtake the rest of the run.
+            // Each op stays registered until just before its own callback,
+            // and the run holds its gate until the release below. So no
+            // barrier that one callback enqueues, not even a file close,
+            // overtakes the callbacks still to come.
             auto& gate = gate_of(id);
-            for (auto const& op : run) {
-                unregister_running_write(gate, op.span);
-            }
             for (auto& op : run) {
+                unregister_running_write(gate, op.span);
                 if (op.on_write) {
                     std::move(op.on_write)(id, op.span, make_error(err));
                 }

@@ -1001,6 +1001,30 @@ TEST_F(LocalDataWorkersTest, combinedWritesDeliverEveryCallbackBeforeAQueuedBarr
     local_data->shutdown();
 }
 
+TEST_F(LocalDataWorkersTest, combinedWritesDeliverEveryCallbackBeforeAQueuedFileClose)
+{
+    auto const local_data = makeLocalData(makeDescriptor({ { "data.bin", 2U * BlockSize } }, 32768U), 1U);
+    auto n_done = size_t{};
+    auto closed = false;
+
+    local_data->set_workers_paused(true);
+    writeBlocks(*local_data, 0U, 2U * BlockSize, [&]() {
+        EXPECT_FALSE(closed);
+        if (++n_done == 1U) {
+            local_data->close_file(TorId, 0U, [&](tr_torrent_id_t) {
+                EXPECT_EQ(2U, n_done);
+                closed = true;
+            });
+        }
+    });
+    local_data->set_workers_paused(false);
+
+    EXPECT_TRUE(pumpUntil([&closed]() { return closed; }));
+    EXPECT_EQ(2U, n_done);
+    EXPECT_EQ(1U, local_data->stats().write_runs);
+    local_data->shutdown();
+}
+
 TEST_F(LocalDataWorkersTest, shutdownDeliversEveryCallback)
 {
     static auto constexpr FileSize = size_t{ 65536U };
