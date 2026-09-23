@@ -14,10 +14,6 @@
 #include <variant>
 #include <vector>
 
-#ifdef _WIN32
-#include <share.h>
-#endif
-
 #include <fmt/format.h>
 
 #include "libtransmission/api-compat.h"
@@ -29,8 +25,6 @@
 #include "libtransmission/tr-assert.h"
 #include "libtransmission/utils.h"
 #include "libtransmission/variant.h"
-
-using namespace std::literals;
 
 namespace
 {
@@ -195,7 +189,7 @@ std::optional<tr_variant> tr_variant_serde::parse(std::string_view input)
 
 [[nodiscard]] std::optional<tr_variant> tr_variant_serde::parse_file(std::string_view filename)
 {
-    TR_ASSERT_MSG(!parse_inplace_, "not supported in from_file()");
+    TR_ASSERT_MSG(!parse_inplace_, "not supported in parse_file()");
     parse_inplace_ = false;
 
     if (auto buf = std::vector<char>{}; tr_file_read(filename, buf, &error_)) {

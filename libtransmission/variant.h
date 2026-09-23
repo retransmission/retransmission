@@ -127,15 +127,6 @@ public:
             return 0U;
         }
 
-        // std::erase_if-style helper: removes every element for which
-        // `pred(std::pair<tr_quark, tr_variant> const&)` is true and
-        // returns the number of elements removed.
-        template<typename Predicate>
-        auto erase_if(Predicate pred)
-        {
-            return std::erase_if(vec_, std::move(pred));
-        }
-
         constexpr bool replace_key(tr_quark const old_key, tr_quark const new_key)
         {
             if (contains(new_key)) {
@@ -532,8 +523,6 @@ public:
     tr_error error_;
 
 private:
-    friend tr_variant;
-
     enum class Type : uint8_t { Benc, Json };
 
     explicit tr_variant_serde(Type type)
