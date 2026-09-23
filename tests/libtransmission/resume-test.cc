@@ -651,4 +651,26 @@ TEST_F(ResumeTest, savedRatioModeOutOfRange)
     }
 }
 
+// A saved idle mode that isn't a tr_idlelimit loads as TR_IDLELIMIT_GLOBAL.
+// Truncated to uint8_t, 257 would pass for TR_IDLELIMIT_SINGLE.
+TEST_F(ResumeTest, savedIdleModeOutOfRange)
+{
+    auto const saved_values = std::array{ int64_t{ 7 }, int64_t{ 257 } };
+
+    for (size_t i = 0; i < std::size(saved_values); ++i) {
+        SCOPED_TRACE(saved_values[i]);
+
+        auto idle = tr_variant::Map{ 1U };
+        idle.try_emplace(TR_KEY_idle_mode, saved_values[i]);
+        auto map = tr_variant::Map{ 1U };
+        map.try_emplace(TR_KEY_idle_limit, std::move(idle));
+
+        // The file size sets the info hash, so each value gets a torrent of its own.
+        auto builder = tr_torrent_builder{ session_ };
+        auto const* const tor = torrentInit(builder, { i + 1U }, std::move(map));
+        ASSERT_NE(nullptr, tor);
+        EXPECT_EQ(TR_IDLELIMIT_GLOBAL, tor->idle_limit_mode());
+    }
+}
+
 } // namespace tr::test
