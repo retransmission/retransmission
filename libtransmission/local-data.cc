@@ -1266,13 +1266,14 @@ void LocalData::close_all()
 
 void LocalData::move(
     tr_torrent_id_t const id,
-    std::string_view const parent,
+    MoveParent parent, // NOLINT(performance-unnecessary-value-param)
     OnMove on_move) // NOLINT(performance-unnecessary-value-param)
 {
-    admin(id, [this, id, parent = std::string{ parent }, on_move = std::move(on_move)]() mutable {
-        auto const err = backend_->move(id, parent);
+    admin(id, [this, id, parent = std::move(parent), on_move = std::move(on_move)]() mutable {
+        auto const dir = parent();
+        auto const err = std::empty(dir) ? tr_error_code_t{} : backend_->move(id, dir);
         if (on_move) {
-            std::move(on_move)(id, make_error(err));
+            std::move(on_move)(id, dir, make_error(err));
         }
     });
 }

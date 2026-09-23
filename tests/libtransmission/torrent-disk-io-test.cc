@@ -11,11 +11,13 @@
 #include <chrono>
 #include <cstdint>
 #include <cstring>
+#include <functional>
 #include <future>
 #include <memory>
 #include <optional>
 #include <span>
 #include <string>
+#include <string_view>
 #include <thread>
 #include <vector>
 
@@ -354,6 +356,62 @@ class TorrentRemovalTest
     : public TorrentDiskIoWorkersTest
     , public ::testing::WithParamInterface<bool>
 {
+};
+
+// Completes torrents whose files start in the incomplete dir.
+class IncompleteDirWorkersTest : public TorrentDiskIoWorkersTest
+{
+protected:
+    void SetUp() override
+    {
+        settings().insert_or_assign(TR_KEY_incomplete_dir_enabled, true);
+        TorrentDiskIoWorkersTest::SetUp();
+    }
+
+    // Completes `tor` from this thread by skipping the file that holds
+    // its missing piece. A paused write holds back the disk barriers
+    // until then. `before` runs on the session thread first. Returns the
+    // torrent's current dir as the completeness callback saw it.
+    [[nodiscard]] std::string completeBehindAWrite(tr_torrent* const tor, std::function<void()> const& before = {})
+    {
+        auto dir = std::string{};
+        auto called = std::atomic<bool>{ false };
+        tr_sessionSetCompletenessCallback(session_, [tor, &dir, &called](tr_torrent_id_t, tr_completeness, bool) {
+            dir = tor->current_dir().sv();
+            called = true;
+        });
+
+        session_->local_data.set_workers_paused(true);
+        blockingRunInSessionThread([tor, &before]() {
+            auto const block = tor->block_span_for_piece(0U).begin;
+            tor->save_block(block, zeroBlock(tor, block));
+            if (before) {
+                before();
+            }
+        });
+        auto const file = tr_file_index_t{ 0U };
+        tr_torrentSetFileDLs(tor, std::span{ &file, 1U }, false);
+
+        // the callback waits for the move out, which waits for the write
+        blockingRunInSessionThread([&called]() { EXPECT_FALSE(called); });
+        session_->local_data.set_workers_paused(false);
+        EXPECT_TRUE(waitFor([&called]() { return called.load(); }, MaxWaitMsec));
+        tr_sessionSetCompletenessCallback(session_, nullptr);
+        return dir;
+    }
+
+    void expectFilesIn(tr_torrent* const tor, std::string_view const dir)
+    {
+        blockingRunInSessionThread([tor, dir]() {
+            EXPECT_EQ(dir, tor->current_dir().sv());
+            EXPECT_TRUE(std::empty(tor->incomplete_dir()));
+            for (auto file = tr_file_index_t{ 1U }; file < tor->file_count(); ++file) {
+                auto const found = tor->find_file(file);
+                ASSERT_TRUE(found);
+                EXPECT_EQ(dir, found->base);
+            }
+        });
+    }
 };
 
 class WriteBudgetTest
@@ -1046,6 +1104,46 @@ TEST_F(TorrentDiskIoWorkersTest, failedWriteSetsLocalError)
     // the block was not counted, and is no longer pending
     EXPECT_FALSE(tor->has_block(block));
     EXPECT_FALSE(tor->has_block_or_pending(block));
+}
+
+TEST_F(IncompleteDirWorkersTest, doneCallbackWaitsForTheMoveOut)
+{
+    auto* const tor = zeroTorrentInit(ZeroTorrentState::Partial);
+    auto const download_dir = std::string{ tor->download_dir().sv() };
+
+    EXPECT_EQ(download_dir, completeBehindAWrite(tor));
+    expectFilesIn(tor, download_dir);
+}
+
+TEST_F(IncompleteDirWorkersTest, setLocationQueuedBeforeCompletionPicksTheDir)
+{
+    auto* const tor = zeroTorrentInit(ZeroTorrentState::Partial);
+    auto const target = tr_pathbuf{ sandboxDir(), "/target" };
+    auto state = -1;
+
+    EXPECT_EQ(target.sv(), completeBehindAWrite(tor, [tor, &target, &state]() {
+                  tr_torrentSetLocation(tor, target, true, &state);
+              }));
+    EXPECT_EQ(TR_LOC_DONE, state);
+    expectFilesIn(tor, target);
+}
+
+TEST_F(IncompleteDirWorkersTest, failedSetLocationStillLeavesTheIncompleteDir)
+{
+    auto* const tor = zeroTorrentInit(ZeroTorrentState::Partial);
+    auto const download_dir = std::string{ tor->download_dir().sv() };
+
+    // nothing can be created under a regular file
+    auto const blocker = tr_pathbuf{ sandboxDir(), "/blocker" };
+    createFileWithContents(blocker, std::string_view{ "x" });
+    auto const target = tr_pathbuf{ blocker, "/target" };
+    auto state = -1;
+
+    EXPECT_EQ(download_dir, completeBehindAWrite(tor, [tor, &target, &state]() {
+                  tr_torrentSetLocation(tor, target, true, &state);
+              }));
+    EXPECT_EQ(TR_LOC_ERROR, state);
+    expectFilesIn(tor, download_dir);
 }
 
 } // namespace tr::test

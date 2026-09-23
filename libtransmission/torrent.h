@@ -34,6 +34,7 @@
 #include "libtransmission/completion.h"
 #include "libtransmission/crypto-utils.h" // tr_rand_obj()
 #include "libtransmission/file-piece-map.h"
+#include "libtransmission/local-data.h"
 #include "libtransmission/log.h"
 #include "libtransmission/session.h"
 #include "libtransmission/shared-string.h"
@@ -1378,11 +1379,10 @@ private:
 
     void update_file_path(tr_file_index_t file, std::optional<bool> has_file) const;
 
-    void set_location_in_session_thread(std::string_view path, bool move_from_old_path, int volatile* setme_state);
+    void set_location_in_session_thread(tr::LocalData::MoveParent path, bool move_from_old_path, int volatile* setme_state);
 
-    // Once done, move out of the incomplete dir. Defers to a queued
-    // set-location, which decides where the files end up.
-    void maybe_leave_incomplete_dir();
+    // Once done, move the files from the incomplete dir to the download dir.
+    void leave_incomplete_dir();
 
     void start_in_session_thread();
 
@@ -1495,16 +1495,6 @@ private:
     bool is_queued_ = false;
     bool is_running_ = false;
     bool is_stopping_ = false;
-
-    // set-location calls queued behind disk IO. Until they land,
-    // current_dir() is stale.
-    size_t relocations_pending_ = 0U;
-
-    // A move out of the incomplete dir that waits for a queued set-location.
-    bool leave_deferred_ = false;
-
-    // A done script that waits for the queued set-locations to land.
-    bool done_script_deferred_ = false;
 
     bool finished_seeding_by_idle_ = false;
 

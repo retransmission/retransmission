@@ -1084,53 +1084,34 @@ tr_torrent* tr_torrentNew(tr_torrent_builder* builder, tr_torrent** setme_duplic
 // --- Location
 
 void tr_torrent::set_location_in_session_thread(
-    std::string_view const path,
+    tr::LocalData::MoveParent path,
     bool const move_from_old_path,
     int volatile* setme_state)
 {
     TR_ASSERT(session->am_in_session_thread());
     auto const lock = unique_lock();
 
-    ++relocations_pending_;
-
-    auto on_done = [session = this->session, path = std::string{ path }, move_from_old_path, setme_state](
-                       tr_torrent_id_t const tor_id,
-                       tr_error const& error) {
-        if (auto* const tor = session->torrents().get(tor_id); tor != nullptr) {
-            --tor->relocations_pending_;
-
-            if (error) {
-                tor->error().set_local_error(
-                    fmt::format(
-                        fmt::runtime(_("Couldn't move torrent files to '{path}': {error} ({error_code})")),
-                        fmt::arg("path", path),
-                        fmt::arg("error", error.message()),
-                        fmt::arg("error_code", error.code())));
-                tr_torrentStop(tor);
-
-                // A leave deferred to this set-location still has to happen.
-                // The flag is clear when this was that leave, so a failing
-                // leave doesn't retry itself.
-                if (tor->leave_deferred_) {
-                    tor->maybe_leave_incomplete_dir();
-                }
-            } else {
-                if (move_from_old_path) {
-                    // set_download_dir() then makes `path` the current dir
-                    tor->incomplete_dir_.clear();
-                }
-
-                // tell the torrent where the files are
-                tor->set_download_dir(path);
-                session->add_recent_relocate_dir(path);
-                tor->maybe_leave_incomplete_dir();
+    auto on_done = [session = this->session,
+                    move_from_old_path,
+                    setme_state](tr_torrent_id_t const tor_id, std::string_view const path, tr_error const& error) {
+        auto* const tor = session->torrents().get(tor_id);
+        if (tor != nullptr && error) {
+            tor->error().set_local_error(
+                fmt::format(
+                    fmt::runtime(_("Couldn't move torrent files to '{path}': {error} ({error_code})")),
+                    fmt::arg("path", path),
+                    fmt::arg("error", error.message()),
+                    fmt::arg("error_code", error.code())));
+            tr_torrentStop(tor);
+        } else if (tor != nullptr && !std::empty(path)) {
+            if (move_from_old_path) {
+                // set_download_dir() then makes `path` the current dir
+                tor->incomplete_dir_.clear();
             }
 
-            // Run a deferred done script once the last queued set-location
-            // lands, whether or not it moved the files.
-            if (tor->relocations_pending_ == 0U && std::exchange(tor->done_script_deferred_, false) && !tor->is_deleting_) {
-                callScriptIfEnabled(tor, TR_SCRIPT_ON_TORRENT_DONE);
-            }
+            // tell the torrent where the files are
+            tor->set_download_dir(path);
+            session->add_recent_relocate_dir(path);
         }
 
         if (setme_state != nullptr) {
@@ -1143,7 +1124,11 @@ void tr_torrent::set_location_in_session_thread(
         // still changes where ops resolve their paths. Wait for the
         // ops in flight like any other storage change, and let the
         // now-stale fds close with them.
-        session->local_data.close_torrent(id(), [on_done](tr_torrent_id_t const tor_id) { on_done(tor_id, {}); });
+        session->local_data.close_torrent(
+            id(),
+            [path = std::move(path), on_done = std::move(on_done)](tr_torrent_id_t const tor_id) {
+                on_done(tor_id, path(), {});
+            });
         return;
     }
 
@@ -1155,7 +1140,7 @@ void tr_torrent::set_location_in_session_thread(
     // those hashes must run before the files close and move.
     session->verify_remove(this);
     session->local_data.close_torrent(id());
-    session->local_data.move(id(), path, std::move(on_done));
+    session->local_data.move(id(), std::move(path), std::move(on_done));
 }
 
 small::max_size_vector<std::string_view, 2> tr_torrent::search_paths() const
@@ -1170,7 +1155,7 @@ void tr_torrent::set_location(std::string_view location, bool move_from_old_path
     }
 
     session->run_in_session_thread([this, loc = std::string(location), move_from_old_path, setme_state]() {
-        set_location_in_session_thread(loc, move_from_old_path, setme_state);
+        set_location_in_session_thread([loc]() { return loc; }, move_from_old_path, setme_state);
     });
 }
 
@@ -1841,25 +1826,26 @@ void tr_torrent::create_empty_files() const
     }
 }
 
-void tr_torrent::maybe_leave_incomplete_dir()
+void tr_torrent::leave_incomplete_dir()
 {
-    leave_deferred_ = false;
-
-    if (!is_done()) {
+    if (std::empty(incomplete_dir())) {
         return;
     }
 
-    // A queued set-location decides where the files end up.
-    // Its completion asks again, whether or not it moves them.
-    if (relocations_pending_ != 0U) {
-        leave_deferred_ = true;
-        return;
-    }
+    // Decide when the move starts, once the set-locations queued before
+    // it have landed. Skip it if one of them took the files elsewhere.
+    auto parent = [session = this->session, tor_id = id()]() -> std::string {
+        auto const* const tor = session->torrents().get(tor_id);
+        if (tor == nullptr) {
+            return {};
+        }
 
-    if (auto const incomplete = incomplete_dir().sv();
-        current_dir() == incomplete || (!std::empty(incomplete) && files().has_any_local_data(std::span{ &incomplete, 1U }))) {
-        set_location(download_dir().sv(), true, nullptr);
-    }
+        auto const incomplete = tor->incomplete_dir().sv();
+        auto const in_incomplete = tor->current_dir() == incomplete ||
+            (!std::empty(incomplete) && tor->files().has_any_local_data(std::span{ &incomplete, 1U }));
+        return in_incomplete ? std::string{ tor->download_dir().sv() } : std::string{};
+    };
+    set_location_in_session_thread(std::move(parent), true, nullptr);
 }
 
 void tr_torrent::recheck_completeness()
@@ -1896,41 +1882,53 @@ void tr_torrent::recheck_completeness()
 
         completeness_ = new_completeness;
 
-        if (is_done()) {
-            // Clients call this on their own threads too, but disk ops
-            // must be enqueued from the session thread.
-            session->run_in_session_thread(
-                [session = this->session, tor_id = id()]() { session->local_data.close_torrent(tor_id); });
-
-            if (recent_change) {
-                // https://www.bittorrent.org/beps/bep_0003.html
-                // ...and one using completed is sent when the download is complete.
-                // No completed is sent if the file was complete when started.
-                tr_announcerTorrentCompleted(this);
-            }
-            date_done_ = tr_time();
-
-            maybe_leave_incomplete_dir();
-
-            done_(this, recent_change);
+        if (!is_done()) {
+            session->onTorrentCompletenessChanged(id(), completeness_, was_running);
+            set_dirty();
+            mark_changed();
+            return;
         }
 
-        session->onTorrentCompletenessChanged(id(), completeness_, was_running);
-
-        set_dirty();
-        mark_changed();
-
-        if (is_done()) {
-            save_resume_file();
-
-            // The script is told where the files are, so it waits for
-            // a queued set-location, including the leave queued above.
-            if (relocations_pending_ == 0U) {
-                callScriptIfEnabled(this, TR_SCRIPT_ON_TORRENT_DONE);
-            } else {
-                done_script_deferred_ = true;
-            }
+        if (recent_change) {
+            // https://www.bittorrent.org/beps/bep_0003.html
+            // ...and one using completed is sent when the download is complete.
+            // No completed is sent if the file was complete when started.
+            tr_announcerTorrentCompleted(this);
         }
+        date_done_ = tr_time();
+
+        // The rest waits until the files are where they end up.
+        // The done script, for one, is told where they are.
+        auto finish = [session = this->session, recent_change, was_running](tr_torrent_id_t const tor_id) {
+            auto* const tor = session->torrents().get(tor_id);
+            if (tor == nullptr) {
+                return;
+            }
+
+            // Skip it if a removal is queued, or if the torrent wants more data again.
+            auto const lock = tor->unique_lock();
+            if (tor->is_deleting_ || !tor->is_done()) {
+                return;
+            }
+
+            tor->done_(tor, recent_change);
+            session->onTorrentCompletenessChanged(tor_id, tor->completeness_, was_running);
+            tor->set_dirty();
+            tor->mark_changed();
+            tor->save_resume_file();
+            callScriptIfEnabled(tor, TR_SCRIPT_ON_TORRENT_DONE);
+        };
+
+        // Clients call this on their own threads too, but disk ops
+        // must be enqueued from the session thread. Closing the files
+        // behind the move runs `finish` once the move lands.
+        session->run_in_session_thread([session = this->session, tor_id = id(), finish = std::move(finish)]() mutable {
+            if (auto* const tor = session->torrents().get(tor_id); tor != nullptr) {
+                auto const lock = tor->unique_lock();
+                tor->leave_incomplete_dir();
+                session->local_data.close_torrent(tor_id, std::move(finish));
+            }
+        });
     }
 }
 

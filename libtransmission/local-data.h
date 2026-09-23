@@ -19,6 +19,7 @@
 #include <optional>
 #include <random>
 #include <span>
+#include <string>
 #include <string_view>
 #include <type_traits>
 #include <utility>
@@ -182,7 +183,12 @@ public:
 
     using OnWrite = std::function<void(tr_torrent_id_t, tr_byte_span_t byte_span, tr_error const& error)>;
 
-    using OnMove = std::function<void(tr_torrent_id_t, tr_error const& error)>;
+    // Names the dir a move puts the files under, or an empty one to skip
+    // the move. It runs when the move starts, after the ops queued before it.
+    using MoveParent = std::function<std::string()>;
+
+    // `parent` is the dir the files went under, or empty if the move was skipped.
+    using OnMove = std::function<void(tr_torrent_id_t, std::string_view parent, tr_error const& error)>;
 
     using OnRemove = std::function<void(tr_torrent_id_t, tr_error const& error)>;
 
@@ -284,7 +290,7 @@ public:
     void close_torrent(tr_torrent_id_t tor_id, OnClose on_close = {});
     void close_file(tr_torrent_id_t tor_id, tr_file_index_t file_num, OnClose on_close = {});
     void close_all();
-    void move(tr_torrent_id_t id, std::string_view parent, OnMove on_move);
+    void move(tr_torrent_id_t id, MoveParent parent, OnMove on_move);
     void remove(tr_torrent_id_t id, tr_torrent_remove_func remove_func, OnRemove on_remove = {});
     void rename(tr_torrent_id_t id, std::string_view oldpath, std::string_view newname, tr_torrent_rename_done_func callback);
 

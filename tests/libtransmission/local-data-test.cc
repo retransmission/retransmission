@@ -216,12 +216,29 @@ TEST(LocalData, AdminOperationsDelegate)
     auto local_data = tr::LocalData{ std::move(backend) };
 
     auto move_called = false;
-    local_data.move(5, "/new", [&move_called](tr_torrent_id_t tor_id, tr_error const& error) {
-        move_called = true;
-        EXPECT_EQ(5, tor_id);
-        EXPECT_FALSE(error);
-    });
+    local_data.move(
+        5,
+        []() { return std::string{ "/new" }; },
+        [&move_called](tr_torrent_id_t tor_id, std::string_view const parent, tr_error const& error) {
+            move_called = true;
+            EXPECT_EQ(5, tor_id);
+            EXPECT_EQ("/new", parent);
+            EXPECT_FALSE(error);
+        });
     EXPECT_TRUE(move_called);
+    EXPECT_EQ("/new", raw_backend->moved_to);
+
+    // an empty parent skips the move
+    auto skip_called = false;
+    local_data.move(
+        5,
+        []() { return std::string{}; },
+        [&skip_called](tr_torrent_id_t, std::string_view const parent, tr_error const& error) {
+            skip_called = true;
+            EXPECT_EQ("", parent);
+            EXPECT_FALSE(error);
+        });
+    EXPECT_TRUE(skip_called);
     EXPECT_EQ("/new", raw_backend->moved_to);
 
     auto rename_called = false;
@@ -325,10 +342,13 @@ TEST(LocalData, AdminOpsDrainParkedCompletions)
 
     // rule 3: a barrier waits for the ops enqueued before it
     auto move_finished = false;
-    local_data.move(7, "/new", [&read_finished, &move_finished](auto, auto const&) {
-        EXPECT_TRUE(read_finished);
-        move_finished = true;
-    });
+    local_data.move(
+        7,
+        []() { return std::string{ "/new" }; },
+        [&read_finished, &move_finished](auto, auto, auto const&) {
+            EXPECT_TRUE(read_finished);
+            move_finished = true;
+        });
 
     EXPECT_TRUE(move_finished);
     EXPECT_EQ("/new", raw_backend->moved_to);
@@ -843,9 +863,15 @@ TEST_F(LocalDataWorkersTest, barriersWaitForWritesAndBlockLaterOps)
     auto order = std::vector<std::string>{};
     writeBlocks(*local_data, 0U, 2U * BlockSize, [&order]() { order.emplace_back("write"); });
 
-    // (the move itself fails since there's no real torrent, and only
-    // the ordering of the completions matters here)
-    local_data->move(TorId, "/new", [&order](auto, auto const&) { order.emplace_back("move"); });
+    // The move picks its dir when it starts. (The move itself fails
+    // since there's no real torrent. Only the ordering matters here.)
+    local_data->move(
+        TorId,
+        [&order]() {
+            order.emplace_back("parent");
+            return std::string{ "/new" };
+        },
+        [&order](auto, auto, auto const&) { order.emplace_back("move"); });
 
     // ...and this read waits for the barrier
     local_data->read(TorId, { .begin = 0U, .end = BlockSize }, [&order](auto, auto, auto const&, auto) {
@@ -857,8 +883,8 @@ TEST_F(LocalDataWorkersTest, barriersWaitForWritesAndBlockLaterOps)
     EXPECT_EQ(2U * BlockSize, local_data->enqueued_write_bytes());
 
     local_data->set_workers_paused(false);
-    EXPECT_TRUE(pumpUntil([&order]() { return std::size(order) == 4U; }));
-    auto const expected = std::vector<std::string>{ "write", "write", "move", "read" };
+    EXPECT_TRUE(pumpUntil([&order]() { return std::size(order) == 5U; }));
+    auto const expected = std::vector<std::string>{ "write", "write", "parent", "move", "read" };
     EXPECT_EQ(expected, order);
 
     local_data->shutdown();
