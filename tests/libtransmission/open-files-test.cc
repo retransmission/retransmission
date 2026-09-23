@@ -76,16 +76,16 @@ TEST_F(OpenFilesTest, getReportsWhetherItCreatedTheFile)
     auto created = true;
 
     // the first writable get() creates the file
-    EXPECT_TRUE(session_->openFiles().get(0, 0, true, filename, tr_file_preallocation::None, 1U, error, nullptr, &created));
+    EXPECT_TRUE(session_->openFiles().get(0, 0, true, filename, tr_file_preallocation::None, 1U, error, &created));
     EXPECT_TRUE(created);
 
     // the second one finds it in the pool
-    EXPECT_TRUE(session_->openFiles().get(0, 0, true, filename, tr_file_preallocation::None, 1U, error, nullptr, &created));
+    EXPECT_TRUE(session_->openFiles().get(0, 0, true, filename, tr_file_preallocation::None, 1U, error, &created));
     EXPECT_FALSE(created);
 
     // and after a close, it finds it on disk
     session_->openFiles().close_file(0, 0);
-    EXPECT_TRUE(session_->openFiles().get(0, 0, true, filename, tr_file_preallocation::None, 1U, error, nullptr, &created));
+    EXPECT_TRUE(session_->openFiles().get(0, 0, true, filename, tr_file_preallocation::None, 1U, error, &created));
     EXPECT_FALSE(created);
     EXPECT_FALSE(error) << error;
 }
@@ -378,16 +378,6 @@ TEST_P(OpenFilesPreallocationTest, serializesWritersUntilInitializationFinishes)
     EXPECT_EQ(std::future_status::ready, entered.get_future().wait_for(5s));
     EXPECT_FALSE(files.get(0, 0, true));
 
-    auto lookup_ready = std::promise<void>{};
-    auto open_ready = std::promise<void>{};
-    auto lookup_waiter = tr_open_files::Waiter{ .on_ready = [&]() { lookup_ready.set_value(); } };
-    auto open_waiter = tr_open_files::Waiter{ .on_ready = [&]() { open_ready.set_value(); } };
-    auto error = tr_error{};
-    EXPECT_FALSE(files.get(0, 0, true, &lookup_waiter));
-    EXPECT_FALSE(files.get(0, 0, true, filename, PreallocateFull, FileSize, error, &open_waiter));
-    EXPECT_TRUE(lookup_waiter.blocked);
-    EXPECT_TRUE(open_waiter.blocked);
-
     auto writer_started = std::promise<void>{};
     auto second = std::async(std::launch::async, [&]() {
         writer_started.set_value();
@@ -413,8 +403,6 @@ TEST_P(OpenFilesPreallocationTest, serializesWritersUntilInitializationFinishes)
 
     auto const first_file = first.get();
     auto const second_file = second.get();
-    EXPECT_EQ(std::future_status::ready, lookup_ready.get_future().wait_for(0s));
-    EXPECT_EQ(std::future_status::ready, open_ready.get_future().wait_for(0s));
     EXPECT_TRUE(independent.get());
     EXPECT_EQ(!fail, static_cast<bool>(first_file));
     ASSERT_TRUE(second_file);

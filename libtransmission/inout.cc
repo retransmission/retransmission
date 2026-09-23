@@ -80,35 +80,19 @@ struct GotFile {
     bool created = false;
 };
 
-// True if the pool parked the waiter behind another caller's open of
-// the same file. The caller tries again when the waiter fires.
-[[nodiscard]] bool parked(tr_open_files::Waiter const* const waiter, tr_error& error)
-{
-    if (waiter == nullptr || !waiter->blocked) {
-        return false;
-    }
-
-    error.set(EAGAIN, "File initialization pending");
-    return true;
-}
-
 // Returns a RAII reference to the open file.
 [[nodiscard]] GotFile get_file(
     tr::StorageDescriptor const& desc,
     tr_open_files& open_files,
     bool const writable,
     tr_file_index_t const file_index,
-    tr_error& error,
-    tr_open_files::Waiter* const waiter)
+    tr_error& error)
 {
     auto const tor_id = desc.id;
 
     // is the file already open in the fd pool?
-    if (auto file = open_files.get(tor_id, file_index, writable, waiter)) {
+    if (auto file = open_files.get(tor_id, file_index, writable)) {
         return { .file = std::move(file) };
-    }
-    if (parked(waiter, error)) {
-        return {};
     }
 
     // does the file exist?
@@ -116,7 +100,7 @@ struct GotFile {
     auto const prealloc = writable && desc.files_wanted.test(file_index) ? desc.preallocation : tr_file_preallocation::None;
     if (auto const found = desc.find(file_index)) {
         auto const filename = found->filename<tr_pathbuf>();
-        if (auto file = open_files.get(tor_id, file_index, writable, filename, prealloc, file_size, error, waiter); file) {
+        if (auto file = open_files.get(tor_id, file_index, writable, filename, prealloc, file_size, error); file) {
             return { .file = std::move(file) };
         }
 
@@ -130,15 +114,10 @@ struct GotFile {
         auto const suffix = desc.partial_file_naming ? tr_torrent_files::PartialFileSuffix : ""sv;
         auto const filename = tr_pathbuf{ desc.current_dir, '/', desc.files.path(file_index), suffix };
         auto created = false;
-        if (auto file = open_files.get(tor_id, file_index, writable, filename, prealloc, file_size, error, waiter, &created);
-            file) {
+        if (auto file = open_files.get(tor_id, file_index, writable, filename, prealloc, file_size, error, &created); file) {
             // Another worker may have created the file since find() looked.
             return { .file = std::move(file), .created = created };
         }
-    }
-
-    if (parked(waiter, error)) {
-        return {};
     }
 
     if (error) {
@@ -165,8 +144,7 @@ void read_bytes(
     tr_file_index_t const file_index,
     uint64_t const file_offset,
     std::span<uint8_t> buf,
-    tr_error& error,
-    tr_open_files::Waiter* const waiter)
+    tr_error& error)
 {
     TR_ASSERT(file_index < desc.files.file_count());
     auto const file_size = desc.files.file_size(file_index);
@@ -176,7 +154,7 @@ void read_bytes(
         return;
     }
 
-    auto const file = get_file(desc, open_files, false, file_index, error, waiter).file;
+    auto const file = get_file(desc, open_files, false, file_index, error).file;
     if (!file || error) {
         return;
     }
@@ -202,8 +180,7 @@ void write_bytes(
     uint64_t const file_offset,
     std::span<uint8_t const> buf,
     tr_error& error,
-    size_t& n_files_created,
-    tr_open_files::Waiter* const waiter)
+    size_t& n_files_created)
 {
     TR_ASSERT(file_index < desc.files.file_count());
     auto const file_size = desc.files.file_size(file_index);
@@ -213,7 +190,7 @@ void write_bytes(
         return;
     }
 
-    auto const [file, created] = get_file(desc, open_files, true, file_index, error, waiter);
+    auto const [file, created] = get_file(desc, open_files, true, file_index, error);
     if (created) {
         ++n_files_created;
     }
@@ -241,8 +218,7 @@ tr_error_code_t tr_ioRead(
     tr::StorageDescriptor const& desc,
     tr_open_files& open_files,
     uint64_t const begin,
-    std::span<uint8_t> const setme,
-    tr_open_files::Waiter* const waiter)
+    std::span<uint8_t> const setme)
 {
     if (std::empty(setme)) {
         return 0;
@@ -257,7 +233,7 @@ tr_error_code_t tr_ioRead(
     auto buf = setme;
     while (!std::empty(buf) && !error) {
         auto const bytes_this_pass = std::min<uint64_t>(std::size(buf), desc.files.file_size(file_index) - file_offset);
-        read_bytes(desc, open_files, file_index, file_offset, buf.first(bytes_this_pass), error, waiter);
+        read_bytes(desc, open_files, file_index, file_offset, buf.first(bytes_this_pass), error);
         buf = buf.subspan(bytes_this_pass);
         ++file_index;
         file_offset = 0U;
@@ -270,8 +246,7 @@ tr_io_write_result tr_ioWrite(
     tr::StorageDescriptor const& desc,
     tr_open_files& open_files,
     uint64_t const begin,
-    std::span<uint8_t const> const writeme,
-    tr_open_files::Waiter* const waiter)
+    std::span<uint8_t const> const writeme)
 {
     auto result = tr_io_write_result{};
 
@@ -289,15 +264,7 @@ tr_io_write_result tr_ioWrite(
     auto buf = writeme;
     while (!std::empty(buf) && !error) {
         auto const bytes_this_pass = std::min<uint64_t>(std::size(buf), desc.files.file_size(file_index) - file_offset);
-        write_bytes(
-            desc,
-            open_files,
-            file_index,
-            file_offset,
-            buf.first(bytes_this_pass),
-            error,
-            result.n_files_created,
-            waiter);
+        write_bytes(desc, open_files, file_index, file_offset, buf.first(bytes_this_pass), error, result.n_files_created);
         buf = buf.subspan(bytes_this_pass);
         ++file_index;
         file_offset = 0U;
@@ -311,8 +278,7 @@ tr_error_code_t tr_ioRecalculateHash(
     tr::StorageDescriptor const& desc,
     tr_open_files& open_files,
     tr_piece_index_t const piece,
-    tr_sha1_digest_t& setme,
-    tr_open_files::Waiter* const waiter)
+    tr_sha1_digest_t& setme)
 {
     auto const& block_info = desc.block_info;
     if (piece >= block_info.piece_count()) {
@@ -324,10 +290,10 @@ tr_error_code_t tr_ioRecalculateHash(
     auto const hash = tr_ioHashPiece(
         block_info,
         piece,
-        [&desc, &open_files, &block_info, &buffer, &err, waiter](tr_block_index_t const block) -> std::span<uint8_t const> {
+        [&desc, &open_files, &block_info, &buffer, &err](tr_block_index_t const block) -> std::span<uint8_t const> {
             auto const byte_span = block_info.byte_span_for_block(block);
             auto const data = std::span{ buffer }.first(static_cast<size_t>(byte_span.size()));
-            err = tr_ioRead(desc, open_files, byte_span.begin, data, waiter);
+            err = tr_ioRead(desc, open_files, byte_span.begin, data);
             return err == 0 ? data : std::span<uint8_t>{};
         });
 

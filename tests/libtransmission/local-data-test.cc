@@ -583,86 +583,31 @@ private:
 
 } // namespace
 
-TEST_F(LocalDataWorkersTest, fileInitializationParksDependentWorkWithoutOccupyingWorkers)
+TEST_F(LocalDataWorkersTest, failedPreallocationFailsTheWrite)
 {
-    for (auto const fail : { false, true }) {
-        SCOPED_TRACE(fail);
-        auto const desc = std::make_shared<tr::StorageDescriptor>(*makeDescriptor(
-            { { fail ? "prefix-failed.bin" : "prefix.bin", BlockSize / 2U },
-              { fail ? "failed.bin" : "slow.bin", 4U * BlockSize },
-              { fail ? "other-failed.bin" : "other.bin", BlockSize } },
-            BlockSize));
-        desc->preallocation = tr_file_preallocation::Full;
-        auto entered = std::promise<void>{};
-        auto prefix_created = std::promise<void>{};
-        auto resume = std::promise<void>{};
-        auto const resumed = resume.get_future().share();
-        auto files = tr_open_files{ [&](tr_sys_file_t, uint64_t const size, int, tr_error* const error) {
-            if (size == 4U * BlockSize) {
-                entered.set_value();
-                EXPECT_EQ(std::future_status::ready, resumed.wait_for(5s));
-                return tr::test::failPreallocation(error, fail);
-            }
-            if (size == BlockSize / 2U) {
-                prefix_created.set_value();
-            }
-            return true;
-        } };
-        auto local_data = tr::LocalData{ torrents_, files };
-        auto n_created = size_t{};
-        local_data.set_on_files_created([&](tr_torrent_id_t, size_t const count) { n_created += count; });
-        local_data.start_workers(2U, files, marshal(), [desc](tr_torrent_id_t) {
-            return std::shared_ptr<tr::StorageDescriptor const>{ desc };
-        });
-        auto first_done = false;
-        auto dependent_done = false;
-        auto hash_done = false;
-        auto independent_done = false;
-        auto closed = false;
-        local_data.write(
-            TorId,
-            { .begin = BlockSize, .end = 2U * BlockSize },
-            patternBlock(BlockSize, BlockSize),
-            [&](tr_torrent_id_t, tr_byte_span_t, tr_error const& error) {
-                EXPECT_EQ(fail, static_cast<bool>(error));
-                if (fail) {
-                    EXPECT_TRUE(tr_error_is_enospc(error.code())) << error;
-                }
-                first_done = true;
-            });
-        EXPECT_EQ(std::future_status::ready, entered.get_future().wait_for(5s));
-        writeBlocks(local_data, 0U, BlockSize, [&]() { dependent_done = true; });
-        EXPECT_EQ(std::future_status::ready, prefix_created.get_future().wait_for(5s));
-        local_data.test_piece(TorId, 3U, [&](tr_torrent_id_t, tr_piece_index_t, tr_error const& error, auto hash) {
-            if (!fail) {
-                EXPECT_FALSE(error);
-                EXPECT_EQ(tr_sha1::digest(std::string(BlockSize, '\0')), hash);
-            }
-            hash_done = true;
-        });
-        writeBlocks(local_data, 9U * BlockSize / 2U, 11U * BlockSize / 2U, [&]() { independent_done = true; });
-        local_data.close_torrent(TorId, [&](tr_torrent_id_t) { closed = true; });
+    auto const desc = std::make_shared<tr::StorageDescriptor>(*makeDescriptor({ { "data.bin", BlockSize } }, BlockSize));
+    desc->preallocation = tr_file_preallocation::Full;
+    auto files = tr_open_files{ [](tr_sys_file_t, uint64_t, int, tr_error* const error) {
+        return tr::test::failPreallocation(error, true);
+    } };
+    auto local_data = tr::LocalData{ torrents_, files };
+    local_data.start_workers(2U, files, marshal(), [desc](tr_torrent_id_t) {
+        return std::shared_ptr<tr::StorageDescriptor const>{ desc };
+    });
 
-        pumpUntil([&]() { return independent_done; });
-        EXPECT_FALSE(first_done);
-        EXPECT_FALSE(dependent_done);
-        EXPECT_FALSE(hash_done);
-        EXPECT_FALSE(closed);
-        EXPECT_EQ(2U * BlockSize, local_data.enqueued_write_bytes());
+    auto done = false;
+    local_data.write(
+        TorId,
+        { .begin = 0U, .end = BlockSize },
+        patternBlock(0U, BlockSize),
+        [&done](tr_torrent_id_t, tr_byte_span_t, tr_error const& error) {
+            EXPECT_TRUE(tr_error_is_enospc(error.code())) << error;
+            done = true;
+        });
 
-        resume.set_value();
-        pumpUntil([&]() { return closed; });
-        EXPECT_TRUE(first_done);
-        EXPECT_TRUE(dependent_done);
-        EXPECT_TRUE(hash_done);
-        EXPECT_EQ(0U, local_data.enqueued_write_bytes());
-        EXPECT_EQ(fail ? 2U : 3U, n_created);
-        EXPECT_EQ(patternString(0U, BlockSize / 2U), readFile(fail ? "prefix-failed.bin" : "prefix.bin"));
-        EXPECT_EQ(
-            patternString(BlockSize / 2U, BlockSize / 2U),
-            readFile(fail ? "failed.bin" : "slow.bin").substr(0U, BlockSize / 2U));
-        EXPECT_EQ(patternString(9U * BlockSize / 2U, BlockSize), readFile(fail ? "other-failed.bin" : "other.bin"));
-    }
+    EXPECT_TRUE(pumpUntil([&done]() { return done; }));
+    EXPECT_EQ(0U, local_data.enqueued_write_bytes());
+    local_data.shutdown();
 }
 
 TEST_F(LocalDataWorkersTest, blockPatternsAreDistinct)

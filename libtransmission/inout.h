@@ -18,10 +18,10 @@
 #include "libtransmission/crypto-utils.h" // tr_sha1
 #include "libtransmission/digest.h"
 #include "libtransmission/error-types.h"
-#include "libtransmission/open-files.h"
 #include "libtransmission/tr-assert.h"
 #include "libtransmission/types.h"
 
+class tr_open_files;
 struct tr_torrent;
 
 namespace tr
@@ -40,8 +40,7 @@ struct StorageDescriptor;
     tr::StorageDescriptor const& desc,
     tr_open_files& open_files,
     uint64_t begin,
-    std::span<uint8_t> setme,
-    tr_open_files::Waiter* waiter = nullptr);
+    std::span<uint8_t> setme);
 
 struct tr_io_write_result {
     // 0 on success, or an errno value on failure.
@@ -64,8 +63,7 @@ struct tr_io_write_result {
     tr::StorageDescriptor const& desc,
     tr_open_files& open_files,
     uint64_t begin,
-    std::span<uint8_t const> writeme,
-    tr_open_files::Waiter* waiter = nullptr);
+    std::span<uint8_t const> writeme);
 
 /**
  * Hashes one piece from whatever `get_block` returns for each of its blocks.
@@ -123,8 +121,7 @@ template<typename GetBlock> // std::span<uint8_t const>(tr_block_index_t)
     tr::StorageDescriptor const& desc,
     tr_open_files& open_files,
     tr_piece_index_t piece,
-    tr_sha1_digest_t& setme,
-    tr_open_files::Waiter* waiter = nullptr);
+    tr_sha1_digest_t& setme);
 
 /**
  * @brief Test to see if the piece matches its metainfo's SHA1 checksum.

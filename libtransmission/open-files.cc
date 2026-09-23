@@ -125,29 +125,9 @@ bool preallocate_file_full(
 
 // ---
 
-bool tr_open_files::park_if_opening(Key const& key, Waiter* const waiter)
-{
-    auto const it = opening_.find(key);
-    if (waiter == nullptr || it == std::end(opening_)) {
-        return false;
-    }
-
-    it->second.push_back(waiter->on_ready);
-    waiter->blocked = true;
-    return true;
-}
-
-tr_open_files::Handle tr_open_files::get(
-    tr_torrent_id_t const tor_id,
-    tr_file_index_t const file_num,
-    bool const writable,
-    Waiter* const waiter)
+tr_open_files::Handle tr_open_files::get(tr_torrent_id_t const tor_id, tr_file_index_t const file_num, bool const writable)
 {
     auto const lock = std::scoped_lock{ mutex_ };
-
-    if (park_if_opening(make_key(tor_id, file_num), waiter)) {
-        return {};
-    }
 
     if (auto* const found = pool_.get(make_key(tor_id, file_num)); found != nullptr) {
         if (writable && !(*found)->is_writable()) {
@@ -168,7 +148,6 @@ tr_open_files::Handle tr_open_files::get(
     tr_file_preallocation const allocation,
     uint64_t const file_size,
     tr_error& error,
-    Waiter* const waiter,
     bool* const setme_created)
 {
     if (setme_created != nullptr) {
@@ -179,9 +158,6 @@ tr_open_files::Handle tr_open_files::get(
     auto const key = make_key(tor_id, file_num);
     {
         auto lock = std::unique_lock{ mutex_ };
-        if (park_if_opening(key, waiter)) {
-            return {};
-        }
         opening_cv_.wait(lock, [this, key]() { return !opening_.contains(key); });
         if (auto* const found = pool_.get(key); found != nullptr) {
             if (!writable || (*found)->is_writable()) {
@@ -192,7 +168,7 @@ tr_open_files::Handle tr_open_files::get(
             // through the old descriptor keeps it open until they're done.
             pool_.erase(key);
         }
-        opening_.try_emplace(key);
+        opening_.insert(key);
     }
     auto const opening = Opening{ *this, key };
 
@@ -289,16 +265,11 @@ tr_open_files::Handle tr_open_files::get(
 
 tr_open_files::Opening::~Opening()
 {
-    auto callbacks = std::vector<std::function<void()>>{};
     {
         auto const lock = std::scoped_lock{ owner_.mutex_ };
-        callbacks = std::move(owner_.opening_.at(key_));
         owner_.opening_.erase(key_);
     }
     owner_.opening_cv_.notify_all();
-    for (auto& callback : callbacks) {
-        callback();
-    }
 }
 
 void tr_open_files::close_all()

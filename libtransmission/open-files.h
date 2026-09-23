@@ -13,12 +13,11 @@
 #include <cstddef> // for size_t
 #include <cstdint> // for uintX_t
 #include <functional>
-#include <map>
+#include <set>
 #include <memory>
 #include <mutex>
 #include <string_view>
 #include <utility>
-#include <vector>
 
 #include "libtransmission/file.h" // tr_sys_file_t
 #include "libtransmission/lru-cache.h"
@@ -97,12 +96,7 @@ public:
     {
     }
 
-    struct Waiter {
-        std::function<void()> on_ready;
-        bool blocked = false;
-    };
-
-    [[nodiscard]] Handle get(tr_torrent_id_t tor_id, tr_file_index_t file_num, bool writable, Waiter* waiter = nullptr);
+    [[nodiscard]] Handle get(tr_torrent_id_t tor_id, tr_file_index_t file_num, bool writable);
 
     // Sets `setme_created` to whether this call created the file on disk.
     [[nodiscard]] Handle get(
@@ -113,7 +107,6 @@ public:
         tr_file_preallocation allocation,
         uint64_t file_size,
         tr_error& error,
-        Waiter* waiter = nullptr,
         bool* setme_created = nullptr);
 
     void close_all();
@@ -150,10 +143,6 @@ private:
         return std::make_pair(tor_id, file_num);
     }
 
-    // Call with mutex_ held. True if another caller is initializing
-    // the file and `waiter` is now parked on it.
-    [[nodiscard]] bool park_if_opening(Key const& key, Waiter* waiter);
-
     static constexpr size_t MaxOpenFiles = 32U;
 
     Preallocate const preallocate_;
@@ -161,6 +150,6 @@ private:
     // Guards pool_ and opening_. File initialization runs outside the lock.
     std::mutex mutex_;
     std::condition_variable opening_cv_;
-    std::map<Key, std::vector<std::function<void()>>> opening_;
+    std::set<Key> opening_;
     tr_lru_cache<Key, Handle, MaxOpenFiles> pool_;
 };

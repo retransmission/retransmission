@@ -592,7 +592,6 @@ private:
         tr_byte_span_t span;
         std::unique_ptr<BlockData> data;
         OnWrite on_write;
-        std::shared_ptr<bool> ready = nullptr;
     };
 
     // A piece hash the gate admitted, waiting for a worker.
@@ -601,7 +600,6 @@ private:
         std::shared_ptr<StorageDescriptor const> desc;
         tr_piece_index_t piece;
         OnTest on_test;
-        std::shared_ptr<bool> ready = nullptr;
     };
 
     struct WriteKey {
@@ -933,12 +931,9 @@ private:
                         return false;
                     }
 
-                    auto const next_test = std::ranges::find_if(pending_tests_, [](auto const& op) {
-                        return is_ready(op.ready);
-                    });
-                    if (next_test != std::end(pending_tests_)) {
-                        test = std::move(*next_test);
-                        pending_tests_.erase(next_test);
+                    if (!std::empty(pending_tests_)) {
+                        test = std::move(pending_tests_.front());
+                        pending_tests_.pop_front();
                         return true;
                     }
 
@@ -957,36 +952,16 @@ private:
         }
     }
 
-    [[nodiscard]] static bool is_ready(std::shared_ptr<bool> const& ready) noexcept
-    {
-        return !ready || *ready;
-    }
-
-    [[nodiscard]] tr_open_files::Waiter make_waiter(std::shared_ptr<bool> const& ready)
-    {
-        return { .on_ready = [this, ready]() {
-            {
-                auto const lock = std::scoped_lock{ work_mutex_ };
-                *ready = true;
-            }
-            work_cv_.notify_all();
-        } };
-    }
-
     // Take the next write past the cursor, plus the writes contiguous
     // with it. Call with work_mutex_ held.
     [[nodiscard]] std::vector<PendingWrite> take_write_run()
     {
-        auto const runnable = [](auto const& entry) {
-            return is_ready(entry.second.ready);
-        };
-        auto const start = pending_writes_.lower_bound(cursor_);
-        auto it = std::find_if(start, std::end(pending_writes_), runnable);
+        auto it = pending_writes_.lower_bound(cursor_);
         if (it == std::end(pending_writes_)) {
-            it = std::find_if(std::begin(pending_writes_), start, runnable);
-            if (it == start) {
-                return {};
-            }
+            it = std::begin(pending_writes_);
+        }
+        if (it == std::end(pending_writes_)) {
+            return {};
         }
 
         auto const tor_id = it->second.tor_id;
@@ -997,7 +972,7 @@ private:
         auto run = std::vector<PendingWrite>{};
         while (it != std::end(pending_writes_)) {
             auto const& op = it->second;
-            if (!is_ready(op.ready) || op.tor_id != tor_id || op.desc != desc || op.span.begin != next_byte ||
+            if (op.tor_id != tor_id || op.desc != desc || op.span.begin != next_byte ||
                 n_bytes + op.span.size() > MaxRunBytes) {
                 break;
             }
@@ -1038,8 +1013,6 @@ private:
         auto const begin = run.front().span.begin;
         auto const n_bytes = static_cast<size_t>(run.back().span.end - begin);
 
-        auto const ready = std::make_shared<bool>(false);
-        auto waiter = make_waiter(ready);
         auto writeme = std::span<uint8_t const>{ *run.front().data }.first(run.front().span.size());
         if (std::size(run) > 1U) {
             // Adjacent blocks go to the disk as one write.
@@ -1052,30 +1025,14 @@ private:
             writeme = buf;
         }
 
-        auto const result = tr_ioWrite(desc, open_files_, begin, writeme, &waiter);
+        auto const result = tr_ioWrite(desc, open_files_, begin, writeme);
 
-        // A blocked run is retried, but the files it created exist now.
         if (result.n_files_created > 0U) {
             post_completion([this, id = run.front().tor_id, n = result.n_files_created]() {
                 if (on_files_created_) {
                     on_files_created_(id, n);
                 }
             });
-        }
-
-        if (waiter.blocked) {
-            {
-                auto const lock = std::scoped_lock{ work_mutex_ };
-                for (auto& op : run) {
-                    op.ready = ready;
-                    auto const key = WriteKey{ .tor_id = op.tor_id, .begin = op.span.begin };
-                    // the key is free: admit_write() rejects a second write for a block in flight
-                    [[maybe_unused]] auto const inserted = pending_writes_.emplace(key, std::move(op)).second;
-                    TR_ASSERT(inserted);
-                }
-            }
-            work_cv_.notify_all();
-            return;
         }
 
         enqueued_write_bytes_.fetch_sub(n_bytes, std::memory_order_relaxed);
@@ -1132,18 +1089,7 @@ private:
             err = found ? 0 : EIO;
             hashes_from_buffers_.fetch_add(1U, std::memory_order_relaxed);
         } else {
-            auto const ready = std::make_shared<bool>(false);
-            auto waiter = make_waiter(ready);
-            err = tr_ioRecalculateHash(*op.desc, open_files_, op.piece, hash, &waiter);
-            if (waiter.blocked) {
-                {
-                    auto const lock = std::scoped_lock{ work_mutex_ };
-                    op.ready = ready;
-                    pending_tests_.push_back(std::move(op));
-                }
-                work_cv_.notify_all();
-                return;
-            }
+            err = tr_ioRecalculateHash(*op.desc, open_files_, op.piece, hash);
             hashes_from_disk_.fetch_add(1U, std::memory_order_relaxed);
         }
 
