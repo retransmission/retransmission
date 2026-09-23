@@ -822,6 +822,7 @@ void tr_torrent::on_metainfo_updated()
     files_wanted_ = tr_files_wanted{ &fpm_ };
     checked_pieces_ = tr_bitfield{ static_cast<size_t>(piece_count()) };
     blocks_pending_write_ = tr_bitfield{ static_cast<size_t>(block_count()) };
+    blocks_awaiting_hash_ = tr_bitfield{ static_cast<size_t>(block_count()) };
     invalidate_storage_descriptor();
 }
 
@@ -1329,13 +1330,7 @@ tr_stat tr_torrent::stats() const
     stats.corrupt_ever = this->bytes_corrupt_.ever();
     stats.downloaded_ever = this->bytes_downloaded_.ever();
     stats.uploaded_ever = this->bytes_uploaded_.ever();
-    // A piece whose hash is still running may yet fail.
     stats.have_valid = this->completion_.has_valid();
-    for (auto const& [piece, token] : hash_tokens_) {
-        if (completion_.has_piece(piece)) {
-            stats.have_valid -= piece_size(piece);
-        }
-    }
     stats.have_unchecked = this->has_total() - stats.have_valid;
     stats.desired_available = tr_peerMgrGetDesiredAvailable(this);
 
@@ -1602,7 +1597,9 @@ void tr_torrentVerify(tr_torrent* tor)
                 torrent->start_when_stable_ = false;
             }
 
+            // the verify decides every piece from what's on disk
             torrent->hash_tokens_.clear();
+            torrent->blocks_awaiting_hash_.set_has_none();
             session->verify_add(torrent);
         });
     });
@@ -1613,12 +1610,13 @@ void tr_torrent::cancel_pending_verify()
     ++verify_token_;
     if (verify_state_ == VerifyState::Queued) {
         set_verify_state(VerifyState::None);
-        auto const pending = std::exchange(hash_tokens_, {});
-        for (auto const& [piece, token] : pending) {
-            if (has_blocks(block_span_for_piece(piece))) {
-                test_piece(piece);
+        auto pieces = std::vector<tr_piece_index_t>{};
+        for (auto const& [piece, token] : std::exchange(hash_tokens_, {})) {
+            if (is_piece_written(piece)) {
+                pieces.push_back(piece);
             }
         }
+        test_pieces(pieces);
     }
 }
 
@@ -1692,10 +1690,7 @@ void tr_torrent::VerifyMediator::on_verify_started()
 
 void tr_torrent::VerifyMediator::on_piece_checked(tr_piece_index_t const piece, bool const has_piece)
 {
-    // This runs on the verify thread. Read completion_ directly:
-    // has_piece() also reads hash_tokens_, which belongs to the
-    // session thread.
-    if (auto const had_piece = tor_->completion_.has_piece(piece); !has_piece || !had_piece) {
+    if (auto const had_piece = tor_->has_piece(piece); !has_piece || !had_piece) {
         tor_->set_has_piece(piece, has_piece);
         tor_->set_dirty();
     }
@@ -1853,14 +1848,6 @@ void tr_torrent::recheck_completeness()
     using namespace completeness_helpers;
 
     auto const lock = unique_lock();
-
-    // completion_ counts a piece as soon as its blocks are written, but
-    // the piece is had only once its hash passes. Wait for the hashes
-    // in flight; each one asks for another check when it finishes.
-    if (!std::empty(hash_tokens_)) {
-        needs_completeness_check_ = true;
-        return;
-    }
 
     needs_completeness_check_ = false;
 
@@ -2267,53 +2254,100 @@ void tr_torrent::on_piece_failed(tr_piece_index_t const piece)
     auto const n = piece_size(piece);
     bytes_corrupt_ += n;
     bytes_downloaded_.reduce(n);
+    // download every block again, held back or not
     set_has_piece(piece, false);
+    auto const [begin, end] = block_span_for_piece(piece);
+    blocks_awaiting_hash_.unset_span(begin, end);
     set_dirty(); // the resume file lists this piece's blocks
     set_needs_completeness_check();
     got_bad_piece_(this, piece);
 }
 
-void tr_torrent::test_piece(tr_piece_index_t const piece)
+void tr_torrent::test_pieces(std::span<tr_piece_index_t const> const pieces)
 {
-    auto const token = ++next_hash_token_;
-    hash_tokens_.insert_or_assign(piece, token);
+    // Register every hash before starting any. A hash may finish before
+    // its enqueue call returns, and a block the pieces share must still
+    // wait for the others.
+    auto tokens = std::vector<std::pair<tr_piece_index_t, uint64_t>>{};
+    for (auto const piece : pieces) {
+        auto const token = ++next_hash_token_;
+        hash_tokens_.insert_or_assign(piece, token);
+        tokens.emplace_back(piece, token);
+    }
 
     if (verify_state_ != VerifyState::None) {
         return;
     }
 
-    session->local_data.test_piece(
-        id(),
-        piece,
-        [session = this->session,
-         token](tr_torrent_id_t const tor_id, tr_piece_index_t const tested, tr_error const&, auto const hash) {
-            auto* const tor = session->torrents().get(tor_id);
-            if (tor == nullptr || tor->verify_state_ != VerifyState::None) {
-                return;
-            }
+    for (auto const& [piece, token] : tokens) {
+        session->local_data.test_piece(
+            id(),
+            piece,
+            [session = this->session,
+             token](tr_torrent_id_t const tor_id, tr_piece_index_t const tested, tr_error const&, auto const hash) {
+                auto* const tor = session->torrents().get(tor_id);
+                if (tor == nullptr || tor->verify_state_ != VerifyState::None) {
+                    return;
+                }
 
-            // Drop the result unless the piece is still the one we hashed.
-            auto const iter = tor->hash_tokens_.find(tested);
-            if (iter == std::end(tor->hash_tokens_) || iter->second != token) {
-                return;
-            }
-            tor->hash_tokens_.erase(iter);
+                // Drop the result unless the piece is still the one we hashed.
+                auto const iter = tor->hash_tokens_.find(tested);
+                if (iter == std::end(tor->hash_tokens_) || iter->second != token) {
+                    return;
+                }
+                tor->hash_tokens_.erase(iter);
 
-            // A neighbor that failed its hash takes back the block it shares
-            // with this piece. The result is about data this piece no longer
-            // has, and the piece is hashed again once that block is rewritten.
-            if (!tor->has_blocks(tor->block_span_for_piece(tested))) {
-                return;
-            }
+                // A neighbor that failed its hash takes back the block it shares
+                // with this piece. The result is about data this piece no longer
+                // has, and the piece is hashed again once that block is rewritten.
+                if (!tor->is_piece_written(tested)) {
+                    return;
+                }
 
-            if (hash && *hash == tor->piece_hash(tested)) {
-                tor->checked_pieces_.set(tested);
-                tor->set_dirty(); // the resume file lists the piece's blocks now
-                tor->on_piece_completed(tested);
-            } else {
-                tor->on_piece_failed(tested);
+                if (hash && *hash == tor->piece_hash(tested)) {
+                    tor->checked_pieces_.set(tested);
+                    tor->count_written_blocks(tor->block_span_for_piece(tested));
+                } else {
+                    tor->on_piece_failed(tested);
+                }
+            });
+    }
+}
+
+bool tr_torrent::is_piece_written(tr_piece_index_t const piece) const
+{
+    // no block is both counted and held
+    auto const [begin, end] = block_span_for_piece(piece);
+    return completion_.count_missing_blocks_in_piece(piece) == blocks_awaiting_hash_.count(begin, end);
+}
+
+void tr_torrent::count_written_blocks(tr_block_span_t const span)
+{
+    auto const is_hashing = [this](tr_piece_index_t const piece) {
+        return hash_tokens_.contains(piece);
+    };
+
+    for (auto block = span.begin; block < span.end; ++block) {
+        if (!blocks_awaiting_hash_.test(block)) {
+            continue;
+        }
+
+        auto const first_piece = block_loc(block).piece;
+        auto const last_piece = block_last_loc(block).piece;
+        if (std::ranges::any_of(std::views::iota(first_piece, last_piece + 1U), is_hashing)) {
+            continue;
+        }
+
+        blocks_awaiting_hash_.unset(block);
+        completion_.add_block(block);
+        set_dirty();
+
+        for (auto piece = first_piece; piece <= last_piece; ++piece) {
+            if (has_piece(piece)) {
+                on_piece_completed(piece);
             }
-        });
+        }
+    }
 }
 
 bool tr_torrent::on_block_received(tr_block_index_t const block)
@@ -2373,17 +2407,16 @@ void tr_torrent::on_block_written(tr_block_index_t const block, tr_error const& 
         return;
     }
 
-    set_dirty();
-
-    completion_.add_block(block);
-
-    auto const first_piece = block_loc(block).piece;
-    auto const last_piece = block_last_loc(block).piece;
-    for (auto piece = first_piece; piece <= last_piece; ++piece) {
-        if (has_blocks(block_span_for_piece(piece))) {
-            test_piece(piece);
+    // Hold the block back while any piece it completes is hashed.
+    blocks_awaiting_hash_.set(block);
+    auto pieces = std::vector<tr_piece_index_t>{};
+    for (auto piece = block_loc(block).piece, last = block_last_loc(block).piece; piece <= last; ++piece) {
+        if (is_piece_written(piece)) {
+            pieces.push_back(piece);
         }
     }
+    test_pieces(pieces);
+    count_written_blocks({ .begin = block, .end = block + 1U });
 }
 
 // ---
@@ -2716,19 +2749,9 @@ void tr_torrent::ResumeHelper::load_checked_pieces(tr_bitfield const& checked, t
 
 // ---
 
-tr_bitfield tr_torrent::ResumeHelper::blocks() const
+tr_bitfield const& tr_torrent::ResumeHelper::blocks() const noexcept
 {
-    auto blocks = tor_.completion_.blocks();
-
-    // A piece whose hash is in flight may still fail. Leave its blocks
-    // out so the next session downloads them again rather than trusting
-    // them.
-    for (auto const& [piece, token] : tor_.hash_tokens_) {
-        auto const [begin, end] = tor_.block_span_for_piece(piece);
-        blocks.unset_span(begin, end);
-    }
-
-    return blocks;
+    return tor_.completion_.blocks();
 }
 
 void tr_torrent::ResumeHelper::load_blocks(tr_bitfield blocks)

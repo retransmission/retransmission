@@ -70,6 +70,7 @@ namespace tr::test
 class RenameTest_multifileTorrent_Test;
 class RenameTest_singleFilenameTorrent_Test;
 class TorrentDiskIoTest_hashResultForInvalidatedPieceIsDropped_Test;
+class TorrentDiskIoWorkersTest_cancelledVerificationRestoresDeferredPieceHashes_Test;
 
 } // namespace tr::test
 
@@ -90,8 +91,7 @@ struct tr_torrent {
         void load_seconds_seeding_before_current_start(time_t when) noexcept;
         void load_start_when_stable(bool val) noexcept;
 
-        // The blocks on disk, minus the pieces whose hash is in flight.
-        [[nodiscard]] tr_bitfield blocks() const;
+        [[nodiscard]] tr_bitfield const& blocks() const noexcept;
         [[nodiscard]] tr_bitfield const& checked_pieces() const noexcept;
         [[nodiscard]] std::vector<time_t> const& file_mtimes() const noexcept;
         [[nodiscard]] time_t date_active() const noexcept;
@@ -330,9 +330,9 @@ struct tr_torrent {
         return completion_.has_metainfo();
     }
 
-    [[nodiscard]] auto has_all() const noexcept
+    [[nodiscard]] constexpr auto has_all() const noexcept
     {
-        return completion_.has_all() && std::empty(hash_tokens_);
+        return completion_.has_all();
     }
 
     [[nodiscard]] constexpr auto has_none() const noexcept
@@ -343,21 +343,12 @@ struct tr_torrent {
     [[nodiscard]] auto has_file(tr_file_index_t file) const
     {
         auto const span = byte_span_for_file(file);
-        if (completion_.count_has_bytes_in_span(span) != span.end - span.begin) {
-            return false;
-        }
-
-        // A piece with a hash in flight is not had yet. See has_piece().
-        auto const [begin, end] = fpm_.piece_span_for_file(file);
-        return std::ranges::none_of(hash_tokens_, [begin, end](auto const& piece_and_token) {
-            auto const piece = piece_and_token.first;
-            return begin <= piece && piece < end;
-        });
+        return completion_.count_has_bytes_in_span(span) == span.end - span.begin;
     }
 
     [[nodiscard]] auto has_piece(tr_piece_index_t piece) const
     {
-        return completion_.has_piece(piece) && !hash_tokens_.contains(piece);
+        return completion_.has_piece(piece);
     }
 
     [[nodiscard]] constexpr bool is_piece_checked(tr_piece_index_t const piece) const
@@ -370,12 +361,12 @@ struct tr_torrent {
         return completion_.has_block(block);
     }
 
-    // True if the block is on disk, or if we're writing it now.
-    // Peers use this instead of has_block() to tell whether they still
-    // need a block.
+    // True if the block is ours, or will be once its write or its
+    // piece's hash finishes. Peers use this instead of has_block() to
+    // tell whether they still need a block.
     [[nodiscard]] constexpr auto has_block_or_pending(tr_block_index_t const block) const
     {
-        return has_block(block) || blocks_pending_write_.test(block);
+        return has_block(block) || blocks_pending_write_.test(block) || blocks_awaiting_hash_.test(block);
     }
 
     [[nodiscard]] auto has_blocks(tr_block_span_t span) const
@@ -400,14 +391,7 @@ struct tr_torrent {
 
     [[nodiscard]] auto create_piece_bitfield() const
     {
-        auto pieces = completion_.create_piece_bitfield();
-
-        // a piece with a hash in flight is not had yet; see has_piece()
-        for (auto const& [piece, token] : hash_tokens_) {
-            pieces.unset(piece);
-        }
-
-        return pieces.raw();
+        return completion_.create_piece_bitfield();
     }
 
     [[nodiscard]] constexpr bool is_done() const noexcept
@@ -1117,6 +1101,7 @@ struct tr_torrent {
 
 private:
     friend class tr::test::TorrentDiskIoTest_hashResultForInvalidatedPieceIsDropped_Test;
+    friend class tr::test::TorrentDiskIoWorkersTest_cancelledVerificationRestoresDeferredPieceHashes_Test;
     friend bool tr_torrentSetMetainfoFromFile(tr_torrent* tor, tr_torrent_metainfo const* metainfo, char const* filename);
     friend tr_file_view tr_torrentFile(tr_torrent const* tor, tr_file_index_t file);
     friend tr_stat tr_torrentStat(tr_torrent* tor);
@@ -1247,11 +1232,19 @@ private:
 
     [[nodiscard]] bool check_piece(tr_piece_index_t piece) const;
 
-    // Hashes a piece we just finished downloading and records the result.
-    // The answer arrives later, by which time the piece may have been
-    // invalidated and downloaded again. A token says which version of the
+    // Hashes pieces we just finished downloading and records the results.
+    // An answer arrives later, by which time its piece may have been
+    // invalidated and downloaded again. A token says which version of a
     // piece was hashed, so a hash of an older version is dropped.
-    void test_piece(tr_piece_index_t piece);
+    void test_pieces(std::span<tr_piece_index_t const> pieces);
+
+    // True if each of the piece's blocks is written: counted, or held
+    // back until the piece's hash passes.
+    [[nodiscard]] bool is_piece_written(tr_piece_index_t piece) const;
+
+    // Counts the held-back blocks in `span` that no hash in flight still
+    // covers, and completes the pieces that they finish.
+    void count_written_blocks(tr_block_span_t span);
 
     [[nodiscard]] constexpr std::optional<uint16_t> effective_idle_limit_minutes() const noexcept
     {
@@ -1402,6 +1395,11 @@ private:
     // blocks we've received and are writing to disk.
     // A block leaves this set when its write finishes.
     tr_bitfield blocks_pending_write_ = tr_bitfield{ 0 };
+
+    // Written blocks that complete a piece whose hash hasn't passed.
+    // completion_ counts them once it passes, so it never counts a
+    // piece that might be bad.
+    tr_bitfield blocks_awaiting_hash_ = tr_bitfield{ 0 };
 
     // which version of a piece each in-flight hash is checking.
     // An entry lives only as long as its hash. Session thread only:

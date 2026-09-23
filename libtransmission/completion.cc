@@ -92,7 +92,7 @@ void tr_completion::amount_done(std::span<float> const tab) const
     }
 }
 
-tr_bitfield tr_completion::create_piece_bitfield() const
+std::vector<std::byte> tr_completion::create_piece_bitfield() const
 {
     size_t const n = block_info_->piece_count();
     auto pieces = tr_bitfield{ n };
@@ -105,7 +105,7 @@ tr_bitfield tr_completion::create_piece_bitfield() const
     [[maybe_unused]] auto const set_res = pieces.set_from_bools({ flags.get(), n });
     TR_ASSERT(set_res);
 
-    return pieces;
+    return pieces.raw();
 }
 
 // --- mutators

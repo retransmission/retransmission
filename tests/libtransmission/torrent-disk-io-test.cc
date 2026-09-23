@@ -9,10 +9,12 @@
 #include <cerrno>
 #include <charconv>
 #include <chrono>
+#include <cstddef>
 #include <cstdint>
 #include <cstring>
 #include <functional>
 #include <future>
+#include <iterator>
 #include <memory>
 #include <optional>
 #include <span>
@@ -27,6 +29,7 @@
 
 #include <libtransmission/transmission.h>
 
+#include <libtransmission/crypto-utils.h>
 #include <libtransmission/error.h>
 #include <libtransmission/file.h>
 #include <libtransmission/local-data.h>
@@ -34,6 +37,7 @@
 #include <libtransmission/peer-mgr.h>
 #include <libtransmission/peer-socket-tcp.h>
 #include <libtransmission/quark.h>
+#include <libtransmission/torrent-builder.h>
 #include <libtransmission/torrent.h>
 #include <libtransmission/variant.h>
 #include <libtransmission/webseed.h>
@@ -116,6 +120,37 @@ protected:
     {
         TorrentDiskIoTestBase::SetUp();
         session_->local_data.set_completions(tr::LocalData::Completions::Deferred);
+    }
+
+    // Two 24 KiB pieces of zeroes. The middle block ends piece 0 and
+    // starts piece 1, so writing it last completes both.
+    [[nodiscard]] tr_torrent* straddlingTorrentInit()
+    {
+        static auto constexpr PieceSize = size_t{ 24576U };
+        auto const piece_hash = tr_sha1::digest(std::string(PieceSize, '\0'));
+        auto pieces = std::string{};
+        std::ranges::transform(piece_hash, std::back_inserter(pieces), [](std::byte const b) { return static_cast<char>(b); });
+        pieces += pieces;
+
+        auto const benc = "d4:infod6:lengthi" + std::to_string(2U * PieceSize) + "e4:name8:straddle12:piece lengthi" +
+            std::to_string(PieceSize) + "e6:pieces" + std::to_string(std::size(pieces)) + ':' + pieces + "ee";
+        auto builder = tr_torrent_builder{ session_ };
+        EXPECT_TRUE(builder.set_metainfo(benc));
+        builder.set_paused(true);
+        return createTorrentAndWaitForVerifyDone(&builder);
+    }
+
+    // Writes the straddling torrent's blocks, the middle one last.
+    void writeStraddlingBlocks(tr_torrent* const tor, bool const bad_piece_1)
+    {
+        for (auto const block : { tr_block_index_t{ 0U }, tr_block_index_t{ 2U }, tr_block_index_t{ 1U } }) {
+            auto data = zeroBlock(tor, block);
+            if (bad_piece_1 && block == 2U) {
+                std::ranges::fill(*data, uint8_t{ 1U });
+            }
+            tor->save_block(block, std::move(data));
+            session_->local_data.pump();
+        }
     }
 };
 
@@ -508,8 +543,9 @@ TEST_F(TorrentDiskIoTest, writtenPieceIsNotAdvertisedUntilItsHashCompletes)
             tor->save_block(block, zeroBlock(tor, block));
         }
 
+        // every block is written, but the last one waits for the hash
         session_->local_data.pump();
-        EXPECT_TRUE(tor->has_blocks(span));
+        EXPECT_EQ(1U, tor->count_missing_blocks_in_piece(0U));
         EXPECT_FALSE(tor->has_piece(0U));
         EXPECT_FALSE(tor->has_all());
         EXPECT_EQ(std::byte{}, tor->create_piece_bitfield().front() & std::byte{ 0x80 });
@@ -533,12 +569,15 @@ TEST_F(TorrentDiskIoTest, failedHashNeverMakesThePieceAvailable)
             tor->save_block(block, std::move(data));
         }
         session_->local_data.pump();
-        EXPECT_TRUE(tor->has_blocks(span));
+        EXPECT_EQ(1U, tor->count_missing_blocks_in_piece(0U));
         EXPECT_FALSE(tor->has_piece(0U));
         EXPECT_EQ(std::byte{}, tor->create_piece_bitfield().front() & std::byte{ 0x80 });
 
+        // the piece is downloaded again, block by block
         session_->local_data.pump();
-        EXPECT_FALSE(tor->has_blocks(span));
+        for (auto block = span.begin; block < span.end; ++block) {
+            EXPECT_FALSE(tor->has_block_or_pending(block));
+        }
         EXPECT_FALSE(tor->has_piece(0U));
         EXPECT_EQ(std::byte{}, tor->create_piece_bitfield().front() & std::byte{ 0x80 });
     });
@@ -559,7 +598,7 @@ TEST_F(TorrentDiskIoTest, hashResultForInvalidatedPieceIsDropped)
 
         // deliver the writes, which leaves the piece's hash in flight
         session_->local_data.pump();
-        EXPECT_TRUE(tor->has_blocks(span));
+        EXPECT_EQ(1U, tor->count_missing_blocks_in_piece(0));
         EXPECT_FALSE(tor->has_piece(0));
 
         // Invalidate the piece while its hash is still in flight.
@@ -569,6 +608,46 @@ TEST_F(TorrentDiskIoTest, hashResultForInvalidatedPieceIsDropped)
         session_->local_data.pump();
         EXPECT_FALSE(tor->has_piece(0));
         EXPECT_EQ(0U, n_completed);
+    });
+}
+
+TEST_F(TorrentDiskIoTest, blockSharedByTwoPiecesCountsOnceBothPass)
+{
+    auto* const tor = straddlingTorrentInit();
+    ASSERT_NE(nullptr, tor);
+    auto n_completed = size_t{};
+    auto const tag = tor->piece_completed_.connect_scoped([&n_completed](tr_torrent*, tr_piece_index_t) { ++n_completed; });
+
+    blockingRunInSessionThread([this, tor, &n_completed]() {
+        // the middle block's write leaves both hashes in flight
+        writeStraddlingBlocks(tor, false);
+        EXPECT_FALSE(tor->has_block(1U));
+        EXPECT_TRUE(tor->has_block_or_pending(1U));
+        EXPECT_EQ(0U, n_completed);
+
+        // whichever hash lands first
+        session_->local_data.pump();
+        EXPECT_EQ(2U, n_completed);
+        EXPECT_TRUE(tor->has_all());
+    });
+}
+
+TEST_F(TorrentDiskIoTest, blockSharedWithAFailedPieceIsDownloadedAgain)
+{
+    auto* const tor = straddlingTorrentInit();
+    ASSERT_NE(nullptr, tor);
+    auto n_completed = size_t{};
+    auto const tag = tor->piece_completed_.connect_scoped([&n_completed](tr_torrent*, tr_piece_index_t) { ++n_completed; });
+
+    // Piece 0's hash passes before piece 1's starts. The block they share
+    // still waits for piece 1, which fails and takes the block back.
+    session_->local_data.set_completions(tr::LocalData::Completions::Inline);
+    blockingRunInSessionThread([this, tor, &n_completed]() {
+        writeStraddlingBlocks(tor, true);
+        EXPECT_EQ(0U, n_completed);
+        EXPECT_TRUE(tor->has_block(0U));
+        EXPECT_FALSE(tor->has_block_or_pending(1U));
+        EXPECT_FALSE(tor->has_block_or_pending(2U));
     });
 }
 
@@ -1043,9 +1122,16 @@ TEST_F(TorrentDiskIoWorkersTest, cancelledVerificationRestoresDeferredPieceHashe
 
     session_->local_data.set_workers_paused(true);
     blockingRunInSessionThread([tor, block]() {
+        // the paused write holds the verify back...
         tor->save_block(block, zeroBlock(tor, block));
         tr_torrentVerify(tor);
-        tor->on_block_written(tor->block_span_for_piece(1U).begin, {});
+
+        // ...while piece 1's writes land, which defers its hash
+        tor->set_has_piece(1U, false);
+        auto const [begin, end] = tor->block_span_for_piece(1U);
+        for (auto written = begin; written < end; ++written) {
+            tor->on_block_written(written, {});
+        }
         tr_torrentStop(tor);
     });
 
