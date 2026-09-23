@@ -2268,6 +2268,13 @@ void tr_torrent::test_piece(tr_piece_index_t const piece)
             }
             tor->hash_tokens_.erase(iter);
 
+            // A neighbor that failed its hash takes back the block it shares
+            // with this piece. The result is about data this piece no longer
+            // has, and the piece is hashed again once that block is rewritten.
+            if (!tor->has_blocks(tor->block_span_for_piece(tested))) {
+                return;
+            }
+
             if (hash && *hash == tor->piece_hash(tested)) {
                 tor->checked_pieces_.set(tested);
                 tor->on_piece_completed(tested);

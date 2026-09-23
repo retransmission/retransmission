@@ -757,9 +757,9 @@ private:
     // after its writes complete, so a failure here is a caller bug, not
     // a backend race. A write may overlap a hash in flight. When a piece
     // fails its hash, a block it shares with a neighbor is downloaded
-    // again while the neighbor's hash may still be running. That hash
-    // sees stale or torn data, and the torrent hashes the neighbor
-    // again once the new block lands.
+    // again while the neighbor's hash may still be running. The torrent
+    // drops that hash's result, since the neighbor no longer has the
+    // block, and hashes the neighbor again once the new block lands.
     static void register_running_hash(Gate& gate, tr_byte_span_t const span)
     {
         TR_ASSERT(!overlaps_running_write(gate, span));

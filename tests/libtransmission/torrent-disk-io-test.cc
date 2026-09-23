@@ -562,8 +562,10 @@ TEST_F(TorrentDiskIoTest, hashResultForInvalidatedPieceIsDropped)
 {
     auto* const tor = zeroTorrentInit(ZeroTorrentState::Partial);
     auto const span = tor->block_span_for_piece(0);
+    auto n_completed = size_t{};
+    auto const tag = tor->piece_completed_.connect_scoped([&n_completed](tr_torrent*, tr_piece_index_t) { ++n_completed; });
 
-    blockingRunInSessionThread([this, tor, span]() {
+    blockingRunInSessionThread([this, tor, span, &n_completed]() {
         for (auto block = span.begin; block < span.end; ++block) {
             ASSERT_TRUE(tor->on_block_received(block));
             tor->save_block(block, zeroBlock(tor, block));
@@ -580,6 +582,7 @@ TEST_F(TorrentDiskIoTest, hashResultForInvalidatedPieceIsDropped)
         tor->set_has_piece(0, false);
         session_->local_data.pump();
         EXPECT_FALSE(tor->has_piece(0));
+        EXPECT_EQ(0U, n_completed);
     });
 }
 
