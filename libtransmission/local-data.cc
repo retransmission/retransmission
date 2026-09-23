@@ -52,6 +52,22 @@ namespace
     return error;
 }
 
+// Reads at most one block. `desc` is null when the torrent is gone.
+[[nodiscard]] tr_error_code_t read_block(
+    StorageDescriptor const* const desc,
+    tr_open_files& open_files,
+    tr_byte_span_t const span,
+    LocalData::BlockData& setme)
+{
+    if (desc == nullptr || !span.is_valid() || span.size() > TrBlockSize) {
+        return TR_ERROR_EINVAL;
+    }
+
+    auto const len = static_cast<size_t>(span.size());
+    setme.resize(len);
+    return tr_ioRead(*desc, open_files, span.begin, std::span{ std::data(setme), len });
+}
+
 class DefaultBackend final : public LocalData::Backend
 {
 public:
@@ -64,23 +80,9 @@ public:
     [[nodiscard]] tr_error_code_t read(tr_torrent_id_t const id, tr_byte_span_t const byte_span, LocalData::BlockData& setme)
         override
     {
-        if (!byte_span.is_valid()) {
-            return TR_ERROR_EINVAL;
-        }
-
-        auto const len = byte_span.size();
-        if (len > TrBlockSize) {
-            return TR_ERROR_EINVAL;
-        }
-        auto const span_size = static_cast<size_t>(len);
-
         auto const* const tor = torrents_.get(id);
-        if (tor == nullptr) {
-            return TR_ERROR_EINVAL;
-        }
-
-        setme.resize(span_size);
-        return tr_ioRead(*tor->storage_descriptor(), open_files_, byte_span.begin, std::span{ std::data(setme), span_size });
+        auto const desc = tor != nullptr ? tor->storage_descriptor() : nullptr;
+        return read_block(desc.get(), open_files_, byte_span, setme);
     }
 
     [[nodiscard]] tr_error_code_t test_piece(
@@ -787,15 +789,7 @@ private:
     void exec_read(tr_torrent_id_t const id, ReadOp const& op)
     {
         auto data = std::make_unique<BlockData>();
-        auto err = tr_error_code_t{ TR_ERROR_EINVAL };
-
-        auto const span = op.span;
-        if (auto const desc = provider_(id); desc && span.is_valid() && span.size() <= TrBlockSize) {
-            auto const len = static_cast<size_t>(span.size());
-            data->resize(len);
-            err = tr_ioRead(*desc, open_files_, span.begin, std::span{ std::data(*data), len });
-        }
-
+        auto const err = read_block(provider_(id).get(), open_files_, op.span, *data);
         if (err != 0) {
             data = nullptr;
         }
