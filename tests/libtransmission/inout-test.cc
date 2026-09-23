@@ -32,7 +32,7 @@ TEST_F(InOutTest, writeFailsWhenExistingFileCannotBeOpened)
     // tr_ioWrite() must run in the session thread; block until it's done
     auto const write_block = [session = session_, tor, &err]() {
         auto const buf = std::vector<uint8_t>(TrBlockSize);
-        err = tr_ioWrite(*tor->storage_descriptor(), session->openFiles(), tor->block_loc(0U).byte, buf).error;
+        err = tr_ioWrite(*tor->storage_descriptor(), session->openFiles(), tor->block_loc(0U).byte, buf);
     };
 
     // Neither the fixture nor verify go through the fd pool, so warm it

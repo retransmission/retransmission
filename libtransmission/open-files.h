@@ -9,6 +9,7 @@
 #error only libtransmission should #include this header.
 #endif
 
+#include <atomic>
 #include <condition_variable>
 #include <cstddef> // for size_t
 #include <cstdint> // for uintX_t
@@ -98,7 +99,6 @@ public:
 
     [[nodiscard]] Handle get(tr_torrent_id_t tor_id, tr_file_index_t file_num, bool writable);
 
-    // Sets `setme_created` to whether this call created the file on disk.
     [[nodiscard]] Handle get(
         tr_torrent_id_t tor_id,
         tr_file_index_t file_num,
@@ -106,12 +106,17 @@ public:
         std::string_view filename,
         tr_file_preallocation allocation,
         uint64_t file_size,
-        tr_error& error,
-        bool* setme_created = nullptr);
+        tr_error& error);
 
     void close_all();
     void close_torrent(tr_torrent_id_t tor_id);
     void close_file(tr_torrent_id_t tor_id, tr_file_index_t file_num);
+
+    // How many files get() has created on disk since the last call.
+    [[nodiscard]] size_t take_files_created() noexcept
+    {
+        return n_files_created_.exchange(0U, std::memory_order_relaxed);
+    }
 
 private:
     using Key = std::pair<tr_torrent_id_t, tr_file_index_t>;
@@ -152,4 +157,6 @@ private:
     std::condition_variable opening_cv_;
     std::set<Key> opening_;
     tr_lru_cache<Key, Handle, MaxOpenFiles> pool_;
+
+    std::atomic<size_t> n_files_created_ = 0U;
 };

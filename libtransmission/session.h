@@ -889,9 +889,12 @@ public:
         set_date_active(now);
     }
 
-    constexpr void add_files_created(size_t const n) noexcept
+    // tr_open_files counts the files it creates, from any thread.
+    void collect_files_created() noexcept
     {
-        stats().add_files_created(n);
+        if (auto const n = open_files_.take_files_created(); n > 0U) {
+            stats().add_files_created(n);
+        }
     }
 
     // The incoming peer port that's been opened on the local machine

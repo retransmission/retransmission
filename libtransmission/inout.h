@@ -42,14 +42,6 @@ struct StorageDescriptor;
     uint64_t begin,
     std::span<uint8_t> setme);
 
-struct tr_io_write_result {
-    // 0 on success, or an errno value on failure.
-    tr_error_code_t error = 0;
-
-    // How many files the write created on disk.
-    size_t n_files_created = 0;
-};
-
 /**
  * Writes torrent data starting at byte `begin`.
  *
@@ -59,7 +51,7 @@ struct tr_io_write_result {
  * Does no error handling of its own. The caller decides what to do with
  * the returned code.
  */
-[[nodiscard]] tr_io_write_result tr_ioWrite(
+[[nodiscard]] tr_error_code_t tr_ioWrite(
     tr::StorageDescriptor const& desc,
     tr_open_files& open_files,
     uint64_t begin,

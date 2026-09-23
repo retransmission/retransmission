@@ -198,12 +198,10 @@ public:
             tr_torrent_id_t tor_id,
             tr_piece_index_t piece,
             tr_sha1_digest_t& setme_hash) = 0;
-        // Adds the files the write created on disk to `n_files_created`.
         [[nodiscard]] virtual tr_error_code_t write(
             tr_torrent_id_t tor_id,
             tr_byte_span_t byte_span,
-            BlockData const& data,
-            size_t& n_files_created) = 0;
+            BlockData const& data) = 0;
         [[nodiscard]] virtual tr_error_code_t move(tr_torrent_id_t id, std::string_view parent) = 0;
         [[nodiscard]] virtual tr_error_code_t remove(tr_torrent_id_t id, tr_torrent_remove_func remove_func) = 0;
         virtual void rename(
@@ -243,9 +241,6 @@ public:
     // the torrent is gone. Called on the session thread when an op is
     // admitted.
     using DescriptorProvider = std::function<std::shared_ptr<StorageDescriptor const>(tr_torrent_id_t)>;
-
-    // Called on the session thread when a write created files on disk.
-    using OnFilesCreated = std::function<void(tr_torrent_id_t, size_t n_files)>;
 
     // Counters for tests and diagnostics.
     struct Stats {
@@ -313,9 +308,6 @@ public:
     // synchronous backend writes a block before it reads the next one
     // off the wire, so nothing buffers there.
     [[nodiscard]] std::optional<uint64_t> spare_write_bytes(uint64_t requested) const noexcept;
-
-    // Both backends report created files through this.
-    void set_on_files_created(OnFilesCreated on_files_created);
 
     // For tests. Paused workers take no new ops.
     void set_workers_paused(bool paused);
@@ -393,7 +385,6 @@ private:
     [[nodiscard]] size_t retained_bytes() const noexcept;
 
     std::unique_ptr<Backend> backend_;
-    OnFilesCreated on_files_created_;
 
     std::shared_ptr<Threaded> threaded_;
     std::optional<uint64_t> write_budget_;

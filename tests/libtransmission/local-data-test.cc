@@ -70,8 +70,7 @@ public:
     [[nodiscard]] tr_error_code_t write(
         [[maybe_unused]] tr_torrent_id_t tor_id,
         tr_byte_span_t byte_span,
-        tr::LocalData::BlockData const& data,
-        [[maybe_unused]] size_t& n_files_created) override
+        tr::LocalData::BlockData const& data) override
     {
         write_span = byte_span;
         last_write.assign(std::begin(data), std::end(data));
@@ -536,11 +535,6 @@ protected:
         if (write_budget) {
             local_data->set_write_budget(*write_budget);
         }
-        local_data->set_on_files_created([this](tr_torrent_id_t const id, size_t const n_files) {
-            if (id == TorId) {
-                files_created_ += n_files;
-            }
-        });
         local_data->start_workers(n_workers, open_files_, marshal(), [desc = std::move(desc)](tr_torrent_id_t const id) {
             return id == TorId ? desc : nullptr;
         });
@@ -571,7 +565,6 @@ protected:
         return n_writes;
     }
 
-    size_t files_created_ = 0U;
     tr_torrents torrents_;
     tr_open_files open_files_;
 
@@ -702,7 +695,7 @@ TEST_F(LocalDataWorkersTest, writeCreatesTheFileAndItsDirs)
     writeBlocks(*local_data, 0U, BlockSize, [&n_done]() { ++n_done; });
 
     EXPECT_TRUE(pumpUntil([&n_done]() { return n_done == 1U; }));
-    EXPECT_EQ(1U, files_created_);
+    EXPECT_EQ(1U, open_files_.take_files_created());
     EXPECT_EQ(patternString(0U, BlockSize), readFile("sub/dir/data.bin"));
 
     local_data->shutdown();

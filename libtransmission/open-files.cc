@@ -147,13 +147,8 @@ tr_open_files::Handle tr_open_files::get(
     std::string_view const filename,
     tr_file_preallocation const allocation,
     uint64_t const file_size,
-    tr_error& error,
-    bool* const setme_created)
+    tr_error& error)
 {
-    if (setme_created != nullptr) {
-        *setme_created = false;
-    }
-
     // is there already an entry
     auto const key = make_key(tor_id, file_num);
     {
@@ -253,8 +248,8 @@ tr_open_files::Handle tr_open_files::get(
         return {};
     }
 
-    if (setme_created != nullptr) {
-        *setme_created = !already_existed;
+    if (!already_existed) {
+        n_files_created_.fetch_add(1U, std::memory_order_relaxed);
     }
 
     // cache it

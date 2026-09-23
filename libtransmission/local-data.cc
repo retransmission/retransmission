@@ -106,8 +106,7 @@ public:
     [[nodiscard]] tr_error_code_t write(
         tr_torrent_id_t const id,
         tr_byte_span_t const byte_span,
-        LocalData::BlockData const& data,
-        size_t& n_files_created) override
+        LocalData::BlockData const& data) override
     {
         if (!byte_span.is_valid()) {
             return TR_ERROR_EINVAL;
@@ -124,13 +123,7 @@ public:
             return TR_ERROR_EINVAL;
         }
 
-        auto const result = tr_ioWrite(
-            *tor->storage_descriptor(),
-            open_files_,
-            byte_span.begin,
-            std::span{ std::data(data), span_size });
-        n_files_created += result.n_files_created;
-        return result.error;
+        return tr_ioWrite(*tor->storage_descriptor(), open_files_, byte_span.begin, std::span{ std::data(data), span_size });
     }
 
     [[nodiscard]] tr_error_code_t move(tr_torrent_id_t const id, std::string_view const parent) override
@@ -381,13 +374,11 @@ public:
         tr_open_files& open_files,
         DescriptorProvider provider,
         Marshal marshal,
-        OnFilesCreated const& on_files_created,
         size_t const n_workers,
         size_t const retained_bytes)
         : open_files_{ open_files }
         , provider_{ std::move(provider) }
         , marshal_{ std::move(marshal) }
-        , on_files_created_{ on_files_created }
         , retained_{ retained_bytes }
     {
         workers_.reserve(n_workers);
@@ -1025,18 +1016,10 @@ private:
             writeme = buf;
         }
 
-        auto const result = tr_ioWrite(desc, open_files_, begin, writeme);
-
-        if (result.n_files_created > 0U) {
-            post_completion([this, id = run.front().tor_id, n = result.n_files_created]() {
-                if (on_files_created_) {
-                    on_files_created_(id, n);
-                }
-            });
-        }
+        auto const err = tr_ioWrite(desc, open_files_, begin, writeme);
 
         enqueued_write_bytes_.fetch_sub(n_bytes, std::memory_order_relaxed);
-        if (result.error == 0) {
+        if (err == 0) {
             write_runs_.fetch_add(1U, std::memory_order_relaxed);
             blocks_written_.fetch_add(std::size(run), std::memory_order_relaxed);
         }
@@ -1046,12 +1029,12 @@ private:
             // are kept, since that's the unit the hash pulls.
             auto const block = desc.block_info.byte_loc(op.span.begin).block;
             auto const block_span = desc.block_info.byte_span_for_block(block);
-            if (result.error == 0 && op.span == block_span) {
+            if (err == 0 && op.span == block_span) {
                 retained_.stash(op.tor_id, desc.block_info, block, std::move(op.data));
             }
         }
 
-        post_completion([this, run = std::move(run), err = result.error]() mutable {
+        post_completion([this, run = std::move(run), err]() mutable {
             auto const id = run.front().tor_id;
 
             // Each op stays registered until just before its own callback,
@@ -1112,7 +1095,6 @@ private:
     tr_open_files& open_files_;
     DescriptorProvider provider_;
     Marshal marshal_;
-    OnFilesCreated const& on_files_created_; // the facade's
 
     std::map<tr_torrent_id_t, Gate> gates_;
 
@@ -1168,13 +1150,7 @@ void LocalData::start_workers(size_t worker_count, tr_open_files& open_files, Ma
     static auto constexpr MaxWorkerCount = size_t{ 64U };
     worker_count = std::min(worker_count, MaxWorkerCount);
 
-    threaded_ = std::make_shared<Threaded>(
-        open_files,
-        std::move(provider),
-        std::move(marshal),
-        on_files_created_,
-        worker_count,
-        retained_bytes());
+    threaded_ = std::make_shared<Threaded>(open_files, std::move(provider), std::move(marshal), worker_count, retained_bytes());
 }
 
 void LocalData::read(tr_torrent_id_t const id, tr_byte_span_t const byte_span, OnRead on_read)
@@ -1225,12 +1201,7 @@ void LocalData::write(
         return;
     }
 
-    auto n_files_created = size_t{};
-    auto const err = data != nullptr ? backend_->write(id, byte_span, *data, n_files_created) :
-                                       tr_error_code_t{ TR_ERROR_EINVAL };
-    if (n_files_created > 0U && on_files_created_) {
-        on_files_created_(id, n_files_created);
-    }
+    auto const err = data != nullptr ? backend_->write(id, byte_span, *data) : tr_error_code_t{ TR_ERROR_EINVAL };
 
     if (on_write) {
         finish([id, byte_span, err, on_write = std::move(on_write)]() mutable {
@@ -1355,11 +1326,6 @@ uint64_t LocalData::enqueued_write_bytes() const noexcept
 LocalData::Stats LocalData::stats() const noexcept
 {
     return threaded_ ? threaded_->stats() : Stats{};
-}
-
-void LocalData::set_on_files_created(OnFilesCreated on_files_created)
-{
-    on_files_created_ = std::move(on_files_created);
 }
 
 void LocalData::set_write_budget(uint64_t const bytes)
