@@ -217,8 +217,7 @@ TEST(RemoteLoopback, listGroupsPrintsEveryGroup)
     EXPECT_EQ(
         "foo: Upload speed limit: 50 kB/s, Download speed limit: 100 kB/s, does not honor session bandwidth limits\n"
         "bar: Upload speed limit: unlimited, Download speed limit: unlimited, honors session bandwidth limits\n",
-        result.output)
-        << "requests seen: " << server.request_count() << ", authenticated: " << server.authenticated_request_seen();
+        result.output);
 }
 
 } // namespace
