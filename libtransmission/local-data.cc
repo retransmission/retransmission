@@ -436,6 +436,16 @@ public:
             return;
         }
 
+        // Nothing to write, which succeeds as it does on the synchronous
+        // backend. The gate keys a write by its first byte, so an empty
+        // span would collide with the write that starts there.
+        if (span.size() == 0U) {
+            if (on_write) {
+                std::move(on_write)(id, span, tr_error{});
+            }
+            return;
+        }
+
         enqueued_write_bytes_.fetch_add(span.size(), std::memory_order_relaxed);
         submit(id, WriteOp{ .span = span, .data = std::move(data), .on_write = std::move(on_write) });
     }

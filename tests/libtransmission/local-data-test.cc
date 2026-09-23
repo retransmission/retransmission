@@ -1025,6 +1025,31 @@ TEST_F(LocalDataWorkersTest, combinedWritesDeliverEveryCallbackBeforeAQueuedFile
     local_data->shutdown();
 }
 
+TEST_F(LocalDataWorkersTest, emptyWriteSucceedsBesideAWriteInFlight)
+{
+    auto const local_data = makeLocalData(makeDescriptor({ { "data.bin", BlockSize } }, 32768U), 1U);
+    auto n_done = size_t{};
+
+    local_data->set_workers_paused(true);
+    writeBlocks(*local_data, 0U, BlockSize, [&n_done]() { ++n_done; });
+
+    // an empty span at the same offset has nothing to write
+    auto empty_done = false;
+    local_data->write(
+        TorId,
+        { .begin = 0U, .end = 0U },
+        std::make_unique<tr::LocalData::BlockData>(),
+        [&empty_done](tr_torrent_id_t, tr_byte_span_t, tr_error const& error) {
+            EXPECT_FALSE(error) << error;
+            empty_done = true;
+        });
+    EXPECT_TRUE(empty_done);
+    local_data->set_workers_paused(false);
+
+    EXPECT_TRUE(pumpUntil([&n_done]() { return n_done == 1U; }));
+    local_data->shutdown();
+}
+
 TEST_F(LocalDataWorkersTest, shutdownDeliversEveryCallback)
 {
     static auto constexpr FileSize = size_t{ 65536U };
