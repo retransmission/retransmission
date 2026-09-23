@@ -520,10 +520,6 @@ void save_progress(tr_variant::Map& map, tr_torrent::ResumeHelper const& helper)
     // A file with no usable entry gets 0, marking its pieces untested.
     auto mtimes = std::vector<time_t>(tor->file_count());
 
-    // A file whose mtime we take from the entry saved for some other file
-    // has its pieces dropped from the checked set, so a legacy-length list
-    // costs a rehash of everything after its first zero-length file unless
-    // its entries are paired with their own files.
     auto const set_mtime = [&mtimes](tr_file_index_t const i, tr_variant const* const entry) {
         if (entry != nullptr) {
             mtimes[i] = static_cast<time_t>(entry->value_if<int64_t>().value_or(0));
@@ -531,6 +527,10 @@ void save_progress(tr_variant::Map& map, tr_torrent::ResumeHelper const& helper)
     };
 
     auto const* const list = prog.find_if<tr_variant::Vector>(TR_KEY_mtimes);
+
+    // Pair the entries with their files through for_each_file_entry(), not by position.
+    // Read by position, a legacy-length list gives files other files' mtimes,
+    // and every piece after its first zero-length file drops from the checked set.
     if (list == nullptr || !for_each_file_entry(tor, *list, set_mtime)) {
         auto const n_list = list != nullptr ? std::size(*list) : size_t{};
         tr_logAddDebugTor(tor, fmt::format("Couldn't load mtimes: expected {} got {}", std::size(mtimes), n_list));
