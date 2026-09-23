@@ -699,36 +699,33 @@ void tr_torrentRemoveInSessionThread(
 
     tor->stop_now();
 
+    // Free the torrent once its disk IO has drained.
+    auto free_torrent = [session = tor->session](tr_torrent_id_t const tor_id) {
+        if (auto* const torrent = session->torrents().get(tor_id); torrent != nullptr) {
+            tr_torrentFreeInSessionThread(torrent);
+        }
+    };
+
     if (delete_flag && tor->has_metainfo()) {
         tor->session->local_data.remove(
             tor->id(),
             std::move(remove_func),
-            [session = tor->session](tr_torrent_id_t const tor_id, tr_error const& error) {
-                auto* const tor2 = session->torrents().get(tor_id);
-                if (tor2 == nullptr) {
-                    return;
-                }
-
-                if (error) {
+            [session = tor->session, free_torrent](tr_torrent_id_t const tor_id, tr_error const& error) {
+                if (auto const* const torrent = session->torrents().get(tor_id); torrent != nullptr && error) {
                     tr_logAddWarnTor(
-                        tor2,
+                        torrent,
                         fmt::format(
                             fmt::runtime(_("Couldn't remove all torrent files: {error} ({error_code})")),
                             fmt::arg("error", error.message()),
                             fmt::arg("error_code", error.code())));
                 }
 
-                auto const lock2 = tor2->unique_lock();
-                tr_torrentFreeInSessionThread(tor2);
+                free_torrent(tor_id);
             });
         return;
     }
 
-    tor->session->local_data.close_torrent(tor->id(), [session = tor->session](tr_torrent_id_t const id) {
-        if (auto* const torrent = session->torrents().get(id); torrent != nullptr) {
-            tr_torrentFreeInSessionThread(torrent);
-        }
-    });
+    tor->session->local_data.close_torrent(tor->id(), std::move(free_torrent));
 }
 
 void tr_torrentStop(tr_torrent* tor)
