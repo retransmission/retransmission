@@ -415,7 +415,7 @@ TEST_P(RetainedBudgetTest, cacheSizeFollowsStartupAndRuntimeBudget)
             for (auto block = tr_block_index_t{}; block < BlocksWritten; ++block) {
                 session_->local_data.write(
                     tor->id(),
-                    { .begin = tor->block_loc(block).byte, .end = tor->block_loc(block).byte + tor->block_size(block) },
+                    tor->block_info().byte_span_for_block(block),
                     zeroBlock(tor, block),
                     [&writes_done](tr_torrent_id_t, tr_byte_span_t, tr_error const& error) {
                         EXPECT_FALSE(error);
