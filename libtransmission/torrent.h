@@ -1497,6 +1497,9 @@ private:
     // A move out of the incomplete dir that waits for a queued set-location.
     bool leave_deferred_ = false;
 
+    // A done script that waits for the queued set-locations to land.
+    bool done_script_deferred_ = false;
+
     bool finished_seeding_by_idle_ = false;
 
     bool needs_completeness_check_ = true;

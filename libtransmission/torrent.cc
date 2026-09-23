@@ -1127,6 +1127,12 @@ void tr_torrent::set_location_in_session_thread(
                 session->add_recent_relocate_dir(path);
                 tor->maybe_leave_incomplete_dir();
             }
+
+            // Run a deferred done script once the last queued set-location
+            // lands, whether or not it moved the files.
+            if (tor->relocations_pending_ == 0U && std::exchange(tor->done_script_deferred_, false) && !tor->is_deleting_) {
+                callScriptIfEnabled(tor, TR_SCRIPT_ON_TORRENT_DONE);
+            }
         }
 
         if (setme_state != nullptr) {
@@ -1912,7 +1918,14 @@ void tr_torrent::recheck_completeness()
 
         if (is_done()) {
             save_resume_file();
-            callScriptIfEnabled(this, TR_SCRIPT_ON_TORRENT_DONE);
+
+            // The script is told where the files are, so it waits for
+            // a queued set-location, including the leave queued above.
+            if (relocations_pending_ == 0U) {
+                callScriptIfEnabled(this, TR_SCRIPT_ON_TORRENT_DONE);
+            } else {
+                done_script_deferred_ = true;
+            }
         }
     }
 }
