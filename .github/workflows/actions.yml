@@ -1175,7 +1175,7 @@ jobs:
         uses: ./.github/actions/setup-ccache
         with:
           in-container: 'true'
-          key-suffix: ${{ matrix.version }}
+          key-suffix: ${{ matrix.docker-image }}-${{ matrix.version }}
       - name: Get Source
         uses: actions/download-artifact@v8
         with:
