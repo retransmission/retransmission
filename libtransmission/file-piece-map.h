@@ -9,10 +9,11 @@
 #error only libtransmission should #include this header.
 #endif
 
-#include <algorithm> // for std::binary_search()
+#include <algorithm>
 #include <cstdint> // for uint64_t
 #include <cstddef> // for size_t
 #include <span>
+#include <utility>
 #include <vector>
 
 #include "libtransmission/bitfield.h"
@@ -51,7 +52,7 @@ public:
 
     [[nodiscard]] file_offset_t file_offset(uint64_t offset) const;
 
-    [[nodiscard]] constexpr size_t file_count() const
+    [[nodiscard]] constexpr size_t file_count() const noexcept
     {
         return std::size(file_pieces_);
     }
@@ -87,8 +88,36 @@ public:
     }
 
     // returns true if any file's priority changed.
-    [[nodiscard]] bool set(tr_file_index_t file, tr_priority_t priority);
-    [[nodiscard]] bool set(std::span<tr_file_index_t const> files, tr_priority_t priority);
+    [[nodiscard]] constexpr bool set(tr_file_index_t const file, tr_priority_t const priority) noexcept
+    {
+        if (file >= fpm_->file_count()) {
+            return false;
+        }
+
+        if (std::empty(priorities_)) {
+            if (priority == TR_PRI_NORMAL) {
+                return false;
+            }
+
+            priorities_.assign(fpm_->file_count(), TR_PRI_NORMAL);
+            priorities_.shrink_to_fit();
+        }
+
+        return std::exchange(priorities_[file], priority) != priority;
+    }
+
+    [[nodiscard]] constexpr bool set(std::span<tr_file_index_t const> const files, tr_priority_t const priority)
+    {
+        if (std::ranges::any_of(files, [n_files = fpm_->file_count()](tr_file_index_t file) { return file >= n_files; })) {
+            return false;
+        }
+
+        auto ret = false;
+        for (auto const file : files) {
+            ret |= set(file, priority);
+        }
+        return ret;
+    }
 
     [[nodiscard]] constexpr tr_priority_t file_priority(tr_file_index_t const file) const noexcept
     {

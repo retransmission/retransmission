@@ -141,37 +141,6 @@ tr_file_piece_map::file_offset_t tr_file_piece_map::file_offset(uint64_t const o
 
 // ---
 
-bool tr_file_priorities::set(tr_file_index_t const file, tr_priority_t const new_priority)
-{
-    if (file >= fpm_->file_count()) {
-        return false;
-    }
-
-    if (std::empty(priorities_)) {
-        if (new_priority == TR_PRI_NORMAL) {
-            return false;
-        }
-
-        priorities_.assign(fpm_->file_count(), TR_PRI_NORMAL);
-        priorities_.shrink_to_fit();
-    }
-
-    return std::exchange(priorities_[file], new_priority) != new_priority;
-}
-
-bool tr_file_priorities::set(std::span<tr_file_index_t const> const files, tr_priority_t const new_priority)
-{
-    if (std::ranges::any_of(files, [n_files = fpm_->file_count()](tr_file_index_t file) { return file >= n_files; })) {
-        return false;
-    }
-
-    auto ret = false;
-    for (auto const file : files) {
-        ret |= set(file, new_priority);
-    }
-    return ret;
-}
-
 tr_priority_t tr_file_priorities::piece_priority(tr_piece_index_t const piece) const
 {
     // increase priority if a file begins or ends in this piece
