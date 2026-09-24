@@ -426,7 +426,8 @@ void setBandwidthGroupLimits(tr_session* const session, std::string_view const n
 }
 } // namespace
 
-TEST_F(SessionTest, reloadsBandwidthGroupSpeedLimits)
+// The groups persist even for a client that never calls tr_sessionSaveSettings().
+TEST_F(SessionTest, savesBandwidthGroupsWhenItCloses)
 {
     static auto constexpr Name = "capped"sv;
     auto const limits = tr_bandwidth_limits{
@@ -437,7 +438,6 @@ TEST_F(SessionTest, reloadsBandwidthGroupSpeedLimits)
     };
 
     setBandwidthGroupLimits(session_, Name, limits);
-    tr_sessionSaveSettings(session_, sandboxDir(), quietSettings());
     closeSession();
 
     auto const reloaded = loadBandwidthGroupLimits(sandboxDir(), quietSettings(), Name);

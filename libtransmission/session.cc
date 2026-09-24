@@ -1305,6 +1305,7 @@ void tr_session::closeImplPart1(std::promise<void>* closed_promise, std::chrono:
 
     if (mayWriteConfigDir()) {
         torrent_queue().to_file();
+        bandwidth_group_helpers::bandwidthGroupWrite(this, configDir());
     }
 
     // Deliver any pending completions while their torrents still exist.
