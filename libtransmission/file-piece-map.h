@@ -40,6 +40,42 @@ public:
     };
 
     using file_offset_t = offset_t<tr_file_index_t>;
+
+private:
+    template<typename T>
+    struct CompareToSpan {
+        using span_t = index_span_t<T>;
+
+        [[nodiscard]] static constexpr int compare(T const item, span_t const span) // <=>
+        {
+            if (item < span.begin) {
+                return -1;
+            }
+
+            if (item >= span.end) {
+                return 1;
+            }
+
+            return 0;
+        }
+
+        [[nodiscard]] constexpr bool operator()(T const item, span_t const span) const // <
+        {
+            return compare(item, span) < 0;
+        }
+
+        [[nodiscard]] static constexpr int compare(span_t const span, T const item) // <=>
+        {
+            return -compare(item, span);
+        }
+
+        [[nodiscard]] constexpr bool operator()(span_t const span, T const item) const // <
+        {
+            return compare(span, item) < 0;
+        }
+    };
+
+public:
     explicit tr_file_piece_map(tr_torrent_metainfo const& tm);
     tr_file_piece_map(tr_block_info const& block_info, std::span<uint64_t const> file_sizes);
 
@@ -48,7 +84,16 @@ public:
         return file_pieces_[file];
     }
 
-    [[nodiscard]] file_span_t file_span_for_piece(tr_piece_index_t piece) const;
+    [[nodiscard]] constexpr file_span_t file_span_for_piece(tr_piece_index_t const piece) const
+    {
+        constexpr auto Compare = CompareToSpan<tr_piece_index_t>{};
+        auto const begin = std::begin(file_pieces_);
+        auto const [equal_begin, equal_end] = std::equal_range(begin, std::end(file_pieces_), piece, Compare);
+        return {
+            .begin = static_cast<tr_file_index_t>(equal_begin - begin),
+            .end = static_cast<tr_file_index_t>(equal_end - begin),
+        };
+    }
 
     [[nodiscard]] file_offset_t file_offset(uint64_t offset) const;
 
