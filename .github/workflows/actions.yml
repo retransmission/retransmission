@@ -1376,7 +1376,13 @@ jobs:
       uses: android-actions/setup-android@v4
       with:
         # https://github.com/android-actions/setup-android/issues/537
-        packages: 'platform-tools platforms;android-31'
+        packages: 'platform-tools'
+
+    - name: Install Android SDK platform
+      run: |
+        compile_sdk="$(sed -n 's/^Transmission_compileSdkVersion=//p' android/gradle.properties)"
+        test -n "$compile_sdk"
+        sdkmanager "platforms;android-${compile_sdk}"
 
     - name: Install NDK
       run: sdkmanager "ndk;28.2.13676358"
