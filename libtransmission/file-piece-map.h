@@ -90,7 +90,15 @@ public:
     [[nodiscard]] bool set(tr_file_index_t file, tr_priority_t priority);
     [[nodiscard]] bool set(std::span<tr_file_index_t const> files, tr_priority_t priority);
 
-    [[nodiscard]] tr_priority_t file_priority(tr_file_index_t file) const;
+    [[nodiscard]] constexpr tr_priority_t file_priority(tr_file_index_t const file) const noexcept
+    {
+        if (file >= priorities_.size()) {
+            return TR_PRI_NORMAL;
+        }
+
+        return priorities_[file];
+    }
+
     [[nodiscard]] tr_priority_t piece_priority(tr_piece_index_t piece) const;
 
 private:

@@ -172,15 +172,6 @@ bool tr_file_priorities::set(std::span<tr_file_index_t const> const files, tr_pr
     return ret;
 }
 
-tr_priority_t tr_file_priorities::file_priority(tr_file_index_t const file) const
-{
-    if (file >= priorities_.size()) {
-        return TR_PRI_NORMAL;
-    }
-
-    return priorities_[file];
-}
-
 tr_priority_t tr_file_priorities::piece_priority(tr_piece_index_t const piece) const
 {
     // increase priority if a file begins or ends in this piece
