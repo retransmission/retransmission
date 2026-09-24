@@ -1381,7 +1381,10 @@ jobs:
     - name: Install Android SDK platform
       run: |
         compile_sdk="$(sed -n 's/^Transmission_compileSdkVersion=//p' android/gradle.properties)"
-        test -n "$compile_sdk"
+        if [[ -z "$compile_sdk" ]]; then
+          echo "Transmission_compileSdkVersion not found in android/gradle.properties" >&2
+          exit 1
+        fi
         sdkmanager "platforms;android-${compile_sdk}"
 
     - name: Install NDK
