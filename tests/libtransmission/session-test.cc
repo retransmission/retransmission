@@ -397,32 +397,44 @@ TEST_F(SessionTest, savesSettings)
 
 namespace
 {
-// Sets a bandwidth group's limits on the session thread, where `group_set` sets them over RPC.
-void setBandwidthGroupLimits(tr_session* const session, std::string_view const name, tr_bandwidth_limits const& limits)
+// What a session saves for a bandwidth group.
+struct SavedBandwidthGroup {
+    tr_bandwidth_limits limits;
+    bool honors_session_limits = true;
+};
+
+// Sets a bandwidth group on the session thread, where `group_set` sets it over RPC.
+void setBandwidthGroup(tr_session* const session, std::string_view const name, SavedBandwidthGroup const& saved)
 {
     auto done = std::promise<void>{};
     session->run_in_session_thread([&]() {
-        session->getBandwidthGroup(name).set_limits(limits);
+        auto& group = session->getBandwidthGroup(name);
+        group.set_limits(saved.limits);
+        group.honor_parent_limits(tr_direction::Up, saved.honors_session_limits);
+        group.honor_parent_limits(tr_direction::Down, saved.honors_session_limits);
         done.set_value();
     });
     done.get_future().wait();
 }
 
-// The limits that a new session on `config_dir` loads for the group `name`, if it loads that group at all.
-[[nodiscard]] std::optional<tr_bandwidth_limits> loadBandwidthGroupLimits(
+// What a new session on `config_dir` loads for the group `name`, if it loads that group at all.
+[[nodiscard]] std::optional<SavedBandwidthGroup> loadBandwidthGroup(
     std::string_view const config_dir,
     tr::Settings const& settings,
     std::string_view const name)
 {
     auto* const session = tr_sessionInit(config_dir, false, settings);
-    auto limits = std::optional<tr_bandwidth_limits>{};
+    auto loaded = std::optional<SavedBandwidthGroup>{};
     for (auto const& [group_name, group] : session->bandwidthGroups()) {
         if (group_name == name) {
-            limits = group->get_limits();
+            loaded = SavedBandwidthGroup{
+                .limits = group->get_limits(),
+                .honors_session_limits = group->are_parent_limits_honored(tr_direction::Up),
+            };
         }
     }
     tr_sessionClose(session, 1);
-    return limits;
+    return loaded;
 }
 } // namespace
 
@@ -430,22 +442,26 @@ void setBandwidthGroupLimits(tr_session* const session, std::string_view const n
 TEST_F(SessionTest, savesBandwidthGroupsWhenItCloses)
 {
     static auto constexpr Name = "capped"sv;
-    auto const limits = tr_bandwidth_limits{
-        .up_limit = Speed{ 20, Speed::Units::KByps },
-        .down_limit = Speed{ 30, Speed::Units::KByps },
-        .up_limited = true,
-        .down_limited = true,
+    auto const saved = SavedBandwidthGroup{
+        .limits = {
+            .up_limit = Speed{ 20, Speed::Units::KByps },
+            .down_limit = Speed{ 30, Speed::Units::KByps },
+            .up_limited = true,
+            .down_limited = true,
+        },
+        .honors_session_limits = false,
     };
 
-    setBandwidthGroupLimits(session_, Name, limits);
+    setBandwidthGroup(session_, Name, saved);
     closeSession();
 
-    auto const reloaded = loadBandwidthGroupLimits(sandboxDir(), quietSettings(), Name);
+    auto const reloaded = loadBandwidthGroup(sandboxDir(), quietSettings(), Name);
     ASSERT_TRUE(reloaded);
-    EXPECT_EQ(limits.up_limit, reloaded->up_limit);
-    EXPECT_EQ(limits.down_limit, reloaded->down_limit);
-    EXPECT_EQ(limits.up_limited, reloaded->up_limited);
-    EXPECT_EQ(limits.down_limited, reloaded->down_limited);
+    EXPECT_EQ(saved.limits.up_limit, reloaded->limits.up_limit);
+    EXPECT_EQ(saved.limits.down_limit, reloaded->limits.down_limit);
+    EXPECT_EQ(saved.limits.up_limited, reloaded->limits.up_limited);
+    EXPECT_EQ(saved.limits.down_limited, reloaded->limits.down_limited);
+    EXPECT_EQ(saved.honors_session_limits, reloaded->honors_session_limits);
 }
 
 // Files from some builds hold the speed limits as doubles.
@@ -460,10 +476,10 @@ TEST_F(SessionTest, loadsBandwidthGroupSpeedLimitsSavedAsDoubles)
         filename,
         R"({"capped":{"download_limit":30.9,"download_limited":true,"honors_session_limits":true,"name":"capped","upload_limit":20.0,"upload_limited":true}})"sv));
 
-    auto const reloaded = loadBandwidthGroupLimits(sandboxDir(), quietSettings(), Name);
+    auto const reloaded = loadBandwidthGroup(sandboxDir(), quietSettings(), Name);
     ASSERT_TRUE(reloaded);
-    EXPECT_EQ((Speed{ 20, Speed::Units::KByps }), reloaded->up_limit);
-    EXPECT_EQ((Speed{ 30, Speed::Units::KByps }), reloaded->down_limit);
+    EXPECT_EQ((Speed{ 20, Speed::Units::KByps }), reloaded->limits.up_limit);
+    EXPECT_EQ((Speed{ 30, Speed::Units::KByps }), reloaded->limits.down_limit);
 }
 
 TEST_F(SessionTest, loadTorrentsThenMagnets)
