@@ -1241,7 +1241,7 @@ jobs:
           build-config: Release
       - name: Install
         run: cmake --install obj --config Release --strip
-      - uses: actions/upload-artifact@v6
+      - uses: actions/upload-artifact@v7
         with:
           name: binaries-${{ github.job }}-${{ matrix.docker-image }}-${{ matrix.version }}
           path: pfx/**/*
