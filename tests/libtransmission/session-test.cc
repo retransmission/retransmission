@@ -8,9 +8,11 @@
 #include <cstdlib>
 #include <cstring>
 #include <ctime>
+#include <future>
 #include <initializer_list>
 #include <map>
 #include <memory>
+#include <optional>
 #include <string>
 #include <string_view>
 #include <vector>
@@ -19,21 +21,24 @@
 
 #include <libtransmission/transmission.h>
 
+#include <libtransmission/bandwidth.h>
 #include <libtransmission/constants.h>
 #include <libtransmission/crypto-utils.h>
-#include <libtransmission/file-utils.h> // tr_file_read()
+#include <libtransmission/file-utils.h> // tr_file_read(), tr_file_save()
 #include <libtransmission/file.h>
 #include <libtransmission/quark.h>
 #include <libtransmission/session-id.h>
 #include <libtransmission/session.h>
 #include <libtransmission/tr-strbuf.h>
 #include <libtransmission/utils.h>
+#include <libtransmission/values.h>
 #include <libtransmission/variant.h>
 #include <libtransmission/version.h>
 
 #include "test-fixtures.h"
 
 using namespace std::literals;
+using namespace tr::Values;
 
 namespace tr::test
 {
@@ -388,6 +393,77 @@ TEST_F(SessionTest, savesSettings)
         ASSERT_TRUE(flag);
         EXPECT_TRUE(*flag);
     }
+}
+
+namespace
+{
+// Sets a bandwidth group's limits on the session thread, where `group_set` sets them over RPC.
+void setBandwidthGroupLimits(tr_session* const session, std::string_view const name, tr_bandwidth_limits const& limits)
+{
+    auto done = std::promise<void>{};
+    session->run_in_session_thread([&]() {
+        session->getBandwidthGroup(name).set_limits(limits);
+        done.set_value();
+    });
+    done.get_future().wait();
+}
+
+// The limits that a new session on `config_dir` loads for the group `name`, if it loads that group at all.
+[[nodiscard]] std::optional<tr_bandwidth_limits> loadBandwidthGroupLimits(
+    std::string_view const config_dir,
+    tr::Settings const& settings,
+    std::string_view const name)
+{
+    auto* const session = tr_sessionInit(config_dir, false, settings);
+    auto limits = std::optional<tr_bandwidth_limits>{};
+    for (auto const& [group_name, group] : session->bandwidthGroups()) {
+        if (group_name == name) {
+            limits = group->get_limits();
+        }
+    }
+    tr_sessionClose(session, 1);
+    return limits;
+}
+} // namespace
+
+TEST_F(SessionTest, reloadsBandwidthGroupSpeedLimits)
+{
+    static auto constexpr Name = "capped"sv;
+    auto const limits = tr_bandwidth_limits{
+        .up_limit = Speed{ 20, Speed::Units::KByps },
+        .down_limit = Speed{ 30, Speed::Units::KByps },
+        .up_limited = true,
+        .down_limited = true,
+    };
+
+    setBandwidthGroupLimits(session_, Name, limits);
+    tr_sessionSaveSettings(session_, sandboxDir(), quietSettings());
+    closeSession();
+
+    auto const reloaded = loadBandwidthGroupLimits(sandboxDir(), quietSettings(), Name);
+    ASSERT_TRUE(reloaded);
+    EXPECT_EQ(limits.up_limit, reloaded->up_limit);
+    EXPECT_EQ(limits.down_limit, reloaded->down_limit);
+    EXPECT_EQ(limits.up_limited, reloaded->up_limited);
+    EXPECT_EQ(limits.down_limited, reloaded->down_limited);
+}
+
+// Files from some builds hold the speed limits as doubles.
+// They load with any fraction dropped.
+TEST_F(SessionTest, loadsBandwidthGroupSpeedLimitsSavedAsDoubles)
+{
+    static auto constexpr Name = "capped"sv;
+    closeSession();
+
+    auto const filename = tr_pathbuf{ sandboxDir(), "/bandwidth-groups.json"sv };
+    ASSERT_TRUE(tr_file_save(
+        filename,
+        R"({"capped":{"download_limit":30.9,"download_limited":true,"honors_session_limits":true,"name":"capped","upload_limit":20.0,"upload_limited":true}})"sv));
+
+    auto const reloaded = loadBandwidthGroupLimits(sandboxDir(), quietSettings(), Name);
+    ASSERT_TRUE(reloaded);
+    EXPECT_EQ((Speed{ 20, Speed::Units::KByps }), reloaded->up_limit);
+    EXPECT_EQ((Speed{ 30, Speed::Units::KByps }), reloaded->down_limit);
 }
 
 TEST_F(SessionTest, loadTorrentsThenMagnets)

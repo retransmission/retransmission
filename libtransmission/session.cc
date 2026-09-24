@@ -84,6 +84,24 @@ namespace bandwidth_group_helpers
     return fmt::format("{:s}/bandwidth-groups.json"sv, config_dir);
 }
 
+// Reads a speed limit, which is saved in whole KB/s.
+// Files from some builds hold doubles such as `20.0`.
+// A double loads with its fraction dropped.
+[[nodiscard]] std::optional<Speed> speed_limit_if(tr_variant::Map const& group_map, tr_quark const key)
+{
+    if (auto const val = group_map.value_if<uint64_t>(key); val) {
+        return Speed{ *val, Speed::Units::KByps };
+    }
+
+    // The range check keeps the cast defined.
+    if (auto const val = group_map.value_if<double>(key);
+        val && *val >= 0.0 && *val < static_cast<double>(std::numeric_limits<uint64_t>::max())) {
+        return Speed{ static_cast<uint64_t>(*val), Speed::Units::KByps };
+    }
+
+    return {};
+}
+
 void bandwidthGroupRead(tr_session* session, std::string_view const config_dir)
 {
     for (auto const& [key, group_var] : tr::settings::load(get_bandwidth_filename(config_dir))) {
@@ -99,12 +117,12 @@ void bandwidthGroupRead(tr_session* session, std::string_view const config_dir)
                 limits.down_limited = *val;
             }
 
-            if (auto const val = group_map->value_if<int64_t>(TR_KEY_upload_limit); val) {
-                limits.up_limit = Speed{ *val, Speed::Units::KByps };
+            if (auto const val = speed_limit_if(*group_map, TR_KEY_upload_limit); val) {
+                limits.up_limit = *val;
             }
 
-            if (auto const val = group_map->value_if<int64_t>(TR_KEY_download_limit); val) {
-                limits.down_limit = Speed{ *val, Speed::Units::KByps };
+            if (auto const val = speed_limit_if(*group_map, TR_KEY_download_limit); val) {
+                limits.down_limit = *val;
             }
 
             group.set_limits(limits);
@@ -124,11 +142,11 @@ void bandwidthGroupWrite(tr_session const* session, std::string_view const confi
     for (auto const& [name, group] : groups) {
         auto const limits = group->get_limits();
         auto group_map = tr_variant::Map{ 6U };
-        group_map.try_emplace(TR_KEY_download_limit, limits.down_limit.count(Speed::Units::KByps));
+        group_map.try_emplace(TR_KEY_download_limit, static_cast<int64_t>(limits.down_limit.count(Speed::Units::KByps)));
         group_map.try_emplace(TR_KEY_download_limited, limits.down_limited);
         group_map.try_emplace(TR_KEY_honors_session_limits, group->are_parent_limits_honored(tr_direction::Up));
         group_map.try_emplace(TR_KEY_name, name.sv());
-        group_map.try_emplace(TR_KEY_upload_limit, limits.up_limit.count(Speed::Units::KByps));
+        group_map.try_emplace(TR_KEY_upload_limit, static_cast<int64_t>(limits.up_limit.count(Speed::Units::KByps)));
         group_map.try_emplace(TR_KEY_upload_limited, limits.up_limited);
         groups_map.try_emplace(tr_quark_new(name.sv()), std::move(group_map));
     }
