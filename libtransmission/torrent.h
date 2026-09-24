@@ -404,7 +404,7 @@ struct tr_torrent {
         return fpm_.piece_span_for_file(file);
     }
 
-    [[nodiscard]] auto file_offset(tr_block_info::Location loc) const
+    [[nodiscard]] constexpr auto file_offset(tr_block_info::Location const loc) const
     {
         return fpm_.file_offset(loc.byte);
     }

@@ -82,16 +82,6 @@ void tr_file_piece_map::reset(tr_torrent_metainfo const& tm)
     reset(tm.block_info(), file_sizes);
 }
 
-tr_file_piece_map::file_offset_t tr_file_piece_map::file_offset(uint64_t const offset) const
-{
-    static constexpr auto Compare = CompareToSpan<uint64_t>{};
-    auto const begin = std::begin(file_bytes_);
-    auto const it = std::lower_bound(begin, std::end(file_bytes_), offset, Compare);
-    tr_file_index_t const file_index = std::distance(begin, it);
-    auto const file_offset = offset - it->begin;
-    return file_offset_t{ .index = file_index, .offset = file_offset };
-}
-
 // ---
 
 tr_priority_t tr_file_priorities::piece_priority(tr_piece_index_t const piece) const

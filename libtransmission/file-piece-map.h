@@ -95,7 +95,15 @@ public:
         };
     }
 
-    [[nodiscard]] file_offset_t file_offset(uint64_t offset) const;
+    [[nodiscard]] constexpr file_offset_t file_offset(uint64_t const offset) const
+    {
+        constexpr auto Compare = CompareToSpan<uint64_t>{};
+        auto const begin = std::begin(file_bytes_);
+        auto const it = std::lower_bound(begin, std::end(file_bytes_), offset, Compare);
+        tr_file_index_t const file_index = std::distance(begin, it);
+        auto const file_offset = offset - it->begin;
+        return file_offset_t{ .index = file_index, .offset = file_offset };
+    }
 
     [[nodiscard]] constexpr size_t file_count() const noexcept
     {
