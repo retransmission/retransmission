@@ -1463,7 +1463,7 @@ static NSString* getOSStatusDescription(OSStatus errorCode)
 
 - (void)updateRPCPassword
 {
-    CFTypeRef data;
+    CFTypeRef data = NULL;
     OSStatus result = SecItemCopyMatching(
         (CFDictionaryRef) @{
             (NSString*)kSecClass : (NSString*)kSecClassGenericPassword,
@@ -1472,19 +1472,24 @@ static NSString* getOSStatusDescription(OSStatus errorCode)
             (NSString*)kSecReturnData : @YES,
         },
         &data);
-    if (result != noErr && result != errSecItemNotFound) {
-        NSLog(@"Problem accessing Keychain: %@", getOSStatusDescription(result));
+    if (result == errSecItemNotFound) {
+        return;
     }
-    char const* password = (char const*)((__bridge_transfer NSData*)data).bytes;
+    if (result != noErr) {
+        NSLog(@"Problem accessing Keychain: %@", getOSStatusDescription(result));
+        return;
+    }
+
+    NSString* password = [[NSString alloc] initWithData:(__bridge_transfer NSData*)data encoding:NSUTF8StringEncoding];
     if (password) {
-        tr_sessionSetRPCPassword(self.fHandle, password);
-        self.fRPCPassword = @(password);
+        tr_sessionSetRPCPassword(self.fHandle, password.UTF8String);
+        self.fRPCPassword = password;
     }
 }
 
 - (void)setKeychainPassword:(char const*)password
 {
-    CFTypeRef item;
+    CFTypeRef item = NULL;
     OSStatus result = SecItemCopyMatching(
         (CFDictionaryRef) @{
             (NSString*)kSecClass : (NSString*)kSecClassGenericPassword,
