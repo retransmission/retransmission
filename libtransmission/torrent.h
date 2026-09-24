@@ -433,7 +433,7 @@ struct tr_torrent {
 
     /// PRIORITIES
 
-    [[nodiscard]] tr_priority_t piece_priority(tr_piece_index_t piece) const
+    [[nodiscard]] constexpr tr_priority_t piece_priority(tr_piece_index_t const piece) const
     {
         return file_priorities_.piece_priority(piece);
     }
