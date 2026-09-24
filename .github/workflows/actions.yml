@@ -1376,7 +1376,7 @@ jobs:
       uses: android-actions/setup-android@v4
       with:
         # https://github.com/android-actions/setup-android/issues/537
-        packages: 'platform-tools'
+        packages: 'platform-tools platforms;android-31'
 
     - name: Install NDK
       run: sdkmanager "ndk;28.2.13676358"
