@@ -4,12 +4,14 @@
 // License text can be found in the licenses/ folder.
 
 #include <string_view>
+#include <tuple>
 
 #include <gtest/gtest.h>
 
 #include <libtransmission/api-compat.h>
 #include <libtransmission/macros.h>
 #include <libtransmission/quark.h>
+#include <libtransmission/session-settings.h>
 #include <libtransmission/variant.h>
 
 #include "settings-fixtures.h"
@@ -1151,6 +1153,26 @@ TEST_F(ApiCompatTest, canConvertJsonDataFiles)
         tr::api_compat::convert(*parsed, tgt_style);
         EXPECT_EQ(expected, serde.to_string(*parsed)) << name;
     }
+}
+
+TEST_F(ApiCompatTest, settingsFixturesHaveEverySettingsKey)
+{
+    // canConvertJsonDataFiles tests a settings key's legacy name only if the fixtures have that key.
+    auto serde = tr_variant_serde::json();
+    auto const settings = serde.parse(CurrentSettingsJson);
+    ASSERT_TRUE(settings.has_value()) << serde.error_;
+    auto const* const map = settings->get_if<tr_variant::Map>();
+    ASSERT_NE(map, nullptr);
+
+    auto const expect_key = [map](tr_quark const key) {
+        EXPECT_TRUE(map->contains(key)) << tr_quark_get_string_view(key);
+    };
+    auto const expect_keys = [&expect_key](auto const& fields) {
+        std::apply([&expect_key](auto const&... field) { (expect_key(field.key), ...); }, fields);
+    };
+    expect_keys(tr::SessionSettings::Fields);
+    expect_keys(tr::SessionAltSpeedSettings::Fields);
+    expect_keys(tr::RpcServerSettings::Fields);
 }
 
 TEST_F(ApiCompatTest, migratesLegacyRatioSettingKeys)

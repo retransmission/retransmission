@@ -23,6 +23,7 @@
 #include "libtransmission-app/display-modes.h"
 #include "libtransmission-app/prefs.h"
 
+#include "../libtransmission/settings-fixtures.h"
 #include "test-fixtures.h"
 
 using namespace std::literals;
@@ -139,6 +140,30 @@ TEST_F(PrefsTest, defaultConstructorMatchesEverySessionDefault)
                 ...);
         },
         tr::app::SessionPrefs::Fields);
+}
+
+TEST_F(PrefsTest, settingsFixturesHaveEveryPersistentPrefsKey)
+{
+    // ApiCompatTest tests a settings key's legacy name only if the fixtures have that key.
+    auto serde = tr_variant_serde::json();
+    auto const settings = serde.parse(tr::test::CurrentSettingsJson);
+    ASSERT_TRUE(settings.has_value()) << serde.error_.message();
+    auto const* const map = settings->get_if<tr_variant::Map>();
+    ASSERT_NE(map, nullptr);
+
+    // Prefs::save() strips transient keys, so no real settings.json has them.
+    auto const expect_key = [map](tr_quark const key) {
+        if (key == TR_KEY_filter_text) {
+            EXPECT_FALSE(map->contains(key)) << "transient key " << tr_quark_get_string_view(key);
+        } else {
+            EXPECT_TRUE(map->contains(key)) << tr_quark_get_string_view(key);
+        }
+    };
+    auto const expect_keys = [&expect_key](auto const& fields) {
+        std::apply([&expect_key](auto const&... field) { (expect_key(field.key), ...); }, fields);
+    };
+    expect_keys(tr::app::AppPrefs::Fields);
+    expect_keys(tr::app::SessionPrefs::Fields);
 }
 
 TEST_F(PrefsTest, getSetRoundTripsBool)
