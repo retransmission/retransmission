@@ -15,6 +15,7 @@
 #include <gtest/gtest.h>
 
 #include <libtransmission/quark.h>
+#include <libtransmission/serializer.h>
 #include <libtransmission/session-settings.h> // tr::is_settings_key()
 #include <libtransmission/tr-assert.h> // TR_ENABLE_ASSERTS
 #include <libtransmission/transmission.h> // tr_encryption_mode, tr_sessionGetDefaultSettings()
@@ -23,6 +24,7 @@
 #include "libtransmission-app/display-modes.h"
 #include "libtransmission-app/prefs.h"
 
+#include "../libtransmission/settings-fixtures.h"
 #include "test-fixtures.h"
 
 using namespace std::literals;
@@ -521,4 +523,28 @@ TEST_F(PrefsFileTest, saveRoundTripsThroughConfigDirConstructor)
     EXPECT_EQ(reloaded.get<std::string>(TR_KEY_download_dir), "/round/trip/dl");
     EXPECT_EQ(reloaded.get<int>(TR_KEY_speed_limit_down), 321);
     EXPECT_EQ(reloaded.get<std::string>(TR_KEY_filter_text), std::string{}); // not persisted
+}
+
+TEST_F(PrefsFileTest, settingsFixturesHaveEverySavedKey)
+{
+    // ApiCompatTest tests a settings key's legacy name only if the fixtures have that key.
+    auto serde = tr_variant_serde::json();
+    auto const settings = serde.parse(tr::test::CurrentSettingsJson);
+    ASSERT_TRUE(settings.has_value()) << serde.error_.message();
+    auto const* const map = settings->get_if<tr_variant::Map>();
+    ASSERT_NE(map, nullptr);
+
+    auto const prefs = TestPrefs{};
+    auto const saved = save_and_reload(prefs);
+    for (auto const& [key, value] : saved) {
+        EXPECT_TRUE(map->contains(key)) << tr_quark_get_string_view(key);
+    }
+
+    // save() leaves transient prefs keys out of every real settings.json.
+    // The fixtures must leave them out too.
+    for (auto const& [key, value] : *map) {
+        if (tr::serializer::has_key<tr::app::AppPrefs, tr::app::SessionPrefs>(key)) {
+            EXPECT_TRUE(saved.contains(key)) << tr_quark_get_string_view(key);
+        }
+    }
 }

@@ -52,6 +52,7 @@ target_sources(libtransmission-test
         serializer-tests.cc
         session-alt-speeds-test.cc
         session-test.cc
+        settings-fixtures.h
         settings-test.cc
         shared-string-test.cc
         strbuf-test.cc
