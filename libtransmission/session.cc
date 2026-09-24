@@ -489,9 +489,6 @@ void tr_sessionSaveSettings(tr_session* session, std::string_view const config_d
     settings.merge(tr::settings::load(filename)); // fallbacks from pre-existing file
     settings.merge(tr_sessionGetDefaultSettings()); // fallbacks from defaults
     tr::settings::save(filename, settings);
-
-    // write bandwidth groups limits to file
-    bandwidth_group_helpers::bandwidthGroupWrite(session, config_dir);
 }
 
 // ---
