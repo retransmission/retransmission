@@ -100,8 +100,6 @@ bool write_entire_buf(tr_sys_file_t const fd, uint64_t file_offset, std::span<ui
         auto const suffix = session.isIncompleteFileNamingEnabled() ? tr_torrent_files::PartialFileSuffix : ""sv;
         auto const filename = tr_pathbuf{ base, '/', tor.file_subpath(file_index), suffix };
         if (auto file = open_files.get(tor_id, file_index, writable, filename, prealloc, file_size, error); file) {
-            // make a note that we just created a file
-            session.add_file_created();
             return file;
         }
     }

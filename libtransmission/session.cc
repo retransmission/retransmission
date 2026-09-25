@@ -529,6 +529,7 @@ void tr_session::on_now_timer()
     tr_timeUpdate(std::chrono::system_clock::to_time_t(now));
     alt_speeds_.check_scheduler();
     busy_window_.store(compute_busy_window(), std::memory_order_relaxed);
+    collect_files_created();
 
     // set the timer to kick again right after (10ms after) the next second
     auto const target_time = std::chrono::time_point_cast<std::chrono::seconds>(now) + 1s + 10ms;
@@ -1344,6 +1345,7 @@ void tr_session::closeImplPart2(std::promise<void>* closed_promise, std::chrono:
     this->announcer_.reset();
     this->announcer_udp_.reset();
 
+    collect_files_created();
     stats().save();
     peer_mgr_.reset();
     openFiles().close_all();
