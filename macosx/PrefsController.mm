@@ -2,6 +2,8 @@
 // It may be used under the MIT (SPDX: MIT) license.
 // License text can be found in the licenses/ folder.
 
+#include <string_view>
+
 #include <libtransmission/macros.h>
 #include <libtransmission/string-utils.h>
 
@@ -1480,9 +1482,11 @@ static NSString* getOSStatusDescription(OSStatus errorCode)
         return;
     }
 
-    NSString* const password = [[NSString alloc] initWithData:(__bridge_transfer NSData*)data encoding:NSUTF8StringEncoding];
+    NSData* const passwordData = (__bridge_transfer NSData*)data;
+    NSString* const password = [[NSString alloc] initWithData:passwordData encoding:NSUTF8StringEncoding];
     if (password) {
-        tr_sessionSetRPCPassword(self.fHandle, password.UTF8String);
+        auto const passwordBytes = std::string_view{ static_cast<char const*>(passwordData.bytes), passwordData.length };
+        tr_sessionSetRPCPassword(self.fHandle, passwordBytes);
         self.fRPCPassword = password;
     }
 }
