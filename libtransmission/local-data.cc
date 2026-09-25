@@ -8,6 +8,7 @@
 #include <functional>
 #include <memory>
 #include <span>
+#include <string>
 #include <string_view>
 #include <utility>
 #include <vector>
@@ -106,10 +107,7 @@ public:
         return tr_ioWrite(*tor->storage_descriptor(), open_files_, byte_span.begin, std::span{ std::data(data), span_size });
     }
 
-    [[nodiscard]] tr_error_code_t move(
-        tr_torrent_id_t const id,
-        std::string_view const parent,
-        std::string_view const parent_name) override
+    [[nodiscard]] tr_error_code_t move(tr_torrent_id_t const id, std::string_view const parent) override
     {
         auto* const tor = torrents_.get(id);
         if (tor == nullptr) {
@@ -117,7 +115,7 @@ public:
         }
 
         auto error = tr_error{};
-        if (tor->files().move(tor->search_paths(), parent, parent_name, &error)) {
+        if (tor->files().move(tor->search_paths(), parent, tor->name(), &error)) {
             return 0;
         }
 
@@ -154,7 +152,7 @@ public:
             return;
         }
 
-        tr_torrentRenamePath(tor, oldpath, newname, std::move(callback));
+        tor->rename_path_in_session_thread(oldpath, newname, callback);
     }
 
     void close_all() override
@@ -238,16 +236,37 @@ void LocalData::write(
     }
 }
 
-void LocalData::close_torrent(tr_torrent_id_t const tor_id)
+// Run an admin op as a barrier: wait for the ops in flight, run
+// exclusively, and hold back the ops enqueued behind it (rule 3).
+// `body` is the whole op. It calls the backend and delivers its own
+// completion.
+void LocalData::admin([[maybe_unused]] tr_torrent_id_t const id, std::function<void()> body)
 {
     drain();
-    backend_->close_torrent(tor_id);
+    body();
 }
 
-void LocalData::close_file(tr_torrent_id_t const tor_id, tr_file_index_t const file_num)
+void LocalData::close_torrent(tr_torrent_id_t const tor_id, OnClose on_close) // NOLINT(performance-unnecessary-value-param)
 {
-    drain();
-    backend_->close_file(tor_id, file_num);
+    admin(tor_id, [this, tor_id, on_close = std::move(on_close)]() mutable {
+        backend_->close_torrent(tor_id);
+        if (on_close) {
+            std::move(on_close)(tor_id);
+        }
+    });
+}
+
+void LocalData::close_file(
+    tr_torrent_id_t const tor_id,
+    tr_file_index_t const file_num,
+    OnClose on_close) // NOLINT(performance-unnecessary-value-param)
+{
+    admin(tor_id, [this, tor_id, file_num, on_close = std::move(on_close)]() mutable {
+        backend_->close_file(tor_id, file_num);
+        if (on_close) {
+            std::move(on_close)(tor_id);
+        }
+    });
 }
 
 void LocalData::close_all()
@@ -258,22 +277,29 @@ void LocalData::close_all()
 
 void LocalData::move(
     tr_torrent_id_t const id,
-    std::string_view const parent,
-    std::string_view const parent_name,
+    MoveParent parent, // NOLINT(performance-unnecessary-value-param)
     OnMove on_move) // NOLINT(performance-unnecessary-value-param)
 {
-    drain();
-    auto const err = backend_->move(id, parent, parent_name);
-
-    if (on_move) {
-        std::move(on_move)(id, make_error(err));
-    }
+    admin(id, [this, id, parent = std::move(parent), on_move = std::move(on_move)]() mutable {
+        auto const dir = parent();
+        auto const err = std::empty(dir) ? tr_error_code_t{} : backend_->move(id, dir);
+        if (on_move) {
+            std::move(on_move)(id, dir, make_error(err));
+        }
+    });
 }
 
-void LocalData::remove(tr_torrent_id_t const id, tr_torrent_remove_func remove_func)
+void LocalData::remove(
+    tr_torrent_id_t const id,
+    tr_torrent_remove_func remove_func,
+    OnRemove on_remove) // NOLINT(performance-unnecessary-value-param)
 {
-    drain();
-    static_cast<void>(backend_->remove(id, std::move(remove_func)));
+    admin(id, [this, id, remove_func = std::move(remove_func), on_remove = std::move(on_remove)]() mutable {
+        auto const err = backend_->remove(id, std::move(remove_func));
+        if (on_remove) {
+            std::move(on_remove)(id, make_error(err));
+        }
+    });
 }
 
 void LocalData::rename(
@@ -282,8 +308,13 @@ void LocalData::rename(
     std::string_view const newname,
     tr_torrent_rename_done_func callback)
 {
-    drain();
-    backend_->rename(id, oldpath, newname, std::move(callback));
+    admin(
+        id,
+        [this,
+         id,
+         oldpath = std::string{ oldpath },
+         newname = std::string{ newname },
+         callback = std::move(callback)]() mutable { backend_->rename(id, oldpath, newname, std::move(callback)); });
 }
 
 void LocalData::shutdown()

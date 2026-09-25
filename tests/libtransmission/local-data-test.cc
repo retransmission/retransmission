@@ -6,6 +6,7 @@
 #include <algorithm>
 #include <memory>
 #include <optional>
+#include <string>
 #include <string_view>
 #include <utility>
 #include <vector>
@@ -54,13 +55,9 @@ public:
         return write_err;
     }
 
-    [[nodiscard]] tr_error_code_t move(
-        [[maybe_unused]] tr_torrent_id_t id,
-        std::string_view parent,
-        std::string_view parent_name) override
+    [[nodiscard]] tr_error_code_t move([[maybe_unused]] tr_torrent_id_t id, std::string_view const parent) override
     {
         moved_to = std::string{ parent };
-        moved_name = std::string{ parent_name };
         return move_err;
     }
 
@@ -110,7 +107,6 @@ public:
     tr_sha1_digest_t hash = tr_sha1::digest("local-data-test"sv);
     std::vector<uint8_t> last_write;
     std::string moved_to;
-    std::string moved_name;
     std::string renamed_from;
     std::string renamed_to;
     tr_torrent_id_t closed_torrent = -1;
@@ -198,14 +194,30 @@ TEST(LocalData, AdminOperationsDelegate)
     auto local_data = tr::LocalData{ std::move(backend) };
 
     auto move_called = false;
-    local_data.move(5, "/new", "name", [&move_called](tr_torrent_id_t tor_id, tr_error const& error) {
-        move_called = true;
-        EXPECT_EQ(5, tor_id);
-        EXPECT_FALSE(error);
-    });
+    local_data.move(
+        5,
+        []() { return std::string{ "/new" }; },
+        [&move_called](tr_torrent_id_t tor_id, std::string_view const parent, tr_error const& error) {
+            move_called = true;
+            EXPECT_EQ(5, tor_id);
+            EXPECT_EQ("/new", parent);
+            EXPECT_FALSE(error);
+        });
     EXPECT_TRUE(move_called);
     EXPECT_EQ("/new", raw_backend->moved_to);
-    EXPECT_EQ("name", raw_backend->moved_name);
+
+    // an empty parent skips the move
+    auto skip_called = false;
+    local_data.move(
+        5,
+        []() { return std::string{}; },
+        [&skip_called](tr_torrent_id_t, std::string_view const parent, tr_error const& error) {
+            skip_called = true;
+            EXPECT_EQ("", parent);
+            EXPECT_FALSE(error);
+        });
+    EXPECT_TRUE(skip_called);
+    EXPECT_EQ("/new", raw_backend->moved_to);
 
     auto rename_called = false;
     local_data.rename(
@@ -221,15 +233,31 @@ TEST(LocalData, AdminOperationsDelegate)
         });
     EXPECT_TRUE(rename_called);
 
-    local_data.remove(12, {});
+    auto remove_called = false;
+    local_data.remove(12, {}, [&remove_called](tr_torrent_id_t tor_id, tr_error const& error) {
+        remove_called = true;
+        EXPECT_EQ(12, tor_id);
+        EXPECT_FALSE(error);
+    });
+    EXPECT_TRUE(remove_called);
     EXPECT_TRUE(raw_backend->remove_called);
 
-    local_data.close_file(13, 2);
+    auto close_file_called = false;
+    local_data.close_file(13, 2, [&close_file_called](tr_torrent_id_t tor_id) {
+        close_file_called = true;
+        EXPECT_EQ(13, tor_id);
+    });
+    EXPECT_TRUE(close_file_called);
     ASSERT_TRUE(raw_backend->closed_file.has_value());
     EXPECT_EQ(13, raw_backend->closed_file->first);
     EXPECT_EQ(2, raw_backend->closed_file->second);
 
-    local_data.close_torrent(14);
+    auto close_torrent_called = false;
+    local_data.close_torrent(14, [&close_torrent_called](tr_torrent_id_t tor_id) {
+        close_torrent_called = true;
+        EXPECT_EQ(14, tor_id);
+    });
+    EXPECT_TRUE(close_torrent_called);
     EXPECT_EQ(14, raw_backend->closed_torrent);
 
     local_data.close_all();
@@ -292,10 +320,13 @@ TEST(LocalData, AdminOpsDrainParkedCompletions)
 
     // rule 3: a barrier waits for the ops enqueued before it
     auto move_finished = false;
-    local_data.move(7, "/new", "name", [&read_finished, &move_finished](auto, auto const&) {
-        EXPECT_TRUE(read_finished);
-        move_finished = true;
-    });
+    local_data.move(
+        7,
+        []() { return std::string{ "/new" }; },
+        [&read_finished, &move_finished](auto, auto, auto const&) {
+            EXPECT_TRUE(read_finished);
+            move_finished = true;
+        });
 
     EXPECT_TRUE(move_finished);
     EXPECT_EQ("/new", raw_backend->moved_to);
