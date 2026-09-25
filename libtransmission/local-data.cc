@@ -15,10 +15,10 @@
 #include "libtransmission/local-data.h"
 
 #include "libtransmission/constants.h"
-#include "libtransmission/crypto-utils.h"
 #include "libtransmission/error.h"
 #include "libtransmission/inout.h"
 #include "libtransmission/open-files.h"
+#include "libtransmission/storage-descriptor.h"
 #include "libtransmission/torrent.h"
 #include "libtransmission/torrents.h"
 #include "libtransmission/transmission.h"
@@ -27,11 +27,6 @@ namespace tr
 {
 namespace
 {
-struct HashResult {
-    tr_error_code_t error = 0;
-    std::optional<tr_sha1_digest_t> hash;
-};
-
 [[nodiscard]] tr_error make_error(tr_error_code_t err)
 {
     auto error = tr_error{};
@@ -42,42 +37,20 @@ struct HashResult {
     return error;
 }
 
-[[nodiscard]] HashResult recalculate_hash(
-    LocalData::Backend& backend,
-    tr_torrent_id_t const id,
-    tr_block_info const block_info,
-    tr_piece_index_t const piece)
+// Reads at most one block. `desc` is null when the torrent is gone.
+[[nodiscard]] tr_error_code_t read_block(
+    StorageDescriptor const* const desc,
+    tr_open_files& open_files,
+    tr_byte_span_t const span,
+    LocalData::BlockData& setme)
 {
-    TR_ASSERT(piece < block_info.piece_count());
-
-    auto sha = tr_sha1{};
-    auto buffer = LocalData::BlockData{};
-
-    auto const [begin_byte, end_byte] = block_info.byte_span_for_piece(piece);
-    auto const [begin_block, end_block] = block_info.block_span_for_piece(piece);
-    [[maybe_unused]] auto n_bytes_checked = size_t{};
-    for (auto block = begin_block; block < end_block; ++block) {
-        auto const byte_span = block_info.byte_span_for_block(block);
-
-        if (auto const err = backend.read(id, byte_span, buffer); err != 0) {
-            return { .error = err, .hash = {} };
-        }
-
-        auto span = std::span{ buffer.data(), static_cast<size_t>(byte_span.size()) };
-
-        if (block + 1U == end_block) {
-            span = span.first(end_byte - byte_span.begin);
-        }
-        if (block == begin_block) {
-            span = span.subspan(begin_byte - byte_span.begin);
-        }
-
-        sha.add(span);
-        n_bytes_checked += span.size();
+    if (desc == nullptr || !span.is_valid() || span.size() > TrBlockSize) {
+        return TR_ERROR_EINVAL;
     }
 
-    TR_ASSERT(block_info.piece_size(piece) == n_bytes_checked);
-    return { .error = 0, .hash = sha.finish() };
+    auto const len = static_cast<size_t>(span.size());
+    setme.resize(len);
+    return tr_ioRead(*desc, open_files, span.begin, std::span{ std::data(setme), len });
 }
 
 class DefaultBackend final : public LocalData::Backend
@@ -92,24 +65,9 @@ public:
     [[nodiscard]] tr_error_code_t read(tr_torrent_id_t const id, tr_byte_span_t const byte_span, LocalData::BlockData& setme)
         override
     {
-        if (!byte_span.is_valid()) {
-            return TR_ERROR_EINVAL;
-        }
-
-        auto const len = byte_span.size();
-        if (len > TrBlockSize) {
-            return TR_ERROR_EINVAL;
-        }
-        auto const span_size = static_cast<size_t>(len);
-
         auto const* const tor = torrents_.get(id);
-        if (tor == nullptr) {
-            return TR_ERROR_EINVAL;
-        }
-
-        auto const loc = tor->block_info().byte_loc(byte_span.begin);
-        setme.resize(span_size);
-        return tr_ioRead(*tor, open_files_, loc, std::span{ std::data(setme), span_size });
+        auto const desc = tor != nullptr ? tor->storage_descriptor() : nullptr;
+        return read_block(desc.get(), open_files_, byte_span, setme);
     }
 
     [[nodiscard]] tr_error_code_t test_piece(
@@ -118,17 +76,11 @@ public:
         tr_sha1_digest_t& setme_hash) override
     {
         auto const* const tor = torrents_.get(id);
-        if (tor == nullptr || piece >= tor->piece_count()) {
+        if (tor == nullptr) {
             return TR_ERROR_EINVAL;
         }
 
-        auto const result = recalculate_hash(*this, id, tor->block_info(), piece);
-        if (!result.hash) {
-            return result.error != 0 ? result.error : EIO;
-        }
-
-        setme_hash = *result.hash;
-        return 0;
+        return tr_ioRecalculateHash(*tor->storage_descriptor(), open_files_, piece, setme_hash);
     }
 
     [[nodiscard]] tr_error_code_t write(
@@ -146,13 +98,12 @@ public:
         }
         auto const span_size = static_cast<size_t>(len);
 
-        auto* const tor = torrents_.get(id);
+        auto const* const tor = torrents_.get(id);
         if (tor == nullptr) {
             return TR_ERROR_EINVAL;
         }
 
-        auto const loc = tor->block_info().byte_loc(byte_span.begin);
-        return tr_ioWrite(*tor, open_files_, loc, std::span{ std::data(data), span_size });
+        return tr_ioWrite(*tor->storage_descriptor(), open_files_, byte_span.begin, std::span{ std::data(data), span_size });
     }
 
     [[nodiscard]] tr_error_code_t move(
