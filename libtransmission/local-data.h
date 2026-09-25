@@ -304,6 +304,20 @@ public:
 
     [[nodiscard]] Stats stats() const noexcept;
 
+    // The most bytes that may wait for the disk, counting blocks
+    // requested from peers as well as blocks received. Also sizes the
+    // retained-block cache.
+    void set_write_budget(uint64_t bytes);
+
+    // The retained-block cache's size: half the write budget, up to 32 MiB.
+    [[nodiscard]] size_t retained_bytes() const noexcept;
+
+    // Bytes still spare under the write budget once `requested` bytes
+    // join what waits for the disk. No value means no bound: the
+    // synchronous backend writes a block before it reads the next one
+    // off the wire, so nothing buffers there.
+    [[nodiscard]] std::optional<uint64_t> spare_write_bytes(uint64_t requested) const noexcept;
+
     // For tests. Paused workers take no new ops.
     void set_workers_paused(bool paused);
 
@@ -379,6 +393,7 @@ private:
     std::unique_ptr<Backend> backend_;
 
     std::shared_ptr<Threaded> threaded_;
+    std::optional<uint64_t> write_budget_;
 
     std::vector<std::unique_ptr<Parked>> parked_;
     std::function<void()> wake_;

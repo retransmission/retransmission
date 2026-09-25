@@ -254,6 +254,13 @@ public:
         trim();
     }
 
+    void set_capacity(size_t const max_bytes)
+    {
+        auto const lock = std::scoped_lock{ mutex_ };
+        max_bytes_ = max_bytes;
+        trim();
+    }
+
     // Takes the piece's blocks. Empty unless every one of them is here.
     [[nodiscard]] std::vector<Block> take(tr_torrent_id_t const id, tr_piece_index_t const piece)
     {
@@ -319,7 +326,7 @@ private:
     Entries entries_;
     std::list<Key> lru_;
     size_t bytes_ = 0U;
-    size_t const max_bytes_;
+    size_t max_bytes_;
 };
 
 } // namespace
@@ -526,6 +533,11 @@ public:
             paused_ = paused;
         }
         work_cv_.notify_all();
+    }
+
+    void set_retained_bytes(size_t const max_bytes)
+    {
+        retained_.set_capacity(max_bytes);
     }
 
 private:
@@ -1138,7 +1150,7 @@ void LocalData::start_workers(size_t worker_count, tr_open_files& open_files, Ma
     static auto constexpr MaxWorkerCount = size_t{ 64U };
     worker_count = std::min(worker_count, MaxWorkerCount);
 
-    threaded_ = std::make_shared<Threaded>(open_files, std::move(provider), std::move(marshal), worker_count, MaxRetainedBytes);
+    threaded_ = std::make_shared<Threaded>(open_files, std::move(provider), std::move(marshal), worker_count, retained_bytes());
 }
 
 void LocalData::read(tr_torrent_id_t const id, tr_byte_span_t const byte_span, OnRead on_read)
@@ -1315,6 +1327,29 @@ uint64_t LocalData::enqueued_write_bytes() const noexcept
 LocalData::Stats LocalData::stats() const noexcept
 {
     return threaded_ ? threaded_->stats() : Stats{};
+}
+
+void LocalData::set_write_budget(uint64_t const bytes)
+{
+    write_budget_ = bytes;
+    if (threaded_) {
+        threaded_->set_retained_bytes(retained_bytes());
+    }
+}
+
+size_t LocalData::retained_bytes() const noexcept
+{
+    return write_budget_ ? static_cast<size_t>(std::min<uint64_t>(MaxRetainedBytes, *write_budget_ / 2U)) : MaxRetainedBytes;
+}
+
+std::optional<uint64_t> LocalData::spare_write_bytes(uint64_t const requested) const noexcept
+{
+    if (!threaded_ || !write_budget_) {
+        return {};
+    }
+
+    auto const in_flight = threaded_->enqueued_write_bytes() + requested;
+    return *write_budget_ - std::min(*write_budget_, in_flight);
 }
 
 void LocalData::set_workers_paused(bool const paused)

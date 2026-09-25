@@ -545,9 +545,16 @@ protected:
                                    .partial_file_naming = false });
     }
 
-    [[nodiscard]] auto makeLocalData(std::shared_ptr<tr::StorageDescriptor const> desc, size_t const n_workers = 2U)
+    // The write budget also sizes the retained-block cache, at half the budget.
+    [[nodiscard]] auto makeLocalData(
+        std::shared_ptr<tr::StorageDescriptor const> desc,
+        size_t const n_workers = 2U,
+        std::optional<uint64_t> const write_budget = {})
     {
         auto local_data = std::make_unique<tr::LocalData>(torrents_, open_files_);
+        if (write_budget) {
+            local_data->set_write_budget(*write_budget);
+        }
         local_data->start_workers(n_workers, open_files_, marshal(), [desc = std::move(desc)](tr_torrent_id_t const id) {
             return id == TorId ? desc : nullptr;
         });
@@ -741,6 +748,77 @@ TEST_F(LocalDataWorkersTest, pieceIsHashedFromBufferedBlocks)
     EXPECT_EQ(1U, stats.hashes_from_buffers);
     EXPECT_EQ(0U, stats.hashes_from_disk);
 
+    local_data->shutdown();
+}
+
+TEST_F(LocalDataWorkersTest, retainedCacheIsHalfTheWriteBudgetUpTo32MiB)
+{
+    static auto constexpr MiB = size_t{ 1024U } * 1024U;
+    auto local_data = tr::LocalData{ torrents_, open_files_ };
+
+    // with no budget set, the cache takes the cap
+    EXPECT_EQ(32U * MiB, local_data.retained_bytes());
+
+    local_data.set_write_budget(0U);
+    EXPECT_EQ(0U, local_data.retained_bytes());
+    local_data.set_write_budget(MiB);
+    EXPECT_EQ(MiB / 2U, local_data.retained_bytes());
+    local_data.set_write_budget(uint64_t{ 128U } * MiB);
+    EXPECT_EQ(32U * MiB, local_data.retained_bytes());
+}
+
+TEST_F(LocalDataWorkersTest, pieceLargerThanTheRetainedCacheIsReadBack)
+{
+    static auto constexpr PieceSize = uint32_t{ 32768U };
+    // a cache of one block can't hold a whole piece, so it keeps none of it
+    auto const local_data = makeLocalData(makeDescriptor({ { "data.bin", PieceSize } }, PieceSize), 1U, 2U * BlockSize);
+    auto n_done = size_t{};
+    auto const n_writes = writeBlocks(*local_data, 0U, PieceSize, [&n_done]() { ++n_done; });
+    ASSERT_TRUE(pumpUntil([&n_done, n_writes]() { return n_done == n_writes; }));
+
+    auto hash = std::optional<tr_sha1_digest_t>{};
+    local_data->test_piece(TorId, 0U, [&hash](tr_torrent_id_t, tr_piece_index_t, tr_error const& error, auto found) {
+        EXPECT_FALSE(error);
+        hash = found;
+    });
+    ASSERT_TRUE(pumpUntil([&hash]() { return hash.has_value(); }));
+    EXPECT_EQ(tr_sha1::digest(patternString(0U, PieceSize)), *hash);
+    EXPECT_EQ(0U, local_data->stats().hashes_from_buffers);
+    EXPECT_EQ(1U, local_data->stats().hashes_from_disk);
+    local_data->shutdown();
+}
+
+TEST_F(LocalDataWorkersTest, resizingRetainedCapacityEvictsOldestPiecesAndAllowsGrowth)
+{
+    static auto constexpr PieceSize = size_t{ 32768U };
+    auto const local_data = makeLocalData(makeDescriptor({ { "data.bin", 2U * PieceSize } }, PieceSize), 1U);
+    auto const write_pieces = [&]() {
+        auto n_done = size_t{};
+        auto const n_writes = writeBlocks(*local_data, 0U, 2U * PieceSize, [&n_done]() { ++n_done; });
+        EXPECT_TRUE(pumpUntil([&n_done, n_writes]() { return n_done == n_writes; }));
+    };
+    auto const hash_pieces = [&]() {
+        for (auto piece = tr_piece_index_t{}; piece < 2U; ++piece) {
+            auto hash = std::optional<tr_sha1_digest_t>{};
+            local_data->test_piece(TorId, piece, [&hash](tr_torrent_id_t, tr_piece_index_t, tr_error const& error, auto found) {
+                EXPECT_FALSE(error);
+                hash = found;
+            });
+            ASSERT_TRUE(pumpUntil([&hash]() { return hash.has_value(); }));
+            EXPECT_EQ(tr_sha1::digest(patternString(piece * PieceSize, PieceSize)), *hash);
+            EXPECT_EQ(1U, local_data->stats().hashes_from_disk);
+        }
+    };
+
+    write_pieces();
+    local_data->set_write_budget(2U * PieceSize);
+    hash_pieces();
+    EXPECT_EQ(1U, local_data->stats().hashes_from_buffers);
+
+    local_data->set_write_budget(4U * PieceSize);
+    write_pieces();
+    hash_pieces();
+    EXPECT_EQ(3U, local_data->stats().hashes_from_buffers);
     local_data->shutdown();
 }
 
