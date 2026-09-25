@@ -268,12 +268,22 @@ void save_file_priorities(tr_variant::Map& map, tr_torrent const* const tor)
     // keeps the priority a fresh torrent gives it.
     auto const sort_file = [&low, &normal, &high](tr_file_index_t const i, tr_variant const* const entry) {
         auto const priority = entry != nullptr ? valid_priority(entry->value_if<int8_t>()) : std::nullopt;
-        if (priority == TR_PRI_LOW) {
+        if (!priority) {
+            return;
+        }
+
+        switch (*priority) {
+        case TR_PRI_LOW:
             low.push_back(i);
-        } else if (priority == TR_PRI_NORMAL) {
+            break;
+
+        case TR_PRI_NORMAL:
             normal.push_back(i);
-        } else if (priority == TR_PRI_HIGH) {
+            break;
+
+        case TR_PRI_HIGH:
             high.push_back(i);
+            break;
         }
     };
 
