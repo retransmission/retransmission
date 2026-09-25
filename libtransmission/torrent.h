@@ -9,10 +9,12 @@
 #error only libtransmission should #include this header.
 #endif
 
+#include <algorithm>
 #include <cstddef> // size_t
 #include <cstdint> // uint64_t, uint16_t
 #include <ctime>
 #include <memory>
+#include <mutex>
 #include <optional>
 #include <span>
 #include <string>
@@ -47,6 +49,11 @@ class tr_swarm;
 struct tr_error;
 struct tr_torrent;
 struct tr_torrent_announcer;
+
+namespace tr
+{
+struct StorageDescriptor;
+}
 
 // --- Package-visible
 
@@ -499,12 +506,28 @@ struct tr_torrent {
     void set_file_subpath(tr_file_index_t i, std::string_view subpath)
     {
         metainfo_.set_file_subpath(i, subpath);
+        invalidate_storage_descriptor();
     }
 
     // The views refer to the torrent's directories, not to the returned container.
     [[nodiscard]] small::max_size_vector<std::string_view, 2> search_paths() const;
 
     [[nodiscard]] std::optional<tr_torrent_files::FoundFile> find_file(tr_file_index_t file_index) const;
+
+    // A snapshot of this torrent's on-disk layout for disk IO.
+    // Cached until the next invalidate_storage_descriptor() call.
+    // Safe to call from any thread: tr_torrentNew() checks the first
+    // piece on the caller's thread.
+    [[nodiscard]] std::shared_ptr<tr::StorageDescriptor const> storage_descriptor() const;
+
+    // Call after changing anything that affects where this torrent's
+    // data lives on disk: dirs, file subpaths, wanted files, or the
+    // metainfo.
+    void invalidate_storage_descriptor() noexcept
+    {
+        auto const lock = std::scoped_lock{ storage_descriptor_mutex_ };
+        storage_descriptor_.reset();
+    }
 
     [[nodiscard]] bool has_any_local_data() const;
 
@@ -1373,6 +1396,10 @@ private:
     tr_completion completion_;
 
     tr_file_piece_map fpm_ = tr_file_piece_map{ metainfo_ };
+
+    // see storage_descriptor()
+    mutable std::mutex storage_descriptor_mutex_;
+    mutable std::shared_ptr<tr::StorageDescriptor const> storage_descriptor_;
 
     // when Transmission thinks the torrent's files were last changed
     std::vector<time_t> file_mtimes_;

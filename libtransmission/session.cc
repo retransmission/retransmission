@@ -787,6 +787,11 @@ void tr_session::setSettings(tr_session::Settings&& settings_in, bool force)
         verifier_->set_sleep_per_seconds_during_verify(val);
     }
 
+    if (new_settings.preallocation_mode != old_settings.preallocation_mode ||
+        new_settings.is_incomplete_file_naming_enabled != old_settings.is_incomplete_file_naming_enabled) {
+        invalidate_storage_descriptors();
+    }
+
     // We need to update bandwidth if speed settings changed.
     // It's a harmless call, so just call it instead of checking for settings changes
     update_bandwidth(tr_direction::Up);
@@ -886,6 +891,7 @@ void tr_sessionSetIncompleteFileNamingEnabled(tr_session* session, bool enabled)
     TR_ASSERT(session != nullptr);
 
     session->settings_.is_incomplete_file_naming_enabled = enabled;
+    session->run_in_session_thread([session]() { session->invalidate_storage_descriptors(); });
 }
 
 bool tr_sessionIsIncompleteFileNamingEnabled(tr_session const* session)
@@ -1919,6 +1925,15 @@ void tr_session::close_torrent_files(tr_torrent_id_t const tor_id) noexcept
 void tr_session::close_torrent_file(tr_torrent const& tor, tr_file_index_t file_num) noexcept
 {
     openFiles().close_file(tor.id(), file_num);
+}
+
+void tr_session::invalidate_storage_descriptors()
+{
+    TR_ASSERT(am_in_session_thread());
+
+    for (auto* const tor : torrents_) {
+        tor->invalidate_storage_descriptor();
+    }
 }
 
 // ---
