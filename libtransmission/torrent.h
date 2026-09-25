@@ -863,8 +863,8 @@ struct tr_torrent {
 
     void set_idle_limit_mode(tr_idlelimit mode) noexcept
     {
+        // RPC and resume files pass modes through unchecked, so ignore an invalid one.
         auto const is_valid = mode == TR_IDLELIMIT_GLOBAL || mode == TR_IDLELIMIT_SINGLE || mode == TR_IDLELIMIT_UNLIMITED;
-        TR_ASSERT(is_valid);
         if (idle_limit_mode_ != mode && is_valid) {
             idle_limit_mode_ = mode;
             set_dirty();

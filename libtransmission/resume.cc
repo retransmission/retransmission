@@ -397,10 +397,10 @@ void load_single_speed_limit(tr_variant::Map const& map, tr_direction const dir,
         tor->set_idle_limit_minutes(*imin);
     }
 
-    // A mode that isn't a tr_idlelimit follows the session's settings.
-    if (auto const i = d->value_if<int64_t>(TR_KEY_idle_mode)) {
-        auto const is_valid = *i == TR_IDLELIMIT_GLOBAL || *i == TR_IDLELIMIT_SINGLE || *i == TR_IDLELIMIT_UNLIMITED;
-        tor->set_idle_limit_mode(is_valid ? static_cast<tr_idlelimit>(*i) : TR_IDLELIMIT_GLOBAL);
+    // Read as tr_idlelimit's underlying type, so a value out of its range is dropped instead of wrapped.
+    // set_idle_limit_mode() ignores the other invalid modes.
+    if (auto const i = d->value_if<std::underlying_type_t<tr_idlelimit>>(TR_KEY_idle_mode)) {
+        tor->set_idle_limit_mode(static_cast<tr_idlelimit>(*i));
     }
 
     return Idlelimit;
