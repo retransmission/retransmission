@@ -616,6 +616,23 @@ TEST_F(ResumeTest, savedMaxPeersOutOfRange)
     }
 }
 
+// Saved byte counts that are negative are ignored, so the counts start at zero.
+// Converted to uint64_t, -1 would load as 2^64 - 1.
+TEST_F(ResumeTest, savedByteCountsNegative)
+{
+    auto map = tr_variant::Map{ 3U };
+    map.try_emplace(TR_KEY_corrupt, int64_t{ -1 });
+    map.try_emplace(TR_KEY_downloaded, int64_t{ -1 });
+    map.try_emplace(TR_KEY_uploaded, int64_t{ -1 });
+
+    auto builder = tr_torrent_builder{ session_ };
+    auto const* const tor = torrentInit(builder, { 1U }, std::move(map));
+    ASSERT_NE(nullptr, tor);
+    EXPECT_EQ(0U, tor->bytes_corrupt_.ever());
+    EXPECT_EQ(0U, tor->bytes_downloaded_.ever());
+    EXPECT_EQ(0U, tor->bytes_uploaded_.ever());
+}
+
 // A saved bandwidth priority that doesn't fit in tr_priority_t is ignored.
 // Truncated to int8_t, 257 would pass for TR_PRI_HIGH.
 TEST_F(ResumeTest, savedBandwidthPriorityOutOfRange)
