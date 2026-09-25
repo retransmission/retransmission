@@ -158,10 +158,6 @@
                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                 <font key="font" metaFont="system"/>
                             </buttonCell>
-                            <connections>
-                                <action selector="setAutoSize:" target="-2" id="231"/>
-                                <binding destination="365" name="value" keyPath="values.AutoSize" id="399"/>
-                            </connections>
                         </button>
                         <textField focusRingType="none" verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="229">
                             <rect key="frame" x="18" y="338" width="140" height="16"/>

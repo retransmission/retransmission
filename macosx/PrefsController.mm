@@ -1002,11 +1002,6 @@ static NSString* const kWebUIURLFormat = @"http://localhost:%ld/";
     }];
 }
 
-- (void)setAutoSize:(id)sender
-{
-    [NSNotificationCenter.defaultCenter postNotificationName:@"AutoSizeSettingChange" object:self];
-}
-
 - (IBAction)setRPCEnabled:(id)sender
 {
     BOOL enable = [self.fDefaults boolForKey:@"RPC"];
