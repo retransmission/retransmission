@@ -360,12 +360,12 @@ struct tr_torrent {
         return completion_.has_block(block);
     }
 
-    // True if the block is on disk, or if we're writing it now.
-    // Peers use this instead of has_block() to tell whether they still
-    // need a block.
+    // True if the block is ours, or will be once its write or its
+    // piece's hash finishes. Peers use this instead of has_block() to
+    // tell whether they still need a block.
     [[nodiscard]] constexpr auto has_block_or_pending(tr_block_index_t const block) const
     {
-        return has_block(block) || blocks_pending_write_.test(block);
+        return has_block(block) || blocks_pending_write_.test(block) || blocks_awaiting_hash_.test(block);
     }
 
     [[nodiscard]] auto has_blocks(tr_block_span_t span) const
@@ -1230,11 +1230,19 @@ private:
 
     [[nodiscard]] bool check_piece(tr_piece_index_t piece) const;
 
-    // Hashes a piece we just finished downloading and records the result.
-    // The answer arrives later, by which time the piece may have been
-    // invalidated and downloaded again. A token says which version of the
+    // Hashes pieces we just finished downloading and records the results.
+    // An answer arrives later, by which time its piece may have been
+    // invalidated and downloaded again. A token says which version of a
     // piece was hashed, so a hash of an older version is dropped.
-    void test_piece(tr_piece_index_t piece);
+    void test_pieces(std::span<tr_piece_index_t const> pieces);
+
+    // True if each of the piece's blocks is written: counted, or held
+    // back until the piece's hash passes.
+    [[nodiscard]] bool is_piece_written(tr_piece_index_t piece) const;
+
+    // Counts the held-back blocks in `span` that no hash in flight still
+    // covers, and completes the pieces that they finish.
+    void count_written_blocks(tr_block_span_t span);
 
     [[nodiscard]] constexpr std::optional<uint16_t> effective_idle_limit_minutes() const noexcept
     {
@@ -1318,12 +1326,6 @@ private:
 
     void set_has_piece(tr_piece_index_t piece, bool has)
     {
-        if (!has) {
-            // Any hash in flight for this piece is about a version of it
-            // that no longer exists. See test_piece().
-            hash_tokens_.erase(piece);
-        }
-
         completion_.set_has_piece(piece, has);
     }
 
@@ -1392,8 +1394,14 @@ private:
     // A block leaves this set when its write finishes.
     tr_bitfield blocks_pending_write_ = tr_bitfield{ 0 };
 
+    // Written blocks that complete a piece whose hash hasn't passed.
+    // completion_ counts them once it passes, so it never counts a
+    // piece that might be bad.
+    tr_bitfield blocks_awaiting_hash_ = tr_bitfield{ 0 };
+
     // which version of a piece each in-flight hash is checking.
-    // An entry lives only as long as its hash.
+    // An entry lives only as long as its hash. Session thread only:
+    // the verify thread must not touch this map.
     std::unordered_map<tr_piece_index_t, uint64_t> hash_tokens_;
     uint64_t next_hash_token_ = 0U;
 
