@@ -161,11 +161,9 @@ concept HasConverter = requires(T const& src, tr_variant const& var, T* tgt) {
 };
 
 // True iff `Converter<T>` is the generic integral specialization below.
-// The dispatchers require this for integral types (except `bool`, which
-// has its own legitimate specialization): an explicit `Converter` for an
-// integral type would be specializing a type alias, silently capturing
-// every value of the shared underlying type. Types that need custom
-// serialization must be distinct wrapper classes (e.g. `tr_mode_t`).
+// The dispatchers require it for every integral type except `bool`, whose specialization is deliberate.
+// A `Converter` specialized for an integral type also captures all of that type's aliases.
+// A type that needs custom serialization must be its own class, like `tr_mode_t`.
 template<typename T>
 concept HasGenericIntegralConverter = requires { requires Converter<T>::IsGenericIntegral; };
 
@@ -222,7 +220,8 @@ template<typename T>
     if constexpr (detail::HasConverter<T>) {
         static_assert(
             !std::integral<T> || std::is_same_v<T, bool> || detail::HasGenericIntegralConverter<T>,
-            "a Converter for an integral alias hijacks its underlying type; use a wrapper class like tr_mode_t");
+            "Converter<T> is specialized for an integral type, which also captures all its aliases; "
+            "give the type its own class, like tr_mode_t");
         return Converter<T>::to_variant(src);
     } else if constexpr (std::ranges::sized_range<T> && !detail::is_basic_string_v<T> && !detail::is_basic_string_view_v<T>) {
         return detail::from_range(src);
@@ -245,7 +244,8 @@ bool to_value(tr_variant const& src, T* const ptgt)
     if constexpr (detail::HasConverter<T>) {
         static_assert(
             !std::integral<T> || std::is_same_v<T, bool> || detail::HasGenericIntegralConverter<T>,
-            "a Converter for an integral alias hijacks its underlying type; use a wrapper class like tr_mode_t");
+            "Converter<T> is specialized for an integral type, which also captures all its aliases; "
+            "give the type its own class, like tr_mode_t");
         ok = Converter<T>::to_value(src, ptgt);
     } else if constexpr (detail::is_push_back_range_v<T> || detail::is_insert_range_v<T>) {
         ok = detail::to_range(src, ptgt);
