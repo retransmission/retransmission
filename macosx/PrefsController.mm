@@ -1480,7 +1480,7 @@ static NSString* getOSStatusDescription(OSStatus errorCode)
         return;
     }
 
-    NSString* password = [[NSString alloc] initWithData:(__bridge_transfer NSData*)data encoding:NSUTF8StringEncoding];
+    NSString* const password = [[NSString alloc] initWithData:(__bridge_transfer NSData*)data encoding:NSUTF8StringEncoding];
     if (password) {
         tr_sessionSetRPCPassword(self.fHandle, password.UTF8String);
         self.fRPCPassword = password;
