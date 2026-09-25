@@ -160,17 +160,14 @@ concept HasConverter = requires(T const& src, tr_variant const& var, T* tgt) {
     { Converter<T>::to_value(var, tgt) } -> std::same_as<bool>;
 };
 
-// True iff `Converter<T>` is the generic integral specialization below.
-// The dispatchers require it for every integral type except `bool`, whose specialization is deliberate.
-// A `Converter` specialized for an integral type also captures all of that type's aliases.
-// A type that needs custom serialization must be its own class, like `tr_mode_t`.
-template<typename T>
-concept HasGenericIntegralConverter = requires { requires Converter<T>::IsGenericIntegral; };
-
 } // namespace detail
 
 // NOLINTBEGIN(bugprone-macro-parentheses)
 #define TR_DECLARE_CONVERTER(type) \
+    static_assert( \
+        !std::integral<type> || std::is_same_v<type, bool>, \
+        "Converter<T> is specialized for an integral type, which also captures all its aliases; " \
+        "give the type its own class, like tr_mode_t"); \
     template<> \
     struct Converter<type> { \
         static tr_variant to_variant(type const& src); \
@@ -218,10 +215,6 @@ template<typename T>
 [[nodiscard]] tr_variant to_variant(T const& src)
 {
     if constexpr (detail::HasConverter<T>) {
-        static_assert(
-            !std::integral<T> || std::is_same_v<T, bool> || detail::HasGenericIntegralConverter<T>,
-            "Converter<T> is specialized for an integral type, which also captures all its aliases; "
-            "give the type its own class, like tr_mode_t");
         return Converter<T>::to_variant(src);
     } else if constexpr (std::ranges::sized_range<T> && !detail::is_basic_string_v<T> && !detail::is_basic_string_view_v<T>) {
         return detail::from_range(src);
@@ -242,10 +235,6 @@ bool to_value(tr_variant const& src, T* const ptgt)
     bool ok = false;
 
     if constexpr (detail::HasConverter<T>) {
-        static_assert(
-            !std::integral<T> || std::is_same_v<T, bool> || detail::HasGenericIntegralConverter<T>,
-            "Converter<T> is specialized for an integral type, which also captures all its aliases; "
-            "give the type its own class, like tr_mode_t");
         ok = Converter<T>::to_value(src, ptgt);
     } else if constexpr (detail::is_push_back_range_v<T> || detail::is_insert_range_v<T>) {
         ok = detail::to_range(src, ptgt);
@@ -322,8 +311,6 @@ template<typename T>
         !std::is_same_v<T, unsigned char> && !std::is_same_v<T, wchar_t> && !std::is_same_v<T, char16_t> &&
         !std::is_same_v<T, char32_t>)
 struct Converter<T> {
-    static constexpr bool IsGenericIntegral = true;
-
     static tr_variant to_variant(T const& src)
     {
         return src;

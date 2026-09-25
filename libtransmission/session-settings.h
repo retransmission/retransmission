@@ -27,11 +27,8 @@
 // serializer header does not have to pull in `<small/vector.hpp>`.
 namespace tr::serializer
 {
-template<>
-struct Converter<small::max_size_vector<tr_preferred_transport, PreferredTransportCount>> {
-    static tr_variant to_variant(small::max_size_vector<tr_preferred_transport, PreferredTransportCount> const& src);
-    static bool to_value(tr_variant const& src, small::max_size_vector<tr_preferred_transport, PreferredTransportCount>* tgt);
-};
+using PreferredTransports = small::max_size_vector<tr_preferred_transport, PreferredTransportCount>;
+TR_DECLARE_CONVERTER(PreferredTransports)
 } // namespace tr::serializer
 
 namespace tr
