@@ -1489,21 +1489,20 @@ static NSString* getOSStatusDescription(OSStatus errorCode)
 
 - (void)setKeychainPassword:(char const*)password
 {
-    CFTypeRef item = NULL;
     OSStatus result = SecItemCopyMatching(
         (CFDictionaryRef) @{
             (NSString*)kSecClass : (NSString*)kSecClassGenericPassword,
             (NSString*)kSecAttrAccount : @(kRPCKeychainName),
             (NSString*)kSecAttrService : @(kRPCKeychainService),
         },
-        &item);
+        nil);
     if (result != noErr && result != errSecItemNotFound) {
         NSLog(@"Problem accessing Keychain: %@", getOSStatusDescription(result));
         return;
     }
 
     size_t passwordLength = strlen(password);
-    if (item) {
+    if (result == noErr) {
         if (passwordLength > 0) // found and needed, so update it
         {
             result = SecItemUpdate(
@@ -1529,7 +1528,6 @@ static NSString* getOSStatusDescription(OSStatus errorCode)
                 NSLog(@"Problem removing Keychain item: %@", getOSStatusDescription(result));
             }
         }
-        CFRelease(item);
     } else if (result == errSecItemNotFound) {
         if (passwordLength > 0) // not found and needed, so add it
         {
