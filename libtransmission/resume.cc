@@ -9,6 +9,7 @@
 #include <ctime>
 #include <optional>
 #include <string_view>
+#include <type_traits> // std::underlying_type_t
 #include <utility> // std::move, std::pair
 #include <vector>
 
@@ -376,10 +377,10 @@ void load_single_speed_limit(tr_variant::Map const& map, tr_direction const dir,
         tor->set_seed_ratio(*dratio);
     }
 
-    // A mode that isn't a tr_ratiolimit follows the session's settings.
-    if (auto const i = d->value_if<int64_t>(TR_KEY_ratio_mode)) {
-        auto const is_valid = *i == TR_RATIOLIMIT_GLOBAL || *i == TR_RATIOLIMIT_SINGLE || *i == TR_RATIOLIMIT_UNLIMITED;
-        tor->set_seed_ratio_mode(is_valid ? static_cast<tr_ratiolimit>(*i) : TR_RATIOLIMIT_GLOBAL);
+    // Read as tr_ratiolimit's underlying type, so a value out of its range is dropped instead of wrapped.
+    // set_seed_ratio_mode() ignores the other invalid modes.
+    if (auto const i = d->value_if<std::underlying_type_t<tr_ratiolimit>>(TR_KEY_ratio_mode)) {
+        tor->set_seed_ratio_mode(static_cast<tr_ratiolimit>(*i));
     }
 
     return Ratiolimit;

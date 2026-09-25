@@ -906,8 +906,8 @@ struct tr_torrent {
 
     constexpr void set_seed_ratio_mode(tr_ratiolimit mode) noexcept
     {
+        // RPC and resume files pass modes through unchecked, so ignore an invalid one.
         auto const is_valid = mode == TR_RATIOLIMIT_GLOBAL || mode == TR_RATIOLIMIT_SINGLE || mode == TR_RATIOLIMIT_UNLIMITED;
-        TR_ASSERT(is_valid);
         if (seed_ratio_mode_ != mode && is_valid) {
             seed_ratio_mode_ = mode;
             set_dirty();
