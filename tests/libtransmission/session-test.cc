@@ -464,6 +464,31 @@ TEST_F(SessionTest, savesBandwidthGroupsWhenItCloses)
     EXPECT_EQ(saved.honors_session_limits, reloaded->honors_session_limits);
 }
 
+// The periodic save writes the groups after a change, and only then.
+TEST_F(SessionTest, savesChangedBandwidthGroupsPeriodically)
+{
+    static auto constexpr Name = "capped"sv;
+    auto const filename = tr_pathbuf{ sandboxDir(), "/bandwidth-groups.json"sv };
+    auto const saved = SavedBandwidthGroup{
+        .limits = {
+            .up_limit = Speed{ 20, Speed::Units::KByps },
+            .down_limit = Speed{ 30, Speed::Units::KByps },
+            .up_limited = true,
+            .down_limited = true,
+        },
+    };
+
+    setBandwidthGroup(session_, Name, saved);
+    runSaveTimer();
+    auto const reloaded = loadBandwidthGroup(sandboxDir(), quietSettings(), Name);
+    ASSERT_TRUE(reloaded);
+    EXPECT_EQ(saved.limits.up_limit, reloaded->limits.up_limit);
+
+    ASSERT_TRUE(tr_sys_path_remove(filename));
+    runSaveTimer();
+    EXPECT_FALSE(tr_sys_path_exists(filename));
+}
+
 // Files from some builds hold the speed limits as doubles.
 // They load with any fraction dropped.
 TEST_F(SessionTest, loadsBandwidthGroupSpeedLimitsSavedAsDoubles)

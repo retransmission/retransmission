@@ -520,6 +520,12 @@ protected:
         tr_logClearQueue();
     }
 
+    // Runs the fixture session's periodic save now.
+    void runSaveTimer()
+    {
+        blockingRunInSessionThread([this]() { session_->on_save_timer(); });
+    }
+
     void SetUp() override
     {
         SandboxedTest::SetUp();

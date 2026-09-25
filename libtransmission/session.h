@@ -1212,6 +1212,8 @@ private:
     void on_queue_timer();
     void on_save_timer();
 
+    void save_bandwidth_groups_if_dirty();
+
     // How long after its last activity the session still counts as busy.
     // Session thread only: reads the queue-stalled settings.
     [[nodiscard]] time_t compute_busy_window() const noexcept
@@ -1405,6 +1407,9 @@ public:
 private:
     // depends-on: top_bandwidth_
     std::vector<std::pair<tr::shared_string, std::unique_ptr<tr_bandwidth>>> bandwidth_groups_;
+
+    // Whether a group may have changed since the groups were last saved.
+    bool bandwidth_groups_dirty_ = false;
 
     // depends-on: timer_maker_, settings_, local_peer_port_
     PortForwardingMediator port_forwarding_mediator_{ *this };

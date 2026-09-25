@@ -659,7 +659,14 @@ void tr_session::on_save_timer()
 
     stats().save_if_dirty();
     torrent_queue().to_file();
-    bandwidth_group_helpers::bandwidthGroupWrite(this, configDir());
+    save_bandwidth_groups_if_dirty();
+}
+
+void tr_session::save_bandwidth_groups_if_dirty()
+{
+    if (std::exchange(bandwidth_groups_dirty_, false)) {
+        bandwidth_group_helpers::bandwidthGroupWrite(this, configDir());
+    }
 }
 
 void tr_session::initImpl(init_data& data)
@@ -1303,7 +1310,7 @@ void tr_session::closeImplPart1(std::promise<void>* closed_promise, std::chrono:
 
     if (mayWriteConfigDir()) {
         torrent_queue().to_file();
-        bandwidth_group_helpers::bandwidthGroupWrite(this, configDir());
+        save_bandwidth_groups_if_dirty();
     }
 
     // Deliver any pending completions while their torrents still exist.
@@ -1604,6 +1611,9 @@ void tr_sessionSetDefaultTrackers(tr_session* session, std::string_view const tr
 
 tr_bandwidth& tr_session::getBandwidthGroup(std::string_view name)
 {
+    // The caller may change the group.
+    bandwidth_groups_dirty_ = true;
+
     auto& groups = this->bandwidth_groups_;
 
     for (auto const& [group_name, group] : groups) {
