@@ -674,6 +674,32 @@ void tr_session::initImpl(init_data& data)
 
     setSettings(settings, true);
 
+    // Runtime changes to disk_io_workers take effect on restart.
+    // Stopping a running worker pool safely isn't worth the
+    // complexity of a live switch.
+    try {
+        local_data.start_workers(
+            settings_.disk_io_workers,
+            open_files_,
+            // Completions change torrent state, which clients read from
+            // their own threads while holding the session lock.
+            [this](std::function<void()> fn) {
+                queue_session_thread([this, fn = std::move(fn)]() {
+                    auto const lock = unique_lock();
+                    fn();
+                });
+            },
+            [this](tr_torrent_id_t const id) -> std::shared_ptr<tr::StorageDescriptor const> {
+                auto const* const tor = torrents_.get(id);
+                return tor != nullptr ? tor->storage_descriptor() : nullptr;
+            });
+    } catch (std::exception const& e) {
+        tr_logAddError(
+            fmt::format(
+                fmt::runtime(_("Couldn't start disk IO workers, continuing without them: {error}")),
+                fmt::arg("error", e.what())));
+    }
+
     tr_utp_init(this);
 
     /* cleanup */
@@ -1297,7 +1323,11 @@ void tr_session::closeImplPart1(std::promise<void>* closed_promise, std::chrono:
     }
 
     // Deliver any pending completions while their torrents still exist.
-    local_data.shutdown();
+    // They change torrent state, so they need the session lock here too.
+    {
+        auto const lock = unique_lock();
+        local_data.shutdown();
+    }
 
     // Close the torrents in order of most active to least active
     // so that the most important announce=stopped events are
