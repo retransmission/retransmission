@@ -728,6 +728,10 @@ void tr_session::setSettings(tr_session::Settings&& settings_in, bool force)
 
     // the rest of the func is session_ responding to settings changes
 
+    if (force || new_settings.disk_write_budget_mib != old_settings.disk_write_budget_mib) {
+        local_data.set_write_budget(effective_write_budget_bytes());
+    }
+
     if (auto const& val = new_settings.log_level; force || val != old_settings.log_level) {
         tr_logSetLevel(val);
     }
@@ -1947,6 +1951,24 @@ void tr_session::verify_add(tr_torrent* const tor)
 }
 
 // ---
+
+std::optional<size_t> tr_session::spare_request_blocks() const noexcept
+{
+    auto const requested = uint64_t{ active_request_count_ } * TrBlockSize;
+    if (auto const spare = local_data.spare_write_bytes(requested); spare) {
+        return static_cast<size_t>(*spare / TrBlockSize);
+    }
+
+    return {};
+}
+
+uint64_t tr_session::effective_write_budget_bytes() const noexcept
+{
+    // The setting is in MiB, so zero is the only value below one MiB.
+    // A budget of zero admits no requests. Treat it as one MiB.
+    static auto constexpr MinBudget = uint64_t{ 1024U } * 1024U;
+    return std::max(uint64_t{ settings_.disk_write_budget_mib } * 1024U * 1024U, MinBudget);
+}
 
 void tr_session::invalidate_storage_descriptors()
 {

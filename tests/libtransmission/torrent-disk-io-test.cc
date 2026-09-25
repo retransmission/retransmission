@@ -4,16 +4,26 @@
 // License text can be found in the licenses/ folder.
 
 #include <algorithm>
+#include <array>
 #include <atomic>
 #include <cerrno>
+#include <charconv>
+#include <chrono>
 #include <cstddef>
 #include <cstdint>
+#include <cstring>
 #include <functional>
+#include <future>
 #include <iterator>
 #include <memory>
+#include <optional>
 #include <span>
 #include <string>
 #include <string_view>
+#include <thread>
+#include <vector>
+
+#include <event2/util.h>
 
 #include <gtest/gtest.h>
 
@@ -23,10 +33,16 @@
 #include <libtransmission/error.h>
 #include <libtransmission/file.h>
 #include <libtransmission/local-data.h>
+#include <libtransmission/peer-common.h>
+#include <libtransmission/peer-mgr.h>
+#include <libtransmission/peer-socket-tcp.h>
 #include <libtransmission/quark.h>
 #include <libtransmission/torrent-builder.h>
 #include <libtransmission/torrent.h>
+#include <libtransmission/variant.h>
+#include <libtransmission/webseed.h>
 
+#include "loopback-server.h"
 #include "test-fixtures.h"
 
 namespace tr::test
@@ -34,6 +50,44 @@ namespace tr::test
 namespace
 {
 auto constexpr MaxWaitMsec = 5000;
+
+class RequestBudgetPeer final : public tr_peer
+{
+public:
+    using tr_peer::tr_peer;
+
+    [[nodiscard]] Speed get_piece_speed(uint64_t /*now*/, tr_direction /*direction*/) const override
+    {
+        return {};
+    }
+
+    [[nodiscard]] std::string display_name() const override
+    {
+        return {};
+    }
+
+    [[nodiscard]] tr_bitfield const& has() const noexcept override
+    {
+        return active_requests();
+    }
+
+    [[nodiscard]] size_t active_req_count(tr_direction const direction) const noexcept override
+    {
+        return direction == tr_direction::ClientToPeer ? active_requests().count() : 0U;
+    }
+
+    void request_blocks(tr_block_span_t const* const spans, size_t const n_spans) override
+    {
+        for (auto index = size_t{}; index < n_spans; ++index) {
+            set_active_requests(spans[index]);
+        }
+    }
+
+    void ban() override
+    {
+        clear_active_requests();
+    }
+};
 
 // Helpers for the torrent call sites that read and write through tr::LocalData.
 class TorrentDiskIoTestBase : public SessionTest
@@ -117,6 +171,222 @@ protected:
     }
 };
 
+class RequestBudgetTest : public TorrentDiskIoWorkersTest
+{
+protected:
+    static auto constexpr BudgetBlocks = size_t{ 64U };
+    static auto constexpr TorrentSize = uint64_t{ 4U } * 1024U * 1024U;
+
+    struct Request {
+        uint32_t piece;
+        uint32_t offset;
+        uint32_t length;
+    };
+
+    struct ConnectedPeer {
+        // On Windows, EVUTIL_INVALID_SOCKET is an unsigned SOCKET while
+        // evutil_socket_t is signed, so spell the conversion out once.
+        static auto constexpr InvalidSocket = TR_IF_WIN32(
+            static_cast<evutil_socket_t>(EVUTIL_INVALID_SOCKET),
+            evutil_socket_t{ EVUTIL_INVALID_SOCKET });
+
+        ConnectedPeer() = default;
+        ConnectedPeer(ConnectedPeer const&) = delete;
+        ConnectedPeer(ConnectedPeer&&) = delete;
+        ConnectedPeer& operator=(ConnectedPeer const&) = delete;
+        ConnectedPeer& operator=(ConnectedPeer&&) = delete;
+
+        ~ConnectedPeer()
+        {
+            if (remote != InvalidSocket) {
+                evutil_closesocket(remote);
+            }
+        }
+
+        evutil_socket_t remote = InvalidSocket;
+        std::vector<uint8_t> input;
+        std::vector<Request> requests;
+        bool handshaken = false;
+        bool interested = false;
+    };
+
+    void SetUp() override
+    {
+        settings().insert_or_assign(TR_KEY_disk_write_budget_mib, int64_t{ 1 });
+        TorrentDiskIoWorkersTest::SetUp();
+    }
+
+    void TearDown() override
+    {
+        session_->local_data.set_workers_paused(false);
+        blockingRunInSessionThread([this]() { webseed_.reset(); });
+        peers_.clear();
+        TorrentDiskIoWorkersTest::TearDown();
+    }
+
+    [[nodiscard]] ConnectedPeer& addPeer(tr_torrent& tor)
+    {
+        auto peer = std::make_unique<ConnectedPeer>();
+        auto sockets = std::array<evutil_socket_t, 2>{ ConnectedPeer::InvalidSocket, ConnectedPeer::InvalidSocket };
+        EXPECT_EQ(0, evutil_socketpair(TR_IF_WIN32(AF_INET, AF_UNIX), SOCK_STREAM, 0, sockets.data()));
+        EXPECT_EQ(0, evutil_make_socket_nonblocking(sockets[0]));
+        EXPECT_EQ(0, evutil_make_socket_nonblocking(sockets[1]));
+        peer->remote = sockets[1];
+        auto const address = *tr_address::from_string("127.0.0." + std::to_string(peers_.size() + 2U));
+        auto const socket_address = tr_socket_address{ address, tr_port::from_host(8080) };
+        blockingRunInSessionThread([&]() {
+            tr_peerMgrAddIncoming(
+                peerManager(),
+                tr_peer_socket_tcp::create(*session_, socket_address, static_cast<tr_socket_t>(sockets[0])));
+        });
+        auto const protocol = std::string_view{ "\023BitTorrent protocol" };
+        auto handshake = std::vector<uint8_t>{ protocol.begin(), protocol.end() };
+        handshake.resize(28U, 0U);
+        handshake.back() = 4U;
+        auto const& hash = tor.info_hash();
+        auto const* hash_bytes = reinterpret_cast<uint8_t const*>(hash.data());
+        handshake.insert(handshake.end(), hash_bytes, hash_bytes + hash.size());
+        handshake.resize(68U, static_cast<uint8_t>(peers_.size() + 1U));
+        receive(*peer, handshake);
+        receive(*peer, { 0U, 0U, 0U, 1U, 14U, 0U, 0U, 0U, 1U, 1U });
+        peers_.push_back(std::move(peer));
+        return *peers_.back();
+    }
+
+    [[nodiscard]] tr_torrent* makeBudgetTorrent(std::string_view const name, std::string_view const webseed = {})
+    {
+        auto const piece_hash = tr_sha1::digest(std::string(TrBlockSize, '\0'));
+        auto hashes = std::string{};
+        for (auto block = size_t{}; block < TorrentSize / TrBlockSize; ++block) {
+            hashes.append(reinterpret_cast<char const*>(piece_hash.data()), piece_hash.size());
+        }
+        auto info = tr_variant::Map{};
+        info.try_emplace(TR_KEY_name, name);
+        info.try_emplace(TR_KEY_length, TorrentSize);
+        info.try_emplace(TR_KEY_piece_length, TrBlockSize);
+        info.try_emplace(TR_KEY_pieces, std::move(hashes));
+        auto metainfo = tr_variant::Map{};
+        metainfo.try_emplace(TR_KEY_info, std::move(info));
+        if (!webseed.empty()) {
+            metainfo.try_emplace(TR_KEY_url_list, webseed);
+        }
+        auto builder = tr_torrent_builder{ session_ };
+        EXPECT_TRUE(builder.set_metainfo(tr_variant_serde::benc().to_string(std::move(metainfo))));
+        builder.set_paused(true);
+        builder.set_sequential_download(true);
+        return createTorrentAndWaitForVerifyDone(&builder);
+    }
+
+    // The remote socket is nonblocking and its send buffer may be smaller
+    // than a block message (8 KiB on macOS), so send in as many passes
+    // as it takes. The session thread drains the other end meanwhile.
+    static void receive(ConnectedPeer const& peer, std::vector<uint8_t> const& message)
+    {
+        auto const deadline = std::chrono::steady_clock::now() + std::chrono::milliseconds{ MaxWaitMsec };
+        auto remaining = std::span<uint8_t const>{ message };
+        while (!std::empty(remaining)) {
+            auto const sent = send(peer.remote, reinterpret_cast<char const*>(std::data(remaining)), std::size(remaining), 0);
+            if (sent > 0) {
+                remaining = remaining.subspan(static_cast<size_t>(sent));
+                continue;
+            }
+
+            auto const err = EVUTIL_SOCKET_ERROR();
+            ASSERT_TRUE(
+                sent < 0 && (err == TR_IF_WIN32(WSAEWOULDBLOCK, EAGAIN) || err == TR_IF_WIN32(WSAEWOULDBLOCK, EWOULDBLOCK)))
+                << err;
+            ASSERT_TRUE(std::chrono::steady_clock::now() < deadline) << "the peer never drained its socket";
+            std::this_thread::sleep_for(std::chrono::milliseconds{ 1 });
+        }
+    }
+
+    [[nodiscard]] static uint32_t readUint32(uint8_t const* const bytes) noexcept
+    {
+        auto value = uint32_t{};
+        std::memcpy(&value, bytes, sizeof(value));
+        return ntohl(value);
+    }
+
+    static void collectMessages(ConnectedPeer& peer)
+    {
+        auto buffer = std::array<uint8_t, 4096>{};
+        for (;;) {
+            auto const count = recv(peer.remote, reinterpret_cast<char*>(buffer.data()), buffer.size(), 0);
+            if (count <= 0) {
+                break;
+            }
+            peer.input.insert(peer.input.end(), buffer.begin(), buffer.begin() + count);
+        }
+        if (!peer.handshaken) {
+            if (peer.input.size() < 68U) {
+                return;
+            }
+            EXPECT_EQ(19U, peer.input.front());
+            peer.input.erase(peer.input.begin(), peer.input.begin() + 68U);
+            peer.handshaken = true;
+        }
+        while (peer.input.size() >= 4U) {
+            auto const length = readUint32(peer.input.data());
+            if (peer.input.size() < 4U + length) {
+                break;
+            }
+            if (length == 13U && peer.input[4] == 6U) {
+                peer.requests.push_back(
+                    Request{ .piece = readUint32(peer.input.data() + 5U),
+                             .offset = readUint32(peer.input.data() + 9U),
+                             .length = readUint32(peer.input.data() + 13U) });
+            } else if (length == 1U && peer.input[4] == 2U) {
+                peer.interested = true;
+            }
+            peer.input.erase(peer.input.begin(), peer.input.begin() + 4U + length);
+        }
+    }
+
+    [[nodiscard]] size_t requestCount()
+    {
+        auto count = size_t{};
+        for (auto const& peer : peers_) {
+            collectMessages(*peer);
+            count += peer->requests.size();
+        }
+        return count;
+    }
+
+    [[nodiscard]] size_t spareBlocks()
+    {
+        auto spare = size_t{};
+        blockingRunInSessionThread([this, &spare]() { spare = session_->spare_request_blocks().value(); });
+        return spare;
+    }
+
+    static void appendUint32(std::vector<uint8_t>& message, uint32_t const value)
+    {
+        for (auto const shift : { 24U, 16U, 8U, 0U }) {
+            message.push_back(static_cast<uint8_t>(value >> shift));
+        }
+    }
+
+    static void receiveBlock(ConnectedPeer const& peer, Request const& request)
+    {
+        auto message = std::vector<uint8_t>{};
+        appendUint32(message, 9U + request.length);
+        message.push_back(7U);
+        appendUint32(message, request.piece);
+        appendUint32(message, request.offset);
+        message.resize(message.size() + request.length, 0U);
+        receive(peer, message);
+    }
+
+    std::vector<std::unique_ptr<ConnectedPeer>> peers_;
+    std::unique_ptr<tr_webseed> webseed_;
+};
+
+class WebseedRequestBudgetTest
+    : public RequestBudgetTest
+    , public ::testing::WithParamInterface<bool>
+{
+};
+
 class TorrentRemovalTest
     : public TorrentDiskIoWorkersTest
     , public ::testing::WithParamInterface<bool>
@@ -179,7 +449,43 @@ protected:
     }
 };
 
+class WriteBudgetTest
+    : public TorrentDiskIoWorkersTest
+    , public ::testing::WithParamInterface<int64_t>
+{
+protected:
+    void SetUp() override
+    {
+        settings().insert_or_assign(TR_KEY_disk_write_budget_mib, GetParam());
+        TorrentDiskIoWorkersTest::SetUp();
+    }
+};
+
 } // namespace
+
+TEST_P(WriteBudgetTest, followsTheSettingAtStartupAndRuntime)
+{
+    static auto constexpr MiB = uint64_t{ 1024U } * 1024U;
+    auto const check = [this](int64_t const budget_mib) {
+        // A budget of zero would admit no requests, so it counts as 1 MiB.
+        auto const bytes = static_cast<uint64_t>(std::max(int64_t{ 1 }, budget_mib)) * MiB;
+        EXPECT_EQ(bytes, session_->effective_write_budget_bytes());
+        EXPECT_EQ(bytes / TrBlockSize, session_->spare_request_blocks().value());
+        EXPECT_EQ(std::min(bytes / 2U, 32U * MiB), session_->local_data.retained_bytes());
+    };
+
+    blockingRunInSessionThread([&]() { check(GetParam()); });
+
+    for (auto const budget_mib : { int64_t{ 0 }, int64_t{ 1 }, int64_t{ 64 }, int64_t{ 128 } }) {
+        SCOPED_TRACE(budget_mib);
+        auto config = tr_sessionGetSettings(session_);
+        config.insert_or_assign(TR_KEY_disk_write_budget_mib, budget_mib);
+        tr_sessionSet(session_, config);
+        blockingRunInSessionThread([&]() { check(budget_mib); });
+    }
+}
+
+INSTANTIATE_TEST_SUITE_P(WriteBudget, WriteBudgetTest, ::testing::Values(int64_t{ 0 }, int64_t{ 1 }, int64_t{ 64 }));
 
 TEST_F(TorrentDiskIoTest, blockIsNotOursUntilItsWriteFinishes)
 {
@@ -364,6 +670,235 @@ TEST_F(TorrentDiskIoTest, blockArrivingDuringVerificationIsRefused)
     EXPECT_TRUE(waitFor([&verified]() { return verified.load(); }, MaxWaitMsec));
 }
 
+TEST_F(TorrentDiskIoTest, requestBudgetIsUnboundedOnTheSynchronousBackend)
+{
+    EXPECT_FALSE(session_->spare_request_blocks().has_value());
+}
+
+// ---
+
+TEST_F(RequestBudgetTest, peersResumeOnlyAfterReceivedDataIsWritten)
+{
+    auto* const tor = zeroTorrentInit(ZeroTorrentState::NoFiles);
+    tr_torrentStart(tor);
+    ASSERT_TRUE(waitFor(
+        [tor]() {
+            auto const lock = tor->unique_lock();
+            return tor->is_running();
+        },
+        MaxWaitMsec));
+    session_->local_data.set_workers_paused(true);
+    auto& first = addPeer(*tor);
+    ASSERT_TRUE(waitFor([this]() { return requestCount() >= 32U; }, 15000));
+    EXPECT_EQ(32U, requestCount());
+    EXPECT_EQ(32U, spareBlocks());
+    auto& second = addPeer(*tor);
+    ASSERT_TRUE(waitFor([this]() { return requestCount() >= BudgetBlocks; }, 15000));
+    EXPECT_EQ(32U, second.requests.size());
+    auto& waiting = addPeer(*tor);
+    ASSERT_TRUE(waitFor(
+        [&waiting]() {
+            collectMessages(waiting);
+            return waiting.interested;
+        },
+        15000));
+    EXPECT_EQ(BudgetBlocks, requestCount());
+    EXPECT_TRUE(waiting.requests.empty());
+    EXPECT_EQ(0U, spareBlocks());
+
+    auto const request = std::ranges::find_if(first.requests, [](Request const& item) { return item.length == TrBlockSize; });
+    ASSERT_NE(first.requests.end(), request);
+    receiveBlock(first, *request);
+    ASSERT_TRUE(waitFor([this]() { return session_->local_data.enqueued_write_bytes() == TrBlockSize; }, MaxWaitMsec));
+    EXPECT_EQ(0U, spareBlocks());
+    EXPECT_EQ(BudgetBlocks, requestCount());
+
+    session_->local_data.set_workers_paused(false);
+    EXPECT_TRUE(waitFor([this]() { return session_->local_data.enqueued_write_bytes() == 0U; }, MaxWaitMsec));
+    EXPECT_TRUE(waitFor([this]() { return requestCount() > BudgetBlocks; }, MaxWaitMsec));
+    EXPECT_EQ(BudgetBlocks + 1U, requestCount());
+    EXPECT_EQ(0U, spareBlocks());
+    peers_.clear();
+    EXPECT_TRUE(waitFor([this]() { return spareBlocks() == BudgetBlocks; }, MaxWaitMsec));
+}
+
+TEST_F(RequestBudgetTest, unrequestedBlockIsRefusedWhileTheBudgetIsSpent)
+{
+    auto* const tor = zeroTorrentInit(ZeroTorrentState::NoFiles);
+    tr_torrentStart(tor);
+    ASSERT_TRUE(waitFor(
+        [tor]() {
+            auto const lock = tor->unique_lock();
+            return tor->is_running();
+        },
+        MaxWaitMsec));
+    session_->local_data.set_workers_paused(true);
+    auto& first = addPeer(*tor);
+    ASSERT_TRUE(waitFor([this]() { return requestCount() >= 32U; }, 15000));
+    auto& second = addPeer(*tor);
+    ASSERT_TRUE(waitFor([this]() { return requestCount() >= BudgetBlocks; }, 15000));
+    EXPECT_EQ(0U, spareBlocks());
+
+    auto const was_requested = [&first, &second](tr_block_info::Location const& loc) {
+        return std::ranges::any_of(std::array{ &first, &second }, [&loc](ConnectedPeer const* const peer) {
+            return std::ranges::any_of(peer->requests, [&loc](Request const& request) {
+                return request.piece == loc.piece && request.offset == loc.piece_offset;
+            });
+        });
+    };
+    auto unrequested = std::optional<tr_block_index_t>{};
+    for (auto block = tr_block_index_t{}; block < tor->block_count(); ++block) {
+        if (!was_requested(tor->block_loc(block))) {
+            unrequested = block;
+            break;
+        }
+    }
+    ASSERT_TRUE(unrequested.has_value());
+    auto const requested = std::ranges::find_if(first.requests, [](Request const& item) { return item.length == TrBlockSize; });
+    ASSERT_NE(first.requests.end(), requested);
+    auto const requested_block = tor->piece_loc(requested->piece, requested->offset).block;
+
+    // A peer can send a block we never asked it for. With the budget
+    // spent, that block is refused. The requested block sent after it on
+    // the same connection shows when the peer's messages were read.
+    auto const loc = tor->block_loc(*unrequested);
+    receiveBlock(first, Request{ .piece = loc.piece, .offset = loc.piece_offset, .length = tor->block_size(*unrequested) });
+    receiveBlock(first, *requested);
+    ASSERT_TRUE(waitFor(
+        [tor, requested_block]() {
+            auto const lock = tor->unique_lock();
+            return tor->has_block_or_pending(requested_block);
+        },
+        MaxWaitMsec));
+    auto const lock = tor->unique_lock();
+    EXPECT_FALSE(tor->has_block_or_pending(*unrequested));
+    EXPECT_EQ(TrBlockSize, session_->local_data.enqueued_write_bytes());
+}
+
+TEST_F(RequestBudgetTest, duplicateWebseedResponseReleasesItsReservation)
+{
+    auto release_response = std::promise<void>{};
+    auto const response_allowed = release_response.get_future().share();
+    auto requested = std::promise<void>{};
+    auto server = LoopbackServer{};
+    server.setHandler([&](evhttp_request* const request) {
+        requested.set_value();
+        EXPECT_EQ(std::future_status::ready, response_allowed.wait_for(5s));
+        LoopbackServer::reply(request, 206, "Partial Content", std::string(TrBlockSize, '\0'));
+    });
+    auto* const tor = makeBudgetTorrent("duplicate.bin");
+    tr_torrentStart(tor);
+    ASSERT_TRUE(waitFor(
+        [tor]() {
+            auto const lock = tor->unique_lock();
+            return tor->is_running();
+        },
+        MaxWaitMsec));
+
+    session_->local_data.set_workers_paused(true);
+    blockingRunInSessionThread([&]() {
+        webseed_ = tr_webseed::create(*tor, server.url(), nullptr, nullptr);
+        auto const span = tr_block_span_t{ .begin = 0U, .end = 1U };
+        webseed_->request_blocks(&span, 1U);
+        EXPECT_EQ(BudgetBlocks - 1U, session_->spare_request_blocks());
+        tor->save_block(0U, zeroBlock(tor, 0U));
+        EXPECT_EQ(BudgetBlocks - 2U, session_->spare_request_blocks());
+        tr_torrentStop(tor);
+    });
+    EXPECT_EQ(std::future_status::ready, requested.get_future().wait_for(5s));
+    release_response.set_value();
+
+    EXPECT_TRUE(waitFor([this]() { return spareBlocks() == BudgetBlocks - 1U; }, MaxWaitMsec));
+    blockingRunInSessionThread([this]() {
+        EXPECT_EQ(0U, webseed_->active_requests().count());
+        EXPECT_EQ(TrBlockSize, session_->local_data.enqueued_write_bytes());
+    });
+    session_->local_data.set_workers_paused(false);
+    EXPECT_TRUE(waitFor([this]() { return spareBlocks() == BudgetBlocks; }, MaxWaitMsec));
+}
+
+TEST_P(WebseedRequestBudgetTest, rangeRequestsResumeAfterTheDiskQueueDrains)
+{
+    auto const peer_blocks = GetParam() ? size_t{ 32U } : size_t{};
+    auto const available_bytes = (BudgetBlocks - peer_blocks) * TrBlockSize;
+    if (GetParam()) {
+        auto* const peer_torrent = makeBudgetTorrent("peer.bin");
+        tr_torrentStart(peer_torrent);
+        ASSERT_TRUE(waitFor(
+            [peer_torrent]() {
+                auto const lock = peer_torrent->unique_lock();
+                return peer_torrent->is_running();
+            },
+            MaxWaitMsec));
+        auto& peer = addPeer(*peer_torrent);
+        ASSERT_TRUE(waitFor(
+            [&peer, peer_blocks]() {
+                collectMessages(peer);
+                return peer.requests.size() >= peer_blocks;
+            },
+            15000));
+        EXPECT_EQ(peer_blocks, requestCount());
+    }
+
+    auto requests = std::atomic<size_t>{};
+    auto received_bytes = std::atomic<uint64_t>{};
+    auto server = LoopbackServer{};
+    server.setHandler([&](evhttp_request* const request) {
+        auto const* header = evhttp_find_header(evhttp_request_get_input_headers(request), "Range");
+        if (header == nullptr) {
+            ADD_FAILURE() << "missing HTTP range";
+            LoopbackServer::reply(request, 400, "Bad Request", {});
+            return;
+        }
+        auto const range = std::string_view{ header };
+        auto const dash = range.find('-');
+        auto begin = uint64_t{};
+        auto end = uint64_t{};
+        if (!range.starts_with("bytes=") || dash == std::string_view::npos ||
+            std::from_chars(range.data() + 6U, range.data() + dash, begin).ec != std::errc{} ||
+            std::from_chars(range.data() + dash + 1U, range.data() + range.size(), end).ec != std::errc{} || begin > end ||
+            end >= TorrentSize) {
+            ADD_FAILURE() << "invalid HTTP range: " << range;
+            LoopbackServer::reply(request, 400, "Bad Request", {});
+            return;
+        }
+        auto const length = end - begin + 1U;
+        EXPECT_LE(length, available_bytes);
+        ++requests;
+        received_bytes += length;
+        auto const content_range = fmt::format("bytes {}-{}/{}", begin, end, TorrentSize);
+        evhttp_add_header(evhttp_request_get_output_headers(request), "Content-Range", content_range.c_str());
+        LoopbackServer::reply(request, 206, "Partial Content", std::string(static_cast<size_t>(length), '\0'));
+    });
+
+    auto* const tor = makeBudgetTorrent("webseed.bin", server.url());
+    session_->local_data.set_workers_paused(true);
+    tr_torrentStart(tor);
+    ASSERT_TRUE(
+        waitFor([this, available_bytes]() { return session_->local_data.enqueued_write_bytes() == available_bytes; }, 15000));
+    EXPECT_EQ(0U, spareBlocks());
+    EXPECT_EQ(available_bytes, received_bytes.load());
+    auto const requests_when_full = requests.load();
+    EXPECT_FALSE(waitFor([&requests, requests_when_full]() { return requests.load() != requests_when_full; }, 2500));
+
+    session_->local_data.set_workers_paused(false);
+    ASSERT_TRUE(waitFor(
+        [tor]() {
+            auto const lock = tor->unique_lock();
+            return tor->is_done();
+        },
+        30000));
+    EXPECT_EQ(TorrentSize, received_bytes.load());
+    EXPECT_GT(requests.load(), requests_when_full);
+    EXPECT_EQ(BudgetBlocks - peer_blocks, spareBlocks());
+    EXPECT_EQ(0U, session_->local_data.enqueued_write_bytes());
+    if (GetParam()) {
+        EXPECT_EQ(peer_blocks, requestCount());
+    }
+}
+
+INSTANTIATE_TEST_SUITE_P(SharedBudget, WebseedRequestBudgetTest, ::testing::Bool());
+
 TEST_P(TorrentRemovalTest, waitsForWritesAndHashesBeforeUnregistering)
 {
     auto* const tor = zeroTorrentInit(ZeroTorrentState::Partial);
@@ -398,6 +933,78 @@ TEST_P(TorrentRemovalTest, waitsForWritesAndHashesBeforeUnregistering)
 }
 
 INSTANTIATE_TEST_SUITE_P(KeepOrDeleteData, TorrentRemovalTest, ::testing::Bool());
+
+TEST_F(TorrentDiskIoWorkersTest, requestBudgetTracksChangesAndPeerDestruction)
+{
+    auto* const tor = zeroTorrentInit(ZeroTorrentState::Partial);
+    blockingRunInSessionThread([this, tor]() {
+        auto const budget = session_->spare_request_blocks();
+        ASSERT_TRUE(budget);
+        {
+            auto first = RequestBudgetPeer{ *tor };
+            auto second = RequestBudgetPeer{ *tor };
+            first.set_active_requests({ .begin = 0U, .end = 3U });
+            first.set_active_requests({ .begin = 1U, .end = 4U });
+            second.set_active_requests({ .begin = 2U, .end = 4U });
+            EXPECT_EQ(*budget - 6U, session_->spare_request_blocks());
+
+            first.unset_active_request(1U);
+            first.unset_active_request(1U);
+            EXPECT_EQ(*budget - 5U, session_->spare_request_blocks());
+            first.set_active_requests({ .begin = 2U, .end = 4U }, false);
+            EXPECT_EQ(*budget - 3U, session_->spare_request_blocks());
+
+            second.ban();
+            second.clear_active_requests();
+            EXPECT_EQ(*budget - 1U, session_->spare_request_blocks());
+        }
+        EXPECT_EQ(budget, session_->spare_request_blocks());
+    });
+}
+
+TEST_F(TorrentDiskIoWorkersTest, queuedWritesConsumeTheRequestBudget)
+{
+    auto* const tor = zeroTorrentInit(ZeroTorrentState::Partial);
+    auto const block = tor->block_span_for_piece(0).begin;
+
+    auto budget = std::optional<size_t>{};
+    blockingRunInSessionThread([this, &budget]() { budget = session_->spare_request_blocks(); });
+    ASSERT_TRUE(budget.has_value());
+    EXPECT_GT(*budget, 0U);
+
+    // a queued write takes its block out of the budget until it lands
+    session_->local_data.set_workers_paused(true);
+    blockingRunInSessionThread([this, tor, block, &budget]() {
+        ASSERT_TRUE(tor->on_block_received(block));
+        tor->save_block(block, zeroBlock(tor, block));
+        EXPECT_EQ(*budget - 1U, session_->spare_request_blocks());
+    });
+
+    session_->local_data.set_workers_paused(false);
+    EXPECT_TRUE(waitForInSessionThread([tor, block]() { return tor->has_block(block); }, MaxWaitMsec));
+    blockingRunInSessionThread([this, &budget]() { EXPECT_EQ(budget, session_->spare_request_blocks()); });
+}
+
+TEST_F(TorrentDiskIoWorkersTest, writesBehindBarriersConsumeTheRequestBudget)
+{
+    auto* const tor = zeroTorrentInit(ZeroTorrentState::Partial);
+    auto const block = tor->block_span_for_piece(0).begin;
+
+    session_->local_data.set_workers_paused(true);
+    blockingRunInSessionThread([this, tor, block]() {
+        auto const budget = session_->spare_request_blocks();
+        ASSERT_TRUE(budget.has_value());
+        tor->save_block(block, zeroBlock(tor, block));
+        session_->local_data.close_torrent(tor->id());
+        tor->save_block(block + 1U, zeroBlock(tor, block + 1U));
+        EXPECT_EQ(*budget - 2U, session_->spare_request_blocks());
+    });
+
+    session_->local_data.set_workers_paused(false);
+    EXPECT_TRUE(
+        waitForInSessionThread([tor, block]() { return tor->has_block(block) && tor->has_block(block + 1U); }, MaxWaitMsec));
+    EXPECT_EQ(0U, session_->local_data.enqueued_write_bytes());
+}
 
 TEST_F(TorrentDiskIoWorkersTest, blockCountsOnlyAfterItsWriteFinishes)
 {
