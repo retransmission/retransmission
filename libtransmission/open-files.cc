@@ -31,7 +31,11 @@ namespace
     return fd != TR_BAD_SYS_FILE;
 }
 
-bool preallocate_file_sparse(tr_sys_file_t fd, uint64_t length, tr_error* error)
+bool preallocate_file_sparse(
+    tr_open_files::Preallocate const& preallocate,
+    tr_sys_file_t const fd,
+    uint64_t const length,
+    tr_error* const error)
 {
     if (length == 0U) {
         return true;
@@ -39,7 +43,7 @@ bool preallocate_file_sparse(tr_sys_file_t fd, uint64_t length, tr_error* error)
 
     auto local_error = tr_error{};
 
-    if (tr_sys_file_preallocate(fd, length, TR_SYS_FILE_PREALLOC_SPARSE, &local_error)) {
+    if (preallocate(fd, length, TR_SYS_FILE_PREALLOC_SPARSE, &local_error)) {
         return true;
     }
 
@@ -66,7 +70,11 @@ bool preallocate_file_sparse(tr_sys_file_t fd, uint64_t length, tr_error* error)
     return false;
 }
 
-bool preallocate_file_full(tr_sys_file_t fd, uint64_t length, tr_error* error)
+bool preallocate_file_full(
+    tr_open_files::Preallocate const& preallocate,
+    tr_sys_file_t const fd,
+    uint64_t length,
+    tr_error* const error)
 {
     if (length == 0U) {
         return true;
@@ -74,7 +82,7 @@ bool preallocate_file_full(tr_sys_file_t fd, uint64_t length, tr_error* error)
 
     auto local_error = tr_error{};
 
-    if (tr_sys_file_preallocate(fd, length, 0, &local_error)) {
+    if (preallocate(fd, length, 0, &local_error)) {
         return true;
     }
 
@@ -117,7 +125,7 @@ bool preallocate_file_full(tr_sys_file_t fd, uint64_t length, tr_error* error)
 
 // ---
 
-tr_open_files::Handle tr_open_files::get(tr_torrent_id_t tor_id, tr_file_index_t file_num, bool writable)
+tr_open_files::Handle tr_open_files::get(tr_torrent_id_t const tor_id, tr_file_index_t const file_num, bool const writable)
 {
     auto const lock = std::scoped_lock{ mutex_ };
 
@@ -133,18 +141,19 @@ tr_open_files::Handle tr_open_files::get(tr_torrent_id_t tor_id, tr_file_index_t
 }
 
 tr_open_files::Handle tr_open_files::get(
-    tr_torrent_id_t tor_id,
-    tr_file_index_t file_num,
+    tr_torrent_id_t const tor_id,
+    tr_file_index_t const file_num,
     bool writable,
     std::string_view const filename,
-    tr_file_preallocation allocation,
-    uint64_t file_size,
+    tr_file_preallocation const allocation,
+    uint64_t const file_size,
     tr_error& error)
 {
     // is there already an entry
-    auto key = make_key(tor_id, file_num);
+    auto const key = make_key(tor_id, file_num);
     {
-        auto const lock = std::scoped_lock{ mutex_ };
+        auto lock = std::unique_lock{ mutex_ };
+        opening_cv_.wait(lock, [this, key]() { return !opening_.contains(key); });
         if (auto* const found = pool_.get(key); found != nullptr) {
             if (!writable || (*found)->is_writable()) {
                 return *found;
@@ -154,14 +163,12 @@ tr_open_files::Handle tr_open_files::get(
             // through the old descriptor keeps it open until they're done.
             pool_.erase(key);
         }
+        opening_.insert(key);
     }
+    auto const opening = Opening{ *this, key };
 
-    // Everything below opens the file without the lock held. Opening can
-    // block on disk and preallocation can block for a very long time, so
-    // holding it here would stall every other lookup. Two callers racing
-    // to open the same file both get a working descriptor; only the last
-    // one to finish stays in the pool, and the other closes when whoever
-    // holds it is done.
+    // Same-file opens wait for initialization, including preallocation.
+    // Other files can be opened while this one waits on disk.
 
     // create subfolders, if any
     if (writable) {
@@ -205,10 +212,10 @@ tr_open_files::Handle tr_open_files::get(
         char const* type = nullptr;
 
         if (allocation == tr_file_preallocation::Full) {
-            success = preallocate_file_full(fd, file_size, &error);
+            success = preallocate_file_full(preallocate_, fd, file_size, &error);
             type = "full";
         } else if (allocation == tr_file_preallocation::Sparse) {
-            success = preallocate_file_sparse(fd, file_size, &error);
+            success = preallocate_file_sparse(preallocate_, fd, file_size, &error);
             type = "sparse";
         }
 
@@ -241,11 +248,23 @@ tr_open_files::Handle tr_open_files::get(
         return {};
     }
 
+    if (!already_existed) {
+        n_files_created_.fetch_add(1U, std::memory_order_relaxed);
+    }
+
     // cache it
     auto const lock = std::scoped_lock{ mutex_ };
-    pool_.erase(key); // a racing caller may have added one meanwhile
-    pool_.add(std::move(key)) = file;
+    pool_.add(Key{ key }) = file;
     return file;
+}
+
+tr_open_files::Opening::~Opening()
+{
+    {
+        auto const lock = std::scoped_lock{ owner_.mutex_ };
+        owner_.opening_.erase(key_);
+    }
+    owner_.opening_cv_.notify_all();
 }
 
 void tr_open_files::close_all()
