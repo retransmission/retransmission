@@ -656,7 +656,9 @@ fields_t load(tr_torrent* const tor, tr_torrent::ResumeHelper& helper, fields_t 
         }
     };
 
-    load_field(Corrupt, map.value_if<int64_t>(TR_KEY_corrupt), [tor](int64_t const val) { tor->bytes_corrupt_.set_prev(val); });
+    load_field(Corrupt, map.value_if<uint64_t>(TR_KEY_corrupt), [tor](uint64_t const val) {
+        tor->bytes_corrupt_.set_prev(val);
+    });
     load_field(
         DownloadDir,
         nonempty(map.value_if<std::string_view>(TR_KEY_destination)),
@@ -665,10 +667,10 @@ fields_t load(tr_torrent* const tor, tr_torrent::ResumeHelper& helper, fields_t 
         IncompleteDir,
         nonempty(map.value_if<std::string_view>(TR_KEY_incomplete_dir)),
         [&helper](std::string_view const val) { helper.load_incomplete_dir(val); });
-    load_field(Downloaded, map.value_if<int64_t>(TR_KEY_downloaded), [tor](int64_t const val) {
+    load_field(Downloaded, map.value_if<uint64_t>(TR_KEY_downloaded), [tor](uint64_t const val) {
         tor->bytes_downloaded_.set_prev(val);
     });
-    load_field(Uploaded, map.value_if<int64_t>(TR_KEY_uploaded), [tor](int64_t const val) {
+    load_field(Uploaded, map.value_if<uint64_t>(TR_KEY_uploaded), [tor](uint64_t const val) {
         tor->bytes_uploaded_.set_prev(val);
     });
     load_field(MaxPeers, map.value_if<uint16_t>(TR_KEY_max_peers), [tor](uint16_t const val) { tor->set_peer_limit(val); });
