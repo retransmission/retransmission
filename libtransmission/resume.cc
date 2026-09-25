@@ -673,19 +673,17 @@ fields_t load(tr_torrent* const tor, tr_torrent::ResumeHelper& helper, fields_t 
     });
     load_field(MaxPeers, map.value_if<uint16_t>(TR_KEY_max_peers), [tor](uint16_t const val) { tor->set_peer_limit(val); });
     load_field(Run, map.value_if<bool>(TR_KEY_paused), [&helper](bool const val) { helper.load_start_when_stable(!val); });
-    load_field(AddedDate, map.value_if<int64_t>(TR_KEY_added_date), [&helper](int64_t const val) {
-        helper.load_date_added(static_cast<time_t>(val));
+    load_field(AddedDate, map.value_if<time_t>(TR_KEY_added_date), [&helper](time_t const val) {
+        helper.load_date_added(val);
     });
-    load_field(DoneDate, map.value_if<int64_t>(TR_KEY_done_date), [&helper](int64_t const val) {
-        helper.load_date_done(static_cast<time_t>(val));
-    });
-    load_field(ActivityDate, map.value_if<int64_t>(TR_KEY_activity_date), [tor](int64_t const val) {
+    load_field(DoneDate, map.value_if<time_t>(TR_KEY_done_date), [&helper](time_t const val) { helper.load_date_done(val); });
+    load_field(ActivityDate, map.value_if<time_t>(TR_KEY_activity_date), [tor](time_t const val) {
         tor->set_date_active(val);
     });
-    load_field(TimeSeeding, map.value_if<int64_t>(TR_KEY_seeding_time_seconds), [&helper](int64_t const val) {
+    load_field(TimeSeeding, map.value_if<time_t>(TR_KEY_seeding_time_seconds), [&helper](time_t const val) {
         helper.load_seconds_seeding_before_current_start(val);
     });
-    load_field(TimeDownloading, map.value_if<int64_t>(TR_KEY_downloading_time_seconds), [&helper](int64_t const val) {
+    load_field(TimeDownloading, map.value_if<time_t>(TR_KEY_downloading_time_seconds), [&helper](time_t const val) {
         helper.load_seconds_downloading_before_current_start(val);
     });
     load_field(SequentialDownload, map.value_if<bool>(TR_KEY_sequential_download), [tor](bool const val) {
