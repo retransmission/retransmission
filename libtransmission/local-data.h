@@ -19,6 +19,7 @@
 #include <optional>
 #include <random>
 #include <span>
+#include <string>
 #include <string_view>
 #include <type_traits>
 #include <utility>
@@ -170,7 +171,16 @@ public:
 
     using OnWrite = std::function<void(tr_torrent_id_t, tr_byte_span_t byte_span, tr_error const& error)>;
 
-    using OnMove = std::function<void(tr_torrent_id_t, tr_error const& error)>;
+    // Names the dir a move puts the files under, or an empty one to skip
+    // the move. It runs when the move starts, after the ops queued before it.
+    using MoveParent = std::function<std::string()>;
+
+    // `parent` is the dir the files went under, or empty if the move was skipped.
+    using OnMove = std::function<void(tr_torrent_id_t, std::string_view parent, tr_error const& error)>;
+
+    using OnRemove = std::function<void(tr_torrent_id_t, tr_error const& error)>;
+
+    using OnClose = std::function<void(tr_torrent_id_t)>;
 
     class Backend
     {
@@ -186,10 +196,7 @@ public:
             tr_torrent_id_t tor_id,
             tr_byte_span_t byte_span,
             BlockData const& data) = 0;
-        [[nodiscard]] virtual tr_error_code_t move(
-            tr_torrent_id_t id,
-            std::string_view parent,
-            std::string_view parent_name) = 0;
+        [[nodiscard]] virtual tr_error_code_t move(tr_torrent_id_t id, std::string_view parent) = 0;
         [[nodiscard]] virtual tr_error_code_t remove(tr_torrent_id_t id, tr_torrent_remove_func remove_func) = 0;
         virtual void rename(
             tr_torrent_id_t id,
@@ -233,11 +240,11 @@ public:
     void read(tr_torrent_id_t id, tr_byte_span_t byte_span, OnRead on_read);
     void test_piece(tr_torrent_id_t id, tr_piece_index_t piece, OnTest on_test);
     void write(tr_torrent_id_t id, tr_byte_span_t byte_span, std::unique_ptr<BlockData> data, OnWrite on_write);
-    void close_torrent(tr_torrent_id_t tor_id);
-    void close_file(tr_torrent_id_t tor_id, tr_file_index_t file_num);
+    void close_torrent(tr_torrent_id_t tor_id, OnClose on_close = {});
+    void close_file(tr_torrent_id_t tor_id, tr_file_index_t file_num, OnClose on_close = {});
     void close_all();
-    void move(tr_torrent_id_t id, std::string_view parent, std::string_view parent_name, OnMove on_move);
-    void remove(tr_torrent_id_t id, tr_torrent_remove_func remove_func);
+    void move(tr_torrent_id_t id, MoveParent parent, OnMove on_move);
+    void remove(tr_torrent_id_t id, tr_torrent_remove_func remove_func, OnRemove on_remove = {});
     void rename(tr_torrent_id_t id, std::string_view oldpath, std::string_view newname, tr_torrent_rename_done_func callback);
     void shutdown();
     [[nodiscard]] static uint64_t enqueued_write_bytes() noexcept;
@@ -296,6 +303,9 @@ private:
 
     // True if this completion should wait for pump() instead of firing now.
     [[nodiscard]] bool defer_next() noexcept;
+
+    // Run an admin op as a barrier on the torrent. See the definition.
+    void admin(tr_torrent_id_t id, std::function<void()> body);
 
     void park(std::unique_ptr<Parked> completion);
 

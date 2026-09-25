@@ -34,6 +34,7 @@
 #include "libtransmission/completion.h"
 #include "libtransmission/crypto-utils.h" // tr_rand_obj()
 #include "libtransmission/file-piece-map.h"
+#include "libtransmission/local-data.h"
 #include "libtransmission/log.h"
 #include "libtransmission/session.h"
 #include "libtransmission/shared-string.h"
@@ -188,6 +189,14 @@ struct tr_torrent {
     void set_location(std::string_view location, bool move_from_old_path, int volatile* setme_state);
 
     void rename_path(std::string_view oldpath, std::string_view newname, tr_torrent_rename_done_func&& callback);
+
+    // The synchronous half of rename_path(), run under the disk-IO
+    // barrier. Call rename_path() instead unless you are the backend
+    // of tr::LocalData.
+    void rename_path_in_session_thread(
+        std::string_view oldpath,
+        std::string_view newname,
+        tr_torrent_rename_done_func const& callback);
 
     // these functions should become private when possible,
     // but more refactoring is needed before that can happen
@@ -523,6 +532,12 @@ struct tr_torrent {
     // Call after changing anything that affects where this torrent's
     // data lives on disk: dirs, file subpaths, wanted files, or the
     // metainfo.
+    //
+    // Dirs and file subpaths change inside disk-IO barriers, so no op in
+    // flight holds a stale layout. Wanted files, the preallocation mode,
+    // and the partial-file suffix may change at any time. They only decide
+    // how a missing file gets created, and an op in flight at worst
+    // creates it the old way.
     void invalidate_storage_descriptor() noexcept
     {
         auto const lock = std::scoped_lock{ storage_descriptor_mutex_ };
@@ -664,6 +679,8 @@ struct tr_torrent {
     /// METAINFO - PIECE CHECKSUMS
 
     [[nodiscard]] bool ensure_piece_is_checked(tr_piece_index_t piece);
+
+    void cancel_pending_verify();
 
     /// METAINFO - MAGNET
 
@@ -1341,7 +1358,7 @@ private:
     void on_have_all_metainfo();
     void on_piece_completed(tr_piece_index_t piece);
     void on_piece_failed(tr_piece_index_t piece);
-    void on_file_completed(tr_file_index_t file);
+    void on_file_completed(tr_file_index_t file) const;
     void on_tracker_response(tr_tracker_event const* event);
 
     void create_empty_files() const;
@@ -1351,12 +1368,10 @@ private:
 
     void update_file_path(tr_file_index_t file, std::optional<bool> has_file) const;
 
-    void set_location_in_session_thread(std::string_view path, bool move_from_old_path, int volatile* setme_state);
+    void set_location_in_session_thread(tr::LocalData::MoveParent path, bool move_from_old_path, int volatile* setme_state);
 
-    void rename_path_in_session_thread(
-        std::string_view oldpath,
-        std::string_view newname,
-        tr_torrent_rename_done_func const& callback);
+    // Once done, move the files from the incomplete dir to the download dir.
+    void leave_incomplete_dir();
 
     void start_in_session_thread();
 
@@ -1455,6 +1470,7 @@ private:
     tr_idlelimit idle_limit_mode_ = TR_IDLELIMIT_GLOBAL;
 
     VerifyState verify_state_ = VerifyState::None;
+    uint64_t verify_token_ = 0U;
 
     tr_completeness completeness_ = TR_LEECH;
 

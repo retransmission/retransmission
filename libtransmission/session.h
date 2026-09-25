@@ -731,9 +731,6 @@ public:
     // files get the partial-file suffix.
     void invalidate_storage_descriptors();
 
-    void close_torrent_files(tr_torrent_id_t tor_id) noexcept;
-    void close_torrent_file(tr_torrent const& tor, tr_file_index_t file_num) noexcept;
-
     // announce ip
 
     [[nodiscard]] constexpr std::string const& announceIP() const noexcept
@@ -1139,7 +1136,7 @@ public:
     }
 
     void verify_add(tr_torrent* tor);
-    void verify_remove(tr_torrent const* tor);
+    void verify_remove(tr_torrent* tor);
 
     void fetch(tr_web::FetchOptions&& options) const
     {

@@ -4,6 +4,7 @@
 // License text can be found in the licenses/ folder.
 
 #include <algorithm>
+#include <atomic>
 #include <functional>
 #include <memory>
 
@@ -19,6 +20,8 @@ namespace tr::test
 {
 namespace
 {
+auto constexpr MaxWaitMsec = 5000;
+
 // Covers the torrent call sites that read and write through tr::LocalData.
 // The fixture parks completions instead of shuffling them, so each test
 // decides when they arrive.
@@ -110,6 +113,25 @@ TEST_F(TorrentDiskIoTest, hashResultForInvalidatedPieceIsDropped)
         session_->local_data.pump();
         EXPECT_FALSE(tor->has_piece(0));
     });
+}
+
+TEST_F(TorrentDiskIoTest, blockArrivingDuringVerificationIsRefused)
+{
+    auto* const tor = zeroTorrentInit(ZeroTorrentState::Partial);
+    auto const block = tor->block_span_for_piece(0).begin;
+    auto verified = std::atomic<bool>{ false };
+    auto const tag = session_->verify_done_.connect_scoped([&verified](tr_torrent_id_t) { verified = true; });
+
+    blockingRunInSessionThread([tor, block]() {
+        tr_torrentVerify(tor);
+
+        // Stopping the torrent doesn't stop a webseed fetch, so its block
+        // can still arrive. The verify may have scanned the piece already.
+        EXPECT_FALSE(tor->on_block_received(block));
+        EXPECT_FALSE(tor->has_block_or_pending(block));
+    });
+
+    EXPECT_TRUE(waitFor([&verified]() { return verified.load(); }, MaxWaitMsec));
 }
 
 } // namespace tr::test
