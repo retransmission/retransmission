@@ -659,6 +659,7 @@ void tr_session::on_save_timer()
 
     stats().save_if_dirty();
     torrent_queue().to_file();
+    bandwidth_group_helpers::bandwidthGroupWrite(this, configDir());
 }
 
 void tr_session::initImpl(init_data& data)
