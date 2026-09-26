@@ -1498,6 +1498,8 @@ private:
     uint64_t verify_token_ = 0U;
 
     tr_completeness completeness_ = TR_LEECH;
+    // Changes with completeness_, so a deferred done step can tell it's stale.
+    uint64_t completeness_token_ = 0U;
 
     uint16_t idle_limit_minutes_ = 0;
 

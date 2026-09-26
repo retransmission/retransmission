@@ -1189,6 +1189,42 @@ TEST_F(TorrentDiskIoWorkersTest, failedWriteSetsLocalError)
     });
 }
 
+TEST_F(TorrentDiskIoWorkersTest, doneStepOfAnUndoneCompletionIsDropped)
+{
+    auto* const tor = zeroTorrentInit(ZeroTorrentState::Partial);
+    auto const id = tor->id();
+    auto n_done = std::atomic<size_t>{};
+    tr_sessionSetCompletenessCallback(session_, [&n_done](tr_torrent_id_t, tr_completeness const completeness, bool) {
+        if (completeness != TR_LEECH) {
+            ++n_done;
+        }
+    });
+
+    // A paused write holds back each completion's done step.
+    session_->local_data.set_workers_paused(true);
+    blockingRunInSessionThread([tor]() {
+        auto const block = tor->block_span_for_piece(0U).begin;
+        tor->save_block(block, zeroBlock(tor, block));
+    });
+
+    // Skipping the file that holds the missing piece completes the torrent.
+    // Wanting it again undoes that, and skipping it again completes it anew.
+    auto const file = tr_file_index_t{ 0U };
+    for (auto const wanted : { false, true, false }) {
+        tr_torrentSetFileDLs(tor, std::span{ &file, 1U }, wanted);
+    }
+
+    // This close queues behind both done steps.
+    auto closed = std::atomic<bool>{ false };
+    blockingRunInSessionThread(
+        [this, id, &closed]() { session_->local_data.close_torrent(id, [&closed](tr_torrent_id_t) { closed = true; }); });
+    session_->local_data.set_workers_paused(false);
+    EXPECT_TRUE(waitFor([&closed]() { return closed.load(); }, MaxWaitMsec));
+    tr_sessionSetCompletenessCallback(session_, nullptr);
+
+    EXPECT_EQ(1U, n_done.load());
+}
+
 TEST_F(IncompleteDirWorkersTest, doneCallbackWaitsForTheMoveOut)
 {
     auto* const tor = zeroTorrentInit(ZeroTorrentState::Partial);

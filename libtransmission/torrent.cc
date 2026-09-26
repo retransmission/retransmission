@@ -1904,6 +1904,7 @@ void tr_torrent::recheck_completeness()
                 get_completion_string(new_completeness)));
 
         completeness_ = new_completeness;
+        auto const token = ++completeness_token_;
 
         if (!is_done()) {
             session->onTorrentCompletenessChanged(id(), completeness_, was_running);
@@ -1922,15 +1923,16 @@ void tr_torrent::recheck_completeness()
 
         // The rest waits until the files are where they end up.
         // The done script, for one, is told where they are.
-        auto finish = [session = this->session, recent_change, was_running](tr_torrent_id_t const tor_id) {
+        auto finish = [session = this->session, recent_change, was_running, token](tr_torrent_id_t const tor_id) {
             auto* const tor = session->torrents().get(tor_id);
             if (tor == nullptr) {
                 return;
             }
 
-            // Skip it if a removal is queued, or if the torrent wants more data again.
+            // Skip it if a removal is queued, or if the completeness changed again.
+            // A newer completion queues its own done step.
             auto const lock = tor->unique_lock();
-            if (tor->is_deleting_ || !tor->is_done()) {
+            if (tor->is_deleting_ || tor->completeness_token_ != token) {
                 return;
             }
 
