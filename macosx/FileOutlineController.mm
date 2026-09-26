@@ -59,14 +59,26 @@ typedef NS_ENUM(NSUInteger, FilePriorityMenuTag) { //
 
 - (void)setTorrent:(Torrent*)torrent
 {
-    _torrent = torrent;
+    // Drop the filter; the batch update below replaces every row it would rebuild.
+    _filterText = nil;
 
+    [self.fOutline deselectAll:nil];
+
+    NSUInteger const oldRootCount = self.fFileList.count;
+    auto oldIndexes = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, oldRootCount)];
+
+    _torrent = torrent;
     [self.fFileList setArray:torrent.fileList ?: @[]];
 
-    self.filterText = nil;
+    NSUInteger const newRootCount = self.fFileList.count;
+    auto newIndexes = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, newRootCount)];
 
-    [self.fOutline reloadData];
-    [self.fOutline deselectAll:nil]; //do this after reloading the data #4575
+    [self.fOutline beginUpdates];
+
+    [self.fOutline removeItemsAtIndexes:oldIndexes inParent:nil withAnimation:NSTableViewAnimationEffectNone];
+    [self.fOutline insertItemsAtIndexes:newIndexes inParent:nil withAnimation:NSTableViewAnimationEffectNone];
+
+    [self.fOutline endUpdates];
 }
 
 - (void)setFilterText:(NSString*)text
