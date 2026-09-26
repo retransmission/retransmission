@@ -17,6 +17,7 @@
 #include <set>
 #include <memory>
 #include <mutex>
+#include <string>
 #include <string_view>
 #include <utility>
 
@@ -120,15 +121,17 @@ public:
 
 private:
     using Key = std::pair<tr_torrent_id_t, tr_file_index_t>;
+    using Paths = std::set<std::string, std::less<>>;
 
-    // Marks a file as being opened for as long as it lives.
-    // Same-file callers wait until it's gone.
+    // Marks a path as being opened for as long as it lives.
+    // Opens of that path wait until it's gone, whichever torrent
+    // they're for, so none of them sees a half-initialized file.
     class Opening
     {
     public:
-        Opening(tr_open_files& owner, Key const key) noexcept
+        Opening(tr_open_files& owner, Paths::iterator const path) noexcept
             : owner_{ owner }
-            , key_{ key }
+            , path_{ path }
         {
         }
 
@@ -140,7 +143,7 @@ private:
 
     private:
         tr_open_files& owner_;
-        Key key_;
+        Paths::iterator path_;
     };
 
     [[nodiscard]] static Key make_key(tr_torrent_id_t tor_id, tr_file_index_t file_num) noexcept
@@ -155,7 +158,7 @@ private:
     // Guards pool_ and opening_. File initialization runs outside the lock.
     std::mutex mutex_;
     std::condition_variable opening_cv_;
-    std::set<Key> opening_;
+    Paths opening_;
     tr_lru_cache<Key, Handle, MaxOpenFiles> pool_;
 
     std::atomic<size_t> n_files_created_ = 0U;

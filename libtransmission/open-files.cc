@@ -151,9 +151,10 @@ tr_open_files::Handle tr_open_files::get(
 {
     // is there already an entry
     auto const key = make_key(tor_id, file_num);
+    auto path = Paths::iterator{};
     {
         auto lock = std::unique_lock{ mutex_ };
-        opening_cv_.wait(lock, [this, key]() { return !opening_.contains(key); });
+        opening_cv_.wait(lock, [this, filename]() { return !opening_.contains(filename); });
         if (auto* const found = pool_.get(key); found != nullptr) {
             if (!writable || (*found)->is_writable()) {
                 return *found;
@@ -163,12 +164,12 @@ tr_open_files::Handle tr_open_files::get(
             // through the old descriptor keeps it open until they're done.
             pool_.erase(key);
         }
-        opening_.insert(key);
+        path = opening_.emplace(filename).first;
     }
-    auto const opening = Opening{ *this, key };
+    auto const opening = Opening{ *this, path };
 
-    // Same-file opens wait for initialization, including preallocation.
-    // Other files can be opened while this one waits on disk.
+    // Opens of the same path wait for initialization, including preallocation.
+    // Other paths can be opened while this one waits on disk.
 
     // create subfolders, if any
     if (writable) {
@@ -262,7 +263,7 @@ tr_open_files::Opening::~Opening()
 {
     {
         auto const lock = std::scoped_lock{ owner_.mutex_ };
-        owner_.opening_.erase(key_);
+        owner_.opening_.erase(path_);
     }
     owner_.opening_cv_.notify_all();
 }

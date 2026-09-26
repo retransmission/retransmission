@@ -15,6 +15,7 @@
 #include <string>
 #include <string_view>
 #include <thread>
+#include <tuple>
 #include <vector>
 
 #include <fmt/format.h>
@@ -342,9 +343,10 @@ TEST_F(OpenFilesTest, concurrentWritersShareTheInitializedFile)
 namespace
 {
 
+// Params: whether the first writer's open fails, and which torrent the second writer is for.
 class OpenFilesPreallocationTest
     : public tr::test::SandboxedTest
-    , public ::testing::WithParamInterface<bool>
+    , public ::testing::WithParamInterface<std::tuple<bool, tr_torrent_id_t>>
 {
 };
 
@@ -355,7 +357,8 @@ TEST_P(OpenFilesPreallocationTest, serializesWritersUntilInitializationFinishes)
     static auto constexpr FileSize = (uint64_t{ 2U } * 1024U * 1024U) + 17U;
     static auto constexpr Offset = (uint64_t{ 1024U } * 1024U) + 13U;
     static auto constexpr Payload = "second writer's data"sv;
-    auto const fail = GetParam();
+    auto const fail = std::get<0>(GetParam());
+    auto const second_tor_id = std::get<1>(GetParam());
     auto const filename = tr_pathbuf{ sandboxDir(), "/preallocated.bin" };
     auto const other_filename = tr_pathbuf{ sandboxDir(), "/independent.bin" };
     auto entered = std::promise<void>{};
@@ -382,7 +385,7 @@ TEST_P(OpenFilesPreallocationTest, serializesWritersUntilInitializationFinishes)
     auto second = std::async(std::launch::async, [&]() {
         writer_started.set_value();
         auto error = tr_error{};
-        auto file = files.get(0, 0, true, filename, PreallocateFull, FileSize, error);
+        auto file = files.get(second_tor_id, 0, true, filename, PreallocateFull, FileSize, error);
         if (file) {
             auto const lock = file->io_lock();
             auto written = uint64_t{};
@@ -406,11 +409,10 @@ TEST_P(OpenFilesPreallocationTest, serializesWritersUntilInitializationFinishes)
     EXPECT_TRUE(independent.get());
     EXPECT_EQ(!fail, static_cast<bool>(first_file));
     ASSERT_TRUE(second_file);
-    EXPECT_EQ(second_file, files.get(0, 0, true));
+    EXPECT_EQ(second_file, files.get(second_tor_id, 0, true));
     EXPECT_EQ(1U, calls.load());
-    if (!fail) {
-        EXPECT_EQ(first_file, second_file);
-    }
+    // a torrent's writers share one descriptor
+    EXPECT_EQ(!fail && second_tor_id == 0, first_file == second_file);
 
     auto expected = std::string(static_cast<size_t>(fail ? Offset + Payload.size() : FileSize), '\0');
     expected.replace(Offset, Payload.size(), Payload);
@@ -424,7 +426,10 @@ TEST_P(OpenFilesPreallocationTest, serializesWritersUntilInitializationFinishes)
     EXPECT_EQ(expected.size(), info->size);
 }
 
-INSTANTIATE_TEST_SUITE_P(FullAllocation, OpenFilesPreallocationTest, ::testing::Bool());
+INSTANTIATE_TEST_SUITE_P(
+    FullAllocation,
+    OpenFilesPreallocationTest,
+    ::testing::Combine(::testing::Bool(), ::testing::Values(tr_torrent_id_t{ 0 }, tr_torrent_id_t{ 1 })));
 
 TEST_F(OpenFilesTest, closesLeastRecentlyUsedFile)
 {
