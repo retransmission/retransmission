@@ -25,6 +25,10 @@
 #ifdef _WIN32
 #include <windows.h>
 #define setenv(key, value, unused) SetEnvironmentVariableA(key, value)
+#else
+#include <csignal>
+#include <sys/wait.h>
+#include <unistd.h>
 #endif
 
 namespace tr::test
@@ -281,6 +285,102 @@ TEST_P(SubprocessTest, SpawnAsyncCwdMissing)
     EXPECT_NE(0, error.code());
     EXPECT_NE(""sv, error.message());
 }
+
+#ifndef _WIN32
+
+namespace
+{
+void noopSignalHandler(int /*signum*/)
+{
+}
+} // namespace
+
+TEST_P(SubprocessTest, SpawnAsyncKeepsSigchldHandler)
+{
+    struct sigaction action{};
+    action.sa_handler = &noopSignalHandler;
+    sigemptyset(&action.sa_mask);
+    struct sigaction saved{};
+    ASSERT_EQ(0, sigaction(SIGCHLD, &action, &saved)) << tr_strerror(errno);
+
+    auto const result_path = buildSandboxPath("result.txt");
+    auto const args = std::to_array<char const*>({ self_path_.c_str(), result_path.c_str(), arg_dump_cwd_.c_str(), nullptr });
+
+    auto error = tr_error{};
+    EXPECT_TRUE(tr_spawn_async(std::data(args), {}, {}, &error)) << error;
+    waitForFileToBeReadable(result_path);
+
+    struct sigaction current{};
+    EXPECT_EQ(0, sigaction(SIGCHLD, nullptr, &current)) << tr_strerror(errno);
+    EXPECT_EQ(&noopSignalHandler, current.sa_handler);
+
+    EXPECT_EQ(0, sigaction(SIGCHLD, &saved, nullptr)) << tr_strerror(errno);
+}
+
+TEST_P(SubprocessTest, SpawnAsyncLeavesOtherChildrenAlone)
+{
+    auto const other_pid = fork();
+    ASSERT_NE(-1, other_pid) << tr_strerror(errno);
+    if (other_pid == 0) {
+        _exit(42);
+    }
+
+    // Wait for it to exit, but leave it for the final waitpid() to reap.
+    auto info = siginfo_t{};
+    ASSERT_EQ(0, waitid(P_PID, static_cast<id_t>(other_pid), &info, WEXITED | WNOWAIT)) << tr_strerror(errno);
+
+    auto const result_path = buildSandboxPath("result.txt");
+    auto const args = std::to_array<char const*>({ self_path_.c_str(), result_path.c_str(), arg_dump_cwd_.c_str(), nullptr });
+
+    auto error = tr_error{};
+    EXPECT_TRUE(tr_spawn_async(std::data(args), {}, {}, &error)) << error;
+    waitForFileToBeReadable(result_path);
+
+    // Run any SIGCHLD handler now, so one that reaps other children has done so before the check.
+    ASSERT_EQ(0, raise(SIGCHLD));
+
+    auto status = int{};
+    ASSERT_EQ(other_pid, waitpid(other_pid, &status, 0)) << tr_strerror(errno);
+    ASSERT_TRUE(WIFEXITED(status));
+    EXPECT_EQ(42, WEXITSTATUS(status));
+}
+
+TEST_P(SubprocessTest, SpawnAsyncLeavesNoChild)
+{
+    auto const result_path = buildSandboxPath("result.txt");
+    auto const args = std::to_array<char const*>({ self_path_.c_str(), result_path.c_str(), arg_dump_cwd_.c_str(), nullptr });
+
+    // Spawn from a helper process: it starts with no children, so other tests' children can't interfere.
+    // The helper blocks SIGCHLD, so no handler can reap the spawned program before the check.
+    auto const helper_pid = fork();
+    ASSERT_NE(-1, helper_pid) << tr_strerror(errno);
+    if (helper_pid == 0) {
+        auto mask = sigset_t{};
+        sigemptyset(&mask);
+        sigaddset(&mask, SIGCHLD);
+        if (sigprocmask(SIG_BLOCK, &mask, nullptr) != 0) {
+            _exit(2);
+        }
+
+        if (!tr_spawn_async(std::data(args), {}, {}, nullptr)) {
+            _exit(3);
+        }
+
+        if (!waitFor([&result_path]() { return tr_sys_path_exists(result_path); }, 30000)) {
+            _exit(4);
+        }
+
+        _exit(waitpid(-1, nullptr, WNOHANG) == -1 && errno == ECHILD ? 0 : 1);
+    }
+
+    auto status = int{};
+    ASSERT_EQ(helper_pid, waitpid(helper_pid, &status, 0)) << tr_strerror(errno);
+    ASSERT_TRUE(WIFEXITED(status));
+    EXPECT_EQ(0, WEXITSTATUS(status)) << "1: the helper still has a child, 2: sigprocmask() failed, "
+                                         "3: tr_spawn_async() failed, 4: no result file";
+}
+
+#endif
 
 INSTANTIATE_TEST_SUITE_P(Subprocess,
                          SubprocessTest,
