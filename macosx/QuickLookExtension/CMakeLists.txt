@@ -1,5 +1,7 @@
 set(MAC_QL_BUNDLE_NAME QuickLookExtension)
 
+find_program(XCRUN_EXECUTABLE xcrun REQUIRED)
+
 add_library(${TR_NAME}-mac-qlappex MODULE)
 
 target_sources(${TR_NAME}-mac-qlappex
@@ -49,23 +51,37 @@ set_source_files_properties(
     PROPERTIES
         MACOSX_PACKAGE_LOCATION Resources)
 
-foreach(LANG ${ENABLED_LINGUAS})
-    set(${LANG}_STRINGS_FILES)
-    set(STRINGS_FILES_RESOURCES_DIR Resources)
-    if(NOT CMAKE_GENERATOR STREQUAL Xcode)
-        string(APPEND STRINGS_FILES_RESOURCES_DIR /${LANG}.lproj)
-    endif()
-    foreach(F ${LANG_STRINGS_FILES})
-        list(APPEND ${LANG}_STRINGS_FILES ${LANG}.lproj/${F})
-        list(APPEND RESOURCES ${${LANG}_STRINGS_FILES})
-        set_source_files_properties(
-            ${${LANG}_STRINGS_FILES}
-            PROPERTIES
-                MACOSX_PACKAGE_LOCATION ${STRINGS_FILES_RESOURCES_DIR})
+set(XSTRINGS_SRC "${CMAKE_CURRENT_SOURCE_DIR}/Resources/Localizable.xcstrings")
+
+if(CMAKE_GENERATOR STREQUAL Xcode)
+    list(APPEND RESOURCES ${XSTRINGS_SRC})
+    set_source_files_properties(${XSTRINGS_SRC}
+        PROPERTIES
+            MACOSX_PACKAGE_LOCATION Resources)
+else()
+    set(XSTRINGS_BUILD_DIR "${CMAKE_CURRENT_BINARY_DIR}/xcstrings_out")
+    set(XSTRINGS_OUTPUTS)
+
+    foreach(LANG ${ENABLED_LINGUAS})
+        set(LOCALIZED_RESOURCE "${XSTRINGS_BUILD_DIR}/${LANG}.lproj/Localizable.strings")
+        list(APPEND XSTRINGS_OUTPUTS "${LOCALIZED_RESOURCE}")
+        set_source_files_properties("${LOCALIZED_RESOURCE}" PROPERTIES
+            GENERATED TRUE
+            MACOSX_PACKAGE_LOCATION "Resources/${LANG}.lproj")
     endforeach()
-    source_group(Resources/${LANG}.lproj
-        FILES ${${LANG}_STRINGS_FILES})
-endforeach()
+
+    add_custom_command(
+        OUTPUT ${XSTRINGS_OUTPUTS}
+        COMMAND ${XCRUN_EXECUTABLE} xcstringstool compile
+                "${XSTRINGS_SRC}"
+                --output-directory "${XSTRINGS_BUILD_DIR}"
+        DEPENDS "${XSTRINGS_SRC}"
+        COMMENT "Compiling String Catalog ${XSTRINGS_SRC}"
+        VERBATIM
+    )
+
+    list(APPEND RESOURCES "${XSTRINGS_OUTPUTS}")
+endif()
 
 target_sources(${TR_NAME}-mac-qlappex
     PRIVATE

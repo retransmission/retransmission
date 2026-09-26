@@ -1058,7 +1058,6 @@
 				Sparkle.framework = (Weak, );
 			};
 			membershipExceptions = (
-				"/Localized: QuickLookExtension/Localizable.strings",
 				CMakeLists.txt,
 				Info.plist,
 				Info.plist.in,
@@ -1066,6 +1065,7 @@
 				QuickLookExtension/Info.plist,
 				QuickLookExtension/Info.plist.in,
 				QuickLookExtension/PreviewProvider.mm,
+				QuickLookExtension/Resources/Localizable.xcstrings,
 				QuickLookExtension/style.css,
 				VDKQueue/CMakeLists.txt,
 			);
@@ -1074,8 +1074,8 @@
 		0AD81F55304EC83D00C22874 /* Exceptions for "macosx" folder in "QuickLookExtension" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
-				"/Localized: QuickLookExtension/Localizable.strings",
 				QuickLookExtension/PreviewProvider.mm,
+				QuickLookExtension/Resources/Localizable.xcstrings,
 				QuickLookExtension/style.css,
 			);
 			target = ED5E0E7B2CD30B180071433B /* QuickLookExtension */;
