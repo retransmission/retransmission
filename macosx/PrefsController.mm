@@ -2,6 +2,8 @@
 // It may be used under the MIT (SPDX: MIT) license.
 // License text can be found in the licenses/ folder.
 
+#include <string_view>
+
 #include <libtransmission/macros.h>
 #include <libtransmission/string-utils.h>
 
@@ -1463,7 +1465,7 @@ static NSString* getOSStatusDescription(OSStatus errorCode)
 
 - (void)updateRPCPassword
 {
-    CFTypeRef data;
+    CFTypeRef data = NULL;
     OSStatus result = SecItemCopyMatching(
         (CFDictionaryRef) @{
             (NSString*)kSecClass : (NSString*)kSecClassGenericPassword,
@@ -1472,33 +1474,39 @@ static NSString* getOSStatusDescription(OSStatus errorCode)
             (NSString*)kSecReturnData : @YES,
         },
         &data);
-    if (result != noErr && result != errSecItemNotFound) {
-        NSLog(@"Problem accessing Keychain: %@", getOSStatusDescription(result));
+    if (result == errSecItemNotFound) {
+        return;
     }
-    char const* password = (char const*)((__bridge_transfer NSData*)data).bytes;
+    if (result != noErr) {
+        NSLog(@"Problem accessing Keychain: %@", getOSStatusDescription(result));
+        return;
+    }
+
+    NSData* const passwordData = (__bridge_transfer NSData*)data;
+    NSString* const password = [[NSString alloc] initWithData:passwordData encoding:NSUTF8StringEncoding];
     if (password) {
-        tr_sessionSetRPCPassword(self.fHandle, password);
-        self.fRPCPassword = @(password);
+        auto const passwordBytes = std::string_view{ static_cast<char const*>(passwordData.bytes), passwordData.length };
+        tr_sessionSetRPCPassword(self.fHandle, passwordBytes);
+        self.fRPCPassword = password;
     }
 }
 
 - (void)setKeychainPassword:(char const*)password
 {
-    CFTypeRef item;
     OSStatus result = SecItemCopyMatching(
         (CFDictionaryRef) @{
             (NSString*)kSecClass : (NSString*)kSecClassGenericPassword,
             (NSString*)kSecAttrAccount : @(kRPCKeychainName),
             (NSString*)kSecAttrService : @(kRPCKeychainService),
         },
-        &item);
+        nil);
     if (result != noErr && result != errSecItemNotFound) {
         NSLog(@"Problem accessing Keychain: %@", getOSStatusDescription(result));
         return;
     }
 
     size_t passwordLength = strlen(password);
-    if (item) {
+    if (result == noErr) {
         if (passwordLength > 0) // found and needed, so update it
         {
             result = SecItemUpdate(
@@ -1524,7 +1532,6 @@ static NSString* getOSStatusDescription(OSStatus errorCode)
                 NSLog(@"Problem removing Keychain item: %@", getOSStatusDescription(result));
             }
         }
-        CFRelease(item);
     } else if (result == errSecItemNotFound) {
         if (passwordLength > 0) // not found and needed, so add it
         {
