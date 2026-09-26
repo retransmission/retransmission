@@ -877,6 +877,13 @@ struct tr_torrent {
         return is_stopping_;
     }
 
+    // Whether the torrent's removal is queued behind its disk IO.
+    // RPC treats it as removed from then on. Session thread only.
+    [[nodiscard]] constexpr auto is_removal_queued() const noexcept
+    {
+        return removal_queued_;
+    }
+
     constexpr void stop_soon() noexcept
     {
         is_stopping_ = true;
@@ -1506,6 +1513,7 @@ private:
     uint16_t max_connected_peers_ = TrDefaultPeerLimitTorrent;
 
     bool is_deleting_ = false;
+    bool removal_queued_ = false;
     bool is_dirty_ = false;
     bool is_queued_ = false;
     bool is_running_ = false;

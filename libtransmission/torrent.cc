@@ -582,7 +582,7 @@ void freeTorrent(tr_torrent* tor)
 
     session->announcer_->removeTorrent(tor);
 
-    session->torrents().remove(tor, tr_time());
+    session->torrents().remove(tor);
 
     if (!session->isClosing()) {
         session->torrent_queue().remove(tor->id());
@@ -728,6 +728,13 @@ void tr_torrentRemoveInSessionThread(
     tr_torrent_remove_func remove_func) // NOLINT(performance-unnecessary-value-param)
 {
     auto const lock = tor->unique_lock();
+
+    // The first request's keep-or-delete choice stands.
+    if (tor->removal_queued_) {
+        return;
+    }
+    tor->removal_queued_ = true;
+    tor->session->torrents().mark_removed(tor->id(), tr_time());
 
     tor->stop_now();
 

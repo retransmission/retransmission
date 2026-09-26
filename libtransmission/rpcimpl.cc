@@ -261,6 +261,7 @@ void tr_rpc_idle_done(struct tr_rpc_idle_data* data, JsonRpc::Error::Code code, 
         torrents_vec = torrents.get_all();
     }
 
+    std::erase_if(torrents_vec, [](tr_torrent const* const tor) { return tor->is_removal_queued(); });
     return torrents_vec;
 }
 
@@ -1828,7 +1829,7 @@ void add_strings_from_var(std::set<std::string_view>& strings, tr_variant const&
     };
 
     auto const& torrents = session->torrents();
-    auto const total = std::size(torrents);
+    auto const total = std::ranges::count_if(torrents, [](auto const* tor) { return !tor->is_removal_queued(); });
     auto const n_running = std::count_if(std::begin(torrents), std::end(torrents), [](auto const* tor) {
         return tor->is_running();
     });

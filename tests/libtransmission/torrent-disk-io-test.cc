@@ -37,6 +37,7 @@
 #include <libtransmission/peer-mgr.h>
 #include <libtransmission/peer-socket-tcp.h>
 #include <libtransmission/quark.h>
+#include <libtransmission/rpcimpl.h>
 #include <libtransmission/torrent-builder.h>
 #include <libtransmission/torrent.h>
 #include <libtransmission/variant.h>
@@ -391,6 +392,25 @@ class TorrentRemovalTest
     : public TorrentDiskIoWorkersTest
     , public ::testing::WithParamInterface<bool>
 {
+protected:
+    // Runs an RPC method and returns its result.
+    [[nodiscard]] tr_variant::Map rpc(tr_quark const method, tr_variant::Map params)
+    {
+        auto request = tr_variant::Map{ 4U };
+        request.try_emplace(TR_KEY_id, 1);
+        request.try_emplace(TR_KEY_jsonrpc, JsonRpc::Version);
+        request.try_emplace(TR_KEY_method, tr_variant::unmanaged_string(method));
+        request.try_emplace(TR_KEY_params, std::move(params));
+
+        auto response = tr_variant{};
+        tr_rpc_request_exec(session_, std::move(request), [&response](tr_variant&& resp) { response = std::move(resp); });
+        if (auto* const map = response.get_if<tr_variant::Map>(); map != nullptr) {
+            if (auto* const result = map->find_if<tr_variant::Map>(TR_KEY_result); result != nullptr) {
+                return std::move(*result);
+            }
+        }
+        return {};
+    }
 };
 
 // Completes torrents whose files start in the incomplete dir.
@@ -929,6 +949,46 @@ TEST_P(TorrentRemovalTest, waitsForWritesAndHashesBeforeUnregistering)
         EXPECT_TRUE(hash_completed);
         EXPECT_EQ(0U, session_->local_data.enqueued_write_bytes());
     });
+    EXPECT_EQ(!GetParam(), tr_sys_path_exists(filename));
+}
+
+TEST_P(TorrentRemovalTest, rpcSeesTheRemovalBeforeDiskIoDrains)
+{
+    auto* const tor = zeroTorrentInit(ZeroTorrentState::Partial);
+    auto const id = tor->id();
+    auto const filename = tr_torrentFindFile(tor, 0U);
+
+    // A paused write holds back the removal.
+    session_->local_data.set_workers_paused(true);
+    blockingRunInSessionThread([this, tor, id]() {
+        tor->save_block(0U, zeroBlock(tor, 0U));
+        tr_torrentRemove(tor, GetParam());
+        tr_torrentRemove(tor, !GetParam());
+
+        auto fields = tr_variant::Vector{};
+        fields.emplace_back(tr_quark_get_string_view(TR_KEY_id));
+        auto params = tr_variant::Map{ 2U };
+        params.try_emplace(TR_KEY_fields, std::move(fields));
+        params.try_emplace(TR_KEY_ids, tr_quark_get_string_view(TR_KEY_recently_active));
+        auto const got = rpc(TR_KEY_torrent_get, std::move(params));
+        auto const* const torrents = got.find_if<tr_variant::Vector>(TR_KEY_torrents);
+        ASSERT_NE(nullptr, torrents);
+        EXPECT_TRUE(std::empty(*torrents));
+        auto const* const removed = got.find_if<tr_variant::Vector>(TR_KEY_removed);
+        ASSERT_NE(nullptr, removed);
+        ASSERT_EQ(1U, std::size(*removed));
+        EXPECT_EQ(int64_t{ id }, removed->front().value_if<int64_t>());
+
+        auto const stats = rpc(TR_KEY_session_stats, {});
+        EXPECT_EQ(int64_t{ 0 }, stats.value_if<int64_t>(TR_KEY_torrent_count));
+
+        // the torrent itself stays until its disk IO drains
+        EXPECT_EQ(tor, session_->torrents().get(id));
+    });
+    session_->local_data.set_workers_paused(false);
+
+    EXPECT_TRUE(waitForInSessionThread([this, id]() { return session_->torrents().get(id) == nullptr; }, MaxWaitMsec));
+    // the first request's keep-or-delete choice stands
     EXPECT_EQ(!GetParam(), tr_sys_path_exists(filename));
 }
 
