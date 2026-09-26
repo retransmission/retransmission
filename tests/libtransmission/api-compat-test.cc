@@ -4,17 +4,22 @@
 // License text can be found in the licenses/ folder.
 
 #include <string_view>
+#include <tuple>
 
 #include <gtest/gtest.h>
 
 #include <libtransmission/api-compat.h>
 #include <libtransmission/macros.h>
 #include <libtransmission/quark.h>
+#include <libtransmission/session-settings.h>
 #include <libtransmission/variant.h>
 
+#include "settings-fixtures.h"
 #include "test-fixtures.h"
 
 using ApiCompatTest = ::tr::test::TransmissionTest;
+using tr::test::CurrentSettingsJson;
+using tr::test::LegacySettingsJson;
 
 namespace
 {
@@ -560,206 +565,6 @@ constexpr std::string_view CurrentStatsJson = R"json({
     "seconds_active": 56,
     "session_count": 78,
     "uploaded_bytes": 90
-})json";
-
-constexpr std::string_view LegacySettingsJson = R"json({
-    "alt-speed-down": 50,
-    "alt-speed-enabled": false,
-    "alt-speed-time-begin": 540,
-    "alt-speed-time-day": 127,
-    "alt-speed-time-enabled": false,
-    "alt-speed-time-end": 1020,
-    "alt-speed-up": 50,
-    "blocklist-date": 0,
-    "blocklist-enabled": false,
-    "blocklist-updates-enabled": true,
-    "blocklist-url": "http://www.example.com/blocklist",
-    "compact-view": false,
-    "default-trackers": "",
-    "dht-enabled": true,
-    "download-dir": "/home/user/Downloads",
-    "download-queue-enabled": true,
-    "download-queue-size": 5,
-    "encryption": 1,
-    "filter-mode": "show-all",
-    "filter-trackers": "",
-    "idle-seeding-limit": 30,
-    "idle-seeding-limit-enabled": false,
-    "incomplete-dir": "/home/user/Downloads",
-    "incomplete-dir-enabled": false,
-    "inhibit-desktop-hibernation": false,
-    "lpd-enabled": true,
-    "main-window-height": 500,
-    "main-window-width": 650,
-    "main-window-x": 3840,
-    "main-window-y": 0,
-    "message-level": 4,
-    "open-dialog-dir": "/home/user",
-    "peer-limit-global": 200,
-    "peer-limit-per-torrent": 50,
-    "peer-port": 51413,
-    "peer-port-random-high": 65535,
-    "peer-port-random-low": 49152,
-    "peer-port-random-on-start": false,
-    "peer-socket-tos": "le",
-    "pex-enabled": true,
-    "port-forwarding-enabled": true,
-    "preallocation": 1,
-    "queue-stalled-minutes": 30,
-    "ratio-limit": 2.0,
-    "ratio-limit-enabled": false,
-    "read-clipboard": false,
-    "remote-session-enabled": false,
-    "remote-session-host": "localhost",
-    "remote-session-https": false,
-    "remote-session-password": "",
-    "remote-session-port": 9091,
-    "remote-session-requres-authentication": false,
-    "remote-session-username": "",
-    "rename-partial-files": true,
-    "rpc-authentication-required": false,
-    "rpc-enabled": false,
-    "rpc-password": "",
-    "rpc-port": 9091,
-    "rpc-username": "",
-    "rpc-whitelist": "127.0.0.1,::1",
-    "rpc-whitelist-enabled": true,
-    "script-torrent-done-enabled": false,
-    "script-torrent-done-filename": "",
-    "script-torrent-done-seeding-enabled": false,
-    "script-torrent-done-seeding-filename": "",
-    "show-backup-trackers": false,
-    "show-filterbar": true,
-    "show-notification-area-icon": false,
-    "show-options-window": true,
-    "show-statusbar": true,
-    "show-toolbar": true,
-    "show-tracker-scrapes": false,
-    "sleep-per-seconds-during-verify": 100,
-    "sort-mode": "sort-by-name",
-    "sort-reversed": false,
-    "speed-limit-down": 100,
-    "speed-limit-down-enabled": false,
-    "speed-limit-up": 100,
-    "speed-limit-up-enabled": false,
-    "start-added-torrents": true,
-    "start-minimized": false,
-    "statusbar-stats": "total-ratio",
-    "torrent-added-notification-enabled": true,
-    "torrent-complete-notification-enabled": true,
-    "torrent-complete-sound-command": [
-        "canberra-gtk-play",
-        "-i",
-        "complete-download",
-        "-d",
-        "torrent downloaded"
-    ],
-    "torrent-complete-sound-enabled": true,
-    "trash-original-torrent-files": false,
-    "upload-slots-per-torrent": 8,
-    "utp-enabled": true,
-    "watch-dir": "/home/user/Downloads",
-    "watch-dir-enabled": false
-})json";
-
-constexpr std::string_view CurrentSettingsJson = R"json({
-    "alt_speed_down": 50,
-    "alt_speed_enabled": false,
-    "alt_speed_time_begin": 540,
-    "alt_speed_time_day": 127,
-    "alt_speed_time_enabled": false,
-    "alt_speed_time_end": 1020,
-    "alt_speed_up": 50,
-    "blocklist_date": 0,
-    "blocklist_enabled": false,
-    "blocklist_updates_enabled": true,
-    "blocklist_url": "http://www.example.com/blocklist",
-    "compact_view": false,
-    "default_trackers": "",
-    "dht_enabled": true,
-    "download_dir": "/home/user/Downloads",
-    "download_queue_enabled": true,
-    "download_queue_size": 5,
-    "encryption": "preferred",
-    "filter_trackers": "",
-    "idle_seeding_limit": 30,
-    "idle_seeding_limit_enabled": false,
-    "incomplete_dir": "/home/user/Downloads",
-    "incomplete_dir_enabled": false,
-    "inhibit_desktop_hibernation": false,
-    "lpd_enabled": true,
-    "main_window_height": 500,
-    "main_window_width": 650,
-    "main_window_x": 3840,
-    "main_window_y": 0,
-    "message_level": 4,
-    "open_dialog_dir": "/home/user",
-    "peer_limit_global": 200,
-    "peer_limit_per_torrent": 50,
-    "peer_port": 51413,
-    "peer_port_random_high": 65535,
-    "peer_port_random_low": 49152,
-    "peer_port_random_on_start": false,
-    "peer_socket_diffserv": "le",
-    "pex_enabled": true,
-    "port_forwarding_enabled": true,
-    "preallocation": 1,
-    "queue_stalled_minutes": 30,
-    "read_clipboard": false,
-    "remote_session_enabled": false,
-    "remote_session_host": "localhost",
-    "remote_session_https": false,
-    "remote_session_password": "",
-    "remote_session_port": 9091,
-    "remote_session_requires_authentication": false,
-    "remote_session_username": "",
-    "rename_partial_files": true,
-    "rpc_authentication_required": false,
-    "rpc_enabled": false,
-    "rpc_password": "",
-    "rpc_port": 9091,
-    "rpc_username": "",
-    "rpc_whitelist": "127.0.0.1,::1",
-    "rpc_whitelist_enabled": true,
-    "script_torrent_done_enabled": false,
-    "script_torrent_done_filename": "",
-    "script_torrent_done_seeding_enabled": false,
-    "script_torrent_done_seeding_filename": "",
-    "seed_ratio_limit": 2.0,
-    "seed_ratio_limited": false,
-    "show_backup_trackers": false,
-    "show_filterbar": true,
-    "show_mode": "show_all",
-    "show_notification_area_icon": false,
-    "show_options_window": true,
-    "show_statusbar": true,
-    "show_toolbar": true,
-    "show_tracker_scrapes": false,
-    "sleep_per_seconds_during_verify": 100,
-    "sort_mode": "sort_by_name",
-    "sort_reversed": false,
-    "speed_limit_down": 100,
-    "speed_limit_down_enabled": false,
-    "speed_limit_up": 100,
-    "speed_limit_up_enabled": false,
-    "start_added_torrents": true,
-    "start_minimized": false,
-    "statusbar_stats": "total_ratio",
-    "torrent_added_notification_enabled": true,
-    "torrent_complete_notification_enabled": true,
-    "torrent_complete_sound_command": [
-        "canberra-gtk-play",
-        "-i",
-        "complete-download",
-        "-d",
-        "torrent downloaded"
-    ],
-    "torrent_complete_sound_enabled": true,
-    "trash_original_torrent_files": false,
-    "upload_slots_per_torrent": 8,
-    "utp_enabled": true,
-    "watch_dir": "/home/user/Downloads",
-    "watch_dir_enabled": false
 })json";
 
 constexpr std::string_view LegacyRatioSettingsKebabJson = R"json({
@@ -1348,6 +1153,26 @@ TEST_F(ApiCompatTest, canConvertJsonDataFiles)
         tr::api_compat::convert(*parsed, tgt_style);
         EXPECT_EQ(expected, serde.to_string(*parsed)) << name;
     }
+}
+
+TEST_F(ApiCompatTest, settingsFixturesHaveEverySettingsKey)
+{
+    // canConvertJsonDataFiles tests a settings key's legacy name only if the fixtures have that key.
+    auto serde = tr_variant_serde::json();
+    auto const settings = serde.parse(CurrentSettingsJson);
+    ASSERT_TRUE(settings.has_value()) << serde.error_;
+    auto const* const map = settings->get_if<tr_variant::Map>();
+    ASSERT_NE(map, nullptr);
+
+    auto const expect_key = [map](tr_quark const key) {
+        EXPECT_TRUE(map->contains(key)) << tr_quark_get_string_view(key);
+    };
+    auto const expect_keys = [&expect_key](auto const& fields) {
+        std::apply([&expect_key](auto const&... field) { (expect_key(field.key), ...); }, fields);
+    };
+    expect_keys(tr::SessionSettings::Fields);
+    expect_keys(tr::SessionAltSpeedSettings::Fields);
+    expect_keys(tr::RpcServerSettings::Fields);
 }
 
 TEST_F(ApiCompatTest, migratesLegacyRatioSettingKeys)
