@@ -3446,7 +3446,7 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
 - (IBAction)toggleAvailabilityBar:(id)sender
 {
     [self.fDefaults setBool:![self.fDefaults boolForKey:@"DisplayProgressBarAvailable"] forKey:@"DisplayProgressBarAvailable"];
-    [self.fTableView display];
+    [self.fTableView reloadVisibleRows];
 }
 
 - (IBAction)toggleStatusBar:(id)sender

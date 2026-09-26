@@ -8,4 +8,5 @@
 @interface TorrentCellControlButton : NSButton
 @property(nonatomic, weak) TorrentCell* torrentCell;
 - (void)resetImage;
+- (void)updateImage;
 @end
