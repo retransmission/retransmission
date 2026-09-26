@@ -58,7 +58,6 @@ struct tr_torrent;
 #ifdef WITH_SYSTEMD
 
 #include <cinttypes>
-#include <ctime>
 
 #include <systemd/sd-daemon.h>
 
@@ -725,22 +724,10 @@ void tr_daemon::reconfigure()
         seen_hup_ = true;
     } else {
 #ifdef WITH_SYSTEMD
-        auto ts = timespec{};
-        if (clock_gettime(CLOCK_MONOTONIC, &ts) < 0) {
-            auto error = tr_error{};
-            error.set_from_errno(errno);
-            tr_logAddError(
-                fmt::format(
-                    fmt::runtime(_("Failed to reload: Failed to get current monotonic time: {errmsg} ({errno})")),
-                    fmt::arg("errmsg", error.message()),
-                    fmt::arg("errno", error.code())));
-            return;
-        }
-
-        sd_notifyf(
-            0,
-            "STATUS=Reloading...\nRELOADING=1\nMONOTONIC_USEC=%" PRIu64 "\n",
-            static_cast<uint64_t>(ts.tv_sec) * 1000000U + static_cast<uint64_t>(ts.tv_nsec) / 1000U);
+        auto const now_usec = std::chrono::duration_cast<std::chrono::microseconds>(
+            std::chrono::steady_clock::now().time_since_epoch());
+        auto const msg = fmt::format("STATUS=Reloading...\nRELOADING=1\nMONOTONIC_USEC={}\n", now_usec.count());
+        sd_notify(0, msg.c_str());
 #endif
 
         /* reopen the logfile to allow for log rotation */
