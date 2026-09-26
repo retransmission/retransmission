@@ -545,6 +545,12 @@ protected:
         tr_logClearQueue();
     }
 
+    // Runs the fixture session's periodic save now.
+    void runSaveTimer()
+    {
+        blockingRunInSessionThread([this]() { session_->on_save_timer(); });
+    }
+
     // A suite that scripts completion delivery itself returns false.
     // The parked-completion modes only hold on the synchronous backend,
     // where nothing completes off the session thread.

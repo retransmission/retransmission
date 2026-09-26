@@ -8,9 +8,11 @@
 #include <cstdlib>
 #include <cstring>
 #include <ctime>
+#include <future>
 #include <initializer_list>
 #include <map>
 #include <memory>
+#include <optional>
 #include <string>
 #include <string_view>
 #include <vector>
@@ -19,21 +21,24 @@
 
 #include <libtransmission/transmission.h>
 
+#include <libtransmission/bandwidth.h>
 #include <libtransmission/constants.h>
 #include <libtransmission/crypto-utils.h>
-#include <libtransmission/file-utils.h> // tr_file_read()
+#include <libtransmission/file-utils.h> // tr_file_read(), tr_file_save()
 #include <libtransmission/file.h>
 #include <libtransmission/quark.h>
 #include <libtransmission/session-id.h>
 #include <libtransmission/session.h>
 #include <libtransmission/tr-strbuf.h>
 #include <libtransmission/utils.h>
+#include <libtransmission/values.h>
 #include <libtransmission/variant.h>
 #include <libtransmission/version.h>
 
 #include "test-fixtures.h"
 
 using namespace std::literals;
+using namespace tr::Values;
 
 namespace tr::test
 {
@@ -388,6 +393,118 @@ TEST_F(SessionTest, savesSettings)
         ASSERT_TRUE(flag);
         EXPECT_TRUE(*flag);
     }
+}
+
+namespace
+{
+// What a session saves for a bandwidth group.
+struct SavedBandwidthGroup {
+    tr_bandwidth_limits limits;
+    bool honors_session_limits = true;
+};
+
+// Sets a bandwidth group on the session thread, where `group_set` sets it over RPC.
+void setBandwidthGroup(tr_session* const session, std::string_view const name, SavedBandwidthGroup const& saved)
+{
+    auto done = std::promise<void>{};
+    session->run_in_session_thread([&]() {
+        auto& group = session->getBandwidthGroup(name);
+        group.set_limits(saved.limits);
+        group.honor_parent_limits(tr_direction::Up, saved.honors_session_limits);
+        group.honor_parent_limits(tr_direction::Down, saved.honors_session_limits);
+        done.set_value();
+    });
+    done.get_future().wait();
+}
+
+// What a new session on `config_dir` loads for the group `name`, if it loads that group at all.
+[[nodiscard]] std::optional<SavedBandwidthGroup> loadBandwidthGroup(
+    std::string_view const config_dir,
+    tr::Settings const& settings,
+    std::string_view const name)
+{
+    auto* const session = tr_sessionInit(config_dir, false, settings);
+    auto loaded = std::optional<SavedBandwidthGroup>{};
+    for (auto const& [group_name, group] : session->bandwidthGroups()) {
+        if (group_name == name) {
+            loaded = SavedBandwidthGroup{
+                .limits = group->get_limits(),
+                .honors_session_limits = group->are_parent_limits_honored(tr_direction::Up),
+            };
+        }
+    }
+    tr_sessionClose(session, 1);
+    return loaded;
+}
+} // namespace
+
+// The groups persist even for a client that never calls tr_sessionSaveSettings().
+TEST_F(SessionTest, savesBandwidthGroupsWhenItCloses)
+{
+    static auto constexpr Name = "capped"sv;
+    auto const saved = SavedBandwidthGroup{
+        .limits = {
+            .up_limit = Speed{ 20, Speed::Units::KByps },
+            .down_limit = Speed{ 30, Speed::Units::KByps },
+            .up_limited = true,
+            .down_limited = true,
+        },
+        .honors_session_limits = false,
+    };
+
+    setBandwidthGroup(session_, Name, saved);
+    closeSession();
+
+    auto const reloaded = loadBandwidthGroup(sandboxDir(), quietSettings(), Name);
+    ASSERT_TRUE(reloaded);
+    EXPECT_EQ(saved.limits.up_limit, reloaded->limits.up_limit);
+    EXPECT_EQ(saved.limits.down_limit, reloaded->limits.down_limit);
+    EXPECT_EQ(saved.limits.up_limited, reloaded->limits.up_limited);
+    EXPECT_EQ(saved.limits.down_limited, reloaded->limits.down_limited);
+    EXPECT_EQ(saved.honors_session_limits, reloaded->honors_session_limits);
+}
+
+// The periodic save writes the groups after a change, and only then.
+TEST_F(SessionTest, savesChangedBandwidthGroupsPeriodically)
+{
+    static auto constexpr Name = "capped"sv;
+    auto const filename = tr_pathbuf{ sandboxDir(), "/bandwidth-groups.json"sv };
+    auto const saved = SavedBandwidthGroup{
+        .limits = {
+            .up_limit = Speed{ 20, Speed::Units::KByps },
+            .down_limit = Speed{ 30, Speed::Units::KByps },
+            .up_limited = true,
+            .down_limited = true,
+        },
+    };
+
+    setBandwidthGroup(session_, Name, saved);
+    runSaveTimer();
+    auto const reloaded = loadBandwidthGroup(sandboxDir(), quietSettings(), Name);
+    ASSERT_TRUE(reloaded);
+    EXPECT_EQ(saved.limits.up_limit, reloaded->limits.up_limit);
+
+    ASSERT_TRUE(tr_sys_path_remove(filename));
+    runSaveTimer();
+    EXPECT_FALSE(tr_sys_path_exists(filename));
+}
+
+// Files from some builds hold the speed limits as doubles.
+// They load with any fraction dropped.
+TEST_F(SessionTest, loadsBandwidthGroupSpeedLimitsSavedAsDoubles)
+{
+    static auto constexpr Name = "capped"sv;
+    closeSession();
+
+    auto const filename = tr_pathbuf{ sandboxDir(), "/bandwidth-groups.json"sv };
+    ASSERT_TRUE(tr_file_save(
+        filename,
+        R"({"capped":{"download_limit":30.9,"download_limited":true,"honors_session_limits":true,"name":"capped","upload_limit":20.0,"upload_limited":true}})"sv));
+
+    auto const reloaded = loadBandwidthGroup(sandboxDir(), quietSettings(), Name);
+    ASSERT_TRUE(reloaded);
+    EXPECT_EQ((Speed{ 20, Speed::Units::KByps }), reloaded->limits.up_limit);
+    EXPECT_EQ((Speed{ 30, Speed::Units::KByps }), reloaded->limits.down_limit);
 }
 
 TEST_F(SessionTest, loadTorrentsThenMagnets)
