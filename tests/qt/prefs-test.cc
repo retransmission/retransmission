@@ -59,7 +59,7 @@ private slots:
     // QStringList round-trips exercise the Qt-only Converter in VariantHelpers.
     void handles_qstringlist()
     {
-        auto constexpr Key = TR_KEY_torrent_complete_sound_command;
+        auto constexpr Key = TR_KEY_recent_download_paths;
         auto const val_a = std::vector<QString>{ QStringLiteral("one"), QStringLiteral("two"), QStringLiteral("three") };
         auto const val_b = std::vector<QString>{ QStringLiteral("alpha"), QStringLiteral("beta") };
 

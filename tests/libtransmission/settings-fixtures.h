@@ -148,13 +148,6 @@ inline constexpr std::string_view LegacySettingsJson = R"json({
     "torrent-added-notification-enabled": true,
     "torrent-added-verify-mode": "fast",
     "torrent-complete-notification-enabled": true,
-    "torrent-complete-sound-command": [
-        "canberra-gtk-play",
-        "-i",
-        "complete-download",
-        "-d",
-        "torrent downloaded"
-    ],
     "torrent-complete-sound-enabled": true,
     "torrent_complete_verify_enabled": false,
     "trash-original-torrent-files": false,
@@ -300,13 +293,6 @@ inline constexpr std::string_view CurrentSettingsJson = R"json({
     "torrent_added_notification_enabled": true,
     "torrent_added_verify_mode": "fast",
     "torrent_complete_notification_enabled": true,
-    "torrent_complete_sound_command": [
-        "canberra-gtk-play",
-        "-i",
-        "complete-download",
-        "-d",
-        "torrent downloaded"
-    ],
     "torrent_complete_sound_enabled": true,
     "torrent_complete_verify_enabled": false,
     "trash_original_torrent_files": false,
