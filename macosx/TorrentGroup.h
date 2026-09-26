@@ -6,6 +6,12 @@
 
 @class Torrent;
 
+typedef struct {
+    CGFloat ratio;
+    CGFloat uploadRate;
+    CGFloat downloadRate;
+} TorrentGroupData;
+
 @interface TorrentGroup : NSObject
 
 - (instancetype)initWithGroup:(NSInteger)group;
@@ -14,8 +20,6 @@
 @property(nonatomic, readonly) NSInteger groupOrderValue;
 @property(nonatomic, readonly) NSMutableArray<Torrent*>* torrents;
 
-@property(nonatomic, readonly) CGFloat ratio;
-@property(nonatomic, readonly) CGFloat uploadRate;
-@property(nonatomic, readonly) CGFloat downloadRate;
+@property(nonatomic, readonly) TorrentGroupData aggregatedData;
 
 @end

@@ -3,6 +3,40 @@
 // License text can be found in the licenses/ folder.
 
 #import "GroupCell.h"
+#import "NSStringAdditions.h"
+
+// Layout
+// Leading Stack
+static CGFloat const kIndicatorSize = 14.0;
+static CGFloat const kLeadingOffset = 11.0;
+
+// Trailing Stack
+static CGFloat const kTrailingStackHeight = 16.0;
+static CGFloat const kElementStackWidth = 60.0;
+static CGFloat const kStackSpacing = 4.0;
+static CGFloat const kIconSize = 12.0;
+static CGFloat const kTrailingOffset = -5.0; // inverted for constraints.
+
+@interface GroupCell ()
+@property(nonatomic, readonly) NSStackView* fLeadingStackView;
+@property(nonatomic, readonly) NSStackView* fTrailingStackView;
+
+@property(nonatomic, readonly) NSImageView* fIndicatorView;
+@property(nonatomic, readonly) NSTextField* fTitleField;
+
+@property(nonatomic, readonly) NSStackView* fDownloadStack;
+@property(nonatomic, readonly) NSStackView* fUploadStack;
+@property(nonatomic, readonly) NSStackView* fRatioStack;
+
+@property(nonatomic, readonly) NSImageView* fDownloadIconView;
+@property(nonatomic, readonly) NSImageView* fUploadIconView;
+@property(nonatomic, readonly) NSImageView* fRatioIconView;
+
+@property(nonatomic, readonly) NSTextField* fDownloadField;
+@property(nonatomic, readonly) NSTextField* fUploadField;
+@property(nonatomic, readonly) NSTextField* fRatioField;
+
+@end
 
 @implementation GroupCell
 
@@ -20,90 +54,126 @@
 {
     auto indicatorView = [[NSImageView alloc] init];
     indicatorView.imageScaling = NSImageScaleProportionallyDown;
-    self.fGroupIndicatorView = indicatorView;
 
-    auto titleField = [[NSTextField alloc] init];
+    auto titleField = [NSTextField labelWithString:@""];
+    titleField.font = [NSFont boldSystemFontOfSize:NSFont.smallSystemFontSize];
     titleField.textColor = NSColor.secondaryLabelColor;
     titleField.lineBreakMode = NSLineBreakByTruncatingMiddle;
-    self.fGroupTitleField = titleField;
     titleField.allowsExpansionToolTips = YES;
 
-    auto downloadView = [[NSImageView alloc] init];
-    downloadView.imageScaling = NSImageScaleProportionallyDown;
-    self.fGroupDownloadView = downloadView;
+    auto downloadField = [NSTextField labelWithString:@""];
+    auto uploadField = [NSTextField labelWithString:@""];
+    auto ratioField = [NSTextField labelWithString:@""];
 
-    auto downloadField = [[NSTextField alloc] init];
-    downloadField.textColor = NSColor.secondaryLabelColor;
-    downloadField.lineBreakMode = NSLineBreakByClipping;
-    self.fGroupDownloadField = downloadField;
-
-    auto uploadAndRatioView = [[NSImageView alloc] init];
-    uploadAndRatioView.imageScaling = NSImageScaleProportionallyDown;
-    self.fGroupUploadAndRatioView = uploadAndRatioView;
-
-    auto uploadAndRatioField = [[NSTextField alloc] init];
-    uploadAndRatioField.textColor = NSColor.secondaryLabelColor;
-    uploadAndRatioField.lineBreakMode = NSLineBreakByClipping;
-    self.fGroupUploadAndRatioField = uploadAndRatioField;
-
-    for (NSTextField* view in @[ titleField, downloadField, uploadAndRatioField ]) {
-        view.editable = NO;
-        view.selectable = NO;
-        view.bordered = NO;
-        view.font = [NSFont boldSystemFontOfSize:NSFont.smallSystemFontSize];
-        view.drawsBackground = NO;
+    for (NSTextField* field in @[ downloadField, uploadField, ratioField ]) {
+        field.font = [NSFont boldSystemFontOfSize:NSFont.smallSystemFontSize];
+        field.textColor = NSColor.secondaryLabelColor;
+        field.lineBreakMode = NSLineBreakByClipping;
     }
 
-    for (NSView* view in @[ indicatorView, titleField, downloadView, downloadField, uploadAndRatioView, uploadAndRatioField ]) {
+    auto downloadIconView = [[NSImageView alloc] init];
+    downloadIconView.image = [NSImage imageNamed:@"DownArrowGroupTemplate"];
+    downloadIconView.toolTip = NSLocalizedString(@"Download speed", "Torrent table -> group row -> tooltip");
+
+    auto uploadIconView = [[NSImageView alloc] init];
+    uploadIconView.image = [NSImage imageNamed:@"UpArrowGroupTemplate"];
+    uploadIconView.toolTip = NSLocalizedString(@"Upload speed", "Torrent table -> group row -> tooltip");
+    uploadIconView.image.accessibilityDescription = NSLocalizedString(@"UL", "Torrent -> status image");
+
+    auto ratioIconView = [[NSImageView alloc] init];
+    ratioIconView.image = [NSImage imageNamed:@"YingYangGroupTemplate"];
+    ratioIconView.toolTip = NSLocalizedString(@"Ratio", "Torrent table -> group row -> tooltip");
+    ratioIconView.image.accessibilityDescription = NSLocalizedString(@"Ratio", "Torrent -> status image");
+
+    for (NSImageView* view in @[ downloadIconView, uploadIconView, ratioIconView ]) {
+        view.imageScaling = NSImageScaleProportionallyDown;
+        view.contentTintColor = NSColor.secondaryLabelColor;
+    }
+
+    auto downloadStack = [[NSStackView alloc] initWithFrame:NSZeroRect];
+    downloadStack.orientation = NSUserInterfaceLayoutOrientationHorizontal;
+    downloadStack.spacing = 4.0;
+    [downloadStack addArrangedSubview:downloadIconView];
+    [downloadStack addArrangedSubview:downloadField];
+
+    auto uploadStack = [[NSStackView alloc] initWithFrame:NSZeroRect];
+    uploadStack.orientation = NSUserInterfaceLayoutOrientationHorizontal;
+    uploadStack.spacing = 4.0;
+    [uploadStack addArrangedSubview:uploadIconView];
+    [uploadStack addArrangedSubview:uploadField];
+
+    auto ratioStack = [[NSStackView alloc] initWithFrame:NSZeroRect];
+    ratioStack.orientation = NSUserInterfaceLayoutOrientationHorizontal;
+    ratioStack.spacing = 4.0;
+    [ratioStack addArrangedSubview:ratioIconView];
+    [ratioStack addArrangedSubview:ratioField];
+
+    auto leadingStackView = [[NSStackView alloc] initWithFrame:NSZeroRect];
+    [leadingStackView addArrangedSubview:indicatorView];
+    [leadingStackView addArrangedSubview:titleField];
+
+    auto trailingStackView = [[NSStackView alloc] initWithFrame:NSZeroRect];
+
+    [trailingStackView addArrangedSubview:downloadStack];
+    [trailingStackView addArrangedSubview:uploadStack];
+    [trailingStackView addArrangedSubview:ratioStack];
+
+    for (NSView* view in @[ leadingStackView, trailingStackView ]) {
         view.translatesAutoresizingMaskIntoConstraints = NO;
         [self addSubview:view];
     }
+
+    _fLeadingStackView = leadingStackView;
+    _fTrailingStackView = trailingStackView;
+
+    _fIndicatorView = indicatorView;
+    _fTitleField = titleField;
+
+    _fDownloadStack = downloadStack;
+    _fUploadStack = uploadStack;
+    _fRatioStack = ratioStack;
+
+    _fDownloadIconView = downloadIconView;
+    _fUploadIconView = uploadIconView;
+    _fRatioIconView = ratioIconView;
+
+    _fDownloadField = downloadField;
+    _fUploadField = uploadField;
+    _fRatioField = ratioField;
 }
 
 - (void)setupConstraints
 {
     [NSLayoutConstraint activateConstraints:@[
-        // IndicatorView
-        [self.fGroupIndicatorView.leadingAnchor constraintEqualToAnchor:self.leadingAnchor constant:11],
-        [self.fGroupIndicatorView.centerYAnchor constraintEqualToAnchor:self.centerYAnchor],
-        [self.fGroupIndicatorView.widthAnchor constraintEqualToConstant:14],
-        [self.fGroupIndicatorView.heightAnchor constraintEqualToConstant:14],
+        [self.fLeadingStackView.leadingAnchor constraintEqualToAnchor:self.leadingAnchor constant:kLeadingOffset],
+        [self.fLeadingStackView.centerYAnchor constraintEqualToAnchor:self.centerYAnchor],
+        [self.fIndicatorView.widthAnchor constraintEqualToConstant:kIndicatorSize],
+        [self.fIndicatorView.heightAnchor constraintEqualToConstant:kIndicatorSize],
 
-        // TitleField
-        [self.fGroupTitleField.leadingAnchor constraintEqualToAnchor:self.fGroupIndicatorView.trailingAnchor constant:5],
-        [self.fGroupTitleField.centerYAnchor constraintEqualToAnchor:self.centerYAnchor],
+        [self.fTrailingStackView.leadingAnchor constraintGreaterThanOrEqualToAnchor:self.fTitleField.trailingAnchor],
+        [self.fTrailingStackView.trailingAnchor constraintEqualToAnchor:self.trailingAnchor constant:kTrailingOffset],
+        [self.fTrailingStackView.centerYAnchor constraintEqualToAnchor:self.centerYAnchor],
+        [self.fTrailingStackView.heightAnchor constraintEqualToConstant:kTrailingStackHeight],
 
-        // DownloadView
-        [self.fGroupTitleField.trailingAnchor constraintEqualToAnchor:self.fGroupDownloadView.leadingAnchor],
-        [self.fGroupDownloadView.centerYAnchor constraintEqualToAnchor:self.centerYAnchor],
-        [self.fGroupDownloadView.widthAnchor constraintEqualToConstant:16],
-        [self.fGroupDownloadView.heightAnchor constraintEqualToConstant:16],
+        [self.fDownloadIconView.widthAnchor constraintEqualToConstant:kIconSize],
+        [self.fDownloadIconView.heightAnchor constraintEqualToConstant:kIconSize],
+        [self.fUploadIconView.widthAnchor constraintEqualToConstant:kIconSize],
+        [self.fUploadIconView.heightAnchor constraintEqualToConstant:kIconSize],
+        [self.fRatioIconView.widthAnchor constraintEqualToConstant:kIconSize],
+        [self.fRatioIconView.heightAnchor constraintEqualToConstant:kIconSize],
 
-        // DownloadField
-        [self.fGroupDownloadView.trailingAnchor constraintEqualToAnchor:self.fGroupDownloadField.leadingAnchor],
-        [self.fGroupDownloadField.centerYAnchor constraintEqualToAnchor:self.centerYAnchor],
-        [self.fGroupDownloadField.widthAnchor constraintGreaterThanOrEqualToConstant:60],
-
-        // UploadAndRatioView
-        [self.fGroupUploadAndRatioView.leadingAnchor constraintEqualToAnchor:self.fGroupDownloadField.trailingAnchor constant:8],
-        [self.fGroupUploadAndRatioView.centerYAnchor constraintEqualToAnchor:self.centerYAnchor],
-        [self.fGroupUploadAndRatioView.widthAnchor constraintEqualToConstant:16],
-        [self.fGroupUploadAndRatioView.heightAnchor constraintEqualToConstant:16],
-
-        // UploadAndRatioField
-        [self.fGroupUploadAndRatioField.leadingAnchor constraintEqualToAnchor:self.fGroupUploadAndRatioView.trailingAnchor],
-        [self.fGroupUploadAndRatioField.trailingAnchor constraintEqualToAnchor:self.trailingAnchor constant:-5],
-        [self.fGroupUploadAndRatioField.centerYAnchor constraintEqualToAnchor:self.centerYAnchor],
-        [self.fGroupUploadAndRatioField.widthAnchor constraintGreaterThanOrEqualToConstant:60],
+        [self.fDownloadStack.widthAnchor constraintGreaterThanOrEqualToConstant:kElementStackWidth],
+        [self.fUploadStack.widthAnchor constraintGreaterThanOrEqualToConstant:kElementStackWidth],
+        [self.fRatioStack.widthAnchor constraintGreaterThanOrEqualToConstant:kElementStackWidth]
     ]];
 
-    [self.fGroupTitleField setContentCompressionResistancePriority:NSLayoutPriorityDefaultLow
-                                                    forOrientation:NSLayoutConstraintOrientationHorizontal];
-
-    [self.fGroupDownloadField setContentHuggingPriority:NSLayoutPriorityDefaultLow + 1
-                                         forOrientation:NSLayoutConstraintOrientationHorizontal];
-    [self.fGroupUploadAndRatioField setContentHuggingPriority:NSLayoutPriorityDefaultLow + 1
+    [self.fTitleField setContentCompressionResistancePriority:NSLayoutPriorityDefaultLow
                                                forOrientation:NSLayoutConstraintOrientationHorizontal];
+
+    [self.fDownloadStack setContentHuggingPriority:NSLayoutPriorityDefaultLow + 1
+                                    forOrientation:NSLayoutConstraintOrientationHorizontal];
+    [self.fUploadStack setContentHuggingPriority:NSLayoutPriorityDefaultLow + 1 forOrientation:NSLayoutConstraintOrientationHorizontal];
+    [self.fRatioStack setContentHuggingPriority:NSLayoutPriorityDefaultLow + 1 forOrientation:NSLayoutConstraintOrientationHorizontal];
 }
 
 - (void)setBackgroundStyle:(NSBackgroundStyle)backgroundStyle
@@ -111,7 +181,61 @@
     [super setBackgroundStyle:backgroundStyle];
 
     auto isEmphasized = backgroundStyle == NSBackgroundStyleEmphasized;
-    self.fGroupTitleField.textColor = isEmphasized ? NSColor.labelColor : NSColor.secondaryLabelColor;
+    auto color = isEmphasized ? NSColor.labelColor : NSColor.secondaryLabelColor;
+
+    self.fTitleField.textColor = color;
+
+    self.fDownloadIconView.contentTintColor = color;
+    self.fUploadIconView.contentTintColor = color;
+    self.fRatioIconView.contentTintColor = color;
+
+    self.fDownloadField.textColor = color;
+    self.fUploadField.textColor = color;
+    self.fRatioField.textColor = color;
+}
+
+- (void)updateImage:(NSImage*)image
+{
+    self.fIndicatorView.image = image;
+}
+
+- (void)updateTitle:(NSString*)title
+{
+    self.fTitleField.stringValue = title;
+}
+
+- (void)updateDownloadSpeed:(CGFloat)downloadSpeed
+                uploadSpeed:(CGFloat)uploadSpeed
+                      ratio:(CGFloat)ratio
+               displayRatio:(BOOL)displayRatio
+{
+    self.fDownloadStack.hidden = displayRatio;
+    self.fUploadStack.hidden = displayRatio;
+    self.fRatioStack.hidden = !displayRatio;
+
+    if (displayRatio) {
+        self.fRatioField.stringValue = [NSString stringForRatio:ratio];
+    } else {
+        self.fDownloadField.stringValue = [NSString stringForSpeed:downloadSpeed];
+        self.fUploadField.stringValue = [NSString stringForSpeed:uploadSpeed];
+    }
+}
+
+- (void)updateTooltipForTorrentsCount:(NSUInteger)count
+{
+    NSString* tooltipGroup;
+    if (count == 1) {
+        tooltipGroup = NSLocalizedString(@"1 transfer", "Torrent table -> group row -> tooltip");
+    } else {
+        tooltipGroup = NSLocalizedString(@"%lu transfers", "Torrent table -> group row -> tooltip");
+        tooltipGroup = [NSString localizedStringWithFormat:tooltipGroup, count];
+    }
+    self.toolTip = tooltipGroup;
+}
+
+- (BOOL)isPointInStatusArea:(NSPoint)pointInCell
+{
+    return pointInCell.x >= NSMinX(self.fTrailingStackView.frame);
 }
 
 @end
