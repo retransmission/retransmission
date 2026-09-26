@@ -186,9 +186,7 @@ target_sources(${TR_NAME}-mac
         URLSheetWindowController.h
         URLSheetWindowController.mm
         Utils.h
-        Utils.mm
-        WebSeedTableView.h
-        WebSeedTableView.mm)
+        Utils.mm)
 
 set(XIB_FILES
     AboutWindow.xib
