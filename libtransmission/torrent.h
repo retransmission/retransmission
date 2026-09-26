@@ -9,10 +9,12 @@
 #error only libtransmission should #include this header.
 #endif
 
+#include <algorithm>
 #include <cstddef> // size_t
 #include <cstdint> // uint64_t, uint16_t
 #include <ctime>
 #include <memory>
+#include <mutex>
 #include <optional>
 #include <span>
 #include <string>
@@ -32,6 +34,7 @@
 #include "libtransmission/completion.h"
 #include "libtransmission/crypto-utils.h" // tr_rand_obj()
 #include "libtransmission/file-piece-map.h"
+#include "libtransmission/local-data.h"
 #include "libtransmission/log.h"
 #include "libtransmission/session.h"
 #include "libtransmission/shared-string.h"
@@ -48,6 +51,11 @@ struct tr_error;
 struct tr_torrent;
 struct tr_torrent_announcer;
 
+namespace tr
+{
+struct StorageDescriptor;
+}
+
 // --- Package-visible
 
 void tr_torrentFreeInSessionThread(tr_torrent* tor);
@@ -62,6 +70,7 @@ namespace tr::test
 class RenameTest_multifileTorrent_Test;
 class RenameTest_singleFilenameTorrent_Test;
 class TorrentDiskIoTest_hashResultForInvalidatedPieceIsDropped_Test;
+class TorrentDiskIoWorkersTest_cancelledVerificationRestoresDeferredPieceHashes_Test;
 
 } // namespace tr::test
 
@@ -181,6 +190,14 @@ struct tr_torrent {
     void set_location(std::string_view location, bool move_from_old_path, int volatile* setme_state);
 
     void rename_path(std::string_view oldpath, std::string_view newname, tr_torrent_rename_done_func&& callback);
+
+    // The synchronous half of rename_path(), run under the disk-IO
+    // barrier. Call rename_path() instead unless you are the backend
+    // of tr::LocalData.
+    void rename_path_in_session_thread(
+        std::string_view oldpath,
+        std::string_view newname,
+        tr_torrent_rename_done_func const& callback);
 
     // these functions should become private when possible,
     // but more refactoring is needed before that can happen
@@ -344,12 +361,12 @@ struct tr_torrent {
         return completion_.has_block(block);
     }
 
-    // True if the block is on disk, or if we're writing it now.
-    // Peers use this instead of has_block() to tell whether they still
-    // need a block.
+    // True if the block is ours, or will be once its write or its
+    // piece's hash finishes. Peers use this instead of has_block() to
+    // tell whether they still need a block.
     [[nodiscard]] constexpr auto has_block_or_pending(tr_block_index_t const block) const
     {
-        return has_block(block) || blocks_pending_write_.test(block);
+        return has_block(block) || blocks_pending_write_.test(block) || blocks_awaiting_hash_.test(block);
     }
 
     [[nodiscard]] auto has_blocks(tr_block_span_t span) const
@@ -499,12 +516,34 @@ struct tr_torrent {
     void set_file_subpath(tr_file_index_t i, std::string_view subpath)
     {
         metainfo_.set_file_subpath(i, subpath);
+        invalidate_storage_descriptor();
     }
 
     // The views refer to the torrent's directories, not to the returned container.
     [[nodiscard]] small::max_size_vector<std::string_view, 2> search_paths() const;
 
     [[nodiscard]] std::optional<tr_torrent_files::FoundFile> find_file(tr_file_index_t file_index) const;
+
+    // A snapshot of this torrent's on-disk layout for disk IO.
+    // Cached until the next invalidate_storage_descriptor() call.
+    // Safe to call from any thread: tr_torrentNew() checks the first
+    // piece on the caller's thread.
+    [[nodiscard]] std::shared_ptr<tr::StorageDescriptor const> storage_descriptor() const;
+
+    // Call after changing anything that affects where this torrent's
+    // data lives on disk: dirs, file subpaths, wanted files, or the
+    // metainfo.
+    //
+    // Dirs and file subpaths change inside disk-IO barriers, so no op in
+    // flight holds a stale layout. Wanted files, the preallocation mode,
+    // and the partial-file suffix may change at any time. They only decide
+    // how a missing file gets created, and an op in flight at worst
+    // creates it the old way.
+    void invalidate_storage_descriptor() noexcept
+    {
+        auto const lock = std::scoped_lock{ storage_descriptor_mutex_ };
+        storage_descriptor_.reset();
+    }
 
     [[nodiscard]] bool has_any_local_data() const;
 
@@ -641,6 +680,8 @@ struct tr_torrent {
     /// METAINFO - PIECE CHECKSUMS
 
     [[nodiscard]] bool ensure_piece_is_checked(tr_piece_index_t piece);
+
+    void cancel_pending_verify();
 
     /// METAINFO - MAGNET
 
@@ -1060,6 +1101,7 @@ struct tr_torrent {
 
 private:
     friend class tr::test::TorrentDiskIoTest_hashResultForInvalidatedPieceIsDropped_Test;
+    friend class tr::test::TorrentDiskIoWorkersTest_cancelledVerificationRestoresDeferredPieceHashes_Test;
     friend bool tr_torrentSetMetainfoFromFile(tr_torrent* tor, tr_torrent_metainfo const* metainfo, char const* filename);
     friend tr_file_view tr_torrentFile(tr_torrent const* tor, tr_file_index_t file);
     friend tr_stat tr_torrentStat(tr_torrent* tor);
@@ -1190,11 +1232,19 @@ private:
 
     [[nodiscard]] bool check_piece(tr_piece_index_t piece) const;
 
-    // Hashes a piece we just finished downloading and records the result.
-    // The answer arrives later, by which time the piece may have been
-    // invalidated and downloaded again. A token says which version of the
+    // Hashes pieces we just finished downloading and records the results.
+    // An answer arrives later, by which time its piece may have been
+    // invalidated and downloaded again. A token says which version of a
     // piece was hashed, so a hash of an older version is dropped.
-    void test_piece(tr_piece_index_t piece);
+    void test_pieces(std::span<tr_piece_index_t const> pieces);
+
+    // True if each of the piece's blocks is written: counted, or held
+    // back until the piece's hash passes.
+    [[nodiscard]] bool is_piece_written(tr_piece_index_t piece) const;
+
+    // Counts the held-back blocks in `span` that no hash in flight still
+    // covers, and completes the pieces that they finish.
+    void count_written_blocks(tr_block_span_t span);
 
     [[nodiscard]] constexpr std::optional<uint16_t> effective_idle_limit_minutes() const noexcept
     {
@@ -1278,12 +1328,6 @@ private:
 
     void set_has_piece(tr_piece_index_t piece, bool has)
     {
-        if (!has) {
-            // Any hash in flight for this piece is about a version of it
-            // that no longer exists. See test_piece().
-            hash_tokens_.erase(piece);
-        }
-
         completion_.set_has_piece(piece, has);
     }
 
@@ -1318,7 +1362,7 @@ private:
     void on_have_all_metainfo();
     void on_piece_completed(tr_piece_index_t piece);
     void on_piece_failed(tr_piece_index_t piece);
-    void on_file_completed(tr_file_index_t file);
+    void on_file_completed(tr_file_index_t file) const;
     void on_tracker_response(tr_tracker_event const* event);
 
     void create_empty_files() const;
@@ -1328,12 +1372,10 @@ private:
 
     void update_file_path(tr_file_index_t file, std::optional<bool> has_file) const;
 
-    void set_location_in_session_thread(std::string_view path, bool move_from_old_path, int volatile* setme_state);
+    void set_location_in_session_thread(tr::LocalData::MoveParent path, bool move_from_old_path, int volatile* setme_state);
 
-    void rename_path_in_session_thread(
-        std::string_view oldpath,
-        std::string_view newname,
-        tr_torrent_rename_done_func const& callback);
+    // Once done, move the files from the incomplete dir to the download dir.
+    void leave_incomplete_dir();
 
     void start_in_session_thread();
 
@@ -1354,8 +1396,14 @@ private:
     // A block leaves this set when its write finishes.
     tr_bitfield blocks_pending_write_ = tr_bitfield{ 0 };
 
+    // Written blocks that complete a piece whose hash hasn't passed.
+    // completion_ counts them once it passes, so it never counts a
+    // piece that might be bad.
+    tr_bitfield blocks_awaiting_hash_ = tr_bitfield{ 0 };
+
     // which version of a piece each in-flight hash is checking.
-    // An entry lives only as long as its hash.
+    // An entry lives only as long as its hash. Session thread only:
+    // the verify thread must not touch this map.
     std::unordered_map<tr_piece_index_t, uint64_t> hash_tokens_;
     uint64_t next_hash_token_ = 0U;
 
@@ -1373,6 +1421,10 @@ private:
     tr_completion completion_;
 
     tr_file_piece_map fpm_ = tr_file_piece_map{ metainfo_ };
+
+    // see storage_descriptor()
+    mutable std::mutex storage_descriptor_mutex_;
+    mutable std::shared_ptr<tr::StorageDescriptor const> storage_descriptor_;
 
     // when Transmission thinks the torrent's files were last changed
     std::vector<time_t> file_mtimes_;
@@ -1428,6 +1480,7 @@ private:
     tr_idlelimit idle_limit_mode_ = TR_IDLELIMIT_GLOBAL;
 
     VerifyState verify_state_ = VerifyState::None;
+    uint64_t verify_token_ = 0U;
 
     tr_completeness completeness_ = TR_LEECH;
 

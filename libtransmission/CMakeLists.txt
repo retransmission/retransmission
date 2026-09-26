@@ -144,6 +144,8 @@ target_sources(${TR_NAME}
         shared-string.h
         stats.cc
         stats.h
+        storage-descriptor.cc
+        storage-descriptor.h
         string-utils.cc
         string-utils.h
         $<$<BOOL:${IS_APPLE_CLANG}>:string-utils.mm>

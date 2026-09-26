@@ -544,6 +544,7 @@ void tr_session::on_now_timer()
     tr_timeUpdate(std::chrono::system_clock::to_time_t(now));
     alt_speeds_.check_scheduler();
     busy_window_.store(compute_busy_window(), std::memory_order_relaxed);
+    collect_files_created();
 
     // set the timer to kick again right after (10ms after) the next second
     auto const target_time = std::chrono::time_point_cast<std::chrono::seconds>(now) + 1s + 10ms;
@@ -696,6 +697,32 @@ void tr_session::initImpl(init_data& data)
 
     setSettings(settings, true);
 
+    // Runtime changes to disk_io_workers take effect on restart.
+    // Stopping a running worker pool safely isn't worth the
+    // complexity of a live switch.
+    try {
+        local_data.start_workers(
+            settings_.disk_io_workers,
+            open_files_,
+            // Completions change torrent state, which clients read from
+            // their own threads while holding the session lock.
+            [this](std::function<void()> fn) {
+                queue_session_thread([this, fn = std::move(fn)]() {
+                    auto const lock = unique_lock();
+                    fn();
+                });
+            },
+            [this](tr_torrent_id_t const id) -> std::shared_ptr<tr::StorageDescriptor const> {
+                auto const* const tor = torrents_.get(id);
+                return tor != nullptr ? tor->storage_descriptor() : nullptr;
+            });
+    } catch (std::exception const& e) {
+        tr_logAddError(
+            fmt::format(
+                fmt::runtime(_("Couldn't start disk IO workers, continuing without them: {error}")),
+                fmt::arg("error", e.what())));
+    }
+
     tr_utp_init(this);
 
     /* cleanup */
@@ -723,6 +750,10 @@ void tr_session::setSettings(tr_session::Settings&& settings_in, bool force)
     auto const& old_settings = settings_in;
 
     // the rest of the func is session_ responding to settings changes
+
+    if (force || new_settings.disk_write_budget_mib != old_settings.disk_write_budget_mib) {
+        local_data.set_write_budget(effective_write_budget_bytes());
+    }
 
     if (auto const& val = new_settings.log_level; force || val != old_settings.log_level) {
         tr_logSetLevel(val);
@@ -807,6 +838,11 @@ void tr_session::setSettings(tr_session::Settings&& settings_in, bool force)
     if (auto const& val = new_settings.sleep_per_seconds_during_verify;
         force || val != old_settings.sleep_per_seconds_during_verify) {
         verifier_->set_sleep_per_seconds_during_verify(val);
+    }
+
+    if (new_settings.preallocation_mode != old_settings.preallocation_mode ||
+        new_settings.is_incomplete_file_naming_enabled != old_settings.is_incomplete_file_naming_enabled) {
+        invalidate_storage_descriptors();
     }
 
     // We need to update bandwidth if speed settings changed.
@@ -908,6 +944,7 @@ void tr_sessionSetIncompleteFileNamingEnabled(tr_session* session, bool enabled)
     TR_ASSERT(session != nullptr);
 
     session->settings_.is_incomplete_file_naming_enabled = enabled;
+    session->run_in_session_thread([session]() { session->invalidate_storage_descriptors(); });
 }
 
 bool tr_sessionIsIncompleteFileNamingEnabled(tr_session const* session)
@@ -1314,7 +1351,11 @@ void tr_session::closeImplPart1(std::promise<void>* closed_promise, std::chrono:
     }
 
     // Deliver any pending completions while their torrents still exist.
-    local_data.shutdown();
+    // They change torrent state, so they need the session lock here too.
+    {
+        auto const lock = unique_lock();
+        local_data.shutdown();
+    }
 
     // Close the torrents in order of most active to least active
     // so that the most important announce=stopped events are
@@ -1368,9 +1409,10 @@ void tr_session::closeImplPart2(std::promise<void>* closed_promise, std::chrono:
     this->announcer_.reset();
     this->announcer_udp_.reset();
 
+    collect_files_created();
     stats().save();
     peer_mgr_.reset();
-    openFiles().close_all();
+    local_data.close_all();
     tr_utp_close(this);
     this->udp_core_.reset();
 
@@ -1920,8 +1962,9 @@ size_t tr_sessionGetQueueStalledMinutes(tr_session const* session)
 
 // ---
 
-void tr_session::verify_remove(tr_torrent const* const tor)
+void tr_session::verify_remove(tr_torrent* const tor)
 {
+    tor->cancel_pending_verify();
     if (verifier_) {
         verifier_->remove(tor->info_hash());
     }
@@ -1936,14 +1979,31 @@ void tr_session::verify_add(tr_torrent* const tor)
 
 // ---
 
-void tr_session::close_torrent_files(tr_torrent_id_t const tor_id) noexcept
+std::optional<size_t> tr_session::spare_request_blocks() const noexcept
 {
-    openFiles().close_torrent(tor_id);
+    auto const requested = uint64_t{ active_request_count_ } * TrBlockSize;
+    if (auto const spare = local_data.spare_write_bytes(requested); spare) {
+        return static_cast<size_t>(*spare / TrBlockSize);
+    }
+
+    return {};
 }
 
-void tr_session::close_torrent_file(tr_torrent const& tor, tr_file_index_t file_num) noexcept
+uint64_t tr_session::effective_write_budget_bytes() const noexcept
 {
-    openFiles().close_file(tor.id(), file_num);
+    // The setting is in MiB, so zero is the only value below one MiB.
+    // A budget of zero admits no requests. Treat it as one MiB.
+    static auto constexpr MinBudget = uint64_t{ 1024U } * 1024U;
+    return std::max(uint64_t{ settings_.disk_write_budget_mib } * 1024U * 1024U, MinBudget);
+}
+
+void tr_session::invalidate_storage_descriptors()
+{
+    TR_ASSERT(am_in_session_thread());
+
+    for (auto* const tor : torrents_) {
+        tor->invalidate_storage_descriptor();
+    }
 }
 
 // ---
