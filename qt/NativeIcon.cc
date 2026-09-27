@@ -65,7 +65,7 @@ QString getWindowsFontFamily()
         return Win11IconFamily;
     }
 
-    if (QOperatingSystemVersion::current() >= QOperatingSystemVersion(QOperatingSystemVersion::Windows, 10)) {
+    if (QOperatingSystemVersion::current() >= QOperatingSystemVersion::Windows10) {
         return Win10IconFamily;
     }
 
