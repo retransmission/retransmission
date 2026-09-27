@@ -572,7 +572,7 @@ QIcon icon(Type const type, QStyle const* const style)
     return {};
 }
 
-[[nodiscard]] bool shouldBeShownInMenu(Type type)
+[[nodiscard]] bool shouldBeShownInMenu(Type const type)
 {
     static bool const ForceIcons = !qgetenv("TR_SHOW_MENU_ICONS").isEmpty();
     static bool const IsGnome = qgetenv("XDG_CURRENT_DESKTOP").contains("GNOME");
