@@ -345,7 +345,7 @@ void load_single_speed_limit(tr_variant::Map const& map, tr_direction const dir,
     }
 
     if (auto const b = map.value_if<bool>(TR_KEY_use_global_speed_limit)) {
-        tr_torrentUseSessionLimits(tor, *b);
+        tor->use_session_limits(*b);
     }
 }
 
@@ -709,7 +709,7 @@ fields_t load(tr_torrent* const tor, tr_torrent::ResumeHelper& helper, fields_t 
     load_field(
         BandwidthPriority,
         valid_priority(map.value_if<int8_t>(TR_KEY_bandwidth_priority)),
-        [tor](tr_priority_t const val) { tr_torrentSetPriority(tor, val); });
+        [tor](tr_priority_t const val) { tor->set_priority(val); });
 
     if ((fields_to_load & Peers) != 0) {
         fields_loaded |= load_peers(map, tor);

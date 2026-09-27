@@ -252,11 +252,7 @@ void tr_torrentUseSessionLimits(tr_torrent* const tor, bool const enabled)
 {
     tr_return_if_fail(tr_isTorrent(tor));
 
-    auto const changed_up = tor->bandwidth().honor_parent_limits(tr_direction::Up, enabled);
-    auto const changed_down = tor->bandwidth().honor_parent_limits(tr_direction::Down, enabled);
-    if (changed_up || changed_down) {
-        tor->set_dirty();
-    }
+    tor->use_session_limits(enabled);
 }
 
 bool tr_torrentUsesSessionLimits(tr_torrent const* tor)
@@ -923,7 +919,7 @@ void tr_torrent::init(tr_torrent_builder const& builder)
     auto resume_helper = ResumeHelper{ *this };
 
     {
-        // tr_resume::load() calls a lot of tr_torrentSetFoo() methods
+        // tr_resume::load() calls a lot of setters
         // that set things as dirty, but... these settings being loaded are
         // the same ones that would be saved back again, so don't let them
         // affect the 'is dirty' flag.
@@ -1164,7 +1160,7 @@ void tr_torrentSetDownloadDir(tr_torrent* tor, std::string_view const path)
 {
     tr_return_if_fail(tr_isTorrent(tor));
 
-    if (tor->download_dir_ != path) {
+    if (tor->download_dir() != path) {
         tor->set_download_dir(path, true);
     }
 }
@@ -1372,8 +1368,8 @@ tr_file_view tr_torrentFile(tr_torrent const* tor, tr_file_index_t file)
     tr_return_val_if_fail(tr_isTorrent(tor), {});
 
     auto const& subpath = tor->file_subpath(file);
-    auto const priority = tor->file_priorities_.file_priority(file);
-    auto const wanted = tor->files_wanted_.file_wanted(file);
+    auto const priority = tor->file_priority(file);
+    auto const wanted = tor->file_is_wanted(file);
     auto const length = tor->file_size(file);
     auto const [begin, end] = tor->piece_span_for_file(file);
 
@@ -1390,7 +1386,7 @@ tr_file_view tr_torrentFile(tr_torrent const* tor, tr_file_index_t file)
         };
     }
 
-    auto const have = tor->completion_.count_has_bytes_in_span(tor->byte_span_for_file(file));
+    auto const have = tor->count_has_bytes_in_file(file);
     return {
         .name = subpath.c_str(),
         .have = have,
@@ -1866,11 +1862,7 @@ void tr_torrentSetPriority(tr_torrent* const tor, tr_priority_t const priority)
     tr_return_if_fail(tr_isTorrent(tor));
     tr_return_if_fail(tr_isPriority(priority));
 
-    if (tor->bandwidth().get_priority() != priority) {
-        tor->bandwidth().set_priority(priority);
-
-        tor->set_dirty();
-    }
+    tor->set_priority(priority);
 }
 
 // ---
@@ -2065,7 +2057,7 @@ uint64_t tr_torrentGetBytesLeftToAllocate(tr_torrent const* tor)
     uint64_t bytes_left = 0;
 
     for (tr_file_index_t i = 0, n = tor->file_count(); i < n; ++i) {
-        if (auto const wanted = tor->files_wanted_.file_wanted(i); !wanted) {
+        if (auto const wanted = tor->file_is_wanted(i); !wanted) {
             continue;
         }
 

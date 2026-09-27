@@ -227,6 +227,15 @@ struct tr_torrent {
         }
     }
 
+    constexpr void use_session_limits(bool const do_use) noexcept
+    {
+        auto const changed_up = bandwidth().honor_parent_limits(tr_direction::Up, do_use);
+        auto const changed_down = bandwidth().honor_parent_limits(tr_direction::Down, do_use);
+        if (changed_up || changed_down) {
+            set_dirty();
+        }
+    }
+
     [[nodiscard]] constexpr auto speed_limit(tr_direction dir) const
     {
         return bandwidth().get_desired_speed(dir);
@@ -321,6 +330,11 @@ struct tr_torrent {
     [[nodiscard]] constexpr auto has_none() const noexcept
     {
         return completion_.has_none();
+    }
+
+    [[nodiscard]] auto count_has_bytes_in_file(tr_file_index_t const file) const noexcept
+    {
+        return completion_.count_has_bytes_in_span(byte_span_for_file(file));
     }
 
     [[nodiscard]] auto has_file(tr_file_index_t file) const
@@ -841,6 +855,14 @@ struct tr_torrent {
         return bandwidth().get_priority();
     }
 
+    constexpr void set_priority(tr_priority_t const priority) noexcept
+    {
+        if (get_priority() != priority) {
+            bandwidth().set_priority(priority);
+            set_dirty();
+        }
+    }
+
     [[nodiscard]] constexpr auto const& bandwidth_group() const noexcept
     {
         return bandwidth_group_;
@@ -1061,20 +1083,13 @@ struct tr_torrent {
 private:
     friend class tr::test::TorrentDiskIoTest_hashResultForInvalidatedPieceIsDropped_Test;
     friend bool tr_torrentSetMetainfoFromFile(tr_torrent* tor, tr_torrent_metainfo const* metainfo, char const* filename);
-    friend tr_file_view tr_torrentFile(tr_torrent const* tor, tr_file_index_t file);
-    friend tr_stat tr_torrentStat(tr_torrent* tor);
-    friend std::vector<tr_stat> tr_torrentStat(std::span<tr_torrent* const> torrents);
     friend tr_torrent* tr_torrentNew(tr_torrent_builder* builder, tr_torrent** setme_duplicate_of);
-    friend uint64_t tr_torrentGetBytesLeftToAllocate(tr_torrent const* tor);
     friend void tr_torrentFreeInSessionThread(tr_torrent* tor);
     friend void tr_torrentRemoveInSessionThread(tr_torrent* tor, bool delete_flag, tr_torrent_remove_func remove_func);
     friend void tr_torrentRemove(tr_torrent* tor, bool delete_flag, tr_torrent_remove_func remove_func);
-    friend void tr_torrentSetDownloadDir(tr_torrent* tor, std::string_view path);
-    friend void tr_torrentSetPriority(tr_torrent* tor, tr_priority_t priority);
     friend void tr_torrentStart(tr_torrent* tor);
     friend void tr_torrentStartNow(tr_torrent* tor);
     friend void tr_torrentStop(tr_torrent* tor);
-    friend void tr_torrentUseSessionLimits(tr_torrent* tor, bool enabled);
     friend void tr_torrentVerify(tr_torrent* tor);
 
     enum class VerifyState : uint8_t { None, Queued, Active };
