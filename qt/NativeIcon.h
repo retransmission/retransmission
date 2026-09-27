@@ -9,8 +9,7 @@
 
 #include <QtGui/QIcon>
 
-#include <QtWidgets/QApplication>
-#include <QtWidgets/QStyle>
+class QStyle;
 
 namespace icons
 {
@@ -67,7 +66,8 @@ enum class Type : uint8_t {
     TorrentStateError
 };
 
-[[nodiscard]] QIcon icon(Type type, QStyle const* style = QApplication::style());
+[[nodiscard]] QIcon icon(Type type);
+[[nodiscard]] QIcon icon(Type type, QStyle const* style);
 
 [[nodiscard]] bool shouldBeShownInMenu(Type type);
 

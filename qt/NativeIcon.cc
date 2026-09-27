@@ -530,6 +530,11 @@ struct Info {
 }
 } // namespace
 
+QIcon icon(Type const type)
+{
+    return icon(type, QApplication::style());
+}
+
 QIcon icon(Type const type, QStyle const* const style)
 {
     ensureFontsLoaded();
