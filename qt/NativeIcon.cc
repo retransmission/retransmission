@@ -28,7 +28,7 @@
 
 #if defined(Q_OS_MAC)
 [[nodiscard]] extern bool hasSFSymbol(QString symbol_name);
-extern QPixmap loadSFSymbol(QString symbol_name, int pixel_size, QColor const& color);
+[[nodiscard]] extern QPixmap loadSFSymbol(QString symbol_name, int pixel_size, QColor const& color);
 #endif
 
 namespace icons
