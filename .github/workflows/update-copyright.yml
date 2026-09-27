@@ -25,7 +25,6 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           path: |
             gtk/Application.cc
-            qt/LicenseDialog.ui
           transform: (?<=Copyright )(?<from>\d{4})?-?(\d{4})
       - uses: FantasticFiasco/action-update-license-year@v3
         with:

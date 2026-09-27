@@ -5,12 +5,9 @@
 
 #pragma once
 
-#include <QtCore/QPointer>
-
 #include "BaseDialog.h"
 #include "ui_AboutDialog.h"
 
-class LicenseDialog;
 class Session;
 
 class AboutDialog : public BaseDialog
@@ -27,10 +24,7 @@ public:
 
 private slots:
     void showCredits();
-    void showLicense();
 
 private:
     Ui::AboutDialog ui_{};
-
-    QPointer<LicenseDialog> license_dialog_;
 };
