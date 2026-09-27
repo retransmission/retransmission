@@ -484,8 +484,6 @@ struct Info {
         break;
 
     case Type::PauseTorrent:
-        [[fallthrough]];
-
     case Type::TorrentStatePaused:
         sf_symbol_name = "pause";
         segoe_codepoint = 0xE769U; // Pause
@@ -500,8 +498,6 @@ struct Info {
         break;
 
     case Type::VerifyTorrent:
-        [[fallthrough]];
-
     case Type::TorrentStateVerifying:
         sf_symbol_name = "arrow.clockwise";
         segoe_codepoint = 0xE72CU; // Refresh
@@ -510,8 +506,6 @@ struct Info {
         break;
 
     case Type::TorrentErrorEmblem:
-        [[fallthrough]];
-
     case Type::TorrentStateError:
         sf_symbol_name = "xmark.circle";
         segoe_codepoint = 0xEB90U; // StatusErrorFull
