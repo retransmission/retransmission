@@ -57,7 +57,9 @@ QString getWindowsFontFamily()
 #ifdef DEV_FORCE_FONT_FAMILY
     return DEV_FORCE_FONT_FAMILY;
 #else
-    if (QOperatingSystemVersion::current() >= QOperatingSystemVersion(QOperatingSystemVersion::Windows, 11)) {
+    // Windows 11 reports major version 10; its builds start at 22000.
+    auto constexpr Windows11 = QOperatingSystemVersion{ QOperatingSystemVersion::Windows, 10, 0, 22000 };
+    if (QOperatingSystemVersion::current() >= Windows11) {
         return Win11IconFamily;
     }
 
