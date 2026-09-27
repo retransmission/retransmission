@@ -545,9 +545,9 @@ QIcon icon(Type const type, QStyle const* const style)
 
     if (auto const key = info.segoe_codepoint) {
         // The Windows version can't change while the app runs.
-        static auto const family = getWindowsFontFamily();
-        if (!family.isEmpty()) {
-            auto const font = QFont{ family };
+        static auto const WindowsFontFamily = getWindowsFontFamily();
+        if (!WindowsFontFamily.isEmpty()) {
+            auto const font = QFont{ WindowsFontFamily };
             if (auto const glyph = QChar{ key }; QFontMetrics{ font }.inFont(glyph)) {
                 return QIcon{ new FontGlyphIconEngine{ font, glyph } };
             }
