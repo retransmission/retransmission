@@ -8,6 +8,7 @@
 #include <cerrno> // EINVAL
 #include <cstddef> // size_t
 #include <ctime>
+#include <functional>
 #include <map>
 #include <sstream>
 #include <ranges>
@@ -69,6 +70,40 @@ using namespace tr::Values;
             return val; \
         } \
     } while (0)
+
+namespace
+{
+// Runs `work(tor)` in the session thread, or `on_gone()` if the torrent is freed before then.
+// The queued work holds the torrent's id, not `tor`.
+// A removal queued ahead of it may free the torrent first.
+// Called from the session thread, it runs the work before returning.
+template<typename Work, typename OnGone>
+void run_in_session_thread_by_id(tr_torrent& tor, Work&& work, OnGone&& on_gone)
+{
+    tor.session->run_in_session_thread([session = tor.session,
+                                        tor_id = tor.id(),
+                                        work = std::forward<Work>(work),
+                                        on_gone = std::forward<OnGone>(on_gone)]() mutable {
+        // Other threads add torrents under the session lock.
+        auto* const torrent = [session, tor_id] {
+            auto const lock = session->unique_lock();
+            return session->torrents().get(tor_id);
+        }();
+        if (torrent == nullptr) {
+            on_gone();
+            return;
+        }
+
+        std::invoke(work, torrent);
+    });
+}
+
+template<typename Work>
+void run_in_session_thread_by_id(tr_torrent& tor, Work&& work)
+{
+    run_in_session_thread_by_id(tor, std::forward<Work>(work), [] {});
+}
+} // namespace
 
 // ---
 
@@ -612,7 +647,7 @@ void tr_torrent::start(bool bypass_queue, std::optional<bool> has_any_local_data
     is_running_ = true;
     session->add_started_torrent();
     set_dirty();
-    session->run_in_session_thread([this]() { start_in_session_thread(); });
+    run_in_session_thread_by_id(*this, &tr_torrent::start_in_session_thread);
 }
 
 void tr_torrent::start_in_session_thread()
@@ -726,7 +761,7 @@ void tr_torrentStop(tr_torrent* tor)
 
     tor->start_when_stable_ = false;
     tor->set_dirty();
-    tor->session->run_in_session_thread([tor]() { tor->stop_now(); });
+    run_in_session_thread_by_id(*tor, &tr_torrent::stop_now);
 }
 
 void tr_torrentRemove(tr_torrent* tor, bool delete_flag, tr_torrent_remove_func remove_func)
@@ -737,7 +772,9 @@ void tr_torrentRemove(tr_torrent* tor, bool delete_flag, tr_torrent_remove_func 
 
     tor->is_deleting_ = true;
 
-    tor->session->run_in_session_thread(tr_torrentRemoveInSessionThread, tor, delete_flag, std::move(remove_func));
+    run_in_session_thread_by_id(*tor, [delete_flag, remove_func = std::move(remove_func)](tr_torrent* const torrent) mutable {
+        tr_torrentRemoveInSessionThread(torrent, delete_flag, std::move(remove_func));
+    });
 }
 
 void tr_torrentFreeInSessionThread(tr_torrent* tor)
@@ -1133,9 +1170,16 @@ void tr_torrent::set_location(std::string_view location, bool move_from_old_path
         *setme_state = TR_LOC_MOVING;
     }
 
-    session->run_in_session_thread([this, loc = std::string(location), move_from_old_path, setme_state]() {
-        set_location_in_session_thread(loc, move_from_old_path, setme_state);
-    });
+    run_in_session_thread_by_id(
+        *this,
+        [loc = std::string(location), move_from_old_path, setme_state](tr_torrent* const tor) {
+            tor->set_location_in_session_thread(loc, move_from_old_path, setme_state);
+        },
+        [setme_state]() {
+            if (setme_state != nullptr) {
+                *setme_state = TR_LOC_ERROR;
+            }
+        });
 }
 
 void tr_torrentSetLocation(
@@ -1215,7 +1259,7 @@ void tr_torrentManualUpdate(tr_torrent* tor)
 
     tr_return_if_fail(tr_isTorrent(tor));
 
-    tor->session->run_in_session_thread(torrentManualUpdateImpl, tor);
+    run_in_session_thread_by_id(*tor, torrentManualUpdateImpl);
 }
 
 bool tr_torrentCanManualUpdate(tr_torrent const* tor)
@@ -1516,15 +1560,15 @@ void tr_torrentStartNow(tr_torrent* tor)
 
 // ---
 
-void tr_torrentVerify(tr_torrent* tor)
+void tr_torrentVerify(tr_torrent* const torrent_in)
 {
-    tr_return_if_fail(tr_isTorrent(tor));
+    tr_return_if_fail(tr_isTorrent(torrent_in));
 
-    tor->session->run_in_session_thread([tor, session = tor->session, tor_id = tor->id()]() {
+    run_in_session_thread_by_id(*torrent_in, [session = torrent_in->session](tr_torrent* const tor) {
         TR_ASSERT(session->am_in_session_thread());
         auto const lock = session->unique_lock();
 
-        if (tor != session->torrents().get(tor_id) || tor->is_deleting_) {
+        if (tor->is_deleting_) {
             return;
         }
 
@@ -1654,27 +1698,23 @@ void tr_torrent::VerifyMediator::on_verify_done(bool const aborted)
     tor_->set_verify_state(VerifyState::None);
 
     if (!aborted && !tor_->is_deleting_) {
-        tor_->session->run_in_session_thread(
-            // Do not capture the torrent pointer directly, or else we will crash if program
-            // execution reaches this point while the session thread is about to free this torrent.
-            [tor_id = tor_->id(), session = tor_->session]() {
-                auto* const tor = session->torrents().get(tor_id);
-                if (tor == nullptr || tor->is_deleting_) {
-                    return;
-                }
+        run_in_session_thread_by_id(*tor_, [](tr_torrent* const tor) {
+            if (tor->is_deleting_) {
+                return;
+            }
 
-                for (tr_file_index_t file = 0, n_files = tor->file_count(); file < n_files; ++file) {
-                    tor->update_file_path(file, {});
-                }
+            for (tr_file_index_t file = 0, n_files = tor->file_count(); file < n_files; ++file) {
+                tor->update_file_path(file, {});
+            }
 
-                tor->recheck_completeness();
+            tor->recheck_completeness();
 
-                session->verify_done_(tor_id);
+            tor->session->verify_done_(tor->id());
 
-                if (tor->start_when_stable_) {
-                    tor->start(false, !tor->checked_pieces_.has_none());
-                }
-            });
+            if (tor->start_when_stable_) {
+                tor->start(false, !tor->checked_pieces_.has_none());
+            }
+        });
     }
 }
 
@@ -2455,10 +2495,20 @@ void tr_torrent::rename_path_in_session_thread(
 
 void tr_torrent::rename_path(std::string_view oldpath, std::string_view newname, tr_torrent_rename_done_func&& callback)
 {
-    this->session->run_in_session_thread(
-        [this, oldpath = std::string(oldpath), newname = std::string(newname), cb = std::move(callback)] {
-            rename_path_in_session_thread(oldpath, newname, cb);
-        });
+    auto on_gone = [tor_id = id(), oldpath = std::string(oldpath), newname = std::string(newname), callback]() {
+        if (callback != nullptr) {
+            auto error = tr_error{};
+            error.set_from_errno(TR_ERROR_EINVAL);
+            callback(tor_id, oldpath, newname, error);
+        }
+    };
+
+    run_in_session_thread_by_id(
+        *this,
+        [oldpath = std::string(oldpath), newname = std::string(newname), cb = std::move(callback)](tr_torrent* const tor) {
+            tor->rename_path_in_session_thread(oldpath, newname, cb);
+        },
+        std::move(on_gone));
 }
 
 void tr_torrentRenamePath(

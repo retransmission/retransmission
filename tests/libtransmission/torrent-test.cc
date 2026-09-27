@@ -5,9 +5,17 @@
 
 #include <array>
 #include <cstddef>
+#include <future>
+#include <optional>
 #include <ranges>
+#include <string_view>
 
+#include <libtransmission/transmission.h>
+
+#include <libtransmission/error.h>
+#include <libtransmission/error-types.h>
 #include <libtransmission/torrent.h>
+#include <libtransmission/tr-strbuf.h>
 #include <libtransmission/types.h>
 
 #include "test-fixtures.h"
@@ -131,4 +139,44 @@ TEST_F(TorrentTest, queueMoveBottom)
     for (size_t i = 0; i < ExpectedQueuePosition.size(); ++i) {
         EXPECT_EQ(ExpectedQueuePosition[i], torrents[i]->queue_position()) << i;
     }
+}
+
+TEST_F(TorrentTest, workQueuedBehindRemovalSkipsFreedTorrent)
+{
+    auto* const tor = zeroTorrentInit(ZeroTorrentState::Complete);
+    ASSERT_NE(nullptr, tor);
+    auto const name = tr_torrentName(tor);
+    auto const target_dir = tr_pathbuf{ sandboxDir(), "/target"sv };
+
+    // Hold the session thread, so that each call below queues its work.
+    auto release = std::promise<void>{};
+    session_->queue_session_thread([released = release.get_future().share()]() { released.wait(); });
+
+    // `tor` is valid for every call, but the first removal frees it before the rest of the work runs.
+    // Only a sanitizer build checks the work that reports nothing.
+    tr_torrentRemove(tor, false);
+    tr_torrentStart(tor);
+    tr_torrentStop(tor);
+    tr_torrentVerify(tor);
+    tr_torrentManualUpdate(tor);
+    auto location_state = -1;
+    tr_torrentSetLocation(tor, target_dir, true, &location_state);
+    auto rename_error = std::optional<tr_error_code_t>{};
+    tr_torrentRenamePath(
+        tor,
+        name,
+        "renamed"sv,
+        [&rename_error](
+            tr_torrent_id_t const /*tor_id*/,
+            std::string_view const /*oldpath*/,
+            std::string_view const /*newname*/,
+            tr_error const& error) { rename_error = error.code(); });
+    tr_torrentRemove(tor, false);
+
+    release.set_value();
+    blockingRunInSessionThread([]() {}); // runs after the work queued above
+
+    // The work that reports back reports an error.
+    EXPECT_EQ(TR_LOC_ERROR, location_state);
+    EXPECT_EQ(TR_ERROR_EINVAL, rename_error);
 }
