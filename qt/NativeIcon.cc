@@ -7,26 +7,28 @@
 
 #include <optional>
 #include <string_view>
-
-#include <small/set.hpp>
+#include <utility>
 
 #include <QtCore/QChar>
 #include <QtCore/QOperatingSystemVersion>
 
+#include <QtGui/QColor>
 #include <QtGui/QFont>
 #include <QtGui/QFontDatabase>
-#include <QtGui/QGuiApplication> // qApp
 #include <QtGui/QIcon>
+#include <QtGui/QIconEngine>
 #include <QtGui/QPainter>
 #include <QtGui/QPalette>
 #include <QtGui/QPixmap>
 
+#include <QtWidgets/QApplication>
 #include <QtWidgets/QStyle>
 
 #include "Utils.h"
 
 #if defined(Q_OS_MAC)
-extern QPixmap loadSFSymbol(QString symbol_name, int pixel_size);
+[[nodiscard]] extern bool hasSFSymbol(QString symbol_name);
+extern QPixmap loadSFSymbol(QString symbol_name, int pixel_size, QColor const& color);
 #endif
 
 namespace icons
@@ -78,30 +80,117 @@ void ensureFontsLoaded()
 #endif
 }
 
-QPixmap makeIconFromCodepoint(QString const& family, QChar const codepoint, int const pixel_size)
+[[nodiscard]] QColor glyphColor(QIcon::Mode const mode)
 {
-    auto font = QFont{ family };
-    if (!QFontMetrics{ font }.inFont(codepoint)) {
-        return {};
+    switch (mode) {
+    case QIcon::Disabled:
+        return QApplication::palette().color(QPalette::Disabled, QPalette::ButtonText);
+    case QIcon::Selected:
+        // Selected items are drawn by item views, which can have their own palette (macOS gives them one).
+        return QApplication::palette("QAbstractItemView").color(QPalette::HighlightedText);
+    case QIcon::Normal:
+    case QIcon::Active:
+        break;
+    }
+    return QApplication::palette().color(QPalette::ButtonText);
+}
+
+// Draws on every paint with the current palette,
+// so icons that were already handed out follow light/dark switches.
+class GlyphIconEngine : public QIconEngine
+{
+public:
+    // QIconEngine's default pixmap() is opaque and never cleared.
+    QPixmap pixmap(QSize const& size, QIcon::Mode const mode, QIcon::State const state) override
+    {
+        if (size.isEmpty()) {
+            return {};
+        }
+
+        auto pixmap = QPixmap{ size };
+        pixmap.fill(Qt::transparent);
+        auto painter = QPainter{ &pixmap };
+        paint(&painter, QRect{ QPoint{}, size }, mode, state);
+        painter.end();
+        return pixmap;
+    }
+};
+
+class FontGlyphIconEngine final : public GlyphIconEngine
+{
+public:
+    FontGlyphIconEngine(QFont const& font, QChar const glyph)
+        : font_{ font }
+        , glyph_{ glyph }
+    {
     }
 
-    font.setPixelSize(pixel_size);
+    void paint(QPainter* const painter, QRect const& rect, QIcon::Mode const mode, QIcon::State const /*state*/) override
+    {
+        auto font = font_;
+        font.setPixelSize(rect.height());
 
-    // FIXME: HDPI, pixel size vs point size?
-    auto const rect = QRect{ 0, 0, pixel_size, pixel_size };
-    auto pixmap = QPixmap{ rect.size() };
-    pixmap.fill(Qt::transparent);
-    auto painter = QPainter{ &pixmap };
-    painter.setFont(font);
-    painter.setBrush(Qt::NoBrush);
-    painter.setPen(qApp->palette().color(QPalette::ButtonText));
-    painter.setRenderHint(QPainter::TextAntialiasing);
-    auto br = QRect{};
-    painter.drawText(rect, Qt::AlignCenter, QString{ codepoint }, &br);
-    painter.end();
+        painter->save();
+        painter->setFont(font);
+        painter->setPen(glyphColor(mode));
+        painter->setRenderHint(QPainter::TextAntialiasing);
+        painter->drawText(rect, Qt::AlignCenter, QString{ glyph_ });
+        painter->restore();
+    }
 
-    return pixmap;
-}
+    [[nodiscard]] QIconEngine* clone() const override
+    {
+        return new FontGlyphIconEngine{ *this };
+    }
+
+private:
+    QFont font_;
+    QChar glyph_;
+};
+
+#if defined(Q_OS_MAC)
+class SFSymbolIconEngine final : public GlyphIconEngine
+{
+public:
+    explicit SFSymbolIconEngine(QString name)
+        : name_{ std::move(name) }
+    {
+    }
+
+    void paint(QPainter* const painter, QRect const& rect, QIcon::Mode const mode, QIcon::State const /*state*/) override
+    {
+        // AppKit hands back a bitmap, so render it at the device's pixel size.
+        auto const pixel_size = qRound(rect.height() * painter->device()->devicePixelRatioF());
+        if (pixel_size <= 0) {
+            return;
+        }
+
+        auto const pixmap = loadSFSymbol(name_, pixel_size, glyphColor(mode));
+        if (pixmap.isNull()) {
+            return;
+        }
+
+        auto const target = QStyle::alignedRect(
+            Qt::LeftToRight,
+            Qt::AlignCenter,
+            pixmap.size().scaled(rect.size(), Qt::KeepAspectRatio),
+            rect);
+
+        painter->save();
+        painter->setRenderHint(QPainter::SmoothPixmapTransform);
+        painter->drawPixmap(target, pixmap);
+        painter->restore();
+    }
+
+    [[nodiscard]] QIconEngine* clone() const override
+    {
+        return new SFSymbolIconEngine{ *this };
+    }
+
+private:
+    QString name_;
+};
+#endif
 
 struct Info {
     std::string_view sf_symbol_name;
@@ -445,41 +534,21 @@ QIcon icon(Type const type, QStyle const* const style)
 {
     ensureFontsLoaded();
 
-    auto const pixel_sizes = small::max_size_set<int, 7U>{
-        style->pixelMetric(QStyle::PM_ButtonIconSize),   style->pixelMetric(QStyle::PM_LargeIconSize),
-        style->pixelMetric(QStyle::PM_ListViewIconSize), style->pixelMetric(QStyle::PM_MessageBoxIconSize),
-        style->pixelMetric(QStyle::PM_SmallIconSize),    style->pixelMetric(QStyle::PM_TabBarIconSize),
-        style->pixelMetric(QStyle::PM_ToolBarIconSize)
-    };
-
     auto const info = getInfo(type);
 
 #if defined(Q_OS_MAC)
     if (auto const key = info.sf_symbol_name; !std::empty(key)) {
-        auto icon = QIcon{};
-        auto const name = Utils::qstringFromUtf8(key);
-        for (int const pixel_size : pixel_sizes) {
-            if (auto const pixmap = loadSFSymbol(name, pixel_size); !pixmap.isNull()) {
-                icon.addPixmap(pixmap);
-            }
-        }
-        if (!icon.isNull()) {
-            return icon;
+        if (auto const name = Utils::qstringFromUtf8(key); hasSFSymbol(name)) {
+            return QIcon{ new SFSymbolIconEngine{ name } };
         }
     }
 #endif
 
     if (auto const key = info.segoe_codepoint) {
         if (auto const family = getWindowsFontFamily(); !family.isEmpty()) {
-            auto icon = QIcon{};
-            auto const ch = QChar{ key };
-            for (int const pixel_size : pixel_sizes) {
-                if (auto pixmap = makeIconFromCodepoint(family, ch, pixel_size); !pixmap.isNull()) {
-                    icon.addPixmap(pixmap);
-                }
-            }
-            if (!icon.isNull()) {
-                return icon;
+            auto const font = QFont{ family };
+            if (auto const glyph = QChar{ key }; QFontMetrics{ font }.inFont(glyph)) {
+                return QIcon{ new FontGlyphIconEngine{ font, glyph } };
             }
         }
     }

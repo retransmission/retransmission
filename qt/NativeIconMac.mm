@@ -5,10 +5,7 @@
 
 #import <QtGui/QColor>
 #import <QtGui/QImage>
-#import <QtGui/QPalette>
 #import <QtGui/QPixmap>
-
-#import <QtWidgets/QApplication>
 
 #import <AppKit/AppKit.h>
 
@@ -73,13 +70,16 @@ QImage CGImageToQImage(CGImageRef cgImage)
 
 } // namespace bribri
 
-QPixmap loadSFSymbol(QString const symbol_name, int const pixel_size)
+[[nodiscard]] bool hasSFSymbol(QString const symbol_name)
+{
+    return [NSImage imageWithSystemSymbolName:symbol_name.toNSString() accessibilityDescription:nil] != nil;
+}
+
+QPixmap loadSFSymbol(QString const symbol_name, int const pixel_size, QColor const& color)
 {
     if (NSImage* image = [NSImage imageWithSystemSymbolName:symbol_name.toNSString() accessibilityDescription:nil]) {
         auto* configuration = [NSImageSymbolConfiguration configurationWithPointSize:pixel_size weight:NSFontWeightRegular];
-        // use whatever color QPalette::ButtonText is using
-        QColor const qfg = qApp->palette().color(QPalette::ButtonText);
-        NSColor* nsfg = [NSColor colorWithCalibratedRed:qfg.redF() green:qfg.greenF() blue:qfg.blueF() alpha:qfg.alphaF()];
+        NSColor* nsfg = [NSColor colorWithCalibratedRed:color.redF() green:color.greenF() blue:color.blueF() alpha:color.alphaF()];
         auto* colorConfig = [NSImageSymbolConfiguration configurationWithHierarchicalColor:nsfg];
         configuration = [configuration configurationByApplyingConfiguration:colorConfig];
         image = [image imageWithSymbolConfiguration:configuration];
