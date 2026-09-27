@@ -53,8 +53,10 @@
 
         // Let AppKit draw straight into the QImage's pixels.
         // Premultiplied alpha-first in host byte order is Format_ARGB32_Premultiplied's layout.
+        // CGBitmapInfo{} keeps C++20 from warning about OR-ing two different enum types.
+        auto constexpr BitmapInfo = CGBitmapInfo{ kCGImageAlphaPremultipliedFirst } | kCGBitmapByteOrder32Host;
         CGColorSpaceRef const color_space = CGColorSpaceCreateWithName(kCGColorSpaceSRGB);
-        CGContextRef const context = CGBitmapContextCreate(image.bits(), pixel_size, pixel_size, 8, image.bytesPerLine(), color_space, kCGImageAlphaPremultipliedFirst | kCGBitmapByteOrder32Host);
+        CGContextRef const context = CGBitmapContextCreate(image.bits(), pixel_size, pixel_size, 8, image.bytesPerLine(), color_space, BitmapInfo);
         CGColorSpaceRelease(color_space);
         if (context == nullptr) {
             return {};
