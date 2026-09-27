@@ -44,7 +44,7 @@ auto const Win10IconFamily = QStringLiteral("Segoe MDL2 Assets");
 // NOLINTNEXTLINE(cert-err58-cpp)
 auto const Win11IconFamily = QStringLiteral("Segoe Fluent Icons");
 
-// Define these two macros to force a specific icon icon during development.
+// Define these two macros to force a specific icon font during development.
 // Their EULA doesn't allow redistribution but does allow using them
 // during design/develop/testing.
 // 1. Snag the ttf you want to use (Win 10 uses https://aka.ms/SegoeFonts,
@@ -249,7 +249,7 @@ struct Info {
  *
  * This is an extremely limited icon set. Use with caution.
  * https://github.com/transmission/transmission/pull/2283 has galleries.
- * This is used as a fallback to ensure all toolbar acitions have icons,
+ * This is used as a fallback to ensure all toolbar actions have icons,
  * even on very old Windows / macOS systems lacking Segoe / SF Symbols.
  */
 [[nodiscard]] constexpr Info getInfo(Type const type)
