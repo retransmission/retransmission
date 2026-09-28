@@ -11,14 +11,12 @@
           <attribute name="icon">document-open</attribute>
           <attribute name="label" translatable="yes">_Open</attribute>
           <attribute name="accel">&lt;control&gt;O</attribute>
-          <attribute name="tooltip" translatable="yes">Open a torrent</attribute>
         </item>
         <item>
           <attribute name="action">win.open-torrent-from-url</attribute>
           <attribute name="icon">document-open</attribute>
           <attribute name="label" translatable="yes">Open _URL…</attribute>
           <attribute name="accel">&lt;control&gt;U</attribute>
-          <attribute name="tooltip" translatable="yes">Open URL…</attribute>
         </item>
         <item>
           <attribute name="action">win.new-torrent</attribute>
@@ -32,13 +30,11 @@
           <attribute name="action">win.start-all-torrents</attribute>
           <attribute name="icon">media-playback-start</attribute>
           <attribute name="label" translatable="yes">_Start All</attribute>
-          <attribute name="tooltip" translatable="yes">Start all torrents</attribute>
         </item>
         <item>
           <attribute name="action">win.pause-all-torrents</attribute>
           <attribute name="icon">media-playback-pause</attribute>
           <attribute name="label" translatable="yes">_Pause All</attribute>
-          <attribute name="tooltip" translatable="yes">Pause all torrents</attribute>
         </item>
       </section>
       <section>
@@ -81,7 +77,6 @@
           <attribute name="icon">document-properties</attribute>
           <attribute name="label" translatable="yes">_Properties</attribute>
           <attribute name="accel">&lt;alt&gt;Return</attribute>
-          <attribute name="tooltip" translatable="yes">Torrent properties</attribute>
         </item>
         <item>
           <attribute name="action">win.open-torrent-folder</attribute>
@@ -96,14 +91,12 @@
           <attribute name="icon">media-playback-start</attribute>
           <attribute name="label" translatable="yes">_Start</attribute>
           <attribute name="accel">&lt;control&gt;S</attribute>
-          <attribute name="tooltop" translatable="yes">Start torrent</attribute>
         </item>
         <item>
           <attribute name="action">win.torrent-start-now</attribute>
           <attribute name="icon">media-playback-start</attribute>
           <attribute name="label" translatable="yes">Start _Now</attribute>
           <attribute name="accel">&lt;shift&gt;&lt;control&gt;S</attribute>
-          <attribute name="tooltop" translatable="yes">Start torrent now</attribute>
         </item>
         <item>
           <attribute name="action">win.torrent-reannounce</attribute>
@@ -140,7 +133,6 @@
           <attribute name="icon">media-playback-pause</attribute>
           <attribute name="label" translatable="yes">_Pause</attribute>
           <attribute name="accel">&lt;control&gt;P</attribute>
-          <attribute name="tooltip" translatable="yes">Pause torrent</attribute>
         </item>
       </section>
       <section>
@@ -292,7 +284,6 @@
         <attribute name="icon">document-properties</attribute>
         <attribute name="label" translatable="yes">_Properties</attribute>
         <attribute name="accel">&lt;alt&gt;Return</attribute>
-        <attribute name="tooltip" translatable="yes">Torrent properties</attribute>
       </item>
       <item>
         <attribute name="action">win.open-torrent-folder</attribute>
@@ -365,14 +356,12 @@
         <attribute name="icon">media-playback-start</attribute>
         <attribute name="label" translatable="yes">_Start</attribute>
         <attribute name="accel">&lt;control&gt;S</attribute>
-        <attribute name="tooltop" translatable="yes">Start torrent</attribute>
       </item>
       <item>
         <attribute name="action">win.torrent-start-now</attribute>
         <attribute name="icon">media-playback-start</attribute>
         <attribute name="label" translatable="yes">Start _Now</attribute>
         <attribute name="accel">&lt;shift&gt;&lt;control&gt;S</attribute>
-        <attribute name="tooltop" translatable="yes">Start torrent now</attribute>
       </item>
       <item>
         <attribute name="action">win.torrent-reannounce</attribute>
@@ -409,7 +398,6 @@
         <attribute name="icon">media-playback-pause</attribute>
         <attribute name="label" translatable="yes">_Pause</attribute>
         <attribute name="accel">&lt;control&gt;P</attribute>
-        <attribute name="tooltip" translatable="yes">Pause torrent</attribute>
       </item>
     </section>
     <section>
@@ -456,14 +444,12 @@
         <attribute name="action">win.open-torrent</attribute>
         <attribute name="icon">document-open</attribute>
         <attribute name="label" translatable="yes">_Open</attribute>
-        <attribute name="tooltip" translatable="yes">Open a torrent</attribute>
       </item>
       <item>
         <attribute name="action">win.open-torrent-from-url</attribute>
         <attribute name="icon">document-open</attribute>
         <attribute name="label" translatable="yes">Open _URL…</attribute>
         <attribute name="accel"></attribute>
-        <attribute name="tooltip" translatable="yes">Open URL…</attribute>
       </item>
     </section>
     <section>
@@ -471,13 +457,11 @@
         <attribute name="action">win.pause-all-torrents</attribute>
         <attribute name="icon">media-playback-pause</attribute>
         <attribute name="label" translatable="yes">_Pause All</attribute>
-        <attribute name="tooltip" translatable="yes">Pause all torrents</attribute>
       </item>
       <item>
         <attribute name="action">win.start-all-torrents</attribute>
         <attribute name="icon">media-playback-start</attribute>
         <attribute name="label" translatable="yes">_Start All</attribute>
-        <attribute name="tooltip" translatable="yes">Start all torrents</attribute>
       </item>
     </section>
     <section>
