@@ -105,6 +105,9 @@ TEST_F(TorrentFilesTest, cleanupRemovesJunkAndPreservesOrdinaryEntries)
     createFileWithContents(tr_pathbuf{ download, "/name/nested/data"sv }, "second"sv);
     // The nested tree becomes empty; notes.txt keeps its parent alive.
     createFileWithContents(tr_pathbuf{ download, "/name/nested/.DS_Store"sv }, "junk"sv);
+    createFileWithContents(
+        tr_pathbuf{ download, "/name/nested/"sv, TrFileCopyPrefix, "0123456789abcdef"sv },
+        "interrupted copy"sv);
     createFileWithContents(tr_pathbuf{ download, "/name/notes.txt"sv }, "notes"sv);
     createFileWithContents(tr_pathbuf{ unused, "/name/desktop.ini"sv }, "unused root"sv);
     ASSERT_TRUE(files.move(roots, target, "name"));

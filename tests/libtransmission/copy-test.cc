@@ -6,6 +6,7 @@
 #include <algorithm>
 #include <cstdint> // uint64_t
 #include <cstring>
+#include <string>
 #include <string_view>
 #include <vector>
 
@@ -50,6 +51,19 @@ protected:
         tr_sys_path_remove(path2);
     }
 
+    static bool filesAreIdentical(std::string_view filename1, std::string_view filename2)
+    {
+        auto contents1 = std::vector<char>{};
+        auto contents2 = std::vector<char>{};
+        return tr_file_read(filename1, contents1) && tr_file_read(filename2, contents2) && contents1 == contents2;
+    }
+
+    static bool hasTemporaryCopy(std::string_view const dir)
+    {
+        auto const names = tr_sys_dir_get_files(dir, tr_basename_accept_all);
+        return std::ranges::any_of(names, [](std::string_view name) { return name.starts_with(TrFileCopyPrefix); });
+    }
+
 private:
     static uint64_t fillBufferFromFd(tr_sys_file_t fd, uint64_t bytes_remaining, char* buf, size_t buf_len)
     {
@@ -70,13 +84,6 @@ private:
 
         return bytes_remaining;
     }
-
-    static bool filesAreIdentical(std::string_view filename1, std::string_view filename2)
-    {
-        auto contents1 = std::vector<char>{};
-        auto contents2 = std::vector<char>{};
-        return tr_file_read(filename1, contents1) && tr_file_read(filename2, contents2) && contents1 == contents2;
-    }
 };
 } // namespace
 
@@ -87,6 +94,48 @@ TEST_F(CopyTest, copy)
     auto const random_file_length = 1024 * 1024 * 10;
 
     testImpl(filename1, filename2, random_file_length);
+}
+
+TEST_F(CopyTest, atomicCopyReplacesTheTarget)
+{
+    auto const source = tr_pathbuf{ sandboxDir(), "/source.bin"sv };
+    auto const target = tr_pathbuf{ sandboxDir(), "/target.bin"sv };
+    createFileWithContents(source, "new contents"sv);
+    createFileWithContents(target, "old contents"sv);
+
+    auto error = tr_error{};
+    EXPECT_TRUE(tr_file_copy_atomic(source, target, &error));
+    EXPECT_FALSE(error) << error;
+    EXPECT_TRUE(filesAreIdentical(source, target));
+    EXPECT_FALSE(hasTemporaryCopy(sandboxDir()));
+}
+
+TEST_F(CopyTest, atomicCopyFitsANameAtTheLengthLimit)
+{
+    // Most filesystems cap a name at 255 bytes.
+    auto const source = tr_pathbuf{ sandboxDir(), "/source.bin"sv };
+    auto const target = tr_pathbuf{ sandboxDir(), '/', std::string(255U, 'x') };
+    createFileWithContents(source, "contents"sv);
+
+    auto error = tr_error{};
+    EXPECT_TRUE(tr_file_copy_atomic(source, target, &error));
+    EXPECT_FALSE(error) << error;
+    EXPECT_TRUE(filesAreIdentical(source, target));
+}
+
+TEST_F(CopyTest, failedAtomicCopyLeavesTheTargetAlone)
+{
+    auto const source = tr_pathbuf{ sandboxDir(), "/missing.bin"sv };
+    auto const target = tr_pathbuf{ sandboxDir(), "/target.bin"sv };
+    createFileWithContents(target, "old contents"sv);
+
+    auto error = tr_error{};
+    EXPECT_FALSE(tr_file_copy_atomic(source, target, &error));
+    EXPECT_TRUE(error);
+    auto contents = std::vector<char>{};
+    ASSERT_TRUE(tr_file_read(target, contents));
+    EXPECT_EQ("old contents"sv, (std::string_view{ std::data(contents), std::size(contents) }));
+    EXPECT_FALSE(hasTemporaryCopy(sandboxDir()));
 }
 
 } // namespace tr::test

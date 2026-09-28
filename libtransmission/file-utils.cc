@@ -14,6 +14,7 @@
 
 #include <fmt/format.h>
 
+#include "libtransmission/crypto-utils.h"
 #include "libtransmission/error-types.h"
 #include "libtransmission/error.h"
 #include "libtransmission/file.h"
@@ -161,7 +162,7 @@ bool tr_file_move(std::string_view oldpath, std::string_view newpath, bool allow
     }
 
     /* Otherwise, copy the file. */
-    if (!tr_sys_path_copy(oldpath, newpath, error)) {
+    if (!tr_file_copy_atomic(oldpath, newpath, error)) {
         error->prefix_message("Unable to copy: ");
         return false;
     }
@@ -176,4 +177,23 @@ bool tr_file_move(std::string_view oldpath, std::string_view newpath, bool allow
     }
 
     return true;
+}
+
+bool tr_file_copy_atomic(std::string_view const oldpath, std::string_view const newpath, tr_error* error)
+{
+    // The temporary name has a fixed length, so it fits wherever `newpath` does.
+    // Its random part keeps concurrent copies into one dir apart.
+    auto const tmp = tr_pathbuf{
+        tr_sys_path_dirname(newpath),
+        '/',
+        TrFileCopyPrefix,
+        fmt::format("{:016x}", tr_rand_obj<uint64_t>()),
+    };
+
+    if (tr_sys_path_copy(oldpath, tmp, error) && tr_sys_path_rename(tmp, newpath, error)) {
+        return true;
+    }
+
+    tr_sys_path_remove(tmp);
+    return false;
 }
