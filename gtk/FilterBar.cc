@@ -46,6 +46,7 @@
 #include <ranges>
 #include <string>
 #include <unordered_map>
+#include <utility> // std::exchange()
 
 using namespace tr::app;
 
@@ -129,6 +130,7 @@ private:
     sigc::connection update_filter_models_tag_;
     sigc::connection update_filter_models_on_add_remove_tag_;
     sigc::connection update_filter_models_on_change_tag_;
+    Torrent::ChangeFlags pending_filter_models_changes_;
 };
 
 // --- TRACKERS
@@ -601,10 +603,15 @@ void FilterBar::Impl::update_filter_models(Torrent::ChangeFlags changes)
 
 void FilterBar::Impl::update_filter_models_idle(Torrent::ChangeFlags changes)
 {
+    // Changes reported before the idle handler runs are merged into one update.
+    pending_filter_models_changes_ |= changes;
+
     if (!update_filter_models_tag_.connected()) {
-        update_filter_models_tag_ = Glib::signal_idle().connect([this, changes]() {
-            update_filter_models(changes);
-            return false;
+        update_filter_models_tag_ = Glib::signal_idle().connect([this]() {
+            update_filter_models(std::exchange(pending_filter_models_changes_, {}));
+
+            // Changes reported while update_filter_models() ran need another pass.
+            return pending_filter_models_changes_.any();
         });
     }
 }
