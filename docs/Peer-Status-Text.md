@@ -5,7 +5,7 @@ The cryptic "peer status" is shown in transmission-remote's `--peers` argument a
 <tr><td><tt>D</tt></td><td>Downloading from this peer</td></tr>
 <tr><td><tt>d</tt></td><td>We would download from this peer if they would let us</td></tr>
 <tr><td><tt>U</tt></td><td>Uploading to peer</td></tr>
-<tr><td><tt>u</tt></td><td>We would upload to this peer if they would ask</td></tr>
+<tr><td><tt>u</tt></td><td>This peer would download from us if we would let them</td></tr>
 <tr><td><tt>K</tt></td><td>Peer has unchoked us, but we are not interested</td></tr>
 <tr><td><tt>?</tt></td><td>We unchoked this peer, but they are not interested</td></tr>
 <tr><td><tt>E</tt></td><td>Encrypted Connection</td></tr>

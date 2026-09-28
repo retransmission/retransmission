@@ -1206,7 +1206,7 @@ bool DetailsDialog::Impl::onPeerViewQueryTooltip(int x, int y, bool keyboard_tip
                 break;
 
             case 'u':
-                s = _("We would upload to this peer if they asked");
+                s = _("This peer would download from us if we would let them");
                 break;
 
             case 'K':

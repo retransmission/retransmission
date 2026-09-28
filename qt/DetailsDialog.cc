@@ -1080,7 +1080,7 @@ void DetailsDialog::refreshUI()
                     break;
 
                 case 'u':
-                    txt = tr("We would upload to this peer if they asked");
+                    txt = tr("This peer would download from us if we would let them");
                     break;
 
                 case 'K':
