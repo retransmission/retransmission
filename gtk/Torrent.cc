@@ -601,7 +601,7 @@ Glib::ustring Torrent::Impl::get_error_text() const
         return fmt::format(fmt::runtime(_("Tracker warning: '{warning}'")), fmt::arg("warning", cache_.error_message));
 
     case tr_stat::Error::TrackerError:
-        return fmt::format(fmt::runtime(_("Tracker Error: '{error}'")), fmt::arg("error", cache_.error_message));
+        return fmt::format(fmt::runtime(_("Tracker error: '{error}'")), fmt::arg("error", cache_.error_message));
 
     case tr_stat::Error::LocalError:
         return fmt::format(fmt::runtime(_("Local error: '{error}'")), fmt::arg("error", cache_.error_message));

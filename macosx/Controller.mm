@@ -1346,7 +1346,7 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
     }
     alert.informativeText = [NSString
         stringWithFormat:NSLocalizedString(
-                             @"The magnet link  \"%@\" cannot be added because it is a duplicate of an already existing transfer.",
+                             @"The magnet link \"%@\" cannot be added because it is a duplicate of an already existing transfer.",
                              "Open duplicate magnet alert -> message"),
                          address];
     alert.alertStyle = NSAlertStyleWarning;

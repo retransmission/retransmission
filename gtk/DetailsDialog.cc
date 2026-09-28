@@ -1555,7 +1555,7 @@ void appendScrapeInfo(tr_tracker_view const& tracker, time_t const now, Gtk::Tex
         gstr << '\n';
         gstr << dir_mark;
         gstr << fmt::format(
-            fmt::runtime(_("Asking for peer counts in {time_span_from_now}")),
+            fmt::runtime(_("Asking for peer counts {time_span_from_now}")),
             fmt::arg("time_span_from_now", tr_format_time_relative(now, tracker.nextScrapeTime)));
         break;
 
