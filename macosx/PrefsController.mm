@@ -2,6 +2,8 @@
 // It may be used under the MIT (SPDX: MIT) license.
 // License text can be found in the licenses/ folder.
 
+#include <string_view>
+
 #include <libtransmission/macros.h>
 #include <libtransmission/string-utils.h>
 
@@ -1463,7 +1465,7 @@ static NSString* getOSStatusDescription(OSStatus errorCode)
 
 - (void)updateRPCPassword
 {
-    CFTypeRef data;
+    CFTypeRef data{};
     OSStatus result = SecItemCopyMatching(
         (CFDictionaryRef) @{
             (NSString*)kSecClass : (NSString*)kSecClassGenericPassword,
@@ -1472,33 +1474,45 @@ static NSString* getOSStatusDescription(OSStatus errorCode)
             (NSString*)kSecReturnData : @YES,
         },
         &data);
-    if (result != noErr && result != errSecItemNotFound) {
+    if (result == errSecItemNotFound) {
+        return;
+    }
+    if (result != noErr) {
         NSLog(@"Problem accessing Keychain: %@", getOSStatusDescription(result));
+        return;
     }
-    char const* password = (char const*)((__bridge_transfer NSData*)data).bytes;
-    if (password) {
-        tr_sessionSetRPCPassword(self.fHandle, password);
-        self.fRPCPassword = @(password);
+
+    NSData* const passwordData = (__bridge_transfer NSData*)data;
+    NSString* const password = [[NSString alloc] initWithData:passwordData encoding:NSUTF8StringEncoding];
+    if (!password) {
+        NSLog(@"Problem accessing Keychain: password is not valid UTF-8");
+        return;
     }
+
+    tr_sessionSetRPCPassword(self.fHandle, std::string_view{ static_cast<char const*>(passwordData.bytes), passwordData.length });
+
+    // NSString's UTF-8 decoding drops a leading byte order mark,
+    // which is part of the password.
+    auto const droppedBom = [password lengthOfBytesUsingEncoding:NSUTF8StringEncoding] < passwordData.length;
+    self.fRPCPassword = droppedBom ? [@"\uFEFF" stringByAppendingString:password] : password;
 }
 
 - (void)setKeychainPassword:(char const*)password
 {
-    CFTypeRef item;
     OSStatus result = SecItemCopyMatching(
         (CFDictionaryRef) @{
             (NSString*)kSecClass : (NSString*)kSecClassGenericPassword,
             (NSString*)kSecAttrAccount : @(kRPCKeychainName),
             (NSString*)kSecAttrService : @(kRPCKeychainService),
         },
-        &item);
+        nil);
     if (result != noErr && result != errSecItemNotFound) {
         NSLog(@"Problem accessing Keychain: %@", getOSStatusDescription(result));
         return;
     }
 
     size_t passwordLength = strlen(password);
-    if (item) {
+    if (result == noErr) {
         if (passwordLength > 0) // found and needed, so update it
         {
             result = SecItemUpdate(
@@ -1524,8 +1538,7 @@ static NSString* getOSStatusDescription(OSStatus errorCode)
                 NSLog(@"Problem removing Keychain item: %@", getOSStatusDescription(result));
             }
         }
-        CFRelease(item);
-    } else if (result == errSecItemNotFound) {
+    } else {
         if (passwordLength > 0) // not found and needed, so add it
         {
             result = SecItemAdd(
