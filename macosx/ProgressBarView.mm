@@ -5,10 +5,9 @@
 #include <array>
 
 #import "ProgressBarView.h"
-#import "ProgressGradients.h"
+#import "ProgressColors.h"
 #import "TorrentTableView.h"
 #import "Torrent.h"
-#import "NSApplicationAdditions.h"
 
 static CGFloat const kPiecesTotalPercent = 0.6;
 static NSInteger const kMaxPieces = 18 * 18;
@@ -84,25 +83,33 @@ static NSInteger const kMaxPieces = 18 * 18;
     if (!NSIsEmptyRect(haveRect)) {
         if (torrent.active) {
             if (torrent.checking) {
-                [ProgressGradients.progressYellowGradient drawInRect:haveRect angle:90];
+                [ProgressColors.progressYellowColor set];
+                NSRectFillUsingOperation(haveRect, NSCompositingOperationSourceOver);
             } else if (torrent.seeding) {
                 NSRect ratioHaveRect, ratioRemainingRect;
                 NSDivideRect(haveRect, &ratioHaveRect, &ratioRemainingRect, round(torrent.progressStopRatio.to_fraction() * NSWidth(haveRect)), NSMinXEdge);
 
-                [ProgressGradients.progressGreenGradient drawInRect:ratioHaveRect angle:90];
-                [ProgressGradients.progressLightGreenGradient drawInRect:ratioRemainingRect angle:90];
+                [ProgressColors.progressGreenColor set];
+                NSRectFillUsingOperation(ratioHaveRect, NSCompositingOperationSourceOver);
+
+                [ProgressColors.progressLightGreenColor set];
+                NSRectFillUsingOperation(ratioRemainingRect, NSCompositingOperationSourceOver);
             } else {
-                [ProgressGradients.progressBlueGradient drawInRect:haveRect angle:90];
+                [ProgressColors.progressBlueColor set];
+                NSRectFillUsingOperation(haveRect, NSCompositingOperationSourceOver);
             }
         } else {
             if (torrent.waitingToStart) {
                 if (torrent.allDownloaded) {
-                    [ProgressGradients.progressDarkGreenGradient drawInRect:haveRect angle:90];
+                    [ProgressColors.progressDarkGreenColor set];
+                    NSRectFillUsingOperation(haveRect, NSCompositingOperationSourceOver);
                 } else {
-                    [ProgressGradients.progressDarkBlueGradient drawInRect:haveRect angle:90];
+                    [ProgressColors.progressDarkBlueColor set];
+                    NSRectFillUsingOperation(haveRect, NSCompositingOperationSourceOver);
                 }
             } else {
-                [ProgressGradients.progressGrayGradient drawInRect:haveRect angle:90];
+                [ProgressColors.progressGrayColor set];
+                NSRectFillUsingOperation(haveRect, NSCompositingOperationSourceOver);
             }
         }
     }
@@ -119,28 +126,34 @@ static NSInteger const kMaxPieces = 18 * 18;
             NSRect unavailableRect;
             NSDivideRect(wantedRect, &wantedRect, &unavailableRect, round(NSWidth(wantedRect) * torrent.availableDesired.to_fraction()), NSMinXEdge);
 
-            [ProgressGradients.progressRedGradient drawInRect:unavailableRect angle:90];
+            [ProgressColors.progressRedColor set];
+            NSRectFillUsingOperation(unavailableRect, NSCompositingOperationSourceOver);
         }
 
         //remaining section
-        [ProgressGradients.progressWhiteGradient drawInRect:wantedRect angle:90];
+        [ProgressColors.progressWhiteColor set];
+        NSRectFillUsingOperation(wantedRect, NSCompositingOperationSourceOver);
     }
 
     //unwanted section
     if (!NSIsEmptyRect(missingRect)) {
         if (!torrent.magnet) {
-            [ProgressGradients.progressLightGrayGradient drawInRect:missingRect angle:90];
+            [ProgressColors.progressLightGrayColor set];
+            NSRectFillUsingOperation(missingRect, NSCompositingOperationSourceOver);
         } else {
-            [ProgressGradients.progressRedGradient drawInRect:missingRect angle:90];
+            [ProgressColors.progressRedColor set];
+            NSRectFillUsingOperation(missingRect, NSCompositingOperationSourceOver);
         }
     }
 }
 
 - (void)drawPiecesBar:(NSRect)barRect forTorrent:(Torrent*)torrent minimal:(BOOL)minimal
 {
+    BOOL const darkMode = [[NSAppearance.currentDrawingAppearance
+        bestMatchFromAppearancesWithNames:@[ NSAppearanceNameAqua, NSAppearanceNameDarkAqua ]] isEqualToString:NSAppearanceNameDarkAqua];
     // Fill a solid color bar for magnet links
     if (torrent.magnet) {
-        if (NSApp.darkMode) {
+        if (darkMode) {
             [NSColor.controlColor set];
         } else {
             [[NSColor colorWithCalibratedWhite:1.0 alpha:minimal ? 0.25 : 1.0] set];
@@ -163,7 +176,7 @@ static NSInteger const kMaxPieces = 18 * 18;
     NSIndexSet* previousFinishedIndexes = torrent.previousFinishedPieces;
     NSMutableIndexSet* finishedIndexes = [NSMutableIndexSet indexSet];
 
-    NSColor* const pieceBgColor = NSApp.darkMode ? NSColor.controlColor : NSColor.whiteColor;
+    NSColor* const pieceBgColor = darkMode ? NSColor.controlColor : NSColor.whiteColor;
 
     for (int i = 0; i < pieceCount; i++) {
         NSColor* pieceColor;

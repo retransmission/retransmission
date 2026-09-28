@@ -4,7 +4,6 @@
 
 #import "SmallTorrentCell.h"
 #import "ProgressBarView.h"
-#import "ProgressGradients.h"
 #import "TorrentTableView.h"
 #import "TorrentCellControlButton.h"
 #import "TorrentCellActionButton.h"
