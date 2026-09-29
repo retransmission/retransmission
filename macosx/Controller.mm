@@ -3104,7 +3104,7 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
 
         [self openFiles:@[ fullFile ] addType:AddTypeAuto forcePath:nil];
 
-        NSString* notificationTitle = NSLocalizedString(@"Torrent File Auto Added", "notification title");
+        NSString* notificationTitle = NSLocalizedString(@"Torrent Added", "notification title");
 
         NSString* identifier = [@"Torrent File Auto Added " stringByAppendingString:file];
         UNMutableNotificationContent* content = [UNMutableNotificationContent new];

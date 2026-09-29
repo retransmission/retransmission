@@ -554,7 +554,7 @@ static tr_torrent_rename_done_func makeRenameDoneCallback(NSDictionary* contextI
         [NSNotificationCenter.defaultCenter postNotificationName:@"UpdateStats" object:nil];
     } else {
         NSAlert* alert = [[NSAlert alloc] init];
-        alert.messageText = NSLocalizedString(@"There was an error moving the data file.", "Move error alert -> title");
+        alert.messageText = NSLocalizedString(@"Couldn't move torrent", "Move error alert -> title");
         alert.informativeText = [NSString
             stringWithFormat:NSLocalizedString(@"The move operation of \"%@\" cannot be done.", "Move error alert -> message"), self.name];
         [alert addButtonWithTitle:NSLocalizedString(@"OK", "Move error alert -> button")];
@@ -958,7 +958,7 @@ static tr_torrent_rename_done_func makeRenameDoneCallback(NSDictionary* contextI
 
     NSString* error = tr_strv_to_utf8_nsstring(self.fStat.error_string);
     if (!error || [error isEqualToString:@""]) {
-        error = [NSString stringWithFormat:@"(%@)", NSLocalizedString(@"unreadable error", "Torrent -> error string unreadable")];
+        error = [NSString stringWithFormat:@"(%@)", NSLocalizedString(@"Unknown error", "Torrent -> error string unreadable")];
     }
 
     return error;
@@ -1106,7 +1106,7 @@ static tr_torrent_rename_done_func makeRenameDoneCallback(NSDictionary* contextI
         switch (self.fStat.activity) {
         case TR_STATUS_STOPPED:
             if (self.finishedSeeding) {
-                string = NSLocalizedString(@"Seeding complete", "Torrent -> status string");
+                string = NSLocalizedString(@"Finished", "Torrent -> status string");
             } else {
                 string = NSLocalizedString(@"Paused", "Torrent -> status string");
             }
@@ -1199,7 +1199,7 @@ static tr_torrent_rename_done_func makeRenameDoneCallback(NSDictionary* contextI
     switch (self.fStat.activity) {
     case TR_STATUS_STOPPED:
         if (self.finishedSeeding) {
-            string = NSLocalizedString(@"Seeding complete", "Torrent -> status string");
+            string = NSLocalizedString(@"Finished", "Torrent -> status string");
         } else {
             string = NSLocalizedString(@"Paused", "Torrent -> status string");
         }
@@ -1266,7 +1266,7 @@ static tr_torrent_rename_done_func makeRenameDoneCallback(NSDictionary* contextI
                     NSLocalizedString(@"Queued for download", "Torrent -> status string") :
                     NSLocalizedString(@"Queued for seeding", "Torrent -> status string");
             } else if (self.finishedSeeding) {
-                extra = NSLocalizedString(@"Seeding complete", "Torrent -> status string");
+                extra = NSLocalizedString(@"Finished", "Torrent -> status string");
             }
 
             return extra ? [string stringByAppendingFormat:@" (%@)", extra] : string;
