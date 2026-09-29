@@ -232,7 +232,7 @@
           <item row="0" column="0">
            <widget class="QCheckBox" name="watchDirCheck">
             <property name="text">
-             <string>Automatically add .torrent files &amp;from:</string>
+             <string>Automatically add torrent files &amp;from:</string>
             </property>
             <property name="checked">
              <bool>true</bool>
@@ -511,7 +511,7 @@
           <item row="2" column="0">
            <widget class="QCheckBox" name="doneSeedingScriptCheck">
             <property name="text">
-             <string>Call scrip&amp;t when seeding is completed:</string>
+             <string>Call scrip&amp;t when done seeding:</string>
             </property>
             <property name="checked">
              <bool>true</bool>

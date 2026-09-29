@@ -346,7 +346,7 @@
     <string>&amp;Properties</string>
    </property>
    <property name="toolTip">
-    <string>Show torrent properties</string>
+    <string>Torrent properties</string>
    </property>
    <property name="shortcut">
     <string notr="true">Alt+Enter</string>

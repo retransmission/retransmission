@@ -49,7 +49,7 @@ OptionsDialog::OptionsDialog(Session& session, Prefs const& prefs, AddData addme
     if (add_.type == AddData::FILENAME) {
         ui_.sourceStack->setCurrentWidget(ui_.sourceButton);
         ui_.sourceButton->setMode(PathButton::FileMode);
-        ui_.sourceButton->setTitle(tr("Open Torrent"));
+        ui_.sourceButton->setTitle(tr("Open a Torrent"));
         ui_.sourceButton->setNameFilter(tr("Torrent Files (*.torrent);;All Files (*.*)"));
         ui_.sourceButton->setPath(add_.filename);
         connect(ui_.sourceButton, &PathButton::pathChanged, this, &OptionsDialog::onSourceChanged);
@@ -74,7 +74,7 @@ OptionsDialog::OptionsDialog(Session& session, Prefs const& prefs, AddData addme
     auto const recent_download_paths = prefs.get<QStringList>(TR_KEY_recent_download_paths);
 
     ui_.destinationButton->setMode(PathButton::DirectoryMode);
-    ui_.destinationButton->setTitle(tr("Select Destination"));
+    ui_.destinationButton->setTitle(tr("Select Destination Folder"));
     ui_.destinationButton->setPath(download_dir);
     ui_.destinationButton->setRecentPaths(recent_download_paths);
 

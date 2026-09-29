@@ -1096,11 +1096,11 @@ void DetailsDialog::refreshUI()
                     break;
 
                 case 'H':
-                    txt = tr("Peer was discovered through DHT");
+                    txt = tr("Peer was found through DHT");
                     break;
 
                 case 'X':
-                    txt = tr("Peer was discovered through Peer Exchange (PEX)");
+                    txt = tr("Peer was found through Peer Exchange (PEX)");
                     break;
 
                 case 'I':
@@ -1456,7 +1456,7 @@ void DetailsDialog::initPeersTab()
     auto const speed_width_str = Speed{ 1024U, Speed::Units::MByps }.toQstring();
 
     ui_.peersView->setHeaderLabels(
-        { QString{}, tr("Up"), tr("Up Reqs"), tr("Down"), tr("Dn Reqs"), tr("%"), tr("Status"), tr("Address"), tr("Client") });
+        { QString{}, tr("Up"), tr("Up Reqs"), tr("Down"), tr("Dn Reqs"), tr("%"), tr("Flags"), tr("Address"), tr("Client") });
     ui_.peersView->sortByColumn(COL_ADDRESS, Qt::AscendingOrder);
 
     ui_.peersView->setColumnWidth(COL_LOCK, 20);

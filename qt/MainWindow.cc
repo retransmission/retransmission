@@ -1159,8 +1159,8 @@ void MainWindow::refreshPref(tr_quark const key)
             b = prefs_.get<bool>(TR_KEY_alt_speed_enabled);
             alt_speed_action_->setChecked(b);
             ui_.altSpeedButton->setChecked(b);
-            auto const fmt = b ? tr("Click to disable Temporary Speed Limits\n (%1 down, %2 up)") :
-                                 tr("Click to enable Temporary Speed Limits\n (%1 down, %2 up)");
+            auto const fmt = b ? tr("Click to disable Alternative Speed Limits\n (%1 down, %2 up)") :
+                                 tr("Click to enable Alternative Speed Limits\n (%1 down, %2 up)");
             auto const d = Speed{ prefs_.get<int>(TR_KEY_alt_speed_down), Speed::Units::KByps };
             auto const u = Speed{ prefs_.get<int>(TR_KEY_alt_speed_up), Speed::Units::KByps };
             ui_.altSpeedButton->setToolTip(fmt.arg(d.toQstring()).arg(u.toQstring()));
@@ -1190,7 +1190,7 @@ void MainWindow::newTorrent()
 void MainWindow::openTorrent()
 {
     auto* const d = new QFileDialog{ this,
-                                     tr("Open Torrent"),
+                                     tr("Open a Torrent"),
                                      prefs_.get<QString>(TR_KEY_open_dialog_dir),
                                      tr("Torrent Files (*.torrent);;All Files (*.*)") };
     d->setFileMode(QFileDialog::ExistingFiles);

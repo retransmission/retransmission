@@ -510,7 +510,7 @@ void PrefsDialog::initDownloadingTab()
     ui_.doneSeedingScriptButton->setMode(PathButton::FileMode);
 
     ui_.watchDirButton->setTitle(tr("Select Watch Directory"));
-    ui_.downloadDirButton->setTitle(tr("Select Destination"));
+    ui_.downloadDirButton->setTitle(tr("Select Destination Folder"));
     ui_.incompleteDirButton->setTitle(tr("Select Incomplete Directory"));
     ui_.doneDownloadingScriptButton->setTitle(tr("Select \"Torrent Done Downloading\" Script"));
 
