@@ -300,7 +300,7 @@ void PathButton::Impl::show_dialog()
     auto const title = title_.get_value();
 
     auto dialog = Gtk::FileChooserNative::create(
-        !title.empty() ? title : _("Select a File"),
+        !title.empty() ? title : _("Select File"),
         action_.get_value(),
         _("_Open"),
         _("_Cancel"));

@@ -664,7 +664,7 @@
                         </child>
                         <child>
                           <object class="GtkCheckButton" id="incomplete_dir_check">
-                            <property name="label" translatable="yes">Keep _incomplete torrents in:</property>
+                            <property name="label" translatable="yes">Keep _incomplete files in:</property>
                             <property name="visible">True</property>
                             <property name="can-focus">True</property>
                             <property name="receives-default">False</property>
@@ -1135,7 +1135,7 @@
                           <object class="GtkLabel" id="listening_port_label">
                             <property name="visible">True</property>
                             <property name="can-focus">False</property>
-                            <property name="label" translatable="yes">_Port used for incoming connections:</property>
+                            <property name="label" translatable="yes">_Port for incoming connections:</property>
                             <property name="use-underline">True</property>
                             <property name="mnemonic-widget">listening_port_spin</property>
                             <property name="xalign">0</property>
@@ -1355,7 +1355,7 @@
                         <property name="column-spacing">12</property>
                         <child>
                           <object class="GtkCheckButton" id="enable_utp_check">
-                            <property name="label" translatable="yes">Enable µ_TP for peer communication</property>
+                            <property name="label" translatable="yes">Enable µ_TP for peer connections</property>
                             <property name="visible">True</property>
                             <property name="can-focus">True</property>
                             <property name="receives-default">False</property>
