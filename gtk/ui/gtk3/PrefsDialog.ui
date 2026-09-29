@@ -455,7 +455,7 @@
                         </child>
                         <child>
                           <object class="GtkCheckButton" id="trash_on_add_check">
-                            <property name="label" translatable="yes">Mo_ve torrent file to the trash</property>
+                            <property name="label" translatable="yes">Mo_ve torrent file to the Trash</property>
                             <property name="visible">True</property>
                             <property name="can-focus">True</property>
                             <property name="receives-default">False</property>

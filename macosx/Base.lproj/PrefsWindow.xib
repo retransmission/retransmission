@@ -428,7 +428,7 @@
                                             </textField>
                                             <button translatesAutoresizingMaskIntoConstraints="NO" id="115">
                                                 <rect key="frame" x="84" y="210" width="182" height="18"/>
-                                                <buttonCell key="cell" type="check" title="Trash original torrent files" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="1218">
+                                                <buttonCell key="cell" type="check" title="Move torrent file to the Trash" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="1218">
                                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                                     <font key="font" metaFont="system"/>
                                                 </buttonCell>

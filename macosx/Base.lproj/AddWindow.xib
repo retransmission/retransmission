@@ -184,7 +184,7 @@ Gw
                     </button>
                     <button translatesAutoresizingMaskIntoConstraints="NO" id="58">
                         <rect key="frame" x="20" y="42" width="123" height="16"/>
-                        <buttonCell key="cell" type="check" title="Trash torrent file" bezelStyle="regularSquare" imagePosition="left" alignment="left" state="on" inset="2" id="59">
+                        <buttonCell key="cell" type="check" title="Move torrent file to the Trash" bezelStyle="regularSquare" imagePosition="left" alignment="left" state="on" inset="2" id="59">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                             <font key="font" metaFont="system"/>
                         </buttonCell>

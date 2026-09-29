@@ -98,7 +98,7 @@
    <item row="6" column="0" colspan="2">
     <widget class="QCheckBox" name="trashCheck">
      <property name="text">
-      <string>Mo&amp;ve .torrent file to the trash</string>
+      <string>Mo&amp;ve torrent file to the Trash</string>
      </property>
     </widget>
    </item>
