@@ -155,7 +155,7 @@
         <item>
           <attribute name="action">win.remove-torrent</attribute>
           <attribute name="icon">list-remove</attribute>
-          <attribute name="label" translatable="yes">_Remove</attribute>
+          <attribute name="label" translatable="yes" comments="Removes the torrent from the list and keeps its downloaded files">_Remove</attribute>
           <attribute name="accel">Delete</attribute>
         </item>
         <item>
@@ -420,7 +420,7 @@
       <item>
         <attribute name="action">win.remove-torrent</attribute>
         <attribute name="icon">list-remove</attribute>
-        <attribute name="label" translatable="yes">_Remove</attribute>
+        <attribute name="label" translatable="yes" comments="Removes the torrent from the list and keeps its downloaded files">_Remove</attribute>
         <attribute name="accel">Delete</attribute>
       </item>
       <item>
