@@ -1309,9 +1309,8 @@ void MainWindow::removeTorrents(bool const delete_files)
     }
 
     if (incomplete == 0 && connected == 0) {
-        secondary_text = count == 1 ?
-            tr("Once removed, continuing the transfer will require the torrent file or magnet link.") :
-            tr("Once removed, continuing the transfers will require the torrent files or magnet links.");
+        secondary_text = count == 1 ? tr("Once removed, you'll need the torrent file or magnet link to add it again.") :
+                                      tr("Once removed, you'll need the torrent files or magnet links to add them again.");
     } else if (count == incomplete) {
         secondary_text = count == 1 ? tr("This torrent has not finished downloading.") :
                                       tr("These torrents have not finished downloading.");

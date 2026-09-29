@@ -107,7 +107,7 @@ static tr_session* fLib = NULL;
     alert.messageText = NSLocalizedString(@"Reset your statistics?", "Stats reset -> title");
     alert.informativeText = [NSString stringWithFormat:NSLocalizedString(
                                                            @"This will clear the global statistics displayed by %@."
-                                                            " Individual transfer statistics will not be affected.",
+                                                            " Individual torrent statistics will not be affected.",
                                                            "Stats reset -> message"),
                                                        @TR_PROJ_APPNAME_CAPITALIZED];
     alert.alertStyle = NSAlertStyleWarning;

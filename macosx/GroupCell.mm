@@ -223,9 +223,9 @@ static CGFloat const kTrailingOffset = -5.0; // inverted for constraints.
 {
     NSString* tooltipGroup;
     if (count == 1) {
-        tooltipGroup = NSLocalizedString(@"1 transfer", "Torrent table -> group row -> tooltip");
+        tooltipGroup = NSLocalizedString(@"1 torrent", "Torrent table -> group row -> tooltip");
     } else {
-        tooltipGroup = NSLocalizedString(@"%lu transfers", "Torrent table -> group row -> tooltip");
+        tooltipGroup = NSLocalizedString(@"%lu torrents", "Torrent table -> group row -> tooltip");
         tooltipGroup = [NSString localizedStringWithFormat:tooltipGroup, count];
     }
     self.toolTip = tooltipGroup;

@@ -266,7 +266,7 @@ static NSString* const kWebUIURLFormat = @"http://localhost:%ld/";
         item.action = @selector(setPrefView:);
         item.autovalidates = NO;
     } else if ([ident isEqualToString:ToolbarTabTransfers]) {
-        item.label = NSLocalizedString(@"Transfers", "Preferences -> toolbar item title");
+        item.label = NSLocalizedString(@"Torrents", "Preferences -> toolbar item title");
         item.image = [NSImage imageWithSystemSymbolName:@"arrow.up.arrow.down" accessibilityDescription:nil];
         item.target = self;
         item.action = @selector(setPrefView:);

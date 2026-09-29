@@ -227,9 +227,9 @@ static NSString* const kWebSeedAnimationId = @"webSeed";
     } else {
         NSString* notActiveString;
         if (self.fTorrents.count == 1) {
-            notActiveString = NSLocalizedString(@"Transfer Not Active", "Inspector -> Peers tab -> peers");
+            notActiveString = NSLocalizedString(@"Torrent Not Active", "Inspector -> Peers tab -> peers");
         } else {
-            notActiveString = NSLocalizedString(@"Transfers Not Active", "Inspector -> Peers tab -> peers");
+            notActiveString = NSLocalizedString(@"Torrents Not Active", "Inspector -> Peers tab -> peers");
         }
 
         self.fConnectedPeersField.stringValue = notActiveString;

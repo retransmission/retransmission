@@ -1134,7 +1134,7 @@ To add a new primary URL, add it after a blank line.]]></property>
                             <property name="column-spacing">12</property>
                             <child>
                               <object class="GtkCheckButton" id="inhibit_hibernation_check">
-                                <property name="label" translatable="yes">_Prevent computer from sleeping with active transfers</property>
+                                <property name="label" translatable="yes">_Prevent computer from sleeping with active torrents</property>
                                 <property name="focusable">1</property>
                                 <property name="valign">center</property>
                                 <property name="hexpand">1</property>

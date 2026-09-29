@@ -169,7 +169,7 @@ QString TorrentDelegate::progressString(Torrent const& tor)
     {
         //: First part of torrent progress string,
         //: %1 is the percentage of torrent metadata downloaded
-        str = tr("Magnetized transfer - retrieving metadata (%1%)")
+        str = tr("Magnetized torrent - retrieving metadata (%1%)")
                   .arg(Formatter::percentToString(tor.metadataPercentDone() * 100.0));
     } else if (!is_done) // downloading
     {

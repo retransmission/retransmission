@@ -590,7 +590,7 @@ static tr_torrent_rename_done_func makeRenameDoneCallback(NSDictionary* contextI
                 stringWithFormat:NSLocalizedString(@"Not enough remaining disk space to download \"%@\" completely.", "Torrent disk space alert -> title"),
                                  self.name];
             alert.informativeText = [NSString stringWithFormat:NSLocalizedString(
-                                                                   @"The transfer will be paused."
+                                                                   @"The torrent will be paused."
                                                                     " Clear up space on %@ or deselect files in the torrent inspector to continue.",
                                                                    "Torrent disk space alert -> message"),
                                                                volumeName];
@@ -1036,7 +1036,7 @@ static tr_torrent_rename_done_func makeRenameDoneCallback(NSDictionary* contextI
                                        [NSString percentString:self.fStat.metadata_percent_complete longDecimals:YES]] :
             NSLocalizedString(@"torrent metadata needed", "Torrent -> progress string");
 
-        return [NSString stringWithFormat:@"%@ — %@", NSLocalizedString(@"Magnetized transfer", "Torrent -> progress string"), progressString];
+        return [NSString stringWithFormat:@"%@ — %@", NSLocalizedString(@"Magnetized torrent", "Torrent -> progress string"), progressString];
     }
 
     NSString* string;
