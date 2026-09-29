@@ -65,14 +65,14 @@ static NSString* const kWebSeedAnimationId = @"webSeed";
 
     //set table header tool tips
     [self.fPeerTable tableColumnWithIdentifier:@"Encryption"].headerToolTip = NSLocalizedString(
-        @"Encrypted Connection",
+        @"Encrypted connection",
         "inspector -> peer table -> header tool tip");
     [self.fPeerTable tableColumnWithIdentifier:@"Progress"].headerToolTip = NSLocalizedString(@"Available", "inspector -> peer table -> header tool tip");
-    [self.fPeerTable tableColumnWithIdentifier:@"DL From"].headerToolTip = NSLocalizedString(@"Downloading From Peer", "inspector -> peer table -> header tool tip");
-    [self.fPeerTable tableColumnWithIdentifier:@"UL To"].headerToolTip = NSLocalizedString(@"Uploading To Peer", "inspector -> peer table -> header tool tip");
+    [self.fPeerTable tableColumnWithIdentifier:@"DL From"].headerToolTip = NSLocalizedString(@"Downloading from peer", "inspector -> peer table -> header tool tip");
+    [self.fPeerTable tableColumnWithIdentifier:@"UL To"].headerToolTip = NSLocalizedString(@"Uploading to peer", "inspector -> peer table -> header tool tip");
 
     [self.fWebSeedTable tableColumnWithIdentifier:@"DL From"].headerToolTip = NSLocalizedString(
-        @"Downloading From Web Seed",
+        @"Downloading from web seed",
         "inspector -> web seed table -> header tool tip");
 
     self.fConnectedPeersField.placeholderString = NSLocalizedString(@"no peer info available", "Inspector -> Peers tab -> peers");
@@ -395,7 +395,7 @@ static NSString* const kWebSeedAnimationId = @"webSeed";
                                                               [NSString percentString:progress longDecimals:NO]];
         if (progress < 1.0 && [peer[@"Seed"] boolValue]) {
             progressString = [progressString
-                stringByAppendingFormat:@" (%@)", NSLocalizedString(@"Partial Seed", "Inspector -> Peers tab -> table row tooltip")];
+                stringByAppendingFormat:@" (%@)", NSLocalizedString(@"Partial seed", "Inspector -> Peers tab -> table row tooltip")];
         }
         [components addObject:progressString];
 

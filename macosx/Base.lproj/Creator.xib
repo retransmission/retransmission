@@ -277,7 +277,7 @@ Gw
                     </stepper>
                     <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="19">
                         <rect key="frame" x="18" y="56" width="77" height="16"/>
-                        <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="right" title="Torrent File:" usesSingleLineMode="YES" id="74">
+                        <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="right" title="Torrent file:" usesSingleLineMode="YES" id="74">
                             <font key="font" metaFont="system"/>
                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>

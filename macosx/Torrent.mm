@@ -2034,7 +2034,7 @@ static tr_torrent_rename_done_func makeRenameDoneCallback(NSDictionary* contextI
     }
     // Foundation undocumented behavior: values above INT32_MAX (68 years) are interpreted as negative values by `stringFromTimeInterval` (#3451)
     if (eta < 0 || eta > INT32_MAX || (fromIdle && eta >= kETAIdleDisplaySec)) {
-        return NSLocalizedString(@"remaining time unknown", "Torrent -> eta string");
+        return NSLocalizedString(@"Remaining time unknown", "Torrent -> eta string");
     }
 
     static NSDateComponentsFormatter* formatter;

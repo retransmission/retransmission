@@ -261,23 +261,23 @@ static CGFloat const kImageOverlap = 1.0;
     NSString* tooltip = nil;
     switch (priorities.count) {
     case 0:
-        tooltip = NSLocalizedString(@"Priority Not Available", "files tab -> tooltip");
+        tooltip = NSLocalizedString(@"Priority not available", "files tab -> tooltip");
         break;
     case 1:
         switch ([[priorities anyObject] intValue]) {
         case TR_PRI_LOW:
-            tooltip = NSLocalizedString(@"Low Priority", "files tab -> tooltip");
+            tooltip = NSLocalizedString(@"Low priority", "files tab -> tooltip");
             break;
         case TR_PRI_HIGH:
-            tooltip = NSLocalizedString(@"High Priority", "files tab -> tooltip");
+            tooltip = NSLocalizedString(@"High priority", "files tab -> tooltip");
             break;
         case TR_PRI_NORMAL:
-            tooltip = NSLocalizedString(@"Normal Priority", "files tab -> tooltip");
+            tooltip = NSLocalizedString(@"Normal priority", "files tab -> tooltip");
             break;
         }
         break;
     default:
-        tooltip = NSLocalizedString(@"Multiple Priorities", "files tab -> tooltip");
+        tooltip = NSLocalizedString(@"Multiple priorities", "files tab -> tooltip");
         break;
     }
     self.toolTip = tooltip;

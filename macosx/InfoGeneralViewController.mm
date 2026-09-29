@@ -105,7 +105,7 @@
         self.fHashField.toolTip = hashString;
         self.fSecureField.stringValue = torrent.privateTorrent ?
             NSLocalizedString(@"Private Torrent, non-tracker peer discovery disabled", "Inspector -> private torrent") :
-            NSLocalizedString(@"Public Torrent", "Inspector -> private torrent");
+            NSLocalizedString(@"Public torrent", "Inspector -> private torrent");
 
         NSString* commentString = torrent.comment;
         self.fCommentView.string = commentString;
