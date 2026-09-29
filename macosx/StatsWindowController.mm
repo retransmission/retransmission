@@ -71,11 +71,11 @@ static tr_session* fLib = NULL;
     self.window.collectionBehavior = NSWindowCollectionBehaviorFullScreenNone;
 
     //set label text
-    self.fUploadedLabelField.stringValue = [NSLocalizedString(@"Uploaded", "Stats window -> label") stringByAppendingString:@":"];
-    self.fDownloadedLabelField.stringValue = [NSLocalizedString(@"Downloaded", "Stats window -> label") stringByAppendingString:@":"];
-    self.fRatioLabelField.stringValue = [NSLocalizedString(@"Ratio", "Stats window -> label") stringByAppendingString:@":"];
-    self.fTimeLabelField.stringValue = [NSLocalizedString(@"Running Time", "Stats window -> label") stringByAppendingString:@":"];
-    self.fNumOpenedLabelField.stringValue = [NSLocalizedString(@"Program Started", "Stats window -> label") stringByAppendingString:@":"];
+    self.fUploadedLabelField.stringValue = NSLocalizedString(@"Uploaded:", "Stats window -> label");
+    self.fDownloadedLabelField.stringValue = NSLocalizedString(@"Downloaded:", "Stats window -> label");
+    self.fRatioLabelField.stringValue = NSLocalizedString(@"Ratio:", "Stats window -> label");
+    self.fTimeLabelField.stringValue = NSLocalizedString(@"Running time:", "Stats window -> label");
+    self.fNumOpenedLabelField.stringValue = NSLocalizedString(@"Program started:", "Stats window -> label");
 
     self.fResetButton.title = NSLocalizedString(@"Reset", "Stats window -> reset button");
 }
