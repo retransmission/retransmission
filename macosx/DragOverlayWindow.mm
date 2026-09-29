@@ -113,7 +113,7 @@
 - (void)setFile:(NSString*)file
 {
     [self.contentView setOverlay:[NSImage imageNamed:@"CreateLarge"]
-                        mainLine:NSLocalizedString(@"Create a Torrent File", "Drag overlay -> file")
+                        mainLine:NSLocalizedString(@"Create Torrent File", "Drag overlay -> file")
                          subLine:file];
     [self fadeIn];
 }

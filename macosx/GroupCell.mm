@@ -80,7 +80,7 @@ static CGFloat const kTrailingOffset = -5.0; // inverted for constraints.
     uploadIconView.image = [NSImage imageNamed:@"UpArrowGroupTemplate"];
     uploadIconView.toolTip = NSLocalizedString(@"Upload speed", "Torrent table -> group row -> tooltip");
     uploadField.toolTip = uploadIconView.toolTip;
-    uploadIconView.image.accessibilityDescription = NSLocalizedString(@"UL", "Torrent -> status image");
+    uploadIconView.image.accessibilityDescription = NSLocalizedString(@"Up", "Torrent -> status image");
 
     auto ratioIconView = [[NSImageView alloc] init];
     ratioIconView.image = [NSImage imageNamed:@"YingYangGroupTemplate"];

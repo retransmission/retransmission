@@ -135,7 +135,7 @@ Gw
                                             </textFieldCell>
                                         </tableColumn>
                                         <tableColumn identifier="Check" editable="NO" width="31" minWidth="10" maxWidth="1000" id="48">
-                                            <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="DL">
+                                            <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Down">
                                                 <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                 <color key="backgroundColor" name="headerColor" catalog="System" colorSpace="catalog"/>
                                             </tableHeaderCell>

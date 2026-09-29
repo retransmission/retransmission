@@ -961,9 +961,6 @@ static tr_torrent_rename_done_func makeRenameDoneCallback(NSDictionary* contextI
         error = [NSString stringWithFormat:@"(%@)", NSLocalizedString(@"unreadable error", "Torrent -> error string unreadable")];
     }
 
-    //libtransmission uses "Set Location", Mac client uses "Move data file to..." - very hacky!
-    error = [error stringByReplacingOccurrencesOfString:@"Set Location" withString:[@"Move Data File To" stringByAppendingEllipsis]];
-
     return error;
 }
 
@@ -1181,13 +1178,13 @@ static tr_torrent_rename_done_func makeRenameDoneCallback(NSDictionary* contextI
     if (self.active && !self.checking) {
         if (self.fStat.activity == TR_STATUS_DOWNLOAD) {
             string = [string stringByAppendingFormat:@" — %@: %@, %@: %@",
-                                                     NSLocalizedString(@"DL", "Torrent -> status string"),
+                                                     NSLocalizedString(@"Down", "Torrent -> status string"),
                                                      [NSString stringForSpeed:self.downloadRate],
-                                                     NSLocalizedString(@"UL", "Torrent -> status string"),
+                                                     NSLocalizedString(@"Up", "Torrent -> status string"),
                                                      [NSString stringForSpeed:self.uploadRate]];
         } else {
             string = [string stringByAppendingFormat:@" — %@: %@",
-                                                     NSLocalizedString(@"UL", "Torrent -> status string"),
+                                                     NSLocalizedString(@"Up", "Torrent -> status string"),
                                                      [NSString stringForSpeed:self.uploadRate]];
         }
     }
@@ -1228,9 +1225,9 @@ static tr_torrent_rename_done_func makeRenameDoneCallback(NSDictionary* contextI
 
     case TR_STATUS_DOWNLOAD:
         string = [NSString stringWithFormat:@"%@: %@, %@: %@",
-                                            NSLocalizedString(@"DL", "Torrent -> status string"),
+                                            NSLocalizedString(@"Down", "Torrent -> status string"),
                                             [NSString stringForSpeed:self.downloadRate],
-                                            NSLocalizedString(@"UL", "Torrent -> status string"),
+                                            NSLocalizedString(@"Up", "Torrent -> status string"),
                                             [NSString stringForSpeed:self.uploadRate]];
         break;
 
@@ -1238,7 +1235,7 @@ static tr_torrent_rename_done_func makeRenameDoneCallback(NSDictionary* contextI
         string = [NSString stringWithFormat:@"%@: %@, %@: %@",
                                             NSLocalizedString(@"Ratio", "Torrent -> status string"),
                                             [NSString stringForRatio:self.ratio],
-                                            NSLocalizedString(@"UL", "Torrent -> status string"),
+                                            NSLocalizedString(@"Up", "Torrent -> status string"),
                                             [NSString stringForSpeed:self.uploadRate]];
     }
 
