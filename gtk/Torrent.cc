@@ -397,7 +397,7 @@ Glib::ustring Torrent::Impl::get_short_status_text() const
 {
     switch (cache_.activity) {
     case TR_STATUS_STOPPED:
-        return cache_.finished ? _("Finished") : _("Paused");
+        return cache_.finished ? _("Seeding complete") : _("Paused");
 
     case TR_STATUS_CHECK_WAIT:
         return _("Queued for verification");

@@ -1808,7 +1808,7 @@
                         </textField>
                         <button verticalHuggingPriority="1000" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="1925">
                             <rect key="frame" x="106" y="204" width="338" height="18"/>
-                            <buttonCell key="cell" type="check" title="Use DHT to find more peers" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="1926">
+                            <buttonCell key="cell" type="check" title="Use DHT to find more peers for public torrents" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="1926">
                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                 <font key="font" metaFont="system"/>
                             </buttonCell>
@@ -1847,7 +1847,7 @@
                         </textField>
                         <textField focusRingType="none" verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1430">
                             <rect key="frame" x="106" y="276" width="251" height="16"/>
-                            <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" title="Maximum connections for new torrents:" id="1443">
+                            <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" title="Maximum peers for new torrents:" id="1443">
                                 <font key="font" metaFont="system"/>
                                 <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                 <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
@@ -1903,7 +1903,7 @@
                         </textField>
                         <button verticalHuggingPriority="1000" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="1741">
                             <rect key="frame" x="125" y="-1" width="199" height="18"/>
-                            <buttonCell key="cell" type="check" title="Enable automatic updates" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="1742">
+                            <buttonCell key="cell" type="check" title="Automatically update weekly" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="1742">
                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                 <font key="font" metaFont="system"/>
                             </buttonCell>
@@ -1931,7 +1931,7 @@
                         </textField>
                         <button verticalHuggingPriority="1000" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="1431">
                             <rect key="frame" x="106" y="224" width="293" height="18"/>
-                            <buttonCell key="cell" type="check" title="Use PEX to find more peers" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="1442">
+                            <buttonCell key="cell" type="check" title="Use PEX to find more peers for public torrents" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="1442">
                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                 <font key="font" metaFont="system"/>
                             </buttonCell>
@@ -1953,7 +1953,7 @@
                         </textField>
                         <button verticalHuggingPriority="1000" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="1951">
                             <rect key="frame" x="106" y="184" width="287" height="18"/>
-                            <buttonCell key="cell" type="check" title="Use Local Peer Discovery to find more peers" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="1952">
+                            <buttonCell key="cell" type="check" title="Use Local Peer Discovery to find more peers for public torrents" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="1952">
                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                 <font key="font" metaFont="system"/>
                             </buttonCell>

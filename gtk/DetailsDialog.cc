@@ -499,7 +499,7 @@ Glib::ustring activityString(int activity, bool finished)
         return C_("Verb", "Seeding");
 
     case TR_STATUS_STOPPED:
-        return finished ? _("Finished") : _("Paused");
+        return finished ? _("Seeding complete") : _("Paused");
 
     default:
         g_assert_not_reached();

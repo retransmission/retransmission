@@ -512,7 +512,7 @@ void DetailsDialog::refreshUI()
         if (is_mixed) {
             string = mixed;
         } else if (all_finished) {
-            string = tr("Finished");
+            string = tr("Seeding complete");
         } else if (all_paused) {
             string = tr("Paused");
         } else {

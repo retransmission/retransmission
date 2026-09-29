@@ -1106,7 +1106,7 @@ static tr_torrent_rename_done_func makeRenameDoneCallback(NSDictionary* contextI
         switch (self.fStat.activity) {
         case TR_STATUS_STOPPED:
             if (self.finishedSeeding) {
-                string = NSLocalizedString(@"Finished", "Torrent -> status string");
+                string = NSLocalizedString(@"Seeding complete", "Torrent -> status string");
             } else {
                 string = NSLocalizedString(@"Paused", "Torrent -> status string");
             }
@@ -1199,7 +1199,7 @@ static tr_torrent_rename_done_func makeRenameDoneCallback(NSDictionary* contextI
     switch (self.fStat.activity) {
     case TR_STATUS_STOPPED:
         if (self.finishedSeeding) {
-            string = NSLocalizedString(@"Finished", "Torrent -> status string");
+            string = NSLocalizedString(@"Seeding complete", "Torrent -> status string");
         } else {
             string = NSLocalizedString(@"Paused", "Torrent -> status string");
         }
@@ -1266,7 +1266,7 @@ static tr_torrent_rename_done_func makeRenameDoneCallback(NSDictionary* contextI
                     NSLocalizedString(@"Queued for download", "Torrent -> status string") :
                     NSLocalizedString(@"Queued for seeding", "Torrent -> status string");
             } else if (self.finishedSeeding) {
-                extra = NSLocalizedString(@"Finished", "Torrent -> status string");
+                extra = NSLocalizedString(@"Seeding complete", "Torrent -> status string");
             }
 
             return extra ? [string stringByAppendingFormat:@" (%@)", extra] : string;
