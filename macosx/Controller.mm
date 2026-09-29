@@ -829,12 +829,12 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
     alert.messageText = NSLocalizedString(@"Are you sure you want to quit?", "Confirm Quit panel -> title");
     alert.informativeText = active == 1 ?
         NSLocalizedString(
-            @"There is an active transfer that will be paused on quit."
-             " The transfer will automatically resume on the next launch.",
+            @"There is an active torrent that will be paused on quit."
+             " The torrent will start again automatically on the next launch.",
             "Confirm Quit panel -> message") :
         [NSString localizedStringWithFormat:NSLocalizedString(
-                                                @"There are %lu active transfers that will be paused on quit."
-                                                 " The transfers will automatically resume on the next launch.",
+                                                @"There are %lu active torrents that will be paused on quit."
+                                                 " The torrents will start again automatically on the next launch.",
                                                 "Confirm Quit panel -> message"),
                                             active];
     [alert addButtonWithTitle:NSLocalizedString(@"Quit", "Confirm Quit panel -> button")];
@@ -3697,7 +3697,7 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
         [segmentedControl setTag:ToolbarGroupTagResume forSegment:ToolbarGroupTagResume];
         [segmentedControl setImage:[NSImage imageWithSystemSymbolName:@"arrow.clockwise.circle.fill" accessibilityDescription:nil]
                         forSegment:ToolbarGroupTagResume];
-        [segmentedControl setToolTip:NSLocalizedString(@"Resume all transfers", "All toolbar item -> tooltip")
+        [segmentedControl setToolTip:NSLocalizedString(@"Start all torrents", "All toolbar item -> tooltip")
                           forSegment:ToolbarGroupTagResume];
         if ([toolbar isKindOfClass:Toolbar.class] && ((Toolbar*)toolbar).isRunningCustomizationPalette) {
             // On macOS 13.2, the palette autolayout will hang unless the segmentedControl width is longer than the groupItem paletteLabel (matters especially in Russian and French).
@@ -3706,7 +3706,7 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
         }
 
         groupItem.label = NSLocalizedString(@"Apply All", "All toolbar item -> label");
-        groupItem.paletteLabel = NSLocalizedString(@"Pause / Resume All", "All toolbar item -> palette label");
+        groupItem.paletteLabel = NSLocalizedString(@"Pause / Start All", "All toolbar item -> palette label");
         groupItem.visibilityPriority = NSToolbarItemVisibilityPriorityHigh;
         groupItem.subitems = @[ itemPause, itemResume ];
         groupItem.view = segmentedControl;
@@ -3715,7 +3715,7 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
 
         [groupItem createMenu:@[
             NSLocalizedString(@"Pause All", "All toolbar item -> label"),
-            NSLocalizedString(@"Resume All", "All toolbar item -> label")
+            NSLocalizedString(@"Start All", "All toolbar item -> label")
         ]];
 
         return groupItem;
@@ -3739,7 +3739,7 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
         [segmentedControl setTag:ToolbarGroupTagResume forSegment:ToolbarGroupTagResume];
         [segmentedControl setImage:[NSImage imageWithSystemSymbolName:@"arrow.clockwise" accessibilityDescription:nil]
                         forSegment:ToolbarGroupTagResume];
-        [segmentedControl setToolTip:NSLocalizedString(@"Resume selected transfers", "Selected toolbar item -> tooltip")
+        [segmentedControl setToolTip:NSLocalizedString(@"Start torrent", "Selected toolbar item -> tooltip")
                           forSegment:ToolbarGroupTagResume];
         if ([toolbar isKindOfClass:Toolbar.class] && ((Toolbar*)toolbar).isRunningCustomizationPalette) {
             // On macOS 13.2, the palette autolayout will hang unless the segmentedControl width is longer than the groupItem paletteLabel (matters especially in Russian and French).
@@ -3748,7 +3748,7 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
         }
 
         groupItem.label = NSLocalizedString(@"Apply Selected", "Selected toolbar item -> label");
-        groupItem.paletteLabel = NSLocalizedString(@"Pause / Resume Selected", "Selected toolbar item -> palette label");
+        groupItem.paletteLabel = NSLocalizedString(@"Pause / Start Selected", "Selected toolbar item -> palette label");
         groupItem.visibilityPriority = NSToolbarItemVisibilityPriorityHigh;
         groupItem.subitems = @[ itemPause, itemResume ];
         groupItem.view = segmentedControl;
@@ -3756,8 +3756,8 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
         groupItem.action = @selector(selectedToolbarClicked:);
 
         [groupItem createMenu:@[
-            NSLocalizedString(@"Pause Selected", "Selected toolbar item -> label"),
-            NSLocalizedString(@"Resume Selected", "Selected toolbar item -> label")
+            NSLocalizedString(@"Pause", "Selected toolbar item -> label"),
+            NSLocalizedString(@"Start", "Selected toolbar item -> label")
         ]];
 
         return groupItem;
@@ -4354,7 +4354,7 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
     }
 
     [menu addItemWithTitle:NSLocalizedString(@"Pause All", "Dock item") action:@selector(stopAllTorrents:) keyEquivalent:@""];
-    [menu addItemWithTitle:NSLocalizedString(@"Resume All", "Dock item") action:@selector(resumeAllTorrents:) keyEquivalent:@""];
+    [menu addItemWithTitle:NSLocalizedString(@"Start All", "Dock item") action:@selector(resumeAllTorrents:) keyEquivalent:@""];
     [menu addItem:[NSMenuItem separatorItem]];
     [menu addItemWithTitle:NSLocalizedString(@"Speed Limit", "Dock item") action:@selector(toggleSpeedLimit:) keyEquivalent:@""];
 

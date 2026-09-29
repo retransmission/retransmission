@@ -473,12 +473,12 @@
                             <menuItem isSeparatorItem="YES" id="1567">
                                 <modifierMask key="keyEquivalentModifierMask" command="YES"/>
                             </menuItem>
-                            <menuItem title="Pause Selected" secondaryImage="pause" catalog="system" keyEquivalent="." id="1403">
+                            <menuItem title="Pause" secondaryImage="pause" catalog="system" keyEquivalent="." id="1403">
                                 <connections>
                                     <action selector="stopSelectedTorrents:" target="206" id="1581"/>
                                 </connections>
                             </menuItem>
-                            <menuItem title="Resume Selected" secondaryImage="arrow.clockwise" catalog="system" keyEquivalent="/" id="1404">
+                            <menuItem title="Start" secondaryImage="arrow.clockwise" catalog="system" keyEquivalent="/" id="1404">
                                 <connections>
                                     <action selector="resumeSelectedTorrents:" target="206" id="1582"/>
                                 </connections>
@@ -526,7 +526,7 @@ CA
                                     <action selector="stopAllTorrents:" target="206" id="1417"/>
                                 </connections>
                             </menuItem>
-                            <menuItem title="Resume All" secondaryImage="arrow.clockwise.circle.fill" catalog="system" keyEquivalent="/" id="1414">
+                            <menuItem title="Start All" secondaryImage="arrow.clockwise.circle.fill" catalog="system" keyEquivalent="/" id="1414">
                                 <modifierMask key="keyEquivalentModifierMask" option="YES" command="YES"/>
                                 <connections>
                                     <action selector="resumeAllTorrents:" target="206" id="1418"/>
@@ -535,12 +535,12 @@ CA
                             <menuItem isSeparatorItem="YES" id="1805">
                                 <modifierMask key="keyEquivalentModifierMask" command="YES"/>
                             </menuItem>
-                            <menuItem title="Resume Selected Right Away" secondaryImage="arrow.clockwise.circle" catalog="system" id="1678">
+                            <menuItem title="Start Now" secondaryImage="arrow.clockwise.circle" catalog="system" id="1678">
                                 <connections>
                                     <action selector="resumeSelectedTorrentsNoWait:" target="206" id="1806"/>
                                 </connections>
                             </menuItem>
-                            <menuItem title="Resume All Waiting" secondaryImage="stopwatch" catalog="system" id="1804">
+                            <menuItem title="Start All Queued Now" secondaryImage="stopwatch" catalog="system" id="1804">
                                 <connections>
                                     <action selector="resumeWaitingTorrents:" target="206" id="1807"/>
                                 </connections>
@@ -696,17 +696,17 @@ CA
         </customObject>
         <menu title="Menu" id="456" userLabel="ContextRowMenu">
             <items>
-                <menuItem title="Pause Selected" secondaryImage="pause" catalog="system" tag="1" id="457">
+                <menuItem title="Pause" secondaryImage="pause" catalog="system" tag="1" id="457">
                     <connections>
                         <action selector="stopSelectedTorrents:" target="206" id="1583"/>
                     </connections>
                 </menuItem>
-                <menuItem title="Resume Selected" secondaryImage="arrow.clockwise" catalog="system" tag="1" id="1028">
+                <menuItem title="Start" secondaryImage="arrow.clockwise" catalog="system" tag="1" id="1028">
                     <connections>
                         <action selector="resumeSelectedTorrents:" target="206" id="1584"/>
                     </connections>
                 </menuItem>
-                <menuItem title="Resume Selected Right Away" secondaryImage="arrow.clockwise.circle" catalog="system" tag="1" id="1808">
+                <menuItem title="Start Now" secondaryImage="arrow.clockwise.circle" catalog="system" tag="1" id="1808">
                     <connections>
                         <action selector="resumeSelectedTorrentsNoWait:" target="206" id="1809"/>
                     </connections>

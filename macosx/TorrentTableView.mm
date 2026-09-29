@@ -552,11 +552,11 @@ static NSTimeInterval const kToggleProgressSeconds = 0.175;
             statusString = NSLocalizedString(@"Pause the transfer", "Torrent Table -> tooltip");
         else {
             if (NSApp.currentEvent.modifierFlags & NSEventModifierFlagOption) {
-                statusString = NSLocalizedString(@"Resume the transfer right away", "Torrent cell -> button info");
+                statusString = NSLocalizedString(@"Bypass the queue and start now", "Torrent cell -> button info");
             } else if (torrent.waitingToStart) {
                 statusString = NSLocalizedString(@"Stop waiting to start", "Torrent cell -> button info");
             } else {
-                statusString = NSLocalizedString(@"Resume the transfer", "Torrent cell -> button info");
+                statusString = NSLocalizedString(@"Start torrent", "Torrent cell -> button info");
             }
         }
     } else if ([view isKindOfClass:[TorrentCellActionButton class]]) {
