@@ -1517,7 +1517,7 @@
                         </textField>
                         <button translatesAutoresizingMaskIntoConstraints="NO" id="307">
                             <rect key="frame" x="172" y="29" width="162" height="18"/>
-                            <buttonCell key="cell" type="check" title="Schedule Speed Limit:" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="1280">
+                            <buttonCell key="cell" type="check" title="Scheduled times:" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="1280">
                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                 <font key="font" metaFont="system"/>
                             </buttonCell>
@@ -1532,7 +1532,7 @@
                         </imageView>
                         <textField focusRingType="none" verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="200">
                             <rect key="frame" x="192" y="53" width="324" height="28"/>
-                            <textFieldCell key="cell" controlSize="small" sendsActionOnEndEditing="YES" title="When enabled Speed Limit overrides the global bandwidth limits" id="1278">
+                            <textFieldCell key="cell" controlSize="small" sendsActionOnEndEditing="YES" title="Override normal speed limits manually or at scheduled times" id="1278">
                                 <font key="font" metaFont="smallSystem"/>
                                 <color key="textColor" name="disabledControlTextColor" catalog="System" colorSpace="catalog"/>
                                 <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
@@ -1556,7 +1556,7 @@
                         </textField>
                         <textField focusRingType="none" verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="196">
                             <rect key="frame" x="50" y="114" width="118" height="16"/>
-                            <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="right" title="Speed Limit mode:" id="1275">
+                            <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="right" title="Alternative speed limits:" id="1275">
                                 <font key="font" metaFont="system"/>
                                 <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                 <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
@@ -1624,7 +1624,7 @@
                         </textField>
                         <textField focusRingType="none" verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="163">
                             <rect key="frame" x="18" y="185" width="150" height="16"/>
-                            <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="right" title="Global bandwidth limits:" id="1270">
+                            <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="right" title="Speed limits:" id="1270">
                                 <font key="font" metaFont="system"/>
                                 <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                 <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>

@@ -465,7 +465,7 @@
                 <menuItem title="Torrent" id="1399">
                     <menu key="submenu" title="Torrent" id="1400">
                         <items>
-                            <menuItem title="Speed Limit" secondaryImage="tortoise" catalog="system" keyEquivalent="l" id="1566">
+                            <menuItem title="Alternative Speed Limits" secondaryImage="tortoise" catalog="system" keyEquivalent="l" id="1566">
                                 <connections>
                                     <action selector="toggleSpeedLimit:" target="206" id="2144"/>
                                 </connections>

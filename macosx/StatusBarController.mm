@@ -146,7 +146,7 @@ typedef NS_ENUM(NSUInteger, StatusTag) {
     if ([NSUserDefaults.standardUserDefaults boolForKey:@"SpeedLimit"]) {
         NSString* speedString = [NSString stringWithFormat:@"%@ (%@)",
                                                            NSLocalizedString(@"%ld KB/s", "Status Bar -> speed tooltip"),
-                                                           NSLocalizedString(@"Speed Limit", "Status Bar -> speed tooltip")];
+                                                           NSLocalizedString(@"Alternative Speed Limits", "Status Bar -> speed tooltip")];
 
         uploadText = [NSString stringWithFormat:speedString, [NSUserDefaults.standardUserDefaults integerForKey:@"SpeedLimitUploadLimit"]];
         downloadText = [NSString stringWithFormat:speedString, [NSUserDefaults.standardUserDefaults integerForKey:@"SpeedLimitDownloadLimit"]];

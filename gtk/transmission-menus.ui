@@ -467,7 +467,7 @@
     <section>
       <item>
         <attribute name="action">win.alt-speed-enabled</attribute>
-        <attribute name="label" translatable="yes">Enable Alternative Speed _Limits</attribute>
+        <attribute name="label" translatable="yes">Alternative Speed _Limits</attribute>
       </item>
     </section>
     <section>

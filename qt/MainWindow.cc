@@ -184,7 +184,7 @@ MainWindow::MainWindow(Session& session, Prefs& prefs, TorrentModel& model, bool
     connect(action_group, &QActionGroup::triggered, this, &MainWindow::onSortModeChanged);
 
     // NOLINTNEXTLINE(clang-analyzer-cplusplus.NewDeleteLeaks)
-    alt_speed_action_ = new QAction{ tr("Speed Limits"), this };
+    alt_speed_action_ = new QAction{ tr("Alternative Speed &Limits"), this };
     alt_speed_action_->setIcon(ui_.altSpeedButton->icon());
     alt_speed_action_->setCheckable(true);
     connect(alt_speed_action_, &QAction::triggered, this, &MainWindow::toggleSpeedMode);

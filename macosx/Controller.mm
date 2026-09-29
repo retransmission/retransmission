@@ -528,7 +528,7 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
     }
 
     self.fSpeedLimitButton.toolTip = NSLocalizedString(
-        @"Speed Limit overrides the total bandwidth limits with its own limits.",
+        @"Override normal speed limits manually or at scheduled times",
         "Main window -> 2nd bottom left button (turtle) tooltip");
 
     self.fClearCompletedButton.toolTip = NSLocalizedString(
@@ -3006,9 +3006,9 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
     [self.fStatusBar updateSpeedFieldsToolTips];
 
     if (![dict[@"ByUser"] boolValue]) {
-        NSString* title = isLimited ? NSLocalizedString(@"Speed Limit Auto Enabled", "notification title") :
-                                      NSLocalizedString(@"Speed Limit Auto Disabled", "notification title");
-        NSString* body = NSLocalizedString(@"Bandwidth settings changed", "notification description");
+        NSString* title = isLimited ? NSLocalizedString(@"Alternative Speed Limits Enabled", "notification title") :
+                                      NSLocalizedString(@"Alternative Speed Limits Disabled", "notification title");
+        NSString* body = NSLocalizedString(@"Changed at a scheduled time", "notification description");
 
         NSString* identifier = @"Bandwidth settings changed";
         UNMutableNotificationContent* content = [UNMutableNotificationContent new];
@@ -4351,7 +4351,8 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
     [menu addItemWithTitle:NSLocalizedString(@"Pause All", "Dock item") action:@selector(stopAllTorrents:) keyEquivalent:@""];
     [menu addItemWithTitle:NSLocalizedString(@"Start All", "Dock item") action:@selector(resumeAllTorrents:) keyEquivalent:@""];
     [menu addItem:[NSMenuItem separatorItem]];
-    [menu addItemWithTitle:NSLocalizedString(@"Speed Limit", "Dock item") action:@selector(toggleSpeedLimit:) keyEquivalent:@""];
+    [menu addItemWithTitle:NSLocalizedString(@"Alternative Speed Limits", "Dock item") action:@selector(toggleSpeedLimit:)
+             keyEquivalent:@""];
 
     return menu;
 }
