@@ -835,7 +835,7 @@
                             </child>
                             <child>
                               <object class="GtkCheckButton" id="pick_random_listening_port_at_start_check">
-                                <property name="label" translatable="yes">Pick a _random port every time Transmission is started</property>
+                                <property name="label" translatable="yes">Pick a _random port at startup</property>
                                 <property name="focusable">1</property>
                                 <property name="valign">center</property>
                                 <property name="hexpand">1</property>

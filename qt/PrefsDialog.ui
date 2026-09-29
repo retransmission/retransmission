@@ -694,7 +694,7 @@
           <item row="2" column="0" colspan="3">
            <widget class="QCheckBox" name="randomPeerPortCheck">
             <property name="text">
-             <string>Pick a &amp;random port every time Transmission is started</string>
+             <string>Pick a &amp;random port at startup</string>
             </property>
            </widget>
           </item>
