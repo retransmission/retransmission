@@ -282,7 +282,7 @@ To add a new primary URL, add it after a blank line.]]></property>
         </child>
         <child>
           <object class="GtkButton" id="new_button">
-            <property name="label" translatable="yes">_New</property>
+            <property name="label" translatable="yes">C_reate</property>
             <property name="focusable">1</property>
             <property name="receives-default">1</property>
             <property name="use-underline">1</property>

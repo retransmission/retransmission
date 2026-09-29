@@ -191,7 +191,7 @@ QVariant FileTreeModel::headerData(int column, Qt::Orientation orientation, int 
     if (orientation == Qt::Horizontal && role == Qt::DisplayRole) {
         switch (column) {
         case COL_NAME:
-            return tr("File");
+            return tr("Name");
 
         case COL_SIZE:
             return tr("Size");

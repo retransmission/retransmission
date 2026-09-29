@@ -651,7 +651,7 @@
        <item>
         <widget class="QGroupBox" name="incomingPeersSection">
          <property name="title">
-          <string>Incoming Peers</string>
+          <string>Listening Port</string>
          </property>
          <layout class="QGridLayout" name="incomingPeersSectionLayout" columnstretch="0,1,0">
           <item row="0" column="0">

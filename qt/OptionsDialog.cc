@@ -40,7 +40,7 @@ OptionsDialog::OptionsDialog(Session& session, Prefs const& prefs, AddData addme
 {
     ui_.setupUi(this);
 
-    setWindowTitle(add_.type == AddData::FILENAME ? tr("Open Torrent from File") : tr("Open Torrent from URL or Magnet Link"));
+    setWindowTitle(tr("Torrent Options"));
 
     edit_timer_.setInterval(2000);
     edit_timer_.setSingleShot(true);
