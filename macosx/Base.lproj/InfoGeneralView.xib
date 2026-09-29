@@ -131,7 +131,7 @@
                 </textField>
                 <textField verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="YES" preferredMaxLayoutWidth="0.0" translatesAutoresizingMaskIntoConstraints="NO" id="3">
                     <rect key="frame" x="10" y="202" width="114" height="14"/>
-                    <textFieldCell key="cell" sendsActionOnEndEditing="YES" title="Torrent Information" id="41">
+                    <textFieldCell key="cell" sendsActionOnEndEditing="YES" title="Details" id="41">
                         <font key="font" metaFont="smallSystemBold"/>
                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
@@ -155,7 +155,7 @@
                 </textField>
                 <textField verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="YES" preferredMaxLayoutWidth="0.0" translatesAutoresizingMaskIntoConstraints="NO" id="13">
                     <rect key="frame" x="10" y="28" width="41" height="14"/>
-                    <textFieldCell key="cell" sendsActionOnEndEditing="YES" title="Where" id="28">
+                    <textFieldCell key="cell" sendsActionOnEndEditing="YES" title="Location" id="28">
                         <font key="font" metaFont="smallSystemBold"/>
                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
@@ -163,7 +163,7 @@
                 </textField>
                 <textField horizontalHuggingPriority="249" verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="YES" preferredMaxLayoutWidth="0.0" translatesAutoresizingMaskIntoConstraints="NO" id="15">
                     <rect key="frame" x="10" y="12" width="68" height="14"/>
-                    <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="right" title="Data File:" id="26">
+                    <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="right" title="Location:" id="26">
                         <font key="font" metaFont="smallSystem"/>
                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>

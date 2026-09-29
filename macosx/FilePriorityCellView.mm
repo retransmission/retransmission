@@ -277,7 +277,7 @@ static CGFloat const kImageOverlap = 1.0;
         }
         break;
     default:
-        tooltip = NSLocalizedString(@"Multiple priorities", "files tab -> tooltip");
+        tooltip = NSLocalizedString(@"Mixed", "files tab -> tooltip");
         break;
     }
     self.toolTip = tooltip;
