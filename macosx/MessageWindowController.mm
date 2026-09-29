@@ -77,7 +77,7 @@ static NSUInteger const kMaxQueueLength = 10000U;
     //set images and text for popup button items
     [self.fLevelButton itemAtIndex:LevelButtonLevelError].title = NSLocalizedString(@"Error", "Message window -> level string");
     [self.fLevelButton itemAtIndex:LevelButtonLevelWarn].title = NSLocalizedString(@"Warning", "Message window -> level string");
-    [self.fLevelButton itemAtIndex:LevelButtonLevelInfo].title = NSLocalizedString(@"Info", "Message window -> level string");
+    [self.fLevelButton itemAtIndex:LevelButtonLevelInfo].title = NSLocalizedString(@"Information", "Message window -> level string");
     [self.fLevelButton itemAtIndex:LevelButtonLevelDebug].title = NSLocalizedString(@"Debug", "Message window -> level string");
     [self.fLevelButton itemAtIndex:LevelButtonLevelError].image = [self.class iconForLevel:TR_LOG_ERROR];
     [self.fLevelButton itemAtIndex:LevelButtonLevelWarn].image = [self.class iconForLevel:TR_LOG_WARN];
@@ -553,7 +553,7 @@ static NSUInteger const kMaxQueueLength = 10000U;
         levelString = NSLocalizedString(@"Warning", "Message window -> level");
         break;
     case TR_LOG_INFO:
-        levelString = NSLocalizedString(@"Info", "Message window -> level");
+        levelString = NSLocalizedString(@"Information", "Message window -> level");
         break;
     case TR_LOG_DEBUG:
         levelString = NSLocalizedString(@"Debug", "Message window -> level");

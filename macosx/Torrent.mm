@@ -1116,20 +1116,20 @@ static tr_torrent_rename_done_func makeRenameDoneCallback(NSDictionary* contextI
             break;
 
         case TR_STATUS_DOWNLOAD_WAIT:
-            string = [NSLocalizedString(@"Waiting to download", "Torrent -> status string") stringByAppendingEllipsis];
+            string = [NSLocalizedString(@"Queued for download", "Torrent -> status string") stringByAppendingEllipsis];
             break;
 
         case TR_STATUS_SEED_WAIT:
-            string = [NSLocalizedString(@"Waiting to seed", "Torrent -> status string") stringByAppendingEllipsis];
+            string = [NSLocalizedString(@"Queued for seeding", "Torrent -> status string") stringByAppendingEllipsis];
             break;
 
         case TR_STATUS_CHECK_WAIT:
-            string = [NSLocalizedString(@"Waiting to check existing data", "Torrent -> status string") stringByAppendingEllipsis];
+            string = [NSLocalizedString(@"Queued for verification", "Torrent -> status string") stringByAppendingEllipsis];
             break;
 
         case TR_STATUS_CHECK:
             string = [NSString stringWithFormat:@"%@ (%@)",
-                                                NSLocalizedString(@"Checking existing data", "Torrent -> status string"),
+                                                NSLocalizedString(@"Verifying local data", "Torrent -> status string"),
                                                 [NSString percentString:self.checkingProgress longDecimals:YES]];
             break;
 
@@ -1209,20 +1209,20 @@ static tr_torrent_rename_done_func makeRenameDoneCallback(NSDictionary* contextI
         break;
 
     case TR_STATUS_DOWNLOAD_WAIT:
-        string = [NSLocalizedString(@"Waiting to download", "Torrent -> status string") stringByAppendingEllipsis];
+        string = [NSLocalizedString(@"Queued for download", "Torrent -> status string") stringByAppendingEllipsis];
         break;
 
     case TR_STATUS_SEED_WAIT:
-        string = [NSLocalizedString(@"Waiting to seed", "Torrent -> status string") stringByAppendingEllipsis];
+        string = [NSLocalizedString(@"Queued for seeding", "Torrent -> status string") stringByAppendingEllipsis];
         break;
 
     case TR_STATUS_CHECK_WAIT:
-        string = [NSLocalizedString(@"Waiting to check existing data", "Torrent -> status string") stringByAppendingEllipsis];
+        string = [NSLocalizedString(@"Queued for verification", "Torrent -> status string") stringByAppendingEllipsis];
         break;
 
     case TR_STATUS_CHECK:
         string = [NSString stringWithFormat:@"%@ (%@)",
-                                            NSLocalizedString(@"Checking existing data", "Torrent -> status string"),
+                                            NSLocalizedString(@"Verifying local data", "Torrent -> status string"),
                                             [NSString percentString:self.checkingProgress longDecimals:YES]];
         break;
 
@@ -1266,8 +1266,8 @@ static tr_torrent_rename_done_func makeRenameDoneCallback(NSDictionary* contextI
             NSString* extra = nil;
             if (self.waitingToStart) {
                 extra = self.fStat.activity == TR_STATUS_DOWNLOAD_WAIT ?
-                    NSLocalizedString(@"Waiting to download", "Torrent -> status string") :
-                    NSLocalizedString(@"Waiting to seed", "Torrent -> status string");
+                    NSLocalizedString(@"Queued for download", "Torrent -> status string") :
+                    NSLocalizedString(@"Queued for seeding", "Torrent -> status string");
             } else if (self.finishedSeeding) {
                 extra = NSLocalizedString(@"Seeding complete", "Torrent -> status string");
             }
@@ -1276,11 +1276,11 @@ static tr_torrent_rename_done_func makeRenameDoneCallback(NSDictionary* contextI
         }
 
     case TR_STATUS_CHECK_WAIT:
-        return [NSLocalizedString(@"Waiting to check existing data", "Torrent -> status string") stringByAppendingEllipsis];
+        return [NSLocalizedString(@"Queued for verification", "Torrent -> status string") stringByAppendingEllipsis];
 
     case TR_STATUS_CHECK:
         return [NSString stringWithFormat:@"%@ (%@)",
-                                          NSLocalizedString(@"Checking existing data", "Torrent -> status string"),
+                                          NSLocalizedString(@"Verifying local data", "Torrent -> status string"),
                                           [NSString percentString:self.checkingProgress longDecimals:YES]];
 
     case TR_STATUS_DOWNLOAD:
