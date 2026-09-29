@@ -3665,7 +3665,7 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
         ((NSButtonCell*)((NSButton*)item.view).cell).showsStateBy = NSContentsCellMask; //blue when enabled
 
         item.label = NSLocalizedString(@"Inspector", "Inspector toolbar item -> label");
-        item.paletteLabel = NSLocalizedString(@"Toggle Inspector", "Inspector toolbar item -> palette label");
+        item.paletteLabel = NSLocalizedString(@"Inspector", "Inspector toolbar item -> palette label");
         item.toolTip = NSLocalizedString(@"Toggle the torrent inspector", "Inspector toolbar item -> tooltip");
         item.image = [NSImage imageWithSystemSymbolName:@"info.circle" accessibilityDescription:nil];
         item.target = self;
