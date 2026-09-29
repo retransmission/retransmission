@@ -1792,7 +1792,7 @@
                     <subviews>
                         <textField focusRingType="none" verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1427">
                             <rect key="frame" x="352" y="301" width="39" height="16"/>
-                            <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" title="peers" id="1447">
+                            <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" id="1447">
                                 <font key="font" metaFont="system"/>
                                 <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                 <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
@@ -1831,7 +1831,7 @@
                         </button>
                         <textField focusRingType="none" verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1428">
                             <rect key="frame" x="417" y="276" width="39" height="16"/>
-                            <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" title="peers" id="1446">
+                            <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" id="1446">
                                 <font key="font" metaFont="system"/>
                                 <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                 <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
