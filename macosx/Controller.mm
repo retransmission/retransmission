@@ -353,13 +353,14 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
     NSArray* apps = [NSRunningApplication runningApplicationsWithBundleIdentifier:NSBundle.mainBundle.bundleIdentifier];
     if (apps.count > 1) {
         NSAlert* alert = [[NSAlert alloc] init];
-        [alert addButtonWithTitle:NSLocalizedString(@"OK", TR_PROJ_APPNAME_CAPITALIZED " already running alert -> button")];
-        alert.messageText = NSLocalizedString(@TR_PROJ_APPNAME_CAPITALIZED " is already running.", TR_PROJ_APPNAME_CAPITALIZED " already running alert -> title");
-        alert.informativeText = NSLocalizedString(
-            @"There is already a copy of " TR_PROJ_APPNAME_CAPITALIZED
-             " running. "
-             "This copy cannot be opened until that instance is quit.",
-            TR_PROJ_APPNAME_CAPITALIZED " already running alert -> message");
+        [alert addButtonWithTitle:NSLocalizedString(@"OK", "Already running alert -> button")];
+        alert.messageText = [NSString stringWithFormat:NSLocalizedString(@"%@ is already running.", "Already running alert -> title"),
+                                                       @TR_PROJ_APPNAME_CAPITALIZED];
+        alert.informativeText = [NSString stringWithFormat:NSLocalizedString(
+                                                               @"There is already a copy of %@ running. "
+                                                                "This copy cannot be opened until that instance is quit.",
+                                                               "Already running alert -> message"),
+                                                           @TR_PROJ_APPNAME_CAPITALIZED];
         alert.alertStyle = NSAlertStyleCritical;
 
         [alert runModal];
@@ -704,13 +705,14 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
         NSAlert* alert = [[NSAlert alloc] init];
         [alert addButtonWithTitle:NSLocalizedString(@"I Accept", "Legal alert -> button")];
         [alert addButtonWithTitle:NSLocalizedString(@"Quit", "Legal alert -> button")];
-        alert.messageText = NSLocalizedString(@"Welcome to " TR_PROJ_APPNAME_CAPITALIZED, "Legal alert -> title");
-        alert.informativeText = NSLocalizedString(
-            @TR_PROJ_APPNAME_CAPITALIZED
-            " is a file-sharing program."
-            " When you run a torrent, its data will be made available to others by means of upload."
-            " You and you alone are fully responsible for exercising proper judgement and abiding by your local laws.",
-            "Legal alert -> message");
+        alert.messageText = [NSString stringWithFormat:NSLocalizedString(@"Welcome to %@", "Legal alert -> title"), @TR_PROJ_APPNAME_CAPITALIZED];
+        alert.informativeText = [NSString
+            stringWithFormat:NSLocalizedString(
+                                 @"%@ is a file-sharing program."
+                                  " When you run a torrent, its data will be made available to others by means of upload."
+                                  " You and you alone are fully responsible for exercising proper judgement and abiding by your local laws.",
+                                 "Legal alert -> message"),
+                             @TR_PROJ_APPNAME_CAPITALIZED];
         alert.alertStyle = NSAlertStyleInformational;
 
         if ([alert runModal] == NSAlertSecondButtonReturn) {
@@ -756,11 +758,12 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
 
             NSString* donateMessage = [NSString
                 stringWithFormat:@"%@\n\n%@",
-                                 NSLocalizedString(
-                                     @TR_PROJ_APPNAME_CAPITALIZED " is a full-featured torrent application."
-                                                                  " A lot of time and effort have gone into development, coding, and refinement."
-                                                                  " If you enjoy using it, please consider showing your love with a donation.",
-                                     "Donation beg -> message"),
+                                 [NSString stringWithFormat:NSLocalizedString(
+                                                                @"%@ is a full-featured torrent application."
+                                                                 " A lot of time and effort have gone into development, coding, and refinement."
+                                                                 " If you enjoy using it, please consider showing your love with a donation.",
+                                                                "Donation beg -> message"),
+                                                            @TR_PROJ_APPNAME_CAPITALIZED],
                                  NSLocalizedString(@"Donate or not, there will be no difference to your torrenting experience.", "Donation beg -> message")];
 
             alert.informativeText = donateMessage;

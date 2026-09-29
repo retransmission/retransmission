@@ -350,18 +350,18 @@ typedef NS_ENUM(NSInteger, TrackerSegmentTag) {
             alert.messageText = [NSString
                 localizedStringWithFormat:NSLocalizedString(@"Are you sure you want to remove %lu trackers?", "Remove trackers alert -> title"),
                                           removeTrackerCount];
-            alert.informativeText = NSLocalizedString(
-                @"Once removed, " TR_PROJ_APPNAME_CAPITALIZED
-                 " will no longer attempt to contact them."
-                 " This cannot be undone.",
-                "Remove trackers alert -> message");
+            alert.informativeText = [NSString stringWithFormat:NSLocalizedString(
+                                                                   @"Once removed, %@ will no longer attempt to contact them."
+                                                                    " This cannot be undone.",
+                                                                   "Remove trackers alert -> message"),
+                                                               @TR_PROJ_APPNAME_CAPITALIZED];
         } else {
             alert.messageText = NSLocalizedString(@"Are you sure you want to remove this tracker?", "Remove trackers alert -> title");
-            alert.informativeText = NSLocalizedString(
-                @"Once removed, " TR_PROJ_APPNAME_CAPITALIZED
-                 " will no longer attempt to contact it."
-                 " This cannot be undone.",
-                "Remove trackers alert -> message");
+            alert.informativeText = [NSString stringWithFormat:NSLocalizedString(
+                                                                   @"Once removed, %@ will no longer attempt to contact it."
+                                                                    " This cannot be undone.",
+                                                                   "Remove trackers alert -> message"),
+                                                               @TR_PROJ_APPNAME_CAPITALIZED];
         }
 
         [alert addButtonWithTitle:NSLocalizedString(@"Remove", "Remove trackers alert -> button")];

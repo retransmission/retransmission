@@ -105,11 +105,11 @@ static tr_session* fLib = NULL;
 
     NSAlert* alert = [[NSAlert alloc] init];
     alert.messageText = NSLocalizedString(@"Are you sure you want to reset usage statistics?", "Stats reset -> title");
-    alert.informativeText = NSLocalizedString(
-        @"This will clear the global statistics displayed by " TR_PROJ_APPNAME_CAPITALIZED
-         "."
-         " Individual transfer statistics will not be affected.",
-        "Stats reset -> message");
+    alert.informativeText = [NSString stringWithFormat:NSLocalizedString(
+                                                           @"This will clear the global statistics displayed by %@."
+                                                            " Individual transfer statistics will not be affected.",
+                                                           "Stats reset -> message"),
+                                                       @TR_PROJ_APPNAME_CAPITALIZED];
     alert.alertStyle = NSAlertStyleWarning;
     [alert addButtonWithTitle:NSLocalizedString(@"Reset", "Stats reset -> button")];
     [alert addButtonWithTitle:NSLocalizedString(@"Cancel", "Stats reset -> button")];
