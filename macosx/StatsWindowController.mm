@@ -104,7 +104,7 @@ static tr_session* fLib = NULL;
     }
 
     NSAlert* alert = [[NSAlert alloc] init];
-    alert.messageText = NSLocalizedString(@"Are you sure you want to reset usage statistics?", "Stats reset -> title");
+    alert.messageText = NSLocalizedString(@"Reset your statistics?", "Stats reset -> title");
     alert.informativeText = [NSString stringWithFormat:NSLocalizedString(
                                                            @"This will clear the global statistics displayed by %@."
                                                             " Individual transfer statistics will not be affected.",

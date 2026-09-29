@@ -140,7 +140,7 @@
                     </imageView>
                     <button translatesAutoresizingMaskIntoConstraints="NO" id="22">
                         <rect key="frame" x="99" y="86" width="68" height="18"/>
-                        <buttonCell key="cell" type="check" title="Private" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="77">
+                        <buttonCell key="cell" type="check" title="Private torrent" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="77">
                             <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                             <font key="font" metaFont="system"/>
                         </buttonCell>
@@ -358,7 +358,7 @@ Gw
             <subviews>
                 <textField verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="59">
                     <rect key="frame" x="18" y="48" width="312" height="16"/>
-                    <textFieldCell key="cell" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" title="Creating torrent file…" id="83">
+                    <textFieldCell key="cell" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" title="Creating torrent…" id="83">
                         <font key="font" metaFont="system"/>
                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>

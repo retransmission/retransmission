@@ -163,7 +163,7 @@
                                     <action selector="checkForUpdates:" target="1812" id="1814"/>
                                 </connections>
                             </menuItem>
-                            <menuItem title="Donate…" tag="5678" id="3212">
+                            <menuItem title="Donate" tag="5678" id="3212">
                                 <imageReference key="secondaryImage" image="heart" catalog="system" symbolScale="default" variableValue="1"/>
                                 <connections>
                                     <action selector="linkDonate:" target="206" id="3213"/>

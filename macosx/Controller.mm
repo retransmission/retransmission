@@ -3622,7 +3622,7 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
 
         item.label = NSLocalizedString(@"Create", "Create toolbar item -> label");
         item.paletteLabel = NSLocalizedString(@"Create Torrent File", "Create toolbar item -> palette label");
-        item.toolTip = NSLocalizedString(@"Create torrent file", "Create toolbar item -> tooltip");
+        item.toolTip = NSLocalizedString(@"Create a new torrent", "Create toolbar item -> tooltip");
         item.image = [NSImage imageWithSystemSymbolName:@"doc.badge.plus" accessibilityDescription:nil];
         item.target = self;
         item.action = @selector(createFile:);
@@ -3634,7 +3634,7 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
 
         item.label = NSLocalizedString(@"Open", "Open toolbar item -> label");
         item.paletteLabel = NSLocalizedString(@"Open Torrent Files", "Open toolbar item -> palette label");
-        item.toolTip = NSLocalizedString(@"Open torrent files", "Open toolbar item -> tooltip");
+        item.toolTip = NSLocalizedString(@"Open a torrent", "Open toolbar item -> tooltip");
         item.image = [NSImage imageWithSystemSymbolName:@"folder" accessibilityDescription:nil];
         item.target = self;
         item.action = @selector(openShowSheet:);
