@@ -223,7 +223,7 @@
                 </button>
                 <button translatesAutoresizingMaskIntoConstraints="NO" id="117">
                     <rect key="frame" x="11" y="11" width="187" height="16"/>
-                    <buttonCell key="cell" type="check" title="Stop seeding when inactive for:" bezelStyle="regularSquare" imagePosition="left" alignment="left" controlSize="small" state="on" inset="2" id="118">
+                    <buttonCell key="cell" type="check" title="Stop seeding if idle for:" bezelStyle="regularSquare" imagePosition="left" alignment="left" controlSize="small" state="on" inset="2" id="118">
                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                         <font key="font" metaFont="smallSystem"/>
                     </buttonCell>

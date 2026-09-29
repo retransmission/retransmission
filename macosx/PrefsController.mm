@@ -278,7 +278,7 @@ static NSString* const kWebUIURLFormat = @"http://localhost:%ld/";
         item.action = @selector(setPrefView:);
         item.autovalidates = NO;
     } else if ([ident isEqualToString:ToolbarTabBandwidth]) {
-        item.label = NSLocalizedString(@"Bandwidth", "Preferences -> toolbar item title");
+        item.label = NSLocalizedString(@"Speed", "Preferences -> toolbar item title");
         item.image = [NSImage imageWithSystemSymbolName:@"speedometer" accessibilityDescription:nil];
         item.target = self;
         item.action = @selector(setPrefView:);
@@ -936,7 +936,7 @@ static NSString* const kWebUIURLFormat = @"http://localhost:%ld/";
         self.fShowMagnetAddWindowCheck.state = NSControlStateValueOn;
         self.fShowMagnetAddWindowCheck.enabled = NO;
         self.fShowMagnetAddWindowCheck.toolTip = NSLocalizedString(
-            @"This option is not available if Default location is set to Same as torrent file.",
+            @"This option is not available if Save to location is set to Same as torrent file.",
             "Preferences -> Transfers -> Adding -> Magnet tooltip");
     } else {
         self.fShowMagnetAddWindowCheck.state = [self.fDefaults boolForKey:@"MagnetOpenAsk"];

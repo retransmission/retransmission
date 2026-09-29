@@ -412,7 +412,7 @@
                                             </popUpButton>
                                             <textField focusRingType="none" verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="59">
                                                 <rect key="frame" x="84" y="276" width="103" height="16"/>
-                                                <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" title="Default location:" id="1216">
+                                                <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" title="Save to location:" id="1216">
                                                     <font key="font" metaFont="system"/>
                                                     <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
@@ -438,7 +438,7 @@
                                             </button>
                                             <button translatesAutoresizingMaskIntoConstraints="NO" id="1939">
                                                 <rect key="frame" x="84" y="190" width="221" height="18"/>
-                                                <buttonCell key="cell" type="check" title="Append .part to incomplete files" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="1940">
+                                                <buttonCell key="cell" type="check" title="Append &quot;.part&quot; to incomplete files' names" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="1940">
                                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                                     <font key="font" metaFont="system"/>
                                                 </buttonCell>
@@ -449,7 +449,7 @@
                                             </button>
                                             <button translatesAutoresizingMaskIntoConstraints="NO" id="209">
                                                 <rect key="frame" x="84" y="56" width="177" height="18"/>
-                                                <buttonCell key="cell" type="check" title="Watch for torrent files in:" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="1219">
+                                                <buttonCell key="cell" type="check" title="Automatically add torrent files from:" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="1219">
                                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                                     <font key="font" metaFont="system"/>
                                                 </buttonCell>
@@ -770,7 +770,7 @@
                                             </textField>
                                             <button verticalHuggingPriority="1000" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="1958">
                                                 <rect key="frame" x="76" y="214" width="217" height="18"/>
-                                                <buttonCell key="cell" type="check" title="Stop seeding when inactive for:" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="1962">
+                                                <buttonCell key="cell" type="check" title="Stop seeding if idle for:" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="1962">
                                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                                     <font key="font" metaFont="system"/>
                                                 </buttonCell>
@@ -1819,7 +1819,7 @@
                         </button>
                         <button verticalHuggingPriority="1000" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="1421">
                             <rect key="frame" x="125" y="128" width="183" height="18"/>
-                            <buttonCell key="cell" type="check" title="Ignore unencrypted peers" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="1454">
+                            <buttonCell key="cell" type="check" title="Require encryption" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="1454">
                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                 <font key="font" metaFont="system"/>
                             </buttonCell>
@@ -1871,7 +1871,7 @@
                         </textField>
                         <button verticalHuggingPriority="1000" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="1423">
                             <rect key="frame" x="106" y="148" width="166" height="18"/>
-                            <buttonCell key="cell" type="check" title="Prefer encrypted peers" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="1452">
+                            <buttonCell key="cell" type="check" title="Prefer encryption" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="1452">
                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                 <font key="font" metaFont="system"/>
                             </buttonCell>
@@ -1915,7 +1915,7 @@
                         </button>
                         <textField focusRingType="none" verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1425">
                             <rect key="frame" x="106" y="301" width="186" height="16"/>
-                            <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" title="Global maximum connections:" id="1450">
+                            <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="left" title="Maximum peers overall:" id="1450">
                                 <font key="font" metaFont="system"/>
                                 <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                 <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
@@ -2150,7 +2150,7 @@
                         </textField>
                         <textField focusRingType="none" verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="2081">
                             <rect key="frame" x="18" y="104" width="132" height="16"/>
-                            <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="right" title="Peer listening port:" usesSingleLineMode="YES" id="2082">
+                            <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="right" title="Port for incoming connections:" usesSingleLineMode="YES" id="2082">
                                 <font key="font" metaFont="system"/>
                                 <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                 <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
@@ -2469,7 +2469,7 @@
                         </textField>
                         <button horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="1747">
                             <rect key="frame" x="38" y="139" width="323" height="18"/>
-                            <buttonCell key="cell" type="check" title="Only allow the following IP addresses to connect:" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="1748">
+                            <buttonCell key="cell" type="check" title="Only allow these IP addresses:" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="1748">
                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                 <font key="font" metaFont="system"/>
                             </buttonCell>
@@ -2481,7 +2481,7 @@
                         </button>
                         <button translatesAutoresizingMaskIntoConstraints="NO" id="1504">
                             <rect key="frame" x="38" y="269" width="163" height="18"/>
-                            <buttonCell key="cell" type="check" title="Require authentication" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="1505">
+                            <buttonCell key="cell" type="check" title="Use authentication" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="1505">
                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                 <font key="font" metaFont="system"/>
                             </buttonCell>
@@ -2505,7 +2505,7 @@
                         </button>
                         <button translatesAutoresizingMaskIntoConstraints="NO" id="1483">
                             <rect key="frame" x="18" y="363" width="159" height="18"/>
-                            <buttonCell key="cell" type="check" title="Enable remote access" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="1502">
+                            <buttonCell key="cell" type="check" title="Allow remote access" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="1502">
                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                 <font key="font" metaFont="system"/>
                             </buttonCell>
@@ -2577,7 +2577,7 @@
                         </textField>
                         <textField focusRingType="none" verticalHuggingPriority="750" horizontalCompressionResistancePriority="250" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1492" customClass="ColorTextField">
                             <rect key="frame" x="38" y="178" width="92" height="16"/>
-                            <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="right" title="Listening port:" id="1493">
+                            <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="right" title="HTTP port:" id="1493">
                                 <font key="font" metaFont="system"/>
                                 <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                 <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
@@ -2588,7 +2588,7 @@
                         </textField>
                         <button verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="1717">
                             <rect key="frame" x="33" y="301" width="167" height="32"/>
-                            <buttonCell key="cell" type="push" title="Launch Web Interface" bezelStyle="rounded" alignment="center" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="1718">
+                            <buttonCell key="cell" type="push" title="Open Web Client" bezelStyle="rounded" alignment="center" state="on" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="1718">
                                 <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                 <font key="font" metaFont="system"/>
                             </buttonCell>
