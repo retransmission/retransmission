@@ -148,14 +148,14 @@
         <item>
           <attribute name="action">win.copy-magnet-link-to-clipboard</attribute>
           <attribute name="icon">edit-copy</attribute>
-          <attribute name="label" translatable="yes">Copy _Magnet Link to Clipboard</attribute>
+          <attribute name="label" translatable="yes">_Copy Magnet Link to Clipboard</attribute>
         </item>
       </section>
       <section>
         <item>
           <attribute name="action">win.remove-torrent</attribute>
           <attribute name="icon">list-remove</attribute>
-          <attribute name="label" translatable="yes">Remove torrent</attribute>
+          <attribute name="label" translatable="yes">_Remove</attribute>
           <attribute name="accel">Delete</attribute>
         </item>
         <item>
@@ -413,14 +413,14 @@
       <item>
         <attribute name="action">win.copy-magnet-link-to-clipboard</attribute>
         <attribute name="icon">edit-copy</attribute>
-        <attribute name="label" translatable="yes">Copy _Magnet Link to Clipboard</attribute>
+        <attribute name="label" translatable="yes">_Copy Magnet Link to Clipboard</attribute>
       </item>
     </section>
     <section>
       <item>
         <attribute name="action">win.remove-torrent</attribute>
         <attribute name="icon">list-remove</attribute>
-        <attribute name="label" translatable="yes">Remove torrent</attribute>
+        <attribute name="label" translatable="yes">_Remove</attribute>
         <attribute name="accel">Delete</attribute>
       </item>
       <item>

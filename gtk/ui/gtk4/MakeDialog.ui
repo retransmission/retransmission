@@ -110,7 +110,7 @@
                     </child>
                     <child>
                       <object class="GtkLabel" id="piece_size_label">
-                        <property name="label" translatable="yes">Piece size:</property>
+                        <property name="label" translatable="yes">Piece si_ze:</property>
                         <property name="use-underline">1</property>
                         <property name="mnemonic-widget">piece_size_scale</property>
                         <property name="xalign">0</property>
