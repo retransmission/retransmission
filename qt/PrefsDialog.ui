@@ -97,7 +97,7 @@
             <item>
              <widget class="QLabel" name="altSpeedLimitsSectionDescriptionLabel">
               <property name="text">
-               <string>&lt;small&gt;Override normal speed limits manually or at scheduled times&lt;/small&gt;</string>
+               <string>Override normal speed limits manually or at scheduled times</string>
               </property>
              </widget>
             </item>

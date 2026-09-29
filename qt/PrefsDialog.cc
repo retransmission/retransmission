@@ -253,6 +253,9 @@ void PrefsDialog::initSpeedTab()
     ui_.altUploadSpeedLimitSpin->setSuffix(suffix);
     ui_.altDownloadSpeedLimitSpin->setSuffix(suffix);
 
+    auto* const alt_description = ui_.altSpeedLimitsSectionDescriptionLabel;
+    alt_description->setText(QStringLiteral("<small>%1</small>").arg(alt_description->text()));
+
     initWidget(ui_.uploadSpeedLimitCheck, TR_KEY_speed_limit_up_enabled);
     initWidget(ui_.uploadSpeedLimitSpin, TR_KEY_speed_limit_up);
     initWidget(ui_.downloadSpeedLimitCheck, TR_KEY_speed_limit_down_enabled);
