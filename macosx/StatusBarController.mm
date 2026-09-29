@@ -101,10 +101,8 @@ typedef NS_ENUM(NSUInteger, StatusTag) {
 
         auto const stats = total ? tr_sessionGetCumulativeStats(self.fLib) : tr_sessionGetStats(self.fLib);
 
-        statusString = [NSString stringWithFormat:@"%@: %@  %@: %@",
-                                                  NSLocalizedString(@"Down", "status bar -> status label"),
+        statusString = [NSString stringWithFormat:NSLocalizedString(@"Down: %@, Up: %@", "status bar -> status label"),
                                                   [NSString stringForFileSize:stats.downloadedBytes],
-                                                  NSLocalizedString(@"Up", "status bar -> status label"),
                                                   [NSString stringForFileSize:stats.uploadedBytes]];
     }
 

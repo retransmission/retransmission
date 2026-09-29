@@ -1177,15 +1177,14 @@ static tr_torrent_rename_done_func makeRenameDoneCallback(NSDictionary* contextI
     //append even if error
     if (self.active && !self.checking) {
         if (self.fStat.activity == TR_STATUS_DOWNLOAD) {
-            string = [string stringByAppendingFormat:@" — %@: %@, %@: %@",
-                                                     NSLocalizedString(@"Down", "Torrent -> status string"),
-                                                     [NSString stringForSpeed:self.downloadRate],
-                                                     NSLocalizedString(@"Up", "Torrent -> status string"),
-                                                     [NSString stringForSpeed:self.uploadRate]];
+            string = [string stringByAppendingFormat:@" — %@",
+                                                     [NSString stringWithFormat:NSLocalizedString(@"Down: %@, Up: %@", "Torrent -> status string"),
+                                                                                [NSString stringForSpeed:self.downloadRate],
+                                                                                [NSString stringForSpeed:self.uploadRate]]];
         } else {
-            string = [string stringByAppendingFormat:@" — %@: %@",
-                                                     NSLocalizedString(@"Up", "Torrent -> status string"),
-                                                     [NSString stringForSpeed:self.uploadRate]];
+            string = [string stringByAppendingFormat:@" — %@",
+                                                     [NSString stringWithFormat:NSLocalizedString(@"Up: %@", "Torrent -> status string"),
+                                                                                [NSString stringForSpeed:self.uploadRate]]];
         }
     }
 
@@ -1224,18 +1223,14 @@ static tr_torrent_rename_done_func makeRenameDoneCallback(NSDictionary* contextI
         break;
 
     case TR_STATUS_DOWNLOAD:
-        string = [NSString stringWithFormat:@"%@: %@, %@: %@",
-                                            NSLocalizedString(@"Down", "Torrent -> status string"),
+        string = [NSString stringWithFormat:NSLocalizedString(@"Down: %@, Up: %@", "Torrent -> status string"),
                                             [NSString stringForSpeed:self.downloadRate],
-                                            NSLocalizedString(@"Up", "Torrent -> status string"),
                                             [NSString stringForSpeed:self.uploadRate]];
         break;
 
     case TR_STATUS_SEED:
-        string = [NSString stringWithFormat:@"%@: %@, %@: %@",
-                                            NSLocalizedString(@"Ratio", "Torrent -> status string"),
+        string = [NSString stringWithFormat:NSLocalizedString(@"Ratio: %@, Up: %@", "Torrent -> status string"),
                                             [NSString stringForRatio:self.ratio],
-                                            NSLocalizedString(@"Up", "Torrent -> status string"),
                                             [NSString stringForSpeed:self.uploadRate]];
     }
 
