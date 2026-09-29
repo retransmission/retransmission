@@ -193,7 +193,7 @@
                 </scrollView>
                 <textField verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="3">
                     <rect key="frame" x="10" y="12" width="304" height="28"/>
-                    <textFieldCell key="cell" controlSize="small" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" alignment="center" placeholderString="no peer info available" id="30">
+                    <textFieldCell key="cell" controlSize="small" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" alignment="center" id="30">
                         <font key="font" metaFont="smallSystem"/>
                         <string key="title">Multiline Label
 Multiline Label</string>

@@ -75,6 +75,8 @@ static NSString* const kWebSeedAnimationId = @"webSeed";
         @"Downloading From Web Seed",
         "inspector -> web seed table -> header tool tip");
 
+    self.fConnectedPeersField.placeholderString = NSLocalizedString(@"no peer info available", "Inspector -> Peers tab -> peers");
+
     //prepare for animating peer table and web seed table
     self.fViewTopMargin = self.fWebSeedTableTopConstraint.constant;
 
