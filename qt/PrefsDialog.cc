@@ -426,7 +426,7 @@ void PrefsDialog::onBlocklistUpdateFailed(QString const& message)
     // SECURITY: `message` originates from the session -- a remote daemon can be hostile --
     // and this dialog renders RichText, so toHtmlEscaped() is load-bearing: it stops a
     // malicious daemon from injecting markup here. Don't drop it.
-    auto const detail = message.isEmpty() ? tr("The blocklist could not be updated.") : message.toHtmlEscaped();
+    auto const detail = message.isEmpty() ? tr("Couldn't update blocklist") : message.toHtmlEscaped();
     blocklist_dialog_->setText(QStringLiteral("<b>%1</b><p>%2</p>").arg(tr("Download of the blocklist failed."), detail));
     blocklist_dialog_->setTextFormat(Qt::RichText);
 }

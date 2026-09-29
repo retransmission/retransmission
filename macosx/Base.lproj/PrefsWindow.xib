@@ -1540,7 +1540,7 @@
                         </textField>
                         <textField focusRingType="none" verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="199">
                             <rect key="frame" x="172" y="114" width="96" height="16"/>
-                            <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="right" title="Download rate:" id="1277">
+                            <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="right" title="Download:" id="1277">
                                 <font key="font" metaFont="system"/>
                                 <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                 <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
@@ -1548,7 +1548,7 @@
                         </textField>
                         <textField focusRingType="none" verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="198">
                             <rect key="frame" x="172" y="89" width="79" height="16"/>
-                            <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="right" title="Upload rate:" id="1276">
+                            <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="right" title="Upload:" id="1276">
                                 <font key="font" metaFont="system"/>
                                 <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                 <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
@@ -1654,7 +1654,7 @@
                         </textField>
                         <button translatesAutoresizingMaskIntoConstraints="NO" id="157">
                             <rect key="frame" x="172" y="184" width="118" height="18"/>
-                            <buttonCell key="cell" type="check" title="Download rate:" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="1267">
+                            <buttonCell key="cell" type="check" title="Download:" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="1267">
                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                 <font key="font" metaFont="system"/>
                             </buttonCell>
@@ -1688,7 +1688,7 @@
                         </textField>
                         <button translatesAutoresizingMaskIntoConstraints="NO" id="155">
                             <rect key="frame" x="172" y="159" width="118" height="18"/>
-                            <buttonCell key="cell" type="check" title="Upload rate:" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="1265">
+                            <buttonCell key="cell" type="check" title="Upload:" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="1265">
                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                 <font key="font" metaFont="system"/>
                             </buttonCell>
@@ -1800,7 +1800,7 @@
                         </textField>
                         <textField focusRingType="none" verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1424">
                             <rect key="frame" x="18" y="301" width="84" height="16"/>
-                            <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="right" title="Connections:" usesSingleLineMode="YES" id="1451">
+                            <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="right" title="Peer limits:" usesSingleLineMode="YES" id="1451">
                                 <font key="font" metaFont="system"/>
                                 <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                 <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
@@ -1808,7 +1808,7 @@
                         </textField>
                         <button verticalHuggingPriority="1000" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="1925">
                             <rect key="frame" x="106" y="204" width="338" height="18"/>
-                            <buttonCell key="cell" type="check" title="Use distributed hash table (DHT) for public torrents" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="1926">
+                            <buttonCell key="cell" type="check" title="Use DHT to find more peers" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="1926">
                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                 <font key="font" metaFont="system"/>
                             </buttonCell>
@@ -1903,7 +1903,7 @@
                         </textField>
                         <button verticalHuggingPriority="1000" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="1741">
                             <rect key="frame" x="125" y="-1" width="199" height="18"/>
-                            <buttonCell key="cell" type="check" title="Automatically update weekly" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="1742">
+                            <buttonCell key="cell" type="check" title="Enable automatic updates" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="1742">
                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                 <font key="font" metaFont="system"/>
                             </buttonCell>
@@ -1931,7 +1931,7 @@
                         </textField>
                         <button verticalHuggingPriority="1000" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="1431">
                             <rect key="frame" x="106" y="224" width="293" height="18"/>
-                            <buttonCell key="cell" type="check" title="Use peer exchange (PEX) for public torrents" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="1442">
+                            <buttonCell key="cell" type="check" title="Use PEX to find more peers" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="1442">
                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                 <font key="font" metaFont="system"/>
                             </buttonCell>
@@ -1953,7 +1953,7 @@
                         </textField>
                         <button verticalHuggingPriority="1000" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="1951">
                             <rect key="frame" x="106" y="184" width="287" height="18"/>
-                            <buttonCell key="cell" type="check" title="Use local peer discovery for public torrents" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="1952">
+                            <buttonCell key="cell" type="check" title="Use Local Peer Discovery to find more peers" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="1952">
                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                 <font key="font" metaFont="system"/>
                             </buttonCell>
@@ -2019,7 +2019,7 @@
                         </textField>
                         <button verticalHuggingPriority="1000" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="1433">
                             <rect key="frame" x="106" y="92" width="282" height="18"/>
-                            <buttonCell key="cell" type="check" title="Prevent peers in blocklist from connecting" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="1440">
+                            <buttonCell key="cell" type="check" title="Enable blocklist" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="1440">
                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                 <font key="font" metaFont="system"/>
                             </buttonCell>
@@ -2238,7 +2238,7 @@
                         </textField>
                         <button verticalHuggingPriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="2077">
                             <rect key="frame" x="152" y="142" width="259" height="18"/>
-                            <buttonCell key="cell" type="check" title="Enable Micro Transport Protocol (µTP)" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="2078">
+                            <buttonCell key="cell" type="check" title="Enable µTP for peer connections" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="2078">
                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                 <font key="font" metaFont="system"/>
                             </buttonCell>
@@ -2350,7 +2350,7 @@
                         </textField>
                         <textField focusRingType="none" verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="1541">
                             <rect key="frame" x="132" y="26" width="193" height="14"/>
-                            <textFieldCell key="cell" controlSize="small" sendsActionOnEndEditing="YES" title="IP addresses may include * wildcard" id="1542">
+                            <textFieldCell key="cell" controlSize="small" sendsActionOnEndEditing="YES" title="IP addresses may use wildcards, such as 192.168.*.*" id="1542">
                                 <font key="font" metaFont="smallSystem"/>
                                 <color key="textColor" name="disabledControlTextColor" catalog="System" colorSpace="catalog"/>
                                 <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
