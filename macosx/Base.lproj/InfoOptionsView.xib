@@ -74,7 +74,7 @@
                                 </textField>
                                 <button horizontalHuggingPriority="1000" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="6">
                                     <rect key="frame" x="-1" y="11" width="223" height="16"/>
-                                    <buttonCell key="cell" type="check" title="Stay within the global bandwidth limits" bezelStyle="regularSquare" imagePosition="left" alignment="left" controlSize="small" state="on" allowsMixedState="YES" inset="2" id="45">
+                                    <buttonCell key="cell" type="check" title="Honor global limits" bezelStyle="regularSquare" imagePosition="left" alignment="left" controlSize="small" state="on" allowsMixedState="YES" inset="2" id="45">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                         <font key="font" metaFont="smallSystem"/>
                                     </buttonCell>
@@ -84,7 +84,7 @@
                                 </button>
                                 <button verticalHuggingPriority="1000" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="7">
                                     <rect key="frame" x="-1" y="51" width="105" height="16"/>
-                                    <buttonCell key="cell" type="check" title="Limit Download:" bezelStyle="regularSquare" imagePosition="left" alignment="left" controlSize="small" state="on" allowsMixedState="YES" inset="2" id="44">
+                                    <buttonCell key="cell" type="check" title="Limit download speed:" bezelStyle="regularSquare" imagePosition="left" alignment="left" controlSize="small" state="on" allowsMixedState="YES" inset="2" id="44">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                         <font key="font" metaFont="smallSystem"/>
                                     </buttonCell>
@@ -94,7 +94,7 @@
                                 </button>
                                 <button verticalHuggingPriority="1000" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="8">
                                     <rect key="frame" x="-1" y="31" width="105" height="16"/>
-                                    <buttonCell key="cell" type="check" title="Limit Upload:" bezelStyle="regularSquare" imagePosition="left" alignment="left" controlSize="small" state="on" allowsMixedState="YES" inset="2" id="43">
+                                    <buttonCell key="cell" type="check" title="Limit upload speed:" bezelStyle="regularSquare" imagePosition="left" alignment="left" controlSize="small" state="on" allowsMixedState="YES" inset="2" id="43">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                         <font key="font" metaFont="smallSystem"/>
                                     </buttonCell>
@@ -223,12 +223,12 @@
                                 </textField>
                                 <popUpButton verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="80">
                                     <rect key="frame" x="60" y="80" width="122" height="20"/>
-                                    <popUpButtonCell key="cell" type="roundRect" title="Global Setting" bezelStyle="roundedRect" alignment="left" controlSize="small" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" inset="2" preferredEdge="maxY" selectedItem="87" id="84">
+                                    <popUpButtonCell key="cell" type="roundRect" title="Use Global Settings" bezelStyle="roundedRect" alignment="left" controlSize="small" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" inset="2" preferredEdge="maxY" selectedItem="87" id="84">
                                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                         <font key="font" metaFont="smallSystem"/>
                                         <menu key="menu" id="85">
                                             <items>
-                                                <menuItem title="Global Setting" state="on" id="87"/>
+                                                <menuItem title="Use Global Settings" state="on" id="87"/>
                                                 <menuItem title="Unlimited" id="88"/>
                                                 <menuItem title="Stop When Inactive" id="86"/>
                                             </items>
@@ -266,14 +266,14 @@
                                 </textField>
                                 <popUpButton verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="9">
                                     <rect key="frame" x="60" y="102" width="122" height="20"/>
-                                    <popUpButtonCell key="cell" type="roundRect" title="Global Setting" bezelStyle="roundedRect" alignment="left" controlSize="small" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" inset="2" preferredEdge="maxY" selectedItem="41" id="38">
+                                    <popUpButtonCell key="cell" type="roundRect" title="Use Global Settings" bezelStyle="roundedRect" alignment="left" controlSize="small" lineBreakMode="truncatingTail" state="on" borderStyle="borderAndBezel" inset="2" preferredEdge="maxY" selectedItem="41" id="38">
                                         <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
                                         <font key="font" metaFont="smallSystem"/>
                                         <menu key="menu" id="39">
                                             <items>
-                                                <menuItem title="Global Setting" state="on" id="41"/>
+                                                <menuItem title="Use Global Settings" state="on" id="41"/>
                                                 <menuItem title="Unlimited" id="40"/>
-                                                <menuItem title="Stop at Ratio" id="42"/>
+                                                <menuItem title="Stop Seeding at Ratio" id="42"/>
                                             </items>
                                         </menu>
                                     </popUpButtonCell>
@@ -381,7 +381,7 @@
                                 </textField>
                                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" allowsCharacterPickerTouchBarItem="YES" preferredMaxLayoutWidth="0.0" translatesAutoresizingMaskIntoConstraints="NO" id="79">
                                     <rect key="frame" x="-2" y="82" width="56" height="14"/>
-                                    <textFieldCell key="cell" sendsActionOnEndEditing="YES" title="Inactivity:" id="89">
+                                    <textFieldCell key="cell" sendsActionOnEndEditing="YES" title="Idle:" id="89">
                                         <font key="font" metaFont="smallSystem"/>
                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>

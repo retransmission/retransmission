@@ -449,24 +449,22 @@ static NSString* const kWebSeedAnimationId = @"webSeed";
         NSString* flags = peer[@"Flags"];
 
         if ([flags rangeOfString:@"D"].location != NSNotFound) {
-            [statusArray addObject:NSLocalizedString(@"Currently downloading (interested and not choked)", "Inspector -> peer -> status")];
+            [statusArray addObject:NSLocalizedString(@"Downloading from this peer", "Inspector -> peer -> status")];
         }
         if ([flags rangeOfString:@"d"].location != NSNotFound) {
-            [statusArray addObject:NSLocalizedString(
-                                       @"You want to download, but peer does not want to send (interested and choked)",
-                                       "Inspector -> peer -> status")];
+            [statusArray addObject:NSLocalizedString(@"We would download from this peer if they would let us", "Inspector -> peer -> status")];
         }
         if ([flags rangeOfString:@"U"].location != NSNotFound) {
-            [statusArray addObject:NSLocalizedString(@"Currently uploading (interested and not choked)", "Inspector -> peer -> status")];
+            [statusArray addObject:NSLocalizedString(@"Uploading to peer", "Inspector -> peer -> status")];
         }
         if ([flags rangeOfString:@"u"].location != NSNotFound) {
-            [statusArray addObject:NSLocalizedString(@"Peer wants you to upload, but you do not want to (interested and choked)", "Inspector -> peer -> status")];
+            [statusArray addObject:NSLocalizedString(@"This peer would download from us if we would let them", "Inspector -> peer -> status")];
         }
         if ([flags rangeOfString:@"K"].location != NSNotFound) {
-            [statusArray addObject:NSLocalizedString(@"Peer is unchoking you, but you are not interested", "Inspector -> peer -> status")];
+            [statusArray addObject:NSLocalizedString(@"Peer has unchoked us, but we're not interested", "Inspector -> peer -> status")];
         }
         if ([flags rangeOfString:@"?"].location != NSNotFound) {
-            [statusArray addObject:NSLocalizedString(@"You unchoked the peer, but the peer is not interested", "Inspector -> peer -> status")];
+            [statusArray addObject:NSLocalizedString(@"We unchoked this peer, but they're not interested", "Inspector -> peer -> status")];
         }
 
         if (statusArray.count > 0) {

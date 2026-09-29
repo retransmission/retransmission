@@ -106,7 +106,7 @@ typedef NS_ENUM(NSUInteger, TabTag) {
     };
     setImageAndToolTipForSegment(
         [NSImage imageWithSystemSymbolName:@"info.circle" accessibilityDescription:nil],
-        NSLocalizedString(@"General Info", "Inspector -> tab"),
+        NSLocalizedString(@"Information", "Inspector -> tab"),
         TabTagGeneral);
     setImageAndToolTipForSegment(
         [NSImage imageWithSystemSymbolName:@"square.grid.3x3.fill.square" accessibilityDescription:nil],
