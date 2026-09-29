@@ -3639,9 +3639,9 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
     } else if ([ident isEqualToString:ToolbarItemIdentifierOpenWeb]) {
         ButtonToolbarItem* item = [self standardToolbarButtonWithIdentifier:ident];
 
-        item.label = NSLocalizedString(@"Open Address", "Open address toolbar item -> label");
-        item.paletteLabel = NSLocalizedString(@"Open Torrent Address", "Open address toolbar item -> palette label");
-        item.toolTip = NSLocalizedString(@"Open torrent web address", "Open address toolbar item -> tooltip");
+        item.label = NSLocalizedString(@"Open URL", "Open address toolbar item -> label");
+        item.paletteLabel = NSLocalizedString(@"Open URL", "Open address toolbar item -> palette label");
+        item.toolTip = NSLocalizedString(@"Open torrent from URL", "Open address toolbar item -> tooltip");
         item.image = [NSImage imageWithSystemSymbolName:@"globe" accessibilityDescription:nil];
         item.target = self;
         item.action = @selector(openURLShowSheet:);

@@ -232,7 +232,7 @@
                                     <action selector="openShowSheet:" target="206" id="1681"/>
                                 </connections>
                             </menuItem>
-                            <menuItem title="Open Torrent Address…" secondaryImage="globe" catalog="system" keyEquivalent="u" id="1846">
+                            <menuItem title="Open URL…" secondaryImage="globe" catalog="system" keyEquivalent="u" id="1846">
                                 <connections>
                                     <action selector="openURLShowSheet:" target="206" id="1847"/>
                                 </connections>
@@ -816,7 +816,7 @@ CA
                         <action selector="openShowSheet:" target="206" id="612"/>
                     </connections>
                 </menuItem>
-                <menuItem title="Open Torrent Address…" secondaryImage="globe" catalog="system" id="1858">
+                <menuItem title="Open URL…" secondaryImage="globe" catalog="system" id="1858">
                     <connections>
                         <action selector="openURLShowSheet:" target="206" id="1859"/>
                     </connections>

@@ -120,7 +120,7 @@
 
 - (void)setURL:(NSString*)url
 {
-    [self.contentView setOverlay:[NSImage imageNamed:@"Globe"] mainLine:NSLocalizedString(@"Web Address", "Drag overlay -> url")
+    [self.contentView setOverlay:[NSImage imageNamed:@"Globe"] mainLine:NSLocalizedString(@"Open URL", "Drag overlay -> url")
                          subLine:url];
     [self fadeIn];
 }
