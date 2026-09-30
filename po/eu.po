@@ -682,12 +682,12 @@ msgid "Down: {downloaded_size}, Up: {uploaded_size}"
 msgstr "Deskarga: {downloaded_size}, Igoera: {uploaded_size}"
 
 #: ../gtk/MainWindow.cc:815
-msgid "{download_speed} ▼"
-msgstr "{download_speed} ▼"
+msgid "{download_speed} ▾"
+msgstr "{download_speed} ▾"
 
 #: ../gtk/MainWindow.cc:818 ../gtk/Torrent.cc:629
-msgid "{upload_speed} ▲"
-msgstr "{upload_speed} ▲"
+msgid "{upload_speed} ▴"
+msgstr "{upload_speed} ▴"
 
 #: ../gtk/MakeDialog.cc:194
 msgid "Creating '{path}'"
@@ -930,8 +930,8 @@ msgid "These statistics are for your information only. Resetting them doesn't af
 msgstr "Estatistika hauek zu informatzeko dira soilik. Haiek berrezartzeak ez du eraginik zure BitTorrent aztarnariek gordetako estatistiketan."
 
 #: ../gtk/SystemTrayIcon.cc:207
-msgid "{upload_speed} ▲ {download_speed} ▼"
-msgstr "{upload_speed} ▲ {download_speed} ▼"
+msgid "{upload_speed} ▴ {download_speed} ▾"
+msgstr "{upload_speed} ▴ {download_speed} ▾"
 
 #: ../gtk/Torrent.cc:442
 #, no-c-format
@@ -963,8 +963,8 @@ msgid "Remaining time unknown"
 msgstr "Geratzen den denbora ezezaguna"
 
 #: ../gtk/Torrent.cc:622
-msgid "{download_speed} ▼  {upload_speed} ▲"
-msgstr "{download_speed} ▼  {upload_speed} ▲"
+msgid "{download_speed} ▾  {upload_speed} ▴"
+msgstr "{download_speed} ▾  {upload_speed} ▴"
 
 #: ../gtk/Torrent.cc:634
 msgid "Stalled"

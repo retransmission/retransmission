@@ -656,11 +656,11 @@ msgid "Down: {downloaded_size}, Up: {uploaded_size}"
 msgstr ""
 
 #: ../gtk/MainWindow.cc:815
-msgid "{download_speed} ▼"
+msgid "{download_speed} ▾"
 msgstr ""
 
 #: ../gtk/MainWindow.cc:818 ../gtk/Torrent.cc:629
-msgid "{upload_speed} ▲"
+msgid "{upload_speed} ▴"
 msgstr ""
 
 #: ../gtk/MakeDialog.cc:194
@@ -902,7 +902,7 @@ msgid "These statistics are for your information only. Resetting them doesn't af
 msgstr "這些統計資料只是提供給您的資訊而已。重設它們並不會影響 BitTorrent 追蹤器上所紀錄的統計資料。"
 
 #: ../gtk/SystemTrayIcon.cc:207
-msgid "{upload_speed} ▲ {download_speed} ▼"
+msgid "{upload_speed} ▴ {download_speed} ▾"
 msgstr ""
 
 #: ../gtk/Torrent.cc:442
@@ -935,7 +935,7 @@ msgid "Remaining time unknown"
 msgstr "剩餘時間未知"
 
 #: ../gtk/Torrent.cc:622
-msgid "{download_speed} ▼  {upload_speed} ▲"
+msgid "{download_speed} ▾  {upload_speed} ▴"
 msgstr ""
 
 #: ../gtk/Torrent.cc:634

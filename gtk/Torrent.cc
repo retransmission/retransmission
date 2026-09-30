@@ -578,13 +578,13 @@ Glib::ustring Torrent::Impl::get_short_transfer_text() const
 {
     if (cache_.has_metadata && cache_.active_peers_down > 0) {
         return fmt::format(
-            fmt::runtime(_("{download_speed} ▼  {upload_speed} ▲")),
+            fmt::runtime(_("{download_speed} ▾  {upload_speed} ▴")),
             fmt::arg("upload_speed", cache_.speed_up.to_string()),
             fmt::arg("download_speed", cache_.speed_down.to_string()));
     }
 
     if (cache_.has_metadata && cache_.active_peers_up > 0) {
-        return fmt::format(fmt::runtime(_("{upload_speed} ▲")), fmt::arg("upload_speed", cache_.speed_up.to_string()));
+        return fmt::format(fmt::runtime(_("{upload_speed} ▴")), fmt::arg("upload_speed", cache_.speed_up.to_string()));
     }
 
     if (cache_.stalled) {

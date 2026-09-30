@@ -649,11 +649,11 @@ msgid "Down: {downloaded_size}, Up: {uploaded_size}"
 msgstr ""
 
 #: ../gtk/MainWindow.cc:815
-msgid "{download_speed} ▼"
+msgid "{download_speed} ▾"
 msgstr ""
 
 #: ../gtk/MainWindow.cc:818 ../gtk/Torrent.cc:629
-msgid "{upload_speed} ▲"
+msgid "{upload_speed} ▴"
 msgstr ""
 
 #: ../gtk/MakeDialog.cc:194
@@ -895,7 +895,7 @@ msgid "These statistics are for your information only. Resetting them doesn't af
 msgstr ""
 
 #: ../gtk/SystemTrayIcon.cc:207
-msgid "{upload_speed} ▲ {download_speed} ▼"
+msgid "{upload_speed} ▴ {download_speed} ▾"
 msgstr ""
 
 #: ../gtk/Torrent.cc:442
@@ -928,7 +928,7 @@ msgid "Remaining time unknown"
 msgstr ""
 
 #: ../gtk/Torrent.cc:622
-msgid "{download_speed} ▼  {upload_speed} ▲"
+msgid "{download_speed} ▾  {upload_speed} ▴"
 msgstr ""
 
 #: ../gtk/Torrent.cc:634

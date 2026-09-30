@@ -5,20 +5,16 @@
 
 #include "Speed.h"
 
-#include <string_view>
-
 #include <QtCore/QString>
 
 #include "TrFormat.h"
 
 QString Speed::toUploadQstring() const
 {
-    static auto constexpr UploadSymbol = std::string_view{ "▴" };
-    return TR_FORMAT("{speed} {arrow}", fmt::arg("speed", toQstring()), fmt::arg("arrow", UploadSymbol));
+    return TR_FORMAT("{upload_speed} ▴", fmt::arg("upload_speed", toQstring()));
 }
 
 QString Speed::toDownloadQstring() const
 {
-    static auto constexpr DownloadSymbol = std::string_view{ "▾" };
-    return TR_FORMAT("{speed} {arrow}", fmt::arg("speed", toQstring()), fmt::arg("arrow", DownloadSymbol));
+    return TR_FORMAT("{download_speed} ▾", fmt::arg("download_speed", toQstring()));
 }
