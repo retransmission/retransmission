@@ -1,133 +1,97 @@
 #!/usr/bin/env python3
 # SPDX-License-Identifier: GPL-2.0-or-later
 #
-# find-broken-translations.py
+# Fails when a translation in po/*.po would make {fmt} abort the GTK client.
 #
-# Scans po/*.po for translated strings whose libfmt placeholders reference
-# argument names that the source string (msgid / msgid_plural) does not
-# supply. Because Transmission builds libfmt with FMT_USE_EXCEPTIONS=0
-# (see cmake/FindFmt.cmake), such a mismatch is fatal at runtime: when
-# fmt::vformat hits the missing arg it calls fmt::detail::assert_fail()
-# which abort()s the process. See issue #8766 for an example
-# (fr.po `{time_span}` typo crashing the GTK client).
+# {fmt} is built without exceptions (FMT_USE_EXCEPTIONS=0 in CMakeLists.txt),
+# so a format error calls abort() instead of throwing.
+# Every message whose English text contains a brace is a {fmt} format string
+# with named arguments,
+# so each of its translations must parse as one
+# and may use only the fields that its msgid or msgid_plural uses.
+# Omitting a field is fine: singular forms often drop the count.
+# Format specs such as ":L" are not checked,
+# because their validity depends on the argument type.
 #
-# Usage:
-#     cd <transmission-source-root>
-#     python3 release/find-broken-translations.py
-#
-# Output is a Markdown table with one row per offending translation,
-# including a deep link to the string in Transifex for quick editing.
-#
-# Notes:
-# - Only argument *names* are checked. Format-specs like `{count:L}` are
-#   stripped before comparison, so `{count}` vs `{count:L}` is not flagged.
-# - For ngettext entries, the union of msgid and msgid_plural names is
-#   treated as "allowed" because the runtime call passes `count` for both
-#   singular and plural cases.
-# - Only the first offending msgstr per entry is reported (translators
-#   typically copy the same mistake into every plural form).
+# Usage: find-broken-translations.py [PO_FILE]...
+# With no arguments, it checks every file in po/.
 
-import glob
 import os
+import pathlib
 import re
-import urllib.parse
+import sys
 
-# Matches `{name}` and `{name:format-spec}`. Captures just the name.
-NAME_RE = re.compile(r'\{([A-Za-z_][A-Za-z0-9_]*)(?::[^{}]*)?\}')
+KEYWORD_RE = re.compile(r'(msgctxt|msgid|msgid_plural|msgstr(?:\[\d+\])?)\s+"(.*)"\s*$')
 
-
-def names(s):
-    """Return the set of libfmt argument names referenced in `s`."""
-    return set(NAME_RE.findall(s))
+# Escaped braces, replacement fields ({name}, {name:spec}, {0}, {}), and any other brace,
+# which {fmt} rejects.
+TOKEN_RE = re.compile(r'\{\{|\}\}|\{(?P<id>[A-Za-z_][A-Za-z0-9_]*|[0-9]*)(?::[^{}]*)?\}|(?P<stray>[{}])')
 
 
-def parse_po(path):
-    """Yield (msgid, msgid_plural, [msgstr, ...]) tuples from a .po file.
+def entries(path):
+    """Yield each entry of a PO file as (flags, {keyword: (line number, text)})."""
+    flags, fields, keyword = set(), {}, None
+    lines = path.read_text(encoding='utf-8').splitlines()
+    for number, line in enumerate(lines + [''], start=1):
+        if not line.strip():
+            if fields:
+                yield flags, fields
+            flags, fields, keyword = set(), {}, None
+        elif line.startswith('#,'):
+            flags.update(flag.strip() for flag in line[2:].split(','))
+        elif match := KEYWORD_RE.match(line):
+            keyword = match[1]
+            fields[keyword] = (number, match[2])
+        elif line.startswith('"') and keyword is not None:
+            start, text = fields[keyword]
+            fields[keyword] = (start, text + line.strip()[1:-1])
 
-    Uses a tiny state machine; relies on .po quoted strings being valid
-    Python string literals (which they are, per gettext spec) so `eval`
-    handles escapes (\\n, \\", \\\\, etc.) for us.
-    """
-    entries = []
-    msgid = msgid_plural = ""
-    msgstrs = {}
-    state = None
 
-    def flush():
-        if msgid:
-            entries.append((msgid, msgid_plural, list(msgstrs.values())))
+def field_ids(text):
+    """Return the ids of the replacement fields in `text`, or None if {fmt} can't parse it."""
+    ids = set()
+    for token in TOKEN_RE.finditer(text):
+        if token['stray'] is not None:
+            return None
+        if token['id'] is not None:
+            ids.add(token['id'])
+    return ids
 
-    with open(path, encoding='utf-8') as f:
-        for raw in f:
-            line = raw.rstrip('\n')
-            if not line.strip():
-                flush()
-                msgid = msgid_plural = ""
-                msgstrs = {}
-                state = None
+
+def problems(path):
+    name = os.path.relpath(path)
+    for flags, fields in entries(path):
+        sources = [fields[key] for key in ('msgid', 'msgid_plural') if key in fields]
+        if 'fuzzy' in flags or not any(c in text for _, text in sources for c in '{}'):
+            continue
+
+        source_ids = [field_ids(text) for _, text in sources]
+        if None in source_ids:
+            yield f'{name}:{sources[0][0]}: msgid is not a format string this script can parse'
+            continue
+        allowed = set().union(*source_ids)
+
+        for keyword, (number, text) in fields.items():
+            if not keyword.startswith('msgstr') or not text:
                 continue
-            if line.startswith('#'):
-                continue
-            if line.startswith('msgid '):
-                flush()
-                msgid_plural = ""
-                msgstrs = {}
-                msgid = eval(line[6:])
-                state = 'msgid'
-            elif line.startswith('msgid_plural '):
-                msgid_plural = eval(line[13:])
-                state = 'msgid_plural'
-            elif line.startswith('msgstr '):
-                msgstrs[0] = eval(line[7:])
-                state = ('msgstr', 0)
-            elif (m := re.match(r'msgstr\[(\d+)\] (.*)', line)):
-                i = int(m.group(1))
-                msgstrs[i] = eval(m.group(2))
-                state = ('msgstr', i)
-            elif line.startswith('"'):
-                # Continuation line; append to whatever we're building.
-                s = eval(line)
-                if state == 'msgid':
-                    msgid += s
-                elif state == 'msgid_plural':
-                    msgid_plural += s
-                elif isinstance(state, tuple):
-                    msgstrs[state[1]] += s
-    flush()
-    return entries
+            ids = field_ids(text)
+            if ids is None:
+                yield f'{name}:{number}: unmatched brace or malformed field'
+            elif unknown := sorted(ids - allowed):
+                yield f'{name}:{number}: unknown field ' + ', '.join(f'{{{field}}}' for field in unknown)
 
 
-def tx_url(lang, msgid):
-    """Build a Transifex deep link that filters strings by msgid text."""
-    q = urllib.parse.quote(f"text:'{msgid[:60]}'", safe="")
-    return (f"https://app.transifex.com/transmissionbt/transmissionbt"
-            f"/viewstrings/#{lang}/gtk/?q={q}")
-
-
-def main():
-    rows = []
-    for path in sorted(glob.glob('po/*.po')):
-        lang = os.path.basename(path)[:-3]
-        for msgid, msgid_plural, msgstrs in parse_po(path):
-            allowed = names(msgid) | names(msgid_plural)
-            for ms in msgstrs:
-                if not ms:
-                    continue
-                extra = names(ms) - allowed
-                if extra:
-                    rows.append((lang, sorted(extra), msgid, ms))
-                    break  # one report per entry is enough
-
-    print("| Lang | Bad placeholder(s) | msgid | msgstr (offending) | Edit |")
-    print("|------|---------------------|-------|---------------------|------|")
-    for lang, extra, msgid, ms in rows:
-        ph = ', '.join(f'`{{{x}}}`' for x in extra)
-        sm = msgid if len(msgid) < 50 else msgid[:47] + '...'
-        st = ms if len(ms) < 60 else ms[:57] + '...'
-        print(f"| {lang} | {ph} | `{sm}` | `{st}` | [tx]({tx_url(lang, msgid)}) |")
-    langs = len({r[0] for r in rows})
-    print(f"\n{len(rows)} crash-causing translations across {langs} languages.")
+def main(args):
+    po_dir = pathlib.Path(__file__).resolve().parent.parent / 'po'
+    paths = [pathlib.Path(arg) for arg in args] or sorted(po_dir.glob('*.po'))
+    found = [problem for path in paths for problem in problems(path)]
+    for problem in found:
+        print(problem)
+    if found:
+        print(f'{len(found)} translations would abort fmt::format(). '
+              'A translation may use only the fields in its English text.')
+    return 1 if found else 0
 
 
 if __name__ == '__main__':
-    main()
+    sys.exit(main(sys.argv[1:]))
