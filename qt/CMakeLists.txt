@@ -95,6 +95,8 @@ target_sources(${TR_NAME}-qt-lib
         TrackerModelFilter.cc
         TrackerModelFilter.h
         Transports.h
+        TrFormat.cc
+        TrFormat.h
         TrQtInit.cc
         TrQtInit.h
         Typedefs.h
