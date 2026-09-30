@@ -14,6 +14,10 @@
         <translation>Kopiereg © Die Transmission-projek</translation>
     </message>
     <message>
+        <source>Copyright © The {appname} Project</source>
+        <translation>Kopiereg © Die {appname}-projek</translation>
+    </message>
+    <message>
         <location line="-10"/>
         <source>A fast and easy BitTorrent client</source>
         <translation>’n Vinnige en maklike BitTorrent-kliënt</translation>
@@ -2040,6 +2044,14 @@ To add a new primary URL, add it after a blank line.</source>
         <translation>&lt;b&gt;Werk Bloklys By&lt;/b&gt;&lt;p&gt;Kry tans nuwe bloklys…&lt;/p&gt;</translation>
     </message>
     <message>
+        <source>Getting new blocklist…</source>
+        <translation>Kry tans nuwe bloklys…</translation>
+    </message>
+    <message>
+        <source>Update Blocklist</source>
+        <translation>Werk Bloklys By</translation>
+    </message>
+    <message>
         <location line="+85"/>
         <source>Select Destination</source>
         <translation>Kies Bestemming</translation>
@@ -2229,6 +2241,14 @@ To add a new primary URL, add it after a blank line.</source>
         <location line="+1"/>
         <source>&lt;p&gt;&lt;b&gt;Unable to rename &quot;{old_path}&quot; as &quot;{path}&quot;: {error}.&lt;/b&gt;&lt;/p&gt;&lt;p&gt;Please correct the errors and try again.&lt;/p&gt;</source>
         <translation>&lt;p&gt;&lt;b&gt;Kan nie “{old_path}” as “{path}” hernoem nie: {error}.&lt;/b&gt;&lt;/p&gt;&lt;p&gt;Herstel die fout en probeer weer.&lt;/p&gt;</translation>
+    </message>
+    <message>
+        <source>Please correct the errors and try again.</source>
+        <translation>Herstel die fout en probeer weer.</translation>
+    </message>
+    <message>
+        <source>Unable to rename &quot;{old_path}&quot; as &quot;{path}&quot;: {error}.</source>
+        <translation>Kan nie “{old_path}” as “{path}” hernoem nie: {error}.</translation>
     </message>
     <message>
         <location line="+565"/>

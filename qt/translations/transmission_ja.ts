@@ -14,6 +14,10 @@
         <translation>Copyright © The Transmission Project</translation>
     </message>
     <message>
+        <source>Copyright © The {appname} Project</source>
+        <translation>Copyright © The {appname} Project</translation>
+    </message>
+    <message>
         <location line="-10"/>
         <source>A fast and easy BitTorrent client</source>
         <translation>高速でお手軽な BitTorrent クライアント</translation>
@@ -2027,6 +2031,14 @@ To add a new primary URL, add it after a blank line.</source>
         <translation>&lt;b&gt;ブロックリストの更新&lt;/b&gt;&lt;p&gt;新しいブロックリストを取得…&lt;/p&gt;</translation>
     </message>
     <message>
+        <source>Getting new blocklist…</source>
+        <translation>新しいブロックリストを取得…</translation>
+    </message>
+    <message>
+        <source>Update Blocklist</source>
+        <translation>ブロックリストの更新</translation>
+    </message>
+    <message>
         <location line="+85"/>
         <source>Select Destination</source>
         <translation>保存先を選択</translation>
@@ -2216,6 +2228,14 @@ To add a new primary URL, add it after a blank line.</source>
         <location line="+1"/>
         <source>&lt;p&gt;&lt;b&gt;Unable to rename &quot;{old_path}&quot; as &quot;{path}&quot;: {error}.&lt;/b&gt;&lt;/p&gt;&lt;p&gt;Please correct the errors and try again.&lt;/p&gt;</source>
         <translation>&lt;p&gt;&lt;b&gt;「{old_path}」を「{path}」に改名できません: {error}。&lt;/b&gt;&lt;/p&gt;&lt;p&gt;エラーを修正し再度お試しください。&lt;/p&gt;</translation>
+    </message>
+    <message>
+        <source>Please correct the errors and try again.</source>
+        <translation>エラーを修正し再度お試しください。</translation>
+    </message>
+    <message>
+        <source>Unable to rename &quot;{old_path}&quot; as &quot;{path}&quot;: {error}.</source>
+        <translation>「{old_path}」を「{path}」に改名できません: {error}。</translation>
     </message>
     <message>
         <location line="+565"/>

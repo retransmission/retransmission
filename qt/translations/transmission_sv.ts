@@ -14,6 +14,10 @@
         <translation>Copyright © The Transmission Project</translation>
     </message>
     <message>
+        <source>Copyright © The {appname} Project</source>
+        <translation>Copyright © The {appname} Project</translation>
+    </message>
+    <message>
         <location line="-10"/>
         <source>A fast and easy BitTorrent client</source>
         <translation>En snabb och enkel BitTorrent-klient</translation>
@@ -2043,6 +2047,14 @@ Lägg till en ny primär URL genom att lägga till den efter en tom rad.</transl
         <translation>&lt;b&gt;Uppdatera blockeringslista&lt;/b&gt;&lt;p&gt;Hämtar ny blockeringslista…&lt;/p&gt;</translation>
     </message>
     <message>
+        <source>Getting new blocklist…</source>
+        <translation>Hämtar ny blockeringslista…</translation>
+    </message>
+    <message>
+        <source>Update Blocklist</source>
+        <translation>Uppdatera blockeringslista</translation>
+    </message>
+    <message>
         <location line="+85"/>
         <source>Select Destination</source>
         <translation>Välj destination</translation>
@@ -2232,6 +2244,14 @@ Lägg till en ny primär URL genom att lägga till den efter en tom rad.</transl
         <location line="+1"/>
         <source>&lt;p&gt;&lt;b&gt;Unable to rename &quot;{old_path}&quot; as &quot;{path}&quot;: {error}.&lt;/b&gt;&lt;/p&gt;&lt;p&gt;Please correct the errors and try again.&lt;/p&gt;</source>
         <translation>&lt;p&gt;&lt;b&gt;Det går inte att byta namn på &quot;{old_path}&quot; till &quot;{path}&quot;: {error}.&lt;/b&gt;&lt;/p&gt;&lt;p&gt;Rätta till felen och försök igen.&lt;/p&gt;</translation>
+    </message>
+    <message>
+        <source>Please correct the errors and try again.</source>
+        <translation>Rätta till felen och försök igen.</translation>
+    </message>
+    <message>
+        <source>Unable to rename &quot;{old_path}&quot; as &quot;{path}&quot;: {error}.</source>
+        <translation>Det går inte att byta namn på &quot;{old_path}&quot; till &quot;{path}&quot;: {error}.</translation>
     </message>
     <message>
         <location line="+565"/>

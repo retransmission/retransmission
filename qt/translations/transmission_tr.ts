@@ -14,6 +14,10 @@
         <translation>Telif Hakkı © Transmission Projesi</translation>
     </message>
     <message>
+        <source>Copyright © The {appname} Project</source>
+        <translation>Telif Hakkı © {appname} Projesi</translation>
+    </message>
+    <message>
         <location line="-10"/>
         <source>A fast and easy BitTorrent client</source>
         <translation>Hızlı ve kolay BitTorrent istemcisi</translation>
@@ -2026,6 +2030,14 @@ Yeni bir birincil URL eklemek için, bunu boş bir satırdan sonra ekleyin.</tra
         <translation>&lt;b&gt;Engel Listesini Güncelle&lt;/b&gt;&lt;p&gt;Yeni engel listesi alınıyor…&lt;/p&gt;</translation>
     </message>
     <message>
+        <source>Getting new blocklist…</source>
+        <translation>Yeni engel listesi alınıyor…</translation>
+    </message>
+    <message>
+        <source>Update Blocklist</source>
+        <translation>Engel Listesini Güncelle</translation>
+    </message>
+    <message>
         <location line="+85"/>
         <source>Select Destination</source>
         <translation>Hedef Seç</translation>
@@ -2215,6 +2227,14 @@ Yeni bir birincil URL eklemek için, bunu boş bir satırdan sonra ekleyin.</tra
         <location line="+1"/>
         <source>&lt;p&gt;&lt;b&gt;Unable to rename &quot;{old_path}&quot; as &quot;{path}&quot;: {error}.&lt;/b&gt;&lt;/p&gt;&lt;p&gt;Please correct the errors and try again.&lt;/p&gt;</source>
         <translation>&lt;p&gt;&lt;b&gt;&quot;{old_path}&quot;, &quot;{path}&quot; olarak yeniden adlandırılamadı: {error}.&lt;/b&gt;&lt;/p&gt; &lt;p&gt;Lütfen hataları düzeltip yeniden deneyin.&lt;/p&gt;</translation>
+    </message>
+    <message>
+        <source>Please correct the errors and try again.</source>
+        <translation>Lütfen hataları düzeltip yeniden deneyin.</translation>
+    </message>
+    <message>
+        <source>Unable to rename &quot;{old_path}&quot; as &quot;{path}&quot;: {error}.</source>
+        <translation>&quot;{old_path}&quot;, &quot;{path}&quot; olarak yeniden adlandırılamadı: {error}.</translation>
     </message>
     <message>
         <location line="+565"/>

@@ -14,6 +14,10 @@
         <translation>Авторское право © The Transmission Project</translation>
     </message>
     <message>
+        <source>Copyright © The {appname} Project</source>
+        <translation>Авторское право © The {appname} Project</translation>
+    </message>
+    <message>
         <location line="-10"/>
         <source>A fast and easy BitTorrent client</source>
         <translation>Быстрый и простой торрент-клиент</translation>
@@ -2060,6 +2064,14 @@ To add a new primary URL, add it after a blank line.</source>
         <translation>&lt;b&gt;Обновить чёрный список&lt;/b&gt;&lt;p&gt;Получение нового чёрного списка…&lt;/p&gt;</translation>
     </message>
     <message>
+        <source>Getting new blocklist…</source>
+        <translation>Получение нового чёрного списка…</translation>
+    </message>
+    <message>
+        <source>Update Blocklist</source>
+        <translation>Обновить чёрный список</translation>
+    </message>
+    <message>
         <location line="+85"/>
         <source>Select Destination</source>
         <translation>Выбор папки назначения</translation>
@@ -2249,6 +2261,14 @@ To add a new primary URL, add it after a blank line.</source>
         <location line="+1"/>
         <source>&lt;p&gt;&lt;b&gt;Unable to rename &quot;{old_path}&quot; as &quot;{path}&quot;: {error}.&lt;/b&gt;&lt;/p&gt;&lt;p&gt;Please correct the errors and try again.&lt;/p&gt;</source>
         <translation>&lt;p&gt;&lt;b&gt;Невозможно переименовать «{old_path}» в «{path}»: {error}.&lt;/b&gt;&lt;/p&gt;&lt;p&gt;Пожалуйста, исправьте ошибки и попробуйте снова.&lt;/p&gt;</translation>
+    </message>
+    <message>
+        <source>Please correct the errors and try again.</source>
+        <translation>Пожалуйста, исправьте ошибки и попробуйте снова.</translation>
+    </message>
+    <message>
+        <source>Unable to rename &quot;{old_path}&quot; as &quot;{path}&quot;: {error}.</source>
+        <translation>Невозможно переименовать «{old_path}» в «{path}»: {error}.</translation>
     </message>
     <message>
         <location line="+565"/>

@@ -14,6 +14,10 @@
         <translation>Ophavsret © Transmission-projektet</translation>
     </message>
     <message>
+        <source>Copyright © The {appname} Project</source>
+        <translation>Ophavsret © {appname}-projektet</translation>
+    </message>
+    <message>
         <location line="-10"/>
         <source>A fast and easy BitTorrent client</source>
         <translation>En hurtig BitTorrent-klient der er let at bruge</translation>
@@ -2043,6 +2047,14 @@ For at tilføje en ny primær-URL, skal du tilføje den efter en tom linje.</tra
         <translation>&lt;b&gt;Opdater blokeringsliste&lt;/b&gt;&lt;p&gt;Henter ny blokeringsliste …&lt;/p&gt;</translation>
     </message>
     <message>
+        <source>Getting new blocklist…</source>
+        <translation>Henter ny blokeringsliste …</translation>
+    </message>
+    <message>
+        <source>Update Blocklist</source>
+        <translation>Opdater blokeringsliste</translation>
+    </message>
+    <message>
         <location line="+85"/>
         <source>Select Destination</source>
         <translation>Vælg destination</translation>
@@ -2232,6 +2244,14 @@ For at tilføje en ny primær-URL, skal du tilføje den efter en tom linje.</tra
         <location line="+1"/>
         <source>&lt;p&gt;&lt;b&gt;Unable to rename &quot;{old_path}&quot; as &quot;{path}&quot;: {error}.&lt;/b&gt;&lt;/p&gt;&lt;p&gt;Please correct the errors and try again.&lt;/p&gt;</source>
         <translation>&lt;p&gt;&lt;b&gt;Kunne ikke omdøbe &quot;{old_path}&quot; som &quot;{path}&quot;: {error}.&lt;/b&gt;&lt;/p&gt;&lt;p&gt;Ret venligst fejlene og prøv igen.&lt;/p&gt;</translation>
+    </message>
+    <message>
+        <source>Please correct the errors and try again.</source>
+        <translation>Ret venligst fejlene og prøv igen.</translation>
+    </message>
+    <message>
+        <source>Unable to rename &quot;{old_path}&quot; as &quot;{path}&quot;: {error}.</source>
+        <translation>Kunne ikke omdøbe &quot;{old_path}&quot; som &quot;{path}&quot;: {error}.</translation>
     </message>
     <message>
         <location line="+565"/>

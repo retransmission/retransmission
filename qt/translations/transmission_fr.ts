@@ -14,6 +14,10 @@
         <translation>Tous droits réservés © Le Projet&#xa0;Transmission</translation>
     </message>
     <message>
+        <source>Copyright © The {appname} Project</source>
+        <translation>Tous droits réservés © Le Projet {appname}</translation>
+    </message>
+    <message>
         <location line="-10"/>
         <source>A fast and easy BitTorrent client</source>
         <translation>Un client&#xa0;BitTorrent rapide et simple</translation>
@@ -2043,6 +2047,14 @@ Pour ajouter une nouvelle URL primaire, placez-la après une ligne vide.</transl
         <translation>&lt;b&gt;Mise à jour de la liste de blocage&lt;/b&gt;&lt;p&gt;Récupération de la nouvelle liste…&lt;/p&gt;</translation>
     </message>
     <message>
+        <source>Getting new blocklist…</source>
+        <translation>Récupération de la nouvelle liste…</translation>
+    </message>
+    <message>
+        <source>Update Blocklist</source>
+        <translation>Mise à jour de la liste de blocage</translation>
+    </message>
+    <message>
         <location line="+85"/>
         <source>Select Destination</source>
         <translation>Sélectionner la destination</translation>
@@ -2232,6 +2244,14 @@ Pour ajouter une nouvelle URL primaire, placez-la après une ligne vide.</transl
         <location line="+1"/>
         <source>&lt;p&gt;&lt;b&gt;Unable to rename &quot;{old_path}&quot; as &quot;{path}&quot;: {error}.&lt;/b&gt;&lt;/p&gt;&lt;p&gt;Please correct the errors and try again.&lt;/p&gt;</source>
         <translation>&lt;p&gt;&lt;b&gt;Impossible de renommer «&#xa0;{old_path}&#xa0;» en «&#xa0;{path}&#xa0;»&#xa0;: {error}.&lt;/b&gt;&lt;/p&gt;&lt;p&gt;Veuillez corriger les erreurs et ressayer.&lt;/p&gt;</translation>
+    </message>
+    <message>
+        <source>Please correct the errors and try again.</source>
+        <translation>Veuillez corriger les erreurs et ressayer.</translation>
+    </message>
+    <message>
+        <source>Unable to rename &quot;{old_path}&quot; as &quot;{path}&quot;: {error}.</source>
+        <translation>Impossible de renommer « {old_path} » en « {path} » : {error}.</translation>
     </message>
     <message>
         <location line="+565"/>

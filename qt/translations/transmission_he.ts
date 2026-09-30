@@ -14,6 +14,10 @@
         <translation>כל הזכויות שמורות © מיזם Transmission</translation>
     </message>
     <message>
+        <source>Copyright © The {appname} Project</source>
+        <translation>כל הזכויות שמורות © מיזם {appname}</translation>
+    </message>
+    <message>
         <location line="-10"/>
         <source>A fast and easy BitTorrent client</source>
         <translation>לקוח ביטורנט מהיר ופשוט</translation>
@@ -2043,6 +2047,14 @@ To add a new primary URL, add it after a blank line.</source>
         <translation>&lt;b&gt;עדכון רשימת החסימה&lt;/b&gt;&lt;p&gt;מתקבלת רשימת חסימה חדשה…&lt;/p&gt;</translation>
     </message>
     <message>
+        <source>Getting new blocklist…</source>
+        <translation>מתקבלת רשימת חסימה חדשה…</translation>
+    </message>
+    <message>
+        <source>Update Blocklist</source>
+        <translation>עדכון רשימת החסימה</translation>
+    </message>
+    <message>
         <location line="+85"/>
         <source>Select Destination</source>
         <translation>בחירת יעד</translation>
@@ -2232,6 +2244,14 @@ To add a new primary URL, add it after a blank line.</source>
         <location line="+1"/>
         <source>&lt;p&gt;&lt;b&gt;Unable to rename &quot;{old_path}&quot; as &quot;{path}&quot;: {error}.&lt;/b&gt;&lt;/p&gt;&lt;p&gt;Please correct the errors and try again.&lt;/p&gt;</source>
         <translation>&lt;p&gt;&lt;b&gt;לא ניתן לשנות את השם „{old_path}” לשם „{path}”: {error}.&lt;/b&gt;&lt;/p&gt;&lt;p&gt;נא לתקן את השגיאות ולנסות שוב.&lt;/p&gt;</translation>
+    </message>
+    <message>
+        <source>Please correct the errors and try again.</source>
+        <translation>נא לתקן את השגיאות ולנסות שוב.</translation>
+    </message>
+    <message>
+        <source>Unable to rename &quot;{old_path}&quot; as &quot;{path}&quot;: {error}.</source>
+        <translation>לא ניתן לשנות את השם „{old_path}” לשם „{path}”: {error}.</translation>
     </message>
     <message>
         <location line="+565"/>

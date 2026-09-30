@@ -16,11 +16,14 @@
 #include <libtransmission/version.h>
 
 #include "Session.h"
+#include "TrFormat.h"
 
 AboutDialog::AboutDialog(Session& session, QWidget* parent)
     : BaseDialog{ parent }
 {
     ui_.setupUi(this);
+    ui_.copyrightsLabel->setText(
+        TR_FORMAT("Copyright © The {appname} Project", fmt::arg("appname", TR_PROJ_APPNAME_CAPITALIZED)));
 
     ui_.iconLabel->setPixmap(QApplication::windowIcon().pixmap(48));
 

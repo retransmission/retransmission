@@ -14,6 +14,10 @@
         <translation>Copyright © Das Transmission Projekt</translation>
     </message>
     <message>
+        <source>Copyright © The {appname} Project</source>
+        <translation>Copyright © Das {appname} Projekt</translation>
+    </message>
+    <message>
         <location line="-10"/>
         <source>A fast and easy BitTorrent client</source>
         <translation>Ein schneller und einfacher BitTorrent-Klient</translation>
@@ -2040,6 +2044,14 @@ To add a new primary URL, add it after a blank line.</source>
         <translation>&lt;b&gt;Aktualisiere Sperrliste&lt;/b&gt;&lt;p&gt;Neue Sperrliste wird empfangen…&lt;/p&gt;</translation>
     </message>
     <message>
+        <source>Getting new blocklist…</source>
+        <translation>Neue Sperrliste wird empfangen…</translation>
+    </message>
+    <message>
+        <source>Update Blocklist</source>
+        <translation>Aktualisiere Sperrliste</translation>
+    </message>
+    <message>
         <location line="+85"/>
         <source>Select Destination</source>
         <translation>Ziel auswählen</translation>
@@ -2229,6 +2241,14 @@ To add a new primary URL, add it after a blank line.</source>
         <location line="+1"/>
         <source>&lt;p&gt;&lt;b&gt;Unable to rename &quot;{old_path}&quot; as &quot;{path}&quot;: {error}.&lt;/b&gt;&lt;/p&gt;&lt;p&gt;Please correct the errors and try again.&lt;/p&gt;</source>
         <translation>&lt;p&gt;&lt;b&gt;Konnte &quot;{old_path}&quot; nicht zu &quot;{path}&quot; umbenennen: {error}.&lt;/b&gt;&lt;/p&gt;&lt;p&gt;Bitte Fehler korrigieren und erneut versuchen.&lt;/p&gt;</translation>
+    </message>
+    <message>
+        <source>Please correct the errors and try again.</source>
+        <translation>Bitte Fehler korrigieren und erneut versuchen.</translation>
+    </message>
+    <message>
+        <source>Unable to rename &quot;{old_path}&quot; as &quot;{path}&quot;: {error}.</source>
+        <translation>Konnte &quot;{old_path}&quot; nicht zu &quot;{path}&quot; umbenennen: {error}.</translation>
     </message>
     <message>
         <location line="+565"/>

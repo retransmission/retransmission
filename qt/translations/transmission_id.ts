@@ -14,6 +14,10 @@
         <translation>Hak Cipta © Proyek Transmission</translation>
     </message>
     <message>
+        <source>Copyright © The {appname} Project</source>
+        <translation>Hak Cipta © Proyek {appname}</translation>
+    </message>
+    <message>
         <location line="-10"/>
         <source>A fast and easy BitTorrent client</source>
         <translation>Klien BitTorrent yang cepat dan mudah</translation>
@@ -2214,6 +2218,14 @@ To add a new primary URL, add it after a blank line.</source>
         <translation>&lt;p&gt;&lt;b&gt;Tidak dapat mengubah nama &quot;{old_path}&quot; sebagai &quot;{path}&quot;: {error}.&lt;/b&gt;&lt;/p&gt;&lt;p&gt;Silakan perbaiki galat dan coba lagi.&lt;/p&gt;</translation>
     </message>
     <message>
+        <source>Please correct the errors and try again.</source>
+        <translation>Silakan perbaiki galat dan coba lagi.</translation>
+    </message>
+    <message>
+        <source>Unable to rename &quot;{old_path}&quot; as &quot;{path}&quot;: {error}.</source>
+        <translation>Tidak dapat mengubah nama &quot;{old_path}&quot; sebagai &quot;{path}&quot;: {error}.</translation>
+    </message>
+    <message>
         <location line="+565"/>
         <source>Error Adding Torrent</source>
         <translation>Galat Saat Menambah Torrent</translation>
@@ -2472,7 +2484,7 @@ To add a new primary URL, add it after a blank line.</source>
         <location line="+6"/>
         <source>Remaining time unknown</source>
         <extracomment>Second (optional) part of torrent progress string, notice that leading space (before the dash) is included here</extracomment>
-        <translation type="unfinished"></translation>
+        <translation>Sisa waktu tidak diketahui</translation>
     </message>
     <message numerus="yes">
         <location line="+40"/>

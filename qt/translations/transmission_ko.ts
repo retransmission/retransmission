@@ -2214,6 +2214,14 @@ To add a new primary URL, add it after a blank line.</source>
         <translation>&lt;p&gt;&lt;b&gt;&quot;{old_path}&quot; 을 &quot;{path}&quot;로 변경할수 없습니다: {error}.&lt;/b&gt;&lt;/p&gt;&lt;p&gt;오류를 수정하고 다시 시도해주십시오.&lt;/p&gt;</translation>
     </message>
     <message>
+        <source>Please correct the errors and try again.</source>
+        <translation>오류를 수정하고 다시 시도해주십시오.</translation>
+    </message>
+    <message>
+        <source>Unable to rename &quot;{old_path}&quot; as &quot;{path}&quot;: {error}.</source>
+        <translation>&quot;{old_path}&quot; 을 &quot;{path}&quot;로 변경할수 없습니다: {error}.</translation>
+    </message>
+    <message>
         <location line="+565"/>
         <source>Error Adding Torrent</source>
         <translation>Torrent 추가 오류</translation>
@@ -2472,7 +2480,7 @@ To add a new primary URL, add it after a blank line.</source>
         <location line="+6"/>
         <source>Remaining time unknown</source>
         <extracomment>Second (optional) part of torrent progress string, notice that leading space (before the dash) is included here</extracomment>
-        <translation type="unfinished"></translation>
+        <translation>완료 시간 불분명함</translation>
     </message>
     <message numerus="yes">
         <location line="+40"/>

@@ -2235,6 +2235,14 @@ To add a new primary URL, add it after a blank line.</source>
         <translation>&lt;p&gt;&lt;b&gt;ვერ მოხერხდა &quot;{old_path}-ის&quot; &quot;{path}&quot;: {error}-ად გადარქმევა.&lt;/b&gt;&lt;/p&gt;&lt;p&gt;გთხოვთ გამოასწორეთ შეცდომები და სცადეთ ხელახლა.&lt;/p&gt;</translation>
     </message>
     <message>
+        <source>Please correct the errors and try again.</source>
+        <translation>გთხოვთ გამოასწორეთ შეცდომები და სცადეთ ხელახლა.</translation>
+    </message>
+    <message>
+        <source>Unable to rename &quot;{old_path}&quot; as &quot;{path}&quot;: {error}.</source>
+        <translation>ვერ მოხერხდა &quot;{old_path}-ის&quot; &quot;{path}&quot;: {error}-ად გადარქმევა.</translation>
+    </message>
+    <message>
         <location line="+565"/>
         <source>Error Adding Torrent</source>
         <translation type="unfinished"></translation>
@@ -2496,7 +2504,7 @@ To add a new primary URL, add it after a blank line.</source>
         <location line="+6"/>
         <source>Remaining time unknown</source>
         <extracomment>Second (optional) part of torrent progress string, notice that leading space (before the dash) is included here</extracomment>
-        <translation type="unfinished"></translation>
+        <translation>დარჩენილი დრო უცნობია</translation>
     </message>
     <message numerus="yes">
         <location line="+40"/>

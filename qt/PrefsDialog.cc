@@ -439,11 +439,13 @@ void PrefsDialog::onBlocklistUpdateFailed(QString const& message)
 
 void PrefsDialog::onUpdateBlocklistClicked()
 {
-    blocklist_dialog_ = new QMessageBox{ QMessageBox::Information,
-                                         QString{},
-                                         tr("<b>Update Blocklist</b><p>Getting new blocklist…</p>"),
-                                         QMessageBox::Close,
-                                         this };
+    blocklist_dialog_ = new QMessageBox{
+        QMessageBox::Information,
+        QString{},
+        QStringLiteral("<b>%1</b><p>%2</p>").arg(tr("Update Blocklist"), tr("Getting new blocklist…")),
+        QMessageBox::Close,
+        this
+    };
     connect(blocklist_dialog_, &QDialog::rejected, this, &PrefsDialog::onUpdateBlocklistCancelled);
     connect(&session_, &Session::blocklistUpdated, this, &PrefsDialog::onBlocklistUpdated);
     connect(&session_, &Session::blocklistUpdateFailed, this, &PrefsDialog::onBlocklistUpdateFailed);

@@ -2233,6 +2233,14 @@ To add a new primary URL, add it after a blank line.</source>
         <translation>&lt;p&gt;&lt;b&gt;Impossibile rinominare &quot;{old_path}&quot; in &quot;{path}&quot;: {error}.&lt;/b&gt;&lt;/p&gt;&lt;p&gt;Si prega di correggere gli errori e riprovare.&lt;/p&gt;</translation>
     </message>
     <message>
+        <source>Please correct the errors and try again.</source>
+        <translation>Si prega di correggere gli errori e riprovare.</translation>
+    </message>
+    <message>
+        <source>Unable to rename &quot;{old_path}&quot; as &quot;{path}&quot;: {error}.</source>
+        <translation>Impossibile rinominare &quot;{old_path}&quot; in &quot;{path}&quot;: {error}.</translation>
+    </message>
+    <message>
         <location line="+565"/>
         <source>Error Adding Torrent</source>
         <translation>Errore nell&apos;aggiunta del torrent</translation>
@@ -2494,7 +2502,7 @@ To add a new primary URL, add it after a blank line.</source>
         <location line="+6"/>
         <source>Remaining time unknown</source>
         <extracomment>Second (optional) part of torrent progress string, notice that leading space (before the dash) is included here</extracomment>
-        <translation type="unfinished"></translation>
+        <translation>Tempo rimanente sconosciuto</translation>
     </message>
     <message numerus="yes">
         <location line="+40"/>

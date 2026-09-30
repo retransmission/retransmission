@@ -253,9 +253,8 @@ QString TorrentDelegate::progressString(Torrent const& tor)
             //: notice that leading space (before the dash) is included here
             str += TR_FORMAT(" - {time_span} left", fmt::arg("time_span", Formatter::timeToString(tor.getETA())));
         } else {
-            //: Second (optional) part of torrent progress string,
-            //: notice that leading space (before the dash) is included here
-            str += tr(" - Remaining time unknown");
+            //: Second (optional) part of torrent progress string
+            str += QStringLiteral(" - ") + tr("Remaining time unknown");
         }
     }
 
@@ -310,8 +309,7 @@ QString TorrentDelegate::shortStatusString(Torrent const& tor)
             //: notice that leading space (before the dash) is included here
             str += TR_FORMAT("{time_span} left", fmt::arg("time_span", Formatter::timeToString(tor.getETA())));
         } else {
-            //: Second (optional) part of torrent progress string,
-            //: notice that leading space (before the dash) is included here
+            //: Second (optional) part of torrent progress string
             str += tr("Remaining time unknown");
         }
     }

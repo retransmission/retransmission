@@ -2231,6 +2231,14 @@ To add a new primary URL, add it after a blank line.</source>
         <translation>&lt;p&gt;&lt;b&gt;&quot;{old_path}&quot; का नाम &quot;{path}&quot; करने में विफल : {error}।&lt;/b&gt;&lt;/p&gt;&lt;p&gt;त्रुटि ठीक कर पुनः प्रयास करें।&lt;/p&gt;</translation>
     </message>
     <message>
+        <source>Please correct the errors and try again.</source>
+        <translation>त्रुटि ठीक कर पुनः प्रयास करें।</translation>
+    </message>
+    <message>
+        <source>Unable to rename &quot;{old_path}&quot; as &quot;{path}&quot;: {error}.</source>
+        <translation>&quot;{old_path}&quot; का नाम &quot;{path}&quot; करने में विफल : {error}।</translation>
+    </message>
+    <message>
         <location line="+565"/>
         <source>Error Adding Torrent</source>
         <translation>टोरेंट जोड़ते समय त्रुटि</translation>
@@ -2492,7 +2500,7 @@ To add a new primary URL, add it after a blank line.</source>
         <location line="+6"/>
         <source>Remaining time unknown</source>
         <extracomment>Second (optional) part of torrent progress string, notice that leading space (before the dash) is included here</extracomment>
-        <translation type="unfinished"></translation>
+        <translation>शेष समय अज्ञात</translation>
     </message>
     <message numerus="yes">
         <location line="+40"/>

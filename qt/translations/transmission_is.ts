@@ -14,6 +14,10 @@
         <translation>Höfundarréttur © Transmission-verkefnið</translation>
     </message>
     <message>
+        <source>Copyright © The {appname} Project</source>
+        <translation>Höfundarréttur © {appname}-verkefnið</translation>
+    </message>
+    <message>
         <location line="-10"/>
         <source>A fast and easy BitTorrent client</source>
         <translation>Hraðvikt BitTorrent-forrit sem er auðvelt í notkun</translation>
@@ -2040,6 +2044,14 @@ To add a new primary URL, add it after a blank line.</source>
         <translation>&lt;b&gt;Uppfæri bannlista&lt;/b&gt;&lt;p&gt;Næ í nýjan bannlista…&lt;/p&gt;</translation>
     </message>
     <message>
+        <source>Getting new blocklist…</source>
+        <translation>Næ í nýjan bannlista…</translation>
+    </message>
+    <message>
+        <source>Update Blocklist</source>
+        <translation>Uppfæri bannlista</translation>
+    </message>
+    <message>
         <location line="+85"/>
         <source>Select Destination</source>
         <translation>Veldu áfangastað</translation>
@@ -2229,6 +2241,14 @@ To add a new primary URL, add it after a blank line.</source>
         <location line="+1"/>
         <source>&lt;p&gt;&lt;b&gt;Unable to rename &quot;{old_path}&quot; as &quot;{path}&quot;: {error}.&lt;/b&gt;&lt;/p&gt;&lt;p&gt;Please correct the errors and try again.&lt;/p&gt;</source>
         <translation>&lt;p&gt;&lt;b&gt;Tókst ekki að endurnefna &quot;{old_path}&quot; sem &quot;{path}&quot;: {error}.&lt;/b&gt;&lt;/p&gt;&lt;p&gt;Lagfærðu villurnar og reyndu aftur.&lt;/p&gt;</translation>
+    </message>
+    <message>
+        <source>Please correct the errors and try again.</source>
+        <translation>Lagfærðu villurnar og reyndu aftur.</translation>
+    </message>
+    <message>
+        <source>Unable to rename &quot;{old_path}&quot; as &quot;{path}&quot;: {error}.</source>
+        <translation>Tókst ekki að endurnefna &quot;{old_path}&quot; sem &quot;{path}&quot;: {error}.</translation>
     </message>
     <message>
         <location line="+565"/>

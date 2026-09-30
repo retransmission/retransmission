@@ -14,6 +14,10 @@
         <translation>جميع الحقوق محفوظة © The Transmission Project</translation>
     </message>
     <message>
+        <source>Copyright © The {appname} Project</source>
+        <translation>جميع الحقوق محفوظة © The {appname} Project</translation>
+    </message>
+    <message>
         <location line="-10"/>
         <source>A fast and easy BitTorrent client</source>
         <translation>عميل تورنت سريع وسهل.</translation>
@@ -2299,6 +2303,14 @@ To add a new primary URL, add it after a blank line.</source>
         <translation>&lt;p&gt;&lt;b&gt;تعذر إعادة تسمية &quot;{old_path}&quot; إلى&quot;{path}&quot;: {error}.&lt;/b&gt;&lt;/p&gt;رجاء صحح الخطأ وحاول مجددا.&lt;/p&gt;</translation>
     </message>
     <message>
+        <source>Please correct the errors and try again.</source>
+        <translation>رجاء صحح الخطأ وحاول مجددا.</translation>
+    </message>
+    <message>
+        <source>Unable to rename &quot;{old_path}&quot; as &quot;{path}&quot;: {error}.</source>
+        <translation>تعذر إعادة تسمية &quot;{old_path}&quot; إلى&quot;{path}&quot;: {error}.</translation>
+    </message>
+    <message>
         <location line="+565"/>
         <source>Error Adding Torrent</source>
         <translation>تعذر إضافة التورنت</translation>
@@ -2572,7 +2584,7 @@ To add a new primary URL, add it after a blank line.</source>
         <location line="+6"/>
         <source>Remaining time unknown</source>
         <extracomment>Second (optional) part of torrent progress string, notice that leading space (before the dash) is included here</extracomment>
-        <translation type="unfinished"></translation>
+        <translation>الوقت المتبقي مجهول</translation>
     </message>
     <message numerus="yes">
         <location line="+40"/>

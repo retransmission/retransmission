@@ -258,11 +258,13 @@ void Session::torrentRenamePath(torrent_ids_t const& torrent_ids, QString const&
                 RpcClient::ResponseFunc done) mutable { exec(TR_KEY_torrent_rename_path, std::move(params), std::move(done)); },
             [](RpcResponse const& r) {
                 auto const title = tr("Error Renaming Path");
-                auto const text = TR_FORMAT(
-                    R"(<p><b>Unable to rename "{old_path}" as "{path}": {error}.</b></p><p>Please correct the errors and try again.</p>)",
+                auto const summary = TR_FORMAT(
+                    R"(Unable to rename "{old_path}" as "{path}": {error}.)",
                     fmt::arg("old_path", dictFind<QString>(r.args.get(), TR_KEY_path).value_or(QStringLiteral("(unknown)"))),
                     fmt::arg("path", dictFind<QString>(r.args.get(), TR_KEY_name).value_or(QStringLiteral("(unknown)"))),
                     fmt::arg("error", r.errmsg));
+                auto const text = QStringLiteral("<p><b>%1</b></p><p>%2</p>")
+                                      .arg(summary, tr("Please correct the errors and try again."));
                 auto* d = new QMessageBox{ QMessageBox::Information,
                                            title,
                                            text,

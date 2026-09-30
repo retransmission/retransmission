@@ -14,6 +14,10 @@
         <translation>Авторське право © The Transmission Project</translation>
     </message>
     <message>
+        <source>Copyright © The {appname} Project</source>
+        <translation>Авторське право © The {appname} Project</translation>
+    </message>
+    <message>
         <location line="-10"/>
         <source>A fast and easy BitTorrent client</source>
         <translation>Швидкий і простий у використанні клієнт BitTorrent</translation>
@@ -2057,6 +2061,14 @@ To add a new primary URL, add it after a blank line.</source>
         <translation>&lt;b&gt;Оновити список блокування&lt;/b&gt;&lt;p&gt;Отримання нового списку…&lt;/p&gt;</translation>
     </message>
     <message>
+        <source>Getting new blocklist…</source>
+        <translation>Отримання нового списку…</translation>
+    </message>
+    <message>
+        <source>Update Blocklist</source>
+        <translation>Оновити список блокування</translation>
+    </message>
+    <message>
         <location line="+85"/>
         <source>Select Destination</source>
         <translation>Виберіть призначення</translation>
@@ -2246,6 +2258,14 @@ To add a new primary URL, add it after a blank line.</source>
         <location line="+1"/>
         <source>&lt;p&gt;&lt;b&gt;Unable to rename &quot;{old_path}&quot; as &quot;{path}&quot;: {error}.&lt;/b&gt;&lt;/p&gt;&lt;p&gt;Please correct the errors and try again.&lt;/p&gt;</source>
         <translation>&lt;p&gt;&lt;b&gt;Не вдалося перейменувати «{old_path}» на «{path}»: {error}.&lt;/b&gt;&lt;/p&gt;&lt;p&gt;Виправте помилку і спробуйте ще раз.&lt;/p&gt;</translation>
+    </message>
+    <message>
+        <source>Please correct the errors and try again.</source>
+        <translation>Виправте помилку і спробуйте ще раз.</translation>
+    </message>
+    <message>
+        <source>Unable to rename &quot;{old_path}&quot; as &quot;{path}&quot;: {error}.</source>
+        <translation>Не вдалося перейменувати «{old_path}» на «{path}»: {error}.</translation>
     </message>
     <message>
         <location line="+565"/>

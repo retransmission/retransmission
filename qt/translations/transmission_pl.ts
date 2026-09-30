@@ -14,6 +14,10 @@
         <translation>Copyright © Projekt Transmission</translation>
     </message>
     <message>
+        <source>Copyright © The {appname} Project</source>
+        <translation>Copyright © Projekt {appname}</translation>
+    </message>
+    <message>
         <location line="-10"/>
         <source>A fast and easy BitTorrent client</source>
         <translation>Szybki i&#xa0;łatwy w&#xa0;użyciu klient sieci BitTorrent</translation>
@@ -2060,6 +2064,14 @@ Nowy podstawowy adres URL należy dodać po pustym wierszu.</translation>
         <translation>&lt;b&gt;Aktualizacja listy blokowania&lt;/b&gt;&lt;p&gt;Pobieranie nowej listy blokowania…&lt;/p&gt;</translation>
     </message>
     <message>
+        <source>Getting new blocklist…</source>
+        <translation>Pobieranie nowej listy blokowania…</translation>
+    </message>
+    <message>
+        <source>Update Blocklist</source>
+        <translation>Aktualizacja listy blokowania</translation>
+    </message>
+    <message>
         <location line="+85"/>
         <source>Select Destination</source>
         <translation>Wybór miejsca docelowego</translation>
@@ -2249,6 +2261,14 @@ Nowy podstawowy adres URL należy dodać po pustym wierszu.</translation>
         <location line="+1"/>
         <source>&lt;p&gt;&lt;b&gt;Unable to rename &quot;{old_path}&quot; as &quot;{path}&quot;: {error}.&lt;/b&gt;&lt;/p&gt;&lt;p&gt;Please correct the errors and try again.&lt;/p&gt;</source>
         <translation>&lt;p&gt;&lt;b&gt;Nie można zmienić nazwy pliku „{old_path}” na „{path}”: {error}.&lt;/b&gt;&lt;/p&gt;&lt;p&gt;Proszę poprawić błędy i spróbować ponownie.&lt;/p&gt;</translation>
+    </message>
+    <message>
+        <source>Please correct the errors and try again.</source>
+        <translation>Proszę poprawić błędy i spróbować ponownie.</translation>
+    </message>
+    <message>
+        <source>Unable to rename &quot;{old_path}&quot; as &quot;{path}&quot;: {error}.</source>
+        <translation>Nie można zmienić nazwy pliku „{old_path}” na „{path}”: {error}.</translation>
     </message>
     <message>
         <location line="+565"/>

@@ -14,6 +14,10 @@
         <translation>Copyright © Transmission-projekti</translation>
     </message>
     <message>
+        <source>Copyright © The {appname} Project</source>
+        <translation>Copyright © {appname}-projekti</translation>
+    </message>
+    <message>
         <location line="-10"/>
         <source>A fast and easy BitTorrent client</source>
         <translation>Nopea ja helppo BitTorrent-asiakasohjelma</translation>
@@ -2043,6 +2047,14 @@ seuraavalle riville. Lisää uusi URL-osoite lisäämällä se tyhjän rivin jä
         <translation>&lt;b&gt;Päivitä estolista&lt;/b&gt;&lt;p&gt; Noudetaan uutta estolistaa…&lt;/p&gt;</translation>
     </message>
     <message>
+        <source>Getting new blocklist…</source>
+        <translation>Noudetaan uutta estolistaa…</translation>
+    </message>
+    <message>
+        <source>Update Blocklist</source>
+        <translation>Päivitä estolista</translation>
+    </message>
+    <message>
         <location line="+85"/>
         <source>Select Destination</source>
         <translation>Valitse kohde</translation>
@@ -2232,6 +2244,14 @@ seuraavalle riville. Lisää uusi URL-osoite lisäämällä se tyhjän rivin jä
         <location line="+1"/>
         <source>&lt;p&gt;&lt;b&gt;Unable to rename &quot;{old_path}&quot; as &quot;{path}&quot;: {error}.&lt;/b&gt;&lt;/p&gt;&lt;p&gt;Please correct the errors and try again.&lt;/p&gt;</source>
         <translation>&lt;p&gt;&lt;b&gt;Kohdetta &quot;{old_path}&quot; ei voi nimetä nimellä &quot;{path}&quot;: {error}.&lt;/b&gt;&lt;/p&gt;&lt;p&gt;Korjaa virheet ja yritä uudelleen.&lt;/p&gt;</translation>
+    </message>
+    <message>
+        <source>Please correct the errors and try again.</source>
+        <translation>Korjaa virheet ja yritä uudelleen.</translation>
+    </message>
+    <message>
+        <source>Unable to rename &quot;{old_path}&quot; as &quot;{path}&quot;: {error}.</source>
+        <translation>Kohdetta &quot;{old_path}&quot; ei voi nimetä nimellä &quot;{path}&quot;: {error}.</translation>
     </message>
     <message>
         <location line="+565"/>

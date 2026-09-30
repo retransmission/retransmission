@@ -14,6 +14,10 @@
         <translation>Copyright © The Transmission Project</translation>
     </message>
     <message>
+        <source>Copyright © The {appname} Project</source>
+        <translation>Copyright © The {appname} Project</translation>
+    </message>
+    <message>
         <location line="-10"/>
         <source>A fast and easy BitTorrent client</source>
         <translation>簡單快速的 BitTorrent 用戶端</translation>
@@ -2026,6 +2030,14 @@ To add a new primary URL, add it after a blank line.</source>
         <translation>&lt;b&gt;更新黑名單&lt;/b&gt;&lt;p&gt;正在取得新的黑名單…&lt;/p&gt;</translation>
     </message>
     <message>
+        <source>Getting new blocklist…</source>
+        <translation>正在取得新的黑名單…</translation>
+    </message>
+    <message>
+        <source>Update Blocklist</source>
+        <translation>更新黑名單</translation>
+    </message>
+    <message>
         <location line="+85"/>
         <source>Select Destination</source>
         <translation>選擇目標資料夾</translation>
@@ -2215,6 +2227,14 @@ To add a new primary URL, add it after a blank line.</source>
         <location line="+1"/>
         <source>&lt;p&gt;&lt;b&gt;Unable to rename &quot;{old_path}&quot; as &quot;{path}&quot;: {error}.&lt;/b&gt;&lt;/p&gt;&lt;p&gt;Please correct the errors and try again.&lt;/p&gt;</source>
         <translation>&lt;p&gt;&lt;b&gt;無法重新命名 &quot;{old_path}&quot; 為 &quot;{path}&quot;：{error}。&lt;/b&gt;&lt;/p&gt;&lt;p&gt;請修正錯誤後再試一次。&lt;/p&gt;</translation>
+    </message>
+    <message>
+        <source>Please correct the errors and try again.</source>
+        <translation>請修正錯誤後再試一次。</translation>
+    </message>
+    <message>
+        <source>Unable to rename &quot;{old_path}&quot; as &quot;{path}&quot;: {error}.</source>
+        <translation>無法重新命名 &quot;{old_path}&quot; 為 &quot;{path}&quot;：{error}。</translation>
     </message>
     <message>
         <location line="+565"/>

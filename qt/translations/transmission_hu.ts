@@ -14,6 +14,10 @@
         <translation>Copyright © A Transmission Projekt</translation>
     </message>
     <message>
+        <source>Copyright © The {appname} Project</source>
+        <translation>Copyright © A {appname} Projekt</translation>
+    </message>
+    <message>
         <location line="-10"/>
         <source>A fast and easy BitTorrent client</source>
         <translation>Egy gyors és egyszerű BitTorrent kliens</translation>
@@ -2023,6 +2027,14 @@ To add a new primary URL, add it after a blank line.</source>
         <translation>&lt;b&gt;Tiltólista frissítése&lt;/b&gt;&lt;p&gt;Új tiltólista letöltése…&lt;/p&gt;</translation>
     </message>
     <message>
+        <source>Getting new blocklist…</source>
+        <translation>Új tiltólista letöltése…</translation>
+    </message>
+    <message>
+        <source>Update Blocklist</source>
+        <translation>Tiltólista frissítése</translation>
+    </message>
+    <message>
         <location line="+85"/>
         <source>Select Destination</source>
         <translation>Válassza ki a célkönyvtárat</translation>
@@ -2212,6 +2224,14 @@ To add a new primary URL, add it after a blank line.</source>
         <location line="+1"/>
         <source>&lt;p&gt;&lt;b&gt;Unable to rename &quot;{old_path}&quot; as &quot;{path}&quot;: {error}.&lt;/b&gt;&lt;/p&gt;&lt;p&gt;Please correct the errors and try again.&lt;/p&gt;</source>
         <translation>&lt;p&gt;&lt;b&gt;Nem sikerült átnevezni a(z) &quot;{old_path}&quot; elemet erre: &quot;{path}&quot;, mert: {error}.&lt;/b&gt;&lt;/p&gt;&lt;p&gt;Javítsa ki a hibákat, és próbálkozzon újra.&lt;/p&gt;</translation>
+    </message>
+    <message>
+        <source>Please correct the errors and try again.</source>
+        <translation>Javítsa ki a hibákat, és próbálkozzon újra.</translation>
+    </message>
+    <message>
+        <source>Unable to rename &quot;{old_path}&quot; as &quot;{path}&quot;: {error}.</source>
+        <translation>Nem sikerült átnevezni a(z) &quot;{old_path}&quot; elemet erre: &quot;{path}&quot;, mert: {error}.</translation>
     </message>
     <message>
         <location line="+565"/>

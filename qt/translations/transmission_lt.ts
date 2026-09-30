@@ -2248,6 +2248,14 @@ To add a new primary URL, add it after a blank line.</source>
         <translation>&lt;p&gt;&lt;b&gt;Nepavyko pervadinti &quot;{old_path}&quot; kaip &quot;{path}&quot;: {error}.&lt;/b&gt;&lt;/p&gt;&lt;p&gt;Prašome ištaisyti klaidas ir bandyti dar kartą.&lt;/p&gt;</translation>
     </message>
     <message>
+        <source>Please correct the errors and try again.</source>
+        <translation>Prašome ištaisyti klaidas ir bandyti dar kartą.</translation>
+    </message>
+    <message>
+        <source>Unable to rename &quot;{old_path}&quot; as &quot;{path}&quot;: {error}.</source>
+        <translation>Nepavyko pervadinti &quot;{old_path}&quot; kaip &quot;{path}&quot;: {error}.</translation>
+    </message>
+    <message>
         <location line="+565"/>
         <source>Error Adding Torrent</source>
         <translation>Klaida pridedant torentą</translation>

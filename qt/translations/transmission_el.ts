@@ -14,6 +14,10 @@
         <translation>Με την επιφύλαξη παντός δικαιώματος © The Transmission Project</translation>
     </message>
     <message>
+        <source>Copyright © The {appname} Project</source>
+        <translation>Με την επιφύλαξη παντός δικαιώματος © The {appname} Project</translation>
+    </message>
+    <message>
         <location line="-10"/>
         <source>A fast and easy BitTorrent client</source>
         <translation>Ένα γρήγορο κι εύχρηστο πρόγραμμα-πελάτης BitTorrent</translation>
@@ -2043,6 +2047,14 @@ To add a new primary URL, add it after a blank line.</source>
         <translation>&lt;b&gt;Ενημέρωση λίστα φραγής&lt;/b&gt;&lt;p&gt;Απόκτηση νέας λίστας φραγής…&lt;/p&gt;</translation>
     </message>
     <message>
+        <source>Getting new blocklist…</source>
+        <translation>Απόκτηση νέας λίστας φραγής…</translation>
+    </message>
+    <message>
+        <source>Update Blocklist</source>
+        <translation>Ενημέρωση λίστα φραγής</translation>
+    </message>
+    <message>
         <location line="+85"/>
         <source>Select Destination</source>
         <translation>Επιλογή Προορισμού</translation>
@@ -2232,6 +2244,14 @@ To add a new primary URL, add it after a blank line.</source>
         <location line="+1"/>
         <source>&lt;p&gt;&lt;b&gt;Unable to rename &quot;{old_path}&quot; as &quot;{path}&quot;: {error}.&lt;/b&gt;&lt;/p&gt;&lt;p&gt;Please correct the errors and try again.&lt;/p&gt;</source>
         <translation>&lt;p&gt;&lt;b&gt;Αδύνατη η μετονομασία του &quot;{old_path}&quot; σε &quot;{path}&quot;: {error}.&lt;/b&gt;&lt;/p&gt;&lt;p&gt;Παρακαλώ διορθώστε τα λάθη και δοκιμάστε ξανά.&lt;/p&gt;</translation>
+    </message>
+    <message>
+        <source>Please correct the errors and try again.</source>
+        <translation>Παρακαλώ διορθώστε τα λάθη και δοκιμάστε ξανά.</translation>
+    </message>
+    <message>
+        <source>Unable to rename &quot;{old_path}&quot; as &quot;{path}&quot;: {error}.</source>
+        <translation>Αδύνατη η μετονομασία του &quot;{old_path}&quot; σε &quot;{path}&quot;: {error}.</translation>
     </message>
     <message>
         <location line="+565"/>
