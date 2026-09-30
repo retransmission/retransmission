@@ -692,8 +692,7 @@ void Session::addTorrent(AddData const& add_me, tr_variant::Map args_dict)
             [add_me](RpcResponse const& r) {
                 auto const title = tr("Error Adding Torrent");
                 auto const text = QStringLiteral("<p><b>%1</b></p><p>%2</p>")
-                                      .arg(Utils::qstringFromUtf8(r.errmsg))
-                                      .arg(add_me.readableName());
+                                      .arg(Utils::qstringFromUtf8(r.errmsg), add_me.readableName());
                 auto* d = new QMessageBox{ QMessageBox::Warning,
                                            title,
                                            text,

@@ -32,9 +32,8 @@ AboutDialog::AboutDialog(Session& session, QWidget* parent)
         QString title = QStringLiteral(
             "<div style='font-size:x-large; font-weight: bold; text-align: center'>" TR_PROJ_APPNAME_CAPITALIZED "</div>");
         title += QStringLiteral("<div style='text-align: center'>%1: %2</div>")
-                     .arg(tr("Client"))
-                     .arg(QStringLiteral(LONG_VERSION_STRING));
-        title += QStringLiteral("<div style='text-align: center'>%1: %2</div>").arg(tr("Server")).arg(session.sessionVersion());
+                     .arg(tr("Client"), QStringLiteral(LONG_VERSION_STRING));
+        title += QStringLiteral("<div style='text-align: center'>%1: %2</div>").arg(tr("Server"), session.sessionVersion());
         ui_.titleLabel->setText(title);
     }
 

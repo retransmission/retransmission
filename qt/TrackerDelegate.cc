@@ -196,7 +196,7 @@ QString TrackerDelegate::getText(TrackerInfo const& inf) const
     str += inf.st.is_backup ? QStringLiteral("<i>") : QStringLiteral("<b>");
     auto const announce_url = inf.st.announce.toStdString();
     if (auto const parsed = tr_urlParse(announce_url); parsed) {
-        str += QStringLiteral("%1:%2").arg(Utils::qstringFromUtf8(parsed->host)).arg(parsed->port);
+        str += QStringLiteral("%1:%2").arg(Utils::qstringFromUtf8(parsed->host), QString::number(parsed->port));
     }
     str += inf.st.is_backup ? QStringLiteral("</i>") : QStringLiteral("</b>");
 
