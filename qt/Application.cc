@@ -281,6 +281,7 @@ void Application::loadTranslations()
         (applicationDirPath() + QStringLiteral("/translations"));
 
     auto const qt_file_name = QStringLiteral("qtbase");
+    auto const app_file_name = QStringLiteral(TRANSLATIONS_NAME);
 
     QLocale const locale;
     QLocale const english_locale(QLocale::English, QLocale::UnitedStates);
@@ -290,8 +291,8 @@ void Application::loadTranslations()
         installTranslator(&qt_translator_);
     }
 
-    if (loadTranslation(app_translator_, ConfigName, locale, app_qm_dirs) ||
-        loadTranslation(app_translator_, ConfigName, english_locale, app_qm_dirs)) {
+    if (loadTranslation(app_translator_, app_file_name, locale, app_qm_dirs) ||
+        loadTranslation(app_translator_, app_file_name, english_locale, app_qm_dirs)) {
         installTranslator(&app_translator_);
     }
 }
