@@ -538,6 +538,10 @@
         <source>&amp;Maximum peers:</source>
         <translation>מספר עמיתים מ&amp;רבי:</translation>
     </message>
+    <message>
+        <source>{torrent_name} - Edit Trackers</source>
+        <translation>{torrent_name} - עריכת עוקבים</translation>
+    </message>
 </context>
 <context>
     <name>FileTreeItem</name>

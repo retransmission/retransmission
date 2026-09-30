@@ -538,6 +538,10 @@
         <source>&amp;Maximum peers:</source>
         <translation>&amp;Højeste antal modparter:</translation>
     </message>
+    <message>
+        <source>{torrent_name} - Edit Trackers</source>
+        <translation>{torrent_name} - Rediger trackere</translation>
+    </message>
 </context>
 <context>
     <name>FileTreeItem</name>

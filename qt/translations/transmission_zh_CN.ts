@@ -534,6 +534,10 @@
         <source>&amp;Maximum peers:</source>
         <translation>最大节点数(&amp;M)：</translation>
     </message>
+    <message>
+        <source>{torrent_name} - Edit Trackers</source>
+        <translation>{torrent_name}—编辑 Tracker 列表</translation>
+    </message>
 </context>
 <context>
     <name>FileTreeItem</name>

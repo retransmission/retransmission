@@ -538,6 +538,10 @@
         <source>&amp;Maximum peers:</source>
         <translation>Há&amp;marksfjöldi jafningja:</translation>
     </message>
+    <message>
+        <source>{torrent_name} - Edit Trackers</source>
+        <translation>{torrent_name} - Breyta rekjurum</translation>
+    </message>
 </context>
 <context>
     <name>FileTreeItem</name>

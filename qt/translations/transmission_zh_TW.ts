@@ -534,6 +534,10 @@
         <source>&amp;Maximum peers:</source>
         <translation>最大連線節點數量 (&amp;M)：</translation>
     </message>
+    <message>
+        <source>{torrent_name} - Edit Trackers</source>
+        <translation>{torrent_name} - 編輯追蹤器</translation>
+    </message>
 </context>
 <context>
     <name>FileTreeItem</name>

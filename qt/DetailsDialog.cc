@@ -1350,6 +1350,7 @@ void DetailsDialog::onEditTrackersClicked()
     }
 
     auto* dialog = new TrackersDialog{ tor->trackerList(), this };
+    dialog->setWindowTitle(TR_FORMAT("{torrent_name} - Edit Trackers", fmt::arg("torrent_name", tor->name())));
     dialog->setAttribute(Qt::WA_DeleteOnClose);
     connect(dialog, &TrackersDialog::trackerListEdited, this, &DetailsDialog::onTrackerListEdited);
     dialog->open();

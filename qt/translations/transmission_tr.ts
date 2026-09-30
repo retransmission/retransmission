@@ -534,6 +534,10 @@
         <source>&amp;Maximum peers:</source>
         <translation>&amp;Azami eş:</translation>
     </message>
+    <message>
+        <source>{torrent_name} - Edit Trackers</source>
+        <translation>{torrent_name} - İzleyicileri Düzenle</translation>
+    </message>
 </context>
 <context>
     <name>FileTreeItem</name>

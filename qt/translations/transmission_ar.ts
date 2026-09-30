@@ -554,6 +554,10 @@
         <source>&amp;Maximum peers:</source>
         <translation>الحدّ الأقصى لعدد الأنداد:</translation>
     </message>
+    <message>
+        <source>{torrent_name} - Edit Trackers</source>
+        <translation>{torrent_name} - تعديل المتتبعات</translation>
+    </message>
 </context>
 <context>
     <name>FileTreeItem</name>

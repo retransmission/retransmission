@@ -542,6 +542,10 @@
         <source>&amp;Maximum peers:</source>
         <translation>&amp;Максимум участников:</translation>
     </message>
+    <message>
+        <source>{torrent_name} - Edit Trackers</source>
+        <translation>Изменить трекеры {torrent_name}</translation>
+    </message>
 </context>
 <context>
     <name>FileTreeItem</name>

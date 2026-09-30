@@ -538,6 +538,10 @@
         <source>&amp;Maximum peers:</source>
         <translation>&amp;Maximum de pairs&#xa0;:</translation>
     </message>
+    <message>
+        <source>{torrent_name} - Edit Trackers</source>
+        <translation>{torrent_name} – Modifier les traceurs</translation>
+    </message>
 </context>
 <context>
     <name>FileTreeItem</name>

@@ -538,6 +538,10 @@
         <source>&amp;Maximum peers:</source>
         <translation>&amp;Vertaisia enimmillään:</translation>
     </message>
+    <message>
+        <source>{torrent_name} - Edit Trackers</source>
+        <translation>{torrent_name} - Muokkaa seurantapalvelimia</translation>
+    </message>
 </context>
 <context>
     <name>FileTreeItem</name>

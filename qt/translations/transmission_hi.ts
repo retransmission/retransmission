@@ -534,6 +534,10 @@
         <source>&amp;Maximum peers:</source>
         <translation>अधिकतम पीयर (&amp;M) :</translation>
     </message>
+    <message>
+        <source>{torrent_name} - Edit Trackers</source>
+        <translation>{torrent_name} - ट्रैकर संपादन</translation>
+    </message>
 </context>
 <context>
     <name>FileTreeItem</name>

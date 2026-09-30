@@ -538,6 +538,10 @@
         <source>&amp;Maximum peers:</source>
         <translation>&amp;Maximalt antal jämlikar:</translation>
     </message>
+    <message>
+        <source>{torrent_name} - Edit Trackers</source>
+        <translation>{torrent_name} - Redigera spårare</translation>
+    </message>
 </context>
 <context>
     <name>FileTreeItem</name>

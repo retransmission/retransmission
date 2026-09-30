@@ -542,6 +542,10 @@
         <source>&amp;Maximum peers:</source>
         <translation>&amp;Maksymalna liczba partnerów:</translation>
     </message>
+    <message>
+        <source>{torrent_name} - Edit Trackers</source>
+        <translation>{torrent_name} — modyfikacja serwerów śledzących</translation>
+    </message>
 </context>
 <context>
     <name>FileTreeItem</name>

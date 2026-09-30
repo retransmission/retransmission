@@ -538,6 +538,10 @@
         <source>&amp;Maximum peers:</source>
         <translation>&amp;Maksimum eweknieë:</translation>
     </message>
+    <message>
+        <source>{torrent_name} - Edit Trackers</source>
+        <translation>{torrent_name} - Wysig spoorders</translation>
+    </message>
 </context>
 <context>
     <name>FileTreeItem</name>

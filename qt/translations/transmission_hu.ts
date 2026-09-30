@@ -534,6 +534,10 @@
         <source>&amp;Maximum peers:</source>
         <translation>Partnerek &amp;maximális száma:</translation>
     </message>
+    <message>
+        <source>{torrent_name} - Edit Trackers</source>
+        <translation>{torrent_name} - Trackerek szerkesztése</translation>
+    </message>
 </context>
 <context>
     <name>FileTreeItem</name>

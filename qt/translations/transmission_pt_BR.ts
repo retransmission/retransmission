@@ -538,6 +538,10 @@
         <source>&amp;Maximum peers:</source>
         <translation>&amp;Máximo de fontes:</translation>
     </message>
+    <message>
+        <source>{torrent_name} - Edit Trackers</source>
+        <translation>{torrent_name} - Editar Trackers</translation>
+    </message>
 </context>
 <context>
     <name>FileTreeItem</name>

@@ -538,6 +538,10 @@
         <source>&amp;Maximum peers:</source>
         <translation>&amp;Μέγιστος αριθμός χρηστών:</translation>
     </message>
+    <message>
+        <source>{torrent_name} - Edit Trackers</source>
+        <translation>{torrent_name} - Επεξεργασία Ιχνηλατών</translation>
+    </message>
 </context>
 <context>
     <name>FileTreeItem</name>

@@ -534,6 +534,10 @@
         <source>&amp;Maximum peers:</source>
         <translation>最大ピア数(&amp;M):</translation>
     </message>
+    <message>
+        <source>{torrent_name} - Edit Trackers</source>
+        <translation>{torrent_name} - トラッカー編集</translation>
+    </message>
 </context>
 <context>
     <name>FileTreeItem</name>

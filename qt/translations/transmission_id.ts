@@ -534,6 +534,10 @@
         <source>&amp;Maximum peers:</source>
         <translation>Rekan &amp;maksimum:</translation>
     </message>
+    <message>
+        <source>{torrent_name} - Edit Trackers</source>
+        <translation>{torrent_name} - Sunting Pelacak</translation>
+    </message>
 </context>
 <context>
     <name>FileTreeItem</name>

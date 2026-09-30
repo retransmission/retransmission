@@ -546,6 +546,10 @@
         <source>&amp;Maximum peers:</source>
         <translation>Največ soležnikov:</translation>
     </message>
+    <message>
+        <source>{torrent_name} - Edit Trackers</source>
+        <translation>{torrent_name} - Uredi sledilnike</translation>
+    </message>
 </context>
 <context>
     <name>FileTreeItem</name>

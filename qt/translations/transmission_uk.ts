@@ -542,6 +542,10 @@
         <source>&amp;Maximum peers:</source>
         <translation>&amp;Максимальна кількість вузлів:</translation>
     </message>
+    <message>
+        <source>{torrent_name} - Edit Trackers</source>
+        <translation>{torrent_name} - Редагувати Трекери</translation>
+    </message>
 </context>
 <context>
     <name>FileTreeItem</name>
