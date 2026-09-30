@@ -558,13 +558,21 @@ msgstr[2] "Propriedades - {torrent_count:L}Torrents"
 
 #: ../gtk/Dialogs.cc:57
 msgid "Remove torrent?"
+msgstr "Remover torrent?"
+
+#: ../gtk/Dialogs.cc:57
+msgid "Remove {count:L} torrent?"
 msgid_plural "Remove {count:L} torrents?"
-msgstr[0] "Remover torrent?"
+msgstr[0] "Remover {count:L} torrent?"
 msgstr[1] "Remover {count:L} torrents?"
 msgstr[2] "Remover {count:L} torrent(s)?"
 
 #: ../gtk/Dialogs.cc:59
 msgid "Delete this torrent's downloaded files?"
+msgstr "Excluir esse {count:L} arquivo baixado do torrent?"
+
+#: ../gtk/Dialogs.cc:59
+msgid "Delete this {count:L} torrent's downloaded files?"
 msgid_plural "Delete these {count:L} torrents' downloaded files?"
 msgstr[0] "Excluir esse {count:L} arquivo baixado do torrent?"
 msgstr[1] "Excluir esses {count:L} arquivos baixados do torrent?"
@@ -579,31 +587,35 @@ msgstr[2] "Uma vez removidos, continuar a transferência exigirá os arquivos to
 
 #: ../gtk/Dialogs.cc:75
 msgid "This torrent has not finished downloading."
-msgid_plural "These torrents have not finished downloading."
-msgstr[0] "Este torrent não foi concluído."
-msgstr[1] "Estes torrents não foram concluídos."
-msgstr[2] "Estes torrents não foram concluídos."
+msgstr "Este torrent não foi concluído."
+
+#: ../gtk/Dialogs.cc:75
+msgid "These torrents have not finished downloading."
+msgstr "Estes torrents não foram concluídos."
 
 #: ../gtk/Dialogs.cc:81
 msgid "This torrent is connected to peers."
-msgid_plural "These torrents are connected to peers."
-msgstr[0] "Este torrent está conectado a pares."
-msgstr[1] "Estes torrents estão conectados a pares."
-msgstr[2] "Estes torrents estão conectados a pares."
+msgstr "Este torrent está conectado a pares."
+
+#: ../gtk/Dialogs.cc:81
+msgid "These torrents are connected to peers."
+msgstr "Estes torrents estão conectados a pares."
 
 #: ../gtk/Dialogs.cc:88
 msgid "One of these torrents is connected to peers."
-msgid_plural "Some of these torrents are connected to peers."
-msgstr[0] "Um destes torrents está conectado a pares."
-msgstr[1] "Alguns destes torrents estão conectados a pares."
-msgstr[2] "Alguns destes torrents estão conectados a pares."
+msgstr "Um destes torrents está conectado a pares."
+
+#: ../gtk/Dialogs.cc:88
+msgid "Some of these torrents are connected to peers."
+msgstr "Alguns destes torrents estão conectados a pares."
 
 #: ../gtk/Dialogs.cc:101
 msgid "One of these torrents has not finished downloading."
-msgid_plural "Some of these torrents have not finished downloading."
-msgstr[0] "Um destes torrents não foi concluído."
-msgstr[1] "Alguns destes torrents não foram concluídos."
-msgstr[2] "Alguns destes torrents não foram concluídos."
+msgstr "Um destes torrents não foi concluído."
+
+#: ../gtk/Dialogs.cc:101
+msgid "Some of these torrents have not finished downloading."
+msgstr "Alguns destes torrents não foram concluídos."
 
 #: ../gtk/Dialogs.cc:120 ../gtk/MessageLogWindow.cc:271 ../gtk/OptionsDialog.cc:370 ../gtk/PathButton.cc:155 ../gtk/StatsDialog.cc:112 ../gtk/ui/gtk3/AddTrackerDialog.ui:20 ../gtk/ui/gtk3/EditTrackersDialog.ui:20 ../gtk/ui/gtk3/MakeProgressDialog.ui:21 ../gtk/ui/gtk3/OptionsDialog.ui:20 ../gtk/ui/gtk3/RelocateDialog.ui:20 ../gtk/ui/gtk3/TorrentUrlChooserDialog.ui:20 ../gtk/ui/gtk4/AddTrackerDialog.ui:67 ../gtk/ui/gtk4/EditTrackersDialog.ui:86 ../gtk/ui/gtk4/MakeProgressDialog.ui:36 ../gtk/ui/gtk4/OptionsDialog.ui:176 ../gtk/ui/gtk4/RelocateDialog.ui:93 ../gtk/ui/gtk4/TorrentUrlChooserDialog.ui:67
 msgid "_Cancel"

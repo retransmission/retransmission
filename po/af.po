@@ -489,14 +489,22 @@ msgstr[1] "Eienskappe - {torrent_count:L} Torrents"
 
 #: ../gtk/Dialogs.cc:57
 msgid "Remove torrent?"
+msgstr "Verwyder torrent?"
+
+#: ../gtk/Dialogs.cc:57
+msgid "Remove {count:L} torrent?"
 msgid_plural "Remove {count:L} torrents?"
-msgstr[0] "Verwyder torrent?"
+msgstr[0] "Verwyder {count:L} torrent?"
 msgstr[1] "Verwyder {count:L} torrents?"
 
 #: ../gtk/Dialogs.cc:59
 msgid "Delete this torrent's downloaded files?"
+msgstr "Skrap hierdie torrent se afgelaaide lêers?"
+
+#: ../gtk/Dialogs.cc:59
+msgid "Delete this {count:L} torrent's downloaded files?"
 msgid_plural "Delete these {count:L} torrents' downloaded files?"
-msgstr[0] "Skrap hierdie torrent se afgelaaide lêers?"
+msgstr[0] "Skrap hierdie {count:L} torrent se afgelaaide lêers?"
 msgstr[1] "Skrap hierdie {count:L} torrents se afgelaaide lêers?"
 
 #: ../gtk/Dialogs.cc:68
@@ -507,27 +515,35 @@ msgstr[1] "Sodra dit verwyder word sal die torrentlêers of magneetskakels vir v
 
 #: ../gtk/Dialogs.cc:75
 msgid "This torrent has not finished downloading."
-msgid_plural "These torrents have not finished downloading."
-msgstr[0] "Hierdie torrent is nog besig om af te laai."
-msgstr[1] "Hierdie torrents is nog besig om af te laai."
+msgstr "Hierdie torrent is nog besig om af te laai."
+
+#: ../gtk/Dialogs.cc:75
+msgid "These torrents have not finished downloading."
+msgstr "Hierdie torrents is nog besig om af te laai."
 
 #: ../gtk/Dialogs.cc:81
 msgid "This torrent is connected to peers."
-msgid_plural "These torrents are connected to peers."
-msgstr[0] "Hierdie torrent is aan eweknieë verbind."
-msgstr[1] "Hierdie torrents is aan eweknieë verbind."
+msgstr "Hierdie torrent is aan eweknieë verbind."
+
+#: ../gtk/Dialogs.cc:81
+msgid "These torrents are connected to peers."
+msgstr "Hierdie torrents is aan eweknieë verbind."
 
 #: ../gtk/Dialogs.cc:88
 msgid "One of these torrents is connected to peers."
-msgid_plural "Some of these torrents are connected to peers."
-msgstr[0] "Een van hierdie torrents is aan eweknieë verbind."
-msgstr[1] "Sommige van hierdie torrents is aan eweknieë verbind."
+msgstr "Een van hierdie torrents is aan eweknieë verbind."
+
+#: ../gtk/Dialogs.cc:88
+msgid "Some of these torrents are connected to peers."
+msgstr "Sommige van hierdie torrents is aan eweknieë verbind."
 
 #: ../gtk/Dialogs.cc:101
 msgid "One of these torrents has not finished downloading."
-msgid_plural "Some of these torrents have not finished downloading."
-msgstr[0] "Een van hierdie torrents is nog besig om af te laai."
-msgstr[1] "Sommige van hierdie torrents is nog besig om af te laai."
+msgstr "Een van hierdie torrents is nog besig om af te laai."
+
+#: ../gtk/Dialogs.cc:101
+msgid "Some of these torrents have not finished downloading."
+msgstr "Sommige van hierdie torrents is nog besig om af te laai."
 
 #: ../gtk/Dialogs.cc:120 ../gtk/MessageLogWindow.cc:271 ../gtk/OptionsDialog.cc:370 ../gtk/PathButton.cc:155 ../gtk/StatsDialog.cc:112 ../gtk/ui/gtk3/AddTrackerDialog.ui:20 ../gtk/ui/gtk3/EditTrackersDialog.ui:20 ../gtk/ui/gtk3/MakeProgressDialog.ui:21 ../gtk/ui/gtk3/OptionsDialog.ui:20 ../gtk/ui/gtk3/RelocateDialog.ui:20 ../gtk/ui/gtk3/TorrentUrlChooserDialog.ui:20 ../gtk/ui/gtk4/AddTrackerDialog.ui:67 ../gtk/ui/gtk4/EditTrackersDialog.ui:86 ../gtk/ui/gtk4/MakeProgressDialog.ui:36 ../gtk/ui/gtk4/OptionsDialog.ui:176 ../gtk/ui/gtk4/RelocateDialog.ui:93 ../gtk/ui/gtk4/TorrentUrlChooserDialog.ui:67
 msgid "_Cancel"
