@@ -546,6 +546,18 @@
         <source>{torrent_name} - Edit Trackers</source>
         <translation>{torrent_name} — modyfikacja serwerów śledzących</translation>
     </message>
+    <message>
+        <source>&amp;Add</source>
+        <translation>&amp;Dodaj</translation>
+    </message>
+    <message>
+        <source>&amp;Edit</source>
+        <translation>&amp;Edycja</translation>
+    </message>
+    <message>
+        <source>&amp;Remove</source>
+        <translation>&amp;Usuń</translation>
+    </message>
 </context>
 <context>
     <name>FileTreeItem</name>
@@ -690,6 +702,10 @@
         <location line="+13"/>
         <source>Search…</source>
         <translation>Wyszukaj…</translation>
+    </message>
+    <message>
+        <source>&amp;Show:</source>
+        <translation>W&amp;yświetlanie:</translation>
     </message>
 </context>
 <context>
@@ -1360,6 +1376,10 @@
         <location line="+4"/>
         <source>{host} is not responding</source>
         <translation>{host} nie odpowiada</translation>
+    </message>
+    <message>
+        <source>Show options dialog</source>
+        <translation>Okno opcji</translation>
     </message>
 </context>
 <context>

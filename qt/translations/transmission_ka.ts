@@ -534,6 +534,18 @@
         <source>&amp;Maximum peers:</source>
         <translation>&amp;მაქსიმალური პირები:</translation>
     </message>
+    <message>
+        <source>&amp;Add</source>
+        <translation>&amp;დამატება</translation>
+    </message>
+    <message>
+        <source>&amp;Edit</source>
+        <translation>&amp;ჩასწორება</translation>
+    </message>
+    <message>
+        <source>&amp;Remove</source>
+        <translation>მ&amp;ოცილება</translation>
+    </message>
 </context>
 <context>
     <name>FileTreeItem</name>
@@ -678,6 +690,10 @@
         <location line="+13"/>
         <source>Search…</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Show:</source>
+        <translation>[&amp;ჩვენება]</translation>
     </message>
 </context>
 <context>
@@ -1343,6 +1359,10 @@
         <location line="+4"/>
         <source>{host} is not responding</source>
         <translation>{host} არ პასუხობს</translation>
+    </message>
+    <message>
+        <source>Show options dialog</source>
+        <translation>პარამეტრების დიალოგის ჩვენება</translation>
     </message>
 </context>
 <context>

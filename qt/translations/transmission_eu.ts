@@ -542,6 +542,18 @@
         <source>{torrent_name} - Edit Trackers</source>
         <translation>{torrent_name} - Editatu Aztarnariak</translation>
     </message>
+    <message>
+        <source>&amp;Add</source>
+        <translation>&amp;Gehitu</translation>
+    </message>
+    <message>
+        <source>&amp;Edit</source>
+        <translation>&amp;Editatu</translation>
+    </message>
+    <message>
+        <source>&amp;Remove</source>
+        <translation>&amp;Kendu</translation>
+    </message>
 </context>
 <context>
     <name>FileTreeItem</name>
@@ -686,6 +698,10 @@
         <location line="+13"/>
         <source>Search…</source>
         <translation>Bilatu…</translation>
+    </message>
+    <message>
+        <source>&amp;Show:</source>
+        <translation>E&amp;rakutsi:</translation>
     </message>
 </context>
 <context>
@@ -1349,6 +1365,10 @@
         <location line="+4"/>
         <source>{host} is not responding</source>
         <translation>{host} ez du erantzuten</translation>
+    </message>
+    <message>
+        <source>Show options dialog</source>
+        <translation>Erakutsi aukeren mezua</translation>
     </message>
 </context>
 <context>

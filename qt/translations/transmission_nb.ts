@@ -534,6 +534,18 @@
         <source>&amp;Maximum peers:</source>
         <translation>&amp;Maksimalt antall likemenn:</translation>
     </message>
+    <message>
+        <source>&amp;Add</source>
+        <translation>&amp;Legg til</translation>
+    </message>
+    <message>
+        <source>&amp;Edit</source>
+        <translation>R&amp;ediger</translation>
+    </message>
+    <message>
+        <source>&amp;Remove</source>
+        <translation>F&amp;jern</translation>
+    </message>
 </context>
 <context>
     <name>FileTreeItem</name>
@@ -678,6 +690,10 @@
         <location line="+13"/>
         <source>Search…</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Show:</source>
+        <translation>V&amp;is:</translation>
     </message>
 </context>
 <context>
@@ -1341,6 +1357,10 @@
         <location line="+4"/>
         <source>{host} is not responding</source>
         <translation>{host} svarer ikke</translation>
+    </message>
+    <message>
+        <source>Show options dialog</source>
+        <translation>Vis valgdialog</translation>
     </message>
 </context>
 <context>

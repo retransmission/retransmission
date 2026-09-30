@@ -542,6 +542,18 @@
         <source>{torrent_name} - Edit Trackers</source>
         <translation>{torrent_name} - Επεξεργασία Ιχνηλατών</translation>
     </message>
+    <message>
+        <source>&amp;Add</source>
+        <translation>Π&amp;ροσθήκη</translation>
+    </message>
+    <message>
+        <source>&amp;Edit</source>
+        <translation>&amp;Επεξεργασία</translation>
+    </message>
+    <message>
+        <source>&amp;Remove</source>
+        <translation>&amp;Αφαίρεση</translation>
+    </message>
 </context>
 <context>
     <name>FileTreeItem</name>
@@ -686,6 +698,10 @@
         <location line="+13"/>
         <source>Search…</source>
         <translation>Αναζήτηση…</translation>
+    </message>
+    <message>
+        <source>&amp;Show:</source>
+        <translation>Ε&amp;μφάνιση:</translation>
     </message>
 </context>
 <context>
@@ -1349,6 +1365,10 @@
         <location line="+4"/>
         <source>{host} is not responding</source>
         <translation>{host} δεν αποκρίνεται</translation>
+    </message>
+    <message>
+        <source>Show options dialog</source>
+        <translation>Εμφάνιση διαλόγου επιλογών</translation>
     </message>
 </context>
 <context>

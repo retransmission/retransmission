@@ -530,6 +530,18 @@
         <source>&amp;Maximum peers:</source>
         <translation>최대 피어 (&amp;M)</translation>
     </message>
+    <message>
+        <source>&amp;Add</source>
+        <translation>추가(&amp;A)</translation>
+    </message>
+    <message>
+        <source>&amp;Edit</source>
+        <translation>편집(&amp;E)</translation>
+    </message>
+    <message>
+        <source>&amp;Remove</source>
+        <translation>제거(&amp;R)</translation>
+    </message>
 </context>
 <context>
     <name>FileTreeItem</name>
@@ -674,6 +686,10 @@
         <location line="+13"/>
         <source>Search…</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Show:</source>
+        <translation>표시(&amp;S):</translation>
     </message>
 </context>
 <context>
@@ -1330,6 +1346,10 @@
         <location line="+4"/>
         <source>{host} is not responding</source>
         <translation>{host} 반응하지 않음</translation>
+    </message>
+    <message>
+        <source>Show options dialog</source>
+        <translation>옵션 표시 대화 상자</translation>
     </message>
 </context>
 <context>

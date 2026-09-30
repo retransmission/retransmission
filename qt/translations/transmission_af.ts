@@ -542,6 +542,18 @@
         <source>{torrent_name} - Edit Trackers</source>
         <translation>{torrent_name} - Wysig spoorders</translation>
     </message>
+    <message>
+        <source>&amp;Add</source>
+        <translation>&amp;Voeg Toe</translation>
+    </message>
+    <message>
+        <source>&amp;Edit</source>
+        <translation>&amp;Wysig</translation>
+    </message>
+    <message>
+        <source>&amp;Remove</source>
+        <translation>V&amp;erwyder</translation>
+    </message>
 </context>
 <context>
     <name>FileTreeItem</name>
@@ -686,6 +698,10 @@
         <location line="+13"/>
         <source>Search…</source>
         <translation>Soek…</translation>
+    </message>
+    <message>
+        <source>&amp;Show:</source>
+        <translation>T&amp;oon:</translation>
     </message>
 </context>
 <context>
@@ -1349,6 +1365,10 @@
         <location line="+4"/>
         <source>{host} is not responding</source>
         <translation>{host} reageer nie</translation>
+    </message>
+    <message>
+        <source>Show options dialog</source>
+        <translation>Vertoon opsiesdialoog</translation>
     </message>
 </context>
 <context>

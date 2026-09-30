@@ -1214,7 +1214,7 @@ void MainWindow::openTorrent()
     d->setAttribute(Qt::WA_DeleteOnClose);
 
     if (auto* const l = qobject_cast<QGridLayout*>(d->layout()); l != nullptr) {
-        auto* b = new QCheckBox{ tr("Show &options dialog") };
+        auto* b = new QCheckBox{ tr("Show options dialog") };
         b->setChecked(prefs_.get<bool>(TR_KEY_show_options_window));
         b->setObjectName(show_options_checkbox_name_);
         l->addWidget(b, l->rowCount(), 0, 1, -1, Qt::AlignLeft);

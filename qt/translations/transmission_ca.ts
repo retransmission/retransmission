@@ -534,6 +534,18 @@
         <source>&amp;Maximum peers:</source>
         <translation>Nombre &amp;màxim de clients:</translation>
     </message>
+    <message>
+        <source>&amp;Add</source>
+        <translation>&amp;Afegeix</translation>
+    </message>
+    <message>
+        <source>&amp;Edit</source>
+        <translation>&amp;Edita</translation>
+    </message>
+    <message>
+        <source>&amp;Remove</source>
+        <translation>S&amp;uprimeix</translation>
+    </message>
 </context>
 <context>
     <name>FileTreeItem</name>
@@ -678,6 +690,10 @@
         <location line="+13"/>
         <source>Search…</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Show:</source>
+        <translation>&amp;Mostra:</translation>
     </message>
 </context>
 <context>
@@ -1341,6 +1357,10 @@
         <location line="+4"/>
         <source>{host} is not responding</source>
         <translation>{host} no està responent</translation>
+    </message>
+    <message>
+        <source>Show options dialog</source>
+        <translation>Mostra el diàleg de les opcions</translation>
     </message>
 </context>
 <context>

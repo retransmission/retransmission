@@ -542,6 +542,18 @@
         <source>{torrent_name} - Edit Trackers</source>
         <translation>{torrent_name} - Redigera spårare</translation>
     </message>
+    <message>
+        <source>&amp;Add</source>
+        <translation>&amp;Lägg till</translation>
+    </message>
+    <message>
+        <source>&amp;Edit</source>
+        <translation>R&amp;edigera</translation>
+    </message>
+    <message>
+        <source>&amp;Remove</source>
+        <translation>&amp;Ta bort</translation>
+    </message>
 </context>
 <context>
     <name>FileTreeItem</name>
@@ -686,6 +698,10 @@
         <location line="+13"/>
         <source>Search…</source>
         <translation>Sök…</translation>
+    </message>
+    <message>
+        <source>&amp;Show:</source>
+        <translation>Vi&amp;sa:</translation>
     </message>
 </context>
 <context>
@@ -1349,6 +1365,10 @@
         <location line="+4"/>
         <source>{host} is not responding</source>
         <translation>{host} svarar inte</translation>
+    </message>
+    <message>
+        <source>Show options dialog</source>
+        <translation>Visa alternativdialogruta</translation>
     </message>
 </context>
 <context>

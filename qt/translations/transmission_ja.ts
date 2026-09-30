@@ -538,6 +538,18 @@
         <source>{torrent_name} - Edit Trackers</source>
         <translation>{torrent_name} - トラッカー編集</translation>
     </message>
+    <message>
+        <source>&amp;Add</source>
+        <translation>追加(&amp;A)</translation>
+    </message>
+    <message>
+        <source>&amp;Edit</source>
+        <translation>編集(&amp;E)</translation>
+    </message>
+    <message>
+        <source>&amp;Remove</source>
+        <translation>削除(&amp;R)</translation>
+    </message>
 </context>
 <context>
     <name>FileTreeItem</name>
@@ -682,6 +694,10 @@
         <location line="+13"/>
         <source>Search…</source>
         <translation>検索…</translation>
+    </message>
+    <message>
+        <source>&amp;Show:</source>
+        <translation>表示(&amp;S):</translation>
     </message>
 </context>
 <context>
@@ -1338,6 +1354,10 @@
         <location line="+4"/>
         <source>{host} is not responding</source>
         <translation>{host} は応答していない</translation>
+    </message>
+    <message>
+        <source>Show options dialog</source>
+        <translation>オプションダイアログを表示</translation>
     </message>
 </context>
 <context>

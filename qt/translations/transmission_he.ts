@@ -542,6 +542,18 @@
         <source>{torrent_name} - Edit Trackers</source>
         <translation>{torrent_name} - עריכת עוקבים</translation>
     </message>
+    <message>
+        <source>&amp;Add</source>
+        <translation>הו&amp;ספה</translation>
+    </message>
+    <message>
+        <source>&amp;Edit</source>
+        <translation>&amp;עריכה</translation>
+    </message>
+    <message>
+        <source>&amp;Remove</source>
+        <translation>הס&amp;רה</translation>
+    </message>
 </context>
 <context>
     <name>FileTreeItem</name>
@@ -686,6 +698,10 @@
         <location line="+13"/>
         <source>Search…</source>
         <translation>חיפוש…</translation>
+    </message>
+    <message>
+        <source>&amp;Show:</source>
+        <translation>&amp;הצגה:</translation>
     </message>
 </context>
 <context>
@@ -1349,6 +1365,10 @@
         <location line="+4"/>
         <source>{host} is not responding</source>
         <translation>אין תגובה מצד {host}</translation>
+    </message>
+    <message>
+        <source>Show options dialog</source>
+        <translation>הצגת חלונית אפשרויות</translation>
     </message>
 </context>
 <context>

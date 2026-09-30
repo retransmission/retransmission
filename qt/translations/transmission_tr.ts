@@ -538,6 +538,18 @@
         <source>{torrent_name} - Edit Trackers</source>
         <translation>{torrent_name} - İzleyicileri Düzenle</translation>
     </message>
+    <message>
+        <source>&amp;Add</source>
+        <translation>&amp;Ekle</translation>
+    </message>
+    <message>
+        <source>&amp;Edit</source>
+        <translation>&amp;Düzenle</translation>
+    </message>
+    <message>
+        <source>&amp;Remove</source>
+        <translation>&amp;Kaldır</translation>
+    </message>
 </context>
 <context>
     <name>FileTreeItem</name>
@@ -682,6 +694,10 @@
         <location line="+13"/>
         <source>Search…</source>
         <translation>Ara…</translation>
+    </message>
+    <message>
+        <source>&amp;Show:</source>
+        <translation>G&amp;öster:</translation>
     </message>
 </context>
 <context>
@@ -1338,6 +1354,10 @@
         <location line="+4"/>
         <source>{host} is not responding</source>
         <translation>{host} yanıtlamıyor</translation>
+    </message>
+    <message>
+        <source>Show options dialog</source>
+        <translation>Seçenekler iletişim kutusunu göster</translation>
     </message>
 </context>
 <context>

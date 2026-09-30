@@ -534,6 +534,18 @@
         <source>&amp;Maximum peers:</source>
         <translation>Peers &amp;Máximos:</translation>
     </message>
+    <message>
+        <source>&amp;Add</source>
+        <translation>&amp;Adicionar</translation>
+    </message>
+    <message>
+        <source>&amp;Edit</source>
+        <translation>&amp;Editar</translation>
+    </message>
+    <message>
+        <source>&amp;Remove</source>
+        <translation>&amp;Remover</translation>
+    </message>
 </context>
 <context>
     <name>FileTreeItem</name>
@@ -678,6 +690,10 @@
         <location line="+13"/>
         <source>Search…</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Show:</source>
+        <translation>&amp;Mostrar:</translation>
     </message>
 </context>
 <context>
@@ -1341,6 +1357,10 @@
         <location line="+4"/>
         <source>{host} is not responding</source>
         <translation>{host} não está a responder</translation>
+    </message>
+    <message>
+        <source>Show options dialog</source>
+        <translation>Mostrar Opções</translation>
     </message>
 </context>
 <context>

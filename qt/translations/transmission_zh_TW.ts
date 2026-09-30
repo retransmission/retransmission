@@ -538,6 +538,18 @@
         <source>{torrent_name} - Edit Trackers</source>
         <translation>{torrent_name} - 編輯追蹤器</translation>
     </message>
+    <message>
+        <source>&amp;Add</source>
+        <translation>加入 (&amp;A)</translation>
+    </message>
+    <message>
+        <source>&amp;Edit</source>
+        <translation>編輯 (&amp;E)</translation>
+    </message>
+    <message>
+        <source>&amp;Remove</source>
+        <translation>移除 (&amp;R)</translation>
+    </message>
 </context>
 <context>
     <name>FileTreeItem</name>
@@ -682,6 +694,10 @@
         <location line="+13"/>
         <source>Search…</source>
         <translation>搜尋…</translation>
+    </message>
+    <message>
+        <source>&amp;Show:</source>
+        <translation>顯示 (&amp;S)：</translation>
     </message>
 </context>
 <context>
@@ -1338,6 +1354,10 @@
         <location line="+4"/>
         <source>{host} is not responding</source>
         <translation>{host} 沒有回應</translation>
+    </message>
+    <message>
+        <source>Show options dialog</source>
+        <translation>顯示選項對話方塊</translation>
     </message>
 </context>
 <context>

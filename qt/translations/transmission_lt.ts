@@ -538,6 +538,18 @@
         <source>&amp;Maximum peers:</source>
         <translation>&amp;Daugiausia galimų siuntėjų:</translation>
     </message>
+    <message>
+        <source>&amp;Add</source>
+        <translation>&amp;Pridėti</translation>
+    </message>
+    <message>
+        <source>&amp;Edit</source>
+        <translation>&amp;Taisa</translation>
+    </message>
+    <message>
+        <source>&amp;Remove</source>
+        <translation>Pa&amp;šalinti</translation>
+    </message>
 </context>
 <context>
     <name>FileTreeItem</name>
@@ -682,6 +694,10 @@
         <location line="+13"/>
         <source>Search…</source>
         <translation>Ieškoti…</translation>
+    </message>
+    <message>
+        <source>&amp;Show:</source>
+        <translation>Ro&amp;dyti:</translation>
     </message>
 </context>
 <context>
@@ -1352,6 +1368,10 @@
         <location line="+4"/>
         <source>{host} is not responding</source>
         <translation>{host} neatsako</translation>
+    </message>
+    <message>
+        <source>Show options dialog</source>
+        <translation>Rodyti parametrų dialogą</translation>
     </message>
 </context>
 <context>

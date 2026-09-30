@@ -538,6 +538,18 @@
         <source>&amp;Maximum peers:</source>
         <translation>&amp;Najviše točaka:</translation>
     </message>
+    <message>
+        <source>&amp;Add</source>
+        <translation>&amp;Dodaj</translation>
+    </message>
+    <message>
+        <source>&amp;Edit</source>
+        <translation>&amp;Uredi</translation>
+    </message>
+    <message>
+        <source>&amp;Remove</source>
+        <translation>U&amp;kloni</translation>
+    </message>
 </context>
 <context>
     <name>FileTreeItem</name>
@@ -682,6 +694,10 @@
         <location line="+13"/>
         <source>Search…</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Show:</source>
+        <translation>P&amp;rikaži:</translation>
     </message>
 </context>
 <context>
@@ -1352,6 +1368,10 @@
         <location line="+4"/>
         <source>{host} is not responding</source>
         <translation>{host} nije odgovorio</translation>
+    </message>
+    <message>
+        <source>Show options dialog</source>
+        <translation>Prikaži dijalog mogućnosti</translation>
     </message>
 </context>
 <context>

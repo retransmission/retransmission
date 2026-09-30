@@ -542,6 +542,18 @@
         <source>{torrent_name} - Edit Trackers</source>
         <translation>{torrent_name} - Muokkaa seurantapalvelimia</translation>
     </message>
+    <message>
+        <source>&amp;Add</source>
+        <translation>Li&amp;sää</translation>
+    </message>
+    <message>
+        <source>&amp;Edit</source>
+        <translation>&amp;Muokkaa</translation>
+    </message>
+    <message>
+        <source>&amp;Remove</source>
+        <translation>&amp;Poista</translation>
+    </message>
 </context>
 <context>
     <name>FileTreeItem</name>
@@ -686,6 +698,10 @@
         <location line="+13"/>
         <source>Search…</source>
         <translation>Etsi…</translation>
+    </message>
+    <message>
+        <source>&amp;Show:</source>
+        <translation>N&amp;äytä:</translation>
     </message>
 </context>
 <context>
@@ -1349,6 +1365,10 @@
         <location line="+4"/>
         <source>{host} is not responding</source>
         <translation>{host} ei vastaa</translation>
+    </message>
+    <message>
+        <source>Show options dialog</source>
+        <translation>Näytä valintaikkuna</translation>
     </message>
 </context>
 <context>

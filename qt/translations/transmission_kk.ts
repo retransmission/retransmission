@@ -534,6 +534,18 @@
         <source>&amp;Maximum peers:</source>
         <translation>Тораптардың ма&amp;ксимал саны:</translation>
     </message>
+    <message>
+        <source>&amp;Add</source>
+        <translation>Қо&amp;су</translation>
+    </message>
+    <message>
+        <source>&amp;Edit</source>
+        <translation>Тү&amp;зету</translation>
+    </message>
+    <message>
+        <source>&amp;Remove</source>
+        <translation>Өші&amp;ру</translation>
+    </message>
 </context>
 <context>
     <name>FileTreeItem</name>
@@ -678,6 +690,10 @@
         <location line="+13"/>
         <source>Search…</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Show:</source>
+        <translation>Көр&amp;сету:</translation>
     </message>
 </context>
 <context>
@@ -1339,6 +1355,10 @@
         <location line="+4"/>
         <source>{host} is not responding</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show options dialog</source>
+        <translation>Баптаулар терезесін көрсету</translation>
     </message>
 </context>
 <context>

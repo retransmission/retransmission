@@ -538,6 +538,18 @@
         <source>{torrent_name} - Edit Trackers</source>
         <translation>{torrent_name} - Trackerek szerkesztése</translation>
     </message>
+    <message>
+        <source>&amp;Add</source>
+        <translation>&amp;Hozzáadás</translation>
+    </message>
+    <message>
+        <source>&amp;Edit</source>
+        <translation>S&amp;zerkesztés</translation>
+    </message>
+    <message>
+        <source>&amp;Remove</source>
+        <translation>&amp;Eltávolítás</translation>
+    </message>
 </context>
 <context>
     <name>FileTreeItem</name>
@@ -682,6 +694,10 @@
         <location line="+13"/>
         <source>Search…</source>
         <translation>Keresés…</translation>
+    </message>
+    <message>
+        <source>&amp;Show:</source>
+        <translation>&amp;Megjelenítés:</translation>
     </message>
 </context>
 <context>
@@ -1338,6 +1354,10 @@
         <location line="+4"/>
         <source>{host} is not responding</source>
         <translation>{host} nem válaszol</translation>
+    </message>
+    <message>
+        <source>Show options dialog</source>
+        <translation>Beállítások ablak megjelenítése</translation>
     </message>
 </context>
 <context>
