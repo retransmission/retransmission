@@ -2090,11 +2090,11 @@ msgstr "_Slóð"
 
 #: ../libtransmission/announcer-http.cc:453
 msgid "Couldn't parse announce response: {error} ({error_code})"
-msgstr "Gat ekki túlkað svar tilkynningar '{path}': {error} ({error_code})"
+msgstr "Gat ekki túlkað svar tilkynningar: {error} ({error_code})"
 
 #: ../libtransmission/announcer-http.cc:673
 msgid "Couldn't parse scrape response: {error} ({error_code})"
-msgstr "Gat ekki túlkað svar skrapara '{path}': {error} ({error_code})"
+msgstr "Gat ekki túlkað svar skrapara: {error} ({error_code})"
 
 #: ../libtransmission/announcer-udp.cc:147 ../libtransmission/announcer-udp.cc:308
 msgid "Unknown error"

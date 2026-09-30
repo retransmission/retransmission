@@ -986,7 +986,7 @@ msgstr "В застой"
 
 #: ../gtk/Torrent.cc:645
 msgid "Tracker warning: '{warning}'"
-msgstr "Предупреждение от тракера: {%s}"
+msgstr "Предупреждение от тракера: {warning}"
 
 #: ../gtk/Torrent.cc:648
 msgid "Tracker Error: '{error}'"

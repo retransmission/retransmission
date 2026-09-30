@@ -2376,7 +2376,7 @@ msgstr "Απαιτείται κωδικός"
 
 #: ../libtransmission/rpc-server.cc:1033
 msgid "Serving RPC and Web requests from '{path}'"
-msgstr "Εξυπηρέτηση RPC και Web αιτημάτων από την {address}"
+msgstr "Εξυπηρέτηση RPC και Web αιτημάτων από την {path}"
 
 #: ../libtransmission/rpcimpl.cc:1496
 msgid "Couldn't test port: {error} ({error_code})"
