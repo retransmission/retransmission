@@ -36,17 +36,8 @@ public:
         return QString::fromStdString(to_string());
     }
 
-    [[nodiscard]] auto toUploadQstring() const
-    {
-        static auto constexpr UploadSymbol = QChar{ 0x25B4 };
-        return tr("%1 %2").arg(toQstring()).arg(UploadSymbol);
-    }
-
-    [[nodiscard]] auto toDownloadQstring() const
-    {
-        static auto constexpr DownloadSymbol = QChar{ 0x25BE };
-        return tr("%1 %2").arg(toQstring()).arg(DownloadSymbol);
-    }
+    [[nodiscard]] QString toUploadQstring() const;
+    [[nodiscard]] QString toDownloadQstring() const;
 
     [[nodiscard]] static auto displayName(Speed::Units const units)
     {

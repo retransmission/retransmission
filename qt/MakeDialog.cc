@@ -26,8 +26,8 @@
 
 #include "ColumnResizer.h"
 #include "Formatter.h"
-#include "QtCompat.h"
 #include "Session.h"
+#include "TrFormat.h"
 #include "ui_MakeProgressDialog.h"
 
 namespace
@@ -123,7 +123,7 @@ void MakeProgressDialog::onProgress()
 
     auto success = false;
     if (!is_done) {
-        str = tr("Creating '%1'").arg(base);
+        str = TR_FORMAT("Creating '{path}'", fmt::arg("path", base));
     } else {
         auto checksums = future_.get();
         auto error = std::move(checksums.error);
@@ -134,13 +134,14 @@ void MakeProgressDialog::onProgress()
         }
 
         if (!error) {
-            str = tr("Created '%1'").arg(base);
+            str = TR_FORMAT("Created '{path}'", fmt::arg("path", base));
             success = true;
         } else {
-            auto err_msg = QString::fromUtf8(
-                std::data(error.message()),
-                static_cast<QtrSizeArgType>(std::size(error.message())));
-            str = tr("Couldn't create '%1': %2 (%3)").arg(base).arg(err_msg).arg(error.code());
+            str = TR_FORMAT(
+                "Couldn't create '{path}': {error} ({error_code})",
+                fmt::arg("path", base),
+                fmt::arg("error", error.message()),
+                fmt::arg("error_code", error.code()));
         }
     }
 
@@ -289,13 +290,23 @@ void MakeDialog::updatePiecesLabel()
         text = QStringLiteral("<i>%1</i>").arg(tr("No source selected"));
         ui_.pieceSizeSlider->setEnabled(false);
     } else {
-        auto const files = tr("%Ln File(s)", nullptr, static_cast<int>(builder_->file_count()));
-        auto const pieces = tr("%Ln Piece(s)", nullptr, static_cast<int>(builder_->piece_count()));
-        text = tr("%1 in %2; %3 @ %4")
-                   .arg(Formatter::storageToString(builder_->total_size()))
-                   .arg(files)
-                   .arg(pieces)
-                   .arg(Formatter::memoryToString(builder_->piece_size()));
+        auto const file_count = builder_->file_count();
+        auto const piece_count = builder_->piece_count();
+        auto const files = TR_FORMAT_N(
+            "{file_count:L} File(s)",
+            static_cast<int>(file_count),
+            fmt::arg("file_count", file_count));
+        auto const pieces = TR_FORMAT_N(
+            "{piece_count:L} Piece(s)",
+            static_cast<int>(piece_count),
+            fmt::arg("piece_count", piece_count));
+        //: {files} is "{file_count} File(s)" and {pieces} is "{piece_count} Piece(s)"
+        text = TR_FORMAT(
+            "{total_size} in {files}; {pieces} @ {piece_size}",
+            fmt::arg("total_size", Formatter::storageToString(builder_->total_size())),
+            fmt::arg("files", files),
+            fmt::arg("pieces", pieces),
+            fmt::arg("piece_size", Formatter::memoryToString(builder_->piece_size())));
         ui_.pieceSizeSlider->setEnabled(true);
     }
 

@@ -43,6 +43,7 @@
 #include "Prefs.h"
 #include "SessionDialog.h"
 #include "Torrent.h"
+#include "TrFormat.h"
 #include "Utils.h"
 #include "VariantHelpers.h"
 
@@ -257,11 +258,11 @@ void Session::torrentRenamePath(torrent_ids_t const& torrent_ids, QString const&
                 RpcClient::ResponseFunc done) mutable { exec(TR_KEY_torrent_rename_path, std::move(params), std::move(done)); },
             [](RpcResponse const& r) {
                 auto const title = tr("Error Renaming Path");
-                auto const text =
-                    tr(R"(<p><b>Unable to rename "%1" as "%2": %3.</b></p><p>Please correct the errors and try again.</p>)")
-                        .arg(dictFind<QString>(r.args.get(), TR_KEY_path).value_or(QStringLiteral("(unknown)")))
-                        .arg(dictFind<QString>(r.args.get(), TR_KEY_name).value_or(QStringLiteral("(unknown)")))
-                        .arg(Utils::qstringFromUtf8(r.errmsg));
+                auto const text = TR_FORMAT(
+                    R"(<p><b>Unable to rename "{old_path}" as "{path}": {error}.</b></p><p>Please correct the errors and try again.</p>)",
+                    fmt::arg("old_path", dictFind<QString>(r.args.get(), TR_KEY_path).value_or(QStringLiteral("(unknown)"))),
+                    fmt::arg("path", dictFind<QString>(r.args.get(), TR_KEY_name).value_or(QStringLiteral("(unknown)"))),
+                    fmt::arg("error", r.errmsg));
                 auto* d = new QMessageBox{ QMessageBox::Information,
                                            title,
                                            text,
@@ -727,16 +728,17 @@ void Session::onDuplicatesTimer()
 
     QStringList lines;
     for (auto const& [dupe, original] : duplicates) {
-        lines.push_back(tr("%1 (copy of %2)").arg(dupe).arg(original.left(7)));
+        lines.push_back(
+            TR_FORMAT("{torrent_name} (copy of {hash})", fmt::arg("torrent_name", dupe), fmt::arg("hash", original.left(7))));
     }
 
     if (!lines.empty()) {
         lines.sort(Qt::CaseInsensitive);
         // NOLINTNEXTLINE(readability-redundant-casting): Remove this comment when we drop Qt5
-        auto const title = tr("Duplicate Torrent(s)", "", static_cast<int>(lines.size()));
+        auto const count = static_cast<int>(lines.size());
+        auto const title = tr("Duplicate Torrent(s)", "", count);
         auto const detail = lines.join(QStringLiteral("\n"));
-        // NOLINTNEXTLINE(readability-redundant-casting): Remove this comment when we drop Qt5
-        auto const detail_text = tr("Unable to add %n duplicate torrent(s)", "", static_cast<int>(lines.size()));
+        auto const detail_text = TR_FORMAT_N("Unable to add {count} duplicate torrent(s)", count, fmt::arg("count", count));
         auto const use_detail = lines.size() > 1;
         auto const text = use_detail ? detail_text : detail;
 

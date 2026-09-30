@@ -53,6 +53,7 @@
 #include "TrackerDelegate.h"
 #include "TrackerModel.h"
 #include "TrackerModelFilter.h"
+#include "TrFormat.h"
 #include "ui_TrackersDialog.h"
 #include "Utils.h"
 
@@ -553,25 +554,30 @@ void DetailsDialog::refreshUI()
 
         if (have_unverified == 0U && left_until_done == 0U) {
             //: Text following the "Have:" label in torrent properties dialog;
-            //: %1 is amount of downloaded and verified data
-            string = tr("%1 (100%)").arg(Formatter::storageToString(have_verified));
+            //: {current_size} is amount of downloaded and verified data
+            string = TR_FORMAT("{current_size} (100%)", fmt::arg("current_size", Formatter::storageToString(have_verified)));
         } else if (have_unverified == 0U) {
             //: Text following the "Have:" label in torrent properties dialog;
-            //: %1 is amount of downloaded and verified data,
-            //: %2 is overall size of torrent data,
-            //: %3 is percentage (%1/%2*100)
-            string = tr("%1 of %2 (%3%)").arg(Formatter::storageToString(have_verified)).arg(size_when_done_str).arg(pct);
+            //: {current_size} is amount of downloaded and verified data,
+            //: {complete_size} is overall size of torrent data,
+            //: {percent_done} is percentage ({current_size}/{complete_size}*100)
+            string = TR_FORMAT(
+                "{current_size} of {complete_size} ({percent_done}%)",
+                fmt::arg("current_size", Formatter::storageToString(have_verified)),
+                fmt::arg("complete_size", size_when_done_str),
+                fmt::arg("percent_done", pct));
         } else {
             //: Text following the "Have:" label in torrent properties dialog;
-            //: %1 is amount of downloaded data (both verified and unverified),
-            //: %2 is overall size of torrent data,
-            //: %3 is percentage (%1/%2*100),
-            //: %4 is amount of downloaded but not yet verified data
-            string = tr("%1 of %2 (%3%), %4 Unverified")
-                         .arg(Formatter::storageToString(have_verified + have_unverified))
-                         .arg(size_when_done_str)
-                         .arg(pct)
-                         .arg(Formatter::storageToString(have_unverified));
+            //: {current_size} is amount of downloaded data (both verified and unverified),
+            //: {complete_size} is overall size of torrent data,
+            //: {percent_done} is percentage ({current_size}/{complete_size}*100),
+            //: {unverified_size} is amount of downloaded but not yet verified data
+            string = TR_FORMAT(
+                "{current_size} of {complete_size} ({percent_done}%), {unverified_size} Unverified",
+                fmt::arg("current_size", Formatter::storageToString(have_verified + have_unverified)),
+                fmt::arg("complete_size", size_when_done_str),
+                fmt::arg("percent_done", pct),
+                fmt::arg("unverified_size", Formatter::storageToString(have_unverified)));
         }
     }
 
@@ -603,7 +609,10 @@ void DetailsDialog::refreshUI()
         auto const fstr = Formatter::storageToString(f);
 
         if (f != 0) {
-            string = tr("%1 (+%2 discarded after failed checksum)").arg(dstr).arg(fstr);
+            string = TR_FORMAT(
+                "{downloaded_size} (+{discarded_size} discarded after failed checksum)",
+                fmt::arg("downloaded_size", dstr),
+                fmt::arg("discarded_size", fstr));
         } else {
             string = dstr;
         }
@@ -623,9 +632,10 @@ void DetailsDialog::refreshUI()
             denominator += t->sizeWhenDone();
         }
 
-        string = tr("%1 (Ratio: %2)")
-                     .arg(Formatter::storageToString(uploaded))
-                     .arg(Formatter::ratioToString(tr_getRatio(uploaded, denominator)));
+        string = TR_FORMAT(
+            "{uploaded_size} (Ratio: {ratio})",
+            fmt::arg("uploaded_size", Formatter::storageToString(uploaded)),
+            fmt::arg("ratio", Formatter::ratioToString(tr_getRatio(uploaded, denominator))));
     }
 
     ui_.uploadedValueLabel->setText(string);
@@ -702,7 +712,7 @@ void DetailsDialog::refreshUI()
         } else if (seconds < 5) {
             string = tr("Active now");
         } else {
-            string = tr("%1 ago").arg(Formatter::timeToString(seconds));
+            string = TR_FORMAT("{time_span} ago", fmt::arg("time_span", Formatter::timeToString(seconds)));
         }
     }
 
@@ -751,11 +761,18 @@ void DetailsDialog::refreshUI()
         if (size == 0) {
             string = none;
         } else if (piece_size > 0) {
-            string = tr("%1 (%Ln pieces @ %2)", "", pieces)
-                         .arg(Formatter::storageToString(size))
-                         .arg(Formatter::memoryToString(piece_size));
+            string = TR_FORMAT_N(
+                "{total_size} ({piece_count:L} pieces @ {piece_size})",
+                pieces,
+                fmt::arg("total_size", Formatter::storageToString(size)),
+                fmt::arg("piece_count", pieces),
+                fmt::arg("piece_size", Formatter::memoryToString(piece_size)));
         } else {
-            string = tr("%1 (%Ln pieces)", "", pieces).arg(Formatter::storageToString(size));
+            string = TR_FORMAT_N(
+                "{total_size} ({piece_count:L} pieces)",
+                pieces,
+                fmt::arg("total_size", Formatter::storageToString(size)),
+                fmt::arg("piece_count", pieces));
         }
     }
 
@@ -860,13 +877,13 @@ void DetailsDialog::refreshUI()
         } else if (empty_creator && empty_date) {
             string = tr("N/A");
         } else if (empty_date && !empty_creator) {
-            string = tr("Created by %1").arg(creator);
+            string = TR_FORMAT("Created by {creator}", fmt::arg("creator", creator));
         } else if (empty_creator && !empty_date) {
             auto const date_str = QDateTime::fromSecsSinceEpoch(date).toString();
-            string = tr("Created on %1").arg(date_str);
+            string = TR_FORMAT("Created on {date}", fmt::arg("date", date_str));
         } else {
             auto const date_str = QDateTime::fromSecsSinceEpoch(date).toString();
-            string = tr("Created by %1 on %2").arg(creator).arg(date_str);
+            string = TR_FORMAT("Created by {creator} on {date}", fmt::arg("creator", creator), fmt::arg("date", date_str));
         }
     }
 
@@ -1241,9 +1258,8 @@ void DetailsDialog::onIdleModeChanged(int index)
 void DetailsDialog::onIdleLimitChanged()
 {
     //: Spin box format, "Stop seeding if idle for: [ 5 minutes ]"
-    auto const* const units_format = QT_TRANSLATE_N_NOOP("DetailsDialog", "%1 minute(s)");
-    auto const placeholder = QStringLiteral("%1");
-    Utils::updateSpinBoxFormat(ui_.idleSpin, "DetailsDialog", units_format, placeholder);
+    auto const* const units_format = QT_TRANSLATE_N_NOOP("DetailsDialog", "{minutes:L} minute(s)");
+    Utils::updateSpinBoxFormat(ui_.idleSpin, "DetailsDialog", units_format, "minutes");
 }
 
 void DetailsDialog::onRatioModeChanged(int index)

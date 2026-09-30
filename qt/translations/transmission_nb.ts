@@ -90,7 +90,7 @@
     </message>
     <message>
         <location line="+109"/>
-        <source>%1 (+%2 discarded after failed checksum)</source>
+        <source>{downloaded_size} (+{discarded_size} discarded after failed checksum)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -100,23 +100,23 @@
     </message>
     <message>
         <location line="+4"/>
-        <source>%1 ago</source>
-        <translation>%1 siden</translation>
+        <source>{time_span} ago</source>
+        <translation>{time_span} siden</translation>
     </message>
     <message numerus="yes">
         <location line="+63"/>
-        <source>%1 (%Ln pieces @ %2)</source>
+        <source>{total_size} ({piece_count:L} pieces @ {piece_size})</source>
         <translation>
-            <numerusform>%1 (%Ln del @ %2)</numerusform>
-            <numerusform>%1 (%Ln feler @ %2)</numerusform>
+            <numerusform>{total_size} ({piece_count:L} del @ {piece_size})</numerusform>
+            <numerusform>{total_size} ({piece_count:L} feler @ {piece_size})</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <location line="+6"/>
-        <source>%1 (%Ln pieces)</source>
+        <source>{total_size} ({piece_count:L} pieces)</source>
         <translation>
-            <numerusform>%1 (%Ln del)</numerusform>
-            <numerusform>%1 (%Ln deler)</numerusform>
+            <numerusform>{total_size} ({piece_count:L} del)</numerusform>
+            <numerusform>{total_size} ({piece_count:L} deler)</numerusform>
         </translation>
     </message>
     <message>
@@ -131,18 +131,18 @@
     </message>
     <message>
         <location line="+102"/>
-        <source>Created by %1</source>
-        <translation>Opprettet av %1</translation>
+        <source>Created by {creator}</source>
+        <translation>Opprettet av {creator}</translation>
     </message>
     <message>
         <location line="+5"/>
-        <source>Created on %1</source>
-        <translation>Opprettet %1</translation>
+        <source>Created on {date}</source>
+        <translation>Opprettet {date}</translation>
     </message>
     <message>
         <location line="+5"/>
-        <source>Created by %1 on %2</source>
-        <translation>Opprettet av %1 på %2</translation>
+        <source>Created by {creator} on {date}</source>
+        <translation>Opprettet av {creator} på {date}</translation>
     </message>
     <message>
         <location line="+207"/>
@@ -222,26 +222,26 @@
     </message>
     <message>
         <location line="-872"/>
-        <source>%1 (100%)</source>
-        <extracomment>Text following the &quot;Have:&quot; label in torrent properties dialog; %1 is amount of downloaded and verified data</extracomment>
-        <translation>%1 (100%)</translation>
+        <source>{current_size} (100%)</source>
+        <extracomment>Text following the &quot;Have:&quot; label in torrent properties dialog; {current_size} is amount of downloaded and verified data</extracomment>
+        <translation>{current_size} (100%)</translation>
     </message>
     <message>
         <location line="+8"/>
-        <source>%1 of %2 (%3%)</source>
-        <extracomment>Text following the &quot;Have:&quot; label in torrent properties dialog; %1 is amount of downloaded and verified data, %2 is overall size of torrent data, %3 is percentage (%1/%2*100)</extracomment>
-        <translation>%1 of %2 (%3%)</translation>
+        <source>{current_size} of {complete_size} ({percent_done}%)</source>
+        <extracomment>Text following the &quot;Have:&quot; label in torrent properties dialog; {current_size} is amount of downloaded and verified data, {complete_size} is overall size of torrent data, {percent_done} is percentage ({current_size}/{complete_size}*100)</extracomment>
+        <translation>{current_size} of {complete_size} ({percent_done}%)</translation>
     </message>
     <message>
         <location line="+9"/>
-        <source>%1 of %2 (%3%), %4 Unverified</source>
-        <extracomment>Text following the &quot;Have:&quot; label in torrent properties dialog; %1 is amount of downloaded data (both verified and unverified), %2 is overall size of torrent data, %3 is percentage (%1/%2*100), %4 is amount of downloaded but not yet verified data</extracomment>
-        <translation>%1 av %2 (%3%), %4 ubekreftet</translation>
+        <source>{current_size} of {complete_size} ({percent_done}%), {unverified_size} Unverified</source>
+        <extracomment>Text following the &quot;Have:&quot; label in torrent properties dialog; {current_size} is amount of downloaded data (both verified and unverified), {complete_size} is overall size of torrent data, {percent_done} is percentage ({current_size}/{complete_size}*100), {unverified_size} is amount of downloaded but not yet verified data</extracomment>
+        <translation>{current_size} av {complete_size} ({percent_done}%), {unverified_size} ubekreftet</translation>
     </message>
     <message>
         <location line="+70"/>
-        <source>%1 (Ratio: %2)</source>
-        <translation>%1 (Forhold: %2)</translation>
+        <source>{uploaded_size} (Ratio: {ratio})</source>
+        <translation>{uploaded_size} (Forhold: {ratio})</translation>
     </message>
     <message>
         <location line="+303"/>
@@ -251,7 +251,7 @@
     </message>
     <message numerus="yes">
         <location line="+358"/>
-        <source>%1 minute(s)</source>
+        <source>{minutes:L} minute(s)</source>
         <extracomment>Spin box format, &quot;Stop seeding if idle for: [ 5 minutes ]&quot;</extracomment>
         <translation type="unfinished">
             <numerusform></numerusform>
@@ -697,34 +697,34 @@
     </message>
     <message numerus="yes">
         <location line="+30"/>
-        <source>%Ln day(s)</source>
+        <source>{days:L} day(s)</source>
         <translation>
-            <numerusform>%Ln dag</numerusform>
-            <numerusform>%Ln dager</numerusform>
+            <numerusform>{days:L} dag</numerusform>
+            <numerusform>{days:L} dager</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <location line="-5"/>
-        <source>%Ln hour(s)</source>
+        <source>{hours:L} hour(s)</source>
         <translation>
-            <numerusform>%Ln time</numerusform>
-            <numerusform>%Ln timer</numerusform>
+            <numerusform>{hours:L} time</numerusform>
+            <numerusform>{hours:L} timer</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <location line="-7"/>
-        <source>%Ln minute(s)</source>
+        <source>{minutes:L} minute(s)</source>
         <translation>
-            <numerusform>%Ln minutt</numerusform>
-            <numerusform>%Ln minutter</numerusform>
+            <numerusform>{minutes:L} minutt</numerusform>
+            <numerusform>{minutes:L} minutter</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <location line="-7"/>
-        <source>%Ln second(s)</source>
+        <source>{seconds:L} second(s)</source>
         <translation>
-            <numerusform>%Ln sekund</numerusform>
-            <numerusform>%Ln sekunder</numerusform>
+            <numerusform>{seconds:L} sekund</numerusform>
+            <numerusform>{seconds:L} sekunder</numerusform>
         </translation>
     </message>
 </context>
@@ -737,8 +737,8 @@
     </message>
     <message>
         <location line="+29"/>
-        <source>%1 free</source>
-        <translation>%1 ledig</translation>
+        <source>{disk_space} free</source>
+        <translation>{disk_space} ledig</translation>
     </message>
 </context>
 <context>
@@ -1152,8 +1152,8 @@
         <location line="+6"/>
         <location line="+812"/>
         <location line="+9"/>
-        <source>Limited at %1</source>
-        <translation>Begrenset til %1</translation>
+        <source>Limited at {speed}</source>
+        <translation>Begrenset til {speed}</translation>
     </message>
     <message>
         <location line="-766"/>
@@ -1173,14 +1173,14 @@
     <message>
         <location line="+6"/>
         <location line="+799"/>
-        <source>Stop at Ratio (%1)</source>
-        <translation>Stopp når forholdet når (%1)</translation>
+        <source>Stop at Ratio ({ratio})</source>
+        <translation>Stopp når forholdet når ({ratio})</translation>
     </message>
     <message>
         <location line="-448"/>
-        <source> - %1:%2</source>
+        <source> - {host}:{port}</source>
         <extracomment>Second (optional) part of main window title &quot;Transmission - host:port&quot; (added when connected to remote session) notice that leading space (before the dash) is included here</extracomment>
-        <translation> - %1:%2</translation>
+        <translation> - {host}:{port}</translation>
     </message>
     <message>
         <location line="+16"/>
@@ -1190,14 +1190,14 @@
     <message>
         <location line="+26"/>
         <location line="+19"/>
-        <source>Ratio: %1</source>
-        <translation>Forhold: %1</translation>
+        <source>Ratio: {ratio}</source>
+        <translation>Forhold: {ratio}</translation>
     </message>
     <message>
         <location line="-14"/>
         <location line="+7"/>
-        <source>Down: %1, Up: %2</source>
-        <translation>↓: %1, ↑: %2</translation>
+        <source>Down: {downloaded_size}, Up: {uploaded_size}</source>
+        <translation>↓: {downloaded_size}, ↑: {uploaded_size}</translation>
     </message>
     <message>
         <location line="+480"/>
@@ -1250,26 +1250,26 @@
     </message>
     <message numerus="yes">
         <location line="-4"/>
-        <source>Remove %Ln torrent(s)?</source>
+        <source>Remove {count:L} torrent(s)?</source>
         <translation>
-            <numerusform>Fjern %Ln torrent?</numerusform>
-            <numerusform>Fjern %Ln torrenter?</numerusform>
+            <numerusform>Fjern {count:L} torrent?</numerusform>
+            <numerusform>Fjern {count:L} torrenter?</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <location line="-584"/>
-        <source>Showing %L1 of %Ln torrent(s)</source>
+        <source>Showing {visible_count:L} of {count:L} torrent(s)</source>
         <translation>
-            <numerusform>Viser %L1 av %Ln torrent</numerusform>
-            <numerusform>Viser %L1 av %Ln torrenter</numerusform>
+            <numerusform>Viser {visible_count:L} av {count:L} torrent</numerusform>
+            <numerusform>Viser {visible_count:L} av {count:L} torrenter</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <location line="+589"/>
-        <source>Delete these %Ln torrent(s)&apos; downloaded files?</source>
+        <source>Delete these {count:L} torrent(s)&apos; downloaded files?</source>
         <translation>
             <numerusform>Slett tilhørende filer for denne torrenten?</numerusform>
-            <numerusform>Slett tilhørende filer for disse %Ln torrentene?</numerusform>
+            <numerusform>Slett tilhørende filer for disse {count:L} torrentene?</numerusform>
         </translation>
     </message>
     <message>
@@ -1324,23 +1324,23 @@
     </message>
     <message>
         <location line="+69"/>
-        <source>%1 has not responded yet</source>
-        <translation>%1 har ikke svart enda</translation>
+        <source>{host} has not responded yet</source>
+        <translation>{host} har ikke svart enda</translation>
     </message>
     <message>
         <location line="+8"/>
-        <source>%1 is responding</source>
-        <translation>%1 svarer</translation>
+        <source>{host} is responding</source>
+        <translation>{host} svarer</translation>
     </message>
     <message>
         <location line="+4"/>
-        <source>%1 last responded %2 ago</source>
-        <translation>%1 svarte sist for %2 siden</translation>
+        <source>{host} last responded {time_span} ago</source>
+        <translation>{host} svarte sist for {time_span} siden</translation>
     </message>
     <message>
         <location line="+4"/>
-        <source>%1 is not responding</source>
-        <translation>%1 svarer ikke</translation>
+        <source>{host} is not responding</source>
+        <translation>{host} svarer ikke</translation>
     </message>
 </context>
 <context>
@@ -1357,24 +1357,24 @@
     </message>
     <message numerus="yes">
         <location line="+5"/>
-        <source>%Ln File(s)</source>
+        <source>{file_count:L} File(s)</source>
         <translation>
-            <numerusform>%Ln fil</numerusform>
-            <numerusform>%Ln filer</numerusform>
+            <numerusform>{file_count:L} fil</numerusform>
+            <numerusform>{file_count:L} filer</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <location line="+1"/>
-        <source>%Ln Piece(s)</source>
+        <source>{piece_count:L} Piece(s)</source>
         <translation>
-            <numerusform>%Ln del</numerusform>
-            <numerusform>%Ln deler</numerusform>
+            <numerusform>{piece_count:L} del</numerusform>
+            <numerusform>{piece_count:L} deler</numerusform>
         </translation>
     </message>
     <message>
         <location line="+1"/>
-        <source>%1 in %2; %3 @ %4</source>
-        <translation>%1 i %2; %3 @ %4</translation>
+        <source>{total_size} in {files}; {pieces} @ {piece_size}</source>
+        <translation>{total_size} i {files}; {pieces} @ {piece_size}</translation>
     </message>
     <message>
         <location filename="../MakeDialog.ui" line="+6"/>
@@ -1643,7 +1643,7 @@ For å legge til en primær URL, legg den til etter en tom linje.</translation>
     </message>
     <message numerus="yes">
         <location line="+464"/>
-        <source>%1 minute(s)</source>
+        <source>{minutes:L} minute(s)</source>
         <extracomment>Spin box format, &quot;Stop seeding if idle for: [ 5 minutes ]&quot;</extracomment>
         <translation type="unfinished">
             <numerusform></numerusform>
@@ -1652,7 +1652,7 @@ For å legge til en primær URL, legg den til etter en tom linje.</translation>
     </message>
     <message numerus="yes">
         <location line="+26"/>
-        <source>%1 minute(s) ago</source>
+        <source>{minutes_ago:L} minute(s) ago</source>
         <extracomment>Spin box format, &quot;Download is inactive if data sharing stopped: [ 5 minutes ago ]&quot;</extracomment>
         <translation type="unfinished">
             <numerusform></numerusform>
@@ -1744,10 +1744,10 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message numerus="yes">
         <location filename="../PrefsDialog.cc" line="+180"/>
-        <source>&lt;i&gt;Blocklist contains %Ln rule(s)&lt;/i&gt;</source>
+        <source>&lt;i&gt;Blocklist contains {count:L} rule(s)&lt;/i&gt;</source>
         <translation>
-            <numerusform>&lt;i&gt;Blokklisten inneholder %Ln regel&lt;/i&gt;</numerusform>
-            <numerusform>&lt;i&gt;Blokklisten inneholder %Ln regler&lt;/i&gt;</numerusform>
+            <numerusform>&lt;i&gt;Blokklisten inneholder {count:L} regel&lt;/i&gt;</numerusform>
+            <numerusform>&lt;i&gt;Blokklisten inneholder {count:L} regler&lt;/i&gt;</numerusform>
         </translation>
     </message>
     <message>
@@ -2018,17 +2018,17 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message>
         <location line="+13"/>
-        <source>Status: &lt;b&gt;%1&lt;/b&gt;</source>
+        <source>Status: &lt;b&gt;{status}&lt;/b&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+1"/>
-        <source>Status: &lt;b&gt;%1&lt;/b&gt; (IPv4), &lt;b&gt;%2&lt;/b&gt; (IPv6)</source>
+        <source>Status: &lt;b&gt;{status_ipv4}&lt;/b&gt; (IPv4), &lt;b&gt;{status_ipv6}&lt;/b&gt; (IPv6)</source>
         <translation type="unfinished"></translation>
     </message>
     <message numerus="yes">
         <location line="+96"/>
-        <source>&lt;b&gt;Update succeeded!&lt;/b&gt;&lt;p&gt;Blocklist now has %Ln rule(s).&lt;/p&gt;</source>
+        <source>&lt;b&gt;Update succeeded!&lt;/b&gt;&lt;p&gt;Blocklist now has {count:L} rule(s).&lt;/p&gt;</source>
         <translation type="unfinished">
             <numerusform></numerusform>
             <numerusform></numerusform>
@@ -2227,8 +2227,8 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message>
         <location line="+1"/>
-        <source>&lt;p&gt;&lt;b&gt;Unable to rename &quot;%1&quot; as &quot;%2&quot;: %3.&lt;/b&gt;&lt;/p&gt;&lt;p&gt;Please correct the errors and try again.&lt;/p&gt;</source>
-        <translation>&lt;p&gt;&lt;b&gt;Klarte ikke å gi &quot;%1&quot; nytt navn som &quot;%2&quot;: %3.&lt;/b&gt;&lt;/p&gt;&lt;p&gt;Utbedre feilene og prøv igjen.&lt;/p&gt;</translation>
+        <source>&lt;p&gt;&lt;b&gt;Unable to rename &quot;{old_path}&quot; as &quot;{path}&quot;: {error}.&lt;/b&gt;&lt;/p&gt;&lt;p&gt;Please correct the errors and try again.&lt;/p&gt;</source>
+        <translation>&lt;p&gt;&lt;b&gt;Klarte ikke å gi &quot;{old_path}&quot; nytt navn som &quot;{path}&quot;: {error}.&lt;/b&gt;&lt;/p&gt;&lt;p&gt;Utbedre feilene og prøv igjen.&lt;/p&gt;</translation>
     </message>
     <message>
         <location line="+565"/>
@@ -2237,7 +2237,7 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message>
         <location line="+38"/>
-        <source>%1 (copy of %2)</source>
+        <source>{torrent_name} (copy of {hash})</source>
         <translation type="unfinished"></translation>
     </message>
     <message numerus="yes">
@@ -2250,7 +2250,7 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message numerus="yes">
         <location line="+2"/>
-        <source>Unable to add %n duplicate torrent(s)</source>
+        <source>Unable to add {count} duplicate torrent(s)</source>
         <translation type="unfinished">
             <numerusform></numerusform>
             <numerusform></numerusform>
@@ -2315,7 +2315,7 @@ To add a new primary URL, add it after a blank line.</source>
     <message>
         <location filename="../Speed.h" line="+40"/>
         <location line="+6"/>
-        <source>%1 %2</source>
+        <source>{speed} {arrow}</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -2362,10 +2362,10 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message numerus="yes">
         <location filename="../StatsDialog.cc" line="+63"/>
-        <source>Started %Ln time(s)</source>
+        <source>Started {count:L} time(s)</source>
         <translation>
-            <numerusform>Startet %Ln gang</numerusform>
-            <numerusform>Startet %Ln ganger</numerusform>
+            <numerusform>Startet {count:L} gang</numerusform>
+            <numerusform>Startet {count:L} ganger</numerusform>
         </translation>
     </message>
 </context>
@@ -2413,18 +2413,18 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message>
         <location line="+15"/>
-        <source>Tracker gave a warning: %1</source>
-        <translation>Sporeren kom med advarselen: %1</translation>
+        <source>Tracker gave a warning: {warning}</source>
+        <translation>Sporeren kom med advarselen: {warning}</translation>
     </message>
     <message>
         <location line="+3"/>
-        <source>Tracker gave an error: %1</source>
-        <translation>Sporeren kom med feilen: %1</translation>
+        <source>Tracker gave an error: {error}</source>
+        <translation>Sporeren kom med feilen: {error}</translation>
     </message>
     <message>
         <location line="+3"/>
-        <source>Error: %1</source>
-        <translation>Feil: %1</translation>
+        <source>Error: {error}</source>
+        <translation>Feil: {error}</translation>
     </message>
 </context>
 <context>
@@ -2437,9 +2437,9 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message>
         <location line="+9"/>
-        <source>%1 of %2 (%3%)</source>
-        <extracomment>First part of torrent progress string, %1 is how much we&apos;ve got, %2 is how much we&apos;ll have when done, %3 is a percentage of the two</extracomment>
-        <translation>%1 av %2 (%3%)</translation>
+        <source>{current_size} of {complete_size} ({percent_done}%)</source>
+        <extracomment>First part of torrent progress string, {current_size} is how much we&apos;ve got, {complete_size} is how much we&apos;ll have when done, {percent_done} is a percentage of the two</extracomment>
+        <translation>{current_size} av {complete_size} ({percent_done}%)</translation>
     </message>
     <message>
         <location line="+16"/>
@@ -2449,9 +2449,9 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message>
         <location line="+16"/>
-        <source>%1 of %2 (%3%), uploaded %4 (Ratio: %5)</source>
-        <extracomment>First part of torrent progress string, %1 is how much we&apos;ve got, %2 is the torrent&apos;s total size, %3 is a percentage of the two, %4 is how much we&apos;ve uploaded, %5 is our upload-to-download ratio</extracomment>
-        <translation>%1 av %2 (%3%), lastet opp %4 (Forhold: %5)</translation>
+        <source>{current_size} of {complete_size} ({percent_complete}%), uploaded {uploaded_size} (Ratio: {ratio})</source>
+        <extracomment>First part of torrent progress string, {current_size} is how much we&apos;ve got, {complete_size} is the torrent&apos;s total size, {percent_complete} is a percentage of the two, {uploaded_size} is how much we&apos;ve uploaded, {ratio} is our upload-to-download ratio</extracomment>
+        <translation>{current_size} av {complete_size} ({percent_complete}%), lastet opp {uploaded_size} (Forhold: {ratio})</translation>
     </message>
     <message>
         <location line="+17"/>
@@ -2461,15 +2461,15 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message>
         <location line="+12"/>
-        <source>%1, uploaded %2 (Ratio: %3)</source>
-        <extracomment>First part of torrent progress string, %1 is the torrent&apos;s total size, %2 is how much we&apos;ve uploaded, %3 is our upload-to-download ratio</extracomment>
-        <translation>%1, lastet opp %2 (Forhold: %3)</translation>
+        <source>{complete_size}, uploaded {uploaded_size} (Ratio: {ratio})</source>
+        <extracomment>First part of torrent progress string, {complete_size} is the torrent&apos;s total size, {uploaded_size} is how much we&apos;ve uploaded, {ratio} is our upload-to-download ratio</extracomment>
+        <translation>{complete_size}, lastet opp {uploaded_size} (Forhold: {ratio})</translation>
     </message>
     <message>
         <location line="+15"/>
-        <source> - %1 left</source>
-        <extracomment>Second (optional) part of torrent progress string, %1 is duration, notice that leading space (before the dash) is included here</extracomment>
-        <translation> - %1 igjen</translation>
+        <source> - {time_span} left</source>
+        <extracomment>Second (optional) part of torrent progress string, {time_span} is duration, notice that leading space (before the dash) is included here</extracomment>
+        <translation> - {time_span} igjen</translation>
     </message>
     <message>
         <location line="+6"/>
@@ -2479,13 +2479,13 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message>
         <location line="+38"/>
-        <source>Ratio: %1</source>
-        <translation>Forhold: %1</translation>
+        <source>Ratio: {ratio}</source>
+        <translation>Forhold: {ratio}</translation>
     </message>
     <message>
         <location line="+18"/>
-        <source>%1 left</source>
-        <extracomment>Second (optional) part of torrent progress string, %1 is duration, notice that leading space (before the dash) is included here</extracomment>
+        <source>{time_span} left</source>
+        <extracomment>Second (optional) part of torrent progress string, {time_span} is duration, notice that leading space (before the dash) is included here</extracomment>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2496,19 +2496,19 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message numerus="yes">
         <location line="+40"/>
-        <source>Downloading from %Ln peer(s)</source>
+        <source>Downloading from {active_count:L} peer(s)</source>
         <extracomment>First part of phrase &quot;Downloading from ... peer(s) and ... web seed(s)&quot;</extracomment>
         <translation>
-            <numerusform>Laster ned fra %Ln likemann</numerusform>
-            <numerusform>Laster ned fra %Ln likemenn</numerusform>
+            <numerusform>Laster ned fra {active_count:L} likemann</numerusform>
+            <numerusform>Laster ned fra {active_count:L} likemenn</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <location line="+22"/>
-        <source>Seeding to %Ln peer(s)</source>
+        <source>Seeding to {active_count:L} peer(s)</source>
         <translation>
-            <numerusform>Deler til %Ln likemann</numerusform>
-            <numerusform>Deler til %Ln likemenn</numerusform>
+            <numerusform>Deler til {active_count:L} likemann</numerusform>
+            <numerusform>Deler til {active_count:L} likemenn</numerusform>
         </translation>
     </message>
     <message>
@@ -2518,66 +2518,66 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message numerus="yes">
         <location line="-50"/>
-        <source>Downloading metadata from %Ln peer(s) (%1% done)</source>
+        <source>Downloading metadata from {active_count:L} peer(s) ({percent_done}% done)</source>
         <translation>
-            <numerusform>Laster ned metadata fra %Ln likemann (%1% fullført)</numerusform>
-            <numerusform>Laster ned metadata fra %Ln likemenn (%1% fullført)</numerusform>
+            <numerusform>Laster ned metadata fra {active_count:L} likemann ({percent_done}% fullført)</numerusform>
+            <numerusform>Laster ned metadata fra {active_count:L} likemenn ({percent_done}% fullført)</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <location line="+15"/>
-        <source>Downloading from %1 of %Ln connected peer(s)</source>
+        <source>Downloading from {active_count} of {connected_count} connected peer(s)</source>
         <extracomment>First part of phrase &quot;Downloading from ... of ... connected peer(s) and ... web seed(s)&quot;</extracomment>
         <translation>
-            <numerusform>Laster ned fra %1 av %Ln tilkoblet likemann</numerusform>
-            <numerusform>Laster ned fra %1 av %Ln tilkoblede likemenn</numerusform>
+            <numerusform>Laster ned fra {active_count} av {connected_count} tilkoblet likemann</numerusform>
+            <numerusform>Laster ned fra {active_count} av {connected_count} tilkoblede likemenn</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <location line="+8"/>
-        <source> and %Ln web seed(s)</source>
+        <source> and {webseed_count:L} web seed(s)</source>
         <extracomment>Second (optional) part of phrase &quot;Downloading from ... of ... connected peer(s) and ... web seed(s)&quot;, notice that leading space (before &quot;and&quot;) is included here</extracomment>
         <translation>
-            <numerusform>Og %Ln vevressurs</numerusform>
-            <numerusform>Og %Ln vevressurser</numerusform>
+            <numerusform>Og {webseed_count:L} vevressurs</numerusform>
+            <numerusform>Og {webseed_count:L} vevressurser</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <location line="+13"/>
-        <source>Seeding to %1 of %Ln connected peer(s)</source>
+        <source>Seeding to {active_count} of {connected_count} connected peer(s)</source>
         <translation>
-            <numerusform>Deler til %1 av %Ln tilkoblet likemann</numerusform>
-            <numerusform>Deler til %1 av %Ln tilkoblede likemenn</numerusform>
+            <numerusform>Deler til {active_count} av {connected_count} tilkoblet likemann</numerusform>
+            <numerusform>Deler til {active_count} av {connected_count} tilkoblede likemenn</numerusform>
         </translation>
     </message>
     <message>
         <location line="-95"/>
-        <source>Verifying local data (%1% tested)</source>
-        <translation>Bekrefter lokal data (%1% testet)</translation>
+        <source>Verifying local data ({percent_done}% tested)</source>
+        <translation>Bekrefter lokal data ({percent_done}% testet)</translation>
     </message>
 </context>
 <context>
     <name>TrackerDelegate</name>
     <message numerus="yes">
         <location filename="../TrackerDelegate.cc" line="+220"/>
-        <source>Got a list of%1 %Ln peer(s)%2 %3 ago</source>
-        <extracomment>%1 and %2 are replaced with HTML markup, %3 is duration</extracomment>
+        <source>Got a list of{markup_begin} {peer_count:L} peer(s){markup_end} {time_span} ago</source>
+        <extracomment>{markup_begin} and {markup_end} are replaced with HTML markup, {time_span} is duration</extracomment>
         <translation>
-            <numerusform>Fikk en liste med%1 %Ln likemann%2 %3 siden</numerusform>
-            <numerusform>Fikk en liste med%1 %Ln likemenn%2 %3 siden</numerusform>
+            <numerusform>Fikk en liste med{markup_begin} {peer_count:L} likemann{markup_end} {time_span} siden</numerusform>
+            <numerusform>Fikk en liste med{markup_begin} {peer_count:L} likemenn{markup_end} {time_span} siden</numerusform>
         </translation>
     </message>
     <message>
         <location line="+8"/>
-        <source>Peer list request %1timed out%2 %3 ago; will retry</source>
-        <extracomment>%1 and %2 are replaced with HTML markup, %3 is duration</extracomment>
-        <translation>Forespørsel etter liste over likemenn  %1utløpte %2 %3 siden. Vil forsøke igjen</translation>
+        <source>Peer list request {markup_begin}timed out{markup_end} {time_span} ago; will retry</source>
+        <extracomment>{markup_begin} and {markup_end} are replaced with HTML markup, {time_span} is duration</extracomment>
+        <translation>Forespørsel etter liste over likemenn  {markup_begin}utløpte {markup_end} {time_span} siden. Vil forsøke igjen</translation>
     </message>
     <message>
         <location line="+8"/>
-        <source>Got an error %1&quot;%2&quot;%3 %4 ago</source>
-        <extracomment>%1 and %3 are replaced with HTML markup, %2 is error message, %4 is duration</extracomment>
-        <translation>Feil mottatt. %1&quot;%2&quot;%3 %4 siden</translation>
+        <source>Got an error {markup_begin}&quot;{error}&quot;{markup_end} {time_span} ago</source>
+        <extracomment>{markup_begin} and {markup_end} are replaced with HTML markup, {error} is error message, {time_span} is duration</extracomment>
+        <translation>Feil mottatt. {markup_begin}&quot;{error}&quot;{markup_end} {time_span} siden</translation>
     </message>
     <message>
         <location line="+12"/>
@@ -2586,9 +2586,9 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message>
         <location line="+6"/>
-        <source>Asking for more peers in %1</source>
-        <extracomment>%1 is duration</extracomment>
-        <translation>Etterspør flere likemenn om %1</translation>
+        <source>Asking for more peers in {time_span}</source>
+        <extracomment>{time_span} is duration</extracomment>
+        <translation>Etterspør flere likemenn om {time_span}</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -2597,51 +2597,51 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message>
         <location line="+73"/>
-        <source>Asking for peer counts now… &lt;small&gt;%1&lt;/small&gt;</source>
-        <extracomment>%1 is duration</extracomment>
+        <source>Asking for peer counts now… &lt;small&gt;{time_span}&lt;/small&gt;</source>
+        <extracomment>{time_span} is duration</extracomment>
         <translation type="unfinished"></translation>
     </message>
     <message numerus="yes">
         <location line="-37"/>
-        <source>Tracker had%1 %Ln seeder(s)%2</source>
-        <extracomment>First part of phrase &quot;Tracker had ... seeder(s) and ... leecher(s) ... ago&quot;, %1 and %2 are replaced with HTML markup</extracomment>
+        <source>Tracker had{markup_begin} {seeder_count:L} seeder(s){markup_end}</source>
+        <extracomment>First part of phrase &quot;Tracker had ... seeder(s) and ... leecher(s) ... ago&quot;, {markup_begin} and {markup_end} are replaced with HTML markup</extracomment>
         <translation>
-            <numerusform>Sporeren har%1 %Ln likemann%2</numerusform>
-            <numerusform>Sporeren har%1 %Ln likemenn%2</numerusform>
+            <numerusform>Sporeren har{markup_begin} {seeder_count:L} likemann{markup_end}</numerusform>
+            <numerusform>Sporeren har{markup_begin} {seeder_count:L} likemenn{markup_end}</numerusform>
         </translation>
     </message>
     <message numerus="yes">
         <location line="+6"/>
-        <source> and%1 %Ln leecher(s)%2 %3 ago</source>
-        <extracomment>Second part of phrase &quot;Tracker had ... seeder(s) and ... leecher(s) ... ago&quot;, %1 and %2 are replaced with HTML markup, %3 is duration; notice that leading space (before &quot;and&quot;) is included here</extracomment>
+        <source> and{markup_begin} {leecher_count:L} leecher(s){markup_end} {time_span} ago</source>
+        <extracomment>Second part of phrase &quot;Tracker had ... seeder(s) and ... leecher(s) ... ago&quot;, {markup_begin} and {markup_end} are replaced with HTML markup, {time_span} is duration; notice that leading space (before &quot;and&quot;) is included here</extracomment>
         <translation>
-            <numerusform> og%1 %Ln mottaker%2 %3 siden</numerusform>
-            <numerusform> og%1 %Ln mottakere%2 %3 siden</numerusform>
+            <numerusform> og{markup_begin} {leecher_count:L} mottaker{markup_end} {time_span} siden</numerusform>
+            <numerusform> og{markup_begin} {leecher_count:L} mottakere{markup_end} {time_span} siden</numerusform>
         </translation>
     </message>
     <message>
         <location line="+8"/>
-        <source>Tracker had %1no information%2 on peer counts %3 ago</source>
-        <extracomment>%1 and %2 are replaced with HTML markup, %3 is duration</extracomment>
-        <translation>Sporeren hadde %1ingen informasjon%2 om likemannsantall %3 siden</translation>
+        <source>Tracker had {markup_begin}no information{markup_end} on peer counts {time_span} ago</source>
+        <extracomment>{markup_begin} and {markup_end} are replaced with HTML markup, {time_span} is duration</extracomment>
+        <translation>Sporeren hadde {markup_begin}ingen informasjon{markup_end} om likemannsantall {time_span} siden</translation>
     </message>
     <message>
         <location line="-24"/>
-        <source>Got a scrape error %1&quot;%2&quot;%3 %4 ago</source>
-        <extracomment>%1 and %3 are replaced with HTML markup, %2 is error message, %4 is duration</extracomment>
-        <translation>Fikk krafsefeil %1&quot;%2&quot;%3 %4 siden</translation>
+        <source>Got a scrape error {markup_begin}&quot;{error}&quot;{markup_end} {time_span} ago</source>
+        <extracomment>{markup_begin} and {markup_end} are replaced with HTML markup, {error} is error message, {time_span} is duration</extracomment>
+        <translation>Fikk krafsefeil {markup_begin}&quot;{error}&quot;{markup_end} {time_span} siden</translation>
     </message>
     <message>
         <location line="-20"/>
-        <source>Asking for more peers now… &lt;small&gt;%1&lt;/small&gt;</source>
-        <extracomment>%1 is duration</extracomment>
+        <source>Asking for more peers now… &lt;small&gt;{time_span}&lt;/small&gt;</source>
+        <extracomment>{time_span} is duration</extracomment>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+56"/>
-        <source>Asking for peer counts in %1</source>
-        <extracomment>%1 is duration</extracomment>
-        <translation>Etterspør likemannsantall om %1</translation>
+        <source>Asking for peer counts in {time_span}</source>
+        <extracomment>{time_span} is duration</extracomment>
+        <translation>Etterspør likemannsantall om {time_span}</translation>
     </message>
     <message>
         <location line="+5"/>
