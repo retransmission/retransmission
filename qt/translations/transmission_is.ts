@@ -5,13 +5,13 @@
     <name>AboutDialog</name>
     <message>
         <location filename="../AboutDialog.ui" line="+14"/>
-        <source>About Transmission</source>
-        <translation>Um Transmission</translation>
+        <source>About {appname}</source>
+        <translation>Um {appname}</translation>
     </message>
     <message>
         <location line="+39"/>
-        <source>Copyright © The Transmission Project</source>
-        <translation>Höfundarréttur © Transmission-verkefnið</translation>
+        <source>Copyright © The Retransmission Project</source>
+        <translation>Höfundarréttur © Retransmission-verkefnið</translation>
     </message>
     <message>
         <source>Copyright © The {appname} Project</source>
@@ -777,8 +777,8 @@
     <name>MainWindow</name>
     <message>
         <location filename="../MainWindow.ui" line="+14"/>
-        <source>Transmission</source>
-        <translation>Transmission</translation>
+        <source>Retransmission</source>
+        <translation>Retransmission</translation>
     </message>
     <message>
         <location line="+181"/>
@@ -1841,8 +1841,8 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message>
         <location line="+6"/>
-        <source>Show Transmission icon in the &amp;notification area</source>
-        <translation>Birta Tra&amp;nsmission-tákn í tilkynningasvæðinu</translation>
+        <source>Show {appname} icon in the &amp;notification area</source>
+        <translation>Birta {appname}-tákn í tilky&amp;nningasvæðinu</translation>
     </message>
     <message>
         <location line="-192"/>
@@ -2123,8 +2123,8 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message>
         <location line="-467"/>
-        <source>Transmission Preferences</source>
-        <translation>Kjörstillingar Transmission</translation>
+        <source>{appname} Preferences</source>
+        <translation>Kjörstillingar {appname}</translation>
     </message>
     <message>
         <location line="+16"/>

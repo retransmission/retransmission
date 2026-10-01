@@ -5,12 +5,12 @@
     <name>AboutDialog</name>
     <message>
         <location filename="../AboutDialog.ui" line="+14"/>
-        <source>About Transmission</source>
-        <translation>O Transmissionu</translation>
+        <source>About {appname}</source>
+        <translation>O {appname}u</translation>
     </message>
     <message>
         <location line="+39"/>
-        <source>Copyright © The Transmission Project</source>
+        <source>Copyright © The Retransmission Project</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -777,8 +777,8 @@
     <name>MainWindow</name>
     <message>
         <location filename="../MainWindow.ui" line="+14"/>
-        <source>Transmission</source>
-        <translation>Transmission</translation>
+        <source>Retransmission</source>
+        <translation>Retransmission</translation>
     </message>
     <message>
         <location line="+181"/>
@@ -1849,8 +1849,8 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message>
         <location line="+6"/>
-        <source>Show Transmission icon in the &amp;notification area</source>
-        <translation>Prikaži Transmissionovu ikonu u &amp;traci sustava</translation>
+        <source>Show {appname} icon in the &amp;notification area</source>
+        <translation>Prikaži {appname}ovu ikonu u &amp;traci sustava</translation>
     </message>
     <message>
         <location line="-192"/>
@@ -2124,8 +2124,8 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message>
         <location line="-467"/>
-        <source>Transmission Preferences</source>
-        <translation>Osobitosti Transmissiona</translation>
+        <source>{appname} Preferences</source>
+        <translation>Osobitosti {appname}a</translation>
     </message>
     <message>
         <location line="+16"/>

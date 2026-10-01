@@ -2,7 +2,7 @@
 <interface>
   <requires lib="gtk" version="4.0"/>
   <object class="GtkDialog" id="PrefsDialog">
-    <property name="title" translatable="yes">Transmission Preferences</property>
+    <property name="title" translatable="yes">{appname} Preferences</property>
     <property name="modal">0</property>
     <child internal-child="content_area">
       <object class="GtkBox" id="dialog_layout">
@@ -1148,7 +1148,7 @@ To add a new primary URL, add it after a blank line.]]></property>
                             </child>
                             <child>
                               <object class="GtkCheckButton" id="show_systray_icon_check">
-                                <property name="label" translatable="yes">Show Transmission icon in the _notification area</property>
+                                <property name="label" translatable="yes">Show {appname} icon in the _notification area</property>
                                 <property name="focusable">1</property>
                                 <property name="valign">center</property>
                                 <property name="hexpand">1</property>

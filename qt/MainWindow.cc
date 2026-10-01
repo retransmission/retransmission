@@ -101,6 +101,7 @@ MainWindow::MainWindow(Session& session, Prefs& prefs, TorrentModel& model, bool
     qApp->setAttribute(Qt::ApplicationAttribute::AA_DontShowIconsInMenus, false);
 
     ui_.setupUi(this);
+    refreshTitle();
 
     ui_.listView->setStyle(lvp_style_.get());
     ui_.listView->setAttribute(Qt::WA_MacShowFocusRect, false);

@@ -10,9 +10,6 @@
     <height>427</height>
    </rect>
   </property>
-  <property name="windowTitle">
-   <string>Transmission</string>
-  </property>
   <property name="unifiedTitleAndToolBarOnMac">
    <bool>true</bool>
   </property>

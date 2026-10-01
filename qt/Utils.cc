@@ -28,6 +28,8 @@
 #include <QtWidgets/QSpinBox>
 #include <QtWidgets/QStyle>
 
+#include <libtransmission/macros.h>
+
 #include "QtCompat.h"
 #include "TrFormat.h"
 
@@ -67,6 +69,11 @@ QIcon Utils::getIconFromIndex(QModelIndex const& index)
 QString Utils::qstringFromUtf8(std::string_view const str)
 {
     return QString::fromUtf8(str.data(), static_cast<QtrSizeArgType>(str.size()));
+}
+
+QString Utils::withAppName(QString text)
+{
+    return text.replace(QStringLiteral("{appname}"), QStringLiteral(TR_PROJ_APPNAME_CAPITALIZED));
 }
 
 QString Utils::removeTrailingDirSeparator(QString const& path)

@@ -102,8 +102,8 @@ msgid "Couldn't launch daemon event loop: {error} ({error_code})"
 msgstr "Det gick inte att starta demonens händelseslinga: {error} ({error_code})"
 
 #: ../gtk/Application.cc:402
-msgid "Couldn't register Transmission as a {content_type} handler: {error} ({error_code})"
-msgstr "Det gick inte att registrera överföring som en {content_type}-hanterare: {error} ({error_code})"
+msgid "Couldn't register {appname} as a {content_type} handler: {error} ({error_code})"
+msgstr "Det gick inte att registrera {appname} som en {content_type}-hanterare: {error} ({error_code})"
 
 #: ../gtk/Application.cc:560
 msgid "Got termination signal, trying to shut down cleanly. Do it again if it gets stuck."
@@ -138,8 +138,8 @@ msgid "A fast and easy BitTorrent client"
 msgstr "En snabb och enkel BitTorrent-klient"
 
 #: ../gtk/Application.cc:1397
-msgid "Copyright © The Transmission Project"
-msgstr "Copyright © The Transmission Project"
+msgid "Copyright © The {appname} Project"
+msgstr "Copyright © The {appname} Project"
 
 #. Translators: translate "translator-credits" as your name
 #. to have it appear in the credits in the "About"
@@ -1139,16 +1139,16 @@ msgstr "URL som inte stöds: '{url}'"
 
 #. modal
 #: ../gtk/Utils.cc:871
-msgid "Transmission doesn't know how to use '{url}'"
-msgstr "Transmissionen vet inte hur den ska använda '{url}'"
+msgid "{appname} doesn't know how to use '{url}'"
+msgstr "{appname} vet inte hur den ska använda '{url}'"
 
 #: ../gtk/Utils.cc:876
 msgid "This magnet link appears to be intended for something other than BitTorrent."
 msgstr "Denna magnetlänk verkar vara avsedd för något annat än BitTorrent."
 
 #: ../gtk/main.cc:63 ../gtk/transmission-gtk.desktop.in:2
-msgid "Transmission"
-msgstr "Transmission"
+msgid "Retransmission"
+msgstr "Retransmission"
 
 #. parse the command line
 #: ../gtk/main.cc:79
@@ -1245,12 +1245,12 @@ msgid "torrents;downloading;uploading;share;sharing;"
 msgstr "torrenter;hämtar;skickar;dela;delar;"
 
 #: ../gtk/transmission-gtk.desktop.in:20
-msgid "Start Transmission with All Torrents Paused"
-msgstr "Starta Transmission med alla torrenter pausade"
+msgid "Start Retransmission with All Torrents Paused"
+msgstr "Starta Retransmission med alla torrenter pausade"
 
 #: ../gtk/transmission-gtk.desktop.in:24
-msgid "Start Transmission Minimized"
-msgstr "Starta Transmission minimerad"
+msgid "Start Retransmission Minimized"
+msgstr "Starta Retransmission minimerad"
 
 #: ../gtk/transmission.ui:14 ../gtk/transmission.ui:459 ../gtk/ui/gtk3/MainWindow.ui:21 ../gtk/ui/gtk4/MainWindow.ui:16
 msgid "Open a torrent"
@@ -1453,8 +1453,8 @@ msgid "_About"
 msgstr "_Om"
 
 #: ../gtk/transmission.ui:451
-msgid "_Show Transmission"
-msgstr "_Visa Transmission"
+msgid "_Show {appname}"
+msgstr "_Visa {appname}"
 
 #: ../gtk/transmission.ui:486
 msgid "Enable Alternative Speed _Limits"
@@ -1737,8 +1737,8 @@ msgid "Mo_ve torrent file to the trash"
 msgstr "Fl_ytta torrentfil till papperskorgen"
 
 #: ../gtk/ui/gtk3/PrefsDialog.ui:7 ../gtk/ui/gtk4/PrefsDialog.ui:5
-msgid "Transmission Preferences"
-msgstr "Inställningar för Transmission"
+msgid "{appname} Preferences"
+msgstr "Inställningar för {appname}"
 
 #: ../gtk/ui/gtk3/PrefsDialog.ui:22 ../gtk/ui/gtk4/PrefsDialog.ui:1471
 msgid "_Help"
@@ -1981,8 +1981,8 @@ msgid "_Inhibit hibernation when torrents are active"
 msgstr "_Förhindra viloläge när torrenter är aktiva"
 
 #: ../gtk/ui/gtk3/PrefsDialog.ui:1540 ../gtk/ui/gtk4/PrefsDialog.ui:1138
-msgid "Show Transmission icon in the _notification area"
-msgstr "Visa Transmission-ikonen i _aviseringsytan"
+msgid "Show {appname} icon in the _notification area"
+msgstr "Visa {appname}-ikonen i _aviseringsytan"
 
 #: ../gtk/ui/gtk3/PrefsDialog.ui:1572 ../gtk/ui/gtk4/PrefsDialog.ui:1158
 msgid "Notification"
@@ -2198,8 +2198,8 @@ msgid "Couldn't connect socket {socket} to {address}:{port}: {error} ({error_cod
 msgstr "Det gick inte att ansluta socketen {socket} till {address}:{port}: {error} ({error_code})"
 
 #: ../libtransmission/net.cc:361
-msgid "Couldn't bind port {port} on {address}: {error} ({error_code}) -- Is another copy of Transmission already running?"
-msgstr "Det gick inte att binda port {port} på {address}: {error} ({error_code}) -- Körs en annan kopia av Transmission redan?"
+msgid "Couldn't bind port {port} on {address}: {error} ({error_code}) -- Is another copy of {appname} already running?"
+msgstr "Det gick inte att binda port {port} på {address}: {error} ({error_code}) -- Körs en annan kopia av {appname} redan?"
 
 #: ../libtransmission/net.cc:362
 msgid "Couldn't bind port {port} on {address}: {error} ({error_code})"
@@ -2388,12 +2388,12 @@ msgid "Listening to incoming peer connections on {hostport}"
 msgstr "Lyssnar på inkommande jämlikeanslutningar på {hostport}"
 
 #: ../libtransmission/session.cc:748
-msgid "Transmission version {version} starting"
-msgstr "Transmission version {version} startar"
+msgid "{appname} version {version} starting"
+msgstr "{appname} version {version} startar"
 
 #: ../libtransmission/session.cc:1488
-msgid "Transmission version {version} shutting down"
-msgstr "Transmission version {version} stängs av"
+msgid "{appname} version {version} shutting down"
+msgstr "{appname} version {version} stängs av"
 
 #: ../libtransmission/session.cc:1570
 msgid "Loaded {count} torrent"
