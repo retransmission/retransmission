@@ -34,6 +34,8 @@
 #include <libtransmission-app/interop.h>
 #include <libtransmission-app/startup-coordinator.h>
 
+#include <libtransmission/macros.h>
+
 #include "InteropObject.h"
 #include "Utils.h"
 #include "Transports.h"
@@ -322,7 +324,7 @@ private slots:
         // Only a private dbus-run-session bus can host what follows.
         if (auto const* const iface = QDBusConnection::sessionBus().interface();
             iface != nullptr && QDBusReply<bool>{ iface->isServiceRegistered(ServiceName) }.value()) {
-            QTest::qSkip("another Transmission owns this bus", __FILE__, __LINE__);
+            QTest::qSkip("another " TR_PROJ_APPNAME_CAPITALIZED " owns this bus", __FILE__, __LINE__);
             return;
         }
     }
