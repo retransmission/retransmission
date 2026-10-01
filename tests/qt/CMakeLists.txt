@@ -4,6 +4,7 @@ add_test(
     NAME QT.desktop-file
     COMMAND ${CMAKE_COMMAND}
         -Ddesktop_file=${CMAKE_BINARY_DIR}/qt/${TR_NAME}-qt.desktop
+        -Dapp_name=${TR_PROJ_APPNAME_CAPITALIZED}
         -Dicon_name=${TR_QT_ICON_NAME}
         -Dexe=$<TARGET_FILE_BASE_NAME:${TR_NAME}-qt>
         -Dvalidator=${DESKTOP_FILE_VALIDATE}
