@@ -19,6 +19,8 @@ target_sources(${LIBNAME}
         interop-names.h
         interop.cc
         interop.h
+        l10n.cc
+        l10n.h
         prefs.cc
         prefs.h
         rpc-client.cc
