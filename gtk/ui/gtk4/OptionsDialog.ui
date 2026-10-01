@@ -118,7 +118,7 @@
             </child>
             <child>
               <object class="GtkCheckButton" id="trash_check">
-                <property name="label" translatable="yes">Mo_ve torrent file to the trash</property>
+                <property name="label" translatable="yes">Mo_ve torrent file to the Trash</property>
                 <property name="focusable">1</property>
                 <property name="valign">center</property>
                 <property name="use-underline">1</property>

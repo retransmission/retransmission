@@ -160,7 +160,7 @@ struct RemoteConfig {
 
     auto const hstr = fmt::format("{:d} {:s}", hours, tr_ngettext("hour", "hours", hours));
     auto const mstr = fmt::format("{:d} {:s}", minutes, tr_ngettext("minute", "minutes", minutes));
-    auto const sstr = fmt::format("{:d} {:s}", seconds, tr_ngettext("seconds", "seconds", seconds));
+    auto const sstr = fmt::format("{:d} {:s}", seconds, tr_ngettext("second", "seconds", seconds));
 
     if (days > 0) {
         auto const dstr = fmt::format("{:d} {:s}", days, tr_ngettext("day", "days", days));

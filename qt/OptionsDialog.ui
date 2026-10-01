@@ -14,7 +14,7 @@
    <item row="0" column="0">
     <widget class="QLabel" name="sourceLabel">
      <property name="text">
-      <string>&amp;Source:</string>
+      <string>Sou&amp;rce:</string>
      </property>
      <property name="buddy">
       <cstring>sourceButton</cstring>
@@ -91,14 +91,14 @@
    <item row="5" column="0" colspan="2">
     <widget class="QCheckBox" name="startCheck">
      <property name="text">
-      <string>S&amp;tart when added</string>
+      <string>&amp;Start when added</string>
      </property>
     </widget>
    </item>
    <item row="6" column="0" colspan="2">
     <widget class="QCheckBox" name="trashCheck">
      <property name="text">
-      <string>Mo&amp;ve .torrent file to the trash</string>
+      <string>Mo&amp;ve torrent file to the Trash</string>
      </property>
     </widget>
    </item>

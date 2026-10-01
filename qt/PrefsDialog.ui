@@ -97,7 +97,7 @@
             <item>
              <widget class="QLabel" name="altSpeedLimitsSectionDescriptionLabel">
               <property name="text">
-               <string>&lt;small&gt;Override normal speed limits manually or at scheduled times&lt;/small&gt;</string>
+               <string>Override normal speed limits manually or at scheduled times</string>
               </property>
              </widget>
             </item>
@@ -232,7 +232,7 @@
           <item row="0" column="0">
            <widget class="QCheckBox" name="watchDirCheck">
             <property name="text">
-             <string>Automatically add .torrent files &amp;from:</string>
+             <string>Automatically add torrent files &amp;from:</string>
             </property>
             <property name="checked">
              <bool>true</bool>
@@ -278,14 +278,14 @@
           <item row="4" column="0" colspan="2">
            <widget class="QCheckBox" name="trashTorrentFileCheck">
             <property name="text">
-             <string>Mo&amp;ve the .torrent file to the trash</string>
+             <string>Mo&amp;ve torrent file to the Trash</string>
             </property>
            </widget>
           </item>
           <item row="5" column="0">
            <widget class="QLabel" name="downloadDirLabel">
             <property name="text">
-             <string>Save to &amp;Location:</string>
+             <string>Save to &amp;location:</string>
             </property>
            </widget>
           </item>
@@ -511,7 +511,7 @@
           <item row="2" column="0">
            <widget class="QCheckBox" name="doneSeedingScriptCheck">
             <property name="text">
-             <string>Call scrip&amp;t when seeding is completed:</string>
+             <string>Call scrip&amp;t when done seeding:</string>
             </property>
             <property name="checked">
              <bool>true</bool>
@@ -614,7 +614,7 @@
           <item row="2" column="0" colspan="3">
            <widget class="QCheckBox" name="autoUpdateBlocklistCheck">
             <property name="text">
-             <string>Enable &amp;automatic updates</string>
+             <string>&amp;Automatically update weekly</string>
             </property>
            </widget>
           </item>
@@ -651,7 +651,7 @@
        <item>
         <widget class="QGroupBox" name="incomingPeersSection">
          <property name="title">
-          <string>Incoming Peers</string>
+          <string>Listening Port</string>
          </property>
          <layout class="QGridLayout" name="incomingPeersSectionLayout" columnstretch="0,1,0">
           <item row="0" column="0">
@@ -694,7 +694,7 @@
           <item row="2" column="0" colspan="3">
            <widget class="QCheckBox" name="randomPeerPortCheck">
             <property name="text">
-             <string>Pick a &amp;random port every time Transmission is started</string>
+             <string>Pick a &amp;random port at startup</string>
             </property>
            </widget>
           </item>
@@ -717,7 +717,7 @@
           <item row="0" column="0">
            <widget class="QLabel" name="torrentPeerLimitLabel">
             <property name="text">
-             <string>Maximum peers per &amp;torrent:</string>
+             <string>Maximum peers for new &amp;torrents:</string>
             </property>
             <property name="buddy">
              <cstring>torrentPeerLimitSpin</cstring>
@@ -785,7 +785,7 @@
              <string>PEX is a tool for exchanging peer lists with the peers you're connected to.</string>
             </property>
             <property name="text">
-             <string>Use PE&amp;X to find more peers</string>
+             <string>Use PE&amp;X to find more peers for public torrents</string>
             </property>
            </widget>
           </item>
@@ -795,7 +795,7 @@
              <string>DHT is a tool for finding peers without a tracker.</string>
             </property>
             <property name="text">
-             <string>Use &amp;DHT to find more peers</string>
+             <string>Use &amp;DHT to find more peers for public torrents</string>
             </property>
            </widget>
           </item>
@@ -805,7 +805,7 @@
              <string>LPD is a tool for finding peers on your local network.</string>
             </property>
             <property name="text">
-             <string>Use &amp;Local Peer Discovery to find more peers</string>
+             <string>Use &amp;Local Peer Discovery to find more peers for public torrents</string>
             </property>
            </widget>
           </item>
@@ -883,7 +883,7 @@ To add a new primary URL, add it after a blank line.</string>
           <item>
            <widget class="QCheckBox" name="preventSleepCheck">
             <property name="text">
-             <string>&amp;Prevent computer from sleeping with active transfers</string>
+             <string>&amp;Prevent computer from sleeping with active torrents</string>
             </property>
            </widget>
           </item>
@@ -959,7 +959,7 @@ To add a new primary URL, add it after a blank line.</string>
           <item row="0" column="2">
            <widget class="QPushButton" name="openWebClientButton">
             <property name="text">
-             <string>&amp;Open web client</string>
+             <string>&amp;Open Web Client</string>
             </property>
             <property name="autoDefault">
              <bool>false</bool>

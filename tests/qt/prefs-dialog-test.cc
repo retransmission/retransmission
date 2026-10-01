@@ -136,7 +136,7 @@ private slots:
         QCOMPARE(prefs.get<bool>(Key), !was_checked);
     }
 
-    // The "automatic updates" checkbox drives blocklist_updates_enabled, which is
+    // The "Automatically update weekly" checkbox drives blocklist_updates_enabled, which is
     // now a session-owned pref -- toggling it is how a client asks the session to
     // turn its periodic blocklist auto-update on or off.
     void toggling_auto_update_check_emits_prefs_changed()

@@ -106,7 +106,7 @@ typedef NS_ENUM(NSUInteger, TabTag) {
     };
     setImageAndToolTipForSegment(
         [NSImage imageWithSystemSymbolName:@"info.circle" accessibilityDescription:nil],
-        NSLocalizedString(@"General Info", "Inspector -> tab"),
+        NSLocalizedString(@"Information", "Inspector -> tab"),
         TabTagGeneral);
     setImageAndToolTipForSegment(
         [NSImage imageWithSystemSymbolName:@"square.grid.3x3.fill.square" accessibilityDescription:nil],
@@ -314,8 +314,7 @@ typedef NS_ENUM(NSUInteger, TabTag) {
 
     NSWindow* window = self.window;
 
-    window.title = [NSString
-        stringWithFormat:@"%@ — %@", self.fViewController.title, NSLocalizedString(@"Torrent Inspector", "Inspector -> title")];
+    window.title = [NSString stringWithFormat:@"%@ — %@", self.fViewController.title, NSLocalizedString(@"Inspector", "Inspector -> title")];
 
     NSView* view = self.fViewController.view;
 
@@ -503,10 +502,10 @@ typedef NS_ENUM(NSUInteger, TabTag) {
             if (magnetCount > 0) {
                 NSString* magnetString;
                 if (magnetCount == 1) {
-                    magnetString = NSLocalizedString(@"1 magnetized transfer", "Inspector -> selected torrents");
+                    magnetString = NSLocalizedString(@"1 magnetized torrent", "Inspector -> selected torrents");
                 } else {
                     magnetString = [NSString
-                        localizedStringWithFormat:NSLocalizedString(@"%lu magnetized transfers", "Inspector -> selected torrents"), magnetCount];
+                        localizedStringWithFormat:NSLocalizedString(@"%lu magnetized torrents", "Inspector -> selected torrents"), magnetCount];
                 }
                 [fileStrings addObject:magnetString];
             }
@@ -568,7 +567,7 @@ typedef NS_ENUM(NSUInteger, TabTag) {
             formatter.allowedUnits = NSByteCountFormatterUseBytes;
             self.fBasicInfoField.toolTip = [formatter stringFromByteCount:torrent.size];
         } else {
-            self.fBasicInfoField.stringValue = NSLocalizedString(@"Magnetized transfer", "Inspector -> selected torrents");
+            self.fBasicInfoField.stringValue = NSLocalizedString(@"Magnetized torrent", "Inspector -> selected torrents");
             self.fBasicInfoField.toolTip = nil;
         }
         self.fBasicInfoField.hidden = NO;

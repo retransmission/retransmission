@@ -499,7 +499,7 @@ Glib::ustring activityString(int activity, bool finished)
         return C_("Verb", "Seeding");
 
     case TR_STATUS_STOPPED:
-        return finished ? _("Finished") : _("Paused");
+        return finished ? _("Seeding complete") : _("Paused");
 
     default:
         g_assert_not_reached();
@@ -1206,7 +1206,7 @@ bool DetailsDialog::Impl::onPeerViewQueryTooltip(int x, int y, bool keyboard_tip
                 break;
 
             case 'u':
-                s = _("We would upload to this peer if they asked");
+                s = _("This peer would download from us if we would let them");
                 break;
 
             case 'K':
@@ -1555,7 +1555,7 @@ void appendScrapeInfo(tr_tracker_view const& tracker, time_t const now, Gtk::Tex
         gstr << '\n';
         gstr << dir_mark;
         gstr << fmt::format(
-            fmt::runtime(_("Asking for peer counts in {time_span_from_now}")),
+            fmt::runtime(_("Asking for peer counts {time_span_from_now}")),
             fmt::arg("time_span_from_now", tr_format_time_relative(now, tracker.nextScrapeTime)));
         break;
 

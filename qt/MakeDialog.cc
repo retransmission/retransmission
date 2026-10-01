@@ -123,7 +123,7 @@ void MakeProgressDialog::onProgress()
 
     auto success = false;
     if (!is_done) {
-        str = tr("Creating \"%1\"").arg(base);
+        str = tr("Creating '%1'").arg(base);
     } else {
         auto checksums = future_.get();
         auto error = std::move(checksums.error);
@@ -134,13 +134,13 @@ void MakeProgressDialog::onProgress()
         }
 
         if (!error) {
-            str = tr("Created \"%1\"!").arg(base);
+            str = tr("Created '%1'").arg(base);
             success = true;
         } else {
             auto err_msg = QString::fromUtf8(
                 std::data(error.message()),
                 static_cast<QtrSizeArgType>(std::size(error.message())));
-            str = tr("Couldn't create \"%1\": %2 (%3)").arg(base).arg(err_msg).arg(error.code());
+            str = tr("Couldn't create '%1': %2 (%3)").arg(base).arg(err_msg).arg(error.code());
         }
     }
 
@@ -286,7 +286,7 @@ void MakeDialog::updatePiecesLabel()
     QString text;
 
     if (!builder_) {
-        text = tr("<i>No source selected</i>");
+        text = QStringLiteral("<i>%1</i>").arg(tr("No source selected"));
         ui_.pieceSizeSlider->setEnabled(false);
     } else {
         auto const files = tr("%Ln File(s)", nullptr, static_cast<int>(builder_->file_count()));

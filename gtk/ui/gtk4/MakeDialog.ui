@@ -51,7 +51,7 @@
                     </child>
                     <child>
                       <object class="GtkCheckButton" id="source_folder_radio">
-                        <property name="label" translatable="yes">Source F_older:</property>
+                        <property name="label" translatable="yes">Source f_older:</property>
                         <property name="valign">center</property>
                         <property name="use-underline">1</property>
                         <property name="active">1</property>
@@ -74,7 +74,7 @@
                     </child>
                     <child>
                       <object class="GtkCheckButton" id="source_file_radio">
-                        <property name="label" translatable="yes">Source _File:</property>
+                        <property name="label" translatable="yes">Source _file:</property>
                         <property name="valign">center</property>
                         <property name="use-underline">1</property>
                         <property name="group">source_folder_radio</property>
@@ -110,7 +110,7 @@
                     </child>
                     <child>
                       <object class="GtkLabel" id="piece_size_label">
-                        <property name="label" translatable="yes">Piece size:</property>
+                        <property name="label" translatable="yes">Piece si_ze:</property>
                         <property name="use-underline">1</property>
                         <property name="mnemonic-widget">piece_size_scale</property>
                         <property name="xalign">0</property>
@@ -282,7 +282,7 @@ To add a new primary URL, add it after a blank line.]]></property>
         </child>
         <child>
           <object class="GtkButton" id="new_button">
-            <property name="label" translatable="yes">_New</property>
+            <property name="label" translatable="yes">C_reate</property>
             <property name="focusable">1</property>
             <property name="receives-default">1</property>
             <property name="use-underline">1</property>

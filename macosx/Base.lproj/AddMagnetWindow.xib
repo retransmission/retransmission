@@ -110,7 +110,7 @@ Gw
                                 </popUpButton>
                                 <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="YES" preferredMaxLayoutWidth="0.0" translatesAutoresizingMaskIntoConstraints="NO" id="10">
                                     <rect key="frame" x="9" y="65" width="84" height="16"/>
-                                    <textFieldCell key="cell" sendsActionOnEndEditing="YES" title="Download to:" id="15">
+                                    <textFieldCell key="cell" sendsActionOnEndEditing="YES" title="Destination folder:" id="15">
                                         <font key="font" metaFont="system"/>
                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>

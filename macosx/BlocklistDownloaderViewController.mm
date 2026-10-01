@@ -123,7 +123,7 @@ static BlocklistDownloaderViewController* fBLViewController = nil;
                 [weakPrefsController updateBlocklistFields];
                 break;
             default:
-                [strongSelf setFailed:error ?: NSLocalizedString(@"The blocklist could not be updated.", "Blocklist -> message")];
+                [strongSelf setFailed:error ?: NSLocalizedString(@"Couldn't update blocklist", "Blocklist -> message")];
                 break;
             }
         });

@@ -72,7 +72,7 @@
                         <subviews>
                             <textField focusRingType="none" verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="2700">
                                 <rect key="frame" x="211" y="5" width="58" height="14"/>
-                                <textFieldCell key="cell" controlSize="small" lineBreakMode="truncatingTail" allowsUndo="NO" sendsActionOnEndEditing="YES" alignment="center" title="Transfers" usesSingleLineMode="YES" id="3049">
+                                <textFieldCell key="cell" controlSize="small" lineBreakMode="truncatingTail" allowsUndo="NO" sendsActionOnEndEditing="YES" alignment="center" title="Torrents" usesSingleLineMode="YES" id="3049">
                                     <font key="font" metaFont="smallSystem"/>
                                     <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                     <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
@@ -163,7 +163,7 @@
                                     <action selector="checkForUpdates:" target="1812" id="1814"/>
                                 </connections>
                             </menuItem>
-                            <menuItem title="Donate…" tag="5678" id="3212">
+                            <menuItem title="Donate" tag="5678" id="3212">
                                 <imageReference key="secondaryImage" image="heart" catalog="system" symbolScale="default" variableValue="1"/>
                                 <connections>
                                     <action selector="linkDonate:" target="206" id="3213"/>
@@ -221,7 +221,7 @@
                                     <action selector="createFile:" target="206" id="1922"/>
                                 </connections>
                             </menuItem>
-                            <menuItem title="Open Torrent File…" secondaryImage="folder" catalog="system" keyEquivalent="o" id="72">
+                            <menuItem title="Open…" secondaryImage="folder" catalog="system" keyEquivalent="o" id="72">
                                 <connections>
                                     <action selector="openShowSheet:" target="206" id="300"/>
                                 </connections>
@@ -232,7 +232,7 @@
                                     <action selector="openShowSheet:" target="206" id="1681"/>
                                 </connections>
                             </menuItem>
-                            <menuItem title="Open Torrent Address…" secondaryImage="globe" catalog="system" keyEquivalent="u" id="1846">
+                            <menuItem title="Open URL…" secondaryImage="globe" catalog="system" keyEquivalent="u" id="1846">
                                 <connections>
                                     <action selector="openURLShowSheet:" target="206" id="1847"/>
                                 </connections>
@@ -256,12 +256,12 @@
                             <menuItem isSeparatorItem="YES" id="3167">
                                 <modifierMask key="keyEquivalentModifierMask" command="YES"/>
                             </menuItem>
-                            <menuItem title="Move Data File To…" secondaryImage="arrow.forward.folder" catalog="system" id="1891">
+                            <menuItem title="Set Location…" secondaryImage="arrow.forward.folder" catalog="system" id="1891">
                                 <connections>
                                     <action selector="moveDataFilesSelected:" target="206" id="3153"/>
                                 </connections>
                             </menuItem>
-                            <menuItem title="Rename File…" secondaryImage="pencil" catalog="system" id="3448">
+                            <menuItem title="Rename…" secondaryImage="pencil" catalog="system" id="3448">
                                 <connections>
                                     <action selector="renameSelected:" target="206" id="3449"/>
                                 </connections>
@@ -361,8 +361,8 @@
                                     <action selector="setSortByGroup:" target="206" id="3079"/>
                                 </connections>
                             </menuItem>
-                            <menuItem title="Sort Transfers By" secondaryImage="arrow.up.arrow.down" catalog="system" id="1894">
-                                <menu key="submenu" title="Sort Transfers By" id="1895">
+                            <menuItem title="Sort Torrents By" secondaryImage="arrow.up.arrow.down" catalog="system" id="1894">
+                                <menu key="submenu" title="Sort Torrents By" id="1895">
                                     <items>
                                         <menuItem title="Queue Order" id="1901">
                                             <connections>
@@ -462,10 +462,10 @@
                         </items>
                     </menu>
                 </menuItem>
-                <menuItem title="Transfers" id="1399">
-                    <menu key="submenu" title="Transfers" id="1400">
+                <menuItem title="Torrent" id="1399">
+                    <menu key="submenu" title="Torrent" id="1400">
                         <items>
-                            <menuItem title="Speed Limit" secondaryImage="tortoise" catalog="system" keyEquivalent="l" id="1566">
+                            <menuItem title="Alternative Speed Limits" secondaryImage="tortoise" catalog="system" keyEquivalent="l" id="1566">
                                 <connections>
                                     <action selector="toggleSpeedLimit:" target="206" id="2144"/>
                                 </connections>
@@ -473,12 +473,12 @@
                             <menuItem isSeparatorItem="YES" id="1567">
                                 <modifierMask key="keyEquivalentModifierMask" command="YES"/>
                             </menuItem>
-                            <menuItem title="Pause Selected" secondaryImage="pause" catalog="system" keyEquivalent="." id="1403">
+                            <menuItem title="Pause" secondaryImage="pause" catalog="system" keyEquivalent="." id="1403">
                                 <connections>
                                     <action selector="stopSelectedTorrents:" target="206" id="1581"/>
                                 </connections>
                             </menuItem>
-                            <menuItem title="Resume Selected" secondaryImage="arrow.clockwise" catalog="system" keyEquivalent="/" id="1404">
+                            <menuItem title="Start" secondaryImage="arrow.clockwise" catalog="system" keyEquivalent="/" id="1404">
                                 <connections>
                                     <action selector="resumeSelectedTorrents:" target="206" id="1582"/>
                                 </connections>
@@ -486,7 +486,7 @@
                             <menuItem isSeparatorItem="YES" id="1412">
                                 <modifierMask key="keyEquivalentModifierMask" command="YES"/>
                             </menuItem>
-                            <menuItem title="Remove From List" secondaryImage="trash" catalog="system" tag="2" id="1516">
+                            <menuItem title="Remove" secondaryImage="trash" catalog="system" tag="2" id="1516">
                                 <string key="keyEquivalent" base64-UTF8="YES">
 CA
 </string>
@@ -494,7 +494,7 @@ CA
                                     <action selector="removeNoDelete:" target="206" id="1546"/>
                                 </connections>
                             </menuItem>
-                            <menuItem title="Remove and Trash Data File" secondaryImage="document.on.trash" catalog="system" tag="4" id="1514">
+                            <menuItem title="Delete Files and Remove" secondaryImage="document.on.trash" catalog="system" tag="4" id="1514">
                                 <string key="keyEquivalent" base64-UTF8="YES">
 CA
 </string>
@@ -526,7 +526,7 @@ CA
                                     <action selector="stopAllTorrents:" target="206" id="1417"/>
                                 </connections>
                             </menuItem>
-                            <menuItem title="Resume All" secondaryImage="arrow.clockwise.circle.fill" catalog="system" keyEquivalent="/" id="1414">
+                            <menuItem title="Start All" secondaryImage="arrow.clockwise.circle.fill" catalog="system" keyEquivalent="/" id="1414">
                                 <modifierMask key="keyEquivalentModifierMask" option="YES" command="YES"/>
                                 <connections>
                                     <action selector="resumeAllTorrents:" target="206" id="1418"/>
@@ -535,12 +535,12 @@ CA
                             <menuItem isSeparatorItem="YES" id="1805">
                                 <modifierMask key="keyEquivalentModifierMask" command="YES"/>
                             </menuItem>
-                            <menuItem title="Resume Selected Right Away" secondaryImage="arrow.clockwise.circle" catalog="system" id="1678">
+                            <menuItem title="Start Now" secondaryImage="arrow.clockwise.circle" catalog="system" id="1678">
                                 <connections>
                                     <action selector="resumeSelectedTorrentsNoWait:" target="206" id="1806"/>
                                 </connections>
                             </menuItem>
-                            <menuItem title="Resume All Waiting" secondaryImage="stopwatch" catalog="system" id="1804">
+                            <menuItem title="Start All Queued Now" secondaryImage="stopwatch" catalog="system" id="1804">
                                 <connections>
                                     <action selector="resumeWaitingTorrents:" target="206" id="1807"/>
                                 </connections>
@@ -559,7 +559,7 @@ CA
                             <menuItem isSeparatorItem="YES" id="3408">
                                 <modifierMask key="keyEquivalentModifierMask" command="YES"/>
                             </menuItem>
-                            <menuItem title="Update Tracker" secondaryImage="megaphone" catalog="system" id="1860">
+                            <menuItem title="Ask Tracker for More Peers" secondaryImage="megaphone" catalog="system" id="1860">
                                 <connections>
                                     <action selector="announceSelectedTorrents:" target="206" id="1862"/>
                                 </connections>
@@ -696,17 +696,17 @@ CA
         </customObject>
         <menu title="Menu" id="456" userLabel="ContextRowMenu">
             <items>
-                <menuItem title="Pause Selected" secondaryImage="pause" catalog="system" tag="1" id="457">
+                <menuItem title="Pause" secondaryImage="pause" catalog="system" tag="1" id="457">
                     <connections>
                         <action selector="stopSelectedTorrents:" target="206" id="1583"/>
                     </connections>
                 </menuItem>
-                <menuItem title="Resume Selected" secondaryImage="arrow.clockwise" catalog="system" tag="1" id="1028">
+                <menuItem title="Start" secondaryImage="arrow.clockwise" catalog="system" tag="1" id="1028">
                     <connections>
                         <action selector="resumeSelectedTorrents:" target="206" id="1584"/>
                     </connections>
                 </menuItem>
-                <menuItem title="Resume Selected Right Away" secondaryImage="arrow.clockwise.circle" catalog="system" tag="1" id="1808">
+                <menuItem title="Start Now" secondaryImage="arrow.clockwise.circle" catalog="system" tag="1" id="1808">
                     <connections>
                         <action selector="resumeSelectedTorrentsNoWait:" target="206" id="1809"/>
                     </connections>
@@ -714,12 +714,12 @@ CA
                 <menuItem isSeparatorItem="YES" id="613">
                     <modifierMask key="keyEquivalentModifierMask" command="YES"/>
                 </menuItem>
-                <menuItem title="Remove From List" secondaryImage="trash" catalog="system" tag="2" id="1550">
+                <menuItem title="Remove" secondaryImage="trash" catalog="system" tag="2" id="1550">
                     <connections>
                         <action selector="removeNoDelete:" target="206" id="1554"/>
                     </connections>
                 </menuItem>
-                <menuItem title="Remove and Trash Data File" secondaryImage="document.on.trash" catalog="system" tag="4" id="1551">
+                <menuItem title="Delete Files and Remove" secondaryImage="document.on.trash" catalog="system" tag="4" id="1551">
                     <modifierMask key="keyEquivalentModifierMask" option="YES" command="YES"/>
                     <connections>
                         <action selector="removeDeleteData:" target="206" id="1555"/>
@@ -746,12 +746,12 @@ CA
                 <menuItem isSeparatorItem="YES" id="3206">
                     <modifierMask key="keyEquivalentModifierMask" command="YES"/>
                 </menuItem>
-                <menuItem title="Move Data File To…" secondaryImage="arrow.up.doc" catalog="system" id="3209">
+                <menuItem title="Set Location…" secondaryImage="arrow.up.doc" catalog="system" id="3209">
                     <connections>
                         <action selector="moveDataFilesSelected:" target="206" id="3210"/>
                     </connections>
                 </menuItem>
-                <menuItem title="Rename File…" secondaryImage="pencil" catalog="system" tag="4" id="3445">
+                <menuItem title="Rename…" secondaryImage="pencil" catalog="system" tag="4" id="3445">
                     <modifierMask key="keyEquivalentModifierMask"/>
                     <connections>
                         <action selector="renameSelected:" target="206" id="3447"/>
@@ -783,7 +783,7 @@ CA
                 <menuItem isSeparatorItem="YES" id="2848">
                     <modifierMask key="keyEquivalentModifierMask" command="YES"/>
                 </menuItem>
-                <menuItem title="Update Tracker" secondaryImage="megaphone" catalog="system" id="2122">
+                <menuItem title="Ask Tracker for More Peers" secondaryImage="megaphone" catalog="system" id="2122">
                     <connections>
                         <action selector="announceSelectedTorrents:" target="206" id="2124"/>
                     </connections>
@@ -811,12 +811,12 @@ CA
                         <action selector="createFile:" target="206" id="1924"/>
                     </connections>
                 </menuItem>
-                <menuItem title="Open Torrent File…" secondaryImage="folder" catalog="system" id="611">
+                <menuItem title="Open…" secondaryImage="folder" catalog="system" id="611">
                     <connections>
                         <action selector="openShowSheet:" target="206" id="612"/>
                     </connections>
                 </menuItem>
-                <menuItem title="Open Torrent Address…" secondaryImage="globe" catalog="system" id="1858">
+                <menuItem title="Open URL…" secondaryImage="globe" catalog="system" id="1858">
                     <connections>
                         <action selector="openURLShowSheet:" target="206" id="1859"/>
                     </connections>

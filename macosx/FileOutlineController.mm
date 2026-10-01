@@ -594,8 +594,7 @@ typedef NS_ENUM(NSUInteger, FilePriorityMenuTag) { //
     [menu addItem:[NSMenuItem separatorItem]];
 
     //rename
-    item = [[NSMenuItem alloc] initWithTitle:[NSLocalizedString(@"Rename File", "File Outline -> Menu") stringByAppendingEllipsis]
-                                      action:@selector(renameSelected:)
+    item = [[NSMenuItem alloc] initWithTitle:NSLocalizedString(@"Rename…", "File Outline -> Menu") action:@selector(renameSelected:)
                                keyEquivalent:@""];
     if (@available(macOS 26.0, *)) {
         item.image = [NSImage imageWithSystemSymbolName:@"pencil" accessibilityDescription:nil];

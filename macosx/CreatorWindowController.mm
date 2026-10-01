@@ -271,12 +271,12 @@ static NSMutableSet* creatorWindowControllerSet;
 
         NSString* infoString = isPrivate ?
             NSLocalizedString(
-                @"A transfer marked as private with no tracker addresses will be unable to connect to peers."
+                @"A torrent marked as private with no tracker addresses will be unable to connect to peers."
                  " The torrent file will only be useful if you plan to upload the file to a tracker website"
                  " that will add the addresses for you.",
                 "Create torrent -> blank address -> message") :
             NSLocalizedString(
-                @"The transfer will not contact trackers for peers, and will have to rely solely on"
+                @"The torrent will not contact trackers for peers, and will have to rely solely on"
                  " non-tracker peer discovery methods such as PEX and DHT to download and seed.",
                 "Create torrent -> blank address -> message");
 

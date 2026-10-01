@@ -140,15 +140,15 @@ static NSString* stringForFileSize(uint64_t const size)
     NSString* creationString = nil;
     if (dateCreatedString && creatorString) {
         creationString = [NSString
-            stringWithFormat:NSLocalizedStringFromTableInBundle(@"Created on %@ with %@", nil, bundle, "quicklook creation info"),
-                             dateCreatedString,
-                             creatorString];
+            stringWithFormat:NSLocalizedStringFromTableInBundle(@"Created by %@ on %@", nil, bundle, "quicklook creation info"),
+                             creatorString,
+                             dateCreatedString];
     } else if (dateCreatedString) {
         creationString = [NSString
             stringWithFormat:NSLocalizedStringFromTableInBundle(@"Created on %@", nil, bundle, "quicklook creation info"), dateCreatedString];
     } else if (creatorString) {
         creationString = [NSString
-            stringWithFormat:NSLocalizedStringFromTableInBundle(@"Created with %@", nil, bundle, "quicklook creation info"), creatorString];
+            stringWithFormat:NSLocalizedStringFromTableInBundle(@"Created by %@", nil, bundle, "quicklook creation info"), creatorString];
     }
     if (creationString) {
         [htmlString appendFormat:@"<p>%@</p>", creationString];

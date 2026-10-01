@@ -67,13 +67,13 @@
     NSString* tooltip = nil;
     switch (self.checkButton.state) {
     case NSControlStateValueOff:
-        tooltip = NSLocalizedString(@"Don't Download", "files tab -> tooltip");
+        tooltip = NSLocalizedString(@"Don't download", "files tab -> tooltip");
         break;
     case NSControlStateValueOn:
         tooltip = NSLocalizedString(@"Download", "files tab -> tooltip");
         break;
     case NSControlStateValueMixed:
-        tooltip = NSLocalizedString(@"Download Some", "files tab -> tooltip");
+        tooltip = NSLocalizedString(@"Download some", "files tab -> tooltip");
         break;
     }
     self.checkButton.toolTip = tooltip;

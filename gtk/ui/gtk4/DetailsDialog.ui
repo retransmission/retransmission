@@ -35,7 +35,7 @@
                             <property name="column-spacing">12</property>
                             <child>
                               <object class="GtkLabel" id="torrent_size_label">
-                                <property name="label" translatable="yes">Torrent size:</property>
+                                <property name="label" translatable="yes">Size:</property>
                                 <property name="xalign">0</property>
                                 <layout>
                                   <property name="column">0</property>

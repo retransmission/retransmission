@@ -32,7 +32,7 @@
 - (instancetype)init
 {
     if ((self = [super initWithNibName:@"InfoGeneralView" bundle:nil])) {
-        self.title = NSLocalizedString(@"General Info", "Inspector view -> title");
+        self.title = NSLocalizedString(@"Information", "Inspector view -> title");
     }
 
     return self;
@@ -104,8 +104,8 @@
         self.fHashField.stringValue = hashString;
         self.fHashField.toolTip = hashString;
         self.fSecureField.stringValue = torrent.privateTorrent ?
-            NSLocalizedString(@"Private Torrent, non-tracker peer discovery disabled", "Inspector -> private torrent") :
-            NSLocalizedString(@"Public Torrent", "Inspector -> private torrent");
+            NSLocalizedString(@"Private to this tracker -- DHT and PEX disabled", "Inspector -> private torrent") :
+            NSLocalizedString(@"Public torrent", "Inspector -> private torrent");
 
         NSString* commentString = torrent.comment;
         self.fCommentView.string = commentString;

@@ -549,18 +549,18 @@ static NSTimeInterval const kToggleProgressSeconds = 0.175;
         statusString = NSLocalizedString(@"Show the data file in Finder", "Torrent cell -> button info");
     } else if ([view isKindOfClass:[TorrentCellControlButton class]]) {
         if (torrent.active)
-            statusString = NSLocalizedString(@"Pause the transfer", "Torrent Table -> tooltip");
+            statusString = NSLocalizedString(@"Pause torrent", "Torrent Table -> tooltip");
         else {
             if (NSApp.currentEvent.modifierFlags & NSEventModifierFlagOption) {
-                statusString = NSLocalizedString(@"Resume the transfer right away", "Torrent cell -> button info");
+                statusString = NSLocalizedString(@"Bypass the queue and start now", "Torrent cell -> button info");
             } else if (torrent.waitingToStart) {
                 statusString = NSLocalizedString(@"Stop waiting to start", "Torrent cell -> button info");
             } else {
-                statusString = NSLocalizedString(@"Resume the transfer", "Torrent cell -> button info");
+                statusString = NSLocalizedString(@"Start torrent", "Torrent cell -> button info");
             }
         }
     } else if ([view isKindOfClass:[TorrentCellActionButton class]]) {
-        statusString = NSLocalizedString(@"Change transfer settings", "Torrent Table -> tooltip");
+        statusString = NSLocalizedString(@"Change torrent settings", "Torrent Table -> tooltip");
     }
 
     auto previousHoveredTorrent = self.hoveringData.hoveredTorrent;
