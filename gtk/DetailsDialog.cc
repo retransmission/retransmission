@@ -14,6 +14,8 @@
 #include "Session.h"
 #include "Utils.h"
 
+#include <libtransmission-app/formatters.h>
+
 #include <libtransmission/converters.h>
 #include <libtransmission/string-utils.h>
 #include <libtransmission/utils.h>
@@ -669,7 +671,7 @@ void DetailsDialog::Impl::refreshInfo(std::vector<tr_torrent*> const& torrents)
         } else if (baseline <= 0 || stats[0].activity == TR_STATUS_STOPPED) {
             str = stateString;
         } else {
-            str = tr_format_time(now - baseline);
+            str = tr::app::format_time(now - baseline);
         }
     }
 
@@ -687,7 +689,7 @@ void DetailsDialog::Impl::refreshInfo(std::vector<tr_torrent*> const& torrents)
         } else if (baseline < 0) {
             str = _("Unknown");
         } else {
-            str = tr_format_time_left(baseline);
+            str = tr::app::format_time_left(baseline);
         }
     }
 
@@ -880,7 +882,7 @@ void DetailsDialog::Impl::refreshInfo(std::vector<tr_torrent*> const& torrents)
         } else if ((now - latest) < 5U) {
             str = _("Active now");
         } else {
-            str = tr_format_time_relative(now, latest);
+            str = tr::app::format_time_relative(latest, now);
         }
     }
 
@@ -1447,7 +1449,7 @@ void appendAnnounceInfo(tr_tracker_view const& tracker, time_t const now, Gtk::T
     if (tracker.hasAnnounced && tracker.announceState != TR_TRACKER_INACTIVE) {
         gstr << '\n';
         gstr << dir_mark;
-        auto const time_span_ago = tr_format_time_relative(now, tracker.lastAnnounceTime);
+        auto const time_span_ago = tr::app::format_time_relative(tracker.lastAnnounceTime, now);
 
         if (tracker.lastAnnounceSucceeded) {
             gstr << fmt::format(
@@ -1490,7 +1492,7 @@ void appendAnnounceInfo(tr_tracker_view const& tracker, time_t const now, Gtk::T
         gstr << dir_mark;
         gstr << fmt::format(
             fmt::runtime(_("Asking for more peers {time_span_from_now}")),
-            fmt::arg("time_span_from_now", tr_format_time_relative(now, tracker.nextAnnounceTime)));
+            fmt::arg("time_span_from_now", tr::app::format_time_relative(tracker.nextAnnounceTime, now)));
         break;
 
     case TR_TRACKER_QUEUED:
@@ -1506,7 +1508,7 @@ void appendAnnounceInfo(tr_tracker_view const& tracker, time_t const now, Gtk::T
             // {markup_begin} and {markup_end} should surround time_span_ago
             fmt::runtime(_("Asked for more peers {markup_begin}{time_span_ago}{markup_end}")),
             fmt::arg("markup_begin", "<small>"),
-            fmt::arg("time_span_ago", tr_format_time_relative(now, tracker.lastAnnounceStartTime)),
+            fmt::arg("time_span_ago", tr::app::format_time_relative(tracker.lastAnnounceStartTime, now)),
             fmt::arg("markup_end", "</small>"));
         break;
 
@@ -1522,7 +1524,7 @@ void appendScrapeInfo(tr_tracker_view const& tracker, time_t const now, Gtk::Tex
     if (tracker.hasScraped) {
         gstr << '\n';
         gstr << dir_mark;
-        auto const time_span_ago = tr_format_time_relative(now, tracker.lastScrapeTime);
+        auto const time_span_ago = tr::app::format_time_relative(tracker.lastScrapeTime, now);
 
         if (tracker.lastScrapeSucceeded) {
             gstr << fmt::format(
@@ -1556,7 +1558,7 @@ void appendScrapeInfo(tr_tracker_view const& tracker, time_t const now, Gtk::Tex
         gstr << dir_mark;
         gstr << fmt::format(
             fmt::runtime(_("Asking for peer counts {time_span_from_now}")),
-            fmt::arg("time_span_from_now", tr_format_time_relative(now, tracker.nextScrapeTime)));
+            fmt::arg("time_span_from_now", tr::app::format_time_relative(tracker.nextScrapeTime, now)));
         break;
 
     case TR_TRACKER_QUEUED:
@@ -1571,7 +1573,7 @@ void appendScrapeInfo(tr_tracker_view const& tracker, time_t const now, Gtk::Tex
         gstr << fmt::format(
             fmt::runtime(_("Asked for peer counts {markup_begin}{time_span_ago}{markup_end}")),
             fmt::arg("markup_begin", "<small>"),
-            fmt::arg("time_span_ago", tr_format_time_relative(now, tracker.lastScrapeStartTime)),
+            fmt::arg("time_span_ago", tr::app::format_time_relative(tracker.lastScrapeStartTime, now)),
             fmt::arg("markup_end", "</small>"));
         break;
 

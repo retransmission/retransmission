@@ -51,6 +51,7 @@ gtk/ui/gtk4/RelocateDialog.ui
 gtk/ui/gtk4/StatsDialog.ui
 gtk/ui/gtk4/TorrentUrlChooserDialog.ui
 gtk/Utils.cc
+libtransmission-app/formatters.cc
 libtransmission/announcer.cc
 libtransmission/announcer-http.cc
 libtransmission/announcer-udp.cc
