@@ -20,7 +20,7 @@
    <item>
     <widget class="QGroupBox" name="setLocationSection">
      <property name="title">
-      <string>Set Location</string>
+      <string>Location</string>
      </property>
      <layout class="QGridLayout" name="setLocationSectionLayout" columnstretch="0,1">
       <item row="0" column="0">

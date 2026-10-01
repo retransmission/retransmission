@@ -253,6 +253,9 @@ void PrefsDialog::initSpeedTab()
     ui_.altUploadSpeedLimitSpin->setSuffix(suffix);
     ui_.altDownloadSpeedLimitSpin->setSuffix(suffix);
 
+    auto* const alt_description = ui_.altSpeedLimitsSectionDescriptionLabel;
+    alt_description->setText(QStringLiteral("<small>%1</small>").arg(alt_description->text()));
+
     initWidget(ui_.uploadSpeedLimitCheck, TR_KEY_speed_limit_up_enabled);
     initWidget(ui_.uploadSpeedLimitSpin, TR_KEY_speed_limit_up);
     initWidget(ui_.downloadSpeedLimitCheck, TR_KEY_speed_limit_down_enabled);
@@ -423,7 +426,7 @@ void PrefsDialog::onBlocklistUpdateFailed(QString const& message)
     // SECURITY: `message` originates from the session -- a remote daemon can be hostile --
     // and this dialog renders RichText, so toHtmlEscaped() is load-bearing: it stops a
     // malicious daemon from injecting markup here. Don't drop it.
-    auto const detail = message.isEmpty() ? tr("The blocklist could not be updated.") : message.toHtmlEscaped();
+    auto const detail = message.isEmpty() ? tr("Couldn't update blocklist") : message.toHtmlEscaped();
     blocklist_dialog_->setText(QStringLiteral("<b>%1</b><p>%2</p>").arg(tr("Download of the blocklist failed."), detail));
     blocklist_dialog_->setTextFormat(Qt::RichText);
 }
@@ -507,7 +510,7 @@ void PrefsDialog::initDownloadingTab()
     ui_.doneSeedingScriptButton->setMode(PathButton::FileMode);
 
     ui_.watchDirButton->setTitle(tr("Select Watch Directory"));
-    ui_.downloadDirButton->setTitle(tr("Select Destination"));
+    ui_.downloadDirButton->setTitle(tr("Select Destination Folder"));
     ui_.incompleteDirButton->setTitle(tr("Select Incomplete Directory"));
     ui_.doneDownloadingScriptButton->setTitle(tr("Select \"Torrent Done Downloading\" Script"));
 

@@ -916,7 +916,7 @@ FileList::Impl::Impl(
     {
         /* add "progress" column */
         auto* rend = Gtk::make_managed<Gtk::CellRendererProgress>();
-        auto* col = Gtk::make_managed<Gtk::TreeViewColumn>(_("Have"), *rend);
+        auto* col = Gtk::make_managed<Gtk::TreeViewColumn>(_("Progress"), *rend);
         col->add_attribute(rend->property_text(), file_cols.prog_str);
         col->add_attribute(rend->property_value(), file_cols.prog);
         col->set_sizing(TR_GTK_TREE_VIEW_COLUMN_SIZING(FIXED));

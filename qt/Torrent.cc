@@ -291,7 +291,7 @@ QString Torrent::activityString() const
 {
     switch (getActivity()) {
     case TR_STATUS_STOPPED:
-        return isFinished() ? tr("Finished") : tr("Paused");
+        return isFinished() ? tr("Seeding complete") : tr("Paused");
 
     case TR_STATUS_CHECK_WAIT:
         return tr("Queued for verification");

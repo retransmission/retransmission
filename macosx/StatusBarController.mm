@@ -101,10 +101,8 @@ typedef NS_ENUM(NSUInteger, StatusTag) {
 
         auto const stats = total ? tr_sessionGetCumulativeStats(self.fLib) : tr_sessionGetStats(self.fLib);
 
-        statusString = [NSString stringWithFormat:@"%@: %@  %@: %@",
-                                                  NSLocalizedString(@"DL", "status bar -> status label"),
+        statusString = [NSString stringWithFormat:NSLocalizedString(@"Down: %@, Up: %@", "status bar -> status label"),
                                                   [NSString stringForFileSize:stats.downloadedBytes],
-                                                  NSLocalizedString(@"UL", "status bar -> status label"),
                                                   [NSString stringForFileSize:stats.uploadedBytes]];
     }
 
@@ -146,7 +144,7 @@ typedef NS_ENUM(NSUInteger, StatusTag) {
     if ([NSUserDefaults.standardUserDefaults boolForKey:@"SpeedLimit"]) {
         NSString* speedString = [NSString stringWithFormat:@"%@ (%@)",
                                                            NSLocalizedString(@"%ld KB/s", "Status Bar -> speed tooltip"),
-                                                           NSLocalizedString(@"Speed Limit", "Status Bar -> speed tooltip")];
+                                                           NSLocalizedString(@"Alternative Speed Limits", "Status Bar -> speed tooltip")];
 
         uploadText = [NSString stringWithFormat:speedString, [NSUserDefaults.standardUserDefaults integerForKey:@"SpeedLimitUploadLimit"]];
         downloadText = [NSString stringWithFormat:speedString, [NSUserDefaults.standardUserDefaults integerForKey:@"SpeedLimitDownloadLimit"]];

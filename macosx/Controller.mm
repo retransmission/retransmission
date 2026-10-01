@@ -696,11 +696,11 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
     }
 
     self.fSpeedLimitButton.toolTip = NSLocalizedString(
-        @"Speed Limit overrides the total bandwidth limits with its own limits.",
+        @"Override normal speed limits manually or at scheduled times",
         "Main window -> 2nd bottom left button (turtle) tooltip");
 
     self.fClearCompletedButton.toolTip = NSLocalizedString(
-        @"Remove all transfers that have completed seeding.",
+        @"Remove all torrents that have completed seeding.",
         "Main window -> 3rd bottom left button (remove all) tooltip");
 
     [self.fTableView registerForDraggedTypes:@[ kTorrentTableViewDataType ]];
@@ -997,12 +997,12 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
     alert.messageText = NSLocalizedString(@"Are you sure you want to quit?", "Confirm Quit panel -> title");
     alert.informativeText = active == 1 ?
         NSLocalizedString(
-            @"There is an active transfer that will be paused on quit."
-             " The transfer will automatically resume on the next launch.",
+            @"There is an active torrent that will be paused on quit."
+             " The torrent will start again automatically on the next launch.",
             "Confirm Quit panel -> message") :
         [NSString localizedStringWithFormat:NSLocalizedString(
-                                                @"There are %lu active transfers that will be paused on quit."
-                                                 " The transfers will automatically resume on the next launch.",
+                                                @"There are %lu active torrents that will be paused on quit."
+                                                 " The torrents will start again automatically on the next launch.",
                                                 "Confirm Quit panel -> message"),
                                             active];
     [alert addButtonWithTitle:NSLocalizedString(@"Quit", "Confirm Quit panel -> button")];
@@ -1462,10 +1462,10 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
     }
 
     NSAlert* alert = [[NSAlert alloc] init];
-    alert.messageText = NSLocalizedString(@"Adding magnetized transfer failed.", "Magnet link failed -> title");
+    alert.messageText = NSLocalizedString(@"Adding magnetized torrent failed.", "Magnet link failed -> title");
     alert.informativeText = [NSString stringWithFormat:NSLocalizedString(
                                                            @"There was an error when adding the magnet link \"%@\"."
-                                                            " The transfer will not occur.",
+                                                            " The torrent will not be added.",
                                                            "Magnet link failed -> message"),
                                                        address];
     alert.alertStyle = NSAlertStyleWarning;
@@ -1485,9 +1485,9 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
 
     NSAlert* alert = [[NSAlert alloc] init];
     alert.messageText = [NSString
-        stringWithFormat:NSLocalizedString(@"A transfer of \"%@\" already exists.", "Open duplicate alert -> title"), name];
+        stringWithFormat:NSLocalizedString(@"A torrent for \"%@\" already exists.", "Open duplicate alert -> title"), name];
     alert.informativeText = NSLocalizedString(
-        @"The transfer cannot be added because it is a duplicate of an already existing transfer.",
+        @"The torrent cannot be added because it is a duplicate of an already existing torrent.",
         "Open duplicate alert -> message");
 
     alert.alertStyle = NSAlertStyleWarning;
@@ -1509,13 +1509,13 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
     NSAlert* alert = [[NSAlert alloc] init];
     if (name) {
         alert.messageText = [NSString
-            stringWithFormat:NSLocalizedString(@"A transfer of \"%@\" already exists.", "Open duplicate magnet alert -> title"), name];
+            stringWithFormat:NSLocalizedString(@"A torrent for \"%@\" already exists.", "Open duplicate magnet alert -> title"), name];
     } else {
-        alert.messageText = NSLocalizedString(@"Magnet link is a duplicate of an existing transfer.", "Open duplicate magnet alert -> title");
+        alert.messageText = NSLocalizedString(@"Magnet link is a duplicate of an existing torrent.", "Open duplicate magnet alert -> title");
     }
     alert.informativeText = [NSString
         stringWithFormat:NSLocalizedString(
-                             @"The magnet link  \"%@\" cannot be added because it is a duplicate of an already existing transfer.",
+                             @"The magnet link \"%@\" cannot be added because it is a duplicate of an already existing torrent.",
                              "Open duplicate magnet alert -> message"),
                          address];
     alert.alertStyle = NSAlertStyleWarning;
@@ -1736,45 +1736,45 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
 
                 if (deleteData) {
                     title = [NSString stringWithFormat:NSLocalizedString(
-                                                           @"Are you sure you want to remove \"%@\" from the transfer list"
+                                                           @"Are you sure you want to remove \"%@\" from the torrent list"
                                                             " and trash the data file?",
                                                            "Removal confirm panel -> title"),
                                                        torrentName];
                 } else {
                     title = [NSString
-                        stringWithFormat:NSLocalizedString(@"Are you sure you want to remove \"%@\" from the transfer list?", "Removal confirm panel -> title"),
+                        stringWithFormat:NSLocalizedString(@"Are you sure you want to remove \"%@\" from the torrent list?", "Removal confirm panel -> title"),
                                          torrentName];
                 }
 
                 message = NSLocalizedString(
-                    @"This transfer is active."
-                     " Once removed, continuing the transfer will require the torrent file or magnet link.",
+                    @"This torrent is active."
+                     " Once removed, you'll need the torrent file or magnet link to add it again.",
                     "Removal confirm panel -> message");
             } else {
                 if (deleteData) {
                     title = [NSString localizedStringWithFormat:NSLocalizedString(
-                                                                    @"Are you sure you want to remove %lu transfers from the transfer list"
+                                                                    @"Are you sure you want to remove %lu torrents from the torrent list"
                                                                      " and trash the data files?",
                                                                     "Removal confirm panel -> title"),
                                                                 selected];
                 } else {
                     title = [NSString localizedStringWithFormat:NSLocalizedString(
-                                                                    @"Are you sure you want to remove %lu transfers from the transfer list?",
+                                                                    @"Are you sure you want to remove %lu torrents from the torrent list?",
                                                                     "Removal confirm panel -> title"),
                                                                 selected];
                 }
 
                 if (selected == active) {
-                    message = [NSString localizedStringWithFormat:NSLocalizedString(@"There are %lu active transfers.", "Removal confirm panel -> message part 1"),
+                    message = [NSString localizedStringWithFormat:NSLocalizedString(@"There are %lu active torrents.", "Removal confirm panel -> message part 1"),
                                                                   active];
                 } else {
-                    message = [NSString localizedStringWithFormat:NSLocalizedString(@"There are %1$lu transfers (%2$lu active).", "Removal confirm panel -> message part 1"),
+                    message = [NSString localizedStringWithFormat:NSLocalizedString(@"There are %1$lu torrents (%2$lu active).", "Removal confirm panel -> message part 1"),
                                                                   selected,
                                                                   active];
                 }
                 message = [message stringByAppendingFormat:@" %@",
                                                            NSLocalizedString(
-                                                               @"Once removed, continuing the transfers will require the torrent files or magnet links.",
+                                                               @"Once removed, you'll need the torrent files or magnet links to add them again.",
                                                                "Removal confirm panel -> message part 2")];
             }
 
@@ -1918,22 +1918,17 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
         NSString *message, *info;
         if (torrents.count == 1) {
             NSString* torrentName = torrents[0].name;
-            message = [NSString
-                stringWithFormat:NSLocalizedString(@"Are you sure you want to remove \"%@\" from the transfer list?", "Remove completed confirm panel -> title"),
-                                 torrentName];
+            message = [NSString stringWithFormat:NSLocalizedString(@"Are you sure you want to remove \"%@\" from the torrent list?", "Remove completed confirm panel -> title"),
+                                                 torrentName];
 
-            info = NSLocalizedString(
-                @"Once removed, continuing the transfer will require the torrent file or magnet link.",
-                "Remove completed confirm panel -> message");
+            info = NSLocalizedString(@"Once removed, you'll need the torrent file or magnet link to add it again.", "Remove completed confirm panel -> message");
         } else {
             message = [NSString localizedStringWithFormat:NSLocalizedString(
-                                                              @"Are you sure you want to remove %lu completed transfers from the transfer list?",
+                                                              @"Are you sure you want to remove %lu completed torrents from the torrent list?",
                                                               "Remove completed confirm panel -> title"),
                                                           torrents.count];
 
-            info = NSLocalizedString(
-                @"Once removed, continuing the transfers will require the torrent files or magnet links.",
-                "Remove completed confirm panel -> message");
+            info = NSLocalizedString(@"Once removed, you'll need the torrent files or magnet links to add them again.", "Remove completed confirm panel -> message");
         }
 
         NSAlert* alert = [[NSAlert alloc] init];
@@ -2236,9 +2231,9 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
     NSString* totalTorrentsString;
     NSUInteger totalCount = self.fTorrents.count;
     if (totalCount != 1) {
-        totalTorrentsString = [NSString localizedStringWithFormat:NSLocalizedString(@"%lu transfers", "Status bar transfer count"), totalCount];
+        totalTorrentsString = [NSString localizedStringWithFormat:NSLocalizedString(@"%lu torrents", "Status bar transfer count"), totalCount];
     } else {
-        totalTorrentsString = NSLocalizedString(@"1 transfer", "Status bar transfer count");
+        totalTorrentsString = NSLocalizedString(@"1 torrent", "Status bar transfer count");
     }
 
     if (filtering) {
@@ -3180,9 +3175,9 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
     [self.fStatusBar updateSpeedFieldsToolTips];
 
     if (![dict[@"ByUser"] boolValue]) {
-        NSString* title = isLimited ? NSLocalizedString(@"Speed Limit Auto Enabled", "notification title") :
-                                      NSLocalizedString(@"Speed Limit Auto Disabled", "notification title");
-        NSString* body = NSLocalizedString(@"Bandwidth settings changed", "notification description");
+        NSString* title = isLimited ? NSLocalizedString(@"Alternative Speed Limits Enabled", "notification title") :
+                                      NSLocalizedString(@"Alternative Speed Limits Disabled", "notification title");
+        NSString* body = NSLocalizedString(@"Changed at a scheduled time", "notification description");
 
         NSString* identifier = @"Bandwidth settings changed";
         UNMutableNotificationContent* content = [UNMutableNotificationContent new];
@@ -3278,7 +3273,7 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
 
         [self openFiles:@[ fullFile ] addType:AddTypeAuto forcePath:nil];
 
-        NSString* notificationTitle = NSLocalizedString(@"Torrent File Auto Added", "notification title");
+        NSString* notificationTitle = NSLocalizedString(@"Torrent Added", "notification title");
 
         NSString* identifier = [@"Torrent File Auto Added " stringByAppendingString:file];
         UNMutableNotificationContent* content = [UNMutableNotificationContent new];
@@ -3791,7 +3786,7 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
 
         item.label = NSLocalizedString(@"Create", "Create toolbar item -> label");
         item.paletteLabel = NSLocalizedString(@"Create Torrent File", "Create toolbar item -> palette label");
-        item.toolTip = NSLocalizedString(@"Create torrent file", "Create toolbar item -> tooltip");
+        item.toolTip = NSLocalizedString(@"Create a new torrent", "Create toolbar item -> tooltip");
         item.image = [NSImage imageWithSystemSymbolName:@"doc.badge.plus" accessibilityDescription:nil];
         item.target = self;
         item.action = @selector(createFile:);
@@ -3803,7 +3798,7 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
 
         item.label = NSLocalizedString(@"Open", "Open toolbar item -> label");
         item.paletteLabel = NSLocalizedString(@"Open Torrent Files", "Open toolbar item -> palette label");
-        item.toolTip = NSLocalizedString(@"Open torrent files", "Open toolbar item -> tooltip");
+        item.toolTip = NSLocalizedString(@"Open a torrent", "Open toolbar item -> tooltip");
         item.image = [NSImage imageWithSystemSymbolName:@"folder" accessibilityDescription:nil];
         item.target = self;
         item.action = @selector(openShowSheet:);
@@ -3813,9 +3808,9 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
     } else if ([ident isEqualToString:ToolbarItemIdentifierOpenWeb]) {
         ButtonToolbarItem* item = [self standardToolbarButtonWithIdentifier:ident];
 
-        item.label = NSLocalizedString(@"Open Address", "Open address toolbar item -> label");
-        item.paletteLabel = NSLocalizedString(@"Open Torrent Address", "Open address toolbar item -> palette label");
-        item.toolTip = NSLocalizedString(@"Open torrent web address", "Open address toolbar item -> tooltip");
+        item.label = NSLocalizedString(@"Open URL", "Open address toolbar item -> label");
+        item.paletteLabel = NSLocalizedString(@"Open URL", "Open address toolbar item -> palette label");
+        item.toolTip = NSLocalizedString(@"Open torrent from URL", "Open address toolbar item -> tooltip");
         item.image = [NSImage imageWithSystemSymbolName:@"globe" accessibilityDescription:nil];
         item.target = self;
         item.action = @selector(openURLShowSheet:);
@@ -3827,7 +3822,7 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
 
         item.label = NSLocalizedString(@"Remove", "Remove toolbar item -> label");
         item.paletteLabel = NSLocalizedString(@"Remove Selected", "Remove toolbar item -> palette label");
-        item.toolTip = NSLocalizedString(@"Remove selected transfers", "Remove toolbar item -> tooltip");
+        item.toolTip = NSLocalizedString(@"Remove torrent", "Remove toolbar item -> tooltip");
         item.image = [NSImage imageWithSystemSymbolName:@"nosign" accessibilityDescription:nil];
         item.target = self;
         item.action = @selector(removeNoDelete:);
@@ -3839,7 +3834,7 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
         ((NSButtonCell*)((NSButton*)item.view).cell).showsStateBy = NSContentsCellMask; //blue when enabled
 
         item.label = NSLocalizedString(@"Inspector", "Inspector toolbar item -> label");
-        item.paletteLabel = NSLocalizedString(@"Toggle Inspector", "Inspector toolbar item -> palette label");
+        item.paletteLabel = NSLocalizedString(@"Inspector", "Inspector toolbar item -> palette label");
         item.toolTip = NSLocalizedString(@"Toggle the torrent inspector", "Inspector toolbar item -> tooltip");
         item.image = [NSImage imageWithSystemSymbolName:@"info.circle" accessibilityDescription:nil];
         item.target = self;
@@ -3860,13 +3855,13 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
         [segmentedControl setTag:ToolbarGroupTagPause forSegment:ToolbarGroupTagPause];
         [segmentedControl setImage:[NSImage imageWithSystemSymbolName:@"pause.circle.fill" accessibilityDescription:nil]
                         forSegment:ToolbarGroupTagPause];
-        [segmentedControl setToolTip:NSLocalizedString(@"Pause all transfers", "All toolbar item -> tooltip")
+        [segmentedControl setToolTip:NSLocalizedString(@"Pause all torrents", "All toolbar item -> tooltip")
                           forSegment:ToolbarGroupTagPause];
 
         [segmentedControl setTag:ToolbarGroupTagResume forSegment:ToolbarGroupTagResume];
         [segmentedControl setImage:[NSImage imageWithSystemSymbolName:@"arrow.clockwise.circle.fill" accessibilityDescription:nil]
                         forSegment:ToolbarGroupTagResume];
-        [segmentedControl setToolTip:NSLocalizedString(@"Resume all transfers", "All toolbar item -> tooltip")
+        [segmentedControl setToolTip:NSLocalizedString(@"Start all torrents", "All toolbar item -> tooltip")
                           forSegment:ToolbarGroupTagResume];
         if ([toolbar isKindOfClass:Toolbar.class] && ((Toolbar*)toolbar).isRunningCustomizationPalette) {
             // On macOS 13.2, the palette autolayout will hang unless the segmentedControl width is longer than the groupItem paletteLabel (matters especially in Russian and French).
@@ -3875,7 +3870,7 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
         }
 
         groupItem.label = NSLocalizedString(@"Apply All", "All toolbar item -> label");
-        groupItem.paletteLabel = NSLocalizedString(@"Pause / Resume All", "All toolbar item -> palette label");
+        groupItem.paletteLabel = NSLocalizedString(@"Pause / Start All", "All toolbar item -> palette label");
         groupItem.visibilityPriority = NSToolbarItemVisibilityPriorityHigh;
         groupItem.subitems = @[ itemPause, itemResume ];
         groupItem.view = segmentedControl;
@@ -3884,7 +3879,7 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
 
         [groupItem createMenu:@[
             NSLocalizedString(@"Pause All", "All toolbar item -> label"),
-            NSLocalizedString(@"Resume All", "All toolbar item -> label")
+            NSLocalizedString(@"Start All", "All toolbar item -> label")
         ]];
 
         return groupItem;
@@ -3902,13 +3897,13 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
         [segmentedControl setTag:ToolbarGroupTagPause forSegment:ToolbarGroupTagPause];
         [segmentedControl setImage:[NSImage imageWithSystemSymbolName:@"pause" accessibilityDescription:nil]
                         forSegment:ToolbarGroupTagPause];
-        [segmentedControl setToolTip:NSLocalizedString(@"Pause selected transfers", "Selected toolbar item -> tooltip")
+        [segmentedControl setToolTip:NSLocalizedString(@"Pause torrent", "Selected toolbar item -> tooltip")
                           forSegment:ToolbarGroupTagPause];
 
         [segmentedControl setTag:ToolbarGroupTagResume forSegment:ToolbarGroupTagResume];
         [segmentedControl setImage:[NSImage imageWithSystemSymbolName:@"arrow.clockwise" accessibilityDescription:nil]
                         forSegment:ToolbarGroupTagResume];
-        [segmentedControl setToolTip:NSLocalizedString(@"Resume selected transfers", "Selected toolbar item -> tooltip")
+        [segmentedControl setToolTip:NSLocalizedString(@"Start torrent", "Selected toolbar item -> tooltip")
                           forSegment:ToolbarGroupTagResume];
         if ([toolbar isKindOfClass:Toolbar.class] && ((Toolbar*)toolbar).isRunningCustomizationPalette) {
             // On macOS 13.2, the palette autolayout will hang unless the segmentedControl width is longer than the groupItem paletteLabel (matters especially in Russian and French).
@@ -3917,7 +3912,7 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
         }
 
         groupItem.label = NSLocalizedString(@"Apply Selected", "Selected toolbar item -> label");
-        groupItem.paletteLabel = NSLocalizedString(@"Pause / Resume Selected", "Selected toolbar item -> palette label");
+        groupItem.paletteLabel = NSLocalizedString(@"Pause / Start Selected", "Selected toolbar item -> palette label");
         groupItem.visibilityPriority = NSToolbarItemVisibilityPriorityHigh;
         groupItem.subitems = @[ itemPause, itemResume ];
         groupItem.view = segmentedControl;
@@ -3925,8 +3920,8 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
         groupItem.action = @selector(selectedToolbarClicked:);
 
         [groupItem createMenu:@[
-            NSLocalizedString(@"Pause Selected", "Selected toolbar item -> label"),
-            NSLocalizedString(@"Resume Selected", "Selected toolbar item -> label")
+            NSLocalizedString(@"Pause", "Selected toolbar item -> label"),
+            NSLocalizedString(@"Start", "Selected toolbar item -> label")
         ]];
 
         return groupItem;
@@ -4523,9 +4518,10 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
     }
 
     [menu addItemWithTitle:NSLocalizedString(@"Pause All", "Dock item") action:@selector(stopAllTorrents:) keyEquivalent:@""];
-    [menu addItemWithTitle:NSLocalizedString(@"Resume All", "Dock item") action:@selector(resumeAllTorrents:) keyEquivalent:@""];
+    [menu addItemWithTitle:NSLocalizedString(@"Start All", "Dock item") action:@selector(resumeAllTorrents:) keyEquivalent:@""];
     [menu addItem:[NSMenuItem separatorItem]];
-    [menu addItemWithTitle:NSLocalizedString(@"Speed Limit", "Dock item") action:@selector(toggleSpeedLimit:) keyEquivalent:@""];
+    [menu addItemWithTitle:NSLocalizedString(@"Alternative Speed Limits", "Dock item") action:@selector(toggleSpeedLimit:)
+             keyEquivalent:@""];
 
     return menu;
 }

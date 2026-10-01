@@ -568,7 +568,7 @@ void MainWindow::Impl::onOptionsClicked()
     update_menu(
         ratio_menu_info_,
         fmt::format(
-            fmt::runtime(_("Stop at Seed Ratio ({ratio})")),
+            fmt::runtime(_("Stop at Ratio ({ratio})")),
             fmt::arg("ratio", tr_strlratio(gtr_pref_double_get(TR_KEY_seed_ratio_limit)))),
         TR_KEY_seed_ratio_limited);
 }

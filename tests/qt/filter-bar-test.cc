@@ -36,7 +36,7 @@ class FilterBarTest : public QObject
         { "Seeding", ShowMode::ShowSeeding },
         { "Downloading", ShowMode::ShowDownloading },
         { "Paused", ShowMode::ShowPaused },
-        { "Finished", ShowMode::ShowFinished },
+        { "Seeding complete", ShowMode::ShowFinished },
         { "Verifying", ShowMode::ShowVerifying },
         { "Error", ShowMode::ShowError },
     } };

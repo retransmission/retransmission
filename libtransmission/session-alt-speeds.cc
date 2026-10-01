@@ -51,7 +51,7 @@ void tr_session_alt_speeds::check_scheduler()
 
     if (auto const active = is_active_minute(mediator_.time());
         !scheduler_set_is_active_to_ || scheduler_set_is_active_to_ != active) {
-        tr_logAddInfo(active ? _("Time to turn on turtle mode") : _("Time to turn off turtle mode"));
+        tr_logAddInfo(active ? _("Time to turn on alternative speed limits") : _("Time to turn off alternative speed limits"));
         scheduler_set_is_active_to_ = active;
         set_active(active, ChangeReason::Scheduler);
     }

@@ -57,8 +57,8 @@ void gtr_confirm_remove(
     Glib::ustring secondary_text;
     if (incomplete == 0 && connected == 0) {
         secondary_text = ngettext(
-            "Once removed, continuing the transfer will require the torrent file or magnet link.",
-            "Once removed, continuing the transfers will require the torrent files or magnet links.",
+            "Once removed, you'll need the torrent file or magnet link to add it again.",
+            "Once removed, you'll need the torrent files or magnet links to add them again.",
             count);
     } else if (count == incomplete) {
         secondary_text = ngettext(
