@@ -499,7 +499,8 @@ DesktopPage::DesktopPage(
     init_check_button("inhibit_hibernation_check", TR_KEY_inhibit_desktop_hibernation);
 
     if (SystemTrayIcon::is_available()) {
-        init_check_button("show_systray_icon_check", TR_KEY_show_notification_area_icon);
+        auto* const check = init_check_button("show_systray_icon_check", TR_KEY_show_notification_area_icon);
+        check->set_label(gtr_with_app_name(check->get_label()));
     } else {
         get_widget<Gtk::CheckButton>("show_systray_icon_check")->hide();
     }
@@ -1056,6 +1057,7 @@ PrefsDialog::PrefsDialog(
     : Gtk::Dialog(cast_item)
     , impl_(std::make_unique<Impl>(*this, builder, core))
 {
+    set_title(gtr_with_app_name(get_title()));
     set_transient_for(parent);
 }
 

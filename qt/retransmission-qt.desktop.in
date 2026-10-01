@@ -1,5 +1,5 @@
 [Desktop Entry]
-Name=Transmission (Qt)
+Name=Retransmission (Qt)
 GenericName=BitTorrent Client
 Comment=Download and share files over BitTorrent
 # Translators: Search terms to find this application. Do NOT translate or localize the semicolons! The list MUST also end with a semicolon!
@@ -14,6 +14,6 @@ X-AppInstall-Keywords=torrent
 Actions=Minimize;
 
 [Desktop Action Minimize]
-Name=Start Transmission Minimized
+Name=Start Retransmission Minimized
 Exec=@TR_NAME@-qt --minimized
 

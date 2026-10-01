@@ -1,5 +1,5 @@
 [Desktop Entry]
-Name=Transmission
+Name=Retransmission
 GenericName=BitTorrent Client
 Comment=Download and share files over BitTorrent
 # Translators: Search terms to find this application. Do NOT translate or localize the semicolons! The list MUST also end with a semicolon!
@@ -19,9 +19,9 @@ X-AppInstall-Keywords=torrent
 Actions=Pause;Minimize;
 
 [Desktop Action Pause]
-Name=Start Transmission with All Torrents Paused
+Name=Start Retransmission with All Torrents Paused
 Exec=@TR_GTK_EXECUTABLE_NAME@ --paused
 
 [Desktop Action Minimize]
-Name=Start Transmission Minimized
+Name=Start Retransmission Minimized
 Exec=@TR_GTK_EXECUTABLE_NAME@ --minimized

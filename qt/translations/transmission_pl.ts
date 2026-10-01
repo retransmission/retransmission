@@ -5,13 +5,13 @@
     <name>AboutDialog</name>
     <message>
         <location filename="../AboutDialog.ui" line="+14"/>
-        <source>About Transmission</source>
+        <source>About {appname}</source>
         <translation>O&#xa0;programie</translation>
     </message>
     <message>
         <location line="+39"/>
-        <source>Copyright © The Transmission Project</source>
-        <translation>Copyright © Projekt Transmission</translation>
+        <source>Copyright © The Retransmission Project</source>
+        <translation>Copyright © Projekt Retransmission</translation>
     </message>
     <message>
         <source>Copyright © The {appname} Project</source>
@@ -785,8 +785,8 @@
     <name>MainWindow</name>
     <message>
         <location filename="../MainWindow.ui" line="+14"/>
-        <source>Transmission</source>
-        <translation>Transmission</translation>
+        <source>Retransmission</source>
+        <translation>Retransmission</translation>
     </message>
     <message>
         <location line="+181"/>
@@ -1860,7 +1860,7 @@ Nowy podstawowy adres URL należy dodać po pustym wierszu.</translation>
     </message>
     <message>
         <location line="+6"/>
-        <source>Show Transmission icon in the &amp;notification area</source>
+        <source>Show {appname} icon in the &amp;notification area</source>
         <translation>Ikona programu w&#xa0;obszarze p&amp;owiadamiania</translation>
     </message>
     <message>
@@ -2143,7 +2143,7 @@ Nowy podstawowy adres URL należy dodać po pustym wierszu.</translation>
     </message>
     <message>
         <location line="-467"/>
-        <source>Transmission Preferences</source>
+        <source>{appname} Preferences</source>
         <translation>Preferencje</translation>
     </message>
     <message>
