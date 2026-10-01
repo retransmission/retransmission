@@ -631,10 +631,10 @@
 "Once removed, continuing the transfers will require the torrent files or magnet links." = "Kendu ondoren, transferentziekin jarraitu nahi bada torrent fitxategiak edo magnet estekak beharko dira.";
 
 /* Remove trackers alert -> message */
-"Once removed, Transmission will no longer attempt to contact it. This cannot be undone." = "Behin kenduta, Transmission-ek ez du berriz kontaktatuko. Ekintza honek ez du atzera bueltarik.";
+"Once removed, %@ will no longer attempt to contact it. This cannot be undone." = "Behin kenduta, %@-ek ez du berriz kontaktatuko. Ekintza honek ez du atzera bueltarik.";
 
 /* Remove trackers alert -> message */
-"Once removed, Transmission will no longer attempt to contact them. This cannot be undone." = "Behin kenduta, Transmission-ek ez ditu berriz kontaktatuko. Ekintza honek ez du atzera bueltarik.";
+"Once removed, %@ will no longer attempt to contact them. This cannot be undone." = "Behin kenduta, %@-ek ez ditu berriz kontaktatuko. Ekintza honek ez du atzera bueltarik.";
 
 /* File Outline -> Menu */
 "Only Check Selected" = "Soilik Egiaztatu Aukeratutakoak";
@@ -998,7 +998,7 @@
 "There are no tracker addresses." = "Ez dago aztarnari-helbiderik.";
 
 /* Transmission already running alert -> message */
-"There is already a copy of Transmission running. This copy cannot be opened until that instance is quit." = "Transmission-eko instantzia bat dagoeneko martxan dago. Instantzia hau ezin da ireki beste instantzia hori itxi arte.";
+"There is already a copy of %@ running. This copy cannot be opened until that instance is quit." = "%@-eko instantzia bat dagoeneko martxan dago. Instantzia hau ezin da ireki beste instantzia hori itxi arte.";
 
 /* Confirm Quit panel -> message */
 "There is an active transfer that will be paused on quit. The transfer will automatically resume on the next launch." = "Ixterakoan pausatuko den transferentzia bat aktibo dago. Transferentzia automatikoki martxan jarriko da berriz abiarazten denean.";
@@ -1093,13 +1093,13 @@
 "Transfers Not Active" = "Transferentzia Ez Aktiboak";
 
 /* Legal alert -> message */
-"Transmission is a file-sharing program. When you run a torrent, its data will be made available to others by means of upload. You and you alone are fully responsible for exercising proper judgement and abiding by your local laws." = "Transmission fitxategiak partekatzeko programa bat da. Torrent bat exekutatzen duzunean, bere datuak eskuragarri jarriko dira igorriak izan daitezen. Zu eta soilik zu zara arduraduna zure lekuko legeak betetzeko erabaki zentzudunak egiteko.";
+"%@ is a file-sharing program. When you run a torrent, its data will be made available to others by means of upload. You and you alone are fully responsible for exercising proper judgement and abiding by your local laws." = "%@ fitxategiak partekatzeko programa bat da. Torrent bat exekutatzen duzunean, bere datuak eskuragarri jarriko dira igorriak izan daitezen. Zu eta soilik zu zara arduraduna zure lekuko legeak betetzeko erabaki zentzudunak egiteko.";
 
 /* Donation beg -> message */
-"Transmission is a full-featured torrent application. A lot of time and effort have gone into development, coding, and refinement. If you enjoy using it, please consider showing your love with a donation." = "Transmission funtzio askoz hornitutako torrent aplikazio bat da. Garapenak, kodea idazteak eta hobekuntzak denbora eta esfortzu handia behar izan du. Transmission erabiltzea gustuko baduzu, zure maitasuna erakusteko donazio bat egitea hausnartu ezazu.";
+"%@ is a full-featured torrent application. A lot of time and effort have gone into development, coding, and refinement. If you enjoy using it, please consider showing your love with a donation." = "%1$@ funtzio askoz hornitutako torrent aplikazio bat da. Garapenak, kodea idazteak eta hobekuntzak denbora eta esfortzu handia behar izan du. %1$@ erabiltzea gustuko baduzu, zure maitasuna erakusteko donazio bat egitea hausnartu ezazu.";
 
 /* Transmission already running alert -> title */
-"Transmission is already running." = "Transmission dagoeneko martxan dago.";
+"%@ is already running." = "%@ dagoeneko martxan dago.";
 
 /* inspector -> peer table -> header
    status bar -> status label
@@ -1157,7 +1157,7 @@
 "Web Seeds" = "Web emaritzak";
 
 /* Legal alert -> title */
-"Welcome to Transmission" = "Ongi Etorri Transmission-era";
+"Welcome to %@" = "Ongi Etorri %@-era";
 
 /* Groups -> Name */
 "Yellow" = "Horia";

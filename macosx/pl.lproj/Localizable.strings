@@ -631,10 +631,10 @@
 "Once removed, continuing the transfers will require the torrent files or magnet links." = "Po usunięciu, wznowienie przesyłania będzie wymagało plików torrent lub odnośników magnet.";
 
 /* Remove trackers alert -> message */
-"Once removed, Transmission will no longer attempt to contact it. This cannot be undone." = "Po usunięciu, program Transmission nie będzie już się z nim kontaktował. Nie można tego cofnąć.";
+"Once removed, %@ will no longer attempt to contact it. This cannot be undone." = "Po usunięciu, program %@ nie będzie już się z nim kontaktował. Nie można tego cofnąć.";
 
 /* Remove trackers alert -> message */
-"Once removed, Transmission will no longer attempt to contact them. This cannot be undone." = "Po usunięciu, program Transmission nie będzie już się z nimi kontaktował. Nie można tego cofnąć.";
+"Once removed, %@ will no longer attempt to contact them. This cannot be undone." = "Po usunięciu, program %@ nie będzie już się z nimi kontaktował. Nie można tego cofnąć.";
 
 /* File Outline -> Menu */
 "Only Check Selected" = "Zaznacz tylko wybrane";
@@ -998,7 +998,7 @@
 "There are no tracker addresses." = "Nie ma żadnych adresów serwerów śledzących.";
 
 /* Transmission already running alert -> message */
-"There is already a copy of Transmission running. This copy cannot be opened until that instance is quit." = "Kopia programu Transmission jest już uruchomiona. Ta kopia nie może zostać otwarta, dopóki tamta nie zostanie zakończona.";
+"There is already a copy of %@ running. This copy cannot be opened until that instance is quit." = "Kopia programu %@ jest już uruchomiona. Ta kopia nie może zostać otwarta, dopóki tamta nie zostanie zakończona.";
 
 /* Confirm Quit panel -> message */
 "There is an active transfer that will be paused on quit. The transfer will automatically resume on the next launch." = "Istnieje aktywne przesyłanie, które zostanie wstrzymane podczas zakończenia działania programu. Zostanie ono automatycznie wznowione po następnym uruchomieniu.";
@@ -1093,13 +1093,13 @@
 "Transfers Not Active" = "Nieaktywne przesyłania";
 
 /* Legal alert -> message */
-"Transmission is a file-sharing program. When you run a torrent, its data will be made available to others by means of upload. You and you alone are fully responsible for exercising proper judgement and abiding by your local laws." = "Transmission jest programem do udostępniania plików. Kiedy uruchamiany jest torrent, jego dane stają się dostępne dla innych. Wyłącznie użytkownik jest odpowiedzialny za właściwe zachowanie i przestrzeganie lokalnego prawa.";
+"%@ is a file-sharing program. When you run a torrent, its data will be made available to others by means of upload. You and you alone are fully responsible for exercising proper judgement and abiding by your local laws." = "%@ jest programem do udostępniania plików. Kiedy uruchamiany jest torrent, jego dane stają się dostępne dla innych. Wyłącznie użytkownik jest odpowiedzialny za właściwe zachowanie i przestrzeganie lokalnego prawa.";
 
 /* Donation beg -> message */
-"Transmission is a full-featured torrent application. A lot of time and effort have gone into development, coding, and refinement. If you enjoy using it, please consider showing your love with a donation." = "Transmission to w pełni funkcjonalny program do obsługi torrentów. W jego rozwój, programowanie i ulepszanie włożono wiele czasu i wysiłku. Jeśli Ci się podoba, prosimy rozważyć wsparcie finansowe.";
+"%@ is a full-featured torrent application. A lot of time and effort have gone into development, coding, and refinement. If you enjoy using it, please consider showing your love with a donation." = "%@ to w pełni funkcjonalny program do obsługi torrentów. W jego rozwój, programowanie i ulepszanie włożono wiele czasu i wysiłku. Jeśli Ci się podoba, prosimy rozważyć wsparcie finansowe.";
 
 /* Transmission already running alert -> title */
-"Transmission is already running." = "Program Transmission jest już uruchomiony.";
+"%@ is already running." = "Program %@ jest już uruchomiony.";
 
 /* inspector -> peer table -> header
    status bar -> status label
@@ -1157,7 +1157,7 @@
 "Web Seeds" = "Wysyłający w sieci";
 
 /* Legal alert -> title */
-"Welcome to Transmission" = "Witaj w programie Transmission";
+"Welcome to %@" = "Witaj w programie %@";
 
 /* Groups -> Name */
 "Yellow" = "Żółty";

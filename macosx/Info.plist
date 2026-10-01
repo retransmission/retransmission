@@ -26,7 +26,7 @@
 	<key>CFBundleHelpBookFolder</key>
 	<string>TransmissionHelp</string>
 	<key>CFBundleHelpBookName</key>
-	<string>Transmission Help</string>
+	<string>Retransmission Help</string>
 	<key>CFBundleIdentifier</key>
 	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
 	<key>CFBundleInfoDictionaryVersion</key>
@@ -64,7 +64,7 @@
 	<key>NSAppleScriptEnabled</key>
 	<string>YES</string>
 	<key>NSHumanReadableCopyright</key>
-	<string>Copyright © 2005–2026 The Transmission Project</string>
+	<string>Copyright © 2005–2026 The Retransmission Project</string>
 	<key>NSMainNibFile</key>
 	<string>MainMenu</string>
 	<key>NSPrincipalClass</key>

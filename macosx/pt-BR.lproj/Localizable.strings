@@ -631,10 +631,10 @@
 "Once removed, continuing the transfers will require the torrent files or magnet links." = "Uma vez removidos, continuar a transferência exigirá os arquivos torrents ou links magnéticos.";
 
 /* Remove trackers alert -> message */
-"Once removed, Transmission will no longer attempt to contact it. This cannot be undone." = "Uma vez removido, o Transmission não tentará mais contatá-lo. Isto não pode ser desfeito.";
+"Once removed, %@ will no longer attempt to contact it. This cannot be undone." = "Uma vez removido, o %@ não tentará mais contatá-lo. Isto não pode ser desfeito.";
 
 /* Remove trackers alert -> message */
-"Once removed, Transmission will no longer attempt to contact them. This cannot be undone." = "Uma vez removido, o Transmission não tentará mais contatá-los. Isto não pode ser desfeito.";
+"Once removed, %@ will no longer attempt to contact them. This cannot be undone." = "Uma vez removido, o %@ não tentará mais contatá-los. Isto não pode ser desfeito.";
 
 /* File Outline -> Menu */
 "Only Check Selected" = "Verificar Apenas o Selecionado";
@@ -989,7 +989,7 @@
 "There are %1$lu transfers (%2$lu active)." = "Existem %1$lu transferências (%2$lu ativas).";
 
 /* Confirm Quit panel -> message */
-"There are %lu active transfers that will be paused on quit. The transfers will automatically resume on the next launch." = "Existem %lu transferências ativas que serão colocadas em pausa ao sair. As transferências serão retomadas automaticamente quando voltar a iniciar o Transmission";
+"There are %lu active transfers that will be paused on quit. The transfers will automatically resume on the next launch." = "Existem %lu transferências ativas que serão colocadas em pausa ao sair. As transferências serão retomadas automaticamente quando voltar a iniciar o Retransmission";
 
 /* Removal confirm panel -> message part 1 */
 "There are %lu active transfers." = "Existem %lu transferências ativas.";
@@ -998,7 +998,7 @@
 "There are no tracker addresses." = "Não há endereços dos rastreadores.";
 
 /* Transmission already running alert -> message */
-"There is already a copy of Transmission running. This copy cannot be opened until that instance is quit." = "Já existe uma instância do Transmission em execução. Uma nova instância não pode ser aberta, até que a anterior seja encerrada.";
+"There is already a copy of %@ running. This copy cannot be opened until that instance is quit." = "Já existe uma instância do %@ em execução. Uma nova instância não pode ser aberta, até que a anterior seja encerrada.";
 
 /* Confirm Quit panel -> message */
 "There is an active transfer that will be paused on quit. The transfer will automatically resume on the next launch." = "Há uma transferência ativa que será pausada ao sair. A transferência será automaticamente retomada na próxima reabertura do programa.";
@@ -1093,13 +1093,13 @@
 "Transfers Not Active" = "Transferências Não Ativas";
 
 /* Legal alert -> message */
-"Transmission is a file-sharing program. When you run a torrent, its data will be made available to others by means of upload. You and you alone are fully responsible for exercising proper judgement and abiding by your local laws." = "O Transmission é um programa de compartilhamento de arquivos. Ao ativar um torrent, você vai estar disponibilizando-o para os demais usuários da rede. Você é o responsável legal pelo conteúdo que compartilhar; respeite as leis locais.";
+"%@ is a file-sharing program. When you run a torrent, its data will be made available to others by means of upload. You and you alone are fully responsible for exercising proper judgement and abiding by your local laws." = "O %@ é um programa de compartilhamento de arquivos. Ao ativar um torrent, você vai estar disponibilizando-o para os demais usuários da rede. Você é o responsável legal pelo conteúdo que compartilhar; respeite as leis locais.";
 
 /* Donation beg -> message */
-"Transmission is a full-featured torrent application. A lot of time and effort have gone into development, coding, and refinement. If you enjoy using it, please consider showing your love with a donation." = "O Transmission é um aplicativo completo para torrent. Saiba que muito tempo e esforço foram investidos no desenvolvimento, codificação e refinamento. Se você gosta de usá-lo, considere fazer uma doação.";
+"%@ is a full-featured torrent application. A lot of time and effort have gone into development, coding, and refinement. If you enjoy using it, please consider showing your love with a donation." = "O %@ é um aplicativo completo para torrent. Saiba que muito tempo e esforço foram investidos no desenvolvimento, codificação e refinamento. Se você gosta de usá-lo, considere fazer uma doação.";
 
 /* Transmission already running alert -> title */
-"Transmission is already running." = "O Transmission já está em execução.";
+"%@ is already running." = "O %@ já está em execução.";
 
 /* inspector -> peer table -> header
    status bar -> status label
@@ -1157,7 +1157,7 @@
 "Web Seeds" = "Sementes da Web";
 
 /* Legal alert -> title */
-"Welcome to Transmission" = "Bem-vindo ao Transmission";
+"Welcome to %@" = "Bem-vindo ao %@";
 
 /* Groups -> Name */
 "Yellow" = "Amarelo";
