@@ -63,8 +63,8 @@ file(
     COPY "${SOURCE_ICONS_DIR}/transmission.ico"
     DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 
-set(WEBSRCDIR "${CMAKE_INSTALL_PREFIX}/share/transmission/public_html")
-set(TRQMSRCDIR "${CMAKE_INSTALL_PREFIX}/share/transmission/translations")
+set(WEBSRCDIR "${TR_DATA_INSTALL_FULL_DIR}/public_html")
+set(TRQMSRCDIR "${TR_DATA_INSTALL_FULL_DIR}/translations")
 set(QTQMSRCDIR "${TR_QT_DIR}/translations")
 
 configure_file(TransmissionConfig.wxi.in TransmissionConfig.wxi)
