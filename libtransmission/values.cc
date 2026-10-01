@@ -15,25 +15,37 @@
 
 #include <fmt/format.h>
 
+#include "libtransmission/utils.h" // _()
 #include "libtransmission/values.h"
-
-using namespace std::literals;
 
 namespace tr::Values
 {
 
-// default values; can be overridden by client apps
-Config::Units<MemoryUnits> Config::memory{ Config::Base::Kibi, "B"sv, "KiB"sv, "MiB"sv, "GiB"sv, "TiB"sv };
-Config::Units<SpeedUnits> Config::speed{ Config::Base::Kilo, "B/s"sv, "kB/s"sv, "MB/s"sv, "GB/s"sv, "TB/s"sv };
-Config::Units<StorageUnits> Config::storage{ Config::Base::Kilo, "B"sv, "kB"sv, "MB"sv, "GB"sv, "TB"sv };
+// Marks a unit name for xgettext. display_name() translates it.
+#define N_(msgid) msgid
+
+// Client apps can override these.
+Config::Units<MemoryUnits> Config::memory{ Config::Base::Kibi, N_("B"), N_("KiB"), N_("MiB"), N_("GiB"), N_("TiB") };
+Config::Units<SpeedUnits> Config::speed{ Config::Base::Kilo, N_("B/s"), N_("kB/s"), N_("MB/s"), N_("GB/s"), N_("TB/s") };
+Config::Units<StorageUnits> Config::storage{ Config::Base::Kilo, N_("B"), N_("kB"), N_("MB"), N_("GB"), N_("TB") };
+
+std::string_view Config::UnitsBase::display_name(size_t const units) const noexcept
+{
+    // An unused unit's name stays empty: gettext translates "" to its catalog's header.
+    if (units >= std::size(display_names_) || display_names_[units].front() == '\0') {
+        return {};
+    }
+
+    return _(std::data(display_names_[units]));
+}
 
 std::vector<std::string> Config::UnitsBase::display_names() const
 {
     auto names = std::vector<std::string>{};
     names.reserve(display_names_.size());
 
-    for (auto const& name : display_names_) {
-        names.emplace_back(std::data(name));
+    for (size_t idx = 0; idx < std::size(display_names_); ++idx) {
+        names.emplace_back(display_name(idx));
     }
 
     return names;
