@@ -8,13 +8,12 @@
 #import "NSStringAdditions.h"
 #import "PeerProgressIndicatorCell.h"
 #import "Torrent.h"
-#import "WebSeedTableView.h"
 #import "NSImageAdditions.h"
 
 static NSString* const kAnimationIdKey = @"animationId";
 static NSString* const kWebSeedAnimationId = @"webSeed";
 
-@interface InfoPeersViewController ()<CAAnimationDelegate>
+@interface InfoPeersViewController ()<CAAnimationDelegate, NSTableViewDataSource, NSTableViewDelegate, NSMenuItemValidation>
 
 @property(nonatomic, copy) NSArray<Torrent*>* fTorrents;
 
@@ -24,7 +23,7 @@ static NSString* const kWebSeedAnimationId = @"webSeed";
 @property(nonatomic) NSMutableArray<NSDictionary*>* fWebSeeds;
 
 @property(nonatomic) IBOutlet NSTableView* fPeerTable;
-@property(nonatomic) IBOutlet WebSeedTableView* fWebSeedTable;
+@property(nonatomic) IBOutlet NSTableView* fWebSeedTable;
 
 @property(nonatomic) IBOutlet NSTextField* fConnectedPeersField;
 
@@ -76,6 +75,8 @@ static NSString* const kWebSeedAnimationId = @"webSeed";
         @"Downloading From Web Seed",
         "inspector -> web seed table -> header tool tip");
 
+    self.fConnectedPeersField.placeholderString = NSLocalizedString(@"no peer info available", "Inspector -> Peers tab -> peers");
+
     //prepare for animating peer table and web seed table
     self.fViewTopMargin = self.fWebSeedTableTopConstraint.constant;
 
@@ -87,6 +88,25 @@ static NSString* const kWebSeedAnimationId = @"webSeed";
     self.fWebSeedTableTopConstraint.animations = @{ @"constant" : webSeedTableAnimation };
 
     [self setWebSeedTableHidden:YES animate:NO];
+
+    self.fPeerTable.target = self;
+    self.fPeerTable.action = @selector(tableViewDidClick:);
+}
+
+- (void)tableViewDidClick:(NSTableView*)sender
+{
+    auto row = sender.clickedRow;
+    auto column = sender.clickedColumn;
+
+    if ((row != -1) && (column == [sender columnWithIdentifier:@"Progress"])) {
+        [NSUserDefaults.standardUserDefaults setBool:![NSUserDefaults.standardUserDefaults boolForKey:@"DisplayPeerProgressBarNumber"]
+                                              forKey:@"DisplayPeerProgressBarNumber"];
+
+        NSRange rows = [sender rowsInRect:sender.visibleRect];
+        NSIndexSet* rowIndexes = [NSIndexSet indexSetWithIndexesInRange:rows];
+        NSIndexSet* columnIndexes = [NSIndexSet indexSetWithIndex:column];
+        [sender reloadDataForRowIndexes:rowIndexes columnIndexes:columnIndexes];
+    }
 }
 
 - (void)setInfoForTorrents:(NSArray<Torrent*>*)torrents
@@ -175,7 +195,6 @@ static NSString* const kWebSeedAnimationId = @"webSeed";
 
     [self.fWebSeeds sortUsingDescriptors:self.fWebSeedTable.sortDescriptors];
     [self.fWebSeedTable reloadData];
-    self.fWebSeedTable.webSeeds = self.fWebSeeds;
 
     if (anyActive) {
         NSString* connectedText;
@@ -549,6 +568,31 @@ static NSString* const kWebSeedAnimationId = @"webSeed";
     }
 
     return descriptors;
+}
+
+- (void)copy:(id)sender
+{
+    NSIndexSet* indexes = self.fWebSeedTable.selectedRowIndexes;
+    NSMutableArray* addresses = [NSMutableArray arrayWithCapacity:indexes.count];
+    [self.fWebSeeds enumerateObjectsAtIndexes:indexes options:0
+                                   usingBlock:^(NSDictionary* webSeed, NSUInteger /*idx*/, BOOL* /*stop*/) {
+                                       [addresses addObject:webSeed[@"Address"]];
+                                   }];
+    NSString* text = [addresses componentsJoinedByString:@"\n"];
+    NSPasteboard* pb = NSPasteboard.generalPasteboard;
+    [pb clearContents];
+    [pb writeObjects:@[ text ]];
+}
+
+- (BOOL)validateMenuItem:(NSMenuItem*)menuItem
+{
+    SEL const action = menuItem.action;
+    if (action == @selector(copy:)) {
+        auto tableView = self.fWebSeedTable;
+        return self.view.window.firstResponder == tableView && tableView.numberOfSelectedRows > 0;
+    }
+
+    return YES;
 }
 
 @end

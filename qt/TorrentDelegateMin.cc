@@ -204,7 +204,8 @@ void TorrentDelegateMin::drawTorrent(QPainter* painter, QStyleOptionViewItem con
 
     progress_bar_state |= QStyle::State_Small | QStyle::State_Horizontal;
 
-    QIcon::Mode const emblem_im = is_item_selected ? QIcon::Selected : QIcon::Normal;
+    // Native icons draw QIcon::Selected in the active HighlightedText, which inactive selections don't use.
+    QIcon::Mode const emblem_im = is_item_selected && is_item_active ? QIcon::Selected : QIcon::Normal;
     QIcon const emblem_icon = tor.hasError() ? warningEmblem() : QIcon{};
 
     // layout

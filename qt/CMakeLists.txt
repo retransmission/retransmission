@@ -46,8 +46,6 @@ target_sources(${TR_NAME}-qt-lib
         IconToolButton.h
         InteropObject.cc
         InteropObject.h
-        LicenseDialog.cc
-        LicenseDialog.h
         MainWindow.cc
         MainWindow.h
         MakeDialog.cc
@@ -118,7 +116,6 @@ target_sources(${TR_NAME}-qt-lib
     PRIVATE
         AboutDialog.ui
         DetailsDialog.ui
-        LicenseDialog.ui
         MainWindow.ui
         MakeDialog.ui
         MakeProgressDialog.ui

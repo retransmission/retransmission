@@ -12,8 +12,6 @@
 
 struct tr_block_info {
 public:
-    static auto constexpr BlockSize = TrBlockSize;
-
     tr_block_info() noexcept = default;
 
     tr_block_info(uint64_t const total_size_in, uint32_t const piece_size_in) noexcept
@@ -28,7 +26,7 @@ public:
 
     [[nodiscard]] constexpr auto block_size(tr_block_index_t const block) const noexcept
     {
-        return block + 1U == n_blocks_ ? final_block_size_ : BlockSize;
+        return block + 1U == n_blocks_ ? final_block_size_ : TrBlockSize;
     }
 
     [[nodiscard]] constexpr auto piece_count() const noexcept
@@ -79,10 +77,10 @@ public:
         if (is_initialized()) {
             loc.byte = byte_idx;
 
-            loc.block = static_cast<tr_block_index_t>(byte_idx / BlockSize);
+            loc.block = static_cast<tr_block_index_t>(byte_idx / TrBlockSize);
             loc.piece = static_cast<tr_piece_index_t>(byte_idx / piece_size());
 
-            loc.block_offset = static_cast<uint32_t>(loc.byte - (uint64_t{ loc.block } * BlockSize));
+            loc.block_offset = static_cast<uint32_t>(loc.byte - (uint64_t{ loc.block } * TrBlockSize));
             loc.piece_offset = static_cast<uint32_t>(loc.byte - (uint64_t{ loc.piece } * piece_size()));
         }
 
@@ -92,7 +90,7 @@ public:
     // Location of the first byte in `block`.
     [[nodiscard]] constexpr auto block_loc(tr_block_index_t const block) const noexcept
     {
-        return byte_loc(uint64_t{ block } * BlockSize);
+        return byte_loc(uint64_t{ block } * TrBlockSize);
     }
 
     [[nodiscard]] constexpr tr_byte_span_t byte_span_for_block(tr_block_index_t const block) const noexcept
@@ -104,7 +102,7 @@ public:
     // Location of the last byte in `block`.
     [[nodiscard]] constexpr auto block_last_loc(tr_block_index_t const block) const noexcept
     {
-        return byte_loc((uint64_t{ block } * BlockSize) + block_size(block) - 1U);
+        return byte_loc((uint64_t{ block } * TrBlockSize) + block_size(block) - 1U);
     }
 
     // Location of the first byte (+ optional offset and length) in `piece`

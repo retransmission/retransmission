@@ -4,7 +4,7 @@
 // License text can be found in the licenses/ folder.
 
 #include <array>
-#include <ctime> // time, size_t, time_t
+#include <ctime> // size_t, time_t
 #include <memory>
 #include <set>
 #include <string_view>
@@ -220,7 +220,7 @@ TEST_F(TorrentsTest, simpleTests)
     EXPECT_EQ(tor, torrents.get(tm));
 
     // cleanup
-    torrents.remove(tor, time(nullptr));
+    torrents.remove(tor);
 }
 
 TEST_F(TorrentsTest, rangedLoop)
@@ -285,7 +285,8 @@ TEST_F(TorrentsTest, removedSince)
     for (size_t i = 0; i < 4; ++i) {
         auto* const tor = torrents_v[i];
         EXPECT_EQ(tor, torrents.get(tor->id()));
-        torrents.remove(torrents_v[i], TimeRemoved[i]);
+        torrents.mark_removed(tor->id(), TimeRemoved[i]);
+        torrents.remove(tor);
         EXPECT_EQ(nullptr, torrents.get(tor->id()));
     }
 

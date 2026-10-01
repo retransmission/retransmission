@@ -164,6 +164,10 @@ concept HasConverter = requires(T const& src, tr_variant const& var, T* tgt) {
 
 // NOLINTBEGIN(bugprone-macro-parentheses)
 #define TR_DECLARE_CONVERTER(type) \
+    static_assert( \
+        !std::integral<type> || std::is_same_v<type, bool>, \
+        "Converter<T> is specialized for an integral type, which also captures all its aliases; " \
+        "give the type its own class, like tr_mode_t"); \
     template<> \
     struct Converter<type> { \
         static tr_variant to_variant(type const& src); \
@@ -194,7 +198,7 @@ template<typename T>
     } else if constexpr (std::is_floating_point_v<T>) {
         return index == tr_variant::DoubleIndex || index == tr_variant::IntIndex || is_string;
     } else if constexpr (std::is_enum_v<T> || std::is_integral_v<T>) {
-        // ints and enums decode from int tokens or string labels/octal --
+        // ints and enums decode from int tokens or string labels --
         // but *not* from a boolean (benc never produces one for these).
         return index == tr_variant::IntIndex || is_string;
     } else {
@@ -296,18 +300,16 @@ bool set(T& tgt, tr_variant const& src)
     return val && set(tgt, std::move(*val));
 }
 
-// Generic integer specialization. Covers int64_t, uint64_t, uint32_t, size_t,
-// time_t, etc. — including platform-dependent aliases (e.g. on Linux
-// int64_t == long == time_t, uint64_t == unsigned long == size_t).
+// Generic integer specialization. Covers int64_t, uint64_t, uint32_t,
+// uint16_t, size_t, time_t, etc. — including platform-dependent aliases
+// (e.g. on Linux int64_t == long == time_t, uint64_t == unsigned long == size_t).
 //
-// `bool` and `uint16_t` are excluded:
-//   - `bool` has its own specialization above.
-//   - `uint16_t` is aliased by `tr_mode_t`, which needs octal-string handling.
+// `bool` is excluded because it has its own specialization.
 template<typename T>
     requires(
-        std::integral<T> && !std::is_same_v<T, bool> && !std::is_same_v<T, uint16_t> && !std::is_same_v<T, char> &&
-        !std::is_same_v<T, signed char> && !std::is_same_v<T, unsigned char> && !std::is_same_v<T, wchar_t> &&
-        !std::is_same_v<T, char16_t> && !std::is_same_v<T, char32_t>)
+        std::integral<T> && !std::is_same_v<T, bool> && !std::is_same_v<T, char> && !std::is_same_v<T, signed char> &&
+        !std::is_same_v<T, unsigned char> && !std::is_same_v<T, wchar_t> && !std::is_same_v<T, char16_t> &&
+        !std::is_same_v<T, char32_t>)
 struct Converter<T> {
     static tr_variant to_variant(T const& src)
     {

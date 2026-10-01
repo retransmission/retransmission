@@ -390,7 +390,7 @@ static CGFloat const kStackViewSpacing = 8.0;
     }
 }
 
-- (void)setUseSpeedLimit:(id)sender
+- (IBAction)setUseSpeedLimit:(id)sender
 {
     BOOL const upload = sender == self.fUploadLimitCheck;
 
@@ -416,7 +416,7 @@ static CGFloat const kStackViewSpacing = 8.0;
     [NSNotificationCenter.defaultCenter postNotificationName:@"UpdateOptionsNotification" object:self];
 }
 
-- (void)setUseGlobalSpeedLimit:(id)sender
+- (IBAction)setUseGlobalSpeedLimit:(id)sender
 {
     if (((NSButton*)sender).state == NSControlStateValueMixed) {
         [sender setState:NSControlStateValueOn];
@@ -430,7 +430,7 @@ static CGFloat const kStackViewSpacing = 8.0;
     [NSNotificationCenter.defaultCenter postNotificationName:@"UpdateOptionsNotification" object:self];
 }
 
-- (void)setSpeedLimit:(id)sender
+- (IBAction)setSpeedLimit:(id)sender
 {
     BOOL const upload = sender == self.fUploadLimitField;
     NSInteger const limit = [sender intValue];
@@ -442,7 +442,7 @@ static CGFloat const kStackViewSpacing = 8.0;
     [NSNotificationCenter.defaultCenter postNotificationName:@"UpdateOptionsNotification" object:self];
 }
 
-- (void)setRatioSetting:(id)sender
+- (IBAction)setRatioSetting:(id)sender
 {
     NSInteger setting;
     BOOL single = NO;
@@ -477,7 +477,7 @@ static CGFloat const kStackViewSpacing = 8.0;
     [NSNotificationCenter.defaultCenter postNotificationName:@"UpdateOptionsNotification" object:self];
 }
 
-- (void)setRatioLimit:(id)sender
+- (IBAction)setRatioLimit:(id)sender
 {
     CGFloat const limit = [sender floatValue];
 
@@ -488,7 +488,7 @@ static CGFloat const kStackViewSpacing = 8.0;
     [NSNotificationCenter.defaultCenter postNotificationName:@"UpdateOptionsNotification" object:self];
 }
 
-- (void)setIdleSetting:(id)sender
+- (IBAction)setIdleSetting:(id)sender
 {
     NSInteger setting;
     BOOL single = NO;
@@ -524,7 +524,7 @@ static CGFloat const kStackViewSpacing = 8.0;
     [NSNotificationCenter.defaultCenter postNotificationName:@"UpdateOptionsNotification" object:self];
 }
 
-- (void)setIdleLimit:(id)sender
+- (IBAction)setIdleLimit:(id)sender
 {
     NSUInteger const limit = [sender integerValue];
 
@@ -549,7 +549,7 @@ static CGFloat const kStackViewSpacing = 8.0;
     [NSNotificationCenter.defaultCenter postNotificationName:@"UpdateOptionsNotification" object:self];
 }
 
-- (void)setPriority:(id)sender
+- (IBAction)setPriority:(id)sender
 {
     tr_priority_t priority;
     switch ([sender indexOfSelectedItem]) {
@@ -576,7 +576,7 @@ static CGFloat const kStackViewSpacing = 8.0;
     [NSNotificationCenter.defaultCenter postNotificationName:@"UpdateOptionsNotification" object:self];
 }
 
-- (void)setPeersConnectLimit:(id)sender
+- (IBAction)setPeersConnectLimit:(id)sender
 {
     NSInteger limit = [sender intValue];
 

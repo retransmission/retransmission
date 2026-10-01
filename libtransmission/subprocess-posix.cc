@@ -5,7 +5,6 @@
 
 #include <array>
 #include <cerrno>
-#include <csignal>
 #include <cstdlib>
 #include <map>
 #include <string>
@@ -27,20 +26,6 @@ using namespace std::literals;
 
 namespace
 {
-void handle_sigchld(int /*i*/)
-{
-    for (;;) {
-        // FIXME: only check for our own PIDs
-        auto const res = waitpid(-1, nullptr, WNOHANG);
-
-        if ((res == 0) || (res == -1 && errno != EINTR)) {
-            break;
-        }
-    }
-
-    // FIXME: Call old handler, if any
-}
-
 void set_system_error(tr_error* error, int code, std::string_view what)
 {
     if (error != nullptr) {
@@ -48,7 +33,8 @@ void set_system_error(tr_error* error, int code, std::string_view what)
     }
 }
 
-[[nodiscard]] bool tr_spawn_async_in_child(
+// Returns only on failure, with errno set.
+void spawn_async_in_child(
     char const* const* cmd,
     std::map<std::string_view, std::string_view> const& env,
     std::string_view work_dir)
@@ -61,22 +47,18 @@ void set_system_error(tr_error* error, int code, std::string_view what)
         val_sz = val_sv;
 
         if (setenv(key_sz.c_str(), val_sz.c_str(), 1) != 0) {
-            return false;
+            return;
         }
     }
 
     if (!std::empty(work_dir) && chdir(tr_pathbuf{ work_dir }.c_str()) == -1) {
-        return false;
+        return;
     }
 
-    if (execvp(cmd[0], const_cast<char* const*>(cmd)) == -1) {
-        return false;
-    }
-
-    return true;
+    execvp(cmd[0], const_cast<char* const*>(cmd));
 }
 
-[[nodiscard]] bool tr_spawn_async_in_parent(int pipe_fd, tr_error* error)
+[[nodiscard]] bool spawn_async_in_parent(int pipe_fd, tr_error* error)
 {
     auto child_errno = int{};
     auto n_read = ssize_t{};
@@ -110,19 +92,6 @@ bool tr_spawn_async(
     std::string_view work_dir,
     tr_error* error)
 {
-    static bool sigchld_handler_set = false;
-
-    if (!sigchld_handler_set) {
-        /* FIXME: "The effects of signal() in a multithreaded process are unspecified." © man 2 signal */
-        if (signal(SIGCHLD, &handle_sigchld) == SIG_ERR) // NOLINT(performance-no-int-to-ptr)
-        {
-            set_system_error(error, errno, "Call to signal()");
-            return false;
-        }
-
-        sigchld_handler_set = true;
-    }
-
     auto pipe_fds = std::array<int, 2>{};
 
     if (pipe(std::data(pipe_fds)) == -1) {
@@ -137,6 +106,9 @@ bool tr_spawn_async(
         return false;
     }
 
+    // Fork twice, so the spawned process is never our child and we never reap it:
+    // the intermediate child forks it and exits at once, re-parenting it to init (or a subreaper).
+    // That leaves SIGCHLD, and the reaping of every other child, to the host process.
     int const child_pid = fork();
 
     if (child_pid == -1) {
@@ -149,13 +121,25 @@ bool tr_spawn_async(
     if (child_pid == 0) {
         close(pipe_fds[0]);
 
-        if (!tr_spawn_async_in_child(cmd, env, work_dir)) {
-            auto const ok = write(pipe_fds[1], &errno, sizeof(errno)) != -1;
-            _exit(ok ? EXIT_SUCCESS : EXIT_FAILURE);
+        auto const grandchild_pid = fork();
+
+        if (grandchild_pid == 0) {
+            spawn_async_in_child(cmd, env, work_dir);
+        } else if (grandchild_pid > 0) {
+            _exit(EXIT_SUCCESS);
         }
+
+        // fork() failed, or the grandchild failed to set up or exec
+        auto const ok = write(pipe_fds[1], &errno, sizeof(errno)) != -1;
+        _exit(ok ? EXIT_SUCCESS : EXIT_FAILURE);
     }
 
     close(pipe_fds[1]);
 
-    return tr_spawn_async_in_parent(pipe_fds[0], error);
+    // The intermediate child exits right after forking, so this returns promptly.
+    // ECHILD means it was already reaped, e.g. because SIGCHLD is ignored.
+    while (waitpid(child_pid, nullptr, 0) == -1 && errno == EINTR) {
+    }
+
+    return spawn_async_in_parent(pipe_fds[0], error);
 }

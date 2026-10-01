@@ -101,8 +101,13 @@ void FilterBarComboBox::paintEvent(QPaintEvent* e)
 
         // draw the icon
         if (auto const icon = Utils::getIconFromIndex(model_index); !icon.isNull()) {
+            // QComboBox sets State_Selected while it has focus,
+            // but the label beside this icon is drawn in QPalette::Text.
+            auto icon_style_state = opt.state;
+            icon_style_state.setFlag(QStyle::State_Selected, false);
+
             auto const icon_rect = QStyle::alignedRect(opt.direction, Qt::AlignLeft | Qt::AlignVCenter, opt.iconSize, rect);
-            icon.paint(&painter, icon_rect, Qt::AlignCenter, StyleHelper::getIconMode(opt.state), QIcon::Off);
+            icon.paint(&painter, icon_rect, Qt::AlignCenter, StyleHelper::getIconMode(icon_style_state), QIcon::Off);
             Utils::narrowRect(rect, icon_rect.width() + hmargin, 0, opt.direction);
         }
 

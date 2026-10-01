@@ -32,4 +32,6 @@
 - (void)configurePriorities;
 - (void)setupConstraints;
 
+- (void)setAnyErrorOrWarning:(BOOL)errorOrWarning;
+
 @end

@@ -64,9 +64,9 @@ public:
         is_dirty_ = true;
     }
 
-    constexpr void add_file_created() noexcept
+    constexpr void add_files_created(size_t const n) noexcept
     {
-        ++single_.filesAdded;
+        single_.filesAdded += n;
         is_dirty_ = true;
     }
 

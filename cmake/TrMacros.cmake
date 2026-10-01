@@ -144,8 +144,15 @@ function(tr_add_external_auto_library ID PACKAGENAME)
         if(NOT SYSTEM_${ID}_IS_REQUIRED)
             set(_TAEAL_QUIET QUIET)
         endif()
-        find_package(${PACKAGENAME} ${${ID}_MINIMUM} ${SYSTEM_${ID}_IS_REQUIRED} ${_TAEAL_QUIET}
+        # Fail here rather than via find_package(REQUIRED) so the error can name the way out.
+        # find_package() still reports why it rejected the system copy.
+        find_package(${PACKAGENAME} ${${ID}_MINIMUM} ${_TAEAL_QUIET}
             COMPONENTS ${_TAEAL_ARG_COMPONENTS})
+        if(SYSTEM_${ID}_IS_REQUIRED AND NOT ${PACKAGENAME}_FOUND)
+            message(FATAL_ERROR
+                "USE_SYSTEM_${ID} is ON, but no suitable system ${PACKAGENAME} was found. "
+                "Pass -DUSE_SYSTEM_${ID}=OFF to build the bundled copy instead.")
+        endif()
         tr_fixup_auto_option(USE_SYSTEM_${ID} ${PACKAGENAME}_FOUND SYSTEM_${ID}_IS_REQUIRED)
     endif()
 

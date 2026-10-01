@@ -134,8 +134,6 @@ target_sources(${TR_NAME}-mac
         NSStringAdditions.mm
         PeerProgressIndicatorCell.h
         PeerProgressIndicatorCell.mm
-        PeerTableView.h
-        PeerTableView.mm
         PiecesView.h
         PiecesView.mm
         PortChecker.h
@@ -185,14 +183,12 @@ target_sources(${TR_NAME}-mac
         TrackerCell.mm
         TrackerNode.h
         TrackerNode.mm
-        TrackerTableView.h
-        TrackerTableView.mm
+        TRGroup.h
+        TRGroup.mm
         URLSheetWindowController.h
         URLSheetWindowController.mm
         Utils.h
-        Utils.mm
-        WebSeedTableView.h
-        WebSeedTableView.mm)
+        Utils.mm)
 
 set(XIB_FILES
     AboutWindow.xib
@@ -313,8 +309,10 @@ set_source_files_properties(
         MACOSX_PACKAGE_LOCATION Resources)
 
 set(LINGUAS
+    af
     da
     de
+    el
     en
     es
     eu
@@ -332,7 +330,8 @@ set(LINGUAS
     tr
     uk
     zh-CN
-    zh-TW)
+    zh-TW
+    )
 
 if(ENABLE_NLS)
     set(ENABLED_LINGUAS ${LINGUAS})
@@ -405,7 +404,6 @@ target_link_libraries(${TR_NAME}-mac
         vdkqueue
         ${SPARKLE_FRAMEWORK}
         "-framework AppKit"
-        "-framework Carbon"
         "-framework Foundation"
         "-framework Quartz"
         "-framework Security"

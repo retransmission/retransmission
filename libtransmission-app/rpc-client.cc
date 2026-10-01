@@ -15,6 +15,7 @@
 #include <libtransmission/constants.h> // TrRpcSessionIdHeader, TrRpcVersionHeader
 #include <libtransmission/env.h> // tr_env_key_exists
 #include <libtransmission/macros.h>
+#include <libtransmission/quark.h>
 #include <libtransmission/rpcimpl.h> // JsonRpc::Version, tr_rpc_request_exec
 #include <libtransmission/variant.h>
 #include <libtransmission/version.h> // SHORT_VERSION_STRING
@@ -172,6 +173,24 @@ void RpcClient::send_remote_request(std::string body, ResponseFunc on_done)
                                did_connect,
                                status,
                                parsed]() mutable {
+                auto result = RpcResponse{};
+                result.http_status = status;
+
+                if (status == 413) {
+                    result.errmsg = fmt::format(
+                        "request body larger than configured limit in the server, consider increasing '{}' in the server settings",
+                        tr_quark_get_string_view(TR_KEY_rpc_max_request_body_size));
+                    network_response(false, result.errmsg);
+                    if (on_done) {
+                        result.network_error = true;
+                        on_done(std::move(result));
+                    }
+
+                    // Early return before modifying the client state, because this response
+                    // won't contain any of the HTTP headers this handler usually expects
+                    return;
+                }
+
                 if (new_session_id) {
                     session_id_ = *new_session_id;
                 }
@@ -191,9 +210,6 @@ void RpcClient::send_remote_request(std::string body, ResponseFunc on_done)
                 if (status == 401) {
                     auth_required();
                 }
-
-                auto result = RpcResponse{};
-                result.http_status = status;
 
                 if (errmsg) {
                     result.network_error = true;

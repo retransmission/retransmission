@@ -4,12 +4,13 @@ add_library(${TR_NAME}-mac-qlappex MODULE)
 
 target_sources(${TR_NAME}-mac-qlappex
     PRIVATE
-        ../NSStringAdditions.mm
         PreviewProvider.mm)
 
 set(LINGUAS
+    af
     da
     de
+    el
     en
     es
     eu
@@ -90,10 +91,6 @@ target_link_options(
     ${TR_NAME}-mac-qlappex
     PUBLIC
         "-mmacosx-version-min=12.0")
-
-target_include_directories(${TR_NAME}-mac-qlappex
-    PRIVATE
-        ..)
 
 target_link_libraries(${TR_NAME}-mac-qlappex
     PRIVATE

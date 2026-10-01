@@ -27,11 +27,8 @@
 // serializer header does not have to pull in `<small/vector.hpp>`.
 namespace tr::serializer
 {
-template<>
-struct Converter<small::max_size_vector<tr_preferred_transport, PreferredTransportCount>> {
-    static tr_variant to_variant(small::max_size_vector<tr_preferred_transport, PreferredTransportCount> const& src);
-    static bool to_value(tr_variant const& src, small::max_size_vector<tr_preferred_transport, PreferredTransportCount>* tgt);
-};
+using PreferredTransports = small::max_size_vector<tr_preferred_transport, PreferredTransportCount>;
+TR_DECLARE_CONVERTER(PreferredTransports)
 } // namespace tr::serializer
 
 namespace tr
@@ -107,6 +104,16 @@ public:
     bool utp_enabled = true;
     double ratio_limit = 2.0;
     size_t unused_cache_size_mbytes = 4U; // TODO(TR5): remove
+    // Threads for writing torrent data to disk and hashing finished
+    // pieces. Zero runs all disk IO on the session thread instead.
+    size_t disk_io_workers = 0U;
+    // The most memory that downloaded data may occupy while it waits for
+    // the disk: blocks requested but not yet received, plus blocks
+    // received but not yet written. Enforced by disk_io_workers > 0.
+    // Counting requests bounds the burst that lands when the disk falls
+    // behind. It also caps throughput at the budget divided by the
+    // request round-trip time.
+    size_t disk_write_budget_mib = 64U;
     size_t download_queue_size = 5U;
     size_t peer_limit_global = TrDefaultPeerLimitGlobal;
     size_t peer_limit_per_torrent = TrDefaultPeerLimitTorrent;
@@ -141,7 +148,7 @@ public:
 
     tr_encryption_mode encryption_mode = TR_ENCRYPTION_PREFERRED;
     tr_log_level log_level = TR_LOG_INFO;
-    tr_mode_t umask = 022;
+    tr_mode_t umask{ 022 };
     tr_file_preallocation preallocation_mode = tr_file_preallocation::Sparse;
     tr_port peer_port_random_high = tr_port::from_host(65535);
     tr_port peer_port_random_low = tr_port::from_host(49152);
@@ -168,6 +175,8 @@ public:
         Field<&SessionSettings::blocklist_url>{ TR_KEY_blocklist_url },
         Field<&SessionSettings::default_trackers_str>{ TR_KEY_default_trackers },
         Field<&SessionSettings::dht_enabled>{ TR_KEY_dht_enabled },
+        Field<&SessionSettings::disk_io_workers>{ TR_KEY_disk_io_workers },
+        Field<&SessionSettings::disk_write_budget_mib>{ TR_KEY_disk_write_budget_mib },
         Field<&SessionSettings::download_dir>{ TR_KEY_download_dir },
         Field<&SessionSettings::download_queue_enabled>{ TR_KEY_download_queue_enabled },
         Field<&SessionSettings::download_queue_size>{ TR_KEY_download_queue_size },
@@ -294,13 +303,14 @@ public:
     bool is_host_whitelist_enabled = true;
     bool is_whitelist_enabled = true;
     size_t anti_brute_force_limit = 100U;
+    size_t max_request_body_size = TrWebDefaultMaxBodyBytes;
     std::string bind_address_str = "0.0.0.0";
     std::string host_whitelist_str;
     std::string salted_password;
     std::string url = std::string{ TrDefaultHttpServerBasePath };
     std::string username;
     std::string whitelist_str = std::string{ TrDefaultRpcWhitelist };
-    tr_mode_t socket_mode = 0750;
+    tr_mode_t socket_mode{ 0750 };
     tr_port port = tr_port::from_host(TrDefaultRpcPort);
 
 private:
@@ -316,6 +326,7 @@ public:
         Field<&RpcServerSettings::is_enabled>{ TR_KEY_rpc_enabled },
         Field<&RpcServerSettings::host_whitelist_str>{ TR_KEY_rpc_host_whitelist },
         Field<&RpcServerSettings::is_host_whitelist_enabled>{ TR_KEY_rpc_host_whitelist_enabled },
+        Field<&RpcServerSettings::max_request_body_size>{ TR_KEY_rpc_max_request_body_size },
         Field<&RpcServerSettings::port>{ TR_KEY_rpc_port },
         Field<&RpcServerSettings::salted_password>{ TR_KEY_rpc_password },
         Field<&RpcServerSettings::socket_mode>{ TR_KEY_rpc_socket_mode },

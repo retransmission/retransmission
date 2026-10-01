@@ -15,6 +15,7 @@
 
 #include <libtransmission/bitfield.h>
 #include <libtransmission/block-info.h>
+#include <libtransmission/constants.h>
 #include <libtransmission/file-piece-map.h>
 
 #include "test-fixtures.h"
@@ -24,7 +25,7 @@ namespace
 class FilePieceMapTest : public ::tr::test::TransmissionTest
 {
 protected:
-    static constexpr size_t PieceSize{ tr_block_info::BlockSize };
+    static constexpr size_t PieceSize{ TrBlockSize };
     static constexpr size_t TotalSize{ 10 * PieceSize };
     tr_block_info const block_info_{ TotalSize, PieceSize };
     tr_block_info const magnet_block_info_{ 0, 0 };

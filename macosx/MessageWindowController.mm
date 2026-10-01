@@ -370,7 +370,7 @@ static NSUInteger const kMaxQueueLength = 10000U;
     return YES;
 }
 
-- (void)changeLevel:(id)sender
+- (IBAction)changeLevel:(id)sender
 {
     NSInteger level;
     switch (self.fLevelButton.indexOfSelectedItem) {
@@ -404,7 +404,7 @@ static NSUInteger const kMaxQueueLength = 10000U;
     [self.fLock unlock];
 }
 
-- (void)changeFilter:(id)sender
+- (IBAction)changeFilter:(id)sender
 {
     [self.fLock lock];
 
@@ -413,7 +413,7 @@ static NSUInteger const kMaxQueueLength = 10000U;
     [self.fLock unlock];
 }
 
-- (void)clearLog:(id)sender
+- (IBAction)clearLog:(id)sender
 {
     [self.fLock lock];
 
@@ -430,7 +430,7 @@ static NSUInteger const kMaxQueueLength = 10000U;
     [self.fLock unlock];
 }
 
-- (void)writeToFile:(id)sender
+- (IBAction)writeToFile:(id)sender
 {
     NSSavePanel* panel = [NSSavePanel savePanel];
     panel.allowedFileTypes = @[ @"txt" ];

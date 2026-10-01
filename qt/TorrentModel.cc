@@ -11,6 +11,7 @@
 #include <ctime>
 #include <iterator> // for std::back_inserter
 #include <ranges>
+#include <span>
 #include <string_view>
 #include <vector>
 
@@ -122,17 +123,12 @@ QVariant TorrentModel::data(QModelIndex const& index, int role) const
 ****
 ***/
 
-void TorrentModel::removeTorrents(tr_variant* torrent_list)
+void TorrentModel::removeTorrents(std::span<tr_variant const> const torrent_ids)
 {
-    auto const* const ids = torrent_list->get_if<tr_variant::Vector>();
-    if (!ids || std::empty(*ids)) {
-        return;
-    }
-
     auto torrents = torrents_t{};
-    torrents.reserve(std::size(*ids));
+    torrents.reserve(std::size(torrent_ids));
 
-    for (tr_variant const& child : *ids) {
+    for (tr_variant const& child : torrent_ids) {
         if (auto const id = tr::serializer::to_value<int64_t>(child)) {
             if (auto* const torrent = getTorrentFromId(static_cast<int>(*id))) {
                 torrents.push_back(torrent);
@@ -145,7 +141,7 @@ void TorrentModel::removeTorrents(tr_variant* torrent_list)
     }
 }
 
-void TorrentModel::updateTorrents(tr_variant* torrent_list, bool is_complete_list)
+void TorrentModel::updateTorrents(std::span<tr_variant const> const torrent_list, bool const is_complete_list)
 {
     auto const old = is_complete_list ? torrents_ : torrents_t{};
     auto added = torrent_ids_t{};
@@ -164,12 +160,7 @@ void TorrentModel::updateTorrents(tr_variant* torrent_list, bool is_complete_lis
         return (date != 0) && (difftime(now, date) < MaxAge);
     };
 
-    auto* const list = torrent_list->get_if<tr_variant::Vector>();
-    if (list == nullptr) {
-        return;
-    }
-
-    auto* const first_child = !list->empty() ? &list->front() : nullptr;
+    auto const* const first_child = !std::empty(torrent_list) ? &torrent_list.front() : nullptr;
 
     // In 'table' format, the first entry in 'torrents' is an array of keys.
     // All the other entries are an array of the values for one torrent.
@@ -189,11 +180,9 @@ void TorrentModel::updateTorrents(tr_variant* torrent_list, bool is_complete_lis
     // Loop through the torrent records...
     std::vector<Torrent::keyval_t> keyvals;
     keyvals.reserve(keys.size());
-    processed.reserve(list->size());
+    processed.reserve(std::size(torrent_list));
     auto n_skipped = size_t{};
-    for (auto it = std::next(std::begin(*list), table ? 1 : 0); it != std::end(*list); ++it) {
-        tr_variant& v = *it;
-
+    for (tr_variant const& v : torrent_list.subspan(table ? 1U : 0U)) {
         // Pair up this torrent's keys and values
         keyvals.clear();
         if (table) {

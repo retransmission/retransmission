@@ -17,8 +17,6 @@
 
 #include <gtest/gtest.h>
 
-#define LIBTRANSMISSION_VARIANT_MODULE
-
 #include <libtransmission/benc.h>
 #include <libtransmission/crypto-utils.h> // tr_rand_buffer(), tr_rand_int()
 #include <libtransmission/error.h>
@@ -384,6 +382,17 @@ TEST_F(VariantTest, bencSortWhenSerializing)
     EXPECT_TRUE(var.has_value());
     EXPECT_EQ(std::data(In) + std::size(In), serde.end());
     EXPECT_EQ(ExpectedOut, serde.to_string(*var));
+}
+
+TEST_F(VariantTest, bencSerializesRealsAsStrings)
+{
+    auto const serde = tr_variant_serde::benc();
+    EXPECT_EQ("8:0.250000"sv, serde.to_string(tr_variant{ 0.25 }));
+
+    // 1e300 in fixed notation: 301 integer digits, the point, 6 decimals
+    auto const big = serde.to_string(tr_variant{ 1e300 });
+    EXPECT_TRUE(big.starts_with("308:1000"sv)) << big;
+    EXPECT_EQ(std::size("308:"sv) + 308U, std::size(big));
 }
 
 TEST_F(VariantTest, bencMalformedTooManyEndings)

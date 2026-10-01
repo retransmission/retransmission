@@ -579,7 +579,6 @@ TR_DEFINE_CONVERTER(tr_verify_added_mode, to_verify_added_mode, from_verify_adde
 
 // `small::max_size_vector<tr_preferred_transport, ...>` Converter is declared
 // in `session-settings.h`, where the type itself is used.
-using PreferredTransports = small::max_size_vector<tr_preferred_transport, PreferredTransportCount>;
 TR_DEFINE_CONVERTER(PreferredTransports, to_preferred_transport, from_preferred_transport)
 
 #undef TR_DEFINE_CONVERTER

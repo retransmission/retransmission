@@ -3,13 +3,11 @@
 // License text can be found in the licenses/ folder.
 
 #if __has_feature(modules)
-@import Carbon;
 @import UserNotifications;
 
 @import Sparkle;
 @import SystemConfiguration;
 #else
-#import <Carbon/Carbon.h>
 #import <UserNotifications/UserNotifications.h>
 
 #import <Sparkle/Sparkle.h>
@@ -354,7 +352,6 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
 
 @property(nonatomic) BOOL fGlobalPopoverShown;
 @property(nonatomic) NSView* fPositioningView;
-@property(nonatomic) BOOL fSoundPlaying;
 @property(nonatomic) SCDynamicStoreRef fActiveVPNDynamicStore;
 @property(nonatomic) CFRunLoopSourceRef fActiveVPNDynamicStoreSource;
 @property(nonatomic, copy) NSDictionary<NSString*, id>* fActiveVPNBindInterfaceStatus;
@@ -380,13 +377,14 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
     NSArray* apps = [NSRunningApplication runningApplicationsWithBundleIdentifier:NSBundle.mainBundle.bundleIdentifier];
     if (apps.count > 1) {
         NSAlert* alert = [[NSAlert alloc] init];
-        [alert addButtonWithTitle:NSLocalizedString(@"OK", TR_PROJ_APPNAME_CAPITALIZED " already running alert -> button")];
-        alert.messageText = NSLocalizedString(@TR_PROJ_APPNAME_CAPITALIZED " is already running.", TR_PROJ_APPNAME_CAPITALIZED " already running alert -> title");
-        alert.informativeText = NSLocalizedString(
-            @"There is already a copy of " TR_PROJ_APPNAME_CAPITALIZED
-             " running. "
-             "This copy cannot be opened until that instance is quit.",
-            TR_PROJ_APPNAME_CAPITALIZED " already running alert -> message");
+        [alert addButtonWithTitle:NSLocalizedString(@"OK", "Already running alert -> button")];
+        alert.messageText = [NSString stringWithFormat:NSLocalizedString(@"%@ is already running.", "Already running alert -> title"),
+                                                       @TR_PROJ_APPNAME_CAPITALIZED];
+        alert.informativeText = [NSString stringWithFormat:NSLocalizedString(
+                                                               @"There is already a copy of %@ running. "
+                                                                "This copy cannot be opened until that instance is quit.",
+                                                               "Already running alert -> message"),
+                                                           @TR_PROJ_APPNAME_CAPITALIZED];
         alert.alertStyle = NSAlertStyleCritical;
 
         [alert runModal];
@@ -488,12 +486,6 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
 
         NSApp.delegate = self;
 
-        //register for magnet URLs (has to be in init)
-        [[NSAppleEventManager sharedAppleEventManager] setEventHandler:self
-                                                           andSelector:@selector(handleOpenContentsEvent:replyEvent:)
-                                                         forEventClass:kInternetEventClass
-                                                            andEventID:kAEGetURL];
-
         _fTorrents = [[NSMutableArray alloc] init];
         _fDisplayedTorrents = [[NSMutableArray alloc] init];
         _fTorrentHashes = [[NSMutableDictionary alloc] init];
@@ -514,7 +506,6 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
 
         _fQuitting = NO;
         _fGlobalPopoverShown = NO;
-        _fSoundPlaying = NO;
 
         tr_sessionSetAltSpeedFunc(_fLib, [controller = self](bool const active, bool const by_user) {
             NSDictionary* const dict = @{ @"Active" : @(active), @"ByUser" : @(by_user) };
@@ -534,7 +525,7 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
 
         _fQuitRequested = NO;
 
-        _fPauseOnLaunch = (GetCurrentKeyModifiers() & (optionKey | rightOptionKey)) != 0;
+        _fPauseOnLaunch = (NSEvent.modifierFlags & NSEventModifierFlagOption) != 0;
     }
     return self;
 }
@@ -882,13 +873,14 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
         NSAlert* alert = [[NSAlert alloc] init];
         [alert addButtonWithTitle:NSLocalizedString(@"I Accept", "Legal alert -> button")];
         [alert addButtonWithTitle:NSLocalizedString(@"Quit", "Legal alert -> button")];
-        alert.messageText = NSLocalizedString(@"Welcome to " TR_PROJ_APPNAME_CAPITALIZED, "Legal alert -> title");
-        alert.informativeText = NSLocalizedString(
-            @TR_PROJ_APPNAME_CAPITALIZED
-            " is a file-sharing program."
-            " When you run a torrent, its data will be made available to others by means of upload."
-            " You and you alone are fully responsible for exercising proper judgement and abiding by your local laws.",
-            "Legal alert -> message");
+        alert.messageText = [NSString stringWithFormat:NSLocalizedString(@"Welcome to %@", "Legal alert -> title"), @TR_PROJ_APPNAME_CAPITALIZED];
+        alert.informativeText = [NSString
+            stringWithFormat:NSLocalizedString(
+                                 @"%@ is a file-sharing program."
+                                  " When you run a torrent, its data will be made available to others by means of upload."
+                                  " You and you alone are fully responsible for exercising proper judgement and abiding by your local laws.",
+                                 "Legal alert -> message"),
+                             @TR_PROJ_APPNAME_CAPITALIZED];
         alert.alertStyle = NSAlertStyleInformational;
 
         if ([alert runModal] == NSAlertSecondButtonReturn) {
@@ -902,11 +894,6 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
 
     [PowerManager.shared setDelegate:self];
     [PowerManager.shared start];
-
-    //register for dock icon drags (has to be in applicationDidFinishLaunching: to work)
-    [[NSAppleEventManager sharedAppleEventManager] setEventHandler:self andSelector:@selector(handleOpenContentsEvent:replyEvent:)
-                                                     forEventClass:kCoreEventClass
-                                                        andEventID:kAEOpenContents];
 
     //if we were opened from a user notification, do the corresponding action
     UNNotificationResponse* launchNotification = notification.userInfo[NSApplicationLaunchUserNotificationKey];
@@ -939,11 +926,12 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
 
             NSString* donateMessage = [NSString
                 stringWithFormat:@"%@\n\n%@",
-                                 NSLocalizedString(
-                                     @TR_PROJ_APPNAME_CAPITALIZED " is a full-featured torrent application."
-                                                                  " A lot of time and effort have gone into development, coding, and refinement."
-                                                                  " If you enjoy using it, please consider showing your love with a donation.",
-                                     "Donation beg -> message"),
+                                 [NSString stringWithFormat:NSLocalizedString(
+                                                                @"%@ is a full-featured torrent application."
+                                                                 " A lot of time and effort have gone into development, coding, and refinement."
+                                                                 " If you enjoy using it, please consider showing your love with a donation.",
+                                                                "Donation beg -> message"),
+                                                            @TR_PROJ_APPNAME_CAPITALIZED],
                                  NSLocalizedString(@"Donate or not, there will be no difference to your torrenting experience.", "Donation beg -> message")];
 
             alert.informativeText = donateMessage;
@@ -1085,6 +1073,24 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
     tr_sessionClose(self.fLib);
 }
 
+- (void)application:(NSApplication*)application openURLs:(NSArray<NSURL*>*)urls
+{
+    // AppKit sends both opened files and magnet links here.
+    // It does not call `application:openFiles:` when this method exists.
+    NSMutableArray<NSString*>* filenames = [NSMutableArray arrayWithCapacity:urls.count];
+    for (NSURL* url in urls) {
+        if (url.fileURL) {
+            [filenames addObject:url.path];
+        } else {
+            [self openURL:url.absoluteString];
+        }
+    }
+
+    if (filenames.count > 0) {
+        [self openFiles:filenames addType:AddTypeManual forcePath:nil];
+    }
+}
+
 - (BOOL)applicationSupportsSecureRestorableState:(NSApplication*)app
 {
     return YES;
@@ -1095,26 +1101,6 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
 - (tr_session*)sessionHandle
 {
     return self.fLib;
-}
-
-- (void)handleOpenContentsEvent:(NSAppleEventDescriptor*)event replyEvent:(NSAppleEventDescriptor*)replyEvent
-{
-    NSString* urlString = nil;
-
-    NSAppleEventDescriptor* directObject = [event paramDescriptorForKeyword:keyDirectObject];
-    if (directObject.descriptorType == typeAEList) {
-        for (NSInteger i = 1; i <= directObject.numberOfItems; i++) {
-            if ((urlString = [directObject descriptorAtIndex:i].stringValue)) {
-                break;
-            }
-        }
-    } else {
-        urlString = directObject.stringValue;
-    }
-
-    if (urlString) {
-        [self openURL:urlString];
-    }
 }
 
 #pragma mark - NSURLSessionDelegate
@@ -1204,11 +1190,6 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
 }
 
 #pragma mark -
-
-- (void)application:(NSApplication*)app openFiles:(NSArray<NSString*>*)filenames
-{
-    [self openFiles:filenames addType:AddTypeManual forcePath:nil];
-}
 
 - (void)openFiles:(NSArray<NSString*>*)filenames addType:(AddType)type forcePath:(NSString*)path
 {
@@ -1429,21 +1410,7 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
     [self openFiles:@[ dict[@"File"] ] addType:AddTypeCreated forcePath:dict[@"Path"]];
 }
 
-- (void)openFilesWithDict:(NSDictionary*)dictionary
-{
-    [self openFiles:dictionary[@"Filenames"] addType:static_cast<AddType>([dictionary[@"AddType"] intValue]) forcePath:nil];
-}
-
-//called on by applescript
-- (void)open:(NSArray*)files
-{
-    NSDictionary* dict = @{ @"Filenames" : files, @"AddType" : @(AddTypeManual) };
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [self openFilesWithDict:dict];
-    });
-}
-
-- (void)openShowSheet:(id)sender
+- (IBAction)openShowSheet:(id)sender
 {
     NSOpenPanel* panel = [NSOpenPanel openPanel];
 
@@ -1460,12 +1427,9 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
                 [filenames addObject:url.path];
             }
 
-            NSDictionary* dictionary = @{
-                @"Filenames" : filenames,
-                @"AddType" : sender == self.fOpenIgnoreDownloadFolder ? @(AddTypeShowOptions) : @(AddTypeManual)
-            };
+            AddType const addType = sender == self.fOpenIgnoreDownloadFolder ? AddTypeShowOptions : AddTypeManual;
             dispatch_async(dispatch_get_main_queue(), ^{
-                [self openFilesWithDict:dictionary];
+                [self openFiles:filenames addType:addType forcePath:nil];
             });
         }
     }];
@@ -1603,7 +1567,7 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
     }
 }
 
-- (void)openURLShowSheet:(id)sender
+- (IBAction)openURLShowSheet:(id)sender
 {
     if (!self.fUrlSheetController) {
         self.fUrlSheetController = [[URLSheetWindowController alloc] init];
@@ -1664,17 +1628,17 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
     }
 }
 
-- (void)createFile:(id)sender
+- (IBAction)createFile:(id)sender
 {
     [CreatorWindowController createTorrentFile:self.fLib];
 }
 
-- (void)resumeSelectedTorrents:(id)sender
+- (IBAction)resumeSelectedTorrents:(id)sender
 {
     [self resumeTorrents:self.fTableView.selectedTorrents];
 }
 
-- (void)resumeAllTorrents:(id)sender
+- (IBAction)resumeAllTorrents:(id)sender
 {
     NSMutableArray<Torrent*>* torrents = [NSMutableArray arrayWithCapacity:self.fTorrents.count];
 
@@ -1696,12 +1660,12 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
     [self fullUpdateUI];
 }
 
-- (void)resumeSelectedTorrentsNoWait:(id)sender
+- (IBAction)resumeSelectedTorrentsNoWait:(id)sender
 {
     [self resumeTorrentsNoWait:self.fTableView.selectedTorrents];
 }
 
-- (void)resumeWaitingTorrents:(id)sender
+- (IBAction)resumeWaitingTorrents:(id)sender
 {
     NSMutableArray<Torrent*>* torrents = [NSMutableArray arrayWithCapacity:self.fTorrents.count];
 
@@ -1724,12 +1688,12 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
     [self fullUpdateUI];
 }
 
-- (void)stopSelectedTorrents:(id)sender
+- (IBAction)stopSelectedTorrents:(id)sender
 {
     [self stopTorrents:self.fTableView.selectedTorrents];
 }
 
-- (void)stopAllTorrents:(id)sender
+- (IBAction)stopAllTorrents:(id)sender
 {
     [self stopTorrents:self.fTorrents];
 }
@@ -1930,17 +1894,17 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
     }
 }
 
-- (void)removeNoDelete:(id)sender
+- (IBAction)removeNoDelete:(id)sender
 {
     [self removeTorrents:self.fTableView.selectedTorrents deleteData:NO];
 }
 
-- (void)removeDeleteData:(id)sender
+- (IBAction)removeDeleteData:(id)sender
 {
     [self removeTorrents:self.fTableView.selectedTorrents deleteData:YES];
 }
 
-- (void)clearCompleted:(id)sender
+- (IBAction)clearCompleted:(id)sender
 {
     NSMutableArray<Torrent*>* torrents = [NSMutableArray array];
 
@@ -1993,7 +1957,7 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
     [self confirmRemoveTorrents:torrents deleteData:NO];
 }
 
-- (void)moveDataFilesSelected:(id)sender
+- (IBAction)moveDataFilesSelected:(id)sender
 {
     [self moveDataFiles:self.fTableView.selectedTorrents];
 }
@@ -2027,7 +1991,7 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
     }];
 }
 
-- (void)copyTorrentFiles:(id)sender
+- (IBAction)copyTorrentFiles:(id)sender
 {
     [self copyTorrentFileForTorrents:[[NSMutableArray alloc] initWithArray:self.fTableView.selectedTorrents]];
 }
@@ -2078,12 +2042,12 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
     }
 }
 
-- (void)copyMagnetLinks:(id)sender
+- (IBAction)copyMagnetLinks:(id)sender
 {
     [self.fTableView copy:sender];
 }
 
-- (void)revealFile:(id)sender
+- (IBAction)revealFile:(id)sender
 {
     NSArray* selected = self.fTableView.selectedTorrents;
     NSMutableArray* paths = [NSMutableArray arrayWithCapacity:selected.count];
@@ -2117,7 +2081,7 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
     }];
 }
 
-- (void)announceSelectedTorrents:(id)sender
+- (IBAction)announceSelectedTorrents:(id)sender
 {
     for (Torrent* torrent in self.fTableView.selectedTorrents) {
         if (torrent.canManualAnnounce) {
@@ -2126,7 +2090,7 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
     }
 }
 
-- (void)verifySelectedTorrents:(id)sender
+- (IBAction)verifySelectedTorrents:(id)sender
 {
     [self verifyTorrents:self.fTableView.selectedTorrents];
 }
@@ -2145,7 +2109,7 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
     return self.fTableView.selectedTorrents;
 }
 
-- (void)showPreferenceWindow:(id)sender
+- (IBAction)showPreferenceWindow:(id)sender
 {
     NSWindow* window = _prefsController.window;
     if (!window.visible) {
@@ -2155,12 +2119,17 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
     [window makeKeyAndOrderFront:nil];
 }
 
-- (void)showAboutWindow:(id)sender
+- (IBAction)showAboutWindow:(id)sender
 {
     [AboutWindowController.aboutController showWindow:nil];
 }
 
-- (void)showInfo:(id)sender
+- (void)showInfo
+{
+    [self showInfo:nil];
+}
+
+- (IBAction)showInfo:(id)sender
 {
     if (self.fInfoController.window.visible) {
         [self.fInfoController close];
@@ -2186,7 +2155,7 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
     }
 }
 
-- (void)setInfoTab:(id)sender
+- (IBAction)setInfoTab:(id)sender
 {
     if (sender == self.fNextInfoTabItem) {
         [self.fInfoController setNextTab];
@@ -2204,12 +2173,12 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
     return self.fMessageController;
 }
 
-- (void)showMessageWindow:(id)sender
+- (IBAction)showMessageWindow:(id)sender
 {
     [self.messageWindowController showWindow:nil];
 }
 
-- (void)showStatsWindow:(id)sender
+- (IBAction)showStatsWindow:(id)sender
 {
     [StatsWindowController.statsWindow showWindow:nil];
 }
@@ -2413,11 +2382,9 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
     Torrent* torrent = notification.object;
 
     if ([notification.userInfo[@"WasRunning"] boolValue]) {
-        if (!self.fSoundPlaying && [self.fDefaults boolForKey:@"PlayDownloadSound"]) {
-            NSSound* sound;
-            if ((sound = [NSSound soundNamed:[self.fDefaults stringForKey:@"DownloadSound"]])) {
-                sound.delegate = self;
-                self.fSoundPlaying = YES;
+        if ([self.fDefaults boolForKey:@"PlayDownloadSound"]) {
+            NSSound* sound = [NSSound soundNamed:[self.fDefaults stringForKey:@"DownloadSound"]];
+            if (sound && !sound.isPlaying) {
                 [sound play];
             }
         }
@@ -2461,11 +2428,9 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
 {
     Torrent* torrent = notification.object;
 
-    if (!self.fSoundPlaying && [self.fDefaults boolForKey:@"PlaySeedingSound"]) {
-        NSSound* sound;
-        if ((sound = [NSSound soundNamed:[self.fDefaults stringForKey:@"SeedingSound"]])) {
-            sound.delegate = self;
-            self.fSoundPlaying = YES;
+    if ([self.fDefaults boolForKey:@"PlaySeedingSound"]) {
+        NSSound* sound = [NSSound soundNamed:[self.fDefaults stringForKey:@"SeedingSound"]];
+        if (sound && !sound.isPlaying) {
             [sound play];
         }
     }
@@ -2518,7 +2483,7 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
     [history writeToFile:historyFile atomically:YES];
 }
 
-- (void)setSort:(id)sender
+- (IBAction)setSort:(id)sender
 {
     SortType sortType;
     NSMenuItem* senderMenuItem = sender;
@@ -2561,7 +2526,7 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
     [self sortTorrentsAndIncludeQueueOrder:YES];
 }
 
-- (void)setSortByGroup:(id)sender
+- (IBAction)setSortByGroup:(id)sender
 {
     BOOL sortByGroup = ![self.fDefaults boolForKey:@"SortByGroup"];
     [self.fDefaults setBool:sortByGroup forKey:@"SortByGroup"];
@@ -2569,7 +2534,7 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
     [self applyFilter];
 }
 
-- (void)setSortReverse:(id)sender
+- (IBAction)setSortReverse:(id)sender
 {
     BOOL const setReverse = ((NSMenuItem*)sender).tag == SortOrderTagDescending;
     if (setReverse != [self.fDefaults boolForKey:@"SortReverse"]) {
@@ -3116,7 +3081,7 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
     }
 }
 
-- (void)switchFilter:(id)sender
+- (IBAction)switchFilter:(id)sender
 {
     [self.fFilterBar switchFilter:sender == self.fNextFilterItem];
 }
@@ -3195,13 +3160,13 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
     [self updateTorrentHistory];
 }
 
-- (void)toggleSpeedLimit:(id)sender
+- (IBAction)toggleSpeedLimit:(id)sender
 {
     [self.fDefaults setBool:![self.fDefaults boolForKey:@"SpeedLimit"] forKey:@"SpeedLimit"];
     [self speedLimitChanged:sender];
 }
 
-- (void)speedLimitChanged:(id)sender
+- (IBAction)speedLimitChanged:(id)sender
 {
     tr_sessionUseAltSpeed(self.fLib, [self.fDefaults boolForKey:@"SpeedLimit"]);
     [self.fStatusBar updateSpeedFieldsToolTips];
@@ -3227,11 +3192,6 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
         UNNotificationRequest* request = [UNNotificationRequest requestWithIdentifier:identifier content:content trigger:nil];
         [UNUserNotificationCenter.currentNotificationCenter addNotificationRequest:request withCompletionHandler:nil];
     }
-}
-
-- (void)sound:(NSSound*)sound didFinishPlaying:(BOOL)finishedPlaying
-{
-    self.fSoundPlaying = NO;
 }
 
 - (void)VDKQueue:(VDKQueue*)queue receivedNotification:(NSString*)notification forPath:(NSString*)fpath
@@ -3609,7 +3569,7 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
         }
 
         if (filesToOpen.count > 0) {
-            [self application:NSApp openFiles:filesToOpen];
+            [self openFiles:filesToOpen addType:AddTypeManual forcePath:nil];
         } else {
             if (!torrent && files.count == 1) {
                 [CreatorWindowController createTorrentFile:self.fLib forFile:files[0]];
@@ -3630,7 +3590,7 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
     return NO;
 }
 
-- (void)toggleSmallView:(id)sender
+- (IBAction)toggleSmallView:(id)sender
 {
     BOOL makeSmall = ![self.fDefaults boolForKey:@"SmallView"];
     [self.fDefaults setBool:makeSmall forKey:@"SmallView"];
@@ -3649,26 +3609,26 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
     [self updateForAutoSize];
 }
 
-- (void)togglePiecesBar:(id)sender
+- (IBAction)togglePiecesBar:(id)sender
 {
     [self.fDefaults setBool:![self.fDefaults boolForKey:@"PiecesBar"] forKey:@"PiecesBar"];
     [self.fTableView togglePiecesBar];
 }
 
-- (void)toggleAvailabilityBar:(id)sender
+- (IBAction)toggleAvailabilityBar:(id)sender
 {
     [self.fDefaults setBool:![self.fDefaults boolForKey:@"DisplayProgressBarAvailable"] forKey:@"DisplayProgressBarAvailable"];
-    [self.fTableView display];
+    [self.fTableView reloadVisibleRows];
 }
 
-- (void)toggleStatusBar:(id)sender
+- (IBAction)toggleStatusBar:(id)sender
 {
     BOOL const show = self.fStatusBar == nil || self.fStatusBar.isHidden;
     [self.fDefaults setBool:show forKey:@"StatusBar"];
     [self updateMainWindow];
 }
 
-- (void)toggleFilterBar:(id)sender
+- (IBAction)toggleFilterBar:(id)sender
 {
     BOOL const show = self.fFilterBar == nil || self.fFilterBar.isHidden;
 
@@ -4787,7 +4747,7 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
     [self setBottomCountText:YES];
 }
 
-- (void)showMainWindow:(id)sender
+- (IBAction)showMainWindow:(id)sender
 {
     [self.fWindow makeKeyAndOrderFront:nil];
 }
@@ -4803,7 +4763,12 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
     [self updateUI];
 }
 
-- (void)toggleQuickLook:(id)sender
+- (void)toggleQuickLook
+{
+    [self toggleQuickLook:nil];
+}
+
+- (IBAction)toggleQuickLook:(id)sender
 {
     if ([QLPreviewPanel sharedPreviewPanel].visible) {
         [[QLPreviewPanel sharedPreviewPanel] orderOut:nil];
@@ -4812,22 +4777,22 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
     }
 }
 
-- (void)linkHomepage:(id)sender
+- (IBAction)linkHomepage:(id)sender
 {
     [NSWorkspace.sharedWorkspace openURL:[NSURL URLWithString:kWebsiteURL]];
 }
 
-- (void)linkForums:(id)sender
+- (IBAction)linkForums:(id)sender
 {
     [NSWorkspace.sharedWorkspace openURL:[NSURL URLWithString:kForumURL]];
 }
 
-- (void)linkGitHub:(id)sender
+- (IBAction)linkGitHub:(id)sender
 {
     [NSWorkspace.sharedWorkspace openURL:[NSURL URLWithString:kGithubURL]];
 }
 
-- (void)linkDonate:(id)sender
+- (IBAction)linkDonate:(id)sender
 {
     [NSWorkspace.sharedWorkspace openURL:[NSURL URLWithString:kDonateURL]];
 }

@@ -6,15 +6,25 @@
 #include <algorithm>
 #include <array>
 #include <atomic>
+#include <barrier>
+#include <cerrno>
+#include <chrono>
 #include <cstddef> // size_t
 #include <cstdint> // uint64_t
+#include <future>
+#include <string>
 #include <string_view>
 #include <thread>
+#include <tuple>
 #include <vector>
 
 #include <fmt/format.h>
 
 #include <gtest/gtest.h>
+
+#ifdef _WIN32
+#include <windows.h>
+#endif
 
 #include <libtransmission/transmission.h>
 
@@ -58,6 +68,27 @@ TEST_F(OpenFilesTest, getOpensIfNotCached)
     EXPECT_TRUE(tr_sys_file_read_at(file->fd(), std::data(buf), std::size(Contents), 0, &bytes_read));
     auto const contents = std::string_view{ std::data(buf), static_cast<size_t>(bytes_read) };
     EXPECT_EQ(Contents, contents);
+}
+
+TEST_F(OpenFilesTest, countsOnlyTheFilesItCreates)
+{
+    auto files = tr_open_files{};
+    auto error = tr_error{};
+    auto const filename = tr_pathbuf{ sandboxDir(), "/new-file.bin" };
+
+    // the first writable get() creates the file
+    EXPECT_TRUE(files.get(0, 0, true, filename, tr_file_preallocation::None, 1U, error));
+    EXPECT_EQ(1U, files.take_files_created());
+
+    // the second one finds it in the pool
+    EXPECT_TRUE(files.get(0, 0, true, filename, tr_file_preallocation::None, 1U, error));
+    EXPECT_EQ(0U, files.take_files_created());
+
+    // and after a close, it finds it on disk
+    files.close_file(0, 0);
+    EXPECT_TRUE(files.get(0, 0, true, filename, tr_file_preallocation::None, 1U, error));
+    EXPECT_EQ(0U, files.take_files_created());
+    EXPECT_FALSE(error) << error;
 }
 
 TEST_F(OpenFilesTest, getCacheSucceedsIfCached)
@@ -279,6 +310,126 @@ TEST_F(OpenFilesTest, servesConcurrentCallersWhileFilesAreClosed)
 
     EXPECT_EQ(0, bad_reads);
 }
+
+TEST_F(OpenFilesTest, concurrentWritersShareTheInitializedFile)
+{
+    static auto constexpr NumWriters = size_t{ 8U };
+    static auto constexpr FileSize = uint64_t{ 1024U } * 1024U;
+    auto const filename = tr_pathbuf{ sandboxDir(), "/concurrent.bin" };
+    auto ready = std::barrier{ static_cast<std::ptrdiff_t>(NumWriters) };
+    auto handles = std::array<tr_open_files::Handle, NumWriters>{};
+    auto writers = std::vector<std::thread>{};
+
+    for (auto index = size_t{}; index < NumWriters; ++index) {
+        writers.emplace_back([this, &filename, &ready, &handles, index]() {
+            ready.arrive_and_wait();
+            auto error = tr_error{};
+            handles[index] = session_->openFiles().get(0, 0, true, filename, PreallocateFull, FileSize, error);
+        });
+    }
+    for (auto& writer : writers) {
+        writer.join();
+    }
+
+    ASSERT_TRUE(handles.front());
+    for (auto const& handle : handles) {
+        EXPECT_EQ(handles.front(), handle);
+    }
+    auto const info = tr_sys_path_get_info(filename);
+    ASSERT_TRUE(info);
+    EXPECT_EQ(FileSize, info->size);
+}
+
+namespace
+{
+
+// Params: whether the first writer's open fails, and which torrent the second writer is for.
+class OpenFilesPreallocationTest
+    : public tr::test::SandboxedTest
+    , public ::testing::WithParamInterface<std::tuple<bool, tr_torrent_id_t>>
+{
+};
+
+} // namespace
+
+TEST_P(OpenFilesPreallocationTest, serializesWritersUntilInitializationFinishes)
+{
+    static auto constexpr FileSize = (uint64_t{ 2U } * 1024U * 1024U) + 17U;
+    static auto constexpr Offset = (uint64_t{ 1024U } * 1024U) + 13U;
+    static auto constexpr Payload = "second writer's data"sv;
+    auto const fail = std::get<0>(GetParam());
+    auto const second_tor_id = std::get<1>(GetParam());
+    auto const filename = tr_pathbuf{ sandboxDir(), "/preallocated.bin" };
+    auto const other_filename = tr_pathbuf{ sandboxDir(), "/independent.bin" };
+    auto entered = std::promise<void>{};
+    auto resume = std::promise<void>{};
+    auto const resumed = resume.get_future().share();
+    auto calls = std::atomic<size_t>{};
+    auto files = tr_open_files{ [&](tr_sys_file_t, uint64_t const size, int const flags, tr_error* const error) {
+        ++calls;
+        EXPECT_EQ(FileSize, size);
+        EXPECT_EQ(0, flags);
+        entered.set_value();
+        EXPECT_EQ(std::future_status::ready, resumed.wait_for(5s));
+        return tr::test::failPreallocation(error, fail);
+    } };
+
+    auto first = std::async(std::launch::async, [&]() {
+        auto error = tr_error{};
+        return files.get(0, 0, true, filename, PreallocateFull, FileSize, error);
+    });
+    EXPECT_EQ(std::future_status::ready, entered.get_future().wait_for(5s));
+    EXPECT_FALSE(files.get(0, 0, true));
+
+    auto writer_started = std::promise<void>{};
+    auto second = std::async(std::launch::async, [&]() {
+        writer_started.set_value();
+        auto error = tr_error{};
+        auto file = files.get(second_tor_id, 0, true, filename, PreallocateFull, FileSize, error);
+        if (file) {
+            auto const lock = file->io_lock();
+            auto written = uint64_t{};
+            EXPECT_TRUE(tr_sys_file_write_at(file->fd(), Payload.data(), Payload.size(), Offset, &written));
+            EXPECT_EQ(Payload.size(), written);
+        }
+        return file;
+    });
+    EXPECT_EQ(std::future_status::ready, writer_started.get_future().wait_for(5s));
+    EXPECT_EQ(std::future_status::timeout, second.wait_for(100ms));
+
+    auto independent = std::async(std::launch::async, [&]() {
+        auto error = tr_error{};
+        return files.get(0, 1, true, other_filename, tr_file_preallocation::None, 0U, error);
+    });
+    EXPECT_EQ(std::future_status::ready, independent.wait_for(1s));
+    resume.set_value();
+
+    auto const first_file = first.get();
+    auto const second_file = second.get();
+    EXPECT_TRUE(independent.get());
+    EXPECT_EQ(!fail, static_cast<bool>(first_file));
+    ASSERT_TRUE(second_file);
+    EXPECT_EQ(second_file, files.get(second_tor_id, 0, true));
+    EXPECT_EQ(1U, calls.load());
+    // a torrent's writers share one descriptor
+    EXPECT_EQ(!fail && second_tor_id == 0, first_file == second_file);
+
+    auto expected = std::string(static_cast<size_t>(fail ? Offset + Payload.size() : FileSize), '\0');
+    expected.replace(Offset, Payload.size(), Payload);
+    auto actual = std::string(expected.size(), '\0');
+    auto bytes_read = uint64_t{};
+    EXPECT_TRUE(tr_sys_file_read_at(second_file->fd(), actual.data(), actual.size(), 0U, &bytes_read));
+    EXPECT_EQ(expected.size(), bytes_read);
+    EXPECT_EQ(expected, actual);
+    auto const info = tr_sys_path_get_info(filename);
+    ASSERT_TRUE(info);
+    EXPECT_EQ(expected.size(), info->size);
+}
+
+INSTANTIATE_TEST_SUITE_P(
+    FullAllocation,
+    OpenFilesPreallocationTest,
+    ::testing::Combine(::testing::Bool(), ::testing::Values(tr_torrent_id_t{ 0 }, tr_torrent_id_t{ 1 })));
 
 TEST_F(OpenFilesTest, closesLeastRecentlyUsedFile)
 {

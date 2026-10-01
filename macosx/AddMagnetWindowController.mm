@@ -101,7 +101,7 @@ typedef NS_ENUM(NSUInteger, PopupPriority) {
     }
 }
 
-- (void)setDestination:(id)sender
+- (IBAction)setDestination:(id)sender
 {
     NSOpenPanel* panel = [NSOpenPanel openPanel];
 
@@ -127,7 +127,7 @@ typedef NS_ENUM(NSUInteger, PopupPriority) {
     }];
 }
 
-- (void)add:(id)sender
+- (IBAction)add:(id)sender
 {
     if ([self.fDestination.lastPathComponent isEqualToString:self.torrent.name] &&
         [NSUserDefaults.standardUserDefaults boolForKey:@"WarningFolderDataSameName"]) {
@@ -158,7 +158,7 @@ typedef NS_ENUM(NSUInteger, PopupPriority) {
     }
 }
 
-- (void)cancelAdd:(id)sender
+- (IBAction)cancelAdd:(id)sender
 {
     [self.window performClose:sender];
 }
@@ -170,7 +170,7 @@ typedef NS_ENUM(NSUInteger, PopupPriority) {
     return YES;
 }
 
-- (void)changePriority:(id)sender
+- (IBAction)changePriority:(id)sender
 {
     tr_priority_t priority;
     switch ([sender indexOfSelectedItem]) {

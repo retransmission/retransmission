@@ -253,10 +253,12 @@ tr_variant from_stats_mode(StatsMode const& src)
 
     // TODO(c++20): switch to std::chrono::zoned_time, GCC 13.1, clang 19 (or clang 21 with std::format), fmt 11.2
     // prefer localtime with TZ offset data when we can get it.
+    // Where std::tm lacks tm_gmtoff, this branch never runs but is still compiled,
+    // and fmt rejects "%z" at compile time. The "%z"-less string only lets it compile there.
+    static auto constexpr LocalFmt = HasTmGmtoffV<std::tm> ? "{:%FT%T%z}"sv : "{:%FT%T}"sv;
     if constexpr (HasTmGmtoffV<std::tm>) {
         if (auto const* local = std::localtime(&tt)) {
-            // fmt::runtime to workaround FTBFS in clang
-            return fmt::format(fmt::runtime("{:%FT%T%z}"), *local);
+            return fmt::format(LocalFmt, *local);
         }
     }
 

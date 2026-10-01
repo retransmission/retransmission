@@ -99,7 +99,7 @@
                         <property name="can-focus">False</property>
                         <property name="hexpand">True</property>
                         <property name="action">select-folder</property>
-                        <property name="title" translatable="yes"/>
+                        <property name="title"/>
                       </object>
                       <packing>
                         <property name="left-attach">1</property>

@@ -3,92 +3,71 @@
 // or any future license endorsed by Mnemosaic LLC.
 // License text can be found in the licenses/ folder.
 
+#include <algorithm>
+#include <utility>
+
 #import <QtGui/QColor>
 #import <QtGui/QImage>
-#import <QtGui/QPalette>
 #import <QtGui/QPixmap>
-
-#import <QtWidgets/QApplication>
 
 #import <AppKit/AppKit.h>
 
-// Source: https://stackoverflow.com/a/74756071
-// Posted by Bri Bri
-// Retrieved 2025-11-22, License - CC BY-SA 4.0
-namespace bribri
+[[nodiscard]] bool hasSFSymbol(QString const symbol_name)
 {
-
-CGBitmapInfo CGBitmapInfoForQImage(QImage const& image)
-{
-    CGBitmapInfo bitmapInfo = kCGImageAlphaNone;
-
-    switch (image.format()) {
-    case QImage::Format_ARGB32:
-        bitmapInfo = kCGImageAlphaFirst | kCGBitmapByteOrder32Host;
-        break;
-    case QImage::Format_RGB32:
-        bitmapInfo = kCGImageAlphaNoneSkipFirst | kCGBitmapByteOrder32Host;
-        break;
-    case QImage::Format_RGBA8888_Premultiplied:
-        bitmapInfo = kCGImageAlphaPremultipliedLast | kCGBitmapByteOrder32Big;
-        break;
-    case QImage::Format_RGBA8888:
-        bitmapInfo = kCGImageAlphaLast | kCGBitmapByteOrder32Big;
-        break;
-    case QImage::Format_RGBX8888:
-        bitmapInfo = kCGImageAlphaNoneSkipLast | kCGBitmapByteOrder32Big;
-        break;
-    case QImage::Format_ARGB32_Premultiplied:
-        bitmapInfo = kCGImageAlphaPremultipliedFirst | kCGBitmapByteOrder32Host;
-        break;
-    default:
-        break;
-    }
-
-    return bitmapInfo;
+    return [NSImage imageWithSystemSymbolName:symbol_name.toNSString() accessibilityDescription:nil] != nil;
 }
 
-QImage CGImageToQImage(CGImageRef cgImage)
+[[nodiscard]] QPixmap loadSFSymbol(QString const symbol_name, int const pixel_size, QColor const& color)
 {
-    size_t const width = CGImageGetWidth(cgImage);
-    size_t const height = CGImageGetHeight(cgImage);
-    QImage image(width, height, QImage::Format_ARGB32_Premultiplied);
-    image.fill(Qt::transparent);
-
-    CGColorSpaceRef colorSpace = CGColorSpaceCreateWithName(kCGColorSpaceSRGB);
-    CGContextRef context = CGBitmapContextCreate((void*)image.bits(), image.width(), image.height(), 8, image.bytesPerLine(), colorSpace, CGBitmapInfoForQImage(image));
-
-    // Scale the context so that painting happens in device-independent pixels
-    qreal const devicePixelRatio = image.devicePixelRatio();
-    CGContextScaleCTM(context, devicePixelRatio, devicePixelRatio);
-
-    CGRect rect = CGRectMake(0, 0, width, height);
-    CGContextDrawImage(context, rect, cgImage);
-
-    CFRelease(colorSpace);
-    CFRelease(context);
-
-    return image;
-}
-
-} // namespace bribri
-
-QPixmap loadSFSymbol(QString const symbol_name, int const pixel_size)
-{
-    if (NSImage* image = [NSImage imageWithSystemSymbolName:symbol_name.toNSString() accessibilityDescription:nil]) {
-        auto* configuration = [NSImageSymbolConfiguration configurationWithPointSize:pixel_size weight:NSFontWeightRegular];
-        // use whatever color QPalette::ButtonText is using
-        QColor const qfg = qApp->palette().color(QPalette::ButtonText);
-        NSColor* nsfg = [NSColor colorWithCalibratedRed:qfg.redF() green:qfg.greenF() blue:qfg.blueF() alpha:qfg.alphaF()];
-        auto* colorConfig = [NSImageSymbolConfiguration configurationWithHierarchicalColor:nsfg];
-        configuration = [configuration configurationByApplyingConfiguration:colorConfig];
-        image = [image imageWithSymbolConfiguration:configuration];
-
-        // NSImage -> QPixmap
-        NSRect image_rect = NSMakeRect(0, 0, pixel_size, pixel_size);
-        CGImageRef cgimg = [image CGImageForProposedRect:&image_rect context:nil hints:nil];
-        return QPixmap::fromImage(bribri::CGImageToQImage(cgimg));
+    if (pixel_size <= 0) {
+        return {};
     }
 
-    return {};
+    // Drain before returning: the autoreleased NSGraphicsContext retains `context`,
+    // which must not outlive the pixels it draws into.
+    @autoreleasepool {
+        NSImage* symbol = [NSImage imageWithSystemSymbolName:symbol_name.toNSString() accessibilityDescription:nil];
+        if (symbol == nil) {
+            return {};
+        }
+
+        // Build the color in sRGB, the bitmap's color space, so its pixels equal the QColor's components.
+        NSColor* const ns_color = [NSColor colorWithSRGBRed:color.redF() green:color.greenF() blue:color.blueF()
+                                                      alpha:color.alphaF()];
+        auto* const size_config = [NSImageSymbolConfiguration configurationWithPointSize:pixel_size weight:NSFontWeightRegular];
+        auto* const color_config = [NSImageSymbolConfiguration configurationWithHierarchicalColor:ns_color];
+        symbol = [symbol imageWithSymbolConfiguration:[size_config configurationByApplyingConfiguration:color_config]];
+
+        // Center the symbol in a pixel_size square without changing its aspect ratio.
+        // A square bitmap lets the icon engine map it 1:1 onto a square icon rect.
+        auto const natural = symbol.size;
+        if (natural.width <= 0 || natural.height <= 0) {
+            return {};
+        }
+        auto const scale = pixel_size / std::max(natural.width, natural.height);
+        auto const width = natural.width * scale;
+        auto const height = natural.height * scale;
+
+        auto image = QImage{ pixel_size, pixel_size, QImage::Format_ARGB32_Premultiplied };
+        image.fill(Qt::transparent);
+
+        // Let AppKit draw straight into the QImage's pixels.
+        // Premultiplied alpha-first in host byte order is Format_ARGB32_Premultiplied's layout.
+        // CGBitmapInfo{} keeps C++20 from warning about OR-ing two different enum types.
+        auto constexpr BitmapInfo = CGBitmapInfo{ kCGImageAlphaPremultipliedFirst } | kCGBitmapByteOrder32Host;
+        CGColorSpaceRef const color_space = CGColorSpaceCreateWithName(kCGColorSpaceSRGB);
+        CGContextRef const context = CGBitmapContextCreate(image.bits(), pixel_size, pixel_size, 8, image.bytesPerLine(), color_space, BitmapInfo);
+        CGColorSpaceRelease(color_space);
+        if (context == nullptr) {
+            return {};
+        }
+
+        [NSGraphicsContext saveGraphicsState];
+        [NSGraphicsContext setCurrentContext:[NSGraphicsContext graphicsContextWithCGContext:context flipped:NO]];
+        [symbol drawInRect:NSMakeRect((pixel_size - width) / 2, (pixel_size - height) / 2, width, height)];
+        [NSGraphicsContext restoreGraphicsState];
+        CGContextRelease(context);
+
+        return QPixmap::fromImage(std::move(image));
+    }
 }

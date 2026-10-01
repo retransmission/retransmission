@@ -13,6 +13,7 @@
 #include "libtransmission/bitfield.h"
 #include "libtransmission/block-info.h"
 #include "libtransmission/completion.h"
+#include "libtransmission/constants.h"
 #include "libtransmission/tr-assert.h"
 #include "libtransmission/torrent.h"
 #include "libtransmission/types.h"
@@ -196,7 +197,7 @@ uint64_t tr_completion::count_has_bytes_in_span(tr_byte_span_t span) const
     // the first block
     if (has_block(begin_block)) {
         uint64_t u = begin_block + 1;
-        u *= tr_block_info::BlockSize;
+        u *= TrBlockSize;
         u -= begin_byte;
         total += u;
     }
@@ -204,14 +205,14 @@ uint64_t tr_completion::count_has_bytes_in_span(tr_byte_span_t span) const
     // the middle blocks
     if (begin_block + 1 < final_block) {
         uint64_t u = blocks_.count(begin_block + 1, final_block);
-        u *= tr_block_info::BlockSize;
+        u *= TrBlockSize;
         total += u;
     }
 
     // the last block
     if (has_block(final_block)) {
         uint64_t u = final_block;
-        u *= tr_block_info::BlockSize;
+        u *= TrBlockSize;
         total += end_byte - u;
     }
 

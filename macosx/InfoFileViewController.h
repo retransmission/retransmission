@@ -16,10 +16,6 @@
 
 - (void)saveViewSize;
 
-- (IBAction)setFileFilterText:(id)sender;
-- (IBAction)checkAll:(id)sender;
-- (IBAction)uncheckAll:(id)sender;
-
 - (NSRect)quickLookSourceFrameForPreviewItem:(id<QLPreviewItem>)item;
 
 @end

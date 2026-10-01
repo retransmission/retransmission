@@ -150,7 +150,7 @@ private:
     [[nodiscard]] bool ensure_bits_alloced(size_t n);
     [[nodiscard]] bool ensure_nth_bit_alloced(size_t nth);
 
-    void free_array() noexcept
+    constexpr void free_array() noexcept
     {
         // move-assign to ensure the reserve memory is cleared
         flags_ = std::vector<std::byte>{};

@@ -95,7 +95,6 @@ cat > libtransmission/version.h.new << EOF
 #define PEERID_PREFIX             "${peer_id_prefix}"
 #define USERAGENT_PREFIX          "${user_agent_prefix}"
 #define VCS_REVISION              "${vcs_revision}"
-#define VCS_REVISION_NUM          ${vcs_revision}
 #define SHORT_VERSION_STRING      "${user_agent_prefix}"
 #define LONG_VERSION_STRING       "${user_agent_prefix} (${vcs_revision})"
 #define VERSION_STRING_INFOPLIST  ${user_agent_prefix}

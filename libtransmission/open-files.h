@@ -9,10 +9,15 @@
 #error only libtransmission should #include this header.
 #endif
 
+#include <atomic>
+#include <condition_variable>
 #include <cstddef> // for size_t
 #include <cstdint> // for uintX_t
+#include <functional>
+#include <set>
 #include <memory>
 #include <mutex>
+#include <string>
 #include <string_view>
 #include <utility>
 
@@ -86,6 +91,13 @@ public:
     // A reference to a pooled descriptor. Empty if the file isn't available.
     using Handle = std::shared_ptr<OpenFile const>;
 
+    using Preallocate = std::function<bool(tr_sys_file_t, uint64_t, int, tr_error*)>;
+
+    explicit tr_open_files(Preallocate preallocate = tr_sys_file_preallocate)
+        : preallocate_{ std::move(preallocate) }
+    {
+    }
+
     [[nodiscard]] Handle get(tr_torrent_id_t tor_id, tr_file_index_t file_num, bool writable);
 
     [[nodiscard]] Handle get(
@@ -101,8 +113,38 @@ public:
     void close_torrent(tr_torrent_id_t tor_id);
     void close_file(tr_torrent_id_t tor_id, tr_file_index_t file_num);
 
+    // How many files get() has created on disk since the last call.
+    [[nodiscard]] size_t take_files_created() noexcept
+    {
+        return n_files_created_.exchange(0U, std::memory_order_relaxed);
+    }
+
 private:
     using Key = std::pair<tr_torrent_id_t, tr_file_index_t>;
+    using Paths = std::set<std::string, std::less<>>;
+
+    // Marks a path as being opened for as long as it lives.
+    // Opens of that path wait until it's gone, whichever torrent
+    // they're for, so none of them sees a half-initialized file.
+    class Opening
+    {
+    public:
+        Opening(tr_open_files& owner, Paths::iterator const path) noexcept
+            : owner_{ owner }
+            , path_{ path }
+        {
+        }
+
+        Opening(Opening const&) = delete;
+        Opening(Opening&&) = delete;
+        Opening& operator=(Opening const&) = delete;
+        Opening& operator=(Opening&&) = delete;
+        ~Opening();
+
+    private:
+        tr_open_files& owner_;
+        Paths::iterator path_;
+    };
 
     [[nodiscard]] static Key make_key(tr_torrent_id_t tor_id, tr_file_index_t file_num) noexcept
     {
@@ -111,7 +153,13 @@ private:
 
     static constexpr size_t MaxOpenFiles = 32U;
 
-    // Guards pool_ only. Files are opened outside it: see get().
+    Preallocate const preallocate_;
+
+    // Guards pool_ and opening_. File initialization runs outside the lock.
     std::mutex mutex_;
+    std::condition_variable opening_cv_;
+    Paths opening_;
     tr_lru_cache<Key, Handle, MaxOpenFiles> pool_;
+
+    std::atomic<size_t> n_files_created_ = 0U;
 };

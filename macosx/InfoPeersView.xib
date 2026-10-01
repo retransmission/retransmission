@@ -26,7 +26,7 @@
                         <rect key="frame" x="1" y="1" width="298" height="70"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" alternatingRowBackgroundColors="YES" typeSelect="NO" autosaveName="InspectorTableWebSeeds" rowHeight="14" headerView="25" id="22" customClass="WebSeedTableView">
+                            <tableView verticalHuggingPriority="750" allowsExpansionToolTips="YES" alternatingRowBackgroundColors="YES" typeSelect="NO" autosaveName="InspectorTableWebSeeds" rowHeight="14" headerView="25" id="22">
                                 <rect key="frame" x="0.0" y="0.0" width="299" height="47"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <size key="intercellSpacing" width="3" height="2"/>
@@ -89,7 +89,7 @@
                         <rect key="frame" x="1" y="1" width="298" height="148"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <tableView allowsExpansionToolTips="YES" alternatingRowBackgroundColors="YES" multipleSelection="NO" typeSelect="NO" autosaveName="InspectorTable" rowHeight="16" headerView="6" id="9" customClass="PeerTableView">
+                            <tableView allowsExpansionToolTips="YES" alternatingRowBackgroundColors="YES" multipleSelection="NO" typeSelect="NO" autosaveName="InspectorTable" rowHeight="16" headerView="6" id="9">
                                 <rect key="frame" x="0.0" y="0.0" width="298" height="125"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <size key="intercellSpacing" width="3" height="2"/>
@@ -193,7 +193,7 @@
                 </scrollView>
                 <textField verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="3">
                     <rect key="frame" x="10" y="12" width="304" height="28"/>
-                    <textFieldCell key="cell" controlSize="small" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" alignment="center" placeholderString="no peer info available" id="30">
+                    <textFieldCell key="cell" controlSize="small" lineBreakMode="truncatingTail" sendsActionOnEndEditing="YES" alignment="center" id="30">
                         <font key="font" metaFont="smallSystem"/>
                         <string key="title">Multiline Label
 Multiline Label</string>

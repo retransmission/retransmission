@@ -8,7 +8,6 @@
 #include "FilterBase.hh"
 #include "Utils.h"
 
-#include <libtransmission/macros.h>
 #include <libtransmission/transmission.h>
 
 #include <algorithm>
@@ -116,7 +115,7 @@ void TorrentFilter::update(Torrent::ChangeFlags changes)
     bool refilter_needed = false;
 
     if (show_mode_ != ShowMode::ShowAll) {
-        static auto TR_CONSTEXPR23 ShowModeFlags = std::to_array<std::pair<ShowMode, Torrent::ChangeFlags>>({
+        static auto constexpr ShowModeFlags = std::to_array<std::pair<ShowMode, Torrent::ChangeFlags>>({
             { ShowMode::ShowActive, Flag::ACTIVE_PEER_COUNT | Flag::ACTIVITY },
             { ShowMode::ShowDownloading, Flag::ACTIVITY },
             { ShowMode::ShowError, Flag::ERROR_CODE },

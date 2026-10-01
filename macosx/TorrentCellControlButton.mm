@@ -85,12 +85,14 @@
 
 - (void)updateTrackingAreas
 {
+    [super updateTrackingAreas];
+
     if (self.fTrackingArea != nil) {
         [self removeTrackingArea:self.fTrackingArea];
     }
 
-    NSTrackingAreaOptions opts = (NSTrackingMouseEnteredAndExited | NSTrackingActiveAlways);
-    self.fTrackingArea = [[NSTrackingArea alloc] initWithRect:self.bounds options:opts owner:self userInfo:nil];
+    NSTrackingAreaOptions options = (NSTrackingMouseEnteredAndExited | NSTrackingActiveAlways);
+    self.fTrackingArea = [[NSTrackingArea alloc] initWithRect:self.bounds options:options owner:self userInfo:nil];
     [self addTrackingArea:self.fTrackingArea];
 }
 

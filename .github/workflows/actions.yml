@@ -80,7 +80,8 @@ jobs:
           }
           get_changes core       CMakeLists.txt cmake third-party libtransmission libtransmission-app
           get_changes android    CMakeLists.txt cmake third-party libtransmission android
-          get_changes cli        CMakeLists.txt cmake Transmission.xcodeproj third-party libtransmission cli
+          get_changes cli        CMakeLists.txt cmake third-party libtransmission cli
+          get_changes daemon     CMakeLists.txt cmake third-party libtransmission daemon
           get_changes any-code   CMakeLists.txt cmake Transmission.xcodeproj libtransmission libtransmission-app cli daemon gtk macosx qt utils tests web third-party
           get_changes our-code   CMakeLists.txt cmake Transmission.xcodeproj libtransmission libtransmission-app cli daemon gtk macosx qt utils tests web
           get_changes tidy-config libtransmission/.clang-tidy libtransmission-app/.clang-tidy gtk/.clang-tidy qt/.clang-tidy tests/libtransmission/.clang-tidy tests/qt/.clang-tidy
@@ -90,7 +91,6 @@ jobs:
           get_changes tidy-core-src libtransmission libtransmission-app tests/libtransmission
           get_changes tidy-gtk-src  gtk
           get_changes tidy-qt-src   qt tests/qt
-          get_changes daemon     CMakeLists.txt cmake Transmission.xcodeproj third-party libtransmission daemon
           get_changes dist       dist release
           get_changes docs       docs
           get_changes gtk        CMakeLists.txt cmake third-party libtransmission libtransmission-app gtk
@@ -186,6 +186,7 @@ jobs:
             -DUSE_SYSTEM_DEFAULT=ON \
             -DUSE_SYSTEM_ARCHIVE=OFF `# Build vendored libarchive here to exercise its ExternalProject scripts on Linux` \
             -DUSE_SYSTEM_DHT=OFF `# Not packaged in Ubuntu` \
+            -DUSE_SYSTEM_FMT=AUTO `# distro may not have fmt >= FMT_MINIMUM` \
             -DUSE_SYSTEM_SIGSLOT=OFF `# Not packaged in Ubuntu` \
             -DUSE_SYSTEM_SIMDUTF=OFF `# TODO: YES in 26.04` \
             -DUSE_SYSTEM_SMALL=OFF `# Not packaged in Ubuntu` \
@@ -375,7 +376,6 @@ jobs:
     # clang-tidy can parse every TU, but never compiles the whole target;
     # ctcache caches per-TU results across runs. The matrix.enabled flag (wired
     # to the what-to-make tidy-* outputs) skips cells whose area did not change.
-    # TODO: try removing '-DFMT_USE_CONSTEVAL=0' either when upgrading clang or fmt
     strategy:
       fail-fast: false
       matrix:
@@ -456,8 +456,8 @@ jobs:
             -DENABLE_TESTS=${{ matrix.enable-tests && 'ON' || 'OFF' }} \
             -DRUN_CLANG_TIDY=OFF \
             -DUSE_SYSTEM_DEFAULT=ON \
-            -DUSE_SYSTEM_FMT=${{ matrix.toolkit == 'gtk4' && 'OFF' || 'ON' }} `# TODO: remove this line when fmt>10 or clang>20` \
             -DUSE_SYSTEM_DHT=OFF `# Not packaged in Ubuntu` \
+            -DUSE_SYSTEM_FMT=AUTO `# distro may not have fmt >= FMT_MINIMUM` \
             -DUSE_SYSTEM_SIGSLOT=OFF `# Not packaged in Ubuntu` \
             -DUSE_SYSTEM_SIMDUTF=OFF `# TODO: YES in 26.04` \
             -DUSE_SYSTEM_SMALL=OFF `# Not packaged in Ubuntu` \
@@ -484,7 +484,6 @@ jobs:
           regex: ${{ matrix.regex }}
           cache-key: ${{ github.job }}-${{ matrix.toolkit }}
           clang-tidy-binary: clang-tidy-22
-          extra-arg: '-DFMT_USE_CONSTEVAL=0'
 
   clang-tidy-windows:
     runs-on: windows-2025
@@ -1109,6 +1108,7 @@ jobs:
             -DUSE_SYSTEM_GTEST=ON \
             -DUSE_SYSTEM_DEFAULT=ON \
             -DUSE_SYSTEM_DHT=OFF \
+            -DUSE_SYSTEM_FMT=AUTO `# distro may not have fmt >= FMT_MINIMUM` \
             -DUSE_SYSTEM_SIGSLOT=OFF \
             -DUSE_SYSTEM_SIMDUTF=OFF `# TODO: YES in sid` \
             -DUSE_SYSTEM_SMALL=OFF \
@@ -1136,22 +1136,44 @@ jobs:
         if: always()
         run: ccache --show-stats
 
-  fedora:
+  rhel-family:
     needs: [ make-source-tarball, what-to-make ]
     if: ${{ needs.what-to-make.outputs.make-cli == 'true' || needs.what-to-make.outputs.make-daemon == 'true' || needs.what-to-make.outputs.make-gtk == 'true' || needs.what-to-make.outputs.make-qt == 'true' || needs.what-to-make.outputs.make-tests == 'true' || needs.what-to-make.outputs.make-utils == 'true' }}
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
-        version: [ latest ]
+        include:
+          - docker-image: fedora
+            version: latest
+            compiler: gcc
+            gtk: gtk4
+          - docker-image: almalinux
+            version: latest
+            compiler: gcc
+            gtk: gtk4
+          # Drop this matrix entry when AlmaLinux 9 reaches
+          - docker-image: almalinux
+            version: 9
+            compiler: clang # AlmaLinux 9 needs clang instead of GCC, since its GCC 11 is older than our GCC 12 minimum
+            gtk: gtk3 # AlmaLinux 9 only has gtk3
+            eol: 2027-05-31 # https://wiki.almalinux.org/release-notes/
     container:
-      image: fedora:${{ matrix.version }}
+      image: ${{matrix.docker-image}}:${{ matrix.version }}
     steps:
       - name: Show Configuration
         run: |
           echo '${{ toJSON(needs) }}'
           echo '${{ toJSON(runner) }}'
           cat /etc/os-release
+      - name: Check End-of-Life
+        if: ${{ matrix.eol != '' }}
+        run: |
+          now=$(date +%s)
+          eol=$(date -d '${{ matrix.eol }}T00:00:00Z + 1 day' +%s)
+          if [ "$now" -gt "$eol" ]; then
+            echo '::warning title=${{ matrix.docker-image }}:${{ matrix.version}} reached EOL::Update or remove this runner.'
+          fi
       - name: Get Composite Actions
         uses: actions/checkout@v7
         with:
@@ -1161,8 +1183,8 @@ jobs:
       - name: Get Dependencies
         uses: ./.github/actions/install-deps
         with:
-          compiler: gcc
-          enable-gtk: ${{ needs.what-to-make.outputs.make-gtk == 'true' && 'gtk4' || 'false' }}
+          compiler: ${{ matrix.compiler }}
+          enable-gtk: ${{ needs.what-to-make.outputs.make-gtk == 'true' && matrix.gtk || 'false' }}
           enable-qt: ${{ needs.what-to-make.outputs.make-qt == 'true' && 'qt6' || 'false' }}
           use-sudo: false
           enable-mold: true
@@ -1171,7 +1193,7 @@ jobs:
         uses: ./.github/actions/setup-ccache
         with:
           in-container: 'true'
-          key-suffix: ${{ matrix.version }}
+          key-suffix: ${{ matrix.docker-image }}-${{ matrix.version }}
       - name: Get Source
         uses: actions/download-artifact@v8
         with:
@@ -1184,6 +1206,8 @@ jobs:
             -S src \
             -B obj \
             -G Ninja \
+            -DCMAKE_C_COMPILER=${{ matrix.compiler == 'clang' && 'clang' || 'gcc' }} \
+            -DCMAKE_CXX_COMPILER=${{ matrix.compiler == 'clang' && 'clang++' || 'g++' }} \
             -DCMAKE_C_COMPILER_LAUNCHER=ccache \
             -DCMAKE_CXX_COMPILER_LAUNCHER=ccache \
             -DCMAKE_BUILD_TYPE=Release \
@@ -1200,11 +1224,13 @@ jobs:
             -DRUN_CLANG_TIDY=OFF \
             -DCMAKE_EXE_LINKER_FLAGS=-fuse-ld=mold \
             -DUSE_SYSTEM_DEFAULT=ON \
-            -DUSE_SYSTEM_DHT=OFF `# Not packaged in Fedora` \
-            -DUSE_SYSTEM_SIGSLOT=OFF `# Not packaged in Fedora` \
-            -DUSE_SYSTEM_SMALL=OFF `# Not packaged in Fedora` \
-            -DUSE_SYSTEM_UTP=OFF `# Not packaged in Fedora` \
-            -DUSE_SYSTEM_WIDE_INTEGER=OFF `# Not packaged in Fedora`
+            -DUSE_SYSTEM_FMT=AUTO `# distro may not have fmt >= FMT_MINIMUM` \
+            -DUSE_SYSTEM_DHT=OFF `# Not packaged in RHEL/Fedora` \
+            -DUSE_SYSTEM_SIGSLOT=OFF `# Not packaged in RHEL/Fedora` \
+            -DUSE_SYSTEM_SIMDUTF=${{ matrix.docker-image == 'fedora' && 'ON' || 'OFF' }} `# Not packaged in RHEL/EPEL` \
+            -DUSE_SYSTEM_SMALL=OFF `# Not packaged in RHEL/Fedora` \
+            -DUSE_SYSTEM_UTP=OFF `# Not packaged in RHEL/Fedora` \
+            -DUSE_SYSTEM_WIDE_INTEGER=OFF `# Not packaged in RHEL/Fedora`
       - name: Build
         run: cmake --build obj --config Release
       - name: Test
@@ -1217,7 +1243,7 @@ jobs:
         run: cmake --install obj --config Release --strip
       - uses: actions/upload-artifact@v7
         with:
-          name: binaries-${{ github.job }}-${{ matrix.version }}
+          name: binaries-${{ github.job }}-${{ matrix.docker-image }}-${{ matrix.version }}
           path: pfx/**/*
       - name: Finalize ccache
         uses: ./.github/actions/finalize-ccache
@@ -1287,6 +1313,7 @@ jobs:
             -DCMAKE_EXE_LINKER_FLAGS=-fuse-ld=mold \
             -DUSE_SYSTEM_DEFAULT=ON \
             -DUSE_SYSTEM_DHT=OFF `# Not packaged in Ubuntu` \
+            -DUSE_SYSTEM_FMT=AUTO `# distro may not have fmt >= FMT_MINIMUM` \
             -DUSE_SYSTEM_SIGSLOT=OFF `# Not packaged in Ubuntu` \
             -DUSE_SYSTEM_SIMDUTF=OFF `# TODO: YES in 26.04` \
             -DUSE_SYSTEM_SMALL=OFF `# Not packaged in Ubuntu` \
@@ -1339,7 +1366,7 @@ jobs:
     - name: Setup Gradle
       uses: gradle/actions/setup-gradle@v6
       with:
-        # Using the default value 'external' opts us into a proprietary license,
+        # Using the default value 'enhanced' opts us into a proprietary license,
         # and I'm playing it safe by NOT doing that.
         # https://github.com/gradle/actions/blob/f9f39a915cd0648dca917c72880100a59df96944/DISTRIBUTION.md
         cache-provider: basic
@@ -1427,6 +1454,7 @@ jobs:
             -DRUN_CLANG_TIDY=OFF \
             -DUSE_SYSTEM_DEFAULT=ON \
             -DUSE_SYSTEM_DHT=OFF `# Not packaged in Ubuntu` \
+            -DUSE_SYSTEM_FMT=AUTO `# distro may not have fmt >= FMT_MINIMUM` \
             -DUSE_SYSTEM_SIGSLOT=OFF `# Not packaged in Ubuntu` \
             -DUSE_SYSTEM_SIMDUTF=OFF `# TODO: YES in 26.04` \
             -DUSE_SYSTEM_SMALL=OFF `# Not packaged in Ubuntu` \
@@ -1502,6 +1530,7 @@ jobs:
             -DRUN_CLANG_TIDY=OFF \
             -DUSE_SYSTEM_DEFAULT=ON \
             -DUSE_SYSTEM_DHT=OFF `# Not packaged in Ubuntu` \
+            -DUSE_SYSTEM_FMT=AUTO `# distro may not have fmt >= FMT_MINIMUM` \
             -DUSE_SYSTEM_SIGSLOT=OFF `# Not packaged in Ubuntu` \
             -DUSE_SYSTEM_SIMDUTF=OFF `# TODO: YES in 26.04` \
             -DUSE_SYSTEM_SMALL=OFF `# Not packaged in Ubuntu` \
@@ -1677,6 +1706,7 @@ jobs:
             -DCMAKE_EXE_LINKER_FLAGS=-fuse-ld=mold \
             -DUSE_SYSTEM_DEFAULT=ON \
             -DUSE_SYSTEM_DHT=OFF `# Not packaged in Ubuntu` \
+            -DUSE_SYSTEM_FMT=AUTO `# distro may not have fmt >= FMT_MINIMUM` \
             -DUSE_SYSTEM_SIGSLOT=OFF `# Not packaged in Ubuntu` \
             -DUSE_SYSTEM_SIMDUTF=OFF `# TODO: YES in 26.04` \
             -DUSE_SYSTEM_SMALL=OFF `# Not packaged in Ubuntu` \
@@ -1878,7 +1908,7 @@ jobs:
     # by main. Families that stop being produced age out through the
     # provider's 7-day unused-entry eviction.
     # Runs only on pushes to main: PR runs from forks get a read-only token.
-    needs: [ android, clang-tidy-linux, clang-tidy-windows, crypto, cxx23, debian, fedora, freebsd, macos-cmake-arm64-tar-26, macos-cmake-intel-git-15, netbsd, openbsd, sanitizer-tests-linux, sanitizer-tests-macos-26, sanitizer-tests-windows, ubuntu-24-04-arm64, utp-disabled, windows ]
+    needs: [ android, clang-tidy-linux, clang-tidy-windows, crypto, cxx23, debian, freebsd, macos-cmake-arm64-tar-26, macos-cmake-intel-git-15, netbsd, openbsd, rhel-family, sanitizer-tests-linux, sanitizer-tests-macos-26, sanitizer-tests-windows, ubuntu-24-04-arm64, utp-disabled, windows ]
     if: ${{ always() && github.event_name == 'push' }}
     runs-on: ubuntu-slim
     env:

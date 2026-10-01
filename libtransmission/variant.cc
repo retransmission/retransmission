@@ -14,13 +14,7 @@
 #include <variant>
 #include <vector>
 
-#ifdef _WIN32
-#include <share.h>
-#endif
-
 #include <fmt/format.h>
-
-#define LIBTRANSMISSION_VARIANT_MODULE
 
 #include "libtransmission/api-compat.h"
 #include "libtransmission/error.h"
@@ -31,8 +25,6 @@
 #include "libtransmission/tr-assert.h"
 #include "libtransmission/utils.h"
 #include "libtransmission/variant.h"
-
-using namespace std::literals;
 
 namespace
 {
@@ -119,32 +111,6 @@ void merge_variant(tr_variant& dest, tr_variant&& src)
     auto moved_src = std::move(src);
     merge_variant_impl<true>(dest, moved_src);
 }
-
-template<typename T>
-[[nodiscard]] tr_variant* dict_set(tr_variant* const var, tr_quark const key, T&& val)
-{
-    TR_ASSERT(var != nullptr);
-    TR_ASSERT(var->holds_alternative<tr_variant::Map>());
-
-    if (auto* const map = var != nullptr ? var->get_if<tr_variant::MapIndex>() : nullptr; map != nullptr) {
-        return &map->insert_or_assign(key, std::forward<T>(val)).first;
-    }
-
-    return {};
-}
-
-template<typename T>
-[[nodiscard]] tr_variant* vec_add(tr_variant* const var, T&& val)
-{
-    TR_ASSERT(var != nullptr);
-    TR_ASSERT(var->holds_alternative<tr_variant::Vector>());
-
-    if (auto* const vec = var != nullptr ? var->get_if<tr_variant::VectorIndex>() : nullptr; vec != nullptr) {
-        return &vec->emplace_back(std::forward<T>(val));
-    }
-
-    return {};
-}
 } // namespace
 
 // ---
@@ -215,66 +181,6 @@ tr_variant& tr_variant::merge(tr_variant&& that)
 
 // ---
 
-tr_variant* tr_variantDictFind(tr_variant* const var, tr_quark key)
-{
-    if (auto* const map = var != nullptr ? var->get_if<tr_variant::MapIndex>() : nullptr; map != nullptr) {
-        if (auto iter = map->find(key); iter != std::end(*map)) {
-            return &iter->second;
-        }
-    }
-
-    return {};
-}
-
-tr_variant* tr_variantListChild(tr_variant* const var, size_t pos)
-{
-    if (auto* const vec = var != nullptr ? var->get_if<tr_variant::VectorIndex>() : nullptr; vec != nullptr) {
-        if (pos < std::size(*vec)) {
-            return &vec->at(pos);
-        }
-    }
-
-    return {};
-}
-
-bool tr_variantDictFindList(tr_variant* const var, tr_quark key, tr_variant** setme)
-{
-    if (auto* const res = tr_variantDictFind(var, key); res != nullptr && res->holds_alternative<tr_variant::Vector>()) {
-        *setme = res;
-        return true;
-    }
-
-    return false;
-}
-
-bool tr_variantDictFindDict(tr_variant* const var, tr_quark key, tr_variant** setme)
-{
-    if (auto* const res = tr_variantDictFind(var, key); res != nullptr && res->holds_alternative<tr_variant::Map>()) {
-        *setme = res;
-        return true;
-    }
-
-    return false;
-}
-
-// ---
-
-tr_variant* tr_variantDictAddDict(tr_variant* const var, tr_quark key, size_t n_reserve)
-{
-    return dict_set(var, key, tr_variant::make_map(n_reserve));
-}
-
-// ---
-
-void tr_variantMergeDicts(tr_variant* const tgt, tr_variant const* const src)
-{
-    TR_ASSERT(tgt != nullptr);
-    TR_ASSERT(src != nullptr);
-    tgt->merge(*src);
-}
-
-// ---
-
 std::optional<tr_variant> tr_variant_serde::parse(std::string_view input)
 {
     error_ = {};
@@ -283,7 +189,7 @@ std::optional<tr_variant> tr_variant_serde::parse(std::string_view input)
 
 [[nodiscard]] std::optional<tr_variant> tr_variant_serde::parse_file(std::string_view filename)
 {
-    TR_ASSERT_MSG(!parse_inplace_, "not supported in from_file()");
+    TR_ASSERT_MSG(!parse_inplace_, "not supported in parse_file()");
     parse_inplace_ = false;
 
     if (auto buf = std::vector<char>{}; tr_file_read(filename, buf, &error_)) {

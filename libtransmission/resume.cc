@@ -4,21 +4,24 @@
 // License text can be found in the licenses/ folder.
 
 #include <algorithm> // std::min, std::ranges::adjacent_find, std::ranges::sort
+#include <cstddef> // size_t
 #include <cstdint>
-#include <cstring>
 #include <ctime>
-#include <limits>
+#include <optional>
 #include <string_view>
+#include <type_traits> // std::underlying_type_t
+#include <utility> // std::move, std::pair
 #include <vector>
 
 #include <fmt/format.h>
 
 #include "libtransmission/api-compat.h"
+#include "libtransmission/bandwidth.h" // tr_isPriority
 #include "libtransmission/bitfield.h"
 #include "libtransmission/converters.h"
-#include "libtransmission/error.h"
 #include "libtransmission/file-utils.h"
 #include "libtransmission/file.h"
+#include "libtransmission/log.h"
 #include "libtransmission/net.h"
 #include "libtransmission/peer-mgr.h" /* pex */
 #include "libtransmission/quark.h"
@@ -30,6 +33,7 @@
 #include "libtransmission/tr-assert.h"
 #include "libtransmission/types.h"
 #include "libtransmission/utils.h"
+#include "libtransmission/values.h"
 #include "libtransmission/variant.h"
 
 using namespace std::literals;
@@ -41,57 +45,79 @@ namespace
 {
 constexpr auto MaxRememberedPeers = 200U;
 
+[[nodiscard]] constexpr std::optional<std::string_view> nonempty(std::optional<std::string_view> sv) noexcept
+{
+    return sv && !std::empty(*sv) ? std::move(sv) : std::nullopt;
+}
+
+[[nodiscard]] constexpr std::optional<tr_priority_t> valid_priority(std::optional<int8_t> const val) noexcept
+{
+    if (val && tr_isPriority(static_cast<tr_priority_t>(*val))) {
+        return static_cast<tr_priority_t>(*val);
+    }
+
+    return {};
+}
+
 // ---
 
-// How a saved per-file list's entries line up with a torrent's files.
-enum class FileListAlignment : uint8_t {
-    ByIndex, // one entry per file, in file order
-    SkipEmptyFiles, // one entry per nonempty file, in file order
-    Unusable, // no reading pairs the entries up with the files
-};
-
-[[nodiscard]] FileListAlignment file_list_alignment(tr_torrent const* const tor, size_t const n_list)
+// Builds a list with one entry, `fn(file_index)`, per file.
+template<typename Fn>
+[[nodiscard]] tr_variant::Vector per_file_list(tr_torrent const* const tor, Fn const& fn)
 {
     auto const n_files = tor->file_count();
-
-    if (n_list == n_files) {
-        return FileListAlignment::ByIndex;
+    auto list = tr_variant::Vector{};
+    list.reserve(n_files);
+    for (tr_file_index_t i = 0; i < n_files; ++i) {
+        list.emplace_back(fn(i));
     }
+    return list;
+}
+
+// Calls `fn(file_index, entry)` for each of the torrent's files, in file order.
+// `entry` points to the file's entry in the saved per-file `list`,
+// or is nullptr if the list has no entry for that file.
+// Returns false, without calling `fn`, if the list can't be paired up with the files.
+template<typename Fn>
+[[nodiscard]] bool for_each_file_entry(tr_torrent const* const tor, tr_variant::Vector const& list, Fn const& fn)
+{
+    auto const n_files = tor->file_count();
+    auto const n_list = std::size(list);
 
     // Resume files written before zero-length files were part of a torrent's
     // file list are short by exactly those files, so each entry after an
     // omitted one sits at a lower position in the list than its file index.
     // Skipping the zero-length files while walking the list realigns them.
-    auto n_empty_files = size_t{};
-    for (tr_file_index_t i = 0; i < n_files; ++i) {
-        if (tor->file_size(i) == 0U) {
-            ++n_empty_files;
+    auto const skip_empty_files = n_list != n_files;
+
+    if (skip_empty_files) {
+        auto n_empty_files = size_t{};
+        for (tr_file_index_t i = 0; i < n_files; ++i) {
+            if (tor->file_size(i) == 0U) {
+                ++n_empty_files;
+            }
+        }
+
+        // A list of any other length can't be paired up with the files, so none
+        // of it can be applied: a partial mapping would give file indices other
+        // files' settings.
+        if (n_list + n_empty_files != n_files) {
+            return false;
         }
     }
 
-    if (n_list + n_empty_files == n_files) {
-        return FileListAlignment::SkipEmptyFiles;
+    auto pos = size_t{};
+    for (tr_file_index_t i = 0; i < n_files; ++i) {
+        auto const has_entry = !skip_empty_files || tor->file_size(i) != 0U;
+        fn(i, has_entry ? &list[pos++] : nullptr);
     }
 
-    // A list of any other length can't be paired up with the files, so none
-    // of it can be applied: a partial mapping would give file indices other
-    // files' settings.
-    return FileListAlignment::Unusable;
-}
-
-// Whether a list with this alignment has an entry for this file. Zero-length
-// files have none in a list that was written without them.
-[[nodiscard]] bool file_has_list_entry(
-    tr_torrent const* const tor,
-    FileListAlignment const alignment,
-    tr_file_index_t const file_index)
-{
-    return alignment != FileListAlignment::SkipEmptyFiles || tor->file_size(file_index) != 0U;
+    return true;
 }
 
 // ---
 
-void save_peers(tr_variant::Map& map, tr_torrent const* tor)
+void save_peers(tr_variant::Map& map, tr_torrent const* const tor)
 {
     if (auto const pex = tr_peerMgrGetPeers(tor, TR_AF_INET, TR_PEERS_INTERESTING, MaxRememberedPeers); !std::empty(pex)) {
         map.insert_or_assign(TR_KEY_peers2, tr::serializer::to_variant(pex));
@@ -102,7 +128,7 @@ void save_peers(tr_variant::Map& map, tr_torrent const* tor)
     }
 }
 
-size_t add_peers(tr_torrent* tor, tr_variant::Vector const& l)
+size_t add_peers(tr_torrent* const tor, tr_variant::Vector const& l)
 {
     auto const n_pex = std::min(std::size(l), size_t{ MaxRememberedPeers });
     auto pex = std::vector<tr_pex>{};
@@ -115,20 +141,20 @@ size_t add_peers(tr_torrent* tor, tr_variant::Vector const& l)
     return tr_peerMgrAddPex(tor, TR_PEER_FROM_RESUME, pex);
 }
 
-auto load_peers(tr_variant::Map const& map, tr_torrent* tor)
+[[nodiscard]] fields_t load_peers(tr_variant::Map const& map, tr_torrent* const tor)
 {
-    auto ret = tr_resume::fields_t{};
+    auto ret = fields_t{};
 
-    if (auto const* l = map.find_if<tr_variant::Vector>(TR_KEY_peers2); l != nullptr) {
+    if (auto const* const l = map.find_if<tr_variant::Vector>(TR_KEY_peers2)) {
         auto const num_added = add_peers(tor, *l);
         tr_logAddTraceTor(tor, fmt::format("Loaded {} IPv4 peers from resume file", num_added));
-        ret = tr_resume::Peers;
+        ret = Peers;
     }
 
-    if (auto const* l = map.find_if<tr_variant::Vector>(TR_KEY_peers2_6)) {
+    if (auto const* const l = map.find_if<tr_variant::Vector>(TR_KEY_peers2_6)) {
         auto const num_added = add_peers(tor, *l);
         tr_logAddTraceTor(tor, fmt::format("Loaded {} IPv6 peers from resume file", num_added));
-        ret = tr_resume::Peers;
+        ret = Peers;
     }
 
     return ret;
@@ -136,7 +162,7 @@ auto load_peers(tr_variant::Map const& map, tr_torrent* tor)
 
 // ---
 
-void save_labels(tr_variant::Map& map, tr_torrent const* tor)
+void save_labels(tr_variant::Map& map, tr_torrent const* const tor)
 {
     auto const& labels = tor->labels();
     auto list = tr_variant::Vector{};
@@ -147,7 +173,7 @@ void save_labels(tr_variant::Map& map, tr_torrent const* tor)
     map.insert_or_assign(TR_KEY_labels, std::move(list));
 }
 
-tr_resume::fields_t load_labels(tr_variant::Map const& map, tr_torrent* tor)
+[[nodiscard]] fields_t load_labels(tr_variant::Map const& map, tr_torrent* const tor)
 {
     auto const* const list = map.find_if<tr_variant::Vector>(TR_KEY_labels);
     if (list == nullptr) {
@@ -157,27 +183,27 @@ tr_resume::fields_t load_labels(tr_variant::Map const& map, tr_torrent* tor)
     auto labels = tr_labels_t{};
     labels.reserve(std::size(*list));
     for (auto const& var : *list) {
-        if (auto sv = var.value_if<std::string_view>(); sv && !std::empty(*sv)) {
+        if (auto const sv = nonempty(var.value_if<std::string_view>())) {
             labels.emplace_back(*sv);
         }
     }
 
     tor->set_labels(labels);
-    return tr_resume::Labels;
+    return Labels;
 }
 
 // ---
 
-void save_group(tr_variant::Map& map, tr_torrent const* tor)
+void save_group(tr_variant::Map& map, tr_torrent const* const tor)
 {
     map.insert_or_assign(TR_KEY_group, tr_variant::unmanaged_string(tor->bandwidth_group().sv()));
 }
 
-tr_resume::fields_t load_group(tr_variant::Map const& map, tr_torrent* tor)
+[[nodiscard]] fields_t load_group(tr_variant::Map const& map, tr_torrent* const tor)
 {
-    if (auto const sv = map.value_if<std::string_view>(TR_KEY_group); sv && !std::empty(*sv)) {
+    if (auto const sv = nonempty(map.value_if<std::string_view>(TR_KEY_group))) {
         tor->set_bandwidth_group(*sv);
-        return tr_resume::Group;
+        return Group;
     }
 
     return {};
@@ -185,18 +211,12 @@ tr_resume::fields_t load_group(tr_variant::Map const& map, tr_torrent* tor)
 
 // ---
 
-void save_dnd(tr_variant::Map& map, tr_torrent const* tor)
+void save_dnd(tr_variant::Map& map, tr_torrent const* const tor)
 {
-    auto const n = tor->file_count();
-    auto list = tr_variant::Vector{};
-    list.reserve(n);
-    for (tr_file_index_t i = 0; i < n; ++i) {
-        list.emplace_back(!tr_torrentFile(tor, i).wanted);
-    }
-    map.insert_or_assign(TR_KEY_dnd, std::move(list));
+    map.insert_or_assign(TR_KEY_dnd, per_file_list(tor, [tor](tr_file_index_t const i) { return !tor->file_is_wanted(i); }));
 }
 
-tr_resume::fields_t load_dnd(tr_variant::Map const& map, tr_torrent* tor)
+[[nodiscard]] fields_t load_dnd(tr_variant::Map const& map, tr_torrent* const tor)
 {
     auto const* const list = map.find_if<tr_variant::Vector>(TR_KEY_dnd);
     if (list == nullptr) {
@@ -204,81 +224,84 @@ tr_resume::fields_t load_dnd(tr_variant::Map const& map, tr_torrent* tor)
         return {};
     }
 
-    auto const n = tor->file_count();
-    auto const n_list = std::size(*list);
-    auto const alignment = file_list_alignment(tor, n_list);
-
-    if (alignment == FileListAlignment::Unusable) {
-        return {};
-    }
-
+    auto const n_files = tor->file_count();
     auto wanted = std::vector<tr_file_index_t>{};
     auto unwanted = std::vector<tr_file_index_t>{};
-    wanted.reserve(n);
-    unwanted.reserve(n);
+    wanted.reserve(n_files);
+    unwanted.reserve(n_files);
 
-    for (tr_file_index_t i = 0, pos = 0; i < n; ++i) {
-        // A file with no entry is wanted: it is zero-length, so there is no
-        // download to opt out of, and that is what a fresh torrent gives it.
-        auto dnd = false;
-        if (file_has_list_entry(tor, alignment, i)) {
-            dnd = (*list)[pos++].value_if<bool>().value_or(false);
-        }
-
+    // A file with no entry is wanted: it is zero-length, so there is no
+    // download to opt out of, and that is what a fresh torrent gives it.
+    auto const sort_file = [&wanted, &unwanted](tr_file_index_t const i, tr_variant const* const entry) {
+        auto const dnd = entry != nullptr && entry->value_if<bool>().value_or(false);
         (dnd ? unwanted : wanted).push_back(i);
+    };
+
+    if (!for_each_file_entry(tor, *list, sort_file)) {
+        return {};
     }
 
     tor->init_files_wanted(unwanted, false);
     tor->init_files_wanted(wanted, true);
 
-    return tr_resume::Dnd;
+    return Dnd;
 }
 
 // ---
 
-void save_file_priorities(tr_variant::Map& map, tr_torrent const* tor)
+void save_file_priorities(tr_variant::Map& map, tr_torrent const* const tor)
 {
-    auto const n = tor->file_count();
-    auto list = tr_variant::Vector{};
-    list.reserve(n);
-    for (tr_file_index_t i = 0; i < n; ++i) {
-        list.emplace_back(tr_torrentFile(tor, i).priority);
-    }
-    map.insert_or_assign(TR_KEY_priority, std::move(list));
+    map.insert_or_assign(TR_KEY_priority, per_file_list(tor, [tor](tr_file_index_t const i) { return tor->file_priority(i); }));
 }
 
-tr_resume::fields_t load_file_priorities(tr_variant::Map const& map, tr_torrent* tor)
+[[nodiscard]] fields_t load_file_priorities(tr_variant::Map const& map, tr_torrent* const tor)
 {
     auto const* const list = map.find_if<tr_variant::Vector>(TR_KEY_priority);
     if (list == nullptr) {
         return {};
     }
 
-    auto const n = tor->file_count();
-    auto const n_list = std::size(*list);
-    auto const alignment = file_list_alignment(tor, n_list);
+    auto low = std::vector<tr_file_index_t>{};
+    auto normal = std::vector<tr_file_index_t>{};
+    auto high = std::vector<tr_file_index_t>{};
 
-    if (alignment == FileListAlignment::Unusable) {
+    // A file with no entry, or whose entry isn't a valid priority,
+    // keeps the priority a fresh torrent gives it.
+    auto const sort_file = [&low, &normal, &high](tr_file_index_t const i, tr_variant const* const entry) {
+        auto const priority = entry != nullptr ? valid_priority(entry->value_if<int8_t>()) : std::nullopt;
+        if (!priority) {
+            return;
+        }
+
+        switch (*priority) {
+        case TR_PRI_LOW:
+            low.push_back(i);
+            break;
+
+        case TR_PRI_NORMAL:
+            normal.push_back(i);
+            break;
+
+        case TR_PRI_HIGH:
+            high.push_back(i);
+            break;
+        }
+    };
+
+    if (!for_each_file_entry(tor, *list, sort_file)) {
         return {};
     }
 
-    // A file with no entry keeps the priority a fresh torrent gives it.
-    for (tr_file_index_t i = 0, pos = 0; i < n; ++i) {
-        if (!file_has_list_entry(tor, alignment, i)) {
-            continue;
-        }
+    tor->set_file_priorities(low, TR_PRI_LOW);
+    tor->set_file_priorities(normal, TR_PRI_NORMAL);
+    tor->set_file_priorities(high, TR_PRI_HIGH);
 
-        if (auto const priority = (*list)[pos++].value_if<int64_t>(); priority) {
-            tor->set_file_priority(i, static_cast<tr_priority_t>(*priority));
-        }
-    }
-
-    return tr_resume::FilePriorities;
+    return FilePriorities;
 }
 
 // ---
 
-tr_variant::Map save_single_speed_limit(tr_torrent const* tor, tr_direction dir)
+[[nodiscard]] tr_variant::Map save_single_speed_limit(tr_torrent const* const tor, tr_direction const dir)
 {
     auto map = tr_variant::Map{ 3 };
     map.try_emplace(TR_KEY_speed_Bps, tor->speed_limit(dir).base_quantity());
@@ -287,13 +310,13 @@ tr_variant::Map save_single_speed_limit(tr_torrent const* tor, tr_direction dir)
     return map;
 }
 
-void save_speed_limits(tr_variant::Map& map, tr_torrent const* tor)
+void save_speed_limits(tr_variant::Map& map, tr_torrent const* const tor)
 {
     map.insert_or_assign(TR_KEY_speed_limit_down, save_single_speed_limit(tor, tr_direction::Down));
     map.insert_or_assign(TR_KEY_speed_limit_up, save_single_speed_limit(tor, tr_direction::Up));
 }
 
-void save_ratio_limits(tr_variant::Map& map, tr_torrent const* tor)
+void save_ratio_limits(tr_variant::Map& map, tr_torrent const* const tor)
 {
     auto d = tr_variant::Map{ 2 };
     d.try_emplace(TR_KEY_seed_ratio_limit, tor->seed_ratio());
@@ -301,7 +324,7 @@ void save_ratio_limits(tr_variant::Map& map, tr_torrent const* tor)
     map.insert_or_assign(TR_KEY_seed_ratio_limit, std::move(d));
 }
 
-void save_idle_limits(tr_variant::Map& map, tr_torrent const* tor)
+void save_idle_limits(tr_variant::Map& map, tr_torrent const* const tor)
 {
     auto d = tr_variant::Map{ 2 };
     d.try_emplace(TR_KEY_idle_limit, tor->idle_limit_minutes());
@@ -309,11 +332,11 @@ void save_idle_limits(tr_variant::Map& map, tr_torrent const* tor)
     map.insert_or_assign(TR_KEY_idle_limit, std::move(d));
 }
 
-void load_single_speed_limit(tr_variant::Map const& map, tr_direction dir, tr_torrent* tor)
+void load_single_speed_limit(tr_variant::Map const& map, tr_direction const dir, tr_torrent* const tor)
 {
     if (auto const i = map.value_if<int64_t>(TR_KEY_speed_Bps)) {
         tor->set_speed_limit(dir, Speed{ *i, Speed::Units::Byps });
-    } else if (auto const i2 = map.value_if<int64_t>(TR_KEY_speed); i2) {
+    } else if (auto const i2 = map.value_if<int64_t>(TR_KEY_speed)) {
         tor->set_speed_limit(dir, Speed{ *i2, Speed::Units::KByps });
     }
 
@@ -322,28 +345,28 @@ void load_single_speed_limit(tr_variant::Map const& map, tr_direction dir, tr_to
     }
 
     if (auto const b = map.value_if<bool>(TR_KEY_use_global_speed_limit)) {
-        tr_torrentUseSessionLimits(tor, *b);
+        tor->use_session_limits(*b);
     }
 }
 
-auto load_speed_limits(tr_variant::Map const& map, tr_torrent* tor)
+[[nodiscard]] fields_t load_speed_limits(tr_variant::Map const& map, tr_torrent* const tor)
 {
-    auto ret = tr_resume::fields_t{};
+    auto ret = fields_t{};
 
-    if (auto const* child = map.find_if<tr_variant::Map>(TR_KEY_speed_limit_up)) {
+    if (auto const* const child = map.find_if<tr_variant::Map>(TR_KEY_speed_limit_up)) {
         load_single_speed_limit(*child, tr_direction::Up, tor);
-        ret = tr_resume::Speedlimit;
+        ret = Speedlimit;
     }
 
-    if (auto const* child = map.find_if<tr_variant::Map>(TR_KEY_speed_limit_down)) {
+    if (auto const* const child = map.find_if<tr_variant::Map>(TR_KEY_speed_limit_down)) {
         load_single_speed_limit(*child, tr_direction::Down, tor);
-        ret = tr_resume::Speedlimit;
+        ret = Speedlimit;
     }
 
     return ret;
 }
 
-tr_resume::fields_t load_ratio_limits(tr_variant::Map const& map, tr_torrent* tor)
+[[nodiscard]] fields_t load_ratio_limits(tr_variant::Map const& map, tr_torrent* const tor)
 {
     auto const* const d = map.find_if<tr_variant::Map>(TR_KEY_seed_ratio_limit);
     if (d == nullptr) {
@@ -354,14 +377,16 @@ tr_resume::fields_t load_ratio_limits(tr_variant::Map const& map, tr_torrent* to
         tor->set_seed_ratio(*dratio);
     }
 
-    if (auto const i = d->value_if<int64_t>(TR_KEY_ratio_mode)) {
+    // Read as tr_ratiolimit's underlying type, so a value out of its range is dropped instead of wrapped.
+    // set_seed_ratio_mode() ignores the other invalid modes.
+    if (auto const i = d->value_if<std::underlying_type_t<tr_ratiolimit>>(TR_KEY_ratio_mode)) {
         tor->set_seed_ratio_mode(static_cast<tr_ratiolimit>(*i));
     }
 
-    return tr_resume::Ratiolimit;
+    return Ratiolimit;
 }
 
-tr_resume::fields_t load_idle_limits(tr_variant::Map const& map, tr_torrent* tor)
+[[nodiscard]] fields_t load_idle_limits(tr_variant::Map const& map, tr_torrent* const tor)
 {
     auto const* const d = map.find_if<tr_variant::Map>(TR_KEY_idle_limit);
     if (d == nullptr) {
@@ -372,82 +397,80 @@ tr_resume::fields_t load_idle_limits(tr_variant::Map const& map, tr_torrent* tor
         tor->set_idle_limit_minutes(*imin);
     }
 
-    if (auto const i = d->value_if<int64_t>(TR_KEY_idle_mode)) {
+    // Read as tr_idlelimit's underlying type, so a value out of its range is dropped instead of wrapped.
+    // set_idle_limit_mode() ignores the other invalid modes.
+    if (auto const i = d->value_if<std::underlying_type_t<tr_idlelimit>>(TR_KEY_idle_mode)) {
         tor->set_idle_limit_mode(static_cast<tr_idlelimit>(*i));
     }
 
-    return tr_resume::Idlelimit;
+    return Idlelimit;
 }
 
 // ---
 
-void save_name(tr_variant::Map& map, tr_torrent const* tor)
+void save_name(tr_variant::Map& map, tr_torrent const* const tor)
 {
     map.insert_or_assign(TR_KEY_name, tr_variant::unmanaged_string(tor->name()));
 }
 
-tr_resume::fields_t load_name(tr_variant::Map const& map, tr_torrent* tor)
+[[nodiscard]] fields_t load_name(tr_variant::Map const& map, tr_torrent* const tor)
 {
     auto const o_name = map.value_if<std::string_view>(TR_KEY_name);
     if (!o_name) {
         return {};
     }
 
-    auto const& name = tr_strv_strip(*o_name);
+    auto const name = tr_strv_strip(*o_name);
     if (std::empty(name)) {
         return {};
     }
 
     tor->set_name(name);
 
-    return tr_resume::Name;
+    return Name;
 }
 
 // ---
 
-void save_filenames(tr_variant::Map& map, tr_torrent const* tor)
+void save_filenames(tr_variant::Map& map, tr_torrent const* const tor)
 {
-    auto const n = tor->file_count();
-    auto list = tr_variant::Vector{};
-    list.reserve(n);
-    for (tr_file_index_t i = 0; i < n; ++i) {
-        list.emplace_back(tr_variant::unmanaged_string(tor->file_subpath(i)));
-    }
-    map.insert_or_assign(TR_KEY_files, std::move(list));
+    map.insert_or_assign(TR_KEY_files, per_file_list(tor, [tor](tr_file_index_t const i) {
+                             return tr_variant::unmanaged_string(tor->file_subpath(i));
+                         }));
 }
 
-tr_resume::fields_t load_filenames(tr_variant::Map const& map, tr_torrent* tor)
+[[nodiscard]] fields_t load_filenames(tr_variant::Map const& map, tr_torrent* const tor)
 {
     auto const* const list = map.find_if<tr_variant::Vector>(TR_KEY_files);
     if (list == nullptr) {
         return {};
     }
 
-    auto const n_files = tor->file_count();
-    auto const n_list = std::size(*list);
-    auto const alignment = file_list_alignment(tor, n_list);
+    // The saved pathnames that differ from the ones the files have now.
+    // They're collected in full before any of them is applied,
+    // since a duplicate can turn up at any position
+    // and the entries before it would already be on their files.
+    auto renames = std::vector<std::pair<tr_file_index_t, std::string_view>>{};
 
-    if (alignment == FileListAlignment::Unusable) {
+    // A file with no entry, or whose entry isn't a usable pathname,
+    // keeps the pathname it has.
+    auto const add_rename = [tor, &renames](tr_file_index_t const i, tr_variant const* const entry) {
+        if (entry == nullptr) {
+            return;
+        }
+
+        if (auto const sv = nonempty(entry->value_if<std::string_view>()); sv && *sv != tor->file_subpath(i)) {
+            renames.emplace_back(i, *sv);
+        }
+    };
+
+    if (!for_each_file_entry(tor, *list, add_rename)) {
         return {};
     }
 
-    // The pathname each file would end up with. The mapping is built in full
-    // before any of it is applied, since a duplicate can turn up at any
-    // position and the entries before it would already be on their files.
-    auto subpaths = std::vector<std::string_view>{};
-    subpaths.reserve(n_files);
-    for (tr_file_index_t i = 0, pos = 0; i < n_files; ++i) {
-        // A file with no entry, or whose entry isn't a usable pathname,
-        // keeps the pathname its metainfo gave it.
-        auto subpath = std::string_view{ tor->file_subpath(i) };
-
-        if (file_has_list_entry(tor, alignment, i)) {
-            if (auto const sv = (*list)[pos++].value_if<std::string_view>(); sv && !std::empty(*sv)) {
-                subpath = *sv;
-            }
-        }
-
-        subpaths.push_back(subpath);
+    // The common case: nothing was renamed, so there's nothing to vet or apply.
+    if (std::empty(renames)) {
+        return Filenames;
     }
 
     // Two files sharing a pathname share one file on disk, but the open-file
@@ -455,9 +478,17 @@ tr_resume::fields_t load_filenames(tr_variant::Map const& map, tr_torrent* tor)
     // write over each other. A torrent's own file list can't name a file
     // twice, so a duplicate is the saved list's, and the rest of that list is
     // no more trustworthy than the part that collided.
-    auto sorted = subpaths;
-    std::ranges::sort(sorted);
-    if (auto const dupe = std::ranges::adjacent_find(sorted); dupe != std::end(sorted)) {
+    auto const n_files = tor->file_count();
+    auto subpaths = std::vector<std::string_view>{};
+    subpaths.reserve(n_files);
+    for (tr_file_index_t i = 0; i < n_files; ++i) {
+        subpaths.emplace_back(tor->file_subpath(i));
+    }
+    for (auto const& [i, subpath] : renames) {
+        subpaths[i] = subpath;
+    }
+    std::ranges::sort(subpaths);
+    if (auto const dupe = std::ranges::adjacent_find(subpaths); dupe != std::end(subpaths)) {
         tr_logAddWarnTor(
             tor,
             fmt::format(
@@ -468,18 +499,16 @@ tr_resume::fields_t load_filenames(tr_variant::Map const& map, tr_torrent* tor)
         return {};
     }
 
-    for (tr_file_index_t i = 0; i < n_files; ++i) {
-        if (auto const subpath = subpaths[i]; subpath != tor->file_subpath(i)) {
-            tor->set_file_subpath(i, subpath);
-        }
+    for (auto const& [i, subpath] : renames) {
+        tor->set_file_subpath(i, subpath);
     }
 
-    return tr_resume::Filenames;
+    return Filenames;
 }
 
 // ---
 
-tr_variant bitfield_to_raw(tr_bitfield const& b)
+[[nodiscard]] tr_variant bitfield_to_raw(tr_bitfield const& b)
 {
     if (b.has_all()) {
         return tr_variant::unmanaged_string("all"sv);
@@ -508,47 +537,50 @@ tr_variant bitfield_to_raw(tr_bitfield const& b)
 void save_progress(tr_variant::Map& map, tr_torrent::ResumeHelper const& helper)
 {
     auto prog = tr_variant::Map{ 3 };
-
-    // add the mtimes
-    auto const& mtimes = helper.file_mtimes();
-    auto const n = std::size(mtimes);
-    auto l = tr_variant::Vector{};
-    l.reserve(n);
-    for (auto const& mtime : mtimes) {
-        l.emplace_back(mtime);
-    }
-    prog.try_emplace(TR_KEY_mtimes, std::move(l));
-
-    // add the 'checked pieces' bitfield
+    prog.try_emplace(TR_KEY_mtimes, tr::serializer::to_variant(helper.file_mtimes()));
     prog.try_emplace(TR_KEY_pieces, bitfield_to_raw(helper.checked_pieces()));
-
-    // add the blocks bitfield
     prog.try_emplace(TR_KEY_blocks, bitfield_to_raw(helper.blocks()));
-
     map.insert_or_assign(TR_KEY_progress, std::move(prog));
 }
 
+[[nodiscard]] std::vector<time_t> load_mtimes(tr_variant::Map const& prog, tr_torrent const* const tor)
+{
+    // A file with no usable entry gets 0, marking its pieces untested.
+    auto mtimes = std::vector<time_t>(tor->file_count());
+
+    auto const set_mtime = [&mtimes](tr_file_index_t const i, tr_variant const* const entry) {
+        if (entry != nullptr) {
+            mtimes[i] = static_cast<time_t>(entry->value_if<int64_t>().value_or(0));
+        }
+    };
+
+    auto const* const list = prog.find_if<tr_variant::Vector>(TR_KEY_mtimes);
+
+    // Pair the entries with their files through for_each_file_entry(), not by position.
+    // Read by position, a legacy-length list gives files other files' mtimes,
+    // and every piece after its first zero-length file drops from the checked set.
+    if (list == nullptr || !for_each_file_entry(tor, *list, set_mtime)) {
+        auto const n_list = list != nullptr ? std::size(*list) : size_t{};
+        tr_logAddDebugTor(tor, fmt::format("Couldn't load mtimes: expected {} got {}", std::size(mtimes), n_list));
+    }
+
+    return mtimes;
+}
+
 /*
- * Transmission has iterated through a few strategies here, so the
- * code has some added complexity to support older approaches.
- *
- * Current approach: 'progress' is a dict with two entries:
- * - 'pieces' a bitfield for whether each piece has been checked.
+ * 'progress' is a dict with three entries:
+ * - 'blocks', a bitfield for whether we have each block.
+ * - 'pieces', a bitfield for whether each piece has been checked.
  * - 'mtimes', an array of per-file timestamps
  * On startup, 'pieces' is loaded. Then we check to see if the disk
  * mtimes differ from the 'mtimes' list. Changed files have their
  * pieces cleared from the bitset.
  *
- * Second approach (2.20 - 3.00): the 'progress' dict had a
- * 'time_checked' entry which was a list with file_count items.
- * Each item was either a list of per-piece timestamps, or a
- * single timestamp if either all or none of the pieces had been
- * tested more recently than the file's mtime.
- *
- * First approach (pre-2.20) had an "mtimes" list identical to
- * the current approach, but not the 'pieces' bitfield.
+ * Resume files from 3.00 and earlier have no 'pieces' entry,
+ * so all of their pieces load as unchecked.
+ * Older ones still name the blocks bitfield 'bitfield'.
  */
-tr_resume::fields_t load_progress(tr_variant::Map const& map, tr_torrent* tor, tr_torrent::ResumeHelper& helper)
+[[nodiscard]] fields_t load_progress(tr_variant::Map const& map, tr_torrent* const tor, tr_torrent::ResumeHelper& helper)
 {
     auto const* const prog = map.find_if<tr_variant::Map>(TR_KEY_progress);
     if (prog == nullptr) {
@@ -558,88 +590,11 @@ tr_resume::fields_t load_progress(tr_variant::Map const& map, tr_torrent* tor, t
     /// CHECKED PIECES
 
     auto checked = tr_bitfield{ tor->piece_count() };
-    auto mtimes = std::vector<time_t>{};
-    auto const n_files = tor->file_count();
-    mtimes.reserve(n_files);
-
-    // try to load mtimes
-    if (auto const* l = prog->find_if<tr_variant::Vector>(TR_KEY_mtimes); l != nullptr) {
-        for (auto const& var : *l) {
-            auto const t = var.value_if<int64_t>();
-            if (!t) {
-                break;
-            }
-
-            mtimes.push_back(*t);
-        }
-    }
-
-    // try to load the piece-checked bitfield
     if (auto const sv = prog->value_if<std::string_view>(TR_KEY_pieces); sv && !raw_to_bitfield(checked, *sv)) {
-        tr_logAddDebugTor(tor, fmt::format("Couldn't load checked pieces: invalid value for 'pieces'"));
+        tr_logAddDebugTor(tor, "Couldn't load checked pieces: invalid value for 'pieces'");
     }
 
-    // maybe it's a .resume file from [2.20 - 3.00] with the per-piece mtimes
-    if (auto const* l = prog->find_if<tr_variant::Vector>(TR_KEY_time_checked); l != nullptr) {
-        for (tr_file_index_t fi = 0, n_l = std::min(n_files, std::size(*l)); fi < n_l; ++fi) {
-            auto const& b = (*l)[fi];
-            auto time_checked = time_t{};
-
-            if (auto const t = b.value_if<int64_t>(); t) {
-                time_checked = static_cast<time_t>(*t);
-            } else if (auto const* ll = b.get_if<tr_variant::Vector>(); ll != nullptr) {
-                // The first element (idx 0) stores a base value for all piece timestamps,
-                // which would be the value of the smallest piece timestamp minus 1.
-                //
-                // The rest of the elements are the timestamp of each piece, stored as
-                // an offset to the base value.
-                // i.e. idx 1 <-> piece 0, idx 2 <-> piece 1, ...
-                //      timestamp of piece n = idx 0 + idx n+1
-                //
-                // Pieces that haven't been checked will have a timestamp offset of 0.
-                // They can be differentiated from the oldest checked piece(s) since the
-                // offset for any checked pieces will be at least 1.
-
-                auto const base = (*ll)[0].value_if<int64_t>().value_or(0);
-
-                auto const [piece_begin, piece_end] = tor->piece_span_for_file(fi);
-                auto const n_ll = std::size(*ll);
-                auto const n_pieces = piece_end - piece_begin;
-                time_checked = std::numeric_limits<time_t>::max();
-                for (tr_piece_index_t i = 1; time_checked > time_t{} && i <= n_pieces && i < n_ll; ++i) {
-                    auto const offset = (*ll)[i].value_if<int64_t>().value_or(0);
-                    time_checked = std::min(time_checked, offset != 0 ? static_cast<time_t>(base + offset) : time_t{});
-                }
-            }
-
-            mtimes.push_back(time_checked);
-        }
-    }
-
-    // A file whose mtime we take from the entry saved for some other file
-    // has its pieces dropped from the checked set, so a legacy-length list
-    // costs a rehash of everything after its first zero-length file unless
-    // its entries are moved back to their own files first.
-    if (auto const alignment = file_list_alignment(tor, std::size(mtimes)); alignment == FileListAlignment::SkipEmptyFiles) {
-        // Zero-length files get 0, marking their pieces untested: their
-        // entries are the ones the saved list left out.
-        auto aligned = std::vector<time_t>(n_files, time_t{});
-        for (tr_file_index_t i = 0, pos = 0; i < n_files; ++i) {
-            if (file_has_list_entry(tor, alignment, i)) {
-                aligned[i] = mtimes[pos++];
-            }
-        }
-        mtimes = std::move(aligned);
-    }
-
-    if (std::size(mtimes) != n_files) {
-        tr_logAddDebugTor(tor, fmt::format("Couldn't load mtimes: expected {} got {}", std::size(mtimes), n_files));
-        // if resizing grows the vector, we'll get 0 mtimes for the
-        // new items which is exactly what we want since the pieces
-        // in an unknown state should be treated as untested
-        mtimes.resize(n_files);
-    }
-
+    auto const mtimes = load_mtimes(*prog, tor);
     helper.load_checked_pieces(checked, std::data(mtimes));
 
     /// COMPLETION
@@ -650,7 +605,7 @@ tr_resume::fields_t load_progress(tr_variant::Map const& map, tr_torrent* tor, t
         if (auto const sv = b->second.value_if<std::string_view>(); sv && !raw_to_bitfield(blocks, *sv)) {
             err = "Invalid value for 'blocks'";
         }
-    } else if (auto const raw = prog->value_if<std::string_view>(TR_KEY_bitfield); raw) {
+    } else if (auto const raw = prog->value_if<std::string_view>(TR_KEY_bitfield)) {
         if (!blocks.set_raw(*raw)) {
             err = "Invalid value for 'bitfield'";
         }
@@ -661,15 +616,15 @@ tr_resume::fields_t load_progress(tr_variant::Map const& map, tr_torrent* tor, t
     if (err != nullptr) {
         tr_logAddDebugTor(tor, fmt::format("Torrent needs to be verified - {}", err));
     } else {
-        helper.load_blocks(blocks);
+        helper.load_blocks(std::move(blocks));
     }
 
-    return tr_resume::Progress;
+    return Progress;
 }
 
-// ---
+} // namespace
 
-tr_resume::fields_t load_from_file(tr_torrent* tor, tr_torrent::ResumeHelper& helper, tr_resume::fields_t fields_to_load)
+fields_t load(tr_torrent* const tor, tr_torrent::ResumeHelper& helper, fields_t fields_to_load)
 {
     TR_ASSERT(tr_isTorrent(tor));
 
@@ -697,174 +652,116 @@ tr_resume::fields_t load_from_file(tr_torrent* tor, tr_torrent::ResumeHelper& he
     auto const& map = *p_map;
 
     tr_logAddDebugTor(tor, fmt::format("Read resume file '{}'", filename));
-    auto fields_loaded = tr_resume::fields_t{};
+    auto fields_loaded = fields_t{};
 
-    if ((fields_to_load & tr_resume::Corrupt) != 0) {
-        if (auto i = map.value_if<int64_t>(TR_KEY_corrupt); i) {
-            tor->bytes_corrupt_.set_prev(*i);
-            fields_loaded |= tr_resume::Corrupt;
-        }
+    // Progress can't be loaded without knowing where the files are.
+    if ((fields_to_load & Progress) != 0) {
+        fields_to_load |= DownloadDir | IncompleteDir;
     }
 
-    if ((fields_to_load & (tr_resume::Progress | tr_resume::DownloadDir)) != 0) {
-        if (auto sv = map.value_if<std::string_view>(TR_KEY_destination); sv && !std::empty(*sv)) {
-            helper.load_download_dir(*sv);
-            fields_loaded |= tr_resume::DownloadDir;
+    // If `field` was asked for and the resume file has a `value` for it, use it.
+    auto const load_field = [fields_to_load, &fields_loaded](fields_t const field, auto const& value, auto const& setter) {
+        if ((fields_to_load & field) != 0 && value) {
+            setter(*value);
+            fields_loaded |= field;
         }
-    }
+    };
 
-    if ((fields_to_load & (tr_resume::Progress | tr_resume::IncompleteDir)) != 0) {
-        if (auto sv = map.value_if<std::string_view>(TR_KEY_incomplete_dir); sv && !std::empty(*sv)) {
-            helper.load_incomplete_dir(*sv);
-            fields_loaded |= tr_resume::IncompleteDir;
-        }
-    }
+    load_field(Corrupt, map.value_if<uint64_t>(TR_KEY_corrupt), [tor](uint64_t const val) {
+        tor->bytes_corrupt_.set_prev(val);
+    });
+    load_field(
+        DownloadDir,
+        nonempty(map.value_if<std::string_view>(TR_KEY_destination)),
+        [&helper](std::string_view const val) { helper.load_download_dir(val); });
+    load_field(
+        IncompleteDir,
+        nonempty(map.value_if<std::string_view>(TR_KEY_incomplete_dir)),
+        [&helper](std::string_view const val) { helper.load_incomplete_dir(val); });
+    load_field(Downloaded, map.value_if<uint64_t>(TR_KEY_downloaded), [tor](uint64_t const val) {
+        tor->bytes_downloaded_.set_prev(val);
+    });
+    load_field(Uploaded, map.value_if<uint64_t>(TR_KEY_uploaded), [tor](uint64_t const val) {
+        tor->bytes_uploaded_.set_prev(val);
+    });
+    load_field(MaxPeers, map.value_if<uint16_t>(TR_KEY_max_peers), [tor](uint16_t const val) { tor->set_peer_limit(val); });
+    load_field(Run, map.value_if<bool>(TR_KEY_paused), [&helper](bool const val) { helper.load_start_when_stable(!val); });
+    load_field(AddedDate, map.value_if<time_t>(TR_KEY_added_date), [&helper](time_t const val) {
+        helper.load_date_added(val);
+    });
+    load_field(DoneDate, map.value_if<time_t>(TR_KEY_done_date), [&helper](time_t const val) { helper.load_date_done(val); });
+    load_field(ActivityDate, map.value_if<time_t>(TR_KEY_activity_date), [tor](time_t const val) {
+        tor->set_date_active(val);
+    });
+    load_field(TimeSeeding, map.value_if<time_t>(TR_KEY_seeding_time_seconds), [&helper](time_t const val) {
+        helper.load_seconds_seeding_before_current_start(val);
+    });
+    load_field(TimeDownloading, map.value_if<time_t>(TR_KEY_downloading_time_seconds), [&helper](time_t const val) {
+        helper.load_seconds_downloading_before_current_start(val);
+    });
+    load_field(SequentialDownload, map.value_if<bool>(TR_KEY_sequential_download), [tor](bool const val) {
+        tor->set_sequential_download(val);
+    });
+    load_field(
+        SequentialDownloadFromPiece,
+        map.value_if<tr_piece_index_t>(TR_KEY_sequential_download_from_piece),
+        [tor](tr_piece_index_t const val) { tor->set_sequential_download_from_piece(val); });
+    load_field(
+        BandwidthPriority,
+        valid_priority(map.value_if<int8_t>(TR_KEY_bandwidth_priority)),
+        [tor](tr_priority_t const val) { tor->set_priority(val); });
 
-    if ((fields_to_load & tr_resume::Downloaded) != 0) {
-        if (auto i = map.value_if<int64_t>(TR_KEY_downloaded); i) {
-            tor->bytes_downloaded_.set_prev(*i);
-            fields_loaded |= tr_resume::Downloaded;
-        }
-    }
-
-    if ((fields_to_load & tr_resume::Uploaded) != 0) {
-        if (auto i = map.value_if<int64_t>(TR_KEY_uploaded); i) {
-            tor->bytes_uploaded_.set_prev(*i);
-            fields_loaded |= tr_resume::Uploaded;
-        }
-    }
-
-    if ((fields_to_load & tr_resume::MaxPeers) != 0) {
-        if (auto const i = map.value_if<int64_t>(TR_KEY_max_peers)) {
-            tor->set_peer_limit(static_cast<uint16_t>(*i));
-            fields_loaded |= tr_resume::MaxPeers;
-        }
-    }
-
-    if ((fields_to_load & tr_resume::Run) != 0) {
-        if (auto b = map.value_if<bool>(TR_KEY_paused); b) {
-            helper.load_start_when_stable(!*b);
-            fields_loaded |= tr_resume::Run;
-        }
-    }
-
-    if ((fields_to_load & tr_resume::AddedDate) != 0) {
-        if (auto const i = map.value_if<int64_t>(TR_KEY_added_date)) {
-            helper.load_date_added(static_cast<time_t>(*i));
-            fields_loaded |= tr_resume::AddedDate;
-        }
-    }
-
-    if ((fields_to_load & tr_resume::DoneDate) != 0) {
-        if (auto const i = map.value_if<int64_t>(TR_KEY_done_date)) {
-            helper.load_date_done(static_cast<time_t>(*i));
-            fields_loaded |= tr_resume::DoneDate;
-        }
-    }
-
-    if ((fields_to_load & tr_resume::ActivityDate) != 0) {
-        if (auto const i = map.value_if<int64_t>(TR_KEY_activity_date)) {
-            tor->set_date_active(*i);
-            fields_loaded |= tr_resume::ActivityDate;
-        }
-    }
-
-    if ((fields_to_load & tr_resume::TimeSeeding) != 0) {
-        if (auto const i = map.value_if<int64_t>(TR_KEY_seeding_time_seconds)) {
-            helper.load_seconds_seeding_before_current_start(*i);
-            fields_loaded |= tr_resume::TimeSeeding;
-        }
-    }
-
-    if ((fields_to_load & tr_resume::TimeDownloading) != 0) {
-        if (auto const i = map.value_if<int64_t>(TR_KEY_downloading_time_seconds)) {
-            helper.load_seconds_downloading_before_current_start(*i);
-            fields_loaded |= tr_resume::TimeDownloading;
-        }
-    }
-
-    if ((fields_to_load & tr_resume::BandwidthPriority) != 0) {
-        if (auto const i = map.value_if<int64_t>(TR_KEY_bandwidth_priority);
-            i && tr_isPriority(static_cast<tr_priority_t>(*i))) {
-            tr_torrentSetPriority(tor, static_cast<tr_priority_t>(*i));
-            fields_loaded |= tr_resume::BandwidthPriority;
-        }
-    }
-
-    if ((fields_to_load & tr_resume::SequentialDownload) != 0) {
-        if (auto b = map.value_if<bool>(TR_KEY_sequential_download); b) {
-            tor->set_sequential_download(*b);
-            fields_loaded |= tr_resume::SequentialDownload;
-        }
-    }
-
-    if ((fields_to_load & tr_resume::SequentialDownloadFromPiece) != 0) {
-        if (auto i = map.value_if<int64_t>(TR_KEY_sequential_download_from_piece); i) {
-            tor->set_sequential_download_from_piece(*i);
-            fields_loaded |= tr_resume::SequentialDownloadFromPiece;
-        }
-    }
-
-    if ((fields_to_load & tr_resume::Peers) != 0) {
+    if ((fields_to_load & Peers) != 0) {
         fields_loaded |= load_peers(map, tor);
     }
 
     // Note: load_filenames() must come before load_progress()
     // so that load_progress() -> helper.load_checked_pieces() -> tor_.find_file()
     // will know where to look
-    if ((fields_to_load & tr_resume::Filenames) != 0) {
+    if ((fields_to_load & Filenames) != 0) {
         fields_loaded |= load_filenames(map, tor);
     }
 
     // Note: load_progress() should come before load_file_priorities()
     // so that we can skip loading priorities iff the torrent is a
     // seed or a partial seed.
-    if ((fields_to_load & tr_resume::Progress) != 0) {
+    if ((fields_to_load & Progress) != 0) {
         fields_loaded |= load_progress(map, tor, helper);
     }
 
-    if (!tor->is_done() && (fields_to_load & tr_resume::FilePriorities) != 0) {
+    if (!tor->is_done() && (fields_to_load & FilePriorities) != 0) {
         fields_loaded |= load_file_priorities(map, tor);
     }
 
-    if ((fields_to_load & tr_resume::Dnd) != 0) {
+    if ((fields_to_load & Dnd) != 0) {
         fields_loaded |= load_dnd(map, tor);
     }
 
-    if ((fields_to_load & tr_resume::Speedlimit) != 0) {
+    if ((fields_to_load & Speedlimit) != 0) {
         fields_loaded |= load_speed_limits(map, tor);
     }
 
-    if ((fields_to_load & tr_resume::Ratiolimit) != 0) {
+    if ((fields_to_load & Ratiolimit) != 0) {
         fields_loaded |= load_ratio_limits(map, tor);
     }
 
-    if ((fields_to_load & tr_resume::Idlelimit) != 0) {
+    if ((fields_to_load & Idlelimit) != 0) {
         fields_loaded |= load_idle_limits(map, tor);
     }
 
-    if ((fields_to_load & tr_resume::Name) != 0) {
+    if ((fields_to_load & Name) != 0) {
         fields_loaded |= load_name(map, tor);
     }
 
-    if ((fields_to_load & tr_resume::Labels) != 0) {
+    if ((fields_to_load & Labels) != 0) {
         fields_loaded |= load_labels(map, tor);
     }
 
-    if ((fields_to_load & tr_resume::Group) != 0) {
+    if ((fields_to_load & Group) != 0) {
         fields_loaded |= load_group(map, tor);
     }
 
     return fields_loaded;
-}
-
-} // namespace
-
-fields_t load(tr_torrent* tor, tr_torrent::ResumeHelper& helper, fields_t const fields_to_load)
-{
-    TR_ASSERT(tr_isTorrent(tor));
-
-    return load_from_file(tor, helper, fields_to_load);
 }
 
 void save(tr_torrent* const tor, tr_torrent::ResumeHelper const& helper)

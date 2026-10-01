@@ -399,7 +399,6 @@ auto constexpr SessionKeys = std::to_array<ApiKey>({
     { .current = TR_KEY_start_minimized, .legacy = TR_KEY_start_minimized_kebab_APICOMPAT },
     { .current = TR_KEY_statusbar_stats, .legacy = TR_KEY_statusbar_stats_kebab_APICOMPAT },
     { .current = TR_KEY_tcp_enabled, .legacy = TR_KEY_tcp_enabled_kebab_APICOMPAT },
-    { .current = TR_KEY_time_checked, .legacy = TR_KEY_time_checked_kebab_APICOMPAT },
     { .current = TR_KEY_torrent_added_notification_enabled,
       .legacy = TR_KEY_torrent_added_notification_enabled_kebab_APICOMPAT },
     { .current = TR_KEY_torrent_added_verify_mode, .legacy = TR_KEY_torrent_added_verify_mode_kebab_APICOMPAT },

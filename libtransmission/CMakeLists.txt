@@ -144,6 +144,8 @@ target_sources(${TR_NAME}
         shared-string.h
         stats.cc
         stats.h
+        storage-descriptor.cc
+        storage-descriptor.h
         string-utils.cc
         string-utils.h
         $<$<BOOL:${IS_APPLE_CLANG}>:string-utils.mm>
@@ -190,6 +192,7 @@ target_sources(${TR_NAME}
         values.cc
         values.h
         variant-benc.cc
+        variant-common.h
         variant-json.cc
         variant.cc
         variant.h
@@ -326,7 +329,6 @@ if(INSTALL_LIB)
             log.h
             macros.h
             makemeta.h
-            net.h
             quark.h
             rpcimpl.h
             session-id.h

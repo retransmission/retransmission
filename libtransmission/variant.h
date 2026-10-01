@@ -5,7 +5,7 @@
 
 #pragma once
 
-#include <algorithm> // std::move()
+#include <algorithm> // std::max, std::ranges::find
 #include <concepts> // std::integral
 #include <cstddef> // size_t
 #include <cstdint> // int64_t
@@ -86,15 +86,12 @@ public:
 
         [[nodiscard]] constexpr auto find(tr_quark const key) noexcept
         {
-            auto const predicate = [key](auto const& item) {
-                return item.first == key;
-            };
-            return std::ranges::find_if(vec_, predicate);
+            return std::ranges::find(vec_, key, &Entry::first);
         }
 
         [[nodiscard]] constexpr auto find(tr_quark const key) const noexcept
         {
-            return Vector::const_iterator{ const_cast<Map*>(this)->find(key) };
+            return std::ranges::find(vec_, key, &Entry::first);
         }
 
         [[nodiscard]] constexpr auto contains(tr_quark const key) const noexcept
@@ -127,15 +124,6 @@ public:
             return 0U;
         }
 
-        // std::erase_if-style helper: removes every element for which
-        // `pred(std::pair<tr_quark, tr_variant> const&)` is true and
-        // returns the number of elements removed.
-        template<typename Predicate>
-        auto erase_if(Predicate pred)
-        {
-            return std::erase_if(vec_, std::move(pred));
-        }
-
         constexpr bool replace_key(tr_quark const old_key, tr_quark const new_key)
         {
             if (contains(new_key)) {
@@ -151,13 +139,9 @@ public:
             return true;
         }
 
-        [[nodiscard]] tr_variant& operator[](tr_quark const& key)
+        [[nodiscard]] tr_variant& operator[](tr_quark const key)
         {
-            if (auto const iter = find(key); iter != end()) {
-                return iter->second;
-            }
-
-            return vec_.emplace_back(key, tr_variant{}).second;
+            return try_emplace(key, tr_variant{}).first;
         }
 
         template<typename Val>
@@ -167,7 +151,7 @@ public:
                 return { iter->second, false };
             }
 
-            return { vec_.emplace_back(key, tr_variant{ std::forward<Val>(val) }).second, true };
+            return { vec_.emplace_back(key, std::forward<Val>(val)).second, true };
         }
 
         template<typename Val>
@@ -182,24 +166,24 @@ public:
 
         // --- custom functions
 
-        template<typename Type>
+        template<typename Val>
         [[nodiscard]] constexpr auto* find_if(tr_quark const key) noexcept
         {
             auto const iter = find(key);
-            return iter != end() ? iter->second.get_if<Type>() : nullptr;
+            return iter != end() ? iter->second.get_if<Val>() : nullptr;
         }
 
-        template<typename Type>
+        template<typename Val>
         [[nodiscard]] constexpr auto const* find_if(tr_quark const key) const noexcept
         {
-            return const_cast<Map*>(this)->find_if<Type>(key);
+            return const_cast<Map*>(this)->find_if<Val>(key);
         }
 
-        template<typename Type>
-        [[nodiscard]] std::optional<Type> value_if(tr_quark const key) const noexcept
+        template<typename Val>
+        [[nodiscard]] std::optional<Val> value_if(tr_quark const key) const noexcept
         {
             if (auto it = find(key); it != end()) {
-                return it->second.value_if<Type>();
+                return it->second.value_if<Val>();
             }
 
             return std::nullopt;
@@ -210,8 +194,8 @@ public:
         [[nodiscard]] Map clone() const;
 
     private:
-        using Vector = std::vector<std::pair<tr_quark, tr_variant>>;
-        Vector vec_;
+        using Entry = std::pair<tr_quark, tr_variant>;
+        std::vector<Entry> vec_;
     };
 
     constexpr tr_variant() noexcept = default;
@@ -495,6 +479,8 @@ public:
     // When set, assumes that the `input` passed to parse() is valid
     // for the lifespan of the variant and we can use string_views of
     // `input` instead of cloning new strings.
+    // Only the benc parser can do this; the JSON parser always copies
+    // because it unescapes strings into a scratch buffer.
     constexpr tr_variant_serde& inplace() noexcept
     {
         parse_inplace_ = true;
@@ -530,8 +516,6 @@ public:
     tr_error error_;
 
 private:
-    friend tr_variant;
-
     enum class Type : uint8_t { Benc, Json };
 
     explicit tr_variant_serde(Type type)
@@ -565,11 +549,3 @@ namespace settings
 bool save(std::string_view filename, Settings const& settings);
 } // namespace settings
 } // namespace tr
-
-// Deprecated C API. Do not use.
-bool tr_variantDictFindDict(tr_variant* var, tr_quark key, tr_variant** setme_value);
-bool tr_variantDictFindList(tr_variant* var, tr_quark key, tr_variant** setme);
-tr_variant* tr_variantDictAddDict(tr_variant* var, tr_quark key, size_t n_reserve);
-tr_variant* tr_variantDictFind(tr_variant* var, tr_quark key);
-tr_variant* tr_variantListChild(tr_variant* var, size_t pos);
-void tr_variantMergeDicts(tr_variant* tgt, tr_variant const* src);

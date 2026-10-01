@@ -134,6 +134,8 @@ auto constexpr MyStatic = std::array<std::string_view, TR_N_KEYS>{
     "details_window_width"sv, // gtk app
     "dht-enabled"sv, // daemon, rpc, tr_session::Settings
     "dht_enabled"sv, // daemon, rpc, tr_session::Settings
+    "disk_io_workers"sv, // tr_session::Settings
+    "disk_write_budget_mib"sv, // tr_session::Settings
     "dnd"sv, // .resume
     "done-date"sv, // .resume
     "doneDate"sv, // rpc
@@ -509,6 +511,7 @@ auto constexpr MyStatic = std::array<std::string_view, TR_N_KEYS>{
     "rpc_enabled"sv, // daemon, rpc server settings
     "rpc_host_whitelist"sv, // rpc, rpc server settings
     "rpc_host_whitelist_enabled"sv, // rpc, rpc server settings
+    "rpc_max_request_body_size", // rpc, rpc server settings
     "rpc_password"sv, // daemon, rpc server settings
     "rpc_port"sv, // daemon, gtk app, rpc server settings
     "rpc_socket_mode"sv, // rpc server settings
@@ -638,8 +641,6 @@ auto constexpr MyStatic = std::array<std::string_view, TR_N_KEYS>{
     "tcp-enabled"sv, // rpc, tr_session::Settings
     "tcp_enabled"sv, // rpc, tr_session::Settings
     "tier"sv, // rpc
-    "time-checked"sv, // .resume
-    "time_checked"sv, // .resume
     "torrent-add"sv, // rpc
     "torrent-added"sv, // rpc
     "torrent-added-notification-enabled"sv, // gtk app, qt app

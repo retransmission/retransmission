@@ -34,6 +34,7 @@
 #define ZLIB_CONST
 #include <zlib.h>
 
+#include "libtransmission/constants.h"
 #include "libtransmission/crypto-utils.h" /* tr_ssha1_matches() */
 #include "libtransmission/error.h"
 #include "libtransmission/file-utils.h"
@@ -767,6 +768,13 @@ void start_server(tr_rpc_server* server)
                 fmt::arg("count", ServerStartRetryCount)));
     } else {
         evhttp_set_gencb(httpd, handle_request, server);
+
+        evhttp_set_max_body_size(httpd, static_cast<ev_ssize_t>(server->get_max_request_body_size()));
+        // N.B. One may be tempted to set EVHTTP_SERVER_LINGERING_CLOSE so that browsers display the
+        // HTTP 413 page properly. DO NOT set this as it opens the door to DoS attacks that keeps
+        // the connection alive indefinitely. Setting timeouts using evhttp_set_timeout or its siblings
+        // only partially mitigates the attack. GHSA-hrw7-9gf2-gw65
+
         server->httpd.reset(httpd);
 
         tr_logAddInfo(
@@ -899,6 +907,19 @@ void tr_rpc_server::set_anti_brute_force_enabled(bool enabled) noexcept
 
     if (!enabled) {
         login_attempts_ = 0;
+    }
+}
+
+void tr_rpc_server::set_max_request_body_size(size_t const max_request_body_size)
+{
+    if (settings_.max_request_body_size == max_request_body_size) {
+        return;
+    }
+
+    settings_.max_request_body_size = max_request_body_size;
+
+    if (httpd) {
+        evhttp_set_max_body_size(httpd.get(), static_cast<ev_ssize_t>(max_request_body_size));
     }
 }
 

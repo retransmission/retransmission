@@ -233,7 +233,7 @@ struct tau_announce_request {
         payload.add_uint32(get_tau_announce_event(in.event));
         if (announce_ip && announce_ip->is_ipv4()) {
             // Since size of IP field is only 4 bytes long, we can only announce IPv4 addresses
-            payload.add_address(*announce_ip);
+            announce_ip->to_compact_buf(payload);
         } else {
             payload.add_uint32(0U);
         }

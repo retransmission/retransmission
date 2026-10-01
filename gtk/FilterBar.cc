@@ -15,8 +15,6 @@
 
 #include <libtransmission-app/display-modes.h>
 
-#include <libtransmission/macros.h>
-
 #include <gdkmm/pixbuf.h>
 #include <gtkmm/cellrendererpixbuf.h>
 #include <gtkmm/cellrenderertext.h>
@@ -48,6 +46,7 @@
 #include <ranges>
 #include <string>
 #include <unordered_map>
+#include <utility> // std::exchange()
 
 using namespace tr::app;
 
@@ -131,6 +130,7 @@ private:
     sigc::connection update_filter_models_tag_;
     sigc::connection update_filter_models_on_add_remove_tag_;
     sigc::connection update_filter_models_on_change_tag_;
+    Torrent::ChangeFlags pending_filter_models_changes_;
 };
 
 // --- TRACKERS
@@ -581,7 +581,7 @@ void FilterBar::Impl::update_count_label_idle()
 
 void FilterBar::Impl::update_filter_models(Torrent::ChangeFlags changes)
 {
-    static auto TR_CONSTEXPR23 show_mode_flags = Torrent::ChangeFlag::ACTIVE_PEERS_DOWN | Torrent::ChangeFlag::ACTIVE_PEERS_UP |
+    static auto constexpr show_mode_flags = Torrent::ChangeFlag::ACTIVE_PEERS_DOWN | Torrent::ChangeFlag::ACTIVE_PEERS_UP |
         Torrent::ChangeFlag::ACTIVE | Torrent::ChangeFlag::ACTIVITY | Torrent::ChangeFlag::ERROR_CODE |
         Torrent::ChangeFlag::FINISHED;
     static auto constexpr tracker_flags = Torrent::ChangeFlag::TRACKERS;
@@ -603,10 +603,15 @@ void FilterBar::Impl::update_filter_models(Torrent::ChangeFlags changes)
 
 void FilterBar::Impl::update_filter_models_idle(Torrent::ChangeFlags changes)
 {
+    // Changes reported before the idle handler runs are merged into one update.
+    pending_filter_models_changes_ |= changes;
+
     if (!update_filter_models_tag_.connected()) {
-        update_filter_models_tag_ = Glib::signal_idle().connect([this, changes]() {
-            update_filter_models(changes);
-            return false;
+        update_filter_models_tag_ = Glib::signal_idle().connect([this]() {
+            update_filter_models(std::exchange(pending_filter_models_changes_, {}));
+
+            // Changes reported while update_filter_models() ran need another pass.
+            return pending_filter_models_changes_.any();
         });
     }
 }

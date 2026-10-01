@@ -763,8 +763,29 @@ public:
         return open_files_;
     }
 
-    void close_torrent_files(tr_torrent_id_t tor_id) noexcept;
-    void close_torrent_file(tr_torrent const& tor, tr_file_index_t file_num) noexcept;
+    // Call after changing a setting that every torrent's storage
+    // descriptor snapshots: the preallocation mode, or whether new
+    // files get the partial-file suffix.
+    void invalidate_storage_descriptors();
+
+    // How many more blocks the swarms may request from peers and webseeds.
+    //
+    // Data in flight toward the disk is bounded: blocks requested but
+    // not yet received, plus blocks received but not yet written. That
+    // keeps a disk slower than the swarm from buffering without limit.
+    //
+    // No value means no bound. The synchronous disk backend writes a
+    // block before it reads the next one off the wire, so nothing
+    // buffers there.
+    [[nodiscard]] std::optional<size_t> spare_request_blocks() const noexcept;
+
+    [[nodiscard]] uint64_t effective_write_budget_bytes() const noexcept;
+
+    void update_active_request_count(size_t const previous, size_t const current) noexcept
+    {
+        TR_ASSERT(active_request_count_ >= previous);
+        active_request_count_ = active_request_count_ - previous + current;
+    }
 
     // announce ip
 
@@ -905,9 +926,12 @@ public:
         set_date_active(now);
     }
 
-    constexpr void add_file_created() noexcept
+    // tr_open_files counts the files it creates, from any thread.
+    void collect_files_created() noexcept
     {
-        stats().add_file_created();
+        if (auto const n = open_files_.take_files_created(); n > 0U) {
+            stats().add_files_created(n);
+        }
     }
 
     // The incoming peer port that's been opened on the local machine
@@ -1095,6 +1119,16 @@ public:
         rpc_server_->set_anti_brute_force_enabled(enabled);
     }
 
+    [[nodiscard]] TR_CONSTEXPR23 auto get_max_request_body_size() const noexcept
+    {
+        return rpc_server_->get_max_request_body_size();
+    }
+
+    void set_max_request_body_size(size_t const max_request_body_size)
+    {
+        rpc_server_->set_max_request_body_size(max_request_body_size);
+    }
+
     [[nodiscard]] size_t count_queue_free_slots(tr_direction dir) const noexcept;
 
     [[nodiscard]] bool has_ip_protocol(tr_address_type type) const noexcept
@@ -1168,7 +1202,7 @@ public:
     }
 
     void verify_add(tr_torrent* tor);
-    void verify_remove(tr_torrent const* tor);
+    void verify_remove(tr_torrent* tor);
 
     void fetch(tr_web::FetchOptions&& options) const
     {
@@ -1259,6 +1293,8 @@ private:
     void on_now_timer();
     void on_queue_timer();
     void on_save_timer();
+
+    void save_bandwidth_groups_if_dirty();
 
     // How long after its last activity the session still counts as busy.
     // Session thread only: reads the queue-stalled settings.
@@ -1466,6 +1502,9 @@ private:
     // depends-on: top_bandwidth_
     std::vector<std::pair<tr::shared_string, std::unique_ptr<tr_bandwidth>>> bandwidth_groups_;
 
+    // Whether a group may have changed since the groups were last saved.
+    bool bandwidth_groups_dirty_ = false;
+
     // depends-on: timer_maker_, settings_, local_peer_port_
     PortForwardingMediator port_forwarding_mediator_{ *this };
     std::unique_ptr<tr_port_forwarding> port_forwarding_ = tr_port_forwarding::create(port_forwarding_mediator_);
@@ -1540,6 +1579,7 @@ private:
     // busy_window_ mirrors the queue-stalled settings and is refreshed
     // once per second in on_now_timer().
     std::atomic<size_t> n_started_torrents_;
+    size_t active_request_count_ = 0U;
     std::atomic<size_t> n_verify_jobs_;
     std::atomic<time_t> date_active_{ 0 };
     std::atomic<time_t> busy_window_{ 0 };

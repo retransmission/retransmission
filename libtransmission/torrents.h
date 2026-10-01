@@ -30,7 +30,10 @@ public:
     // returns a fast lookup id for `tor`
     [[nodiscard]] tr_torrent_id_t add(tr_torrent* tor);
 
-    void remove(tr_torrent const* tor, time_t current_time);
+    void remove(tr_torrent const* tor);
+
+    // Lists `id` in removedSince() from `when` on.
+    void mark_removed(tr_torrent_id_t id, time_t when);
 
     // O(1)
     [[nodiscard]] constexpr tr_torrent* get(tr_torrent_id_t id) const

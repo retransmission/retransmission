@@ -3,6 +3,7 @@
 // or any future license endorsed by Mnemosaic LLC.
 // License text can be found in the licenses/ folder.
 
+#include <cstddef>
 #include <cstdint>
 #include <string>
 #include <string_view>
@@ -54,4 +55,16 @@ TEST_F(SerializerTest, ustringPrefReadsBackAsString)
 
     EXPECT_EQ(gtr_pref_string_get(Key), "alice");
     EXPECT_EQ(gtr_pref_get<Glib::ustring>(Key), "alice");
+}
+
+// Spin buttons store `uint16_t` prefs.
+// The session handlers read them back with `gtr_pref_int_get()`.
+TEST_F(SerializerTest, uint16PrefReadsBackAsInt)
+{
+    auto constexpr Key = TR_KEY_idle_seeding_limit;
+
+    gtr_pref_set(Key, uint16_t{ 45U });
+
+    EXPECT_EQ(gtr_pref_int_get<uint16_t>(Key), 45U);
+    EXPECT_EQ(gtr_pref_int_get<size_t>(Key), 45U);
 }

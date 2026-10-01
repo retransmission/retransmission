@@ -158,6 +158,32 @@ TEST_F(SerializerTest, usesBuiltins)
     }
 }
 
+// A bare `uint16_t` takes the generic integral Converter; only the
+// distinct type `tr_mode_t` gets octal-string formatting.
+TEST_F(SerializerTest, usesUint16AsInt)
+{
+    static auto constexpr Expected = uint16_t{ 9091U };
+    auto const var = to_variant(Expected);
+    EXPECT_TRUE(var.holds_alternative<int64_t>());
+    EXPECT_EQ(var.value_if<int64_t>(), Expected);
+
+    auto actual = uint16_t{};
+    EXPECT_TRUE(to_value(var, &actual));
+    EXPECT_EQ(actual, Expected);
+}
+
+TEST_F(SerializerTest, usesModeAsOctalString)
+{
+    static auto constexpr Expected = tr_mode_t{ 0750 };
+    auto const var = to_variant(Expected);
+    EXPECT_TRUE(var.holds_alternative<std::string_view>());
+    EXPECT_EQ(var.value_if<std::string_view>(), "0750"sv);
+
+    auto actual = tr_mode_t{};
+    EXPECT_TRUE(to_value(var, &actual));
+    EXPECT_EQ(actual, Expected);
+}
+
 TEST_F(SerializerTest, usesTimeT)
 {
     static auto constexpr Expected = time_t{ 1774486600 };
