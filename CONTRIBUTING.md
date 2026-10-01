@@ -1,4 +1,4 @@
-# Contributing to Transmission
+# Contributing to Retransmission
 
 Thanks for reading this and thinking about contributing! :tada:
 
@@ -18,20 +18,20 @@ If not, there are three labels in the issues tracker that can help:
 
 The project also welcomes changes that:
 
-- improve Transmission's compliance with [accepted BEPs](https://www.bittorrent.org/beps/bep_0000.html)
+- improve Retransmission's compliance with [accepted BEPs](https://www.bittorrent.org/beps/bep_0000.html)
 - improve transfer speeds or peer communication
 - reduce the app's footprint in CPU or memory use
 - improve testing
 - simplify / shrink the existing codebase
 - remove deprecated macOS API use in the macOS client
 - remove deprecated GTK API use in the GTK client
-- reduce feature disparity between the different Transmission apps
+- reduce feature disparity between the different Retransmission apps
 
 # Mechanics
 
 ## Getting Started
 
-On macOS, Transmission is usually built with Xcode. Everywhere else, it's CMake + the development environment of your choice. If you need to add source files but don't have Xcode, a maintainer can help you to update the Xcode project file. See [README.md](README.md) for information on building Transmission from source.
+On macOS, Retransmission is usually built with Xcode. Everywhere else, it's CMake + the development environment of your choice. If you need to add source files but don't have Xcode, a maintainer can help you to update the Xcode project file. See [README.md](README.md) for information on building Retransmission from source.
 
 ## Style
 
@@ -67,7 +67,7 @@ When submitting a pull request, please add a one-sentence paragraph that begins 
 - Prefer commonly-used tools over bespoke ones, e.g. use `std::list` instead of rolling your own list. This simplifies the code and makes it easier for other contributors to work with.
 - Please keep new code reasonably decoupled from the rest of the codebase for testability, either with DI or other methods. Be aware that much of the codebase was not written  with testability in mind. See peer-mgr-wishlist for one example of adding new, tested code into an existing untested module.
 - When adding advanced features, consider exposing them only in the config file instead of the UI.
-  - Transmission has a native macOS app, a native GTK app, and a Qt app. This is a strength in that each client can tightly integrate with its target environment, but it comes at the cost of making GUI changes very time-consuming. So consider, does this feature _need_ to be in the GUI?
+  - Retransmission has a native macOS app, a native GTK app, and a Qt app. This is a strength in that each client can tightly integrate with its target environment, but it comes at the cost of making GUI changes very time-consuming. So consider, does this feature _need_ to be in the GUI?
 - New features must be reachable via the C API and the RPC/JSON API.
   - The macOS and GTK clients still use the C API. Everything else, including a large number of 3rd party applications, use the RPC/JSON API. New features need to be usable via both of these.
-- KISS. Transmission is a _huge_ codebase so if you're trying to decide between to approaches to implement something, try the simpler one first.
+- KISS. Retransmission is a _huge_ codebase so if you're trying to decide between to approaches to implement something, try the simpler one first.

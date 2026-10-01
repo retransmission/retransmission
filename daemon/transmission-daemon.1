@@ -34,7 +34,7 @@
 .Ek
 .Sh DESCRIPTION
 .Nm
-is a daemon-based Transmission session that can be controlled
+is a daemon-based Retransmission session that can be controlled
 via RPC commands from transmission's web interface or
 .Xr transmission-remote 1 .
 .Sh OPTIONS
@@ -45,11 +45,11 @@ Wildcards can be specified in an address by using '*'.
 Default: "127.0.0.1,::1"
 Example: "127.0.0.*,192.168.1.*"
 .It Fl b Fl -blocklist
-Enable peer blocklists. Transmission understands the bluetack blocklist file format.
+Enable peer blocklists. Retransmission understands the bluetack blocklist file format.
 New blocklists can be added by copying them into the config-dir's "blocklists" subdirectory.
 .It Fl c Fl -watch-dir Ar directory
 Directory to watch for new .torrent files to be added. As they are added to this directory,
-the daemon will load them into Transmission.
+the daemon will load them into Retransmission.
 .It Fl C
 Do not watch for new .torrent files.
 .It Fl B Fl -no-blocklist
