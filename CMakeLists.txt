@@ -959,9 +959,11 @@ if(RUN_CLANG_TIDY)
     endif()
 endif()
 
-# The app's name, read from libtransmission/macros.h.
-# The code looks up installed data under it, e.g. <datadir>/retransmission/public_html.
-tr_read_header_define(${PROJECT_SOURCE_DIR}/libtransmission/macros.h TR_PROJ_APPNAME TR_PROJ_APPNAME)
+# The app's names, read from libtransmission/macros.h.
+# The code looks up installed data under TR_PROJ_APPNAME, e.g. <datadir>/retransmission/public_html.
+foreach(NAME IN ITEMS TR_PROJ_APPNAME TR_PROJ_APPNAME_CAPITALIZED)
+    tr_read_header_define(${PROJECT_SOURCE_DIR}/libtransmission/macros.h ${NAME} ${NAME})
+endforeach()
 
 # The app's installed data, such as the web client and the Qt client's translations.
 set(TR_DATA_INSTALL_DIR ${CMAKE_INSTALL_DATADIR}/${TR_PROJ_APPNAME})
