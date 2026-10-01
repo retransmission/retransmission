@@ -631,10 +631,10 @@
 "Once removed, continuing the transfers will require the torrent files or magnet links." = "Az eltávolítás után az átvitelek folytatásához torrent fájlok vagy magnet linkek szükségesek.";
 
 /* Remove trackers alert -> message */
-"Once removed, Transmission will no longer attempt to contact it. This cannot be undone." = "Eltávolítás után, a Transmission többé nem próbálja meg felvenni a kapcsolatot. Ezt nem lehet visszacsinálni.";
+"Once removed, %@ will no longer attempt to contact it. This cannot be undone." = "Eltávolítás után, a %@ többé nem próbálja meg felvenni a kapcsolatot. Ezt nem lehet visszacsinálni.";
 
 /* Remove trackers alert -> message */
-"Once removed, Transmission will no longer attempt to contact them. This cannot be undone." = "Eltávolítás után, a Transmission többé nem próbálja meg felvenni a kapcsolatot. Ezt nem lehet visszacsinálni.";
+"Once removed, %@ will no longer attempt to contact them. This cannot be undone." = "Eltávolítás után, a %@ többé nem próbálja meg felvenni a kapcsolatot. Ezt nem lehet visszacsinálni.";
 
 /* File Outline -> Menu */
 "Only Check Selected" = "Csak a kiválasztottak bejelölése";
@@ -998,7 +998,7 @@
 "There are no tracker addresses." = "Nincsenek tracker címek.";
 
 /* Transmission already running alert -> message */
-"There is already a copy of Transmission running. This copy cannot be opened until that instance is quit." = "Már fut egy másik Transmission. Nem lehet megnyitni, amíg a másik példányt be nem zárja.";
+"There is already a copy of %@ running. This copy cannot be opened until that instance is quit." = "Már fut egy másik %@. Nem lehet megnyitni, amíg a másik példányt be nem zárja.";
 
 /* Confirm Quit panel -> message */
 "There is an active transfer that will be paused on quit. The transfer will automatically resume on the next launch." = "Egy aktív átvitel van, amely szünetelni fog a kilépéskor. Az átvitel automatikusan folytatódik a következő indításkor.";
@@ -1093,13 +1093,13 @@
 "Transfers Not Active" = "Átvitelek nem aktívak";
 
 /* Legal alert -> message */
-"Transmission is a file-sharing program. When you run a torrent, its data will be made available to others by means of upload. You and you alone are fully responsible for exercising proper judgement and abiding by your local laws." = "A Transmission egy fájlmegosztó program. Egy torrent futtatása során a hozzá tartozó adatok elérhetővé válnak más felhasználók számára is. Minden megosztott tartalomért kizárólag Ön tartozik felelősséggel.";
+"%@ is a file-sharing program. When you run a torrent, its data will be made available to others by means of upload. You and you alone are fully responsible for exercising proper judgement and abiding by your local laws." = "A %@ egy fájlmegosztó program. Egy torrent futtatása során a hozzá tartozó adatok elérhetővé válnak más felhasználók számára is. Minden megosztott tartalomért kizárólag Ön tartozik felelősséggel.";
 
 /* Donation beg -> message */
-"Transmission is a full-featured torrent application. A lot of time and effort have gone into development, coding, and refinement. If you enjoy using it, please consider showing your love with a donation." = "A Transmission egy teljes funkcionalitású torrent alkalmazás. Sok időbe és erőfeszítésbe telt a fejlesztése. Ha örömmel használja, kérjük, megbecsüléseként járuljon hozzá a fejlesztéshez anyagi támogatással.";
+"%@ is a full-featured torrent application. A lot of time and effort have gone into development, coding, and refinement. If you enjoy using it, please consider showing your love with a donation." = "A %@ egy teljes funkcionalitású torrent alkalmazás. Sok időbe és erőfeszítésbe telt a fejlesztése. Ha örömmel használja, kérjük, megbecsüléseként járuljon hozzá a fejlesztéshez anyagi támogatással.";
 
 /* Transmission already running alert -> title */
-"Transmission is already running." = "Transmisson már fut.";
+"%@ is already running." = "%@ már fut.";
 
 /* inspector -> peer table -> header
    status bar -> status label
@@ -1157,7 +1157,7 @@
 "Web Seeds" = "Webes partnerek";
 
 /* Legal alert -> title */
-"Welcome to Transmission" = "Üdvözli a Transmission";
+"Welcome to %@" = "Üdvözli a %@";
 
 /* Groups -> Name */
 "Yellow" = "Sárga";

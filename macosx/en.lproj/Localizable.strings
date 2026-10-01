@@ -631,10 +631,10 @@
 "Once removed, continuing the transfers will require the torrent files or magnet links." = "Once removed, continuing the transfers will require the torrent files or magnet links.";
 
 /* Remove trackers alert -> message */
-"Once removed, Transmission will no longer attempt to contact it. This cannot be undone." = "Once removed, Transmission will no longer attempt to contact it. This cannot be undone.";
+"Once removed, %@ will no longer attempt to contact it. This cannot be undone." = "Once removed, %@ will no longer attempt to contact it. This cannot be undone.";
 
 /* Remove trackers alert -> message */
-"Once removed, Transmission will no longer attempt to contact them. This cannot be undone." = "Once removed, Transmission will no longer attempt to contact them. This cannot be undone.";
+"Once removed, %@ will no longer attempt to contact them. This cannot be undone." = "Once removed, %@ will no longer attempt to contact them. This cannot be undone.";
 
 /* File Outline -> Menu */
 "Only Check Selected" = "Only Check Selected";
@@ -998,7 +998,7 @@
 "There are no tracker addresses." = "There are no tracker addresses.";
 
 /* Transmission already running alert -> message */
-"There is already a copy of Transmission running. This copy cannot be opened until that instance is quit." = "There is already a copy of Transmission running. This copy cannot be opened until that instance is quit.";
+"There is already a copy of %@ running. This copy cannot be opened until that instance is quit." = "There is already a copy of %@ running. This copy cannot be opened until that instance is quit.";
 
 /* Confirm Quit panel -> message */
 "There is an active transfer that will be paused on quit. The transfer will automatically resume on the next launch." = "There is an active transfer that will be paused on quit. The transfer will automatically resume on the next launch.";
@@ -1093,13 +1093,13 @@
 "Transfers Not Active" = "Transfers Not Active";
 
 /* Legal alert -> message */
-"Transmission is a file-sharing program. When you run a torrent, its data will be made available to others by means of upload. You and you alone are fully responsible for exercising proper judgement and abiding by your local laws." = "Transmission is a file-sharing program. When you run a torrent, its data will be made available to others by means of upload. You and you alone are fully responsible for exercising proper judgement and abiding by your local laws.";
+"%@ is a file-sharing program. When you run a torrent, its data will be made available to others by means of upload. You and you alone are fully responsible for exercising proper judgement and abiding by your local laws." = "%@ is a file-sharing program. When you run a torrent, its data will be made available to others by means of upload. You and you alone are fully responsible for exercising proper judgement and abiding by your local laws.";
 
 /* Donation beg -> message */
-"Transmission is a full-featured torrent application. A lot of time and effort have gone into development, coding, and refinement. If you enjoy using it, please consider showing your love with a donation." = "Transmission is a full-featured torrent application. A lot of time and effort have gone into development, coding, and refinement. If you enjoy using it, please consider showing your love with a donation.";
+"%@ is a full-featured torrent application. A lot of time and effort have gone into development, coding, and refinement. If you enjoy using it, please consider showing your love with a donation." = "%@ is a full-featured torrent application. A lot of time and effort have gone into development, coding, and refinement. If you enjoy using it, please consider showing your love with a donation.";
 
 /* Transmission already running alert -> title */
-"Transmission is already running." = "Transmission is already running.";
+"%@ is already running." = "%@ is already running.";
 
 /* inspector -> peer table -> header
    status bar -> status label
@@ -1157,7 +1157,7 @@
 "Web Seeds" = "Web Seeds";
 
 /* Legal alert -> title */
-"Welcome to Transmission" = "Welcome to Transmission";
+"Welcome to %@" = "Welcome to %@";
 
 /* Groups -> Name */
 "Yellow" = "Yellow";

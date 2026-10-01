@@ -631,10 +631,10 @@
 "Once removed, continuing the transfers will require the torrent files or magnet links." = "Når de er blevet fjernet kræver det torrent-filerne eller magnetlinkene for at fortsætte overførslerne.";
 
 /* Remove trackers alert -> message */
-"Once removed, Transmission will no longer attempt to contact it. This cannot be undone." = "Fjernes denne, vil programmet ikke længere forsøge at kontakte den. Denne handling kan ikke fortrydes.";
+"Once removed, %@ will no longer attempt to contact it. This cannot be undone." = "Fjernes denne, vil programmet ikke længere forsøge at kontakte den. Denne handling kan ikke fortrydes.";
 
 /* Remove trackers alert -> message */
-"Once removed, Transmission will no longer attempt to contact them. This cannot be undone." = "Fjernes disse, vil programmet ikke længere forsøge at kontakte dem. Denne handling kan ikke fortrydes.";
+"Once removed, %@ will no longer attempt to contact them. This cannot be undone." = "Fjernes disse, vil programmet ikke længere forsøge at kontakte dem. Denne handling kan ikke fortrydes.";
 
 /* File Outline -> Menu */
 "Only Check Selected" = "Tjek kun valgte";
@@ -998,7 +998,7 @@
 "There are no tracker addresses." = "Der er ingen tracker adresser.";
 
 /* Transmission already running alert -> message */
-"There is already a copy of Transmission running. This copy cannot be opened until that instance is quit." = "Transmission kører allerede. En kopi kan ikke startes før den nuværende afsluttes.";
+"There is already a copy of %@ running. This copy cannot be opened until that instance is quit." = "%@ kører allerede. En kopi kan ikke startes før den nuværende afsluttes.";
 
 /* Confirm Quit panel -> message */
 "There is an active transfer that will be paused on quit. The transfer will automatically resume on the next launch." = "Der er en aktiv overførsel som pauses ved afslutning. Overførslen genoptages automatisk, næste gang programmet startes.";
@@ -1093,13 +1093,13 @@
 "Transfers Not Active" = "Inaktive overførsler";
 
 /* Legal alert -> message */
-"Transmission is a file-sharing program. When you run a torrent, its data will be made available to others by means of upload. You and you alone are fully responsible for exercising proper judgement and abiding by your local laws." = "Transmission er et fildelingsprogram. Når du kører en torrent, vil dens data være tilgængelig for andre. Du har alene det fulde ansvar for at udvise god dømmekraft og overholde dine lands love.";
+"%@ is a file-sharing program. When you run a torrent, its data will be made available to others by means of upload. You and you alone are fully responsible for exercising proper judgement and abiding by your local laws." = "%@ er et fildelingsprogram. Når du kører en torrent, vil dens data være tilgængelig for andre. Du har alene det fulde ansvar for at udvise god dømmekraft og overholde dine lands love.";
 
 /* Donation beg -> message */
-"Transmission is a full-featured torrent application. A lot of time and effort have gone into development, coding, and refinement. If you enjoy using it, please consider showing your love with a donation." = "Transmission er et fuldt udstyret torrent-program. Der bruges mange ressourcer på udvikling, kodning og forbedring. Hvis du synes godt om programmet, venligst overvej at støtte projektet ved at donere.";
+"%@ is a full-featured torrent application. A lot of time and effort have gone into development, coding, and refinement. If you enjoy using it, please consider showing your love with a donation." = "%@ er et fuldt udstyret torrent-program. Der bruges mange ressourcer på udvikling, kodning og forbedring. Hvis du synes godt om programmet, venligst overvej at støtte projektet ved at donere.";
 
 /* Transmission already running alert -> title */
-"Transmission is already running." = "Transmission kører allerede.";
+"%@ is already running." = "%@ kører allerede.";
 
 /* inspector -> peer table -> header
    status bar -> status label
@@ -1157,7 +1157,7 @@
 "Web Seeds" = "Webseeds";
 
 /* Legal alert -> title */
-"Welcome to Transmission" = "Velkommen til Transmission";
+"Welcome to %@" = "Velkommen til %@";
 
 /* Groups -> Name */
 "Yellow" = "Gul";
