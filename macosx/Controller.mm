@@ -349,7 +349,7 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
     if (self != [Controller self])
         return;
 
-    //make sure another Transmission.app isn't running already
+    //make sure another Retransmission.app isn't running already
     NSArray* apps = [NSRunningApplication runningApplicationsWithBundleIdentifier:NSBundle.mainBundle.bundleIdentifier];
     if (apps.count > 1) {
         NSAlert* alert = [[NSAlert alloc] init];
