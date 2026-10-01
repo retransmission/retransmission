@@ -618,7 +618,7 @@ jobs:
       - uses: actions/upload-artifact@v7
         with:
           name: binaries-${{ github.job }}
-          path: pfx/Build/Products/**/Transmission.app*
+          path: pfx/Build/Products/**/Retransmission.app*
 
   macos-cmake-intel-git-15:
     needs: [what-to-make]
