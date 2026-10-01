@@ -2,7 +2,7 @@ It is not always possible to set all configurations from the GUI, especially for
 
 Note: The client _should_ be closed before making changes, otherwise settings will be reverted to their previous state.
 
-Some of Transmission's behavior can also be customized via environment variables.
+Some of Retransmission's behavior can also be customized via environment variables.
 
 # GTK / Daemon / CLI
 
@@ -10,10 +10,10 @@ Some of Transmission's behavior can also be customized via environment variables
 > Transmisson 4.1.0 started a transition to convert all configuration strings to snake_case.
 >
 > The old kebab-case strings are still the default in Transmission 4, but are deprecated and will be removed in the future.
-> The new snake_case strings will become the default in Transmission 5, but you can adopt them now by starting Transmission
+> The new snake_case strings will become the default in Transmission 5, but you can adopt them now by starting Retransmission
 > with environment variable `TR_SAVE_VERSION_FORMAT=5` (this will be the default in Transmission 5).
 >
-> You can start Transmission with `TR_SAVE_VERSION_FORMAT=4` (the default in Transmission 4) to fall back to the old format if needed.
+> You can start Retransmission with `TR_SAVE_VERSION_FORMAT=4` (the default in Transmission 4) to fall back to the old format if needed.
 >
 > For documentation of the old configurations, please consult documentation from previous versions.
 > https://github.com/retransmission/retransmission/blob/4.0.6/docs/Editing-Configuration-Files.md
@@ -73,53 +73,53 @@ Here is a sample of the three basic types: respectively Boolean, Number and Stri
  * **incomplete_dir:** String (default = [default locations](Configuration-Files.md#Locations)) Directory to keep files in until torrent is complete.
  * **incomplete_dir_enabled:** Boolean (default = false) When enabled, new torrents will download the files to `incomplete_dir`. When complete, the files will be moved to `download_dir`.
  * **preallocation:** Number (0 = Off, 1 = Fast, 2 = Full (slower but reduces disk fragmentation), default = 1)
- * **recent_download_paths:** String[] (default = [`download_dir`]) List of recently-used download directories, most recent first, offered by the GUI clients' destination folder pickers. Transmission keeps up to 6 entries.
+ * **recent_download_paths:** String[] (default = [`download_dir`]) List of recently-used download directories, most recent first, offered by the GUI clients' destination folder pickers. Retransmission keeps up to 6 entries.
  * **recent_relocate_paths:** String[] (default = [`download_dir`]) Same as `recent_download_paths`, but for the dialogs that move a torrent's local data to a new location.
  * **rename_partial_files:** Boolean (default = true) Postfix partially downloaded files with ".part".
  * **start_added_torrents:** Boolean (default = true) Start torrents as soon as they are added.
- * **trash_can_enabled:** Boolean (default = true) Whether to move the torrents to the system's trashcan or unlink them right away upon deletion from Transmission.
+ * **trash_can_enabled:** Boolean (default = true) Whether to move the torrents to the system's trashcan or unlink them right away upon deletion from Retransmission.
    _Note: transmission-gtk only._
  * **trash_original_torrent_files:** Boolean (default = false) Delete torrents added from the watch directory.
- * **umask:** String (default = "022") Sets Transmission's file mode creation mask. See [the umask(2) manpage](https://man7.org/linux/man-pages/man2/umask.2.html) for more information.
+ * **umask:** String (default = "022") Sets Retransmission's file mode creation mask. See [the umask(2) manpage](https://man7.org/linux/man-pages/man2/umask.2.html) for more information.
  * **watch_dir:** String
- * **watch_dir_enabled:** Boolean (default = false) Watch a directory for torrent files and add them to Transmission.
+ * **watch_dir_enabled:** Boolean (default = false) Watch a directory for torrent files and add them to Retransmission.
    _Note: When `watch_dir_enabled` is true, only the transmission-daemon, transmission-gtk, and transmission-qt applications will monitor `watch_dir` for new .torrent files and automatically load them._
  * **watch_dir_force_generic**: Boolean (default = false) Force to use a watch directory implementation that does not rely on OS-specific mechanisms. Useful when your watch directory is on a network location, such as CIFS or NFS.
    _Note: transmission-daemon only._
 
 #### Misc
- * **cache_size_mib:** Number (default = 4) **DEPRECATED** and has no effect: Transmission's memory cache has been removed. The key is kept only for backwards compatibility and will be removed in the future.
+ * **cache_size_mib:** Number (default = 4) **DEPRECATED** and has no effect: Retransmission's memory cache has been removed. The key is kept only for backwards compatibility and will be removed in the future.
  * **default_trackers:** String (default = "") A list of double-newline separated tracker announce URLs. These are used for all torrents in addition to the per torrent trackers specified in the torrent file. If a tracker is only meant to be a backup, it should be separated from its main tracker by a single newline character. If a tracker should be used additionally to another tracker it should be separated by two newlines. (e.g. "udp://tracker.example.invalid:1337/announce\n\nudp://tracker.another-example.invalid:6969/announce\nhttps://backup-tracker.another-example.invalid:443/announce\n\nudp://tracker.yet-another-example.invalid:1337/announce", in this case tracker.example.invalid, tracker.another-example.invalid and tracker.yet-another-example.invalid would be used as trackers and backup-tracker.another-example.invalid as backup in case tracker.another-example.invalid is unreachable.
  * **dht_enabled:** Boolean (default = true) Enable [Distributed Hash Table (DHT)](https://wiki.theory.org/BitTorrentSpecification#Distributed_Hash_Table).
- * **disk_io_workers:** Number (default = 0) Number of background threads for writing torrent data to disk and checking finished pieces. 0 does that work on Transmission's main network thread. 2 is a good starting point for trying the threaded writer: a slow disk no longer stalls the network or the UI while writing, and downloads settle at the disk's speed with bounded buffering. Reads for uploads still run on the network thread. Changes take effect after a restart. Values above 64 are treated as 64.
+ * **disk_io_workers:** Number (default = 0) Number of background threads for writing torrent data to disk and checking finished pieces. 0 does that work on Retransmission's main network thread. 2 is a good starting point for trying the threaded writer: a slow disk no longer stalls the network or the UI while writing, and downloads settle at the disk's speed with bounded buffering. Reads for uploads still run on the network thread. Changes take effect after a restart. Values above 64 are treated as 64.
  * **disk_write_budget_mib:** Number (default = 64) When `disk_io_workers` is above 0, the most memory, in MiB, that downloaded data may occupy while it waits for the disk: blocks requested from peers but not yet received, plus blocks received but not yet written. When the disk can't keep up with the swarm, downloads slow to the disk's speed instead of buffering without limit. Requests in flight count against the budget too, so it also caps the data in transit from peers: throughput cannot exceed the budget divided by the request round-trip time. Raise it on fast links. Values below 1 are treated as 1. The separate cache of already-written blocks for piece hashing is sized at half the effective budget, capped at 32 MiB. Both limits update at runtime. Pieces larger than the cache must be read back from disk. These limits exclude worker buffers, hashes in progress, and other process memory.
  * **encryption:** String ("allowed" = Prefer unencrypted connections, "preferred" = Prefer encrypted connections, "required" = Require encrypted connections; default = "preferred") [Encryption](https://wiki.vuze.com/w/Message_Stream_Encryption) preference. Encryption may help get around some ISP filtering, but at the cost of slightly higher CPU use.
- * **ip_endpoints_ipv4** String[] (default = ["https://ipv4.retransmission.org"]) A list of IP query endpoints to be tried in order, and the first valid result will be cached as the client's global IPv4 address. Specifying an empty array disables IP query for IPv4, but Transmission might not be able to announce your IPv4 address via legacy BEP-7 `&ipv4=` query parameter.
+ * **ip_endpoints_ipv4** String[] (default = ["https://ipv4.retransmission.org"]) A list of IP query endpoints to be tried in order, and the first valid result will be cached as the client's global IPv4 address. Specifying an empty array disables IP query for IPv4, but Retransmission might not be able to announce your IPv4 address via legacy BEP-7 `&ipv4=` query parameter.
  * **ip_endpoints_ipv6** String[] (default = ["https://ipv6.retransmission.org"]) Same as `ip_endpoints_ipv4`, but for IPv6.
  * **lpd_enabled:** Boolean (default = true) Enable [Local Peer Discovery (LPD)](https://en.wikipedia.org/wiki/Local_Peer_Discovery).
- * **message_level:** Number (0 = None, 1 = Critical, 2 = Error, 3 = Warn, 4 = Info, 5 = Debug, 6 = Trace; default = 4) Set verbosity of Transmission's log messages.
+ * **message_level:** Number (0 = None, 1 = Critical, 2 = Error, 3 = Warn, 4 = Info, 5 = Debug, 6 = Trace; default = 4) Set verbosity of Retransmission's log messages.
  * **pex_enabled:** Boolean (default = true) Enable [Peer Exchange (PEX)](https://en.wikipedia.org/wiki/Peer_exchange).
  * **pidfile:** String Path to file in which daemon PID will be stored (_transmission-daemon only_)
- * **proxy_url:** String? (default = null) Proxy for HTTP(S) requests (for example, requests to tracker). Format `[scheme]://[host]:[port]`, where `scheme` is one of: `http`, `https`, `socks4`, `socks4h`, `socks5`, `socks5h`. If null, Transmission respects the CURL environment variables. If empty string, no proxy is used. For more information see [curl proxy documentation](https://curl.se/libcurl/c/CURLOPT_PROXY.html)
+ * **proxy_url:** String? (default = null) Proxy for HTTP(S) requests (for example, requests to tracker). Format `[scheme]://[host]:[port]`, where `scheme` is one of: `http`, `https`, `socks4`, `socks4h`, `socks5`, `socks5h`. If null, Retransmission respects the CURL environment variables. If empty string, no proxy is used. For more information see [curl proxy documentation](https://curl.se/libcurl/c/CURLOPT_PROXY.html)
  * **scrape_paused_torrents_enabled:** Boolean (default = true)
- * **script_torrent_added_enabled:** Boolean (default = false) Run a script when a torrent is added to Transmission. Environmental variables are passed in as detailed on the [Scripts](./Scripts.md) page.
+ * **script_torrent_added_enabled:** Boolean (default = false) Run a script when a torrent is added to Retransmission. Environmental variables are passed in as detailed on the [Scripts](./Scripts.md) page.
  * **script_torrent_added_filename:** String (default = "") Path to script.
  * **script_torrent_done_enabled:** Boolean (default = false) Run a script when a torrent is done downloading. Environmental variables are passed in as detailed on the [Scripts](./Scripts.md) page.
  * **script_torrent_done_filename:** String (default = "") Path to script.
  * **script_torrent_done_seeding_enabled:** Boolean (default = false) Run a script when a torrent is done seeding. Environmental variables are passed in as detailed on the [Scripts](./Scripts.md) page.
  * **script_torrent_done_seeding_filename:** String (default = "") Path to script.
  * **start_paused**: Boolean (default = false) Pause the torrents when daemon starts. _Note: transmission-daemon only._
- * **tcp_enabled:** Boolean (default = true) **DEPRECATED**, use `preferred_transports` instead. Leave it at default and let Transmission manage this value to minimize accidents.
+ * **tcp_enabled:** Boolean (default = true) **DEPRECATED**, use `preferred_transports` instead. Leave it at default and let Retransmission manage this value to minimize accidents.
  * **torrent_added_verify_mode:** String ("fast", "full", default: "fast") Whether newly-added torrents' local data should be fully verified when added, or wait and verify them on-demand later. See [#2626](https://github.com/transmission/transmission/pull/2626) for more discussion.
  * **torrent_complete_verify_enabled**: Boolean (default = false) Whether to verify the torrent once it finishes downloading.
- * **utp_enabled:** Boolean (default = true) ***DEPRECATED***, use `preferred_transports` instead. Leave it at default and let Transmission manage this value to minimize accidents.
+ * **utp_enabled:** Boolean (default = true) ***DEPRECATED***, use `preferred_transports` instead. Leave it at default and let Retransmission manage this value to minimize accidents.
  * **preferred_transports:** String[] ("utp" = [Micro Transport Protocol (µTP)](https://en.wikipedia.org/wiki/Micro_Transport_Protocol), "tcp" = TCP; default = ["utp", "tcp"]) List your preference of transport protocols in the order of preferred-first. Omitting the transport protocol from the list will disable it.
    _Note: Never disable TCP when you also disable µTP, because then your client would not be able to communicate. Disabling TCP might also break webseeds._
  * **sleep_per_seconds_during_verify:** Number (default = 100) Controls the duration in milliseconds for which the verification process will pause to reduce disk I/O pressure.
 
 #### Peers
- * **bind_address_ipv4:** String (default = "") Where to listen for peer connections. When no valid IPv4 address is provided, Transmission will bind to "0.0.0.0".
- * **bind_address_ipv6:** String (default = "") Where to listen for peer connections. When no valid IPv6 address is provided, Transmission will try to bind to your default global IPv6 address. If that didn't work, then Transmission will bind to "::".
+ * **bind_address_ipv4:** String (default = "") Where to listen for peer connections. When no valid IPv4 address is provided, Retransmission will bind to "0.0.0.0".
+ * **bind_address_ipv6:** String (default = "") Where to listen for peer connections. When no valid IPv6 address is provided, Retransmission will try to bind to your default global IPv6 address. If that didn't work, then Retransmission will bind to "::".
  * **peer_congestion_algorithm:** String. This is documented on https://www.pps.jussieu.fr/~jch/software/bittorrent/tcp-congestion-control.html.
  * **peer_limit_global:** Number (default = 200)
  * **peer_limit_per_torrent:** Number (default = 50)
@@ -135,11 +135,11 @@ Here is a sample of the three basic types: respectively Boolean, Number and Stri
  * **port_forwarding_enabled:** Boolean (default = true) Enable [UPnP](https://en.wikipedia.org/wiki/Universal_Plug_and_Play) or [NAT-PMP](https://en.wikipedia.org/wiki/NAT_Port_Mapping_Protocol).
 
 #### Queuing
- * **download_queue_enabled:** Boolean (default = true) When true, Transmission will only download `download_queue_size` non-stalled torrents at once.
+ * **download_queue_enabled:** Boolean (default = true) When true, Retransmission will only download `download_queue_size` non-stalled torrents at once.
  * **download_queue_size:** Number (default = 5) See `download_queue_enabled`.
  * **queue_stalled_enabled:** Boolean (default = true) When true, torrents that have not shared data for `queue_stalled_minutes` are treated as 'stalled' and are not counted against the `download_queue_size` and `seed_queue_size` limits.
  * **queue_stalled_minutes:** Number (default = 30) See `queue_stalled_enabled`.
- * **seed_queue_enabled:** Boolean (default = false) When true. Transmission will only seed `seed_queue_size` non-stalled torrents at once.
+ * **seed_queue_enabled:** Boolean (default = false) When true. Retransmission will only seed `seed_queue_size` non-stalled torrents at once.
  * **seed_queue_size:** Number (default = 10) See `seed_queue_enabled`.
 
 #### [RPC](rpc-spec.md)
@@ -151,7 +151,7 @@ Here is a sample of the three basic types: respectively Boolean, Number and Stri
  * **rpc_host_whitelist:** String (Comma-delimited list of domain names. Wildcards allowed using '\*'. Example: "*.foo.org,example.com", Default: "", Always allowed: "localhost", "localhost.", all the IP addresses. Added in v2.93)
  * **rpc_host_whitelist_enabled:** Boolean (default = true. Added in v2.93)
  * **rpc_max_request_body_size:** Number (default = 16777216, 16 MiB) Respond with HTTP 413 if the request body is larger than this number in bytes.
- * **rpc_password:** String. You can enter this in as plaintext when Transmission is not running, and then Transmission will salt the value on startup and re-save the salted version as a security measure. **Note:** Transmission treats passwords starting with the character `{` as salted, so when you first create your password, the plaintext password you enter must not begin with `{`.
+ * **rpc_password:** String. You can enter this in as plaintext when Retransmission is not running, and then Retransmission will salt the value on startup and re-save the salted version as a security measure. **Note:** Retransmission treats passwords starting with the character `{` as salted, so when you first create your password, the plaintext password you enter must not begin with `{`.
  * **rpc_port:** Number (default = 9091)
  * **rpc_socket_mode:** String UNIX filesystem mode for the RPC UNIX socket (default: 0750; used when `rpc_bind_address` is a UNIX socket)
  * **rpc_url:** String (default = /transmission/. Added in v2.2)
@@ -183,7 +183,7 @@ Here is a sample of the three basic types: respectively Boolean, Number and Stri
  * **seed_ratio_limited:**  Boolean (default = false)
 
 ### Legacy Options
-Only keys that differ from above are listed here. These options have been replaced in newer versions of Transmission.
+Only keys that differ from above are listed here. These options have been replaced in newer versions of Retransmission.
 
 #### 2.31 (and older)
  * **open-file-limit:** Number (default = 32)
@@ -218,7 +218,7 @@ Only keys that differ from above are listed here. These options have been replac
 
 # macOS
 ### Overview
-macOS has a standardized way of saving user preferences files using [XML](https://en.wikipedia.org/wiki/XML) format. These files are called [plist](https://en.wikipedia.org/wiki/Plist) (short for property list) files. Usually there is no need to modify these files directly, since Apple provided a [command-line tool](https://developer.apple.com/DOCUMENTATION/Darwin/Reference/ManPages/man1/defaults.1.html) to reliably change settings. You do need to restart Transmission before these have effect.
+macOS has a standardized way of saving user preferences files using [XML](https://en.wikipedia.org/wiki/XML) format. These files are called [plist](https://en.wikipedia.org/wiki/Plist) (short for property list) files. Usually there is no need to modify these files directly, since Apple provided a [command-line tool](https://developer.apple.com/DOCUMENTATION/Darwin/Reference/ManPages/man1/defaults.1.html) to reliably change settings. You do need to restart Retransmission before these have effect.
 
 In short:
  * To set a key: `defaults write org.m0k.transmission <key> <value>`
