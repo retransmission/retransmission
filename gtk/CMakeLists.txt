@@ -155,6 +155,9 @@ tr_target_glib_resources(${TR_NAME}-gtk
     transmission.gresource.xml
     ${UI_SUBDIR}/transmission-ui.gresource.xml)
 
+# The program the desktop entry and the magnet handler launch.
+set(TR_GTK_EXECUTABLE_NAME ${TR_NAME}-gtk)
+
 # The desktop file ID, which the metainfo and users' default apps refer to.
 # The finished file has this name whether or not it went through gettext,
 # so the install and the test both have one path to name.
@@ -179,6 +182,7 @@ endif()
 target_compile_definitions(${TR_NAME}-gtk-lib
     PUBLIC
         "TR_GTK_APP_ID=\"${TR_GTK_APP_ID}\""
+        "TR_GTK_EXECUTABLE_NAME=\"${TR_GTK_EXECUTABLE_NAME}\""
         TRANSMISSIONLOCALEDIR="${CMAKE_INSTALL_FULL_LOCALEDIR}"
         GETTEXT_PACKAGE="${TR_GETTEXT_DOMAIN}"
         $<$<BOOL:${ENABLE_UTP}>:WITH_UTP>)
