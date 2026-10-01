@@ -292,6 +292,8 @@ TEST_F(IPCacheTest, invalidateForgetsAddressesAndIgnoresStaleResponse)
 
     auto const respond = [](tr_web::FetchDoneFunc const& done, std::string_view body) {
         auto const response = tr_web::FetchResponse{
+            .request_url = {},
+            .errmsg = {},
             .status = 200,
             .headers = {},
             .body = std::string{ body },
