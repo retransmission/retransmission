@@ -362,7 +362,7 @@ function(tr_win32_app_info TGT DESCR INTNAME ORIGFNAME)
         set(TR_MAIN_ICON "${ARGN}")
     endif()
 
-    configure_file("${PROJECT_SOURCE_DIR}/cmake/Transmission.rc.in" "${INTNAME}-app-info.rc")
+    configure_file("${PROJECT_SOURCE_DIR}/cmake/app-info.rc.in" "${INTNAME}-app-info.rc")
 
     target_sources(${TGT}
         PRIVATE
@@ -556,7 +556,7 @@ function(tr_wrap_idl TGT INPUT_FILE OUTPUT_FILE_BASE)
         DEPENDS ${INPUT_FILE}
         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
 
-    configure_file("${PROJECT_SOURCE_DIR}/cmake/Transmission.tlb.rc.in" ${OUTPUT_FILE_BASE}.tlb.rc)
+    configure_file("${PROJECT_SOURCE_DIR}/cmake/typelib.rc.in" ${OUTPUT_FILE_BASE}.tlb.rc)
 
     target_sources(${TGT}
         PRIVATE
