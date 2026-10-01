@@ -3,13 +3,16 @@
 // or any future license endorsed by Mnemosaic LLC.
 // License text can be found in the licenses/ folder.
 
+#include <atomic>
 #include <chrono>
 #include <cstdint>
+#include <functional>
 #include <future>
 #include <memory>
 #include <optional>
 #include <string>
 #include <string_view>
+#include <thread>
 #include <utility>
 
 #include <event2/http.h>
@@ -63,11 +66,18 @@ public:
 
     [[nodiscard]] std::optional<std::string> bind_interface() const override
     {
+        if (bind_interface_func_) {
+            return bind_interface_func_();
+        }
         return bind_interface_;
     }
 
     std::optional<std::string> user_agent_;
     std::optional<std::string> bind_interface_;
+
+    // if set, answers bind_interface() instead of bind_interface_,
+    // so a test can change the binding between two reads
+    std::function<std::optional<std::string>()> bind_interface_func_;
 };
 
 class WebTest : public ::tr::test::SandboxedTest
@@ -411,6 +421,28 @@ TEST_F(WebTest, blockedSessionInterfaceIsRefused)
 {
     // the session-level binding is refused the same way when the request has no override
     mediator_.bind_interface_ = "blocked";
+
+    auto const response = fetch(options());
+    EXPECT_EQ(0, response.status);
+    EXPECT_FALSE(response.did_connect);
+    EXPECT_TRUE(std::empty(server_.lastRequest().method));
+}
+
+TEST_F(WebTest, sessionInterfaceBlockedAfterQueueingIsNotSentUnbound)
+{
+    // The session binding names an interface when the fetch is queued and
+    // when tr_web's thread first reads it, and is "blocked" on every read
+    // after that. Both values fail the fetch: the interface doesn't exist,
+    // and "blocked" is refused. A request that reaches the server was
+    // therefore sent unbound.
+    static auto constexpr NoSuchInterface = "nosuchif0"sv;
+    mediator_.bind_interface_func_ = [test_thread = std::this_thread::get_id(),
+                                      n_reads = std::make_shared<std::atomic<int>>()]() -> std::optional<std::string> {
+        if (std::this_thread::get_id() == test_thread || (*n_reads)++ == 0) {
+            return std::string{ NoSuchInterface };
+        }
+        return "blocked"s;
+    };
 
     auto const response = fetch(options());
     EXPECT_EQ(0, response.status);
