@@ -179,7 +179,7 @@ struct Field {
 // Warns once per source string, since views format the same text on every repaint.
 void warnBadTranslation(QString const& translation, char const* source)
 {
-    thread_local auto warned = std::set<char const*>{};
+    static thread_local auto warned = std::set<char const*>{};
     if (warned.insert(source).second) {
         qWarning().noquote() << "Ignoring translation" << translation << "of" << source
                              << "because its fields don't fit the arguments";
@@ -191,12 +191,14 @@ void warnBadTranslation(QString const& translation, char const* source)
 std::locale const& fmtLocale()
 {
     // QLocale::setDefault() can change QLocale{} at any time, so compare on every call.
-    thread_local auto cache = std::optional<std::pair<QLocale, std::locale>>{};
+    static thread_local auto cache = std::optional<std::pair<QLocale, std::locale>>{};
 
+    // std::locale owns its facets and deletes them along with its last copy.
+    // NOLINTBEGIN(clang-analyzer-cplusplus.NewDeleteLeaks)
     if (auto const qlocale = QLocale{}; !cache || cache->first != qlocale) {
-        auto locale = std::locale{ std::locale::classic(), new QLocaleFacet{ qlocale } };
-        cache.emplace(qlocale, std::move(locale));
+        cache.emplace(qlocale, std::locale{ std::locale::classic(), new QLocaleFacet{ qlocale } });
     }
+    // NOLINTEND(clang-analyzer-cplusplus.NewDeleteLeaks)
 
     return cache->second;
 }

@@ -4,10 +4,10 @@
 // License text can be found in the licenses/ folder.
 
 #include <cstdint>
-#include <map>
 #include <utility>
 
 #include <QCoreApplication>
+#include <QHash>
 #include <QLocale>
 #include <QString>
 #include <QStringList>
@@ -26,11 +26,11 @@ namespace
 class FakeTranslator final : public QTranslator
 {
 public:
-    std::map<QString, QStringList> translations;
+    QHash<QString, QStringList> translations;
 
     [[nodiscard]] bool isEmpty() const override
     {
-        return translations.empty();
+        return translations.isEmpty();
     }
 
     [[nodiscard]] QString translate(
@@ -39,12 +39,7 @@ public:
         char const* /*disambiguation*/,
         int const n) const override
     {
-        auto const iter = translations.find(QString::fromUtf8(source_text));
-        if (iter == translations.end()) {
-            return {};
-        }
-
-        auto const& forms = iter->second;
+        auto const forms = translations.value(QString::fromUtf8(source_text));
         return forms.value(n == 1 || forms.size() == 1 ? 0 : 1);
     }
 };
