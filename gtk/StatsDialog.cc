@@ -10,6 +10,8 @@
 #include "Session.h"
 #include "Utils.h"
 
+#include <libtransmission-app/formatters.h>
+
 #include <gtkmm/label.h>
 #include <gtkmm/messagedialog.h>
 
@@ -81,14 +83,14 @@ bool StatsDialog::Impl::updateStats()
     auto stats = tr_sessionGetStats(core_->get_session());
     setLabel(one_up_lb_, tr_strlsize(stats.uploadedBytes));
     setLabel(one_down_lb_, tr_strlsize(stats.downloadedBytes));
-    setLabel(one_time_lb_, tr_format_time(stats.secondsActive));
+    setLabel(one_time_lb_, tr::app::format_time(stats.secondsActive));
     setLabelFromRatio(one_ratio_lb_, stats.ratio);
 
     stats = tr_sessionGetCumulativeStats(core_->get_session());
     setLabel(all_sessions_lb_, startedTimesText(stats.sessionCount));
     setLabel(all_up_lb_, tr_strlsize(stats.uploadedBytes));
     setLabel(all_down_lb_, tr_strlsize(stats.downloadedBytes));
-    setLabel(all_time_lb_, tr_format_time(stats.secondsActive));
+    setLabel(all_time_lb_, tr::app::format_time(stats.secondsActive));
     setLabelFromRatio(all_ratio_lb_, stats.ratio);
 
     return true;
