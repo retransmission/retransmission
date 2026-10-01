@@ -5,9 +5,12 @@
 
 #include <ctime> // time_t
 #include <string>
+#include <string_view>
+#include <vector>
 
 #include <fmt/format.h>
 
+#include <libtransmission/types.h> // tr_tracker_view
 #include <libtransmission/utils.h> // _(), tr_ngettext()
 
 #include "libtransmission-app/formatters.h"
@@ -81,6 +84,179 @@ auto constexpr SecondsPerDay = time_t{ 86400 };
 
     return _("now");
 }
+
+// Escapes text for Pango markup and for HTML,
+// and replaces control characters, which neither displays.
+[[nodiscard]] std::string escape_markup(std::string_view const text)
+{
+    auto escaped = std::string{};
+    escaped.reserve(std::size(text));
+
+    for (auto const ch : text) {
+        switch (ch) {
+        case '&':
+            escaped += "&amp;";
+            break;
+        case '<':
+            escaped += "&lt;";
+            break;
+        case '>':
+            escaped += "&gt;";
+            break;
+        case '"':
+            escaped += "&quot;";
+            break;
+        case '\'':
+            escaped += "&#39;";
+            break;
+        default:
+            escaped += (static_cast<unsigned char>(ch) < 0x20U || ch == 0x7F) ? ' ' : ch;
+            break;
+        }
+    }
+
+    return escaped;
+}
+
+void append_announce_status(
+    std::vector<std::string>& lines,
+    tr_tracker_view const& tracker,
+    time_t const now,
+    TrackerStatusMarkup const& markup)
+{
+    if (tracker.hasAnnounced && tracker.announceState != TR_TRACKER_INACTIVE) {
+        auto const time_span_ago = format_time_relative(tracker.lastAnnounceTime, now);
+
+        if (tracker.lastAnnounceSucceeded) {
+            lines.emplace_back(
+                fmt::format(
+                    // {markup_begin} and {markup_end} should surround the peer text
+                    fmt::runtime(tr_ngettext(
+                        "Got a list of {markup_begin}{peer_count} peer{markup_end} {time_span_ago}",
+                        "Got a list of {markup_begin}{peer_count} peers{markup_end} {time_span_ago}",
+                        tracker.lastAnnouncePeerCount)),
+                    fmt::arg("markup_begin", markup.success_begin),
+                    fmt::arg("peer_count", tracker.lastAnnouncePeerCount),
+                    fmt::arg("markup_end", markup.success_end),
+                    fmt::arg("time_span_ago", time_span_ago)));
+        } else if (tracker.lastAnnounceTimedOut) {
+            lines.emplace_back(
+                fmt::format(
+                    // {markup_begin} and {markup_end} should surround the time_span
+                    fmt::runtime(_("Peer list request {markup_begin}timed out {time_span_ago}{markup_end}; will retry")),
+                    fmt::arg("markup_begin", markup.timeout_begin),
+                    fmt::arg("time_span_ago", time_span_ago),
+                    fmt::arg("markup_end", markup.timeout_end)));
+        } else {
+            lines.emplace_back(
+                fmt::format(
+                    // {markup_begin} and {markup_end} should surround the error
+                    fmt::runtime(_("Got an error '{markup_begin}{error}{markup_end}' {time_span_ago}")),
+                    fmt::arg("markup_begin", markup.error_begin),
+                    fmt::arg("error", escape_markup(std::data(tracker.lastAnnounceResult))),
+                    fmt::arg("markup_end", markup.error_end),
+                    fmt::arg("time_span_ago", time_span_ago)));
+        }
+    }
+
+    switch (tracker.announceState) {
+    case TR_TRACKER_INACTIVE:
+        lines.emplace_back(_("No updates scheduled"));
+        break;
+
+    case TR_TRACKER_WAITING:
+        lines.emplace_back(
+            fmt::format(
+                fmt::runtime(_("Asking for more peers {time_span_from_now}")),
+                fmt::arg("time_span_from_now", format_time_relative(tracker.nextAnnounceTime, now))));
+        break;
+
+    case TR_TRACKER_QUEUED:
+        lines.emplace_back(_("Queued to ask for more peers"));
+        break;
+
+    case TR_TRACKER_ACTIVE:
+        lines.emplace_back(
+            fmt::format(
+                // {markup_begin} and {markup_end} should surround time_span_ago
+                fmt::runtime(_("Asked for more peers {markup_begin}{time_span_ago}{markup_end}")),
+                fmt::arg("markup_begin", "<small>"),
+                fmt::arg("time_span_ago", format_time_relative(tracker.lastAnnounceStartTime, now)),
+                fmt::arg("markup_end", "</small>")));
+        break;
+
+    default:
+        break;
+    }
+}
+
+void append_scrape_status(
+    std::vector<std::string>& lines,
+    tr_tracker_view const& tracker,
+    time_t const now,
+    TrackerStatusMarkup const& markup)
+{
+    if (tracker.hasScraped) {
+        auto const time_span_ago = format_time_relative(tracker.lastScrapeTime, now);
+
+        if (!tracker.lastScrapeSucceeded) {
+            lines.emplace_back(
+                fmt::format(
+                    // {markup_begin} and {markup_end} should surround the error text
+                    fmt::runtime(_("Got a scrape error '{markup_begin}{error}{markup_end}' {time_span_ago}")),
+                    fmt::arg("error", escape_markup(std::data(tracker.lastScrapeResult))),
+                    fmt::arg("time_span_ago", time_span_ago),
+                    fmt::arg("markup_begin", markup.error_begin),
+                    fmt::arg("markup_end", markup.error_end)));
+        } else if (tracker.seederCount < 0 || tracker.leecherCount < 0) {
+            lines.emplace_back(
+                fmt::format(
+                    // {markup_begin} and {markup_end} should surround "no information"
+                    fmt::runtime(_("Tracker had {markup_begin}no information{markup_end} on peer counts {time_span_ago}")),
+                    fmt::arg("markup_begin", markup.success_begin),
+                    fmt::arg("markup_end", markup.success_end),
+                    fmt::arg("time_span_ago", time_span_ago)));
+        } else {
+            lines.emplace_back(
+                fmt::format(
+                    // {markup_begin} and {markup_end} should surround the seeder/leecher text
+                    fmt::runtime(_(
+                        "Tracker had {markup_begin}{seeder_count} {seeder_or_seeders} and {leecher_count} {leecher_or_leechers}{markup_end} {time_span_ago}")),
+                    fmt::arg("seeder_count", tracker.seederCount),
+                    fmt::arg("seeder_or_seeders", tr_ngettext("seeder", "seeders", tracker.seederCount)),
+                    fmt::arg("leecher_count", tracker.leecherCount),
+                    fmt::arg("leecher_or_leechers", tr_ngettext("leecher", "leechers", tracker.leecherCount)),
+                    fmt::arg("time_span_ago", time_span_ago),
+                    fmt::arg("markup_begin", markup.success_begin),
+                    fmt::arg("markup_end", markup.success_end)));
+        }
+    }
+
+    switch (tracker.scrapeState) {
+    case TR_TRACKER_WAITING:
+        lines.emplace_back(
+            fmt::format(
+                fmt::runtime(_("Asking for peer counts {time_span_from_now}")),
+                fmt::arg("time_span_from_now", format_time_relative(tracker.nextScrapeTime, now))));
+        break;
+
+    case TR_TRACKER_QUEUED:
+        lines.emplace_back(_("Queued to ask for peer counts"));
+        break;
+
+    case TR_TRACKER_ACTIVE:
+        lines.emplace_back(
+            fmt::format(
+                fmt::runtime(_("Asked for peer counts {markup_begin}{time_span_ago}{markup_end}")),
+                fmt::arg("markup_begin", "<small>"),
+                fmt::arg("time_span_ago", format_time_relative(tracker.lastScrapeStartTime, now)),
+                fmt::arg("markup_end", "</small>")));
+        break;
+
+    default: // TR_TRACKER_INACTIVE
+        break;
+    }
+}
 } // namespace
 
 std::string format_time(time_t const seconds)
@@ -140,6 +316,22 @@ std::string format_time_left(time_t const seconds)
 std::string format_time_relative(time_t const then, time_t const now)
 {
     return then > now ? format_time_from_now(then - now) : format_time_ago(now - then);
+}
+
+std::vector<std::string> tracker_status_lines(
+    tr_tracker_view const& tracker,
+    time_t const now,
+    bool const with_scrape,
+    TrackerStatusMarkup const& markup)
+{
+    auto lines = std::vector<std::string>{};
+    append_announce_status(lines, tracker, now, markup);
+
+    if (with_scrape) {
+        append_scrape_status(lines, tracker, now, markup);
+    }
+
+    return lines;
 }
 
 } // namespace tr::app
