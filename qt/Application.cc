@@ -7,6 +7,7 @@
 
 #include <algorithm>
 #include <iterator>
+#include <string>
 #include <utility>
 #include <vector>
 
@@ -30,9 +31,9 @@
 
 #include <libtransmission/macros.h>
 #include <libtransmission/quark.h>
-#include <libtransmission/values.h>
 
 #include <libtransmission-app/interop.h>
+#include <libtransmission-app/l10n.h>
 #include <libtransmission-app/startup-coordinator.h>
 
 #include "AccessibleSqueezeLabel.h"
@@ -43,6 +44,7 @@
 #include "QtCompat.h"
 #include "Session.h"
 #include "TorrentModel.h"
+#include "TrFormat.h"
 #include "Utils.h"
 #include "WatchDir.h"
 
@@ -72,32 +74,6 @@ bool loadTranslation(QTranslator& translator, QString const& name, QLocale const
     }
 
     return false;
-}
-
-void initUnits()
-{
-    using Config = tr::Values::Config;
-
-    Config::speed = { Config::Base::Kilo,
-                      QObject::tr("B/s").toStdString(),
-                      QObject::tr("kB/s").toStdString(),
-                      QObject::tr("MB/s").toStdString(),
-                      QObject::tr("GB/s").toStdString(),
-                      QObject::tr("TB/s").toStdString() };
-
-    Config::memory = { Config::Base::Kibi,
-                       QObject::tr("B").toStdString(),
-                       QObject::tr("KiB").toStdString(),
-                       QObject::tr("MiB").toStdString(),
-                       QObject::tr("GiB").toStdString(),
-                       QObject::tr("TiB").toStdString() };
-
-    Config::storage = { Config::Base::Kilo,
-                        QObject::tr("B").toStdString(),
-                        QObject::tr("kB").toStdString(),
-                        QObject::tr("MB").toStdString(),
-                        QObject::tr("GB").toStdString(),
-                        QObject::tr("TB").toStdString() };
 }
 
 [[nodiscard]] auto makeWindowIcon()
@@ -149,8 +125,8 @@ Application::Application(
     , startup_coordinator_{ std::move(startup_coordinator) }
 {
     setApplicationName(ConfigName);
+    trqt::setGlobalFmtLocale();
     loadTranslations();
-    initUnits();
 
     setWindowIcon(makeWindowIcon());
 
@@ -289,6 +265,16 @@ void Application::loadTranslations()
         loadTranslation(app_translator_, app_file_name, english_locale, app_qm_dirs)) {
         installTranslator(&app_translator_);
     }
+
+    // libtransmission's strings, and those the clients share, come from the gettext catalogs.
+    // They use the language of the .qm file, so that no window mixes two languages.
+    auto const catalog_dirs = std::vector<std::string>{ TR_LOCALE_DIR,
+                                                        (applicationDirPath() + QStringLiteral("/locale")).toStdString() };
+    auto languages = std::vector<std::string>{};
+    if (auto const language = app_translator_.language(); !language.isEmpty()) {
+        languages.push_back(language.toStdString());
+    }
+    tr::app::l10n::use_catalogs(catalog_dirs, TR_GETTEXT_DOMAIN, languages);
 }
 
 void Application::onTorrentsEdited(torrent_ids_t const& torrent_ids) const

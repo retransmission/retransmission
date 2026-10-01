@@ -16,6 +16,8 @@
 #include <QtCore/QDebug>
 #include <QtCore/QLocale>
 
+#include <libtransmission/utils.h>
+
 #include <libtransmission-app/l10n.h>
 
 namespace trqt
@@ -152,9 +154,16 @@ std::locale const& fmtLocale()
     return cache->second;
 }
 
+void setGlobalFmtLocale()
+{
+    // std::locale owns its facets and deletes them along with its last copy.
+    // NOLINTNEXTLINE(clang-analyzer-cplusplus.NewDeleteLeaks)
+    tr_locale_set_global(std::locale{ std::locale{}, new QLocaleFacet{ QLocale{} } });
+}
+
 std::pair<QString, QString> splitAtField(QString const& translation, char const* const source, std::string_view const name)
 {
-    // Unescapes "{{" and "}}", which parseFields() has checked come in pairs.
+    // Unescapes "{{" and "}}", which parse_fields() has checked come in pairs.
     auto const unescape = [](std::string_view const text) {
         auto str = std::string{};
         for (size_t pos = 0; pos < std::size(text); ++pos) {
