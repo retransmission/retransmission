@@ -11,14 +11,14 @@ The actual software prerequisites for building the app are based on GitHub Actio
 
 Building the project on Mac requires the source to be retrieved from GitHub. Pre-packaged source code will not compile.
 ```bash
-git clone --recurse-submodules https://github.com/retransmission/retransmission Transmission
+git clone --recurse-submodules https://github.com/retransmission/retransmission Retransmission
 ```
 
 If building from source is too daunting for you, check out the [nightly builds](https://build.retransmission.org/).
 (Note: These are untested snapshots. Use them with care.)
 
 ### Building the native app with Xcode ###
-Transmission has an Xcode project file for building in Xcode.
+Retransmission has an Xcode project file for building in Xcode.
 - Open Transmission.xcodeproj
 - Run the Transmission scheme
 
@@ -27,7 +27,7 @@ Build the app:
 ```bash
 cmake -B build -G Ninja -DCMAKE_BUILD_TYPE=RelWithDebInfo
 cmake --build build -t transmission-mac
-open ./build/macosx/Transmission.app
+open ./build/macosx/Retransmission.app
 ```
 
 ### Building the GTK app with CMake ###
@@ -59,7 +59,7 @@ For building transmission-daemon you will need basic dependencies:
 ```bash
 $ sudo apt install build-essential cmake git libcurl4-openssl-dev zlib1g-dev
 ```
-These packages are not mandatory for a working binary. Transmission brings its own libraries if they aren't installed, except for `libsystemd-dev`.
+These packages are not mandatory for a working binary. Retransmission brings its own libraries if they aren't installed, except for `libsystemd-dev`.
 ```bash
 $ sudo apt install libevent-dev libminiupnpc-dev libnatpmp-dev libsystemd-dev
 ```
@@ -93,7 +93,7 @@ For building transmission-daemon you will need basic dependencies:
 ```bash
 $ sudo apt install build-essential cmake git libcurl4-openssl-dev libssl-dev zlib1g-dev
 ```
-These packages are not mandatory for a working binary. Transmission brings its own libraries if they aren't installed, except for `libsystemd-dev`.
+These packages are not mandatory for a working binary. Retransmission brings its own libraries if they aren't installed, except for `libsystemd-dev`.
 ```bash
 $ sudo apt install libevent-dev libminiupnpc-dev libnatpmp-dev libpsl-dev libsystemd-dev
 ```
@@ -126,10 +126,10 @@ $ sudo apt-get install build-essential automake autoconf libtool pkg-config intl
 
 Then you can begin [building.](#building-transmission-from-git-first-time)
 
-### Building Transmission from Git (first time) ###
+### Building Retransmission from Git (first time) ###
 ```bash
-$ git clone --recurse-submodules https://github.com/retransmission/retransmission Transmission
-$ cd Transmission
+$ git clone --recurse-submodules https://github.com/retransmission/retransmission Retransmission
+$ cd Retransmission
 # Use -DCMAKE_BUILD_TYPE=RelWithDebInfo to build optimized binary with debug information. (preferred)
 # Use -DCMAKE_BUILD_TYPE=Release to build full optimized binary.
 $ cmake -B build -DCMAKE_BUILD_TYPE=RelWithDebInfo
@@ -138,9 +138,9 @@ $ cmake --build .
 $ sudo cmake --install .
 ```
 
-### Building Transmission from Git (updating) ###
+### Building Retransmission from Git (updating) ###
 ```bash
-$ cd Transmission/build
+$ cd Retransmission/build
 $ cmake --build . -t clean
 $ git submodule foreach --recursive git clean -xfd
 $ git pull --rebase --prune
@@ -177,7 +177,7 @@ Additional dependencies for the Qt client:
 vcpkg install qtactiveqt qtsvg qttools
 ```
 
-### Get Transmission source
+### Get Retransmission source
 ```bat
 git clone https://github.com/retransmission/retransmission
 cd transmission
