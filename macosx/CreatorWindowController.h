@@ -13,13 +13,6 @@
 
 - (instancetype)initWithHandle:(tr_session*)handle path:(NSURL*)path;
 
-- (IBAction)setLocation:(id)sender;
-- (IBAction)create:(id)sender;
-- (IBAction)cancelCreateWindow:(id)sender;
-- (IBAction)cancelCreateProgress:(id)sender;
-- (IBAction)incrementOrDecrementPieceSize:(id)sender;
-- (IBAction)addRemoveTracker:(id)sender;
-
 - (void)copy:(id)sender;
 - (void)paste:(id)sender;
 

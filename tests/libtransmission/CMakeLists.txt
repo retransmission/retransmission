@@ -52,6 +52,7 @@ target_sources(libtransmission-test
         serializer-tests.cc
         session-alt-speeds-test.cc
         session-test.cc
+        settings-fixtures.h
         settings-test.cc
         shared-string-test.cc
         strbuf-test.cc
@@ -125,6 +126,16 @@ if(NOT CMAKE_CROSSCOMPILING OR CMAKE_CROSSCOMPILING_EMULATOR)
     set_tests_properties(LT.ShuffledDiskIo
         PROPERTIES
             ENVIRONMENT TR_LOCAL_DATA_SHUFFLE=1)
+
+    # ...and once more on the threaded backend, where writes and piece
+    # hashes finish on worker threads and admin ops wait for them.
+    add_test(
+        NAME LT.ThreadedDiskIo
+        COMMAND libtransmission-test --gtest_filter=*IncompleteDirTest.*:MoveTest.*:RenameTest.*:RpcTest.*)
+
+    set_tests_properties(LT.ThreadedDiskIo
+        PROPERTIES
+            ENVIRONMENT TR_LOCAL_DATA_WORKERS=2)
 endif()
 
 add_custom_command(

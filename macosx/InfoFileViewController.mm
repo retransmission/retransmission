@@ -102,7 +102,7 @@
     [NSUserDefaults.standardUserDefaults setFloat:NSHeight(self.view.frame) forKey:@"InspectorContentHeightFiles"];
 }
 
-- (void)setFileFilterText:(id)sender
+- (IBAction)setFileFilterText:(id)sender
 {
     self.fFileController.filterText = [sender stringValue];
 }

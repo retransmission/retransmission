@@ -9,6 +9,7 @@
 #include <condition_variable>
 #include <cstdlib> // getenv()
 #include <cstring> // strlen()
+#include <future>
 #include <iostream>
 #include <memory>
 #include <mutex> // std::once_flag()
@@ -16,6 +17,7 @@
 #include <string>
 #include <string_view>
 #include <thread>
+#include <utility>
 #include <vector>
 
 #include <event2/event.h>
@@ -36,6 +38,7 @@
 #include <libtransmission/torrent-builder.h>
 #include <libtransmission/torrent.h>
 #include <libtransmission/tr-strbuf.h>
+#include <libtransmission/utils.h> // tr_num_parse()
 #include <libtransmission/variant.h>
 
 using namespace std::literals;
@@ -79,7 +82,7 @@ inline bool waitFor(std::function<bool()> const& test, std::chrono::milliseconds
     }
 }
 
-inline bool waitFor(std::function<bool()> const& test, int msec)
+inline bool waitFor(std::function<bool()> const& test, std::chrono::milliseconds::rep const msec)
 {
     return waitFor(test, std::chrono::milliseconds{ msec });
 }
@@ -102,6 +105,18 @@ inline bool waitFor(
 
         event_base_loop(evb, EVLOOP_ONCE | EVLOOP_NONBLOCK);
     }
+}
+
+// Fails a preallocation the way a full disk (`disk_full`) or a
+// filesystem without preallocation (`!disk_full`) would.
+inline bool failPreallocation(tr_error* const error, bool const disk_full)
+{
+#ifdef _WIN32
+    error->set(disk_full ? ERROR_DISK_FULL : ERROR_NOT_SUPPORTED, "injected preallocation error");
+#else
+    error->set(disk_full ? ENOSPC : ENOSYS, "injected preallocation error");
+#endif
+    return false;
 }
 
 class TransmissionTest : public ::testing::Test
@@ -319,6 +334,11 @@ private:
 protected:
     enum class ZeroTorrentState : uint8_t { NoFiles, Partial, Complete };
 
+    [[nodiscard]] tr_peerMgr* peerManager() const noexcept
+    {
+        return session_->peer_mgr_.get();
+    }
+
     [[nodiscard]] tr_torrent* createTorrentAndWaitForVerifyDone(tr_torrent_builder* builder)
     {
         auto verified_lock = std::unique_lock(verified_mutex_);
@@ -445,6 +465,36 @@ protected:
         verified_cv_.wait_for(verified_lock, 20s, stop_waiting);
     }
 
+    // Runs `func` on the session thread and waits for it to finish and returns the result.
+    template<typename Func>
+    auto blockingRunInSessionThread(Func&& func, std::chrono::milliseconds const msec = 5s)
+    {
+        using Result = decltype(func());
+
+        auto task = std::make_shared<std::packaged_task<Result()>>(std::forward<Func>(func));
+        auto future = task->get_future();
+        session_->run_in_session_thread([task]() { (*task)(); });
+        auto const status = future.wait_for(msec);
+        EXPECT_EQ(status, std::future_status::ready);
+        if (status != std::future_status::ready) {
+            return Result();
+        }
+        return future.get();
+    }
+
+    template<typename Func>
+    auto blockingRunInSessionThread(Func&& func, std::chrono::milliseconds::rep const msec)
+    {
+        return blockingRunInSessionThread(std::forward<Func>(func), std::chrono::milliseconds{ msec });
+    }
+
+    // Waits for `test` to hold, checking it on the session thread,
+    // which owns the torrent state that tests wait on.
+    [[nodiscard]] bool waitForInSessionThread(std::function<bool()> const& test, std::chrono::milliseconds::rep const msec)
+    {
+        return waitFor([this, &test]() { return blockingRunInSessionThread(test); }, msec);
+    }
+
     tr_session* session_ = nullptr;
 
     tr::Settings& settings()
@@ -495,9 +545,30 @@ protected:
         tr_logClearQueue();
     }
 
+    // Runs the fixture session's periodic save now.
+    void runSaveTimer()
+    {
+        blockingRunInSessionThread([this]() { session_->on_save_timer(); });
+    }
+
+    // A suite that scripts completion delivery itself returns false.
+    // The parked-completion modes only hold on the synchronous backend,
+    // where nothing completes off the session thread.
+    [[nodiscard]] virtual bool useLocalDataWorkersFromEnv() const
+    {
+        return true;
+    }
+
     void SetUp() override
     {
         SandboxedTest::SetUp();
+
+        // TR_LOCAL_DATA_WORKERS runs the disk IO on the threaded backend
+        // instead of the synchronous one.
+        auto const workers = useLocalDataWorkersFromEnv() ? tr_env_get_string("TR_LOCAL_DATA_WORKERS") : std::string{};
+        if (!std::empty(workers)) {
+            settings().insert_or_assign(TR_KEY_disk_io_workers, tr_num_parse<int64_t>(workers).value_or(2));
+        }
 
         session_ = sessionInit(settings());
 
@@ -507,7 +578,7 @@ protected:
         // tr::LocalData may deliver completions late and out of order.
         // TR_LOCAL_DATA_SHUFFLE makes it do so, so code that assumes
         // otherwise fails here.
-        if (tr_env_key_exists("TR_LOCAL_DATA_SHUFFLE")) {
+        if (std::empty(workers) && tr_env_key_exists("TR_LOCAL_DATA_SHUFFLE")) {
             session_->local_data.set_completions(tr::LocalData::Completions::Shuffled);
         }
 

@@ -3,13 +3,11 @@
 // or any future license endorsed by Mnemosaic LLC.
 // License text can be found in the licenses/ folder.
 
-#include <algorithm>
 #include <array>
-#include <cerrno> /* EILSEQ, EINVAL */
-#include <cstddef> // std::byte
-#include <cstdint> // uint16_t
+#include <cerrno> // E2BIG, EILSEQ, EINVAL
+#include <cstddef> // size_t
+#include <cstdint> // int64_t, uint64_t
 #include <optional>
-#include <stack>
 #include <string>
 #include <string_view>
 #include <type_traits>
@@ -36,6 +34,7 @@
 #include "libtransmission/string-utils.h"
 #include "libtransmission/tr-assert.h"
 #include "libtransmission/utils.h"
+#include "libtransmission/variant-common.h"
 #include "libtransmission/variant.h"
 
 namespace
@@ -48,7 +47,7 @@ struct json_to_variant_handler : public rapidjson::BaseReaderHandler<> {
 
     explicit json_to_variant_handler(tr_variant* const top)
     {
-        stack_.emplace(top);
+        stack_.push_back(top);
     }
 
     bool Null()
@@ -93,30 +92,28 @@ struct json_to_variant_handler : public rapidjson::BaseReaderHandler<> {
         return true;
     }
 
-    bool String(Ch const* const str, rapidjson::SizeType const len, bool const copy)
+    // `str` points into RapidJSON's scratch buffer, which is reused for
+    // the next string, so the variant must own a copy even when
+    // tr_variant_serde::inplace() was requested.
+    bool String(Ch const* const str, rapidjson::SizeType const len, bool /*copy*/)
     {
-        *get_leaf() = copy ? tr_variant{ std::string_view{ str, len } } : tr_variant::unmanaged_string({ str, len });
+        *get_leaf() = std::string_view{ str, len };
         return true;
     }
 
     bool StartObject()
     {
         if (auto* node = push_stack()) {
-            *node = tr_variant::Map{ prealloc_guess() };
+            *node = tr_variant::make_map(prealloc_guess());
             return true;
         }
 
         return false;
     }
 
-    bool Key(Ch const* const str, rapidjson::SizeType const len, bool const copy)
+    bool Key(Ch const* const str, rapidjson::SizeType const len, bool /*copy*/)
     {
-        if (copy) {
-            key_buf_.assign(str, len);
-            cur_key_ = key_buf_;
-        } else {
-            cur_key_ = std::string_view{ str, len };
-        }
+        key_ = tr_quark_new({ str, len });
         return true;
     }
 
@@ -145,46 +142,31 @@ struct json_to_variant_handler : public rapidjson::BaseReaderHandler<> {
 private:
     [[nodiscard]] size_t prealloc_guess() const noexcept
     {
-        auto const depth = std::size(stack_);
-        return depth < MaxDepth ? prealloc_guess_[depth] : 0;
+        return prealloc_guess_[std::size(stack_)];
     }
 
     tr_variant* push_stack()
     {
-        return std::size(stack_) < MaxDepth ? stack_.emplace(get_leaf()) : nullptr;
+        return std::size(stack_) < MaxDepth ? stack_.emplace_back(get_leaf()) : nullptr;
     }
 
     void pop_stack(rapidjson::SizeType const len) noexcept
     {
-#ifdef TR_ENABLE_ASSERTS
-        if (auto* top = stack_.top(); top->holds_alternative<tr_variant::Vector>()) {
-            TR_ASSERT(std::size(*top->get_if<tr_variant::Vector>()) == len);
-        } else if (top->holds_alternative<tr_variant::Map>()) {
-            TR_ASSERT(std::size(*top->get_if<tr_variant::Map>()) == len);
-        }
-#endif
-
-        auto const depth = std::size(stack_);
-        stack_.pop();
+        prealloc_guess_[std::size(stack_)] = len;
+        stack_.pop_back();
         TR_ASSERT(!std::empty(stack_));
-        if (depth < MaxDepth) {
-            prealloc_guess_[depth] = len;
-        }
     }
 
     [[nodiscard]] tr_variant* get_leaf()
     {
-        auto* const parent = stack_.top();
+        auto* const parent = stack_.back();
         TR_ASSERT(parent != nullptr);
 
         if (auto* const vec = parent->get_if<tr_variant::Vector>()) {
             return &vec->emplace_back();
         }
         if (auto* const map = parent->get_if<tr_variant::Map>()) {
-            TR_ASSERT(!std::empty(cur_key_));
-            auto tmp = std::string_view{};
-            std::swap(cur_key_, tmp);
-            return &(*map)[tr_quark_new(tmp)];
+            return &(*map)[key_];
         }
 
         return parent;
@@ -196,12 +178,15 @@ private:
     /* A very common pattern is for a container's children to be similar,
      * e.g. they may all be objects with the same set of keys. So when
      * a container is popped off the stack, remember its size to use as
-     * a preallocation heuristic for the next container at that depth. */
-    std::array<size_t, MaxDepth> prealloc_guess_{};
+     * a preallocation heuristic for the next container at that depth.
+     * Indexed by the stack size, which push_stack() caps at MaxDepth. */
+    std::array<size_t, MaxDepth + 1> prealloc_guess_{};
 
-    std::string key_buf_;
-    std::string_view cur_key_;
-    std::stack<tr_variant*> stack_;
+    // RapidJSON reports each member's key right before its value,
+    // so this is current whenever get_leaf() finds a map on the stack.
+    tr_quark key_ = TR_KEY_NONE;
+
+    small::max_size_vector<tr_variant*, MaxDepth> stack_;
 };
 // NOLINTEND(bugprone-derived-method-shadowing-base-method)
 } // namespace parse_helpers
@@ -212,7 +197,9 @@ std::optional<tr_variant> tr_variant_serde::parse_json(std::string_view input)
     auto* begin = std::data(input);
     auto size = std::size(input);
     if (begin == nullptr) {
-        // RapidJSON will dereference a nullptr otherwise
+        // clang-analyzer does not know a null string_view is empty and
+        // reports MemoryStream reading through it. Give it an empty
+        // buffer instead.
         begin = "";
         size = 0;
     }
@@ -243,7 +230,7 @@ std::optional<tr_variant> tr_variant_serde::parse_json(std::string_view input)
             fmt::format(
                 fmt::runtime(_("Couldn't parse JSON at position {position} '{text}': {error} ({error_code})")),
                 fmt::arg("position", pos),
-                fmt::arg("text", std::string_view{ begin + pos, std::min(size_t{ 16U }, size - pos) }),
+                fmt::arg("text", input.substr(pos, 16U)),
                 fmt::arg("error", rapidjson::GetParseError_En(err_code)),
                 fmt::arg("error_code", static_cast<std::underlying_type_t<decltype(err_code)>>(err_code))));
     }
@@ -280,29 +267,9 @@ private:
     fmt::memory_buffer buf_;
 };
 
-[[nodiscard]] auto sorted_entries(tr_variant::Map const& map)
-{
-    static auto constexpr N = 32U;
-    auto entries = small::vector<std::pair<std::string_view, tr_variant const*>, N>{};
-    entries.reserve(map.size());
-    for (auto const& [key, child] : map) {
-        entries.emplace_back(tr_quark_get_string_view(key), &child);
-    }
-    std::ranges::sort(entries);
-    return entries;
-}
-
 template<typename WriterT>
 struct JsonWriter {
     WriterT& writer;
-
-    using StringWriteFunc = bool (WriterT::*)(typename WriterT::Ch const*, rapidjson::SizeType, bool);
-
-    void WriteString(StringWriteFunc const func, std::string_view sv) const
-    {
-        auto const utf8 = tr_strv_to_utf8_string(sv);
-        (writer.*func)(std::data(utf8), std::size(utf8), true);
-    }
 
     void operator()(std::monostate /*unused*/) const
     {
@@ -330,7 +297,7 @@ struct JsonWriter {
 
     void operator()(std::string_view const val) const
     {
-        WriteString(&WriterT::String, val);
+        writer.String(tr_strv_to_utf8_string(val));
     }
 
     void operator()(tr_variant::Vector const& val) const
@@ -345,8 +312,8 @@ struct JsonWriter {
     void operator()(tr_variant::Map const& val) const
     {
         writer.StartObject();
-        for (auto const& [key, child] : sorted_entries(val)) {
-            WriteString(&WriterT::Key, key);
+        for (auto const& [key, child] : tr::variant::detail::sorted_entries(val)) {
+            writer.Key(tr_strv_to_utf8_string(key));
             child->visit(*this);
         }
         writer.EndObject();
@@ -354,7 +321,13 @@ struct JsonWriter {
 };
 
 template<typename WriterT>
-JsonWriter(WriterT&) -> JsonWriter<WriterT>;
+[[nodiscard]] std::string to_json(tr_variant const& var)
+{
+    auto buf = FmtOutputStream{};
+    auto writer = WriterT{ buf };
+    var.visit(JsonWriter<WriterT>{ writer });
+    return buf.to_string();
+}
 
 } // namespace to_string_helpers
 } // namespace
@@ -362,16 +335,7 @@ JsonWriter(WriterT&) -> JsonWriter<WriterT>;
 std::string tr_variant_serde::to_json_string(tr_variant const& var) const
 {
     using namespace to_string_helpers;
+    using Out = FmtOutputStream;
 
-    auto buf = FmtOutputStream{};
-    if (compact_) {
-        auto writer = rapidjson::Writer{ buf };
-        var.visit(JsonWriter{ writer });
-    } else {
-        // Explicitly specify template parameter to workaround
-        // https://gcc.gnu.org/bugzilla/show_bug.cgi?id=85790
-        auto writer = rapidjson::PrettyWriter<FmtOutputStream>{ buf };
-        var.visit(JsonWriter{ writer });
-    }
-    return buf.to_string();
+    return compact_ ? to_json<rapidjson::Writer<Out>>(var) : to_json<rapidjson::PrettyWriter<Out>>(var);
 }

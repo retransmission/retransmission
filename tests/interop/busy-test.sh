@@ -45,11 +45,9 @@ daemon_pid=$!
 #
 # The launch reads settings.json too. Without one it opens the connection dialog
 # and waits for a user instead of starting the session that finds the dir held.
-# bandwidth-groups.json is the rest of that same save, so waiting for it leaves
-# no startup write to land between the snapshot below and the comparison after.
 ready=0
 for _ in $(seq 1 300); do
-    if [ -f "$config_dir/settings.json" ] && [ -f "$config_dir/bandwidth-groups.json" ]; then
+    if [ -f "$config_dir/settings.json" ]; then
         ready=1
         break
     fi

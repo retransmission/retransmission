@@ -10,18 +10,4 @@
 
 - (instancetype)initWithHandle:(tr_session*)handle;
 
-- (IBAction)updatedDisplayString:(id)sender;
-
-- (IBAction)setDownSpeedSetting:(id)sender;
-- (IBAction)setDownSpeedLimit:(id)sender;
-
-- (IBAction)setUpSpeedSetting:(id)sender;
-- (IBAction)setUpSpeedLimit:(id)sender;
-
-- (IBAction)setRatioStopSetting:(id)sender;
-- (IBAction)setRatioStopLimit:(id)sender;
-
-- (IBAction)setIdleStopSetting:(id)sender;
-- (IBAction)setIdleStopLimit:(id)sender;
-
 @end

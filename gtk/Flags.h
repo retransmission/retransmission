@@ -5,95 +5,73 @@
 
 #pragma once
 
-#include <libtransmission/macros.h>
-
-#include <bitset>
-#include <initializer_list>
+#include <cstdint>
+#include <limits>
 #include <type_traits>
 
-// NOLINTBEGIN(bugprone-macro-parentheses, cppcoreguidelines-macro-usage)
-
-#define DEFINE_FLAGS_OPERATORS(FlagType) \
-    TR_CONSTEXPR23 inline Flags<FlagType> operator|(FlagType lhs, FlagType rhs) noexcept \
-    { \
-        return { lhs, rhs }; \
-    }
-
-// NOLINTEND(bugprone-macro-parentheses, cppcoreguidelines-macro-usage)
-
-template<typename T>
+template<typename FlagType>
 class Flags
 {
 public:
-    using FlagType = T;
-    using EnumValueType = std::make_unsigned_t<std::underlying_type_t<FlagType>>;
-    using BitsetType = std::bitset<static_cast<EnumValueType>(FlagType::N_FLAGS)>;
+    static_assert(std::is_enum_v<FlagType> && !std::is_convertible_v<FlagType, int>, "FlagType must be a scoped enum");
 
-    static_assert(std::is_enum_v<FlagType> && !std::is_convertible_v<FlagType, BitsetType>);
-
-public:
     constexpr Flags() noexcept = default;
 
     // NOLINTNEXTLINE(hicpp-explicit-conversions)
-    TR_CONSTEXPR23 Flags(FlagType flag) noexcept
+    constexpr Flags(FlagType const flag) noexcept
+        : value_{ bit(flag) }
     {
-        set(flag);
     }
 
-    TR_CONSTEXPR23 Flags(std::initializer_list<FlagType> flags) noexcept
+    [[nodiscard]] constexpr bool none() const noexcept
     {
-        for (auto const flag : flags) {
-            set(flag);
-        }
+        return value_ == 0U;
     }
 
-    [[nodiscard]] TR_CONSTEXPR23 bool none() const noexcept
+    [[nodiscard]] constexpr bool any() const noexcept
     {
-        return value_.none();
+        return value_ != 0U;
     }
 
-    [[nodiscard]] TR_CONSTEXPR23 bool any() const noexcept
+    [[nodiscard]] constexpr bool test(Flags const rhs) const noexcept
     {
-        return value_.any();
+        return (value_ & rhs.value_) != 0U;
     }
 
-    [[nodiscard]] TR_CONSTEXPR23 bool test(FlagType flag) const noexcept
+    constexpr void set(FlagType const flag) noexcept
     {
-        return value_.test(static_cast<EnumValueType>(flag));
+        value_ |= bit(flag);
     }
 
-    [[nodiscard]] TR_CONSTEXPR23 bool test(Flags rhs) const noexcept
+    [[nodiscard]] constexpr Flags operator|(Flags rhs) const noexcept
     {
-        return (value_ & rhs.value_).any();
+        return rhs |= *this;
     }
 
-    TR_CONSTEXPR23 void set(FlagType flag) noexcept
-    {
-        value_.set(static_cast<EnumValueType>(flag));
-    }
-
-    [[nodiscard]] TR_CONSTEXPR23 Flags operator|(Flags rhs) const noexcept
-    {
-        return Flags(value_ | rhs.value_);
-    }
-
-    TR_CONSTEXPR23 Flags& operator|=(Flags rhs) noexcept
+    constexpr Flags& operator|=(Flags const rhs) noexcept
     {
         value_ |= rhs.value_;
         return *this;
     }
 
-    [[nodiscard]] TR_CONSTEXPR23 Flags operator~() const noexcept
+    [[nodiscard]] constexpr Flags operator~() const noexcept
     {
-        return Flags(~value_);
+        auto ret = Flags{};
+        ret.value_ = ~value_ & AllBits;
+        return ret;
     }
 
 private:
-    constexpr explicit Flags(BitsetType value) noexcept
-        : value_(std::move(value))
+    using ValueType = std::uint64_t;
+
+    static constexpr auto NFlags = static_cast<unsigned>(FlagType::N_FLAGS);
+    static_assert(NFlags < std::numeric_limits<ValueType>::digits);
+    static constexpr auto AllBits = ValueType{ (ValueType{ 1U } << NFlags) - 1U };
+
+    [[nodiscard]] static constexpr ValueType bit(FlagType const flag) noexcept
     {
+        return ValueType{ 1U } << static_cast<unsigned>(flag);
     }
 
-private:
-    BitsetType value_ = {};
+    ValueType value_ = {};
 };

@@ -104,15 +104,14 @@ void Session::copyMagnetLinkToClipboard(int torrent_id)
             exec(TR_KEY_torrent_get, std::move(params), std::move(done));
         })
         .add([](RpcResponse const& r) {
-            tr_variant* torrents = nullptr;
-            if (!tr_variantDictFindList(r.args.get(), TR_KEY_torrents, &torrents)) {
+            auto const* const args = r.args->get_if<tr_variant::Map>();
+            auto const* const torrents = args != nullptr ? args->find_if<tr_variant::Vector>(TR_KEY_torrents) : nullptr;
+            if (torrents == nullptr || std::empty(*torrents)) {
                 return;
             }
 
-            if (tr_variant* const child = tr_variantListChild(torrents, 0)) {
-                if (auto const link = dictFind<QString>(child, TR_KEY_magnet_link)) {
-                    QApplication::clipboard()->setText(*link);
-                }
+            if (auto const link = dictFind<QString>(&torrents->front(), TR_KEY_magnet_link)) {
+                QApplication::clipboard()->setText(*link);
             }
         })
         .run();
@@ -455,14 +454,17 @@ void Session::refreshTorrents(torrent_ids_t const& torrent_ids, TorrentPropertie
             exec(TR_KEY_torrent_get, std::move(map), std::move(done));
         })
         .add([this, all_torrents](RpcResponse const& r) {
-            tr_variant* torrents = nullptr;
-
-            if (tr_variantDictFindList(r.args.get(), TR_KEY_torrents, &torrents)) {
-                emit torrentsUpdated(torrents, all_torrents);
+            auto const* const args = r.args->get_if<tr_variant::Map>();
+            if (args == nullptr) {
+                return;
             }
 
-            if (tr_variantDictFindList(r.args.get(), TR_KEY_removed, &torrents)) {
-                emit torrentsRemoved(torrents);
+            if (auto const* const torrents = args->find_if<tr_variant::Vector>(TR_KEY_torrents)) {
+                emit torrentsUpdated(*torrents, all_torrents);
+            }
+
+            if (auto const* const removed = args->find_if<tr_variant::Vector>(TR_KEY_removed)) {
+                emit torrentsRemoved(*removed);
             }
         })
         .run();
@@ -593,7 +595,7 @@ void Session::exec(tr_quark method, tr_variant::Map params, RpcClient::ResponseF
     rpc_.exec(method, std::move(params), std::move(on_done));
 }
 
-void Session::updateStats(tr_variant const& args_dict, tr_session_stats& stats)
+void Session::updateStats(tr_variant::Map const& args_dict, tr_session_stats& stats)
 {
     static constexpr auto Fields = std::tuple{
         tr::serializer::Field<&tr_session_stats::downloadedBytes>{ TR_KEY_downloaded_bytes },
@@ -609,12 +611,14 @@ void Session::updateStats(tr_variant const& args_dict, tr_session_stats& stats)
 
 void Session::updateStats(tr_variant* dict)
 {
-    if (tr_variant* var = nullptr; tr_variantDictFindDict(dict, TR_KEY_current_stats, &var)) {
-        updateStats(*var, stats_);
-    }
+    if (auto const* const map = dict != nullptr ? dict->get_if<tr_variant::Map>() : nullptr; map != nullptr) {
+        if (auto const* const current = map->find_if<tr_variant::Map>(TR_KEY_current_stats); current != nullptr) {
+            updateStats(*current, stats_);
+        }
 
-    if (tr_variant* var = nullptr; tr_variantDictFindDict(dict, TR_KEY_cumulative_stats, &var)) {
-        updateStats(*var, cumulative_stats_);
+        if (auto const* const cumulative = map->find_if<tr_variant::Map>(TR_KEY_cumulative_stats); cumulative != nullptr) {
+            updateStats(*cumulative, cumulative_stats_);
+        }
     }
 
     if (auto const busy = dictFind<bool>(dict, TR_KEY_busy)) {

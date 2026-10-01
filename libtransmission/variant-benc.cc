@@ -3,16 +3,13 @@
 // or any future license endorsed by Mnemosaic LLC.
 // License text can be found in the licenses/ folder.
 
-#include <algorithm>
-#include <array>
-#include <cctype> /* isdigit() */
-#include <cstddef> // size_t, std::byte
+#include <cstddef> // size_t, std::nullptr_t
 #include <cstdint> // int64_t
-#include <deque>
 #include <optional>
 #include <string>
 #include <string_view>
 #include <utility>
+#include <variant> // std::monostate
 #include <vector>
 
 #include <fmt/format.h>
@@ -23,12 +20,12 @@
 
 #include "libtransmission/benc.h"
 #include "libtransmission/quark.h"
+#include "libtransmission/tr-assert.h"
 #include "libtransmission/utils.h"
+#include "libtransmission/variant-common.h"
 #include "libtransmission/variant.h"
 
 using namespace std::literals;
-
-auto constexpr MaxBencStrLength = size_t{ 128 * 1024 * 1024 }; // arbitrary
 
 // ---
 
@@ -47,34 +44,30 @@ namespace tr::benc::impl
  */
 std::optional<int64_t> ParseInt(std::string_view* benc)
 {
-    auto constexpr Prefix = "i"sv;
-    auto constexpr Suffix = "e"sv;
-
-    // find the beginning delimiter
+    // skip the beginning delimiter
     auto walk = *benc;
-    if (std::size(walk) < 3 || !walk.starts_with(Prefix)) {
+    if (!walk.starts_with('i')) {
         return {};
     }
+    walk.remove_prefix(1);
 
-    // find the ending delimiter
-    walk.remove_prefix(std::size(Prefix));
-    if (auto const pos = walk.find(Suffix); pos == std::string_view::npos) {
+    // parse the number and make sure the ending delimiter follows it
+    auto const number_begin = walk;
+    auto const value = tr_num_parse<int64_t>(walk, &walk);
+    if (!value || !walk.starts_with('e')) {
         return {};
     }
 
     // leading zeroes are not allowed
-    if ((walk[0] == '0' && (isdigit(static_cast<unsigned char>(walk[1])) != 0)) ||
-        (walk[0] == '-' && walk[1] == '0' && (isdigit(static_cast<unsigned char>(walk[2])) != 0))) {
+    auto digits = number_begin.substr(0, std::size(number_begin) - std::size(walk));
+    if (digits.starts_with('-')) {
+        digits.remove_prefix(1);
+    }
+    if (std::size(digits) > 1 && digits.front() == '0') {
         return {};
     }
 
-    // parse the string and make sure the next char is `Suffix`
-    auto value = tr_num_parse<int64_t>(walk, &walk);
-    if (!value || !walk.starts_with(Suffix)) {
-        return {};
-    }
-
-    walk.remove_prefix(std::size(Suffix));
+    walk.remove_prefix(1);
     *benc = walk;
     return value;
 }
@@ -87,32 +80,30 @@ std::optional<int64_t> ParseInt(std::string_view* benc)
  */
 std::optional<std::string_view> ParseString(std::string_view* benc)
 {
-    // find the ':' delimiter
-    auto const colon_pos = benc->find(':');
-    if (colon_pos == std::string_view::npos) {
+    static auto constexpr MaxLength = size_t{ 128 * 1024 * 1024 }; // arbitrary
+
+    // get the string length.
+    // Parsing as unsigned rejects signs and whitespace,
+    // so anything but a digit run ends the number.
+    auto walk = *benc;
+    auto const len = tr_num_parse<size_t>(walk, &walk);
+    if (!len || *len >= MaxLength) {
         return {};
     }
 
-    // get the string length
-    auto svtmp = benc->substr(0, colon_pos);
-    if (!std::ranges::all_of(svtmp, [](auto ch) { return isdigit(static_cast<unsigned char>(ch)) != 0; })) {
+    // skip the ':' delimiter
+    if (!walk.starts_with(':')) {
         return {};
     }
-
-    auto const len = tr_num_parse<size_t>(svtmp, &svtmp);
-    if (!len || *len >= MaxBencStrLength) {
-        return {};
-    }
+    walk.remove_prefix(1);
 
     // do we have `len` bytes of string data?
-    svtmp = benc->substr(colon_pos + 1);
-    if (std::size(svtmp) < len) {
+    if (std::size(walk) < *len) {
         return {};
     }
 
-    auto const string = svtmp.substr(0, *len);
-    *benc = svtmp.substr(*len);
-    return string;
+    *benc = walk.substr(*len);
+    return walk.substr(0, *len);
 }
 
 } // namespace tr::benc::impl
@@ -123,129 +114,121 @@ namespace
 {
 namespace parse_helpers
 {
-struct MyHandler : public tr::benc::Handler {
-    tr_variant* const top_;
-    bool inplace_;
-    std::deque<tr_variant*> stack_;
-    std::optional<tr_quark> key_;
-
-    MyHandler(tr_variant* top, bool inplace)
-        : top_{ top }
-        , inplace_{ inplace }
+struct VariantBuilder : public tr::benc::Handler {
+    VariantBuilder(tr_variant* const top, bool const inplace)
+        : inplace_{ inplace }
     {
+        stack_.push_back(top);
     }
 
-    MyHandler(MyHandler&&) = delete;
-    MyHandler(MyHandler const&) = delete;
-    MyHandler& operator=(MyHandler&&) = delete;
-    MyHandler& operator=(MyHandler const&) = delete;
-
-    ~MyHandler() override = default;
-
-    bool Int64(int64_t value, Context const& /*context*/) final
+    bool Int64(int64_t const value, Context const& /*context*/) final
     {
-        auto* const variant = get_node();
-        if (variant == nullptr) {
-            return false;
-        }
-
-        *variant = value;
-        return true;
+        return add(value) != nullptr;
     }
 
-    bool String(std::string_view sv, Context const& /*context*/) final
+    bool String(std::string_view const sv, Context const& /*context*/) final
     {
-        if (auto* const variant = get_node(); variant != nullptr) {
-            *variant = inplace_ ? tr_variant::unmanaged_string(sv) : tr_variant{ sv };
-            return true;
-        }
-
-        return false;
+        return add(inplace_ ? tr_variant::unmanaged_string(sv) : tr_variant{ sv }) != nullptr;
     }
 
     bool StartDict(Context const& /*context*/) final
     {
-        if (auto* const var = get_node()) {
-            *var = tr_variant::Map{};
-            stack_.push_back(var);
-            return true;
-        }
-
-        return false;
+        return push(tr_variant::Map{});
     }
 
-    bool Key(std::string_view sv, Context const& /*context*/) final
+    bool Key(std::string_view const sv, Context const& /*context*/) final
     {
         key_ = tr_quark_new(sv);
-
         return true;
     }
 
     bool EndDict(Context const& /*context*/) final
     {
-        if (std::empty(stack_)) {
-            return false;
-        }
-
-        stack_.pop_back();
+        pop();
         return true;
     }
 
     bool StartArray(Context const& /*context*/) final
     {
-        if (auto* const var = get_node()) {
-            *var = tr_variant::Vector{};
-            stack_.push_back(var);
-            return true;
-        }
-
-        return false;
+        return push(tr_variant::Vector{});
     }
 
     bool EndArray(Context const& /*context*/) final
     {
-        if (std::empty(stack_)) {
-            return false;
-        }
-
-        stack_.pop_back();
+        pop();
         return true;
     }
 
 private:
+    template<typename Val>
+    [[nodiscard]] tr_variant* add(Val&& val)
+    {
+        auto* const node = get_node();
+        if (node != nullptr) {
+            *node = std::forward<Val>(val);
+        }
+        return node;
+    }
+
+    template<typename Container>
+    [[nodiscard]] bool push(Container&& container)
+    {
+        auto* const node = add(std::forward<Container>(container));
+        if (node != nullptr) {
+            stack_.push_back(node);
+        }
+        return node != nullptr;
+    }
+
+    void pop()
+    {
+        // `tr::benc::parse()` rejects an unbalanced 'e' before calling End*()
+        TR_ASSERT(std::size(stack_) > 1U);
+        stack_.pop_back();
+    }
+
+    // Returns where the next value goes, or nullptr if it has no place.
     [[nodiscard]] tr_variant* get_node()
     {
-        if (std::empty(stack_)) {
-            return top_;
+        auto* const parent = stack_.back();
+
+        if (auto* const vec = parent->get_if<tr_variant::Vector>()) {
+            return &vec->emplace_back();
         }
 
-        if (auto* parent = stack_.back()) {
-            if (auto* const vec = parent->get_if<tr_variant::Vector>()) {
-                return &vec->emplace_back();
+        if (auto* const map = parent->get_if<tr_variant::Map>()) {
+            // `tr::benc::parse()` only calls Key() for strings,
+            // so a non-string in the key position, e.g. `di1ei2ee`,
+            // arrives here with no key.
+            auto const key = std::exchange(key_, {});
+            if (!key) {
+                return nullptr;
             }
 
-            if (auto* const map = parent->get_if<tr_variant::Map>(); key_ && map != nullptr) {
-                auto& entry = (*map)[*key_];
-                key_.reset();
-                return &entry;
-            }
+            return &(*map)[*key];
         }
 
-        return {};
+        // `parent` is the still-empty top
+        return parent;
     }
+
+    static auto constexpr TypicalMaxDepth = 16U;
+
+    bool const inplace_;
+    std::optional<tr_quark> key_;
+
+    // The open containers, innermost last, atop the top-level variant.
+    small::vector<tr_variant*, TypicalMaxDepth> stack_;
 };
 } // namespace parse_helpers
 } // namespace
 
 std::optional<tr_variant> tr_variant_serde::parse_benc(std::string_view input)
 {
-    using namespace parse_helpers;
-    using Stack = tr::benc::ParserStack<512>;
-
     auto top = tr_variant{};
-    auto stack = Stack{};
-    auto handler = MyHandler{ &top, parse_inplace_ };
-    if (tr::benc::parse(input, stack, handler, &end_, &error_) && std::empty(stack)) {
+    auto stack = tr::benc::ParserStack<512>{};
+    auto handler = parse_helpers::VariantBuilder{ &top, parse_inplace_ };
+    if (tr::benc::parse(input, stack, handler, &end_, &error_)) {
         return std::optional<tr_variant>{ std::move(top) };
     }
 
@@ -258,22 +241,9 @@ namespace
 {
 namespace to_string_helpers
 {
-using OutBuf = fmt::memory_buffer;
-
-[[nodiscard]] auto sorted_entries(tr_variant::Map const& map)
-{
-    static auto constexpr N = 32U;
-    auto entries = small::vector<std::pair<std::string_view, tr_variant const*>, N>{};
-    entries.reserve(map.size());
-    for (auto const& [key, child] : map) {
-        entries.emplace_back(tr_quark_get_string_view(key), &child);
-    }
-
-    std::ranges::sort(entries);
-    return entries;
-}
-
 struct BencWriter {
+    fmt::memory_buffer& out_;
+
     void operator()(std::monostate /*unused*/) const
     {
     }
@@ -283,22 +253,26 @@ struct BencWriter {
         write_string(""sv);
     }
 
-    void operator()(bool val) const
+    void operator()(bool const val) const
     {
-        append_literal(val ? "i1e"sv : "i0e"sv);
+        out_.append(val ? "i1e"sv : "i0e"sv);
     }
 
-    void operator()(int64_t val) const
+    void operator()(int64_t const val) const
     {
-        write_int(val);
+        out_.push_back('i');
+        out_.append(fmt::format_int{ val });
+        out_.push_back('e');
     }
 
-    void operator()(double val) const
+    void operator()(double const val) const
     {
-        write_real(val);
+        auto buf = fmt::memory_buffer{};
+        fmt::format_to(fmt::appender(buf), "{:f}", val);
+        write_string({ std::data(buf), std::size(buf) });
     }
 
-    void operator()(std::string_view sv) const
+    void operator()(std::string_view const sv) const
     {
         write_string(sv);
     }
@@ -315,37 +289,19 @@ struct BencWriter {
     void operator()(tr_variant::Map const& map) const
     {
         out_.push_back('d');
-        auto entries = sorted_entries(map);
-        for (auto const& [key, child] : entries) {
+        for (auto const& [key, child] : tr::variant::detail::sorted_entries(map)) {
             write_string(key);
             child->visit(*this);
         }
         out_.push_back('e');
     }
 
-    OutBuf& out_;
-
 private:
-    void write_string(std::string_view sv) const
+    void write_string(std::string_view const sv) const
     {
-        fmt::format_to(fmt::appender(out_), "{:d}:{:s}", std::size(sv), sv);
-    }
-
-    void write_int(int64_t val) const
-    {
-        fmt::format_to(fmt::appender(out_), "i{:d}e", val);
-    }
-
-    void write_real(double val) const
-    {
-        auto buf = std::array<char, 64>{};
-        auto const* const out_ptr = fmt::format_to(std::data(buf), "{:f}", val);
-        write_string({ std::data(buf), static_cast<size_t>(out_ptr - std::data(buf)) });
-    }
-
-    void append_literal(std::string_view literal) const
-    {
-        out_.append(std::data(literal), std::data(literal) + std::size(literal));
+        out_.append(fmt::format_int{ std::size(sv) });
+        out_.push_back(':');
+        out_.append(sv);
     }
 };
 
@@ -354,9 +310,7 @@ private:
 
 std::string tr_variant_serde::to_benc_string(tr_variant const& var)
 {
-    using namespace to_string_helpers;
-
-    auto buf = OutBuf{};
-    var.visit(BencWriter{ buf });
+    auto buf = fmt::memory_buffer{};
+    var.visit(to_string_helpers::BencWriter{ buf });
     return fmt::to_string(buf);
 }

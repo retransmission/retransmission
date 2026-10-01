@@ -16,8 +16,6 @@
 - (void)updateInfoStats;
 - (void)updateOptions;
 
-- (IBAction)setTab:(id)sender;
-
 - (void)setNextTab;
 - (void)setPreviousTab;
 

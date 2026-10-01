@@ -219,7 +219,7 @@ typedef NS_ENUM(NSUInteger, TabTag) {
     }
 }
 
-- (void)setTab:(id)sender
+- (IBAction)setTab:(id)sender
 {
     NSInteger const oldTabTag = self.fCurrentTabTag;
     self.fCurrentTabTag = self.fTabs.selectedSegment;

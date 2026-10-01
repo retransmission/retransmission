@@ -13,10 +13,16 @@
 #include <string>
 #include <string_view>
 
+#ifdef _WIN32
+#include <winsock2.h>
+#else
+#include <arpa/inet.h>
+#endif
+
 #include <small/vector.hpp>
 
-#include "libtransmission/net.h" // tr_port
 #include "libtransmission/tr-assert.h"
+#include "libtransmission/types.h"
 #include "libtransmission/utils.h" // for tr_htonll(), tr_ntohll()
 
 namespace tr
@@ -187,21 +193,6 @@ public:
     {
         auto nport = port.network();
         add(&nport, sizeof(nport));
-    }
-
-    void add_address(tr_address const& addr)
-    {
-        switch (addr.type) {
-        case TR_AF_INET:
-            add(&addr.addr.addr4.s_addr, sizeof(addr.addr.addr4.s_addr));
-            break;
-        case TR_AF_INET6:
-            add(&addr.addr.addr6.s6_addr, sizeof(addr.addr.addr6.s6_addr));
-            break;
-        default:
-            TR_ASSERT_MSG(false, "invalid type");
-            break;
-        }
     }
 };
 

@@ -40,7 +40,7 @@
 	<false/>
 	<key>CheckUpload</key>
 	<false/>
-	<key>CreatorLocation</key>
+	<key>CreatorLocationURL</key>
 	<string>~/Desktop</string>
 	<key>DeleteOriginalTorrent</key>
 	<false/>

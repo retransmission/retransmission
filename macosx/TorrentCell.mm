@@ -35,6 +35,13 @@ static CGFloat const kButtonSize = 14.0;
 static CGFloat const kButtonsSpacing = 3.0;
 static CGFloat const kRevealButtonTrailingOffset = -8.0; // inverted for constraints.
 
+// Error status
+static CGFloat const kErrorImageSize = 20.0;
+
+@interface TorrentCell ()
+@property(nonatomic) NSImageView* errorImageView;
+@end
+
 @implementation TorrentCell
 
 - (instancetype)initWithFrame:(NSRect)frameRect
@@ -52,6 +59,9 @@ static CGFloat const kRevealButtonTrailingOffset = -8.0; // inverted for constra
     auto groupIndicatorView = [[NSImageView alloc] init];
 
     auto iconView = [[NSImageView alloc] init];
+    auto errorImageView = [[NSImageView alloc] init];
+    errorImageView.image = [NSImage imageNamed:NSImageNameCaution];
+
     auto actionButton = [[TorrentCellActionButton alloc] init];
 
     auto stackView = [[NSStackView alloc] init];
@@ -80,7 +90,7 @@ static CGFloat const kRevealButtonTrailingOffset = -8.0; // inverted for constra
     auto controlButton = [[TorrentCellControlButton alloc] init];
     auto revealButton = [[TorrentCellRevealButton alloc] init];
 
-    for (NSImageView* imageView in @[ groupIndicatorView, iconView, torrentPriorityView ]) {
+    for (NSImageView* imageView in @[ groupIndicatorView, iconView, errorImageView, torrentPriorityView ]) {
         imageView.imageScaling = NSImageScaleProportionallyDown;
     }
 
@@ -103,6 +113,7 @@ static CGFloat const kRevealButtonTrailingOffset = -8.0; // inverted for constra
     for (NSView* view in @[
              groupIndicatorView,
              iconView,
+             errorImageView,
              actionButton,
              stackView,
              torrentProgressField,
@@ -116,6 +127,7 @@ static CGFloat const kRevealButtonTrailingOffset = -8.0; // inverted for constra
 
     self.fGroupIndicatorView = groupIndicatorView;
     self.fIconView = iconView;
+    self.errorImageView = errorImageView;
     self.fActionButton = actionButton;
     self.fStackView = stackView;
     self.fTorrentTitleField = torrentTitleField;
@@ -175,6 +187,7 @@ static CGFloat const kRevealButtonTrailingOffset = -8.0; // inverted for constra
 {
     auto groupIndicatorView = self.fGroupIndicatorView;
     auto iconView = self.fIconView;
+    auto errorImageView = self.errorImageView;
     auto actionButton = self.fActionButton;
     auto torrentPriorityView = self.fTorrentPriorityView;
     auto stackView = self.fStackView;
@@ -187,6 +200,7 @@ static CGFloat const kRevealButtonTrailingOffset = -8.0; // inverted for constra
     for (NSView* view in @[
              groupIndicatorView,
              iconView,
+             errorImageView,
              actionButton,
              stackView,
              torrentProgressField,
@@ -210,6 +224,12 @@ static CGFloat const kRevealButtonTrailingOffset = -8.0; // inverted for constra
         [iconView.centerYAnchor constraintEqualToAnchor:self.centerYAnchor],
         [iconView.widthAnchor constraintEqualToConstant:kIconSize],
         [iconView.heightAnchor constraintEqualToConstant:kIconSize],
+
+        // errorImageView
+        [errorImageView.trailingAnchor constraintEqualToAnchor:iconView.trailingAnchor],
+        [errorImageView.bottomAnchor constraintEqualToAnchor:iconView.bottomAnchor],
+        [errorImageView.widthAnchor constraintEqualToConstant:kErrorImageSize],
+        [errorImageView.heightAnchor constraintEqualToConstant:kErrorImageSize],
 
         // actionButton
         [actionButton.centerXAnchor constraintEqualToAnchor:iconView.centerXAnchor],
@@ -307,6 +327,11 @@ static CGFloat const kRevealButtonTrailingOffset = -8.0; // inverted for constra
 
     NSColor* priorityColor = backgroundStyle == NSBackgroundStyleEmphasized ? NSColor.whiteColor : NSColor.labelColor;
     self.fTorrentPriorityView.contentTintColor = priorityColor;
+}
+
+- (void)setAnyErrorOrWarning:(BOOL)errorOrWarning
+{
+    self.errorImageView.hidden = !errorOrWarning;
 }
 
 @end

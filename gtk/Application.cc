@@ -633,7 +633,7 @@ void Application::Impl::on_startup()
     core_ = Session::create(session);
 
     /* init the ui manager */
-    ui_builder_ = Gtk::Builder::create_from_resource(gtr_get_full_resource_path("transmission-ui.xml"));
+    ui_builder_ = Gtk::Builder::create_from_resource(gtr_get_full_resource_path("transmission-menus.ui"));
     auto const actions = gtr_actions_init(ui_builder_, this);
 
     auto const main_menu = gtr_action_get_object<Gio::Menu>("main-window-menu");
@@ -1374,7 +1374,8 @@ void Application::Impl::show_about_dialog()
     auto d = std::make_shared<Gtk::AboutDialog>();
     d->set_authors(authors);
     d->set_comments(_("A fast and easy BitTorrent client"));
-    d->set_copyright(_("Copyright © The " TR_PROJ_APPNAME_CAPITALIZED " Project"));
+    d->set_copyright(
+        fmt::format(fmt::runtime(_("Copyright © The {appname} Project")), fmt::arg("appname", TR_PROJ_APPNAME_CAPITALIZED)));
     d->set_logo_icon_name(std::string{ AppIconName });
     d->set_name(Glib::get_application_name());
     /* Translators: translate "translator-credits" as your name

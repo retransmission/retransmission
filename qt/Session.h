@@ -10,6 +10,7 @@
 #include <cstdint> // int64_t
 #include <map>
 #include <optional>
+#include <span>
 #include <string>
 #include <type_traits>
 
@@ -144,8 +145,8 @@ signals:
     void sessionUpdated();
     void blocklistUpdated(qint64);
     void blocklistUpdateFailed(QString const& message);
-    void torrentsUpdated(tr_variant* torrent_list, bool complete_list);
-    void torrentsRemoved(tr_variant* torrent_list);
+    void torrentsUpdated(std::span<tr_variant const> torrents, bool complete_list);
+    void torrentsRemoved(std::span<tr_variant const> torrent_ids);
     void sessionCalled(Tag);
     void dataReadProgress();
     void dataSendProgress();
@@ -202,7 +203,7 @@ private:
     void sendTorrentRequest(tr_quark method, torrent_ids_t const& torrent_ids);
     void refreshTorrents(torrent_ids_t const& ids, TorrentProperties props);
 
-    static void updateStats(tr_variant const& args_dict, tr_session_stats& stats);
+    static void updateStats(tr_variant::Map const& args_dict, tr_session_stats& stats);
 
     QString const config_dir_;
     Prefs& prefs_;

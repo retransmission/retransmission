@@ -3,6 +3,7 @@
 // or any future license endorsed by Mnemosaic LLC.
 // License text can be found in the licenses/ folder.
 
+#include <array>
 #include <cstddef> // size_t
 #include <cstdint> // int64_t, uint32_t, uint64_t
 #include <ctime> // time_t
@@ -127,6 +128,30 @@ struct Layout {
         { .name = "two adjacent zero-length files"sv, .file_sizes = { 1U, 0U, 0U, 1U } },
         { .name = "two zero-length files apart"sv, .file_sizes = { 0U, 1U, 0U, 1U } },
     };
+}
+
+[[nodiscard]] tr_variant::Vector mtimeList(std::vector<time_t> const& mtimes)
+{
+    auto ret = tr_variant::Vector{};
+    ret.reserve(std::size(mtimes));
+    for (auto const mtime : mtimes) {
+        ret.emplace_back(int64_t{ mtime });
+    }
+    return ret;
+}
+
+// A resume file whose 'progress' has every block and every piece checked,
+// so that only the mtimes decide which pieces stay checked.
+[[nodiscard]] tr_variant::Map checkedProgress(tr_variant::Vector&& mtimes)
+{
+    auto progress = tr_variant::Map{ 3U };
+    progress.try_emplace(TR_KEY_mtimes, std::move(mtimes));
+    progress.try_emplace(TR_KEY_pieces, tr_variant::unmanaged_string("all"sv));
+    progress.try_emplace(TR_KEY_blocks, tr_variant::unmanaged_string("all"sv));
+
+    auto map = tr_variant::Map{ 1U };
+    map.try_emplace(TR_KEY_progress, std::move(progress));
+    return map;
 }
 
 [[nodiscard]] tr_variant::Vector priorityList(std::vector<tr_priority_t> const& priorities)
@@ -421,6 +446,34 @@ TEST_F(ResumeTest, savedDndAndPrioritiesListsOfUnusableLength)
         { TR_PRI_NORMAL, TR_PRI_NORMAL, TR_PRI_NORMAL, TR_PRI_NORMAL });
 }
 
+TEST_F(ResumeTest, currentDirectoryUsesFirstFileFoundWhileLoadingProgress)
+{
+    auto const file_sizes = std::vector<uint64_t>{ 1U, 1U, 1U };
+    auto const incomplete = tr_pathbuf{ sandboxDir(), "/incomplete"sv };
+    // File #0 is absent. The first match is partial and in downloadDir;
+    // the later match in incompleteDir must not replace it.
+    createFileWithContents(tr_pathbuf{ session_->downloadDir(), "/root/f1.part"sv }, "x"sv);
+    createFileWithContents(tr_pathbuf{ incomplete, "/root/f2"sv }, "x"sv);
+
+    auto mtimes = tr_variant::Vector{};
+    for (size_t i = 0; i < std::size(file_sizes); ++i) {
+        mtimes.emplace_back(int64_t{});
+    }
+    auto progress = tr_variant::Map{ 3U };
+    progress.try_emplace(TR_KEY_mtimes, std::move(mtimes));
+    progress.try_emplace(TR_KEY_pieces, tr_variant::unmanaged_string("none"sv));
+    progress.try_emplace(TR_KEY_blocks, tr_variant::unmanaged_string("none"sv));
+
+    auto map = savedFilenames(canonicalSubpaths(std::size(file_sizes)));
+    map.try_emplace(TR_KEY_incomplete_dir, incomplete.sv());
+    map.try_emplace(TR_KEY_progress, std::move(progress));
+    auto builder = tr_torrent_builder{ session_ };
+    auto const* const tor = torrentInit(builder, file_sizes, std::move(map));
+    ASSERT_NE(nullptr, tor);
+    EXPECT_EQ(incomplete.sv(), tor->incomplete_dir().sv());
+    EXPECT_EQ(session_->downloadDir(), tor->current_dir().sv());
+}
+
 // The mtimes list in a resume file written without zero-length files realigns
 // like the others. A file checked against another file's mtime looks changed,
 // so applying such a list by position throws away the checked state of every
@@ -457,6 +510,184 @@ TEST_F(ResumeTest, savedMtimesListWrittenWithoutZeroLengthFiles)
     EXPECT_FALSE(tor->is_piece_checked(1)); // f1 and f2
     EXPECT_FALSE(tor->is_piece_checked(2)); // f3
     EXPECT_TRUE(tor->is_piece_checked(3)); // f4
+}
+
+// An mtimes list short by more than the zero-length files can't be paired up
+// with the files, so none of it is applied and every piece loads as unchecked.
+// Applied by position, it would leave f0's and f1's pieces checked.
+TEST_F(ResumeTest, savedMtimesListOfUnusableLength)
+{
+    auto const file_sizes = std::vector<uint64_t>{ PieceSize, PieceSize, PieceSize };
+    auto mtimes = createFiles(file_sizes);
+    mtimes.pop_back();
+
+    auto builder = tr_torrent_builder{ session_ };
+    auto const* const tor = torrentInit(builder, file_sizes, checkedProgress(mtimeList(mtimes)));
+    ASSERT_NE(nullptr, tor);
+    EXPECT_FALSE(tor->is_piece_checked(0));
+    EXPECT_FALSE(tor->is_piece_checked(1));
+    EXPECT_FALSE(tor->is_piece_checked(2));
+}
+
+// An mtimes list longer than the file count is unusable too.
+TEST_F(ResumeTest, savedMtimesListLongerThanFileCount)
+{
+    auto const file_sizes = std::vector<uint64_t>{ PieceSize, PieceSize };
+    auto mtimes = createFiles(file_sizes);
+    mtimes.push_back(mtimes.back());
+
+    auto builder = tr_torrent_builder{ session_ };
+    auto const* const tor = torrentInit(builder, file_sizes, checkedProgress(mtimeList(mtimes)));
+    ASSERT_NE(nullptr, tor);
+    EXPECT_FALSE(tor->is_piece_checked(0));
+    EXPECT_FALSE(tor->is_piece_checked(1));
+}
+
+// An mtimes entry that isn't an integer leaves only its own file unchecked.
+// It still holds a position, so the entries after it keep their alignment.
+TEST_F(ResumeTest, savedMtimesUnusableEntry)
+{
+    auto const file_sizes = std::vector<uint64_t>{ PieceSize, PieceSize, PieceSize };
+    auto const mtimes = createFiles(file_sizes);
+
+    auto mtime_list = mtimeList(mtimes);
+    mtime_list[1] = tr_variant{ "not a time"sv };
+
+    auto builder = tr_torrent_builder{ session_ };
+    auto const* const tor = torrentInit(builder, file_sizes, checkedProgress(std::move(mtime_list)));
+    ASSERT_NE(nullptr, tor);
+    EXPECT_TRUE(tor->is_piece_checked(0));
+    EXPECT_FALSE(tor->is_piece_checked(1));
+    EXPECT_TRUE(tor->is_piece_checked(2));
+}
+
+// A saved file priority that isn't a valid priority leaves that one file alone.
+// 2 is out of range, and 257 would pass for TR_PRI_HIGH if truncated to int8_t.
+TEST_F(ResumeTest, savedFilePrioritiesOutOfRange)
+{
+    auto const file_sizes = std::vector<uint64_t>{ 1U, 1U, 1U };
+
+    auto priorities = tr_variant::Vector{};
+    priorities.emplace_back(int64_t{ 2 });
+    priorities.emplace_back(int64_t{ 257 });
+    priorities.emplace_back(int64_t{ TR_PRI_HIGH });
+
+    auto map = savedFilenames(canonicalSubpaths(std::size(file_sizes)));
+    map.try_emplace(TR_KEY_priority, std::move(priorities));
+
+    auto builder = tr_torrent_builder{ session_ };
+    expectWantedAndPriorities(
+        torrentInit(builder, file_sizes, std::move(map)),
+        { true, true, true },
+        { TR_PRI_NORMAL, TR_PRI_NORMAL, TR_PRI_HIGH });
+}
+
+// A saved sequential-download start piece that doesn't fit in tr_piece_index_t
+// is ignored. Truncated to 32 bits, 2^32 + 1 would pass for piece 1.
+TEST_F(ResumeTest, savedSequentialDownloadFromPieceOutOfRange)
+{
+    auto map = tr_variant::Map{ 1U };
+    map.try_emplace(TR_KEY_sequential_download_from_piece, int64_t{ 0x1'0000'0001 });
+
+    auto builder = tr_torrent_builder{ session_ };
+    auto const* const tor = torrentInit(builder, { PieceSize, PieceSize }, std::move(map));
+    ASSERT_NE(nullptr, tor);
+    EXPECT_EQ(0U, tor->sequential_download_from_piece());
+}
+
+// A saved peer limit that doesn't fit in uint16_t is ignored, so the torrent
+// keeps the session's default. Truncated to 16 bits, 70000 would load as 4464
+// and -1 as 65535.
+TEST_F(ResumeTest, savedMaxPeersOutOfRange)
+{
+    auto const saved_values = std::array{ int64_t{ 70000 }, int64_t{ -1 } };
+
+    for (size_t i = 0; i < std::size(saved_values); ++i) {
+        SCOPED_TRACE(saved_values[i]);
+
+        auto map = tr_variant::Map{ 1U };
+        map.try_emplace(TR_KEY_max_peers, saved_values[i]);
+
+        // The file size sets the info hash, so each value gets a torrent of its own.
+        auto builder = tr_torrent_builder{ session_ };
+        auto const* const tor = torrentInit(builder, { i + 1U }, std::move(map));
+        ASSERT_NE(nullptr, tor);
+        EXPECT_EQ(session_->peerLimitPerTorrent(), tor->peer_limit());
+    }
+}
+
+// Saved byte counts that are negative are ignored, so the counts start at zero.
+// Converted to uint64_t, -1 would load as 2^64 - 1.
+TEST_F(ResumeTest, savedByteCountsNegative)
+{
+    auto map = tr_variant::Map{ 3U };
+    map.try_emplace(TR_KEY_corrupt, int64_t{ -1 });
+    map.try_emplace(TR_KEY_downloaded, int64_t{ -1 });
+    map.try_emplace(TR_KEY_uploaded, int64_t{ -1 });
+
+    auto builder = tr_torrent_builder{ session_ };
+    auto const* const tor = torrentInit(builder, { 1U }, std::move(map));
+    ASSERT_NE(nullptr, tor);
+    EXPECT_EQ(0U, tor->bytes_corrupt_.ever());
+    EXPECT_EQ(0U, tor->bytes_downloaded_.ever());
+    EXPECT_EQ(0U, tor->bytes_uploaded_.ever());
+}
+
+// A saved bandwidth priority that doesn't fit in tr_priority_t is ignored.
+// Truncated to int8_t, 257 would pass for TR_PRI_HIGH.
+TEST_F(ResumeTest, savedBandwidthPriorityOutOfRange)
+{
+    auto map = tr_variant::Map{ 1U };
+    map.try_emplace(TR_KEY_bandwidth_priority, int64_t{ 257 });
+
+    auto builder = tr_torrent_builder{ session_ };
+    auto const* const tor = torrentInit(builder, { 1U }, std::move(map));
+    ASSERT_NE(nullptr, tor);
+    EXPECT_EQ(TR_PRI_NORMAL, tor->get_priority());
+}
+
+// A saved ratio mode that isn't a tr_ratiolimit loads as TR_RATIOLIMIT_GLOBAL.
+// Truncated to uint8_t, 257 would pass for TR_RATIOLIMIT_SINGLE.
+TEST_F(ResumeTest, savedRatioModeOutOfRange)
+{
+    auto const saved_values = std::array{ int64_t{ 7 }, int64_t{ 257 } };
+
+    for (size_t i = 0; i < std::size(saved_values); ++i) {
+        SCOPED_TRACE(saved_values[i]);
+
+        auto ratio = tr_variant::Map{ 1U };
+        ratio.try_emplace(TR_KEY_ratio_mode, saved_values[i]);
+        auto map = tr_variant::Map{ 1U };
+        map.try_emplace(TR_KEY_seed_ratio_limit, std::move(ratio));
+
+        // The file size sets the info hash, so each value gets a torrent of its own.
+        auto builder = tr_torrent_builder{ session_ };
+        auto const* const tor = torrentInit(builder, { i + 1U }, std::move(map));
+        ASSERT_NE(nullptr, tor);
+        EXPECT_EQ(TR_RATIOLIMIT_GLOBAL, tor->seed_ratio_mode());
+    }
+}
+
+// A saved idle mode that isn't a tr_idlelimit loads as TR_IDLELIMIT_GLOBAL.
+// Truncated to uint8_t, 257 would pass for TR_IDLELIMIT_SINGLE.
+TEST_F(ResumeTest, savedIdleModeOutOfRange)
+{
+    auto const saved_values = std::array{ int64_t{ 7 }, int64_t{ 257 } };
+
+    for (size_t i = 0; i < std::size(saved_values); ++i) {
+        SCOPED_TRACE(saved_values[i]);
+
+        auto idle = tr_variant::Map{ 1U };
+        idle.try_emplace(TR_KEY_idle_mode, saved_values[i]);
+        auto map = tr_variant::Map{ 1U };
+        map.try_emplace(TR_KEY_idle_limit, std::move(idle));
+
+        // The file size sets the info hash, so each value gets a torrent of its own.
+        auto builder = tr_torrent_builder{ session_ };
+        auto const* const tor = torrentInit(builder, { i + 1U }, std::move(map));
+        ASSERT_NE(nullptr, tor);
+        EXPECT_EQ(TR_IDLELIMIT_GLOBAL, tor->idle_limit_mode());
+    }
 }
 
 } // namespace tr::test

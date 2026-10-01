@@ -9,10 +9,12 @@
 #error only libtransmission should #include this header.
 #endif
 
+#include <algorithm>
 #include <cstddef> // size_t
 #include <cstdint> // uint64_t, uint16_t
 #include <ctime>
 #include <memory>
+#include <mutex>
 #include <optional>
 #include <span>
 #include <string>
@@ -23,6 +25,8 @@
 
 #include <sigslot/signal.hpp>
 
+#include <small/vector.hpp>
+
 #include "libtransmission/announce-list.h"
 #include "libtransmission/bandwidth.h"
 #include "libtransmission/bitfield.h"
@@ -30,6 +34,7 @@
 #include "libtransmission/completion.h"
 #include "libtransmission/crypto-utils.h" // tr_rand_obj()
 #include "libtransmission/file-piece-map.h"
+#include "libtransmission/local-data.h"
 #include "libtransmission/log.h"
 #include "libtransmission/session.h"
 #include "libtransmission/shared-string.h"
@@ -46,6 +51,11 @@ struct tr_error;
 struct tr_torrent;
 struct tr_torrent_announcer;
 
+namespace tr
+{
+struct StorageDescriptor;
+}
+
 // --- Package-visible
 
 void tr_torrentFreeInSessionThread(tr_torrent* tor);
@@ -60,6 +70,7 @@ namespace tr::test
 class RenameTest_multifileTorrent_Test;
 class RenameTest_singleFilenameTorrent_Test;
 class TorrentDiskIoTest_hashResultForInvalidatedPieceIsDropped_Test;
+class TorrentDiskIoWorkersTest_cancelledVerificationRestoresDeferredPieceHashes_Test;
 
 } // namespace tr::test
 
@@ -101,6 +112,8 @@ struct tr_torrent {
         }
 
         tr_torrent& tor_;
+        // Disengaged until the resume file scan runs; an empty string means no file was found.
+        std::optional<tr::shared_string> first_found_dir_;
     };
 
     class CumulativeCount
@@ -178,6 +191,14 @@ struct tr_torrent {
 
     void rename_path(std::string_view oldpath, std::string_view newname, tr_torrent_rename_done_func&& callback);
 
+    // The synchronous half of rename_path(), run under the disk-IO
+    // barrier. Call rename_path() instead unless you are the backend
+    // of tr::LocalData.
+    void rename_path_in_session_thread(
+        std::string_view oldpath,
+        std::string_view newname,
+        tr_torrent_rename_done_func const& callback);
+
     // these functions should become private when possible,
     // but more refactoring is needed before that can happen
     // because much of tr_torrent's impl is in the non-member C bindings
@@ -219,6 +240,15 @@ struct tr_torrent {
     constexpr void use_speed_limit(tr_direction dir, bool do_use)
     {
         if (bandwidth().set_limited(dir, do_use)) {
+            set_dirty();
+        }
+    }
+
+    constexpr void use_session_limits(bool const do_use) noexcept
+    {
+        auto const changed_up = bandwidth().honor_parent_limits(tr_direction::Up, do_use);
+        auto const changed_down = bandwidth().honor_parent_limits(tr_direction::Down, do_use);
+        if (changed_up || changed_down) {
             set_dirty();
         }
     }
@@ -319,6 +349,11 @@ struct tr_torrent {
         return completion_.has_none();
     }
 
+    [[nodiscard]] auto count_has_bytes_in_file(tr_file_index_t const file) const noexcept
+    {
+        return completion_.count_has_bytes_in_span(byte_span_for_file(file));
+    }
+
     [[nodiscard]] auto has_file(tr_file_index_t file) const
     {
         auto const span = byte_span_for_file(file);
@@ -340,12 +375,12 @@ struct tr_torrent {
         return completion_.has_block(block);
     }
 
-    // True if the block is on disk, or if we're writing it now.
-    // Peers use this instead of has_block() to tell whether they still
-    // need a block.
+    // True if the block is ours, or will be once its write or its
+    // piece's hash finishes. Peers use this instead of has_block() to
+    // tell whether they still need a block.
     [[nodiscard]] constexpr auto has_block_or_pending(tr_block_index_t const block) const
     {
-        return has_block(block) || blocks_pending_write_.test(block);
+        return has_block(block) || blocks_pending_write_.test(block) || blocks_awaiting_hash_.test(block);
     }
 
     [[nodiscard]] auto has_blocks(tr_block_span_t span) const
@@ -400,7 +435,7 @@ struct tr_torrent {
         return fpm_.piece_span_for_file(file);
     }
 
-    [[nodiscard]] auto file_offset(tr_block_info::Location loc) const
+    [[nodiscard]] constexpr auto file_offset(tr_block_info::Location const loc) const
     {
         return fpm_.file_offset(loc.byte);
     }
@@ -429,17 +464,17 @@ struct tr_torrent {
 
     /// PRIORITIES
 
-    [[nodiscard]] tr_priority_t piece_priority(tr_piece_index_t piece) const
+    [[nodiscard]] constexpr tr_priority_t piece_priority(tr_piece_index_t const piece) const
     {
         return file_priorities_.piece_priority(piece);
     }
 
-    void set_file_priorities(std::span<tr_file_index_t const> files, tr_priority_t priority);
-
-    void set_file_priority(tr_file_index_t file, tr_priority_t priority)
+    [[nodiscard]] constexpr tr_priority_t file_priority(tr_file_index_t const file) const noexcept
     {
-        set_file_priorities(std::span{ &file, 1U }, priority);
+        return file_priorities_.file_priority(file);
     }
+
+    void set_file_priorities(std::span<tr_file_index_t const> files, tr_priority_t priority);
 
     /// LOCATION
 
@@ -495,9 +530,34 @@ struct tr_torrent {
     void set_file_subpath(tr_file_index_t i, std::string_view subpath)
     {
         metainfo_.set_file_subpath(i, subpath);
+        invalidate_storage_descriptor();
     }
 
+    // The views refer to the torrent's directories, not to the returned container.
+    [[nodiscard]] small::max_size_vector<std::string_view, 2> search_paths() const;
+
     [[nodiscard]] std::optional<tr_torrent_files::FoundFile> find_file(tr_file_index_t file_index) const;
+
+    // A snapshot of this torrent's on-disk layout for disk IO.
+    // Cached until the next invalidate_storage_descriptor() call.
+    // Safe to call from any thread: tr_torrentNew() checks the first
+    // piece on the caller's thread.
+    [[nodiscard]] std::shared_ptr<tr::StorageDescriptor const> storage_descriptor() const;
+
+    // Call after changing anything that affects where this torrent's
+    // data lives on disk: dirs, file subpaths, wanted files, or the
+    // metainfo.
+    //
+    // Dirs and file subpaths change inside disk-IO barriers, so no op in
+    // flight holds a stale layout. Wanted files, the preallocation mode,
+    // and the partial-file suffix may change at any time. They only decide
+    // how a missing file gets created, and an op in flight at worst
+    // creates it the old way.
+    void invalidate_storage_descriptor() noexcept
+    {
+        auto const lock = std::scoped_lock{ storage_descriptor_mutex_ };
+        storage_descriptor_.reset();
+    }
 
     [[nodiscard]] bool has_any_local_data() const;
 
@@ -635,6 +695,8 @@ struct tr_torrent {
 
     [[nodiscard]] bool ensure_piece_is_checked(tr_piece_index_t piece);
 
+    void cancel_pending_verify();
+
     /// METAINFO - MAGNET
 
     void maybe_start_metadata_transfer(int64_t size);
@@ -702,7 +764,8 @@ struct tr_torrent {
 
     void set_download_dir(std::string_view path, bool is_new_torrent = false);
 
-    void refresh_current_dir();
+    // A supplied result belongs to the current initialization, not a persistent filesystem cache.
+    void refresh_current_dir(std::optional<tr::shared_string> const& first_found_dir = {});
 
     [[nodiscard]] constexpr auto id() const noexcept
     {
@@ -814,6 +877,13 @@ struct tr_torrent {
         return is_stopping_;
     }
 
+    // Whether the torrent's removal is queued behind its disk IO.
+    // RPC treats it as removed from then on. Session thread only.
+    [[nodiscard]] constexpr auto is_removal_queued() const noexcept
+    {
+        return removal_queued_;
+    }
+
     constexpr void stop_soon() noexcept
     {
         is_stopping_ = true;
@@ -831,6 +901,14 @@ struct tr_torrent {
     [[nodiscard]] constexpr auto get_priority() const noexcept
     {
         return bandwidth().get_priority();
+    }
+
+    constexpr void set_priority(tr_priority_t const priority) noexcept
+    {
+        if (get_priority() != priority) {
+            bandwidth().set_priority(priority);
+            set_dirty();
+        }
     }
 
     [[nodiscard]] constexpr auto const& bandwidth_group() const noexcept
@@ -855,8 +933,8 @@ struct tr_torrent {
 
     void set_idle_limit_mode(tr_idlelimit mode) noexcept
     {
+        // RPC and resume files pass modes through unchecked, so ignore an invalid one.
         auto const is_valid = mode == TR_IDLELIMIT_GLOBAL || mode == TR_IDLELIMIT_SINGLE || mode == TR_IDLELIMIT_UNLIMITED;
-        TR_ASSERT(is_valid);
         if (idle_limit_mode_ != mode && is_valid) {
             idle_limit_mode_ = mode;
             set_dirty();
@@ -898,8 +976,8 @@ struct tr_torrent {
 
     constexpr void set_seed_ratio_mode(tr_ratiolimit mode) noexcept
     {
+        // RPC and resume files pass modes through unchecked, so ignore an invalid one.
         auto const is_valid = mode == TR_RATIOLIMIT_GLOBAL || mode == TR_RATIOLIMIT_SINGLE || mode == TR_RATIOLIMIT_UNLIMITED;
-        TR_ASSERT(is_valid);
         if (seed_ratio_mode_ != mode && is_valid) {
             seed_ratio_mode_ = mode;
             set_dirty();
@@ -1052,21 +1130,15 @@ struct tr_torrent {
 
 private:
     friend class tr::test::TorrentDiskIoTest_hashResultForInvalidatedPieceIsDropped_Test;
+    friend class tr::test::TorrentDiskIoWorkersTest_cancelledVerificationRestoresDeferredPieceHashes_Test;
     friend bool tr_torrentSetMetainfoFromFile(tr_torrent* tor, tr_torrent_metainfo const* metainfo, char const* filename);
-    friend tr_file_view tr_torrentFile(tr_torrent const* tor, tr_file_index_t file);
-    friend tr_stat tr_torrentStat(tr_torrent* tor);
-    friend std::vector<tr_stat> tr_torrentStat(std::span<tr_torrent* const> torrents);
     friend tr_torrent* tr_torrentNew(tr_torrent_builder* builder, tr_torrent** setme_duplicate_of);
-    friend uint64_t tr_torrentGetBytesLeftToAllocate(tr_torrent const* tor);
     friend void tr_torrentFreeInSessionThread(tr_torrent* tor);
     friend void tr_torrentRemoveInSessionThread(tr_torrent* tor, bool delete_flag, tr_torrent_remove_func remove_func);
     friend void tr_torrentRemove(tr_torrent* tor, bool delete_flag, tr_torrent_remove_func remove_func);
-    friend void tr_torrentSetDownloadDir(tr_torrent* tor, std::string_view path);
-    friend void tr_torrentSetPriority(tr_torrent* tor, tr_priority_t priority);
     friend void tr_torrentStart(tr_torrent* tor);
     friend void tr_torrentStartNow(tr_torrent* tor);
     friend void tr_torrentStop(tr_torrent* tor);
-    friend void tr_torrentUseSessionLimits(tr_torrent* tor, bool enabled);
     friend void tr_torrentVerify(tr_torrent* tor);
 
     enum class VerifyState : uint8_t { None, Queued, Active };
@@ -1182,11 +1254,19 @@ private:
 
     [[nodiscard]] bool check_piece(tr_piece_index_t piece) const;
 
-    // Hashes a piece we just finished downloading and records the result.
-    // The answer arrives later, by which time the piece may have been
-    // invalidated and downloaded again. A token says which version of the
+    // Hashes pieces we just finished downloading and records the results.
+    // An answer arrives later, by which time its piece may have been
+    // invalidated and downloaded again. A token says which version of a
     // piece was hashed, so a hash of an older version is dropped.
-    void test_piece(tr_piece_index_t piece);
+    void test_pieces(std::span<tr_piece_index_t const> pieces);
+
+    // True if each of the piece's blocks is written: counted, or held
+    // back until the piece's hash passes.
+    [[nodiscard]] bool is_piece_written(tr_piece_index_t piece) const;
+
+    // Counts the held-back blocks in `span` that no hash in flight still
+    // covers, and completes the pieces that they finish.
+    void count_written_blocks(tr_block_span_t span);
 
     [[nodiscard]] constexpr std::optional<uint16_t> effective_idle_limit_minutes() const noexcept
     {
@@ -1270,12 +1350,6 @@ private:
 
     void set_has_piece(tr_piece_index_t piece, bool has)
     {
-        if (!has) {
-            // Any hash in flight for this piece is about a version of it
-            // that no longer exists. See test_piece().
-            hash_tokens_.erase(piece);
-        }
-
         completion_.set_has_piece(piece, has);
     }
 
@@ -1310,7 +1384,7 @@ private:
     void on_have_all_metainfo();
     void on_piece_completed(tr_piece_index_t piece);
     void on_piece_failed(tr_piece_index_t piece);
-    void on_file_completed(tr_file_index_t file);
+    void on_file_completed(tr_file_index_t file) const;
     void on_tracker_response(tr_tracker_event const* event);
 
     void create_empty_files() const;
@@ -1320,12 +1394,10 @@ private:
 
     void update_file_path(tr_file_index_t file, std::optional<bool> has_file) const;
 
-    void set_location_in_session_thread(std::string_view path, bool move_from_old_path, int volatile* setme_state);
+    void set_location_in_session_thread(tr::LocalData::MoveParent path, bool move_from_old_path, int volatile* setme_state);
 
-    void rename_path_in_session_thread(
-        std::string_view oldpath,
-        std::string_view newname,
-        tr_torrent_rename_done_func const& callback);
+    // Once done, move the files from the incomplete dir to the download dir.
+    void leave_incomplete_dir();
 
     void start_in_session_thread();
 
@@ -1346,8 +1418,14 @@ private:
     // A block leaves this set when its write finishes.
     tr_bitfield blocks_pending_write_ = tr_bitfield{ 0 };
 
+    // Written blocks that complete a piece whose hash hasn't passed.
+    // completion_ counts them once it passes, so it never counts a
+    // piece that might be bad.
+    tr_bitfield blocks_awaiting_hash_ = tr_bitfield{ 0 };
+
     // which version of a piece each in-flight hash is checking.
-    // An entry lives only as long as its hash.
+    // An entry lives only as long as its hash. Session thread only:
+    // the verify thread must not touch this map.
     std::unordered_map<tr_piece_index_t, uint64_t> hash_tokens_;
     uint64_t next_hash_token_ = 0U;
 
@@ -1365,6 +1443,10 @@ private:
     tr_completion completion_;
 
     tr_file_piece_map fpm_ = tr_file_piece_map{ metainfo_ };
+
+    // see storage_descriptor()
+    mutable std::mutex storage_descriptor_mutex_;
+    mutable std::shared_ptr<tr::StorageDescriptor const> storage_descriptor_;
 
     // when Transmission thinks the torrent's files were last changed
     std::vector<time_t> file_mtimes_;
@@ -1420,14 +1502,18 @@ private:
     tr_idlelimit idle_limit_mode_ = TR_IDLELIMIT_GLOBAL;
 
     VerifyState verify_state_ = VerifyState::None;
+    uint64_t verify_token_ = 0U;
 
     tr_completeness completeness_ = TR_LEECH;
+    // Changes with completeness_, so a deferred done step can tell it's stale.
+    uint64_t completeness_token_ = 0U;
 
     uint16_t idle_limit_minutes_ = 0;
 
     uint16_t max_connected_peers_ = TrDefaultPeerLimitTorrent;
 
     bool is_deleting_ = false;
+    bool removal_queued_ = false;
     bool is_dirty_ = false;
     bool is_queued_ = false;
     bool is_running_ = false;

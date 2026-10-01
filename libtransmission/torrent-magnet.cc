@@ -146,7 +146,7 @@ namespace
 {
 namespace set_metadata_piece_helpers
 {
-tr_variant build_metainfo_except_info_dict(tr_torrent_metainfo const& tm)
+[[nodiscard]] tr_variant::Map build_metainfo_except_info_dict(tr_torrent_metainfo const& tm)
 {
     auto top = tr_variant::Map{ 8U };
 
@@ -178,7 +178,7 @@ tr_variant build_metainfo_except_info_dict(tr_torrent_metainfo const& tm)
         }
     }
 
-    return tr_variant{ std::move(top) };
+    return top;
 }
 } // namespace set_metadata_piece_helpers
 } // namespace
@@ -208,9 +208,9 @@ tr_variant build_metainfo_except_info_dict(tr_torrent_metainfo const& tm)
     }
 
     // yay we have an info dict. Let's make a torrent file
-    auto top_var = build_metainfo_except_info_dict(metainfo());
-    tr_variantMergeDicts(tr_variantDictAddDict(&top_var, TR_KEY_info, 0), &*info_dict_v);
-    auto const benc = serde.to_string(top_var);
+    auto top = build_metainfo_except_info_dict(metainfo());
+    top.try_emplace(TR_KEY_info, std::move(*info_dict_v));
+    auto const benc = serde.to_string(tr_variant{ std::move(top) });
 
     // does this synthetic torrent file parse?
     auto metainfo = tr_torrent_metainfo{};

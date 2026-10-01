@@ -7,10 +7,6 @@
 	<key>CFBundleDocumentTypes</key>
 	<array>
 		<dict>
-			<key>CFBundleTypeExtensions</key>
-			<array>
-				<string>torrent</string>
-			</array>
 			<key>CFBundleTypeIconFile</key>
 			<string>TransmissionDocument</string>
 			<key>CFBundleTypeName</key>
@@ -27,8 +23,6 @@
 	</array>
 	<key>CFBundleExecutable</key>
 	<string>Transmission</string>
-	<key>CFBundleGetInfoString</key>
-	<string>@TR_USER_AGENT_PREFIX@ (@TR_VCS_REVISION@)</string>
 	<key>CFBundleHelpBookFolder</key>
 	<string>TransmissionHelp</string>
 	<key>CFBundleHelpBookName</key>

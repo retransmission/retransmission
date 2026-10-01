@@ -18,6 +18,7 @@
 
 #include "libtransmission/bandwidth.h"
 #include "libtransmission/block-info.h" // tr_block_info
+#include "libtransmission/constants.h"
 #include "libtransmission/digest.h"
 #include "libtransmission/error.h"
 #include "libtransmission/log.h"
@@ -62,7 +63,7 @@ size_t get_desired_output_buffer_size(tr_peerIo const* io, uint64_t now)
 
     // the 3 is an arbitrary number of blocks;
     // the .5 is to leave room for protocol messages
-    static auto constexpr Floor = static_cast<uint64_t>(tr_block_info::BlockSize * 3.5);
+    static auto constexpr Floor = static_cast<uint64_t>(TrBlockSize * 3.5);
 
     auto const current_speed = io->get_piece_speed(now, tr_direction::Up);
     return std::max(Floor, current_speed.base_quantity() * PeriodSecs);

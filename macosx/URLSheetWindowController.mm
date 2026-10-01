@@ -51,12 +51,12 @@
     self.fCancelButton.frame = cancelFrame;
 }
 
-- (void)openURLEndSheet:(id)sender
+- (IBAction)openURLEndSheet:(id)sender
 {
     [NSApp endSheet:self.window returnCode:1];
 }
 
-- (void)openURLCancelEndSheet:(id)sender
+- (IBAction)openURLCancelEndSheet:(id)sender
 {
     [NSApp endSheet:self.window returnCode:0];
 }

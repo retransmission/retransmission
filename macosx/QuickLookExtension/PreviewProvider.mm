@@ -11,8 +11,6 @@
 #include <libtransmission/string-utils.h>
 #include <libtransmission/torrent-metainfo.h>
 
-#import "NSStringAdditions.h"
-
 static NSUInteger const kIconWidth = 16;
 
 namespace
@@ -60,6 +58,17 @@ NSString* generateIconData(UTType* type, NSUInteger width, NSMutableDictionary<N
     }
 
     return [@"cid:" stringByAppendingString:iconFileName];
+}
+
+// One shared formatter. +[NSByteCountFormatter stringFromByteCount:countStyle:]
+// builds a fresh formatter per call, and the file table calls this once per file.
+// Sizes above 9.22 EB are unsupported because stringFromByteCount: takes a long long.
+[[nodiscard]]
+static NSString* stringForFileSize(uint64_t const size)
+{
+    // countStyle defaults to NSByteCountFormatterCountStyleFile.
+    static auto* const fmt = [[NSByteCountFormatter alloc] init];
+    return [fmt stringFromByteCount:static_cast<long long>(size)];
 }
 
 @implementation PreviewProvider
@@ -110,7 +119,7 @@ NSString* generateIconData(UTType* type, NSUInteger width, NSMutableDictionary<N
                              width,
                              name];
 
-    NSString* fileSizeString = [NSString stringForFileSize:metainfo.total_size()];
+    NSString* fileSizeString = stringForFileSize(metainfo.total_size());
     if (is_multifile) {
         NSString* fileCountString = [NSString
             localizedStringWithFormat:NSLocalizedStringFromTableInBundle(@"%lu files", nil, bundle, "quicklook file count"), n_files];
@@ -230,7 +239,7 @@ NSString* generateIconData(UTType* type, NSUInteger width, NSMutableDictionary<N
                     } else {
                         // This node is a leaf file.
                         pathType = [UTType typeWithFilenameExtension:pathPart.pathExtension];
-                        fileSize = [NSString stringForFileSize:size];
+                        fileSize = stringForFileSize(size);
                     }
 
                     [listSection appendFormat:@"<tr><td><img style=\"padding-left: %ldpx\" class=\"icon\" src=\"%@\" width=\"%ld\" height=\"%ld\" />%@</td><td class=\"grey\">%@</td></tr>",

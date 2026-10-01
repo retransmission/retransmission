@@ -16,6 +16,7 @@
 
 #include <fmt/format.h>
 
+#include <libtransmission/constants.h>
 #include <libtransmission/crypto-utils.h> // tr_base64_encode()
 #include <libtransmission/utils.h> // tr_num_parse()
 #include <libtransmission/web.h>
@@ -35,13 +36,15 @@ TEST(FetchOptionsTest, effectiveMaxFileSize)
 {
     auto options = tr_web::FetchOptions{ "http://example.invalid/"s, nullptr, nullptr };
 
-    EXPECT_EQ(tr_web::FetchOptions::DefaultMaxFileSize, options.effective_max_file_size());
+    EXPECT_EQ(TrWebDefaultMaxBodyBytes, options.effective_max_file_size());
 
     options.max_file_size = 123U;
     EXPECT_EQ(123U, options.effective_max_file_size());
+    EXPECT_NE(TrWebDefaultMaxBodyBytes, options.effective_max_file_size());
 
     options.range = std::make_pair(uint64_t{ 100 }, uint64_t{ 199 });
     EXPECT_EQ(100U, options.effective_max_file_size());
+    EXPECT_NE(TrWebDefaultMaxBodyBytes, options.effective_max_file_size());
 }
 
 // tr_web needs a Mediator; this one overrides only what tests set:
@@ -94,14 +97,18 @@ protected:
         return future.get();
     }
 
-    [[nodiscard]] tr_web::FetchOptions options(std::string_view path = "/"sv, void* user_data = nullptr)
+    [[nodiscard]] tr_web::FetchOptions options(std::string_view path = "/"sv, void* user_data = nullptr) const
     {
-        return tr_web::FetchOptions{ server_.url(path), nullptr, user_data };
+        auto options = tr_web::FetchOptions{ server_.url(path), nullptr, user_data };
+        options.max_file_size = TestMaxFileSize;
+        return options;
     }
 
     TestMediator mediator_;
     std::unique_ptr<tr_web> web_ = tr_web::create(mediator_);
     LoopbackServer server_;
+
+    static auto constexpr TestMaxFileSize = 128U;
 };
 
 TEST_F(WebTest, getReturnsBody)
@@ -344,7 +351,7 @@ TEST_F(WebTest, responseBodyLimitReportsCurlError)
 
 TEST_F(WebTest, defaultResponseBodyLimitReportsCurlError)
 {
-    auto body = std::string(tr_web::FetchOptions::DefaultMaxFileSize + 1U, 'x');
+    auto body = std::string(TestMaxFileSize + 1U, 'x');
     server_.setHandler([&body](evhttp_request* req) { LoopbackServer::reply(req, HTTP_OK, "OK", body); });
 
     auto const response = fetch(options());
@@ -352,12 +359,12 @@ TEST_F(WebTest, defaultResponseBodyLimitReportsCurlError)
     EXPECT_TRUE(response.did_connect);
     ASSERT_TRUE(response.errmsg);
     EXPECT_FALSE(std::empty(*response.errmsg));
-    EXPECT_LE(std::size(response.body), tr_web::FetchOptions::DefaultMaxFileSize);
+    EXPECT_LE(std::size(response.body), TestMaxFileSize);
 }
 
 TEST_F(WebTest, zeroMaxFileSizeDisablesLimit)
 {
-    auto body = std::string(tr_web::FetchOptions::DefaultMaxFileSize + 1U, 'x');
+    auto body = std::string(TestMaxFileSize + 1U, 'x');
     server_.setHandler([&body](evhttp_request* req) { LoopbackServer::reply(req, HTTP_OK, "OK", body); });
 
     auto opts = options();

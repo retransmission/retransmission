@@ -31,6 +31,7 @@
 #include "libtransmission/bitfield.h"
 #include "libtransmission/block-info.h"
 #include "libtransmission/clients.h"
+#include "libtransmission/constants.h"
 #include "libtransmission/crypto-utils.h"
 #include "libtransmission/local-data.h"
 #include "libtransmission/log.h"
@@ -64,7 +65,7 @@ using namespace std::literals;
 namespace
 {
 // initial capacity is big enough to hold a BtPeerMsgs::Piece message
-using MessageBuffer = tr::StackBuffer<tr_block_info::BlockSize + 16U, std::byte, std::ratio<5, 1>>;
+using MessageBuffer = tr::StackBuffer<TrBlockSize + 16U, std::byte, std::ratio<5, 1>>;
 using MessageReader = tr::BufferReader<std::byte>;
 using MessageWriter = tr::BufferWriter<std::byte>;
 
@@ -253,7 +254,7 @@ struct tr_incoming {
         std::unique_ptr<tr::LocalData::BlockData> buf;
 
     private:
-        std::bitset<tr_block_info::BlockSize> have_;
+        std::bitset<TrBlockSize> have_;
         uint32_t const block_size_;
     };
 
@@ -355,7 +356,7 @@ public:
     {
         switch (dir) {
         case tr_direction::ClientToPeer: // requests we sent
-            return active_requests.count();
+            return active_requests().count();
 
         case tr_direction::PeerToClient: // requests they sent
             return std::size(peer_requested_) + std::size(reading_);
@@ -426,14 +427,14 @@ public:
 
     void cancel_block_request(tr_block_index_t block)
     {
-        active_requests.unset(block);
+        unset_active_request(block);
         publish(tr_peer_event::SentCancel(tor_.block_info(), block));
         protocol_send_cancel(peer_request::from_block(tor_, block));
     }
 
     void maybe_cancel_block_request(tr_block_index_t block) override
     {
-        if (active_requests.test(block)) {
+        if (active_requests().test(block)) {
             cancel_block_request(block);
         }
     }
@@ -514,7 +515,7 @@ public:
                 request_timeouts_.emplace_back(block, timeout);
             }
 
-            active_requests.set_span(block_begin, block_end);
+            set_active_requests({ .begin = block_begin, .end = block_end });
             publish(tr_peer_event::SentRequest(tor_.block_info(), *span));
         }
     }
@@ -852,7 +853,7 @@ private:
     case BtPeerMsgs::Piece:
         {
             auto constexpr HeaderLen = sizeof(id) + sizeof(uint32_t /*piece*/) + sizeof(uint32_t /*offset*/);
-            return len >= HeaderLen && len <= HeaderLen + tr_block_info::BlockSize;
+            return len >= HeaderLen && len <= HeaderLen + TrBlockSize;
         }
 
     case BtPeerMsgs::DhtPort:
@@ -1535,7 +1536,7 @@ ReadResult tr_peerMsgsImpl::process_peer_message(uint8_t id, MessageReader& payl
 
         if (!fext) {
             publish(tr_peer_event::GotChoke());
-            active_requests.set_has_none();
+            clear_active_requests();
             request_timeouts_.clear();
         }
 
@@ -1726,8 +1727,8 @@ ReadResult tr_peerMsgsImpl::process_peer_message(uint8_t id, MessageReader& payl
             r.length = payload.to_uint32();
 
             if (fext) {
-                if (auto const block = tor_.piece_loc(r.index, r.offset).block; active_requests.test(block)) {
-                    active_requests.unset(block);
+                if (auto const block = tor_.piece_loc(r.index, r.offset).block; active_requests().test(block)) {
+                    unset_active_request(block);
 
                     // Make sure maybe_send_block_requests() is called before removing the request
                     // from the wishlist, so that it will choose a block other than the rejected block.
@@ -1788,6 +1789,17 @@ ReadResult tr_peerMsgsImpl::read_piece_data(MessageReader& payload)
         }
     }
 
+    // The disk write budget counts our requests, so a block we didn't
+    // request (e.g. one we cancelled) takes budget no request reserved.
+    // Accept one only while the budget has room for it. Dropping it
+    // is no error, so keep reading this peer's other messages.
+    if (!active_requests().test(block)) {
+        if (auto const spare = session->spare_request_blocks(); spare && *spare == 0U) {
+            logtrace(this, fmt::format("got unrequested block {:d} with the disk write budget spent", block));
+            return { ReadState::Now, len };
+        }
+    }
+
     auto const now = tr_time();
     peer_info->set_latest_piece_data_time(now);
     bytes_sent_to_client.add(now, len);
@@ -1838,7 +1850,7 @@ bool tr_peerMsgsImpl::client_got_block(std::unique_ptr<tr::LocalData::BlockData>
         return false; // another peer beat us to it
     }
 
-    active_requests.unset(block);
+    unset_active_request(block);
     publish(tr_peer_event::GotBlock(tor_.block_info(), block));
 
     // A failed write can pause the torrent, which destroys `this`.
@@ -2050,7 +2062,7 @@ void tr_peerMsgsImpl::check_request_timeout(time_t const now)
             continue;
         }
 
-        if (!active_requests.test(block)) {
+        if (!active_requests().test(block)) {
             // request no longer active, discard
             it = request_timeouts_.erase(it);
             continue;
@@ -2207,7 +2219,7 @@ bool tr_peerMsgsImpl::is_valid_request(peer_request const& req) const
         err = 2;
     } else if (req.offset + req.length > tor_.piece_size(req.index)) {
         err = 3;
-    } else if (req.length > tr_block_info::BlockSize) {
+    } else if (req.length > TrBlockSize) {
         err = 4;
     } else if (tor_.piece_loc(req.index, req.offset, req.length).byte > tor_.total_size()) {
         err = 5;
@@ -2271,7 +2283,7 @@ size_t tr_peerMsgsImpl::max_available_reqs() const
     // many requests we should send to this peer
     static auto constexpr Floor = size_t{ 32 };
     static size_t constexpr Seconds = RequestBufSecs;
-    size_t const estimated_blocks_in_period = (rate.base_quantity() * Seconds) / tr_block_info::BlockSize;
+    size_t const estimated_blocks_in_period = (rate.base_quantity() * Seconds) / TrBlockSize;
     auto const ceil = peer_reqq_.value_or(PeerReqQDefault);
 
     // - Don't use std::clamp as `ceil` can be smaller than `Floor`

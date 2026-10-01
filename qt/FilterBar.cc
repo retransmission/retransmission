@@ -248,7 +248,14 @@ void FilterBar::refreshPref(tr_quark key)
         {
             auto const show_mode = prefs_.get<ShowMode>(key);
             QAbstractItemModel const* const model = activity_combo_->model();
-            QModelIndexList indices = model->match(model->index(0, 0), ACTIVITY_ROLE, QVariant::fromValue(show_mode));
+            // match()'s default flags compare the values as strings,
+            // and Qt 5 cannot stringify a ShowMode.
+            QModelIndexList indices = model->match(
+                model->index(0, 0),
+                ACTIVITY_ROLE,
+                QVariant::fromValue(show_mode),
+                1,
+                Qt::MatchExactly);
             activity_combo_->setCurrentIndex(indices.isEmpty() ? 0 : indices.first().row());
             break;
         }

@@ -85,6 +85,24 @@ namespace bandwidth_group_helpers
     return fmt::format("{:s}/bandwidth-groups.json"sv, config_dir);
 }
 
+// Reads a speed limit, which is saved in whole KB/s.
+// Files from some builds hold doubles such as `20.0`.
+// A double loads with its fraction dropped.
+[[nodiscard]] std::optional<Speed> speed_limit_if(tr_variant::Map const& group_map, tr_quark const key)
+{
+    if (auto const val = group_map.value_if<uint64_t>(key); val) {
+        return Speed{ *val, Speed::Units::KByps };
+    }
+
+    // The range check keeps the cast defined.
+    if (auto const val = group_map.value_if<double>(key);
+        val && *val >= 0.0 && *val < static_cast<double>(std::numeric_limits<uint64_t>::max())) {
+        return Speed{ static_cast<uint64_t>(*val), Speed::Units::KByps };
+    }
+
+    return {};
+}
+
 void bandwidthGroupRead(tr_session* session, std::string_view const config_dir)
 {
     for (auto const& [key, group_var] : tr::settings::load(get_bandwidth_filename(config_dir))) {
@@ -100,12 +118,12 @@ void bandwidthGroupRead(tr_session* session, std::string_view const config_dir)
                 limits.down_limited = *val;
             }
 
-            if (auto const val = group_map->value_if<int64_t>(TR_KEY_upload_limit); val) {
-                limits.up_limit = Speed{ *val, Speed::Units::KByps };
+            if (auto const val = speed_limit_if(*group_map, TR_KEY_upload_limit); val) {
+                limits.up_limit = *val;
             }
 
-            if (auto const val = group_map->value_if<int64_t>(TR_KEY_download_limit); val) {
-                limits.down_limit = Speed{ *val, Speed::Units::KByps };
+            if (auto const val = speed_limit_if(*group_map, TR_KEY_download_limit); val) {
+                limits.down_limit = *val;
             }
 
             group.set_limits(limits);
@@ -125,11 +143,11 @@ void bandwidthGroupWrite(tr_session const* session, std::string_view const confi
     for (auto const& [name, group] : groups) {
         auto const limits = group->get_limits();
         auto group_map = tr_variant::Map{ 6U };
-        group_map.try_emplace(TR_KEY_download_limit, limits.down_limit.count(Speed::Units::KByps));
+        group_map.try_emplace(TR_KEY_download_limit, static_cast<int64_t>(limits.down_limit.count(Speed::Units::KByps)));
         group_map.try_emplace(TR_KEY_download_limited, limits.down_limited);
         group_map.try_emplace(TR_KEY_honors_session_limits, group->are_parent_limits_honored(tr_direction::Up));
         group_map.try_emplace(TR_KEY_name, name.sv());
-        group_map.try_emplace(TR_KEY_upload_limit, limits.up_limit.count(Speed::Units::KByps));
+        group_map.try_emplace(TR_KEY_upload_limit, static_cast<int64_t>(limits.up_limit.count(Speed::Units::KByps)));
         group_map.try_emplace(TR_KEY_upload_limited, limits.up_limited);
         groups_map.try_emplace(tr_quark_new(name.sv()), std::move(group_map));
     }
@@ -492,9 +510,6 @@ void tr_sessionSaveSettings(tr_session* session, std::string_view const config_d
     settings.merge(tr::settings::load(filename)); // fallbacks from pre-existing file
     settings.merge(tr_sessionGetDefaultSettings()); // fallbacks from defaults
     tr::settings::save(filename, settings);
-
-    // write bandwidth groups limits to file
-    bandwidth_group_helpers::bandwidthGroupWrite(session, config_dir);
 }
 
 // ---
@@ -550,6 +565,7 @@ void tr_session::on_now_timer()
     tr_timeUpdate(std::chrono::system_clock::to_time_t(now));
     alt_speeds_.check_scheduler();
     busy_window_.store(compute_busy_window(), std::memory_order_relaxed);
+    collect_files_created();
 
     // A named interface can be absent when its sockets are bound (a VPN
     // not yet connected) or be recreated under a new index later. Either
@@ -678,6 +694,14 @@ void tr_session::on_save_timer()
 
     stats().save_if_dirty();
     torrent_queue().to_file();
+    save_bandwidth_groups_if_dirty();
+}
+
+void tr_session::save_bandwidth_groups_if_dirty()
+{
+    if (std::exchange(bandwidth_groups_dirty_, false)) {
+        bandwidth_group_helpers::bandwidthGroupWrite(this, configDir());
+    }
 }
 
 void tr_session::initImpl(init_data& data)
@@ -706,6 +730,32 @@ void tr_session::initImpl(init_data& data)
             fmt::arg("version", LONG_VERSION_STRING)));
 
     setSettings(settings, true);
+
+    // Runtime changes to disk_io_workers take effect on restart.
+    // Stopping a running worker pool safely isn't worth the
+    // complexity of a live switch.
+    try {
+        local_data.start_workers(
+            settings_.disk_io_workers,
+            open_files_,
+            // Completions change torrent state, which clients read from
+            // their own threads while holding the session lock.
+            [this](std::function<void()> fn) {
+                queue_session_thread([this, fn = std::move(fn)]() {
+                    auto const lock = unique_lock();
+                    fn();
+                });
+            },
+            [this](tr_torrent_id_t const id) -> std::shared_ptr<tr::StorageDescriptor const> {
+                auto const* const tor = torrents_.get(id);
+                return tor != nullptr ? tor->storage_descriptor() : nullptr;
+            });
+    } catch (std::exception const& e) {
+        tr_logAddError(
+            fmt::format(
+                fmt::runtime(_("Couldn't start disk IO workers, continuing without them: {error}")),
+                fmt::arg("error", e.what())));
+    }
 
     tr_utp_init(this);
 
@@ -742,6 +792,10 @@ void tr_session::setSettings(tr_session::Settings&& settings_in, bool force)
     }
 
     // the rest of the func is session_ responding to settings changes
+
+    if (force || new_settings.disk_write_budget_mib != old_settings.disk_write_budget_mib) {
+        local_data.set_write_budget(effective_write_budget_bytes());
+    }
 
     if (auto const& val = new_settings.log_level; force || val != old_settings.log_level) {
         tr_logSetLevel(val);
@@ -792,6 +846,11 @@ void tr_session::setSettings(tr_session::Settings&& settings_in, bool force)
     if (auto const& val = new_settings.sleep_per_seconds_during_verify;
         force || val != old_settings.sleep_per_seconds_during_verify) {
         verifier_->set_sleep_per_seconds_during_verify(val);
+    }
+
+    if (new_settings.preallocation_mode != old_settings.preallocation_mode ||
+        new_settings.is_incomplete_file_naming_enabled != old_settings.is_incomplete_file_naming_enabled) {
+        invalidate_storage_descriptors();
     }
 
     // We need to update bandwidth if speed settings changed.
@@ -989,6 +1048,7 @@ void tr_sessionSetIncompleteFileNamingEnabled(tr_session* session, bool enabled)
     TR_ASSERT(session != nullptr);
 
     session->settings_.is_incomplete_file_naming_enabled = enabled;
+    session->run_in_session_thread([session]() { session->invalidate_storage_descriptors(); });
 }
 
 bool tr_sessionIsIncompleteFileNamingEnabled(tr_session const* session)
@@ -1391,10 +1451,15 @@ void tr_session::closeImplPart1(std::promise<void>* closed_promise, std::chrono:
 
     if (mayWriteConfigDir()) {
         torrent_queue().to_file();
+        save_bandwidth_groups_if_dirty();
     }
 
     // Deliver any pending completions while their torrents still exist.
-    local_data.shutdown();
+    // They change torrent state, so they need the session lock here too.
+    {
+        auto const lock = unique_lock();
+        local_data.shutdown();
+    }
 
     // Close the torrents in order of most active to least active
     // so that the most important announce=stopped events are
@@ -1448,9 +1513,10 @@ void tr_session::closeImplPart2(std::promise<void>* closed_promise, std::chrono:
     this->announcer_.reset();
     this->announcer_udp_.reset();
 
+    collect_files_created();
     stats().save();
     peer_mgr_.reset();
-    openFiles().close_all();
+    local_data.close_all();
     tr_utp_close(this);
     this->udp_core_.reset();
 
@@ -1710,6 +1776,9 @@ void tr_sessionSetDefaultTrackers(tr_session* session, std::string_view const tr
 
 tr_bandwidth& tr_session::getBandwidthGroup(std::string_view name)
 {
+    // The caller may change the group.
+    bandwidth_groups_dirty_ = true;
+
     auto& groups = this->bandwidth_groups_;
 
     for (auto const& [group_name, group] : groups) {
@@ -2016,8 +2085,9 @@ size_t tr_sessionGetQueueStalledMinutes(tr_session const* session)
 
 // ---
 
-void tr_session::verify_remove(tr_torrent const* const tor)
+void tr_session::verify_remove(tr_torrent* const tor)
 {
+    tor->cancel_pending_verify();
     if (verifier_) {
         verifier_->remove(tor->info_hash());
     }
@@ -2032,14 +2102,31 @@ void tr_session::verify_add(tr_torrent* const tor)
 
 // ---
 
-void tr_session::close_torrent_files(tr_torrent_id_t const tor_id) noexcept
+std::optional<size_t> tr_session::spare_request_blocks() const noexcept
 {
-    openFiles().close_torrent(tor_id);
+    auto const requested = uint64_t{ active_request_count_ } * TrBlockSize;
+    if (auto const spare = local_data.spare_write_bytes(requested); spare) {
+        return static_cast<size_t>(*spare / TrBlockSize);
+    }
+
+    return {};
 }
 
-void tr_session::close_torrent_file(tr_torrent const& tor, tr_file_index_t file_num) noexcept
+uint64_t tr_session::effective_write_budget_bytes() const noexcept
 {
-    openFiles().close_file(tor.id(), file_num);
+    // The setting is in MiB, so zero is the only value below one MiB.
+    // A budget of zero admits no requests. Treat it as one MiB.
+    static auto constexpr MinBudget = uint64_t{ 1024U } * 1024U;
+    return std::max(uint64_t{ settings_.disk_write_budget_mib } * 1024U * 1024U, MinBudget);
+}
+
+void tr_session::invalidate_storage_descriptors()
+{
+    TR_ASSERT(am_in_session_thread());
+
+    for (auto* const tor : torrents_) {
+        tor->invalidate_storage_descriptor();
+    }
 }
 
 // ---

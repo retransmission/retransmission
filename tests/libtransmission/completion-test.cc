@@ -13,6 +13,7 @@
 
 #include <libtransmission/bitfield.h>
 #include <libtransmission/block-info.h>
+#include <libtransmission/constants.h>
 #include <libtransmission/crypto-utils.h> // for tr_rand_obj()
 #include <libtransmission/completion.h>
 
@@ -32,7 +33,8 @@ struct TestTorrent {
     }
 };
 
-auto constexpr BlockSize = uint64_t{ 16 } * 1024U;
+// Convenience to avoid clang-tidy warnings such as `bugprone-implicit-widening-of-multiplication-result`
+auto constexpr BlockSizeU64 = uint64_t{ TrBlockSize };
 
 } // namespace
 
@@ -58,8 +60,8 @@ TEST_F(CompletionTest, MagnetLink)
 
 TEST_F(CompletionTest, setBlocks)
 {
-    auto constexpr TotalSize = uint64_t{ BlockSize * 64 * 50000 }; // 50GB
-    auto constexpr PieceSize = uint64_t{ BlockSize * 64 };
+    auto constexpr TotalSize = uint64_t{ BlockSizeU64 * 64 * 50000 }; // 50GB
+    auto constexpr PieceSize = uint64_t{ BlockSizeU64 * 64 };
 
     auto torrent = TestTorrent{};
     auto const block_info = tr_block_info{ TotalSize, PieceSize };
@@ -81,8 +83,8 @@ TEST_F(CompletionTest, setBlocks)
 TEST_F(CompletionTest, hasBlock)
 {
     auto torrent = TestTorrent{};
-    auto constexpr TotalSize = uint64_t{ BlockSize * 4096 };
-    auto constexpr PieceSize = uint64_t{ BlockSize * 64 };
+    auto constexpr TotalSize = uint64_t{ BlockSizeU64 * 4096 };
+    auto constexpr PieceSize = uint64_t{ BlockSizeU64 * 64 };
     auto const block_info = tr_block_info{ TotalSize, PieceSize };
     auto completion = torrent.makeCompletion(block_info);
 
@@ -101,8 +103,8 @@ TEST_F(CompletionTest, hasBlock)
 TEST_F(CompletionTest, hasBlocks)
 {
     auto torrent = TestTorrent{};
-    auto constexpr TotalSize = uint64_t{ BlockSize * 4096 };
-    auto constexpr PieceSize = uint64_t{ BlockSize * 64 };
+    auto constexpr TotalSize = uint64_t{ BlockSizeU64 * 4096 };
+    auto constexpr PieceSize = uint64_t{ BlockSizeU64 * 64 };
     auto const block_info = tr_block_info{ TotalSize, PieceSize };
 
     auto completion = torrent.makeCompletion(block_info);
@@ -117,8 +119,8 @@ TEST_F(CompletionTest, hasBlocks)
 TEST_F(CompletionTest, hasNone)
 {
     auto torrent = TestTorrent{};
-    auto constexpr TotalSize = uint64_t{ BlockSize * 4096 };
-    auto constexpr PieceSize = uint64_t{ BlockSize * 64 };
+    auto constexpr TotalSize = uint64_t{ BlockSizeU64 * 4096 };
+    auto constexpr PieceSize = uint64_t{ BlockSizeU64 * 64 };
     auto const block_info = tr_block_info{ TotalSize, PieceSize };
 
     auto completion = torrent.makeCompletion(block_info);
@@ -131,8 +133,8 @@ TEST_F(CompletionTest, hasNone)
 TEST_F(CompletionTest, hasPiece)
 {
     auto torrent = TestTorrent{};
-    auto constexpr TotalSize = uint64_t{ BlockSize * 4096 };
-    auto constexpr PieceSize = uint64_t{ BlockSize * 64 };
+    auto constexpr TotalSize = uint64_t{ BlockSizeU64 * 4096 };
+    auto constexpr PieceSize = uint64_t{ BlockSizeU64 * 64 };
     auto const block_info = tr_block_info{ TotalSize, PieceSize };
 
     // check that the initial state does not have it
@@ -167,8 +169,8 @@ TEST_F(CompletionTest, hasPiece)
 TEST_F(CompletionTest, percentCompleteAndDone)
 {
     auto torrent = TestTorrent{};
-    auto constexpr TotalSize = uint64_t{ BlockSize * 4096 };
-    auto constexpr PieceSize = uint64_t{ BlockSize * 64 };
+    auto constexpr TotalSize = uint64_t{ BlockSizeU64 * 4096 };
+    auto constexpr PieceSize = uint64_t{ BlockSizeU64 * 64 };
     auto const block_info = tr_block_info{ TotalSize, PieceSize };
 
     // check that in blank-slate initial state, isDone() is false
@@ -205,8 +207,8 @@ TEST_F(CompletionTest, percentCompleteAndDone)
 TEST_F(CompletionTest, hasTotalAndValid)
 {
     auto torrent = TestTorrent{};
-    auto constexpr TotalSize = uint64_t{ BlockSize * 4096 } + 1;
-    auto constexpr PieceSize = uint64_t{ BlockSize * 64 };
+    auto constexpr TotalSize = uint64_t{ BlockSizeU64 * 4096 } + 1;
+    auto constexpr PieceSize = uint64_t{ BlockSizeU64 * 64 };
     auto const block_info = tr_block_info{ TotalSize, PieceSize };
 
     // check that the initial blank-slate state has nothing
@@ -237,14 +239,14 @@ TEST_F(CompletionTest, hasTotalAndValid)
     // check that adding an incomplete piece adjusts hasTotal but not hasValid
     completion.add_block(0);
     EXPECT_EQ(0, completion.has_valid());
-    EXPECT_EQ(BlockSize, completion.has_total());
+    EXPECT_EQ(BlockSizeU64, completion.has_total());
 }
 
 TEST_F(CompletionTest, leftUntilDone)
 {
     auto torrent = TestTorrent{};
-    auto constexpr TotalSize = uint64_t{ BlockSize * 4096 } + 1;
-    auto constexpr PieceSize = uint64_t{ BlockSize * 64 };
+    auto constexpr TotalSize = uint64_t{ BlockSizeU64 * 4096 } + 1;
+    auto constexpr PieceSize = uint64_t{ BlockSizeU64 * 64 };
     auto const block_info = tr_block_info{ TotalSize, PieceSize };
 
     // check that the initial blank-slate state has nothing
@@ -285,14 +287,14 @@ TEST_F(CompletionTest, leftUntilDone)
 
     // check that adding a block adjusts by block_info.block_size
     completion.add_block(0);
-    EXPECT_EQ(block_info.total_size() - tr_block_info::BlockSize, completion.left_until_done());
+    EXPECT_EQ(block_info.total_size() - TrBlockSize, completion.left_until_done());
 }
 
 TEST_F(CompletionTest, sizeWhenDone)
 {
     auto torrent = TestTorrent{};
-    auto constexpr TotalSize = uint64_t{ BlockSize * 64 * 50000 }; // 50GB
-    auto constexpr PieceSize = uint64_t{ BlockSize * 64 };
+    auto constexpr TotalSize = uint64_t{ BlockSizeU64 * 64 * 50000 }; // 50GB
+    auto constexpr PieceSize = uint64_t{ BlockSizeU64 * 64 };
     auto const block_info = tr_block_info{ TotalSize, PieceSize };
 
     // check that adding or removing blocks or pieces does not affect size_when_done
@@ -324,8 +326,8 @@ TEST_F(CompletionTest, sizeWhenDone)
 TEST_F(CompletionTest, createPieceBitfield)
 {
     auto torrent = TestTorrent{};
-    auto constexpr TotalSize = uint64_t{ BlockSize * 4096 } + 1;
-    auto constexpr PieceSize = uint64_t{ BlockSize * 64 };
+    auto constexpr TotalSize = uint64_t{ BlockSizeU64 * 4096 } + 1;
+    auto constexpr PieceSize = uint64_t{ BlockSizeU64 * 64 };
     auto const block_info = tr_block_info{ TotalSize, PieceSize };
 
     // make a completion object that has a random assortment of pieces
@@ -355,14 +357,14 @@ TEST_F(CompletionTest, setHasPiece)
 TEST_F(CompletionTest, countMissingBytesInPiece)
 {
     auto torrent = TestTorrent{};
-    auto constexpr TotalSize = uint64_t{ BlockSize * 4096 } + 1;
-    auto constexpr PieceSize = uint64_t{ BlockSize * 64 };
+    auto constexpr TotalSize = uint64_t{ BlockSizeU64 * 4096 } + 1;
+    auto constexpr PieceSize = uint64_t{ BlockSizeU64 * 64 };
     auto const block_info = tr_block_info{ TotalSize, PieceSize };
     auto completion = torrent.makeCompletion(block_info);
 
     EXPECT_EQ(block_info.piece_size(0), completion.count_missing_bytes_in_piece(0));
     completion.add_block(0);
-    EXPECT_EQ(block_info.piece_size(0) - tr_block_info::BlockSize, completion.count_missing_bytes_in_piece(0));
+    EXPECT_EQ(block_info.piece_size(0) - TrBlockSize, completion.count_missing_bytes_in_piece(0));
     completion.add_piece(0);
     EXPECT_EQ(0U, completion.count_missing_bytes_in_piece(0));
 
@@ -378,8 +380,8 @@ TEST_F(CompletionTest, countMissingBytesInPiece)
 TEST_F(CompletionTest, amountDone)
 {
     auto torrent = TestTorrent{};
-    auto constexpr TotalSize = uint64_t{ BlockSize * 4096 } + 1;
-    auto constexpr PieceSize = uint64_t{ BlockSize * 64 };
+    auto constexpr TotalSize = uint64_t{ BlockSizeU64 * 4096 } + 1;
+    auto constexpr PieceSize = uint64_t{ BlockSizeU64 * 64 };
     auto const block_info = tr_block_info{ TotalSize, PieceSize };
     auto completion = torrent.makeCompletion(block_info);
 
@@ -420,8 +422,8 @@ TEST_F(CompletionTest, countHasBytesInSpan)
 {
     // set up a fake torrent
     auto torrent = TestTorrent{};
-    auto constexpr TotalSize = uint64_t{ BlockSize * 4096 } + 1;
-    auto constexpr PieceSize = uint64_t{ BlockSize * 64 };
+    auto constexpr TotalSize = uint64_t{ BlockSizeU64 * 4096 } + 1;
+    auto constexpr PieceSize = uint64_t{ BlockSizeU64 * 64 };
     auto const block_info = tr_block_info{ TotalSize, PieceSize };
     auto completion = torrent.makeCompletion(block_info);
 
@@ -436,36 +438,42 @@ TEST_F(CompletionTest, countHasBytesInSpan)
     EXPECT_EQ(1, completion.count_has_bytes_in_span({ 16, 17 }));
     EXPECT_EQ(16, completion.count_has_bytes_in_span({ 16, 32 }));
     // test edge cases on block boundary
-    EXPECT_EQ(1, completion.count_has_bytes_in_span({ BlockSize - 1, BlockSize }));
-    EXPECT_EQ(1, completion.count_has_bytes_in_span({ BlockSize, BlockSize + 1 }));
-    EXPECT_EQ(2, completion.count_has_bytes_in_span({ BlockSize - 1, BlockSize + 1 }));
+    EXPECT_EQ(1, completion.count_has_bytes_in_span({ BlockSizeU64 - 1, BlockSizeU64 }));
+    EXPECT_EQ(1, completion.count_has_bytes_in_span({ BlockSizeU64, BlockSizeU64 + 1 }));
+    EXPECT_EQ(2, completion.count_has_bytes_in_span({ BlockSizeU64 - 1, BlockSizeU64 + 1 }));
     // test edge cases on piece boundary
     EXPECT_EQ(1, completion.count_has_bytes_in_span({ PieceSize - 1, PieceSize }));
     EXPECT_EQ(1, completion.count_has_bytes_in_span({ PieceSize, PieceSize + 1 }));
     EXPECT_EQ(2, completion.count_has_bytes_in_span({ PieceSize - 1, PieceSize + 1 }));
 
     // test span that has a middle block
-    EXPECT_EQ(BlockSize * 3, completion.count_has_bytes_in_span({ 0, BlockSize * 3 }));
-    EXPECT_EQ(BlockSize * 2, completion.count_has_bytes_in_span({ BlockSize / 2, (BlockSize * 2) + (BlockSize / 2) }));
+    EXPECT_EQ(BlockSizeU64 * 3, completion.count_has_bytes_in_span({ 0, BlockSizeU64 * 3 }));
+    EXPECT_EQ(
+        BlockSizeU64 * 2,
+        completion.count_has_bytes_in_span({ BlockSizeU64 / 2, (BlockSizeU64 * 2) + (BlockSizeU64 / 2) }));
 
     // test span where first block is missing
     blocks.unset(0);
     completion.set_blocks(blocks);
-    EXPECT_EQ(BlockSize * 2, completion.count_has_bytes_in_span({ 0, BlockSize * 3 }));
-    EXPECT_EQ(BlockSize * 1.5, completion.count_has_bytes_in_span({ BlockSize / 2, (BlockSize * 2) + (BlockSize / 2) }));
+    EXPECT_EQ(BlockSizeU64 * 2, completion.count_has_bytes_in_span({ 0, BlockSizeU64 * 3 }));
+    EXPECT_EQ(
+        BlockSizeU64 * 1.5,
+        completion.count_has_bytes_in_span({ BlockSizeU64 / 2, (BlockSizeU64 * 2) + (BlockSizeU64 / 2) }));
     // test span where final block is missing
     blocks.set_has_all();
     blocks.unset(2);
     completion.set_blocks(blocks);
-    EXPECT_EQ(BlockSize * 2, completion.count_has_bytes_in_span({ 0, BlockSize * 3 }));
-    EXPECT_EQ(BlockSize * 1.5, completion.count_has_bytes_in_span({ BlockSize / 2, (BlockSize * 2) + (BlockSize / 2) }));
+    EXPECT_EQ(BlockSizeU64 * 2, completion.count_has_bytes_in_span({ 0, BlockSizeU64 * 3 }));
+    EXPECT_EQ(
+        BlockSizeU64 * 1.5,
+        completion.count_has_bytes_in_span({ BlockSizeU64 / 2, (BlockSizeU64 * 2) + (BlockSizeU64 / 2) }));
 }
 
 TEST_F(CompletionTest, wantNone)
 {
     auto torrent = TestTorrent{};
-    auto constexpr TotalSize = uint64_t{ BlockSize * 4096 };
-    auto constexpr PieceSize = uint64_t{ BlockSize * 64 };
+    auto constexpr TotalSize = uint64_t{ BlockSizeU64 * 4096 };
+    auto constexpr PieceSize = uint64_t{ BlockSizeU64 * 64 };
     auto const block_info = tr_block_info{ TotalSize, PieceSize };
     auto completion = torrent.makeCompletion(block_info);
 
@@ -479,8 +487,8 @@ TEST_F(CompletionTest, wantNone)
     completion.invalidate_size_when_done();
 
     EXPECT_LE(completion.has_total(), completion.size_when_done());
-    EXPECT_EQ(completion.has_total(), block_info.BlockSize);
-    EXPECT_EQ(completion.size_when_done(), block_info.BlockSize);
+    EXPECT_EQ(completion.has_total(), TrBlockSize);
+    EXPECT_EQ(completion.size_when_done(), TrBlockSize);
     EXPECT_LE(completion.left_until_done(), completion.size_when_done());
     EXPECT_EQ(completion.left_until_done(), 0);
 
@@ -488,8 +496,8 @@ TEST_F(CompletionTest, wantNone)
     completion.add_block(1);
 
     EXPECT_LE(completion.has_total(), completion.size_when_done());
-    EXPECT_EQ(completion.has_total(), 2 * block_info.BlockSize);
-    EXPECT_EQ(completion.size_when_done(), 2 * block_info.BlockSize);
+    EXPECT_EQ(completion.has_total(), 2 * TrBlockSize);
+    EXPECT_EQ(completion.size_when_done(), 2 * TrBlockSize);
     EXPECT_LE(completion.left_until_done(), completion.size_when_done());
     EXPECT_EQ(completion.left_until_done(), 0);
 }

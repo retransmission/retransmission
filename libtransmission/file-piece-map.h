@@ -9,10 +9,11 @@
 #error only libtransmission should #include this header.
 #endif
 
-#include <algorithm> // for std::binary_search()
+#include <algorithm>
 #include <cstdint> // for uint64_t
 #include <cstddef> // for size_t
 #include <span>
+#include <utility>
 #include <vector>
 
 #include "libtransmission/bitfield.h"
@@ -39,6 +40,42 @@ public:
     };
 
     using file_offset_t = offset_t<tr_file_index_t>;
+
+private:
+    template<typename T>
+    struct CompareToSpan {
+        using span_t = index_span_t<T>;
+
+        [[nodiscard]] static constexpr int compare(T const item, span_t const span) // <=>
+        {
+            if (item < span.begin) {
+                return -1;
+            }
+
+            if (item >= span.end) {
+                return 1;
+            }
+
+            return 0;
+        }
+
+        [[nodiscard]] constexpr bool operator()(T const item, span_t const span) const // <
+        {
+            return compare(item, span) < 0;
+        }
+
+        [[nodiscard]] static constexpr int compare(span_t const span, T const item) // <=>
+        {
+            return -compare(item, span);
+        }
+
+        [[nodiscard]] constexpr bool operator()(span_t const span, T const item) const // <
+        {
+            return compare(span, item) < 0;
+        }
+    };
+
+public:
     explicit tr_file_piece_map(tr_torrent_metainfo const& tm);
     tr_file_piece_map(tr_block_info const& block_info, std::span<uint64_t const> file_sizes);
 
@@ -47,11 +84,28 @@ public:
         return file_pieces_[file];
     }
 
-    [[nodiscard]] file_span_t file_span_for_piece(tr_piece_index_t piece) const;
+    [[nodiscard]] constexpr file_span_t file_span_for_piece(tr_piece_index_t const piece) const
+    {
+        constexpr auto Compare = CompareToSpan<tr_piece_index_t>{};
+        auto const begin = std::begin(file_pieces_);
+        auto const [equal_begin, equal_end] = std::equal_range(begin, std::end(file_pieces_), piece, Compare);
+        return {
+            .begin = static_cast<tr_file_index_t>(equal_begin - begin),
+            .end = static_cast<tr_file_index_t>(equal_end - begin),
+        };
+    }
 
-    [[nodiscard]] file_offset_t file_offset(uint64_t offset) const;
+    [[nodiscard]] constexpr file_offset_t file_offset(uint64_t const offset) const
+    {
+        constexpr auto Compare = CompareToSpan<uint64_t>{};
+        auto const begin = std::begin(file_bytes_);
+        auto const it = std::lower_bound(begin, std::end(file_bytes_), offset, Compare);
+        tr_file_index_t const file_index = std::distance(begin, it);
+        auto const file_offset = offset - it->begin;
+        return file_offset_t{ .index = file_index, .offset = file_offset };
+    }
 
-    [[nodiscard]] constexpr size_t file_count() const
+    [[nodiscard]] constexpr size_t file_count() const noexcept
     {
         return std::size(file_pieces_);
     }
@@ -87,11 +141,67 @@ public:
     }
 
     // returns true if any file's priority changed.
-    [[nodiscard]] bool set(tr_file_index_t file, tr_priority_t priority);
-    [[nodiscard]] bool set(std::span<tr_file_index_t const> files, tr_priority_t priority);
+    [[nodiscard]] constexpr bool set(tr_file_index_t const file, tr_priority_t const priority) noexcept
+    {
+        if (file >= fpm_->file_count()) {
+            return false;
+        }
 
-    [[nodiscard]] tr_priority_t file_priority(tr_file_index_t file) const;
-    [[nodiscard]] tr_priority_t piece_priority(tr_piece_index_t piece) const;
+        if (std::empty(priorities_)) {
+            if (priority == TR_PRI_NORMAL) {
+                return false;
+            }
+
+            priorities_.assign(fpm_->file_count(), TR_PRI_NORMAL);
+            priorities_.shrink_to_fit();
+        }
+
+        return std::exchange(priorities_[file], priority) != priority;
+    }
+
+    [[nodiscard]] constexpr bool set(std::span<tr_file_index_t const> const files, tr_priority_t const priority)
+    {
+        if (std::ranges::any_of(files, [n_files = fpm_->file_count()](tr_file_index_t file) { return file >= n_files; })) {
+            return false;
+        }
+
+        auto ret = false;
+        for (auto const file : files) {
+            ret |= set(file, priority);
+        }
+        return ret;
+    }
+
+    [[nodiscard]] constexpr tr_priority_t file_priority(tr_file_index_t const file) const noexcept
+    {
+        if (file >= priorities_.size()) {
+            return TR_PRI_NORMAL;
+        }
+
+        return priorities_[file];
+    }
+
+    [[nodiscard]] constexpr tr_priority_t piece_priority(tr_piece_index_t const piece) const
+    {
+        // increase priority if a file begins or ends in this piece
+        // because that makes life easier for code/users using at incomplete files.
+        // Xrefs: f2daeb242
+        if (fpm_->is_edge_piece(piece)) {
+            return TR_PRI_HIGH;
+        }
+
+        // check the priorities of the files that touch this piece
+        if (auto const [begin_file, end_file] = fpm_->file_span_for_piece(piece); end_file <= std::size(priorities_)) {
+            using diff_type = decltype(priorities_)::difference_type;
+            auto const begin = std::begin(priorities_) + static_cast<diff_type>(begin_file);
+            auto const end = std::begin(priorities_) + static_cast<diff_type>(end_file);
+            if (auto const it = std::max_element(begin, end); it != end) {
+                return *it;
+            }
+        }
+
+        return TR_PRI_NORMAL;
+    }
 
 private:
     tr_file_piece_map const* fpm_;
@@ -109,6 +219,11 @@ public:
     [[nodiscard]] constexpr bool file_wanted(tr_file_index_t file) const
     {
         return wanted_.test(file);
+    }
+
+    [[nodiscard]] constexpr auto const& wanted_files() const noexcept
+    {
+        return wanted_;
     }
 
     [[nodiscard]] bool piece_wanted(tr_piece_index_t piece) const;

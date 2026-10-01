@@ -61,7 +61,8 @@ set(EVENT2_MINIMUM 2.1.0)
 # fast_float's version file is configured with `COMPATIBILITY SameMajorVersion`
 # The version range currently distributed varies greatly (e.g. Debian Trixie -> 8.0.0, Ubuntu 24.04 -> 3.9.0)
 # set(FAST_FLOAT_MINIMUM 3...8)
-set(FMT_MINIMUM 8.0.1)
+# {fmt} < 11.1.0 fails to compile as C++20 with Clang 21 and 22
+set(FMT_MINIMUM 11.1.0)
 set(GIOMM_MINIMUM 2.26.0)
 set(GLIBMM_MINIMUM 2.60.0)
 set(GTKMM3_MINIMUM 3.24.0)

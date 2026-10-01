@@ -117,9 +117,7 @@ void Session::import_session_settings(tr_variant::Map const& settings)
         prefs_.set(TR_KEY_rpc_authentication_required, tr_sessionIsRPCPasswordEnabled(embedded));
         prefs_.set(TR_KEY_rpc_enabled, tr_sessionIsRPCEnabled(embedded));
         prefs_.set(TR_KEY_rpc_password, tr_sessionGetRPCPassword(embedded));
-        // int, not uint16_t: Converter<uint16_t> is tr_mode_t's octal-string
-        // converter, which an integral pref field would silently reject
-        prefs_.set(TR_KEY_rpc_port, static_cast<int>(tr_sessionGetRPCPort(embedded)));
+        prefs_.set(TR_KEY_rpc_port, tr_sessionGetRPCPort(embedded));
         prefs_.set(TR_KEY_rpc_username, tr_sessionGetRPCUsername(embedded));
         prefs_.set(TR_KEY_rpc_whitelist, tr_sessionGetRPCWhitelist(embedded));
         prefs_.set(TR_KEY_rpc_whitelist_enabled, tr_sessionGetRPCWhitelistEnabled(embedded));

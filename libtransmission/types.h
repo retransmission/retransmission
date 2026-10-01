@@ -36,7 +36,7 @@ struct tr_error;
 // care about accurate statistics-keeping can match the two announces."
 using tr_announce_key_t = uint32_t;
 
-// Assuming a 16 KiB block (tr_block_info::BlockSize), a 32-bit block
+// Assuming a 16 KiB block (TrBlockSize), a 32-bit block
 // index gives us a maximum torrent size of 64 TiB. When we ever need to
 // grow past that, change tr_block_index_t and  tr_piece_index_t to uint64_t.
 using tr_block_index_t = uint32_t;
@@ -44,8 +44,6 @@ using tr_block_index_t = uint32_t;
 using tr_byte_index_t = uint64_t;
 
 using tr_file_index_t = size_t;
-
-using tr_mode_t = uint16_t;
 
 // https://www.bittorrent.org/beps/bep_0003.html
 // A string of length 20 which this downloader uses as its id. Each
@@ -149,6 +147,35 @@ public:
 private:
     int value_ = 0x04;
 };
+
+// A serializer-friendly wrapper around a Unix-style file mode value.
+// A distinct type rather than a `uint16_t` alias so that its octal-string
+// Converter applies only to modes, not to every `uint16_t`.
+class tr_mode_t
+{
+public:
+    constexpr tr_mode_t() = default;
+
+    constexpr explicit tr_mode_t(uint16_t value) noexcept
+        : value_{ value }
+    {
+    }
+
+    // NOLINTNEXTLINE(google-explicit-constructor)
+    [[nodiscard]] constexpr operator uint16_t() const noexcept
+    {
+        return value_;
+    }
+
+private:
+    uint16_t value_ = 0;
+};
+
+// fmt formats `tr_mode_t` through this ADL opt-in
+[[nodiscard]] constexpr uint16_t format_as(tr_mode_t const mode) noexcept
+{
+    return mode;
+}
 
 using tr_tracker_id_t = uint32_t;
 
@@ -343,6 +370,8 @@ struct tr_byte_span_t {
     {
         return end - begin;
     }
+
+    [[nodiscard]] constexpr bool operator==(tr_byte_span_t const&) const noexcept = default;
 
     uint64_t begin;
     uint64_t end;

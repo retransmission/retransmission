@@ -15,9 +15,7 @@
 #include <libtransmission/transmission.h>
 #include <libtransmission/version.h>
 
-#include "LicenseDialog.h"
 #include "Session.h"
-#include "Utils.h"
 
 AboutDialog::AboutDialog(Session& session, QWidget* parent)
     : BaseDialog{ parent }
@@ -43,9 +41,6 @@ AboutDialog::AboutDialog(Session& session, QWidget* parent)
     QPushButton const* b = ui_.dialogButtons->addButton(tr("C&redits"), QDialogButtonBox::ActionRole);
     connect(b, &QAbstractButton::clicked, this, &AboutDialog::showCredits);
 
-    b = ui_.dialogButtons->addButton(tr("&License"), QDialogButtonBox::ActionRole);
-    connect(b, &QAbstractButton::clicked, this, &AboutDialog::showLicense);
-
     ui_.dialogButtons->button(QDialogButtonBox::Close)->setDefault(true);
 }
 
@@ -58,9 +53,4 @@ void AboutDialog::showCredits()
             "Charles Kerr (Backend; Daemon; GTK+; Qt)\n"
             "Mitchell Livingston (macOS)\n"
             "Mike Gelfand\n"));
-}
-
-void AboutDialog::showLicense()
-{
-    Utils::openDialog(license_dialog_, this); // NOLINT clang-analyzer-cplusplus.NewDelete
 }
