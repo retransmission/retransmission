@@ -23,8 +23,8 @@ export class AboutDialog extends EventTarget {
 
   static _create(version_info) {
     const elements = createDialogContainer('about-dialog');
-    elements.root.setAttribute('aria-label', 'About transmission');
-    elements.heading.textContent = 'Transmission';
+    elements.root.setAttribute('aria-label', 'About Retransmission');
+    elements.heading.textContent = 'Retransmission';
     elements.dismiss.textContent = 'Close';
 
     let e = document.createElement('div');
@@ -41,7 +41,7 @@ export class AboutDialog extends EventTarget {
     e.textContent = 'A fast and easy bitTorrent client';
     elements.workarea.append(e);
     e = document.createElement('div');
-    e.textContent = 'Copyright © The Transmission Project';
+    e.textContent = 'Copyright © The Retransmission Project';
     elements.workarea.append(e);
 
     e = document.createElement('a');
