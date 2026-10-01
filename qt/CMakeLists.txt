@@ -210,7 +210,9 @@ target_compile_definitions(${TR_NAME}-qt-lib
     PRIVATE
         "TRANSLATIONS_DIR=\"${TR_DATA_INSTALL_FULL_DIR}/translations\""
         "TRANSLATIONS_NAME=\"${TRANSLATIONS_NAME}\""
-        "TR_QT_ICON_NAME=\"${TR_QT_ICON_NAME}\"")
+        "TR_QT_ICON_NAME=\"${TR_QT_ICON_NAME}\""
+        "TR_GETTEXT_DOMAIN=\"${TR_GETTEXT_DOMAIN}\""
+        "TR_LOCALE_DIR=\"${CMAKE_INSTALL_FULL_LOCALEDIR}\"")
 
 set_target_properties(
     ${TR_NAME}-qt-lib

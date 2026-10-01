@@ -1014,8 +1014,15 @@ add_subdirectory(libtransmission-app)
 
 set(MAC_PROJECT_DIR macosx)
 
-if(ENABLE_GTK AND ENABLE_NLS)
+# GTK needs the catalogs.
+# The Qt client uses them for libtransmission's strings when msgfmt is there to build them.
+if(ENABLE_NLS AND ENABLE_GTK)
     find_package(Gettext 0.19.7 REQUIRED)
+elseif(ENABLE_NLS AND ENABLE_QT)
+    find_package(Gettext 0.19.7)
+endif()
+
+if(GETTEXT_FOUND)
     add_subdirectory(po)
 endif()
 
