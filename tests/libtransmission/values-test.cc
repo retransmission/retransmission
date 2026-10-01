@@ -3,11 +3,16 @@
 // or any future license endorsed by Mnemosaic LLC.
 // License text can be found in the licenses/ folder.
 
+#include <cstdint>
+#include <string_view>
+
+#include <libtransmission/utils.h>
 #include <libtransmission/values.h>
 
 #include "test-fixtures.h"
 
 using ValuesTest = ::tr::test::TransmissionTest;
+using namespace std::literals;
 using namespace tr::Values;
 
 TEST_F(ValuesTest, baseQuantity)
@@ -56,4 +61,18 @@ TEST_F(ValuesTest, isZero)
 
     val = Speed{ 1, Speed::Units::Byps };
     EXPECT_FALSE(val.is_zero());
+}
+
+TEST_F(ValuesTest, translatedUnitNames)
+{
+    tr_set_translator(
+        [](char const* msgid) noexcept -> char const* { return msgid == "kB/s"sv ? "ko/s" : msgid; },
+        [](char const* msgid, char const* msgid_plural, uint64_t n) noexcept -> char const* {
+            return n == 1U ? msgid : msgid_plural;
+        });
+    EXPECT_EQ("10 ko/s", (Speed{ 10, Speed::Units::KByps }.to_string()));
+    EXPECT_EQ("10 MB/s", (Speed{ 10, Speed::Units::MByps }.to_string()));
+
+    tr_set_translator(nullptr, nullptr);
+    EXPECT_EQ("10 kB/s", (Speed{ 10, Speed::Units::KByps }.to_string()));
 }

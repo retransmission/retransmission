@@ -88,6 +88,7 @@ libtransmission/tr-lpd.cc
 libtransmission/tr-udp.cc
 libtransmission/tr-utp.cc
 libtransmission/utils.h
+libtransmission/values.cc
 libtransmission/variant.cc
 libtransmission/variant-json.cc
 libtransmission/watchdir.cc
