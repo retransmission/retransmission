@@ -12,6 +12,13 @@ add_test(
         -Dvalidator=${DESKTOP_FILE_VALIDATE}
         -P ${CMAKE_CURRENT_SOURCE_DIR}/desktop-file-test.cmake)
 
+# The domain attribute lives in the .ui sources, which no client test reads.
+add_test(
+    NAME GTK.ui-translation-domain
+    COMMAND ${CMAKE_COMMAND}
+        -Dui_dir=${PROJECT_SOURCE_DIR}/gtk
+        -P ${CMAKE_CURRENT_SOURCE_DIR}/ui-translation-domain-test.cmake)
+
 # ---
 
 include(GoogleTest)

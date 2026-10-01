@@ -15,7 +15,6 @@ StartupNotify=true
 StartupWMClass=@TR_GTK_APP_ID@
 MimeType=application/x-bittorrent;x-scheme-handler/magnet;
 Categories=Network;FileTransfer;P2P;GTK;
-X-Ubuntu-Gettext-Domain=transmission
 X-AppInstall-Keywords=torrent
 Actions=Pause;Minimize;
 

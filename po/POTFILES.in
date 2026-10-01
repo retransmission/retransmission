@@ -21,8 +21,8 @@ gtk/Session.cc
 gtk/StatsDialog.cc
 gtk/SystemTrayIcon.cc
 gtk/Torrent.cc
-gtk/transmission-gtk.desktop.in
-gtk/transmission-gtk.metainfo.xml.in
+gtk/retransmission-gtk.desktop.in
+gtk/retransmission-gtk.metainfo.xml.in
 gtk/transmission-menus.ui
 gtk/ui/gtk3/AddTrackerDialog.ui
 gtk/ui/gtk3/DetailsDialog.ui
