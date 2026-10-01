@@ -111,7 +111,7 @@ if(ENABLE_QT_DBUS_INTEROP)
     # whole suite as passed rather than skipped.
     set_tests_properties(QT.dbus-interop
         PROPERTIES
-            SKIP_REGULAR_EXPRESSION "no session bus;another Transmission owns this bus")
+            SKIP_REGULAR_EXPRESSION "no session bus;another ${TR_PROJ_APPNAME_CAPITALIZED} owns this bus")
 endif()
 
 get_property(QT_TEST_TARGETS DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY QT_TEST_TARGETS)
