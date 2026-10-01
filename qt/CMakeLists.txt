@@ -209,7 +209,8 @@ target_compile_definitions(${TR_NAME}-qt-lib
         QT_NO_CAST_FROM_ASCII
     PRIVATE
         "TRANSLATIONS_DIR=\"${TR_DATA_INSTALL_FULL_DIR}/translations\""
-        "TRANSLATIONS_NAME=\"${TRANSLATIONS_NAME}\"")
+        "TRANSLATIONS_NAME=\"${TRANSLATIONS_NAME}\""
+        "TR_QT_ICON_NAME=\"${TR_QT_ICON_NAME}\"")
 
 set_target_properties(
     ${TR_NAME}-qt-lib
@@ -258,21 +259,7 @@ install(
     TARGETS ${TR_NAME}-qt
     DESTINATION ${CMAKE_INSTALL_BINDIR})
 
-set(PUBLIC_ICONS
-    hicolor_apps_scalable_transmission.svg
-    hicolor_apps_scalable_transmission-devel.svg
-    hicolor_apps_symbolic_transmission-symbolic.svg)
-
-set(ICON_NAME_REGEX "^([^_]+)_([^_]+)_([^_]+)_(.+)$")
-foreach(ICON ${PUBLIC_ICONS})
-    string(REGEX REPLACE ${ICON_NAME_REGEX} "\\1/\\3/\\2" ICON_DIR ${ICON})
-    string(REGEX REPLACE ${ICON_NAME_REGEX} "\\4" ICON_NAME ${ICON})
-    string(REGEX REPLACE "^transmission" "transmission-qt" ICON_NAME ${ICON_NAME})
-    install(
-        FILES ${SOURCE_ICONS_DIR}/${ICON}
-        DESTINATION ${CMAKE_INSTALL_DATADIR}/icons/${ICON_DIR}/
-        RENAME ${ICON_NAME})
-endforeach()
+tr_install_app_icons(${TR_QT_ICON_NAME})
 
 if(INSTALL_DOC)
     install(
@@ -280,8 +267,13 @@ if(INSTALL_DOC)
         DESTINATION ${CMAKE_INSTALL_MANDIR}/man1)
 endif()
 
+configure_file(
+    "${CMAKE_CURRENT_SOURCE_DIR}/retransmission-qt.desktop.in"
+    "${CMAKE_CURRENT_BINARY_DIR}/${TR_NAME}-qt.desktop"
+    @ONLY)
+
 install(
-    FILES transmission-qt.desktop
+    FILES ${CMAKE_CURRENT_BINARY_DIR}/${TR_NAME}-qt.desktop
     DESTINATION ${CMAKE_INSTALL_DATADIR}/applications)
 
 if(ENABLE_NLS)
