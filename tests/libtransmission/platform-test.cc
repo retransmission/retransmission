@@ -14,7 +14,6 @@
 
 #include <libtransmission/file-utils.h>
 #include <libtransmission/file.h>
-#include <libtransmission/macros.h>
 #include <libtransmission/platform.h>
 #include <libtransmission/tr-strbuf.h>
 
@@ -116,9 +115,14 @@ TEST_F(PlatformTest, webClientDirEnvTr)
 #if !defined(BUILD_MAC_CLIENT) && !defined(_WIN32)
 TEST_F(PlatformTest, webClientDirXdgDataHome)
 {
+    // Lay out the sandbox the way the build installs the web client under the data dir.
+    // A web client installed outside the data dir is one the lookup can't find.
+    auto constexpr InstallSubdir = std::string_view{ LIBTRANSMISSION_TEST_WEB_CLIENT_INSTALL_SUBDIR };
+    ASSERT_FALSE(InstallSubdir.starts_with(".."sv));
+
     setenv("XDG_DATA_HOME", sandboxDir().c_str(), 1);
 
-    auto const expected = tr_pathbuf{ sandboxDir(), "/" TR_PROJ_APPNAME "/public_html"sv };
+    auto const expected = tr_pathbuf{ sandboxDir(), '/', InstallSubdir };
     auto const index_html = tr_pathbuf{ expected, "/index.html"sv };
     EXPECT_TRUE(tr_sys_dir_create(expected, TR_SYS_DIR_CREATE_PARENTS, 0777));
     EXPECT_TRUE(tr_file_save(index_html, "<html></html>"sv));

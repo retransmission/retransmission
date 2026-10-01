@@ -208,7 +208,7 @@ target_compile_definitions(${TR_NAME}-qt-lib
         $<$<BOOL:${ENABLE_QT_DBUS_INTEROP}>:ENABLE_DBUS_INTEROP>
         QT_NO_CAST_FROM_ASCII
     PRIVATE
-        "TRANSLATIONS_DIR=\"${CMAKE_INSTALL_FULL_DATADIR}/${TR_NAME}/translations\""
+        "TRANSLATIONS_DIR=\"${TR_DATA_INSTALL_FULL_DIR}/translations\""
         "TRANSLATIONS_NAME=\"${TRANSLATIONS_NAME}\"")
 
 set_target_properties(
@@ -287,7 +287,7 @@ install(
 if(ENABLE_NLS)
     install(
         FILES ${QM_FILES}
-        DESTINATION ${CMAKE_INSTALL_DATADIR}/${TR_NAME}/translations)
+        DESTINATION ${TR_DATA_INSTALL_DIR}/translations)
 endif()
 
 if(WIN32)

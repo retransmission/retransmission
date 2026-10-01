@@ -959,6 +959,17 @@ if(RUN_CLANG_TIDY)
     endif()
 endif()
 
+# The app's name, read from libtransmission/macros.h.
+# The code looks up installed data under it, e.g. <datadir>/retransmission/public_html.
+tr_read_header_define(${PROJECT_SOURCE_DIR}/libtransmission/macros.h TR_PROJ_APPNAME TR_PROJ_APPNAME)
+
+# The app's installed data, such as the web client and the Qt client's translations.
+set(TR_DATA_INSTALL_DIR ${CMAKE_INSTALL_DATADIR}/${TR_PROJ_APPNAME})
+set(TR_DATA_INSTALL_FULL_DIR ${CMAKE_INSTALL_FULL_DATADIR}/${TR_PROJ_APPNAME})
+
+# The gettext domain, which names each language's installed catalog.
+set(TR_GETTEXT_DOMAIN ${TR_PROJ_APPNAME})
+
 # This is GTK-specific, but is exposed in this top-level file so that
 # it can be shared by `gtk/` and by `tests/gtk/`.
 set(TR_GTK_APP_ID "org.retransmission.retransmission" CACHE INTERNAL "the app id the client and its desktop file share")
@@ -975,9 +986,6 @@ add_subdirectory(libtransmission)
 add_subdirectory(libtransmission-app)
 
 set(MAC_PROJECT_DIR macosx)
-
-# The gettext domain, which names each language's installed catalog.
-set(TR_GETTEXT_DOMAIN retransmission)
 
 if(ENABLE_GTK AND ENABLE_NLS)
     find_package(Gettext 0.19.7 REQUIRED)
@@ -1000,7 +1008,7 @@ if(ENABLE_TESTS)
 endif()
 
 if(ENABLE_DAEMON OR ENABLE_GTK OR ENABLE_QT)
-    tr_install_web(${CMAKE_INSTALL_DATAROOTDIR}/${TR_NAME})
+    tr_install_web(${TR_DATA_INSTALL_DIR})
 endif()
 
 if(INSTALL_DOC)
