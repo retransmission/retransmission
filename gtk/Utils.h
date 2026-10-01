@@ -77,10 +77,6 @@ template<typename... Ts>
         { Glib::Variant<std::remove_cvref_t<Ts>>::create(std::forward<Ts>(args))... });
 }
 
-std::string tr_format_time_relative(time_t timestamp, time_t origin);
-std::string tr_format_time_left(time_t timestamp);
-std::string tr_format_time(time_t timestamp);
-
 /***
 ****
 ***/
