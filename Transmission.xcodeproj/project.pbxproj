@@ -665,7 +665,7 @@
 		66F977825E65AD498C028BB3 /* announce-list.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.h; path = "announce-list.h"; sourceTree = "<group>"; };
 		6A044CBD8C049AFCBD4DB411 /* block-info.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.h; path = "block-info.h"; sourceTree = "<group>"; };
 		888A256631B3DE536FEB8B01 /* tr-strbuf.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.h; fileEncoding = 4; path = "tr-strbuf.h"; sourceTree = "<group>"; };
-		8D1107320486CEB800E47090 /* Transmission.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Transmission.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		8D1107320486CEB800E47090 /* Retransmission.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Retransmission.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		9F0B1F2A2E4D1A0100A1B2C3 /* env.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.h; path = env.h; sourceTree = "<group>"; };
 		9F0B1F2B2E4D1A0100A1B2C3 /* env.cc */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = env.cc; sourceTree = "<group>"; };
 		9F0B1F2C2E4D1A0100A1B2C3 /* file-utils.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.h; path = "file-utils.h"; sourceTree = "<group>"; };
@@ -1321,7 +1321,7 @@
 			isa = PBXGroup;
 			children = (
 				ADD1A00000000000000000F7 /* libarchive.a */,
-				8D1107320486CEB800E47090 /* Transmission.app */,
+				8D1107320486CEB800E47090 /* Retransmission.app */,
 				4DDBB71909E16BAE00284745 /* transmissioncli */,
 				4D18389709DEC0030047D688 /* libtransmission.a */,
 				BEFC1C000C07750000B0BB3C /* transmission-daemon */,
@@ -2230,7 +2230,7 @@
 			name = Transmission;
 			productInstallPath = "$(HOME)/Applications";
 			productName = Transmission;
-			productReference = 8D1107320486CEB800E47090 /* Transmission.app */;
+			productReference = 8D1107320486CEB800E47090 /* Retransmission.app */;
 			productType = "com.apple.product-type.application";
 		};
 		A22CFCB90FC24F710009BD3E /* dht */ = {
@@ -3289,7 +3289,7 @@
 					"-Xclang",
 					"-fno-cxx-modules",
 				);
-				PRODUCT_NAME = Transmission;
+				PRODUCT_NAME = Retransmission;
 				SYSTEM_HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"third-party/fmt/include",
@@ -3563,7 +3563,7 @@
 					"-Xclang",
 					"-fno-cxx-modules",
 				);
-				PRODUCT_NAME = Transmission;
+				PRODUCT_NAME = Retransmission;
 				SYSTEM_HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"third-party/fmt/include",
@@ -3828,7 +3828,7 @@
 					"-Xclang",
 					"-fno-cxx-modules",
 				);
-				PRODUCT_NAME = Transmission;
+				PRODUCT_NAME = Retransmission;
 				SYSTEM_HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"third-party/fmt/include",
