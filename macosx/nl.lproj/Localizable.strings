@@ -631,10 +631,10 @@
 "Once removed, continuing the transfers will require the torrent files or magnet links." = "Eenmaal verwijderd zijn de torrentbestanden of magnetlinks nodig om de overdrachten te vervolledigen.";
 
 /* Remove trackers alert -> message */
-"Once removed, Transmission will no longer attempt to contact it. This cannot be undone." = "Eenmaal verwijderd zal Transmission niet meer proberen om het te contacteren. Dit kan niet ongedaan gemaakt worden.";
+"Once removed, %@ will no longer attempt to contact it. This cannot be undone." = "Eenmaal verwijderd zal %@ niet meer proberen om het te contacteren. Dit kan niet ongedaan gemaakt worden.";
 
 /* Remove trackers alert -> message */
-"Once removed, Transmission will no longer attempt to contact them. This cannot be undone." = "Eenmaal verwijderd zal Transmission niet meer proberen om ze te contacteren. Dit kan niet ongedaan gemaakt worden.";
+"Once removed, %@ will no longer attempt to contact them. This cannot be undone." = "Eenmaal verwijderd zal %@ niet meer proberen om ze te contacteren. Dit kan niet ongedaan gemaakt worden.";
 
 /* File Outline -> Menu */
 "Only Check Selected" = "Enkel geselecteerde aanvinken";
@@ -998,7 +998,7 @@
 "There are no tracker addresses." = "Er zijn geen trackeradressen.";
 
 /* Transmission already running alert -> message */
-"There is already a copy of Transmission running. This copy cannot be opened until that instance is quit." = "Er is al een exemplaar van Transmission actief. Dit exemplaar kan niet geopend worden voordat de ander afgesloten is.";
+"There is already a copy of %@ running. This copy cannot be opened until that instance is quit." = "Er is al een exemplaar van %@ actief. Dit exemplaar kan niet geopend worden voordat de ander afgesloten is.";
 
 /* Confirm Quit panel -> message */
 "There is an active transfer that will be paused on quit. The transfer will automatically resume on the next launch." = "Er is een actieve overdracht die gepauzeerd zal worden bij afsluiten. De overdracht wordt automatisch hervat bij het herstarten.";
@@ -1093,13 +1093,13 @@
 "Transfers Not Active" = "Overdrachten niet actief";
 
 /* Legal alert -> message */
-"Transmission is a file-sharing program. When you run a torrent, its data will be made available to others by means of upload. You and you alone are fully responsible for exercising proper judgement and abiding by your local laws." = "Transmission is een programma om bestanden te delen. Als u een torrent downloadt worden de gegevens ervan beschikbaar gesteld voor anderen door middel van upload. U, en enkel u, bent volledig verantwoordelijk voor het respecteren van lokale wetgeving.";
+"%@ is a file-sharing program. When you run a torrent, its data will be made available to others by means of upload. You and you alone are fully responsible for exercising proper judgement and abiding by your local laws." = "%@ is een programma om bestanden te delen. Als u een torrent downloadt worden de gegevens ervan beschikbaar gesteld voor anderen door middel van upload. U, en enkel u, bent volledig verantwoordelijk voor het respecteren van lokale wetgeving.";
 
 /* Donation beg -> message */
-"Transmission is a full-featured torrent application. A lot of time and effort have gone into development, coding, and refinement. If you enjoy using it, please consider showing your love with a donation." = "Transmission is een volledig torrentprogramma. Er is veel energie gestoken in het ontwikkelen, programmeren en het verfijnen. Als u er plezier aan heeft, toon dan uw liefde met een donatie.";
+"%@ is a full-featured torrent application. A lot of time and effort have gone into development, coding, and refinement. If you enjoy using it, please consider showing your love with a donation." = "%@ is een volledig torrentprogramma. Er is veel energie gestoken in het ontwikkelen, programmeren en het verfijnen. Als u er plezier aan heeft, toon dan uw liefde met een donatie.";
 
 /* Transmission already running alert -> title */
-"Transmission is already running." = "Transmission is al actief.";
+"%@ is already running." = "%@ is al actief.";
 
 /* inspector -> peer table -> header
    status bar -> status label
@@ -1157,7 +1157,7 @@
 "Web Seeds" = "Webseeds";
 
 /* Legal alert -> title */
-"Welcome to Transmission" = "Welkom bij Transmission";
+"Welcome to %@" = "Welkom bij %@";
 
 /* Groups -> Name */
 "Yellow" = "Geel";

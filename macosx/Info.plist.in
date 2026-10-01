@@ -26,7 +26,7 @@
 	<key>CFBundleHelpBookFolder</key>
 	<string>TransmissionHelp</string>
 	<key>CFBundleHelpBookName</key>
-	<string>Transmission Help</string>
+	<string>Retransmission Help</string>
 	<key>CFBundleIconFile</key>
 	<string>@APPICON_NAME@</string>
 	<key>CFBundleIconName</key>
@@ -68,7 +68,7 @@
 		<true/>
 	</dict>
 	<key>NSHumanReadableCopyright</key>
-	<string>Copyright © 2005–2026 The Transmission Project</string>
+	<string>Copyright © 2005–2026 The Retransmission Project</string>
 	<key>NSMainNibFile</key>
 	<string>MainMenu</string>
 	<key>NSPrincipalClass</key>

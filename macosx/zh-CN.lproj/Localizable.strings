@@ -631,10 +631,10 @@
 "Once removed, continuing the transfers will require the torrent files or magnet links." = "一旦移除，继续传输将需要 Torrent 文件或磁力链接。";
 
 /* Remove trackers alert -> message */
-"Once removed, Transmission will no longer attempt to contact it. This cannot be undone." = "一旦被移除，Transmission 将不再尝试联系该文件。此操作无法被撤销。";
+"Once removed, %@ will no longer attempt to contact it. This cannot be undone." = "一旦被移除，%@ 将不再尝试联系该文件。此操作无法被撤销。";
 
 /* Remove trackers alert -> message */
-"Once removed, Transmission will no longer attempt to contact them. This cannot be undone." = "一旦被移除，Transmission 将不再尝试联系它们。此操作无法被撤销。";
+"Once removed, %@ will no longer attempt to contact them. This cannot be undone." = "一旦被移除，%@ 将不再尝试联系它们。此操作无法被撤销。";
 
 /* File Outline -> Menu */
 "Only Check Selected" = "仅检查所选项目";
@@ -998,7 +998,7 @@
 "There are no tracker addresses." = "没有 Tracker 地址。";
 
 /* Transmission already running alert -> message */
-"There is already a copy of Transmission running. This copy cannot be opened until that instance is quit." = "Transmission 已经在运行了。在关闭该实例之前，无法打开此副本。";
+"There is already a copy of %@ running. This copy cannot be opened until that instance is quit." = "%@ 已经在运行了。在关闭该实例之前，无法打开此副本。";
 
 /* Confirm Quit panel -> message */
 "There is an active transfer that will be paused on quit. The transfer will automatically resume on the next launch." = "有一个正在进行中的传输将在退出时暂停。该传输将在下一次启动时自动恢复。";
@@ -1093,13 +1093,13 @@
 "Transfers Not Active" = "传输未启动";
 
 /* Legal alert -> message */
-"Transmission is a file-sharing program. When you run a torrent, its data will be made available to others by means of upload. You and you alone are fully responsible for exercising proper judgement and abiding by your local laws." = "Transmission 是一个文件共享程序。当你运行一个 Torrent 时，其数据将通过上传的方式提供给其他人。你和你自己要对做出正确的判断和遵守当地的法律负全部责任。";
+"%@ is a file-sharing program. When you run a torrent, its data will be made available to others by means of upload. You and you alone are fully responsible for exercising proper judgement and abiding by your local laws." = "%@ 是一个文件共享程序。当你运行一个 Torrent 时，其数据将通过上传的方式提供给其他人。你和你自己要对做出正确的判断和遵守当地的法律负全部责任。";
 
 /* Donation beg -> message */
-"Transmission is a full-featured torrent application. A lot of time and effort have gone into development, coding, and refinement. If you enjoy using it, please consider showing your love with a donation." = "Transmission 是一个全功能的 Torrent 应用程序。在开发、编码和完善方面花费了大量的时间和精力。如果你喜欢使用它，请考虑用捐赠来表达你的爱。";
+"%@ is a full-featured torrent application. A lot of time and effort have gone into development, coding, and refinement. If you enjoy using it, please consider showing your love with a donation." = "%@ 是一个全功能的 Torrent 应用程序。在开发、编码和完善方面花费了大量的时间和精力。如果你喜欢使用它，请考虑用捐赠来表达你的爱。";
 
 /* Transmission already running alert -> title */
-"Transmission is already running." = "Transmission 已经在运行。";
+"%@ is already running." = "%@ 已经在运行。";
 
 /* inspector -> peer table -> header
    status bar -> status label
@@ -1157,7 +1157,7 @@
 "Web Seeds" = "Web 种子";
 
 /* Legal alert -> title */
-"Welcome to Transmission" = "欢迎来到Transmission";
+"Welcome to %@" = "欢迎来到%@";
 
 /* Groups -> Name */
 "Yellow" = "黄色";
