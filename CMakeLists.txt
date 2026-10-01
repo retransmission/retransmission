@@ -970,9 +970,30 @@ set(TR_DATA_INSTALL_FULL_DIR ${CMAKE_INSTALL_FULL_DATADIR}/${TR_PROJ_APPNAME})
 # The gettext domain, which names each language's installed catalog.
 set(TR_GETTEXT_DOMAIN ${TR_PROJ_APPNAME})
 
-# This is GTK-specific, but is exposed in this top-level file so that
-# it can be shared by `gtk/` and by `tests/gtk/`.
+# Names the clients' desktop entries carry, set here so that tests/ can check the entries against them.
+# The GTK client and its desktop entry share the app id.
+# Each client installs its icon under its own name, so that packages of different clients don't conflict.
 set(TR_GTK_APP_ID "org.retransmission.retransmission" CACHE INTERNAL "the app id the client and its desktop file share")
+set(TR_GTK_ICON_NAME ${TR_PROJ_APPNAME}-gtk)
+set(TR_QT_ICON_NAME ${TR_PROJ_APPNAME}-qt)
+
+# Installs the app's icons into the hicolor theme, renamed to ICON_NAME.
+# Source files are named <theme>_<context>_<size>_transmission<variant>.svg.
+function(tr_install_app_icons ICON_NAME)
+    set(ICON_FILE_REGEX "^([^_]+)_([^_]+)_([^_]+)_transmission(.*)$")
+    foreach(ICON IN ITEMS
+            hicolor_apps_scalable_transmission.svg
+            hicolor_apps_scalable_transmission-devel.svg
+            hicolor_apps_symbolic_transmission-symbolic.svg)
+        if(NOT ICON MATCHES "${ICON_FILE_REGEX}")
+            message(FATAL_ERROR "can't tell where to install icon '${ICON}'")
+        endif()
+        install(
+            FILES ${SOURCE_ICONS_DIR}/${ICON}
+            DESTINATION ${CMAKE_INSTALL_DATADIR}/icons/${CMAKE_MATCH_1}/${CMAKE_MATCH_3}/${CMAKE_MATCH_2}/
+            RENAME ${ICON_NAME}${CMAKE_MATCH_4})
+    endforeach()
+endfunction()
 
 function(tr_install_web DST_DIR)
     if(INSTALL_WEB)
