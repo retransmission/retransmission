@@ -281,6 +281,7 @@ void PrefsDialog::initSpeedTab()
 
 void PrefsDialog::initDesktopTab()
 {
+    ui_.showTrayIconCheck->setText(Utils::withAppName(ui_.showTrayIconCheck->text()));
     initWidget(ui_.showTrayIconCheck, TR_KEY_show_notification_area_icon);
     initWidget(ui_.startMinimizedCheck, TR_KEY_start_minimized);
     initWidget(ui_.notifyOnTorrentAddedCheck, TR_KEY_torrent_added_notification_enabled);
@@ -601,6 +602,7 @@ PrefsDialog::PrefsDialog(Session& session, Prefs& prefs, QWidget* parent)
     , is_local_fs_{ session_.isLocalFilesystem() }
 {
     ui_.setupUi(this);
+    setWindowTitle(Utils::withAppName(windowTitle()));
 
     initSpeedTab();
     initDownloadingTab();

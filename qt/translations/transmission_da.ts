@@ -5,13 +5,13 @@
     <name>AboutDialog</name>
     <message>
         <location filename="../AboutDialog.ui" line="+14"/>
-        <source>About Transmission</source>
-        <translation>Om Transmission</translation>
+        <source>About {appname}</source>
+        <translation>Om {appname}</translation>
     </message>
     <message>
         <location line="+39"/>
-        <source>Copyright © The Transmission Project</source>
-        <translation>Ophavsret © Transmission-projektet</translation>
+        <source>Copyright © The Retransmission Project</source>
+        <translation>Ophavsret © Retransmission-projektet</translation>
     </message>
     <message>
         <source>Copyright © The {appname} Project</source>
@@ -777,8 +777,8 @@
     <name>MainWindow</name>
     <message>
         <location filename="../MainWindow.ui" line="+14"/>
-        <source>Transmission</source>
-        <translation>Transmission</translation>
+        <source>Retransmission</source>
+        <translation>Retransmission</translation>
     </message>
     <message>
         <location line="+181"/>
@@ -1844,8 +1844,8 @@ For at tilføje en ny primær-URL, skal du tilføje den efter en tom linje.</tra
     </message>
     <message>
         <location line="+6"/>
-        <source>Show Transmission icon in the &amp;notification area</source>
-        <translation>Vis Transmission-ikon i &amp;underretningsområdet</translation>
+        <source>Show {appname} icon in the &amp;notification area</source>
+        <translation>Vis {appname}-ikon i &amp;underretningsområdet</translation>
     </message>
     <message>
         <location line="-192"/>
@@ -2126,8 +2126,8 @@ For at tilføje en ny primær-URL, skal du tilføje den efter en tom linje.</tra
     </message>
     <message>
         <location line="-467"/>
-        <source>Transmission Preferences</source>
-        <translation>Præferencer for Transmission</translation>
+        <source>{appname} Preferences</source>
+        <translation>Præferencer for {appname}</translation>
     </message>
     <message>
         <location line="+16"/>

@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Transmission Preferences</string>
+   <string>{appname} Preferences</string>
   </property>
   <layout class="QVBoxLayout" name="dialogLayout">
    <item>
@@ -869,7 +869,7 @@ To add a new primary URL, add it after a blank line.</string>
           <item>
            <widget class="QCheckBox" name="showTrayIconCheck">
             <property name="text">
-             <string>Show Transmission icon in the &amp;notification area</string>
+             <string>Show {appname} icon in the &amp;notification area</string>
             </property>
            </widget>
           </item>

@@ -181,6 +181,12 @@ SystemTrayIcon::Impl::Impl([[maybe_unused]] Gtk::Window& main_window, Glib::RefP
 {
 #if !defined(TR_SYS_TRAY_IMPL_NONE)
     auto const icon_name = getIconName();
+
+    // This item names the app, so it gets its label here, where the name can be filled in.
+    auto const show_section = gtr_action_get_object<Gio::Menu>("icon-popup-show-section");
+    show_section->remove_all();
+    show_section->append(gtr_with_app_name(_("_Show {appname}")), "win.toggle-main-window");
+
     menu_ = Gtk::make_managed<Gtk::Menu>(gtr_action_get_object<Gio::Menu>("icon-popup"));
     menu_->attach_to_widget(main_window);
 #endif

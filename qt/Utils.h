@@ -26,6 +26,9 @@ public:
 
     [[nodiscard]] static QString qstringFromUtf8(std::string_view str);
 
+    // Fills in the {appname} field of an already-translated string, such as one from a .ui file.
+    [[nodiscard]] static QString withAppName(QString text);
+
     static QString removeTrailingDirSeparator(QString const& path);
 
     static void narrowRect(QRect& rect, int dx1, int dx2, Qt::LayoutDirection direction);
