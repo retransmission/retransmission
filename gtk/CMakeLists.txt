@@ -222,7 +222,7 @@ if(MSVC)
 endif()
 
 tr_win32_app_info(${TR_NAME}-gtk
-    "Transmission GTK+ Client"
+    "GTK+ Client"
     "${TR_NAME}-gtk"
     "${TR_NAME}-gtk.exe"
     "${TR_NAME}.ico")

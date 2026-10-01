@@ -39,7 +39,7 @@ jobs:
           transform: (?<=Copyright © )(?<from>\d{4})?[-–]?(\d{4})
       - uses: FantasticFiasco/action-update-license-year@v3
         with:
-          commitTitle: 'chore: update copyright year in cmake/transmission.rc.in'
+          commitTitle: 'chore: update copyright year in cmake/app-info.rc.in'
           token: ${{ secrets.GITHUB_TOKEN }}
-          path: cmake/Transmission.rc.in
-          transform: (?<from>\d{4})?-?(\d{4})(?= Transmission Project)
+          path: cmake/app-info.rc.in
+          transform: (?<from>\d{4})?-?(\d{4})(?= The Retransmission Project)
