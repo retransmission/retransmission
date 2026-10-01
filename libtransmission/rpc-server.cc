@@ -301,19 +301,18 @@ void handle_web_client(struct evhttp_request* req, tr_rpc_server const* server)
             "<p>Couldn't find " TR_PROJ_APPNAME_CAPITALIZED
             "'s web interface files!</p>"
             "<p>Users: to tell " TR_PROJ_APPNAME_CAPITALIZED
-            "  where to look, "
+            " where to look, "
             "set the TRANSMISSION_WEB_HOME environment "
             "variable to the folder where the web interface's "
             "index.html is located.</p>"
-            "<p>Package Builders: to set a custom default at compile time, "
-            "#define PACKAGE_DATA_DIR in libtransmission/platform.c "
-            "or tweak tr_getClutchDir() by hand.</p>");
+            "<p>Package Builders: install the files in one of the folders "
+            "that tr_getWebClientDir() in libtransmission/platform.cc searches.</p>");
         return;
     }
 
     // convert the URL path component into a filesystem path, e.g.
     // "/transmission/web/images/favicon.png" ->
-    // "/usr/share/transmission/web/images/favicon.png")
+    // "/usr/share/retransmission/public_html/images/favicon.png"
     auto subpath = std::string_view{ evhttp_request_get_uri(req) };
 
     // remove the web base path eg "/transmission/web/"

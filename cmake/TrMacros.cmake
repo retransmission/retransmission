@@ -291,6 +291,25 @@ function(tr_append_target_property TGT PROP VAL)
     set_target_properties(${TGT} PROPERTIES ${PROP} "${VAL}")
 endfunction()
 
+# Reads the quoted string on the line of HEADER that matches LINE_REGEX,
+# so that CMake uses the code's spelling of a name instead of repeating it.
+# Editing HEADER reruns the configure.
+# A name that cannot be read is fatal, because a guess would silently disagree with the code.
+function(tr_read_header_string HEADER LINE_REGEX OVAR)
+    set_property(DIRECTORY APPEND PROPERTY CMAKE_CONFIGURE_DEPENDS "${HEADER}")
+    file(STRINGS "${HEADER}" MATCHED REGEX "${LINE_REGEX}")
+    if(NOT MATCHED MATCHES "\"([^\"]+)\"")
+        message(FATAL_ERROR "couldn't read a string matching '${LINE_REGEX}' from ${HEADER}")
+    endif()
+    set(${OVAR} "${CMAKE_MATCH_1}" PARENT_SCOPE)
+endfunction()
+
+# Reads the value of `#define NAME "value"` in HEADER.
+function(tr_read_header_define HEADER NAME OVAR)
+    tr_read_header_string("${HEADER}" "^#define +${NAME} +\"" VALUE)
+    set(${OVAR} "${VALUE}" PARENT_SCOPE)
+endfunction()
+
 function(tr_target_compile_definitions_for_headers TGT)
     cmake_parse_arguments(ARG "" "" "PRIVATE;PUBLIC" ${ARGN})
     foreach(VISIBILITY IN ITEMS PRIVATE PUBLIC)
