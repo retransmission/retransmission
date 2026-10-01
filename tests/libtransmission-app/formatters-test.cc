@@ -3,12 +3,16 @@
 // or any future license endorsed by Mnemosaic LLC.
 // License text can be found in the licenses/ folder.
 
+#include <algorithm> // std::ranges::copy()
 #include <cstdint> // uint64_t
 #include <ctime> // time_t
+#include <string>
 #include <string_view>
+#include <vector>
 
 #include <gtest/gtest.h>
 
+#include <libtransmission/types.h>
 #include <libtransmission/utils.h>
 
 #include "libtransmission-app/formatters.h"
@@ -76,4 +80,69 @@ TEST_F(FormattersTest, phrasesAreTranslatedWhole)
     EXPECT_EQ("через 1 минуту", tr::app::format_time_relative(Now + Minute, Now));
 
     tr_set_translator(nullptr, nullptr);
+}
+
+TEST_F(FormattersTest, trackerStatusLines)
+{
+    static auto constexpr Markup = tr::app::TrackerStatusMarkup{
+        .success_begin = "<ok>",
+        .success_end = "</ok>",
+        .timeout_begin = "<slow>",
+        .timeout_end = "</slow>",
+        .error_begin = "<err>",
+        .error_end = "</err>",
+    };
+    auto constexpr Now = time_t{ 1'700'000'000 };
+
+    auto tracker = tr_tracker_view{};
+    tracker.hasAnnounced = true;
+    tracker.lastAnnounceSucceeded = true;
+    tracker.lastAnnounceTime = Now - (5 * Minute);
+    tracker.lastAnnouncePeerCount = 1;
+    tracker.announceState = TR_TRACKER_WAITING;
+    tracker.nextAnnounceTime = Now + (30 * Minute);
+    tracker.hasScraped = true;
+    tracker.lastScrapeSucceeded = true;
+    tracker.lastScrapeTime = Now - Hour;
+    tracker.seederCount = 3;
+    tracker.leecherCount = 1;
+    tracker.scrapeState = TR_TRACKER_QUEUED;
+
+    using Lines = std::vector<std::string>;
+    EXPECT_EQ(
+        (Lines{ "Got a list of <ok>1 peer</ok> 5 minutes ago", "Asking for more peers 30 minutes from now" }),
+        tr::app::tracker_status_lines(tracker, Now, false, Markup));
+    EXPECT_EQ(
+        (Lines{ "Got a list of <ok>1 peer</ok> 5 minutes ago",
+                "Asking for more peers 30 minutes from now",
+                "Tracker had <ok>3 seeders and 1 leecher</ok> 1 hour ago",
+                "Queued to ask for peer counts" }),
+        tr::app::tracker_status_lines(tracker, Now, true, Markup));
+
+    // A tracker's errors are escaped, since they come from the tracker.
+    tracker.lastAnnounceSucceeded = false;
+    std::ranges::copy(
+        R"(<b>Tom & Jerry's "torrent"</b>)"
+        "\n"sv,
+        std::begin(tracker.lastAnnounceResult));
+    tracker.announceState = TR_TRACKER_ACTIVE;
+    tracker.lastAnnounceStartTime = Now - 1;
+    tracker.seederCount = -1;
+    tracker.scrapeState = TR_TRACKER_INACTIVE;
+    EXPECT_EQ(
+        (Lines{ "Got an error '<err>&lt;b&gt;Tom &amp; Jerry&#39;s &quot;torrent&quot;&lt;/b&gt; </err>' 5 minutes ago",
+                "Asked for more peers <small>1 second ago</small>",
+                "Tracker had <ok>no information</ok> on peer counts 1 hour ago" }),
+        tr::app::tracker_status_lines(tracker, Now, true, Markup));
+
+    tracker.lastAnnounceTimedOut = true;
+    tracker.announceState = TR_TRACKER_INACTIVE;
+    tracker.hasAnnounced = false;
+    EXPECT_EQ((Lines{ "No updates scheduled" }), tr::app::tracker_status_lines(tracker, Now, false, Markup));
+
+    tracker.hasAnnounced = true;
+    tracker.announceState = TR_TRACKER_QUEUED;
+    EXPECT_EQ(
+        (Lines{ "Peer list request <slow>timed out 5 minutes ago</slow>; will retry", "Queued to ask for more peers" }),
+        tr::app::tracker_status_lines(tracker, Now, false, Markup));
 }
