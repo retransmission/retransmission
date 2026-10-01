@@ -109,8 +109,6 @@ using StringValue = Glib::Value<Glib::ustring>;
 namespace
 {
 
-char const* const AppIconName = TR_PROJ_APPNAME;
-
 char const* const LICENSE =
     "Copyright 2005-2026. All code is copyrighted by the respective authors.\n"
     "\n"
@@ -597,7 +595,7 @@ void Application::Impl::on_startup()
 {
     IF_GTKMM4(Gtk::IconTheme::get_for_display(Gdk::Display::get_default()), Gtk::IconTheme::get_default())
         ->add_resource_path(gtr_get_full_resource_path("icons"s));
-    Gtk::Window::set_default_icon_name(std::string{ AppIconName });
+    Gtk::Window::set_default_icon_name(std::string{ TR_GTK_ICON_NAME });
 
     /* Add style provider to the window. */
     auto css_provider = Gtk::CssProvider::create();
@@ -1384,7 +1382,7 @@ void Application::Impl::show_about_dialog()
     d->set_comments(_("A fast and easy BitTorrent client"));
     d->set_copyright(
         fmt::format(fmt::runtime(_("Copyright © The {appname} Project")), fmt::arg("appname", TR_PROJ_APPNAME_CAPITALIZED)));
-    d->set_logo_icon_name(std::string{ AppIconName });
+    d->set_logo_icon_name(std::string{ TR_GTK_ICON_NAME });
     d->set_name(Glib::get_application_name());
     /* Translators: translate "translator-credits" as your name
        to have it appear in the credits in the "About"

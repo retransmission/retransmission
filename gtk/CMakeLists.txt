@@ -183,6 +183,7 @@ target_compile_definitions(${TR_NAME}-gtk-lib
     PUBLIC
         "TR_GTK_APP_ID=\"${TR_GTK_APP_ID}\""
         "TR_GTK_EXECUTABLE_NAME=\"${TR_GTK_EXECUTABLE_NAME}\""
+        "TR_GTK_ICON_NAME=\"${TR_GTK_ICON_NAME}\""
         TRANSMISSIONLOCALEDIR="${CMAKE_INSTALL_FULL_LOCALEDIR}"
         GETTEXT_PACKAGE="${TR_GETTEXT_DOMAIN}"
         $<$<BOOL:${ENABLE_UTP}>:WITH_UTP>)
@@ -230,21 +231,7 @@ install(
     TARGETS ${TR_NAME}-gtk
     DESTINATION ${CMAKE_INSTALL_BINDIR})
 
-set(PUBLIC_ICONS
-    hicolor_apps_scalable_transmission.svg
-    hicolor_apps_scalable_transmission-devel.svg
-    hicolor_apps_symbolic_transmission-symbolic.svg)
-
-set(ICON_NAME_REGEX "^([^_]+)_([^_]+)_([^_]+)_(.+)$")
-foreach(ICON ${PUBLIC_ICONS})
-    string(REGEX REPLACE ${ICON_NAME_REGEX} "\\1/\\3/\\2" ICON_DIR ${ICON})
-    string(REGEX REPLACE ${ICON_NAME_REGEX} "\\4" ICON_NAME ${ICON})
-    string(REGEX REPLACE "^transmission" "transmission-gtk" ICON_NAME ${ICON_NAME})
-    install(
-        FILES ${SOURCE_ICONS_DIR}/${ICON}
-        DESTINATION ${CMAKE_INSTALL_DATADIR}/icons/${ICON_DIR}/
-        RENAME ${ICON_NAME})
-endforeach()
+tr_install_app_icons(${TR_GTK_ICON_NAME})
 
 if(INSTALL_DOC)
     install(
