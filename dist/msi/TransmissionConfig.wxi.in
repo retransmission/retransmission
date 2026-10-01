@@ -4,6 +4,7 @@
   <?define TrVersion = "${VERSION}" ?>
   <?define TrVersionMsi = "${VERSION_MSI}" ?>
   <?define TrVersionFull = "${VERSION_FULL}" ?>
+  <?define TrAppName = "${TR_PROJ_APPNAME_CAPITALIZED}" ?>
 
   <?define VcVerMajor = "${MSVC_TOOLSET_VERSION_MAJOR}" ?>
   <?define VcVerMinor = "${MSVC_TOOLSET_VERSION_MINOR}" ?>
