@@ -5,6 +5,7 @@ add_test(
     COMMAND ${CMAKE_COMMAND}
         -Ddesktop_file=${CMAKE_BINARY_DIR}/qt/${TR_NAME}-qt.desktop
         -Dicon_name=${TR_QT_ICON_NAME}
+        -Dexe=$<TARGET_FILE_BASE_NAME:${TR_NAME}-qt>
         -Dvalidator=${DESKTOP_FILE_VALIDATE}
         -P ${CMAKE_CURRENT_SOURCE_DIR}/../desktop-file-test.cmake)
 
