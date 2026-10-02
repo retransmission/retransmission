@@ -1539,6 +1539,28 @@ static NSString* getOSStatusDescription(OSStatus errorCode)
     }
 }
 
++ (BOOL)saveUnguessableRPCPassword
+{
+    // Deletes any saved item first, so the new password replaces it.
+    // macOS refuses to delete an item another app owns, which may also be unreadable here, and then nothing is saved.
+    OSStatus result = SecItemDelete((__bridge CFDictionaryRef)rpcKeychainQuery());
+    if (result != noErr && result != errSecItemNotFound) {
+        NSLog(@"Problem removing Keychain item: %@", getOSStatusDescription(result));
+        return NO;
+    }
+
+    NSMutableData* const randomBytes = [NSMutableData dataWithLength:18];
+    arc4random_buf(randomBytes.mutableBytes, randomBytes.length);
+    NSData* const password = [[randomBytes base64EncodedStringWithOptions:0] dataUsingEncoding:NSUTF8StringEncoding];
+
+    result = SecItemAdd((__bridge CFDictionaryRef)rpcKeychainQuery(@{ (NSString*)kSecValueData : password }), nil);
+    if (result != noErr) {
+        NSLog(@"Problem adding Keychain item: %@", getOSStatusDescription(result));
+        return NO;
+    }
+    return YES;
+}
+
 - (void)updateRPCWhitelist
 {
     NSString* string = [self.fRPCWhitelistArray componentsJoinedByString:@","];

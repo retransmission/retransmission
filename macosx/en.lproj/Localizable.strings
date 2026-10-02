@@ -1,3 +1,18 @@
+/* Transmission import alert -> message */
+"%@ can copy your settings and transfers from Transmission. The two apps will share your downloaded files, so run only one at a time." = "%@ can copy your settings and transfers from Transmission. The two apps will share your downloaded files, so run only one at a time.";
+
+/* Transmission import alert -> message */
+"%@ can copy your settings from Transmission, but not its transfers." = "%@ can copy your settings from Transmission, but not its transfers.";
+
+/* Transmission import remote access alert -> message */
+"%@ can't copy Transmission's remote access password or save a new one, so remote access is off. Set a password in the Remote preferences, then turn remote access back on." = "%@ can't copy Transmission's remote access password or save a new one, so remote access is off. Set a password in the Remote preferences, then turn remote access back on.";
+
+/* Transmission import remote access alert -> message */
+"%@ can't copy Transmission's remote access password. Until you set a new one in the Remote preferences, remote access refuses every login." = "%@ can't copy Transmission's remote access password. Until you set a new one in the Remote preferences, remote access refuses every login.";
+
+/* Transmission launched alert -> message */
+"%@ will quit, because the two apps would work on the same downloads." = "%@ will quit, because the two apps would work on the same downloads.";
+
 /* file size string
    Inspector -> Files tab -> file status string
    Status bar transfer count */
@@ -280,6 +295,9 @@
 /* Torrent file copy alert -> title */
 "Copy of \"%@\" Cannot Be Created" = "Copy of \"%@\" Cannot Be Created";
 
+/* Transmission import progress -> label */
+"Copying Transmission's transfers" = "Copying Transmission's transfers";
+
 /* Create toolbar item -> label
    Create torrent -> blank address -> button */
 "Create" = "Create";
@@ -339,6 +357,9 @@
 
 /* files tab -> tooltip */
 "Don't Download" = "Don't Download";
+
+/* Transmission import alert -> button */
+"Don't Import" = "Don't Import";
 
 /* Donation beg -> button */
 "Donate" = "Donate";
@@ -485,6 +506,12 @@
 /* Add torrent -> same name -> message */
 "If you are attempting to use already existing data, the root data directory should be inside the destination directory." = "If you are attempting to use already existing data, the root data directory should be inside the destination directory.";
 
+/* Transmission import alert -> button */
+"Import" = "Import";
+
+/* Transmission import alert -> title */
+"Import from Transmission?" = "Import from Transmission?";
+
 /* Torrent -> eta string */
 "inactive" = "inactive";
 
@@ -617,7 +644,10 @@
    Torrent disk space alert -> button
    Torrent download failed -> button
    Torrent file copy alert -> button
-   Transmission already running alert -> button */
+   Transmission already running alert -> button
+   Transmission import error alert -> button
+   Transmission import remote access alert -> button
+   Transmission running alert -> button */
 "OK" = "OK";
 
 /* Remove completed confirm panel -> message */
@@ -754,8 +784,15 @@
    View menu -> Quick Look */
 "Quick Look" = "Quick Look";
 
-/* Confirm Quit panel -> button */
+/* Confirm Quit panel -> button
+   Transmission launched alert -> button */
 "Quit" = "Quit";
+
+/* Transmission running alert -> message */
+"Quit Transmission before opening %@. The two apps would work on the same downloads." = "Quit Transmission before opening %@. The two apps would work on the same downloads.";
+
+/* Transmission import alert -> message */
+"Quit Transmission, then click Import." = "Quit Transmission, then click Import.";
 
 /* Stats window -> label
    status bar -> status label
@@ -772,6 +809,9 @@
 
 /* Preferences -> toolbar item title */
 "Remote" = "Remote";
+
+/* Transmission import remote access alert -> title */
+"Remote access needs a new password." = "Remote access needs a new password.";
 
 /* Removal confirm panel -> button
    Remove completed confirm panel -> button
@@ -1093,6 +1133,13 @@
 
 /* Transmission already running alert -> title */
 "%@ is already running." = "%@ is already running.";
+
+/* Transmission launched alert -> title
+   Transmission running alert -> title */
+"Transmission is running." = "Transmission is running.";
+
+/* Transmission import error alert -> title */
+"Transmission's transfers couldn't be copied." = "Transmission's transfers couldn't be copied.";
 
 /* inspector -> peer table -> header
    status bar -> status label
