@@ -221,8 +221,8 @@ Only keys that differ from above are listed here. These options have been replac
 macOS has a standardized way of saving user preferences files using [XML](https://en.wikipedia.org/wiki/XML) format. These files are called [plist](https://en.wikipedia.org/wiki/Plist) (short for property list) files. Usually there is no need to modify these files directly, since Apple provided a [command-line tool](https://developer.apple.com/DOCUMENTATION/Darwin/Reference/ManPages/man1/defaults.1.html) to reliably change settings. You do need to restart Retransmission before these have effect.
 
 In short:
- * To set a key: `defaults write org.m0k.transmission <key> <value>`
- * To reset a key: `defaults delete org.m0k.transmission <key>`
+ * To set a key: `defaults write org.retransmission.retransmission <key> <value>`
+ * To reset a key: `defaults delete org.retransmission.retransmission <key>`
 
 ### Options
  * **PeerSocketTOS:** Number (Default = 0)
