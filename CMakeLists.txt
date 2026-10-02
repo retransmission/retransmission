@@ -961,9 +961,13 @@ endif()
 
 # The app's names, read from libtransmission/macros.h.
 # The code looks up installed data under TR_PROJ_APPNAME, e.g. <datadir>/retransmission/public_html.
-foreach(NAME IN ITEMS TR_PROJ_APPNAME TR_PROJ_APPNAME_CAPITALIZED)
+foreach(NAME IN ITEMS TR_PROJ_APPNAME TR_PROJ_APPNAME_CAPITALIZED TR_PROJ_DOMAIN_TLD TR_PROJ_DOMAIN_SLD)
     tr_read_header_define(${PROJECT_SOURCE_DIR}/libtransmission/macros.h ${NAME} ${NAME})
 endforeach()
+
+# The reverse-DNS app ID, built as macros.h builds TR_PROJ_APPNAME_RDNS.
+# The macOS bundle ID and the GTK app ID both use it.
+set(TR_PROJ_APPNAME_RDNS ${TR_PROJ_DOMAIN_TLD}.${TR_PROJ_DOMAIN_SLD}.${TR_PROJ_APPNAME})
 
 # The app's installed data, such as the web client and the Qt client's translations.
 set(TR_DATA_INSTALL_DIR ${CMAKE_INSTALL_DATADIR}/${TR_PROJ_APPNAME})
@@ -975,7 +979,7 @@ set(TR_GETTEXT_DOMAIN ${TR_PROJ_APPNAME})
 # Names the clients' desktop entries carry, set here so that tests/ can check the entries against them.
 # The GTK client and its desktop entry share the app id.
 # Each client installs its icon under its own name, so that packages of different clients don't conflict.
-set(TR_GTK_APP_ID "org.retransmission.retransmission" CACHE INTERNAL "the app id the client and its desktop file share")
+set(TR_GTK_APP_ID ${TR_PROJ_APPNAME_RDNS} CACHE INTERNAL "the app id the client and its desktop file share")
 set(TR_GTK_ICON_NAME ${TR_PROJ_APPNAME}-gtk)
 set(TR_QT_ICON_NAME ${TR_PROJ_APPNAME}-qt)
 
