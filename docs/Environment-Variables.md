@@ -13,7 +13,7 @@ Users can set environmental variables to override Retransmission's default behav
  * If `TRANSMISSION_HOME` is _not_ set, Unix-based versions of Retransmission will look for their settings in `$XDG_CONFIG_HOME/transmission/`. `XDG_CONFIG_HOME` has a default value of `$HOME/.config/`.
  * If `HOME` is set, it is used in three ways:
    1. By the `XDG` variables, as described above.
-   2. If `TRANSMISSION_HOME` is _not_ set, Mac-based versions of Retransmission will look for their settings in `$HOME/Library/Application Support/Transmission`.
+   2. If `TRANSMISSION_HOME` is _not_ set, Mac-based versions of Retransmission will look for their settings in `$HOME/Library/Application Support/Retransmission`.
    3. `$HOME/Downloads` is the default download directory.
 
 ## Standard Variables Used by Other Tools
