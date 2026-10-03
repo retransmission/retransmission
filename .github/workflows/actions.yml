@@ -98,7 +98,7 @@ jobs:
           get_changes mac        CMakeLists.txt cmake Transmission.xcodeproj third-party libtransmission macosx
           get_changes qt         CMakeLists.txt cmake third-party libtransmission libtransmission-app qt
           get_changes tests      CMakeLists.txt cmake third-party libtransmission libtransmission-app utils tests
-          get_changes translations po qt
+          get_changes translations po
           get_changes utils      CMakeLists.txt cmake third-party libtransmission utils
           get_changes ci-actions .github/workflows/actions.yml .github/actions release
           cat "$GITHUB_OUTPUT"
@@ -745,7 +745,7 @@ jobs:
         run: apk add --upgrade gtkmm4-dev
       - name: Get Dependencies (Qt6)
         if: ${{ needs.what-to-make.outputs.make-qt == 'true' }}
-        run: apk add --upgrade qt6-qtbase-dev qt6-qttools-dev qt6-qtsvg-dev xcb-util-cursor
+        run: apk add --upgrade qt6-qtbase-dev qt6-qtsvg-dev xcb-util-cursor
       - name: Get Source
         uses: actions/checkout@v7
         with:

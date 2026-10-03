@@ -211,9 +211,9 @@ runs:
       run: |
         if [[ "$PKG_FAMILY" == "dnf" ]]; then
           if [[ "${{ inputs.enable-qt }}" == "qt6" ]]; then
-            dnf install -y qt6-qtbase-devel qt6-qtsvg-devel qt6-qttools-devel xcb-util-cursor
+            dnf install -y qt6-qtbase-devel qt6-qtsvg-devel xcb-util-cursor
           elif [[ "${{ inputs.enable-qt }}" == "qt5" ]]; then
-            dnf install -y qt5-qtbase-devel qt5-qtsvg-devel qt5-qttools-devel xcb-util-cursor
+            dnf install -y qt5-qtbase-devel qt5-qtsvg-devel xcb-util-cursor
           fi
         elif [[ "$PKG_FAMILY" == "apt" ]]; then
           SUDO_CMD=""
@@ -221,9 +221,9 @@ runs:
             SUDO_CMD="sudo"
           fi
           if [[ "${{ inputs.enable-qt }}" == "qt5" ]]; then
-            SUDO_CMD="$SUDO_CMD" bash "$GITHUB_ACTION_PATH/apt-install.sh" libxcb-cursor0 qtbase5-dev libqt5svg5-dev qttools5-dev
+            SUDO_CMD="$SUDO_CMD" bash "$GITHUB_ACTION_PATH/apt-install.sh" libxcb-cursor0 qtbase5-dev libqt5svg5-dev
           elif [[ "${{ inputs.enable-qt }}" == "qt6" ]]; then
-            SUDO_CMD="$SUDO_CMD" bash "$GITHUB_ACTION_PATH/apt-install.sh" qt6-base-dev qt6-tools-dev qt6-l10n-tools qt6-svg-dev
+            SUDO_CMD="$SUDO_CMD" bash "$GITHUB_ACTION_PATH/apt-install.sh" qt6-base-dev qt6-svg-dev
           fi
         else
           echo "Unsupported package family: $PKG_FAMILY"
@@ -270,7 +270,7 @@ runs:
       if: env.OS_FAMILY == 'macos' && inputs.enable-qt != 'false'
       shell: bash
       run: |
-        brew install --formula qtsvg qttools
+        brew install --formula qtsvg
 
     - name: Report Installed Versions
       shell: bash
