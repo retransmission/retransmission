@@ -1240,7 +1240,7 @@ msgid "Adding"
 msgstr "Ajout"
 
 msgid "Automatically add torrent files _from:"
-msgstr "Ajouter automatiquement les fichiers torrent &de :"
+msgstr "Ajouter automatiquement les fichiers torrent _de :"
 
 msgid "Show the Torrent Options _dialog"
 msgstr "Afficher la boite de dialogue des _options"

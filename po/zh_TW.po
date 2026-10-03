@@ -1232,7 +1232,7 @@ msgid "Adding"
 msgstr "正在加入"
 
 msgid "Automatically add torrent files _from:"
-msgstr "自動從以下位置加入 torrent 檔案 (&F)："
+msgstr "自動從以下位置加入 torrent 檔案 (_F)："
 
 msgid "Show the Torrent Options _dialog"
 msgstr "顯示 Torrent 選項對話方塊 (_D)"
