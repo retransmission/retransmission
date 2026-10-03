@@ -98,7 +98,7 @@ jobs:
           get_changes mac        CMakeLists.txt cmake Transmission.xcodeproj third-party libtransmission macosx
           get_changes qt         CMakeLists.txt cmake third-party libtransmission libtransmission-app qt
           get_changes tests      CMakeLists.txt cmake third-party libtransmission libtransmission-app utils tests
-          get_changes translations po qt
+          get_changes translations po
           get_changes utils      CMakeLists.txt cmake third-party libtransmission utils
           get_changes ci-actions .github/workflows/actions.yml .github/actions release
           cat "$GITHUB_OUTPUT"

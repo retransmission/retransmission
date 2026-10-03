@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 # SPDX-License-Identifier: GPL-2.0-or-later
 #
-# Fails when a translation in po/*.po or qt/translations/*.ts has {fmt} fields
+# Fails when a translation in po/*.po has {fmt} fields
 # that don't fit its English text.
 #
 # {fmt} is built without exceptions (FMT_USE_EXCEPTIONS=0 in CMakeLists.txt),
 # so a format error calls abort() instead of throwing.
 # The GTK client would abort on such a translation;
-# the Qt client ignores it and shows English.
+# the Qt client and libtransmission-app's catalog reader ignore it and show English.
 # Every message whose English text contains a brace is a {fmt} format string
 # with named arguments,
 # so each of its translations must parse as one
@@ -16,14 +16,13 @@
 # Format specs such as ":L" are not checked,
 # because their validity depends on the argument type.
 #
-# Usage: find-broken-translations.py [PO_OR_TS_FILE]...
-# With no arguments, it checks every file in po/ and qt/translations/.
+# Usage: find-broken-translations.py [PO_FILE]...
+# With no arguments, it checks every file in po/.
 
 import os
 import pathlib
 import re
 import sys
-import xml.parsers.expat
 
 KEYWORD_RE = re.compile(r'(msgctxt|msgid|msgid_plural|msgstr(?:\[\d+\])?)\s+"(.*)"\s*$')
 
@@ -54,43 +53,6 @@ def po_messages(path):
             fields[keyword] = (start, text + line.strip()[1:-1])
 
 
-def ts_messages(path):
-    """Yield each compiled message of a Qt .ts file as ([(line, English text)], [(line, translation)])."""
-    parser = xml.parsers.expat.ParserCreate()
-    messages, message, texts, compiled = [], None, None, True
-
-    def start(name, attrs):
-        nonlocal message, texts, compiled
-        if name == 'message':
-            message = ([], [])
-        elif name == 'translation':
-            # lrelease compiles unfinished translations, but not vanished or obsolete ones.
-            compiled = attrs.get('type') not in ('vanished', 'obsolete')
-        if name in ('source', 'translation', 'numerusform'):
-            texts = (parser.CurrentLineNumber, [])
-
-    def end(name):
-        nonlocal message, texts
-        if name == 'source':
-            message[0].append((texts[0], ''.join(texts[1])))
-        elif name in ('translation', 'numerusform') and compiled and texts is not None:
-            message[1].append((texts[0], ''.join(texts[1])))
-        elif name == 'message':
-            messages.append(message)
-        texts = None
-
-    def characters(data):
-        if texts is not None:
-            texts[1].append(data)
-
-    parser.StartElementHandler = start
-    parser.EndElementHandler = end
-    parser.CharacterDataHandler = characters
-    with path.open('rb') as file:
-        parser.ParseFile(file)
-    return messages
-
-
 def field_ids(text):
     """Return the ids of the replacement fields in `text`, or None if {fmt} can't parse it."""
     ids = set()
@@ -104,8 +66,7 @@ def field_ids(text):
 
 def problems(path):
     name = os.path.relpath(path)
-    messages = ts_messages(path) if path.suffix == '.ts' else po_messages(path)
-    for sources, translations in messages:
+    for sources, translations in po_messages(path):
         if not any(c in text for _, text in sources for c in '{}'):
             continue
 
@@ -127,10 +88,7 @@ def problems(path):
 
 def main(args):
     root = pathlib.Path(__file__).resolve().parent.parent
-    paths = [pathlib.Path(arg) for arg in args] or [
-        *sorted((root / 'po').glob('*.po')),
-        *sorted((root / 'qt' / 'translations').glob('*.ts')),
-    ]
+    paths = [pathlib.Path(arg) for arg in args] or sorted((root / 'po').glob('*.po'))
     found = [problem for path in paths for problem in problems(path)]
     for problem in found:
         print(problem)

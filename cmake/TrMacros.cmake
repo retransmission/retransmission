@@ -538,17 +538,6 @@ function(tr_gettext_msgfmt TGT OUTPUT_FILE INPUT_FILE)
             "${OUTPUT_FILE}")
 endfunction()
 
-macro(tr_qt_add_translation OUTPUT_FILES_VAR)
-    if(Qt_VERSION_MAJOR EQUAL 6)
-        qt6_add_translation(${OUTPUT_FILES_VAR} ${ARGN} OPTIONS -silent)
-    else()
-        qt5_add_translation(${OUTPUT_FILES_VAR} ${ARGN} OPTIONS -silent)
-    endif()
-
-    source_group("Generated Files"
-        FILES ${${OUTPUT_FILES_VAR}})
-endmacro()
-
 function(tr_wrap_idl TGT INPUT_FILE OUTPUT_FILE_BASE)
     add_custom_command(
         OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/${OUTPUT_FILE_BASE}.tlb

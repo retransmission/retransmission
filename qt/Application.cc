@@ -237,44 +237,31 @@ bool Application::configDirIsContended() const noexcept
 
 void Application::loadTranslations()
 {
-    auto const qt_qm_dirs = QStringList{} << //
-        IF_QT6(QLibraryInfo::path(QLibraryInfo::TranslationsPath), QLibraryInfo::location(QLibraryInfo::TranslationsPath)) <<
-#ifdef TRANSLATIONS_DIR
-        QStringLiteral(TRANSLATIONS_DIR) <<
-#endif
-        (applicationDirPath() + QStringLiteral("/translations"));
-
-    QStringList const app_qm_dirs = QStringList{} <<
-#ifdef TRANSLATIONS_DIR
-        QStringLiteral(TRANSLATIONS_DIR) <<
-#endif
-        (applicationDirPath() + QStringLiteral("/translations"));
-
-    auto const qt_file_name = QStringLiteral("qtbase");
-    auto const app_file_name = QStringLiteral(TRANSLATIONS_NAME);
-
-    QLocale const locale;
-    QLocale const english_locale(QLocale::English, QLocale::UnitedStates);
-
-    if (loadTranslation(qt_translator_, qt_file_name, locale, qt_qm_dirs) ||
-        loadTranslation(qt_translator_, qt_file_name, english_locale, qt_qm_dirs)) {
-        installTranslator(&qt_translator_);
+    auto preferred_languages = std::vector<std::string>{};
+    for (auto const& language : QLocale{}.uiLanguages()) {
+        preferred_languages.push_back(language.toStdString());
     }
 
-    if (loadTranslation(app_translator_, app_file_name, locale, app_qm_dirs) ||
-        loadTranslation(app_translator_, app_file_name, english_locale, app_qm_dirs)) {
-        installTranslator(&app_translator_);
-    }
-
-    // libtransmission's strings, and those the clients share, come from the gettext catalogs.
-    // They use the language of the .qm file, so that no window mixes two languages.
     auto const catalog_dirs = std::vector<std::string>{ TR_LOCALE_DIR,
                                                         (applicationDirPath() + QStringLiteral("/locale")).toStdString() };
-    auto languages = std::vector<std::string>{};
-    if (auto const language = app_translator_.language(); !language.isEmpty()) {
-        languages.push_back(language.toStdString());
+    auto const languages = tr::app::l10n::use_catalogs(catalog_dirs, TR_GETTEXT_DOMAIN, preferred_languages);
+
+    // Qt's own dialogs use the catalogs' language, so that no window mixes two languages.
+    if (std::empty(languages)) {
+        return;
     }
-    tr::app::l10n::use_catalogs(catalog_dirs, TR_GETTEXT_DOMAIN, languages);
+
+    auto const qt_qm_dirs = QStringList{
+        IF_QT6(QLibraryInfo::path(QLibraryInfo::TranslationsPath), QLibraryInfo::location(QLibraryInfo::TranslationsPath)),
+        applicationDirPath() + QStringLiteral("/translations"),
+    };
+    if (loadTranslation(
+            qt_translator_,
+            QStringLiteral("qtbase"),
+            QLocale{ QString::fromStdString(languages.front()) },
+            qt_qm_dirs)) {
+        installTranslator(&qt_translator_);
+    }
 }
 
 void Application::onTorrentsEdited(torrent_ids_t const& torrent_ids) const
