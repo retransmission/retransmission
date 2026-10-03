@@ -29,13 +29,8 @@ msgstr ""
 
 #: cli/cli.cc:95 qt/DetailsDialog.cc:468 qt/Formatter.cc:31 qt/Formatter.cc:40
 #: qt/Formatter.cc:58
-#, fuzzy
 msgid "None"
-msgstr ""
-"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Bat ere ez\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ezer ez"
+msgstr "Bat ere ez"
 
 #: cli/cli.cc:99
 msgid "Inf"
@@ -161,13 +156,8 @@ msgstr[0] "Ezin izan da torrent bikoiztua gehitu"
 msgstr[1] "Ezin izan dira bikoiztutako torrent-ak gehitu"
 
 #: gtk/Application.cc:1382 qt/AboutDialog.ui:43
-#, fuzzy
 msgid "A fast and easy BitTorrent client"
-msgstr ""
-"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"BitTorrent bezero azkar eta erraza\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"BitTorrent bezero azkar eta erraz bat"
+msgstr "BitTorrent bezero azkar eta erraza"
 
 #: gtk/Application.cc:1384 qt/AboutDialog.cc:28
 msgid "Copyright © The {appname} Project"
@@ -211,13 +201,8 @@ msgid "Stop seeding if idle for N minutes:"
 msgstr "Gelditu igortzen N minutuz geratuta badago:"
 
 #: gtk/DetailsDialog.cc:486 gtk/Torrent.cc:405 qt/Torrent.cc:298
-#, fuzzy
 msgid "Queued for verification"
-msgstr ""
-"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Egiaztatzeko ilaratuta\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Egiaztapenerako ilaratuta"
+msgstr "Egiaztatzeko ilaratuta"
 
 #: gtk/DetailsDialog.cc:489 qt/Torrent.cc:301
 msgid "Verifying local data"
@@ -247,41 +232,22 @@ msgstr "Igortzen"
 #: qt/DetailsDialog.cc:516 qt/FilterBar.cc:62 qt/Torrent.cc:295
 #, fuzzy
 msgid "Seeding complete"
-msgstr ""
-"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Osatu gabea\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Osatugabe"
+msgstr "Osatu gabea"
 
 #: gtk/DetailsDialog.cc:504 gtk/FilterBar.cc:462 gtk/Torrent.cc:402
 #: qt/DetailsDialog.cc:518 qt/FilterBar.cc:61 qt/Torrent.cc:295
-#, fuzzy
 msgid "Paused"
-msgstr ""
-"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Pausatua\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Pausatuta"
+msgstr "Pausatuta"
 
 #: gtk/DetailsDialog.cc:524 gtk/DetailsDialog.cc:529 gtk/DetailsDialog.cc:614
 #: qt/DetailsDialog.cc:880 qt/DetailsDialog.cc:923
-#, fuzzy
 msgid "N/A"
-msgstr ""
-"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"E/E\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"E/G"
+msgstr "E/E"
 
 #: gtk/DetailsDialog.cc:538 gtk/FileList.cc:611 qt/DetailsDialog.cc:469
 #: qt/FileTreeItem.cc:265 qt/FileTreeView.cc:107
-#, fuzzy
 msgid "Mixed"
-msgstr ""
-"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Nahasia\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Nahastua"
+msgstr "Nahasia"
 
 #: gtk/DetailsDialog.cc:539
 msgid "No Torrents Selected"
@@ -296,26 +262,16 @@ msgid "Public torrent"
 msgstr "Torrent publikoa"
 
 #: gtk/DetailsDialog.cc:606 qt/DetailsDialog.cc:888
-#, fuzzy
 msgid "Created by {creator} on {date}"
-msgstr ""
-"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Sortzailea {creator} data honetan: {date}\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{creator} erabiltzaileak sortuta data honetan: {date}"
+msgstr "Sortzailea {creator} data honetan: {date}"
 
 #: gtk/DetailsDialog.cc:610 qt/DetailsDialog.cc:882
 msgid "Created by {creator}"
 msgstr "Sortzailea: {creator}"
 
 #: gtk/DetailsDialog.cc:612 qt/DetailsDialog.cc:885
-#, fuzzy
 msgid "Created on {date}"
-msgstr ""
-"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Sortze data: {date}\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Sortze-data: {date}"
+msgstr "Sortze-data: {date}"
 
 #: gtk/DetailsDialog.cc:690 qt/DetailsDialog.cc:470 qt/DetailsDialog.cc:689
 #: qt/Formatter.cc:27 qt/Formatter.cc:49
@@ -366,75 +322,41 @@ msgid "Never"
 msgstr "Inoiz ez"
 
 #: gtk/DetailsDialog.cc:883 qt/DetailsDialog.cc:713
-#, fuzzy
 msgid "Active now"
-msgstr ""
-"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Aktibo orain\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Martxan orain"
+msgstr "Aktibo orain"
 
 #: gtk/DetailsDialog.cc:1195 qt/DetailsDialog.cc:1086
 msgid "Optimistic unchoke"
 msgstr "Buxadura kentze baikorra"
 
 #: gtk/DetailsDialog.cc:1199 qt/DetailsDialog.cc:1090
-#, fuzzy
 msgid "Downloading from this peer"
-msgstr ""
-"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Kide honetatik deskargatzen\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Kide honengandik deskargatzen"
+msgstr "Kide honetatik deskargatzen"
 
 #: gtk/DetailsDialog.cc:1203 qt/DetailsDialog.cc:1094
-#, fuzzy
 msgid "We would download from this peer if they would let us"
-msgstr ""
-"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Kide honetatik deskargatuko genuke utziko baligu\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Kide honetatik deskargatuko genuke beraiek utziz gero"
+msgstr "Kide honetatik deskargatuko genuke utziko baligu"
 
 #: gtk/DetailsDialog.cc:1207 qt/DetailsDialog.cc:1098
-#, fuzzy
 msgid "Uploading to peer"
-msgstr ""
-"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Kide batera igortzen\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Kide batera igotzen"
+msgstr "Kide batera igortzen"
 
 #: gtk/DetailsDialog.cc:1211 qt/DetailsDialog.cc:1102
 #, fuzzy
 msgid "This peer would download from us if we would let them"
-msgstr ""
-"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Kide honetatik deskargatuko genuke utziko baligu\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Kide honetatik deskargatuko genuke beraiek utziz gero"
+msgstr "Kide honetatik deskargatuko genuke utziko baligu"
 
 #: gtk/DetailsDialog.cc:1215 qt/DetailsDialog.cc:1106
-#, fuzzy
 msgid "Peer has unchoked us, but we're not interested"
-msgstr ""
-"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Kideak buxadura ezabatu digu, baina ez gaude interesatuta\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Kideak buxadura kendu digu, baina ez gaude interesatuta"
+msgstr "Kideak buxadura kendu digu, baina ez gaude interesatuta"
 
 #: gtk/DetailsDialog.cc:1219 qt/DetailsDialog.cc:1110
 msgid "We unchoked this peer, but they're not interested"
 msgstr "Kide honi buxadura kendu diogu, baina ez daude interesatuta"
 
 #: gtk/DetailsDialog.cc:1223 qt/DetailsDialog.cc:1069 qt/DetailsDialog.cc:1114
-#, fuzzy
 msgid "Encrypted connection"
-msgstr ""
-"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Konexio zifratua\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Zifratutako konexioa"
+msgstr "Konexio zifratua"
 
 #: gtk/DetailsDialog.cc:1227 qt/DetailsDialog.cc:1122
 msgid "Peer was found through Peer Exchange (PEX)"
@@ -445,22 +367,12 @@ msgid "Peer was found through DHT"
 msgstr "Kidea DHT bitartez aurkitu da"
 
 #: gtk/DetailsDialog.cc:1235 qt/DetailsDialog.cc:1126
-#, fuzzy
 msgid "Peer is an incoming connection"
-msgstr ""
-"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Kidea sarrerako konexio bat da\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Kidea barrurako konexio bat da"
+msgstr "Kidea sarrerako konexio bat da"
 
 #: gtk/DetailsDialog.cc:1239 qt/DetailsDialog.cc:1130
-#, fuzzy
 msgid "Peer is connected over µTP"
-msgstr ""
-"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Kidea µTP bidez konektatuta dago\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Kidea µTP bitartez konektatuta dago"
+msgstr "Kidea µTP bidez konektatuta dago"
 
 #: gtk/DetailsDialog.cc:1243 qt/DetailsDialog.cc:1134
 msgid "Peer supports holepunch (BEP 55)"
@@ -483,22 +395,12 @@ msgid "Up Reqs"
 msgstr "Gorako esk."
 
 #: gtk/DetailsDialog.cc:1333 gtk/DetailsDialog.cc:1402 qt/DetailsDialog.cc:1480
-#, fuzzy
 msgid "Down"
-msgstr ""
-"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Behera\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Deskargatzen"
+msgstr "Behera"
 
 #: gtk/DetailsDialog.cc:1339 qt/DetailsDialog.cc:1478
-#, fuzzy
 msgid "Up"
-msgstr ""
-"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Gora\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Igortzen"
+msgstr "Gora"
 
 #: gtk/DetailsDialog.cc:1344 qt/AboutDialog.cc:40 qt/DetailsDialog.cc:1485
 msgid "Client"
@@ -521,13 +423,8 @@ msgid "List contains invalid URLs"
 msgstr "Zerrendak URL baliogabeak ditu"
 
 #: gtk/DetailsDialog.cc:1734 gtk/FileList.cc:792 qt/Session.cc:267
-#, fuzzy
 msgid "Please correct the errors and try again."
-msgstr ""
-"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Zuzendu erroreak eta saiatu berriro\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Mesedez zuzendu akatsak eta saiatu berriro."
+msgstr "Mesedez zuzendu akatsak eta saiatu berriro."
 
 #: gtk/DetailsDialog.cc:1814
 msgid "{torrent_name} - Add Tracker"
@@ -549,22 +446,12 @@ msgstr[0] "Ezaugarriak - {torrent_count:L} Torrent"
 msgstr[1] "Ezaugarriak - {torrent_count:L} Torrent"
 
 #: gtk/Dialogs.cc:53 qt/MainWindow.cc:1325
-#, fuzzy
 msgid "Remove torrent?"
-msgstr ""
-"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Kendu torrent-a?\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Kendu torrenta?"
+msgstr "Kendu torrenta?"
 
 #: gtk/Dialogs.cc:53 qt/MainWindow.cc:1328
-#, fuzzy
 msgid "Delete this torrent's downloaded files?"
-msgstr ""
-"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ezabatu torrent honek deskargatutako fitxategiak?\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ezabatu deskargatutako torrent honen fitxategiak?"
+msgstr "Ezabatu torrent honek deskargatutako fitxategiak?"
 
 #: gtk/Dialogs.cc:56 qt/MainWindow.cc:1326
 msgid "Remove {count:L} torrent?"
@@ -573,19 +460,10 @@ msgstr[0] "Kendu {count:L} torrent?"
 msgstr[1] "Kendu {count:L} torrent?"
 
 #: gtk/Dialogs.cc:58 qt/MainWindow.cc:1330
-#, fuzzy
 msgid "Delete this {count:L} torrent's downloaded files?"
 msgid_plural "Delete these {count:L} torrents' downloaded files?"
-msgstr[0] ""
-"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ezabatu jeitsitako {count:L} torrent hauen agiriak?\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ezabatu jeitsitako {count:L} torrent hauen agiriak?"
-msgstr[1] ""
-"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ezabatu {count:L} torrent hauek deskargatutako fitxategiak?\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ezabatu deskargatutako {count:L} torrent hauen fitxategiak?"
+msgstr[0] "Ezabatu jeitsitako {count:L} torrent hauen agiriak?"
+msgstr[1] "Ezabatu {count:L} torrent hauek deskargatutako fitxategiak?"
 
 #: gtk/Dialogs.cc:65 qt/MainWindow.cc:1337
 #, fuzzy
@@ -601,58 +479,28 @@ msgid "Once removed, you'll need the torrent files or magnet links to add them a
 msgstr "Behin kenduta, transferentziekin jarraitzeko torrent fitxategiak edo magnet loturak beharko dituzu."
 
 #: gtk/Dialogs.cc:68 qt/MainWindow.cc:1340
-#, fuzzy
 msgid "This torrent has not finished downloading."
-msgstr ""
-"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Torrent honek ez du oraindik deskarga amaitu.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Torrent honek ez du deskarga amaitu."
+msgstr "Torrent honek ez du oraindik deskarga amaitu."
 
 #: gtk/Dialogs.cc:69 qt/MainWindow.cc:1341
-#, fuzzy
 msgid "These torrents have not finished downloading."
-msgstr ""
-"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Torrent hauek ez dute oraindik deskarga amaitu.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Torrent hauek ez dute deskarga amaitu."
+msgstr "Torrent hauek ez dute oraindik deskarga amaitu."
 
 #: gtk/Dialogs.cc:71 qt/MainWindow.cc:1343
-#, fuzzy
 msgid "This torrent is connected to peers."
-msgstr ""
-"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Torrent hau pareekin konektatuta dago.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Torrent hau kideetara konektatuta dago."
+msgstr "Torrent hau kideetara konektatuta dago."
 
 #: gtk/Dialogs.cc:71 qt/MainWindow.cc:1344
-#, fuzzy
 msgid "These torrents are connected to peers."
-msgstr ""
-"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Torrent hauek kideekin konektatuta daude.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Torrent hauek kideetara konektatuta daude."
+msgstr "Torrent hauek kideetara konektatuta daude."
 
 #: gtk/Dialogs.cc:74 qt/MainWindow.cc:1347
-#, fuzzy
 msgid "One of these torrents is connected to peers."
-msgstr ""
-"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Torrent hauetako bat pareekin konektatuta dago.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Torrent hauetako bat kideetara konektatuta dago."
+msgstr "Torrent hauetako bat kideetara konektatuta dago."
 
 #: gtk/Dialogs.cc:75 qt/MainWindow.cc:1348
-#, fuzzy
 msgid "Some of these torrents are connected to peers."
-msgstr ""
-"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Torrent hauetako batzuk kideekin konektatuta daude.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Torrent hauetako batzuk kideetara konektatuta daude."
+msgstr "Torrent hauetako batzuk kideetara konektatuta daude."
 
 #: gtk/Dialogs.cc:83 qt/MainWindow.cc:1356
 msgid "One of these torrents has not finished downloading."
@@ -720,13 +568,8 @@ msgid "Progress"
 msgstr "Aurrerapena"
 
 #: gtk/FileList.cc:930 qt/FileTreeModel.cc:204
-#, fuzzy
 msgid "Download"
-msgstr ""
-"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Deskarga\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Deskargatu"
+msgstr "Deskarga"
 
 #: gtk/FileList.cc:941 qt/FileTreeModel.cc:207 qt/FileTreeView.cc:343
 msgid "Priority"
@@ -734,22 +577,12 @@ msgstr "Lehentasuna"
 
 #: gtk/FilterBar.cc:315 gtk/FilterBar.cc:451 qt/FilterBar.cc:46
 #: qt/FilterBar.cc:170
-#, fuzzy
 msgid "All"
-msgstr ""
-"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Dena\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Denak"
+msgstr "Dena"
 
 #: gtk/FilterBar.cc:453 qt/FilterBar.cc:58
-#, fuzzy
 msgid "Active"
-msgstr ""
-"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Aktiboa\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Martxan"
+msgstr "Aktiboa"
 
 #: gtk/FilterBar.cc:469 qt/FilterBar.cc:63
 msgctxt "Verb"
@@ -763,13 +596,8 @@ msgstr "Errorea"
 
 #: gtk/FilterBar.cc:569 gtk/ui/gtk3/FilterBar.ui:13 gtk/ui/gtk4/FilterBar.ui:8
 #: qt/FilterBar.cc:193
-#, fuzzy
 msgid "_Show:"
-msgstr ""
-"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Erakutsi:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"E_rakutsi:"
+msgstr "_Erakutsi:"
 
 #: gtk/FilterBar.cc:570
 msgid "_Show {count:L} of:"
@@ -828,71 +656,36 @@ msgid "Seed Forever"
 msgstr "Igorri Etengabe"
 
 #: gtk/MainWindow.cc:528 qt/MainWindow.cc:390
-#, fuzzy
 msgid "Limit Download Speed"
-msgstr ""
-"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Mugatu deskarga-abiadura\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Mugatu Deskargatze-Abiadura"
+msgstr "Mugatu Deskargatze-Abiadura"
 
 #: gtk/MainWindow.cc:529 qt/MainWindow.cc:396
-#, fuzzy
 msgid "Limit Upload Speed"
-msgstr ""
-"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Mugatu karga-abiadura\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Mugatu Igotze-Abiadura"
+msgstr "Mugatu Igotze-Abiadura"
 
 #: gtk/MainWindow.cc:533 qt/MainWindow.cc:405
-#, fuzzy
 msgid "Stop Seeding at Ratio"
-msgstr ""
-"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Gelditu igortzen maila honetan\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Gelditu Igortzen Maila honetan"
+msgstr "Gelditu igortzen maila honetan"
 
 #: gtk/MainWindow.cc:571 qt/MainWindow.cc:370 qt/MainWindow.cc:1113
 msgid "Stop at Ratio ({ratio})"
 msgstr "Gelditu Maila honetan ({ratio})"
 
 #: gtk/MainWindow.cc:602 qt/MainWindow.ui:622
-#, fuzzy
 msgid "Total Ratio"
-msgstr ""
-"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Tasa guztira\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Maila guztira"
+msgstr "Maila guztira"
 
 #: gtk/MainWindow.cc:603 qt/MainWindow.ui:630
-#, fuzzy
 msgid "Session Ratio"
-msgstr ""
-"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Saioaren tasa\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Saioaren maila"
+msgstr "Saioaren maila"
 
 #: gtk/MainWindow.cc:604 qt/MainWindow.ui:638
-#, fuzzy
 msgid "Total Transfer"
-msgstr ""
-"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Transferentzia guztira\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Transferentziak Guztira"
+msgstr "Transferentzia guztira"
 
 #: gtk/MainWindow.cc:605 qt/MainWindow.ui:646
-#, fuzzy
 msgid "Session Transfer"
-msgstr ""
-"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Saioaren transferentzia\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Saioaren Transferentziak"
+msgstr "Saioaren transferentzia"
 
 #: gtk/MainWindow.cc:757 qt/MainWindow.cc:738
 msgid "Down: {downloaded_size}, Up: {uploaded_size}"
@@ -998,22 +791,12 @@ msgid "Torrent Complete"
 msgstr "Torrent-a osatu da"
 
 #: gtk/Notify.cc:242 qt/Application.cc:340
-#, fuzzy
 msgid "Start Now"
-msgstr ""
-"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Hasi orain\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Abiarazi Orain"
+msgstr "Hasi orain"
 
 #: gtk/Notify.cc:254 qt/Application.cc:341
-#, fuzzy
 msgid "Torrent Added"
-msgstr ""
-"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Torrent-a gehitu da\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Torrenta Gehituta"
+msgstr "Torrent-a gehitu da"
 
 #: gtk/OptionsDialog.cc:196
 msgid "Torrent files"
@@ -1048,22 +831,12 @@ msgid "Select File"
 msgstr "Hautatu Fitxategia"
 
 #: gtk/PathButton.cc:344 qt/PathButton.cc:29 qt/PathButton.cc:98
-#, fuzzy
 msgid "(None)"
-msgstr ""
-"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"(Bat ere ez)\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"(Ezer ez)"
+msgstr "(Bat ere ez)"
 
 #: gtk/PrefsDialog.cc:292 qt/PrefsDialog.cc:105
-#, fuzzy
 msgid "Allow encryption"
-msgstr ""
-"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Onartu zifratzea\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Baimendu zifratzea"
+msgstr "Baimendu zifratzea"
 
 #: gtk/PrefsDialog.cc:293 qt/PrefsDialog.cc:106
 msgid "Prefer encryption"
@@ -1078,22 +851,12 @@ msgid "Every Day"
 msgstr "Egunero"
 
 #: gtk/PrefsDialog.cc:358 qt/PrefsDialog.cc:76
-#, fuzzy
 msgid "Weekdays"
-msgstr ""
-"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Lanegunetan\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Lanegunak"
+msgstr "Lanegunetan"
 
 #: gtk/PrefsDialog.cc:359 qt/PrefsDialog.cc:77
-#, fuzzy
 msgid "Weekends"
-msgstr ""
-"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Asteburuetan\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Asteburuak"
+msgstr "Asteburuetan"
 
 #: gtk/PrefsDialog.cc:550
 msgid "Blocklist has {count:L} entry"
@@ -1111,13 +874,8 @@ msgid "Couldn't update blocklist"
 msgstr "Ezin izan da blokeo-zerrenda eguneratu"
 
 #: gtk/PrefsDialog.cc:578 qt/PrefsDialog.cc:446
-#, fuzzy
 msgid "Getting new blocklist…"
-msgstr ""
-"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Blokeo-zerrenda berria jasotzen…\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Blokeo-zerrenda berria eskuratzen…"
+msgstr "Blokeo-zerrenda berria jasotzen…"
 
 #: gtk/PrefsDialog.cc:925
 msgctxt "Port test status"
@@ -1180,19 +938,10 @@ msgid "Couldn't find pending RPC request for id {id}"
 msgstr ""
 
 #: gtk/StatsDialog.cc:76 qt/StatsDialog.cc:65
-#, fuzzy
 msgid "Started {count:L} time"
 msgid_plural "Started {count:L} times"
-msgstr[0] ""
-"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-" {count:L} aldiz hasi da\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Hasita {count:L} aldiz"
-msgstr[1] ""
-"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-" {count:L} aldiz hasi da\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Hasita {count:L} aldiz"
+msgstr[0] "Hasita {count:L} aldiz"
+msgstr[1] "Hasita {count:L} aldiz"
 
 #: gtk/StatsDialog.cc:109
 msgid "Reset your statistics?"
@@ -1221,49 +970,29 @@ msgid "Verifying local data ({percent_done}% tested)"
 msgstr "Datu lokalak egiaztatzen ({percent_done}% aztertuta)"
 
 #: gtk/Torrent.cc:443 qt/DetailsDialog.cc:565 qt/TorrentDelegate.cc:183
-#, fuzzy
 msgid "{current_size} of {complete_size} ({percent_done}%)"
-msgstr ""
-"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{current_size} /{complete_size} (%{percent_done})\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{current_size} --> {complete_size} ({percent_done}%)"
+msgstr "{current_size} /{complete_size} (%{percent_done})"
 
 #: gtk/Torrent.cc:453 qt/TorrentDelegate.cc:198
 msgid "{current_size} of {complete_size} ({percent_complete}%), uploaded {uploaded_size} (Ratio: {ratio}, Goal: {seed_ratio})"
 msgstr "{current_size} / {complete_size} (%{percent_complete}), {uploaded_size} igota (Maila: {ratio}, Helburua: {seed_ratio})"
 
 #: gtk/Torrent.cc:465 qt/TorrentDelegate.cc:213
-#, fuzzy
 msgid "{current_size} of {complete_size} ({percent_complete}%), uploaded {uploaded_size} (Ratio: {ratio})"
-msgstr ""
-"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{current_size} / {complete_size} (%{percent_complete}), {uploaded_size} igota (Maila: {ratio})\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{current_size} --> {complete_size} ({percent_complete}%), igota {uploaded_size} (Maila: {ratio})"
+msgstr "{current_size} / {complete_size} (%{percent_complete}), {uploaded_size} igota (Maila: {ratio})"
 
 #: gtk/Torrent.cc:474 qt/TorrentDelegate.cc:229
 msgid "{complete_size}, uploaded {uploaded_size} (Ratio: {ratio}, Goal: {seed_ratio})"
 msgstr "{complete_size}, {uploaded_size} igota (Maila: {ratio}, Helburua: {seed_ratio})"
 
 #: gtk/Torrent.cc:482 qt/TorrentDelegate.cc:241
-#, fuzzy
 msgid "{complete_size}, uploaded {uploaded_size} (Ratio: {ratio})"
-msgstr ""
-"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{complete_size}, {uploaded_size} igota (Maila: {ratio})\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{complete_size}, igota {uploaded_size} (Maila: {ratio})"
+msgstr "{complete_size}, {uploaded_size} igota (Maila: {ratio})"
 
 #. Translators: Second (optional) part of torrent progress string
 #: gtk/Torrent.cc:493 qt/TorrentDelegate.cc:254 qt/TorrentDelegate.cc:307
-#, fuzzy
 msgid "Remaining time unknown"
-msgstr ""
-"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Geratzen den denbora ezezaguna\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Gelditzen den denbora ezezaguna"
+msgstr "Geratzen den denbora ezezaguna"
 
 #: gtk/Torrent.cc:583
 msgid "{download_speed} ▾  {upload_speed} ▴"
@@ -1307,34 +1036,16 @@ msgstr[0] "Deskargatzen {active_count} web-igorleatik"
 msgstr[1] "Deskargatzen {active_count} web-igorleetatik"
 
 #: gtk/Torrent.cc:659 qt/TorrentDelegate.cc:351
-#, fuzzy
 msgid "Downloading from {active_count} of {connected_count} connected peer"
 msgid_plural "Downloading from {active_count} of {connected_count} connected peers"
-msgstr[0] ""
-"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Deskargatzen {active_count} / {connected_count} konektatutako hartzaileatik\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Jeisten {active_count} --> {connected_count} elkarketaturiko hartzailetik"
-msgstr[1] ""
-"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Deskargatzen {active_count} / {connected_count} konektatutako kideetatik\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Deskargatzen {active_count} --> {connected_count} konektatutako kidetatik"
+msgstr[0] "Deskargatzen {active_count} / {connected_count} konektatutako hartzaileatik"
+msgstr[1] "Deskargatzen {active_count} / {connected_count} konektatutako kideetatik"
 
 #: gtk/Torrent.cc:668 qt/TorrentDelegate.cc:380
-#, fuzzy
 msgid "Seeding to {active_count} of {connected_count} connected peer"
 msgid_plural "Seeding to {active_count} of {connected_count} connected peers"
-msgstr[0] ""
-"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-" {active_count} / {connected_count} konektatutako hartzailera igortzen\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{active_count} / {connected_count} elkarturiko hartzailera emaritzen"
-msgstr[1] ""
-"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-" {active_count} / {connected_count} konektatutako kidetara igortzen\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{active_count} / {connected_count} konektatutako kidetara igortzen"
+msgstr[0] "{active_count} / {connected_count} elkarturiko hartzailera emaritzen"
+msgstr[1] "{active_count} / {connected_count} konektatutako kidetara igortzen"
 
 #: gtk/retransmission-gtk.desktop.in:2
 #: gtk/retransmission-gtk.metainfo.xml.in:11
@@ -1393,13 +1104,8 @@ msgstr "_Fitxategia"
 
 #: gtk/transmission-menus.ui:18 gtk/transmission-menus.ui:447
 #: qt/MainWindow.ui:685
-#, fuzzy
 msgid "Open _URL…"
-msgstr ""
-"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ireki _URL-a…\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ireki _URLa…"
+msgstr "Ireki _URLa…"
 
 #: gtk/transmission-menus.ui:25 qt/MainWindow.ui:332
 msgid "_New…"
@@ -1407,33 +1113,18 @@ msgstr "_Berria…"
 
 #: gtk/transmission-menus.ui:32 gtk/transmission-menus.ui:460
 #: qt/MainWindow.ui:437
-#, fuzzy
 msgid "_Start All"
-msgstr ""
-"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Abiarazi Guztiak\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Hasi Denak"
+msgstr "_Abiarazi Guztiak"
 
 #: gtk/transmission-menus.ui:37 gtk/transmission-menus.ui:455
 #: qt/MainWindow.ui:442
-#, fuzzy
 msgid "_Pause All"
-msgstr ""
-"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Pausatu Guztiak\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Pausatu Denak"
+msgstr "_Pausatu Guztiak"
 
 #: gtk/transmission-menus.ui:45 gtk/transmission-menus.ui:473
 #: qt/MainWindow.ui:447
-#, fuzzy
 msgid "_Quit"
-msgstr ""
-"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Utzi\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"It_xi"
+msgstr "_Utzi"
 
 #: gtk/transmission-menus.ui:50 gtk/ui/gtk3/DetailsDialog.ui:715
 #: gtk/ui/gtk4/DetailsDialog.ui:559 qt/DetailsDialog.ui:637
@@ -1465,44 +1156,24 @@ msgstr "_Ezaugarriak"
 
 #: gtk/transmission-menus.ui:84 gtk/transmission-menus.ui:291
 #: qt/MainWindow.ui:354
-#, fuzzy
 msgid "Open Fold_er"
-msgstr ""
-"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ireki karpe_ta\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Ireki Karpeta"
+msgstr "Ireki karpe_ta"
 
 #: gtk/transmission-menus.ui:92 gtk/transmission-menus.ui:357
 #: gtk/ui/gtk3/MainWindow.ui:39 gtk/ui/gtk4/MainWindow.ui:44
 #: qt/MainWindow.ui:365
-#, fuzzy
 msgid "_Start"
-msgstr ""
-"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Abiarazi\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Hasi"
+msgstr "_Abiarazi"
 
 #: gtk/transmission-menus.ui:98 gtk/transmission-menus.ui:363
 #: qt/MainWindow.ui:698
-#, fuzzy
 msgid "Start _Now"
-msgstr ""
-"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Abiarazi _Orain\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Hasi _Orain"
+msgstr "Abiarazi _Orain"
 
 #: gtk/transmission-menus.ui:104 gtk/transmission-menus.ui:369
 #: qt/MainWindow.ui:379
-#, fuzzy
 msgid "Ask Tracker for _More Peers"
-msgstr ""
-"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Galdetu Aztarnariari _Pare Gehiagorako\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Eskatu Aztarnariari Kide Gehiago"
+msgstr "_Eskatu Aztarnariari Kide Gehiago"
 
 #: gtk/transmission-menus.ui:107 gtk/transmission-menus.ui:372
 #: qt/MainWindow.ui:196
@@ -1513,13 +1184,8 @@ msgstr "Ilara"
 
 #: gtk/transmission-menus.ui:112 gtk/transmission-menus.ui:377
 #: qt/MainWindow.ui:712
-#, fuzzy
 msgid "Move to _Top"
-msgstr ""
-"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Mugitu _Goren\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Mugitu _Goraino"
+msgstr "Mugitu _Goraino"
 
 #: gtk/transmission-menus.ui:117 gtk/transmission-menus.ui:382
 #: qt/MainWindow.ui:717
@@ -1528,23 +1194,13 @@ msgstr "Mugitu G_ora"
 
 #: gtk/transmission-menus.ui:122 gtk/transmission-menus.ui:387
 #: qt/MainWindow.ui:725
-#, fuzzy
 msgid "Move _Down"
-msgstr ""
-"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Mugitu _Behera\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Mugitu B_ehera"
+msgstr "Mugitu B_ehera"
 
 #: gtk/transmission-menus.ui:127 gtk/transmission-menus.ui:392
 #: qt/MainWindow.ui:733
-#, fuzzy
 msgid "Move to _Bottom"
-msgstr ""
-"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Mugitu Be_heren\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Mugitu _Beheraino"
+msgstr "Mugitu _Beheraino"
 
 #: gtk/transmission-menus.ui:134 gtk/transmission-menus.ui:399
 #: gtk/ui/gtk3/MainWindow.ui:54 gtk/ui/gtk3/MessageLogWindow.ui:66
@@ -1555,23 +1211,13 @@ msgstr "_Pausatu"
 
 #: gtk/transmission-menus.ui:141 gtk/transmission-menus.ui:406
 #: qt/MainWindow.ui:675
-#, fuzzy
 msgid "Set _Location…"
-msgstr ""
-"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ezarri _Kokalekua…\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Zehaztu _Kokapena…"
+msgstr "Zehaztu _Kokapena…"
 
 #: gtk/transmission-menus.ui:145 gtk/transmission-menus.ui:410
 #: qt/MainWindow.ui:401
-#, fuzzy
 msgid "_Verify Local Data"
-msgstr ""
-"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Egiaztatu tokiko datuak\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Egiaztatu Datuak _Lokalak"
+msgstr "Egiaztatu Datuak _Lokalak"
 
 #: gtk/transmission-menus.ui:151 gtk/transmission-menus.ui:416
 #: qt/MainWindow.ui:680
@@ -1580,148 +1226,78 @@ msgstr "Kopiatu _Magnet Esteka Arbelera"
 
 #: gtk/transmission-menus.ui:164 gtk/transmission-menus.ui:429
 #: qt/MainWindow.ui:426
-#, fuzzy
 msgid "_Delete Files and Remove"
-msgstr ""
-"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Ezabatu fitxategiak eta kendu\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"E_zabatu Fitxategiak eta Kendu"
+msgstr "E_zabatu Fitxategiak eta Kendu"
 
 #: gtk/transmission-menus.ui:170 qt/MainWindow.ui:244
 msgid "_View"
 msgstr "_Ikusi"
 
 #: gtk/transmission-menus.ui:174 qt/MainWindow.ui:485
-#, fuzzy
 msgid "_Compact View"
-msgstr ""
-"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Bista trinkoa\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Ikuspegi Trinkoa"
+msgstr "_Bista trinkoa"
 
 #: gtk/transmission-menus.ui:181 qt/MainWindow.ui:502
 msgid "_Toolbar"
 msgstr "_Tresnabarra"
 
 #: gtk/transmission-menus.ui:185 qt/MainWindow.ui:510
-#, fuzzy
 msgid "_Filterbar"
-msgstr ""
-"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Iragazki-barra\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"I_ragazkibarra"
+msgstr "I_ragazkibarra"
 
 #: gtk/transmission-menus.ui:189 qt/MainWindow.ui:518
-#, fuzzy
 msgid "_Statusbar"
-msgstr ""
-"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Egoera-barra\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Egoerabarra"
+msgstr "_Egoerabarra"
 
 #: gtk/transmission-menus.ui:195 gtk/transmission-menus.ui:301
 #: qt/MainWindow.ui:526
-#, fuzzy
 msgid "Sort by _Activity"
-msgstr ""
-"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ordenatu _aktibitatearen arabera\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ordenatu _Jardueraren arabera"
+msgstr "Ordenatu _Jardueraren arabera"
 
 #: gtk/transmission-menus.ui:200 gtk/transmission-menus.ui:306
 #: qt/MainWindow.ui:534
-#, fuzzy
 msgid "Sort by A_ge"
-msgstr ""
-"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ordenatu a_dinaren arabera\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ordenatu _Adinaren arabera"
+msgstr "Ordenatu a_dinaren arabera"
 
 #: gtk/transmission-menus.ui:205 gtk/transmission-menus.ui:311
 #: qt/MainWindow.ui:550
-#, fuzzy
 msgid "Sort by _Name"
-msgstr ""
-"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ordenatu _izenaren arabera\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ordenatu I_zenaren arabera"
+msgstr "Ordenatu _izenaren arabera"
 
 #: gtk/transmission-menus.ui:210 gtk/transmission-menus.ui:316
 #: qt/MainWindow.ui:558
-#, fuzzy
 msgid "Sort by _Progress"
-msgstr ""
-"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ordenatu aurrera_penaren arabera\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ordenatu _Aurrerapenaren arabera"
+msgstr "Ordenatu aurrera_penaren arabera"
 
 #: gtk/transmission-menus.ui:215 gtk/transmission-menus.ui:321
 #: qt/MainWindow.ui:741
-#, fuzzy
 msgid "Sort by _Queue"
-msgstr ""
-"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ordenatu i_lararen arabera\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ordenatu _Ilararen arabera"
+msgstr "Ordenatu i_lararen arabera"
 
 #: gtk/transmission-menus.ui:220 gtk/transmission-menus.ui:326
 #: qt/MainWindow.ui:566
-#, fuzzy
 msgid "Sort by Rati_o"
-msgstr ""
-"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ordenatu _tasaren arabera\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ordenatu _Ratioaren arabera"
+msgstr "Ordenatu _tasaren arabera"
 
 #: gtk/transmission-menus.ui:225 gtk/transmission-menus.ui:331
 #: qt/MainWindow.ui:574
-#, fuzzy
 msgid "Sort by Si_ze"
-msgstr ""
-"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ordenatu ta_mainaren arabera\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ordenatu _Tamainaren arabera"
+msgstr "Ordenatu ta_mainaren arabera"
 
 #: gtk/transmission-menus.ui:230 gtk/transmission-menus.ui:336
 #: qt/MainWindow.ui:582
-#, fuzzy
 msgid "Sort by Stat_e"
-msgstr ""
-"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ordenatu ego_eraren arabera\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ordenatu _Egoeraren arabera"
+msgstr "Ordenatu ego_eraren arabera"
 
 #: gtk/transmission-menus.ui:235 gtk/transmission-menus.ui:341
 #: qt/MainWindow.ui:542
-#, fuzzy
 msgid "Sort by Time _Left"
-msgstr ""
-"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ordenatu _geratzen den denboraren arabera\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ordenatu Gelditzen den _Denboraz"
+msgstr "Ordenatu _geratzen den denboraren arabera"
 
 #: gtk/transmission-menus.ui:242 gtk/transmission-menus.ui:348
 #: qt/MainWindow.ui:614
-#, fuzzy
 msgid "Re_verse Sort Order"
-msgstr ""
-"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Al_derantzikatu ordena\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Alderantzikatu Ordenatze _Irizpidea"
+msgstr "Al_derantzikatu ordena"
 
 #: gtk/transmission-menus.ui:247 gtk/ui/gtk3/PrefsDialog.ui:22
 #: gtk/ui/gtk4/PrefsDialog.ui:1484 qt/MainWindow.ui:233
@@ -1729,13 +1305,8 @@ msgid "_Help"
 msgstr "_Laguntza"
 
 #: gtk/transmission-menus.ui:251
-#, fuzzy
 msgid "Message _Log"
-msgstr ""
-"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Mezuen _egunkaria\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Mezuen _Erregistroa"
+msgstr "Mezuen _egunkaria"
 
 #: gtk/transmission-menus.ui:255 qt/MainWindow.ui:590
 msgid "_Statistics"
@@ -1746,40 +1317,22 @@ msgid "_Donate"
 msgstr "_Dirulaguntza"
 
 #: gtk/transmission-menus.ui:268 qt/MainWindow.ui:595
-#, fuzzy
 msgid "_Contents"
-msgstr ""
-"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Edukiak\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ed_ukiak"
+msgstr "Ed_ukiak"
 
 #: gtk/transmission-menus.ui:274 qt/MainWindow.ui:603
-#, fuzzy
 msgid "_About"
-msgstr ""
-"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Honi buruz\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Honi _Buruz"
+msgstr "_Honi buruz"
 
 #: gtk/transmission-menus.ui:297
 #, fuzzy
 msgid "_Sort Torrents By"
-msgstr ""
-"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Abiarazi torrenta\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Hasi torrenta"
+msgstr "Abiarazi torrenta"
 
 #: gtk/transmission-menus.ui:466 qt/MainWindow.cc:189
 #, fuzzy
 msgid "Alternative Speed _Limits"
-msgstr ""
-"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Abiadura-muga alternatiboak\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Aukerazko Abiadura Mugak"
+msgstr "Abiadura-muga alternatiboak"
 
 #: gtk/ui/gtk3/AddTrackerDialog.ui:34 gtk/ui/gtk3/DetailsDialog.ui:701
 #: gtk/ui/gtk3/MakeProgressDialog.ui:51 gtk/ui/gtk3/PrefsDialog.ui:1898
@@ -1825,27 +1378,15 @@ msgstr "Dauka:"
 #: gtk/ui/gtk3/StatsDialog.ui:246 gtk/ui/gtk4/DetailsDialog.ui:58
 #: gtk/ui/gtk4/StatsDialog.ui:32 gtk/ui/gtk4/StatsDialog.ui:164
 #: qt/DetailsDialog.ui:106 qt/StatsDialog.ui:29 qt/StatsDialog.ui:158
-#, fuzzy
 msgid "Uploaded:"
-msgstr ""
-"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Kargatua:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Igorritakoa:\n"
-"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Igota:"
+msgstr "Igota:"
 
 #: gtk/ui/gtk3/DetailsDialog.ui:110 gtk/ui/gtk3/StatsDialog.ui:115
 #: gtk/ui/gtk3/StatsDialog.ui:275 gtk/ui/gtk4/DetailsDialog.ui:68
 #: gtk/ui/gtk4/StatsDialog.ui:57 gtk/ui/gtk4/StatsDialog.ui:189
 #: qt/DetailsDialog.ui:138 qt/StatsDialog.ui:55 qt/StatsDialog.ui:184
-#, fuzzy
 msgid "Downloaded:"
-msgstr ""
-"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Deskargatua:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Deskargatuta:"
+msgstr "Deskargatuta:"
 
 #: gtk/ui/gtk3/DetailsDialog.ui:122 gtk/ui/gtk4/DetailsDialog.ui:78
 #: qt/DetailsDialog.ui:170
@@ -1854,23 +1395,13 @@ msgstr "Egoera:"
 
 #: gtk/ui/gtk3/DetailsDialog.ui:134 gtk/ui/gtk4/DetailsDialog.ui:88
 #: qt/DetailsDialog.ui:202
-#, fuzzy
 msgid "Running time:"
-msgstr ""
-"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Abian daraman denbora:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Exekuzio denbora:"
+msgstr "Abian daraman denbora:"
 
 #: gtk/ui/gtk3/DetailsDialog.ui:146 gtk/ui/gtk4/DetailsDialog.ui:98
 #: qt/DetailsDialog.ui:234
-#, fuzzy
 msgid "Remaining time:"
-msgstr ""
-"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Geratzen den denbora:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Gelditzen den denbora:"
+msgstr "Geratzen den denbora:"
 
 #: gtk/ui/gtk3/DetailsDialog.ui:158 gtk/ui/gtk4/DetailsDialog.ui:108
 #: qt/DetailsDialog.ui:266
@@ -1889,13 +1420,8 @@ msgstr "Xehetasunak"
 
 #: gtk/ui/gtk3/DetailsDialog.ui:368 gtk/ui/gtk4/DetailsDialog.ui:286
 #: qt/DetailsDialog.ui:371
-#, fuzzy
 msgid "Location:"
-msgstr ""
-"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Kokapena:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Kokalekua:"
+msgstr "Kokapena:"
 
 #: gtk/ui/gtk3/DetailsDialog.ui:380 gtk/ui/gtk4/DetailsDialog.ui:296
 #: qt/DetailsDialog.ui:403
@@ -1940,13 +1466,8 @@ msgstr "Kideak"
 
 #: gtk/ui/gtk3/DetailsDialog.ui:773 gtk/ui/gtk4/DetailsDialog.ui:587
 #: qt/DetailsDialog.ui:671
-#, fuzzy
 msgid "Show _backup trackers"
-msgstr ""
-"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Erakutsi _babeskopiako aztarnariak\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Erakutsi _segurtasun-kopiako aztarnariak"
+msgstr "Erakutsi _babeskopiako aztarnariak"
 
 #: gtk/ui/gtk3/DetailsDialog.ui:834 gtk/ui/gtk4/DetailsDialog.ui:627
 msgid "File listing not available for combined torrent properties"
@@ -1966,13 +1487,8 @@ msgstr "Abiadura"
 
 #: gtk/ui/gtk3/DetailsDialog.ui:887 gtk/ui/gtk4/DetailsDialog.ui:663
 #: qt/DetailsDialog.ui:723
-#, fuzzy
 msgid "Honor global _limits"
-msgstr ""
-"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Bete muga _orokorrak\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Bete muga orokorrak"
+msgstr "Bete muga _orokorrak"
 
 #: gtk/ui/gtk3/DetailsDialog.ui:903 gtk/ui/gtk4/DetailsDialog.ui:676
 msgid "Limit _download speed ({speed_units}):"
@@ -1985,13 +1501,8 @@ msgstr "Mugatu _igoera-abiadura ({speed_units}):"
 #: gtk/ui/gtk3/DetailsDialog.ui:935 gtk/ui/gtk3/OptionsDialog.ui:143
 #: gtk/ui/gtk4/DetailsDialog.ui:700 gtk/ui/gtk4/OptionsDialog.ui:87
 #: qt/DetailsDialog.ui:770
-#, fuzzy
 msgid "Torrent _priority:"
-msgstr ""
-"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Torrent-en _lehentasuna:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Torrent lehentasuna:"
+msgstr "_Torrent lehentasuna:"
 
 #: gtk/ui/gtk3/DetailsDialog.ui:997 gtk/ui/gtk4/DetailsDialog.ui:749
 #: qt/DetailsDialog.ui:786
@@ -2000,43 +1511,23 @@ msgstr "Igortze-Mugak"
 
 #: gtk/ui/gtk3/DetailsDialog.ui:1013 gtk/ui/gtk4/DetailsDialog.ui:761
 #: qt/DetailsDialog.ui:792
-#, fuzzy
 msgid "_Ratio:"
-msgstr ""
-"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Partekatze-tasa:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"M_aila:"
+msgstr "M_aila:"
 
 #: gtk/ui/gtk3/DetailsDialog.ui:1027 gtk/ui/gtk4/DetailsDialog.ui:773
 #: qt/DetailsDialog.ui:819
-#, fuzzy
 msgid "_Idle:"
-msgstr ""
-"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Inaktibo:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Geratuta:"
+msgstr "_Geratuta:"
 
 #: gtk/ui/gtk3/DetailsDialog.ui:1125 gtk/ui/gtk4/DetailsDialog.ui:831
 #: qt/DetailsDialog.ui:855
-#, fuzzy
 msgid "Peer Connections"
-msgstr ""
-"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Kideen konexioak\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Kideen Konexioak"
+msgstr "Kideen konexioak"
 
 #: gtk/ui/gtk3/DetailsDialog.ui:1141 gtk/ui/gtk4/DetailsDialog.ui:843
 #: qt/DetailsDialog.ui:861
-#, fuzzy
 msgid "_Maximum peers:"
-msgstr ""
-"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Gehienezko kide-kopurua:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Gehienezko kide kopurua:"
+msgstr "_Gehienezko kide-kopurua:"
 
 #: gtk/ui/gtk3/DetailsDialog.ui:1180 gtk/ui/gtk3/MainWindow.ui:169
 #: gtk/ui/gtk3/PrefsDialog.ui:1344 gtk/ui/gtk4/DetailsDialog.ui:871
@@ -2071,13 +1562,8 @@ msgstr "Ireki torrent bat"
 
 #: gtk/ui/gtk3/MainWindow.ui:37 gtk/ui/gtk4/MainWindow.ui:42
 #: qt/MainWindow.ui:368
-#, fuzzy
 msgid "Start torrent"
-msgstr ""
-"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Abiarazi torrenta\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Hasi torrenta"
+msgstr "Abiarazi torrenta"
 
 #: gtk/ui/gtk3/MainWindow.ui:52 gtk/ui/gtk4/MainWindow.ui:52
 #: qt/MainWindow.ui:390
@@ -2108,13 +1594,8 @@ msgstr "Estatistikak"
 #: gtk/ui/gtk3/MakeDialog.ui:7 gtk/ui/gtk3/MakeProgressDialog.ui:7
 #: gtk/ui/gtk4/MakeDialog.ui:5 gtk/ui/gtk4/MakeProgressDialog.ui:5
 #: qt/MakeDialog.ui:17 qt/MakeProgressDialog.ui:14
-#, fuzzy
 msgid "New Torrent"
-msgstr ""
-"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Torrent berria\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Torrent Berria"
+msgstr "Torrent berria"
 
 #: gtk/ui/gtk3/MakeDialog.ui:35 gtk/ui/gtk4/MakeDialog.ui:285
 #, fuzzy
@@ -2124,13 +1605,8 @@ msgstr "_Kredituak"
 
 #: gtk/ui/gtk3/MakeDialog.ui:85 gtk/ui/gtk4/MakeDialog.ui:32
 #: qt/MakeDialog.ui:29
-#, fuzzy
 msgid "Sa_ve to:"
-msgstr ""
-"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Go_rde honela:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Gorde hemen:"
+msgstr "_Gorde hemen:"
 
 #: gtk/ui/gtk3/MakeDialog.ui:110 gtk/ui/gtk4/MakeDialog.ui:54
 #: qt/MakeDialog.ui:42
@@ -2151,33 +1627,18 @@ msgstr "Zatiaren tamaina:"
 
 #: gtk/ui/gtk3/MakeDialog.ui:231 gtk/ui/gtk4/MakeDialog.ui:146
 #: qt/MakeDialog.ui:105
-#, fuzzy
 msgid "Properties"
-msgstr ""
-"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Propietateak\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ezaugarriak"
+msgstr "Ezaugarriak"
 
 #: gtk/ui/gtk3/MakeDialog.ui:249 gtk/ui/gtk4/MakeDialog.ui:159
 #: qt/MakeDialog.ui:111
-#, fuzzy
 msgid "_Trackers:"
-msgstr ""
-"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Aztarnariak:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"A_ztarnariak:"
+msgstr "_Aztarnariak:"
 
 #: gtk/ui/gtk3/MakeDialog.ui:312 gtk/ui/gtk4/MakeDialog.ui:206
 #: qt/MakeDialog.ui:142
-#, fuzzy
 msgid "Co_mment:"
-msgstr ""
-"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Iru_zkina:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Iruzkina:"
+msgstr "Iru_zkina:"
 
 #: gtk/ui/gtk3/MakeDialog.ui:339 gtk/ui/gtk4/MakeDialog.ui:229
 #: qt/MakeDialog.ui:156
@@ -2186,13 +1647,8 @@ msgstr "_Jatorria:"
 
 #: gtk/ui/gtk3/MakeDialog.ui:366 gtk/ui/gtk4/MakeDialog.ui:252
 #: qt/MakeDialog.ui:170
-#, fuzzy
 msgid "_Private torrent"
-msgstr ""
-"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Torrent _pribatua\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Torrent pribatua"
+msgstr "Torrent _pribatua"
 
 #: gtk/ui/gtk3/MakeProgressDialog.ui:81 gtk/ui/gtk4/MakeProgressDialog.ui:19
 msgid "Creating torrent…"
@@ -2229,13 +1685,8 @@ msgstr "Hautatu iturburu-fitxategia"
 
 #: gtk/ui/gtk3/OptionsDialog.ui:91 gtk/ui/gtk4/OptionsDialog.ui:41
 #: qt/OptionsDialog.ui:39
-#, fuzzy
 msgid "_Destination folder:"
-msgstr ""
-"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Helburuko karpeta:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Helmugako karpeta:"
+msgstr "_Helburuko karpeta:"
 
 #: gtk/ui/gtk3/OptionsDialog.ui:107 gtk/ui/gtk4/OptionsDialog.ui:55
 #: qt/OptionsDialog.cc:78 qt/PrefsDialog.cc:522
@@ -2257,23 +1708,13 @@ msgstr "Mu_gitu torrent-fitxategia zakarrontzira"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:7 gtk/ui/gtk4/PrefsDialog.ui:5
 #: qt/PrefsDialog.ui:14
-#, fuzzy
 msgid "{appname} Preferences"
-msgstr ""
-"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{appname}-en hobespenak\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{appname} Hobespenak"
+msgstr "{appname}-en hobespenak"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:76 gtk/ui/gtk4/PrefsDialog.ui:29
 #: qt/PrefsDialog.ui:36
-#, fuzzy
 msgid "Speed Limits"
-msgstr ""
-"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Abiadura-mugak\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Abiadura Mugak"
+msgstr "Abiadura-mugak"
 
 #. Checkbox to limit upload speed
 #: gtk/ui/gtk3/PrefsDialog.ui:90 gtk/ui/gtk4/PrefsDialog.ui:41
@@ -2287,13 +1728,8 @@ msgstr "_Deskarga ({speed_units}):"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:159 gtk/ui/gtk4/PrefsDialog.ui:93
 #: qt/PrefsDialog.ui:85
-#, fuzzy
 msgid "Alternative Speed Limits"
-msgstr ""
-"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Abiadura-muga alternatiboak\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Aukerazko Abiadura Mugak"
+msgstr "Abiadura-muga alternatiboak"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:193 gtk/ui/gtk4/PrefsDialog.ui:114
 #: qt/PrefsDialog.ui:100
@@ -2317,13 +1753,8 @@ msgstr "_Programatutako orduak:"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:260 gtk/ui/gtk4/PrefsDialog.ui:167
 #: qt/PrefsDialog.ui:193
-#, fuzzy
 msgid "_On days:"
-msgstr ""
-"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"E_gun hauetan:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Eg_unak:"
+msgstr "E_gun hauetan:"
 
 #. Label goes between two time selectors, e.g. "limit speeds from [time] to [time]"
 #: gtk/ui/gtk3/PrefsDialog.ui:317 gtk/ui/gtk4/PrefsDialog.ui:210
@@ -2343,23 +1774,13 @@ msgstr "Gehitu automatikoki torrent-fitxategiak _hemendik:"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:424 gtk/ui/gtk4/PrefsDialog.ui:286
 #: qt/PrefsDialog.ui:257
-#, fuzzy
 msgid "Show the Torrent Options _dialog"
-msgstr ""
-"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Erakutsi Torrent aukeren _elkarrizketa\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Erakutsi _Torrent Aukeren leihoa"
+msgstr "Erakutsi _Torrent Aukeren leihoa"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:441 gtk/ui/gtk4/PrefsDialog.ui:300
 #: qt/PrefsDialog.ui:264
-#, fuzzy
 msgid "_Start added torrents"
-msgstr ""
-"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Hasi gehitutako torrent horiekin\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Hasi gehitutako torrentak"
+msgstr "_Hasi gehitutako torrentak"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:477 gtk/ui/gtk4/PrefsDialog.ui:328
 #: qt/PrefsDialog.ui:288
@@ -2370,23 +1791,13 @@ msgstr "Gorde he_men:"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:557 gtk/ui/gtk4/PrefsDialog.ui:389
 #: qt/PrefsDialog.ui:320
-#, fuzzy
 msgid "Download Queue"
-msgstr ""
-"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Deskargen ilara\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Deskargen Ilara"
+msgstr "Deskargen ilara"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:573 gtk/ui/gtk4/PrefsDialog.ui:401
 #: qt/PrefsDialog.ui:326
-#, fuzzy
 msgid "Ma_ximum active downloads:"
-msgstr ""
-"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Deskarga aktiboen Mu_ga :\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Gehienezko _deskarga aktibo kopurua:"
+msgstr "Gehienezko _deskarga aktibo kopurua:"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:587 gtk/ui/gtk4/PrefsDialog.ui:413
 msgid "Downloads sharing data in the last _N minutes are active:"
@@ -2394,23 +1805,13 @@ msgstr "Datuak partekatzen egindako deskargak azken _N minutuetan aktibo segitze
 
 #: gtk/ui/gtk3/PrefsDialog.ui:636 gtk/ui/gtk4/PrefsDialog.ui:451
 #: qt/PrefsDialog.ui:375
-#, fuzzy
 msgid "Incomplete"
-msgstr ""
-"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Osatu gabea\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Osatugabe"
+msgstr "Osatu gabea"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:650 gtk/ui/gtk4/PrefsDialog.ui:463
 #: qt/PrefsDialog.ui:381
-#, fuzzy
 msgid "Append \"._part\" to incomplete files' names"
-msgstr ""
-"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Gehitu \"._part\" osorik ez dauden fitxategi-izenei\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Erantsi \".part\" osatugabeko fitxategi izenei"
+msgstr "Gehitu \"._part\" osorik ez dauden fitxategi-izenei"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:667 gtk/ui/gtk4/PrefsDialog.ui:477
 #: qt/PrefsDialog.ui:388
@@ -2443,13 +1844,8 @@ msgstr "Mugak"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:792 gtk/ui/gtk4/PrefsDialog.ui:570
 #: qt/PrefsDialog.ui:468
-#, fuzzy
 msgid "Stop seeding at _ratio:"
-msgstr ""
-"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Gelditu igortzen _maila honetan:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Gelditu igortzen maila honetan:"
+msgstr "Gelditu igortzen _maila honetan:"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:807 gtk/ui/gtk4/PrefsDialog.ui:582
 msgid "Stop seeding if idle for _N minutes:"
@@ -2473,13 +1869,8 @@ msgstr "Pribatutasuna"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:928 gtk/ui/gtk4/PrefsDialog.ui:673
 #: qt/PrefsDialog.ui:565
-#, fuzzy
 msgid "_Encryption mode:"
-msgstr ""
-"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Zifratze-modua:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Zifratze modua:"
+msgstr "_Zifratze-modua:"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:966 gtk/ui/gtk4/PrefsDialog.ui:700
 #: qt/PrefsDialog.ui:581
@@ -2488,13 +1879,8 @@ msgstr "Blokeo-zerrenda"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:980 gtk/ui/gtk4/PrefsDialog.ui:712
 #: qt/PrefsDialog.ui:587
-#, fuzzy
 msgid "Enable _blocklist:"
-msgstr ""
-"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Gaitu _blokeo-zerrenda:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Gaitu blokeo-_zerrenda:"
+msgstr "Gaitu _blokeo-zerrenda:"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:995 gtk/ui/gtk4/PrefsDialog.ui:725
 #: qt/PrefsDialog.ui:617
@@ -2505,13 +1891,8 @@ msgstr "Gaitu eguneratze _automatikoak"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1050 gtk/ui/gtk4/PrefsDialog.ui:766
 #: qt/PrefsDialog.ui:607
-#, fuzzy
 msgid "_Update"
-msgstr ""
-"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Eg_uneratu\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Eguneraketa"
+msgstr "Eg_uneratu"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1122 gtk/ui/gtk4/PrefsDialog.ui:814
 #: qt/PrefsDialog.ui:654
@@ -2532,33 +1913,18 @@ msgstr "Hautatu _ausazko ataka bat Transmission abiarazten den bakoitzean"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1167 gtk/ui/gtk4/PrefsDialog.ui:852
 #: qt/PrefsDialog.ui:704
-#, fuzzy
 msgid "Use UPnP or NAT-PMP port _forwarding from my router"
-msgstr ""
-"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Erabili UPnP edo NAT-PMP ataka-birbidalketa nire bideratzailetik\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Erabili UPnP edo NAT-PMP ataka berbidalketa nire router-etik"
+msgstr "_Erabili UPnP edo NAT-PMP ataka berbidalketa nire router-etik"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1229 gtk/ui/gtk4/PrefsDialog.ui:904
 #: qt/PrefsDialog.ui:680
-#, fuzzy
 msgid "Te_st Port"
-msgstr ""
-"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Probatu ataka\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Probatu _Ataka"
+msgstr "_Probatu ataka"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1265 gtk/ui/gtk4/PrefsDialog.ui:924
 #: qt/PrefsDialog.ui:714
-#, fuzzy
 msgid "Peer Limits"
-msgstr ""
-"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Kideen mugak\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Kideen Mugak"
+msgstr "Kideen mugak"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1281 gtk/ui/gtk4/PrefsDialog.ui:936
 #: qt/PrefsDialog.ui:720
@@ -2569,13 +1935,8 @@ msgstr "Gehienezko kide-kopurua _torrent bakoitzeko:"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1295 gtk/ui/gtk4/PrefsDialog.ui:948
 #: qt/PrefsDialog.ui:743
-#, fuzzy
 msgid "Maximum peers _overall:"
-msgstr ""
-"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Gehienezko kide-kopurua _guztira:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Gehienezko kide _guztira:"
+msgstr "Gehienezko kide-kopurua _guztira:"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1358 gtk/ui/gtk4/PrefsDialog.ui:998
 #: qt/PrefsDialog.ui:778
@@ -2596,13 +1957,8 @@ msgstr "Erabili PE_X kide gehiago aurkitzeko"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1380 gtk/ui/gtk4/PrefsDialog.ui:1015
 #: qt/PrefsDialog.ui:785
-#, fuzzy
 msgid "PEX is a tool for exchanging peer lists with the peers you're connected to."
-msgstr ""
-"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"PEX zurekin konektatuta dauden kideekin kide-zerrendak trukatzeko tresna bat da.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"PEX konektatuta zauden hartzaileekin kideen zerrendak trukatzeko tresna bat da."
+msgstr "PEX zurekin konektatuta dauden kideekin kide-zerrendak trukatzeko tresna bat da."
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1394 gtk/ui/gtk4/PrefsDialog.ui:1028
 #: qt/PrefsDialog.ui:798
@@ -2613,13 +1969,8 @@ msgstr "Erabili _DHT kide gehiago aurkitzeko"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1398 gtk/ui/gtk4/PrefsDialog.ui:1030
 #: qt/PrefsDialog.ui:795
-#, fuzzy
 msgid "DHT is a tool for finding peers without a tracker."
-msgstr ""
-"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"DHT kideak aztarnaririk gabe aurkitzeko tresna bat da.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"DHT aztarnari gabeko kideak bilatzeko tresna bat da."
+msgstr "DHT kideak aztarnaririk gabe aurkitzeko tresna bat da."
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1412 gtk/ui/gtk4/PrefsDialog.ui:1043
 #: qt/PrefsDialog.ui:808
@@ -2630,13 +1981,8 @@ msgstr "Erabili Kideen Aurkikuntza Lokala (LPD) kide gehiago aurkitzeko"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1416 gtk/ui/gtk4/PrefsDialog.ui:1045
 #: qt/PrefsDialog.ui:805
-#, fuzzy
 msgid "LPD is a tool for finding peers on your local network."
-msgstr ""
-"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"LDP zure sare lokalean kideak aurkitzeko tresna bat da.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"LPD zure sare lokalean kide gehiago bilatzeko tresna bat da."
+msgstr "LPD zure sare lokalean kide gehiago bilatzeko tresna bat da."
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1445 gtk/ui/gtk4/PrefsDialog.ui:1064
 #: qt/PrefsDialog.ui:818
@@ -2645,20 +1991,16 @@ msgstr "Aztarnari publiko lehenetsiak"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1471 gtk/ui/gtk4/PrefsDialog.ui:1086
 #: qt/PrefsDialog.ui:824
-#, fuzzy
 msgid ""
 "Trackers to use on all public torrents.\n"
 "\n"
 "To add a backup URL, add it on the next line after a primary URL.\n"
 "To add a new primary URL, add it after a blank line."
 msgstr ""
-"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
 "Torrent publiko guztietan erabili beharreko aztarnariak.\n"
 "\n"
 "Segurtasun-kopiarako URL bat gehitzeko, URL nagusiaren ondorengo errenkadan gehitu ezazu.\n"
-"URL nagusi berri bat gehitzeko, errenkada huts baten ondoren gehitu ezazu.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Torrent publiko guztietan erabiltzeko aztarnariak (''trackers'').To add a backup URL, add it on the next line after a primary URL.URLaren babeskopia gehitzeko, gehitu hurrengo lerroan, hasierako URLaren ostean.Oinarrizko URL bat gehitzekotan, gehitu lerro zuriaren ostean."
+"URL nagusi berri bat gehitzeko, errenkada huts baten ondoren gehitu ezazu."
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1503 gtk/ui/gtk4/PrefsDialog.ui:1108
 #: qt/PrefsDialog.ui:648
@@ -2678,13 +2020,8 @@ msgstr ""
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1556 gtk/ui/gtk4/PrefsDialog.ui:1151
 #: qt/PrefsDialog.ui:872
-#, fuzzy
 msgid "Show {appname} icon in the _notification area"
-msgstr ""
-"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Erakutsi {appname}-en ikonoa _jakinarazpen-arean\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Erakutsi _{appname} ikonoa jakinarazpen eremuan"
+msgstr "Erakutsi {appname}-en ikonoa _jakinarazpen-arean"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1588 gtk/ui/gtk4/PrefsDialog.ui:1171
 #: qt/PrefsDialog.ui:896
@@ -2693,53 +2030,28 @@ msgstr "Jakinarazpena"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1602 gtk/ui/gtk4/PrefsDialog.ui:1183
 #: qt/PrefsDialog.ui:902
-#, fuzzy
 msgid "Show a notification when torrents are a_dded"
-msgstr ""
-"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Erakutsi jakinarazpena torrent-ak _gehitzean\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Erakutsi jakinarazpen bat torreta gehitzen denean"
+msgstr "Erakutsi jakinarazpena torrent-ak _gehitzean"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1619 gtk/ui/gtk4/PrefsDialog.ui:1197
 #: qt/PrefsDialog.ui:909
-#, fuzzy
 msgid "Show a notification when torrents _finish"
-msgstr ""
-"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Erakutsi jakinarazpena torrent-ak _osatzean\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"E_rakutsi jakinarazpen bat torrentak amaitzean"
+msgstr "Erakutsi jakinarazpena torrent-ak _osatzean"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1636 gtk/ui/gtk4/PrefsDialog.ui:1211
 #: qt/PrefsDialog.ui:916
-#, fuzzy
 msgid "Play a _sound when torrents finish"
-msgstr ""
-"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Erre_produzitu soinu bat torrent-ak osatzean\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Jo soinu bat torrentek amaitzean"
+msgstr "Erre_produzitu soinu bat torrent-ak osatzean"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1691 gtk/ui/gtk4/PrefsDialog.ui:1248
 #: qt/PrefsDialog.ui:946
-#, fuzzy
 msgid "Remote Control"
-msgstr ""
-"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Urrutiko kontrola\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Urruneko Kontrola"
+msgstr "Urruneko Kontrola"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1711 gtk/ui/gtk4/PrefsDialog.ui:1265
 #: qt/PrefsDialog.ui:952
-#, fuzzy
 msgid "Allow _remote access"
-msgstr ""
-"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Baimendu _urrutitik sartzea\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ahalbidetu _urruneko sarbidea"
+msgstr "Ahalbidetu _urruneko sarbidea"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1727 gtk/ui/gtk4/PrefsDialog.ui:1274
 #: qt/PrefsDialog.ui:962
@@ -2755,45 +2067,23 @@ msgstr "HTTP _ataka:"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1765 gtk/ui/gtk4/PrefsDialog.ui:1303
 #: qt/PrefsDialog.ui:992
-#, fuzzy
 msgid "Use _authentication"
-msgstr ""
-"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Erabili _autentifikazioa\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"E_rabili autentifikazioa"
+msgstr "E_rabili autentifikazioa"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1785 gtk/ui/gtk4/PrefsDialog.ui:1317
 #: qt/PrefsDialog.ui:1002 qt/SessionDialog.ui:83
-#, fuzzy
 msgid "_Username:"
-msgstr ""
-"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"E_rabiltzaile-izena:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Erabiltzaile-izena:\n"
-"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Erabiltzaile-_izena:"
+msgstr "_Erabiltzaile-izena:"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1799 gtk/ui/gtk4/PrefsDialog.ui:1329
 #: qt/PrefsDialog.ui:1015 qt/SessionDialog.ui:96
-#, fuzzy
 msgid "Pass_word:"
-msgstr ""
-"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Pa_sahitza:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Pasahitza:"
+msgstr "Pa_sahitza:"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1811 gtk/ui/gtk4/PrefsDialog.ui:1342
 #: qt/PrefsDialog.ui:1032
-#, fuzzy
 msgid "Only allow these IP a_ddresses:"
-msgstr ""
-"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Onartue IP he_lbide hau, ez besterik:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"A_halbidetu IP helbide hauek bakarrik:"
+msgstr "A_halbidetu IP helbide hauek bakarrik:"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1833 gtk/ui/gtk4/PrefsDialog.ui:1358
 #: qt/PrefsDialog.ui:1042
@@ -2806,23 +2096,13 @@ msgstr "IP helbideetarako komodinak erabil daitezke, adibidez 192.168.*.*"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1975 gtk/ui/gtk4/PrefsDialog.ui:1467
 #: qt/PrefsDialog.ui:940
-#, fuzzy
 msgid "Remote"
-msgstr ""
-"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Urrutikoa\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Urrunekoa"
+msgstr "Urrunekoa"
 
 #: gtk/ui/gtk3/RelocateDialog.ui:7 gtk/ui/gtk4/RelocateDialog.ui:5
 #: qt/RelocateDialog.ui:14
-#, fuzzy
 msgid "Set Torrent Location"
-msgstr ""
-"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ezarri torrent-aren kokapena\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ezarri Torrentaren Kokalekua"
+msgstr "Ezarri torrent-aren kokapena"
 
 #: gtk/ui/gtk3/RelocateDialog.ui:35 gtk/ui/gtk4/RelocateDialog.ui:101
 msgid "_Apply"
@@ -2840,44 +2120,24 @@ msgstr "_Kokaleku berria:"
 
 #: gtk/ui/gtk3/RelocateDialog.ui:111 gtk/ui/gtk4/RelocateDialog.ui:55
 #: qt/RelocateDialog.ui:49
-#, fuzzy
 msgid "_Move from the current folder"
-msgstr ""
-"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Mugitu uneko karpetatik\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Mugitu oraingo karpetatik"
+msgstr "_Mugitu uneko karpetatik"
 
 #: gtk/ui/gtk3/RelocateDialog.ui:128 gtk/ui/gtk4/RelocateDialog.ui:68
 #: qt/RelocateDialog.ui:56
-#, fuzzy
 msgid "Local data is _already there"
-msgstr ""
-"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Datu lokalak _jadanik han daude\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Datu lokalak jadanik hor daude"
+msgstr "Datu lokalak _jadanik han daude"
 
 #: gtk/ui/gtk3/StatsDialog.ui:70 gtk/ui/gtk4/StatsDialog.ui:20
 #: qt/StatsDialog.ui:23
-#, fuzzy
 msgid "Current Session"
-msgstr ""
-"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Uneko saioa\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Oraingo Saioa"
+msgstr "Uneko saioa"
 
 #: gtk/ui/gtk3/StatsDialog.ui:144 gtk/ui/gtk3/StatsDialog.ui:304
 #: gtk/ui/gtk4/StatsDialog.ui:82 gtk/ui/gtk4/StatsDialog.ui:214
 #: qt/StatsDialog.ui:81 qt/StatsDialog.ui:210
-#, fuzzy
 msgid "Ratio:"
-msgstr ""
-"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Partekatze-tasa:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Maila:"
+msgstr "Maila:"
 
 #: gtk/ui/gtk3/StatsDialog.ui:173 gtk/ui/gtk3/StatsDialog.ui:333
 #: gtk/ui/gtk4/StatsDialog.ui:107 gtk/ui/gtk4/StatsDialog.ui:239
@@ -2988,19 +2248,10 @@ msgstr[0] "Orain dela {hours_ago:L} ordu"
 msgstr[1] "Orain dela {hours_ago:L} ordu"
 
 #: libtransmission-app/formatters.cc:75 qt/PrefsDialog.cc:508
-#, fuzzy
 msgid "{minutes_ago:L} minute ago"
 msgid_plural "{minutes_ago:L} minutes ago"
-msgstr[0] ""
-"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Orain dela {minutes_ago:L} minutu\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"duela minutu {minutes_ago:L}"
-msgstr[1] ""
-"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Orain dela {minutes_ago:L} minutu\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"duela {minutes_ago:L} minutu"
+msgstr[0] "Orain dela {minutes_ago:L} minutu"
+msgstr[1] "Orain dela {minutes_ago:L} minutu"
 
 #: libtransmission-app/formatters.cc:81
 msgid "{seconds_ago:L} second ago"
@@ -3023,26 +2274,16 @@ msgid "Got an error '{markup_begin}{error}{markup_end}' {time_span_ago}"
 msgstr "Errorea jaso da '{markup_begin}{error}{markup_end}' {time_span_ago}"
 
 #: libtransmission-app/formatters.cc:164
-#, fuzzy
 msgid "No updates scheduled"
-msgstr ""
-"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ez da eguneraketarik programatu\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ez dago eguneraketarik programatuta"
+msgstr "Ez da eguneraketarik programatu"
 
 #: libtransmission-app/formatters.cc:170
 msgid "Asking for more peers {time_span_from_now}"
 msgstr "Kide gehiago eskatzen {time_span_from_now}"
 
 #: libtransmission-app/formatters.cc:175
-#, fuzzy
 msgid "Queued to ask for more peers"
-msgstr ""
-"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Kide gehiago eskatzeko ilaratuta\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Kide gehiagoengatik galdetzeko ilaratuta"
+msgstr "Kide gehiago eskatzeko ilaratuta"
 
 #: libtransmission-app/formatters.cc:182
 msgid "Asked for more peers {markup_begin}{time_span_ago}{markup_end}"
@@ -3081,13 +2322,8 @@ msgid "Asking for peer counts {time_span_from_now}"
 msgstr "Kide kopuruaz galdetzen {time_span_from_now}"
 
 #: libtransmission-app/formatters.cc:244
-#, fuzzy
 msgid "Queued to ask for peer counts"
-msgstr ""
-"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Kide-kopurua eskatzeko ilaratuta\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Kide kopuruaz galdetzeko ilaratuta"
+msgstr "Kide-kopurua eskatzeko ilaratuta"
 
 #: libtransmission-app/formatters.cc:250
 msgid "Asked for peer counts {markup_begin}{time_span_ago}{markup_end}"
@@ -3108,38 +2344,16 @@ msgstr[1] "{hours:L} ordu"
 #. Translators: Spin box format, "Stop seeding if idle for: [ 5 minutes ]"
 #: libtransmission-app/formatters.cc:274 qt/DetailsDialog.cc:1263
 #: qt/PrefsDialog.cc:482
-#, fuzzy
 msgid "{minutes:L} minute"
 msgid_plural "{minutes:L} minutes"
-msgstr[0] ""
-"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{minutes:L} minutu\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"minutu {minutes:L}\n"
-"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{minutes:L} minutu"
-msgstr[1] ""
-"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{minutes:L} minutu\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{minutes:L} minutu\n"
-"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{minutes:L} minutu"
+msgstr[0] "{minutes:L} minutu"
+msgstr[1] "{minutes:L} minutu"
 
 #: libtransmission-app/formatters.cc:280
-#, fuzzy
 msgid "{seconds:L} second"
 msgid_plural "{seconds:L} seconds"
-msgstr[0] ""
-"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{seconds:L} segundo\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{seconds:L} segundu"
-msgstr[1] ""
-"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{seconds:L} segundo\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{seconds:L} segundu"
+msgstr[0] "{seconds:L} segundo"
+msgstr[1] "{seconds:L} segundo"
 
 #: libtransmission-app/formatters.cc:291
 msgid "{days_left:L} day left"

@@ -158,13 +158,8 @@ msgid_plural "Couldn't add duplicate torrents"
 msgstr[0] "无法添加重复的种子"
 
 #: gtk/Application.cc:1382 qt/AboutDialog.ui:43
-#, fuzzy
 msgid "A fast and easy BitTorrent client"
-msgstr ""
-"#-#-#-#-#  zh_CN.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"一个快速易用的 BitTorrent 客户端\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"一个快速、简单的 BitTorrent 客户端"
+msgstr "一个快速易用的 BitTorrent 客户端"
 
 #: gtk/Application.cc:1384 qt/AboutDialog.cc:28
 msgid "Copyright © The {appname} Project"
@@ -227,93 +222,48 @@ msgid "Use global settings"
 msgstr "使用全局设置"
 
 #: gtk/DetailsDialog.cc:441 qt/DetailsDialog.cc:1399
-#, fuzzy
 msgid "Seed regardless of ratio"
-msgstr ""
-"#-#-#-#-#  zh_CN.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"忽略分享率做种\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"无视分享率做种"
+msgstr "忽略分享率做种"
 
 #: gtk/DetailsDialog.cc:442 qt/DetailsDialog.cc:1400
-#, fuzzy
 msgid "Stop seeding at ratio:"
-msgstr ""
-"#-#-#-#-#  zh_CN.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"达到以下分享率停止做种：\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"停止做种分享率:"
+msgstr "达到以下分享率停止做种："
 
 #: gtk/DetailsDialog.cc:457 qt/DetailsDialog.cc:1403
-#, fuzzy
 msgid "Seed regardless of activity"
-msgstr ""
-"#-#-#-#-#  zh_CN.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"忽略活跃情况做种\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"无视活跃度做种"
+msgstr "忽略活跃情况做种"
 
 #: gtk/DetailsDialog.cc:458
 msgid "Stop seeding if idle for N minutes:"
 msgstr "空闲以下分钟数停止做种："
 
 #: gtk/DetailsDialog.cc:486 gtk/Torrent.cc:405 qt/Torrent.cc:298
-#, fuzzy
 msgid "Queued for verification"
-msgstr ""
-"#-#-#-#-#  zh_CN.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"已加入校验队列\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"等待验证"
+msgstr "等待验证"
 
 #: gtk/DetailsDialog.cc:489 qt/Torrent.cc:301
-#, fuzzy
 msgid "Verifying local data"
-msgstr ""
-"#-#-#-#-#  zh_CN.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"正在校验本地数据\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"正在验证本地数据"
+msgstr "正在验证本地数据"
 
 #: gtk/DetailsDialog.cc:492 gtk/Torrent.cc:408 qt/Torrent.cc:304
-#, fuzzy
 msgid "Queued for download"
-msgstr ""
-"#-#-#-#-#  zh_CN.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"已加入下载队列\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"排队下载"
+msgstr "排队下载"
 
 #: gtk/DetailsDialog.cc:495 gtk/FilterBar.cc:456 qt/FilterBar.cc:60
 #: qt/Torrent.cc:307
-#, fuzzy
 msgctxt "Verb"
 msgid "Downloading"
-msgstr ""
-"#-#-#-#-#  zh_CN.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"下载中\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"正在下载"
+msgstr "正在下载"
 
 #: gtk/DetailsDialog.cc:498 gtk/Torrent.cc:411 qt/Torrent.cc:310
-#, fuzzy
 msgid "Queued for seeding"
-msgstr ""
-"#-#-#-#-#  zh_CN.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"已排队做种\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"排队做种"
+msgstr "排队做种"
 
 #: gtk/DetailsDialog.cc:501 gtk/FilterBar.cc:460 qt/FilterBar.cc:59
 #: qt/Torrent.cc:313
-#, fuzzy
 msgctxt "Verb"
 msgid "Seeding"
-msgstr ""
-"#-#-#-#-#  zh_CN.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"做种中\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"正在做种"
+msgstr "正在做种"
 
 #: gtk/DetailsDialog.cc:504 gtk/FilterBar.cc:465 gtk/Torrent.cc:402
 #: qt/DetailsDialog.cc:516 qt/FilterBar.cc:62 qt/Torrent.cc:295
@@ -329,13 +279,8 @@ msgstr "已暂停"
 
 #: gtk/DetailsDialog.cc:524 gtk/DetailsDialog.cc:529 gtk/DetailsDialog.cc:614
 #: qt/DetailsDialog.cc:880 qt/DetailsDialog.cc:923
-#, fuzzy
 msgid "N/A"
-msgstr ""
-"#-#-#-#-#  zh_CN.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"N/A\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"不可用"
+msgstr "N/A"
 
 #: gtk/DetailsDialog.cc:538 gtk/FileList.cc:611 qt/DetailsDialog.cc:469
 #: qt/FileTreeItem.cc:265 qt/FileTreeView.cc:107
@@ -347,44 +292,24 @@ msgid "No Torrents Selected"
 msgstr "未选择种子"
 
 #: gtk/DetailsDialog.cc:561 qt/DetailsDialog.cc:799
-#, fuzzy
 msgid "Private to this tracker -- DHT and PEX disabled"
-msgstr ""
-"#-#-#-#-#  zh_CN.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"当前 Tracker 的私有种子——已禁用 DHT 和 PEX\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"当前 Tracker 设置为私有 -- DHT 和 PEX 被禁用"
+msgstr "当前 Tracker 的私有种子——已禁用 DHT 和 PEX"
 
 #: gtk/DetailsDialog.cc:561 qt/DetailsDialog.cc:799
 msgid "Public torrent"
 msgstr "公共种子"
 
 #: gtk/DetailsDialog.cc:606 qt/DetailsDialog.cc:888
-#, fuzzy
 msgid "Created by {creator} on {date}"
-msgstr ""
-"#-#-#-#-#  zh_CN.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"由 {creator} 于 {date} 创建\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"通过 {creator} 创建于 {date}"
+msgstr "由 {creator} 于 {date} 创建"
 
 #: gtk/DetailsDialog.cc:610 qt/DetailsDialog.cc:882
-#, fuzzy
 msgid "Created by {creator}"
-msgstr ""
-"#-#-#-#-#  zh_CN.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"由 {creator} 创建\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"通过 {creator} 创建"
+msgstr "由 {creator} 创建"
 
 #: gtk/DetailsDialog.cc:612 qt/DetailsDialog.cc:885
-#, fuzzy
 msgid "Created on {date}"
-msgstr ""
-"#-#-#-#-#  zh_CN.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"于 {date} 创建\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"创建于 {date}"
+msgstr "于 {date} 创建"
 
 #: gtk/DetailsDialog.cc:690 qt/DetailsDialog.cc:470 qt/DetailsDialog.cc:689
 #: qt/Formatter.cc:27 qt/Formatter.cc:49
@@ -417,22 +342,12 @@ msgid "{current_size} ({percent_done}% of {percent_available}% available; {unver
 msgstr "{current_size}（{percent_done}% / {percent_available}% 可用；{unverified_size} 未校验）"
 
 #: gtk/DetailsDialog.cc:816 qt/DetailsDialog.cc:613
-#, fuzzy
 msgid "{downloaded_size} (+{discarded_size} discarded after failed checksum)"
-msgstr ""
-"#-#-#-#-#  zh_CN.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{downloaded_size}（+{discarded_size} 校验和失败后被丢弃）\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{downloaded_size} (+{discarded_size} 校验失败后丢弃)"
+msgstr "{downloaded_size}（+{discarded_size} 校验和失败后被丢弃）"
 
 #: gtk/DetailsDialog.cc:837 qt/DetailsDialog.cc:636
-#, fuzzy
 msgid "{uploaded_size} (Ratio: {ratio})"
-msgstr ""
-"#-#-#-#-#  zh_CN.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{uploaded_size}（分享率：{ratio}）\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{uploaded_size} (分享率: {ratio})"
+msgstr "{uploaded_size}（分享率：{ratio}）"
 
 #: gtk/DetailsDialog.cc:866
 msgid "No errors"
@@ -443,76 +358,37 @@ msgid "Never"
 msgstr "从未"
 
 #: gtk/DetailsDialog.cc:883 qt/DetailsDialog.cc:713
-#, fuzzy
 msgid "Active now"
-msgstr ""
-"#-#-#-#-#  zh_CN.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"当前活跃\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"当前活动"
+msgstr "当前活跃"
 
 #: gtk/DetailsDialog.cc:1195 qt/DetailsDialog.cc:1086
-#, fuzzy
 msgid "Optimistic unchoke"
-msgstr ""
-"#-#-#-#-#  zh_CN.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"积极解锁（Optimistic unchoke）\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"开放式unchoke"
+msgstr "积极解锁（Optimistic unchoke）"
 
 #: gtk/DetailsDialog.cc:1199 qt/DetailsDialog.cc:1090
-#, fuzzy
 msgid "Downloading from this peer"
-msgstr ""
-"#-#-#-#-#  zh_CN.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"正从此节点下载\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"正在从该节点下载"
+msgstr "正从此节点下载"
 
 #: gtk/DetailsDialog.cc:1203 qt/DetailsDialog.cc:1094
-#, fuzzy
 msgid "We would download from this peer if they would let us"
-msgstr ""
-"#-#-#-#-#  zh_CN.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"若对方允许，将从此节点下载\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"如果对方允许，我们将从该节点下载"
+msgstr "若对方允许，将从此节点下载"
 
 #: gtk/DetailsDialog.cc:1207 qt/DetailsDialog.cc:1098
-#, fuzzy
 msgid "Uploading to peer"
-msgstr ""
-"#-#-#-#-#  zh_CN.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"正上传至此节点\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"正在上传给该节点"
+msgstr "正上传至此节点"
 
 #: gtk/DetailsDialog.cc:1211 qt/DetailsDialog.cc:1102
 #, fuzzy
 msgid "This peer would download from us if we would let them"
-msgstr ""
-"#-#-#-#-#  zh_CN.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"若对方允许，将从此节点下载\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"如果对方允许，我们将从该节点下载"
+msgstr "若对方允许，将从此节点下载"
 
 #: gtk/DetailsDialog.cc:1215 qt/DetailsDialog.cc:1106
-#, fuzzy
 msgid "Peer has unchoked us, but we're not interested"
-msgstr ""
-"#-#-#-#-#  zh_CN.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"节点已对我们解锁，但我们不感兴趣\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"节点已对我们开放，但我们不感兴趣"
+msgstr "节点已对我们解锁，但我们不感兴趣"
 
 #: gtk/DetailsDialog.cc:1219 qt/DetailsDialog.cc:1110
-#, fuzzy
 msgid "We unchoked this peer, but they're not interested"
-msgstr ""
-"#-#-#-#-#  zh_CN.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"我们已解锁此节点，但对方不感兴趣\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"我们已对此节点开放，但对方不感兴趣"
+msgstr "我们已解锁此节点，但对方不感兴趣"
 
 #: gtk/DetailsDialog.cc:1223 qt/DetailsDialog.cc:1069 qt/DetailsDialog.cc:1114
 msgid "Encrypted connection"
@@ -527,22 +403,12 @@ msgid "Peer was found through DHT"
 msgstr "通过 DHT 找到的节点"
 
 #: gtk/DetailsDialog.cc:1235 qt/DetailsDialog.cc:1126
-#, fuzzy
 msgid "Peer is an incoming connection"
-msgstr ""
-"#-#-#-#-#  zh_CN.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"通过入站连接的节点\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"节点是一个传入连接"
+msgstr "通过入站连接的节点"
 
 #: gtk/DetailsDialog.cc:1239 qt/DetailsDialog.cc:1130
-#, fuzzy
 msgid "Peer is connected over µTP"
-msgstr ""
-"#-#-#-#-#  zh_CN.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"通过 µTP 协议连接到的节点\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"通过 µTP 连接的节点"
+msgstr "通过 µTP 连接的节点"
 
 #: gtk/DetailsDialog.cc:1243 qt/DetailsDialog.cc:1134
 msgid "Peer supports holepunch (BEP 55)"
@@ -593,13 +459,8 @@ msgid "List contains invalid URLs"
 msgstr "列表包含无效的网址"
 
 #: gtk/DetailsDialog.cc:1734 gtk/FileList.cc:792 qt/Session.cc:267
-#, fuzzy
 msgid "Please correct the errors and try again."
-msgstr ""
-"#-#-#-#-#  zh_CN.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"请修正问题后重试。\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"请纠正问题后重试。"
+msgstr "请修正问题后重试。"
 
 #: gtk/DetailsDialog.cc:1814
 msgid "{torrent_name} - Add Tracker"
@@ -620,42 +481,22 @@ msgid_plural "Properties - {torrent_count:L} Torrents"
 msgstr[0] "属性—{torrent_count:L} 个种子"
 
 #: gtk/Dialogs.cc:53 qt/MainWindow.cc:1325
-#, fuzzy
 msgid "Remove torrent?"
-msgstr ""
-"#-#-#-#-#  zh_CN.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"移除 {count:L} 个 Torrents？\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"移除种子？"
+msgstr "移除种子？"
 
 #: gtk/Dialogs.cc:53 qt/MainWindow.cc:1328
-#, fuzzy
 msgid "Delete this torrent's downloaded files?"
-msgstr ""
-"#-#-#-#-#  zh_CN.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"删除这 {count:L} 个种子下载的文件吗？\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"删除该种子已下载文件？"
+msgstr "删除该种子已下载文件？"
 
 #: gtk/Dialogs.cc:56 qt/MainWindow.cc:1326
-#, fuzzy
 msgid "Remove {count:L} torrent?"
 msgid_plural "Remove {count:L} torrents?"
-msgstr[0] ""
-"#-#-#-#-#  zh_CN.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"移除 {count:L} 个 Torrents？\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"移除 {count:L} 个种子？"
+msgstr[0] "移除 {count:L} 个种子？"
 
 #: gtk/Dialogs.cc:58 qt/MainWindow.cc:1330
-#, fuzzy
 msgid "Delete this {count:L} torrent's downloaded files?"
 msgid_plural "Delete these {count:L} torrents' downloaded files?"
-msgstr[0] ""
-"#-#-#-#-#  zh_CN.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"删除这 {count:L} 个种子下载的文件吗？\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"删除这 {count:L} 个种子已下载文件？"
+msgstr[0] "删除这 {count:L} 个种子下载的文件吗？"
 
 #: gtk/Dialogs.cc:65 qt/MainWindow.cc:1337
 #, fuzzy
@@ -671,76 +512,36 @@ msgid "Once removed, you'll need the torrent files or magnet links to add them a
 msgstr "移除后，继续传输需要种子文件或磁力链接。"
 
 #: gtk/Dialogs.cc:68 qt/MainWindow.cc:1340
-#, fuzzy
 msgid "This torrent has not finished downloading."
-msgstr ""
-"#-#-#-#-#  zh_CN.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"此种子尚未完成下载。\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"该种子未完成下载。"
+msgstr "此种子尚未完成下载。"
 
 #: gtk/Dialogs.cc:69 qt/MainWindow.cc:1341
-#, fuzzy
 msgid "These torrents have not finished downloading."
-msgstr ""
-"#-#-#-#-#  zh_CN.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"此种子尚未完成下载。\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"这些种子未完成下载。"
+msgstr "这些种子未完成下载。"
 
 #: gtk/Dialogs.cc:71 qt/MainWindow.cc:1343
-#, fuzzy
 msgid "This torrent is connected to peers."
-msgstr ""
-"#-#-#-#-#  zh_CN.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"此 Torrent 已连接到其他节点。\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"该种子已连接节点。"
+msgstr "该种子已连接节点。"
 
 #: gtk/Dialogs.cc:71 qt/MainWindow.cc:1344
-#, fuzzy
 msgid "These torrents are connected to peers."
-msgstr ""
-"#-#-#-#-#  zh_CN.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"此 Torrent 已连接到其他节点。\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"这些种子已连接节点。"
+msgstr "这些种子已连接节点。"
 
 #: gtk/Dialogs.cc:74 qt/MainWindow.cc:1347
-#, fuzzy
 msgid "One of these torrents is connected to peers."
-msgstr ""
-"#-#-#-#-#  zh_CN.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"其中一些种子文件已经连接到了节点。\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"一个种子已连接节点。"
+msgstr "一个种子已连接节点。"
 
 #: gtk/Dialogs.cc:75 qt/MainWindow.cc:1348
-#, fuzzy
 msgid "Some of these torrents are connected to peers."
-msgstr ""
-"#-#-#-#-#  zh_CN.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"其中一些种子文件已经连接到了节点。\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"一些种子已连接节点。"
+msgstr "一些种子已连接节点。"
 
 #: gtk/Dialogs.cc:83 qt/MainWindow.cc:1356
-#, fuzzy
 msgid "One of these torrents has not finished downloading."
-msgstr ""
-"#-#-#-#-#  zh_CN.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"有一个种子尚未完成下载。\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"有一个种子未完成下载。"
+msgstr "有一个种子尚未完成下载。"
 
 #: gtk/Dialogs.cc:84 qt/MainWindow.cc:1357
-#, fuzzy
 msgid "Some of these torrents have not finished downloading."
-msgstr ""
-"#-#-#-#-#  zh_CN.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"有一个种子尚未完成下载。\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"一些种子未完成下载。"
+msgstr "一些种子未完成下载。"
 
 #: gtk/Dialogs.cc:100 gtk/MessageLogWindow.cc:269 gtk/OptionsDialog.cc:321
 #: gtk/PathButton.cc:306 gtk/StatsDialog.cc:114
@@ -774,13 +575,8 @@ msgstr "高"
 #: gtk/FileList.cc:603 gtk/Utils.cc:577 qt/DetailsDialog.cc:1395
 #: qt/FileTreeItem.cc:262 qt/FileTreeView.cc:107 qt/FileTreeView.cc:345
 #: qt/OptionsDialog.cc:96
-#, fuzzy
 msgid "Normal"
-msgstr ""
-"#-#-#-#-#  zh_CN.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"正常\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"中"
+msgstr "正常"
 
 #: gtk/FileList.cc:607 gtk/Utils.cc:578 qt/DetailsDialog.cc:1396
 #: qt/FileTreeItem.cc:256 qt/FileTreeView.cc:107 qt/FileTreeView.cc:346
@@ -818,33 +614,18 @@ msgid "All"
 msgstr "全部"
 
 #: gtk/FilterBar.cc:453 qt/FilterBar.cc:58
-#, fuzzy
 msgid "Active"
-msgstr ""
-"#-#-#-#-#  zh_CN.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"活跃\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"活动"
+msgstr "活跃"
 
 #: gtk/FilterBar.cc:469 qt/FilterBar.cc:63
-#, fuzzy
 msgctxt "Verb"
 msgid "Verifying"
-msgstr ""
-"#-#-#-#-#  zh_CN.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"校验中\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"正在验证"
+msgstr "正在验证"
 
 #: gtk/FilterBar.cc:471 gtk/FreeSpaceLabel.cc:57 qt/DetailsDialog.cc:1323
 #: qt/FilterBar.cc:64
-#, fuzzy
 msgid "Error"
-msgstr ""
-"#-#-#-#-#  zh_CN.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"出错\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"错误"
+msgstr "错误"
 
 #: gtk/FilterBar.cc:569 gtk/ui/gtk3/FilterBar.ui:13 gtk/ui/gtk4/FilterBar.ui:8
 #: qt/FilterBar.cc:193
@@ -908,66 +689,36 @@ msgid "Seed Forever"
 msgstr "一直做种"
 
 #: gtk/MainWindow.cc:528 qt/MainWindow.cc:390
-#, fuzzy
 msgid "Limit Download Speed"
-msgstr ""
-"#-#-#-#-#  zh_CN.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"限制下载速度\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"下载限速"
+msgstr "限制下载速度"
 
 #: gtk/MainWindow.cc:529 qt/MainWindow.cc:396
-#, fuzzy
 msgid "Limit Upload Speed"
-msgstr ""
-"#-#-#-#-#  zh_CN.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"限制上传速度\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"上传限速"
+msgstr "限制上传速度"
 
 #: gtk/MainWindow.cc:533 qt/MainWindow.cc:405
-#, fuzzy
 msgid "Stop Seeding at Ratio"
-msgstr ""
-"#-#-#-#-#  zh_CN.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"达到分享率后停止做种\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"停止做种分享率"
+msgstr "达到分享率后停止做种"
 
 #: gtk/MainWindow.cc:571 qt/MainWindow.cc:370 qt/MainWindow.cc:1113
-#, fuzzy
 msgid "Stop at Ratio ({ratio})"
-msgstr ""
-"#-#-#-#-#  zh_CN.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"达到分享率（{ratio}）后停止\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"停止分享率 ({ratio})"
+msgstr "达到分享率（{ratio}）后停止"
 
 #: gtk/MainWindow.cc:602 qt/MainWindow.ui:622
 msgid "Total Ratio"
 msgstr "总分享率"
 
 #: gtk/MainWindow.cc:603 qt/MainWindow.ui:630
-#, fuzzy
 msgid "Session Ratio"
-msgstr ""
-"#-#-#-#-#  zh_CN.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"当前会话分享率\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"会话分享率"
+msgstr "会话分享率"
 
 #: gtk/MainWindow.cc:604 qt/MainWindow.ui:638
 msgid "Total Transfer"
 msgstr "总传输量"
 
 #: gtk/MainWindow.cc:605 qt/MainWindow.ui:646
-#, fuzzy
 msgid "Session Transfer"
-msgstr ""
-"#-#-#-#-#  zh_CN.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"当前会话传输量\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"会话传输量"
+msgstr "会话传输量"
 
 #: gtk/MainWindow.cc:757 qt/MainWindow.cc:738
 msgid "Down: {downloaded_size}, Up: {uploaded_size}"
@@ -975,13 +726,8 @@ msgstr "下载: {downloaded_size}, 上传: {uploaded_size}"
 
 #: gtk/MainWindow.cc:760 gtk/Torrent.cc:424 qt/MainWindow.cc:741
 #: qt/TorrentDelegate.cc:291
-#, fuzzy
 msgid "Ratio: {ratio}"
-msgstr ""
-"#-#-#-#-#  zh_CN.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"分享率：{ratio}\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"分享率: {ratio}"
+msgstr "分享率：{ratio}"
 
 #: gtk/MainWindow.cc:782 qt/Speed.cc:19
 msgid "{download_speed} ▾"
@@ -1078,13 +824,8 @@ msgid "Torrent Complete"
 msgstr "种子已完成"
 
 #: gtk/Notify.cc:242 qt/Application.cc:340
-#, fuzzy
 msgid "Start Now"
-msgstr ""
-"#-#-#-#-#  zh_CN.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"立即开始\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"现在开始"
+msgstr "立即开始"
 
 #: gtk/Notify.cc:254 qt/Application.cc:341
 msgid "Torrent Added"
@@ -1123,35 +864,20 @@ msgid "Select File"
 msgstr "选择文件"
 
 #: gtk/PathButton.cc:344 qt/PathButton.cc:29 qt/PathButton.cc:98
-#, fuzzy
 msgid "(None)"
-msgstr ""
-"#-#-#-#-#  zh_CN.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"（无）\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"(无)"
+msgstr "（无）"
 
 #: gtk/PrefsDialog.cc:292 qt/PrefsDialog.cc:105
 msgid "Allow encryption"
 msgstr "允许加密"
 
 #: gtk/PrefsDialog.cc:293 qt/PrefsDialog.cc:106
-#, fuzzy
 msgid "Prefer encryption"
-msgstr ""
-"#-#-#-#-#  zh_CN.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"优先使用加密\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"偏好加密"
+msgstr "优先使用加密"
 
 #: gtk/PrefsDialog.cc:294 qt/PrefsDialog.cc:107
-#, fuzzy
 msgid "Require encryption"
-msgstr ""
-"#-#-#-#-#  zh_CN.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"需要加密\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"必须加密"
+msgstr "需要加密"
 
 #: gtk/PrefsDialog.cc:357 qt/PrefsDialog.cc:75
 msgid "Every Day"
@@ -1270,13 +996,9 @@ msgid "{upload_speed} ▴ {download_speed} ▾"
 msgstr "{upload_speed} ▴ {download_speed} ▾"
 
 #: gtk/Torrent.cc:416 qt/TorrentDelegate.cc:284
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Verifying local data ({percent_done}% tested)"
-msgstr ""
-"#-#-#-#-#  zh_CN.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"正在校验本地数据（已测试 {percent_done}%）\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"正在验证本地数据 (已测试 {percent_done}%)"
+msgstr "正在验证本地数据 (已测试 {percent_done}%)"
 
 #: gtk/Torrent.cc:443 qt/DetailsDialog.cc:565 qt/TorrentDelegate.cc:183
 msgid "{current_size} of {complete_size} ({percent_done}%)"
@@ -1287,26 +1009,16 @@ msgid "{current_size} of {complete_size} ({percent_complete}%), uploaded {upload
 msgstr "{current_size} / {complete_size} ({percent_complete}%)，已上传 {uploaded_size}（分享率：{ratio}，目标：{seed_ratio}）"
 
 #: gtk/Torrent.cc:465 qt/TorrentDelegate.cc:213
-#, fuzzy
 msgid "{current_size} of {complete_size} ({percent_complete}%), uploaded {uploaded_size} (Ratio: {ratio})"
-msgstr ""
-"#-#-#-#-#  zh_CN.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{current_size} of {complete_size} ({percent_complete}%)，已上传 {uploaded_size}（分享率：{ratio}）\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{current_size} / {complete_size} ({percent_complete}%), 已上传 {uploaded_size} (分享率: {ratio})"
+msgstr "{current_size} / {complete_size} ({percent_complete}%), 已上传 {uploaded_size} (分享率: {ratio})"
 
 #: gtk/Torrent.cc:474 qt/TorrentDelegate.cc:229
 msgid "{complete_size}, uploaded {uploaded_size} (Ratio: {ratio}, Goal: {seed_ratio})"
 msgstr "{complete_size}，已上传 {uploaded_size}（分享率：{ratio}，目标：{seed_ratio}）"
 
 #: gtk/Torrent.cc:482 qt/TorrentDelegate.cc:241
-#, fuzzy
 msgid "{complete_size}, uploaded {uploaded_size} (Ratio: {ratio})"
-msgstr ""
-"#-#-#-#-#  zh_CN.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{complete_size}，已上传 {uploaded_size}（分享率：{ratio}）\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{complete_size}, 已上传 {uploaded_size} (分享率: {ratio})"
+msgstr "{complete_size}，已上传 {uploaded_size}（分享率：{ratio}）"
 
 #. Translators: Second (optional) part of torrent progress string
 #: gtk/Torrent.cc:493 qt/TorrentDelegate.cc:254 qt/TorrentDelegate.cc:307
@@ -1352,24 +1064,14 @@ msgid_plural "Downloading from {active_count} webseeds"
 msgstr[0] "正在从 {active_count} 个 web 种子中下载"
 
 #: gtk/Torrent.cc:659 qt/TorrentDelegate.cc:351
-#, fuzzy
 msgid "Downloading from {active_count} of {connected_count} connected peer"
 msgid_plural "Downloading from {active_count} of {connected_count} connected peers"
-msgstr[0] ""
-"#-#-#-#-#  zh_CN.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"正在从 {active_count} / {connected_count} 个连接的节点中下载\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"正在下载自 {active_count} / {connected_count} 个已连接节点"
+msgstr[0] "正在从 {active_count} / {connected_count} 个连接的节点中下载"
 
 #: gtk/Torrent.cc:668 qt/TorrentDelegate.cc:380
-#, fuzzy
 msgid "Seeding to {active_count} of {connected_count} connected peer"
 msgid_plural "Seeding to {active_count} of {connected_count} connected peers"
-msgstr[0] ""
-"#-#-#-#-#  zh_CN.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"正在向 {active_count} / {connected_count} 个连接的节点做种上传\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"正在做种给 {active_count} / {connected_count} 个已连接节点"
+msgstr[0] "正在向 {active_count} / {connected_count} 个连接的节点做种上传"
 
 #: gtk/retransmission-gtk.desktop.in:2
 #: gtk/retransmission-gtk.metainfo.xml.in:11
@@ -1465,13 +1167,8 @@ msgid "Dese_lect All"
 msgstr "取消选择(_L)"
 
 #: gtk/transmission-menus.ui:68 qt/MainWindow.ui:474
-#, fuzzy
 msgid "_Preferences"
-msgstr ""
-"#-#-#-#-#  zh_CN.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"首选项(_P)\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"偏好设置(_P)"
+msgstr "首选项(_P)"
 
 #: gtk/transmission-menus.ui:73 qt/MainWindow.ui:192
 msgid "_Torrent"
@@ -1496,13 +1193,8 @@ msgstr "开始(_S)"
 
 #: gtk/transmission-menus.ui:98 gtk/transmission-menus.ui:363
 #: qt/MainWindow.ui:698
-#, fuzzy
 msgid "Start _Now"
-msgstr ""
-"#-#-#-#-#  zh_CN.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"立即开始(_N)\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"现在开始(_N)"
+msgstr "立即开始(_N)"
 
 #: gtk/transmission-menus.ui:104 gtk/transmission-menus.ui:369
 #: qt/MainWindow.ui:379
@@ -1518,43 +1210,23 @@ msgstr "队列"
 
 #: gtk/transmission-menus.ui:112 gtk/transmission-menus.ui:377
 #: qt/MainWindow.ui:712
-#, fuzzy
 msgid "Move to _Top"
-msgstr ""
-"#-#-#-#-#  zh_CN.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"移至顶部(_T)\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"置顶(_T)"
+msgstr "移至顶部(_T)"
 
 #: gtk/transmission-menus.ui:117 gtk/transmission-menus.ui:382
 #: qt/MainWindow.ui:717
-#, fuzzy
 msgid "Move _Up"
-msgstr ""
-"#-#-#-#-#  zh_CN.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"向上移动(_U)\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"上移(_U)"
+msgstr "向上移动(_U)"
 
 #: gtk/transmission-menus.ui:122 gtk/transmission-menus.ui:387
 #: qt/MainWindow.ui:725
-#, fuzzy
 msgid "Move _Down"
-msgstr ""
-"#-#-#-#-#  zh_CN.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"向下移动(_D)\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"下移(_D)"
+msgstr "向下移动(_D)"
 
 #: gtk/transmission-menus.ui:127 gtk/transmission-menus.ui:392
 #: qt/MainWindow.ui:733
-#, fuzzy
 msgid "Move to _Bottom"
-msgstr ""
-"#-#-#-#-#  zh_CN.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"移至底部(_B)\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"置底(_B)"
+msgstr "移至底部(_B)"
 
 #: gtk/transmission-menus.ui:134 gtk/transmission-menus.ui:399
 #: gtk/ui/gtk3/MainWindow.ui:54 gtk/ui/gtk3/MessageLogWindow.ui:66
@@ -1565,23 +1237,13 @@ msgstr "暂停(_P)"
 
 #: gtk/transmission-menus.ui:141 gtk/transmission-menus.ui:406
 #: qt/MainWindow.ui:675
-#, fuzzy
 msgid "Set _Location…"
-msgstr ""
-"#-#-#-#-#  zh_CN.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"设定位置(_L)…\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"设置位置(_L)…"
+msgstr "设置位置(_L)…"
 
 #: gtk/transmission-menus.ui:145 gtk/transmission-menus.ui:410
 #: qt/MainWindow.ui:401
-#, fuzzy
 msgid "_Verify Local Data"
-msgstr ""
-"#-#-#-#-#  zh_CN.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"校验本地数据(_V)\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"验证本地数据(_V)"
+msgstr "验证本地数据(_V)"
 
 #: gtk/transmission-menus.ui:151 gtk/transmission-menus.ui:416
 #: qt/MainWindow.ui:680
@@ -1590,13 +1252,8 @@ msgstr "复制磁力链接到剪贴板(_C)"
 
 #: gtk/transmission-menus.ui:164 gtk/transmission-menus.ui:429
 #: qt/MainWindow.ui:426
-#, fuzzy
 msgid "_Delete Files and Remove"
-msgstr ""
-"#-#-#-#-#  zh_CN.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"移除并删除文件(_D)\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"删除文件并移除(_D)"
+msgstr "移除并删除文件(_D)"
 
 #: gtk/transmission-menus.ui:170 qt/MainWindow.ui:244
 msgid "_View"
@@ -1620,103 +1277,53 @@ msgstr "状态栏(_S)"
 
 #: gtk/transmission-menus.ui:195 gtk/transmission-menus.ui:301
 #: qt/MainWindow.ui:526
-#, fuzzy
 msgid "Sort by _Activity"
-msgstr ""
-"#-#-#-#-#  zh_CN.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"按活跃度排列(_A)\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"按活动状态排序(_A)"
+msgstr "按活动状态排序(_A)"
 
 #: gtk/transmission-menus.ui:200 gtk/transmission-menus.ui:306
 #: qt/MainWindow.ui:534
-#, fuzzy
 msgid "Sort by A_ge"
-msgstr ""
-"#-#-#-#-#  zh_CN.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"按创建时间排列(_G)\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"按创建时间排序(_G)"
+msgstr "按创建时间排序(_G)"
 
 #: gtk/transmission-menus.ui:205 gtk/transmission-menus.ui:311
 #: qt/MainWindow.ui:550
-#, fuzzy
 msgid "Sort by _Name"
-msgstr ""
-"#-#-#-#-#  zh_CN.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"按名称排列(_N)\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"按名称排序(_N)"
+msgstr "按名称排序(_N)"
 
 #: gtk/transmission-menus.ui:210 gtk/transmission-menus.ui:316
 #: qt/MainWindow.ui:558
-#, fuzzy
 msgid "Sort by _Progress"
-msgstr ""
-"#-#-#-#-#  zh_CN.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"按进度排列(_P)\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"按进度排序(_P)"
+msgstr "按进度排序(_P)"
 
 #: gtk/transmission-menus.ui:215 gtk/transmission-menus.ui:321
 #: qt/MainWindow.ui:741
-#, fuzzy
 msgid "Sort by _Queue"
-msgstr ""
-"#-#-#-#-#  zh_CN.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"按队列排列(_Q)\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"按队列排序(_Q)"
+msgstr "按队列排序(_Q)"
 
 #: gtk/transmission-menus.ui:220 gtk/transmission-menus.ui:326
 #: qt/MainWindow.ui:566
-#, fuzzy
 msgid "Sort by Rati_o"
-msgstr ""
-"#-#-#-#-#  zh_CN.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"按分享率排列(_O)\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"按分享率排序(_O)"
+msgstr "按分享率排序(_O)"
 
 #: gtk/transmission-menus.ui:225 gtk/transmission-menus.ui:331
 #: qt/MainWindow.ui:574
-#, fuzzy
 msgid "Sort by Si_ze"
-msgstr ""
-"#-#-#-#-#  zh_CN.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"按大小排列(_Z)\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"按大小排序(_Z)"
+msgstr "按大小排序(_Z)"
 
 #: gtk/transmission-menus.ui:230 gtk/transmission-menus.ui:336
 #: qt/MainWindow.ui:582
-#, fuzzy
 msgid "Sort by Stat_e"
-msgstr ""
-"#-#-#-#-#  zh_CN.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"按状态排列(_E)\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"按状态排序(_E)"
+msgstr "按状态排序(_E)"
 
 #: gtk/transmission-menus.ui:235 gtk/transmission-menus.ui:341
 #: qt/MainWindow.ui:542
-#, fuzzy
 msgid "Sort by Time _Left"
-msgstr ""
-"#-#-#-#-#  zh_CN.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"按剩余时间排列(_L)\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"按剩余时间排序(_L)"
+msgstr "按剩余时间排序(_L)"
 
 #: gtk/transmission-menus.ui:242 gtk/transmission-menus.ui:348
 #: qt/MainWindow.ui:614
-#, fuzzy
 msgid "Re_verse Sort Order"
-msgstr ""
-"#-#-#-#-#  zh_CN.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"倒序排列(_V)\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"倒序(_V)"
+msgstr "倒序排列(_V)"
 
 #: gtk/transmission-menus.ui:247 gtk/ui/gtk3/PrefsDialog.ui:22
 #: gtk/ui/gtk4/PrefsDialog.ui:1484 qt/MainWindow.ui:233
@@ -1728,31 +1335,16 @@ msgid "Message _Log"
 msgstr "消息日志(_L)"
 
 #: gtk/transmission-menus.ui:255 qt/MainWindow.ui:590
-#, fuzzy
 msgid "_Statistics"
-msgstr ""
-"#-#-#-#-#  zh_CN.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"统计信息(_S)\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"统计(_S)"
+msgstr "统计信息(_S)"
 
 #: gtk/transmission-menus.ui:261 qt/MainWindow.ui:693
-#, fuzzy
 msgid "_Donate"
-msgstr ""
-"#-#-#-#-#  zh_CN.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"捐助(_D)\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"捐赠(_D)"
+msgstr "捐助(_D)"
 
 #: gtk/transmission-menus.ui:268 qt/MainWindow.ui:595
-#, fuzzy
 msgid "_Contents"
-msgstr ""
-"#-#-#-#-#  zh_CN.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"目录(_C)\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"内容(_C)"
+msgstr "目录(_C)"
 
 #: gtk/transmission-menus.ui:274 qt/MainWindow.ui:603
 msgid "_About"
@@ -1761,20 +1353,12 @@ msgstr "关于(_A)"
 #: gtk/transmission-menus.ui:297
 #, fuzzy
 msgid "_Sort Torrents By"
-msgstr ""
-"#-#-#-#-#  zh_CN.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"开始任务\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"开始种子"
+msgstr "开始任务"
 
 #: gtk/transmission-menus.ui:466 qt/MainWindow.cc:189
 #, fuzzy
 msgid "Alternative Speed _Limits"
-msgstr ""
-"#-#-#-#-#  zh_CN.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"速度限制\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"备用速度限制"
+msgstr "备用速度限制"
 
 #: gtk/ui/gtk3/AddTrackerDialog.ui:34 gtk/ui/gtk3/DetailsDialog.ui:701
 #: gtk/ui/gtk3/MakeProgressDialog.ui:51 gtk/ui/gtk3/PrefsDialog.ui:1898
@@ -1813,41 +1397,22 @@ msgstr "大小："
 
 #: gtk/ui/gtk3/DetailsDialog.ui:86 gtk/ui/gtk4/DetailsDialog.ui:48
 #: qt/DetailsDialog.ui:42
-#, fuzzy
 msgid "Have:"
-msgstr ""
-"#-#-#-#-#  zh_CN.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"进度：\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"已有："
+msgstr "已有："
 
 #: gtk/ui/gtk3/DetailsDialog.ui:98 gtk/ui/gtk3/StatsDialog.ui:86
 #: gtk/ui/gtk3/StatsDialog.ui:246 gtk/ui/gtk4/DetailsDialog.ui:58
 #: gtk/ui/gtk4/StatsDialog.ui:32 gtk/ui/gtk4/StatsDialog.ui:164
 #: qt/DetailsDialog.ui:106 qt/StatsDialog.ui:29 qt/StatsDialog.ui:158
-#, fuzzy
 msgid "Uploaded:"
-msgstr ""
-"#-#-#-#-#  zh_CN.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"已上传：\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"已上传：\n"
-"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"已上传:"
+msgstr "已上传："
 
 #: gtk/ui/gtk3/DetailsDialog.ui:110 gtk/ui/gtk3/StatsDialog.ui:115
 #: gtk/ui/gtk3/StatsDialog.ui:275 gtk/ui/gtk4/DetailsDialog.ui:68
 #: gtk/ui/gtk4/StatsDialog.ui:57 gtk/ui/gtk4/StatsDialog.ui:189
 #: qt/DetailsDialog.ui:138 qt/StatsDialog.ui:55 qt/StatsDialog.ui:184
-#, fuzzy
 msgid "Downloaded:"
-msgstr ""
-"#-#-#-#-#  zh_CN.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"已下载：\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"已下载：\n"
-"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"已下载:"
+msgstr "已下载："
 
 #: gtk/ui/gtk3/DetailsDialog.ui:122 gtk/ui/gtk4/DetailsDialog.ui:78
 #: qt/DetailsDialog.ui:170
@@ -1866,13 +1431,8 @@ msgstr "剩余时间："
 
 #: gtk/ui/gtk3/DetailsDialog.ui:158 gtk/ui/gtk4/DetailsDialog.ui:108
 #: qt/DetailsDialog.ui:266
-#, fuzzy
 msgid "Last activity:"
-msgstr ""
-"#-#-#-#-#  zh_CN.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"最后活动时间：\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"最后活动："
+msgstr "最后活动时间："
 
 #: gtk/ui/gtk3/DetailsDialog.ui:170 gtk/ui/gtk4/DetailsDialog.ui:118
 #: qt/DetailsDialog.ui:298
@@ -1886,33 +1446,18 @@ msgstr "详细信息"
 
 #: gtk/ui/gtk3/DetailsDialog.ui:368 gtk/ui/gtk4/DetailsDialog.ui:286
 #: qt/DetailsDialog.ui:371
-#, fuzzy
 msgid "Location:"
-msgstr ""
-"#-#-#-#-#  zh_CN.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"位置：\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"位置:"
+msgstr "位置："
 
 #: gtk/ui/gtk3/DetailsDialog.ui:380 gtk/ui/gtk4/DetailsDialog.ui:296
 #: qt/DetailsDialog.ui:403
-#, fuzzy
 msgid "Hash:"
-msgstr ""
-"#-#-#-#-#  zh_CN.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"散列值：\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"哈希值："
+msgstr "散列值："
 
 #: gtk/ui/gtk3/DetailsDialog.ui:392 gtk/ui/gtk4/DetailsDialog.ui:306
 #: qt/DetailsDialog.ui:435
-#, fuzzy
 msgid "Privacy:"
-msgstr ""
-"#-#-#-#-#  zh_CN.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"私密类型：\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"隐私性："
+msgstr "私密类型："
 
 #: gtk/ui/gtk3/DetailsDialog.ui:404 gtk/ui/gtk4/DetailsDialog.ui:316
 #: qt/DetailsDialog.ui:467
@@ -1921,13 +1466,8 @@ msgstr "来源："
 
 #: gtk/ui/gtk3/DetailsDialog.ui:416 gtk/ui/gtk4/DetailsDialog.ui:326
 #: qt/DetailsDialog.ui:499
-#, fuzzy
 msgid "Added:"
-msgstr ""
-"#-#-#-#-#  zh_CN.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"添加时间：\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"添加:"
+msgstr "添加时间："
 
 #: gtk/ui/gtk3/DetailsDialog.ui:430 gtk/ui/gtk4/DetailsDialog.ui:338
 #: qt/DetailsDialog.ui:542
@@ -1942,13 +1482,8 @@ msgstr "信息"
 #: gtk/ui/gtk3/DetailsDialog.ui:629 gtk/ui/gtk3/DetailsDialog.ui:757
 #: gtk/ui/gtk4/DetailsDialog.ui:502 gtk/ui/gtk4/DetailsDialog.ui:579
 #: qt/DetailsDialog.ui:600 qt/DetailsDialog.ui:664
-#, fuzzy
 msgid "Show _more details"
-msgstr ""
-"#-#-#-#-#  zh_CN.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"显示更多信息(_M)\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"显示更多细节(_M)"
+msgstr "显示更多信息(_M)"
 
 #: gtk/ui/gtk3/DetailsDialog.ui:652 gtk/ui/gtk4/DetailsDialog.ui:512
 #: qt/DetailsDialog.ui:569
@@ -1978,13 +1513,8 @@ msgstr "速度"
 
 #: gtk/ui/gtk3/DetailsDialog.ui:887 gtk/ui/gtk4/DetailsDialog.ui:663
 #: qt/DetailsDialog.ui:723
-#, fuzzy
 msgid "Honor global _limits"
-msgstr ""
-"#-#-#-#-#  zh_CN.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"服从全局限制(_L)\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"遵循全局限制(_L)"
+msgstr "服从全局限制(_L)"
 
 #: gtk/ui/gtk3/DetailsDialog.ui:903 gtk/ui/gtk4/DetailsDialog.ui:676
 msgid "Limit _download speed ({speed_units}):"
@@ -2012,13 +1542,8 @@ msgstr "分享率(_R)："
 
 #: gtk/ui/gtk3/DetailsDialog.ui:1027 gtk/ui/gtk4/DetailsDialog.ui:773
 #: qt/DetailsDialog.ui:819
-#, fuzzy
 msgid "_Idle:"
-msgstr ""
-"#-#-#-#-#  zh_CN.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"空闲(_I)：\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"闲置(_I)："
+msgstr "空闲(_I)："
 
 #: gtk/ui/gtk3/DetailsDialog.ui:1125 gtk/ui/gtk4/DetailsDialog.ui:831
 #: qt/DetailsDialog.ui:855
@@ -2053,13 +1578,8 @@ msgstr ""
 
 #: gtk/ui/gtk3/EditTrackersDialog.ui:118 gtk/ui/gtk4/EditTrackersDialog.ui:63
 #: qt/TrackersDialog.ui:47
-#, fuzzy
 msgid "Also see Default Public Trackers in Edit > Preferences > Network"
-msgstr ""
-"#-#-#-#-#  zh_CN.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"参见“默认公共Trackers”于 编辑 > 首选项 > 网络\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"另请参见 编辑>首选项>网络 中的默认公共 Tracker"
+msgstr "另请参见 编辑>首选项>网络 中的默认公共 Tracker"
 
 #: gtk/ui/gtk3/MainWindow.ui:21 gtk/ui/gtk4/MainWindow.ui:16
 #: qt/MainWindow.ui:324
@@ -2068,23 +1588,13 @@ msgstr "打开种子"
 
 #: gtk/ui/gtk3/MainWindow.ui:37 gtk/ui/gtk4/MainWindow.ui:42
 #: qt/MainWindow.ui:368
-#, fuzzy
 msgid "Start torrent"
-msgstr ""
-"#-#-#-#-#  zh_CN.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"开始任务\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"开始种子"
+msgstr "开始种子"
 
 #: gtk/ui/gtk3/MainWindow.ui:52 gtk/ui/gtk4/MainWindow.ui:52
 #: qt/MainWindow.ui:390
-#, fuzzy
 msgid "Pause torrent"
-msgstr ""
-"#-#-#-#-#  zh_CN.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"暂停任务\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"暂停种子"
+msgstr "暂停种子"
 
 #: gtk/ui/gtk3/MainWindow.ui:67 gtk/ui/gtk3/MainWindow.ui:69
 #: gtk/ui/gtk4/MainWindow.ui:62 gtk/ui/gtk4/MainWindow.ui:64
@@ -2104,24 +1614,14 @@ msgstr "种子"
 #: gtk/ui/gtk3/MainWindow.ui:251 gtk/ui/gtk3/StatsDialog.ui:7
 #: gtk/ui/gtk4/MainWindow.ui:190 gtk/ui/gtk4/StatsDialog.ui:5
 #: qt/MainWindow.ui:147 qt/StatsDialog.ui:14
-#, fuzzy
 msgid "Statistics"
-msgstr ""
-"#-#-#-#-#  zh_CN.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"统计信息\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"统计"
+msgstr "统计信息"
 
 #: gtk/ui/gtk3/MakeDialog.ui:7 gtk/ui/gtk3/MakeProgressDialog.ui:7
 #: gtk/ui/gtk4/MakeDialog.ui:5 gtk/ui/gtk4/MakeProgressDialog.ui:5
 #: qt/MakeDialog.ui:17 qt/MakeProgressDialog.ui:14
-#, fuzzy
 msgid "New Torrent"
-msgstr ""
-"#-#-#-#-#  zh_CN.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"新建种子\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"新种子"
+msgstr "新建种子"
 
 #: gtk/ui/gtk3/MakeDialog.ui:35 gtk/ui/gtk4/MakeDialog.ui:285
 #, fuzzy
@@ -2158,45 +1658,23 @@ msgstr "属性"
 
 #: gtk/ui/gtk3/MakeDialog.ui:249 gtk/ui/gtk4/MakeDialog.ui:159
 #: qt/MakeDialog.ui:111
-#, fuzzy
 msgid "_Trackers:"
-msgstr ""
-"#-#-#-#-#  zh_CN.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Tracker：\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Tracker(_T)："
+msgstr "Tracker(_T)："
 
 #: gtk/ui/gtk3/MakeDialog.ui:312 gtk/ui/gtk4/MakeDialog.ui:206
 #: qt/MakeDialog.ui:142
-#, fuzzy
 msgid "Co_mment:"
-msgstr ""
-"#-#-#-#-#  zh_CN.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"备注(_M)：\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"说明(_M)："
+msgstr "备注(_M)："
 
 #: gtk/ui/gtk3/MakeDialog.ui:339 gtk/ui/gtk4/MakeDialog.ui:229
 #: qt/MakeDialog.ui:156
-#, fuzzy
 msgid "_Source:"
-msgstr ""
-"#-#-#-#-#  zh_CN.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"来源(_S)\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"来源(_S):\n"
-"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"来源(_S)："
+msgstr "来源(_S)："
 
 #: gtk/ui/gtk3/MakeDialog.ui:366 gtk/ui/gtk4/MakeDialog.ui:252
 #: qt/MakeDialog.ui:170
-#, fuzzy
 msgid "_Private torrent"
-msgstr ""
-"#-#-#-#-#  zh_CN.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"私有种子(_P)\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"私有 Torrent(_P)"
+msgstr "私有种子(_P)"
 
 #: gtk/ui/gtk3/MakeProgressDialog.ui:81 gtk/ui/gtk4/MakeProgressDialog.ui:19
 msgid "Creating torrent…"
@@ -2256,25 +1734,13 @@ msgstr "移动种子文件至回收站(_V)"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:7 gtk/ui/gtk4/PrefsDialog.ui:5
 #: qt/PrefsDialog.ui:14
-#, fuzzy
 msgid "{appname} Preferences"
-msgstr ""
-"#-#-#-#-#  zh_CN.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{appname} 首选项\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{appname} 偏好设置"
+msgstr "{appname} 首选项"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:76 gtk/ui/gtk4/PrefsDialog.ui:29
 #: qt/PrefsDialog.ui:36
-#, fuzzy
 msgid "Speed Limits"
-msgstr ""
-"#-#-#-#-#  zh_CN.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"速度限制\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"限速\n"
-"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"速度限制"
+msgstr "速度限制"
 
 #. Checkbox to limit upload speed
 #: gtk/ui/gtk3/PrefsDialog.ui:90 gtk/ui/gtk4/PrefsDialog.ui:41
@@ -2288,13 +1754,8 @@ msgstr "下载（{speed_units}）(_D)："
 
 #: gtk/ui/gtk3/PrefsDialog.ui:159 gtk/ui/gtk4/PrefsDialog.ui:93
 #: qt/PrefsDialog.ui:85
-#, fuzzy
 msgid "Alternative Speed Limits"
-msgstr ""
-"#-#-#-#-#  zh_CN.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"速度限制\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"备用速度限制"
+msgstr "备用速度限制"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:193 gtk/ui/gtk4/PrefsDialog.ui:114
 #: qt/PrefsDialog.ui:100
@@ -2313,34 +1774,19 @@ msgstr "下载（{speed_units}）(_W)："
 
 #: gtk/ui/gtk3/PrefsDialog.ui:242 gtk/ui/gtk4/PrefsDialog.ui:154
 #: qt/PrefsDialog.ui:149
-#, fuzzy
 msgid "_Scheduled times:"
-msgstr ""
-"#-#-#-#-#  zh_CN.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"计划时间(_S)：\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"定时(_S)："
+msgstr "计划时间(_S)："
 
 #: gtk/ui/gtk3/PrefsDialog.ui:260 gtk/ui/gtk4/PrefsDialog.ui:167
 #: qt/PrefsDialog.ui:193
-#, fuzzy
 msgid "_On days:"
-msgstr ""
-"#-#-#-#-#  zh_CN.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"重复(_O)：\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"日子(_O)："
+msgstr "重复(_O)："
 
 #. Label goes between two time selectors, e.g. "limit speeds from [time] to [time]"
 #: gtk/ui/gtk3/PrefsDialog.ui:317 gtk/ui/gtk4/PrefsDialog.ui:210
 #: qt/PrefsDialog.ui:174
-#, fuzzy
 msgid "_to"
-msgstr ""
-"#-#-#-#-#  zh_CN.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"至(_T)\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"到(_T)"
+msgstr "至(_T)"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:395 gtk/ui/gtk4/PrefsDialog.ui:262
 msgctxt "Gerund"
@@ -2354,23 +1800,13 @@ msgstr "从此处自动添加种子文件(_F)："
 
 #: gtk/ui/gtk3/PrefsDialog.ui:424 gtk/ui/gtk4/PrefsDialog.ui:286
 #: qt/PrefsDialog.ui:257
-#, fuzzy
 msgid "Show the Torrent Options _dialog"
-msgstr ""
-"#-#-#-#-#  zh_CN.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"显示种子的选项对话框(_D)\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"显示 Torrent 的选项对话框(_D)"
+msgstr "显示种子的选项对话框(_D)"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:441 gtk/ui/gtk4/PrefsDialog.ui:300
 #: qt/PrefsDialog.ui:264
-#, fuzzy
 msgid "_Start added torrents"
-msgstr ""
-"#-#-#-#-#  zh_CN.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"添加种子后开始(_S)\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"添加 Torrent 后开始(_S)"
+msgstr "添加种子后开始(_S)"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:477 gtk/ui/gtk4/PrefsDialog.ui:328
 #: qt/PrefsDialog.ui:288
@@ -2386,13 +1822,8 @@ msgstr "下载队列"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:573 gtk/ui/gtk4/PrefsDialog.ui:401
 #: qt/PrefsDialog.ui:326
-#, fuzzy
 msgid "Ma_ximum active downloads:"
-msgstr ""
-"#-#-#-#-#  zh_CN.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"最大活跃下载数(_X)：\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"最大活动下载数(_X)："
+msgstr "最大活跃下载数(_X)："
 
 #: gtk/ui/gtk3/PrefsDialog.ui:587 gtk/ui/gtk4/PrefsDialog.ui:413
 msgid "Downloads sharing data in the last _N minutes are active:"
@@ -2405,13 +1836,8 @@ msgstr "未完成"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:650 gtk/ui/gtk4/PrefsDialog.ui:463
 #: qt/PrefsDialog.ui:381
-#, fuzzy
 msgid "Append \"._part\" to incomplete files' names"
-msgstr ""
-"#-#-#-#-#  zh_CN.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"在未完成的文件名附加“.part”扩展名(_P)\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"为未完成的文件名附加 \".part\" 扩展名(_P)"
+msgstr "在未完成的文件名附加“.part”扩展名(_P)"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:667 gtk/ui/gtk4/PrefsDialog.ui:477
 #: qt/PrefsDialog.ui:388
@@ -2444,13 +1870,8 @@ msgstr "限制"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:792 gtk/ui/gtk4/PrefsDialog.ui:570
 #: qt/PrefsDialog.ui:468
-#, fuzzy
 msgid "Stop seeding at _ratio:"
-msgstr ""
-"#-#-#-#-#  zh_CN.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"达到分享率后停止做种(_R)：\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"停止做种当分享率达到(_R)："
+msgstr "达到分享率后停止做种(_R)："
 
 #: gtk/ui/gtk3/PrefsDialog.ui:807 gtk/ui/gtk4/PrefsDialog.ui:582
 msgid "Stop seeding if idle for _N minutes:"
@@ -2518,13 +1939,8 @@ msgstr "在 Transmission 启动时随机选择端口(_R)"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1167 gtk/ui/gtk4/PrefsDialog.ui:852
 #: qt/PrefsDialog.ui:704
-#, fuzzy
 msgid "Use UPnP or NAT-PMP port _forwarding from my router"
-msgstr ""
-"#-#-#-#-#  zh_CN.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"启用路由器的 UPnP 或 NAT-PMP 端口转发功能(_F)\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"使用路由器的 UPnP 或 NAT-PMP 端口转发(_F)"
+msgstr "使用路由器的 UPnP 或 NAT-PMP 端口转发(_F)"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1229 gtk/ui/gtk4/PrefsDialog.ui:904
 #: qt/PrefsDialog.ui:680
@@ -2545,13 +1961,8 @@ msgstr "单个种子最大节点数(_T)："
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1295 gtk/ui/gtk4/PrefsDialog.ui:948
 #: qt/PrefsDialog.ui:743
-#, fuzzy
 msgid "Maximum peers _overall:"
-msgstr ""
-"#-#-#-#-#  zh_CN.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"全局最大节点数(_O)：\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"总体最大节点数量(_O)："
+msgstr "全局最大节点数(_O)："
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1358 gtk/ui/gtk4/PrefsDialog.ui:998
 #: qt/PrefsDialog.ui:778
@@ -2560,13 +1971,8 @@ msgstr "为节点连接启用 µTP(_T)"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1362 gtk/ui/gtk4/PrefsDialog.ui:1000
 #: qt/PrefsDialog.ui:775
-#, fuzzy
 msgid "µTP is a tool for reducing network congestion."
-msgstr ""
-"#-#-#-#-#  zh_CN.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"µTP 是一个用于减少网络拥堵的工具。\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"µTP 是一种减少网络拥堵的工具。"
+msgstr "µTP 是一个用于减少网络拥堵的工具。"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1376 gtk/ui/gtk4/PrefsDialog.ui:1013
 #: qt/PrefsDialog.ui:788
@@ -2577,13 +1983,8 @@ msgstr "使用 PEX 以寻找更多节点"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1380 gtk/ui/gtk4/PrefsDialog.ui:1015
 #: qt/PrefsDialog.ui:785
-#, fuzzy
 msgid "PEX is a tool for exchanging peer lists with the peers you're connected to."
-msgstr ""
-"#-#-#-#-#  zh_CN.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"PEX 是用于跟你相连接的节点交换节点名单的工具。\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"PEX 是一个用来与您所连接的节点交换节点列表的工具。"
+msgstr "PEX 是一个用来与您所连接的节点交换节点列表的工具。"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1394 gtk/ui/gtk4/PrefsDialog.ui:1028
 #: qt/PrefsDialog.ui:798
@@ -2594,13 +1995,8 @@ msgstr "使用 DHT 以寻找更多节点"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1398 gtk/ui/gtk4/PrefsDialog.ui:1030
 #: qt/PrefsDialog.ui:795
-#, fuzzy
 msgid "DHT is a tool for finding peers without a tracker."
-msgstr ""
-"#-#-#-#-#  zh_CN.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"DHT 是个无需 Tracker 的寻找节点的工具。\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"DHT 是一个没有 Tracker 也能寻找节点的工具。"
+msgstr "DHT 是一个没有 Tracker 也能寻找节点的工具。"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1412 gtk/ui/gtk4/PrefsDialog.ui:1043
 #: qt/PrefsDialog.ui:808
@@ -2611,13 +2007,8 @@ msgstr "使用本地节点发现（LPD）寻找更多节点"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1416 gtk/ui/gtk4/PrefsDialog.ui:1045
 #: qt/PrefsDialog.ui:805
-#, fuzzy
 msgid "LPD is a tool for finding peers on your local network."
-msgstr ""
-"#-#-#-#-#  zh_CN.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"LPD 是用于在本地网络寻找节点的工具。\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"LPD 是一个用来发现您本地网络节点的工具。"
+msgstr "LPD 是用于在本地网络寻找节点的工具。"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1445 gtk/ui/gtk4/PrefsDialog.ui:1064
 #: qt/PrefsDialog.ui:818
@@ -2665,33 +2056,18 @@ msgstr "通知"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1602 gtk/ui/gtk4/PrefsDialog.ui:1183
 #: qt/PrefsDialog.ui:902
-#, fuzzy
 msgid "Show a notification when torrents are a_dded"
-msgstr ""
-"#-#-#-#-#  zh_CN.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"添加种子后显示通知(_D)\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"当 Torrent 被添加时显示一个通知(_D)"
+msgstr "添加种子后显示通知(_D)"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1619 gtk/ui/gtk4/PrefsDialog.ui:1197
 #: qt/PrefsDialog.ui:909
-#, fuzzy
 msgid "Show a notification when torrents _finish"
-msgstr ""
-"#-#-#-#-#  zh_CN.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"种子完成后显示通知(_F)\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"当 Torrent 完成时显示一个通知(_F)"
+msgstr "种子完成后显示通知(_F)"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1636 gtk/ui/gtk4/PrefsDialog.ui:1211
 #: qt/PrefsDialog.ui:916
-#, fuzzy
 msgid "Play a _sound when torrents finish"
-msgstr ""
-"#-#-#-#-#  zh_CN.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"种子完成后播放声音(_S)\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"当 Torrent 完成时播放提示音(_S)"
+msgstr "种子完成后播放声音(_S)"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1691 gtk/ui/gtk4/PrefsDialog.ui:1248
 #: qt/PrefsDialog.ui:946
@@ -2717,37 +2093,18 @@ msgstr "HTTP 端口(_P)："
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1765 gtk/ui/gtk4/PrefsDialog.ui:1303
 #: qt/PrefsDialog.ui:992
-#, fuzzy
 msgid "Use _authentication"
-msgstr ""
-"#-#-#-#-#  zh_CN.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"使用认证(_A)\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"使用身份验证(_A)"
+msgstr "使用身份验证(_A)"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1785 gtk/ui/gtk4/PrefsDialog.ui:1317
 #: qt/PrefsDialog.ui:1002 qt/SessionDialog.ui:83
-#, fuzzy
 msgid "_Username:"
-msgstr ""
-"#-#-#-#-#  zh_CN.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"用户名(_U)：\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"用户名(_U)：\n"
-"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"用户名(_U):"
+msgstr "用户名(_U)："
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1799 gtk/ui/gtk4/PrefsDialog.ui:1329
 #: qt/PrefsDialog.ui:1015 qt/SessionDialog.ui:96
-#, fuzzy
 msgid "Pass_word:"
-msgstr ""
-"#-#-#-#-#  zh_CN.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"密码(_W)：\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"密码(_W)：\n"
-"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"密码(_W):"
+msgstr "密码(_W)："
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1811 gtk/ui/gtk4/PrefsDialog.ui:1342
 #: qt/PrefsDialog.ui:1032
@@ -2770,13 +2127,8 @@ msgstr "远程"
 
 #: gtk/ui/gtk3/RelocateDialog.ui:7 gtk/ui/gtk4/RelocateDialog.ui:5
 #: qt/RelocateDialog.ui:14
-#, fuzzy
 msgid "Set Torrent Location"
-msgstr ""
-"#-#-#-#-#  zh_CN.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"设定种子位置\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"设置 Torrent 位置"
+msgstr "设置 Torrent 位置"
 
 #: gtk/ui/gtk3/RelocateDialog.ui:35 gtk/ui/gtk4/RelocateDialog.ui:101
 msgid "_Apply"
@@ -2794,23 +2146,13 @@ msgstr "新的位置(_L)："
 
 #: gtk/ui/gtk3/RelocateDialog.ui:111 gtk/ui/gtk4/RelocateDialog.ui:55
 #: qt/RelocateDialog.ui:49
-#, fuzzy
 msgid "_Move from the current folder"
-msgstr ""
-"#-#-#-#-#  zh_CN.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"从当前文件夹移出(_M)\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"从当前文件夹移动(_M)"
+msgstr "从当前文件夹移出(_M)"
 
 #: gtk/ui/gtk3/RelocateDialog.ui:128 gtk/ui/gtk4/RelocateDialog.ui:68
 #: qt/RelocateDialog.ui:56
-#, fuzzy
 msgid "Local data is _already there"
-msgstr ""
-"#-#-#-#-#  zh_CN.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"本地数据已存在(_A)\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"本地数据已经在那里(_A)"
+msgstr "本地数据已存在(_A)"
 
 #: gtk/ui/gtk3/StatsDialog.ui:70 gtk/ui/gtk4/StatsDialog.ui:20
 #: qt/StatsDialog.ui:23
@@ -2820,24 +2162,14 @@ msgstr "当前会话"
 #: gtk/ui/gtk3/StatsDialog.ui:144 gtk/ui/gtk3/StatsDialog.ui:304
 #: gtk/ui/gtk4/StatsDialog.ui:82 gtk/ui/gtk4/StatsDialog.ui:214
 #: qt/StatsDialog.ui:81 qt/StatsDialog.ui:210
-#, fuzzy
 msgid "Ratio:"
-msgstr ""
-"#-#-#-#-#  zh_CN.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"分享率：\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"分享率:"
+msgstr "分享率："
 
 #: gtk/ui/gtk3/StatsDialog.ui:173 gtk/ui/gtk3/StatsDialog.ui:333
 #: gtk/ui/gtk4/StatsDialog.ui:107 gtk/ui/gtk4/StatsDialog.ui:239
 #: qt/StatsDialog.ui:107 qt/StatsDialog.ui:236
-#, fuzzy
 msgid "Duration:"
-msgstr ""
-"#-#-#-#-#  zh_CN.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"持续时间：\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"时长:"
+msgstr "持续时间："
 
 #: gtk/ui/gtk3/StatsDialog.ui:215 gtk/ui/gtk4/StatsDialog.ui:138
 #: qt/StatsDialog.ui:136
@@ -2959,13 +2291,8 @@ msgid "Got an error '{markup_begin}{error}{markup_end}' {time_span_ago}"
 msgstr "{time_span_ago}遇到错误“{markup_begin}{error}{markup_end}”"
 
 #: libtransmission-app/formatters.cc:164
-#, fuzzy
 msgid "No updates scheduled"
-msgstr ""
-"#-#-#-#-#  zh_CN.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"无计划更新\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"无更新计划任务"
+msgstr "无计划更新"
 
 #: libtransmission-app/formatters.cc:170
 msgid "Asking for more peers {time_span_from_now}"
@@ -3023,28 +2350,16 @@ msgid_plural "{days:L} days"
 msgstr[0] "{days:L} 天"
 
 #: libtransmission-app/formatters.cc:269
-#, fuzzy
 msgid "{hours:L} hour"
 msgid_plural "{hours:L} hours"
-msgstr[0] ""
-"#-#-#-#-#  zh_CN.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{hours:L} 小时\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{hours:L} 时"
+msgstr[0] "{hours:L} 小时"
 
 #. Translators: Spin box format, "Stop seeding if idle for: [ 5 minutes ]"
 #: libtransmission-app/formatters.cc:274 qt/DetailsDialog.cc:1263
 #: qt/PrefsDialog.cc:482
-#, fuzzy
 msgid "{minutes:L} minute"
 msgid_plural "{minutes:L} minutes"
-msgstr[0] ""
-"#-#-#-#-#  zh_CN.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{minutes:L} 分\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{minutes:L} 分钟\n"
-"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{minutes:L} 分"
+msgstr[0] "{minutes:L} 分钟"
 
 #: libtransmission-app/formatters.cc:280
 msgid "{seconds:L} second"
@@ -3565,13 +2880,8 @@ msgid "TiB"
 msgstr "TiB"
 
 #: libtransmission/values.cc:29
-#, fuzzy
 msgid "B/s"
-msgstr ""
-"#-#-#-#-#  zh_CN.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"字节/秒\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"B/秒"
+msgstr "B/秒"
 
 #: libtransmission/values.cc:29
 msgid "kB/s"
@@ -3826,13 +3136,8 @@ msgid_plural "Showing {visible_count:L} of {count:L} torrents"
 msgstr[0] "显示 {visible_count:L} / {count:L} 个种子"
 
 #: qt/MainWindow.cc:1214 qt/OptionsDialog.cc:54
-#, fuzzy
 msgid "Torrent Files (*.torrent);;All Files (*.*)"
-msgstr ""
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"种子文件 (*.torrent);;全部文件 (*.*)\n"
-"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Torrent 文件（*.torrent）；全部文件（*.*）"
+msgstr "种子文件 (*.torrent);;全部文件 (*.*)"
 
 #: qt/MainWindow.cc:1414
 msgid "{host} has not responded yet"
@@ -3926,13 +3231,7 @@ msgstr ""
 #: qt/OptionsDialog.ui:17
 #, fuzzy
 msgid "Sou_rce:"
-msgstr ""
-"#-#-#-#-#  zh_CN.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"来源(_S)\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"来源(_S):\n"
-"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"来源(_S)："
+msgstr "来源(_S)："
 
 #: qt/OptionsDialog.ui:81
 msgid "_Priority:"

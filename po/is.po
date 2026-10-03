@@ -152,13 +152,8 @@ msgstr[0] "Gat ekki bætt við torrent-skrá sem var þegar til staðar"
 msgstr[1] "Gat ekki bætt við torrent-skrám sem voru þegar til staðar"
 
 #: gtk/Application.cc:1382 qt/AboutDialog.ui:43
-#, fuzzy
 msgid "A fast and easy BitTorrent client"
-msgstr ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Hraðvikt torrent-forrit sem er auðvelt í notkun\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Hraðvikt BitTorrent-forrit sem er auðvelt í notkun"
+msgstr "Hraðvikt BitTorrent-forrit sem er auðvelt í notkun"
 
 #: gtk/Application.cc:1384 qt/AboutDialog.cc:28
 msgid "Copyright © The {appname} Project"
@@ -215,14 +210,9 @@ msgstr "Sett í niðurhalsbiðröð"
 
 #: gtk/DetailsDialog.cc:495 gtk/FilterBar.cc:456 qt/FilterBar.cc:60
 #: qt/Torrent.cc:307
-#, fuzzy
 msgctxt "Verb"
 msgid "Downloading"
-msgstr ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Verið að sækja\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Sæki"
+msgstr "Verið að sækja"
 
 #: gtk/DetailsDialog.cc:498 gtk/Torrent.cc:411 qt/Torrent.cc:310
 msgid "Queued for seeding"
@@ -269,22 +259,12 @@ msgid "Public torrent"
 msgstr "Opinbert torrent-streymi"
 
 #: gtk/DetailsDialog.cc:606 qt/DetailsDialog.cc:888
-#, fuzzy
 msgid "Created by {creator} on {date}"
-msgstr ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Búið til af {creator} {date}\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Búið til af {creator} þann {date}"
+msgstr "Búið til af {creator} þann {date}"
 
 #: gtk/DetailsDialog.cc:610 qt/DetailsDialog.cc:882
-#, fuzzy
 msgid "Created by {creator}"
-msgstr ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Búið til af {creator}\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Útbúið af {creator}"
+msgstr "Búið til af {creator}"
 
 #: gtk/DetailsDialog.cc:612 qt/DetailsDialog.cc:885
 msgid "Created on {date}"
@@ -323,22 +303,12 @@ msgid "{current_size} ({percent_done}% of {percent_available}% available; {unver
 msgstr "{current_size} ({percent_done}% af {percent_available}% tiltæku; {unverified_size} ekki sannreynt)"
 
 #: gtk/DetailsDialog.cc:816 qt/DetailsDialog.cc:613
-#, fuzzy
 msgid "{downloaded_size} (+{discarded_size} discarded after failed checksum)"
-msgstr ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{downloaded_size} (+{discarded_size} hent eftir að yfirferð gátsummu mistókst)\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{downloaded_size} (+{discarded_size} hent eftir misheppnaða gátsummu)"
+msgstr "{downloaded_size} (+{discarded_size} hent eftir að yfirferð gátsummu mistókst)"
 
 #: gtk/DetailsDialog.cc:837 qt/DetailsDialog.cc:636
-#, fuzzy
 msgid "{uploaded_size} (Ratio: {ratio})"
-msgstr ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{uploaded_size} (Deilihlutfall: {ratio})\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{uploaded_size} (deilihlutfall: {ratio})"
+msgstr "{uploaded_size} (Deilihlutfall: {ratio})"
 
 #: gtk/DetailsDialog.cc:866
 msgid "No errors"
@@ -482,34 +452,16 @@ msgid "Delete this torrent's downloaded files?"
 msgstr "Viltu eyða sóttum skrám úr þessari torrent-skrá?"
 
 #: gtk/Dialogs.cc:56 qt/MainWindow.cc:1326
-#, fuzzy
 msgid "Remove {count:L} torrent?"
 msgid_plural "Remove {count:L} torrents?"
-msgstr[0] ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Fjarlægja {count:L} torrent-streymi?\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Fjarlægja {count:L} torrent-streymi?"
-msgstr[1] ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Fjarlægja {count:L} torrent-skrárnar?\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Fjarlægja {count:L} torrent-streymi?"
+msgstr[0] "Fjarlægja {count:L} torrent-streymi?"
+msgstr[1] "Fjarlægja {count:L} torrent-streymi?"
 
 #: gtk/Dialogs.cc:58 qt/MainWindow.cc:1330
-#, fuzzy
 msgid "Delete this {count:L} torrent's downloaded files?"
 msgid_plural "Delete these {count:L} torrents' downloaded files?"
-msgstr[0] ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Viltu eyða {count:L} sóttri skrá úr þessu torrent-streymi?\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Viltu eyða {count:L} sóttri skrá úr þessu torrent-streymi?"
-msgstr[1] ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Viltu eyða sóttum skrám úr þessum {count:L} torrent-skrám?\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Viltu eyða {count:L} sóttum skrám úr þessu torrent-streymi?"
+msgstr[0] "Viltu eyða {count:L} sóttri skrá úr þessu torrent-streymi?"
+msgstr[1] "Viltu eyða sóttum skrám úr þessum {count:L} torrent-skrám?"
 
 #: gtk/Dialogs.cc:65 qt/MainWindow.cc:1337
 #, fuzzy
@@ -545,13 +497,8 @@ msgid "One of these torrents is connected to peers."
 msgstr "Ein af þessum torrent-skrám er tengd við jafningja."
 
 #: gtk/Dialogs.cc:75 qt/MainWindow.cc:1348
-#, fuzzy
 msgid "Some of these torrents are connected to peers."
-msgstr ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Einhverjar þessara torrent-skráa eru tengdar við jafningja.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Einhver þessara torrent-streyma eru tengd við jafningja."
+msgstr "Einhver þessara torrent-streyma eru tengd við jafningja."
 
 #: gtk/Dialogs.cc:83 qt/MainWindow.cc:1356
 msgid "One of these torrents has not finished downloading."
@@ -581,28 +528,14 @@ msgstr "_Eyða"
 #: gtk/transmission-menus.ui:423 gtk/ui/gtk3/DetailsDialog.ui:729
 #: gtk/ui/gtk3/PrefsDialog.ui:1913 gtk/ui/gtk4/DetailsDialog.ui:567
 #: gtk/ui/gtk4/PrefsDialog.ui:1424 qt/DetailsDialog.ui:644 qt/MainWindow.ui:412
-#, fuzzy
 msgid "_Remove"
-msgstr ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Fjarlægja\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"F_jarlægja\n"
-"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Fjarlægja"
+msgstr "F_jarlægja"
 
 #: gtk/FileList.cc:599 gtk/Utils.cc:576 qt/DetailsDialog.cc:1394
 #: qt/FileTreeItem.cc:259 qt/FileTreeView.cc:107 qt/FileTreeView.cc:344
 #: qt/OptionsDialog.cc:95
-#, fuzzy
 msgid "High"
-msgstr ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Hár\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Mikill\n"
-"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Hár"
+msgstr "Hár"
 
 #: gtk/FileList.cc:603 gtk/Utils.cc:577 qt/DetailsDialog.cc:1395
 #: qt/FileTreeItem.cc:262 qt/FileTreeView.cc:107 qt/FileTreeView.cc:345
@@ -613,15 +546,8 @@ msgstr "Venjulegur"
 #: gtk/FileList.cc:607 gtk/Utils.cc:578 qt/DetailsDialog.cc:1396
 #: qt/FileTreeItem.cc:256 qt/FileTreeView.cc:107 qt/FileTreeView.cc:346
 #: qt/OptionsDialog.cc:97
-#, fuzzy
 msgid "Low"
-msgstr ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Lágur\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Lítill\n"
-"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Lágur"
+msgstr "Lágur"
 
 #: gtk/FileList.cc:783 gtk/Session.cc:313
 msgid "Couldn't rename '{old_path}' as '{path}': {error} ({error_code})"
@@ -657,34 +583,19 @@ msgid "Active"
 msgstr "Virkt"
 
 #: gtk/FilterBar.cc:469 qt/FilterBar.cc:63
-#, fuzzy
 msgctxt "Verb"
 msgid "Verifying"
-msgstr ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Í yfirferð\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Staðfesti"
+msgstr "Í yfirferð"
 
 #: gtk/FilterBar.cc:471 gtk/FreeSpaceLabel.cc:57 qt/DetailsDialog.cc:1323
 #: qt/FilterBar.cc:64
-#, fuzzy
 msgid "Error"
-msgstr ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Villur\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Villa"
+msgstr "Villa"
 
 #: gtk/FilterBar.cc:569 gtk/ui/gtk3/FilterBar.ui:13 gtk/ui/gtk4/FilterBar.ui:8
 #: qt/FilterBar.cc:193
-#, fuzzy
 msgid "_Show:"
-msgstr ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Sýna:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"S_ýna:"
+msgstr "_Sýna:"
 
 #: gtk/FilterBar.cc:570
 msgid "_Show {count:L} of:"
@@ -755,13 +666,8 @@ msgid "Stop Seeding at Ratio"
 msgstr "Hætta að deila þegar deilihlutfallið nær"
 
 #: gtk/MainWindow.cc:571 qt/MainWindow.cc:370 qt/MainWindow.cc:1113
-#, fuzzy
 msgid "Stop at Ratio ({ratio})"
-msgstr ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Hætta við hlutfallið ({ratio})\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Hætta að deila þegar deilihlutfallið nær ({ratio})"
+msgstr "Hætta að deila þegar deilihlutfallið nær ({ratio})"
 
 #: gtk/MainWindow.cc:602 qt/MainWindow.ui:622
 msgid "Total Ratio"
@@ -923,13 +829,8 @@ msgid "Select File"
 msgstr "Veldu skrá"
 
 #: gtk/PathButton.cc:344 qt/PathButton.cc:29 qt/PathButton.cc:98
-#, fuzzy
 msgid "(None)"
-msgstr ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"(ekkert)\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"(Ekkert)"
+msgstr "(ekkert)"
 
 #: gtk/PrefsDialog.cc:292 qt/PrefsDialog.cc:105
 msgid "Allow encryption"
@@ -952,13 +853,8 @@ msgid "Weekdays"
 msgstr "Virka daga"
 
 #: gtk/PrefsDialog.cc:359 qt/PrefsDialog.cc:77
-#, fuzzy
 msgid "Weekends"
-msgstr ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Um helgar\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Helgar"
+msgstr "Um helgar"
 
 #: gtk/PrefsDialog.cc:550
 msgid "Blocklist has {count:L} entry"
@@ -976,13 +872,8 @@ msgid "Couldn't update blocklist"
 msgstr "Gat ekki uppfært bannlistann"
 
 #: gtk/PrefsDialog.cc:578 qt/PrefsDialog.cc:446
-#, fuzzy
 msgid "Getting new blocklist…"
-msgstr ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Sæki nýjan bannlista…\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Næ í nýjan bannlista…"
+msgstr "Sæki nýjan bannlista…"
 
 #: gtk/PrefsDialog.cc:925
 msgctxt "Port test status"
@@ -1085,26 +976,16 @@ msgid "{current_size} of {complete_size} ({percent_complete}%), uploaded {upload
 msgstr "{current_size} af {complete_size} ({percent_complete}%), sent inn {uploaded_size} (Deilihlutfall: {ratio}, Markmið: {seed_ratio})"
 
 #: gtk/Torrent.cc:465 qt/TorrentDelegate.cc:213
-#, fuzzy
 msgid "{current_size} of {complete_size} ({percent_complete}%), uploaded {uploaded_size} (Ratio: {ratio})"
-msgstr ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{current_size} af {complete_size} ({percent_complete}%), sent inn {uploaded_size} (Deilihlutfall: {ratio})\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{current_size} af {complete_size} ({percent_complete}%), sent {uploaded_size} (Deilihlutfall: {ratio})"
+msgstr "{current_size} af {complete_size} ({percent_complete}%), sent inn {uploaded_size} (Deilihlutfall: {ratio})"
 
 #: gtk/Torrent.cc:474 qt/TorrentDelegate.cc:229
 msgid "{complete_size}, uploaded {uploaded_size} (Ratio: {ratio}, Goal: {seed_ratio})"
 msgstr "{complete_size}, sent inn {uploaded_size} (Deilihlutfall: {ratio}, Markmið: {seed_ratio})"
 
 #: gtk/Torrent.cc:482 qt/TorrentDelegate.cc:241
-#, fuzzy
 msgid "{complete_size}, uploaded {uploaded_size} (Ratio: {ratio})"
-msgstr ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{complete_size}, sent inn {uploaded_size} (Deilihlutfall: {ratio})\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{complete_size}, sent {uploaded_size} (deilihlutfall: {ratio})"
+msgstr "{complete_size}, sent inn {uploaded_size} (Deilihlutfall: {ratio})"
 
 #. Translators: Second (optional) part of torrent progress string
 #: gtk/Torrent.cc:493 qt/TorrentDelegate.cc:254 qt/TorrentDelegate.cc:307
@@ -1153,34 +1034,16 @@ msgstr[0] "Sæki frá {active_count} vefdeilingu"
 msgstr[1] "Sæki frá {active_count} vefdeilingum"
 
 #: gtk/Torrent.cc:659 qt/TorrentDelegate.cc:351
-#, fuzzy
 msgid "Downloading from {active_count} of {connected_count} connected peer"
 msgid_plural "Downloading from {active_count} of {connected_count} connected peers"
-msgstr[0] ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Sæki frá {active_count} of {connected_count} tengdum jafningja\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Sæki frá {active_count} af {connected_count} tengdum jafningjum"
-msgstr[1] ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Sæki frá {active_count} of {connected_count} tengdum jafningjum\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Sæki frá {active_count} af {connected_count} tengdum jafningjum"
+msgstr[0] "Sæki frá {active_count} af {connected_count} tengdum jafningjum"
+msgstr[1] "Sæki frá {active_count} af {connected_count} tengdum jafningjum"
 
 #: gtk/Torrent.cc:668 qt/TorrentDelegate.cc:380
-#, fuzzy
 msgid "Seeding to {active_count} of {connected_count} connected peer"
 msgid_plural "Seeding to {active_count} of {connected_count} connected peers"
-msgstr[0] ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Deili til {active_count} af {connected_count} tengds jafningja\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Deili til {active_count} af {connected_count} tengdum jafningjum"
-msgstr[1] ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Deili til {active_count} af {connected_count} tengdra jafningja\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Deili til {active_count} af {connected_count} tengdum jafningjum"
+msgstr[0] "Deili til {active_count} af {connected_count} tengdum jafningjum"
+msgstr[1] "Deili til {active_count} af {connected_count} tengdum jafningjum"
 
 #: gtk/retransmission-gtk.desktop.in:2
 #: gtk/retransmission-gtk.metainfo.xml.in:11
@@ -1248,23 +1111,13 @@ msgstr "_Nýtt…"
 
 #: gtk/transmission-menus.ui:32 gtk/transmission-menus.ui:460
 #: qt/MainWindow.ui:437
-#, fuzzy
 msgid "_Start All"
-msgstr ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Sækja allar skrár\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ræ_sa allt"
+msgstr "Ræ_sa allt"
 
 #: gtk/transmission-menus.ui:37 gtk/transmission-menus.ui:455
 #: qt/MainWindow.ui:442
-#, fuzzy
 msgid "_Pause All"
-msgstr ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Bíða með allt\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Setja allt í _bið"
+msgstr "_Bíða með allt"
 
 #: gtk/transmission-menus.ui:45 gtk/transmission-menus.ui:473
 #: qt/MainWindow.ui:447
@@ -1274,15 +1127,8 @@ msgstr "_Hætta"
 #: gtk/transmission-menus.ui:50 gtk/ui/gtk3/DetailsDialog.ui:715
 #: gtk/ui/gtk4/DetailsDialog.ui:559 qt/DetailsDialog.ui:637
 #: qt/MainWindow.ui:222
-#, fuzzy
 msgid "_Edit"
-msgstr ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Breyta\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"B_reyta\n"
-"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Breyta"
+msgstr "_Breyta"
 
 #: gtk/transmission-menus.ui:55 qt/MainWindow.ui:458
 msgid "Select _All"
@@ -1308,24 +1154,14 @@ msgstr "_Eiginleikar"
 
 #: gtk/transmission-menus.ui:84 gtk/transmission-menus.ui:291
 #: qt/MainWindow.ui:354
-#, fuzzy
 msgid "Open Fold_er"
-msgstr ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Opna möppu\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Opna _möppu..."
+msgstr "_Opna möppu"
 
 #: gtk/transmission-menus.ui:92 gtk/transmission-menus.ui:357
 #: gtk/ui/gtk3/MainWindow.ui:39 gtk/ui/gtk4/MainWindow.ui:44
 #: qt/MainWindow.ui:365
-#, fuzzy
 msgid "_Start"
-msgstr ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Sækja\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Byrja"
+msgstr "_Byrja"
 
 #: gtk/transmission-menus.ui:98 gtk/transmission-menus.ui:363
 #: qt/MainWindow.ui:698
@@ -1334,13 +1170,8 @@ msgstr "Byrja _núna"
 
 #: gtk/transmission-menus.ui:104 gtk/transmission-menus.ui:369
 #: qt/MainWindow.ui:379
-#, fuzzy
 msgid "Ask Tracker for _More Peers"
-msgstr ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Biðja rekjara um _fleiri jafningja\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Biðja rekjara u_m fleiri jafningja"
+msgstr "Biðja rekjara u_m fleiri jafningja"
 
 #: gtk/transmission-menus.ui:107 gtk/transmission-menus.ui:372
 #: qt/MainWindow.ui:196
@@ -1383,13 +1214,8 @@ msgstr "Sti_lla staðsetningu…"
 
 #: gtk/transmission-menus.ui:145 gtk/transmission-menus.ui:410
 #: qt/MainWindow.ui:401
-#, fuzzy
 msgid "_Verify Local Data"
-msgstr ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Athuga þau gögn sem eru komin\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Skoða sótt gögn"
+msgstr "_Athuga þau gögn sem eru komin"
 
 #: gtk/transmission-menus.ui:151 gtk/transmission-menus.ui:416
 #: qt/MainWindow.ui:680
@@ -1406,55 +1232,30 @@ msgid "_View"
 msgstr "S_koða"
 
 #: gtk/transmission-menus.ui:174 qt/MainWindow.ui:485
-#, fuzzy
 msgid "_Compact View"
-msgstr ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Þjappa saman\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Þ_jöppuð sýn"
+msgstr "Þ_jöppuð sýn"
 
 #: gtk/transmission-menus.ui:181 qt/MainWindow.ui:502
 msgid "_Toolbar"
 msgstr "_Verkfærastika"
 
 #: gtk/transmission-menus.ui:185 qt/MainWindow.ui:510
-#, fuzzy
 msgid "_Filterbar"
-msgstr ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Síustika\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Síusti_ka"
+msgstr "Síusti_ka"
 
 #: gtk/transmission-menus.ui:189 qt/MainWindow.ui:518
-#, fuzzy
 msgid "_Statusbar"
-msgstr ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"S_töðustika\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Stöðustika"
+msgstr "S_töðustika"
 
 #: gtk/transmission-menus.ui:195 gtk/transmission-menus.ui:301
 #: qt/MainWindow.ui:526
-#, fuzzy
 msgid "Sort by _Activity"
-msgstr ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Raða eftir _virkni\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"R_aða eftir virkni"
+msgstr "R_aða eftir virkni"
 
 #: gtk/transmission-menus.ui:200 gtk/transmission-menus.ui:306
 #: qt/MainWindow.ui:534
-#, fuzzy
 msgid "Sort by A_ge"
-msgstr ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Raða eftir _aldri\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Raða eftir al_dri"
+msgstr "Raða eftir al_dri"
 
 #: gtk/transmission-menus.ui:205 gtk/transmission-menus.ui:311
 #: qt/MainWindow.ui:550
@@ -1473,85 +1274,45 @@ msgstr "Raða eftir _biðröð"
 
 #: gtk/transmission-menus.ui:220 gtk/transmission-menus.ui:326
 #: qt/MainWindow.ui:566
-#, fuzzy
 msgid "Sort by Rati_o"
-msgstr ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Raða eftir _hlutfalli\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Raða eftir deilihl_utfalli"
+msgstr "Raða eftir deilihl_utfalli"
 
 #: gtk/transmission-menus.ui:225 gtk/transmission-menus.ui:331
 #: qt/MainWindow.ui:574
-#, fuzzy
 msgid "Sort by Si_ze"
-msgstr ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Raða eftir s_tærð\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Raða eftir _stærð"
+msgstr "Raða eftir _stærð"
 
 #: gtk/transmission-menus.ui:230 gtk/transmission-menus.ui:336
 #: qt/MainWindow.ui:582
-#, fuzzy
 msgid "Sort by Stat_e"
-msgstr ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Raða eftir _stöðu\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Raða eftir s_töðu"
+msgstr "Raða eftir _stöðu"
 
 #: gtk/transmission-menus.ui:235 gtk/transmission-menus.ui:341
 #: qt/MainWindow.ui:542
-#, fuzzy
 msgid "Sort by Time _Left"
-msgstr ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Raða eftir _tíma sem er eftir\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Raða eftir tí_ma sem er eftir"
+msgstr "Raða eftir tí_ma sem er eftir"
 
 #: gtk/transmission-menus.ui:242 gtk/transmission-menus.ui:348
 #: qt/MainWindow.ui:614
-#, fuzzy
 msgid "Re_verse Sort Order"
-msgstr ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Öfug röð\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ö_fug röð"
+msgstr "_Öfug röð"
 
 #: gtk/transmission-menus.ui:247 gtk/ui/gtk3/PrefsDialog.ui:22
 #: gtk/ui/gtk4/PrefsDialog.ui:1484 qt/MainWindow.ui:233
-#, fuzzy
 msgid "_Help"
-msgstr ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Aðstoð\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Hjálp"
+msgstr "_Aðstoð"
 
 #: gtk/transmission-menus.ui:251
-#, fuzzy
 msgid "Message _Log"
-msgstr ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Skilaboð\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ski_laboðaskráning"
+msgstr "_Skilaboð"
 
 #: gtk/transmission-menus.ui:255 qt/MainWindow.ui:590
 msgid "_Statistics"
 msgstr "_Tölfræði"
 
 #: gtk/transmission-menus.ui:261 qt/MainWindow.ui:693
-#, fuzzy
 msgid "_Donate"
-msgstr ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Styðja\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"St_yrkja"
+msgstr "St_yrkja"
 
 #: gtk/transmission-menus.ui:268 qt/MainWindow.ui:595
 msgid "_Contents"
@@ -1610,13 +1371,8 @@ msgstr "Stærð:"
 
 #: gtk/ui/gtk3/DetailsDialog.ui:86 gtk/ui/gtk4/DetailsDialog.ui:48
 #: qt/DetailsDialog.ui:42
-#, fuzzy
 msgid "Have:"
-msgstr ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Komið í hús:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Hafa:"
+msgstr "Komið í hús:"
 
 #: gtk/ui/gtk3/DetailsDialog.ui:98 gtk/ui/gtk3/StatsDialog.ui:86
 #: gtk/ui/gtk3/StatsDialog.ui:246 gtk/ui/gtk4/DetailsDialog.ui:58
@@ -1639,13 +1395,8 @@ msgstr "Staða:"
 
 #: gtk/ui/gtk3/DetailsDialog.ui:134 gtk/ui/gtk4/DetailsDialog.ui:88
 #: qt/DetailsDialog.ui:202
-#, fuzzy
 msgid "Running time:"
-msgstr ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Tími í keyrslu:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Keyrslu tími:"
+msgstr "Tími í keyrslu:"
 
 #: gtk/ui/gtk3/DetailsDialog.ui:146 gtk/ui/gtk4/DetailsDialog.ui:98
 #: qt/DetailsDialog.ui:234
@@ -1705,13 +1456,8 @@ msgstr "Upplýsingar"
 #: gtk/ui/gtk3/DetailsDialog.ui:629 gtk/ui/gtk3/DetailsDialog.ui:757
 #: gtk/ui/gtk4/DetailsDialog.ui:502 gtk/ui/gtk4/DetailsDialog.ui:579
 #: qt/DetailsDialog.ui:600 qt/DetailsDialog.ui:664
-#, fuzzy
 msgid "Show _more details"
-msgstr ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Birta _frekari upplýsingar\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Sýna _frekari upplýsingar"
+msgstr "Birta _frekari upplýsingar"
 
 #: gtk/ui/gtk3/DetailsDialog.ui:652 gtk/ui/gtk4/DetailsDialog.ui:512
 #: qt/DetailsDialog.ui:569
@@ -1720,13 +1466,8 @@ msgstr "Jafningjar"
 
 #: gtk/ui/gtk3/DetailsDialog.ui:773 gtk/ui/gtk4/DetailsDialog.ui:587
 #: qt/DetailsDialog.ui:671
-#, fuzzy
 msgid "Show _backup trackers"
-msgstr ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Birta _öryggisrekjara\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Birta öryggisrekjara"
+msgstr "Birta _öryggisrekjara"
 
 #: gtk/ui/gtk3/DetailsDialog.ui:834 gtk/ui/gtk4/DetailsDialog.ui:627
 msgid "File listing not available for combined torrent properties"
@@ -1746,13 +1487,8 @@ msgstr "Hraði"
 
 #: gtk/ui/gtk3/DetailsDialog.ui:887 gtk/ui/gtk4/DetailsDialog.ui:663
 #: qt/DetailsDialog.ui:723
-#, fuzzy
 msgid "Honor global _limits"
-msgstr ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Virða _öll takmörk\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Virða ö_ll takmörk"
+msgstr "Virða _öll takmörk"
 
 #: gtk/ui/gtk3/DetailsDialog.ui:903 gtk/ui/gtk4/DetailsDialog.ui:676
 msgid "Limit _download speed ({speed_units}):"
@@ -1775,23 +1511,13 @@ msgstr "Deilitakmörk"
 
 #: gtk/ui/gtk3/DetailsDialog.ui:1013 gtk/ui/gtk4/DetailsDialog.ui:761
 #: qt/DetailsDialog.ui:792
-#, fuzzy
 msgid "_Ratio:"
-msgstr ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Hlutfall:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Deilihlutfall:"
+msgstr "_Deilihlutfall:"
 
 #: gtk/ui/gtk3/DetailsDialog.ui:1027 gtk/ui/gtk4/DetailsDialog.ui:773
 #: qt/DetailsDialog.ui:819
-#, fuzzy
 msgid "_Idle:"
-msgstr ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Iðjulaus:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Aðgerðalaust:"
+msgstr "_Aðgerðalaust:"
 
 #: gtk/ui/gtk3/DetailsDialog.ui:1125 gtk/ui/gtk4/DetailsDialog.ui:831
 #: qt/DetailsDialog.ui:855
@@ -1800,13 +1526,8 @@ msgstr "Tengingar við jafningja"
 
 #: gtk/ui/gtk3/DetailsDialog.ui:1141 gtk/ui/gtk4/DetailsDialog.ui:843
 #: qt/DetailsDialog.ui:861
-#, fuzzy
 msgid "_Maximum peers:"
-msgstr ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Hámarksfjöldi jafningja:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Há_marksfjöldi jafningja:"
+msgstr "_Hámarksfjöldi jafningja:"
 
 #: gtk/ui/gtk3/DetailsDialog.ui:1180 gtk/ui/gtk3/MainWindow.ui:169
 #: gtk/ui/gtk3/PrefsDialog.ui:1344 gtk/ui/gtk4/DetailsDialog.ui:871
@@ -1817,13 +1538,8 @@ msgstr "Valkostir"
 
 #: gtk/ui/gtk3/EditTrackersDialog.ui:67 gtk/ui/gtk4/EditTrackersDialog.ui:20
 #: qt/TrackersDialog.ui:20
-#, fuzzy
 msgid "Tracker Announce URLs"
-msgstr ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Slóðatilkynningar rekjara\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Tilkynningaslóðir rekjara"
+msgstr "Tilkynningaslóðir rekjara"
 
 #: gtk/ui/gtk3/EditTrackersDialog.ui:83 gtk/ui/gtk3/MakeDialog.ui:294
 #: gtk/ui/gtk4/EditTrackersDialog.ui:32 gtk/ui/gtk4/MakeDialog.ui:193
@@ -1889,13 +1605,8 @@ msgstr "F_ramlög"
 
 #: gtk/ui/gtk3/MakeDialog.ui:85 gtk/ui/gtk4/MakeDialog.ui:32
 #: qt/MakeDialog.ui:29
-#, fuzzy
 msgid "Sa_ve to:"
-msgstr ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Vi_sta í:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Vista í:"
+msgstr "Vi_sta í:"
 
 #: gtk/ui/gtk3/MakeDialog.ui:110 gtk/ui/gtk4/MakeDialog.ui:54
 #: qt/MakeDialog.ui:42
@@ -1921,23 +1632,13 @@ msgstr "Eiginleikar"
 
 #: gtk/ui/gtk3/MakeDialog.ui:249 gtk/ui/gtk4/MakeDialog.ui:159
 #: qt/MakeDialog.ui:111
-#, fuzzy
 msgid "_Trackers:"
-msgstr ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Rekjarar:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Re_kjarar"
+msgstr "_Rekjarar:"
 
 #: gtk/ui/gtk3/MakeDialog.ui:312 gtk/ui/gtk4/MakeDialog.ui:206
 #: qt/MakeDialog.ui:142
-#, fuzzy
 msgid "Co_mment:"
-msgstr ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"A_thugasemd:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Athugase_md:"
+msgstr "A_thugasemd:"
 
 #: gtk/ui/gtk3/MakeDialog.ui:339 gtk/ui/gtk4/MakeDialog.ui:229
 #: qt/MakeDialog.ui:156
@@ -1946,13 +1647,8 @@ msgstr "_Uppruni:"
 
 #: gtk/ui/gtk3/MakeDialog.ui:366 gtk/ui/gtk4/MakeDialog.ui:252
 #: qt/MakeDialog.ui:170
-#, fuzzy
 msgid "_Private torrent"
-msgstr ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Einka-torrent-streymi\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Einka torrent-streymi"
+msgstr "_Einka-torrent-streymi"
 
 #: gtk/ui/gtk3/MakeProgressDialog.ui:81 gtk/ui/gtk4/MakeProgressDialog.ui:19
 msgid "Creating torrent…"
@@ -1989,13 +1685,8 @@ msgstr "Veldu upprunaskrá"
 
 #: gtk/ui/gtk3/OptionsDialog.ui:91 gtk/ui/gtk4/OptionsDialog.ui:41
 #: qt/OptionsDialog.ui:39
-#, fuzzy
 msgid "_Destination folder:"
-msgstr ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Staðsetning:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Móttökumappa:"
+msgstr "_Móttökumappa:"
 
 #: gtk/ui/gtk3/OptionsDialog.ui:107 gtk/ui/gtk4/OptionsDialog.ui:55
 #: qt/OptionsDialog.cc:78 qt/PrefsDialog.cc:522
@@ -2017,13 +1708,8 @@ msgstr "_Henda torrent-skránni í ruslið"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:7 gtk/ui/gtk4/PrefsDialog.ui:5
 #: qt/PrefsDialog.ui:14
-#, fuzzy
 msgid "{appname} Preferences"
-msgstr ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Stillingar á {appname}\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Kjörstillingar {appname}"
+msgstr "Kjörstillingar {appname}"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:76 gtk/ui/gtk4/PrefsDialog.ui:29
 #: qt/PrefsDialog.ui:36
@@ -2062,23 +1748,13 @@ msgstr "Niður_hal ({speed_units}):"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:242 gtk/ui/gtk4/PrefsDialog.ui:154
 #: qt/PrefsDialog.ui:149
-#, fuzzy
 msgid "_Scheduled times:"
-msgstr ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ákveðnir _tímar:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Áætlaðir _tímar:"
+msgstr "Ákveðnir _tímar:"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:260 gtk/ui/gtk4/PrefsDialog.ui:167
 #: qt/PrefsDialog.ui:193
-#, fuzzy
 msgid "_On days:"
-msgstr ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Dagana:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Vikudagana:"
+msgstr "_Dagana:"
 
 #. Label goes between two time selectors, e.g. "limit speeds from [time] to [time]"
 #: gtk/ui/gtk3/PrefsDialog.ui:317 gtk/ui/gtk4/PrefsDialog.ui:210
@@ -2098,13 +1774,8 @@ msgstr "_Bæta sjálfkrafa við torrent-skrám frá:"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:424 gtk/ui/gtk4/PrefsDialog.ui:286
 #: qt/PrefsDialog.ui:257
-#, fuzzy
 msgid "Show the Torrent Options _dialog"
-msgstr ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Birta _stillingaglugga torrent-streyma\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Birta stillinga_glugga torrent-streyma"
+msgstr "Birta _stillingaglugga torrent-streyma"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:441 gtk/ui/gtk4/PrefsDialog.ui:300
 #: qt/PrefsDialog.ui:264
@@ -2125,13 +1796,8 @@ msgstr "Niðurhalsbiðröð"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:573 gtk/ui/gtk4/PrefsDialog.ui:401
 #: qt/PrefsDialog.ui:326
-#, fuzzy
 msgid "Ma_ximum active downloads:"
-msgstr ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Hámarksfjöldi virkra niðurhala:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Hámar_ksfjöldi virkra niðurhala:"
+msgstr "_Hámarksfjöldi virkra niðurhala:"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:587 gtk/ui/gtk4/PrefsDialog.ui:413
 msgid "Downloads sharing data in the last _N minutes are active:"
@@ -2144,13 +1810,8 @@ msgstr "Óklárað"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:650 gtk/ui/gtk4/PrefsDialog.ui:463
 #: qt/PrefsDialog.ui:381
-#, fuzzy
 msgid "Append \"._part\" to incomplete files' names"
-msgstr ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Bæta „._part“ við ókláruð skráaheiti\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Bæta „.._part“ við ókláruð skráaheiti"
+msgstr "Bæta „._part“ við ókláruð skráaheiti"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:667 gtk/ui/gtk4/PrefsDialog.ui:477
 #: qt/PrefsDialog.ui:388
@@ -2183,13 +1844,8 @@ msgstr "Takmörk"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:792 gtk/ui/gtk4/PrefsDialog.ui:570
 #: qt/PrefsDialog.ui:468
-#, fuzzy
 msgid "Stop seeding at _ratio:"
-msgstr ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Hætta að deila við _deilihlutfall:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Hætta að deila þega_r deilihlutfallið nær:"
+msgstr "Hætta að deila þega_r deilihlutfallið nær:"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:807 gtk/ui/gtk4/PrefsDialog.ui:582
 msgid "Stop seeding if idle for _N minutes:"
@@ -2213,13 +1869,8 @@ msgstr "Gagnaleynd"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:928 gtk/ui/gtk4/PrefsDialog.ui:673
 #: qt/PrefsDialog.ui:565
-#, fuzzy
 msgid "_Encryption mode:"
-msgstr ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Dulkóðunarhamur:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Dulritunarhamur:"
+msgstr "_Dulritunarhamur:"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:966 gtk/ui/gtk4/PrefsDialog.ui:700
 #: qt/PrefsDialog.ui:581
@@ -2262,23 +1913,13 @@ msgstr "Velja _handahófskennda gátt þegar forritið er opnað"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1167 gtk/ui/gtk4/PrefsDialog.ui:852
 #: qt/PrefsDialog.ui:704
-#, fuzzy
 msgid "Use UPnP or NAT-PMP port _forwarding from my router"
-msgstr ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Nota UPnP eða NAT-PMP gáttarframvísun frá _beininum\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Nota UPnP eða NAT-PMP endurbeiningu gáttar fyrir beininn minn"
+msgstr "Nota UPnP eða NAT-PMP gáttarframvísun frá _beininum"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1229 gtk/ui/gtk4/PrefsDialog.ui:904
 #: qt/PrefsDialog.ui:680
-#, fuzzy
 msgid "Te_st Port"
-msgstr ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Prófa gáttina\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Prófa _gátt"
+msgstr "_Prófa gáttina"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1265 gtk/ui/gtk4/PrefsDialog.ui:924
 #: qt/PrefsDialog.ui:714
@@ -2294,13 +1935,8 @@ msgstr "Hámarksfjöldi jafningja á _hvert torrent-streymi:"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1295 gtk/ui/gtk4/PrefsDialog.ui:948
 #: qt/PrefsDialog.ui:743
-#, fuzzy
 msgid "Maximum peers _overall:"
-msgstr ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Hámarksfjöldi jafningja _yfir höfuð:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Hámarksfjöldi jafningja alls:"
+msgstr "_Hámarksfjöldi jafningja alls:"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1358 gtk/ui/gtk4/PrefsDialog.ui:998
 #: qt/PrefsDialog.ui:778
@@ -2345,13 +1981,8 @@ msgstr "Nota _Local Peer Discovery til að finna fleiri jafningja"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1416 gtk/ui/gtk4/PrefsDialog.ui:1045
 #: qt/PrefsDialog.ui:805
-#, fuzzy
 msgid "LPD is a tool for finding peers on your local network."
-msgstr ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"LPD finnur jafningja á staðværu (‚local‘) neti.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"LPD finnur jafningja á staðarnetinu þínu."
+msgstr "LPD finnur jafningja á staðarnetinu þínu."
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1445 gtk/ui/gtk4/PrefsDialog.ui:1064
 #: qt/PrefsDialog.ui:818
@@ -2389,13 +2020,8 @@ msgstr ""
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1556 gtk/ui/gtk4/PrefsDialog.ui:1151
 #: qt/PrefsDialog.ui:872
-#, fuzzy
 msgid "Show {appname} icon in the _notification area"
-msgstr ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Birta {appname}-tákn í _tilkynningasvæðinu\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Birta {appname}-tákn í tilky_nningasvæðinu"
+msgstr "Birta {appname}-tákn í _tilkynningasvæðinu"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1588 gtk/ui/gtk4/PrefsDialog.ui:1171
 #: qt/PrefsDialog.ui:896
@@ -2409,13 +2035,8 @@ msgstr "_Birta tilkynningu þegar torrent-streymum bætt er við"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1619 gtk/ui/gtk4/PrefsDialog.ui:1197
 #: qt/PrefsDialog.ui:909
-#, fuzzy
 msgid "Show a notification when torrents _finish"
-msgstr ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Birta tilkynningu þegar torrent-streymi _klárast\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Birta tilk_ynningu þegar torrent-streymi klárast"
+msgstr "Birta tilkynningu þegar torrent-streymi _klárast"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1636 gtk/ui/gtk4/PrefsDialog.ui:1211
 #: qt/PrefsDialog.ui:916
@@ -2429,13 +2050,8 @@ msgstr "Fjarstýring"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1711 gtk/ui/gtk4/PrefsDialog.ui:1265
 #: qt/PrefsDialog.ui:952
-#, fuzzy
 msgid "Allow _remote access"
-msgstr ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Leyfa _fjarstýringu\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Leyfa fja_raðgang"
+msgstr "Leyfa fja_raðgang"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1727 gtk/ui/gtk4/PrefsDialog.ui:1274
 #: qt/PrefsDialog.ui:962
@@ -2446,13 +2062,8 @@ msgstr "_Opna netvafra"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1753 gtk/ui/gtk4/PrefsDialog.ui:1290
 #: qt/PrefsDialog.ui:972
-#, fuzzy
 msgid "HTTP _port:"
-msgstr ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"HTTP _gátt:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"HTT_P-gátt:"
+msgstr "HTT_P-gátt:"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1765 gtk/ui/gtk4/PrefsDialog.ui:1303
 #: qt/PrefsDialog.ui:992
@@ -2466,25 +2077,13 @@ msgstr "_Notandanafn:"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1799 gtk/ui/gtk4/PrefsDialog.ui:1329
 #: qt/PrefsDialog.ui:1015 qt/SessionDialog.ui:96
-#, fuzzy
 msgid "Pass_word:"
-msgstr ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Lykilorð:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Lykil_orð\n"
-"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Lykil_orð:"
+msgstr "_Lykilorð:"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1811 gtk/ui/gtk4/PrefsDialog.ui:1342
 #: qt/PrefsDialog.ui:1032
-#, fuzzy
 msgid "Only allow these IP a_ddresses:"
-msgstr ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Aðeins leyfa þessar IP-_tölur:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Aðeins ley_fa þessi IP-vistföng:"
+msgstr "Aðeins leyfa þessar IP-_tölur:"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1833 gtk/ui/gtk4/PrefsDialog.ui:1358
 #: qt/PrefsDialog.ui:1042
@@ -2521,23 +2120,13 @@ msgstr "Ný staðsetnin_g:"
 
 #: gtk/ui/gtk3/RelocateDialog.ui:111 gtk/ui/gtk4/RelocateDialog.ui:55
 #: qt/RelocateDialog.ui:49
-#, fuzzy
 msgid "_Move from the current folder"
-msgstr ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Færa úr núverandi möppu\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Færa úr núverandi _möppu"
+msgstr "_Færa úr núverandi möppu"
 
 #: gtk/ui/gtk3/RelocateDialog.ui:128 gtk/ui/gtk4/RelocateDialog.ui:68
 #: qt/RelocateDialog.ui:56
-#, fuzzy
 msgid "Local data is _already there"
-msgstr ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Gögnin eru _þegar þar\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Gögnin eru þeg_ar þar"
+msgstr "Gögnin eru _þegar þar"
 
 #: gtk/ui/gtk3/StatsDialog.ui:70 gtk/ui/gtk4/StatsDialog.ui:20
 #: qt/StatsDialog.ui:23
@@ -2659,19 +2248,10 @@ msgstr[0] "Fyrir {hours_ago:L} klukkustund síðan"
 msgstr[1] "Fyrir {hours_ago:L} klukkustundum síðan"
 
 #: libtransmission-app/formatters.cc:75 qt/PrefsDialog.cc:508
-#, fuzzy
 msgid "{minutes_ago:L} minute ago"
 msgid_plural "{minutes_ago:L} minutes ago"
-msgstr[0] ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Fyrir {minutes_ago:L} mínútu síðan\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{minutes_ago:L} mínuta síðan"
-msgstr[1] ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Fyrir {minutes_ago:L} mínútum síðan\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{minutes_ago:L} mínutur síðan"
+msgstr[0] "Fyrir {minutes_ago:L} mínútu síðan"
+msgstr[1] "Fyrir {minutes_ago:L} mínútum síðan"
 
 #: libtransmission-app/formatters.cc:81
 msgid "{seconds_ago:L} second ago"
@@ -2750,55 +2330,24 @@ msgid "Asked for peer counts {markup_begin}{time_span_ago}{markup_end}"
 msgstr "Óskaði eftir fjölda jafningja {markup_begin}{time_span_ago}{markup_end}"
 
 #: libtransmission-app/formatters.cc:265
-#, fuzzy
 msgid "{days:L} day"
 msgid_plural "{days:L} days"
-msgstr[0] ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{days:L} dagur\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{days:L} dag"
-msgstr[1] ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{days:L} dagar\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{days:L} dagar"
+msgstr[0] "{days:L} dagur"
+msgstr[1] "{days:L} dagar"
 
 #: libtransmission-app/formatters.cc:269
-#, fuzzy
 msgid "{hours:L} hour"
 msgid_plural "{hours:L} hours"
-msgstr[0] ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{hours:L} klukkustund\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{hours:L} klukkutími"
-msgstr[1] ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{hours:L} klukkustundir\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{hours:L} klukkutímar"
+msgstr[0] "{hours:L} klukkustund"
+msgstr[1] "{hours:L} klukkustundir"
 
 #. Translators: Spin box format, "Stop seeding if idle for: [ 5 minutes ]"
 #: libtransmission-app/formatters.cc:274 qt/DetailsDialog.cc:1263
 #: qt/PrefsDialog.cc:482
-#, fuzzy
 msgid "{minutes:L} minute"
 msgid_plural "{minutes:L} minutes"
-msgstr[0] ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{minutes:L} mínúta\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{minutes:L} mínúta\n"
-"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{minutes:L} mínuta"
-msgstr[1] ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{minutes:L} mínútur\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{minutes:L} mínutur\n"
-"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{minutes:L} mínutur"
+msgstr[0] "{minutes:L} mínúta"
+msgstr[1] "{minutes:L} mínútur"
 
 #: libtransmission-app/formatters.cc:280
 msgid "{seconds:L} second"
@@ -3716,11 +3265,7 @@ msgstr "_Loka"
 #: qt/PrefsDialog.cc:309
 #, fuzzy
 msgid "error"
-msgstr ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Villur\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Villa"
+msgstr "Villa"
 
 #: qt/PrefsDialog.cc:420
 msgid "<b>Update succeeded!</b><p>Blocklist now has {count:L} rule.</p>"

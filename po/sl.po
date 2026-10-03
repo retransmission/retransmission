@@ -192,26 +192,16 @@ msgid "Use global settings"
 msgstr "Uporabi splošne nastavitve"
 
 #: gtk/DetailsDialog.cc:441 qt/DetailsDialog.cc:1399
-#, fuzzy
 msgid "Seed regardless of ratio"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Sejanje ne glede na razmerje\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Sej ne glede na razmerje"
+msgstr "Sejanje ne glede na razmerje"
 
 #: gtk/DetailsDialog.cc:442 qt/DetailsDialog.cc:1400
 msgid "Stop seeding at ratio:"
 msgstr "Prenehaj sejati pri razmerju:"
 
 #: gtk/DetailsDialog.cc:457 qt/DetailsDialog.cc:1403
-#, fuzzy
 msgid "Seed regardless of activity"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Sejanje ne glede na dejavnost\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Sej ne glede na aktivnost"
+msgstr "Sejanje ne glede na dejavnost"
 
 #: gtk/DetailsDialog.cc:458
 msgid "Stop seeding if idle for N minutes:"
@@ -222,57 +212,28 @@ msgid "Queued for verification"
 msgstr "V vrsti za preverjanje"
 
 #: gtk/DetailsDialog.cc:489 qt/Torrent.cc:301
-#, fuzzy
 msgid "Verifying local data"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Preverjanje krajevnih podatkov\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Preverjam krajevne podatke"
+msgstr "Preverjanje krajevnih podatkov"
 
 #: gtk/DetailsDialog.cc:492 gtk/Torrent.cc:408 qt/Torrent.cc:304
-#, fuzzy
 msgid "Queued for download"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"V vrsti za prejem\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"V vrsti za prejemanje"
+msgstr "V vrsti za prejem"
 
 #: gtk/DetailsDialog.cc:495 gtk/FilterBar.cc:456 qt/FilterBar.cc:60
 #: qt/Torrent.cc:307
-#, fuzzy
 msgctxt "Verb"
 msgid "Downloading"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Prejemanje\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Prenašanje\n"
-"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Prejemanje"
+msgstr "Prejemanje"
 
 #: gtk/DetailsDialog.cc:498 gtk/Torrent.cc:411 qt/Torrent.cc:310
-#, fuzzy
 msgid "Queued for seeding"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"V vrsti za sejanje\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"V vrsti za pošiljanje"
+msgstr "V vrsti za sejanje"
 
 #: gtk/DetailsDialog.cc:501 gtk/FilterBar.cc:460 qt/FilterBar.cc:59
 #: qt/Torrent.cc:313
-#, fuzzy
 msgctxt "Verb"
 msgid "Seeding"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Sejanje\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Pošiljanje\n"
-"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Sejanje"
+msgstr "Sejanje"
 
 #: gtk/DetailsDialog.cc:504 gtk/FilterBar.cc:465 gtk/Torrent.cc:402
 #: qt/DetailsDialog.cc:516 qt/FilterBar.cc:62 qt/Torrent.cc:295
@@ -288,13 +249,8 @@ msgstr "V premoru"
 
 #: gtk/DetailsDialog.cc:524 gtk/DetailsDialog.cc:529 gtk/DetailsDialog.cc:614
 #: qt/DetailsDialog.cc:880 qt/DetailsDialog.cc:923
-#, fuzzy
 msgid "N/A"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"N/A\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ni na voljo"
+msgstr "Ni na voljo"
 
 #: gtk/DetailsDialog.cc:538 gtk/FileList.cc:611 qt/DetailsDialog.cc:469
 #: qt/FileTreeItem.cc:265 qt/FileTreeView.cc:107
@@ -306,13 +262,8 @@ msgid "No Torrents Selected"
 msgstr "Noben torrent ni izbran"
 
 #: gtk/DetailsDialog.cc:561 qt/DetailsDialog.cc:799
-#, fuzzy
 msgid "Private to this tracker -- DHT and PEX disabled"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Lastno sledilniku -- DHT in PEX sta onemogočena\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Vidno le temu sledilniku - DHT in PEX onemogočena"
+msgstr "Vidno le temu sledilniku - DHT in PEX onemogočena"
 
 #: gtk/DetailsDialog.cc:561 qt/DetailsDialog.cc:799
 msgid "Public torrent"
@@ -382,40 +333,20 @@ msgid "Never"
 msgstr "Nikoli"
 
 #: gtk/DetailsDialog.cc:883 qt/DetailsDialog.cc:713
-#, fuzzy
 msgid "Active now"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Trenutno dejavni\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Trenutno dejavno"
+msgstr "Trenutno dejavno"
 
 #: gtk/DetailsDialog.cc:1195 qt/DetailsDialog.cc:1086
-#, fuzzy
 msgid "Optimistic unchoke"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Optimistična oddušitev\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Optimistično zadrževanje"
+msgstr "Optimistična oddušitev"
 
 #: gtk/DetailsDialog.cc:1199 qt/DetailsDialog.cc:1090
-#, fuzzy
 msgid "Downloading from this peer"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Prejemanje od tega soležnika\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Prejemam od tega soležnika"
+msgstr "Prejemanje od tega soležnika"
 
 #: gtk/DetailsDialog.cc:1203 qt/DetailsDialog.cc:1094
-#, fuzzy
 msgid "We would download from this peer if they would let us"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Od tega soležnika bi bilo mogoče prejemati, če bi ta odobril zahtevo\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Bi prejemal od tega soležnika, če bi nam dovolil"
+msgstr "Od tega soležnika bi bilo mogoče prejemati, če bi ta odobril zahtevo"
 
 #: gtk/DetailsDialog.cc:1207 qt/DetailsDialog.cc:1098
 msgid "Uploading to peer"
@@ -424,29 +355,15 @@ msgstr "Pošiljanje soležniku"
 #: gtk/DetailsDialog.cc:1211 qt/DetailsDialog.cc:1102
 #, fuzzy
 msgid "This peer would download from us if we would let them"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Od tega soležnika bi bilo mogoče prejemati, če bi ta odobril zahtevo\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Bi prejemal od tega soležnika, če bi nam dovolil"
+msgstr "Od tega soležnika bi bilo mogoče prejemati, če bi ta odobril zahtevo"
 
 #: gtk/DetailsDialog.cc:1215 qt/DetailsDialog.cc:1106
-#, fuzzy
 msgid "Peer has unchoked us, but we're not interested"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Soležnik nas je oddušil , vendar nas ne zanima\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Soležnik nas je nehal zadrževati, ampak nas ne zanima"
+msgstr "Soležnik nas je nehal zadrževati, ampak nas ne zanima"
 
 #: gtk/DetailsDialog.cc:1219 qt/DetailsDialog.cc:1110
-#, fuzzy
 msgid "We unchoked this peer, but they're not interested"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Soležnik je bil oddušen, vendar jim je vseeno\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Soležnika smo nehali zadrževati, ampak jih to ne zanima"
+msgstr "Soležnika smo nehali zadrževati, ampak jih to ne zanima"
 
 #: gtk/DetailsDialog.cc:1223 qt/DetailsDialog.cc:1069 qt/DetailsDialog.cc:1114
 msgid "Encrypted connection"
@@ -461,13 +378,8 @@ msgid "Peer was found through DHT"
 msgstr "Soležnik je bil najden skozi DHT"
 
 #: gtk/DetailsDialog.cc:1235 qt/DetailsDialog.cc:1126
-#, fuzzy
 msgid "Peer is an incoming connection"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Soležnik je dohodno povezan\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Soležnik je dohodna povezava"
+msgstr "Soležnik je dohodno povezan"
 
 #: gtk/DetailsDialog.cc:1239 qt/DetailsDialog.cc:1130
 msgid "Peer is connected over µTP"
@@ -494,22 +406,12 @@ msgid "Up Reqs"
 msgstr "Zahteve pošiljanja"
 
 #: gtk/DetailsDialog.cc:1333 gtk/DetailsDialog.cc:1402 qt/DetailsDialog.cc:1480
-#, fuzzy
 msgid "Down"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Prejemanje\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Dol"
+msgstr "Prejemanje"
 
 #: gtk/DetailsDialog.cc:1339 qt/DetailsDialog.cc:1478
-#, fuzzy
 msgid "Up"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Pošiljanje\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Gor"
+msgstr "Pošiljanje"
 
 #: gtk/DetailsDialog.cc:1344 qt/AboutDialog.cc:40 qt/DetailsDialog.cc:1485
 msgid "Client"
@@ -532,13 +434,8 @@ msgid "List contains invalid URLs"
 msgstr "Seznam vsebuje neveljavne naslove URL"
 
 #: gtk/DetailsDialog.cc:1734 gtk/FileList.cc:792 qt/Session.cc:267
-#, fuzzy
 msgid "Please correct the errors and try again."
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Prosimo, popravite napake in poizkusite ponovno.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Prosimo, popravite napake in poskusite znova."
+msgstr "Prosimo, popravite napake in poskusite znova."
 
 #: gtk/DetailsDialog.cc:1814
 msgid "{torrent_name} - Add Tracker"
@@ -599,71 +496,36 @@ msgid "Once removed, you'll need the torrent files or magnet links to add them a
 msgstr "Po odstrajevanju bo za nadaljevanje prenosa potrebno podati datoteko torrent ali povezavo magnet."
 
 #: gtk/Dialogs.cc:68 qt/MainWindow.cc:1340
-#, fuzzy
 msgid "This torrent has not finished downloading."
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Torrent še ni končal prejemanja.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ta torrent še ni zaključil s prenosom."
+msgstr "Ta torrent še ni zaključil s prenosom."
 
 #: gtk/Dialogs.cc:69 qt/MainWindow.cc:1341
-#, fuzzy
 msgid "These torrents have not finished downloading."
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Torrenti še niso končali prejemanja.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ti torrenti še niso zaključili s prenosom."
+msgstr "Ti torrenti še niso zaključili s prenosom."
 
 #: gtk/Dialogs.cc:71 qt/MainWindow.cc:1343
-#, fuzzy
 msgid "This torrent is connected to peers."
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Torrent je povezan s soležniki.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ta torrent je povezan s soležniki."
+msgstr "Ta torrent je povezan s soležniki."
 
 #: gtk/Dialogs.cc:71 qt/MainWindow.cc:1344
-#, fuzzy
 msgid "These torrents are connected to peers."
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Torrenti so povezani s soležniki.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ti torrenti so povezani s soležniki."
+msgstr "Ti torrenti so povezani s soležniki."
 
 #: gtk/Dialogs.cc:74 qt/MainWindow.cc:1347
-#, fuzzy
 msgid "One of these torrents is connected to peers."
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Eden od teh torrentov je povezanih s soležniki.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Eden od teh torrentov je povezan s soležniki."
+msgstr "Eden od teh torrentov je povezan s soležniki."
 
 #: gtk/Dialogs.cc:75 qt/MainWindow.cc:1348
 msgid "Some of these torrents are connected to peers."
 msgstr "Nekateri od teh torrentov so povezani s soležniki."
 
 #: gtk/Dialogs.cc:83 qt/MainWindow.cc:1356
-#, fuzzy
 msgid "One of these torrents has not finished downloading."
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Prejem torrenta še ni končan.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Eden od teh torrentov še ni zaključil s prenosom."
+msgstr "Eden od teh torrentov še ni zaključil s prenosom."
 
 #: gtk/Dialogs.cc:84 qt/MainWindow.cc:1357
-#, fuzzy
 msgid "Some of these torrents have not finished downloading."
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Prejem torrentov še ni končan.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Nekateri od teh torrentov še niso zaključili s prenosom."
+msgstr "Nekateri od teh torrentov še niso zaključili s prenosom."
 
 #: gtk/Dialogs.cc:100 gtk/MessageLogWindow.cc:269 gtk/OptionsDialog.cc:321
 #: gtk/PathButton.cc:306 gtk/StatsDialog.cc:114
@@ -685,54 +547,26 @@ msgstr ""
 #: gtk/transmission-menus.ui:423 gtk/ui/gtk3/DetailsDialog.ui:729
 #: gtk/ui/gtk3/PrefsDialog.ui:1913 gtk/ui/gtk4/DetailsDialog.ui:567
 #: gtk/ui/gtk4/PrefsDialog.ui:1424 qt/DetailsDialog.ui:644 qt/MainWindow.ui:412
-#, fuzzy
 msgid "_Remove"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Odst_rani\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Odst_rani\n"
-"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Odstrani"
+msgstr "Odst_rani"
 
 #: gtk/FileList.cc:599 gtk/Utils.cc:576 qt/DetailsDialog.cc:1394
 #: qt/FileTreeItem.cc:259 qt/FileTreeView.cc:107 qt/FileTreeView.cc:344
 #: qt/OptionsDialog.cc:95
-#, fuzzy
 msgid "High"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Visoka\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Visoko\n"
-"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Visoka"
+msgstr "Visoka"
 
 #: gtk/FileList.cc:603 gtk/Utils.cc:577 qt/DetailsDialog.cc:1395
 #: qt/FileTreeItem.cc:262 qt/FileTreeView.cc:107 qt/FileTreeView.cc:345
 #: qt/OptionsDialog.cc:96
-#, fuzzy
 msgid "Normal"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Običajna\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Normalno\n"
-"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Normalna"
+msgstr "Običajna"
 
 #: gtk/FileList.cc:607 gtk/Utils.cc:578 qt/DetailsDialog.cc:1396
 #: qt/FileTreeItem.cc:256 qt/FileTreeView.cc:107 qt/FileTreeView.cc:346
 #: qt/OptionsDialog.cc:97
-#, fuzzy
 msgid "Low"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Nizka\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Nizko\n"
-"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Nizka"
+msgstr "Nizka"
 
 #: gtk/FileList.cc:783 gtk/Session.cc:313
 msgid "Couldn't rename '{old_path}' as '{path}': {error} ({error_code})"
@@ -751,51 +585,26 @@ msgid "Progress"
 msgstr "Napredek"
 
 #: gtk/FileList.cc:930 qt/FileTreeModel.cc:204
-#, fuzzy
 msgid "Download"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Prejemanje\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Prenos"
+msgstr "Prejemanje"
 
 #: gtk/FileList.cc:941 qt/FileTreeModel.cc:207 qt/FileTreeView.cc:343
-#, fuzzy
 msgid "Priority"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Prednost\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Prioriteta"
+msgstr "Prednost"
 
 #: gtk/FilterBar.cc:315 gtk/FilterBar.cc:451 qt/FilterBar.cc:46
 #: qt/FilterBar.cc:170
-#, fuzzy
 msgid "All"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Vseh\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Vse"
+msgstr "Vse"
 
 #: gtk/FilterBar.cc:453 qt/FilterBar.cc:58
-#, fuzzy
 msgid "Active"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Dejavno\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Aktivno"
+msgstr "Dejavno"
 
 #: gtk/FilterBar.cc:469 qt/FilterBar.cc:63
-#, fuzzy
 msgctxt "Verb"
 msgid "Verifying"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Preverjanje\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"V potrjevanju"
+msgstr "Preverjanje"
 
 #: gtk/FilterBar.cc:471 gtk/FreeSpaceLabel.cc:57 qt/DetailsDialog.cc:1323
 #: qt/FilterBar.cc:64
@@ -856,22 +665,12 @@ msgid "Unlimited"
 msgstr "Neomejeno"
 
 #: gtk/MainWindow.cc:490 qt/MainWindow.cc:360
-#, fuzzy
 msgid "Seed Forever"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ne omejuj sejanja\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Sej neomejeno"
+msgstr "Ne omejuj sejanja"
 
 #: gtk/MainWindow.cc:528 qt/MainWindow.cc:390
-#, fuzzy
 msgid "Limit Download Speed"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Omeji hitrost prejemanje\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Omeji hitrost prenašanja"
+msgstr "Omeji hitrost prenašanja"
 
 #: gtk/MainWindow.cc:529 qt/MainWindow.cc:396
 msgid "Limit Upload Speed"
@@ -890,26 +689,16 @@ msgid "Total Ratio"
 msgstr "Skupno razmerje"
 
 #: gtk/MainWindow.cc:603 qt/MainWindow.ui:630
-#, fuzzy
 msgid "Session Ratio"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Razmerje prenosa seje\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Sejno razmerje"
+msgstr "Sejno razmerje"
 
 #: gtk/MainWindow.cc:604 qt/MainWindow.ui:638
 msgid "Total Transfer"
 msgstr "Skupni prenos"
 
 #: gtk/MainWindow.cc:605 qt/MainWindow.ui:646
-#, fuzzy
 msgid "Session Transfer"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Prenos seje\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Sejni prenos"
+msgstr "Sejni prenos"
 
 #: gtk/MainWindow.cc:757 qt/MainWindow.cc:738
 msgid "Down: {downloaded_size}, Up: {uploaded_size}"
@@ -1017,13 +806,8 @@ msgid "Start Now"
 msgstr "Začni zdaj"
 
 #: gtk/Notify.cc:254 qt/Application.cc:341
-#, fuzzy
 msgid "Torrent Added"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Torrent je dodan\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Torrent dodan"
+msgstr "Torrent je dodan"
 
 #: gtk/OptionsDialog.cc:196
 msgid "Torrent files"
@@ -1078,22 +862,12 @@ msgid "Every Day"
 msgstr "Vsak dan"
 
 #: gtk/PrefsDialog.cc:358 qt/PrefsDialog.cc:76
-#, fuzzy
 msgid "Weekdays"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Delovni dnevi\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Med tednom"
+msgstr "Delovni dnevi"
 
 #: gtk/PrefsDialog.cc:359 qt/PrefsDialog.cc:77
-#, fuzzy
 msgid "Weekends"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Konci tedna\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Med vikendom"
+msgstr "Konci tedna"
 
 #: gtk/PrefsDialog.cc:550
 msgid "Blocklist has {count:L} entry"
@@ -1113,13 +887,8 @@ msgid "Couldn't update blocklist"
 msgstr ""
 
 #: gtk/PrefsDialog.cc:578 qt/PrefsDialog.cc:446
-#, fuzzy
 msgid "Getting new blocklist…"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Prejemanje novega črnega seznama …\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Pridobivanje novega seznama blokad…"
+msgstr "Pridobivanje novega seznama blokad…"
 
 #: gtk/PrefsDialog.cc:925
 msgctxt "Port test status"
@@ -1235,13 +1004,8 @@ msgstr "{complete_size}, poslano {uploaded_size} (Razmerje: {ratio})"
 
 #. Translators: Second (optional) part of torrent progress string
 #: gtk/Torrent.cc:493 qt/TorrentDelegate.cc:254 qt/TorrentDelegate.cc:307
-#, fuzzy
 msgid "Remaining time unknown"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Čas do konca prenosa neznan\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Preostali čas neznan"
+msgstr "Preostali čas neznan"
 
 #: gtk/Torrent.cc:583
 msgid "{download_speed} ▾  {upload_speed} ▴"
@@ -1372,46 +1136,24 @@ msgstr "_Nov …"
 
 #: gtk/transmission-menus.ui:32 gtk/transmission-menus.ui:460
 #: qt/MainWindow.ui:437
-#, fuzzy
 msgid "_Start All"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Začni vse\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Začni vse"
+msgstr "_Začni vse"
 
 #: gtk/transmission-menus.ui:37 gtk/transmission-menus.ui:455
 #: qt/MainWindow.ui:442
-#, fuzzy
 msgid "_Pause All"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Naredi _premor prenosa\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Pavziraj vse"
+msgstr "Pavziraj vse"
 
 #: gtk/transmission-menus.ui:45 gtk/transmission-menus.ui:473
 #: qt/MainWindow.ui:447
-#, fuzzy
 msgid "_Quit"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Končaj\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Izhod"
+msgstr "_Končaj"
 
 #: gtk/transmission-menus.ui:50 gtk/ui/gtk3/DetailsDialog.ui:715
 #: gtk/ui/gtk4/DetailsDialog.ui:559 qt/DetailsDialog.ui:637
 #: qt/MainWindow.ui:222
-#, fuzzy
 msgid "_Edit"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Uredi\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Uredi\n"
-"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Uredi"
+msgstr "_Uredi"
 
 #: gtk/transmission-menus.ui:55 qt/MainWindow.ui:458
 msgid "Select _All"
@@ -1437,44 +1179,24 @@ msgstr "Lastnosti"
 
 #: gtk/transmission-menus.ui:84 gtk/transmission-menus.ui:291
 #: qt/MainWindow.ui:354
-#, fuzzy
 msgid "Open Fold_er"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"O_dpri mapo\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Odpri mapo"
+msgstr "O_dpri mapo"
 
 #: gtk/transmission-menus.ui:92 gtk/transmission-menus.ui:357
 #: gtk/ui/gtk3/MainWindow.ui:39 gtk/ui/gtk4/MainWindow.ui:44
 #: qt/MainWindow.ui:365
-#, fuzzy
 msgid "_Start"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Začni\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Začni"
+msgstr "_Začni"
 
 #: gtk/transmission-menus.ui:98 gtk/transmission-menus.ui:363
 #: qt/MainWindow.ui:698
-#, fuzzy
 msgid "Start _Now"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Z_ačni zdaj\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Začni zdaj"
+msgstr "Z_ačni zdaj"
 
 #: gtk/transmission-menus.ui:104 gtk/transmission-menus.ui:369
 #: qt/MainWindow.ui:379
-#, fuzzy
 msgid "Ask Tracker for _More Peers"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Zahtevaj večje število soležnikov\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Zahtevaj več soležnikov od sledilnika"
+msgstr "Zahtevaj več soležnikov od sledilnika"
 
 #: gtk/transmission-menus.ui:107 gtk/transmission-menus.ui:372
 #: qt/MainWindow.ui:196
@@ -1485,65 +1207,35 @@ msgstr "Vrsta"
 
 #: gtk/transmission-menus.ui:112 gtk/transmission-menus.ui:377
 #: qt/MainWindow.ui:712
-#, fuzzy
 msgid "Move to _Top"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Premakni na _vrh\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Premakni na vrh"
+msgstr "Premakni na _vrh"
 
 #: gtk/transmission-menus.ui:117 gtk/transmission-menus.ui:382
 #: qt/MainWindow.ui:717
-#, fuzzy
 msgid "Move _Up"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Premakni _navzgor\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Premakni navzgor"
+msgstr "Premakni _navzgor"
 
 #: gtk/transmission-menus.ui:122 gtk/transmission-menus.ui:387
 #: qt/MainWindow.ui:725
-#, fuzzy
 msgid "Move _Down"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Premakni navz_dol\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Premakno navzdol"
+msgstr "Premakni navz_dol"
 
 #: gtk/transmission-menus.ui:127 gtk/transmission-menus.ui:392
 #: qt/MainWindow.ui:733
-#, fuzzy
 msgid "Move to _Bottom"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Premakni na d_no\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Premakni na dno"
+msgstr "Premakni na d_no"
 
 #: gtk/transmission-menus.ui:134 gtk/transmission-menus.ui:399
 #: gtk/ui/gtk3/MainWindow.ui:54 gtk/ui/gtk3/MessageLogWindow.ui:66
 #: gtk/ui/gtk4/MainWindow.ui:54 gtk/ui/gtk4/MessageLogWindow.ui:84
 #: qt/MainWindow.ui:387
-#, fuzzy
 msgid "_Pause"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Premor\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Premor"
+msgstr "_Premor"
 
 #: gtk/transmission-menus.ui:141 gtk/transmission-menus.ui:406
 #: qt/MainWindow.ui:675
-#, fuzzy
 msgid "Set _Location…"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Nastavi m_esto …\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Nastavi mesto …"
+msgstr "Nastavi m_esto …"
 
 #: gtk/transmission-menus.ui:145 gtk/transmission-menus.ui:410
 #: qt/MainWindow.ui:401
@@ -1557,199 +1249,99 @@ msgstr "Kopiraj povezavo Magnet na odložišče"
 
 #: gtk/transmission-menus.ui:164 gtk/transmission-menus.ui:429
 #: qt/MainWindow.ui:426
-#, fuzzy
 msgid "_Delete Files and Remove"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Izbriši in odstrani datoteke\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Odstrani datoteke in torrent"
+msgstr "_Izbriši in odstrani datoteke"
 
 #: gtk/transmission-menus.ui:170 qt/MainWindow.ui:244
 msgid "_View"
 msgstr "Pogled"
 
 #: gtk/transmission-menus.ui:174 qt/MainWindow.ui:485
-#, fuzzy
 msgid "_Compact View"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Zgoščen pogled\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Kompaktni pogled"
+msgstr "_Zgoščen pogled"
 
 #: gtk/transmission-menus.ui:181 qt/MainWindow.ui:502
-#, fuzzy
 msgid "_Toolbar"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Orodna vrstica\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Orodna vrstica"
+msgstr "_Orodna vrstica"
 
 #: gtk/transmission-menus.ui:185 qt/MainWindow.ui:510
-#, fuzzy
 msgid "_Filterbar"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Vrstica _filtrov\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Vrstica filtra"
+msgstr "Vrstica _filtrov"
 
 #: gtk/transmission-menus.ui:189 qt/MainWindow.ui:518
-#, fuzzy
 msgid "_Statusbar"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Vrstica _stanja\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Vrstica stanja"
+msgstr "Vrstica _stanja"
 
 #: gtk/transmission-menus.ui:195 gtk/transmission-menus.ui:301
 #: qt/MainWindow.ui:526
-#, fuzzy
 msgid "Sort by _Activity"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Razvrsti po dej_avnosti\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Uredi po a_ktivnosti"
+msgstr "Razvrsti po dej_avnosti"
 
 #: gtk/transmission-menus.ui:200 gtk/transmission-menus.ui:306
 #: qt/MainWindow.ui:534
-#, fuzzy
 msgid "Sort by A_ge"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Razvrsti po staros_ti\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Uredi po s_tarosti"
+msgstr "Razvrsti po staros_ti"
 
 #: gtk/transmission-menus.ui:205 gtk/transmission-menus.ui:311
 #: qt/MainWindow.ui:550
-#, fuzzy
 msgid "Sort by _Name"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Razvrsti po _imenu\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Uredi po imenu"
+msgstr "Razvrsti po _imenu"
 
 #: gtk/transmission-menus.ui:210 gtk/transmission-menus.ui:316
 #: qt/MainWindow.ui:558
-#, fuzzy
 msgid "Sort by _Progress"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Razvrsti po _napredku\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Uredi po napredku"
+msgstr "Razvrsti po _napredku"
 
 #: gtk/transmission-menus.ui:215 gtk/transmission-menus.ui:321
 #: qt/MainWindow.ui:741
-#, fuzzy
 msgid "Sort by _Queue"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Razvrsti po _čakalni vrsti\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Uredi po vrsti"
+msgstr "Razvrsti po _čakalni vrsti"
 
 #: gtk/transmission-menus.ui:220 gtk/transmission-menus.ui:326
 #: qt/MainWindow.ui:566
-#, fuzzy
 msgid "Sort by Rati_o"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Razvrsti po raz_merju\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Uredi po razmerju"
+msgstr "Razvrsti po raz_merju"
 
 #: gtk/transmission-menus.ui:225 gtk/transmission-menus.ui:331
 #: qt/MainWindow.ui:574
-#, fuzzy
 msgid "Sort by Si_ze"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Razvrsti po _velikosti\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Uredi po velikosti"
+msgstr "Razvrsti po _velikosti"
 
 #: gtk/transmission-menus.ui:230 gtk/transmission-menus.ui:336
 #: qt/MainWindow.ui:582
-#, fuzzy
 msgid "Sort by Stat_e"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Razvrsti po stan_ju\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Uredi po stanju"
+msgstr "Razvrsti po stan_ju"
 
 #: gtk/transmission-menus.ui:235 gtk/transmission-menus.ui:341
 #: qt/MainWindow.ui:542
-#, fuzzy
 msgid "Sort by Time _Left"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Razvrsti po _preostalem času\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Uredi po preostalem času"
+msgstr "Razvrsti po _preostalem času"
 
 #: gtk/transmission-menus.ui:242 gtk/transmission-menus.ui:348
 #: qt/MainWindow.ui:614
-#, fuzzy
 msgid "Re_verse Sort Order"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Obrni vrstni _red\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Obrni vrstni red urejanja"
+msgstr "Obrni vrstni _red"
 
 #: gtk/transmission-menus.ui:247 gtk/ui/gtk3/PrefsDialog.ui:22
 #: gtk/ui/gtk4/PrefsDialog.ui:1484 qt/MainWindow.ui:233
-#, fuzzy
 msgid "_Help"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Pomo_č\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Pomoč"
+msgstr "Pomo_č"
 
 #: gtk/transmission-menus.ui:251
-#, fuzzy
 msgid "Message _Log"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Dnevnik sporočil\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Dnevnik poročil"
+msgstr "_Dnevnik sporočil"
 
 #: gtk/transmission-menus.ui:255 qt/MainWindow.ui:590
-#, fuzzy
 msgid "_Statistics"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Statistika\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Statistika"
+msgstr "_Statistika"
 
 #: gtk/transmission-menus.ui:261 qt/MainWindow.ui:693
-#, fuzzy
 msgid "_Donate"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Podari\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Prispevaj"
+msgstr "_Podari"
 
 #: gtk/transmission-menus.ui:268 qt/MainWindow.ui:595
-#, fuzzy
 msgid "_Contents"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Vsebina\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Vsebina"
+msgstr "_Vsebina"
 
 #: gtk/transmission-menus.ui:274 qt/MainWindow.ui:603
 msgid "_About"
@@ -1764,11 +1356,7 @@ msgstr "Začni torrent"
 #: gtk/transmission-menus.ui:466 qt/MainWindow.cc:189
 #, fuzzy
 msgid "Alternative Speed _Limits"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Nadomestne omejitve hitrosti\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Alternativne omejitve hitrosti"
+msgstr "Nadomestne omejitve hitrosti"
 
 #: gtk/ui/gtk3/AddTrackerDialog.ui:34 gtk/ui/gtk3/DetailsDialog.ui:701
 #: gtk/ui/gtk3/MakeProgressDialog.ui:51 gtk/ui/gtk3/PrefsDialog.ui:1898
@@ -1797,13 +1385,8 @@ msgstr ""
 
 #: gtk/ui/gtk3/DetailsDialog.ui:58 gtk/ui/gtk4/DetailsDialog.ui:26
 #: qt/DetailsDialog.ui:36
-#, fuzzy
 msgid "Activity"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Dejavnost\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Aktivnost"
+msgstr "Dejavnost"
 
 #: gtk/ui/gtk3/DetailsDialog.ui:74 gtk/ui/gtk4/DetailsDialog.ui:38
 #: qt/DetailsDialog.ui:339
@@ -1812,13 +1395,8 @@ msgstr "Velikost:"
 
 #: gtk/ui/gtk3/DetailsDialog.ui:86 gtk/ui/gtk4/DetailsDialog.ui:48
 #: qt/DetailsDialog.ui:42
-#, fuzzy
 msgid "Have:"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Imate:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ima:"
+msgstr "Imate:"
 
 #: gtk/ui/gtk3/DetailsDialog.ui:98 gtk/ui/gtk3/StatsDialog.ui:86
 #: gtk/ui/gtk3/StatsDialog.ui:246 gtk/ui/gtk4/DetailsDialog.ui:58
@@ -1846,23 +1424,13 @@ msgstr "Čas delovanja:"
 
 #: gtk/ui/gtk3/DetailsDialog.ui:146 gtk/ui/gtk4/DetailsDialog.ui:98
 #: qt/DetailsDialog.ui:234
-#, fuzzy
 msgid "Remaining time:"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Preostal čas:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Preostali čas:"
+msgstr "Preostali čas:"
 
 #: gtk/ui/gtk3/DetailsDialog.ui:158 gtk/ui/gtk4/DetailsDialog.ui:108
 #: qt/DetailsDialog.ui:266
-#, fuzzy
 msgid "Last activity:"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Zadnja dejavnost:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Zadnja aktivnost:"
+msgstr "Zadnja dejavnost:"
 
 #: gtk/ui/gtk3/DetailsDialog.ui:170 gtk/ui/gtk4/DetailsDialog.ui:118
 #: qt/DetailsDialog.ui:298
@@ -1901,34 +1469,19 @@ msgstr "Dodan:"
 
 #: gtk/ui/gtk3/DetailsDialog.ui:430 gtk/ui/gtk4/DetailsDialog.ui:338
 #: qt/DetailsDialog.ui:542
-#, fuzzy
 msgid "Comment:"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Opomba:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Komentar:"
+msgstr "Opomba:"
 
 #: gtk/ui/gtk3/DetailsDialog.ui:562 gtk/ui/gtk4/DetailsDialog.ui:451
 #: qt/DetailsDialog.ui:30
-#, fuzzy
 msgid "Information"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Podrobnosti\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Informacije"
+msgstr "Informacije"
 
 #: gtk/ui/gtk3/DetailsDialog.ui:629 gtk/ui/gtk3/DetailsDialog.ui:757
 #: gtk/ui/gtk4/DetailsDialog.ui:502 gtk/ui/gtk4/DetailsDialog.ui:579
 #: qt/DetailsDialog.ui:600 qt/DetailsDialog.ui:664
-#, fuzzy
 msgid "Show _more details"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Pokaži več _podrobnosti\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Pokaži več podrobnosti"
+msgstr "Pokaži več _podrobnosti"
 
 #: gtk/ui/gtk3/DetailsDialog.ui:652 gtk/ui/gtk4/DetailsDialog.ui:512
 #: qt/DetailsDialog.ui:569
@@ -1937,13 +1490,8 @@ msgstr "Soležniki"
 
 #: gtk/ui/gtk3/DetailsDialog.ui:773 gtk/ui/gtk4/DetailsDialog.ui:587
 #: qt/DetailsDialog.ui:671
-#, fuzzy
 msgid "Show _backup trackers"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Pokaži _pomožne sledilnike\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Pokaži pomožne sledilnike"
+msgstr "Pokaži _pomožne sledilnike"
 
 #: gtk/ui/gtk3/DetailsDialog.ui:834 gtk/ui/gtk4/DetailsDialog.ui:627
 msgid "File listing not available for combined torrent properties"
@@ -1963,13 +1511,8 @@ msgstr "Hitrost"
 
 #: gtk/ui/gtk3/DetailsDialog.ui:887 gtk/ui/gtk4/DetailsDialog.ui:663
 #: qt/DetailsDialog.ui:723
-#, fuzzy
 msgid "Honor global _limits"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Upoštevaj splošne _omejitve\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Upoštevaj splošne omejitve"
+msgstr "Upoštevaj splošne _omejitve"
 
 #: gtk/ui/gtk3/DetailsDialog.ui:903 gtk/ui/gtk4/DetailsDialog.ui:676
 msgid "Limit _download speed ({speed_units}):"
@@ -1982,87 +1525,45 @@ msgstr ""
 #: gtk/ui/gtk3/DetailsDialog.ui:935 gtk/ui/gtk3/OptionsDialog.ui:143
 #: gtk/ui/gtk4/DetailsDialog.ui:700 gtk/ui/gtk4/OptionsDialog.ui:87
 #: qt/DetailsDialog.ui:770
-#, fuzzy
 msgid "Torrent _priority:"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Prednost torrenta:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Prioriteta torrenta:"
+msgstr "_Prednost torrenta:"
 
 #: gtk/ui/gtk3/DetailsDialog.ui:997 gtk/ui/gtk4/DetailsDialog.ui:749
 #: qt/DetailsDialog.ui:786
-#, fuzzy
 msgid "Seeding Limits"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Omejitve sejanja\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Omejitve sejanja:"
+msgstr "Omejitve sejanja"
 
 #: gtk/ui/gtk3/DetailsDialog.ui:1013 gtk/ui/gtk4/DetailsDialog.ui:761
 #: qt/DetailsDialog.ui:792
-#, fuzzy
 msgid "_Ratio:"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Razmerje:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Razmerje"
+msgstr "_Razmerje:"
 
 #: gtk/ui/gtk3/DetailsDialog.ui:1027 gtk/ui/gtk4/DetailsDialog.ui:773
 #: qt/DetailsDialog.ui:819
-#, fuzzy
 msgid "_Idle:"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Nedejavno:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Neaktivno:"
+msgstr "_Nedejavno:"
 
 #: gtk/ui/gtk3/DetailsDialog.ui:1125 gtk/ui/gtk4/DetailsDialog.ui:831
 #: qt/DetailsDialog.ui:855
-#, fuzzy
 msgid "Peer Connections"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Povezave soležnikov\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Povezave do soležnikov"
+msgstr "Povezave soležnikov"
 
 #: gtk/ui/gtk3/DetailsDialog.ui:1141 gtk/ui/gtk4/DetailsDialog.ui:843
 #: qt/DetailsDialog.ui:861
-#, fuzzy
 msgid "_Maximum peers:"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Največje število soležnikov:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Največ soležnikov:"
+msgstr "_Največje število soležnikov:"
 
 #: gtk/ui/gtk3/DetailsDialog.ui:1180 gtk/ui/gtk3/MainWindow.ui:169
 #: gtk/ui/gtk3/PrefsDialog.ui:1344 gtk/ui/gtk4/DetailsDialog.ui:871
 #: gtk/ui/gtk4/MainWindow.ui:136 gtk/ui/gtk4/PrefsDialog.ui:986
 #: qt/DetailsDialog.ui:711 qt/MainWindow.ui:64 qt/PrefsDialog.ui:769
-#, fuzzy
 msgid "Options"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Možnosti\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Možnosti\n"
-"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Nastavitve"
+msgstr "Možnosti"
 
 #: gtk/ui/gtk3/EditTrackersDialog.ui:67 gtk/ui/gtk4/EditTrackersDialog.ui:20
 #: qt/TrackersDialog.ui:20
-#, fuzzy
 msgid "Tracker Announce URLs"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Naslovi URL objave sledilnika\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"URL-ji za objave sledilnika"
+msgstr "Naslovi URL objave sledilnika"
 
 #: gtk/ui/gtk3/EditTrackersDialog.ui:83 gtk/ui/gtk3/MakeDialog.ui:294
 #: gtk/ui/gtk4/EditTrackersDialog.ui:32 gtk/ui/gtk4/MakeDialog.ui:193
@@ -2088,13 +1589,8 @@ msgstr "Začni torrent"
 
 #: gtk/ui/gtk3/MainWindow.ui:52 gtk/ui/gtk4/MainWindow.ui:52
 #: qt/MainWindow.ui:390
-#, fuzzy
 msgid "Pause torrent"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Premor torrenta\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Pavziraj torrent"
+msgstr "Pavziraj torrent"
 
 #: gtk/ui/gtk3/MainWindow.ui:67 gtk/ui/gtk3/MainWindow.ui:69
 #: gtk/ui/gtk4/MainWindow.ui:62 gtk/ui/gtk4/MainWindow.ui:64
@@ -2120,15 +1616,8 @@ msgstr "Statistika"
 #: gtk/ui/gtk3/MakeDialog.ui:7 gtk/ui/gtk3/MakeProgressDialog.ui:7
 #: gtk/ui/gtk4/MakeDialog.ui:5 gtk/ui/gtk4/MakeProgressDialog.ui:5
 #: qt/MakeDialog.ui:17 qt/MakeProgressDialog.ui:14
-#, fuzzy
 msgid "New Torrent"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Nov torrent\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Nov torrent\n"
-"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Novi torrent"
+msgstr "Nov torrent"
 
 #: gtk/ui/gtk3/MakeDialog.ui:35 gtk/ui/gtk4/MakeDialog.ui:285
 #, fuzzy
@@ -2138,13 +1627,8 @@ msgstr "_Zasluge"
 
 #: gtk/ui/gtk3/MakeDialog.ui:85 gtk/ui/gtk4/MakeDialog.ui:32
 #: qt/MakeDialog.ui:29
-#, fuzzy
 msgid "Sa_ve to:"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Shrani v mapo:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Shrani v:"
+msgstr "_Shrani v mapo:"
 
 #: gtk/ui/gtk3/MakeDialog.ui:110 gtk/ui/gtk4/MakeDialog.ui:54
 #: qt/MakeDialog.ui:42
@@ -2170,23 +1654,13 @@ msgstr "Lastnosti"
 
 #: gtk/ui/gtk3/MakeDialog.ui:249 gtk/ui/gtk4/MakeDialog.ui:159
 #: qt/MakeDialog.ui:111
-#, fuzzy
 msgid "_Trackers:"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Sledilniki:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Sledilniki:"
+msgstr "_Sledilniki:"
 
 #: gtk/ui/gtk3/MakeDialog.ui:312 gtk/ui/gtk4/MakeDialog.ui:206
 #: qt/MakeDialog.ui:142
-#, fuzzy
 msgid "Co_mment:"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"O_pomba:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Komentar:"
+msgstr "O_pomba:"
 
 #: gtk/ui/gtk3/MakeDialog.ui:339 gtk/ui/gtk4/MakeDialog.ui:229
 #: qt/MakeDialog.ui:156
@@ -2195,13 +1669,8 @@ msgstr "Vir:"
 
 #: gtk/ui/gtk3/MakeDialog.ui:366 gtk/ui/gtk4/MakeDialog.ui:252
 #: qt/MakeDialog.ui:170
-#, fuzzy
 msgid "_Private torrent"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Zasebni torrent\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Zasebni torrent"
+msgstr "_Zasebni torrent"
 
 #: gtk/ui/gtk3/MakeProgressDialog.ui:81 gtk/ui/gtk4/MakeProgressDialog.ui:19
 msgid "Creating torrent…"
@@ -2238,13 +1707,8 @@ msgstr "Izbor izvorne datoteke"
 
 #: gtk/ui/gtk3/OptionsDialog.ui:91 gtk/ui/gtk4/OptionsDialog.ui:41
 #: qt/OptionsDialog.ui:39
-#, fuzzy
 msgid "_Destination folder:"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Ciljna mapa:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ciljna mapa:"
+msgstr "_Ciljna mapa:"
 
 #: gtk/ui/gtk3/OptionsDialog.ui:107 gtk/ui/gtk4/OptionsDialog.ui:55
 #: qt/OptionsDialog.cc:78 qt/PrefsDialog.cc:522
@@ -2266,13 +1730,8 @@ msgstr "Premakni datoteko .torrent v smeti"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:7 gtk/ui/gtk4/PrefsDialog.ui:5
 #: qt/PrefsDialog.ui:14
-#, fuzzy
 msgid "{appname} Preferences"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Nastavitve\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Nastavitve {appname}"
+msgstr "Nastavitve {appname}"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:76 gtk/ui/gtk4/PrefsDialog.ui:29
 #: qt/PrefsDialog.ui:36
@@ -2291,13 +1750,8 @@ msgstr ""
 
 #: gtk/ui/gtk3/PrefsDialog.ui:159 gtk/ui/gtk4/PrefsDialog.ui:93
 #: qt/PrefsDialog.ui:85
-#, fuzzy
 msgid "Alternative Speed Limits"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Nadomestne omejitve hitrosti\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Alternativne omejitve hitrosti"
+msgstr "Nadomestne omejitve hitrosti"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:193 gtk/ui/gtk4/PrefsDialog.ui:114
 #: qt/PrefsDialog.ui:100
@@ -2316,34 +1770,19 @@ msgstr ""
 
 #: gtk/ui/gtk3/PrefsDialog.ui:242 gtk/ui/gtk4/PrefsDialog.ui:154
 #: qt/PrefsDialog.ui:149
-#, fuzzy
 msgid "_Scheduled times:"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Načrtovani časi:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Predpisani časi:"
+msgstr "_Načrtovani časi:"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:260 gtk/ui/gtk4/PrefsDialog.ui:167
 #: qt/PrefsDialog.ui:193
-#, fuzzy
 msgid "_On days:"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Ob dnevih:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ob dnevih:"
+msgstr "_Ob dnevih:"
 
 #. Label goes between two time selectors, e.g. "limit speeds from [time] to [time]"
 #: gtk/ui/gtk3/PrefsDialog.ui:317 gtk/ui/gtk4/PrefsDialog.ui:210
 #: qt/PrefsDialog.ui:174
-#, fuzzy
 msgid "_to"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_do\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"do"
+msgstr "_do"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:395 gtk/ui/gtk4/PrefsDialog.ui:262
 msgctxt "Gerund"
@@ -2393,13 +1832,8 @@ msgstr "Nedokončano"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:650 gtk/ui/gtk4/PrefsDialog.ui:463
 #: qt/PrefsDialog.ui:381
-#, fuzzy
 msgid "Append \"._part\" to incomplete files' names"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Pripni \"._part\" k imenu nedokončane datoteke\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Dodaj \".part\" k imenom nedokončanih datotek"
+msgstr "Pripni \"._part\" k imenu nedokončane datoteke"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:667 gtk/ui/gtk4/PrefsDialog.ui:477
 #: qt/PrefsDialog.ui:388
@@ -2432,13 +1866,8 @@ msgstr "Omejitve"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:792 gtk/ui/gtk4/PrefsDialog.ui:570
 #: qt/PrefsDialog.ui:468
-#, fuzzy
 msgid "Stop seeding at _ratio:"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Prenehaj sejati pri _razmerju:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Prenehaj sejati pri razmerju:"
+msgstr "Prenehaj sejati pri _razmerju:"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:807 gtk/ui/gtk4/PrefsDialog.ui:582
 msgid "Stop seeding if idle for _N minutes:"
@@ -2462,33 +1891,18 @@ msgstr "Zasebnost"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:928 gtk/ui/gtk4/PrefsDialog.ui:673
 #: qt/PrefsDialog.ui:565
-#, fuzzy
 msgid "_Encryption mode:"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Način _šifriranja:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Način šifriranja:"
+msgstr "Način _šifriranja:"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:966 gtk/ui/gtk4/PrefsDialog.ui:700
 #: qt/PrefsDialog.ui:581
-#, fuzzy
 msgid "Blocklist"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Črni seznam\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Seznam blokad"
+msgstr "Seznam blokad"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:980 gtk/ui/gtk4/PrefsDialog.ui:712
 #: qt/PrefsDialog.ui:587
-#, fuzzy
 msgid "Enable _blocklist:"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Omogoči _črni seznam:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Omogoči seznam blokad"
+msgstr "Omogoči _črni seznam:"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:995 gtk/ui/gtk4/PrefsDialog.ui:725
 #: qt/PrefsDialog.ui:617
@@ -2499,13 +1913,8 @@ msgstr "Omogoči _samodejne posodobitve"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1050 gtk/ui/gtk4/PrefsDialog.ui:766
 #: qt/PrefsDialog.ui:607
-#, fuzzy
 msgid "_Update"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Posodobi\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Posodobi"
+msgstr "_Posodobi"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1122 gtk/ui/gtk4/PrefsDialog.ui:814
 #: qt/PrefsDialog.ui:654
@@ -2526,23 +1935,13 @@ msgstr "Izberi _naključna vrata ob vsakem zagonu programa Transmission"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1167 gtk/ui/gtk4/PrefsDialog.ui:852
 #: qt/PrefsDialog.ui:704
-#, fuzzy
 msgid "Use UPnP or NAT-PMP port _forwarding from my router"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Uporabi posredovanje _vrat UPnP ali NAT-PMP z usmerjevalnika\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Uporabi UPnP ali NAT-PMP posredovanje vrat na mojem usmerjevalniku"
+msgstr "Uporabi posredovanje _vrat UPnP ali NAT-PMP z usmerjevalnika"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1229 gtk/ui/gtk4/PrefsDialog.ui:904
 #: qt/PrefsDialog.ui:680
-#, fuzzy
 msgid "Te_st Port"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Preizkus vrat\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Preveri vrata"
+msgstr "_Preizkus vrat"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1265 gtk/ui/gtk4/PrefsDialog.ui:924
 #: qt/PrefsDialog.ui:714
@@ -2558,13 +1957,8 @@ msgstr "Največje število soležnikov na _torrent:"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1295 gtk/ui/gtk4/PrefsDialog.ui:948
 #: qt/PrefsDialog.ui:743
-#, fuzzy
 msgid "Maximum peers _overall:"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Največje število _soležnikov:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Največ soležnikov v celoti:"
+msgstr "Največ soležnikov v celoti:"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1358 gtk/ui/gtk4/PrefsDialog.ui:998
 #: qt/PrefsDialog.ui:778
@@ -2585,13 +1979,8 @@ msgstr "Uporabi PE_X za iskanje soležnikov"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1380 gtk/ui/gtk4/PrefsDialog.ui:1015
 #: qt/PrefsDialog.ui:785
-#, fuzzy
 msgid "PEX is a tool for exchanging peer lists with the peers you're connected to."
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"PEX je orodje za izmenjavo soležnikov s soležniki, s katerimi ste povezani.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"PEX je orodje za izmenjavo seznamov soležnikov z že povezanimi soležniki."
+msgstr "PEX je orodje za izmenjavo seznamov soležnikov z že povezanimi soležniki."
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1394 gtk/ui/gtk4/PrefsDialog.ui:1028
 #: qt/PrefsDialog.ui:798
@@ -2602,13 +1991,8 @@ msgstr "Uporabi _DHT za iskanje soležnikov"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1398 gtk/ui/gtk4/PrefsDialog.ui:1030
 #: qt/PrefsDialog.ui:795
-#, fuzzy
 msgid "DHT is a tool for finding peers without a tracker."
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"DHT je orodje za iskanje soležnikov brez uporabe sledilnika.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"DHT je orodje za iskanje soležnikov brez sledilnika."
+msgstr "DHT je orodje za iskanje soležnikov brez uporabe sledilnika."
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1412 gtk/ui/gtk4/PrefsDialog.ui:1043
 #: qt/PrefsDialog.ui:808
@@ -2619,13 +2003,8 @@ msgstr "Pri iskanju uporabi odkrivanje krajevnih soležnikov (_LPD)"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1416 gtk/ui/gtk4/PrefsDialog.ui:1045
 #: qt/PrefsDialog.ui:805
-#, fuzzy
 msgid "LPD is a tool for finding peers on your local network."
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"LPD je orodje za iskanje soležnikov na krajevnem omrežju.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"LPD je orodje za iskanje več virov na krajevnem omrežju."
+msgstr "LPD je orodje za iskanje soležnikov na krajevnem omrežju."
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1445 gtk/ui/gtk4/PrefsDialog.ui:1064
 #: qt/PrefsDialog.ui:818
@@ -2659,53 +2038,28 @@ msgstr ""
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1556 gtk/ui/gtk4/PrefsDialog.ui:1151
 #: qt/PrefsDialog.ui:872
-#, fuzzy
 msgid "Show {appname} icon in the _notification area"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Pokaži ikono programa v _obvestilni vrstici.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Pokaži ikono {appname} v območju za obvestila"
+msgstr "Pokaži ikono {appname} v območju za obvestila"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1588 gtk/ui/gtk4/PrefsDialog.ui:1171
 #: qt/PrefsDialog.ui:896
-#, fuzzy
 msgid "Notification"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Obvestilo\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Obvestila"
+msgstr "Obvestilo"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1602 gtk/ui/gtk4/PrefsDialog.ui:1183
 #: qt/PrefsDialog.ui:902
-#, fuzzy
 msgid "Show a notification when torrents are a_dded"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Pokaži obvestilo ob _dodajanju torrentov\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Pokaži obvestilo ob dodajanju torrentov"
+msgstr "Pokaži obvestilo ob _dodajanju torrentov"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1619 gtk/ui/gtk4/PrefsDialog.ui:1197
 #: qt/PrefsDialog.ui:909
-#, fuzzy
 msgid "Show a notification when torrents _finish"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Pokaži obvestilo ob _končanju prejema torrenta\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Pokaži obvestilo ob zaključku torrentov"
+msgstr "Pokaži obvestilo ob _končanju prejema torrenta"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1636 gtk/ui/gtk4/PrefsDialog.ui:1211
 #: qt/PrefsDialog.ui:916
-#, fuzzy
 msgid "Play a _sound when torrents finish"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Predvajaj _zvok, ko se prejem torrenta konča\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Predvajaj zvok ob zaključku torrentov"
+msgstr "Predvajaj _zvok, ko se prejem torrenta konča"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1691 gtk/ui/gtk4/PrefsDialog.ui:1248
 #: qt/PrefsDialog.ui:946
@@ -2726,33 +2080,18 @@ msgstr "_Odpri spletni odjemalec"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1753 gtk/ui/gtk4/PrefsDialog.ui:1290
 #: qt/PrefsDialog.ui:972
-#, fuzzy
 msgid "HTTP _port:"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Vrata HTT_P:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Vrata HTTP:"
+msgstr "Vrata HTT_P:"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1765 gtk/ui/gtk4/PrefsDialog.ui:1303
 #: qt/PrefsDialog.ui:992
-#, fuzzy
 msgid "Use _authentication"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Uporabi _overitev\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Uporabi overjanje"
+msgstr "Uporabi _overitev"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1785 gtk/ui/gtk4/PrefsDialog.ui:1317
 #: qt/PrefsDialog.ui:1002 qt/SessionDialog.ui:83
-#, fuzzy
 msgid "_Username:"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Uporabniško Ime:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Uporabniško ime:"
+msgstr "_Uporabniško Ime:"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1799 gtk/ui/gtk4/PrefsDialog.ui:1329
 #: qt/PrefsDialog.ui:1015 qt/SessionDialog.ui:96
@@ -2799,23 +2138,13 @@ msgstr "Novo mesto:"
 
 #: gtk/ui/gtk3/RelocateDialog.ui:111 gtk/ui/gtk4/RelocateDialog.ui:55
 #: qt/RelocateDialog.ui:49
-#, fuzzy
 msgid "_Move from the current folder"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Premakni iz trenutne mape\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Premakni iz trenutne mape"
+msgstr "_Premakni iz trenutne mape"
 
 #: gtk/ui/gtk3/RelocateDialog.ui:128 gtk/ui/gtk4/RelocateDialog.ui:68
 #: qt/RelocateDialog.ui:56
-#, fuzzy
 msgid "Local data is _already there"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Krajevni podatki so _že prejeti\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Krajevni podatki so že na mestu"
+msgstr "Krajevni podatki so že na mestu"
 
 #: gtk/ui/gtk3/StatsDialog.ui:70 gtk/ui/gtk4/StatsDialog.ui:20
 #: qt/StatsDialog.ui:23
@@ -2831,13 +2160,8 @@ msgstr "Razmerje:"
 #: gtk/ui/gtk3/StatsDialog.ui:173 gtk/ui/gtk3/StatsDialog.ui:333
 #: gtk/ui/gtk4/StatsDialog.ui:107 gtk/ui/gtk4/StatsDialog.ui:239
 #: qt/StatsDialog.ui:107 qt/StatsDialog.ui:236
-#, fuzzy
 msgid "Duration:"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Skupni čas izvajanja:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Trajanje:"
+msgstr "Trajanje:"
 
 #: gtk/ui/gtk3/StatsDialog.ui:215 gtk/ui/gtk4/StatsDialog.ui:138
 #: qt/StatsDialog.ui:136
@@ -2982,26 +2306,16 @@ msgid "Got an error '{markup_begin}{error}{markup_end}' {time_span_ago}"
 msgstr ""
 
 #: libtransmission-app/formatters.cc:164
-#, fuzzy
 msgid "No updates scheduled"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ni pripravljenih posodobitev\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ni načrtovanih posodobitev"
+msgstr "Ni načrtovanih posodobitev"
 
 #: libtransmission-app/formatters.cc:170
 msgid "Asking for more peers {time_span_from_now}"
 msgstr ""
 
 #: libtransmission-app/formatters.cc:175
-#, fuzzy
 msgid "Queued to ask for more peers"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"V vrsti za zahtevo po več soležnikih\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Načrtovana prošnja za več soležnikov"
+msgstr "V vrsti za zahtevo po več soležnikih"
 
 #: libtransmission-app/formatters.cc:182
 msgid "Asked for more peers {markup_begin}{time_span_ago}{markup_end}"
@@ -3044,13 +2358,8 @@ msgid "Asking for peer counts {time_span_from_now}"
 msgstr "Prosim za število soležnikov čez {time_span}"
 
 #: libtransmission-app/formatters.cc:244
-#, fuzzy
 msgid "Queued to ask for peer counts"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"V vrsti za zahtevo štetja soležnikov\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Načrtovana prošnja za število soležnikov"
+msgstr "V vrsti za zahtevo štetja soležnikov"
 
 #: libtransmission-app/formatters.cc:250
 msgid "Asked for peer counts {markup_begin}{time_span_ago}{markup_end}"
@@ -3444,20 +2753,12 @@ msgstr ""
 #: libtransmission/session-alt-speeds.cc:54
 #, fuzzy
 msgid "Time to turn on alternative speed limits"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Nadomestne omejitve hitrosti\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Alternativne omejitve hitrosti"
+msgstr "Nadomestne omejitve hitrosti"
 
 #: libtransmission/session-alt-speeds.cc:54
 #, fuzzy
 msgid "Time to turn off alternative speed limits"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Nadomestne omejitve hitrosti\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Alternativne omejitve hitrosti"
+msgstr "Nadomestne omejitve hitrosti"
 
 #: libtransmission/session.cc:409
 msgid "Listening to incoming peer connections on {hostport}"

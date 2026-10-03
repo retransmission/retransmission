@@ -180,57 +180,32 @@ msgid "Use global settings"
 msgstr "Genel ayarları kullan"
 
 #: gtk/DetailsDialog.cc:441 qt/DetailsDialog.cc:1399
-#, fuzzy
 msgid "Seed regardless of ratio"
-msgstr ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Orandan bağımsız gönderim\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Oran ne olursa olsun gönder"
+msgstr "Orandan bağımsız gönderim"
 
 #: gtk/DetailsDialog.cc:442 qt/DetailsDialog.cc:1400
-#, fuzzy
 msgid "Stop seeding at ratio:"
-msgstr ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Şu oranda gönderimi durdur:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Şu oranda göndermeyi durdur:"
+msgstr "Şu oranda gönderimi durdur:"
 
 #: gtk/DetailsDialog.cc:457 qt/DetailsDialog.cc:1403
-#, fuzzy
 msgid "Seed regardless of activity"
-msgstr ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Etkinlikten bağımsız gönderim\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Etkinlik ne olursa olsun gönder"
+msgstr "Etkinlikten bağımsız gönderim"
 
 #: gtk/DetailsDialog.cc:458
 msgid "Stop seeding if idle for N minutes:"
 msgstr "Şu dakika boyunca boşsa gönderimi durdur:"
 
 #: gtk/DetailsDialog.cc:486 gtk/Torrent.cc:405 qt/Torrent.cc:298
-#, fuzzy
 msgid "Queued for verification"
-msgstr ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Doğrulama için sıralandı\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Doğrulama için kuyrukta"
+msgstr "Doğrulama için kuyrukta"
 
 #: gtk/DetailsDialog.cc:489 qt/Torrent.cc:301
 msgid "Verifying local data"
 msgstr "Yerel veri doğrulanıyor"
 
 #: gtk/DetailsDialog.cc:492 gtk/Torrent.cc:408 qt/Torrent.cc:304
-#, fuzzy
 msgid "Queued for download"
-msgstr ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"İndirme için sıralandı\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"İndirme sırasına eklendi"
+msgstr "İndirme sırasına eklendi"
 
 #: gtk/DetailsDialog.cc:495 gtk/FilterBar.cc:456 qt/FilterBar.cc:60
 #: qt/Torrent.cc:307
@@ -239,13 +214,8 @@ msgid "Downloading"
 msgstr "İndiriliyor"
 
 #: gtk/DetailsDialog.cc:498 gtk/Torrent.cc:411 qt/Torrent.cc:310
-#, fuzzy
 msgid "Queued for seeding"
-msgstr ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Gönderim için sıralandı\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Gönderme kuyruğuna eklendi"
+msgstr "Gönderme kuyruğuna eklendi"
 
 #: gtk/DetailsDialog.cc:501 gtk/FilterBar.cc:460 qt/FilterBar.cc:59
 #: qt/Torrent.cc:313
@@ -280,49 +250,24 @@ msgid "No Torrents Selected"
 msgstr "Seçili Torrent Yok"
 
 #: gtk/DetailsDialog.cc:561 qt/DetailsDialog.cc:799
-#, fuzzy
 msgid "Private to this tracker -- DHT and PEX disabled"
-msgstr ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Bu izleyiciye özel -- DHT ve PEX etkisizleştirildi\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Bu izleyiciye özel -- DHT ve PEX devre dışı"
+msgstr "Bu izleyiciye özel -- DHT ve PEX etkisizleştirildi"
 
 #: gtk/DetailsDialog.cc:561 qt/DetailsDialog.cc:799
-#, fuzzy
 msgid "Public torrent"
-msgstr ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Kamusal torrent\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Genel torrent"
+msgstr "Genel torrent"
 
 #: gtk/DetailsDialog.cc:606 qt/DetailsDialog.cc:888
-#, fuzzy
 msgid "Created by {creator} on {date}"
-msgstr ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{creator} tarafından {date} tarihinde yaratıldı\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{creator} tarafından {date} üzerinde oluşturuldu"
+msgstr "{creator} tarafından {date} tarihinde yaratıldı"
 
 #: gtk/DetailsDialog.cc:610 qt/DetailsDialog.cc:882
-#, fuzzy
 msgid "Created by {creator}"
-msgstr ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{creator} tarafından yaratıldı\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{creator} tarafından oluşturuldu"
+msgstr "{creator} tarafından yaratıldı"
 
 #: gtk/DetailsDialog.cc:612 qt/DetailsDialog.cc:885
-#, fuzzy
 msgid "Created on {date}"
-msgstr ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{date} tarihinde yaratıldı\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{date} tarihinde oluşturuldu"
+msgstr "{date} tarihinde yaratıldı"
 
 #: gtk/DetailsDialog.cc:690 qt/DetailsDialog.cc:470 qt/DetailsDialog.cc:689
 #: qt/Formatter.cc:27 qt/Formatter.cc:49
@@ -357,13 +302,8 @@ msgid "{current_size} ({percent_done}% of {percent_available}% available; {unver
 msgstr "{current_size} (%{percent_done} / %{percent_available} uygun; {unverified_size} doğrulanmamış)"
 
 #: gtk/DetailsDialog.cc:816 qt/DetailsDialog.cc:613
-#, fuzzy
 msgid "{downloaded_size} (+{discarded_size} discarded after failed checksum)"
-msgstr ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{downloaded_size} (+{discarded_size} özet denetimi sonrası atılan)\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{downloaded_size} (+{discarded_size} başarısız sağlama sonrası çıkarıldı)"
+msgstr "{downloaded_size} (+{discarded_size} başarısız sağlama sonrası çıkarıldı)"
 
 #: gtk/DetailsDialog.cc:837 qt/DetailsDialog.cc:636
 msgid "{uploaded_size} (Ratio: {ratio})"
@@ -390,13 +330,8 @@ msgid "Downloading from this peer"
 msgstr "Bu eşten indiriliyor"
 
 #: gtk/DetailsDialog.cc:1203 qt/DetailsDialog.cc:1094
-#, fuzzy
 msgid "We would download from this peer if they would let us"
-msgstr ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Bize izin verirlerse bu eşten indirebiliriz\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Eğer bize izin verirse bu eşten indirebiliriz"
+msgstr "Bize izin verirlerse bu eşten indirebiliriz"
 
 #: gtk/DetailsDialog.cc:1207 qt/DetailsDialog.cc:1098
 msgid "Uploading to peer"
@@ -405,11 +340,7 @@ msgstr "Eşe gönderiliyor"
 #: gtk/DetailsDialog.cc:1211 qt/DetailsDialog.cc:1102
 #, fuzzy
 msgid "This peer would download from us if we would let them"
-msgstr ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Bize izin verirlerse bu eşten indirebiliriz\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Eğer bize izin verirse bu eşten indirebiliriz"
+msgstr "Bize izin verirlerse bu eşten indirebiliriz"
 
 #: gtk/DetailsDialog.cc:1215 qt/DetailsDialog.cc:1106
 msgid "Peer has unchoked us, but we're not interested"
@@ -420,13 +351,8 @@ msgid "We unchoked this peer, but they're not interested"
 msgstr "Bu eşin kesintisini giderdik, ama ilgilenmiyorlar"
 
 #: gtk/DetailsDialog.cc:1223 qt/DetailsDialog.cc:1069 qt/DetailsDialog.cc:1114
-#, fuzzy
 msgid "Encrypted connection"
-msgstr ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Şifreli bağlantı\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Şifrelenmiş bağlantı"
+msgstr "Şifreli bağlantı"
 
 #: gtk/DetailsDialog.cc:1227 qt/DetailsDialog.cc:1122
 msgid "Peer was found through Peer Exchange (PEX)"
@@ -441,13 +367,8 @@ msgid "Peer is an incoming connection"
 msgstr "Eş, bir gelen bağlantıdır"
 
 #: gtk/DetailsDialog.cc:1239 qt/DetailsDialog.cc:1130
-#, fuzzy
 msgid "Peer is connected over µTP"
-msgstr ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Eş, µTP üzerinden bağlandı\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Eş, µTP üstünden bağlandı"
+msgstr "Eş, µTP üzerinden bağlandı"
 
 #: gtk/DetailsDialog.cc:1243 qt/DetailsDialog.cc:1134
 msgid "Peer supports holepunch (BEP 55)"
@@ -470,22 +391,12 @@ msgid "Up Reqs"
 msgstr "Yük. İst."
 
 #: gtk/DetailsDialog.cc:1333 gtk/DetailsDialog.cc:1402 qt/DetailsDialog.cc:1480
-#, fuzzy
 msgid "Down"
-msgstr ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"İnd.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"İndirme"
+msgstr "İnd."
 
 #: gtk/DetailsDialog.cc:1339 qt/DetailsDialog.cc:1478
-#, fuzzy
 msgid "Up"
-msgstr ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Yük.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Gönderme"
+msgstr "Yük."
 
 #: gtk/DetailsDialog.cc:1344 qt/AboutDialog.cc:40 qt/DetailsDialog.cc:1485
 msgid "Client"
@@ -531,52 +442,24 @@ msgstr[0] "Özellikler - {torrent_count:L} Torrent"
 msgstr[1] "Özellikler - {torrent_count:L} Torrent"
 
 #: gtk/Dialogs.cc:53 qt/MainWindow.cc:1325
-#, fuzzy
 msgid "Remove torrent?"
-msgstr ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Torrent kaldırılsın mı?\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Torrenti kaldır?"
+msgstr "Torrent kaldırılsın mı?"
 
 #: gtk/Dialogs.cc:53 qt/MainWindow.cc:1328
-#, fuzzy
 msgid "Delete this torrent's downloaded files?"
-msgstr ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Bu torrentin indirilmiş dosyaları kaldırılsın mı?\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Bu torrentin indirilen dosyaları silinsin mi?"
+msgstr "Bu torrentin indirilen dosyaları silinsin mi?"
 
 #: gtk/Dialogs.cc:56 qt/MainWindow.cc:1326
-#, fuzzy
 msgid "Remove {count:L} torrent?"
 msgid_plural "Remove {count:L} torrents?"
-msgstr[0] ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{count:L} torrenti kaldırılsın mı?\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{count:L} torrenti kaldırılsın mı?"
-msgstr[1] ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{count:L} torrent kaldırılsın mı?\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{count:L} torrenti kaldırılsın mı?"
+msgstr[0] "{count:L} torrenti kaldırılsın mı?"
+msgstr[1] "{count:L} torrent kaldırılsın mı?"
 
 #: gtk/Dialogs.cc:58 qt/MainWindow.cc:1330
-#, fuzzy
 msgid "Delete this {count:L} torrent's downloaded files?"
 msgid_plural "Delete these {count:L} torrents' downloaded files?"
-msgstr[0] ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Bu {count:L} torrentin indirilen dosyaları silinsin mi?\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Bu {count:L} torrentin indirilen dosyaları silinsin mi?"
-msgstr[1] ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Bu {count:L} torrentin indirilen dosyaları kaldırılsın mı?\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Bu {count:L} torrentin indirilen dosyaları silinsin mi?"
+msgstr[0] "Bu {count:L} torrentin indirilen dosyaları silinsin mi?"
+msgstr[1] "Bu {count:L} torrentin indirilen dosyaları silinsin mi?"
 
 #: gtk/Dialogs.cc:65 qt/MainWindow.cc:1337
 #, fuzzy
@@ -592,76 +475,36 @@ msgid "Once removed, you'll need the torrent files or magnet links to add them a
 msgstr "Bir kez silince, aktarımları sürdürmek için torrent dosyaları veya mıknatıs bağlantıları gerekir."
 
 #: gtk/Dialogs.cc:68 qt/MainWindow.cc:1340
-#, fuzzy
 msgid "This torrent has not finished downloading."
-msgstr ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Bu torrentin indirilmesi bitmedi.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Bu torrentin indirilmesi bitirilmedi."
+msgstr "Bu torrentin indirilmesi bitmedi."
 
 #: gtk/Dialogs.cc:69 qt/MainWindow.cc:1341
-#, fuzzy
 msgid "These torrents have not finished downloading."
-msgstr ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Bu torrentlerin indirilmesi bitmedi.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Bu torrentlerin indirilmesi bitirilmedi."
+msgstr "Bu torrentlerin indirilmesi bitmedi."
 
 #: gtk/Dialogs.cc:71 qt/MainWindow.cc:1343
-#, fuzzy
 msgid "This torrent is connected to peers."
-msgstr ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Bu torrent eşlere bağlı.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Bu torrent eşlere bağlı durumda."
+msgstr "Bu torrent eşlere bağlı."
 
 #: gtk/Dialogs.cc:71 qt/MainWindow.cc:1344
-#, fuzzy
 msgid "These torrents are connected to peers."
-msgstr ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Bu torrentler eşlere bağlı.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Bu torrentler eşlere bağlı durumda."
+msgstr "Bu torrentler eşlere bağlı."
 
 #: gtk/Dialogs.cc:74 qt/MainWindow.cc:1347
-#, fuzzy
 msgid "One of these torrents is connected to peers."
-msgstr ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Bu torrentlerin biri eşlere bağlı.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Bu torrentlerden biri eşlere bağlı durumda."
+msgstr "Bu torrentlerden biri eşlere bağlı durumda."
 
 #: gtk/Dialogs.cc:75 qt/MainWindow.cc:1348
-#, fuzzy
 msgid "Some of these torrents are connected to peers."
-msgstr ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Bu torrentlerin bazıları eşlere bağlı.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Bu torrentlerden bazıları eşlere bağlı durumda."
+msgstr "Bu torrentlerden bazıları eşlere bağlı durumda."
 
 #: gtk/Dialogs.cc:83 qt/MainWindow.cc:1356
-#, fuzzy
 msgid "One of these torrents has not finished downloading."
-msgstr ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Bu torrentlerin birinin indirilmesi bitmedi.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Bu torrentlerden biri indirmeyi bitirmedi."
+msgstr "Bu torrentlerin birinin indirilmesi bitmedi."
 
 #: gtk/Dialogs.cc:84 qt/MainWindow.cc:1357
-#, fuzzy
 msgid "Some of these torrents have not finished downloading."
-msgstr ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Bu torrentlerin bazılarının indirilmesi bitmedi.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Bu torrentlerden bazıları indirmeyi bitirmedi."
+msgstr "Bu torrentlerin bazılarının indirilmesi bitmedi."
 
 #: gtk/Dialogs.cc:100 gtk/MessageLogWindow.cc:269 gtk/OptionsDialog.cc:321
 #: gtk/PathButton.cc:306 gtk/StatsDialog.cc:114
@@ -749,13 +592,8 @@ msgstr "Hata"
 
 #: gtk/FilterBar.cc:569 gtk/ui/gtk3/FilterBar.ui:13 gtk/ui/gtk4/FilterBar.ui:8
 #: qt/FilterBar.cc:193
-#, fuzzy
 msgid "_Show:"
-msgstr ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Göster:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"G_öster:"
+msgstr "_Göster:"
 
 #: gtk/FilterBar.cc:570
 msgid "_Show {count:L} of:"
@@ -822,22 +660,12 @@ msgid "Limit Upload Speed"
 msgstr "Gönderme Hızını Sınırla"
 
 #: gtk/MainWindow.cc:533 qt/MainWindow.cc:405
-#, fuzzy
 msgid "Stop Seeding at Ratio"
-msgstr ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Belli Orana Ulaşıldığında Dağıtımı Durdur\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Oranda Dağıtımı Durdur"
+msgstr "Belli Orana Ulaşıldığında Dağıtımı Durdur"
 
 #: gtk/MainWindow.cc:571 qt/MainWindow.cc:370 qt/MainWindow.cc:1113
-#, fuzzy
 msgid "Stop at Ratio ({ratio})"
-msgstr ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Oranda Dur ({ratio})\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"({ratio}) Oranında Durdur"
+msgstr "({ratio}) Oranında Durdur"
 
 #: gtk/MainWindow.cc:602 qt/MainWindow.ui:622
 msgid "Total Ratio"
@@ -999,13 +827,8 @@ msgid "Select File"
 msgstr "Dosya Seç"
 
 #: gtk/PathButton.cc:344 qt/PathButton.cc:29 qt/PathButton.cc:98
-#, fuzzy
 msgid "(None)"
-msgstr ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"(Hiçbiri)\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"(Yok)"
+msgstr "(Hiçbiri)"
 
 #: gtk/PrefsDialog.cc:292 qt/PrefsDialog.cc:105
 msgid "Allow encryption"
@@ -1151,26 +974,16 @@ msgid "{current_size} of {complete_size} ({percent_complete}%), uploaded {upload
 msgstr "{current_size} / {complete_size} (%{percent_complete}), gönderilen {uploaded_size} (Oran: {ratio}, Hedef: {seed_ratio})"
 
 #: gtk/Torrent.cc:465 qt/TorrentDelegate.cc:213
-#, fuzzy
 msgid "{current_size} of {complete_size} ({percent_complete}%), uploaded {uploaded_size} (Ratio: {ratio})"
-msgstr ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{current_size} / {complete_size} (%{percent_complete}), gönderilen {uploaded_size} (Oran: {ratio})\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{current_size} / {complete_size} (%{percent_complete}), Gönderilen: {uploaded_size} (Oran: {ratio})"
+msgstr "{current_size} / {complete_size} (%{percent_complete}), gönderilen {uploaded_size} (Oran: {ratio})"
 
 #: gtk/Torrent.cc:474 qt/TorrentDelegate.cc:229
 msgid "{complete_size}, uploaded {uploaded_size} (Ratio: {ratio}, Goal: {seed_ratio})"
 msgstr "{complete_size}, gönderilen {uploaded_size} (Oran: {ratio}, Hedef: {seed_ratio})"
 
 #: gtk/Torrent.cc:482 qt/TorrentDelegate.cc:241
-#, fuzzy
 msgid "{complete_size}, uploaded {uploaded_size} (Ratio: {ratio})"
-msgstr ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{complete_size}, gönderilen {uploaded_size} (Oran: {ratio})\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{complete_size}, Gönderilen: {uploaded_size} (Oran: {ratio})"
+msgstr "{complete_size}, gönderilen {uploaded_size} (Oran: {ratio})"
 
 #. Translators: Second (optional) part of torrent progress string
 #: gtk/Torrent.cc:493 qt/TorrentDelegate.cc:254 qt/TorrentDelegate.cc:307
@@ -1219,34 +1032,16 @@ msgstr[0] "{active_count} web besleyicisinden indiriliyor"
 msgstr[1] "{active_count} web besleyicisinden indiriliyor"
 
 #: gtk/Torrent.cc:659 qt/TorrentDelegate.cc:351
-#, fuzzy
 msgid "Downloading from {active_count} of {connected_count} connected peer"
 msgid_plural "Downloading from {active_count} of {connected_count} connected peers"
-msgstr[0] ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{active_count} / {connected_count} bağlı eşten indiriliyor\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{connected_count} bağlı eşin {active_count} tanesinden indiriliyor"
-msgstr[1] ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{active_count} / {connected_count} bağlı eşten indiriliyor\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{connected_count} bağlı eşin {active_count} tanesinden indiriliyor"
+msgstr[0] "{active_count} / {connected_count} bağlı eşten indiriliyor"
+msgstr[1] "{active_count} / {connected_count} bağlı eşten indiriliyor"
 
 #: gtk/Torrent.cc:668 qt/TorrentDelegate.cc:380
-#, fuzzy
 msgid "Seeding to {active_count} of {connected_count} connected peer"
 msgid_plural "Seeding to {active_count} of {connected_count} connected peers"
-msgstr[0] ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{active_count} / {connected_count} bağlı eşe gönderiliyor\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{connected_count} bağlı eşten {active_count} tanesine gönderiliyor"
-msgstr[1] ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{active_count} / {connected_count} bağlı eşe gönderiliyor\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{connected_count} bağlı eşten {active_count} tanesine gönderiliyor"
+msgstr[0] "{active_count} / {connected_count} bağlı eşe gönderiliyor"
+msgstr[1] "{active_count} / {connected_count} bağlı eşe gönderiliyor"
 
 #: gtk/retransmission-gtk.desktop.in:2
 #: gtk/retransmission-gtk.metainfo.xml.in:11
@@ -1314,23 +1109,13 @@ msgstr "_Yeni…"
 
 #: gtk/transmission-menus.ui:32 gtk/transmission-menus.ui:460
 #: qt/MainWindow.ui:437
-#, fuzzy
 msgid "_Start All"
-msgstr ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Tümünü _Başlat\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Tümünü Başlat"
+msgstr "Tümünü _Başlat"
 
 #: gtk/transmission-menus.ui:37 gtk/transmission-menus.ui:455
 #: qt/MainWindow.ui:442
-#, fuzzy
 msgid "_Pause All"
-msgstr ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Tümünü _Duraklat\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Tümünü Duraklat"
+msgstr "Tümünü _Duraklat"
 
 #: gtk/transmission-menus.ui:45 gtk/transmission-menus.ui:473
 #: qt/MainWindow.ui:447
@@ -1367,13 +1152,8 @@ msgstr "_Özellikler"
 
 #: gtk/transmission-menus.ui:84 gtk/transmission-menus.ui:291
 #: qt/MainWindow.ui:354
-#, fuzzy
 msgid "Open Fold_er"
-msgstr ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Klasörü Aç\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Klasör Aç"
+msgstr "_Klasörü Aç"
 
 #: gtk/transmission-menus.ui:92 gtk/transmission-menus.ui:357
 #: gtk/ui/gtk3/MainWindow.ui:39 gtk/ui/gtk4/MainWindow.ui:44
@@ -1383,23 +1163,13 @@ msgstr "_Başlat"
 
 #: gtk/transmission-menus.ui:98 gtk/transmission-menus.ui:363
 #: qt/MainWindow.ui:698
-#, fuzzy
 msgid "Start _Now"
-msgstr ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Şimdi Başlat\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Şimdi _Başlat"
+msgstr "_Şimdi Başlat"
 
 #: gtk/transmission-menus.ui:104 gtk/transmission-menus.ui:369
 #: qt/MainWindow.ui:379
-#, fuzzy
 msgid "Ask Tracker for _More Peers"
-msgstr ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"İzleyiciye Daha _Çok Eş Sor\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"İzleyiciye Daha Çok _Eş Sor"
+msgstr "İzleyiciye Daha _Çok Eş Sor"
 
 #: gtk/transmission-menus.ui:107 gtk/transmission-menus.ui:372
 #: qt/MainWindow.ui:196
@@ -1425,13 +1195,8 @@ msgstr "_Aşağı Taşı"
 
 #: gtk/transmission-menus.ui:127 gtk/transmission-menus.ui:392
 #: qt/MainWindow.ui:733
-#, fuzzy
 msgid "Move to _Bottom"
-msgstr ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"En _Alta Taşı\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_En Alta Taşı"
+msgstr "_En Alta Taşı"
 
 #: gtk/transmission-menus.ui:134 gtk/transmission-menus.ui:399
 #: gtk/ui/gtk3/MainWindow.ui:54 gtk/ui/gtk3/MessageLogWindow.ui:66
@@ -1447,13 +1212,8 @@ msgstr "_Konumu Ayarla…"
 
 #: gtk/transmission-menus.ui:145 gtk/transmission-menus.ui:410
 #: qt/MainWindow.ui:401
-#, fuzzy
 msgid "_Verify Local Data"
-msgstr ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Yerel Veriyi _Doğrula\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Yerel Veriyi Doğrula"
+msgstr "_Yerel Veriyi Doğrula"
 
 #: gtk/transmission-menus.ui:151 gtk/transmission-menus.ui:416
 #: qt/MainWindow.ui:680
@@ -1462,13 +1222,8 @@ msgstr "_Mıknatıs Bağlantısını Panoya Kopyala"
 
 #: gtk/transmission-menus.ui:164 gtk/transmission-menus.ui:429
 #: qt/MainWindow.ui:426
-#, fuzzy
 msgid "_Delete Files and Remove"
-msgstr ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Dosyaları _Sil ve Kaldır\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Dosyaları Sil ve Kaldır"
+msgstr "Dosyaları _Sil ve Kaldır"
 
 #: gtk/transmission-menus.ui:170 qt/MainWindow.ui:244
 msgid "_View"
@@ -1497,13 +1252,8 @@ msgstr "_Etkinliğe Göre Sırala"
 
 #: gtk/transmission-menus.ui:200 gtk/transmission-menus.ui:306
 #: qt/MainWindow.ui:534
-#, fuzzy
 msgid "Sort by A_ge"
-msgstr ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Yaşa Göre Sırala\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Tarihe Göre Sırala"
+msgstr "_Yaşa Göre Sırala"
 
 #: gtk/transmission-menus.ui:205 gtk/transmission-menus.ui:311
 #: qt/MainWindow.ui:550
@@ -1542,13 +1292,8 @@ msgstr "_Kalan Süreye Göre Sırala"
 
 #: gtk/transmission-menus.ui:242 gtk/transmission-menus.ui:348
 #: qt/MainWindow.ui:614
-#, fuzzy
 msgid "Re_verse Sort Order"
-msgstr ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Sıralama Düzenini _Ters Çevir\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Sıralamayı Ters Çe_vir"
+msgstr "Sıralama Düzenini _Ters Çevir"
 
 #: gtk/transmission-menus.ui:247 gtk/ui/gtk3/PrefsDialog.ui:22
 #: gtk/ui/gtk4/PrefsDialog.ui:1484 qt/MainWindow.ui:233
@@ -1564,13 +1309,8 @@ msgid "_Statistics"
 msgstr "_İstatistikler"
 
 #: gtk/transmission-menus.ui:261 qt/MainWindow.ui:693
-#, fuzzy
 msgid "_Donate"
-msgstr ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Bağış Yap\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Bağış"
+msgstr "_Bağış Yap"
 
 #: gtk/transmission-menus.ui:268 qt/MainWindow.ui:595
 msgid "_Contents"
@@ -1629,39 +1369,22 @@ msgstr "Boyut:"
 
 #: gtk/ui/gtk3/DetailsDialog.ui:86 gtk/ui/gtk4/DetailsDialog.ui:48
 #: qt/DetailsDialog.ui:42
-#, fuzzy
 msgid "Have:"
-msgstr ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Eldeki:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Sahip olunan:"
+msgstr "Eldeki:"
 
 #: gtk/ui/gtk3/DetailsDialog.ui:98 gtk/ui/gtk3/StatsDialog.ui:86
 #: gtk/ui/gtk3/StatsDialog.ui:246 gtk/ui/gtk4/DetailsDialog.ui:58
 #: gtk/ui/gtk4/StatsDialog.ui:32 gtk/ui/gtk4/StatsDialog.ui:164
 #: qt/DetailsDialog.ui:106 qt/StatsDialog.ui:29 qt/StatsDialog.ui:158
-#, fuzzy
 msgid "Uploaded:"
-msgstr ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Yüklenen:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Yüklendi:\n"
-"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Gönderildi:"
+msgstr "Yüklenen:"
 
 #: gtk/ui/gtk3/DetailsDialog.ui:110 gtk/ui/gtk3/StatsDialog.ui:115
 #: gtk/ui/gtk3/StatsDialog.ui:275 gtk/ui/gtk4/DetailsDialog.ui:68
 #: gtk/ui/gtk4/StatsDialog.ui:57 gtk/ui/gtk4/StatsDialog.ui:189
 #: qt/DetailsDialog.ui:138 qt/StatsDialog.ui:55 qt/StatsDialog.ui:184
-#, fuzzy
 msgid "Downloaded:"
-msgstr ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"İndirilen:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"İndirildi:"
+msgstr "İndirilen:"
 
 #: gtk/ui/gtk3/DetailsDialog.ui:122 gtk/ui/gtk4/DetailsDialog.ui:78
 #: qt/DetailsDialog.ui:170
@@ -1762,13 +1485,8 @@ msgstr "Hız"
 
 #: gtk/ui/gtk3/DetailsDialog.ui:887 gtk/ui/gtk4/DetailsDialog.ui:663
 #: qt/DetailsDialog.ui:723
-#, fuzzy
 msgid "Honor global _limits"
-msgstr ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Genel _sınırlamalara uy\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Genel _sınırlara uy"
+msgstr "Genel _sınırlara uy"
 
 #: gtk/ui/gtk3/DetailsDialog.ui:903 gtk/ui/gtk4/DetailsDialog.ui:676
 msgid "Limit _download speed ({speed_units}):"
@@ -1786,13 +1504,8 @@ msgstr "Torrent _önceliği:"
 
 #: gtk/ui/gtk3/DetailsDialog.ui:997 gtk/ui/gtk4/DetailsDialog.ui:749
 #: qt/DetailsDialog.ui:786
-#, fuzzy
 msgid "Seeding Limits"
-msgstr ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Gönderim Sınırlamaları\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Yükleme Sınırları"
+msgstr "Gönderim Sınırlamaları"
 
 #: gtk/ui/gtk3/DetailsDialog.ui:1013 gtk/ui/gtk4/DetailsDialog.ui:761
 #: qt/DetailsDialog.ui:792
@@ -1811,13 +1524,8 @@ msgstr "Eş Bağlantıları"
 
 #: gtk/ui/gtk3/DetailsDialog.ui:1141 gtk/ui/gtk4/DetailsDialog.ui:843
 #: qt/DetailsDialog.ui:861
-#, fuzzy
 msgid "_Maximum peers:"
-msgstr ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"En _çok eş:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Azami eş:"
+msgstr "En _çok eş:"
 
 #: gtk/ui/gtk3/DetailsDialog.ui:1180 gtk/ui/gtk3/MainWindow.ui:169
 #: gtk/ui/gtk3/PrefsDialog.ui:1344 gtk/ui/gtk4/DetailsDialog.ui:871
@@ -1828,13 +1536,8 @@ msgstr "Seçenekler"
 
 #: gtk/ui/gtk3/EditTrackersDialog.ui:67 gtk/ui/gtk4/EditTrackersDialog.ui:20
 #: qt/TrackersDialog.ui:20
-#, fuzzy
 msgid "Tracker Announce URLs"
-msgstr ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"İzleyici Duyuru URL'leri\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"İzleyici Duyuru URL"
+msgstr "İzleyici Duyuru URL'leri"
 
 #: gtk/ui/gtk3/EditTrackersDialog.ui:83 gtk/ui/gtk3/MakeDialog.ui:294
 #: gtk/ui/gtk4/EditTrackersDialog.ui:32 gtk/ui/gtk4/MakeDialog.ui:193
@@ -1847,23 +1550,13 @@ msgstr ""
 
 #: gtk/ui/gtk3/EditTrackersDialog.ui:118 gtk/ui/gtk4/EditTrackersDialog.ui:63
 #: qt/TrackersDialog.ui:47
-#, fuzzy
 msgid "Also see Default Public Trackers in Edit > Preferences > Network"
-msgstr ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Düzenle > Tercihler > Ağ'da Öntanımlı Genel İzleyiciler'e de bakınız\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Düzenle > Tercihler > Ağ içindeki Öntanımlı Genel İzleyiciler'e de bakınız"
+msgstr "Düzenle > Tercihler > Ağ'da Öntanımlı Genel İzleyiciler'e de bakınız"
 
 #: gtk/ui/gtk3/MainWindow.ui:21 gtk/ui/gtk4/MainWindow.ui:16
 #: qt/MainWindow.ui:324
-#, fuzzy
 msgid "Open a torrent"
-msgstr ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Torrent aç\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Torrent Aç"
+msgstr "Torrent aç"
 
 #: gtk/ui/gtk3/MainWindow.ui:37 gtk/ui/gtk4/MainWindow.ui:42
 #: qt/MainWindow.ui:368
@@ -1910,13 +1603,8 @@ msgstr "H_azırlayanlar"
 
 #: gtk/ui/gtk3/MakeDialog.ui:85 gtk/ui/gtk4/MakeDialog.ui:32
 #: qt/MakeDialog.ui:29
-#, fuzzy
 msgid "Sa_ve to:"
-msgstr ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Kaydet:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Şuraya _kaydet:"
+msgstr "Şuraya _kaydet:"
 
 #: gtk/ui/gtk3/MakeDialog.ui:110 gtk/ui/gtk4/MakeDialog.ui:54
 #: qt/MakeDialog.ui:42
@@ -2063,13 +1751,8 @@ msgstr "_Planlanmış zaman:"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:260 gtk/ui/gtk4/PrefsDialog.ui:167
 #: qt/PrefsDialog.ui:193
-#, fuzzy
 msgid "_On days:"
-msgstr ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Şu günlerde:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Şu günler:"
+msgstr "_Şu günlerde:"
 
 #. Label goes between two time selectors, e.g. "limit speeds from [time] to [time]"
 #: gtk/ui/gtk3/PrefsDialog.ui:317 gtk/ui/gtk4/PrefsDialog.ui:210
@@ -2089,13 +1772,8 @@ msgstr "_Şuradan torrent dosyalarını kendiliğinden ekle:"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:424 gtk/ui/gtk4/PrefsDialog.ui:286
 #: qt/PrefsDialog.ui:257
-#, fuzzy
 msgid "Show the Torrent Options _dialog"
-msgstr ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Torrent Seçenekleri _iletişim kutusunu göster\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Torrent seçenekleri _ileti penceresini göster"
+msgstr "Torrent Seçenekleri _iletişim kutusunu göster"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:441 gtk/ui/gtk4/PrefsDialog.ui:300
 #: qt/PrefsDialog.ui:264
@@ -2116,13 +1794,8 @@ msgstr "İndirme Sırası"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:573 gtk/ui/gtk4/PrefsDialog.ui:401
 #: qt/PrefsDialog.ui:326
-#, fuzzy
 msgid "Ma_ximum active downloads:"
-msgstr ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"En _çok etkin indirme:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"En çok _etkin indirme sayısı:"
+msgstr "En _çok etkin indirme:"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:587 gtk/ui/gtk4/PrefsDialog.ui:413
 msgid "Downloads sharing data in the last _N minutes are active:"
@@ -2164,23 +1837,13 @@ msgstr "İndirme"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:778 gtk/ui/gtk4/PrefsDialog.ui:558
 #: qt/PrefsDialog.ui:462
-#, fuzzy
 msgid "Limits"
-msgstr ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Sınırlamalar\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Sınırlar"
+msgstr "Sınırlar"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:792 gtk/ui/gtk4/PrefsDialog.ui:570
 #: qt/PrefsDialog.ui:468
-#, fuzzy
 msgid "Stop seeding at _ratio:"
-msgstr ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Şu _oranda gönderimi durdur:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Orana ulaşılınca göndermeyi durdur:"
+msgstr "Şu _oranda gönderimi durdur:"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:807 gtk/ui/gtk4/PrefsDialog.ui:582
 msgid "Stop seeding if idle for _N minutes:"
@@ -2209,13 +1872,8 @@ msgstr "_Şifreleme kipi:"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:966 gtk/ui/gtk4/PrefsDialog.ui:700
 #: qt/PrefsDialog.ui:581
-#, fuzzy
 msgid "Blocklist"
-msgstr ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Engel listesi\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Engel Listesi"
+msgstr "Engel Listesi"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:980 gtk/ui/gtk4/PrefsDialog.ui:712
 #: qt/PrefsDialog.ui:587
@@ -2258,13 +1916,8 @@ msgstr "Yönelticimden _yönlendirirken UPnP ya da NAT-PMP bağlantı noktasın�
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1229 gtk/ui/gtk4/PrefsDialog.ui:904
 #: qt/PrefsDialog.ui:680
-#, fuzzy
 msgid "Te_st Port"
-msgstr ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Bağlantı Noktasını _Sına\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Bağlantı Noktasını Sı_na"
+msgstr "Bağlantı Noktasını _Sına"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1265 gtk/ui/gtk4/PrefsDialog.ui:924
 #: qt/PrefsDialog.ui:714
@@ -2280,13 +1933,8 @@ msgstr "_Torrent başına azami eş sayısı:"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1295 gtk/ui/gtk4/PrefsDialog.ui:948
 #: qt/PrefsDialog.ui:743
-#, fuzzy
 msgid "Maximum peers _overall:"
-msgstr ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Genel azami eş sayısı:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Genel azami eş sayısı"
+msgstr "_Genel azami eş sayısı:"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1358 gtk/ui/gtk4/PrefsDialog.ui:998
 #: qt/PrefsDialog.ui:778
@@ -2307,13 +1955,8 @@ msgstr "Daha çok eş bulmak için PE_X kullan"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1380 gtk/ui/gtk4/PrefsDialog.ui:1015
 #: qt/PrefsDialog.ui:785
-#, fuzzy
 msgid "PEX is a tool for exchanging peer lists with the peers you're connected to."
-msgstr ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"PEX bağlı olduğunuz eşlerle, eş listenizi paylaşmanıza yarayan araçtır.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"PEX bağlı olduğunuz eşlerle, eş listenizi paylaşmanıza yarayan bir araçtır."
+msgstr "PEX bağlı olduğunuz eşlerle, eş listenizi paylaşmanıza yarayan araçtır."
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1394 gtk/ui/gtk4/PrefsDialog.ui:1028
 #: qt/PrefsDialog.ui:798
@@ -2324,13 +1967,8 @@ msgstr "Daha çok eş bulmak için _DHT kullan"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1398 gtk/ui/gtk4/PrefsDialog.ui:1030
 #: qt/PrefsDialog.ui:795
-#, fuzzy
 msgid "DHT is a tool for finding peers without a tracker."
-msgstr ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"DHT, izleyiciye gereksinmeden eş bulma aracıdır.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"DHT, izleyiciye gereksinim olmadan eş bulma aracıdır."
+msgstr "DHT, izleyiciye gereksinmeden eş bulma aracıdır."
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1412 gtk/ui/gtk4/PrefsDialog.ui:1043
 #: qt/PrefsDialog.ui:808
@@ -2341,13 +1979,8 @@ msgstr "Daha çok eş bulmak için _Yerel Eş Keşfini kullan"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1416 gtk/ui/gtk4/PrefsDialog.ui:1045
 #: qt/PrefsDialog.ui:805
-#, fuzzy
 msgid "LPD is a tool for finding peers on your local network."
-msgstr ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"LPD, yerel ağınızda eşleri bulmak için bir araçtır.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"LPD yerel ağınızda eşleri bulmanıza yardımcı bir araçtır."
+msgstr "LPD, yerel ağınızda eşleri bulmak için bir araçtır."
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1445 gtk/ui/gtk4/PrefsDialog.ui:1064
 #: qt/PrefsDialog.ui:818
@@ -2356,19 +1989,12 @@ msgstr "Öntanımlı Genel İzleyiciler"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1471 gtk/ui/gtk4/PrefsDialog.ui:1086
 #: qt/PrefsDialog.ui:824
-#, fuzzy
 msgid ""
 "Trackers to use on all public torrents.\n"
 "\n"
 "To add a backup URL, add it on the next line after a primary URL.\n"
 "To add a new primary URL, add it after a blank line."
 msgstr ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Tüm genel torrentlerde kullanılacak izleyiciler.\n"
-"\n"
-"Yedek URL eklemek için, onu ana URL'den sonraki satıra ekleyin.\n"
-"Başka ana URL eklemek için, onu boş bir satırdan sonra ekleyin.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
 "Tüm genel torrentlerde kullanılacak izleyiciler.\n"
 "\n"
 "Yedek URL eklemek için, birincil URL'den sonraki satıra ekleyin.\n"
@@ -2402,23 +2028,13 @@ msgstr "Bildirim"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1602 gtk/ui/gtk4/PrefsDialog.ui:1183
 #: qt/PrefsDialog.ui:902
-#, fuzzy
 msgid "Show a notification when torrents are a_dded"
-msgstr ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Torrentler eklen_diğinde bildirim göster\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Torrent _eklendiğinde bildirim göster"
+msgstr "Torrentler eklen_diğinde bildirim göster"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1619 gtk/ui/gtk4/PrefsDialog.ui:1197
 #: qt/PrefsDialog.ui:909
-#, fuzzy
 msgid "Show a notification when torrents _finish"
-msgstr ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Torrentler _bittiğinde bildirim göster\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Torrent _bittiğinde bildirim göster"
+msgstr "Torrentler _bittiğinde bildirim göster"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1636 gtk/ui/gtk4/PrefsDialog.ui:1211
 #: qt/PrefsDialog.ui:916
@@ -2432,13 +2048,8 @@ msgstr "Uzaktan Denetim"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1711 gtk/ui/gtk4/PrefsDialog.ui:1265
 #: qt/PrefsDialog.ui:952
-#, fuzzy
 msgid "Allow _remote access"
-msgstr ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Uzaktan erişime izin ver\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Uzaktan _erişime izin ver"
+msgstr "Uzaktan _erişime izin ver"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1727 gtk/ui/gtk4/PrefsDialog.ui:1274
 #: qt/PrefsDialog.ui:962
@@ -2459,35 +2070,18 @@ msgstr "_Yetkilendirme kullan"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1785 gtk/ui/gtk4/PrefsDialog.ui:1317
 #: qt/PrefsDialog.ui:1002 qt/SessionDialog.ui:83
-#, fuzzy
 msgid "_Username:"
-msgstr ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Kullanıcı adı:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Kullanıcı Adı:"
+msgstr "_Kullanıcı adı:"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1799 gtk/ui/gtk4/PrefsDialog.ui:1329
 #: qt/PrefsDialog.ui:1015 qt/SessionDialog.ui:96
-#, fuzzy
 msgid "Pass_word:"
-msgstr ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Parola:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Paro_la:\n"
-"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Parola:"
+msgstr "_Parola:"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1811 gtk/ui/gtk4/PrefsDialog.ui:1342
 #: qt/PrefsDialog.ui:1032
-#, fuzzy
 msgid "Only allow these IP a_ddresses:"
-msgstr ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Yalnızca şu IP a_dreslerine bağlanma izni ver:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Yalnızca şu IP a_dreslerine izni ver:"
+msgstr "Yalnızca şu IP a_dreslerine bağlanma izni ver:"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1833 gtk/ui/gtk4/PrefsDialog.ui:1358
 #: qt/PrefsDialog.ui:1042
@@ -2524,13 +2118,8 @@ msgstr "Yeni _konum"
 
 #: gtk/ui/gtk3/RelocateDialog.ui:111 gtk/ui/gtk4/RelocateDialog.ui:55
 #: qt/RelocateDialog.ui:49
-#, fuzzy
 msgid "_Move from the current folder"
-msgstr ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Geçerli klasörden _taşı\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Şu anki dizinden _taşı"
+msgstr "Geçerli klasörden _taşı"
 
 #: gtk/ui/gtk3/RelocateDialog.ui:128 gtk/ui/gtk4/RelocateDialog.ui:68
 #: qt/RelocateDialog.ui:56
@@ -2683,13 +2272,8 @@ msgid "Got an error '{markup_begin}{error}{markup_end}' {time_span_ago}"
 msgstr "{time_span_ago} önce '{markup_begin}{error}{markup_end}' hatası alındı"
 
 #: libtransmission-app/formatters.cc:164
-#, fuzzy
 msgid "No updates scheduled"
-msgstr ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Belirlenmiş güncelleştirme yok\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Planlanlı güncelleme yok"
+msgstr "Belirlenmiş güncelleştirme yok"
 
 #: libtransmission-app/formatters.cc:170
 msgid "Asking for more peers {time_span_from_now}"
@@ -3295,40 +2879,20 @@ msgid "B/s"
 msgstr "B/s"
 
 #: libtransmission/values.cc:29
-#, fuzzy
 msgid "kB/s"
-msgstr ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"kB/sn\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"kB/s"
+msgstr "kB/s"
 
 #: libtransmission/values.cc:29
-#, fuzzy
 msgid "MB/s"
-msgstr ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"MB/sn\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"MB/s"
+msgstr "MB/s"
 
 #: libtransmission/values.cc:29
-#, fuzzy
 msgid "GB/s"
-msgstr ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"GB/sn\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"GB/s"
+msgstr "GB/s"
 
 #: libtransmission/values.cc:29
-#, fuzzy
 msgid "TB/s"
-msgstr ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"TB/sn\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"TB/s"
+msgstr "TB/s"
 
 #: libtransmission/values.cc:30
 msgid "kB"

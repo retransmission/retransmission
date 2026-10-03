@@ -150,13 +150,8 @@ msgid_plural "Couldn't add duplicate torrents"
 msgstr[0] "重複したトレントは追加できません"
 
 #: gtk/Application.cc:1382 qt/AboutDialog.ui:43
-#, fuzzy
 msgid "A fast and easy BitTorrent client"
-msgstr ""
-"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"高速で簡単な BitTorrent クライアント\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"高速でお手軽な BitTorrent クライアント"
+msgstr "高速で簡単な BitTorrent クライアント"
 
 #: gtk/Application.cc:1384 qt/AboutDialog.cc:28
 msgid "Copyright © The {appname} Project"
@@ -194,26 +189,16 @@ msgid "Stop seeding if idle for N minutes:"
 msgstr "N分のアイドル状態でシード停止:"
 
 #: gtk/DetailsDialog.cc:486 gtk/Torrent.cc:405 qt/Torrent.cc:298
-#, fuzzy
 msgid "Queued for verification"
-msgstr ""
-"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"検証待ち\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"検証の処理待ちに追加"
+msgstr "検証の処理待ちに追加"
 
 #: gtk/DetailsDialog.cc:489 qt/Torrent.cc:301
 msgid "Verifying local data"
 msgstr "取得済みのデータを検証中"
 
 #: gtk/DetailsDialog.cc:492 gtk/Torrent.cc:408 qt/Torrent.cc:304
-#, fuzzy
 msgid "Queued for download"
-msgstr ""
-"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"ダウンロード待ち行列\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"ダウンロードの処理待ちに追加"
+msgstr "ダウンロードの処理待ちに追加"
 
 #: gtk/DetailsDialog.cc:495 gtk/FilterBar.cc:456 qt/FilterBar.cc:60
 #: qt/Torrent.cc:307
@@ -258,39 +243,24 @@ msgid "No Torrents Selected"
 msgstr "トレントファイルの選択なし"
 
 #: gtk/DetailsDialog.cc:561 qt/DetailsDialog.cc:799
-#, fuzzy
 msgid "Private to this tracker -- DHT and PEX disabled"
-msgstr ""
-"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"このトラッカーを非公開に -- DHT と PEX を無効化\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"このトラッカーは非公開 -- DHT と PEX を無効化"
+msgstr "このトラッカーは非公開 -- DHT と PEX を無効化"
 
 #: gtk/DetailsDialog.cc:561 qt/DetailsDialog.cc:799
 msgid "Public torrent"
 msgstr "公開トレント"
 
 #: gtk/DetailsDialog.cc:606 qt/DetailsDialog.cc:888
-#, fuzzy
 msgid "Created by {creator} on {date}"
-msgstr ""
-"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"作成 {creator} / 作成日 {date}\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"作成 {creator} / 作成日: {date}"
+msgstr "作成 {creator} / 作成日 {date}"
 
 #: gtk/DetailsDialog.cc:610 qt/DetailsDialog.cc:882
 msgid "Created by {creator}"
 msgstr "作成 {creator}"
 
 #: gtk/DetailsDialog.cc:612 qt/DetailsDialog.cc:885
-#, fuzzy
 msgid "Created on {date}"
-msgstr ""
-"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{date} に作成\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"作成日 {date}"
+msgstr "{date} に作成"
 
 #: gtk/DetailsDialog.cc:690 qt/DetailsDialog.cc:470 qt/DetailsDialog.cc:689
 #: qt/Formatter.cc:27 qt/Formatter.cc:49
@@ -323,13 +293,8 @@ msgid "{current_size} ({percent_done}% of {percent_available}% available; {unver
 msgstr "{current_size} ({percent_done}% / {percent_available}% 入手可能; {unverified_size} 未検証)"
 
 #: gtk/DetailsDialog.cc:816 qt/DetailsDialog.cc:613
-#, fuzzy
 msgid "{downloaded_size} (+{discarded_size} discarded after failed checksum)"
-msgstr ""
-"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{downloaded_size} (+{discarded_size} をチェックサム失敗により破棄)\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{downloaded_size} (+{discarded_size} はチェックサムの失敗により破棄されました)"
+msgstr "{downloaded_size} (+{discarded_size} をチェックサム失敗により破棄)"
 
 #: gtk/DetailsDialog.cc:837 qt/DetailsDialog.cc:636
 msgid "{uploaded_size} (Ratio: {ratio})"
@@ -356,49 +321,25 @@ msgid "Downloading from this peer"
 msgstr "このピアからダウンロード中"
 
 #: gtk/DetailsDialog.cc:1203 qt/DetailsDialog.cc:1094
-#, fuzzy
 msgid "We would download from this peer if they would let us"
-msgstr ""
-"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"許可されればこのピアからダウンロード可能\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"許可があればこのピアからダウンロード"
+msgstr "許可されればこのピアからダウンロード可能"
 
 #: gtk/DetailsDialog.cc:1207 qt/DetailsDialog.cc:1098
-#, fuzzy
 msgid "Uploading to peer"
-msgstr ""
-"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"ピアへのアップロード\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"ピアにアップロード中"
+msgstr "ピアにアップロード中"
 
 #: gtk/DetailsDialog.cc:1211 qt/DetailsDialog.cc:1102
 #, fuzzy
 msgid "This peer would download from us if we would let them"
-msgstr ""
-"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"許可されればこのピアからダウンロード可能\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"許可があればこのピアからダウンロード"
+msgstr "許可されればこのピアからダウンロード可能"
 
 #: gtk/DetailsDialog.cc:1215 qt/DetailsDialog.cc:1106
-#, fuzzy
 msgid "Peer has unchoked us, but we're not interested"
-msgstr ""
-"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"ピアはこちらのチョークを解除しましたが影響はありません\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"このピアをアンチョークしたがピアへの影響なし"
+msgstr "ピアはこちらのチョークを解除しましたが影響はありません"
 
 #: gtk/DetailsDialog.cc:1219 qt/DetailsDialog.cc:1110
-#, fuzzy
 msgid "We unchoked this peer, but they're not interested"
-msgstr ""
-"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"このピアのチョークを解除したが、ピアはへの影響はありません\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"私はアンチョークだが大勢への影響なし"
+msgstr "このピアのチョークを解除したが、ピアはへの影響はありません"
 
 #: gtk/DetailsDialog.cc:1223 qt/DetailsDialog.cc:1069 qt/DetailsDialog.cc:1114
 msgid "Encrypted connection"
@@ -417,13 +358,8 @@ msgid "Peer is an incoming connection"
 msgstr "ピアが接続してきました"
 
 #: gtk/DetailsDialog.cc:1239 qt/DetailsDialog.cc:1130
-#, fuzzy
 msgid "Peer is connected over µTP"
-msgstr ""
-"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"ピアと µTP で接続しました\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"ピアに µTP を介して接続"
+msgstr "ピアと µTP で接続しました"
 
 #: gtk/DetailsDialog.cc:1243 qt/DetailsDialog.cc:1134
 msgid "Peer supports holepunch (BEP 55)"
@@ -474,13 +410,8 @@ msgid "List contains invalid URLs"
 msgstr "リストに無効なURLが含まれています"
 
 #: gtk/DetailsDialog.cc:1734 gtk/FileList.cc:792 qt/Session.cc:267
-#, fuzzy
 msgid "Please correct the errors and try again."
-msgstr ""
-"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"エラーを訂正し再度お試しください。\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"エラーを修正し再度お試しください。"
+msgstr "エラーを修正し再度お試しください。"
 
 #: gtk/DetailsDialog.cc:1814
 msgid "{torrent_name} - Add Tracker"
@@ -501,42 +432,22 @@ msgid_plural "Properties - {torrent_count:L} Torrents"
 msgstr[0] "プロパティ― - {torrent_count:L} トレント"
 
 #: gtk/Dialogs.cc:53 qt/MainWindow.cc:1325
-#, fuzzy
 msgid "Remove torrent?"
-msgstr ""
-"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{count:L} 個のトレントを削除しますか？\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"トレントを除去しますか？"
+msgstr "トレントを除去しますか？"
 
 #: gtk/Dialogs.cc:53 qt/MainWindow.cc:1328
-#, fuzzy
 msgid "Delete this torrent's downloaded files?"
-msgstr ""
-"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"これら{count:L}個のトレントのダウンロード済みファイルを削除します？\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"このトレントとダウンロード済みファイルを削除しますか？"
+msgstr "このトレントとダウンロード済みファイルを削除しますか？"
 
 #: gtk/Dialogs.cc:56 qt/MainWindow.cc:1326
-#, fuzzy
 msgid "Remove {count:L} torrent?"
 msgid_plural "Remove {count:L} torrents?"
-msgstr[0] ""
-"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{count:L} 個のトレントを削除しますか？\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{count:L} トレントを除去しますか？"
+msgstr[0] "{count:L} トレントを除去しますか？"
 
 #: gtk/Dialogs.cc:58 qt/MainWindow.cc:1330
-#, fuzzy
 msgid "Delete this {count:L} torrent's downloaded files?"
 msgid_plural "Delete these {count:L} torrents' downloaded files?"
-msgstr[0] ""
-"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"これら{count:L}個のトレントのダウンロード済みファイルを削除します？\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"これら {count:L} トレントのダウンロード済みファイルを削除しますか？"
+msgstr[0] "これら {count:L} トレントのダウンロード済みファイルを削除しますか？"
 
 #: gtk/Dialogs.cc:65 qt/MainWindow.cc:1337
 #, fuzzy
@@ -556,58 +467,28 @@ msgid "This torrent has not finished downloading."
 msgstr "このトレントはダウンロードが完了していません。"
 
 #: gtk/Dialogs.cc:69 qt/MainWindow.cc:1341
-#, fuzzy
 msgid "These torrents have not finished downloading."
-msgstr ""
-"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"このトレントはダウンロードが完了していません。\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"これらのトレントはダウンロードが完了していません。"
+msgstr "これらのトレントはダウンロードが完了していません。"
 
 #: gtk/Dialogs.cc:71 qt/MainWindow.cc:1343
-#, fuzzy
 msgid "This torrent is connected to peers."
-msgstr ""
-"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"このトレントはピアに接続しています。\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"このトレントはピアに接続されています。"
+msgstr "このトレントはピアに接続されています。"
 
 #: gtk/Dialogs.cc:71 qt/MainWindow.cc:1344
-#, fuzzy
 msgid "These torrents are connected to peers."
-msgstr ""
-"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"このトレントはピアに接続しています。\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"これらのトレントはピアに接続されています。"
+msgstr "これらのトレントはピアに接続されています。"
 
 #: gtk/Dialogs.cc:74 qt/MainWindow.cc:1347
-#, fuzzy
 msgid "One of these torrents is connected to peers."
-msgstr ""
-"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"これらのトレントの一部はピアに接続しています。\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"これらのトレントの1つがピアに接続されています。"
+msgstr "これらのトレントの1つがピアに接続されています。"
 
 #: gtk/Dialogs.cc:75 qt/MainWindow.cc:1348
-#, fuzzy
 msgid "Some of these torrents are connected to peers."
-msgstr ""
-"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"これらのトレントの一部はピアに接続しています。\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"これらのトレントの一部がピアに接続されています。"
+msgstr "これらのトレントの一部がピアに接続されています。"
 
 #: gtk/Dialogs.cc:83 qt/MainWindow.cc:1356
-#, fuzzy
 msgid "One of these torrents has not finished downloading."
-msgstr ""
-"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"これらのトレントの一部はダウンロードが完了していません。\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"これらのトレントの1つはダウンロードが完了していません。"
+msgstr "これらのトレントの1つはダウンロードが完了していません。"
 
 #: gtk/Dialogs.cc:84 qt/MainWindow.cc:1357
 msgid "Some of these torrents have not finished downloading."
@@ -633,15 +514,8 @@ msgstr "削除(_D)"
 #: gtk/transmission-menus.ui:423 gtk/ui/gtk3/DetailsDialog.ui:729
 #: gtk/ui/gtk3/PrefsDialog.ui:1913 gtk/ui/gtk4/DetailsDialog.ui:567
 #: gtk/ui/gtk4/PrefsDialog.ui:1424 qt/DetailsDialog.ui:644 qt/MainWindow.ui:412
-#, fuzzy
 msgid "_Remove"
-msgstr ""
-"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"削除(_R)\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"削除(_R)\n"
-"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"除去(_R)"
+msgstr "除去(_R)"
 
 #: gtk/FileList.cc:599 gtk/Utils.cc:576 qt/DetailsDialog.cc:1394
 #: qt/FileTreeItem.cc:259 qt/FileTreeView.cc:107 qt/FileTreeView.cc:344
@@ -758,13 +632,8 @@ msgstr ""
 " ({download_speed} ダウン, {upload_speed} アップ)"
 
 #: gtk/MainWindow.cc:427 qt/MainWindow.cc:319
-#, fuzzy
 msgid "Unlimited"
-msgstr ""
-"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"制限なし\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"無制限"
+msgstr "制限なし"
 
 #: gtk/MainWindow.cc:490 qt/MainWindow.cc:360
 msgid "Seed Forever"
@@ -787,26 +656,16 @@ msgid "Stop at Ratio ({ratio})"
 msgstr "この共有比で停止 ({ratio})"
 
 #: gtk/MainWindow.cc:602 qt/MainWindow.ui:622
-#, fuzzy
 msgid "Total Ratio"
-msgstr ""
-"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"全体比率\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"総比率"
+msgstr "全体比率"
 
 #: gtk/MainWindow.cc:603 qt/MainWindow.ui:630
 msgid "Session Ratio"
 msgstr "セッション比率"
 
 #: gtk/MainWindow.cc:604 qt/MainWindow.ui:638
-#, fuzzy
 msgid "Total Transfer"
-msgstr ""
-"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"全体転送\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"総転送"
+msgstr "全体転送"
 
 #: gtk/MainWindow.cc:605 qt/MainWindow.ui:646
 msgid "Session Transfer"
@@ -920,13 +779,8 @@ msgid "Start Now"
 msgstr "すぐ開始"
 
 #: gtk/Notify.cc:254 qt/Application.cc:341
-#, fuzzy
 msgid "Torrent Added"
-msgstr ""
-"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"トレントが追加されました\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"追加したトレント"
+msgstr "トレントが追加されました"
 
 #: gtk/OptionsDialog.cc:196
 msgid "Torrent files"
@@ -1003,13 +857,8 @@ msgid "Couldn't update blocklist"
 msgstr "ブロックリストを更新できません"
 
 #: gtk/PrefsDialog.cc:578 qt/PrefsDialog.cc:446
-#, fuzzy
 msgid "Getting new blocklist…"
-msgstr ""
-"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"新しいブロックリストを取得中…\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"新しいブロックリストを取得…"
+msgstr "新しいブロックリストを取得中…"
 
 #: gtk/PrefsDialog.cc:925
 msgctxt "Port test status"
@@ -1072,14 +921,9 @@ msgid "Couldn't find pending RPC request for id {id}"
 msgstr ""
 
 #: gtk/StatsDialog.cc:76 qt/StatsDialog.cc:65
-#, fuzzy
 msgid "Started {count:L} time"
 msgid_plural "Started {count:L} times"
-msgstr[0] ""
-"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
-" {count:L} 回起動\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{count:L} 回起動"
+msgstr[0] "{count:L} 回起動"
 
 #: gtk/StatsDialog.cc:109
 msgid "Reset your statistics?"
@@ -1103,13 +947,9 @@ msgid "{upload_speed} ▴ {download_speed} ▾"
 msgstr "{upload_speed} ▴ {download_speed} ▾"
 
 #: gtk/Torrent.cc:416 qt/TorrentDelegate.cc:284
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Verifying local data ({percent_done}% tested)"
-msgstr ""
-"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"取得済みのデータを検証中 ({percent_done}%)\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"取得済みのデータを検証中 ({percent_done}% 済み)"
+msgstr "取得済みのデータを検証中 ({percent_done}% 済み)"
 
 #: gtk/Torrent.cc:443 qt/DetailsDialog.cc:565 qt/TorrentDelegate.cc:183
 msgid "{current_size} of {complete_size} ({percent_done}%)"
@@ -1120,26 +960,16 @@ msgid "{current_size} of {complete_size} ({percent_complete}%), uploaded {upload
 msgstr "{current_size} / {complete_size} ({percent_complete}%), アップ済み {uploaded_size} (共有比: {ratio}, 目標: {seed_ratio})"
 
 #: gtk/Torrent.cc:465 qt/TorrentDelegate.cc:213
-#, fuzzy
 msgid "{current_size} of {complete_size} ({percent_complete}%), uploaded {uploaded_size} (Ratio: {ratio})"
-msgstr ""
-"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{current_size} / {complete_size} ({percent_complete}%), アップ済み{uploaded_size} (共有比: {ratio})\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{current_size} / {complete_size} ({percent_complete}%), アップ済み {uploaded_size} (共有比: {ratio})"
+msgstr "{current_size} / {complete_size} ({percent_complete}%), アップ済み {uploaded_size} (共有比: {ratio})"
 
 #: gtk/Torrent.cc:474 qt/TorrentDelegate.cc:229
 msgid "{complete_size}, uploaded {uploaded_size} (Ratio: {ratio}, Goal: {seed_ratio})"
 msgstr "{complete_size}, アップ済み{uploaded_size} (共有比: {ratio}, 目標: {seed_ratio})"
 
 #: gtk/Torrent.cc:482 qt/TorrentDelegate.cc:241
-#, fuzzy
 msgid "{complete_size}, uploaded {uploaded_size} (Ratio: {ratio})"
-msgstr ""
-"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{complete_size}, アップ済み{uploaded_size} (共有比: {ratio})\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{complete_size}, アップ済み {uploaded_size} (共有比: {ratio})"
+msgstr "{complete_size}, アップ済み {uploaded_size} (共有比: {ratio})"
 
 #. Translators: Second (optional) part of torrent progress string
 #: gtk/Torrent.cc:493 qt/TorrentDelegate.cc:254 qt/TorrentDelegate.cc:307
@@ -1185,24 +1015,14 @@ msgid_plural "Downloading from {active_count} webseeds"
 msgstr[0] "ダウンロード中, {active_count} 個のウェブシードから"
 
 #: gtk/Torrent.cc:659 qt/TorrentDelegate.cc:351
-#, fuzzy
 msgid "Downloading from {active_count} of {connected_count} connected peer"
 msgid_plural "Downloading from {active_count} of {connected_count} connected peers"
-msgstr[0] ""
-"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"ダウンロード中, 全 {connected_count} 中  {active_count} 個の接続済みピアから\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"ダウンロード中, {connected_count} 中 {active_count} の接続ピア"
+msgstr[0] "ダウンロード中, 全 {connected_count} 中  {active_count} 個の接続済みピアから"
 
 #: gtk/Torrent.cc:668 qt/TorrentDelegate.cc:380
-#, fuzzy
 msgid "Seeding to {active_count} of {connected_count} connected peer"
 msgid_plural "Seeding to {active_count} of {connected_count} connected peers"
-msgstr[0] ""
-"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"シード中, 全 {connected_count} 中 {active_count} 個の接続済みピアへ\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{connected_count} 中 {active_count} の接続ピアにシード中"
+msgstr[0] "シード中, 全 {connected_count} 中 {active_count} 個の接続済みピアへ"
 
 #: gtk/retransmission-gtk.desktop.in:2
 #: gtk/retransmission-gtk.metainfo.xml.in:11
@@ -1261,32 +1081,17 @@ msgstr "ファイル(_F)"
 
 #: gtk/transmission-menus.ui:18 gtk/transmission-menus.ui:447
 #: qt/MainWindow.ui:685
-#, fuzzy
 msgid "Open _URL…"
-msgstr ""
-"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"URLを開く(_U)…\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"URL を開く(_U)"
+msgstr "URLを開く(_U)…"
 
 #: gtk/transmission-menus.ui:25 qt/MainWindow.ui:332
-#, fuzzy
 msgid "_New…"
-msgstr ""
-"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"新規(_N)…\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"新規(_N)"
+msgstr "新規(_N)…"
 
 #: gtk/transmission-menus.ui:32 gtk/transmission-menus.ui:460
 #: qt/MainWindow.ui:437
-#, fuzzy
 msgid "_Start All"
-msgstr ""
-"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"すべてを開始(_S)\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"すべて開始(_S)"
+msgstr "すべて開始(_S)"
 
 #: gtk/transmission-menus.ui:37 gtk/transmission-menus.ui:455
 #: qt/MainWindow.ui:442
@@ -1313,13 +1118,8 @@ msgid "Dese_lect All"
 msgstr "すべて選択解除(_L)"
 
 #: gtk/transmission-menus.ui:68 qt/MainWindow.ui:474
-#, fuzzy
 msgid "_Preferences"
-msgstr ""
-"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"環境設定(_P)\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"設定(_P)"
+msgstr "環境設定(_P)"
 
 #: gtk/transmission-menus.ui:73 qt/MainWindow.ui:192
 msgid "_Torrent"
@@ -1349,13 +1149,8 @@ msgstr "すぐに開始(_N)"
 
 #: gtk/transmission-menus.ui:104 gtk/transmission-menus.ui:369
 #: qt/MainWindow.ui:379
-#, fuzzy
 msgid "Ask Tracker for _More Peers"
-msgstr ""
-"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"トラッカーにピア増加を要求(_M)\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"トラッカーからピアを増加(_M)"
+msgstr "トラッカーにピア増加を要求(_M)"
 
 #: gtk/transmission-menus.ui:107 gtk/transmission-menus.ui:372
 #: qt/MainWindow.ui:196
@@ -1366,75 +1161,40 @@ msgstr "待ち行列"
 
 #: gtk/transmission-menus.ui:112 gtk/transmission-menus.ui:377
 #: qt/MainWindow.ui:712
-#, fuzzy
 msgid "Move to _Top"
-msgstr ""
-"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"先頭に移動(_T)\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"先頭へ(_T)"
+msgstr "先頭に移動(_T)"
 
 #: gtk/transmission-menus.ui:117 gtk/transmission-menus.ui:382
 #: qt/MainWindow.ui:717
-#, fuzzy
 msgid "Move _Up"
-msgstr ""
-"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"上に移動(_U)\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"ひとつ上へ(_U)"
+msgstr "上に移動(_U)"
 
 #: gtk/transmission-menus.ui:122 gtk/transmission-menus.ui:387
 #: qt/MainWindow.ui:725
-#, fuzzy
 msgid "Move _Down"
-msgstr ""
-"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"下に移動(_D)\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"ひとつ下へ(_D)"
+msgstr "下に移動(_D)"
 
 #: gtk/transmission-menus.ui:127 gtk/transmission-menus.ui:392
 #: qt/MainWindow.ui:733
-#, fuzzy
 msgid "Move to _Bottom"
-msgstr ""
-"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"末尾に移動(_B)\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"最後へ(_B)"
+msgstr "末尾に移動(_B)"
 
 #: gtk/transmission-menus.ui:134 gtk/transmission-menus.ui:399
 #: gtk/ui/gtk3/MainWindow.ui:54 gtk/ui/gtk3/MessageLogWindow.ui:66
 #: gtk/ui/gtk4/MainWindow.ui:54 gtk/ui/gtk4/MessageLogWindow.ui:84
 #: qt/MainWindow.ui:387
-#, fuzzy
 msgid "_Pause"
-msgstr ""
-"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"中断(_P)\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"停止(_P)"
+msgstr "停止(_P)"
 
 #: gtk/transmission-menus.ui:141 gtk/transmission-menus.ui:406
 #: qt/MainWindow.ui:675
-#, fuzzy
 msgid "Set _Location…"
-msgstr ""
-"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"場所を設定する(_L)…\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"場所の設定(_L)"
+msgstr "場所の設定(_L)"
 
 #: gtk/transmission-menus.ui:145 gtk/transmission-menus.ui:410
 #: qt/MainWindow.ui:401
-#, fuzzy
 msgid "_Verify Local Data"
-msgstr ""
-"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"ローカルデータを検証(_V)\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"取得データを検証(_V)"
+msgstr "取得データを検証(_V)"
 
 #: gtk/transmission-menus.ui:151 gtk/transmission-menus.ui:416
 #: qt/MainWindow.ui:680
@@ -1443,13 +1203,8 @@ msgstr "マグネットリンクをコピー(_C)"
 
 #: gtk/transmission-menus.ui:164 gtk/transmission-menus.ui:429
 #: qt/MainWindow.ui:426
-#, fuzzy
 msgid "_Delete Files and Remove"
-msgstr ""
-"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"ファイルの削除(_D)\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"除去とファイルの削除(_R)"
+msgstr "除去とファイルの削除(_R)"
 
 #: gtk/transmission-menus.ui:170 qt/MainWindow.ui:244
 msgid "_View"
@@ -1464,13 +1219,8 @@ msgid "_Toolbar"
 msgstr "ツールバー(_T)"
 
 #: gtk/transmission-menus.ui:185 qt/MainWindow.ui:510
-#, fuzzy
 msgid "_Filterbar"
-msgstr ""
-"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"フィルターバー(_F)\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"絞り込みバー(_F)"
+msgstr "フィルターバー(_F)"
 
 #: gtk/transmission-menus.ui:189 qt/MainWindow.ui:518
 msgid "_Statusbar"
@@ -1478,103 +1228,53 @@ msgstr "ステータスバー(_S)"
 
 #: gtk/transmission-menus.ui:195 gtk/transmission-menus.ui:301
 #: qt/MainWindow.ui:526
-#, fuzzy
 msgid "Sort by _Activity"
-msgstr ""
-"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"稼働順に並び替え(_A)\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"稼働順(_A)"
+msgstr "稼働順に並び替え(_A)"
 
 #: gtk/transmission-menus.ui:200 gtk/transmission-menus.ui:306
 #: qt/MainWindow.ui:534
-#, fuzzy
 msgid "Sort by A_ge"
-msgstr ""
-"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"追加順に並び替え(_G)\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"登録日時順(_G)"
+msgstr "追加順に並び替え(_G)"
 
 #: gtk/transmission-menus.ui:205 gtk/transmission-menus.ui:311
 #: qt/MainWindow.ui:550
-#, fuzzy
 msgid "Sort by _Name"
-msgstr ""
-"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"名前順に並び替え(_N)\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"名前順(_N)"
+msgstr "名前順に並び替え(_N)"
 
 #: gtk/transmission-menus.ui:210 gtk/transmission-menus.ui:316
 #: qt/MainWindow.ui:558
-#, fuzzy
 msgid "Sort by _Progress"
-msgstr ""
-"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"進行率順に並び替え(_P)\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"進行率順(_P)"
+msgstr "進行率順に並び替え(_P)"
 
 #: gtk/transmission-menus.ui:215 gtk/transmission-menus.ui:321
 #: qt/MainWindow.ui:741
-#, fuzzy
 msgid "Sort by _Queue"
-msgstr ""
-"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"処理待ち順に並び替え(_Q)\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"処理待ち順(_Q)"
+msgstr "処理待ち順に並び替え(_Q)"
 
 #: gtk/transmission-menus.ui:220 gtk/transmission-menus.ui:326
 #: qt/MainWindow.ui:566
-#, fuzzy
 msgid "Sort by Rati_o"
-msgstr ""
-"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"共有比順に並び替え(_O)\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"共有比順(_O)"
+msgstr "共有比順に並び替え(_O)"
 
 #: gtk/transmission-menus.ui:225 gtk/transmission-menus.ui:331
 #: qt/MainWindow.ui:574
-#, fuzzy
 msgid "Sort by Si_ze"
-msgstr ""
-"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"サイズ順に並び替え(_Z)\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"サイズ順(_Z)"
+msgstr "サイズ順に並び替え(_Z)"
 
 #: gtk/transmission-menus.ui:230 gtk/transmission-menus.ui:336
 #: qt/MainWindow.ui:582
-#, fuzzy
 msgid "Sort by Stat_e"
-msgstr ""
-"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"状態順に並び替え(_E)\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"状態順(_E)"
+msgstr "状態順に並び替え(_E)"
 
 #: gtk/transmission-menus.ui:235 gtk/transmission-menus.ui:341
 #: qt/MainWindow.ui:542
-#, fuzzy
 msgid "Sort by Time _Left"
-msgstr ""
-"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"残り時間順に並び替え(_L)\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"残り時間順(_L)"
+msgstr "残り時間順に並び替え(_L)"
 
 #: gtk/transmission-menus.ui:242 gtk/transmission-menus.ui:348
 #: qt/MainWindow.ui:614
-#, fuzzy
 msgid "Re_verse Sort Order"
-msgstr ""
-"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"逆順に並び替え(_V)\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"順序を逆に(_V)"
+msgstr "逆順に並び替え(_V)"
 
 #: gtk/transmission-menus.ui:247 gtk/ui/gtk3/PrefsDialog.ui:22
 #: gtk/ui/gtk4/PrefsDialog.ui:1484 qt/MainWindow.ui:233
@@ -1586,31 +1286,16 @@ msgid "Message _Log"
 msgstr "メッセージログ(_L)"
 
 #: gtk/transmission-menus.ui:255 qt/MainWindow.ui:590
-#, fuzzy
 msgid "_Statistics"
-msgstr ""
-"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"統計データ(_S)\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"統計(_S)"
+msgstr "統計データ(_S)"
 
 #: gtk/transmission-menus.ui:261 qt/MainWindow.ui:693
-#, fuzzy
 msgid "_Donate"
-msgstr ""
-"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"寄付(_D)\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"寄付する(_D)"
+msgstr "寄付(_D)"
 
 #: gtk/transmission-menus.ui:268 qt/MainWindow.ui:595
-#, fuzzy
 msgid "_Contents"
-msgstr ""
-"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"コンテンツ(_C)\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"オンライン文書(_C)"
+msgstr "コンテンツ(_C)"
 
 #: gtk/transmission-menus.ui:274 qt/MainWindow.ui:603
 msgid "_About"
@@ -1625,11 +1310,7 @@ msgstr "トレントを開始"
 #: gtk/transmission-menus.ui:466 qt/MainWindow.cc:189
 #, fuzzy
 msgid "Alternative Speed _Limits"
-msgstr ""
-"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"一時的な速度制限\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"第二の速度制限"
+msgstr "第二の速度制限"
 
 #: gtk/ui/gtk3/AddTrackerDialog.ui:34 gtk/ui/gtk3/DetailsDialog.ui:701
 #: gtk/ui/gtk3/MakeProgressDialog.ui:51 gtk/ui/gtk3/PrefsDialog.ui:1898
@@ -1675,25 +1356,15 @@ msgstr "所有:"
 #: gtk/ui/gtk3/StatsDialog.ui:246 gtk/ui/gtk4/DetailsDialog.ui:58
 #: gtk/ui/gtk4/StatsDialog.ui:32 gtk/ui/gtk4/StatsDialog.ui:164
 #: qt/DetailsDialog.ui:106 qt/StatsDialog.ui:29 qt/StatsDialog.ui:158
-#, fuzzy
 msgid "Uploaded:"
-msgstr ""
-"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"アップロード済:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"アップロード済み:"
+msgstr "アップロード済み:"
 
 #: gtk/ui/gtk3/DetailsDialog.ui:110 gtk/ui/gtk3/StatsDialog.ui:115
 #: gtk/ui/gtk3/StatsDialog.ui:275 gtk/ui/gtk4/DetailsDialog.ui:68
 #: gtk/ui/gtk4/StatsDialog.ui:57 gtk/ui/gtk4/StatsDialog.ui:189
 #: qt/DetailsDialog.ui:138 qt/StatsDialog.ui:55 qt/StatsDialog.ui:184
-#, fuzzy
 msgid "Downloaded:"
-msgstr ""
-"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"ダウンロード済:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"ダウンロード済み:"
+msgstr "ダウンロード済み:"
 
 #: gtk/ui/gtk3/DetailsDialog.ui:122 gtk/ui/gtk4/DetailsDialog.ui:78
 #: qt/DetailsDialog.ui:170
@@ -1712,13 +1383,8 @@ msgstr "残り時間:"
 
 #: gtk/ui/gtk3/DetailsDialog.ui:158 gtk/ui/gtk4/DetailsDialog.ui:108
 #: qt/DetailsDialog.ui:266
-#, fuzzy
 msgid "Last activity:"
-msgstr ""
-"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"最終稼働時間:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"最終稼働時間;"
+msgstr "最終稼働時間:"
 
 #: gtk/ui/gtk3/DetailsDialog.ui:170 gtk/ui/gtk4/DetailsDialog.ui:118
 #: qt/DetailsDialog.ui:298
@@ -1747,13 +1413,8 @@ msgstr "プライバシー:"
 
 #: gtk/ui/gtk3/DetailsDialog.ui:404 gtk/ui/gtk4/DetailsDialog.ui:316
 #: qt/DetailsDialog.ui:467
-#, fuzzy
 msgid "Origin:"
-msgstr ""
-"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"作成:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"起源:"
+msgstr "作成:"
 
 #: gtk/ui/gtk3/DetailsDialog.ui:416 gtk/ui/gtk4/DetailsDialog.ui:326
 #: qt/DetailsDialog.ui:499
@@ -1773,13 +1434,8 @@ msgstr "情報"
 #: gtk/ui/gtk3/DetailsDialog.ui:629 gtk/ui/gtk3/DetailsDialog.ui:757
 #: gtk/ui/gtk4/DetailsDialog.ui:502 gtk/ui/gtk4/DetailsDialog.ui:579
 #: qt/DetailsDialog.ui:600 qt/DetailsDialog.ui:664
-#, fuzzy
 msgid "Show _more details"
-msgstr ""
-"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"詳細を表示(_M)\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"詳細表示(_M)"
+msgstr "詳細を表示(_M)"
 
 #: gtk/ui/gtk3/DetailsDialog.ui:652 gtk/ui/gtk4/DetailsDialog.ui:512
 #: qt/DetailsDialog.ui:569
@@ -1788,13 +1444,8 @@ msgstr "ピア"
 
 #: gtk/ui/gtk3/DetailsDialog.ui:773 gtk/ui/gtk4/DetailsDialog.ui:587
 #: qt/DetailsDialog.ui:671
-#, fuzzy
 msgid "Show _backup trackers"
-msgstr ""
-"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"代替トラッカーを表示(_B)\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"バックアップトラッカーを表示(_B)"
+msgstr "代替トラッカーを表示(_B)"
 
 #: gtk/ui/gtk3/DetailsDialog.ui:834 gtk/ui/gtk4/DetailsDialog.ui:627
 msgid "File listing not available for combined torrent properties"
@@ -1814,13 +1465,8 @@ msgstr "速度"
 
 #: gtk/ui/gtk3/DetailsDialog.ui:887 gtk/ui/gtk4/DetailsDialog.ui:663
 #: qt/DetailsDialog.ui:723
-#, fuzzy
 msgid "Honor global _limits"
-msgstr ""
-"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"速度制限の全体設定に従う(_L)\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"速度制限の全体設定を尊重(_L)"
+msgstr "速度制限の全体設定に従う(_L)"
 
 #: gtk/ui/gtk3/DetailsDialog.ui:903 gtk/ui/gtk4/DetailsDialog.ui:676
 msgid "Limit _download speed ({speed_units}):"
@@ -1833,23 +1479,13 @@ msgstr "アップロード速度の制限(_U) ({speed_units}):"
 #: gtk/ui/gtk3/DetailsDialog.ui:935 gtk/ui/gtk3/OptionsDialog.ui:143
 #: gtk/ui/gtk4/DetailsDialog.ui:700 gtk/ui/gtk4/OptionsDialog.ui:87
 #: qt/DetailsDialog.ui:770
-#, fuzzy
 msgid "Torrent _priority:"
-msgstr ""
-"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"トレントの優先度(_P):\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"トレントの優先度 (_P):"
+msgstr "トレントの優先度(_P):"
 
 #: gtk/ui/gtk3/DetailsDialog.ui:997 gtk/ui/gtk4/DetailsDialog.ui:749
 #: qt/DetailsDialog.ui:786
-#, fuzzy
 msgid "Seeding Limits"
-msgstr ""
-"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"シードの上限\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"シード制限"
+msgstr "シードの上限"
 
 #: gtk/ui/gtk3/DetailsDialog.ui:1013 gtk/ui/gtk4/DetailsDialog.ui:761
 #: qt/DetailsDialog.ui:792
@@ -1858,33 +1494,18 @@ msgstr "共有比(_R):"
 
 #: gtk/ui/gtk3/DetailsDialog.ui:1027 gtk/ui/gtk4/DetailsDialog.ui:773
 #: qt/DetailsDialog.ui:819
-#, fuzzy
 msgid "_Idle:"
-msgstr ""
-"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"アイドル状態(_I):\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"アイドル(_I):"
+msgstr "アイドル状態(_I):"
 
 #: gtk/ui/gtk3/DetailsDialog.ui:1125 gtk/ui/gtk4/DetailsDialog.ui:831
 #: qt/DetailsDialog.ui:855
-#, fuzzy
 msgid "Peer Connections"
-msgstr ""
-"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"ピアとの接続\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"ピア接続"
+msgstr "ピアとの接続"
 
 #: gtk/ui/gtk3/DetailsDialog.ui:1141 gtk/ui/gtk4/DetailsDialog.ui:843
 #: qt/DetailsDialog.ui:861
-#, fuzzy
 msgid "_Maximum peers:"
-msgstr ""
-"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"ピア最大数(_M):\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"最大ピア数(_M):"
+msgstr "最大ピア数(_M):"
 
 #: gtk/ui/gtk3/DetailsDialog.ui:1180 gtk/ui/gtk3/MainWindow.ui:169
 #: gtk/ui/gtk3/PrefsDialog.ui:1344 gtk/ui/gtk4/DetailsDialog.ui:871
@@ -1924,24 +1545,14 @@ msgstr "トレントを開始"
 
 #: gtk/ui/gtk3/MainWindow.ui:52 gtk/ui/gtk4/MainWindow.ui:52
 #: qt/MainWindow.ui:390
-#, fuzzy
 msgid "Pause torrent"
-msgstr ""
-"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"トレントを一時停止\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"トレントを停止"
+msgstr "トレントを停止"
 
 #: gtk/ui/gtk3/MainWindow.ui:67 gtk/ui/gtk3/MainWindow.ui:69
 #: gtk/ui/gtk4/MainWindow.ui:62 gtk/ui/gtk4/MainWindow.ui:64
 #: qt/MainWindow.ui:415
-#, fuzzy
 msgid "Remove torrent"
-msgstr ""
-"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"トレントを削除\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"トレントを除去"
+msgstr "トレントを除去"
 
 #: gtk/ui/gtk3/MainWindow.ui:92 gtk/ui/gtk4/MainWindow.ui:78
 #: qt/MainWindow.ui:346
@@ -1999,13 +1610,8 @@ msgstr "プロパティ"
 
 #: gtk/ui/gtk3/MakeDialog.ui:249 gtk/ui/gtk4/MakeDialog.ui:159
 #: qt/MakeDialog.ui:111
-#, fuzzy
 msgid "_Trackers:"
-msgstr ""
-"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"トラッカー(_T):\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"トラッカー(_T);"
+msgstr "トラッカー(_T):"
 
 #: gtk/ui/gtk3/MakeDialog.ui:312 gtk/ui/gtk4/MakeDialog.ui:206
 #: qt/MakeDialog.ui:142
@@ -2057,13 +1663,8 @@ msgstr "対象ファイルの選択"
 
 #: gtk/ui/gtk3/OptionsDialog.ui:91 gtk/ui/gtk4/OptionsDialog.ui:41
 #: qt/OptionsDialog.ui:39
-#, fuzzy
 msgid "_Destination folder:"
-msgstr ""
-"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"保存先フォルダ(_D):\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"保存フォルダ(_D):"
+msgstr "保存先フォルダ(_D):"
 
 #: gtk/ui/gtk3/OptionsDialog.ui:107 gtk/ui/gtk4/OptionsDialog.ui:55
 #: qt/OptionsDialog.cc:78 qt/PrefsDialog.cc:522
@@ -2085,13 +1686,8 @@ msgstr ".torrent ファイルをごみ箱へ(_V)"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:7 gtk/ui/gtk4/PrefsDialog.ui:5
 #: qt/PrefsDialog.ui:14
-#, fuzzy
 msgid "{appname} Preferences"
-msgstr ""
-"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{appname} 設定\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{appname} の設定"
+msgstr "{appname} 設定"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:76 gtk/ui/gtk4/PrefsDialog.ui:29
 #: qt/PrefsDialog.ui:36
@@ -2110,13 +1706,8 @@ msgstr "ダウンロード(_D) ({speed_units}):"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:159 gtk/ui/gtk4/PrefsDialog.ui:93
 #: qt/PrefsDialog.ui:85
-#, fuzzy
 msgid "Alternative Speed Limits"
-msgstr ""
-"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"一時的な速度制限\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"第二の速度制限"
+msgstr "第二の速度制限"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:193 gtk/ui/gtk4/PrefsDialog.ui:114
 #: qt/PrefsDialog.ui:100
@@ -2140,24 +1731,14 @@ msgstr "予定時刻(_S):"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:260 gtk/ui/gtk4/PrefsDialog.ui:167
 #: qt/PrefsDialog.ui:193
-#, fuzzy
 msgid "_On days:"
-msgstr ""
-"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"日(_O):\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"曜日(_O)"
+msgstr "曜日(_O)"
 
 #. Label goes between two time selectors, e.g. "limit speeds from [time] to [time]"
 #: gtk/ui/gtk3/PrefsDialog.ui:317 gtk/ui/gtk4/PrefsDialog.ui:210
 #: qt/PrefsDialog.ui:174
-#, fuzzy
 msgid "_to"
-msgstr ""
-"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"から(_T)\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"から"
+msgstr "から(_T)"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:395 gtk/ui/gtk4/PrefsDialog.ui:262
 msgctxt "Gerund"
@@ -2171,13 +1752,8 @@ msgstr "ここのトレントファイルを自動追加(_F):"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:424 gtk/ui/gtk4/PrefsDialog.ui:286
 #: qt/PrefsDialog.ui:257
-#, fuzzy
 msgid "Show the Torrent Options _dialog"
-msgstr ""
-"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"トレントのオプションダイアログを表示(_D)\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"トレントオプションダイアログを表示(_D)"
+msgstr "トレントのオプションダイアログを表示(_D)"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:441 gtk/ui/gtk4/PrefsDialog.ui:300
 #: qt/PrefsDialog.ui:264
@@ -2198,13 +1774,8 @@ msgstr "ダウンロード待ち行列"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:573 gtk/ui/gtk4/PrefsDialog.ui:401
 #: qt/PrefsDialog.ui:326
-#, fuzzy
 msgid "Ma_ximum active downloads:"
-msgstr ""
-"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"最大稼働ダウンロード数:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"最大稼働ダウンロード数(_X):"
+msgstr "最大稼働ダウンロード数(_X):"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:587 gtk/ui/gtk4/PrefsDialog.ui:413
 msgid "Downloads sharing data in the last _N minutes are active:"
@@ -2320,13 +1891,8 @@ msgstr "Transmission の起動ごとにランダムにポートを変更(_R)"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1167 gtk/ui/gtk4/PrefsDialog.ui:852
 #: qt/PrefsDialog.ui:704
-#, fuzzy
 msgid "Use UPnP or NAT-PMP port _forwarding from my router"
-msgstr ""
-"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"UPnP か NAT-PMP にて自分のルーターのポート転送を使用(_F)\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"UPnP か NAT-PMP にて自分のルータのポート転送を使用(_F)"
+msgstr "UPnP か NAT-PMP にて自分のルーターのポート転送を使用(_F)"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1229 gtk/ui/gtk4/PrefsDialog.ui:904
 #: qt/PrefsDialog.ui:680
@@ -2369,13 +1935,8 @@ msgstr "PEX でより多くのピアを探す(_X)"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1380 gtk/ui/gtk4/PrefsDialog.ui:1015
 #: qt/PrefsDialog.ui:785
-#, fuzzy
 msgid "PEX is a tool for exchanging peer lists with the peers you're connected to."
-msgstr ""
-"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"PEX は、ピアのリストを接続中のピアとで交換するツールです。\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"PEX は、接続中のピア同士でピア一覧を交換するツールです。"
+msgstr "PEX は、接続中のピア同士でピア一覧を交換するツールです。"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1394 gtk/ui/gtk4/PrefsDialog.ui:1028
 #: qt/PrefsDialog.ui:798
@@ -2386,13 +1947,8 @@ msgstr "DHT でより多くのピアを探す(_D)"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1398 gtk/ui/gtk4/PrefsDialog.ui:1030
 #: qt/PrefsDialog.ui:795
-#, fuzzy
 msgid "DHT is a tool for finding peers without a tracker."
-msgstr ""
-"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"DHTはトラッカーを介さずにピアを見つけるツールです。\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"DHT は、トラッカーなしでピアを探すツールです。"
+msgstr "DHT は、トラッカーなしでピアを探すツールです。"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1412 gtk/ui/gtk4/PrefsDialog.ui:1043
 #: qt/PrefsDialog.ui:808
@@ -2403,13 +1959,8 @@ msgstr "ローカルピア探索でより多くのピアを探す(_L)"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1416 gtk/ui/gtk4/PrefsDialog.ui:1045
 #: qt/PrefsDialog.ui:805
-#, fuzzy
 msgid "LPD is a tool for finding peers on your local network."
-msgstr ""
-"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"LPD はローカル・ネットワーク上のピアを検索するツールです。\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"LPD は、あなたのローカルネットワーク上のピアを探すツールです。"
+msgstr "LPD はローカル・ネットワーク上のピアを検索するツールです。"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1445 gtk/ui/gtk4/PrefsDialog.ui:1064
 #: qt/PrefsDialog.ui:818
@@ -2418,23 +1969,16 @@ msgstr "標準の公開トラッカー"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1471 gtk/ui/gtk4/PrefsDialog.ui:1086
 #: qt/PrefsDialog.ui:824
-#, fuzzy
 msgid ""
 "Trackers to use on all public torrents.\n"
 "\n"
 "To add a backup URL, add it on the next line after a primary URL.\n"
 "To add a new primary URL, add it after a blank line."
 msgstr ""
-"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
 "すべての公開トレントで使用するトラッカーです。\n"
 "\n"
 "代替URLを追加するときは、プライマリURLの次の行に追加してください。\n"
-"新しいプライマリURLを追加するときは、空白行を挟んで追加してください。\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"すべての公開トレントに使用するトラッカー。\n"
-"\n"
-"代替 URL を追加するには、プライマリ URL の次の行に追加します。\n"
-"新しいプライマリ URL を追加するには、空白行の後に追加します。"
+"新しいプライマリURLを追加するときは、空白行を挟んで追加してください。"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1503 gtk/ui/gtk4/PrefsDialog.ui:1108
 #: qt/PrefsDialog.ui:648
@@ -2454,13 +1998,8 @@ msgstr ""
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1556 gtk/ui/gtk4/PrefsDialog.ui:1151
 #: qt/PrefsDialog.ui:872
-#, fuzzy
 msgid "Show {appname} icon in the _notification area"
-msgstr ""
-"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"通知領域に {appname} のアイコンを表示(_N)\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{appname} のアイコンを通知領域に表示(_N)"
+msgstr "通知領域に {appname} のアイコンを表示(_N)"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1588 gtk/ui/gtk4/PrefsDialog.ui:1171
 #: qt/PrefsDialog.ui:896
@@ -2469,33 +2008,18 @@ msgstr "通知"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1602 gtk/ui/gtk4/PrefsDialog.ui:1183
 #: qt/PrefsDialog.ui:902
-#, fuzzy
 msgid "Show a notification when torrents are a_dded"
-msgstr ""
-"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"トレント追加時に通知を表示(_D)\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"トレントが追加されたら通知を表示(_D)"
+msgstr "トレント追加時に通知を表示(_D)"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1619 gtk/ui/gtk4/PrefsDialog.ui:1197
 #: qt/PrefsDialog.ui:909
-#, fuzzy
 msgid "Show a notification when torrents _finish"
-msgstr ""
-"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"トレント完了時に通知を表示(_F)\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"トレントが完了したら通知を表示(_F)"
+msgstr "トレント完了時に通知を表示(_F)"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1636 gtk/ui/gtk4/PrefsDialog.ui:1211
 #: qt/PrefsDialog.ui:916
-#, fuzzy
 msgid "Play a _sound when torrents finish"
-msgstr ""
-"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"トレント完了時に音を鳴らす(_S)\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"トレントが完了したら音を鳴らす(_S)"
+msgstr "トレント完了時に音を鳴らす(_S)"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1691 gtk/ui/gtk4/PrefsDialog.ui:1248
 #: qt/PrefsDialog.ui:946
@@ -2516,13 +2040,8 @@ msgstr "ブラウザで開く(_O)"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1753 gtk/ui/gtk4/PrefsDialog.ui:1290
 #: qt/PrefsDialog.ui:972
-#, fuzzy
 msgid "HTTP _port:"
-msgstr ""
-"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"HTTPポート(_P):\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"HTTP ポート(_P):"
+msgstr "HTTPポート(_P):"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1765 gtk/ui/gtk4/PrefsDialog.ui:1303
 #: qt/PrefsDialog.ui:992
@@ -2560,13 +2079,8 @@ msgstr "リモート"
 
 #: gtk/ui/gtk3/RelocateDialog.ui:7 gtk/ui/gtk4/RelocateDialog.ui:5
 #: qt/RelocateDialog.ui:14
-#, fuzzy
 msgid "Set Torrent Location"
-msgstr ""
-"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"トレントの場所を設定\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"トレントの保存場所を設定"
+msgstr "トレントの場所を設定"
 
 #: gtk/ui/gtk3/RelocateDialog.ui:35 gtk/ui/gtk4/RelocateDialog.ui:101
 msgid "_Apply"
@@ -2729,26 +2243,16 @@ msgid "Got an error '{markup_begin}{error}{markup_end}' {time_span_ago}"
 msgstr "エラー取得「{markup_begin}{error}{markup_end}」{time_span_ago}"
 
 #: libtransmission-app/formatters.cc:164
-#, fuzzy
 msgid "No updates scheduled"
-msgstr ""
-"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"更新の予定なし\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"更新の予定はありません"
+msgstr "更新の予定なし"
 
 #: libtransmission-app/formatters.cc:170
 msgid "Asking for more peers {time_span_from_now}"
 msgstr "ピア探索を要求 {time_span_from_now}"
 
 #: libtransmission-app/formatters.cc:175
-#, fuzzy
 msgid "Queued to ask for more peers"
-msgstr ""
-"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"ピア探索の処理待ちに追加\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"ピア探索を処理待ちに追加"
+msgstr "ピア探索の処理待ちに追加"
 
 #: libtransmission-app/formatters.cc:182
 msgid "Asked for more peers {markup_begin}{time_span_ago}{markup_end}"
@@ -2785,13 +2289,8 @@ msgid "Asking for peer counts {time_span_from_now}"
 msgstr "ピア数を問い合わせ {time_span_from_now}後"
 
 #: libtransmission-app/formatters.cc:244
-#, fuzzy
 msgid "Queued to ask for peer counts"
-msgstr ""
-"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"ピア数の確認の処理待ちに追加\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"ピア数確認を処理待ちに追加"
+msgstr "ピア数の確認の処理待ちに追加"
 
 #: libtransmission-app/formatters.cc:250
 msgid "Asked for peer counts {markup_begin}{time_span_ago}{markup_end}"
@@ -2810,26 +2309,14 @@ msgstr[0] "{hours:L}時間"
 #. Translators: Spin box format, "Stop seeding if idle for: [ 5 minutes ]"
 #: libtransmission-app/formatters.cc:274 qt/DetailsDialog.cc:1263
 #: qt/PrefsDialog.cc:482
-#, fuzzy
 msgid "{minutes:L} minute"
 msgid_plural "{minutes:L} minutes"
-msgstr[0] ""
-"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{minutes:L}分\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{minutes:L}分\n"
-"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{minutes:L} 分"
+msgstr[0] "{minutes:L}分"
 
 #: libtransmission-app/formatters.cc:280
-#, fuzzy
 msgid "{seconds:L} second"
 msgid_plural "{seconds:L} seconds"
-msgstr[0] ""
-"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{seconds:L}秒\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{seconds:L} 秒"
+msgstr[0] "{seconds:L}秒"
 
 #: libtransmission-app/formatters.cc:291
 msgid "{days_left:L} day left"
@@ -3325,58 +2812,28 @@ msgid "Unknown socket family"
 msgstr "不明なソケットファミリー"
 
 #: libtransmission/values.cc:28 libtransmission/values.cc:30
-#, fuzzy
 msgid "B"
-msgstr ""
-"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"バイト\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"B"
+msgstr "B"
 
 #: libtransmission/values.cc:28
-#, fuzzy
 msgid "KiB"
-msgstr ""
-"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"KB\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"KiB"
+msgstr "KiB"
 
 #: libtransmission/values.cc:28
-#, fuzzy
 msgid "MiB"
-msgstr ""
-"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"MB\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"MiB"
+msgstr "MiB"
 
 #: libtransmission/values.cc:28
-#, fuzzy
 msgid "GiB"
-msgstr ""
-"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"GB\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"GiB"
+msgstr "GiB"
 
 #: libtransmission/values.cc:28
-#, fuzzy
 msgid "TiB"
-msgstr ""
-"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"TB\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"TiB"
+msgstr "TiB"
 
 #: libtransmission/values.cc:29
-#, fuzzy
 msgid "B/s"
-msgstr ""
-"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"バイト/秒\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"B/秒"
+msgstr "B/秒"
 
 #: libtransmission/values.cc:29
 msgid "kB/s"

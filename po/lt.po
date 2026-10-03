@@ -25,15 +25,8 @@ msgstr ""
 
 #: cli/cli.cc:95 qt/DetailsDialog.cc:468 qt/Formatter.cc:31 qt/Formatter.cc:40
 #: qt/Formatter.cc:58
-#, fuzzy
 msgid "None"
-msgstr ""
-"#-#-#-#-#  lt.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"nėra\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"nėra\n"
-"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"laisvas"
+msgstr "nėra"
 
 #: cli/cli.cc:99
 msgid "Inf"
@@ -163,13 +156,8 @@ msgstr[2] "Nepavyko pridėti besidubliuojančių torentų"
 msgstr[3] "Nepavyko pridėti besidubliuojančių torentų"
 
 #: gtk/Application.cc:1382 qt/AboutDialog.ui:43
-#, fuzzy
 msgid "A fast and easy BitTorrent client"
-msgstr ""
-"#-#-#-#-#  lt.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Sparti ir paprasta „BitTorrent“ klientinė programa\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Sparti ir paprasta „BitTorrent“ kliento programa"
+msgstr "Sparti ir paprasta „BitTorrent“ klientinė programa"
 
 #: gtk/Application.cc:1384 qt/AboutDialog.cc:28
 msgid "Copyright © The {appname} Project"
@@ -221,39 +209,22 @@ msgid "Stop seeding if idle for N minutes:"
 msgstr "nebeskleisti jei neaktyvus N minučių:"
 
 #: gtk/DetailsDialog.cc:486 gtk/Torrent.cc:405 qt/Torrent.cc:298
-#, fuzzy
 msgid "Queued for verification"
-msgstr ""
-"#-#-#-#-#  lt.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Eilėje patikrinimui\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Eilėje duomenų tikrinimui"
+msgstr "Eilėje patikrinimui"
 
 #: gtk/DetailsDialog.cc:489 qt/Torrent.cc:301
 msgid "Verifying local data"
 msgstr "Tikrinami vietiniai duomenys"
 
 #: gtk/DetailsDialog.cc:492 gtk/Torrent.cc:408 qt/Torrent.cc:304
-#, fuzzy
 msgid "Queued for download"
-msgstr ""
-"#-#-#-#-#  lt.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Eilėje atsiuntimui\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Eilėje parsiuntimui"
+msgstr "Eilėje atsiuntimui"
 
 #: gtk/DetailsDialog.cc:495 gtk/FilterBar.cc:456 qt/FilterBar.cc:60
 #: qt/Torrent.cc:307
-#, fuzzy
 msgctxt "Verb"
 msgid "Downloading"
-msgstr ""
-"#-#-#-#-#  lt.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Atsiunčiama\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"atsiunčiamus\n"
-"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"atsiunčiamas"
+msgstr "Atsiunčiama"
 
 #: gtk/DetailsDialog.cc:498 gtk/Torrent.cc:411 qt/Torrent.cc:310
 msgid "Queued for seeding"
@@ -261,40 +232,20 @@ msgstr "Eilėje skleidimui"
 
 #: gtk/DetailsDialog.cc:501 gtk/FilterBar.cc:460 qt/FilterBar.cc:59
 #: qt/Torrent.cc:313
-#, fuzzy
 msgctxt "Verb"
 msgid "Seeding"
-msgstr ""
-"#-#-#-#-#  lt.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Skleidžiama\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"skleidžiamus\n"
-"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"skleidžiamas"
+msgstr "Skleidžiama"
 
 #: gtk/DetailsDialog.cc:504 gtk/FilterBar.cc:465 gtk/Torrent.cc:402
 #: qt/DetailsDialog.cc:516 qt/FilterBar.cc:62 qt/Torrent.cc:295
 #, fuzzy
 msgid "Seeding complete"
-msgstr ""
-"#-#-#-#-#  lt.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Nebaigti\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Nebaigtas"
+msgstr "Nebaigti"
 
 #: gtk/DetailsDialog.cc:504 gtk/FilterBar.cc:462 gtk/Torrent.cc:402
 #: qt/DetailsDialog.cc:518 qt/FilterBar.cc:61 qt/Torrent.cc:295
-#, fuzzy
 msgid "Paused"
-msgstr ""
-"#-#-#-#-#  lt.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Pristabdytas\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"pristabdytas\n"
-"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"pristabdytus\n"
-"#-#-#-#-#  qt-2.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Pristabdytas"
+msgstr "Pristabdytas"
 
 #: gtk/DetailsDialog.cc:524 gtk/DetailsDialog.cc:529 gtk/DetailsDialog.cc:614
 #: qt/DetailsDialog.cc:880 qt/DetailsDialog.cc:923
@@ -303,15 +254,8 @@ msgstr "N/D"
 
 #: gtk/DetailsDialog.cc:538 gtk/FileList.cc:611 qt/DetailsDialog.cc:469
 #: qt/FileTreeItem.cc:265 qt/FileTreeView.cc:107
-#, fuzzy
 msgid "Mixed"
-msgstr ""
-"#-#-#-#-#  lt.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"įvairuoja\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"įvairuoja\n"
-"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Maišyta"
+msgstr "įvairuoja"
 
 #: gtk/DetailsDialog.cc:539
 msgid "No Torrents Selected"
@@ -326,22 +270,12 @@ msgid "Public torrent"
 msgstr "viešas torentas"
 
 #: gtk/DetailsDialog.cc:606 qt/DetailsDialog.cc:888
-#, fuzzy
 msgid "Created by {creator} on {date}"
-msgstr ""
-"#-#-#-#-#  lt.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"sukurtas {date} naudojant {creator}\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"sukurtas {date} naudojant „{creator}“"
+msgstr "sukurtas {date} naudojant „{creator}“"
 
 #: gtk/DetailsDialog.cc:610 qt/DetailsDialog.cc:882
-#, fuzzy
 msgid "Created by {creator}"
-msgstr ""
-"#-#-#-#-#  lt.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"sukurtas naudojant {creator}\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"sukurtas naudojant „{creator}“"
+msgstr "sukurtas naudojant „{creator}“"
 
 #: gtk/DetailsDialog.cc:612 qt/DetailsDialog.cc:885
 msgid "Created on {date}"
@@ -474,33 +408,16 @@ msgid "Up Reqs"
 msgstr "Išs. užklausos"
 
 #: gtk/DetailsDialog.cc:1333 gtk/DetailsDialog.cc:1402 qt/DetailsDialog.cc:1480
-#, fuzzy
 msgid "Down"
-msgstr ""
-"#-#-#-#-#  lt.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ats.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Atsiųsta"
+msgstr "Ats."
 
 #: gtk/DetailsDialog.cc:1339 qt/DetailsDialog.cc:1478
-#, fuzzy
 msgid "Up"
-msgstr ""
-"#-#-#-#-#  lt.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Išs.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Išsiųsta"
+msgstr "Išs."
 
 #: gtk/DetailsDialog.cc:1344 qt/AboutDialog.cc:40 qt/DetailsDialog.cc:1485
-#, fuzzy
 msgid "Client"
-msgstr ""
-"#-#-#-#-#  lt.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Programa\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Klientas\n"
-"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Programa"
+msgstr "Programa"
 
 #: gtk/DetailsDialog.cc:1348 qt/DetailsDialog.cc:1483
 msgid "Flags"
@@ -519,13 +436,8 @@ msgid "List contains invalid URLs"
 msgstr "Sąraše yra netinkamų URL adresų"
 
 #: gtk/DetailsDialog.cc:1734 gtk/FileList.cc:792 qt/Session.cc:267
-#, fuzzy
 msgid "Please correct the errors and try again."
-msgstr ""
-"#-#-#-#-#  lt.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ištaisykite klaidas ir bandykite dar kartą.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Prašome ištaisyti klaidas ir bandyti dar kartą."
+msgstr "Ištaisykite klaidas ir bandykite dar kartą."
 
 #: gtk/DetailsDialog.cc:1814
 msgid "{torrent_name} - Add Tracker"
@@ -602,26 +514,16 @@ msgid "These torrents are connected to peers."
 msgstr "Šie torentai prisijungę prie siuntėjų."
 
 #: gtk/Dialogs.cc:74 qt/MainWindow.cc:1347
-#, fuzzy
 msgid "One of these torrents is connected to peers."
-msgstr ""
-"#-#-#-#-#  lt.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Kai kurie šių torentų prisijungę prie siuntėjų.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Vienas šių torentų prisijungęs prie siuntėjų."
+msgstr "Vienas šių torentų prisijungęs prie siuntėjų."
 
 #: gtk/Dialogs.cc:75 qt/MainWindow.cc:1348
 msgid "Some of these torrents are connected to peers."
 msgstr "Kai kurie šių torentų prisijungę prie siuntėjų."
 
 #: gtk/Dialogs.cc:83 qt/MainWindow.cc:1356
-#, fuzzy
 msgid "One of these torrents has not finished downloading."
-msgstr ""
-"#-#-#-#-#  lt.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Kai kurie šių torentų dar neatsiųsti.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Vienas šių torentų dar neatsiųstas."
+msgstr "Vienas šių torentų dar neatsiųstas."
 
 #: gtk/Dialogs.cc:84 qt/MainWindow.cc:1357
 msgid "Some of these torrents have not finished downloading."
@@ -653,28 +555,14 @@ msgstr "Pa_šalinti"
 #: gtk/FileList.cc:599 gtk/Utils.cc:576 qt/DetailsDialog.cc:1394
 #: qt/FileTreeItem.cc:259 qt/FileTreeView.cc:107 qt/FileTreeView.cc:344
 #: qt/OptionsDialog.cc:95
-#, fuzzy
 msgid "High"
-msgstr ""
-"#-#-#-#-#  lt.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"aukštas\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"aukštas\n"
-"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Aukštas"
+msgstr "aukštas"
 
 #: gtk/FileList.cc:603 gtk/Utils.cc:577 qt/DetailsDialog.cc:1395
 #: qt/FileTreeItem.cc:262 qt/FileTreeView.cc:107 qt/FileTreeView.cc:345
 #: qt/OptionsDialog.cc:96
-#, fuzzy
 msgid "Normal"
-msgstr ""
-"#-#-#-#-#  lt.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"normalus\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"normalus\n"
-"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Normalus"
+msgstr "normalus"
 
 #: gtk/FileList.cc:607 gtk/Utils.cc:578 qt/DetailsDialog.cc:1396
 #: qt/FileTreeItem.cc:256 qt/FileTreeView.cc:107 qt/FileTreeView.cc:346
@@ -699,13 +587,8 @@ msgid "Progress"
 msgstr "Pažanga"
 
 #: gtk/FileList.cc:930 qt/FileTreeModel.cc:204
-#, fuzzy
 msgid "Download"
-msgstr ""
-"#-#-#-#-#  lt.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Atsiųsti\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Atsiuntimas"
+msgstr "Atsiųsti"
 
 #: gtk/FileList.cc:941 qt/FileTreeModel.cc:207 qt/FileTreeView.cc:343
 msgid "Priority"
@@ -721,26 +604,14 @@ msgid "Active"
 msgstr "aktyvius"
 
 #: gtk/FilterBar.cc:469 qt/FilterBar.cc:63
-#, fuzzy
 msgctxt "Verb"
 msgid "Verifying"
-msgstr ""
-"#-#-#-#-#  lt.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Tikrinama\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"tikrinamus"
+msgstr "Tikrinama"
 
 #: gtk/FilterBar.cc:471 gtk/FreeSpaceLabel.cc:57 qt/DetailsDialog.cc:1323
 #: qt/FilterBar.cc:64
-#, fuzzy
 msgid "Error"
-msgstr ""
-"#-#-#-#-#  lt.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Klaida\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Klaida\n"
-"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"klaidas"
+msgstr "Klaida"
 
 #: gtk/FilterBar.cc:569 gtk/ui/gtk3/FilterBar.ui:13 gtk/ui/gtk4/FilterBar.ui:8
 #: qt/FilterBar.cc:193
@@ -1303,13 +1174,8 @@ msgid "Dese_lect All"
 msgstr "_Panaikinti žymėjimą"
 
 #: gtk/transmission-menus.ui:68 qt/MainWindow.ui:474
-#, fuzzy
 msgid "_Preferences"
-msgstr ""
-"#-#-#-#-#  lt.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Nustatymai\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Nuostatos"
+msgstr "_Nustatymai"
 
 #: gtk/transmission-menus.ui:73 qt/MainWindow.ui:192
 msgid "_Torrent"
@@ -1334,13 +1200,8 @@ msgstr "_Paleisti"
 
 #: gtk/transmission-menus.ui:98 gtk/transmission-menus.ui:363
 #: qt/MainWindow.ui:698
-#, fuzzy
 msgid "Start _Now"
-msgstr ""
-"#-#-#-#-#  lt.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Pradėti _dabar\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Paleisti da_bar"
+msgstr "Pradėti _dabar"
 
 #: gtk/transmission-menus.ui:104 gtk/transmission-menus.ui:369
 #: qt/MainWindow.ui:379
@@ -1356,43 +1217,23 @@ msgstr "&Eilė"
 
 #: gtk/transmission-menus.ui:112 gtk/transmission-menus.ui:377
 #: qt/MainWindow.ui:712
-#, fuzzy
 msgid "Move to _Top"
-msgstr ""
-"#-#-#-#-#  lt.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Perkelti į _viršų\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Perkelti _aukštyn"
+msgstr "Perkelti į _viršų"
 
 #: gtk/transmission-menus.ui:117 gtk/transmission-menus.ui:382
 #: qt/MainWindow.ui:717
-#, fuzzy
 msgid "Move _Up"
-msgstr ""
-"#-#-#-#-#  lt.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Perkelti _aukštyn\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Pa_kelti"
+msgstr "Perkelti _aukštyn"
 
 #: gtk/transmission-menus.ui:122 gtk/transmission-menus.ui:387
 #: qt/MainWindow.ui:725
-#, fuzzy
 msgid "Move _Down"
-msgstr ""
-"#-#-#-#-#  lt.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Perkelti ž_emyn\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Nu_leisti"
+msgstr "Perkelti ž_emyn"
 
 #: gtk/transmission-menus.ui:127 gtk/transmission-menus.ui:392
 #: qt/MainWindow.ui:733
-#, fuzzy
 msgid "Move to _Bottom"
-msgstr ""
-"#-#-#-#-#  lt.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Perkelti į a_pačią\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Perkelti _žemyn"
+msgstr "Perkelti į a_pačią"
 
 #: gtk/transmission-menus.ui:134 gtk/transmission-menus.ui:399
 #: gtk/ui/gtk3/MainWindow.ui:54 gtk/ui/gtk3/MessageLogWindow.ui:66
@@ -1458,13 +1299,8 @@ msgstr "Rikiuoti pagal pa_vadinimą"
 
 #: gtk/transmission-menus.ui:210 gtk/transmission-menus.ui:316
 #: qt/MainWindow.ui:558
-#, fuzzy
 msgid "Sort by _Progress"
-msgstr ""
-"#-#-#-#-#  lt.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Rikiuoti pagal _eigą\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Rikiuoti pagal _pažangą"
+msgstr "Rikiuoti pagal _pažangą"
 
 #: gtk/transmission-menus.ui:215 gtk/transmission-menus.ui:321
 #: qt/MainWindow.ui:741
@@ -1502,13 +1338,8 @@ msgid "_Help"
 msgstr "_Pagalba"
 
 #: gtk/transmission-menus.ui:251
-#, fuzzy
 msgid "Message _Log"
-msgstr ""
-"#-#-#-#-#  lt.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"P_ranešimų žurnalas\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Pranešimų _žurnalas"
+msgstr "P_ranešimų žurnalas"
 
 #: gtk/transmission-menus.ui:255 qt/MainWindow.ui:590
 msgid "_Statistics"
@@ -1535,11 +1366,7 @@ msgstr "Paleisti torentą"
 #: gtk/transmission-menus.ui:466 qt/MainWindow.cc:189
 #, fuzzy
 msgid "Alternative Speed _Limits"
-msgstr ""
-"#-#-#-#-#  lt.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Alternatyvieji greičio ribojimai\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Alternatyvūs greičio apribojimai"
+msgstr "Alternatyvieji greičio ribojimai"
 
 #: gtk/ui/gtk3/AddTrackerDialog.ui:34 gtk/ui/gtk3/DetailsDialog.ui:701
 #: gtk/ui/gtk3/MakeProgressDialog.ui:51 gtk/ui/gtk3/PrefsDialog.ui:1898
@@ -1713,13 +1540,8 @@ msgstr "Torento p_rioritetas:"
 
 #: gtk/ui/gtk3/DetailsDialog.ui:997 gtk/ui/gtk4/DetailsDialog.ui:749
 #: qt/DetailsDialog.ui:786
-#, fuzzy
 msgid "Seeding Limits"
-msgstr ""
-"#-#-#-#-#  lt.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Skleidimo apribojimai\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Sklaidos apribojimai"
+msgstr "Skleidimo apribojimai"
 
 #: gtk/ui/gtk3/DetailsDialog.ui:1013 gtk/ui/gtk4/DetailsDialog.ui:761
 #: qt/DetailsDialog.ui:792
@@ -1745,15 +1567,8 @@ msgstr "_Daugiausia galimų siuntėjų:"
 #: gtk/ui/gtk3/PrefsDialog.ui:1344 gtk/ui/gtk4/DetailsDialog.ui:871
 #: gtk/ui/gtk4/MainWindow.ui:136 gtk/ui/gtk4/PrefsDialog.ui:986
 #: qt/DetailsDialog.ui:711 qt/MainWindow.ui:64 qt/PrefsDialog.ui:769
-#, fuzzy
 msgid "Options"
-msgstr ""
-"#-#-#-#-#  lt.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Parametrai\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Nuostatos\n"
-"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Parametrai"
+msgstr "Parametrai"
 
 #: gtk/ui/gtk3/EditTrackersDialog.ui:67 gtk/ui/gtk4/EditTrackersDialog.ui:20
 #: qt/TrackersDialog.ui:20
@@ -1923,13 +1738,8 @@ msgstr "Per_kelti torento failą į šiukšlinę"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:7 gtk/ui/gtk4/PrefsDialog.ui:5
 #: qt/PrefsDialog.ui:14
-#, fuzzy
 msgid "{appname} Preferences"
-msgstr ""
-"#-#-#-#-#  lt.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"„{appname}“ nustatymai\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"„{appname}“ nuostatos"
+msgstr "„{appname}“ nustatymai"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:76 gtk/ui/gtk4/PrefsDialog.ui:29
 #: qt/PrefsDialog.ui:36
@@ -1948,13 +1758,8 @@ msgstr "_Atsiuntimas ({speed_units}):"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:159 gtk/ui/gtk4/PrefsDialog.ui:93
 #: qt/PrefsDialog.ui:85
-#, fuzzy
 msgid "Alternative Speed Limits"
-msgstr ""
-"#-#-#-#-#  lt.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Alternatyvieji greičio ribojimai\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Alternatyvūs greičio apribojimai"
+msgstr "Alternatyvieji greičio ribojimai"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:193 gtk/ui/gtk4/PrefsDialog.ui:114
 #: qt/PrefsDialog.ui:100
@@ -1999,23 +1804,13 @@ msgstr "Automatiškai pridėti torentų failus _iš:"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:424 gtk/ui/gtk4/PrefsDialog.ui:286
 #: qt/PrefsDialog.ui:257
-#, fuzzy
 msgid "Show the Torrent Options _dialog"
-msgstr ""
-"#-#-#-#-#  lt.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Rodyti torento parametrų _dialogą\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Rodyti torento parinkčių _dialogą"
+msgstr "Rodyti torento parametrų _dialogą"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:441 gtk/ui/gtk4/PrefsDialog.ui:300
 #: qt/PrefsDialog.ui:264
-#, fuzzy
 msgid "_Start added torrents"
-msgstr ""
-"#-#-#-#-#  lt.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Paleisti pridėtus torentus\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Palei_sti pridėtus torentus"
+msgstr "_Paleisti pridėtus torentus"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:477 gtk/ui/gtk4/PrefsDialog.ui:328
 #: qt/PrefsDialog.ui:288
@@ -2026,23 +1821,13 @@ msgstr "Įrašyti _vietoje:"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:557 gtk/ui/gtk4/PrefsDialog.ui:389
 #: qt/PrefsDialog.ui:320
-#, fuzzy
 msgid "Download Queue"
-msgstr ""
-"#-#-#-#-#  lt.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Atsiuntimų eilė\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Atsiuntimų Eilė"
+msgstr "Atsiuntimų eilė"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:573 gtk/ui/gtk4/PrefsDialog.ui:401
 #: qt/PrefsDialog.ui:326
-#, fuzzy
 msgid "Ma_ximum active downloads:"
-msgstr ""
-"#-#-#-#-#  lt.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Dau_giausia aktyvių atsiuntimų:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Dau_giausiai aktyvių atsiuntimų:"
+msgstr "Dau_giausia aktyvių atsiuntimų:"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:587 gtk/ui/gtk4/PrefsDialog.ui:413
 msgid "Downloads sharing data in the last _N minutes are active:"
@@ -2050,13 +1835,8 @@ msgstr "Atsiuntimai, per pastarąsias N minučių keitęsi duomenimis, laikomi _
 
 #: gtk/ui/gtk3/PrefsDialog.ui:636 gtk/ui/gtk4/PrefsDialog.ui:451
 #: qt/PrefsDialog.ui:375
-#, fuzzy
 msgid "Incomplete"
-msgstr ""
-"#-#-#-#-#  lt.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Nebaigti\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Nebaigtas"
+msgstr "Nebaigti"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:650 gtk/ui/gtk4/PrefsDialog.ui:463
 #: qt/PrefsDialog.ui:381
@@ -2087,13 +1867,8 @@ msgstr "Atsiuntimas"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:778 gtk/ui/gtk4/PrefsDialog.ui:558
 #: qt/PrefsDialog.ui:462
-#, fuzzy
 msgid "Limits"
-msgstr ""
-"#-#-#-#-#  lt.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Apribojimai\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ribojimai"
+msgstr "Apribojimai"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:792 gtk/ui/gtk4/PrefsDialog.ui:570
 #: qt/PrefsDialog.ui:468
@@ -2176,13 +1951,8 @@ msgstr "_Tikrinti prievadą"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1265 gtk/ui/gtk4/PrefsDialog.ui:924
 #: qt/PrefsDialog.ui:714
-#, fuzzy
 msgid "Peer Limits"
-msgstr ""
-"#-#-#-#-#  lt.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Siuntėjų ribojimai\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ryšių ribojimai"
+msgstr "Siuntėjų ribojimai"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1281 gtk/ui/gtk4/PrefsDialog.ui:936
 #: qt/PrefsDialog.ui:720
@@ -2281,63 +2051,33 @@ msgstr "Rodyti „{appname}“ piktogramą pranešimų _srityje"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1588 gtk/ui/gtk4/PrefsDialog.ui:1171
 #: qt/PrefsDialog.ui:896
-#, fuzzy
 msgid "Notification"
-msgstr ""
-"#-#-#-#-#  lt.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Pranešimas\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Pranešimai"
+msgstr "Pranešimas"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1602 gtk/ui/gtk4/PrefsDialog.ui:1183
 #: qt/PrefsDialog.ui:902
-#, fuzzy
 msgid "Show a notification when torrents are a_dded"
-msgstr ""
-"#-#-#-#-#  lt.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Rodyti pranešimą kai torentai _pridedami\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Rodyti pranešimą, kai yra pride_dami torentai"
+msgstr "Rodyti pranešimą, kai yra pride_dami torentai"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1619 gtk/ui/gtk4/PrefsDialog.ui:1197
 #: qt/PrefsDialog.ui:909
-#, fuzzy
 msgid "Show a notification when torrents _finish"
-msgstr ""
-"#-#-#-#-#  lt.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Rodyti pranešimą kai torentai _baigiami\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Rodyti pranešimą, kai torentai _yra užbaigiami"
+msgstr "Rodyti pranešimą, kai torentai _yra užbaigiami"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1636 gtk/ui/gtk4/PrefsDialog.ui:1211
 #: qt/PrefsDialog.ui:916
-#, fuzzy
 msgid "Play a _sound when torrents finish"
-msgstr ""
-"#-#-#-#-#  lt.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Sugroti _garsą kai torentai baigiami\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Groti gar_są, kai torentai yra užbaigiami"
+msgstr "Groti gar_są, kai torentai yra užbaigiami"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1691 gtk/ui/gtk4/PrefsDialog.ui:1248
 #: qt/PrefsDialog.ui:946
-#, fuzzy
 msgid "Remote Control"
-msgstr ""
-"#-#-#-#-#  lt.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Nuotolinis valdymas\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Nuotolinis Valdymas"
+msgstr "Nuotolinis valdymas"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1711 gtk/ui/gtk4/PrefsDialog.ui:1265
 #: qt/PrefsDialog.ui:952
-#, fuzzy
 msgid "Allow _remote access"
-msgstr ""
-"#-#-#-#-#  lt.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Leisti _nuotolinę prieigą\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Leisti nuotolinę p_rieigą"
+msgstr "Leisti _nuotolinę prieigą"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1727 gtk/ui/gtk4/PrefsDialog.ui:1274
 #: qt/PrefsDialog.ui:962
@@ -2358,15 +2098,8 @@ msgstr "Reikalauti _tapatybės nustatymo"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1785 gtk/ui/gtk4/PrefsDialog.ui:1317
 #: qt/PrefsDialog.ui:1002 qt/SessionDialog.ui:83
-#, fuzzy
 msgid "_Username:"
-msgstr ""
-"#-#-#-#-#  lt.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Naudotojo _vardas:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Naudotojo _vardas:\n"
-"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Naudotojo vardas:"
+msgstr "Naudotojo _vardas:"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1799 gtk/ui/gtk4/PrefsDialog.ui:1329
 #: qt/PrefsDialog.ui:1015 qt/SessionDialog.ui:96
@@ -2380,13 +2113,8 @@ msgstr "Leisti tik šiuos IP a_dresus:"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1833 gtk/ui/gtk4/PrefsDialog.ui:1358
 #: qt/PrefsDialog.ui:1042
-#, fuzzy
 msgid "Addresses:"
-msgstr ""
-"#-#-#-#-#  lt.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ad_resai:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ad&resai:"
+msgstr "Ad_resai:"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1944 gtk/ui/gtk4/PrefsDialog.ui:1446
 msgid "IP addresses may use wildcards, such as 192.168.*.*"
@@ -3045,20 +2773,12 @@ msgstr ""
 #: libtransmission/session-alt-speeds.cc:54
 #, fuzzy
 msgid "Time to turn on alternative speed limits"
-msgstr ""
-"#-#-#-#-#  lt.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Alternatyvieji greičio ribojimai\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Alternatyvūs greičio apribojimai"
+msgstr "Alternatyvieji greičio ribojimai"
 
 #: libtransmission/session-alt-speeds.cc:54
 #, fuzzy
 msgid "Time to turn off alternative speed limits"
-msgstr ""
-"#-#-#-#-#  lt.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Alternatyvieji greičio ribojimai\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Alternatyvūs greičio apribojimai"
+msgstr "Alternatyvieji greičio ribojimai"
 
 #: libtransmission/session.cc:409
 msgid "Listening to incoming peer connections on {hostport}"

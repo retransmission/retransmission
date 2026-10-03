@@ -26,13 +26,8 @@ msgstr ""
 
 #: cli/cli.cc:95 qt/DetailsDialog.cc:468 qt/Formatter.cc:31 qt/Formatter.cc:40
 #: qt/Formatter.cc:58
-#, fuzzy
 msgid "None"
-msgstr ""
-"#-#-#-#-#  ca.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Res\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Cap"
+msgstr "Cap"
 
 #: cli/cli.cc:99
 msgid "Inf"
@@ -209,26 +204,16 @@ msgid "Stop seeding if idle for N minutes:"
 msgstr "Atura la compartició si està inactiu N minuts:"
 
 #: gtk/DetailsDialog.cc:486 gtk/Torrent.cc:405 qt/Torrent.cc:298
-#, fuzzy
 msgid "Queued for verification"
-msgstr ""
-"#-#-#-#-#  ca.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"S'ha enviat a la cua per a la verificació\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"S'ha enviat la cua per a la verificació"
+msgstr "S'ha enviat a la cua per a la verificació"
 
 #: gtk/DetailsDialog.cc:489 qt/Torrent.cc:301
 msgid "Verifying local data"
 msgstr "S'estan verificant les dades locals"
 
 #: gtk/DetailsDialog.cc:492 gtk/Torrent.cc:408 qt/Torrent.cc:304
-#, fuzzy
 msgid "Queued for download"
-msgstr ""
-"#-#-#-#-#  ca.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"S'ha enviat a la cua per a la baixada\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"S'ha posat a la cua per a la baixada"
+msgstr "S'ha enviat a la cua per a la baixada"
 
 #: gtk/DetailsDialog.cc:495 gtk/FilterBar.cc:456 qt/FilterBar.cc:60
 #: qt/Torrent.cc:307
@@ -237,13 +222,8 @@ msgid "Downloading"
 msgstr "S'està baixant"
 
 #: gtk/DetailsDialog.cc:498 gtk/Torrent.cc:411 qt/Torrent.cc:310
-#, fuzzy
 msgid "Queued for seeding"
-msgstr ""
-"#-#-#-#-#  ca.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"S'ha enviat a la cua per a la compartició\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"S'ha enviat la cua per a la compartició"
+msgstr "S'ha enviat a la cua per a la compartició"
 
 #: gtk/DetailsDialog.cc:501 gtk/FilterBar.cc:460 qt/FilterBar.cc:59
 #: qt/Torrent.cc:313
@@ -265,13 +245,8 @@ msgstr "En pausa"
 
 #: gtk/DetailsDialog.cc:524 gtk/DetailsDialog.cc:529 gtk/DetailsDialog.cc:614
 #: qt/DetailsDialog.cc:880 qt/DetailsDialog.cc:923
-#, fuzzy
 msgid "N/A"
-msgstr ""
-"#-#-#-#-#  ca.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"No disponible\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"N/D"
+msgstr "No disponible"
 
 #: gtk/DetailsDialog.cc:538 gtk/FileList.cc:611 qt/DetailsDialog.cc:469
 #: qt/FileTreeItem.cc:265 qt/FileTreeView.cc:107
@@ -452,13 +427,8 @@ msgid "List contains invalid URLs"
 msgstr "La llista conté URL no vàlids"
 
 #: gtk/DetailsDialog.cc:1734 gtk/FileList.cc:792 qt/Session.cc:267
-#, fuzzy
 msgid "Please correct the errors and try again."
-msgstr ""
-"#-#-#-#-#  ca.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Corregiu els errors i torneu-ho a provar.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Corregiu els errors i torneu-ho a intentar."
+msgstr "Corregiu els errors i torneu-ho a provar."
 
 #: gtk/DetailsDialog.cc:1814
 msgid "{torrent_name} - Add Tracker"
@@ -564,15 +534,8 @@ msgstr "_Elimina"
 #: gtk/transmission-menus.ui:423 gtk/ui/gtk3/DetailsDialog.ui:729
 #: gtk/ui/gtk3/PrefsDialog.ui:1913 gtk/ui/gtk4/DetailsDialog.ui:567
 #: gtk/ui/gtk4/PrefsDialog.ui:1424 qt/DetailsDialog.ui:644 qt/MainWindow.ui:412
-#, fuzzy
 msgid "_Remove"
-msgstr ""
-"#-#-#-#-#  ca.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Suprimeix\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"S_uprimeix\n"
-"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Sup_rimeix"
+msgstr "_Suprimeix"
 
 #: gtk/FileList.cc:599 gtk/Utils.cc:576 qt/DetailsDialog.cc:1394
 #: qt/FileTreeItem.cc:259 qt/FileTreeView.cc:107 qt/FileTreeView.cc:344
@@ -632,13 +595,8 @@ msgstr "S'està verificant"
 
 #: gtk/FilterBar.cc:471 gtk/FreeSpaceLabel.cc:57 qt/DetailsDialog.cc:1323
 #: qt/FilterBar.cc:64
-#, fuzzy
 msgid "Error"
-msgstr ""
-"#-#-#-#-#  ca.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Errors\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Error"
+msgstr "Error"
 
 #: gtk/FilterBar.cc:569 gtk/ui/gtk3/FilterBar.ui:13 gtk/ui/gtk4/FilterBar.ui:8
 #: qt/FilterBar.cc:193
@@ -837,13 +795,8 @@ msgid "Start Now"
 msgstr ""
 
 #: gtk/Notify.cc:254 qt/Application.cc:341
-#, fuzzy
 msgid "Torrent Added"
-msgstr ""
-"#-#-#-#-#  ca.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"S'ha afegit el torrent\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Torrent afegit"
+msgstr "S'ha afegit el torrent"
 
 #: gtk/OptionsDialog.cc:196
 msgid "Torrent files"
@@ -1160,13 +1113,8 @@ msgstr "_Nou…"
 
 #: gtk/transmission-menus.ui:32 gtk/transmission-menus.ui:460
 #: qt/MainWindow.ui:437
-#, fuzzy
 msgid "_Start All"
-msgstr ""
-"#-#-#-#-#  ca.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Inicia-ho tot\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Inicia'ls tots"
+msgstr "_Inicia-ho tot"
 
 #: gtk/transmission-menus.ui:37 gtk/transmission-menus.ui:455
 #: qt/MainWindow.ui:442
@@ -1208,24 +1156,14 @@ msgstr "_Propietats"
 
 #: gtk/transmission-menus.ui:84 gtk/transmission-menus.ui:291
 #: qt/MainWindow.ui:354
-#, fuzzy
 msgid "Open Fold_er"
-msgstr ""
-"#-#-#-#-#  ca.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Obre la _carpeta\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Obr_e la carpeta"
+msgstr "Obre la _carpeta"
 
 #: gtk/transmission-menus.ui:92 gtk/transmission-menus.ui:357
 #: gtk/ui/gtk3/MainWindow.ui:39 gtk/ui/gtk4/MainWindow.ui:44
 #: qt/MainWindow.ui:365
-#, fuzzy
 msgid "_Start"
-msgstr ""
-"#-#-#-#-#  ca.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Inicia\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ini_cia"
+msgstr "_Inicia"
 
 #: gtk/transmission-menus.ui:98 gtk/transmission-menus.ui:363
 #: qt/MainWindow.ui:698
@@ -1288,35 +1226,20 @@ msgstr "_Copia l'enllaç magnet al porta-retalls"
 
 #: gtk/transmission-menus.ui:164 gtk/transmission-menus.ui:429
 #: qt/MainWindow.ui:426
-#, fuzzy
 msgid "_Delete Files and Remove"
-msgstr ""
-"#-#-#-#-#  ca.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Suprimeix i _elimina els fitxers\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Suprimeix i _esborra els fitxers"
+msgstr "Suprimeix i _elimina els fitxers"
 
 #: gtk/transmission-menus.ui:170 qt/MainWindow.ui:244
 msgid "_View"
 msgstr "_Visualitza"
 
 #: gtk/transmission-menus.ui:174 qt/MainWindow.ui:485
-#, fuzzy
 msgid "_Compact View"
-msgstr ""
-"#-#-#-#-#  ca.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Vista _compacta\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Visualització _compacta"
+msgstr "Visualització _compacta"
 
 #: gtk/transmission-menus.ui:181 qt/MainWindow.ui:502
-#, fuzzy
 msgid "_Toolbar"
-msgstr ""
-"#-#-#-#-#  ca.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Barra d'_eines\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Barra d'eines"
+msgstr "Barra d'_eines"
 
 #: gtk/transmission-menus.ui:185 qt/MainWindow.ui:510
 msgid "_Filterbar"
@@ -1382,40 +1305,20 @@ msgid "_Help"
 msgstr "_Ajuda"
 
 #: gtk/transmission-menus.ui:251
-#, fuzzy
 msgid "Message _Log"
-msgstr ""
-"#-#-#-#-#  ca.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Registre de missatges\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Registre de _missatges"
+msgstr "_Registre de missatges"
 
 #: gtk/transmission-menus.ui:255 qt/MainWindow.ui:590
-#, fuzzy
 msgid "_Statistics"
-msgstr ""
-"#-#-#-#-#  ca.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Estadístiques\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"E_stadístiques"
+msgstr "_Estadístiques"
 
 #: gtk/transmission-menus.ui:261 qt/MainWindow.ui:693
-#, fuzzy
 msgid "_Donate"
-msgstr ""
-"#-#-#-#-#  ca.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Donatius\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Fer un _donatiu"
+msgstr "_Donatius"
 
 #: gtk/transmission-menus.ui:268 qt/MainWindow.ui:595
-#, fuzzy
 msgid "_Contents"
-msgstr ""
-"#-#-#-#-#  ca.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Continguts\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Contingut"
+msgstr "_Continguts"
 
 #: gtk/transmission-menus.ui:274 qt/MainWindow.ui:603
 msgid "_About"
@@ -1555,13 +1458,8 @@ msgstr "Informació"
 #: gtk/ui/gtk3/DetailsDialog.ui:629 gtk/ui/gtk3/DetailsDialog.ui:757
 #: gtk/ui/gtk4/DetailsDialog.ui:502 gtk/ui/gtk4/DetailsDialog.ui:579
 #: qt/DetailsDialog.ui:600 qt/DetailsDialog.ui:664
-#, fuzzy
 msgid "Show _more details"
-msgstr ""
-"#-#-#-#-#  ca.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Mostra _més detalls\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Mostra'n més detalls"
+msgstr "Mostra _més detalls"
 
 #: gtk/ui/gtk3/DetailsDialog.ui:652 gtk/ui/gtk4/DetailsDialog.ui:512
 #: qt/DetailsDialog.ui:569
@@ -1630,13 +1528,8 @@ msgstr "Connexions de clients"
 
 #: gtk/ui/gtk3/DetailsDialog.ui:1141 gtk/ui/gtk4/DetailsDialog.ui:843
 #: qt/DetailsDialog.ui:861
-#, fuzzy
 msgid "_Maximum peers:"
-msgstr ""
-"#-#-#-#-#  ca.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Nombre _màxim de clients connectats:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Nombre _màxim de clients:"
+msgstr "Nombre _màxim de clients:"
 
 #: gtk/ui/gtk3/DetailsDialog.ui:1180 gtk/ui/gtk3/MainWindow.ui:169
 #: gtk/ui/gtk3/PrefsDialog.ui:1344 gtk/ui/gtk4/DetailsDialog.ui:871
@@ -1737,13 +1630,8 @@ msgstr "Propietats"
 
 #: gtk/ui/gtk3/MakeDialog.ui:249 gtk/ui/gtk4/MakeDialog.ui:159
 #: qt/MakeDialog.ui:111
-#, fuzzy
 msgid "_Trackers:"
-msgstr ""
-"#-#-#-#-#  ca.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Rastrejadors:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ras_trejadors:"
+msgstr "_Rastrejadors:"
 
 #: gtk/ui/gtk3/MakeDialog.ui:312 gtk/ui/gtk4/MakeDialog.ui:206
 #: qt/MakeDialog.ui:142
@@ -1757,13 +1645,8 @@ msgstr "_Origen:"
 
 #: gtk/ui/gtk3/MakeDialog.ui:366 gtk/ui/gtk4/MakeDialog.ui:252
 #: qt/MakeDialog.ui:170
-#, fuzzy
 msgid "_Private torrent"
-msgstr ""
-"#-#-#-#-#  ca.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Torrent _particular\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Torrent _privat"
+msgstr "Torrent _privat"
 
 #: gtk/ui/gtk3/MakeProgressDialog.ui:81 gtk/ui/gtk4/MakeProgressDialog.ui:19
 msgid "Creating torrent…"
@@ -2002,13 +1885,8 @@ msgstr "Habilita les actualitzacions _automàtiques"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1050 gtk/ui/gtk4/PrefsDialog.ui:766
 #: qt/PrefsDialog.ui:607
-#, fuzzy
 msgid "_Update"
-msgstr ""
-"#-#-#-#-#  ca.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Actualitza\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Act_ualitza"
+msgstr "_Actualitza"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1122 gtk/ui/gtk4/PrefsDialog.ui:814
 #: qt/PrefsDialog.ui:654
@@ -2181,13 +2059,8 @@ msgstr "_Port HTTP:"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1765 gtk/ui/gtk4/PrefsDialog.ui:1303
 #: qt/PrefsDialog.ui:992
-#, fuzzy
 msgid "Use _authentication"
-msgstr ""
-"#-#-#-#-#  ca.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Utilitza l'autenticació\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Utilitza l'_autenticació"
+msgstr "_Utilitza l'autenticació"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1785 gtk/ui/gtk4/PrefsDialog.ui:1317
 #: qt/PrefsDialog.ui:1002 qt/SessionDialog.ui:83
@@ -2220,13 +2093,8 @@ msgstr "Remot"
 
 #: gtk/ui/gtk3/RelocateDialog.ui:7 gtk/ui/gtk4/RelocateDialog.ui:5
 #: qt/RelocateDialog.ui:14
-#, fuzzy
 msgid "Set Torrent Location"
-msgstr ""
-"#-#-#-#-#  ca.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Estableix la ubicació del torrent\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Estableix la ubicació"
+msgstr "Estableix la ubicació del torrent"
 
 #: gtk/ui/gtk3/RelocateDialog.ui:35 gtk/ui/gtk4/RelocateDialog.ui:101
 msgid "_Apply"
@@ -2406,13 +2274,8 @@ msgid "Asking for more peers {time_span_from_now}"
 msgstr ""
 
 #: libtransmission-app/formatters.cc:175
-#, fuzzy
 msgid "Queued to ask for more peers"
-msgstr ""
-"#-#-#-#-#  ca.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"S'ha enviat a la cua per a la sol·licitud de més clients\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"S'ha enviat la cua per a la sol·licitud de més clients"
+msgstr "S'ha enviat a la cua per a la sol·licitud de més clients"
 
 #: libtransmission-app/formatters.cc:182
 msgid "Asked for more peers {markup_begin}{time_span_ago}{markup_end}"
@@ -2451,13 +2314,8 @@ msgid "Asking for peer counts {time_span_from_now}"
 msgstr "Se sol·licitarà el nombre de clients d'aquí {time_span}"
 
 #: libtransmission-app/formatters.cc:244
-#, fuzzy
 msgid "Queued to ask for peer counts"
-msgstr ""
-"#-#-#-#-#  ca.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"S'ha enviat a la cua per a la sol·licitud del nombre de clients\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"S'ha enviat la cua per a la sol·licitud del nombre de clients"
+msgstr "S'ha enviat a la cua per a la sol·licitud del nombre de clients"
 
 #: libtransmission-app/formatters.cc:250
 msgid "Asked for peer counts {markup_begin}{time_span_ago}{markup_end}"
@@ -3405,11 +3263,7 @@ msgstr "Tan_ca"
 #: qt/PrefsDialog.cc:309
 #, fuzzy
 msgid "error"
-msgstr ""
-"#-#-#-#-#  ca.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Errors\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Error"
+msgstr "Error"
 
 #: qt/PrefsDialog.cc:420
 #, fuzzy

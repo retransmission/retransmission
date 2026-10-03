@@ -24,13 +24,8 @@ msgstr ""
 
 #: cli/cli.cc:95 qt/DetailsDialog.cc:468 qt/Formatter.cc:31 qt/Formatter.cc:40
 #: qt/Formatter.cc:58
-#, fuzzy
 msgid "None"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Nihil\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Tidak ada"
+msgstr "Tidak ada"
 
 #: cli/cli.cc:99
 msgid "Inf"
@@ -154,13 +149,8 @@ msgid_plural "Couldn't add duplicate torrents"
 msgstr[0] "Tak bisa menambah torrent duplikat"
 
 #: gtk/Application.cc:1382 qt/AboutDialog.ui:43
-#, fuzzy
 msgid "A fast and easy BitTorrent client"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Aplikasi BitTorrent yang cepat dan mudah\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Klien BitTorrent yang cepat dan mudah"
+msgstr "Klien BitTorrent yang cepat dan mudah"
 
 #: gtk/Application.cc:1384 qt/AboutDialog.cc:28
 msgid "Copyright © The {appname} Project"
@@ -195,57 +185,32 @@ msgid "Use global settings"
 msgstr "Pakai pengaturan global"
 
 #: gtk/DetailsDialog.cc:441 qt/DetailsDialog.cc:1399
-#, fuzzy
 msgid "Seed regardless of ratio"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Membibit tak peduli rasio\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Membenih tak peduli rasio"
+msgstr "Membibit tak peduli rasio"
 
 #: gtk/DetailsDialog.cc:442 qt/DetailsDialog.cc:1400
-#, fuzzy
 msgid "Stop seeding at ratio:"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Berhenti membibit pada rasio:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Berhenti membenih pada rasio:"
+msgstr "Berhenti membibit pada rasio:"
 
 #: gtk/DetailsDialog.cc:457 qt/DetailsDialog.cc:1403
-#, fuzzy
 msgid "Seed regardless of activity"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Membibit tak peduli aktivitas\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Kirim terlepas dari rasio"
+msgstr "Membibit tak peduli aktivitas"
 
 #: gtk/DetailsDialog.cc:458
 msgid "Stop seeding if idle for N minutes:"
 msgstr "Berhenti membibit bila menganggur selama N menit:"
 
 #: gtk/DetailsDialog.cc:486 gtk/Torrent.cc:405 qt/Torrent.cc:298
-#, fuzzy
 msgid "Queued for verification"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Diantrikan untuk verifikasi\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Antri untuk pemeriksaan"
+msgstr "Diantrikan untuk verifikasi"
 
 #: gtk/DetailsDialog.cc:489 qt/Torrent.cc:301
 msgid "Verifying local data"
 msgstr "Memeriksa data lokal"
 
 #: gtk/DetailsDialog.cc:492 gtk/Torrent.cc:408 qt/Torrent.cc:304
-#, fuzzy
 msgid "Queued for download"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Diantrikan untuk diunduh\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Antri untuk mengunduh"
+msgstr "Diantrikan untuk diunduh"
 
 #: gtk/DetailsDialog.cc:495 gtk/FilterBar.cc:456 qt/FilterBar.cc:60
 #: qt/Torrent.cc:307
@@ -254,24 +219,14 @@ msgid "Downloading"
 msgstr "Mengunduh"
 
 #: gtk/DetailsDialog.cc:498 gtk/Torrent.cc:411 qt/Torrent.cc:310
-#, fuzzy
 msgid "Queued for seeding"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Diantrikan untuk pembibitan\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Antri untuk mengirim"
+msgstr "Diantrikan untuk pembibitan"
 
 #: gtk/DetailsDialog.cc:501 gtk/FilterBar.cc:460 qt/FilterBar.cc:59
 #: qt/Torrent.cc:313
-#, fuzzy
 msgctxt "Verb"
 msgid "Seeding"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Pembibitan\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Mengirim"
+msgstr "Pembibitan"
 
 #: gtk/DetailsDialog.cc:504 gtk/FilterBar.cc:465 gtk/Torrent.cc:402
 #: qt/DetailsDialog.cc:516 qt/FilterBar.cc:62 qt/Torrent.cc:295
@@ -282,27 +237,13 @@ msgstr "Belum komplit"
 
 #: gtk/DetailsDialog.cc:504 gtk/FilterBar.cc:462 gtk/Torrent.cc:402
 #: qt/DetailsDialog.cc:518 qt/FilterBar.cc:61 qt/Torrent.cc:295
-#, fuzzy
 msgid "Paused"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ditunda\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Diistirahatkan\n"
-"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Berhenti Sejenak\n"
-"#-#-#-#-#  qt-2.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Dijeda"
+msgstr "Dijeda"
 
 #: gtk/DetailsDialog.cc:524 gtk/DetailsDialog.cc:529 gtk/DetailsDialog.cc:614
 #: qt/DetailsDialog.cc:880 qt/DetailsDialog.cc:923
-#, fuzzy
 msgid "N/A"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Tidak Tersedia\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"N/A"
+msgstr "Tidak Tersedia"
 
 #: gtk/DetailsDialog.cc:538 gtk/FileList.cc:611 qt/DetailsDialog.cc:469
 #: qt/FileTreeItem.cc:265 qt/FileTreeView.cc:107
@@ -314,13 +255,8 @@ msgid "No Torrents Selected"
 msgstr "Tak Ada Torrent Yang Dipilih"
 
 #: gtk/DetailsDialog.cc:561 qt/DetailsDialog.cc:799
-#, fuzzy
 msgid "Private to this tracker -- DHT and PEX disabled"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Privat ke pelacak ini -- DHT dan PEX dimatikan\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Pribadi ke pelacak ini -- DHT dan PEX dinonaktifkan"
+msgstr "Privat ke pelacak ini -- DHT dan PEX dimatikan"
 
 #: gtk/DetailsDialog.cc:561 qt/DetailsDialog.cc:799
 msgid "Public torrent"
@@ -340,13 +276,8 @@ msgstr "Dibuat pada {date}"
 
 #: gtk/DetailsDialog.cc:690 qt/DetailsDialog.cc:470 qt/DetailsDialog.cc:689
 #: qt/Formatter.cc:27 qt/Formatter.cc:49
-#, fuzzy
 msgid "Unknown"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Tak diketahui\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Tidak diketahui"
+msgstr "Tak diketahui"
 
 #: gtk/DetailsDialog.cc:723 gtk/MakeDialog.cc:374
 msgid "{total_size} in {file_count:L} file"
@@ -393,76 +324,37 @@ msgid "Active now"
 msgstr "Aktif sekarang"
 
 #: gtk/DetailsDialog.cc:1195 qt/DetailsDialog.cc:1086
-#, fuzzy
 msgid "Optimistic unchoke"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Lepas rem optimistis\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Buka pengetatan optimis"
+msgstr "Buka pengetatan optimis"
 
 #: gtk/DetailsDialog.cc:1199 qt/DetailsDialog.cc:1090
-#, fuzzy
 msgid "Downloading from this peer"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Mengunduh dari peer ini\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Mengunduh dari rekan ini"
+msgstr "Mengunduh dari rekan ini"
 
 #: gtk/DetailsDialog.cc:1203 qt/DetailsDialog.cc:1094
-#, fuzzy
 msgid "We would download from this peer if they would let us"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Kita akan mengunduh dari peer ini bila mereka mengijinkan\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Kami akan mengunduh dari rekan ini jika mereka mengizinkan kami"
+msgstr "Kami akan mengunduh dari rekan ini jika mereka mengizinkan kami"
 
 #: gtk/DetailsDialog.cc:1207 qt/DetailsDialog.cc:1098
-#, fuzzy
 msgid "Uploading to peer"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Mengunggah ke peer\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Mengunggah ke rekan"
+msgstr "Mengunggah ke rekan"
 
 #: gtk/DetailsDialog.cc:1211 qt/DetailsDialog.cc:1102
 #, fuzzy
 msgid "This peer would download from us if we would let them"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Kita akan mengunduh dari peer ini bila mereka mengijinkan\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Kami akan mengunduh dari rekan ini jika mereka mengizinkan kami"
+msgstr "Kami akan mengunduh dari rekan ini jika mereka mengizinkan kami"
 
 #: gtk/DetailsDialog.cc:1215 qt/DetailsDialog.cc:1106
-#, fuzzy
 msgid "Peer has unchoked us, but we're not interested"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Peer telah melepas remnya atas kita, tapi kita tak tertarik\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Rekan membuka pengetatan untuk kita, tapi kita tidak tertarik"
+msgstr "Rekan membuka pengetatan untuk kita, tapi kita tidak tertarik"
 
 #: gtk/DetailsDialog.cc:1219 qt/DetailsDialog.cc:1110
-#, fuzzy
 msgid "We unchoked this peer, but they're not interested"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Kita telah melepas rem ke peer ini, tapi mereka tak tertarik\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Kita membuka pengetatan untuk rekan ini, tapi mereka tidak tertarik"
+msgstr "Kita membuka pengetatan untuk rekan ini, tapi mereka tidak tertarik"
 
 #: gtk/DetailsDialog.cc:1223 qt/DetailsDialog.cc:1069 qt/DetailsDialog.cc:1114
-#, fuzzy
 msgid "Encrypted connection"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Koneksi terenkripsi\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Sambungan terenkripsi"
+msgstr "Sambungan terenkripsi"
 
 #: gtk/DetailsDialog.cc:1227 qt/DetailsDialog.cc:1122
 msgid "Peer was found through Peer Exchange (PEX)"
@@ -473,13 +365,8 @@ msgid "Peer was found through DHT"
 msgstr "Peer ditemukan melalui DHT"
 
 #: gtk/DetailsDialog.cc:1235 qt/DetailsDialog.cc:1126
-#, fuzzy
 msgid "Peer is an incoming connection"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Peer adalah koneksi masuk\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Rekan adalah sambungan yang masuk"
+msgstr "Rekan adalah sambungan yang masuk"
 
 #: gtk/DetailsDialog.cc:1239 qt/DetailsDialog.cc:1130
 msgid "Peer is connected over µTP"
@@ -514,13 +401,8 @@ msgid "Up"
 msgstr "Unggah"
 
 #: gtk/DetailsDialog.cc:1344 qt/AboutDialog.cc:40 qt/DetailsDialog.cc:1485
-#, fuzzy
 msgid "Client"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Aplikasi\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Klien"
+msgstr "Klien"
 
 #: gtk/DetailsDialog.cc:1348 qt/DetailsDialog.cc:1483
 msgid "Flags"
@@ -539,13 +421,8 @@ msgid "List contains invalid URLs"
 msgstr "Daftar mengandung URL tak valid"
 
 #: gtk/DetailsDialog.cc:1734 gtk/FileList.cc:792 qt/Session.cc:267
-#, fuzzy
 msgid "Please correct the errors and try again."
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Mohon perbaiki dan coba lagi.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Silakan perbaiki galat dan coba lagi."
+msgstr "Silakan perbaiki galat dan coba lagi."
 
 #: gtk/DetailsDialog.cc:1814
 msgid "{torrent_name} - Add Tracker"
@@ -597,76 +474,36 @@ msgid "Once removed, you'll need the torrent files or magnet links to add them a
 msgstr "Sekali dihilangkan, melanjutkan transfer akan membutuhkan berkas torrent atau tautan magnet."
 
 #: gtk/Dialogs.cc:68 qt/MainWindow.cc:1340
-#, fuzzy
 msgid "This torrent has not finished downloading."
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Torrent ini belum selesai mengunduh.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Torrent ini belum selesai diunduh."
+msgstr "Torrent ini belum selesai diunduh."
 
 #: gtk/Dialogs.cc:69 qt/MainWindow.cc:1341
-#, fuzzy
 msgid "These torrents have not finished downloading."
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Torrent ini belum selesai mengunduh.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Torrent ini belum selesai diunduh."
+msgstr "Torrent ini belum selesai diunduh."
 
 #: gtk/Dialogs.cc:71 qt/MainWindow.cc:1343
-#, fuzzy
 msgid "This torrent is connected to peers."
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Torrent ini tersambung ke peer.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Torrent ini tersambung dengan rekan - rekan."
+msgstr "Torrent ini tersambung ke peer."
 
 #: gtk/Dialogs.cc:71 qt/MainWindow.cc:1344
-#, fuzzy
 msgid "These torrents are connected to peers."
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Torrent ini tersambung ke peer.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Torrent ini tersambung dengan rekan - rekan."
+msgstr "Torrent ini tersambung ke peer."
 
 #: gtk/Dialogs.cc:74 qt/MainWindow.cc:1347
-#, fuzzy
 msgid "One of these torrents is connected to peers."
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Satu atau lebih dari torrent-torrent ini tersambung ke peer.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Salah satu torrent ini tersambung ke rekan-rekan."
+msgstr "Salah satu torrent ini tersambung ke rekan-rekan."
 
 #: gtk/Dialogs.cc:75 qt/MainWindow.cc:1348
-#, fuzzy
 msgid "Some of these torrents are connected to peers."
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Satu atau lebih dari torrent-torrent ini tersambung ke peer.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Beberapa torrent ini tersambung dengan rekan-rekan."
+msgstr "Beberapa torrent ini tersambung dengan rekan-rekan."
 
 #: gtk/Dialogs.cc:83 qt/MainWindow.cc:1356
-#, fuzzy
 msgid "One of these torrents has not finished downloading."
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Satu atau lebih dari torrent-torrent ini belum selesai mengunduh.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Salah satu torrent ini belum selesai diunduh."
+msgstr "Salah satu torrent ini belum selesai diunduh."
 
 #: gtk/Dialogs.cc:84 qt/MainWindow.cc:1357
-#, fuzzy
 msgid "Some of these torrents have not finished downloading."
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Satu atau lebih dari torrent-torrent ini belum selesai mengunduh.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Beberapa torrent ini belum selesai diunduh."
+msgstr "Beberapa torrent ini belum selesai diunduh."
 
 #: gtk/Dialogs.cc:100 gtk/MessageLogWindow.cc:269 gtk/OptionsDialog.cc:321
 #: gtk/PathButton.cc:306 gtk/StatsDialog.cc:114
@@ -743,14 +580,9 @@ msgid "Active"
 msgstr "Aktif"
 
 #: gtk/FilterBar.cc:469 qt/FilterBar.cc:63
-#, fuzzy
 msgctxt "Verb"
 msgid "Verifying"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Memverifikasi\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Memeriksa"
+msgstr "Memeriksa"
 
 #: gtk/FilterBar.cc:471 gtk/FreeSpaceLabel.cc:57 qt/DetailsDialog.cc:1323
 #: qt/FilterBar.cc:64
@@ -759,13 +591,8 @@ msgstr "Galat"
 
 #: gtk/FilterBar.cc:569 gtk/ui/gtk3/FilterBar.ui:13 gtk/ui/gtk4/FilterBar.ui:8
 #: qt/FilterBar.cc:193
-#, fuzzy
 msgid "_Show:"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Tampilkan:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"T_ampilkan:"
+msgstr "_Tampilkan:"
 
 #: gtk/FilterBar.cc:570
 msgid "_Show {count:L} of:"
@@ -812,35 +639,20 @@ msgid ""
 msgstr ""
 
 #: gtk/MainWindow.cc:427 qt/MainWindow.cc:319
-#, fuzzy
 msgid "Unlimited"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Tak terbatas\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Tidak terbatas"
+msgstr "Tak terbatas"
 
 #: gtk/MainWindow.cc:490 qt/MainWindow.cc:360
 msgid "Seed Forever"
 msgstr "Membibit Selamanya"
 
 #: gtk/MainWindow.cc:528 qt/MainWindow.cc:390
-#, fuzzy
 msgid "Limit Download Speed"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Batas Laju Unduh\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Batas Kecepatan Unduh"
+msgstr "Batas Kecepatan Unduh"
 
 #: gtk/MainWindow.cc:529 qt/MainWindow.cc:396
-#, fuzzy
 msgid "Limit Upload Speed"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Batas Laju Unggah\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Batas Kecepatan Unggah"
+msgstr "Batas Kecepatan Unggah"
 
 #: gtk/MainWindow.cc:533 qt/MainWindow.cc:405
 msgid "Stop Seeding at Ratio"
@@ -1012,53 +824,28 @@ msgid "(None)"
 msgstr "(Tidak ada)"
 
 #: gtk/PrefsDialog.cc:292 qt/PrefsDialog.cc:105
-#, fuzzy
 msgid "Allow encryption"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ijinkan enkripsi\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Mengizinkan enkripsi"
+msgstr "Mengizinkan enkripsi"
 
 #: gtk/PrefsDialog.cc:293 qt/PrefsDialog.cc:106
-#, fuzzy
 msgid "Prefer encryption"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Lebih suka enkripsi\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Lebih memilih enkripsi"
+msgstr "Lebih memilih enkripsi"
 
 #: gtk/PrefsDialog.cc:294 qt/PrefsDialog.cc:107
-#, fuzzy
 msgid "Require encryption"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Persyaratkan enkripsi\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Membutuhkan enkripsi"
+msgstr "Membutuhkan enkripsi"
 
 #: gtk/PrefsDialog.cc:357 qt/PrefsDialog.cc:75
-#, fuzzy
 msgid "Every Day"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Tiap hari\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Setiap Hari"
+msgstr "Tiap hari"
 
 #: gtk/PrefsDialog.cc:358 qt/PrefsDialog.cc:76
 msgid "Weekdays"
 msgstr "Hari kerja"
 
 #: gtk/PrefsDialog.cc:359 qt/PrefsDialog.cc:77
-#, fuzzy
 msgid "Weekends"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Akhir minggu\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Akhir pekan"
+msgstr "Akhir pekan"
 
 #: gtk/PrefsDialog.cc:550
 msgid "Blocklist has {count:L} entry"
@@ -1189,13 +976,8 @@ msgstr "{complete_size}, diunggah {uploaded_size} (Rasio: {ratio})"
 
 #. Translators: Second (optional) part of torrent progress string
 #: gtk/Torrent.cc:493 qt/TorrentDelegate.cc:254 qt/TorrentDelegate.cc:307
-#, fuzzy
 msgid "Remaining time unknown"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Sisa waktu tak diketahui\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Sisa waktu tidak diketahui"
+msgstr "Sisa waktu tak diketahui"
 
 #: gtk/Torrent.cc:583
 msgid "{download_speed} ▾  {upload_speed} ▴"
@@ -1316,23 +1098,13 @@ msgstr "Mulai _Semua"
 
 #: gtk/transmission-menus.ui:37 gtk/transmission-menus.ui:455
 #: qt/MainWindow.ui:442
-#, fuzzy
 msgid "_Pause All"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Istirahat Semua\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Rehat Semua"
+msgstr "_Rehat Semua"
 
 #: gtk/transmission-menus.ui:45 gtk/transmission-menus.ui:473
 #: qt/MainWindow.ui:447
-#, fuzzy
 msgid "_Quit"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Keluar\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Keluar"
+msgstr "_Keluar"
 
 #: gtk/transmission-menus.ui:50 gtk/ui/gtk3/DetailsDialog.ui:715
 #: gtk/ui/gtk4/DetailsDialog.ui:559 qt/DetailsDialog.ui:637
@@ -1380,13 +1152,8 @@ msgstr "Mulai Sekara_ng"
 
 #: gtk/transmission-menus.ui:104 gtk/transmission-menus.ui:369
 #: qt/MainWindow.ui:379
-#, fuzzy
 msgid "Ask Tracker for _More Peers"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Tanyakan Penjejak untuk _Peer yang lebih banyak\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Tanya Pelacak untuk _Rekan Lebih Banyak"
+msgstr "Tanya Pelacak untuk _Rekan Lebih Banyak"
 
 #: gtk/transmission-menus.ui:107 gtk/transmission-menus.ui:372
 #: qt/MainWindow.ui:196
@@ -1402,23 +1169,13 @@ msgstr "Pindah ke _Puncak"
 
 #: gtk/transmission-menus.ui:117 gtk/transmission-menus.ui:382
 #: qt/MainWindow.ui:717
-#, fuzzy
 msgid "Move _Up"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Nai_kkan\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Pindah ke _Atas"
+msgstr "Pindah ke _Atas"
 
 #: gtk/transmission-menus.ui:122 gtk/transmission-menus.ui:387
 #: qt/MainWindow.ui:725
-#, fuzzy
 msgid "Move _Down"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Tur_unkan\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Pindah ke _Bawah"
+msgstr "Pindah ke _Bawah"
 
 #: gtk/transmission-menus.ui:127 gtk/transmission-menus.ui:392
 #: qt/MainWindow.ui:733
@@ -1429,13 +1186,8 @@ msgstr "Pindah ke _Dasar"
 #: gtk/ui/gtk3/MainWindow.ui:54 gtk/ui/gtk3/MessageLogWindow.ui:66
 #: gtk/ui/gtk4/MainWindow.ui:54 gtk/ui/gtk4/MessageLogWindow.ui:84
 #: qt/MainWindow.ui:387
-#, fuzzy
 msgid "_Pause"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Stop\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Rehat"
+msgstr "_Rehat"
 
 #: gtk/transmission-menus.ui:141 gtk/transmission-menus.ui:406
 #: qt/MainWindow.ui:675
@@ -1444,13 +1196,8 @@ msgstr "Tata _Lokasi…"
 
 #: gtk/transmission-menus.ui:145 gtk/transmission-menus.ui:410
 #: qt/MainWindow.ui:401
-#, fuzzy
 msgid "_Verify Local Data"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Pe_riksa Data Lokal\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Verifikasi Data Lokal"
+msgstr "_Verifikasi Data Lokal"
 
 #: gtk/transmission-menus.ui:151 gtk/transmission-menus.ui:416
 #: qt/MainWindow.ui:680
@@ -1459,153 +1206,78 @@ msgstr "_Salin Tautan Magnet ke Papan Klip"
 
 #: gtk/transmission-menus.ui:164 gtk/transmission-menus.ui:429
 #: qt/MainWindow.ui:426
-#, fuzzy
 msgid "_Delete Files and Remove"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Hapus _dan Musnahkan Berkas\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Hapus File dan Hilangkan"
+msgstr "Hapus File dan Hilangkan"
 
 #: gtk/transmission-menus.ui:170 qt/MainWindow.ui:244
 msgid "_View"
 msgstr "_Tampilan"
 
 #: gtk/transmission-menus.ui:174 qt/MainWindow.ui:485
-#, fuzzy
 msgid "_Compact View"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Tilikan _Kompak\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Tampilan Kompak"
+msgstr "_Tampilan Kompak"
 
 #: gtk/transmission-menus.ui:181 qt/MainWindow.ui:502
-#, fuzzy
 msgid "_Toolbar"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Bilat Ala_t\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Bilah Alat"
+msgstr "_Bilah Alat"
 
 #: gtk/transmission-menus.ui:185 qt/MainWindow.ui:510
-#, fuzzy
 msgid "_Filterbar"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Bilah Pe_nyaring\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Bilah Penyaring"
+msgstr "Bilah Pe_nyaring"
 
 #: gtk/transmission-menus.ui:189 qt/MainWindow.ui:518
-#, fuzzy
 msgid "_Statusbar"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Bilah _Status\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Bilah Status"
+msgstr "Bilah _Status"
 
 #: gtk/transmission-menus.ui:195 gtk/transmission-menus.ui:301
 #: qt/MainWindow.ui:526
-#, fuzzy
 msgid "Sort by _Activity"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Urut _Aktivitas\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Urutkan dengan _Aktivitas"
+msgstr "Urut _Aktivitas"
 
 #: gtk/transmission-menus.ui:200 gtk/transmission-menus.ui:306
 #: qt/MainWindow.ui:534
-#, fuzzy
 msgid "Sort by A_ge"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Urut U_mur\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Urutkan dengan U_mur"
+msgstr "Urut U_mur"
 
 #: gtk/transmission-menus.ui:205 gtk/transmission-menus.ui:311
 #: qt/MainWindow.ui:550
-#, fuzzy
 msgid "Sort by _Name"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Urut _Nama\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Urutkan dengan _Nama"
+msgstr "Urut _Nama"
 
 #: gtk/transmission-menus.ui:210 gtk/transmission-menus.ui:316
 #: qt/MainWindow.ui:558
-#, fuzzy
 msgid "Sort by _Progress"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Urut _Kemajuan\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Urutkan dengan _Kemajuan"
+msgstr "Urut _Kemajuan"
 
 #: gtk/transmission-menus.ui:215 gtk/transmission-menus.ui:321
 #: qt/MainWindow.ui:741
-#, fuzzy
 msgid "Sort by _Queue"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Urut Ant_rian\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Urutkan dengan _Antrian"
+msgstr "Urut Ant_rian"
 
 #: gtk/transmission-menus.ui:220 gtk/transmission-menus.ui:326
 #: qt/MainWindow.ui:566
-#, fuzzy
 msgid "Sort by Rati_o"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Urut Rasi_o\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Urutkan dengan Rasi_o"
+msgstr "Urut Rasi_o"
 
 #: gtk/transmission-menus.ui:225 gtk/transmission-menus.ui:331
 #: qt/MainWindow.ui:574
-#, fuzzy
 msgid "Sort by Si_ze"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Urut _Ukuran\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Urutkan dengan Uku_ran"
+msgstr "Urut _Ukuran"
 
 #: gtk/transmission-menus.ui:230 gtk/transmission-menus.ui:336
 #: qt/MainWindow.ui:582
-#, fuzzy
 msgid "Sort by Stat_e"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Urut K_eadaan\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Urutkan dengan Kead_aan"
+msgstr "Urut K_eadaan"
 
 #: gtk/transmission-menus.ui:235 gtk/transmission-menus.ui:341
 #: qt/MainWindow.ui:542
-#, fuzzy
 msgid "Sort by Time _Left"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Urut Sisa _Waktu\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Urutkan dengan Waktu _Tersisa"
+msgstr "Urut Sisa _Waktu"
 
 #: gtk/transmission-menus.ui:242 gtk/transmission-menus.ui:348
 #: qt/MainWindow.ui:614
-#, fuzzy
 msgid "Re_verse Sort Order"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Balikkan Urutan\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Balikkan Pengur_utan"
+msgstr "_Balikkan Urutan"
 
 #: gtk/transmission-menus.ui:247 gtk/ui/gtk3/PrefsDialog.ui:22
 #: gtk/ui/gtk4/PrefsDialog.ui:1484 qt/MainWindow.ui:233
@@ -1613,44 +1285,24 @@ msgid "_Help"
 msgstr "_Bantuan"
 
 #: gtk/transmission-menus.ui:251
-#, fuzzy
 msgid "Message _Log"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Log Pesan\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Catatan _Pesan"
+msgstr "_Log Pesan"
 
 #: gtk/transmission-menus.ui:255 qt/MainWindow.ui:590
 msgid "_Statistics"
 msgstr "_Statistik"
 
 #: gtk/transmission-menus.ui:261 qt/MainWindow.ui:693
-#, fuzzy
 msgid "_Donate"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Donasi\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Menyumbang"
+msgstr "_Donasi"
 
 #: gtk/transmission-menus.ui:268 qt/MainWindow.ui:595
-#, fuzzy
 msgid "_Contents"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"I_si\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Konten"
+msgstr "_Konten"
 
 #: gtk/transmission-menus.ui:274 qt/MainWindow.ui:603
-#, fuzzy
 msgid "_About"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Perih_al\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Tent_ang"
+msgstr "Perih_al"
 
 #: gtk/transmission-menus.ui:297
 #, fuzzy
@@ -1701,47 +1353,27 @@ msgstr "Ukuran:"
 
 #: gtk/ui/gtk3/DetailsDialog.ui:86 gtk/ui/gtk4/DetailsDialog.ui:48
 #: qt/DetailsDialog.ui:42
-#, fuzzy
 msgid "Have:"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Dimiliki:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Memiliki:"
+msgstr "Dimiliki:"
 
 #: gtk/ui/gtk3/DetailsDialog.ui:98 gtk/ui/gtk3/StatsDialog.ui:86
 #: gtk/ui/gtk3/StatsDialog.ui:246 gtk/ui/gtk4/DetailsDialog.ui:58
 #: gtk/ui/gtk4/StatsDialog.ui:32 gtk/ui/gtk4/StatsDialog.ui:164
 #: qt/DetailsDialog.ui:106 qt/StatsDialog.ui:29 qt/StatsDialog.ui:158
-#, fuzzy
 msgid "Uploaded:"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Terunggah:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Diunggah:"
+msgstr "Terunggah:"
 
 #: gtk/ui/gtk3/DetailsDialog.ui:110 gtk/ui/gtk3/StatsDialog.ui:115
 #: gtk/ui/gtk3/StatsDialog.ui:275 gtk/ui/gtk4/DetailsDialog.ui:68
 #: gtk/ui/gtk4/StatsDialog.ui:57 gtk/ui/gtk4/StatsDialog.ui:189
 #: qt/DetailsDialog.ui:138 qt/StatsDialog.ui:55 qt/StatsDialog.ui:184
-#, fuzzy
 msgid "Downloaded:"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Terunduh:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Diunduh:"
+msgstr "Terunduh:"
 
 #: gtk/ui/gtk3/DetailsDialog.ui:122 gtk/ui/gtk4/DetailsDialog.ui:78
 #: qt/DetailsDialog.ui:170
-#, fuzzy
 msgid "State:"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Status:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Keadaan:"
+msgstr "Keadaan:"
 
 #: gtk/ui/gtk3/DetailsDialog.ui:134 gtk/ui/gtk4/DetailsDialog.ui:88
 #: qt/DetailsDialog.ui:202
@@ -1750,13 +1382,8 @@ msgstr "Waktu berjalan:"
 
 #: gtk/ui/gtk3/DetailsDialog.ui:146 gtk/ui/gtk4/DetailsDialog.ui:98
 #: qt/DetailsDialog.ui:234
-#, fuzzy
 msgid "Remaining time:"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Waktu tersisa:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Sisa waktu:"
+msgstr "Sisa waktu:"
 
 #: gtk/ui/gtk3/DetailsDialog.ui:158 gtk/ui/gtk4/DetailsDialog.ui:108
 #: qt/DetailsDialog.ui:266
@@ -1765,23 +1392,13 @@ msgstr "Aktivitas terakhir:"
 
 #: gtk/ui/gtk3/DetailsDialog.ui:170 gtk/ui/gtk4/DetailsDialog.ui:118
 #: qt/DetailsDialog.ui:298
-#, fuzzy
 msgid "Error:"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Error:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Galat:"
+msgstr "Galat:"
 
 #: gtk/ui/gtk3/DetailsDialog.ui:352 gtk/ui/gtk4/DetailsDialog.ui:274
 #: qt/DetailsDialog.ui:333
-#, fuzzy
 msgid "Details"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Informasi\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Rincian"
+msgstr "Rincian"
 
 #: gtk/ui/gtk3/DetailsDialog.ui:368 gtk/ui/gtk4/DetailsDialog.ui:286
 #: qt/DetailsDialog.ui:371
@@ -1800,13 +1417,8 @@ msgstr "Privasi:"
 
 #: gtk/ui/gtk3/DetailsDialog.ui:404 gtk/ui/gtk4/DetailsDialog.ui:316
 #: qt/DetailsDialog.ui:467
-#, fuzzy
 msgid "Origin:"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Asal:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Asal Usul:"
+msgstr "Asal:"
 
 #: gtk/ui/gtk3/DetailsDialog.ui:416 gtk/ui/gtk4/DetailsDialog.ui:326
 #: qt/DetailsDialog.ui:499
@@ -1826,33 +1438,18 @@ msgstr "Informasi"
 #: gtk/ui/gtk3/DetailsDialog.ui:629 gtk/ui/gtk3/DetailsDialog.ui:757
 #: gtk/ui/gtk4/DetailsDialog.ui:502 gtk/ui/gtk4/DetailsDialog.ui:579
 #: qt/DetailsDialog.ui:600 qt/DetailsDialog.ui:664
-#, fuzzy
 msgid "Show _more details"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ta_mpilkan lebih banyak rincian\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Tampilan _rincian lebih"
+msgstr "Ta_mpilkan lebih banyak rincian"
 
 #: gtk/ui/gtk3/DetailsDialog.ui:652 gtk/ui/gtk4/DetailsDialog.ui:512
 #: qt/DetailsDialog.ui:569
-#, fuzzy
 msgid "Peers"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Peer\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Rekan"
+msgstr "Rekan"
 
 #: gtk/ui/gtk3/DetailsDialog.ui:773 gtk/ui/gtk4/DetailsDialog.ui:587
 #: qt/DetailsDialog.ui:671
-#, fuzzy
 msgid "Show _backup trackers"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Tampilkan pelacak _cadangan\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Tampilan _pelacak cadangan"
+msgstr "Tampilkan pelacak _cadangan"
 
 #: gtk/ui/gtk3/DetailsDialog.ui:834 gtk/ui/gtk4/DetailsDialog.ui:627
 msgid "File listing not available for combined torrent properties"
@@ -1872,13 +1469,8 @@ msgstr "Kecepatan"
 
 #: gtk/ui/gtk3/DetailsDialog.ui:887 gtk/ui/gtk4/DetailsDialog.ui:663
 #: qt/DetailsDialog.ui:723
-#, fuzzy
 msgid "Honor global _limits"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Hormati batas g_lobal\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Patuhi batas g_lobal"
+msgstr "Hormati batas g_lobal"
 
 #: gtk/ui/gtk3/DetailsDialog.ui:903 gtk/ui/gtk4/DetailsDialog.ui:676
 msgid "Limit _download speed ({speed_units}):"
@@ -1896,65 +1488,35 @@ msgstr "_Prioritas torrent:"
 
 #: gtk/ui/gtk3/DetailsDialog.ui:997 gtk/ui/gtk4/DetailsDialog.ui:749
 #: qt/DetailsDialog.ui:786
-#, fuzzy
 msgid "Seeding Limits"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Batas Pembibitan\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Batas Kirim"
+msgstr "Batas Pembibitan"
 
 #: gtk/ui/gtk3/DetailsDialog.ui:1013 gtk/ui/gtk4/DetailsDialog.ui:761
 #: qt/DetailsDialog.ui:792
-#, fuzzy
 msgid "_Ratio:"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Rasio:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Rasio"
+msgstr "_Rasio:"
 
 #: gtk/ui/gtk3/DetailsDialog.ui:1027 gtk/ui/gtk4/DetailsDialog.ui:773
 #: qt/DetailsDialog.ui:819
-#, fuzzy
 msgid "_Idle:"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Mengganggur:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Mengan_ggur:"
+msgstr "Mengan_ggur:"
 
 #: gtk/ui/gtk3/DetailsDialog.ui:1125 gtk/ui/gtk4/DetailsDialog.ui:831
 #: qt/DetailsDialog.ui:855
-#, fuzzy
 msgid "Peer Connections"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Koneksi-koneksi Peer\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Sambungan Rekan"
+msgstr "Sambungan Rekan"
 
 #: gtk/ui/gtk3/DetailsDialog.ui:1141 gtk/ui/gtk4/DetailsDialog.ui:843
 #: qt/DetailsDialog.ui:861
-#, fuzzy
 msgid "_Maximum peers:"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Peer _maksimum:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Rekan _maksimum:"
+msgstr "Rekan _maksimum:"
 
 #: gtk/ui/gtk3/DetailsDialog.ui:1180 gtk/ui/gtk3/MainWindow.ui:169
 #: gtk/ui/gtk3/PrefsDialog.ui:1344 gtk/ui/gtk4/DetailsDialog.ui:871
 #: gtk/ui/gtk4/MainWindow.ui:136 gtk/ui/gtk4/PrefsDialog.ui:986
 #: qt/DetailsDialog.ui:711 qt/MainWindow.ui:64 qt/PrefsDialog.ui:769
-#, fuzzy
 msgid "Options"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Pengaturan\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Opsi"
+msgstr "Pengaturan"
 
 #: gtk/ui/gtk3/EditTrackersDialog.ui:67 gtk/ui/gtk4/EditTrackersDialog.ui:20
 #: qt/TrackersDialog.ui:20
@@ -1975,13 +1537,8 @@ msgstr "Lihat juga Pelacak Publik Baku dalam Sunting > Preferensi > Jaringan"
 
 #: gtk/ui/gtk3/MainWindow.ui:21 gtk/ui/gtk4/MainWindow.ui:16
 #: qt/MainWindow.ui:324
-#, fuzzy
 msgid "Open a torrent"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Buka suatu torrent\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Buka sebuah torrent"
+msgstr "Buka suatu torrent"
 
 #: gtk/ui/gtk3/MainWindow.ui:37 gtk/ui/gtk4/MainWindow.ui:42
 #: qt/MainWindow.ui:368
@@ -1990,24 +1547,14 @@ msgstr "Mulai torrent"
 
 #: gtk/ui/gtk3/MainWindow.ui:52 gtk/ui/gtk4/MainWindow.ui:52
 #: qt/MainWindow.ui:390
-#, fuzzy
 msgid "Pause torrent"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Hentikan torrent sementara\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Hentikan sejenak torrent"
+msgstr "Hentikan sejenak torrent"
 
 #: gtk/ui/gtk3/MainWindow.ui:67 gtk/ui/gtk3/MainWindow.ui:69
 #: gtk/ui/gtk4/MainWindow.ui:62 gtk/ui/gtk4/MainWindow.ui:64
 #: qt/MainWindow.ui:415
-#, fuzzy
 msgid "Remove torrent"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Hapus torrent\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Hilangkan torrent"
+msgstr "Hilangkan torrent"
 
 #: gtk/ui/gtk3/MainWindow.ui:92 gtk/ui/gtk4/MainWindow.ui:78
 #: qt/MainWindow.ui:346
@@ -2027,13 +1574,8 @@ msgstr "Statistik"
 #: gtk/ui/gtk3/MakeDialog.ui:7 gtk/ui/gtk3/MakeProgressDialog.ui:7
 #: gtk/ui/gtk4/MakeDialog.ui:5 gtk/ui/gtk4/MakeProgressDialog.ui:5
 #: qt/MakeDialog.ui:17 qt/MakeProgressDialog.ui:14
-#, fuzzy
 msgid "New Torrent"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Buat Torrent\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Torrent Baru"
+msgstr "Torrent Baru"
 
 #: gtk/ui/gtk3/MakeDialog.ui:35 gtk/ui/gtk4/MakeDialog.ui:285
 #, fuzzy
@@ -2043,13 +1585,8 @@ msgstr "K_redit"
 
 #: gtk/ui/gtk3/MakeDialog.ui:85 gtk/ui/gtk4/MakeDialog.ui:32
 #: qt/MakeDialog.ui:29
-#, fuzzy
 msgid "Sa_ve to:"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Sim_pan ke:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Si_mpan ke:"
+msgstr "Si_mpan ke:"
 
 #: gtk/ui/gtk3/MakeDialog.ui:110 gtk/ui/gtk4/MakeDialog.ui:54
 #: qt/MakeDialog.ui:42
@@ -2080,13 +1617,8 @@ msgstr "_Pelacak:"
 
 #: gtk/ui/gtk3/MakeDialog.ui:312 gtk/ui/gtk4/MakeDialog.ui:206
 #: qt/MakeDialog.ui:142
-#, fuzzy
 msgid "Co_mment:"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"K_omentar:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ko_mentar:"
+msgstr "K_omentar:"
 
 #: gtk/ui/gtk3/MakeDialog.ui:339 gtk/ui/gtk4/MakeDialog.ui:229
 #: qt/MakeDialog.ui:156
@@ -2095,13 +1627,8 @@ msgstr "_Sumber:"
 
 #: gtk/ui/gtk3/MakeDialog.ui:366 gtk/ui/gtk4/MakeDialog.ui:252
 #: qt/MakeDialog.ui:170
-#, fuzzy
 msgid "_Private torrent"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Torrent _privat\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Torrent pribadi"
+msgstr "Torrent _privat"
 
 #: gtk/ui/gtk3/MakeProgressDialog.ui:81 gtk/ui/gtk4/MakeProgressDialog.ui:19
 msgid "Creating torrent…"
@@ -2138,13 +1665,8 @@ msgstr "Pilih Berkas Torrent"
 
 #: gtk/ui/gtk3/OptionsDialog.ui:91 gtk/ui/gtk4/OptionsDialog.ui:41
 #: qt/OptionsDialog.ui:39
-#, fuzzy
 msgid "_Destination folder:"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Direktori penyimpanan:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Folder Tujuan:"
+msgstr "_Direktori penyimpanan:"
 
 #: gtk/ui/gtk3/OptionsDialog.ui:107 gtk/ui/gtk4/OptionsDialog.ui:55
 #: qt/OptionsDialog.cc:78 qt/PrefsDialog.cc:522
@@ -2206,13 +1728,8 @@ msgstr ""
 
 #: gtk/ui/gtk3/PrefsDialog.ui:242 gtk/ui/gtk4/PrefsDialog.ui:154
 #: qt/PrefsDialog.ui:149
-#, fuzzy
 msgid "_Scheduled times:"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Waktu _terjadwal:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Waktu dijadwalkan:"
+msgstr "Waktu _terjadwal:"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:260 gtk/ui/gtk4/PrefsDialog.ui:167
 #: qt/PrefsDialog.ui:193
@@ -2237,13 +1754,8 @@ msgstr ""
 
 #: gtk/ui/gtk3/PrefsDialog.ui:424 gtk/ui/gtk4/PrefsDialog.ui:286
 #: qt/PrefsDialog.ui:257
-#, fuzzy
 msgid "Show the Torrent Options _dialog"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Tampilkan _dialog Opsi Torrent\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Tampilkan _dialog Pilihan Torrent"
+msgstr "Tampilkan _dialog Opsi Torrent"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:441 gtk/ui/gtk4/PrefsDialog.ui:300
 #: qt/PrefsDialog.ui:264
@@ -2264,13 +1776,8 @@ msgstr "Antrian Unduh"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:573 gtk/ui/gtk4/PrefsDialog.ui:401
 #: qt/PrefsDialog.ui:326
-#, fuzzy
 msgid "Ma_ximum active downloads:"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ma_ksimum unduhan aktif:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ma_ksimum unduh yang aktif:"
+msgstr "Ma_ksimum unduhan aktif:"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:587 gtk/ui/gtk4/PrefsDialog.ui:413
 msgid "Downloads sharing data in the last _N minutes are active:"
@@ -2283,13 +1790,8 @@ msgstr "Belum komplit"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:650 gtk/ui/gtk4/PrefsDialog.ui:463
 #: qt/PrefsDialog.ui:381
-#, fuzzy
 msgid "Append \"._part\" to incomplete files' names"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Imbuhkan \".part\" ke nama berkas yang belum komplit\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Tambahkan \"._part\" pada nama berkas yang tidak selesai"
+msgstr "Tambahkan \"._part\" pada nama berkas yang tidak selesai"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:667 gtk/ui/gtk4/PrefsDialog.ui:477
 #: qt/PrefsDialog.ui:388
@@ -2322,13 +1824,8 @@ msgstr "Batas"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:792 gtk/ui/gtk4/PrefsDialog.ui:570
 #: qt/PrefsDialog.ui:468
-#, fuzzy
 msgid "Stop seeding at _ratio:"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Berhenti membibit pada _rasio:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Berhenti kirim pada _rasio:"
+msgstr "Berhenti membibit pada _rasio:"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:807 gtk/ui/gtk4/PrefsDialog.ui:582
 msgid "Stop seeding if idle for _N minutes:"
@@ -2352,13 +1849,8 @@ msgstr "Privasi"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:928 gtk/ui/gtk4/PrefsDialog.ui:673
 #: qt/PrefsDialog.ui:565
-#, fuzzy
 msgid "_Encryption mode:"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Mode _enkripsi:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Mode enkripsi:"
+msgstr "Mode _enkripsi:"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:966 gtk/ui/gtk4/PrefsDialog.ui:700
 #: qt/PrefsDialog.ui:581
@@ -2367,13 +1859,8 @@ msgstr "Daftar blok"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:980 gtk/ui/gtk4/PrefsDialog.ui:712
 #: qt/PrefsDialog.ui:587
-#, fuzzy
 msgid "Enable _blocklist:"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Fungsikan daftar _blok:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Aktifkan _daftarblok:"
+msgstr "Fungsikan daftar _blok:"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:995 gtk/ui/gtk4/PrefsDialog.ui:725
 #: qt/PrefsDialog.ui:617
@@ -2384,13 +1871,8 @@ msgstr "Fungsikan pemutakhiran otom_atis"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1050 gtk/ui/gtk4/PrefsDialog.ui:766
 #: qt/PrefsDialog.ui:607
-#, fuzzy
 msgid "_Update"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"M_utakhirkan\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Perbar_ui"
+msgstr "M_utakhirkan"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1122 gtk/ui/gtk4/PrefsDialog.ui:814
 #: qt/PrefsDialog.ui:654
@@ -2411,33 +1893,18 @@ msgstr "Pakai po_rt acak setiap kali Transmission dimulai"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1167 gtk/ui/gtk4/PrefsDialog.ui:852
 #: qt/PrefsDialog.ui:704
-#, fuzzy
 msgid "Use UPnP or NAT-PMP port _forwarding from my router"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Pakai penerusan port UPnP atau NAT-PMP dari routerku\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Gunakan penerusan port UPnP atau NAT-PMP dari router saya"
+msgstr "_Pakai penerusan port UPnP atau NAT-PMP dari routerku"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1229 gtk/ui/gtk4/PrefsDialog.ui:904
 #: qt/PrefsDialog.ui:680
-#, fuzzy
 msgid "Te_st Port"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Uji Port\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Po_rt Uji"
+msgstr "_Uji Port"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1265 gtk/ui/gtk4/PrefsDialog.ui:924
 #: qt/PrefsDialog.ui:714
-#, fuzzy
 msgid "Peer Limits"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Batas Peer\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Batas Rekan"
+msgstr "Batas Rekan"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1281 gtk/ui/gtk4/PrefsDialog.ui:936
 #: qt/PrefsDialog.ui:720
@@ -2448,23 +1915,14 @@ msgstr "Maksimum peer per _torrent:"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1295 gtk/ui/gtk4/PrefsDialog.ui:948
 #: qt/PrefsDialog.ui:743
-#, fuzzy
 msgid "Maximum peers _overall:"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Maksimum peer _menyeluruh:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Maksimum rekan _keseluruhan:"
+msgstr "Maksimum rekan _keseluruhan:"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1358 gtk/ui/gtk4/PrefsDialog.ui:998
 #: qt/PrefsDialog.ui:778
 #, fuzzy
 msgid "Enable µ_TP for peer connections"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Koneksi-koneksi Peer\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Sambungan Rekan"
+msgstr "Sambungan Rekan"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1362 gtk/ui/gtk4/PrefsDialog.ui:1000
 #: qt/PrefsDialog.ui:775
@@ -2480,13 +1938,8 @@ msgstr "Pakai PE_X untuk menemukan lebih banyak peer"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1380 gtk/ui/gtk4/PrefsDialog.ui:1015
 #: qt/PrefsDialog.ui:785
-#, fuzzy
 msgid "PEX is a tool for exchanging peer lists with the peers you're connected to."
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"PEX adalah alat untuk mempertukarkan daftar peer dengan peer yang sedang tersambung.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"PEX adalah alat untuk menukar daftar rekan dengan rekan yang tersambung denganmu."
+msgstr "PEX adalah alat untuk menukar daftar rekan dengan rekan yang tersambung denganmu."
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1394 gtk/ui/gtk4/PrefsDialog.ui:1028
 #: qt/PrefsDialog.ui:798
@@ -2497,13 +1950,8 @@ msgstr "Pakai _DHT untuk menemukan lebih banyak peer"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1398 gtk/ui/gtk4/PrefsDialog.ui:1030
 #: qt/PrefsDialog.ui:795
-#, fuzzy
 msgid "DHT is a tool for finding peers without a tracker."
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"DHT adalah alat untuk menemukan peer tanpa pelacak.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"DHT adalah alat untuk mencari rekan tanpa sebuah pelacak."
+msgstr "DHT adalah alat untuk mencari rekan tanpa sebuah pelacak."
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1412 gtk/ui/gtk4/PrefsDialog.ui:1043
 #: qt/PrefsDialog.ui:808
@@ -2514,13 +1962,8 @@ msgstr "Pakai _Local Peer Discovery untuk menemukan lebih banyak peer"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1416 gtk/ui/gtk4/PrefsDialog.ui:1045
 #: qt/PrefsDialog.ui:805
-#, fuzzy
 msgid "LPD is a tool for finding peers on your local network."
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"LPD adalah alat untuk menemukan peer pada jaringan lokal Anda.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"LPD adalah alat untuk mencari rekan pada jaringan lokalmu."
+msgstr "LPD adalah alat untuk mencari rekan pada jaringan lokalmu."
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1445 gtk/ui/gtk4/PrefsDialog.ui:1064
 #: qt/PrefsDialog.ui:818
@@ -2554,73 +1997,38 @@ msgstr ""
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1556 gtk/ui/gtk4/PrefsDialog.ui:1151
 #: qt/PrefsDialog.ui:872
-#, fuzzy
 msgid "Show {appname} icon in the _notification area"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Tampilka_n ikon {appname} pada area pemberitahuan\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Tampilkan ikon {appname} di _area notifikasi"
+msgstr "Tampilka_n ikon {appname} pada area pemberitahuan"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1588 gtk/ui/gtk4/PrefsDialog.ui:1171
 #: qt/PrefsDialog.ui:896
-#, fuzzy
 msgid "Notification"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Pemberitahuan\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Notifikasi"
+msgstr "Pemberitahuan"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1602 gtk/ui/gtk4/PrefsDialog.ui:1183
 #: qt/PrefsDialog.ui:902
-#, fuzzy
 msgid "Show a notification when torrents are a_dded"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Tampilkan pemberitahuan saat torrent _ditambahkan\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Tampilkan notifikasi ketika torrent _ditambahkan"
+msgstr "Tampilkan pemberitahuan saat torrent _ditambahkan"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1619 gtk/ui/gtk4/PrefsDialog.ui:1197
 #: qt/PrefsDialog.ui:909
-#, fuzzy
 msgid "Show a notification when torrents _finish"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Tampilkan pemberitahuan saat torrent s_elesai\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Tampilkan notifikasi ketika torrent _selesai"
+msgstr "Tampilkan pemberitahuan saat torrent s_elesai"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1636 gtk/ui/gtk4/PrefsDialog.ui:1211
 #: qt/PrefsDialog.ui:916
-#, fuzzy
 msgid "Play a _sound when torrents finish"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Bunyikan suara saat torrent selesai\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Jalankan sebuah _suara ketika torrent selesai"
+msgstr "Jalankan sebuah _suara ketika torrent selesai"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1691 gtk/ui/gtk4/PrefsDialog.ui:1248
 #: qt/PrefsDialog.ui:946
-#, fuzzy
 msgid "Remote Control"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Kendali Jarak Jauh\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Kendali Remote"
+msgstr "Kendali Jarak Jauh"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1711 gtk/ui/gtk4/PrefsDialog.ui:1265
 #: qt/PrefsDialog.ui:952
-#, fuzzy
 msgid "Allow _remote access"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Izinkan akses _remote\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Izinkan _akses remote"
+msgstr "Izinkan akses _remote"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1727 gtk/ui/gtk4/PrefsDialog.ui:1274
 #: qt/PrefsDialog.ui:962
@@ -2631,55 +2039,28 @@ msgstr "_Buka klien web"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1753 gtk/ui/gtk4/PrefsDialog.ui:1290
 #: qt/PrefsDialog.ui:972
-#, fuzzy
 msgid "HTTP _port:"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Port HTTP:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Port _HTTP:"
+msgstr "_Port HTTP:"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1765 gtk/ui/gtk4/PrefsDialog.ui:1303
 #: qt/PrefsDialog.ui:992
-#, fuzzy
 msgid "Use _authentication"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"P_akai otentikasi\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Gunakan _otentikasi"
+msgstr "P_akai otentikasi"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1785 gtk/ui/gtk4/PrefsDialog.ui:1317
 #: qt/PrefsDialog.ui:1002 qt/SessionDialog.ui:83
-#, fuzzy
 msgid "_Username:"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Nama pengg_una:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Nama Pengguna:"
+msgstr "Nama pengg_una:"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1799 gtk/ui/gtk4/PrefsDialog.ui:1329
 #: qt/PrefsDialog.ui:1015 qt/SessionDialog.ui:96
-#, fuzzy
 msgid "Pass_word:"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Sandi:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Kata_ Sandi:\n"
-"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Kata _Sandi:"
+msgstr "_Sandi:"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1811 gtk/ui/gtk4/PrefsDialog.ui:1342
 #: qt/PrefsDialog.ui:1032
-#, fuzzy
 msgid "Only allow these IP a_ddresses:"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Hanya izinkan ala_mat IP ini:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Hanya mengizinkan Alamat IP ini:"
+msgstr "Hanya izinkan ala_mat IP ini:"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1833 gtk/ui/gtk4/PrefsDialog.ui:1358
 #: qt/PrefsDialog.ui:1042
@@ -2697,13 +2078,8 @@ msgstr "Remote"
 
 #: gtk/ui/gtk3/RelocateDialog.ui:7 gtk/ui/gtk4/RelocateDialog.ui:5
 #: qt/RelocateDialog.ui:14
-#, fuzzy
 msgid "Set Torrent Location"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Tata Lokasi Torrent\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Tetapkan Lokasi Torrent"
+msgstr "Tata Lokasi Torrent"
 
 #: gtk/ui/gtk3/RelocateDialog.ui:35 gtk/ui/gtk4/RelocateDialog.ui:101
 msgid "_Apply"
@@ -2721,33 +2097,18 @@ msgstr "_Lokasi baru:"
 
 #: gtk/ui/gtk3/RelocateDialog.ui:111 gtk/ui/gtk4/RelocateDialog.ui:55
 #: qt/RelocateDialog.ui:49
-#, fuzzy
 msgid "_Move from the current folder"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Pi_ndahkan dari folder saat ini\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Pindah dari folder saat ini"
+msgstr "Pi_ndahkan dari folder saat ini"
 
 #: gtk/ui/gtk3/RelocateDialog.ui:128 gtk/ui/gtk4/RelocateDialog.ui:68
 #: qt/RelocateDialog.ui:56
-#, fuzzy
 msgid "Local data is _already there"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Data lokal sudah _ada di sana\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Data lokal _telah ada di sana"
+msgstr "Data lokal sudah _ada di sana"
 
 #: gtk/ui/gtk3/StatsDialog.ui:70 gtk/ui/gtk4/StatsDialog.ui:20
 #: qt/StatsDialog.ui:23
-#, fuzzy
 msgid "Current Session"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Sesi saat ini\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Sesi Saat Ini"
+msgstr "Sesi saat ini"
 
 #: gtk/ui/gtk3/StatsDialog.ui:144 gtk/ui/gtk3/StatsDialog.ui:304
 #: gtk/ui/gtk4/StatsDialog.ui:82 gtk/ui/gtk4/StatsDialog.ui:214
@@ -2877,26 +2238,16 @@ msgid "Got an error '{markup_begin}{error}{markup_end}' {time_span_ago}"
 msgstr ""
 
 #: libtransmission-app/formatters.cc:164
-#, fuzzy
 msgid "No updates scheduled"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Tak ada pemutakhiran yang dijadwalkan\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Tidak ada pembaruan terjadwal"
+msgstr "Tak ada pemutakhiran yang dijadwalkan"
 
 #: libtransmission-app/formatters.cc:170
 msgid "Asking for more peers {time_span_from_now}"
 msgstr ""
 
 #: libtransmission-app/formatters.cc:175
-#, fuzzy
 msgid "Queued to ask for more peers"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Diantrikan untuk meminta lebih banyak peer\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Antri untuk meminta lebih banyak rekan"
+msgstr "Antri untuk meminta lebih banyak rekan"
 
 #: libtransmission-app/formatters.cc:182
 msgid "Asked for more peers {markup_begin}{time_span_ago}{markup_end}"
@@ -2933,13 +2284,8 @@ msgid "Asking for peer counts {time_span_from_now}"
 msgstr "Meminta untuk jumlah rekan di {time_span}"
 
 #: libtransmission-app/formatters.cc:244
-#, fuzzy
 msgid "Queued to ask for peer counts"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Diantrikan untuk meminta cacah peer\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Antri untuk meminta jumlah rekan"
+msgstr "Antri untuk meminta jumlah rekan"
 
 #: libtransmission-app/formatters.cc:250
 msgid "Asked for peer counts {markup_begin}{time_span_ago}{markup_end}"
@@ -3834,11 +3180,7 @@ msgstr "Pilih Folder"
 #: qt/PrefsDialog.cc:301
 #, fuzzy
 msgid "unknown"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Tak diketahui\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Tidak diketahui"
+msgstr "Tak diketahui"
 
 #: qt/PrefsDialog.cc:303
 msgid "checking…"

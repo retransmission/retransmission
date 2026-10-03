@@ -26,13 +26,8 @@ msgstr ""
 
 #: cli/cli.cc:95 qt/DetailsDialog.cc:468 qt/Formatter.cc:31 qt/Formatter.cc:40
 #: qt/Formatter.cc:58
-#, fuzzy
 msgid "None"
-msgstr ""
-"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"ללא\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"אין"
+msgstr "ללא"
 
 #: cli/cli.cc:99
 msgid "Inf"
@@ -161,13 +156,8 @@ msgstr[1] "לא ניתן להוסיף טורנטים כפולים"
 msgstr[2] "לא ניתן להוסיף טורנטים כפולים"
 
 #: gtk/Application.cc:1382 qt/AboutDialog.ui:43
-#, fuzzy
 msgid "A fast and easy BitTorrent client"
-msgstr ""
-"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"תכנית ביטטורנט קלה ופשוטה\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"לקוח ביטורנט מהיר ופשוט"
+msgstr "לקוח ביטורנט מהיר ופשוט"
 
 #: gtk/Application.cc:1384 qt/AboutDialog.cc:28
 msgid "Copyright © The {appname} Project"
@@ -211,13 +201,8 @@ msgid "Seed regardless of ratio"
 msgstr "זריעה ללא התחשבות ביחס"
 
 #: gtk/DetailsDialog.cc:442 qt/DetailsDialog.cc:1400
-#, fuzzy
 msgid "Stop seeding at ratio:"
-msgstr ""
-"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"הפסקת הזריעה ביחס:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"הפסקת זריעה ביחס:"
+msgstr "הפסקת זריעה ביחס:"
 
 #: gtk/DetailsDialog.cc:457 qt/DetailsDialog.cc:1403
 msgid "Seed regardless of activity"
@@ -228,22 +213,12 @@ msgid "Stop seeding if idle for N minutes:"
 msgstr "הפסקת זריעה במקרה של אי פעילות למשך N דקות:"
 
 #: gtk/DetailsDialog.cc:486 gtk/Torrent.cc:405 qt/Torrent.cc:298
-#, fuzzy
 msgid "Queued for verification"
-msgstr ""
-"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"בהמתנה לאימות\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"בתור לאימות"
+msgstr "בתור לאימות"
 
 #: gtk/DetailsDialog.cc:489 qt/Torrent.cc:301
-#, fuzzy
 msgid "Verifying local data"
-msgstr ""
-"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"הנתונים המקומיים בהליכי אימות\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"הנתונים המקומיים באימות"
+msgstr "הנתונים המקומיים באימות"
 
 #: gtk/DetailsDialog.cc:492 gtk/Torrent.cc:408 qt/Torrent.cc:304
 msgid "Queued for download"
@@ -251,16 +226,9 @@ msgstr "בתור להורדה"
 
 #: gtk/DetailsDialog.cc:495 gtk/FilterBar.cc:456 qt/FilterBar.cc:60
 #: qt/Torrent.cc:307
-#, fuzzy
 msgctxt "Verb"
 msgid "Downloading"
-msgstr ""
-"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"בהליכי הורדה\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"בהורדה\n"
-"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"בהליכי הורדה"
+msgstr "בהורדה"
 
 #: gtk/DetailsDialog.cc:498 gtk/Torrent.cc:411 qt/Torrent.cc:310
 msgid "Queued for seeding"
@@ -268,38 +236,20 @@ msgstr "בתור לזריעה"
 
 #: gtk/DetailsDialog.cc:501 gtk/FilterBar.cc:460 qt/FilterBar.cc:59
 #: qt/Torrent.cc:313
-#, fuzzy
 msgctxt "Verb"
 msgid "Seeding"
-msgstr ""
-"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"בזריעה\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"בזריעה\n"
-"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"זריעה"
+msgstr "בזריעה"
 
 #: gtk/DetailsDialog.cc:504 gtk/FilterBar.cc:465 gtk/Torrent.cc:402
 #: qt/DetailsDialog.cc:516 qt/FilterBar.cc:62 qt/Torrent.cc:295
 #, fuzzy
 msgid "Seeding complete"
-msgstr ""
-"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"לא שלם\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"חלקי"
+msgstr "לא שלם"
 
 #: gtk/DetailsDialog.cc:504 gtk/FilterBar.cc:462 gtk/Torrent.cc:402
 #: qt/DetailsDialog.cc:518 qt/FilterBar.cc:61 qt/Torrent.cc:295
-#, fuzzy
 msgid "Paused"
-msgstr ""
-"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"מושהה\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"מושהה\n"
-"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"מושהים"
+msgstr "מושהה"
 
 #: gtk/DetailsDialog.cc:524 gtk/DetailsDialog.cc:529 gtk/DetailsDialog.cc:614
 #: qt/DetailsDialog.cc:880 qt/DetailsDialog.cc:923
@@ -308,15 +258,8 @@ msgstr "לא זמין"
 
 #: gtk/DetailsDialog.cc:538 gtk/FileList.cc:611 qt/DetailsDialog.cc:469
 #: qt/FileTreeItem.cc:265 qt/FileTreeView.cc:107
-#, fuzzy
 msgid "Mixed"
-msgstr ""
-"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"מעורב\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"מעורב\n"
-"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"מעורבת"
+msgstr "מעורב"
 
 #: gtk/DetailsDialog.cc:539
 msgid "No Torrents Selected"
@@ -331,13 +274,8 @@ msgid "Public torrent"
 msgstr "טורנט ציבורי"
 
 #: gtk/DetailsDialog.cc:606 qt/DetailsDialog.cc:888
-#, fuzzy
 msgid "Created by {creator} on {date}"
-msgstr ""
-"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"נוצר ע״י {creator} ב־{date}\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"נוצר על ידי {creator} ב־{date}"
+msgstr "נוצר ע״י {creator} ב־{date}"
 
 #: gtk/DetailsDialog.cc:610 qt/DetailsDialog.cc:882
 msgid "Created by {creator}"
@@ -384,13 +322,8 @@ msgid "{current_size} ({percent_done}% of {percent_available}% available; {unver
 msgstr "{current_size} ({percent_done}% מתוך {percent_available}% זמינים; {unverified_size} לא אומתו)"
 
 #: gtk/DetailsDialog.cc:816 qt/DetailsDialog.cc:613
-#, fuzzy
 msgid "{downloaded_size} (+{discarded_size} discarded after failed checksum)"
-msgstr ""
-"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{downloaded_size} (+{discarded_size} הושלכו לאחר חישוב סכום שגוי)\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{downloaded_size} (+{discarded_size} הושלכו לאחר בדיקת סכום שנכשלה)"
+msgstr "{downloaded_size} (+{discarded_size} הושלכו לאחר בדיקת סכום שנכשלה)"
 
 #: gtk/DetailsDialog.cc:837 qt/DetailsDialog.cc:636
 msgid "{uploaded_size} (Ratio: {ratio})"
@@ -405,26 +338,16 @@ msgid "Never"
 msgstr "אף פעם"
 
 #: gtk/DetailsDialog.cc:883 qt/DetailsDialog.cc:713
-#, fuzzy
 msgid "Active now"
-msgstr ""
-"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"פעילים כעת\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"פעיל כעת"
+msgstr "פעיל כעת"
 
 #: gtk/DetailsDialog.cc:1195 qt/DetailsDialog.cc:1086
 msgid "Optimistic unchoke"
 msgstr "שחרור בלימה אופטימי"
 
 #: gtk/DetailsDialog.cc:1199 qt/DetailsDialog.cc:1090
-#, fuzzy
 msgid "Downloading from this peer"
-msgstr ""
-"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"מתבצעת הורדה מעמית זה\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"הורדה מהעמית הזה"
+msgstr "מתבצעת הורדה מעמית זה"
 
 #: gtk/DetailsDialog.cc:1203 qt/DetailsDialog.cc:1094
 msgid "We would download from this peer if they would let us"
@@ -489,22 +412,12 @@ msgid "Up Reqs"
 msgstr "בקשות העלאה"
 
 #: gtk/DetailsDialog.cc:1333 gtk/DetailsDialog.cc:1402 qt/DetailsDialog.cc:1480
-#, fuzzy
 msgid "Down"
-msgstr ""
-"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"מהירות הורדה\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"הורדה"
+msgstr "הורדה"
 
 #: gtk/DetailsDialog.cc:1339 qt/DetailsDialog.cc:1478
-#, fuzzy
 msgid "Up"
-msgstr ""
-"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"מהירות העלאה\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"העלאה"
+msgstr "העלאה"
 
 #: gtk/DetailsDialog.cc:1344 qt/AboutDialog.cc:40 qt/DetailsDialog.cc:1485
 msgid "Client"
@@ -552,62 +465,26 @@ msgstr[2] "מאפיינים - {torrent_count:L} טורנטים"
 msgstr[3] "מאפיינים - {torrent_count:L} טורנטים"
 
 #: gtk/Dialogs.cc:53 qt/MainWindow.cc:1325
-#, fuzzy
 msgid "Remove torrent?"
-msgstr ""
-"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"להסיר את הטורנט?\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"הסרת טורנט?"
+msgstr "להסיר את הטורנט?"
 
 #: gtk/Dialogs.cc:53 qt/MainWindow.cc:1328
-#, fuzzy
 msgid "Delete this torrent's downloaded files?"
-msgstr ""
-"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"למחוק את הקבצים שהורדו במסגרת הטורנט הזה?\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"מחיקת הקבצים שהתקבלו לטורנט הזה?"
+msgstr "למחוק את הקבצים שהורדו במסגרת הטורנט הזה?"
 
 #: gtk/Dialogs.cc:56 qt/MainWindow.cc:1326
-#, fuzzy
 msgid "Remove {count:L} torrent?"
 msgid_plural "Remove {count:L} torrents?"
-msgstr[0] ""
-"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"הסרת טורנט?\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"הסרת טורנט?"
-msgstr[1] ""
-"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"להסיר {count:L} טורנטים?\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"הסרת {count:L} טורנטים?"
-msgstr[2] ""
-"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"להסיר {count:L} טורנטים?\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"הסרת {count:L} טורנטים?"
+msgstr[0] "הסרת טורנט?"
+msgstr[1] "להסיר {count:L} טורנטים?"
+msgstr[2] "להסיר {count:L} טורנטים?"
 
 #: gtk/Dialogs.cc:58 qt/MainWindow.cc:1330
-#, fuzzy
 msgid "Delete this {count:L} torrent's downloaded files?"
 msgid_plural "Delete these {count:L} torrents' downloaded files?"
-msgstr[0] ""
-"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"למחוק את הקבצים שהתקבלו עבור הטורנט הזה?\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"למחוק את הקבצים שהתקבלו עבור הטורנט הזה?"
-msgstr[1] ""
-"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"למחוק את {count:L} הקבצים שהורדו במסגרת הטורנטים האלה?\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"למחוק את הקבצים שהתקבלו עבור {count:L} הטורנטים האלה?"
-msgstr[2] ""
-"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"למחוק את {count:L} הקבצים שהורדו במסגרת הטורנטים האלה?\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"למחוק את הקבצים שהתקבלו עבור {count:L} הטורנטים האלה?"
+msgstr[0] "למחוק את הקבצים שהתקבלו עבור הטורנט הזה?"
+msgstr[1] "למחוק את הקבצים שהתקבלו עבור {count:L} הטורנטים האלה?"
+msgstr[2] "למחוק את הקבצים שהתקבלו עבור {count:L} הטורנטים האלה?"
 
 #: gtk/Dialogs.cc:65 qt/MainWindow.cc:1337
 #, fuzzy
@@ -623,13 +500,8 @@ msgid "Once removed, you'll need the torrent files or magnet links to add them a
 msgstr "לאחר ההסרה, המשך ההעברה תדרוש את קובץ הטורנט או את קישור המגנט."
 
 #: gtk/Dialogs.cc:68 qt/MainWindow.cc:1340
-#, fuzzy
 msgid "This torrent has not finished downloading."
-msgstr ""
-"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"הורדת הטורנט הבא טרם הסתיימה.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"הורדת הטורנט טרם הסתיימה."
+msgstr "הורדת הטורנט טרם הסתיימה."
 
 #: gtk/Dialogs.cc:69 qt/MainWindow.cc:1341
 msgid "These torrents have not finished downloading."
@@ -644,22 +516,12 @@ msgid "These torrents are connected to peers."
 msgstr "הטורנטים האלו מחוברים לעמיתים."
 
 #: gtk/Dialogs.cc:74 qt/MainWindow.cc:1347
-#, fuzzy
 msgid "One of these torrents is connected to peers."
-msgstr ""
-"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"אחד מהטורנטים האלו אינו מחובר לעמיתים.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"אחד מהטורנטים האלה מחובר לעמיתים."
+msgstr "אחד מהטורנטים האלה מחובר לעמיתים."
 
 #: gtk/Dialogs.cc:75 qt/MainWindow.cc:1348
-#, fuzzy
 msgid "Some of these torrents are connected to peers."
-msgstr ""
-"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"חלק מהטורנטים האלו אינם מחוברים לעמיתים.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"חלק מהטורנטים האלו מחוברים לעמיתים."
+msgstr "חלק מהטורנטים האלו מחוברים לעמיתים."
 
 #: gtk/Dialogs.cc:83 qt/MainWindow.cc:1356
 msgid "One of these torrents has not finished downloading."
@@ -689,15 +551,8 @@ msgstr "_מחיקה"
 #: gtk/transmission-menus.ui:423 gtk/ui/gtk3/DetailsDialog.ui:729
 #: gtk/ui/gtk3/PrefsDialog.ui:1913 gtk/ui/gtk4/DetailsDialog.ui:567
 #: gtk/ui/gtk4/PrefsDialog.ui:1424 qt/DetailsDialog.ui:644 qt/MainWindow.ui:412
-#, fuzzy
 msgid "_Remove"
-msgstr ""
-"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"הס_רה\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"הס_רה\n"
-"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"ה_סרה"
+msgstr "הס_רה"
 
 #: gtk/FileList.cc:599 gtk/Utils.cc:576 qt/DetailsDialog.cc:1394
 #: qt/FileTreeItem.cc:259 qt/FileTreeView.cc:107 qt/FileTreeView.cc:344
@@ -762,13 +617,8 @@ msgstr "שגיאה"
 
 #: gtk/FilterBar.cc:569 gtk/ui/gtk3/FilterBar.ui:13 gtk/ui/gtk4/FilterBar.ui:8
 #: qt/FilterBar.cc:193
-#, fuzzy
 msgid "_Show:"
-msgstr ""
-"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"ה_צגה:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_הצגה:"
+msgstr "_הצגה:"
 
 #: gtk/FilterBar.cc:570
 msgid "_Show {count:L} of:"
@@ -839,22 +689,12 @@ msgid "Stop Seeding at Ratio"
 msgstr "הפסקת זריעה ביחס"
 
 #: gtk/MainWindow.cc:571 qt/MainWindow.cc:370 qt/MainWindow.cc:1113
-#, fuzzy
 msgid "Stop at Ratio ({ratio})"
-msgstr ""
-"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"לעצור ביחס ({ratio})\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"להפסיק ביחס ({ratio})"
+msgstr "להפסיק ביחס ({ratio})"
 
 #: gtk/MainWindow.cc:602 qt/MainWindow.ui:622
-#, fuzzy
 msgid "Total Ratio"
-msgstr ""
-"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"יחס שיתוף כולל\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"יחס כולל"
+msgstr "יחס כולל"
 
 #: gtk/MainWindow.cc:603 qt/MainWindow.ui:630
 msgid "Session Ratio"
@@ -1012,26 +852,16 @@ msgid "Select File"
 msgstr "בחירת קובץ"
 
 #: gtk/PathButton.cc:344 qt/PathButton.cc:29 qt/PathButton.cc:98
-#, fuzzy
 msgid "(None)"
-msgstr ""
-"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"(ללא)\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"(אין)"
+msgstr "(ללא)"
 
 #: gtk/PrefsDialog.cc:292 qt/PrefsDialog.cc:105
 msgid "Allow encryption"
 msgstr "אפשור הצפנה"
 
 #: gtk/PrefsDialog.cc:293 qt/PrefsDialog.cc:106
-#, fuzzy
 msgid "Prefer encryption"
-msgstr ""
-"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"להעדיף הצפנה\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"העדפת הצפנה"
+msgstr "העדפת הצפנה"
 
 #: gtk/PrefsDialog.cc:294 qt/PrefsDialog.cc:107
 msgid "Require encryption"
@@ -1067,13 +897,8 @@ msgid "Couldn't update blocklist"
 msgstr "לא ניתן לעדכן את רשימת החסימה"
 
 #: gtk/PrefsDialog.cc:578 qt/PrefsDialog.cc:446
-#, fuzzy
 msgid "Getting new blocklist…"
-msgstr ""
-"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"מתקבלת רשימה חדשה…\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"מתקבלת רשימת חסימה חדשה…"
+msgstr "מתקבלת רשימת חסימה חדשה…"
 
 #: gtk/PrefsDialog.cc:925
 msgctxt "Port test status"
@@ -1136,27 +961,11 @@ msgid "Couldn't find pending RPC request for id {id}"
 msgstr ""
 
 #: gtk/StatsDialog.cc:76 qt/StatsDialog.cc:65
-#, fuzzy
 msgid "Started {count:L} time"
 msgid_plural "Started {count:L} times"
-msgstr[0] ""
-"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"התחיל פעם אחת\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"התחיל פעם אחת"
-msgstr[1] ""
-"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"התחיל {count:L} פעמים\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"התחיל פעמיים"
-msgstr[2] ""
-"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"התחיל {count:L} פעמים\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"התחיל פעמיים"
-msgstr[3] ""
-"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"התחיל {count:L} פעמים"
+msgstr[0] "התחיל פעם אחת"
+msgstr[1] "התחיל {count:L} פעמים"
+msgstr[2] "התחיל {count:L} פעמים"
 
 #: gtk/StatsDialog.cc:109
 msgid "Reset your statistics?"
@@ -1180,13 +989,9 @@ msgid "{upload_speed} ▴ {download_speed} ▾"
 msgstr "{upload_speed} ▴ {download_speed} ▾"
 
 #: gtk/Torrent.cc:416 qt/TorrentDelegate.cc:284
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Verifying local data ({percent_done}% tested)"
-msgstr ""
-"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"הנתונים המקומיים מאומתים ({percent_done}% נבדקו)\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"הנתונים המקומיים בהליכי אימות ({percent_done}% נבדקו)"
+msgstr "הנתונים המקומיים מאומתים ({percent_done}% נבדקו)"
 
 #: gtk/Torrent.cc:443 qt/DetailsDialog.cc:565 qt/TorrentDelegate.cc:183
 msgid "{current_size} of {complete_size} ({percent_done}%)"
@@ -1261,50 +1066,18 @@ msgstr[2] "מתבצעת הורדה מ־{active_count} זורעים יעודיי�
 msgstr[3] "מתבצעת הורדה מ־{active_count} זורעים יעודיים"
 
 #: gtk/Torrent.cc:659 qt/TorrentDelegate.cc:351
-#, fuzzy
 msgid "Downloading from {active_count} of {connected_count} connected peer"
 msgid_plural "Downloading from {active_count} of {connected_count} connected peers"
-msgstr[0] ""
-"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"מתבצעת הורדה מהעמית המחובר\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"מתבצעת הורדה מ־{active_count} מתוך עמית מחובר {connected_count}"
-msgstr[1] ""
-"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"מתבצעת הורדה מ־{active_count} מתוך {connected_count} העמיתים המחוברים\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"מתבצעת הורדה מ־{active_count} מתוך {connected_count} עמיתים מחוברים"
-msgstr[2] ""
-"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"מתבצעת הורדה מ־{active_count} מתוך {connected_count} העמיתים המחוברים\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"מתבצעת הורדה מ־{active_count} מתוך {connected_count} עמיתים מחוברים"
-msgstr[3] ""
-"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"מתבצעת הורדה מ־{active_count} מתוך {connected_count} העמיתים המחוברים"
+msgstr[0] "מתבצעת הורדה מ־{active_count} מתוך עמית מחובר {connected_count}"
+msgstr[1] "מתבצעת הורדה מ־{active_count} מתוך {connected_count} עמיתים מחוברים"
+msgstr[2] "מתבצעת הורדה מ־{active_count} מתוך {connected_count} עמיתים מחוברים"
 
 #: gtk/Torrent.cc:668 qt/TorrentDelegate.cc:380
-#, fuzzy
 msgid "Seeding to {active_count} of {connected_count} connected peer"
 msgid_plural "Seeding to {active_count} of {connected_count} connected peers"
-msgstr[0] ""
-"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"מתבצעת זריעה אל {active_count} מתוך עמית מחובר\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"מתבצעת זריעה ל־עמית מחובר {active_count} מתוך {connected_count}"
-msgstr[1] ""
-"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"מתבצעת זריעה אל {active_count} מתוך {connected_count} עמיתים מחוברים\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"מתבצעת זריעה ל־{active_count} מתוך {connected_count} עמיתים מחוברים"
-msgstr[2] ""
-"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"מתבצעת זריעה אל {active_count} מתוך {connected_count} עמיתים מחוברים\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"מתבצעת זריעה ל־{active_count} מתוך {connected_count} עמיתים מחוברים"
-msgstr[3] ""
-"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"מתבצעת זריעה אל {active_count} מתוך {connected_count} עמיתים מחוברים"
+msgstr[0] "מתבצעת זריעה אל {active_count} מתוך עמית מחובר"
+msgstr[1] "מתבצעת זריעה אל {active_count} מתוך {connected_count} עמיתים מחוברים"
+msgstr[2] "מתבצעת זריעה אל {active_count} מתוך {connected_count} עמיתים מחוברים"
 
 #: gtk/retransmission-gtk.desktop.in:2
 #: gtk/retransmission-gtk.metainfo.xml.in:11
@@ -1363,13 +1136,8 @@ msgstr "_קובץ"
 
 #: gtk/transmission-menus.ui:18 gtk/transmission-menus.ui:447
 #: qt/MainWindow.ui:685
-#, fuzzy
 msgid "Open _URL…"
-msgstr ""
-"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"פתיחה מ_כתובת…\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"פתיחת _כתובת…"
+msgstr "פתיחה מ_כתובת…"
 
 #: gtk/transmission-menus.ui:25 qt/MainWindow.ui:332
 msgid "_New…"
@@ -1377,33 +1145,18 @@ msgstr "_חדש…"
 
 #: gtk/transmission-menus.ui:32 gtk/transmission-menus.ui:460
 #: qt/MainWindow.ui:437
-#, fuzzy
 msgid "_Start All"
-msgstr ""
-"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"ה_תחלת הכול\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"התחלת ה_כול"
+msgstr "ה_תחלת הכול"
 
 #: gtk/transmission-menus.ui:37 gtk/transmission-menus.ui:455
 #: qt/MainWindow.ui:442
-#, fuzzy
 msgid "_Pause All"
-msgstr ""
-"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"השהיית הכו_ל\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"ה_שהית הכול"
+msgstr "השהיית הכו_ל"
 
 #: gtk/transmission-menus.ui:45 gtk/transmission-menus.ui:473
 #: qt/MainWindow.ui:447
-#, fuzzy
 msgid "_Quit"
-msgstr ""
-"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_יציאה\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"י_ציאה"
+msgstr "_יציאה"
 
 #: gtk/transmission-menus.ui:50 gtk/ui/gtk3/DetailsDialog.ui:715
 #: gtk/ui/gtk4/DetailsDialog.ui:559 qt/DetailsDialog.ui:637
@@ -1420,13 +1173,8 @@ msgid "Dese_lect All"
 msgstr "ביטול הבחי_רה"
 
 #: gtk/transmission-menus.ui:68 qt/MainWindow.ui:474
-#, fuzzy
 msgid "_Preferences"
-msgstr ""
-"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"ה_עדפות\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_העדפות"
+msgstr "ה_עדפות"
 
 #: gtk/transmission-menus.ui:73 qt/MainWindow.ui:192
 msgid "_Torrent"
@@ -1440,24 +1188,14 @@ msgstr "מ_אפיינים"
 
 #: gtk/transmission-menus.ui:84 gtk/transmission-menus.ui:291
 #: qt/MainWindow.ui:354
-#, fuzzy
 msgid "Open Fold_er"
-msgstr ""
-"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"פתיחת תי_קייה\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"פתיחת _תיקייה"
+msgstr "פתיחת תי_קייה"
 
 #: gtk/transmission-menus.ui:92 gtk/transmission-menus.ui:357
 #: gtk/ui/gtk3/MainWindow.ui:39 gtk/ui/gtk4/MainWindow.ui:44
 #: qt/MainWindow.ui:365
-#, fuzzy
 msgid "_Start"
-msgstr ""
-"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_התחלה\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"הת_חלה"
+msgstr "_התחלה"
 
 #: gtk/transmission-menus.ui:98 gtk/transmission-menus.ui:363
 #: qt/MainWindow.ui:698
@@ -1505,23 +1243,13 @@ msgstr "ה_שהיה"
 
 #: gtk/transmission-menus.ui:141 gtk/transmission-menus.ui:406
 #: qt/MainWindow.ui:675
-#, fuzzy
 msgid "Set _Location…"
-msgstr ""
-"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"הגדרת _מיקום…\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"ה_גדרת מיקום…"
+msgstr "הגדרת _מיקום…"
 
 #: gtk/transmission-menus.ui:145 gtk/transmission-menus.ui:410
 #: qt/MainWindow.ui:401
-#, fuzzy
 msgid "_Verify Local Data"
-msgstr ""
-"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_בדיקת נתונים מקומיים\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_אימות נתונים מקומיים"
+msgstr "_בדיקת נתונים מקומיים"
 
 #: gtk/transmission-menus.ui:151 gtk/transmission-menus.ui:416
 #: qt/MainWindow.ui:680
@@ -1530,13 +1258,8 @@ msgstr "העתקת קישור מ_גנט אל לוח הגזירים"
 
 #: gtk/transmission-menus.ui:164 gtk/transmission-menus.ui:429
 #: qt/MainWindow.ui:426
-#, fuzzy
 msgid "_Delete Files and Remove"
-msgstr ""
-"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_מחיקת הקבצים והסרה\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"מ_חיקת הקבצים והסרה"
+msgstr "מ_חיקת הקבצים והסרה"
 
 #: gtk/transmission-menus.ui:170 qt/MainWindow.ui:244
 msgid "_View"
@@ -1547,31 +1270,16 @@ msgid "_Compact View"
 msgstr "תצוגה _חסכונית"
 
 #: gtk/transmission-menus.ui:181 qt/MainWindow.ui:502
-#, fuzzy
 msgid "_Toolbar"
-msgstr ""
-"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"סרגל _כלים\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_סרגל כלים"
+msgstr "סרגל _כלים"
 
 #: gtk/transmission-menus.ui:185 qt/MainWindow.ui:510
-#, fuzzy
 msgid "_Filterbar"
-msgstr ""
-"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"שורת _סינון\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"סרגל מס_ננים"
+msgstr "שורת _סינון"
 
 #: gtk/transmission-menus.ui:189 qt/MainWindow.ui:518
-#, fuzzy
 msgid "_Statusbar"
-msgstr ""
-"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"שורת _מצב\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"סרגל מ_צב"
+msgstr "שורת _מצב"
 
 #: gtk/transmission-menus.ui:195 gtk/transmission-menus.ui:301
 #: qt/MainWindow.ui:526
@@ -1625,53 +1333,28 @@ msgstr "מיון בסדר ה_פוך"
 
 #: gtk/transmission-menus.ui:247 gtk/ui/gtk3/PrefsDialog.ui:22
 #: gtk/ui/gtk4/PrefsDialog.ui:1484 qt/MainWindow.ui:233
-#, fuzzy
 msgid "_Help"
-msgstr ""
-"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_עזרה\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"ע_זרה"
+msgstr "ע_זרה"
 
 #: gtk/transmission-menus.ui:251
-#, fuzzy
 msgid "Message _Log"
-msgstr ""
-"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"יו_מן הודעות\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"יומן הוד_עות"
+msgstr "יו_מן הודעות"
 
 #: gtk/transmission-menus.ui:255 qt/MainWindow.ui:590
 msgid "_Statistics"
 msgstr "_סטטיסטיקה"
 
 #: gtk/transmission-menus.ui:261 qt/MainWindow.ui:693
-#, fuzzy
 msgid "_Donate"
-msgstr ""
-"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"ת_רומה\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_תרומה"
+msgstr "ת_רומה"
 
 #: gtk/transmission-menus.ui:268 qt/MainWindow.ui:595
-#, fuzzy
 msgid "_Contents"
-msgstr ""
-"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"ת_כנים\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_תכנים"
+msgstr "ת_כנים"
 
 #: gtk/transmission-menus.ui:274 qt/MainWindow.ui:603
-#, fuzzy
 msgid "_About"
-msgstr ""
-"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
-" על _אודות\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"על _אודות"
+msgstr "על _אודות"
 
 #: gtk/transmission-menus.ui:297
 #, fuzzy
@@ -1736,15 +1419,8 @@ msgstr "הועלו:"
 #: gtk/ui/gtk3/StatsDialog.ui:275 gtk/ui/gtk4/DetailsDialog.ui:68
 #: gtk/ui/gtk4/StatsDialog.ui:57 gtk/ui/gtk4/StatsDialog.ui:189
 #: qt/DetailsDialog.ui:138 qt/StatsDialog.ui:55 qt/StatsDialog.ui:184
-#, fuzzy
 msgid "Downloaded:"
-msgstr ""
-"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"ירדו:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"הורדו:\n"
-"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"ירדו:"
+msgstr "הורדו:"
 
 #: gtk/ui/gtk3/DetailsDialog.ui:122 gtk/ui/gtk4/DetailsDialog.ui:78
 #: qt/DetailsDialog.ui:170
@@ -1758,23 +1434,13 @@ msgstr "זמן פעילות:"
 
 #: gtk/ui/gtk3/DetailsDialog.ui:146 gtk/ui/gtk4/DetailsDialog.ui:98
 #: qt/DetailsDialog.ui:234
-#, fuzzy
 msgid "Remaining time:"
-msgstr ""
-"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"הזמן שנותר:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"זמן שנותר:"
+msgstr "זמן שנותר:"
 
 #: gtk/ui/gtk3/DetailsDialog.ui:158 gtk/ui/gtk4/DetailsDialog.ui:108
 #: qt/DetailsDialog.ui:266
-#, fuzzy
 msgid "Last activity:"
-msgstr ""
-"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"הפעילות האחרונה:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"פעילות אחרונה:"
+msgstr "פעילות אחרונה:"
 
 #: gtk/ui/gtk3/DetailsDialog.ui:170 gtk/ui/gtk4/DetailsDialog.ui:118
 #: qt/DetailsDialog.ui:298
@@ -1855,13 +1521,8 @@ msgstr "מהירות"
 
 #: gtk/ui/gtk3/DetailsDialog.ui:887 gtk/ui/gtk4/DetailsDialog.ui:663
 #: qt/DetailsDialog.ui:723
-#, fuzzy
 msgid "Honor global _limits"
-msgstr ""
-"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"אכיפת ה_גבלות כלליות\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_כיבוד מגבלות כלליות"
+msgstr "_כיבוד מגבלות כלליות"
 
 #: gtk/ui/gtk3/DetailsDialog.ui:903 gtk/ui/gtk4/DetailsDialog.ui:676
 msgid "Limit _download speed ({speed_units}):"
@@ -1874,13 +1535,8 @@ msgstr "הגבלת מהירות הה_עלאה ({speed_units}):"
 #: gtk/ui/gtk3/DetailsDialog.ui:935 gtk/ui/gtk3/OptionsDialog.ui:143
 #: gtk/ui/gtk4/DetailsDialog.ui:700 gtk/ui/gtk4/OptionsDialog.ui:87
 #: qt/DetailsDialog.ui:770
-#, fuzzy
 msgid "Torrent _priority:"
-msgstr ""
-"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"עדיפות ה_טורנט:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_עדיפות טורנט:"
+msgstr "עדיפות ה_טורנט:"
 
 #: gtk/ui/gtk3/DetailsDialog.ui:997 gtk/ui/gtk4/DetailsDialog.ui:749
 #: qt/DetailsDialog.ui:786
@@ -1894,33 +1550,18 @@ msgstr "י_חס:"
 
 #: gtk/ui/gtk3/DetailsDialog.ui:1027 gtk/ui/gtk4/DetailsDialog.ui:773
 #: qt/DetailsDialog.ui:819
-#, fuzzy
 msgid "_Idle:"
-msgstr ""
-"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"בהמ_תנה:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"חוסר _פעילות:"
+msgstr "חוסר _פעילות:"
 
 #: gtk/ui/gtk3/DetailsDialog.ui:1125 gtk/ui/gtk4/DetailsDialog.ui:831
 #: qt/DetailsDialog.ui:855
-#, fuzzy
 msgid "Peer Connections"
-msgstr ""
-"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"חיבורי עמיתים\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"חיבורים לעמיתים"
+msgstr "חיבורי עמיתים"
 
 #: gtk/ui/gtk3/DetailsDialog.ui:1141 gtk/ui/gtk4/DetailsDialog.ui:843
 #: qt/DetailsDialog.ui:861
-#, fuzzy
 msgid "_Maximum peers:"
-msgstr ""
-"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"מס׳ עמיתים מרבי:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"מספר עמיתים מ_רבי:"
+msgstr "מספר עמיתים מ_רבי:"
 
 #: gtk/ui/gtk3/DetailsDialog.ui:1180 gtk/ui/gtk3/MainWindow.ui:169
 #: gtk/ui/gtk3/PrefsDialog.ui:1344 gtk/ui/gtk4/DetailsDialog.ui:871
@@ -1960,13 +1601,8 @@ msgstr "התחלת טורנט"
 
 #: gtk/ui/gtk3/MainWindow.ui:52 gtk/ui/gtk4/MainWindow.ui:52
 #: qt/MainWindow.ui:390
-#, fuzzy
 msgid "Pause torrent"
-msgstr ""
-"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"השהיית טורנט\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"השהיית הטורנט"
+msgstr "השהיית טורנט"
 
 #: gtk/ui/gtk3/MainWindow.ui:67 gtk/ui/gtk3/MainWindow.ui:69
 #: gtk/ui/gtk4/MainWindow.ui:62 gtk/ui/gtk4/MainWindow.ui:64
@@ -2040,13 +1676,8 @@ msgstr "ה_ערה:"
 
 #: gtk/ui/gtk3/MakeDialog.ui:339 gtk/ui/gtk4/MakeDialog.ui:229
 #: qt/MakeDialog.ui:156
-#, fuzzy
 msgid "_Source:"
-msgstr ""
-"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_מקור:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"מ_קור:"
+msgstr "_מקור:"
 
 #: gtk/ui/gtk3/MakeDialog.ui:366 gtk/ui/gtk4/MakeDialog.ui:252
 #: qt/MakeDialog.ui:170
@@ -2088,13 +1719,8 @@ msgstr "בחירת קובץ מקור"
 
 #: gtk/ui/gtk3/OptionsDialog.ui:91 gtk/ui/gtk4/OptionsDialog.ui:41
 #: qt/OptionsDialog.ui:39
-#, fuzzy
 msgid "_Destination folder:"
-msgstr ""
-"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_תיקיית יעד:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"תי_קיית יעד:"
+msgstr "תי_קיית יעד:"
 
 #: gtk/ui/gtk3/OptionsDialog.ui:107 gtk/ui/gtk4/OptionsDialog.ui:55
 #: qt/OptionsDialog.cc:78 qt/PrefsDialog.cc:522
@@ -2204,13 +1830,8 @@ msgstr "תור הורדה"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:573 gtk/ui/gtk4/PrefsDialog.ui:401
 #: qt/PrefsDialog.ui:326
-#, fuzzy
 msgid "Ma_ximum active downloads:"
-msgstr ""
-"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"כמות מ_רבית של הורדות פעילות:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"כמות ההורדות הפעילות המ_רבית:"
+msgstr "כמות מ_רבית של הורדות פעילות:"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:587 gtk/ui/gtk4/PrefsDialog.ui:413
 msgid "Downloads sharing data in the last _N minutes are active:"
@@ -2218,23 +1839,13 @@ msgstr "הורדות שחולקות נתונים ב־N הדקות ה_אחרונ�
 
 #: gtk/ui/gtk3/PrefsDialog.ui:636 gtk/ui/gtk4/PrefsDialog.ui:451
 #: qt/PrefsDialog.ui:375
-#, fuzzy
 msgid "Incomplete"
-msgstr ""
-"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"לא שלם\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"חלקי"
+msgstr "לא שלם"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:650 gtk/ui/gtk4/PrefsDialog.ui:463
 #: qt/PrefsDialog.ui:381
-#, fuzzy
 msgid "Append \"._part\" to incomplete files' names"
-msgstr ""
-"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"הוספת „‎.part” לשמות קבצים שהורדתם _טרם הושלמה\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"הוספת „‎.part” לשמות קבצים שטרם הושלמו"
+msgstr "הוספת „‎.part” לשמות קבצים שהורדתם _טרם הושלמה"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:667 gtk/ui/gtk4/PrefsDialog.ui:477
 #: qt/PrefsDialog.ui:388
@@ -2297,13 +1908,8 @@ msgstr "מצב ה_צפנה:"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:966 gtk/ui/gtk4/PrefsDialog.ui:700
 #: qt/PrefsDialog.ui:581
-#, fuzzy
 msgid "Blocklist"
-msgstr ""
-"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"רשימת החסומים\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"רשימת חסימה"
+msgstr "רשימת חסימה"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:980 gtk/ui/gtk4/PrefsDialog.ui:712
 #: qt/PrefsDialog.ui:587
@@ -2341,23 +1947,13 @@ msgstr "יש לבחור בפתחה _אקראית עם כל הפעלה של ‏Tr
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1167 gtk/ui/gtk4/PrefsDialog.ui:852
 #: qt/PrefsDialog.ui:704
-#, fuzzy
 msgid "Use UPnP or NAT-PMP port _forwarding from my router"
-msgstr ""
-"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"להשתמש בהעברת _פתחות בסיוע UPnP או NAT-PMP מהנתב שלי\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"שימוש ב_ניתוב פתחות  UPnP או  NAT-PMP מהנתב שלי"
+msgstr "להשתמש בהעברת _פתחות בסיוע UPnP או NAT-PMP מהנתב שלי"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1229 gtk/ui/gtk4/PrefsDialog.ui:904
 #: qt/PrefsDialog.ui:680
-#, fuzzy
 msgid "Te_st Port"
-msgstr ""
-"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_בדיקת הפתחה\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_בדיקת פתחה"
+msgstr "_בדיקת הפתחה"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1265 gtk/ui/gtk4/PrefsDialog.ui:924
 #: qt/PrefsDialog.ui:714
@@ -2373,13 +1969,8 @@ msgstr "כמות העמיתים המרבית לכל _טורנט:"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1295 gtk/ui/gtk4/PrefsDialog.ui:948
 #: qt/PrefsDialog.ui:743
-#, fuzzy
 msgid "Maximum peers _overall:"
-msgstr ""
-"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"כמות _עמיתים מרבית:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"כמות עמיתים _כוללת:"
+msgstr "כמות _עמיתים מרבית:"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1358 gtk/ui/gtk4/PrefsDialog.ui:998
 #: qt/PrefsDialog.ui:778
@@ -2453,13 +2044,8 @@ msgstr "רשת"
 #: gtk/ui/gtk3/PrefsDialog.ui:1525 gtk/ui/gtk3/PrefsDialog.ui:1669
 #: gtk/ui/gtk4/PrefsDialog.ui:1125 gtk/ui/gtk4/PrefsDialog.ui:1231
 #: qt/PrefsDialog.ui:860 qt/PrefsDialog.ui:866
-#, fuzzy
 msgid "Desktop"
-msgstr ""
-"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"שולחן העבודה\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"שולחן עבודה"
+msgstr "שולחן העבודה"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1539 gtk/ui/gtk4/PrefsDialog.ui:1137
 #: qt/PrefsDialog.ui:886
@@ -2478,53 +2064,28 @@ msgstr "הודעה"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1602 gtk/ui/gtk4/PrefsDialog.ui:1183
 #: qt/PrefsDialog.ui:902
-#, fuzzy
 msgid "Show a notification when torrents are a_dded"
-msgstr ""
-"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"הצגת הודעה עם הוס_פת טורנטים\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"הצגת הודעה כאשר מתוו_ספים טורנטים חדשים"
+msgstr "הצגת הודעה עם הוס_פת טורנטים"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1619 gtk/ui/gtk4/PrefsDialog.ui:1197
 #: qt/PrefsDialog.ui:909
-#, fuzzy
 msgid "Show a notification when torrents _finish"
-msgstr ""
-"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"הצגת הו_דעה עם סיום הורדתם של טורנטים\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"הצגת הודעה עם _סיום טורנטים"
+msgstr "הצגת הודעה עם _סיום טורנטים"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1636 gtk/ui/gtk4/PrefsDialog.ui:1211
 #: qt/PrefsDialog.ui:916
-#, fuzzy
 msgid "Play a _sound when torrents finish"
-msgstr ""
-"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"לנגן _צליל עם סיום הורדתם של טורנטים\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"השמעת _צליל בעת סיום טורנטים"
+msgstr "השמעת _צליל בעת סיום טורנטים"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1691 gtk/ui/gtk4/PrefsDialog.ui:1248
 #: qt/PrefsDialog.ui:946
-#, fuzzy
 msgid "Remote Control"
-msgstr ""
-"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"גישה מרחוק\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"שלט רחוק"
+msgstr "גישה מרחוק"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1711 gtk/ui/gtk4/PrefsDialog.ui:1265
 #: qt/PrefsDialog.ui:952
-#, fuzzy
 msgid "Allow _remote access"
-msgstr ""
-"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"לאפשר _גישה מרחוק\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"אפשור _גישה מרחוק"
+msgstr "לאפשר _גישה מרחוק"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1727 gtk/ui/gtk4/PrefsDialog.ui:1274
 #: qt/PrefsDialog.ui:962
@@ -2540,33 +2101,18 @@ msgstr "_פתחת HTTP:"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1765 gtk/ui/gtk4/PrefsDialog.ui:1303
 #: qt/PrefsDialog.ui:992
-#, fuzzy
 msgid "Use _authentication"
-msgstr ""
-"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"להשתמש ב_אימות\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"שימוש ב_אימות"
+msgstr "להשתמש ב_אימות"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1785 gtk/ui/gtk4/PrefsDialog.ui:1317
 #: qt/PrefsDialog.ui:1002 qt/SessionDialog.ui:83
-#, fuzzy
 msgid "_Username:"
-msgstr ""
-"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"שם _משתמש:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_שם משתמש:"
+msgstr "_שם משתמש:"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1799 gtk/ui/gtk4/PrefsDialog.ui:1329
 #: qt/PrefsDialog.ui:1015 qt/SessionDialog.ui:96
-#, fuzzy
 msgid "Pass_word:"
-msgstr ""
-"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"סיס_מה:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_סיסמה:"
+msgstr "סיס_מה:"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1811 gtk/ui/gtk4/PrefsDialog.ui:1342
 #: qt/PrefsDialog.ui:1032
@@ -2613,13 +2159,8 @@ msgstr "ה_עברה מהתיקייה הנוכחית"
 
 #: gtk/ui/gtk3/RelocateDialog.ui:128 gtk/ui/gtk4/RelocateDialog.ui:68
 #: qt/RelocateDialog.ui:56
-#, fuzzy
 msgid "Local data is _already there"
-msgstr ""
-"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"הנתונים המקומיים כבר _שם\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"ה_נתונים המקומיים כבר שם"
+msgstr "הנתונים המקומיים כבר _שם"
 
 #: gtk/ui/gtk3/StatsDialog.ui:70 gtk/ui/gtk4/StatsDialog.ui:20
 #: qt/StatsDialog.ui:23
@@ -2629,24 +2170,14 @@ msgstr "מופע נוכחי"
 #: gtk/ui/gtk3/StatsDialog.ui:144 gtk/ui/gtk3/StatsDialog.ui:304
 #: gtk/ui/gtk4/StatsDialog.ui:82 gtk/ui/gtk4/StatsDialog.ui:214
 #: qt/StatsDialog.ui:81 qt/StatsDialog.ui:210
-#, fuzzy
 msgid "Ratio:"
-msgstr ""
-"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"יחס שיתוף:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"יחס:"
+msgstr "יחס:"
 
 #: gtk/ui/gtk3/StatsDialog.ui:173 gtk/ui/gtk3/StatsDialog.ui:333
 #: gtk/ui/gtk4/StatsDialog.ui:107 gtk/ui/gtk4/StatsDialog.ui:239
 #: qt/StatsDialog.ui:107 qt/StatsDialog.ui:236
-#, fuzzy
 msgid "Duration:"
-msgstr ""
-"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"משך זמן:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"משך:"
+msgstr "משך זמן:"
 
 #: gtk/ui/gtk3/StatsDialog.ui:215 gtk/ui/gtk4/StatsDialog.ui:138
 #: qt/StatsDialog.ui:136
@@ -2763,27 +2294,11 @@ msgstr[2] "לפני {hours_ago:L} שעות"
 msgstr[3] "לפני {hours_ago:L} שעות"
 
 #: libtransmission-app/formatters.cc:75 qt/PrefsDialog.cc:508
-#, fuzzy
 msgid "{minutes_ago:L} minute ago"
 msgid_plural "{minutes_ago:L} minutes ago"
-msgstr[0] ""
-"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"לפני דקה\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"לפני דקה"
-msgstr[1] ""
-"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"לפני {minutes_ago:L} דקות\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"לפני שתי דקות"
-msgstr[2] ""
-"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"לפני {minutes_ago:L} דקות\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"לפני שתי דקות"
-msgstr[3] ""
-"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"לפני {minutes_ago:L} דקות"
+msgstr[0] "לפני דקה"
+msgstr[1] "לפני {minutes_ago:L} דקות"
+msgstr[2] "לפני {minutes_ago:L} דקות"
 
 #: libtransmission-app/formatters.cc:81
 msgid "{seconds_ago:L} second ago"
@@ -2810,26 +2325,16 @@ msgid "Got an error '{markup_begin}{error}{markup_end}' {time_span_ago}"
 msgstr "עלתה השגיאה ‚{markup_begin}{error}{markup_end}’ {time_span_ago}"
 
 #: libtransmission-app/formatters.cc:164
-#, fuzzy
 msgid "No updates scheduled"
-msgstr ""
-"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"אין עדכונים מתוכננים\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"אין עדכונים מתוזמנים"
+msgstr "אין עדכונים מתוכננים"
 
 #: libtransmission-app/formatters.cc:170
 msgid "Asking for more peers {time_span_from_now}"
 msgstr "עלתה בקשה למשיכת עמיתים נוספים {time_span_from_now}"
 
 #: libtransmission-app/formatters.cc:175
-#, fuzzy
 msgid "Queued to ask for more peers"
-msgstr ""
-"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"בתור לבקשת עמיתים נוספים\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"בתור לבקשת עוד עמיתים"
+msgstr "בתור לבקשת עמיתים נוספים"
 
 #: libtransmission-app/formatters.cc:182
 msgid "Asked for more peers {markup_begin}{time_span_ago}{markup_end}"
@@ -2880,104 +2385,34 @@ msgid "Asked for peer counts {markup_begin}{time_span_ago}{markup_end}"
 msgstr "בקשה למשיכת עמיתים נוספים {markup_begin}{time_span_ago}{markup_end}"
 
 #: libtransmission-app/formatters.cc:265
-#, fuzzy
 msgid "{days:L} day"
 msgid_plural "{days:L} days"
-msgstr[0] ""
-"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"יום\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"יום"
-msgstr[1] ""
-"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"יומיים\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"יומיים"
-msgstr[2] ""
-"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{days:L} ימים\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"יומיים"
-msgstr[3] ""
-"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{days:L} ימים"
+msgstr[0] "יום"
+msgstr[1] "יומיים"
+msgstr[2] "{days:L} ימים"
 
 #: libtransmission-app/formatters.cc:269
-#, fuzzy
 msgid "{hours:L} hour"
 msgid_plural "{hours:L} hours"
-msgstr[0] ""
-"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"שעה\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"שעה"
-msgstr[1] ""
-"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"שעתיים\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"שעתיים"
-msgstr[2] ""
-"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{hours:L} שעות\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"שעתיים"
-msgstr[3] ""
-"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{hours:L} שעות"
+msgstr[0] "שעה"
+msgstr[1] "שעתיים"
+msgstr[2] "{hours:L} שעות"
 
 #. Translators: Spin box format, "Stop seeding if idle for: [ 5 minutes ]"
 #: libtransmission-app/formatters.cc:274 qt/DetailsDialog.cc:1263
 #: qt/PrefsDialog.cc:482
-#, fuzzy
 msgid "{minutes:L} minute"
 msgid_plural "{minutes:L} minutes"
-msgstr[0] ""
-"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"דקה\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"דקה\n"
-"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"דקה"
-msgstr[1] ""
-"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{minutes:L} דקות\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{minutes:L} דק׳\n"
-"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{minutes:L} דקות"
-msgstr[2] ""
-"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{minutes:L} דקות\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{minutes:L} דק׳\n"
-"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{minutes:L} דקות"
-msgstr[3] ""
-"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{minutes:L} דקות"
+msgstr[0] "דקה"
+msgstr[1] "{minutes:L} דקות"
+msgstr[2] "{minutes:L} דקות"
 
 #: libtransmission-app/formatters.cc:280
-#, fuzzy
 msgid "{seconds:L} second"
 msgid_plural "{seconds:L} seconds"
-msgstr[0] ""
-"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"שנייה\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"שנייה"
-msgstr[1] ""
-"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{seconds:L} שניות\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{seconds:L} שניות"
-msgstr[2] ""
-"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{seconds:L} שניות\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{seconds:L} שניות"
-msgstr[3] ""
-"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{seconds:L} שניות"
+msgstr[0] "שנייה"
+msgstr[1] "{seconds:L} שניות"
+msgstr[2] "{seconds:L} שניות"
 
 #: libtransmission-app/formatters.cc:291
 msgid "{days_left:L} day left"
@@ -3517,49 +2952,24 @@ msgid "TiB"
 msgstr "TiB"
 
 #: libtransmission/values.cc:29
-#, fuzzy
 msgid "B/s"
-msgstr ""
-"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"ב׳/שנ׳\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"ב׳ לשנ׳"
+msgstr "ב׳ לשנ׳"
 
 #: libtransmission/values.cc:29
-#, fuzzy
 msgid "kB/s"
-msgstr ""
-"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"ק״ב/שנייה\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"ק״ב לשנ׳"
+msgstr "ק״ב לשנ׳"
 
 #: libtransmission/values.cc:29
-#, fuzzy
 msgid "MB/s"
-msgstr ""
-"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"מ״ב/שנייה\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"מ״ב לשנ׳"
+msgstr "מ״ב לשנ׳"
 
 #: libtransmission/values.cc:29
-#, fuzzy
 msgid "GB/s"
-msgstr ""
-"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"ג״ב/שנייה\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"ג״ב לשנ׳"
+msgstr "ג״ב לשנ׳"
 
 #: libtransmission/values.cc:29
-#, fuzzy
 msgid "TB/s"
-msgstr ""
-"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"ט״ב/שנ׳\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"ט״ב לשנ׳"
+msgstr "ט״ב לשנ׳"
 
 #: libtransmission/values.cc:30
 msgid "kB"
@@ -3903,11 +3313,7 @@ msgstr ""
 #: qt/OptionsDialog.ui:17
 #, fuzzy
 msgid "Sou_rce:"
-msgstr ""
-"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_מקור:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"מ_קור:"
+msgstr "_מקור:"
 
 #: qt/OptionsDialog.ui:81
 msgid "_Priority:"

@@ -156,13 +156,8 @@ msgstr[0] "A már meglévő torrent hozzáadása sikertelen"
 msgstr[1] "A már meglévő torrentek hozzáadása sikertelen"
 
 #: gtk/Application.cc:1382 qt/AboutDialog.ui:43
-#, fuzzy
 msgid "A fast and easy BitTorrent client"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Egy gyors és egyszerű BitTorrent-kliens\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Egy gyors és egyszerű BitTorrent kliens"
+msgstr "Egy gyors és egyszerű BitTorrent-kliens"
 
 #: gtk/Application.cc:1384 qt/AboutDialog.cc:28
 msgid "Copyright © The {appname} Project"
@@ -229,48 +224,26 @@ msgid "Stop seeding if idle for N minutes:"
 msgstr "Megosztás befejezése, ha N percig inaktív:"
 
 #: gtk/DetailsDialog.cc:486 gtk/Torrent.cc:405 qt/Torrent.cc:298
-#, fuzzy
 msgid "Queued for verification"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Sorbaállítva ellenőrzéshez\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Sorbaállítva ellenőrzésre"
+msgstr "Sorbaállítva ellenőrzéshez"
 
 #: gtk/DetailsDialog.cc:489 qt/Torrent.cc:301
 msgid "Verifying local data"
 msgstr "Helyi adatok ellenőrzése"
 
 #: gtk/DetailsDialog.cc:492 gtk/Torrent.cc:408 qt/Torrent.cc:304
-#, fuzzy
 msgid "Queued for download"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Letöltéshez sorba állítva\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Sorbaállítva letöltésre"
+msgstr "Letöltéshez sorba állítva"
 
 #: gtk/DetailsDialog.cc:495 gtk/FilterBar.cc:456 qt/FilterBar.cc:60
 #: qt/Torrent.cc:307
-#, fuzzy
 msgctxt "Verb"
 msgid "Downloading"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Letöltés\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Letöltés alatt\n"
-"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Letöltés"
+msgstr "Letöltés"
 
 #: gtk/DetailsDialog.cc:498 gtk/Torrent.cc:411 qt/Torrent.cc:310
-#, fuzzy
 msgid "Queued for seeding"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Sorbaállítva megosztáshoz\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Sorba állítva megosztáshoz"
+msgstr "Sorba állítva megosztáshoz"
 
 #: gtk/DetailsDialog.cc:501 gtk/FilterBar.cc:460 qt/FilterBar.cc:59
 #: qt/Torrent.cc:313
@@ -287,15 +260,8 @@ msgstr "Befejezetlen"
 
 #: gtk/DetailsDialog.cc:504 gtk/FilterBar.cc:462 gtk/Torrent.cc:402
 #: qt/DetailsDialog.cc:518 qt/FilterBar.cc:61 qt/Torrent.cc:295
-#, fuzzy
 msgid "Paused"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Szüneteltetett\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Szüneteltetve\n"
-"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Szünetelteve"
+msgstr "Szüneteltetve"
 
 #: gtk/DetailsDialog.cc:524 gtk/DetailsDialog.cc:529 gtk/DetailsDialog.cc:614
 #: qt/DetailsDialog.cc:880 qt/DetailsDialog.cc:923
@@ -320,31 +286,16 @@ msgid "Public torrent"
 msgstr "Nyilvános torrent"
 
 #: gtk/DetailsDialog.cc:606 qt/DetailsDialog.cc:888
-#, fuzzy
 msgid "Created by {creator} on {date}"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Létrehozta: {creator}, ekkor: {date}\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Készítette: {creator} ekkor: {date}"
+msgstr "Létrehozta: {creator}, ekkor: {date}"
 
 #: gtk/DetailsDialog.cc:610 qt/DetailsDialog.cc:882
-#, fuzzy
 msgid "Created by {creator}"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Létrehozta: {creator}\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Készítette: {creator}"
+msgstr "Létrehozta: {creator}"
 
 #: gtk/DetailsDialog.cc:612 qt/DetailsDialog.cc:885
-#, fuzzy
 msgid "Created on {date}"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Létrehozva: {date}\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ekkor készült: {date}"
+msgstr "Létrehozva: {date}"
 
 #: gtk/DetailsDialog.cc:690 qt/DetailsDialog.cc:470 qt/DetailsDialog.cc:689
 #: qt/Formatter.cc:27 qt/Formatter.cc:49
@@ -379,22 +330,12 @@ msgid "{current_size} ({percent_done}% of {percent_available}% available; {unver
 msgstr "{current_size} ({percent_done}% kész, {percent_available}% érhető el, {unverified_size} nem ellenőrzött)"
 
 #: gtk/DetailsDialog.cc:816 qt/DetailsDialog.cc:613
-#, fuzzy
 msgid "{downloaded_size} (+{discarded_size} discarded after failed checksum)"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{downloaded_size} (+{discarded_size} hibás ellenőrzőösszeg miatt elvetve)\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{downloaded_size} (+{discarded_size} elvetve nem egyező ellenőrzőösszeg miatt)"
+msgstr "{downloaded_size} (+{discarded_size} hibás ellenőrzőösszeg miatt elvetve)"
 
 #: gtk/DetailsDialog.cc:837 qt/DetailsDialog.cc:636
-#, fuzzy
 msgid "{uploaded_size} (Ratio: {ratio})"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{uploaded_size} (arány: {ratio})\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{uploaded_size} (Arány: {ratio})"
+msgstr "{uploaded_size} (arány: {ratio})"
 
 #: gtk/DetailsDialog.cc:866
 msgid "No errors"
@@ -405,22 +346,12 @@ msgid "Never"
 msgstr "Soha"
 
 #: gtk/DetailsDialog.cc:883 qt/DetailsDialog.cc:713
-#, fuzzy
 msgid "Active now"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Most aktív\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Jelenleg aktív"
+msgstr "Most aktív"
 
 #: gtk/DetailsDialog.cc:1195 qt/DetailsDialog.cc:1086
-#, fuzzy
 msgid "Optimistic unchoke"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Optimista feloldás\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Optimista engedélyezés"
+msgstr "Optimista feloldás"
 
 #: gtk/DetailsDialog.cc:1199 qt/DetailsDialog.cc:1090
 msgid "Downloading from this peer"
@@ -431,13 +362,8 @@ msgid "We would download from this peer if they would let us"
 msgstr "Letöltenénk ettől a partnertől, ha hagyná"
 
 #: gtk/DetailsDialog.cc:1207 qt/DetailsDialog.cc:1098
-#, fuzzy
 msgid "Uploading to peer"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Feltöltés a partnernek\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Feltöltés partnernek"
+msgstr "Feltöltés a partnernek"
 
 #: gtk/DetailsDialog.cc:1211 qt/DetailsDialog.cc:1102
 #, fuzzy
@@ -522,13 +448,8 @@ msgid "List contains invalid URLs"
 msgstr "A lista érvénytelen webcímeket tartalmaz"
 
 #: gtk/DetailsDialog.cc:1734 gtk/FileList.cc:792 qt/Session.cc:267
-#, fuzzy
 msgid "Please correct the errors and try again."
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Javítsa a hibákat és próbálja újra.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Javítsa ki a hibákat, és próbálkozzon újra."
+msgstr "Javítsa ki a hibákat, és próbálkozzon újra."
 
 #: gtk/DetailsDialog.cc:1814
 msgid "{torrent_name} - Add Tracker"
@@ -554,43 +475,20 @@ msgid "Remove torrent?"
 msgstr "Eltávolítja a torrentet?"
 
 #: gtk/Dialogs.cc:53 qt/MainWindow.cc:1328
-#, fuzzy
 msgid "Delete this torrent's downloaded files?"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Törli a torrent letöltött fájljait?\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Törölni kívánja a torrent letöltött fájljait?"
+msgstr "Törli a torrent letöltött fájljait?"
 
 #: gtk/Dialogs.cc:56 qt/MainWindow.cc:1326
-#, fuzzy
 msgid "Remove {count:L} torrent?"
 msgid_plural "Remove {count:L} torrents?"
-msgstr[0] ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Valóban törölni kívánod mind a {count:L} torrentet?\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Valóban törölni kívánod mind a {count:L} torrentet?"
-msgstr[1] ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Eltávolít {count:L} torrentet?\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Valóban törölni kívánod mind a {count:L} torrentet?"
+msgstr[0] "Valóban törölni kívánod mind a {count:L} torrentet?"
+msgstr[1] "Eltávolít {count:L} torrentet?"
 
 #: gtk/Dialogs.cc:58 qt/MainWindow.cc:1330
-#, fuzzy
 msgid "Delete this {count:L} torrent's downloaded files?"
 msgid_plural "Delete these {count:L} torrents' downloaded files?"
-msgstr[0] ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Valóban törölni akarod a(z) {count:L} torrent letöltött fájlait?\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Valóban törölni akarod a(z) {count:L} torrent letöltött fájlait?"
-msgstr[1] ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Törli {count:L} torrent letöltött fájljait?\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Valóban törölni akarod a(z) {count:L} torrent letöltött fájlait?"
+msgstr[0] "Valóban törölni akarod a(z) {count:L} torrent letöltött fájlait?"
+msgstr[1] "Törli {count:L} torrent letöltött fájljait?"
 
 #: gtk/Dialogs.cc:65 qt/MainWindow.cc:1337
 #, fuzzy
@@ -606,66 +504,36 @@ msgid "Once removed, you'll need the torrent files or magnet links to add them a
 msgstr "Ha egyszer eltávolítja, akkor a folytatáshoz szüksége lesz a torrent fájlokra, vagy a magnet linkekre."
 
 #: gtk/Dialogs.cc:68 qt/MainWindow.cc:1340
-#, fuzzy
 msgid "This torrent has not finished downloading."
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"A torrent letöltése még nem fejeződött be.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ez a torrent még nem fejezte be a letöltést."
+msgstr "A torrent letöltése még nem fejeződött be."
 
 #: gtk/Dialogs.cc:69 qt/MainWindow.cc:1341
-#, fuzzy
 msgid "These torrents have not finished downloading."
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"A torrentek letöltése még nem fejeződött be.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ezek a torrentek még nem fejezték be a letöltést."
+msgstr "A torrentek letöltése még nem fejeződött be."
 
 #: gtk/Dialogs.cc:71 qt/MainWindow.cc:1343
-#, fuzzy
 msgid "This torrent is connected to peers."
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ez a torrent partnerekhez csatlakozik.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ez a torrent partnerekhez kapcsolódik."
+msgstr "Ez a torrent partnerekhez csatlakozik."
 
 #: gtk/Dialogs.cc:71 qt/MainWindow.cc:1344
 msgid "These torrents are connected to peers."
 msgstr "Ezek a torrentek partnerekhez kapcsolódnak."
 
 #: gtk/Dialogs.cc:74 qt/MainWindow.cc:1347
-#, fuzzy
 msgid "One of these torrents is connected to peers."
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"A torrentek egyike partnerekhez csatlakozik.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ezen torrentek valamelyike partnerekhez kapcsolódik."
+msgstr "A torrentek egyike partnerekhez csatlakozik."
 
 #: gtk/Dialogs.cc:75 qt/MainWindow.cc:1348
 msgid "Some of these torrents are connected to peers."
 msgstr "Ezen torrentek némelyike partnerekhez kapcsolódik."
 
 #: gtk/Dialogs.cc:83 qt/MainWindow.cc:1356
-#, fuzzy
 msgid "One of these torrents has not finished downloading."
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Egy torrent letöltése még nem fejeződött be.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ezen torrentek egyike még nem fejezte be a letöltést."
+msgstr "Egy torrent letöltése még nem fejeződött be."
 
 #: gtk/Dialogs.cc:84 qt/MainWindow.cc:1357
-#, fuzzy
 msgid "Some of these torrents have not finished downloading."
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Néhány torrent letöltése még nem fejeződött be.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ezen torrentek némelyike még nem fejezte be a letöltést."
+msgstr "Néhány torrent letöltése még nem fejeződött be."
 
 #: gtk/Dialogs.cc:100 gtk/MessageLogWindow.cc:269 gtk/OptionsDialog.cc:321
 #: gtk/PathButton.cc:306 gtk/StatsDialog.cc:114
@@ -734,13 +602,8 @@ msgstr "Prioritás"
 
 #: gtk/FilterBar.cc:315 gtk/FilterBar.cc:451 qt/FilterBar.cc:46
 #: qt/FilterBar.cc:170
-#, fuzzy
 msgid "All"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Összes\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Mind"
+msgstr "Összes"
 
 #: gtk/FilterBar.cc:453 qt/FilterBar.cc:58
 msgid "Active"
@@ -818,49 +681,24 @@ msgid "Seed Forever"
 msgstr "Megosztás folyamatosan"
 
 #: gtk/MainWindow.cc:528 qt/MainWindow.cc:390
-#, fuzzy
 msgid "Limit Download Speed"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Letöltési sebesség korlátozása\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Letöltési sebességkorlát"
+msgstr "Letöltési sebesség korlátozása"
 
 #: gtk/MainWindow.cc:529 qt/MainWindow.cc:396
-#, fuzzy
 msgid "Limit Upload Speed"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Feltöltési sebesség korlátozása\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Feltöltési sebességkorlát"
+msgstr "Feltöltési sebesség korlátozása"
 
 #: gtk/MainWindow.cc:533 qt/MainWindow.cc:405
-#, fuzzy
 msgid "Stop Seeding at Ratio"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Megosztás megállítása ekkora aránynál\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Megosztás befejezése ha elérte az arányt"
+msgstr "Megosztás megállítása ekkora aránynál"
 
 #: gtk/MainWindow.cc:571 qt/MainWindow.cc:370 qt/MainWindow.cc:1113
-#, fuzzy
 msgid "Stop at Ratio ({ratio})"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Megosztás adott arányig ({ratio})\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Megállás aránynál ({ratio})"
+msgstr "Megosztás adott arányig ({ratio})"
 
 #: gtk/MainWindow.cc:602 qt/MainWindow.ui:622
-#, fuzzy
 msgid "Total Ratio"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Összesített arány\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Összarány"
+msgstr "Összesített arány"
 
 #: gtk/MainWindow.cc:603 qt/MainWindow.ui:630
 msgid "Session Ratio"
@@ -1061,13 +899,8 @@ msgid "Couldn't update blocklist"
 msgstr "Nem sikerült a tiltólista frissítése"
 
 #: gtk/PrefsDialog.cc:578 qt/PrefsDialog.cc:446
-#, fuzzy
 msgid "Getting new blocklist…"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Új tiltólista beszerzése…\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Új tiltólista letöltése…"
+msgstr "Új tiltólista beszerzése…"
 
 #: gtk/PrefsDialog.cc:925
 msgctxt "Port test status"
@@ -1130,19 +963,10 @@ msgid "Couldn't find pending RPC request for id {id}"
 msgstr ""
 
 #: gtk/StatsDialog.cc:76 qt/StatsDialog.cc:65
-#, fuzzy
 msgid "Started {count:L} time"
 msgid_plural "Started {count:L} times"
-msgstr[0] ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Elindítva {count:L} alkalommal\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{count:L} alkalommal lett elindítva"
-msgstr[1] ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Elindítva {count:L} alkalommal\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{count:L} alkalommal lett elindítva"
+msgstr[0] "Elindítva {count:L} alkalommal"
+msgstr[1] "Elindítva {count:L} alkalommal"
 
 #: gtk/StatsDialog.cc:109
 msgid "Reset your statistics?"
@@ -1179,26 +1003,16 @@ msgid "{current_size} of {complete_size} ({percent_complete}%), uploaded {upload
 msgstr "{current_size} / {complete_size} ({percent_complete}%), {uploaded_size} feltöltve (arány: {ratio}, cél: {seed_ratio})"
 
 #: gtk/Torrent.cc:465 qt/TorrentDelegate.cc:213
-#, fuzzy
 msgid "{current_size} of {complete_size} ({percent_complete}%), uploaded {uploaded_size} (Ratio: {ratio})"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{current_size} / {complete_size} ({percent_complete}%), {uploaded_size} feltöltve (arány: {ratio})\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{current_size} / {complete_size} ({percent_complete}%), feltöltve: {uploaded_size} (Arány: {ratio})"
+msgstr "{current_size} / {complete_size} ({percent_complete}%), {uploaded_size} feltöltve (arány: {ratio})"
 
 #: gtk/Torrent.cc:474 qt/TorrentDelegate.cc:229
 msgid "{complete_size}, uploaded {uploaded_size} (Ratio: {ratio}, Goal: {seed_ratio})"
 msgstr "{complete_size}, {uploaded_size} feltöltve (arány: {ratio}, cél: {seed_ratio})"
 
 #: gtk/Torrent.cc:482 qt/TorrentDelegate.cc:241
-#, fuzzy
 msgid "{complete_size}, uploaded {uploaded_size} (Ratio: {ratio})"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{complete_size}, {uploaded_size} feltöltve (arány: {ratio})\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{complete_size}, feltöltve {uploaded_size} (Arány: {ratio})"
+msgstr "{complete_size}, {uploaded_size} feltöltve (arány: {ratio})"
 
 #. Translators: Second (optional) part of torrent progress string
 #: gtk/Torrent.cc:493 qt/TorrentDelegate.cc:254 qt/TorrentDelegate.cc:307
@@ -1247,34 +1061,16 @@ msgstr[0] "Letöltés {active_count} webes megosztótól"
 msgstr[1] "Letöltés {active_count} webes megosztótól"
 
 #: gtk/Torrent.cc:659 qt/TorrentDelegate.cc:351
-#, fuzzy
 msgid "Downloading from {active_count} of {connected_count} connected peer"
 msgid_plural "Downloading from {active_count} of {connected_count} connected peers"
-msgstr[0] ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Letöltés {active_count} / {connected_count} kapcsolódó partnertől\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Letöltés {active_count} / {connected_count} kapcsolódott partnertől"
-msgstr[1] ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Letöltés {active_count} / {connected_count} kapcsolódó partnertől\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Letöltés {active_count} / {connected_count} kapcsolódott partnertől"
+msgstr[0] "Letöltés {active_count} / {connected_count} kapcsolódó partnertől"
+msgstr[1] "Letöltés {active_count} / {connected_count} kapcsolódó partnertől"
 
 #: gtk/Torrent.cc:668 qt/TorrentDelegate.cc:380
-#, fuzzy
 msgid "Seeding to {active_count} of {connected_count} connected peer"
 msgid_plural "Seeding to {active_count} of {connected_count} connected peers"
-msgstr[0] ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Megosztás {active_count} / {connected_count} kapcsolódó partnernek\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Seedelés a {active_count} partnernek ({connected_count} elérhető)"
-msgstr[1] ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Megosztás {active_count} / {connected_count} kapcsolódó partnernek\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Seedelés a {active_count} partnernek ({connected_count} elérhető)"
+msgstr[0] "Megosztás {active_count} / {connected_count} kapcsolódó partnernek"
+msgstr[1] "Megosztás {active_count} / {connected_count} kapcsolódó partnernek"
 
 #: gtk/retransmission-gtk.desktop.in:2
 #: gtk/retransmission-gtk.metainfo.xml.in:11
@@ -1342,13 +1138,8 @@ msgstr "Ú_j…"
 
 #: gtk/transmission-menus.ui:32 gtk/transmission-menus.ui:460
 #: qt/MainWindow.ui:437
-#, fuzzy
 msgid "_Start All"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Összes in_dítása\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Összes _indítása"
+msgstr "Összes _indítása"
 
 #: gtk/transmission-menus.ui:37 gtk/transmission-menus.ui:455
 #: qt/MainWindow.ui:442
@@ -1363,15 +1154,8 @@ msgstr "_Kilépés"
 #: gtk/transmission-menus.ui:50 gtk/ui/gtk3/DetailsDialog.ui:715
 #: gtk/ui/gtk4/DetailsDialog.ui:559 qt/DetailsDialog.ui:637
 #: qt/MainWindow.ui:222
-#, fuzzy
 msgid "_Edit"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"S_zerkesztés\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"S_zerkesztés\n"
-"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Szerkesztés"
+msgstr "S_zerkesztés"
 
 #: gtk/transmission-menus.ui:55 qt/MainWindow.ui:458
 msgid "Select _All"
@@ -1397,44 +1181,24 @@ msgstr "_Tulajdonságok"
 
 #: gtk/transmission-menus.ui:84 gtk/transmission-menus.ui:291
 #: qt/MainWindow.ui:354
-#, fuzzy
 msgid "Open Fold_er"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"M_appa megnyitása\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Mappa megnyitása"
+msgstr "M_appa megnyitása"
 
 #: gtk/transmission-menus.ui:92 gtk/transmission-menus.ui:357
 #: gtk/ui/gtk3/MainWindow.ui:39 gtk/ui/gtk4/MainWindow.ui:44
 #: qt/MainWindow.ui:365
-#, fuzzy
 msgid "_Start"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Indítás\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Start"
+msgstr "_Indítás"
 
 #: gtk/transmission-menus.ui:98 gtk/transmission-menus.ui:363
 #: qt/MainWindow.ui:698
-#, fuzzy
 msgid "Start _Now"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Indítás _most\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Indítás a_zonnal"
+msgstr "Indítás _most"
 
 #: gtk/transmission-menus.ui:104 gtk/transmission-menus.ui:369
 #: qt/MainWindow.ui:379
-#, fuzzy
 msgid "Ask Tracker for _More Peers"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Több partner kérése a tr_ackertől\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Több _partner igénylése a trackertől"
+msgstr "Több _partner igénylése a trackertől"
 
 #: gtk/transmission-menus.ui:107 gtk/transmission-menus.ui:372
 #: qt/MainWindow.ui:196
@@ -1445,13 +1209,8 @@ msgstr "Sorrend"
 
 #: gtk/transmission-menus.ui:112 gtk/transmission-menus.ui:377
 #: qt/MainWindow.ui:712
-#, fuzzy
 msgid "Move to _Top"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Mozgatás l_egfelülre\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Mozgatás _legfelülre"
+msgstr "Mozgatás l_egfelülre"
 
 #: gtk/transmission-menus.ui:117 gtk/transmission-menus.ui:382
 #: qt/MainWindow.ui:717
@@ -1465,45 +1224,25 @@ msgstr "Mozgatás _le"
 
 #: gtk/transmission-menus.ui:127 gtk/transmission-menus.ui:392
 #: qt/MainWindow.ui:733
-#, fuzzy
 msgid "Move to _Bottom"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Mozgatás az _aljára\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Mozgatás leg_alulra"
+msgstr "Mozgatás leg_alulra"
 
 #: gtk/transmission-menus.ui:134 gtk/transmission-menus.ui:399
 #: gtk/ui/gtk3/MainWindow.ui:54 gtk/ui/gtk3/MessageLogWindow.ui:66
 #: gtk/ui/gtk4/MainWindow.ui:54 gtk/ui/gtk4/MessageLogWindow.ui:84
 #: qt/MainWindow.ui:387
-#, fuzzy
 msgid "_Pause"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Szüneteltetés\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Szünet"
+msgstr "_Szüneteltetés"
 
 #: gtk/transmission-menus.ui:141 gtk/transmission-menus.ui:406
 #: qt/MainWindow.ui:675
-#, fuzzy
 msgid "Set _Location…"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"He_ly megadása…\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"H_ely megadása…"
+msgstr "He_ly megadása…"
 
 #: gtk/transmission-menus.ui:145 gtk/transmission-menus.ui:410
 #: qt/MainWindow.ui:401
-#, fuzzy
 msgid "_Verify Local Data"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Helyi adatok ellenőrzése\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Helyi adat ellenőrzése"
+msgstr "_Helyi adatok ellenőrzése"
 
 #: gtk/transmission-menus.ui:151 gtk/transmission-menus.ui:416
 #: qt/MainWindow.ui:680
@@ -1512,13 +1251,8 @@ msgstr "Magnet link másolása a _vágólapra"
 
 #: gtk/transmission-menus.ui:164 gtk/transmission-menus.ui:429
 #: qt/MainWindow.ui:426
-#, fuzzy
 msgid "_Delete Files and Remove"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Fájlok törlése és eltáv_olítás\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Fájlok törlése és eltávolítás"
+msgstr "_Fájlok törlése és eltávolítás"
 
 #: gtk/transmission-menus.ui:170 qt/MainWindow.ui:244
 msgid "_View"
@@ -1537,113 +1271,58 @@ msgid "_Filterbar"
 msgstr "_Szűrősor"
 
 #: gtk/transmission-menus.ui:189 qt/MainWindow.ui:518
-#, fuzzy
 msgid "_Statusbar"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Á_llapotsor\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Állapotsor"
+msgstr "Á_llapotsor"
 
 #: gtk/transmission-menus.ui:195 gtk/transmission-menus.ui:301
 #: qt/MainWindow.ui:526
-#, fuzzy
 msgid "Sort by _Activity"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Aktivitás szerinti rendezés\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Rendezés _aktivitás szerint"
+msgstr "_Aktivitás szerinti rendezés"
 
 #: gtk/transmission-menus.ui:200 gtk/transmission-menus.ui:306
 #: qt/MainWindow.ui:534
-#, fuzzy
 msgid "Sort by A_ge"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Kor szerinti rendezés\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Rendezés _kor szerint"
+msgstr "_Kor szerinti rendezés"
 
 #: gtk/transmission-menus.ui:205 gtk/transmission-menus.ui:311
 #: qt/MainWindow.ui:550
-#, fuzzy
 msgid "Sort by _Name"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Név szerinti rendezés\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Rendezés _név szerint"
+msgstr "_Név szerinti rendezés"
 
 #: gtk/transmission-menus.ui:210 gtk/transmission-menus.ui:316
 #: qt/MainWindow.ui:558
-#, fuzzy
 msgid "Sort by _Progress"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Folyamat szerinti rendezés\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Rendezés _folyamat szerint"
+msgstr "_Folyamat szerinti rendezés"
 
 #: gtk/transmission-menus.ui:215 gtk/transmission-menus.ui:321
 #: qt/MainWindow.ui:741
-#, fuzzy
 msgid "Sort by _Queue"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Sorrend szerinti rendezés\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Sorrend szerint rendezés"
+msgstr "_Sorrend szerinti rendezés"
 
 #: gtk/transmission-menus.ui:220 gtk/transmission-menus.ui:326
 #: qt/MainWindow.ui:566
-#, fuzzy
 msgid "Sort by Rati_o"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Megosztási _arány szerinti rendezés\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Rendezés a_rány szerint"
+msgstr "Megosztási _arány szerinti rendezés"
 
 #: gtk/transmission-menus.ui:225 gtk/transmission-menus.ui:331
 #: qt/MainWindow.ui:574
-#, fuzzy
 msgid "Sort by Si_ze"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Méret szerinti rendezés\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Rendezés _méret szerint"
+msgstr "_Méret szerinti rendezés"
 
 #: gtk/transmission-menus.ui:230 gtk/transmission-menus.ui:336
 #: qt/MainWindow.ui:582
-#, fuzzy
 msgid "Sort by Stat_e"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Álla_pot szerinti rendezés\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Rendezés á_llapot szerint"
+msgstr "Álla_pot szerinti rendezés"
 
 #: gtk/transmission-menus.ui:235 gtk/transmission-menus.ui:341
 #: qt/MainWindow.ui:542
-#, fuzzy
 msgid "Sort by Time _Left"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Hátralévő _idő szerinti rendezés\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Rendezés _hátralévő idő szerint"
+msgstr "Hátralévő _idő szerinti rendezés"
 
 #: gtk/transmission-menus.ui:242 gtk/transmission-menus.ui:348
 #: qt/MainWindow.ui:614
-#, fuzzy
 msgid "Re_verse Sort Order"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Fordított rendezés\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Rendezés _fordítva"
+msgstr "_Fordított rendezés"
 
 #: gtk/transmission-menus.ui:247 gtk/ui/gtk3/PrefsDialog.ui:22
 #: gtk/ui/gtk4/PrefsDialog.ui:1484 qt/MainWindow.ui:233
@@ -1655,35 +1334,20 @@ msgid "Message _Log"
 msgstr "Ü_zenetnapló"
 
 #: gtk/transmission-menus.ui:255 qt/MainWindow.ui:590
-#, fuzzy
 msgid "_Statistics"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Statisztikák\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Statisztika"
+msgstr "_Statisztikák"
 
 #: gtk/transmission-menus.ui:261 qt/MainWindow.ui:693
-#, fuzzy
 msgid "_Donate"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Támogatás\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Adakozás"
+msgstr "_Adakozás"
 
 #: gtk/transmission-menus.ui:268 qt/MainWindow.ui:595
 msgid "_Contents"
 msgstr "_Tartalom"
 
 #: gtk/transmission-menus.ui:274 qt/MainWindow.ui:603
-#, fuzzy
 msgid "_About"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Névjegy\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"A Transmission-_ről"
+msgstr "_Névjegy"
 
 #: gtk/transmission-menus.ui:297
 #, fuzzy
@@ -1734,13 +1398,8 @@ msgstr "Méret:"
 
 #: gtk/ui/gtk3/DetailsDialog.ui:86 gtk/ui/gtk4/DetailsDialog.ui:48
 #: qt/DetailsDialog.ui:42
-#, fuzzy
 msgid "Have:"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Meglévő:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Van:"
+msgstr "Meglévő:"
 
 #: gtk/ui/gtk3/DetailsDialog.ui:98 gtk/ui/gtk3/StatsDialog.ui:86
 #: gtk/ui/gtk3/StatsDialog.ui:246 gtk/ui/gtk4/DetailsDialog.ui:58
@@ -1763,33 +1422,18 @@ msgstr "Állapot:"
 
 #: gtk/ui/gtk3/DetailsDialog.ui:134 gtk/ui/gtk4/DetailsDialog.ui:88
 #: qt/DetailsDialog.ui:202
-#, fuzzy
 msgid "Running time:"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Futási idő:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Futásidő:"
+msgstr "Futási idő:"
 
 #: gtk/ui/gtk3/DetailsDialog.ui:146 gtk/ui/gtk4/DetailsDialog.ui:98
 #: qt/DetailsDialog.ui:234
-#, fuzzy
 msgid "Remaining time:"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Hátralévő idő:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Hátralevő idő:"
+msgstr "Hátralévő idő:"
 
 #: gtk/ui/gtk3/DetailsDialog.ui:158 gtk/ui/gtk4/DetailsDialog.ui:108
 #: qt/DetailsDialog.ui:266
-#, fuzzy
 msgid "Last activity:"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Legutóbbi aktivitás:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Utolsó aktivitás:"
+msgstr "Legutóbbi aktivitás:"
 
 #: gtk/ui/gtk3/DetailsDialog.ui:170 gtk/ui/gtk4/DetailsDialog.ui:118
 #: qt/DetailsDialog.ui:298
@@ -1839,13 +1483,8 @@ msgstr "Információ"
 #: gtk/ui/gtk3/DetailsDialog.ui:629 gtk/ui/gtk3/DetailsDialog.ui:757
 #: gtk/ui/gtk4/DetailsDialog.ui:502 gtk/ui/gtk4/DetailsDialog.ui:579
 #: qt/DetailsDialog.ui:600 qt/DetailsDialog.ui:664
-#, fuzzy
 msgid "Show _more details"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"További részletek _megjelenítése\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"További _részletek mutatása"
+msgstr "További részletek _megjelenítése"
 
 #: gtk/ui/gtk3/DetailsDialog.ui:652 gtk/ui/gtk4/DetailsDialog.ui:512
 #: qt/DetailsDialog.ui:569
@@ -1854,13 +1493,8 @@ msgstr "Partnerek"
 
 #: gtk/ui/gtk3/DetailsDialog.ui:773 gtk/ui/gtk4/DetailsDialog.ui:587
 #: qt/DetailsDialog.ui:671
-#, fuzzy
 msgid "Show _backup trackers"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Tartalék tr_ackerek megjelenítése\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Tartalék _trackerek megjelenítése"
+msgstr "Tartalék tr_ackerek megjelenítése"
 
 #: gtk/ui/gtk3/DetailsDialog.ui:834 gtk/ui/gtk4/DetailsDialog.ui:627
 msgid "File listing not available for combined torrent properties"
@@ -1880,13 +1514,8 @@ msgstr "Sebesség"
 
 #: gtk/ui/gtk3/DetailsDialog.ui:887 gtk/ui/gtk4/DetailsDialog.ui:663
 #: qt/DetailsDialog.ui:723
-#, fuzzy
 msgid "Honor global _limits"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Á_ltalános korlátok betartása\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Globális limitek betartása"
+msgstr "Á_ltalános korlátok betartása"
 
 #: gtk/ui/gtk3/DetailsDialog.ui:903 gtk/ui/gtk4/DetailsDialog.ui:676
 msgid "Limit _download speed ({speed_units}):"
@@ -1899,33 +1528,18 @@ msgstr "_Feltöltési sebesség korlátozása ({speed_units}):"
 #: gtk/ui/gtk3/DetailsDialog.ui:935 gtk/ui/gtk3/OptionsDialog.ui:143
 #: gtk/ui/gtk4/DetailsDialog.ui:700 gtk/ui/gtk4/OptionsDialog.ui:87
 #: qt/DetailsDialog.ui:770
-#, fuzzy
 msgid "Torrent _priority:"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Torrent p_rioritása:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Torrent _prioritása:"
+msgstr "Torrent _prioritása:"
 
 #: gtk/ui/gtk3/DetailsDialog.ui:997 gtk/ui/gtk4/DetailsDialog.ui:749
 #: qt/DetailsDialog.ui:786
-#, fuzzy
 msgid "Seeding Limits"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Megosztás korlátozása\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Megosztási korlátok"
+msgstr "Megosztási korlátok"
 
 #: gtk/ui/gtk3/DetailsDialog.ui:1013 gtk/ui/gtk4/DetailsDialog.ui:761
 #: qt/DetailsDialog.ui:792
-#, fuzzy
 msgid "_Ratio:"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"A_rány:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Arány:"
+msgstr "_Arány:"
 
 #: gtk/ui/gtk3/DetailsDialog.ui:1027 gtk/ui/gtk4/DetailsDialog.ui:773
 #: qt/DetailsDialog.ui:819
@@ -1934,13 +1548,8 @@ msgstr "_Inaktív:"
 
 #: gtk/ui/gtk3/DetailsDialog.ui:1125 gtk/ui/gtk4/DetailsDialog.ui:831
 #: qt/DetailsDialog.ui:855
-#, fuzzy
 msgid "Peer Connections"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Partnerkapcsolatok\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Csatlakozott partnerek"
+msgstr "Partnerkapcsolatok"
 
 #: gtk/ui/gtk3/DetailsDialog.ui:1141 gtk/ui/gtk4/DetailsDialog.ui:843
 #: qt/DetailsDialog.ui:861
@@ -2006,26 +1615,14 @@ msgstr "Torrent"
 #: gtk/ui/gtk3/MainWindow.ui:251 gtk/ui/gtk3/StatsDialog.ui:7
 #: gtk/ui/gtk4/MainWindow.ui:190 gtk/ui/gtk4/StatsDialog.ui:5
 #: qt/MainWindow.ui:147 qt/StatsDialog.ui:14
-#, fuzzy
 msgid "Statistics"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Statisztikák\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Statisztika"
+msgstr "Statisztikák"
 
 #: gtk/ui/gtk3/MakeDialog.ui:7 gtk/ui/gtk3/MakeProgressDialog.ui:7
 #: gtk/ui/gtk4/MakeDialog.ui:5 gtk/ui/gtk4/MakeProgressDialog.ui:5
 #: qt/MakeDialog.ui:17 qt/MakeProgressDialog.ui:14
-#, fuzzy
 msgid "New Torrent"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Új torrent\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Új Torrent\n"
-"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Új torrent"
+msgstr "Új torrent"
 
 #: gtk/ui/gtk3/MakeDialog.ui:35 gtk/ui/gtk4/MakeDialog.ui:285
 #, fuzzy
@@ -2035,13 +1632,8 @@ msgstr "K_észítették"
 
 #: gtk/ui/gtk3/MakeDialog.ui:85 gtk/ui/gtk4/MakeDialog.ui:32
 #: qt/MakeDialog.ui:29
-#, fuzzy
 msgid "Sa_ve to:"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Me_ntés ide:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Mentés _ide:"
+msgstr "Me_ntés ide:"
 
 #: gtk/ui/gtk3/MakeDialog.ui:110 gtk/ui/gtk4/MakeDialog.ui:54
 #: qt/MakeDialog.ui:42
@@ -2072,13 +1664,8 @@ msgstr "_Trackerek:"
 
 #: gtk/ui/gtk3/MakeDialog.ui:312 gtk/ui/gtk4/MakeDialog.ui:206
 #: qt/MakeDialog.ui:142
-#, fuzzy
 msgid "Co_mment:"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Meg_jegyzés:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Megje_gyzés:"
+msgstr "Meg_jegyzés:"
 
 #: gtk/ui/gtk3/MakeDialog.ui:339 gtk/ui/gtk4/MakeDialog.ui:229
 #: qt/MakeDialog.ui:156
@@ -2153,15 +1740,8 @@ msgstr "{appname} beállításai"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:76 gtk/ui/gtk4/PrefsDialog.ui:29
 #: qt/PrefsDialog.ui:36
-#, fuzzy
 msgid "Speed Limits"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Sebességkorlátok\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Sebesség korlátok\n"
-"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Sebességkorlátok"
+msgstr "Sebességkorlátok"
 
 #. Checkbox to limit upload speed
 #: gtk/ui/gtk3/PrefsDialog.ui:90 gtk/ui/gtk4/PrefsDialog.ui:41
@@ -2195,34 +1775,19 @@ msgstr "L_etöltés ({speed_units}):"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:242 gtk/ui/gtk4/PrefsDialog.ui:154
 #: qt/PrefsDialog.ui:149
-#, fuzzy
 msgid "_Scheduled times:"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ütemezett i_dőszak:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ü_temezett időszakok:"
+msgstr "Ü_temezett időszakok:"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:260 gtk/ui/gtk4/PrefsDialog.ui:167
 #: qt/PrefsDialog.ui:193
-#, fuzzy
 msgid "_On days:"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ezen _napokon:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Megadott _napokon:"
+msgstr "Ezen _napokon:"
 
 #. Label goes between two time selectors, e.g. "limit speeds from [time] to [time]"
 #: gtk/ui/gtk3/PrefsDialog.ui:317 gtk/ui/gtk4/PrefsDialog.ui:210
 #: qt/PrefsDialog.ui:174
-#, fuzzy
 msgid "_to"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"–\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_ide"
+msgstr "–"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:395 gtk/ui/gtk4/PrefsDialog.ui:262
 msgctxt "Gerund"
@@ -2241,13 +1806,8 @@ msgstr "Torrentbeállítások _ablak megjelenítése"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:441 gtk/ui/gtk4/PrefsDialog.ui:300
 #: qt/PrefsDialog.ui:264
-#, fuzzy
 msgid "_Start added torrents"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Hozzáadott torrentek _elindítása\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Hozzáadott torrentek indítása"
+msgstr "Hozzáadott torrentek _elindítása"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:477 gtk/ui/gtk4/PrefsDialog.ui:328
 #: qt/PrefsDialog.ui:288
@@ -2258,23 +1818,13 @@ msgstr "Mentés _helye:"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:557 gtk/ui/gtk4/PrefsDialog.ui:389
 #: qt/PrefsDialog.ui:320
-#, fuzzy
 msgid "Download Queue"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Letöltési sor\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Letöltési sorrend"
+msgstr "Letöltési sor"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:573 gtk/ui/gtk4/PrefsDialog.ui:401
 #: qt/PrefsDialog.ui:326
-#, fuzzy
 msgid "Ma_ximum active downloads:"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Aktív letöltések ma_ximális száma:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ma_ximum aktív letöltések:"
+msgstr "Aktív letöltések ma_ximális száma:"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:587 gtk/ui/gtk4/PrefsDialog.ui:413
 msgid "Downloads sharing data in the last _N minutes are active:"
@@ -2287,13 +1837,8 @@ msgstr "Befejezetlen"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:650 gtk/ui/gtk4/PrefsDialog.ui:463
 #: qt/PrefsDialog.ui:381
-#, fuzzy
 msgid "Append \"._part\" to incomplete files' names"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"\"._part\" hozzáfűzése a befejezetlen fájlok nevéhez\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Befejezetlen fájlok nevéhez \"._part\" hozzáfűzése"
+msgstr "\"._part\" hozzáfűzése a befejezetlen fájlok nevéhez"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:667 gtk/ui/gtk4/PrefsDialog.ui:477
 #: qt/PrefsDialog.ui:388
@@ -2395,13 +1940,8 @@ msgstr "Véletlenszerű port _választása a Transmission minden indításakor"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1167 gtk/ui/gtk4/PrefsDialog.ui:852
 #: qt/PrefsDialog.ui:704
-#, fuzzy
 msgid "Use UPnP or NAT-PMP port _forwarding from my router"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"A router UPnP vagy _NAT-PMP porttovábbításának használata\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"UPnP vagy NAT-PMP portát_irányítás használata a routertől"
+msgstr "A router UPnP vagy _NAT-PMP porttovábbításának használata"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1229 gtk/ui/gtk4/PrefsDialog.ui:904
 #: qt/PrefsDialog.ui:680
@@ -2410,13 +1950,8 @@ msgstr "P_ort tesztelése"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1265 gtk/ui/gtk4/PrefsDialog.ui:924
 #: qt/PrefsDialog.ui:714
-#, fuzzy
 msgid "Peer Limits"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Partnerkorlátok\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Partner korlátok"
+msgstr "Partnerkorlátok"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1281 gtk/ui/gtk4/PrefsDialog.ui:936
 #: qt/PrefsDialog.ui:720
@@ -2427,13 +1962,8 @@ msgstr "Partnerek _maximális száma torrentenként:"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1295 gtk/ui/gtk4/PrefsDialog.ui:948
 #: qt/PrefsDialog.ui:743
-#, fuzzy
 msgid "Maximum peers _overall:"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Partnerek száma összesen:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Partnerek maximális száma összesen:"
+msgstr "_Partnerek maximális száma összesen:"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1358 gtk/ui/gtk4/PrefsDialog.ui:998
 #: qt/PrefsDialog.ui:778
@@ -2454,13 +1984,8 @@ msgstr "PE_X használata partnerek kereséséhez"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1380 gtk/ui/gtk4/PrefsDialog.ui:1015
 #: qt/PrefsDialog.ui:785
-#, fuzzy
 msgid "PEX is a tool for exchanging peer lists with the peers you're connected to."
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"A PEX a kapcsolódó partnerek partnerlistáinak cseréjére szolgál.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"A PEX egy eszköz ami lehetővé teszi a partnerlista cseréjét a kapcsolódott partnerekkel."
+msgstr "A PEX a kapcsolódó partnerek partnerlistáinak cseréjére szolgál."
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1394 gtk/ui/gtk4/PrefsDialog.ui:1028
 #: qt/PrefsDialog.ui:798
@@ -2483,13 +2008,8 @@ msgstr "_Helyi partnerek felderítésének használata"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1416 gtk/ui/gtk4/PrefsDialog.ui:1045
 #: qt/PrefsDialog.ui:805
-#, fuzzy
 msgid "LPD is a tool for finding peers on your local network."
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Az LPD a helyi hálózaton levő partnerek megtalálására szolgál.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Az LDP segít partnereket találni a helyi hálózaton."
+msgstr "Az LPD a helyi hálózaton levő partnerek megtalálására szolgál."
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1445 gtk/ui/gtk4/PrefsDialog.ui:1064
 #: qt/PrefsDialog.ui:818
@@ -2527,13 +2047,8 @@ msgstr ""
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1556 gtk/ui/gtk4/PrefsDialog.ui:1151
 #: qt/PrefsDialog.ui:872
-#, fuzzy
 msgid "Show {appname} icon in the _notification area"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{appname} iko_n megjelenítése az értesítési területen\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{appname} ikon mutatása az ér_tesítési területen"
+msgstr "{appname} iko_n megjelenítése az értesítési területen"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1588 gtk/ui/gtk4/PrefsDialog.ui:1171
 #: qt/PrefsDialog.ui:896
@@ -2542,33 +2057,18 @@ msgstr "Értesítés"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1602 gtk/ui/gtk4/PrefsDialog.ui:1183
 #: qt/PrefsDialog.ui:902
-#, fuzzy
 msgid "Show a notification when torrents are a_dded"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Értesítés megjelenítése a torrentek hozzáa_dásakor\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Értesítés megjelenítése torrentek h_ozzáadásakor"
+msgstr "Értesítés megjelenítése torrentek h_ozzáadásakor"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1619 gtk/ui/gtk4/PrefsDialog.ui:1197
 #: qt/PrefsDialog.ui:909
-#, fuzzy
 msgid "Show a notification when torrents _finish"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Értesítés megjelenítése a torrentek elkészültekor\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Értesítés megjelenítése torrentek be_fejeződésekor"
+msgstr "Értesítés megjelenítése torrentek be_fejeződésekor"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1636 gtk/ui/gtk4/PrefsDialog.ui:1211
 #: qt/PrefsDialog.ui:916
-#, fuzzy
 msgid "Play a _sound when torrents finish"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Hang leját_szása a torrentek elkészültekor\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Hang leját_szása torrentek befejeződésekor"
+msgstr "Hang leját_szása torrentek befejeződésekor"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1691 gtk/ui/gtk4/PrefsDialog.ui:1248
 #: qt/PrefsDialog.ui:946
@@ -2577,13 +2077,8 @@ msgstr "Távvezérlés"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1711 gtk/ui/gtk4/PrefsDialog.ui:1265
 #: qt/PrefsDialog.ui:952
-#, fuzzy
 msgid "Allow _remote access"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Távoli hozzáférés engedélyezése\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Távvezérlés engedélyezése"
+msgstr "_Távoli hozzáférés engedélyezése"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1727 gtk/ui/gtk4/PrefsDialog.ui:1274
 #: qt/PrefsDialog.ui:962
@@ -2594,23 +2089,13 @@ msgstr "Webes kliens _megnyitása"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1753 gtk/ui/gtk4/PrefsDialog.ui:1290
 #: qt/PrefsDialog.ui:972
-#, fuzzy
 msgid "HTTP _port:"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"HTTP-_port:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"HTTP _port:"
+msgstr "HTTP-_port:"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1765 gtk/ui/gtk4/PrefsDialog.ui:1303
 #: qt/PrefsDialog.ui:992
-#, fuzzy
 msgid "Use _authentication"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Hitelesítés használata\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Hitelesítés szükséges"
+msgstr "_Hitelesítés használata"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1785 gtk/ui/gtk4/PrefsDialog.ui:1317
 #: qt/PrefsDialog.ui:1002 qt/SessionDialog.ui:83
@@ -2643,13 +2128,8 @@ msgstr "Távoli"
 
 #: gtk/ui/gtk3/RelocateDialog.ui:7 gtk/ui/gtk4/RelocateDialog.ui:5
 #: qt/RelocateDialog.ui:14
-#, fuzzy
 msgid "Set Torrent Location"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Torrent helyének beálltása\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Torrent helyének kiválasztása"
+msgstr "Torrent helyének kiválasztása"
 
 #: gtk/ui/gtk3/RelocateDialog.ui:35 gtk/ui/gtk4/RelocateDialog.ui:101
 msgid "_Apply"
@@ -2667,23 +2147,13 @@ msgstr "Új _hely:"
 
 #: gtk/ui/gtk3/RelocateDialog.ui:111 gtk/ui/gtk4/RelocateDialog.ui:55
 #: qt/RelocateDialog.ui:49
-#, fuzzy
 msgid "_Move from the current folder"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Áthelyezés a jelenlegi _mappából\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Áthelyezés a _jelenlegi mappából"
+msgstr "Áthelyezés a jelenlegi _mappából"
 
 #: gtk/ui/gtk3/RelocateDialog.ui:128 gtk/ui/gtk4/RelocateDialog.ui:68
 #: qt/RelocateDialog.ui:56
-#, fuzzy
 msgid "Local data is _already there"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"A helyi adatok már _ott vannak\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"A letöltött adatok _már itt vannak"
+msgstr "A helyi adatok már _ott vannak"
 
 #: gtk/ui/gtk3/StatsDialog.ui:70 gtk/ui/gtk4/StatsDialog.ui:20
 #: qt/StatsDialog.ui:23
@@ -2831,26 +2301,16 @@ msgid "Got an error '{markup_begin}{error}{markup_end}' {time_span_ago}"
 msgstr "'{markup_begin}{error}{markup_end}' hiba fogadva {time_span_ago}"
 
 #: libtransmission-app/formatters.cc:164
-#, fuzzy
 msgid "No updates scheduled"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Nincs ütemezett frissítés\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Nincs frissítés beütemezve"
+msgstr "Nincs ütemezett frissítés"
 
 #: libtransmission-app/formatters.cc:170
 msgid "Asking for more peers {time_span_from_now}"
 msgstr "További partnerek kérése {time_span_from_now}"
 
 #: libtransmission-app/formatters.cc:175
-#, fuzzy
 msgid "Queued to ask for more peers"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"További partnerek kérése ütemezve\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"További partnerek kérése beütemezve"
+msgstr "További partnerek kérése ütemezve"
 
 #: libtransmission-app/formatters.cc:182
 msgid "Asked for more peers {markup_begin}{time_span_ago}{markup_end}"
@@ -2889,13 +2349,8 @@ msgid "Asking for peer counts {time_span_from_now}"
 msgstr "Partnerek számának lekérése {time_span_from_now}"
 
 #: libtransmission-app/formatters.cc:244
-#, fuzzy
 msgid "Queued to ask for peer counts"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Partnerek számának lekérése ütemezve\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Partnerszám lekérése beütemezve"
+msgstr "Partnerek számának lekérése ütemezve"
 
 #: libtransmission-app/formatters.cc:250
 msgid "Asked for peer counts {markup_begin}{time_span_ago}{markup_end}"

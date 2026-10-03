@@ -29,13 +29,8 @@ msgstr ""
 
 #: cli/cli.cc:95 qt/DetailsDialog.cc:468 qt/Formatter.cc:31 qt/Formatter.cc:40
 #: qt/Formatter.cc:58
-#, fuzzy
 msgid "None"
-msgstr ""
-"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"0\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Κανένα"
+msgstr "Κανένα"
 
 #: cli/cli.cc:99
 msgid "Inf"
@@ -161,22 +156,12 @@ msgstr[0] "Αδύνατη η προσθήκη διπλότυπου torrent"
 msgstr[1] "Δεν ήταν δυνατή η προσθήκη διπλότυπων torrent"
 
 #: gtk/Application.cc:1382 qt/AboutDialog.ui:43
-#, fuzzy
 msgid "A fast and easy BitTorrent client"
-msgstr ""
-"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ένα γρήγορο κι εύχρηστο πρόγραμμα για το πρωτόκολλο BitTorrent\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ένα γρήγορο κι εύχρηστο πρόγραμμα-πελάτης BitTorrent"
+msgstr "Ένα γρήγορο κι εύχρηστο πρόγραμμα-πελάτης BitTorrent"
 
 #: gtk/Application.cc:1384 qt/AboutDialog.cc:28
-#, fuzzy
 msgid "Copyright © The {appname} Project"
-msgstr ""
-"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Πνευματική ιδιοκτησία © The {appname} Project\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Με την επιφύλαξη παντός δικαιώματος © The {appname} Project"
+msgstr "Πνευματική ιδιοκτησία © The {appname} Project"
 
 #. Translators: translate "translator-credits" as your name
 #. to have it appear in the credits in the "About"
@@ -227,13 +212,8 @@ msgid "Seed regardless of ratio"
 msgstr "Διαμοιρασμός ανεξάρτητα από την αναλογία"
 
 #: gtk/DetailsDialog.cc:442 qt/DetailsDialog.cc:1400
-#, fuzzy
 msgid "Stop seeding at ratio:"
-msgstr ""
-"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Παύση διαμοιρασμού στην αναλογία:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Διακοπή διαμοιρασμού στην αναλογία:"
+msgstr "Παύση διαμοιρασμού στην αναλογία:"
 
 #: gtk/DetailsDialog.cc:457 qt/DetailsDialog.cc:1403
 msgid "Seed regardless of activity"
@@ -244,13 +224,8 @@ msgid "Stop seeding if idle for N minutes:"
 msgstr "Παύση διαμοιρασμού σε περίπτωση αδράνειας για N λεπτά:"
 
 #: gtk/DetailsDialog.cc:486 gtk/Torrent.cc:405 qt/Torrent.cc:298
-#, fuzzy
 msgid "Queued for verification"
-msgstr ""
-"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Σε αναμονή για επαλήθευση\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Σε σειρά για επαλήθευση"
+msgstr "Σε σειρά για επαλήθευση"
 
 #: gtk/DetailsDialog.cc:489 qt/Torrent.cc:301
 msgid "Verifying local data"
@@ -262,34 +237,19 @@ msgstr "Σε σειρά για κατέβασμα"
 
 #: gtk/DetailsDialog.cc:495 gtk/FilterBar.cc:456 qt/FilterBar.cc:60
 #: qt/Torrent.cc:307
-#, fuzzy
 msgctxt "Verb"
 msgid "Downloading"
-msgstr ""
-"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Λαμβανόμενα\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Λήψη"
+msgstr "Λήψη"
 
 #: gtk/DetailsDialog.cc:498 gtk/Torrent.cc:411 qt/Torrent.cc:310
-#, fuzzy
 msgid "Queued for seeding"
-msgstr ""
-"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Σε σειρά για μοίρασμα\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Σε σειρά για διαμοιρασμό"
+msgstr "Σε σειρά για διαμοιρασμό"
 
 #: gtk/DetailsDialog.cc:501 gtk/FilterBar.cc:460 qt/FilterBar.cc:59
 #: qt/Torrent.cc:313
-#, fuzzy
 msgctxt "Verb"
 msgid "Seeding"
-msgstr ""
-"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Διαμοιραζόμενα\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Διαμοιρασμός"
+msgstr "Διαμοιρασμός"
 
 #: gtk/DetailsDialog.cc:504 gtk/FilterBar.cc:465 gtk/Torrent.cc:402
 #: qt/DetailsDialog.cc:516 qt/FilterBar.cc:62 qt/Torrent.cc:295
@@ -300,13 +260,8 @@ msgstr "Μη ολοκληρωμένο"
 
 #: gtk/DetailsDialog.cc:504 gtk/FilterBar.cc:462 gtk/Torrent.cc:402
 #: qt/DetailsDialog.cc:518 qt/FilterBar.cc:61 qt/Torrent.cc:295
-#, fuzzy
 msgid "Paused"
-msgstr ""
-"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Παυθέντα\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Σε παύση"
+msgstr "Σε παύση"
 
 #: gtk/DetailsDialog.cc:524 gtk/DetailsDialog.cc:529 gtk/DetailsDialog.cc:614
 #: qt/DetailsDialog.cc:880 qt/DetailsDialog.cc:923
@@ -323,35 +278,20 @@ msgid "No Torrents Selected"
 msgstr "Δεν έχουν επιλεχθεί torrents"
 
 #: gtk/DetailsDialog.cc:561 qt/DetailsDialog.cc:799
-#, fuzzy
 msgid "Private to this tracker -- DHT and PEX disabled"
-msgstr ""
-"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ιδιωτικό σε αυτόν τον ιχνηλάτη -- απενεργοποίηση DHT και PEX\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ιδιωτικό σε αυτόν τον ιχνηλάτη -- DHT και PEX απενεργοποιημένα"
+msgstr "Ιδιωτικό σε αυτόν τον ιχνηλάτη -- DHT και PEX απενεργοποιημένα"
 
 #: gtk/DetailsDialog.cc:561 qt/DetailsDialog.cc:799
 msgid "Public torrent"
 msgstr "Δημόσιο torrent"
 
 #: gtk/DetailsDialog.cc:606 qt/DetailsDialog.cc:888
-#, fuzzy
 msgid "Created by {creator} on {date}"
-msgstr ""
-"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Δημιουργήθηκε από {creator} την {date}\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Δημιουργήθηκε από τον/την {creator}$ την {date}"
+msgstr "Δημιουργήθηκε από {creator} την {date}"
 
 #: gtk/DetailsDialog.cc:610 qt/DetailsDialog.cc:882
-#, fuzzy
 msgid "Created by {creator}"
-msgstr ""
-"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Δημιουργήθηκε από {creator}\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Δημιουργήθηκε από τον/την {creator}$"
+msgstr "Δημιουργήθηκε από {creator}"
 
 #: gtk/DetailsDialog.cc:612 qt/DetailsDialog.cc:885
 msgid "Created on {date}"
@@ -359,13 +299,8 @@ msgstr "Δημιουργήθηκε την {date}"
 
 #: gtk/DetailsDialog.cc:690 qt/DetailsDialog.cc:470 qt/DetailsDialog.cc:689
 #: qt/Formatter.cc:27 qt/Formatter.cc:49
-#, fuzzy
 msgid "Unknown"
-msgstr ""
-"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Άγνωστος\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Άγνωστο"
+msgstr "Άγνωστο"
 
 #: gtk/DetailsDialog.cc:723 gtk/MakeDialog.cc:374
 msgid "{total_size} in {file_count:L} file"
@@ -395,13 +330,8 @@ msgid "{current_size} ({percent_done}% of {percent_available}% available; {unver
 msgstr "{current_size} ({percent_done}% από {percent_available}% διαθέσιμα· {unverified_size} μη ελεγχθέντα)"
 
 #: gtk/DetailsDialog.cc:816 qt/DetailsDialog.cc:613
-#, fuzzy
 msgid "{downloaded_size} (+{discarded_size} discarded after failed checksum)"
-msgstr ""
-"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{downloaded_size} (+{discarded_size} απορριφθέντα έπειτα από αποτυχημένο checksum)\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{downloaded_size} (+{discarded_size} απορρίφθηκαν κατόπιν αποτυχημένου ελέγχου αθροίσματος)"
+msgstr "{downloaded_size} (+{discarded_size} απορρίφθηκαν κατόπιν αποτυχημένου ελέγχου αθροίσματος)"
 
 #: gtk/DetailsDialog.cc:837 qt/DetailsDialog.cc:636
 msgid "{uploaded_size} (Ratio: {ratio})"
@@ -424,67 +354,33 @@ msgid "Optimistic unchoke"
 msgstr "Βελτιωτική απόφραξη"
 
 #: gtk/DetailsDialog.cc:1199 qt/DetailsDialog.cc:1090
-#, fuzzy
 msgid "Downloading from this peer"
-msgstr ""
-"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Γίνεται λήψη από αυτόν τον διαμοιραστή\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Γίνεται λήψη από αυτόν τον χρήστη"
+msgstr "Γίνεται λήψη από αυτόν τον διαμοιραστή"
 
 #: gtk/DetailsDialog.cc:1203 qt/DetailsDialog.cc:1094
-#, fuzzy
 msgid "We would download from this peer if they would let us"
-msgstr ""
-"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Θα γινόταν λήψη απ'αυτόν τον διαμοιραστή αν μας επιτρεπόταν\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Θα γινόταν λήψη απ'αυτόν τον χρήστη αν μας επιτρεπόταν"
+msgstr "Θα γινόταν λήψη απ'αυτόν τον διαμοιραστή αν μας επιτρεπόταν"
 
 #: gtk/DetailsDialog.cc:1207 qt/DetailsDialog.cc:1098
-#, fuzzy
 msgid "Uploading to peer"
-msgstr ""
-"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ανέβασμα σε διαμοιραστή\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Αποστολή σε χρήστη"
+msgstr "Ανέβασμα σε διαμοιραστή"
 
 #: gtk/DetailsDialog.cc:1211 qt/DetailsDialog.cc:1102
 #, fuzzy
 msgid "This peer would download from us if we would let them"
-msgstr ""
-"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Θα γινόταν λήψη απ'αυτόν τον διαμοιραστή αν μας επιτρεπόταν\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Θα γινόταν λήψη απ'αυτόν τον χρήστη αν μας επιτρεπόταν"
+msgstr "Θα γινόταν λήψη απ'αυτόν τον διαμοιραστή αν μας επιτρεπόταν"
 
 #: gtk/DetailsDialog.cc:1215 qt/DetailsDialog.cc:1106
-#, fuzzy
 msgid "Peer has unchoked us, but we're not interested"
-msgstr ""
-"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ο διαμοιραστής μας επιτρέπει την ανταλλαγή δεδομένων, αλλά δεν ενδιαφερόμαστε\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ο χρήστης μας επιτρέπει την ανταλλαγή δεδομένων, αλλά δεν ενδιαφερόμαστε"
+msgstr "Ο διαμοιραστής μας επιτρέπει την ανταλλαγή δεδομένων, αλλά δεν ενδιαφερόμαστε"
 
 #: gtk/DetailsDialog.cc:1219 qt/DetailsDialog.cc:1110
-#, fuzzy
 msgid "We unchoked this peer, but they're not interested"
-msgstr ""
-"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Επιτρέπουμε την ανταλλαγή δεδομένων στον διαμοιραστή, αλλά δεν ενδιαφέρεται\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Επιτρέπουμε την ανταλλαγή δεδομένων στον χρήστη, αλλά δεν ενδιαφέρεται"
+msgstr "Επιτρέπουμε την ανταλλαγή δεδομένων στον διαμοιραστή, αλλά δεν ενδιαφέρεται"
 
 #: gtk/DetailsDialog.cc:1223 qt/DetailsDialog.cc:1069 qt/DetailsDialog.cc:1114
-#, fuzzy
 msgid "Encrypted connection"
-msgstr ""
-"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Κρυπρογραφημένη σύνδεση\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Κρυπτογραφημένη σύνδεση"
+msgstr "Κρυπτογραφημένη σύνδεση"
 
 #: gtk/DetailsDialog.cc:1227 qt/DetailsDialog.cc:1122
 msgid "Peer was found through Peer Exchange (PEX)"
@@ -495,22 +391,12 @@ msgid "Peer was found through DHT"
 msgstr "Βρέθηκε διαμοιραστής μέσω του DHT"
 
 #: gtk/DetailsDialog.cc:1235 qt/DetailsDialog.cc:1126
-#, fuzzy
 msgid "Peer is an incoming connection"
-msgstr ""
-"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"O διαμοιραστής είναι μια εισερχόμενη σύνδεση\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"O χρήστης είναι μια εισερχόμενη σύνδεση"
+msgstr "O διαμοιραστής είναι μια εισερχόμενη σύνδεση"
 
 #: gtk/DetailsDialog.cc:1239 qt/DetailsDialog.cc:1130
-#, fuzzy
 msgid "Peer is connected over µTP"
-msgstr ""
-"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ο χρήστης είναι συνδεδεμένος μέσω µTP\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"O διαμοιραστής είναι συνδεδεμένος μέσω µTP"
+msgstr "O διαμοιραστής είναι συνδεδεμένος μέσω µTP"
 
 #: gtk/DetailsDialog.cc:1243 qt/DetailsDialog.cc:1134
 msgid "Peer supports holepunch (BEP 55)"
@@ -533,22 +419,12 @@ msgid "Up Reqs"
 msgstr "Αιτήσεις ανεβάσματος"
 
 #: gtk/DetailsDialog.cc:1333 gtk/DetailsDialog.cc:1402 qt/DetailsDialog.cc:1480
-#, fuzzy
 msgid "Down"
-msgstr ""
-"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Κατέβασμα\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Λήψη"
+msgstr "Λήψη"
 
 #: gtk/DetailsDialog.cc:1339 qt/DetailsDialog.cc:1478
-#, fuzzy
 msgid "Up"
-msgstr ""
-"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ανέβασμα\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Αποστολή"
+msgstr "Αποστολή"
 
 #: gtk/DetailsDialog.cc:1344 qt/AboutDialog.cc:40 qt/DetailsDialog.cc:1485
 msgid "Client"
@@ -571,13 +447,8 @@ msgid "List contains invalid URLs"
 msgstr "Η λίστα περιέχει μη έγκυρα URL"
 
 #: gtk/DetailsDialog.cc:1734 gtk/FileList.cc:792 qt/Session.cc:267
-#, fuzzy
 msgid "Please correct the errors and try again."
-msgstr ""
-"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Παρακαλώ διορθώστε τα σφάλματα και δοκιμάστε ξανά.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Παρακαλώ διορθώστε τα λάθη και δοκιμάστε ξανά."
+msgstr "Παρακαλώ διορθώστε τα σφάλματα και δοκιμάστε ξανά."
 
 #: gtk/DetailsDialog.cc:1814
 msgid "{torrent_name} - Add Tracker"
@@ -603,43 +474,20 @@ msgid "Remove torrent?"
 msgstr "Αφαίρεση torrent;"
 
 #: gtk/Dialogs.cc:53 qt/MainWindow.cc:1328
-#, fuzzy
 msgid "Delete this torrent's downloaded files?"
-msgstr ""
-"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Διαγραφή των κατεβασμένων αρχείων αυτού του torrent;\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Να διαγραφούν τα ληφθέντα αρχεία αυτού του torrent;"
+msgstr "Να διαγραφούν τα ληφθέντα αρχεία αυτού του torrent;"
 
 #: gtk/Dialogs.cc:56 qt/MainWindow.cc:1326
-#, fuzzy
 msgid "Remove {count:L} torrent?"
 msgid_plural "Remove {count:L} torrents?"
-msgstr[0] ""
-"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Αφαίρεση {count:L} torrent;\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Αφαίρεση {count:L} torrent;"
-msgstr[1] ""
-"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Αφαίρεση {count:L} torrents;\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Αφαίρεση {count:L} torrent;"
+msgstr[0] "Αφαίρεση {count:L} torrent;"
+msgstr[1] "Αφαίρεση {count:L} torrent;"
 
 #: gtk/Dialogs.cc:58 qt/MainWindow.cc:1330
-#, fuzzy
 msgid "Delete this {count:L} torrent's downloaded files?"
 msgid_plural "Delete these {count:L} torrents' downloaded files?"
-msgstr[0] ""
-"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Να διαγραφούν τα ληφθέντα αρχεία αυτού του torrent;\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Να διαγραφούν τα ληφθέντα αρχεία αυτού του torrent;"
-msgstr[1] ""
-"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Διαγραφή των κατεβασμένων αρχείων αυτών των {count:L} torrents;\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Να διαγραφούν τα ληφθέντα αρχεία αυτών των torrent;"
+msgstr[0] "Να διαγραφούν τα ληφθέντα αρχεία αυτού του torrent;"
+msgstr[1] "Διαγραφή των κατεβασμένων αρχείων αυτών των {count:L} torrents;"
 
 #: gtk/Dialogs.cc:65 qt/MainWindow.cc:1337
 #, fuzzy
@@ -663,40 +511,20 @@ msgid "These torrents have not finished downloading."
 msgstr "Δεν έχει ολοκληρωθεί η λήψη αυτών των torrent."
 
 #: gtk/Dialogs.cc:71 qt/MainWindow.cc:1343
-#, fuzzy
 msgid "This torrent is connected to peers."
-msgstr ""
-"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Αυτό το torrent είναι συνδεμένο σε διαμοιραστές.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Αυτό το torrent είναι συνδεδεμένο σε χρήστες."
+msgstr "Αυτό το torrent είναι συνδεμένο σε διαμοιραστές."
 
 #: gtk/Dialogs.cc:71 qt/MainWindow.cc:1344
-#, fuzzy
 msgid "These torrents are connected to peers."
-msgstr ""
-"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Αυτά τα torrents είναι συνδεμένα σε διαμοιραστές.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Αυτά τα torrent είναι συνδεδεμένα σε χρήστες."
+msgstr "Αυτά τα torrents είναι συνδεμένα σε διαμοιραστές."
 
 #: gtk/Dialogs.cc:74 qt/MainWindow.cc:1347
-#, fuzzy
 msgid "One of these torrents is connected to peers."
-msgstr ""
-"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ένα από αυτά τα torrents είναι συνδεμένo σε διαμοιραστές.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ένα από αυτά τα torrent είναι συνδεδεμένο σε χρήστες."
+msgstr "Ένα από αυτά τα torrents είναι συνδεμένo σε διαμοιραστές."
 
 #: gtk/Dialogs.cc:75 qt/MainWindow.cc:1348
-#, fuzzy
 msgid "Some of these torrents are connected to peers."
-msgstr ""
-"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Κάποια από αυτά τα torrents είναι συνδεμένα σε διαμοιραστές.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ορισμένα από αυτά τα torrent είναι συνδεδεμένα σε χρήστες."
+msgstr "Κάποια από αυτά τα torrents είναι συνδεμένα σε διαμοιραστές."
 
 #: gtk/Dialogs.cc:83 qt/MainWindow.cc:1356
 msgid "One of these torrents has not finished downloading."
@@ -781,14 +609,9 @@ msgid "Active"
 msgstr "Ενεργά"
 
 #: gtk/FilterBar.cc:469 qt/FilterBar.cc:63
-#, fuzzy
 msgctxt "Verb"
 msgid "Verifying"
-msgstr ""
-"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Γίνεται επαλήθευση\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Επαλήθευση"
+msgstr "Επαλήθευση"
 
 #: gtk/FilterBar.cc:471 gtk/FreeSpaceLabel.cc:57 qt/DetailsDialog.cc:1323
 #: qt/FilterBar.cc:64
@@ -849,49 +672,24 @@ msgstr ""
 " ({download_speed} κάτω, {upload_speed} πάνω)"
 
 #: gtk/MainWindow.cc:427 qt/MainWindow.cc:319
-#, fuzzy
 msgid "Unlimited"
-msgstr ""
-"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Χωρίς όριο\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Απεριόριστη"
+msgstr "Χωρίς όριο"
 
 #: gtk/MainWindow.cc:490 qt/MainWindow.cc:360
-#, fuzzy
 msgid "Seed Forever"
-msgstr ""
-"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ανέβασμα για πάντα\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Διαμοιρασμός για Πάντα"
+msgstr "Διαμοιρασμός για Πάντα"
 
 #: gtk/MainWindow.cc:528 qt/MainWindow.cc:390
-#, fuzzy
 msgid "Limit Download Speed"
-msgstr ""
-"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Περιορισμός ταχύτητας κατεβάσματος\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Περιορισμός Ταχύτητας Λήψης"
+msgstr "Περιορισμός ταχύτητας κατεβάσματος"
 
 #: gtk/MainWindow.cc:529 qt/MainWindow.cc:396
-#, fuzzy
 msgid "Limit Upload Speed"
-msgstr ""
-"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Περιορισμός ταχύτητας ανεβάσματος\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Περιορισμός Ταχύτητας Αποστολής"
+msgstr "Περιορισμός ταχύτητας ανεβάσματος"
 
 #: gtk/MainWindow.cc:533 qt/MainWindow.cc:405
-#, fuzzy
 msgid "Stop Seeding at Ratio"
-msgstr ""
-"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Διακοπή ανεβάσματος σε Αναλογία\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Διακοπή Διαμοιρασμού στην Αναλογία"
+msgstr "Διακοπή Διαμοιρασμού στην Αναλογία"
 
 #: gtk/MainWindow.cc:571 qt/MainWindow.cc:370 qt/MainWindow.cc:1113
 msgid "Stop at Ratio ({ratio})"
@@ -1021,13 +819,8 @@ msgid "Start Now"
 msgstr "Εκκίνηση Τώρα"
 
 #: gtk/Notify.cc:254 qt/Application.cc:341
-#, fuzzy
 msgid "Torrent Added"
-msgstr ""
-"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Το torrent προστέθηκε\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Το Torrent Προστέθηκε"
+msgstr "Το torrent προστέθηκε"
 
 #: gtk/OptionsDialog.cc:196
 msgid "Torrent files"
@@ -1066,40 +859,20 @@ msgid "(None)"
 msgstr "(Κανένα)"
 
 #: gtk/PrefsDialog.cc:292 qt/PrefsDialog.cc:105
-#, fuzzy
 msgid "Allow encryption"
-msgstr ""
-"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Να επιτρέπεται κρυπτογράφηση\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Να επιτρέπεται η κρυπτογράφηση"
+msgstr "Να επιτρέπεται η κρυπτογράφηση"
 
 #: gtk/PrefsDialog.cc:293 qt/PrefsDialog.cc:106
-#, fuzzy
 msgid "Prefer encryption"
-msgstr ""
-"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Να προτιμάται κρυπτογράφηση\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Να προτιμάται η κρυπτογράφηση"
+msgstr "Να προτιμάται η κρυπτογράφηση"
 
 #: gtk/PrefsDialog.cc:294 qt/PrefsDialog.cc:107
-#, fuzzy
 msgid "Require encryption"
-msgstr ""
-"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Να απαιτείται κρυπτογράφηση\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Να απαιτείται η κρυπτογράφηση"
+msgstr "Να απαιτείται η κρυπτογράφηση"
 
 #: gtk/PrefsDialog.cc:357 qt/PrefsDialog.cc:75
-#, fuzzy
 msgid "Every Day"
-msgstr ""
-"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Κάθε μέρα\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Κάθε Μέρα"
+msgstr "Κάθε μέρα"
 
 #: gtk/PrefsDialog.cc:358 qt/PrefsDialog.cc:76
 msgid "Weekdays"
@@ -1125,13 +898,8 @@ msgid "Couldn't update blocklist"
 msgstr "Αδυναμία ενημέρωσης λίστας φραγής"
 
 #: gtk/PrefsDialog.cc:578 qt/PrefsDialog.cc:446
-#, fuzzy
 msgid "Getting new blocklist…"
-msgstr ""
-"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Λαμβάνεται νέα λίστα αποκλεισμού…\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Απόκτηση νέας λίστας φραγής…"
+msgstr "Απόκτηση νέας λίστας φραγής…"
 
 #: gtk/PrefsDialog.cc:925
 msgctxt "Port test status"
@@ -1194,19 +962,10 @@ msgid "Couldn't find pending RPC request for id {id}"
 msgstr ""
 
 #: gtk/StatsDialog.cc:76 qt/StatsDialog.cc:65
-#, fuzzy
 msgid "Started {count:L} time"
 msgid_plural "Started {count:L} times"
-msgstr[0] ""
-"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ξεκίνησε {count:L} φορά\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Εκκινήθηκε {count:L} φορά"
-msgstr[1] ""
-"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ξεκίνησε {count:L} φορές\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Εκκινήθηκε {count:L} φορές"
+msgstr[0] "Ξεκίνησε {count:L} φορά"
+msgstr[1] "Ξεκίνησε {count:L} φορές"
 
 #: gtk/StatsDialog.cc:109
 msgid "Reset your statistics?"
@@ -1230,13 +989,9 @@ msgid "{upload_speed} ▴ {download_speed} ▾"
 msgstr "{upload_speed} ▴ {download_speed} ▾"
 
 #: gtk/Torrent.cc:416 qt/TorrentDelegate.cc:284
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Verifying local data ({percent_done}% tested)"
-msgstr ""
-"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Έλεγχος τοπικών δεδομένων ({percent_done}% ελεγχθέντα)\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Επαλήθευση τοπικών δεδομένων ({percent_done}% ελέγχθηκαν)"
+msgstr "Επαλήθευση τοπικών δεδομένων ({percent_done}% ελέγχθηκαν)"
 
 #: gtk/Torrent.cc:443 qt/DetailsDialog.cc:565 qt/TorrentDelegate.cc:183
 msgid "{current_size} of {complete_size} ({percent_done}%)"
@@ -1247,26 +1002,16 @@ msgid "{current_size} of {complete_size} ({percent_complete}%), uploaded {upload
 msgstr "{current_size} από {complete_size} ({percent_complete}%), {uploaded_size} ανεβασμένα (Αναλογία: {ratio}, Στόχος: {seed_ratio})"
 
 #: gtk/Torrent.cc:465 qt/TorrentDelegate.cc:213
-#, fuzzy
 msgid "{current_size} of {complete_size} ({percent_complete}%), uploaded {uploaded_size} (Ratio: {ratio})"
-msgstr ""
-"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{current_size} από {complete_size} ({percent_complete}%), {uploaded_size} ανεβασμένα (Αναλογία: {ratio})\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{current_size} από {complete_size} ({percent_complete}%), απεστάλησαν {uploaded_size} (Αναλογία: {ratio})"
+msgstr "{current_size} από {complete_size} ({percent_complete}%), {uploaded_size} ανεβασμένα (Αναλογία: {ratio})"
 
 #: gtk/Torrent.cc:474 qt/TorrentDelegate.cc:229
 msgid "{complete_size}, uploaded {uploaded_size} (Ratio: {ratio}, Goal: {seed_ratio})"
 msgstr "{complete_size}, {uploaded_size} ανεβασμένα (Αναλογία: {ratio}, Στόχος: {seed_ratio})"
 
 #: gtk/Torrent.cc:482 qt/TorrentDelegate.cc:241
-#, fuzzy
 msgid "{complete_size}, uploaded {uploaded_size} (Ratio: {ratio})"
-msgstr ""
-"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{complete_size}, {uploaded_size} ανεβασμένα (Αναλογία: {ratio})\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{complete_size}, απεστάλησαν  {uploaded_size} (Αναλογία: {ratio})"
+msgstr "{complete_size}, {uploaded_size} ανεβασμένα (Αναλογία: {ratio})"
 
 #. Translators: Second (optional) part of torrent progress string
 #: gtk/Torrent.cc:493 qt/TorrentDelegate.cc:254 qt/TorrentDelegate.cc:307
@@ -1315,34 +1060,16 @@ msgstr[0] "Λήψη από {active_count} διαμοιραστή δικτύου"
 msgstr[1] "Λήψη από {active_count} διαμοιραστές δικτύου"
 
 #: gtk/Torrent.cc:659 qt/TorrentDelegate.cc:351
-#, fuzzy
 msgid "Downloading from {active_count} of {connected_count} connected peer"
 msgid_plural "Downloading from {active_count} of {connected_count} connected peers"
-msgstr[0] ""
-"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Λήψη από {active_count} από {connected_count} συνδεδεμένο διαμοιραστή\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Λήψη από {active_count} από {connected_count} συνδεδεμένο χρήστη"
-msgstr[1] ""
-"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Λήψη από {active_count} από {connected_count} συνδεδεμένους διαμοιραστές\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Λήψη από {active_count} από {connected_count} συνδεδεμένους χρήστες"
+msgstr[0] "Λήψη από {active_count} από {connected_count} συνδεδεμένο διαμοιραστή"
+msgstr[1] "Λήψη από {active_count} από {connected_count} συνδεδεμένους διαμοιραστές"
 
 #: gtk/Torrent.cc:668 qt/TorrentDelegate.cc:380
-#, fuzzy
 msgid "Seeding to {active_count} of {connected_count} connected peer"
 msgid_plural "Seeding to {active_count} of {connected_count} connected peers"
-msgstr[0] ""
-"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Διαμοιρασμός σε {active_count} από {connected_count} συνδεδεμένο διαμοιραστή\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Διαμοιρασμός σε {active_count} από {connected_count} συνδεδεμένο ομότιμο χρήστη"
-msgstr[1] ""
-"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Διαμοιρασμός σε {active_count} από {connected_count} συνδεδεμένους διαμοιραστές\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Διαμοιρασμός σε {active_count} από {connected_count} συνδεδεμένους χρήστες"
+msgstr[0] "Διαμοιρασμός σε {active_count} από {connected_count} συνδεδεμένο διαμοιραστή"
+msgstr[1] "Διαμοιρασμός σε {active_count} από {connected_count} συνδεδεμένους διαμοιραστές"
 
 #: gtk/retransmission-gtk.desktop.in:2
 #: gtk/retransmission-gtk.metainfo.xml.in:11
@@ -1401,13 +1128,8 @@ msgstr "_Αρχείο"
 
 #: gtk/transmission-menus.ui:18 gtk/transmission-menus.ui:447
 #: qt/MainWindow.ui:685
-#, fuzzy
 msgid "Open _URL…"
-msgstr ""
-"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Άνοιγμα _URL…\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Άνοιγμα _Συνδέσμου…"
+msgstr "Άνοιγμα _URL…"
 
 #: gtk/transmission-menus.ui:25 qt/MainWindow.ui:332
 msgid "_New…"
@@ -1415,13 +1137,8 @@ msgstr "_Νέο…"
 
 #: gtk/transmission-menus.ui:32 gtk/transmission-menus.ui:460
 #: qt/MainWindow.ui:437
-#, fuzzy
 msgid "_Start All"
-msgstr ""
-"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Εκκίνηση όλων\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Εκκίνηση Όλων"
+msgstr "_Εκκίνηση όλων"
 
 #: gtk/transmission-menus.ui:37 gtk/transmission-menus.ui:455
 #: qt/MainWindow.ui:442
@@ -1430,13 +1147,8 @@ msgstr "_Παύση όλων"
 
 #: gtk/transmission-menus.ui:45 gtk/transmission-menus.ui:473
 #: qt/MainWindow.ui:447
-#, fuzzy
 msgid "_Quit"
-msgstr ""
-"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Έ_ξοδος\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Έξοδος"
+msgstr "Έ_ξοδος"
 
 #: gtk/transmission-menus.ui:50 gtk/ui/gtk3/DetailsDialog.ui:715
 #: gtk/ui/gtk4/DetailsDialog.ui:559 qt/DetailsDialog.ui:637
@@ -1479,23 +1191,13 @@ msgstr "_Εκκίνηση"
 
 #: gtk/transmission-menus.ui:98 gtk/transmission-menus.ui:363
 #: qt/MainWindow.ui:698
-#, fuzzy
 msgid "Start _Now"
-msgstr ""
-"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Εκκίνηση _τώρα\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Εκκίνηση _Τώρα"
+msgstr "Εκκίνηση _τώρα"
 
 #: gtk/transmission-menus.ui:104 gtk/transmission-menus.ui:369
 #: qt/MainWindow.ui:379
-#, fuzzy
 msgid "Ask Tracker for _More Peers"
-msgstr ""
-"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Αίτηση στον ιχνηλάτη για ε_πιπλέον ομότιμους χρήστες\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Αίτημα στον Ιχνηλάτη για _Επιπλέον Χρήστες"
+msgstr "Αίτηση στον ιχνηλάτη για ε_πιπλέον ομότιμους χρήστες"
 
 #: gtk/transmission-menus.ui:107 gtk/transmission-menus.ui:372
 #: qt/MainWindow.ui:196
@@ -1506,75 +1208,40 @@ msgstr "Ουρά"
 
 #: gtk/transmission-menus.ui:112 gtk/transmission-menus.ui:377
 #: qt/MainWindow.ui:712
-#, fuzzy
 msgid "Move to _Top"
-msgstr ""
-"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Μετακίνηση στην _κορυφή\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Μετακίνηση στην _Κορυφή"
+msgstr "Μετακίνηση στην _κορυφή"
 
 #: gtk/transmission-menus.ui:117 gtk/transmission-menus.ui:382
 #: qt/MainWindow.ui:717
-#, fuzzy
 msgid "Move _Up"
-msgstr ""
-"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Μετακίνηση _επάνω\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Μετακίνηση _Επάνω"
+msgstr "Μετακίνηση _επάνω"
 
 #: gtk/transmission-menus.ui:122 gtk/transmission-menus.ui:387
 #: qt/MainWindow.ui:725
-#, fuzzy
 msgid "Move _Down"
-msgstr ""
-"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Μετακίνηση _κάτω\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Μετακίνηση _Kάτω"
+msgstr "Μετακίνηση _κάτω"
 
 #: gtk/transmission-menus.ui:127 gtk/transmission-menus.ui:392
 #: qt/MainWindow.ui:733
-#, fuzzy
 msgid "Move to _Bottom"
-msgstr ""
-"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Μετακίνηση στο _τέλος\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Μετακίνηση στο _Tέλος"
+msgstr "Μετακίνηση στο _τέλος"
 
 #: gtk/transmission-menus.ui:134 gtk/transmission-menus.ui:399
 #: gtk/ui/gtk3/MainWindow.ui:54 gtk/ui/gtk3/MessageLogWindow.ui:66
 #: gtk/ui/gtk4/MainWindow.ui:54 gtk/ui/gtk4/MessageLogWindow.ui:84
 #: qt/MainWindow.ui:387
-#, fuzzy
 msgid "_Pause"
-msgstr ""
-"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Παύ_ση\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Παύση"
+msgstr "Παύ_ση"
 
 #: gtk/transmission-menus.ui:141 gtk/transmission-menus.ui:406
 #: qt/MainWindow.ui:675
-#, fuzzy
 msgid "Set _Location…"
-msgstr ""
-"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Καθορισμός _τοποθεσίας…\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Καθορισμός _Τοποθεσίας…"
+msgstr "Καθορισμός _τοποθεσίας…"
 
 #: gtk/transmission-menus.ui:145 gtk/transmission-menus.ui:410
 #: qt/MainWindow.ui:401
-#, fuzzy
 msgid "_Verify Local Data"
-msgstr ""
-"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Επαλήθευση τοπικών δεδομένων\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Επαλήθευση Τοπικών Δεδομένων"
+msgstr "_Επαλήθευση τοπικών δεδομένων"
 
 #: gtk/transmission-menus.ui:151 gtk/transmission-menus.ui:416
 #: qt/MainWindow.ui:680
@@ -1583,53 +1250,28 @@ msgstr "_Αντιγραφή του Συνδέσμου Magnet στο Πρόχει
 
 #: gtk/transmission-menus.ui:164 gtk/transmission-menus.ui:429
 #: qt/MainWindow.ui:426
-#, fuzzy
 msgid "_Delete Files and Remove"
-msgstr ""
-"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Διαγραφή αρχείων και αφαίρεση από την λίστα\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Διαγραφή Αρχείων και Αφαίρεση"
+msgstr "_Διαγραφή αρχείων και αφαίρεση από την λίστα"
 
 #: gtk/transmission-menus.ui:170 qt/MainWindow.ui:244
 msgid "_View"
 msgstr "_Προβολή"
 
 #: gtk/transmission-menus.ui:174 qt/MainWindow.ui:485
-#, fuzzy
 msgid "_Compact View"
-msgstr ""
-"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Συνοπτική προβολή\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Συνοπτική Προβολή"
+msgstr "_Συνοπτική προβολή"
 
 #: gtk/transmission-menus.ui:181 qt/MainWindow.ui:502
-#, fuzzy
 msgid "_Toolbar"
-msgstr ""
-"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Εργαλειοθήκη\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Γραμμή εργαλειών"
+msgstr "_Γραμμή εργαλειών"
 
 #: gtk/transmission-menus.ui:185 qt/MainWindow.ui:510
-#, fuzzy
 msgid "_Filterbar"
-msgstr ""
-"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Γραμμή _φίλτρου\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Γραμμή φίλτρου"
+msgstr "Γραμμή _φίλτρου"
 
 #: gtk/transmission-menus.ui:189 qt/MainWindow.ui:518
-#, fuzzy
 msgid "_Statusbar"
-msgstr ""
-"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Γραμμή _κατάστασης\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Γραμμή κατάστασης"
+msgstr "Γραμμή _κατάστασης"
 
 #: gtk/transmission-menus.ui:195 gtk/transmission-menus.ui:301
 #: qt/MainWindow.ui:526
@@ -1643,13 +1285,8 @@ msgstr "Ταξινόμηση κατά Πα_λαιότητα"
 
 #: gtk/transmission-menus.ui:205 gtk/transmission-menus.ui:311
 #: qt/MainWindow.ui:550
-#, fuzzy
 msgid "Sort by _Name"
-msgstr ""
-"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ταξινόμηση κατά Ό_νομα\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ταξινόμηση κατά _Όνομα"
+msgstr "Ταξινόμηση κατά Ό_νομα"
 
 #: gtk/transmission-menus.ui:210 gtk/transmission-menus.ui:316
 #: qt/MainWindow.ui:558
@@ -1658,23 +1295,13 @@ msgstr "Ταξινόμηση κατά _Πρόοδο"
 
 #: gtk/transmission-menus.ui:215 gtk/transmission-menus.ui:321
 #: qt/MainWindow.ui:741
-#, fuzzy
 msgid "Sort by _Queue"
-msgstr ""
-"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ταξινόμηση κατά _σειρά\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ταξινόμηση κατά _Σειρά"
+msgstr "Ταξινόμηση κατά _Σειρά"
 
 #: gtk/transmission-menus.ui:220 gtk/transmission-menus.ui:326
 #: qt/MainWindow.ui:566
-#, fuzzy
 msgid "Sort by Rati_o"
-msgstr ""
-"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ταξινόμηση κατά _Αναλογία\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ταξινόμηση κατά Αναλογί_α"
+msgstr "Ταξινόμηση κατά _Αναλογία"
 
 #: gtk/transmission-menus.ui:225 gtk/transmission-menus.ui:331
 #: qt/MainWindow.ui:574
@@ -1683,33 +1310,18 @@ msgstr "Ταξινόμηση κατά Μέ_γεθος"
 
 #: gtk/transmission-menus.ui:230 gtk/transmission-menus.ui:336
 #: qt/MainWindow.ui:582
-#, fuzzy
 msgid "Sort by Stat_e"
-msgstr ""
-"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ταξινόμηση κατά _Κατάσταση\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ταξινόμηση κατά Κατάστα_ση"
+msgstr "Ταξινόμηση κατά _Κατάσταση"
 
 #: gtk/transmission-menus.ui:235 gtk/transmission-menus.ui:341
 #: qt/MainWindow.ui:542
-#, fuzzy
 msgid "Sort by Time _Left"
-msgstr ""
-"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ταξινόμηση βάσει _Εναπομείναντος χρόνου\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ταξινόμηση βάσει _Εναπομείναντος Χρόνου"
+msgstr "Ταξινόμηση βάσει _Εναπομείναντος χρόνου"
 
 #: gtk/transmission-menus.ui:242 gtk/transmission-menus.ui:348
 #: qt/MainWindow.ui:614
-#, fuzzy
 msgid "Re_verse Sort Order"
-msgstr ""
-"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Αν_τιστροφή σειράς ταξινόμησης\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Αν_τιστροφή Σειράς Ταξινόμησης"
+msgstr "Αν_τιστροφή σειράς ταξινόμησης"
 
 #: gtk/transmission-menus.ui:247 gtk/ui/gtk3/PrefsDialog.ui:22
 #: gtk/ui/gtk4/PrefsDialog.ui:1484 qt/MainWindow.ui:233
@@ -1717,13 +1329,8 @@ msgid "_Help"
 msgstr "_Βοήθεια"
 
 #: gtk/transmission-menus.ui:251
-#, fuzzy
 msgid "Message _Log"
-msgstr ""
-"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Κ_αταγραφή μηνυμάτων\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Καταγραφή Μηνυμάτων"
+msgstr "Κ_αταγραφή μηνυμάτων"
 
 #: gtk/transmission-menus.ui:255 qt/MainWindow.ui:590
 msgid "_Statistics"
@@ -1734,22 +1341,12 @@ msgid "_Donate"
 msgstr "_Δωρεά"
 
 #: gtk/transmission-menus.ui:268 qt/MainWindow.ui:595
-#, fuzzy
 msgid "_Contents"
-msgstr ""
-"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Περιεχόμενα\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Σχόλια"
+msgstr "_Περιεχόμενα"
 
 #: gtk/transmission-menus.ui:274 qt/MainWindow.ui:603
-#, fuzzy
 msgid "_About"
-msgstr ""
-"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Σχετικά\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Περί"
+msgstr "_Σχετικά"
 
 #: gtk/transmission-menus.ui:297
 #, fuzzy
@@ -1768,13 +1365,8 @@ msgstr "Εναλλακτικά Όρια Ταχύτητας"
 #: gtk/ui/gtk4/AddTrackerDialog.ui:75 gtk/ui/gtk4/DetailsDialog.ui:551
 #: gtk/ui/gtk4/MakeProgressDialog.ui:52 gtk/ui/gtk4/PrefsDialog.ui:1416
 #: qt/DetailsDialog.ui:630
-#, fuzzy
 msgid "_Add"
-msgstr ""
-"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Προσθήκη\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Π_ροσθήκη"
+msgstr "_Προσθήκη"
 
 #: gtk/ui/gtk3/AddTrackerDialog.ui:68 gtk/ui/gtk4/AddTrackerDialog.ui:20
 #: qt/DetailsDialog.ui:608
@@ -1859,13 +1451,8 @@ msgstr "Τοποθεσία:"
 
 #: gtk/ui/gtk3/DetailsDialog.ui:380 gtk/ui/gtk4/DetailsDialog.ui:296
 #: qt/DetailsDialog.ui:403
-#, fuzzy
 msgid "Hash:"
-msgstr ""
-"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Κλειδί ελέγχου ακεραιότητας δεδομένων:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Hash:"
+msgstr "Κλειδί ελέγχου ακεραιότητας δεδομένων:"
 
 #: gtk/ui/gtk3/DetailsDialog.ui:392 gtk/ui/gtk4/DetailsDialog.ui:306
 #: qt/DetailsDialog.ui:435
@@ -1879,13 +1466,8 @@ msgstr "Προέλευση:"
 
 #: gtk/ui/gtk3/DetailsDialog.ui:416 gtk/ui/gtk4/DetailsDialog.ui:326
 #: qt/DetailsDialog.ui:499
-#, fuzzy
 msgid "Added:"
-msgstr ""
-"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Προστέθηκαν:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Προστέθηκε:"
+msgstr "Προστέθηκε:"
 
 #: gtk/ui/gtk3/DetailsDialog.ui:430 gtk/ui/gtk4/DetailsDialog.ui:338
 #: qt/DetailsDialog.ui:542
@@ -1905,13 +1487,8 @@ msgstr "Εμφάνιση _περισσότερων  λεπτομερειών"
 
 #: gtk/ui/gtk3/DetailsDialog.ui:652 gtk/ui/gtk4/DetailsDialog.ui:512
 #: qt/DetailsDialog.ui:569
-#, fuzzy
 msgid "Peers"
-msgstr ""
-"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ομότιμοι χρήστες\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Χρήστες"
+msgstr "Ομότιμοι χρήστες"
 
 #: gtk/ui/gtk3/DetailsDialog.ui:773 gtk/ui/gtk4/DetailsDialog.ui:587
 #: qt/DetailsDialog.ui:671
@@ -1960,43 +1537,23 @@ msgstr "Όρια Διαμοιρασμού"
 
 #: gtk/ui/gtk3/DetailsDialog.ui:1013 gtk/ui/gtk4/DetailsDialog.ui:761
 #: qt/DetailsDialog.ui:792
-#, fuzzy
 msgid "_Ratio:"
-msgstr ""
-"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Αναλογία\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Αναλογία:"
+msgstr "_Αναλογία:"
 
 #: gtk/ui/gtk3/DetailsDialog.ui:1027 gtk/ui/gtk4/DetailsDialog.ui:773
 #: qt/DetailsDialog.ui:819
-#, fuzzy
 msgid "_Idle:"
-msgstr ""
-"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Α_δρανές\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Αδρανές:"
+msgstr "_Αδρανές:"
 
 #: gtk/ui/gtk3/DetailsDialog.ui:1125 gtk/ui/gtk4/DetailsDialog.ui:831
 #: qt/DetailsDialog.ui:855
-#, fuzzy
 msgid "Peer Connections"
-msgstr ""
-"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Συνδέσεις ομότιμων χρηστών\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Συνδέσεις Χρηστών"
+msgstr "Συνδέσεις ομότιμων χρηστών"
 
 #: gtk/ui/gtk3/DetailsDialog.ui:1141 gtk/ui/gtk4/DetailsDialog.ui:843
 #: qt/DetailsDialog.ui:861
-#, fuzzy
 msgid "_Maximum peers:"
-msgstr ""
-"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Μέγιστος αριθμός ομότιμων χρηστών:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Μέγιστος αριθμός χρηστών:"
+msgstr "_Μέγιστος αριθμός ομότιμων χρηστών:"
 
 #: gtk/ui/gtk3/DetailsDialog.ui:1180 gtk/ui/gtk3/MainWindow.ui:169
 #: gtk/ui/gtk3/PrefsDialog.ui:1344 gtk/ui/gtk4/DetailsDialog.ui:871
@@ -2007,13 +1564,8 @@ msgstr "Επιλογές"
 
 #: gtk/ui/gtk3/EditTrackersDialog.ui:67 gtk/ui/gtk4/EditTrackersDialog.ui:20
 #: qt/TrackersDialog.ui:20
-#, fuzzy
 msgid "Tracker Announce URLs"
-msgstr ""
-"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"URL Αναφοράς Ιχνηλάτη\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Σύνδεσμοι Ανακοινώσεων Ιχνηλατών"
+msgstr "Σύνδεσμοι Ανακοινώσεων Ιχνηλατών"
 
 #: gtk/ui/gtk3/EditTrackersDialog.ui:83 gtk/ui/gtk3/MakeDialog.ui:294
 #: gtk/ui/gtk4/EditTrackersDialog.ui:32 gtk/ui/gtk4/MakeDialog.ui:193
@@ -2026,13 +1578,8 @@ msgstr ""
 
 #: gtk/ui/gtk3/EditTrackersDialog.ui:118 gtk/ui/gtk4/EditTrackersDialog.ui:63
 #: qt/TrackersDialog.ui:47
-#, fuzzy
 msgid "Also see Default Public Trackers in Edit > Preferences > Network"
-msgstr ""
-"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Δείτε επίσης τους Προεπιλεγμένους Δημόσιους Ιχνηλάτες στο Επεξεργασία > Προτιμήσεις > Δίκτυο\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Δείτε επίσης τους Προκαθορισμένους Δημόσιους Ιχνηλάτες υπό την Επεξεργασία > Προτιμήσεις > Δίκτυο"
+msgstr "Δείτε επίσης τους Προεπιλεγμένους Δημόσιους Ιχνηλάτες στο Επεξεργασία > Προτιμήσεις > Δίκτυο"
 
 #: gtk/ui/gtk3/MainWindow.ui:21 gtk/ui/gtk4/MainWindow.ui:16
 #: qt/MainWindow.ui:324
@@ -2084,13 +1631,8 @@ msgstr "Σ_υντελεστές"
 
 #: gtk/ui/gtk3/MakeDialog.ui:85 gtk/ui/gtk4/MakeDialog.ui:32
 #: qt/MakeDialog.ui:29
-#, fuzzy
 msgid "Sa_ve to:"
-msgstr ""
-"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Α_ποθήκευση σε:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Απο_θήκευση σε:"
+msgstr "Α_ποθήκευση σε:"
 
 #: gtk/ui/gtk3/MakeDialog.ui:110 gtk/ui/gtk4/MakeDialog.ui:54
 #: qt/MakeDialog.ui:42
@@ -2116,23 +1658,13 @@ msgstr "Ιδιότητες"
 
 #: gtk/ui/gtk3/MakeDialog.ui:249 gtk/ui/gtk4/MakeDialog.ui:159
 #: qt/MakeDialog.ui:111
-#, fuzzy
 msgid "_Trackers:"
-msgstr ""
-"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Ιχνηλάτες:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Ιχνηλάτες"
+msgstr "_Ιχνηλάτες:"
 
 #: gtk/ui/gtk3/MakeDialog.ui:312 gtk/ui/gtk4/MakeDialog.ui:206
 #: qt/MakeDialog.ui:142
-#, fuzzy
 msgid "Co_mment:"
-msgstr ""
-"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Σ_χόλιο:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Σχ_όλιο:"
+msgstr "Σ_χόλιο:"
 
 #: gtk/ui/gtk3/MakeDialog.ui:339 gtk/ui/gtk4/MakeDialog.ui:229
 #: qt/MakeDialog.ui:156
@@ -2207,13 +1739,8 @@ msgstr "Προτιμήσεις του {appname}"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:76 gtk/ui/gtk4/PrefsDialog.ui:29
 #: qt/PrefsDialog.ui:36
-#, fuzzy
 msgid "Speed Limits"
-msgstr ""
-"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Όρια ταχύτητας\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Όρια Tαχύτητας"
+msgstr "Όρια ταχύτητας"
 
 #. Checkbox to limit upload speed
 #: gtk/ui/gtk3/PrefsDialog.ui:90 gtk/ui/gtk4/PrefsDialog.ui:41
@@ -2258,13 +1785,8 @@ msgstr "_Τις ημέρες:"
 #. Label goes between two time selectors, e.g. "limit speeds from [time] to [time]"
 #: gtk/ui/gtk3/PrefsDialog.ui:317 gtk/ui/gtk4/PrefsDialog.ui:210
 #: qt/PrefsDialog.ui:174
-#, fuzzy
 msgid "_to"
-msgstr ""
-"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_μέχρι\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_σε"
+msgstr "_μέχρι"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:395 gtk/ui/gtk4/PrefsDialog.ui:262
 msgctxt "Gerund"
@@ -2278,23 +1800,13 @@ msgstr "Αυτόματη προσθήκη αρχείων torrent _από:"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:424 gtk/ui/gtk4/PrefsDialog.ui:286
 #: qt/PrefsDialog.ui:257
-#, fuzzy
 msgid "Show the Torrent Options _dialog"
-msgstr ""
-"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Εμφάνιση του _διαλόγου Επιλογών Torrent\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Εμφάνιση του Διαλόγου _Επιλογών Torrent"
+msgstr "Εμφάνιση του _διαλόγου Επιλογών Torrent"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:441 gtk/ui/gtk4/PrefsDialog.ui:300
 #: qt/PrefsDialog.ui:264
-#, fuzzy
 msgid "_Start added torrents"
-msgstr ""
-"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Εκκίνηση προστιθέμενων torrent\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Εκκίνηση των torrent που προστέθηκαν"
+msgstr "_Εκκίνηση προστιθέμενων torrent"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:477 gtk/ui/gtk4/PrefsDialog.ui:328
 #: qt/PrefsDialog.ui:288
@@ -2310,13 +1822,8 @@ msgstr "Ουρά Λήψης"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:573 gtk/ui/gtk4/PrefsDialog.ui:401
 #: qt/PrefsDialog.ui:326
-#, fuzzy
 msgid "Ma_ximum active downloads:"
-msgstr ""
-"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Μέ_γιστος αριθμός ενεργών λήψεων:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Μέγιστος αριθμός ενεργών λήψεων:"
+msgstr "Μέ_γιστος αριθμός ενεργών λήψεων:"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:587 gtk/ui/gtk4/PrefsDialog.ui:413
 msgid "Downloads sharing data in the last _N minutes are active:"
@@ -2363,13 +1870,8 @@ msgstr "Όρια"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:792 gtk/ui/gtk4/PrefsDialog.ui:570
 #: qt/PrefsDialog.ui:468
-#, fuzzy
 msgid "Stop seeding at _ratio:"
-msgstr ""
-"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Παύση διαμοιρασμού στην _αναλογία:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Διακοπή διαμοιρασμού στην _αναλογία:"
+msgstr "Παύση διαμοιρασμού στην _αναλογία:"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:807 gtk/ui/gtk4/PrefsDialog.ui:582
 msgid "Stop seeding if idle for _N minutes:"
@@ -2398,13 +1900,8 @@ msgstr "_Λειτουργία κρυπτογράφησης:"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:966 gtk/ui/gtk4/PrefsDialog.ui:700
 #: qt/PrefsDialog.ui:581
-#, fuzzy
 msgid "Blocklist"
-msgstr ""
-"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Μαύρη λίστα\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Λίστα αποκλεισμού"
+msgstr "Λίστα αποκλεισμού"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:980 gtk/ui/gtk4/PrefsDialog.ui:712
 #: qt/PrefsDialog.ui:587
@@ -2447,23 +1944,13 @@ msgstr "Χρήση του UPnP ή του NAT-PMP για την _προώθηση
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1229 gtk/ui/gtk4/PrefsDialog.ui:904
 #: qt/PrefsDialog.ui:680
-#, fuzzy
 msgid "Te_st Port"
-msgstr ""
-"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Δ_οκιμή θύρας\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Δοκ_ιμή θύρας"
+msgstr "Δ_οκιμή θύρας"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1265 gtk/ui/gtk4/PrefsDialog.ui:924
 #: qt/PrefsDialog.ui:714
-#, fuzzy
 msgid "Peer Limits"
-msgstr ""
-"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Όριο ομότιμων χρηστών\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Όρια Χρηστών"
+msgstr "Όριο ομότιμων χρηστών"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1281 gtk/ui/gtk4/PrefsDialog.ui:936
 #: qt/PrefsDialog.ui:720
@@ -2474,13 +1961,8 @@ msgstr "Μέγιστος αριθμός ομότιμων χρηστών ανά _
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1295 gtk/ui/gtk4/PrefsDialog.ui:948
 #: qt/PrefsDialog.ui:743
-#, fuzzy
 msgid "Maximum peers _overall:"
-msgstr ""
-"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Μέγιστος αριθμός ομότιμων χρηστών _συνολικά:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Μέγιστος αριθμός χρηστών _συνολικά:"
+msgstr "Μέγιστος αριθμός ομότιμων χρηστών _συνολικά:"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1358 gtk/ui/gtk4/PrefsDialog.ui:998
 #: qt/PrefsDialog.ui:778
@@ -2489,13 +1971,8 @@ msgstr "Ενεργοποίηση µ_TP για συνδέσεις διαμοιρ�
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1362 gtk/ui/gtk4/PrefsDialog.ui:1000
 #: qt/PrefsDialog.ui:775
-#, fuzzy
 msgid "µTP is a tool for reducing network congestion."
-msgstr ""
-"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"To µTP είναι ένα εργαλείο μείωσης της συμφόρησης του δικτύου.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Το µTP είναι ένα μέσο μείωσης της δικτυακής συμφόρησης."
+msgstr "To µTP είναι ένα εργαλείο μείωσης της συμφόρησης του δικτύου."
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1376 gtk/ui/gtk4/PrefsDialog.ui:1013
 #: qt/PrefsDialog.ui:788
@@ -2506,13 +1983,8 @@ msgstr "Χρήση του P_EX για εύρεση επιπλέον ομότιμ
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1380 gtk/ui/gtk4/PrefsDialog.ui:1015
 #: qt/PrefsDialog.ui:785
-#, fuzzy
 msgid "PEX is a tool for exchanging peer lists with the peers you're connected to."
-msgstr ""
-"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Το PEX είναι ένα εργαλείο για την ανταλλαγή λιστών ομότιμων χρηστών με τους χρήστες που είστε συνδεδεμένος.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Το PEX είναι ένα εργαλείο για την ανταλλαγή λιστών χρηστών με τους χρήστες που είστε συνδεδεμένος."
+msgstr "Το PEX είναι ένα εργαλείο για την ανταλλαγή λιστών ομότιμων χρηστών με τους χρήστες που είστε συνδεδεμένος."
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1394 gtk/ui/gtk4/PrefsDialog.ui:1028
 #: qt/PrefsDialog.ui:798
@@ -2523,13 +1995,8 @@ msgstr "Χρήση του _DHT για εύρεση επιπλέον ομότιμ
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1398 gtk/ui/gtk4/PrefsDialog.ui:1030
 #: qt/PrefsDialog.ui:795
-#, fuzzy
 msgid "DHT is a tool for finding peers without a tracker."
-msgstr ""
-"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Το DHT είναι ένα εργαλείο για την εύρεση ομότιμων χρηστών χωρίς τη βοήθεια ιχνηλάτη.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Το DHT είναι ένα εργαλείο για την εύρεση χρηστών χωρίς τη βοήθεια ανιχνευτή."
+msgstr "Το DHT είναι ένα εργαλείο για την εύρεση ομότιμων χρηστών χωρίς τη βοήθεια ιχνηλάτη."
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1412 gtk/ui/gtk4/PrefsDialog.ui:1043
 #: qt/PrefsDialog.ui:808
@@ -2540,43 +2007,26 @@ msgstr "Χρήση Ανα_κάλυψης Τοπικών Διαμοιραστών
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1416 gtk/ui/gtk4/PrefsDialog.ui:1045
 #: qt/PrefsDialog.ui:805
-#, fuzzy
 msgid "LPD is a tool for finding peers on your local network."
-msgstr ""
-"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Το LPD είναι ένα εργαλείο ανεύρεσης ομότιμων χρηστών στο τοπικό σας δίκτυο.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Το LPD είναι ένα εργαλείο ανεύρεσης χρηστών στο τοπικό σας δίκτυο."
+msgstr "Το LPD είναι ένα εργαλείο ανεύρεσης ομότιμων χρηστών στο τοπικό σας δίκτυο."
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1445 gtk/ui/gtk4/PrefsDialog.ui:1064
 #: qt/PrefsDialog.ui:818
-#, fuzzy
 msgid "Default Public Trackers"
-msgstr ""
-"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Προεπιλεγμένοι Δημόσιοι Ιχνηλάτες\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Προκαθορισμένοι Δημόσιοι Ιχνηλάτες"
+msgstr "Προεπιλεγμένοι Δημόσιοι Ιχνηλάτες"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1471 gtk/ui/gtk4/PrefsDialog.ui:1086
 #: qt/PrefsDialog.ui:824
-#, fuzzy
 msgid ""
 "Trackers to use on all public torrents.\n"
 "\n"
 "To add a backup URL, add it on the next line after a primary URL.\n"
 "To add a new primary URL, add it after a blank line."
 msgstr ""
-"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
 "Ιχνηλάτες προς χρήση σε όλα τα δημόσια torrents.\n"
 "\n"
 "Για την προσθήκη εφεδρικού URL, προσθέστε το στην επόμενη γραμμή μετά το κύριο URL.\n"
-"Για την προσθήκη νέου κύριου URL, προσθέστε το μετά από μία κενή γραμμή.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ιχνηλάτες για χρήση σε όλα τα δημόσια torrents.\n"
-"\n"
-"Για την χρήση εφεδρικού συνδέσμου, προσθέστε τον στην επόμενη γραμμή έπειτα από τον κύριο σύνδεσμο.\n"
-"Για την προσθήκη νέου κύριου συνδέσμου, προσθέστε τον έπειτα από μία κενή γραμμή."
+"Για την προσθήκη νέου κύριου URL, προσθέστε το μετά από μία κενή γραμμή."
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1503 gtk/ui/gtk4/PrefsDialog.ui:1108
 #: qt/PrefsDialog.ui:648
@@ -2596,13 +2046,8 @@ msgstr ""
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1556 gtk/ui/gtk4/PrefsDialog.ui:1151
 #: qt/PrefsDialog.ui:872
-#, fuzzy
 msgid "Show {appname} icon in the _notification area"
-msgstr ""
-"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Εμφάνιση του εικονιδίου του {appname} στην _περιοχή ειδοποιήσεων\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Εμφάνιση εικονιδίου του {appname} στην _περιοχή ειδοποιήσεων"
+msgstr "Εμφάνιση του εικονιδίου του {appname} στην _περιοχή ειδοποιήσεων"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1588 gtk/ui/gtk4/PrefsDialog.ui:1171
 #: qt/PrefsDialog.ui:896
@@ -2611,33 +2056,18 @@ msgstr "Ειδοποίηση"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1602 gtk/ui/gtk4/PrefsDialog.ui:1183
 #: qt/PrefsDialog.ui:902
-#, fuzzy
 msgid "Show a notification when torrents are a_dded"
-msgstr ""
-"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Εμφάνιση ειδοποίησης όταν _προστίθενται torrents\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Εμφάνιση ειδοποίησης όταν π_ροστίθενται torrent"
+msgstr "Εμφάνιση ειδοποίησης όταν π_ροστίθενται torrent"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1619 gtk/ui/gtk4/PrefsDialog.ui:1197
 #: qt/PrefsDialog.ui:909
-#, fuzzy
 msgid "Show a notification when torrents _finish"
-msgstr ""
-"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Εμφάνιση μιας ειδοποίησης όταν _ολοκληρωθούν τα torrents\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Εμφάνιση μιας ειδοποίησης όταν _ολοκληρωθούν τα torrent"
+msgstr "Εμφάνιση μιας ειδοποίησης όταν _ολοκληρωθούν τα torrent"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1636 gtk/ui/gtk4/PrefsDialog.ui:1211
 #: qt/PrefsDialog.ui:916
-#, fuzzy
 msgid "Play a _sound when torrents finish"
-msgstr ""
-"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Αναπαραγωγή ενός ή_χου όταν ολοκληρώνονται torrents\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Αναπαραγωγή ενός _ήχου όταν ολοκληρώνονται torrent"
+msgstr "Αναπαραγωγή ενός _ήχου όταν ολοκληρώνονται torrent"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1691 gtk/ui/gtk4/PrefsDialog.ui:1248
 #: qt/PrefsDialog.ui:946
@@ -2658,13 +2088,8 @@ msgstr "_Άνοιγμα πελάτη ιστού"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1753 gtk/ui/gtk4/PrefsDialog.ui:1290
 #: qt/PrefsDialog.ui:972
-#, fuzzy
 msgid "HTTP _port:"
-msgstr ""
-"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"πό_ρτα HTTP:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Θύρα HTTP:"
+msgstr "_Θύρα HTTP:"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1765 gtk/ui/gtk4/PrefsDialog.ui:1303
 #: qt/PrefsDialog.ui:992
@@ -2673,33 +2098,18 @@ msgstr "Χρήση _πιστοποίησης"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1785 gtk/ui/gtk4/PrefsDialog.ui:1317
 #: qt/PrefsDialog.ui:1002 qt/SessionDialog.ui:83
-#, fuzzy
 msgid "_Username:"
-msgstr ""
-"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ό_νομα χρήστη:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Όνομα χρήστη:"
+msgstr "Ό_νομα χρήστη:"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1799 gtk/ui/gtk4/PrefsDialog.ui:1329
 #: qt/PrefsDialog.ui:1015 qt/SessionDialog.ui:96
-#, fuzzy
 msgid "Pass_word:"
-msgstr ""
-"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Κωδικός πρόσβασης:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Κωδικός _πρόσβασης:"
+msgstr "_Κωδικός πρόσβασης:"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1811 gtk/ui/gtk4/PrefsDialog.ui:1342
 #: qt/PrefsDialog.ui:1032
-#, fuzzy
 msgid "Only allow these IP a_ddresses:"
-msgstr ""
-"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Επίτρεψε μόνο σε αυτές τις δι_ευθύνσεις IP:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Επίτρεψε μόνο σε αυτές τις διευθύνσεις IP:"
+msgstr "Επίτρεψε μόνο σε αυτές τις δι_ευθύνσεις IP:"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1833 gtk/ui/gtk4/PrefsDialog.ui:1358
 #: qt/PrefsDialog.ui:1042
@@ -2717,13 +2127,8 @@ msgstr "Απομακρυσμένα"
 
 #: gtk/ui/gtk3/RelocateDialog.ui:7 gtk/ui/gtk4/RelocateDialog.ui:5
 #: qt/RelocateDialog.ui:14
-#, fuzzy
 msgid "Set Torrent Location"
-msgstr ""
-"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ορισμός τοποθεσίας torrent\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ορισμός Τοποθεσίας Torrent"
+msgstr "Ορισμός τοποθεσίας torrent"
 
 #: gtk/ui/gtk3/RelocateDialog.ui:35 gtk/ui/gtk4/RelocateDialog.ui:101
 msgid "_Apply"
@@ -2895,26 +2300,16 @@ msgid "Got an error '{markup_begin}{error}{markup_end}' {time_span_ago}"
 msgstr "Λήφθηκε σφάλμα '{markup_begin}{error}{markup_end}' {time_span_ago}"
 
 #: libtransmission-app/formatters.cc:164
-#, fuzzy
 msgid "No updates scheduled"
-msgstr ""
-"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Δεν έχει προγραμματιστεί καμία ενημέρωση\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Δεν έχουν προγραμματιστεί ενημέρωσεις"
+msgstr "Δεν έχει προγραμματιστεί καμία ενημέρωση"
 
 #: libtransmission-app/formatters.cc:170
 msgid "Asking for more peers {time_span_from_now}"
 msgstr "Αίτηση για περισσότερους διαμοιραστές σε {time_span_from_now}"
 
 #: libtransmission-app/formatters.cc:175
-#, fuzzy
 msgid "Queued to ask for more peers"
-msgstr ""
-"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Σε αναμονή αίτησης για επιπλέον διαμοιραστές\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Σε ουρά για αίτημα επιπλέον χρηστών"
+msgstr "Σε αναμονή αίτησης για επιπλέον διαμοιραστές"
 
 #: libtransmission-app/formatters.cc:182
 msgid "Asked for more peers {markup_begin}{time_span_ago}{markup_end}"
@@ -2953,13 +2348,8 @@ msgid "Asking for peer counts {time_span_from_now}"
 msgstr "Αίτηση για περισσότερους διαμοιραστές σε {time_span_from_now}"
 
 #: libtransmission-app/formatters.cc:244
-#, fuzzy
 msgid "Queued to ask for peer counts"
-msgstr ""
-"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Σε αναμονή για αίτηση αριθμού διαμοιραστών\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Σε ουρά για αίτημα αριθμού χρηστών"
+msgstr "Σε αναμονή για αίτηση αριθμού διαμοιραστών"
 
 #: libtransmission-app/formatters.cc:250
 msgid "Asked for peer counts {markup_begin}{time_span_ago}{markup_end}"

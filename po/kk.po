@@ -151,13 +151,8 @@ msgstr[0] "Қайталанатын торренттерді қосу мүмкі
 msgstr[1] "Қайталанатын торренттерді қосу мүмкін емес"
 
 #: gtk/Application.cc:1382 qt/AboutDialog.ui:43
-#, fuzzy
 msgid "A fast and easy BitTorrent client"
-msgstr ""
-"#-#-#-#-#  kk.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Жылдам мен қарапайым BitTorrent клиенті\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Жылдам мен қарапайым BitTorrent қолданбасы"
+msgstr "Жылдам мен қарапайым BitTorrent клиенті"
 
 #: gtk/Application.cc:1384 qt/AboutDialog.cc:28
 msgid "Copyright © The {appname} Project"
@@ -211,14 +206,9 @@ msgstr "Жүктеу үшін кезекте"
 
 #: gtk/DetailsDialog.cc:495 gtk/FilterBar.cc:456 qt/FilterBar.cc:60
 #: qt/Torrent.cc:307
-#, fuzzy
 msgctxt "Verb"
 msgid "Downloading"
-msgstr ""
-"#-#-#-#-#  kk.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Жүктеп алу\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Жүктелуде"
+msgstr "Жүктелуде"
 
 #: gtk/DetailsDialog.cc:498 gtk/Torrent.cc:411 qt/Torrent.cc:310
 msgid "Queued for seeding"
@@ -482,26 +472,16 @@ msgid "Once removed, you'll need the torrent files or magnet links to add them a
 msgstr "Өшірілсе, торренті қайта жалғастыру үшін торрент файлдар не сілтемесі керек болады."
 
 #: gtk/Dialogs.cc:68 qt/MainWindow.cc:1340
-#, fuzzy
 msgid "This torrent has not finished downloading."
-msgstr ""
-"#-#-#-#-#  kk.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Бұл торренттердің жүктелуі аяқталмаған.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Бұл торренттің жүктелуі аяқталмаған."
+msgstr "Бұл торренттің жүктелуі аяқталмаған."
 
 #: gtk/Dialogs.cc:69 qt/MainWindow.cc:1341
 msgid "These torrents have not finished downloading."
 msgstr "Бұл торренттердің жүктелуі аяқталмаған."
 
 #: gtk/Dialogs.cc:71 qt/MainWindow.cc:1343
-#, fuzzy
 msgid "This torrent is connected to peers."
-msgstr ""
-"#-#-#-#-#  kk.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Бұл торренттер тораптарға қосулы тұр.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Бұл торрент тораптарға қосулы тұр."
+msgstr "Бұл торрент тораптарға қосулы тұр."
 
 #: gtk/Dialogs.cc:71 qt/MainWindow.cc:1344
 msgid "These torrents are connected to peers."
@@ -516,13 +496,8 @@ msgid "Some of these torrents are connected to peers."
 msgstr "Бұл торренттердің кейбіреулері тораптарға қосулы тұр."
 
 #: gtk/Dialogs.cc:83 qt/MainWindow.cc:1356
-#, fuzzy
 msgid "One of these torrents has not finished downloading."
-msgstr ""
-"#-#-#-#-#  kk.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Бұл торренттердің кейбіреулерінің жүктелуі аяқталмаған.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Бұл торренттердің біреуінің жүктелуі аяқталмаған."
+msgstr "Бұл торренттердің біреуінің жүктелуі аяқталмаған."
 
 #: gtk/Dialogs.cc:84 qt/MainWindow.cc:1357
 msgid "Some of these torrents have not finished downloading."
@@ -678,13 +653,8 @@ msgid "Limit Upload Speed"
 msgstr "Тарату жылдамдығын шектеу"
 
 #: gtk/MainWindow.cc:533 qt/MainWindow.cc:405
-#, fuzzy
 msgid "Stop Seeding at Ratio"
-msgstr ""
-"#-#-#-#-#  kk.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Келесі рейтингке жеткенде таратуды тоқтату:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Келесі рейтингке жеткенде таратуды тоқтату"
+msgstr "Келесі рейтингке жеткенде таратуды тоқтату"
 
 #: gtk/MainWindow.cc:571 qt/MainWindow.cc:370 qt/MainWindow.cc:1113
 msgid "Stop at Ratio ({ratio})"
@@ -1605,13 +1575,8 @@ msgstr "Торрент"
 #: gtk/ui/gtk3/MainWindow.ui:251 gtk/ui/gtk3/StatsDialog.ui:7
 #: gtk/ui/gtk4/MainWindow.ui:190 gtk/ui/gtk4/StatsDialog.ui:5
 #: qt/MainWindow.ui:147 qt/StatsDialog.ui:14
-#, fuzzy
 msgid "Statistics"
-msgstr ""
-"#-#-#-#-#  kk.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Статистикасы\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Статистика"
+msgstr "Статистика"
 
 #: gtk/ui/gtk3/MakeDialog.ui:7 gtk/ui/gtk3/MakeProgressDialog.ui:7
 #: gtk/ui/gtk4/MakeDialog.ui:5 gtk/ui/gtk4/MakeProgressDialog.ui:5
@@ -1880,13 +1845,8 @@ msgstr "Таратылуда"
 #: gtk/ui/gtk3/PrefsDialog.ui:912 gtk/ui/gtk3/PrefsDialog.ui:1099
 #: gtk/ui/gtk4/PrefsDialog.ui:661 gtk/ui/gtk4/PrefsDialog.ui:796
 #: qt/PrefsDialog.ui:553
-#, fuzzy
 msgid "Privacy"
-msgstr ""
-"#-#-#-#-#  kk.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Дербестік\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Жекелігі"
+msgstr "Жекелігі"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:928 gtk/ui/gtk4/PrefsDialog.ui:673
 #: qt/PrefsDialog.ui:565
@@ -2004,13 +1964,8 @@ msgstr "_Тораптарды табу үшін LPD қолдану"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1416 gtk/ui/gtk4/PrefsDialog.ui:1045
 #: qt/PrefsDialog.ui:805
-#, fuzzy
 msgid "LPD is a tool for finding peers on your local network."
-msgstr ""
-"#-#-#-#-#  kk.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"LPD - жергілікті желіңізден тораптарды табу құралы.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"LPD - жергілікті желіңізден пирлерді табу құралы."
+msgstr "LPD - жергілікті желіңізден тораптарды табу құралы."
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1445 gtk/ui/gtk4/PrefsDialog.ui:1064
 #: qt/PrefsDialog.ui:818
@@ -2304,13 +2259,8 @@ msgid "Asking for more peers {time_span_from_now}"
 msgstr ""
 
 #: libtransmission-app/formatters.cc:175
-#, fuzzy
 msgid "Queued to ask for more peers"
-msgstr ""
-"#-#-#-#-#  kk.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Көбірек тораптарды сұрауда кезекте тұр\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Көбірек пирлерді сұрауда кезекте тұр"
+msgstr "Көбірек тораптарды сұрауда кезекте тұр"
 
 #: libtransmission-app/formatters.cc:182
 msgid "Asked for more peers {markup_begin}{time_span_ago}{markup_end}"
@@ -2349,13 +2299,8 @@ msgid "Asking for peer counts {time_span_from_now}"
 msgstr "{time_span} ішіндегі пирлер саны сұрауда"
 
 #: libtransmission-app/formatters.cc:244
-#, fuzzy
 msgid "Queued to ask for peer counts"
-msgstr ""
-"#-#-#-#-#  kk.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Тораптар санын сұрауда кезекте тұр\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Пирлер санын сұрауда кезекте тұр"
+msgstr "Тораптар санын сұрауда кезекте тұр"
 
 #: libtransmission-app/formatters.cc:250
 msgid "Asked for peer counts {markup_begin}{time_span_ago}{markup_end}"

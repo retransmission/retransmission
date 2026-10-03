@@ -154,13 +154,8 @@ msgstr[0] "Kon dubbele torrent niet toevoegen"
 msgstr[1] "Kon dubbele torrents niet toevoegen"
 
 #: gtk/Application.cc:1382 qt/AboutDialog.ui:43
-#, fuzzy
 msgid "A fast and easy BitTorrent client"
-msgstr ""
-"#-#-#-#-#  nl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Een eenvoudige en snelle BitTorrent-client\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Een eenvoudige en snelle BitTorrent-cliënt"
+msgstr "Een eenvoudige en snelle BitTorrent-cliënt"
 
 #: gtk/Application.cc:1384 qt/AboutDialog.cc:28
 msgid "Copyright © The {appname} Project"
@@ -215,13 +210,8 @@ msgid "Seed regardless of ratio"
 msgstr "Seeden ongeacht verhouding"
 
 #: gtk/DetailsDialog.cc:442 qt/DetailsDialog.cc:1400
-#, fuzzy
 msgid "Stop seeding at ratio:"
-msgstr ""
-"#-#-#-#-#  nl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Stoppen met seeden bij een verhouding van:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Stop met seeden bij een verhouding van:"
+msgstr "Stoppen met seeden bij een verhouding van:"
 
 #: gtk/DetailsDialog.cc:457 qt/DetailsDialog.cc:1403
 msgid "Seed regardless of activity"
@@ -232,31 +222,16 @@ msgid "Stop seeding if idle for N minutes:"
 msgstr "Stoppen met seeden indien langer dan N minuten inactief:"
 
 #: gtk/DetailsDialog.cc:486 gtk/Torrent.cc:405 qt/Torrent.cc:298
-#, fuzzy
 msgid "Queued for verification"
-msgstr ""
-"#-#-#-#-#  nl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"In de wachtrij gezet voor verificatie\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"In de wachtrij voor verificatie gezet"
+msgstr "In de wachtrij gezet voor verificatie"
 
 #: gtk/DetailsDialog.cc:489 qt/Torrent.cc:301
-#, fuzzy
 msgid "Verifying local data"
-msgstr ""
-"#-#-#-#-#  nl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Lokale gegevens aan het verifiëren\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Lokale gegevens verifiëren"
+msgstr "Lokale gegevens verifiëren"
 
 #: gtk/DetailsDialog.cc:492 gtk/Torrent.cc:408 qt/Torrent.cc:304
-#, fuzzy
 msgid "Queued for download"
-msgstr ""
-"#-#-#-#-#  nl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"In de wachtrij gezet voor download\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"In de wachtrij voor downloaden gezet"
+msgstr "In de wachtrij gezet voor download"
 
 #: gtk/DetailsDialog.cc:495 gtk/FilterBar.cc:456 qt/FilterBar.cc:60
 #: qt/Torrent.cc:307
@@ -265,13 +240,8 @@ msgid "Downloading"
 msgstr "Downloaden"
 
 #: gtk/DetailsDialog.cc:498 gtk/Torrent.cc:411 qt/Torrent.cc:310
-#, fuzzy
 msgid "Queued for seeding"
-msgstr ""
-"#-#-#-#-#  nl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"In de wachtrij gezet voor seeden\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"In de wachtrij voor seeden gezet"
+msgstr "In de wachtrij gezet voor seeden"
 
 #: gtk/DetailsDialog.cc:501 gtk/FilterBar.cc:460 qt/FilterBar.cc:59
 #: qt/Torrent.cc:313
@@ -306,13 +276,8 @@ msgid "No Torrents Selected"
 msgstr "Geen torrents geselecteerd"
 
 #: gtk/DetailsDialog.cc:561 qt/DetailsDialog.cc:799
-#, fuzzy
 msgid "Private to this tracker -- DHT and PEX disabled"
-msgstr ""
-"#-#-#-#-#  nl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Exclusief voor deze tracker — DHT en PEX uitgeschakeld\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Privé voor deze tracker -- DHT en PEX uitgeschakeld"
+msgstr "Privé voor deze tracker -- DHT en PEX uitgeschakeld"
 
 #: gtk/DetailsDialog.cc:561 qt/DetailsDialog.cc:799
 msgid "Public torrent"
@@ -363,22 +328,12 @@ msgid "{current_size} ({percent_done}% of {percent_available}% available; {unver
 msgstr "{current_size} ({percent_done}% van {percent_available}% beschikbaar; {unverified_size} niet geverifieerd)"
 
 #: gtk/DetailsDialog.cc:816 qt/DetailsDialog.cc:613
-#, fuzzy
 msgid "{downloaded_size} (+{discarded_size} discarded after failed checksum)"
-msgstr ""
-"#-#-#-#-#  nl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{downloaded_size} (+{discarded_size} weggegooid na mislukte checksum)\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{downloaded_size} (+{discarded_size} weggegooid na mislukte controlesom)"
+msgstr "{downloaded_size} (+{discarded_size} weggegooid na mislukte checksum)"
 
 #: gtk/DetailsDialog.cc:837 qt/DetailsDialog.cc:636
-#, fuzzy
 msgid "{uploaded_size} (Ratio: {ratio})"
-msgstr ""
-"#-#-#-#-#  nl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{uploaded_size} (Ratio: {ratio})\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{uploaded_size} (verhouding: {ratio})"
+msgstr "{uploaded_size} (verhouding: {ratio})"
 
 #: gtk/DetailsDialog.cc:866
 msgid "No errors"
@@ -393,22 +348,12 @@ msgid "Active now"
 msgstr "Nu actief"
 
 #: gtk/DetailsDialog.cc:1195 qt/DetailsDialog.cc:1086
-#, fuzzy
 msgid "Optimistic unchoke"
-msgstr ""
-"#-#-#-#-#  nl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Betere verbindingen met peers zoeken\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Optimistisch unchoken"
+msgstr "Betere verbindingen met peers zoeken"
 
 #: gtk/DetailsDialog.cc:1199 qt/DetailsDialog.cc:1090
-#, fuzzy
 msgid "Downloading from this peer"
-msgstr ""
-"#-#-#-#-#  nl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Aan het downloaden van deze peer\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Downloaden van deze peer"
+msgstr "Downloaden van deze peer"
 
 #: gtk/DetailsDialog.cc:1203 qt/DetailsDialog.cc:1094
 msgid "We would download from this peer if they would let us"
@@ -425,22 +370,12 @@ msgid "This peer would download from us if we would let them"
 msgstr "We zouden van deze peer downloaden als deze dat toeliet"
 
 #: gtk/DetailsDialog.cc:1215 qt/DetailsDialog.cc:1106
-#, fuzzy
 msgid "Peer has unchoked us, but we're not interested"
-msgstr ""
-"#-#-#-#-#  nl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"We zouden van deze peer kunnen downloaden, maar willen dat niet\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Peer heeft ons geünchoket, maar we hebben geen interesse"
+msgstr "We zouden van deze peer kunnen downloaden, maar willen dat niet"
 
 #: gtk/DetailsDialog.cc:1219 qt/DetailsDialog.cc:1110
-#, fuzzy
 msgid "We unchoked this peer, but they're not interested"
-msgstr ""
-"#-#-#-#-#  nl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Deze peer zou van ons kunnen downloaden, maar wil dat niet\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"We hebben deze peer geünchoket, maar er is geen interesse"
+msgstr "Deze peer zou van ons kunnen downloaden, maar wil dat niet"
 
 #: gtk/DetailsDialog.cc:1223 qt/DetailsDialog.cc:1069 qt/DetailsDialog.cc:1114
 msgid "Encrypted connection"
@@ -459,13 +394,8 @@ msgid "Peer is an incoming connection"
 msgstr "Peer is een inkomende verbinding"
 
 #: gtk/DetailsDialog.cc:1239 qt/DetailsDialog.cc:1130
-#, fuzzy
 msgid "Peer is connected over µTP"
-msgstr ""
-"#-#-#-#-#  nl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Peer is verbonden via µTP\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Peer is aangesloten via μTP"
+msgstr "Peer is verbonden via µTP"
 
 #: gtk/DetailsDialog.cc:1243 qt/DetailsDialog.cc:1134
 msgid "Peer supports holepunch (BEP 55)"
@@ -488,22 +418,12 @@ msgid "Up Reqs"
 msgstr "Upl.-verz."
 
 #: gtk/DetailsDialog.cc:1333 gtk/DetailsDialog.cc:1402 qt/DetailsDialog.cc:1480
-#, fuzzy
 msgid "Down"
-msgstr ""
-"#-#-#-#-#  nl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Downl.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Omlaag"
+msgstr "Downl."
 
 #: gtk/DetailsDialog.cc:1339 qt/DetailsDialog.cc:1478
-#, fuzzy
 msgid "Up"
-msgstr ""
-"#-#-#-#-#  nl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Upl.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Omhoog"
+msgstr "Upl."
 
 #: gtk/DetailsDialog.cc:1344 qt/AboutDialog.cc:40 qt/DetailsDialog.cc:1485
 msgid "Client"
@@ -526,13 +446,8 @@ msgid "List contains invalid URLs"
 msgstr "De lijst bevat ongeldige URL’s"
 
 #: gtk/DetailsDialog.cc:1734 gtk/FileList.cc:792 qt/Session.cc:267
-#, fuzzy
 msgid "Please correct the errors and try again."
-msgstr ""
-"#-#-#-#-#  nl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Verhelp de fouten en probeer het opnieuw.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Corrigeer de fouten en probeer het opnieuw."
+msgstr "Verhelp de fouten en probeer het opnieuw."
 
 #: gtk/DetailsDialog.cc:1814
 msgid "{torrent_name} - Add Tracker"
@@ -558,43 +473,20 @@ msgid "Remove torrent?"
 msgstr "Torrent verwijderen?"
 
 #: gtk/Dialogs.cc:53 qt/MainWindow.cc:1328
-#, fuzzy
 msgid "Delete this torrent's downloaded files?"
-msgstr ""
-"#-#-#-#-#  nl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"De van deze torrent gedownloade bestanden verwijderen?\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"De binnengehaalde bestanden van deze torrent verwijderen?"
+msgstr "De van deze torrent gedownloade bestanden verwijderen?"
 
 #: gtk/Dialogs.cc:56 qt/MainWindow.cc:1326
-#, fuzzy
 msgid "Remove {count:L} torrent?"
 msgid_plural "Remove {count:L} torrents?"
-msgstr[0] ""
-"#-#-#-#-#  nl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{count:L} torrent verwijderen?\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{count:L} torrent verwijderen?"
-msgstr[1] ""
-"#-#-#-#-#  nl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{count:L}torrents verwijderen?\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"&Ln torrents verwijderen?"
+msgstr[0] "{count:L} torrent verwijderen?"
+msgstr[1] "{count:L}torrents verwijderen?"
 
 #: gtk/Dialogs.cc:58 qt/MainWindow.cc:1330
-#, fuzzy
 msgid "Delete this {count:L} torrent's downloaded files?"
 msgid_plural "Delete these {count:L} torrents' downloaded files?"
-msgstr[0] ""
-"#-#-#-#-#  nl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Gedownloade bestanden van deze {count:L} torrent verwijderen?\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Gedownloade bestanden van deze {count:L} torrent verwijderen?"
-msgstr[1] ""
-"#-#-#-#-#  nl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"De van deze {count:L} torrents gedownloade bestanden verwijderen?\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Gedownloade bestanden van deze {count:L} torrents verwijderen?"
+msgstr[0] "Gedownloade bestanden van deze {count:L} torrent verwijderen?"
+msgstr[1] "Gedownloade bestanden van deze {count:L} torrents verwijderen?"
 
 #: gtk/Dialogs.cc:65 qt/MainWindow.cc:1337
 #, fuzzy
@@ -610,76 +502,36 @@ msgid "Once removed, you'll need the torrent files or magnet links to add them a
 msgstr "Eenmaal verwijderd, zullen om verder te gaan met de overdrachten, de torrentbestanden of magnetlinks nodig zijn"
 
 #: gtk/Dialogs.cc:68 qt/MainWindow.cc:1340
-#, fuzzy
 msgid "This torrent has not finished downloading."
-msgstr ""
-"#-#-#-#-#  nl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Deze torrent is nog niet klaar met binnenhalen.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Deze torrent is niet klaar met downloaden."
+msgstr "Deze torrent is niet klaar met downloaden."
 
 #: gtk/Dialogs.cc:69 qt/MainWindow.cc:1341
-#, fuzzy
 msgid "These torrents have not finished downloading."
-msgstr ""
-"#-#-#-#-#  nl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Deze torrents zijn nog niet klaar met binnenhalen.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Deze torrents zijn niet klaar met downloaden."
+msgstr "Deze torrents zijn niet klaar met downloaden."
 
 #: gtk/Dialogs.cc:71 qt/MainWindow.cc:1343
-#, fuzzy
 msgid "This torrent is connected to peers."
-msgstr ""
-"#-#-#-#-#  nl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Deze torrent is nog verbonden met peers.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Deze torrent is verbonden met peers."
+msgstr "Deze torrent is verbonden met peers."
 
 #: gtk/Dialogs.cc:71 qt/MainWindow.cc:1344
-#, fuzzy
 msgid "These torrents are connected to peers."
-msgstr ""
-"#-#-#-#-#  nl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Deze torrents zijn nog verbonden met peers.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Deze torrents zijn verbonden met peers."
+msgstr "Deze torrents zijn verbonden met peers."
 
 #: gtk/Dialogs.cc:74 qt/MainWindow.cc:1347
-#, fuzzy
 msgid "One of these torrents is connected to peers."
-msgstr ""
-"#-#-#-#-#  nl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Een van deze torrents is nog verbonden met peers.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Eén van deze torrents is verbonden met peers."
+msgstr "Eén van deze torrents is verbonden met peers."
 
 #: gtk/Dialogs.cc:75 qt/MainWindow.cc:1348
-#, fuzzy
 msgid "Some of these torrents are connected to peers."
-msgstr ""
-"#-#-#-#-#  nl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Enkele van deze torrents zijn nog verbonden met peers.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Enkele van deze torrents zijn verbonden met peers."
+msgstr "Enkele van deze torrents zijn verbonden met peers."
 
 #: gtk/Dialogs.cc:83 qt/MainWindow.cc:1356
-#, fuzzy
 msgid "One of these torrents has not finished downloading."
-msgstr ""
-"#-#-#-#-#  nl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Een van deze torrents is nog niet klaar met downloaden.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Eén van deze torrents is niet klaar met downloaden."
+msgstr "Eén van deze torrents is niet klaar met downloaden."
 
 #: gtk/Dialogs.cc:84 qt/MainWindow.cc:1357
-#, fuzzy
 msgid "Some of these torrents have not finished downloading."
-msgstr ""
-"#-#-#-#-#  nl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Enkele van deze torrents zijn nog niet klaar met downloaden.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Enkele van deze torrents zijn niet klaar met downloaden."
+msgstr "Enkele van deze torrents zijn niet klaar met downloaden."
 
 #: gtk/Dialogs.cc:100 gtk/MessageLogWindow.cc:269 gtk/OptionsDialog.cc:321
 #: gtk/PathButton.cc:306 gtk/StatsDialog.cc:114
@@ -739,13 +591,8 @@ msgid "Progress"
 msgstr "Voortgang"
 
 #: gtk/FileList.cc:930 qt/FileTreeModel.cc:204
-#, fuzzy
 msgid "Download"
-msgstr ""
-"#-#-#-#-#  nl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Downloaden\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Download"
+msgstr "Downloaden"
 
 #: gtk/FileList.cc:941 qt/FileTreeModel.cc:207 qt/FileTreeView.cc:343
 msgid "Priority"
@@ -761,24 +608,14 @@ msgid "Active"
 msgstr "Actief"
 
 #: gtk/FilterBar.cc:469 qt/FilterBar.cc:63
-#, fuzzy
 msgctxt "Verb"
 msgid "Verifying"
-msgstr ""
-"#-#-#-#-#  nl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Aan het verifiëren\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Verifiëren"
+msgstr "Verifiëren"
 
 #: gtk/FilterBar.cc:471 gtk/FreeSpaceLabel.cc:57 qt/DetailsDialog.cc:1323
 #: qt/FilterBar.cc:64
-#, fuzzy
 msgid "Error"
-msgstr ""
-"#-#-#-#-#  nl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Foutmelding\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Fout"
+msgstr "Fout"
 
 #: gtk/FilterBar.cc:569 gtk/ui/gtk3/FilterBar.ui:13 gtk/ui/gtk4/FilterBar.ui:8
 #: qt/FilterBar.cc:193
@@ -854,39 +691,24 @@ msgid "Stop Seeding at Ratio"
 msgstr "Stoppen met seeden bij verhouding"
 
 #: gtk/MainWindow.cc:571 qt/MainWindow.cc:370 qt/MainWindow.cc:1113
-#, fuzzy
 msgid "Stop at Ratio ({ratio})"
-msgstr ""
-"#-#-#-#-#  nl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Stop bij Ratio ({ratio})\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Stoppen bij verhouding ({ratio})"
+msgstr "Stoppen bij verhouding ({ratio})"
 
 #: gtk/MainWindow.cc:602 qt/MainWindow.ui:622
 msgid "Total Ratio"
 msgstr "Totale verhouding"
 
 #: gtk/MainWindow.cc:603 qt/MainWindow.ui:630
-#, fuzzy
 msgid "Session Ratio"
-msgstr ""
-"#-#-#-#-#  nl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Verhouding per sessie\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Verhouding voor sessie"
+msgstr "Verhouding per sessie"
 
 #: gtk/MainWindow.cc:604 qt/MainWindow.ui:638
 msgid "Total Transfer"
 msgstr "Totale overdracht"
 
 #: gtk/MainWindow.cc:605 qt/MainWindow.ui:646
-#, fuzzy
 msgid "Session Transfer"
-msgstr ""
-"#-#-#-#-#  nl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Overdracht per sessie\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Overdracht voor sessie"
+msgstr "Overdracht per sessie"
 
 #: gtk/MainWindow.cc:757 qt/MainWindow.cc:738
 msgid "Down: {downloaded_size}, Up: {uploaded_size}"
@@ -894,13 +716,8 @@ msgstr "Download: {downloaded_size}$s, Upload: {uploaded_size}$s"
 
 #: gtk/MainWindow.cc:760 gtk/Torrent.cc:424 qt/MainWindow.cc:741
 #: qt/TorrentDelegate.cc:291
-#, fuzzy
 msgid "Ratio: {ratio}"
-msgstr ""
-"#-#-#-#-#  nl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ratio: {ratio}\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Verhouding: {ratio}"
+msgstr "Verhouding: {ratio}"
 
 #: gtk/MainWindow.cc:782 qt/Speed.cc:19
 msgid "{download_speed} ▾"
@@ -1037,40 +854,20 @@ msgid "Select File"
 msgstr "Kies bestand"
 
 #: gtk/PathButton.cc:344 qt/PathButton.cc:29 qt/PathButton.cc:98
-#, fuzzy
 msgid "(None)"
-msgstr ""
-"#-#-#-#-#  nl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"(Geen)\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"(geen)"
+msgstr "(Geen)"
 
 #: gtk/PrefsDialog.cc:292 qt/PrefsDialog.cc:105
-#, fuzzy
 msgid "Allow encryption"
-msgstr ""
-"#-#-#-#-#  nl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Versleuteling toestaan\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Sta versleuteling toe"
+msgstr "Versleuteling toestaan"
 
 #: gtk/PrefsDialog.cc:293 qt/PrefsDialog.cc:106
-#, fuzzy
 msgid "Prefer encryption"
-msgstr ""
-"#-#-#-#-#  nl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Voorkeur geven aan versleuteling\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Geef voorkeur aan versleuteling"
+msgstr "Voorkeur geven aan versleuteling"
 
 #: gtk/PrefsDialog.cc:294 qt/PrefsDialog.cc:107
-#, fuzzy
 msgid "Require encryption"
-msgstr ""
-"#-#-#-#-#  nl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Versleuteling vereisen\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Vereis versleuteling"
+msgstr "Versleuteling vereisen"
 
 #: gtk/PrefsDialog.cc:357 qt/PrefsDialog.cc:75
 msgid "Every Day"
@@ -1081,13 +878,8 @@ msgid "Weekdays"
 msgstr "Weekdagen"
 
 #: gtk/PrefsDialog.cc:359 qt/PrefsDialog.cc:77
-#, fuzzy
 msgid "Weekends"
-msgstr ""
-"#-#-#-#-#  nl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Weekends\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Weekenden"
+msgstr "Weekends"
 
 #: gtk/PrefsDialog.cc:550
 msgid "Blocklist has {count:L} entry"
@@ -1105,13 +897,8 @@ msgid "Couldn't update blocklist"
 msgstr "Kon zwarte lijst niet bijwerken"
 
 #: gtk/PrefsDialog.cc:578 qt/PrefsDialog.cc:446
-#, fuzzy
 msgid "Getting new blocklist…"
-msgstr ""
-"#-#-#-#-#  nl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Nieuwe blokkadelijst wordt opgehaald…\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Verkrijgen van nieuwe zwarte lijst…"
+msgstr "Nieuwe blokkadelijst wordt opgehaald…"
 
 #: gtk/PrefsDialog.cc:925
 msgctxt "Port test status"
@@ -1201,50 +988,29 @@ msgid "{upload_speed} ▴ {download_speed} ▾"
 msgstr "{upload_speed} ▴ {download_speed} ▾"
 
 #: gtk/Torrent.cc:416 qt/TorrentDelegate.cc:284
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Verifying local data ({percent_done}% tested)"
-msgstr ""
-"#-#-#-#-#  nl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Lokale gegevens verifiëren ({percent_done}% getest)\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Lokale gegevens verifiëren ({percent_done} % getest)"
+msgstr "Lokale gegevens verifiëren ({percent_done}% getest)"
 
 #: gtk/Torrent.cc:443 qt/DetailsDialog.cc:565 qt/TorrentDelegate.cc:183
-#, fuzzy
 msgid "{current_size} of {complete_size} ({percent_done}%)"
-msgstr ""
-"#-#-#-#-#  nl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{current_size} of {complete_size} ({percent_done}%)\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{current_size} van {complete_size} ({percent_done})\n"
-"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{current_size} van {complete_size} ({percent_done} %)"
+msgstr "{current_size} van {complete_size} ({percent_done} %)"
 
 #: gtk/Torrent.cc:453 qt/TorrentDelegate.cc:198
 msgid "{current_size} of {complete_size} ({percent_complete}%), uploaded {uploaded_size} (Ratio: {ratio}, Goal: {seed_ratio})"
 msgstr "{current_size} van {complete_size} ({percent_complete}%), geüpload {uploaded_size} (Ratio: {ratio}, Doel: {seed_ratio})"
 
 #: gtk/Torrent.cc:465 qt/TorrentDelegate.cc:213
-#, fuzzy
 msgid "{current_size} of {complete_size} ({percent_complete}%), uploaded {uploaded_size} (Ratio: {ratio})"
-msgstr ""
-"#-#-#-#-#  nl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{current_size} van {complete_size} ({percent_complete}%), geüpload {uploaded_size} (Ratio: {ratio})\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{current_size} van {complete_size} ({percent_complete} %), {uploaded_size} geüpload (verhouding: {ratio})"
+msgstr "{current_size} van {complete_size} ({percent_complete} %), {uploaded_size} geüpload (verhouding: {ratio})"
 
 #: gtk/Torrent.cc:474 qt/TorrentDelegate.cc:229
 msgid "{complete_size}, uploaded {uploaded_size} (Ratio: {ratio}, Goal: {seed_ratio})"
 msgstr "{complete_size}, geüpload {uploaded_size} (Ratio: {ratio}, Doel: {seed_ratio})"
 
 #: gtk/Torrent.cc:482 qt/TorrentDelegate.cc:241
-#, fuzzy
 msgid "{complete_size}, uploaded {uploaded_size} (Ratio: {ratio})"
-msgstr ""
-"#-#-#-#-#  nl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{complete_size}, geüpload {uploaded_size} (Ratio: {ratio})\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{complete_size}, {uploaded_size} geüpload (verhouding: {ratio})"
+msgstr "{complete_size}, {uploaded_size} geüpload (verhouding: {ratio})"
 
 #. Translators: Second (optional) part of torrent progress string
 #: gtk/Torrent.cc:493 qt/TorrentDelegate.cc:254 qt/TorrentDelegate.cc:307
@@ -1293,19 +1059,10 @@ msgstr[0] "Downloaden vanaf {active_count} webseed"
 msgstr[1] "Downloaden vanaf {active_count} webseeds"
 
 #: gtk/Torrent.cc:659 qt/TorrentDelegate.cc:351
-#, fuzzy
 msgid "Downloading from {active_count} of {connected_count} connected peer"
 msgid_plural "Downloading from {active_count} of {connected_count} connected peers"
-msgstr[0] ""
-"#-#-#-#-#  nl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Downloaden vanaf {active_count} van {connected_count} verbonden peer\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Downloaden van {active_count} van de {connected_count} verbonden peer"
-msgstr[1] ""
-"#-#-#-#-#  nl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Downloaden vanaf {active_count} van {connected_count} verbonden peers\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Downloaden van {active_count} van de {connected_count} verbonden peers"
+msgstr[0] "Downloaden vanaf {active_count} van {connected_count} verbonden peer"
+msgstr[1] "Downloaden vanaf {active_count} van {connected_count} verbonden peers"
 
 #: gtk/Torrent.cc:668 qt/TorrentDelegate.cc:380
 msgid "Seeding to {active_count} of {connected_count} connected peer"
@@ -1389,26 +1146,14 @@ msgstr "Alles _pauzeren"
 
 #: gtk/transmission-menus.ui:45 gtk/transmission-menus.ui:473
 #: qt/MainWindow.ui:447
-#, fuzzy
 msgid "_Quit"
-msgstr ""
-"#-#-#-#-#  nl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"A_fsluiten\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Af_sluiten"
+msgstr "A_fsluiten"
 
 #: gtk/transmission-menus.ui:50 gtk/ui/gtk3/DetailsDialog.ui:715
 #: gtk/ui/gtk4/DetailsDialog.ui:559 qt/DetailsDialog.ui:637
 #: qt/MainWindow.ui:222
-#, fuzzy
 msgid "_Edit"
-msgstr ""
-"#-#-#-#-#  nl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Be_werken\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Be_werken\n"
-"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"B_ewerken"
+msgstr "Be_werken"
 
 #: gtk/transmission-menus.ui:55 qt/MainWindow.ui:458
 msgid "Select _All"
@@ -1429,23 +1174,13 @@ msgstr "_Torrent"
 #: gtk/transmission-menus.ui:78 gtk/transmission-menus.ui:285
 #: gtk/ui/gtk3/MainWindow.ui:95 gtk/ui/gtk4/MainWindow.ui:92
 #: qt/MainWindow.ui:343
-#, fuzzy
 msgid "_Properties"
-msgstr ""
-"#-#-#-#-#  nl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Eigenschappen\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Eigenscha_ppen"
+msgstr "_Eigenschappen"
 
 #: gtk/transmission-menus.ui:84 gtk/transmission-menus.ui:291
 #: qt/MainWindow.ui:354
-#, fuzzy
 msgid "Open Fold_er"
-msgstr ""
-"#-#-#-#-#  nl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Map open_en\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Map op_enen"
+msgstr "Map open_en"
 
 #: gtk/transmission-menus.ui:92 gtk/transmission-menus.ui:357
 #: gtk/ui/gtk3/MainWindow.ui:39 gtk/ui/gtk4/MainWindow.ui:44
@@ -1460,13 +1195,8 @@ msgstr "_Nu starten"
 
 #: gtk/transmission-menus.ui:104 gtk/transmission-menus.ui:369
 #: qt/MainWindow.ui:379
-#, fuzzy
 msgid "Ask Tracker for _More Peers"
-msgstr ""
-"#-#-#-#-#  nl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Tracker om meer peers vragen\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Tracker om _meer peers vragen"
+msgstr "_Tracker om meer peers vragen"
 
 #: gtk/transmission-menus.ui:107 gtk/transmission-menus.ui:372
 #: qt/MainWindow.ui:196
@@ -1477,13 +1207,8 @@ msgstr "Wachtrij"
 
 #: gtk/transmission-menus.ui:112 gtk/transmission-menus.ui:377
 #: qt/MainWindow.ui:712
-#, fuzzy
 msgid "Move to _Top"
-msgstr ""
-"#-#-#-#-#  nl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Bovenaan plaatsen\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Bovenaan plaa_tsen"
+msgstr "_Bovenaan plaatsen"
 
 #: gtk/transmission-menus.ui:117 gtk/transmission-menus.ui:382
 #: qt/MainWindow.ui:717
@@ -1509,23 +1234,13 @@ msgstr "_Pauzeren"
 
 #: gtk/transmission-menus.ui:141 gtk/transmission-menus.ui:406
 #: qt/MainWindow.ui:675
-#, fuzzy
 msgid "Set _Location…"
-msgstr ""
-"#-#-#-#-#  nl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Locatie instellen…\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Locatie instellen…"
+msgstr "_Locatie instellen…"
 
 #: gtk/transmission-menus.ui:145 gtk/transmission-menus.ui:410
 #: qt/MainWindow.ui:401
-#, fuzzy
 msgid "_Verify Local Data"
-msgstr ""
-"#-#-#-#-#  nl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Lokale gegevens verif_iëren\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Lokale gegevens _verifiëren"
+msgstr "Lokale gegevens verif_iëren"
 
 #: gtk/transmission-menus.ui:151 gtk/transmission-menus.ui:416
 #: qt/MainWindow.ui:680
@@ -1534,13 +1249,8 @@ msgstr "Magnetkoppeling _kopiëren naar klembord"
 
 #: gtk/transmission-menus.ui:164 gtk/transmission-menus.ui:429
 #: qt/MainWindow.ui:426
-#, fuzzy
 msgid "_Delete Files and Remove"
-msgstr ""
-"#-#-#-#-#  nl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Bestanden wissen en verwijderen\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Bestan_den wissen en verwijderen"
+msgstr "Bestan_den wissen en verwijderen"
 
 #: gtk/transmission-menus.ui:170 qt/MainWindow.ui:244
 msgid "_View"
@@ -1579,13 +1289,8 @@ msgstr "Sorteren op _naam"
 
 #: gtk/transmission-menus.ui:210 gtk/transmission-menus.ui:316
 #: qt/MainWindow.ui:558
-#, fuzzy
 msgid "Sort by _Progress"
-msgstr ""
-"#-#-#-#-#  nl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Sorteren op _voortgang\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Sorteren o_p voortgang"
+msgstr "Sorteren op _voortgang"
 
 #: gtk/transmission-menus.ui:215 gtk/transmission-menus.ui:321
 #: qt/MainWindow.ui:741
@@ -1604,23 +1309,13 @@ msgstr "Sorteren op _grootte"
 
 #: gtk/transmission-menus.ui:230 gtk/transmission-menus.ui:336
 #: qt/MainWindow.ui:582
-#, fuzzy
 msgid "Sort by Stat_e"
-msgstr ""
-"#-#-#-#-#  nl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Sorteren op stat_us\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Sorteren op _status"
+msgstr "Sorteren op stat_us"
 
 #: gtk/transmission-menus.ui:235 gtk/transmission-menus.ui:341
 #: qt/MainWindow.ui:542
-#, fuzzy
 msgid "Sort by Time _Left"
-msgstr ""
-"#-#-#-#-#  nl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Sorteren op resterende _tijd\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Sorteren op resterende t_ijd"
+msgstr "Sorteren op resterende _tijd"
 
 #: gtk/transmission-menus.ui:242 gtk/transmission-menus.ui:348
 #: qt/MainWindow.ui:614
@@ -1633,13 +1328,8 @@ msgid "_Help"
 msgstr "_Hulp"
 
 #: gtk/transmission-menus.ui:251
-#, fuzzy
 msgid "Message _Log"
-msgstr ""
-"#-#-#-#-#  nl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Berichtenlogboek\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Berichten_log"
+msgstr "_Berichtenlogboek"
 
 #: gtk/transmission-menus.ui:255 qt/MainWindow.ui:590
 msgid "_Statistics"
@@ -1650,22 +1340,12 @@ msgid "_Donate"
 msgstr "_Doneren"
 
 #: gtk/transmission-menus.ui:268 qt/MainWindow.ui:595
-#, fuzzy
 msgid "_Contents"
-msgstr ""
-"#-#-#-#-#  nl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"In_houd\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Inhoud"
+msgstr "In_houd"
 
 #: gtk/transmission-menus.ui:274 qt/MainWindow.ui:603
-#, fuzzy
 msgid "_About"
-msgstr ""
-"#-#-#-#-#  nl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Over\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"In_fo"
+msgstr "_Over"
 
 #: gtk/transmission-menus.ui:297
 #, fuzzy
@@ -1735,23 +1415,13 @@ msgstr "Gedownload:"
 
 #: gtk/ui/gtk3/DetailsDialog.ui:122 gtk/ui/gtk4/DetailsDialog.ui:78
 #: qt/DetailsDialog.ui:170
-#, fuzzy
 msgid "State:"
-msgstr ""
-"#-#-#-#-#  nl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Status:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Staat:"
+msgstr "Status:"
 
 #: gtk/ui/gtk3/DetailsDialog.ui:134 gtk/ui/gtk4/DetailsDialog.ui:88
 #: qt/DetailsDialog.ui:202
-#, fuzzy
 msgid "Running time:"
-msgstr ""
-"#-#-#-#-#  nl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Looptijd:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Tijd actief:"
+msgstr "Looptijd:"
 
 #: gtk/ui/gtk3/DetailsDialog.ui:146 gtk/ui/gtk4/DetailsDialog.ui:98
 #: qt/DetailsDialog.ui:234
@@ -1765,13 +1435,8 @@ msgstr "Laatste activiteit:"
 
 #: gtk/ui/gtk3/DetailsDialog.ui:170 gtk/ui/gtk4/DetailsDialog.ui:118
 #: qt/DetailsDialog.ui:298
-#, fuzzy
 msgid "Error:"
-msgstr ""
-"#-#-#-#-#  nl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Foutmelding:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Fout:"
+msgstr "Fout:"
 
 #: gtk/ui/gtk3/DetailsDialog.ui:352 gtk/ui/gtk4/DetailsDialog.ui:274
 #: qt/DetailsDialog.ui:333
@@ -1795,13 +1460,8 @@ msgstr "Privacy:"
 
 #: gtk/ui/gtk3/DetailsDialog.ui:404 gtk/ui/gtk4/DetailsDialog.ui:316
 #: qt/DetailsDialog.ui:467
-#, fuzzy
 msgid "Origin:"
-msgstr ""
-"#-#-#-#-#  nl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Herkomst:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Oorsprong:"
+msgstr "Herkomst:"
 
 #: gtk/ui/gtk3/DetailsDialog.ui:416 gtk/ui/gtk4/DetailsDialog.ui:326
 #: qt/DetailsDialog.ui:499
@@ -1810,13 +1470,8 @@ msgstr "Toegevoegd:"
 
 #: gtk/ui/gtk3/DetailsDialog.ui:430 gtk/ui/gtk4/DetailsDialog.ui:338
 #: qt/DetailsDialog.ui:542
-#, fuzzy
 msgid "Comment:"
-msgstr ""
-"#-#-#-#-#  nl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Commentaar:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Opmerking:"
+msgstr "Commentaar:"
 
 #: gtk/ui/gtk3/DetailsDialog.ui:562 gtk/ui/gtk4/DetailsDialog.ui:451
 #: qt/DetailsDialog.ui:30
@@ -1857,13 +1512,8 @@ msgstr "Snelheid"
 
 #: gtk/ui/gtk3/DetailsDialog.ui:887 gtk/ui/gtk4/DetailsDialog.ui:663
 #: qt/DetailsDialog.ui:723
-#, fuzzy
 msgid "Honor global _limits"
-msgstr ""
-"#-#-#-#-#  nl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Algemene _limieten aanhouden\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Globale _limieten aanhouden"
+msgstr "Algemene _limieten aanhouden"
 
 #: gtk/ui/gtk3/DetailsDialog.ui:903 gtk/ui/gtk4/DetailsDialog.ui:676
 msgid "Limit _download speed ({speed_units}):"
@@ -1876,13 +1526,8 @@ msgstr "Beperk _upload snelheid ({speed_units}):"
 #: gtk/ui/gtk3/DetailsDialog.ui:935 gtk/ui/gtk3/OptionsDialog.ui:143
 #: gtk/ui/gtk4/DetailsDialog.ui:700 gtk/ui/gtk4/OptionsDialog.ui:87
 #: qt/DetailsDialog.ui:770
-#, fuzzy
 msgid "Torrent _priority:"
-msgstr ""
-"#-#-#-#-#  nl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Prioriteit van de torrent:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Torrent_prioriteit:"
+msgstr "_Prioriteit van de torrent:"
 
 #: gtk/ui/gtk3/DetailsDialog.ui:997 gtk/ui/gtk4/DetailsDialog.ui:749
 #: qt/DetailsDialog.ui:786
@@ -1891,13 +1536,8 @@ msgstr "Seedlimieten"
 
 #: gtk/ui/gtk3/DetailsDialog.ui:1013 gtk/ui/gtk4/DetailsDialog.ui:761
 #: qt/DetailsDialog.ui:792
-#, fuzzy
 msgid "_Ratio:"
-msgstr ""
-"#-#-#-#-#  nl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ve_rhouding:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Verhouding:"
+msgstr "Ve_rhouding:"
 
 #: gtk/ui/gtk3/DetailsDialog.ui:1027 gtk/ui/gtk4/DetailsDialog.ui:773
 #: qt/DetailsDialog.ui:819
@@ -1906,13 +1546,8 @@ msgstr "_Inactief:"
 
 #: gtk/ui/gtk3/DetailsDialog.ui:1125 gtk/ui/gtk4/DetailsDialog.ui:831
 #: qt/DetailsDialog.ui:855
-#, fuzzy
 msgid "Peer Connections"
-msgstr ""
-"#-#-#-#-#  nl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Peerverbindingen\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"&Peerverbindingen"
+msgstr "Peerverbindingen"
 
 #: gtk/ui/gtk3/DetailsDialog.ui:1141 gtk/ui/gtk4/DetailsDialog.ui:843
 #: qt/DetailsDialog.ui:861
@@ -1928,13 +1563,8 @@ msgstr "Opties"
 
 #: gtk/ui/gtk3/EditTrackersDialog.ui:67 gtk/ui/gtk4/EditTrackersDialog.ui:20
 #: qt/TrackersDialog.ui:20
-#, fuzzy
 msgid "Tracker Announce URLs"
-msgstr ""
-"#-#-#-#-#  nl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Trackeraankondigings-URL\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Tracker aankondigings-URL"
+msgstr "Trackeraankondigings-URL"
 
 #: gtk/ui/gtk3/EditTrackersDialog.ui:83 gtk/ui/gtk3/MakeDialog.ui:294
 #: gtk/ui/gtk4/EditTrackersDialog.ui:32 gtk/ui/gtk4/MakeDialog.ui:193
@@ -2000,13 +1630,8 @@ msgstr "M_et dank aan"
 
 #: gtk/ui/gtk3/MakeDialog.ui:85 gtk/ui/gtk4/MakeDialog.ui:32
 #: qt/MakeDialog.ui:29
-#, fuzzy
 msgid "Sa_ve to:"
-msgstr ""
-"#-#-#-#-#  nl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Opslaan in:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Opslaan naar:"
+msgstr "_Opslaan in:"
 
 #: gtk/ui/gtk3/MakeDialog.ui:110 gtk/ui/gtk4/MakeDialog.ui:54
 #: qt/MakeDialog.ui:42
@@ -2037,35 +1662,18 @@ msgstr "_Trackers:"
 
 #: gtk/ui/gtk3/MakeDialog.ui:312 gtk/ui/gtk4/MakeDialog.ui:206
 #: qt/MakeDialog.ui:142
-#, fuzzy
 msgid "Co_mment:"
-msgstr ""
-"#-#-#-#-#  nl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Commentaar:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Op_merking:"
+msgstr "_Commentaar:"
 
 #: gtk/ui/gtk3/MakeDialog.ui:339 gtk/ui/gtk4/MakeDialog.ui:229
 #: qt/MakeDialog.ui:156
-#, fuzzy
 msgid "_Source:"
-msgstr ""
-"#-#-#-#-#  nl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Bron:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Bron:\n"
-"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Bron:"
+msgstr "_Bron:"
 
 #: gtk/ui/gtk3/MakeDialog.ui:366 gtk/ui/gtk4/MakeDialog.ui:252
 #: qt/MakeDialog.ui:170
-#, fuzzy
 msgid "_Private torrent"
-msgstr ""
-"#-#-#-#-#  nl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Privétorrent\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Privé-torrent"
+msgstr "_Privé-torrent"
 
 #: gtk/ui/gtk3/MakeProgressDialog.ui:81 gtk/ui/gtk4/MakeProgressDialog.ui:19
 msgid "Creating torrent…"
@@ -2102,13 +1710,8 @@ msgstr "Bronbestand selecteren"
 
 #: gtk/ui/gtk3/OptionsDialog.ui:91 gtk/ui/gtk4/OptionsDialog.ui:41
 #: qt/OptionsDialog.ui:39
-#, fuzzy
 msgid "_Destination folder:"
-msgstr ""
-"#-#-#-#-#  nl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Doelmap:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Bestemmingsmap:"
+msgstr "_Doelmap:"
 
 #: gtk/ui/gtk3/OptionsDialog.ui:107 gtk/ui/gtk4/OptionsDialog.ui:55
 #: qt/OptionsDialog.cc:78 qt/PrefsDialog.cc:522
@@ -2130,13 +1733,8 @@ msgstr "_Verplaats torrent bestand naar de prullenbak"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:7 gtk/ui/gtk4/PrefsDialog.ui:5
 #: qt/PrefsDialog.ui:14
-#, fuzzy
 msgid "{appname} Preferences"
-msgstr ""
-"#-#-#-#-#  nl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Voorkeuren van {appname}\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Voorkeuren {appname}"
+msgstr "Voorkeuren van {appname}"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:76 gtk/ui/gtk4/PrefsDialog.ui:29
 #: qt/PrefsDialog.ui:36
@@ -2175,23 +1773,13 @@ msgstr "Do_wnload ({speed_units}):"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:242 gtk/ui/gtk4/PrefsDialog.ui:154
 #: qt/PrefsDialog.ui:149
-#, fuzzy
 msgid "_Scheduled times:"
-msgstr ""
-"#-#-#-#-#  nl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Geplande tijd_stippen:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Geplande tijden:"
+msgstr "Geplande tijd_stippen:"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:260 gtk/ui/gtk4/PrefsDialog.ui:167
 #: qt/PrefsDialog.ui:193
-#, fuzzy
 msgid "_On days:"
-msgstr ""
-"#-#-#-#-#  nl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Op de d_agen:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Op dagen:"
+msgstr "Op de d_agen:"
 
 #. Label goes between two time selectors, e.g. "limit speeds from [time] to [time]"
 #: gtk/ui/gtk3/PrefsDialog.ui:317 gtk/ui/gtk4/PrefsDialog.ui:210
@@ -2216,13 +1804,8 @@ msgstr "Toon het _dialoogvenster Torrentopties"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:441 gtk/ui/gtk4/PrefsDialog.ui:300
 #: qt/PrefsDialog.ui:264
-#, fuzzy
 msgid "_Start added torrents"
-msgstr ""
-"#-#-#-#-#  nl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Toegevoegde torrents _starten\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Start toegevoegde torrents"
+msgstr "Toegevoegde torrents _starten"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:477 gtk/ui/gtk4/PrefsDialog.ui:328
 #: qt/PrefsDialog.ui:288
@@ -2238,13 +1821,8 @@ msgstr "Downloadwachtrij"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:573 gtk/ui/gtk4/PrefsDialog.ui:401
 #: qt/PrefsDialog.ui:326
-#, fuzzy
 msgid "Ma_ximum active downloads:"
-msgstr ""
-"#-#-#-#-#  nl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Maximum aantal actieve _downloads:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ma_ximum aantal actieve downloads:"
+msgstr "Maximum aantal actieve _downloads:"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:587 gtk/ui/gtk4/PrefsDialog.ui:413
 msgid "Downloads sharing data in the last _N minutes are active:"
@@ -2257,13 +1835,8 @@ msgstr "Onvoltooid"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:650 gtk/ui/gtk4/PrefsDialog.ui:463
 #: qt/PrefsDialog.ui:381
-#, fuzzy
 msgid "Append \"._part\" to incomplete files' names"
-msgstr ""
-"#-#-#-#-#  nl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"‘._part’ aan de namen van onvoltooide bestanden toevoegen\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"‘.__part’ aan de namen van onvoltooide bestanden toevoegen"
+msgstr "‘._part’ aan de namen van onvoltooide bestanden toevoegen"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:667 gtk/ui/gtk4/PrefsDialog.ui:477
 #: qt/PrefsDialog.ui:388
@@ -2296,13 +1869,8 @@ msgstr "Limieten"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:792 gtk/ui/gtk4/PrefsDialog.ui:570
 #: qt/PrefsDialog.ui:468
-#, fuzzy
 msgid "Stop seeding at _ratio:"
-msgstr ""
-"#-#-#-#-#  nl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Stoppen met seeden bij een _verhouding van:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Stop met seeden bij ve_rhouding:"
+msgstr "Stoppen met seeden bij een _verhouding van:"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:807 gtk/ui/gtk4/PrefsDialog.ui:582
 msgid "Stop seeding if idle for _N minutes:"
@@ -2336,13 +1904,8 @@ msgstr "Blokkadelijst"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:980 gtk/ui/gtk4/PrefsDialog.ui:712
 #: qt/PrefsDialog.ui:587
-#, fuzzy
 msgid "Enable _blocklist:"
-msgstr ""
-"#-#-#-#-#  nl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Blokkadelijst inschakelen:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Schakel _blokkadelijst in:"
+msgstr "_Blokkadelijst inschakelen:"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:995 gtk/ui/gtk4/PrefsDialog.ui:725
 #: qt/PrefsDialog.ui:617
@@ -2353,13 +1916,8 @@ msgstr "_Automatische updates inschakelen"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1050 gtk/ui/gtk4/PrefsDialog.ui:766
 #: qt/PrefsDialog.ui:607
-#, fuzzy
 msgid "_Update"
-msgstr ""
-"#-#-#-#-#  nl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Bijw_erken\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Update"
+msgstr "Bijw_erken"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1122 gtk/ui/gtk4/PrefsDialog.ui:814
 #: qt/PrefsDialog.ui:654
@@ -2380,23 +1938,13 @@ msgstr "Een willekeurige poort kiezen telkens Transmission wordt gesta_rt"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1167 gtk/ui/gtk4/PrefsDialog.ui:852
 #: qt/PrefsDialog.ui:704
-#, fuzzy
 msgid "Use UPnP or NAT-PMP port _forwarding from my router"
-msgstr ""
-"#-#-#-#-#  nl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Poort-_doorsturen via UPnP of NAT-PMP van de router gebruiken\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Gebruik UPnP of NAT-PMP port _forwarding van mijn router"
+msgstr "Poort-_doorsturen via UPnP of NAT-PMP van de router gebruiken"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1229 gtk/ui/gtk4/PrefsDialog.ui:904
 #: qt/PrefsDialog.ui:680
-#, fuzzy
 msgid "Te_st Port"
-msgstr ""
-"#-#-#-#-#  nl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Poort _testen\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Te_stpoort"
+msgstr "Poort _testen"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1265 gtk/ui/gtk4/PrefsDialog.ui:924
 #: qt/PrefsDialog.ui:714
@@ -2412,13 +1960,8 @@ msgstr "Maximumaantal peers _per torrent:"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1295 gtk/ui/gtk4/PrefsDialog.ui:948
 #: qt/PrefsDialog.ui:743
-#, fuzzy
 msgid "Maximum peers _overall:"
-msgstr ""
-"#-#-#-#-#  nl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Maximum aantal peers in _totaal:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Maximum aantal peers in het algemeen:"
+msgstr "Maximum aantal peers in _totaal:"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1358 gtk/ui/gtk4/PrefsDialog.ui:998
 #: qt/PrefsDialog.ui:778
@@ -2439,13 +1982,8 @@ msgstr "PE_X gebruiken om meer peers te vinden"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1380 gtk/ui/gtk4/PrefsDialog.ui:1015
 #: qt/PrefsDialog.ui:785
-#, fuzzy
 msgid "PEX is a tool for exchanging peer lists with the peers you're connected to."
-msgstr ""
-"#-#-#-#-#  nl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"PEX wordt gebruikt om lijsten met peers uit te wisselen, met de peers waarmee u verbonden bent.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"PEX is een hulpmiddel om peerlijsten uit te wisselen met de peers waarmee u verbonden bent."
+msgstr "PEX wordt gebruikt om lijsten met peers uit te wisselen, met de peers waarmee u verbonden bent."
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1394 gtk/ui/gtk4/PrefsDialog.ui:1028
 #: qt/PrefsDialog.ui:798
@@ -2456,13 +1994,8 @@ msgstr "_DHT gebruiken om meer peers te vinden"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1398 gtk/ui/gtk4/PrefsDialog.ui:1030
 #: qt/PrefsDialog.ui:795
-#, fuzzy
 msgid "DHT is a tool for finding peers without a tracker."
-msgstr ""
-"#-#-#-#-#  nl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"DHT wordt gebruikt om peers zonder tracker te vinden.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"DHT is een hulpmiddel om peers zonder tracker te vinden."
+msgstr "DHT wordt gebruikt om peers zonder tracker te vinden."
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1412 gtk/ui/gtk4/PrefsDialog.ui:1043
 #: qt/PrefsDialog.ui:808
@@ -2473,13 +2006,8 @@ msgstr "_Lokale peerontdekking gebruiken om meer peers te vinden"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1416 gtk/ui/gtk4/PrefsDialog.ui:1045
 #: qt/PrefsDialog.ui:805
-#, fuzzy
 msgid "LPD is a tool for finding peers on your local network."
-msgstr ""
-"#-#-#-#-#  nl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"LPD (lokale peerontdekking) wordt gebruikt om peers op het lokale netwerk te vinden.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"LPD is een hulpmiddel om peers op je lokale netwerk te vinden/"
+msgstr "LPD (lokale peerontdekking) wordt gebruikt om peers op het lokale netwerk te vinden."
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1445 gtk/ui/gtk4/PrefsDialog.ui:1064
 #: qt/PrefsDialog.ui:818
@@ -2488,23 +2016,16 @@ msgstr "Standaard openbare trackers"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1471 gtk/ui/gtk4/PrefsDialog.ui:1086
 #: qt/PrefsDialog.ui:824
-#, fuzzy
 msgid ""
 "Trackers to use on all public torrents.\n"
 "\n"
 "To add a backup URL, add it on the next line after a primary URL.\n"
 "To add a new primary URL, add it after a blank line."
 msgstr ""
-"#-#-#-#-#  nl.po (PACKAGE VERSION)  #-#-#-#-#\n"
 "Trackers te gebruiken op alle openbare torrents.\n"
 "\n"
 "Als u een back-up-URL wilt toevoegen, voegt u deze toe aan de volgende regel na een primaire URL.\n"
-"Als u een nieuwe primaire URL wilt toevoegen, voegt u deze toe na een lege regel.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Trackers voor gebruik op alle openbare torrents.\n"
-"\n"
-"Om een ​​back-up-URL toe te voegen, voeg je deze toe op de volgende regel na een primaire URL\n"
-"Om een nieuwe primaire URL toe te voegen, voeg je deze toe na een lege regel."
+"Als u een nieuwe primaire URL wilt toevoegen, voegt u deze toe na een lege regel."
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1503 gtk/ui/gtk4/PrefsDialog.ui:1108
 #: qt/PrefsDialog.ui:648
@@ -2524,13 +2045,8 @@ msgstr ""
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1556 gtk/ui/gtk4/PrefsDialog.ui:1151
 #: qt/PrefsDialog.ui:872
-#, fuzzy
 msgid "Show {appname} icon in the _notification area"
-msgstr ""
-"#-#-#-#-#  nl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{appname}-pictogram in het _mededelingengebied tonen\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Toon {appname}-icoon in het _notificatiegebied"
+msgstr "{appname}-pictogram in het _mededelingengebied tonen"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1588 gtk/ui/gtk4/PrefsDialog.ui:1171
 #: qt/PrefsDialog.ui:896
@@ -2539,53 +2055,28 @@ msgstr "Notificatie"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1602 gtk/ui/gtk4/PrefsDialog.ui:1183
 #: qt/PrefsDialog.ui:902
-#, fuzzy
 msgid "Show a notification when torrents are a_dded"
-msgstr ""
-"#-#-#-#-#  nl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Een notificatie tonen wanneer torrents worden _toegevoegd\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Laat een notificatie zien als torrents zijn toegevoeg_d"
+msgstr "Een notificatie tonen wanneer torrents worden _toegevoegd"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1619 gtk/ui/gtk4/PrefsDialog.ui:1197
 #: qt/PrefsDialog.ui:909
-#, fuzzy
 msgid "Show a notification when torrents _finish"
-msgstr ""
-"#-#-#-#-#  nl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Een notificatie tonen wanneer torrents _voltooid zijn\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Laat een noti_ficatie zien als torrents klaar zijn"
+msgstr "Een notificatie tonen wanneer torrents _voltooid zijn"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1636 gtk/ui/gtk4/PrefsDialog.ui:1211
 #: qt/PrefsDialog.ui:916
-#, fuzzy
 msgid "Play a _sound when torrents finish"
-msgstr ""
-"#-#-#-#-#  nl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Een _geluid afspelen wanneer torrents voltooid zijn\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Speel een geluid af als torrents klaar zijn"
+msgstr "Een _geluid afspelen wanneer torrents voltooid zijn"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1691 gtk/ui/gtk4/PrefsDialog.ui:1248
 #: qt/PrefsDialog.ui:946
-#, fuzzy
 msgid "Remote Control"
-msgstr ""
-"#-#-#-#-#  nl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Bedienen op afstand\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Bedien op afstand"
+msgstr "Bedienen op afstand"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1711 gtk/ui/gtk4/PrefsDialog.ui:1265
 #: qt/PrefsDialog.ui:952
-#, fuzzy
 msgid "Allow _remote access"
-msgstr ""
-"#-#-#-#-#  nl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Sta _bediening op afstand toe\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Sta bediening op afstand toe"
+msgstr "Sta _bediening op afstand toe"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1727 gtk/ui/gtk4/PrefsDialog.ui:1274
 #: qt/PrefsDialog.ui:962
@@ -2606,15 +2097,8 @@ msgstr "Gebruik _authenticatie"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1785 gtk/ui/gtk4/PrefsDialog.ui:1317
 #: qt/PrefsDialog.ui:1002 qt/SessionDialog.ui:83
-#, fuzzy
 msgid "_Username:"
-msgstr ""
-"#-#-#-#-#  nl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Gebruikersnaam:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Gebr_uikersnaam:\n"
-"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Gebruikersnaam:"
+msgstr "_Gebruikersnaam:"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1799 gtk/ui/gtk4/PrefsDialog.ui:1329
 #: qt/PrefsDialog.ui:1015 qt/SessionDialog.ui:96
@@ -2623,23 +2107,13 @@ msgstr "_Wachtwoord:"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1811 gtk/ui/gtk4/PrefsDialog.ui:1342
 #: qt/PrefsDialog.ui:1032
-#, fuzzy
 msgid "Only allow these IP a_ddresses:"
-msgstr ""
-"#-#-#-#-#  nl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Alleen de volgende IP-_adressen toegang geven:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Sta alleen deze IP-a_dressen toe:"
+msgstr "Alleen de volgende IP-_adressen toegang geven:"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1833 gtk/ui/gtk4/PrefsDialog.ui:1358
 #: qt/PrefsDialog.ui:1042
-#, fuzzy
 msgid "Addresses:"
-msgstr ""
-"#-#-#-#-#  nl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Adressen:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"&Adressen:"
+msgstr "Adressen:"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1944 gtk/ui/gtk4/PrefsDialog.ui:1446
 msgid "IP addresses may use wildcards, such as 192.168.*.*"
@@ -2652,13 +2126,8 @@ msgstr "Op afstand"
 
 #: gtk/ui/gtk3/RelocateDialog.ui:7 gtk/ui/gtk4/RelocateDialog.ui:5
 #: qt/RelocateDialog.ui:14
-#, fuzzy
 msgid "Set Torrent Location"
-msgstr ""
-"#-#-#-#-#  nl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Torrentlocatie instellen\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Selecteer torrentlocatie"
+msgstr "Torrentlocatie instellen"
 
 #: gtk/ui/gtk3/RelocateDialog.ui:35 gtk/ui/gtk4/RelocateDialog.ui:101
 msgid "_Apply"
@@ -2676,23 +2145,13 @@ msgstr "Nieuwe _locatie:"
 
 #: gtk/ui/gtk3/RelocateDialog.ui:111 gtk/ui/gtk4/RelocateDialog.ui:55
 #: qt/RelocateDialog.ui:49
-#, fuzzy
 msgid "_Move from the current folder"
-msgstr ""
-"#-#-#-#-#  nl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Verplaatsen vanuit de huidige _map\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Verplaats van huidige _map"
+msgstr "Verplaatsen vanuit de huidige _map"
 
 #: gtk/ui/gtk3/RelocateDialog.ui:128 gtk/ui/gtk4/RelocateDialog.ui:68
 #: qt/RelocateDialog.ui:56
-#, fuzzy
 msgid "Local data is _already there"
-msgstr ""
-"#-#-#-#-#  nl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Lokale gegevens zijn reeds _aanwezig\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Lokale gegevens zijn _al aanwezig"
+msgstr "Lokale gegevens zijn reeds _aanwezig"
 
 #: gtk/ui/gtk3/StatsDialog.ui:70 gtk/ui/gtk4/StatsDialog.ui:20
 #: qt/StatsDialog.ui:23
@@ -2713,13 +2172,8 @@ msgstr "Duur:"
 
 #: gtk/ui/gtk3/StatsDialog.ui:215 gtk/ui/gtk4/StatsDialog.ui:138
 #: qt/StatsDialog.ui:136
-#, fuzzy
 msgid "Total"
-msgstr ""
-"#-#-#-#-#  nl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Totaal\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"totaal"
+msgstr "Totaal"
 
 #: gtk/ui/gtk3/TorrentUrlChooserDialog.ui:7
 #: gtk/ui/gtk4/TorrentUrlChooserDialog.ui:5
@@ -2853,13 +2307,8 @@ msgid "Asking for more peers {time_span_from_now}"
 msgstr "Er worden meer peers gevraagd {time_span_from_now}"
 
 #: libtransmission-app/formatters.cc:175
-#, fuzzy
 msgid "Queued to ask for more peers"
-msgstr ""
-"#-#-#-#-#  nl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"In de wachtrij om naar meer peers te vragen\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"In de wachtrij gezet om naar meer peers te vragen"
+msgstr "In de wachtrij om naar meer peers te vragen"
 
 #: libtransmission-app/formatters.cc:182
 msgid "Asked for more peers {markup_begin}{time_span_ago}{markup_end}"
@@ -2898,13 +2347,8 @@ msgid "Asking for peer counts {time_span_from_now}"
 msgstr "Er wordt een peer telling gevraagd over {time_span_from_now}"
 
 #: libtransmission-app/formatters.cc:244
-#, fuzzy
 msgid "Queued to ask for peer counts"
-msgstr ""
-"#-#-#-#-#  nl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"In de wachtrij om het aantal peers op te vragen\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"In de wachtrij gezet om naar peeraantallen te vragen"
+msgstr "In de wachtrij om het aantal peers op te vragen"
 
 #: libtransmission-app/formatters.cc:250
 msgid "Asked for peer counts {markup_begin}{time_span_ago}{markup_end}"
@@ -2917,19 +2361,10 @@ msgstr[0] "{days:L} dag"
 msgstr[1] "{days:L} dagen"
 
 #: libtransmission-app/formatters.cc:269
-#, fuzzy
 msgid "{hours:L} hour"
 msgid_plural "{hours:L} hours"
-msgstr[0] ""
-"#-#-#-#-#  nl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{hours:L} uur\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{hours:L} uur"
-msgstr[1] ""
-"#-#-#-#-#  nl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{hours:L} uren\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{hours:L} uur"
+msgstr[0] "{hours:L} uur"
+msgstr[1] "{hours:L} uren"
 
 #. Translators: Spin box format, "Stop seeding if idle for: [ 5 minutes ]"
 #: libtransmission-app/formatters.cc:274 qt/DetailsDialog.cc:1263
@@ -3823,13 +3258,7 @@ msgstr ""
 #: qt/OptionsDialog.ui:17
 #, fuzzy
 msgid "Sou_rce:"
-msgstr ""
-"#-#-#-#-#  nl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Bron:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Bron:\n"
-"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Bron:"
+msgstr "_Bron:"
 
 #: qt/OptionsDialog.ui:81
 msgid "_Priority:"

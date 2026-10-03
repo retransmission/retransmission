@@ -151,13 +151,8 @@ msgstr[0] "प्रतिलिपि टोरेंट जोड़ना वि
 msgstr[1] "प्रतिलिपि टोरेंट जोड़ना विफल"
 
 #: gtk/Application.cc:1382 qt/AboutDialog.ui:43
-#, fuzzy
 msgid "A fast and easy BitTorrent client"
-msgstr ""
-"#-#-#-#-#  hi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"तीव्र व सरल बिट टोरेंट साधन\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"तीव्र व सरल बिट टोरेंट साधन "
+msgstr "तीव्र व सरल बिट टोरेंट साधन"
 
 #: gtk/Application.cc:1384 qt/AboutDialog.cc:28
 msgid "Copyright © The {appname} Project"
@@ -257,13 +252,8 @@ msgid "Private to this tracker -- DHT and PEX disabled"
 msgstr "निजी ट्रैकर -- डीएचटी व पेक्स निष्क्रिय"
 
 #: gtk/DetailsDialog.cc:561 qt/DetailsDialog.cc:799
-#, fuzzy
 msgid "Public torrent"
-msgstr ""
-"#-#-#-#-#  hi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"सार्वजनिक टोरेंट\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"सामान्य टोरेंट"
+msgstr "सार्वजनिक टोरेंट"
 
 #: gtk/DetailsDialog.cc:606 qt/DetailsDialog.cc:888
 msgid "Created by {creator} on {date}"
@@ -427,13 +417,8 @@ msgid "List contains invalid URLs"
 msgstr "सूची में अमान्य यूआरएल हैं"
 
 #: gtk/DetailsDialog.cc:1734 gtk/FileList.cc:792 qt/Session.cc:267
-#, fuzzy
 msgid "Please correct the errors and try again."
-msgstr ""
-"#-#-#-#-#  hi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"कृपया त्रुटि सुधार कर पुनः प्रयास करें।\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"त्रुटि ठीक कर पुनः प्रयास करें।"
+msgstr "कृपया त्रुटि सुधार कर पुनः प्रयास करें।"
 
 #: gtk/DetailsDialog.cc:1814
 msgid "{torrent_name} - Add Tracker"
@@ -551,15 +536,8 @@ msgstr "उच्च"
 #: gtk/FileList.cc:603 gtk/Utils.cc:577 qt/DetailsDialog.cc:1395
 #: qt/FileTreeItem.cc:262 qt/FileTreeView.cc:107 qt/FileTreeView.cc:345
 #: qt/OptionsDialog.cc:96
-#, fuzzy
 msgid "Normal"
-msgstr ""
-"#-#-#-#-#  hi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"सामान्य\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"समान्य\n"
-"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"सामान्य"
+msgstr "सामान्य"
 
 #: gtk/FileList.cc:607 gtk/Utils.cc:578 qt/DetailsDialog.cc:1396
 #: qt/FileTreeItem.cc:256 qt/FileTreeView.cc:107 qt/FileTreeView.cc:346
@@ -1123,13 +1101,8 @@ msgstr "नया (_N)…"
 
 #: gtk/transmission-menus.ui:32 gtk/transmission-menus.ui:460
 #: qt/MainWindow.ui:437
-#, fuzzy
 msgid "_Start All"
-msgstr ""
-"#-#-#-#-#  hi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"सभी आरंभ करें(_S)\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"सभी आरंभ करें (_S)"
+msgstr "सभी आरंभ करें (_S)"
 
 #: gtk/transmission-menus.ui:37 gtk/transmission-menus.ui:455
 #: qt/MainWindow.ui:442
@@ -1328,13 +1301,8 @@ msgid "_Statistics"
 msgstr "आँकड़ें (_S)"
 
 #: gtk/transmission-menus.ui:261 qt/MainWindow.ui:693
-#, fuzzy
 msgid "_Donate"
-msgstr ""
-"#-#-#-#-#  hi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"दान करें (_D)\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"दान दें (_D)"
+msgstr "दान करें (_D)"
 
 #: gtk/transmission-menus.ui:268 qt/MainWindow.ui:595
 msgid "_Contents"
@@ -1523,13 +1491,8 @@ msgstr ""
 #: gtk/ui/gtk3/DetailsDialog.ui:935 gtk/ui/gtk3/OptionsDialog.ui:143
 #: gtk/ui/gtk4/DetailsDialog.ui:700 gtk/ui/gtk4/OptionsDialog.ui:87
 #: qt/DetailsDialog.ui:770
-#, fuzzy
 msgid "Torrent _priority:"
-msgstr ""
-"#-#-#-#-#  hi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"टोरेंट प्राथमिकता (_p):\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"टोरेंट प्राथमिकता (_p) :"
+msgstr "टोरेंट प्राथमिकता (_p):"
 
 #: gtk/ui/gtk3/DetailsDialog.ui:997 gtk/ui/gtk4/DetailsDialog.ui:749
 #: qt/DetailsDialog.ui:786
@@ -1538,23 +1501,13 @@ msgstr "सीड सीमाएँ"
 
 #: gtk/ui/gtk3/DetailsDialog.ui:1013 gtk/ui/gtk4/DetailsDialog.ui:761
 #: qt/DetailsDialog.ui:792
-#, fuzzy
 msgid "_Ratio:"
-msgstr ""
-"#-#-#-#-#  hi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"अनुपात (_R):\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"अनुपात (_R) :"
+msgstr "अनुपात (_R):"
 
 #: gtk/ui/gtk3/DetailsDialog.ui:1027 gtk/ui/gtk4/DetailsDialog.ui:773
 #: qt/DetailsDialog.ui:819
-#, fuzzy
 msgid "_Idle:"
-msgstr ""
-"#-#-#-#-#  hi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"निष्क्रिय (_I):\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"निष्क्रिय (_I) :"
+msgstr "निष्क्रिय (_I):"
 
 #: gtk/ui/gtk3/DetailsDialog.ui:1125 gtk/ui/gtk4/DetailsDialog.ui:831
 #: qt/DetailsDialog.ui:855
@@ -1563,13 +1516,8 @@ msgstr "पीयर कनेक्शन"
 
 #: gtk/ui/gtk3/DetailsDialog.ui:1141 gtk/ui/gtk4/DetailsDialog.ui:843
 #: qt/DetailsDialog.ui:861
-#, fuzzy
 msgid "_Maximum peers:"
-msgstr ""
-"#-#-#-#-#  hi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"अधिकतम पियर (_M):\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"अधिकतम पीयर (_M) :"
+msgstr "अधिकतम पीयर (_M) :"
 
 #: gtk/ui/gtk3/DetailsDialog.ui:1180 gtk/ui/gtk3/MainWindow.ui:169
 #: gtk/ui/gtk3/PrefsDialog.ui:1344 gtk/ui/gtk4/DetailsDialog.ui:871
@@ -1609,13 +1557,8 @@ msgstr "टोरेंट आरंभ करें"
 
 #: gtk/ui/gtk3/MainWindow.ui:52 gtk/ui/gtk4/MainWindow.ui:52
 #: qt/MainWindow.ui:390
-#, fuzzy
 msgid "Pause torrent"
-msgstr ""
-"#-#-#-#-#  hi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"टोरेंट स्थगित करें\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"टोरेंट रोकें"
+msgstr "टोरेंट रोकें"
 
 #: gtk/ui/gtk3/MainWindow.ui:67 gtk/ui/gtk3/MainWindow.ui:69
 #: gtk/ui/gtk4/MainWindow.ui:62 gtk/ui/gtk4/MainWindow.ui:64
@@ -1672,13 +1615,8 @@ msgstr ""
 
 #: gtk/ui/gtk3/MakeDialog.ui:231 gtk/ui/gtk4/MakeDialog.ui:146
 #: qt/MakeDialog.ui:105
-#, fuzzy
 msgid "Properties"
-msgstr ""
-"#-#-#-#-#  hi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"सूचना\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"विशेषताएँ"
+msgstr "विशेषताएँ"
 
 #: gtk/ui/gtk3/MakeDialog.ui:249 gtk/ui/gtk4/MakeDialog.ui:159
 #: qt/MakeDialog.ui:111
@@ -1763,13 +1701,8 @@ msgstr "{appname} सेटिंग्स"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:76 gtk/ui/gtk4/PrefsDialog.ui:29
 #: qt/PrefsDialog.ui:36
-#, fuzzy
 msgid "Speed Limits"
-msgstr ""
-"#-#-#-#-#  hi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"गति सीमा\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"गति सीमाएँ"
+msgstr "गति सीमाएँ"
 
 #. Checkbox to limit upload speed
 #: gtk/ui/gtk3/PrefsDialog.ui:90 gtk/ui/gtk4/PrefsDialog.ui:41
@@ -1968,13 +1901,8 @@ msgstr "प्रत्येक ट्रांसमिशन आरंभ प
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1167 gtk/ui/gtk4/PrefsDialog.ui:852
 #: qt/PrefsDialog.ui:704
-#, fuzzy
 msgid "Use UPnP or NAT-PMP port _forwarding from my router"
-msgstr ""
-"#-#-#-#-#  hi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"राऊटर से UPnP या NAT_PMP पोर्ट अग्रसारित करें (_f)\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"राऊटर से UPnP या NAT__PMP पोर्ट अग्रसारित करें (_f)"
+msgstr "राऊटर से UPnP या NAT__PMP पोर्ट अग्रसारित करें (_f)"
 
 #: gtk/ui/gtk3/PrefsDialog.ui:1229 gtk/ui/gtk4/PrefsDialog.ui:904
 #: qt/PrefsDialog.ui:680
@@ -2163,13 +2091,8 @@ msgstr "दूरस्थ"
 
 #: gtk/ui/gtk3/RelocateDialog.ui:7 gtk/ui/gtk4/RelocateDialog.ui:5
 #: qt/RelocateDialog.ui:14
-#, fuzzy
 msgid "Set Torrent Location"
-msgstr ""
-"#-#-#-#-#  hi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"टोरेंट स्थान सेट करें\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"टोरेंट फोल्डर चुनें"
+msgstr "टोरेंट स्थान सेट करें"
 
 #: gtk/ui/gtk3/RelocateDialog.ui:35 gtk/ui/gtk4/RelocateDialog.ui:101
 msgid "_Apply"
@@ -2192,13 +2115,8 @@ msgstr "वर्तमान फोल्डर से अंतरित क�
 
 #: gtk/ui/gtk3/RelocateDialog.ui:128 gtk/ui/gtk4/RelocateDialog.ui:68
 #: qt/RelocateDialog.ui:56
-#, fuzzy
 msgid "Local data is _already there"
-msgstr ""
-"#-#-#-#-#  hi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"वहाँ लोकल डाटा पहले से मौजूद है (_a)\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"लोकल डाटा पहले से मौजूद है"
+msgstr "वहाँ लोकल डाटा पहले से मौजूद है (_a)"
 
 #: gtk/ui/gtk3/StatsDialog.ui:70 gtk/ui/gtk4/StatsDialog.ui:20
 #: qt/StatsDialog.ui:23
@@ -3466,20 +3384,12 @@ msgstr "{torrent_name} ({hash} की प्रतिलिपि)"
 #: qt/Session.cc:740
 #, fuzzy
 msgid "Duplicate Torrent"
-msgstr ""
-"#-#-#-#-#  hi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"सार्वजनिक टोरेंट\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"सामान्य टोरेंट"
+msgstr "सार्वजनिक टोरेंट"
 
 #: qt/Session.cc:740
 #, fuzzy
 msgid "Duplicate Torrents"
-msgstr ""
-"#-#-#-#-#  hi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"सार्वजनिक टोरेंट\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"सामान्य टोरेंट"
+msgstr "सार्वजनिक टोरेंट"
 
 #: qt/Session.cc:743
 #, fuzzy
