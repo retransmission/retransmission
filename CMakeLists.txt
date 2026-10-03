@@ -976,6 +976,9 @@ add_subdirectory(libtransmission-app)
 
 set(MAC_PROJECT_DIR macosx)
 
+# The gettext domain, which names each language's installed catalog.
+set(TR_GETTEXT_DOMAIN retransmission)
+
 if(ENABLE_GTK AND ENABLE_NLS)
     find_package(Gettext 0.19.7 REQUIRED)
     add_subdirectory(po)

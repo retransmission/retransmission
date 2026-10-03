@@ -155,45 +155,32 @@ tr_target_glib_resources(${TR_NAME}-gtk
     transmission.gresource.xml
     ${UI_SUBDIR}/transmission-ui.gresource.xml)
 
-# TR_GTK_APP_ID comes from the top-level CMakeLists, which sets it early enough for tests/ to see.
-configure_file(
-    "${CMAKE_CURRENT_SOURCE_DIR}/transmission-gtk.desktop.in"
-    "${CMAKE_CURRENT_BINARY_DIR}/transmission-gtk.desktop.in"
-    @ONLY)
-
-# One name for the finished file whether or not it went through gettext,
+# The desktop file ID, which the metainfo and users' default apps refer to.
+# The finished file has this name whether or not it went through gettext,
 # so the install and the test both have one path to name.
-set(DESKTOP_FILE "${CMAKE_CURRENT_BINARY_DIR}/${TR_NAME}-gtk.desktop")
+set(DESKTOP_FILE_ID ${TR_NAME}-gtk.desktop)
+set(DESKTOP_FILE "${CMAKE_CURRENT_BINARY_DIR}/${DESKTOP_FILE_ID}")
+set(METAINFO_FILE "${CMAKE_CURRENT_BINARY_DIR}/${TR_NAME}-gtk.metainfo.xml")
 
+# Gettext merges the translations into the configured copies.
 if(ENABLE_NLS)
+    configure_file(retransmission-gtk.desktop.in retransmission-gtk.desktop.in @ONLY)
+    configure_file(retransmission-gtk.metainfo.xml.in retransmission-gtk.metainfo.xml.in @ONLY)
     tr_gettext_msgfmt(${TR_NAME}-gtk
         ${DESKTOP_FILE}
-        ${CMAKE_CURRENT_BINARY_DIR}/transmission-gtk.desktop.in)
-    target_sources(${TR_NAME}-gtk
-        PRIVATE
-            ${DESKTOP_FILE})
-else()
-    configure_file(
-        "${CMAKE_CURRENT_SOURCE_DIR}/transmission-gtk.desktop.in"
-        "${DESKTOP_FILE}"
-        @ONLY)
-endif()
-
-if(ENABLE_NLS)
-    set(METAINFO_FILE "${CMAKE_CURRENT_BINARY_DIR}/${TR_NAME}-gtk.metainfo.xml")
+        ${CMAKE_CURRENT_BINARY_DIR}/retransmission-gtk.desktop.in)
     tr_gettext_msgfmt(${TR_NAME}-gtk
         ${METAINFO_FILE}
-        ${CMAKE_CURRENT_SOURCE_DIR}/transmission-gtk.metainfo.xml.in)
-    target_sources(${TR_NAME}-gtk
-        PRIVATE
-            ${METAINFO_FILE})
+        ${CMAKE_CURRENT_BINARY_DIR}/retransmission-gtk.metainfo.xml.in)
+else()
+    configure_file(retransmission-gtk.desktop.in ${DESKTOP_FILE} @ONLY)
 endif()
 
 target_compile_definitions(${TR_NAME}-gtk-lib
     PUBLIC
         "TR_GTK_APP_ID=\"${TR_GTK_APP_ID}\""
         TRANSMISSIONLOCALEDIR="${CMAKE_INSTALL_FULL_LOCALEDIR}"
-        GETTEXT_PACKAGE="${TR_NAME}-gtk"
+        GETTEXT_PACKAGE="${TR_GETTEXT_DOMAIN}"
         $<$<BOOL:${ENABLE_UTP}>:WITH_UTP>)
 
 foreach(TGT ${TR_NAME}-gtk-lib ${TR_NAME}-gtk)

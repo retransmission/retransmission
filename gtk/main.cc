@@ -43,7 +43,6 @@
 namespace
 {
 auto const* const AppConfigDirName = TR_PROJ_SHARED_CONFIG_DIRNAME;
-auto const* const AppTranslationDomainName = MY_NAME;
 auto const* const AppName = MY_NAME;
 
 Glib::OptionEntry create_option_entry(Glib::ustring const& long_name, gchar short_name, Glib::ustring const& description)
@@ -74,9 +73,9 @@ int main(int argc, char** argv)
     tr::app::init();
 
     /* init i18n */
-    bindtextdomain(AppTranslationDomainName, TRANSMISSIONLOCALEDIR);
-    bind_textdomain_codeset(AppTranslationDomainName, "UTF-8");
-    textdomain(AppTranslationDomainName);
+    bindtextdomain(GETTEXT_PACKAGE, TRANSMISSIONLOCALEDIR);
+    bind_textdomain_codeset(GETTEXT_PACKAGE, "UTF-8");
+    textdomain(GETTEXT_PACKAGE);
 
     /* init glib/gtk */
     Gio::init();
@@ -117,7 +116,6 @@ int main(int argc, char** argv)
     // and asking for one where there is none fails the whole launch.
     Gtk::Main::add_gtk_option_group(option_context, false);
 #endif
-    option_context.set_translation_domain(GETTEXT_PACKAGE);
 
     try {
         option_context.parse(argc, argv);
