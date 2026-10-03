@@ -248,10 +248,7 @@ QString TorrentDelegate::progressString(Torrent const& tor)
     // add time when downloading
     if ((seed_ratio_limit && tor.isSeeding()) || tor.isDownloading()) {
         if (tor.hasETA()) {
-            //: Second (optional) part of torrent progress string,
-            //: {time_span} is duration,
-            //: notice that leading space (before the dash) is included here
-            str += TR_FORMAT(" - {time_span} left", fmt::arg("time_span", Formatter::timeToString(tor.getETA())));
+            str += QStringLiteral(" - ") + Formatter::timeLeftToString(tor.getETA());
         } else {
             //: Second (optional) part of torrent progress string
             str += QStringLiteral(" - ") + tr("Remaining time unknown");
@@ -304,10 +301,7 @@ QString TorrentDelegate::shortStatusString(Torrent const& tor)
     if ((seed_ratio_limit && tor.isSeeding()) || tor.isDownloading()) {
         str += QStringLiteral("    ");
         if (tor.hasETA()) {
-            //: Second (optional) part of torrent progress string,
-            //: {time_span} is duration,
-            //: notice that leading space (before the dash) is included here
-            str += TR_FORMAT("{time_span} left", fmt::arg("time_span", Formatter::timeToString(tor.getETA())));
+            str += Formatter::timeLeftToString(tor.getETA());
         } else {
             //: Second (optional) part of torrent progress string
             str += tr("Remaining time unknown");

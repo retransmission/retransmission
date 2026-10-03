@@ -16,6 +16,7 @@
 
 #include <libtransmission/macros.h>
 #include <libtransmission/transmission.h>
+#include <libtransmission/utils.h>
 #include <libtransmission/version.h>
 
 #include <gtkmm.h>
@@ -35,6 +36,7 @@
 
 #include <fmt/format.h>
 
+#include <cstdint>
 #include <cstdio>
 #include <iterator> // std::next()
 #include <string>
@@ -76,6 +78,11 @@ int main(int argc, char** argv)
     bindtextdomain(GETTEXT_PACKAGE, TRANSMISSIONLOCALEDIR);
     bind_textdomain_codeset(GETTEXT_PACKAGE, "UTF-8");
     textdomain(GETTEXT_PACKAGE);
+    tr_set_translator(
+        [](char const* msgid) noexcept -> char const* { return gettext(msgid); },
+        [](char const* msgid, char const* msgid_plural, uint64_t n) noexcept -> char const* {
+            return ngettext(msgid, msgid_plural, static_cast<unsigned long>(n));
+        });
 
     /* init glib/gtk */
     Gio::init();
@@ -133,12 +140,6 @@ int main(int argc, char** argv)
         fmt::print(stderr, "{} {}\n", AppName, LONG_VERSION_STRING);
         return 0;
     }
-
-    // init the unit formatters
-    using Config = tr::Values::Config;
-    Config::speed = { Config::Base::Kilo, _("B/s"), _("kB/s"), _("MB/s"), _("GB/s"), _("TB/s") };
-    Config::memory = { Config::Base::Kibi, _("B"), _("KiB"), _("MiB"), _("GiB"), _("TiB") };
-    Config::storage = { Config::Base::Kilo, _("B"), _("kB"), _("MB"), _("GB"), _("TB") };
 
     /* set up the config dir */
     if (std::empty(config_dir)) {

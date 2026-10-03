@@ -5,6 +5,11 @@
 
 #include "TrackerDelegate.h"
 
+#include <algorithm>
+#include <ctime> // time()
+#include <iterator> // std::data(), std::size()
+#include <span>
+
 #include <QtGui/QAbstractTextDocumentLayout>
 #include <QtGui/QPainter>
 #include <QtGui/QPixmap>
@@ -12,14 +17,15 @@
 
 #include <QtWidgets/QApplication>
 
+#include <libtransmission/types.h>
 #include <libtransmission/web-utils.h>
 
 #include <libtransmission-app/favicon-cache.h>
+#include <libtransmission-app/formatters.h>
 
-#include "Formatter.h"
 #include "Torrent.h"
 #include "TrackerModel.h"
-#include "TrFormat.h"
+#include "TrFormat.h" // fmt::formatter<QString>
 #include "Utils.h"
 
 using namespace tr::app;
@@ -164,33 +170,48 @@ void TrackerDelegate::setShowMore(bool b)
 
 namespace
 {
-QString timeToRoundedString(int seconds)
-{
-    if (seconds > 60) {
-        seconds -= seconds % 60;
-    }
+auto constexpr StatusMarkup = tr::app::TrackerStatusMarkup{
+    .success_begin = R"(<span style="color:#008B00">)",
+    .success_end = "</span>",
+    .timeout_begin = R"(<span style="color:#224466">)",
+    .timeout_end = "</span>",
+    .error_begin = R"(<span style="color:red">)",
+    .error_end = "</span>",
+};
 
-    return Formatter::timeToString(seconds);
+[[nodiscard]] tr_tracker_view toTrackerView(TrackerStat const& st)
+{
+    // Copies as much of `str` as fits, keeping room for the '\0'.
+    auto const copy = [](QString const& str, std::span<char> const buf) {
+        *fmt::format_to_n(std::data(buf), std::size(buf) - 1U, "{}", str).out = '\0';
+    };
+
+    auto view = tr_tracker_view{};
+    copy(st.last_announce_result, view.lastAnnounceResult);
+    copy(st.last_scrape_result, view.lastScrapeResult);
+    view.lastAnnounceStartTime = st.last_announce_start_time;
+    view.lastAnnounceTime = st.last_announce_time;
+    view.nextAnnounceTime = st.next_announce_time;
+    view.lastScrapeStartTime = st.last_scrape_start_time;
+    view.lastScrapeTime = st.last_scrape_time;
+    view.nextScrapeTime = st.next_scrape_time;
+    view.lastAnnouncePeerCount = static_cast<size_t>(std::max(st.last_announce_peer_count, 0));
+    view.leecherCount = st.leecher_count;
+    view.seederCount = st.seeder_count;
+    view.announceState = static_cast<tr_tracker_state>(st.announce_state);
+    view.scrapeState = static_cast<tr_tracker_state>(st.scrape_state);
+    view.hasAnnounced = st.has_announced;
+    view.hasScraped = st.has_scraped;
+    view.lastAnnounceSucceeded = st.last_announce_succeeded;
+    view.lastAnnounceTimedOut = st.last_announce_timed_out;
+    view.lastScrapeSucceeded = st.last_scrape_succeeded;
+    return view;
 }
 } // namespace
 
 QString TrackerDelegate::getText(TrackerInfo const& inf) const
 {
     QString str;
-    auto const err_markup_begin = QStringLiteral("<span style=\"color:red\">");
-    auto const err_markup_end = QStringLiteral("</span>");
-    auto const timeout_markup_begin = QStringLiteral("<span style=\"color:#224466\">");
-    auto const timeout_markup_end = QStringLiteral("</span>");
-    auto const success_markup_begin = QStringLiteral("<span style=\"color:#008B00\">");
-    auto const success_markup_end = QStringLiteral("</span>");
-
-    auto const now = time(nullptr);
-    auto const time_until = [&now](auto t) {
-        return timeToRoundedString(static_cast<int>(t - now));
-    };
-    auto const time_since = [&now](auto t) {
-        return timeToRoundedString(static_cast<int>(now - t));
-    };
 
     // hostname
     str += inf.st.is_backup ? QStringLiteral("<i>") : QStringLiteral("<b>");
@@ -202,139 +223,9 @@ QString TrackerDelegate::getText(TrackerInfo const& inf) const
 
     // announce & scrape info
     if (!inf.st.is_backup) {
-        if (inf.st.has_announced && inf.st.announce_state != TR_TRACKER_INACTIVE) {
-            auto const tstr = time_since(inf.st.last_announce_time);
+        for (auto const& line : tr::app::tracker_status_lines(toTrackerView(inf.st), time(nullptr), show_more_, StatusMarkup)) {
             str += QStringLiteral("<br/>\n");
-
-            if (inf.st.last_announce_succeeded) {
-                //: {markup_begin} and {markup_end} are replaced with HTML markup, {time_span} is duration
-                str += TR_FORMAT_N(
-                    "Got a list of{markup_begin} {peer_count:L} peer(s){markup_end} {time_span} ago",
-                    inf.st.last_announce_peer_count,
-                    fmt::arg("markup_begin", success_markup_begin),
-                    fmt::arg("peer_count", inf.st.last_announce_peer_count),
-                    fmt::arg("markup_end", success_markup_end),
-                    fmt::arg("time_span", tstr));
-            } else if (inf.st.last_announce_timed_out) {
-                //: {markup_begin} and {markup_end} are replaced with HTML markup, {time_span} is duration
-                str += TR_FORMAT(
-                    "Peer list request {markup_begin}timed out{markup_end} {time_span} ago; will retry",
-                    fmt::arg("markup_begin", timeout_markup_begin),
-                    fmt::arg("markup_end", timeout_markup_end),
-                    fmt::arg("time_span", tstr));
-            } else {
-                //: {markup_begin} and {markup_end} are replaced with HTML markup, {error} is error message,
-                //: {time_span} is duration
-                str += TR_FORMAT(
-                    "Got an error {markup_begin}\"{error}\"{markup_end} {time_span} ago",
-                    fmt::arg("markup_begin", err_markup_begin),
-                    fmt::arg("error", inf.st.last_announce_result),
-                    fmt::arg("markup_end", err_markup_end),
-                    fmt::arg("time_span", tstr));
-            }
-        }
-
-        switch (inf.st.announce_state) {
-        case TR_TRACKER_INACTIVE:
-            str += QStringLiteral("<br/>\n");
-            str += tr("No updates scheduled");
-            break;
-
-        case TR_TRACKER_WAITING:
-            str += QStringLiteral("<br/>\n");
-            //: {time_span} is duration
-            str += TR_FORMAT(
-                "Asking for more peers in {time_span}",
-                fmt::arg("time_span", time_until(inf.st.next_announce_time)));
-            break;
-
-        case TR_TRACKER_QUEUED:
-            str += QStringLiteral("<br/>\n");
-            str += tr("Queued to ask for more peers");
-            break;
-
-        case TR_TRACKER_ACTIVE:
-            str += QStringLiteral("<br/>\n");
-            //: {time_span} is duration
-            str += TR_FORMAT(
-                "Asking for more peers now… <small>{time_span}</small>",
-                fmt::arg("time_span", time_since(inf.st.last_announce_start_time)));
-            break;
-
-        default:
-            break;
-        }
-
-        if (!show_more_) {
-            return str;
-        }
-
-        if (inf.st.has_scraped) {
-            str += QStringLiteral("<br/>\n");
-            auto const tstr = time_since(inf.st.last_scrape_time);
-
-            if (!inf.st.last_scrape_succeeded) {
-                //: {markup_begin} and {markup_end} are replaced with HTML markup, {error} is error message,
-                //: {time_span} is duration
-                str += TR_FORMAT(
-                    "Got a scrape error {markup_begin}\"{error}\"{markup_end} {time_span} ago",
-                    fmt::arg("markup_begin", err_markup_begin),
-                    fmt::arg("error", inf.st.last_scrape_result),
-                    fmt::arg("markup_end", err_markup_end),
-                    fmt::arg("time_span", tstr));
-            } else if (inf.st.seeder_count >= 0 && inf.st.leecher_count >= 0) {
-                //: First part of phrase "Tracker had ... seeder(s) and ... leecher(s) ... ago",
-                //: {markup_begin} and {markup_end} are replaced with HTML markup
-                str += TR_FORMAT_N(
-                    "Tracker had{markup_begin} {seeder_count:L} seeder(s){markup_end}",
-                    inf.st.seeder_count,
-                    fmt::arg("markup_begin", success_markup_begin),
-                    fmt::arg("seeder_count", inf.st.seeder_count),
-                    fmt::arg("markup_end", success_markup_end));
-                //: Second part of phrase "Tracker had ... seeder(s) and ... leecher(s) ... ago",
-                //: {markup_begin} and {markup_end} are replaced with HTML markup, {time_span} is duration;
-                //: notice that leading space (before "and") is included here
-                str += TR_FORMAT_N(
-                    " and{markup_begin} {leecher_count:L} leecher(s){markup_end} {time_span} ago",
-                    inf.st.leecher_count,
-                    fmt::arg("markup_begin", success_markup_begin),
-                    fmt::arg("leecher_count", inf.st.leecher_count),
-                    fmt::arg("markup_end", success_markup_end),
-                    fmt::arg("time_span", tstr));
-            } else {
-                //: {markup_begin} and {markup_end} are replaced with HTML markup, {time_span} is duration
-                str += TR_FORMAT(
-                    "Tracker had {markup_begin}no information{markup_end} on peer counts {time_span} ago",
-                    fmt::arg("markup_begin", success_markup_begin),
-                    fmt::arg("markup_end", success_markup_end),
-                    fmt::arg("time_span", tstr));
-            }
-        }
-
-        switch (inf.st.scrape_state) {
-        case TR_TRACKER_WAITING:
-            str += QStringLiteral("<br/>\n");
-            //: {time_span} is duration
-            str += TR_FORMAT(
-                "Asking for peer counts in {time_span}",
-                fmt::arg("time_span", time_until(inf.st.next_scrape_time)));
-            break;
-
-        case TR_TRACKER_QUEUED:
-            str += QStringLiteral("<br/>\n");
-            str += tr("Queued to ask for peer counts");
-            break;
-
-        case TR_TRACKER_ACTIVE:
-            str += QStringLiteral("<br/>\n");
-            //: {time_span} is duration
-            str += TR_FORMAT(
-                "Asking for peer counts now… <small>{time_span}</small>",
-                fmt::arg("time_span", time_since(inf.st.last_scrape_start_time)));
-            break;
-
-        default: // TR_TRACKER_INACTIVE
-            break;
+            str += QString::fromStdString(line);
         }
     }
 

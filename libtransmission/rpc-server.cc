@@ -626,7 +626,7 @@ bool bindUnixSocket(
 #ifdef _WIN32
     tr_logAddError(
         fmt::format(
-            _("Unix sockets are unsupported on Windows. Please change '{key}' in your settings."),
+            fmt::runtime(_("Unix sockets are unsupported on Windows. Please change '{key}' in your settings.")),
             fmt::arg("key", tr_quark_get_string_view(TR_KEY_rpc_bind_address))));
     return false;
 #else
