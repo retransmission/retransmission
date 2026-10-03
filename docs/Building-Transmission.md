@@ -30,6 +30,19 @@ cmake --build build -t transmission-mac
 open ./build/macosx/Transmission.app
 ```
 
+### Building CLI Tools and Daemons on macOS ###
+Use CMake to build command-line utilities:
+
+```bash
+# Build daemon and utils (enabled by default in CMake)
+cmake -B build -G Ninja -DCMAKE_BUILD_TYPE=RelWithDebInfo
+cmake --build build -t transmission-daemon transmission-remote
+
+# To build the legacy transmissioncli, ensure it's enabled:
+cmake -B build -G Ninja -DCMAKE_BUILD_TYPE=RelWithDebInfo -DENABLE_CLI=ON
+cmake --build build -t transmissioncli
+```
+
 ### Building the GTK app with CMake ###
 Install GTK and build the app:
 ```bash

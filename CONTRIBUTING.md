@@ -31,7 +31,12 @@ The project also welcomes changes that:
 
 ## Getting Started
 
-On macOS, Transmission is usually built with Xcode. Everywhere else, it's CMake + the development environment of your choice. If you need to add source files but don't have Xcode, a maintainer can help you to update the Xcode project file. See [README.md](README.md) for information on building Transmission from source.
+On macOS, the native app (`Transmission.app`) and its core engine (`libtransmission`) are built together via Xcode.
+CLI tools and daemon are now driven exclusively by CMake. 
+
+If you add or remove core C++ source files, you must update both `libtransmission/CMakeLists.txt` for CMake users and the Xcode project file (`Transmission.xcodeproj`) to keep the macOS application build intact.
+
+If you need to add source files but don't have Xcode, a maintainer can help you to update the Xcode project file. See [README.md](README.md) for information on building Transmission from source.
 
 ## Style
 

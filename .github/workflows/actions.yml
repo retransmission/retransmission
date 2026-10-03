@@ -594,10 +594,7 @@ jobs:
   macos-xcodebuild-universal-git-26:
     runs-on: macos-26
     needs: [ what-to-make ]
-    if: ${{ needs.what-to-make.outputs.make-cli == 'true' ||
-            needs.what-to-make.outputs.make-daemon == 'true' ||
-            needs.what-to-make.outputs.make-mac == 'true' ||
-            needs.what-to-make.outputs.make-utils == 'true' }}
+    if: ${{ needs.what-to-make.outputs.make-mac == 'true' }}
     steps:
       - name: Show Configuration
         run: |
