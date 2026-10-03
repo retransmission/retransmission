@@ -686,7 +686,7 @@ void DetailsDialog::refreshUI()
 
         if (string.isEmpty()) {
             if (baseline < 0) {
-                string = TR_TEXT("Unknown");
+                string = unknown;
             } else {
                 string = Formatter::timeToString(baseline);
             }

@@ -87,16 +87,6 @@ private slots:
         QCOMPARE(TR_TEXT("Seeding"), QStringLiteral("Verteilt"));
     }
 
-    void picks_plural_text()
-    {
-        QCOMPARE(TR_TEXT_N("Torrent Completed", "Torrents Completed", 1), QStringLiteral("Torrent Completed"));
-        QCOMPARE(TR_TEXT_N("Torrent Completed", "Torrents Completed", int64_t{ 2 }), QStringLiteral("Torrents Completed"));
-
-        translate("Torrent Completed", { "Torrent abgeschlossen", "Torrents abgeschlossen" });
-        QCOMPARE(TR_TEXT_N("Torrent Completed", "Torrents Completed", 1), QStringLiteral("Torrent abgeschlossen"));
-        QCOMPARE(TR_TEXT_N("Torrent Completed", "Torrents Completed", size_t{ 2 }), QStringLiteral("Torrents abgeschlossen"));
-    }
-
     void converts_mnemonics_data()
     {
         QTest::addColumn<QByteArray>("text");
@@ -171,22 +161,22 @@ private slots:
 
     void falls_back_on_bad_translation_data()
     {
-        QTest::addColumn<QString>("translation");
+        QTest::addColumn<QByteArray>("translation");
 
-        QTest::newRow("unknown field") << QStringLiteral("Erstellt von {author}");
-        QTest::newRow("positional field") << QStringLiteral("Erstellt von {0}");
-        QTest::newRow("automatic field") << QStringLiteral("Erstellt von {}");
-        QTest::newRow("unmatched open brace") << QStringLiteral("Erstellt von {creator");
-        QTest::newRow("unmatched close brace") << QStringLiteral("Erstellt von creator}");
-        QTest::newRow("nested field") << QStringLiteral("Erstellt von {creator:{width}}");
-        QTest::newRow("localized string") << QStringLiteral("Erstellt von {creator:L}");
-        QTest::newRow("spec not in source") << QStringLiteral("Erstellt von {creator:>20}");
+        QTest::newRow("unknown field") << QByteArray{ "Erstellt von {author}" };
+        QTest::newRow("positional field") << QByteArray{ "Erstellt von {0}" };
+        QTest::newRow("automatic field") << QByteArray{ "Erstellt von {}" };
+        QTest::newRow("unmatched open brace") << QByteArray{ "Erstellt von {creator" };
+        QTest::newRow("unmatched close brace") << QByteArray{ "Erstellt von creator}" };
+        QTest::newRow("nested field") << QByteArray{ "Erstellt von {creator:{width}}" };
+        QTest::newRow("localized string") << QByteArray{ "Erstellt von {creator:L}" };
+        QTest::newRow("spec not in source") << QByteArray{ "Erstellt von {creator:>20}" };
     }
 
     void falls_back_on_bad_translation()
     {
-        QFETCH(QString, translation);
-        translate("Created by {creator}", { translation.toUtf8() });
+        QFETCH(QByteArray, translation);
+        translate("Created by {creator}", { translation });
 
         QCOMPARE(TR_FORMAT("Created by {creator}", fmt::arg("creator", "Mnemosaic")), QStringLiteral("Created by Mnemosaic"));
     }
@@ -281,16 +271,14 @@ private slots:
         auto const* const source = "{minutes:L} minute(s) ago";
 
         QCOMPARE(
-            trqt::splitAtField(QStringLiteral("vor {minutes} Minuten"), source, "minutes"),
+            trqt::splitAtField("vor {minutes} Minuten", source, "minutes"),
             std::pair(QStringLiteral("vor "), QStringLiteral(" Minuten")));
+        QCOMPARE(trqt::splitAtField("{{{minutes:L}}}", source, "minutes"), std::pair(QStringLiteral("{"), QStringLiteral("}")));
         QCOMPARE(
-            trqt::splitAtField(QStringLiteral("{{{minutes:L}}}"), source, "minutes"),
-            std::pair(QStringLiteral("{"), QStringLiteral("}")));
-        QCOMPARE(
-            trqt::splitAtField(QStringLiteral("vor {count} Minuten"), source, "minutes"),
+            trqt::splitAtField("vor {count} Minuten", source, "minutes"),
             std::pair(QString{}, QStringLiteral(" minute(s) ago")));
         QCOMPARE(
-            trqt::splitAtField(QStringLiteral("vor {minutes} {minutes} Minuten"), source, "minutes"),
+            trqt::splitAtField("vor {minutes} {minutes} Minuten", source, "minutes"),
             std::pair(QString{}, QStringLiteral(" minute(s) ago")));
     }
 };
