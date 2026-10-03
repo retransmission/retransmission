@@ -58,9 +58,7 @@ TEST_F(UtilsTest, translatorWithContext)
             }
             return msgid == "Seeding"sv ? "Verteilt" : msgid;
         },
-        [](char const* msgid, char const* msgid_plural, uint64_t n) noexcept -> char const* {
-            return n == 1U ? msgid : msgid_plural;
-        });
+        nullptr);
     EXPECT_STREQ("Verteilen", tr_pgettext("Verb", "Seeding"));
     EXPECT_STREQ("Verteilt", _("Seeding"));
     EXPECT_STREQ("Seeding", tr_pgettext("Adjective", "Seeding"));
