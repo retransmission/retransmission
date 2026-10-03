@@ -84,12 +84,11 @@ source_lang = en
 type        = STRINGS
 lang_map    = pt_BR: pt-BR, pt_PT: pt-PT, zh_CN: zh-CN, zh_TW: zh-TW
 
-[o:transmissionbt:p:transmissionbt:r:mac-ql]
-file_filter = macosx/QuickLookExtension/<lang>.lproj/Localizable.strings
-source_file = macosx/QuickLookExtension/en.lproj/Localizable.strings
+[o:transmissionbt:p:transmissionbt:r:mac-ql-xcstrings]
+file_filter = macosx/QuickLookExtension/Resources/Localizable.xcstrings
+source_file = macosx/QuickLookExtension/Resources/Localizable.xcstrings
 source_lang = en
-type        = STRINGS
-lang_map    = pt_BR: pt-BR, pt_PT: pt-PT, zh_CN: zh-CN, zh_TW: zh-TW
+type = XSTRINGS
 
 [o:transmissionbt:p:transmissionbt:r:qt]
 file_filter = qt/translations/transmission_<lang>.ts
