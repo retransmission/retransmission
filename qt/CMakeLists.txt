@@ -215,7 +215,7 @@ endif()
 set(DESKTOP_FILE "${CMAKE_CURRENT_BINARY_DIR}/${TR_NAME}-qt.desktop")
 
 # Gettext merges the translations into the configured copy.
-if(ENABLE_NLS AND GETTEXT_FOUND)
+if(GETTEXT_FOUND)
     configure_file(retransmission-qt.desktop.in retransmission-qt.desktop.in @ONLY)
     tr_gettext_msgfmt(${TR_NAME}-qt
         ${DESKTOP_FILE}
