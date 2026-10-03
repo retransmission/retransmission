@@ -21,8 +21,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-01-04 14:15+0000\n"
+"Report-Msgid-Bugs-To: https://github.com/retransmission/retransmission/issues\n"
+"POT-Creation-Date: 2026-10-03 11:48-0500\n"
 "PO-Revision-Date: 2017-01-26 19:47+0000\n"
 "Last-Translator: Виталий Саенко <mail.saenkovitalik@gmail.com>, 2025\n"
 "Language-Team: Ukrainian (https://app.transifex.com/transmissionbt/teams/33778/uk/)\n"
@@ -32,11 +32,19 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=4; plural=(n % 1 == 0 && n % 10 == 1 && n % 100 != 11 ? 0 : n % 1 == 0 && n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 12 || n % 100 > 14) ? 1 : n % 1 == 0 && (n % 10 ==0 || (n % 10 >=5 && n % 10 <=9) || (n % 100 >=11 && n % 100 <=14 )) ? 2: 3);\n"
 
+#, fuzzy
 msgid "None"
-msgstr "Немає"
+msgstr ""
+"#-#-#-#-#  uk.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Немає\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Нічого"
 
 msgid "Inf"
 msgstr "∞"
+
+msgid "Another process is already using '{path}'."
+msgstr ""
 
 msgid "Couldn't read '{path}': {error} ({error_code})"
 msgstr "Не вдалося прочитати «{path}»: {error} ({error_code})"
@@ -64,6 +72,9 @@ msgstr "Перезавантаження налаштувань з «{path}»"
 
 msgid "Couldn't initialize daemon: {error} ({error_code})"
 msgstr "Не вдалося ініціалізувати демон {error} ({error_code})"
+
+msgid "Waiting for another process to release '{path}'"
+msgstr ""
 
 msgid "Loading settings from '{path}'"
 msgstr "Завантаження налаштувань з «{path}»"
@@ -118,8 +129,13 @@ msgstr[1] "Не вдалося додати дубляж торентів"
 msgstr[2] "Не вдалося додати дубляж торентів"
 msgstr[3] "Не вдалося додати дубляж торентів"
 
+#, fuzzy
 msgid "A fast and easy BitTorrent client"
-msgstr "Швидкий і простий BitTorrent клієнт"
+msgstr ""
+"#-#-#-#-#  uk.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Швидкий і простий BitTorrent клієнт\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Швидкий і простий у використанні клієнт BitTorrent"
 
 msgid "Copyright © The {appname} Project"
 msgstr "Авторське право © The {appname} Project"
@@ -169,28 +185,50 @@ msgstr "Поширювати незалежно від активності"
 msgid "Stop seeding if idle for N minutes:"
 msgstr "Припинити поширення, якщо не буде активності (у хвилинах):"
 
+#, fuzzy
 msgid "Queued for verification"
-msgstr "У черзі на перевірку"
+msgstr ""
+"#-#-#-#-#  uk.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"У черзі на перевірку\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Черга на перевірку"
 
+#, fuzzy
 msgid "Verifying local data"
-msgstr "Перевіряються завантажені дані"
+msgstr ""
+"#-#-#-#-#  uk.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Перевіряються завантажені дані\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Перевірка локальних даних"
 
+#, fuzzy
 msgid "Queued for download"
-msgstr "Додано до черги завантаження"
+msgstr ""
+"#-#-#-#-#  uk.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Додано до черги завантаження\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Черга на завантаження"
 
 msgctxt "Verb"
 msgid "Downloading"
 msgstr "Завантаження"
 
+#, fuzzy
 msgid "Queued for seeding"
-msgstr "Додано до черги розповсюдження"
+msgstr ""
+"#-#-#-#-#  uk.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Додано до черги розповсюдження\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Черга на поширення"
 
 msgctxt "Verb"
 msgid "Seeding"
 msgstr "Поширення"
 
-msgid "Finished"
-msgstr "Завершено"
+#, fuzzy
+#| msgid "Incomplete"
+msgid "Seeding complete"
+msgstr "Не завершено"
 
 msgid "Paused"
 msgstr "Призупинено"
@@ -204,20 +242,40 @@ msgstr "Мішаний"
 msgid "No Torrents Selected"
 msgstr "Не позначено жодного торенту"
 
+#, fuzzy
 msgid "Private to this tracker -- DHT and PEX disabled"
-msgstr "Лише для цього трекеру — DHT та PEX вимкнено"
+msgstr ""
+"#-#-#-#-#  uk.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Лише для цього трекеру — DHT та PEX вимкнено\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Особисто до цього трекера -- DHT та PEX вимкнено"
 
 msgid "Public torrent"
 msgstr "Публічний торент"
 
+#, fuzzy
 msgid "Created by {creator} on {date}"
-msgstr "Створено {creator} {date}"
+msgstr ""
+"#-#-#-#-#  uk.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Створено {creator} {date}\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Створено автором {creator} у {date}"
 
+#, fuzzy
 msgid "Created by {creator}"
-msgstr "Створено {creator}"
+msgstr ""
+"#-#-#-#-#  uk.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Створено {creator}\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Автор {creator}"
 
+#, fuzzy
 msgid "Created on {date}"
-msgstr "Створено {date}"
+msgstr ""
+"#-#-#-#-#  uk.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Створено {date}\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Створено у {date}"
 
 msgid "Unknown"
 msgstr "Невідомо"
@@ -243,11 +301,18 @@ msgstr "{current_size} ({percent_done}%)"
 msgid "{current_size} ({percent_done}% of {percent_available}% available)"
 msgstr "{current_size} ({percent_done}% з доступних {percent_available}%)"
 
+#, fuzzy, c-format
+#| msgid "{current_size} ({percent_done}% of {percent_available}% available; {unverified_size} unverified)"
 msgid "{current_size} ({percent_done}% of {percent_available}% available; {unverified_size} unverified)"
 msgstr "{current_size} ({percent_done}% з доступних {percent_available}%; {unverified_size} не верифіковано)"
 
+#, fuzzy
 msgid "{downloaded_size} (+{discarded_size} discarded after failed checksum)"
-msgstr "{downloaded_size} (+{discarded_size} відкинуто через неправильну контрольну суму)"
+msgstr ""
+"#-#-#-#-#  uk.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{downloaded_size} (+{discarded_size} відкинуто через неправильну контрольну суму)\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{downloaded_size} (+{discarded_size} відкинуто після невідповідної контрольної суми)"
 
 msgid "{uploaded_size} (Ratio: {ratio})"
 msgstr "{uploaded_size} (Співвідношення: {ratio})"
@@ -273,8 +338,10 @@ msgstr "Ми можемо завантажити з цього вузла, як�
 msgid "Uploading to peer"
 msgstr "Вивантаження на вузол"
 
-msgid "We would upload to this peer if they asked"
-msgstr "Можлива передача даних на цей вузол, якщо надійде відповідний запит"
+#, fuzzy
+#| msgid "We would download from this peer if they would let us"
+msgid "This peer would download from us if we would let them"
+msgstr "Ми можемо завантажити з цього вузла, якщо він це дозволить"
 
 msgid "Peer has unchoked us, but we're not interested"
 msgstr "Вузол може передати дані, але нам ці дані не потрібні"
@@ -297,10 +364,12 @@ msgstr "Вузол є вхідним з’єднанням"
 msgid "Peer is connected over µTP"
 msgstr "Вузол з’єднано за протоколом µTP"
 
+msgid "Peer supports holepunch (BEP 55)"
+msgstr ""
+
 msgid "Address"
 msgstr "Адреса"
 
-#. % is percent done
 msgid "%"
 msgstr "%"
 
@@ -310,23 +379,21 @@ msgstr "Завант."
 msgid "Up Reqs"
 msgstr "Розд."
 
-msgid "Dn Blocks"
-msgstr "Завант. блоків"
-
-msgid "Up Blocks"
-msgstr "Відвант. блоків"
-
-msgid "We Cancelled"
-msgstr "Скасовано нами"
-
-msgid "They Cancelled"
-msgstr "Скасовано ними"
-
+#, fuzzy
 msgid "Down"
-msgstr "Завант."
+msgstr ""
+"#-#-#-#-#  uk.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Завант.\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Завант"
 
+#, fuzzy
 msgid "Up"
-msgstr "Вивант."
+msgstr ""
+"#-#-#-#-#  uk.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Вивант.\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Вивант"
 
 msgid "Client"
 msgstr "Клієнт"
@@ -337,72 +404,19 @@ msgstr "Прапорці"
 msgid "Web Seeds"
 msgstr "Веб-сиди"
 
-msgid "Got a list of {markup_begin}{peer_count} peer{markup_end} {time_span_ago}"
-msgid_plural "Got a list of {markup_begin}{peer_count} peers{markup_end} {time_span_ago}"
-msgstr[0] "Отримано список з {markup_begin}{peer_count} вузла{markup_end} {time_span_ago}"
-msgstr[1] "Отримано список з {markup_begin}{peer_count} вузлів{markup_end} {time_span_ago}"
-msgstr[2] "Отримано список з {markup_begin}{peer_count} вузлів{markup_end} {time_span_ago}"
-msgstr[3] "Отримано список з {markup_begin}{peer_count} вузлів{markup_end} {time_span_ago}"
-
-#. {markup_begin} and {markup_end} should surround the time_span
-msgid "Peer list request {markup_begin}timed out {time_span_ago}{markup_end}; will retry"
-msgstr "Запит списку вузлів {markup_begin}вичерпав час {time_span_ago}{markup_end}; буде надіслано повторно"
-
-#. {markup_begin} and {markup_end} should surround the error
-msgid "Got an error '{markup_begin}{error}{markup_end}' {time_span_ago}"
-msgstr "Виникла помилка «{markup_begin}{error}{markup_end}» {time_span_ago}"
-
-msgid "No updates scheduled"
-msgstr "Жодних оновлень не заплановано"
-
-msgid "Asking for more peers {time_span_from_now}"
-msgstr "Запит додаткових вузлів {time_span_from_now}"
-
-msgid "Queued to ask for more peers"
-msgstr "У черзі на перевірку нових вузлів"
-
-#. {markup_begin} and {markup_end} should surround time_span_ago
-msgid "Asked for more peers {markup_begin}{time_span_ago}{markup_end}"
-msgstr "Запитано додаткові вузли {markup_begin}{time_span_ago}{markup_end}"
-
-msgid "Tracker had {markup_begin}{seeder_count} {seeder_or_seeders} and {leecher_count} {leecher_or_leechers}{markup_end} {time_span_ago}"
-msgstr "Трекер мав {markup_begin}{seeder_count} {seeder_or_seeders} і {leecher_count} {leecher_or_leechers}{markup_end} {time_span_ago}"
-
-msgid "seeder"
-msgid_plural "seeders"
-msgstr[0] "роздаючий"
-msgstr[1] "роздаючих"
-msgstr[2] "роздаючих"
-msgstr[3] "роздаючих"
-
-msgid "leecher"
-msgid_plural "leechers"
-msgstr[0] "завантажуючий"
-msgstr[1] "завантажуючих"
-msgstr[2] "завантажуючих"
-msgstr[3] "завантажуючих"
-
-#. {markup_begin} and {markup_end} should surround the error text
-msgid "Got a scrape error '{markup_begin}{error}{markup_end}' {time_span_ago}"
-msgstr "Виникла помилка запиту до трекера '{markup_begin}{error}{markup_end}' {time_span_ago}"
-
-msgid "Asking for peer counts in {time_span_from_now}"
-msgstr "Запит на підрахунок вузлів у {time_span_from_now}"
-
-msgid "Queued to ask for peer counts"
-msgstr "У черзі на запит кількість вузлів"
-
-msgid "Asked for peer counts {markup_begin}{time_span_ago}{markup_end}"
-msgstr "Запитано кількість вузлів {markup_begin}{time_span_ago}{markup_end}"
-
 msgid "{torrent_name} - Edit Trackers"
 msgstr "{torrent_name} - Редагувати Трекери"
 
 msgid "List contains invalid URLs"
 msgstr "Перелік містить помилкові адреси"
 
+#, fuzzy
 msgid "Please correct the errors and try again."
-msgstr "Будь ласка, виправте помилки і повторіть спробу."
+msgstr ""
+"#-#-#-#-#  uk.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Будь ласка, виправте помилки і повторіть спробу.\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Виправте помилку і спробуйте ще раз."
 
 msgid "{torrent_name} - Add Tracker"
 msgstr "{torrent_name} - Додати Трекер"
@@ -423,6 +437,14 @@ msgstr[3] "Властивості — {torrent_count:L} торенти"
 msgid "Remove torrent?"
 msgstr "Вилучити торент?"
 
+#, fuzzy
+msgid "Delete this torrent's downloaded files?"
+msgstr ""
+"#-#-#-#-#  uk.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Видалити цей завантажений файл торрента?\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Вилучити завантажені файли цих торентів?"
+
 msgid "Remove {count:L} torrent?"
 msgid_plural "Remove {count:L} torrents?"
 msgstr[0] "Вилучити {count:L} торент?"
@@ -430,40 +452,83 @@ msgstr[1] "Вилучити {count:L} торента?"
 msgstr[2] "Вилучити {count:L} торентів?"
 msgstr[3] "Вилучити {count:L} торентів?"
 
-msgid "Delete this torrent's downloaded files?"
-msgstr "Видалити цей завантажений файл торрента?"
-
+#, fuzzy
 msgid "Delete this {count:L} torrent's downloaded files?"
 msgid_plural "Delete these {count:L} torrents' downloaded files?"
-msgstr[0] "Вилучити завантажени файлы цього {count:L} торенту?"
-msgstr[1] "Видалити ці {count:L} завантажені файли торрента?"
-msgstr[2] "Видалити ці {count:L} завантажених файлів торрента?"
-msgstr[3] "Видалити ці {count:L} завантажених файлів торрента?"
+msgstr[0] ""
+"#-#-#-#-#  uk.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Вилучити завантажени файлы цього {count:L} торенту?\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Вилучити завантажени файлы цього {count:L} торенту?"
+msgstr[1] ""
+"#-#-#-#-#  uk.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Видалити ці {count:L} завантажені файли торрента?\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Вилучити завантажени файлы цих {count:L} торентів?"
+msgstr[2] ""
+"#-#-#-#-#  uk.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Видалити ці {count:L} завантажених файлів торрента?\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Вилучити завантажени файлы цих {count:L} торентів?"
+msgstr[3] ""
+"#-#-#-#-#  uk.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Видалити ці {count:L} завантажених файлів торрента?\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Вилучити завантажени файлы цих {count:L} торентів?"
 
-msgid "Once removed, continuing the transfer will require the torrent file or magnet link."
-msgid_plural "Once removed, continuing the transfers will require the torrent files or magnet links."
-msgstr[0] "Після вилучення для продовження передавання потрібен буде торент-файл або магнет-посилання."
-msgstr[1] "Після вилучення для продовження передавань потрібен буде торент-файл або магнет-посилання."
-msgstr[2] "Після вилучення для продовження передавань потрібен буде торент-файл або магнет-посилання."
-msgstr[3] "Після вилучення для продовження передавань потрібен буде торент-файл або магнет-посилання."
+#, fuzzy
+#| msgid "Once removed, continuing the transfer will require the torrent file or magnet link."
+#| msgid_plural "Once removed, continuing the transfers will require the torrent files or magnet links."
+msgid "Once removed, you'll need the torrent file or magnet link to add it again."
+msgstr "Після вилучення для продовження передавання потрібен буде торент-файл або магнет-посилання."
+
+#, fuzzy
+#| msgid "Once removed, continuing the transfers will require the torrent files or magnet links."
+msgid "Once removed, you'll need the torrent files or magnet links to add them again."
+msgstr "Після вилучення для продовження передавання потрібен буде торрент-файл або магнет-посилання."
 
 msgid "This torrent has not finished downloading."
 msgstr "Завантаження цього торенту не завершене."
 
+#, fuzzy
 msgid "These torrents have not finished downloading."
-msgstr "Завантаження цих торентів не завершене."
+msgstr ""
+"#-#-#-#-#  uk.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Завантаження цих торентів не завершене.\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Завантаження цих торентів не завершено."
 
+#, fuzzy
 msgid "This torrent is connected to peers."
-msgstr "Цей торент під’єднаний до вузлів."
+msgstr ""
+"#-#-#-#-#  uk.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Цей торент під’єднаний до вузлів.\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Цей торент підключений до вузлів."
 
+#, fuzzy
 msgid "These torrents are connected to peers."
-msgstr "Ці торенти під’єднані до вузлів."
+msgstr ""
+"#-#-#-#-#  uk.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Ці торенти під’єднані до вузлів.\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Ці торенти підключені до вузлів."
 
+#, fuzzy
 msgid "One of these torrents is connected to peers."
-msgstr "Один із цих торентів під’єднаний до вузлів."
+msgstr ""
+"#-#-#-#-#  uk.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Один із цих торентів під’єднаний до вузлів.\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Один з цих торентів підключений до вузлів."
 
+#, fuzzy
 msgid "Some of these torrents are connected to peers."
-msgstr "Деякі із цих торентів під’єднані до вузлів."
+msgstr ""
+"#-#-#-#-#  uk.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Деякі із цих торентів під’єднані до вузлів.\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Деякі із цих торентів підключений до вузлів."
 
 msgid "One of these torrents has not finished downloading."
 msgstr "Завантаження одного із цих торентів не завершене."
@@ -477,14 +542,22 @@ msgstr "_Скасувати"
 msgid "_Delete"
 msgstr "_Видалити"
 
+#. Removes the torrent from the list and keeps its downloaded files
 msgid "_Remove"
 msgstr "В_илучити"
 
 msgid "High"
 msgstr "Високий"
 
+#, fuzzy
 msgid "Normal"
-msgstr "Звичайний"
+msgstr ""
+"#-#-#-#-#  uk.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Звичайний\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Звичайний\n"
+"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Нормальний"
 
 msgid "Low"
 msgstr "Низький"
@@ -498,7 +571,7 @@ msgstr "Назва"
 msgid "Size"
 msgstr "Розмір"
 
-msgid "Have"
+msgid "Progress"
 msgstr "Поступ"
 
 msgid "Download"
@@ -507,8 +580,13 @@ msgstr "Завантаження"
 msgid "Priority"
 msgstr "Пріоритет"
 
+#, fuzzy
 msgid "All"
-msgstr "Усі"
+msgstr ""
+"#-#-#-#-#  uk.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Усі\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Всі"
 
 msgid "Active"
 msgstr "Активний"
@@ -526,8 +604,31 @@ msgstr "Пок_азувати:"
 msgid "_Show {count:L} of:"
 msgstr "_Показати {count:L} з:"
 
+#, fuzzy
 msgid "{disk_space} free"
-msgstr "{disk_space} доступно"
+msgstr ""
+"#-#-#-#-#  uk.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{disk_space} доступно\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{disk_space} вільно"
+
+msgid "Where to look for configuration files"
+msgstr "Де шукати файли налаштувань"
+
+msgid "Start with all torrents paused"
+msgstr "Запускати з призупинкою усіх торентів"
+
+msgid "Start minimized in notification area"
+msgstr "Запускати згорнутим у системний лоток"
+
+msgid "Show version number and exit"
+msgstr "Показати номер версії та вийти"
+
+msgid "[torrent files or urls]"
+msgstr "[Файли торентів або посилання]"
+
+msgid "Run '{program} --help' to see a full list of available command line options.\n"
+msgstr "Виконайте '{program} --help', щоб побачити повний перелік доступних  параметрів командного рядка.\n"
 
 msgid ""
 "Click to disable Alternative Speed Limits\n"
@@ -558,8 +659,13 @@ msgstr "Обмежити швидкість поширення"
 msgid "Stop Seeding at Ratio"
 msgstr "Припинити поширення за співвідношення"
 
+#, fuzzy
 msgid "Stop at Ratio ({ratio})"
-msgstr "Зупинити при Співвідношенні ({ratio})"
+msgstr ""
+"#-#-#-#-#  uk.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Зупинити при Співвідношенні ({ratio})\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Зупинити за співвідношення ({ratio})"
 
 msgid "Total Ratio"
 msgstr "Загальне співвідношення"
@@ -567,22 +673,27 @@ msgstr "Загальне співвідношення"
 msgid "Session Ratio"
 msgstr "Співвідношення за сеанс"
 
+#, fuzzy
 msgid "Total Transfer"
-msgstr "Усього передано"
+msgstr ""
+"#-#-#-#-#  uk.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Усього передано\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Всього передано"
 
 msgid "Session Transfer"
 msgstr "Передано за сеанс"
 
+msgid "Down: {downloaded_size}, Up: {uploaded_size}"
+msgstr "Заван: {downloaded_size}, Виван: {uploaded_size}"
+
+#, fuzzy
 msgid "Ratio: {ratio}"
-msgstr "Співвідношення: {ratio}"
-
-msgctxt "current session totals"
-msgid "Down: {downloaded_size}, Up: {uploaded_size}"
-msgstr "Завантажено: {downloaded_size}, Вивантажено: {uploaded_size}"
-
-msgctxt "all-time totals"
-msgid "Down: {downloaded_size}, Up: {uploaded_size}"
-msgstr "Завантажено: {downloaded_size}, Вивантажено: {uploaded_size}"
+msgstr ""
+"#-#-#-#-#  uk.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Співвідношення: {ratio}\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Рейтинг: {ratio}"
 
 msgid "{download_speed} ▾"
 msgstr "{download_speed} ▾"
@@ -640,6 +751,11 @@ msgstr "Час"
 msgid "Couldn't create proxy for '{bus}': {error} ({error_code})"
 msgstr "Не вдалося створити проксі для '{bus}': {error} ({error_code})"
 
+#, fuzzy
+#| msgid "Couldn't save '{path}': {error} ({error_code})"
+msgid "Couldn't spawn async process \"'{command}'\": {error} ({error_code})"
+msgstr "Не вдалося зберегти «{path}»: {error} ({error_code})"
+
 msgid "Open File"
 msgstr "Відкрити файл"
 
@@ -670,7 +786,10 @@ msgstr "_Відкрити"
 msgid "Show options dialog"
 msgstr "Показати діалогове вікно налаштувань"
 
-msgid "Select a File"
+msgid "Other…"
+msgstr ""
+
+msgid "Select File"
 msgstr "Обрати файл"
 
 msgid "(None)"
@@ -685,11 +804,21 @@ msgstr "Надавати перевагу шифруванню"
 msgid "Require encryption"
 msgstr "Вимагати шифрування"
 
+#, fuzzy
 msgid "Every Day"
-msgstr "Щодня"
+msgstr ""
+"#-#-#-#-#  uk.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Щодня\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Кожного дня"
 
+#, fuzzy
 msgid "Weekdays"
-msgstr "У робочі дні"
+msgstr ""
+"#-#-#-#-#  uk.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"У робочі дні\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"В робочі дні"
 
 msgid "Weekends"
 msgstr "У вихідні"
@@ -707,8 +836,13 @@ msgstr "Список блокування оновлено!"
 msgid "Couldn't update blocklist"
 msgstr "Не вдалося оновити список блокування"
 
+#, fuzzy
 msgid "Getting new blocklist…"
-msgstr "Отримання нового переліку блоків…"
+msgstr ""
+"#-#-#-#-#  uk.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Отримання нового переліку блоків…\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Отримання нового списку…"
 
 msgctxt "Port test status"
 msgid "unknown"
@@ -745,29 +879,40 @@ msgstr "Не вдалося пересунути торент"
 msgid "This may take a moment…"
 msgstr "Ця дія може бути тривалою…"
 
+#, fuzzy
+#| msgid "Couldn't watch '{path}': {error} ({error_code})"
+msgid "Couldn't open watchdir '{dirname}': {error} ({error_code})"
+msgstr "Не вдалося відстежити «{path}»: {error} ({error_code})"
+
 msgid "Couldn't read '{path}'"
 msgstr "Не вдалося зчитати «{path}»"
-
-#. logging
-msgid "Inhibiting desktop hibernation"
-msgstr "Відкладаємо присипляння системи"
-
-msgid "Couldn't inhibit desktop hibernation: {error}"
-msgstr "Не вдалося стримати гібернацію: {error}"
-
-#. logging
-msgid "Allowing desktop hibernation"
-msgstr "Дозвіл на присипляння"
 
 msgid "Couldn't find pending RPC request for id {id}"
 msgstr ""
 
+#, fuzzy
 msgid "Started {count:L} time"
 msgid_plural "Started {count:L} times"
-msgstr[0] "Запущено {count:L} раз"
-msgstr[1] "Запущено {count:L} рази"
-msgstr[2] "Запущено {count:L} разів"
-msgstr[3] "Запущено {count:L} рази"
+msgstr[0] ""
+"#-#-#-#-#  uk.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Запущено {count:L} раз\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Запущено {count:L} раз"
+msgstr[1] ""
+"#-#-#-#-#  uk.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Запущено {count:L} рази\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Запущено {count:L} раза"
+msgstr[2] ""
+"#-#-#-#-#  uk.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Запущено {count:L} разів\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Запущено {count:L} разів"
+msgstr[3] ""
+"#-#-#-#-#  uk.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Запущено {count:L} рази\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Запущено {count:L} разів"
 
 msgid "Reset your statistics?"
 msgstr "Вилучити Ваші статистичні дані?"
@@ -778,12 +923,19 @@ msgstr "_Скинути"
 msgid "These statistics are for your information only. Resetting them doesn't affect the statistics logged by your BitTorrent trackers."
 msgstr "Ці статистичні дані наведено лише з довідковою метою. Відновлення початкових даних не вплине на статистичні дані, які записано на Ваших трекерах BitTorrent."
 
+msgid "_Show {appname}"
+msgstr "_Показати вікно {appname}"
+
 msgid "{upload_speed} ▴ {download_speed} ▾"
 msgstr "{upload_speed} ▴ {download_speed} ▾"
 
-#, no-c-format
+#, fuzzy, no-c-format
 msgid "Verifying local data ({percent_done}% tested)"
-msgstr "Перевірка локальних даних ({percent_done}% перевірено)"
+msgstr ""
+"#-#-#-#-#  uk.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Перевірка локальних даних ({percent_done}% перевірено)\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Очікування перевірки локальних даних ({percent_done}% перевірено)"
 
 msgid "{current_size} of {complete_size} ({percent_done}%)"
 msgstr "{current_size} з {complete_size} ({percent_done}%)"
@@ -791,15 +943,26 @@ msgstr "{current_size} з {complete_size} ({percent_done}%)"
 msgid "{current_size} of {complete_size} ({percent_complete}%), uploaded {uploaded_size} (Ratio: {ratio}, Goal: {seed_ratio})"
 msgstr "{current_size} з {complete_size} ({percent_complete}%), вивантажено {uploaded_size} (Співвідношення: {ratio}, Мета: {seed_ratio})"
 
+#, fuzzy
 msgid "{current_size} of {complete_size} ({percent_complete}%), uploaded {uploaded_size} (Ratio: {ratio})"
-msgstr "{current_size} з {complete_size} ({percent_complete}%), вивантажено {uploaded_size} (Співвідношення: {ratio})"
+msgstr ""
+"#-#-#-#-#  uk.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{current_size} з {complete_size} ({percent_complete}%), вивантажено {uploaded_size} (Співвідношення: {ratio})\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{current_size} з {complete_size} ({percent_complete}%), відвантажено {uploaded_size} (Співвідношення: {ratio})"
 
 msgid "{complete_size}, uploaded {uploaded_size} (Ratio: {ratio}, Goal: {seed_ratio})"
 msgstr "{complete_size}, вивантажено {uploaded_size} (Співвідношення: {ratio}, Мета: {seed_ratio}) "
 
+#, fuzzy
 msgid "{complete_size}, uploaded {uploaded_size} (Ratio: {ratio})"
-msgstr "{complete_size}, вивантажено {uploaded_size} (Співвідношення: {ratio})"
+msgstr ""
+"#-#-#-#-#  uk.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{complete_size}, вивантажено {uploaded_size} (Співвідношення: {ratio})\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{complete_size}, відвантажено {uploaded_size} (Співвідношення: {ratio})"
 
+#. Translators: Second (optional) part of torrent progress string
 msgid "Remaining time unknown"
 msgstr "Час, що залишився, невідомий"
 
@@ -812,7 +975,9 @@ msgstr "Павза зв'язку"
 msgid "Tracker warning: '{warning}'"
 msgstr "Попередження трекера: «{warning}»"
 
-msgid "Tracker Error: '{error}'"
+#, fuzzy
+#| msgid "Tracker Error: '{error}'"
+msgid "Tracker error: '{error}'"
 msgstr "Помилка трекера: «{error}»"
 
 msgid "Local error: '{error}'"
@@ -840,220 +1005,56 @@ msgstr[1] "Завантаження від {active_count} веб-сідів"
 msgstr[2] "Завантаження від {active_count} веб-сідів"
 msgstr[3] "Завантаження від {active_count} веб-сідів"
 
+#, fuzzy
 msgid "Downloading from {active_count} of {connected_count} connected peer"
 msgid_plural "Downloading from {active_count} of {connected_count} connected peers"
-msgstr[0] "Завантаження від {active_count} з {connected_count} підʼєднаного вузла"
-msgstr[1] "Завантаження від {active_count} з {connected_count} підʼєднаних вузлів"
-msgstr[2] "Завантаження від {active_count} з {connected_count} підʼєднаних вузлів"
-msgstr[3] "Завантаження від {active_count} з {connected_count} підʼєднаних вузлів"
+msgstr[0] ""
+"#-#-#-#-#  uk.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Завантаження від {active_count} з {connected_count} підʼєднаного вузла\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Завантаження від {active_count} з {connected_count} підключеного вузла"
+msgstr[1] ""
+"#-#-#-#-#  uk.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Завантаження від {active_count} з {connected_count} підʼєднаних вузлів\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Завантаження від {active_count} з {connected_count} підключених вузлів"
+msgstr[2] ""
+"#-#-#-#-#  uk.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Завантаження від {active_count} з {connected_count} підʼєднаних вузлів\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Завантаження від {active_count} з {connected_count} підключених вузлів"
+msgstr[3] ""
+"#-#-#-#-#  uk.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Завантаження від {active_count} з {connected_count} підʼєднаних вузлів\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Завантаження від {active_count} з {connected_count} підключених вузлів"
 
+#, fuzzy
 msgid "Seeding to {active_count} of {connected_count} connected peer"
 msgid_plural "Seeding to {active_count} of {connected_count} connected peers"
-msgstr[0] "Поширення до {active_count} з {connected_count} підʼєднаного вузла"
-msgstr[1] "Поширення до {active_count} з {connected_count} підʼєднаних вузлів"
-msgstr[2] "Поширення до {active_count} з {connected_count} підʼєднаних вузлів"
-msgstr[3] "Поширення до {active_count} з {connected_count} підʼєднаних вузлів"
-
-msgid "{days_from_now:L} day from now"
-msgid_plural "{days_from_now:L} days from now"
-msgstr[0] "через {days_from_now:L} день"
-msgstr[1] "через {days_from_now:L} дні"
-msgstr[2] "через {days_from_now:L} днів"
-msgstr[3] "через {days_from_now:L} дня"
-
-msgid "{hours_from_now:L} hour from now"
-msgid_plural "{hours_from_now:L} hours from now"
-msgstr[0] "через {hours_from_now:L} годину"
-msgstr[1] "через {hours_from_now:L} години"
-msgstr[2] "через {hours_from_now:L} годин"
-msgstr[3] "через {hours_from_now:L} години"
-
-msgid "{minutes_from_now:L} minute from now"
-msgid_plural "{minutes_from_now:L} minutes from now"
-msgstr[0] "через {minutes_from_now:L} хвилину"
-msgstr[1] "через {minutes_from_now:L} хвилини"
-msgstr[2] "через {minutes_from_now:L} хвилин"
-msgstr[3] "через {minutes_from_now:L} хвилини"
-
-msgid "{seconds_from_now:L} second from now"
-msgid_plural "{seconds_from_now:L} seconds from now"
-msgstr[0] "через {seconds_from_now:L} секунду"
-msgstr[1] "через {seconds_from_now:L} секунди"
-msgstr[2] "через {seconds_from_now:L} секунд"
-msgstr[3] "через {seconds_from_now:L} секунди"
-
-msgid "now"
-msgstr "зараз"
-
-msgid "{days_ago:L} day ago"
-msgid_plural "{days_ago:L} days ago"
-msgstr[0] "{days_ago:L} день тому"
-msgstr[1] "{days_ago:L} дні тому"
-msgstr[2] "{days_ago:L} днів тому"
-msgstr[3] "{days_ago:L} дня тому"
-
-msgid "{hours_ago:L} hour ago"
-msgid_plural "{hours_ago:L} hours ago"
-msgstr[0] "{hours_ago:L} годину тому"
-msgstr[1] "{hours_ago:L} години тому"
-msgstr[2] "{hours_ago:L} годин тому"
-msgstr[3] "{hours_ago:L} години тому"
-
-msgid "{minutes_ago:L} minute ago"
-msgid_plural "{minutes_ago:L} minutes ago"
-msgstr[0] "{minutes_ago:L} хвилину тому"
-msgstr[1] "{minutes_ago:L} хвилини тому"
-msgstr[2] "{minutes_ago:L} хвилин тому"
-msgstr[3] "{minutes_ago:L} хвилини тому"
-
-msgid "{seconds_ago:L} second ago"
-msgid_plural "{seconds_ago:L} seconds ago"
-msgstr[0] "{seconds_ago:L} секунду тому"
-msgstr[1] "{seconds_ago:L} секунди тому"
-msgstr[2] "{seconds_ago:L} секунд тому"
-msgstr[3] "{seconds_ago:L} секунди тому"
-
-msgid "{days:L} day"
-msgid_plural "{days:L} days"
-msgstr[0] "{days:L} день"
-msgstr[1] "{days:L} дні"
-msgstr[2] "{days:L} днів"
-msgstr[3] "{days:L} дня"
-
-msgid "{hours:L} hour"
-msgid_plural "{hours:L} hours"
-msgstr[0] "{hours:L} година"
-msgstr[1] "{hours:L} години"
-msgstr[2] "{hours:L} годин"
-msgstr[3] "{hours:L} години"
-
-msgid "{minutes:L} minute"
-msgid_plural "{minutes:L} minutes"
-msgstr[0] "{minutes:L} хвилина"
-msgstr[1] "{minutes:L} хвилини"
-msgstr[2] "{minutes:L} хвилин"
-msgstr[3] "{minutes:L} хвилини"
-
-msgid "{seconds:L} second"
-msgid_plural "{seconds:L} seconds"
-msgstr[0] "{seconds:L} секунда"
-msgstr[1] "{seconds:L} секунди"
-msgstr[2] "{seconds:L} секунд"
-msgstr[3] "{seconds:L} секунди"
-
-msgid "{days_left:L} day left"
-msgid_plural "{days_left:L} days left"
-msgstr[0] "Залишився {days_left:L} день"
-msgstr[1] "Залишилося {days_left:L} дні"
-msgstr[2] "Залишилося {days_left:L} днів"
-msgstr[3] "Залишилося {days_left:L} дня"
-
-msgid "{hours_left:L} hour left"
-msgid_plural "{hours_left:L} hours left"
-msgstr[0] "Залишилася {hours_left:L} година"
-msgstr[1] "Залишилося {hours_left:L} години"
-msgstr[2] "Залишилося {hours_left:L} годин"
-msgstr[3] "Залишилося {hours_left:L} години"
-
-msgid "{minutes_left:L} minute left"
-msgid_plural "{minutes_left:L} minutes left"
-msgstr[0] "Залишилася {minutes_left:L} хвилина"
-msgstr[1] "Залишилося {minutes_left:L} хвилини"
-msgstr[2] "Залишилося {minutes_left:L} хвилин"
-msgstr[3] "Залишилося {minutes_left:L} хвилини"
-
-msgid "{seconds_left:L} second left"
-msgid_plural "{seconds_left:L} seconds left"
-msgstr[0] "Залишилася {seconds_left:L} секунда"
-msgstr[1] "Залишилося {seconds_left:L} секунди"
-msgstr[2] "Залишилося {seconds_left:L} секунд"
-msgstr[3] "Залишилося{seconds_left:L} секунди"
-
-msgid "The torrent file '{path}' is already in use by '{torrent_name}'."
-msgstr "Торент-файл «{path}» вже використовується торентом «{torrent_name}»."
-
-msgid "Couldn't open torrent"
-msgstr "Не вдалося відкрити торент"
-
-msgid "Couldn't move '{path}' to trash: {error} ({error_code})"
-msgstr "Не вдалося перемістити '{path}' до смітника: {error} ({error_code})"
-
-msgid "Couldn't open '{url}'"
-msgstr "Не вдалося відкрити '{url}'"
-
-msgid "Unsupported URL: '{url}'"
-msgstr "URL не підтримується: «{url}»"
-
-#. modal
-msgid "{appname} doesn't know how to use '{url}'"
-msgstr "{appname} не знає як користуватися «{url}»"
-
-msgid "This magnet link appears to be intended for something other than BitTorrent."
-msgstr "Здається, це магнітне посилання призначене для чогось іншого, ніж BitTorrent."
+msgstr[0] ""
+"#-#-#-#-#  uk.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Поширення до {active_count} з {connected_count} підʼєднаного вузла\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Поширення до {active_count} з {connected_count} підключеного вузла"
+msgstr[1] ""
+"#-#-#-#-#  uk.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Поширення до {active_count} з {connected_count} підʼєднаних вузлів\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Поширення до {active_count} з {connected_count} підключених вузлів"
+msgstr[2] ""
+"#-#-#-#-#  uk.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Поширення до {active_count} з {connected_count} підʼєднаних вузлів\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Поширення до {active_count} з {connected_count} підключених вузлів"
+msgstr[3] ""
+"#-#-#-#-#  uk.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Поширення до {active_count} з {connected_count} підʼєднаних вузлів\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Поширення до {active_count} з {connected_count} підключених вузлів"
 
 msgid "Retransmission"
 msgstr "Retransmission"
-
-#. parse the command line
-msgid "Where to look for configuration files"
-msgstr "Де шукати файли налаштувань"
-
-msgid "Start with all torrents paused"
-msgstr "Запускати з призупинкою усіх торентів"
-
-msgid "Start minimized in notification area"
-msgstr "Запускати згорнутим у системний лоток"
-
-msgid "Show version number and exit"
-msgstr "Показати номер версії та вийти"
-
-msgid "[torrent files or urls]"
-msgstr "[Файли торентів або посилання]"
-
-msgid "Run '{program} --help' to see a full list of available command line options.\n"
-msgstr "Виконайте '{program} --help', щоб побачити повний перелік доступних  параметрів командного рядка.\n"
-
-msgid "B/s"
-msgstr "Б/с"
-
-msgid "GB/s"
-msgstr "ГБ/с"
-
-msgid "MB/s"
-msgstr "МБ/с"
-
-msgid "TB/s"
-msgstr "ТБ/с"
-
-msgid "kB/s"
-msgstr "кБ/с"
-
-msgid "B"
-msgstr "Б"
-
-msgid "GiB"
-msgstr "ГіБ"
-
-msgid "KiB"
-msgstr "КіБ"
-
-msgid "MiB"
-msgstr "МіБ"
-
-msgid "TiB"
-msgstr "ТіБ"
-
-msgid "GB"
-msgstr "ГБ"
-
-msgid "MB"
-msgstr "МБ"
-
-msgid "TB"
-msgstr "ТБ"
-
-msgid "kB"
-msgstr "кБ"
 
 msgid "BitTorrent Client"
 msgstr "Клієнт BitTorrent"
@@ -1071,32 +1072,66 @@ msgstr "Запустити Retransmission з призупинкою усіх т�
 msgid "Start Retransmission Minimized"
 msgstr "Запустити Retransmission згорнутим"
 
-msgid "Open a torrent"
-msgstr "Відкрити торент"
+#, fuzzy
+#| msgid "Copyright © The Retransmission Project"
+msgid "The Retransmission Project"
+msgstr "Авторське право © The Retransmission Project"
+
+#. Translators: these are the application description paragraphs in the MetaInfo file.
+msgid "BitTorrent is a peer-to-peer file-sharing protocol that is commonly used to distribute large amounts of data between multiple users."
+msgstr ""
+
+msgid "Retransmission is a BitTorrent client with an easy-to-use interface on top of a cross-platform backend. Native interfaces are available for macOS, Linux, and Windows, as well as command line binaries and a web GUI."
+msgstr ""
+
+msgid "Notable features of Retransmission include support for Local Peer Discovery, encryption, DHT, µTP, PEX and Magnet links."
+msgstr ""
+
+msgid "Main window, showing an ongoing download of Fedora Workstation"
+msgstr ""
+
+msgid "_File"
+msgstr "_Файл"
 
 msgid "Open _URL…"
 msgstr "Відкрити _адресу…"
 
-msgid "Open URL…"
-msgstr "Відкрити адресу…"
-
+#, fuzzy
 msgid "_New…"
-msgstr "С_творити…"
+msgstr ""
+"#-#-#-#-#  uk.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"С_творити…\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Новий…"
 
+#, fuzzy
 msgid "_Start All"
-msgstr "_Запустити усе"
+msgstr ""
+"#-#-#-#-#  uk.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Запустити усе\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Запустити все"
 
-msgid "Start all torrents"
-msgstr "Запустити усі торенти"
-
+#, fuzzy
 msgid "_Pause All"
-msgstr "П_ризупинити усі"
-
-msgid "Pause all torrents"
-msgstr "Призупинити усі торенти"
+msgstr ""
+"#-#-#-#-#  uk.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"П_ризупинити усі\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"П_ризупинити всі"
 
 msgid "_Quit"
 msgstr "Ви_йти"
+
+#, fuzzy
+msgid "_Edit"
+msgstr ""
+"#-#-#-#-#  uk.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Зміни\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Зміни\n"
+"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"З_міни"
 
 msgid "Select _All"
 msgstr "Позначити _усе"
@@ -1107,11 +1142,11 @@ msgstr "_Зняти позначення"
 msgid "_Preferences"
 msgstr "_Налаштування"
 
+msgid "_Torrent"
+msgstr "_Торент"
+
 msgid "_Properties"
 msgstr "_Властивості"
-
-msgid "Torrent properties"
-msgstr "Властивості торенту"
 
 msgid "Open Fold_er"
 msgstr "Відкрити _теку"
@@ -1119,50 +1154,76 @@ msgstr "Відкрити _теку"
 msgid "_Start"
 msgstr "_Запустити"
 
-msgid "Start torrent"
-msgstr "Запустити торент"
-
+#, fuzzy
 msgid "Start _Now"
-msgstr "_Розпочати зараз"
-
-msgid "Start torrent now"
-msgstr "Почати роботу з торентом негайно"
+msgstr ""
+"#-#-#-#-#  uk.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Розпочати зараз\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Запустити зараз"
 
 msgid "Ask Tracker for _More Peers"
 msgstr "Запросити у трекера _більше вузлів"
 
+#, fuzzy
+#| msgid "Queue"
+msgid "_Queue"
+msgstr "Черга"
+
 msgid "Move to _Top"
 msgstr "Пересунути на _початок"
 
+#, fuzzy
 msgid "Move _Up"
-msgstr "Пересунути в_гору"
+msgstr ""
+"#-#-#-#-#  uk.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Пересунути в_гору\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Перемістити в_гору"
 
+#, fuzzy
 msgid "Move _Down"
-msgstr "Пересунути в_низ"
+msgstr ""
+"#-#-#-#-#  uk.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Пересунути в_низ\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Перемістити в_низ"
 
+#, fuzzy
 msgid "Move to _Bottom"
-msgstr "Пересунути у _кінець"
+msgstr ""
+"#-#-#-#-#  uk.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Пересунути у _кінець\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Пересунути в _кінець"
 
 msgid "_Pause"
 msgstr "_Призупинити"
 
-msgid "Pause torrent"
-msgstr "Призупинити торент"
-
+#, fuzzy
 msgid "Set _Location…"
-msgstr "Встановити _місце…"
+msgstr ""
+"#-#-#-#-#  uk.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Встановити _місце…\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Вказати _місце…"
 
 msgid "_Verify Local Data"
 msgstr "_Перевірити локальні дані"
 
-msgid "Copy _Magnet Link to Clipboard"
-msgstr "Скопіювати magnet-посилання до буферу обміну"
+msgid "_Copy Magnet Link to Clipboard"
+msgstr "С_копіювати magnet-посилання до буфера обміну"
 
-msgid "Remove torrent"
-msgstr "Вилучити торент"
-
+#, fuzzy
 msgid "_Delete Files and Remove"
-msgstr "_Вилучити файли і торент-файл"
+msgstr ""
+"#-#-#-#-#  uk.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Вилучити файли і торент-файл\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Вилучити файли і торент"
+
+msgid "_View"
+msgstr "П_ерегляд"
 
 msgid "_Compact View"
 msgstr "_Стислий перегляд"
@@ -1188,8 +1249,13 @@ msgstr "Впорядкувати за _назвою"
 msgid "Sort by _Progress"
 msgstr "Впорядкувати за _поступом"
 
+#, fuzzy
 msgid "Sort by _Queue"
-msgstr "Впорядкувати за _чергою"
+msgstr ""
+"#-#-#-#-#  uk.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Впорядкувати за _чергою\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Впорядкувати за чергою"
 
 msgid "Sort by Rati_o"
 msgstr "Впорядкувати за спів_відношенням"
@@ -1200,11 +1266,24 @@ msgstr "Впорядкувати за ро_зміром"
 msgid "Sort by Stat_e"
 msgstr "Впорядкувати за ста_ном"
 
+#, fuzzy
 msgid "Sort by Time _Left"
-msgstr "Впорядкувати за часом, _що залишився"
+msgstr ""
+"#-#-#-#-#  uk.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Впорядкувати за часом, _що залишився\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Впорядкувати за ча_сом, що залишився"
 
+#, fuzzy
 msgid "Re_verse Sort Order"
-msgstr "Зворотній порядок сорту_вання"
+msgstr ""
+"#-#-#-#-#  uk.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Зворотній порядок сорту_вання\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Змінити порядок сортування"
+
+msgid "_Help"
+msgstr "_Довідка"
 
 msgid "Message _Log"
 msgstr "_Журнал повідомлень"
@@ -1218,17 +1297,31 @@ msgstr "_Підтримати фінансово"
 msgid "_Contents"
 msgstr "_Вміст"
 
+#, fuzzy
 msgid "_About"
-msgstr "_Про"
+msgstr ""
+"#-#-#-#-#  uk.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Про\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Про програму"
 
-msgid "_Show {appname}"
-msgstr "_Показати вікно {appname}"
+#, fuzzy
+#| msgid "Start torrent"
+msgid "_Sort Torrents By"
+msgstr "Запустити торент"
 
-msgid "Enable Alternative Speed _Limits"
-msgstr "Увімкнути альтернативні о_бмеження на швидкість"
+#, fuzzy
+#| msgid "Alternative Speed Limits"
+msgid "Alternative Speed _Limits"
+msgstr "Альтернативні обмеження швидкості"
 
+#, fuzzy
 msgid "_Add"
-msgstr "_Додати"
+msgstr ""
+"#-#-#-#-#  uk.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Додати\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Д_одати"
 
 msgid "Tracker"
 msgstr "Трекер"
@@ -1242,7 +1335,7 @@ msgstr "_Закрити"
 msgid "Activity"
 msgstr "Активність"
 
-msgid "Torrent size:"
+msgid "Size:"
 msgstr "Розмір:"
 
 msgid "Have:"
@@ -1260,11 +1353,21 @@ msgstr "Стан:"
 msgid "Running time:"
 msgstr "Тривалість роботи:"
 
+#, fuzzy
 msgid "Remaining time:"
-msgstr "Залишилося часу:"
+msgstr ""
+"#-#-#-#-#  uk.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Залишилося часу:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Залишилось часу:"
 
+#, fuzzy
 msgid "Last activity:"
-msgstr "Час останньої активності:"
+msgstr ""
+"#-#-#-#-#  uk.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Час останньої активності:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Остання активність:"
 
 msgid "Error:"
 msgstr "Помилка:"
@@ -1296,14 +1399,21 @@ msgstr "Інформація"
 msgid "Show _more details"
 msgstr "_Докладніше"
 
+#, fuzzy
 msgid "Peers"
-msgstr "Піри"
+msgstr ""
+"#-#-#-#-#  uk.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Піри\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Вузли"
 
-msgid "_Edit"
-msgstr "_Зміни"
-
+#, fuzzy
 msgid "Show _backup trackers"
-msgstr "Показати резервні трекери"
+msgstr ""
+"#-#-#-#-#  uk.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Показати резервні трекери\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Показати _резервні трекери"
 
 msgid "File listing not available for combined torrent properties"
 msgstr "У зведених даних торенту перелік файлів не вказано"
@@ -1323,8 +1433,13 @@ msgstr "Обмежити швидкість _завантаження ({speed_un
 msgid "Limit _upload speed ({speed_units}):"
 msgstr "Обмежити швидкість _вивантаження ({speed_units}):"
 
+#, fuzzy
 msgid "Torrent _priority:"
-msgstr "Прі_оритетність торенту:"
+msgstr ""
+"#-#-#-#-#  uk.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Прі_оритетність торенту:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Прі_оритетність торента:"
 
 msgid "Seeding Limits"
 msgstr "Обмеження поширення"
@@ -1335,8 +1450,13 @@ msgstr "С_піввідношення:"
 msgid "_Idle:"
 msgstr "_Неактивність:"
 
+#, fuzzy
 msgid "Peer Connections"
-msgstr "Під’єднання вузлів"
+msgstr ""
+"#-#-#-#-#  uk.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Під’єднання вузлів\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Підключення вузлів"
 
 msgid "_Maximum peers:"
 msgstr "_Максимальна кількість вузлів:"
@@ -1344,8 +1464,13 @@ msgstr "_Максимальна кількість вузлів:"
 msgid "Options"
 msgstr "Параметри"
 
+#, fuzzy
 msgid "Tracker Announce URLs"
-msgstr "Посилання на оголошення трекерів"
+msgstr ""
+"#-#-#-#-#  uk.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Посилання на оголошення трекерів\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"URL-адреси оголошення трекера"
 
 msgid ""
 "To add a backup URL, add it on the next line after a primary URL.\n"
@@ -1357,6 +1482,21 @@ msgstr ""
 msgid "Also see Default Public Trackers in Edit > Preferences > Network"
 msgstr "Також перегляньте Загальнодоступні трекери за замовчуванням у меню Редагувати > Налаштування > Мережа"
 
+msgid "Open a torrent"
+msgstr "Відкрити торент"
+
+msgid "Start torrent"
+msgstr "Запустити торент"
+
+msgid "Pause torrent"
+msgstr "Призупинити торент"
+
+msgid "Remove torrent"
+msgstr "Вилучити торент"
+
+msgid "Torrent properties"
+msgstr "Властивості торенту"
+
 msgid "Torrent"
 msgstr "Торент"
 
@@ -1366,19 +1506,23 @@ msgstr "Статистика"
 msgid "New Torrent"
 msgstr "Новий торент"
 
-msgid "_New"
-msgstr "_Новий"
+#, fuzzy
+#| msgid "C_redits"
+msgid "C_reate"
+msgstr "А_втори"
 
 msgid "Sa_ve to:"
 msgstr "З_берегти до:"
 
-msgid "Source F_older:"
+msgid "Source f_older:"
 msgstr "Тека з _даними:"
 
-msgid "Source _File:"
+msgid "Source _file:"
 msgstr "_Файл даних:"
 
-msgid "Piece size:"
+#, fuzzy
+#| msgid "Piece size:"
+msgid "Piece si_ze:"
 msgstr "Розмір частини:"
 
 msgid "Properties"
@@ -1387,8 +1531,13 @@ msgstr "Властивості"
 msgid "_Trackers:"
 msgstr "_Трекери:"
 
+#, fuzzy
 msgid "Co_mment:"
-msgstr "Ко_ментар:"
+msgstr ""
+"#-#-#-#-#  uk.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Ко_ментар:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Ком_ентар:"
 
 msgid "_Source:"
 msgstr "_Джерело:"
@@ -1407,9 +1556,6 @@ msgstr "Зберегти _Як"
 
 msgid "Clear"
 msgstr "Очистити"
-
-msgid "P_ause"
-msgstr "П_ризупинити"
 
 msgid "Level"
 msgstr "Рівень"
@@ -1432,14 +1578,13 @@ msgstr "Виберіть теку призначення"
 msgid "_Start when added"
 msgstr "_Розпочинати безпосередньо після додавання"
 
-msgid "Mo_ve torrent file to the trash"
+#, fuzzy
+#| msgid "Mo_ve torrent file to the trash"
+msgid "Mo_ve torrent file to the Trash"
 msgstr "Вилу_чити торент-файл до смітника"
 
 msgid "{appname} Preferences"
 msgstr "Налаштування {appname}"
-
-msgid "_Help"
-msgstr "_Довідка"
 
 msgid "Speed Limits"
 msgstr "Обмеження швидкості"
@@ -1486,17 +1631,29 @@ msgstr "Автоматично додавати торент-файли _з:"
 msgid "Show the Torrent Options _dialog"
 msgstr "Показати _діалог налаштування торенту"
 
+#, fuzzy
 msgid "_Start added torrents"
-msgstr "Розпочати додані торенти"
+msgstr ""
+"#-#-#-#-#  uk.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Розпочати додані торенти\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Розпочати додані торенти"
 
-msgid "Save to _Location:"
+#, fuzzy
+#| msgid "Save to _Location:"
+msgid "Save to _location:"
 msgstr "Зберігати до т_еки:"
 
 msgid "Download Queue"
 msgstr "Черга завантажень"
 
+#, fuzzy
 msgid "Ma_ximum active downloads:"
-msgstr "Ма_ксимальна кількість активних завантажень:"
+msgstr ""
+"#-#-#-#-#  uk.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Ма_ксимальна кількість активних завантажень:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Максимальна _к-ть активних завантажень:"
 
 msgid "Downloads sharing data in the last _N minutes are active:"
 msgstr "Завантаження з обміном даними за останні _N хвилин активні:"
@@ -1507,11 +1664,18 @@ msgstr "Не завершено"
 msgid "Append \"._part\" to incomplete files' names"
 msgstr "Додавати до назви незавершених файлів «._part»"
 
-msgid "Keep _incomplete torrents in:"
-msgstr "_Незавершені торенти зберігати до:"
+msgid "Keep _incomplete files in:"
+msgstr "Зберігати _незавершені файли у:"
 
-msgid "Call scrip_t when done downloading:"
-msgstr "Викличте scrip_t після завершення завантаження:"
+#, fuzzy
+#| msgid "Call scrip_t when downloading is completed:"
+msgid "Call scrip_t when download completes:"
+msgstr "Викликати сцена_рій після завершення завантаження:"
+
+#, fuzzy
+#| msgid "Call scrip_t when downloading is completed:"
+msgid "Verify data when download completes"
+msgstr "Викликати сцена_рій після завершення завантаження:"
 
 msgctxt "Gerund"
 msgid "Downloading"
@@ -1520,8 +1684,13 @@ msgstr "Завантаження"
 msgid "Limits"
 msgstr "Обмеження"
 
+#, fuzzy
 msgid "Stop seeding at _ratio:"
-msgstr "Припинити поширення при співві_дношенні:"
+msgstr ""
+"#-#-#-#-#  uk.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Припинити поширення при співві_дношенні:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Припинити поширення при співвідношенні:"
 
 msgid "Stop seeding if idle for _N minutes:"
 msgstr "Припинити поширення, якщо не буде активності (у _хвилинах):"
@@ -1539,13 +1708,25 @@ msgstr "Конфіденційність"
 msgid "_Encryption mode:"
 msgstr "Режим _шифрування:"
 
+#, fuzzy
 msgid "Blocklist"
-msgstr "Чорний перелік"
+msgstr ""
+"#-#-#-#-#  uk.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Чорний перелік\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Список блокувань"
 
+#, fuzzy
 msgid "Enable _blocklist:"
-msgstr "Увімкнути перелік _блокування:"
+msgstr ""
+"#-#-#-#-#  uk.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Увімкнути перелік _блокування:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Дозволити список блокувань:"
 
-msgid "Enable _automatic updates"
+#, fuzzy
+#| msgid "Enable _automatic updates"
+msgid "_Automatically update weekly"
 msgstr "Увімкнути _автоматичне оновлення"
 
 msgid "_Update"
@@ -1554,10 +1735,12 @@ msgstr "_Оновити"
 msgid "Listening Port"
 msgstr "Порт очікування"
 
-msgid "_Port used for incoming connections:"
+msgid "_Port for incoming connections:"
 msgstr "_Порт для вхідних з’єднань:"
 
-msgid "Pick a _random port every time Transmission is started"
+#, fuzzy
+#| msgid "Pick a _random port every time Transmission is started"
+msgid "Pick a _random port at startup"
 msgstr "Вибирати випадковий порт при кожному запуску Transmission"
 
 msgid "Use UPnP or NAT-PMP port _forwarding from my router"
@@ -1566,38 +1749,66 @@ msgstr "Використовувати UPnP або NAT-PMP п_ереадресу
 msgid "Te_st Port"
 msgstr "Перевірити порт"
 
+#, fuzzy
 msgid "Peer Limits"
-msgstr "Обмеження поширення"
+msgstr ""
+"#-#-#-#-#  uk.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Обмеження поширення\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Обмеження вузлів"
 
-msgid "Maximum peers per _torrent:"
+#, fuzzy
+#| msgid "Maximum peers per _torrent:"
+msgid "Maximum peers for new _torrents:"
 msgstr "Макс. кількість вузлів на _торент:"
 
 msgid "Maximum peers _overall:"
 msgstr "Макс. кількість вузлів _взагалі:"
 
-msgid "Enable µ_TP for peer communication"
+msgid "Enable µ_TP for peer connections"
 msgstr "Увімкнути обмін даними за µ_TP"
 
 msgid "µTP is a tool for reducing network congestion."
 msgstr "µTP — це інструмент для зменшення перевантаження мережі."
 
-msgid "Use PE_X to find more peers"
+#, fuzzy
+#| msgid "Use PE_X to find more peers"
+msgid "Use PE_X to find more peers for public torrents"
 msgstr "Використовувати PE_X для пошуку вузлів"
 
+#, fuzzy
 msgid "PEX is a tool for exchanging peer lists with the peers you're connected to."
-msgstr "PEX — це спосіб обміну переліками вузлів між вузлами, з якими встановлено з’єднання."
+msgstr ""
+"#-#-#-#-#  uk.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"PEX — це спосіб обміну переліками вузлів між вузлами, з якими встановлено з’єднання.\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"PEX — це спосіб обміну списками вузлів між вузлами, з якими встановлено з’єднання."
 
-msgid "Use _DHT to find more peers"
+#, fuzzy
+#| msgid "Use _DHT to find more peers"
+msgid "Use _DHT to find more peers for public torrents"
 msgstr "Використовувати _DHT для пошуку вузлів"
 
+#, fuzzy
 msgid "DHT is a tool for finding peers without a tracker."
-msgstr "DHT — це спосіб пошуку вузлів без використання трекеру."
+msgstr ""
+"#-#-#-#-#  uk.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"DHT — це спосіб пошуку вузлів без використання трекеру.\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"DHT — це спосіб пошуку вузлів без використання трекера."
 
-msgid "Use _Local Peer Discovery to find more peers"
+#, fuzzy
+#| msgid "Use _Local Peer Discovery to find more peers"
+msgid "Use _Local Peer Discovery to find more peers for public torrents"
 msgstr "Використовувати ви_явлення локальних вузлів"
 
+#, fuzzy
 msgid "LPD is a tool for finding peers on your local network."
-msgstr "LPD — проґрама для пошуку вузлів у Вашій локальній мережі."
+msgstr ""
+"#-#-#-#-#  uk.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"LPD — проґрама для пошуку вузлів у Вашій локальній мережі.\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"LPD — програма для пошуку вузлів у вашій локальній мережі."
 
 msgid "Default Public Trackers"
 msgstr "Загальнодоступні трекери за замовчуванням"
@@ -1616,23 +1827,43 @@ msgstr ""
 msgid "Network"
 msgstr "Мережа"
 
+#, fuzzy
 msgid "Desktop"
-msgstr "Стільниця"
+msgstr ""
+"#-#-#-#-#  uk.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Стільниця\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Робочий стіл"
 
-msgid "_Inhibit hibernation when torrents are active"
-msgstr "_Відкласти присипляння, якщо завантажуються торенти"
+msgid "_Prevent computer from sleeping with active torrents"
+msgstr ""
 
+#, fuzzy
 msgid "Show {appname} icon in the _notification area"
-msgstr "П_оказувати піктограму {appname} у лотку сповіщення"
+msgstr ""
+"#-#-#-#-#  uk.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"П_оказувати піктограму {appname} у лотку сповіщення\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Показувати _значок {appname} в зоні сповіщення"
 
 msgid "Notification"
 msgstr "Сповіщення"
 
+#, fuzzy
 msgid "Show a notification when torrents are a_dded"
-msgstr "П_оказувати сповіщення у відповідь на додавання торенту"
+msgstr ""
+"#-#-#-#-#  uk.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"П_оказувати сповіщення у відповідь на додавання торенту\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"П_оказувати сповіщення у відповідь на додавання торента"
 
+#, fuzzy
 msgid "Show a notification when torrents _finish"
-msgstr "Показувати сповіщення щодо _завершення отримання торенту"
+msgstr ""
+"#-#-#-#-#  uk.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Показувати сповіщення щодо _завершення отримання торенту\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Показувати сповіщення щодо _завершення отримання торента"
 
 msgid "Play a _sound when torrents finish"
 msgstr "Відтворити зв_уковий файл після завершення завантаження"
@@ -1640,17 +1871,34 @@ msgstr "Відтворити зв_уковий файл після заверш�
 msgid "Remote Control"
 msgstr "Віддалене керування"
 
+#, fuzzy
 msgid "Allow _remote access"
-msgstr "Дозволити віддалений доступ"
+msgstr ""
+"#-#-#-#-#  uk.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Дозволити віддалений доступ\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Дозволити _віддалений доступ"
 
-msgid "_Open web client"
+#, fuzzy
+#| msgid "_Open web client"
+msgid "_Open Web Client"
 msgstr "Переглянути через веб"
 
+#, fuzzy
 msgid "HTTP _port:"
-msgstr "_Порт HTTP:"
+msgstr ""
+"#-#-#-#-#  uk.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Порт HTTP:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"HTTP порт:"
 
+#, fuzzy
 msgid "Use _authentication"
-msgstr "Вимагати _реєстрації користувача"
+msgstr ""
+"#-#-#-#-#  uk.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Вимагати _реєстрації користувача\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Вимагати авто_ризації"
 
 msgid "_Username:"
 msgstr "_Користувач:"
@@ -1658,8 +1906,13 @@ msgstr "_Користувач:"
 msgid "Pass_word:"
 msgstr "_Пароль:"
 
+#, fuzzy
 msgid "Only allow these IP a_ddresses:"
-msgstr "Дозволити лише такі IP а_дреси"
+msgstr ""
+"#-#-#-#-#  uk.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Дозволити лише такі IP а_дреси\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Дозволити лише таким IP-_адресам:"
 
 msgid "Addresses:"
 msgstr "Адреси:"
@@ -1667,11 +1920,21 @@ msgstr "Адреси:"
 msgid "IP addresses may use wildcards, such as 192.168.*.*"
 msgstr "IP-адреси можуть містити символи шаблонів, наприклад, 192.168.*.*"
 
+#, fuzzy
 msgid "Remote"
-msgstr "Віддалений"
+msgstr ""
+"#-#-#-#-#  uk.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Віддалений\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Віддалений доступ"
 
+#, fuzzy
 msgid "Set Torrent Location"
-msgstr "Встановити розташування торрента"
+msgstr ""
+"#-#-#-#-#  uk.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Встановити розташування торрента\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Встановити розташування торенту"
 
 msgid "_Apply"
 msgstr "_Застосувати"
@@ -1679,26 +1942,51 @@ msgstr "_Застосувати"
 msgid "Location"
 msgstr "Розташування"
 
-msgid "Torrent _location:"
-msgstr "Торент розташовано у:"
+msgid "New _location:"
+msgstr "Но_ве розташування:"
 
+#, fuzzy
 msgid "_Move from the current folder"
-msgstr "Перенести зі старої теки у вказану"
+msgstr ""
+"#-#-#-#-#  uk.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Перенести зі старої теки у вказану\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Перенести зі старої теки у вказану"
 
+#, fuzzy
 msgid "Local data is _already there"
-msgstr "Завантажені дані вже перенесено"
+msgstr ""
+"#-#-#-#-#  uk.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Завантажені дані вже перенесено\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Локальні дані вже перенесено"
 
+#, fuzzy
 msgid "Current Session"
-msgstr "Поточний сеанс"
+msgstr ""
+"#-#-#-#-#  uk.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Поточний сеанс\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Поточна сесія"
 
+#, fuzzy
 msgid "Ratio:"
-msgstr "Співвідношення:"
+msgstr ""
+"#-#-#-#-#  uk.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Співвідношення:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Рейтинг:"
 
 msgid "Duration:"
 msgstr "Тривалість:"
 
+#, fuzzy
 msgid "Total"
-msgstr "Усього"
+msgstr ""
+"#-#-#-#-#  uk.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Усього\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Загалом"
 
 msgid "Open URL"
 msgstr "Відкрити адресу"
@@ -1709,20 +1997,319 @@ msgstr "Відкрити торент з адреси"
 msgid "_URL"
 msgstr "_Адреса"
 
-msgid "Couldn't parse announce response: {error} ({error_code})"
-msgstr "Не вдалося розпізнати відповідь оголошення: {error} ({error_code})"
+msgid "The torrent file '{path}' is already in use by '{torrent_name}'."
+msgstr "Торент-файл «{path}» вже використовується торентом «{torrent_name}»."
 
-msgid "Couldn't parse scrape response: {error} ({error_code})"
-msgstr "Не вдалося розпізнати відповідь scrape: {error} ({error_code})"
+msgid "Couldn't open torrent"
+msgstr "Не вдалося відкрити торент"
 
-msgid "Unknown error"
-msgstr "Невідома помилка"
+msgid "Couldn't move '{path}' to trash: {error} ({error_code})"
+msgstr "Не вдалося перемістити '{path}' до смітника: {error} ({error_code})"
 
-msgid "{ip_protocol} connection failed"
+#, fuzzy
+#| msgid "Couldn't create proxy for '{bus}': {error} ({error_code})"
+msgid "Couldn't launch default application for URI '{uri}': {error} ({error_code})"
+msgstr "Не вдалося створити проксі для '{bus}': {error} ({error_code})"
+
+#, fuzzy
+#| msgid "Couldn't open '{path}': {error} ({error_code})"
+msgid "Couldn't invoke xdg-open for URI '{uri}': {error} ({error_code})"
+msgstr "Не вдалося відкрити «{path}»: {error} ({error_code})"
+
+msgid "Couldn't open '{url}'"
+msgstr "Не вдалося відкрити '{url}'"
+
+msgid "Unsupported URL: '{url}'"
+msgstr "URL не підтримується: «{url}»"
+
+msgid "{appname} doesn't know how to use '{url}'"
+msgstr "{appname} не знає як користуватися «{url}»"
+
+msgid "This magnet link appears to be intended for something other than BitTorrent."
+msgstr "Здається, це магнітне посилання призначене для чогось іншого, ніж BitTorrent."
+
+msgid "{days_from_now:L} day from now"
+msgid_plural "{days_from_now:L} days from now"
+msgstr[0] "через {days_from_now:L} день"
+msgstr[1] "через {days_from_now:L} дні"
+msgstr[2] "через {days_from_now:L} днів"
+msgstr[3] "через {days_from_now:L} дня"
+
+msgid "{hours_from_now:L} hour from now"
+msgid_plural "{hours_from_now:L} hours from now"
+msgstr[0] "через {hours_from_now:L} годину"
+msgstr[1] "через {hours_from_now:L} години"
+msgstr[2] "через {hours_from_now:L} годин"
+msgstr[3] "через {hours_from_now:L} години"
+
+msgid "{minutes_from_now:L} minute from now"
+msgid_plural "{minutes_from_now:L} minutes from now"
+msgstr[0] "через {minutes_from_now:L} хвилину"
+msgstr[1] "через {minutes_from_now:L} хвилини"
+msgstr[2] "через {minutes_from_now:L} хвилин"
+msgstr[3] "через {minutes_from_now:L} хвилини"
+
+msgid "{seconds_from_now:L} second from now"
+msgid_plural "{seconds_from_now:L} seconds from now"
+msgstr[0] "через {seconds_from_now:L} секунду"
+msgstr[1] "через {seconds_from_now:L} секунди"
+msgstr[2] "через {seconds_from_now:L} секунд"
+msgstr[3] "через {seconds_from_now:L} секунди"
+
+msgid "now"
+msgstr "зараз"
+
+msgid "{days_ago:L} day ago"
+msgid_plural "{days_ago:L} days ago"
+msgstr[0] "{days_ago:L} день тому"
+msgstr[1] "{days_ago:L} дні тому"
+msgstr[2] "{days_ago:L} днів тому"
+msgstr[3] "{days_ago:L} дня тому"
+
+msgid "{hours_ago:L} hour ago"
+msgid_plural "{hours_ago:L} hours ago"
+msgstr[0] "{hours_ago:L} годину тому"
+msgstr[1] "{hours_ago:L} години тому"
+msgstr[2] "{hours_ago:L} годин тому"
+msgstr[3] "{hours_ago:L} години тому"
+
+#, fuzzy
+msgid "{minutes_ago:L} minute ago"
+msgid_plural "{minutes_ago:L} minutes ago"
+msgstr[0] ""
+"#-#-#-#-#  uk.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{minutes_ago:L} хвилину тому\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+" {minutes_ago:L} хвилин(у) тому"
+msgstr[1] ""
+"#-#-#-#-#  uk.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{minutes_ago:L} хвилини тому\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+" {minutes_ago:L} хвилин(у) тому"
+msgstr[2] ""
+"#-#-#-#-#  uk.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{minutes_ago:L} хвилин тому\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+" {minutes_ago:L}хвилин(у) тому"
+msgstr[3] ""
+"#-#-#-#-#  uk.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{minutes_ago:L} хвилини тому\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+" {minutes_ago:L}хвилин(у) тому"
+
+msgid "{seconds_ago:L} second ago"
+msgid_plural "{seconds_ago:L} seconds ago"
+msgstr[0] "{seconds_ago:L} секунду тому"
+msgstr[1] "{seconds_ago:L} секунди тому"
+msgstr[2] "{seconds_ago:L} секунд тому"
+msgstr[3] "{seconds_ago:L} секунди тому"
+
+msgid "Got a list of {markup_begin}{peer_count} peer{markup_end} {time_span_ago}"
+msgid_plural "Got a list of {markup_begin}{peer_count} peers{markup_end} {time_span_ago}"
+msgstr[0] "Отримано список з {markup_begin}{peer_count} вузла{markup_end} {time_span_ago}"
+msgstr[1] "Отримано список з {markup_begin}{peer_count} вузлів{markup_end} {time_span_ago}"
+msgstr[2] "Отримано список з {markup_begin}{peer_count} вузлів{markup_end} {time_span_ago}"
+msgstr[3] "Отримано список з {markup_begin}{peer_count} вузлів{markup_end} {time_span_ago}"
+
+msgid "Peer list request {markup_begin}timed out {time_span_ago}{markup_end}; will retry"
+msgstr "Запит списку вузлів {markup_begin}вичерпав час {time_span_ago}{markup_end}; буде надіслано повторно"
+
+msgid "Got an error '{markup_begin}{error}{markup_end}' {time_span_ago}"
+msgstr "Виникла помилка «{markup_begin}{error}{markup_end}» {time_span_ago}"
+
+msgid "No updates scheduled"
+msgstr "Жодних оновлень не заплановано"
+
+msgid "Asking for more peers {time_span_from_now}"
+msgstr "Запит додаткових вузлів {time_span_from_now}"
+
+#, fuzzy
+msgid "Queued to ask for more peers"
 msgstr ""
+"#-#-#-#-#  uk.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"У черзі на перевірку нових вузлів\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"В черзі на перевірку нових вузлів"
 
-msgid "Couldn't look up '{address}:{port}' in {ip_protocol}: {error} ({error_code})"
-msgstr ""
+msgid "Asked for more peers {markup_begin}{time_span_ago}{markup_end}"
+msgstr "Запитано додаткові вузли {markup_begin}{time_span_ago}{markup_end}"
+
+msgid "Got a scrape error '{markup_begin}{error}{markup_end}' {time_span_ago}"
+msgstr "Виникла помилка запиту до трекера '{markup_begin}{error}{markup_end}' {time_span_ago}"
+
+#, fuzzy
+#| msgid "Tracker had {markup_begin}no information{markup_end} on peer counts {time_span} ago"
+msgid "Tracker had {markup_begin}no information{markup_end} on peer counts {time_span_ago}"
+msgstr "Трекер {markup_begin}не мав інформації{markup_end} щодо кількості вузлів {time_span} тому"
+
+msgid "Tracker had {markup_begin}{seeder_count} {seeder_or_seeders} and {leecher_count} {leecher_or_leechers}{markup_end} {time_span_ago}"
+msgstr "Трекер мав {markup_begin}{seeder_count} {seeder_or_seeders} і {leecher_count} {leecher_or_leechers}{markup_end} {time_span_ago}"
+
+msgid "seeder"
+msgid_plural "seeders"
+msgstr[0] "роздаючий"
+msgstr[1] "роздаючих"
+msgstr[2] "роздаючих"
+msgstr[3] "роздаючих"
+
+msgid "leecher"
+msgid_plural "leechers"
+msgstr[0] "завантажуючий"
+msgstr[1] "завантажуючих"
+msgstr[2] "завантажуючих"
+msgstr[3] "завантажуючих"
+
+#, fuzzy
+#| msgid "Asking for peer counts in {time_span_from_now}"
+msgid "Asking for peer counts {time_span_from_now}"
+msgstr "Запит на підрахунок вузлів у {time_span_from_now}"
+
+msgid "Queued to ask for peer counts"
+msgstr "У черзі на запит кількість вузлів"
+
+msgid "Asked for peer counts {markup_begin}{time_span_ago}{markup_end}"
+msgstr "Запитано кількість вузлів {markup_begin}{time_span_ago}{markup_end}"
+
+#, fuzzy
+msgid "{days:L} day"
+msgid_plural "{days:L} days"
+msgstr[0] ""
+"#-#-#-#-#  uk.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{days:L} день\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{days:L} день"
+msgstr[1] ""
+"#-#-#-#-#  uk.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{days:L} дні\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{days:L} дні"
+msgstr[2] ""
+"#-#-#-#-#  uk.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{days:L} днів\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{days:L} днів"
+msgstr[3] ""
+"#-#-#-#-#  uk.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{days:L} дня\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{days:L} днів"
+
+#, fuzzy
+msgid "{hours:L} hour"
+msgid_plural "{hours:L} hours"
+msgstr[0] ""
+"#-#-#-#-#  uk.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{hours:L} година\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{hours:L} година"
+msgstr[1] ""
+"#-#-#-#-#  uk.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{hours:L} години\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{hours:L} години"
+msgstr[2] ""
+"#-#-#-#-#  uk.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{hours:L} годин\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{hours:L} годин"
+msgstr[3] ""
+"#-#-#-#-#  uk.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{hours:L} години\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{hours:L} годин"
+
+#. Translators: Spin box format, "Stop seeding if idle for: [ 5 minutes ]"
+#, fuzzy
+msgid "{minutes:L} minute"
+msgid_plural "{minutes:L} minutes"
+msgstr[0] ""
+"#-#-#-#-#  uk.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{minutes:L} хвилина\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{minutes:L} хвилин(у)\n"
+"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{minutes:L} хвилина\n"
+"#-#-#-#-#  qt-2.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{minutes:L} хвилин(у) "
+msgstr[1] ""
+"#-#-#-#-#  uk.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{minutes:L} хвилини\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{minutes:L} хвилин(у)\n"
+"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{minutes:L} хвилини\n"
+"#-#-#-#-#  qt-2.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{minutes:L} хвилин(у)"
+msgstr[2] ""
+"#-#-#-#-#  uk.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{minutes:L} хвилин\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{minutes:L} хвилин(у)\n"
+"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{minutes:L} хвилин\n"
+"#-#-#-#-#  qt-2.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{minutes:L} хвилин(у)"
+msgstr[3] ""
+"#-#-#-#-#  uk.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{minutes:L} хвилини\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{minutes:L} хвилин(у)\n"
+"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{minutes:L} хвилин\n"
+"#-#-#-#-#  qt-2.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{minutes:L} хвилин(у)"
+
+#, fuzzy
+msgid "{seconds:L} second"
+msgid_plural "{seconds:L} seconds"
+msgstr[0] ""
+"#-#-#-#-#  uk.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{seconds:L} секунда\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{seconds:L} секунда"
+msgstr[1] ""
+"#-#-#-#-#  uk.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{seconds:L} секунди\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{seconds:L} секунди"
+msgstr[2] ""
+"#-#-#-#-#  uk.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{seconds:L} секунд\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{seconds:L} секунд"
+msgstr[3] ""
+"#-#-#-#-#  uk.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{seconds:L} секунди\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{seconds:L} секунд"
+
+msgid "{days_left:L} day left"
+msgid_plural "{days_left:L} days left"
+msgstr[0] "Залишився {days_left:L} день"
+msgstr[1] "Залишилося {days_left:L} дні"
+msgstr[2] "Залишилося {days_left:L} днів"
+msgstr[3] "Залишилося {days_left:L} дня"
+
+msgid "{hours_left:L} hour left"
+msgid_plural "{hours_left:L} hours left"
+msgstr[0] "Залишилася {hours_left:L} година"
+msgstr[1] "Залишилося {hours_left:L} години"
+msgstr[2] "Залишилося {hours_left:L} годин"
+msgstr[3] "Залишилося {hours_left:L} години"
+
+msgid "{minutes_left:L} minute left"
+msgid_plural "{minutes_left:L} minutes left"
+msgstr[0] "Залишилася {minutes_left:L} хвилина"
+msgstr[1] "Залишилося {minutes_left:L} хвилини"
+msgstr[2] "Залишилося {minutes_left:L} хвилин"
+msgstr[3] "Залишилося {minutes_left:L} хвилини"
+
+msgid "{seconds_left:L} second left"
+msgid_plural "{seconds_left:L} seconds left"
+msgstr[0] "Залишилася {seconds_left:L} секунда"
+msgstr[1] "Залишилося {seconds_left:L} секунди"
+msgstr[2] "Залишилося {seconds_left:L} секунд"
+msgstr[3] "Залишилося{seconds_left:L} секунди"
 
 msgid "Announce error: {error} ({url})"
 msgstr "Помилка оголошення: {error} ({url})"
@@ -1743,6 +2330,21 @@ msgstr "Трекер не відповідає"
 msgid "Success"
 msgstr "Вдачно"
 
+msgid "Couldn't parse announce response: {error} ({error_code})"
+msgstr "Не вдалося розпізнати відповідь оголошення: {error} ({error_code})"
+
+msgid "Couldn't parse scrape response: {error} ({error_code})"
+msgstr "Не вдалося розпізнати відповідь scrape: {error} ({error_code})"
+
+msgid "Unknown error"
+msgstr "Невідома помилка"
+
+msgid "{ip_protocol} connection failed"
+msgstr ""
+
+msgid "Couldn't look up '{address}:{port}' in {ip_protocol}: {error} ({error_code})"
+msgstr ""
+
 msgid "Blocklist '{path}' has {count} entry"
 msgid_plural "Blocklist '{path}' has {count} entries"
 msgstr[0] "Список блокування «{path}» має {count} запис"
@@ -1750,15 +2352,43 @@ msgstr[1] "Список блокування «{path}» має {count} запи�
 msgstr[2] "Список блокування «{path}» має {count} записів"
 msgstr[3] "Список блокування «{path}» має {count} записи"
 
-#. don't try to display the actual lines - it causes issues
-msgid "Couldn't parse line: '{line}'"
+#, fuzzy
+#| msgid "Couldn't parse line: '{line}'"
+msgid "Couldn't parse line {line}: {base64}"
 msgstr "Не вдалося розпізнати рядок: «{line}»"
 
-msgid "Rewriting old blocklist file format to new format"
+#, fuzzy
+#| msgid "Rewriting old blocklist file format to new format"
+msgid "Rewriting old blocklist file {path} to new format"
 msgstr "Перезапис старого формату файлу списку блокувань у новий формат"
+
+msgid "Blocklist is larger than {limit} MiB; ignoring it"
+msgstr ""
+
+#, fuzzy
+#| msgid "Couldn't fetch blocklist: {error} ({error_code})"
+msgid "Couldn't fetch blocklist: {errmsg}, response code: {error} ({error_code})"
+msgstr "Не вдалося отримати список блокування: {error} ({error_code})"
+
+msgid "Couldn't fetch blocklist: {error} ({error_code})"
+msgstr "Не вдалося отримати список блокування: {error} ({error_code})"
+
+msgid "Automatically updated blocklist, which now has {count} rules"
+msgstr ""
+
+msgid "Invalid tr_sched_days value {val}"
+msgstr ""
 
 msgid "{crypto_library} error: {error} ({error_code})"
 msgstr "Помилка {crypto_library}: {error} ({error_code})"
+
+msgid "Couldn't read '{path}': Not a regular file"
+msgstr "Не вдалося зчитати «{path}»: Не є регулярним файлом"
+
+#, fuzzy
+#| msgid "Couldn't read '{path}'"
+msgid "Couldn't get '{path}': "
+msgstr "Не вдалося зчитати «{path}»"
 
 msgid "Couldn't get '{path}': {error} ({error_code})"
 msgstr "Не вдалося отримати «{path}»: {error} ({error_code})"
@@ -1775,20 +2405,14 @@ msgstr "Ваш пристрій не підтримує {protocol}"
 msgid "Successfully updated global {type} address to {ip} using {url}"
 msgstr "Успішно оновлено глобальну  {type} за адресою {ip} за допомогою{url}"
 
+msgid "Still waiting for disk IO on torrent {id}: {running} running, {queued} queued"
+msgstr ""
+
 msgid "Too many messages like this! I won't log this message anymore this session."
 msgstr "Забагато таких повідомлень! Це повідомлення більше не показуватиметься впродовж цієї сесії."
 
 msgid "Skipping '{path}': {error} ({error_code})"
 msgstr "Пропуск «{path}»: {error} ({error_code})"
-
-msgid "Couldn't create socket: {error} ({error_code})"
-msgstr "Не вдалося створити сокет: {error} ({error_code})"
-
-msgid "Couldn't set source address {address} on {socket}: {error} ({error_code})"
-msgstr "Не вдалося встановити адресу джерела {address} на {socket}: {error} ({error_code})"
-
-msgid "Couldn't connect socket {socket} to {address}:{port}: {error} ({error_code})"
-msgstr "Не вдалося підʼєднати сокет {socket} до {address}:{port}: {error} ({error_code})"
 
 msgid "Couldn't bind port {port} on {address}: {error} ({error_code}) -- Is another copy of {appname} already running?"
 msgstr "Не вдалося привʼязати порт {port} на {address}: {error} ({error_code}) — Чи не запущено вже іншу копію {appname}?"
@@ -1805,8 +2429,35 @@ msgstr "Не вдалося зарезервувати «{path}»: {error} ({err
 msgid "Couldn't truncate '{path}': {error} ({error_code})"
 msgstr "Не вдалося обрізати «{path}»: {error} ({error_code})"
 
+msgid "Couldn't create socket: {error} ({error_code})"
+msgstr "Не вдалося створити сокет: {error} ({error_code})"
+
+msgid "Couldn't set source address {address} on {socket}: {error} ({error_code})"
+msgstr "Не вдалося встановити адресу джерела {address} на {socket}: {error} ({error_code})"
+
+msgid "Couldn't connect socket {socket} to {address}:{port}: {error} ({error_code})"
+msgstr "Не вдалося підʼєднати сокет {socket} до {address}:{port}: {error} ({error_code})"
+
 msgid "Unknown state: {state}"
 msgstr "Невідомий стан: {state}"
+
+msgid "Starting"
+msgstr "Запуск"
+
+msgid "Forwarded"
+msgstr "Переспрямовано"
+
+msgid "Stopping"
+msgstr "Зупинка"
+
+msgid "Not forwarded"
+msgstr "Не переспрямовано"
+
+msgid "Mapped private port {private_port} to public port {public_port}"
+msgstr "Переадресовано приватний порт {private_port} до публічного порту {public_port}"
+
+msgid "State changed from '{old_state}' to '{state}'"
+msgstr "Стан змінено з «{old_state}» до «{state}»"
 
 msgid "Found public address '{address}'"
 msgstr "Знайдено публічну адресу «{address}»"
@@ -1838,23 +2489,21 @@ msgstr ""
 msgid "If your router supports UPnP, please make sure UPnP is enabled!"
 msgstr "Якщо ваш маршрутизатор підтримує UPnP, будь ласка, переконайтеся, що UPnP увімкнено!"
 
-msgid "Starting"
-msgstr "Запуск"
+#, fuzzy
+#| msgid "Couldn't test port: {error} ({error_code})"
+msgid "Couldn't test port: {errmsg}, response code: {error} ({error_code})"
+msgstr "Не вдалося перевірити порт: {error} ({error_code})"
 
-msgid "Forwarded"
-msgstr "Переспрямовано"
+msgid "Couldn't test port: {error} ({error_code})"
+msgstr "Не вдалося перевірити порт: {error} ({error_code})"
 
-msgid "Stopping"
-msgstr "Зупинка"
+#, fuzzy
+#| msgid "Couldn't fetch torrent: {error} ({error_code})"
+msgid "Couldn't fetch torrent: {errmsg}, Response code: {error} ({error_code})"
+msgstr "Не вдалося отримати торент: {error} ({error_code})"
 
-msgid "Not forwarded"
-msgstr "Не переспрямовано"
-
-msgid "Mapped private port {private_port} to public port {public_port}"
-msgstr "Переадресовано приватний порт {private_port} до публічного порту {public_port}"
-
-msgid "State changed from '{old_state}' to '{state}'"
-msgstr "Стан змінено з «{old_state}» до «{state}»"
+msgid "Couldn't fetch torrent: {error} ({error_code})"
+msgstr "Не вдалося отримати торент: {error} ({error_code})"
 
 msgid "Unix socket path must be fewer than {count} characters (including '{prefix}' prefix)"
 msgstr "Довжина шляху до Unix-сокета має бути менше {count} символів (включно з префіксом «{prefix}»)"
@@ -1914,29 +2563,24 @@ msgstr "Потрібен пароль"
 msgid "Serving RPC and Web requests from '{path}'"
 msgstr "Обслуговування RPC та Web запитів із «{path}»"
 
-msgid "Couldn't test port: {error} ({error_code})"
-msgstr "Не вдалося перевірити порт: {error} ({error_code})"
-
-msgid "Couldn't fetch blocklist: {error} ({error_code})"
-msgstr "Не вдалося отримати список блокування: {error} ({error_code})"
-
-msgid "Couldn't fetch torrent: {error} ({error_code})"
-msgstr "Не вдалося отримати торент: {error} ({error_code})"
-
-msgid "Time to turn off turtle mode"
-msgstr "Час вимкнення «черепашого» режиму"
-
-msgid "Time to turn on turtle mode"
+#, fuzzy
+#| msgid "Time to turn on turtle mode"
+msgid "Time to turn on alternative speed limits"
 msgstr "Час увімкнення «черепашого» режиму"
 
-msgid "Couldn't open session lock file '{path}': {error} ({error_code})"
-msgstr "Не вдалося відкрити lock-файл сесії «{path}»: {error} ({error_code})"
+#, fuzzy
+#| msgid "Time to turn off turtle mode"
+msgid "Time to turn off alternative speed limits"
+msgstr "Час вимкнення «черепашого» режиму"
 
 msgid "Listening to incoming peer connections on {hostport}"
 msgstr "Прослуховуються вхідні з'єднання вузлів на {hostport}"
 
 msgid "{appname} version {version} starting"
 msgstr "{appname} версії {version} запускається"
+
+msgid "Couldn't start disk IO workers, continuing without them: {error}"
+msgstr ""
 
 msgid "{appname} version {version} shutting down"
 msgstr "{appname} версії {version} завершує роботу"
@@ -1948,8 +2592,11 @@ msgstr[1] "Завантажено {count} торенти"
 msgstr[2] "Завантажено {count} торентів"
 msgstr[3] "Завантажено {count} торента"
 
-msgid "Migrated torrent file from '{old_path}' to '{path}'"
-msgstr "Торент-файл перенесено з '{old_path}' до '{path}'"
+msgid "Couldn't claim '{path}'. If another session is using it, the two will overwrite each other's settings, resume files and stats."
+msgstr ""
+
+msgid "Couldn't open session lock file '{path}': {error} ({error_code})"
+msgstr "Не вдалося відкрити lock-файл сесії «{path}»: {error} ({error_code})"
 
 msgid "Couldn't use metainfo from '{path}' for '{magnet}': {error} ({error_code})"
 msgstr "Не вдалося використати метаінформацію від  '{path}' для '{magnet}': {error} ({error_code})"
@@ -1981,14 +2628,32 @@ msgstr ""
 msgid "Removing torrent"
 msgstr "Вилучення торенту"
 
-msgid "Couldn't move '{old_path}' to '{path}': {error} ({error_code})"
+#, fuzzy
+#| msgid "Couldn't move '{old_path}' to '{path}': {error} ({error_code})"
+msgid "Couldn't move torrent files to '{path}': {error} ({error_code})"
 msgstr "Не вдалося пересунути «{old_path}» до «{path}»: {error} ({error_code})"
 
 msgid "Paused torrent as no data was found! Ensure your drives are connected or use \"Set Location\", then use \"Verify Local Data\" again. To re-download, start the torrent."
 msgstr " Торрент призупинено, оскільки не знайдено жодних даних!Переконайтеся, що ваші диски підключено, або скористайтеся «Встановити місцезнаходження», а потім знову скористайтеся «Перевірити локальні дані». Щоб завантажити повторно, запустіть торрент."
 
+msgid "Couldn't move '{old_path}' to '{path}': {error} ({error_code})"
+msgstr "Не вдалося пересунути «{old_path}» до «{path}»: {error} ({error_code})"
+
 msgid "Tracker warning: '{warning}' ({url})"
 msgstr " Попередження відстеження: '{warning}' ({url})"
+
+#, fuzzy
+#| msgid "Removing torrent file '{path}'"
+msgid "Moving '{source}' will overwrite '{path}'"
+msgstr "Видалення torrent-файлу «{path}»"
+
+#, fuzzy
+#| msgid "Couldn't move '{old_path}' to '{path}': {error} ({error_code})"
+msgid "Couldn't compare '{path}' with '{root}': {error} ({error_code}); leaving it alone"
+msgstr "Не вдалося пересунути «{old_path}» до «{path}»: {error} ({error_code})"
+
+msgid "Migrated torrent file from '{old_path}' to '{path}'"
+msgstr "Торент-файл перенесено з '{old_path}' до '{path}'"
 
 msgid "Couldn't parse '{filename}' line: '{line}'"
 msgstr "Не вдалося розпізнати  '{filename}' рядок: '{line}'"
@@ -2017,8 +2682,47 @@ msgstr ""
 msgid "Unknown socket family"
 msgstr "Невідоме сімейство сокетів"
 
-msgid "Couldn't read '{path}': Not a regular file"
-msgstr "Не вдалося зчитати «{path}»: Не є регулярним файлом"
+msgid "B"
+msgstr "Б"
+
+msgid "KiB"
+msgstr "КіБ"
+
+msgid "MiB"
+msgstr "МіБ"
+
+msgid "GiB"
+msgstr "ГіБ"
+
+msgid "TiB"
+msgstr "ТіБ"
+
+msgid "B/s"
+msgstr "Б/с"
+
+msgid "kB/s"
+msgstr "кБ/с"
+
+msgid "MB/s"
+msgstr "МБ/с"
+
+msgid "GB/s"
+msgstr "ГБ/с"
+
+msgid "TB/s"
+msgstr "ТБ/с"
+
+msgid "kB"
+msgstr "кБ"
+
+msgid "MB"
+msgstr "МБ"
+
+msgid "GB"
+msgstr "ГБ"
+
+msgid "TB"
+msgstr "ТБ"
 
 msgid "Couldn't parse JSON at position {position} '{text}': {error} ({error_code})"
 msgstr "Не вдалося розпізнати JSON на позиції {position} «{text}»: {error} ({error_code})"
@@ -2026,17 +2730,14 @@ msgstr "Не вдалося розпізнати JSON на позиції {posit
 msgid "Couldn't watch '{path}': {error} ({error_code})"
 msgstr "Не вдалося відстежити «{path}»: {error} ({error_code})"
 
-msgid "Couldn't read event: {error} ({error_code})"
-msgstr "Не вдалося зчитати подію: {error} ({error_code})"
-
 msgid "Couldn't read event: expected {expected_size}, got {actual_size}"
 msgstr "Не вдалося зчитати подію: очікувалося {expected_size}, отримано {actual_size}"
 
-msgid "Couldn't read filename: {error} ({error_code})"
-msgstr "Не вдалося зчитати ім'я файлу: {error} ({error_code})"
-
 msgid "Couldn't read filename: expected {expected_size}, got {actual_size}"
 msgstr "Не вдалося зчитати імʼя файлу: очікувалося {expected_size}, отримано {actual_size}"
+
+msgid "Couldn't read event: {error} ({error_code})"
+msgstr "Не вдалося зчитати подію: {error} ({error_code})"
 
 msgid "Couldn't convert '{path}' to native path"
 msgstr "Не вдалося перетворити «{path}» на нативний шлях"
@@ -2056,10 +2757,13 @@ msgstr "Не вдалося стежити за змінами до теки"
 msgid "Consider upgrading your curl installation."
 msgstr ""
 
+msgid "The minimum supported version is {curl_version}, you might face unexpected behaviour."
+msgstr ""
+
 msgid "curl {curl_version} is prone to SIGPIPE crashes. {details_url}"
 msgstr ""
 
-msgid "curl {curl_version} is prone to an eventfd double close vulnerability that might cause SIGABRT crashes for the transmission-daemon systemd service. {details_url}"
+msgid "curl {curl_version} is prone to an eventfd double close vulnerability that might cause SIGABRT crashes for the daemon systemd service. {details_url}"
 msgstr ""
 
 msgid "Will verify tracker certs using envvar CURL_CA_BUNDLE: {bundle}"
@@ -2071,8 +2775,432 @@ msgstr "Примітка: це працює, лише якщо ви зібрал
 msgid "NB: Invalid certs will appear as 'Could not connect to tracker' like many other errors"
 msgstr "Примітка: Недійсні сертифікати відображатимуться як «Не вдалося підключитися до трекера», як і багато інших помилок"
 
+msgid "Aborting request: response body exceeded max size of {max_file_size} bytes"
+msgstr ""
+
 msgid "Couldn't fetch '{url}': expected HTTP response code {expected_code}, got {actual_code}"
 msgstr "Не вдалося отримати '{url}': очікуваний код відповіді HTTP {expected_code}, отримано {actual_code}"
+
+msgid "Server"
+msgstr "Сервер"
+
+msgid "C_redits"
+msgstr "А_втори"
+
+msgid "Credits"
+msgstr "Автори"
+
+msgid "About {appname}"
+msgstr "Про {appname}"
+
+msgid "Torrent Completed"
+msgstr "Торент завершено"
+
+msgid "Torrents Completed"
+msgstr "Торенти завершені"
+
+#. Translators: Text following the "Have:" label in torrent properties dialog;
+#. {current_size} is amount of downloaded and verified data
+msgid "{current_size} (100%)"
+msgstr "{current_size} (100%)"
+
+msgid "{current_size} of {complete_size} ({percent_done}%), {unverified_size} Unverified"
+msgstr "{current_size} з {complete_size} ({percent_done}%), не перевірено {unverified_size}"
+
+msgid "{total_size} ({piece_count:L} piece @ {piece_size})"
+msgid_plural "{total_size} ({piece_count:L} pieces @ {piece_size})"
+msgstr[0] "{total_size} ({piece_count:L} частина @ {piece_size})"
+msgstr[1] "{total_size} ({piece_count:L} частини @ {piece_size})"
+msgstr[2] "{total_size} ({piece_count:L} частин @ {piece_size})"
+msgstr[3] "{total_size} ({piece_count:L} частин @ {piece_size})"
+
+msgid "{total_size} ({piece_count:L} piece)"
+msgid_plural "{total_size} ({piece_count:L} pieces)"
+msgstr[0] "{total_size} ({piece_count:L} частина)"
+msgstr[1] "{total_size} ({piece_count:L} частини)"
+msgstr[2] "{total_size} ({piece_count:L} частин)"
+msgstr[3] "{total_size} ({piece_count:L} частин)"
+
+msgid "Add URL(s)"
+msgstr "Додати URL(-и) "
+
+msgid "Add tracker announce URLs, one per line:"
+msgstr "Додайте URL-адреси оголошення трекера, по одній на рядок:"
+
+msgid "No new URLs found."
+msgstr "Нові URL-адреси не знайдені."
+
+msgid "Use Global Settings"
+msgstr "Використовувати загальні параметри"
+
+msgid "Stop seeding if idle for:"
+msgstr "Припинити поширення, якщо не буде активності:"
+
+msgid "Torrent Properties"
+msgstr "Властивості торенту"
+
+msgid "Availability:"
+msgstr "Доступність:"
+
+msgid "Labels:"
+msgstr "Мітки:"
+
+msgid "Limit _upload speed:"
+msgstr "Обмежити шв_идкість відвантаження:"
+
+msgid "Limit _download speed:"
+msgstr "Обмежити _швидкість завантаження:"
+
+msgid "Check Selected"
+msgstr "Обрати виділене"
+
+msgid "Uncheck Selected"
+msgstr "Зняти виділене"
+
+msgid "Only Check Selected"
+msgstr "Обрати тільки виділене"
+
+msgid "Open"
+msgstr "Відкрити"
+
+msgid "Rename…"
+msgstr "Перейменувати…"
+
+msgid "Search…"
+msgstr "Шукати…"
+
+msgid "<i>Calculating Free Space…</i>"
+msgstr "<i>Обчислення вільного простору…</i>"
+
+msgid "Limited at {speed}"
+msgstr "Обмежено до {speed}"
+
+#. Translators: Second (optional) part of main window title "Appname - host:port" (added when connected to remote session)
+#. notice that leading space (before the dash) is included here
+msgid " - {host}:{port}"
+msgstr " - {host}:{port}"
+
+msgid "Network Error"
+msgstr "Помилка мережі"
+
+msgid "Idle"
+msgstr "Неактивний"
+
+msgid "Showing {visible_count:L} of {count:L} torrent"
+msgid_plural "Showing {visible_count:L} of {count:L} torrents"
+msgstr[0] "Відображен {visible_count:L} з {count:L} торентів"
+msgstr[1] "Відображені {visible_count:L} з {count:L} торентів"
+msgstr[2] "Відображені {visible_count:L} з {count:L} торентів"
+msgstr[3] "Відображені {visible_count:L} з {count:L} торентів"
+
+msgid "Torrent Files (*.torrent);;All Files (*.*)"
+msgstr "Файли торентів (*.torrent);;Всі файли (*.*)"
+
+msgid "{host} has not responded yet"
+msgstr "{host} ще не відповів"
+
+msgid "{host} is responding"
+msgstr "{host} відповідає"
+
+#, fuzzy
+#| msgid "{host} last responded {time_span} ago"
+msgid "{host} last responded {time_span_ago}"
+msgstr "{host} остання відповідь {time_span} тому"
+
+msgid "{host} is not responding"
+msgstr "{host} не відповідає"
+
+msgid "_Open…"
+msgstr "_Відкрити…"
+
+msgid "Create a new torrent"
+msgstr "Створити новий торент"
+
+msgid "Open the torrent's folder"
+msgstr "Відкрити теку з торентами"
+
+msgid "Ask tracker for more peers"
+msgstr "Запросити у трекера більше вузлів"
+
+msgid "Verify local data"
+msgstr "Перевірити локальні дані"
+
+msgid "Remove torrent and delete its files"
+msgstr "Вилучити торент разом із файлами"
+
+msgid "Compact View"
+msgstr "Стислий перегляд"
+
+msgid "_Main Window"
+msgstr "_Головне вікно"
+
+msgid "Tray _Icon"
+msgstr "Іконка в зоні сповіщень"
+
+msgid "_Change Session…"
+msgstr "_Змінити сеанс…"
+
+#. Start a local session or connect to a running session
+msgid "Choose Session"
+msgstr "Обрати сеанс"
+
+msgid "Bypass the queue and start now"
+msgstr "Пропустити чергу і почати зараз"
+
+msgid "{file_count:L} File"
+msgid_plural "{file_count:L} Files"
+msgstr[0] "{file_count:L} файл"
+msgstr[1] "{file_count:L} файла"
+msgstr[2] "{file_count:L} файлів"
+msgstr[3] "{file_count:L} файлів"
+
+msgid "{piece_count:L} Piece"
+msgid_plural "{piece_count:L} Pieces"
+msgstr[0] "{piece_count:L} частина"
+msgstr[1] "{piece_count:L} частини"
+msgstr[2] "{piece_count:L} частин"
+msgstr[3] "{piece_count:L} частин"
+
+msgid "{total_size} in {files}; {pieces} @ {piece_size}"
+msgstr "{total_size} у {files}; {pieces} @ {piece_size}"
+
+msgid ""
+"To add a backup URL, add it on the line after the primary URL.\n"
+"To add another primary URL, add it after a blank line."
+msgstr ""
+"Резервну адресу додавайте після основної.\n"
+"Щоб додати нову основну адресу, допишіть її після порожнього рядка."
+
+#, fuzzy
+#| msgid "_Source:"
+msgid "Sou_rce:"
+msgstr "_Джерело:"
+
+msgid "_Priority:"
+msgstr "_Пріоритет:"
+
+msgid "Select Folder"
+msgstr "Обрати теку"
+
+msgid "unknown"
+msgstr "невідомо"
+
+msgid "checking…"
+msgstr "перевіряю..."
+
+msgid "open"
+msgstr "відкрити"
+
+#, fuzzy
+#| msgctxt "Port test status"
+#| msgid "closed"
+msgid "closed"
+msgstr "закрито"
+
+msgid "error"
+msgstr "помилка"
+
+msgid "<b>Update succeeded!</b><p>Blocklist now has {count:L} rule.</p>"
+msgid_plural "<b>Update succeeded!</b><p>Blocklist now has {count:L} rules.</p>"
+msgstr[0] "<b>Успішно оновлено!</b><p>Список блокувань тепер містить {count:L} правило.</p>"
+msgstr[1] "<b>Успішно оновлено!</b><p>Список блокувань тепер містить {count:L} правила.</p>"
+msgstr[2] "<b>Успішно оновлено!</b><p>Список блокувань тепер містить {count:L} правил.</p>"
+msgstr[3] "<b>Успішно оновлено!</b><p>Список блокувань тепер містить {count:L} правил.</p>"
+
+msgid "Download of the blocklist failed."
+msgstr ""
+
+msgid "Update Blocklist"
+msgstr "Оновити список блокування"
+
+msgid "Select \"Torrent Done Seeding\" Script"
+msgstr "Виберіть сценарій «Поширення торента завершено»."
+
+msgid "Select Watch Directory"
+msgstr "Обрати теку для спостереження"
+
+msgid "Select Incomplete Directory"
+msgstr "Обрати теку для незавершених"
+
+msgid "Select \"Torrent Done Downloading\" Script"
+msgstr "Виберіть сценарій «Завантаження торрента завершено»."
+
+msgid "Not supported by remote sessions"
+msgstr "Не підтримується віддаленою сесією"
+
+msgid "<i>Blocklist contains {count:L} rule</i>"
+msgid_plural "<i>Blocklist contains {count:L} rules</i>"
+msgstr[0] "<i>У списку блокування міститься {count:L} правило</i>"
+msgstr[1] "<i>У списку блокування міститься {count:L} правила</i>"
+msgstr[2] "<i>У списку блокування міститься {count:L} правил</i>"
+msgstr[3] "<i>У списку блокування міститься {count:L} правил</i>"
+
+#, fuzzy
+#| msgid "<i>Blocklist contains {count:L} rule</i>"
+#| msgid_plural "<i>Blocklist contains {count:L} rules</i>"
+msgid "<i>Blocklist has never been updated</i>"
+msgstr "<i>У списку блокування міститься {count:L} правило</i>"
+
+#, fuzzy
+#| msgid "<i>Blocklist contains {count:L} rule</i>"
+#| msgid_plural "<i>Blocklist contains {count:L} rules</i>"
+msgid "<i>Blocklist last updated {date}</i>"
+msgstr "<i>У списку блокування міститься {count:L} правило</i>"
+
+msgid "_Upload:"
+msgstr "Ві_двантаження:"
+
+msgid "_Download:"
+msgstr "З_авантаження:"
+
+msgid "U_pload:"
+msgstr "Ві_двантаження:"
+
+msgid "Do_wnload:"
+msgstr "З_авантаження:"
+
+msgid "Downloading"
+msgstr "Завантаження"
+
+msgid "Adding"
+msgstr "Додавання"
+
+msgid "Reads user clipboard content for torrents"
+msgstr "Читає вміст буфера обміну користувача для торрентів"
+
+msgid "Detect new torrents from clipboard"
+msgstr "Виявити нові торренти з буфера обміну"
+
+#. Please keep this phrase as short as possible, it's currently the longest and influences dialog width
+msgid "Download is i_nactive if data sharing stopped:"
+msgstr "Завантаження неможливо, якщо обмін даними зупинено:"
+
+msgid "Seeding"
+msgstr "Поширення"
+
+msgid "Stop seedi_ng if idle for:"
+msgstr "Припинити поширення, якщо не буде активності:"
+
+msgid "Encryption"
+msgstr "Шифрування"
+
+msgid "Start _minimized in notification area"
+msgstr "Запускати зверненим у системний лоток"
+
+#, fuzzy
+#| msgid "Retransmission"
+msgid "Retransmission (Qt)"
+msgstr "Retransmission"
+
+msgid "Select Location"
+msgstr "Обрати розташування"
+
+msgid "Error Renaming Path"
+msgstr "Помилка під час перейменування шляху"
+
+msgid "Unable to rename \"{old_path}\" as \"{path}\": {error}."
+msgstr "Не вдалося перейменувати «{old_path}» на «{path}»: {error}."
+
+msgid "Error Adding Torrent"
+msgstr "Помилка під час додавання торенту"
+
+msgid "{torrent_name} (copy of {hash})"
+msgstr "{torrent_name} (копія {hash})"
+
+msgid "Duplicate Torrent"
+msgstr "Дубльований торент"
+
+msgid "Duplicate Torrents"
+msgstr "Дубльовані торенти"
+
+msgid "Unable to add {count} duplicate torrent"
+msgid_plural "Unable to add {count} duplicate torrents"
+msgstr[0] "Не вдається додати {count} дубльований торент"
+msgstr[1] "Не вдається додати {count} дубльованих торенти"
+msgstr[2] "Не вдається додати {count} дубльований(х) торент(ів)"
+msgstr[3] "Не вдається додати {count} дубльований(х) торент(ів)"
+
+msgid "Change Session"
+msgstr "Змінити сеанс"
+
+msgid "Source"
+msgstr "Джерело"
+
+msgid "Start _Local Session"
+msgstr "Ро_зпочати локальний сеанс"
+
+msgid "Connect to _Remote Session"
+msgstr "Під_ключитись до віддаленого сеансу"
+
+msgid "_Host:"
+msgstr "_Гост:"
+
+msgid "_Port:"
+msgstr "_Порт:"
+
+msgid "_Authentication required"
+msgstr "Необхідна ав_торизація"
+
+msgid "Remote root pa_th:"
+msgstr ""
+
+msgid "Tracker gave a warning: {warning}"
+msgstr "Трекер видав попередження: {warning}"
+
+msgid "Tracker gave an error: {error}"
+msgstr "Трекер повідомив про помилку: {error}"
+
+msgid "Error: {error}"
+msgstr "Помилка: {error}"
+
+#, fuzzy
+#| msgid "Magnetized transfer - retrieving metadata (%1%)"
+msgid "Magnetized torrent - retrieving metadata ({percent_done}%)"
+msgstr "Маґнет-передача - отримання метаданих (%1%)"
+
+#, no-c-format
+msgid "Downloading metadata from {active_count:L} peer ({percent_done}% done)"
+msgid_plural "Downloading metadata from {active_count:L} peers ({percent_done}% done)"
+msgstr[0] "Завантажуються метадані з {active_count:L} піра ({percent_done}% завершено)"
+msgstr[1] "Завантажуються метадані з {active_count:L} пірів ({percent_done}% завершено)"
+msgstr[2] "Завантажуються метадані з {active_count:L} пірів ({percent_done}% завершено)"
+msgstr[3] "Завантажуються метадані з {active_count:L} пірів ({percent_done}% завершено)"
+
+msgid "Downloading from {active_count:L} peer"
+msgid_plural "Downloading from {active_count:L} peers"
+msgstr[0] "Завантаження від {active_count:L} вузла"
+msgstr[1] "Завантаження від {active_count:L} вузлів"
+msgstr[2] "Завантаження від {active_count:L} вузлів"
+msgstr[3] "Завантаження від {active_count:L} вузлів"
+
+msgid " and {webseed_count:L} web seed"
+msgid_plural " and {webseed_count:L} web seeds"
+msgstr[0] " і {webseed_count:L} веб-сидера"
+msgstr[1] " і {webseed_count:L} веб-сидерів"
+msgstr[2] " і {webseed_count:L} веб-сидерів"
+msgstr[3] " і {webseed_count:L} веб-сидерів"
+
+msgid "Seeding to {active_count:L} peer"
+msgid_plural "Seeding to {active_count:L} peers"
+msgstr[0] "Поширення до {active_count:L} вузла"
+msgstr[1] "Поширення до {active_count:L} вузлів"
+msgstr[2] "Поширення до {active_count:L} вузлів"
+msgstr[3] "Поширення до {active_count:L} вузлів"
+
+msgid " - "
+msgstr " - "
+
+#, fuzzy
+#| msgid ""
+#| "To add a backup URL, add it on the next line after a primary URL.\n"
+#| "To add a new primary URL, add it after a blank line."
+msgid "To add a backup URL, add it on the next line after a primary URL."
+msgstr ""
+"Щоб додати резервну URL-адресу, додайте її в наступний рядок після основної URL-адреси.\n"
+"Щоб додати нову основну URL-адресу, додайте її після порожнього рядка."
+
+msgid "To add a new primary URL, add it after a blank line."
+msgstr "Щоб додати нову основну URL-адресу, додайте її після порожнього рядка."
 
 msgid "{file_count:L} file, {total_size}\n"
 msgid_plural "{file_count:L} files, {total_size}\n"
@@ -2102,7 +3230,10 @@ msgstr[1] "хвилини"
 msgstr[2] "хвилин"
 msgstr[3] "хвилини"
 
-msgid "seconds"
+#, fuzzy
+#| msgid "seconds"
+#| msgid_plural "seconds"
+msgid "second"
 msgid_plural "seconds"
 msgstr[0] "секунда"
 msgstr[1] "секунди"
@@ -2115,6 +3246,108 @@ msgstr[0] "день"
 msgstr[1] "дні"
 msgstr[2] "днів"
 msgstr[3] "дня"
+
+msgid "seconds"
+msgid_plural "seconds"
+msgstr[0] "секунда"
+msgstr[1] "секунди"
+msgstr[2] "секунд"
+msgstr[3] "секунди"
+
+#~ msgid "Finished"
+#~ msgstr "Завершено"
+
+#~ msgid "We would upload to this peer if they asked"
+#~ msgstr "Можлива передача даних на цей вузол, якщо надійде відповідний запит"
+
+#~ msgid "Dn Blocks"
+#~ msgstr "Завант. блоків"
+
+#~ msgid "Up Blocks"
+#~ msgstr "Відвант. блоків"
+
+#~ msgid "We Cancelled"
+#~ msgstr "Скасовано нами"
+
+#~ msgid "They Cancelled"
+#~ msgstr "Скасовано ними"
+
+#~ msgid "Have"
+#~ msgstr "Поступ"
+
+#~ msgctxt "current session totals"
+#~ msgid "Down: {downloaded_size}, Up: {uploaded_size}"
+#~ msgstr "Завантажено: {downloaded_size}, Вивантажено: {uploaded_size}"
+
+#~ msgctxt "all-time totals"
+#~ msgid "Down: {downloaded_size}, Up: {uploaded_size}"
+#~ msgstr "Завантажено: {downloaded_size}, Вивантажено: {uploaded_size}"
+
+#~ msgid "Select a File"
+#~ msgstr "Обрати файл"
+
+#~ msgid "Inhibiting desktop hibernation"
+#~ msgstr "Відкладаємо присипляння системи"
+
+#~ msgid "Couldn't inhibit desktop hibernation: {error}"
+#~ msgstr "Не вдалося стримати гібернацію: {error}"
+
+#~ msgid "Allowing desktop hibernation"
+#~ msgstr "Дозвіл на присипляння"
+
+#~ msgid "Open URL…"
+#~ msgstr "Відкрити адресу…"
+
+#~ msgid "Start all torrents"
+#~ msgstr "Запустити усі торенти"
+
+#~ msgid "Pause all torrents"
+#~ msgstr "Призупинити усі торенти"
+
+#~ msgid "Start torrent now"
+#~ msgstr "Почати роботу з торентом негайно"
+
+#~ msgid "Copy _Magnet Link to Clipboard"
+#~ msgstr "Скопіювати magnet-посилання до буферу обміну"
+
+#~ msgid "Enable Alternative Speed _Limits"
+#~ msgstr "Увімкнути альтернативні о_бмеження на швидкість"
+
+#~ msgid "Torrent size:"
+#~ msgstr "Розмір:"
+
+#~ msgid "_New"
+#~ msgstr "_Новий"
+
+#~ msgid "Source F_older:"
+#~ msgstr "Тека з _даними:"
+
+#~ msgid "Source _File:"
+#~ msgstr "_Файл даних:"
+
+#~ msgid "P_ause"
+#~ msgstr "П_ризупинити"
+
+#~ msgid "Keep _incomplete torrents in:"
+#~ msgstr "_Незавершені торенти зберігати до:"
+
+#~ msgid "Call scrip_t when done downloading:"
+#~ msgstr "Викличте scrip_t після завершення завантаження:"
+
+#~ msgid "_Port used for incoming connections:"
+#~ msgstr "_Порт для вхідних з’єднань:"
+
+#~ msgid "Enable µ_TP for peer communication"
+#~ msgstr "Увімкнути обмін даними за µ_TP"
+
+#~ msgid "_Inhibit hibernation when torrents are active"
+#~ msgstr "_Відкласти присипляння, якщо завантажуються торенти"
+
+#~ msgid "Torrent _location:"
+#~ msgstr "Торент розташовано у:"
+
+#~ msgid "Couldn't read filename: {error} ({error_code})"
+#~ msgstr "Не вдалося зчитати ім'я файлу: {error} ({error_code})"
 
 #~ msgid "Couldn't find pending RPC request for tag {tag}"
 #~ msgstr "Не вдалось знайти запит RPC, що очікує на розгляд, для тега {tag}"

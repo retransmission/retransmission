@@ -16,8 +16,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-01-04 14:15+0000\n"
+"Report-Msgid-Bugs-To: https://github.com/retransmission/retransmission/issues\n"
+"POT-Creation-Date: 2026-10-03 11:48-0500\n"
 "PO-Revision-Date: 2017-01-26 19:47+0000\n"
 "Last-Translator: Balázs Meskó <meskobalazs@mailbox.org>, 2025\n"
 "Language-Team: Hungarian (https://app.transifex.com/transmissionbt/teams/33778/hu/)\n"
@@ -32,6 +32,9 @@ msgstr "Nincs"
 
 msgid "Inf"
 msgstr "Inf"
+
+msgid "Another process is already using '{path}'."
+msgstr ""
 
 msgid "Couldn't read '{path}': {error} ({error_code})"
 msgstr "'{path}' nem olvasható: {error} ({error_code})"
@@ -59,6 +62,9 @@ msgstr "Beállítások újratöltése innen: '{path}'"
 
 msgid "Couldn't initialize daemon: {error} ({error_code})"
 msgstr "Nem sikerült a démon elindítása: {error} ({error_code})"
+
+msgid "Waiting for another process to release '{path}'"
+msgstr ""
 
 msgid "Loading settings from '{path}'"
 msgstr "A beállítások betöltése innen: '{path}'"
@@ -109,8 +115,13 @@ msgid_plural "Couldn't add duplicate torrents"
 msgstr[0] "A már meglévő torrent hozzáadása sikertelen"
 msgstr[1] "A már meglévő torrentek hozzáadása sikertelen"
 
+#, fuzzy
 msgid "A fast and easy BitTorrent client"
-msgstr "Egy gyors és egyszerű BitTorrent-kliens"
+msgstr ""
+"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Egy gyors és egyszerű BitTorrent-kliens\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Egy gyors és egyszerű BitTorrent kliens"
 
 msgid "Copyright © The {appname} Project"
 msgstr "Copyright © A {appname} Projekt"
@@ -169,31 +180,62 @@ msgstr "Megosztás aktivitástól függetlenül"
 msgid "Stop seeding if idle for N minutes:"
 msgstr "Megosztás befejezése, ha N percig inaktív:"
 
+#, fuzzy
 msgid "Queued for verification"
-msgstr "Sorbaállítva ellenőrzéshez"
+msgstr ""
+"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Sorbaállítva ellenőrzéshez\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Sorbaállítva ellenőrzésre"
 
 msgid "Verifying local data"
 msgstr "Helyi adatok ellenőrzése"
 
+#, fuzzy
 msgid "Queued for download"
-msgstr "Letöltéshez sorba állítva"
+msgstr ""
+"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Letöltéshez sorba állítva\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Sorbaállítva letöltésre"
 
+#, fuzzy
 msgctxt "Verb"
 msgid "Downloading"
-msgstr "Letöltés"
+msgstr ""
+"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Letöltés\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Letöltés alatt\n"
+"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Letöltés"
 
+#, fuzzy
 msgid "Queued for seeding"
-msgstr "Sorbaállítva megosztáshoz"
+msgstr ""
+"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Sorbaállítva megosztáshoz\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Sorba állítva megosztáshoz"
 
 msgctxt "Verb"
 msgid "Seeding"
 msgstr "Megosztás"
 
-msgid "Finished"
-msgstr "Elkészült"
+#, fuzzy
+#| msgid "Incomplete"
+msgid "Seeding complete"
+msgstr "Befejezetlen"
 
+#, fuzzy
 msgid "Paused"
-msgstr "Szüneteltetett"
+msgstr ""
+"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Szüneteltetett\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Szüneteltetve\n"
+"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Szünetelteve"
 
 msgid "N/A"
 msgstr "N/A"
@@ -210,14 +252,29 @@ msgstr "Privát ezen tracker számára -- DHT és PEX letiltva "
 msgid "Public torrent"
 msgstr "Nyilvános torrent"
 
+#, fuzzy
 msgid "Created by {creator} on {date}"
-msgstr "Létrehozta: {creator}, ekkor: {date}"
+msgstr ""
+"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Létrehozta: {creator}, ekkor: {date}\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Készítette: {creator} ekkor: {date}"
 
+#, fuzzy
 msgid "Created by {creator}"
-msgstr "Létrehozta: {creator}"
+msgstr ""
+"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Létrehozta: {creator}\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Készítette: {creator}"
 
+#, fuzzy
 msgid "Created on {date}"
-msgstr "Létrehozva: {date}"
+msgstr ""
+"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Létrehozva: {date}\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Ekkor készült: {date}"
 
 msgid "Unknown"
 msgstr "Ismeretlen"
@@ -239,14 +296,26 @@ msgstr "{current_size} ({percent_done}%)"
 msgid "{current_size} ({percent_done}% of {percent_available}% available)"
 msgstr "{current_size} ({percent_done}% kész, {percent_available}% érhető el)"
 
+#, fuzzy, c-format
+#| msgid "{current_size} ({percent_done}% of {percent_available}% available; {unverified_size} unverified)"
 msgid "{current_size} ({percent_done}% of {percent_available}% available; {unverified_size} unverified)"
 msgstr "{current_size} ({percent_done}% kész, {percent_available}% érhető el, {unverified_size} nem ellenőrzött)"
 
+#, fuzzy
 msgid "{downloaded_size} (+{discarded_size} discarded after failed checksum)"
-msgstr "{downloaded_size} (+{discarded_size} hibás ellenőrzőösszeg miatt elvetve)"
+msgstr ""
+"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{downloaded_size} (+{discarded_size} hibás ellenőrzőösszeg miatt elvetve)\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{downloaded_size} (+{discarded_size} elvetve nem egyező ellenőrzőösszeg miatt)"
 
+#, fuzzy
 msgid "{uploaded_size} (Ratio: {ratio})"
-msgstr "{uploaded_size} (arány: {ratio})"
+msgstr ""
+"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{uploaded_size} (arány: {ratio})\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{uploaded_size} (Arány: {ratio})"
 
 msgid "No errors"
 msgstr "Nincs hiba"
@@ -254,11 +323,21 @@ msgstr "Nincs hiba"
 msgid "Never"
 msgstr "Soha"
 
+#, fuzzy
 msgid "Active now"
-msgstr "Most aktív"
+msgstr ""
+"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Most aktív\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Jelenleg aktív"
 
+#, fuzzy
 msgid "Optimistic unchoke"
-msgstr "Optimista feloldás"
+msgstr ""
+"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Optimista feloldás\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Optimista engedélyezés"
 
 msgid "Downloading from this peer"
 msgstr "Letöltés ettől a partnertől"
@@ -266,11 +345,18 @@ msgstr "Letöltés ettől a partnertől"
 msgid "We would download from this peer if they would let us"
 msgstr "Letöltenénk ettől a partnertől, ha hagyná"
 
+#, fuzzy
 msgid "Uploading to peer"
-msgstr "Feltöltés a partnernek"
+msgstr ""
+"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Feltöltés a partnernek\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Feltöltés partnernek"
 
-msgid "We would upload to this peer if they asked"
-msgstr "Feltöltés a partnernek, ha kérné"
+#, fuzzy
+#| msgid "We would download from this peer if they would let us"
+msgid "This peer would download from us if we would let them"
+msgstr "Letöltenénk ettől a partnertől, ha hagyná"
 
 msgid "Peer has unchoked us, but we're not interested"
 msgstr "A partner feloldott minket, de nem érdeklődünk"
@@ -293,10 +379,12 @@ msgstr "Bejövő kapcsolatú partner"
 msgid "Peer is connected over µTP"
 msgstr "Partner µTP-n keresztül kapcsolódik"
 
+msgid "Peer supports holepunch (BEP 55)"
+msgstr ""
+
 msgid "Address"
 msgstr "Cím"
 
-#. % is percent done
 msgid "%"
 msgstr "%"
 
@@ -305,18 +393,6 @@ msgstr "Letöltési kérések"
 
 msgid "Up Reqs"
 msgstr "Feltöltési kérések"
-
-msgid "Dn Blocks"
-msgstr "Blokkok le"
-
-msgid "Up Blocks"
-msgstr "Blokkok fel"
-
-msgid "We Cancelled"
-msgstr "Megszakítottuk"
-
-msgid "They Cancelled"
-msgstr "Megszakították"
 
 msgid "Down"
 msgstr "Le"
@@ -333,66 +409,19 @@ msgstr "Jelzők"
 msgid "Web Seeds"
 msgstr "Webes megosztók"
 
-msgid "Got a list of {markup_begin}{peer_count} peer{markup_end} {time_span_ago}"
-msgid_plural "Got a list of {markup_begin}{peer_count} peers{markup_end} {time_span_ago}"
-msgstr[0] "{markup_begin}{peer_count} partner{markup_end} fogadva {time_span_ago}"
-msgstr[1] "{markup_begin}{peer_count} partner{markup_end} fogadva {time_span_ago}"
-
-#. {markup_begin} and {markup_end} should surround the time_span
-msgid "Peer list request {markup_begin}timed out {time_span_ago}{markup_end}; will retry"
-msgstr "A partnerlista kérése során {markup_begin}időtúllépés történt {time_span_ago}{markup_end}; újrapróbálkozás később"
-
-#. {markup_begin} and {markup_end} should surround the error
-msgid "Got an error '{markup_begin}{error}{markup_end}' {time_span_ago}"
-msgstr "'{markup_begin}{error}{markup_end}' hiba fogadva {time_span_ago}"
-
-msgid "No updates scheduled"
-msgstr "Nincs ütemezett frissítés"
-
-msgid "Asking for more peers {time_span_from_now}"
-msgstr "További partnerek kérése {time_span_from_now}"
-
-msgid "Queued to ask for more peers"
-msgstr "További partnerek kérése ütemezve"
-
-#. {markup_begin} and {markup_end} should surround time_span_ago
-msgid "Asked for more peers {markup_begin}{time_span_ago}{markup_end}"
-msgstr "További partnerek kérve {markup_begin}{time_span_ago}{markup_end}"
-
-msgid "Tracker had {markup_begin}{seeder_count} {seeder_or_seeders} and {leecher_count} {leecher_or_leechers}{markup_end} {time_span_ago}"
-msgstr "A tracker {time_span_ago} ennyi felhasználóról tudott: {markup_begin}{seeder_count} {seeder_or_seeders} és {leecher_count} {leecher_or_leechers}{markup_end}."
-
-msgid "seeder"
-msgid_plural "seeders"
-msgstr[0] "megosztó"
-msgstr[1] "megosztó"
-
-msgid "leecher"
-msgid_plural "leechers"
-msgstr[0] "letöltő"
-msgstr[1] "letöltő"
-
-#. {markup_begin} and {markup_end} should surround the error text
-msgid "Got a scrape error '{markup_begin}{error}{markup_end}' {time_span_ago}"
-msgstr "'{markup_begin}{error}{markup_end}' scrape hiba fogadva {time_span_ago}"
-
-msgid "Asking for peer counts in {time_span_from_now}"
-msgstr "Partnerek számának lekérése {time_span_from_now}"
-
-msgid "Queued to ask for peer counts"
-msgstr "Partnerek számának lekérése ütemezve"
-
-msgid "Asked for peer counts {markup_begin}{time_span_ago}{markup_end}"
-msgstr "Partnerek száma lekérve {markup_begin}{time_span_ago}{markup_end}"
-
 msgid "{torrent_name} - Edit Trackers"
 msgstr "{torrent_name} - Trackerek szerkesztése"
 
 msgid "List contains invalid URLs"
 msgstr "A lista érvénytelen webcímeket tartalmaz"
 
+#, fuzzy
 msgid "Please correct the errors and try again."
-msgstr "Javítsa a hibákat és próbálja újra."
+msgstr ""
+"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Javítsa a hibákat és próbálja újra.\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Javítsa ki a hibákat, és próbálkozzon újra."
 
 msgid "{torrent_name} - Add Tracker"
 msgstr "{torrent_name} - Tracker hozzáadása"
@@ -411,47 +440,106 @@ msgstr[1] "Tulajdonságok - {torrent_count:L} torrent"
 msgid "Remove torrent?"
 msgstr "Eltávolítja a torrentet?"
 
+#, fuzzy
+msgid "Delete this torrent's downloaded files?"
+msgstr ""
+"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Törli a torrent letöltött fájljait?\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Törölni kívánja a torrent letöltött fájljait?"
+
+#, fuzzy
 msgid "Remove {count:L} torrent?"
 msgid_plural "Remove {count:L} torrents?"
-msgstr[0] "Valóban törölni kívánod mind a {count:L} torrentet?"
-msgstr[1] "Eltávolít {count:L} torrentet?"
+msgstr[0] ""
+"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Valóban törölni kívánod mind a {count:L} torrentet?\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Valóban törölni kívánod mind a {count:L} torrentet?"
+msgstr[1] ""
+"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Eltávolít {count:L} torrentet?\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Valóban törölni kívánod mind a {count:L} torrentet?"
 
-msgid "Delete this torrent's downloaded files?"
-msgstr "Törli a torrent letöltött fájljait?"
-
+#, fuzzy
 msgid "Delete this {count:L} torrent's downloaded files?"
 msgid_plural "Delete these {count:L} torrents' downloaded files?"
-msgstr[0] "Valóban törölni akarod a(z) {count:L} torrent letöltött fájlait?"
-msgstr[1] "Törli {count:L} torrent letöltött fájljait?"
+msgstr[0] ""
+"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Valóban törölni akarod a(z) {count:L} torrent letöltött fájlait?\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Valóban törölni akarod a(z) {count:L} torrent letöltött fájlait?"
+msgstr[1] ""
+"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Törli {count:L} torrent letöltött fájljait?\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Valóban törölni akarod a(z) {count:L} torrent letöltött fájlait?"
 
-msgid "Once removed, continuing the transfer will require the torrent file or magnet link."
-msgid_plural "Once removed, continuing the transfers will require the torrent files or magnet links."
-msgstr[0] "Ha törölte, az átvitel folytatásához szüksége lesz a torrentfájlra vagy a mágneslinkre."
-msgstr[1] "Ha törölte, az átvitelek folytatásához szüksége lesz a torrent fájlokra vagy a magnet linkekre."
+#, fuzzy
+#| msgid "Once removed, continuing the transfer will require the torrent file or magnet link."
+#| msgid_plural "Once removed, continuing the transfers will require the torrent files or magnet links."
+msgid "Once removed, you'll need the torrent file or magnet link to add it again."
+msgstr "Ha törölte, az átvitel folytatásához szüksége lesz a torrentfájlra vagy a mágneslinkre."
 
+#, fuzzy
+#| msgid "Once removed, continuing the transfers will require the torrent files or magnet links."
+msgid "Once removed, you'll need the torrent files or magnet links to add them again."
+msgstr "Ha egyszer eltávolítja, akkor a folytatáshoz szüksége lesz a torrent fájlokra, vagy a magnet linkekre."
+
+#, fuzzy
 msgid "This torrent has not finished downloading."
-msgstr "A torrent letöltése még nem fejeződött be."
+msgstr ""
+"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"A torrent letöltése még nem fejeződött be.\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Ez a torrent még nem fejezte be a letöltést."
 
+#, fuzzy
 msgid "These torrents have not finished downloading."
-msgstr "A torrentek letöltése még nem fejeződött be."
+msgstr ""
+"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"A torrentek letöltése még nem fejeződött be.\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Ezek a torrentek még nem fejezték be a letöltést."
 
+#, fuzzy
 msgid "This torrent is connected to peers."
-msgstr "Ez a torrent partnerekhez csatlakozik."
+msgstr ""
+"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Ez a torrent partnerekhez csatlakozik.\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Ez a torrent partnerekhez kapcsolódik."
 
 msgid "These torrents are connected to peers."
 msgstr "Ezek a torrentek partnerekhez kapcsolódnak."
 
+#, fuzzy
 msgid "One of these torrents is connected to peers."
-msgstr "A torrentek egyike partnerekhez csatlakozik."
+msgstr ""
+"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"A torrentek egyike partnerekhez csatlakozik.\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Ezen torrentek valamelyike partnerekhez kapcsolódik."
 
 msgid "Some of these torrents are connected to peers."
 msgstr "Ezen torrentek némelyike partnerekhez kapcsolódik."
 
+#, fuzzy
 msgid "One of these torrents has not finished downloading."
-msgstr "Egy torrent letöltése még nem fejeződött be."
+msgstr ""
+"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Egy torrent letöltése még nem fejeződött be.\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Ezen torrentek egyike még nem fejezte be a letöltést."
 
+#, fuzzy
 msgid "Some of these torrents have not finished downloading."
-msgstr "Néhány torrent letöltése még nem fejeződött be."
+msgstr ""
+"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Néhány torrent letöltése még nem fejeződött be.\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Ezen torrentek némelyike még nem fejezte be a letöltést."
 
 msgid "_Cancel"
 msgstr "_Mégse"
@@ -459,6 +547,7 @@ msgstr "_Mégse"
 msgid "_Delete"
 msgstr "_Törlés"
 
+#. Removes the torrent from the list and keeps its downloaded files
 msgid "_Remove"
 msgstr "_Eltávolítás"
 
@@ -480,8 +569,8 @@ msgstr "Név"
 msgid "Size"
 msgstr "Méret"
 
-msgid "Have"
-msgstr "Meglévő"
+msgid "Progress"
+msgstr "Folyamat"
 
 msgid "Download"
 msgstr "Letöltés"
@@ -489,8 +578,13 @@ msgstr "Letöltés"
 msgid "Priority"
 msgstr "Prioritás"
 
+#, fuzzy
 msgid "All"
-msgstr "Összes"
+msgstr ""
+"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Összes\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Mind"
 
 msgid "Active"
 msgstr "Aktív"
@@ -510,6 +604,24 @@ msgstr "{count:L} meg_jelenítése ennyiből:"
 
 msgid "{disk_space} free"
 msgstr "{disk_space} szabad"
+
+msgid "Where to look for configuration files"
+msgstr "Hol keresse a beállításfájlokat"
+
+msgid "Start with all torrents paused"
+msgstr "Az összes torrent indítása szüneteltetve"
+
+msgid "Start minimized in notification area"
+msgstr "Indítás az értesítési területen, kis méretben"
+
+msgid "Show version number and exit"
+msgstr "Verziószám megjelenítése és kilépés"
+
+msgid "[torrent files or urls]"
+msgstr "[torrent fájlok vagy webcímek]"
+
+msgid "Run '{program} --help' to see a full list of available command line options.\n"
+msgstr "A parancssori kapcsolók teljes listájáért futtassa a '{program} --help' parancsot.\n"
 
 msgid ""
 "Click to disable Alternative Speed Limits\n"
@@ -531,20 +643,45 @@ msgstr "Korlátlan"
 msgid "Seed Forever"
 msgstr "Megosztás folyamatosan"
 
+#, fuzzy
 msgid "Limit Download Speed"
-msgstr "Letöltési sebesség korlátozása"
+msgstr ""
+"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Letöltési sebesség korlátozása\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Letöltési sebességkorlát"
 
+#, fuzzy
 msgid "Limit Upload Speed"
-msgstr "Feltöltési sebesség korlátozása"
+msgstr ""
+"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Feltöltési sebesség korlátozása\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Feltöltési sebességkorlát"
 
+#, fuzzy
 msgid "Stop Seeding at Ratio"
-msgstr "Megosztás megállítása ekkora aránynál"
+msgstr ""
+"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Megosztás megállítása ekkora aránynál\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Megosztás befejezése ha elérte az arányt"
 
+#, fuzzy
 msgid "Stop at Ratio ({ratio})"
-msgstr "Megosztás adott arányig ({ratio})"
+msgstr ""
+"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Megosztás adott arányig ({ratio})\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Megállás aránynál ({ratio})"
 
+#, fuzzy
 msgid "Total Ratio"
-msgstr "Összesített arány"
+msgstr ""
+"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Összesített arány\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Összarány"
 
 msgid "Session Ratio"
 msgstr "Munkamenet aránya"
@@ -555,16 +692,11 @@ msgstr "Összes forgalom"
 msgid "Session Transfer"
 msgstr "Munkamenet forgalma"
 
+msgid "Down: {downloaded_size}, Up: {uploaded_size}"
+msgstr "Le: {downloaded_size}, Fel: {uploaded_size}"
+
 msgid "Ratio: {ratio}"
 msgstr "Arány: {ratio}"
-
-msgctxt "current session totals"
-msgid "Down: {downloaded_size}, Up: {uploaded_size}"
-msgstr "Le: {downloaded_size}, fel: {uploaded_size}"
-
-msgctxt "all-time totals"
-msgid "Down: {downloaded_size}, Up: {uploaded_size}"
-msgstr "Le: {downloaded_size}, fel: {uploaded_size}"
 
 msgid "{download_speed} ▾"
 msgstr "{download_speed} ▾"
@@ -622,6 +754,11 @@ msgstr "Idő"
 msgid "Couldn't create proxy for '{bus}': {error} ({error_code})"
 msgstr "Nem sikerült a proxy létrehozása a következőhöz: '{bus}': {error} ({error_code})"
 
+#, fuzzy
+#| msgid "Couldn't save '{path}': {error} ({error_code})"
+msgid "Couldn't spawn async process \"'{command}'\": {error} ({error_code})"
+msgstr "Nem sikerült '{path}' mentése: {error} ({error_code})"
+
 msgid "Open File"
 msgstr "Fájl megnyitása"
 
@@ -652,7 +789,10 @@ msgstr "_Megnyitás"
 msgid "Show options dialog"
 msgstr "Beállítások ablak megjelenítése"
 
-msgid "Select a File"
+msgid "Other…"
+msgstr ""
+
+msgid "Select File"
 msgstr "Fájl kiválasztása"
 
 msgid "(None)"
@@ -687,8 +827,13 @@ msgstr "Tiltólista frissítve!"
 msgid "Couldn't update blocklist"
 msgstr "Nem sikerült a tiltólista frissítése"
 
+#, fuzzy
 msgid "Getting new blocklist…"
-msgstr "Új tiltólista beszerzése…"
+msgstr ""
+"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Új tiltólista beszerzése…\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Új tiltólista letöltése…"
 
 msgctxt "Port test status"
 msgid "unknown"
@@ -725,27 +870,30 @@ msgstr "Nem sikerült a torrent áthelyezése"
 msgid "This may take a moment…"
 msgstr "Ez eltarthat egy ideig…"
 
+#, fuzzy
+#| msgid "Couldn't watch '{path}': {error} ({error_code})"
+msgid "Couldn't open watchdir '{dirname}': {error} ({error_code})"
+msgstr "Nem sikerült a '{path}' figyelése: {error} ({error_code})"
+
 msgid "Couldn't read '{path}'"
 msgstr "Nem sikerült '{path}' olvasása"
-
-#. logging
-msgid "Inhibiting desktop hibernation"
-msgstr "Hibernálás megakadályozása"
-
-msgid "Couldn't inhibit desktop hibernation: {error}"
-msgstr "Nem sikerült a hibernálás megakadályozása: {error}"
-
-#. logging
-msgid "Allowing desktop hibernation"
-msgstr "Számítógép hibernálásának engedélyezése"
 
 msgid "Couldn't find pending RPC request for id {id}"
 msgstr ""
 
+#, fuzzy
 msgid "Started {count:L} time"
 msgid_plural "Started {count:L} times"
-msgstr[0] "Elindítva {count:L} alkalommal"
-msgstr[1] "Elindítva {count:L} alkalommal"
+msgstr[0] ""
+"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Elindítva {count:L} alkalommal\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{count:L} alkalommal lett elindítva"
+msgstr[1] ""
+"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Elindítva {count:L} alkalommal\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{count:L} alkalommal lett elindítva"
 
 msgid "Reset your statistics?"
 msgstr "Lenullázza a statisztikákat?"
@@ -755,6 +903,9 @@ msgstr "_Visszaállítás"
 
 msgid "These statistics are for your information only. Resetting them doesn't affect the statistics logged by your BitTorrent trackers."
 msgstr "Ezek a statisztikák csak tájékoztató jellegűek. A nullázás nem érinti a BitTorrent trackerek által naplózott statisztikát."
+
+msgid "_Show {appname}"
+msgstr "_{appname} megjelenítése"
 
 msgid "{upload_speed} ▴ {download_speed} ▾"
 msgstr "{upload_speed} ▴ {download_speed} ▾"
@@ -769,15 +920,26 @@ msgstr "{current_size} / {complete_size} ({percent_done}%)"
 msgid "{current_size} of {complete_size} ({percent_complete}%), uploaded {uploaded_size} (Ratio: {ratio}, Goal: {seed_ratio})"
 msgstr "{current_size} / {complete_size} ({percent_complete}%), {uploaded_size} feltöltve (arány: {ratio}, cél: {seed_ratio})"
 
+#, fuzzy
 msgid "{current_size} of {complete_size} ({percent_complete}%), uploaded {uploaded_size} (Ratio: {ratio})"
-msgstr "{current_size} / {complete_size} ({percent_complete}%), {uploaded_size} feltöltve (arány: {ratio})"
+msgstr ""
+"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{current_size} / {complete_size} ({percent_complete}%), {uploaded_size} feltöltve (arány: {ratio})\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{current_size} / {complete_size} ({percent_complete}%), feltöltve: {uploaded_size} (Arány: {ratio})"
 
 msgid "{complete_size}, uploaded {uploaded_size} (Ratio: {ratio}, Goal: {seed_ratio})"
 msgstr "{complete_size}, {uploaded_size} feltöltve (arány: {ratio}, cél: {seed_ratio})"
 
+#, fuzzy
 msgid "{complete_size}, uploaded {uploaded_size} (Ratio: {ratio})"
-msgstr "{complete_size}, {uploaded_size} feltöltve (arány: {ratio})"
+msgstr ""
+"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{complete_size}, {uploaded_size} feltöltve (arány: {ratio})\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{complete_size}, feltöltve {uploaded_size} (Arány: {ratio})"
 
+#. Translators: Second (optional) part of torrent progress string
 msgid "Remaining time unknown"
 msgstr "Hátralévő idő ismeretlen"
 
@@ -790,7 +952,9 @@ msgstr "Elakadt"
 msgid "Tracker warning: '{warning}'"
 msgstr "Tracker figyelmeztetés: '{warning}'"
 
-msgid "Tracker Error: '{error}'"
+#, fuzzy
+#| msgid "Tracker Error: '{error}'"
+msgid "Tracker error: '{error}'"
 msgstr "Tracker hiba: '{error}'"
 
 msgid "Local error: '{error}'"
@@ -812,15 +976,1097 @@ msgid_plural "Downloading from {active_count} webseeds"
 msgstr[0] "Letöltés {active_count} webes megosztótól"
 msgstr[1] "Letöltés {active_count} webes megosztótól"
 
+#, fuzzy
 msgid "Downloading from {active_count} of {connected_count} connected peer"
 msgid_plural "Downloading from {active_count} of {connected_count} connected peers"
-msgstr[0] "Letöltés {active_count} / {connected_count} kapcsolódó partnertől"
-msgstr[1] "Letöltés {active_count} / {connected_count} kapcsolódó partnertől"
+msgstr[0] ""
+"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Letöltés {active_count} / {connected_count} kapcsolódó partnertől\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Letöltés {active_count} / {connected_count} kapcsolódott partnertől"
+msgstr[1] ""
+"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Letöltés {active_count} / {connected_count} kapcsolódó partnertől\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Letöltés {active_count} / {connected_count} kapcsolódott partnertől"
 
+#, fuzzy
 msgid "Seeding to {active_count} of {connected_count} connected peer"
 msgid_plural "Seeding to {active_count} of {connected_count} connected peers"
-msgstr[0] "Megosztás {active_count} / {connected_count} kapcsolódó partnernek"
-msgstr[1] "Megosztás {active_count} / {connected_count} kapcsolódó partnernek"
+msgstr[0] ""
+"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Megosztás {active_count} / {connected_count} kapcsolódó partnernek\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Seedelés a {active_count} partnernek ({connected_count} elérhető)"
+msgstr[1] ""
+"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Megosztás {active_count} / {connected_count} kapcsolódó partnernek\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Seedelés a {active_count} partnernek ({connected_count} elérhető)"
+
+msgid "Retransmission"
+msgstr "Retransmission"
+
+msgid "BitTorrent Client"
+msgstr "BitTorrent-kliens"
+
+msgid "Download and share files over BitTorrent"
+msgstr "Fájlok letöltése és megosztása BitTorrenten keresztül"
+
+#. Translators: Search terms to find this application. Do NOT translate or localize the semicolons! The list MUST also end with a semicolon!
+msgid "torrents;downloading;uploading;share;sharing;"
+msgstr "torrentek;letöltés;feltöltés;megosztás;"
+
+msgid "Start Retransmission with All Torrents Paused"
+msgstr "A Retransmission indítása az összes torrent szüneteltetésével"
+
+msgid "Start Retransmission Minimized"
+msgstr "A Retransmission indítása minimalizálva"
+
+#, fuzzy
+#| msgid "Copyright © The Retransmission Project"
+msgid "The Retransmission Project"
+msgstr "Copyright © A Retransmission Projekt"
+
+#. Translators: these are the application description paragraphs in the MetaInfo file.
+msgid "BitTorrent is a peer-to-peer file-sharing protocol that is commonly used to distribute large amounts of data between multiple users."
+msgstr ""
+
+msgid "Retransmission is a BitTorrent client with an easy-to-use interface on top of a cross-platform backend. Native interfaces are available for macOS, Linux, and Windows, as well as command line binaries and a web GUI."
+msgstr ""
+
+msgid "Notable features of Retransmission include support for Local Peer Discovery, encryption, DHT, µTP, PEX and Magnet links."
+msgstr ""
+
+msgid "Main window, showing an ongoing download of Fedora Workstation"
+msgstr ""
+
+msgid "_File"
+msgstr "_Fájl"
+
+msgid "Open _URL…"
+msgstr "_Webcím megnyitása…"
+
+msgid "_New…"
+msgstr "Ú_j…"
+
+#, fuzzy
+msgid "_Start All"
+msgstr ""
+"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Összes in_dítása\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Összes _indítása"
+
+msgid "_Pause All"
+msgstr "Összes _szüneteltetése"
+
+msgid "_Quit"
+msgstr "_Kilépés"
+
+#, fuzzy
+msgid "_Edit"
+msgstr ""
+"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"S_zerkesztés\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"S_zerkesztés\n"
+"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Szerkesztés"
+
+msgid "Select _All"
+msgstr "Összes _kijelölése"
+
+msgid "Dese_lect All"
+msgstr "Kije_lölések megszüntetése"
+
+msgid "_Preferences"
+msgstr "_Beállítások"
+
+msgid "_Torrent"
+msgstr "_Torrent"
+
+msgid "_Properties"
+msgstr "_Tulajdonságok"
+
+#, fuzzy
+msgid "Open Fold_er"
+msgstr ""
+"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"M_appa megnyitása\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Mappa megnyitása"
+
+#, fuzzy
+msgid "_Start"
+msgstr ""
+"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Indítás\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Start"
+
+#, fuzzy
+msgid "Start _Now"
+msgstr ""
+"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Indítás _most\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Indítás a_zonnal"
+
+#, fuzzy
+msgid "Ask Tracker for _More Peers"
+msgstr ""
+"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Több partner kérése a tr_ackertől\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Több _partner igénylése a trackertől"
+
+#, fuzzy
+#| msgid "Queue"
+msgid "_Queue"
+msgstr "Sorrend"
+
+#, fuzzy
+msgid "Move to _Top"
+msgstr ""
+"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Mozgatás l_egfelülre\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Mozgatás _legfelülre"
+
+msgid "Move _Up"
+msgstr "Mozgatás _fel"
+
+msgid "Move _Down"
+msgstr "Mozgatás _le"
+
+#, fuzzy
+msgid "Move to _Bottom"
+msgstr ""
+"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Mozgatás az _aljára\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Mozgatás leg_alulra"
+
+#, fuzzy
+msgid "_Pause"
+msgstr ""
+"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Szüneteltetés\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Szünet"
+
+#, fuzzy
+msgid "Set _Location…"
+msgstr ""
+"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"He_ly megadása…\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"H_ely megadása…"
+
+#, fuzzy
+msgid "_Verify Local Data"
+msgstr ""
+"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Helyi adatok ellenőrzése\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Helyi adat ellenőrzése"
+
+msgid "_Copy Magnet Link to Clipboard"
+msgstr "Magnet link másolása a _vágólapra"
+
+#, fuzzy
+msgid "_Delete Files and Remove"
+msgstr ""
+"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Fájlok törlése és eltáv_olítás\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Fájlok törlése és eltávolítás"
+
+msgid "_View"
+msgstr "_Nézet"
+
+msgid "_Compact View"
+msgstr "_Kompakt nézet"
+
+msgid "_Toolbar"
+msgstr "_Eszköztár"
+
+msgid "_Filterbar"
+msgstr "_Szűrősor"
+
+#, fuzzy
+msgid "_Statusbar"
+msgstr ""
+"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Á_llapotsor\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Állapotsor"
+
+#, fuzzy
+msgid "Sort by _Activity"
+msgstr ""
+"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Aktivitás szerinti rendezés\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Rendezés _aktivitás szerint"
+
+#, fuzzy
+msgid "Sort by A_ge"
+msgstr ""
+"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Kor szerinti rendezés\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Rendezés _kor szerint"
+
+#, fuzzy
+msgid "Sort by _Name"
+msgstr ""
+"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Név szerinti rendezés\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Rendezés _név szerint"
+
+#, fuzzy
+msgid "Sort by _Progress"
+msgstr ""
+"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Folyamat szerinti rendezés\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Rendezés _folyamat szerint"
+
+#, fuzzy
+msgid "Sort by _Queue"
+msgstr ""
+"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Sorrend szerinti rendezés\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Sorrend szerint rendezés"
+
+#, fuzzy
+msgid "Sort by Rati_o"
+msgstr ""
+"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Megosztási _arány szerinti rendezés\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Rendezés a_rány szerint"
+
+#, fuzzy
+msgid "Sort by Si_ze"
+msgstr ""
+"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Méret szerinti rendezés\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Rendezés _méret szerint"
+
+#, fuzzy
+msgid "Sort by Stat_e"
+msgstr ""
+"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Álla_pot szerinti rendezés\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Rendezés á_llapot szerint"
+
+#, fuzzy
+msgid "Sort by Time _Left"
+msgstr ""
+"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Hátralévő _idő szerinti rendezés\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Rendezés _hátralévő idő szerint"
+
+#, fuzzy
+msgid "Re_verse Sort Order"
+msgstr ""
+"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Fordított rendezés\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Rendezés _fordítva"
+
+msgid "_Help"
+msgstr "_Súgó"
+
+msgid "Message _Log"
+msgstr "Ü_zenetnapló"
+
+#, fuzzy
+msgid "_Statistics"
+msgstr ""
+"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Statisztikák\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Statisztika"
+
+#, fuzzy
+msgid "_Donate"
+msgstr ""
+"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Támogatás\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Adakozás"
+
+msgid "_Contents"
+msgstr "_Tartalom"
+
+#, fuzzy
+msgid "_About"
+msgstr ""
+"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Névjegy\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"A Transmission-_ről"
+
+#, fuzzy
+#| msgid "Start torrent"
+msgid "_Sort Torrents By"
+msgstr "Torrent indítása"
+
+#, fuzzy
+#| msgid "Alternative Speed Limits"
+msgid "Alternative Speed _Limits"
+msgstr "Alternatív sebességkorlátok"
+
+msgid "_Add"
+msgstr "_Hozzáadás"
+
+msgid "Tracker"
+msgstr "Tracker"
+
+msgid "_Announce URL:"
+msgstr "_Bejelentési webcím:"
+
+msgid "_Close"
+msgstr "_Bezárás"
+
+msgid "Activity"
+msgstr "Aktivitás"
+
+msgid "Size:"
+msgstr "Méret:"
+
+#, fuzzy
+msgid "Have:"
+msgstr ""
+"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Meglévő:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Van:"
+
+msgid "Uploaded:"
+msgstr "Feltöltve:"
+
+msgid "Downloaded:"
+msgstr "Letöltve:"
+
+msgid "State:"
+msgstr "Állapot:"
+
+#, fuzzy
+msgid "Running time:"
+msgstr ""
+"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Futási idő:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Futásidő:"
+
+#, fuzzy
+msgid "Remaining time:"
+msgstr ""
+"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Hátralévő idő:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Hátralevő idő:"
+
+#, fuzzy
+msgid "Last activity:"
+msgstr ""
+"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Legutóbbi aktivitás:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Utolsó aktivitás:"
+
+msgid "Error:"
+msgstr "Hiba:"
+
+msgid "Details"
+msgstr "Részletek"
+
+msgid "Location:"
+msgstr "Hely:"
+
+msgid "Hash:"
+msgstr "Ellenőrzőösszeg:"
+
+msgid "Privacy:"
+msgstr "Adatvédelem:"
+
+msgid "Origin:"
+msgstr "Eredet:"
+
+msgid "Added:"
+msgstr "Hozzáadva:"
+
+msgid "Comment:"
+msgstr "Megjegyzés:"
+
+msgid "Information"
+msgstr "Információ"
+
+#, fuzzy
+msgid "Show _more details"
+msgstr ""
+"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"További részletek _megjelenítése\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"További _részletek mutatása"
+
+msgid "Peers"
+msgstr "Partnerek"
+
+#, fuzzy
+msgid "Show _backup trackers"
+msgstr ""
+"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Tartalék tr_ackerek megjelenítése\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Tartalék _trackerek megjelenítése"
+
+msgid "File listing not available for combined torrent properties"
+msgstr "A fájlok felsorolása nem érhető el a kombinált torrenttulajdonságoknál"
+
+msgid "Files"
+msgstr "Fájlok"
+
+msgid "Speed"
+msgstr "Sebesség"
+
+#, fuzzy
+msgid "Honor global _limits"
+msgstr ""
+"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Á_ltalános korlátok betartása\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Globális limitek betartása"
+
+msgid "Limit _download speed ({speed_units}):"
+msgstr "_Letöltési sebesség korlátozása ({speed_units}):"
+
+msgid "Limit _upload speed ({speed_units}):"
+msgstr "_Feltöltési sebesség korlátozása ({speed_units}):"
+
+#, fuzzy
+msgid "Torrent _priority:"
+msgstr ""
+"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Torrent p_rioritása:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Torrent _prioritása:"
+
+#, fuzzy
+msgid "Seeding Limits"
+msgstr ""
+"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Megosztás korlátozása\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Megosztási korlátok"
+
+#, fuzzy
+msgid "_Ratio:"
+msgstr ""
+"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"A_rány:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Arány:"
+
+msgid "_Idle:"
+msgstr "_Inaktív:"
+
+#, fuzzy
+msgid "Peer Connections"
+msgstr ""
+"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Partnerkapcsolatok\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Csatlakozott partnerek"
+
+msgid "_Maximum peers:"
+msgstr "Partnerek _maximális száma:"
+
+msgid "Options"
+msgstr "Beállítások"
+
+msgid "Tracker Announce URLs"
+msgstr "Tracker bejelentési webcímek"
+
+msgid ""
+"To add a backup URL, add it on the next line after a primary URL.\n"
+"To add a new primary URL, add it after a blank line."
+msgstr ""
+"Tartalék webcím hozzáadásához vegye fel az egy elsődleges webcímet követő sorba.\n"
+"Másik elsődleges webcímet egy üres sor után vehet fel."
+
+msgid "Also see Default Public Trackers in Edit > Preferences > Network"
+msgstr "Továbbá nézze meg az Alapértelmezett nyilvános trackereket a Szerkesztés > Beállítások > Hálózat alatt"
+
+msgid "Open a torrent"
+msgstr "Torrent megnyitása"
+
+msgid "Start torrent"
+msgstr "Torrent indítása"
+
+msgid "Pause torrent"
+msgstr "Torrent szüneteltetése"
+
+msgid "Remove torrent"
+msgstr "Torrent eltávolítása"
+
+msgid "Torrent properties"
+msgstr "Torrent tulajdonságai"
+
+msgid "Torrent"
+msgstr "Torrent"
+
+#, fuzzy
+msgid "Statistics"
+msgstr ""
+"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Statisztikák\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Statisztika"
+
+#, fuzzy
+msgid "New Torrent"
+msgstr ""
+"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Új torrent\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Új Torrent\n"
+"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Új torrent"
+
+#, fuzzy
+#| msgid "C_redits"
+msgid "C_reate"
+msgstr "K_észítették"
+
+#, fuzzy
+msgid "Sa_ve to:"
+msgstr ""
+"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Me_ntés ide:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Mentés _ide:"
+
+msgid "Source f_older:"
+msgstr "Forrás _mappa:"
+
+msgid "Source _file:"
+msgstr "_Forrásfájl:"
+
+#, fuzzy
+#| msgid "Piece size:"
+msgid "Piece si_ze:"
+msgstr "Szeletméret:"
+
+msgid "Properties"
+msgstr "Tulajdonságok"
+
+msgid "_Trackers:"
+msgstr "_Trackerek:"
+
+#, fuzzy
+msgid "Co_mment:"
+msgstr ""
+"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Meg_jegyzés:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Megje_gyzés:"
+
+msgid "_Source:"
+msgstr "_Forrás:"
+
+msgid "_Private torrent"
+msgstr "_Privát torrent"
+
+msgid "Creating torrent…"
+msgstr "Torrent létrehozása…"
+
+msgid "Message Log"
+msgstr "Üzenetnapló"
+
+msgid "Save _As"
+msgstr "Mentés _másként"
+
+msgid "Clear"
+msgstr "Törlés"
+
+msgid "Level"
+msgstr "Szint"
+
+msgid "Torrent Options"
+msgstr "Torrentbeállítások"
+
+msgid "_Torrent file:"
+msgstr "_Torrent fájl:"
+
+msgid "Select Source File"
+msgstr "Válasszon forrásfájlt"
+
+msgid "_Destination folder:"
+msgstr "_Célmappa:"
+
+msgid "Select Destination Folder"
+msgstr "Válasszon célmappát"
+
+msgid "_Start when added"
+msgstr "_Elindítás hozzáadáskor"
+
+#, fuzzy
+#| msgid "Mo_ve torrent file to the trash"
+msgid "Mo_ve torrent file to the Trash"
+msgstr "Torrent fájl áthelyezése a _kukába"
+
+msgid "{appname} Preferences"
+msgstr "{appname} beállításai"
+
+#, fuzzy
+msgid "Speed Limits"
+msgstr ""
+"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Sebességkorlátok\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Sebesség korlátok\n"
+"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Sebességkorlátok"
+
+#. Checkbox to limit upload speed
+msgid "_Upload ({speed_units}):"
+msgstr "_Feltöltés ({speed_units}):"
+
+#. Checkbox to limit download speed
+msgid "_Download ({speed_units}):"
+msgstr "_Letöltés ({speed_units}):"
+
+msgid "Alternative Speed Limits"
+msgstr "Alternatív sebességkorlátok"
+
+msgid "Override normal speed limits manually or at scheduled times"
+msgstr "Általános sebességkorlátok figyelmen kívül hagyása kézileg, vagy az ütemezett időszakokban"
+
+#. Labels a spinbutton for alternate upload speed limits
+msgid "U_pload ({speed_units}):"
+msgstr "Fel_töltés ({speed_units}):"
+
+#. Labels a spinbutton for alternate download speed limits
+msgid "Do_wnload ({speed_units}):"
+msgstr "L_etöltés ({speed_units}):"
+
+#, fuzzy
+msgid "_Scheduled times:"
+msgstr ""
+"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Ütemezett i_dőszak:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Ü_temezett időszakok:"
+
+#, fuzzy
+msgid "_On days:"
+msgstr ""
+"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Ezen _napokon:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Megadott _napokon:"
+
+#. Label goes between two time selectors, e.g. "limit speeds from [time] to [time]"
+#, fuzzy
+msgid "_to"
+msgstr ""
+"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"–\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_ide"
+
+msgctxt "Gerund"
+msgid "Adding"
+msgstr "Hozzáadás"
+
+msgid "Automatically add torrent files _from:"
+msgstr "Torrent fájlok automatikus hozzáadása _innen:"
+
+msgid "Show the Torrent Options _dialog"
+msgstr "Torrentbeállítások _ablak megjelenítése"
+
+#, fuzzy
+msgid "_Start added torrents"
+msgstr ""
+"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Hozzáadott torrentek _elindítása\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Hozzáadott torrentek indítása"
+
+#, fuzzy
+#| msgid "Save to _Location:"
+msgid "Save to _location:"
+msgstr "Mentés _helye:"
+
+#, fuzzy
+msgid "Download Queue"
+msgstr ""
+"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Letöltési sor\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Letöltési sorrend"
+
+#, fuzzy
+msgid "Ma_ximum active downloads:"
+msgstr ""
+"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Aktív letöltések ma_ximális száma:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Ma_ximum aktív letöltések:"
+
+msgid "Downloads sharing data in the last _N minutes are active:"
+msgstr "Az utolsó _N percben adatokat megosztó letöltések legyenek aktívak:"
+
+msgid "Incomplete"
+msgstr "Befejezetlen"
+
+#, fuzzy
+msgid "Append \"._part\" to incomplete files' names"
+msgstr ""
+"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"\"._part\" hozzáfűzése a befejezetlen fájlok nevéhez\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Befejezetlen fájlok nevéhez \"._part\" hozzáfűzése"
+
+msgid "Keep _incomplete files in:"
+msgstr "_Befejezetlen fájlok tárolása ebben a mappában:"
+
+#, fuzzy
+#| msgid "Call scrip_t when downloading is completed:"
+msgid "Call scrip_t when download completes:"
+msgstr "_Parancsfájl meghívása, amikor a torrent befejeződik:"
+
+#, fuzzy
+#| msgid "Call scrip_t when downloading is completed:"
+msgid "Verify data when download completes"
+msgstr "_Parancsfájl meghívása, amikor a torrent befejeződik:"
+
+msgctxt "Gerund"
+msgid "Downloading"
+msgstr "Letöltés"
+
+msgid "Limits"
+msgstr "Korlátok"
+
+msgid "Stop seeding at _ratio:"
+msgstr "Megosztás eddig az _arányig:"
+
+msgid "Stop seeding if idle for _N minutes:"
+msgstr "Megosztás befejezése, ha _N percig inaktív:"
+
+msgid "Call scrip_t when done seeding:"
+msgstr "Parancsfájl meg_hívása, ha a megosztás kész:"
+
+msgctxt "Gerund"
+msgid "Seeding"
+msgstr "Megosztás"
+
+msgid "Privacy"
+msgstr "Adatvédelem"
+
+msgid "_Encryption mode:"
+msgstr "_Titkosítás módja:"
+
+msgid "Blocklist"
+msgstr "Tiltólista"
+
+msgid "Enable _blocklist:"
+msgstr "_Tiltólista engedélyezése:"
+
+#, fuzzy
+#| msgid "Enable _automatic updates"
+msgid "_Automatically update weekly"
+msgstr "_Automatikus frissítések engedélyezése"
+
+msgid "_Update"
+msgstr "_Frissítés"
+
+msgid "Listening Port"
+msgstr "Használt port"
+
+msgid "_Port for incoming connections:"
+msgstr "_Bejövő kapcsolatok portja:"
+
+#, fuzzy
+#| msgid "Pick a _random port every time Transmission is started"
+msgid "Pick a _random port at startup"
+msgstr "Véletlenszerű port _választása a Transmission minden indításakor"
+
+#, fuzzy
+msgid "Use UPnP or NAT-PMP port _forwarding from my router"
+msgstr ""
+"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"A router UPnP vagy _NAT-PMP porttovábbításának használata\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"UPnP vagy NAT-PMP portát_irányítás használata a routertől"
+
+msgid "Te_st Port"
+msgstr "P_ort tesztelése"
+
+#, fuzzy
+msgid "Peer Limits"
+msgstr ""
+"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Partnerkorlátok\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Partner korlátok"
+
+#, fuzzy
+#| msgid "Maximum peers per _torrent:"
+msgid "Maximum peers for new _torrents:"
+msgstr "Partnerek _maximális száma torrentenként:"
+
+#, fuzzy
+msgid "Maximum peers _overall:"
+msgstr ""
+"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Partnerek száma összesen:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Partnerek maximális száma összesen:"
+
+msgid "Enable µ_TP for peer connections"
+msgstr "µ_TP engedélyezése partner kapcsolatokhoz"
+
+msgid "µTP is a tool for reducing network congestion."
+msgstr "Az µTP a hálózati torlódás csökkentésére használt eszköz."
+
+#, fuzzy
+#| msgid "Use PE_X to find more peers"
+msgid "Use PE_X to find more peers for public torrents"
+msgstr "PE_X használata partnerek kereséséhez"
+
+#, fuzzy
+msgid "PEX is a tool for exchanging peer lists with the peers you're connected to."
+msgstr ""
+"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"A PEX a kapcsolódó partnerek partnerlistáinak cseréjére szolgál.\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"A PEX egy eszköz ami lehetővé teszi a partnerlista cseréjét a kapcsolódott partnerekkel."
+
+#, fuzzy
+#| msgid "Use _DHT to find more peers"
+msgid "Use _DHT to find more peers for public torrents"
+msgstr "_DHT használata partnerek kereséséhez"
+
+msgid "DHT is a tool for finding peers without a tracker."
+msgstr "A DHT egy a partnerek tracker nélküli megtalálására szolgáló eszköz."
+
+#, fuzzy
+#| msgid "Use _Local Peer Discovery to find more peers"
+msgid "Use _Local Peer Discovery to find more peers for public torrents"
+msgstr "_Helyi partnerek felderítésének használata"
+
+#, fuzzy
+msgid "LPD is a tool for finding peers on your local network."
+msgstr ""
+"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Az LPD a helyi hálózaton levő partnerek megtalálására szolgál.\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Az LDP segít partnereket találni a helyi hálózaton."
+
+msgid "Default Public Trackers"
+msgstr "Alapértelmezett nyilvános trackerek"
+
+msgid ""
+"Trackers to use on all public torrents.\n"
+"\n"
+"To add a backup URL, add it on the next line after a primary URL.\n"
+"To add a new primary URL, add it after a blank line."
+msgstr ""
+"Az összes nyilvános torrent esetén használandó trackerek.\n"
+"\n"
+"Tartalék webcím hozzáadásához vegye fel az egy elsődleges webcímet tracker sorba.\n"
+"Másik elsődleges webcímet egy üres sor után vehet fel."
+
+msgid "Network"
+msgstr "Hálózat"
+
+msgid "Desktop"
+msgstr "Asztal"
+
+msgid "_Prevent computer from sleeping with active torrents"
+msgstr ""
+
+#, fuzzy
+msgid "Show {appname} icon in the _notification area"
+msgstr ""
+"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{appname} iko_n megjelenítése az értesítési területen\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{appname} ikon mutatása az ér_tesítési területen"
+
+msgid "Notification"
+msgstr "Értesítés"
+
+#, fuzzy
+msgid "Show a notification when torrents are a_dded"
+msgstr ""
+"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Értesítés megjelenítése a torrentek hozzáa_dásakor\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Értesítés megjelenítése torrentek h_ozzáadásakor"
+
+#, fuzzy
+msgid "Show a notification when torrents _finish"
+msgstr ""
+"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Értesítés megjelenítése a torrentek elkészültekor\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Értesítés megjelenítése torrentek be_fejeződésekor"
+
+#, fuzzy
+msgid "Play a _sound when torrents finish"
+msgstr ""
+"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Hang leját_szása a torrentek elkészültekor\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Hang leját_szása torrentek befejeződésekor"
+
+msgid "Remote Control"
+msgstr "Távvezérlés"
+
+#, fuzzy
+msgid "Allow _remote access"
+msgstr ""
+"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Távoli hozzáférés engedélyezése\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Távvezérlés engedélyezése"
+
+#, fuzzy
+#| msgid "_Open web client"
+msgid "_Open Web Client"
+msgstr "Webes kliens _megnyitása"
+
+#, fuzzy
+msgid "HTTP _port:"
+msgstr ""
+"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"HTTP-_port:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"HTTP _port:"
+
+#, fuzzy
+msgid "Use _authentication"
+msgstr ""
+"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Hitelesítés használata\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Hitelesítés szükséges"
+
+msgid "_Username:"
+msgstr "_Felhasználónév:"
+
+msgid "Pass_word:"
+msgstr "_Jelszó:"
+
+msgid "Only allow these IP a_ddresses:"
+msgstr "Csak a következő IP cí_mek engedélyezése:"
+
+msgid "Addresses:"
+msgstr "Címek:"
+
+msgid "IP addresses may use wildcards, such as 192.168.*.*"
+msgstr "Az IP-címekben lehetnek helyettesítő karakterek, például: 192.168.*.*"
+
+msgid "Remote"
+msgstr "Távoli"
+
+#, fuzzy
+msgid "Set Torrent Location"
+msgstr ""
+"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Torrent helyének beálltása\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Torrent helyének kiválasztása"
+
+msgid "_Apply"
+msgstr "_Alkalmaz"
+
+msgid "Location"
+msgstr "Hely"
+
+msgid "New _location:"
+msgstr "Új _hely:"
+
+#, fuzzy
+msgid "_Move from the current folder"
+msgstr ""
+"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Áthelyezés a jelenlegi _mappából\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Áthelyezés a _jelenlegi mappából"
+
+#, fuzzy
+msgid "Local data is _already there"
+msgstr ""
+"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"A helyi adatok már _ott vannak\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"A letöltött adatok _már itt vannak"
+
+msgid "Current Session"
+msgstr "Jelenlegi munkamenet"
+
+msgid "Ratio:"
+msgstr "Arány:"
+
+msgid "Duration:"
+msgstr "Időtartam:"
+
+msgid "Total"
+msgstr "Összesen"
+
+msgid "Open URL"
+msgstr "Webcím megnyitása"
+
+msgid "Open torrent from URL"
+msgstr "Torrent megnyitása webcímről"
+
+msgid "_URL"
+msgstr "_Webcím"
+
+msgid "The torrent file '{path}' is already in use by '{torrent_name}'."
+msgstr "'{path}' torrent fájlt már használja a '{torrent_name}' torrent."
+
+msgid "Couldn't open torrent"
+msgstr "Nem sikerült megnyitni a torrentet"
+
+msgid "Couldn't move '{path}' to trash: {error} ({error_code})"
+msgstr "Nem sikerült '{path}' áthelyezése a kukába: {error} ({error_code})"
+
+#, fuzzy
+#| msgid "Couldn't create proxy for '{bus}': {error} ({error_code})"
+msgid "Couldn't launch default application for URI '{uri}': {error} ({error_code})"
+msgstr "Nem sikerült a proxy létrehozása a következőhöz: '{bus}': {error} ({error_code})"
+
+#, fuzzy
+#| msgid "Couldn't open '{path}': {error} ({error_code})"
+msgid "Couldn't invoke xdg-open for URI '{uri}': {error} ({error_code})"
+msgstr "Nem sikerült a '{path}' megnyitása: {error} ({error_code})"
+
+msgid "Couldn't open '{url}'"
+msgstr "'{url}' url nem nyitható meg"
+
+msgid "Unsupported URL: '{url}'"
+msgstr "Nem támogatott webcím: '{url}'"
+
+msgid "{appname} doesn't know how to use '{url}'"
+msgstr "A {appname} nem tudja hogyan használja a '{url}' webcímet"
+
+msgid "This magnet link appears to be intended for something other than BitTorrent."
+msgstr "Úgy néz ki, hogy ez a magnet link nem BitTorrenthez készült."
 
 msgid "{days_from_now:L} day from now"
 msgid_plural "{days_from_now:L} days from now"
@@ -865,6 +2111,76 @@ msgid_plural "{seconds_ago:L} seconds ago"
 msgstr[0] "{seconds_ago:L} másodperce"
 msgstr[1] "{seconds_ago:L} másodperce"
 
+msgid "Got a list of {markup_begin}{peer_count} peer{markup_end} {time_span_ago}"
+msgid_plural "Got a list of {markup_begin}{peer_count} peers{markup_end} {time_span_ago}"
+msgstr[0] "{markup_begin}{peer_count} partner{markup_end} fogadva {time_span_ago}"
+msgstr[1] "{markup_begin}{peer_count} partner{markup_end} fogadva {time_span_ago}"
+
+msgid "Peer list request {markup_begin}timed out {time_span_ago}{markup_end}; will retry"
+msgstr "A partnerlista kérése során {markup_begin}időtúllépés történt {time_span_ago}{markup_end}; újrapróbálkozás később"
+
+msgid "Got an error '{markup_begin}{error}{markup_end}' {time_span_ago}"
+msgstr "'{markup_begin}{error}{markup_end}' hiba fogadva {time_span_ago}"
+
+#, fuzzy
+msgid "No updates scheduled"
+msgstr ""
+"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Nincs ütemezett frissítés\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Nincs frissítés beütemezve"
+
+msgid "Asking for more peers {time_span_from_now}"
+msgstr "További partnerek kérése {time_span_from_now}"
+
+#, fuzzy
+msgid "Queued to ask for more peers"
+msgstr ""
+"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"További partnerek kérése ütemezve\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"További partnerek kérése beütemezve"
+
+msgid "Asked for more peers {markup_begin}{time_span_ago}{markup_end}"
+msgstr "További partnerek kérve {markup_begin}{time_span_ago}{markup_end}"
+
+msgid "Got a scrape error '{markup_begin}{error}{markup_end}' {time_span_ago}"
+msgstr "'{markup_begin}{error}{markup_end}' scrape hiba fogadva {time_span_ago}"
+
+#, fuzzy
+#| msgid "Tracker had {markup_begin}no information{markup_end} on peer counts {time_span} ago"
+msgid "Tracker had {markup_begin}no information{markup_end} on peer counts {time_span_ago}"
+msgstr "A trackernek {markup_begin}nem volt információja{markup_end} a partnerek számáról ennyivel ezelőtt: {time_span}"
+
+msgid "Tracker had {markup_begin}{seeder_count} {seeder_or_seeders} and {leecher_count} {leecher_or_leechers}{markup_end} {time_span_ago}"
+msgstr "A tracker {time_span_ago} ennyi felhasználóról tudott: {markup_begin}{seeder_count} {seeder_or_seeders} és {leecher_count} {leecher_or_leechers}{markup_end}."
+
+msgid "seeder"
+msgid_plural "seeders"
+msgstr[0] "megosztó"
+msgstr[1] "megosztó"
+
+msgid "leecher"
+msgid_plural "leechers"
+msgstr[0] "letöltő"
+msgstr[1] "letöltő"
+
+#, fuzzy
+#| msgid "Asking for peer counts in {time_span_from_now}"
+msgid "Asking for peer counts {time_span_from_now}"
+msgstr "Partnerek számának lekérése {time_span_from_now}"
+
+#, fuzzy
+msgid "Queued to ask for peer counts"
+msgstr ""
+"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Partnerek számának lekérése ütemezve\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Partnerszám lekérése beütemezve"
+
+msgid "Asked for peer counts {markup_begin}{time_span_ago}{markup_end}"
+msgstr "Partnerek száma lekérve {markup_begin}{time_span_ago}{markup_end}"
+
 msgid "{days:L} day"
 msgid_plural "{days:L} days"
 msgstr[0] "{days:L} nap"
@@ -875,6 +2191,7 @@ msgid_plural "{hours:L} hours"
 msgstr[0] "{hours:L} óra"
 msgstr[1] "{hours:L} óra"
 
+#. Translators: Spin box format, "Stop seeding if idle for: [ 5 minutes ]"
 msgid "{minutes:L} minute"
 msgid_plural "{minutes:L} minutes"
 msgstr[0] "{minutes:L} perc"
@@ -905,761 +2222,6 @@ msgid_plural "{seconds_left:L} seconds left"
 msgstr[0] "{seconds_left:L} másodperc van hátra"
 msgstr[1] "{seconds_left:L} másodperc van hátra"
 
-msgid "The torrent file '{path}' is already in use by '{torrent_name}'."
-msgstr "'{path}' torrent fájlt már használja a '{torrent_name}' torrent."
-
-msgid "Couldn't open torrent"
-msgstr "Nem sikerült megnyitni a torrentet"
-
-msgid "Couldn't move '{path}' to trash: {error} ({error_code})"
-msgstr "Nem sikerült '{path}' áthelyezése a kukába: {error} ({error_code})"
-
-msgid "Couldn't open '{url}'"
-msgstr "'{url}' url nem nyitható meg"
-
-msgid "Unsupported URL: '{url}'"
-msgstr "Nem támogatott webcím: '{url}'"
-
-#. modal
-msgid "{appname} doesn't know how to use '{url}'"
-msgstr "A {appname} nem tudja hogyan használja a '{url}' webcímet"
-
-msgid "This magnet link appears to be intended for something other than BitTorrent."
-msgstr "Úgy néz ki, hogy ez a magnet link nem BitTorrenthez készült."
-
-msgid "Retransmission"
-msgstr "Retransmission"
-
-#. parse the command line
-msgid "Where to look for configuration files"
-msgstr "Hol keresse a beállításfájlokat"
-
-msgid "Start with all torrents paused"
-msgstr "Az összes torrent indítása szüneteltetve"
-
-msgid "Start minimized in notification area"
-msgstr "Indítás az értesítési területen, kis méretben"
-
-msgid "Show version number and exit"
-msgstr "Verziószám megjelenítése és kilépés"
-
-msgid "[torrent files or urls]"
-msgstr "[torrent fájlok vagy webcímek]"
-
-msgid "Run '{program} --help' to see a full list of available command line options.\n"
-msgstr "A parancssori kapcsolók teljes listájáért futtassa a '{program} --help' parancsot.\n"
-
-msgid "B/s"
-msgstr "B/s"
-
-msgid "GB/s"
-msgstr "GB/s"
-
-msgid "MB/s"
-msgstr "MB/s"
-
-msgid "TB/s"
-msgstr "TB/s"
-
-msgid "kB/s"
-msgstr "kB/s"
-
-msgid "B"
-msgstr "B"
-
-msgid "GiB"
-msgstr "GiB"
-
-msgid "KiB"
-msgstr "KiB"
-
-msgid "MiB"
-msgstr "MiB"
-
-msgid "TiB"
-msgstr "TiB"
-
-msgid "GB"
-msgstr "GB"
-
-msgid "MB"
-msgstr "MB"
-
-msgid "TB"
-msgstr "TB"
-
-msgid "kB"
-msgstr "kB"
-
-msgid "BitTorrent Client"
-msgstr "BitTorrent-kliens"
-
-msgid "Download and share files over BitTorrent"
-msgstr "Fájlok letöltése és megosztása BitTorrenten keresztül"
-
-#. Translators: Search terms to find this application. Do NOT translate or localize the semicolons! The list MUST also end with a semicolon!
-msgid "torrents;downloading;uploading;share;sharing;"
-msgstr "torrentek;letöltés;feltöltés;megosztás;"
-
-msgid "Start Retransmission with All Torrents Paused"
-msgstr "A Retransmission indítása az összes torrent szüneteltetésével"
-
-msgid "Start Retransmission Minimized"
-msgstr "A Retransmission indítása minimalizálva"
-
-msgid "Open a torrent"
-msgstr "Torrent megnyitása"
-
-msgid "Open _URL…"
-msgstr "_Webcím megnyitása…"
-
-msgid "Open URL…"
-msgstr "Webcím megnyitása…"
-
-msgid "_New…"
-msgstr "Ú_j…"
-
-msgid "_Start All"
-msgstr "Összes in_dítása"
-
-msgid "Start all torrents"
-msgstr "Összes torrent elindítása"
-
-msgid "_Pause All"
-msgstr "Összes _szüneteltetése"
-
-msgid "Pause all torrents"
-msgstr "Összes torrent szüneteltetése"
-
-msgid "_Quit"
-msgstr "_Kilépés"
-
-msgid "Select _All"
-msgstr "Összes _kijelölése"
-
-msgid "Dese_lect All"
-msgstr "Kije_lölések megszüntetése"
-
-msgid "_Preferences"
-msgstr "_Beállítások"
-
-msgid "_Properties"
-msgstr "_Tulajdonságok"
-
-msgid "Torrent properties"
-msgstr "Torrent tulajdonságai"
-
-msgid "Open Fold_er"
-msgstr "M_appa megnyitása"
-
-msgid "_Start"
-msgstr "_Indítás"
-
-msgid "Start torrent"
-msgstr "Torrent indítása"
-
-msgid "Start _Now"
-msgstr "Indítás _most"
-
-msgid "Start torrent now"
-msgstr "Torrent indítása most"
-
-msgid "Ask Tracker for _More Peers"
-msgstr "Több partner kérése a tr_ackertől"
-
-msgid "Move to _Top"
-msgstr "Mozgatás l_egfelülre"
-
-msgid "Move _Up"
-msgstr "Mozgatás _fel"
-
-msgid "Move _Down"
-msgstr "Mozgatás _le"
-
-msgid "Move to _Bottom"
-msgstr "Mozgatás az _aljára"
-
-msgid "_Pause"
-msgstr "_Szüneteltetés"
-
-msgid "Pause torrent"
-msgstr "Torrent szüneteltetése"
-
-msgid "Set _Location…"
-msgstr "He_ly megadása…"
-
-msgid "_Verify Local Data"
-msgstr "_Helyi adatok ellenőrzése"
-
-msgid "Copy _Magnet Link to Clipboard"
-msgstr "_Magnet link másolása a vágólapra"
-
-msgid "Remove torrent"
-msgstr "Torrent eltávolítása"
-
-msgid "_Delete Files and Remove"
-msgstr "Fájlok törlése és eltáv_olítás"
-
-msgid "_Compact View"
-msgstr "_Kompakt nézet"
-
-msgid "_Toolbar"
-msgstr "_Eszköztár"
-
-msgid "_Filterbar"
-msgstr "_Szűrősor"
-
-msgid "_Statusbar"
-msgstr "Á_llapotsor"
-
-msgid "Sort by _Activity"
-msgstr "_Aktivitás szerinti rendezés"
-
-msgid "Sort by A_ge"
-msgstr "_Kor szerinti rendezés"
-
-msgid "Sort by _Name"
-msgstr "_Név szerinti rendezés"
-
-msgid "Sort by _Progress"
-msgstr "_Folyamat szerinti rendezés"
-
-msgid "Sort by _Queue"
-msgstr "_Sorrend szerinti rendezés"
-
-msgid "Sort by Rati_o"
-msgstr "Megosztási _arány szerinti rendezés"
-
-msgid "Sort by Si_ze"
-msgstr "_Méret szerinti rendezés"
-
-msgid "Sort by Stat_e"
-msgstr "Álla_pot szerinti rendezés"
-
-msgid "Sort by Time _Left"
-msgstr "Hátralévő _idő szerinti rendezés"
-
-msgid "Re_verse Sort Order"
-msgstr "_Fordított rendezés"
-
-msgid "Message _Log"
-msgstr "Ü_zenetnapló"
-
-msgid "_Statistics"
-msgstr "_Statisztikák"
-
-msgid "_Donate"
-msgstr "_Támogatás"
-
-msgid "_Contents"
-msgstr "_Tartalom"
-
-msgid "_About"
-msgstr "_Névjegy"
-
-msgid "_Show {appname}"
-msgstr "_{appname} megjelenítése"
-
-msgid "Enable Alternative Speed _Limits"
-msgstr "A_lternatív sebességkorlátok engedélyezése"
-
-msgid "_Add"
-msgstr "_Hozzáadás"
-
-msgid "Tracker"
-msgstr "Tracker"
-
-msgid "_Announce URL:"
-msgstr "_Bejelentési webcím:"
-
-msgid "_Close"
-msgstr "_Bezárás"
-
-msgid "Activity"
-msgstr "Aktivitás"
-
-msgid "Torrent size:"
-msgstr "Torrent méret:"
-
-msgid "Have:"
-msgstr "Meglévő:"
-
-msgid "Uploaded:"
-msgstr "Feltöltve:"
-
-msgid "Downloaded:"
-msgstr "Letöltve:"
-
-msgid "State:"
-msgstr "Állapot:"
-
-msgid "Running time:"
-msgstr "Futási idő:"
-
-msgid "Remaining time:"
-msgstr "Hátralévő idő:"
-
-msgid "Last activity:"
-msgstr "Legutóbbi aktivitás:"
-
-msgid "Error:"
-msgstr "Hiba:"
-
-msgid "Details"
-msgstr "Részletek"
-
-msgid "Location:"
-msgstr "Hely:"
-
-msgid "Hash:"
-msgstr "Ellenőrzőösszeg:"
-
-msgid "Privacy:"
-msgstr "Adatvédelem:"
-
-msgid "Origin:"
-msgstr "Eredet:"
-
-msgid "Added:"
-msgstr "Hozzáadva:"
-
-msgid "Comment:"
-msgstr "Megjegyzés:"
-
-msgid "Information"
-msgstr "Információ"
-
-msgid "Show _more details"
-msgstr "További részletek _megjelenítése"
-
-msgid "Peers"
-msgstr "Partnerek"
-
-msgid "_Edit"
-msgstr "S_zerkesztés"
-
-msgid "Show _backup trackers"
-msgstr "Tartalék tr_ackerek megjelenítése"
-
-msgid "File listing not available for combined torrent properties"
-msgstr "A fájlok felsorolása nem érhető el a kombinált torrenttulajdonságoknál"
-
-msgid "Files"
-msgstr "Fájlok"
-
-msgid "Speed"
-msgstr "Sebesség"
-
-msgid "Honor global _limits"
-msgstr "Á_ltalános korlátok betartása"
-
-msgid "Limit _download speed ({speed_units}):"
-msgstr "_Letöltési sebesség korlátozása ({speed_units}):"
-
-msgid "Limit _upload speed ({speed_units}):"
-msgstr "_Feltöltési sebesség korlátozása ({speed_units}):"
-
-msgid "Torrent _priority:"
-msgstr "Torrent p_rioritása:"
-
-msgid "Seeding Limits"
-msgstr "Megosztás korlátozása"
-
-msgid "_Ratio:"
-msgstr "A_rány:"
-
-msgid "_Idle:"
-msgstr "_Inaktív:"
-
-msgid "Peer Connections"
-msgstr "Partnerkapcsolatok"
-
-msgid "_Maximum peers:"
-msgstr "Partnerek _maximális száma:"
-
-msgid "Options"
-msgstr "Beállítások"
-
-msgid "Tracker Announce URLs"
-msgstr "Tracker bejelentési webcímek"
-
-msgid ""
-"To add a backup URL, add it on the next line after a primary URL.\n"
-"To add a new primary URL, add it after a blank line."
-msgstr ""
-"Tartalék webcím hozzáadásához vegye fel az egy elsődleges webcímet követő sorba.\n"
-"Másik elsődleges webcímet egy üres sor után vehet fel."
-
-msgid "Also see Default Public Trackers in Edit > Preferences > Network"
-msgstr "Továbbá nézze meg az Alapértelmezett nyilvános trackereket a Szerkesztés > Beállítások > Hálózat alatt"
-
-msgid "Torrent"
-msgstr "Torrent"
-
-msgid "Statistics"
-msgstr "Statisztikák"
-
-msgid "New Torrent"
-msgstr "Új torrent"
-
-msgid "_New"
-msgstr "_Új"
-
-msgid "Sa_ve to:"
-msgstr "Me_ntés ide:"
-
-msgid "Source F_older:"
-msgstr "F_orráskönyvtár:"
-
-msgid "Source _File:"
-msgstr "_Forrásfájl:"
-
-msgid "Piece size:"
-msgstr "Szeletméret:"
-
-msgid "Properties"
-msgstr "Tulajdonságok"
-
-msgid "_Trackers:"
-msgstr "_Trackerek:"
-
-msgid "Co_mment:"
-msgstr "Meg_jegyzés:"
-
-msgid "_Source:"
-msgstr "_Forrás:"
-
-msgid "_Private torrent"
-msgstr "_Privát torrent"
-
-msgid "Creating torrent…"
-msgstr "Torrent létrehozása…"
-
-msgid "Message Log"
-msgstr "Üzenetnapló"
-
-msgid "Save _As"
-msgstr "Mentés _másként"
-
-msgid "Clear"
-msgstr "Törlés"
-
-msgid "P_ause"
-msgstr "_Szüneteltetés"
-
-msgid "Level"
-msgstr "Szint"
-
-msgid "Torrent Options"
-msgstr "Torrentbeállítások"
-
-msgid "_Torrent file:"
-msgstr "_Torrent fájl:"
-
-msgid "Select Source File"
-msgstr "Válasszon forrásfájlt"
-
-msgid "_Destination folder:"
-msgstr "_Célmappa:"
-
-msgid "Select Destination Folder"
-msgstr "Válasszon célmappát"
-
-msgid "_Start when added"
-msgstr "_Elindítás hozzáadáskor"
-
-msgid "Mo_ve torrent file to the trash"
-msgstr "Torrent fájl áthelyezése a _kukába"
-
-msgid "{appname} Preferences"
-msgstr "{appname} beállításai"
-
-msgid "_Help"
-msgstr "_Súgó"
-
-msgid "Speed Limits"
-msgstr "Sebességkorlátok"
-
-#. Checkbox to limit upload speed
-msgid "_Upload ({speed_units}):"
-msgstr "_Feltöltés ({speed_units}):"
-
-#. Checkbox to limit download speed
-msgid "_Download ({speed_units}):"
-msgstr "_Letöltés ({speed_units}):"
-
-msgid "Alternative Speed Limits"
-msgstr "Alternatív sebességkorlátok"
-
-msgid "Override normal speed limits manually or at scheduled times"
-msgstr "Általános sebességkorlátok figyelmen kívül hagyása kézileg, vagy az ütemezett időszakokban"
-
-#. Labels a spinbutton for alternate upload speed limits
-msgid "U_pload ({speed_units}):"
-msgstr "Fel_töltés ({speed_units}):"
-
-#. Labels a spinbutton for alternate download speed limits
-msgid "Do_wnload ({speed_units}):"
-msgstr "L_etöltés ({speed_units}):"
-
-msgid "_Scheduled times:"
-msgstr "Ütemezett i_dőszak:"
-
-msgid "_On days:"
-msgstr "Ezen _napokon:"
-
-#. Label goes between two time selectors, e.g. "limit speeds from [time] to [time]"
-msgid "_to"
-msgstr "–"
-
-msgctxt "Gerund"
-msgid "Adding"
-msgstr "Hozzáadás"
-
-msgid "Automatically add torrent files _from:"
-msgstr "Torrent fájlok automatikus hozzáadása _innen:"
-
-msgid "Show the Torrent Options _dialog"
-msgstr "Torrentbeállítások _ablak megjelenítése"
-
-msgid "_Start added torrents"
-msgstr "Hozzáadott torrentek _elindítása"
-
-msgid "Save to _Location:"
-msgstr "Mentés _helye:"
-
-msgid "Download Queue"
-msgstr "Letöltési sor"
-
-msgid "Ma_ximum active downloads:"
-msgstr "Aktív letöltések ma_ximális száma:"
-
-msgid "Downloads sharing data in the last _N minutes are active:"
-msgstr "Az utolsó _N percben adatokat megosztó letöltések legyenek aktívak:"
-
-msgid "Incomplete"
-msgstr "Befejezetlen"
-
-msgid "Append \"._part\" to incomplete files' names"
-msgstr "\"._part\" hozzáfűzése a befejezetlen fájlok nevéhez"
-
-msgid "Keep _incomplete torrents in:"
-msgstr "Befejezetlen _torrentek tárolása itt:"
-
-msgid "Call scrip_t when done downloading:"
-msgstr "Parancsfájl meg_hívása, ha a letöltés kész:"
-
-msgctxt "Gerund"
-msgid "Downloading"
-msgstr "Letöltés"
-
-msgid "Limits"
-msgstr "Korlátok"
-
-msgid "Stop seeding at _ratio:"
-msgstr "Megosztás eddig az _arányig:"
-
-msgid "Stop seeding if idle for _N minutes:"
-msgstr "Megosztás befejezése, ha _N percig inaktív:"
-
-msgid "Call scrip_t when done seeding:"
-msgstr "Parancsfájl meg_hívása, ha a megosztás kész:"
-
-msgctxt "Gerund"
-msgid "Seeding"
-msgstr "Megosztás"
-
-msgid "Privacy"
-msgstr "Adatvédelem"
-
-msgid "_Encryption mode:"
-msgstr "_Titkosítás módja:"
-
-msgid "Blocklist"
-msgstr "Tiltólista"
-
-msgid "Enable _blocklist:"
-msgstr "_Tiltólista engedélyezése:"
-
-msgid "Enable _automatic updates"
-msgstr "_Automatikus frissítések engedélyezése"
-
-msgid "_Update"
-msgstr "_Frissítés"
-
-msgid "Listening Port"
-msgstr "Használt port"
-
-msgid "_Port used for incoming connections:"
-msgstr "A _bejövő kapcsolatokhoz használt port:"
-
-msgid "Pick a _random port every time Transmission is started"
-msgstr "Véletlenszerű port _választása a Transmission minden indításakor"
-
-msgid "Use UPnP or NAT-PMP port _forwarding from my router"
-msgstr "A router UPnP vagy _NAT-PMP porttovábbításának használata"
-
-msgid "Te_st Port"
-msgstr "P_ort tesztelése"
-
-msgid "Peer Limits"
-msgstr "Partnerkorlátok"
-
-msgid "Maximum peers per _torrent:"
-msgstr "Partnerek _maximális száma torrentenként:"
-
-msgid "Maximum peers _overall:"
-msgstr "_Partnerek száma összesen:"
-
-msgid "Enable µ_TP for peer communication"
-msgstr "µ_TP engedélyezése partner kommunikációhoz"
-
-msgid "µTP is a tool for reducing network congestion."
-msgstr "Az µTP a hálózati torlódás csökkentésére használt eszköz."
-
-msgid "Use PE_X to find more peers"
-msgstr "PE_X használata partnerek kereséséhez"
-
-msgid "PEX is a tool for exchanging peer lists with the peers you're connected to."
-msgstr "A PEX a kapcsolódó partnerek partnerlistáinak cseréjére szolgál."
-
-msgid "Use _DHT to find more peers"
-msgstr "_DHT használata partnerek kereséséhez"
-
-msgid "DHT is a tool for finding peers without a tracker."
-msgstr "A DHT egy a partnerek tracker nélküli megtalálására szolgáló eszköz."
-
-msgid "Use _Local Peer Discovery to find more peers"
-msgstr "_Helyi partnerek felderítésének használata"
-
-msgid "LPD is a tool for finding peers on your local network."
-msgstr "Az LPD a helyi hálózaton levő partnerek megtalálására szolgál."
-
-msgid "Default Public Trackers"
-msgstr "Alapértelmezett nyilvános trackerek"
-
-msgid ""
-"Trackers to use on all public torrents.\n"
-"\n"
-"To add a backup URL, add it on the next line after a primary URL.\n"
-"To add a new primary URL, add it after a blank line."
-msgstr ""
-"Az összes nyilvános torrent esetén használandó trackerek.\n"
-"\n"
-"Tartalék webcím hozzáadásához vegye fel az egy elsődleges webcímet tracker sorba.\n"
-"Másik elsődleges webcímet egy üres sor után vehet fel."
-
-msgid "Network"
-msgstr "Hálózat"
-
-msgid "Desktop"
-msgstr "Asztal"
-
-msgid "_Inhibit hibernation when torrents are active"
-msgstr "H_ibernálás tiltása, ha vannak aktív torrentek"
-
-msgid "Show {appname} icon in the _notification area"
-msgstr "{appname} iko_n megjelenítése az értesítési területen"
-
-msgid "Notification"
-msgstr "Értesítés"
-
-msgid "Show a notification when torrents are a_dded"
-msgstr "Értesítés megjelenítése a torrentek hozzáa_dásakor"
-
-msgid "Show a notification when torrents _finish"
-msgstr "Értesítés megjelenítése a torrentek elkészültekor"
-
-msgid "Play a _sound when torrents finish"
-msgstr "Hang leját_szása a torrentek elkészültekor"
-
-msgid "Remote Control"
-msgstr "Távvezérlés"
-
-msgid "Allow _remote access"
-msgstr "_Távoli hozzáférés engedélyezése"
-
-msgid "_Open web client"
-msgstr "Webes kliens _megnyitása"
-
-msgid "HTTP _port:"
-msgstr "HTTP-_port:"
-
-msgid "Use _authentication"
-msgstr "_Hitelesítés használata"
-
-msgid "_Username:"
-msgstr "_Felhasználónév:"
-
-msgid "Pass_word:"
-msgstr "_Jelszó:"
-
-msgid "Only allow these IP a_ddresses:"
-msgstr "Csak a következő IP cí_mek engedélyezése:"
-
-msgid "Addresses:"
-msgstr "Címek:"
-
-msgid "IP addresses may use wildcards, such as 192.168.*.*"
-msgstr "Az IP-címekben lehetnek helyettesítő karakterek, például: 192.168.*.*"
-
-msgid "Remote"
-msgstr "Távoli"
-
-msgid "Set Torrent Location"
-msgstr "Torrent helyének beálltása"
-
-msgid "_Apply"
-msgstr "_Alkalmaz"
-
-msgid "Location"
-msgstr "Hely"
-
-msgid "Torrent _location:"
-msgstr "Torrent _helye:"
-
-msgid "_Move from the current folder"
-msgstr "Áthelyezés a jelenlegi _mappából"
-
-msgid "Local data is _already there"
-msgstr "A helyi adatok már _ott vannak"
-
-msgid "Current Session"
-msgstr "Jelenlegi munkamenet"
-
-msgid "Ratio:"
-msgstr "Arány:"
-
-msgid "Duration:"
-msgstr "Időtartam:"
-
-msgid "Total"
-msgstr "Összesen"
-
-msgid "Open URL"
-msgstr "Webcím megnyitása"
-
-msgid "Open torrent from URL"
-msgstr "Torrent megnyitása webcímről"
-
-msgid "_URL"
-msgstr "_Webcím"
-
-msgid "Couldn't parse announce response: {error} ({error_code})"
-msgstr "Nem sikerült feldolgozni a bejelentés válaszát: {error} ({error_code})"
-
-msgid "Couldn't parse scrape response: {error} ({error_code})"
-msgstr "Nem sikerült feldolgozni a scrape választ: {error} ({error_code})"
-
-msgid "Unknown error"
-msgstr "Ismeretlen hiba"
-
-msgid "{ip_protocol} connection failed"
-msgstr "{ip_protocol} kapcsolat sikertelen"
-
-msgid "Couldn't look up '{address}:{port}' in {ip_protocol}: {error} ({error_code})"
-msgstr "Nem sikerült lekérni a „{address}:{port}” {ip_protocol} protokollon: {error} ({error_code})"
-
 msgid "Announce error: {error} ({url})"
 msgstr "Bejelentési hiba: {error} ({url})"
 
@@ -1677,20 +2239,63 @@ msgstr "A tracker nem válaszolt"
 msgid "Success"
 msgstr "Sikeres"
 
+msgid "Couldn't parse announce response: {error} ({error_code})"
+msgstr "Nem sikerült feldolgozni a bejelentés válaszát: {error} ({error_code})"
+
+msgid "Couldn't parse scrape response: {error} ({error_code})"
+msgstr "Nem sikerült feldolgozni a scrape választ: {error} ({error_code})"
+
+msgid "Unknown error"
+msgstr "Ismeretlen hiba"
+
+msgid "{ip_protocol} connection failed"
+msgstr "{ip_protocol} kapcsolat sikertelen"
+
+msgid "Couldn't look up '{address}:{port}' in {ip_protocol}: {error} ({error_code})"
+msgstr "Nem sikerült lekérni a „{address}:{port}” {ip_protocol} protokollon: {error} ({error_code})"
+
 msgid "Blocklist '{path}' has {count} entry"
 msgid_plural "Blocklist '{path}' has {count} entries"
 msgstr[0] "A(z) „{path}” tiltólista {count} elemet tartalmaz"
 msgstr[1] "A(z) '{path}' tiltólista {count} elemet tartalmaz"
 
-#. don't try to display the actual lines - it causes issues
-msgid "Couldn't parse line: '{line}'"
+#, fuzzy
+#| msgid "Couldn't parse line: '{line}'"
+msgid "Couldn't parse line {line}: {base64}"
 msgstr "Nem sikerült a sor feldolgozása: '{line}'"
 
-msgid "Rewriting old blocklist file format to new format"
+#, fuzzy
+#| msgid "Rewriting old blocklist file format to new format"
+msgid "Rewriting old blocklist file {path} to new format"
 msgstr "Régi tiltólista fájl formátum átírása az új formátumra"
+
+msgid "Blocklist is larger than {limit} MiB; ignoring it"
+msgstr ""
+
+#, fuzzy
+#| msgid "Couldn't fetch blocklist: {error} ({error_code})"
+msgid "Couldn't fetch blocklist: {errmsg}, response code: {error} ({error_code})"
+msgstr "Nem sikerült a tiltólista lekérése: {error} ({error_code})"
+
+msgid "Couldn't fetch blocklist: {error} ({error_code})"
+msgstr "Nem sikerült a tiltólista lekérése: {error} ({error_code})"
+
+msgid "Automatically updated blocklist, which now has {count} rules"
+msgstr ""
+
+msgid "Invalid tr_sched_days value {val}"
+msgstr ""
 
 msgid "{crypto_library} error: {error} ({error_code})"
 msgstr "{crypto_library} hiba: {error} ({error_code})"
+
+msgid "Couldn't read '{path}': Not a regular file"
+msgstr "Nem sikerült '{path}' olvasása: Nem egy hagyományos fájl"
+
+#, fuzzy
+#| msgid "Couldn't read '{path}'"
+msgid "Couldn't get '{path}': "
+msgstr "Nem sikerült '{path}' olvasása"
 
 msgid "Couldn't get '{path}': {error} ({error_code})"
 msgstr "Nem sikerült '{path}' lekérése: {error} ({error_code})"
@@ -1707,20 +2312,14 @@ msgstr "Az ön gépe nem támogatja a következőt: {protocol}"
 msgid "Successfully updated global {type} address to {ip} using {url}"
 msgstr "Sikeresen frissítette a globális {type} címet {ip}-re a {url} használatával"
 
+msgid "Still waiting for disk IO on torrent {id}: {running} running, {queued} queued"
+msgstr ""
+
 msgid "Too many messages like this! I won't log this message anymore this session."
 msgstr "Túl sok ilyen üzenet! Ebben a munkamenetben többet nem lesz naplózva."
 
 msgid "Skipping '{path}': {error} ({error_code})"
 msgstr "'{path}' kihagyása: {error} ({error_code})"
-
-msgid "Couldn't create socket: {error} ({error_code})"
-msgstr "Nem sikerült a socket létrehozása: {error} ({error_code})"
-
-msgid "Couldn't set source address {address} on {socket}: {error} ({error_code})"
-msgstr "Nem sikerült a {address} forráscím beállítása a következő socketen: {socket}. Hiba: {error} ({error_code})"
-
-msgid "Couldn't connect socket {socket} to {address}:{port}: {error} ({error_code})"
-msgstr "Nem sikerült a {socket} socket hozzákapcsolása a {address}:{port} címhez: {error} ({error_code})"
 
 msgid "Couldn't bind port {port} on {address}: {error} ({error_code}) -- Is another copy of {appname} already running?"
 msgstr "Nem sikerült a {port} lefoglalása a {address} címen: {error} ({error_code}) -- Már fut a {appname} egy másik példánya?"
@@ -1737,8 +2336,35 @@ msgstr "Nem sikerült a '{path}' előre lefoglalása: {error} ({error_code})"
 msgid "Couldn't truncate '{path}': {error} ({error_code})"
 msgstr "Nem sikerült a '{path}' feldarabolása: {error} ({error_code})"
 
+msgid "Couldn't create socket: {error} ({error_code})"
+msgstr "Nem sikerült a socket létrehozása: {error} ({error_code})"
+
+msgid "Couldn't set source address {address} on {socket}: {error} ({error_code})"
+msgstr "Nem sikerült a {address} forráscím beállítása a következő socketen: {socket}. Hiba: {error} ({error_code})"
+
+msgid "Couldn't connect socket {socket} to {address}:{port}: {error} ({error_code})"
+msgstr "Nem sikerült a {socket} socket hozzákapcsolása a {address}:{port} címhez: {error} ({error_code})"
+
 msgid "Unknown state: {state}"
 msgstr "Ismeretlen állapot: {state}"
+
+msgid "Starting"
+msgstr "Indítás"
+
+msgid "Forwarded"
+msgstr "Továbbítva"
+
+msgid "Stopping"
+msgstr "Leállítás"
+
+msgid "Not forwarded"
+msgstr "Nincs továbbítva"
+
+msgid "Mapped private port {private_port} to public port {public_port}"
+msgstr "{private_port} számú privát port hozzárendelve a {public_port} számú nyilvános porthoz"
+
+msgid "State changed from '{old_state}' to '{state}'"
+msgstr "'{old_state}' állapot erre változott: '{state}'"
 
 msgid "Found public address '{address}'"
 msgstr "Talált nyilvános cím: '{address}'"
@@ -1770,23 +2396,21 @@ msgstr "Helyi port ({local_port}) továbbítva ide: {advertised_port}"
 msgid "If your router supports UPnP, please make sure UPnP is enabled!"
 msgstr "Ha a routere támogatja az UPnP-t, akkor győződjön meg róla, hogy engedélyezve van-e."
 
-msgid "Starting"
-msgstr "Indítás"
+#, fuzzy
+#| msgid "Couldn't test port: {error} ({error_code})"
+msgid "Couldn't test port: {errmsg}, response code: {error} ({error_code})"
+msgstr "Nem sikerült a port tesztelése: {error} ({error_code})"
 
-msgid "Forwarded"
-msgstr "Továbbítva"
+msgid "Couldn't test port: {error} ({error_code})"
+msgstr "Nem sikerült a port tesztelése: {error} ({error_code})"
 
-msgid "Stopping"
-msgstr "Leállítás"
+#, fuzzy
+#| msgid "Couldn't fetch torrent: {error} ({error_code})"
+msgid "Couldn't fetch torrent: {errmsg}, Response code: {error} ({error_code})"
+msgstr "Nem sikerült a torrent lekérése: {error} ({error_code})"
 
-msgid "Not forwarded"
-msgstr "Nincs továbbítva"
-
-msgid "Mapped private port {private_port} to public port {public_port}"
-msgstr "{private_port} számú privát port hozzárendelve a {public_port} számú nyilvános porthoz"
-
-msgid "State changed from '{old_state}' to '{state}'"
-msgstr "'{old_state}' állapot erre változott: '{state}'"
+msgid "Couldn't fetch torrent: {error} ({error_code})"
+msgstr "Nem sikerült a torrent lekérése: {error} ({error_code})"
 
 msgid "Unix socket path must be fewer than {count} characters (including '{prefix}' prefix)"
 msgstr "Unix-foglalat útvonalának {count} karakternél rövidebbnek kell lennie (a '{prefix}' előtagot is beleértve)"
@@ -1844,29 +2468,24 @@ msgstr "Jelszó szükséges"
 msgid "Serving RPC and Web requests from '{path}'"
 msgstr "RPC és webes kérések kiszolgálása a következő útvonalon: '{path}'"
 
-msgid "Couldn't test port: {error} ({error_code})"
-msgstr "Nem sikerült a port tesztelése: {error} ({error_code})"
-
-msgid "Couldn't fetch blocklist: {error} ({error_code})"
-msgstr "Nem sikerült a tiltólista lekérése: {error} ({error_code})"
-
-msgid "Couldn't fetch torrent: {error} ({error_code})"
-msgstr "Nem sikerült a torrent lekérése: {error} ({error_code})"
-
-msgid "Time to turn off turtle mode"
-msgstr "Ideje kikapcsolni a teknős módot"
-
-msgid "Time to turn on turtle mode"
+#, fuzzy
+#| msgid "Time to turn on turtle mode"
+msgid "Time to turn on alternative speed limits"
 msgstr "Ideje bekapcsolni a teknős módot"
 
-msgid "Couldn't open session lock file '{path}': {error} ({error_code})"
-msgstr "Nem sikerült a '{path}' munkamenetzárolási-fájl megnyitása: {error} ({error_code})"
+#, fuzzy
+#| msgid "Time to turn off turtle mode"
+msgid "Time to turn off alternative speed limits"
+msgstr "Ideje kikapcsolni a teknős módot"
 
 msgid "Listening to incoming peer connections on {hostport}"
 msgstr "Bejövő kapcsolatok figyelése a {hostport} porton"
 
 msgid "{appname} version {version} starting"
 msgstr "A {appname} {version} indul"
+
+msgid "Couldn't start disk IO workers, continuing without them: {error}"
+msgstr ""
 
 msgid "{appname} version {version} shutting down"
 msgstr "A {appname} {version} leáll"
@@ -1876,8 +2495,11 @@ msgid_plural "Loaded {count} torrents"
 msgstr[0] "{count} torrent betöltve"
 msgstr[1] "{count} torrent betöltve"
 
-msgid "Migrated torrent file from '{old_path}' to '{path}'"
-msgstr "Torrent fájl átköltöztetve innen: '{old_path}', ide: '{path}'"
+msgid "Couldn't claim '{path}'. If another session is using it, the two will overwrite each other's settings, resume files and stats."
+msgstr ""
+
+msgid "Couldn't open session lock file '{path}': {error} ({error_code})"
+msgstr "Nem sikerült a '{path}' munkamenetzárolási-fájl megnyitása: {error} ({error_code})"
 
 msgid "Couldn't use metainfo from '{path}' for '{magnet}': {error} ({error_code})"
 msgstr "Nem lehetett használni a metainfót innen: '{path}' ami a következőhöz tartozik: '{magnet}'. Hiba: {error}({error_code})"
@@ -1909,14 +2531,32 @@ msgstr ""
 msgid "Removing torrent"
 msgstr "Torrent eltávolítása"
 
-msgid "Couldn't move '{old_path}' to '{path}': {error} ({error_code})"
+#, fuzzy
+#| msgid "Couldn't move '{old_path}' to '{path}': {error} ({error_code})"
+msgid "Couldn't move torrent files to '{path}': {error} ({error_code})"
 msgstr "'{old_path}' áthelyezése nem sikerült ide: '{path}': {error} ({error_code})"
 
 msgid "Paused torrent as no data was found! Ensure your drives are connected or use \"Set Location\", then use \"Verify Local Data\" again. To re-download, start the torrent."
 msgstr "Torrent szüneteltetésre került, mert nem található adat! Győződjön meg róla, hogy a meghajtói csatlakoztatva vannak, aztán használja a \"Hely megadása\" lehetőséget. Végül az újbóli letöltéshez használja a \"Helyi adatok ellenőrzése\" opciót, és indítsa el a torrentet utána."
 
+msgid "Couldn't move '{old_path}' to '{path}': {error} ({error_code})"
+msgstr "'{old_path}' áthelyezése nem sikerült ide: '{path}': {error} ({error_code})"
+
 msgid "Tracker warning: '{warning}' ({url})"
 msgstr "Tracker figyelmeztetés: '{warning}' ({url})"
+
+#, fuzzy
+#| msgid "Removing torrent file '{path}'"
+msgid "Moving '{source}' will overwrite '{path}'"
+msgstr "'{path}' torrent fájl eltávolítása"
+
+#, fuzzy
+#| msgid "Couldn't move '{old_path}' to '{path}': {error} ({error_code})"
+msgid "Couldn't compare '{path}' with '{root}': {error} ({error_code}); leaving it alone"
+msgstr "'{old_path}' áthelyezése nem sikerült ide: '{path}': {error} ({error_code})"
+
+msgid "Migrated torrent file from '{old_path}' to '{path}'"
+msgstr "Torrent fájl átköltöztetve innen: '{old_path}', ide: '{path}'"
 
 msgid "Couldn't parse '{filename}' line: '{line}'"
 msgstr "Nem sikerült '{filename}' sorának feldolgozása. Sor: '{line}'"
@@ -1945,8 +2585,47 @@ msgstr ""
 msgid "Unknown socket family"
 msgstr "Ismeretlen socket család"
 
-msgid "Couldn't read '{path}': Not a regular file"
-msgstr "Nem sikerült '{path}' olvasása: Nem egy hagyományos fájl"
+msgid "B"
+msgstr "B"
+
+msgid "KiB"
+msgstr "KiB"
+
+msgid "MiB"
+msgstr "MiB"
+
+msgid "GiB"
+msgstr "GiB"
+
+msgid "TiB"
+msgstr "TiB"
+
+msgid "B/s"
+msgstr "B/s"
+
+msgid "kB/s"
+msgstr "kB/s"
+
+msgid "MB/s"
+msgstr "MB/s"
+
+msgid "GB/s"
+msgstr "GB/s"
+
+msgid "TB/s"
+msgstr "TB/s"
+
+msgid "kB"
+msgstr "kB"
+
+msgid "MB"
+msgstr "MB"
+
+msgid "GB"
+msgstr "GB"
+
+msgid "TB"
+msgstr "TB"
 
 msgid "Couldn't parse JSON at position {position} '{text}': {error} ({error_code})"
 msgstr "Nem sikerült a JSON feldolgozása a {position} pozícióban: '{text}': {error} ({error_code})"
@@ -1954,17 +2633,14 @@ msgstr "Nem sikerült a JSON feldolgozása a {position} pozícióban: '{text}': 
 msgid "Couldn't watch '{path}': {error} ({error_code})"
 msgstr "Nem sikerült a '{path}' figyelése: {error} ({error_code})"
 
-msgid "Couldn't read event: {error} ({error_code})"
-msgstr "Nem sikerült az esemény olvasása: {error} ({error_code})"
-
 msgid "Couldn't read event: expected {expected_size}, got {actual_size}"
 msgstr "Nem sikerült az esemény olvasása: {expected_size} volt várva, de {actual_size} érkezett"
 
-msgid "Couldn't read filename: {error} ({error_code})"
-msgstr "Nem sikerült a fájlnév olvasása: {error} ({error_code})"
-
 msgid "Couldn't read filename: expected {expected_size}, got {actual_size}"
 msgstr "Nem sikerült a fájlnév olvasása: {expected_size} volt várva, de {actual_size} érkezett"
+
+msgid "Couldn't read event: {error} ({error_code})"
+msgstr "Nem sikerült az esemény olvasása: {error} ({error_code})"
 
 msgid "Couldn't convert '{path}' to native path"
 msgstr "Nem sikerült a '{path}' útvonalat natív elérési úttá alakítani"
@@ -1984,10 +2660,13 @@ msgstr "Nem sikerült a könyvtár változásait megvárni"
 msgid "Consider upgrading your curl installation."
 msgstr ""
 
+msgid "The minimum supported version is {curl_version}, you might face unexpected behaviour."
+msgstr ""
+
 msgid "curl {curl_version} is prone to SIGPIPE crashes. {details_url}"
 msgstr ""
 
-msgid "curl {curl_version} is prone to an eventfd double close vulnerability that might cause SIGABRT crashes for the transmission-daemon systemd service. {details_url}"
+msgid "curl {curl_version} is prone to an eventfd double close vulnerability that might cause SIGABRT crashes for the daemon systemd service. {details_url}"
 msgstr ""
 
 msgid "Will verify tracker certs using envvar CURL_CA_BUNDLE: {bundle}"
@@ -1999,8 +2678,420 @@ msgstr "NB: ez csak akkor működik, ha a libcurl openssl-lel vagy gnutls-sel le
 msgid "NB: Invalid certs will appear as 'Could not connect to tracker' like many other errors"
 msgstr "NB: az érvénytelen tanúsítványok (más hibákhoz hasonlóan) 'Nem sikerült kapcsolódni a trackerhez' üzenetként fognak megjelenni"
 
+msgid "Aborting request: response body exceeded max size of {max_file_size} bytes"
+msgstr ""
+
 msgid "Couldn't fetch '{url}': expected HTTP response code {expected_code}, got {actual_code}"
 msgstr "Nem sikerült letölteni '{url}': várt HTTP válasz kód {expected_code}, kapott kód {actual_code}"
+
+msgid "Server"
+msgstr "Kiszolgáló"
+
+msgid "C_redits"
+msgstr "K_észítették"
+
+msgid "Credits"
+msgstr "Készítették"
+
+msgid "About {appname}"
+msgstr "A {appname}-ről"
+
+msgid "Torrent Completed"
+msgstr "Befejezett torrent"
+
+msgid "Torrents Completed"
+msgstr "Befejezett torrent"
+
+#. Translators: Text following the "Have:" label in torrent properties dialog;
+#. {current_size} is amount of downloaded and verified data
+msgid "{current_size} (100%)"
+msgstr "{current_size} (100%)"
+
+msgid "{current_size} of {complete_size} ({percent_done}%), {unverified_size} Unverified"
+msgstr "{current_size} letöltött. Teljes méret: {complete_size}. ({percent_done}%), {unverified_size} nem ellenőrzött"
+
+msgid "{total_size} ({piece_count:L} piece @ {piece_size})"
+msgid_plural "{total_size} ({piece_count:L} pieces @ {piece_size})"
+msgstr[0] "{total_size} ({piece_count:L} darab @ {piece_size})"
+msgstr[1] "{total_size} ({piece_count:L} darab @ {piece_size})"
+
+msgid "{total_size} ({piece_count:L} piece)"
+msgid_plural "{total_size} ({piece_count:L} pieces)"
+msgstr[0] "{total_size} ({piece_count:L} darab)"
+msgstr[1] "{total_size} ({piece_count:L} darab)"
+
+msgid "Add URL(s)"
+msgstr "Webcímek hozzáadása"
+
+msgid "Add tracker announce URLs, one per line:"
+msgstr "Tracker bejelentési webcímek hozzáadása, soronként egy:"
+
+msgid "No new URLs found."
+msgstr "Nem találhatók új webcímek."
+
+msgid "Use Global Settings"
+msgstr "Globális beállítások használata"
+
+msgid "Stop seeding if idle for:"
+msgstr "Megosztás befejezése, ha inaktív a torrent:"
+
+msgid "Torrent Properties"
+msgstr "Torrent tulajdonságai"
+
+msgid "Availability:"
+msgstr "Elérhetőség:"
+
+msgid "Labels:"
+msgstr "Címkék:"
+
+msgid "Limit _upload speed:"
+msgstr "_Feltöltési sebességkorlát:"
+
+msgid "Limit _download speed:"
+msgstr "_Letöltési sebességkorlát:"
+
+msgid "Check Selected"
+msgstr "Kiválasztottak bejelölése"
+
+msgid "Uncheck Selected"
+msgstr "Kiválasztottak bejelölésének megszüntetése"
+
+msgid "Only Check Selected"
+msgstr "Csak a kiválasztottak bejelölése"
+
+msgid "Open"
+msgstr "Megnyitás"
+
+msgid "Rename…"
+msgstr "Átnevezés…"
+
+msgid "Search…"
+msgstr "Keresés…"
+
+msgid "<i>Calculating Free Space…</i>"
+msgstr "<i>Szabad terület kiszámítása…</i>"
+
+msgid "Limited at {speed}"
+msgstr "Korlátozva: {speed}"
+
+#. Translators: Second (optional) part of main window title "Appname - host:port" (added when connected to remote session)
+#. notice that leading space (before the dash) is included here
+msgid " - {host}:{port}"
+msgstr " - {host}:{port}"
+
+msgid "Network Error"
+msgstr "Hálózati hiba"
+
+msgid "Idle"
+msgstr "Inaktív"
+
+msgid "Showing {visible_count:L} of {count:L} torrent"
+msgid_plural "Showing {visible_count:L} of {count:L} torrents"
+msgstr[0] "{visible_count:L} /{count:L} torrent mutatása"
+msgstr[1] "{visible_count:L} /{count:L} torrent mutatása"
+
+msgid "Torrent Files (*.torrent);;All Files (*.*)"
+msgstr "Torrent fájlok (*.torrent);;Minden fájl (*.*)"
+
+msgid "{host} has not responded yet"
+msgstr "{host} még nem válaszolt"
+
+msgid "{host} is responding"
+msgstr "{host} válaszol"
+
+#, fuzzy
+#| msgid "{host} last responded {time_span} ago"
+msgid "{host} last responded {time_span_ago}"
+msgstr "{host} legutóbb {time_span} válaszolt"
+
+msgid "{host} is not responding"
+msgstr "{host} nem válaszol"
+
+msgid "_Open…"
+msgstr "_Megnyitás…"
+
+msgid "Create a new torrent"
+msgstr "Új torrent létrehozása"
+
+msgid "Open the torrent's folder"
+msgstr "Torrent mappájának megnyitása"
+
+msgid "Ask tracker for more peers"
+msgstr "Több partner igénylése a trackertől"
+
+msgid "Verify local data"
+msgstr "Helyi adat ellenőrzése"
+
+msgid "Remove torrent and delete its files"
+msgstr "Torrent eltávolítása és adatok törlése"
+
+msgid "Compact View"
+msgstr "Kompakt nézet"
+
+msgid "_Main Window"
+msgstr "_Főablak"
+
+msgid "Tray _Icon"
+msgstr "Tálca _ikon"
+
+msgid "_Change Session…"
+msgstr "M_unkamenet váltás"
+
+#. Start a local session or connect to a running session
+msgid "Choose Session"
+msgstr "Munkamenet kiválasztása"
+
+msgid "Bypass the queue and start now"
+msgstr "Sorrend figyelmen kívül hagyása, és azonnali indítás"
+
+msgid "{file_count:L} File"
+msgid_plural "{file_count:L} Files"
+msgstr[0] "{file_count:L} fájl"
+msgstr[1] "{file_count:L} fájl"
+
+msgid "{piece_count:L} Piece"
+msgid_plural "{piece_count:L} Pieces"
+msgstr[0] "{piece_count:L} szelet"
+msgstr[1] "{piece_count:L} szelet"
+
+msgid "{total_size} in {files}; {pieces} @ {piece_size}"
+msgstr "{total_size} in {files}; {pieces} @ {piece_size}"
+
+msgid ""
+"To add a backup URL, add it on the line after the primary URL.\n"
+"To add another primary URL, add it after a blank line."
+msgstr ""
+"Ha tartalék webcímet kívánsz hozzáadni, írd azt az elsődleges után vele egy sorba.\n"
+"Másik elsődleges webcímet egy üres sor hozzáadása után adhatsz hozzá."
+
+#, fuzzy
+#| msgid "_Source:"
+msgid "Sou_rce:"
+msgstr "_Forrás:"
+
+msgid "_Priority:"
+msgstr "_Priorítás:"
+
+msgid "Select Folder"
+msgstr "Mappa kiválasztása"
+
+#, fuzzy
+#| msgctxt "Port test status"
+#| msgid "unknown"
+msgid "unknown"
+msgstr "ismeretlen"
+
+#, fuzzy
+#| msgctxt "Port test status"
+#| msgid "checking…"
+msgid "checking…"
+msgstr "ellenőrzés…"
+
+#, fuzzy
+#| msgctxt "Port test status"
+#| msgid "open"
+msgid "open"
+msgstr "nyitva"
+
+#, fuzzy
+#| msgctxt "Port test status"
+#| msgid "closed"
+msgid "closed"
+msgstr "zárva"
+
+#, fuzzy
+#| msgctxt "Port test status"
+#| msgid "error"
+msgid "error"
+msgstr "hiba"
+
+msgid "<b>Update succeeded!</b><p>Blocklist now has {count:L} rule.</p>"
+msgid_plural "<b>Update succeeded!</b><p>Blocklist now has {count:L} rules.</p>"
+msgstr[0] "<b>Frissítés sikeres!</b><p>A tiltólista most {count:L} szabályt tartalmaz."
+msgstr[1] "<b>Frissítés sikeres!</b><p>A tiltólista most {count:L} szabályt tartalmaz."
+
+msgid "Download of the blocklist failed."
+msgstr ""
+
+msgid "Update Blocklist"
+msgstr "Tiltólista frissítése"
+
+msgid "Select \"Torrent Done Seeding\" Script"
+msgstr "Válasszon \"Torrent megosztása kész\" parancsfájlt"
+
+msgid "Select Watch Directory"
+msgstr "Válassza ki a megfigyelni kívánt könyvtárat"
+
+msgid "Select Incomplete Directory"
+msgstr "Válassza ki a befejezetlen fájlok könyvtárat"
+
+msgid "Select \"Torrent Done Downloading\" Script"
+msgstr "Válasszon \"Torrent letöltése kész\" parancsfájlt"
+
+msgid "Not supported by remote sessions"
+msgstr "Távoli munkamenet esetén nem támogatott"
+
+msgid "<i>Blocklist contains {count:L} rule</i>"
+msgid_plural "<i>Blocklist contains {count:L} rules</i>"
+msgstr[0] "<i>A blokkolási lista {count:L} szabályt tartalmaz</i>"
+msgstr[1] "<i>A blokkolási lista {count:L} szabályt tartalmaz</i>"
+
+#, fuzzy
+#| msgid "<i>Blocklist contains {count:L} rule</i>"
+#| msgid_plural "<i>Blocklist contains {count:L} rules</i>"
+msgid "<i>Blocklist has never been updated</i>"
+msgstr "<i>A blokkolási lista {count:L} szabályt tartalmaz</i>"
+
+#, fuzzy
+#| msgid "<i>Blocklist contains {count:L} rule</i>"
+#| msgid_plural "<i>Blocklist contains {count:L} rules</i>"
+msgid "<i>Blocklist last updated {date}</i>"
+msgstr "<i>A blokkolási lista {count:L} szabályt tartalmaz</i>"
+
+msgid "_Upload:"
+msgstr "_Feltöltés:"
+
+msgid "_Download:"
+msgstr "_Letöltés:"
+
+msgid "U_pload:"
+msgstr "F_eltöltés:"
+
+msgid "Do_wnload:"
+msgstr "Le_töltés:"
+
+msgid "Downloading"
+msgstr "Letöltés"
+
+msgid "Adding"
+msgstr "Hozzáadás"
+
+msgid "Reads user clipboard content for torrents"
+msgstr "Kiolvassa a felhasználó vágólapjának tartalmát torrenteket keresve"
+
+msgid "Detect new torrents from clipboard"
+msgstr "Új torrentek észlelése a vágólapon"
+
+#. Please keep this phrase as short as possible, it's currently the longest and influences dialog width
+msgid "Download is i_nactive if data sharing stopped:"
+msgstr "Letöltés i_naktív ha megosztás leállítva:"
+
+msgid "Seeding"
+msgstr "Megosztás"
+
+msgid "Stop seedi_ng if idle for:"
+msgstr "Megosztás _befejezése ha inaktív a torrent:"
+
+msgid "Encryption"
+msgstr "Titkosítás"
+
+msgid "Start _minimized in notification area"
+msgstr "_Indítás az értesítési területen, kis méretben"
+
+#, fuzzy
+#| msgid "Retransmission"
+msgid "Retransmission (Qt)"
+msgstr "Retransmission"
+
+msgid "Select Location"
+msgstr "Válassza ki a mappát"
+
+msgid "Error Renaming Path"
+msgstr "Hiba az útvonal átnevezésekor"
+
+msgid "Unable to rename \"{old_path}\" as \"{path}\": {error}."
+msgstr "Nem sikerült átnevezni a(z) \"{old_path}\" elemet erre: \"{path}\", mert: {error}."
+
+msgid "Error Adding Torrent"
+msgstr "Hiba a torrent hozzáadásakor"
+
+msgid "{torrent_name} (copy of {hash})"
+msgstr "{torrent_name} (a {hash} másolata)"
+
+msgid "Duplicate Torrent"
+msgstr "Ismétlődő torrent"
+
+msgid "Duplicate Torrents"
+msgstr "Ismétlődő torrent"
+
+msgid "Unable to add {count} duplicate torrent"
+msgid_plural "Unable to add {count} duplicate torrents"
+msgstr[0] "Nem sikerült hozzáadni {count} ismétlődő torrentet"
+msgstr[1] "Nem sikerült hozzáadni {count} ismétlődő torrentet"
+
+msgid "Change Session"
+msgstr "Munkamenet váltás"
+
+msgid "Source"
+msgstr "Forrás"
+
+msgid "Start _Local Session"
+msgstr "_Helyi munkamenet indítása"
+
+msgid "Connect to _Remote Session"
+msgstr "Csatlakozás _távoli munkamenethez"
+
+msgid "_Host:"
+msgstr "_Kiszolgáló:"
+
+msgid "_Port:"
+msgstr "_Port:"
+
+msgid "_Authentication required"
+msgstr "_Hitelesítés szükséges"
+
+msgid "Remote root pa_th:"
+msgstr ""
+
+msgid "Tracker gave a warning: {warning}"
+msgstr "A tracker figyelmeztetést adott: {warning}"
+
+msgid "Tracker gave an error: {error}"
+msgstr "A tracker hibát adott: {error}"
+
+msgid "Error: {error}"
+msgstr "Hiba: {error}"
+
+#, fuzzy
+#| msgid "Magnetized transfer - retrieving metadata (%1%)"
+msgid "Magnetized torrent - retrieving metadata ({percent_done}%)"
+msgstr "Magnet átvitel - metaadatok letöltése (%1 %)"
+
+#, no-c-format
+msgid "Downloading metadata from {active_count:L} peer ({percent_done}% done)"
+msgid_plural "Downloading metadata from {active_count:L} peers ({percent_done}% done)"
+msgstr[0] "Metaadat letöltése {active_count:L} partnertől ({percent_done} % kész)"
+msgstr[1] "Metaadat letöltése {active_count:L} partnertől ({percent_done} % kész)"
+
+msgid "Downloading from {active_count:L} peer"
+msgid_plural "Downloading from {active_count:L} peers"
+msgstr[0] "Letöltés {active_count:L} partnertől"
+msgstr[1] "Letöltés {active_count:L} partnertől"
+
+msgid " and {webseed_count:L} web seed"
+msgid_plural " and {webseed_count:L} web seeds"
+msgstr[0] " és {webseed_count:L} web seed"
+msgstr[1] " és {webseed_count:L} web seed"
+
+msgid "Seeding to {active_count:L} peer"
+msgid_plural "Seeding to {active_count:L} peers"
+msgstr[0] "Seedelés a {active_count:L} partnernek"
+msgstr[1] "Seedelés a {active_count:L} partnernek"
+
+msgid " - "
+msgstr " - "
+
+#, fuzzy
+#| msgid ""
+#| "To add a backup URL, add it on the next line after a primary URL.\n"
+#| "To add a new primary URL, add it after a blank line."
+msgid "To add a backup URL, add it on the next line after a primary URL."
+msgstr ""
+"Tartalék webcím hozzáadásához vegye fel az egy elsődleges webcímet követő sorba.\n"
+"Másik elsődleges webcímet egy üres sor után vehet fel."
+
+msgid "To add a new primary URL, add it after a blank line."
+msgstr "Másik elsődleges webcímet egy üres sor után vehet fel."
 
 msgid "{file_count:L} file, {total_size}\n"
 msgid_plural "{file_count:L} files, {total_size}\n"
@@ -2022,7 +3113,10 @@ msgid_plural "minutes"
 msgstr[0] "perc"
 msgstr[1] "perc"
 
-msgid "seconds"
+#, fuzzy
+#| msgid "seconds"
+#| msgid_plural "seconds"
+msgid "second"
 msgid_plural "seconds"
 msgstr[0] "másodperc"
 msgstr[1] "másodperc"
@@ -2031,6 +3125,106 @@ msgid "day"
 msgid_plural "days"
 msgstr[0] "nap"
 msgstr[1] "nap"
+
+msgid "seconds"
+msgid_plural "seconds"
+msgstr[0] "másodperc"
+msgstr[1] "másodperc"
+
+#~ msgid "Finished"
+#~ msgstr "Elkészült"
+
+#~ msgid "We would upload to this peer if they asked"
+#~ msgstr "Feltöltés a partnernek, ha kérné"
+
+#~ msgid "Dn Blocks"
+#~ msgstr "Blokkok le"
+
+#~ msgid "Up Blocks"
+#~ msgstr "Blokkok fel"
+
+#~ msgid "We Cancelled"
+#~ msgstr "Megszakítottuk"
+
+#~ msgid "They Cancelled"
+#~ msgstr "Megszakították"
+
+#~ msgid "Have"
+#~ msgstr "Meglévő"
+
+#~ msgctxt "current session totals"
+#~ msgid "Down: {downloaded_size}, Up: {uploaded_size}"
+#~ msgstr "Le: {downloaded_size}, fel: {uploaded_size}"
+
+#~ msgctxt "all-time totals"
+#~ msgid "Down: {downloaded_size}, Up: {uploaded_size}"
+#~ msgstr "Le: {downloaded_size}, fel: {uploaded_size}"
+
+#~ msgid "Select a File"
+#~ msgstr "Fájl kiválasztása"
+
+#~ msgid "Inhibiting desktop hibernation"
+#~ msgstr "Hibernálás megakadályozása"
+
+#~ msgid "Couldn't inhibit desktop hibernation: {error}"
+#~ msgstr "Nem sikerült a hibernálás megakadályozása: {error}"
+
+#~ msgid "Allowing desktop hibernation"
+#~ msgstr "Számítógép hibernálásának engedélyezése"
+
+#~ msgid "Open URL…"
+#~ msgstr "Webcím megnyitása…"
+
+#~ msgid "Start all torrents"
+#~ msgstr "Összes torrent elindítása"
+
+#~ msgid "Pause all torrents"
+#~ msgstr "Összes torrent szüneteltetése"
+
+#~ msgid "Start torrent now"
+#~ msgstr "Torrent indítása most"
+
+#~ msgid "Copy _Magnet Link to Clipboard"
+#~ msgstr "_Magnet link másolása a vágólapra"
+
+#~ msgid "Enable Alternative Speed _Limits"
+#~ msgstr "A_lternatív sebességkorlátok engedélyezése"
+
+#~ msgid "Torrent size:"
+#~ msgstr "Torrent méret:"
+
+#~ msgid "_New"
+#~ msgstr "_Új"
+
+#~ msgid "Source F_older:"
+#~ msgstr "F_orráskönyvtár:"
+
+#~ msgid "Source _File:"
+#~ msgstr "_Forrásfájl:"
+
+#~ msgid "P_ause"
+#~ msgstr "_Szüneteltetés"
+
+#~ msgid "Keep _incomplete torrents in:"
+#~ msgstr "Befejezetlen _torrentek tárolása itt:"
+
+#~ msgid "Call scrip_t when done downloading:"
+#~ msgstr "Parancsfájl meg_hívása, ha a letöltés kész:"
+
+#~ msgid "_Port used for incoming connections:"
+#~ msgstr "A _bejövő kapcsolatokhoz használt port:"
+
+#~ msgid "Enable µ_TP for peer communication"
+#~ msgstr "µ_TP engedélyezése partner kommunikációhoz"
+
+#~ msgid "_Inhibit hibernation when torrents are active"
+#~ msgstr "H_ibernálás tiltása, ha vannak aktív torrentek"
+
+#~ msgid "Torrent _location:"
+#~ msgstr "Torrent _helye:"
+
+#~ msgid "Couldn't read filename: {error} ({error_code})"
+#~ msgstr "Nem sikerült a fájlnév olvasása: {error} ({error_code})"
 
 #~ msgid "Couldn't find pending RPC request for tag {tag}"
 #~ msgstr "Nem található függőben lévő RPC kérés a {tag} címkéhez"

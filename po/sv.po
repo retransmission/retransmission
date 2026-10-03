@@ -14,8 +14,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-01-04 14:15+0000\n"
+"Report-Msgid-Bugs-To: https://github.com/retransmission/retransmission/issues\n"
+"POT-Creation-Date: 2026-10-03 11:48-0500\n"
 "PO-Revision-Date: 2017-01-26 19:47+0000\n"
 "Last-Translator: Daniel, 2025\n"
 "Language-Team: Swedish (https://app.transifex.com/transmissionbt/teams/33778/sv/)\n"
@@ -25,11 +25,19 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
+#, fuzzy
 msgid "None"
-msgstr "Inget"
+msgstr ""
+"#-#-#-#-#  sv.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Inget\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Ingen"
 
 msgid "Inf"
 msgstr "Inf"
+
+msgid "Another process is already using '{path}'."
+msgstr ""
 
 msgid "Couldn't read '{path}': {error} ({error_code})"
 msgstr "Det gick inte att läsa '{path}': {error} ({error_code})"
@@ -57,6 +65,9 @@ msgstr "Läs om inställningar från '{path}'"
 
 msgid "Couldn't initialize daemon: {error} ({error_code})"
 msgstr "Det gick inte att initiera demon: {error} ({error_code})"
+
+msgid "Waiting for another process to release '{path}'"
+msgstr ""
 
 msgid "Loading settings from '{path}'"
 msgstr "Läser in inställningar från '{path}'"
@@ -150,18 +161,39 @@ msgstr "Hämtar"
 msgid "Queued for seeding"
 msgstr "I kö för distribuering"
 
+#, fuzzy
 msgctxt "Verb"
 msgid "Seeding"
-msgstr "Distribuerar"
+msgstr ""
+"#-#-#-#-#  sv.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Distribuerar\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Distribuerar\n"
+"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Distribuering"
 
-msgid "Finished"
-msgstr "Slutförda"
+#, fuzzy
+#| msgid "Incomplete"
+msgid "Seeding complete"
+msgstr "Ofullständiga"
 
+#, fuzzy
 msgid "Paused"
-msgstr "Pausad"
+msgstr ""
+"#-#-#-#-#  sv.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Pausad\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Pausad\n"
+"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Pausade"
 
+#, fuzzy
 msgid "N/A"
-msgstr "Saknas"
+msgstr ""
+"#-#-#-#-#  sv.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Saknas\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"N/A"
 
 msgid "Mixed"
 msgstr "Blandad"
@@ -169,8 +201,13 @@ msgstr "Blandad"
 msgid "No Torrents Selected"
 msgstr "Inga torrenter valda"
 
+#, fuzzy
 msgid "Private to this tracker -- DHT and PEX disabled"
-msgstr "Privat för denna spårare -- DHT och PEX är inaktiverade"
+msgstr ""
+"#-#-#-#-#  sv.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Privat för denna spårare -- DHT och PEX är inaktiverade\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Privat för denna spårare -- DHT och PEX inaktiverat"
 
 msgid "Public torrent"
 msgstr "Publik torrent"
@@ -204,6 +241,8 @@ msgstr "{current_size} ({percent_done}%)"
 msgid "{current_size} ({percent_done}% of {percent_available}% available)"
 msgstr "{current_size} ({percent_done}% av {percent_available}% tillgängligt)"
 
+#, fuzzy, c-format
+#| msgid "{current_size} ({percent_done}% of {percent_available}% available; {unverified_size} unverified)"
 msgid "{current_size} ({percent_done}% of {percent_available}% available; {unverified_size} unverified)"
 msgstr "{current_size} ({percent_done}% av {percent_available}% tillgängligt; {unverified_size} overifierad)"
 
@@ -234,8 +273,10 @@ msgstr "Vi skulle hämta från denna jämlike om den tillät oss"
 msgid "Uploading to peer"
 msgstr "Skickar till jämlike"
 
-msgid "We would upload to this peer if they asked"
-msgstr "Vi skulle skicka till denna jämlike om den frågade"
+#, fuzzy
+#| msgid "We would download from this peer if they would let us"
+msgid "This peer would download from us if we would let them"
+msgstr "Vi skulle hämta från denna jämlike om den tillät oss"
 
 msgid "Peer has unchoked us, but we're not interested"
 msgstr "Jämliken har tagit bort strypning för oss, men vi är inte intresserade"
@@ -258,10 +299,12 @@ msgstr "Jämlike är en inkommande anslutning"
 msgid "Peer is connected over µTP"
 msgstr "Jämlike är ansluten via µTP"
 
+msgid "Peer supports holepunch (BEP 55)"
+msgstr ""
+
 msgid "Address"
 msgstr "Adress"
 
-#. % is percent done
 msgid "%"
 msgstr "%"
 
@@ -270,18 +313,6 @@ msgstr "Nerförfrågningar"
 
 msgid "Up Reqs"
 msgstr "Uppförfrågningar"
-
-msgid "Dn Blocks"
-msgstr "Block ner"
-
-msgid "Up Blocks"
-msgstr "Block upp"
-
-msgid "We Cancelled"
-msgstr "Vi avbröt"
-
-msgid "They Cancelled"
-msgstr "De avbröt"
 
 msgid "Down"
 msgstr "Ner"
@@ -297,58 +328,6 @@ msgstr "Flaggor"
 
 msgid "Web Seeds"
 msgstr "Webbdistributioner"
-
-msgid "Got a list of {markup_begin}{peer_count} peer{markup_end} {time_span_ago}"
-msgid_plural "Got a list of {markup_begin}{peer_count} peers{markup_end} {time_span_ago}"
-msgstr[0] "Mottog en lista med {markup_begin}{peer_count} jämlike{markup_end} för {time_span_ago}"
-msgstr[1] "Mottog en lista med {markup_begin}{peer_count} jämlikar{markup_end} för {time_span_ago}"
-
-#. {markup_begin} and {markup_end} should surround the time_span
-msgid "Peer list request {markup_begin}timed out {time_span_ago}{markup_end}; will retry"
-msgstr "Förfrågan efter lista över jämlikar {markup_begin}tog för lång tid för {time_span_ago}{markup_end}; kommer att försöka igen"
-
-#. {markup_begin} and {markup_end} should surround the error
-msgid "Got an error '{markup_begin}{error}{markup_end}' {time_span_ago}"
-msgstr "Fick felet '{markup_begin}{error}{markup_end}' för {time_span_ago}"
-
-msgid "No updates scheduled"
-msgstr "Inga uppdateringar schemalagda"
-
-msgid "Asking for more peers {time_span_from_now}"
-msgstr "Frågar efter fler jämlikar {time_span_from_now}"
-
-msgid "Queued to ask for more peers"
-msgstr "I kö för att fråga efter fler jämlikar"
-
-#. {markup_begin} and {markup_end} should surround time_span_ago
-msgid "Asked for more peers {markup_begin}{time_span_ago}{markup_end}"
-msgstr "Frågade efter fler jämlikar {markup_begin} för {time_span_ago}{markup_end}"
-
-msgid "Tracker had {markup_begin}{seeder_count} {seeder_or_seeders} and {leecher_count} {leecher_or_leechers}{markup_end} {time_span_ago}"
-msgstr "Spåraren hade {markup_begin}{seeder_count} {seeder_or_seeders} och {leecher_count} {leecher_or_leechers}{markup_end} för {time_span_ago}"
-
-msgid "seeder"
-msgid_plural "seeders"
-msgstr[0] "distributör"
-msgstr[1] "distributörer"
-
-msgid "leecher"
-msgid_plural "leechers"
-msgstr[0] "reciprokör"
-msgstr[1] "reciprokörer"
-
-#. {markup_begin} and {markup_end} should surround the error text
-msgid "Got a scrape error '{markup_begin}{error}{markup_end}' {time_span_ago}"
-msgstr "Fick ett skrapningsfel '{markup_begin}{error}{markup_end}' för {time_span_ago}"
-
-msgid "Asking for peer counts in {time_span_from_now}"
-msgstr "Frågar efter antal jämlikar om {time_span_from_now}"
-
-msgid "Queued to ask for peer counts"
-msgstr "I kö för att fråga efter antal jämlikar"
-
-msgid "Asked for peer counts {markup_begin}{time_span_ago}{markup_end}"
-msgstr "Frågade efter antal jämlikar {markup_begin} för {time_span_ago}{markup_end}"
 
 msgid "{torrent_name} - Edit Trackers"
 msgstr "{torrent_name} - Redigera spårare"
@@ -376,29 +355,54 @@ msgstr[1] "Egenskaper - {torrent_count:L} torrenter"
 msgid "Remove torrent?"
 msgstr "Ta bort torrent?"
 
+#, fuzzy
+msgid "Delete this torrent's downloaded files?"
+msgstr ""
+"#-#-#-#-#  sv.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Ta bort den här torrentens hämtade filer?\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Ta bort denna torrentens hämtade filer?"
+
 msgid "Remove {count:L} torrent?"
 msgid_plural "Remove {count:L} torrents?"
 msgstr[0] "Ta bort {count:L} torrent?"
 msgstr[1] "Ta bort {count:L} torrenter?"
 
-msgid "Delete this torrent's downloaded files?"
-msgstr "Ta bort den här torrentens hämtade filer?"
-
+#, fuzzy
 msgid "Delete this {count:L} torrent's downloaded files?"
 msgid_plural "Delete these {count:L} torrents' downloaded files?"
-msgstr[0] "Ta bort nedladdade filer för {count:L} torrent?"
-msgstr[1] "Ta bort dessa {count:L} torrenternas hämtade filer?"
+msgstr[0] ""
+"#-#-#-#-#  sv.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Ta bort nedladdade filer för {count:L} torrent?\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Ta bort nedladdade filer för {count:L} torrent?"
+msgstr[1] ""
+"#-#-#-#-#  sv.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Ta bort dessa {count:L} torrenternas hämtade filer?\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Ta bort hämtade filer för alla {count:L} torrenter?"
 
-msgid "Once removed, continuing the transfer will require the torrent file or magnet link."
-msgid_plural "Once removed, continuing the transfers will require the torrent files or magnet links."
-msgstr[0] "När den har tagits bort kommer torrentfilen eller magnetlänken att krävas för att fortsätta överföringen."
-msgstr[1] "När de har tagits bort kommer torrentfilerna eller magnetlänkarna att krävas för att fortsätta överföringarna."
+#, fuzzy
+#| msgid "Once removed, continuing the transfer will require the torrent file or magnet link."
+#| msgid_plural "Once removed, continuing the transfers will require the torrent files or magnet links."
+msgid "Once removed, you'll need the torrent file or magnet link to add it again."
+msgstr "När den har tagits bort kommer torrentfilen eller magnetlänken att krävas för att fortsätta överföringen."
+
+#, fuzzy
+#| msgid "Once removed, continuing the transfers will require the torrent files or magnet links."
+msgid "Once removed, you'll need the torrent files or magnet links to add them again."
+msgstr "När de har tagits bort kommer torrentfilerna eller magnetlänkarna att krävas för att fortsätta överföringarna."
 
 msgid "This torrent has not finished downloading."
 msgstr "Denna torrent har inte hämtats klart."
 
+#, fuzzy
 msgid "These torrents have not finished downloading."
-msgstr "Dessa torrenter har inte hämtats klart."
+msgstr ""
+"#-#-#-#-#  sv.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Dessa torrenter har inte hämtats klart.\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Dessa torrenter är inte klara med hämtningarna."
 
 msgid "This torrent is connected to peers."
 msgstr "Denna torrent är ansluten till jämlikar."
@@ -406,14 +410,24 @@ msgstr "Denna torrent är ansluten till jämlikar."
 msgid "These torrents are connected to peers."
 msgstr "Dessa torrenter är anslutna till jämlikar."
 
+#, fuzzy
 msgid "One of these torrents is connected to peers."
-msgstr "En av de här torrenterna är ansluten till jämlikar."
+msgstr ""
+"#-#-#-#-#  sv.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"En av de här torrenterna är ansluten till jämlikar.\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"En av dessa torrenter är ansluten till jämlikar."
 
 msgid "Some of these torrents are connected to peers."
 msgstr "Några av dessa torrenter är anslutna till jämlikar."
 
+#, fuzzy
 msgid "One of these torrents has not finished downloading."
-msgstr "En av de här torrenterna har inte hämtats klart."
+msgstr ""
+"#-#-#-#-#  sv.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"En av de här torrenterna har inte hämtats klart.\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"En av dessa torrenter har inte hämtats klart."
 
 msgid "Some of these torrents have not finished downloading."
 msgstr "Några av dessa torrenter har inte hämtats klart."
@@ -424,6 +438,7 @@ msgstr "_Avbryt"
 msgid "_Delete"
 msgstr "_Ta bort"
 
+#. Removes the torrent from the list and keeps its downloaded files
 msgid "_Remove"
 msgstr "_Ta bort"
 
@@ -445,8 +460,8 @@ msgstr "Namn"
 msgid "Size"
 msgstr "Storlek"
 
-msgid "Have"
-msgstr "Har"
+msgid "Progress"
+msgstr "Förlopp"
 
 msgid "Download"
 msgstr "Hämta"
@@ -467,14 +482,37 @@ msgstr "Verifierar"
 msgid "Error"
 msgstr "Fel"
 
+#, fuzzy
 msgid "_Show:"
-msgstr "_Visa:"
+msgstr ""
+"#-#-#-#-#  sv.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Visa:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Vi_sa:"
 
 msgid "_Show {count:L} of:"
 msgstr "_Visa {count:L} av:"
 
 msgid "{disk_space} free"
 msgstr "{disk_space} ledigt"
+
+msgid "Where to look for configuration files"
+msgstr "Var man ska leta efter konfigurationsfiler"
+
+msgid "Start with all torrents paused"
+msgstr "Starta med alla torrenter pausade"
+
+msgid "Start minimized in notification area"
+msgstr "Starta minimerad i aviseringsfältet"
+
+msgid "Show version number and exit"
+msgstr "Visa versionsnummer och avsluta"
+
+msgid "[torrent files or urls]"
+msgstr "[torrentfiler eller URL:er]"
+
+msgid "Run '{program} --help' to see a full list of available command line options.\n"
+msgstr "Kör '{program} --help' för att se en fullständig lista över tillgängliga kommandoradsalternativ.\n"
 
 msgid ""
 "Click to disable Alternative Speed Limits\n"
@@ -517,19 +555,19 @@ msgstr "Sessionskvot"
 msgid "Total Transfer"
 msgstr "Totalt överfört"
 
+#, fuzzy
 msgid "Session Transfer"
-msgstr "Sessionsöverföring"
+msgstr ""
+"#-#-#-#-#  sv.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Sessionsöverföring\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Sessionsöverfört"
+
+msgid "Down: {downloaded_size}, Up: {uploaded_size}"
+msgstr "Ner: {downloaded_size}, Upp: {uploaded_size}"
 
 msgid "Ratio: {ratio}"
 msgstr "Kvot: {ratio}"
-
-msgctxt "current session totals"
-msgid "Down: {downloaded_size}, Up: {uploaded_size}"
-msgstr "Ner: {downloaded_size}, Upp: {uploaded_size}"
-
-msgctxt "all-time totals"
-msgid "Down: {downloaded_size}, Up: {uploaded_size}"
-msgstr "Ner: {downloaded_size}, Upp: {uploaded_size}"
 
 msgid "{download_speed} ▾"
 msgstr "{download_speed} ▾"
@@ -587,6 +625,11 @@ msgstr "Tid"
 msgid "Couldn't create proxy for '{bus}': {error} ({error_code})"
 msgstr "Det gick inte att skapa proxy för '{bus}': {error} ({error_code})"
 
+#, fuzzy
+#| msgid "Couldn't save '{path}': {error} ({error_code})"
+msgid "Couldn't spawn async process \"'{command}'\": {error} ({error_code})"
+msgstr "Det gick inte att spara '{path}': {error} ({error_code})"
+
 msgid "Open File"
 msgstr "Öppna fil"
 
@@ -617,8 +660,11 @@ msgstr "_Öppna"
 msgid "Show options dialog"
 msgstr "Visa alternativdialogruta"
 
-msgid "Select a File"
-msgstr "Välj en fil"
+msgid "Other…"
+msgstr ""
+
+msgid "Select File"
+msgstr "Välj fil"
 
 msgid "(None)"
 msgstr "(Ingen)"
@@ -635,8 +681,13 @@ msgstr "Kräv kryptering"
 msgid "Every Day"
 msgstr "Varje dag"
 
+#, fuzzy
 msgid "Weekdays"
-msgstr "Veckodagar"
+msgstr ""
+"#-#-#-#-#  sv.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Veckodagar\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Vardagar"
 
 msgid "Weekends"
 msgstr "Helger"
@@ -690,27 +741,30 @@ msgstr "Det gick inte att flytta torrent"
 msgid "This may take a moment…"
 msgstr "Detta kan ta en stund…"
 
+#, fuzzy
+#| msgid "Couldn't watch '{path}': {error} ({error_code})"
+msgid "Couldn't open watchdir '{dirname}': {error} ({error_code})"
+msgstr "Det gick inte att se '{path}': {error} ({error_code})"
+
 msgid "Couldn't read '{path}'"
 msgstr "Det gick inte att läsa '{path}'"
-
-#. logging
-msgid "Inhibiting desktop hibernation"
-msgstr "Förhindra viloläge för datorn"
-
-msgid "Couldn't inhibit desktop hibernation: {error}"
-msgstr "Det gick inte att förhindra viloläget: {error}"
-
-#. logging
-msgid "Allowing desktop hibernation"
-msgstr "Tillåter skrivbordsviloläge"
 
 msgid "Couldn't find pending RPC request for id {id}"
 msgstr ""
 
+#, fuzzy
 msgid "Started {count:L} time"
 msgid_plural "Started {count:L} times"
-msgstr[0] "Startad {count:L} gånger"
-msgstr[1] "Startad {count:L} gång"
+msgstr[0] ""
+"#-#-#-#-#  sv.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Startad {count:L} gånger\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Startad {count:L} gång"
+msgstr[1] ""
+"#-#-#-#-#  sv.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Startad {count:L} gång\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Startad {count:L} gånger"
 
 msgid "Reset your statistics?"
 msgstr "Återställ din statistik?"
@@ -721,12 +775,19 @@ msgstr "_Återställ"
 msgid "These statistics are for your information only. Resetting them doesn't affect the statistics logged by your BitTorrent trackers."
 msgstr "Denna statistik är endast för din information. Återställning av den påverkar inte statistiken som loggas av dina BitTorrent-spårare."
 
+msgid "_Show {appname}"
+msgstr "_Visa {appname}"
+
 msgid "{upload_speed} ▴ {download_speed} ▾"
 msgstr "{upload_speed} ▴ {download_speed} ▾"
 
-#, no-c-format
+#, fuzzy, no-c-format
 msgid "Verifying local data ({percent_done}% tested)"
-msgstr "Verifierar lokala data ({percent_done}% kontrollerat)"
+msgstr ""
+"#-#-#-#-#  sv.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Verifierar lokala data ({percent_done}% kontrollerat)\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Verifierar lokala data ({percent_done}% testat)"
 
 msgid "{current_size} of {complete_size} ({percent_done}%)"
 msgstr "{current_size} av {complete_size} ({percent_done}%)"
@@ -743,6 +804,7 @@ msgstr "{complete_size}, skickat {uploaded_size} (Kvot: {ratio}, Mål: {seed_rat
 msgid "{complete_size}, uploaded {uploaded_size} (Ratio: {ratio})"
 msgstr "{complete_size}, skickat {uploaded_size} (Kvot: {ratio})"
 
+#. Translators: Second (optional) part of torrent progress string
 msgid "Remaining time unknown"
 msgstr "Återstående tid är okänd"
 
@@ -755,7 +817,9 @@ msgstr "Avstannad"
 msgid "Tracker warning: '{warning}'"
 msgstr "Spårarvarning: '{warning}'"
 
-msgid "Tracker Error: '{error}'"
+#, fuzzy
+#| msgid "Tracker Error: '{error}'"
+msgid "Tracker error: '{error}'"
 msgstr "Spårarfel: '{error}'"
 
 msgid "Local error: '{error}'"
@@ -787,174 +851,8 @@ msgid_plural "Seeding to {active_count} of {connected_count} connected peers"
 msgstr[0] "Distribuerar till {active_count} av {connected_count} ansluten jämlike"
 msgstr[1] "Distribuerar till {active_count} av {connected_count} anslutna jämlikar"
 
-msgid "{days_from_now:L} day from now"
-msgid_plural "{days_from_now:L} days from now"
-msgstr[0] "{days_from_now:L} dag från nu"
-msgstr[1] "{days_from_now:L} dagar från nu"
-
-msgid "{hours_from_now:L} hour from now"
-msgid_plural "{hours_from_now:L} hours from now"
-msgstr[0] "{hours_from_now:L} timme från nu"
-msgstr[1] "{hours_from_now:L} timmar från nu"
-
-msgid "{minutes_from_now:L} minute from now"
-msgid_plural "{minutes_from_now:L} minutes from now"
-msgstr[0] "{minutes_from_now:L} minut från nu"
-msgstr[1] "{minutes_from_now:L} minuter från nu"
-
-msgid "{seconds_from_now:L} second from now"
-msgid_plural "{seconds_from_now:L} seconds from now"
-msgstr[0] "{seconds_from_now:L} sekund från nu"
-msgstr[1] "{seconds_from_now:L} sekunder från nu"
-
-msgid "now"
-msgstr "nu"
-
-msgid "{days_ago:L} day ago"
-msgid_plural "{days_ago:L} days ago"
-msgstr[0] "{days_ago:L} dag sedan"
-msgstr[1] "{days_ago:L} dagar sedan"
-
-msgid "{hours_ago:L} hour ago"
-msgid_plural "{hours_ago:L} hours ago"
-msgstr[0] "{hours_ago:L} timme sedan"
-msgstr[1] "{hours_ago:L} timmar sedan"
-
-msgid "{minutes_ago:L} minute ago"
-msgid_plural "{minutes_ago:L} minutes ago"
-msgstr[0] "{minutes_ago:L} minut sedan"
-msgstr[1] "{minutes_ago:L} minuter sedan"
-
-msgid "{seconds_ago:L} second ago"
-msgid_plural "{seconds_ago:L} seconds ago"
-msgstr[0] "{seconds_ago:L} sekund sedan"
-msgstr[1] "{seconds_ago:L} sekunder sedan"
-
-msgid "{days:L} day"
-msgid_plural "{days:L} days"
-msgstr[0] "{days:L} dag"
-msgstr[1] "{days:L} dagar"
-
-msgid "{hours:L} hour"
-msgid_plural "{hours:L} hours"
-msgstr[0] "{hours:L} timme"
-msgstr[1] "{hours:L} timmar"
-
-msgid "{minutes:L} minute"
-msgid_plural "{minutes:L} minutes"
-msgstr[0] "{minutes:L} minut"
-msgstr[1] "{minutes:L} minuter"
-
-msgid "{seconds:L} second"
-msgid_plural "{seconds:L} seconds"
-msgstr[0] "{seconds:L} sekund"
-msgstr[1] "{seconds:L} sekunder"
-
-msgid "{days_left:L} day left"
-msgid_plural "{days_left:L} days left"
-msgstr[0] "{days_left:L} dag kvar"
-msgstr[1] "{days_left:L} dagar kvar"
-
-msgid "{hours_left:L} hour left"
-msgid_plural "{hours_left:L} hours left"
-msgstr[0] "{hours_left:L} timme kvar"
-msgstr[1] "{hours_left:L} timmar kvar"
-
-msgid "{minutes_left:L} minute left"
-msgid_plural "{minutes_left:L} minutes left"
-msgstr[0] "{minutes_left:L} minut kvar"
-msgstr[1] "{minutes_left:L} minuter kvar"
-
-msgid "{seconds_left:L} second left"
-msgid_plural "{seconds_left:L} seconds left"
-msgstr[0] "{seconds_left:L} sekund kvar"
-msgstr[1] "{seconds_left:L} sekunder kvar"
-
-msgid "The torrent file '{path}' is already in use by '{torrent_name}'."
-msgstr "Torrentfilen '{path}' används redan av '{torrent_name}'."
-
-msgid "Couldn't open torrent"
-msgstr "Det gick inte att öppna torrent"
-
-msgid "Couldn't move '{path}' to trash: {error} ({error_code})"
-msgstr "Det gick inte att flytta '{path}' till papperskorgen: {error} ({error_code})"
-
-msgid "Couldn't open '{url}'"
-msgstr "Det gick inte att öppna '{url}'"
-
-msgid "Unsupported URL: '{url}'"
-msgstr "URL som inte stöds: '{url}'"
-
-#. modal
-msgid "{appname} doesn't know how to use '{url}'"
-msgstr "{appname} vet inte hur den ska använda '{url}'"
-
-msgid "This magnet link appears to be intended for something other than BitTorrent."
-msgstr "Denna magnetlänk verkar vara avsedd för något annat än BitTorrent."
-
 msgid "Retransmission"
 msgstr "Retransmission"
-
-#. parse the command line
-msgid "Where to look for configuration files"
-msgstr "Var man ska leta efter konfigurationsfiler"
-
-msgid "Start with all torrents paused"
-msgstr "Starta med alla torrenter pausade"
-
-msgid "Start minimized in notification area"
-msgstr "Starta minimerad i aviseringsfältet"
-
-msgid "Show version number and exit"
-msgstr "Visa versionsnummer och avsluta"
-
-msgid "[torrent files or urls]"
-msgstr "[torrentfiler eller URL:er]"
-
-msgid "Run '{program} --help' to see a full list of available command line options.\n"
-msgstr "Kör '{program} --help' för att se en fullständig lista över tillgängliga kommandoradsalternativ.\n"
-
-msgid "B/s"
-msgstr "B/s"
-
-msgid "GB/s"
-msgstr "GB/s"
-
-msgid "MB/s"
-msgstr "MB/s"
-
-msgid "TB/s"
-msgstr "TB/s"
-
-msgid "kB/s"
-msgstr "kB/s"
-
-msgid "B"
-msgstr "B"
-
-msgid "GiB"
-msgstr "GiB"
-
-msgid "KiB"
-msgstr "KiB"
-
-msgid "MiB"
-msgstr "MiB"
-
-msgid "TiB"
-msgstr "TiB"
-
-msgid "GB"
-msgstr "GB"
-
-msgid "MB"
-msgstr "MB"
-
-msgid "TB"
-msgstr "TB"
-
-msgid "kB"
-msgstr "kB"
 
 msgid "BitTorrent Client"
 msgstr "BitTorrent-klient"
@@ -972,14 +870,29 @@ msgstr "Starta Retransmission med alla torrenter pausade"
 msgid "Start Retransmission Minimized"
 msgstr "Starta Retransmission minimerad"
 
-msgid "Open a torrent"
-msgstr "Öppna en torrent"
+#, fuzzy
+#| msgid "Copyright © The Retransmission Project"
+msgid "The Retransmission Project"
+msgstr "Copyright © The Retransmission Project"
+
+#. Translators: these are the application description paragraphs in the MetaInfo file.
+msgid "BitTorrent is a peer-to-peer file-sharing protocol that is commonly used to distribute large amounts of data between multiple users."
+msgstr ""
+
+msgid "Retransmission is a BitTorrent client with an easy-to-use interface on top of a cross-platform backend. Native interfaces are available for macOS, Linux, and Windows, as well as command line binaries and a web GUI."
+msgstr ""
+
+msgid "Notable features of Retransmission include support for Local Peer Discovery, encryption, DHT, µTP, PEX and Magnet links."
+msgstr ""
+
+msgid "Main window, showing an ongoing download of Fedora Workstation"
+msgstr ""
+
+msgid "_File"
+msgstr "_Arkiv"
 
 msgid "Open _URL…"
 msgstr "Öppna _URL…"
-
-msgid "Open URL…"
-msgstr "Öppna URL…"
 
 msgid "_New…"
 msgstr "_Ny…"
@@ -987,17 +900,31 @@ msgstr "_Ny…"
 msgid "_Start All"
 msgstr "_Starta alla"
 
-msgid "Start all torrents"
-msgstr "Starta alla torrenter"
-
+#, fuzzy
 msgid "_Pause All"
-msgstr "Pausa a_lla"
+msgstr ""
+"#-#-#-#-#  sv.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Pausa a_lla\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Pausa alla"
 
-msgid "Pause all torrents"
-msgstr "Pausa alla torrenter"
-
+#, fuzzy
 msgid "_Quit"
-msgstr "A_vsluta"
+msgstr ""
+"#-#-#-#-#  sv.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"A_vsluta\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Avsluta"
+
+#, fuzzy
+msgid "_Edit"
+msgstr ""
+"#-#-#-#-#  sv.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"R_edigera\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"R_edigera\n"
+"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Redigera"
 
 msgid "Select _All"
 msgstr "Markera _alla"
@@ -1005,65 +932,106 @@ msgstr "Markera _alla"
 msgid "Dese_lect All"
 msgstr "Avma_rkera alla"
 
+#, fuzzy
 msgid "_Preferences"
-msgstr "_Inställningar"
+msgstr ""
+"#-#-#-#-#  sv.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Inställningar\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Egenskaper"
+
+msgid "_Torrent"
+msgstr "_Torrent"
 
 msgid "_Properties"
 msgstr "_Egenskaper"
 
-msgid "Torrent properties"
-msgstr "Torrent-egenskaper"
-
+#, fuzzy
 msgid "Open Fold_er"
-msgstr "Öppna ma_pp"
+msgstr ""
+"#-#-#-#-#  sv.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Öppna ma_pp\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Öppna _mapp"
 
+#, fuzzy
 msgid "_Start"
-msgstr "Sta_rta"
-
-msgid "Start torrent"
-msgstr "Starta torrent"
+msgstr ""
+"#-#-#-#-#  sv.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Sta_rta\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Starta"
 
 msgid "Start _Now"
 msgstr "Starta _nu"
 
-msgid "Start torrent now"
-msgstr "Starta torrent nu"
-
+#, fuzzy
 msgid "Ask Tracker for _More Peers"
-msgstr "Fråga spårare efter f_ler jämlikar"
+msgstr ""
+"#-#-#-#-#  sv.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Fråga spårare efter f_ler jämlikar\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Fråga spårare om _fler jämlikar"
 
+#, fuzzy
+#| msgid "Queue"
+msgid "_Queue"
+msgstr "Kö"
+
+#, fuzzy
 msgid "Move to _Top"
-msgstr "Flytta längst _upp"
+msgstr ""
+"#-#-#-#-#  sv.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Flytta längst _upp\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Flytta _längst upp"
 
+#, fuzzy
 msgid "Move _Up"
-msgstr "Flytta _upp"
+msgstr ""
+"#-#-#-#-#  sv.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Flytta _upp\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Flytta _fram"
 
+#, fuzzy
 msgid "Move _Down"
-msgstr "Flytta _ner"
+msgstr ""
+"#-#-#-#-#  sv.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Flytta _ner\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Flytta _bak"
 
+#, fuzzy
 msgid "Move to _Bottom"
-msgstr "Flytta längst _ner"
+msgstr ""
+"#-#-#-#-#  sv.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Flytta längst _ner\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Flytta _längst ner"
 
 msgid "_Pause"
 msgstr "_Pausa"
 
-msgid "Pause torrent"
-msgstr "Pausa torrent"
-
+#, fuzzy
 msgid "Set _Location…"
-msgstr "Ange p_lats…"
+msgstr ""
+"#-#-#-#-#  sv.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Ange p_lats…\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Ange _plats…"
 
 msgid "_Verify Local Data"
 msgstr "_Verifiera lokala data"
 
-msgid "Copy _Magnet Link to Clipboard"
-msgstr "Kopiera _magnetlänk till urklipp"
-
-msgid "Remove torrent"
-msgstr "Ta bort torrent"
+msgid "_Copy Magnet Link to Clipboard"
+msgstr "_Kopiera magnetlänk till urklipp"
 
 msgid "_Delete Files and Remove"
 msgstr "_Ta bort torrent och dess filer"
+
+msgid "_View"
+msgstr "_Visa"
 
 msgid "_Compact View"
 msgstr "_Kompakt vy"
@@ -1071,8 +1039,13 @@ msgstr "_Kompakt vy"
 msgid "_Toolbar"
 msgstr "_Verktygsfält"
 
+#, fuzzy
 msgid "_Filterbar"
-msgstr "_Filterfält"
+msgstr ""
+"#-#-#-#-#  sv.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Filterfält\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Filtreringsfält"
 
 msgid "_Statusbar"
 msgstr "_Statusfält"
@@ -1092,20 +1065,43 @@ msgstr "Sortera efter _förlopp"
 msgid "Sort by _Queue"
 msgstr "Sortera efter _kö"
 
+#, fuzzy
 msgid "Sort by Rati_o"
-msgstr "Sortera efter k_vot"
+msgstr ""
+"#-#-#-#-#  sv.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Sortera efter k_vot\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Sortera efter _kvot"
 
+#, fuzzy
 msgid "Sort by Si_ze"
-msgstr "Sortera efter s_torlek"
+msgstr ""
+"#-#-#-#-#  sv.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Sortera efter s_torlek\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Sortera efter _storlek"
 
+#, fuzzy
 msgid "Sort by Stat_e"
-msgstr "Sortera efter ti_llstånd"
+msgstr ""
+"#-#-#-#-#  sv.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Sortera efter ti_llstånd\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Sortera efter _läge"
 
 msgid "Sort by Time _Left"
 msgstr "Sortera efter återstående _tid"
 
+#, fuzzy
 msgid "Re_verse Sort Order"
-msgstr "O_mvänd sorteringsordning"
+msgstr ""
+"#-#-#-#-#  sv.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"O_mvänd sorteringsordning\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"In_vertera sorteringsordning"
+
+msgid "_Help"
+msgstr "_Hjälp"
 
 msgid "Message _Log"
 msgstr "Meddelande_logg"
@@ -1122,11 +1118,15 @@ msgstr "_Innehåll"
 msgid "_About"
 msgstr "_Om"
 
-msgid "_Show {appname}"
-msgstr "_Visa {appname}"
+#, fuzzy
+#| msgid "Start torrent"
+msgid "_Sort Torrents By"
+msgstr "Starta torrent"
 
-msgid "Enable Alternative Speed _Limits"
-msgstr "Aktivera alternativa hastighets_gränser"
+#, fuzzy
+#| msgid "Alternative Speed Limits"
+msgid "Alternative Speed _Limits"
+msgstr "Alternativa hastighetsgränser"
 
 msgid "_Add"
 msgstr "_Lägg till"
@@ -1143,8 +1143,8 @@ msgstr "_Stäng"
 msgid "Activity"
 msgstr "Aktivitet"
 
-msgid "Torrent size:"
-msgstr "Torrentstorlek:"
+msgid "Size:"
+msgstr "Storlek:"
 
 msgid "Have:"
 msgstr "Har:"
@@ -1199,9 +1199,6 @@ msgstr "Visa _mer detaljer"
 
 msgid "Peers"
 msgstr "Jämlikar"
-
-msgid "_Edit"
-msgstr "R_edigera"
 
 msgid "Show _backup trackers"
 msgstr "Visa _reservspårare"
@@ -1258,6 +1255,21 @@ msgstr ""
 msgid "Also see Default Public Trackers in Edit > Preferences > Network"
 msgstr "Se även publika standardspårare i Redigera > Inställningar > Nätverk"
 
+msgid "Open a torrent"
+msgstr "Öppna en torrent"
+
+msgid "Start torrent"
+msgstr "Starta torrent"
+
+msgid "Pause torrent"
+msgstr "Pausa torrent"
+
+msgid "Remove torrent"
+msgstr "Ta bort torrent"
+
+msgid "Torrent properties"
+msgstr "Torrent-egenskaper"
+
 msgid "Torrent"
 msgstr "Torrent"
 
@@ -1267,19 +1279,28 @@ msgstr "Statistik"
 msgid "New Torrent"
 msgstr "Ny torrent"
 
-msgid "_New"
-msgstr "_Ny"
+#, fuzzy
+#| msgid "C_redits"
+msgid "C_reate"
+msgstr "T_ack till"
 
+#, fuzzy
 msgid "Sa_ve to:"
-msgstr "S_para till:"
+msgstr ""
+"#-#-#-#-#  sv.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"S_para till:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Spa_ra till:"
 
-msgid "Source F_older:"
+msgid "Source f_older:"
 msgstr "Källm_app:"
 
-msgid "Source _File:"
+msgid "Source _file:"
 msgstr "Käll_fil:"
 
-msgid "Piece size:"
+#, fuzzy
+#| msgid "Piece size:"
+msgid "Piece si_ze:"
 msgstr "Delstorlek:"
 
 msgid "Properties"
@@ -1309,9 +1330,6 @@ msgstr "Spara _som"
 msgid "Clear"
 msgstr "Rensa"
 
-msgid "P_ause"
-msgstr "P_ausa"
-
 msgid "Level"
 msgstr "Nivå"
 
@@ -1324,8 +1342,13 @@ msgstr "_Torrentfil:"
 msgid "Select Source File"
 msgstr "Välj källfil"
 
+#, fuzzy
 msgid "_Destination folder:"
-msgstr "_Destinationsmapp:"
+msgstr ""
+"#-#-#-#-#  sv.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Destinationsmapp:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Desinationsmapp:"
 
 msgid "Select Destination Folder"
 msgstr "Välj destinationsmapp"
@@ -1333,14 +1356,13 @@ msgstr "Välj destinationsmapp"
 msgid "_Start when added"
 msgstr "_Starta när den lagts till"
 
-msgid "Mo_ve torrent file to the trash"
+#, fuzzy
+#| msgid "Mo_ve torrent file to the trash"
+msgid "Mo_ve torrent file to the Trash"
 msgstr "Fl_ytta torrentfil till papperskorgen"
 
 msgid "{appname} Preferences"
 msgstr "Inställningar för {appname}"
-
-msgid "_Help"
-msgstr "_Hjälp"
 
 msgid "Speed Limits"
 msgstr "Hastighetsgränser"
@@ -1384,13 +1406,25 @@ msgstr "Tilläggning"
 msgid "Automatically add torrent files _from:"
 msgstr "Lägg automatiskt till torrentfiler _från:"
 
+#, fuzzy
 msgid "Show the Torrent Options _dialog"
-msgstr "Visa torrentalternativ_dialogrutan"
+msgstr ""
+"#-#-#-#-#  sv.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Visa torrentalternativ_dialogrutan\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Visa _dialogrutan för torrentalternativ"
 
+#, fuzzy
 msgid "_Start added torrents"
-msgstr "_Visa tillagda torrenter"
+msgstr ""
+"#-#-#-#-#  sv.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Visa tillagda torrenter\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Starta tillagda torrenter"
 
-msgid "Save to _Location:"
+#, fuzzy
+#| msgid "Save to _Location:"
+msgid "Save to _location:"
 msgstr "Spara till _plats:"
 
 msgid "Download Queue"
@@ -1408,10 +1442,17 @@ msgstr "Ofullständiga"
 msgid "Append \"._part\" to incomplete files' names"
 msgstr "Lägg till \"._part\" till ofullständiga filers namn"
 
-msgid "Keep _incomplete torrents in:"
-msgstr "Behåll _ofullständiga torrenter i:"
+msgid "Keep _incomplete files in:"
+msgstr "Behåll _ofullständiga filer i:"
 
-msgid "Call scrip_t when done downloading:"
+#, fuzzy
+#| msgid "Call scrip_t when downloading is completed:"
+msgid "Call scrip_t when download completes:"
+msgstr "Anropa skrip_t när hämtningen är klar:"
+
+#, fuzzy
+#| msgid "Call scrip_t when downloading is completed:"
+msgid "Verify data when download completes"
 msgstr "Anropa skrip_t när hämtningen är klar:"
 
 msgctxt "Gerund"
@@ -1437,8 +1478,13 @@ msgstr "Distribuering"
 msgid "Privacy"
 msgstr "Integritet"
 
+#, fuzzy
 msgid "_Encryption mode:"
-msgstr "Kr_ypteringsläge:"
+msgstr ""
+"#-#-#-#-#  sv.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Kr_ypteringsläge:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Krypteringsläge:"
 
 msgid "Blocklist"
 msgstr "Blockeringslista"
@@ -1446,7 +1492,9 @@ msgstr "Blockeringslista"
 msgid "Enable _blocklist:"
 msgstr "Aktivera _blockeringslista:"
 
-msgid "Enable _automatic updates"
+#, fuzzy
+#| msgid "Enable _automatic updates"
+msgid "_Automatically update weekly"
 msgstr "Aktivera _automatiska uppdateringar"
 
 msgid "_Update"
@@ -1455,14 +1503,21 @@ msgstr "_Uppdatera"
 msgid "Listening Port"
 msgstr "Lyssningsport"
 
-msgid "_Port used for incoming connections:"
-msgstr "_Port som används för inkommande anslutningar:"
+msgid "_Port for incoming connections:"
+msgstr "_Port för inkommande anslutningar:"
 
-msgid "Pick a _random port every time Transmission is started"
+#, fuzzy
+#| msgid "Pick a _random port every time Transmission is started"
+msgid "Pick a _random port at startup"
 msgstr "Välj en s_lumpmässig port varje gång Transmission startas"
 
+#, fuzzy
 msgid "Use UPnP or NAT-PMP port _forwarding from my router"
-msgstr "Använd port_vidarebefordran via UPnP eller NAT-PMP från min router"
+msgstr ""
+"#-#-#-#-#  sv.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Använd port_vidarebefordran via UPnP eller NAT-PMP från min router\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Använd UPnP eller NAT-PMP port _forwarding från min router"
 
 msgid "Te_st Port"
 msgstr "Te_sta port"
@@ -1470,49 +1525,79 @@ msgstr "Te_sta port"
 msgid "Peer Limits"
 msgstr "Jämlikegränser"
 
-msgid "Maximum peers per _torrent:"
+#, fuzzy
+#| msgid "Maximum peers per _torrent:"
+msgid "Maximum peers for new _torrents:"
 msgstr "Maximalt antal jämlikar per _torrent:"
 
+#, fuzzy
 msgid "Maximum peers _overall:"
-msgstr "Maximalt antal jämlikar t_otalt:"
+msgstr ""
+"#-#-#-#-#  sv.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Maximalt antal jämlikar t_otalt:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Maximalt antal jämlikar _totalt:"
 
-msgid "Enable µ_TP for peer communication"
+msgid "Enable µ_TP for peer connections"
 msgstr "Aktivera µ_TP för jämlikeanslutningar"
 
 msgid "µTP is a tool for reducing network congestion."
 msgstr "µTP är ett verktyg för att minska nätverksöverbelastning."
 
-msgid "Use PE_X to find more peers"
+#, fuzzy
+#| msgid "Use PE_X to find more peers"
+msgid "Use PE_X to find more peers for public torrents"
 msgstr "Använd PE_X för att hitta fler jämlikar"
 
+#, fuzzy
 msgid "PEX is a tool for exchanging peer lists with the peers you're connected to."
-msgstr "PEX är ett verktyg för att utväxla jämlikelistor med de jämlikar som du är ansluten till."
+msgstr ""
+"#-#-#-#-#  sv.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"PEX är ett verktyg för att utväxla jämlikelistor med de jämlikar som du är ansluten till.\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"PEX är ett verktyg för att byta ut jämlikelistor med jämlikar du är ansluten till."
 
-msgid "Use _DHT to find more peers"
+#, fuzzy
+#| msgid "Use _DHT to find more peers"
+msgid "Use _DHT to find more peers for public torrents"
 msgstr "Använd _DHT för att hitta fler jämlikar"
 
 msgid "DHT is a tool for finding peers without a tracker."
 msgstr "DHT är ett verktyg för att hitta jämlikar utan en spårare."
 
-msgid "Use _Local Peer Discovery to find more peers"
+#, fuzzy
+#| msgid "Use _Local Peer Discovery to find more peers"
+msgid "Use _Local Peer Discovery to find more peers for public torrents"
 msgstr "Använd _upptäck lokala jämlikar för att hitta fler jämlikar"
 
+#, fuzzy
 msgid "LPD is a tool for finding peers on your local network."
-msgstr "LPD är ett verktyg för att hitta jämlikar på ditt lokala nätverk."
+msgstr ""
+"#-#-#-#-#  sv.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"LPD är ett verktyg för att hitta jämlikar på ditt lokala nätverk.\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"LPD är ett verktyg för att hitta jämlikar i ditt lokala nätverk."
 
 msgid "Default Public Trackers"
 msgstr "Publika spårare som standard"
 
+#, fuzzy
 msgid ""
 "Trackers to use on all public torrents.\n"
 "\n"
 "To add a backup URL, add it on the next line after a primary URL.\n"
 "To add a new primary URL, add it after a blank line."
 msgstr ""
+"#-#-#-#-#  sv.po (PACKAGE VERSION)  #-#-#-#-#\n"
 "Spårare att använda på alla publika torrenter.\n"
 "\n"
 "För att lägga till en reserv URL, lägg till den på nästa rad efter en primär URL.\n"
-"För att lägga till en ny primär URL, lägg till den efter en tom rad."
+"För att lägga till en ny primär URL, lägg till den efter en tom rad.\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Spårare att använda på alla publika torrenter.\n"
+"\n"
+"För att lägga till en reserv-URL, lägg till den på nästa rad efter en primär URL.\n"
+"Lägg till en ny primär URL genom att lägga till den efter en tom rad."
 
 msgid "Network"
 msgstr "Nätverk"
@@ -1520,41 +1605,78 @@ msgstr "Nätverk"
 msgid "Desktop"
 msgstr "Skrivbord"
 
-msgid "_Inhibit hibernation when torrents are active"
-msgstr "_Förhindra viloläge när torrenter är aktiva"
+msgid "_Prevent computer from sleeping with active torrents"
+msgstr ""
 
+#, fuzzy
 msgid "Show {appname} icon in the _notification area"
-msgstr "Visa {appname}-ikonen i _aviseringsytan"
+msgstr ""
+"#-#-#-#-#  sv.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Visa {appname}-ikonen i _aviseringsytan\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Visa {appname}-ikon i _aviseringsfältet"
 
 msgid "Notification"
 msgstr "Avisering"
 
+#, fuzzy
 msgid "Show a notification when torrents are a_dded"
-msgstr "Visa avisering när torrenter läggs _till"
+msgstr ""
+"#-#-#-#-#  sv.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Visa avisering när torrenter läggs _till\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Visa avisering när torrenter lä_ggs till"
 
 msgid "Show a notification when torrents _finish"
 msgstr "Visa avisering när torrenter _slutförs"
 
+#, fuzzy
 msgid "Play a _sound when torrents finish"
-msgstr "Spela upp ett _ljud när torrenter slutförs"
+msgstr ""
+"#-#-#-#-#  sv.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Spela upp ett _ljud när torrenter slutförs\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Spela ett _ljud när torrenter slutförs"
 
+#, fuzzy
 msgid "Remote Control"
-msgstr "Fjärrkontroll"
+msgstr ""
+"#-#-#-#-#  sv.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Fjärrkontroll\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Fjärrstyrning"
 
+#, fuzzy
 msgid "Allow _remote access"
-msgstr "Tillåt _fjärråtkomst"
+msgstr ""
+"#-#-#-#-#  sv.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Tillåt _fjärråtkomst\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Tillåt _fjärrstyrning"
 
-msgid "_Open web client"
+#, fuzzy
+#| msgid "_Open web client"
+msgid "_Open Web Client"
 msgstr "_Öppna webbklient"
 
 msgid "HTTP _port:"
 msgstr "HTTP-_port:"
 
+#, fuzzy
 msgid "Use _authentication"
-msgstr "Använd a_utentisering"
+msgstr ""
+"#-#-#-#-#  sv.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Använd a_utentisering\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Använd _autentisering"
 
+#, fuzzy
 msgid "_Username:"
-msgstr "_Användarnamn:"
+msgstr ""
+"#-#-#-#-#  sv.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Användarnamn:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"A_nvändarnamn:"
 
 msgid "Pass_word:"
 msgstr "Lösen_ord:"
@@ -1580,8 +1702,8 @@ msgstr "_Tillämpa"
 msgid "Location"
 msgstr "Plats"
 
-msgid "Torrent _location:"
-msgstr "Torrent_plats:"
+msgid "New _location:"
+msgstr "Ny _plats:"
 
 msgid "_Move from the current folder"
 msgstr "_Flytta från aktuell mapp"
@@ -1610,20 +1732,175 @@ msgstr "Öppna torrent från URL"
 msgid "_URL"
 msgstr "_URL"
 
-msgid "Couldn't parse announce response: {error} ({error_code})"
-msgstr "Det gick inte att tolka meddelandesvar: {error} ({error_code})"
+msgid "The torrent file '{path}' is already in use by '{torrent_name}'."
+msgstr "Torrentfilen '{path}' används redan av '{torrent_name}'."
 
-msgid "Couldn't parse scrape response: {error} ({error_code})"
-msgstr "Det gick inte att tolka skrapningssvar: {error} ({error_code})"
+msgid "Couldn't open torrent"
+msgstr "Det gick inte att öppna torrent"
 
-msgid "Unknown error"
-msgstr "Okänt fel"
+msgid "Couldn't move '{path}' to trash: {error} ({error_code})"
+msgstr "Det gick inte att flytta '{path}' till papperskorgen: {error} ({error_code})"
 
-msgid "{ip_protocol} connection failed"
-msgstr "{ip_protocol} anslutning misslyckades"
+#, fuzzy
+#| msgid "Couldn't create proxy for '{bus}': {error} ({error_code})"
+msgid "Couldn't launch default application for URI '{uri}': {error} ({error_code})"
+msgstr "Det gick inte att skapa proxy för '{bus}': {error} ({error_code})"
 
-msgid "Couldn't look up '{address}:{port}' in {ip_protocol}: {error} ({error_code})"
-msgstr "Kunde inte slå upp '{address}:{port}' in {ip_protocol}: {error} ({error_code})"
+#, fuzzy
+#| msgid "Couldn't open '{path}': {error} ({error_code})"
+msgid "Couldn't invoke xdg-open for URI '{uri}': {error} ({error_code})"
+msgstr "Det gick inte att öppna '{path}': {error} ({error_code})"
+
+msgid "Couldn't open '{url}'"
+msgstr "Det gick inte att öppna '{url}'"
+
+msgid "Unsupported URL: '{url}'"
+msgstr "URL som inte stöds: '{url}'"
+
+msgid "{appname} doesn't know how to use '{url}'"
+msgstr "{appname} vet inte hur den ska använda '{url}'"
+
+msgid "This magnet link appears to be intended for something other than BitTorrent."
+msgstr "Denna magnetlänk verkar vara avsedd för något annat än BitTorrent."
+
+msgid "{days_from_now:L} day from now"
+msgid_plural "{days_from_now:L} days from now"
+msgstr[0] "{days_from_now:L} dag från nu"
+msgstr[1] "{days_from_now:L} dagar från nu"
+
+msgid "{hours_from_now:L} hour from now"
+msgid_plural "{hours_from_now:L} hours from now"
+msgstr[0] "{hours_from_now:L} timme från nu"
+msgstr[1] "{hours_from_now:L} timmar från nu"
+
+msgid "{minutes_from_now:L} minute from now"
+msgid_plural "{minutes_from_now:L} minutes from now"
+msgstr[0] "{minutes_from_now:L} minut från nu"
+msgstr[1] "{minutes_from_now:L} minuter från nu"
+
+msgid "{seconds_from_now:L} second from now"
+msgid_plural "{seconds_from_now:L} seconds from now"
+msgstr[0] "{seconds_from_now:L} sekund från nu"
+msgstr[1] "{seconds_from_now:L} sekunder från nu"
+
+msgid "now"
+msgstr "nu"
+
+msgid "{days_ago:L} day ago"
+msgid_plural "{days_ago:L} days ago"
+msgstr[0] "{days_ago:L} dag sedan"
+msgstr[1] "{days_ago:L} dagar sedan"
+
+msgid "{hours_ago:L} hour ago"
+msgid_plural "{hours_ago:L} hours ago"
+msgstr[0] "{hours_ago:L} timme sedan"
+msgstr[1] "{hours_ago:L} timmar sedan"
+
+msgid "{minutes_ago:L} minute ago"
+msgid_plural "{minutes_ago:L} minutes ago"
+msgstr[0] "{minutes_ago:L} minut sedan"
+msgstr[1] "{minutes_ago:L} minuter sedan"
+
+msgid "{seconds_ago:L} second ago"
+msgid_plural "{seconds_ago:L} seconds ago"
+msgstr[0] "{seconds_ago:L} sekund sedan"
+msgstr[1] "{seconds_ago:L} sekunder sedan"
+
+msgid "Got a list of {markup_begin}{peer_count} peer{markup_end} {time_span_ago}"
+msgid_plural "Got a list of {markup_begin}{peer_count} peers{markup_end} {time_span_ago}"
+msgstr[0] "Mottog en lista med {markup_begin}{peer_count} jämlike{markup_end} för {time_span_ago}"
+msgstr[1] "Mottog en lista med {markup_begin}{peer_count} jämlikar{markup_end} för {time_span_ago}"
+
+msgid "Peer list request {markup_begin}timed out {time_span_ago}{markup_end}; will retry"
+msgstr "Förfrågan efter lista över jämlikar {markup_begin}tog för lång tid för {time_span_ago}{markup_end}; kommer att försöka igen"
+
+msgid "Got an error '{markup_begin}{error}{markup_end}' {time_span_ago}"
+msgstr "Fick felet '{markup_begin}{error}{markup_end}' för {time_span_ago}"
+
+msgid "No updates scheduled"
+msgstr "Inga uppdateringar schemalagda"
+
+msgid "Asking for more peers {time_span_from_now}"
+msgstr "Frågar efter fler jämlikar {time_span_from_now}"
+
+msgid "Queued to ask for more peers"
+msgstr "I kö för att fråga efter fler jämlikar"
+
+msgid "Asked for more peers {markup_begin}{time_span_ago}{markup_end}"
+msgstr "Frågade efter fler jämlikar {markup_begin} för {time_span_ago}{markup_end}"
+
+msgid "Got a scrape error '{markup_begin}{error}{markup_end}' {time_span_ago}"
+msgstr "Fick ett skrapningsfel '{markup_begin}{error}{markup_end}' för {time_span_ago}"
+
+#, fuzzy
+#| msgid "Tracker had {markup_begin}no information{markup_end} on peer counts {time_span} ago"
+msgid "Tracker had {markup_begin}no information{markup_end} on peer counts {time_span_ago}"
+msgstr "Spåraren hade {markup_begin}ingen information{markup_end} om antal jämlikar för {time_span} sedan"
+
+msgid "Tracker had {markup_begin}{seeder_count} {seeder_or_seeders} and {leecher_count} {leecher_or_leechers}{markup_end} {time_span_ago}"
+msgstr "Spåraren hade {markup_begin}{seeder_count} {seeder_or_seeders} och {leecher_count} {leecher_or_leechers}{markup_end} för {time_span_ago}"
+
+msgid "seeder"
+msgid_plural "seeders"
+msgstr[0] "distributör"
+msgstr[1] "distributörer"
+
+msgid "leecher"
+msgid_plural "leechers"
+msgstr[0] "reciprokör"
+msgstr[1] "reciprokörer"
+
+#, fuzzy
+#| msgid "Asking for peer counts in {time_span_from_now}"
+msgid "Asking for peer counts {time_span_from_now}"
+msgstr "Frågar efter antal jämlikar om {time_span_from_now}"
+
+msgid "Queued to ask for peer counts"
+msgstr "I kö för att fråga efter antal jämlikar"
+
+msgid "Asked for peer counts {markup_begin}{time_span_ago}{markup_end}"
+msgstr "Frågade efter antal jämlikar {markup_begin} för {time_span_ago}{markup_end}"
+
+msgid "{days:L} day"
+msgid_plural "{days:L} days"
+msgstr[0] "{days:L} dag"
+msgstr[1] "{days:L} dagar"
+
+msgid "{hours:L} hour"
+msgid_plural "{hours:L} hours"
+msgstr[0] "{hours:L} timme"
+msgstr[1] "{hours:L} timmar"
+
+#. Translators: Spin box format, "Stop seeding if idle for: [ 5 minutes ]"
+msgid "{minutes:L} minute"
+msgid_plural "{minutes:L} minutes"
+msgstr[0] "{minutes:L} minut"
+msgstr[1] "{minutes:L} minuter"
+
+msgid "{seconds:L} second"
+msgid_plural "{seconds:L} seconds"
+msgstr[0] "{seconds:L} sekund"
+msgstr[1] "{seconds:L} sekunder"
+
+msgid "{days_left:L} day left"
+msgid_plural "{days_left:L} days left"
+msgstr[0] "{days_left:L} dag kvar"
+msgstr[1] "{days_left:L} dagar kvar"
+
+msgid "{hours_left:L} hour left"
+msgid_plural "{hours_left:L} hours left"
+msgstr[0] "{hours_left:L} timme kvar"
+msgstr[1] "{hours_left:L} timmar kvar"
+
+msgid "{minutes_left:L} minute left"
+msgid_plural "{minutes_left:L} minutes left"
+msgstr[0] "{minutes_left:L} minut kvar"
+msgstr[1] "{minutes_left:L} minuter kvar"
+
+msgid "{seconds_left:L} second left"
+msgid_plural "{seconds_left:L} seconds left"
+msgstr[0] "{seconds_left:L} sekund kvar"
+msgstr[1] "{seconds_left:L} sekunder kvar"
 
 msgid "Announce error: {error} ({url})"
 msgstr "Annonseringsfel: {error} ({url})"
@@ -1642,20 +1919,63 @@ msgstr "Spårare svarade inte"
 msgid "Success"
 msgstr "Lyckades"
 
+msgid "Couldn't parse announce response: {error} ({error_code})"
+msgstr "Det gick inte att tolka meddelandesvar: {error} ({error_code})"
+
+msgid "Couldn't parse scrape response: {error} ({error_code})"
+msgstr "Det gick inte att tolka skrapningssvar: {error} ({error_code})"
+
+msgid "Unknown error"
+msgstr "Okänt fel"
+
+msgid "{ip_protocol} connection failed"
+msgstr "{ip_protocol} anslutning misslyckades"
+
+msgid "Couldn't look up '{address}:{port}' in {ip_protocol}: {error} ({error_code})"
+msgstr "Kunde inte slå upp '{address}:{port}' in {ip_protocol}: {error} ({error_code})"
+
 msgid "Blocklist '{path}' has {count} entry"
 msgid_plural "Blocklist '{path}' has {count} entries"
 msgstr[0] "Blocklistan '{path}' har {count} post"
 msgstr[1] "Blockeringslistan '{path}' har {count} poster"
 
-#. don't try to display the actual lines - it causes issues
-msgid "Couldn't parse line: '{line}'"
+#, fuzzy
+#| msgid "Couldn't parse line: '{line}'"
+msgid "Couldn't parse line {line}: {base64}"
 msgstr "Det gick inte att tolka rad: '{line}'"
 
-msgid "Rewriting old blocklist file format to new format"
+#, fuzzy
+#| msgid "Rewriting old blocklist file format to new format"
+msgid "Rewriting old blocklist file {path} to new format"
 msgstr "Skriver om gammalt blocklistfilformat till nytt format"
+
+msgid "Blocklist is larger than {limit} MiB; ignoring it"
+msgstr ""
+
+#, fuzzy
+#| msgid "Couldn't fetch blocklist: {error} ({error_code})"
+msgid "Couldn't fetch blocklist: {errmsg}, response code: {error} ({error_code})"
+msgstr "Det gick inte att hämta blockeringslistan: {error} ({error_code})"
+
+msgid "Couldn't fetch blocklist: {error} ({error_code})"
+msgstr "Det gick inte att hämta blockeringslistan: {error} ({error_code})"
+
+msgid "Automatically updated blocklist, which now has {count} rules"
+msgstr ""
+
+msgid "Invalid tr_sched_days value {val}"
+msgstr ""
 
 msgid "{crypto_library} error: {error} ({error_code})"
 msgstr "{crypto_library} fel: {error} ({error_code})"
+
+msgid "Couldn't read '{path}': Not a regular file"
+msgstr "Det gick inte att läsa '{path}': Inte en vanlig fil"
+
+#, fuzzy
+#| msgid "Couldn't read '{path}'"
+msgid "Couldn't get '{path}': "
+msgstr "Det gick inte att läsa '{path}'"
 
 msgid "Couldn't get '{path}': {error} ({error_code})"
 msgstr "Det gick inte att få '{path}': {error} ({error_code})"
@@ -1672,20 +1992,14 @@ msgstr "Din maskin stöder inte {protocol}"
 msgid "Successfully updated global {type} address to {ip} using {url}"
 msgstr "Den globala {type}-adressen har uppdaterats till {ip} med {url}"
 
+msgid "Still waiting for disk IO on torrent {id}: {running} running, {queued} queued"
+msgstr ""
+
 msgid "Too many messages like this! I won't log this message anymore this session."
 msgstr "För många meddelanden som detta! Jag kommer inte att logga detta meddelande längre denna session."
 
 msgid "Skipping '{path}': {error} ({error_code})"
 msgstr "Hoppar över '{path}': {error} ({error_code})"
-
-msgid "Couldn't create socket: {error} ({error_code})"
-msgstr "Det gick inte att skapa socket: {error} ({error_code})"
-
-msgid "Couldn't set source address {address} on {socket}: {error} ({error_code})"
-msgstr "Det gick inte att ställa in källadressen {address} på {socket}: {error} ({error_code})"
-
-msgid "Couldn't connect socket {socket} to {address}:{port}: {error} ({error_code})"
-msgstr "Det gick inte att ansluta socketen {socket} till {address}:{port}: {error} ({error_code})"
 
 msgid "Couldn't bind port {port} on {address}: {error} ({error_code}) -- Is another copy of {appname} already running?"
 msgstr "Det gick inte att binda port {port} på {address}: {error} ({error_code}) -- Körs en annan kopia av {appname} redan?"
@@ -1702,8 +2016,35 @@ msgstr "Det gick inte att förallokera '{path}': {error} ({error_code})"
 msgid "Couldn't truncate '{path}': {error} ({error_code})"
 msgstr "Det gick inte att trunkera '{path}': {error} ({error_code})"
 
+msgid "Couldn't create socket: {error} ({error_code})"
+msgstr "Det gick inte att skapa socket: {error} ({error_code})"
+
+msgid "Couldn't set source address {address} on {socket}: {error} ({error_code})"
+msgstr "Det gick inte att ställa in källadressen {address} på {socket}: {error} ({error_code})"
+
+msgid "Couldn't connect socket {socket} to {address}:{port}: {error} ({error_code})"
+msgstr "Det gick inte att ansluta socketen {socket} till {address}:{port}: {error} ({error_code})"
+
 msgid "Unknown state: {state}"
 msgstr "Okänt tillstånd: {state}"
+
+msgid "Starting"
+msgstr "Startar"
+
+msgid "Forwarded"
+msgstr "Vidarebefordrad"
+
+msgid "Stopping"
+msgstr "Stoppar"
+
+msgid "Not forwarded"
+msgstr "Inte vidarebefordrad"
+
+msgid "Mapped private port {private_port} to public port {public_port}"
+msgstr "Mappade privat port {private_port} till publik port {public_port}"
+
+msgid "State changed from '{old_state}' to '{state}'"
+msgstr "Tillstånd ändrat från '{old_state}' till '{state}'"
 
 msgid "Found public address '{address}'"
 msgstr "Hittade publik adress '{address}'"
@@ -1735,23 +2076,21 @@ msgstr "Vidarebefordrade lokal port {local_port} till {advertised_port}"
 msgid "If your router supports UPnP, please make sure UPnP is enabled!"
 msgstr "Om din router stöder UPnP, se till att UPnP är aktiverat!"
 
-msgid "Starting"
-msgstr "Startar"
+#, fuzzy
+#| msgid "Couldn't test port: {error} ({error_code})"
+msgid "Couldn't test port: {errmsg}, response code: {error} ({error_code})"
+msgstr "Det gick inte att testa port: {error} ({error_code})"
 
-msgid "Forwarded"
-msgstr "Vidarebefordrad"
+msgid "Couldn't test port: {error} ({error_code})"
+msgstr "Det gick inte att testa port: {error} ({error_code})"
 
-msgid "Stopping"
-msgstr "Stoppar"
+#, fuzzy
+#| msgid "Couldn't fetch torrent: {error} ({error_code})"
+msgid "Couldn't fetch torrent: {errmsg}, Response code: {error} ({error_code})"
+msgstr "Det gick inte att hämta torrent: {error} ({error_code})"
 
-msgid "Not forwarded"
-msgstr "Inte vidarebefordrad"
-
-msgid "Mapped private port {private_port} to public port {public_port}"
-msgstr "Mappade privat port {private_port} till publik port {public_port}"
-
-msgid "State changed from '{old_state}' to '{state}'"
-msgstr "Tillstånd ändrat från '{old_state}' till '{state}'"
+msgid "Couldn't fetch torrent: {error} ({error_code})"
+msgstr "Det gick inte att hämta torrent: {error} ({error_code})"
 
 msgid "Unix socket path must be fewer than {count} characters (including '{prefix}' prefix)"
 msgstr "Unix-sockets sökväg måste vara färre än {count} tecken (inklusive '{prefix}'-prefixet)"
@@ -1809,29 +2148,24 @@ msgstr "Kräver lösenord"
 msgid "Serving RPC and Web requests from '{path}'"
 msgstr "Betjänar RPC och webbförfrågningar från '{path}'"
 
-msgid "Couldn't test port: {error} ({error_code})"
-msgstr "Det gick inte att testa port: {error} ({error_code})"
-
-msgid "Couldn't fetch blocklist: {error} ({error_code})"
-msgstr "Det gick inte att hämta blockeringslistan: {error} ({error_code})"
-
-msgid "Couldn't fetch torrent: {error} ({error_code})"
-msgstr "Det gick inte att hämta torrent: {error} ({error_code})"
-
-msgid "Time to turn off turtle mode"
-msgstr "Dags att inaktivera av sköldpaddsläget"
-
-msgid "Time to turn on turtle mode"
+#, fuzzy
+#| msgid "Time to turn on turtle mode"
+msgid "Time to turn on alternative speed limits"
 msgstr "Dags att aktivera sköldpaddsläget"
 
-msgid "Couldn't open session lock file '{path}': {error} ({error_code})"
-msgstr "Det gick inte att öppna sessionslåsfilen '{path}': {error} ({error_code})"
+#, fuzzy
+#| msgid "Time to turn off turtle mode"
+msgid "Time to turn off alternative speed limits"
+msgstr "Dags att inaktivera av sköldpaddsläget"
 
 msgid "Listening to incoming peer connections on {hostport}"
 msgstr "Lyssnar på inkommande jämlikeanslutningar på {hostport}"
 
 msgid "{appname} version {version} starting"
 msgstr "{appname} version {version} startar"
+
+msgid "Couldn't start disk IO workers, continuing without them: {error}"
+msgstr ""
 
 msgid "{appname} version {version} shutting down"
 msgstr "{appname} version {version} stängs av"
@@ -1841,8 +2175,11 @@ msgid_plural "Loaded {count} torrents"
 msgstr[0] "Läste in {count} torrent"
 msgstr[1] "Läste in {count} torrenter"
 
-msgid "Migrated torrent file from '{old_path}' to '{path}'"
-msgstr "Migrerade torrentfil från '{old_path}' till '{path}'"
+msgid "Couldn't claim '{path}'. If another session is using it, the two will overwrite each other's settings, resume files and stats."
+msgstr ""
+
+msgid "Couldn't open session lock file '{path}': {error} ({error_code})"
+msgstr "Det gick inte att öppna sessionslåsfilen '{path}': {error} ({error_code})"
 
 msgid "Couldn't use metainfo from '{path}' for '{magnet}': {error} ({error_code})"
 msgstr "Det gick inte att använda metainfo från '{path}' for '{magnet}': {error} ({error_code})"
@@ -1874,14 +2211,32 @@ msgstr "Det gick inte att ta bort alla torrentfiler: {error} ({error_code})"
 msgid "Removing torrent"
 msgstr "Tar bort torrent"
 
-msgid "Couldn't move '{old_path}' to '{path}': {error} ({error_code})"
-msgstr "Det gick inte att flytta '{old_path}' till '{path}': {error} ({error_code})"
+#, fuzzy
+#| msgid "Couldn't remove all torrent files: {error} ({error_code})"
+msgid "Couldn't move torrent files to '{path}': {error} ({error_code})"
+msgstr "Det gick inte att ta bort alla torrentfiler: {error} ({error_code})"
 
 msgid "Paused torrent as no data was found! Ensure your drives are connected or use \"Set Location\", then use \"Verify Local Data\" again. To re-download, start the torrent."
 msgstr "Pausade torrent eftersom inga data hittades! Se till att dina enheter är anslutna eller använd \"Ange plats\" och använd sedan \"Verifiera lokala data\" igen. För att hämta igen, starta torrent."
 
+msgid "Couldn't move '{old_path}' to '{path}': {error} ({error_code})"
+msgstr "Det gick inte att flytta '{old_path}' till '{path}': {error} ({error_code})"
+
 msgid "Tracker warning: '{warning}' ({url})"
 msgstr "Spårarvarning: '{warning}' ({url})"
+
+#, fuzzy
+#| msgid "Removing torrent file '{path}'"
+msgid "Moving '{source}' will overwrite '{path}'"
+msgstr "Tar bort torrentfilen '{path}'"
+
+#, fuzzy
+#| msgid "Couldn't move '{old_path}' to '{path}': {error} ({error_code})"
+msgid "Couldn't compare '{path}' with '{root}': {error} ({error_code}); leaving it alone"
+msgstr "Det gick inte att flytta '{old_path}' till '{path}': {error} ({error_code})"
+
+msgid "Migrated torrent file from '{old_path}' to '{path}'"
+msgstr "Migrerade torrentfil från '{old_path}' till '{path}'"
 
 msgid "Couldn't parse '{filename}' line: '{line}'"
 msgstr "Det gick inte att tolka '{filename}' rad: '{line}'"
@@ -1910,8 +2265,47 @@ msgstr ""
 msgid "Unknown socket family"
 msgstr "Okänd socket-familj"
 
-msgid "Couldn't read '{path}': Not a regular file"
-msgstr "Det gick inte att läsa '{path}': Inte en vanlig fil"
+msgid "B"
+msgstr "B"
+
+msgid "KiB"
+msgstr "KiB"
+
+msgid "MiB"
+msgstr "MiB"
+
+msgid "GiB"
+msgstr "GiB"
+
+msgid "TiB"
+msgstr "TiB"
+
+msgid "B/s"
+msgstr "B/s"
+
+msgid "kB/s"
+msgstr "kB/s"
+
+msgid "MB/s"
+msgstr "MB/s"
+
+msgid "GB/s"
+msgstr "GB/s"
+
+msgid "TB/s"
+msgstr "TB/s"
+
+msgid "kB"
+msgstr "kB"
+
+msgid "MB"
+msgstr "MB"
+
+msgid "GB"
+msgstr "GB"
+
+msgid "TB"
+msgstr "TB"
 
 msgid "Couldn't parse JSON at position {position} '{text}': {error} ({error_code})"
 msgstr "Det gick inte att tolka JSON vid positionen {position} '{text}': {error} ({error_code})"
@@ -1919,17 +2313,14 @@ msgstr "Det gick inte att tolka JSON vid positionen {position} '{text}': {error}
 msgid "Couldn't watch '{path}': {error} ({error_code})"
 msgstr "Det gick inte att se '{path}': {error} ({error_code})"
 
-msgid "Couldn't read event: {error} ({error_code})"
-msgstr "Det gick inte att läsa händelse: {error} ({error_code})"
-
 msgid "Couldn't read event: expected {expected_size}, got {actual_size}"
 msgstr "Det gick inte att läsa händelse: förväntade {expected_size}, fick {actual_size}"
 
-msgid "Couldn't read filename: {error} ({error_code})"
-msgstr "Det gick inte att läsa filnamn: {error} ({error_code})"
-
 msgid "Couldn't read filename: expected {expected_size}, got {actual_size}"
 msgstr "Det gick inte att läsa filnamn: förväntade {expected_size}, fick {actual_size}"
+
+msgid "Couldn't read event: {error} ({error_code})"
+msgstr "Det gick inte att läsa händelse: {error} ({error_code})"
 
 msgid "Couldn't convert '{path}' to native path"
 msgstr "Det gick inte att konvertera '{path}' till inbyggd sökväg"
@@ -1949,10 +2340,15 @@ msgstr "Det gick inte att vänta på mappändringar"
 msgid "Consider upgrading your curl installation."
 msgstr "Överväg att uppgradera din curl-installation."
 
+msgid "The minimum supported version is {curl_version}, you might face unexpected behaviour."
+msgstr ""
+
 msgid "curl {curl_version} is prone to SIGPIPE crashes. {details_url}"
 msgstr "curl {curl_version} är benägen att drabbas av SIGPIPE-krascher. {details_url}"
 
-msgid "curl {curl_version} is prone to an eventfd double close vulnerability that might cause SIGABRT crashes for the transmission-daemon systemd service. {details_url}"
+#, fuzzy
+#| msgid "curl {curl_version} is prone to an eventfd double close vulnerability that might cause SIGABRT crashes for the transmission-daemon systemd service. {details_url}"
+msgid "curl {curl_version} is prone to an eventfd double close vulnerability that might cause SIGABRT crashes for the daemon systemd service. {details_url}"
 msgstr "curl {curl_version} är benägen att drabbas av en sårbarhet med dubbel stängning av händelser (eventfd) som kan orsaka SIGABRT-krascher för transmission-daemon systemd-tjänsten. {details_url}"
 
 msgid "Will verify tracker certs using envvar CURL_CA_BUNDLE: {bundle}"
@@ -1964,8 +2360,399 @@ msgstr "OBS: detta fungerar bara om du byggde mot libcurl med openssl eller gnut
 msgid "NB: Invalid certs will appear as 'Could not connect to tracker' like many other errors"
 msgstr "OBS: Ogiltiga certifikat kommer att visas som \"Det gick inte att ansluta till spårare\" som många andra fel"
 
+msgid "Aborting request: response body exceeded max size of {max_file_size} bytes"
+msgstr ""
+
 msgid "Couldn't fetch '{url}': expected HTTP response code {expected_code}, got {actual_code}"
 msgstr "Det gick inte att hämta '{url}': förväntad HTTP-svarskod {expected_code}, fick {actual_code}"
+
+msgid "Server"
+msgstr "Server"
+
+msgid "C_redits"
+msgstr "T_ack till"
+
+msgid "Credits"
+msgstr "Tack till"
+
+msgid "About {appname}"
+msgstr "Om {appname}"
+
+msgid "Torrent Completed"
+msgstr "Torrent slutförd"
+
+msgid "Torrents Completed"
+msgstr "Torrenter slutförda"
+
+#. Translators: Text following the "Have:" label in torrent properties dialog;
+#. {current_size} is amount of downloaded and verified data
+msgid "{current_size} (100%)"
+msgstr "{current_size} (100%)"
+
+msgid "{current_size} of {complete_size} ({percent_done}%), {unverified_size} Unverified"
+msgstr "{current_size} av {complete_size} ({percent_done}%), {unverified_size} Obekräftad"
+
+msgid "{total_size} ({piece_count:L} piece @ {piece_size})"
+msgid_plural "{total_size} ({piece_count:L} pieces @ {piece_size})"
+msgstr[0] "{total_size} ({piece_count:L} del @ {piece_size})"
+msgstr[1] "{total_size} ({piece_count:L} delar @ {piece_size})"
+
+msgid "{total_size} ({piece_count:L} piece)"
+msgid_plural "{total_size} ({piece_count:L} pieces)"
+msgstr[0] "{total_size} ({piece_count:L} del)"
+msgstr[1] "{total_size} ({piece_count:L} delar)"
+
+msgid "Add URL(s)"
+msgstr "Lägg till URL:er"
+
+msgid "Add tracker announce URLs, one per line:"
+msgstr "Lägg till annonserings-URL:er för spårare, en per rad:"
+
+msgid "No new URLs found."
+msgstr "Inga nya URL:er hittades."
+
+msgid "Use Global Settings"
+msgstr "Använd globala inställningar"
+
+msgid "Stop seeding if idle for:"
+msgstr "Stoppa distribuering om inaktiv i:"
+
+msgid "Torrent Properties"
+msgstr "Torrent-egenskaper"
+
+msgid "Availability:"
+msgstr "Tillgängligt:"
+
+msgid "Labels:"
+msgstr "Etiketter:"
+
+msgid "Limit _upload speed:"
+msgstr "Begränsa _sändningshastighet:"
+
+msgid "Limit _download speed:"
+msgstr "Begränsa _hämtningshastighet:"
+
+msgid "Check Selected"
+msgstr "Markera valda"
+
+msgid "Uncheck Selected"
+msgstr "Avmarkera valda"
+
+msgid "Only Check Selected"
+msgstr "Markera endast valda"
+
+msgid "Open"
+msgstr "Öppna"
+
+msgid "Rename…"
+msgstr "Byt namn…"
+
+msgid "Search…"
+msgstr "Sök…"
+
+msgid "<i>Calculating Free Space…</i>"
+msgstr "<i>Beräknar ledigt utrymme…</i>"
+
+msgid "Limited at {speed}"
+msgstr "Begränsat till {speed}"
+
+#. Translators: Second (optional) part of main window title "Appname - host:port" (added when connected to remote session)
+#. notice that leading space (before the dash) is included here
+msgid " - {host}:{port}"
+msgstr " - {host}:{port}"
+
+msgid "Network Error"
+msgstr "Nätverksfel"
+
+msgid "Idle"
+msgstr "Inaktiv"
+
+msgid "Showing {visible_count:L} of {count:L} torrent"
+msgid_plural "Showing {visible_count:L} of {count:L} torrents"
+msgstr[0] "Visar {visible_count:L} av {count:L} torrent"
+msgstr[1] "Visar {visible_count:L} av {count:L} torrenter"
+
+msgid "Torrent Files (*.torrent);;All Files (*.*)"
+msgstr "Torrentfiler (*.torrent);;Alla filer (*.*)"
+
+msgid "{host} has not responded yet"
+msgstr "{host} har inte svarat ännu"
+
+msgid "{host} is responding"
+msgstr "{host} svarar"
+
+#, fuzzy
+#| msgid "{host} last responded {time_span} ago"
+msgid "{host} last responded {time_span_ago}"
+msgstr "{host} svarade senast för {time_span} sedan"
+
+msgid "{host} is not responding"
+msgstr "{host} svarar inte"
+
+msgid "_Open…"
+msgstr "_Öppna…"
+
+msgid "Create a new torrent"
+msgstr "Skapa en ny torrent"
+
+msgid "Open the torrent's folder"
+msgstr "Öppna torrentmappen"
+
+msgid "Ask tracker for more peers"
+msgstr "Fråga spårare om fler jämlikar"
+
+msgid "Verify local data"
+msgstr "Verifiera lokala data"
+
+msgid "Remove torrent and delete its files"
+msgstr "Ta bort torrent och dess filer"
+
+msgid "Compact View"
+msgstr "Kompakt vy"
+
+msgid "_Main Window"
+msgstr "_Huvudfönster"
+
+msgid "Tray _Icon"
+msgstr "_Ikon i aviseringsfältet"
+
+msgid "_Change Session…"
+msgstr "_Byt session…"
+
+#. Start a local session or connect to a running session
+msgid "Choose Session"
+msgstr "Välj session"
+
+msgid "Bypass the queue and start now"
+msgstr "Gå förbi kön och starta nu"
+
+msgid "{file_count:L} File"
+msgid_plural "{file_count:L} Files"
+msgstr[0] "{file_count:L} Fil"
+msgstr[1] "{file_count:L} filer"
+
+msgid "{piece_count:L} Piece"
+msgid_plural "{piece_count:L} Pieces"
+msgstr[0] "{piece_count:L} Del"
+msgstr[1] "{piece_count:L} delar"
+
+msgid "{total_size} in {files}; {pieces} @ {piece_size}"
+msgstr "{total_size} i {files}; {pieces} @ {piece_size}"
+
+msgid ""
+"To add a backup URL, add it on the line after the primary URL.\n"
+"To add another primary URL, add it after a blank line."
+msgstr ""
+"För att lägga till en reserv URL, lägg till den på raden efter den primära URL:en.\n"
+"För att lägga till ytterligare en primär URL, lägg till den efter en tom rad."
+
+#, fuzzy
+#| msgid "_Source:"
+msgid "Sou_rce:"
+msgstr "_Källa:"
+
+msgid "_Priority:"
+msgstr "_Prioritet:"
+
+msgid "Select Folder"
+msgstr "Välj mapp"
+
+msgid "unknown"
+msgstr "okänd"
+
+msgid "checking…"
+msgstr "kontrollerar…"
+
+msgid "open"
+msgstr "öppen"
+
+msgid "closed"
+msgstr "stängd"
+
+msgid "error"
+msgstr "fel"
+
+msgid "<b>Update succeeded!</b><p>Blocklist now has {count:L} rule.</p>"
+msgid_plural "<b>Update succeeded!</b><p>Blocklist now has {count:L} rules.</p>"
+msgstr[0] "<b>Uppdatering lyckades!</b><p>Blocklistan har nu {count:L} regel.</p>"
+msgstr[1] "<b>Uppdatering lyckades!</b><p>Blockeringslistan har nu {count:L} regler.</p>"
+
+msgid "Download of the blocklist failed."
+msgstr ""
+
+msgid "Update Blocklist"
+msgstr "Uppdatera blockeringslista"
+
+msgid "Select \"Torrent Done Seeding\" Script"
+msgstr "Välj skriptet \"Torrentdistribution klar\"."
+
+msgid "Select Watch Directory"
+msgstr "Välj mapp för övervakning"
+
+msgid "Select Incomplete Directory"
+msgstr "Välj mapp för ofullständiga"
+
+msgid "Select \"Torrent Done Downloading\" Script"
+msgstr "Välj skriptet \"Torrenthämtning klar\"."
+
+msgid "Not supported by remote sessions"
+msgstr "Stöds inte av fjärrsessioner"
+
+msgid "<i>Blocklist contains {count:L} rule</i>"
+msgid_plural "<i>Blocklist contains {count:L} rules</i>"
+msgstr[0] "<i>Blocklistan innehåller {count:L} regel</i>"
+msgstr[1] "<i>Blockeringslistan innehåller {count:L} regler</i>"
+
+#, fuzzy
+#| msgid "<i>Blocklist contains {count:L} rule</i>"
+#| msgid_plural "<i>Blocklist contains {count:L} rules</i>"
+msgid "<i>Blocklist has never been updated</i>"
+msgstr "<i>Blocklistan innehåller {count:L} regel</i>"
+
+#, fuzzy
+#| msgid "<i>Blocklist contains {count:L} rule</i>"
+#| msgid_plural "<i>Blocklist contains {count:L} rules</i>"
+msgid "<i>Blocklist last updated {date}</i>"
+msgstr "<i>Blocklistan innehåller {count:L} regel</i>"
+
+msgid "_Upload:"
+msgstr "_Sändning:"
+
+msgid "_Download:"
+msgstr "_Hämtning:"
+
+msgid "U_pload:"
+msgstr "U_ppladdning:"
+
+msgid "Do_wnload:"
+msgstr "Ne_dladdning:"
+
+msgid "Downloading"
+msgstr "Hämtar"
+
+msgid "Adding"
+msgstr "Tilläggning"
+
+msgid "Reads user clipboard content for torrents"
+msgstr "Läser användarens urklippsinnehåll för torrenter"
+
+msgid "Detect new torrents from clipboard"
+msgstr "Upptäck nya torrenter från urklipp"
+
+#. Please keep this phrase as short as possible, it's currently the longest and influences dialog width
+msgid "Download is i_nactive if data sharing stopped:"
+msgstr "Hämtning är _inaktiv om datadelning stoppas:"
+
+msgid "Seeding"
+msgstr "Distribuerar"
+
+msgid "Stop seedi_ng if idle for:"
+msgstr "Sluta dis_tribuera om inaktiv i:"
+
+msgid "Encryption"
+msgstr "Kryptering"
+
+msgid "Start _minimized in notification area"
+msgstr "Starta _minimerad i aviseringsfältet"
+
+#, fuzzy
+#| msgid "Retransmission"
+msgid "Retransmission (Qt)"
+msgstr "Retransmission"
+
+msgid "Select Location"
+msgstr "Välj plats"
+
+msgid "Error Renaming Path"
+msgstr "Fel vid namnbyte av sökväg"
+
+msgid "Unable to rename \"{old_path}\" as \"{path}\": {error}."
+msgstr "Det går inte att byta namn på \"{old_path}\" till \"{path}\": {error}."
+
+msgid "Error Adding Torrent"
+msgstr "Fel vi tillägg av torrent"
+
+msgid "{torrent_name} (copy of {hash})"
+msgstr "{torrent_name} (kopia av {hash})"
+
+msgid "Duplicate Torrent"
+msgstr "Torrentdubblett"
+
+msgid "Duplicate Torrents"
+msgstr "Torrentdubbletter"
+
+msgid "Unable to add {count} duplicate torrent"
+msgid_plural "Unable to add {count} duplicate torrents"
+msgstr[0] "Det går inte att lägga till {count} torrentdubblett"
+msgstr[1] "Det går inte att lägga till {count} torrentdubbletter"
+
+msgid "Change Session"
+msgstr "Byt session"
+
+msgid "Source"
+msgstr "Källa"
+
+msgid "Start _Local Session"
+msgstr "Starta _lokal session"
+
+msgid "Connect to _Remote Session"
+msgstr "Anslut till _fjärrsession"
+
+msgid "_Host:"
+msgstr "_Värd:"
+
+msgid "_Port:"
+msgstr "_Port:"
+
+msgid "_Authentication required"
+msgstr "_Autentisering krävs"
+
+msgid "Remote root pa_th:"
+msgstr ""
+
+msgid "Tracker gave a warning: {warning}"
+msgstr "Spårare gav en varning: {warning}"
+
+msgid "Tracker gave an error: {error}"
+msgstr "Spårare gav ett fel: {error}"
+
+msgid "Error: {error}"
+msgstr "Fel: {error}"
+
+#, fuzzy
+#| msgid "Magnetized transfer - retrieving metadata (%1%)"
+msgid "Magnetized torrent - retrieving metadata ({percent_done}%)"
+msgstr "Magnetiserad överföring - hämtar metadata (%1%)"
+
+#, no-c-format
+msgid "Downloading metadata from {active_count:L} peer ({percent_done}% done)"
+msgid_plural "Downloading metadata from {active_count:L} peers ({percent_done}% done)"
+msgstr[0] "Hämtar metadata från {active_count:L} jämlike ({percent_done}% klart)"
+msgstr[1] "Hämtar metadata från {active_count:L} jämlikar ({percent_done}% klart)"
+
+msgid "Downloading from {active_count:L} peer"
+msgid_plural "Downloading from {active_count:L} peers"
+msgstr[0] "Hämtar från {active_count:L} jämlike"
+msgstr[1] "Hämtar från {active_count:L} jämlikar"
+
+msgid " and {webseed_count:L} web seed"
+msgid_plural " and {webseed_count:L} web seeds"
+msgstr[0] " och {webseed_count:L} webbdelning"
+msgstr[1] " och {webseed_count:L} webbdistributioner"
+
+msgid "Seeding to {active_count:L} peer"
+msgid_plural "Seeding to {active_count:L} peers"
+msgstr[0] "Distribuerar till {active_count:L} jämlike"
+msgstr[1] "Distribuerar till {active_count:L} jämlikar"
+
+msgid " - "
+msgstr " - "
+
+msgid "To add a backup URL, add it on the next line after a primary URL."
+msgstr "För att lägga till en reserv-URL, lägg till den på nästa rad efter en primär URL."
+
+msgid "To add a new primary URL, add it after a blank line."
+msgstr "För att lägga till en ny primär URL, lägg till den efter en tom rad."
 
 msgid "{file_count:L} file, {total_size}\n"
 msgid_plural "{file_count:L} files, {total_size}\n"
@@ -1987,7 +2774,10 @@ msgid_plural "minutes"
 msgstr[0] "minut"
 msgstr[1] "minuter"
 
-msgid "seconds"
+#, fuzzy
+#| msgid "seconds"
+#| msgid_plural "seconds"
+msgid "second"
 msgid_plural "seconds"
 msgstr[0] "sekund"
 msgstr[1] "sekunder"
@@ -1996,6 +2786,106 @@ msgid "day"
 msgid_plural "days"
 msgstr[0] "dag"
 msgstr[1] "dagar"
+
+msgid "seconds"
+msgid_plural "seconds"
+msgstr[0] "sekund"
+msgstr[1] "sekunder"
+
+#~ msgid "Finished"
+#~ msgstr "Slutförda"
+
+#~ msgid "We would upload to this peer if they asked"
+#~ msgstr "Vi skulle skicka till denna jämlike om den frågade"
+
+#~ msgid "Dn Blocks"
+#~ msgstr "Block ner"
+
+#~ msgid "Up Blocks"
+#~ msgstr "Block upp"
+
+#~ msgid "We Cancelled"
+#~ msgstr "Vi avbröt"
+
+#~ msgid "They Cancelled"
+#~ msgstr "De avbröt"
+
+#~ msgid "Have"
+#~ msgstr "Har"
+
+#~ msgctxt "current session totals"
+#~ msgid "Down: {downloaded_size}, Up: {uploaded_size}"
+#~ msgstr "Ner: {downloaded_size}, Upp: {uploaded_size}"
+
+#~ msgctxt "all-time totals"
+#~ msgid "Down: {downloaded_size}, Up: {uploaded_size}"
+#~ msgstr "Ner: {downloaded_size}, Upp: {uploaded_size}"
+
+#~ msgid "Select a File"
+#~ msgstr "Välj en fil"
+
+#~ msgid "Inhibiting desktop hibernation"
+#~ msgstr "Förhindra viloläge för datorn"
+
+#~ msgid "Couldn't inhibit desktop hibernation: {error}"
+#~ msgstr "Det gick inte att förhindra viloläget: {error}"
+
+#~ msgid "Allowing desktop hibernation"
+#~ msgstr "Tillåter skrivbordsviloläge"
+
+#~ msgid "Open URL…"
+#~ msgstr "Öppna URL…"
+
+#~ msgid "Start all torrents"
+#~ msgstr "Starta alla torrenter"
+
+#~ msgid "Pause all torrents"
+#~ msgstr "Pausa alla torrenter"
+
+#~ msgid "Start torrent now"
+#~ msgstr "Starta torrent nu"
+
+#~ msgid "Copy _Magnet Link to Clipboard"
+#~ msgstr "Kopiera _magnetlänk till urklipp"
+
+#~ msgid "Enable Alternative Speed _Limits"
+#~ msgstr "Aktivera alternativa hastighets_gränser"
+
+#~ msgid "Torrent size:"
+#~ msgstr "Torrentstorlek:"
+
+#~ msgid "_New"
+#~ msgstr "_Ny"
+
+#~ msgid "Source F_older:"
+#~ msgstr "Källm_app:"
+
+#~ msgid "Source _File:"
+#~ msgstr "Käll_fil:"
+
+#~ msgid "P_ause"
+#~ msgstr "P_ausa"
+
+#~ msgid "Keep _incomplete torrents in:"
+#~ msgstr "Behåll _ofullständiga torrenter i:"
+
+#~ msgid "Call scrip_t when done downloading:"
+#~ msgstr "Anropa skrip_t när hämtningen är klar:"
+
+#~ msgid "_Port used for incoming connections:"
+#~ msgstr "_Port som används för inkommande anslutningar:"
+
+#~ msgid "Enable µ_TP for peer communication"
+#~ msgstr "Aktivera µ_TP för jämlikeanslutningar"
+
+#~ msgid "_Inhibit hibernation when torrents are active"
+#~ msgstr "_Förhindra viloläge när torrenter är aktiva"
+
+#~ msgid "Torrent _location:"
+#~ msgstr "Torrent_plats:"
+
+#~ msgid "Couldn't read filename: {error} ({error_code})"
+#~ msgstr "Det gick inte att läsa filnamn: {error} ({error_code})"
 
 #~ msgid "Couldn't find pending RPC request for tag {tag}"
 #~ msgstr "Det gick inte att hitta väntande RPC-förfrågan för taggen {tag}"

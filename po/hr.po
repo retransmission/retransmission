@@ -11,8 +11,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-01-04 14:15+0000\n"
+"Report-Msgid-Bugs-To: https://github.com/retransmission/retransmission/issues\n"
+"POT-Creation-Date: 2026-10-03 11:48-0500\n"
 "PO-Revision-Date: 2017-01-26 19:47+0000\n"
 "Last-Translator: Mike Gelfand <mikedld@mikedld.com>, 2023\n"
 "Language-Team: Croatian (https://app.transifex.com/transmissionbt/teams/33778/hr/)\n"
@@ -26,6 +26,9 @@ msgid "None"
 msgstr "Nijedan"
 
 msgid "Inf"
+msgstr ""
+
+msgid "Another process is already using '{path}'."
 msgstr ""
 
 msgid "Couldn't read '{path}': {error} ({error_code})"
@@ -53,6 +56,9 @@ msgid "Reloading settings from '{path}'"
 msgstr ""
 
 msgid "Couldn't initialize daemon: {error} ({error_code})"
+msgstr ""
+
+msgid "Waiting for another process to release '{path}'"
 msgstr ""
 
 msgid "Loading settings from '{path}'"
@@ -163,17 +169,31 @@ msgctxt "Verb"
 msgid "Seeding"
 msgstr "Dijeljenje"
 
-msgid "Finished"
-msgstr "Završeno"
+#, fuzzy
+#| msgid "Incomplete"
+msgid "Seeding complete"
+msgstr "Nepotpuno"
 
 msgid "Paused"
 msgstr "Pauzirano"
 
+#, fuzzy
 msgid "N/A"
-msgstr "Nedostupno"
+msgstr ""
+"#-#-#-#-#  hr.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Nedostupno\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"N/D"
 
+#, fuzzy
 msgid "Mixed"
-msgstr "Izmiješano"
+msgstr ""
+"#-#-#-#-#  hr.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Izmiješano\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Izmješano\n"
+"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Izmiješano"
 
 msgid "No Torrents Selected"
 msgstr "Nema odabranih torrenata"
@@ -185,13 +205,13 @@ msgid "Public torrent"
 msgstr "Javni torrent"
 
 msgid "Created by {creator} on {date}"
-msgstr ""
+msgstr "Napravio/la {creator} datuma {date}"
 
 msgid "Created by {creator}"
-msgstr ""
+msgstr "Napravio/la {creator}"
 
 msgid "Created on {date}"
-msgstr ""
+msgstr "Napravljeno {date}"
 
 msgid "Unknown"
 msgstr "Nepoznato"
@@ -215,6 +235,7 @@ msgstr ""
 msgid "{current_size} ({percent_done}% of {percent_available}% available)"
 msgstr ""
 
+#, c-format
 msgid "{current_size} ({percent_done}% of {percent_available}% available; {unverified_size} unverified)"
 msgstr ""
 
@@ -222,7 +243,7 @@ msgid "{downloaded_size} (+{discarded_size} discarded after failed checksum)"
 msgstr ""
 
 msgid "{uploaded_size} (Ratio: {ratio})"
-msgstr ""
+msgstr "{uploaded_size} (Omjer: {ratio})"
 
 msgid "No errors"
 msgstr "Nema grešaka"
@@ -245,14 +266,21 @@ msgstr "Preuzimali bismo s ove točke kada bi nam dopustili"
 msgid "Uploading to peer"
 msgstr "Slanje na točku"
 
-msgid "We would upload to this peer if they asked"
-msgstr "Slali bismo ovoj točki da nas to traže"
+#, fuzzy
+#| msgid "We would download from this peer if they would let us"
+msgid "This peer would download from us if we would let them"
+msgstr "Preuzimali bismo s ove točke kada bi nam dopustili"
 
 msgid "Peer has unchoked us, but we're not interested"
 msgstr "Točka nas je odblokirala, ali nismo zainteresirani"
 
+#, fuzzy
 msgid "We unchoked this peer, but they're not interested"
-msgstr "Odblokirali smo ovu točku, ali ona nije zainteresirana"
+msgstr ""
+"#-#-#-#-#  hr.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Odblokirali smo ovu točku, ali ona nije zainteresirana\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Odblokirali smo ovu točku, ali nije zainteresirana"
 
 msgid "Encrypted connection"
 msgstr "Šifrirano povezivanje"
@@ -269,10 +297,12 @@ msgstr "Točka je dolazno povezivanje"
 msgid "Peer is connected over µTP"
 msgstr "Točka je povezana putem µTP-a"
 
+msgid "Peer supports holepunch (BEP 55)"
+msgstr ""
+
 msgid "Address"
 msgstr "Adresa"
 
-#. % is percent done
 msgid "%"
 msgstr "%"
 
@@ -281,18 +311,6 @@ msgstr "Zahtjevi preuzimanja"
 
 msgid "Up Reqs"
 msgstr "Zahtjevi slanja"
-
-msgid "Dn Blocks"
-msgstr "Preuzeti blokovi"
-
-msgid "Up Blocks"
-msgstr "Poslani blokovi"
-
-msgid "We Cancelled"
-msgstr "Mi smo otkazali"
-
-msgid "They Cancelled"
-msgstr "Oni su otkazali"
 
 msgid "Down"
 msgstr "Brzina preuzimanja"
@@ -308,61 +326,6 @@ msgstr "Oznake"
 
 msgid "Web Seeds"
 msgstr "Web djeljitelji"
-
-msgid "Got a list of {markup_begin}{peer_count} peer{markup_end} {time_span_ago}"
-msgid_plural "Got a list of {markup_begin}{peer_count} peers{markup_end} {time_span_ago}"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-
-#. {markup_begin} and {markup_end} should surround the time_span
-msgid "Peer list request {markup_begin}timed out {time_span_ago}{markup_end}; will retry"
-msgstr ""
-
-#. {markup_begin} and {markup_end} should surround the error
-msgid "Got an error '{markup_begin}{error}{markup_end}' {time_span_ago}"
-msgstr ""
-
-msgid "No updates scheduled"
-msgstr "Nema zakazanih nadopuna"
-
-msgid "Asking for more peers {time_span_from_now}"
-msgstr ""
-
-msgid "Queued to ask for more peers"
-msgstr "Upit za dodatnim točkama stavljen u red čekanja"
-
-#. {markup_begin} and {markup_end} should surround time_span_ago
-msgid "Asked for more peers {markup_begin}{time_span_ago}{markup_end}"
-msgstr ""
-
-msgid "Tracker had {markup_begin}{seeder_count} {seeder_or_seeders} and {leecher_count} {leecher_or_leechers}{markup_end} {time_span_ago}"
-msgstr ""
-
-msgid "seeder"
-msgid_plural "seeders"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-
-msgid "leecher"
-msgid_plural "leechers"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-
-#. {markup_begin} and {markup_end} should surround the error text
-msgid "Got a scrape error '{markup_begin}{error}{markup_end}' {time_span_ago}"
-msgstr ""
-
-msgid "Asking for peer counts in {time_span_from_now}"
-msgstr ""
-
-msgid "Queued to ask for peer counts"
-msgstr "Upit broja točke stavljen u red čekanja"
-
-msgid "Asked for peer counts {markup_begin}{time_span_ago}{markup_end}"
-msgstr ""
 
 msgid "{torrent_name} - Edit Trackers"
 msgstr ""
@@ -389,28 +352,33 @@ msgstr[1] ""
 msgstr[2] ""
 
 msgid "Remove torrent?"
-msgstr ""
+msgstr "Želite li ukloniti torrent?"
+
+msgid "Delete this torrent's downloaded files?"
+msgstr "Želite li obrisati preuzete datoteke ovog torrenta?"
 
 msgid "Remove {count:L} torrent?"
 msgid_plural "Remove {count:L} torrents?"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-
-msgid "Delete this torrent's downloaded files?"
-msgstr ""
+msgstr[0] "Želite li ukloniti {count:L} torrent?"
+msgstr[1] "Želite li ukloniti {count:L} torrenta?"
+msgstr[2] "Želite li ukloniti {count:L} torrenta?"
 
 msgid "Delete this {count:L} torrent's downloaded files?"
 msgid_plural "Delete these {count:L} torrents' downloaded files?"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Želite li obrisati ovu {count:L} preuzetu datoteku torrenta?"
+msgstr[1] "Želite li obrisati ove {count:L} preuzete datoteke torrenta?"
+msgstr[2] "Želite li obrisati ovih {count:L} preuzetih datoteka torrenta?"
 
-msgid "Once removed, continuing the transfer will require the torrent file or magnet link."
-msgid_plural "Once removed, continuing the transfers will require the torrent files or magnet links."
-msgstr[0] "Nakon brisanja, nastavak prijenosa će zahtijevati torrent datoteku ili magnetnu poveznicu."
-msgstr[1] "Nakon brisanja, nastavak prijenosa će zahtijevati torrent datoteku ili magnetnu poveznicu."
-msgstr[2] "Nakon brisanja, nastavak prijenosa će zahtijevati torrent datoteku ili magnetnu poveznicu."
+#, fuzzy
+#| msgid "Once removed, continuing the transfer will require the torrent file or magnet link."
+#| msgid_plural "Once removed, continuing the transfers will require the torrent files or magnet links."
+msgid "Once removed, you'll need the torrent file or magnet link to add it again."
+msgstr "Nakon brisanja, nastavak prijenosa će zahtijevati torrent datoteku ili magnetnu poveznicu."
+
+#, fuzzy
+#| msgid "Once removed, continuing the transfers will require the torrent files or magnet links."
+msgid "Once removed, you'll need the torrent files or magnet links to add them again."
+msgstr "Nakon brisanja, nastavak prijenosa će zahtijevati torrent datoteke ili magnetne poveznice."
 
 msgid "This torrent has not finished downloading."
 msgstr "Nije završeno preuzimanje ovog torrenta."
@@ -424,8 +392,13 @@ msgstr "Ovaj je torrent povezan s točkama."
 msgid "These torrents are connected to peers."
 msgstr "Ovi su torrenti povezani s točkama."
 
+#, fuzzy
 msgid "One of these torrents is connected to peers."
-msgstr "Jedan od ovih torrenta je povezan s točkama."
+msgstr ""
+"#-#-#-#-#  hr.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Jedan od ovih torrenta je povezan s točkama.\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Jedan od ovih torrenta su povezni s točkama."
 
 msgid "Some of these torrents are connected to peers."
 msgstr "Neki od ovih torrenta su povezni s točkama."
@@ -442,8 +415,16 @@ msgstr "_Odustani"
 msgid "_Delete"
 msgstr "_Obriši"
 
+#. Removes the torrent from the list and keeps its downloaded files
+#, fuzzy
 msgid "_Remove"
-msgstr "_Ukloni"
+msgstr ""
+"#-#-#-#-#  hr.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Ukloni\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"U_kloni\n"
+"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Ukloni"
 
 msgid "High"
 msgstr "Visok"
@@ -463,7 +444,7 @@ msgstr "Naziv"
 msgid "Size"
 msgstr "Veličina"
 
-msgid "Have"
+msgid "Progress"
 msgstr "Napredak"
 
 msgid "Download"
@@ -485,13 +466,36 @@ msgstr "Provjera"
 msgid "Error"
 msgstr "Greška"
 
+#, fuzzy
 msgid "_Show:"
-msgstr "_Prikaži:"
+msgstr ""
+"#-#-#-#-#  hr.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Prikaži:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"P_rikaži:"
 
 msgid "_Show {count:L} of:"
 msgstr ""
 
 msgid "{disk_space} free"
+msgstr "{disk_space} slobodno"
+
+msgid "Where to look for configuration files"
+msgstr "Gdje tražiti konfiguracijske datoteke"
+
+msgid "Start with all torrents paused"
+msgstr "Pokreni sa svim torrentima pauzirano"
+
+msgid "Start minimized in notification area"
+msgstr "Pokreni smanjeno u traci sustava"
+
+msgid "Show version number and exit"
+msgstr "Prikaži broj inačice i izađi"
+
+msgid "[torrent files or urls]"
+msgstr "[torrent datoteke ili url-ovi]"
+
+msgid "Run '{program} --help' to see a full list of available command line options.\n"
 msgstr ""
 
 msgid ""
@@ -520,7 +524,7 @@ msgid "Stop Seeding at Ratio"
 msgstr "Zaustavi dijeljenje pri omjeru"
 
 msgid "Stop at Ratio ({ratio})"
-msgstr ""
+msgstr "Zaustavi pri omjeru ({ratio})"
 
 msgid "Total Ratio"
 msgstr "Ukupni omjer"
@@ -534,16 +538,11 @@ msgstr "Ukupni prijenos"
 msgid "Session Transfer"
 msgstr "Prijenos sesije"
 
+msgid "Down: {downloaded_size}, Up: {uploaded_size}"
+msgstr "Preuzimanje: {downloaded_size}, Slanje: {uploaded_size}"
+
 msgid "Ratio: {ratio}"
-msgstr ""
-
-msgctxt "current session totals"
-msgid "Down: {downloaded_size}, Up: {uploaded_size}"
-msgstr ""
-
-msgctxt "all-time totals"
-msgid "Down: {downloaded_size}, Up: {uploaded_size}"
-msgstr ""
+msgstr "Omjer: {ratio}"
 
 msgid "{download_speed} ▾"
 msgstr ""
@@ -601,6 +600,9 @@ msgstr "Vrijeme"
 msgid "Couldn't create proxy for '{bus}': {error} ({error_code})"
 msgstr ""
 
+msgid "Couldn't spawn async process \"'{command}'\": {error} ({error_code})"
+msgstr ""
+
 msgid "Open File"
 msgstr "Otvori datoteku"
 
@@ -629,13 +631,16 @@ msgid "_Open"
 msgstr "_Otvori"
 
 msgid "Show options dialog"
+msgstr "Prikaži dijalog mogućnosti"
+
+msgid "Other…"
 msgstr ""
 
-msgid "Select a File"
-msgstr ""
+msgid "Select File"
+msgstr "Odaberi datoteku"
 
 msgid "(None)"
-msgstr ""
+msgstr "(Nijedan)"
 
 msgid "Allow encryption"
 msgstr "Dopusti šifriranje"
@@ -705,28 +710,20 @@ msgstr "Premještanje torrenta nije moguće"
 msgid "This may take a moment…"
 msgstr "Ovo može potrajati nekoliko trenutaka…"
 
+msgid "Couldn't open watchdir '{dirname}': {error} ({error_code})"
+msgstr ""
+
 msgid "Couldn't read '{path}'"
 msgstr ""
-
-#. logging
-msgid "Inhibiting desktop hibernation"
-msgstr "Spriječavanje hibernacije radne površine"
-
-msgid "Couldn't inhibit desktop hibernation: {error}"
-msgstr ""
-
-#. logging
-msgid "Allowing desktop hibernation"
-msgstr "Dopuštanje hibernacije radne površine"
 
 msgid "Couldn't find pending RPC request for id {id}"
 msgstr ""
 
 msgid "Started {count:L} time"
 msgid_plural "Started {count:L} times"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Pokrenuto {count:L} put"
+msgstr[1] "Pokrenuto {count:L} puta"
+msgstr[2] "Pokrenuto {count:L} puta"
 
 msgid "Reset your statistics?"
 msgstr "Želite li poništiti statistiku?"
@@ -737,28 +734,32 @@ msgstr "_Poništi"
 msgid "These statistics are for your information only. Resetting them doesn't affect the statistics logged by your BitTorrent trackers."
 msgstr "Ove statistike su samo za vašu informaciju. Poništavanje statistike ne utječe na statistike vaših BitTorrent pratitelja."
 
+msgid "_Show {appname}"
+msgstr "_Prikaži {appname}"
+
 msgid "{upload_speed} ▴ {download_speed} ▾"
 msgstr ""
 
 #, no-c-format
 msgid "Verifying local data ({percent_done}% tested)"
-msgstr ""
+msgstr "Provjera lokalnih podataka ({percent_done}% testirano)"
 
 msgid "{current_size} of {complete_size} ({percent_done}%)"
-msgstr ""
+msgstr "{current_size} od {complete_size} ({percent_done}%)"
 
 msgid "{current_size} of {complete_size} ({percent_complete}%), uploaded {uploaded_size} (Ratio: {ratio}, Goal: {seed_ratio})"
 msgstr ""
 
 msgid "{current_size} of {complete_size} ({percent_complete}%), uploaded {uploaded_size} (Ratio: {ratio})"
-msgstr ""
+msgstr "{current_size} od {complete_size} ({percent_complete}%), poslano {uploaded_size} (Omjer: {ratio})"
 
 msgid "{complete_size}, uploaded {uploaded_size} (Ratio: {ratio}, Goal: {seed_ratio})"
 msgstr ""
 
 msgid "{complete_size}, uploaded {uploaded_size} (Ratio: {ratio})"
-msgstr ""
+msgstr "{complete_size}, poslano {uploaded_size} (Omjer: {ratio})"
 
+#. Translators: Second (optional) part of torrent progress string
 msgid "Remaining time unknown"
 msgstr "Preostalo vrijeme nepoznato"
 
@@ -771,8 +772,10 @@ msgstr "Zaustavljeno"
 msgid "Tracker warning: '{warning}'"
 msgstr ""
 
-msgid "Tracker Error: '{error}'"
-msgstr ""
+#, fuzzy
+#| msgid "Tracker gave an error: {error}"
+msgid "Tracker error: '{error}'"
+msgstr "Pratitelj je vratio grešku: {error}"
 
 msgid "Local error: '{error}'"
 msgstr ""
@@ -798,200 +801,18 @@ msgstr[2] ""
 
 msgid "Downloading from {active_count} of {connected_count} connected peer"
 msgid_plural "Downloading from {active_count} of {connected_count} connected peers"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Preuzimanje sa {active_count} od {connected_count} povezane točke"
+msgstr[1] "Preuzimanje sa {active_count} od {connected_count} povezane točke"
+msgstr[2] "Preuzimanje sa {active_count} od {connected_count} povezanih točki"
 
 msgid "Seeding to {active_count} of {connected_count} connected peer"
 msgid_plural "Seeding to {active_count} of {connected_count} connected peers"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-
-msgid "{days_from_now:L} day from now"
-msgid_plural "{days_from_now:L} days from now"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-
-msgid "{hours_from_now:L} hour from now"
-msgid_plural "{hours_from_now:L} hours from now"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-
-msgid "{minutes_from_now:L} minute from now"
-msgid_plural "{minutes_from_now:L} minutes from now"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-
-msgid "{seconds_from_now:L} second from now"
-msgid_plural "{seconds_from_now:L} seconds from now"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-
-msgid "now"
-msgstr ""
-
-msgid "{days_ago:L} day ago"
-msgid_plural "{days_ago:L} days ago"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-
-msgid "{hours_ago:L} hour ago"
-msgid_plural "{hours_ago:L} hours ago"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-
-msgid "{minutes_ago:L} minute ago"
-msgid_plural "{minutes_ago:L} minutes ago"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-
-msgid "{seconds_ago:L} second ago"
-msgid_plural "{seconds_ago:L} seconds ago"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-
-msgid "{days:L} day"
-msgid_plural "{days:L} days"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-
-msgid "{hours:L} hour"
-msgid_plural "{hours:L} hours"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-
-msgid "{minutes:L} minute"
-msgid_plural "{minutes:L} minutes"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-
-msgid "{seconds:L} second"
-msgid_plural "{seconds:L} seconds"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-
-msgid "{days_left:L} day left"
-msgid_plural "{days_left:L} days left"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-
-msgid "{hours_left:L} hour left"
-msgid_plural "{hours_left:L} hours left"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-
-msgid "{minutes_left:L} minute left"
-msgid_plural "{minutes_left:L} minutes left"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-
-msgid "{seconds_left:L} second left"
-msgid_plural "{seconds_left:L} seconds left"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-
-msgid "The torrent file '{path}' is already in use by '{torrent_name}'."
-msgstr ""
-
-msgid "Couldn't open torrent"
-msgstr ""
-
-msgid "Couldn't move '{path}' to trash: {error} ({error_code})"
-msgstr ""
-
-msgid "Couldn't open '{url}'"
-msgstr ""
-
-msgid "Unsupported URL: '{url}'"
-msgstr ""
-
-#. modal
-msgid "{appname} doesn't know how to use '{url}'"
-msgstr ""
-
-msgid "This magnet link appears to be intended for something other than BitTorrent."
-msgstr ""
+msgstr[0] "Dijeljenje {active_count} od {connected_count} povezane točake"
+msgstr[1] "Dijeljenje {active_count} od {connected_count} povezane točake"
+msgstr[2] "Dijeljenje {active_count} od {connected_count} povezanih točki"
 
 msgid "Retransmission"
 msgstr "Retransmission"
-
-#. parse the command line
-msgid "Where to look for configuration files"
-msgstr "Gdje tražiti konfiguracijske datoteke"
-
-msgid "Start with all torrents paused"
-msgstr "Pokreni sa svim torrentima pauzirano"
-
-msgid "Start minimized in notification area"
-msgstr "Pokreni smanjeno u traci sustava"
-
-msgid "Show version number and exit"
-msgstr "Prikaži broj inačice i izađi"
-
-msgid "[torrent files or urls]"
-msgstr "[torrent datoteke ili url-ovi]"
-
-msgid "Run '{program} --help' to see a full list of available command line options.\n"
-msgstr ""
-
-msgid "B/s"
-msgstr ""
-
-msgid "GB/s"
-msgstr "GB/s"
-
-msgid "MB/s"
-msgstr "MB/s"
-
-msgid "TB/s"
-msgstr "TB/s"
-
-msgid "kB/s"
-msgstr "kB/s"
-
-msgid "B"
-msgstr ""
-
-msgid "GiB"
-msgstr "GiB"
-
-msgid "KiB"
-msgstr "KiB"
-
-msgid "MiB"
-msgstr "MiB"
-
-msgid "TiB"
-msgstr "TiB"
-
-msgid "GB"
-msgstr "GB"
-
-msgid "MB"
-msgstr "MB"
-
-msgid "TB"
-msgstr "TB"
-
-msgid "kB"
-msgstr "kB"
 
 msgid "BitTorrent Client"
 msgstr "BitTorrent klijent"
@@ -1009,14 +830,29 @@ msgstr "Pokreni Retransmission sa svim torentima pauziranim"
 msgid "Start Retransmission Minimized"
 msgstr "Pokreni Retransmission smanjen"
 
-msgid "Open a torrent"
-msgstr "Otvori torrent"
+#, fuzzy
+#| msgid "Retransmission"
+msgid "The Retransmission Project"
+msgstr "Retransmission"
+
+#. Translators: these are the application description paragraphs in the MetaInfo file.
+msgid "BitTorrent is a peer-to-peer file-sharing protocol that is commonly used to distribute large amounts of data between multiple users."
+msgstr ""
+
+msgid "Retransmission is a BitTorrent client with an easy-to-use interface on top of a cross-platform backend. Native interfaces are available for macOS, Linux, and Windows, as well as command line binaries and a web GUI."
+msgstr ""
+
+msgid "Notable features of Retransmission include support for Local Peer Discovery, encryption, DHT, µTP, PEX and Magnet links."
+msgstr ""
+
+msgid "Main window, showing an ongoing download of Fedora Workstation"
+msgstr ""
+
+msgid "_File"
+msgstr "_Datoteka"
 
 msgid "Open _URL…"
 msgstr "Otvori _URL…"
-
-msgid "Open URL…"
-msgstr "Otvori URL…"
 
 msgid "_New…"
 msgstr "_Novi…"
@@ -1024,17 +860,19 @@ msgstr "_Novi…"
 msgid "_Start All"
 msgstr "_Pokreni sve"
 
-msgid "Start all torrents"
-msgstr "Pokreni sve torrente"
-
 msgid "_Pause All"
 msgstr "_Pauziraj sve"
 
-msgid "Pause all torrents"
-msgstr "_Pauziraj sve torrente"
-
+#, fuzzy
 msgid "_Quit"
-msgstr "_Izlaz"
+msgstr ""
+"#-#-#-#-#  hr.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Izlaz\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Zatvori"
+
+msgid "_Edit"
+msgstr "_Uredi"
 
 msgid "Select _All"
 msgstr "Odaberi _sve"
@@ -1045,29 +883,38 @@ msgstr "Ukl_oni odabir"
 msgid "_Preferences"
 msgstr "_Osobitosti"
 
+msgid "_Torrent"
+msgstr "_Torrent"
+
 msgid "_Properties"
 msgstr "_Svojstva"
 
-msgid "Torrent properties"
-msgstr "Svojstva torrenta"
-
+#, fuzzy
 msgid "Open Fold_er"
-msgstr "Otvori _mapu"
+msgstr ""
+"#-#-#-#-#  hr.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Otvori _mapu\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Otvori ma_pu"
 
 msgid "_Start"
 msgstr "_Pokreni"
 
-msgid "Start torrent"
-msgstr "Pokreni torrent"
-
+#, fuzzy
 msgid "Start _Now"
-msgstr "Pokre_ni odmah"
-
-msgid "Start torrent now"
-msgstr "Pokreni torrent odmah"
+msgstr ""
+"#-#-#-#-#  hr.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Pokre_ni odmah\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Pokreni _odmah"
 
 msgid "Ask Tracker for _More Peers"
 msgstr "Pitaj pratitelja za _više točaka"
+
+#, fuzzy
+#| msgid "Queue"
+msgid "_Queue"
+msgstr "Red čekanja"
 
 msgid "Move to _Top"
 msgstr "Pomakni na _vrh"
@@ -1078,14 +925,21 @@ msgstr "Pomakni _gore"
 msgid "Move _Down"
 msgstr "Pomakni _dolje"
 
+#, fuzzy
 msgid "Move to _Bottom"
-msgstr "Pomakni na  dn_o"
+msgstr ""
+"#-#-#-#-#  hr.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Pomakni na  dn_o\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Pomakni na  _dno"
 
+#, fuzzy
 msgid "_Pause"
-msgstr "_Pauza"
-
-msgid "Pause torrent"
-msgstr "Pauziraj torrent"
+msgstr ""
+"#-#-#-#-#  hr.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Pauza\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Pauziraj"
 
 msgid "Set _Location…"
 msgstr "Postavi _lokaciju…"
@@ -1093,14 +947,14 @@ msgstr "Postavi _lokaciju…"
 msgid "_Verify Local Data"
 msgstr "_Provjeri lokalne podatke"
 
-msgid "Copy _Magnet Link to Clipboard"
-msgstr "Kopiraj _magnetnu poveznicu u međuspremnik"
-
-msgid "Remove torrent"
-msgstr "Ukloni torrent"
+msgid "_Copy Magnet Link to Clipboard"
+msgstr "_Kopiraj magnetnu poveznicu u međuspremnik"
 
 msgid "_Delete Files and Remove"
 msgstr "_Obriši i ukloni datoteke"
+
+msgid "_View"
+msgstr "_Pogled"
 
 msgid "_Compact View"
 msgstr "_Zbijen pogled"
@@ -1108,11 +962,21 @@ msgstr "_Zbijen pogled"
 msgid "_Toolbar"
 msgstr "_Alatna traka"
 
+#, fuzzy
 msgid "_Filterbar"
-msgstr "_Filter traka"
+msgstr ""
+"#-#-#-#-#  hr.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Filter traka\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Traka filtra"
 
+#, fuzzy
 msgid "_Statusbar"
-msgstr "_Statusna traka"
+msgstr ""
+"#-#-#-#-#  hr.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Statusna traka\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Traka stanja"
 
 msgid "Sort by _Activity"
 msgstr "Razvrstaj po _aktivnosti"
@@ -1144,26 +1008,53 @@ msgstr "Razvrstaj po preostalom _vremenu"
 msgid "Re_verse Sort Order"
 msgstr "Ob_rnuti redoslijed razvrstavanja"
 
+msgid "_Help"
+msgstr "_Pomoć"
+
+#, fuzzy
 msgid "Message _Log"
-msgstr "_Zapisnik poruka"
+msgstr ""
+"#-#-#-#-#  hr.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Zapisnik poruka\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Zapis _poruka"
 
+#, fuzzy
 msgid "_Statistics"
-msgstr "_Statistike"
+msgstr ""
+"#-#-#-#-#  hr.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Statistike\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Statistika"
 
+#, fuzzy
 msgid "_Donate"
-msgstr "_Doniraj"
+msgstr ""
+"#-#-#-#-#  hr.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Doniraj\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Donirajte"
 
+#, fuzzy
 msgid "_Contents"
-msgstr "_Priručnik"
+msgstr ""
+"#-#-#-#-#  hr.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Priručnik\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Sadržaj"
 
 msgid "_About"
 msgstr "_O programu"
 
-msgid "_Show {appname}"
-msgstr "_Prikaži {appname}"
+#, fuzzy
+#| msgid "Start torrent"
+msgid "_Sort Torrents By"
+msgstr "Pokreni torrent"
 
-msgid "Enable Alternative Speed _Limits"
-msgstr "Omogući a_lternativna ograničenja brzine"
+#, fuzzy
+#| msgid "Alternative Speed Limits"
+msgid "Alternative Speed _Limits"
+msgstr "Alternativna ograničenja brzine"
 
 msgid "_Add"
 msgstr "_Dodaj"
@@ -1180,8 +1071,8 @@ msgstr "_Zatvori"
 msgid "Activity"
 msgstr "Aktivnost"
 
-msgid "Torrent size:"
-msgstr "Veličina torrenta:"
+msgid "Size:"
+msgstr "Veličina"
 
 msgid "Have:"
 msgstr "Napredak:"
@@ -1237,9 +1128,6 @@ msgstr "Prikaži _više pojedinosti"
 msgid "Peers"
 msgstr "Točke"
 
-msgid "_Edit"
-msgstr "_Uredi"
-
 msgid "Show _backup trackers"
 msgstr "Prikaži _pomoćne pratitelje"
 
@@ -1270,8 +1158,13 @@ msgstr "Ograničenja dijeljenja"
 msgid "_Ratio:"
 msgstr "_Omjer:"
 
+#, fuzzy
 msgid "_Idle:"
-msgstr "_Neaktivnost:"
+msgstr ""
+"#-#-#-#-#  hr.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Neaktivnost:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Mirovanje:"
 
 msgid "Peer Connections"
 msgstr "Povezivanje točaka"
@@ -1295,6 +1188,26 @@ msgstr ""
 msgid "Also see Default Public Trackers in Edit > Preferences > Network"
 msgstr ""
 
+msgid "Open a torrent"
+msgstr "Otvori torrent"
+
+msgid "Start torrent"
+msgstr "Pokreni torrent"
+
+msgid "Pause torrent"
+msgstr "Pauziraj torrent"
+
+#, fuzzy
+msgid "Remove torrent"
+msgstr ""
+"#-#-#-#-#  hr.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Ukloni torrent\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Uklanjanje torrenta"
+
+msgid "Torrent properties"
+msgstr "Svojstva torrenta"
+
 msgid "Torrent"
 msgstr "Torrent"
 
@@ -1304,32 +1217,39 @@ msgstr "Statistika"
 msgid "New Torrent"
 msgstr "Novi torrent"
 
-msgid "_New"
-msgstr "_Novi"
+#, fuzzy
+#| msgid "C_redits"
+msgid "C_reate"
+msgstr "Z_asluge"
 
 msgid "Sa_ve to:"
 msgstr "Sp_remi u:"
 
-msgid "Source F_older:"
-msgstr "Izv_orna mapa:"
+msgid "Source f_older:"
+msgstr "Izvorna m_apa:"
 
-msgid "Source _File:"
+msgid "Source _file:"
 msgstr "Izvorna _datoteka:"
 
-msgid "Piece size:"
+msgid "Piece si_ze:"
 msgstr ""
 
 msgid "Properties"
 msgstr "Svojstva"
 
+#, fuzzy
 msgid "_Trackers:"
-msgstr "Pra_titelji:"
+msgstr ""
+"#-#-#-#-#  hr.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Pra_titelji:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Pratitelji:"
 
 msgid "Co_mment:"
 msgstr "Ko_mentar:"
 
 msgid "_Source:"
-msgstr ""
+msgstr "_Izvor:"
 
 msgid "_Private torrent"
 msgstr "_Privatni torrent"
@@ -1345,9 +1265,6 @@ msgstr "Spremi _kao"
 
 msgid "Clear"
 msgstr "Ukloni"
-
-msgid "P_ause"
-msgstr "P_auziraj"
 
 msgid "Level"
 msgstr "Razina"
@@ -1370,14 +1287,13 @@ msgstr "Odaberite odredišnu mapu"
 msgid "_Start when added"
 msgstr "_Pokreni nakon dodavanja"
 
-msgid "Mo_ve torrent file to the trash"
-msgstr ""
+#, fuzzy
+#| msgid "Mo_ve .torrent file to the trash"
+msgid "Mo_ve torrent file to the Trash"
+msgstr "Pre_mjesti .torrent datoteku u smeće"
 
 msgid "{appname} Preferences"
 msgstr "Osobitosti {appname}a"
-
-msgid "_Help"
-msgstr "_Pomoć"
 
 msgid "Speed Limits"
 msgstr "Ograničenja brzine"
@@ -1427,7 +1343,9 @@ msgstr "Prikaži dijalog mogućnosti _torrenta"
 msgid "_Start added torrents"
 msgstr "_Pokreni dodane torrente"
 
-msgid "Save to _Location:"
+#, fuzzy
+#| msgid "Save to _Location:"
+msgid "Save to _location:"
 msgstr "Spremi u _lokaciju:"
 
 msgid "Download Queue"
@@ -1445,10 +1363,13 @@ msgstr "Nepotpuno"
 msgid "Append \"._part\" to incomplete files' names"
 msgstr "Dodaj \"._part\" na kraju naziva nepreuzetih datoteka"
 
-msgid "Keep _incomplete torrents in:"
+msgid "Keep _incomplete files in:"
 msgstr "Zadrži _nedovršene torrente u:"
 
-msgid "Call scrip_t when done downloading:"
+msgid "Call scrip_t when download completes:"
+msgstr ""
+
+msgid "Verify data when download completes"
 msgstr ""
 
 msgctxt "Gerund"
@@ -1483,7 +1404,9 @@ msgstr "Popis blokiranih"
 msgid "Enable _blocklist:"
 msgstr "Omogući _popis blokiranih:"
 
-msgid "Enable _automatic updates"
+#, fuzzy
+#| msgid "Enable _automatic updates"
+msgid "_Automatically update weekly"
 msgstr "Omogući _automatsku nadopunu"
 
 msgid "_Update"
@@ -1492,10 +1415,12 @@ msgstr "_Nadopuni"
 msgid "Listening Port"
 msgstr "Ulaz osluškivanja"
 
-msgid "_Port used for incoming connections:"
+msgid "_Port for incoming connections:"
 msgstr "_Ulaz za dolazna povezivanja:"
 
-msgid "Pick a _random port every time Transmission is started"
+#, fuzzy
+#| msgid "Pick a _random port every time Transmission is started"
+msgid "Pick a _random port at startup"
 msgstr "Odaberi _naizmjenični ulaz svaki put kad se Transmission pokrene"
 
 msgid "Use UPnP or NAT-PMP port _forwarding from my router"
@@ -1507,31 +1432,46 @@ msgstr "Te_stiraj ulaz"
 msgid "Peer Limits"
 msgstr "Ograničenja točaka"
 
-msgid "Maximum peers per _torrent:"
+#, fuzzy
+#| msgid "Maximum peers per _torrent:"
+msgid "Maximum peers for new _torrents:"
 msgstr "Najviše točaka po _torrentu:"
 
+#, fuzzy
 msgid "Maximum peers _overall:"
-msgstr "_Ukupno najviše točaka:"
-
-msgid "Enable µ_TP for peer communication"
 msgstr ""
+"#-#-#-#-#  hr.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Ukupno najviše točaka:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Ukupno najviše _točaka:"
+
+#, fuzzy
+#| msgid "Peer Connections"
+msgid "Enable µ_TP for peer connections"
+msgstr "Povezivanje točaka"
 
 msgid "µTP is a tool for reducing network congestion."
 msgstr ""
 
-msgid "Use PE_X to find more peers"
+#, fuzzy
+#| msgid "Use PE_X to find more peers"
+msgid "Use PE_X to find more peers for public torrents"
 msgstr "Koristi PE_X za pronalaženje dodatnih točaka"
 
 msgid "PEX is a tool for exchanging peer lists with the peers you're connected to."
 msgstr "PEX je alat za razmjenu popisa točaka s točkama na koje ste povezani."
 
-msgid "Use _DHT to find more peers"
+#, fuzzy
+#| msgid "Use _DHT to find more peers"
+msgid "Use _DHT to find more peers for public torrents"
 msgstr "Koristi _DHT za pronalaženje dodatnih točaka"
 
 msgid "DHT is a tool for finding peers without a tracker."
 msgstr "DHT je alat za pronalaženje točaka bez pratitelja."
 
-msgid "Use _Local Peer Discovery to find more peers"
+#, fuzzy
+#| msgid "Use _Local Peer Discovery to find more peers"
+msgid "Use _Local Peer Discovery to find more peers for public torrents"
 msgstr "Koristi _Lokalno otkrivanje točaka (LPD) za pronalazak više točaka"
 
 msgid "LPD is a tool for finding peers on your local network."
@@ -1553,8 +1493,8 @@ msgstr "Mreža"
 msgid "Desktop"
 msgstr "Radno okruženje"
 
-msgid "_Inhibit hibernation when torrents are active"
-msgstr "_Spriječi hibernaciju kada su torrenti aktivni"
+msgid "_Prevent computer from sleeping with active torrents"
+msgstr ""
 
 msgid "Show {appname} icon in the _notification area"
 msgstr "Prikaži {appname}ovu ikonu u _traci sustava"
@@ -1562,8 +1502,13 @@ msgstr "Prikaži {appname}ovu ikonu u _traci sustava"
 msgid "Notification"
 msgstr "Obavijest"
 
+#, fuzzy
 msgid "Show a notification when torrents are a_dded"
-msgstr "Prikaži obavijest kada su novi torrenti _dodani"
+msgstr ""
+"#-#-#-#-#  hr.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Prikaži obavijest kada su novi torrenti _dodani\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Prikaži obavijest kada su novi torrenti d_odani"
 
 msgid "Show a notification when torrents _finish"
 msgstr "Prikaži obavijest kada se torrent _preuzme"
@@ -1577,7 +1522,9 @@ msgstr "Udaljeno upravljanje"
 msgid "Allow _remote access"
 msgstr "Dopusti _udaljeni pristup"
 
-msgid "_Open web client"
+#, fuzzy
+#| msgid "_Open web client"
+msgid "_Open Web Client"
 msgstr "_Otvori web klijent"
 
 msgid "HTTP _port:"
@@ -1589,8 +1536,13 @@ msgstr "Koristi _ovjeru"
 msgid "_Username:"
 msgstr "_Korisničko ime:"
 
+#, fuzzy
 msgid "Pass_word:"
-msgstr "Loz_inka:"
+msgstr ""
+"#-#-#-#-#  hr.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Loz_inka:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Lozi_nka:"
 
 msgid "Only allow these IP a_ddresses:"
 msgstr "Dopusti samo ove IP a_drese:"
@@ -1613,8 +1565,8 @@ msgstr "_Primijeni"
 msgid "Location"
 msgstr "Lokacija"
 
-msgid "Torrent _location:"
-msgstr "Lokacija _torrenta:"
+msgid "New _location:"
+msgstr "Nova _lokacija:"
 
 msgid "_Move from the current folder"
 msgstr "_Premjesti iz trenutne mape"
@@ -1643,20 +1595,190 @@ msgstr "Otvori torrent iz URL-a"
 msgid "_URL"
 msgstr "_URL"
 
-msgid "Couldn't parse announce response: {error} ({error_code})"
+msgid "The torrent file '{path}' is already in use by '{torrent_name}'."
 msgstr ""
 
-msgid "Couldn't parse scrape response: {error} ({error_code})"
+msgid "Couldn't open torrent"
 msgstr ""
 
-msgid "Unknown error"
-msgstr "Nepoznata greška"
-
-msgid "{ip_protocol} connection failed"
+msgid "Couldn't move '{path}' to trash: {error} ({error_code})"
 msgstr ""
 
-msgid "Couldn't look up '{address}:{port}' in {ip_protocol}: {error} ({error_code})"
+msgid "Couldn't launch default application for URI '{uri}': {error} ({error_code})"
 msgstr ""
+
+msgid "Couldn't invoke xdg-open for URI '{uri}': {error} ({error_code})"
+msgstr ""
+
+msgid "Couldn't open '{url}'"
+msgstr ""
+
+msgid "Unsupported URL: '{url}'"
+msgstr ""
+
+msgid "{appname} doesn't know how to use '{url}'"
+msgstr ""
+
+msgid "This magnet link appears to be intended for something other than BitTorrent."
+msgstr ""
+
+msgid "{days_from_now:L} day from now"
+msgid_plural "{days_from_now:L} days from now"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+
+msgid "{hours_from_now:L} hour from now"
+msgid_plural "{hours_from_now:L} hours from now"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+
+msgid "{minutes_from_now:L} minute from now"
+msgid_plural "{minutes_from_now:L} minutes from now"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+
+msgid "{seconds_from_now:L} second from now"
+msgid_plural "{seconds_from_now:L} seconds from now"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+
+msgid "now"
+msgstr ""
+
+msgid "{days_ago:L} day ago"
+msgid_plural "{days_ago:L} days ago"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+
+msgid "{hours_ago:L} hour ago"
+msgid_plural "{hours_ago:L} hours ago"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+
+msgid "{minutes_ago:L} minute ago"
+msgid_plural "{minutes_ago:L} minutes ago"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+
+msgid "{seconds_ago:L} second ago"
+msgid_plural "{seconds_ago:L} seconds ago"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+
+msgid "Got a list of {markup_begin}{peer_count} peer{markup_end} {time_span_ago}"
+msgid_plural "Got a list of {markup_begin}{peer_count} peers{markup_end} {time_span_ago}"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+
+msgid "Peer list request {markup_begin}timed out {time_span_ago}{markup_end}; will retry"
+msgstr ""
+
+msgid "Got an error '{markup_begin}{error}{markup_end}' {time_span_ago}"
+msgstr ""
+
+msgid "No updates scheduled"
+msgstr "Nema zakazanih nadopuna"
+
+msgid "Asking for more peers {time_span_from_now}"
+msgstr ""
+
+msgid "Queued to ask for more peers"
+msgstr "Upit za dodatnim točkama stavljen u red čekanja"
+
+msgid "Asked for more peers {markup_begin}{time_span_ago}{markup_end}"
+msgstr ""
+
+msgid "Got a scrape error '{markup_begin}{error}{markup_end}' {time_span_ago}"
+msgstr ""
+
+#, fuzzy
+#| msgid "Tracker had {markup_begin}no information{markup_end} on peer counts {time_span} ago"
+msgid "Tracker had {markup_begin}no information{markup_end} on peer counts {time_span_ago}"
+msgstr "Pratitelj {markup_begin}nema information{markup_end} o broju točaka prije {time_span}"
+
+msgid "Tracker had {markup_begin}{seeder_count} {seeder_or_seeders} and {leecher_count} {leecher_or_leechers}{markup_end} {time_span_ago}"
+msgstr ""
+
+msgid "seeder"
+msgid_plural "seeders"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+
+msgid "leecher"
+msgid_plural "leechers"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+
+#, fuzzy
+#| msgid "Asking for peer counts in {time_span}"
+msgid "Asking for peer counts {time_span_from_now}"
+msgstr "Traženje broja točke u {time_span}"
+
+msgid "Queued to ask for peer counts"
+msgstr "Upit broja točke stavljen u red čekanja"
+
+msgid "Asked for peer counts {markup_begin}{time_span_ago}{markup_end}"
+msgstr ""
+
+msgid "{days:L} day"
+msgid_plural "{days:L} days"
+msgstr[0] "{days:L} dan"
+msgstr[1] "{days:L} dana"
+msgstr[2] "{days:L} dana"
+
+msgid "{hours:L} hour"
+msgid_plural "{hours:L} hours"
+msgstr[0] "{hours:L} sat"
+msgstr[1] "{hours:L} sata"
+msgstr[2] "{hours:L} sati"
+
+#. Translators: Spin box format, "Stop seeding if idle for: [ 5 minutes ]"
+msgid "{minutes:L} minute"
+msgid_plural "{minutes:L} minutes"
+msgstr[0] "{minutes:L} minute"
+msgstr[1] "{minutes:L} minute"
+msgstr[2] "{minutes:L} minuta"
+
+msgid "{seconds:L} second"
+msgid_plural "{seconds:L} seconds"
+msgstr[0] "{seconds:L} sekunde"
+msgstr[1] "{seconds:L} sekunde"
+msgstr[2] "{seconds:L} sekundi"
+
+msgid "{days_left:L} day left"
+msgid_plural "{days_left:L} days left"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+
+msgid "{hours_left:L} hour left"
+msgid_plural "{hours_left:L} hours left"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+
+msgid "{minutes_left:L} minute left"
+msgid_plural "{minutes_left:L} minutes left"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+
+msgid "{seconds_left:L} second left"
+msgid_plural "{seconds_left:L} seconds left"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
 
 msgid "Announce error: {error} ({url})"
 msgstr ""
@@ -1676,20 +1798,55 @@ msgstr "Pratitelj ne odgovara"
 msgid "Success"
 msgstr "Uspješno"
 
+msgid "Couldn't parse announce response: {error} ({error_code})"
+msgstr ""
+
+msgid "Couldn't parse scrape response: {error} ({error_code})"
+msgstr ""
+
+msgid "Unknown error"
+msgstr "Nepoznata greška"
+
+msgid "{ip_protocol} connection failed"
+msgstr ""
+
+msgid "Couldn't look up '{address}:{port}' in {ip_protocol}: {error} ({error_code})"
+msgstr ""
+
 msgid "Blocklist '{path}' has {count} entry"
 msgid_plural "Blocklist '{path}' has {count} entries"
 msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
 
-#. don't try to display the actual lines - it causes issues
-msgid "Couldn't parse line: '{line}'"
+msgid "Couldn't parse line {line}: {base64}"
 msgstr ""
 
-msgid "Rewriting old blocklist file format to new format"
+msgid "Rewriting old blocklist file {path} to new format"
+msgstr ""
+
+msgid "Blocklist is larger than {limit} MiB; ignoring it"
+msgstr ""
+
+msgid "Couldn't fetch blocklist: {errmsg}, response code: {error} ({error_code})"
+msgstr ""
+
+msgid "Couldn't fetch blocklist: {error} ({error_code})"
+msgstr ""
+
+msgid "Automatically updated blocklist, which now has {count} rules"
+msgstr ""
+
+msgid "Invalid tr_sched_days value {val}"
 msgstr ""
 
 msgid "{crypto_library} error: {error} ({error_code})"
+msgstr ""
+
+msgid "Couldn't read '{path}': Not a regular file"
+msgstr ""
+
+msgid "Couldn't get '{path}': "
 msgstr ""
 
 msgid "Couldn't get '{path}': {error} ({error_code})"
@@ -1707,19 +1864,13 @@ msgstr ""
 msgid "Successfully updated global {type} address to {ip} using {url}"
 msgstr ""
 
+msgid "Still waiting for disk IO on torrent {id}: {running} running, {queued} queued"
+msgstr ""
+
 msgid "Too many messages like this! I won't log this message anymore this session."
 msgstr ""
 
 msgid "Skipping '{path}': {error} ({error_code})"
-msgstr ""
-
-msgid "Couldn't create socket: {error} ({error_code})"
-msgstr ""
-
-msgid "Couldn't set source address {address} on {socket}: {error} ({error_code})"
-msgstr ""
-
-msgid "Couldn't connect socket {socket} to {address}:{port}: {error} ({error_code})"
 msgstr ""
 
 msgid "Couldn't bind port {port} on {address}: {error} ({error_code}) -- Is another copy of {appname} already running?"
@@ -1737,7 +1888,34 @@ msgstr ""
 msgid "Couldn't truncate '{path}': {error} ({error_code})"
 msgstr ""
 
+msgid "Couldn't create socket: {error} ({error_code})"
+msgstr ""
+
+msgid "Couldn't set source address {address} on {socket}: {error} ({error_code})"
+msgstr ""
+
+msgid "Couldn't connect socket {socket} to {address}:{port}: {error} ({error_code})"
+msgstr ""
+
 msgid "Unknown state: {state}"
+msgstr ""
+
+msgid "Starting"
+msgstr "Pokretanje"
+
+msgid "Forwarded"
+msgstr "Proslijeđeno"
+
+msgid "Stopping"
+msgstr "Zaustavljanje"
+
+msgid "Not forwarded"
+msgstr "Nije proslijeđeno"
+
+msgid "Mapped private port {private_port} to public port {public_port}"
+msgstr ""
+
+msgid "State changed from '{old_state}' to '{state}'"
 msgstr ""
 
 msgid "Found public address '{address}'"
@@ -1770,22 +1948,16 @@ msgstr ""
 msgid "If your router supports UPnP, please make sure UPnP is enabled!"
 msgstr ""
 
-msgid "Starting"
-msgstr "Pokretanje"
-
-msgid "Forwarded"
-msgstr "Proslijeđeno"
-
-msgid "Stopping"
-msgstr "Zaustavljanje"
-
-msgid "Not forwarded"
-msgstr "Nije proslijeđeno"
-
-msgid "Mapped private port {private_port} to public port {public_port}"
+msgid "Couldn't test port: {errmsg}, response code: {error} ({error_code})"
 msgstr ""
 
-msgid "State changed from '{old_state}' to '{state}'"
+msgid "Couldn't test port: {error} ({error_code})"
+msgstr ""
+
+msgid "Couldn't fetch torrent: {errmsg}, Response code: {error} ({error_code})"
+msgstr ""
+
+msgid "Couldn't fetch torrent: {error} ({error_code})"
 msgstr ""
 
 msgid "Unix socket path must be fewer than {count} characters (including '{prefix}' prefix)"
@@ -1845,28 +2017,23 @@ msgstr "Potrebna je lozinka"
 msgid "Serving RPC and Web requests from '{path}'"
 msgstr ""
 
-msgid "Couldn't test port: {error} ({error_code})"
-msgstr ""
+#, fuzzy
+#| msgid "Alternative Speed Limits"
+msgid "Time to turn on alternative speed limits"
+msgstr "Alternativna ograničenja brzine"
 
-msgid "Couldn't fetch blocklist: {error} ({error_code})"
-msgstr ""
-
-msgid "Couldn't fetch torrent: {error} ({error_code})"
-msgstr ""
-
-msgid "Time to turn off turtle mode"
-msgstr ""
-
-msgid "Time to turn on turtle mode"
-msgstr ""
-
-msgid "Couldn't open session lock file '{path}': {error} ({error_code})"
-msgstr ""
+#, fuzzy
+#| msgid "Alternative Speed Limits"
+msgid "Time to turn off alternative speed limits"
+msgstr "Alternativna ograničenja brzine"
 
 msgid "Listening to incoming peer connections on {hostport}"
 msgstr ""
 
 msgid "{appname} version {version} starting"
+msgstr ""
+
+msgid "Couldn't start disk IO workers, continuing without them: {error}"
 msgstr ""
 
 msgid "{appname} version {version} shutting down"
@@ -1878,7 +2045,10 @@ msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
 
-msgid "Migrated torrent file from '{old_path}' to '{path}'"
+msgid "Couldn't claim '{path}'. If another session is using it, the two will overwrite each other's settings, resume files and stats."
+msgstr ""
+
+msgid "Couldn't open session lock file '{path}': {error} ({error_code})"
 msgstr ""
 
 msgid "Couldn't use metainfo from '{path}' for '{magnet}': {error} ({error_code})"
@@ -1911,13 +2081,25 @@ msgstr ""
 msgid "Removing torrent"
 msgstr "Uklanjanje torrenta"
 
-msgid "Couldn't move '{old_path}' to '{path}': {error} ({error_code})"
+msgid "Couldn't move torrent files to '{path}': {error} ({error_code})"
 msgstr ""
 
 msgid "Paused torrent as no data was found! Ensure your drives are connected or use \"Set Location\", then use \"Verify Local Data\" again. To re-download, start the torrent."
 msgstr ""
 
+msgid "Couldn't move '{old_path}' to '{path}': {error} ({error_code})"
+msgstr ""
+
 msgid "Tracker warning: '{warning}' ({url})"
+msgstr ""
+
+msgid "Moving '{source}' will overwrite '{path}'"
+msgstr ""
+
+msgid "Couldn't compare '{path}' with '{root}': {error} ({error_code}); leaving it alone"
+msgstr ""
+
+msgid "Migrated torrent file from '{old_path}' to '{path}'"
 msgstr ""
 
 msgid "Couldn't parse '{filename}' line: '{line}'"
@@ -1947,8 +2129,47 @@ msgstr ""
 msgid "Unknown socket family"
 msgstr ""
 
-msgid "Couldn't read '{path}': Not a regular file"
+msgid "B"
 msgstr ""
+
+msgid "KiB"
+msgstr "KiB"
+
+msgid "MiB"
+msgstr "MiB"
+
+msgid "GiB"
+msgstr "GiB"
+
+msgid "TiB"
+msgstr "TiB"
+
+msgid "B/s"
+msgstr ""
+
+msgid "kB/s"
+msgstr "kB/s"
+
+msgid "MB/s"
+msgstr "MB/s"
+
+msgid "GB/s"
+msgstr "GB/s"
+
+msgid "TB/s"
+msgstr "TB/s"
+
+msgid "kB"
+msgstr "kB"
+
+msgid "MB"
+msgstr "MB"
+
+msgid "GB"
+msgstr "GB"
+
+msgid "TB"
+msgstr "TB"
 
 msgid "Couldn't parse JSON at position {position} '{text}': {error} ({error_code})"
 msgstr ""
@@ -1956,16 +2177,13 @@ msgstr ""
 msgid "Couldn't watch '{path}': {error} ({error_code})"
 msgstr ""
 
-msgid "Couldn't read event: {error} ({error_code})"
-msgstr ""
-
 msgid "Couldn't read event: expected {expected_size}, got {actual_size}"
 msgstr ""
 
-msgid "Couldn't read filename: {error} ({error_code})"
+msgid "Couldn't read filename: expected {expected_size}, got {actual_size}"
 msgstr ""
 
-msgid "Couldn't read filename: expected {expected_size}, got {actual_size}"
+msgid "Couldn't read event: {error} ({error_code})"
 msgstr ""
 
 msgid "Couldn't convert '{path}' to native path"
@@ -1986,10 +2204,13 @@ msgstr ""
 msgid "Consider upgrading your curl installation."
 msgstr ""
 
+msgid "The minimum supported version is {curl_version}, you might face unexpected behaviour."
+msgstr ""
+
 msgid "curl {curl_version} is prone to SIGPIPE crashes. {details_url}"
 msgstr ""
 
-msgid "curl {curl_version} is prone to an eventfd double close vulnerability that might cause SIGABRT crashes for the transmission-daemon systemd service. {details_url}"
+msgid "curl {curl_version} is prone to an eventfd double close vulnerability that might cause SIGABRT crashes for the daemon systemd service. {details_url}"
 msgstr ""
 
 msgid "Will verify tracker certs using envvar CURL_CA_BUNDLE: {bundle}"
@@ -2001,8 +2222,451 @@ msgstr ""
 msgid "NB: Invalid certs will appear as 'Could not connect to tracker' like many other errors"
 msgstr ""
 
+msgid "Aborting request: response body exceeded max size of {max_file_size} bytes"
+msgstr ""
+
 msgid "Couldn't fetch '{url}': expected HTTP response code {expected_code}, got {actual_code}"
 msgstr ""
+
+msgid "Server"
+msgstr ""
+
+msgid "C_redits"
+msgstr "Z_asluge"
+
+msgid "Credits"
+msgstr "Zasluge"
+
+msgid "About {appname}"
+msgstr "O {appname}u"
+
+#, fuzzy
+#| msgid "Torrent Complete"
+msgid "Torrent Completed"
+msgstr "Torrent preuzet"
+
+#, fuzzy
+#| msgid "Torrent Complete"
+msgid "Torrents Completed"
+msgstr "Torrent preuzet"
+
+#. Translators: Text following the "Have:" label in torrent properties dialog;
+#. {current_size} is amount of downloaded and verified data
+msgid "{current_size} (100%)"
+msgstr "{current_size} (100%)"
+
+msgid "{current_size} of {complete_size} ({percent_done}%), {unverified_size} Unverified"
+msgstr "{current_size} od {complete_size} ({percent_done}%), {unverified_size} neprovjereno"
+
+msgid "{total_size} ({piece_count:L} piece @ {piece_size})"
+msgid_plural "{total_size} ({piece_count:L} pieces @ {piece_size})"
+msgstr[0] "{total_size} ({piece_count:L} dio @ {piece_size})"
+msgstr[1] "{total_size} ({piece_count:L} dijela @ {piece_size})"
+msgstr[2] "{total_size} ({piece_count:L} dijelova @ {piece_size})"
+
+msgid "{total_size} ({piece_count:L} piece)"
+msgid_plural "{total_size} ({piece_count:L} pieces)"
+msgstr[0] "{total_size} ({piece_count:L} dio)"
+msgstr[1] "{total_size} ({piece_count:L} dijela)"
+msgstr[2] "{total_size} ({piece_count:L} dijelova)"
+
+msgid "Add URL(s)"
+msgstr ""
+
+#, fuzzy
+#| msgid "Tracker Announce URLs"
+msgid "Add tracker announce URLs, one per line:"
+msgstr "Pratiteljevi URL-ovi najave"
+
+msgid "No new URLs found."
+msgstr ""
+
+msgid "Use Global Settings"
+msgstr "Koristi globalne postavke"
+
+msgid "Stop seeding if idle for:"
+msgstr "Zaustavi dijeljenje pri neaktivnosti:"
+
+msgid "Torrent Properties"
+msgstr "Svojstva torrenta"
+
+msgid "Availability:"
+msgstr "Dostupnost:"
+
+msgid "Labels:"
+msgstr ""
+
+msgid "Limit _upload speed:"
+msgstr "Ograniči _brzinu slanja:"
+
+msgid "Limit _download speed:"
+msgstr "Ograniči _brzinu preuzimanja:"
+
+msgid "Check Selected"
+msgstr "Provjeri odabrano"
+
+msgid "Uncheck Selected"
+msgstr "Ukloni odabir odabranih"
+
+msgid "Only Check Selected"
+msgstr "Provjeri samo odabrano"
+
+msgid "Open"
+msgstr "Otvori"
+
+msgid "Rename…"
+msgstr ""
+
+msgid "Search…"
+msgstr ""
+
+msgid "<i>Calculating Free Space…</i>"
+msgstr ""
+
+msgid "Limited at {speed}"
+msgstr "Ograničeno na {speed}"
+
+#. Translators: Second (optional) part of main window title "Appname - host:port" (added when connected to remote session)
+#. notice that leading space (before the dash) is included here
+msgid " - {host}:{port}"
+msgstr " - {host}:{port}"
+
+msgid "Network Error"
+msgstr "Mrežna greška"
+
+msgid "Idle"
+msgstr "Mirovanje"
+
+msgid "Showing {visible_count:L} of {count:L} torrent"
+msgid_plural "Showing {visible_count:L} of {count:L} torrents"
+msgstr[0] "Prikaz {visible_count:L} od {count:L} torrenta"
+msgstr[1] "Prikaz {visible_count:L} od {count:L} torrenta"
+msgstr[2] "Prikaz {visible_count:L} od {count:L} torrenta"
+
+msgid "Torrent Files (*.torrent);;All Files (*.*)"
+msgstr "Torrent datoteke (*.torrent);;Sve datoteke (*.*)"
+
+msgid "{host} has not responded yet"
+msgstr "{host} još nije odgovorio"
+
+msgid "{host} is responding"
+msgstr "{host} je odgovorio"
+
+#, fuzzy
+#| msgid "{host} last responded {time_span} ago"
+msgid "{host} last responded {time_span_ago}"
+msgstr "{host} je odgovorio prije {time_span}"
+
+msgid "{host} is not responding"
+msgstr "{host} nije odgovorio"
+
+#, fuzzy
+#| msgid "_Open"
+msgid "_Open…"
+msgstr "_Otvori"
+
+msgid "Create a new torrent"
+msgstr "Stvori novi torrent"
+
+msgid "Open the torrent's folder"
+msgstr "Otvori mapu torrenta"
+
+msgid "Ask tracker for more peers"
+msgstr "Pitaj pratitelja za više točaka"
+
+msgid "Verify local data"
+msgstr "Provjera lokalnih podataka"
+
+msgid "Remove torrent and delete its files"
+msgstr "Ukloni torrente i obriši datoteke"
+
+msgid "Compact View"
+msgstr "Zbijen pogled"
+
+msgid "_Main Window"
+msgstr "_Glavni prozor"
+
+msgid "Tray _Icon"
+msgstr "Ikona trake _sustava"
+
+#, fuzzy
+#| msgid "Change Session"
+msgid "_Change Session…"
+msgstr "Promjena sesije"
+
+#. Start a local session or connect to a running session
+msgid "Choose Session"
+msgstr "Odaberi sesiju"
+
+msgid "Bypass the queue and start now"
+msgstr "Zaobiđi red čekanja i pokreni odmah"
+
+msgid "{file_count:L} File"
+msgid_plural "{file_count:L} Files"
+msgstr[0] "{file_count:L} datoteka"
+msgstr[1] "{file_count:L} datoteke"
+msgstr[2] "{file_count:L} datoteka"
+
+msgid "{piece_count:L} Piece"
+msgid_plural "{piece_count:L} Pieces"
+msgstr[0] "{piece_count:L} dio"
+msgstr[1] "{piece_count:L} dijela"
+msgstr[2] "{piece_count:L} dijelova"
+
+msgid "{total_size} in {files}; {pieces} @ {piece_size}"
+msgstr "{total_size} u {files}; {pieces} @ {piece_size}"
+
+msgid ""
+"To add a backup URL, add it on the line after the primary URL.\n"
+"To add another primary URL, add it after a blank line."
+msgstr ""
+"Kako bi dodali pomoćni URL, dodajte ga u redak ispod glavnog URL-a.\n"
+"Kako bi dodali novi glavni URL, dodajte ga nakon praznog retka."
+
+#, fuzzy
+#| msgid "_Source:"
+msgid "Sou_rce:"
+msgstr "_Izvor:"
+
+msgid "_Priority:"
+msgstr "_Prioritet:"
+
+msgid "Select Folder"
+msgstr "Otvori mapu"
+
+#, fuzzy
+#| msgid "Unknown"
+msgid "unknown"
+msgstr "Nepoznato"
+
+msgid "checking…"
+msgstr ""
+
+msgid "open"
+msgstr ""
+
+#, fuzzy
+#| msgid "_Close"
+msgid "closed"
+msgstr "_Zatvori"
+
+#, fuzzy
+#| msgid "Error"
+msgid "error"
+msgstr "Greška"
+
+#, fuzzy
+#| msgid "<i>Blocklist contains {count:L} rule</i>"
+#| msgid_plural "<i>Blocklist contains {count:L} rules</i>"
+msgid "<b>Update succeeded!</b><p>Blocklist now has {count:L} rule.</p>"
+msgid_plural "<b>Update succeeded!</b><p>Blocklist now has {count:L} rules.</p>"
+msgstr[0] "Popis blokiranja sadrži {count:L} pravilo"
+msgstr[1] "Popis blokiranja sadrži {count:L} pravila"
+msgstr[2] "Popis blokiranja sadrži {count:L} pravila"
+
+msgid "Download of the blocklist failed."
+msgstr ""
+
+#, fuzzy
+#| msgid "Blocklist"
+msgid "Update Blocklist"
+msgstr "Popis blokiranih"
+
+msgid "Select \"Torrent Done Seeding\" Script"
+msgstr ""
+
+msgid "Select Watch Directory"
+msgstr "Odaberi direktorij nadziranja"
+
+msgid "Select Incomplete Directory"
+msgstr "Odaberi nepreuzeti direktorij"
+
+msgid "Select \"Torrent Done Downloading\" Script"
+msgstr ""
+
+msgid "Not supported by remote sessions"
+msgstr "Nije podržano udaljenom sesijom"
+
+msgid "<i>Blocklist contains {count:L} rule</i>"
+msgid_plural "<i>Blocklist contains {count:L} rules</i>"
+msgstr[0] "Popis blokiranja sadrži {count:L} pravilo"
+msgstr[1] "Popis blokiranja sadrži {count:L} pravila"
+msgstr[2] "Popis blokiranja sadrži {count:L} pravila"
+
+#, fuzzy
+#| msgid "<i>Blocklist contains {count:L} rule</i>"
+#| msgid_plural "<i>Blocklist contains {count:L} rules</i>"
+msgid "<i>Blocklist has never been updated</i>"
+msgstr "Popis blokiranja sadrži {count:L} pravilo"
+
+#, fuzzy
+#| msgid "<i>Blocklist contains {count:L} rule</i>"
+#| msgid_plural "<i>Blocklist contains {count:L} rules</i>"
+msgid "<i>Blocklist last updated {date}</i>"
+msgstr "Popis blokiranja sadrži {count:L} pravilo"
+
+msgid "_Upload:"
+msgstr "_Slanje:"
+
+msgid "_Download:"
+msgstr "_Preuzimanje:"
+
+msgid "U_pload:"
+msgstr "S_lanje:"
+
+msgid "Do_wnload:"
+msgstr "Pr_euzimanje:"
+
+msgid "Downloading"
+msgstr "Preuzimanje"
+
+msgid "Adding"
+msgstr "Dodavanje"
+
+msgid "Reads user clipboard content for torrents"
+msgstr ""
+
+msgid "Detect new torrents from clipboard"
+msgstr ""
+
+#. Please keep this phrase as short as possible, it's currently the longest and influences dialog width
+msgid "Download is i_nactive if data sharing stopped:"
+msgstr "Preuzimanje nije _aktivno ako se dijeljenje podataka zaustavi:"
+
+msgid "Seeding"
+msgstr "Dijeljenje"
+
+msgid "Stop seedi_ng if idle for:"
+msgstr "Zaustavi dijelje_nje pri neaktivnosti:"
+
+msgid "Encryption"
+msgstr "Šifriranje"
+
+msgid "Start _minimized in notification area"
+msgstr "Pokreni _smanjeno u traci sustava"
+
+#, fuzzy
+#| msgid "Retransmission"
+msgid "Retransmission (Qt)"
+msgstr "Retransmission"
+
+msgid "Select Location"
+msgstr "Odaberi lokaciju"
+
+msgid "Error Renaming Path"
+msgstr "Greška preimenovanja putanje"
+
+msgid "Unable to rename \"{old_path}\" as \"{path}\": {error}."
+msgstr "Nemoguće je preimenovati \"{old_path}\" kao \"{path}\": {error}."
+
+msgid "Error Adding Torrent"
+msgstr "Greška pri dodavanju torrenta"
+
+msgid "{torrent_name} (copy of {hash})"
+msgstr "{torrent_name} (kopija od {hash})"
+
+#, fuzzy
+#| msgid "Public torrent"
+msgid "Duplicate Torrent"
+msgstr "Javni torrent"
+
+#, fuzzy
+#| msgid "Public torrent"
+msgid "Duplicate Torrents"
+msgstr "Javni torrent"
+
+#, fuzzy
+#| msgid "Couldn't add duplicate torrent"
+#| msgid_plural "Couldn't add duplicate torrents"
+msgid "Unable to add {count} duplicate torrent"
+msgid_plural "Unable to add {count} duplicate torrents"
+msgstr[0] "Nemoguće dodati duplikat torrenta"
+msgstr[1] "Nemoguće dodati duplikate torrenata"
+msgstr[2] "Nemoguće dodati duplikate torrenata"
+
+msgid "Change Session"
+msgstr "Promjena sesije"
+
+msgid "Source"
+msgstr "Izvor"
+
+msgid "Start _Local Session"
+msgstr "Pokreni _lokalnu sesiju"
+
+msgid "Connect to _Remote Session"
+msgstr "Poveži se s _lokalnom sesijom"
+
+msgid "_Host:"
+msgstr "_Poslužitelj:"
+
+msgid "_Port:"
+msgstr "_Ulaz:"
+
+msgid "_Authentication required"
+msgstr "_Koristi ovjeru"
+
+msgid "Remote root pa_th:"
+msgstr ""
+
+msgid "Tracker gave a warning: {warning}"
+msgstr "Pratitelj je dao upozorenje: {warning}"
+
+msgid "Tracker gave an error: {error}"
+msgstr "Pratitelj je vratio grešku: {error}"
+
+msgid "Error: {error}"
+msgstr "Greška: {error}"
+
+#, fuzzy
+#| msgid "Magnetized transfer - retrieving metadata (%1%)"
+msgid "Magnetized torrent - retrieving metadata ({percent_done}%)"
+msgstr "Magnetni prijenos - preuzimanje metapodataka (%1%)"
+
+#, no-c-format
+msgid "Downloading metadata from {active_count:L} peer ({percent_done}% done)"
+msgid_plural "Downloading metadata from {active_count:L} peers ({percent_done}% done)"
+msgstr[0] "Preuzimanje metapodataka sa {active_count:L} točke ({percent_done}% završeno)"
+msgstr[1] "Preuzimanje metapodataka sa {active_count:L} točke ({percent_done}% završeno)"
+msgstr[2] "Preuzimanje metapodataka sa {active_count:L} točaka ({percent_done}% završeno)"
+
+msgid "Downloading from {active_count:L} peer"
+msgid_plural "Downloading from {active_count:L} peers"
+msgstr[0] "Preuzimanje sa {active_count:L} točke"
+msgstr[1] "Preuzimanje sa {active_count:L} točke"
+msgstr[2] "Preuzimanje sa {active_count:L} točki"
+
+msgid " and {webseed_count:L} web seed"
+msgid_plural " and {webseed_count:L} web seeds"
+msgstr[0] " i {webseed_count:L} web dijelitelja"
+msgstr[1] " i {webseed_count:L} web dijelitelja"
+msgstr[2] " i {webseed_count:L} web dijelitelja"
+
+msgid "Seeding to {active_count:L} peer"
+msgid_plural "Seeding to {active_count:L} peers"
+msgstr[0] "Slanje na {active_count:L} točku"
+msgstr[1] "Slanje na {active_count:L} točke"
+msgstr[2] "Slanje na {active_count:L} točki"
+
+msgid " - "
+msgstr " - "
+
+#, fuzzy
+#| msgid ""
+#| "To add a backup URL, add it on the next line after a primary URL.\n"
+#| "To add a new primary URL, add it after a blank line."
+msgid "To add a backup URL, add it on the next line after a primary URL."
+msgstr ""
+"Kako bi dodali pomoćni URL, dodajte ga u redak ispod glavnog URL-a.\n"
+"Kako bi dodali novi glavni URL, dodajte ga nakon praznog retka."
+
+#, fuzzy
+#| msgid ""
+#| "To add a backup URL, add it on the next line after a primary URL.\n"
+#| "To add a new primary URL, add it after a blank line."
+msgid "To add a new primary URL, add it after a blank line."
+msgstr ""
+"Kako bi dodali pomoćni URL, dodajte ga u redak ispod glavnog URL-a.\n"
+"Kako bi dodali novi glavni URL, dodajte ga nakon praznog retka."
 
 msgid "{file_count:L} file, {total_size}\n"
 msgid_plural "{file_count:L} files, {total_size}\n"
@@ -2028,7 +2692,7 @@ msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
 
-msgid "seconds"
+msgid "second"
 msgid_plural "seconds"
 msgstr[0] ""
 msgstr[1] ""
@@ -2039,6 +2703,84 @@ msgid_plural "days"
 msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
+
+msgid "seconds"
+msgid_plural "seconds"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+
+#~ msgid "Finished"
+#~ msgstr "Završeno"
+
+#~ msgid "We would upload to this peer if they asked"
+#~ msgstr "Slali bismo ovoj točki da nas to traže"
+
+#~ msgid "Dn Blocks"
+#~ msgstr "Preuzeti blokovi"
+
+#~ msgid "Up Blocks"
+#~ msgstr "Poslani blokovi"
+
+#~ msgid "We Cancelled"
+#~ msgstr "Mi smo otkazali"
+
+#~ msgid "They Cancelled"
+#~ msgstr "Oni su otkazali"
+
+#~ msgid "Have"
+#~ msgstr "Napredak"
+
+#~ msgid "Inhibiting desktop hibernation"
+#~ msgstr "Spriječavanje hibernacije radne površine"
+
+#~ msgid "Allowing desktop hibernation"
+#~ msgstr "Dopuštanje hibernacije radne površine"
+
+#~ msgid "Open URL…"
+#~ msgstr "Otvori URL…"
+
+#~ msgid "Start all torrents"
+#~ msgstr "Pokreni sve torrente"
+
+#~ msgid "Pause all torrents"
+#~ msgstr "_Pauziraj sve torrente"
+
+#~ msgid "Start torrent now"
+#~ msgstr "Pokreni torrent odmah"
+
+#~ msgid "Copy _Magnet Link to Clipboard"
+#~ msgstr "Kopiraj _magnetnu poveznicu u međuspremnik"
+
+#~ msgid "Enable Alternative Speed _Limits"
+#~ msgstr "Omogući a_lternativna ograničenja brzine"
+
+#~ msgid "Torrent size:"
+#~ msgstr "Veličina torrenta:"
+
+#~ msgid "_New"
+#~ msgstr "_Novi"
+
+#~ msgid "Source F_older:"
+#~ msgstr "Izv_orna mapa:"
+
+#~ msgid "Source _File:"
+#~ msgstr "Izvorna _datoteka:"
+
+#~ msgid "P_ause"
+#~ msgstr "P_auziraj"
+
+#~ msgid "Keep _incomplete torrents in:"
+#~ msgstr "Zadrži _nedovršene torrente u:"
+
+#~ msgid "_Port used for incoming connections:"
+#~ msgstr "_Ulaz za dolazna povezivanja:"
+
+#~ msgid "_Inhibit hibernation when torrents are active"
+#~ msgstr "_Spriječi hibernaciju kada su torrenti aktivni"
+
+#~ msgid "Torrent _location:"
+#~ msgstr "Lokacija _torrenta:"
 
 #~ msgid "I _Agree"
 #~ msgstr "Slažem _se"

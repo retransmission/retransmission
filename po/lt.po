@@ -12,8 +12,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-01-04 14:15+0000\n"
+"Report-Msgid-Bugs-To: https://github.com/retransmission/retransmission/issues\n"
+"POT-Creation-Date: 2026-10-03 11:48-0500\n"
 "PO-Revision-Date: 2017-01-26 19:47+0000\n"
 "Last-Translator: Moo, 2025\n"
 "Language-Team: Lithuanian (https://app.transifex.com/transmissionbt/teams/33778/lt/)\n"
@@ -23,10 +23,20 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=4; plural=(n % 10 == 1 && (n % 100 > 19 || n % 100 < 11) ? 0 : (n % 10 >= 2 && n % 10 <=9) && (n % 100 > 19 || n % 100 < 11) ? 1 : n % 1 != 0 ? 2: 3);\n"
 
+#, fuzzy
 msgid "None"
-msgstr "nėra"
+msgstr ""
+"#-#-#-#-#  lt.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"nėra\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"nėra\n"
+"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"laisvas"
 
 msgid "Inf"
+msgstr ""
+
+msgid "Another process is already using '{path}'."
 msgstr ""
 
 msgid "Couldn't read '{path}': {error} ({error_code})"
@@ -54,6 +64,9 @@ msgid "Reloading settings from '{path}'"
 msgstr ""
 
 msgid "Couldn't initialize daemon: {error} ({error_code})"
+msgstr ""
+
+msgid "Waiting for another process to release '{path}'"
 msgstr ""
 
 msgid "Loading settings from '{path}'"
@@ -109,8 +122,13 @@ msgstr[1] "Nepavyko pridėti besidubliuojančių torentų"
 msgstr[2] "Nepavyko pridėti besidubliuojančių torentų"
 msgstr[3] "Nepavyko pridėti besidubliuojančių torentų"
 
+#, fuzzy
 msgid "A fast and easy BitTorrent client"
-msgstr "Sparti ir paprasta „BitTorrent“ klientinė programa"
+msgstr ""
+"#-#-#-#-#  lt.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Sparti ir paprasta „BitTorrent“ klientinė programa\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Sparti ir paprasta „BitTorrent“ kliento programa"
 
 msgid "Copyright © The {appname} Project"
 msgstr "Autorių teisės © {appname} projektas"
@@ -154,37 +172,82 @@ msgstr "skleisti nepaisant aktyvumo"
 msgid "Stop seeding if idle for N minutes:"
 msgstr "nebeskleisti jei neaktyvus N minučių:"
 
+#, fuzzy
 msgid "Queued for verification"
-msgstr "Eilėje patikrinimui"
+msgstr ""
+"#-#-#-#-#  lt.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Eilėje patikrinimui\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Eilėje duomenų tikrinimui"
 
 msgid "Verifying local data"
 msgstr "Tikrinami vietiniai duomenys"
 
+#, fuzzy
 msgid "Queued for download"
-msgstr "Eilėje atsiuntimui"
+msgstr ""
+"#-#-#-#-#  lt.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Eilėje atsiuntimui\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Eilėje parsiuntimui"
 
+#, fuzzy
 msgctxt "Verb"
 msgid "Downloading"
-msgstr "Atsiunčiama"
+msgstr ""
+"#-#-#-#-#  lt.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Atsiunčiama\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"atsiunčiamus\n"
+"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"atsiunčiamas"
 
 msgid "Queued for seeding"
 msgstr "Eilėje skleidimui"
 
+#, fuzzy
 msgctxt "Verb"
 msgid "Seeding"
-msgstr "Skleidžiama"
+msgstr ""
+"#-#-#-#-#  lt.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Skleidžiama\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"skleidžiamus\n"
+"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"skleidžiamas"
 
-msgid "Finished"
-msgstr "Baigtas"
+#, fuzzy
+msgid "Seeding complete"
+msgstr ""
+"#-#-#-#-#  lt.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Nebaigti\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Nebaigtas"
 
+#, fuzzy
 msgid "Paused"
-msgstr "Pristabdytas"
+msgstr ""
+"#-#-#-#-#  lt.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Pristabdytas\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"pristabdytas\n"
+"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"pristabdytus\n"
+"#-#-#-#-#  qt-2.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Pristabdytas"
 
 msgid "N/A"
 msgstr "N/D"
 
+#, fuzzy
 msgid "Mixed"
-msgstr "įvairuoja"
+msgstr ""
+"#-#-#-#-#  lt.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"įvairuoja\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"įvairuoja\n"
+"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Maišyta"
 
 msgid "No Torrents Selected"
 msgstr "Nepažymėtas joks torentas"
@@ -195,11 +258,21 @@ msgstr "privatus šiam sekikliui – DHT ir PEX funkcijos išjungtos"
 msgid "Public torrent"
 msgstr "viešas torentas"
 
+#, fuzzy
 msgid "Created by {creator} on {date}"
-msgstr "sukurtas {date} naudojant {creator}"
+msgstr ""
+"#-#-#-#-#  lt.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"sukurtas {date} naudojant {creator}\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"sukurtas {date} naudojant „{creator}“"
 
+#, fuzzy
 msgid "Created by {creator}"
-msgstr "sukurtas naudojant {creator}"
+msgstr ""
+"#-#-#-#-#  lt.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"sukurtas naudojant {creator}\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"sukurtas naudojant „{creator}“"
 
 msgid "Created on {date}"
 msgstr "sukurtas {date}"
@@ -228,6 +301,8 @@ msgstr ""
 msgid "{current_size} ({percent_done}% of {percent_available}% available)"
 msgstr "{current_size} ({percent_done}% iš {percent_available}% pasiekiama)"
 
+#, fuzzy, c-format
+#| msgid "{current_size} ({percent_done}% of {percent_available}% available; {unverified_size} unverified)"
 msgid "{current_size} ({percent_done}% of {percent_available}% available; {unverified_size} unverified)"
 msgstr "{current_size} ({percent_done}% iš {percent_available}% pasiekiama; {unverified_size} nepatikrinta)"
 
@@ -258,8 +333,10 @@ msgstr "Siųstume iš šio siuntėjo, jei jis leistų"
 msgid "Uploading to peer"
 msgstr "Išsiunčiama šiam siuntėjui"
 
-msgid "We would upload to this peer if they asked"
-msgstr "Siųstume šiam siuntėjui, jei jis paprašytų"
+#, fuzzy
+#| msgid "We would download from this peer if they would let us"
+msgid "This peer would download from us if we would let them"
+msgstr "Siųstume iš šio siuntėjo, jei jis leistų"
 
 msgid "Peer has unchoked us, but we're not interested"
 msgstr "Siuntėjas mus atlaisvino, tačiau tai mūsų nedomina"
@@ -282,10 +359,12 @@ msgstr "Siuntėjas yra įeinantis ryšys"
 msgid "Peer is connected over µTP"
 msgstr "Siuntėjas naudoja µTP"
 
+msgid "Peer supports holepunch (BEP 55)"
+msgstr ""
+
 msgid "Address"
 msgstr "Adresas"
 
-#. % is percent done
 msgid "%"
 msgstr "%"
 
@@ -295,26 +374,31 @@ msgstr "Ats. užklausos"
 msgid "Up Reqs"
 msgstr "Išs. užklausos"
 
-msgid "Dn Blocks"
-msgstr "Ats. blokai"
-
-msgid "Up Blocks"
-msgstr "Išs. blokai"
-
-msgid "We Cancelled"
-msgstr "Mūsų atšaukta"
-
-msgid "They Cancelled"
-msgstr "Jo atšaukta"
-
+#, fuzzy
 msgid "Down"
-msgstr "Ats."
+msgstr ""
+"#-#-#-#-#  lt.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Ats.\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Atsiųsta"
 
+#, fuzzy
 msgid "Up"
-msgstr "Išs."
+msgstr ""
+"#-#-#-#-#  lt.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Išs.\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Išsiųsta"
 
+#, fuzzy
 msgid "Client"
-msgstr "Programa"
+msgstr ""
+"#-#-#-#-#  lt.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Programa\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Klientas\n"
+"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Programa"
 
 msgid "Flags"
 msgstr "Žymės"
@@ -322,72 +406,19 @@ msgstr "Žymės"
 msgid "Web Seeds"
 msgstr "Saityno skleidėjai"
 
-msgid "Got a list of {markup_begin}{peer_count} peer{markup_end} {time_span_ago}"
-msgid_plural "Got a list of {markup_begin}{peer_count} peers{markup_end} {time_span_ago}"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
-
-#. {markup_begin} and {markup_end} should surround the time_span
-msgid "Peer list request {markup_begin}timed out {time_span_ago}{markup_end}; will retry"
-msgstr ""
-
-#. {markup_begin} and {markup_end} should surround the error
-msgid "Got an error '{markup_begin}{error}{markup_end}' {time_span_ago}"
-msgstr ""
-
-msgid "No updates scheduled"
-msgstr "Nėra suplanuotų atnaujinimų"
-
-msgid "Asking for more peers {time_span_from_now}"
-msgstr "Paprašoma daugiau siuntėjų {time_span_from_now}"
-
-msgid "Queued to ask for more peers"
-msgstr "Suplanuota paprašyti daugiau siuntėjų"
-
-#. {markup_begin} and {markup_end} should surround time_span_ago
-msgid "Asked for more peers {markup_begin}{time_span_ago}{markup_end}"
-msgstr "Paprašyta daugiau siuntėjų {markup_begin}{time_span_ago}{markup_end}"
-
-msgid "Tracker had {markup_begin}{seeder_count} {seeder_or_seeders} and {leecher_count} {leecher_or_leechers}{markup_end} {time_span_ago}"
-msgstr ""
-
-msgid "seeder"
-msgid_plural "seeders"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
-
-msgid "leecher"
-msgid_plural "leechers"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
-
-#. {markup_begin} and {markup_end} should surround the error text
-msgid "Got a scrape error '{markup_begin}{error}{markup_end}' {time_span_ago}"
-msgstr ""
-
-msgid "Asking for peer counts in {time_span_from_now}"
-msgstr ""
-
-msgid "Queued to ask for peer counts"
-msgstr "Suplanuota užklausti siuntėjų skaičiaus"
-
-msgid "Asked for peer counts {markup_begin}{time_span_ago}{markup_end}"
-msgstr ""
-
 msgid "{torrent_name} - Edit Trackers"
 msgstr ""
 
 msgid "List contains invalid URLs"
 msgstr "Sąraše yra netinkamų URL adresų"
 
+#, fuzzy
 msgid "Please correct the errors and try again."
-msgstr "Ištaisykite klaidas ir bandykite dar kartą."
+msgstr ""
+"#-#-#-#-#  lt.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Ištaisykite klaidas ir bandykite dar kartą.\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Prašome ištaisyti klaidas ir bandyti dar kartą."
 
 msgid "{torrent_name} - Add Tracker"
 msgstr ""
@@ -406,31 +437,35 @@ msgstr[2] ""
 msgstr[3] ""
 
 msgid "Remove torrent?"
-msgstr ""
+msgstr "Pašalinti torentą?"
+
+msgid "Delete this torrent's downloaded files?"
+msgstr "Pašalinti šio torento atsiųstus failus?"
 
 msgid "Remove {count:L} torrent?"
 msgid_plural "Remove {count:L} torrents?"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
-
-msgid "Delete this torrent's downloaded files?"
-msgstr ""
+msgstr[0] "Šalinti {count:L} torentą?"
+msgstr[1] "Šalinti {count:L} torentus?"
+msgstr[2] "Šalinti {count:L} torentų?"
+msgstr[3] "Šalinti {count:L} torentų?"
 
 msgid "Delete this {count:L} torrent's downloaded files?"
 msgid_plural "Delete these {count:L} torrents' downloaded files?"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Ištrinti šio {count:L} torento atsiųstus failus?"
+msgstr[1] "Ištrinti šių {count:L} torentų atsiųstus failus?"
+msgstr[2] "Ištrinti šių {count:L} torentų atsiųstus failus?"
+msgstr[3] "Ištrinti šių {count:L} torentų atsiųstus failus?"
 
-msgid "Once removed, continuing the transfer will require the torrent file or magnet link."
-msgid_plural "Once removed, continuing the transfers will require the torrent files or magnet links."
-msgstr[0] "Jeigu pašalinsite, norint tęsti siuntimą jums prireiks torento failo arba magnet nuorodos."
-msgstr[1] "Jeigu pašalinsite, norint tęsti siuntimą jums prireiks torentų failų arba magnet nuorodų."
-msgstr[2] "Jeigu pašalinsite, norint tęsti siuntimą jums prireiks torentų failų arba magnet nuorodų."
-msgstr[3] "Jeigu pašalinsite, norint tęsti siuntimą jums prireiks torentų failų arba magnet nuorodų."
+#, fuzzy
+#| msgid "Once removed, continuing the transfer will require the torrent file or magnet link."
+#| msgid_plural "Once removed, continuing the transfers will require the torrent files or magnet links."
+msgid "Once removed, you'll need the torrent file or magnet link to add it again."
+msgstr "Jeigu pašalinsite, norint tęsti siuntimą jums prireiks torento failo arba magnet nuorodos."
+
+#, fuzzy
+#| msgid "Once removed, continuing the transfers will require the torrent files or magnet links."
+msgid "Once removed, you'll need the torrent files or magnet links to add them again."
+msgstr "Jeigu pašalinsite, norint tęsti siuntimus, jums prireiks atitinkamų torentų failų arba magnet nuorodų."
 
 msgid "This torrent has not finished downloading."
 msgstr "Šis torentas dar neatsiųstas."
@@ -444,14 +479,24 @@ msgstr "Šis torentas prisijungęs prie siuntėjų."
 msgid "These torrents are connected to peers."
 msgstr "Šie torentai prisijungę prie siuntėjų."
 
+#, fuzzy
 msgid "One of these torrents is connected to peers."
-msgstr "Kai kurie šių torentų prisijungę prie siuntėjų."
+msgstr ""
+"#-#-#-#-#  lt.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Kai kurie šių torentų prisijungę prie siuntėjų.\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Vienas šių torentų prisijungęs prie siuntėjų."
 
 msgid "Some of these torrents are connected to peers."
 msgstr "Kai kurie šių torentų prisijungę prie siuntėjų."
 
+#, fuzzy
 msgid "One of these torrents has not finished downloading."
-msgstr "Kai kurie šių torentų dar neatsiųsti."
+msgstr ""
+"#-#-#-#-#  lt.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Kai kurie šių torentų dar neatsiųsti.\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Vienas šių torentų dar neatsiųstas."
 
 msgid "Some of these torrents have not finished downloading."
 msgstr "Kai kurie šių torentų dar neatsiųsti."
@@ -462,14 +507,29 @@ msgstr "_Atsisakyti"
 msgid "_Delete"
 msgstr "_Ištrinti"
 
+#. Removes the torrent from the list and keeps its downloaded files
 msgid "_Remove"
 msgstr "Pa_šalinti"
 
+#, fuzzy
 msgid "High"
-msgstr "aukštas"
+msgstr ""
+"#-#-#-#-#  lt.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"aukštas\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"aukštas\n"
+"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Aukštas"
 
+#, fuzzy
 msgid "Normal"
-msgstr "normalus"
+msgstr ""
+"#-#-#-#-#  lt.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"normalus\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"normalus\n"
+"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Normalus"
 
 msgid "Low"
 msgstr "žemas"
@@ -483,11 +543,16 @@ msgstr "Pavadinimas"
 msgid "Size"
 msgstr "Dydis"
 
-msgid "Have"
-msgstr "Turima"
+msgid "Progress"
+msgstr "Pažanga"
 
+#, fuzzy
 msgid "Download"
-msgstr "Atsiųsti"
+msgstr ""
+"#-#-#-#-#  lt.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Atsiųsti\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Atsiuntimas"
 
 msgid "Priority"
 msgstr "Prioritetas"
@@ -498,12 +563,24 @@ msgstr "visus"
 msgid "Active"
 msgstr "aktyvius"
 
+#, fuzzy
 msgctxt "Verb"
 msgid "Verifying"
-msgstr "Tikrinama"
+msgstr ""
+"#-#-#-#-#  lt.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Tikrinama\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"tikrinamus"
 
+#, fuzzy
 msgid "Error"
-msgstr "Klaida"
+msgstr ""
+"#-#-#-#-#  lt.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Klaida\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Klaida\n"
+"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"klaidas"
 
 msgid "_Show:"
 msgstr "Ro_dyti:"
@@ -513,6 +590,24 @@ msgstr "Ro_dyti {count:L}:"
 
 msgid "{disk_space} free"
 msgstr "{disk_space} laisva"
+
+msgid "Where to look for configuration files"
+msgstr "Kur ieškoti konfigūracijos failų"
+
+msgid "Start with all torrents paused"
+msgstr "Paleisti pristabdžius visus torentus"
+
+msgid "Start minimized in notification area"
+msgstr "Paleisti sumažintą pranešimų srityje"
+
+msgid "Show version number and exit"
+msgstr "Parodyti laidos numerį ir baigti darbą"
+
+msgid "[torrent files or urls]"
+msgstr "[torentų failai arba URL adresai]"
+
+msgid "Run '{program} --help' to see a full list of available command line options.\n"
+msgstr ""
 
 msgid ""
 "Click to disable Alternative Speed Limits\n"
@@ -558,16 +653,11 @@ msgstr "Visas siuntimas"
 msgid "Session Transfer"
 msgstr "Seanso siuntimas"
 
+msgid "Down: {downloaded_size}, Up: {uploaded_size}"
+msgstr "Ats.: {downloaded_size}, išs.: {uploaded_size}"
+
 msgid "Ratio: {ratio}"
 msgstr "Santykis: {ratio}"
-
-msgctxt "current session totals"
-msgid "Down: {downloaded_size}, Up: {uploaded_size}"
-msgstr "Ats.: {downloaded_size}, Išs.: {uploaded_size}"
-
-msgctxt "all-time totals"
-msgid "Down: {downloaded_size}, Up: {uploaded_size}"
-msgstr "Ats.: {downloaded_size}, Išs.: {uploaded_size}"
 
 msgid "{download_speed} ▾"
 msgstr "{download_speed} ▾"
@@ -625,6 +715,11 @@ msgstr "Laikas"
 msgid "Couldn't create proxy for '{bus}': {error} ({error_code})"
 msgstr ""
 
+#, fuzzy
+#| msgid "Couldn't read '{path}': {error} ({error_code})"
+msgid "Couldn't spawn async process \"'{command}'\": {error} ({error_code})"
+msgstr "Nepavyko perskaityti „{path}“: {error} ({error_code})"
+
 msgid "Open File"
 msgstr "Atverti failą"
 
@@ -635,7 +730,7 @@ msgid "Torrent Complete"
 msgstr "Torentas baigtas"
 
 msgid "Start Now"
-msgstr ""
+msgstr "Pradėti dabar"
 
 msgid "Torrent Added"
 msgstr "Torentas pridėtas"
@@ -655,11 +750,14 @@ msgstr "_Atverti"
 msgid "Show options dialog"
 msgstr "Rodyti parametrų dialogą"
 
-msgid "Select a File"
+msgid "Other…"
 msgstr ""
 
+msgid "Select File"
+msgstr "Parinkite failą"
+
 msgid "(None)"
-msgstr ""
+msgstr "(Joks)"
 
 msgid "Allow encryption"
 msgstr "leisti šifravimą"
@@ -730,29 +828,23 @@ msgstr "Nepavyko perkelti torento"
 msgid "This may take a moment…"
 msgstr "Tai gali truputį užtrukti…"
 
+#, fuzzy
+#| msgid "Couldn't open '{path}': {error} ({error_code})"
+msgid "Couldn't open watchdir '{dirname}': {error} ({error_code})"
+msgstr "Nepavyko atverti „{path}“: {error} ({error_code})"
+
 msgid "Couldn't read '{path}'"
 msgstr ""
-
-#. logging
-msgid "Inhibiting desktop hibernation"
-msgstr "Neleisti kompiuteriui automatiškai užmigti"
-
-msgid "Couldn't inhibit desktop hibernation: {error}"
-msgstr ""
-
-#. logging
-msgid "Allowing desktop hibernation"
-msgstr "Leidžiamas kompiuterio hibernavimas"
 
 msgid "Couldn't find pending RPC request for id {id}"
 msgstr ""
 
 msgid "Started {count:L} time"
 msgid_plural "Started {count:L} times"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Pradėtas {count:L} kartą"
+msgstr[1] "Pradėtas {count:L} kartus"
+msgstr[2] "Pradėtas {count:L} kartų"
+msgstr[3] "Pradėtas {count:L} kartų"
 
 msgid "Reset your statistics?"
 msgstr "Išvalyti statistiką?"
@@ -763,12 +855,15 @@ msgstr "Iš_valyti"
 msgid "These statistics are for your information only. Resetting them doesn't affect the statistics logged by your BitTorrent trackers."
 msgstr "Ši statistika kaupiama tik Jums informuoti. Jos išvalymas neturi įtakos naudojamų „BitTorrent“ sekiklių kaupiamai statistikai."
 
+msgid "_Show {appname}"
+msgstr "_Rodyti „{appname}“"
+
 msgid "{upload_speed} ▴ {download_speed} ▾"
 msgstr ""
 
 #, no-c-format
 msgid "Verifying local data ({percent_done}% tested)"
-msgstr ""
+msgstr "Tikrinami vietiniai duomenys (patikrinta {percent_done}%)"
 
 msgid "{current_size} of {complete_size} ({percent_done}%)"
 msgstr "{current_size} iš {complete_size} ({percent_done}%)"
@@ -785,6 +880,7 @@ msgstr "{complete_size}, išsiųsta {uploaded_size} (santykis: {ratio}, tikslas:
 msgid "{complete_size}, uploaded {uploaded_size} (Ratio: {ratio})"
 msgstr "{complete_size}, išsiųsta {uploaded_size} (santykis: {ratio})"
 
+#. Translators: Second (optional) part of torrent progress string
 msgid "Remaining time unknown"
 msgstr "Likęs laikas nežinomas"
 
@@ -797,8 +893,10 @@ msgstr "Sustojęs"
 msgid "Tracker warning: '{warning}'"
 msgstr ""
 
-msgid "Tracker Error: '{error}'"
-msgstr ""
+#, fuzzy
+#| msgid "Tracker gave an error: {error}"
+msgid "Tracker error: '{error}'"
+msgstr "Sekiklis pranešė apie klaidą: {error}"
 
 msgid "Local error: '{error}'"
 msgstr "Vietinė klaida: '{error}'"
@@ -838,6 +936,878 @@ msgstr[0] "Skleidžiama {active_count} iš {connected_count} prisijungusio siunt
 msgstr[1] "Skleidžiama {active_count} iš {connected_count} prisijungusių siuntėjų"
 msgstr[2] "Skleidžiama {active_count} iš {connected_count} prisijungusių siuntėjų"
 msgstr[3] "Skleidžiama {active_count} iš {connected_count} prisijungusių siuntėjų"
+
+msgid "Retransmission"
+msgstr "Retransmission"
+
+msgid "BitTorrent Client"
+msgstr "„BitTorrent“ klientinė programa"
+
+msgid "Download and share files over BitTorrent"
+msgstr "Atsiųskite ir dalinkitės failais per „BitTorrent“"
+
+#. Translators: Search terms to find this application. Do NOT translate or localize the semicolons! The list MUST also end with a semicolon!
+msgid "torrents;downloading;uploading;share;sharing;"
+msgstr "torrentai;atsiuntimas;išsiuntimas;bendrinimas;dalinimas;"
+
+msgid "Start Retransmission with All Torrents Paused"
+msgstr "Paleisti Retransmission pristabdžius visus torentus"
+
+msgid "Start Retransmission Minimized"
+msgstr "Paleisti Retransmission suskleistą"
+
+#, fuzzy
+#| msgid "Retransmission"
+msgid "The Retransmission Project"
+msgstr "Retransmission"
+
+#. Translators: these are the application description paragraphs in the MetaInfo file.
+msgid "BitTorrent is a peer-to-peer file-sharing protocol that is commonly used to distribute large amounts of data between multiple users."
+msgstr ""
+
+msgid "Retransmission is a BitTorrent client with an easy-to-use interface on top of a cross-platform backend. Native interfaces are available for macOS, Linux, and Windows, as well as command line binaries and a web GUI."
+msgstr ""
+
+msgid "Notable features of Retransmission include support for Local Peer Discovery, encryption, DHT, µTP, PEX and Magnet links."
+msgstr ""
+
+msgid "Main window, showing an ongoing download of Fedora Workstation"
+msgstr ""
+
+msgid "_File"
+msgstr "_Failas"
+
+msgid "Open _URL…"
+msgstr "Atverti _URL…"
+
+msgid "_New…"
+msgstr "_Naujas…"
+
+msgid "_Start All"
+msgstr "Pa_leisti visus"
+
+msgid "_Pause All"
+msgstr "Pri_stabdyti visus"
+
+msgid "_Quit"
+msgstr "_Baigti darbą"
+
+msgid "_Edit"
+msgstr "_Taisa"
+
+msgid "Select _All"
+msgstr "Pažymėti _viską"
+
+msgid "Dese_lect All"
+msgstr "_Panaikinti žymėjimą"
+
+#, fuzzy
+msgid "_Preferences"
+msgstr ""
+"#-#-#-#-#  lt.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Nustatymai\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Nuostatos"
+
+msgid "_Torrent"
+msgstr "T_orentas"
+
+msgid "_Properties"
+msgstr "_Savybės"
+
+msgid "Open Fold_er"
+msgstr "_Atverti aplanką"
+
+msgid "_Start"
+msgstr "_Paleisti"
+
+#, fuzzy
+msgid "Start _Now"
+msgstr ""
+"#-#-#-#-#  lt.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Pradėti _dabar\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Paleisti da_bar"
+
+msgid "Ask Tracker for _More Peers"
+msgstr "Paprašyti sekiklio _daugiau siuntėjų"
+
+#, fuzzy
+#| msgid "Queue"
+msgid "_Queue"
+msgstr "&Eilė"
+
+#, fuzzy
+msgid "Move to _Top"
+msgstr ""
+"#-#-#-#-#  lt.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Perkelti į _viršų\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Perkelti _aukštyn"
+
+#, fuzzy
+msgid "Move _Up"
+msgstr ""
+"#-#-#-#-#  lt.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Perkelti _aukštyn\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Pa_kelti"
+
+#, fuzzy
+msgid "Move _Down"
+msgstr ""
+"#-#-#-#-#  lt.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Perkelti ž_emyn\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Nu_leisti"
+
+#, fuzzy
+msgid "Move to _Bottom"
+msgstr ""
+"#-#-#-#-#  lt.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Perkelti į a_pačią\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Perkelti _žemyn"
+
+msgid "_Pause"
+msgstr "_Pristabdyti"
+
+msgid "Set _Location…"
+msgstr "Nustatyti _vietą…"
+
+msgid "_Verify Local Data"
+msgstr "Pa_tikrinti turimus duomenis"
+
+msgid "_Copy Magnet Link to Clipboard"
+msgstr "Kopijuoti _magnet nuorodą į iškarpinę"
+
+msgid "_Delete Files and Remove"
+msgstr "Ištrinti _failus ir pašalinti"
+
+msgid "_View"
+msgstr "_Rodymas"
+
+msgid "_Compact View"
+msgstr "_Glaustasis rodinys"
+
+msgid "_Toolbar"
+msgstr "Į_rankinė"
+
+msgid "_Filterbar"
+msgstr "_Filtro juosta"
+
+msgid "_Statusbar"
+msgstr "_Būsenos juosta"
+
+msgid "Sort by _Activity"
+msgstr "Rikiuoti pagal _aktyvumą"
+
+msgid "Sort by A_ge"
+msgstr "Rikiuoti pagal se_numą"
+
+msgid "Sort by _Name"
+msgstr "Rikiuoti pagal pa_vadinimą"
+
+#, fuzzy
+msgid "Sort by _Progress"
+msgstr ""
+"#-#-#-#-#  lt.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Rikiuoti pagal _eigą\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Rikiuoti pagal _pažangą"
+
+msgid "Sort by _Queue"
+msgstr "Rikiuoti pagal _eilę"
+
+msgid "Sort by Rati_o"
+msgstr "Rikiuoti pagal _santykį"
+
+msgid "Sort by Si_ze"
+msgstr "Rikiuoti pagal _dydį"
+
+msgid "Sort by Stat_e"
+msgstr "Rikiuoti pagal b_ūseną"
+
+msgid "Sort by Time _Left"
+msgstr "Rikiuoti pagal likusį _laiką"
+
+msgid "Re_verse Sort Order"
+msgstr "A_tvirkštinė rikiavimo tvarka"
+
+msgid "_Help"
+msgstr "_Pagalba"
+
+#, fuzzy
+msgid "Message _Log"
+msgstr ""
+"#-#-#-#-#  lt.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"P_ranešimų žurnalas\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Pranešimų _žurnalas"
+
+msgid "_Statistics"
+msgstr "_Statistika"
+
+msgid "_Donate"
+msgstr "_Paaukoti"
+
+msgid "_Contents"
+msgstr "_Žinynas"
+
+msgid "_About"
+msgstr "_Apie"
+
+#, fuzzy
+#| msgid "Start torrent"
+msgid "_Sort Torrents By"
+msgstr "Paleisti torentą"
+
+#, fuzzy
+msgid "Alternative Speed _Limits"
+msgstr ""
+"#-#-#-#-#  lt.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Alternatyvieji greičio ribojimai\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Alternatyvūs greičio apribojimai"
+
+msgid "_Add"
+msgstr "_Pridėti"
+
+msgid "Tracker"
+msgstr "Sekiklis"
+
+msgid "_Announce URL:"
+msgstr "_Skelbimo URL adresas:"
+
+msgid "_Close"
+msgstr "_Užverti"
+
+msgid "Activity"
+msgstr "Aktyvumas"
+
+msgid "Size:"
+msgstr "Dydis:"
+
+msgid "Have:"
+msgstr "Turima:"
+
+msgid "Uploaded:"
+msgstr "Išsiųsta:"
+
+msgid "Downloaded:"
+msgstr "Atsiųsta:"
+
+msgid "State:"
+msgstr "Būsena:"
+
+msgid "Running time:"
+msgstr "Veikimo laikas:"
+
+msgid "Remaining time:"
+msgstr "Likęs laikas:"
+
+msgid "Last activity:"
+msgstr "Paskutinė veikla:"
+
+msgid "Error:"
+msgstr "Klaida:"
+
+msgid "Details"
+msgstr "Išsamiau"
+
+msgid "Location:"
+msgstr "Vieta:"
+
+msgid "Hash:"
+msgstr "Maiša:"
+
+msgid "Privacy:"
+msgstr "Privatumas:"
+
+msgid "Origin:"
+msgstr "Kilmė:"
+
+msgid "Added:"
+msgstr "Pridėtas:"
+
+msgid "Comment:"
+msgstr "Komentaras:"
+
+msgid "Information"
+msgstr "Savybės"
+
+msgid "Show _more details"
+msgstr "Rodyti _išsamesnę informaciją"
+
+msgid "Peers"
+msgstr "Siuntėjai"
+
+msgid "Show _backup trackers"
+msgstr "Rodyti _atsarginius sekiklius"
+
+msgid "File listing not available for combined torrent properties"
+msgstr "Peržiūrint jungtines torentų savybes, failų sąrašas nerodomas"
+
+msgid "Files"
+msgstr "Failai"
+
+msgid "Speed"
+msgstr "Greitis"
+
+msgid "Honor global _limits"
+msgstr "Paisyti _visuotinių apribojimų"
+
+msgid "Limit _download speed ({speed_units}):"
+msgstr "Riboti _atsiuntimo greitį ({speed_units}):"
+
+msgid "Limit _upload speed ({speed_units}):"
+msgstr "Riboti _išsiuntimo greitį ({speed_units}):"
+
+msgid "Torrent _priority:"
+msgstr "Torento p_rioritetas:"
+
+#, fuzzy
+msgid "Seeding Limits"
+msgstr ""
+"#-#-#-#-#  lt.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Skleidimo apribojimai\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Sklaidos apribojimai"
+
+msgid "_Ratio:"
+msgstr "_Santykis:"
+
+msgid "_Idle:"
+msgstr "_Pasyvumas:"
+
+msgid "Peer Connections"
+msgstr "Siuntėjų ryšiai"
+
+msgid "_Maximum peers:"
+msgstr "_Daugiausia galimų siuntėjų:"
+
+#, fuzzy
+msgid "Options"
+msgstr ""
+"#-#-#-#-#  lt.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Parametrai\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Nuostatos\n"
+"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Parametrai"
+
+msgid "Tracker Announce URLs"
+msgstr "Sekiklių skelbimo URL adresai"
+
+msgid ""
+"To add a backup URL, add it on the next line after a primary URL.\n"
+"To add a new primary URL, add it after a blank line."
+msgstr ""
+
+msgid "Also see Default Public Trackers in Edit > Preferences > Network"
+msgstr ""
+
+msgid "Open a torrent"
+msgstr "Atverti torentą"
+
+msgid "Start torrent"
+msgstr "Paleisti torentą"
+
+msgid "Pause torrent"
+msgstr "Pristabdyti torentą"
+
+msgid "Remove torrent"
+msgstr "Pašalinti torentą"
+
+msgid "Torrent properties"
+msgstr "Torento savybės"
+
+msgid "Torrent"
+msgstr "Torentas"
+
+msgid "Statistics"
+msgstr "Statistika"
+
+msgid "New Torrent"
+msgstr "Naujas torentas"
+
+#, fuzzy
+#| msgid "C_redits"
+msgid "C_reate"
+msgstr "_Padėkos"
+
+msgid "Sa_ve to:"
+msgstr "Į_rašyti į:"
+
+msgid "Source f_older:"
+msgstr "Šaltinio _aplankas:"
+
+msgid "Source _file:"
+msgstr "Šaltinio _failas:"
+
+msgid "Piece si_ze:"
+msgstr ""
+
+msgid "Properties"
+msgstr "Savybės"
+
+msgid "_Trackers:"
+msgstr "_Sekikliai:"
+
+msgid "Co_mment:"
+msgstr "_Komentaras:"
+
+msgid "_Source:"
+msgstr "Š_altinis:"
+
+msgid "_Private torrent"
+msgstr "_Privatus torentas"
+
+msgid "Creating torrent…"
+msgstr "Kuriamas torentas…"
+
+msgid "Message Log"
+msgstr "Pranešimų žurnalas"
+
+msgid "Save _As"
+msgstr "Įrašyti k_aip"
+
+msgid "Clear"
+msgstr "Išvalyti"
+
+msgid "Level"
+msgstr "Lygmuo"
+
+msgid "Torrent Options"
+msgstr "Torento parametrai"
+
+msgid "_Torrent file:"
+msgstr "Torento _failas:"
+
+msgid "Select Source File"
+msgstr "Parinkite torento failą"
+
+msgid "_Destination folder:"
+msgstr "Paskirties _aplankas:"
+
+msgid "Select Destination Folder"
+msgstr "Parinkite paskirties aplanką"
+
+msgid "_Start when added"
+msgstr "P_radėti pridėjus"
+
+#, fuzzy
+#| msgid "Mo_ve torrent file to the trash"
+msgid "Mo_ve torrent file to the Trash"
+msgstr "Per_kelti torento failą į šiukšlinę"
+
+#, fuzzy
+msgid "{appname} Preferences"
+msgstr ""
+"#-#-#-#-#  lt.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"„{appname}“ nustatymai\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"„{appname}“ nuostatos"
+
+msgid "Speed Limits"
+msgstr "Greičio ribojimai"
+
+#. Checkbox to limit upload speed
+msgid "_Upload ({speed_units}):"
+msgstr "I_šsiuntimas ({speed_units}):"
+
+#. Checkbox to limit download speed
+msgid "_Download ({speed_units}):"
+msgstr "_Atsiuntimas ({speed_units}):"
+
+#, fuzzy
+msgid "Alternative Speed Limits"
+msgstr ""
+"#-#-#-#-#  lt.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Alternatyvieji greičio ribojimai\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Alternatyvūs greičio apribojimai"
+
+msgid "Override normal speed limits manually or at scheduled times"
+msgstr "Taikomi vietoje įprastų greičio ribojimų rankiniu būdu arba numatytuoju laiku"
+
+#. Labels a spinbutton for alternate upload speed limits
+msgid "U_pload ({speed_units}):"
+msgstr "Iš_siuntimas ({speed_units}):"
+
+#. Labels a spinbutton for alternate download speed limits
+msgid "Do_wnload ({speed_units}):"
+msgstr "A_tsiuntimas ({speed_units}):"
+
+msgid "_Scheduled times:"
+msgstr "_Numatytasis laikas:"
+
+msgid "_On days:"
+msgstr "Šiomis _dienomis:"
+
+#. Label goes between two time selectors, e.g. "limit speeds from [time] to [time]"
+msgid "_to"
+msgstr "i_ki"
+
+msgctxt "Gerund"
+msgid "Adding"
+msgstr "Pridėjimas"
+
+msgid "Automatically add torrent files _from:"
+msgstr "Automatiškai pridėti torentų failus _iš:"
+
+#, fuzzy
+msgid "Show the Torrent Options _dialog"
+msgstr ""
+"#-#-#-#-#  lt.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Rodyti torento parametrų _dialogą\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Rodyti torento parinkčių _dialogą"
+
+#, fuzzy
+msgid "_Start added torrents"
+msgstr ""
+"#-#-#-#-#  lt.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Paleisti pridėtus torentus\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Palei_sti pridėtus torentus"
+
+#, fuzzy
+#| msgid "Save to _Location:"
+msgid "Save to _location:"
+msgstr "Įrašyti _vietoje:"
+
+#, fuzzy
+msgid "Download Queue"
+msgstr ""
+"#-#-#-#-#  lt.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Atsiuntimų eilė\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Atsiuntimų Eilė"
+
+#, fuzzy
+msgid "Ma_ximum active downloads:"
+msgstr ""
+"#-#-#-#-#  lt.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Dau_giausia aktyvių atsiuntimų:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Dau_giausiai aktyvių atsiuntimų:"
+
+msgid "Downloads sharing data in the last _N minutes are active:"
+msgstr "Atsiuntimai, per pastarąsias N minučių keitęsi duomenimis, laikomi _aktyviais:"
+
+#, fuzzy
+msgid "Incomplete"
+msgstr ""
+"#-#-#-#-#  lt.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Nebaigti\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Nebaigtas"
+
+msgid "Append \"._part\" to incomplete files' names"
+msgstr "Nebaigtų failų varduose naudoti „.part“ _prievardį"
+
+msgid "Keep _incomplete files in:"
+msgstr "Įrašyti _nebaigtus torentus į:"
+
+#, fuzzy
+#| msgid "Call scrip_t when done downloading:"
+msgid "Call scrip_t when download completes:"
+msgstr "Baigus siųsti torentą, vykdyti s_cenarijų:"
+
+msgid "Verify data when download completes"
+msgstr ""
+
+msgctxt "Gerund"
+msgid "Downloading"
+msgstr "Atsiuntimas"
+
+#, fuzzy
+msgid "Limits"
+msgstr ""
+"#-#-#-#-#  lt.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Apribojimai\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Ribojimai"
+
+msgid "Stop seeding at _ratio:"
+msgstr "Nebeskleisti esant _santykiui:"
+
+msgid "Stop seeding if idle for _N minutes:"
+msgstr "Nebeskleisti jei neaktyvus N _minučių:"
+
+msgid "Call scrip_t when done seeding:"
+msgstr "Baigus skleisti torentą, vykdyti s_cenarijų:"
+
+msgctxt "Gerund"
+msgid "Seeding"
+msgstr "Skleidimas"
+
+msgid "Privacy"
+msgstr "Privatumas"
+
+msgid "_Encryption mode:"
+msgstr "Pozicija dėl _šifravimo:"
+
+msgid "Blocklist"
+msgstr "Blokavimo sąrašas"
+
+msgid "Enable _blocklist:"
+msgstr "Įjungti _blokavimo sąrašą:"
+
+#, fuzzy
+#| msgid "Enable _automatic updates"
+msgid "_Automatically update weekly"
+msgstr "Įjungti _automatinius atnaujinimus"
+
+msgid "_Update"
+msgstr "At_naujinti"
+
+msgid "Listening Port"
+msgstr "Klausomas prievadas"
+
+msgid "_Port for incoming connections:"
+msgstr "Įeinantiems ryšiams naudotinas _prievadas:"
+
+#, fuzzy
+#| msgid "Pick a _random port every time Transmission is started"
+msgid "Pick a _random port at startup"
+msgstr "Pasirinkti _atsitiktinį prievadą kaskart paleidus „Transmission“"
+
+msgid "Use UPnP or NAT-PMP port _forwarding from my router"
+msgstr "Naudototi _UPnP arba NAT-PMP prievadų persiuntimą maršrutizatoriuje"
+
+msgid "Te_st Port"
+msgstr "_Tikrinti prievadą"
+
+#, fuzzy
+msgid "Peer Limits"
+msgstr ""
+"#-#-#-#-#  lt.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Siuntėjų ribojimai\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Ryšių ribojimai"
+
+#, fuzzy
+#| msgid "Maximum peers per _torrent:"
+msgid "Maximum peers for new _torrents:"
+msgstr "Daugiausiai galimų _vieno torento siuntėjų:"
+
+msgid "Maximum peers _overall:"
+msgstr "_Daugiausiai galimų siuntėjų iš viso:"
+
+#, fuzzy
+#| msgid "Enable µ_TP for peer communication"
+msgid "Enable µ_TP for peer connections"
+msgstr "Ryšiams su _siuntėjais naudoti µTP"
+
+msgid "µTP is a tool for reducing network congestion."
+msgstr "µTP – tai priemonė, padedanti mažinti tinklo apkrovas."
+
+#, fuzzy
+#| msgid "Use PE_X to find more peers"
+msgid "Use PE_X to find more peers for public torrents"
+msgstr "Naudoti PE_X papildomiems siuntėjams rasti"
+
+msgid "PEX is a tool for exchanging peer lists with the peers you're connected to."
+msgstr "PEX – tai priemonė, skirta apsikeisti siuntėjų sąrašais su siuntėjais, prie kurių esate prisijungę."
+
+#, fuzzy
+#| msgid "Use _DHT to find more peers"
+msgid "Use _DHT to find more peers for public torrents"
+msgstr "Naudoti _DHT papildomiems siuntėjams rasti"
+
+msgid "DHT is a tool for finding peers without a tracker."
+msgstr "DHT – tai priemonė, skirta siuntėjams be sekiklio rasti."
+
+#, fuzzy
+#| msgid "Use _Local Peer Discovery to find more peers"
+msgid "Use _Local Peer Discovery to find more peers for public torrents"
+msgstr "Naudoti _vietinių siuntėjų aptikimo metodą papildomiems siuntėjams rasti"
+
+msgid "LPD is a tool for finding peers on your local network."
+msgstr "VSA – tai priemonė, skirta siuntėjams Jūsų vietiniame tinkle rasti."
+
+msgid "Default Public Trackers"
+msgstr "Numatytieji viešieji sekikliai"
+
+msgid ""
+"Trackers to use on all public torrents.\n"
+"\n"
+"To add a backup URL, add it on the next line after a primary URL.\n"
+"To add a new primary URL, add it after a blank line."
+msgstr ""
+
+msgid "Network"
+msgstr "Tinklas"
+
+msgid "Desktop"
+msgstr "Aplinka"
+
+msgid "_Prevent computer from sleeping with active torrents"
+msgstr ""
+
+msgid "Show {appname} icon in the _notification area"
+msgstr "Rodyti „{appname}“ piktogramą pranešimų _srityje"
+
+#, fuzzy
+msgid "Notification"
+msgstr ""
+"#-#-#-#-#  lt.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Pranešimas\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Pranešimai"
+
+#, fuzzy
+msgid "Show a notification when torrents are a_dded"
+msgstr ""
+"#-#-#-#-#  lt.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Rodyti pranešimą kai torentai _pridedami\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Rodyti pranešimą, kai yra pride_dami torentai"
+
+#, fuzzy
+msgid "Show a notification when torrents _finish"
+msgstr ""
+"#-#-#-#-#  lt.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Rodyti pranešimą kai torentai _baigiami\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Rodyti pranešimą, kai torentai _yra užbaigiami"
+
+#, fuzzy
+msgid "Play a _sound when torrents finish"
+msgstr ""
+"#-#-#-#-#  lt.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Sugroti _garsą kai torentai baigiami\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Groti gar_są, kai torentai yra užbaigiami"
+
+#, fuzzy
+msgid "Remote Control"
+msgstr ""
+"#-#-#-#-#  lt.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Nuotolinis valdymas\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Nuotolinis Valdymas"
+
+#, fuzzy
+msgid "Allow _remote access"
+msgstr ""
+"#-#-#-#-#  lt.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Leisti _nuotolinę prieigą\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Leisti nuotolinę p_rieigą"
+
+#, fuzzy
+#| msgid "_Open web client"
+msgid "_Open Web Client"
+msgstr "_Atverti saityno sąsają"
+
+msgid "HTTP _port:"
+msgstr "HTTP _prievadas:"
+
+msgid "Use _authentication"
+msgstr "Reikalauti _tapatybės nustatymo"
+
+#, fuzzy
+msgid "_Username:"
+msgstr ""
+"#-#-#-#-#  lt.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Naudotojo _vardas:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Naudotojo _vardas:\n"
+"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Naudotojo vardas:"
+
+msgid "Pass_word:"
+msgstr "_Slaptažodis:"
+
+msgid "Only allow these IP a_ddresses:"
+msgstr "Leisti tik šiuos IP a_dresus:"
+
+#, fuzzy
+msgid "Addresses:"
+msgstr ""
+"#-#-#-#-#  lt.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Ad_resai:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Ad&resai:"
+
+msgid "IP addresses may use wildcards, such as 192.168.*.*"
+msgstr "IP adresuose galima naudoti kaitos simbolius, pvz., 192.168.*.*"
+
+msgid "Remote"
+msgstr "Nuotoliniai"
+
+msgid "Set Torrent Location"
+msgstr "Torento vietos nustatymas"
+
+msgid "_Apply"
+msgstr "P_ritaikyti"
+
+msgid "Location"
+msgstr "Vieta"
+
+msgid "New _location:"
+msgstr "Nauja _vieta:"
+
+msgid "_Move from the current folder"
+msgstr "_Perkelti iš dabartinio aplanko"
+
+msgid "Local data is _already there"
+msgstr "Vietiniai duomenys jau yra _ten"
+
+msgid "Current Session"
+msgstr "Šis seansas"
+
+msgid "Ratio:"
+msgstr "Santykis:"
+
+msgid "Duration:"
+msgstr "Naudojimosi trukmė:"
+
+msgid "Total"
+msgstr "Bendra"
+
+msgid "Open URL"
+msgstr "URL atvėrimas"
+
+msgid "Open torrent from URL"
+msgstr "Atverti torentą iš URL"
+
+msgid "_URL"
+msgstr "_URL"
+
+msgid "The torrent file '{path}' is already in use by '{torrent_name}'."
+msgstr ""
+
+msgid "Couldn't open torrent"
+msgstr ""
+
+msgid "Couldn't move '{path}' to trash: {error} ({error_code})"
+msgstr ""
+
+#, fuzzy
+#| msgid "Couldn't read '{path}': {error} ({error_code})"
+msgid "Couldn't launch default application for URI '{uri}': {error} ({error_code})"
+msgstr "Nepavyko perskaityti „{path}“: {error} ({error_code})"
+
+#, fuzzy
+#| msgid "Couldn't open '{path}': {error} ({error_code})"
+msgid "Couldn't invoke xdg-open for URI '{uri}': {error} ({error_code})"
+msgstr "Nepavyko atverti „{path}“: {error} ({error_code})"
+
+msgid "Couldn't open '{url}'"
+msgstr ""
+
+msgid "Unsupported URL: '{url}'"
+msgstr ""
+
+msgid "{appname} doesn't know how to use '{url}'"
+msgstr ""
+
+msgid "This magnet link appears to be intended for something other than BitTorrent."
+msgstr ""
 
 msgid "{days_from_now:L} day from now"
 msgid_plural "{days_from_now:L} days from now"
@@ -898,33 +1868,95 @@ msgstr[1] ""
 msgstr[2] ""
 msgstr[3] ""
 
-msgid "{days:L} day"
-msgid_plural "{days:L} days"
+msgid "Got a list of {markup_begin}{peer_count} peer{markup_end} {time_span_ago}"
+msgid_plural "Got a list of {markup_begin}{peer_count} peers{markup_end} {time_span_ago}"
 msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
 msgstr[3] ""
+
+msgid "Peer list request {markup_begin}timed out {time_span_ago}{markup_end}; will retry"
+msgstr ""
+
+msgid "Got an error '{markup_begin}{error}{markup_end}' {time_span_ago}"
+msgstr ""
+
+msgid "No updates scheduled"
+msgstr "Nėra suplanuotų atnaujinimų"
+
+msgid "Asking for more peers {time_span_from_now}"
+msgstr "Paprašoma daugiau siuntėjų {time_span_from_now}"
+
+msgid "Queued to ask for more peers"
+msgstr "Suplanuota paprašyti daugiau siuntėjų"
+
+msgid "Asked for more peers {markup_begin}{time_span_ago}{markup_end}"
+msgstr "Paprašyta daugiau siuntėjų {markup_begin}{time_span_ago}{markup_end}"
+
+msgid "Got a scrape error '{markup_begin}{error}{markup_end}' {time_span_ago}"
+msgstr ""
+
+#, fuzzy
+#| msgid "Tracker had {markup_begin}no information{markup_end} on peer counts {time_span} ago"
+msgid "Tracker had {markup_begin}no information{markup_end} on peer counts {time_span_ago}"
+msgstr "Sekiklis prieš {time_span} neturėjo {markup_begin}jokios informacijos{markup_end} apie siuntėjų skaičių"
+
+msgid "Tracker had {markup_begin}{seeder_count} {seeder_or_seeders} and {leecher_count} {leecher_or_leechers}{markup_end} {time_span_ago}"
+msgstr ""
+
+msgid "seeder"
+msgid_plural "seeders"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
+
+msgid "leecher"
+msgid_plural "leechers"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
+
+#, fuzzy
+#| msgid "Asking for more peers {time_span_from_now}"
+msgid "Asking for peer counts {time_span_from_now}"
+msgstr "Paprašoma daugiau siuntėjų {time_span_from_now}"
+
+msgid "Queued to ask for peer counts"
+msgstr "Suplanuota užklausti siuntėjų skaičiaus"
+
+msgid "Asked for peer counts {markup_begin}{time_span_ago}{markup_end}"
+msgstr ""
+
+msgid "{days:L} day"
+msgid_plural "{days:L} days"
+msgstr[0] "{days:L} diena"
+msgstr[1] "{days:L} dienos"
+msgstr[2] "{days:L} dienų"
+msgstr[3] "{days:L} dienų"
 
 msgid "{hours:L} hour"
 msgid_plural "{hours:L} hours"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "{hours:L} valanda"
+msgstr[1] "{hours:L} valandos"
+msgstr[2] "{hours:L} valandų"
+msgstr[3] "{hours:L} valandų"
 
+#. Translators: Spin box format, "Stop seeding if idle for: [ 5 minutes ]"
 msgid "{minutes:L} minute"
 msgid_plural "{minutes:L} minutes"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "{minutes:L} minutė"
+msgstr[1] "{minutes:L} minutės"
+msgstr[2] "{minutes:L} minučių"
+msgstr[3] "{minutes:L} minučių"
 
 msgid "{seconds:L} second"
 msgid_plural "{seconds:L} seconds"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "{seconds:L} sekundė"
+msgstr[1] "{seconds:L} sekundės"
+msgstr[2] "{seconds:L} sekundžių"
+msgstr[3] "{seconds:L} sekundžių"
 
 msgid "{days_left:L} day left"
 msgid_plural "{days_left:L} days left"
@@ -954,755 +1986,6 @@ msgstr[1] ""
 msgstr[2] ""
 msgstr[3] ""
 
-msgid "The torrent file '{path}' is already in use by '{torrent_name}'."
-msgstr ""
-
-msgid "Couldn't open torrent"
-msgstr ""
-
-msgid "Couldn't move '{path}' to trash: {error} ({error_code})"
-msgstr ""
-
-msgid "Couldn't open '{url}'"
-msgstr ""
-
-msgid "Unsupported URL: '{url}'"
-msgstr ""
-
-#. modal
-msgid "{appname} doesn't know how to use '{url}'"
-msgstr ""
-
-msgid "This magnet link appears to be intended for something other than BitTorrent."
-msgstr ""
-
-msgid "Retransmission"
-msgstr "Retransmission"
-
-#. parse the command line
-msgid "Where to look for configuration files"
-msgstr "Kur ieškoti konfigūracijos failų"
-
-msgid "Start with all torrents paused"
-msgstr "Paleisti pristabdžius visus torentus"
-
-msgid "Start minimized in notification area"
-msgstr "Paleisti sumažintą pranešimų srityje"
-
-msgid "Show version number and exit"
-msgstr "Parodyti laidos numerį ir baigti darbą"
-
-msgid "[torrent files or urls]"
-msgstr "[torentų failai arba URL adresai]"
-
-msgid "Run '{program} --help' to see a full list of available command line options.\n"
-msgstr ""
-
-msgid "B/s"
-msgstr ""
-
-msgid "GB/s"
-msgstr "GB/s"
-
-msgid "MB/s"
-msgstr "MB/s"
-
-msgid "TB/s"
-msgstr "TB/s"
-
-msgid "kB/s"
-msgstr "kB/s"
-
-msgid "B"
-msgstr "B"
-
-msgid "GiB"
-msgstr "GiB"
-
-msgid "KiB"
-msgstr "KiB"
-
-msgid "MiB"
-msgstr "MiB"
-
-msgid "TiB"
-msgstr "TiB"
-
-msgid "GB"
-msgstr "GB"
-
-msgid "MB"
-msgstr "MB"
-
-msgid "TB"
-msgstr "TB"
-
-msgid "kB"
-msgstr "kB"
-
-msgid "BitTorrent Client"
-msgstr "„BitTorrent“ klientinė programa"
-
-msgid "Download and share files over BitTorrent"
-msgstr "Atsiųskite ir dalinkitės failais per „BitTorrent“"
-
-#. Translators: Search terms to find this application. Do NOT translate or localize the semicolons! The list MUST also end with a semicolon!
-msgid "torrents;downloading;uploading;share;sharing;"
-msgstr "torrentai;atsiuntimas;išsiuntimas;bendrinimas;dalinimas;"
-
-msgid "Start Retransmission with All Torrents Paused"
-msgstr "Paleisti Retransmission pristabdžius visus torentus"
-
-msgid "Start Retransmission Minimized"
-msgstr "Paleisti Retransmission suskleistą"
-
-msgid "Open a torrent"
-msgstr "Atverti torentą"
-
-msgid "Open _URL…"
-msgstr "Atverti _URL…"
-
-msgid "Open URL…"
-msgstr "Atverti URL…"
-
-msgid "_New…"
-msgstr "_Naujas…"
-
-msgid "_Start All"
-msgstr "Pa_leisti visus"
-
-msgid "Start all torrents"
-msgstr "Paleisti visus torentus"
-
-msgid "_Pause All"
-msgstr "Pri_stabdyti visus"
-
-msgid "Pause all torrents"
-msgstr "Pristabdyti visus torentus"
-
-msgid "_Quit"
-msgstr "_Baigti darbą"
-
-msgid "Select _All"
-msgstr "Pažymėti _viską"
-
-msgid "Dese_lect All"
-msgstr "_Panaikinti žymėjimą"
-
-msgid "_Preferences"
-msgstr "_Nustatymai"
-
-msgid "_Properties"
-msgstr "_Savybės"
-
-msgid "Torrent properties"
-msgstr "Torento savybės"
-
-msgid "Open Fold_er"
-msgstr "_Atverti aplanką"
-
-msgid "_Start"
-msgstr "_Paleisti"
-
-msgid "Start torrent"
-msgstr "Paleisti torentą"
-
-msgid "Start _Now"
-msgstr "Pradėti _dabar"
-
-msgid "Start torrent now"
-msgstr "Pradėti torentą dabar"
-
-msgid "Ask Tracker for _More Peers"
-msgstr "Paprašyti sekiklio _daugiau siuntėjų"
-
-msgid "Move to _Top"
-msgstr "Perkelti į _viršų"
-
-msgid "Move _Up"
-msgstr "Perkelti _aukštyn"
-
-msgid "Move _Down"
-msgstr "Perkelti ž_emyn"
-
-msgid "Move to _Bottom"
-msgstr "Perkelti į a_pačią"
-
-msgid "_Pause"
-msgstr "_Pristabdyti"
-
-msgid "Pause torrent"
-msgstr "Pristabdyti torentą"
-
-msgid "Set _Location…"
-msgstr "Nustatyti _vietą…"
-
-msgid "_Verify Local Data"
-msgstr "Pa_tikrinti turimus duomenis"
-
-msgid "Copy _Magnet Link to Clipboard"
-msgstr "Kopijuoti _magnet nuorodą į iškarpinę"
-
-msgid "Remove torrent"
-msgstr "Pašalinti torentą"
-
-msgid "_Delete Files and Remove"
-msgstr "Ištrinti _failus ir pašalinti"
-
-msgid "_Compact View"
-msgstr "_Glaustasis rodinys"
-
-msgid "_Toolbar"
-msgstr "Į_rankinė"
-
-msgid "_Filterbar"
-msgstr "_Filtro juosta"
-
-msgid "_Statusbar"
-msgstr "_Būsenos juosta"
-
-msgid "Sort by _Activity"
-msgstr "Rikiuoti pagal _aktyvumą"
-
-msgid "Sort by A_ge"
-msgstr "Rikiuoti pagal se_numą"
-
-msgid "Sort by _Name"
-msgstr "Rikiuoti pagal pa_vadinimą"
-
-msgid "Sort by _Progress"
-msgstr "Rikiuoti pagal _eigą"
-
-msgid "Sort by _Queue"
-msgstr "Rikiuoti pagal _eilę"
-
-msgid "Sort by Rati_o"
-msgstr "Rikiuoti pagal _santykį"
-
-msgid "Sort by Si_ze"
-msgstr "Rikiuoti pagal _dydį"
-
-msgid "Sort by Stat_e"
-msgstr "Rikiuoti pagal b_ūseną"
-
-msgid "Sort by Time _Left"
-msgstr "Rikiuoti pagal likusį _laiką"
-
-msgid "Re_verse Sort Order"
-msgstr "A_tvirkštinė rikiavimo tvarka"
-
-msgid "Message _Log"
-msgstr "P_ranešimų žurnalas"
-
-msgid "_Statistics"
-msgstr "_Statistika"
-
-msgid "_Donate"
-msgstr "_Paaukoti"
-
-msgid "_Contents"
-msgstr "_Žinynas"
-
-msgid "_About"
-msgstr "_Apie"
-
-msgid "_Show {appname}"
-msgstr "_Rodyti „{appname}“"
-
-msgid "Enable Alternative Speed _Limits"
-msgstr "Įjungti alternatyviuosius greičio _ribojimus"
-
-msgid "_Add"
-msgstr "_Pridėti"
-
-msgid "Tracker"
-msgstr "Sekiklis"
-
-msgid "_Announce URL:"
-msgstr "_Skelbimo URL adresas:"
-
-msgid "_Close"
-msgstr "_Užverti"
-
-msgid "Activity"
-msgstr "Aktyvumas"
-
-msgid "Torrent size:"
-msgstr "Torento dydis:"
-
-msgid "Have:"
-msgstr "Turima:"
-
-msgid "Uploaded:"
-msgstr "Išsiųsta:"
-
-msgid "Downloaded:"
-msgstr "Atsiųsta:"
-
-msgid "State:"
-msgstr "Būsena:"
-
-msgid "Running time:"
-msgstr "Veikimo laikas:"
-
-msgid "Remaining time:"
-msgstr "Likęs laikas:"
-
-msgid "Last activity:"
-msgstr "Paskutinė veikla:"
-
-msgid "Error:"
-msgstr "Klaida:"
-
-msgid "Details"
-msgstr "Išsamiau"
-
-msgid "Location:"
-msgstr "Vieta:"
-
-msgid "Hash:"
-msgstr "Maiša:"
-
-msgid "Privacy:"
-msgstr "Privatumas:"
-
-msgid "Origin:"
-msgstr "Kilmė:"
-
-msgid "Added:"
-msgstr "Pridėtas:"
-
-msgid "Comment:"
-msgstr "Komentaras:"
-
-msgid "Information"
-msgstr "Savybės"
-
-msgid "Show _more details"
-msgstr "Rodyti _išsamesnę informaciją"
-
-msgid "Peers"
-msgstr "Siuntėjai"
-
-msgid "_Edit"
-msgstr "_Taisa"
-
-msgid "Show _backup trackers"
-msgstr "Rodyti _atsarginius sekiklius"
-
-msgid "File listing not available for combined torrent properties"
-msgstr "Peržiūrint jungtines torentų savybes, failų sąrašas nerodomas"
-
-msgid "Files"
-msgstr "Failai"
-
-msgid "Speed"
-msgstr "Greitis"
-
-msgid "Honor global _limits"
-msgstr "Paisyti _visuotinių apribojimų"
-
-msgid "Limit _download speed ({speed_units}):"
-msgstr "Riboti _atsiuntimo greitį ({speed_units}):"
-
-msgid "Limit _upload speed ({speed_units}):"
-msgstr "Riboti _išsiuntimo greitį ({speed_units}):"
-
-msgid "Torrent _priority:"
-msgstr "Torento p_rioritetas:"
-
-msgid "Seeding Limits"
-msgstr "Skleidimo apribojimai"
-
-msgid "_Ratio:"
-msgstr "_Santykis:"
-
-msgid "_Idle:"
-msgstr "_Pasyvumas:"
-
-msgid "Peer Connections"
-msgstr "Siuntėjų ryšiai"
-
-msgid "_Maximum peers:"
-msgstr "_Daugiausia galimų siuntėjų:"
-
-msgid "Options"
-msgstr "Parametrai"
-
-msgid "Tracker Announce URLs"
-msgstr "Sekiklių skelbimo URL adresai"
-
-msgid ""
-"To add a backup URL, add it on the next line after a primary URL.\n"
-"To add a new primary URL, add it after a blank line."
-msgstr ""
-
-msgid "Also see Default Public Trackers in Edit > Preferences > Network"
-msgstr ""
-
-msgid "Torrent"
-msgstr "Torentas"
-
-msgid "Statistics"
-msgstr "Statistika"
-
-msgid "New Torrent"
-msgstr "Naujas torentas"
-
-msgid "_New"
-msgstr ""
-
-msgid "Sa_ve to:"
-msgstr "Į_rašyti į:"
-
-msgid "Source F_older:"
-msgstr "Šaltinio _aplankas:"
-
-msgid "Source _File:"
-msgstr "Šaltinio _failas:"
-
-msgid "Piece size:"
-msgstr ""
-
-msgid "Properties"
-msgstr "Savybės"
-
-msgid "_Trackers:"
-msgstr "_Sekikliai:"
-
-msgid "Co_mment:"
-msgstr "_Komentaras:"
-
-msgid "_Source:"
-msgstr ""
-
-msgid "_Private torrent"
-msgstr "_Privatus torentas"
-
-msgid "Creating torrent…"
-msgstr "Kuriamas torentas…"
-
-msgid "Message Log"
-msgstr "Pranešimų žurnalas"
-
-msgid "Save _As"
-msgstr "Įrašyti k_aip"
-
-msgid "Clear"
-msgstr "Išvalyti"
-
-msgid "P_ause"
-msgstr "Prist_abdyti"
-
-msgid "Level"
-msgstr "Lygmuo"
-
-msgid "Torrent Options"
-msgstr "Torento parametrai"
-
-msgid "_Torrent file:"
-msgstr "Torento _failas:"
-
-msgid "Select Source File"
-msgstr "Parinkite torento failą"
-
-msgid "_Destination folder:"
-msgstr "Paskirties _aplankas:"
-
-msgid "Select Destination Folder"
-msgstr "Parinkite paskirties aplanką"
-
-msgid "_Start when added"
-msgstr "P_radėti pridėjus"
-
-msgid "Mo_ve torrent file to the trash"
-msgstr "Per_kelti torento failą į šiukšlinę"
-
-msgid "{appname} Preferences"
-msgstr "„{appname}“ nustatymai"
-
-msgid "_Help"
-msgstr "_Pagalba"
-
-msgid "Speed Limits"
-msgstr "Greičio ribojimai"
-
-#. Checkbox to limit upload speed
-msgid "_Upload ({speed_units}):"
-msgstr "I_šsiuntimas ({speed_units}):"
-
-#. Checkbox to limit download speed
-msgid "_Download ({speed_units}):"
-msgstr "_Atsiuntimas ({speed_units}):"
-
-msgid "Alternative Speed Limits"
-msgstr "Alternatyvieji greičio ribojimai"
-
-msgid "Override normal speed limits manually or at scheduled times"
-msgstr "Taikomi vietoje įprastų greičio ribojimų rankiniu būdu arba numatytuoju laiku"
-
-#. Labels a spinbutton for alternate upload speed limits
-msgid "U_pload ({speed_units}):"
-msgstr "Iš_siuntimas ({speed_units}):"
-
-#. Labels a spinbutton for alternate download speed limits
-msgid "Do_wnload ({speed_units}):"
-msgstr "A_tsiuntimas ({speed_units}):"
-
-msgid "_Scheduled times:"
-msgstr "_Numatytasis laikas:"
-
-msgid "_On days:"
-msgstr "Šiomis _dienomis:"
-
-#. Label goes between two time selectors, e.g. "limit speeds from [time] to [time]"
-msgid "_to"
-msgstr "i_ki"
-
-msgctxt "Gerund"
-msgid "Adding"
-msgstr "Pridėjimas"
-
-msgid "Automatically add torrent files _from:"
-msgstr "Automatiškai pridėti torentų failus _iš:"
-
-msgid "Show the Torrent Options _dialog"
-msgstr "Rodyti torento parametrų _dialogą"
-
-msgid "_Start added torrents"
-msgstr "_Paleisti pridėtus torentus"
-
-msgid "Save to _Location:"
-msgstr "Įrašyti _vietoje:"
-
-msgid "Download Queue"
-msgstr "Atsiuntimų eilė"
-
-msgid "Ma_ximum active downloads:"
-msgstr "Dau_giausia aktyvių atsiuntimų:"
-
-msgid "Downloads sharing data in the last _N minutes are active:"
-msgstr "Atsiuntimai, per pastarąsias N minučių keitęsi duomenimis, laikomi _aktyviais:"
-
-msgid "Incomplete"
-msgstr "Nebaigti"
-
-msgid "Append \"._part\" to incomplete files' names"
-msgstr "Nebaigtų failų varduose naudoti „.part“ _prievardį"
-
-msgid "Keep _incomplete torrents in:"
-msgstr "Įrašyti _nebaigtus torentus į:"
-
-msgid "Call scrip_t when done downloading:"
-msgstr "Baigus siųsti torentą, vykdyti s_cenarijų:"
-
-msgctxt "Gerund"
-msgid "Downloading"
-msgstr "Atsiuntimas"
-
-msgid "Limits"
-msgstr "Apribojimai"
-
-msgid "Stop seeding at _ratio:"
-msgstr "Nebeskleisti esant _santykiui:"
-
-msgid "Stop seeding if idle for _N minutes:"
-msgstr "Nebeskleisti jei neaktyvus N _minučių:"
-
-msgid "Call scrip_t when done seeding:"
-msgstr "Baigus skleisti torentą, vykdyti s_cenarijų:"
-
-msgctxt "Gerund"
-msgid "Seeding"
-msgstr "Skleidimas"
-
-msgid "Privacy"
-msgstr "Privatumas"
-
-msgid "_Encryption mode:"
-msgstr "Pozicija dėl _šifravimo:"
-
-msgid "Blocklist"
-msgstr "Blokavimo sąrašas"
-
-msgid "Enable _blocklist:"
-msgstr "Įjungti _blokavimo sąrašą:"
-
-msgid "Enable _automatic updates"
-msgstr "Įjungti _automatinius atnaujinimus"
-
-msgid "_Update"
-msgstr "At_naujinti"
-
-msgid "Listening Port"
-msgstr "Klausomas prievadas"
-
-msgid "_Port used for incoming connections:"
-msgstr "Įeinantiems ryšiams naudotinas _prievadas:"
-
-msgid "Pick a _random port every time Transmission is started"
-msgstr "Pasirinkti _atsitiktinį prievadą kaskart paleidus „Transmission“"
-
-msgid "Use UPnP or NAT-PMP port _forwarding from my router"
-msgstr "Naudototi _UPnP arba NAT-PMP prievadų persiuntimą maršrutizatoriuje"
-
-msgid "Te_st Port"
-msgstr "_Tikrinti prievadą"
-
-msgid "Peer Limits"
-msgstr "Siuntėjų ribojimai"
-
-msgid "Maximum peers per _torrent:"
-msgstr "Daugiausiai galimų _vieno torento siuntėjų:"
-
-msgid "Maximum peers _overall:"
-msgstr "_Daugiausiai galimų siuntėjų iš viso:"
-
-msgid "Enable µ_TP for peer communication"
-msgstr "Ryšiams su _siuntėjais naudoti µTP"
-
-msgid "µTP is a tool for reducing network congestion."
-msgstr "µTP – tai priemonė, padedanti mažinti tinklo apkrovas."
-
-msgid "Use PE_X to find more peers"
-msgstr "Naudoti PE_X papildomiems siuntėjams rasti"
-
-msgid "PEX is a tool for exchanging peer lists with the peers you're connected to."
-msgstr "PEX – tai priemonė, skirta apsikeisti siuntėjų sąrašais su siuntėjais, prie kurių esate prisijungę."
-
-msgid "Use _DHT to find more peers"
-msgstr "Naudoti _DHT papildomiems siuntėjams rasti"
-
-msgid "DHT is a tool for finding peers without a tracker."
-msgstr "DHT – tai priemonė, skirta siuntėjams be sekiklio rasti."
-
-msgid "Use _Local Peer Discovery to find more peers"
-msgstr "Naudoti _vietinių siuntėjų aptikimo metodą papildomiems siuntėjams rasti"
-
-msgid "LPD is a tool for finding peers on your local network."
-msgstr "VSA – tai priemonė, skirta siuntėjams Jūsų vietiniame tinkle rasti."
-
-msgid "Default Public Trackers"
-msgstr "Numatytieji viešieji sekikliai"
-
-msgid ""
-"Trackers to use on all public torrents.\n"
-"\n"
-"To add a backup URL, add it on the next line after a primary URL.\n"
-"To add a new primary URL, add it after a blank line."
-msgstr ""
-
-msgid "Network"
-msgstr "Tinklas"
-
-msgid "Desktop"
-msgstr "Aplinka"
-
-msgid "_Inhibit hibernation when torrents are active"
-msgstr "_Jei yra aktyvių torrentų, neleisti kompiuteriui automatiškai užmigti"
-
-msgid "Show {appname} icon in the _notification area"
-msgstr "Rodyti „{appname}“ piktogramą pranešimų _srityje"
-
-msgid "Notification"
-msgstr "Pranešimas"
-
-msgid "Show a notification when torrents are a_dded"
-msgstr "Rodyti pranešimą kai torentai _pridedami"
-
-msgid "Show a notification when torrents _finish"
-msgstr "Rodyti pranešimą kai torentai _baigiami"
-
-msgid "Play a _sound when torrents finish"
-msgstr "Sugroti _garsą kai torentai baigiami"
-
-msgid "Remote Control"
-msgstr "Nuotolinis valdymas"
-
-msgid "Allow _remote access"
-msgstr "Leisti _nuotolinę prieigą"
-
-msgid "_Open web client"
-msgstr "_Atverti saityno sąsają"
-
-msgid "HTTP _port:"
-msgstr "HTTP _prievadas:"
-
-msgid "Use _authentication"
-msgstr "Reikalauti _tapatybės nustatymo"
-
-msgid "_Username:"
-msgstr "Naudotojo _vardas:"
-
-msgid "Pass_word:"
-msgstr "_Slaptažodis:"
-
-msgid "Only allow these IP a_ddresses:"
-msgstr "Leisti tik šiuos IP a_dresus:"
-
-msgid "Addresses:"
-msgstr "Ad_resai:"
-
-msgid "IP addresses may use wildcards, such as 192.168.*.*"
-msgstr "IP adresuose galima naudoti kaitos simbolius, pvz., 192.168.*.*"
-
-msgid "Remote"
-msgstr ""
-
-msgid "Set Torrent Location"
-msgstr "Torento vietos nustatymas"
-
-msgid "_Apply"
-msgstr "P_ritaikyti"
-
-msgid "Location"
-msgstr "Vieta"
-
-msgid "Torrent _location:"
-msgstr "Torento _vieta:"
-
-msgid "_Move from the current folder"
-msgstr "_Perkelti iš dabartinio aplanko"
-
-msgid "Local data is _already there"
-msgstr "Vietiniai duomenys jau yra _ten"
-
-msgid "Current Session"
-msgstr "Šis seansas"
-
-msgid "Ratio:"
-msgstr "Santykis:"
-
-msgid "Duration:"
-msgstr "Naudojimosi trukmė:"
-
-msgid "Total"
-msgstr "Bendra"
-
-msgid "Open URL"
-msgstr "URL atvėrimas"
-
-msgid "Open torrent from URL"
-msgstr "Atverti torentą iš URL"
-
-msgid "_URL"
-msgstr "_URL"
-
-msgid "Couldn't parse announce response: {error} ({error_code})"
-msgstr ""
-
-msgid "Couldn't parse scrape response: {error} ({error_code})"
-msgstr ""
-
-msgid "Unknown error"
-msgstr "Nežinoma klaida"
-
-msgid "{ip_protocol} connection failed"
-msgstr ""
-
-msgid "Couldn't look up '{address}:{port}' in {ip_protocol}: {error} ({error_code})"
-msgstr ""
-
 msgid "Announce error: {error} ({url})"
 msgstr ""
 
@@ -1722,6 +2005,21 @@ msgstr "Sekiklis neatsakė"
 msgid "Success"
 msgstr "Pavyko"
 
+msgid "Couldn't parse announce response: {error} ({error_code})"
+msgstr ""
+
+msgid "Couldn't parse scrape response: {error} ({error_code})"
+msgstr ""
+
+msgid "Unknown error"
+msgstr "Nežinoma klaida"
+
+msgid "{ip_protocol} connection failed"
+msgstr ""
+
+msgid "Couldn't look up '{address}:{port}' in {ip_protocol}: {error} ({error_code})"
+msgstr ""
+
 msgid "Blocklist '{path}' has {count} entry"
 msgid_plural "Blocklist '{path}' has {count} entries"
 msgstr[0] ""
@@ -1729,15 +2027,39 @@ msgstr[1] ""
 msgstr[2] ""
 msgstr[3] ""
 
-#. don't try to display the actual lines - it causes issues
-msgid "Couldn't parse line: '{line}'"
+msgid "Couldn't parse line {line}: {base64}"
 msgstr ""
 
-msgid "Rewriting old blocklist file format to new format"
+msgid "Rewriting old blocklist file {path} to new format"
+msgstr ""
+
+msgid "Blocklist is larger than {limit} MiB; ignoring it"
+msgstr ""
+
+#, fuzzy
+#| msgid "Couldn't read '{path}': {error} ({error_code})"
+msgid "Couldn't fetch blocklist: {errmsg}, response code: {error} ({error_code})"
+msgstr "Nepavyko perskaityti „{path}“: {error} ({error_code})"
+
+msgid "Couldn't fetch blocklist: {error} ({error_code})"
+msgstr ""
+
+msgid "Automatically updated blocklist, which now has {count} rules"
+msgstr ""
+
+msgid "Invalid tr_sched_days value {val}"
 msgstr ""
 
 msgid "{crypto_library} error: {error} ({error_code})"
 msgstr ""
+
+msgid "Couldn't read '{path}': Not a regular file"
+msgstr ""
+
+#, fuzzy
+#| msgid "Couldn't read '{path}': {error} ({error_code})"
+msgid "Couldn't get '{path}': "
+msgstr "Nepavyko perskaityti „{path}“: {error} ({error_code})"
 
 msgid "Couldn't get '{path}': {error} ({error_code})"
 msgstr ""
@@ -1754,19 +2076,13 @@ msgstr ""
 msgid "Successfully updated global {type} address to {ip} using {url}"
 msgstr ""
 
+msgid "Still waiting for disk IO on torrent {id}: {running} running, {queued} queued"
+msgstr ""
+
 msgid "Too many messages like this! I won't log this message anymore this session."
 msgstr ""
 
 msgid "Skipping '{path}': {error} ({error_code})"
-msgstr ""
-
-msgid "Couldn't create socket: {error} ({error_code})"
-msgstr ""
-
-msgid "Couldn't set source address {address} on {socket}: {error} ({error_code})"
-msgstr ""
-
-msgid "Couldn't connect socket {socket} to {address}:{port}: {error} ({error_code})"
 msgstr ""
 
 msgid "Couldn't bind port {port} on {address}: {error} ({error_code}) -- Is another copy of {appname} already running?"
@@ -1784,8 +2100,35 @@ msgstr ""
 msgid "Couldn't truncate '{path}': {error} ({error_code})"
 msgstr ""
 
+msgid "Couldn't create socket: {error} ({error_code})"
+msgstr ""
+
+msgid "Couldn't set source address {address} on {socket}: {error} ({error_code})"
+msgstr ""
+
+msgid "Couldn't connect socket {socket} to {address}:{port}: {error} ({error_code})"
+msgstr ""
+
 msgid "Unknown state: {state}"
 msgstr "Nežinoma būsena: {state}"
+
+msgid "Starting"
+msgstr "Persiuntimas pradedamas"
+
+msgid "Forwarded"
+msgstr "Persiunčiamas"
+
+msgid "Stopping"
+msgstr "Persiuntimas stabdomas"
+
+msgid "Not forwarded"
+msgstr "Nepersiunčiamas"
+
+msgid "Mapped private port {private_port} to public port {public_port}"
+msgstr ""
+
+msgid "State changed from '{old_state}' to '{state}'"
+msgstr ""
 
 msgid "Found public address '{address}'"
 msgstr ""
@@ -1817,22 +2160,20 @@ msgstr ""
 msgid "If your router supports UPnP, please make sure UPnP is enabled!"
 msgstr ""
 
-msgid "Starting"
-msgstr "Persiuntimas pradedamas"
+#, fuzzy
+#| msgid "Couldn't read '{path}': {error} ({error_code})"
+msgid "Couldn't test port: {errmsg}, response code: {error} ({error_code})"
+msgstr "Nepavyko perskaityti „{path}“: {error} ({error_code})"
 
-msgid "Forwarded"
-msgstr "Persiunčiamas"
-
-msgid "Stopping"
-msgstr "Persiuntimas stabdomas"
-
-msgid "Not forwarded"
-msgstr "Nepersiunčiamas"
-
-msgid "Mapped private port {private_port} to public port {public_port}"
+msgid "Couldn't test port: {error} ({error_code})"
 msgstr ""
 
-msgid "State changed from '{old_state}' to '{state}'"
+#, fuzzy
+#| msgid "Couldn't open '{path}': {error} ({error_code})"
+msgid "Couldn't fetch torrent: {errmsg}, Response code: {error} ({error_code})"
+msgstr "Nepavyko atverti „{path}“: {error} ({error_code})"
+
+msgid "Couldn't fetch torrent: {error} ({error_code})"
 msgstr ""
 
 msgid "Unix socket path must be fewer than {count} characters (including '{prefix}' prefix)"
@@ -1893,28 +2234,29 @@ msgstr "Reikalingas slaptažodis"
 msgid "Serving RPC and Web requests from '{path}'"
 msgstr ""
 
-msgid "Couldn't test port: {error} ({error_code})"
+#, fuzzy
+msgid "Time to turn on alternative speed limits"
 msgstr ""
+"#-#-#-#-#  lt.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Alternatyvieji greičio ribojimai\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Alternatyvūs greičio apribojimai"
 
-msgid "Couldn't fetch blocklist: {error} ({error_code})"
+#, fuzzy
+msgid "Time to turn off alternative speed limits"
 msgstr ""
-
-msgid "Couldn't fetch torrent: {error} ({error_code})"
-msgstr ""
-
-msgid "Time to turn off turtle mode"
-msgstr ""
-
-msgid "Time to turn on turtle mode"
-msgstr ""
-
-msgid "Couldn't open session lock file '{path}': {error} ({error_code})"
-msgstr ""
+"#-#-#-#-#  lt.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Alternatyvieji greičio ribojimai\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Alternatyvūs greičio apribojimai"
 
 msgid "Listening to incoming peer connections on {hostport}"
 msgstr ""
 
 msgid "{appname} version {version} starting"
+msgstr ""
+
+msgid "Couldn't start disk IO workers, continuing without them: {error}"
 msgstr ""
 
 msgid "{appname} version {version} shutting down"
@@ -1927,7 +2269,10 @@ msgstr[1] ""
 msgstr[2] ""
 msgstr[3] ""
 
-msgid "Migrated torrent file from '{old_path}' to '{path}'"
+msgid "Couldn't claim '{path}'. If another session is using it, the two will overwrite each other's settings, resume files and stats."
+msgstr ""
+
+msgid "Couldn't open session lock file '{path}': {error} ({error_code})"
 msgstr ""
 
 msgid "Couldn't use metainfo from '{path}' for '{magnet}': {error} ({error_code})"
@@ -1960,13 +2305,29 @@ msgstr ""
 msgid "Removing torrent"
 msgstr "Šalinamas torentas"
 
-msgid "Couldn't move '{old_path}' to '{path}': {error} ({error_code})"
-msgstr ""
+#, fuzzy
+#| msgid "Couldn't open '{path}': {error} ({error_code})"
+msgid "Couldn't move torrent files to '{path}': {error} ({error_code})"
+msgstr "Nepavyko atverti „{path}“: {error} ({error_code})"
 
 msgid "Paused torrent as no data was found! Ensure your drives are connected or use \"Set Location\", then use \"Verify Local Data\" again. To re-download, start the torrent."
 msgstr ""
 
+msgid "Couldn't move '{old_path}' to '{path}': {error} ({error_code})"
+msgstr ""
+
 msgid "Tracker warning: '{warning}' ({url})"
+msgstr ""
+
+msgid "Moving '{source}' will overwrite '{path}'"
+msgstr ""
+
+#, fuzzy
+#| msgid "Couldn't open '{path}': {error} ({error_code})"
+msgid "Couldn't compare '{path}' with '{root}': {error} ({error_code}); leaving it alone"
+msgstr "Nepavyko atverti „{path}“: {error} ({error_code})"
+
+msgid "Migrated torrent file from '{old_path}' to '{path}'"
 msgstr ""
 
 msgid "Couldn't parse '{filename}' line: '{line}'"
@@ -1996,8 +2357,47 @@ msgstr ""
 msgid "Unknown socket family"
 msgstr ""
 
-msgid "Couldn't read '{path}': Not a regular file"
-msgstr ""
+msgid "B"
+msgstr "B"
+
+msgid "KiB"
+msgstr "KiB"
+
+msgid "MiB"
+msgstr "MiB"
+
+msgid "GiB"
+msgstr "GiB"
+
+msgid "TiB"
+msgstr "TiB"
+
+msgid "B/s"
+msgstr "B/s"
+
+msgid "kB/s"
+msgstr "kB/s"
+
+msgid "MB/s"
+msgstr "MB/s"
+
+msgid "GB/s"
+msgstr "GB/s"
+
+msgid "TB/s"
+msgstr "TB/s"
+
+msgid "kB"
+msgstr "kB"
+
+msgid "MB"
+msgstr "MB"
+
+msgid "GB"
+msgstr "GB"
+
+msgid "TB"
+msgstr "TB"
 
 msgid "Couldn't parse JSON at position {position} '{text}': {error} ({error_code})"
 msgstr ""
@@ -2005,16 +2405,13 @@ msgstr ""
 msgid "Couldn't watch '{path}': {error} ({error_code})"
 msgstr ""
 
-msgid "Couldn't read event: {error} ({error_code})"
-msgstr ""
-
 msgid "Couldn't read event: expected {expected_size}, got {actual_size}"
 msgstr ""
 
-msgid "Couldn't read filename: {error} ({error_code})"
+msgid "Couldn't read filename: expected {expected_size}, got {actual_size}"
 msgstr ""
 
-msgid "Couldn't read filename: expected {expected_size}, got {actual_size}"
+msgid "Couldn't read event: {error} ({error_code})"
 msgstr ""
 
 msgid "Couldn't convert '{path}' to native path"
@@ -2035,10 +2432,13 @@ msgstr ""
 msgid "Consider upgrading your curl installation."
 msgstr ""
 
+msgid "The minimum supported version is {curl_version}, you might face unexpected behaviour."
+msgstr ""
+
 msgid "curl {curl_version} is prone to SIGPIPE crashes. {details_url}"
 msgstr ""
 
-msgid "curl {curl_version} is prone to an eventfd double close vulnerability that might cause SIGABRT crashes for the transmission-daemon systemd service. {details_url}"
+msgid "curl {curl_version} is prone to an eventfd double close vulnerability that might cause SIGABRT crashes for the daemon systemd service. {details_url}"
 msgstr ""
 
 msgid "Will verify tracker certs using envvar CURL_CA_BUNDLE: {bundle}"
@@ -2050,8 +2450,459 @@ msgstr ""
 msgid "NB: Invalid certs will appear as 'Could not connect to tracker' like many other errors"
 msgstr ""
 
+msgid "Aborting request: response body exceeded max size of {max_file_size} bytes"
+msgstr ""
+
 msgid "Couldn't fetch '{url}': expected HTTP response code {expected_code}, got {actual_code}"
 msgstr ""
+
+msgid "Server"
+msgstr "Serveris"
+
+msgid "C_redits"
+msgstr "_Padėkos"
+
+msgid "Credits"
+msgstr "Padėkos"
+
+msgid "About {appname}"
+msgstr "Apie „{appname}“"
+
+#, fuzzy
+#| msgid "Torrent Complete"
+msgid "Torrent Completed"
+msgstr "Torentas baigtas"
+
+#, fuzzy
+#| msgid "Torrent Complete"
+msgid "Torrents Completed"
+msgstr "Torentas baigtas"
+
+#. Translators: Text following the "Have:" label in torrent properties dialog;
+#. {current_size} is amount of downloaded and verified data
+msgid "{current_size} (100%)"
+msgstr "{current_size} (100%)"
+
+msgid "{current_size} of {complete_size} ({percent_done}%), {unverified_size} Unverified"
+msgstr "{current_size} iš {complete_size} ({percent_done}%), {unverified_size} nepatikrinta"
+
+msgid "{total_size} ({piece_count:L} piece @ {piece_size})"
+msgid_plural "{total_size} ({piece_count:L} pieces @ {piece_size})"
+msgstr[0] "{total_size} ({piece_count:L} dalis po {piece_size})"
+msgstr[1] "{total_size} ({piece_count:L} dalys po {piece_size})"
+msgstr[2] "{total_size} ({piece_count:L} dalių po {piece_size})"
+msgstr[3] "{total_size} ({piece_count:L} dalių po {piece_size})"
+
+msgid "{total_size} ({piece_count:L} piece)"
+msgid_plural "{total_size} ({piece_count:L} pieces)"
+msgstr[0] "{total_size} ({piece_count:L} dalis)"
+msgstr[1] "{total_size} ({piece_count:L} dalys)"
+msgstr[2] "{total_size} ({piece_count:L} dalių)"
+msgstr[3] "{total_size} ({piece_count:L} dalių)"
+
+msgid "Add URL(s)"
+msgstr ""
+
+#, fuzzy
+#| msgid "Tracker Announce URLs"
+msgid "Add tracker announce URLs, one per line:"
+msgstr "Sekiklių skelbimo URL adresai"
+
+msgid "No new URLs found."
+msgstr ""
+
+msgid "Use Global Settings"
+msgstr "naudoti visuotinius parametrus"
+
+msgid "Stop seeding if idle for:"
+msgstr "Nebeskleisti, jei pasyvus:"
+
+msgid "Torrent Properties"
+msgstr "Torento(-ų) savybės"
+
+msgid "Availability:"
+msgstr "Pasiekiamumas:"
+
+msgid "Labels:"
+msgstr ""
+
+msgid "Limit _upload speed:"
+msgstr "Riboti i_šsiuntimo greitį:"
+
+msgid "Limit _download speed:"
+msgstr "Riboti _atsiuntimo greitį:"
+
+msgid "Check Selected"
+msgstr "Pažymėti pasirinktus"
+
+msgid "Uncheck Selected"
+msgstr "Nuimti žymėjimą nuo pasirinktų"
+
+msgid "Only Check Selected"
+msgstr "Pažymėti tik pasirinktus"
+
+msgid "Open"
+msgstr "Atverti"
+
+msgid "Rename…"
+msgstr "Pervadinti…"
+
+msgid "Search…"
+msgstr "Ieškoti…"
+
+msgid "<i>Calculating Free Space…</i>"
+msgstr "<i>Apskaičiuojama laisva vieta…</i>"
+
+msgid "Limited at {speed}"
+msgstr "Ribojama iki {speed}"
+
+#. Translators: Second (optional) part of main window title "Appname - host:port" (added when connected to remote session)
+#. notice that leading space (before the dash) is included here
+msgid " - {host}:{port}"
+msgstr " - {host}:{port}"
+
+msgid "Network Error"
+msgstr "Tinklo klaida"
+
+msgid "Idle"
+msgstr "Pasyvus"
+
+msgid "Showing {visible_count:L} of {count:L} torrent"
+msgid_plural "Showing {visible_count:L} of {count:L} torrents"
+msgstr[0] "Rodomas {visible_count:L} iš {count:L} torentų"
+msgstr[1] "Rodomi {visible_count:L} iš {count:L} torentų"
+msgstr[2] "Rodoma {visible_count:L} iš {count:L} torentų"
+msgstr[3] "Rodoma {visible_count:L} iš {count:L} torentų"
+
+msgid "Torrent Files (*.torrent);;All Files (*.*)"
+msgstr "Torentų failai (*.torrent);;Visi failai (*.*)"
+
+msgid "{host} has not responded yet"
+msgstr "{host} dar neatsakė"
+
+msgid "{host} is responding"
+msgstr "{host} atsako"
+
+#, fuzzy
+#| msgid "{host} last responded {time_span} ago"
+msgid "{host} last responded {time_span_ago}"
+msgstr "{host} paskutinį kartą atsakė prieš {time_span}"
+
+msgid "{host} is not responding"
+msgstr "{host} neatsako"
+
+msgid "_Open…"
+msgstr "A_tverti…"
+
+msgid "Create a new torrent"
+msgstr "Sukurti naują torentą"
+
+msgid "Open the torrent's folder"
+msgstr "Atverti torento aplanką"
+
+msgid "Ask tracker for more peers"
+msgstr "Paprašyti sekiklio daugiau siuntėjų"
+
+msgid "Verify local data"
+msgstr "Patikrinti turimus duomenis"
+
+msgid "Remove torrent and delete its files"
+msgstr "Pašalinti torentą ir jo failus"
+
+msgid "Compact View"
+msgstr "Glaustasis rodinys"
+
+msgid "_Main Window"
+msgstr "_Pagrindinis langas"
+
+msgid "Tray _Icon"
+msgstr "_Piktograma pranešimų srityje"
+
+#, fuzzy
+#| msgid "Change Session"
+msgid "_Change Session…"
+msgstr "Seanso keitimas"
+
+#. Start a local session or connect to a running session
+msgid "Choose Session"
+msgstr "Pasirinkite seansą"
+
+msgid "Bypass the queue and start now"
+msgstr "Nepaisyti eilės ir paleisti torentą dabar"
+
+msgid "{file_count:L} File"
+msgid_plural "{file_count:L} Files"
+msgstr[0] "{file_count:L} failas"
+msgstr[1] "{file_count:L} failai"
+msgstr[2] "{file_count:L} failų"
+msgstr[3] "{file_count:L} failų"
+
+msgid "{piece_count:L} Piece"
+msgid_plural "{piece_count:L} Pieces"
+msgstr[0] "{piece_count:L} dalis"
+msgstr[1] "{piece_count:L} dalys"
+msgstr[2] "{piece_count:L} dalių"
+msgstr[3] "{piece_count:L} dalių"
+
+msgid "{total_size} in {files}; {pieces} @ {piece_size}"
+msgstr "{total_size}, {files}; {pieces} po {piece_size}"
+
+msgid ""
+"To add a backup URL, add it on the line after the primary URL.\n"
+"To add another primary URL, add it after a blank line."
+msgstr ""
+"Atsarginį URL adresą veskite atskiroje eilutėje po pirminiu URL adresu.\n"
+"Papildomą pirminį URL adresą galite įvesti, palikę prieš jį tuščią eilutę."
+
+#, fuzzy
+#| msgid "_Source:"
+msgid "Sou_rce:"
+msgstr "Š_altinis:"
+
+msgid "_Priority:"
+msgstr "_Prioritetas:"
+
+msgid "Select Folder"
+msgstr "Parinkite aplanką"
+
+#, fuzzy
+#| msgid "Unknown"
+msgid "unknown"
+msgstr "nežinomas"
+
+msgid "checking…"
+msgstr ""
+
+msgid "open"
+msgstr ""
+
+#, fuzzy
+#| msgid "_Close"
+msgid "closed"
+msgstr "_Užverti"
+
+msgid "error"
+msgstr "klaida"
+
+#, fuzzy
+#| msgid "<i>Blocklist contains {count:L} rule</i>"
+#| msgid_plural "<i>Blocklist contains {count:L} rules</i>"
+msgid "<b>Update succeeded!</b><p>Blocklist now has {count:L} rule.</p>"
+msgid_plural "<b>Update succeeded!</b><p>Blocklist now has {count:L} rules.</p>"
+msgstr[0] "<i>Blokavimo sąraše yra {count:L} taisyklė</i>"
+msgstr[1] "<i>Blokavimo sąraše yra {count:L} taisyklės</i>"
+msgstr[2] "<i>Blokavimo sąraše yra {count:L} taisyklių</i>"
+msgstr[3] "<i>Blokavimo sąraše yra {count:L} taisyklių</i>"
+
+msgid "Download of the blocklist failed."
+msgstr ""
+
+#, fuzzy
+#| msgid "Blocklist"
+msgid "Update Blocklist"
+msgstr "Blokavimo sąrašas"
+
+msgid "Select \"Torrent Done Seeding\" Script"
+msgstr ""
+
+msgid "Select Watch Directory"
+msgstr "Parinkite stebimą aplanką"
+
+msgid "Select Incomplete Directory"
+msgstr "Parinkite nebaigtų torentų aplanką"
+
+msgid "Select \"Torrent Done Downloading\" Script"
+msgstr ""
+
+msgid "Not supported by remote sessions"
+msgstr "Nepalaikoma nuotolinių seansų"
+
+msgid "<i>Blocklist contains {count:L} rule</i>"
+msgid_plural "<i>Blocklist contains {count:L} rules</i>"
+msgstr[0] "<i>Blokavimo sąraše yra {count:L} taisyklė</i>"
+msgstr[1] "<i>Blokavimo sąraše yra {count:L} taisyklės</i>"
+msgstr[2] "<i>Blokavimo sąraše yra {count:L} taisyklių</i>"
+msgstr[3] "<i>Blokavimo sąraše yra {count:L} taisyklių</i>"
+
+#, fuzzy
+#| msgid "<i>Blocklist contains {count:L} rule</i>"
+#| msgid_plural "<i>Blocklist contains {count:L} rules</i>"
+msgid "<i>Blocklist has never been updated</i>"
+msgstr "<i>Blokavimo sąraše yra {count:L} taisyklė</i>"
+
+#, fuzzy
+#| msgid "<i>Blocklist contains {count:L} rule</i>"
+#| msgid_plural "<i>Blocklist contains {count:L} rules</i>"
+msgid "<i>Blocklist last updated {date}</i>"
+msgstr "<i>Blokavimo sąraše yra {count:L} taisyklė</i>"
+
+msgid "_Upload:"
+msgstr "Išsi_untimo:"
+
+msgid "_Download:"
+msgstr "_Atsiuntimo:"
+
+msgid "U_pload:"
+msgstr "Išsiunti_mo:"
+
+msgid "Do_wnload:"
+msgstr "A_tsiuntimo:"
+
+msgid "Downloading"
+msgstr "Atsiuntimas"
+
+msgid "Adding"
+msgstr "Pridėjimas"
+
+msgid "Reads user clipboard content for torrents"
+msgstr ""
+
+msgid "Detect new torrents from clipboard"
+msgstr ""
+
+#. Please keep this phrase as short as possible, it's currently the longest and influences dialog width
+msgid "Download is i_nactive if data sharing stopped:"
+msgstr "Atsiuntimas yra _neaktyvus, jei dalinimasis duomenimis sustabdytas:"
+
+msgid "Seeding"
+msgstr "Skleidimas"
+
+msgid "Stop seedi_ng if idle for:"
+msgstr "Nebeskleisti jei _pasyvus:"
+
+msgid "Encryption"
+msgstr "Šifravimas"
+
+msgid "Start _minimized in notification area"
+msgstr "Paleisti su_mažintą pranešimų srityje"
+
+#, fuzzy
+#| msgid "Retransmission"
+msgid "Retransmission (Qt)"
+msgstr "Retransmission"
+
+msgid "Select Location"
+msgstr "Parinkite vietą"
+
+msgid "Error Renaming Path"
+msgstr "Klaida, pervadinant kelią"
+
+msgid "Unable to rename \"{old_path}\" as \"{path}\": {error}."
+msgstr "Nepavyko pervadinti \"{old_path}\" kaip \"{path}\": {error}."
+
+msgid "Error Adding Torrent"
+msgstr "Klaida pridedant torentą"
+
+msgid "{torrent_name} (copy of {hash})"
+msgstr "{torrent_name} ({hash} kopija)"
+
+#, fuzzy
+#| msgid "Public torrent"
+msgid "Duplicate Torrent"
+msgstr "viešas torentas"
+
+#, fuzzy
+#| msgid "Public torrent"
+msgid "Duplicate Torrents"
+msgstr "viešas torentas"
+
+#, fuzzy
+#| msgid "Couldn't add duplicate torrent"
+#| msgid_plural "Couldn't add duplicate torrents"
+msgid "Unable to add {count} duplicate torrent"
+msgid_plural "Unable to add {count} duplicate torrents"
+msgstr[0] "Nepavyko pridėti besidubliuojančių torentų"
+msgstr[1] "Nepavyko pridėti besidubliuojančių torentų"
+msgstr[2] "Nepavyko pridėti besidubliuojančių torentų"
+msgstr[3] "Nepavyko pridėti besidubliuojančių torentų"
+
+msgid "Change Session"
+msgstr "Seanso keitimas"
+
+msgid "Source"
+msgstr "Seanso kilmė"
+
+msgid "Start _Local Session"
+msgstr "Pradėti _vietinį seansą"
+
+msgid "Connect to _Remote Session"
+msgstr "_Jungtis prie nuotolinio seanso"
+
+msgid "_Host:"
+msgstr "_Mazgas:"
+
+msgid "_Port:"
+msgstr "_Prievadas:"
+
+msgid "_Authentication required"
+msgstr "Reikia patvirtinti _tapatybę"
+
+msgid "Remote root pa_th:"
+msgstr ""
+
+msgid "Tracker gave a warning: {warning}"
+msgstr "Sekiklis įspėjo: {warning}"
+
+msgid "Tracker gave an error: {error}"
+msgstr "Sekiklis pranešė apie klaidą: {error}"
+
+msgid "Error: {error}"
+msgstr "Klaida: {error}"
+
+#, fuzzy
+#| msgid "Magnetized transfer - retrieving metadata (%1%)"
+msgid "Magnetized torrent - retrieving metadata ({percent_done}%)"
+msgstr "Įmagnetintas perdavimas – atsiunčiami metaduomenys (%1%)"
+
+#, no-c-format
+msgid "Downloading metadata from {active_count:L} peer ({percent_done}% done)"
+msgid_plural "Downloading metadata from {active_count:L} peers ({percent_done}% done)"
+msgstr[0] "Atsiunčiami metaduomenys iš {active_count:L} siuntėjo ({percent_done}% atlikta)"
+msgstr[1] "Atsiunčiami metaduomenys iš {active_count:L} siuntėjų ({percent_done}% atlikta)"
+msgstr[2] "Atsiunčiami metaduomenys iš {active_count:L} siuntėjų ({percent_done}% atlikta)"
+msgstr[3] "Atsiunčiami metaduomenys iš {active_count:L} siuntėjų ({percent_done}% atlikta)"
+
+msgid "Downloading from {active_count:L} peer"
+msgid_plural "Downloading from {active_count:L} peers"
+msgstr[0] "Atsiunčiama iš {active_count:L} siuntėjo"
+msgstr[1] "Atsiunčiama iš {active_count:L} siuntėjų"
+msgstr[2] "Atsiunčiama iš {active_count:L} siuntėjų"
+msgstr[3] "Atsiunčiama iš {active_count:L} siuntėjų"
+
+msgid " and {webseed_count:L} web seed"
+msgid_plural " and {webseed_count:L} web seeds"
+msgstr[0] " ir {webseed_count:L} saityno skleidėjo"
+msgstr[1] " ir {webseed_count:L} saityno skleidėjų"
+msgstr[2] " ir {webseed_count:L} saityno skleidėjų"
+msgstr[3] " ir {webseed_count:L} saityno skleidėjų"
+
+msgid "Seeding to {active_count:L} peer"
+msgid_plural "Seeding to {active_count:L} peers"
+msgstr[0] "Skleidžiama {active_count:L} siuntėjui"
+msgstr[1] "Skleidžiama {active_count:L} siuntėjams"
+msgstr[2] "Skleidžiama {active_count:L} siuntėjų"
+msgstr[3] "Skleidžiama {active_count:L} siuntėjų"
+
+msgid " - "
+msgstr " – "
+
+#, fuzzy
+#| msgid ""
+#| "To add a backup URL, add it on the line after the primary URL.\n"
+#| "To add another primary URL, add it after a blank line."
+msgid "To add a backup URL, add it on the next line after a primary URL."
+msgstr ""
+"Atsarginį URL adresą veskite atskiroje eilutėje po pirminiu URL adresu.\n"
+"Papildomą pirminį URL adresą galite įvesti, palikę prieš jį tuščią eilutę."
+
+#, fuzzy
+#| msgid ""
+#| "To add a backup URL, add it on the line after the primary URL.\n"
+#| "To add another primary URL, add it after a blank line."
+msgid "To add a new primary URL, add it after a blank line."
+msgstr ""
+"Atsarginį URL adresą veskite atskiroje eilutėje po pirminiu URL adresu.\n"
+"Papildomą pirminį URL adresą galite įvesti, palikę prieš jį tuščią eilutę."
 
 msgid "{file_count:L} file, {total_size}\n"
 msgid_plural "{file_count:L} files, {total_size}\n"
@@ -2081,7 +2932,7 @@ msgstr[1] ""
 msgstr[2] ""
 msgstr[3] ""
 
-msgid "seconds"
+msgid "second"
 msgid_plural "seconds"
 msgstr[0] ""
 msgstr[1] ""
@@ -2094,6 +2945,90 @@ msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
 msgstr[3] ""
+
+msgid "seconds"
+msgid_plural "seconds"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+msgstr[3] ""
+
+#~ msgid "Finished"
+#~ msgstr "Baigtas"
+
+#~ msgid "We would upload to this peer if they asked"
+#~ msgstr "Siųstume šiam siuntėjui, jei jis paprašytų"
+
+#~ msgid "Dn Blocks"
+#~ msgstr "Ats. blokai"
+
+#~ msgid "Up Blocks"
+#~ msgstr "Išs. blokai"
+
+#~ msgid "We Cancelled"
+#~ msgstr "Mūsų atšaukta"
+
+#~ msgid "They Cancelled"
+#~ msgstr "Jo atšaukta"
+
+#~ msgid "Have"
+#~ msgstr "Turima"
+
+#~ msgctxt "current session totals"
+#~ msgid "Down: {downloaded_size}, Up: {uploaded_size}"
+#~ msgstr "Ats.: {downloaded_size}, Išs.: {uploaded_size}"
+
+#~ msgctxt "all-time totals"
+#~ msgid "Down: {downloaded_size}, Up: {uploaded_size}"
+#~ msgstr "Ats.: {downloaded_size}, Išs.: {uploaded_size}"
+
+#~ msgid "Inhibiting desktop hibernation"
+#~ msgstr "Neleisti kompiuteriui automatiškai užmigti"
+
+#~ msgid "Allowing desktop hibernation"
+#~ msgstr "Leidžiamas kompiuterio hibernavimas"
+
+#~ msgid "Open URL…"
+#~ msgstr "Atverti URL…"
+
+#~ msgid "Start all torrents"
+#~ msgstr "Paleisti visus torentus"
+
+#~ msgid "Pause all torrents"
+#~ msgstr "Pristabdyti visus torentus"
+
+#~ msgid "Start torrent now"
+#~ msgstr "Pradėti torentą dabar"
+
+#~ msgid "Copy _Magnet Link to Clipboard"
+#~ msgstr "Kopijuoti _magnet nuorodą į iškarpinę"
+
+#~ msgid "Enable Alternative Speed _Limits"
+#~ msgstr "Įjungti alternatyviuosius greičio _ribojimus"
+
+#~ msgid "Torrent size:"
+#~ msgstr "Torento dydis:"
+
+#~ msgid "Source F_older:"
+#~ msgstr "Šaltinio _aplankas:"
+
+#~ msgid "Source _File:"
+#~ msgstr "Šaltinio _failas:"
+
+#~ msgid "P_ause"
+#~ msgstr "Prist_abdyti"
+
+#~ msgid "Keep _incomplete torrents in:"
+#~ msgstr "Įrašyti _nebaigtus torentus į:"
+
+#~ msgid "_Port used for incoming connections:"
+#~ msgstr "Įeinantiems ryšiams naudotinas _prievadas:"
+
+#~ msgid "_Inhibit hibernation when torrents are active"
+#~ msgstr "_Jei yra aktyvių torrentų, neleisti kompiuteriui automatiškai užmigti"
+
+#~ msgid "Torrent _location:"
+#~ msgstr "Torento _vieta:"
 
 #~ msgid "I _Agree"
 #~ msgstr "Aš _sutinku"

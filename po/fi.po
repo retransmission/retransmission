@@ -13,8 +13,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-01-04 14:15+0000\n"
+"Report-Msgid-Bugs-To: https://github.com/retransmission/retransmission/issues\n"
+"POT-Creation-Date: 2026-10-03 11:48-0500\n"
 "PO-Revision-Date: 2017-01-26 19:47+0000\n"
 "Last-Translator: Kimmo Kujansuu <mrkujansuu@gmail.com>, 2025\n"
 "Language-Team: Finnish (https://app.transifex.com/transmissionbt/teams/33778/fi/)\n"
@@ -24,11 +24,21 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
+#, fuzzy
 msgid "None"
-msgstr "Ei mitään"
+msgstr ""
+"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Ei mitään\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Ei mitään\n"
+"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Ei yhtään"
 
 msgid "Inf"
 msgstr "Inf"
+
+msgid "Another process is already using '{path}'."
+msgstr ""
 
 msgid "Couldn't read '{path}': {error} ({error_code})"
 msgstr "Ei voitu lukea '{path}': {error} ({error_code})"
@@ -56,6 +66,9 @@ msgstr "Ladataan asetukset uudelleen '{path}'"
 
 msgid "Couldn't initialize daemon: {error} ({error_code})"
 msgstr "Taustaprosessia ei voitu alustaa: {error} ({error_code})"
+
+msgid "Waiting for another process to release '{path}'"
+msgstr ""
 
 msgid "Loading settings from '{path}'"
 msgstr "Ladataan asetukset '{path}'"
@@ -106,11 +119,21 @@ msgid_plural "Couldn't add duplicate torrents"
 msgstr[0] "Samaa torrenttia ei voi lisätä toista kertaa"
 msgstr[1] "Samoja torrentteja ei voi lisätä toista kertaa"
 
+#, fuzzy
 msgid "A fast and easy BitTorrent client"
-msgstr "Nopea ja helppokäyttöinen BitTorrent-sovellus"
+msgstr ""
+"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Nopea ja helppokäyttöinen BitTorrent-sovellus\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Nopea ja helppo BitTorrent-asiakasohjelma"
 
+#, fuzzy
 msgid "Copyright © The {appname} Project"
-msgstr "Copyright © The {appname} Project"
+msgstr ""
+"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Copyright © The {appname} Project\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Copyright © {appname}-projekti"
 
 #. Translators: translate "translator-credits" as your name
 #. to have it appear in the credits in the "About"
@@ -145,14 +168,29 @@ msgstr ""
 msgid "Use global settings"
 msgstr "Käytä yleisiä asetuksia"
 
+#, fuzzy
 msgid "Seed regardless of ratio"
-msgstr "Jaa suhteesta välittämättä"
+msgstr ""
+"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Jaa suhteesta välittämättä\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Kylvä suhdeluvusta huolimatta"
 
+#, fuzzy
 msgid "Stop seeding at ratio:"
-msgstr "Lopeta jakaminen suhteen ollessa:"
+msgstr ""
+"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Lopeta jakaminen suhteen ollessa:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Pysäytä kylväminen suhdeluvulla:"
 
+#, fuzzy
 msgid "Seed regardless of activity"
-msgstr "Jaa välittämättä aktiivisuudesta"
+msgstr ""
+"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Jaa välittämättä aktiivisuudesta\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Kylvä aktiivisuudesta huolimatta"
 
 msgid "Stop seeding if idle for N minutes:"
 msgstr "Pysäytä jakaminen jos jouten N minuuttia:"
@@ -160,46 +198,88 @@ msgstr "Pysäytä jakaminen jos jouten N minuuttia:"
 msgid "Queued for verification"
 msgstr "Laitettiin jonoon tarkistusta varten"
 
+#, fuzzy
 msgid "Verifying local data"
-msgstr "Tarkistetaan paikallista dataa"
+msgstr ""
+"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Tarkistetaan paikallista dataa\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Vahvistetaan paikallista dataa"
 
+#, fuzzy
 msgid "Queued for download"
-msgstr "Jonossa latausta varten"
+msgstr ""
+"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Jonossa latausta varten\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Laitettiin jonoon latausta varten"
 
 msgctxt "Verb"
 msgid "Downloading"
 msgstr "Ladataan"
 
+#, fuzzy
 msgid "Queued for seeding"
-msgstr "Jonossa jaettavaksi"
+msgstr ""
+"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Jonossa jaettavaksi\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Laitettiin jonoon jakamista varten"
 
+#, fuzzy
 msgctxt "Verb"
 msgid "Seeding"
-msgstr "Jaetaan"
+msgstr ""
+"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Jaetaan\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Kylvätään"
 
-msgid "Finished"
-msgstr "Valmis"
+#, fuzzy
+#| msgid "Incomplete"
+msgid "Seeding complete"
+msgstr "Keskeneräinen"
 
+#, fuzzy
 msgid "Paused"
-msgstr "Pysäytetty"
+msgstr ""
+"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Pysäytetty\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Tauotettu"
 
 msgid "N/A"
 msgstr "Ei saatavilla"
 
+#, fuzzy
 msgid "Mixed"
-msgstr "Sekalainen"
+msgstr ""
+"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Sekalainen\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Sekoitettu"
 
 msgid "No Torrents Selected"
 msgstr "Ei torrenteja valittuna"
 
+#, fuzzy
 msgid "Private to this tracker -- DHT and PEX disabled"
-msgstr "Yksityinen tälle seurantapalvelimelle -- DHT ja PEX pois käytöstä"
+msgstr ""
+"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Yksityinen tälle seurantapalvelimelle -- DHT ja PEX pois käytöstä\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Yksityisesti tälle seurantapalvelimelle -- DHT ja PEX pois käytöstä"
 
 msgid "Public torrent"
 msgstr "Julkinen torrent"
 
+#, fuzzy
 msgid "Created by {creator} on {date}"
-msgstr "Luonut {creator} {date}"
+msgstr ""
+"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Luonut {creator} {date}\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Luonut {creator} ajankohtana {date}"
 
 msgid "Created by {creator}"
 msgstr "Luonut {creator}"
@@ -207,8 +287,15 @@ msgstr "Luonut {creator}"
 msgid "Created on {date}"
 msgstr "Luotu {date}"
 
+#, fuzzy
 msgid "Unknown"
-msgstr "Tuntematon"
+msgstr ""
+"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Tuntematon\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Tunnistamaton\n"
+"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Tuntematon"
 
 msgid "{total_size} in {file_count:L} file"
 msgid_plural "{total_size} in {file_count:L} files"
@@ -227,11 +314,18 @@ msgstr "{current_size} ({percent_done}%)"
 msgid "{current_size} ({percent_done}% of {percent_available}% available)"
 msgstr "{current_size} ({percent_done}% / {percent_available}% saatavilla)"
 
+#, fuzzy, c-format
+#| msgid "{current_size} ({percent_done}% of {percent_available}% available; {unverified_size} unverified)"
 msgid "{current_size} ({percent_done}% of {percent_available}% available; {unverified_size} unverified)"
 msgstr "{current_size} ({percent_done}% / {percent_available}% saatavilla; {unverified_size} vahvistamaton)"
 
+#, fuzzy
 msgid "{downloaded_size} (+{discarded_size} discarded after failed checksum)"
-msgstr "{downloaded_size} (+{discarded_size} hylätty tarkistussumman jälkeen)"
+msgstr ""
+"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{downloaded_size} (+{discarded_size} hylätty tarkistussumman jälkeen)\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{downloaded_size} (+{discarded_size} hylätty väärän tarkistussumman jälkeen)"
 
 msgid "{uploaded_size} (Ratio: {ratio})"
 msgstr "{uploaded_size} (Suhde: {ratio})"
@@ -242,29 +336,64 @@ msgstr "Ei virheitä"
 msgid "Never"
 msgstr "Ei koskaan"
 
+#, fuzzy
 msgid "Active now"
-msgstr "Nyt aktiivinen"
+msgstr ""
+"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Nyt aktiivinen\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Nyt aktiivisena"
 
+#, fuzzy
 msgid "Optimistic unchoke"
-msgstr "Optimistinen vapautus"
+msgstr ""
+"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Optimistinen vapautus\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Optimistinen rajoituksen poisto"
 
+#, fuzzy
 msgid "Downloading from this peer"
-msgstr "Lataus käynnissä tältä vertaiselta"
+msgstr ""
+"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Lataus käynnissä tältä vertaiselta\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Ladataan tältä vertaiselta"
 
+#, fuzzy
 msgid "We would download from this peer if they would let us"
-msgstr "Tältä vertaiselta ladattaisiin, jos siihen olisi lupa"
+msgstr ""
+"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Tältä vertaiselta ladattaisiin, jos siihen olisi lupa\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Voitaisiin ladata tältä vertaiselta mikäli he sallisivat sen"
 
 msgid "Uploading to peer"
 msgstr "Lähetetään vertaiselle"
 
-msgid "We would upload to this peer if they asked"
-msgstr "Tälle vertaiselle lähetettäisiin pyydettäessä"
+#, fuzzy
+msgid "This peer would download from us if we would let them"
+msgstr ""
+"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Tältä vertaiselta ladattaisiin, jos siihen olisi lupa\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Voitaisiin ladata tältä vertaiselta mikäli he sallisivat sen"
 
+#, fuzzy
 msgid "Peer has unchoked us, but we're not interested"
-msgstr "Käyttäjä on vapauttanut meidät, mutta emme ole kiinnostuneita"
+msgstr ""
+"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Käyttäjä on vapauttanut meidät, mutta emme ole kiinnostuneita\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Vertainen ei rajoita meitä, mutta emme ole kiinnostuneita"
 
+#, fuzzy
 msgid "We unchoked this peer, but they're not interested"
-msgstr "Vapautimme tämän käyttäjän, mutta he eivät ole kiinnostuneita"
+msgstr ""
+"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Vapautimme tämän käyttäjän, mutta he eivät ole kiinnostuneita\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Emme rajoita tätä vertaista, mutta he eivät ole kiinnostuneita"
 
 msgid "Encrypted connection"
 msgstr "Salattu yhteys"
@@ -275,16 +404,23 @@ msgstr "Vertainen löytyi Peer Exchangen (PEX) kautta"
 msgid "Peer was found through DHT"
 msgstr "Vertainen löytyi DHT:n kautta"
 
+#, fuzzy
 msgid "Peer is an incoming connection"
-msgstr "Vertainen on saapuva yhteys"
+msgstr ""
+"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Vertainen on saapuva yhteys\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Vertainen on sisääntuleva yhteys"
 
 msgid "Peer is connected over µTP"
 msgstr "Vertainen on µTP:n kautta yhteydessä"
 
+msgid "Peer supports holepunch (BEP 55)"
+msgstr ""
+
 msgid "Address"
 msgstr "Osoite"
 
-#. % is percent done
 msgid "%"
 msgstr "%"
 
@@ -294,84 +430,37 @@ msgstr "Lat. pyynnöt"
 msgid "Up Reqs"
 msgstr "Läh. pyynnöt"
 
-msgid "Dn Blocks"
-msgstr "Lad. lohkot"
-
-msgid "Up Blocks"
-msgstr "Läh. lohkot"
-
-msgid "We Cancelled"
-msgstr "Me peruutimme"
-
-msgid "They Cancelled"
-msgstr "He peruuttivat"
-
+#, fuzzy
 msgid "Down"
-msgstr "Ladattu"
+msgstr ""
+"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Ladattu\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Alas"
 
+#, fuzzy
 msgid "Up"
-msgstr "Lähetetty"
+msgstr ""
+"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Lähetetty\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Ylös"
 
+#, fuzzy
 msgid "Client"
-msgstr "Asiakasohjelmisto"
+msgstr ""
+"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Asiakasohjelmisto\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Asiakasohjelmisto\n"
+"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Asiakasohjelma"
 
 msgid "Flags"
 msgstr "Liput"
 
 msgid "Web Seeds"
 msgstr "Verkkolähteet"
-
-msgid "Got a list of {markup_begin}{peer_count} peer{markup_end} {time_span_ago}"
-msgid_plural "Got a list of {markup_begin}{peer_count} peers{markup_end} {time_span_ago}"
-msgstr[0] "Sain listan {markup_begin}{peer_count} konetta{markup_end} {time_span_ago}"
-msgstr[1] "Sain listan {markup_begin}{peer_count} konetta{markup_end} {time_span_ago}"
-
-#. {markup_begin} and {markup_end} should surround the time_span
-msgid "Peer list request {markup_begin}timed out {time_span_ago}{markup_end}; will retry"
-msgstr "Listan pyyntö koneista {markup_begin}aikakatkaisu {time_span_ago}{markup_end}; uudestaan"
-
-#. {markup_begin} and {markup_end} should surround the error
-msgid "Got an error '{markup_begin}{error}{markup_end}' {time_span_ago}"
-msgstr "Tuli virhe '{markup_begin}{error}{markup_end}' {time_span_ago}"
-
-msgid "No updates scheduled"
-msgstr "Ei ajastettuja päivityksiä"
-
-msgid "Asking for more peers {time_span_from_now}"
-msgstr "Pyydetään lisää koneita {time_span_from_now}"
-
-msgid "Queued to ask for more peers"
-msgstr "Uusien vertaisten kysyminen jonossa"
-
-#. {markup_begin} and {markup_end} should surround time_span_ago
-msgid "Asked for more peers {markup_begin}{time_span_ago}{markup_end}"
-msgstr "Pyysi lisää koneita {markup_begin}{time_span_ago}{markup_end}"
-
-msgid "Tracker had {markup_begin}{seeder_count} {seeder_or_seeders} and {leecher_count} {leecher_or_leechers}{markup_end} {time_span_ago}"
-msgstr "Jäljitimessä oli {markup_begin}{seeder_count} {seeder_or_seeders} ja {leecher_count} {leecher_or_leechers}{markup_end} {time_span_ago}"
-
-msgid "seeder"
-msgid_plural "seeders"
-msgstr[0] "jakajaa"
-msgstr[1] "jakajaa"
-
-msgid "leecher"
-msgid_plural "leechers"
-msgstr[0] "lataajaa"
-msgstr[1] "lataajaa"
-
-#. {markup_begin} and {markup_end} should surround the error text
-msgid "Got a scrape error '{markup_begin}{error}{markup_end}' {time_span_ago}"
-msgstr "Tuli koontivirhe '{markup_begin}{error}{markup_end}' {time_span_ago}"
-
-msgid "Asking for peer counts in {time_span_from_now}"
-msgstr "Pyydetään koneiden määrää {time_span_from_now}"
-
-msgid "Queued to ask for peer counts"
-msgstr "Vertaismäärien kysyminen jonossa"
-
-msgid "Asked for peer counts {markup_begin}{time_span_ago}{markup_end}"
-msgstr "Pyydetyt koneet {markup_begin}{time_span_ago}{markup_end}"
 
 msgid "{torrent_name} - Edit Trackers"
 msgstr "{torrent_name} - Muokkaa seurantapalvelimia"
@@ -399,47 +488,111 @@ msgstr[1] "Ominaisuudet - {torrent_count:L} torrentia"
 msgid "Remove torrent?"
 msgstr "Poistetaanko torrent?"
 
-msgid "Remove {count:L} torrent?"
-msgid_plural "Remove {count:L} torrents?"
-msgstr[0] "Poista {count:L} torrentti?"
-msgstr[1] "Poistetaanko {count:L} torrentia?"
-
 msgid "Delete this torrent's downloaded files?"
 msgstr "Poistetaanko tämän torrentin ladatut tiedostot?"
 
+#, fuzzy
+msgid "Remove {count:L} torrent?"
+msgid_plural "Remove {count:L} torrents?"
+msgstr[0] ""
+"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Poista {count:L} torrentti?\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Poista {count:L} torrentti?"
+msgstr[1] ""
+"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Poistetaanko {count:L} torrentia?\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Poista {count:L} torrenttia?"
+
+#, fuzzy
 msgid "Delete this {count:L} torrent's downloaded files?"
 msgid_plural "Delete these {count:L} torrents' downloaded files?"
-msgstr[0] "Poistetaanko tämän torrentin ladatut tiedostot?"
-msgstr[1] "Poistetaanko näiden {count:L} torrentin ladatut tiedostot?"
+msgstr[0] ""
+"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Poistetaanko tämän torrentin ladatut tiedostot?\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Poistetaanko tämän torrentin ladatut tiedostot?"
+msgstr[1] ""
+"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Poistetaanko näiden {count:L} torrentin ladatut tiedostot?\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Poista näiden {count:L}:n torrentin ladatut tiedostot?"
 
-msgid "Once removed, continuing the transfer will require the torrent file or magnet link."
-msgid_plural "Once removed, continuing the transfers will require the torrent files or magnet links."
-msgstr[0] "Kun poistettu, siirron jatkaminen vaatii torrent-tiedoston tai magneettilinkin."
-msgstr[1] "Kun poistettu, siirtojen jatkaminen vaatii torrent-tiedostot tai magneettilinkit."
+#, fuzzy
+#| msgid "Once removed, continuing the transfer will require the torrent file or magnet link."
+#| msgid_plural "Once removed, continuing the transfers will require the torrent files or magnet links."
+msgid "Once removed, you'll need the torrent file or magnet link to add it again."
+msgstr "Kun poistettu, siirron jatkaminen vaatii torrent-tiedoston tai magneettilinkin."
 
+#, fuzzy
+#| msgid "Once removed, continuing the transfers will require the torrent files or magnet links."
+msgid "Once removed, you'll need the torrent files or magnet links to add them again."
+msgstr "Kun poistettu, siirtojen jatkaminen vaatii torrent-tiedostot tai magneettilinkit."
+
+#, fuzzy
 msgid "This torrent has not finished downloading."
-msgstr "Tämän torrentin lataus ei ole vielä valmis."
+msgstr ""
+"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Tämän torrentin lataus ei ole vielä valmis.\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Tämä torrent ei ole vielä valmistunut lataamisessa."
 
+#, fuzzy
 msgid "These torrents have not finished downloading."
-msgstr "Näiden torrenttien lataus ei ole vielä valmis."
+msgstr ""
+"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Näiden torrenttien lataus ei ole vielä valmis.\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Nämä torrentit eivät ole vielä valmistuneet lataamisessa."
 
+#, fuzzy
 msgid "This torrent is connected to peers."
-msgstr "Tämä torrent on yhteydessä vertaisiinsa."
+msgstr ""
+"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Tämä torrent on yhteydessä vertaisiinsa.\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Tämä torrent on yhdistettynä vertaisiin."
 
+#, fuzzy
 msgid "These torrents are connected to peers."
-msgstr "Nämä torrentit ovat yhteydessä vertaisiinsa."
+msgstr ""
+"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Nämä torrentit ovat yhteydessä vertaisiinsa.\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Nämä torrentit ovat yhdistetyttyinä vertaisiin."
 
+#, fuzzy
 msgid "One of these torrents is connected to peers."
-msgstr "Yksi torrenteista on yhteydessä vertaisiinsa."
+msgstr ""
+"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Yksi torrenteista on yhteydessä vertaisiinsa.\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Jokin näistä torrenteista on yhteydessä vertaisiinsa."
 
+#, fuzzy
 msgid "Some of these torrents are connected to peers."
-msgstr "Jotkut torrenteista ovat yhteydessä vertaisiinsa."
+msgstr ""
+"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Jotkut torrenteista ovat yhteydessä vertaisiinsa.\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Jotkin näistä torrenteista ovat yhteydessä vertaisiinsa."
 
+#, fuzzy
 msgid "One of these torrents has not finished downloading."
-msgstr "Yksi torrenteista on vielä kesken."
+msgstr ""
+"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Yksi torrenteista on vielä kesken.\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Jokin näistä torrenteista on vielä kesken."
 
+#, fuzzy
 msgid "Some of these torrents have not finished downloading."
-msgstr "Jotkut torrenteista ovat vielä kesken."
+msgstr ""
+"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Jotkut torrenteista ovat vielä kesken.\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Jotkin näistä torrenteista ovat vielä kesken."
 
 msgid "_Cancel"
 msgstr "_Peru"
@@ -447,6 +600,7 @@ msgstr "_Peru"
 msgid "_Delete"
 msgstr "_Poista"
 
+#. Removes the torrent from the list and keeps its downloaded files
 msgid "_Remove"
 msgstr "_Poista"
 
@@ -468,14 +622,24 @@ msgstr "Nimi"
 msgid "Size"
 msgstr "Koko"
 
-msgid "Have"
-msgstr "Ladattu"
+msgid "Progress"
+msgstr "Tilanne"
 
+#, fuzzy
 msgid "Download"
-msgstr "Lataus"
+msgstr ""
+"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Lataus\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Lataa"
 
+#, fuzzy
 msgid "Priority"
-msgstr "Prioriteetti"
+msgstr ""
+"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Prioriteetti\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Tärkeysjärjestys"
 
 msgid "All"
 msgstr "Kaikki"
@@ -483,21 +647,49 @@ msgstr "Kaikki"
 msgid "Active"
 msgstr "Aktiivinen"
 
+#, fuzzy
 msgctxt "Verb"
 msgid "Verifying"
-msgstr "Tarkistetaan"
+msgstr ""
+"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Tarkistetaan\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Vahvistetaan"
 
 msgid "Error"
 msgstr "Virhe"
 
+#, fuzzy
 msgid "_Show:"
-msgstr "_Näytä:"
+msgstr ""
+"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Näytä:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"N_äytä:"
 
 msgid "_Show {count:L} of:"
 msgstr "_Näytä {count:L} /:"
 
 msgid "{disk_space} free"
 msgstr "{disk_space} vapaana"
+
+msgid "Where to look for configuration files"
+msgstr "Mistä etsitään asetustiedostoja"
+
+msgid "Start with all torrents paused"
+msgstr "Käynnistä kaikki torrentit pysäytettyinä"
+
+msgid "Start minimized in notification area"
+msgstr "Käynnistä pienennettynä ilmoitusalueelle"
+
+msgid "Show version number and exit"
+msgstr "Näytä versionumero ja poistu"
+
+msgid "[torrent files or urls]"
+msgstr "[torrent-tiedostot tai verkko-osoitteet]"
+
+msgid "Run '{program} --help' to see a full list of available command line options.\n"
+msgstr "Suorita '{program} --help' nähdäksesi kaikki komentorivivalitsimet.\n"
 
 msgid ""
 "Click to disable Alternative Speed Limits\n"
@@ -516,8 +708,13 @@ msgstr ""
 msgid "Unlimited"
 msgstr "Rajoittamaton"
 
+#, fuzzy
 msgid "Seed Forever"
-msgstr "Jaa ikuisesti"
+msgstr ""
+"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Jaa ikuisesti\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Kylvä ikuisesti"
 
 msgid "Limit Download Speed"
 msgstr "Rajoita latausnopeutta"
@@ -525,14 +722,29 @@ msgstr "Rajoita latausnopeutta"
 msgid "Limit Upload Speed"
 msgstr "Rajoita lähetysnopeutta"
 
+#, fuzzy
 msgid "Stop Seeding at Ratio"
-msgstr "Lopeta jakaminen suhteessa"
+msgstr ""
+"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Lopeta jakaminen suhteessa\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Lopeta kylväminen suhdeluvulla"
 
+#, fuzzy
 msgid "Stop at Ratio ({ratio})"
-msgstr "Pysäytä suhteessa ({ratio})"
+msgstr ""
+"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Pysäytä suhteessa ({ratio})\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Pysäytä suhdeluvulla ({ratio})"
 
+#, fuzzy
 msgid "Total Ratio"
-msgstr "Kokonaissuhde"
+msgstr ""
+"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Kokonaissuhde\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Suhde kaikkiaan"
 
 msgid "Session Ratio"
 msgstr "Istunnon suhde"
@@ -540,19 +752,26 @@ msgstr "Istunnon suhde"
 msgid "Total Transfer"
 msgstr "Siirretty kaikkiaan"
 
+#, fuzzy
 msgid "Session Transfer"
-msgstr "Siirretty istunnossa"
+msgstr ""
+"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Siirretty istunnossa\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Istunnon siirrot"
 
+msgid "Down: {downloaded_size}, Up: {uploaded_size}"
+msgstr "Alas: {downloaded_size}, Ylös: {uploaded_size}"
+
+#, fuzzy
 msgid "Ratio: {ratio}"
-msgstr "Suhde: {ratio}"
-
-msgctxt "current session totals"
-msgid "Down: {downloaded_size}, Up: {uploaded_size}"
-msgstr "Lataus: {downloaded_size}, Lähetys: {uploaded_size}"
-
-msgctxt "all-time totals"
-msgid "Down: {downloaded_size}, Up: {uploaded_size}"
-msgstr "Lataus: {downloaded_size}, Lähetys: {uploaded_size}"
+msgstr ""
+"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Suhde: {ratio}\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Suhdeluku: {ratio}\n"
+"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Jakosuhde: {ratio}"
 
 msgid "{download_speed} ▾"
 msgstr "{download_speed} ▾"
@@ -610,6 +829,11 @@ msgstr "Aika"
 msgid "Couldn't create proxy for '{bus}': {error} ({error_code})"
 msgstr "Ei voitu luoda välityspalvelinta väylään '{bus}': {error} ({error_code})"
 
+#, fuzzy
+#| msgid "Couldn't save '{path}': {error} ({error_code})"
+msgid "Couldn't spawn async process \"'{command}'\": {error} ({error_code})"
+msgstr "Ei voitu tallentaa '{path}': {error} ({error_code})"
+
 msgid "Open File"
 msgstr "Avaa tiedosto"
 
@@ -622,8 +846,13 @@ msgstr "Torrent on valmis"
 msgid "Start Now"
 msgstr "Aloita nyt"
 
+#, fuzzy
 msgid "Torrent Added"
-msgstr "Lisättiin torrent"
+msgstr ""
+"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Lisättiin torrent\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Torrent lisätty"
 
 msgid "Torrent files"
 msgstr "Torrent-tiedostot"
@@ -640,17 +869,30 @@ msgstr "_Avaa"
 msgid "Show options dialog"
 msgstr "Näytä valintaikkuna"
 
-msgid "Select a File"
+msgid "Other…"
+msgstr ""
+
+msgid "Select File"
 msgstr "Valitse tiedosto"
 
+#, fuzzy
 msgid "(None)"
-msgstr "(Ei mitään)"
+msgstr ""
+"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"(Ei mitään)\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"(Ei yhtään)"
 
 msgid "Allow encryption"
 msgstr "Salli salaus"
 
+#, fuzzy
 msgid "Prefer encryption"
-msgstr "Jos mahdollista, käytä salausta"
+msgstr ""
+"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Jos mahdollista, käytä salausta\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Suosi salausta"
 
 msgid "Require encryption"
 msgstr "Vaadi salaus"
@@ -658,8 +900,13 @@ msgstr "Vaadi salaus"
 msgid "Every Day"
 msgstr "Joka päivä"
 
+#, fuzzy
 msgid "Weekdays"
-msgstr "Arkisin"
+msgstr ""
+"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Arkisin\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Arkipäivisin"
 
 msgid "Weekends"
 msgstr "Viikonloppuisin"
@@ -713,19 +960,13 @@ msgstr "Torrenttia ei voitu siirtää"
 msgid "This may take a moment…"
 msgstr "Tämä saattaa kestää hetken…"
 
+#, fuzzy
+#| msgid "Couldn't watch '{path}': {error} ({error_code})"
+msgid "Couldn't open watchdir '{dirname}': {error} ({error_code})"
+msgstr "Ei voinut katsoa '{path}': {error} ({error_code})"
+
 msgid "Couldn't read '{path}'"
 msgstr "Ei voitu lukea '{path}'"
-
-#. logging
-msgid "Inhibiting desktop hibernation"
-msgstr "Työpöydän lepotilaan siirtyminen estetty"
-
-msgid "Couldn't inhibit desktop hibernation: {error}"
-msgstr "Työpöydän lepotilaa ei voitu estää: {error}"
-
-#. logging
-msgid "Allowing desktop hibernation"
-msgstr "Työpöydän lepotilaan siirtymisen salliminen"
 
 msgid "Couldn't find pending RPC request for id {id}"
 msgstr ""
@@ -744,21 +985,38 @@ msgstr "_Nollaa"
 msgid "These statistics are for your information only. Resetting them doesn't affect the statistics logged by your BitTorrent trackers."
 msgstr "Nämä tilastot ovat vain sinun tiedoksesi. Tilastojen nollaus ei vaikuta seurantapalvelimien rekisteröimiin tietoihin."
 
+msgid "_Show {appname}"
+msgstr "_Näytä {appname}"
+
 msgid "{upload_speed} ▴ {download_speed} ▾"
 msgstr "{upload_speed} ▴ {download_speed} ▾"
 
-#, no-c-format
+#, fuzzy, no-c-format
 msgid "Verifying local data ({percent_done}% tested)"
-msgstr "Vahvistetaan paikallista dataa ({percent_done}% testattu)"
+msgstr ""
+"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Vahvistetaan paikallista dataa ({percent_done}% testattu)\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Vahvistetaan paikallista daataa ({percent_done}% testattu)"
 
+#, fuzzy
 msgid "{current_size} of {complete_size} ({percent_done}%)"
-msgstr "{current_size}/{complete_size} ({percent_done}%)"
+msgstr ""
+"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{current_size}/{complete_size} ({percent_done}%)\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{current_size} / {complete_size} ({percent_done}%)"
 
 msgid "{current_size} of {complete_size} ({percent_complete}%), uploaded {uploaded_size} (Ratio: {ratio}, Goal: {seed_ratio})"
 msgstr "{current_size}/{complete_size} ({percent_complete}%), lähetetty {uploaded_size} (Suhde: {ratio}, Tavoite: {seed_ratio})"
 
+#, fuzzy
 msgid "{current_size} of {complete_size} ({percent_complete}%), uploaded {uploaded_size} (Ratio: {ratio})"
-msgstr "{current_size}/{complete_size} ({percent_complete}%), lähetetty {uploaded_size} (Suhde: {ratio})"
+msgstr ""
+"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{current_size}/{complete_size} ({percent_complete}%), lähetetty {uploaded_size} (Suhde: {ratio})\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{current_size}/{complete_size} ({percent_complete} %), lähetetty {uploaded_size} (Jakosuhde: {ratio})"
 
 msgid "{complete_size}, uploaded {uploaded_size} (Ratio: {ratio}, Goal: {seed_ratio})"
 msgstr "{complete_size}, lähetetty {uploaded_size} (Suhde: {ratio}, Tavoite: {seed_ratio})"
@@ -766,6 +1024,7 @@ msgstr "{complete_size}, lähetetty {uploaded_size} (Suhde: {ratio}, Tavoite: {s
 msgid "{complete_size}, uploaded {uploaded_size} (Ratio: {ratio})"
 msgstr "{complete_size}, lähetetty {uploaded_size} (Suhde: {ratio})"
 
+#. Translators: Second (optional) part of torrent progress string
 msgid "Remaining time unknown"
 msgstr "Jäljellä oleva aika tuntematon"
 
@@ -778,7 +1037,9 @@ msgstr "Jämähtänyt"
 msgid "Tracker warning: '{warning}'"
 msgstr "Seurantapalvelimen varoitus: '{warning}'"
 
-msgid "Tracker Error: '{error}'"
+#, fuzzy
+#| msgid "Tracker Error: '{error}'"
+msgid "Tracker error: '{error}'"
 msgstr "Seurantapalvelimen virhe: '{error}'"
 
 msgid "Local error: '{error}'"
@@ -800,15 +1061,1105 @@ msgid_plural "Downloading from {active_count} webseeds"
 msgstr[0] "Ladataan {active_count} siemenpalvelimesta"
 msgstr[1] "Ladataan {active_count} siemenpalvelimesta"
 
+#, fuzzy
 msgid "Downloading from {active_count} of {connected_count} connected peer"
 msgid_plural "Downloading from {active_count} of {connected_count} connected peers"
-msgstr[0] "Ladataan {active_count} / {connected_count} yhdistetystä koneesta"
-msgstr[1] "Ladataan {active_count} / {connected_count} yhdistetyltä koneelta"
+msgstr[0] ""
+"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Ladataan {active_count} / {connected_count} yhdistetystä koneesta\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Ladataan {active_count} /{connected_count} yhdistetyltä vertaiselta"
+msgstr[1] ""
+"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Ladataan {active_count} / {connected_count} yhdistetyltä koneelta\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Ladataan {active_count}/{connected_count} yhdistetyltä vertaiselta"
 
+#, fuzzy
 msgid "Seeding to {active_count} of {connected_count} connected peer"
 msgid_plural "Seeding to {active_count} of {connected_count} connected peers"
-msgstr[0] "Lähetetään {active_count} / {connected_count} koneeseen"
-msgstr[1] "Lähetetään {active_count}/ {connected_count}"
+msgstr[0] ""
+"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Lähetetään {active_count} / {connected_count} koneeseen\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Lähteet {active_count} / {connected_count} yhdistetyt vertaiskoneet"
+msgstr[1] ""
+"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Lähetetään {active_count}/ {connected_count}\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Seeding to {active_count} of {connected_count} connected peers"
+
+msgid "Retransmission"
+msgstr "Retransmission"
+
+msgid "BitTorrent Client"
+msgstr "BitTorrent-sovellus"
+
+msgid "Download and share files over BitTorrent"
+msgstr "Lataa ja jaa tiedostoja BitTorrentin avulla"
+
+#. Translators: Search terms to find this application. Do NOT translate or localize the semicolons! The list MUST also end with a semicolon!
+msgid "torrents;downloading;uploading;share;sharing;"
+msgstr "torrents;downloading;uploading;share;sharing;torrent;tiedostonjako;lataus;"
+
+msgid "Start Retransmission with All Torrents Paused"
+msgstr "Käynnistä Retransmission kaikki torrentit pysäytettyinä"
+
+msgid "Start Retransmission Minimized"
+msgstr "Käynnistä Retransmission pienennettynä"
+
+#, fuzzy
+#| msgid "Copyright © The Retransmission Project"
+msgid "The Retransmission Project"
+msgstr "Copyright © Retransmission-projekti"
+
+#. Translators: these are the application description paragraphs in the MetaInfo file.
+msgid "BitTorrent is a peer-to-peer file-sharing protocol that is commonly used to distribute large amounts of data between multiple users."
+msgstr ""
+
+msgid "Retransmission is a BitTorrent client with an easy-to-use interface on top of a cross-platform backend. Native interfaces are available for macOS, Linux, and Windows, as well as command line binaries and a web GUI."
+msgstr ""
+
+msgid "Notable features of Retransmission include support for Local Peer Discovery, encryption, DHT, µTP, PEX and Magnet links."
+msgstr ""
+
+msgid "Main window, showing an ongoing download of Fedora Workstation"
+msgstr ""
+
+msgid "_File"
+msgstr "_Tiedosto"
+
+#, fuzzy
+msgid "Open _URL…"
+msgstr ""
+"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Avaa o_soite…\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Avaa _URL-osoite…"
+
+msgid "_New…"
+msgstr "_Uusi…"
+
+#, fuzzy
+msgid "_Start All"
+msgstr ""
+"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Käynnistä kaikki\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Aloita kaikki"
+
+#, fuzzy
+msgid "_Pause All"
+msgstr ""
+"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Pysäytä kaikki\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Tauota kaikki"
+
+msgid "_Quit"
+msgstr "_Poistu"
+
+msgid "_Edit"
+msgstr "_Muokkaa"
+
+msgid "Select _All"
+msgstr "Valitse _kaikki"
+
+msgid "Dese_lect All"
+msgstr "Poista va_linnat"
+
+msgid "_Preferences"
+msgstr "_Asetukset"
+
+msgid "_Torrent"
+msgstr "_Torrent"
+
+msgid "_Properties"
+msgstr "_Ominaisuudet"
+
+#, fuzzy
+msgid "Open Fold_er"
+msgstr ""
+"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Avaa ka_nsio\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Avaa hake_misto"
+
+msgid "_Start"
+msgstr "_Aloita"
+
+#, fuzzy
+msgid "Start _Now"
+msgstr ""
+"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Käynnistä _nyt\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Aloita _nyt"
+
+#, fuzzy
+msgid "Ask Tracker for _More Peers"
+msgstr ""
+"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Pyydä seurantapalveli_melta lisää vertaisia\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Pyydä seurantapalvelimelta _lisää vertaisia"
+
+#, fuzzy
+#| msgid "Queue"
+msgid "_Queue"
+msgstr "Jonota"
+
+#, fuzzy
+msgid "Move to _Top"
+msgstr ""
+"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Siirrä yli_mmäiseksi\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Siirrä _ylimmäiseksi"
+
+msgid "Move _Up"
+msgstr "Siirrä _ylös"
+
+msgid "Move _Down"
+msgstr "Siirrä _alas"
+
+#, fuzzy
+msgid "Move to _Bottom"
+msgstr ""
+"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Siirrä al_immaiseksi\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Siirrä %alimmaiseksi"
+
+#, fuzzy
+msgid "_Pause"
+msgstr ""
+"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"P_ysäytä\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Tauko"
+
+#, fuzzy
+msgid "Set _Location…"
+msgstr ""
+"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Aseta s_ijainti…\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Aseta _sijainti…"
+
+#, fuzzy
+msgid "_Verify Local Data"
+msgstr ""
+"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Tarkista paikallinen data\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Vahvista paikallinen data"
+
+msgid "_Copy Magnet Link to Clipboard"
+msgstr "_Kopioi Magnet-linkki leikepöydälle"
+
+#, fuzzy
+msgid "_Delete Files and Remove"
+msgstr ""
+"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Poista tiedostoineen\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Poista tiedostot ja latauslistasta"
+
+msgid "_View"
+msgstr "_Näytä"
+
+#, fuzzy
+msgid "_Compact View"
+msgstr ""
+"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Tiivis näkymä\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Kompakti näkymä"
+
+msgid "_Toolbar"
+msgstr "_Työkalupalkki"
+
+#, fuzzy
+msgid "_Filterbar"
+msgstr ""
+"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Suodatinrivi\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Suodatinpalkki"
+
+#, fuzzy
+msgid "_Statusbar"
+msgstr ""
+"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Tilapalkki\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Tilannepalkki"
+
+msgid "Sort by _Activity"
+msgstr "Järjestä _aktiivisuuden mukaan"
+
+#, fuzzy
+msgid "Sort by A_ge"
+msgstr ""
+"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Järjestä _iän mukaan\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Järjestä i%än mukaan"
+
+#, fuzzy
+msgid "Sort by _Name"
+msgstr ""
+"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Järjestä _nimen mukaan\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Järjestä nimen _mukaan"
+
+#, fuzzy
+msgid "Sort by _Progress"
+msgstr ""
+"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Järjestä _edistymisen mukaan\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Järjestä tilanteen _mukaan"
+
+#, fuzzy
+msgid "Sort by _Queue"
+msgstr ""
+"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Järjest_ä jonon mukaan\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Järjestä jonotuksen _mukaan"
+
+#, fuzzy
+msgid "Sort by Rati_o"
+msgstr ""
+"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Järjestä _suhteen mukaan\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Järjestä suhteen mukaa_n"
+
+#, fuzzy
+msgid "Sort by Si_ze"
+msgstr ""
+"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Järjestä k_oon mukaan\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Järjestä koon muka_an"
+
+#, fuzzy
+msgid "Sort by Stat_e"
+msgstr ""
+"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Järjestä _tilan mukaan\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Järjestä tilan mukaa_n"
+
+#, fuzzy
+msgid "Sort by Time _Left"
+msgstr ""
+"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Järjestä _jäljellä olevan ajan mukaan\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Järjestä jäljellä olevan ajan _mukaan"
+
+#, fuzzy
+msgid "Re_verse Sort Order"
+msgstr ""
+"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Käänteinen järjestys\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Kä_ännä lajittelujärjestystä"
+
+msgid "_Help"
+msgstr "_Ohje"
+
+msgid "Message _Log"
+msgstr "Viesti_loki"
+
+#, fuzzy
+msgid "_Statistics"
+msgstr ""
+"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Tilastot\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Tilastotiedot"
+
+msgid "_Donate"
+msgstr "_Lahjoita"
+
+msgid "_Contents"
+msgstr "_Sisältö"
+
+msgid "_About"
+msgstr "_Tietoja"
+
+#, fuzzy
+#| msgid "Start torrent"
+msgid "_Sort Torrents By"
+msgstr "Aloita torrent"
+
+#, fuzzy
+#| msgid "Alternative Speed Limits"
+msgid "Alternative Speed _Limits"
+msgstr "Vaihtoehtoiset nopeusrajoitukset"
+
+#, fuzzy
+msgid "_Add"
+msgstr ""
+"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Lisää\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Li_sää"
+
+msgid "Tracker"
+msgstr "Seurantapalvelin"
+
+msgid "_Announce URL:"
+msgstr "_Julkistusosoite:"
+
+msgid "_Close"
+msgstr "_Sulje"
+
+#, fuzzy
+msgid "Activity"
+msgstr ""
+"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Aktiivisuus\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Aktiviteetti"
+
+msgid "Size:"
+msgstr "Koko:"
+
+#, fuzzy
+msgid "Have:"
+msgstr ""
+"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Ladattu:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Hallussa:"
+
+msgid "Uploaded:"
+msgstr "Lähetetty:"
+
+msgid "Downloaded:"
+msgstr "Ladattu:"
+
+msgid "State:"
+msgstr "Tila:"
+
+#, fuzzy
+msgid "Running time:"
+msgstr ""
+"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Käyntiaika:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Kulunut aika:"
+
+#, fuzzy
+msgid "Remaining time:"
+msgstr ""
+"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Jäljellä oleva aika:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Aikaa jäljellä:"
+
+#, fuzzy
+msgid "Last activity:"
+msgstr ""
+"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Viimeisin aktiivisuus:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Aktiivinen viimeksi:"
+
+msgid "Error:"
+msgstr "Virhe:"
+
+#, fuzzy
+msgid "Details"
+msgstr ""
+"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Yksityiskohtainen näkymä\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Lisätiedot"
+
+msgid "Location:"
+msgstr "Sijainti:"
+
+#, fuzzy
+msgid "Hash:"
+msgstr ""
+"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Tiiviste:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Tarkiste:"
+
+msgid "Privacy:"
+msgstr "Yksityisyys:"
+
+msgid "Origin:"
+msgstr "Lähde:"
+
+msgid "Added:"
+msgstr "Lisätty:"
+
+msgid "Comment:"
+msgstr "Kommentti:"
+
+#, fuzzy
+msgid "Information"
+msgstr ""
+"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Tiedot\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Tietoa"
+
+#, fuzzy
+msgid "Show _more details"
+msgstr ""
+"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Näytä _enemmän tietoja\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Näytä _lisää tietoja"
+
+msgid "Peers"
+msgstr "Vertaiset"
+
+#, fuzzy
+msgid "Show _backup trackers"
+msgstr ""
+"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Näytä _varmistusseurantapalvelimet\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Näytä _varalla olevat seurantapalvelimet"
+
+msgid "File listing not available for combined torrent properties"
+msgstr "Tiedostojen luettelointi ei ole käytettävissä yhdistettyjen torrenttien ominaisuuksissa"
+
+msgid "Files"
+msgstr "Tiedostot"
+
+msgid "Speed"
+msgstr "Nopeus"
+
+#, fuzzy
+msgid "Honor global _limits"
+msgstr ""
+"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Noudata yleisiä _rajoituksia\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Kunnioita yleisiä _rajoituksia"
+
+msgid "Limit _download speed ({speed_units}):"
+msgstr "Rajoita _latausnopeus ({speed_units}):"
+
+msgid "Limit _upload speed ({speed_units}):"
+msgstr "Rajoita l_ähetysnopeus ({speed_units}):"
+
+#, fuzzy
+msgid "Torrent _priority:"
+msgstr ""
+"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Torrentin _prioriteetti:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Torrentin _tärkeysjärjestys:"
+
+#, fuzzy
+msgid "Seeding Limits"
+msgstr ""
+"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Jakamisen rajoitukset\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Rajoitukset kylvämiselle"
+
+msgid "_Ratio:"
+msgstr "_Suhde:"
+
+#, fuzzy
+msgid "_Idle:"
+msgstr ""
+"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Toimeton:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Joutilaana:"
+
+#, fuzzy
+msgid "Peer Connections"
+msgstr ""
+"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Vertaisyhteydet\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Vertaisen yhteydet"
+
+#, fuzzy
+msgid "_Maximum peers:"
+msgstr ""
+"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Vertaisten eni_mmäismäärä:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Vertaisia enimmillään:"
+
+#, fuzzy
+msgid "Options"
+msgstr ""
+"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Valinnat\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Ominaisuudet\n"
+"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Valinnat"
+
+#, fuzzy
+msgid "Tracker Announce URLs"
+msgstr ""
+"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Seurantapalvelimien julkistusosoitteet\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Jäljitin Ilmoittaa URL-osoitteet"
+
+msgid ""
+"To add a backup URL, add it on the next line after a primary URL.\n"
+"To add a new primary URL, add it after a blank line."
+msgstr ""
+"Jos haluat lisätä varalle URL-osoitteen, lisää se URL-osoitteen jälkeen seuraavalle riville.\n"
+"Lisää uusi URL-osoite lisäämällä se tyhjän rivin jälkeen."
+
+#, fuzzy
+msgid "Also see Default Public Trackers in Edit > Preferences > Network"
+msgstr ""
+"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Katso myös \"Oletusarvoiset seurantapalvelimet\" kohdassa Muokkaa > Asetukset > Verkko\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Katso myös julkisten jäljittimien oletusarvot Muokkaa > Asetukset > Verkko"
+
+msgid "Open a torrent"
+msgstr "Avaa torrent"
+
+msgid "Start torrent"
+msgstr "Aloita torrent"
+
+#, fuzzy
+msgid "Pause torrent"
+msgstr ""
+"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Pysäytä torrent\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Tauota torrent"
+
+msgid "Remove torrent"
+msgstr "Poista torrent"
+
+msgid "Torrent properties"
+msgstr "Torrentin ominaisuudet"
+
+msgid "Torrent"
+msgstr "Torrent"
+
+#, fuzzy
+msgid "Statistics"
+msgstr ""
+"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Tilastot\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Tilastot\n"
+"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Tilastotiedot"
+
+msgid "New Torrent"
+msgstr "Uusi torrent"
+
+#, fuzzy
+#| msgid "C_redits"
+msgid "C_reate"
+msgstr "L_opputekstit"
+
+#, fuzzy
+msgid "Sa_ve to:"
+msgstr ""
+"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Tallenna:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Ta_llenna kohteeseen:"
+
+msgid "Source f_older:"
+msgstr "Lähdeh_akemisto:"
+
+msgid "Source _file:"
+msgstr "Lähde_tiedosto:"
+
+#, fuzzy
+#| msgid "Piece size:"
+msgid "Piece si_ze:"
+msgstr "Osan koko:"
+
+msgid "Properties"
+msgstr "Ominaisuudet"
+
+msgid "_Trackers:"
+msgstr "_Seurantapalvelimet:"
+
+#, fuzzy
+msgid "Co_mment:"
+msgstr ""
+"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Kommentti:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Ko_mmentti:"
+
+msgid "_Source:"
+msgstr "_Lähde:"
+
+msgid "_Private torrent"
+msgstr "_Yksityinen torrent"
+
+msgid "Creating torrent…"
+msgstr "Luodaan torrentia…"
+
+msgid "Message Log"
+msgstr "Viestiloki"
+
+msgid "Save _As"
+msgstr "Tallenna _nimellä"
+
+msgid "Clear"
+msgstr "Tyhjennä"
+
+msgid "Level"
+msgstr "Taso"
+
+msgid "Torrent Options"
+msgstr "Torrentin asetukset"
+
+msgid "_Torrent file:"
+msgstr "_Torrent-tiedosto:"
+
+msgid "Select Source File"
+msgstr "Valitse lähdetiedosto"
+
+msgid "_Destination folder:"
+msgstr "_Kohdekansio:"
+
+msgid "Select Destination Folder"
+msgstr "Valitse kohdekansio"
+
+msgid "_Start when added"
+msgstr "_Aloita kun lisätään"
+
+#, fuzzy
+#| msgid "Mo_ve torrent file to the trash"
+msgid "Mo_ve torrent file to the Trash"
+msgstr "Siirrä torrent-tiedosto _roskakoriin"
+
+msgid "{appname} Preferences"
+msgstr "{appname}in asetukset"
+
+msgid "Speed Limits"
+msgstr "Nopeusrajoitukset"
+
+#. Checkbox to limit upload speed
+msgid "_Upload ({speed_units}):"
+msgstr "_Lähetys ({speed_units}):"
+
+#. Checkbox to limit download speed
+msgid "_Download ({speed_units}):"
+msgstr "_Lataus ({speed_units}):"
+
+msgid "Alternative Speed Limits"
+msgstr "Vaihtoehtoiset nopeusrajoitukset"
+
+msgid "Override normal speed limits manually or at scheduled times"
+msgstr "Korvaa normaalit siirtorajoitukset käsin tai ajastettuina aikoina"
+
+#. Labels a spinbutton for alternate upload speed limits
+msgid "U_pload ({speed_units}):"
+msgstr "Lä_hetys ({speed_units}):"
+
+#. Labels a spinbutton for alternate download speed limits
+msgid "Do_wnload ({speed_units}):"
+msgstr "La_taus ({speed_units}):"
+
+msgid "_Scheduled times:"
+msgstr "_Määriteltyinä aikoina:"
+
+#, fuzzy
+msgid "_On days:"
+msgstr ""
+"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Päivisin:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Päivinä:"
+
+#. Label goes between two time selectors, e.g. "limit speeds from [time] to [time]"
+#, fuzzy
+msgid "_to"
+msgstr ""
+"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"-\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_asiakkaalle"
+
+msgctxt "Gerund"
+msgid "Adding"
+msgstr "Lisäys"
+
+msgid "Automatically add torrent files _from:"
+msgstr "Lisää torrentit automaattisesti _kohteesta:"
+
+msgid "Show the Torrent Options _dialog"
+msgstr "Näytä torrentin _valintaikkuna"
+
+#, fuzzy
+msgid "_Start added torrents"
+msgstr ""
+"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Kä_ynnistä lisätyt torrentit\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Käynnistä lisätyt torrentit"
+
+#, fuzzy
+#| msgid "Save to _Location:"
+msgid "Save to _location:"
+msgstr "Tallenna _sijaintiin:"
+
+msgid "Download Queue"
+msgstr "Latausjono"
+
+msgid "Ma_ximum active downloads:"
+msgstr "Aktiivisia latauksia enint_ään:"
+
+msgid "Downloads sharing data in the last _N minutes are active:"
+msgstr "Viimeisen _N minuutin aikana tietoa jakaneet lataukset ovat aktiivisia:"
+
+msgid "Incomplete"
+msgstr "Keskeneräinen"
+
+msgid "Append \"._part\" to incomplete files' names"
+msgstr "Lisää \"._part\"-pääte keskeneräisten tiedostojen nimiin"
+
+msgid "Keep _incomplete files in:"
+msgstr "Säilytä _keskeneräiset torrentit kansiossa:"
+
+#, fuzzy
+#| msgid "Call scrip_t when downloading is completed:"
+msgid "Call scrip_t when download completes:"
+msgstr "Kutsu skrip_tiä, kun lataus on valmis:"
+
+#, fuzzy
+#| msgid "Call scrip_t when downloading is completed:"
+msgid "Verify data when download completes"
+msgstr "Kutsu skrip_tiä, kun lataus on valmis:"
+
+msgctxt "Gerund"
+msgid "Downloading"
+msgstr "Lataus"
+
+msgid "Limits"
+msgstr "Rajoitukset"
+
+#, fuzzy
+msgid "Stop seeding at _ratio:"
+msgstr ""
+"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Lopeta jakaminen _suhteessa:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Lopeta jakaminen _suhteen ollessa:"
+
+msgid "Stop seeding if idle for _N minutes:"
+msgstr "Lopeta jakaminen jos jouten _N minuuttia:"
+
+msgid "Call scrip_t when done seeding:"
+msgstr "Kutsu scrip_t, kun levitys on valmis:"
+
+msgctxt "Gerund"
+msgid "Seeding"
+msgstr "Jakaminen"
+
+msgid "Privacy"
+msgstr "Yksityisyys"
+
+msgid "_Encryption mode:"
+msgstr "_Salaustila:"
+
+msgid "Blocklist"
+msgstr "Estolista"
+
+#, fuzzy
+msgid "Enable _blocklist:"
+msgstr ""
+"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Käytä e_stolistaa:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Kä_ytä estolistaa:"
+
+#, fuzzy
+#| msgid "Enable _automatic updates"
+msgid "_Automatically update weekly"
+msgstr "Salli _automaattiset päivitykset"
+
+msgid "_Update"
+msgstr "_Päivitä"
+
+msgid "Listening Port"
+msgstr "Kuunneltava portti"
+
+msgid "_Port for incoming connections:"
+msgstr "_Portti saapuville yhteyksille:"
+
+#, fuzzy
+#| msgid "Pick a _random port every time Transmission is started"
+msgid "Pick a _random port at startup"
+msgstr "Ota _satunnainen portti joka kerta, kun Transmission käynnistetään"
+
+msgid "Use UPnP or NAT-PMP port _forwarding from my router"
+msgstr "Käytä UPnP- tai NAT-PMP-portti_välitystä reitittimeltä"
+
+#, fuzzy
+msgid "Te_st Port"
+msgstr ""
+"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Kokeile porttia\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Te_staa portti"
+
+#, fuzzy
+msgid "Peer Limits"
+msgstr ""
+"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Vertaisrajoitukset\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Vertaisten rajoitukset"
+
+#, fuzzy
+#| msgid "Maximum peers per _torrent:"
+msgid "Maximum peers for new _torrents:"
+msgstr "Enimmäismäärä vertaisia _torrenttia kohti:"
+
+msgid "Maximum peers _overall:"
+msgstr "Enimmäismäärä _vertaisille:"
+
+msgid "Enable µ_TP for peer connections"
+msgstr "Käytä µ_TP:tä vertaisten yhteyksiin"
+
+msgid "µTP is a tool for reducing network congestion."
+msgstr "uTP on työkalu, jonka avulla vähennetään verkon ruuhkaa."
+
+#, fuzzy
+#| msgid "Use PE_X to find more peers"
+msgid "Use PE_X to find more peers for public torrents"
+msgstr "Käytä _PEX:iä vertaisten löytämiseksi"
+
+msgid "PEX is a tool for exchanging peer lists with the peers you're connected to."
+msgstr "PEX:n avulla voit vaihtaa vertaislistoja jo yhdistettyjen vertaisten kanssa."
+
+#, fuzzy
+#| msgid "Use _DHT to find more peers"
+msgid "Use _DHT to find more peers for public torrents"
+msgstr "Käytä _DHT:tä vertaisten löytämiseksi"
+
+#, fuzzy
+msgid "DHT is a tool for finding peers without a tracker."
+msgstr ""
+"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"DHT:n avulla voit löytää vertaisia ilman seurantapalvelinta\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"DHT:n avulla voit löytää vertaisia ilman seurantapalvelinta."
+
+#, fuzzy
+#| msgid "Use _Local Peer Discovery to find more peers"
+msgid "Use _Local Peer Discovery to find more peers for public torrents"
+msgstr "Käytä _paikallisvertaisten etsintää useamman vertaisen löytämiseksi"
+
+msgid "LPD is a tool for finding peers on your local network."
+msgstr "LPD etsii vertaisia lähiverkostasi."
+
+#, fuzzy
+msgid "Default Public Trackers"
+msgstr ""
+"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Oletusarvoiset seurantapalvelimet\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Oletusarvoiset julkiset seurantapalvelimet"
+
+msgid ""
+"Trackers to use on all public torrents.\n"
+"\n"
+"To add a backup URL, add it on the next line after a primary URL.\n"
+"To add a new primary URL, add it after a blank line."
+msgstr ""
+"Seuranta käyttöön kaikissa julkisissa torrenteissa.\n"
+"\n"
+"Jos haluat lisätä varalle URL-osoitteen, lisää se URL-osoitteen jälkeen\n"
+"seuraavalle riville. Lisää uusi URL-osoite lisäämällä se tyhjän rivin jälkeen."
+
+msgid "Network"
+msgstr "Verkko"
+
+msgid "Desktop"
+msgstr "Työpöytä"
+
+msgid "_Prevent computer from sleeping with active torrents"
+msgstr ""
+
+msgid "Show {appname} icon in the _notification area"
+msgstr "Näytä {appname}in kuvake _ilmoitusalueella"
+
+msgid "Notification"
+msgstr "Ilmoitus"
+
+msgid "Show a notification when torrents are a_dded"
+msgstr "Näytä ilmoitus, kun torrent _lisätään"
+
+msgid "Show a notification when torrents _finish"
+msgstr "Näytä ilmoitus, kun torrent _valmistuu"
+
+msgid "Play a _sound when torrents finish"
+msgstr "Toista _ääni, kun torrent valmistuu"
+
+msgid "Remote Control"
+msgstr "Etähallinta"
+
+#, fuzzy
+msgid "Allow _remote access"
+msgstr ""
+"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Salli et_äkäyttö\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Salli etäkäyttö"
+
+#, fuzzy
+#| msgid "_Open web client"
+msgid "_Open Web Client"
+msgstr "_Avaa WWW-käyttöliittymä"
+
+msgid "HTTP _port:"
+msgstr "HTTP-_portti:"
+
+#, fuzzy
+msgid "Use _authentication"
+msgstr ""
+"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Käytä _todentamista\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Käytä _tunnistautumista"
+
+msgid "_Username:"
+msgstr "_Käyttäjänimi:"
+
+#, fuzzy
+msgid "Pass_word:"
+msgstr ""
+"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Salasana:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Sala_sana:"
+
+#, fuzzy
+msgid "Only allow these IP a_ddresses:"
+msgstr ""
+"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Salli vain seuraavat IP-_osoitteet:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Salli vain seuraavat _IP-osoitteet:"
+
+msgid "Addresses:"
+msgstr "Osoitteet:"
+
+msgid "IP addresses may use wildcards, such as 192.168.*.*"
+msgstr "IP-osoitteissa voidaan käyttää jokerimerkkejä, esimerkiksi 192.168.*.*"
+
+msgid "Remote"
+msgstr "Etäkäyttö"
+
+msgid "Set Torrent Location"
+msgstr "Aseta torrentin sijainti"
+
+msgid "_Apply"
+msgstr "_Käytä"
+
+msgid "Location"
+msgstr "Sijainti"
+
+msgid "New _location:"
+msgstr "Uusi _sijainti:"
+
+#, fuzzy
+msgid "_Move from the current folder"
+msgstr ""
+"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Siirrä nykyisestä kansiosta\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Siirrä tämänhetkisestä hakemistosta"
+
+msgid "Local data is _already there"
+msgstr "Paikallinen data on _jo siellä"
+
+#, fuzzy
+msgid "Current Session"
+msgstr ""
+"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Nykyinen istunto\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Tämänhetkinen istunto"
+
+msgid "Ratio:"
+msgstr "Suhde:"
+
+#, fuzzy
+msgid "Duration:"
+msgstr ""
+"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Kesto:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Kesto"
+
+#, fuzzy
+msgid "Total"
+msgstr ""
+"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Yhteensä\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Kaikkiaan"
+
+msgid "Open URL"
+msgstr "Avaa osoite"
+
+msgid "Open torrent from URL"
+msgstr "Avaa torrent verkko-osoitteesta"
+
+msgid "_URL"
+msgstr "_Verkko-osoite"
+
+msgid "The torrent file '{path}' is already in use by '{torrent_name}'."
+msgstr "Torrent-tiedosto '{path}' on jo käytössä '{torrent_name}'."
+
+msgid "Couldn't open torrent"
+msgstr "Ei voitu avata torrentia"
+
+msgid "Couldn't move '{path}' to trash: {error} ({error_code})"
+msgstr "Ei voitu siirtää '{path}' roskakoriin: {error} ({error_code})"
+
+#, fuzzy
+#| msgid "Couldn't create proxy for '{bus}': {error} ({error_code})"
+msgid "Couldn't launch default application for URI '{uri}': {error} ({error_code})"
+msgstr "Ei voitu luoda välityspalvelinta väylään '{bus}': {error} ({error_code})"
+
+#, fuzzy
+#| msgid "Couldn't open '{path}': {error} ({error_code})"
+msgid "Couldn't invoke xdg-open for URI '{uri}': {error} ({error_code})"
+msgstr "Ei voitu avata '{path}': {error} ({error_code})"
+
+msgid "Couldn't open '{url}'"
+msgstr "Osoitetta '{url}' ei voitu avata"
+
+msgid "Unsupported URL: '{url}'"
+msgstr "Ei tuettu URL: '{url}'"
+
+msgid "{appname} doesn't know how to use '{url}'"
+msgstr "{appname} ei osaa käyttää '{url}'"
+
+msgid "This magnet link appears to be intended for something other than BitTorrent."
+msgstr "Tämä linkki näyttää olevan tarkoitettu jollekin muulle kuin BitTorrentille."
 
 msgid "{days_from_now:L} day from now"
 msgid_plural "{days_from_now:L} days from now"
@@ -843,35 +2194,146 @@ msgid_plural "{hours_ago:L} hours ago"
 msgstr[0] "{hours_ago:L}tuntia sitten"
 msgstr[1] "{hours_ago:L} tuntia sitten"
 
+#, fuzzy
 msgid "{minutes_ago:L} minute ago"
 msgid_plural "{minutes_ago:L} minutes ago"
-msgstr[0] "{minutes_ago:L}minuuttia sitten"
-msgstr[1] "{minutes_ago:L} minuuttia sitten"
+msgstr[0] ""
+"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{minutes_ago:L}minuuttia sitten\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{minutes_ago:L} minuuttia sitten"
+msgstr[1] ""
+"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{minutes_ago:L} minuuttia sitten\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{minutes_ago:L} minuuttia sitten"
 
 msgid "{seconds_ago:L} second ago"
 msgid_plural "{seconds_ago:L} seconds ago"
 msgstr[0] "{seconds_ago:L}sekuntia sitten"
 msgstr[1] "{seconds_ago:L} sekuntia sitten"
 
+msgid "Got a list of {markup_begin}{peer_count} peer{markup_end} {time_span_ago}"
+msgid_plural "Got a list of {markup_begin}{peer_count} peers{markup_end} {time_span_ago}"
+msgstr[0] "Sain listan {markup_begin}{peer_count} konetta{markup_end} {time_span_ago}"
+msgstr[1] "Sain listan {markup_begin}{peer_count} konetta{markup_end} {time_span_ago}"
+
+msgid "Peer list request {markup_begin}timed out {time_span_ago}{markup_end}; will retry"
+msgstr "Listan pyyntö koneista {markup_begin}aikakatkaisu {time_span_ago}{markup_end}; uudestaan"
+
+msgid "Got an error '{markup_begin}{error}{markup_end}' {time_span_ago}"
+msgstr "Tuli virhe '{markup_begin}{error}{markup_end}' {time_span_ago}"
+
+#, fuzzy
+msgid "No updates scheduled"
+msgstr ""
+"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Ei ajastettuja päivityksiä\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Ei aikataulutettuja päivityksiä"
+
+msgid "Asking for more peers {time_span_from_now}"
+msgstr "Pyydetään lisää koneita {time_span_from_now}"
+
+#, fuzzy
+msgid "Queued to ask for more peers"
+msgstr ""
+"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Uusien vertaisten kysyminen jonossa\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Laitettu jonoon lisävertaisten kysymistä varten"
+
+msgid "Asked for more peers {markup_begin}{time_span_ago}{markup_end}"
+msgstr "Pyysi lisää koneita {markup_begin}{time_span_ago}{markup_end}"
+
+msgid "Got a scrape error '{markup_begin}{error}{markup_end}' {time_span_ago}"
+msgstr "Tuli koontivirhe '{markup_begin}{error}{markup_end}' {time_span_ago}"
+
+#, fuzzy
+#| msgid "Tracker had {markup_begin}no information{markup_end} on peer counts {time_span} ago"
+msgid "Tracker had {markup_begin}no information{markup_end} on peer counts {time_span_ago}"
+msgstr "Seurantapalvelimella {markup_begin}ei ollut tietoa{markup_end} jakajien määrästä {time_span} sitten"
+
+msgid "Tracker had {markup_begin}{seeder_count} {seeder_or_seeders} and {leecher_count} {leecher_or_leechers}{markup_end} {time_span_ago}"
+msgstr "Jäljitimessä oli {markup_begin}{seeder_count} {seeder_or_seeders} ja {leecher_count} {leecher_or_leechers}{markup_end} {time_span_ago}"
+
+msgid "seeder"
+msgid_plural "seeders"
+msgstr[0] "jakajaa"
+msgstr[1] "jakajaa"
+
+msgid "leecher"
+msgid_plural "leechers"
+msgstr[0] "lataajaa"
+msgstr[1] "lataajaa"
+
+#, fuzzy
+#| msgid "Asking for peer counts in {time_span_from_now}"
+msgid "Asking for peer counts {time_span_from_now}"
+msgstr "Pyydetään koneiden määrää {time_span_from_now}"
+
+#, fuzzy
+msgid "Queued to ask for peer counts"
+msgstr ""
+"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Vertaismäärien kysyminen jonossa\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Jonossa vertaismäärien pyytämiseksi"
+
+msgid "Asked for peer counts {markup_begin}{time_span_ago}{markup_end}"
+msgstr "Pyydetyt koneet {markup_begin}{time_span_ago}{markup_end}"
+
 msgid "{days:L} day"
 msgid_plural "{days:L} days"
 msgstr[0] "{days:L} päivä"
 msgstr[1] "{days:L} päivää"
 
+#, fuzzy
 msgid "{hours:L} hour"
 msgid_plural "{hours:L} hours"
-msgstr[0] "{hours:L} tuntia"
-msgstr[1] "{hours:L} tuntia"
+msgstr[0] ""
+"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{hours:L} tuntia\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{hours:L} tunti"
+msgstr[1] ""
+"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{hours:L} tuntia\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{hours:L} tuntia"
 
+#. Translators: Spin box format, "Stop seeding if idle for: [ 5 minutes ]"
+#, fuzzy
 msgid "{minutes:L} minute"
 msgid_plural "{minutes:L} minutes"
-msgstr[0] "{minutes:L} minuuttia"
-msgstr[1] "{minutes:L} minuuttia"
+msgstr[0] ""
+"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{minutes:L} minuuttia\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{minutes:L} minuuttia\n"
+"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{minutes:L} minuutti"
+msgstr[1] ""
+"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{minutes:L} minuuttia\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{minutes:L} minuuttia\n"
+"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{minutes:L} minuuttia"
 
+#, fuzzy
 msgid "{seconds:L} second"
 msgid_plural "{seconds:L} seconds"
-msgstr[0] "{seconds:L} sekuntia"
-msgstr[1] "{seconds:L} sekuntia"
+msgstr[0] ""
+"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{seconds:L} sekuntia\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{seconds:L} sekunti"
+msgstr[1] ""
+"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{seconds:L} sekuntia\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{seconds:L} sekuntia"
 
 msgid "{days_left:L} day left"
 msgid_plural "{days_left:L} days left"
@@ -893,761 +2355,6 @@ msgid_plural "{seconds_left:L} seconds left"
 msgstr[0] "{seconds_left:L} sekuntia jäljellä"
 msgstr[1] "{seconds_left:L} sekuntia jäljellä"
 
-msgid "The torrent file '{path}' is already in use by '{torrent_name}'."
-msgstr "Torrent-tiedosto '{path}' on jo käytössä '{torrent_name}'."
-
-msgid "Couldn't open torrent"
-msgstr "Ei voitu avata torrentia"
-
-msgid "Couldn't move '{path}' to trash: {error} ({error_code})"
-msgstr "Ei voitu siirtää '{path}' roskakoriin: {error} ({error_code})"
-
-msgid "Couldn't open '{url}'"
-msgstr "Osoitetta '{url}' ei voitu avata"
-
-msgid "Unsupported URL: '{url}'"
-msgstr "Ei tuettu URL: '{url}'"
-
-#. modal
-msgid "{appname} doesn't know how to use '{url}'"
-msgstr "{appname} ei osaa käyttää '{url}'"
-
-msgid "This magnet link appears to be intended for something other than BitTorrent."
-msgstr "Tämä linkki näyttää olevan tarkoitettu jollekin muulle kuin BitTorrentille."
-
-msgid "Retransmission"
-msgstr "Retransmission"
-
-#. parse the command line
-msgid "Where to look for configuration files"
-msgstr "Mistä etsitään asetustiedostoja"
-
-msgid "Start with all torrents paused"
-msgstr "Käynnistä kaikki torrentit pysäytettyinä"
-
-msgid "Start minimized in notification area"
-msgstr "Käynnistä pienennettynä ilmoitusalueelle"
-
-msgid "Show version number and exit"
-msgstr "Näytä versionumero ja poistu"
-
-msgid "[torrent files or urls]"
-msgstr "[torrent-tiedostot tai verkko-osoitteet]"
-
-msgid "Run '{program} --help' to see a full list of available command line options.\n"
-msgstr "Suorita '{program} --help' nähdäksesi kaikki komentorivivalitsimet.\n"
-
-msgid "B/s"
-msgstr "B/s"
-
-msgid "GB/s"
-msgstr "Gt/s"
-
-msgid "MB/s"
-msgstr "Mt/s"
-
-msgid "TB/s"
-msgstr "Tt/s"
-
-msgid "kB/s"
-msgstr "kt/s"
-
-msgid "B"
-msgstr "B"
-
-msgid "GiB"
-msgstr "GiB"
-
-msgid "KiB"
-msgstr "KiB"
-
-msgid "MiB"
-msgstr "MiB"
-
-msgid "TiB"
-msgstr "TiB"
-
-msgid "GB"
-msgstr "Gt"
-
-msgid "MB"
-msgstr "Mt"
-
-msgid "TB"
-msgstr "Tt"
-
-msgid "kB"
-msgstr "kt"
-
-msgid "BitTorrent Client"
-msgstr "BitTorrent-sovellus"
-
-msgid "Download and share files over BitTorrent"
-msgstr "Lataa ja jaa tiedostoja BitTorrentin avulla"
-
-#. Translators: Search terms to find this application. Do NOT translate or localize the semicolons! The list MUST also end with a semicolon!
-msgid "torrents;downloading;uploading;share;sharing;"
-msgstr "torrents;downloading;uploading;share;sharing;torrent;tiedostonjako;lataus;"
-
-msgid "Start Retransmission with All Torrents Paused"
-msgstr "Käynnistä Retransmission kaikki torrentit pysäytettyinä"
-
-msgid "Start Retransmission Minimized"
-msgstr "Käynnistä Retransmission pienennettynä"
-
-msgid "Open a torrent"
-msgstr "Avaa torrent"
-
-msgid "Open _URL…"
-msgstr "Avaa o_soite…"
-
-msgid "Open URL…"
-msgstr "Avaa osoite…"
-
-msgid "_New…"
-msgstr "_Uusi…"
-
-msgid "_Start All"
-msgstr "_Käynnistä kaikki"
-
-msgid "Start all torrents"
-msgstr "Käynnistä kaikki torrentit"
-
-msgid "_Pause All"
-msgstr "_Pysäytä kaikki"
-
-msgid "Pause all torrents"
-msgstr "Pysäytä kaikki torrentit"
-
-msgid "_Quit"
-msgstr "_Poistu"
-
-msgid "Select _All"
-msgstr "Valitse _kaikki"
-
-msgid "Dese_lect All"
-msgstr "Poista va_linnat"
-
-msgid "_Preferences"
-msgstr "_Asetukset"
-
-msgid "_Properties"
-msgstr "_Ominaisuudet"
-
-msgid "Torrent properties"
-msgstr "Torrentin ominaisuudet"
-
-msgid "Open Fold_er"
-msgstr "Avaa ka_nsio"
-
-msgid "_Start"
-msgstr "_Aloita"
-
-msgid "Start torrent"
-msgstr "Aloita torrent"
-
-msgid "Start _Now"
-msgstr "Käynnistä _nyt"
-
-msgid "Start torrent now"
-msgstr "Käynnistä torrent nyt"
-
-msgid "Ask Tracker for _More Peers"
-msgstr "Pyydä seurantapalveli_melta lisää vertaisia"
-
-msgid "Move to _Top"
-msgstr "Siirrä yli_mmäiseksi"
-
-msgid "Move _Up"
-msgstr "Siirrä _ylös"
-
-msgid "Move _Down"
-msgstr "Siirrä _alas"
-
-msgid "Move to _Bottom"
-msgstr "Siirrä al_immaiseksi"
-
-msgid "_Pause"
-msgstr "P_ysäytä"
-
-msgid "Pause torrent"
-msgstr "Pysäytä torrent"
-
-msgid "Set _Location…"
-msgstr "Aseta s_ijainti…"
-
-msgid "_Verify Local Data"
-msgstr "_Tarkista paikallinen data"
-
-msgid "Copy _Magnet Link to Clipboard"
-msgstr "Kopioi _magneettilinkki leikepöydälle"
-
-msgid "Remove torrent"
-msgstr "Poista torrent"
-
-msgid "_Delete Files and Remove"
-msgstr "_Poista tiedostoineen"
-
-msgid "_Compact View"
-msgstr "_Tiivis näkymä"
-
-msgid "_Toolbar"
-msgstr "_Työkalupalkki"
-
-msgid "_Filterbar"
-msgstr "_Suodatinrivi"
-
-msgid "_Statusbar"
-msgstr "_Tilapalkki"
-
-msgid "Sort by _Activity"
-msgstr "Järjestä _aktiivisuuden mukaan"
-
-msgid "Sort by A_ge"
-msgstr "Järjestä _iän mukaan"
-
-msgid "Sort by _Name"
-msgstr "Järjestä _nimen mukaan"
-
-msgid "Sort by _Progress"
-msgstr "Järjestä _edistymisen mukaan"
-
-msgid "Sort by _Queue"
-msgstr "Järjest_ä jonon mukaan"
-
-msgid "Sort by Rati_o"
-msgstr "Järjestä _suhteen mukaan"
-
-msgid "Sort by Si_ze"
-msgstr "Järjestä k_oon mukaan"
-
-msgid "Sort by Stat_e"
-msgstr "Järjestä _tilan mukaan"
-
-msgid "Sort by Time _Left"
-msgstr "Järjestä _jäljellä olevan ajan mukaan"
-
-msgid "Re_verse Sort Order"
-msgstr "_Käänteinen järjestys"
-
-msgid "Message _Log"
-msgstr "Viesti_loki"
-
-msgid "_Statistics"
-msgstr "_Tilastot"
-
-msgid "_Donate"
-msgstr "_Lahjoita"
-
-msgid "_Contents"
-msgstr "_Sisältö"
-
-msgid "_About"
-msgstr "_Tietoja"
-
-msgid "_Show {appname}"
-msgstr "_Näytä {appname}"
-
-msgid "Enable Alternative Speed _Limits"
-msgstr "Käytä vaihtoehtoisia no_peusrajoituksia"
-
-msgid "_Add"
-msgstr "_Lisää"
-
-msgid "Tracker"
-msgstr "Seurantapalvelin"
-
-msgid "_Announce URL:"
-msgstr "_Julkistusosoite:"
-
-msgid "_Close"
-msgstr "_Sulje"
-
-msgid "Activity"
-msgstr "Aktiivisuus"
-
-msgid "Torrent size:"
-msgstr "Torrentin koko:"
-
-msgid "Have:"
-msgstr "Ladattu:"
-
-msgid "Uploaded:"
-msgstr "Lähetetty:"
-
-msgid "Downloaded:"
-msgstr "Ladattu:"
-
-msgid "State:"
-msgstr "Tila:"
-
-msgid "Running time:"
-msgstr "Käyntiaika:"
-
-msgid "Remaining time:"
-msgstr "Jäljellä oleva aika:"
-
-msgid "Last activity:"
-msgstr "Viimeisin aktiivisuus:"
-
-msgid "Error:"
-msgstr "Virhe:"
-
-msgid "Details"
-msgstr "Yksityiskohtainen näkymä"
-
-msgid "Location:"
-msgstr "Sijainti:"
-
-msgid "Hash:"
-msgstr "Tiiviste:"
-
-msgid "Privacy:"
-msgstr "Yksityisyys:"
-
-msgid "Origin:"
-msgstr "Lähde:"
-
-msgid "Added:"
-msgstr "Lisätty:"
-
-msgid "Comment:"
-msgstr "Kommentti:"
-
-msgid "Information"
-msgstr "Tiedot"
-
-msgid "Show _more details"
-msgstr "Näytä _enemmän tietoja"
-
-msgid "Peers"
-msgstr "Vertaiset"
-
-msgid "_Edit"
-msgstr "_Muokkaa"
-
-msgid "Show _backup trackers"
-msgstr "Näytä _varmistusseurantapalvelimet"
-
-msgid "File listing not available for combined torrent properties"
-msgstr "Tiedostojen luettelointi ei ole käytettävissä yhdistettyjen torrenttien ominaisuuksissa"
-
-msgid "Files"
-msgstr "Tiedostot"
-
-msgid "Speed"
-msgstr "Nopeus"
-
-msgid "Honor global _limits"
-msgstr "Noudata yleisiä _rajoituksia"
-
-msgid "Limit _download speed ({speed_units}):"
-msgstr "Rajoita _latausnopeus ({speed_units}):"
-
-msgid "Limit _upload speed ({speed_units}):"
-msgstr "Rajoita l_ähetysnopeus ({speed_units}):"
-
-msgid "Torrent _priority:"
-msgstr "Torrentin _prioriteetti:"
-
-msgid "Seeding Limits"
-msgstr "Jakamisen rajoitukset"
-
-msgid "_Ratio:"
-msgstr "_Suhde:"
-
-msgid "_Idle:"
-msgstr "_Toimeton:"
-
-msgid "Peer Connections"
-msgstr "Vertaisyhteydet"
-
-msgid "_Maximum peers:"
-msgstr "Vertaisten eni_mmäismäärä:"
-
-msgid "Options"
-msgstr "Valinnat"
-
-msgid "Tracker Announce URLs"
-msgstr "Seurantapalvelimien julkistusosoitteet"
-
-msgid ""
-"To add a backup URL, add it on the next line after a primary URL.\n"
-"To add a new primary URL, add it after a blank line."
-msgstr ""
-"Jos haluat lisätä varalle URL-osoitteen, lisää se URL-osoitteen jälkeen seuraavalle riville.\n"
-"Lisää uusi URL-osoite lisäämällä se tyhjän rivin jälkeen."
-
-msgid "Also see Default Public Trackers in Edit > Preferences > Network"
-msgstr "Katso myös \"Oletusarvoiset seurantapalvelimet\" kohdassa Muokkaa > Asetukset > Verkko"
-
-msgid "Torrent"
-msgstr "Torrent"
-
-msgid "Statistics"
-msgstr "Tilastot"
-
-msgid "New Torrent"
-msgstr "Uusi torrent"
-
-msgid "_New"
-msgstr "_Uusi"
-
-msgid "Sa_ve to:"
-msgstr "_Tallenna:"
-
-msgid "Source F_older:"
-msgstr "Lähde_kansio:"
-
-msgid "Source _File:"
-msgstr "Lähde_tiedosto:"
-
-msgid "Piece size:"
-msgstr "Osan koko:"
-
-msgid "Properties"
-msgstr "Ominaisuudet"
-
-msgid "_Trackers:"
-msgstr "_Seurantapalvelimet:"
-
-msgid "Co_mment:"
-msgstr "_Kommentti:"
-
-msgid "_Source:"
-msgstr "_Lähde:"
-
-msgid "_Private torrent"
-msgstr "_Yksityinen torrent"
-
-msgid "Creating torrent…"
-msgstr "Luodaan torrentia…"
-
-msgid "Message Log"
-msgstr "Viestiloki"
-
-msgid "Save _As"
-msgstr "Tallenna _nimellä"
-
-msgid "Clear"
-msgstr "Tyhjennä"
-
-msgid "P_ause"
-msgstr "T_auko"
-
-msgid "Level"
-msgstr "Taso"
-
-msgid "Torrent Options"
-msgstr "Torrentin asetukset"
-
-msgid "_Torrent file:"
-msgstr "_Torrent-tiedosto:"
-
-msgid "Select Source File"
-msgstr "Valitse lähdetiedosto"
-
-msgid "_Destination folder:"
-msgstr "_Kohdekansio:"
-
-msgid "Select Destination Folder"
-msgstr "Valitse kohdekansio"
-
-msgid "_Start when added"
-msgstr "_Aloita kun lisätään"
-
-msgid "Mo_ve torrent file to the trash"
-msgstr "Siirrä torrent-tiedosto _roskakoriin"
-
-msgid "{appname} Preferences"
-msgstr "{appname}in asetukset"
-
-msgid "_Help"
-msgstr "_Ohje"
-
-msgid "Speed Limits"
-msgstr "Nopeusrajoitukset"
-
-#. Checkbox to limit upload speed
-msgid "_Upload ({speed_units}):"
-msgstr "_Lähetys ({speed_units}):"
-
-#. Checkbox to limit download speed
-msgid "_Download ({speed_units}):"
-msgstr "_Lataus ({speed_units}):"
-
-msgid "Alternative Speed Limits"
-msgstr "Vaihtoehtoiset nopeusrajoitukset"
-
-msgid "Override normal speed limits manually or at scheduled times"
-msgstr "Korvaa normaalit siirtorajoitukset käsin tai ajastettuina aikoina"
-
-#. Labels a spinbutton for alternate upload speed limits
-msgid "U_pload ({speed_units}):"
-msgstr "Lä_hetys ({speed_units}):"
-
-#. Labels a spinbutton for alternate download speed limits
-msgid "Do_wnload ({speed_units}):"
-msgstr "La_taus ({speed_units}):"
-
-msgid "_Scheduled times:"
-msgstr "_Määriteltyinä aikoina:"
-
-msgid "_On days:"
-msgstr "_Päivisin:"
-
-#. Label goes between two time selectors, e.g. "limit speeds from [time] to [time]"
-msgid "_to"
-msgstr "-"
-
-msgctxt "Gerund"
-msgid "Adding"
-msgstr "Lisäys"
-
-msgid "Automatically add torrent files _from:"
-msgstr "Lisää torrentit automaattisesti _kohteesta:"
-
-msgid "Show the Torrent Options _dialog"
-msgstr "Näytä torrentin _valintaikkuna"
-
-msgid "_Start added torrents"
-msgstr "Kä_ynnistä lisätyt torrentit"
-
-msgid "Save to _Location:"
-msgstr "Tallenna _sijaintiin:"
-
-msgid "Download Queue"
-msgstr "Latausjono"
-
-msgid "Ma_ximum active downloads:"
-msgstr "Aktiivisia latauksia enint_ään:"
-
-msgid "Downloads sharing data in the last _N minutes are active:"
-msgstr "Viimeisen _N minuutin aikana tietoa jakaneet lataukset ovat aktiivisia:"
-
-msgid "Incomplete"
-msgstr "Keskeneräinen"
-
-msgid "Append \"._part\" to incomplete files' names"
-msgstr "Lisää \"._part\"-pääte keskeneräisten tiedostojen nimiin"
-
-msgid "Keep _incomplete torrents in:"
-msgstr "Säilytä _keskeneräiset torrentit kansiossa:"
-
-msgid "Call scrip_t when done downloading:"
-msgstr "Kutsu scrip_t, kun lataus on valmis:"
-
-msgctxt "Gerund"
-msgid "Downloading"
-msgstr "Lataus"
-
-msgid "Limits"
-msgstr "Rajoitukset"
-
-msgid "Stop seeding at _ratio:"
-msgstr "Lopeta jakaminen _suhteessa:"
-
-msgid "Stop seeding if idle for _N minutes:"
-msgstr "Lopeta jakaminen jos jouten _N minuuttia:"
-
-msgid "Call scrip_t when done seeding:"
-msgstr "Kutsu scrip_t, kun levitys on valmis:"
-
-msgctxt "Gerund"
-msgid "Seeding"
-msgstr "Jakaminen"
-
-msgid "Privacy"
-msgstr "Yksityisyys"
-
-msgid "_Encryption mode:"
-msgstr "_Salaustila:"
-
-msgid "Blocklist"
-msgstr "Estolista"
-
-msgid "Enable _blocklist:"
-msgstr "Käytä e_stolistaa:"
-
-msgid "Enable _automatic updates"
-msgstr "Salli _automaattiset päivitykset"
-
-msgid "_Update"
-msgstr "_Päivitä"
-
-msgid "Listening Port"
-msgstr "Kuunneltava portti"
-
-msgid "_Port used for incoming connections:"
-msgstr "Saapuviin yhteyksiin käytettävä _portti:"
-
-msgid "Pick a _random port every time Transmission is started"
-msgstr "Ota _satunnainen portti joka kerta, kun Transmission käynnistetään"
-
-msgid "Use UPnP or NAT-PMP port _forwarding from my router"
-msgstr "Käytä UPnP- tai NAT-PMP-portti_välitystä reitittimeltä"
-
-msgid "Te_st Port"
-msgstr "_Kokeile porttia"
-
-msgid "Peer Limits"
-msgstr "Vertaisrajoitukset"
-
-msgid "Maximum peers per _torrent:"
-msgstr "Enimmäismäärä vertaisia _torrenttia kohti:"
-
-msgid "Maximum peers _overall:"
-msgstr "Enimmäismäärä _vertaisille:"
-
-msgid "Enable µ_TP for peer communication"
-msgstr "Käytä µ_TP:tä vertaisten yhteyksiin"
-
-msgid "µTP is a tool for reducing network congestion."
-msgstr "uTP on työkalu, jonka avulla vähennetään verkon ruuhkaa."
-
-msgid "Use PE_X to find more peers"
-msgstr "Käytä _PEX:iä vertaisten löytämiseksi"
-
-msgid "PEX is a tool for exchanging peer lists with the peers you're connected to."
-msgstr "PEX:n avulla voit vaihtaa vertaislistoja jo yhdistettyjen vertaisten kanssa."
-
-msgid "Use _DHT to find more peers"
-msgstr "Käytä _DHT:tä vertaisten löytämiseksi"
-
-msgid "DHT is a tool for finding peers without a tracker."
-msgstr "DHT:n avulla voit löytää vertaisia ilman seurantapalvelinta"
-
-msgid "Use _Local Peer Discovery to find more peers"
-msgstr "Käytä _paikallisvertaisten etsintää useamman vertaisen löytämiseksi"
-
-msgid "LPD is a tool for finding peers on your local network."
-msgstr "LPD etsii vertaisia lähiverkostasi."
-
-msgid "Default Public Trackers"
-msgstr "Oletusarvoiset seurantapalvelimet"
-
-msgid ""
-"Trackers to use on all public torrents.\n"
-"\n"
-"To add a backup URL, add it on the next line after a primary URL.\n"
-"To add a new primary URL, add it after a blank line."
-msgstr ""
-"Seuranta käyttöön kaikissa julkisissa torrenteissa.\n"
-"\n"
-"Jos haluat lisätä varalle URL-osoitteen, lisää se URL-osoitteen jälkeen\n"
-"seuraavalle riville. Lisää uusi URL-osoite lisäämällä se tyhjän rivin jälkeen."
-
-msgid "Network"
-msgstr "Verkko"
-
-msgid "Desktop"
-msgstr "Työpöytä"
-
-msgid "_Inhibit hibernation when torrents are active"
-msgstr "_Työpöydän lepotilaan siirtyminen estetty jos on käynnissä olevia torrentteja"
-
-msgid "Show {appname} icon in the _notification area"
-msgstr "Näytä {appname}in kuvake _ilmoitusalueella"
-
-msgid "Notification"
-msgstr "Ilmoitus"
-
-msgid "Show a notification when torrents are a_dded"
-msgstr "Näytä ilmoitus, kun torrent _lisätään"
-
-msgid "Show a notification when torrents _finish"
-msgstr "Näytä ilmoitus, kun torrent _valmistuu"
-
-msgid "Play a _sound when torrents finish"
-msgstr "Toista _ääni, kun torrent valmistuu"
-
-msgid "Remote Control"
-msgstr "Etähallinta"
-
-msgid "Allow _remote access"
-msgstr "Salli et_äkäyttö"
-
-msgid "_Open web client"
-msgstr "_Avaa WWW-käyttöliittymä"
-
-msgid "HTTP _port:"
-msgstr "HTTP-_portti:"
-
-msgid "Use _authentication"
-msgstr "Käytä _todentamista"
-
-msgid "_Username:"
-msgstr "_Käyttäjänimi:"
-
-msgid "Pass_word:"
-msgstr "_Salasana:"
-
-msgid "Only allow these IP a_ddresses:"
-msgstr "Salli vain seuraavat IP-_osoitteet:"
-
-msgid "Addresses:"
-msgstr "Osoitteet:"
-
-msgid "IP addresses may use wildcards, such as 192.168.*.*"
-msgstr "IP-osoitteissa voidaan käyttää jokerimerkkejä, esimerkiksi 192.168.*.*"
-
-msgid "Remote"
-msgstr "Etäkäyttö"
-
-msgid "Set Torrent Location"
-msgstr "Aseta torrentin sijainti"
-
-msgid "_Apply"
-msgstr "_Käytä"
-
-msgid "Location"
-msgstr "Sijainti"
-
-msgid "Torrent _location:"
-msgstr "Torrentin _sijainti:"
-
-msgid "_Move from the current folder"
-msgstr "_Siirrä nykyisestä kansiosta"
-
-msgid "Local data is _already there"
-msgstr "Paikallinen data on _jo siellä"
-
-msgid "Current Session"
-msgstr "Nykyinen istunto"
-
-msgid "Ratio:"
-msgstr "Suhde:"
-
-msgid "Duration:"
-msgstr "Kesto:"
-
-msgid "Total"
-msgstr "Yhteensä"
-
-msgid "Open URL"
-msgstr "Avaa osoite"
-
-msgid "Open torrent from URL"
-msgstr "Avaa torrent verkko-osoitteesta"
-
-msgid "_URL"
-msgstr "_Verkko-osoite"
-
-msgid "Couldn't parse announce response: {error} ({error_code})"
-msgstr "Ei voinut jäsentää vastausta: {error} ({error_code})"
-
-msgid "Couldn't parse scrape response: {error} ({error_code})"
-msgstr "Koontivastausta ei voitu jäsentää: {error} ({error_code})"
-
-msgid "Unknown error"
-msgstr "Tuntematon virhe"
-
-msgid "{ip_protocol} connection failed"
-msgstr "{ip_protocol} yhteys epäonnistui"
-
-msgid "Couldn't look up '{address}:{port}' in {ip_protocol}: {error} ({error_code})"
-msgstr "Ei voinut katsoa '{address}:{port}' kohde {ip_protocol}: {error} ({error_code})"
-
 msgid "Announce error: {error} ({url})"
 msgstr "Ilmoitus virheestä: {error} ({url})"
 
@@ -1665,20 +2372,63 @@ msgstr "Seurantapalvelin ei vastannut"
 msgid "Success"
 msgstr "Onnistui"
 
+msgid "Couldn't parse announce response: {error} ({error_code})"
+msgstr "Ei voinut jäsentää vastausta: {error} ({error_code})"
+
+msgid "Couldn't parse scrape response: {error} ({error_code})"
+msgstr "Koontivastausta ei voitu jäsentää: {error} ({error_code})"
+
+msgid "Unknown error"
+msgstr "Tuntematon virhe"
+
+msgid "{ip_protocol} connection failed"
+msgstr "{ip_protocol} yhteys epäonnistui"
+
+msgid "Couldn't look up '{address}:{port}' in {ip_protocol}: {error} ({error_code})"
+msgstr "Ei voinut katsoa '{address}:{port}' kohde {ip_protocol}: {error} ({error_code})"
+
 msgid "Blocklist '{path}' has {count} entry"
 msgid_plural "Blocklist '{path}' has {count} entries"
 msgstr[0] "Estolistalla '{path}' on {count} kohtaa"
 msgstr[1] "Estolistalla '{path}' on {count} kohtaa"
 
-#. don't try to display the actual lines - it causes issues
-msgid "Couldn't parse line: '{line}'"
+#, fuzzy
+#| msgid "Couldn't parse line: '{line}'"
+msgid "Couldn't parse line {line}: {base64}"
 msgstr "Riviä ei voitu jäsentää: '{line}'"
 
-msgid "Rewriting old blocklist file format to new format"
+#, fuzzy
+#| msgid "Rewriting old blocklist file format to new format"
+msgid "Rewriting old blocklist file {path} to new format"
 msgstr "Kirjoitetaan vanhan estolistan tiedostomuotoa uuteen tiedostomuotoon"
+
+msgid "Blocklist is larger than {limit} MiB; ignoring it"
+msgstr ""
+
+#, fuzzy
+#| msgid "Couldn't fetch blocklist: {error} ({error_code})"
+msgid "Couldn't fetch blocklist: {errmsg}, response code: {error} ({error_code})"
+msgstr "Estolistan noutaminen ei onnistunut: {error} ({error_code})"
+
+msgid "Couldn't fetch blocklist: {error} ({error_code})"
+msgstr "Estolistan noutaminen ei onnistunut: {error} ({error_code})"
+
+msgid "Automatically updated blocklist, which now has {count} rules"
+msgstr ""
+
+msgid "Invalid tr_sched_days value {val}"
+msgstr ""
 
 msgid "{crypto_library} error: {error} ({error_code})"
 msgstr "{crypto_library} virhe: {error} ({error_code})"
+
+msgid "Couldn't read '{path}': Not a regular file"
+msgstr "Ei voitu lukea '{path}': Ei tavallinen tiedosto"
+
+#, fuzzy
+#| msgid "Couldn't read '{path}'"
+msgid "Couldn't get '{path}': "
+msgstr "Ei voitu lukea '{path}'"
 
 msgid "Couldn't get '{path}': {error} ({error_code})"
 msgstr "Ei saatu '{path}': {error} ({error_code})"
@@ -1695,20 +2445,14 @@ msgstr "Tietokoneesi ei tue {protocol}"
 msgid "Successfully updated global {type} address to {ip} using {url}"
 msgstr "Päivitetty onnistuneesti {type} osoitteeseen {ip} käyttäen {url}"
 
+msgid "Still waiting for disk IO on torrent {id}: {running} running, {queued} queued"
+msgstr ""
+
 msgid "Too many messages like this! I won't log this message anymore this session."
 msgstr "Liian monta samaa viestiä! En kirjaa tätä viestiä tämän istunnon aikana."
 
 msgid "Skipping '{path}': {error} ({error_code})"
 msgstr "Ohitetaan '{path}': {error} ({error_code})"
-
-msgid "Couldn't create socket: {error} ({error_code})"
-msgstr "Ei voitu luoda pistoketta: {error} ({error_code})"
-
-msgid "Couldn't set source address {address} on {socket}: {error} ({error_code})"
-msgstr "Lähteen osoitetta ei voitu asettaa {address}, {socket} : {error} ({error_code})"
-
-msgid "Couldn't connect socket {socket} to {address}:{port}: {error} ({error_code})"
-msgstr "Porttia ei voitu yhdistää {socket}, {address}:{port}: {error} ({error_code})"
 
 msgid "Couldn't bind port {port} on {address}: {error} ({error_code}) -- Is another copy of {appname} already running?"
 msgstr "Porttia ei voitu sitoa {port}, {address}: {error} ({error_code}) --  {appname} toinen kopio mahdollisesti jo käynnissä?"
@@ -1725,8 +2469,35 @@ msgstr "Varaaminen ei onnistunut '{path}': {error} ({error_code})"
 msgid "Couldn't truncate '{path}': {error} ({error_code})"
 msgstr "Ei voitu katkaista '{path}': {error} ({error_code})"
 
+msgid "Couldn't create socket: {error} ({error_code})"
+msgstr "Ei voitu luoda pistoketta: {error} ({error_code})"
+
+msgid "Couldn't set source address {address} on {socket}: {error} ({error_code})"
+msgstr "Lähteen osoitetta ei voitu asettaa {address}, {socket} : {error} ({error_code})"
+
+msgid "Couldn't connect socket {socket} to {address}:{port}: {error} ({error_code})"
+msgstr "Porttia ei voitu yhdistää {socket}, {address}:{port}: {error} ({error_code})"
+
 msgid "Unknown state: {state}"
 msgstr "Tuntematon tila: {state}"
+
+msgid "Starting"
+msgstr "Käynnistetään"
+
+msgid "Forwarded"
+msgstr "Välitetty"
+
+msgid "Stopping"
+msgstr "Pysäytetään"
+
+msgid "Not forwarded"
+msgstr "Ei välitetty"
+
+msgid "Mapped private port {private_port} to public port {public_port}"
+msgstr "Yhdistetty yksityinen portti {private_port} julkiseen porttiin {public_port}"
+
+msgid "State changed from '{old_state}' to '{state}'"
+msgstr "Tila muuttui '{old_state}' - '{state}'"
 
 msgid "Found public address '{address}'"
 msgstr "Löydettiin julkinen osoite '{address}'"
@@ -1758,23 +2529,21 @@ msgstr "Välitetty portti {local_port} kohteeseen {advertised_port}"
 msgid "If your router supports UPnP, please make sure UPnP is enabled!"
 msgstr "Jos reitittimesi tukee UPnP:tä, varmista, että UPnP on käytössä!"
 
-msgid "Starting"
-msgstr "Käynnistetään"
+#, fuzzy
+#| msgid "Couldn't test port: {error} ({error_code})"
+msgid "Couldn't test port: {errmsg}, response code: {error} ({error_code})"
+msgstr "Ei voitu testata porttia: {error} ({error_code})"
 
-msgid "Forwarded"
-msgstr "Välitetty"
+msgid "Couldn't test port: {error} ({error_code})"
+msgstr "Ei voitu testata porttia: {error} ({error_code})"
 
-msgid "Stopping"
-msgstr "Pysäytetään"
+#, fuzzy
+#| msgid "Couldn't fetch torrent: {error} ({error_code})"
+msgid "Couldn't fetch torrent: {errmsg}, Response code: {error} ({error_code})"
+msgstr "Ei voitu noutaa torrentia: {error} ({error_code})"
 
-msgid "Not forwarded"
-msgstr "Ei välitetty"
-
-msgid "Mapped private port {private_port} to public port {public_port}"
-msgstr "Yhdistetty yksityinen portti {private_port} julkiseen porttiin {public_port}"
-
-msgid "State changed from '{old_state}' to '{state}'"
-msgstr "Tila muuttui '{old_state}' - '{state}'"
+msgid "Couldn't fetch torrent: {error} ({error_code})"
+msgstr "Ei voitu noutaa torrentia: {error} ({error_code})"
 
 msgid "Unix socket path must be fewer than {count} characters (including '{prefix}' prefix)"
 msgstr "Unix-portin polun on oltava pienempi kuin {count} merkkiä (sisältäen '{prefix}' etuliite)"
@@ -1832,29 +2601,24 @@ msgstr "Salasana vaaditaan"
 msgid "Serving RPC and Web requests from '{path}'"
 msgstr "Kuunneellaan RPC- ja web-pyyntöjä '{path}'"
 
-msgid "Couldn't test port: {error} ({error_code})"
-msgstr "Ei voitu testata porttia: {error} ({error_code})"
-
-msgid "Couldn't fetch blocklist: {error} ({error_code})"
-msgstr "Estolistan noutaminen ei onnistunut: {error} ({error_code})"
-
-msgid "Couldn't fetch torrent: {error} ({error_code})"
-msgstr "Ei voitu noutaa torrentia: {error} ({error_code})"
-
-msgid "Time to turn off turtle mode"
-msgstr "Aika sammuttaa turtle moodi"
-
-msgid "Time to turn on turtle mode"
+#, fuzzy
+#| msgid "Time to turn on turtle mode"
+msgid "Time to turn on alternative speed limits"
 msgstr "Aika käynnistää turtle moodi"
 
-msgid "Couldn't open session lock file '{path}': {error} ({error_code})"
-msgstr "Istunnon lukitustiedostoa ei voitu avata '{path}': {error} ({error_code})"
+#, fuzzy
+#| msgid "Time to turn off turtle mode"
+msgid "Time to turn off alternative speed limits"
+msgstr "Aika sammuttaa turtle moodi"
 
 msgid "Listening to incoming peer connections on {hostport}"
 msgstr "Kuunnellaan saapuvia vertaisyhteyksiä portissa {hostport}"
 
 msgid "{appname} version {version} starting"
 msgstr "{appname}in versio {version} käynnistyy"
+
+msgid "Couldn't start disk IO workers, continuing without them: {error}"
+msgstr ""
 
 msgid "{appname} version {version} shutting down"
 msgstr "{appname}in versio {version} sammuu"
@@ -1864,8 +2628,11 @@ msgid_plural "Loaded {count} torrents"
 msgstr[0] "Ladattiin {count} torrent"
 msgstr[1] "Ladattiin {count} torrentia"
 
-msgid "Migrated torrent file from '{old_path}' to '{path}'"
-msgstr "Migrated torrent tiedosto kohteesta '{old_path}' polkuun '{path}'"
+msgid "Couldn't claim '{path}'. If another session is using it, the two will overwrite each other's settings, resume files and stats."
+msgstr ""
+
+msgid "Couldn't open session lock file '{path}': {error} ({error_code})"
+msgstr "Istunnon lukitustiedostoa ei voitu avata '{path}': {error} ({error_code})"
 
 msgid "Couldn't use metainfo from '{path}' for '{magnet}': {error} ({error_code})"
 msgstr "Metatietoa ei voitu käyttää '{path}' kohteesta '{magnet}': {error} ({error_code})"
@@ -1897,14 +2664,32 @@ msgstr "Ei voitu poistaa kaikkia torrent-tiedostoja: {error} ({error_code})"
 msgid "Removing torrent"
 msgstr "Poistetaan torrenttia"
 
-msgid "Couldn't move '{old_path}' to '{path}': {error} ({error_code})"
-msgstr "Ei voitu siirtää '{old_path}' polkuun '{path}': {error} ({error_code})"
+#, fuzzy
+#| msgid "Couldn't remove all torrent files: {error} ({error_code})"
+msgid "Couldn't move torrent files to '{path}': {error} ({error_code})"
+msgstr "Ei voitu poistaa kaikkia torrent-tiedostoja: {error} ({error_code})"
 
 msgid "Paused torrent as no data was found! Ensure your drives are connected or use \"Set Location\", then use \"Verify Local Data\" again. To re-download, start the torrent."
 msgstr "Torrentti on keskeytetty, koska dataa ei löytynyt! Varmista, että asemasi on kytketty, tai käytä \"Aseta sijainti\" ja valitse \"Vahvista paikallinen data\". Käynnistä ohjelma ja lataa torrentit uudelleen."
 
+msgid "Couldn't move '{old_path}' to '{path}': {error} ({error_code})"
+msgstr "Ei voitu siirtää '{old_path}' polkuun '{path}': {error} ({error_code})"
+
 msgid "Tracker warning: '{warning}' ({url})"
 msgstr "Varoitus: \"{warning}\" ({url})"
+
+#, fuzzy
+#| msgid "Removing torrent file '{path}'"
+msgid "Moving '{source}' will overwrite '{path}'"
+msgstr "Poistetaan torrent-tiedosto '{path}'"
+
+#, fuzzy
+#| msgid "Couldn't move '{old_path}' to '{path}': {error} ({error_code})"
+msgid "Couldn't compare '{path}' with '{root}': {error} ({error_code}); leaving it alone"
+msgstr "Ei voitu siirtää '{old_path}' polkuun '{path}': {error} ({error_code})"
+
+msgid "Migrated torrent file from '{old_path}' to '{path}'"
+msgstr "Migrated torrent tiedosto kohteesta '{old_path}' polkuun '{path}'"
 
 msgid "Couldn't parse '{filename}' line: '{line}'"
 msgstr "Tiedoston '{filename}' riviä ei voitu jäsentää: '{line}'"
@@ -1933,8 +2718,87 @@ msgstr ""
 msgid "Unknown socket family"
 msgstr "Tuntematon porttityyppi"
 
-msgid "Couldn't read '{path}': Not a regular file"
-msgstr "Ei voitu lukea '{path}': Ei tavallinen tiedosto"
+msgid "B"
+msgstr "B"
+
+msgid "KiB"
+msgstr "KiB"
+
+msgid "MiB"
+msgstr "MiB"
+
+msgid "GiB"
+msgstr "GiB"
+
+msgid "TiB"
+msgstr "TiB"
+
+msgid "B/s"
+msgstr "B/s"
+
+#, fuzzy
+msgid "kB/s"
+msgstr ""
+"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"kt/s\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"kB/s"
+
+#, fuzzy
+msgid "MB/s"
+msgstr ""
+"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Mt/s\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"MB/s"
+
+#, fuzzy
+msgid "GB/s"
+msgstr ""
+"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Gt/s\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"GB/s"
+
+#, fuzzy
+msgid "TB/s"
+msgstr ""
+"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Tt/s\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"TB/s"
+
+#, fuzzy
+msgid "kB"
+msgstr ""
+"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"kt\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"kB"
+
+#, fuzzy
+msgid "MB"
+msgstr ""
+"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Mt\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"MB"
+
+#, fuzzy
+msgid "GB"
+msgstr ""
+"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Gt\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"GB"
+
+#, fuzzy
+msgid "TB"
+msgstr ""
+"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Tt\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"TB"
 
 msgid "Couldn't parse JSON at position {position} '{text}': {error} ({error_code})"
 msgstr "Ei voitu jäsentää JSON {position} '{text}': {error} ({error_code})"
@@ -1942,17 +2806,14 @@ msgstr "Ei voitu jäsentää JSON {position} '{text}': {error} ({error_code})"
 msgid "Couldn't watch '{path}': {error} ({error_code})"
 msgstr "Ei voinut katsoa '{path}': {error} ({error_code})"
 
-msgid "Couldn't read event: {error} ({error_code})"
-msgstr "Ei voitu lukea tapahtumaa: {error} ({error_code})"
-
 msgid "Couldn't read event: expected {expected_size}, got {actual_size}"
 msgstr "Ei voinut lukea tapahtumaa: arvioitu {expected_size}, saatu {actual_size}"
 
-msgid "Couldn't read filename: {error} ({error_code})"
-msgstr "Ei voitu lukea tiedostonimeä: {error} ({error_code})"
-
 msgid "Couldn't read filename: expected {expected_size}, got {actual_size}"
 msgstr "Ei voitu lukea tiedostonimeä: arvioitu {expected_size}, saatu {actual_size}"
+
+msgid "Couldn't read event: {error} ({error_code})"
+msgstr "Ei voitu lukea tapahtumaa: {error} ({error_code})"
 
 msgid "Couldn't convert '{path}' to native path"
 msgstr "Ei voitu muuntaa '{path}' alkuperäiseksi poluksi"
@@ -1972,10 +2833,15 @@ msgstr "Ei voitu odottaa hakemiston muutoksia"
 msgid "Consider upgrading your curl installation."
 msgstr "Harkitse curl-asennuksen päivittämistä."
 
+msgid "The minimum supported version is {curl_version}, you might face unexpected behaviour."
+msgstr ""
+
 msgid "curl {curl_version} is prone to SIGPIPE crashes. {details_url}"
 msgstr "curl {curl_version} on altis SIGPIPE kaatumisille. {details_url}"
 
-msgid "curl {curl_version} is prone to an eventfd double close vulnerability that might cause SIGABRT crashes for the transmission-daemon systemd service. {details_url}"
+#, fuzzy
+#| msgid "curl {curl_version} is prone to an eventfd double close vulnerability that might cause SIGABRT crashes for the transmission-daemon systemd service. {details_url}"
+msgid "curl {curl_version} is prone to an eventfd double close vulnerability that might cause SIGABRT crashes for the daemon systemd service. {details_url}"
 msgstr "curl {curl_version} on altis eventfd double close haavoittuvuudelle, joka saattaa aiheuttaa SIGABRT-kaatumiset transmission-daemon systemd palvelulle. {details_url}"
 
 msgid "Will verify tracker certs using envvar CURL_CA_BUNDLE: {bundle}"
@@ -1987,8 +2853,399 @@ msgstr "HUOM: Tämä toimii vain, jos olet kääntänyt libcurl vasten openssl t
 msgid "NB: Invalid certs will appear as 'Could not connect to tracker' like many other errors"
 msgstr "HUOM: Virheelliset varmenteet näkyvät muodossa 'Ei saatu yhteyttä jäljittimeen', kuten monet muut virheet"
 
+msgid "Aborting request: response body exceeded max size of {max_file_size} bytes"
+msgstr ""
+
 msgid "Couldn't fetch '{url}': expected HTTP response code {expected_code}, got {actual_code}"
 msgstr "Ei voi hakea \"{url}\": odotettu HTTP-vastauskoodi {expected_code}, saatiin {actual_code}"
+
+msgid "Server"
+msgstr "Palvelin"
+
+msgid "C_redits"
+msgstr "L_opputekstit"
+
+msgid "Credits"
+msgstr "Lopputekstit"
+
+msgid "About {appname}"
+msgstr "Tietoa {appname}ista"
+
+msgid "Torrent Completed"
+msgstr "Torrenti valmistui"
+
+msgid "Torrents Completed"
+msgstr "Torrentit valmistuivat"
+
+#. Translators: Text following the "Have:" label in torrent properties dialog;
+#. {current_size} is amount of downloaded and verified data
+msgid "{current_size} (100%)"
+msgstr "{current_size} (100%)"
+
+msgid "{current_size} of {complete_size} ({percent_done}%), {unverified_size} Unverified"
+msgstr "{current_size} / {complete_size} ({percent_done}%), {unverified_size} vahvistamatonta"
+
+msgid "{total_size} ({piece_count:L} piece @ {piece_size})"
+msgid_plural "{total_size} ({piece_count:L} pieces @ {piece_size})"
+msgstr[0] "{total_size} ({piece_count:L} osa @ {piece_size})"
+msgstr[1] "{total_size} ({piece_count:L} osaa @ {piece_size})"
+
+msgid "{total_size} ({piece_count:L} piece)"
+msgid_plural "{total_size} ({piece_count:L} pieces)"
+msgstr[0] "{total_size} ({piece_count:L} osa)"
+msgstr[1] "{total_size} ({piece_count:L} osaa)"
+
+msgid "Add URL(s)"
+msgstr "Lisää yksi tai useampi URL-osoite"
+
+msgid "Add tracker announce URLs, one per line:"
+msgstr "Lisää jäljitin ilmoittamaan URL-osoitteet, yksi riviä kohti:"
+
+msgid "No new URLs found."
+msgstr "Uusia URL-osoitteita ei löytynyt."
+
+msgid "Use Global Settings"
+msgstr "Käytä yleisiä asetuksia"
+
+msgid "Stop seeding if idle for:"
+msgstr "Pysäytä kylväminen jos joutilaana ajan:"
+
+msgid "Torrent Properties"
+msgstr "Torrentin ominaisuudet"
+
+msgid "Availability:"
+msgstr "Saatavuus:"
+
+msgid "Labels:"
+msgstr "Nimi:"
+
+msgid "Limit _upload speed:"
+msgstr "Rajoita _lähetysnopeutta:"
+
+msgid "Limit _download speed:"
+msgstr "Rajoita _latausnopeutta:"
+
+msgid "Check Selected"
+msgstr "Merkkaa valitut"
+
+msgid "Uncheck Selected"
+msgstr "Poista valittujen merkintä"
+
+msgid "Only Check Selected"
+msgstr "Merkkaa vain valitut"
+
+msgid "Open"
+msgstr "Avaa"
+
+msgid "Rename…"
+msgstr "Nimeä uudelleen…"
+
+msgid "Search…"
+msgstr "Etsi…"
+
+msgid "<i>Calculating Free Space…</i>"
+msgstr "<i>Lasketaan vapaata tilaa…</i>"
+
+msgid "Limited at {speed}"
+msgstr "Rajoitettu nopeudelle {speed}"
+
+#. Translators: Second (optional) part of main window title "Appname - host:port" (added when connected to remote session)
+#. notice that leading space (before the dash) is included here
+msgid " - {host}:{port}"
+msgstr "- {host}:{port}"
+
+msgid "Network Error"
+msgstr "Verkkovirhe"
+
+msgid "Idle"
+msgstr "Joutilaana"
+
+msgid "Showing {visible_count:L} of {count:L} torrent"
+msgid_plural "Showing {visible_count:L} of {count:L} torrents"
+msgstr[0] "Näytetään {visible_count:L}/{count:L} torrentista"
+msgstr[1] "Näytetään {visible_count:L}/{count:L} torrentista"
+
+msgid "Torrent Files (*.torrent);;All Files (*.*)"
+msgstr "Torrent-tiedostot (*.torrent);;Kaikki tiedostot (*.*)"
+
+msgid "{host} has not responded yet"
+msgstr "{host} ei ole vielä vastannut"
+
+msgid "{host} is responding"
+msgstr "{host} vastaa"
+
+#, fuzzy
+#| msgid "{host} last responded {time_span} ago"
+msgid "{host} last responded {time_span_ago}"
+msgstr "{host} vastasi viimeksi {time_span} sitten"
+
+msgid "{host} is not responding"
+msgstr "{host} ei vastaa"
+
+msgid "_Open…"
+msgstr "_Avaa…"
+
+msgid "Create a new torrent"
+msgstr "Luo uusi torrent"
+
+msgid "Open the torrent's folder"
+msgstr "Avaa torrentin hakemisto"
+
+msgid "Ask tracker for more peers"
+msgstr "Pyydä seurantapalvelimelta lisää vertaisia"
+
+msgid "Verify local data"
+msgstr "Vahvista paikallinen data"
+
+msgid "Remove torrent and delete its files"
+msgstr "Poista torrent ja poista sen tiedostot"
+
+msgid "Compact View"
+msgstr "Kompakti näkymä"
+
+msgid "_Main Window"
+msgstr "_Pääikkuna"
+
+msgid "Tray _Icon"
+msgstr "_Ilmoitusalueen kuvake"
+
+msgid "_Change Session…"
+msgstr "_Vaihda istuntoa…"
+
+#. Start a local session or connect to a running session
+msgid "Choose Session"
+msgstr "Valitse istunto"
+
+msgid "Bypass the queue and start now"
+msgstr "Ohita jonotus ja aloita nyt"
+
+msgid "{file_count:L} File"
+msgid_plural "{file_count:L} Files"
+msgstr[0] "{file_count:L} tiedosto"
+msgstr[1] "{file_count:L} tiedostoa"
+
+msgid "{piece_count:L} Piece"
+msgid_plural "{piece_count:L} Pieces"
+msgstr[0] "{piece_count:L} osa"
+msgstr[1] "{piece_count:L} osaa"
+
+msgid "{total_size} in {files}; {pieces} @ {piece_size}"
+msgstr "{total_size} kohteessa {files}; {pieces} @ {piece_size}"
+
+msgid ""
+"To add a backup URL, add it on the line after the primary URL.\n"
+"To add another primary URL, add it after a blank line."
+msgstr ""
+"Jos haluat lisätä varmuuskopion verkko-osoitteen, lisää se riville ensisijaisen jälkeen.\n"
+"Jos haluat lisätä toisen ensisijaisen verkko-osoitteen, lisää se tyhjän rivin jälkeen."
+
+#, fuzzy
+#| msgid "_Source:"
+msgid "Sou_rce:"
+msgstr "_Lähde:"
+
+msgid "_Priority:"
+msgstr "_Tärkeysjärjestys:"
+
+msgid "Select Folder"
+msgstr "Valitse hakemisto"
+
+msgid "unknown"
+msgstr "tuntematon"
+
+msgid "checking…"
+msgstr "tarkistetaan…"
+
+msgid "open"
+msgstr "auki"
+
+msgid "closed"
+msgstr "suljettu"
+
+msgid "error"
+msgstr "virhe"
+
+msgid "<b>Update succeeded!</b><p>Blocklist now has {count:L} rule.</p>"
+msgid_plural "<b>Update succeeded!</b><p>Blocklist now has {count:L} rules.</p>"
+msgstr[0] "<b>Päivitys onnistui!</b><p>Estolista sisältää nyt {count:L} säännön.</p>"
+msgstr[1] "<b>Päivitys onnistui!</b><p>Estolista sisältää nyt {count:L} sääntöä.</p>"
+
+msgid "Download of the blocklist failed."
+msgstr ""
+
+msgid "Update Blocklist"
+msgstr "Päivitä estolista"
+
+msgid "Select \"Torrent Done Seeding\" Script"
+msgstr "Valitse \"Torrentin kylvö valmis\" -komentosarja"
+
+msgid "Select Watch Directory"
+msgstr "Valitse tarkkailtava kansio"
+
+msgid "Select Incomplete Directory"
+msgstr "Valitse keskeneräisten kansio"
+
+msgid "Select \"Torrent Done Downloading\" Script"
+msgstr "Valitse \"Torrentin lataus valmis\" -komentosarja"
+
+msgid "Not supported by remote sessions"
+msgstr "Ei tuettu etäistunnoissa"
+
+msgid "<i>Blocklist contains {count:L} rule</i>"
+msgid_plural "<i>Blocklist contains {count:L} rules</i>"
+msgstr[0] "<i>Estolista sisältää {count:L} säännön</i>"
+msgstr[1] "<i>Estolista sisältää {count:L} sääntöä</i>"
+
+#, fuzzy
+#| msgid "<i>Blocklist contains {count:L} rule</i>"
+#| msgid_plural "<i>Blocklist contains {count:L} rules</i>"
+msgid "<i>Blocklist has never been updated</i>"
+msgstr "<i>Estolista sisältää {count:L} säännön</i>"
+
+#, fuzzy
+#| msgid "<i>Blocklist contains {count:L} rule</i>"
+#| msgid_plural "<i>Blocklist contains {count:L} rules</i>"
+msgid "<i>Blocklist last updated {date}</i>"
+msgstr "<i>Estolista sisältää {count:L} säännön</i>"
+
+msgid "_Upload:"
+msgstr "L_ähetys:"
+
+msgid "_Download:"
+msgstr "_Lataus:"
+
+msgid "U_pload:"
+msgstr "Lä_hetys:"
+
+msgid "Do_wnload:"
+msgstr "L_ataus:"
+
+msgid "Downloading"
+msgstr "Ladataan"
+
+msgid "Adding"
+msgstr "Lisätään"
+
+msgid "Reads user clipboard content for torrents"
+msgstr "Lukee käyttäjän leikepöydän sisältöä uusien torrentien varalta"
+
+msgid "Detect new torrents from clipboard"
+msgstr "Havaitse uudet torrentit leikepöydältä"
+
+#. Please keep this phrase as short as possible, it's currently the longest and influences dialog width
+msgid "Download is i_nactive if data sharing stopped:"
+msgstr "Lataus pysähtyy, jos tietoje_n jakaminen lopetettiin:"
+
+msgid "Seeding"
+msgstr "Kylvätään"
+
+msgid "Stop seedi_ng if idle for:"
+msgstr "Pysäytä _jakaminen jos jouten N minuuttia:"
+
+msgid "Encryption"
+msgstr "Salaus"
+
+msgid "Start _minimized in notification area"
+msgstr "Käynnistä _pienennettynä ilmoitusalueelle"
+
+#, fuzzy
+#| msgid "Retransmission"
+msgid "Retransmission (Qt)"
+msgstr "Retransmission"
+
+msgid "Select Location"
+msgstr "Valitse sijainti"
+
+msgid "Error Renaming Path"
+msgstr "Virhe uudelleennimettäessä polkua"
+
+msgid "Unable to rename \"{old_path}\" as \"{path}\": {error}."
+msgstr "Kohdetta \"{old_path}\" ei voi nimetä nimellä \"{path}\": {error}."
+
+msgid "Error Adding Torrent"
+msgstr "Virhe lisättäessä torrentia"
+
+msgid "{torrent_name} (copy of {hash})"
+msgstr "{torrent_name} (kopio {hash})"
+
+msgid "Duplicate Torrent"
+msgstr "Torrentin kaksoiskappale"
+
+msgid "Duplicate Torrents"
+msgstr "Torrentien kaksoiskappaleita"
+
+msgid "Unable to add {count} duplicate torrent"
+msgid_plural "Unable to add {count} duplicate torrents"
+msgstr[0] "{count} torrentin kaksoiskappaletta ei voitu lisätä"
+msgstr[1] "{count} torrentien kaksoiskappaletta ei voitu lisätä"
+
+msgid "Change Session"
+msgstr "Vaihda istuntoa"
+
+msgid "Source"
+msgstr "Lähde"
+
+msgid "Start _Local Session"
+msgstr "Aloita _paikallinen istunto"
+
+msgid "Connect to _Remote Session"
+msgstr "Yhdistä _etäistuntoon"
+
+msgid "_Host:"
+msgstr "_Isäntä:"
+
+msgid "_Port:"
+msgstr "_Portti:"
+
+msgid "_Authentication required"
+msgstr "_Tunnistautuminen vaaditaan"
+
+msgid "Remote root pa_th:"
+msgstr ""
+
+msgid "Tracker gave a warning: {warning}"
+msgstr "Seurantapalvelin antoi varoituksen: {warning}"
+
+msgid "Tracker gave an error: {error}"
+msgstr "Seurantapalvelin antoi virheen: {error}"
+
+msgid "Error: {error}"
+msgstr "Virhe: {error}"
+
+#, fuzzy
+#| msgid "Magnetized transfer - retrieving metadata (%1%)"
+msgid "Magnetized torrent - retrieving metadata ({percent_done}%)"
+msgstr "Magnetisoitu siirto - noudetaan metadataa (%1 %)"
+
+#, no-c-format
+msgid "Downloading metadata from {active_count:L} peer ({percent_done}% done)"
+msgid_plural "Downloading metadata from {active_count:L} peers ({percent_done}% done)"
+msgstr[0] "Ladataan metadataa {active_count:L} vertaiselta ({percent_done} % valmiina)"
+msgstr[1] "Ladataan metadataa {active_count:L} vertaiselta ({percent_done} % valmiina)"
+
+msgid "Downloading from {active_count:L} peer"
+msgid_plural "Downloading from {active_count:L} peers"
+msgstr[0] "Ladataan {active_count:L} vertaiselta"
+msgstr[1] "Ladataan {active_count:L} vertaiselta"
+
+msgid " and {webseed_count:L} web seed"
+msgid_plural " and {webseed_count:L} web seeds"
+msgstr[0] "ja {webseed_count:L} verkkolähteet"
+msgstr[1] " ja {webseed_count:L} verkkolähteet"
+
+msgid "Seeding to {active_count:L} peer"
+msgid_plural "Seeding to {active_count:L} peers"
+msgstr[0] "Jaetaan {active_count:L} vertaiselle"
+msgstr[1] "Jaetaan {active_count:L} vertaiselle"
+
+msgid " - "
+msgstr " - "
+
+msgid "To add a backup URL, add it on the next line after a primary URL."
+msgstr "Jos haluat lisätä url-osoitteen varalle, lisää se ensisijaisen url-osoitteen jälkeen seuraavalle riville."
+
+msgid "To add a new primary URL, add it after a blank line."
+msgstr "Jos haluat lisätä uuden ensisijaisen URL:n, lisää se tyhjän rivin jälkeen."
 
 msgid "{file_count:L} file, {total_size}\n"
 msgid_plural "{file_count:L} files, {total_size}\n"
@@ -2010,7 +3267,10 @@ msgid_plural "minutes"
 msgstr[0] "minuutti"
 msgstr[1] "minuuttia"
 
-msgid "seconds"
+#, fuzzy
+#| msgid "seconds"
+#| msgid_plural "seconds"
+msgid "second"
 msgid_plural "seconds"
 msgstr[0] "sekunti"
 msgstr[1] "sekuntia"
@@ -2019,6 +3279,106 @@ msgid "day"
 msgid_plural "days"
 msgstr[0] "päivä"
 msgstr[1] "päivää"
+
+msgid "seconds"
+msgid_plural "seconds"
+msgstr[0] "sekunti"
+msgstr[1] "sekuntia"
+
+#~ msgid "Finished"
+#~ msgstr "Valmis"
+
+#~ msgid "We would upload to this peer if they asked"
+#~ msgstr "Tälle vertaiselle lähetettäisiin pyydettäessä"
+
+#~ msgid "Dn Blocks"
+#~ msgstr "Lad. lohkot"
+
+#~ msgid "Up Blocks"
+#~ msgstr "Läh. lohkot"
+
+#~ msgid "We Cancelled"
+#~ msgstr "Me peruutimme"
+
+#~ msgid "They Cancelled"
+#~ msgstr "He peruuttivat"
+
+#~ msgid "Have"
+#~ msgstr "Ladattu"
+
+#~ msgctxt "current session totals"
+#~ msgid "Down: {downloaded_size}, Up: {uploaded_size}"
+#~ msgstr "Lataus: {downloaded_size}, Lähetys: {uploaded_size}"
+
+#~ msgctxt "all-time totals"
+#~ msgid "Down: {downloaded_size}, Up: {uploaded_size}"
+#~ msgstr "Lataus: {downloaded_size}, Lähetys: {uploaded_size}"
+
+#~ msgid "Select a File"
+#~ msgstr "Valitse tiedosto"
+
+#~ msgid "Inhibiting desktop hibernation"
+#~ msgstr "Työpöydän lepotilaan siirtyminen estetty"
+
+#~ msgid "Couldn't inhibit desktop hibernation: {error}"
+#~ msgstr "Työpöydän lepotilaa ei voitu estää: {error}"
+
+#~ msgid "Allowing desktop hibernation"
+#~ msgstr "Työpöydän lepotilaan siirtymisen salliminen"
+
+#~ msgid "Open URL…"
+#~ msgstr "Avaa osoite…"
+
+#~ msgid "Start all torrents"
+#~ msgstr "Käynnistä kaikki torrentit"
+
+#~ msgid "Pause all torrents"
+#~ msgstr "Pysäytä kaikki torrentit"
+
+#~ msgid "Start torrent now"
+#~ msgstr "Käynnistä torrent nyt"
+
+#~ msgid "Copy _Magnet Link to Clipboard"
+#~ msgstr "Kopioi _magneettilinkki leikepöydälle"
+
+#~ msgid "Enable Alternative Speed _Limits"
+#~ msgstr "Käytä vaihtoehtoisia no_peusrajoituksia"
+
+#~ msgid "Torrent size:"
+#~ msgstr "Torrentin koko:"
+
+#~ msgid "_New"
+#~ msgstr "_Uusi"
+
+#~ msgid "Source F_older:"
+#~ msgstr "Lähde_kansio:"
+
+#~ msgid "Source _File:"
+#~ msgstr "Lähde_tiedosto:"
+
+#~ msgid "P_ause"
+#~ msgstr "T_auko"
+
+#~ msgid "Keep _incomplete torrents in:"
+#~ msgstr "Säilytä _keskeneräiset torrentit kansiossa:"
+
+#~ msgid "Call scrip_t when done downloading:"
+#~ msgstr "Kutsu scrip_t, kun lataus on valmis:"
+
+#~ msgid "_Port used for incoming connections:"
+#~ msgstr "Saapuviin yhteyksiin käytettävä _portti:"
+
+#~ msgid "Enable µ_TP for peer communication"
+#~ msgstr "Käytä µ_TP:tä vertaisten yhteyksiin"
+
+#~ msgid "_Inhibit hibernation when torrents are active"
+#~ msgstr "_Työpöydän lepotilaan siirtyminen estetty jos on käynnissä olevia torrentteja"
+
+#~ msgid "Torrent _location:"
+#~ msgstr "Torrentin _sijainti:"
+
+#~ msgid "Couldn't read filename: {error} ({error_code})"
+#~ msgstr "Ei voitu lukea tiedostonimeä: {error} ({error_code})"
 
 #~ msgid "Couldn't find pending RPC request for tag {tag}"
 #~ msgstr "Tunnisteelle ei ole odottavaa RPC pyyntöä {tag}"

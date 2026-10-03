@@ -16,8 +16,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-01-04 14:15+0000\n"
+"Report-Msgid-Bugs-To: https://github.com/retransmission/retransmission/issues\n"
+"POT-Creation-Date: 2026-10-03 11:48-0500\n"
 "PO-Revision-Date: 2017-01-26 19:47+0000\n"
 "Last-Translator: Iñigo Zendegi Urzelai, 2023\n"
 "Language-Team: Basque (https://app.transifex.com/transmissionbt/teams/33778/eu/)\n"
@@ -27,11 +27,19 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
+#, fuzzy
 msgid "None"
-msgstr "Bat ere ez"
+msgstr ""
+"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Bat ere ez\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Ezer ez"
 
 msgid "Inf"
 msgstr "Inf."
+
+msgid "Another process is already using '{path}'."
+msgstr ""
 
 msgid "Couldn't read '{path}': {error} ({error_code})"
 msgstr "Ezin da irakurri '{path}': {error} ({error_code})"
@@ -59,6 +67,9 @@ msgstr "Ezarpenak berriz kargatzen '{path}'(e)tik"
 
 msgid "Couldn't initialize daemon: {error} ({error_code})"
 msgstr "Ezin izan da daemon-a abiarazi: {error} ({error_code})"
+
+msgid "Waiting for another process to release '{path}'"
+msgstr ""
 
 msgid "Loading settings from '{path}'"
 msgstr "Ezarpenak '{path}' helbidetik kargatzen"
@@ -109,8 +120,13 @@ msgid_plural "Couldn't add duplicate torrents"
 msgstr[0] "Ezin izan da torrent bikoiztua gehitu"
 msgstr[1] "Ezin izan dira bikoiztutako torrent-ak gehitu"
 
+#, fuzzy
 msgid "A fast and easy BitTorrent client"
-msgstr "BitTorrent bezero azkar eta erraza"
+msgstr ""
+"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"BitTorrent bezero azkar eta erraza\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"BitTorrent bezero azkar eta erraz bat"
 
 msgid "Copyright © The {appname} Project"
 msgstr "Copyright © {appname} Proiektua"
@@ -146,8 +162,13 @@ msgstr "Igorri jarduera kontuan izan gabe"
 msgid "Stop seeding if idle for N minutes:"
 msgstr "Gelditu igortzen N minutuz geratuta badago:"
 
+#, fuzzy
 msgid "Queued for verification"
-msgstr "Egiaztatzeko ilaratuta"
+msgstr ""
+"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Egiaztatzeko ilaratuta\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Egiaztapenerako ilaratuta"
 
 msgid "Verifying local data"
 msgstr "Datu lokalak egiaztatzen"
@@ -166,17 +187,37 @@ msgctxt "Verb"
 msgid "Seeding"
 msgstr "Igortzen"
 
-msgid "Finished"
-msgstr "Amaitua"
+#, fuzzy
+msgid "Seeding complete"
+msgstr ""
+"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Osatu gabea\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Osatugabe"
 
+#, fuzzy
 msgid "Paused"
-msgstr "Pausatua"
+msgstr ""
+"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Pausatua\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Pausatuta"
 
+#, fuzzy
 msgid "N/A"
-msgstr "E/E"
+msgstr ""
+"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"E/E\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"E/G"
 
+#, fuzzy
 msgid "Mixed"
-msgstr "Nahasia"
+msgstr ""
+"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Nahasia\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Nahastua"
 
 msgid "No Torrents Selected"
 msgstr "Ez da torrent-ik hautatu"
@@ -187,14 +228,24 @@ msgstr "Aztarnari honen pribatua -- DHT eta PEX desgaituta"
 msgid "Public torrent"
 msgstr "Torrent publikoa"
 
+#, fuzzy
 msgid "Created by {creator} on {date}"
-msgstr "Sortzailea {creator} data honetan: {date}"
+msgstr ""
+"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Sortzailea {creator} data honetan: {date}\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{creator} erabiltzaileak sortuta data honetan: {date}"
 
 msgid "Created by {creator}"
 msgstr "Sortzailea: {creator}"
 
+#, fuzzy
 msgid "Created on {date}"
-msgstr "Sortze data: {date}"
+msgstr ""
+"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Sortze data: {date}\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Sortze-data: {date}"
 
 msgid "Unknown"
 msgstr "Ezezaguna"
@@ -216,6 +267,8 @@ msgstr "{current_size} (%{percent_done})"
 msgid "{current_size} ({percent_done}% of {percent_available}% available)"
 msgstr "{current_size} (%{percent_done} eskuragarri dagoen %{percent_available}(e)tik)"
 
+#, fuzzy, c-format
+#| msgid "{current_size} ({percent_done}% of {percent_available}% available; {unverified_size} unverified)"
 msgid "{current_size} ({percent_done}% of {percent_available}% available; {unverified_size} unverified)"
 msgstr "{current_size} (%{percent_done}eskuragarri dagoen %{percent_available}(e)tik; {unverified_size} egiaztatu gabe)"
 
@@ -231,32 +284,67 @@ msgstr "Errorerik ez"
 msgid "Never"
 msgstr "Inoiz ez"
 
+#, fuzzy
 msgid "Active now"
-msgstr "Aktibo orain"
+msgstr ""
+"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Aktibo orain\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Martxan orain"
 
 msgid "Optimistic unchoke"
 msgstr "Buxadura kentze baikorra"
 
+#, fuzzy
 msgid "Downloading from this peer"
-msgstr "Kide honetatik deskargatzen"
+msgstr ""
+"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Kide honetatik deskargatzen\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Kide honengandik deskargatzen"
 
+#, fuzzy
 msgid "We would download from this peer if they would let us"
-msgstr "Kide honetatik deskargatuko genuke utziko baligu"
+msgstr ""
+"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Kide honetatik deskargatuko genuke utziko baligu\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Kide honetatik deskargatuko genuke beraiek utziz gero"
 
+#, fuzzy
 msgid "Uploading to peer"
-msgstr "Kide batera igortzen"
+msgstr ""
+"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Kide batera igortzen\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Kide batera igotzen"
 
-msgid "We would upload to this peer if they asked"
-msgstr "Kide honetara igorriko genuke eskatuko baligu"
+#, fuzzy
+msgid "This peer would download from us if we would let them"
+msgstr ""
+"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Kide honetatik deskargatuko genuke utziko baligu\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Kide honetatik deskargatuko genuke beraiek utziz gero"
 
+#, fuzzy
 msgid "Peer has unchoked us, but we're not interested"
-msgstr "Kideak buxadura ezabatu digu, baina ez gaude interesatuta"
+msgstr ""
+"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Kideak buxadura ezabatu digu, baina ez gaude interesatuta\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Kideak buxadura kendu digu, baina ez gaude interesatuta"
 
 msgid "We unchoked this peer, but they're not interested"
 msgstr "Kide honi buxadura kendu diogu, baina ez daude interesatuta"
 
+#, fuzzy
 msgid "Encrypted connection"
-msgstr "Konexio zifratua"
+msgstr ""
+"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Konexio zifratua\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Zifratutako konexioa"
 
 msgid "Peer was found through Peer Exchange (PEX)"
 msgstr "Kidea Kide-Trukaketa bidez (PEX) aurkitu zen"
@@ -264,16 +352,28 @@ msgstr "Kidea Kide-Trukaketa bidez (PEX) aurkitu zen"
 msgid "Peer was found through DHT"
 msgstr "Kidea DHT bitartez aurkitu da"
 
+#, fuzzy
 msgid "Peer is an incoming connection"
-msgstr "Kidea sarrerako konexio bat da"
+msgstr ""
+"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Kidea sarrerako konexio bat da\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Kidea barrurako konexio bat da"
 
+#, fuzzy
 msgid "Peer is connected over µTP"
-msgstr "Kidea µTP bidez konektatuta dago"
+msgstr ""
+"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Kidea µTP bidez konektatuta dago\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Kidea µTP bitartez konektatuta dago"
+
+msgid "Peer supports holepunch (BEP 55)"
+msgstr ""
 
 msgid "Address"
 msgstr "Helbidea"
 
-#. % is percent done
 msgid "%"
 msgstr "%"
 
@@ -283,23 +383,21 @@ msgstr "Beherako esk"
 msgid "Up Reqs"
 msgstr "Gorako esk."
 
-msgid "Dn Blocks"
-msgstr "Beherako blok."
-
-msgid "Up Blocks"
-msgstr "Gorako blok."
-
-msgid "We Cancelled"
-msgstr "Guk utzi dugu"
-
-msgid "They Cancelled"
-msgstr "Haiek utzi dute"
-
+#, fuzzy
 msgid "Down"
-msgstr "Behera"
+msgstr ""
+"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Behera\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Deskargatzen"
 
+#, fuzzy
 msgid "Up"
-msgstr "Gora"
+msgstr ""
+"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Gora\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Igortzen"
 
 msgid "Client"
 msgstr "Bezeroa"
@@ -310,66 +408,19 @@ msgstr "Banderak"
 msgid "Web Seeds"
 msgstr "Web igortzeak"
 
-msgid "Got a list of {markup_begin}{peer_count} peer{markup_end} {time_span_ago}"
-msgid_plural "Got a list of {markup_begin}{peer_count} peers{markup_end} {time_span_ago}"
-msgstr[0] " {markup_begin}(e)ko zerrenda dago {peer_count} kiderekin{markup_end} {time_span_ago}"
-msgstr[1] " {markup_begin}(e)ko zerrenda dago {peer_count} kiderekin{markup_end} {time_span_ago}"
-
-#. {markup_begin} and {markup_end} should surround the time_span
-msgid "Peer list request {markup_begin}timed out {time_span_ago}{markup_end}; will retry"
-msgstr "{markup_begin}kide-zerrendaren eskaeraren denbora amaitu da {time_span_ago}{markup_end}; beste saiakera bat egingo da"
-
-#. {markup_begin} and {markup_end} should surround the error
-msgid "Got an error '{markup_begin}{error}{markup_end}' {time_span_ago}"
-msgstr "Errorea jaso da '{markup_begin}{error}{markup_end}' {time_span_ago}"
-
-msgid "No updates scheduled"
-msgstr "Ez da eguneraketarik programatu"
-
-msgid "Asking for more peers {time_span_from_now}"
-msgstr "Kide gehiago eskatzen {time_span_from_now}"
-
-msgid "Queued to ask for more peers"
-msgstr "Kide gehiago eskatzeko ilaratuta"
-
-#. {markup_begin} and {markup_end} should surround time_span_ago
-msgid "Asked for more peers {markup_begin}{time_span_ago}{markup_end}"
-msgstr "Kide gehiago eskatu dira {markup_begin}{time_span_ago}{markup_end}"
-
-msgid "Tracker had {markup_begin}{seeder_count} {seeder_or_seeders} and {leecher_count} {leecher_or_leechers}{markup_end} {time_span_ago}"
-msgstr "Aztarnariak zeukan {markup_begin}{seeder_count} {seeder_or_seeders} eta {leecher_count} {leecher_or_leechers}{markup_end} {time_span_ago}"
-
-msgid "seeder"
-msgid_plural "seeders"
-msgstr[0] "igorlea"
-msgstr[1] "igorleak"
-
-msgid "leecher"
-msgid_plural "leechers"
-msgstr[0] "leecher-a"
-msgstr[1] "izainak"
-
-#. {markup_begin} and {markup_end} should surround the error text
-msgid "Got a scrape error '{markup_begin}{error}{markup_end}' {time_span_ago}"
-msgstr "Zuriketa errorea gertatu da '{markup_begin}{error}{markup_end}' {time_span_ago}"
-
-msgid "Asking for peer counts in {time_span_from_now}"
-msgstr "Kide kopuruaz galdetzen {time_span_from_now}"
-
-msgid "Queued to ask for peer counts"
-msgstr "Kide-kopurua eskatzeko ilaratuta"
-
-msgid "Asked for peer counts {markup_begin}{time_span_ago}{markup_end}"
-msgstr "Kide kopuruaz galdetu da {markup_begin}{time_span_ago}{markup_end}"
-
 msgid "{torrent_name} - Edit Trackers"
 msgstr "{torrent_name} - Editatu Aztarnariak"
 
 msgid "List contains invalid URLs"
 msgstr "Zerrendak URL baliogabeak ditu"
 
+#, fuzzy
 msgid "Please correct the errors and try again."
-msgstr "Zuzendu erroreak eta saiatu berriro"
+msgstr ""
+"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Zuzendu erroreak eta saiatu berriro\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Mesedez zuzendu akatsak eta saiatu berriro."
 
 msgid "{torrent_name} - Add Tracker"
 msgstr "{torrent_name} - Gehitu Aztarnaria"
@@ -385,44 +436,99 @@ msgid_plural "Properties - {torrent_count:L} Torrents"
 msgstr[0] "Ezaugarriak - {torrent_count:L} Torrent"
 msgstr[1] "Ezaugarriak - {torrent_count:L} Torrent"
 
+#, fuzzy
 msgid "Remove torrent?"
-msgstr "Kendu torrent-a?"
+msgstr ""
+"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Kendu torrent-a?\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Kendu torrenta?"
+
+#, fuzzy
+msgid "Delete this torrent's downloaded files?"
+msgstr ""
+"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Ezabatu torrent honek deskargatutako fitxategiak?\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Ezabatu deskargatutako torrent honen fitxategiak?"
 
 msgid "Remove {count:L} torrent?"
 msgid_plural "Remove {count:L} torrents?"
 msgstr[0] "Kendu {count:L} torrent?"
 msgstr[1] "Kendu {count:L} torrent?"
 
-msgid "Delete this torrent's downloaded files?"
-msgstr "Ezabatu torrent honek deskargatutako fitxategiak?"
-
+#, fuzzy
 msgid "Delete this {count:L} torrent's downloaded files?"
 msgid_plural "Delete these {count:L} torrents' downloaded files?"
-msgstr[0] "Ezabatu jeitsitako {count:L} torrent hauen agiriak?"
-msgstr[1] "Ezabatu {count:L} torrent hauek deskargatutako fitxategiak?"
+msgstr[0] ""
+"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Ezabatu jeitsitako {count:L} torrent hauen agiriak?\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Ezabatu jeitsitako {count:L} torrent hauen agiriak?"
+msgstr[1] ""
+"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Ezabatu {count:L} torrent hauek deskargatutako fitxategiak?\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Ezabatu deskargatutako {count:L} torrent hauen fitxategiak?"
 
-msgid "Once removed, continuing the transfer will require the torrent file or magnet link."
-msgid_plural "Once removed, continuing the transfers will require the torrent files or magnet links."
-msgstr[0] "Kendu ondoren, transferentziarekin jarraitu nahi bada torrent fitxategia edo magnet esteka beharko da."
-msgstr[1] "Kendu ondoren, transferentziekin jarraitu nahi bada torrent fitxategiak edo magnet estekak beharko dira."
+#, fuzzy
+#| msgid "Once removed, continuing the transfer will require the torrent file or magnet link."
+#| msgid_plural "Once removed, continuing the transfers will require the torrent files or magnet links."
+msgid "Once removed, you'll need the torrent file or magnet link to add it again."
+msgstr "Kendu ondoren, transferentziarekin jarraitu nahi bada torrent fitxategia edo magnet esteka beharko da."
 
+#, fuzzy
+#| msgid "Once removed, continuing the transfers will require the torrent files or magnet links."
+msgid "Once removed, you'll need the torrent files or magnet links to add them again."
+msgstr "Behin kenduta, transferentziekin jarraitzeko torrent fitxategiak edo magnet loturak beharko dituzu."
+
+#, fuzzy
 msgid "This torrent has not finished downloading."
-msgstr "Torrent honek ez du oraindik deskarga amaitu."
+msgstr ""
+"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Torrent honek ez du oraindik deskarga amaitu.\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Torrent honek ez du deskarga amaitu."
 
+#, fuzzy
 msgid "These torrents have not finished downloading."
-msgstr "Torrent hauek ez dute oraindik deskarga amaitu."
+msgstr ""
+"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Torrent hauek ez dute oraindik deskarga amaitu.\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Torrent hauek ez dute deskarga amaitu."
 
+#, fuzzy
 msgid "This torrent is connected to peers."
-msgstr "Torrent hau pareekin konektatuta dago."
+msgstr ""
+"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Torrent hau pareekin konektatuta dago.\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Torrent hau kideetara konektatuta dago."
 
+#, fuzzy
 msgid "These torrents are connected to peers."
-msgstr "Torrent hauek kideekin konektatuta daude."
+msgstr ""
+"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Torrent hauek kideekin konektatuta daude.\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Torrent hauek kideetara konektatuta daude."
 
+#, fuzzy
 msgid "One of these torrents is connected to peers."
-msgstr "Torrent hauetako bat pareekin konektatuta dago."
+msgstr ""
+"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Torrent hauetako bat pareekin konektatuta dago.\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Torrent hauetako bat kideetara konektatuta dago."
 
+#, fuzzy
 msgid "Some of these torrents are connected to peers."
-msgstr "Torrent hauetako batzuk kideekin konektatuta daude."
+msgstr ""
+"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Torrent hauetako batzuk kideekin konektatuta daude.\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Torrent hauetako batzuk kideetara konektatuta daude."
 
 msgid "One of these torrents has not finished downloading."
 msgstr "Torrent hauetako batek ez du deskarga amaitu."
@@ -436,6 +542,7 @@ msgstr "_Utzi bertan behera"
 msgid "_Delete"
 msgstr "_Ezabatu"
 
+#. Removes the torrent from the list and keeps its downloaded files
 msgid "_Remove"
 msgstr "_Kendu"
 
@@ -457,20 +564,35 @@ msgstr "Izena"
 msgid "Size"
 msgstr "Tamaina"
 
-msgid "Have"
-msgstr "Dauka"
+msgid "Progress"
+msgstr "Aurrerapena"
 
+#, fuzzy
 msgid "Download"
-msgstr "Deskarga"
+msgstr ""
+"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Deskarga\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Deskargatu"
 
 msgid "Priority"
 msgstr "Lehentasuna"
 
+#, fuzzy
 msgid "All"
-msgstr "Dena"
+msgstr ""
+"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Dena\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Denak"
 
+#, fuzzy
 msgid "Active"
-msgstr "Aktiboa"
+msgstr ""
+"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Aktiboa\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Martxan"
 
 msgctxt "Verb"
 msgid "Verifying"
@@ -479,14 +601,37 @@ msgstr "Egiaztatzen"
 msgid "Error"
 msgstr "Errorea"
 
+#, fuzzy
 msgid "_Show:"
-msgstr "_Erakutsi:"
+msgstr ""
+"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Erakutsi:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"E_rakutsi:"
 
 msgid "_Show {count:L} of:"
 msgstr "_Erakutsi {count:L} hauetatik:"
 
 msgid "{disk_space} free"
 msgstr "{disk_space} libre"
+
+msgid "Where to look for configuration files"
+msgstr "Non bilatu konfigurazio-fitxategiak"
+
+msgid "Start with all torrents paused"
+msgstr "Abiarazi torrent guztiak pausatuta"
+
+msgid "Start minimized in notification area"
+msgstr "Abiarazi jakinarazpen-arean ikonotuta"
+
+msgid "Show version number and exit"
+msgstr "Erakutsi bertsio-zenbakia eta irten"
+
+msgid "[torrent files or urls]"
+msgstr "[torrent fitxategiak edo URLak]"
+
+msgid "Run '{program} --help' to see a full list of available command line options.\n"
+msgstr "Exekutatu '{program} --help' eskuragarri dagoen komando-lerro bidezko aukeren zerrenda osoa ikusteko.\n"
 
 msgid ""
 "Click to disable Alternative Speed Limits\n"
@@ -508,40 +653,70 @@ msgstr "Mugagabea"
 msgid "Seed Forever"
 msgstr "Igorri Etengabe"
 
+#, fuzzy
 msgid "Limit Download Speed"
-msgstr "Mugatu deskarga-abiadura"
+msgstr ""
+"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Mugatu deskarga-abiadura\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Mugatu Deskargatze-Abiadura"
 
+#, fuzzy
 msgid "Limit Upload Speed"
-msgstr "Mugatu karga-abiadura"
+msgstr ""
+"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Mugatu karga-abiadura\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Mugatu Igotze-Abiadura"
 
+#, fuzzy
 msgid "Stop Seeding at Ratio"
-msgstr "Gelditu igortzen maila honetan"
+msgstr ""
+"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Gelditu igortzen maila honetan\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Gelditu Igortzen Maila honetan"
 
 msgid "Stop at Ratio ({ratio})"
 msgstr "Gelditu Maila honetan ({ratio})"
 
+#, fuzzy
 msgid "Total Ratio"
-msgstr "Tasa guztira"
+msgstr ""
+"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Tasa guztira\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Maila guztira"
 
+#, fuzzy
 msgid "Session Ratio"
-msgstr "Saioaren tasa"
+msgstr ""
+"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Saioaren tasa\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Saioaren maila"
 
+#, fuzzy
 msgid "Total Transfer"
-msgstr "Transferentzia guztira"
+msgstr ""
+"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Transferentzia guztira\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Transferentziak Guztira"
 
+#, fuzzy
 msgid "Session Transfer"
-msgstr "Saioaren transferentzia"
+msgstr ""
+"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Saioaren transferentzia\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Saioaren Transferentziak"
+
+msgid "Down: {downloaded_size}, Up: {uploaded_size}"
+msgstr "Deskarga: {downloaded_size}, Igoera: {uploaded_size}"
 
 msgid "Ratio: {ratio}"
 msgstr "Maila: {ratio}"
-
-msgctxt "current session totals"
-msgid "Down: {downloaded_size}, Up: {uploaded_size}"
-msgstr "Deskarga: {downloaded_size}, Igoera: {uploaded_size}"
-
-msgctxt "all-time totals"
-msgid "Down: {downloaded_size}, Up: {uploaded_size}"
-msgstr "Deskarga: {downloaded_size}, Igoera: {uploaded_size}"
 
 msgid "{download_speed} ▾"
 msgstr "{download_speed} ▾"
@@ -599,6 +774,11 @@ msgstr "Ordua"
 msgid "Couldn't create proxy for '{bus}': {error} ({error_code})"
 msgstr "Ezin izan da '{bus}'(r)entzako proxya sortu: {error} ({error_code})"
 
+#, fuzzy
+#| msgid "Couldn't save '{path}': {error} ({error_code})"
+msgid "Couldn't spawn async process \"'{command}'\": {error} ({error_code})"
+msgstr "Ezin izan da '{path}' gorde: {error} ({error_code})"
+
 msgid "Open File"
 msgstr "Ireki fitxategia"
 
@@ -608,11 +788,21 @@ msgstr "Ireki karpeta"
 msgid "Torrent Complete"
 msgstr "Torrent-a osatu da"
 
+#, fuzzy
 msgid "Start Now"
-msgstr "Hasi orain"
+msgstr ""
+"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Hasi orain\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Abiarazi Orain"
 
+#, fuzzy
 msgid "Torrent Added"
-msgstr "Torrent-a gehitu da"
+msgstr ""
+"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Torrent-a gehitu da\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Torrenta Gehituta"
 
 msgid "Torrent files"
 msgstr "Torrent-fitxategiak"
@@ -629,14 +819,27 @@ msgstr "_Zabaldu"
 msgid "Show options dialog"
 msgstr "Erakutsi aukeren mezua"
 
-msgid "Select a File"
-msgstr "Aukeratu fitxategi bat"
+msgid "Other…"
+msgstr ""
 
+msgid "Select File"
+msgstr "Hautatu Fitxategia"
+
+#, fuzzy
 msgid "(None)"
-msgstr "(Bat ere ez)"
+msgstr ""
+"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"(Bat ere ez)\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"(Ezer ez)"
 
+#, fuzzy
 msgid "Allow encryption"
-msgstr "Onartu zifratzea"
+msgstr ""
+"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Onartu zifratzea\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Baimendu zifratzea"
 
 msgid "Prefer encryption"
 msgstr "Hobetsi zifratzea"
@@ -647,11 +850,21 @@ msgstr "Behartu zifratzea"
 msgid "Every Day"
 msgstr "Egunero"
 
+#, fuzzy
 msgid "Weekdays"
-msgstr "Lanegunetan"
+msgstr ""
+"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Lanegunetan\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Lanegunak"
 
+#, fuzzy
 msgid "Weekends"
-msgstr "Asteburuetan"
+msgstr ""
+"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Asteburuetan\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Asteburuak"
 
 msgid "Blocklist has {count:L} entry"
 msgid_plural "Blocklist has {count:L} entries"
@@ -664,8 +877,13 @@ msgstr "Blokeo-zerrenda eguneratuta!"
 msgid "Couldn't update blocklist"
 msgstr "Ezin izan da blokeo-zerrenda eguneratu"
 
+#, fuzzy
 msgid "Getting new blocklist…"
-msgstr "Blokeo-zerrenda berria jasotzen…"
+msgstr ""
+"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Blokeo-zerrenda berria jasotzen…\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Blokeo-zerrenda berria eskuratzen…"
 
 msgctxt "Port test status"
 msgid "unknown"
@@ -688,10 +906,10 @@ msgid "error"
 msgstr ""
 
 msgid "Status: <b>{status}</b>"
-msgstr ""
+msgstr "Status: <b>{status}</b>"
 
 msgid "Status: <b>{status_ipv4}</b> (IPv4), <b>{status_ipv6}</b> (IPv6)"
-msgstr ""
+msgstr "Status: <b>{status_ipv4}</b> (IPv4), <b>{status_ipv6}</b> (IPv6)"
 
 msgid "Moving '{torrent_name}'"
 msgstr "'{torrent_name}' mugitzen"
@@ -702,27 +920,30 @@ msgstr "Ezin izan da torrent-a mugitu"
 msgid "This may take a moment…"
 msgstr "Horrek denbora behar du…"
 
+#, fuzzy
+#| msgid "Couldn't watch '{path}': {error} ({error_code})"
+msgid "Couldn't open watchdir '{dirname}': {error} ({error_code})"
+msgstr "Ezin izan da '{path}' ikusi: {error} ({error_code})"
+
 msgid "Couldn't read '{path}'"
 msgstr "Ezin izan da '{path}' irakurri"
-
-#. logging
-msgid "Inhibiting desktop hibernation"
-msgstr "Mahagainaren hibernazioa galarazten"
-
-msgid "Couldn't inhibit desktop hibernation: {error}"
-msgstr "Ezin izan da mahaigainaren hibernazioa eragotzi: {error}"
-
-#. logging
-msgid "Allowing desktop hibernation"
-msgstr "Mahaigainaren hibernatzea onartzen"
 
 msgid "Couldn't find pending RPC request for id {id}"
 msgstr ""
 
+#, fuzzy
 msgid "Started {count:L} time"
 msgid_plural "Started {count:L} times"
-msgstr[0] " {count:L} aldiz hasi da"
-msgstr[1] " {count:L} aldiz hasi da"
+msgstr[0] ""
+"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+" {count:L} aldiz hasi da\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Hasita {count:L} aldiz"
+msgstr[1] ""
+"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+" {count:L} aldiz hasi da\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Hasita {count:L} aldiz"
 
 msgid "Reset your statistics?"
 msgstr "Zure estatistiak berrezarri?"
@@ -733,6 +954,9 @@ msgstr "_Berrezarri"
 msgid "These statistics are for your information only. Resetting them doesn't affect the statistics logged by your BitTorrent trackers."
 msgstr "Estatistika hauek zu informatzeko dira soilik. Haiek berrezartzeak ez du eraginik zure BitTorrent aztarnariek gordetako estatistiketan."
 
+msgid "_Show {appname}"
+msgstr "_Erakutsi {appname}"
+
 msgid "{upload_speed} ▴ {download_speed} ▾"
 msgstr "{upload_speed} ▴ {download_speed} ▾"
 
@@ -740,23 +964,44 @@ msgstr "{upload_speed} ▴ {download_speed} ▾"
 msgid "Verifying local data ({percent_done}% tested)"
 msgstr "Datu lokalak egiaztatzen ({percent_done}% aztertuta)"
 
+#, fuzzy
 msgid "{current_size} of {complete_size} ({percent_done}%)"
-msgstr "{current_size} /{complete_size} (%{percent_done})"
+msgstr ""
+"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{current_size} /{complete_size} (%{percent_done})\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{current_size} --> {complete_size} ({percent_done}%)"
 
 msgid "{current_size} of {complete_size} ({percent_complete}%), uploaded {uploaded_size} (Ratio: {ratio}, Goal: {seed_ratio})"
 msgstr "{current_size} / {complete_size} (%{percent_complete}), {uploaded_size} igota (Maila: {ratio}, Helburua: {seed_ratio})"
 
+#, fuzzy
 msgid "{current_size} of {complete_size} ({percent_complete}%), uploaded {uploaded_size} (Ratio: {ratio})"
-msgstr "{current_size} / {complete_size} (%{percent_complete}), {uploaded_size} igota (Maila: {ratio})"
+msgstr ""
+"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{current_size} / {complete_size} (%{percent_complete}), {uploaded_size} igota (Maila: {ratio})\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{current_size} --> {complete_size} ({percent_complete}%), igota {uploaded_size} (Maila: {ratio})"
 
 msgid "{complete_size}, uploaded {uploaded_size} (Ratio: {ratio}, Goal: {seed_ratio})"
 msgstr "{complete_size}, {uploaded_size} igota (Maila: {ratio}, Helburua: {seed_ratio})"
 
+#, fuzzy
 msgid "{complete_size}, uploaded {uploaded_size} (Ratio: {ratio})"
-msgstr "{complete_size}, {uploaded_size} igota (Maila: {ratio})"
+msgstr ""
+"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{complete_size}, {uploaded_size} igota (Maila: {ratio})\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{complete_size}, igota {uploaded_size} (Maila: {ratio})"
 
+#. Translators: Second (optional) part of torrent progress string
+#, fuzzy
 msgid "Remaining time unknown"
-msgstr "Geratzen den denbora ezezaguna"
+msgstr ""
+"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Geratzen den denbora ezezaguna\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Gelditzen den denbora ezezaguna"
 
 msgid "{download_speed} ▾  {upload_speed} ▴"
 msgstr "{download_speed} ▾  {upload_speed} ▴"
@@ -767,7 +1012,9 @@ msgstr "Trabatuta"
 msgid "Tracker warning: '{warning}'"
 msgstr "Aztarnari oharra: '{warning}'"
 
-msgid "Tracker Error: '{error}'"
+#, fuzzy
+#| msgid "Tracker Error: '{error}'"
+msgid "Tracker error: '{error}'"
 msgstr "Aztarnari-errorea: '{error}'"
 
 msgid "Local error: '{error}'"
@@ -789,15 +1036,1220 @@ msgid_plural "Downloading from {active_count} webseeds"
 msgstr[0] "Deskargatzen {active_count} web-igorleatik"
 msgstr[1] "Deskargatzen {active_count} web-igorleetatik"
 
+#, fuzzy
 msgid "Downloading from {active_count} of {connected_count} connected peer"
 msgid_plural "Downloading from {active_count} of {connected_count} connected peers"
-msgstr[0] "Deskargatzen {active_count} / {connected_count} konektatutako hartzaileatik"
-msgstr[1] "Deskargatzen {active_count} / {connected_count} konektatutako kideetatik"
+msgstr[0] ""
+"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Deskargatzen {active_count} / {connected_count} konektatutako hartzaileatik\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Jeisten {active_count} --> {connected_count} elkarketaturiko hartzailetik"
+msgstr[1] ""
+"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Deskargatzen {active_count} / {connected_count} konektatutako kideetatik\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Deskargatzen {active_count} --> {connected_count} konektatutako kidetatik"
 
+#, fuzzy
 msgid "Seeding to {active_count} of {connected_count} connected peer"
 msgid_plural "Seeding to {active_count} of {connected_count} connected peers"
-msgstr[0] " {active_count} / {connected_count} konektatutako hartzailera igortzen"
-msgstr[1] " {active_count} / {connected_count} konektatutako kidetara igortzen"
+msgstr[0] ""
+"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+" {active_count} / {connected_count} konektatutako hartzailera igortzen\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{active_count} / {connected_count} elkarturiko hartzailera emaritzen"
+msgstr[1] ""
+"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+" {active_count} / {connected_count} konektatutako kidetara igortzen\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{active_count} / {connected_count} konektatutako kidetara igortzen"
+
+msgid "Retransmission"
+msgstr "Retransmission"
+
+msgid "BitTorrent Client"
+msgstr "BitTorrent bezeroa"
+
+msgid "Download and share files over BitTorrent"
+msgstr "Deskargatu eta partekatu fitxategiak BitTorrent bidez"
+
+#. Translators: Search terms to find this application. Do NOT translate or localize the semicolons! The list MUST also end with a semicolon!
+msgid "torrents;downloading;uploading;share;sharing;"
+msgstr "torrentak;deskargatzen;kargatzen;partekatu;partekatzen;"
+
+msgid "Start Retransmission with All Torrents Paused"
+msgstr "Abiarazi Retransmission Torrent guztiak pausatuta mantenduz"
+
+msgid "Start Retransmission Minimized"
+msgstr "Abiarazi Retransmission minimizatua"
+
+#, fuzzy
+#| msgid "Copyright © The Retransmission Project"
+msgid "The Retransmission Project"
+msgstr "Copyright © Retransmission Proiektua"
+
+#. Translators: these are the application description paragraphs in the MetaInfo file.
+msgid "BitTorrent is a peer-to-peer file-sharing protocol that is commonly used to distribute large amounts of data between multiple users."
+msgstr ""
+
+msgid "Retransmission is a BitTorrent client with an easy-to-use interface on top of a cross-platform backend. Native interfaces are available for macOS, Linux, and Windows, as well as command line binaries and a web GUI."
+msgstr ""
+
+msgid "Notable features of Retransmission include support for Local Peer Discovery, encryption, DHT, µTP, PEX and Magnet links."
+msgstr ""
+
+msgid "Main window, showing an ongoing download of Fedora Workstation"
+msgstr ""
+
+msgid "_File"
+msgstr "_Fitxategia"
+
+#, fuzzy
+msgid "Open _URL…"
+msgstr ""
+"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Ireki _URL-a…\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Ireki _URLa…"
+
+msgid "_New…"
+msgstr "_Berria…"
+
+#, fuzzy
+msgid "_Start All"
+msgstr ""
+"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Abiarazi Guztiak\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Hasi Denak"
+
+#, fuzzy
+msgid "_Pause All"
+msgstr ""
+"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Pausatu Guztiak\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Pausatu Denak"
+
+#, fuzzy
+msgid "_Quit"
+msgstr ""
+"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Utzi\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"It_xi"
+
+msgid "_Edit"
+msgstr "_Editatu"
+
+msgid "Select _All"
+msgstr "Hautatu _Guztiak"
+
+msgid "Dese_lect All"
+msgstr "_Deshautatu Guztiak"
+
+msgid "_Preferences"
+msgstr "_Hobespenak"
+
+msgid "_Torrent"
+msgstr "_Torrenta"
+
+msgid "_Properties"
+msgstr "_Ezaugarriak"
+
+#, fuzzy
+msgid "Open Fold_er"
+msgstr ""
+"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Ireki karpe_ta\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Ireki Karpeta"
+
+#, fuzzy
+msgid "_Start"
+msgstr ""
+"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Abiarazi\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Hasi"
+
+#, fuzzy
+msgid "Start _Now"
+msgstr ""
+"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Abiarazi _Orain\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Hasi _Orain"
+
+#, fuzzy
+msgid "Ask Tracker for _More Peers"
+msgstr ""
+"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Galdetu Aztarnariari _Pare Gehiagorako\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Eskatu Aztarnariari Kide Gehiago"
+
+#, fuzzy
+#| msgid "Queue"
+msgid "_Queue"
+msgstr "Ilara"
+
+#, fuzzy
+msgid "Move to _Top"
+msgstr ""
+"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Mugitu _Goren\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Mugitu _Goraino"
+
+msgid "Move _Up"
+msgstr "Mugitu G_ora"
+
+#, fuzzy
+msgid "Move _Down"
+msgstr ""
+"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Mugitu _Behera\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Mugitu B_ehera"
+
+#, fuzzy
+msgid "Move to _Bottom"
+msgstr ""
+"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Mugitu Be_heren\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Mugitu _Beheraino"
+
+msgid "_Pause"
+msgstr "_Pausatu"
+
+#, fuzzy
+msgid "Set _Location…"
+msgstr ""
+"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Ezarri _Kokalekua…\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Zehaztu _Kokapena…"
+
+#, fuzzy
+msgid "_Verify Local Data"
+msgstr ""
+"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Egiaztatu tokiko datuak\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Egiaztatu Datuak _Lokalak"
+
+msgid "_Copy Magnet Link to Clipboard"
+msgstr "Kopiatu _Magnet Esteka Arbelera"
+
+#, fuzzy
+msgid "_Delete Files and Remove"
+msgstr ""
+"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Ezabatu fitxategiak eta kendu\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"E_zabatu Fitxategiak eta Kendu"
+
+msgid "_View"
+msgstr "_Ikusi"
+
+#, fuzzy
+msgid "_Compact View"
+msgstr ""
+"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Bista trinkoa\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Ikuspegi Trinkoa"
+
+msgid "_Toolbar"
+msgstr "_Tresnabarra"
+
+#, fuzzy
+msgid "_Filterbar"
+msgstr ""
+"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Iragazki-barra\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"I_ragazkibarra"
+
+#, fuzzy
+msgid "_Statusbar"
+msgstr ""
+"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Egoera-barra\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Egoerabarra"
+
+#, fuzzy
+msgid "Sort by _Activity"
+msgstr ""
+"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Ordenatu _aktibitatearen arabera\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Ordenatu _Jardueraren arabera"
+
+#, fuzzy
+msgid "Sort by A_ge"
+msgstr ""
+"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Ordenatu a_dinaren arabera\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Ordenatu _Adinaren arabera"
+
+#, fuzzy
+msgid "Sort by _Name"
+msgstr ""
+"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Ordenatu _izenaren arabera\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Ordenatu I_zenaren arabera"
+
+#, fuzzy
+msgid "Sort by _Progress"
+msgstr ""
+"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Ordenatu aurrera_penaren arabera\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Ordenatu _Aurrerapenaren arabera"
+
+#, fuzzy
+msgid "Sort by _Queue"
+msgstr ""
+"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Ordenatu i_lararen arabera\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Ordenatu _Ilararen arabera"
+
+#, fuzzy
+msgid "Sort by Rati_o"
+msgstr ""
+"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Ordenatu _tasaren arabera\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Ordenatu _Ratioaren arabera"
+
+#, fuzzy
+msgid "Sort by Si_ze"
+msgstr ""
+"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Ordenatu ta_mainaren arabera\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Ordenatu _Tamainaren arabera"
+
+#, fuzzy
+msgid "Sort by Stat_e"
+msgstr ""
+"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Ordenatu ego_eraren arabera\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Ordenatu _Egoeraren arabera"
+
+#, fuzzy
+msgid "Sort by Time _Left"
+msgstr ""
+"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Ordenatu _geratzen den denboraren arabera\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Ordenatu Gelditzen den _Denboraz"
+
+#, fuzzy
+msgid "Re_verse Sort Order"
+msgstr ""
+"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Al_derantzikatu ordena\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Alderantzikatu Ordenatze _Irizpidea"
+
+msgid "_Help"
+msgstr "_Laguntza"
+
+#, fuzzy
+msgid "Message _Log"
+msgstr ""
+"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Mezuen _egunkaria\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Mezuen _Erregistroa"
+
+msgid "_Statistics"
+msgstr "_Estatistikak"
+
+msgid "_Donate"
+msgstr "_Dirulaguntza"
+
+#, fuzzy
+msgid "_Contents"
+msgstr ""
+"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Edukiak\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Ed_ukiak"
+
+#, fuzzy
+msgid "_About"
+msgstr ""
+"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Honi buruz\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Honi _Buruz"
+
+#, fuzzy
+msgid "_Sort Torrents By"
+msgstr ""
+"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Abiarazi torrenta\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Hasi torrenta"
+
+#, fuzzy
+msgid "Alternative Speed _Limits"
+msgstr ""
+"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Abiadura-muga alternatiboak\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Aukerazko Abiadura Mugak"
+
+msgid "_Add"
+msgstr "_Gehitu"
+
+msgid "Tracker"
+msgstr "Aztarnaria"
+
+msgid "_Announce URL:"
+msgstr "_Iragarpen URLa:"
+
+msgid "_Close"
+msgstr "_Itxi"
+
+msgid "Activity"
+msgstr "Jarduera"
+
+msgid "Size:"
+msgstr "Tamaina:"
+
+msgid "Have:"
+msgstr "Dauka:"
+
+#, fuzzy
+msgid "Uploaded:"
+msgstr ""
+"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Kargatua:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Igorritakoa:\n"
+"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Igota:"
+
+#, fuzzy
+msgid "Downloaded:"
+msgstr ""
+"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Deskargatua:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Deskargatuta:"
+
+msgid "State:"
+msgstr "Egoera:"
+
+#, fuzzy
+msgid "Running time:"
+msgstr ""
+"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Abian daraman denbora:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Exekuzio denbora:"
+
+#, fuzzy
+msgid "Remaining time:"
+msgstr ""
+"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Geratzen den denbora:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Gelditzen den denbora:"
+
+msgid "Last activity:"
+msgstr "Azken jarduera:"
+
+msgid "Error:"
+msgstr "Errorea:"
+
+msgid "Details"
+msgstr "Xehetasunak"
+
+#, fuzzy
+msgid "Location:"
+msgstr ""
+"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Kokapena:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Kokalekua:"
+
+msgid "Hash:"
+msgstr "Hash-a:"
+
+msgid "Privacy:"
+msgstr "Pribatutasuna:"
+
+msgid "Origin:"
+msgstr "Jatorria:"
+
+msgid "Added:"
+msgstr "Gehitze-data:"
+
+msgid "Comment:"
+msgstr "Iruzkina:"
+
+msgid "Information"
+msgstr "Informazioa"
+
+msgid "Show _more details"
+msgstr "Erakutsi _xehetasun gehiago"
+
+msgid "Peers"
+msgstr "Kideak"
+
+#, fuzzy
+msgid "Show _backup trackers"
+msgstr ""
+"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Erakutsi _babeskopiako aztarnariak\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Erakutsi _segurtasun-kopiako aztarnariak"
+
+msgid "File listing not available for combined torrent properties"
+msgstr "Ezin dira fitxategiak zerrendatu torrent konbinatuen propietateetarako"
+
+msgid "Files"
+msgstr "Fitxategiak"
+
+msgid "Speed"
+msgstr "Abiadura"
+
+#, fuzzy
+msgid "Honor global _limits"
+msgstr ""
+"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Bete muga _orokorrak\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Bete muga orokorrak"
+
+msgid "Limit _download speed ({speed_units}):"
+msgstr "Mugatu _deskargaren abiadura ({speed_units}):"
+
+msgid "Limit _upload speed ({speed_units}):"
+msgstr "Mugatu _igoera-abiadura ({speed_units}):"
+
+#, fuzzy
+msgid "Torrent _priority:"
+msgstr ""
+"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Torrent-en _lehentasuna:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Torrent lehentasuna:"
+
+msgid "Seeding Limits"
+msgstr "Igortze-Mugak"
+
+#, fuzzy
+msgid "_Ratio:"
+msgstr ""
+"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Partekatze-tasa:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"M_aila:"
+
+#, fuzzy
+msgid "_Idle:"
+msgstr ""
+"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Inaktibo:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Geratuta:"
+
+#, fuzzy
+msgid "Peer Connections"
+msgstr ""
+"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Kideen konexioak\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Kideen Konexioak"
+
+#, fuzzy
+msgid "_Maximum peers:"
+msgstr ""
+"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Gehienezko kide-kopurua:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Gehienezko kide kopurua:"
+
+msgid "Options"
+msgstr "Aukerak"
+
+msgid "Tracker Announce URLs"
+msgstr "Aztarnariak iragartzeko URLak"
+
+msgid ""
+"To add a backup URL, add it on the next line after a primary URL.\n"
+"To add a new primary URL, add it after a blank line."
+msgstr ""
+"Segurtasun-kopiarako URL bat gehitzeko, URL nagusiaren ondorengo errenkadan gehitu ezazu.\n"
+"Beste URL nagusi bat gehitzeko, errenkada huts baten ondoren gehitu ezazu."
+
+msgid "Also see Default Public Trackers in Edit > Preferences > Network"
+msgstr "Aztarnari publiko lehenetsiak Editatu > Hobespenak > Sarea atalean ere ikusi ditzakezu"
+
+msgid "Open a torrent"
+msgstr "Ireki torrent bat"
+
+#, fuzzy
+msgid "Start torrent"
+msgstr ""
+"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Abiarazi torrenta\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Hasi torrenta"
+
+msgid "Pause torrent"
+msgstr "Pausatu torrenta"
+
+msgid "Remove torrent"
+msgstr "Kendu torrenta"
+
+msgid "Torrent properties"
+msgstr "Torrentaren ezaugarriak"
+
+msgid "Torrent"
+msgstr "Torrent-a"
+
+msgid "Statistics"
+msgstr "Estatistikak"
+
+#, fuzzy
+msgid "New Torrent"
+msgstr ""
+"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Torrent berria\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Torrent Berria"
+
+#, fuzzy
+#| msgid "C_redits"
+msgid "C_reate"
+msgstr "_Kredituak"
+
+#, fuzzy
+msgid "Sa_ve to:"
+msgstr ""
+"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Go_rde honela:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Gorde hemen:"
+
+msgid "Source f_older:"
+msgstr "Jatorrizko _karpeta:"
+
+msgid "Source _file:"
+msgstr "Jatorrizko _Fitxategia:"
+
+#, fuzzy
+#| msgid "Piece size:"
+msgid "Piece si_ze:"
+msgstr "Zatiaren tamaina:"
+
+#, fuzzy
+msgid "Properties"
+msgstr ""
+"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Propietateak\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Ezaugarriak"
+
+#, fuzzy
+msgid "_Trackers:"
+msgstr ""
+"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Aztarnariak:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"A_ztarnariak:"
+
+#, fuzzy
+msgid "Co_mment:"
+msgstr ""
+"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Iru_zkina:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Iruzkina:"
+
+msgid "_Source:"
+msgstr "_Jatorria:"
+
+#, fuzzy
+msgid "_Private torrent"
+msgstr ""
+"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Torrent _pribatua\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Torrent pribatua"
+
+msgid "Creating torrent…"
+msgstr "Torrent-a sortzen…"
+
+msgid "Message Log"
+msgstr "Mezuen egunkaria"
+
+msgid "Save _As"
+msgstr "Gorde _honela"
+
+msgid "Clear"
+msgstr "Garbitu"
+
+msgid "Level"
+msgstr "Maila"
+
+msgid "Torrent Options"
+msgstr "Torrent-aren aukerak"
+
+msgid "_Torrent file:"
+msgstr "_Torrent-fitxategia:"
+
+msgid "Select Source File"
+msgstr "Hautatu iturburu-fitxategia"
+
+#, fuzzy
+msgid "_Destination folder:"
+msgstr ""
+"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Helburuko karpeta:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Helmugako karpeta:"
+
+msgid "Select Destination Folder"
+msgstr "Hautatu helburuko karpeta"
+
+msgid "_Start when added"
+msgstr "_Abiarazi gehitzean"
+
+#, fuzzy
+#| msgid "Mo_ve torrent file to the trash"
+msgid "Mo_ve torrent file to the Trash"
+msgstr "Mu_gitu torrent-fitxategia zakarrontzira"
+
+#, fuzzy
+msgid "{appname} Preferences"
+msgstr ""
+"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{appname}-en hobespenak\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{appname} Hobespenak"
+
+#, fuzzy
+msgid "Speed Limits"
+msgstr ""
+"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Abiadura-mugak\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Abiadura Mugak"
+
+#. Checkbox to limit upload speed
+msgid "_Upload ({speed_units}):"
+msgstr "_Igo ({speed_units}):"
+
+#. Checkbox to limit download speed
+msgid "_Download ({speed_units}):"
+msgstr "_Deskarga ({speed_units}):"
+
+#, fuzzy
+msgid "Alternative Speed Limits"
+msgstr ""
+"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Abiadura-muga alternatiboak\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Aukerazko Abiadura Mugak"
+
+msgid "Override normal speed limits manually or at scheduled times"
+msgstr "Gainidatzi abiadura-muga normalak eskuz edo programatutako orduetan"
+
+#. Labels a spinbutton for alternate upload speed limits
+msgid "U_pload ({speed_units}):"
+msgstr "I_goera ({speed_units}):"
+
+#. Labels a spinbutton for alternate download speed limits
+msgid "Do_wnload ({speed_units}):"
+msgstr "Des_karga ({speed_units}):"
+
+msgid "_Scheduled times:"
+msgstr "_Programatutako orduak:"
+
+#, fuzzy
+msgid "_On days:"
+msgstr ""
+"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"E_gun hauetan:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Eg_unak:"
+
+#. Label goes between two time selectors, e.g. "limit speeds from [time] to [time]"
+msgid "_to"
+msgstr "_hona"
+
+msgctxt "Gerund"
+msgid "Adding"
+msgstr "Gehitzen"
+
+msgid "Automatically add torrent files _from:"
+msgstr "Gehitu automatikoki torrent-fitxategiak _hemendik:"
+
+#, fuzzy
+msgid "Show the Torrent Options _dialog"
+msgstr ""
+"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Erakutsi Torrent aukeren _elkarrizketa\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Erakutsi _Torrent Aukeren leihoa"
+
+#, fuzzy
+msgid "_Start added torrents"
+msgstr ""
+"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Hasi gehitutako torrent horiekin\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Hasi gehitutako torrentak"
+
+#, fuzzy
+#| msgid "Save to _Location:"
+msgid "Save to _location:"
+msgstr "Gorde he_men:"
+
+#, fuzzy
+msgid "Download Queue"
+msgstr ""
+"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Deskargen ilara\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Deskargen Ilara"
+
+#, fuzzy
+msgid "Ma_ximum active downloads:"
+msgstr ""
+"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Deskarga aktiboen Mu_ga :\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Gehienezko _deskarga aktibo kopurua:"
+
+msgid "Downloads sharing data in the last _N minutes are active:"
+msgstr "Datuak partekatzen egindako deskargak azken _N minutuetan aktibo segitzen dute:"
+
+#, fuzzy
+msgid "Incomplete"
+msgstr ""
+"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Osatu gabea\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Osatugabe"
+
+#, fuzzy
+msgid "Append \"._part\" to incomplete files' names"
+msgstr ""
+"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Gehitu \"._part\" osorik ez dauden fitxategi-izenei\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Erantsi \".part\" osatugabeko fitxategi izenei"
+
+msgid "Keep _incomplete files in:"
+msgstr "_Gorde osatugabeko fitxategiak hemen:"
+
+#, fuzzy
+#| msgid "Call scrip_t when downloading is completed:"
+msgid "Call scrip_t when download completes:"
+msgstr "Deitu scrip_t-a deskarga osatu denean:"
+
+#, fuzzy
+#| msgid "Call scrip_t when downloading is completed:"
+msgid "Verify data when download completes"
+msgstr "Deitu scrip_t-a deskarga osatu denean:"
+
+msgctxt "Gerund"
+msgid "Downloading"
+msgstr "Deskargatzen"
+
+msgid "Limits"
+msgstr "Mugak"
+
+#, fuzzy
+msgid "Stop seeding at _ratio:"
+msgstr ""
+"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Gelditu igortzen _maila honetan:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Gelditu igortzen maila honetan:"
+
+msgid "Stop seeding if idle for _N minutes:"
+msgstr "Gelditu igortzen _N minutuz geratuta badago:"
+
+msgid "Call scrip_t when done seeding:"
+msgstr "Deitu scrip_t-a igortzea amaitzerakoan:"
+
+msgctxt "Gerund"
+msgid "Seeding"
+msgstr "Igortzen"
+
+msgid "Privacy"
+msgstr "Pribatutasuna"
+
+#, fuzzy
+msgid "_Encryption mode:"
+msgstr ""
+"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Zifratze-modua:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Zifratze modua:"
+
+msgid "Blocklist"
+msgstr "Blokeo-zerrenda"
+
+#, fuzzy
+msgid "Enable _blocklist:"
+msgstr ""
+"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Gaitu _blokeo-zerrenda:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Gaitu blokeo-_zerrenda:"
+
+#, fuzzy
+#| msgid "Enable _automatic updates"
+msgid "_Automatically update weekly"
+msgstr "Gaitu eguneratze _automatikoak"
+
+#, fuzzy
+msgid "_Update"
+msgstr ""
+"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Eg_uneratu\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Eguneraketa"
+
+msgid "Listening Port"
+msgstr "Entzuteko ataka"
+
+msgid "_Port for incoming connections:"
+msgstr "_Barrurako konexioentzako ataka:"
+
+#, fuzzy
+#| msgid "Pick a _random port every time Transmission is started"
+msgid "Pick a _random port at startup"
+msgstr "Hautatu _ausazko ataka bat Transmission abiarazten den bakoitzean"
+
+#, fuzzy
+msgid "Use UPnP or NAT-PMP port _forwarding from my router"
+msgstr ""
+"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Erabili UPnP edo NAT-PMP ataka-birbidalketa nire bideratzailetik\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Erabili UPnP edo NAT-PMP ataka berbidalketa nire router-etik"
+
+#, fuzzy
+msgid "Te_st Port"
+msgstr ""
+"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Probatu ataka\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Probatu _Ataka"
+
+#, fuzzy
+msgid "Peer Limits"
+msgstr ""
+"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Kideen mugak\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Kideen Mugak"
+
+#, fuzzy
+#| msgid "Maximum peers per _torrent:"
+msgid "Maximum peers for new _torrents:"
+msgstr "Gehienezko kide-kopurua _torrent bakoitzeko:"
+
+#, fuzzy
+msgid "Maximum peers _overall:"
+msgstr ""
+"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Gehienezko kide-kopurua _guztira:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Gehienezko kide _guztira:"
+
+msgid "Enable µ_TP for peer connections"
+msgstr "Gaitu µ_TP kideen konexioetarako"
+
+msgid "µTP is a tool for reducing network congestion."
+msgstr "µTP sarearen pilaketa txikiagotzeko tresna bat da."
+
+#, fuzzy
+#| msgid "Use PE_X to find more peers"
+msgid "Use PE_X to find more peers for public torrents"
+msgstr "Erabili PE_X kide gehiago aurkitzeko"
+
+#, fuzzy
+msgid "PEX is a tool for exchanging peer lists with the peers you're connected to."
+msgstr ""
+"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"PEX zurekin konektatuta dauden kideekin kide-zerrendak trukatzeko tresna bat da.\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"PEX konektatuta zauden hartzaileekin kideen zerrendak trukatzeko tresna bat da."
+
+#, fuzzy
+#| msgid "Use _DHT to find more peers"
+msgid "Use _DHT to find more peers for public torrents"
+msgstr "Erabili _DHT kide gehiago aurkitzeko"
+
+#, fuzzy
+msgid "DHT is a tool for finding peers without a tracker."
+msgstr ""
+"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"DHT kideak aztarnaririk gabe aurkitzeko tresna bat da.\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"DHT aztarnari gabeko kideak bilatzeko tresna bat da."
+
+#, fuzzy
+#| msgid "Use _Local Peer Discovery to find more peers"
+msgid "Use _Local Peer Discovery to find more peers for public torrents"
+msgstr "Erabili Kideen Aurkikuntza Lokala (LPD) kide gehiago aurkitzeko"
+
+#, fuzzy
+msgid "LPD is a tool for finding peers on your local network."
+msgstr ""
+"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"LDP zure sare lokalean kideak aurkitzeko tresna bat da.\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"LPD zure sare lokalean kide gehiago bilatzeko tresna bat da."
+
+msgid "Default Public Trackers"
+msgstr "Aztarnari publiko lehenetsiak"
+
+#, fuzzy
+msgid ""
+"Trackers to use on all public torrents.\n"
+"\n"
+"To add a backup URL, add it on the next line after a primary URL.\n"
+"To add a new primary URL, add it after a blank line."
+msgstr ""
+"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Torrent publiko guztietan erabili beharreko aztarnariak.\n"
+"\n"
+"Segurtasun-kopiarako URL bat gehitzeko, URL nagusiaren ondorengo errenkadan gehitu ezazu.\n"
+"URL nagusi berri bat gehitzeko, errenkada huts baten ondoren gehitu ezazu.\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Torrent publiko guztietan erabiltzeko aztarnariak (''trackers'').To add a backup URL, add it on the next line after a primary URL.URLaren babeskopia gehitzeko, gehitu hurrengo lerroan, hasierako URLaren ostean.Oinarrizko URL bat gehitzekotan, gehitu lerro zuriaren ostean."
+
+msgid "Network"
+msgstr "Sarea"
+
+msgid "Desktop"
+msgstr "Mahaigaina"
+
+msgid "_Prevent computer from sleeping with active torrents"
+msgstr ""
+
+#, fuzzy
+msgid "Show {appname} icon in the _notification area"
+msgstr ""
+"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Erakutsi {appname}-en ikonoa _jakinarazpen-arean\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Erakutsi _{appname} ikonoa jakinarazpen eremuan"
+
+msgid "Notification"
+msgstr "Jakinarazpena"
+
+#, fuzzy
+msgid "Show a notification when torrents are a_dded"
+msgstr ""
+"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Erakutsi jakinarazpena torrent-ak _gehitzean\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Erakutsi jakinarazpen bat torreta gehitzen denean"
+
+#, fuzzy
+msgid "Show a notification when torrents _finish"
+msgstr ""
+"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Erakutsi jakinarazpena torrent-ak _osatzean\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"E_rakutsi jakinarazpen bat torrentak amaitzean"
+
+#, fuzzy
+msgid "Play a _sound when torrents finish"
+msgstr ""
+"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Erre_produzitu soinu bat torrent-ak osatzean\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Jo soinu bat torrentek amaitzean"
+
+#, fuzzy
+msgid "Remote Control"
+msgstr ""
+"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Urrutiko kontrola\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Urruneko Kontrola"
+
+#, fuzzy
+msgid "Allow _remote access"
+msgstr ""
+"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Baimendu _urrutitik sartzea\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Ahalbidetu _urruneko sarbidea"
+
+#, fuzzy
+#| msgid "_Open web client"
+msgid "_Open Web Client"
+msgstr "_Ireki web bezeroa"
+
+msgid "HTTP _port:"
+msgstr "HTTP _ataka:"
+
+#, fuzzy
+msgid "Use _authentication"
+msgstr ""
+"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Erabili _autentifikazioa\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"E_rabili autentifikazioa"
+
+#, fuzzy
+msgid "_Username:"
+msgstr ""
+"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"E_rabiltzaile-izena:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Erabiltzaile-izena:\n"
+"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Erabiltzaile-_izena:"
+
+#, fuzzy
+msgid "Pass_word:"
+msgstr ""
+"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Pa_sahitza:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Pasahitza:"
+
+#, fuzzy
+msgid "Only allow these IP a_ddresses:"
+msgstr ""
+"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Onartue IP he_lbide hau, ez besterik:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"A_halbidetu IP helbide hauek bakarrik:"
+
+msgid "Addresses:"
+msgstr "Helbideak:"
+
+msgid "IP addresses may use wildcards, such as 192.168.*.*"
+msgstr "IP helbideetarako komodinak erabil daitezke, adibidez 192.168.*.*"
+
+#, fuzzy
+msgid "Remote"
+msgstr ""
+"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Urrutikoa\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Urrunekoa"
+
+#, fuzzy
+msgid "Set Torrent Location"
+msgstr ""
+"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Ezarri torrent-aren kokapena\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Ezarri Torrentaren Kokalekua"
+
+msgid "_Apply"
+msgstr "_Aplikatu"
+
+msgid "Location"
+msgstr "Kokapena"
+
+msgid "New _location:"
+msgstr "_Kokaleku berria:"
+
+#, fuzzy
+msgid "_Move from the current folder"
+msgstr ""
+"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Mugitu uneko karpetatik\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Mugitu oraingo karpetatik"
+
+#, fuzzy
+msgid "Local data is _already there"
+msgstr ""
+"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Datu lokalak _jadanik han daude\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Datu lokalak jadanik hor daude"
+
+#, fuzzy
+msgid "Current Session"
+msgstr ""
+"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Uneko saioa\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Oraingo Saioa"
+
+#, fuzzy
+msgid "Ratio:"
+msgstr ""
+"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Partekatze-tasa:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Maila:"
+
+msgid "Duration:"
+msgstr "Iraupena:"
+
+msgid "Total"
+msgstr "Guztira"
+
+msgid "Open URL"
+msgstr "Ireki URLa"
+
+msgid "Open torrent from URL"
+msgstr "Ireki torrent-a URL batetik"
+
+msgid "_URL"
+msgstr "_URLa"
+
+msgid "The torrent file '{path}' is already in use by '{torrent_name}'."
+msgstr "'{path}' torrent-fitxategia dagoeneko honek erabilita dago: '{torrent_name}'."
+
+msgid "Couldn't open torrent"
+msgstr "Ezin da torrent-a ireki"
+
+msgid "Couldn't move '{path}' to trash: {error} ({error_code})"
+msgstr "Ezin izan da '{path}' zakarrontzira mugitu: {error} ({error_code})"
+
+#, fuzzy
+#| msgid "Couldn't create proxy for '{bus}': {error} ({error_code})"
+msgid "Couldn't launch default application for URI '{uri}': {error} ({error_code})"
+msgstr "Ezin izan da '{bus}'(r)entzako proxya sortu: {error} ({error_code})"
+
+#, fuzzy
+#| msgid "Couldn't open '{path}': {error} ({error_code})"
+msgid "Couldn't invoke xdg-open for URI '{uri}': {error} ({error_code})"
+msgstr "Ezin izan da '{path}' ireki: {error} ({error_code})"
+
+msgid "Couldn't open '{url}'"
+msgstr "Ezin izan da '{url}' ireki"
+
+msgid "Unsupported URL: '{url}'"
+msgstr "URL baliogabea: '{url}'"
+
+msgid "{appname} doesn't know how to use '{url}'"
+msgstr "{appname}-ek ez daki '{url}' nola erabili"
+
+msgid "This magnet link appears to be intended for something other than BitTorrent."
+msgstr "Magnet esteka honek BitTorrent ez den zerbaiterako dela ematen du."
 
 msgid "{days_from_now:L} day from now"
 msgid_plural "{days_from_now:L} days from now"
@@ -832,15 +2284,94 @@ msgid_plural "{hours_ago:L} hours ago"
 msgstr[0] "Orain dela {hours_ago:L} ordu"
 msgstr[1] "Orain dela {hours_ago:L} ordu"
 
+#, fuzzy
 msgid "{minutes_ago:L} minute ago"
 msgid_plural "{minutes_ago:L} minutes ago"
-msgstr[0] "Orain dela {minutes_ago:L} minutu"
-msgstr[1] "Orain dela {minutes_ago:L} minutu"
+msgstr[0] ""
+"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Orain dela {minutes_ago:L} minutu\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"duela minutu {minutes_ago:L}"
+msgstr[1] ""
+"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Orain dela {minutes_ago:L} minutu\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"duela {minutes_ago:L} minutu"
 
 msgid "{seconds_ago:L} second ago"
 msgid_plural "{seconds_ago:L} seconds ago"
 msgstr[0] "Orain dela {seconds_ago:L} segundo"
 msgstr[1] "Orain dela {seconds_ago:L} segundo"
+
+msgid "Got a list of {markup_begin}{peer_count} peer{markup_end} {time_span_ago}"
+msgid_plural "Got a list of {markup_begin}{peer_count} peers{markup_end} {time_span_ago}"
+msgstr[0] " {markup_begin}(e)ko zerrenda dago {peer_count} kiderekin{markup_end} {time_span_ago}"
+msgstr[1] " {markup_begin}(e)ko zerrenda dago {peer_count} kiderekin{markup_end} {time_span_ago}"
+
+msgid "Peer list request {markup_begin}timed out {time_span_ago}{markup_end}; will retry"
+msgstr "{markup_begin}kide-zerrendaren eskaeraren denbora amaitu da {time_span_ago}{markup_end}; beste saiakera bat egingo da"
+
+msgid "Got an error '{markup_begin}{error}{markup_end}' {time_span_ago}"
+msgstr "Errorea jaso da '{markup_begin}{error}{markup_end}' {time_span_ago}"
+
+#, fuzzy
+msgid "No updates scheduled"
+msgstr ""
+"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Ez da eguneraketarik programatu\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Ez dago eguneraketarik programatuta"
+
+msgid "Asking for more peers {time_span_from_now}"
+msgstr "Kide gehiago eskatzen {time_span_from_now}"
+
+#, fuzzy
+msgid "Queued to ask for more peers"
+msgstr ""
+"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Kide gehiago eskatzeko ilaratuta\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Kide gehiagoengatik galdetzeko ilaratuta"
+
+msgid "Asked for more peers {markup_begin}{time_span_ago}{markup_end}"
+msgstr "Kide gehiago eskatu dira {markup_begin}{time_span_ago}{markup_end}"
+
+msgid "Got a scrape error '{markup_begin}{error}{markup_end}' {time_span_ago}"
+msgstr "Zuriketa errorea gertatu da '{markup_begin}{error}{markup_end}' {time_span_ago}"
+
+#, fuzzy
+#| msgid "Tracker had {markup_begin}no information{markup_end} on peer counts {time_span} ago"
+msgid "Tracker had {markup_begin}no information{markup_end} on peer counts {time_span_ago}"
+msgstr "Aztarnariak {markup_begin}ez zuen kideei buruzko argibiderik {markup_end} duela {time_span}"
+
+msgid "Tracker had {markup_begin}{seeder_count} {seeder_or_seeders} and {leecher_count} {leecher_or_leechers}{markup_end} {time_span_ago}"
+msgstr "Aztarnariak zeukan {markup_begin}{seeder_count} {seeder_or_seeders} eta {leecher_count} {leecher_or_leechers}{markup_end} {time_span_ago}"
+
+msgid "seeder"
+msgid_plural "seeders"
+msgstr[0] "igorlea"
+msgstr[1] "igorleak"
+
+msgid "leecher"
+msgid_plural "leechers"
+msgstr[0] "leecher-a"
+msgstr[1] "izainak"
+
+#, fuzzy
+#| msgid "Asking for peer counts in {time_span_from_now}"
+msgid "Asking for peer counts {time_span_from_now}"
+msgstr "Kide kopuruaz galdetzen {time_span_from_now}"
+
+#, fuzzy
+msgid "Queued to ask for peer counts"
+msgstr ""
+"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Kide-kopurua eskatzeko ilaratuta\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Kide kopuruaz galdetzeko ilaratuta"
+
+msgid "Asked for peer counts {markup_begin}{time_span_ago}{markup_end}"
+msgstr "Kide kopuruaz galdetu da {markup_begin}{time_span_ago}{markup_end}"
 
 msgid "{days:L} day"
 msgid_plural "{days:L} days"
@@ -852,15 +2383,38 @@ msgid_plural "{hours:L} hours"
 msgstr[0] "{hours:L} ordu"
 msgstr[1] "{hours:L} ordu"
 
+#. Translators: Spin box format, "Stop seeding if idle for: [ 5 minutes ]"
+#, fuzzy
 msgid "{minutes:L} minute"
 msgid_plural "{minutes:L} minutes"
-msgstr[0] "{minutes:L} minutu"
-msgstr[1] "{minutes:L} minutu"
+msgstr[0] ""
+"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{minutes:L} minutu\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"minutu {minutes:L}\n"
+"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{minutes:L} minutu"
+msgstr[1] ""
+"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{minutes:L} minutu\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{minutes:L} minutu\n"
+"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{minutes:L} minutu"
 
+#, fuzzy
 msgid "{seconds:L} second"
 msgid_plural "{seconds:L} seconds"
-msgstr[0] "{seconds:L} segundo"
-msgstr[1] "{seconds:L} segundo"
+msgstr[0] ""
+"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{seconds:L} segundo\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{seconds:L} segundu"
+msgstr[1] ""
+"#-#-#-#-#  eu.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{seconds:L} segundo\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{seconds:L} segundu"
 
 msgid "{days_left:L} day left"
 msgid_plural "{days_left:L} days left"
@@ -882,761 +2436,6 @@ msgid_plural "{seconds_left:L} seconds left"
 msgstr[0] "{seconds_left:L} segundo falta da"
 msgstr[1] "{seconds_left:L} segundo falta dira"
 
-msgid "The torrent file '{path}' is already in use by '{torrent_name}'."
-msgstr "'{path}' torrent-fitxategia dagoeneko honek erabilita dago: '{torrent_name}'."
-
-msgid "Couldn't open torrent"
-msgstr "Ezin da torrent-a ireki"
-
-msgid "Couldn't move '{path}' to trash: {error} ({error_code})"
-msgstr "Ezin izan da '{path}' zakarrontzira mugitu: {error} ({error_code})"
-
-msgid "Couldn't open '{url}'"
-msgstr "Ezin izan da '{url}' ireki"
-
-msgid "Unsupported URL: '{url}'"
-msgstr "URL baliogabea: '{url}'"
-
-#. modal
-msgid "{appname} doesn't know how to use '{url}'"
-msgstr "{appname}-ek ez daki '{url}' nola erabili"
-
-msgid "This magnet link appears to be intended for something other than BitTorrent."
-msgstr "Magnet esteka honek BitTorrent ez den zerbaiterako dela ematen du."
-
-msgid "Retransmission"
-msgstr "Retransmission"
-
-#. parse the command line
-msgid "Where to look for configuration files"
-msgstr "Non bilatu konfigurazio-fitxategiak"
-
-msgid "Start with all torrents paused"
-msgstr "Abiarazi torrent guztiak pausatuta"
-
-msgid "Start minimized in notification area"
-msgstr "Abiarazi jakinarazpen-arean ikonotuta"
-
-msgid "Show version number and exit"
-msgstr "Erakutsi bertsio-zenbakia eta irten"
-
-msgid "[torrent files or urls]"
-msgstr "[torrent fitxategiak edo URLak]"
-
-msgid "Run '{program} --help' to see a full list of available command line options.\n"
-msgstr "Exekutatu '{program} --help' eskuragarri dagoen komando-lerro bidezko aukeren zerrenda osoa ikusteko.\n"
-
-msgid "B/s"
-msgstr ""
-
-msgid "GB/s"
-msgstr "GB/s"
-
-msgid "MB/s"
-msgstr "MB/s"
-
-msgid "TB/s"
-msgstr "TB/s"
-
-msgid "kB/s"
-msgstr "kB/s"
-
-msgid "B"
-msgstr ""
-
-msgid "GiB"
-msgstr "GiB"
-
-msgid "KiB"
-msgstr "KiB"
-
-msgid "MiB"
-msgstr "MiB"
-
-msgid "TiB"
-msgstr "TiB"
-
-msgid "GB"
-msgstr "GB"
-
-msgid "MB"
-msgstr "MB"
-
-msgid "TB"
-msgstr "TB"
-
-msgid "kB"
-msgstr "kB"
-
-msgid "BitTorrent Client"
-msgstr "BitTorrent bezeroa"
-
-msgid "Download and share files over BitTorrent"
-msgstr "Deskargatu eta partekatu fitxategiak BitTorrent bidez"
-
-#. Translators: Search terms to find this application. Do NOT translate or localize the semicolons! The list MUST also end with a semicolon!
-msgid "torrents;downloading;uploading;share;sharing;"
-msgstr "torrentak;deskargatzen;kargatzen;partekatu;partekatzen;"
-
-msgid "Start Retransmission with All Torrents Paused"
-msgstr "Abiarazi Retransmission Torrent guztiak pausatuta mantenduz"
-
-msgid "Start Retransmission Minimized"
-msgstr "Abiarazi Retransmission minimizatua"
-
-msgid "Open a torrent"
-msgstr "Ireki torrent bat"
-
-msgid "Open _URL…"
-msgstr "Ireki _URL-a…"
-
-msgid "Open URL…"
-msgstr "Ireki URL-a…"
-
-msgid "_New…"
-msgstr "_Berria…"
-
-msgid "_Start All"
-msgstr "_Abiarazi Guztiak"
-
-msgid "Start all torrents"
-msgstr "Abiarazi torrent guztiak"
-
-msgid "_Pause All"
-msgstr "_Pausatu Guztiak"
-
-msgid "Pause all torrents"
-msgstr "Pausatu torrent guztiak"
-
-msgid "_Quit"
-msgstr "_Utzi"
-
-msgid "Select _All"
-msgstr "Hautatu _Guztiak"
-
-msgid "Dese_lect All"
-msgstr "_Deshautatu Guztiak"
-
-msgid "_Preferences"
-msgstr "_Hobespenak"
-
-msgid "_Properties"
-msgstr "_Ezaugarriak"
-
-msgid "Torrent properties"
-msgstr "Torrentaren ezaugarriak"
-
-msgid "Open Fold_er"
-msgstr "Ireki karpe_ta"
-
-msgid "_Start"
-msgstr "_Abiarazi"
-
-msgid "Start torrent"
-msgstr "Abiarazi torrenta"
-
-msgid "Start _Now"
-msgstr "Abiarazi _Orain"
-
-msgid "Start torrent now"
-msgstr "Abiarazi torrenta orain"
-
-msgid "Ask Tracker for _More Peers"
-msgstr "Galdetu Aztarnariari _Pare Gehiagorako"
-
-msgid "Move to _Top"
-msgstr "Mugitu _Goren"
-
-msgid "Move _Up"
-msgstr "Mugitu G_ora"
-
-msgid "Move _Down"
-msgstr "Mugitu _Behera"
-
-msgid "Move to _Bottom"
-msgstr "Mugitu Be_heren"
-
-msgid "_Pause"
-msgstr "_Pausatu"
-
-msgid "Pause torrent"
-msgstr "Pausatu torrenta"
-
-msgid "Set _Location…"
-msgstr "Ezarri _Kokalekua…"
-
-msgid "_Verify Local Data"
-msgstr "_Egiaztatu tokiko datuak"
-
-msgid "Copy _Magnet Link to Clipboard"
-msgstr "Kopiatu _Magnet Lotura Gakora"
-
-msgid "Remove torrent"
-msgstr "Kendu torrenta"
-
-msgid "_Delete Files and Remove"
-msgstr "_Ezabatu fitxategiak eta kendu"
-
-msgid "_Compact View"
-msgstr "_Bista trinkoa"
-
-msgid "_Toolbar"
-msgstr "_Tresnabarra"
-
-msgid "_Filterbar"
-msgstr "_Iragazki-barra"
-
-msgid "_Statusbar"
-msgstr "_Egoera-barra"
-
-msgid "Sort by _Activity"
-msgstr "Ordenatu _aktibitatearen arabera"
-
-msgid "Sort by A_ge"
-msgstr "Ordenatu a_dinaren arabera"
-
-msgid "Sort by _Name"
-msgstr "Ordenatu _izenaren arabera"
-
-msgid "Sort by _Progress"
-msgstr "Ordenatu aurrera_penaren arabera"
-
-msgid "Sort by _Queue"
-msgstr "Ordenatu i_lararen arabera"
-
-msgid "Sort by Rati_o"
-msgstr "Ordenatu _tasaren arabera"
-
-msgid "Sort by Si_ze"
-msgstr "Ordenatu ta_mainaren arabera"
-
-msgid "Sort by Stat_e"
-msgstr "Ordenatu ego_eraren arabera"
-
-msgid "Sort by Time _Left"
-msgstr "Ordenatu _geratzen den denboraren arabera"
-
-msgid "Re_verse Sort Order"
-msgstr "Al_derantzikatu ordena"
-
-msgid "Message _Log"
-msgstr "Mezuen _egunkaria"
-
-msgid "_Statistics"
-msgstr "_Estatistikak"
-
-msgid "_Donate"
-msgstr "_Dirulaguntza"
-
-msgid "_Contents"
-msgstr "_Edukiak"
-
-msgid "_About"
-msgstr "_Honi buruz"
-
-msgid "_Show {appname}"
-msgstr "_Erakutsi {appname}"
-
-msgid "Enable Alternative Speed _Limits"
-msgstr "Gaitu abiadura-muga a_lternatiboak"
-
-msgid "_Add"
-msgstr "_Gehitu"
-
-msgid "Tracker"
-msgstr "Aztarnaria"
-
-msgid "_Announce URL:"
-msgstr "_Iragarpen URLa:"
-
-msgid "_Close"
-msgstr "_Itxi"
-
-msgid "Activity"
-msgstr "Jarduera"
-
-msgid "Torrent size:"
-msgstr "Torrent-aren tamaina:"
-
-msgid "Have:"
-msgstr "Dauka:"
-
-msgid "Uploaded:"
-msgstr "Kargatua:"
-
-msgid "Downloaded:"
-msgstr "Deskargatua:"
-
-msgid "State:"
-msgstr "Egoera:"
-
-msgid "Running time:"
-msgstr "Abian daraman denbora:"
-
-msgid "Remaining time:"
-msgstr "Geratzen den denbora:"
-
-msgid "Last activity:"
-msgstr "Azken jarduera:"
-
-msgid "Error:"
-msgstr "Errorea:"
-
-msgid "Details"
-msgstr "Xehetasunak"
-
-msgid "Location:"
-msgstr "Kokapena:"
-
-msgid "Hash:"
-msgstr "Hash-a:"
-
-msgid "Privacy:"
-msgstr "Pribatutasuna:"
-
-msgid "Origin:"
-msgstr "Jatorria:"
-
-msgid "Added:"
-msgstr "Gehitze-data:"
-
-msgid "Comment:"
-msgstr "Iruzkina:"
-
-msgid "Information"
-msgstr "Informazioa"
-
-msgid "Show _more details"
-msgstr "Erakutsi _xehetasun gehiago"
-
-msgid "Peers"
-msgstr "Kideak"
-
-msgid "_Edit"
-msgstr "_Editatu"
-
-msgid "Show _backup trackers"
-msgstr "Erakutsi _babeskopiako aztarnariak"
-
-msgid "File listing not available for combined torrent properties"
-msgstr "Ezin dira fitxategiak zerrendatu torrent konbinatuen propietateetarako"
-
-msgid "Files"
-msgstr "Fitxategiak"
-
-msgid "Speed"
-msgstr "Abiadura"
-
-msgid "Honor global _limits"
-msgstr "Bete muga _orokorrak"
-
-msgid "Limit _download speed ({speed_units}):"
-msgstr "Mugatu _deskargaren abiadura ({speed_units}):"
-
-msgid "Limit _upload speed ({speed_units}):"
-msgstr "Mugatu _igoera-abiadura ({speed_units}):"
-
-msgid "Torrent _priority:"
-msgstr "Torrent-en _lehentasuna:"
-
-msgid "Seeding Limits"
-msgstr "Igortze-Mugak"
-
-msgid "_Ratio:"
-msgstr "_Partekatze-tasa:"
-
-msgid "_Idle:"
-msgstr "_Inaktibo:"
-
-msgid "Peer Connections"
-msgstr "Kideen konexioak"
-
-msgid "_Maximum peers:"
-msgstr "_Gehienezko kide-kopurua:"
-
-msgid "Options"
-msgstr "Aukerak"
-
-msgid "Tracker Announce URLs"
-msgstr "Aztarnariak iragartzeko URLak"
-
-msgid ""
-"To add a backup URL, add it on the next line after a primary URL.\n"
-"To add a new primary URL, add it after a blank line."
-msgstr ""
-"Segurtasun-kopiarako URL bat gehitzeko, URL nagusiaren ondorengo errenkadan gehitu ezazu.\n"
-"Beste URL nagusi bat gehitzeko, errenkada huts baten ondoren gehitu ezazu."
-
-msgid "Also see Default Public Trackers in Edit > Preferences > Network"
-msgstr "Aztarnari publiko lehenetsiak Editatu > Hobespenak > Sarea atalean ere ikusi ditzakezu"
-
-msgid "Torrent"
-msgstr "Torrent-a"
-
-msgid "Statistics"
-msgstr "Estatistikak"
-
-msgid "New Torrent"
-msgstr "Torrent berria"
-
-msgid "_New"
-msgstr "_Berria"
-
-msgid "Sa_ve to:"
-msgstr "Go_rde honela:"
-
-msgid "Source F_older:"
-msgstr "It_urburu-karpeta:"
-
-msgid "Source _File:"
-msgstr "I_turburu-fitxategia:"
-
-msgid "Piece size:"
-msgstr "Zatiaren tamaina:"
-
-msgid "Properties"
-msgstr "Propietateak"
-
-msgid "_Trackers:"
-msgstr "_Aztarnariak:"
-
-msgid "Co_mment:"
-msgstr "Iru_zkina:"
-
-msgid "_Source:"
-msgstr "_Jatorria:"
-
-msgid "_Private torrent"
-msgstr "Torrent _pribatua"
-
-msgid "Creating torrent…"
-msgstr "Torrent-a sortzen…"
-
-msgid "Message Log"
-msgstr "Mezuen egunkaria"
-
-msgid "Save _As"
-msgstr "Gorde _honela"
-
-msgid "Clear"
-msgstr "Garbitu"
-
-msgid "P_ause"
-msgstr "P_ausatu"
-
-msgid "Level"
-msgstr "Maila"
-
-msgid "Torrent Options"
-msgstr "Torrent-aren aukerak"
-
-msgid "_Torrent file:"
-msgstr "_Torrent-fitxategia:"
-
-msgid "Select Source File"
-msgstr "Hautatu iturburu-fitxategia"
-
-msgid "_Destination folder:"
-msgstr "_Helburuko karpeta:"
-
-msgid "Select Destination Folder"
-msgstr "Hautatu helburuko karpeta"
-
-msgid "_Start when added"
-msgstr "_Abiarazi gehitzean"
-
-msgid "Mo_ve torrent file to the trash"
-msgstr "Mu_gitu torrent-fitxategia zakarrontzira"
-
-msgid "{appname} Preferences"
-msgstr "{appname}-en hobespenak"
-
-msgid "_Help"
-msgstr "_Laguntza"
-
-msgid "Speed Limits"
-msgstr "Abiadura-mugak"
-
-#. Checkbox to limit upload speed
-msgid "_Upload ({speed_units}):"
-msgstr "_Igo ({speed_units}):"
-
-#. Checkbox to limit download speed
-msgid "_Download ({speed_units}):"
-msgstr "_Deskarga ({speed_units}):"
-
-msgid "Alternative Speed Limits"
-msgstr "Abiadura-muga alternatiboak"
-
-msgid "Override normal speed limits manually or at scheduled times"
-msgstr "Gainidatzi abiadura-muga normalak eskuz edo programatutako orduetan"
-
-#. Labels a spinbutton for alternate upload speed limits
-msgid "U_pload ({speed_units}):"
-msgstr "I_goera ({speed_units}):"
-
-#. Labels a spinbutton for alternate download speed limits
-msgid "Do_wnload ({speed_units}):"
-msgstr "Des_karga ({speed_units}):"
-
-msgid "_Scheduled times:"
-msgstr "_Programatutako orduak:"
-
-msgid "_On days:"
-msgstr "E_gun hauetan:"
-
-#. Label goes between two time selectors, e.g. "limit speeds from [time] to [time]"
-msgid "_to"
-msgstr "_hona"
-
-msgctxt "Gerund"
-msgid "Adding"
-msgstr "Gehitzen"
-
-msgid "Automatically add torrent files _from:"
-msgstr "Gehitu automatikoki torrent-fitxategiak _hemendik:"
-
-msgid "Show the Torrent Options _dialog"
-msgstr "Erakutsi Torrent aukeren _elkarrizketa"
-
-msgid "_Start added torrents"
-msgstr "_Hasi gehitutako torrent horiekin"
-
-msgid "Save to _Location:"
-msgstr "Gorde he_men:"
-
-msgid "Download Queue"
-msgstr "Deskargen ilara"
-
-msgid "Ma_ximum active downloads:"
-msgstr "Deskarga aktiboen Mu_ga :"
-
-msgid "Downloads sharing data in the last _N minutes are active:"
-msgstr "Datuak partekatzen egindako deskargak azken _N minutuetan aktibo segitzen dute:"
-
-msgid "Incomplete"
-msgstr "Osatu gabea"
-
-msgid "Append \"._part\" to incomplete files' names"
-msgstr "Gehitu \"._part\" osorik ez dauden fitxategi-izenei"
-
-msgid "Keep _incomplete torrents in:"
-msgstr "Mantendu _osatu gabeko torrent-ak hemen:"
-
-msgid "Call scrip_t when done downloading:"
-msgstr "Deitu scrip_t-a deskarga amaitzerakoan:"
-
-msgctxt "Gerund"
-msgid "Downloading"
-msgstr "Deskargatzen"
-
-msgid "Limits"
-msgstr "Mugak"
-
-msgid "Stop seeding at _ratio:"
-msgstr "Gelditu igortzen _maila honetan:"
-
-msgid "Stop seeding if idle for _N minutes:"
-msgstr "Gelditu igortzen _N minutuz geratuta badago:"
-
-msgid "Call scrip_t when done seeding:"
-msgstr "Deitu scrip_t-a igortzea amaitzerakoan:"
-
-msgctxt "Gerund"
-msgid "Seeding"
-msgstr "Igortzen"
-
-msgid "Privacy"
-msgstr "Pribatutasuna"
-
-msgid "_Encryption mode:"
-msgstr "_Zifratze-modua:"
-
-msgid "Blocklist"
-msgstr "Blokeo-zerrenda"
-
-msgid "Enable _blocklist:"
-msgstr "Gaitu _blokeo-zerrenda:"
-
-msgid "Enable _automatic updates"
-msgstr "Gaitu eguneratze _automatikoak"
-
-msgid "_Update"
-msgstr "Eg_uneratu"
-
-msgid "Listening Port"
-msgstr "Entzuteko ataka"
-
-msgid "_Port used for incoming connections:"
-msgstr "_Sarrerako konexioetarako erabilitako ataka:"
-
-msgid "Pick a _random port every time Transmission is started"
-msgstr "Hautatu _ausazko ataka bat Transmission abiarazten den bakoitzean"
-
-msgid "Use UPnP or NAT-PMP port _forwarding from my router"
-msgstr "Erabili UPnP edo NAT-PMP ataka-birbidalketa nire bideratzailetik"
-
-msgid "Te_st Port"
-msgstr "_Probatu ataka"
-
-msgid "Peer Limits"
-msgstr "Kideen mugak"
-
-msgid "Maximum peers per _torrent:"
-msgstr "Gehienezko kide-kopurua _torrent bakoitzeko:"
-
-msgid "Maximum peers _overall:"
-msgstr "Gehienezko kide-kopurua _guztira:"
-
-msgid "Enable µ_TP for peer communication"
-msgstr "Gaitu µ_TP kideen komunikaziorako"
-
-msgid "µTP is a tool for reducing network congestion."
-msgstr "µTP sarearen pilaketa txikiagotzeko tresna bat da."
-
-msgid "Use PE_X to find more peers"
-msgstr "Erabili PE_X kide gehiago aurkitzeko"
-
-msgid "PEX is a tool for exchanging peer lists with the peers you're connected to."
-msgstr "PEX zurekin konektatuta dauden kideekin kide-zerrendak trukatzeko tresna bat da."
-
-msgid "Use _DHT to find more peers"
-msgstr "Erabili _DHT kide gehiago aurkitzeko"
-
-msgid "DHT is a tool for finding peers without a tracker."
-msgstr "DHT kideak aztarnaririk gabe aurkitzeko tresna bat da."
-
-msgid "Use _Local Peer Discovery to find more peers"
-msgstr "Erabili Kideen Aurkikuntza Lokala (LPD) kide gehiago aurkitzeko"
-
-msgid "LPD is a tool for finding peers on your local network."
-msgstr "LDP zure sare lokalean kideak aurkitzeko tresna bat da."
-
-msgid "Default Public Trackers"
-msgstr "Aztarnari publiko lehenetsiak"
-
-msgid ""
-"Trackers to use on all public torrents.\n"
-"\n"
-"To add a backup URL, add it on the next line after a primary URL.\n"
-"To add a new primary URL, add it after a blank line."
-msgstr ""
-"Torrent publiko guztietan erabili beharreko aztarnariak.\n"
-"\n"
-"Segurtasun-kopiarako URL bat gehitzeko, URL nagusiaren ondorengo errenkadan gehitu ezazu.\n"
-"URL nagusi berri bat gehitzeko, errenkada huts baten ondoren gehitu ezazu."
-
-msgid "Network"
-msgstr "Sarea"
-
-msgid "Desktop"
-msgstr "Mahaigaina"
-
-msgid "_Inhibit hibernation when torrents are active"
-msgstr "_Galarazi hibernazioa torrent-ak aktibo daudenean"
-
-msgid "Show {appname} icon in the _notification area"
-msgstr "Erakutsi {appname}-en ikonoa _jakinarazpen-arean"
-
-msgid "Notification"
-msgstr "Jakinarazpena"
-
-msgid "Show a notification when torrents are a_dded"
-msgstr "Erakutsi jakinarazpena torrent-ak _gehitzean"
-
-msgid "Show a notification when torrents _finish"
-msgstr "Erakutsi jakinarazpena torrent-ak _osatzean"
-
-msgid "Play a _sound when torrents finish"
-msgstr "Erre_produzitu soinu bat torrent-ak osatzean"
-
-msgid "Remote Control"
-msgstr "Urrutiko kontrola"
-
-msgid "Allow _remote access"
-msgstr "Baimendu _urrutitik sartzea"
-
-msgid "_Open web client"
-msgstr "_Ireki web bezeroa"
-
-msgid "HTTP _port:"
-msgstr "HTTP _ataka:"
-
-msgid "Use _authentication"
-msgstr "Erabili _autentifikazioa"
-
-msgid "_Username:"
-msgstr "E_rabiltzaile-izena:"
-
-msgid "Pass_word:"
-msgstr "Pa_sahitza:"
-
-msgid "Only allow these IP a_ddresses:"
-msgstr "Onartue IP he_lbide hau, ez besterik:"
-
-msgid "Addresses:"
-msgstr "Helbideak:"
-
-msgid "IP addresses may use wildcards, such as 192.168.*.*"
-msgstr "IP helbideetarako komodinak erabil daitezke, adibidez 192.168.*.*"
-
-msgid "Remote"
-msgstr "Urrutikoa"
-
-msgid "Set Torrent Location"
-msgstr "Ezarri torrent-aren kokapena"
-
-msgid "_Apply"
-msgstr "_Aplikatu"
-
-msgid "Location"
-msgstr "Kokapena"
-
-msgid "Torrent _location:"
-msgstr "Torrent-aren _kokapena:"
-
-msgid "_Move from the current folder"
-msgstr "_Mugitu uneko karpetatik"
-
-msgid "Local data is _already there"
-msgstr "Datu lokalak _jadanik han daude"
-
-msgid "Current Session"
-msgstr "Uneko saioa"
-
-msgid "Ratio:"
-msgstr "Partekatze-tasa:"
-
-msgid "Duration:"
-msgstr "Iraupena:"
-
-msgid "Total"
-msgstr "Guztira"
-
-msgid "Open URL"
-msgstr "Ireki URLa"
-
-msgid "Open torrent from URL"
-msgstr "Ireki torrent-a URL batetik"
-
-msgid "_URL"
-msgstr "_URLa"
-
-msgid "Couldn't parse announce response: {error} ({error_code})"
-msgstr "Ezin izan da iragarpen erantzuna aztertu: {error} ({error_code})"
-
-msgid "Couldn't parse scrape response: {error} ({error_code})"
-msgstr "Ezin izan da zuriketa erantzuna aztertu: {error} ({error_code})"
-
-msgid "Unknown error"
-msgstr "Errore ezezaguna"
-
-msgid "{ip_protocol} connection failed"
-msgstr ""
-
-msgid "Couldn't look up '{address}:{port}' in {ip_protocol}: {error} ({error_code})"
-msgstr ""
-
 msgid "Announce error: {error} ({url})"
 msgstr ""
 
@@ -1654,20 +2453,63 @@ msgstr "Aztarnariak ez du erantzun"
 msgid "Success"
 msgstr "Behar bezala gauzatu da"
 
+msgid "Couldn't parse announce response: {error} ({error_code})"
+msgstr "Ezin izan da iragarpen erantzuna aztertu: {error} ({error_code})"
+
+msgid "Couldn't parse scrape response: {error} ({error_code})"
+msgstr "Ezin izan da zuriketa erantzuna aztertu: {error} ({error_code})"
+
+msgid "Unknown error"
+msgstr "Errore ezezaguna"
+
+msgid "{ip_protocol} connection failed"
+msgstr ""
+
+msgid "Couldn't look up '{address}:{port}' in {ip_protocol}: {error} ({error_code})"
+msgstr ""
+
 msgid "Blocklist '{path}' has {count} entry"
 msgid_plural "Blocklist '{path}' has {count} entries"
 msgstr[0] "'{path}' blokeo-zerrendak {count} sarrera du"
 msgstr[1] "'{path}' blokeo-zerrendak {count} sarrera ditu"
 
-#. don't try to display the actual lines - it causes issues
-msgid "Couldn't parse line: '{line}'"
+#, fuzzy
+#| msgid "Couldn't parse line: '{line}'"
+msgid "Couldn't parse line {line}: {base64}"
 msgstr "Ezin izan da errenkada aztertu: '{line}'"
 
-msgid "Rewriting old blocklist file format to new format"
+#, fuzzy
+#| msgid "Rewriting old blocklist file format to new format"
+msgid "Rewriting old blocklist file {path} to new format"
 msgstr "Blokeo-zerrendaren fitxategiaren formatua formatu berrira egokitzen"
+
+msgid "Blocklist is larger than {limit} MiB; ignoring it"
+msgstr ""
+
+#, fuzzy
+#| msgid "Couldn't fetch blocklist: {error} ({error_code})"
+msgid "Couldn't fetch blocklist: {errmsg}, response code: {error} ({error_code})"
+msgstr "Ezin izan da blokeo-zerrenda eskuratu: {error} ({error_code})"
+
+msgid "Couldn't fetch blocklist: {error} ({error_code})"
+msgstr "Ezin izan da blokeo-zerrenda eskuratu: {error} ({error_code})"
+
+msgid "Automatically updated blocklist, which now has {count} rules"
+msgstr ""
+
+msgid "Invalid tr_sched_days value {val}"
+msgstr ""
 
 msgid "{crypto_library} error: {error} ({error_code})"
 msgstr "{crypto_library} errorea: {error} ({error_code})"
+
+msgid "Couldn't read '{path}': Not a regular file"
+msgstr "Ezin izan da '{path}' irakurri: Ez da fitxategi arrunta"
+
+#, fuzzy
+#| msgid "Couldn't read '{path}'"
+msgid "Couldn't get '{path}': "
+msgstr "Ezin izan da '{path}' irakurri"
 
 msgid "Couldn't get '{path}': {error} ({error_code})"
 msgstr "Ezin izan da '{path}' eskuratu: {error} ({error_code})"
@@ -1684,20 +2526,14 @@ msgstr ""
 msgid "Successfully updated global {type} address to {ip} using {url}"
 msgstr ""
 
+msgid "Still waiting for disk IO on torrent {id}: {running} running, {queued} queued"
+msgstr ""
+
 msgid "Too many messages like this! I won't log this message anymore this session."
 msgstr "Honen moduko mezu gehiagi! Ez dut horrelako mezu gehiago erregistratuko saio honetan."
 
 msgid "Skipping '{path}': {error} ({error_code})"
 msgstr "'{path}' alde batera uzten: {error} ({error_code})"
-
-msgid "Couldn't create socket: {error} ({error_code})"
-msgstr "Ezin izan da socket-a sortu: {error} ({error_code})"
-
-msgid "Couldn't set source address {address} on {socket}: {error} ({error_code})"
-msgstr "Ezin izan da {address} jatorrizko helbidea zehaztu {socket} socket-ean: {error} ({error_code})"
-
-msgid "Couldn't connect socket {socket} to {address}:{port}: {error} ({error_code})"
-msgstr "Ezin izan da konektatu {socket}socket-a {address} helbidera:{port}: {error} ({error_code})"
 
 msgid "Couldn't bind port {port} on {address}: {error} ({error_code}) -- Is another copy of {appname} already running?"
 msgstr "Ezin izan da lotu {port} ataka {address} helbidean: {error} ({error_code}) -- Dagoeneko {appname}-eko beste kopia bat martxan dago?"
@@ -1714,8 +2550,35 @@ msgstr "Ezin izan da '{path}' aurrez esleitu: {error} ({error_code})"
 msgid "Couldn't truncate '{path}': {error} ({error_code})"
 msgstr "Ezin izan da '{path}' moztu: {error} ({error_code})"
 
+msgid "Couldn't create socket: {error} ({error_code})"
+msgstr "Ezin izan da socket-a sortu: {error} ({error_code})"
+
+msgid "Couldn't set source address {address} on {socket}: {error} ({error_code})"
+msgstr "Ezin izan da {address} jatorrizko helbidea zehaztu {socket} socket-ean: {error} ({error_code})"
+
+msgid "Couldn't connect socket {socket} to {address}:{port}: {error} ({error_code})"
+msgstr "Ezin izan da konektatu {socket}socket-a {address} helbidera:{port}: {error} ({error_code})"
+
 msgid "Unknown state: {state}"
 msgstr "Egoera ezezaguna: {state}"
+
+msgid "Starting"
+msgstr "Abiarazten"
+
+msgid "Forwarded"
+msgstr "Berbidalia"
+
+msgid "Stopping"
+msgstr "Gelditzen"
+
+msgid "Not forwarded"
+msgstr "Berbidali gabe"
+
+msgid "Mapped private port {private_port} to public port {public_port}"
+msgstr "{private_port} ataka pribatua {public_port}ataka publikoarekin lotu"
+
+msgid "State changed from '{old_state}' to '{state}'"
+msgstr "Egoera '{old_state}' egoeratik '{state}' egoerara aldatu da"
 
 msgid "Found public address '{address}'"
 msgstr "'{address}' helbide publikoa aurkitu da"
@@ -1747,23 +2610,21 @@ msgstr ""
 msgid "If your router supports UPnP, please make sure UPnP is enabled!"
 msgstr "Zure router-ak UPnP onartzen badu, ziurtatu ezazu UPnP gaituta dagoela!"
 
-msgid "Starting"
-msgstr "Abiarazten"
+#, fuzzy
+#| msgid "Couldn't test port: {error} ({error_code})"
+msgid "Couldn't test port: {errmsg}, response code: {error} ({error_code})"
+msgstr "Ezin izan da ataka probatu: {error} ({error_code})"
 
-msgid "Forwarded"
-msgstr "Berbidalia"
+msgid "Couldn't test port: {error} ({error_code})"
+msgstr "Ezin izan da ataka probatu: {error} ({error_code})"
 
-msgid "Stopping"
-msgstr "Gelditzen"
+#, fuzzy
+#| msgid "Couldn't fetch torrent: {error} ({error_code})"
+msgid "Couldn't fetch torrent: {errmsg}, Response code: {error} ({error_code})"
+msgstr "Ezin izan da torrent-a eskuratu: {error} ({error_code})"
 
-msgid "Not forwarded"
-msgstr "Berbidali gabe"
-
-msgid "Mapped private port {private_port} to public port {public_port}"
-msgstr "{private_port} ataka pribatua {public_port}ataka publikoarekin lotu"
-
-msgid "State changed from '{old_state}' to '{state}'"
-msgstr "Egoera '{old_state}' egoeratik '{state}' egoerara aldatu da"
+msgid "Couldn't fetch torrent: {error} ({error_code})"
+msgstr "Ezin izan da torrent-a eskuratu: {error} ({error_code})"
 
 msgid "Unix socket path must be fewer than {count} characters (including '{prefix}' prefix)"
 msgstr "Unix-eko socket bidea  {count} karaktere baino gutxiagokoa izan behar da ('{prefix}' aurrizkia barne)"
@@ -1821,29 +2682,24 @@ msgstr "Pasahitza beharrezkoa da"
 msgid "Serving RPC and Web requests from '{path}'"
 msgstr "RPC eta web-eskaerak zerbitzatzen '{path}' helbidetik"
 
-msgid "Couldn't test port: {error} ({error_code})"
-msgstr "Ezin izan da ataka probatu: {error} ({error_code})"
-
-msgid "Couldn't fetch blocklist: {error} ({error_code})"
-msgstr "Ezin izan da blokeo-zerrenda eskuratu: {error} ({error_code})"
-
-msgid "Couldn't fetch torrent: {error} ({error_code})"
-msgstr "Ezin izan da torrent-a eskuratu: {error} ({error_code})"
-
-msgid "Time to turn off turtle mode"
-msgstr "Dordoka-modua desgaitzeko unea"
-
-msgid "Time to turn on turtle mode"
+#, fuzzy
+#| msgid "Time to turn on turtle mode"
+msgid "Time to turn on alternative speed limits"
 msgstr "Dordoka-modua gaitzeko unea"
 
-msgid "Couldn't open session lock file '{path}': {error} ({error_code})"
-msgstr "Ezin da saioaren blokeatze-fitxategia ireki '{path}': {error} ({error_code})"
+#, fuzzy
+#| msgid "Time to turn off turtle mode"
+msgid "Time to turn off alternative speed limits"
+msgstr "Dordoka-modua desgaitzeko unea"
 
 msgid "Listening to incoming peer connections on {hostport}"
 msgstr "Sarrerako kideen konexioak entzutea aktibatuta {hostport}-n"
 
 msgid "{appname} version {version} starting"
 msgstr "{appname} {version} bertsioa abiarazten"
+
+msgid "Couldn't start disk IO workers, continuing without them: {error}"
+msgstr ""
 
 msgid "{appname} version {version} shutting down"
 msgstr "{appname} {version} bertsioa itzaltzen"
@@ -1853,8 +2709,11 @@ msgid_plural "Loaded {count} torrents"
 msgstr[0] "{count} torrent kargatu da"
 msgstr[1] "{count} torrent kargatu dira"
 
-msgid "Migrated torrent file from '{old_path}' to '{path}'"
-msgstr "Torrent-fitxategia '{old_path}' bidetik '{path}' bidera migratu da"
+msgid "Couldn't claim '{path}'. If another session is using it, the two will overwrite each other's settings, resume files and stats."
+msgstr ""
+
+msgid "Couldn't open session lock file '{path}': {error} ({error_code})"
+msgstr "Ezin da saioaren blokeatze-fitxategia ireki '{path}': {error} ({error_code})"
 
 msgid "Couldn't use metainfo from '{path}' for '{magnet}': {error} ({error_code})"
 msgstr "Ezin izan da '{path}'(e)ko metainformazioa erabili '{magnet}'(e)rako: {error} ({error_code})"
@@ -1886,14 +2745,32 @@ msgstr ""
 msgid "Removing torrent"
 msgstr "Torrent-a kentzen"
 
-msgid "Couldn't move '{old_path}' to '{path}': {error} ({error_code})"
+#, fuzzy
+#| msgid "Couldn't move '{old_path}' to '{path}': {error} ({error_code})"
+msgid "Couldn't move torrent files to '{path}': {error} ({error_code})"
 msgstr "Ezin izan da' {old_path}' '{path}'(e)ra mugitu: {error} ({error_code})"
 
 msgid "Paused torrent as no data was found! Ensure your drives are connected or use \"Set Location\", then use \"Verify Local Data\" again. To re-download, start the torrent."
 msgstr ""
 
+msgid "Couldn't move '{old_path}' to '{path}': {error} ({error_code})"
+msgstr "Ezin izan da' {old_path}' '{path}'(e)ra mugitu: {error} ({error_code})"
+
 msgid "Tracker warning: '{warning}' ({url})"
 msgstr ""
+
+#, fuzzy
+#| msgid "Removing torrent file '{path}'"
+msgid "Moving '{source}' will overwrite '{path}'"
+msgstr "'{path}' torrent fitxategia ezabatzen"
+
+#, fuzzy
+#| msgid "Couldn't move '{old_path}' to '{path}': {error} ({error_code})"
+msgid "Couldn't compare '{path}' with '{root}': {error} ({error_code}); leaving it alone"
+msgstr "Ezin izan da' {old_path}' '{path}'(e)ra mugitu: {error} ({error_code})"
+
+msgid "Migrated torrent file from '{old_path}' to '{path}'"
+msgstr "Torrent-fitxategia '{old_path}' bidetik '{path}' bidera migratu da"
 
 msgid "Couldn't parse '{filename}' line: '{line}'"
 msgstr "Ezin da parekatu '{filename}' errenkada: '{line}'"
@@ -1922,8 +2799,47 @@ msgstr ""
 msgid "Unknown socket family"
 msgstr "Socket familia ezezaguna"
 
-msgid "Couldn't read '{path}': Not a regular file"
-msgstr "Ezin izan da '{path}' irakurri: Ez da fitxategi arrunta"
+msgid "B"
+msgstr "B"
+
+msgid "KiB"
+msgstr "KiB"
+
+msgid "MiB"
+msgstr "MiB"
+
+msgid "GiB"
+msgstr "GiB"
+
+msgid "TiB"
+msgstr "TiB"
+
+msgid "B/s"
+msgstr "B/s"
+
+msgid "kB/s"
+msgstr "kB/s"
+
+msgid "MB/s"
+msgstr "MB/s"
+
+msgid "GB/s"
+msgstr "GB/s"
+
+msgid "TB/s"
+msgstr "TB/s"
+
+msgid "kB"
+msgstr "kB"
+
+msgid "MB"
+msgstr "MB"
+
+msgid "GB"
+msgstr "GB"
+
+msgid "TB"
+msgstr "TB"
 
 msgid "Couldn't parse JSON at position {position} '{text}': {error} ({error_code})"
 msgstr "Ezin izan da JSON-a aztertu {position} kokapenean '{text}': {error} ({error_code})"
@@ -1931,17 +2847,14 @@ msgstr "Ezin izan da JSON-a aztertu {position} kokapenean '{text}': {error} ({er
 msgid "Couldn't watch '{path}': {error} ({error_code})"
 msgstr "Ezin izan da '{path}' ikusi: {error} ({error_code})"
 
-msgid "Couldn't read event: {error} ({error_code})"
-msgstr "Ezin izan da ekitaldia irakurri: {error} ({error_code})"
-
 msgid "Couldn't read event: expected {expected_size}, got {actual_size}"
 msgstr "Ezin izan da ekitaldia irakurri: {expected_size} espero zen, eta {actual_size}aurkitu da"
 
-msgid "Couldn't read filename: {error} ({error_code})"
-msgstr "Ezin izan da fitxategi-izena irakurri: {error} ({error_code})"
-
 msgid "Couldn't read filename: expected {expected_size}, got {actual_size}"
 msgstr "Ezin izan da fitxategi-izena irakurri:  {expected_size} espero zen, eta {actual_size} aurkitu da"
+
+msgid "Couldn't read event: {error} ({error_code})"
+msgstr "Ezin izan da ekitaldia irakurri: {error} ({error_code})"
 
 msgid "Couldn't convert '{path}' to native path"
 msgstr "Ezin izan da '{path}' jatorrizko bidera bihurtu"
@@ -1961,10 +2874,13 @@ msgstr "Ezin izan da direktorio-aldaketei itxaron"
 msgid "Consider upgrading your curl installation."
 msgstr ""
 
+msgid "The minimum supported version is {curl_version}, you might face unexpected behaviour."
+msgstr ""
+
 msgid "curl {curl_version} is prone to SIGPIPE crashes. {details_url}"
 msgstr ""
 
-msgid "curl {curl_version} is prone to an eventfd double close vulnerability that might cause SIGABRT crashes for the transmission-daemon systemd service. {details_url}"
+msgid "curl {curl_version} is prone to an eventfd double close vulnerability that might cause SIGABRT crashes for the daemon systemd service. {details_url}"
 msgstr ""
 
 msgid "Will verify tracker certs using envvar CURL_CA_BUNDLE: {bundle}"
@@ -1976,8 +2892,399 @@ msgstr "NB: honek soilik funtzionatzen du libcurl openssl-rekin ala gnutls-rekin
 msgid "NB: Invalid certs will appear as 'Could not connect to tracker' like many other errors"
 msgstr "NB: Ziurtagiri baliogabeak 'Ezin izan da aztarnariarekin konektatu' gisa agertuko dira beste errore asko bezala"
 
+msgid "Aborting request: response body exceeded max size of {max_file_size} bytes"
+msgstr ""
+
 msgid "Couldn't fetch '{url}': expected HTTP response code {expected_code}, got {actual_code}"
 msgstr ""
+
+msgid "Server"
+msgstr "Zerbitzaria"
+
+msgid "C_redits"
+msgstr "_Kredituak"
+
+msgid "Credits"
+msgstr "Kredituak"
+
+msgid "About {appname}"
+msgstr "{appname}i buruz"
+
+msgid "Torrent Completed"
+msgstr "Osatutako Torrent-a"
+
+msgid "Torrents Completed"
+msgstr "Osatutako Torrent-ak"
+
+#. Translators: Text following the "Have:" label in torrent properties dialog;
+#. {current_size} is amount of downloaded and verified data
+msgid "{current_size} (100%)"
+msgstr "{current_size} (100%)"
+
+msgid "{current_size} of {complete_size} ({percent_done}%), {unverified_size} Unverified"
+msgstr "{current_size} --> {complete_size} ({percent_done}%), {unverified_size} Egiaztatu gabea"
+
+msgid "{total_size} ({piece_count:L} piece @ {piece_size})"
+msgid_plural "{total_size} ({piece_count:L} pieces @ {piece_size})"
+msgstr[0] "{total_size} ({piece_count:L} atal @ {piece_size})"
+msgstr[1] "{total_size} ({piece_count:L} zati @ {piece_size})"
+
+msgid "{total_size} ({piece_count:L} piece)"
+msgid_plural "{total_size} ({piece_count:L} pieces)"
+msgstr[0] "{total_size} ({piece_count:L} atal)"
+msgstr[1] "{total_size} ({piece_count:L} zati)"
+
+msgid "Add URL(s)"
+msgstr "Gehitu URLa(k)"
+
+msgid "Add tracker announce URLs, one per line:"
+msgstr "Gehitu aztarnari iragarle URLak, bat errenkada bakoitzean:"
+
+msgid "No new URLs found."
+msgstr "Ez da URL berririk aurkitu."
+
+msgid "Use Global Settings"
+msgstr "Erabili Ezarpen Orokorrak"
+
+msgid "Stop seeding if idle for:"
+msgstr "Gelditu igortzen geratuta badago:"
+
+msgid "Torrent Properties"
+msgstr "Torrent-aren Ezaugarriak"
+
+msgid "Availability:"
+msgstr "Eskuragarritasuna:"
+
+msgid "Labels:"
+msgstr "Etiketak:"
+
+msgid "Limit _upload speed:"
+msgstr "M_ugatu igoeraren abiadura:"
+
+msgid "Limit _download speed:"
+msgstr "_Mugatu deskargaren abiadura:"
+
+msgid "Check Selected"
+msgstr "Aukeratu Hautatua"
+
+msgid "Uncheck Selected"
+msgstr "Desaukeratu Hautatua"
+
+msgid "Only Check Selected"
+msgstr "Aukeratu Hautatua Bakarrik"
+
+msgid "Open"
+msgstr "Ireki"
+
+msgid "Rename…"
+msgstr "Berrizendatu…"
+
+msgid "Search…"
+msgstr "Bilatu…"
+
+msgid "<i>Calculating Free Space…</i>"
+msgstr "<i>Libre dagoen Espazioa kalkulatzen…</i>"
+
+msgid "Limited at {speed}"
+msgstr "Muga: {speed}"
+
+#. Translators: Second (optional) part of main window title "Appname - host:port" (added when connected to remote session)
+#. notice that leading space (before the dash) is included here
+msgid " - {host}:{port}"
+msgstr " - {host}:{port}"
+
+msgid "Network Error"
+msgstr "Errorea sarean"
+
+msgid "Idle"
+msgstr "Geratuta"
+
+msgid "Showing {visible_count:L} of {count:L} torrent"
+msgid_plural "Showing {visible_count:L} of {count:L} torrents"
+msgstr[0] "Erakusten {visible_count:L} -> {count:L} torrent"
+msgstr[1] " {visible_count:L} erakusten guztirako {count:L} torrent-etik"
+
+msgid "Torrent Files (*.torrent);;All Files (*.*)"
+msgstr "Torrent Fitxategiak (*.torrent);;Fitxategi Guztiak (*.*)"
+
+msgid "{host} has not responded yet"
+msgstr "{host} ez du oraindik erantzun"
+
+msgid "{host} is responding"
+msgstr "{host} erantzuten ari da"
+
+#, fuzzy
+#| msgid "{host} last responded {time_span} ago"
+msgid "{host} last responded {time_span_ago}"
+msgstr "{host} azken erantzuna duela {time_span} egin zuen"
+
+msgid "{host} is not responding"
+msgstr "{host} ez du erantzuten"
+
+msgid "_Open…"
+msgstr "_Ireki"
+
+msgid "Create a new torrent"
+msgstr "Sortu torrent berri bat"
+
+msgid "Open the torrent's folder"
+msgstr "Ireki torrentaren agiritegia"
+
+msgid "Ask tracker for more peers"
+msgstr "Eskatu aztarnariari kide gehiago"
+
+msgid "Verify local data"
+msgstr "Egiaztatu datu lokalak"
+
+msgid "Remove torrent and delete its files"
+msgstr "Kendu torrenta eta ezabatu dagozkion fitxategiak"
+
+msgid "Compact View"
+msgstr "Ikuspegi Trinkoa"
+
+msgid "_Main Window"
+msgstr "Leiho _Nagusia"
+
+msgid "Tray _Icon"
+msgstr "Erretilu _Ikonoa"
+
+msgid "_Change Session…"
+msgstr "_Aldatu Saioa…"
+
+#. Start a local session or connect to a running session
+msgid "Choose Session"
+msgstr "Hautatu Saioa"
+
+msgid "Bypass the queue and start now"
+msgstr "Ezikusi ilara eta hasi orain"
+
+msgid "{file_count:L} File"
+msgid_plural "{file_count:L} Files"
+msgstr[0] "{file_count:L} Agiri"
+msgstr[1] "{file_count:L} Fitxategi"
+
+msgid "{piece_count:L} Piece"
+msgid_plural "{piece_count:L} Pieces"
+msgstr[0] "{piece_count:L} Atal"
+msgstr[1] "{piece_count:L}Zati"
+
+msgid "{total_size} in {files}; {pieces} @ {piece_size}"
+msgstr "{total_size} -> {files}; {pieces} @ {piece_size}"
+
+msgid ""
+"To add a backup URL, add it on the line after the primary URL.\n"
+"To add another primary URL, add it after a blank line."
+msgstr ""
+"Segurtasun-kopiarako URL bat gehitzeko, URL nagusiaren ondorengo errenkadan gehitu ezazu.\n"
+"Beste URL nagusi bat gehitzeko, errenkada huts baten ondoren gehitu ezazu."
+
+#, fuzzy
+#| msgid "_Source:"
+msgid "Sou_rce:"
+msgstr "_Jatorria:"
+
+msgid "_Priority:"
+msgstr "_Lehentasuna:"
+
+msgid "Select Folder"
+msgstr "Hautatu Karpeta"
+
+msgid "unknown"
+msgstr "ezezaguna"
+
+msgid "checking…"
+msgstr "ikuskatzen, txekeatzen..."
+
+msgid "open"
+msgstr "zabalik"
+
+msgid "closed"
+msgstr "itxita"
+
+msgid "error"
+msgstr "errore"
+
+msgid "<b>Update succeeded!</b><p>Blocklist now has {count:L} rule.</p>"
+msgid_plural "<b>Update succeeded!</b><p>Blocklist now has {count:L} rules.</p>"
+msgstr[0] "<b>Eguneraketa ondo egin da!</b><p>Blokeo-zerrendak orain {count:L} arau ditu.</p>"
+msgstr[1] "<b>Eguneraketa ondo egin da!</b><p>Blokeo-zerrendak orain {count:L} arau ditu.</p>"
+
+msgid "Download of the blocklist failed."
+msgstr ""
+
+msgid "Update Blocklist"
+msgstr "Eguneratu Blokeo-zerrenda"
+
+msgid "Select \"Torrent Done Seeding\" Script"
+msgstr "Aukeratu \"Torrentaren Igortzea Amaituta\" Script-a"
+
+msgid "Select Watch Directory"
+msgstr "Hautatu Ikusi Direktorioa"
+
+msgid "Select Incomplete Directory"
+msgstr "Hautatu Osatugabeko Direktorioa"
+
+msgid "Select \"Torrent Done Downloading\" Script"
+msgstr "Aukeratu \"Torrentaren Deskarga Amaituta\" Script-a"
+
+msgid "Not supported by remote sessions"
+msgstr "Ez dago sostengaturik urruneko saioentzat"
+
+msgid "<i>Blocklist contains {count:L} rule</i>"
+msgid_plural "<i>Blocklist contains {count:L} rules</i>"
+msgstr[0] "<i>Blokeo-zerrendak ditu {count:L} arau</i>"
+msgstr[1] "<i>Blokeo-zerrendak {count:L} arau ditu</i>"
+
+#, fuzzy
+#| msgid "<i>Blocklist contains {count:L} rule</i>"
+#| msgid_plural "<i>Blocklist contains {count:L} rules</i>"
+msgid "<i>Blocklist has never been updated</i>"
+msgstr "<i>Blokeo-zerrendak ditu {count:L} arau</i>"
+
+#, fuzzy
+#| msgid "<i>Blocklist contains {count:L} rule</i>"
+#| msgid_plural "<i>Blocklist contains {count:L} rules</i>"
+msgid "<i>Blocklist last updated {date}</i>"
+msgstr "<i>Blokeo-zerrendak ditu {count:L} arau</i>"
+
+msgid "_Upload:"
+msgstr "_Igoera:"
+
+msgid "_Download:"
+msgstr "_Deskarga:"
+
+msgid "U_pload:"
+msgstr "I_goera:"
+
+msgid "Do_wnload:"
+msgstr "J_aitsiera:"
+
+msgid "Downloading"
+msgstr "Deskargatzen"
+
+msgid "Adding"
+msgstr "Gehitzen"
+
+msgid "Reads user clipboard content for torrents"
+msgstr "Erabiltzailearen arbelaren edukia irakurtzen du torrent-en bila"
+
+msgid "Detect new torrents from clipboard"
+msgstr "Antzeman torrent berriak arbeletik"
+
+#. Please keep this phrase as short as possible, it's currently the longest and influences dialog width
+msgid "Download is i_nactive if data sharing stopped:"
+msgstr "Deskargatu _geratuta dago datu-partekatzea geratuta badago:"
+
+msgid "Seeding"
+msgstr "Igortzen"
+
+msgid "Stop seedi_ng if idle for:"
+msgstr "Gelditu igortzen _geratuta badago:"
+
+msgid "Encryption"
+msgstr "Zifratzea"
+
+msgid "Start _minimized in notification area"
+msgstr "_Hasi jakinarazpen eremuan minimizatuta"
+
+#, fuzzy
+#| msgid "Retransmission"
+msgid "Retransmission (Qt)"
+msgstr "Retransmission"
+
+msgid "Select Location"
+msgstr "Hautatu Kokalekua"
+
+msgid "Error Renaming Path"
+msgstr "Akatsa Bidea Berrizendatzerakoan"
+
+msgid "Unable to rename \"{old_path}\" as \"{path}\": {error}."
+msgstr "Ezinezkoa berreizendatzea \"{old_path}\" -> \"{path}\": {error}."
+
+msgid "Error Adding Torrent"
+msgstr "Errorea Torrenta Gehitzerakoan"
+
+msgid "{torrent_name} (copy of {hash})"
+msgstr "{torrent_name} ( {hash}(r)en kopia)"
+
+msgid "Duplicate Torrent"
+msgstr "Bikoiztu Torrenta"
+
+msgid "Duplicate Torrents"
+msgstr "Bikoiztu Torrentak"
+
+msgid "Unable to add {count} duplicate torrent"
+msgid_plural "Unable to add {count} duplicate torrents"
+msgstr[0] "Ezin izan da {count} bikoiztutako Torrent gehitu"
+msgstr[1] "Ezin izan da {count} bikoiztutako Torrent gehitu"
+
+msgid "Change Session"
+msgstr "Aldatu Saioa"
+
+msgid "Source"
+msgstr "Jatorria"
+
+msgid "Start _Local Session"
+msgstr "Hasi _Saio Lokala"
+
+msgid "Connect to _Remote Session"
+msgstr "Konektatu _Urruneko Saiora"
+
+msgid "_Host:"
+msgstr "_Hostalaria:"
+
+msgid "_Port:"
+msgstr "_Ataka:"
+
+msgid "_Authentication required"
+msgstr "_Autentifikazioa behar da"
+
+msgid "Remote root pa_th:"
+msgstr ""
+
+msgid "Tracker gave a warning: {warning}"
+msgstr "Aztarnariak ohar bat eman du: {warning}"
+
+msgid "Tracker gave an error: {error}"
+msgstr "Aztarnariak errore bat eman du: {error}"
+
+msgid "Error: {error}"
+msgstr "Errorea: {error}"
+
+#, fuzzy
+#| msgid "Magnetized transfer - retrieving metadata (%1%)"
+msgid "Magnetized torrent - retrieving metadata ({percent_done}%)"
+msgstr "Magnetizatutako transferentzia - metadatuak berreskuratzen (%1%)"
+
+#, no-c-format
+msgid "Downloading metadata from {active_count:L} peer ({percent_done}% done)"
+msgid_plural "Downloading metadata from {active_count:L} peers ({percent_done}% done)"
+msgstr[0] "Metadatuak jeisten {active_count:L} hartzailetik ({percent_done}% eginda)"
+msgstr[1] "Metadatuak deskargatzen {active_count:L} kidetatik ({percent_done}% eginda)"
+
+msgid "Downloading from {active_count:L} peer"
+msgid_plural "Downloading from {active_count:L} peers"
+msgstr[0] "Jeisten %1 --> {active_count:L} elkarketaturiko hartzailetik"
+msgstr[1] "Deskargatzen %1 --> {active_count:L} konektatutako kidetatik"
+
+msgid " and {webseed_count:L} web seed"
+msgid_plural " and {webseed_count:L} web seeds"
+msgstr[0] " eta {webseed_count:L} web emaritza"
+msgstr[1] " eta {webseed_count:L} web-igortze"
+
+msgid "Seeding to {active_count:L} peer"
+msgid_plural "Seeding to {active_count:L} peers"
+msgstr[0] "{active_count:L} hartzailera emaritzen"
+msgstr[1] "{active_count:L} kidetara igortzen"
+
+msgid " - "
+msgstr " - "
+
+msgid "To add a backup URL, add it on the next line after a primary URL."
+msgstr "URLaren babeskopia gehitzekotan, gehitu hurrengo lerroan, oinarrizko URLaren ostean."
+
+msgid "To add a new primary URL, add it after a blank line."
+msgstr "URL nagusi berri bat gehitzeko, errenkada huts baten ondoren gehitu ezazu."
 
 msgid "{file_count:L} file, {total_size}\n"
 msgid_plural "{file_count:L} files, {total_size}\n"
@@ -1999,7 +3306,10 @@ msgid_plural "minutes"
 msgstr[0] "minutu"
 msgstr[1] "minutu"
 
-msgid "seconds"
+#, fuzzy
+#| msgid "seconds"
+#| msgid_plural "seconds"
+msgid "second"
 msgid_plural "seconds"
 msgstr[0] "segundo"
 msgstr[1] "segundo"
@@ -2008,6 +3318,106 @@ msgid "day"
 msgid_plural "days"
 msgstr[0] "egun"
 msgstr[1] "egun"
+
+msgid "seconds"
+msgid_plural "seconds"
+msgstr[0] "segundo"
+msgstr[1] "segundo"
+
+#~ msgid "Finished"
+#~ msgstr "Amaitua"
+
+#~ msgid "We would upload to this peer if they asked"
+#~ msgstr "Kide honetara igorriko genuke eskatuko baligu"
+
+#~ msgid "Dn Blocks"
+#~ msgstr "Beherako blok."
+
+#~ msgid "Up Blocks"
+#~ msgstr "Gorako blok."
+
+#~ msgid "We Cancelled"
+#~ msgstr "Guk utzi dugu"
+
+#~ msgid "They Cancelled"
+#~ msgstr "Haiek utzi dute"
+
+#~ msgid "Have"
+#~ msgstr "Dauka"
+
+#~ msgctxt "current session totals"
+#~ msgid "Down: {downloaded_size}, Up: {uploaded_size}"
+#~ msgstr "Deskarga: {downloaded_size}, Igoera: {uploaded_size}"
+
+#~ msgctxt "all-time totals"
+#~ msgid "Down: {downloaded_size}, Up: {uploaded_size}"
+#~ msgstr "Deskarga: {downloaded_size}, Igoera: {uploaded_size}"
+
+#~ msgid "Select a File"
+#~ msgstr "Aukeratu fitxategi bat"
+
+#~ msgid "Inhibiting desktop hibernation"
+#~ msgstr "Mahagainaren hibernazioa galarazten"
+
+#~ msgid "Couldn't inhibit desktop hibernation: {error}"
+#~ msgstr "Ezin izan da mahaigainaren hibernazioa eragotzi: {error}"
+
+#~ msgid "Allowing desktop hibernation"
+#~ msgstr "Mahaigainaren hibernatzea onartzen"
+
+#~ msgid "Open URL…"
+#~ msgstr "Ireki URL-a…"
+
+#~ msgid "Start all torrents"
+#~ msgstr "Abiarazi torrent guztiak"
+
+#~ msgid "Pause all torrents"
+#~ msgstr "Pausatu torrent guztiak"
+
+#~ msgid "Start torrent now"
+#~ msgstr "Abiarazi torrenta orain"
+
+#~ msgid "Copy _Magnet Link to Clipboard"
+#~ msgstr "Kopiatu _Magnet Lotura Gakora"
+
+#~ msgid "Enable Alternative Speed _Limits"
+#~ msgstr "Gaitu abiadura-muga a_lternatiboak"
+
+#~ msgid "Torrent size:"
+#~ msgstr "Torrent-aren tamaina:"
+
+#~ msgid "_New"
+#~ msgstr "_Berria"
+
+#~ msgid "Source F_older:"
+#~ msgstr "It_urburu-karpeta:"
+
+#~ msgid "Source _File:"
+#~ msgstr "I_turburu-fitxategia:"
+
+#~ msgid "P_ause"
+#~ msgstr "P_ausatu"
+
+#~ msgid "Keep _incomplete torrents in:"
+#~ msgstr "Mantendu _osatu gabeko torrent-ak hemen:"
+
+#~ msgid "Call scrip_t when done downloading:"
+#~ msgstr "Deitu scrip_t-a deskarga amaitzerakoan:"
+
+#~ msgid "_Port used for incoming connections:"
+#~ msgstr "_Sarrerako konexioetarako erabilitako ataka:"
+
+#~ msgid "Enable µ_TP for peer communication"
+#~ msgstr "Gaitu µ_TP kideen komunikaziorako"
+
+#~ msgid "_Inhibit hibernation when torrents are active"
+#~ msgstr "_Galarazi hibernazioa torrent-ak aktibo daudenean"
+
+#~ msgid "Torrent _location:"
+#~ msgstr "Torrent-aren _kokapena:"
+
+#~ msgid "Couldn't read filename: {error} ({error_code})"
+#~ msgstr "Ezin izan da fitxategi-izena irakurri: {error} ({error_code})"
 
 #~ msgid "Couldn't find pending RPC request for tag {tag}"
 #~ msgstr "Ezin izan da aurkitu {tag}(r)entzako zain dagoen RPC eskaera"

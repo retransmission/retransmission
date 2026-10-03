@@ -16,8 +16,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-01-04 14:15+0000\n"
+"Report-Msgid-Bugs-To: https://github.com/retransmission/retransmission/issues\n"
+"POT-Creation-Date: 2026-10-03 11:48-0500\n"
 "PO-Revision-Date: 2017-01-26 19:47+0000\n"
 "Last-Translator: Tony Kim, 2024\n"
 "Language-Team: Korean (https://app.transifex.com/transmissionbt/teams/33778/ko/)\n"
@@ -27,11 +27,19 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
+#, fuzzy
 msgid "None"
-msgstr "없음"
+msgstr ""
+"#-#-#-#-#  ko.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"없음\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"아님"
 
 msgid "Inf"
 msgstr "Inf"
+
+msgid "Another process is already using '{path}'."
+msgstr ""
 
 msgid "Couldn't read '{path}': {error} ({error_code})"
 msgstr "'{path}' 경로를 읽을 수 없음: {error} ({error_code})"
@@ -59,6 +67,9 @@ msgstr "'{path}' 경로에서 설정 다시 불러오는 중"
 
 msgid "Couldn't initialize daemon: {error} ({error_code})"
 msgstr "데몬을 초기화할 수 없습니다. {error} ({error_code})"
+
+msgid "Waiting for another process to release '{path}'"
+msgstr ""
 
 msgid "Loading settings from '{path}'"
 msgstr "'{path}' 경로에서 설정 불러오는 중"
@@ -107,8 +118,13 @@ msgid "Couldn't add duplicate torrent"
 msgid_plural "Couldn't add duplicate torrents"
 msgstr[0] "중복된 토렌트는 추가할 수 없습니다"
 
+#, fuzzy
 msgid "A fast and easy BitTorrent client"
-msgstr "빠르고 간편한 비트토렌트 클라이언트"
+msgstr ""
+"#-#-#-#-#  ko.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"빠르고 간편한 비트토렌트 클라이언트\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"빠르고 편리한 BitTorrent 클라이언트"
 
 msgid "Copyright © The {appname} Project"
 msgstr "Copyright © The {appname} Project"
@@ -141,46 +157,106 @@ msgstr ""
 msgid "Use global settings"
 msgstr "전체 설정 사용"
 
+#, fuzzy
 msgid "Seed regardless of ratio"
-msgstr "비율과 상관없이 배포"
+msgstr ""
+"#-#-#-#-#  ko.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"비율과 상관없이 배포\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"비율에 관계 없이 시드"
 
+#, fuzzy
 msgid "Stop seeding at ratio:"
-msgstr "설정한 비율에서 배포 중지:"
+msgstr ""
+"#-#-#-#-#  ko.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"설정한 비율에서 배포 중지:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"이 비율이 되면 시드 중지:"
 
+#, fuzzy
 msgid "Seed regardless of activity"
-msgstr "상태와 상관없이 배포"
+msgstr ""
+"#-#-#-#-#  ko.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"상태와 상관없이 배포\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"동작에 관계 없이 시드"
 
 msgid "Stop seeding if idle for N minutes:"
 msgstr "N 분 대기 상태에 있으면 배포를 중지:"
 
+#, fuzzy
 msgid "Queued for verification"
-msgstr "검사를 위해 대기"
+msgstr ""
+"#-#-#-#-#  ko.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"검사를 위해 대기\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"검증 큐"
 
+#, fuzzy
 msgid "Verifying local data"
-msgstr "로컬 데이터 확인 중"
+msgstr ""
+"#-#-#-#-#  ko.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"로컬 데이터 확인 중\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"로컬 데이터 검증중"
 
+#, fuzzy
 msgid "Queued for download"
-msgstr "다운로드 대기"
+msgstr ""
+"#-#-#-#-#  ko.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"다운로드 대기\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"다운로드 큐"
 
+#, fuzzy
 msgctxt "Verb"
 msgid "Downloading"
-msgstr "다운로드 중"
+msgstr ""
+"#-#-#-#-#  ko.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"다운로드 중\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"다운로드중"
 
+#, fuzzy
 msgid "Queued for seeding"
-msgstr "배포 대기"
+msgstr ""
+"#-#-#-#-#  ko.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"배포 대기\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"시드 큐"
 
+#, fuzzy
 msgctxt "Verb"
 msgid "Seeding"
-msgstr "배포 중"
+msgstr ""
+"#-#-#-#-#  ko.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"배포 중\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"시딩중"
 
-msgid "Finished"
-msgstr "완료함"
+#, fuzzy
+msgid "Seeding complete"
+msgstr ""
+"#-#-#-#-#  ko.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"미완료\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"완료안됨"
 
+#, fuzzy
 msgid "Paused"
-msgstr "일시 정지"
+msgstr ""
+"#-#-#-#-#  ko.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"일시 정지\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"일시정지됨"
 
+#, fuzzy
 msgid "N/A"
-msgstr "사용 불가"
+msgstr ""
+"#-#-#-#-#  ko.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"사용 불가\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"해당사항 없음"
 
 msgid "Mixed"
 msgstr "섞임"
@@ -188,20 +264,45 @@ msgstr "섞임"
 msgid "No Torrents Selected"
 msgstr "선택한 토렌트 없음"
 
+#, fuzzy
 msgid "Private to this tracker -- DHT and PEX disabled"
-msgstr "비 공개 트래커 -- DHT와 PEX를 사용할 수 없음"
+msgstr ""
+"#-#-#-#-#  ko.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"비 공개 트래커 -- DHT와 PEX를 사용할 수 없음\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"이 트래커를 비공개로 하기 -- DHT, PEX 비활성화"
 
+#, fuzzy
 msgid "Public torrent"
-msgstr "공개 토렌트"
+msgstr ""
+"#-#-#-#-#  ko.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"공개 토렌트\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"공개 Torrent"
 
+#, fuzzy
 msgid "Created by {creator} on {date}"
-msgstr "{creator}이(가) {date}에 만듦"
+msgstr ""
+"#-#-#-#-#  ko.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{creator}이(가) {date}에 만듦\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{date}에 {creator}이 만듬"
 
+#, fuzzy
 msgid "Created by {creator}"
-msgstr "{creator}이(가) 만듦"
+msgstr ""
+"#-#-#-#-#  ko.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{creator}이(가) 만듦\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{creator} 에 의해 만들어짐"
 
+#, fuzzy
 msgid "Created on {date}"
-msgstr "{date}에 만듦"
+msgstr ""
+"#-#-#-#-#  ko.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{date}에 만듦\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{date} 에 의해 만듬"
 
 msgid "Unknown"
 msgstr "알려지지 않음"
@@ -221,6 +322,8 @@ msgstr "{current_size} ({percent_done}%)"
 msgid "{current_size} ({percent_done}% of {percent_available}% available)"
 msgstr "{current_size} (이용 가능한 {percent_available}% 중 {percent_done}%)"
 
+#, fuzzy, c-format
+#| msgid "{current_size} ({percent_done}% of {percent_available}% available; {unverified_size} unverified)"
 msgid "{current_size} ({percent_done}% of {percent_available}% available; {unverified_size} unverified)"
 msgstr "{current_size} (이용 가능한 {percent_available}% 중 {percent_done}%; {unverified_size} 검증되지 않음)"
 
@@ -236,29 +339,69 @@ msgstr "오류 없음"
 msgid "Never"
 msgstr "절대 안 함"
 
+#, fuzzy
 msgid "Active now"
-msgstr "지금 시작"
+msgstr ""
+"#-#-#-#-#  ko.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"지금 시작\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"현재 동작중"
 
+#, fuzzy
 msgid "Optimistic unchoke"
-msgstr "낙관 적인 제한 해제"
+msgstr ""
+"#-#-#-#-#  ko.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"낙관 적인 제한 해제\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"양호한 소통"
 
+#, fuzzy
 msgid "Downloading from this peer"
-msgstr "이 피어에게서 다운로드 중"
+msgstr ""
+"#-#-#-#-#  ko.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"이 피어에게서 다운로드 중\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"이 피어로부터 다운로드 중"
 
+#, fuzzy
 msgid "We would download from this peer if they would let us"
-msgstr "상대가 허용한 경우 이 피어에게서 다운로드 합니다"
+msgstr ""
+"#-#-#-#-#  ko.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"상대가 허용한 경우 이 피어에게서 다운로드 합니다\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"그들이 허용할 경우 다운로드 할 것입니다"
 
+#, fuzzy
 msgid "Uploading to peer"
-msgstr "피어에게 업로드 중"
+msgstr ""
+"#-#-#-#-#  ko.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"피어에게 업로드 중\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"피어로 업로드 중"
 
-msgid "We would upload to this peer if they asked"
-msgstr "상대방이 요청한 경우 이 피어에게 업로드 합니다"
+#, fuzzy
+msgid "This peer would download from us if we would let them"
+msgstr ""
+"#-#-#-#-#  ko.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"상대가 허용한 경우 이 피어에게서 다운로드 합니다\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"그들이 허용할 경우 다운로드 할 것입니다"
 
+#, fuzzy
 msgid "Peer has unchoked us, but we're not interested"
-msgstr "피어가 우리를 제한하지 않았지만 관심이 없음"
+msgstr ""
+"#-#-#-#-#  ko.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"피어가 우리를 제한하지 않았지만 관심이 없음\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"피어가 소통하지 않으며, 관심이 없습니다"
 
+#, fuzzy
 msgid "We unchoked this peer, but they're not interested"
-msgstr "이 피어를 제한하지 않았지만 상대방이 관심이 없음"
+msgstr ""
+"#-#-#-#-#  ko.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"이 피어를 제한하지 않았지만 상대방이 관심이 없음\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"피어가 소통하지 않으며, 관심있어하지도 않습니다."
 
 msgid "Encrypted connection"
 msgstr "암호화된 연결"
@@ -269,16 +412,23 @@ msgstr "피어 교환(PEX)으로 찾은 피어"
 msgid "Peer was found through DHT"
 msgstr "DHT로 찾은 피어"
 
+#, fuzzy
 msgid "Peer is an incoming connection"
-msgstr "피어는 들어오는 연결입니다"
+msgstr ""
+"#-#-#-#-#  ko.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"피어는 들어오는 연결입니다\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"들어오는 연결에 피어가 있습니다"
 
 msgid "Peer is connected over µTP"
 msgstr "피어와 µTP로 연결되었습니다"
 
+msgid "Peer supports holepunch (BEP 55)"
+msgstr ""
+
 msgid "Address"
 msgstr "주소"
 
-#. % is percent done
 msgid "%"
 msgstr "%"
 
@@ -288,23 +438,21 @@ msgstr "다운로드 요청"
 msgid "Up Reqs"
 msgstr "업로드 요청"
 
-msgid "Dn Blocks"
-msgstr "막은 다운로드"
-
-msgid "Up Blocks"
-msgstr "막은 업로드"
-
-msgid "We Cancelled"
-msgstr "우리가 취소함"
-
-msgid "They Cancelled"
-msgstr "상대가 취소함"
-
+#, fuzzy
 msgid "Down"
-msgstr "다운로드"
+msgstr ""
+"#-#-#-#-#  ko.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"다운로드\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"다운"
 
+#, fuzzy
 msgid "Up"
-msgstr "업로드"
+msgstr ""
+"#-#-#-#-#  ko.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"업로드\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"업"
 
 msgid "Client"
 msgstr "클라이언트"
@@ -315,63 +463,19 @@ msgstr "플래그"
 msgid "Web Seeds"
 msgstr "웹 배포"
 
-msgid "Got a list of {markup_begin}{peer_count} peer{markup_end} {time_span_ago}"
-msgid_plural "Got a list of {markup_begin}{peer_count} peers{markup_end} {time_span_ago}"
-msgstr[0] ""
-
-#. {markup_begin} and {markup_end} should surround the time_span
-msgid "Peer list request {markup_begin}timed out {time_span_ago}{markup_end}; will retry"
-msgstr ""
-
-#. {markup_begin} and {markup_end} should surround the error
-msgid "Got an error '{markup_begin}{error}{markup_end}' {time_span_ago}"
-msgstr ""
-
-msgid "No updates scheduled"
-msgstr "예정된 업데이트 없음"
-
-msgid "Asking for more peers {time_span_from_now}"
-msgstr ""
-
-msgid "Queued to ask for more peers"
-msgstr "더 많은 피어 요청 대기"
-
-#. {markup_begin} and {markup_end} should surround time_span_ago
-msgid "Asked for more peers {markup_begin}{time_span_ago}{markup_end}"
-msgstr ""
-
-msgid "Tracker had {markup_begin}{seeder_count} {seeder_or_seeders} and {leecher_count} {leecher_or_leechers}{markup_end} {time_span_ago}"
-msgstr ""
-
-msgid "seeder"
-msgid_plural "seeders"
-msgstr[0] "배포자"
-
-msgid "leecher"
-msgid_plural "leechers"
-msgstr[0] "다운로더"
-
-#. {markup_begin} and {markup_end} should surround the error text
-msgid "Got a scrape error '{markup_begin}{error}{markup_end}' {time_span_ago}"
-msgstr ""
-
-msgid "Asking for peer counts in {time_span_from_now}"
-msgstr ""
-
-msgid "Queued to ask for peer counts"
-msgstr "피어 총 계 요청을 위해 대기"
-
-msgid "Asked for peer counts {markup_begin}{time_span_ago}{markup_end}"
-msgstr ""
-
 msgid "{torrent_name} - Edit Trackers"
 msgstr ""
 
 msgid "List contains invalid URLs"
 msgstr "올바르지 않은 주소 가진 목록"
 
+#, fuzzy
 msgid "Please correct the errors and try again."
-msgstr "오류를 정정하신 후 다시 시도해주십시오."
+msgstr ""
+"#-#-#-#-#  ko.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"오류를 정정하신 후 다시 시도해주십시오.\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"오류를 수정하고 다시 시도해주십시오."
 
 msgid "{torrent_name} - Add Tracker"
 msgstr "{torrent_name} - 트래커 추가"
@@ -387,46 +491,93 @@ msgid_plural "Properties - {torrent_count:L} Torrents"
 msgstr[0] ""
 
 msgid "Remove torrent?"
-msgstr ""
+msgstr "Torrent를 삭제하시겠습니까?"
+
+msgid "Delete this torrent's downloaded files?"
+msgstr "다운받은 Torrent 파일을 삭제하시겠습니까?"
 
 msgid "Remove {count:L} torrent?"
 msgid_plural "Remove {count:L} torrents?"
-msgstr[0] ""
-
-msgid "Delete this torrent's downloaded files?"
-msgstr ""
+msgstr[0] "{count:L} Torrent를 삭제하시겠습니까?"
 
 msgid "Delete this {count:L} torrent's downloaded files?"
 msgid_plural "Delete these {count:L} torrents' downloaded files?"
-msgstr[0] ""
+msgstr[0] "이 {count:L} Torrent의 다운로드된 파일들을 삭제하시겠습니까?"
 
-msgid "Once removed, continuing the transfer will require the torrent file or magnet link."
-msgid_plural "Once removed, continuing the transfers will require the torrent files or magnet links."
-msgstr[0] "제거한 후 전송을 계속하시려면 토렌트 파일이나 마그넷 링크가 필요합니다."
+#, fuzzy
+#| msgid "Once removed, continuing the transfer will require the torrent file or magnet link."
+#| msgid_plural "Once removed, continuing the transfers will require the torrent files or magnet links."
+msgid "Once removed, you'll need the torrent file or magnet link to add it again."
+msgstr "제거한 후 전송을 계속하시려면 토렌트 파일이나 마그넷 링크가 필요합니다."
 
+#, fuzzy
+#| msgid "Once removed, continuing the transfers will require the torrent files or magnet links."
+msgid "Once removed, you'll need the torrent files or magnet links to add them again."
+msgstr "삭제시, 전송을 재게 하려면 Torrent 파일이나 마그넷 링크가 필요합니다."
+
+#, fuzzy
 msgid "This torrent has not finished downloading."
-msgstr "이 토렌트는 다운로드가 끝나지 않았습니다."
+msgstr ""
+"#-#-#-#-#  ko.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"이 토렌트는 다운로드가 끝나지 않았습니다.\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"이 Torrent는 다운로드가 완료되지 않았습니다."
 
+#, fuzzy
 msgid "These torrents have not finished downloading."
-msgstr "이 토렌트는 다운로드가 끝나지 않았습니다."
+msgstr ""
+"#-#-#-#-#  ko.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"이 토렌트는 다운로드가 끝나지 않았습니다.\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"이 Torrent들은 다운로드가 완료되지 않았습니다."
 
+#, fuzzy
 msgid "This torrent is connected to peers."
-msgstr "이 토렌트는 피어와 연결되어 있습니다."
+msgstr ""
+"#-#-#-#-#  ko.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"이 토렌트는 피어와 연결되어 있습니다.\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Torrent가 피어에 연결되었습니다"
 
+#, fuzzy
 msgid "These torrents are connected to peers."
-msgstr "이 토렌트는 피어와 연결되어 있습니다."
+msgstr ""
+"#-#-#-#-#  ko.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"이 토렌트는 피어와 연결되어 있습니다.\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Torrent 들이 피어에 연결되었습니다"
 
+#, fuzzy
 msgid "One of these torrents is connected to peers."
-msgstr "이 토렌트 중 하나는 피어와 연결되어 있습니다."
+msgstr ""
+"#-#-#-#-#  ko.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"이 토렌트 중 하나는 피어와 연결되어 있습니다.\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Torrent 파일들중 하나가 피어에 연결되었습니다."
 
+#, fuzzy
 msgid "Some of these torrents are connected to peers."
-msgstr "이 토렌트 중 하나는 피어와 연결되어 있습니다."
+msgstr ""
+"#-#-#-#-#  ko.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"이 토렌트 중 하나는 피어와 연결되어 있습니다.\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Torrent 파일들중 몇몇개가 피어에 연결되었습니다."
 
+#, fuzzy
 msgid "One of these torrents has not finished downloading."
-msgstr "이 토렌트 중 하나는 다운로드가 끝나지 않았습니다."
+msgstr ""
+"#-#-#-#-#  ko.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"이 토렌트 중 하나는 다운로드가 끝나지 않았습니다.\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Torrent 파일들중 한개의 Torrent의 다운로드가 끝나지 않았습니다."
 
+#, fuzzy
 msgid "Some of these torrents have not finished downloading."
-msgstr "이 토렌트 중 하나는 다운로드가 끝나지 않았습니다."
+msgstr ""
+"#-#-#-#-#  ko.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"이 토렌트 중 하나는 다운로드가 끝나지 않았습니다.\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Torrent 파일들중 몇몇개의 Torrent의 다운로드가 끝나지 않았습니다."
 
 msgid "_Cancel"
 msgstr "취소"
@@ -434,8 +585,16 @@ msgstr "취소"
 msgid "_Delete"
 msgstr "삭제(_D)"
 
+#. Removes the torrent from the list and keeps its downloaded files
+#, fuzzy
 msgid "_Remove"
-msgstr "제거(_R)"
+msgstr ""
+"#-#-#-#-#  ko.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"제거(_R)\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"제거(_R)\n"
+"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"삭제 (_R)"
 
 msgid "High"
 msgstr "높음"
@@ -455,24 +614,44 @@ msgstr "이름"
 msgid "Size"
 msgstr "크기"
 
-msgid "Have"
-msgstr "소유함"
+msgid "Progress"
+msgstr "진행도"
 
 msgid "Download"
 msgstr "다운로드"
 
+#, fuzzy
 msgid "Priority"
-msgstr "우선권"
+msgstr ""
+"#-#-#-#-#  ko.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"우선권\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"우선순위"
 
+#, fuzzy
 msgid "All"
-msgstr "모두"
+msgstr ""
+"#-#-#-#-#  ko.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"모두\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"전체"
 
+#, fuzzy
 msgid "Active"
-msgstr "활동"
+msgstr ""
+"#-#-#-#-#  ko.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"활동\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"활동중"
 
+#, fuzzy
 msgctxt "Verb"
 msgid "Verifying"
-msgstr "확인 중"
+msgstr ""
+"#-#-#-#-#  ko.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"확인 중\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"검증중"
 
 msgid "Error"
 msgstr "오류"
@@ -484,6 +663,24 @@ msgid "_Show {count:L} of:"
 msgstr ""
 
 msgid "{disk_space} free"
+msgstr "{disk_space} 남음"
+
+msgid "Where to look for configuration files"
+msgstr "설정 파일을 찾아볼 위치"
+
+msgid "Start with all torrents paused"
+msgstr "모든 토렌트를 멈춘 상태로 시작"
+
+msgid "Start minimized in notification area"
+msgstr "알림 영역에 최소화된 상태로 시작"
+
+msgid "Show version number and exit"
+msgstr "버전 번호를 보여주고 마침"
+
+msgid "[torrent files or urls]"
+msgstr "[토렌트 파일 또는 주소]"
+
+msgid "Run '{program} --help' to see a full list of available command line options.\n"
 msgstr ""
 
 msgid ""
@@ -496,11 +693,21 @@ msgid ""
 " ({download_speed} down, {upload_speed} up)"
 msgstr ""
 
+#, fuzzy
 msgid "Unlimited"
-msgstr "제한 없음"
+msgstr ""
+"#-#-#-#-#  ko.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"제한 없음\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"무제한"
 
+#, fuzzy
 msgid "Seed Forever"
-msgstr "영구 배포"
+msgstr ""
+"#-#-#-#-#  ko.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"영구 배포\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"계속 시드"
 
 msgid "Limit Download Speed"
 msgstr "다운로드 속도 제한"
@@ -508,34 +715,49 @@ msgstr "다운로드 속도 제한"
 msgid "Limit Upload Speed"
 msgstr "업로드 속도 제한"
 
+#, fuzzy
 msgid "Stop Seeding at Ratio"
-msgstr "설정한 비율에서 배포 중지"
+msgstr ""
+"#-#-#-#-#  ko.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"설정한 비율에서 배포 중지\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"이 비율이 되면 시드 중지"
 
 msgid "Stop at Ratio ({ratio})"
-msgstr ""
+msgstr "비율에 따라 정지 ({ratio})"
 
+#, fuzzy
 msgid "Total Ratio"
-msgstr "전체 비율"
+msgstr ""
+"#-#-#-#-#  ko.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"전체 비율\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"총 비율"
 
 msgid "Session Ratio"
 msgstr "세션 비율"
 
+#, fuzzy
 msgid "Total Transfer"
-msgstr "총 전송 량"
+msgstr ""
+"#-#-#-#-#  ko.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"총 전송 량\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"총 전송량"
 
+#, fuzzy
 msgid "Session Transfer"
-msgstr "세션 전송 량"
+msgstr ""
+"#-#-#-#-#  ko.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"세션 전송 량\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"세션 전송량"
+
+msgid "Down: {downloaded_size}, Up: {uploaded_size}"
+msgstr "다운: {downloaded_size}, 업: {uploaded_size}"
 
 msgid "Ratio: {ratio}"
-msgstr ""
-
-msgctxt "current session totals"
-msgid "Down: {downloaded_size}, Up: {uploaded_size}"
-msgstr ""
-
-msgctxt "all-time totals"
-msgid "Down: {downloaded_size}, Up: {uploaded_size}"
-msgstr ""
+msgstr "비율: {ratio}"
 
 msgid "{download_speed} ▾"
 msgstr ""
@@ -593,6 +815,11 @@ msgstr "시간"
 msgid "Couldn't create proxy for '{bus}': {error} ({error_code})"
 msgstr ""
 
+#, fuzzy
+#| msgid "Couldn't save '{path}': {error} ({error_code})"
+msgid "Couldn't spawn async process \"'{command}'\": {error} ({error_code})"
+msgstr "'{path}' 경로에 저장할 수 없음: {error} ({error_code})"
+
 msgid "Open File"
 msgstr "파일 열기"
 
@@ -605,8 +832,13 @@ msgstr "토렌트 완료"
 msgid "Start Now"
 msgstr "지금 시작"
 
+#, fuzzy
 msgid "Torrent Added"
-msgstr "토렌트 추가됨"
+msgstr ""
+"#-#-#-#-#  ko.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"토렌트 추가됨\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Torrent 추가됨"
 
 msgid "Torrent files"
 msgstr "토렌트 파일"
@@ -623,11 +855,19 @@ msgstr "열기(_O)"
 msgid "Show options dialog"
 msgstr "옵션 표시 대화 상자"
 
-msgid "Select a File"
+msgid "Other…"
+msgstr ""
+
+msgid "Select File"
 msgstr "파일 선택"
 
+#, fuzzy
 msgid "(None)"
-msgstr "(없음)"
+msgstr ""
+"#-#-#-#-#  ko.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"(없음)\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"(아님)"
 
 msgid "Allow encryption"
 msgstr "암호화 허용"
@@ -635,14 +875,29 @@ msgstr "암호화 허용"
 msgid "Prefer encryption"
 msgstr "암호화 선호"
 
+#, fuzzy
 msgid "Require encryption"
-msgstr "암호화 요구"
+msgstr ""
+"#-#-#-#-#  ko.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"암호화 요구\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"암호화 필요"
 
+#, fuzzy
 msgid "Every Day"
-msgstr "매일"
+msgstr ""
+"#-#-#-#-#  ko.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"매일\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"모든 날"
 
+#, fuzzy
 msgid "Weekdays"
-msgstr "주 중"
+msgstr ""
+"#-#-#-#-#  ko.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"주 중\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"주중"
 
 msgid "Weekends"
 msgstr "주말"
@@ -695,26 +950,20 @@ msgstr "토렌트를 옮길 수 없음"
 msgid "This may take a moment…"
 msgstr "다소 긴 시간이 걸릴 수 있습니다…"
 
+#, fuzzy
+#| msgid "Couldn't read '{path}': {error} ({error_code})"
+msgid "Couldn't open watchdir '{dirname}': {error} ({error_code})"
+msgstr "'{path}' 경로를 읽을 수 없음: {error} ({error_code})"
+
 msgid "Couldn't read '{path}'"
 msgstr ""
-
-#. logging
-msgid "Inhibiting desktop hibernation"
-msgstr "데스크톱 최대 절전 사용하지 않기"
-
-msgid "Couldn't inhibit desktop hibernation: {error}"
-msgstr ""
-
-#. logging
-msgid "Allowing desktop hibernation"
-msgstr "데스크톱 최대 절전 모드를 허용"
 
 msgid "Couldn't find pending RPC request for id {id}"
 msgstr ""
 
 msgid "Started {count:L} time"
 msgid_plural "Started {count:L} times"
-msgstr[0] ""
+msgstr[0] "{count:L} 번 시작함"
 
 msgid "Reset your statistics?"
 msgstr "통계를 초기화 하시겠습니까?"
@@ -725,30 +974,39 @@ msgstr "초기화(_R)"
 msgid "These statistics are for your information only. Resetting them doesn't affect the statistics logged by your BitTorrent trackers."
 msgstr "이 통계는 사용자 정보 만을 담고 있습니다. 초기화를 해도 사용자가 로그인 한 비트 토렌트 트래커의 통계에는 영향을 미치지 않습니다."
 
+msgid "_Show {appname}"
+msgstr "{appname} 보이기(_S)"
+
 msgid "{upload_speed} ▴ {download_speed} ▾"
 msgstr ""
 
 #, no-c-format
 msgid "Verifying local data ({percent_done}% tested)"
-msgstr ""
+msgstr "로컬 데이터 검증중 ({percent_done}% 완료됨)"
 
 msgid "{current_size} of {complete_size} ({percent_done}%)"
-msgstr ""
+msgstr "{current_size} / {complete_size} ({percent_done}%)"
 
 msgid "{current_size} of {complete_size} ({percent_complete}%), uploaded {uploaded_size} (Ratio: {ratio}, Goal: {seed_ratio})"
 msgstr ""
 
 msgid "{current_size} of {complete_size} ({percent_complete}%), uploaded {uploaded_size} (Ratio: {ratio})"
-msgstr ""
+msgstr "{current_size} / {complete_size} ({percent_complete}%), 업로드 {uploaded_size} (비율: {ratio})"
 
 msgid "{complete_size}, uploaded {uploaded_size} (Ratio: {ratio}, Goal: {seed_ratio})"
 msgstr ""
 
 msgid "{complete_size}, uploaded {uploaded_size} (Ratio: {ratio})"
-msgstr ""
+msgstr "{complete_size}, 업로드 {uploaded_size} (비율: {ratio})"
 
+#. Translators: Second (optional) part of torrent progress string
+#, fuzzy
 msgid "Remaining time unknown"
-msgstr "남은 시간을 알 수 없습니다"
+msgstr ""
+"#-#-#-#-#  ko.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"남은 시간을 알 수 없습니다\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"완료 시간 불분명함"
 
 msgid "{download_speed} ▾  {upload_speed} ▴"
 msgstr ""
@@ -759,8 +1017,10 @@ msgstr "지연됨"
 msgid "Tracker warning: '{warning}'"
 msgstr ""
 
-msgid "Tracker Error: '{error}'"
-msgstr ""
+#, fuzzy
+#| msgid "Tracker gave an error: {error}"
+msgid "Tracker error: '{error}'"
+msgstr "트래커가 오류를 주었습니다: {error}"
 
 msgid "Local error: '{error}'"
 msgstr ""
@@ -780,11 +1040,1276 @@ msgstr[0] ""
 
 msgid "Downloading from {active_count} of {connected_count} connected peer"
 msgid_plural "Downloading from {active_count} of {connected_count} connected peers"
-msgstr[0] ""
+msgstr[0] "{active_count}을 {connected_count} 연결된 피어로부터 다운로드 중"
 
 msgid "Seeding to {active_count} of {connected_count} connected peer"
 msgid_plural "Seeding to {active_count} of {connected_count} connected peers"
-msgstr[0] ""
+msgstr[0] "{connected_count} 연결된 피어들에게 {active_count} 시드 중"
+
+msgid "Retransmission"
+msgstr "Retransmission"
+
+msgid "BitTorrent Client"
+msgstr "비트토렌트 클라이언트"
+
+msgid "Download and share files over BitTorrent"
+msgstr "비트토렌트를 이용하여 파일을 다운로드 및 공유합니다"
+
+#. Translators: Search terms to find this application. Do NOT translate or localize the semicolons! The list MUST also end with a semicolon!
+msgid "torrents;downloading;uploading;share;sharing;"
+msgstr ""
+
+msgid "Start Retransmission with All Torrents Paused"
+msgstr "모든 토렌트를 멈춘 상태로 시작"
+
+#, fuzzy
+msgid "Start Retransmission Minimized"
+msgstr "트랜스미션을 창이 최소화된 상태로 시작하기"
+
+#, fuzzy
+#| msgid "Retransmission"
+msgid "The Retransmission Project"
+msgstr "Retransmission"
+
+#. Translators: these are the application description paragraphs in the MetaInfo file.
+msgid "BitTorrent is a peer-to-peer file-sharing protocol that is commonly used to distribute large amounts of data between multiple users."
+msgstr ""
+
+msgid "Retransmission is a BitTorrent client with an easy-to-use interface on top of a cross-platform backend. Native interfaces are available for macOS, Linux, and Windows, as well as command line binaries and a web GUI."
+msgstr ""
+
+msgid "Notable features of Retransmission include support for Local Peer Discovery, encryption, DHT, µTP, PEX and Magnet links."
+msgstr ""
+
+msgid "Main window, showing an ongoing download of Fedora Workstation"
+msgstr ""
+
+msgid "_File"
+msgstr "파일 (_F)"
+
+msgid "Open _URL…"
+msgstr "주소 열기(_U)…"
+
+msgid "_New…"
+msgstr "새 토렌트(_N)…"
+
+#, fuzzy
+msgid "_Start All"
+msgstr ""
+"#-#-#-#-#  ko.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"모두 시작(_S)\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"전체 시작 (_S)"
+
+#, fuzzy
+msgid "_Pause All"
+msgstr ""
+"#-#-#-#-#  ko.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"모두 정지(_P)\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"전체 일시정지 (_P)"
+
+#, fuzzy
+msgid "_Quit"
+msgstr ""
+"#-#-#-#-#  ko.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"종료(_Q)\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"나가기 (_Q)"
+
+#, fuzzy
+msgid "_Edit"
+msgstr ""
+"#-#-#-#-#  ko.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"편집(_E)\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"편집(_E)\n"
+"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"수정 (_E)"
+
+msgid "Select _All"
+msgstr "모두 선택(_A)"
+
+msgid "Dese_lect All"
+msgstr "모두 선택하지 않기(_L)"
+
+msgid "_Preferences"
+msgstr "설정 (_P)"
+
+msgid "_Torrent"
+msgstr "Torrent (_T)"
+
+msgid "_Properties"
+msgstr "속성 (_P)"
+
+#, fuzzy
+msgid "Open Fold_er"
+msgstr ""
+"#-#-#-#-#  ko.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"폴더 열기(_E)\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"폴더 열기 (_E)"
+
+#, fuzzy
+msgid "_Start"
+msgstr ""
+"#-#-#-#-#  ko.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"시작(_S)\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"시작 (_S)"
+
+#, fuzzy
+msgid "Start _Now"
+msgstr ""
+"#-#-#-#-#  ko.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"지금 시작(_N)\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"바로 시작 (_N)"
+
+#, fuzzy
+msgid "Ask Tracker for _More Peers"
+msgstr ""
+"#-#-#-#-#  ko.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"더 많은 피어를 트래커에 요청(_M)\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"트래커에 요청하여 피어 가져오기 (_M)"
+
+#, fuzzy
+#| msgid "Queue"
+msgid "_Queue"
+msgstr "큐"
+
+#, fuzzy
+msgid "Move to _Top"
+msgstr ""
+"#-#-#-#-#  ko.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"가장 위로 이동(_T)\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"맨 위로 옮김 (_T)"
+
+#, fuzzy
+msgid "Move _Up"
+msgstr ""
+"#-#-#-#-#  ko.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"위로 이동(_U)\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"위로 옮김 (_U)"
+
+#, fuzzy
+msgid "Move _Down"
+msgstr ""
+"#-#-#-#-#  ko.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"아래로 이동(_D)\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"아래로 옮김 (_D)"
+
+#, fuzzy
+msgid "Move to _Bottom"
+msgstr ""
+"#-#-#-#-#  ko.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"가장 아래로 이동(_B)\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"맨 아래로 옮김 (_B)"
+
+#, fuzzy
+msgid "_Pause"
+msgstr ""
+"#-#-#-#-#  ko.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"중지(_P)\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"일시정지 (_P)"
+
+msgid "Set _Location…"
+msgstr "위치 설정(_L)…"
+
+#, fuzzy
+msgid "_Verify Local Data"
+msgstr ""
+"#-#-#-#-#  ko.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"로컬 데이터 확인(_V)\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"로컬 데이터 검증 (_V)"
+
+msgid "_Copy Magnet Link to Clipboard"
+msgstr "마그넷 링크 클립보드에 복사 (_C)"
+
+#, fuzzy
+msgid "_Delete Files and Remove"
+msgstr ""
+"#-#-#-#-#  ko.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"파일을 삭제하고 목록에서 제거(_D)\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Torrent 파일과 데이터 삭제 (_D)"
+
+msgid "_View"
+msgstr "보기 (_V)"
+
+#, fuzzy
+msgid "_Compact View"
+msgstr ""
+"#-#-#-#-#  ko.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"간단히 보기(_C)\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"간략하게 보기 (_C)"
+
+#, fuzzy
+msgid "_Toolbar"
+msgstr ""
+"#-#-#-#-#  ko.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"도구 모음(_T)\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"툴바 (_T)"
+
+#, fuzzy
+msgid "_Filterbar"
+msgstr ""
+"#-#-#-#-#  ko.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"필터 표시줄(_F)\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"필터 바 (_F)"
+
+#, fuzzy
+msgid "_Statusbar"
+msgstr ""
+"#-#-#-#-#  ko.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"상태 표시줄(_S)\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"상태 바 (_S)"
+
+#, fuzzy
+msgid "Sort by _Activity"
+msgstr ""
+"#-#-#-#-#  ko.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"활동 여부로 정렬(_A)\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"활동순으로 정렬 (_A)"
+
+#, fuzzy
+msgid "Sort by A_ge"
+msgstr ""
+"#-#-#-#-#  ko.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"오래된 순서로 정렬(_G)\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"받은 기한대로 정렬 (_G)"
+
+#, fuzzy
+msgid "Sort by _Name"
+msgstr ""
+"#-#-#-#-#  ko.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"이름으로 정렬(_N)\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"이름순으로 정렬 (_N)"
+
+#, fuzzy
+msgid "Sort by _Progress"
+msgstr ""
+"#-#-#-#-#  ko.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"진행 상태 순서로 정렬(_P)\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"진척사항에 따라 정렬 (_P)"
+
+#, fuzzy
+msgid "Sort by _Queue"
+msgstr ""
+"#-#-#-#-#  ko.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"대기 순서로 정렬(_Q)\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"큐 순서에 따라 정렬 (_Q)"
+
+#, fuzzy
+msgid "Sort by Rati_o"
+msgstr ""
+"#-#-#-#-#  ko.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"비율로 정렬(_O)\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"비율에 따라 정렬 (_O)"
+
+#, fuzzy
+msgid "Sort by Si_ze"
+msgstr ""
+"#-#-#-#-#  ko.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"크기로 정렬(_Z)\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"크기에 따라 정렬 (_Z)"
+
+#, fuzzy
+msgid "Sort by Stat_e"
+msgstr ""
+"#-#-#-#-#  ko.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"상태로 정렬(_E)\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"상태에 따라 정렬 (_E)"
+
+#, fuzzy
+msgid "Sort by Time _Left"
+msgstr ""
+"#-#-#-#-#  ko.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"남은 시간으로 정렬(_L)\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"남은 시간대로 정렬 (_L)"
+
+#, fuzzy
+msgid "Re_verse Sort Order"
+msgstr ""
+"#-#-#-#-#  ko.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"정렬 순서 뒤집기(_V)\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"순서에 따라 정렬 뒤집기 (_V)"
+
+#, fuzzy
+msgid "_Help"
+msgstr ""
+"#-#-#-#-#  ko.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"도움말(_H)\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"도움말 (_H)"
+
+#, fuzzy
+msgid "Message _Log"
+msgstr ""
+"#-#-#-#-#  ko.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"메시지 로그(_L)\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"메시지 _ 로그"
+
+#, fuzzy
+msgid "_Statistics"
+msgstr ""
+"#-#-#-#-#  ko.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"통계(_S)\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"통계 (_S)"
+
+#, fuzzy
+msgid "_Donate"
+msgstr ""
+"#-#-#-#-#  ko.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"기부(_D)\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"기부 (_D)"
+
+#, fuzzy
+msgid "_Contents"
+msgstr ""
+"#-#-#-#-#  ko.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"차례(_C)\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"항목 (_C)"
+
+#, fuzzy
+msgid "_About"
+msgstr ""
+"#-#-#-#-#  ko.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"정보(_A)\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"대하여 (_A)"
+
+#, fuzzy
+msgid "_Sort Torrents By"
+msgstr ""
+"#-#-#-#-#  ko.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"토렌트 시작\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Torrent 시작"
+
+#, fuzzy
+#| msgid "Alternative Speed Limits"
+msgid "Alternative Speed _Limits"
+msgstr "대체 속도 제한"
+
+msgid "_Add"
+msgstr "추가(_A)"
+
+msgid "Tracker"
+msgstr "트래커"
+
+msgid "_Announce URL:"
+msgstr "알림 주소(_A):"
+
+msgid "_Close"
+msgstr "닫기(_C)"
+
+#, fuzzy
+msgid "Activity"
+msgstr ""
+"#-#-#-#-#  ko.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"활동 중\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"활동"
+
+msgid "Size:"
+msgstr "크기:"
+
+#, fuzzy
+msgid "Have:"
+msgstr ""
+"#-#-#-#-#  ko.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"다운로드함:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"갖고있음:"
+
+#, fuzzy
+msgid "Uploaded:"
+msgstr ""
+"#-#-#-#-#  ko.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"업로드함:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"업로드 함:"
+
+#, fuzzy
+msgid "Downloaded:"
+msgstr ""
+"#-#-#-#-#  ko.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"다운로드함:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"다운로드 함:"
+
+msgid "State:"
+msgstr "상태:"
+
+#, fuzzy
+msgid "Running time:"
+msgstr ""
+"#-#-#-#-#  ko.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"진행된 시간:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"동작 시간:"
+
+msgid "Remaining time:"
+msgstr "남은 시간:"
+
+msgid "Last activity:"
+msgstr "마지막 활동:"
+
+#, fuzzy
+msgid "Error:"
+msgstr ""
+"#-#-#-#-#  ko.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"오류:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"오류"
+
+#, fuzzy
+msgid "Details"
+msgstr ""
+"#-#-#-#-#  ko.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"세부 사항\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"세부사항"
+
+msgid "Location:"
+msgstr "위치:"
+
+#, fuzzy
+msgid "Hash:"
+msgstr ""
+"#-#-#-#-#  ko.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"해시:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"해쉬:"
+
+#, fuzzy
+msgid "Privacy:"
+msgstr ""
+"#-#-#-#-#  ko.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"종류:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"공개/비공개:"
+
+#, fuzzy
+msgid "Origin:"
+msgstr ""
+"#-#-#-#-#  ko.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"만든 날짜:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"출처:"
+
+msgid "Added:"
+msgstr "추가됨:"
+
+msgid "Comment:"
+msgstr "주석:"
+
+msgid "Information"
+msgstr "정보"
+
+#, fuzzy
+msgid "Show _more details"
+msgstr ""
+"#-#-#-#-#  ko.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"자세한 내용 보이기(_M)\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"더많은 세부사항 보이기 (_M)"
+
+msgid "Peers"
+msgstr "피어"
+
+#, fuzzy
+msgid "Show _backup trackers"
+msgstr ""
+"#-#-#-#-#  ko.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"백업 트래커 표시(_B)\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"백업 트래커 보이기 (_B)"
+
+msgid "File listing not available for combined torrent properties"
+msgstr "복합 토렌트 속성은 파일 리스팅을 할 수 없습니다"
+
+msgid "Files"
+msgstr "파일"
+
+msgid "Speed"
+msgstr "속도"
+
+#, fuzzy
+msgid "Honor global _limits"
+msgstr ""
+"#-#-#-#-#  ko.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"전체 제한 존중(_L)\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"광역 제한 존중 (_l)"
+
+msgid "Limit _download speed ({speed_units}):"
+msgstr "다운로드 속도 제한 ({speed_units}):"
+
+msgid "Limit _upload speed ({speed_units}):"
+msgstr "업로드 속도 제한 ({speed_units}):"
+
+#, fuzzy
+msgid "Torrent _priority:"
+msgstr ""
+"#-#-#-#-#  ko.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"토렌트 우선 순위(_P):\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Torrent _ 속성 (_P) :"
+
+#, fuzzy
+msgid "Seeding Limits"
+msgstr ""
+"#-#-#-#-#  ko.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"배포 제한\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"시드 제한"
+
+#, fuzzy
+msgid "_Ratio:"
+msgstr ""
+"#-#-#-#-#  ko.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"비율(_R):\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"비율 (_R):"
+
+#, fuzzy
+msgid "_Idle:"
+msgstr ""
+"#-#-#-#-#  ko.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"대기(_I):\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"비활성 (_l)"
+
+#, fuzzy
+msgid "Peer Connections"
+msgstr ""
+"#-#-#-#-#  ko.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"피어 접속\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"피어 연결"
+
+#, fuzzy
+msgid "_Maximum peers:"
+msgstr ""
+"#-#-#-#-#  ko.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"최대 피어(_M):\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"최대 피어 (_M)"
+
+msgid "Options"
+msgstr "옵션"
+
+msgid "Tracker Announce URLs"
+msgstr "트래커 알림 주소"
+
+msgid ""
+"To add a backup URL, add it on the next line after a primary URL.\n"
+"To add a new primary URL, add it after a blank line."
+msgstr ""
+"백업 URL을 추가하려면 기본 URL 다음 줄에 추가합니다.\n"
+"새 기본 URL을 추가하려면 빈 줄 뒤에 추가합니다."
+
+msgid "Also see Default Public Trackers in Edit > Preferences > Network"
+msgstr "편집 > 환경설정 > 네트워크의 기본 공개 트래커도 참조"
+
+#, fuzzy
+msgid "Open a torrent"
+msgstr ""
+"#-#-#-#-#  ko.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"토렌트 열기\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Torrent 열기"
+
+#, fuzzy
+msgid "Start torrent"
+msgstr ""
+"#-#-#-#-#  ko.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"토렌트 시작\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Torrent 시작"
+
+#, fuzzy
+msgid "Pause torrent"
+msgstr ""
+"#-#-#-#-#  ko.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"토렌트 중지\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Torrent 일시 정지"
+
+#, fuzzy
+msgid "Remove torrent"
+msgstr ""
+"#-#-#-#-#  ko.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"토렌트 제거\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Torrent 삭제"
+
+msgid "Torrent properties"
+msgstr "토렌트 속성"
+
+msgid "Torrent"
+msgstr "토렌트"
+
+msgid "Statistics"
+msgstr "통계"
+
+#, fuzzy
+msgid "New Torrent"
+msgstr ""
+"#-#-#-#-#  ko.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"새 토렌트\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"새 Torrent"
+
+#, fuzzy
+#| msgid "C_redits"
+msgid "C_reate"
+msgstr "크레딧 (_R)"
+
+#, fuzzy
+msgid "Sa_ve to:"
+msgstr ""
+"#-#-#-#-#  ko.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"다음에 위치에 저장(_V):\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"저장 위치 (_V):"
+
+msgid "Source f_older:"
+msgstr "소스 폴더 (_O)"
+
+msgid "Source _file:"
+msgstr "소스 파일 (_O)"
+
+#, fuzzy
+#| msgid "Piece size:"
+msgid "Piece si_ze:"
+msgstr "조각 크기:"
+
+msgid "Properties"
+msgstr "속성"
+
+#, fuzzy
+msgid "_Trackers:"
+msgstr ""
+"#-#-#-#-#  ko.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"트래커(_T):\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"트래커 (_T)"
+
+#, fuzzy
+msgid "Co_mment:"
+msgstr ""
+"#-#-#-#-#  ko.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"설명(_M):\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"주석 (_M)"
+
+#, fuzzy
+msgid "_Source:"
+msgstr ""
+"#-#-#-#-#  ko.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"소스(_S):\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"소스 (_S)"
+
+#, fuzzy
+msgid "_Private torrent"
+msgstr ""
+"#-#-#-#-#  ko.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"토렌트 비공개(_P)\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"비공개 Torrent (_P)"
+
+msgid "Creating torrent…"
+msgstr "토렌트를 만드는 중…"
+
+msgid "Message Log"
+msgstr "메시지 로그"
+
+msgid "Save _As"
+msgstr "다른 이름으로 저장(_A)"
+
+msgid "Clear"
+msgstr "지우기"
+
+msgid "Level"
+msgstr "레벨"
+
+msgid "Torrent Options"
+msgstr "토렌트 옵션"
+
+msgid "_Torrent file:"
+msgstr "토렌트 파일(_T):"
+
+msgid "Select Source File"
+msgstr "선택된 소스 파일"
+
+#, fuzzy
+msgid "_Destination folder:"
+msgstr ""
+"#-#-#-#-#  ko.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"대상 폴더(_D):\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"목적 폴더 (_D)"
+
+msgid "Select Destination Folder"
+msgstr "대상 폴더 선택"
+
+msgid "_Start when added"
+msgstr "추가하면 시작하기(_S)"
+
+#, fuzzy
+#| msgid "Mo_ve torrent file to the trash"
+msgid "Mo_ve torrent file to the Trash"
+msgstr "토렌트 파일을 휴지통으로 이동(_V)"
+
+#, fuzzy
+msgid "{appname} Preferences"
+msgstr ""
+"#-#-#-#-#  ko.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{appname} 환경 설정\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{appname} 설정"
+
+#, fuzzy
+msgid "Speed Limits"
+msgstr ""
+"#-#-#-#-#  ko.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"속도 제한\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"속도 제한\n"
+"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"속도 제한속도 제한"
+
+#. Checkbox to limit upload speed
+msgid "_Upload ({speed_units}):"
+msgstr ""
+
+#. Checkbox to limit download speed
+msgid "_Download ({speed_units}):"
+msgstr ""
+
+msgid "Alternative Speed Limits"
+msgstr "대체 속도 제한"
+
+msgid "Override normal speed limits manually or at scheduled times"
+msgstr "기본 속도 제한을 직접 선택하거나 예정된 시간 동안 제한합니다"
+
+#. Labels a spinbutton for alternate upload speed limits
+msgid "U_pload ({speed_units}):"
+msgstr ""
+
+#. Labels a spinbutton for alternate download speed limits
+msgid "Do_wnload ({speed_units}):"
+msgstr ""
+
+#, fuzzy
+msgid "_Scheduled times:"
+msgstr ""
+"#-#-#-#-#  ko.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"적용할 시간(_S):\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"정해진 시간 (_S)"
+
+#, fuzzy
+msgid "_On days:"
+msgstr ""
+"#-#-#-#-#  ko.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"적용할 날(_O):\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"날들 중에 (_O): "
+
+#. Label goes between two time selectors, e.g. "limit speeds from [time] to [time]"
+#, fuzzy
+msgid "_to"
+msgstr ""
+"#-#-#-#-#  ko.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"부터(_T)\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"에게 (_T)"
+
+msgctxt "Gerund"
+msgid "Adding"
+msgstr "추가"
+
+msgid "Automatically add torrent files _from:"
+msgstr "토렌트 파일을 자동으로 추가합니다:"
+
+#, fuzzy
+msgid "Show the Torrent Options _dialog"
+msgstr ""
+"#-#-#-#-#  ko.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"옵션 대화 상자 표시(_D)\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Torrent 옵션과 다이얼로그 보기 (_F)"
+
+#, fuzzy
+msgid "_Start added torrents"
+msgstr ""
+"#-#-#-#-#  ko.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"추가된 토렌트 시작(_S)\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"추가된 Torrent 시작(_S)"
+
+#, fuzzy
+#| msgid "Save to _Location:"
+msgid "Save to _location:"
+msgstr "다음 위치에 저장(_L):"
+
+msgid "Download Queue"
+msgstr "다운로드 큐"
+
+#, fuzzy
+msgid "Ma_ximum active downloads:"
+msgstr ""
+"#-#-#-#-#  ko.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"최대 활성화된 다운로드들 (_x) :\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"최대 활성 다운로드 수 (_X): "
+
+msgid "Downloads sharing data in the last _N minutes are active:"
+msgstr "마지막 N분 동안 데이터를 공유하는 다운로드가 활성화됩니다(_N):"
+
+#, fuzzy
+msgid "Incomplete"
+msgstr ""
+"#-#-#-#-#  ko.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"미완료\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"완료안됨"
+
+#, fuzzy
+msgid "Append \"._part\" to incomplete files' names"
+msgstr ""
+"#-#-#-#-#  ko.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"완료되지 않은 파일 이름에 \"._part\"를 붙임\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"완전하지 않은 파일명 뒤에 \"._part\" 붙이기"
+
+msgid "Keep _incomplete files in:"
+msgstr "완전하지 않은 파일들 보관 (_i):"
+
+#, fuzzy
+#| msgid "Call scrip_t when done downloading:"
+msgid "Call scrip_t when download completes:"
+msgstr "다운로드가 완료되면 호출 스크립트(_T):"
+
+msgid "Verify data when download completes"
+msgstr ""
+
+msgctxt "Gerund"
+msgid "Downloading"
+msgstr "다운로드"
+
+msgid "Limits"
+msgstr "제한"
+
+#, fuzzy
+msgid "Stop seeding at _ratio:"
+msgstr ""
+"#-#-#-#-#  ko.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"설정한 비율에서 배포 중지(_R):\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"이 비율이 되면 시드 중지:"
+
+msgid "Stop seeding if idle for _N minutes:"
+msgstr "N 분 대기 상태에 있으면 배포를 중지(_N):"
+
+msgid "Call scrip_t when done seeding:"
+msgstr "시드가 완료되면 호출 스크립트(_T):"
+
+msgctxt "Gerund"
+msgid "Seeding"
+msgstr "배포"
+
+#, fuzzy
+msgid "Privacy"
+msgstr ""
+"#-#-#-#-#  ko.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"개인 정보\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"프라이버시"
+
+#, fuzzy
+msgid "_Encryption mode:"
+msgstr ""
+"#-#-#-#-#  ko.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"암호화 모드(_E):\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"암호화 모드 (_E): "
+
+#, fuzzy
+msgid "Blocklist"
+msgstr ""
+"#-#-#-#-#  ko.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"차단 목록\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"블록리스트"
+
+#, fuzzy
+msgid "Enable _blocklist:"
+msgstr ""
+"#-#-#-#-#  ko.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"차단 목록 사용(_B):\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"블록리스트 사용 (_B)"
+
+#, fuzzy
+#| msgid "Enable _automatic updates"
+msgid "_Automatically update weekly"
+msgstr "자동 업데이트 사용(_A)"
+
+#, fuzzy
+msgid "_Update"
+msgstr ""
+"#-#-#-#-#  ko.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"업데이트(_U)\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"업데이트 (_U)"
+
+msgid "Listening Port"
+msgstr "들어오는 포트"
+
+msgid "_Port for incoming connections:"
+msgstr "들어오는 연결 포트 (_P)"
+
+#, fuzzy
+#| msgid "Pick a _random port every time Transmission is started"
+msgid "Pick a _random port at startup"
+msgstr "시작할 때 임의의 포트를 선택(_R)"
+
+#, fuzzy
+msgid "Use UPnP or NAT-PMP port _forwarding from my router"
+msgstr ""
+"#-#-#-#-#  ko.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"라우터에서 포트를 포워딩할 때 UPnP 또는 NAT-PMP 포트 사용(_F)\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"공유기의 UPnP나 NAP-PMP 포트 포워딩을 사용해보세요"
+
+#, fuzzy
+msgid "Te_st Port"
+msgstr ""
+"#-#-#-#-#  ko.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"포트 검사(_S)\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"포트 테스트 (_S)"
+
+msgid "Peer Limits"
+msgstr "피어 제한"
+
+#, fuzzy
+#| msgid "Maximum peers per _torrent:"
+msgid "Maximum peers for new _torrents:"
+msgstr "토렌트 당 최대 피어 수(_T):"
+
+#, fuzzy
+msgid "Maximum peers _overall:"
+msgstr ""
+"#-#-#-#-#  ko.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"전체 최대 피어(_O):\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"최대 총 피어수(_O): "
+
+#, fuzzy
+msgid "Enable µ_TP for peer connections"
+msgstr ""
+"#-#-#-#-#  ko.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"피어 접속\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"피어 연결"
+
+msgid "µTP is a tool for reducing network congestion."
+msgstr ""
+
+#, fuzzy
+#| msgid "Use PE_X to find more peers"
+msgid "Use PE_X to find more peers for public torrents"
+msgstr "더 많은 피어를 찾기 위해 PEX 사용(_X)"
+
+#, fuzzy
+msgid "PEX is a tool for exchanging peer lists with the peers you're connected to."
+msgstr ""
+"#-#-#-#-#  ko.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"PEX는 연결된 피어와 피어 목록을 교환하는 도구입니다.\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"PEX는 연결되어 있는 피어로부터 피어를 교환받는 도구입니다."
+
+#, fuzzy
+#| msgid "Use _DHT to find more peers"
+msgid "Use _DHT to find more peers for public torrents"
+msgstr "더 많은 피어를 찾기 위해 DHT 사용(_D)"
+
+#, fuzzy
+msgid "DHT is a tool for finding peers without a tracker."
+msgstr ""
+"#-#-#-#-#  ko.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"DHT는 트래커 없이 피어를 찾는 도구입니다.\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"DHT는 트래커 밖에서 피어를 찾는 도구입니다."
+
+#, fuzzy
+#| msgid "Use _Local Peer Discovery to find more peers"
+msgid "Use _Local Peer Discovery to find more peers for public torrents"
+msgstr "더 많은 피어를 찾기 위해 LPD 사용(_L)"
+
+#, fuzzy
+msgid "LPD is a tool for finding peers on your local network."
+msgstr ""
+"#-#-#-#-#  ko.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"LPD는 로컬 네트워크에서 피어를 찾는 도구입니다.\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"LPD는 로컬 네크워크 상에 있는 피어를 발견하는 도구입니다."
+
+msgid "Default Public Trackers"
+msgstr ""
+
+msgid ""
+"Trackers to use on all public torrents.\n"
+"\n"
+"To add a backup URL, add it on the next line after a primary URL.\n"
+"To add a new primary URL, add it after a blank line."
+msgstr ""
+
+msgid "Network"
+msgstr "네트워크"
+
+#, fuzzy
+msgid "Desktop"
+msgstr ""
+"#-#-#-#-#  ko.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"바탕 화면\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"데스크탑"
+
+msgid "_Prevent computer from sleeping with active torrents"
+msgstr ""
+
+#, fuzzy
+msgid "Show {appname} icon in the _notification area"
+msgstr ""
+"#-#-#-#-#  ko.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{appname} 아이콘을 시스템 알림 영역에 표시(_N)\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"알람 영역에 {appname} 아이콘 보이기 (_N)"
+
+#, fuzzy
+msgid "Notification"
+msgstr ""
+"#-#-#-#-#  ko.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"알림\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"알람"
+
+#, fuzzy
+msgid "Show a notification when torrents are a_dded"
+msgstr ""
+"#-#-#-#-#  ko.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"토렌트를 추가하면 알림 보이기(_D)\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Torrent 추가시 알람 보이기 (_D)"
+
+#, fuzzy
+msgid "Show a notification when torrents _finish"
+msgstr ""
+"#-#-#-#-#  ko.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"토렌트가 끝나면 알림 보이기(_F)\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Torrent 완료시 알람 보이기 (_F)"
+
+#, fuzzy
+msgid "Play a _sound when torrents finish"
+msgstr ""
+"#-#-#-#-#  ko.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"토렌트가 끝나면 소리 재생하기(_S)\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Torrent 완료시 소리 재생하기 (_S)"
+
+msgid "Remote Control"
+msgstr "원격 조종"
+
+#, fuzzy
+msgid "Allow _remote access"
+msgstr ""
+"#-#-#-#-#  ko.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"원격 접속 허용(_R)\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"리모트 액서스 허용 (_R)"
+
+#, fuzzy
+#| msgid "_Open web client"
+msgid "_Open Web Client"
+msgstr "웹 클라이언트 열기(_O)"
+
+#, fuzzy
+msgid "HTTP _port:"
+msgstr ""
+"#-#-#-#-#  ko.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"HTTP 포트(_P):\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"HTTP 포트 (_P): "
+
+#, fuzzy
+msgid "Use _authentication"
+msgstr ""
+"#-#-#-#-#  ko.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"인증 사용(_A)\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"인증 사용 (_A)"
+
+#, fuzzy
+msgid "_Username:"
+msgstr ""
+"#-#-#-#-#  ko.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"사용자 이름(_U):\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"유저 이름 (_U)"
+
+#, fuzzy
+msgid "Pass_word:"
+msgstr ""
+"#-#-#-#-#  ko.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"암호(_W):\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"비밀번호 (_W)"
+
+#, fuzzy
+msgid "Only allow these IP a_ddresses:"
+msgstr ""
+"#-#-#-#-#  ko.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"이 IP 주소만 연결할 수 있게 합니다(_D):\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"이 IP 주소들만 허용 (_D): "
+
+msgid "Addresses:"
+msgstr "주소:"
+
+msgid "IP addresses may use wildcards, such as 192.168.*.*"
+msgstr "IP 주소에 '192.168.*.*' 형식과 같이 와일드 카드를 이용할 수 있습니다"
+
+msgid "Remote"
+msgstr "리모트"
+
+#, fuzzy
+msgid "Set Torrent Location"
+msgstr ""
+"#-#-#-#-#  ko.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"토렌트 위치 설정\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Torrent 위치 선택"
+
+msgid "_Apply"
+msgstr ""
+
+msgid "Location"
+msgstr "위치"
+
+msgid "New _location:"
+msgstr "새 위치 (_l):"
+
+#, fuzzy
+msgid "_Move from the current folder"
+msgstr ""
+"#-#-#-#-#  ko.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"현재 폴더에서 옮김(_M)\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"현 폴더에서 이동 (_M)"
+
+#, fuzzy
+msgid "Local data is _already there"
+msgstr ""
+"#-#-#-#-#  ko.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"다운 받은 데이터가 이미 존재함(_A)\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"이미 있는 로컬 데이터 (_A)"
+
+msgid "Current Session"
+msgstr "현재 세션"
+
+msgid "Ratio:"
+msgstr "비율:"
+
+#, fuzzy
+msgid "Duration:"
+msgstr ""
+"#-#-#-#-#  ko.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"실행 시간:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"기간:"
+
+#, fuzzy
+msgid "Total"
+msgstr ""
+"#-#-#-#-#  ko.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"총 계\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"총"
+
+msgid "Open URL"
+msgstr "주소 열기"
+
+msgid "Open torrent from URL"
+msgstr "주소로 토렌트 열기"
+
+msgid "_URL"
+msgstr "주소(_U)"
+
+msgid "The torrent file '{path}' is already in use by '{torrent_name}'."
+msgstr ""
+
+msgid "Couldn't open torrent"
+msgstr ""
+
+msgid "Couldn't move '{path}' to trash: {error} ({error_code})"
+msgstr ""
+
+#, fuzzy
+#| msgid "Couldn't launch daemon event loop: {error} ({error_code})"
+msgid "Couldn't launch default application for URI '{uri}': {error} ({error_code})"
+msgstr "데몬 이벤트 반복을 실행할 수 없음: {error} ({error_code})"
+
+#, fuzzy
+#| msgid "Couldn't remove '{path}': {error} ({error_code})"
+msgid "Couldn't invoke xdg-open for URI '{uri}': {error} ({error_code})"
+msgstr "'{path}' 경로를 지울 수 없음: {error} ({error_code})"
+
+msgid "Couldn't open '{url}'"
+msgstr ""
+
+msgid "Unsupported URL: '{url}'"
+msgstr ""
+
+msgid "{appname} doesn't know how to use '{url}'"
+msgstr ""
+
+msgid "This magnet link appears to be intended for something other than BitTorrent."
+msgstr ""
 
 msgid "{days_from_now:L} day from now"
 msgid_plural "{days_from_now:L} days from now"
@@ -821,21 +2346,89 @@ msgid "{seconds_ago:L} second ago"
 msgid_plural "{seconds_ago:L} seconds ago"
 msgstr[0] ""
 
+msgid "Got a list of {markup_begin}{peer_count} peer{markup_end} {time_span_ago}"
+msgid_plural "Got a list of {markup_begin}{peer_count} peers{markup_end} {time_span_ago}"
+msgstr[0] ""
+
+msgid "Peer list request {markup_begin}timed out {time_span_ago}{markup_end}; will retry"
+msgstr ""
+
+msgid "Got an error '{markup_begin}{error}{markup_end}' {time_span_ago}"
+msgstr ""
+
+#, fuzzy
+msgid "No updates scheduled"
+msgstr ""
+"#-#-#-#-#  ko.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"예정된 업데이트 없음\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"업데이트 일정 없음"
+
+msgid "Asking for more peers {time_span_from_now}"
+msgstr ""
+
+#, fuzzy
+msgid "Queued to ask for more peers"
+msgstr ""
+"#-#-#-#-#  ko.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"더 많은 피어 요청 대기\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"피어를 더 받아올수 있는지 물어봄 큐"
+
+msgid "Asked for more peers {markup_begin}{time_span_ago}{markup_end}"
+msgstr ""
+
+msgid "Got a scrape error '{markup_begin}{error}{markup_end}' {time_span_ago}"
+msgstr ""
+
+#, fuzzy
+#| msgid "Tracker had {markup_begin}no information{markup_end} on peer counts {time_span} ago"
+msgid "Tracker had {markup_begin}no information{markup_end} on peer counts {time_span_ago}"
+msgstr "{time_span} 전 트래커에게 피어 수에 대한 {markup_begin}정보가 없었음{markup_end}"
+
+msgid "Tracker had {markup_begin}{seeder_count} {seeder_or_seeders} and {leecher_count} {leecher_or_leechers}{markup_end} {time_span_ago}"
+msgstr ""
+
+msgid "seeder"
+msgid_plural "seeders"
+msgstr[0] "배포자"
+
+msgid "leecher"
+msgid_plural "leechers"
+msgstr[0] "다운로더"
+
+#, fuzzy
+#| msgid "Asking for peer counts in {time_span}"
+msgid "Asking for peer counts {time_span_from_now}"
+msgstr "{time_span} 에 피어 수 물어보기"
+
+#, fuzzy
+msgid "Queued to ask for peer counts"
+msgstr ""
+"#-#-#-#-#  ko.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"피어 총 계 요청을 위해 대기\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"피어 수 물어봄 큐"
+
+msgid "Asked for peer counts {markup_begin}{time_span_ago}{markup_end}"
+msgstr ""
+
 msgid "{days:L} day"
 msgid_plural "{days:L} days"
-msgstr[0] ""
+msgstr[0] "{days:L} 일"
 
 msgid "{hours:L} hour"
 msgid_plural "{hours:L} hours"
-msgstr[0] ""
+msgstr[0] "{hours:L} 시간"
 
+#. Translators: Spin box format, "Stop seeding if idle for: [ 5 minutes ]"
 msgid "{minutes:L} minute"
 msgid_plural "{minutes:L} minutes"
-msgstr[0] ""
+msgstr[0] "{minutes:L} 분"
 
 msgid "{seconds:L} second"
 msgid_plural "{seconds:L} seconds"
-msgstr[0] ""
+msgstr[0] "{seconds:L} 초"
 
 msgid "{days_left:L} day left"
 msgid_plural "{days_left:L} days left"
@@ -853,759 +2446,6 @@ msgid "{seconds_left:L} second left"
 msgid_plural "{seconds_left:L} seconds left"
 msgstr[0] ""
 
-msgid "The torrent file '{path}' is already in use by '{torrent_name}'."
-msgstr ""
-
-msgid "Couldn't open torrent"
-msgstr ""
-
-msgid "Couldn't move '{path}' to trash: {error} ({error_code})"
-msgstr ""
-
-msgid "Couldn't open '{url}'"
-msgstr ""
-
-msgid "Unsupported URL: '{url}'"
-msgstr ""
-
-#. modal
-msgid "{appname} doesn't know how to use '{url}'"
-msgstr ""
-
-msgid "This magnet link appears to be intended for something other than BitTorrent."
-msgstr ""
-
-#, fuzzy
-msgid "Retransmission"
-msgstr "트랜스미션"
-
-#. parse the command line
-msgid "Where to look for configuration files"
-msgstr "설정 파일을 찾아볼 위치"
-
-msgid "Start with all torrents paused"
-msgstr "모든 토렌트를 멈춘 상태로 시작"
-
-msgid "Start minimized in notification area"
-msgstr "알림 영역에 최소화된 상태로 시작"
-
-msgid "Show version number and exit"
-msgstr "버전 번호를 보여주고 마침"
-
-msgid "[torrent files or urls]"
-msgstr "[토렌트 파일 또는 주소]"
-
-msgid "Run '{program} --help' to see a full list of available command line options.\n"
-msgstr ""
-
-msgid "B/s"
-msgstr "B/초"
-
-msgid "GB/s"
-msgstr "GB/초"
-
-msgid "MB/s"
-msgstr "MB/초"
-
-msgid "TB/s"
-msgstr "TB/초"
-
-msgid "kB/s"
-msgstr "kB/초"
-
-msgid "B"
-msgstr "B"
-
-msgid "GiB"
-msgstr "GiB"
-
-msgid "KiB"
-msgstr "KiB"
-
-msgid "MiB"
-msgstr "MiB"
-
-msgid "TiB"
-msgstr "TiB"
-
-msgid "GB"
-msgstr "GB"
-
-msgid "MB"
-msgstr "MB"
-
-msgid "TB"
-msgstr "TB"
-
-msgid "kB"
-msgstr "kB"
-
-msgid "BitTorrent Client"
-msgstr "비트토렌트 클라이언트"
-
-msgid "Download and share files over BitTorrent"
-msgstr "비트토렌트를 이용하여 파일을 다운로드 및 공유합니다"
-
-#. Translators: Search terms to find this application. Do NOT translate or localize the semicolons! The list MUST also end with a semicolon!
-msgid "torrents;downloading;uploading;share;sharing;"
-msgstr ""
-
-msgid "Start Retransmission with All Torrents Paused"
-msgstr "모든 토렌트를 멈춘 상태로 시작"
-
-#, fuzzy
-msgid "Start Retransmission Minimized"
-msgstr "트랜스미션을 창이 최소화된 상태로 시작하기"
-
-msgid "Open a torrent"
-msgstr "토렌트 열기"
-
-msgid "Open _URL…"
-msgstr "주소 열기(_U)…"
-
-msgid "Open URL…"
-msgstr "주소 열기…"
-
-msgid "_New…"
-msgstr "새 토렌트(_N)…"
-
-msgid "_Start All"
-msgstr "모두 시작(_S)"
-
-msgid "Start all torrents"
-msgstr "모든 토렌트 시작"
-
-msgid "_Pause All"
-msgstr "모두 정지(_P)"
-
-msgid "Pause all torrents"
-msgstr "모든 토렌트 중지"
-
-msgid "_Quit"
-msgstr "종료(_Q)"
-
-msgid "Select _All"
-msgstr "모두 선택(_A)"
-
-msgid "Dese_lect All"
-msgstr "모두 선택하지 않기(_L)"
-
-msgid "_Preferences"
-msgstr ""
-
-msgid "_Properties"
-msgstr ""
-
-msgid "Torrent properties"
-msgstr "토렌트 속성"
-
-msgid "Open Fold_er"
-msgstr "폴더 열기(_E)"
-
-msgid "_Start"
-msgstr "시작(_S)"
-
-msgid "Start torrent"
-msgstr "토렌트 시작"
-
-msgid "Start _Now"
-msgstr "지금 시작(_N)"
-
-msgid "Start torrent now"
-msgstr "토렌트 지금 시작"
-
-msgid "Ask Tracker for _More Peers"
-msgstr "더 많은 피어를 트래커에 요청(_M)"
-
-msgid "Move to _Top"
-msgstr "가장 위로 이동(_T)"
-
-msgid "Move _Up"
-msgstr "위로 이동(_U)"
-
-msgid "Move _Down"
-msgstr "아래로 이동(_D)"
-
-msgid "Move to _Bottom"
-msgstr "가장 아래로 이동(_B)"
-
-msgid "_Pause"
-msgstr "중지(_P)"
-
-msgid "Pause torrent"
-msgstr "토렌트 중지"
-
-msgid "Set _Location…"
-msgstr "위치 설정(_L)…"
-
-msgid "_Verify Local Data"
-msgstr "로컬 데이터 확인(_V)"
-
-msgid "Copy _Magnet Link to Clipboard"
-msgstr "클립보드로 마그넷 링크 복사(_M)"
-
-msgid "Remove torrent"
-msgstr "토렌트 제거"
-
-msgid "_Delete Files and Remove"
-msgstr "파일을 삭제하고 목록에서 제거(_D)"
-
-msgid "_Compact View"
-msgstr "간단히 보기(_C)"
-
-msgid "_Toolbar"
-msgstr "도구 모음(_T)"
-
-msgid "_Filterbar"
-msgstr "필터 표시줄(_F)"
-
-msgid "_Statusbar"
-msgstr "상태 표시줄(_S)"
-
-msgid "Sort by _Activity"
-msgstr "활동 여부로 정렬(_A)"
-
-msgid "Sort by A_ge"
-msgstr "오래된 순서로 정렬(_G)"
-
-msgid "Sort by _Name"
-msgstr "이름으로 정렬(_N)"
-
-msgid "Sort by _Progress"
-msgstr "진행 상태 순서로 정렬(_P)"
-
-msgid "Sort by _Queue"
-msgstr "대기 순서로 정렬(_Q)"
-
-msgid "Sort by Rati_o"
-msgstr "비율로 정렬(_O)"
-
-msgid "Sort by Si_ze"
-msgstr "크기로 정렬(_Z)"
-
-msgid "Sort by Stat_e"
-msgstr "상태로 정렬(_E)"
-
-msgid "Sort by Time _Left"
-msgstr "남은 시간으로 정렬(_L)"
-
-msgid "Re_verse Sort Order"
-msgstr "정렬 순서 뒤집기(_V)"
-
-msgid "Message _Log"
-msgstr "메시지 로그(_L)"
-
-msgid "_Statistics"
-msgstr "통계(_S)"
-
-msgid "_Donate"
-msgstr "기부(_D)"
-
-msgid "_Contents"
-msgstr "차례(_C)"
-
-msgid "_About"
-msgstr "정보(_A)"
-
-msgid "_Show {appname}"
-msgstr "{appname} 보이기(_S)"
-
-msgid "Enable Alternative Speed _Limits"
-msgstr "대체 속도 제한 켜기(_L)"
-
-msgid "_Add"
-msgstr "추가(_A)"
-
-msgid "Tracker"
-msgstr "트래커"
-
-msgid "_Announce URL:"
-msgstr "알림 주소(_A):"
-
-msgid "_Close"
-msgstr "닫기(_C)"
-
-msgid "Activity"
-msgstr "활동 중"
-
-msgid "Torrent size:"
-msgstr "토렌트 크기:"
-
-msgid "Have:"
-msgstr "다운로드함:"
-
-msgid "Uploaded:"
-msgstr "업로드함:"
-
-msgid "Downloaded:"
-msgstr "다운로드함:"
-
-msgid "State:"
-msgstr "상태:"
-
-msgid "Running time:"
-msgstr "진행된 시간:"
-
-msgid "Remaining time:"
-msgstr "남은 시간:"
-
-msgid "Last activity:"
-msgstr "마지막 활동:"
-
-msgid "Error:"
-msgstr "오류:"
-
-msgid "Details"
-msgstr "세부 사항"
-
-msgid "Location:"
-msgstr "위치:"
-
-msgid "Hash:"
-msgstr "해시:"
-
-msgid "Privacy:"
-msgstr "종류:"
-
-msgid "Origin:"
-msgstr "만든 날짜:"
-
-msgid "Added:"
-msgstr "추가됨:"
-
-msgid "Comment:"
-msgstr "주석:"
-
-msgid "Information"
-msgstr "정보"
-
-msgid "Show _more details"
-msgstr "자세한 내용 보이기(_M)"
-
-msgid "Peers"
-msgstr "피어"
-
-msgid "_Edit"
-msgstr "편집(_E)"
-
-msgid "Show _backup trackers"
-msgstr "백업 트래커 표시(_B)"
-
-msgid "File listing not available for combined torrent properties"
-msgstr "복합 토렌트 속성은 파일 리스팅을 할 수 없습니다"
-
-msgid "Files"
-msgstr "파일"
-
-msgid "Speed"
-msgstr "속도"
-
-msgid "Honor global _limits"
-msgstr "전체 제한 존중(_L)"
-
-msgid "Limit _download speed ({speed_units}):"
-msgstr "다운로드 속도 제한 ({speed_units}):"
-
-msgid "Limit _upload speed ({speed_units}):"
-msgstr "업로드 속도 제한 ({speed_units}):"
-
-msgid "Torrent _priority:"
-msgstr "토렌트 우선 순위(_P):"
-
-msgid "Seeding Limits"
-msgstr "배포 제한"
-
-msgid "_Ratio:"
-msgstr "비율(_R):"
-
-msgid "_Idle:"
-msgstr "대기(_I):"
-
-msgid "Peer Connections"
-msgstr "피어 접속"
-
-msgid "_Maximum peers:"
-msgstr "최대 피어(_M):"
-
-msgid "Options"
-msgstr "옵션"
-
-msgid "Tracker Announce URLs"
-msgstr "트래커 알림 주소"
-
-msgid ""
-"To add a backup URL, add it on the next line after a primary URL.\n"
-"To add a new primary URL, add it after a blank line."
-msgstr ""
-"백업 URL을 추가하려면 기본 URL 다음 줄에 추가합니다.\n"
-"새 기본 URL을 추가하려면 빈 줄 뒤에 추가합니다."
-
-msgid "Also see Default Public Trackers in Edit > Preferences > Network"
-msgstr "편집 > 환경설정 > 네트워크의 기본 공개 트래커도 참조"
-
-msgid "Torrent"
-msgstr "토렌트"
-
-msgid "Statistics"
-msgstr "통계"
-
-msgid "New Torrent"
-msgstr "새 토렌트"
-
-msgid "_New"
-msgstr "새로 만들기(_N)"
-
-msgid "Sa_ve to:"
-msgstr "다음에 위치에 저장(_V):"
-
-msgid "Source F_older:"
-msgstr "공유할 폴더(_O):"
-
-msgid "Source _File:"
-msgstr "공유할 파일(_F):"
-
-msgid "Piece size:"
-msgstr "조각 크기:"
-
-msgid "Properties"
-msgstr "속성"
-
-msgid "_Trackers:"
-msgstr "트래커(_T):"
-
-msgid "Co_mment:"
-msgstr "설명(_M):"
-
-msgid "_Source:"
-msgstr "소스(_S):"
-
-msgid "_Private torrent"
-msgstr "토렌트 비공개(_P)"
-
-msgid "Creating torrent…"
-msgstr "토렌트를 만드는 중…"
-
-msgid "Message Log"
-msgstr "메시지 로그"
-
-msgid "Save _As"
-msgstr "다른 이름으로 저장(_A)"
-
-msgid "Clear"
-msgstr "지우기"
-
-msgid "P_ause"
-msgstr "일시 중지(_A)"
-
-msgid "Level"
-msgstr "레벨"
-
-msgid "Torrent Options"
-msgstr "토렌트 옵션"
-
-msgid "_Torrent file:"
-msgstr "토렌트 파일(_T):"
-
-msgid "Select Source File"
-msgstr "선택된 소스 파일"
-
-msgid "_Destination folder:"
-msgstr "대상 폴더(_D):"
-
-msgid "Select Destination Folder"
-msgstr "대상 폴더 선택"
-
-msgid "_Start when added"
-msgstr "추가하면 시작하기(_S)"
-
-msgid "Mo_ve torrent file to the trash"
-msgstr "토렌트 파일을 휴지통으로 이동(_V)"
-
-msgid "{appname} Preferences"
-msgstr "{appname} 환경 설정"
-
-msgid "_Help"
-msgstr "도움말(_H)"
-
-msgid "Speed Limits"
-msgstr "속도 제한"
-
-#. Checkbox to limit upload speed
-msgid "_Upload ({speed_units}):"
-msgstr ""
-
-#. Checkbox to limit download speed
-msgid "_Download ({speed_units}):"
-msgstr ""
-
-msgid "Alternative Speed Limits"
-msgstr "대체 속도 제한"
-
-msgid "Override normal speed limits manually or at scheduled times"
-msgstr "기본 속도 제한을 직접 선택하거나 예정된 시간 동안 제한합니다"
-
-#. Labels a spinbutton for alternate upload speed limits
-msgid "U_pload ({speed_units}):"
-msgstr ""
-
-#. Labels a spinbutton for alternate download speed limits
-msgid "Do_wnload ({speed_units}):"
-msgstr ""
-
-msgid "_Scheduled times:"
-msgstr "적용할 시간(_S):"
-
-msgid "_On days:"
-msgstr "적용할 날(_O):"
-
-#. Label goes between two time selectors, e.g. "limit speeds from [time] to [time]"
-msgid "_to"
-msgstr "부터(_T)"
-
-msgctxt "Gerund"
-msgid "Adding"
-msgstr "추가"
-
-msgid "Automatically add torrent files _from:"
-msgstr "토렌트 파일을 자동으로 추가합니다:"
-
-msgid "Show the Torrent Options _dialog"
-msgstr "옵션 대화 상자 표시(_D)"
-
-msgid "_Start added torrents"
-msgstr "추가된 토렌트 시작(_S)"
-
-msgid "Save to _Location:"
-msgstr "다음 위치에 저장(_L):"
-
-msgid "Download Queue"
-msgstr "다운로드 큐"
-
-msgid "Ma_ximum active downloads:"
-msgstr "최대 활성화된 다운로드들 (_x) :"
-
-msgid "Downloads sharing data in the last _N minutes are active:"
-msgstr "마지막 N분 동안 데이터를 공유하는 다운로드가 활성화됩니다(_N):"
-
-msgid "Incomplete"
-msgstr "미완료"
-
-msgid "Append \"._part\" to incomplete files' names"
-msgstr "완료되지 않은 파일 이름에 \"._part\"를 붙임"
-
-msgid "Keep _incomplete torrents in:"
-msgstr "미완료 토렌트 다음 위치에 보관(_I):"
-
-msgid "Call scrip_t when done downloading:"
-msgstr "다운로드가 완료되면 호출 스크립트(_T):"
-
-msgctxt "Gerund"
-msgid "Downloading"
-msgstr "다운로드"
-
-msgid "Limits"
-msgstr "제한"
-
-msgid "Stop seeding at _ratio:"
-msgstr "설정한 비율에서 배포 중지(_R):"
-
-msgid "Stop seeding if idle for _N minutes:"
-msgstr "N 분 대기 상태에 있으면 배포를 중지(_N):"
-
-msgid "Call scrip_t when done seeding:"
-msgstr "시드가 완료되면 호출 스크립트(_T):"
-
-msgctxt "Gerund"
-msgid "Seeding"
-msgstr "배포"
-
-msgid "Privacy"
-msgstr "개인 정보"
-
-msgid "_Encryption mode:"
-msgstr "암호화 모드(_E):"
-
-msgid "Blocklist"
-msgstr "차단 목록"
-
-msgid "Enable _blocklist:"
-msgstr "차단 목록 사용(_B):"
-
-msgid "Enable _automatic updates"
-msgstr "자동 업데이트 사용(_A)"
-
-msgid "_Update"
-msgstr "업데이트(_U)"
-
-msgid "Listening Port"
-msgstr "들어오는 포트"
-
-msgid "_Port used for incoming connections:"
-msgstr "들어오는 연결에 사용하는 포트(_P):"
-
-msgid "Pick a _random port every time Transmission is started"
-msgstr "시작할 때 임의의 포트를 선택(_R)"
-
-msgid "Use UPnP or NAT-PMP port _forwarding from my router"
-msgstr "라우터에서 포트를 포워딩할 때 UPnP 또는 NAT-PMP 포트 사용(_F)"
-
-msgid "Te_st Port"
-msgstr "포트 검사(_S)"
-
-msgid "Peer Limits"
-msgstr "피어 제한"
-
-msgid "Maximum peers per _torrent:"
-msgstr "토렌트 당 최대 피어 수(_T):"
-
-msgid "Maximum peers _overall:"
-msgstr "전체 최대 피어(_O):"
-
-msgid "Enable µ_TP for peer communication"
-msgstr ""
-
-msgid "µTP is a tool for reducing network congestion."
-msgstr ""
-
-msgid "Use PE_X to find more peers"
-msgstr "더 많은 피어를 찾기 위해 PEX 사용(_X)"
-
-msgid "PEX is a tool for exchanging peer lists with the peers you're connected to."
-msgstr "PEX는 연결된 피어와 피어 목록을 교환하는 도구입니다."
-
-msgid "Use _DHT to find more peers"
-msgstr "더 많은 피어를 찾기 위해 DHT 사용(_D)"
-
-msgid "DHT is a tool for finding peers without a tracker."
-msgstr "DHT는 트래커 없이 피어를 찾는 도구입니다."
-
-msgid "Use _Local Peer Discovery to find more peers"
-msgstr "더 많은 피어를 찾기 위해 LPD 사용(_L)"
-
-msgid "LPD is a tool for finding peers on your local network."
-msgstr "LPD는 로컬 네트워크에서 피어를 찾는 도구입니다."
-
-msgid "Default Public Trackers"
-msgstr ""
-
-msgid ""
-"Trackers to use on all public torrents.\n"
-"\n"
-"To add a backup URL, add it on the next line after a primary URL.\n"
-"To add a new primary URL, add it after a blank line."
-msgstr ""
-
-msgid "Network"
-msgstr "네트워크"
-
-msgid "Desktop"
-msgstr "바탕 화면"
-
-msgid "_Inhibit hibernation when torrents are active"
-msgstr "토렌트를 전송하고 있을 때 최대 절전 모드를 사용하지 않음(_I)"
-
-msgid "Show {appname} icon in the _notification area"
-msgstr "{appname} 아이콘을 시스템 알림 영역에 표시(_N)"
-
-msgid "Notification"
-msgstr "알림"
-
-msgid "Show a notification when torrents are a_dded"
-msgstr "토렌트를 추가하면 알림 보이기(_D)"
-
-msgid "Show a notification when torrents _finish"
-msgstr "토렌트가 끝나면 알림 보이기(_F)"
-
-msgid "Play a _sound when torrents finish"
-msgstr "토렌트가 끝나면 소리 재생하기(_S)"
-
-msgid "Remote Control"
-msgstr "원격 조종"
-
-msgid "Allow _remote access"
-msgstr "원격 접속 허용(_R)"
-
-msgid "_Open web client"
-msgstr "웹 클라이언트 열기(_O)"
-
-msgid "HTTP _port:"
-msgstr "HTTP 포트(_P):"
-
-msgid "Use _authentication"
-msgstr "인증 사용(_A)"
-
-msgid "_Username:"
-msgstr "사용자 이름(_U):"
-
-msgid "Pass_word:"
-msgstr "암호(_W):"
-
-msgid "Only allow these IP a_ddresses:"
-msgstr "이 IP 주소만 연결할 수 있게 합니다(_D):"
-
-msgid "Addresses:"
-msgstr "주소:"
-
-msgid "IP addresses may use wildcards, such as 192.168.*.*"
-msgstr "IP 주소에 '192.168.*.*' 형식과 같이 와일드 카드를 이용할 수 있습니다"
-
-msgid "Remote"
-msgstr "리모트"
-
-msgid "Set Torrent Location"
-msgstr "토렌트 위치 설정"
-
-msgid "_Apply"
-msgstr ""
-
-msgid "Location"
-msgstr "위치"
-
-msgid "Torrent _location:"
-msgstr "토렌트 위치(_L):"
-
-msgid "_Move from the current folder"
-msgstr "현재 폴더에서 옮김(_M)"
-
-msgid "Local data is _already there"
-msgstr "다운 받은 데이터가 이미 존재함(_A)"
-
-msgid "Current Session"
-msgstr "현재 세션"
-
-msgid "Ratio:"
-msgstr "비율:"
-
-msgid "Duration:"
-msgstr "실행 시간:"
-
-msgid "Total"
-msgstr "총 계"
-
-msgid "Open URL"
-msgstr "주소 열기"
-
-msgid "Open torrent from URL"
-msgstr "주소로 토렌트 열기"
-
-msgid "_URL"
-msgstr "주소(_U)"
-
-msgid "Couldn't parse announce response: {error} ({error_code})"
-msgstr ""
-
-msgid "Couldn't parse scrape response: {error} ({error_code})"
-msgstr ""
-
-msgid "Unknown error"
-msgstr "알려지지 않은 오류"
-
-msgid "{ip_protocol} connection failed"
-msgstr ""
-
-msgid "Couldn't look up '{address}:{port}' in {ip_protocol}: {error} ({error_code})"
-msgstr ""
-
 msgid "Announce error: {error} ({url})"
 msgstr ""
 
@@ -1622,19 +2462,60 @@ msgstr "트래커가 응답하지 않음"
 msgid "Success"
 msgstr "성공"
 
+msgid "Couldn't parse announce response: {error} ({error_code})"
+msgstr ""
+
+msgid "Couldn't parse scrape response: {error} ({error_code})"
+msgstr ""
+
+msgid "Unknown error"
+msgstr "알려지지 않은 오류"
+
+msgid "{ip_protocol} connection failed"
+msgstr ""
+
+msgid "Couldn't look up '{address}:{port}' in {ip_protocol}: {error} ({error_code})"
+msgstr ""
+
 msgid "Blocklist '{path}' has {count} entry"
 msgid_plural "Blocklist '{path}' has {count} entries"
 msgstr[0] ""
 
-#. don't try to display the actual lines - it causes issues
-msgid "Couldn't parse line: '{line}'"
+#, fuzzy
+#| msgid "Couldn't parse log level '{level}'"
+msgid "Couldn't parse line {line}: {base64}"
+msgstr "'{level}' 로그 레벨을 분석할 수 없음"
+
+msgid "Rewriting old blocklist file {path} to new format"
 msgstr ""
 
-msgid "Rewriting old blocklist file format to new format"
+msgid "Blocklist is larger than {limit} MiB; ignoring it"
+msgstr ""
+
+#, fuzzy
+#| msgid "Couldn't initialize daemon: {error} ({error_code})"
+msgid "Couldn't fetch blocklist: {errmsg}, response code: {error} ({error_code})"
+msgstr "데몬을 초기화할 수 없습니다. {error} ({error_code})"
+
+msgid "Couldn't fetch blocklist: {error} ({error_code})"
+msgstr ""
+
+msgid "Automatically updated blocklist, which now has {count} rules"
+msgstr ""
+
+msgid "Invalid tr_sched_days value {val}"
 msgstr ""
 
 msgid "{crypto_library} error: {error} ({error_code})"
 msgstr ""
+
+msgid "Couldn't read '{path}': Not a regular file"
+msgstr ""
+
+#, fuzzy
+#| msgid "Couldn't add torrent file '{path}'"
+msgid "Couldn't get '{path}': "
+msgstr "'{path}' 토렌트 파일 추가할 수 없음"
 
 msgid "Couldn't get '{path}': {error} ({error_code})"
 msgstr ""
@@ -1651,19 +2532,13 @@ msgstr ""
 msgid "Successfully updated global {type} address to {ip} using {url}"
 msgstr ""
 
+msgid "Still waiting for disk IO on torrent {id}: {running} running, {queued} queued"
+msgstr ""
+
 msgid "Too many messages like this! I won't log this message anymore this session."
 msgstr ""
 
 msgid "Skipping '{path}': {error} ({error_code})"
-msgstr ""
-
-msgid "Couldn't create socket: {error} ({error_code})"
-msgstr ""
-
-msgid "Couldn't set source address {address} on {socket}: {error} ({error_code})"
-msgstr ""
-
-msgid "Couldn't connect socket {socket} to {address}:{port}: {error} ({error_code})"
 msgstr ""
 
 msgid "Couldn't bind port {port} on {address}: {error} ({error_code}) -- Is another copy of {appname} already running?"
@@ -1681,7 +2556,34 @@ msgstr ""
 msgid "Couldn't truncate '{path}': {error} ({error_code})"
 msgstr ""
 
+msgid "Couldn't create socket: {error} ({error_code})"
+msgstr ""
+
+msgid "Couldn't set source address {address} on {socket}: {error} ({error_code})"
+msgstr ""
+
+msgid "Couldn't connect socket {socket} to {address}:{port}: {error} ({error_code})"
+msgstr ""
+
 msgid "Unknown state: {state}"
+msgstr ""
+
+msgid "Starting"
+msgstr "시작"
+
+msgid "Forwarded"
+msgstr "포워드함"
+
+msgid "Stopping"
+msgstr "정지"
+
+msgid "Not forwarded"
+msgstr "포워드 되지 않음"
+
+msgid "Mapped private port {private_port} to public port {public_port}"
+msgstr ""
+
+msgid "State changed from '{old_state}' to '{state}'"
 msgstr ""
 
 msgid "Found public address '{address}'"
@@ -1714,22 +2616,20 @@ msgstr ""
 msgid "If your router supports UPnP, please make sure UPnP is enabled!"
 msgstr ""
 
-msgid "Starting"
-msgstr "시작"
+#, fuzzy
+#| msgid "Couldn't create event: {error} ({error_code})"
+msgid "Couldn't test port: {errmsg}, response code: {error} ({error_code})"
+msgstr "이벤트를 만들 수 없음: {error}({error_code})"
 
-msgid "Forwarded"
-msgstr "포워드함"
-
-msgid "Stopping"
-msgstr "정지"
-
-msgid "Not forwarded"
-msgstr "포워드 되지 않음"
-
-msgid "Mapped private port {private_port} to public port {public_port}"
+msgid "Couldn't test port: {error} ({error_code})"
 msgstr ""
 
-msgid "State changed from '{old_state}' to '{state}'"
+#, fuzzy
+#| msgid "Couldn't create event: {error} ({error_code})"
+msgid "Couldn't fetch torrent: {errmsg}, Response code: {error} ({error_code})"
+msgstr "이벤트를 만들 수 없음: {error}({error_code})"
+
+msgid "Couldn't fetch torrent: {error} ({error_code})"
 msgstr ""
 
 msgid "Unix socket path must be fewer than {count} characters (including '{prefix}' prefix)"
@@ -1787,28 +2687,23 @@ msgstr "암호 필요"
 msgid "Serving RPC and Web requests from '{path}'"
 msgstr ""
 
-msgid "Couldn't test port: {error} ({error_code})"
-msgstr ""
+#, fuzzy
+#| msgid "Alternative Speed Limits"
+msgid "Time to turn on alternative speed limits"
+msgstr "대체 속도 제한"
 
-msgid "Couldn't fetch blocklist: {error} ({error_code})"
-msgstr ""
-
-msgid "Couldn't fetch torrent: {error} ({error_code})"
-msgstr ""
-
-msgid "Time to turn off turtle mode"
-msgstr ""
-
-msgid "Time to turn on turtle mode"
-msgstr ""
-
-msgid "Couldn't open session lock file '{path}': {error} ({error_code})"
-msgstr ""
+#, fuzzy
+#| msgid "Alternative Speed Limits"
+msgid "Time to turn off alternative speed limits"
+msgstr "대체 속도 제한"
 
 msgid "Listening to incoming peer connections on {hostport}"
 msgstr ""
 
 msgid "{appname} version {version} starting"
+msgstr ""
+
+msgid "Couldn't start disk IO workers, continuing without them: {error}"
 msgstr ""
 
 msgid "{appname} version {version} shutting down"
@@ -1818,7 +2713,10 @@ msgid "Loaded {count} torrent"
 msgid_plural "Loaded {count} torrents"
 msgstr[0] ""
 
-msgid "Migrated torrent file from '{old_path}' to '{path}'"
+msgid "Couldn't claim '{path}'. If another session is using it, the two will overwrite each other's settings, resume files and stats."
+msgstr ""
+
+msgid "Couldn't open session lock file '{path}': {error} ({error_code})"
 msgstr ""
 
 msgid "Couldn't use metainfo from '{path}' for '{magnet}': {error} ({error_code})"
@@ -1851,13 +2749,31 @@ msgstr ""
 msgid "Removing torrent"
 msgstr "토렌트 제거"
 
-msgid "Couldn't move '{old_path}' to '{path}': {error} ({error_code})"
-msgstr ""
+#, fuzzy
+#| msgid "Couldn't remove '{path}': {error} ({error_code})"
+msgid "Couldn't move torrent files to '{path}': {error} ({error_code})"
+msgstr "'{path}' 경로를 지울 수 없음: {error} ({error_code})"
 
 msgid "Paused torrent as no data was found! Ensure your drives are connected or use \"Set Location\", then use \"Verify Local Data\" again. To re-download, start the torrent."
 msgstr ""
 
+msgid "Couldn't move '{old_path}' to '{path}': {error} ({error_code})"
+msgstr ""
+
 msgid "Tracker warning: '{warning}' ({url})"
+msgstr ""
+
+#, fuzzy
+#| msgid "Removing torrent file '{path}'"
+msgid "Moving '{source}' will overwrite '{path}'"
+msgstr "'{path}' 토렌트 파일 지우는 중"
+
+#, fuzzy
+#| msgid "Couldn't save '{path}': {error} ({error_code})"
+msgid "Couldn't compare '{path}' with '{root}': {error} ({error_code}); leaving it alone"
+msgstr "'{path}' 경로에 저장할 수 없음: {error} ({error_code})"
+
+msgid "Migrated torrent file from '{old_path}' to '{path}'"
 msgstr ""
 
 msgid "Couldn't parse '{filename}' line: '{line}'"
@@ -1887,8 +2803,47 @@ msgstr ""
 msgid "Unknown socket family"
 msgstr ""
 
-msgid "Couldn't read '{path}': Not a regular file"
-msgstr ""
+msgid "B"
+msgstr "B"
+
+msgid "KiB"
+msgstr "KiB"
+
+msgid "MiB"
+msgstr "MiB"
+
+msgid "GiB"
+msgstr "GiB"
+
+msgid "TiB"
+msgstr "TiB"
+
+msgid "B/s"
+msgstr "B/초"
+
+msgid "kB/s"
+msgstr "kB/초"
+
+msgid "MB/s"
+msgstr "MB/초"
+
+msgid "GB/s"
+msgstr "GB/초"
+
+msgid "TB/s"
+msgstr "TB/초"
+
+msgid "kB"
+msgstr "kB"
+
+msgid "MB"
+msgstr "MB"
+
+msgid "GB"
+msgstr "GB"
+
+msgid "TB"
+msgstr "TB"
 
 msgid "Couldn't parse JSON at position {position} '{text}': {error} ({error_code})"
 msgstr ""
@@ -1896,16 +2851,13 @@ msgstr ""
 msgid "Couldn't watch '{path}': {error} ({error_code})"
 msgstr ""
 
-msgid "Couldn't read event: {error} ({error_code})"
-msgstr ""
-
 msgid "Couldn't read event: expected {expected_size}, got {actual_size}"
 msgstr ""
 
-msgid "Couldn't read filename: {error} ({error_code})"
+msgid "Couldn't read filename: expected {expected_size}, got {actual_size}"
 msgstr ""
 
-msgid "Couldn't read filename: expected {expected_size}, got {actual_size}"
+msgid "Couldn't read event: {error} ({error_code})"
 msgstr ""
 
 msgid "Couldn't convert '{path}' to native path"
@@ -1926,10 +2878,13 @@ msgstr ""
 msgid "Consider upgrading your curl installation."
 msgstr ""
 
+msgid "The minimum supported version is {curl_version}, you might face unexpected behaviour."
+msgstr ""
+
 msgid "curl {curl_version} is prone to SIGPIPE crashes. {details_url}"
 msgstr ""
 
-msgid "curl {curl_version} is prone to an eventfd double close vulnerability that might cause SIGABRT crashes for the transmission-daemon systemd service. {details_url}"
+msgid "curl {curl_version} is prone to an eventfd double close vulnerability that might cause SIGABRT crashes for the daemon systemd service. {details_url}"
 msgstr ""
 
 msgid "Will verify tracker certs using envvar CURL_CA_BUNDLE: {bundle}"
@@ -1941,8 +2896,437 @@ msgstr ""
 msgid "NB: Invalid certs will appear as 'Could not connect to tracker' like many other errors"
 msgstr ""
 
+msgid "Aborting request: response body exceeded max size of {max_file_size} bytes"
+msgstr ""
+
 msgid "Couldn't fetch '{url}': expected HTTP response code {expected_code}, got {actual_code}"
 msgstr ""
+
+msgid "Server"
+msgstr ""
+
+msgid "C_redits"
+msgstr "크레딧 (_R)"
+
+msgid "Credits"
+msgstr "크레딧"
+
+msgid "About {appname}"
+msgstr "{appname}에 대하여"
+
+msgid "Torrent Completed"
+msgstr "Torrent 완료됨"
+
+msgid "Torrents Completed"
+msgstr "Torrent 완료됨"
+
+#. Translators: Text following the "Have:" label in torrent properties dialog;
+#. {current_size} is amount of downloaded and verified data
+msgid "{current_size} (100%)"
+msgstr "{current_size} (100%)"
+
+msgid "{current_size} of {complete_size} ({percent_done}%), {unverified_size} Unverified"
+msgstr "{current_size} / {complete_size} ({percent_done}%), {unverified_size} 검증되지 않음"
+
+msgid "{total_size} ({piece_count:L} piece @ {piece_size})"
+msgid_plural "{total_size} ({piece_count:L} pieces @ {piece_size})"
+msgstr[0] "{total_size} ({piece_count:L} / {piece_size} 조각들)"
+
+msgid "{total_size} ({piece_count:L} piece)"
+msgid_plural "{total_size} ({piece_count:L} pieces)"
+msgstr[0] "{total_size} ({piece_count:L} 조각들)"
+
+msgid "Add URL(s)"
+msgstr ""
+
+#, fuzzy
+#| msgid "Tracker Announce URLs"
+msgid "Add tracker announce URLs, one per line:"
+msgstr "트래커 알림 주소"
+
+msgid "No new URLs found."
+msgstr ""
+
+msgid "Use Global Settings"
+msgstr "전역 설정 사용"
+
+msgid "Stop seeding if idle for:"
+msgstr "비활성화 되면 시드 중지"
+
+msgid "Torrent Properties"
+msgstr "Torrent 속성"
+
+msgid "Availability:"
+msgstr "가용율:"
+
+msgid "Labels:"
+msgstr ""
+
+msgid "Limit _upload speed:"
+msgstr "업로드 속도 제한 (_U)"
+
+msgid "Limit _download speed:"
+msgstr "다운로드 속도 제한 (_D)"
+
+msgid "Check Selected"
+msgstr "선택항목 체크"
+
+msgid "Uncheck Selected"
+msgstr "선택항목 체크 해제"
+
+msgid "Only Check Selected"
+msgstr "오직 선택항목만 체크"
+
+msgid "Open"
+msgstr "열기"
+
+msgid "Rename…"
+msgstr ""
+
+msgid "Search…"
+msgstr ""
+
+msgid "<i>Calculating Free Space…</i>"
+msgstr ""
+
+msgid "Limited at {speed}"
+msgstr "{speed} 에 한정"
+
+#. Translators: Second (optional) part of main window title "Appname - host:port" (added when connected to remote session)
+#. notice that leading space (before the dash) is included here
+msgid " - {host}:{port}"
+msgstr " - {host}:{port}"
+
+msgid "Network Error"
+msgstr "네트워크 오류"
+
+msgid "Idle"
+msgstr "비활성"
+
+msgid "Showing {visible_count:L} of {count:L} torrent"
+msgid_plural "Showing {visible_count:L} of {count:L} torrents"
+msgstr[0] "{visible_count:L} / {count:L} Torrent 보이기"
+
+msgid "Torrent Files (*.torrent);;All Files (*.*)"
+msgstr "Torrent 파일 (*.torrent);;전체 파일 (*.*)"
+
+msgid "{host} has not responded yet"
+msgstr "{host}가 반응하지 않고 있습니다"
+
+msgid "{host} is responding"
+msgstr "{host} 반응중"
+
+#, fuzzy
+#| msgid "{host} last responded {time_span} ago"
+msgid "{host} last responded {time_span_ago}"
+msgstr "{host} 의 마지막 반응 - {time_span} 전"
+
+msgid "{host} is not responding"
+msgstr "{host} 반응하지 않음"
+
+#, fuzzy
+#| msgid "_Open"
+msgid "_Open…"
+msgstr "열기(_O)"
+
+msgid "Create a new torrent"
+msgstr "새 Torrent 만들기"
+
+msgid "Open the torrent's folder"
+msgstr "Torrent 폴더 열기"
+
+msgid "Ask tracker for more peers"
+msgstr "트래커에 요청하여 피어 가져오기"
+
+msgid "Verify local data"
+msgstr "로컬 데이터 검증"
+
+msgid "Remove torrent and delete its files"
+msgstr "Torrent 파일과 데이터 삭제"
+
+msgid "Compact View"
+msgstr "간략하게 보기"
+
+msgid "_Main Window"
+msgstr "주 윈도 (_M)"
+
+msgid "Tray _Icon"
+msgstr "트레이 아이콘 (_I)"
+
+#, fuzzy
+#| msgid "Change Session"
+msgid "_Change Session…"
+msgstr "세션 변경"
+
+#. Start a local session or connect to a running session
+msgid "Choose Session"
+msgstr "세션 선택"
+
+msgid "Bypass the queue and start now"
+msgstr "큐를 넘기고 바로 시작합니다"
+
+msgid "{file_count:L} File"
+msgid_plural "{file_count:L} Files"
+msgstr[0] "{file_count:L} 파일"
+
+msgid "{piece_count:L} Piece"
+msgid_plural "{piece_count:L} Pieces"
+msgstr[0] "{piece_count:L} 조각"
+
+msgid "{total_size} in {files}; {pieces} @ {piece_size}"
+msgstr "{files} 안 {total_size}; {piece_size}의 {pieces}"
+
+msgid ""
+"To add a backup URL, add it on the line after the primary URL.\n"
+"To add another primary URL, add it after a blank line."
+msgstr ""
+"백업 URL을 추가하실려면 주 URL 아래에다가 추가하십시오.\n"
+"다른 주 URL을 추가하실려면 빈 라인 아래에 추가하십시오."
+
+#, fuzzy
+msgid "Sou_rce:"
+msgstr ""
+"#-#-#-#-#  ko.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"소스(_S):\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"소스 (_S)"
+
+msgid "_Priority:"
+msgstr "우선순위 (_P)"
+
+msgid "Select Folder"
+msgstr "폴더 선택"
+
+#, fuzzy
+#| msgid "Unknown"
+msgid "unknown"
+msgstr "알려지지 않음"
+
+msgid "checking…"
+msgstr ""
+
+msgid "open"
+msgstr ""
+
+#, fuzzy
+#| msgid "_Close"
+msgid "closed"
+msgstr "닫기(_C)"
+
+#, fuzzy
+#| msgid "Error"
+msgid "error"
+msgstr "오류"
+
+#, fuzzy
+#| msgid "<i>Blocklist contains {count:L} rule</i>"
+#| msgid_plural "<i>Blocklist contains {count:L} rules</i>"
+msgid "<b>Update succeeded!</b><p>Blocklist now has {count:L} rule.</p>"
+msgid_plural "<b>Update succeeded!</b><p>Blocklist now has {count:L} rules.</p>"
+msgstr[0] "<i>블록리스트는 {count:L} 규칙을 포함하고 있습니다</i>"
+
+msgid "Download of the blocklist failed."
+msgstr ""
+
+#, fuzzy
+msgid "Update Blocklist"
+msgstr ""
+"#-#-#-#-#  ko.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"차단 목록\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"블록리스트"
+
+msgid "Select \"Torrent Done Seeding\" Script"
+msgstr ""
+
+msgid "Select Watch Directory"
+msgstr "주의 디렉터리 선택"
+
+msgid "Select Incomplete Directory"
+msgstr "불완전 Torrent 디렉터리 선택"
+
+msgid "Select \"Torrent Done Downloading\" Script"
+msgstr ""
+
+msgid "Not supported by remote sessions"
+msgstr "리모트 세션은 지원하지 않습니다"
+
+msgid "<i>Blocklist contains {count:L} rule</i>"
+msgid_plural "<i>Blocklist contains {count:L} rules</i>"
+msgstr[0] "<i>블록리스트는 {count:L} 규칙을 포함하고 있습니다</i>"
+
+#, fuzzy
+#| msgid "<i>Blocklist contains {count:L} rule</i>"
+#| msgid_plural "<i>Blocklist contains {count:L} rules</i>"
+msgid "<i>Blocklist has never been updated</i>"
+msgstr "<i>블록리스트는 {count:L} 규칙을 포함하고 있습니다</i>"
+
+#, fuzzy
+#| msgid "<i>Blocklist contains {count:L} rule</i>"
+#| msgid_plural "<i>Blocklist contains {count:L} rules</i>"
+msgid "<i>Blocklist last updated {date}</i>"
+msgstr "<i>블록리스트는 {count:L} 규칙을 포함하고 있습니다</i>"
+
+msgid "_Upload:"
+msgstr "업로드 (_U): "
+
+msgid "_Download:"
+msgstr "다운로드 (_D): "
+
+msgid "U_pload:"
+msgstr "업로드 (_P):"
+
+msgid "Do_wnload:"
+msgstr "다운로드 (_W):"
+
+msgid "Downloading"
+msgstr "다운로드중"
+
+msgid "Adding"
+msgstr "추가중"
+
+msgid "Reads user clipboard content for torrents"
+msgstr ""
+
+msgid "Detect new torrents from clipboard"
+msgstr ""
+
+#. Please keep this phrase as short as possible, it's currently the longest and influences dialog width
+msgid "Download is i_nactive if data sharing stopped:"
+msgstr "데이터 공유 중단시 다운로드 비활성화 (_n)"
+
+msgid "Seeding"
+msgstr "시딩중"
+
+msgid "Stop seedi_ng if idle for:"
+msgstr "비활성화 되면 시드 중지 (_N)"
+
+msgid "Encryption"
+msgstr "암호화"
+
+msgid "Start _minimized in notification area"
+msgstr "시작시 알람 영역에 최소화"
+
+#, fuzzy
+#| msgid "Retransmission"
+msgid "Retransmission (Qt)"
+msgstr "Retransmission"
+
+msgid "Select Location"
+msgstr "위치 선택"
+
+msgid "Error Renaming Path"
+msgstr "이름변경 위치 오류"
+
+msgid "Unable to rename \"{old_path}\" as \"{path}\": {error}."
+msgstr "\"{old_path}\" 을 \"{path}\"로 변경할수 없습니다: {error}."
+
+msgid "Error Adding Torrent"
+msgstr "Torrent 추가 오류"
+
+#, fuzzy
+#| msgid "{torrent_name} - Add Tracker"
+msgid "{torrent_name} (copy of {hash})"
+msgstr "{torrent_name} - 트래커 추가"
+
+#, fuzzy
+msgid "Duplicate Torrent"
+msgstr ""
+"#-#-#-#-#  ko.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"공개 토렌트\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"공개 Torrent"
+
+#, fuzzy
+msgid "Duplicate Torrents"
+msgstr ""
+"#-#-#-#-#  ko.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"공개 토렌트\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"공개 Torrent"
+
+#, fuzzy
+#| msgid "Couldn't add duplicate torrent"
+#| msgid_plural "Couldn't add duplicate torrents"
+msgid "Unable to add {count} duplicate torrent"
+msgid_plural "Unable to add {count} duplicate torrents"
+msgstr[0] "중복된 토렌트는 추가할 수 없습니다"
+
+msgid "Change Session"
+msgstr "세션 변경"
+
+msgid "Source"
+msgstr "소스"
+
+msgid "Start _Local Session"
+msgstr "로컬 세션 시작 (_L)"
+
+msgid "Connect to _Remote Session"
+msgstr "리모트 세션 연결 (_R)"
+
+msgid "_Host:"
+msgstr "호스트 (_H):"
+
+msgid "_Port:"
+msgstr "포트 (_P):"
+
+msgid "_Authentication required"
+msgstr "인증 필요함 (_A):"
+
+msgid "Remote root pa_th:"
+msgstr ""
+
+msgid "Tracker gave a warning: {warning}"
+msgstr "트래커가 경고를 주었습니다: {warning}"
+
+msgid "Tracker gave an error: {error}"
+msgstr "트래커가 오류를 주었습니다: {error}"
+
+msgid "Error: {error}"
+msgstr "오류: {error}"
+
+#, fuzzy
+#| msgid "Magnetized transfer - retrieving metadata (%1%)"
+msgid "Magnetized torrent - retrieving metadata ({percent_done}%)"
+msgstr "마그넷 전송 - 메타데이터 가져오는 중 (%1%)"
+
+#, no-c-format
+msgid "Downloading metadata from {active_count:L} peer ({percent_done}% done)"
+msgid_plural "Downloading metadata from {active_count:L} peers ({percent_done}% done)"
+msgstr[0] "{active_count:L} 피어로부터 메타데이터 다운로드중 ({percent_done}% 완료)"
+
+msgid "Downloading from {active_count:L} peer"
+msgid_plural "Downloading from {active_count:L} peers"
+msgstr[0] "{active_count:L} 피어로부터 다운로드중"
+
+msgid " and {webseed_count:L} web seed"
+msgid_plural " and {webseed_count:L} web seeds"
+msgstr[0] "그리고 {webseed_count:L} 웹 시드들"
+
+msgid "Seeding to {active_count:L} peer"
+msgid_plural "Seeding to {active_count:L} peers"
+msgstr[0] "{active_count:L} 피어로부터 시드중"
+
+msgid " - "
+msgstr " - "
+
+#, fuzzy
+#| msgid ""
+#| "To add a backup URL, add it on the next line after a primary URL.\n"
+#| "To add a new primary URL, add it after a blank line."
+msgid "To add a backup URL, add it on the next line after a primary URL."
+msgstr ""
+"백업 URL을 추가하려면 기본 URL 다음 줄에 추가합니다.\n"
+"새 기본 URL을 추가하려면 빈 줄 뒤에 추가합니다."
+
+#, fuzzy
+#| msgid ""
+#| "To add a backup URL, add it on the next line after a primary URL.\n"
+#| "To add a new primary URL, add it after a blank line."
+msgid "To add a new primary URL, add it after a blank line."
+msgstr ""
+"백업 URL을 추가하려면 기본 URL 다음 줄에 추가합니다.\n"
+"새 기본 URL을 추가하려면 빈 줄 뒤에 추가합니다."
 
 msgid "{file_count:L} file, {total_size}\n"
 msgid_plural "{file_count:L} files, {total_size}\n"
@@ -1960,13 +3344,92 @@ msgid "minute"
 msgid_plural "minutes"
 msgstr[0] ""
 
-msgid "seconds"
+msgid "second"
 msgid_plural "seconds"
 msgstr[0] ""
 
 msgid "day"
 msgid_plural "days"
 msgstr[0] ""
+
+msgid "seconds"
+msgid_plural "seconds"
+msgstr[0] ""
+
+#~ msgid "Finished"
+#~ msgstr "완료함"
+
+#~ msgid "We would upload to this peer if they asked"
+#~ msgstr "상대방이 요청한 경우 이 피어에게 업로드 합니다"
+
+#~ msgid "Dn Blocks"
+#~ msgstr "막은 다운로드"
+
+#~ msgid "Up Blocks"
+#~ msgstr "막은 업로드"
+
+#~ msgid "We Cancelled"
+#~ msgstr "우리가 취소함"
+
+#~ msgid "They Cancelled"
+#~ msgstr "상대가 취소함"
+
+#~ msgid "Have"
+#~ msgstr "소유함"
+
+#~ msgid "Select a File"
+#~ msgstr "파일 선택"
+
+#~ msgid "Inhibiting desktop hibernation"
+#~ msgstr "데스크톱 최대 절전 사용하지 않기"
+
+#~ msgid "Allowing desktop hibernation"
+#~ msgstr "데스크톱 최대 절전 모드를 허용"
+
+#~ msgid "Open URL…"
+#~ msgstr "주소 열기…"
+
+#~ msgid "Start all torrents"
+#~ msgstr "모든 토렌트 시작"
+
+#~ msgid "Pause all torrents"
+#~ msgstr "모든 토렌트 중지"
+
+#~ msgid "Start torrent now"
+#~ msgstr "토렌트 지금 시작"
+
+#~ msgid "Copy _Magnet Link to Clipboard"
+#~ msgstr "클립보드로 마그넷 링크 복사(_M)"
+
+#~ msgid "Enable Alternative Speed _Limits"
+#~ msgstr "대체 속도 제한 켜기(_L)"
+
+#~ msgid "Torrent size:"
+#~ msgstr "토렌트 크기:"
+
+#~ msgid "_New"
+#~ msgstr "새로 만들기(_N)"
+
+#~ msgid "Source F_older:"
+#~ msgstr "공유할 폴더(_O):"
+
+#~ msgid "Source _File:"
+#~ msgstr "공유할 파일(_F):"
+
+#~ msgid "P_ause"
+#~ msgstr "일시 중지(_A)"
+
+#~ msgid "Keep _incomplete torrents in:"
+#~ msgstr "미완료 토렌트 다음 위치에 보관(_I):"
+
+#~ msgid "_Port used for incoming connections:"
+#~ msgstr "들어오는 연결에 사용하는 포트(_P):"
+
+#~ msgid "_Inhibit hibernation when torrents are active"
+#~ msgstr "토렌트를 전송하고 있을 때 최대 절전 모드를 사용하지 않음(_I)"
+
+#~ msgid "Torrent _location:"
+#~ msgstr "토렌트 위치(_L):"
 
 #~ msgid "I _Agree"
 #~ msgstr "이에 _동의합니다"

@@ -12,8 +12,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-01-04 14:15+0000\n"
+"Report-Msgid-Bugs-To: https://github.com/retransmission/retransmission/issues\n"
+"POT-Creation-Date: 2026-10-03 11:48-0500\n"
 "PO-Revision-Date: 2017-01-26 19:47+0000\n"
 "Last-Translator: Sveinn í Felli <sv1@fellsnet.is>, 2024\n"
 "Language-Team: Icelandic (https://app.transifex.com/transmissionbt/teams/33778/is/)\n"
@@ -28,6 +28,9 @@ msgstr "Ekkert"
 
 msgid "Inf"
 msgstr "Uppl"
+
+msgid "Another process is already using '{path}'."
+msgstr ""
 
 msgid "Couldn't read '{path}': {error} ({error_code})"
 msgstr "Gat ekki lesið '{path}': {error} ({error_code})"
@@ -55,6 +58,9 @@ msgstr "Hleð aftur inn stillingum úr '{path}'"
 
 msgid "Couldn't initialize daemon: {error} ({error_code})"
 msgstr "Gat ekki frumstillt bakgrunnsþjónustu (daemon): {error} ({error_code})"
+
+msgid "Waiting for another process to release '{path}'"
+msgstr ""
 
 msgid "Loading settings from '{path}'"
 msgstr "Hleð inn stillingum úr '{path}'"
@@ -105,8 +111,13 @@ msgid_plural "Couldn't add duplicate torrents"
 msgstr[0] "Gat ekki bætt við torrent-skrá sem var þegar til staðar"
 msgstr[1] "Gat ekki bætt við torrent-skrám sem voru þegar til staðar"
 
+#, fuzzy
 msgid "A fast and easy BitTorrent client"
-msgstr "Hraðvikt torrent-forrit sem er auðvelt í notkun"
+msgstr ""
+"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Hraðvikt torrent-forrit sem er auðvelt í notkun\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Hraðvikt BitTorrent-forrit sem er auðvelt í notkun"
 
 msgid "Copyright © The {appname} Project"
 msgstr "Höfundarréttur © {appname}-verkefnið"
@@ -151,9 +162,14 @@ msgstr "Skoða sótt gögn"
 msgid "Queued for download"
 msgstr "Sett í niðurhalsbiðröð"
 
+#, fuzzy
 msgctxt "Verb"
 msgid "Downloading"
-msgstr "Verið að sækja"
+msgstr ""
+"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Verið að sækja\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Sæki"
 
 msgid "Queued for seeding"
 msgstr "Sett í deilibiðröð"
@@ -162,8 +178,10 @@ msgctxt "Verb"
 msgid "Seeding"
 msgstr "Í deilingu"
 
-msgid "Finished"
-msgstr "Lokið"
+#, fuzzy
+#| msgid "Incomplete"
+msgid "Seeding complete"
+msgstr "Óklárað"
 
 msgid "Paused"
 msgstr "Í bið"
@@ -183,11 +201,21 @@ msgstr "Prívat til þessa rekjara -- DHT og PEX er óvirkt"
 msgid "Public torrent"
 msgstr "Opinbert torrent-streymi"
 
+#, fuzzy
 msgid "Created by {creator} on {date}"
-msgstr "Búið til af {creator} {date}"
+msgstr ""
+"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Búið til af {creator} {date}\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Búið til af {creator} þann {date}"
 
+#, fuzzy
 msgid "Created by {creator}"
-msgstr "Búið til af {creator}"
+msgstr ""
+"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Búið til af {creator}\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Útbúið af {creator}"
 
 msgid "Created on {date}"
 msgstr "Búið til {date}"
@@ -212,14 +240,26 @@ msgstr "{current_size} ({percent_done}%)"
 msgid "{current_size} ({percent_done}% of {percent_available}% available)"
 msgstr "{current_size} ({percent_done}% af {percent_available}% tiltæku)"
 
+#, fuzzy, c-format
+#| msgid "{current_size} ({percent_done}% of {percent_available}% available; {unverified_size} unverified)"
 msgid "{current_size} ({percent_done}% of {percent_available}% available; {unverified_size} unverified)"
 msgstr "{current_size} ({percent_done}% af {percent_available}% tiltæku; {unverified_size} ekki sannreynt)"
 
+#, fuzzy
 msgid "{downloaded_size} (+{discarded_size} discarded after failed checksum)"
-msgstr "{downloaded_size} (+{discarded_size} hent eftir að yfirferð gátsummu mistókst)"
+msgstr ""
+"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{downloaded_size} (+{discarded_size} hent eftir að yfirferð gátsummu mistókst)\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{downloaded_size} (+{discarded_size} hent eftir misheppnaða gátsummu)"
 
+#, fuzzy
 msgid "{uploaded_size} (Ratio: {ratio})"
-msgstr "{uploaded_size} (Deilihlutfall: {ratio})"
+msgstr ""
+"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{uploaded_size} (Deilihlutfall: {ratio})\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{uploaded_size} (deilihlutfall: {ratio})"
 
 msgid "No errors"
 msgstr "Engar villur"
@@ -242,8 +282,10 @@ msgstr "Við myndum sækja frá þessum jafningja ef þeir gæfu okkur leyfi fyr
 msgid "Uploading to peer"
 msgstr "Sendi gögn til jafningja"
 
-msgid "We would upload to this peer if they asked"
-msgstr "Við myndum senda gögn til þessa jafningja ef hann bæði um það"
+#, fuzzy
+#| msgid "We would download from this peer if they would let us"
+msgid "This peer would download from us if we would let them"
+msgstr "Við myndum sækja frá þessum jafningja ef þeir gæfu okkur leyfi fyrir því"
 
 msgid "Peer has unchoked us, but we're not interested"
 msgstr "Jafninginn hefur afkæft okkur, en við höfum ekki áhuga"
@@ -266,10 +308,12 @@ msgstr "Jafningi er í þann mund að tengjast"
 msgid "Peer is connected over µTP"
 msgstr "Jafningi ertengdur um µTP"
 
+msgid "Peer supports holepunch (BEP 55)"
+msgstr ""
+
 msgid "Address"
 msgstr "Vistfang"
 
-#. % is percent done
 msgid "%"
 msgstr "%"
 
@@ -278,18 +322,6 @@ msgstr "Sækja-beiðnir"
 
 msgid "Up Reqs"
 msgstr "Senda-beiðnir"
-
-msgid "Dn Blocks"
-msgstr "Sóttar blokkir"
-
-msgid "Up Blocks"
-msgstr "Sendar blokkir"
-
-msgid "We Cancelled"
-msgstr "Við hættum við"
-
-msgid "They Cancelled"
-msgstr "Þau hættu við"
 
 msgid "Down"
 msgstr "Sótt"
@@ -305,58 +337,6 @@ msgstr "Flögg"
 
 msgid "Web Seeds"
 msgstr "Vefdeiling"
-
-msgid "Got a list of {markup_begin}{peer_count} peer{markup_end} {time_span_ago}"
-msgid_plural "Got a list of {markup_begin}{peer_count} peers{markup_end} {time_span_ago}"
-msgstr[0] "Fékk lista yfir {markup_begin}{peer_count} jafningja{markup_end} {time_span_ago}"
-msgstr[1] "Fékk lista yfir {markup_begin}{peer_count} jafningja{markup_end} {time_span_ago}"
-
-#. {markup_begin} and {markup_end} should surround the time_span
-msgid "Peer list request {markup_begin}timed out {time_span_ago}{markup_end}; will retry"
-msgstr "Beiðni um lista yfir jafningja {markup_begin}timed out {time_span_ago}{markup_end}; mun reyna aftur"
-
-#. {markup_begin} and {markup_end} should surround the error
-msgid "Got an error '{markup_begin}{error}{markup_end}' {time_span_ago}"
-msgstr "Fékk villu '{markup_begin}{error}{markup_end}' {time_span_ago}"
-
-msgid "No updates scheduled"
-msgstr "Engar uppfærslur á dagskrá"
-
-msgid "Asking for more peers {time_span_from_now}"
-msgstr "Óska eftir fleiri jafningjum eftir {time_span_from_now}"
-
-msgid "Queued to ask for more peers"
-msgstr "Bíð eftir að geta óskað eftir fleiri jafningjum"
-
-#. {markup_begin} and {markup_end} should surround time_span_ago
-msgid "Asked for more peers {markup_begin}{time_span_ago}{markup_end}"
-msgstr "Óskaði eftir fleiri jafningjum {markup_begin}{time_span_ago}{markup_end}"
-
-msgid "Tracker had {markup_begin}{seeder_count} {seeder_or_seeders} and {leecher_count} {leecher_or_leechers}{markup_end} {time_span_ago}"
-msgstr "Rekjari var með {markup_begin}{seeder_count} {seeder_or_seeders} og {leecher_count} {leecher_or_leechers}{markup_end} {time_span_ago}"
-
-msgid "seeder"
-msgid_plural "seeders"
-msgstr[0] "deilara"
-msgstr[1] "deilara"
-
-msgid "leecher"
-msgid_plural "leechers"
-msgstr[0] "viðtakanda"
-msgstr[1] "viðtakendur"
-
-#. {markup_begin} and {markup_end} should surround the error text
-msgid "Got a scrape error '{markup_begin}{error}{markup_end}' {time_span_ago}"
-msgstr "Fékk villu við skröpun '{markup_begin}{error}{markup_end}' {time_span_ago}"
-
-msgid "Asking for peer counts in {time_span_from_now}"
-msgstr "Óska eftir fjölda jafningja eftir {time_span_from_now}"
-
-msgid "Queued to ask for peer counts"
-msgstr "Bíð eftir að fá að spyrja um jafningjafjölda"
-
-msgid "Asked for peer counts {markup_begin}{time_span_ago}{markup_end}"
-msgstr "Óskaði eftir fjölda jafningja {markup_begin}{time_span_ago}{markup_end}"
 
 msgid "{torrent_name} - Edit Trackers"
 msgstr "{torrent_name} - Breyta rekjurum"
@@ -384,23 +364,47 @@ msgstr[1] "Eiginleikar - {torrent_count:L} torrent-skrár"
 msgid "Remove torrent?"
 msgstr "Fjarlægja torrent-skrána?"
 
-msgid "Remove {count:L} torrent?"
-msgid_plural "Remove {count:L} torrents?"
-msgstr[0] "Fjarlægja {count:L} torrent-streymi?"
-msgstr[1] "Fjarlægja {count:L} torrent-skrárnar?"
-
 msgid "Delete this torrent's downloaded files?"
 msgstr "Viltu eyða sóttum skrám úr þessari torrent-skrá?"
 
+#, fuzzy
+msgid "Remove {count:L} torrent?"
+msgid_plural "Remove {count:L} torrents?"
+msgstr[0] ""
+"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Fjarlægja {count:L} torrent-streymi?\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Fjarlægja {count:L} torrent-streymi?"
+msgstr[1] ""
+"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Fjarlægja {count:L} torrent-skrárnar?\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Fjarlægja {count:L} torrent-streymi?"
+
+#, fuzzy
 msgid "Delete this {count:L} torrent's downloaded files?"
 msgid_plural "Delete these {count:L} torrents' downloaded files?"
-msgstr[0] "Viltu eyða {count:L} sóttri skrá úr þessu torrent-streymi?"
-msgstr[1] "Viltu eyða sóttum skrám úr þessum {count:L} torrent-skrám?"
+msgstr[0] ""
+"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Viltu eyða {count:L} sóttri skrá úr þessu torrent-streymi?\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Viltu eyða {count:L} sóttri skrá úr þessu torrent-streymi?"
+msgstr[1] ""
+"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Viltu eyða sóttum skrám úr þessum {count:L} torrent-skrám?\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Viltu eyða {count:L} sóttum skrám úr þessu torrent-streymi?"
 
-msgid "Once removed, continuing the transfer will require the torrent file or magnet link."
-msgid_plural "Once removed, continuing the transfers will require the torrent files or magnet links."
-msgstr[0] "Þegar þetta hefur verið fjarlægt, er krafist torrent-skrár eða segultengils til að halda áfram með skráaflutning."
-msgstr[1] "Þegar þetta hefur verið fjarlægt, er krafist torrent-skráa eða segultengla til að halda áfram með skráaflutninga."
+#, fuzzy
+#| msgid "Once removed, continuing the transfer will require the torrent file or magnet link."
+#| msgid_plural "Once removed, continuing the transfers will require the torrent files or magnet links."
+msgid "Once removed, you'll need the torrent file or magnet link to add it again."
+msgstr "Þegar þetta hefur verið fjarlægt, er krafist torrent-skrár eða segultengils til að halda áfram með skráaflutning."
+
+#, fuzzy
+#| msgid "Once removed, continuing the transfers will require the torrent files or magnet links."
+msgid "Once removed, you'll need the torrent files or magnet links to add them again."
+msgstr "Þegar þetta hefur verið fjarlægt, er krafist torrent-skráa eða segultengla til að halda áfram með skráaflutninga."
 
 msgid "This torrent has not finished downloading."
 msgstr "Þú hefur ekki lokið við niðurhal þessarar torrent-skráar."
@@ -417,8 +421,13 @@ msgstr "Þessar torrent-skrár eru tengdar við jafningja."
 msgid "One of these torrents is connected to peers."
 msgstr "Ein af þessum torrent-skrám er tengd við jafningja."
 
+#, fuzzy
 msgid "Some of these torrents are connected to peers."
-msgstr "Einhverjar þessara torrent-skráa eru tengdar við jafningja."
+msgstr ""
+"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Einhverjar þessara torrent-skráa eru tengdar við jafningja.\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Einhver þessara torrent-streyma eru tengd við jafningja."
 
 msgid "One of these torrents has not finished downloading."
 msgstr "Það á eftir að ljúka við að sækja eina af þessum torrent-skrám."
@@ -432,17 +441,39 @@ msgstr "_Hætta við"
 msgid "_Delete"
 msgstr "_Eyða"
 
+#. Removes the torrent from the list and keeps its downloaded files
+#, fuzzy
 msgid "_Remove"
-msgstr "_Fjarlægja"
+msgstr ""
+"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Fjarlægja\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"F_jarlægja\n"
+"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Fjarlægja"
 
+#, fuzzy
 msgid "High"
-msgstr "Hár"
+msgstr ""
+"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Hár\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Mikill\n"
+"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Hár"
 
 msgid "Normal"
 msgstr "Venjulegur"
 
+#, fuzzy
 msgid "Low"
-msgstr "Lágur"
+msgstr ""
+"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Lágur\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Lítill\n"
+"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Lágur"
 
 msgid "Couldn't rename '{old_path}' as '{path}': {error} ({error_code})"
 msgstr "Gat ekki endurnefnt '{old_path}' sem '{path}': {error} ({error_code})"
@@ -453,8 +484,8 @@ msgstr "Heiti"
 msgid "Size"
 msgstr "Stærð"
 
-msgid "Have"
-msgstr "Komið í hús"
+msgid "Progress"
+msgstr "Framvinda"
 
 msgid "Download"
 msgstr "Sækja"
@@ -468,21 +499,54 @@ msgstr "Allt"
 msgid "Active"
 msgstr "Virkt"
 
+#, fuzzy
 msgctxt "Verb"
 msgid "Verifying"
-msgstr "Í yfirferð"
+msgstr ""
+"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Í yfirferð\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Staðfesti"
 
+#, fuzzy
 msgid "Error"
-msgstr "Villur"
+msgstr ""
+"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Villur\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Villa"
 
+#, fuzzy
 msgid "_Show:"
-msgstr "_Sýna:"
+msgstr ""
+"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Sýna:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"S_ýna:"
 
 msgid "_Show {count:L} of:"
 msgstr "_Sýna {count:L} af:"
 
 msgid "{disk_space} free"
 msgstr "{disk_space} laust"
+
+msgid "Where to look for configuration files"
+msgstr "Hvar skal leita að stillingaskrám"
+
+msgid "Start with all torrents paused"
+msgstr "Byrja með allar torrent-skrár í bið"
+
+msgid "Start minimized in notification area"
+msgstr "Byrja lágmarkkað í tilkynningarsvæðinu"
+
+msgid "Show version number and exit"
+msgstr "Sýna útgáfunúmer og hætta"
+
+msgid "[torrent files or urls]"
+msgstr "[torrent-skrár eða vefslóðir]"
+
+msgid "Run '{program} --help' to see a full list of available command line options.\n"
+msgstr "Keyrðu '{program} --help' til að sjá lista með öllum mögulegum valkostum skipanalínunnar.\n"
 
 msgid ""
 "Click to disable Alternative Speed Limits\n"
@@ -513,8 +577,13 @@ msgstr "Takmarka upphleðsluhraða"
 msgid "Stop Seeding at Ratio"
 msgstr "Hætta að deila þegar deilihlutfallið nær"
 
+#, fuzzy
 msgid "Stop at Ratio ({ratio})"
-msgstr "Hætta við hlutfallið ({ratio})"
+msgstr ""
+"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Hætta við hlutfallið ({ratio})\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Hætta að deila þegar deilihlutfallið nær ({ratio})"
 
 msgid "Total Ratio"
 msgstr "Hlutfall alls"
@@ -528,16 +597,11 @@ msgstr "Alls sótt"
 msgid "Session Transfer"
 msgstr "Sótt í þessari setu"
 
+msgid "Down: {downloaded_size}, Up: {uploaded_size}"
+msgstr "Sótt: {downloaded_size}, Sent: {uploaded_size}"
+
 msgid "Ratio: {ratio}"
 msgstr "Deilihlutfall: {ratio}"
-
-msgctxt "current session totals"
-msgid "Down: {downloaded_size}, Up: {uploaded_size}"
-msgstr "Sótt: {downloaded_size}, Sent: {uploaded_size}"
-
-msgctxt "all-time totals"
-msgid "Down: {downloaded_size}, Up: {uploaded_size}"
-msgstr "Sótt: {downloaded_size}, Sent: {uploaded_size}"
 
 msgid "{download_speed} ▾"
 msgstr "{download_speed} ▾"
@@ -595,6 +659,11 @@ msgstr "Tími"
 msgid "Couldn't create proxy for '{bus}': {error} ({error_code})"
 msgstr "Gat ekki útbúið milliþjón fyrir '{bus}': {error} ({error_code})"
 
+#, fuzzy
+#| msgid "Couldn't save '{path}': {error} ({error_code})"
+msgid "Couldn't spawn async process \"'{command}'\": {error} ({error_code})"
+msgstr "Gat ekki vistað '{path}': {error} ({error_code})"
+
 msgid "Open File"
 msgstr "Opna skrá"
 
@@ -625,11 +694,19 @@ msgstr "_Opna"
 msgid "Show options dialog"
 msgstr "Birta valkostagluggann"
 
-msgid "Select a File"
+msgid "Other…"
+msgstr ""
+
+msgid "Select File"
 msgstr "Veldu skrá"
 
+#, fuzzy
 msgid "(None)"
-msgstr "(ekkert)"
+msgstr ""
+"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"(ekkert)\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"(Ekkert)"
 
 msgid "Allow encryption"
 msgstr "Leyfa dulritun"
@@ -646,8 +723,13 @@ msgstr "Daglega"
 msgid "Weekdays"
 msgstr "Virka daga"
 
+#, fuzzy
 msgid "Weekends"
-msgstr "Um helgar"
+msgstr ""
+"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Um helgar\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Helgar"
 
 msgid "Blocklist has {count:L} entry"
 msgid_plural "Blocklist has {count:L} entries"
@@ -660,8 +742,13 @@ msgstr "Bannlistinn uppfærður!"
 msgid "Couldn't update blocklist"
 msgstr "Gat ekki uppfært bannlistann"
 
+#, fuzzy
 msgid "Getting new blocklist…"
-msgstr "Sæki nýjan bannlista…"
+msgstr ""
+"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Sæki nýjan bannlista…\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Næ í nýjan bannlista…"
 
 msgctxt "Port test status"
 msgid "unknown"
@@ -698,19 +785,13 @@ msgstr "Gat ekki fært torrent-streymi"
 msgid "This may take a moment…"
 msgstr "Þetta getur tekið dágóða stund…"
 
+#, fuzzy
+#| msgid "Couldn't watch '{path}': {error} ({error_code})"
+msgid "Couldn't open watchdir '{dirname}': {error} ({error_code})"
+msgstr "Gat ekki vaktað '{path}': {error} ({error_code})"
+
 msgid "Couldn't read '{path}'"
 msgstr "Gat ekki lesið '{path}'"
-
-#. logging
-msgid "Inhibiting desktop hibernation"
-msgstr "Kem í veg fyrir að tölvan leggjast í dvala"
-
-msgid "Couldn't inhibit desktop hibernation: {error}"
-msgstr "Gat ekki meinað tölvunni að leggjast í dvala: {error}"
-
-#. logging
-msgid "Allowing desktop hibernation"
-msgstr "Leyfi tölvunni að leggjast í dvala"
 
 msgid "Couldn't find pending RPC request for id {id}"
 msgstr ""
@@ -729,6 +810,9 @@ msgstr "_Endurræsa"
 msgid "These statistics are for your information only. Resetting them doesn't affect the statistics logged by your BitTorrent trackers."
 msgstr "Þessi tölfræði er bara fyrir þig. Það að endurræsa hana hefur engin áhrif á torrent-rekjara."
 
+msgid "_Show {appname}"
+msgstr "_Birta forritið"
+
 msgid "{upload_speed} ▴ {download_speed} ▾"
 msgstr "{upload_speed} ▴ {download_speed} ▾"
 
@@ -742,15 +826,26 @@ msgstr "{current_size} af {complete_size} ({percent_done}%)"
 msgid "{current_size} of {complete_size} ({percent_complete}%), uploaded {uploaded_size} (Ratio: {ratio}, Goal: {seed_ratio})"
 msgstr "{current_size} af {complete_size} ({percent_complete}%), sent inn {uploaded_size} (Deilihlutfall: {ratio}, Markmið: {seed_ratio})"
 
+#, fuzzy
 msgid "{current_size} of {complete_size} ({percent_complete}%), uploaded {uploaded_size} (Ratio: {ratio})"
-msgstr "{current_size} af {complete_size} ({percent_complete}%), sent inn {uploaded_size} (Deilihlutfall: {ratio})"
+msgstr ""
+"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{current_size} af {complete_size} ({percent_complete}%), sent inn {uploaded_size} (Deilihlutfall: {ratio})\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{current_size} af {complete_size} ({percent_complete}%), sent {uploaded_size} (Deilihlutfall: {ratio})"
 
 msgid "{complete_size}, uploaded {uploaded_size} (Ratio: {ratio}, Goal: {seed_ratio})"
 msgstr "{complete_size}, sent inn {uploaded_size} (Deilihlutfall: {ratio}, Markmið: {seed_ratio})"
 
+#, fuzzy
 msgid "{complete_size}, uploaded {uploaded_size} (Ratio: {ratio})"
-msgstr "{complete_size}, sent inn {uploaded_size} (Deilihlutfall: {ratio})"
+msgstr ""
+"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{complete_size}, sent inn {uploaded_size} (Deilihlutfall: {ratio})\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{complete_size}, sent {uploaded_size} (deilihlutfall: {ratio})"
 
+#. Translators: Second (optional) part of torrent progress string
 msgid "Remaining time unknown"
 msgstr "Ekki vitað hve mikill tími er eftir"
 
@@ -763,7 +858,9 @@ msgstr "Töf"
 msgid "Tracker warning: '{warning}'"
 msgstr "Aðvörun frá rekjara: '{warning}'"
 
-msgid "Tracker Error: '{error}'"
+#, fuzzy
+#| msgid "Tracker Error: '{error}'"
+msgid "Tracker error: '{error}'"
 msgstr "Villa frá rekjara:  '{error}'"
 
 msgid "Local error: '{error}'"
@@ -785,184 +882,36 @@ msgid_plural "Downloading from {active_count} webseeds"
 msgstr[0] "Sæki frá {active_count} vefdeilingu"
 msgstr[1] "Sæki frá {active_count} vefdeilingum"
 
+#, fuzzy
 msgid "Downloading from {active_count} of {connected_count} connected peer"
 msgid_plural "Downloading from {active_count} of {connected_count} connected peers"
-msgstr[0] "Sæki frá {active_count} of {connected_count} tengdum jafningja"
-msgstr[1] "Sæki frá {active_count} of {connected_count} tengdum jafningjum"
+msgstr[0] ""
+"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Sæki frá {active_count} of {connected_count} tengdum jafningja\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Sæki frá {active_count} af {connected_count} tengdum jafningjum"
+msgstr[1] ""
+"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Sæki frá {active_count} of {connected_count} tengdum jafningjum\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Sæki frá {active_count} af {connected_count} tengdum jafningjum"
 
+#, fuzzy
 msgid "Seeding to {active_count} of {connected_count} connected peer"
 msgid_plural "Seeding to {active_count} of {connected_count} connected peers"
-msgstr[0] "Deili til {active_count} af {connected_count} tengds jafningja"
-msgstr[1] "Deili til {active_count} af {connected_count} tengdra jafningja"
-
-msgid "{days_from_now:L} day from now"
-msgid_plural "{days_from_now:L} days from now"
-msgstr[0] "{days_from_now:L} dagur héðan í frá"
-msgstr[1] "{days_from_now:L} dagar héðan í frá"
-
-msgid "{hours_from_now:L} hour from now"
-msgid_plural "{hours_from_now:L} hours from now"
-msgstr[0] "{hours_from_now:L} klukkustund héðan í frá"
-msgstr[1] "{hours_from_now:L} klukkustundir héðan í frá"
-
-msgid "{minutes_from_now:L} minute from now"
-msgid_plural "{minutes_from_now:L} minutes from now"
-msgstr[0] "{minutes_from_now:L} mínúta héðan í frá"
-msgstr[1] "{minutes_from_now:L} mínútur héðan í frá"
-
-msgid "{seconds_from_now:L} second from now"
-msgid_plural "{seconds_from_now:L} seconds from now"
-msgstr[0] "{seconds_from_now:L} sekúnda héðan í frá"
-msgstr[1] "{seconds_from_now:L} sekúndur héðan í frá"
-
-msgid "now"
-msgstr "núna"
-
-msgid "{days_ago:L} day ago"
-msgid_plural "{days_ago:L} days ago"
-msgstr[0] "fyrir {days_ago:L} degi síðan"
-msgstr[1] "fyrir {days_ago:L} dögum síðan"
-
-msgid "{hours_ago:L} hour ago"
-msgid_plural "{hours_ago:L} hours ago"
-msgstr[0] "Fyrir {hours_ago:L} klukkustund síðan"
-msgstr[1] "Fyrir {hours_ago:L} klukkustundum síðan"
-
-msgid "{minutes_ago:L} minute ago"
-msgid_plural "{minutes_ago:L} minutes ago"
-msgstr[0] "Fyrir {minutes_ago:L} mínútu síðan"
-msgstr[1] "Fyrir {minutes_ago:L} mínútum síðan"
-
-msgid "{seconds_ago:L} second ago"
-msgid_plural "{seconds_ago:L} seconds ago"
-msgstr[0] "Fyrir {seconds_ago:L} sekúndu síðan"
-msgstr[1] "Fyrir {seconds_ago:L} sekúndum síðan"
-
-msgid "{days:L} day"
-msgid_plural "{days:L} days"
-msgstr[0] "{days:L} dagur"
-msgstr[1] "{days:L} dagar"
-
-msgid "{hours:L} hour"
-msgid_plural "{hours:L} hours"
-msgstr[0] "{hours:L} klukkustund"
-msgstr[1] "{hours:L} klukkustundir"
-
-msgid "{minutes:L} minute"
-msgid_plural "{minutes:L} minutes"
-msgstr[0] "{minutes:L} mínúta"
-msgstr[1] "{minutes:L} mínútur"
-
-msgid "{seconds:L} second"
-msgid_plural "{seconds:L} seconds"
-msgstr[0] "{seconds:L} sekúnda"
-msgstr[1] "{seconds:L} sekúndur"
-
-msgid "{days_left:L} day left"
-msgid_plural "{days_left:L} days left"
-msgstr[0] "{days_left:L} dagur eftir"
-msgstr[1] "{days_left:L} dagar eftir"
-
-msgid "{hours_left:L} hour left"
-msgid_plural "{hours_left:L} hours left"
-msgstr[0] "{hours_left:L} klukkustund eftir"
-msgstr[1] "{hours_left:L} klukkustundir eftir"
-
-msgid "{minutes_left:L} minute left"
-msgid_plural "{minutes_left:L} minutes left"
-msgstr[0] "{minutes_left:L} mínúta eftir"
-msgstr[1] "{minutes_left:L} mínútur eftir"
-
-msgid "{seconds_left:L} second left"
-msgid_plural "{seconds_left:L} seconds left"
-msgstr[0] "{seconds_left:L} sekúnda eftir"
-msgstr[1] "{seconds_left:L} sekúndur eftir"
-
-msgid "The torrent file '{path}' is already in use by '{torrent_name}'."
-msgstr "Torrent-skráin '{path}' er þegar í notkun af '{torrent_name}'."
-
-msgid "Couldn't open torrent"
-msgstr "Gat ekki opnað torrent-skrána"
-
-msgid "Couldn't move '{path}' to trash: {error} ({error_code})"
-msgstr "Gat ekki fært '{path}' í ruslið: {error} ({error_code})"
-
-msgid "Couldn't open '{url}'"
-msgstr "Tókst ekki að opna '{url}'"
-
-msgid "Unsupported URL: '{url}'"
-msgstr "Óstudd URL-slóð: '{url}'"
-
-#. modal
-msgid "{appname} doesn't know how to use '{url}'"
-msgstr "{appname} veit ekki hvernig á að nota '{url}'"
-
-msgid "This magnet link appears to be intended for something other than BitTorrent."
-msgstr "Þessi segultengill virðist eiga við eitthvað annað en BitTorrent"
+msgstr[0] ""
+"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Deili til {active_count} af {connected_count} tengds jafningja\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Deili til {active_count} af {connected_count} tengdum jafningjum"
+msgstr[1] ""
+"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Deili til {active_count} af {connected_count} tengdra jafningja\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Deili til {active_count} af {connected_count} tengdum jafningjum"
 
 msgid "Retransmission"
 msgstr "Retransmission"
-
-#. parse the command line
-msgid "Where to look for configuration files"
-msgstr "Hvar skal leita að stillingaskrám"
-
-msgid "Start with all torrents paused"
-msgstr "Byrja með allar torrent-skrár í bið"
-
-msgid "Start minimized in notification area"
-msgstr "Byrja lágmarkkað í tilkynningarsvæðinu"
-
-msgid "Show version number and exit"
-msgstr "Sýna útgáfunúmer og hætta"
-
-msgid "[torrent files or urls]"
-msgstr "[torrent-skrár eða vefslóðir]"
-
-msgid "Run '{program} --help' to see a full list of available command line options.\n"
-msgstr "Keyrðu '{program} --help' til að sjá lista með öllum mögulegum valkostum skipanalínunnar.\n"
-
-msgid "B/s"
-msgstr "B/sek"
-
-msgid "GB/s"
-msgstr "GB/sek"
-
-msgid "MB/s"
-msgstr "MB/sek"
-
-msgid "TB/s"
-msgstr "TB/sek"
-
-msgid "kB/s"
-msgstr "kB/sek"
-
-msgid "B"
-msgstr "B"
-
-msgid "GiB"
-msgstr "GiB"
-
-msgid "KiB"
-msgstr "KiB"
-
-msgid "MiB"
-msgstr "MiB"
-
-msgid "TiB"
-msgstr "TiB"
-
-msgid "GB"
-msgstr "GB"
-
-msgid "MB"
-msgstr "MB"
-
-msgid "TB"
-msgstr "TB"
-
-msgid "kB"
-msgstr "kB"
 
 msgid "BitTorrent Client"
 msgstr "BitTorrent forrit"
@@ -980,32 +929,61 @@ msgstr "Ræsa Retransmission með allar torrent-skrár í bið"
 msgid "Start Retransmission Minimized"
 msgstr "Ræsa Retransmission lágmarkað"
 
-msgid "Open a torrent"
-msgstr "Opna torrent-streymi"
+#, fuzzy
+#| msgid "Copyright © The Retransmission Project"
+msgid "The Retransmission Project"
+msgstr "Höfundarréttur © Retransmission-verkefnið"
+
+#. Translators: these are the application description paragraphs in the MetaInfo file.
+msgid "BitTorrent is a peer-to-peer file-sharing protocol that is commonly used to distribute large amounts of data between multiple users."
+msgstr ""
+
+msgid "Retransmission is a BitTorrent client with an easy-to-use interface on top of a cross-platform backend. Native interfaces are available for macOS, Linux, and Windows, as well as command line binaries and a web GUI."
+msgstr ""
+
+msgid "Notable features of Retransmission include support for Local Peer Discovery, encryption, DHT, µTP, PEX and Magnet links."
+msgstr ""
+
+msgid "Main window, showing an ongoing download of Fedora Workstation"
+msgstr ""
+
+msgid "_File"
+msgstr "_Skrá"
 
 msgid "Open _URL…"
 msgstr "O_pna slóð…"
 
-msgid "Open URL…"
-msgstr "Opna URL…"
-
 msgid "_New…"
 msgstr "_Nýtt…"
 
+#, fuzzy
 msgid "_Start All"
-msgstr "_Sækja allar skrár"
+msgstr ""
+"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Sækja allar skrár\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Ræ_sa allt"
 
-msgid "Start all torrents"
-msgstr "Byrja öll torrent-streymi"
-
+#, fuzzy
 msgid "_Pause All"
-msgstr "_Bíða með allt"
-
-msgid "Pause all torrents"
-msgstr "Setja öll torrent-streymi í bið"
+msgstr ""
+"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Bíða með allt\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Setja allt í _bið"
 
 msgid "_Quit"
 msgstr "_Hætta"
+
+#, fuzzy
+msgid "_Edit"
+msgstr ""
+"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Breyta\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"B_reyta\n"
+"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Breyta"
 
 msgid "Select _All"
 msgstr "Velja _allt"
@@ -1016,29 +994,43 @@ msgstr "Ve_lja ekkert"
 msgid "_Preferences"
 msgstr "_Kjörstillingar"
 
+msgid "_Torrent"
+msgstr "_Torrent-streymi"
+
 msgid "_Properties"
 msgstr "_Eiginleikar"
 
-msgid "Torrent properties"
-msgstr "Eiginleikar torrent-streymis"
-
+#, fuzzy
 msgid "Open Fold_er"
-msgstr "_Opna möppu"
+msgstr ""
+"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Opna möppu\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Opna _möppu..."
 
+#, fuzzy
 msgid "_Start"
-msgstr "_Sækja"
-
-msgid "Start torrent"
-msgstr "Byrja að sækja torrent-streymi"
+msgstr ""
+"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Sækja\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Byrja"
 
 msgid "Start _Now"
 msgstr "Byrja _núna"
 
-msgid "Start torrent now"
-msgstr "Byrja núna að sækja torrent-streymi"
-
+#, fuzzy
 msgid "Ask Tracker for _More Peers"
-msgstr "Biðja rekjara um _fleiri jafningja"
+msgstr ""
+"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Biðja rekjara um _fleiri jafningja\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Biðja rekjara u_m fleiri jafningja"
+
+#, fuzzy
+#| msgid "Queue"
+msgid "_Queue"
+msgstr "Biðröð"
 
 msgid "Move to _Top"
 msgstr "Færa _efst"
@@ -1055,41 +1047,68 @@ msgstr "Færa neð_st"
 msgid "_Pause"
 msgstr "_Bíða"
 
-msgid "Pause torrent"
-msgstr "Bíða með að sækja torrent-streymi"
-
 msgid "Set _Location…"
 msgstr "Sti_lla staðsetningu…"
 
+#, fuzzy
 msgid "_Verify Local Data"
-msgstr "_Athuga þau gögn sem eru komin"
+msgstr ""
+"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Athuga þau gögn sem eru komin\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Skoða sótt gögn"
 
-msgid "Copy _Magnet Link to Clipboard"
-msgstr "Afrita _segultengill á klemmuspjald "
-
-msgid "Remove torrent"
-msgstr "Fjarlægja torrent-streymi"
+msgid "_Copy Magnet Link to Clipboard"
+msgstr "A_frita segultengil á klippispjald "
 
 msgid "_Delete Files and Remove"
 msgstr "_Eyða skrám og fjarlægja"
 
+msgid "_View"
+msgstr "S_koða"
+
+#, fuzzy
 msgid "_Compact View"
-msgstr "_Þjappa saman"
+msgstr ""
+"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Þjappa saman\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Þ_jöppuð sýn"
 
 msgid "_Toolbar"
 msgstr "_Verkfærastika"
 
+#, fuzzy
 msgid "_Filterbar"
-msgstr "_Síustika"
+msgstr ""
+"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Síustika\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Síusti_ka"
 
+#, fuzzy
 msgid "_Statusbar"
-msgstr "S_töðustika"
+msgstr ""
+"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"S_töðustika\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Stöðustika"
 
+#, fuzzy
 msgid "Sort by _Activity"
-msgstr "Raða eftir _virkni"
+msgstr ""
+"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Raða eftir _virkni\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"R_aða eftir virkni"
 
+#, fuzzy
 msgid "Sort by A_ge"
-msgstr "Raða eftir _aldri"
+msgstr ""
+"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Raða eftir _aldri\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Raða eftir al_dri"
 
 msgid "Sort by _Name"
 msgstr "Raða eftir _nafni"
@@ -1100,29 +1119,72 @@ msgstr "Raða eftir _framvindu"
 msgid "Sort by _Queue"
 msgstr "Raða eftir _biðröð"
 
+#, fuzzy
 msgid "Sort by Rati_o"
-msgstr "Raða eftir _hlutfalli"
+msgstr ""
+"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Raða eftir _hlutfalli\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Raða eftir deilihl_utfalli"
 
+#, fuzzy
 msgid "Sort by Si_ze"
-msgstr "Raða eftir s_tærð"
+msgstr ""
+"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Raða eftir s_tærð\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Raða eftir _stærð"
 
+#, fuzzy
 msgid "Sort by Stat_e"
-msgstr "Raða eftir _stöðu"
+msgstr ""
+"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Raða eftir _stöðu\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Raða eftir s_töðu"
 
+#, fuzzy
 msgid "Sort by Time _Left"
-msgstr "Raða eftir _tíma sem er eftir"
+msgstr ""
+"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Raða eftir _tíma sem er eftir\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Raða eftir tí_ma sem er eftir"
 
+#, fuzzy
 msgid "Re_verse Sort Order"
-msgstr "_Öfug röð"
+msgstr ""
+"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Öfug röð\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Ö_fug röð"
 
+#, fuzzy
+msgid "_Help"
+msgstr ""
+"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Aðstoð\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Hjálp"
+
+#, fuzzy
 msgid "Message _Log"
-msgstr "_Skilaboð"
+msgstr ""
+"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Skilaboð\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Ski_laboðaskráning"
 
 msgid "_Statistics"
 msgstr "_Tölfræði"
 
+#, fuzzy
 msgid "_Donate"
-msgstr "_Styðja"
+msgstr ""
+"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Styðja\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"St_yrkja"
 
 msgid "_Contents"
 msgstr "_Innihald"
@@ -1130,11 +1192,15 @@ msgstr "_Innihald"
 msgid "_About"
 msgstr "Um _hugbúnaðinn"
 
-msgid "_Show {appname}"
-msgstr "_Birta forritið"
+#, fuzzy
+#| msgid "Start torrent"
+msgid "_Sort Torrents By"
+msgstr "Byrja að sækja torrent-streymi"
 
-msgid "Enable Alternative Speed _Limits"
-msgstr "Vir_kja önnur hraðatakmörk"
+#, fuzzy
+#| msgid "Alternative Speed Limits"
+msgid "Alternative Speed _Limits"
+msgstr "Önnur hraðatakmörk"
 
 msgid "_Add"
 msgstr "Bæt_a við"
@@ -1151,11 +1217,16 @@ msgstr "_Loka"
 msgid "Activity"
 msgstr "Virkni"
 
-msgid "Torrent size:"
-msgstr "Stærð torrent-streymis:"
+msgid "Size:"
+msgstr "Stærð:"
 
+#, fuzzy
 msgid "Have:"
-msgstr "Komið í hús:"
+msgstr ""
+"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Komið í hús:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Hafa:"
 
 msgid "Uploaded:"
 msgstr "Sent:"
@@ -1166,8 +1237,13 @@ msgstr "Sótt:"
 msgid "State:"
 msgstr "Staða:"
 
+#, fuzzy
 msgid "Running time:"
-msgstr "Tími í keyrslu:"
+msgstr ""
+"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Tími í keyrslu:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Keyrslu tími:"
 
 msgid "Remaining time:"
 msgstr "Tími eftir:"
@@ -1202,17 +1278,24 @@ msgstr "Athugasemd:"
 msgid "Information"
 msgstr "Upplýsingar"
 
+#, fuzzy
 msgid "Show _more details"
-msgstr "Birta _frekari upplýsingar"
+msgstr ""
+"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Birta _frekari upplýsingar\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Sýna _frekari upplýsingar"
 
 msgid "Peers"
 msgstr "Jafningjar"
 
-msgid "_Edit"
-msgstr "_Breyta"
-
+#, fuzzy
 msgid "Show _backup trackers"
-msgstr "Birta _öryggisrekjara"
+msgstr ""
+"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Birta _öryggisrekjara\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Birta öryggisrekjara"
 
 msgid "File listing not available for combined torrent properties"
 msgstr "Skráalisti er ekki tiltækur fyrir sameinaða eiginleika torrent-streymis"
@@ -1223,8 +1306,13 @@ msgstr "Skrár"
 msgid "Speed"
 msgstr "Hraði"
 
+#, fuzzy
 msgid "Honor global _limits"
-msgstr "Virða _öll takmörk"
+msgstr ""
+"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Virða _öll takmörk\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Virða ö_ll takmörk"
 
 msgid "Limit _download speed ({speed_units}):"
 msgstr "Takmarka niður_halshraða ({speed_units}):"
@@ -1238,23 +1326,43 @@ msgstr "_Forgangur torrent-streymis:"
 msgid "Seeding Limits"
 msgstr "Deilitakmörk"
 
+#, fuzzy
 msgid "_Ratio:"
-msgstr "_Hlutfall:"
+msgstr ""
+"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Hlutfall:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Deilihlutfall:"
 
+#, fuzzy
 msgid "_Idle:"
-msgstr "_Iðjulaus:"
+msgstr ""
+"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Iðjulaus:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Aðgerðalaust:"
 
 msgid "Peer Connections"
 msgstr "Tengingar við jafningja"
 
+#, fuzzy
 msgid "_Maximum peers:"
-msgstr "_Hámarksfjöldi jafningja:"
+msgstr ""
+"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Hámarksfjöldi jafningja:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Há_marksfjöldi jafningja:"
 
 msgid "Options"
 msgstr "Valkostir"
 
+#, fuzzy
 msgid "Tracker Announce URLs"
-msgstr "Slóðatilkynningar rekjara"
+msgstr ""
+"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Slóðatilkynningar rekjara\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Tilkynningaslóðir rekjara"
 
 msgid ""
 "To add a backup URL, add it on the next line after a primary URL.\n"
@@ -1266,6 +1374,21 @@ msgstr ""
 msgid "Also see Default Public Trackers in Edit > Preferences > Network"
 msgstr "Skoðaðu einnig 'Sjálfgefnir opinberir rekjarar > Kjörstillingar > Netkerfi'"
 
+msgid "Open a torrent"
+msgstr "Opna torrent-streymi"
+
+msgid "Start torrent"
+msgstr "Byrja að sækja torrent-streymi"
+
+msgid "Pause torrent"
+msgstr "Bíða með að sækja torrent-streymi"
+
+msgid "Remove torrent"
+msgstr "Fjarlægja torrent-streymi"
+
+msgid "Torrent properties"
+msgstr "Eiginleikar torrent-streymis"
+
 msgid "Torrent"
 msgstr "Torrent-streymi"
 
@@ -1275,35 +1398,59 @@ msgstr "Tölfræði"
 msgid "New Torrent"
 msgstr "Nýtt torrent-streymi"
 
-msgid "_New"
-msgstr "_Nýtt"
+#, fuzzy
+#| msgid "C_redits"
+msgid "C_reate"
+msgstr "F_ramlög"
 
+#, fuzzy
 msgid "Sa_ve to:"
-msgstr "Vi_sta í:"
+msgstr ""
+"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Vi_sta í:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Vista í:"
 
-msgid "Source F_older:"
-msgstr "Uppruna_mappa:"
+msgid "Source f_older:"
+msgstr "U_pprunamappa:"
 
-msgid "Source _File:"
-msgstr "Uppruna_skrá:"
+msgid "Source _file:"
+msgstr "Upprunale_g skrá:"
 
-msgid "Piece size:"
+#, fuzzy
+#| msgid "Piece size:"
+msgid "Piece si_ze:"
 msgstr "Stærð bútar:"
 
 msgid "Properties"
 msgstr "Eiginleikar"
 
+#, fuzzy
 msgid "_Trackers:"
-msgstr "_Rekjarar:"
+msgstr ""
+"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Rekjarar:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Re_kjarar"
 
+#, fuzzy
 msgid "Co_mment:"
-msgstr "A_thugasemd:"
+msgstr ""
+"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"A_thugasemd:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Athugase_md:"
 
 msgid "_Source:"
 msgstr "_Uppruni:"
 
+#, fuzzy
 msgid "_Private torrent"
-msgstr "_Einka-torrent-streymi"
+msgstr ""
+"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Einka-torrent-streymi\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Einka torrent-streymi"
 
 msgid "Creating torrent…"
 msgstr "Bý til torrent-streymi…"
@@ -1317,9 +1464,6 @@ msgstr "Vist_a sem"
 msgid "Clear"
 msgstr "Hreinsa"
 
-msgid "P_ause"
-msgstr "_Bíða"
-
 msgid "Level"
 msgstr "Stig"
 
@@ -1332,8 +1476,13 @@ msgstr "_Torrent-skrá:"
 msgid "Select Source File"
 msgstr "Veldu upprunaskrá"
 
+#, fuzzy
 msgid "_Destination folder:"
-msgstr "_Staðsetning:"
+msgstr ""
+"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Staðsetning:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Móttökumappa:"
 
 msgid "Select Destination Folder"
 msgstr "Velja möppu sem ákvörðunarstað"
@@ -1341,14 +1490,18 @@ msgstr "Velja möppu sem ákvörðunarstað"
 msgid "_Start when added"
 msgstr "_Byrja að sækja um leið og skrá er bætt við"
 
-msgid "Mo_ve torrent file to the trash"
+#, fuzzy
+#| msgid "Mo_ve torrent file to the trash"
+msgid "Mo_ve torrent file to the Trash"
 msgstr "_Henda torrent-skránni í ruslið"
 
+#, fuzzy
 msgid "{appname} Preferences"
-msgstr "Stillingar á {appname}"
-
-msgid "_Help"
-msgstr "_Aðstoð"
+msgstr ""
+"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Stillingar á {appname}\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Kjörstillingar {appname}"
 
 msgid "Speed Limits"
 msgstr "Hraðatakmörk"
@@ -1375,11 +1528,21 @@ msgstr "Innsen_ding ({speed_units}):"
 msgid "Do_wnload ({speed_units}):"
 msgstr "Niður_hal ({speed_units}):"
 
+#, fuzzy
 msgid "_Scheduled times:"
-msgstr "Ákveðnir _tímar:"
+msgstr ""
+"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Ákveðnir _tímar:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Áætlaðir _tímar:"
 
+#, fuzzy
 msgid "_On days:"
-msgstr "_Dagana:"
+msgstr ""
+"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Dagana:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Vikudagana:"
 
 #. Label goes between two time selectors, e.g. "limit speeds from [time] to [time]"
 msgid "_to"
@@ -1392,20 +1555,32 @@ msgstr "Bæti við"
 msgid "Automatically add torrent files _from:"
 msgstr "_Bæta sjálfkrafa við torrent-skrám frá:"
 
+#, fuzzy
 msgid "Show the Torrent Options _dialog"
-msgstr "Birta _stillingaglugga torrent-streyma"
+msgstr ""
+"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Birta _stillingaglugga torrent-streyma\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Birta stillinga_glugga torrent-streyma"
 
 msgid "_Start added torrents"
 msgstr "_Ræsa torrent-streymi sem bætt var við"
 
-msgid "Save to _Location:"
+#, fuzzy
+#| msgid "Save to _Location:"
+msgid "Save to _location:"
 msgstr "_Vista á staðsetningu:"
 
 msgid "Download Queue"
 msgstr "Niðurhalsbiðröð"
 
+#, fuzzy
 msgid "Ma_ximum active downloads:"
-msgstr "_Hámarksfjöldi virkra niðurhala:"
+msgstr ""
+"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Hámarksfjöldi virkra niðurhala:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Hámar_ksfjöldi virkra niðurhala:"
 
 msgid "Downloads sharing data in the last _N minutes are active:"
 msgstr "Niðurhöl, sem deilt hafa gögnum síðustu _N mínútur, eru virk:"
@@ -1413,14 +1588,26 @@ msgstr "Niðurhöl, sem deilt hafa gögnum síðustu _N mínútur, eru virk:"
 msgid "Incomplete"
 msgstr "Óklárað"
 
+#, fuzzy
 msgid "Append \"._part\" to incomplete files' names"
-msgstr "Bæta „._part“ við ókláruð skráaheiti"
+msgstr ""
+"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Bæta „._part“ við ókláruð skráaheiti\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Bæta „.._part“ við ókláruð skráaheiti"
 
-msgid "Keep _incomplete torrents in:"
-msgstr "Geyma ó_kláruð torrent-streymi í:"
+msgid "Keep _incomplete files in:"
+msgstr "Geyma ó_kláraðar skrár í:"
 
-msgid "Call scrip_t when done downloading:"
-msgstr "Kalla í skrif_tu þegar niðurhali er lokið:"
+#, fuzzy
+#| msgid "Call scrip_t when downloading is completed:"
+msgid "Call scrip_t when download completes:"
+msgstr "Ræsa skrif_tu þegar torrent hefur verið sótt:"
+
+#, fuzzy
+#| msgid "Call scrip_t when downloading is completed:"
+msgid "Verify data when download completes"
+msgstr "Ræsa skrif_tu þegar torrent hefur verið sótt:"
 
 msgctxt "Gerund"
 msgid "Downloading"
@@ -1429,8 +1616,13 @@ msgstr "Verið að sækja"
 msgid "Limits"
 msgstr "Takmörk"
 
+#, fuzzy
 msgid "Stop seeding at _ratio:"
-msgstr "Hætta að deila við _deilihlutfall:"
+msgstr ""
+"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Hætta að deila við _deilihlutfall:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Hætta að deila þega_r deilihlutfallið nær:"
 
 msgid "Stop seeding if idle for _N minutes:"
 msgstr "Hætta að deila ef óvirkt í _N mínútur:"
@@ -1445,8 +1637,13 @@ msgstr "Deiling"
 msgid "Privacy"
 msgstr "Gagnaleynd"
 
+#, fuzzy
 msgid "_Encryption mode:"
-msgstr "_Dulkóðunarhamur:"
+msgstr ""
+"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Dulkóðunarhamur:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Dulritunarhamur:"
 
 msgid "Blocklist"
 msgstr "Bannlisti"
@@ -1454,7 +1651,9 @@ msgstr "Bannlisti"
 msgid "Enable _blocklist:"
 msgstr "Virkja _bannlista:"
 
-msgid "Enable _automatic updates"
+#, fuzzy
+#| msgid "Enable _automatic updates"
+msgid "_Automatically update weekly"
 msgstr "Uppfæra listann _sjálfkrafa"
 
 msgid "_Update"
@@ -1463,50 +1662,80 @@ msgstr "_Uppfæra"
 msgid "Listening Port"
 msgstr "Vöktunargátt"
 
-msgid "_Port used for incoming connections:"
+msgid "_Port for incoming connections:"
 msgstr "_Gátt fyrir innkomandi tengingar:"
 
-msgid "Pick a _random port every time Transmission is started"
+#, fuzzy
+#| msgid "Pick a _random port every time Transmission is started"
+msgid "Pick a _random port at startup"
 msgstr "Velja _handahófskennda gátt þegar forritið er opnað"
 
+#, fuzzy
 msgid "Use UPnP or NAT-PMP port _forwarding from my router"
-msgstr "Nota UPnP eða NAT-PMP gáttarframvísun frá _beininum"
+msgstr ""
+"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Nota UPnP eða NAT-PMP gáttarframvísun frá _beininum\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Nota UPnP eða NAT-PMP endurbeiningu gáttar fyrir beininn minn"
 
+#, fuzzy
 msgid "Te_st Port"
-msgstr "_Prófa gáttina"
+msgstr ""
+"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Prófa gáttina\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Prófa _gátt"
 
 msgid "Peer Limits"
 msgstr "Takmörk jafningja"
 
-msgid "Maximum peers per _torrent:"
+#, fuzzy
+#| msgid "Maximum peers per _torrent:"
+msgid "Maximum peers for new _torrents:"
 msgstr "Hámarksfjöldi jafningja á _hvert torrent-streymi:"
 
+#, fuzzy
 msgid "Maximum peers _overall:"
-msgstr "Hámarksfjöldi jafningja _yfir höfuð:"
+msgstr ""
+"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Hámarksfjöldi jafningja _yfir höfuð:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Hámarksfjöldi jafningja alls:"
 
-msgid "Enable µ_TP for peer communication"
-msgstr "Virkja µ_TP fyrir jafningjasamskipti"
+msgid "Enable µ_TP for peer connections"
+msgstr "Virkja µ_TP fyrir tengingar við jafningja"
 
 msgid "µTP is a tool for reducing network congestion."
 msgstr "µTP er verkfæri til að minnka stíflur á netkerfum."
 
-msgid "Use PE_X to find more peers"
+#, fuzzy
+#| msgid "Use PE_X to find more peers"
+msgid "Use PE_X to find more peers for public torrents"
 msgstr "Nota _PEX til að finna fleiri jafningja"
 
 msgid "PEX is a tool for exchanging peer lists with the peers you're connected to."
 msgstr "PEX er leið til að skiptast á listum yfir jafningja með jafningjunum sem þú hefur tengst við."
 
-msgid "Use _DHT to find more peers"
+#, fuzzy
+#| msgid "Use _DHT to find more peers"
+msgid "Use _DHT to find more peers for public torrents"
 msgstr "Nota _DHT til að finna fleiri jafningja"
 
 msgid "DHT is a tool for finding peers without a tracker."
 msgstr "DHT er leið til að finna jafningja án rekjara."
 
-msgid "Use _Local Peer Discovery to find more peers"
+#, fuzzy
+#| msgid "Use _Local Peer Discovery to find more peers"
+msgid "Use _Local Peer Discovery to find more peers for public torrents"
 msgstr "Nota _Local Peer Discovery til að finna fleiri jafningja"
 
+#, fuzzy
 msgid "LPD is a tool for finding peers on your local network."
-msgstr "LPD finnur jafningja á staðværu (‚local‘) neti."
+msgstr ""
+"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"LPD finnur jafningja á staðværu (‚local‘) neti.\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"LPD finnur jafningja á staðarnetinu þínu."
 
 msgid "Default Public Trackers"
 msgstr "Sjálfgefnir opinberir rekjarar"
@@ -1528,11 +1757,16 @@ msgstr "Netkerfi"
 msgid "Desktop"
 msgstr "Skjáborð"
 
-msgid "_Inhibit hibernation when torrents are active"
-msgstr "Ekki _leggjast í dvala þegar torrent-streymi eru í gangi"
+msgid "_Prevent computer from sleeping with active torrents"
+msgstr ""
 
+#, fuzzy
 msgid "Show {appname} icon in the _notification area"
-msgstr "Birta {appname}-tákn í _tilkynningasvæðinu"
+msgstr ""
+"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Birta {appname}-tákn í _tilkynningasvæðinu\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Birta {appname}-tákn í tilky_nningasvæðinu"
 
 msgid "Notification"
 msgstr "Tilkynning"
@@ -1540,8 +1774,13 @@ msgstr "Tilkynning"
 msgid "Show a notification when torrents are a_dded"
 msgstr "_Birta tilkynningu þegar torrent-streymum bætt er við"
 
+#, fuzzy
 msgid "Show a notification when torrents _finish"
-msgstr "Birta tilkynningu þegar torrent-streymi _klárast"
+msgstr ""
+"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Birta tilkynningu þegar torrent-streymi _klárast\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Birta tilk_ynningu þegar torrent-streymi klárast"
 
 msgid "Play a _sound when torrents finish"
 msgstr "Spila hl_jóð þegar torrent-streymi klárast"
@@ -1549,14 +1788,26 @@ msgstr "Spila hl_jóð þegar torrent-streymi klárast"
 msgid "Remote Control"
 msgstr "Fjarstýring"
 
+#, fuzzy
 msgid "Allow _remote access"
-msgstr "Leyfa _fjarstýringu"
+msgstr ""
+"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Leyfa _fjarstýringu\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Leyfa fja_raðgang"
 
-msgid "_Open web client"
+#, fuzzy
+#| msgid "_Open web client"
+msgid "_Open Web Client"
 msgstr "_Opna netvafra"
 
+#, fuzzy
 msgid "HTTP _port:"
-msgstr "HTTP _gátt:"
+msgstr ""
+"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"HTTP _gátt:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"HTT_P-gátt:"
 
 msgid "Use _authentication"
 msgstr "Nota _auðkenningu"
@@ -1564,11 +1815,23 @@ msgstr "Nota _auðkenningu"
 msgid "_Username:"
 msgstr "_Notandanafn:"
 
+#, fuzzy
 msgid "Pass_word:"
-msgstr "_Lykilorð:"
+msgstr ""
+"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Lykilorð:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Lykil_orð\n"
+"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Lykil_orð:"
 
+#, fuzzy
 msgid "Only allow these IP a_ddresses:"
-msgstr "Aðeins leyfa þessar IP-_tölur:"
+msgstr ""
+"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Aðeins leyfa þessar IP-_tölur:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Aðeins ley_fa þessi IP-vistföng:"
 
 msgid "Addresses:"
 msgstr "Vistföng:"
@@ -1588,14 +1851,24 @@ msgstr "Virkj_a"
 msgid "Location"
 msgstr "Staðsetning"
 
-msgid "Torrent _location:"
-msgstr "_Staðsetning torrent-streymis:"
+msgid "New _location:"
+msgstr "Ný staðsetnin_g:"
 
+#, fuzzy
 msgid "_Move from the current folder"
-msgstr "_Færa úr núverandi möppu"
+msgstr ""
+"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Færa úr núverandi möppu\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Færa úr núverandi _möppu"
 
+#, fuzzy
 msgid "Local data is _already there"
-msgstr "Gögnin eru _þegar þar"
+msgstr ""
+"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Gögnin eru _þegar þar\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Gögnin eru þeg_ar þar"
 
 msgid "Current Session"
 msgstr "Núverandi seta"
@@ -1618,20 +1891,215 @@ msgstr "Opna torrent-streymi úr vefslóð"
 msgid "_URL"
 msgstr "_Slóð"
 
-msgid "Couldn't parse announce response: {error} ({error_code})"
-msgstr "Gat ekki túlkað svar tilkynningar: {error} ({error_code})"
+msgid "The torrent file '{path}' is already in use by '{torrent_name}'."
+msgstr "Torrent-skráin '{path}' er þegar í notkun af '{torrent_name}'."
 
-msgid "Couldn't parse scrape response: {error} ({error_code})"
-msgstr "Gat ekki túlkað svar skrapara: {error} ({error_code})"
+msgid "Couldn't open torrent"
+msgstr "Gat ekki opnað torrent-skrána"
 
-msgid "Unknown error"
-msgstr "Óþekkt villa"
+msgid "Couldn't move '{path}' to trash: {error} ({error_code})"
+msgstr "Gat ekki fært '{path}' í ruslið: {error} ({error_code})"
 
-msgid "{ip_protocol} connection failed"
-msgstr ""
+#, fuzzy
+#| msgid "Couldn't create proxy for '{bus}': {error} ({error_code})"
+msgid "Couldn't launch default application for URI '{uri}': {error} ({error_code})"
+msgstr "Gat ekki útbúið milliþjón fyrir '{bus}': {error} ({error_code})"
 
-msgid "Couldn't look up '{address}:{port}' in {ip_protocol}: {error} ({error_code})"
-msgstr ""
+#, fuzzy
+#| msgid "Couldn't open '{path}': {error} ({error_code})"
+msgid "Couldn't invoke xdg-open for URI '{uri}': {error} ({error_code})"
+msgstr "Gat ekki opnað '{path}': {error} ({error_code})"
+
+msgid "Couldn't open '{url}'"
+msgstr "Tókst ekki að opna '{url}'"
+
+msgid "Unsupported URL: '{url}'"
+msgstr "Óstudd URL-slóð: '{url}'"
+
+msgid "{appname} doesn't know how to use '{url}'"
+msgstr "{appname} veit ekki hvernig á að nota '{url}'"
+
+msgid "This magnet link appears to be intended for something other than BitTorrent."
+msgstr "Þessi segultengill virðist eiga við eitthvað annað en BitTorrent"
+
+msgid "{days_from_now:L} day from now"
+msgid_plural "{days_from_now:L} days from now"
+msgstr[0] "{days_from_now:L} dagur héðan í frá"
+msgstr[1] "{days_from_now:L} dagar héðan í frá"
+
+msgid "{hours_from_now:L} hour from now"
+msgid_plural "{hours_from_now:L} hours from now"
+msgstr[0] "{hours_from_now:L} klukkustund héðan í frá"
+msgstr[1] "{hours_from_now:L} klukkustundir héðan í frá"
+
+msgid "{minutes_from_now:L} minute from now"
+msgid_plural "{minutes_from_now:L} minutes from now"
+msgstr[0] "{minutes_from_now:L} mínúta héðan í frá"
+msgstr[1] "{minutes_from_now:L} mínútur héðan í frá"
+
+msgid "{seconds_from_now:L} second from now"
+msgid_plural "{seconds_from_now:L} seconds from now"
+msgstr[0] "{seconds_from_now:L} sekúnda héðan í frá"
+msgstr[1] "{seconds_from_now:L} sekúndur héðan í frá"
+
+msgid "now"
+msgstr "núna"
+
+msgid "{days_ago:L} day ago"
+msgid_plural "{days_ago:L} days ago"
+msgstr[0] "fyrir {days_ago:L} degi síðan"
+msgstr[1] "fyrir {days_ago:L} dögum síðan"
+
+msgid "{hours_ago:L} hour ago"
+msgid_plural "{hours_ago:L} hours ago"
+msgstr[0] "Fyrir {hours_ago:L} klukkustund síðan"
+msgstr[1] "Fyrir {hours_ago:L} klukkustundum síðan"
+
+#, fuzzy
+msgid "{minutes_ago:L} minute ago"
+msgid_plural "{minutes_ago:L} minutes ago"
+msgstr[0] ""
+"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Fyrir {minutes_ago:L} mínútu síðan\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{minutes_ago:L} mínuta síðan"
+msgstr[1] ""
+"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Fyrir {minutes_ago:L} mínútum síðan\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{minutes_ago:L} mínutur síðan"
+
+msgid "{seconds_ago:L} second ago"
+msgid_plural "{seconds_ago:L} seconds ago"
+msgstr[0] "Fyrir {seconds_ago:L} sekúndu síðan"
+msgstr[1] "Fyrir {seconds_ago:L} sekúndum síðan"
+
+msgid "Got a list of {markup_begin}{peer_count} peer{markup_end} {time_span_ago}"
+msgid_plural "Got a list of {markup_begin}{peer_count} peers{markup_end} {time_span_ago}"
+msgstr[0] "Fékk lista yfir {markup_begin}{peer_count} jafningja{markup_end} {time_span_ago}"
+msgstr[1] "Fékk lista yfir {markup_begin}{peer_count} jafningja{markup_end} {time_span_ago}"
+
+msgid "Peer list request {markup_begin}timed out {time_span_ago}{markup_end}; will retry"
+msgstr "Beiðni um lista yfir jafningja {markup_begin}timed out {time_span_ago}{markup_end}; mun reyna aftur"
+
+msgid "Got an error '{markup_begin}{error}{markup_end}' {time_span_ago}"
+msgstr "Fékk villu '{markup_begin}{error}{markup_end}' {time_span_ago}"
+
+msgid "No updates scheduled"
+msgstr "Engar uppfærslur á dagskrá"
+
+msgid "Asking for more peers {time_span_from_now}"
+msgstr "Óska eftir fleiri jafningjum eftir {time_span_from_now}"
+
+msgid "Queued to ask for more peers"
+msgstr "Bíð eftir að geta óskað eftir fleiri jafningjum"
+
+msgid "Asked for more peers {markup_begin}{time_span_ago}{markup_end}"
+msgstr "Óskaði eftir fleiri jafningjum {markup_begin}{time_span_ago}{markup_end}"
+
+msgid "Got a scrape error '{markup_begin}{error}{markup_end}' {time_span_ago}"
+msgstr "Fékk villu við skröpun '{markup_begin}{error}{markup_end}' {time_span_ago}"
+
+#, fuzzy
+#| msgid "Tracker had {markup_begin}no information{markup_end} on peer counts {time_span} ago"
+msgid "Tracker had {markup_begin}no information{markup_end} on peer counts {time_span_ago}"
+msgstr "Rekjarinn var {markup_begin}ekki með neinar upplýsingar{markup_end} um fjölda jafningja fyrir {time_span} síðan"
+
+msgid "Tracker had {markup_begin}{seeder_count} {seeder_or_seeders} and {leecher_count} {leecher_or_leechers}{markup_end} {time_span_ago}"
+msgstr "Rekjari var með {markup_begin}{seeder_count} {seeder_or_seeders} og {leecher_count} {leecher_or_leechers}{markup_end} {time_span_ago}"
+
+msgid "seeder"
+msgid_plural "seeders"
+msgstr[0] "deilara"
+msgstr[1] "deilara"
+
+msgid "leecher"
+msgid_plural "leechers"
+msgstr[0] "viðtakanda"
+msgstr[1] "viðtakendur"
+
+#, fuzzy
+#| msgid "Asking for peer counts in {time_span_from_now}"
+msgid "Asking for peer counts {time_span_from_now}"
+msgstr "Óska eftir fjölda jafningja eftir {time_span_from_now}"
+
+msgid "Queued to ask for peer counts"
+msgstr "Bíð eftir að fá að spyrja um jafningjafjölda"
+
+msgid "Asked for peer counts {markup_begin}{time_span_ago}{markup_end}"
+msgstr "Óskaði eftir fjölda jafningja {markup_begin}{time_span_ago}{markup_end}"
+
+#, fuzzy
+msgid "{days:L} day"
+msgid_plural "{days:L} days"
+msgstr[0] ""
+"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{days:L} dagur\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{days:L} dag"
+msgstr[1] ""
+"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{days:L} dagar\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{days:L} dagar"
+
+#, fuzzy
+msgid "{hours:L} hour"
+msgid_plural "{hours:L} hours"
+msgstr[0] ""
+"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{hours:L} klukkustund\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{hours:L} klukkutími"
+msgstr[1] ""
+"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{hours:L} klukkustundir\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{hours:L} klukkutímar"
+
+#. Translators: Spin box format, "Stop seeding if idle for: [ 5 minutes ]"
+#, fuzzy
+msgid "{minutes:L} minute"
+msgid_plural "{minutes:L} minutes"
+msgstr[0] ""
+"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{minutes:L} mínúta\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{minutes:L} mínúta\n"
+"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{minutes:L} mínuta"
+msgstr[1] ""
+"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{minutes:L} mínútur\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{minutes:L} mínutur\n"
+"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{minutes:L} mínutur"
+
+msgid "{seconds:L} second"
+msgid_plural "{seconds:L} seconds"
+msgstr[0] "{seconds:L} sekúnda"
+msgstr[1] "{seconds:L} sekúndur"
+
+msgid "{days_left:L} day left"
+msgid_plural "{days_left:L} days left"
+msgstr[0] "{days_left:L} dagur eftir"
+msgstr[1] "{days_left:L} dagar eftir"
+
+msgid "{hours_left:L} hour left"
+msgid_plural "{hours_left:L} hours left"
+msgstr[0] "{hours_left:L} klukkustund eftir"
+msgstr[1] "{hours_left:L} klukkustundir eftir"
+
+msgid "{minutes_left:L} minute left"
+msgid_plural "{minutes_left:L} minutes left"
+msgstr[0] "{minutes_left:L} mínúta eftir"
+msgstr[1] "{minutes_left:L} mínútur eftir"
+
+msgid "{seconds_left:L} second left"
+msgid_plural "{seconds_left:L} seconds left"
+msgstr[0] "{seconds_left:L} sekúnda eftir"
+msgstr[1] "{seconds_left:L} sekúndur eftir"
 
 msgid "Announce error: {error} ({url})"
 msgstr "Tilkynning um villu: {error} ({url})"
@@ -1650,20 +2118,63 @@ msgstr "Rekjari svarar ekki"
 msgid "Success"
 msgstr "Tókst"
 
+msgid "Couldn't parse announce response: {error} ({error_code})"
+msgstr "Gat ekki túlkað svar tilkynningar: {error} ({error_code})"
+
+msgid "Couldn't parse scrape response: {error} ({error_code})"
+msgstr "Gat ekki túlkað svar skrapara: {error} ({error_code})"
+
+msgid "Unknown error"
+msgstr "Óþekkt villa"
+
+msgid "{ip_protocol} connection failed"
+msgstr ""
+
+msgid "Couldn't look up '{address}:{port}' in {ip_protocol}: {error} ({error_code})"
+msgstr ""
+
 msgid "Blocklist '{path}' has {count} entry"
 msgid_plural "Blocklist '{path}' has {count} entries"
 msgstr[0] "Bannlistinn '{path}' er með {count} færslu"
 msgstr[1] "Svarti listinn '{path}' er með {count} færslur"
 
-#. don't try to display the actual lines - it causes issues
-msgid "Couldn't parse line: '{line}'"
+#, fuzzy
+#| msgid "Couldn't parse line: '{line}'"
+msgid "Couldn't parse line {line}: {base64}"
 msgstr "Gat ekki túlkað línu: '{line}'"
 
-msgid "Rewriting old blocklist file format to new format"
+#, fuzzy
+#| msgid "Rewriting old blocklist file format to new format"
+msgid "Rewriting old blocklist file {path} to new format"
 msgstr "Umrita snið gamla bannlistans yfir á nýtt snið"
+
+msgid "Blocklist is larger than {limit} MiB; ignoring it"
+msgstr ""
+
+#, fuzzy
+#| msgid "Couldn't fetch blocklist: {error} ({error_code})"
+msgid "Couldn't fetch blocklist: {errmsg}, response code: {error} ({error_code})"
+msgstr "Gat ekki náð í bannlista: {error} ({error_code})"
+
+msgid "Couldn't fetch blocklist: {error} ({error_code})"
+msgstr "Gat ekki náð í bannlista: {error} ({error_code})"
+
+msgid "Automatically updated blocklist, which now has {count} rules"
+msgstr ""
+
+msgid "Invalid tr_sched_days value {val}"
+msgstr ""
 
 msgid "{crypto_library} error: {error} ({error_code})"
 msgstr "{crypto_library} villa: {error} ({error_code})"
+
+msgid "Couldn't read '{path}': Not a regular file"
+msgstr "Gat ekki lesið '{path}': Ekki venjuleg skrá"
+
+#, fuzzy
+#| msgid "Couldn't read '{path}'"
+msgid "Couldn't get '{path}': "
+msgstr "Gat ekki lesið '{path}'"
 
 msgid "Couldn't get '{path}': {error} ({error_code})"
 msgstr "Gat ekki sótt '{path}': {error} ({error_code})"
@@ -1680,20 +2191,14 @@ msgstr "Vélin þín styður ekki {protocol}"
 msgid "Successfully updated global {type} address to {ip} using {url}"
 msgstr "Tókst að uppfæra víðværa {type} vistfangið í {ip} með {url}"
 
+msgid "Still waiting for disk IO on torrent {id}: {running} running, {queued} queued"
+msgstr ""
+
 msgid "Too many messages like this! I won't log this message anymore this session."
 msgstr "Of mörg villuboð eins og þessi! Þetta verður ekki skráð oftar í þessari setu."
 
 msgid "Skipping '{path}': {error} ({error_code})"
 msgstr "Sleppi '{path}': {error} ({error_code})"
-
-msgid "Couldn't create socket: {error} ({error_code})"
-msgstr "Gat ekki útbúið sökkul: {error} ({error_code})"
-
-msgid "Couldn't set source address {address} on {socket}: {error} ({error_code})"
-msgstr "Gat ekki sett upprunavistfangið {address} á {socket}: {error} ({error_code})"
-
-msgid "Couldn't connect socket {socket} to {address}:{port}: {error} ({error_code})"
-msgstr "Gat ekki tengt sökkulinn {socket} við {address}:{port}: {error} ({error_code})"
 
 msgid "Couldn't bind port {port} on {address}: {error} ({error_code}) -- Is another copy of {appname} already running?"
 msgstr "Gat ekki bundið gátt {port} á {address}: {error} ({error_code}) -- Er annað tilvik af {appname} þegar í gangi?"
@@ -1710,8 +2215,35 @@ msgstr "Gat ekki forúthlutað '{path}': {error} ({error_code})"
 msgid "Couldn't truncate '{path}': {error} ({error_code})"
 msgstr "Gat ekki stytt '{path}': {error} ({error_code})"
 
+msgid "Couldn't create socket: {error} ({error_code})"
+msgstr "Gat ekki útbúið sökkul: {error} ({error_code})"
+
+msgid "Couldn't set source address {address} on {socket}: {error} ({error_code})"
+msgstr "Gat ekki sett upprunavistfangið {address} á {socket}: {error} ({error_code})"
+
+msgid "Couldn't connect socket {socket} to {address}:{port}: {error} ({error_code})"
+msgstr "Gat ekki tengt sökkulinn {socket} við {address}:{port}: {error} ({error_code})"
+
 msgid "Unknown state: {state}"
 msgstr "Óþekkt staða: {state}"
+
+msgid "Starting"
+msgstr "Opna"
+
+msgid "Forwarded"
+msgstr "Áframvísað"
+
+msgid "Stopping"
+msgstr "Stöðva"
+
+msgid "Not forwarded"
+msgstr "Ekki áframvísað"
+
+msgid "Mapped private port {private_port} to public port {public_port}"
+msgstr "Varpaði einkagáttinni {private_port} á opinberu gáttina {public_port}"
+
+msgid "State changed from '{old_state}' to '{state}'"
+msgstr "Stöðu breytt úr '{old_state}' yfir í '{state}'"
 
 msgid "Found public address '{address}'"
 msgstr "Fann opinbert vistfang '{address}'"
@@ -1743,23 +2275,21 @@ msgstr ""
 msgid "If your router supports UPnP, please make sure UPnP is enabled!"
 msgstr "Ef beinirinn þinn (router) styður UPnP, skaltu ganga úr skugga um að UPnP sé virkt!"
 
-msgid "Starting"
-msgstr "Opna"
+#, fuzzy
+#| msgid "Couldn't test port: {error} ({error_code})"
+msgid "Couldn't test port: {errmsg}, response code: {error} ({error_code})"
+msgstr "Gat ekki prófað gátt: {error} ({error_code})"
 
-msgid "Forwarded"
-msgstr "Áframvísað"
+msgid "Couldn't test port: {error} ({error_code})"
+msgstr "Gat ekki prófað gátt: {error} ({error_code})"
 
-msgid "Stopping"
-msgstr "Stöðva"
+#, fuzzy
+#| msgid "Couldn't fetch torrent: {error} ({error_code})"
+msgid "Couldn't fetch torrent: {errmsg}, Response code: {error} ({error_code})"
+msgstr "Gat ekki náð í torrent: {error} ({error_code})"
 
-msgid "Not forwarded"
-msgstr "Ekki áframvísað"
-
-msgid "Mapped private port {private_port} to public port {public_port}"
-msgstr "Varpaði einkagáttinni {private_port} á opinberu gáttina {public_port}"
-
-msgid "State changed from '{old_state}' to '{state}'"
-msgstr "Stöðu breytt úr '{old_state}' yfir í '{state}'"
+msgid "Couldn't fetch torrent: {error} ({error_code})"
+msgstr "Gat ekki náð í torrent: {error} ({error_code})"
 
 msgid "Unix socket path must be fewer than {count} characters (including '{prefix}' prefix)"
 msgstr "Slóð Unix-sökkuls (socket) verður að vera færri en {count} stafir (að meðtöldu '{prefix}' forskeyti)"
@@ -1817,29 +2347,24 @@ msgstr "Lykilorðs krafist"
 msgid "Serving RPC and Web requests from '{path}'"
 msgstr "Miðla RPC- og vefbeiðnum frá '{path}'"
 
-msgid "Couldn't test port: {error} ({error_code})"
-msgstr "Gat ekki prófað gátt: {error} ({error_code})"
-
-msgid "Couldn't fetch blocklist: {error} ({error_code})"
-msgstr "Gat ekki náð í bannlista: {error} ({error_code})"
-
-msgid "Couldn't fetch torrent: {error} ({error_code})"
-msgstr "Gat ekki náð í torrent: {error} ({error_code})"
-
-msgid "Time to turn off turtle mode"
-msgstr "Tími til að slökkva á skjaldbökuham"
-
-msgid "Time to turn on turtle mode"
+#, fuzzy
+#| msgid "Time to turn on turtle mode"
+msgid "Time to turn on alternative speed limits"
 msgstr "Tími til að kveikja á skjaldbökuham"
 
-msgid "Couldn't open session lock file '{path}': {error} ({error_code})"
-msgstr "Gat ekki opnað læsiskrá setu á '{path}': {error} ({error_code})"
+#, fuzzy
+#| msgid "Time to turn off turtle mode"
+msgid "Time to turn off alternative speed limits"
+msgstr "Tími til að slökkva á skjaldbökuham"
 
 msgid "Listening to incoming peer connections on {hostport}"
 msgstr "Hlusta á innkomandi tengingar jafningja á {hostport}"
 
 msgid "{appname} version {version} starting"
 msgstr "{appname} útgáfa {version} er að ræsa"
+
+msgid "Couldn't start disk IO workers, continuing without them: {error}"
+msgstr ""
 
 msgid "{appname} version {version} shutting down"
 msgstr "{appname} útgáfa {version} er að slökkva á sér"
@@ -1849,8 +2374,11 @@ msgid_plural "Loaded {count} torrents"
 msgstr[0] "Hlóð inn {count} torrent-streymi"
 msgstr[1] "Hlóð inn {count} torrent-streymum"
 
-msgid "Migrated torrent file from '{old_path}' to '{path}'"
-msgstr "Yfirfærði torrent-skrá úr '{old_path}' yfir í '{path}'"
+msgid "Couldn't claim '{path}'. If another session is using it, the two will overwrite each other's settings, resume files and stats."
+msgstr ""
+
+msgid "Couldn't open session lock file '{path}': {error} ({error_code})"
+msgstr "Gat ekki opnað læsiskrá setu á '{path}': {error} ({error_code})"
 
 msgid "Couldn't use metainfo from '{path}' for '{magnet}': {error} ({error_code})"
 msgstr "Gat ekki notað lýsigagnaupplýsingar úr '{path}' fyrir '{magnet}': {error} ({error_code})"
@@ -1882,14 +2410,32 @@ msgstr ""
 msgid "Removing torrent"
 msgstr "Fjarlægi Torrent-streymi"
 
-msgid "Couldn't move '{old_path}' to '{path}': {error} ({error_code})"
+#, fuzzy
+#| msgid "Couldn't move '{old_path}' to '{path}': {error} ({error_code})"
+msgid "Couldn't move torrent files to '{path}': {error} ({error_code})"
 msgstr "Gat ekki fært '{old_path}' yfir í '{path}': {error} ({error_code})"
 
 msgid "Paused torrent as no data was found! Ensure your drives are connected or use \"Set Location\", then use \"Verify Local Data\" again. To re-download, start the torrent."
 msgstr "Setti streymið í bið því engin gögn fundust! Gakktu úr skugga um að allir gagnamiðlar séu tengdir eða notaðu \"Stilla staðsetningu\" og síðan \"Athuga þau gögn sem eru komin\". Til að ná aftur í gögnin, skaltu ræsa aftur torrent-streymið."
 
+msgid "Couldn't move '{old_path}' to '{path}': {error} ({error_code})"
+msgstr "Gat ekki fært '{old_path}' yfir í '{path}': {error} ({error_code})"
+
 msgid "Tracker warning: '{warning}' ({url})"
 msgstr "Aðvörun frá rekjara: '{warning}' ({url})"
+
+#, fuzzy
+#| msgid "Removing torrent file '{path}'"
+msgid "Moving '{source}' will overwrite '{path}'"
+msgstr "Fjarlægi torrent-skrá '{path}'"
+
+#, fuzzy
+#| msgid "Couldn't move '{old_path}' to '{path}': {error} ({error_code})"
+msgid "Couldn't compare '{path}' with '{root}': {error} ({error_code}); leaving it alone"
+msgstr "Gat ekki fært '{old_path}' yfir í '{path}': {error} ({error_code})"
+
+msgid "Migrated torrent file from '{old_path}' to '{path}'"
+msgstr "Yfirfærði torrent-skrá úr '{old_path}' yfir í '{path}'"
 
 msgid "Couldn't parse '{filename}' line: '{line}'"
 msgstr "Gat ekki túlkað '{filename}' í línu: '{line}'"
@@ -1918,8 +2464,47 @@ msgstr ""
 msgid "Unknown socket family"
 msgstr "Óþekkt gerð sökkuls (socket)"
 
-msgid "Couldn't read '{path}': Not a regular file"
-msgstr "Gat ekki lesið '{path}': Ekki venjuleg skrá"
+msgid "B"
+msgstr "B"
+
+msgid "KiB"
+msgstr "KiB"
+
+msgid "MiB"
+msgstr "MiB"
+
+msgid "GiB"
+msgstr "GiB"
+
+msgid "TiB"
+msgstr "TiB"
+
+msgid "B/s"
+msgstr "B/sek"
+
+msgid "kB/s"
+msgstr "kB/sek"
+
+msgid "MB/s"
+msgstr "MB/sek"
+
+msgid "GB/s"
+msgstr "GB/sek"
+
+msgid "TB/s"
+msgstr "TB/sek"
+
+msgid "kB"
+msgstr "kB"
+
+msgid "MB"
+msgstr "MB"
+
+msgid "GB"
+msgstr "GB"
+
+msgid "TB"
+msgstr "TB"
 
 msgid "Couldn't parse JSON at position {position} '{text}': {error} ({error_code})"
 msgstr "Gat ekki túlkað JSON á staðnum {position} '{text}': {error} ({error_code})"
@@ -1927,17 +2512,14 @@ msgstr "Gat ekki túlkað JSON á staðnum {position} '{text}': {error} ({error_
 msgid "Couldn't watch '{path}': {error} ({error_code})"
 msgstr "Gat ekki vaktað '{path}': {error} ({error_code})"
 
-msgid "Couldn't read event: {error} ({error_code})"
-msgstr "Gat ekki lesið atburð: {error} ({error_code})"
-
 msgid "Couldn't read event: expected {expected_size}, got {actual_size}"
 msgstr "Gat ekki lesið atburð: átti von á {expected_size}, fékk {actual_size}"
 
-msgid "Couldn't read filename: {error} ({error_code})"
-msgstr "Gat ekki lesið skráarheiti: {error} ({error_code})"
-
 msgid "Couldn't read filename: expected {expected_size}, got {actual_size}"
 msgstr "Gat ekki lesið skráarheiti: átti von á {expected_size}, fékk {actual_size}"
+
+msgid "Couldn't read event: {error} ({error_code})"
+msgstr "Gat ekki lesið atburð: {error} ({error_code})"
 
 msgid "Couldn't convert '{path}' to native path"
 msgstr "Gat ekki umbreytt '{path}' í innbyggða slóð"
@@ -1957,10 +2539,13 @@ msgstr "Gat ekki beðið eftir breytingum á möppu"
 msgid "Consider upgrading your curl installation."
 msgstr ""
 
+msgid "The minimum supported version is {curl_version}, you might face unexpected behaviour."
+msgstr ""
+
 msgid "curl {curl_version} is prone to SIGPIPE crashes. {details_url}"
 msgstr ""
 
-msgid "curl {curl_version} is prone to an eventfd double close vulnerability that might cause SIGABRT crashes for the transmission-daemon systemd service. {details_url}"
+msgid "curl {curl_version} is prone to an eventfd double close vulnerability that might cause SIGABRT crashes for the daemon systemd service. {details_url}"
 msgstr ""
 
 msgid "Will verify tracker certs using envvar CURL_CA_BUNDLE: {bundle}"
@@ -1972,8 +2557,414 @@ msgstr "ATH: Þetta virkar bara ef þú hefur byggt við libcurl með openssl e�
 msgid "NB: Invalid certs will appear as 'Could not connect to tracker' like many other errors"
 msgstr "ATH: Ógild skilríki munu birtast sem 'Get ekki tengst rekjara' rétt eins og margar aðrar villur"
 
+msgid "Aborting request: response body exceeded max size of {max_file_size} bytes"
+msgstr ""
+
 msgid "Couldn't fetch '{url}': expected HTTP response code {expected_code}, got {actual_code}"
 msgstr "Gat ekki sótt '{url}': átti von á HTTP-svarkóða {expected_code}, en fékk {actual_code}"
+
+msgid "Server"
+msgstr "Þjónn"
+
+msgid "C_redits"
+msgstr "F_ramlög"
+
+msgid "Credits"
+msgstr "Framlög"
+
+msgid "About {appname}"
+msgstr "Um {appname}"
+
+msgid "Torrent Completed"
+msgstr "Torrent-streymi lokið"
+
+msgid "Torrents Completed"
+msgstr "Torrent-streymum lokið"
+
+#. Translators: Text following the "Have:" label in torrent properties dialog;
+#. {current_size} is amount of downloaded and verified data
+msgid "{current_size} (100%)"
+msgstr "{current_size} (100%)"
+
+msgid "{current_size} of {complete_size} ({percent_done}%), {unverified_size} Unverified"
+msgstr "{current_size} af {complete_size} ({percent_done}%), {unverified_size} Óstaðfest"
+
+msgid "{total_size} ({piece_count:L} piece @ {piece_size})"
+msgid_plural "{total_size} ({piece_count:L} pieces @ {piece_size})"
+msgstr[0] "{total_size} ({piece_count:L} hluti @ {piece_size})"
+msgstr[1] "{total_size} ({piece_count:L} hlutar @ {piece_size})"
+
+msgid "{total_size} ({piece_count:L} piece)"
+msgid_plural "{total_size} ({piece_count:L} pieces)"
+msgstr[0] "{total_size} ({piece_count:L} hluti)"
+msgstr[1] "{total_size} ({piece_count:L} hlutar)"
+
+msgid "Add URL(s)"
+msgstr "Bæta við slóð(um)"
+
+msgid "Add tracker announce URLs, one per line:"
+msgstr "Bæta við tilkynningaslóðum rekjara, ein á hverja línu:"
+
+msgid "No new URLs found."
+msgstr "Engar nýjar slóðir fundust."
+
+msgid "Use Global Settings"
+msgstr "Nota víðværar stillingar"
+
+msgid "Stop seeding if idle for:"
+msgstr "Hætta að deila ef óvirkt í:"
+
+msgid "Torrent Properties"
+msgstr "Eiginleikar torrent-streymis"
+
+msgid "Availability:"
+msgstr "Aðgengileiki:"
+
+msgid "Labels:"
+msgstr "Merkingar:"
+
+msgid "Limit _upload speed:"
+msgstr "Takmarka innsendin_garhraða:"
+
+msgid "Limit _download speed:"
+msgstr "Takmarka niður_halshraða:"
+
+msgid "Check Selected"
+msgstr "Merkja valið"
+
+msgid "Uncheck Selected"
+msgstr "Afmerkja valið"
+
+msgid "Only Check Selected"
+msgstr "Aðeins merkja valið"
+
+msgid "Open"
+msgstr "Opna"
+
+msgid "Rename…"
+msgstr "Endurnefna…"
+
+msgid "Search…"
+msgstr "Leita…"
+
+msgid "<i>Calculating Free Space…</i>"
+msgstr "<i>Reikna laust pláss…</i>"
+
+msgid "Limited at {speed}"
+msgstr "Takmarkað við {speed}"
+
+#. Translators: Second (optional) part of main window title "Appname - host:port" (added when connected to remote session)
+#. notice that leading space (before the dash) is included here
+msgid " - {host}:{port}"
+msgstr "- {host}:{port}"
+
+msgid "Network Error"
+msgstr "Villa í netkerfi"
+
+msgid "Idle"
+msgstr "Aðgerðalaus"
+
+msgid "Showing {visible_count:L} of {count:L} torrent"
+msgid_plural "Showing {visible_count:L} of {count:L} torrents"
+msgstr[0] "Sýni {visible_count:L} af {count:L} torrent-streymum"
+msgstr[1] "Sýni {visible_count:L} af {count:L} torrent-streymum"
+
+msgid "Torrent Files (*.torrent);;All Files (*.*)"
+msgstr "Torrent skrár (*.torrent);;Allar skrár (*.*)"
+
+msgid "{host} has not responded yet"
+msgstr "{host} hefur enn ekki svarað"
+
+msgid "{host} is responding"
+msgstr "{host}s er að svara"
+
+#, fuzzy
+#| msgid "{host} last responded {time_span} ago"
+msgid "{host} last responded {time_span_ago}"
+msgstr "{host} svaraði síðast fyrir {time_span} síðan"
+
+msgid "{host} is not responding"
+msgstr "{host}s svarar ekki"
+
+msgid "_Open…"
+msgstr "_Opna…"
+
+msgid "Create a new torrent"
+msgstr "Búa til nýtt torrent-streymi"
+
+msgid "Open the torrent's folder"
+msgstr "Opna möppu torrent-streymisins"
+
+msgid "Ask tracker for more peers"
+msgstr "Biðja rekjara um fleiri jafningja"
+
+msgid "Verify local data"
+msgstr "Skoða sótt gögn"
+
+msgid "Remove torrent and delete its files"
+msgstr "Fjarlægja streymi og skrám hans"
+
+msgid "Compact View"
+msgstr "Þjöppuð sýn"
+
+msgid "_Main Window"
+msgstr "_Aðalgluggi"
+
+msgid "Tray _Icon"
+msgstr "Tákn í kerf_isbakka"
+
+msgid "_Change Session…"
+msgstr "S_kipta um setu"
+
+#. Start a local session or connect to a running session
+msgid "Choose Session"
+msgstr "Veldu setu"
+
+msgid "Bypass the queue and start now"
+msgstr "Fara framhjá biðröð og byrja núna"
+
+msgid "{file_count:L} File"
+msgid_plural "{file_count:L} Files"
+msgstr[0] "{file_count:L} skrá"
+msgstr[1] "{file_count:L} skrár"
+
+msgid "{piece_count:L} Piece"
+msgid_plural "{piece_count:L} Pieces"
+msgstr[0] "{piece_count:L} bútur"
+msgstr[1] "{piece_count:L} bútar"
+
+msgid "{total_size} in {files}; {pieces} @ {piece_size}"
+msgstr "{total_size} í {files}; {pieces} @ {piece_size}"
+
+msgid ""
+"To add a backup URL, add it on the line after the primary URL.\n"
+"To add another primary URL, add it after a blank line."
+msgstr ""
+"Til að bæta við slóð til vara, bættu henni á línuna á eftir aðalslóðinni.\n"
+"Til að bæta við annarri aðalslóð, bættu henni við á nýrri auðri línu."
+
+#, fuzzy
+#| msgid "_Source:"
+msgid "Sou_rce:"
+msgstr "_Uppruni:"
+
+msgid "_Priority:"
+msgstr "_Forgangur:"
+
+msgid "Select Folder"
+msgstr "Veldu möppu"
+
+#, fuzzy
+#| msgid "Unknown"
+msgid "unknown"
+msgstr "Óþekkt"
+
+msgid "checking…"
+msgstr ""
+
+msgid "open"
+msgstr ""
+
+#, fuzzy
+#| msgid "_Close"
+msgid "closed"
+msgstr "_Loka"
+
+#, fuzzy
+msgid "error"
+msgstr ""
+"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Villur\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Villa"
+
+msgid "<b>Update succeeded!</b><p>Blocklist now has {count:L} rule.</p>"
+msgid_plural "<b>Update succeeded!</b><p>Blocklist now has {count:L} rules.</p>"
+msgstr[0] "<b>Uppfærsla tókst!</b><p>Bannlistinn er núna með {count:L} reglu.</p>"
+msgstr[1] "<b>Uppfærsla tókst!</b><p>Bannlistinn er núna með {count:L} reglur.</p>"
+
+msgid "Download of the blocklist failed."
+msgstr ""
+
+msgid "Update Blocklist"
+msgstr "Uppfæri bannlista"
+
+msgid "Select \"Torrent Done Seeding\" Script"
+msgstr "Veldu \"Torrent Done Seeding\" skriftuna"
+
+msgid "Select Watch Directory"
+msgstr "Veldu möppu fyrir vaktað"
+
+msgid "Select Incomplete Directory"
+msgstr "Veldu möppu fyrir ófullgert"
+
+msgid "Select \"Torrent Done Downloading\" Script"
+msgstr "Veldu \"Torrent Done Downloading\" skriftuna"
+
+msgid "Not supported by remote sessions"
+msgstr "Ekki stutt af fjartengdum setum"
+
+msgid "<i>Blocklist contains {count:L} rule</i>"
+msgid_plural "<i>Blocklist contains {count:L} rules</i>"
+msgstr[0] "<i>Bannlisti inniheldur {count:L} reglu</i>"
+msgstr[1] "<i>Bannlisti inniheldur {count:L} reglur</i>"
+
+#, fuzzy
+#| msgid "<i>Blocklist contains {count:L} rule</i>"
+#| msgid_plural "<i>Blocklist contains {count:L} rules</i>"
+msgid "<i>Blocklist has never been updated</i>"
+msgstr "<i>Bannlisti inniheldur {count:L} reglu</i>"
+
+#, fuzzy
+#| msgid "<i>Blocklist contains {count:L} rule</i>"
+#| msgid_plural "<i>Blocklist contains {count:L} rules</i>"
+msgid "<i>Blocklist last updated {date}</i>"
+msgstr "<i>Bannlisti inniheldur {count:L} reglu</i>"
+
+msgid "_Upload:"
+msgstr "Sen_t:"
+
+msgid "_Download:"
+msgstr "_Sótt:"
+
+msgid "U_pload:"
+msgstr "S_ent:"
+
+msgid "Do_wnload:"
+msgstr "Só_tt:"
+
+msgid "Downloading"
+msgstr "Sæki"
+
+msgid "Adding"
+msgstr "Bæti við"
+
+msgid "Reads user clipboard content for torrents"
+msgstr "Les hvort klippispjald notanda inniheldur streymi"
+
+msgid "Detect new torrents from clipboard"
+msgstr "Greinir ný streymi á klippispjaldi"
+
+#. Please keep this phrase as short as possible, it's currently the longest and influences dialog width
+msgid "Download is i_nactive if data sharing stopped:"
+msgstr "_Niðurhal er óvirkt ef deiling gagna er stöðvuð:"
+
+msgid "Seeding"
+msgstr "Í deilingu"
+
+msgid "Stop seedi_ng if idle for:"
+msgstr "Hætta að _deila ef óvirkt í:"
+
+msgid "Encryption"
+msgstr "Dulritun"
+
+msgid "Start _minimized in notification area"
+msgstr "Byrja lág_markað í tilkynningarsvæðinu"
+
+#, fuzzy
+#| msgid "Retransmission"
+msgid "Retransmission (Qt)"
+msgstr "Retransmission"
+
+msgid "Select Location"
+msgstr "Veldu staðsetningu"
+
+msgid "Error Renaming Path"
+msgstr "Villa við að endurnefna slóð"
+
+msgid "Unable to rename \"{old_path}\" as \"{path}\": {error}."
+msgstr "Tókst ekki að endurnefna \"{old_path}\" sem \"{path}\": {error}."
+
+msgid "Error Adding Torrent"
+msgstr "Villa við að bæta við torrent-streymi"
+
+msgid "{torrent_name} (copy of {hash})"
+msgstr "{torrent_name} (afrit af {hash})"
+
+msgid "Duplicate Torrent"
+msgstr "Tvítaka torrent-streymi"
+
+msgid "Duplicate Torrents"
+msgstr "Tvítaka torrent-streymin"
+
+msgid "Unable to add {count} duplicate torrent"
+msgid_plural "Unable to add {count} duplicate torrents"
+msgstr[0] "Gat ekki bætt við {count} tvíteknu torrent-streymi"
+msgstr[1] "Gat ekki bætt við {count} tvíteknum torrent-streymum"
+
+msgid "Change Session"
+msgstr "Skipta um setu"
+
+msgid "Source"
+msgstr "Uppruni"
+
+msgid "Start _Local Session"
+msgstr "_Hefja staðværa setu"
+
+msgid "Connect to _Remote Session"
+msgstr "Tengjast fja_rtengdri setu"
+
+msgid "_Host:"
+msgstr "_Miðlari:"
+
+msgid "_Port:"
+msgstr "_Gátt:"
+
+msgid "_Authentication required"
+msgstr "_Auðkenningar krafist"
+
+msgid "Remote root pa_th:"
+msgstr ""
+
+msgid "Tracker gave a warning: {warning}"
+msgstr "Rekjari gaf aðvörun: {warning}"
+
+msgid "Tracker gave an error: {error}"
+msgstr "Rekjari gaf villu: {error}"
+
+msgid "Error: {error}"
+msgstr "Villa: {error}"
+
+#, fuzzy
+#| msgid "Magnetized transfer - retrieving metadata (%1%)"
+msgid "Magnetized torrent - retrieving metadata ({percent_done}%)"
+msgstr "Flutningur með segultengli - sæki lýsigögn (%1%)"
+
+#, no-c-format
+msgid "Downloading metadata from {active_count:L} peer ({percent_done}% done)"
+msgid_plural "Downloading metadata from {active_count:L} peers ({percent_done}% done)"
+msgstr[0] "Sæki lýsigögn frá {active_count:L} jafningja ({percent_done}% lokið)"
+msgstr[1] "Sæki lýsigögn frá {active_count:L} jafningjum ({percent_done}% lokið)"
+
+msgid "Downloading from {active_count:L} peer"
+msgid_plural "Downloading from {active_count:L} peers"
+msgstr[0] "Sæki frá {active_count:L} jafningja"
+msgstr[1] "Sæki frá {active_count:L} jafningjum"
+
+msgid " and {webseed_count:L} web seed"
+msgid_plural " and {webseed_count:L} web seeds"
+msgstr[0] " og {webseed_count:L} vefdeilingu"
+msgstr[1] " og {webseed_count:L} vefdeilingar"
+
+msgid "Seeding to {active_count:L} peer"
+msgid_plural "Seeding to {active_count:L} peers"
+msgstr[0] "Deili til {active_count:L} jafningja"
+msgstr[1] "Deili til {active_count:L} jafningja"
+
+msgid " - "
+msgstr "- "
+
+#, fuzzy
+#| msgid ""
+#| "To add a backup URL, add it on the next line after a primary URL.\n"
+#| "To add a new primary URL, add it after a blank line."
+msgid "To add a backup URL, add it on the next line after a primary URL."
+msgstr ""
+"Til að bæta við slóð fyrir öryggisafritun, skaltu bæta henni við á næstu línu á eftir aðalslóð.\n"
+"Til að bæta við nýrri aðalslóð, skaltu bæta henni við á eftir auðri línu."
+
+msgid "To add a new primary URL, add it after a blank line."
+msgstr "Til að bæta við nýrri aðalslóð, skaltu bæta henni við á eftir auðri línu."
 
 msgid "{file_count:L} file, {total_size}\n"
 msgid_plural "{file_count:L} files, {total_size}\n"
@@ -1995,7 +2986,10 @@ msgid_plural "minutes"
 msgstr[0] "mínúta"
 msgstr[1] "mínútur"
 
-msgid "seconds"
+#, fuzzy
+#| msgid "seconds"
+#| msgid_plural "seconds"
+msgid "second"
 msgid_plural "seconds"
 msgstr[0] "sekúnda"
 msgstr[1] "sekúndur"
@@ -2004,6 +2998,106 @@ msgid "day"
 msgid_plural "days"
 msgstr[0] "dagur"
 msgstr[1] "dagar"
+
+msgid "seconds"
+msgid_plural "seconds"
+msgstr[0] "sekúnda"
+msgstr[1] "sekúndur"
+
+#~ msgid "Finished"
+#~ msgstr "Lokið"
+
+#~ msgid "We would upload to this peer if they asked"
+#~ msgstr "Við myndum senda gögn til þessa jafningja ef hann bæði um það"
+
+#~ msgid "Dn Blocks"
+#~ msgstr "Sóttar blokkir"
+
+#~ msgid "Up Blocks"
+#~ msgstr "Sendar blokkir"
+
+#~ msgid "We Cancelled"
+#~ msgstr "Við hættum við"
+
+#~ msgid "They Cancelled"
+#~ msgstr "Þau hættu við"
+
+#~ msgid "Have"
+#~ msgstr "Komið í hús"
+
+#~ msgctxt "current session totals"
+#~ msgid "Down: {downloaded_size}, Up: {uploaded_size}"
+#~ msgstr "Sótt: {downloaded_size}, Sent: {uploaded_size}"
+
+#~ msgctxt "all-time totals"
+#~ msgid "Down: {downloaded_size}, Up: {uploaded_size}"
+#~ msgstr "Sótt: {downloaded_size}, Sent: {uploaded_size}"
+
+#~ msgid "Select a File"
+#~ msgstr "Veldu skrá"
+
+#~ msgid "Inhibiting desktop hibernation"
+#~ msgstr "Kem í veg fyrir að tölvan leggjast í dvala"
+
+#~ msgid "Couldn't inhibit desktop hibernation: {error}"
+#~ msgstr "Gat ekki meinað tölvunni að leggjast í dvala: {error}"
+
+#~ msgid "Allowing desktop hibernation"
+#~ msgstr "Leyfi tölvunni að leggjast í dvala"
+
+#~ msgid "Open URL…"
+#~ msgstr "Opna URL…"
+
+#~ msgid "Start all torrents"
+#~ msgstr "Byrja öll torrent-streymi"
+
+#~ msgid "Pause all torrents"
+#~ msgstr "Setja öll torrent-streymi í bið"
+
+#~ msgid "Start torrent now"
+#~ msgstr "Byrja núna að sækja torrent-streymi"
+
+#~ msgid "Copy _Magnet Link to Clipboard"
+#~ msgstr "Afrita _segultengill á klemmuspjald "
+
+#~ msgid "Enable Alternative Speed _Limits"
+#~ msgstr "Vir_kja önnur hraðatakmörk"
+
+#~ msgid "Torrent size:"
+#~ msgstr "Stærð torrent-streymis:"
+
+#~ msgid "_New"
+#~ msgstr "_Nýtt"
+
+#~ msgid "Source F_older:"
+#~ msgstr "Uppruna_mappa:"
+
+#~ msgid "Source _File:"
+#~ msgstr "Uppruna_skrá:"
+
+#~ msgid "P_ause"
+#~ msgstr "_Bíða"
+
+#~ msgid "Keep _incomplete torrents in:"
+#~ msgstr "Geyma ó_kláruð torrent-streymi í:"
+
+#~ msgid "Call scrip_t when done downloading:"
+#~ msgstr "Kalla í skrif_tu þegar niðurhali er lokið:"
+
+#~ msgid "_Port used for incoming connections:"
+#~ msgstr "_Gátt fyrir innkomandi tengingar:"
+
+#~ msgid "Enable µ_TP for peer communication"
+#~ msgstr "Virkja µ_TP fyrir jafningjasamskipti"
+
+#~ msgid "_Inhibit hibernation when torrents are active"
+#~ msgstr "Ekki _leggjast í dvala þegar torrent-streymi eru í gangi"
+
+#~ msgid "Torrent _location:"
+#~ msgstr "_Staðsetning torrent-streymis:"
+
+#~ msgid "Couldn't read filename: {error} ({error_code})"
+#~ msgstr "Gat ekki lesið skráarheiti: {error} ({error_code})"
 
 #~ msgid "Couldn't find pending RPC request for tag {tag}"
 #~ msgstr "Gat ekki fundið RPC-beiðni í bið fyrir merkið {tag}"

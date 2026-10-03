@@ -17,8 +17,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-01-04 14:15+0000\n"
+"Report-Msgid-Bugs-To: https://github.com/retransmission/retransmission/issues\n"
+"POT-Creation-Date: 2026-10-03 11:48-0500\n"
 "PO-Revision-Date: 2017-01-26 19:47+0000\n"
 "Last-Translator: Andrei Stepanov, 2025\n"
 "Language-Team: Russian (https://app.transifex.com/transmissionbt/teams/33778/ru/)\n"
@@ -33,6 +33,9 @@ msgstr "Нет"
 
 msgid "Inf"
 msgstr "Инф."
+
+msgid "Another process is already using '{path}'."
+msgstr ""
 
 msgid "Couldn't read '{path}': {error} ({error_code})"
 msgstr "Не удалось прочитать «{path}»: {error} ({error_code})"
@@ -60,6 +63,9 @@ msgstr "Перезагрузка настроек из «{path}»"
 
 msgid "Couldn't initialize daemon: {error} ({error_code})"
 msgstr "Не удалось запустить службу: {error} ({error_code})"
+
+msgid "Waiting for another process to release '{path}'"
+msgstr ""
 
 msgid "Loading settings from '{path}'"
 msgstr "Загрузка настроек из «{path}»"
@@ -114,8 +120,13 @@ msgstr[1] "Не удалось добавить дублирующиеся то�
 msgstr[2] "Не удалось добавить дублирующиеся торренты"
 msgstr[3] "Не удалось добавить дублирующиеся торренты"
 
+#, fuzzy
 msgid "A fast and easy BitTorrent client"
-msgstr "Быстрый и простой клиент BitTorrent"
+msgstr ""
+"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Быстрый и простой клиент BitTorrent\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Быстрый и простой торрент-клиент"
 
 msgid "Copyright © The {appname} Project"
 msgstr "Авторское право © The {appname} Project"
@@ -147,28 +158,59 @@ msgstr "Прекратить раздачу при простое N минут:"
 msgid "Queued for verification"
 msgstr "В очереди на проверку"
 
+#, fuzzy
 msgid "Verifying local data"
-msgstr "Проверка загруженных данных"
+msgstr ""
+"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Проверка загруженных данных\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Проверка локальных данных"
 
 msgid "Queued for download"
 msgstr "В очереди на загрузку"
 
+#, fuzzy
 msgctxt "Verb"
 msgid "Downloading"
-msgstr "Загружается"
+msgstr ""
+"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Загружается\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Загрузки\n"
+"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Загрузка"
 
 msgid "Queued for seeding"
 msgstr "В очереди на раздачу"
 
+#, fuzzy
 msgctxt "Verb"
 msgid "Seeding"
-msgstr "Раздаётся"
+msgstr ""
+"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Раздаётся\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Раздачи\n"
+"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Раздача"
 
-msgid "Finished"
-msgstr "Завершён"
+#, fuzzy
+msgid "Seeding complete"
+msgstr ""
+"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Процесс загрузки\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Не завершено"
 
+#, fuzzy
 msgid "Paused"
-msgstr "Приостановлен"
+msgstr ""
+"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Приостановлен\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Приостановлено\n"
+"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Приостановленные"
 
 msgid "N/A"
 msgstr "Н/Д"
@@ -185,14 +227,29 @@ msgstr "Только для этого трекера — DHT и PEX отклю�
 msgid "Public torrent"
 msgstr "Публичный торрент"
 
+#, fuzzy
 msgid "Created by {creator} on {date}"
-msgstr "Создано {creator} {date}"
+msgstr ""
+"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Создано {creator} {date}\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Создан {creator}, {date}"
 
+#, fuzzy
 msgid "Created by {creator}"
-msgstr "Создано {creator}"
+msgstr ""
+"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Создано {creator}\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Создан {creator}"
 
+#, fuzzy
 msgid "Created on {date}"
-msgstr "Создано {date}"
+msgstr ""
+"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Создано {date}\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Создан {date}"
 
 msgid "Unknown"
 msgstr "Неизвестно"
@@ -218,14 +275,26 @@ msgstr "{current_size} ({percent_done} %)"
 msgid "{current_size} ({percent_done}% of {percent_available}% available)"
 msgstr "{current_size} (доступно {percent_done} % из {percent_available} %)"
 
+#, fuzzy, c-format
+#| msgid "{current_size} ({percent_done}% of {percent_available}% available; {unverified_size} unverified)"
 msgid "{current_size} ({percent_done}% of {percent_available}% available; {unverified_size} unverified)"
 msgstr "{current_size} (доступно {percent_done} % из {percent_available} %; не проверено {unverified_size})"
 
+#, fuzzy
 msgid "{downloaded_size} (+{discarded_size} discarded after failed checksum)"
-msgstr "{downloaded_size} (+{discarded_size} отменено после проверки контрольной суммы)"
+msgstr ""
+"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{downloaded_size} (+{discarded_size} отменено после проверки контрольной суммы)\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{downloaded_size} (+{discarded_size} отклонено после неудачной проверки контрольной суммы)"
 
+#, fuzzy
 msgid "{uploaded_size} (Ratio: {ratio})"
-msgstr "{uploaded_size} (Соотношение: {ratio})"
+msgstr ""
+"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{uploaded_size} (Соотношение: {ratio})\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{uploaded_size} (Рейтинг: {ratio})"
 
 msgid "No errors"
 msgstr "Ошибок нет"
@@ -236,8 +305,13 @@ msgstr "Никогда"
 msgid "Active now"
 msgstr "Активен сейчас"
 
+#, fuzzy
 msgid "Optimistic unchoke"
-msgstr "Загрузка сейчас начнётся"
+msgstr ""
+"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Загрузка сейчас начнётся\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Скоро начнётся передача"
 
 msgid "Downloading from this peer"
 msgstr "Загрузка от этого участника"
@@ -248,8 +322,10 @@ msgstr "Возможна загрузка данных от этого учас�
 msgid "Uploading to peer"
 msgstr "Отдаётся участнику"
 
-msgid "We would upload to this peer if they asked"
-msgstr "Возможна отдача этому участнику, если он будет заинтересован"
+#, fuzzy
+#| msgid "We would download from this peer if they would let us"
+msgid "This peer would download from us if we would let them"
+msgstr "Возможна загрузка данных от этого участника, если он позволит"
 
 msgid "Peer has unchoked us, but we're not interested"
 msgstr "Участник согласен передавать данные, но мы не заинтересованы"
@@ -257,8 +333,13 @@ msgstr "Участник согласен передавать данные, н�
 msgid "We unchoked this peer, but they're not interested"
 msgstr "Передача участнику была разрешена, но он не заинтересован"
 
+#, fuzzy
 msgid "Encrypted connection"
-msgstr "Зашифрованное соединение"
+msgstr ""
+"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Зашифрованное соединение\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Шифрованное соединение"
 
 msgid "Peer was found through Peer Exchange (PEX)"
 msgstr "Участник был найден с помощью обмена участниками (PEX)"
@@ -269,13 +350,20 @@ msgstr "Участник был найден через DHT"
 msgid "Peer is an incoming connection"
 msgstr "Участник открыл соединение с нами"
 
+#, fuzzy
 msgid "Peer is connected over µTP"
-msgstr "Участник подключён через uTP"
+msgstr ""
+"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Участник подключён через uTP\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Участник подключён через µTP"
+
+msgid "Peer supports holepunch (BEP 55)"
+msgstr ""
 
 msgid "Address"
 msgstr "Адрес"
 
-#. % is percent done
 msgid "%"
 msgstr "%"
 
@@ -285,23 +373,16 @@ msgstr "Входящие запросы"
 msgid "Up Reqs"
 msgstr "Исходящие запросы"
 
-msgid "Dn Blocks"
-msgstr "Принятые блоки"
-
-msgid "Up Blocks"
-msgstr "Переданные блоки"
-
-msgid "We Cancelled"
-msgstr "Отменено вами"
-
-msgid "They Cancelled"
-msgstr "Отменено другими участниками"
-
 msgid "Down"
 msgstr "Загрузка"
 
+#, fuzzy
 msgid "Up"
-msgstr "Раздача"
+msgstr ""
+"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Раздача\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Отдача"
 
 msgid "Client"
 msgstr "Клиент"
@@ -312,72 +393,19 @@ msgstr "Флаги"
 msgid "Web Seeds"
 msgstr "Веб-раздачи"
 
-msgid "Got a list of {markup_begin}{peer_count} peer{markup_end} {time_span_ago}"
-msgid_plural "Got a list of {markup_begin}{peer_count} peers{markup_end} {time_span_ago}"
-msgstr[0] "Получен список из {markup_begin}{peer_count} участника{markup_end} {time_span_ago}"
-msgstr[1] "Получен список из {markup_begin}{peer_count} участников{markup_end} {time_span_ago}"
-msgstr[2] "Получен список из {markup_begin}{peer_count} участников{markup_end} {time_span_ago}"
-msgstr[3] "Получен список из {markup_begin}{peer_count} участников{markup_end} {time_span_ago}"
-
-#. {markup_begin} and {markup_end} should surround the time_span
-msgid "Peer list request {markup_begin}timed out {time_span_ago}{markup_end}; will retry"
-msgstr "Запрос списка участников {markup_begin}превысил время ожидания {time_span_ago}{markup_end}; будет произведена повторная попытка"
-
-#. {markup_begin} and {markup_end} should surround the error
-msgid "Got an error '{markup_begin}{error}{markup_end}' {time_span_ago}"
-msgstr "Получена ошибка \"{markup_begin}{error}{markup_end}\" {time_span_ago}"
-
-msgid "No updates scheduled"
-msgstr "Нет запланированных обновлений"
-
-msgid "Asking for more peers {time_span_from_now}"
-msgstr "Запрос большего числа участников {time_span_from_now}"
-
-msgid "Queued to ask for more peers"
-msgstr "Запрос дополнительных участников поставлен в очередь"
-
-#. {markup_begin} and {markup_end} should surround time_span_ago
-msgid "Asked for more peers {markup_begin}{time_span_ago}{markup_end}"
-msgstr "Запрошено большее число участников {markup_begin}{time_span_ago}{markup_end}"
-
-msgid "Tracker had {markup_begin}{seeder_count} {seeder_or_seeders} and {leecher_count} {leecher_or_leechers}{markup_end} {time_span_ago}"
-msgstr "Трекер содержит {markup_begin}{seeder_count} {seeder_or_seeders} и {leecher_count}{leecher_or_leechers}{markup_end} {time_span_ago}"
-
-msgid "seeder"
-msgid_plural "seeders"
-msgstr[0] "раздающий"
-msgstr[1] "раздающих"
-msgstr[2] "раздающих"
-msgstr[3] "раздающих"
-
-msgid "leecher"
-msgid_plural "leechers"
-msgstr[0] "скачивающий"
-msgstr[1] "скачивающих"
-msgstr[2] "скачивающих"
-msgstr[3] "скачивающих"
-
-#. {markup_begin} and {markup_end} should surround the error text
-msgid "Got a scrape error '{markup_begin}{error}{markup_end}' {time_span_ago}"
-msgstr "Получена ошибка запроса к трекеру «{markup_begin}{error}{markup_end}» {time_span_ago}"
-
-msgid "Asking for peer counts in {time_span_from_now}"
-msgstr "Запрос числа участников через {time_span_from_now}"
-
-msgid "Queued to ask for peer counts"
-msgstr "Запрос числа участников поставлен в очередь"
-
-msgid "Asked for peer counts {markup_begin}{time_span_ago}{markup_end}"
-msgstr "Запрошено число участников {markup_begin}{time_span_ago}{markup_end}"
-
 msgid "{torrent_name} - Edit Trackers"
 msgstr "Изменить трекеры {torrent_name}"
 
 msgid "List contains invalid URLs"
 msgstr "Список содержит неправильные URL"
 
+#, fuzzy
 msgid "Please correct the errors and try again."
-msgstr "Исправьте ошибки и повторите попытку."
+msgstr ""
+"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Исправьте ошибки и повторите попытку.\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Пожалуйста, исправьте ошибки и попробуйте снова."
 
 msgid "{torrent_name} - Add Tracker"
 msgstr "Добавить трекеры {torrent_name}"
@@ -398,6 +426,14 @@ msgstr[3] "Свойства {torrent_count:L} торрентов"
 msgid "Remove torrent?"
 msgstr "Удалить торрент?"
 
+#, fuzzy
+msgid "Delete this torrent's downloaded files?"
+msgstr ""
+"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Удалить эти загруженные файлы торрента?\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Удалить загруженные файлы этого торрента?"
+
 msgid "Remove {count:L} torrent?"
 msgid_plural "Remove {count:L} torrents?"
 msgstr[0] "Удалить {count:L} торрент?"
@@ -405,22 +441,40 @@ msgstr[1] "Удалить {count:L} торрента?"
 msgstr[2] "Удалить {count:L} торрентов?"
 msgstr[3] "Удалить {count:L} торрентов?"
 
-msgid "Delete this torrent's downloaded files?"
-msgstr "Удалить эти загруженные файлы торрента?"
-
+#, fuzzy
 msgid "Delete this {count:L} torrent's downloaded files?"
 msgid_plural "Delete these {count:L} torrents' downloaded files?"
-msgstr[0] "Удалить загруженные файлы этого {count:L} торрента?"
-msgstr[1] "Удалить эти {count:L} загруженных файла торрента?"
-msgstr[2] "Удалить эти {count:L} загруженных файлов торрента?"
-msgstr[3] "Удалить эти {count:L} загруженных файлов торрента?"
+msgstr[0] ""
+"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Удалить загруженные файлы этого {count:L} торрента?\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Удалить загруженные файлы этого {count:L} торрента?"
+msgstr[1] ""
+"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Удалить эти {count:L} загруженных файла торрента?\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Удалить загруженные файлы этих {count:L} торрентов?"
+msgstr[2] ""
+"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Удалить эти {count:L} загруженных файлов торрента?\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Удалить загруженные файлы этих {count:L} торрентов?"
+msgstr[3] ""
+"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Удалить эти {count:L} загруженных файлов торрента?\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Удалить загруженные файлы этих {count:L} торрентов?"
 
-msgid "Once removed, continuing the transfer will require the torrent file or magnet link."
-msgid_plural "Once removed, continuing the transfers will require the torrent files or magnet links."
-msgstr[0] "После удаления, для возобновления передачи потребуется торрент-файл или магнит-ссылка."
-msgstr[1] "После удаления, для возобновления передач потребуются торрент-файлы или магнит-ссылки."
-msgstr[2] "После удаления, для возобновления передач потребуются торрент-файлы или магнит-ссылки."
-msgstr[3] "После удаления, для возобновления передач потребуются торрент-файлы или магнит-ссылки."
+#, fuzzy
+#| msgid "Once removed, continuing the transfer will require the torrent file or magnet link."
+#| msgid_plural "Once removed, continuing the transfers will require the torrent files or magnet links."
+msgid "Once removed, you'll need the torrent file or magnet link to add it again."
+msgstr "После удаления, для возобновления передачи потребуется торрент-файл или магнит-ссылка."
+
+#, fuzzy
+#| msgid "Once removed, continuing the transfers will require the torrent files or magnet links."
+msgid "Once removed, you'll need the torrent files or magnet links to add them again."
+msgstr "После удаления для продолжения раздачи потребуются торрент-файлы или магнит-ссылки."
 
 msgid "This torrent has not finished downloading."
 msgstr "Загрузка этого торрента не завершена."
@@ -428,17 +482,37 @@ msgstr "Загрузка этого торрента не завершена."
 msgid "These torrents have not finished downloading."
 msgstr "Загрузка этих торрентов не завершена."
 
+#, fuzzy
 msgid "This torrent is connected to peers."
-msgstr "Этот торрент подключён к другим участникам."
+msgstr ""
+"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Этот торрент подключён к другим участникам.\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Этот торрент подключён к участникам."
 
+#, fuzzy
 msgid "These torrents are connected to peers."
-msgstr "Эти торренты подключены к другим участникам."
+msgstr ""
+"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Эти торренты подключены к другим участникам.\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Эти торренты подключены к участникам."
 
+#, fuzzy
 msgid "One of these torrents is connected to peers."
-msgstr "Один из этих торрентов подключён к другим участникам."
+msgstr ""
+"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Один из этих торрентов подключён к другим участникам.\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Один из этих торрентов подключён к участникам."
 
+#, fuzzy
 msgid "Some of these torrents are connected to peers."
-msgstr "Некоторые из этих торрентов подключены к другим участникам."
+msgstr ""
+"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Некоторые из этих торрентов подключены к другим участникам.\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Некоторые из этих торрентов подключены к участникам."
 
 msgid "One of these torrents has not finished downloading."
 msgstr "Загрузка одного из этих торрентов не завершена."
@@ -452,6 +526,7 @@ msgstr "_Отмена"
 msgid "_Delete"
 msgstr "_Удалить"
 
+#. Removes the torrent from the list and keeps its downloaded files
 msgid "_Remove"
 msgstr "_Удалить"
 
@@ -473,8 +548,8 @@ msgstr "Имя"
 msgid "Size"
 msgstr "Размер"
 
-msgid "Have"
-msgstr "В наличии"
+msgid "Progress"
+msgstr "Прогресс"
 
 msgid "Download"
 msgstr "Загрузить"
@@ -485,24 +560,64 @@ msgstr "Приоритет"
 msgid "All"
 msgstr "Все"
 
+#, fuzzy
 msgid "Active"
-msgstr "Активен"
+msgstr ""
+"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Активен\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Активные"
 
+#, fuzzy
 msgctxt "Verb"
 msgid "Verifying"
-msgstr "Проверяется"
+msgstr ""
+"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Проверяется\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Проверяемые"
 
+#, fuzzy
 msgid "Error"
-msgstr "Ошибки"
+msgstr ""
+"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Ошибки\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Ошибка\n"
+"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"С ошибкой"
 
+#, fuzzy
 msgid "_Show:"
-msgstr "_Показать:"
+msgstr ""
+"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Показать:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"П_оказать:"
 
 msgid "_Show {count:L} of:"
 msgstr "_Показать {count:L} из:"
 
 msgid "{disk_space} free"
 msgstr "{disk_space} свободно"
+
+msgid "Where to look for configuration files"
+msgstr "Расположение файлов конфигурации"
+
+msgid "Start with all torrents paused"
+msgstr "Начать с приостановленными торрентами"
+
+msgid "Start minimized in notification area"
+msgstr "Запускать свёрнутым в области уведомлений"
+
+msgid "Show version number and exit"
+msgstr "Показать номер версии и завершить"
+
+msgid "[torrent files or urls]"
+msgstr "[торрент-файлы или ссылки]"
+
+msgid "Run '{program} --help' to see a full list of available command line options.\n"
+msgstr "Выполните «{program} --help», чтобы увидеть список всех доступных параметров командной строки.\n"
 
 msgid ""
 "Click to disable Alternative Speed Limits\n"
@@ -518,8 +633,13 @@ msgstr ""
 "Щёлкните для включения особых ограничений скорости\n"
 "({download_speed} загрузка, {upload_speed} отдача)"
 
+#, fuzzy
 msgid "Unlimited"
-msgstr "Неограничено"
+msgstr ""
+"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Неограничено\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Не ограничено"
 
 msgid "Seed Forever"
 msgstr "Раздавать всегда"
@@ -530,8 +650,13 @@ msgstr "Ограничить скорость загрузки"
 msgid "Limit Upload Speed"
 msgstr "Ограничить скорость раздачи"
 
+#, fuzzy
 msgid "Stop Seeding at Ratio"
-msgstr "Остановить раздачу при рейтинге"
+msgstr ""
+"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Остановить раздачу при рейтинге\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Прекратить раздачу при рейтинге"
 
 msgid "Stop at Ratio ({ratio})"
 msgstr "Остановить при рейтинге ({ratio})"
@@ -548,16 +673,11 @@ msgstr "Всего передано"
 msgid "Session Transfer"
 msgstr "Передано за сеанс"
 
+msgid "Down: {downloaded_size}, Up: {uploaded_size}"
+msgstr "Принято: {downloaded_size}, Отдано: {uploaded_size}"
+
 msgid "Ratio: {ratio}"
 msgstr "Рейтинг: {ratio}"
-
-msgctxt "current session totals"
-msgid "Down: {downloaded_size}, Up: {uploaded_size}"
-msgstr "Скачано: {downloaded_size}, Отдано: {uploaded_size}"
-
-msgctxt "all-time totals"
-msgid "Down: {downloaded_size}, Up: {uploaded_size}"
-msgstr "Скачано: {downloaded_size}, Отдано: {uploaded_size}"
 
 msgid "{download_speed} ▾"
 msgstr "{download_speed} ▾"
@@ -615,6 +735,11 @@ msgstr "Время"
 msgid "Couldn't create proxy for '{bus}': {error} ({error_code})"
 msgstr "Не удалось создать прокси для \"{bus}\": {error} ({error_code})"
 
+#, fuzzy
+#| msgid "Couldn't save '{path}': {error} ({error_code})"
+msgid "Couldn't spawn async process \"'{command}'\": {error} ({error_code})"
+msgstr "Не удалось сохранить «{path}»: {error} ({error_code})"
+
 msgid "Open File"
 msgstr "Открыть файл"
 
@@ -627,8 +752,13 @@ msgstr "Торрент завершён"
 msgid "Start Now"
 msgstr "Запустить сейчас"
 
+#, fuzzy
 msgid "Torrent Added"
-msgstr "Добавлен торрент"
+msgstr ""
+"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Добавлен торрент\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Торрент добавлен"
 
 msgid "Torrent files"
 msgstr "Торрент-файлы"
@@ -645,8 +775,11 @@ msgstr "_Открыть"
 msgid "Show options dialog"
 msgstr "Показать окно настроек"
 
-msgid "Select a File"
-msgstr "Выберите файл"
+msgid "Other…"
+msgstr ""
+
+msgid "Select File"
+msgstr "Выбор файла"
 
 msgid "(None)"
 msgstr "(Нет)"
@@ -720,19 +853,13 @@ msgstr "Не удалось переместить торрент"
 msgid "This may take a moment…"
 msgstr "Пожалуйста, подождите…"
 
+#, fuzzy
+#| msgid "Couldn't watch '{path}': {error} ({error_code})"
+msgid "Couldn't open watchdir '{dirname}': {error} ({error_code})"
+msgstr "Не удалось посмотреть «{path}»: {error} ({error_code})"
+
 msgid "Couldn't read '{path}'"
 msgstr "Не удалось прочитать «{path}»"
-
-#. logging
-msgid "Inhibiting desktop hibernation"
-msgstr "Запретить переход в спящий режим"
-
-msgid "Couldn't inhibit desktop hibernation: {error}"
-msgstr "Не удалось запретить переход в спящий режим: {error}"
-
-#. logging
-msgid "Allowing desktop hibernation"
-msgstr "Разрешение ухода в спящий режим"
 
 msgid "Couldn't find pending RPC request for id {id}"
 msgstr ""
@@ -753,15 +880,27 @@ msgstr "_Сбросить"
 msgid "These statistics are for your information only. Resetting them doesn't affect the statistics logged by your BitTorrent trackers."
 msgstr "Эти статистические данные исключительно для ознакомления. Их сброс не влияет на статистику трекеров BitTorrent."
 
+msgid "_Show {appname}"
+msgstr "_Показать {appname}"
+
 msgid "{upload_speed} ▴ {download_speed} ▾"
 msgstr "{upload_speed} ▴ {download_speed} ▾"
 
-#, no-c-format
+#, fuzzy, no-c-format
 msgid "Verifying local data ({percent_done}% tested)"
-msgstr "Проверка данных (проверено {percent_done})"
+msgstr ""
+"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Проверка данных (проверено {percent_done})\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Проверка локальных данных (проверено {percent_done}%)"
 
+#, fuzzy
 msgid "{current_size} of {complete_size} ({percent_done}%)"
-msgstr "{current_size} из {complete_size} ({percent_done} %)"
+msgstr ""
+"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{current_size} из {complete_size} ({percent_done} %)\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{current_size} из {complete_size} ({percent_done}%)"
 
 msgid "{current_size} of {complete_size} ({percent_complete}%), uploaded {uploaded_size} (Ratio: {ratio}, Goal: {seed_ratio})"
 msgstr "{current_size} из {complete_size} ({percent_complete}%), отдано {uploaded_size} (Рейтинг: {ratio}, Цель: {seed_ratio})"
@@ -772,9 +911,15 @@ msgstr "{current_size} из {complete_size} ({percent_complete}%), отдано 
 msgid "{complete_size}, uploaded {uploaded_size} (Ratio: {ratio}, Goal: {seed_ratio})"
 msgstr "{complete_size}, отдано {uploaded_size} (Рейтинг: {ratio}, Цель: {seed_ratio})"
 
+#, fuzzy
 msgid "{complete_size}, uploaded {uploaded_size} (Ratio: {ratio})"
-msgstr "{complete_size}, отдано {uploaded_size} (Цель: {ratio})"
+msgstr ""
+"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{complete_size}, отдано {uploaded_size} (Цель: {ratio})\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{complete_size}, отдано {uploaded_size} (Рейтинг: {ratio})"
 
+#. Translators: Second (optional) part of torrent progress string
 msgid "Remaining time unknown"
 msgstr "Оставшееся время неизвестно"
 
@@ -787,7 +932,9 @@ msgstr "Простаивает"
 msgid "Tracker warning: '{warning}'"
 msgstr "Предупреждение трекера: \"{warning}\""
 
-msgid "Tracker Error: '{error}'"
+#, fuzzy
+#| msgid "Tracker Error: '{error}'"
+msgid "Tracker error: '{error}'"
 msgstr "Ошибка трекера: \"{error}\""
 
 msgid "Local error: '{error}'"
@@ -815,12 +962,29 @@ msgstr[1] "Загружается с {active_count} веб-сидов"
 msgstr[2] "Загружается с {active_count} веб-сидов"
 msgstr[3] "Загружается с {active_count} веб-сидов"
 
+#, fuzzy
 msgid "Downloading from {active_count} of {connected_count} connected peer"
 msgid_plural "Downloading from {active_count} of {connected_count} connected peers"
-msgstr[0] "Загружается с {active_count} из {connected_count} подключённого участника"
-msgstr[1] "Загружается с {active_count} из {connected_count} подключённых участников"
-msgstr[2] "Загружается с {active_count} из {connected_count} подключённых участников"
-msgstr[3] "Загружается с {active_count} из {connected_count} подключённых участников"
+msgstr[0] ""
+"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Загружается с {active_count} из {connected_count} подключённого участника\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Приём от {active_count} из {connected_count} подключённого участника"
+msgstr[1] ""
+"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Загружается с {active_count} из {connected_count} подключённых участников\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Приём от {active_count} из {connected_count} подключённых участников"
+msgstr[2] ""
+"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Загружается с {active_count} из {connected_count} подключённых участников\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Приём от {active_count} из {connected_count} подключённых участников"
+msgstr[3] ""
+"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Загружается с {active_count} из {connected_count} подключённых участников\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Приём от {active_count} из {connected_count} подключённых участников"
 
 msgid "Seeding to {active_count} of {connected_count} connected peer"
 msgid_plural "Seeding to {active_count} of {connected_count} connected peers"
@@ -828,6 +992,976 @@ msgstr[0] "Раздаётся {active_count} из {connected_count} подклю
 msgstr[1] "Раздаётся {active_count} из {connected_count} подключённых участников"
 msgstr[2] "Раздаётся {active_count} из {connected_count} подключённых участников"
 msgstr[3] "Раздаётся {active_count} из {connected_count} подключённых участников"
+
+msgid "Retransmission"
+msgstr "Retransmission"
+
+msgid "BitTorrent Client"
+msgstr "Клиент BitTorrent"
+
+msgid "Download and share files over BitTorrent"
+msgstr "Загружайте и обменивайтесь файлами с помощью BitTorrent"
+
+#. Translators: Search terms to find this application. Do NOT translate or localize the semicolons! The list MUST also end with a semicolon!
+msgid "torrents;downloading;uploading;share;sharing;"
+msgstr "torrent;торренты;скачивание;загрузка;раздать;раздача;обмен;передача;"
+
+msgid "Start Retransmission with All Torrents Paused"
+msgstr "Запустить Retransmission с приостановленными торрентами"
+
+msgid "Start Retransmission Minimized"
+msgstr "Запустить Retransmission в свёрнутом виде"
+
+#, fuzzy
+#| msgid "Copyright © The Retransmission Project"
+msgid "The Retransmission Project"
+msgstr "Авторское право © The Retransmission Project"
+
+#. Translators: these are the application description paragraphs in the MetaInfo file.
+msgid "BitTorrent is a peer-to-peer file-sharing protocol that is commonly used to distribute large amounts of data between multiple users."
+msgstr ""
+
+msgid "Retransmission is a BitTorrent client with an easy-to-use interface on top of a cross-platform backend. Native interfaces are available for macOS, Linux, and Windows, as well as command line binaries and a web GUI."
+msgstr ""
+
+msgid "Notable features of Retransmission include support for Local Peer Discovery, encryption, DHT, µTP, PEX and Magnet links."
+msgstr ""
+
+msgid "Main window, showing an ongoing download of Fedora Workstation"
+msgstr ""
+
+msgid "_File"
+msgstr "_Файл"
+
+#, fuzzy
+msgid "Open _URL…"
+msgstr ""
+"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Отк_рыть URL…\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Отк_рыть ссылку…"
+
+#, fuzzy
+msgid "_New…"
+msgstr ""
+"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Создать…\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Новый…"
+
+msgid "_Start All"
+msgstr "_Запустить все"
+
+msgid "_Pause All"
+msgstr "_Приостановить все"
+
+#, fuzzy
+msgid "_Quit"
+msgstr ""
+"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Выход\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"В_ыход"
+
+msgid "_Edit"
+msgstr "_Правка"
+
+msgid "Select _All"
+msgstr "Выде_лить всё"
+
+msgid "Dese_lect All"
+msgstr "_Снять выделение"
+
+#, fuzzy
+msgid "_Preferences"
+msgstr ""
+"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Настройки\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Н_астройки"
+
+msgid "_Torrent"
+msgstr "_Торрент"
+
+msgid "_Properties"
+msgstr "_Свойства"
+
+#, fuzzy
+msgid "Open Fold_er"
+msgstr ""
+"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Открыть папк_у\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Откр_ыть папку"
+
+#, fuzzy
+msgid "_Start"
+msgstr ""
+"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Запустить\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"З_апустить"
+
+msgid "Start _Now"
+msgstr "Запустить _сейчас"
+
+msgid "Ask Tracker for _More Peers"
+msgstr "Позват_ь ещё участников с трекера"
+
+#, fuzzy
+#| msgid "Queue"
+msgid "_Queue"
+msgstr "Очередь"
+
+msgid "Move to _Top"
+msgstr "В _начало"
+
+msgid "Move _Up"
+msgstr "П_овысить"
+
+msgid "Move _Down"
+msgstr "Пониз_ить"
+
+msgid "Move to _Bottom"
+msgstr "В _конец"
+
+msgid "_Pause"
+msgstr "_Приостановить"
+
+msgid "Set _Location…"
+msgstr "Указать _расположение…"
+
+msgid "_Verify Local Data"
+msgstr "Про_верить локальные данные"
+
+msgid "_Copy Magnet Link to Clipboard"
+msgstr "Копировать магнит-_ссылку в буфер"
+
+#, fuzzy
+msgid "_Delete Files and Remove"
+msgstr ""
+"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Убрать торрент и удалить загруженные файлы\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Удалить _файлы и данные"
+
+msgid "_View"
+msgstr "_Вид"
+
+msgid "_Compact View"
+msgstr "_Компактный вид"
+
+msgid "_Toolbar"
+msgstr "Панель _инструментов"
+
+msgid "_Filterbar"
+msgstr "Панель _фильтров"
+
+#, fuzzy
+msgid "_Statusbar"
+msgstr ""
+"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Строка состояния\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Строка состо_яния"
+
+msgid "Sort by _Activity"
+msgstr "Упорядочивать по _активности"
+
+#, fuzzy
+msgid "Sort by A_ge"
+msgstr ""
+"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Упорядочивать по _дате добавления\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Упорядочивать по _возрасту"
+
+msgid "Sort by _Name"
+msgstr "Упорядочивать по _названию"
+
+#, fuzzy
+msgid "Sort by _Progress"
+msgstr ""
+"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Упорядочивать по _продвижению загрузки\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Упорядочивать по степени _загрузки"
+
+#, fuzzy
+msgid "Sort by _Queue"
+msgstr ""
+"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Упорядочивать по о_черёдности\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Упорядочивать по очер_ёдности"
+
+#, fuzzy
+msgid "Sort by Rati_o"
+msgstr ""
+"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Упорядочивать по соо_тношению\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Упорядочивать по ре_йтингу"
+
+msgid "Sort by Si_ze"
+msgstr "Упорядочивать по _размеру"
+
+#, fuzzy
+msgid "Sort by Stat_e"
+msgstr ""
+"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Упорядочивать по сос_тоянию\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Упорядочивать по _состоянию"
+
+#, fuzzy
+msgid "Sort by Time _Left"
+msgstr ""
+"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Упорядочивать по оставшемуся _времени\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Упорядочивать по _оставшемуся времени"
+
+#, fuzzy
+msgid "Re_verse Sort Order"
+msgstr ""
+"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"О_братить порядок\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Обра_тить порядок"
+
+msgid "_Help"
+msgstr "_Справка"
+
+msgid "Message _Log"
+msgstr "_Журнал сообщений"
+
+msgid "_Statistics"
+msgstr "_Статистика"
+
+msgid "_Donate"
+msgstr "_Пожертвовать"
+
+msgid "_Contents"
+msgstr "Со_держание"
+
+#, fuzzy
+msgid "_About"
+msgstr ""
+"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_О программе\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"О пр_иложении"
+
+#, fuzzy
+#| msgid "Start torrent"
+msgid "_Sort Torrents By"
+msgstr "Запустить торрент"
+
+#, fuzzy
+#| msgid "Alternative Speed Limits"
+msgid "Alternative Speed _Limits"
+msgstr "Особые ограничения скорости"
+
+msgid "_Add"
+msgstr "_Добавить"
+
+msgid "Tracker"
+msgstr "Трекер"
+
+msgid "_Announce URL:"
+msgstr "_Адрес анонса:"
+
+msgid "_Close"
+msgstr "_Закрыть"
+
+msgid "Activity"
+msgstr "Активность"
+
+msgid "Size:"
+msgstr "Размер:"
+
+msgid "Have:"
+msgstr "В наличии:"
+
+#, fuzzy
+msgid "Uploaded:"
+msgstr ""
+"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Роздано:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Отдано:"
+
+msgid "Downloaded:"
+msgstr "Загружено:"
+
+msgid "State:"
+msgstr "Состояние:"
+
+msgid "Running time:"
+msgstr "Время работы:"
+
+msgid "Remaining time:"
+msgstr "Оставшееся время:"
+
+msgid "Last activity:"
+msgstr "Последняя активность:"
+
+msgid "Error:"
+msgstr "Ошибка:"
+
+msgid "Details"
+msgstr "Сведения"
+
+msgid "Location:"
+msgstr "Расположение:"
+
+msgid "Hash:"
+msgstr "Хеш:"
+
+msgid "Privacy:"
+msgstr "Приватность:"
+
+msgid "Origin:"
+msgstr "Источник:"
+
+msgid "Added:"
+msgstr "Добавлен:"
+
+msgid "Comment:"
+msgstr "Комментарий:"
+
+msgid "Information"
+msgstr "Информация"
+
+msgid "Show _more details"
+msgstr "Показать _больше сведений"
+
+msgid "Peers"
+msgstr "Участники"
+
+msgid "Show _backup trackers"
+msgstr "Показать _резервные трекеры"
+
+msgid "File listing not available for combined torrent properties"
+msgstr "Список файлов недоступен одновременно для нескольких торрентов"
+
+msgid "Files"
+msgstr "Файлы"
+
+msgid "Speed"
+msgstr "Скорость"
+
+msgid "Honor global _limits"
+msgstr "Учитывать общие _ограничения"
+
+msgid "Limit _download speed ({speed_units}):"
+msgstr "Ограничение _скорости загрузки ({speed_units}):"
+
+msgid "Limit _upload speed ({speed_units}):"
+msgstr "Ограничение _скорости раздачи ({speed_units}):"
+
+#, fuzzy
+msgid "Torrent _priority:"
+msgstr ""
+"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Приоритет _торрента:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Приоритет торрента:"
+
+msgid "Seeding Limits"
+msgstr "Ограничения раздачи"
+
+msgid "_Ratio:"
+msgstr "_Рейтинг:"
+
+msgid "_Idle:"
+msgstr "_Ожидание:"
+
+msgid "Peer Connections"
+msgstr "Соединения с участниками"
+
+msgid "_Maximum peers:"
+msgstr "_Максимум участников:"
+
+msgid "Options"
+msgstr "Параметры"
+
+#, fuzzy
+msgid "Tracker Announce URLs"
+msgstr ""
+"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Адреса анонсов трекера\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Адреса анонсов трекеров"
+
+msgid ""
+"To add a backup URL, add it on the next line after a primary URL.\n"
+"To add a new primary URL, add it after a blank line."
+msgstr ""
+"Чтобы добавить резервный адрес, укажите его в следующей строке после основного адреса.\n"
+"Чтобы добавить новый основной адрес, укажите его после пустой строки."
+
+msgid "Also see Default Public Trackers in Edit > Preferences > Network"
+msgstr "Также смотрите Общедоступные трекеры по умолчанию в меню Правка > Настройки > Сеть"
+
+#, fuzzy
+msgid "Open a torrent"
+msgstr ""
+"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Открыть торрент\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Открыть файл"
+
+msgid "Start torrent"
+msgstr "Запустить торрент"
+
+msgid "Pause torrent"
+msgstr "Приостановить торрент"
+
+#, fuzzy
+msgid "Remove torrent"
+msgstr ""
+"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Убрать торрент\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Удалить торрент"
+
+msgid "Torrent properties"
+msgstr "Свойства торрента"
+
+msgid "Torrent"
+msgstr "Торрент"
+
+msgid "Statistics"
+msgstr "Статистика"
+
+#, fuzzy
+msgid "New Torrent"
+msgstr ""
+"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Новый торрент\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Создание нового торрента"
+
+#, fuzzy
+#| msgid "C_redits"
+msgid "C_reate"
+msgstr "А_вторы"
+
+#, fuzzy
+msgid "Sa_ve to:"
+msgstr ""
+"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Со_хранить в:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Сохранить в папку:"
+
+msgid "Source f_older:"
+msgstr "Исходная п_апка:"
+
+msgid "Source _file:"
+msgstr "_Исходный файл:"
+
+#, fuzzy
+#| msgid "Piece size:"
+msgid "Piece si_ze:"
+msgstr "Размер части:"
+
+msgid "Properties"
+msgstr "Свойства"
+
+msgid "_Trackers:"
+msgstr "_Трекеры:"
+
+#, fuzzy
+msgid "Co_mment:"
+msgstr ""
+"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"При_мечание:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Комментарий:"
+
+msgid "_Source:"
+msgstr "_Источник:"
+
+msgid "_Private torrent"
+msgstr "_Закрытый торрент"
+
+msgid "Creating torrent…"
+msgstr "Создание торрента…"
+
+msgid "Message Log"
+msgstr "Журнал сообщений"
+
+msgid "Save _As"
+msgstr "Сохранить _как"
+
+msgid "Clear"
+msgstr "Очистить"
+
+msgid "Level"
+msgstr "Уровень"
+
+msgid "Torrent Options"
+msgstr "Параметры торрента"
+
+msgid "_Torrent file:"
+msgstr "Торрент-файл:"
+
+msgid "Select Source File"
+msgstr "Выберите исходный файл"
+
+msgid "_Destination folder:"
+msgstr "_Папка назначения:"
+
+msgid "Select Destination Folder"
+msgstr "Выберите папку назначения"
+
+msgid "_Start when added"
+msgstr "_Запустить после добавления"
+
+#, fuzzy
+#| msgid "Mo_ve torrent file to the trash"
+msgid "Mo_ve torrent file to the Trash"
+msgstr "Убрать торрент-файл в корз_ину"
+
+#, fuzzy
+msgid "{appname} Preferences"
+msgstr ""
+"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Параметры {appname}\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Настройки {appname}"
+
+msgid "Speed Limits"
+msgstr "Ограничения скорости"
+
+#. Checkbox to limit upload speed
+msgid "_Upload ({speed_units}):"
+msgstr "_Отдача ({speed_units}):"
+
+#. Checkbox to limit download speed
+msgid "_Download ({speed_units}):"
+msgstr "_Загрузка ({speed_units}):"
+
+msgid "Alternative Speed Limits"
+msgstr "Особые ограничения скорости"
+
+msgid "Override normal speed limits manually or at scheduled times"
+msgstr "Замещение обычных ограничений скорости по расписанию или вручную"
+
+#. Labels a spinbutton for alternate upload speed limits
+msgid "U_pload ({speed_units}):"
+msgstr "О_тдача ({speed_units}):"
+
+#. Labels a spinbutton for alternate download speed limits
+msgid "Do_wnload ({speed_units}):"
+msgstr "За_грузка ({speed_units}):"
+
+msgid "_Scheduled times:"
+msgstr "_По расписанию:"
+
+#, fuzzy
+msgid "_On days:"
+msgstr ""
+"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_По дням:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"В указанные _дни:"
+
+#. Label goes between two time selectors, e.g. "limit speeds from [time] to [time]"
+msgid "_to"
+msgstr "_до"
+
+msgctxt "Gerund"
+msgid "Adding"
+msgstr "Добавление"
+
+msgid "Automatically add torrent files _from:"
+msgstr "Автоматически добавлять торрент-файлы _из:"
+
+#, fuzzy
+msgid "Show the Torrent Options _dialog"
+msgstr ""
+"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Показывать диалоговое окно параметров торрента\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Показать окно настроек торрента"
+
+#, fuzzy
+msgid "_Start added torrents"
+msgstr ""
+"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Запускать добавленные торренты\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Запустить добавленные торренты"
+
+#, fuzzy
+#| msgid "Save to _Location:"
+msgid "Save to _location:"
+msgstr "Сохранять в _папку:"
+
+msgid "Download Queue"
+msgstr "Очередь загрузки"
+
+msgid "Ma_ximum active downloads:"
+msgstr "Ма_ксимум активных загрузок:"
+
+msgid "Downloads sharing data in the last _N minutes are active:"
+msgstr "Загружать данные о раздаче за последние N минут _активности:"
+
+#, fuzzy
+msgid "Incomplete"
+msgstr ""
+"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Процесс загрузки\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Не завершено"
+
+#, fuzzy
+msgid "Append \"._part\" to incomplete files' names"
+msgstr ""
+"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Добавлять «._part» к именам незавершённых файлов\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Добавлят_ь «.part» к именам незавершённых файлов"
+
+msgid "Keep _incomplete files in:"
+msgstr "Сохранять _незавершённые файлы в:"
+
+#, fuzzy
+#| msgid "Call scrip_t when downloading is completed:"
+msgid "Call scrip_t when download completes:"
+msgstr "Выполнять сц_енарий по окончании загрузки:"
+
+#, fuzzy
+#| msgid "Call scrip_t when downloading is completed:"
+msgid "Verify data when download completes"
+msgstr "Выполнять сц_енарий по окончании загрузки:"
+
+msgctxt "Gerund"
+msgid "Downloading"
+msgstr "Загрузка"
+
+msgid "Limits"
+msgstr "Ограничения"
+
+#, fuzzy
+msgid "Stop seeding at _ratio:"
+msgstr ""
+"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Прекратить раздачу при _рейтинге:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Прекратить _раздачу при рейтинге:"
+
+msgid "Stop seeding if idle for _N minutes:"
+msgstr "Прекратить раздачу при простое _N минут:"
+
+msgid "Call scrip_t when done seeding:"
+msgstr "Выполнять сц_енарий по окончании раздачи:"
+
+msgctxt "Gerund"
+msgid "Seeding"
+msgstr "Раздача"
+
+msgid "Privacy"
+msgstr "Приватность"
+
+msgid "_Encryption mode:"
+msgstr "_Режим шифрования:"
+
+msgid "Blocklist"
+msgstr "Чёрный список"
+
+#, fuzzy
+msgid "Enable _blocklist:"
+msgstr ""
+"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Включить _чёрный список:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Включить «_чёрный список»:"
+
+#, fuzzy
+#| msgid "Enable _automatic updates"
+msgid "_Automatically update weekly"
+msgstr "Разрешить _автоматическое обновление"
+
+msgid "_Update"
+msgstr "_Обновить"
+
+msgid "Listening Port"
+msgstr "Прослушивание порта"
+
+msgid "_Port for incoming connections:"
+msgstr "_Порт для входящих подключений:"
+
+#, fuzzy
+#| msgid "Pick a _random port every time Transmission is started"
+msgid "Pick a _random port at startup"
+msgstr "Устанавливать _случайный порт при каждом запуске программы"
+
+#, fuzzy
+msgid "Use UPnP or NAT-PMP port _forwarding from my router"
+msgstr ""
+"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Использовать перенаправление портов UPnP или NAT-PMP\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Использовать пере_направление портов UPnP или NAT-PMP"
+
+msgid "Te_st Port"
+msgstr "Про_верить порт"
+
+msgid "Peer Limits"
+msgstr "Ограничения участников"
+
+#, fuzzy
+#| msgid "Maximum peers per _torrent:"
+msgid "Maximum peers for new _torrents:"
+msgstr "Максимум участников на торр_ент:"
+
+msgid "Maximum peers _overall:"
+msgstr "Об_щий максимум участников:"
+
+msgid "Enable µ_TP for peer connections"
+msgstr "Ис_пользовать µTP для связи с другими участниками"
+
+msgid "µTP is a tool for reducing network congestion."
+msgstr "µTP — это инструмент для снижения нагрузки на сеть."
+
+#, fuzzy
+#| msgid "Use PE_X to find more peers"
+msgid "Use PE_X to find more peers for public torrents"
+msgstr "Использовать PEX для обмена списками участников"
+
+msgid "PEX is a tool for exchanging peer lists with the peers you're connected to."
+msgstr "PEX — это технология обмена списками участников с теми, к кому вы подключаетесь."
+
+#, fuzzy
+#| msgid "Use _DHT to find more peers"
+msgid "Use _DHT to find more peers for public torrents"
+msgstr "Использовать _DHT для обнаружения участников"
+
+msgid "DHT is a tool for finding peers without a tracker."
+msgstr "DHT — это технология поиска участников без использования трекера."
+
+#, fuzzy
+#| msgid "Use _Local Peer Discovery to find more peers"
+msgid "Use _Local Peer Discovery to find more peers for public torrents"
+msgstr "Исполь_зовать локальное обнаружение участников"
+
+msgid "LPD is a tool for finding peers on your local network."
+msgstr "LPD — это технология поиска участников в локальной сети"
+
+#, fuzzy
+msgid "Default Public Trackers"
+msgstr ""
+"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Стандартные публичные трекеры\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Публичные трекеры по умолчанию"
+
+msgid ""
+"Trackers to use on all public torrents.\n"
+"\n"
+"To add a backup URL, add it on the next line after a primary URL.\n"
+"To add a new primary URL, add it after a blank line."
+msgstr ""
+"Трекеры для использования на всех общедоступных торрентах.\n"
+"\n"
+"Чтобы добавить резервный адрес, укажите его в следующей строке после основного адреса.\n"
+"Чтобы добавить новый основной адрес, укажите его после пустой строки."
+
+msgid "Network"
+msgstr "Сеть"
+
+#, fuzzy
+msgid "Desktop"
+msgstr ""
+"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Система\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Рабочий стол"
+
+msgid "_Prevent computer from sleeping with active torrents"
+msgstr ""
+
+msgid "Show {appname} icon in the _notification area"
+msgstr "Показыва_ть значок {appname} в области уведомлений"
+
+msgid "Notification"
+msgstr "Уведомление"
+
+#, fuzzy
+msgid "Show a notification when torrents are a_dded"
+msgstr ""
+"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Показывать уведомление после добавления торрентов\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Отображать уведомление при доба_влении торрента"
+
+#, fuzzy
+msgid "Show a notification when torrents _finish"
+msgstr ""
+"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Показывать _уведомление после завершения загрузки торрентов\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Отображать _уведомление по окончании торрента"
+
+#, fuzzy
+msgid "Play a _sound when torrents finish"
+msgstr ""
+"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Воспроизводить _звуковое уведомление после завершения загрузки торрентов\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Звуковое уведомление при завершении торрента"
+
+msgid "Remote Control"
+msgstr "Удалённое управление"
+
+msgid "Allow _remote access"
+msgstr "Разрешить _удалённый доступ"
+
+#, fuzzy
+#| msgid "_Open web client"
+msgid "_Open Web Client"
+msgstr "_Открыть веб-клиент"
+
+#, fuzzy
+msgid "HTTP _port:"
+msgstr ""
+"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Порт HTTP:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"П_орт HTTP:"
+
+#, fuzzy
+msgid "Use _authentication"
+msgstr ""
+"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Использовать _аутентификацию\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Испол_ьзовать проверку подлинности"
+
+#, fuzzy
+msgid "_Username:"
+msgstr ""
+"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Имя пользователя:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Пользователь:\n"
+"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"По_льзователь:"
+
+msgid "Pass_word:"
+msgstr "Па_роль:"
+
+#, fuzzy
+msgid "Only allow these IP a_ddresses:"
+msgstr ""
+"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Разрешить доступ только _данным IP-адресам:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Разрешить только эти IP-адреса:"
+
+msgid "Addresses:"
+msgstr "Адреса:"
+
+msgid "IP addresses may use wildcards, such as 192.168.*.*"
+msgstr "IP-адреса могут быть введены в виде маски, например 192.168.*.*"
+
+#, fuzzy
+msgid "Remote"
+msgstr ""
+"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Удалённое управление\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Удалённый доступ"
+
+#, fuzzy
+msgid "Set Torrent Location"
+msgstr ""
+"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Указать расположение торрента\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Указать папку торрента"
+
+msgid "_Apply"
+msgstr "_Применить"
+
+msgid "Location"
+msgstr "Расположение"
+
+msgid "New _location:"
+msgstr "Новое _расположение:"
+
+#, fuzzy
+msgid "_Move from the current folder"
+msgstr ""
+"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"П_ереместить из текущей папки\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Переместить из текущей папки"
+
+#, fuzzy
+msgid "Local data is _already there"
+msgstr ""
+"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Не перемещать, данные уже есть в указанной папке\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Локальные данные уже там"
+
+msgid "Current Session"
+msgstr "Текущий сеанс"
+
+msgid "Ratio:"
+msgstr "Рейтинг:"
+
+msgid "Duration:"
+msgstr "Длительность:"
+
+msgid "Total"
+msgstr "Всего"
+
+msgid "Open URL"
+msgstr "Открыть ссылку"
+
+msgid "Open torrent from URL"
+msgstr "Открыть торрент по ссылке"
+
+msgid "_URL"
+msgstr "_Ссылка"
+
+msgid "The torrent file '{path}' is already in use by '{torrent_name}'."
+msgstr "Торрент-файл «{path}» уже используется «{torrent_name}»."
+
+msgid "Couldn't open torrent"
+msgstr "Не удалось открыть торрент"
+
+msgid "Couldn't move '{path}' to trash: {error} ({error_code})"
+msgstr "Не удалось убрать «{path}» в корзину: {error} ({error_code})"
+
+#, fuzzy
+#| msgid "Couldn't create proxy for '{bus}': {error} ({error_code})"
+msgid "Couldn't launch default application for URI '{uri}': {error} ({error_code})"
+msgstr "Не удалось создать прокси для \"{bus}\": {error} ({error_code})"
+
+#, fuzzy
+#| msgid "Couldn't open '{path}': {error} ({error_code})"
+msgid "Couldn't invoke xdg-open for URI '{uri}': {error} ({error_code})"
+msgstr "Не удалось открыть «{path}»: {error} ({error_code})"
+
+msgid "Couldn't open '{url}'"
+msgstr "Не удалось открыть «{url}»"
+
+msgid "Unsupported URL: '{url}'"
+msgstr "Неподдерживаемый адрес: «{url}»"
+
+msgid "{appname} doesn't know how to use '{url}'"
+msgstr "{appname} не знает, как использовать «{url}»"
+
+msgid "This magnet link appears to be intended for something other than BitTorrent."
+msgstr "Вероятно, эта магнит-ссылка предназначена не для BitTorrent."
 
 msgid "{days_from_now:L} day from now"
 msgid_plural "{days_from_now:L} days from now"
@@ -888,12 +2022,90 @@ msgstr[1] "{seconds_ago:L} секунды назад"
 msgstr[2] "{seconds_ago:L} секунд назад"
 msgstr[3] "{seconds_ago:L} секунд назад"
 
+msgid "Got a list of {markup_begin}{peer_count} peer{markup_end} {time_span_ago}"
+msgid_plural "Got a list of {markup_begin}{peer_count} peers{markup_end} {time_span_ago}"
+msgstr[0] "Получен список из {markup_begin}{peer_count} участника{markup_end} {time_span_ago}"
+msgstr[1] "Получен список из {markup_begin}{peer_count} участников{markup_end} {time_span_ago}"
+msgstr[2] "Получен список из {markup_begin}{peer_count} участников{markup_end} {time_span_ago}"
+msgstr[3] "Получен список из {markup_begin}{peer_count} участников{markup_end} {time_span_ago}"
+
+msgid "Peer list request {markup_begin}timed out {time_span_ago}{markup_end}; will retry"
+msgstr "Запрос списка участников {markup_begin}превысил время ожидания {time_span_ago}{markup_end}; будет произведена повторная попытка"
+
+msgid "Got an error '{markup_begin}{error}{markup_end}' {time_span_ago}"
+msgstr "Получена ошибка \"{markup_begin}{error}{markup_end}\" {time_span_ago}"
+
+msgid "No updates scheduled"
+msgstr "Нет запланированных обновлений"
+
+msgid "Asking for more peers {time_span_from_now}"
+msgstr "Запрос большего числа участников {time_span_from_now}"
+
+msgid "Queued to ask for more peers"
+msgstr "Запрос дополнительных участников поставлен в очередь"
+
+msgid "Asked for more peers {markup_begin}{time_span_ago}{markup_end}"
+msgstr "Запрошено большее число участников {markup_begin}{time_span_ago}{markup_end}"
+
+msgid "Got a scrape error '{markup_begin}{error}{markup_end}' {time_span_ago}"
+msgstr "Получена ошибка запроса к трекеру «{markup_begin}{error}{markup_end}» {time_span_ago}"
+
+#, fuzzy
+#| msgid "Tracker had {markup_begin}no information{markup_end} on peer counts {time_span} ago"
+msgid "Tracker had {markup_begin}no information{markup_end} on peer counts {time_span_ago}"
+msgstr "От трекера {markup_begin}не было информации{markup_end} о числе участников {time_span} назад"
+
+msgid "Tracker had {markup_begin}{seeder_count} {seeder_or_seeders} and {leecher_count} {leecher_or_leechers}{markup_end} {time_span_ago}"
+msgstr "Трекер содержит {markup_begin}{seeder_count} {seeder_or_seeders} и {leecher_count}{leecher_or_leechers}{markup_end} {time_span_ago}"
+
+msgid "seeder"
+msgid_plural "seeders"
+msgstr[0] "раздающий"
+msgstr[1] "раздающих"
+msgstr[2] "раздающих"
+msgstr[3] "раздающих"
+
+msgid "leecher"
+msgid_plural "leechers"
+msgstr[0] "скачивающий"
+msgstr[1] "скачивающих"
+msgstr[2] "скачивающих"
+msgstr[3] "скачивающих"
+
+#, fuzzy
+#| msgid "Asking for peer counts in {time_span_from_now}"
+msgid "Asking for peer counts {time_span_from_now}"
+msgstr "Запрос числа участников через {time_span_from_now}"
+
+msgid "Queued to ask for peer counts"
+msgstr "Запрос числа участников поставлен в очередь"
+
+msgid "Asked for peer counts {markup_begin}{time_span_ago}{markup_end}"
+msgstr "Запрошено число участников {markup_begin}{time_span_ago}{markup_end}"
+
+#, fuzzy
 msgid "{days:L} day"
 msgid_plural "{days:L} days"
-msgstr[0] "{days:L} день"
-msgstr[1] "{days:L} дня"
-msgstr[2] "{days:L} дней"
-msgstr[3] "{days:L} дня"
+msgstr[0] ""
+"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{days:L} день\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{days:L} день"
+msgstr[1] ""
+"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{days:L} дня\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{days:L} дня"
+msgstr[2] ""
+"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{days:L} дней\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{days:L} дней"
+msgstr[3] ""
+"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{days:L} дня\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{days:L} дней"
 
 msgid "{hours:L} hour"
 msgid_plural "{hours:L} hours"
@@ -902,6 +2114,7 @@ msgstr[1] "{hours:L} часа"
 msgstr[2] "{hours:L} часов"
 msgstr[3] "{hours:L} часов"
 
+#. Translators: Spin box format, "Stop seeding if idle for: [ 5 minutes ]"
 msgid "{minutes:L} minute"
 msgid_plural "{minutes:L} minutes"
 msgstr[0] "{minutes:L} мин."
@@ -944,761 +2157,6 @@ msgstr[1] "{seconds_left:L} секунды осталось"
 msgstr[2] "{seconds_left:L} секунд осталось"
 msgstr[3] "{seconds_left:L} секунд осталось"
 
-msgid "The torrent file '{path}' is already in use by '{torrent_name}'."
-msgstr "Торрент-файл «{path}» уже используется «{torrent_name}»."
-
-msgid "Couldn't open torrent"
-msgstr "Не удалось открыть торрент"
-
-msgid "Couldn't move '{path}' to trash: {error} ({error_code})"
-msgstr "Не удалось убрать «{path}» в корзину: {error} ({error_code})"
-
-msgid "Couldn't open '{url}'"
-msgstr "Не удалось открыть «{url}»"
-
-msgid "Unsupported URL: '{url}'"
-msgstr "Неподдерживаемый адрес: «{url}»"
-
-#. modal
-msgid "{appname} doesn't know how to use '{url}'"
-msgstr "{appname} не знает, как использовать «{url}»"
-
-msgid "This magnet link appears to be intended for something other than BitTorrent."
-msgstr "Вероятно, эта магнит-ссылка предназначена не для BitTorrent."
-
-msgid "Retransmission"
-msgstr "Retransmission"
-
-#. parse the command line
-msgid "Where to look for configuration files"
-msgstr "Расположение файлов конфигурации"
-
-msgid "Start with all torrents paused"
-msgstr "Начать с приостановленными торрентами"
-
-msgid "Start minimized in notification area"
-msgstr "Запускать свёрнутым в области уведомлений"
-
-msgid "Show version number and exit"
-msgstr "Показать номер версии и завершить"
-
-msgid "[torrent files or urls]"
-msgstr "[торрент-файлы или ссылки]"
-
-msgid "Run '{program} --help' to see a full list of available command line options.\n"
-msgstr "Выполните «{program} --help», чтобы увидеть список всех доступных параметров командной строки.\n"
-
-msgid "B/s"
-msgstr "Б/с"
-
-msgid "GB/s"
-msgstr "ГБ/с"
-
-msgid "MB/s"
-msgstr "МБ/с"
-
-msgid "TB/s"
-msgstr "ТБ/с"
-
-msgid "kB/s"
-msgstr "КБ/с"
-
-msgid "B"
-msgstr "Б"
-
-msgid "GiB"
-msgstr "ГиБ"
-
-msgid "KiB"
-msgstr "КиБ"
-
-msgid "MiB"
-msgstr "МиБ"
-
-msgid "TiB"
-msgstr "ТиБ"
-
-msgid "GB"
-msgstr "ГБ"
-
-msgid "MB"
-msgstr "МБ"
-
-msgid "TB"
-msgstr "ТБ"
-
-msgid "kB"
-msgstr "КБ"
-
-msgid "BitTorrent Client"
-msgstr "Клиент BitTorrent"
-
-msgid "Download and share files over BitTorrent"
-msgstr "Загружайте и обменивайтесь файлами с помощью BitTorrent"
-
-#. Translators: Search terms to find this application. Do NOT translate or localize the semicolons! The list MUST also end with a semicolon!
-msgid "torrents;downloading;uploading;share;sharing;"
-msgstr "torrent;торренты;скачивание;загрузка;раздать;раздача;обмен;передача;"
-
-msgid "Start Retransmission with All Torrents Paused"
-msgstr "Запустить Retransmission с приостановленными торрентами"
-
-msgid "Start Retransmission Minimized"
-msgstr "Запустить Retransmission в свёрнутом виде"
-
-msgid "Open a torrent"
-msgstr "Открыть торрент"
-
-msgid "Open _URL…"
-msgstr "Отк_рыть URL…"
-
-msgid "Open URL…"
-msgstr "Открыть URL…"
-
-msgid "_New…"
-msgstr "_Создать…"
-
-msgid "_Start All"
-msgstr "_Запустить все"
-
-msgid "Start all torrents"
-msgstr "Запустить все торренты"
-
-msgid "_Pause All"
-msgstr "_Приостановить все"
-
-msgid "Pause all torrents"
-msgstr "Приостановить все торренты"
-
-msgid "_Quit"
-msgstr "_Выход"
-
-msgid "Select _All"
-msgstr "Выде_лить всё"
-
-msgid "Dese_lect All"
-msgstr "_Снять выделение"
-
-msgid "_Preferences"
-msgstr "_Настройки"
-
-msgid "_Properties"
-msgstr "_Свойства"
-
-msgid "Torrent properties"
-msgstr "Свойства торрента"
-
-msgid "Open Fold_er"
-msgstr "Открыть папк_у"
-
-msgid "_Start"
-msgstr "_Запустить"
-
-msgid "Start torrent"
-msgstr "Запустить торрент"
-
-msgid "Start _Now"
-msgstr "Запустить _сейчас"
-
-msgid "Start torrent now"
-msgstr "Запустить торрент сейчас"
-
-msgid "Ask Tracker for _More Peers"
-msgstr "Позват_ь ещё участников с трекера"
-
-msgid "Move to _Top"
-msgstr "В _начало"
-
-msgid "Move _Up"
-msgstr "П_овысить"
-
-msgid "Move _Down"
-msgstr "Пониз_ить"
-
-msgid "Move to _Bottom"
-msgstr "В _конец"
-
-msgid "_Pause"
-msgstr "_Приостановить"
-
-msgid "Pause torrent"
-msgstr "Приостановить торрент"
-
-msgid "Set _Location…"
-msgstr "Указать _расположение…"
-
-msgid "_Verify Local Data"
-msgstr "Про_верить локальные данные"
-
-msgid "Copy _Magnet Link to Clipboard"
-msgstr "Копироват_ь магнит-ссылку в буфер обмена"
-
-msgid "Remove torrent"
-msgstr "Убрать торрент"
-
-msgid "_Delete Files and Remove"
-msgstr "_Убрать торрент и удалить загруженные файлы"
-
-msgid "_Compact View"
-msgstr "_Компактный вид"
-
-msgid "_Toolbar"
-msgstr "Панель _инструментов"
-
-msgid "_Filterbar"
-msgstr "Панель _фильтров"
-
-msgid "_Statusbar"
-msgstr "_Строка состояния"
-
-msgid "Sort by _Activity"
-msgstr "Упорядочивать по _активности"
-
-msgid "Sort by A_ge"
-msgstr "Упорядочивать по _дате добавления"
-
-msgid "Sort by _Name"
-msgstr "Упорядочивать по _названию"
-
-msgid "Sort by _Progress"
-msgstr "Упорядочивать по _продвижению загрузки"
-
-msgid "Sort by _Queue"
-msgstr "Упорядочивать по о_черёдности"
-
-msgid "Sort by Rati_o"
-msgstr "Упорядочивать по соо_тношению"
-
-msgid "Sort by Si_ze"
-msgstr "Упорядочивать по _размеру"
-
-msgid "Sort by Stat_e"
-msgstr "Упорядочивать по сос_тоянию"
-
-msgid "Sort by Time _Left"
-msgstr "Упорядочивать по оставшемуся _времени"
-
-msgid "Re_verse Sort Order"
-msgstr "О_братить порядок"
-
-msgid "Message _Log"
-msgstr "_Журнал сообщений"
-
-msgid "_Statistics"
-msgstr "_Статистика"
-
-msgid "_Donate"
-msgstr "_Пожертвовать"
-
-msgid "_Contents"
-msgstr "Со_держание"
-
-msgid "_About"
-msgstr "_О программе"
-
-msgid "_Show {appname}"
-msgstr "_Показать {appname}"
-
-msgid "Enable Alternative Speed _Limits"
-msgstr "Включить расширенное ограничение с_корости"
-
-msgid "_Add"
-msgstr "_Добавить"
-
-msgid "Tracker"
-msgstr "Трекер"
-
-msgid "_Announce URL:"
-msgstr "_Адрес анонса:"
-
-msgid "_Close"
-msgstr "_Закрыть"
-
-msgid "Activity"
-msgstr "Активность"
-
-msgid "Torrent size:"
-msgstr "Размер торрента:"
-
-msgid "Have:"
-msgstr "В наличии:"
-
-msgid "Uploaded:"
-msgstr "Роздано:"
-
-msgid "Downloaded:"
-msgstr "Загружено:"
-
-msgid "State:"
-msgstr "Состояние:"
-
-msgid "Running time:"
-msgstr "Время работы:"
-
-msgid "Remaining time:"
-msgstr "Оставшееся время:"
-
-msgid "Last activity:"
-msgstr "Последняя активность:"
-
-msgid "Error:"
-msgstr "Ошибка:"
-
-msgid "Details"
-msgstr "Сведения"
-
-msgid "Location:"
-msgstr "Расположение:"
-
-msgid "Hash:"
-msgstr "Хеш:"
-
-msgid "Privacy:"
-msgstr "Приватность:"
-
-msgid "Origin:"
-msgstr "Источник:"
-
-msgid "Added:"
-msgstr "Добавлен:"
-
-msgid "Comment:"
-msgstr "Комментарий:"
-
-msgid "Information"
-msgstr "Информация"
-
-msgid "Show _more details"
-msgstr "Показать _больше сведений"
-
-msgid "Peers"
-msgstr "Участники"
-
-msgid "_Edit"
-msgstr "_Правка"
-
-msgid "Show _backup trackers"
-msgstr "Показать _резервные трекеры"
-
-msgid "File listing not available for combined torrent properties"
-msgstr "Список файлов недоступен одновременно для нескольких торрентов"
-
-msgid "Files"
-msgstr "Файлы"
-
-msgid "Speed"
-msgstr "Скорость"
-
-msgid "Honor global _limits"
-msgstr "Учитывать общие _ограничения"
-
-msgid "Limit _download speed ({speed_units}):"
-msgstr "Ограничение _скорости загрузки ({speed_units}):"
-
-msgid "Limit _upload speed ({speed_units}):"
-msgstr "Ограничение _скорости раздачи ({speed_units}):"
-
-msgid "Torrent _priority:"
-msgstr "Приоритет _торрента:"
-
-msgid "Seeding Limits"
-msgstr "Ограничения раздачи"
-
-msgid "_Ratio:"
-msgstr "_Рейтинг:"
-
-msgid "_Idle:"
-msgstr "_Ожидание:"
-
-msgid "Peer Connections"
-msgstr "Соединения с участниками"
-
-msgid "_Maximum peers:"
-msgstr "_Максимум участников:"
-
-msgid "Options"
-msgstr "Параметры"
-
-msgid "Tracker Announce URLs"
-msgstr "Адреса анонсов трекера"
-
-msgid ""
-"To add a backup URL, add it on the next line after a primary URL.\n"
-"To add a new primary URL, add it after a blank line."
-msgstr ""
-"Чтобы добавить резервный адрес, укажите его в следующей строке после основного адреса.\n"
-"Чтобы добавить новый основной адрес, укажите его после пустой строки."
-
-msgid "Also see Default Public Trackers in Edit > Preferences > Network"
-msgstr "Также смотрите Общедоступные трекеры по умолчанию в меню Правка > Настройки > Сеть"
-
-msgid "Torrent"
-msgstr "Торрент"
-
-msgid "Statistics"
-msgstr "Статистика"
-
-msgid "New Torrent"
-msgstr "Новый торрент"
-
-msgid "_New"
-msgstr "_Новый"
-
-msgid "Sa_ve to:"
-msgstr "Со_хранить в:"
-
-msgid "Source F_older:"
-msgstr "Исходный к_аталог:"
-
-msgid "Source _File:"
-msgstr "Исходный ф_айл:"
-
-msgid "Piece size:"
-msgstr "Размер части:"
-
-msgid "Properties"
-msgstr "Свойства"
-
-msgid "_Trackers:"
-msgstr "_Трекеры:"
-
-msgid "Co_mment:"
-msgstr "При_мечание:"
-
-msgid "_Source:"
-msgstr "_Источник:"
-
-msgid "_Private torrent"
-msgstr "_Закрытый торрент"
-
-msgid "Creating torrent…"
-msgstr "Создание торрента…"
-
-msgid "Message Log"
-msgstr "Журнал сообщений"
-
-msgid "Save _As"
-msgstr "Сохранить _как"
-
-msgid "Clear"
-msgstr "Очистить"
-
-msgid "P_ause"
-msgstr "П_ауза"
-
-msgid "Level"
-msgstr "Уровень"
-
-msgid "Torrent Options"
-msgstr "Параметры торрента"
-
-msgid "_Torrent file:"
-msgstr "Торрент-файл:"
-
-msgid "Select Source File"
-msgstr "Выберите исходный файл"
-
-msgid "_Destination folder:"
-msgstr "_Папка назначения:"
-
-msgid "Select Destination Folder"
-msgstr "Выберите папку назначения"
-
-msgid "_Start when added"
-msgstr "_Запустить после добавления"
-
-msgid "Mo_ve torrent file to the trash"
-msgstr "Убрать торрент-файл в корз_ину"
-
-msgid "{appname} Preferences"
-msgstr "Параметры {appname}"
-
-msgid "_Help"
-msgstr "_Справка"
-
-msgid "Speed Limits"
-msgstr "Ограничения скорости"
-
-#. Checkbox to limit upload speed
-msgid "_Upload ({speed_units}):"
-msgstr "_Отдача ({speed_units}):"
-
-#. Checkbox to limit download speed
-msgid "_Download ({speed_units}):"
-msgstr "_Загрузка ({speed_units}):"
-
-msgid "Alternative Speed Limits"
-msgstr "Особые ограничения скорости"
-
-msgid "Override normal speed limits manually or at scheduled times"
-msgstr "Замещение обычных ограничений скорости по расписанию или вручную"
-
-#. Labels a spinbutton for alternate upload speed limits
-msgid "U_pload ({speed_units}):"
-msgstr "О_тдача ({speed_units}):"
-
-#. Labels a spinbutton for alternate download speed limits
-msgid "Do_wnload ({speed_units}):"
-msgstr "За_грузка ({speed_units}):"
-
-msgid "_Scheduled times:"
-msgstr "_По расписанию:"
-
-msgid "_On days:"
-msgstr "_По дням:"
-
-#. Label goes between two time selectors, e.g. "limit speeds from [time] to [time]"
-msgid "_to"
-msgstr "_до"
-
-msgctxt "Gerund"
-msgid "Adding"
-msgstr "Добавление"
-
-msgid "Automatically add torrent files _from:"
-msgstr "Автоматически добавлять торрент-файлы _из:"
-
-msgid "Show the Torrent Options _dialog"
-msgstr "Показывать диалоговое окно параметров торрента"
-
-msgid "_Start added torrents"
-msgstr "_Запускать добавленные торренты"
-
-msgid "Save to _Location:"
-msgstr "Сохранять в _папку:"
-
-msgid "Download Queue"
-msgstr "Очередь загрузки"
-
-msgid "Ma_ximum active downloads:"
-msgstr "Ма_ксимум активных загрузок:"
-
-msgid "Downloads sharing data in the last _N minutes are active:"
-msgstr "Загружать данные о раздаче за последние N минут _активности:"
-
-msgid "Incomplete"
-msgstr "Процесс загрузки"
-
-msgid "Append \"._part\" to incomplete files' names"
-msgstr "Добавлять «._part» к именам незавершённых файлов"
-
-msgid "Keep _incomplete torrents in:"
-msgstr "Сохранять _незавершённые торренты в:"
-
-msgid "Call scrip_t when done downloading:"
-msgstr "Выполнять сц_енарий по окончании загрузки:"
-
-msgctxt "Gerund"
-msgid "Downloading"
-msgstr "Загрузка"
-
-msgid "Limits"
-msgstr "Ограничения"
-
-msgid "Stop seeding at _ratio:"
-msgstr "Прекратить раздачу при _рейтинге:"
-
-msgid "Stop seeding if idle for _N minutes:"
-msgstr "Прекратить раздачу при простое _N минут:"
-
-msgid "Call scrip_t when done seeding:"
-msgstr "Выполнять сц_енарий по окончании раздачи:"
-
-msgctxt "Gerund"
-msgid "Seeding"
-msgstr "Раздача"
-
-msgid "Privacy"
-msgstr "Приватность"
-
-msgid "_Encryption mode:"
-msgstr "_Режим шифрования:"
-
-msgid "Blocklist"
-msgstr "Чёрный список"
-
-msgid "Enable _blocklist:"
-msgstr "Включить _чёрный список:"
-
-msgid "Enable _automatic updates"
-msgstr "Разрешить _автоматическое обновление"
-
-msgid "_Update"
-msgstr "_Обновить"
-
-msgid "Listening Port"
-msgstr "Прослушивание порта"
-
-msgid "_Port used for incoming connections:"
-msgstr "_Порт входящих подключений:"
-
-msgid "Pick a _random port every time Transmission is started"
-msgstr "Устанавливать _случайный порт при каждом запуске программы"
-
-msgid "Use UPnP or NAT-PMP port _forwarding from my router"
-msgstr "_Использовать перенаправление портов UPnP или NAT-PMP"
-
-msgid "Te_st Port"
-msgstr "Про_верить порт"
-
-msgid "Peer Limits"
-msgstr "Ограничения участников"
-
-msgid "Maximum peers per _torrent:"
-msgstr "Максимум участников на торр_ент:"
-
-msgid "Maximum peers _overall:"
-msgstr "Об_щий максимум участников:"
-
-msgid "Enable µ_TP for peer communication"
-msgstr "Ис_пользовать µTP для связи с другими участниками"
-
-msgid "µTP is a tool for reducing network congestion."
-msgstr "µTP — это инструмент для снижения нагрузки на сеть."
-
-msgid "Use PE_X to find more peers"
-msgstr "Использовать PEX для обмена списками участников"
-
-msgid "PEX is a tool for exchanging peer lists with the peers you're connected to."
-msgstr "PEX — это технология обмена списками участников с теми, к кому вы подключаетесь."
-
-msgid "Use _DHT to find more peers"
-msgstr "Использовать _DHT для обнаружения участников"
-
-msgid "DHT is a tool for finding peers without a tracker."
-msgstr "DHT — это технология поиска участников без использования трекера."
-
-msgid "Use _Local Peer Discovery to find more peers"
-msgstr "Исполь_зовать локальное обнаружение участников"
-
-msgid "LPD is a tool for finding peers on your local network."
-msgstr "LPD — это технология поиска участников в локальной сети"
-
-msgid "Default Public Trackers"
-msgstr "Стандартные публичные трекеры"
-
-msgid ""
-"Trackers to use on all public torrents.\n"
-"\n"
-"To add a backup URL, add it on the next line after a primary URL.\n"
-"To add a new primary URL, add it after a blank line."
-msgstr ""
-"Трекеры для использования на всех общедоступных торрентах.\n"
-"\n"
-"Чтобы добавить резервный адрес, укажите его в следующей строке после основного адреса.\n"
-"Чтобы добавить новый основной адрес, укажите его после пустой строки."
-
-msgid "Network"
-msgstr "Сеть"
-
-msgid "Desktop"
-msgstr "Система"
-
-msgid "_Inhibit hibernation when torrents are active"
-msgstr "_Запрещать переход в спящий режим при активных торрентах"
-
-msgid "Show {appname} icon in the _notification area"
-msgstr "Показыва_ть значок {appname} в области уведомлений"
-
-msgid "Notification"
-msgstr "Уведомление"
-
-msgid "Show a notification when torrents are a_dded"
-msgstr "Показывать уведомление после добавления торрентов"
-
-msgid "Show a notification when torrents _finish"
-msgstr "Показывать _уведомление после завершения загрузки торрентов"
-
-msgid "Play a _sound when torrents finish"
-msgstr "Воспроизводить _звуковое уведомление после завершения загрузки торрентов"
-
-msgid "Remote Control"
-msgstr "Удалённое управление"
-
-msgid "Allow _remote access"
-msgstr "Разрешить _удалённый доступ"
-
-msgid "_Open web client"
-msgstr "_Открыть веб-клиент"
-
-msgid "HTTP _port:"
-msgstr "_Порт HTTP:"
-
-msgid "Use _authentication"
-msgstr "Использовать _аутентификацию"
-
-msgid "_Username:"
-msgstr "_Имя пользователя:"
-
-msgid "Pass_word:"
-msgstr "Па_роль:"
-
-msgid "Only allow these IP a_ddresses:"
-msgstr "Разрешить доступ только _данным IP-адресам:"
-
-msgid "Addresses:"
-msgstr "Адреса:"
-
-msgid "IP addresses may use wildcards, such as 192.168.*.*"
-msgstr "IP-адреса могут быть введены в виде маски, например 192.168.*.*"
-
-msgid "Remote"
-msgstr "Удалённое управление"
-
-msgid "Set Torrent Location"
-msgstr "Указать расположение торрента"
-
-msgid "_Apply"
-msgstr "_Применить"
-
-msgid "Location"
-msgstr "Расположение"
-
-msgid "Torrent _location:"
-msgstr "Расположение торре_нта:"
-
-msgid "_Move from the current folder"
-msgstr "П_ереместить из текущей папки"
-
-msgid "Local data is _already there"
-msgstr "_Не перемещать, данные уже есть в указанной папке"
-
-msgid "Current Session"
-msgstr "Текущий сеанс"
-
-msgid "Ratio:"
-msgstr "Рейтинг:"
-
-msgid "Duration:"
-msgstr "Длительность:"
-
-msgid "Total"
-msgstr "Всего"
-
-msgid "Open URL"
-msgstr "Открыть ссылку"
-
-msgid "Open torrent from URL"
-msgstr "Открыть торрент по ссылке"
-
-msgid "_URL"
-msgstr "_Ссылка"
-
-msgid "Couldn't parse announce response: {error} ({error_code})"
-msgstr "Не удалось разобрать ответ анонса: {error} ({error_code})"
-
-msgid "Couldn't parse scrape response: {error} ({error_code})"
-msgstr "Не удалось разобрать ответ запроса к трекеру: {error} ({error_code})"
-
-msgid "Unknown error"
-msgstr "Неизвестная ошибка"
-
-msgid "{ip_protocol} connection failed"
-msgstr "Сбой подключения по {ip_protocol}"
-
-msgid "Couldn't look up '{address}:{port}' in {ip_protocol}: {error} ({error_code})"
-msgstr "Не удалось найти '{address}:{port}' в {ip_protocol}: {error} ({error_code})"
-
 msgid "Announce error: {error} ({url})"
 msgstr "Ошибка анонса: {error} ({url})"
 
@@ -1718,6 +2176,21 @@ msgstr "Трекер не отвечает"
 msgid "Success"
 msgstr "Успешно"
 
+msgid "Couldn't parse announce response: {error} ({error_code})"
+msgstr "Не удалось разобрать ответ анонса: {error} ({error_code})"
+
+msgid "Couldn't parse scrape response: {error} ({error_code})"
+msgstr "Не удалось разобрать ответ запроса к трекеру: {error} ({error_code})"
+
+msgid "Unknown error"
+msgstr "Неизвестная ошибка"
+
+msgid "{ip_protocol} connection failed"
+msgstr "Сбой подключения по {ip_protocol}"
+
+msgid "Couldn't look up '{address}:{port}' in {ip_protocol}: {error} ({error_code})"
+msgstr "Не удалось найти '{address}:{port}' в {ip_protocol}: {error} ({error_code})"
+
 msgid "Blocklist '{path}' has {count} entry"
 msgid_plural "Blocklist '{path}' has {count} entries"
 msgstr[0] "В чёрном списке «{path}» {count} запись"
@@ -1725,15 +2198,43 @@ msgstr[1] "В чёрном списке «{path}» {count} записи"
 msgstr[2] "В чёрном списке «{path}» {count} записей"
 msgstr[3] "В чёрном списке «{path}» {count} записей"
 
-#. don't try to display the actual lines - it causes issues
-msgid "Couldn't parse line: '{line}'"
+#, fuzzy
+#| msgid "Couldn't parse line: '{line}'"
+msgid "Couldn't parse line {line}: {base64}"
 msgstr "Не удалось разобрать строку: «{line}»"
 
-msgid "Rewriting old blocklist file format to new format"
+#, fuzzy
+#| msgid "Rewriting old blocklist file format to new format"
+msgid "Rewriting old blocklist file {path} to new format"
 msgstr "Перезапись старого формата файла списка блокировок в новый формат"
+
+msgid "Blocklist is larger than {limit} MiB; ignoring it"
+msgstr ""
+
+#, fuzzy
+#| msgid "Couldn't fetch blocklist: {error} ({error_code})"
+msgid "Couldn't fetch blocklist: {errmsg}, response code: {error} ({error_code})"
+msgstr "Не удалось получить чёрный список: {error} ({error_code})"
+
+msgid "Couldn't fetch blocklist: {error} ({error_code})"
+msgstr "Не удалось получить чёрный список: {error} ({error_code})"
+
+msgid "Automatically updated blocklist, which now has {count} rules"
+msgstr ""
+
+msgid "Invalid tr_sched_days value {val}"
+msgstr ""
 
 msgid "{crypto_library} error: {error} ({error_code})"
 msgstr "Ошибка {crypto_library}: {error} ({error_code})"
+
+msgid "Couldn't read '{path}': Not a regular file"
+msgstr "Не удалось прочесть «{path}»: Не является обычным файлом"
+
+#, fuzzy
+#| msgid "Couldn't read '{path}'"
+msgid "Couldn't get '{path}': "
+msgstr "Не удалось прочитать «{path}»"
 
 msgid "Couldn't get '{path}': {error} ({error_code})"
 msgstr "Не удалось получить «{path}»: {error} ({error_code})"
@@ -1750,20 +2251,14 @@ msgstr "Ваша машина не поддерживает {protocol}"
 msgid "Successfully updated global {type} address to {ip} using {url}"
 msgstr "Успешно изменён общий адрес {type} на {ip} через {url}"
 
+msgid "Still waiting for disk IO on torrent {id}: {running} running, {queued} queued"
+msgstr ""
+
 msgid "Too many messages like this! I won't log this message anymore this session."
 msgstr "Слишком много таких сообщений! Это сообщение больше не будет регистрироваться в этом сеансе."
 
 msgid "Skipping '{path}': {error} ({error_code})"
 msgstr "Пропускается «{path}»: {error} ({error_code})"
-
-msgid "Couldn't create socket: {error} ({error_code})"
-msgstr "Не удалось создать сокет: {error} ({error_code})"
-
-msgid "Couldn't set source address {address} on {socket}: {error} ({error_code})"
-msgstr "Не удалось установить адрес источника {address} на {socket}: {error} ({error_code})"
-
-msgid "Couldn't connect socket {socket} to {address}:{port}: {error} ({error_code})"
-msgstr "Не удалось подключить сокет {socket} к {address}:{port}: {error}({error_code})"
 
 msgid "Couldn't bind port {port} on {address}: {error} ({error_code}) -- Is another copy of {appname} already running?"
 msgstr "Не удалось привязать порт {port} на {address}: {error} ({error_code}) — Возможно другой экземпляр {appname} уже запущен?"
@@ -1780,8 +2275,35 @@ msgstr "Не удалось предраспределить «{path}»: {error}
 msgid "Couldn't truncate '{path}': {error} ({error_code})"
 msgstr "Не удалось сократить «{path}»: {error} ({error_code})"
 
+msgid "Couldn't create socket: {error} ({error_code})"
+msgstr "Не удалось создать сокет: {error} ({error_code})"
+
+msgid "Couldn't set source address {address} on {socket}: {error} ({error_code})"
+msgstr "Не удалось установить адрес источника {address} на {socket}: {error} ({error_code})"
+
+msgid "Couldn't connect socket {socket} to {address}:{port}: {error} ({error_code})"
+msgstr "Не удалось подключить сокет {socket} к {address}:{port}: {error}({error_code})"
+
 msgid "Unknown state: {state}"
 msgstr "Неизвестное состояние: {state}"
+
+msgid "Starting"
+msgstr "Запускается"
+
+msgid "Forwarded"
+msgstr "Перенаправляется"
+
+msgid "Stopping"
+msgstr "Останавливается"
+
+msgid "Not forwarded"
+msgstr "Не перенаправляется"
+
+msgid "Mapped private port {private_port} to public port {public_port}"
+msgstr "Сопоставлен приватный порт {private_port} с публичным портом {public_port}"
+
+msgid "State changed from '{old_state}' to '{state}'"
+msgstr "Состояние изменено с «{old_state}» на «{state}»"
 
 msgid "Found public address '{address}'"
 msgstr "Найден публичный адрес «{address}»"
@@ -1813,23 +2335,21 @@ msgstr "Локальный порт {local_port} перенаправлен на
 msgid "If your router supports UPnP, please make sure UPnP is enabled!"
 msgstr "Если ваш роутер поддерживает UPnP, убедитесь, что UPnP включён!"
 
-msgid "Starting"
-msgstr "Запускается"
+#, fuzzy
+#| msgid "Couldn't test port: {error} ({error_code})"
+msgid "Couldn't test port: {errmsg}, response code: {error} ({error_code})"
+msgstr "Не удалось проверить порт: {error} ({error_code})"
 
-msgid "Forwarded"
-msgstr "Перенаправляется"
+msgid "Couldn't test port: {error} ({error_code})"
+msgstr "Не удалось проверить порт: {error} ({error_code})"
 
-msgid "Stopping"
-msgstr "Останавливается"
+#, fuzzy
+#| msgid "Couldn't fetch torrent: {error} ({error_code})"
+msgid "Couldn't fetch torrent: {errmsg}, Response code: {error} ({error_code})"
+msgstr "Не удалось получить торрент: {error} ({error_code})"
 
-msgid "Not forwarded"
-msgstr "Не перенаправляется"
-
-msgid "Mapped private port {private_port} to public port {public_port}"
-msgstr "Сопоставлен приватный порт {private_port} с публичным портом {public_port}"
-
-msgid "State changed from '{old_state}' to '{state}'"
-msgstr "Состояние изменено с «{old_state}» на «{state}»"
+msgid "Couldn't fetch torrent: {error} ({error_code})"
+msgstr "Не удалось получить торрент: {error} ({error_code})"
 
 msgid "Unix socket path must be fewer than {count} characters (including '{prefix}' prefix)"
 msgstr "Путь к сокету Unix должен быть меньше {count} символов (включая префикс «{prefix}»)"
@@ -1889,29 +2409,24 @@ msgstr "Требуется пароль"
 msgid "Serving RPC and Web requests from '{path}'"
 msgstr "Обслуживаются RPC и веб-запросы от «{path}»"
 
-msgid "Couldn't test port: {error} ({error_code})"
-msgstr "Не удалось проверить порт: {error} ({error_code})"
-
-msgid "Couldn't fetch blocklist: {error} ({error_code})"
-msgstr "Не удалось получить чёрный список: {error} ({error_code})"
-
-msgid "Couldn't fetch torrent: {error} ({error_code})"
-msgstr "Не удалось получить торрент: {error} ({error_code})"
-
-msgid "Time to turn off turtle mode"
-msgstr "Время отключения режима черепахи"
-
-msgid "Time to turn on turtle mode"
+#, fuzzy
+#| msgid "Time to turn on turtle mode"
+msgid "Time to turn on alternative speed limits"
 msgstr "Время включения режима черепахи"
 
-msgid "Couldn't open session lock file '{path}': {error} ({error_code})"
-msgstr "Не удалось открыть файл блокировки сеанса «{path}»: {error} ({error_code})"
+#, fuzzy
+#| msgid "Time to turn off turtle mode"
+msgid "Time to turn off alternative speed limits"
+msgstr "Время отключения режима черепахи"
 
 msgid "Listening to incoming peer connections on {hostport}"
 msgstr "Прослушиваются входящие соединения участников на {hostport}"
 
 msgid "{appname} version {version} starting"
 msgstr "{appname} версии {version} запускается"
+
+msgid "Couldn't start disk IO workers, continuing without them: {error}"
+msgstr ""
 
 msgid "{appname} version {version} shutting down"
 msgstr "{appname} версии {version} завершает работу"
@@ -1923,8 +2438,11 @@ msgstr[1] "Загружено {count} торрента"
 msgstr[2] "Загружено {count} торрентов"
 msgstr[3] "Загружено {count} торрентов"
 
-msgid "Migrated torrent file from '{old_path}' to '{path}'"
-msgstr "Торрент-файл перенесён из «{old_path}» в «{path}»"
+msgid "Couldn't claim '{path}'. If another session is using it, the two will overwrite each other's settings, resume files and stats."
+msgstr ""
+
+msgid "Couldn't open session lock file '{path}': {error} ({error_code})"
+msgstr "Не удалось открыть файл блокировки сеанса «{path}»: {error} ({error_code})"
 
 msgid "Couldn't use metainfo from '{path}' for '{magnet}': {error} ({error_code})"
 msgstr "Не удалось использовать метаинформацию из «{path}» для «{magnet}»: {error} ({error_code})"
@@ -1956,14 +2474,32 @@ msgstr "Не удалось удалить все торрент-файлы: {er
 msgid "Removing torrent"
 msgstr "Удаление торрента"
 
-msgid "Couldn't move '{old_path}' to '{path}': {error} ({error_code})"
-msgstr "Не удалось переместить «{old_path}» в «{path}»: {error} ({error_code})"
+#, fuzzy
+#| msgid "Couldn't remove all torrent files: {error} ({error_code})"
+msgid "Couldn't move torrent files to '{path}': {error} ({error_code})"
+msgstr "Не удалось удалить все торрент-файлы: {error} ({error_code})"
 
 msgid "Paused torrent as no data was found! Ensure your drives are connected or use \"Set Location\", then use \"Verify Local Data\" again. To re-download, start the torrent."
 msgstr "Приостановлен торрент, так как данные не были найдены! Убедитесь, что ваши диски подключены или используйте \"Указать расположение\", затем снова используйте \"Проверить локальные данные\". Чтобы загрузить повторно, запустите торрент."
 
+msgid "Couldn't move '{old_path}' to '{path}': {error} ({error_code})"
+msgstr "Не удалось переместить «{old_path}» в «{path}»: {error} ({error_code})"
+
 msgid "Tracker warning: '{warning}' ({url})"
 msgstr "Предупреждение трекера: «{warning}» ({url})"
+
+#, fuzzy
+#| msgid "Removing torrent file '{path}'"
+msgid "Moving '{source}' will overwrite '{path}'"
+msgstr "Удаляется торрент-файл «{path}»"
+
+#, fuzzy
+#| msgid "Couldn't move '{old_path}' to '{path}': {error} ({error_code})"
+msgid "Couldn't compare '{path}' with '{root}': {error} ({error_code}); leaving it alone"
+msgstr "Не удалось переместить «{old_path}» в «{path}»: {error} ({error_code})"
+
+msgid "Migrated torrent file from '{old_path}' to '{path}'"
+msgstr "Торрент-файл перенесён из «{old_path}» в «{path}»"
 
 msgid "Couldn't parse '{filename}' line: '{line}'"
 msgstr "Не удалось разобрать строку в «{filename}»: «{line}»"
@@ -1992,8 +2528,47 @@ msgstr ""
 msgid "Unknown socket family"
 msgstr "Неизвестное семейство адресов сокетов"
 
-msgid "Couldn't read '{path}': Not a regular file"
-msgstr "Не удалось прочесть «{path}»: Не является обычным файлом"
+msgid "B"
+msgstr "Б"
+
+msgid "KiB"
+msgstr "КиБ"
+
+msgid "MiB"
+msgstr "МиБ"
+
+msgid "GiB"
+msgstr "ГиБ"
+
+msgid "TiB"
+msgstr "ТиБ"
+
+msgid "B/s"
+msgstr "Б/с"
+
+msgid "kB/s"
+msgstr "КБ/с"
+
+msgid "MB/s"
+msgstr "МБ/с"
+
+msgid "GB/s"
+msgstr "ГБ/с"
+
+msgid "TB/s"
+msgstr "ТБ/с"
+
+msgid "kB"
+msgstr "КБ"
+
+msgid "MB"
+msgstr "МБ"
+
+msgid "GB"
+msgstr "ГБ"
+
+msgid "TB"
+msgstr "ТБ"
 
 msgid "Couldn't parse JSON at position {position} '{text}': {error} ({error_code})"
 msgstr "Не удалось разобрать JSON в позиции {position} «{text}»: {error} ({error_code})"
@@ -2001,17 +2576,14 @@ msgstr "Не удалось разобрать JSON в позиции {position}
 msgid "Couldn't watch '{path}': {error} ({error_code})"
 msgstr "Не удалось посмотреть «{path}»: {error} ({error_code})"
 
-msgid "Couldn't read event: {error} ({error_code})"
-msgstr "Не удалось прочесть событие: {error} ({error_code})"
-
 msgid "Couldn't read event: expected {expected_size}, got {actual_size}"
 msgstr "Не удалось прочесть событие: ожидалось {expected_size}, получено {actual_size}"
 
-msgid "Couldn't read filename: {error} ({error_code})"
-msgstr "Не удалось прочесть имя файла: {error} ({error_code})"
-
 msgid "Couldn't read filename: expected {expected_size}, got {actual_size}"
 msgstr "Не удалось прочесть имя файла: ожидалось {expected_size}, получено {actual_size}"
+
+msgid "Couldn't read event: {error} ({error_code})"
+msgstr "Не удалось прочесть событие: {error} ({error_code})"
 
 msgid "Couldn't convert '{path}' to native path"
 msgstr "Не удалось преобразовать «{path}» в родной путь"
@@ -2031,10 +2603,15 @@ msgstr "Не удалось дождаться изменений каталог
 msgid "Consider upgrading your curl installation."
 msgstr "Рассмотрите обновление вашей установки curl."
 
+msgid "The minimum supported version is {curl_version}, you might face unexpected behaviour."
+msgstr ""
+
 msgid "curl {curl_version} is prone to SIGPIPE crashes. {details_url}"
 msgstr "Curl {curl_version}  подвержен сбоям SIGPIPE. {details_url}"
 
-msgid "curl {curl_version} is prone to an eventfd double close vulnerability that might cause SIGABRT crashes for the transmission-daemon systemd service. {details_url}"
+#, fuzzy
+#| msgid "curl {curl_version} is prone to an eventfd double close vulnerability that might cause SIGABRT crashes for the transmission-daemon systemd service. {details_url}"
+msgid "curl {curl_version} is prone to an eventfd double close vulnerability that might cause SIGABRT crashes for the daemon systemd service. {details_url}"
 msgstr "Curl {curl_version} подвержен уязвимости двойного закрытия eventfd, которая может привести к сбоям SIGABRT для службы transmission-daemon systemd. {details_url}"
 
 msgid "Will verify tracker certs using envvar CURL_CA_BUNDLE: {bundle}"
@@ -2046,8 +2623,423 @@ msgstr "NB: это работает только тогда, если если �
 msgid "NB: Invalid certs will appear as 'Could not connect to tracker' like many other errors"
 msgstr "NB: Недействительные сертификаты будут отображаться как «Не удалось подключиться к трекеру», как и многие другие ошибки"
 
+msgid "Aborting request: response body exceeded max size of {max_file_size} bytes"
+msgstr ""
+
 msgid "Couldn't fetch '{url}': expected HTTP response code {expected_code}, got {actual_code}"
 msgstr "Не удалось получить «{url}»: ожидаемый код ответа HTTP {expected_code}, получен {actual_code}"
+
+msgid "Server"
+msgstr "Сервер"
+
+msgid "C_redits"
+msgstr "А_вторы"
+
+msgid "Credits"
+msgstr "Сведения об авторах"
+
+msgid "About {appname}"
+msgstr "О {appname}"
+
+msgid "Torrent Completed"
+msgstr "Торрент завершён"
+
+msgid "Torrents Completed"
+msgstr "Торренты завершены"
+
+#. Translators: Text following the "Have:" label in torrent properties dialog;
+#. {current_size} is amount of downloaded and verified data
+msgid "{current_size} (100%)"
+msgstr "{current_size} (100%)"
+
+msgid "{current_size} of {complete_size} ({percent_done}%), {unverified_size} Unverified"
+msgstr "{current_size} из {complete_size} ({percent_done}%), не подтверждено {unverified_size}"
+
+msgid "{total_size} ({piece_count:L} piece @ {piece_size})"
+msgid_plural "{total_size} ({piece_count:L} pieces @ {piece_size})"
+msgstr[0] "{total_size} ({piece_count:L} часть @ {piece_size})"
+msgstr[1] "{total_size} ({piece_count:L} части @ {piece_size})"
+msgstr[2] "{total_size} ({piece_count:L} частей @ {piece_size})"
+msgstr[3] "{total_size} ({piece_count:L} частей @ {piece_size})"
+
+msgid "{total_size} ({piece_count:L} piece)"
+msgid_plural "{total_size} ({piece_count:L} pieces)"
+msgstr[0] "{total_size} ({piece_count:L} часть)"
+msgstr[1] "{total_size} ({piece_count:L} части)"
+msgstr[2] "{total_size} ({piece_count:L} частей)"
+msgstr[3] "{total_size} ({piece_count:L} частей)"
+
+msgid "Add URL(s)"
+msgstr "Добавить ссылку(и)"
+
+msgid "Add tracker announce URLs, one per line:"
+msgstr "Добавить адреса анонсов трекера, один на строку:"
+
+msgid "No new URLs found."
+msgstr "Новые адреса не найдены."
+
+msgid "Use Global Settings"
+msgstr "Использовать общие настройки"
+
+msgid "Stop seeding if idle for:"
+msgstr "Прекратить раздачу при простое:"
+
+msgid "Torrent Properties"
+msgstr "Свойства торрента"
+
+msgid "Availability:"
+msgstr "Доступность:"
+
+msgid "Labels:"
+msgstr "Метки:"
+
+msgid "Limit _upload speed:"
+msgstr "Ограничить скорость _отдачи:"
+
+msgid "Limit _download speed:"
+msgstr "Ограничить скорость _загрузки:"
+
+msgid "Check Selected"
+msgstr "Отметить выбранное"
+
+msgid "Uncheck Selected"
+msgstr "Снять отметку с выбранного"
+
+msgid "Only Check Selected"
+msgstr "Отметить только выбранное"
+
+msgid "Open"
+msgstr "Открыть"
+
+msgid "Rename…"
+msgstr "Переименовать…"
+
+msgid "Search…"
+msgstr "Поиск…"
+
+msgid "<i>Calculating Free Space…</i>"
+msgstr "<i>Вычисляется свободное место…</i>"
+
+msgid "Limited at {speed}"
+msgstr "Ограничено до {speed}"
+
+#. Translators: Second (optional) part of main window title "Appname - host:port" (added when connected to remote session)
+#. notice that leading space (before the dash) is included here
+msgid " - {host}:{port}"
+msgstr " — {host}:{port}"
+
+msgid "Network Error"
+msgstr "Ошибка сети"
+
+msgid "Idle"
+msgstr "Ожидание"
+
+msgid "Showing {visible_count:L} of {count:L} torrent"
+msgid_plural "Showing {visible_count:L} of {count:L} torrents"
+msgstr[0] "Отображается {visible_count:L} из {count:L} торрентов"
+msgstr[1] "Отображается {visible_count:L} из {count:L} торрентов"
+msgstr[2] "Отображается {visible_count:L} из {count:L} торрентов"
+msgstr[3] "Отображается {visible_count:L} из {count:L} торрентов"
+
+msgid "Torrent Files (*.torrent);;All Files (*.*)"
+msgstr "Торрент-файлы (*.torrent);;Все файлы (*.*)"
+
+msgid "{host} has not responded yet"
+msgstr "{host} ещё не ответил"
+
+msgid "{host} is responding"
+msgstr "{host} отвечает"
+
+#, fuzzy
+#| msgid "{host} last responded {time_span} ago"
+msgid "{host} last responded {time_span_ago}"
+msgstr "{host} ответил {time_span} тому назад"
+
+msgid "{host} is not responding"
+msgstr "{host} не отвечает"
+
+msgid "_Open…"
+msgstr "_Открыть…"
+
+msgid "Create a new torrent"
+msgstr "Создать новый торрент"
+
+msgid "Open the torrent's folder"
+msgstr "Открыть папку торрента"
+
+msgid "Ask tracker for more peers"
+msgstr "Позвать ещё участников с трекера"
+
+msgid "Verify local data"
+msgstr "Проверить локальные данные"
+
+msgid "Remove torrent and delete its files"
+msgstr "Удалить торрент и файлы"
+
+msgid "Compact View"
+msgstr "Компактный вид"
+
+msgid "_Main Window"
+msgstr "_Главное окно"
+
+msgid "Tray _Icon"
+msgstr "_Значок в области уведомлений"
+
+msgid "_Change Session…"
+msgstr "_Сменить сеанс…"
+
+#. Start a local session or connect to a running session
+msgid "Choose Session"
+msgstr "Выбрать сеанс"
+
+msgid "Bypass the queue and start now"
+msgstr "Пропустить очередь и запустить сейчас"
+
+msgid "{file_count:L} File"
+msgid_plural "{file_count:L} Files"
+msgstr[0] "{file_count:L} файл"
+msgstr[1] "{file_count:L} файла"
+msgstr[2] "{file_count:L} файлов"
+msgstr[3] "{file_count:L} файлов"
+
+msgid "{piece_count:L} Piece"
+msgid_plural "{piece_count:L} Pieces"
+msgstr[0] "{piece_count:L} часть"
+msgstr[1] "{piece_count:L} части"
+msgstr[2] "{piece_count:L} частей"
+msgstr[3] "{piece_count:L} частей"
+
+msgid "{total_size} in {files}; {pieces} @ {piece_size}"
+msgstr "{total_size} в {files}; {pieces} @ {piece_size}"
+
+msgid ""
+"To add a backup URL, add it on the line after the primary URL.\n"
+"To add another primary URL, add it after a blank line."
+msgstr ""
+"Чтобы добавить резервный адрес, добавьте его после основного в той же строке.\n"
+"Чтобы добавить ещё один основной адрес, добавьте пустую строку, а затем его в новой строке."
+
+#, fuzzy
+#| msgid "_Source:"
+msgid "Sou_rce:"
+msgstr "_Источник:"
+
+msgid "_Priority:"
+msgstr "Приоритет:"
+
+msgid "Select Folder"
+msgstr "Выбор папки"
+
+msgid "unknown"
+msgstr "неизвестно"
+
+msgid "checking…"
+msgstr "проверяется…"
+
+msgid "open"
+msgstr "открыт"
+
+msgid "closed"
+msgstr "закрыт"
+
+msgid "error"
+msgstr "ошибка"
+
+msgid "<b>Update succeeded!</b><p>Blocklist now has {count:L} rule.</p>"
+msgid_plural "<b>Update succeeded!</b><p>Blocklist now has {count:L} rules.</p>"
+msgstr[0] "<b>Обновление завершено!</b><p>В чёрном списке {count:L} правило.</p>"
+msgstr[1] "<b>Обновление завершено!</b><p>В чёрном списке {count:L} правила.</p>"
+msgstr[2] "<b>Обновление завершено!</b><p>В чёрном списке {count:L} правил.</p>"
+msgstr[3] "<b>Обновление завершено!</b><p>В чёрном списке {count:L} правил.</p>"
+
+msgid "Download of the blocklist failed."
+msgstr ""
+
+msgid "Update Blocklist"
+msgstr "Обновить чёрный список"
+
+msgid "Select \"Torrent Done Seeding\" Script"
+msgstr "Выбор сценария «Торрент завершил раздачу»"
+
+msgid "Select Watch Directory"
+msgstr "Выбор папки"
+
+msgid "Select Incomplete Directory"
+msgstr "Выбор папки"
+
+msgid "Select \"Torrent Done Downloading\" Script"
+msgstr "Выбор сценария «Торрент завершил загрузку»"
+
+msgid "Not supported by remote sessions"
+msgstr "Не поддерживается удалёнными сеансами"
+
+msgid "<i>Blocklist contains {count:L} rule</i>"
+msgid_plural "<i>Blocklist contains {count:L} rules</i>"
+msgstr[0] "<i>«Чёрный список» содержит {count:L} правило</i>"
+msgstr[1] "<i>«Чёрный список» содержит {count:L} правила</i>"
+msgstr[2] "<i>«Чёрный список» содержит {count:L} правил</i>"
+msgstr[3] "<i>«Чёрный список» содержит {count:L} правил</i>"
+
+#, fuzzy
+#| msgid "<i>Blocklist contains {count:L} rule</i>"
+#| msgid_plural "<i>Blocklist contains {count:L} rules</i>"
+msgid "<i>Blocklist has never been updated</i>"
+msgstr "<i>«Чёрный список» содержит {count:L} правило</i>"
+
+#, fuzzy
+#| msgid "<i>Blocklist contains {count:L} rule</i>"
+#| msgid_plural "<i>Blocklist contains {count:L} rules</i>"
+msgid "<i>Blocklist last updated {date}</i>"
+msgstr "<i>«Чёрный список» содержит {count:L} правило</i>"
+
+msgid "_Upload:"
+msgstr "_Отдача:"
+
+msgid "_Download:"
+msgstr "_Загрузка:"
+
+msgid "U_pload:"
+msgstr "Отдача:"
+
+msgid "Do_wnload:"
+msgstr "Загрузка:"
+
+msgid "Downloading"
+msgstr "Загрузка"
+
+msgid "Adding"
+msgstr "Добавление"
+
+msgid "Reads user clipboard content for torrents"
+msgstr "Считывает содержимое пользовательского буфера обмена на наличие торрентов"
+
+msgid "Detect new torrents from clipboard"
+msgstr "Искать новые торренты в буфере обмена"
+
+#. Please keep this phrase as short as possible, it's currently the longest and influences dialog width
+msgid "Download is i_nactive if data sharing stopped:"
+msgstr "Загрузка неак_тивна, если передача прекращена:"
+
+msgid "Seeding"
+msgstr "Раздача"
+
+msgid "Stop seedi_ng if idle for:"
+msgstr "Прекратить раздачу при _простое:"
+
+msgid "Encryption"
+msgstr "Шифрование"
+
+msgid "Start _minimized in notification area"
+msgstr "Запускать с_вёрнутым в область уведомлений"
+
+#, fuzzy
+#| msgid "Retransmission"
+msgid "Retransmission (Qt)"
+msgstr "Retransmission"
+
+msgid "Select Location"
+msgstr "Выберите папку"
+
+msgid "Error Renaming Path"
+msgstr "Ошибка переименования пути"
+
+msgid "Unable to rename \"{old_path}\" as \"{path}\": {error}."
+msgstr "Невозможно переименовать «{old_path}» в «{path}»: {error}."
+
+msgid "Error Adding Torrent"
+msgstr "Ошибка при добавлении торрента"
+
+msgid "{torrent_name} (copy of {hash})"
+msgstr "{torrent_name} (копия {hash})"
+
+msgid "Duplicate Torrent"
+msgstr "Повторяющийся торрент"
+
+msgid "Duplicate Torrents"
+msgstr "Повторяющиеся торренты"
+
+msgid "Unable to add {count} duplicate torrent"
+msgid_plural "Unable to add {count} duplicate torrents"
+msgstr[0] "Невозможно добавить {count} повторяющийся торрент"
+msgstr[1] "Невозможно добавить {count} повторяющихся торрента"
+msgstr[2] "Невозможно добавить {count} повторяющихся торрентов"
+msgstr[3] "Невозможно добавить {count} повторяющихся торрентов"
+
+msgid "Change Session"
+msgstr "Сменить сеанс"
+
+msgid "Source"
+msgstr "Источник"
+
+msgid "Start _Local Session"
+msgstr "_Запустить локальный сеанс"
+
+msgid "Connect to _Remote Session"
+msgstr "Подключить к _удалённому сеансу"
+
+msgid "_Host:"
+msgstr "Уз_ел:"
+
+msgid "_Port:"
+msgstr "_Порт:"
+
+msgid "_Authentication required"
+msgstr "_Требуется проверка подлинности"
+
+msgid "Remote root pa_th:"
+msgstr ""
+
+msgid "Tracker gave a warning: {warning}"
+msgstr "Трекер выдал предупреждение: {warning}"
+
+msgid "Tracker gave an error: {error}"
+msgstr "Трекер выдал ошибку: {error}"
+
+msgid "Error: {error}"
+msgstr "Ошибка: {error}"
+
+#, fuzzy
+#| msgid "Magnetized transfer - retrieving metadata (%1%)"
+msgid "Magnetized torrent - retrieving metadata ({percent_done}%)"
+msgstr "Магнит-передача — получение метаданных (%1%)"
+
+#, no-c-format
+msgid "Downloading metadata from {active_count:L} peer ({percent_done}% done)"
+msgid_plural "Downloading metadata from {active_count:L} peers ({percent_done}% done)"
+msgstr[0] "Загрузка метаданных от {active_count:L} участника ({percent_done}% завершено)"
+msgstr[1] "Загрузка метаданных от {active_count:L} участников ({percent_done}% завершено)"
+msgstr[2] "Загрузка метаданных от {active_count:L} участников ({percent_done}% завершено)"
+msgstr[3] "Загрузка метаданных от {active_count:L} участников ({percent_done}% завершено)"
+
+msgid "Downloading from {active_count:L} peer"
+msgid_plural "Downloading from {active_count:L} peers"
+msgstr[0] "Приём от {active_count:L} участника"
+msgstr[1] "Приём от {active_count:L} участников"
+msgstr[2] "Приём от {active_count:L} участников"
+msgstr[3] "Приём от {active_count:L} участников"
+
+msgid " and {webseed_count:L} web seed"
+msgid_plural " and {webseed_count:L} web seeds"
+msgstr[0] " и {webseed_count:L} веб-раздачи"
+msgstr[1] " и {webseed_count:L} веб-раздач"
+msgstr[2] " и {webseed_count:L} веб-раздач"
+msgstr[3] " и {webseed_count:L} веб-раздач"
+
+msgid "Seeding to {active_count:L} peer"
+msgid_plural "Seeding to {active_count:L} peers"
+msgstr[0] "Раздаётся {active_count:L} участнику"
+msgstr[1] "Раздаётся {active_count:L} участникам"
+msgstr[2] "Раздаётся {active_count:L} участникам"
+msgstr[3] "Раздаётся {active_count:L} участникам"
+
+msgid " - "
+msgstr " — "
+
+msgid "To add a backup URL, add it on the next line after a primary URL."
+msgstr "Чтобы добавить резервный адрес, добавьте его в следующей строке после основного адреса."
+
+msgid "To add a new primary URL, add it after a blank line."
+msgstr "Чтобы добавить новый основной адрес, укажите его после пустой строки."
 
 msgid "{file_count:L} file, {total_size}\n"
 msgid_plural "{file_count:L} files, {total_size}\n"
@@ -2077,7 +3069,10 @@ msgstr[1] "минуты"
 msgstr[2] "минут"
 msgstr[3] "минут"
 
-msgid "seconds"
+#, fuzzy
+#| msgid "seconds"
+#| msgid_plural "seconds"
+msgid "second"
 msgid_plural "seconds"
 msgstr[0] "секунда"
 msgstr[1] "секунды"
@@ -2090,6 +3085,108 @@ msgstr[0] "день"
 msgstr[1] "дня"
 msgstr[2] "дней"
 msgstr[3] "дней"
+
+msgid "seconds"
+msgid_plural "seconds"
+msgstr[0] "секунда"
+msgstr[1] "секунды"
+msgstr[2] "секунд"
+msgstr[3] "секунд"
+
+#~ msgid "Finished"
+#~ msgstr "Завершён"
+
+#~ msgid "We would upload to this peer if they asked"
+#~ msgstr "Возможна отдача этому участнику, если он будет заинтересован"
+
+#~ msgid "Dn Blocks"
+#~ msgstr "Принятые блоки"
+
+#~ msgid "Up Blocks"
+#~ msgstr "Переданные блоки"
+
+#~ msgid "We Cancelled"
+#~ msgstr "Отменено вами"
+
+#~ msgid "They Cancelled"
+#~ msgstr "Отменено другими участниками"
+
+#~ msgid "Have"
+#~ msgstr "В наличии"
+
+#~ msgctxt "current session totals"
+#~ msgid "Down: {downloaded_size}, Up: {uploaded_size}"
+#~ msgstr "Скачано: {downloaded_size}, Отдано: {uploaded_size}"
+
+#~ msgctxt "all-time totals"
+#~ msgid "Down: {downloaded_size}, Up: {uploaded_size}"
+#~ msgstr "Скачано: {downloaded_size}, Отдано: {uploaded_size}"
+
+#~ msgid "Select a File"
+#~ msgstr "Выберите файл"
+
+#~ msgid "Inhibiting desktop hibernation"
+#~ msgstr "Запретить переход в спящий режим"
+
+#~ msgid "Couldn't inhibit desktop hibernation: {error}"
+#~ msgstr "Не удалось запретить переход в спящий режим: {error}"
+
+#~ msgid "Allowing desktop hibernation"
+#~ msgstr "Разрешение ухода в спящий режим"
+
+#~ msgid "Open URL…"
+#~ msgstr "Открыть URL…"
+
+#~ msgid "Start all torrents"
+#~ msgstr "Запустить все торренты"
+
+#~ msgid "Pause all torrents"
+#~ msgstr "Приостановить все торренты"
+
+#~ msgid "Start torrent now"
+#~ msgstr "Запустить торрент сейчас"
+
+#~ msgid "Copy _Magnet Link to Clipboard"
+#~ msgstr "Копироват_ь магнит-ссылку в буфер обмена"
+
+#~ msgid "Enable Alternative Speed _Limits"
+#~ msgstr "Включить расширенное ограничение с_корости"
+
+#~ msgid "Torrent size:"
+#~ msgstr "Размер торрента:"
+
+#~ msgid "_New"
+#~ msgstr "_Новый"
+
+#~ msgid "Source F_older:"
+#~ msgstr "Исходный к_аталог:"
+
+#~ msgid "Source _File:"
+#~ msgstr "Исходный ф_айл:"
+
+#~ msgid "P_ause"
+#~ msgstr "П_ауза"
+
+#~ msgid "Keep _incomplete torrents in:"
+#~ msgstr "Сохранять _незавершённые торренты в:"
+
+#~ msgid "Call scrip_t when done downloading:"
+#~ msgstr "Выполнять сц_енарий по окончании загрузки:"
+
+#~ msgid "_Port used for incoming connections:"
+#~ msgstr "_Порт входящих подключений:"
+
+#~ msgid "Enable µ_TP for peer communication"
+#~ msgstr "Ис_пользовать µTP для связи с другими участниками"
+
+#~ msgid "_Inhibit hibernation when torrents are active"
+#~ msgstr "_Запрещать переход в спящий режим при активных торрентах"
+
+#~ msgid "Torrent _location:"
+#~ msgstr "Расположение торре_нта:"
+
+#~ msgid "Couldn't read filename: {error} ({error_code})"
+#~ msgstr "Не удалось прочесть имя файла: {error} ({error_code})"
 
 #~ msgid "Couldn't find pending RPC request for tag {tag}"
 #~ msgstr "Не удалось найти ожидающий запрос RPC для тега {tag}"
