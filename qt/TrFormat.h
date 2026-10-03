@@ -30,13 +30,6 @@
 // TR_TEXT_C("Verb", "Seeding")
 #define TR_TEXT_C(context, msgid) ::trqt::detail::textInContext(context, msgid)
 
-// Translated text in the plural form for `n`, left unformatted,
-// e.g. a spin box's TR_TEXT_N("{minutes:L} minute", "{minutes:L} minutes", minutes) around its own number.
-// TR_FORMAT_N also formats the text.
-// Text that doesn't show the count picks its wording with `count == 1` instead,
-// because a language's form for one can cover other counts, e.g. 21 in Russian.
-#define TR_TEXT_N(msgid, msgid_plural, n) ::trqt::detail::pluralText(msgid, msgid_plural, n)
-
 // Translated text for a widget that reads "&" as a mnemonic marker, such as a menu item, button or buddy label,
 // whether or not the English marks a mnemonic: TR_MNEMONIC("_File") returns "&File", and a translation's "&" stays literal.
 // The catalog marks a mnemonic with "_" and writes a literal underscore as "__", as GTK does.
@@ -49,6 +42,8 @@
 #define TR_FORMAT(msgid, ...) ::trqt::detail::formatTranslation(tr_gettext(msgid), msgid, __VA_ARGS__)
 
 // Like TR_FORMAT, in the plural form for `n`.
+// Text that doesn't show the count picks its wording with `count == 1` instead,
+// because a language's form for one can cover other counts, e.g. 21 in Russian.
 #define TR_FORMAT_N(msgid, msgid_plural, n, ...) ::trqt::detail::formatPlural(msgid, msgid_plural, n, __VA_ARGS__)
 
 template<>
@@ -74,7 +69,7 @@ void setGlobalFmtLocale();
 
 // Splits `translation` around its `name` field, e.g. into a spin box's prefix and suffix.
 // A translation without exactly that one field is ignored in favor of `source`.
-[[nodiscard]] std::pair<QString, QString> splitAtField(QString const& translation, char const* source, std::string_view name);
+[[nodiscard]] std::pair<QString, QString> splitAtField(char const* translation, char const* source, std::string_view name);
 
 // Translates text from a Qt Designer file. uic calls this, as its --tr option asks.
 // Designer files mark mnemonics with "_", as TR_MNEMONIC does, and use "_" for nothing else,
@@ -89,12 +84,6 @@ namespace detail
 [[nodiscard]] QString text(char const* msgid);
 
 [[nodiscard]] QString textInContext(char const* context, char const* msgid);
-
-template<std::integral T>
-[[nodiscard]] QString pluralText(char const* const msgid, char const* const msgid_plural, T const n)
-{
-    return QString::fromUtf8(tr_ngettext(msgid, msgid_plural, n));
-}
 
 [[nodiscard]] QString mnemonicText(char const* msgid);
 

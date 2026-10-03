@@ -123,11 +123,6 @@ using tr::app::l10n::parse_fields;
     });
 }
 
-[[nodiscard]] std::string_view toStringView(QByteArray const& bytes) noexcept
-{
-    return { bytes.constData(), static_cast<size_t>(bytes.size()) };
-}
-
 // Turns the catalog's mnemonic markers into Qt's:
 // "&" becomes "&&", "_X" becomes "&X", and "__" becomes "_".
 [[nodiscard]] QString toQtMnemonic(std::string_view const text)
@@ -154,7 +149,7 @@ using tr::app::l10n::parse_fields;
 }
 
 // Warns once per source string, since views format the same text on every repaint.
-void warnBadTranslation(QString const& translation, char const* source)
+void warnBadTranslation(char const* const translation, char const* const source)
 {
     static thread_local auto warned = std::set<char const*>{};
     if (warned.insert(source).second) {
@@ -187,7 +182,7 @@ void setGlobalFmtLocale()
     tr_locale_set_global(std::locale{ std::locale{}, new QLocaleFacet{ QLocale{} } });
 }
 
-std::pair<QString, QString> splitAtField(QString const& translation, char const* const source, std::string_view const name)
+std::pair<QString, QString> splitAtField(char const* const translation, char const* const source, std::string_view const name)
 {
     // Unescapes "{{" and "}}", which parse_fields() has checked come in pairs.
     auto const unescape = [](std::string_view const text) {
@@ -211,8 +206,7 @@ std::pair<QString, QString> splitAtField(QString const& translation, char const*
         return std::pair{ unescape(text.substr(0, field_begin)), unescape(text.substr(field_end)) };
     };
 
-    auto const utf8 = translation.toUtf8();
-    if (auto result = split(toStringView(utf8)); result) {
+    if (auto result = split(translation); result) {
         return *std::move(result);
     }
 
@@ -256,7 +250,7 @@ QString detail::formatTranslation(
         return format(translation);
     }
 
-    warnBadTranslation(QString::fromUtf8(translation), source);
+    warnBadTranslation(translation, source);
 
     // A source that doesn't fit is a bug in the calling code. Show it unformatted.
     return fits(source, source_fields, arg_infos) ? format(source) : QString::fromUtf8(source);

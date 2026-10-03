@@ -28,6 +28,7 @@
 #include <QtWidgets/QStyle>
 
 #include <libtransmission/macros.h>
+#include <libtransmission/utils.h> // tr_ngettext()
 
 #include "QtCompat.h"
 #include "TrFormat.h"
@@ -125,7 +126,7 @@ void Utils::updateSpinBoxFormat(
 {
     auto const value = spinBox->value();
     auto const [units_prefix, units_suffix] = trqt::splitAtField(
-        TR_TEXT_N(msgid, msgid_plural, value),
+        tr_ngettext(msgid, msgid_plural, value),
         value == 1 ? msgid : msgid_plural,
         field);
 
