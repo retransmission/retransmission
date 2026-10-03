@@ -26,7 +26,7 @@
       <item row="0" column="0">
        <widget class="QLabel" name="newLocationLabel">
         <property name="text">
-         <string>New &amp;location:</string>
+         <string>New _location:</string>
         </property>
        </widget>
       </item>
@@ -46,14 +46,14 @@
       <item row="1" column="0" colspan="2">
        <widget class="QRadioButton" name="moveDataRadio">
         <property name="text">
-         <string>&amp;Move from the current folder</string>
+         <string>_Move from the current folder</string>
         </property>
        </widget>
       </item>
       <item row="2" column="0" colspan="2">
        <widget class="QRadioButton" name="findDataRadio">
         <property name="text">
-         <string>Local data is &amp;already there</string>
+         <string>Local data is _already there</string>
         </property>
        </widget>
       </item>
