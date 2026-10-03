@@ -73,6 +73,7 @@
         </RegistryKey>
       </Component>
 
+      <Directory Id="LOCALEINSTALLDIR" Name="locale" />
       <Directory Id="QMINSTALLDIR" Name="translations" />
 
     </DirectoryRef>
@@ -191,6 +192,7 @@
       <?endif ?>
       <ComponentRef Id="dll.dbus" />
       <ComponentGroupRef Id="QtClientTranslationsComponents" />
+      <ComponentGroupRef Id="QtClientCatalogsComponents" />
       <ComponentGroupRef Id="QtTranslationsComponents" />
     </ComponentGroup>
   </Fragment>
