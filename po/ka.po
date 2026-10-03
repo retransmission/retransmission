@@ -11,8 +11,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-01-04 14:15+0000\n"
+"Report-Msgid-Bugs-To: https://github.com/retransmission/retransmission/issues\n"
+"POT-Creation-Date: 2026-10-03 11:48-0500\n"
 "PO-Revision-Date: 2017-01-26 19:47+0000\n"
 "Last-Translator: Temuri Doghonadze <temuri.doghonadze@gmail.com>, 2023\n"
 "Language-Team: Georgian (https://app.transifex.com/transmissionbt/teams/33778/ka/)\n"
@@ -26,6 +26,9 @@ msgid "None"
 msgstr "არაფერი"
 
 msgid "Inf"
+msgstr ""
+
+msgid "Another process is already using '{path}'."
 msgstr ""
 
 msgid "Couldn't read '{path}': {error} ({error_code})"
@@ -53,6 +56,9 @@ msgid "Reloading settings from '{path}'"
 msgstr ""
 
 msgid "Couldn't initialize daemon: {error} ({error_code})"
+msgstr ""
+
+msgid "Waiting for another process to release '{path}'"
 msgstr ""
 
 msgid "Loading settings from '{path}'"
@@ -104,8 +110,13 @@ msgid_plural "Couldn't add duplicate torrents"
 msgstr[0] "ვერ ვამატებ ტორენტის დუბლიკატს"
 msgstr[1] "ვერ ვამატებ ტორენტის დუბლიკატს"
 
+#, fuzzy
 msgid "A fast and easy BitTorrent client"
-msgstr "სწრაფი და მარტივი ბიტტორენტ კლიენტი"
+msgstr ""
+"#-#-#-#-#  ka.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"სწრაფი და მარტივი ბიტტორენტ კლიენტი\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"სწრაფი და მარტივი BitTorrent კლიენტი"
 
 msgid "Copyright © The {appname} Project"
 msgstr ""
@@ -125,42 +136,68 @@ msgid "Use global settings"
 msgstr "გლობალური პარამეტრების გამოყენება"
 
 msgid "Seed regardless of ratio"
-msgstr ""
+msgstr "სიდირება შეფარდების მიუხედავად"
 
 msgid "Stop seeding at ratio:"
-msgstr ""
+msgstr "სიდირების შეჩერება შეფარდებაზე:"
 
 msgid "Seed regardless of activity"
-msgstr ""
+msgstr "სიდირება აქტიურობის მიუხედავად"
 
 msgid "Stop seeding if idle for N minutes:"
 msgstr ""
 
 msgid "Queued for verification"
-msgstr ""
+msgstr "რიგშია შემოწმებისთვის"
 
 msgid "Verifying local data"
-msgstr ""
+msgstr "ადგილობრივი მონაცემების გადამოწმება"
 
 msgid "Queued for download"
-msgstr ""
+msgstr "რიგშია ჩამოტვირთვისთვის"
 
+#, fuzzy
 msgctxt "Verb"
 msgid "Downloading"
-msgstr "გადმოწერა"
+msgstr ""
+"#-#-#-#-#  ka.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"გადმოწერა\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"ჩამოტვირთვა"
 
+#, fuzzy
 msgid "Queued for seeding"
-msgstr "რიგშია Seeding-სთვის"
+msgstr ""
+"#-#-#-#-#  ka.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"რიგშია Seeding-სთვის\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"რიგშია სიდირებისთვის"
 
+#, fuzzy
 msgctxt "Verb"
 msgid "Seeding"
-msgstr "Seeding"
+msgstr ""
+"#-#-#-#-#  ka.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Seeding\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"ატვირთვა\n"
+"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"სიდირება"
 
-msgid "Finished"
-msgstr "დასრულებულია"
+#, fuzzy
+#| msgid "Incomplete"
+msgid "Seeding complete"
+msgstr "არასრული"
 
+#, fuzzy
 msgid "Paused"
-msgstr "შეჩერება"
+msgstr ""
+"#-#-#-#-#  ka.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"შეჩერება\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"შეჩერებული\n"
+"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"შეჩერებულია"
 
 msgid "N/A"
 msgstr "N/A"
@@ -172,19 +209,19 @@ msgid "No Torrents Selected"
 msgstr ""
 
 msgid "Private to this tracker -- DHT and PEX disabled"
-msgstr ""
+msgstr "პრივატული ამ ტრეკერთან -- DHT და PEX გამორთულია"
 
 msgid "Public torrent"
 msgstr "საჯარო ტორენტი"
 
 msgid "Created by {creator} on {date}"
-msgstr ""
+msgstr "ავტორი {creator} - {date}"
 
 msgid "Created by {creator}"
-msgstr ""
+msgstr "ავტორი: {creator}"
 
 msgid "Created on {date}"
-msgstr ""
+msgstr "შექმნილი - {date}"
 
 msgid "Unknown"
 msgstr "უცნობი"
@@ -206,6 +243,7 @@ msgstr ""
 msgid "{current_size} ({percent_done}% of {percent_available}% available)"
 msgstr ""
 
+#, c-format
 msgid "{current_size} ({percent_done}% of {percent_available}% available; {unverified_size} unverified)"
 msgstr ""
 
@@ -213,7 +251,7 @@ msgid "{downloaded_size} (+{discarded_size} discarded after failed checksum)"
 msgstr ""
 
 msgid "{uploaded_size} (Ratio: {ratio})"
-msgstr ""
+msgstr "{uploaded_size} (შეფარდება: {ratio})"
 
 msgid "No errors"
 msgstr "შეცდომების გარეშე"
@@ -222,31 +260,71 @@ msgid "Never"
 msgstr "არასოდეს"
 
 msgid "Active now"
-msgstr ""
+msgstr "ახლა აქტიური"
 
+#, fuzzy
 msgid "Optimistic unchoke"
-msgstr "ოპტიმისტური ანჩოკი"
+msgstr ""
+"#-#-#-#-#  ka.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"ოპტიმისტური ანჩოკი\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"ოპტიმისტური განჭედვა"
 
+#, fuzzy
 msgid "Downloading from this peer"
-msgstr "ამ პარტნიორისგან გადმოწერა"
+msgstr ""
+"#-#-#-#-#  ka.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"ამ პარტნიორისგან გადმოწერა\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"იტვირთება ამ პირისგან"
 
+#, fuzzy
 msgid "We would download from this peer if they would let us"
-msgstr "პარტნიორისგან უფლების მიღების შემთხვევაში ამასმისგან გადმოვწერ"
+msgstr ""
+"#-#-#-#-#  ka.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"პარტნიორისგან უფლების მიღების შემთხვევაში ამასმისგან გადმოვწერ\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"ნება რომ მოგვცეს, ამ პირისგან ჩამოვტვირთავდით"
 
+#, fuzzy
 msgid "Uploading to peer"
-msgstr "პარტნიორზე ატვირთვა"
+msgstr ""
+"#-#-#-#-#  ka.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"პარტნიორზე ატვირთვა\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"იტვირთება პირთან"
 
-msgid "We would upload to this peer if they asked"
-msgstr "ჩვენ გვინდა პარტნიორებთან ატვირთვა, თუ გვთხოვენ"
+#, fuzzy
+msgid "This peer would download from us if we would let them"
+msgstr ""
+"#-#-#-#-#  ka.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"პარტნიორისგან უფლების მიღების შემთხვევაში ამასმისგან გადმოვწერ\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"ნება რომ მოგვცეს, ამ პირისგან ჩამოვტვირთავდით"
 
+#, fuzzy
 msgid "Peer has unchoked us, but we're not interested"
-msgstr "პარტნიორმა გაგვიკეთა ანჩოკი, მაგრამ ჩვენ დაინტერესებულნი არა ვართ"
+msgstr ""
+"#-#-#-#-#  ka.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"პარტნიორმა გაგვიკეთა ანჩოკი, მაგრამ ჩვენ დაინტერესებულნი არა ვართ\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"პირმა განგვჭედა, მაგრამ ეს არ გვაინტერესებს"
 
+#, fuzzy
 msgid "We unchoked this peer, but they're not interested"
-msgstr "ჩვენ ანჩოკი გავუკეთეთ პირს, მაგრამ ისინი დაინტერესებულნი არ არიან"
+msgstr ""
+"#-#-#-#-#  ka.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"ჩვენ ანჩოკი გავუკეთეთ პირს, მაგრამ ისინი დაინტერესებულნი არ არიან\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"ეს პირი განვჭედეთ, მაგრამ მას ეს არ აინტერესებს"
 
+#, fuzzy
 msgid "Encrypted connection"
-msgstr "დაშიფრული შეერთება"
+msgstr ""
+"#-#-#-#-#  ka.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"დაშიფრული შეერთება\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"დაშიფრული კავშირი"
 
 msgid "Peer was found through Peer Exchange (PEX)"
 msgstr ""
@@ -254,16 +332,23 @@ msgstr ""
 msgid "Peer was found through DHT"
 msgstr ""
 
+#, fuzzy
 msgid "Peer is an incoming connection"
-msgstr "პარტნიორი არის შემომავალი შეერთება"
+msgstr ""
+"#-#-#-#-#  ka.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"პარტნიორი არის შემომავალი შეერთება\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"პირი შემომავალი კავშირია"
 
 msgid "Peer is connected over µTP"
+msgstr ""
+
+msgid "Peer supports holepunch (BEP 55)"
 msgstr ""
 
 msgid "Address"
 msgstr "მისამართი"
 
-#. % is percent done
 msgid "%"
 msgstr "%"
 
@@ -273,23 +358,21 @@ msgstr ""
 msgid "Up Reqs"
 msgstr ""
 
-msgid "Dn Blocks"
-msgstr ""
-
-msgid "Up Blocks"
-msgstr ""
-
-msgid "We Cancelled"
-msgstr ""
-
-msgid "They Cancelled"
-msgstr ""
-
+#, fuzzy
 msgid "Down"
-msgstr "ქვემოთ"
+msgstr ""
+"#-#-#-#-#  ka.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"ქვემოთ\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"ჩამ."
 
+#, fuzzy
 msgid "Up"
-msgstr "ზემოთ"
+msgstr ""
+"#-#-#-#-#  ka.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"ზემოთ\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"ატ."
 
 msgid "Client"
 msgstr "კლიენტი"
@@ -300,58 +383,6 @@ msgstr "ალმები"
 msgid "Web Seeds"
 msgstr ""
 
-msgid "Got a list of {markup_begin}{peer_count} peer{markup_end} {time_span_ago}"
-msgid_plural "Got a list of {markup_begin}{peer_count} peers{markup_end} {time_span_ago}"
-msgstr[0] ""
-msgstr[1] ""
-
-#. {markup_begin} and {markup_end} should surround the time_span
-msgid "Peer list request {markup_begin}timed out {time_span_ago}{markup_end}; will retry"
-msgstr ""
-
-#. {markup_begin} and {markup_end} should surround the error
-msgid "Got an error '{markup_begin}{error}{markup_end}' {time_span_ago}"
-msgstr ""
-
-msgid "No updates scheduled"
-msgstr ""
-
-msgid "Asking for more peers {time_span_from_now}"
-msgstr ""
-
-msgid "Queued to ask for more peers"
-msgstr ""
-
-#. {markup_begin} and {markup_end} should surround time_span_ago
-msgid "Asked for more peers {markup_begin}{time_span_ago}{markup_end}"
-msgstr ""
-
-msgid "Tracker had {markup_begin}{seeder_count} {seeder_or_seeders} and {leecher_count} {leecher_or_leechers}{markup_end} {time_span_ago}"
-msgstr ""
-
-msgid "seeder"
-msgid_plural "seeders"
-msgstr[0] ""
-msgstr[1] ""
-
-msgid "leecher"
-msgid_plural "leechers"
-msgstr[0] ""
-msgstr[1] ""
-
-#. {markup_begin} and {markup_end} should surround the error text
-msgid "Got a scrape error '{markup_begin}{error}{markup_end}' {time_span_ago}"
-msgstr ""
-
-msgid "Asking for peer counts in {time_span_from_now}"
-msgstr ""
-
-msgid "Queued to ask for peer counts"
-msgstr ""
-
-msgid "Asked for peer counts {markup_begin}{time_span_ago}{markup_end}"
-msgstr ""
-
 msgid "{torrent_name} - Edit Trackers"
 msgstr ""
 
@@ -359,7 +390,7 @@ msgid "List contains invalid URLs"
 msgstr ""
 
 msgid "Please correct the errors and try again."
-msgstr ""
+msgstr "გთხოვთ გამოასწორეთ შეცდომები და სცადეთ ხელახლა."
 
 msgid "{torrent_name} - Add Tracker"
 msgstr ""
@@ -376,49 +407,54 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "Remove torrent?"
-msgstr ""
+msgstr "გსურთ ტორენტის ამოღება?"
+
+msgid "Delete this torrent's downloaded files?"
+msgstr "გსურთ ამ ტორენტის ჩამოტვირთული ფაილების წაშლა?"
 
 msgid "Remove {count:L} torrent?"
 msgid_plural "Remove {count:L} torrents?"
-msgstr[0] ""
-msgstr[1] ""
-
-msgid "Delete this torrent's downloaded files?"
-msgstr ""
+msgstr[0] "ამოღებულ იქნას {count:L} ტორენტი?"
+msgstr[1] "ამოღებულ იქნას {count:L} ტორენტი?"
 
 msgid "Delete this {count:L} torrent's downloaded files?"
 msgid_plural "Delete these {count:L} torrents' downloaded files?"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "წაიშალოს ამ {count:L} ტორენტების ჩამოტვირთული ფაილები?"
+msgstr[1] "წაიშალოს ამ {count:L} ტორენტების ჩამოტვირთული ფაილები?"
 
-msgid "Once removed, continuing the transfer will require the torrent file or magnet link."
-msgid_plural "Once removed, continuing the transfers will require the torrent files or magnet links."
-msgstr[0] ""
-msgstr[1] ""
+#, fuzzy
+#| msgid "Once removed, continuing the transfer will require the torrent file or magnet link."
+msgid "Once removed, you'll need the torrent file or magnet link to add it again."
+msgstr "ამოღების შემდეგ, ტრანსფერის გაგრძელებისთვის საჭირო იქნება ტორენტ ფაილი ან მაგნიტური ბმული."
+
+#, fuzzy
+#| msgid "Once removed, continuing the transfers will require the torrent files or magnet links."
+msgid "Once removed, you'll need the torrent files or magnet links to add them again."
+msgstr "ამოღების შემდეგ, ტრანსფერების გაგრძელებისთვის საჭირო იქნება ტორენტ ფაილები ან მაგნიტური ბმულები."
 
 msgid "This torrent has not finished downloading."
-msgstr ""
+msgstr "ტორენტს არ დაუსრულებია ჩამოტვირთვა."
 
 msgid "These torrents have not finished downloading."
-msgstr ""
+msgstr "ტორენტებს არ დაუსრულებიათ ჩამოტვირთვა."
 
 msgid "This torrent is connected to peers."
-msgstr ""
+msgstr "ტორენტი დაკავშირებულია პირებთან."
 
 msgid "These torrents are connected to peers."
-msgstr ""
+msgstr "ტორენტები დაკავშირებულია პირებთან."
 
 msgid "One of these torrents is connected to peers."
-msgstr ""
+msgstr "ერთ-ერთი ტორენტი დაკავშირებულია პირებთან."
 
 msgid "Some of these torrents are connected to peers."
-msgstr ""
+msgstr "ზოგიერთი ტორენტი დაკავშირებულია პირებთან."
 
 msgid "One of these torrents has not finished downloading."
-msgstr ""
+msgstr "ერთ-ერთი ტორენტს ჩამოტვირთვა არ დაუსრულებია."
 
 msgid "Some of these torrents have not finished downloading."
-msgstr ""
+msgstr "ზოგიერთ ტორენტს ჩამოტვირთვა არ დაუსრულებია."
 
 msgid "_Cancel"
 msgstr "_შეწყვეტა"
@@ -426,14 +462,27 @@ msgstr "_შეწყვეტა"
 msgid "_Delete"
 msgstr "_წაშლა"
 
+#. Removes the torrent from the list and keeps its downloaded files
+#, fuzzy
 msgid "_Remove"
-msgstr "_მოცილება"
+msgstr ""
+"#-#-#-#-#  ka.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_მოცილება\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"მ_ოცილება\n"
+"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_ამოღება"
 
 msgid "High"
 msgstr "მაღალი"
 
+#, fuzzy
 msgid "Normal"
-msgstr "ნორმალური"
+msgstr ""
+"#-#-#-#-#  ka.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"ნორმალური\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"ჩვეულებრივი"
 
 msgid "Low"
 msgstr "დაბალი"
@@ -447,8 +496,8 @@ msgstr "სახელი"
 msgid "Size"
 msgstr "ზომა"
 
-msgid "Have"
-msgstr "მაქვს:"
+msgid "Progress"
+msgstr "პროგრესი"
 
 msgid "Download"
 msgstr "ჩამოტვირთვა"
@@ -462,20 +511,55 @@ msgstr "ყველა"
 msgid "Active"
 msgstr "აქტიური"
 
+#, fuzzy
 msgctxt "Verb"
 msgid "Verifying"
-msgstr "შემოწმება"
+msgstr ""
+"#-#-#-#-#  ka.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"შემოწმება\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"გადამოწმებული"
 
+#, fuzzy
 msgid "Error"
-msgstr "შეცდომა"
+msgstr ""
+"#-#-#-#-#  ka.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"შეცდომა\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"შეცდომა\n"
+"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"შეცდომიანი"
 
+#, fuzzy
 msgid "_Show:"
-msgstr "[ჩვენება]"
+msgstr ""
+"#-#-#-#-#  ka.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"[ჩვენება]\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"[_ჩვენება]"
 
 msgid "_Show {count:L} of:"
 msgstr ""
 
 msgid "{disk_space} free"
+msgstr "{disk_space} თავისუფალი"
+
+msgid "Where to look for configuration files"
+msgstr ""
+
+msgid "Start with all torrents paused"
+msgstr "ყველა ტორენტის შეჩერება დაწყებისას"
+
+msgid "Start minimized in notification area"
+msgstr ""
+
+msgid "Show version number and exit"
+msgstr "ვერსიის ჩვენება და გასვლა"
+
+msgid "[torrent files or urls]"
+msgstr ""
+
+msgid "Run '{program} --help' to see a full list of available command line options.\n"
 msgstr ""
 
 msgid ""
@@ -492,42 +576,37 @@ msgid "Unlimited"
 msgstr "შეუზღუდავი"
 
 msgid "Seed Forever"
-msgstr ""
+msgstr "სიდირება სამუდამოდ"
 
 msgid "Limit Download Speed"
-msgstr ""
+msgstr "ჩამოტვირთვის სიჩქარის შეზღუდვა"
 
 msgid "Limit Upload Speed"
-msgstr ""
+msgstr "ატვირთვის სიჩქარის შეზღუდვა"
 
 msgid "Stop Seeding at Ratio"
-msgstr ""
+msgstr "სიდირების შეჩერება ამ შეფარდებაზე"
 
 msgid "Stop at Ratio ({ratio})"
-msgstr ""
+msgstr "შეჩერება ამ შეფარდებაზე ({ratio})"
 
 msgid "Total Ratio"
-msgstr ""
+msgstr "საერთო შეფარდება"
 
 msgid "Session Ratio"
-msgstr ""
+msgstr "სესიის შეფარდება"
 
 msgid "Total Transfer"
-msgstr ""
+msgstr "საერთო ტრანსფერი"
 
 msgid "Session Transfer"
-msgstr ""
+msgstr "სესიის ტრანსფერი"
+
+msgid "Down: {downloaded_size}, Up: {uploaded_size}"
+msgstr "ჩამ.: {downloaded_size}, ატვ.: {uploaded_size}"
 
 msgid "Ratio: {ratio}"
-msgstr ""
-
-msgctxt "current session totals"
-msgid "Down: {downloaded_size}, Up: {uploaded_size}"
-msgstr ""
-
-msgctxt "all-time totals"
-msgid "Down: {downloaded_size}, Up: {uploaded_size}"
-msgstr ""
+msgstr "შეფარდება: {ratio}"
 
 msgid "{download_speed} ▾"
 msgstr ""
@@ -585,6 +664,9 @@ msgstr "დრო"
 msgid "Couldn't create proxy for '{bus}': {error} ({error_code})"
 msgstr ""
 
+msgid "Couldn't spawn async process \"'{command}'\": {error} ({error_code})"
+msgstr ""
+
 msgid "Open File"
 msgstr "ფაილის გახსნა"
 
@@ -598,7 +680,7 @@ msgid "Start Now"
 msgstr "ახლა დაწყება"
 
 msgid "Torrent Added"
-msgstr ""
+msgstr "ტორენტი დაემატა"
 
 msgid "Torrent files"
 msgstr "ტორენტ ფაილები"
@@ -613,31 +695,49 @@ msgid "_Open"
 msgstr "_გახსნა"
 
 msgid "Show options dialog"
+msgstr "პარამეტრების დიალოგის ჩვენება"
+
+msgid "Other…"
 msgstr ""
 
-msgid "Select a File"
+msgid "Select File"
 msgstr "ფაილის არჩევა"
 
 msgid "(None)"
-msgstr ""
+msgstr "(არაფერი)"
 
 msgid "Allow encryption"
-msgstr ""
+msgstr "დაშიფვრის დაშვება"
 
+#, fuzzy
 msgid "Prefer encryption"
-msgstr "მირჩევნია დავშიფრო"
+msgstr ""
+"#-#-#-#-#  ka.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"მირჩევნია დავშიფრო\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"უპირატესობა დაშიფვრას"
 
 msgid "Require encryption"
-msgstr ""
+msgstr "დაშიფვრის მოთხოვნა"
 
 msgid "Every Day"
 msgstr "ყოველდღე"
 
+#, fuzzy
 msgid "Weekdays"
-msgstr "სამუსაო დღეებში"
+msgstr ""
+"#-#-#-#-#  ka.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"სამუსაო დღეებში\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"სამუშაო დღეებში"
 
+#, fuzzy
 msgid "Weekends"
-msgstr "კვირის ბოლოს"
+msgstr ""
+"#-#-#-#-#  ka.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"კვირის ბოლოს\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"შაბათ-კვირას"
 
 msgid "Blocklist has {count:L} entry"
 msgid_plural "Blocklist has {count:L} entries"
@@ -688,18 +788,10 @@ msgstr ""
 msgid "This may take a moment…"
 msgstr ""
 
+msgid "Couldn't open watchdir '{dirname}': {error} ({error_code})"
+msgstr ""
+
 msgid "Couldn't read '{path}'"
-msgstr ""
-
-#. logging
-msgid "Inhibiting desktop hibernation"
-msgstr ""
-
-msgid "Couldn't inhibit desktop hibernation: {error}"
-msgstr ""
-
-#. logging
-msgid "Allowing desktop hibernation"
 msgstr ""
 
 msgid "Couldn't find pending RPC request for id {id}"
@@ -707,8 +799,8 @@ msgstr ""
 
 msgid "Started {count:L} time"
 msgid_plural "Started {count:L} times"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "გაშვებულია {count:L}-ჯერ"
+msgstr[1] "გაშვებულია {count:L}-ჯერ"
 
 msgid "Reset your statistics?"
 msgstr ""
@@ -719,30 +811,39 @@ msgstr "_განულება"
 msgid "These statistics are for your information only. Resetting them doesn't affect the statistics logged by your BitTorrent trackers."
 msgstr ""
 
+msgid "_Show {appname}"
+msgstr ""
+
 msgid "{upload_speed} ▴ {download_speed} ▾"
 msgstr ""
 
 #, no-c-format
 msgid "Verifying local data ({percent_done}% tested)"
-msgstr ""
+msgstr "ადგილობრივი მონაცემების გადამოწმება ({percent_done}% შემოწმებულია)"
 
+#, fuzzy
 msgid "{current_size} of {complete_size} ({percent_done}%)"
 msgstr ""
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{current_size} / {complete_size} ({percent_done}%)\n"
+"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{current_size}/{complete_size} ({percent_done}%)"
 
 msgid "{current_size} of {complete_size} ({percent_complete}%), uploaded {uploaded_size} (Ratio: {ratio}, Goal: {seed_ratio})"
 msgstr ""
 
 msgid "{current_size} of {complete_size} ({percent_complete}%), uploaded {uploaded_size} (Ratio: {ratio})"
-msgstr ""
+msgstr "{current_size}/{complete_size} ({percent_complete}%), ატვირთული {uploaded_size} (შეფარდება: {ratio})"
 
 msgid "{complete_size}, uploaded {uploaded_size} (Ratio: {ratio}, Goal: {seed_ratio})"
 msgstr ""
 
 msgid "{complete_size}, uploaded {uploaded_size} (Ratio: {ratio})"
-msgstr ""
+msgstr "{complete_size}, ატვირთული {uploaded_size} (შეფარდება: {ratio})"
 
+#. Translators: Second (optional) part of torrent progress string
 msgid "Remaining time unknown"
-msgstr ""
+msgstr "დარჩენილი დრო უცნობია"
 
 msgid "{download_speed} ▾  {upload_speed} ▴"
 msgstr ""
@@ -753,8 +854,10 @@ msgstr "გაჭედილი"
 msgid "Tracker warning: '{warning}'"
 msgstr ""
 
-msgid "Tracker Error: '{error}'"
-msgstr ""
+#, fuzzy
+#| msgid "Tracker gave an error: {error}"
+msgid "Tracker error: '{error}'"
+msgstr "ტრეკერმა გამოუშვა შეცდომა: {error}"
 
 msgid "Local error: '{error}'"
 msgstr ""
@@ -777,13 +880,1006 @@ msgstr[1] ""
 
 msgid "Downloading from {active_count} of {connected_count} connected peer"
 msgid_plural "Downloading from {active_count} of {connected_count} connected peers"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "იტვირთება {connected_count} დაკავშირებულ პირთაგან {active_count}-სგან"
+msgstr[1] "იტვირთება {connected_count} დაკავშირებულ პირთაგან {active_count}-სგან"
 
 msgid "Seeding to {active_count} of {connected_count} connected peer"
 msgid_plural "Seeding to {active_count} of {connected_count} connected peers"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "სიდირდება {connected_count} დაკავშირებულ პირთაგან {active_count}-ზე"
+msgstr[1] "სიდირდება {connected_count} დაკავშირებულ პირთაგან {active_count}-ზე"
+
+msgid "Retransmission"
+msgstr "Retransmission"
+
+msgid "BitTorrent Client"
+msgstr "BitTorrent -ის კლიენტი"
+
+msgid "Download and share files over BitTorrent"
+msgstr ""
+
+#. Translators: Search terms to find this application. Do NOT translate or localize the semicolons! The list MUST also end with a semicolon!
+msgid "torrents;downloading;uploading;share;sharing;"
+msgstr ""
+
+msgid "Start Retransmission with All Torrents Paused"
+msgstr ""
+
+msgid "Start Retransmission Minimized"
+msgstr ""
+
+#, fuzzy
+#| msgid "Retransmission"
+msgid "The Retransmission Project"
+msgstr "Retransmission"
+
+#. Translators: these are the application description paragraphs in the MetaInfo file.
+msgid "BitTorrent is a peer-to-peer file-sharing protocol that is commonly used to distribute large amounts of data between multiple users."
+msgstr ""
+
+msgid "Retransmission is a BitTorrent client with an easy-to-use interface on top of a cross-platform backend. Native interfaces are available for macOS, Linux, and Windows, as well as command line binaries and a web GUI."
+msgstr ""
+
+msgid "Notable features of Retransmission include support for Local Peer Discovery, encryption, DHT, µTP, PEX and Magnet links."
+msgstr ""
+
+msgid "Main window, showing an ongoing download of Fedora Workstation"
+msgstr ""
+
+msgid "_File"
+msgstr "_ფაილი"
+
+msgid "Open _URL…"
+msgstr ""
+
+msgid "_New…"
+msgstr "_ახალი…"
+
+#, fuzzy
+msgid "_Start All"
+msgstr ""
+"#-#-#-#-#  ka.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_ყველას დაწყება\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"ყველას _დაწყება"
+
+msgid "_Pause All"
+msgstr "ყველას _შეჩერება"
+
+#, fuzzy
+msgid "_Quit"
+msgstr ""
+"#-#-#-#-#  ka.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_გამოსვლა\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_გასვლა"
+
+#, fuzzy
+msgid "_Edit"
+msgstr ""
+"#-#-#-#-#  ka.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_ჩასწორება\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_ჩასწორება\n"
+"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_რედაქტირება"
+
+msgid "Select _All"
+msgstr "ყველაფრის _მონიშვნა"
+
+msgid "Dese_lect All"
+msgstr "ყველა _მონიშვნის მოხსნა"
+
+#, fuzzy
+msgid "_Preferences"
+msgstr ""
+"#-#-#-#-#  ka.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"გამართვა\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_პარამეტრები"
+
+msgid "_Torrent"
+msgstr "_ტორენტი"
+
+msgid "_Properties"
+msgstr "_თვისებები"
+
+msgid "Open Fold_er"
+msgstr "სა_ქაღალდის გახსნა"
+
+msgid "_Start"
+msgstr "_დაწყება"
+
+msgid "Start _Now"
+msgstr "_ახლავე დაწყება"
+
+#, fuzzy
+msgid "Ask Tracker for _More Peers"
+msgstr ""
+"#-#-#-#-#  ka.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"გამოითხოვე მეთვალყურისგან დამატებითი პირები\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"ტრეკერისთვის _მეტი პირების მოთხოვნა"
+
+#, fuzzy
+#| msgid "Queue"
+msgid "_Queue"
+msgstr "რიგი"
+
+msgid "Move to _Top"
+msgstr "_თავში ატანა"
+
+#, fuzzy
+msgid "Move _Up"
+msgstr ""
+"#-#-#-#-#  ka.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"ზ_ემოთ აწევა\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_მაღლა ატანა"
+
+#, fuzzy
+msgid "Move _Down"
+msgstr ""
+"#-#-#-#-#  ka.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_ჩამოწევა\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"დაბლა _ჩატანა"
+
+msgid "Move to _Bottom"
+msgstr "_ბოლოში ჩატანა"
+
+msgid "_Pause"
+msgstr "_შეჩერება"
+
+msgid "Set _Location…"
+msgstr ""
+
+#, fuzzy
+msgid "_Verify Local Data"
+msgstr ""
+"#-#-#-#-#  ka.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_ლოკალური ინფორმაციის შემოწმება\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"ადგილობრივი მონაცემების _გადამოწმება"
+
+msgid "_Copy Magnet Link to Clipboard"
+msgstr "მაგნიტური ბმულის ა_სლი ბუფერში"
+
+#, fuzzy
+msgid "_Delete Files and Remove"
+msgstr ""
+"#-#-#-#-#  ka.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_ფაილების წაშლა და სიიდან ამოღება\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"ფაილების წაშლა და ამოღე_ბა"
+
+msgid "_View"
+msgstr "_ხედი"
+
+#, fuzzy
+msgid "_Compact View"
+msgstr ""
+"#-#-#-#-#  ka.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"კომპაქტური ჩვენება\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_კომპაქტური ხედი"
+
+#, fuzzy
+msgid "_Toolbar"
+msgstr ""
+"#-#-#-#-#  ka.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"ხელსაწყოთა _პანელი\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_ხელსაწყოთა ზოლი"
+
+#, fuzzy
+msgid "_Filterbar"
+msgstr ""
+"#-#-#-#-#  ka.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"ფილტრები\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_ფილტრის ზოლი"
+
+msgid "_Statusbar"
+msgstr "_სტატუსის ზოლი"
+
+#, fuzzy
+msgid "Sort by _Activity"
+msgstr ""
+"#-#-#-#-#  ka.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_დალაგება აქტივობის მიხედვით\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"დალაგება _აქტივობით"
+
+#, fuzzy
+msgid "Sort by A_ge"
+msgstr ""
+"#-#-#-#-#  ka.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"დალაგება ასაკის _მიხედვით\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"დალაგება ა_საკით"
+
+#, fuzzy
+msgid "Sort by _Name"
+msgstr ""
+"#-#-#-#-#  ka.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"დალაგება _სახელის მიხედვით\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"დალაგება _სახელით"
+
+#, fuzzy
+msgid "Sort by _Progress"
+msgstr ""
+"#-#-#-#-#  ka.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_დალაგება პროგრესის მიხედვით\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"დალაგება _პროგრესით"
+
+msgid "Sort by _Queue"
+msgstr "დალაგება _რიგით"
+
+msgid "Sort by Rati_o"
+msgstr "დალაგება _შეფარდებით"
+
+#, fuzzy
+msgid "Sort by Si_ze"
+msgstr ""
+"#-#-#-#-#  ka.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"ზომის მიხედვით\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"დალაგება _ზომით"
+
+#, fuzzy
+msgid "Sort by Stat_e"
+msgstr ""
+"#-#-#-#-#  ka.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"მდგომარეობის მიხედვით\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"დალაგება მ_დგომარეობით"
+
+#, fuzzy
+msgid "Sort by Time _Left"
+msgstr ""
+"#-#-#-#-#  ka.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"დარჩენილი დროის მიხედვით\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"დალაგება _დარჩენილი დროით"
+
+#, fuzzy
+msgid "Re_verse Sort Order"
+msgstr ""
+"#-#-#-#-#  ka.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"დალაგების შებრუნე_ბა\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"დალაგების მიმართულების შე_ბრუნება"
+
+msgid "_Help"
+msgstr "_დახმარება"
+
+#, fuzzy
+msgid "Message _Log"
+msgstr ""
+"#-#-#-#-#  ka.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"შეტყობინებების ჟურნალი\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"შეტყობინებების _ჟურნალი"
+
+msgid "_Statistics"
+msgstr "_სტატისტიკა"
+
+#, fuzzy
+msgid "_Donate"
+msgstr ""
+"#-#-#-#-#  ka.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_შეწირვა\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"შე_წირვა"
+
+#, fuzzy
+msgid "_Contents"
+msgstr ""
+"#-#-#-#-#  ka.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_შემცველობა\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_შიგთავსი"
+
+#, fuzzy
+msgid "_About"
+msgstr ""
+"#-#-#-#-#  ka.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_შესახებ\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"შესა_ხებ"
+
+#, fuzzy
+msgid "_Sort Torrents By"
+msgstr ""
+"#-#-#-#-#  ka.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"ტორენტის გააშვება\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"ტორენტის დაწყება"
+
+#, fuzzy
+#| msgid "Alternative Speed Limits"
+msgid "Alternative Speed _Limits"
+msgstr "ალტერნატიული სიჩქარის შეზღუდვები"
+
+msgid "_Add"
+msgstr "_დამატება"
+
+#, fuzzy
+msgid "Tracker"
+msgstr ""
+"#-#-#-#-#  ka.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"ტრეკერი\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"აღმნუსხავი"
+
+msgid "_Announce URL:"
+msgstr ""
+
+msgid "_Close"
+msgstr "_დახურვა"
+
+#, fuzzy
+msgid "Activity"
+msgstr ""
+"#-#-#-#-#  ka.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"აქტივობა\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"აქტოვპბა"
+
+msgid "Size:"
+msgstr "ზომა:"
+
+#, fuzzy
+msgid "Have:"
+msgstr ""
+"#-#-#-#-#  ka.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"მაქვს:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"მიღებულია:"
+
+#, fuzzy
+msgid "Uploaded:"
+msgstr ""
+"#-#-#-#-#  ka.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"ატვირთულია:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"ატივრთული:\n"
+"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"ატვირთული:"
+
+#, fuzzy
+msgid "Downloaded:"
+msgstr ""
+"#-#-#-#-#  ka.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"გადმოწერილია:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"ჩამოტვირთული:"
+
+msgid "State:"
+msgstr "მდგომარეობა:"
+
+msgid "Running time:"
+msgstr "გაშვებული დრო:"
+
+msgid "Remaining time:"
+msgstr "დარჩენილი დრო:"
+
+msgid "Last activity:"
+msgstr "ბოლო აქტივობა:"
+
+#, fuzzy
+msgid "Error:"
+msgstr ""
+"#-#-#-#-#  ka.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"შეცდომა:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"შეცდომა"
+
+#, fuzzy
+msgid "Details"
+msgstr ""
+"#-#-#-#-#  ka.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"დაწვრილებით\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"დეტალები"
+
+msgid "Location:"
+msgstr "მდებარეობა:"
+
+msgid "Hash:"
+msgstr "ჰეში:"
+
+#, fuzzy
+msgid "Privacy:"
+msgstr ""
+"#-#-#-#-#  ka.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"პირადი ინფორმაცია:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"პრივატულობა:"
+
+#, fuzzy
+msgid "Origin:"
+msgstr ""
+"#-#-#-#-#  ka.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"საწყისი:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"წარმოშობა:"
+
+msgid "Added:"
+msgstr "დამატებულია:"
+
+#, fuzzy
+msgid "Comment:"
+msgstr ""
+"#-#-#-#-#  ka.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"კომენტარი:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"კომენტარები:"
+
+msgid "Information"
+msgstr "ინფორმაცია"
+
+msgid "Show _more details"
+msgstr "_მეტი დეტალის ჩვენება"
+
+#, fuzzy
+msgid "Peers"
+msgstr ""
+"#-#-#-#-#  ka.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"პარტნიორები\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"პირები"
+
+msgid "Show _backup trackers"
+msgstr "_სარეზერვო ტრეკერების ჩვენება"
+
+msgid "File listing not available for combined torrent properties"
+msgstr ""
+
+msgid "Files"
+msgstr "ფაილები"
+
+msgid "Speed"
+msgstr "სიჩქარე"
+
+msgid "Honor global _limits"
+msgstr "გლობალური _შეზღუდვების პატივისცემა"
+
+msgid "Limit _download speed ({speed_units}):"
+msgstr ""
+
+msgid "Limit _upload speed ({speed_units}):"
+msgstr ""
+
+msgid "Torrent _priority:"
+msgstr "ტორენტის _პრიორიტეტი:"
+
+msgid "Seeding Limits"
+msgstr "სიდირების ლიმიტები"
+
+msgid "_Ratio:"
+msgstr "შე_ფარდება"
+
+msgid "_Idle:"
+msgstr "_უმოქმედო:"
+
+#, fuzzy
+msgid "Peer Connections"
+msgstr ""
+"#-#-#-#-#  ka.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"პარტნორთან მიერთებები\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"პირის კავშირები"
+
+#, fuzzy
+msgid "_Maximum peers:"
+msgstr ""
+"#-#-#-#-#  ka.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"მაქსიმუმი პარტნიორები:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_მაქსიმალური პირები:"
+
+#, fuzzy
+msgid "Options"
+msgstr ""
+"#-#-#-#-#  ka.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"გამართვა\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"პარამეტრები"
+
+msgid "Tracker Announce URLs"
+msgstr ""
+
+msgid ""
+"To add a backup URL, add it on the next line after a primary URL.\n"
+"To add a new primary URL, add it after a blank line."
+msgstr ""
+
+msgid "Also see Default Public Trackers in Edit > Preferences > Network"
+msgstr ""
+
+msgid "Open a torrent"
+msgstr "ტორენტის გახსნა"
+
+#, fuzzy
+msgid "Start torrent"
+msgstr ""
+"#-#-#-#-#  ka.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"ტორენტის გააშვება\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"ტორენტის დაწყება"
+
+msgid "Pause torrent"
+msgstr "ტორენტის შეჩერება"
+
+#, fuzzy
+msgid "Remove torrent"
+msgstr ""
+"#-#-#-#-#  ka.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"ტორენტის წაშლა\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"ტორენტის ამოღება"
+
+msgid "Torrent properties"
+msgstr "ტორენტის თვისებები"
+
+msgid "Torrent"
+msgstr "Torrent"
+
+msgid "Statistics"
+msgstr "სტატისტიკა"
+
+msgid "New Torrent"
+msgstr "ახალი ტორენტი"
+
+#, fuzzy
+#| msgid "C_redits"
+msgid "C_reate"
+msgstr "ა_ვტორები"
+
+msgid "Sa_ve to:"
+msgstr "შეი_ნახოს აქ:"
+
+msgid "Source f_older:"
+msgstr "წყაროს _საქაღალდე:"
+
+msgid "Source _file:"
+msgstr "წყაროს _ფაილი:"
+
+msgid "Piece si_ze:"
+msgstr ""
+
+msgid "Properties"
+msgstr "თვისებები"
+
+msgid "_Trackers:"
+msgstr "_ტრეკერები:"
+
+#, fuzzy
+msgid "Co_mment:"
+msgstr ""
+"#-#-#-#-#  ka.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"კომე_ნტარი:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"კო_მენტარი:"
+
+msgid "_Source:"
+msgstr "_წყარო:"
+
+msgid "_Private torrent"
+msgstr "_პრივატული ტორენტი"
+
+msgid "Creating torrent…"
+msgstr ""
+
+msgid "Message Log"
+msgstr "შეტყობინებების ჟურნალი"
+
+msgid "Save _As"
+msgstr "_შენახვა, როგორც"
+
+msgid "Clear"
+msgstr "გაწმენდა"
+
+msgid "Level"
+msgstr "დონე"
+
+msgid "Torrent Options"
+msgstr "ტორენტის მორგება"
+
+msgid "_Torrent file:"
+msgstr "ტორენტის _ფაილი:"
+
+msgid "Select Source File"
+msgstr "აირჩიეთ საწყისი ფაილი"
+
+msgid "_Destination folder:"
+msgstr "_დანიშნულების საქაღალდე:"
+
+msgid "Select Destination Folder"
+msgstr "აირჩიეთ სამიზნე საქაღალდე"
+
+msgid "_Start when added"
+msgstr "დაწყება დამატებისას"
+
+#, fuzzy
+#| msgid "Mo_ve .torrent file to the trash"
+msgid "Mo_ve torrent file to the Trash"
+msgstr ".torrent ფაილის სანაგვეში გადა_ტანა"
+
+msgid "{appname} Preferences"
+msgstr "{appname}-ის პარამეტრები"
+
+#, fuzzy
+msgid "Speed Limits"
+msgstr ""
+"#-#-#-#-#  ka.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"სიჩქარის ლიმიტები\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"სიჩქარის ლიმიტები\n"
+"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"სიჩქარის შეზღუდვები"
+
+#. Checkbox to limit upload speed
+msgid "_Upload ({speed_units}):"
+msgstr ""
+
+#. Checkbox to limit download speed
+msgid "_Download ({speed_units}):"
+msgstr ""
+
+msgid "Alternative Speed Limits"
+msgstr "ალტერნატიული სიჩქარის შეზღუდვები"
+
+msgid "Override normal speed limits manually or at scheduled times"
+msgstr ""
+
+#. Labels a spinbutton for alternate upload speed limits
+msgid "U_pload ({speed_units}):"
+msgstr ""
+
+#. Labels a spinbutton for alternate download speed limits
+msgid "Do_wnload ({speed_units}):"
+msgstr ""
+
+msgid "_Scheduled times:"
+msgstr "_რეგულარულ დროს:"
+
+msgid "_On days:"
+msgstr "_დღეებში:"
+
+#. Label goes between two time selectors, e.g. "limit speeds from [time] to [time]"
+msgid "_to"
+msgstr "_სად"
+
+msgctxt "Gerund"
+msgid "Adding"
+msgstr "დამატება"
+
+msgid "Automatically add torrent files _from:"
+msgstr ""
+
+msgid "Show the Torrent Options _dialog"
+msgstr "ტორენტის პარამეტრების _დიალოგის ჩვენება"
+
+msgid "_Start added torrents"
+msgstr "_დამატებული ტორენტების დაწყება"
+
+#, fuzzy
+#| msgid "Save to _Location:"
+msgid "Save to _location:"
+msgstr "შენახვა მ_დებარეობაში:"
+
+msgid "Download Queue"
+msgstr "ჩამოტვირთვის რიგი"
+
+msgid "Ma_ximum active downloads:"
+msgstr "მა_ქსიმალური აქტიური ჩამოტვირთვები:"
+
+msgid "Downloads sharing data in the last _N minutes are active:"
+msgstr ""
+
+msgid "Incomplete"
+msgstr "არასრული"
+
+msgid "Append \"._part\" to incomplete files' names"
+msgstr "\"._part\"-ის მიკვრა დაუსრულებელი ფაილების სახელებისთვის"
+
+msgid "Keep _incomplete files in:"
+msgstr "_არასრული ფაილების შენახვა მდებარეობაში:"
+
+msgid "Call scrip_t when download completes:"
+msgstr ""
+
+msgid "Verify data when download completes"
+msgstr ""
+
+msgctxt "Gerund"
+msgid "Downloading"
+msgstr "გადმოწერა"
+
+#, fuzzy
+msgid "Limits"
+msgstr ""
+"#-#-#-#-#  ka.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"ლიმიტები\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"შეზღუდვები"
+
+msgid "Stop seeding at _ratio:"
+msgstr "სიდირების შეჩერება შეფარდება_ზე:"
+
+msgid "Stop seeding if idle for _N minutes:"
+msgstr ""
+
+msgid "Call scrip_t when done seeding:"
+msgstr ""
+
+msgctxt "Gerund"
+msgid "Seeding"
+msgstr "Seeding"
+
+#, fuzzy
+msgid "Privacy"
+msgstr ""
+"#-#-#-#-#  ka.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"პირადი ინფორმაცია\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"პრივატულობა"
+
+msgid "_Encryption mode:"
+msgstr "_დაშიფვირის სახეობა:"
+
+msgid "Blocklist"
+msgstr "შავი სია"
+
+msgid "Enable _blocklist:"
+msgstr "შავი _სიის ჩართვა"
+
+#, fuzzy
+#| msgid "Enable _automatic updates"
+msgid "_Automatically update weekly"
+msgstr "_ავტომატური განახლებების ჩართვა"
+
+#, fuzzy
+msgid "_Update"
+msgstr ""
+"#-#-#-#-#  ka.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"განახლება\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_განახლება"
+
+msgid "Listening Port"
+msgstr ""
+
+msgid "_Port for incoming connections:"
+msgstr "_პორტი შემომავალი კავშირებისთვის:"
+
+#, fuzzy
+#| msgid "Pick a _random port every time Transmission is started"
+msgid "Pick a _random port at startup"
+msgstr "_შემთხვევითი პორტის არჩევა Transmission-ის ყოველ გაშვებაზე"
+
+msgid "Use UPnP or NAT-PMP port _forwarding from my router"
+msgstr "როუტერიდან UPnP ან NAT-PMP პორტის _გადამისამართების გამოყენება"
+
+msgid "Te_st Port"
+msgstr "პორტის შე_მოწმება"
+
+msgid "Peer Limits"
+msgstr "პირის შეზღუდვები"
+
+#, fuzzy
+#| msgid "Maximum peers per _torrent:"
+msgid "Maximum peers for new _torrents:"
+msgstr "მაქსიმალური პირები თითო _ტორენტზე:"
+
+msgid "Maximum peers _overall:"
+msgstr "მაქსიმალური პირები _მთლიანობაში:"
+
+#, fuzzy
+msgid "Enable µ_TP for peer connections"
+msgstr ""
+"#-#-#-#-#  ka.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"პარტნორთან მიერთებები\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"პირის კავშირები"
+
+msgid "µTP is a tool for reducing network congestion."
+msgstr ""
+
+#, fuzzy
+#| msgid "Use PE_X to find more peers"
+msgid "Use PE_X to find more peers for public torrents"
+msgstr "PE_X-ის გამოყენება მეტი პირის საპოვნად"
+
+msgid "PEX is a tool for exchanging peer lists with the peers you're connected to."
+msgstr "PEX ხელსაწყოა, რომელიც გამოიყენება თქვენთან დაკავშირებულ პირებთან პირის სიების გასაცვლელად."
+
+#, fuzzy
+#| msgid "Use _DHT to find more peers"
+msgid "Use _DHT to find more peers for public torrents"
+msgstr "_DHT-ს გამოყენება მეტი პირის საპოვნად"
+
+msgid "DHT is a tool for finding peers without a tracker."
+msgstr "DHT ტრეკერის გარეშე მყოფი პირების საპოვნელი ყელსაწყოა."
+
+#, fuzzy
+#| msgid "Use _Local Peer Discovery to find more peers"
+msgid "Use _Local Peer Discovery to find more peers for public torrents"
+msgstr "_ლოკალური პირების აღმოჩენის გამოყენება მეტი პირის საპოვნად"
+
+msgid "LPD is a tool for finding peers on your local network."
+msgstr "LPD თქვენს ლოკალურ ქსელში პირების საპოვნელი ხელსაწყოა."
+
+msgid "Default Public Trackers"
+msgstr ""
+
+msgid ""
+"Trackers to use on all public torrents.\n"
+"\n"
+"To add a backup URL, add it on the next line after a primary URL.\n"
+"To add a new primary URL, add it after a blank line."
+msgstr ""
+
+msgid "Network"
+msgstr "ქსელი"
+
+msgid "Desktop"
+msgstr "სამუშაო მაგიდა"
+
+msgid "_Prevent computer from sleeping with active torrents"
+msgstr ""
+
+msgid "Show {appname} icon in the _notification area"
+msgstr "{appname}-ის ხატულის ჩვენება _შეტყობინებების არეში"
+
+#, fuzzy
+msgid "Notification"
+msgstr ""
+"#-#-#-#-#  ka.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"შეტყობინება\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"ცნობება"
+
+msgid "Show a notification when torrents are a_dded"
+msgstr "ცნობება ტორენტის დამა_ტებისას"
+
+msgid "Show a notification when torrents _finish"
+msgstr "ცნობება ტორენტის და_სრულებისას"
+
+msgid "Play a _sound when torrents finish"
+msgstr "_ხმის დაკვრა ტორენტის დასრულებისას"
+
+#, fuzzy
+msgid "Remote Control"
+msgstr ""
+"#-#-#-#-#  ka.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"დაშორებული მართვა\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"დისტანციური მართვა"
+
+msgid "Allow _remote access"
+msgstr "_დისტანციური წვოდმის დაშვება"
+
+#, fuzzy
+#| msgid "_Open web client"
+msgid "_Open Web Client"
+msgstr "ვებ კლიენტის _გახსნა"
+
+msgid "HTTP _port:"
+msgstr "HTTP _პორტი:"
+
+msgid "Use _authentication"
+msgstr "_ავთენტიფიკაციის გამოყენება"
+
+#, fuzzy
+msgid "_Username:"
+msgstr ""
+"#-#-#-#-#  ka.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_მომხმარებელი:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_მომხმარებლის სახელი:"
+
+#, fuzzy
+msgid "Pass_word:"
+msgstr ""
+"#-#-#-#-#  ka.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"პა_როლი:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_პაროლი\n"
+"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"პარო_ლი:"
+
+msgid "Only allow these IP a_ddresses:"
+msgstr "მხოლოდ ამ IP მი_სამართების დაშვება:"
+
+msgid "Addresses:"
+msgstr "მისამართები:"
+
+msgid "IP addresses may use wildcards, such as 192.168.*.*"
+msgstr ""
+
+#, fuzzy
+msgid "Remote"
+msgstr ""
+"#-#-#-#-#  ka.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"დაშორებული\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"დისტანციური"
+
+msgid "Set Torrent Location"
+msgstr "ტორენტის მდებარეობის დაყენება"
+
+msgid "_Apply"
+msgstr "_დაგატარება"
+
+msgid "Location"
+msgstr "მდებარეობა"
+
+msgid "New _location:"
+msgstr "ახალი _მდებარეობა:"
+
+msgid "_Move from the current folder"
+msgstr "_მიმდინარე საქაღალდიდან გადატანა"
+
+msgid "Local data is _already there"
+msgstr "ადგილობრივი მონაცემები _უკვე მანდაა"
+
+msgid "Current Session"
+msgstr "მიმდინარე სესია"
+
+msgid "Ratio:"
+msgstr "შეფარდება:"
+
+msgid "Duration:"
+msgstr "ხანგრძლივობა:"
+
+#, fuzzy
+msgid "Total"
+msgstr ""
+"#-#-#-#-#  ka.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"ჯამში\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"მთლიანობაში"
+
+msgid "Open URL"
+msgstr "URL-ის გახსნა"
+
+msgid "Open torrent from URL"
+msgstr ""
+
+msgid "_URL"
+msgstr "_URL"
+
+msgid "The torrent file '{path}' is already in use by '{torrent_name}'."
+msgstr ""
+
+msgid "Couldn't open torrent"
+msgstr ""
+
+msgid "Couldn't move '{path}' to trash: {error} ({error_code})"
+msgstr ""
+
+msgid "Couldn't launch default application for URI '{uri}': {error} ({error_code})"
+msgstr ""
+
+msgid "Couldn't invoke xdg-open for URI '{uri}': {error} ({error_code})"
+msgstr ""
+
+msgid "Couldn't open '{url}'"
+msgstr ""
+
+msgid "Unsupported URL: '{url}'"
+msgstr ""
+
+msgid "{appname} doesn't know how to use '{url}'"
+msgstr ""
+
+msgid "This magnet link appears to be intended for something other than BitTorrent."
+msgstr ""
 
 msgid "{days_from_now:L} day from now"
 msgid_plural "{days_from_now:L} days from now"
@@ -828,25 +1924,81 @@ msgid_plural "{seconds_ago:L} seconds ago"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "{days:L} day"
-msgid_plural "{days:L} days"
+msgid "Got a list of {markup_begin}{peer_count} peer{markup_end} {time_span_ago}"
+msgid_plural "Got a list of {markup_begin}{peer_count} peers{markup_end} {time_span_ago}"
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "Peer list request {markup_begin}timed out {time_span_ago}{markup_end}; will retry"
+msgstr ""
+
+msgid "Got an error '{markup_begin}{error}{markup_end}' {time_span_ago}"
+msgstr ""
+
+msgid "No updates scheduled"
+msgstr "განახლებები არაა დაგეგმილი"
+
+msgid "Asking for more peers {time_span_from_now}"
+msgstr ""
+
+msgid "Queued to ask for more peers"
+msgstr "იმყოფება მეტი პირის მოთხოვნის რიგში"
+
+msgid "Asked for more peers {markup_begin}{time_span_ago}{markup_end}"
+msgstr ""
+
+msgid "Got a scrape error '{markup_begin}{error}{markup_end}' {time_span_ago}"
+msgstr ""
+
+#, fuzzy
+#| msgid "Tracker had {markup_begin}no information{markup_end} on peer counts {time_span} ago"
+msgid "Tracker had {markup_begin}no information{markup_end} on peer counts {time_span_ago}"
+msgstr "ტრაკერს {markup_begin}არ გააჩნდა ინფორმაცია{markup_end} პირების რაოდენობაზე {time_span}ს წინ"
+
+msgid "Tracker had {markup_begin}{seeder_count} {seeder_or_seeders} and {leecher_count} {leecher_or_leechers}{markup_end} {time_span_ago}"
+msgstr ""
+
+msgid "seeder"
+msgid_plural "seeders"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "leecher"
+msgid_plural "leechers"
+msgstr[0] ""
+msgstr[1] ""
+
+#, fuzzy
+#| msgid "Asking for peer counts in {time_span}"
+msgid "Asking for peer counts {time_span_from_now}"
+msgstr "პირების რაოდენობის მოთხოვნა {time_span}ში"
+
+msgid "Queued to ask for peer counts"
+msgstr "პირების რაოდენობის მოთხოვნის რიგში"
+
+msgid "Asked for peer counts {markup_begin}{time_span_ago}{markup_end}"
+msgstr ""
+
+msgid "{days:L} day"
+msgid_plural "{days:L} days"
+msgstr[0] "{days:L} დღე"
+msgstr[1] "{days:L} დღე"
 
 msgid "{hours:L} hour"
 msgid_plural "{hours:L} hours"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "{hours:L} საათი"
+msgstr[1] "{hours:L} საათი"
 
+#. Translators: Spin box format, "Stop seeding if idle for: [ 5 minutes ]"
 msgid "{minutes:L} minute"
 msgid_plural "{minutes:L} minutes"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "{minutes:L} წუთი"
+msgstr[1] "{minutes:L} წუთი"
 
 msgid "{seconds:L} second"
 msgid_plural "{seconds:L} seconds"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "{seconds:L} წამი"
+msgstr[1] "{seconds:L} წამი"
 
 msgid "{days_left:L} day left"
 msgid_plural "{days_left:L} days left"
@@ -868,755 +2020,6 @@ msgid_plural "{seconds_left:L} seconds left"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "The torrent file '{path}' is already in use by '{torrent_name}'."
-msgstr ""
-
-msgid "Couldn't open torrent"
-msgstr ""
-
-msgid "Couldn't move '{path}' to trash: {error} ({error_code})"
-msgstr ""
-
-msgid "Couldn't open '{url}'"
-msgstr ""
-
-msgid "Unsupported URL: '{url}'"
-msgstr ""
-
-#. modal
-msgid "{appname} doesn't know how to use '{url}'"
-msgstr ""
-
-msgid "This magnet link appears to be intended for something other than BitTorrent."
-msgstr ""
-
-msgid "Retransmission"
-msgstr "Retransmission"
-
-#. parse the command line
-msgid "Where to look for configuration files"
-msgstr ""
-
-msgid "Start with all torrents paused"
-msgstr "ყველა ტორენტის შეჩერება დაწყებისას"
-
-msgid "Start minimized in notification area"
-msgstr ""
-
-msgid "Show version number and exit"
-msgstr "ვერსიის ჩვენება და გასვლა"
-
-msgid "[torrent files or urls]"
-msgstr ""
-
-msgid "Run '{program} --help' to see a full list of available command line options.\n"
-msgstr ""
-
-msgid "B/s"
-msgstr ""
-
-msgid "GB/s"
-msgstr "გბ/წმ"
-
-msgid "MB/s"
-msgstr "მბ/წმ"
-
-msgid "TB/s"
-msgstr ""
-
-msgid "kB/s"
-msgstr "კბ/წმ"
-
-msgid "B"
-msgstr ""
-
-msgid "GiB"
-msgstr "გიბ"
-
-msgid "KiB"
-msgstr "კიბ"
-
-msgid "MiB"
-msgstr "მიბ"
-
-msgid "TiB"
-msgstr "ტიბ"
-
-msgid "GB"
-msgstr "გბ"
-
-msgid "MB"
-msgstr "მბ"
-
-msgid "TB"
-msgstr "ტბ"
-
-msgid "kB"
-msgstr "კბ"
-
-msgid "BitTorrent Client"
-msgstr "BitTorrent -ის კლიენტი"
-
-msgid "Download and share files over BitTorrent"
-msgstr ""
-
-#. Translators: Search terms to find this application. Do NOT translate or localize the semicolons! The list MUST also end with a semicolon!
-msgid "torrents;downloading;uploading;share;sharing;"
-msgstr ""
-
-msgid "Start Retransmission with All Torrents Paused"
-msgstr ""
-
-msgid "Start Retransmission Minimized"
-msgstr ""
-
-msgid "Open a torrent"
-msgstr "ტორენტის გახსნა"
-
-msgid "Open _URL…"
-msgstr ""
-
-msgid "Open URL…"
-msgstr ""
-
-msgid "_New…"
-msgstr "_ახალი…"
-
-msgid "_Start All"
-msgstr "_ყველას დაწყება"
-
-msgid "Start all torrents"
-msgstr ""
-
-msgid "_Pause All"
-msgstr ""
-
-msgid "Pause all torrents"
-msgstr ""
-
-msgid "_Quit"
-msgstr "_გამოსვლა"
-
-msgid "Select _All"
-msgstr "ყველაფრის _მონიშვნა"
-
-msgid "Dese_lect All"
-msgstr "ყველა _მონიშვნის მოხსნა"
-
-msgid "_Preferences"
-msgstr "გამართვა"
-
-msgid "_Properties"
-msgstr "_თვისებები"
-
-msgid "Torrent properties"
-msgstr "ტორენტის თვისებები"
-
-msgid "Open Fold_er"
-msgstr ""
-
-msgid "_Start"
-msgstr "_დაწყება"
-
-msgid "Start torrent"
-msgstr "ტორენტის გააშვება"
-
-msgid "Start _Now"
-msgstr ""
-
-msgid "Start torrent now"
-msgstr ""
-
-msgid "Ask Tracker for _More Peers"
-msgstr "გამოითხოვე მეთვალყურისგან დამატებითი პირები"
-
-msgid "Move to _Top"
-msgstr ""
-
-msgid "Move _Up"
-msgstr "ზ_ემოთ აწევა"
-
-msgid "Move _Down"
-msgstr "_ჩამოწევა"
-
-msgid "Move to _Bottom"
-msgstr ""
-
-msgid "_Pause"
-msgstr "_შეჩერება"
-
-msgid "Pause torrent"
-msgstr "ტორენტის შეჩერება"
-
-msgid "Set _Location…"
-msgstr ""
-
-msgid "_Verify Local Data"
-msgstr "_ლოკალური ინფორმაციის შემოწმება"
-
-msgid "Copy _Magnet Link to Clipboard"
-msgstr "_მაგნიტური ბმულის ბუფერში კოპირება"
-
-msgid "Remove torrent"
-msgstr "ტორენტის წაშლა"
-
-msgid "_Delete Files and Remove"
-msgstr "_ფაილების წაშლა და სიიდან ამოღება"
-
-msgid "_Compact View"
-msgstr "კომპაქტური ჩვენება"
-
-msgid "_Toolbar"
-msgstr "ხელსაწყოთა _პანელი"
-
-msgid "_Filterbar"
-msgstr "ფილტრები"
-
-msgid "_Statusbar"
-msgstr "_სტატუსის ზოლი"
-
-msgid "Sort by _Activity"
-msgstr "_დალაგება აქტივობის მიხედვით"
-
-msgid "Sort by A_ge"
-msgstr "დალაგება ასაკის _მიხედვით"
-
-msgid "Sort by _Name"
-msgstr "დალაგება _სახელის მიხედვით"
-
-msgid "Sort by _Progress"
-msgstr "_დალაგება პროგრესის მიხედვით"
-
-msgid "Sort by _Queue"
-msgstr ""
-
-msgid "Sort by Rati_o"
-msgstr ""
-
-msgid "Sort by Si_ze"
-msgstr "ზომის მიხედვით"
-
-msgid "Sort by Stat_e"
-msgstr "მდგომარეობის მიხედვით"
-
-msgid "Sort by Time _Left"
-msgstr "დარჩენილი დროის მიხედვით"
-
-msgid "Re_verse Sort Order"
-msgstr "დალაგების შებრუნე_ბა"
-
-msgid "Message _Log"
-msgstr "შეტყობინებების ჟურნალი"
-
-msgid "_Statistics"
-msgstr "_სტატისტიკა"
-
-msgid "_Donate"
-msgstr "_შეწირვა"
-
-msgid "_Contents"
-msgstr "_შემცველობა"
-
-msgid "_About"
-msgstr "_შესახებ"
-
-msgid "_Show {appname}"
-msgstr ""
-
-msgid "Enable Alternative Speed _Limits"
-msgstr "ალტერნატიული სიჩქარის _ლიმიტების გააქტიურება"
-
-msgid "_Add"
-msgstr "_დამატება"
-
-msgid "Tracker"
-msgstr "ტრეკერი"
-
-msgid "_Announce URL:"
-msgstr ""
-
-msgid "_Close"
-msgstr "_დახურვა"
-
-msgid "Activity"
-msgstr "აქტივობა"
-
-msgid "Torrent size:"
-msgstr ""
-
-msgid "Have:"
-msgstr "მაქვს:"
-
-msgid "Uploaded:"
-msgstr "ატვირთულია:"
-
-msgid "Downloaded:"
-msgstr "გადმოწერილია:"
-
-msgid "State:"
-msgstr "მდგომარეობა:"
-
-msgid "Running time:"
-msgstr ""
-
-msgid "Remaining time:"
-msgstr "დარჩენილი დრო:"
-
-msgid "Last activity:"
-msgstr ""
-
-msgid "Error:"
-msgstr "შეცდომა:"
-
-msgid "Details"
-msgstr "დაწვრილებით"
-
-msgid "Location:"
-msgstr "მდებარეობა:"
-
-msgid "Hash:"
-msgstr "ჰეში:"
-
-msgid "Privacy:"
-msgstr "პირადი ინფორმაცია:"
-
-msgid "Origin:"
-msgstr "საწყისი:"
-
-msgid "Added:"
-msgstr "დამატებულია:"
-
-msgid "Comment:"
-msgstr "კომენტარი:"
-
-msgid "Information"
-msgstr "ინფორმაცია"
-
-msgid "Show _more details"
-msgstr ""
-
-msgid "Peers"
-msgstr "პარტნიორები"
-
-msgid "_Edit"
-msgstr "_ჩასწორება"
-
-msgid "Show _backup trackers"
-msgstr ""
-
-msgid "File listing not available for combined torrent properties"
-msgstr ""
-
-msgid "Files"
-msgstr "ფაილები"
-
-msgid "Speed"
-msgstr "სიჩქარე"
-
-msgid "Honor global _limits"
-msgstr ""
-
-msgid "Limit _download speed ({speed_units}):"
-msgstr ""
-
-msgid "Limit _upload speed ({speed_units}):"
-msgstr ""
-
-msgid "Torrent _priority:"
-msgstr ""
-
-msgid "Seeding Limits"
-msgstr ""
-
-msgid "_Ratio:"
-msgstr ""
-
-msgid "_Idle:"
-msgstr ""
-
-msgid "Peer Connections"
-msgstr "პარტნორთან მიერთებები"
-
-msgid "_Maximum peers:"
-msgstr "მაქსიმუმი პარტნიორები:"
-
-msgid "Options"
-msgstr "გამართვა"
-
-msgid "Tracker Announce URLs"
-msgstr ""
-
-msgid ""
-"To add a backup URL, add it on the next line after a primary URL.\n"
-"To add a new primary URL, add it after a blank line."
-msgstr ""
-
-msgid "Also see Default Public Trackers in Edit > Preferences > Network"
-msgstr ""
-
-msgid "Torrent"
-msgstr "Torrent"
-
-msgid "Statistics"
-msgstr "სტატისტიკა"
-
-msgid "New Torrent"
-msgstr "ახალი ტორენტი"
-
-msgid "_New"
-msgstr "_ახალი"
-
-msgid "Sa_ve to:"
-msgstr ""
-
-msgid "Source F_older:"
-msgstr ""
-
-msgid "Source _File:"
-msgstr ""
-
-msgid "Piece size:"
-msgstr ""
-
-msgid "Properties"
-msgstr ""
-
-msgid "_Trackers:"
-msgstr ""
-
-msgid "Co_mment:"
-msgstr "კომე_ნტარი:"
-
-msgid "_Source:"
-msgstr "_წყარო:"
-
-msgid "_Private torrent"
-msgstr ""
-
-msgid "Creating torrent…"
-msgstr ""
-
-msgid "Message Log"
-msgstr "შეტყობინებების ჟურნალი"
-
-msgid "Save _As"
-msgstr "_შენახვა, როგორც"
-
-msgid "Clear"
-msgstr "გაწმენდა"
-
-msgid "P_ause"
-msgstr "_პაუზა"
-
-msgid "Level"
-msgstr "დონე"
-
-msgid "Torrent Options"
-msgstr "ტორენტის მორგება"
-
-msgid "_Torrent file:"
-msgstr "ტორენტის _ფაილი:"
-
-msgid "Select Source File"
-msgstr "აირჩიეთ საწყისი ფაილი"
-
-msgid "_Destination folder:"
-msgstr "_დანიშნულების საქაღალდე:"
-
-msgid "Select Destination Folder"
-msgstr "აირჩიეთ სამიზნე საქაღალდე"
-
-msgid "_Start when added"
-msgstr "დაწყება დამატებისას"
-
-msgid "Mo_ve torrent file to the trash"
-msgstr ""
-
-msgid "{appname} Preferences"
-msgstr ""
-
-msgid "_Help"
-msgstr "_დახმარება"
-
-msgid "Speed Limits"
-msgstr "სიჩქარის ლიმიტები"
-
-#. Checkbox to limit upload speed
-msgid "_Upload ({speed_units}):"
-msgstr ""
-
-#. Checkbox to limit download speed
-msgid "_Download ({speed_units}):"
-msgstr ""
-
-msgid "Alternative Speed Limits"
-msgstr ""
-
-msgid "Override normal speed limits manually or at scheduled times"
-msgstr ""
-
-#. Labels a spinbutton for alternate upload speed limits
-msgid "U_pload ({speed_units}):"
-msgstr ""
-
-#. Labels a spinbutton for alternate download speed limits
-msgid "Do_wnload ({speed_units}):"
-msgstr ""
-
-msgid "_Scheduled times:"
-msgstr ""
-
-msgid "_On days:"
-msgstr ""
-
-#. Label goes between two time selectors, e.g. "limit speeds from [time] to [time]"
-msgid "_to"
-msgstr ""
-
-msgctxt "Gerund"
-msgid "Adding"
-msgstr "დამატება"
-
-msgid "Automatically add torrent files _from:"
-msgstr ""
-
-msgid "Show the Torrent Options _dialog"
-msgstr ""
-
-msgid "_Start added torrents"
-msgstr ""
-
-msgid "Save to _Location:"
-msgstr ""
-
-msgid "Download Queue"
-msgstr ""
-
-msgid "Ma_ximum active downloads:"
-msgstr ""
-
-msgid "Downloads sharing data in the last _N minutes are active:"
-msgstr ""
-
-msgid "Incomplete"
-msgstr "არასრული"
-
-msgid "Append \"._part\" to incomplete files' names"
-msgstr ""
-
-msgid "Keep _incomplete torrents in:"
-msgstr ""
-
-msgid "Call scrip_t when done downloading:"
-msgstr ""
-
-msgctxt "Gerund"
-msgid "Downloading"
-msgstr "გადმოწერა"
-
-msgid "Limits"
-msgstr "ლიმიტები"
-
-msgid "Stop seeding at _ratio:"
-msgstr ""
-
-msgid "Stop seeding if idle for _N minutes:"
-msgstr ""
-
-msgid "Call scrip_t when done seeding:"
-msgstr ""
-
-msgctxt "Gerund"
-msgid "Seeding"
-msgstr "Seeding"
-
-msgid "Privacy"
-msgstr "პირადი ინფორმაცია"
-
-msgid "_Encryption mode:"
-msgstr ""
-
-msgid "Blocklist"
-msgstr ""
-
-msgid "Enable _blocklist:"
-msgstr ""
-
-msgid "Enable _automatic updates"
-msgstr ""
-
-msgid "_Update"
-msgstr "განახლება"
-
-msgid "Listening Port"
-msgstr ""
-
-msgid "_Port used for incoming connections:"
-msgstr ""
-
-msgid "Pick a _random port every time Transmission is started"
-msgstr ""
-
-msgid "Use UPnP or NAT-PMP port _forwarding from my router"
-msgstr ""
-
-msgid "Te_st Port"
-msgstr ""
-
-msgid "Peer Limits"
-msgstr ""
-
-msgid "Maximum peers per _torrent:"
-msgstr ""
-
-msgid "Maximum peers _overall:"
-msgstr ""
-
-msgid "Enable µ_TP for peer communication"
-msgstr ""
-
-msgid "µTP is a tool for reducing network congestion."
-msgstr ""
-
-msgid "Use PE_X to find more peers"
-msgstr ""
-
-msgid "PEX is a tool for exchanging peer lists with the peers you're connected to."
-msgstr ""
-
-msgid "Use _DHT to find more peers"
-msgstr ""
-
-msgid "DHT is a tool for finding peers without a tracker."
-msgstr ""
-
-msgid "Use _Local Peer Discovery to find more peers"
-msgstr ""
-
-msgid "LPD is a tool for finding peers on your local network."
-msgstr ""
-
-msgid "Default Public Trackers"
-msgstr ""
-
-msgid ""
-"Trackers to use on all public torrents.\n"
-"\n"
-"To add a backup URL, add it on the next line after a primary URL.\n"
-"To add a new primary URL, add it after a blank line."
-msgstr ""
-
-msgid "Network"
-msgstr "ქსელი"
-
-msgid "Desktop"
-msgstr "სამუშაო მაგიდა"
-
-msgid "_Inhibit hibernation when torrents are active"
-msgstr ""
-
-msgid "Show {appname} icon in the _notification area"
-msgstr ""
-
-msgid "Notification"
-msgstr "შეტყობინება"
-
-msgid "Show a notification when torrents are a_dded"
-msgstr ""
-
-msgid "Show a notification when torrents _finish"
-msgstr ""
-
-msgid "Play a _sound when torrents finish"
-msgstr ""
-
-msgid "Remote Control"
-msgstr "დაშორებული მართვა"
-
-msgid "Allow _remote access"
-msgstr ""
-
-msgid "_Open web client"
-msgstr ""
-
-msgid "HTTP _port:"
-msgstr ""
-
-msgid "Use _authentication"
-msgstr ""
-
-msgid "_Username:"
-msgstr "_მომხმარებელი:"
-
-msgid "Pass_word:"
-msgstr "პა_როლი:"
-
-msgid "Only allow these IP a_ddresses:"
-msgstr ""
-
-msgid "Addresses:"
-msgstr "მისამართები:"
-
-msgid "IP addresses may use wildcards, such as 192.168.*.*"
-msgstr ""
-
-msgid "Remote"
-msgstr "დაშორებული"
-
-msgid "Set Torrent Location"
-msgstr ""
-
-msgid "_Apply"
-msgstr "_დაგატარება"
-
-msgid "Location"
-msgstr "მდებარეობა"
-
-msgid "Torrent _location:"
-msgstr ""
-
-msgid "_Move from the current folder"
-msgstr ""
-
-msgid "Local data is _already there"
-msgstr ""
-
-msgid "Current Session"
-msgstr "მიმდინარე სესია"
-
-msgid "Ratio:"
-msgstr "შეფარდება:"
-
-msgid "Duration:"
-msgstr "ხანგრძლივობა:"
-
-msgid "Total"
-msgstr "ჯამში"
-
-msgid "Open URL"
-msgstr "URL-ის გახსნა"
-
-msgid "Open torrent from URL"
-msgstr ""
-
-msgid "_URL"
-msgstr "_URL"
-
-msgid "Couldn't parse announce response: {error} ({error_code})"
-msgstr ""
-
-msgid "Couldn't parse scrape response: {error} ({error_code})"
-msgstr ""
-
-msgid "Unknown error"
-msgstr "უცნობი შეცდომა"
-
-msgid "{ip_protocol} connection failed"
-msgstr ""
-
-msgid "Couldn't look up '{address}:{port}' in {ip_protocol}: {error} ({error_code})"
-msgstr ""
-
 msgid "Announce error: {error} ({url})"
 msgstr ""
 
@@ -1634,19 +2037,54 @@ msgstr ""
 msgid "Success"
 msgstr "წარმატება"
 
+msgid "Couldn't parse announce response: {error} ({error_code})"
+msgstr ""
+
+msgid "Couldn't parse scrape response: {error} ({error_code})"
+msgstr ""
+
+msgid "Unknown error"
+msgstr "უცნობი შეცდომა"
+
+msgid "{ip_protocol} connection failed"
+msgstr ""
+
+msgid "Couldn't look up '{address}:{port}' in {ip_protocol}: {error} ({error_code})"
+msgstr ""
+
 msgid "Blocklist '{path}' has {count} entry"
 msgid_plural "Blocklist '{path}' has {count} entries"
 msgstr[0] ""
 msgstr[1] ""
 
-#. don't try to display the actual lines - it causes issues
-msgid "Couldn't parse line: '{line}'"
+msgid "Couldn't parse line {line}: {base64}"
 msgstr ""
 
-msgid "Rewriting old blocklist file format to new format"
+msgid "Rewriting old blocklist file {path} to new format"
+msgstr ""
+
+msgid "Blocklist is larger than {limit} MiB; ignoring it"
+msgstr ""
+
+msgid "Couldn't fetch blocklist: {errmsg}, response code: {error} ({error_code})"
+msgstr ""
+
+msgid "Couldn't fetch blocklist: {error} ({error_code})"
+msgstr ""
+
+msgid "Automatically updated blocklist, which now has {count} rules"
+msgstr ""
+
+msgid "Invalid tr_sched_days value {val}"
 msgstr ""
 
 msgid "{crypto_library} error: {error} ({error_code})"
+msgstr ""
+
+msgid "Couldn't read '{path}': Not a regular file"
+msgstr ""
+
+msgid "Couldn't get '{path}': "
 msgstr ""
 
 msgid "Couldn't get '{path}': {error} ({error_code})"
@@ -1664,19 +2102,13 @@ msgstr ""
 msgid "Successfully updated global {type} address to {ip} using {url}"
 msgstr ""
 
+msgid "Still waiting for disk IO on torrent {id}: {running} running, {queued} queued"
+msgstr ""
+
 msgid "Too many messages like this! I won't log this message anymore this session."
 msgstr ""
 
 msgid "Skipping '{path}': {error} ({error_code})"
-msgstr ""
-
-msgid "Couldn't create socket: {error} ({error_code})"
-msgstr ""
-
-msgid "Couldn't set source address {address} on {socket}: {error} ({error_code})"
-msgstr ""
-
-msgid "Couldn't connect socket {socket} to {address}:{port}: {error} ({error_code})"
 msgstr ""
 
 msgid "Couldn't bind port {port} on {address}: {error} ({error_code}) -- Is another copy of {appname} already running?"
@@ -1694,7 +2126,34 @@ msgstr ""
 msgid "Couldn't truncate '{path}': {error} ({error_code})"
 msgstr ""
 
+msgid "Couldn't create socket: {error} ({error_code})"
+msgstr ""
+
+msgid "Couldn't set source address {address} on {socket}: {error} ({error_code})"
+msgstr ""
+
+msgid "Couldn't connect socket {socket} to {address}:{port}: {error} ({error_code})"
+msgstr ""
+
 msgid "Unknown state: {state}"
+msgstr ""
+
+msgid "Starting"
+msgstr "გაშვება"
+
+msgid "Forwarded"
+msgstr "გადაგზავნილი"
+
+msgid "Stopping"
+msgstr "შეჩერება"
+
+msgid "Not forwarded"
+msgstr ""
+
+msgid "Mapped private port {private_port} to public port {public_port}"
+msgstr ""
+
+msgid "State changed from '{old_state}' to '{state}'"
 msgstr ""
 
 msgid "Found public address '{address}'"
@@ -1727,22 +2186,16 @@ msgstr ""
 msgid "If your router supports UPnP, please make sure UPnP is enabled!"
 msgstr ""
 
-msgid "Starting"
-msgstr "გაშვება"
-
-msgid "Forwarded"
-msgstr "გადაგზავნილი"
-
-msgid "Stopping"
-msgstr "შეჩერება"
-
-msgid "Not forwarded"
+msgid "Couldn't test port: {errmsg}, response code: {error} ({error_code})"
 msgstr ""
 
-msgid "Mapped private port {private_port} to public port {public_port}"
+msgid "Couldn't test port: {error} ({error_code})"
 msgstr ""
 
-msgid "State changed from '{old_state}' to '{state}'"
+msgid "Couldn't fetch torrent: {errmsg}, Response code: {error} ({error_code})"
+msgstr ""
+
+msgid "Couldn't fetch torrent: {error} ({error_code})"
 msgstr ""
 
 msgid "Unix socket path must be fewer than {count} characters (including '{prefix}' prefix)"
@@ -1801,28 +2254,23 @@ msgstr "პაროლი აუცილებელია"
 msgid "Serving RPC and Web requests from '{path}'"
 msgstr ""
 
-msgid "Couldn't test port: {error} ({error_code})"
-msgstr ""
+#, fuzzy
+#| msgid "Alternative Speed Limits"
+msgid "Time to turn on alternative speed limits"
+msgstr "ალტერნატიული სიჩქარის შეზღუდვები"
 
-msgid "Couldn't fetch blocklist: {error} ({error_code})"
-msgstr ""
-
-msgid "Couldn't fetch torrent: {error} ({error_code})"
-msgstr ""
-
-msgid "Time to turn off turtle mode"
-msgstr ""
-
-msgid "Time to turn on turtle mode"
-msgstr ""
-
-msgid "Couldn't open session lock file '{path}': {error} ({error_code})"
-msgstr ""
+#, fuzzy
+#| msgid "Alternative Speed Limits"
+msgid "Time to turn off alternative speed limits"
+msgstr "ალტერნატიული სიჩქარის შეზღუდვები"
 
 msgid "Listening to incoming peer connections on {hostport}"
 msgstr ""
 
 msgid "{appname} version {version} starting"
+msgstr ""
+
+msgid "Couldn't start disk IO workers, continuing without them: {error}"
 msgstr ""
 
 msgid "{appname} version {version} shutting down"
@@ -1833,7 +2281,10 @@ msgid_plural "Loaded {count} torrents"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "Migrated torrent file from '{old_path}' to '{path}'"
+msgid "Couldn't claim '{path}'. If another session is using it, the two will overwrite each other's settings, resume files and stats."
+msgstr ""
+
+msgid "Couldn't open session lock file '{path}': {error} ({error_code})"
 msgstr ""
 
 msgid "Couldn't use metainfo from '{path}' for '{magnet}': {error} ({error_code})"
@@ -1866,13 +2317,25 @@ msgstr ""
 msgid "Removing torrent"
 msgstr ""
 
-msgid "Couldn't move '{old_path}' to '{path}': {error} ({error_code})"
+msgid "Couldn't move torrent files to '{path}': {error} ({error_code})"
 msgstr ""
 
 msgid "Paused torrent as no data was found! Ensure your drives are connected or use \"Set Location\", then use \"Verify Local Data\" again. To re-download, start the torrent."
 msgstr ""
 
+msgid "Couldn't move '{old_path}' to '{path}': {error} ({error_code})"
+msgstr ""
+
 msgid "Tracker warning: '{warning}' ({url})"
+msgstr ""
+
+msgid "Moving '{source}' will overwrite '{path}'"
+msgstr ""
+
+msgid "Couldn't compare '{path}' with '{root}': {error} ({error_code}); leaving it alone"
+msgstr ""
+
+msgid "Migrated torrent file from '{old_path}' to '{path}'"
 msgstr ""
 
 msgid "Couldn't parse '{filename}' line: '{line}'"
@@ -1902,8 +2365,47 @@ msgstr ""
 msgid "Unknown socket family"
 msgstr ""
 
-msgid "Couldn't read '{path}': Not a regular file"
+msgid "B"
 msgstr ""
+
+msgid "KiB"
+msgstr "კიბ"
+
+msgid "MiB"
+msgstr "მიბ"
+
+msgid "GiB"
+msgstr "გიბ"
+
+msgid "TiB"
+msgstr "ტიბ"
+
+msgid "B/s"
+msgstr ""
+
+msgid "kB/s"
+msgstr "კბ/წმ"
+
+msgid "MB/s"
+msgstr "მბ/წმ"
+
+msgid "GB/s"
+msgstr "გბ/წმ"
+
+msgid "TB/s"
+msgstr ""
+
+msgid "kB"
+msgstr "კბ"
+
+msgid "MB"
+msgstr "მბ"
+
+msgid "GB"
+msgstr "გბ"
+
+msgid "TB"
+msgstr "ტბ"
 
 msgid "Couldn't parse JSON at position {position} '{text}': {error} ({error_code})"
 msgstr ""
@@ -1911,16 +2413,13 @@ msgstr ""
 msgid "Couldn't watch '{path}': {error} ({error_code})"
 msgstr ""
 
-msgid "Couldn't read event: {error} ({error_code})"
-msgstr ""
-
 msgid "Couldn't read event: expected {expected_size}, got {actual_size}"
 msgstr ""
 
-msgid "Couldn't read filename: {error} ({error_code})"
+msgid "Couldn't read filename: expected {expected_size}, got {actual_size}"
 msgstr ""
 
-msgid "Couldn't read filename: expected {expected_size}, got {actual_size}"
+msgid "Couldn't read event: {error} ({error_code})"
 msgstr ""
 
 msgid "Couldn't convert '{path}' to native path"
@@ -1941,10 +2440,13 @@ msgstr ""
 msgid "Consider upgrading your curl installation."
 msgstr ""
 
+msgid "The minimum supported version is {curl_version}, you might face unexpected behaviour."
+msgstr ""
+
 msgid "curl {curl_version} is prone to SIGPIPE crashes. {details_url}"
 msgstr ""
 
-msgid "curl {curl_version} is prone to an eventfd double close vulnerability that might cause SIGABRT crashes for the transmission-daemon systemd service. {details_url}"
+msgid "curl {curl_version} is prone to an eventfd double close vulnerability that might cause SIGABRT crashes for the daemon systemd service. {details_url}"
 msgstr ""
 
 msgid "Will verify tracker certs using envvar CURL_CA_BUNDLE: {bundle}"
@@ -1956,8 +2458,442 @@ msgstr ""
 msgid "NB: Invalid certs will appear as 'Could not connect to tracker' like many other errors"
 msgstr ""
 
+msgid "Aborting request: response body exceeded max size of {max_file_size} bytes"
+msgstr ""
+
 msgid "Couldn't fetch '{url}': expected HTTP response code {expected_code}, got {actual_code}"
 msgstr ""
+
+msgid "Server"
+msgstr ""
+
+msgid "C_redits"
+msgstr "ა_ვტორები"
+
+msgid "Credits"
+msgstr "ავტორები"
+
+msgid "About {appname}"
+msgstr "{appname}-ის შესახებ"
+
+#, fuzzy
+#| msgid "Torrent properties"
+msgid "Torrent Completed"
+msgstr "ტორენტის თვისებები"
+
+#, fuzzy
+#| msgid "Torrent properties"
+msgid "Torrents Completed"
+msgstr "ტორენტის თვისებები"
+
+#. Translators: Text following the "Have:" label in torrent properties dialog;
+#. {current_size} is amount of downloaded and verified data
+msgid "{current_size} (100%)"
+msgstr "{current_size} (100%)"
+
+msgid "{current_size} of {complete_size} ({percent_done}%), {unverified_size} Unverified"
+msgstr "{current_size} / {complete_size} ({percent_done}%), {unverified_size} შეუმოწმებელი"
+
+msgid "{total_size} ({piece_count:L} piece @ {piece_size})"
+msgid_plural "{total_size} ({piece_count:L} pieces @ {piece_size})"
+msgstr[0] "{total_size} ({piece_count:L} ნაწილი @ {piece_size})"
+msgstr[1] "{total_size} ({piece_count:L} ნაწილი @ {piece_size})"
+
+msgid "{total_size} ({piece_count:L} piece)"
+msgid_plural "{total_size} ({piece_count:L} pieces)"
+msgstr[0] "{total_size} ({piece_count:L} ნაწილი)"
+msgstr[1] "{total_size} ({piece_count:L} ნაწილი)"
+
+msgid "Add URL(s)"
+msgstr ""
+
+msgid "Add tracker announce URLs, one per line:"
+msgstr ""
+
+msgid "No new URLs found."
+msgstr ""
+
+msgid "Use Global Settings"
+msgstr "გლობალური პარამეტრების გამოყენება"
+
+msgid "Stop seeding if idle for:"
+msgstr "სიდირების შეჩერება უმოქმედობის:"
+
+msgid "Torrent Properties"
+msgstr "ტორენტის თვისებები"
+
+msgid "Availability:"
+msgstr "ხელმისაწვდომობა:"
+
+msgid "Labels:"
+msgstr ""
+
+msgid "Limit _upload speed:"
+msgstr "_ატვირთვის სიჩქარის შეზღუდვა:"
+
+msgid "Limit _download speed:"
+msgstr "_ჩამოტვირთვის სიჩქარის შეზღუდვა:"
+
+msgid "Check Selected"
+msgstr "არჩეულის მონიშვნა"
+
+msgid "Uncheck Selected"
+msgstr "არჩეულის გადანიშვნა"
+
+msgid "Only Check Selected"
+msgstr "მხოლოდ არჩეულის მონიშვნა"
+
+msgid "Open"
+msgstr "გახსნა"
+
+msgid "Rename…"
+msgstr ""
+
+msgid "Search…"
+msgstr ""
+
+msgid "<i>Calculating Free Space…</i>"
+msgstr ""
+
+msgid "Limited at {speed}"
+msgstr "შეზღუდული {speed}-ზე"
+
+#. Translators: Second (optional) part of main window title "Appname - host:port" (added when connected to remote session)
+#. notice that leading space (before the dash) is included here
+msgid " - {host}:{port}"
+msgstr " - {host}:{port}"
+
+msgid "Network Error"
+msgstr "ქსელის შეცდომა"
+
+msgid "Idle"
+msgstr "უმოქმედო"
+
+msgid "Showing {visible_count:L} of {count:L} torrent"
+msgid_plural "Showing {visible_count:L} of {count:L} torrents"
+msgstr[0] "ნაჩვენებია {visible_count:L} ტორენტი {count:L}-დან"
+msgstr[1] "ნაჩვენებია {visible_count:L} ტორენტი {count:L}-დან"
+
+msgid "Torrent Files (*.torrent);;All Files (*.*)"
+msgstr "ტორენტ ფაილები (*.torrent);;ყველა ფაილი (*.*)"
+
+msgid "{host} has not responded yet"
+msgstr "{host}-ს ჯერ არ უპასუხია"
+
+msgid "{host} is responding"
+msgstr "{host} პასუხობს"
+
+#, fuzzy
+#| msgid "{host} last responded {time_span} ago"
+msgid "{host} last responded {time_span_ago}"
+msgstr "{host}-მ  ბოლოს უპასუხა {time_span}ს წინ"
+
+msgid "{host} is not responding"
+msgstr "{host} არ პასუხობს"
+
+#, fuzzy
+#| msgid "_Open"
+msgid "_Open…"
+msgstr "_გახსნა"
+
+msgid "Create a new torrent"
+msgstr "ახალი ტორენტის შექმნა"
+
+msgid "Open the torrent's folder"
+msgstr "ტორენტის საქაღალდის გახსნა"
+
+msgid "Ask tracker for more peers"
+msgstr "აღმნუსხავისთვის მეტი პირის მოთხოვნა"
+
+msgid "Verify local data"
+msgstr "ადგილობრივი მონაცემების გადამოწმება"
+
+msgid "Remove torrent and delete its files"
+msgstr "ტორენტის ამოღება და მისი ფაილების წაშლა"
+
+msgid "Compact View"
+msgstr "კომპაქტური ხედი"
+
+msgid "_Main Window"
+msgstr "_მთავარი ფანჯარა"
+
+msgid "Tray _Icon"
+msgstr "დავალებების ზოლის _ხატულა"
+
+#, fuzzy
+#| msgid "Change Session"
+msgid "_Change Session…"
+msgstr "სესიის შეცვლა"
+
+#. Start a local session or connect to a running session
+msgid "Choose Session"
+msgstr "სესიის არჩევა"
+
+msgid "Bypass the queue and start now"
+msgstr "რიგისთვის გვერდის ავლა და ახლავე დაწყება"
+
+msgid "{file_count:L} File"
+msgid_plural "{file_count:L} Files"
+msgstr[0] "{file_count:L} ფაილი"
+msgstr[1] "{file_count:L} ფაილი"
+
+msgid "{piece_count:L} Piece"
+msgid_plural "{piece_count:L} Pieces"
+msgstr[0] "{piece_count:L} ნაწილი"
+msgstr[1] "{piece_count:L} ნაწილი"
+
+msgid "{total_size} in {files}; {pieces} @ {piece_size}"
+msgstr "{total_size} - {files}; {pieces} @ {piece_size}"
+
+msgid ""
+"To add a backup URL, add it on the line after the primary URL.\n"
+"To add another primary URL, add it after a blank line."
+msgstr ""
+"თუ მარქაფის URL-ს დამზადება გსურთ, დაამატეთ ის მთავარი URL-ს მოდმევნო ველში.\n"
+"სხვა მთავარი URL-ს დასამატებლად, მოათავსეთ ის ცარიელ ველში."
+
+#, fuzzy
+#| msgid "_Source:"
+msgid "Sou_rce:"
+msgstr "_წყარო:"
+
+msgid "_Priority:"
+msgstr "_პრიორიტეტი:"
+
+msgid "Select Folder"
+msgstr "საქაღალდის არჩევა"
+
+#, fuzzy
+#| msgid "Unknown"
+msgid "unknown"
+msgstr "უცნობი"
+
+msgid "checking…"
+msgstr ""
+
+msgid "open"
+msgstr ""
+
+#, fuzzy
+#| msgid "_Close"
+msgid "closed"
+msgstr "_დახურვა"
+
+#, fuzzy
+msgid "error"
+msgstr ""
+"#-#-#-#-#  ka.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"შეცდომა\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"შეცდომა\n"
+"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"შეცდომიანი"
+
+#, fuzzy
+#| msgid "<i>Blocklist contains {count:L} rule</i>"
+#| msgid_plural "<i>Blocklist contains {count:L} rules</i>"
+msgid "<b>Update succeeded!</b><p>Blocklist now has {count:L} rule.</p>"
+msgid_plural "<b>Update succeeded!</b><p>Blocklist now has {count:L} rules.</p>"
+msgstr[0] "<i>შავი სია შეიცავს {count:L} წესს</i>"
+msgstr[1] "<i>შავი სია შეიცავს {count:L} წესს</i>"
+
+msgid "Download of the blocklist failed."
+msgstr ""
+
+#, fuzzy
+#| msgid "Blocklist"
+msgid "Update Blocklist"
+msgstr "შავი სია"
+
+msgid "Select \"Torrent Done Seeding\" Script"
+msgstr ""
+
+msgid "Select Watch Directory"
+msgstr "შეარჩიეთ დასაკვირვებელი დირექტორია"
+
+msgid "Select Incomplete Directory"
+msgstr "შეარჩიეთ არასრულის დირექტორია"
+
+msgid "Select \"Torrent Done Downloading\" Script"
+msgstr ""
+
+msgid "Not supported by remote sessions"
+msgstr "დისტანციური სესიების მხრიდან მხარდაჭერილი არაა"
+
+msgid "<i>Blocklist contains {count:L} rule</i>"
+msgid_plural "<i>Blocklist contains {count:L} rules</i>"
+msgstr[0] "<i>შავი სია შეიცავს {count:L} წესს</i>"
+msgstr[1] "<i>შავი სია შეიცავს {count:L} წესს</i>"
+
+#, fuzzy
+#| msgid "<i>Blocklist contains {count:L} rule</i>"
+#| msgid_plural "<i>Blocklist contains {count:L} rules</i>"
+msgid "<i>Blocklist has never been updated</i>"
+msgstr "<i>შავი სია შეიცავს {count:L} წესს</i>"
+
+#, fuzzy
+#| msgid "<i>Blocklist contains {count:L} rule</i>"
+#| msgid_plural "<i>Blocklist contains {count:L} rules</i>"
+msgid "<i>Blocklist last updated {date}</i>"
+msgstr "<i>შავი სია შეიცავს {count:L} წესს</i>"
+
+msgid "_Upload:"
+msgstr "_ატვირთვა:"
+
+msgid "_Download:"
+msgstr "_ჩამოტვირთვა:"
+
+msgid "U_pload:"
+msgstr "ა_ტვირთვა:"
+
+msgid "Do_wnload:"
+msgstr "ჩა_მოტვირთვა:"
+
+msgid "Downloading"
+msgstr "ჩამოტვირთვა"
+
+msgid "Adding"
+msgstr "ემატება"
+
+msgid "Reads user clipboard content for torrents"
+msgstr ""
+
+msgid "Detect new torrents from clipboard"
+msgstr ""
+
+#. Please keep this phrase as short as possible, it's currently the longest and influences dialog width
+msgid "Download is i_nactive if data sharing stopped:"
+msgstr "ჩამოტვირთვა უმოქ_მედოა თუ მონაცემთა გაზიარება შეჩერდა:"
+
+msgid "Seeding"
+msgstr "სიდირება"
+
+msgid "Stop seedi_ng if idle for:"
+msgstr "სიდირების შეჩერე_ბა უქმად ყოფნისას:"
+
+msgid "Encryption"
+msgstr "დაშიფვრა"
+
+msgid "Start _minimized in notification area"
+msgstr "შეტყობინებების არეში _ჩაკეცილ მდგომარეობაში გაშვება"
+
+#, fuzzy
+#| msgid "Retransmission"
+msgid "Retransmission (Qt)"
+msgstr "Retransmission"
+
+msgid "Select Location"
+msgstr "მდებარეობის არჩევა"
+
+msgid "Error Renaming Path"
+msgstr "ბილიკის გადარქმევის შეცდომა"
+
+msgid "Unable to rename \"{old_path}\" as \"{path}\": {error}."
+msgstr "ვერ მოხერხდა \"{old_path}-ის\" \"{path}\": {error}-ად გადარქმევა."
+
+msgid "Error Adding Torrent"
+msgstr ""
+
+msgid "{torrent_name} (copy of {hash})"
+msgstr ""
+
+#, fuzzy
+#| msgid "Public torrent"
+msgid "Duplicate Torrent"
+msgstr "საჯარო ტორენტი"
+
+#, fuzzy
+#| msgid "Public torrent"
+msgid "Duplicate Torrents"
+msgstr "საჯარო ტორენტი"
+
+#, fuzzy
+#| msgid "Couldn't add duplicate torrent"
+#| msgid_plural "Couldn't add duplicate torrents"
+msgid "Unable to add {count} duplicate torrent"
+msgid_plural "Unable to add {count} duplicate torrents"
+msgstr[0] "ვერ ვამატებ ტორენტის დუბლიკატს"
+msgstr[1] "ვერ ვამატებ ტორენტის დუბლიკატს"
+
+msgid "Change Session"
+msgstr "სესიის შეცვლა"
+
+msgid "Source"
+msgstr "წყარო"
+
+msgid "Start _Local Session"
+msgstr "_ადგილობრივი სესიის დაწყება"
+
+msgid "Connect to _Remote Session"
+msgstr "_დისტანციურ სესიასთან დაკავშირება"
+
+msgid "_Host:"
+msgstr "_ჰოსტი:"
+
+msgid "_Port:"
+msgstr "_პორტი:"
+
+msgid "_Authentication required"
+msgstr "საჭიროა _ავთენტიფიკაცია"
+
+msgid "Remote root pa_th:"
+msgstr ""
+
+msgid "Tracker gave a warning: {warning}"
+msgstr "ტრეკერმა გამოუშვა გაფრთხილება: {warning}"
+
+msgid "Tracker gave an error: {error}"
+msgstr "ტრეკერმა გამოუშვა შეცდომა: {error}"
+
+msgid "Error: {error}"
+msgstr "შეცდომა: {error}"
+
+#, fuzzy
+#| msgid "Magnetized transfer - retrieving metadata (%1%)"
+msgid "Magnetized torrent - retrieving metadata ({percent_done}%)"
+msgstr "მაგნეტიზირებული ტრანსფერი - მეტამონაცემების მიღება (%1%)"
+
+#, no-c-format
+msgid "Downloading metadata from {active_count:L} peer ({percent_done}% done)"
+msgid_plural "Downloading metadata from {active_count:L} peers ({percent_done}% done)"
+msgstr[0] "მეტამონაცემების ჩამოტვირთვა {active_count:L} პირისგან ({percent_done}% დასრულდა)"
+msgstr[1] "მეტამონაცემების ჩამოტვირთვა {active_count:L} პირისგან ({percent_done}% დასრულდა)"
+
+msgid "Downloading from {active_count:L} peer"
+msgid_plural "Downloading from {active_count:L} peers"
+msgstr[0] "იტვირთება {active_count:L} პირისგან"
+msgstr[1] "იტვირთება {active_count:L} პირისგან"
+
+msgid " and {webseed_count:L} web seed"
+msgid_plural " and {webseed_count:L} web seeds"
+msgstr[0] "და {webseed_count:L} ვებ სიდისგან"
+msgstr[1] "და {webseed_count:L} ვებ სიდისგან"
+
+msgid "Seeding to {active_count:L} peer"
+msgid_plural "Seeding to {active_count:L} peers"
+msgstr[0] "სიდირდება {active_count:L} პირზე"
+msgstr[1] "სიდირდება {active_count:L} პირზე"
+
+msgid " - "
+msgstr " - "
+
+#, fuzzy
+#| msgid ""
+#| "To add a backup URL, add it on the line after the primary URL.\n"
+#| "To add another primary URL, add it after a blank line."
+msgid "To add a backup URL, add it on the next line after a primary URL."
+msgstr ""
+"თუ მარქაფის URL-ს დამზადება გსურთ, დაამატეთ ის მთავარი URL-ს მოდმევნო ველში.\n"
+"სხვა მთავარი URL-ს დასამატებლად, მოათავსეთ ის ცარიელ ველში."
+
+#, fuzzy
+#| msgid ""
+#| "To add a backup URL, add it on the line after the primary URL.\n"
+#| "To add another primary URL, add it after a blank line."
+msgid "To add a new primary URL, add it after a blank line."
+msgstr ""
+"თუ მარქაფის URL-ს დამზადება გსურთ, დაამატეთ ის მთავარი URL-ს მოდმევნო ველში.\n"
+"სხვა მთავარი URL-ს დასამატებლად, მოათავსეთ ის ცარიელ ველში."
 
 msgid "{file_count:L} file, {total_size}\n"
 msgid_plural "{file_count:L} files, {total_size}\n"
@@ -1979,7 +2915,10 @@ msgid_plural "minutes"
 msgstr[0] "წუთი"
 msgstr[1] "წუთი"
 
-msgid "seconds"
+#, fuzzy
+#| msgid "seconds"
+#| msgid_plural "seconds"
+msgid "second"
 msgid_plural "seconds"
 msgstr[0] "წამი"
 msgstr[1] "წამი"
@@ -1988,3 +2927,32 @@ msgid "day"
 msgid_plural "days"
 msgstr[0] "დღე"
 msgstr[1] "დღე"
+
+msgid "seconds"
+msgid_plural "seconds"
+msgstr[0] "წამი"
+msgstr[1] "წამი"
+
+#~ msgid "Finished"
+#~ msgstr "დასრულებულია"
+
+#~ msgid "We would upload to this peer if they asked"
+#~ msgstr "ჩვენ გვინდა პარტნიორებთან ატვირთვა, თუ გვთხოვენ"
+
+#~ msgid "Have"
+#~ msgstr "მაქვს:"
+
+#~ msgid "Select a File"
+#~ msgstr "ფაილის არჩევა"
+
+#~ msgid "Copy _Magnet Link to Clipboard"
+#~ msgstr "_მაგნიტური ბმულის ბუფერში კოპირება"
+
+#~ msgid "Enable Alternative Speed _Limits"
+#~ msgstr "ალტერნატიული სიჩქარის _ლიმიტების გააქტიურება"
+
+#~ msgid "_New"
+#~ msgstr "_ახალი"
+
+#~ msgid "P_ause"
+#~ msgstr "_პაუზა"

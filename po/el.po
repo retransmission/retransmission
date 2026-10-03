@@ -16,8 +16,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-01-04 14:15+0000\n"
+"Report-Msgid-Bugs-To: https://github.com/retransmission/retransmission/issues\n"
+"POT-Creation-Date: 2026-10-03 11:48-0500\n"
 "PO-Revision-Date: 2017-01-26 19:47+0000\n"
 "Last-Translator: Giorgos Mousa, 2025\n"
 "Language-Team: Greek (https://app.transifex.com/transmissionbt/teams/33778/el/)\n"
@@ -27,11 +27,19 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
+#, fuzzy
 msgid "None"
-msgstr "0"
+msgstr ""
+"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"0\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Κανένα"
 
 msgid "Inf"
 msgstr "Άπειρο"
+
+msgid "Another process is already using '{path}'."
+msgstr ""
 
 msgid "Couldn't read '{path}': {error} ({error_code})"
 msgstr "Αδυναμία ανάγνωσης '{path}': {error} ({error_code})"
@@ -59,6 +67,9 @@ msgstr "Επαναφόρτωση ρυθμίσεων από '{path}'"
 
 msgid "Couldn't initialize daemon: {error} ({error_code})"
 msgstr "Αδυναμία εκκίνησης daemon: {error} ({error_code})"
+
+msgid "Waiting for another process to release '{path}'"
+msgstr ""
 
 msgid "Loading settings from '{path}'"
 msgstr "Φόρτωση ρυθμίσεων από '{path}'"
@@ -109,11 +120,21 @@ msgid_plural "Couldn't add duplicate torrents"
 msgstr[0] "Αδύνατη η προσθήκη διπλότυπου torrent"
 msgstr[1] "Δεν ήταν δυνατή η προσθήκη διπλότυπων torrent"
 
+#, fuzzy
 msgid "A fast and easy BitTorrent client"
-msgstr "Ένα γρήγορο κι εύχρηστο πρόγραμμα για το πρωτόκολλο BitTorrent"
+msgstr ""
+"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Ένα γρήγορο κι εύχρηστο πρόγραμμα για το πρωτόκολλο BitTorrent\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Ένα γρήγορο κι εύχρηστο πρόγραμμα-πελάτης BitTorrent"
 
+#, fuzzy
 msgid "Copyright © The {appname} Project"
-msgstr "Πνευματική ιδιοκτησία © The {appname} Project"
+msgstr ""
+"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Πνευματική ιδιοκτησία © The {appname} Project\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Με την επιφύλαξη παντός δικαιώματος © The {appname} Project"
 
 #. Translators: translate "translator-credits" as your name
 #. to have it appear in the credits in the "About"
@@ -160,8 +181,13 @@ msgstr "Χρήση καθολικών ρυθμίσεων"
 msgid "Seed regardless of ratio"
 msgstr "Διαμοιρασμός ανεξάρτητα από την αναλογία"
 
+#, fuzzy
 msgid "Stop seeding at ratio:"
-msgstr "Παύση διαμοιρασμού στην αναλογία:"
+msgstr ""
+"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Παύση διαμοιρασμού στην αναλογία:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Διακοπή διαμοιρασμού στην αναλογία:"
 
 msgid "Seed regardless of activity"
 msgstr "Διαμοιρασμός ανεξάρτητα από την δραστηριότητα"
@@ -169,8 +195,13 @@ msgstr "Διαμοιρασμός ανεξάρτητα από την δραστη
 msgid "Stop seeding if idle for N minutes:"
 msgstr "Παύση διαμοιρασμού σε περίπτωση αδράνειας για N λεπτά:"
 
+#, fuzzy
 msgid "Queued for verification"
-msgstr "Σε αναμονή για επαλήθευση"
+msgstr ""
+"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Σε αναμονή για επαλήθευση\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Σε σειρά για επαλήθευση"
 
 msgid "Verifying local data"
 msgstr "Επαλήθευση τοπικών δεδομένων"
@@ -178,22 +209,44 @@ msgstr "Επαλήθευση τοπικών δεδομένων"
 msgid "Queued for download"
 msgstr "Σε σειρά για κατέβασμα"
 
+#, fuzzy
 msgctxt "Verb"
 msgid "Downloading"
-msgstr "Λαμβανόμενα"
+msgstr ""
+"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Λαμβανόμενα\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Λήψη"
 
+#, fuzzy
 msgid "Queued for seeding"
-msgstr "Σε σειρά για μοίρασμα"
+msgstr ""
+"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Σε σειρά για μοίρασμα\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Σε σειρά για διαμοιρασμό"
 
+#, fuzzy
 msgctxt "Verb"
 msgid "Seeding"
-msgstr "Διαμοιραζόμενα"
+msgstr ""
+"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Διαμοιραζόμενα\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Διαμοιρασμός"
 
-msgid "Finished"
-msgstr "Ολοκληρωμένα"
+#, fuzzy
+#| msgid "Incomplete"
+msgid "Seeding complete"
+msgstr "Μη ολοκληρωμένο"
 
+#, fuzzy
 msgid "Paused"
-msgstr "Παυθέντα"
+msgstr ""
+"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Παυθέντα\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Σε παύση"
 
 msgid "N/A"
 msgstr "N/A"
@@ -204,23 +257,43 @@ msgstr "Μικτή"
 msgid "No Torrents Selected"
 msgstr "Δεν έχουν επιλεχθεί torrents"
 
+#, fuzzy
 msgid "Private to this tracker -- DHT and PEX disabled"
-msgstr "Ιδιωτικό σε αυτόν τον ιχνηλάτη -- απενεργοποίηση DHT και PEX"
+msgstr ""
+"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Ιδιωτικό σε αυτόν τον ιχνηλάτη -- απενεργοποίηση DHT και PEX\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Ιδιωτικό σε αυτόν τον ιχνηλάτη -- DHT και PEX απενεργοποιημένα"
 
 msgid "Public torrent"
 msgstr "Δημόσιο torrent"
 
+#, fuzzy
 msgid "Created by {creator} on {date}"
-msgstr "Δημιουργήθηκε από {creator} την {date}"
+msgstr ""
+"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Δημιουργήθηκε από {creator} την {date}\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Δημιουργήθηκε από τον/την {creator}$ την {date}"
 
+#, fuzzy
 msgid "Created by {creator}"
-msgstr "Δημιουργήθηκε από {creator}"
+msgstr ""
+"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Δημιουργήθηκε από {creator}\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Δημιουργήθηκε από τον/την {creator}$"
 
 msgid "Created on {date}"
 msgstr "Δημιουργήθηκε την {date}"
 
+#, fuzzy
 msgid "Unknown"
-msgstr "Άγνωστος"
+msgstr ""
+"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Άγνωστος\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Άγνωστο"
 
 msgid "{total_size} in {file_count:L} file"
 msgid_plural "{total_size} in {file_count:L} files"
@@ -239,11 +312,18 @@ msgstr "{current_size} ({percent_done}%)"
 msgid "{current_size} ({percent_done}% of {percent_available}% available)"
 msgstr "{current_size} ({percent_done}% από {percent_available}% διαθέσιμα)"
 
+#, fuzzy, c-format
+#| msgid "{current_size} ({percent_done}% of {percent_available}% available; {unverified_size} unverified)"
 msgid "{current_size} ({percent_done}% of {percent_available}% available; {unverified_size} unverified)"
 msgstr "{current_size} ({percent_done}% από {percent_available}% διαθέσιμα· {unverified_size} μη ελεγχθέντα)"
 
+#, fuzzy
 msgid "{downloaded_size} (+{discarded_size} discarded after failed checksum)"
-msgstr "{downloaded_size} (+{discarded_size} απορριφθέντα έπειτα από αποτυχημένο checksum)"
+msgstr ""
+"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{downloaded_size} (+{discarded_size} απορριφθέντα έπειτα από αποτυχημένο checksum)\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{downloaded_size} (+{discarded_size} απορρίφθηκαν κατόπιν αποτυχημένου ελέγχου αθροίσματος)"
 
 msgid "{uploaded_size} (Ratio: {ratio})"
 msgstr "{uploaded_size} (Αναλογία: {ratio})"
@@ -260,26 +340,61 @@ msgstr "Ενεργό τώρα"
 msgid "Optimistic unchoke"
 msgstr "Βελτιωτική απόφραξη"
 
+#, fuzzy
 msgid "Downloading from this peer"
-msgstr "Γίνεται λήψη από αυτόν τον διαμοιραστή"
+msgstr ""
+"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Γίνεται λήψη από αυτόν τον διαμοιραστή\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Γίνεται λήψη από αυτόν τον χρήστη"
 
+#, fuzzy
 msgid "We would download from this peer if they would let us"
-msgstr "Θα γινόταν λήψη απ'αυτόν τον διαμοιραστή αν μας επιτρεπόταν"
+msgstr ""
+"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Θα γινόταν λήψη απ'αυτόν τον διαμοιραστή αν μας επιτρεπόταν\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Θα γινόταν λήψη απ'αυτόν τον χρήστη αν μας επιτρεπόταν"
 
+#, fuzzy
 msgid "Uploading to peer"
-msgstr "Ανέβασμα σε διαμοιραστή"
+msgstr ""
+"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Ανέβασμα σε διαμοιραστή\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Αποστολή σε χρήστη"
 
-msgid "We would upload to this peer if they asked"
-msgstr "Θα γίνει ανέβασμα σε αυτό τον διαμοιραστή αν ζητηθεί"
+#, fuzzy
+msgid "This peer would download from us if we would let them"
+msgstr ""
+"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Θα γινόταν λήψη απ'αυτόν τον διαμοιραστή αν μας επιτρεπόταν\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Θα γινόταν λήψη απ'αυτόν τον χρήστη αν μας επιτρεπόταν"
 
+#, fuzzy
 msgid "Peer has unchoked us, but we're not interested"
-msgstr "Ο διαμοιραστής μας επιτρέπει την ανταλλαγή δεδομένων, αλλά δεν ενδιαφερόμαστε"
+msgstr ""
+"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Ο διαμοιραστής μας επιτρέπει την ανταλλαγή δεδομένων, αλλά δεν ενδιαφερόμαστε\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Ο χρήστης μας επιτρέπει την ανταλλαγή δεδομένων, αλλά δεν ενδιαφερόμαστε"
 
+#, fuzzy
 msgid "We unchoked this peer, but they're not interested"
-msgstr "Επιτρέπουμε την ανταλλαγή δεδομένων στον διαμοιραστή, αλλά δεν ενδιαφέρεται"
+msgstr ""
+"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Επιτρέπουμε την ανταλλαγή δεδομένων στον διαμοιραστή, αλλά δεν ενδιαφέρεται\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Επιτρέπουμε την ανταλλαγή δεδομένων στον χρήστη, αλλά δεν ενδιαφέρεται"
 
+#, fuzzy
 msgid "Encrypted connection"
-msgstr "Κρυπρογραφημένη σύνδεση"
+msgstr ""
+"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Κρυπρογραφημένη σύνδεση\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Κρυπτογραφημένη σύνδεση"
 
 msgid "Peer was found through Peer Exchange (PEX)"
 msgstr "Εύρεση διαμοιραστή μέσω του Peer Exchange (PEX)"
@@ -287,16 +402,28 @@ msgstr "Εύρεση διαμοιραστή μέσω του Peer Exchange (PEX)"
 msgid "Peer was found through DHT"
 msgstr "Βρέθηκε διαμοιραστής μέσω του DHT"
 
+#, fuzzy
 msgid "Peer is an incoming connection"
-msgstr "O διαμοιραστής είναι μια εισερχόμενη σύνδεση"
+msgstr ""
+"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"O διαμοιραστής είναι μια εισερχόμενη σύνδεση\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"O χρήστης είναι μια εισερχόμενη σύνδεση"
 
+#, fuzzy
 msgid "Peer is connected over µTP"
-msgstr "Ο χρήστης είναι συνδεδεμένος μέσω µTP"
+msgstr ""
+"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Ο χρήστης είναι συνδεδεμένος μέσω µTP\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"O διαμοιραστής είναι συνδεδεμένος μέσω µTP"
+
+msgid "Peer supports holepunch (BEP 55)"
+msgstr ""
 
 msgid "Address"
 msgstr "Διεύθυνση"
 
-#. % is percent done
 msgid "%"
 msgstr "%"
 
@@ -306,23 +433,21 @@ msgstr "Αιτήσεις κατεβάσματος"
 msgid "Up Reqs"
 msgstr "Αιτήσεις ανεβάσματος"
 
-msgid "Dn Blocks"
-msgstr "Dn Blocks"
-
-msgid "Up Blocks"
-msgstr "Up Blocks"
-
-msgid "We Cancelled"
-msgstr "Ακυρώθηκαν από εμάς"
-
-msgid "They Cancelled"
-msgstr "Ακυρώθηκαν από άλλους"
-
+#, fuzzy
 msgid "Down"
-msgstr "Κατέβασμα"
+msgstr ""
+"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Κατέβασμα\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Λήψη"
 
+#, fuzzy
 msgid "Up"
-msgstr "Ανέβασμα"
+msgstr ""
+"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Ανέβασμα\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Αποστολή"
 
 msgid "Client"
 msgstr "Πελάτης"
@@ -333,66 +458,19 @@ msgstr "Σημάνσεις"
 msgid "Web Seeds"
 msgstr "Διαμοιραστές δικτύου"
 
-msgid "Got a list of {markup_begin}{peer_count} peer{markup_end} {time_span_ago}"
-msgid_plural "Got a list of {markup_begin}{peer_count} peers{markup_end} {time_span_ago}"
-msgstr[0] "Λήφθηκε λίστα {markup_begin}{peer_count} διαμοιραστή{markup_end} {time_span_ago}"
-msgstr[1] "Λήφθηκε λίστα {markup_begin}{peer_count} διαμοιραστών{markup_end} {time_span_ago}"
-
-#. {markup_begin} and {markup_end} should surround the time_span
-msgid "Peer list request {markup_begin}timed out {time_span_ago}{markup_end}; will retry"
-msgstr "Η αίτηση για λίστα διαμοιραστών {markup_begin}έληξε {time_span_ago}{markup_end}; θα γίνει νέα προσπάθεια"
-
-#. {markup_begin} and {markup_end} should surround the error
-msgid "Got an error '{markup_begin}{error}{markup_end}' {time_span_ago}"
-msgstr "Λήφθηκε σφάλμα '{markup_begin}{error}{markup_end}' {time_span_ago}"
-
-msgid "No updates scheduled"
-msgstr "Δεν έχει προγραμματιστεί καμία ενημέρωση"
-
-msgid "Asking for more peers {time_span_from_now}"
-msgstr "Αίτηση για περισσότερους διαμοιραστές σε {time_span_from_now}"
-
-msgid "Queued to ask for more peers"
-msgstr "Σε αναμονή αίτησης για επιπλέον διαμοιραστές"
-
-#. {markup_begin} and {markup_end} should surround time_span_ago
-msgid "Asked for more peers {markup_begin}{time_span_ago}{markup_end}"
-msgstr "Ζητήθηκαν περισσότεροι διαμοιραστές {markup_begin}{time_span_ago}{markup_end}"
-
-msgid "Tracker had {markup_begin}{seeder_count} {seeder_or_seeders} and {leecher_count} {leecher_or_leechers}{markup_end} {time_span_ago}"
-msgstr "Ο ιχνηλάτης είχε {markup_begin}{seeder_count} {seeder_or_seeders} και {leecher_count} {leecher_or_leechers}{markup_end} {time_span_ago}"
-
-msgid "seeder"
-msgid_plural "seeders"
-msgstr[0] "πάροχος"
-msgstr[1] "πάροχοι"
-
-msgid "leecher"
-msgid_plural "leechers"
-msgstr[0] "λήπτης"
-msgstr[1] "λήπτες"
-
-#. {markup_begin} and {markup_end} should surround the error text
-msgid "Got a scrape error '{markup_begin}{error}{markup_end}' {time_span_ago}"
-msgstr "Λήφθηκε σφάλμα απόξεσης '{markup_begin}{error}{markup_end}' {time_span_ago}"
-
-msgid "Asking for peer counts in {time_span_from_now}"
-msgstr "Αίτηση για περισσότερους διαμοιραστές σε {time_span_from_now}"
-
-msgid "Queued to ask for peer counts"
-msgstr "Σε αναμονή για αίτηση αριθμού διαμοιραστών"
-
-msgid "Asked for peer counts {markup_begin}{time_span_ago}{markup_end}"
-msgstr "Ζητήθηκαν αριθμοί διαμοιραστών {markup_begin}{time_span_ago}{markup_end}"
-
 msgid "{torrent_name} - Edit Trackers"
 msgstr "{torrent_name} - Επεξεργασία Ιχνηλατών"
 
 msgid "List contains invalid URLs"
 msgstr "Η λίστα περιέχει μη έγκυρα URL"
 
+#, fuzzy
 msgid "Please correct the errors and try again."
-msgstr "Παρακαλώ διορθώστε τα σφάλματα και δοκιμάστε ξανά."
+msgstr ""
+"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Παρακαλώ διορθώστε τα σφάλματα και δοκιμάστε ξανά.\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Παρακαλώ διορθώστε τα λάθη και δοκιμάστε ξανά."
 
 msgid "{torrent_name} - Add Tracker"
 msgstr "{torrent_name} - Προσθήκη Ιχνηλάτη"
@@ -411,23 +489,52 @@ msgstr[1] "Ιδιότητες - {torrent_count:L} Torrents"
 msgid "Remove torrent?"
 msgstr "Αφαίρεση torrent;"
 
+#, fuzzy
+msgid "Delete this torrent's downloaded files?"
+msgstr ""
+"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Διαγραφή των κατεβασμένων αρχείων αυτού του torrent;\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Να διαγραφούν τα ληφθέντα αρχεία αυτού του torrent;"
+
+#, fuzzy
 msgid "Remove {count:L} torrent?"
 msgid_plural "Remove {count:L} torrents?"
-msgstr[0] "Αφαίρεση {count:L} torrent;"
-msgstr[1] "Αφαίρεση {count:L} torrents;"
+msgstr[0] ""
+"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Αφαίρεση {count:L} torrent;\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Αφαίρεση {count:L} torrent;"
+msgstr[1] ""
+"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Αφαίρεση {count:L} torrents;\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Αφαίρεση {count:L} torrent;"
 
-msgid "Delete this torrent's downloaded files?"
-msgstr "Διαγραφή των κατεβασμένων αρχείων αυτού του torrent;"
-
+#, fuzzy
 msgid "Delete this {count:L} torrent's downloaded files?"
 msgid_plural "Delete these {count:L} torrents' downloaded files?"
-msgstr[0] "Να διαγραφούν τα ληφθέντα αρχεία αυτού του torrent;"
-msgstr[1] "Διαγραφή των κατεβασμένων αρχείων αυτών των {count:L} torrents;"
+msgstr[0] ""
+"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Να διαγραφούν τα ληφθέντα αρχεία αυτού του torrent;\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Να διαγραφούν τα ληφθέντα αρχεία αυτού του torrent;"
+msgstr[1] ""
+"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Διαγραφή των κατεβασμένων αρχείων αυτών των {count:L} torrents;\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Να διαγραφούν τα ληφθέντα αρχεία αυτών των torrent;"
 
-msgid "Once removed, continuing the transfer will require the torrent file or magnet link."
-msgid_plural "Once removed, continuing the transfers will require the torrent files or magnet links."
-msgstr[0] "Μετά την αφαίρεση του torrent, για να είναι δυνατή η επανεκκίνησή του, θα απαιτηθεί το αρχείο torrent ή ο δεσμός magnet."
-msgstr[1] "Μετά την αφαίρεση των torrent, για να είναι δυνατή η επανεκκίνησή τους, θα απαιτηθούν τα αρχεία torrent ή οι δεσμοί magnet."
+#, fuzzy
+#| msgid "Once removed, continuing the transfer will require the torrent file or magnet link."
+#| msgid_plural "Once removed, continuing the transfers will require the torrent files or magnet links."
+msgid "Once removed, you'll need the torrent file or magnet link to add it again."
+msgstr "Μετά την αφαίρεση του torrent, για να είναι δυνατή η επανεκκίνησή του, θα απαιτηθεί το αρχείο torrent ή ο δεσμός magnet."
+
+#, fuzzy
+#| msgid "Once removed, continuing the transfers will require the torrent files or magnet links."
+msgid "Once removed, you'll need the torrent files or magnet links to add them again."
+msgstr "Μετά την αφαίρεση, η συνέχιση των μεταφορών θα απαιτεί τα αρχεία torrent ή τους συνδέσμους magnet."
 
 msgid "This torrent has not finished downloading."
 msgstr "Δεν έχει ολοκληρωθεί η λήψη αυτού του torrent."
@@ -435,17 +542,37 @@ msgstr "Δεν έχει ολοκληρωθεί η λήψη αυτού του tor
 msgid "These torrents have not finished downloading."
 msgstr "Δεν έχει ολοκληρωθεί η λήψη αυτών των torrent."
 
+#, fuzzy
 msgid "This torrent is connected to peers."
-msgstr "Αυτό το torrent είναι συνδεμένο σε διαμοιραστές."
+msgstr ""
+"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Αυτό το torrent είναι συνδεμένο σε διαμοιραστές.\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Αυτό το torrent είναι συνδεδεμένο σε χρήστες."
 
+#, fuzzy
 msgid "These torrents are connected to peers."
-msgstr "Αυτά τα torrents είναι συνδεμένα σε διαμοιραστές."
+msgstr ""
+"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Αυτά τα torrents είναι συνδεμένα σε διαμοιραστές.\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Αυτά τα torrent είναι συνδεδεμένα σε χρήστες."
 
+#, fuzzy
 msgid "One of these torrents is connected to peers."
-msgstr "Ένα από αυτά τα torrents είναι συνδεμένo σε διαμοιραστές."
+msgstr ""
+"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Ένα από αυτά τα torrents είναι συνδεμένo σε διαμοιραστές.\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Ένα από αυτά τα torrent είναι συνδεδεμένο σε χρήστες."
 
+#, fuzzy
 msgid "Some of these torrents are connected to peers."
-msgstr "Κάποια από αυτά τα torrents είναι συνδεμένα σε διαμοιραστές."
+msgstr ""
+"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Κάποια από αυτά τα torrents είναι συνδεμένα σε διαμοιραστές.\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Ορισμένα από αυτά τα torrent είναι συνδεδεμένα σε χρήστες."
 
 msgid "One of these torrents has not finished downloading."
 msgstr "Δεν έχει ολοκληρωθεί η λήψη ενός από αυτά τα torrent."
@@ -459,6 +586,7 @@ msgstr "_Ακύρωση"
 msgid "_Delete"
 msgstr "_Διαγραφή"
 
+#. Removes the torrent from the list and keeps its downloaded files
 msgid "_Remove"
 msgstr "_Αφαίρεση"
 
@@ -480,8 +608,8 @@ msgstr "Όνομα"
 msgid "Size"
 msgstr "Μέγεθος"
 
-msgid "Have"
-msgstr "Κατοχή"
+msgid "Progress"
+msgstr "Πρόοδος"
 
 msgid "Download"
 msgstr "Λήψη"
@@ -495,9 +623,14 @@ msgstr "Όλα"
 msgid "Active"
 msgstr "Ενεργά"
 
+#, fuzzy
 msgctxt "Verb"
 msgid "Verifying"
-msgstr "Γίνεται επαλήθευση"
+msgstr ""
+"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Γίνεται επαλήθευση\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Επαλήθευση"
 
 msgid "Error"
 msgstr "Σφάλμα"
@@ -510,6 +643,24 @@ msgstr "Ε_μφάνιση {count:L} από:"
 
 msgid "{disk_space} free"
 msgstr "{disk_space} ελεύθερα"
+
+msgid "Where to look for configuration files"
+msgstr "Που υπάρχουν τα αρχεία ρυθμίσεων"
+
+msgid "Start with all torrents paused"
+msgstr "Έναρξη με όλα τα torrent σε παύση"
+
+msgid "Start minimized in notification area"
+msgstr "Εκκίνηση ελαχιστοποιημένο στην περιοχή ειδοποιήσεων"
+
+msgid "Show version number and exit"
+msgstr "Εμφάνιση αριθμού έκδοσης και έξοδος"
+
+msgid "[torrent files or urls]"
+msgstr "[αρχεία torrent ή urls]"
+
+msgid "Run '{program} --help' to see a full list of available command line options.\n"
+msgstr "Εκτελέστε '{program} --help' για να δείτε την πλήρη λίστα των διαθέσιμων εντολών.\n"
 
 msgid ""
 "Click to disable Alternative Speed Limits\n"
@@ -525,20 +676,45 @@ msgstr ""
 "Ενεργοποίηση Εναλλακτικών Ορίων Ταχύτητας\n"
 " ({download_speed} κάτω, {upload_speed} πάνω)"
 
+#, fuzzy
 msgid "Unlimited"
-msgstr "Χωρίς όριο"
+msgstr ""
+"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Χωρίς όριο\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Απεριόριστη"
 
+#, fuzzy
 msgid "Seed Forever"
-msgstr "Ανέβασμα για πάντα"
+msgstr ""
+"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Ανέβασμα για πάντα\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Διαμοιρασμός για Πάντα"
 
+#, fuzzy
 msgid "Limit Download Speed"
-msgstr "Περιορισμός ταχύτητας κατεβάσματος"
+msgstr ""
+"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Περιορισμός ταχύτητας κατεβάσματος\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Περιορισμός Ταχύτητας Λήψης"
 
+#, fuzzy
 msgid "Limit Upload Speed"
-msgstr "Περιορισμός ταχύτητας ανεβάσματος"
+msgstr ""
+"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Περιορισμός ταχύτητας ανεβάσματος\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Περιορισμός Ταχύτητας Αποστολής"
 
+#, fuzzy
 msgid "Stop Seeding at Ratio"
-msgstr "Διακοπή ανεβάσματος σε Αναλογία"
+msgstr ""
+"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Διακοπή ανεβάσματος σε Αναλογία\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Διακοπή Διαμοιρασμού στην Αναλογία"
 
 msgid "Stop at Ratio ({ratio})"
 msgstr "Διακοπή σε Αναλογία ({ratio})"
@@ -555,16 +731,11 @@ msgstr "Συνολικώς Μεταφερθέντα"
 msgid "Session Transfer"
 msgstr "Μεταφερθέντα Συνεδρίας"
 
+msgid "Down: {downloaded_size}, Up: {uploaded_size}"
+msgstr "Λήψη: {downloaded_size}, Αποστολή: {uploaded_size}"
+
 msgid "Ratio: {ratio}"
 msgstr "Αναλογία: {ratio}"
-
-msgctxt "current session totals"
-msgid "Down: {downloaded_size}, Up: {uploaded_size}"
-msgstr "Κάτω: {downloaded_size}, Πάνω: {uploaded_size}"
-
-msgctxt "all-time totals"
-msgid "Down: {downloaded_size}, Up: {uploaded_size}"
-msgstr "Κάτω: {downloaded_size}, Πάνω: {uploaded_size}"
 
 msgid "{download_speed} ▾"
 msgstr "{download_speed} ▾"
@@ -622,6 +793,11 @@ msgstr "Χρόνος"
 msgid "Couldn't create proxy for '{bus}': {error} ({error_code})"
 msgstr "Αδυναμία δημιουργίας διαμεσολαβητή για '{bus}': {error} ({error_code})"
 
+#, fuzzy
+#| msgid "Couldn't save '{path}': {error} ({error_code})"
+msgid "Couldn't spawn async process \"'{command}'\": {error} ({error_code})"
+msgstr "Αδυναμία αποθήκευσης '{path}': {error} ({error_code})"
+
 msgid "Open File"
 msgstr "Αναπαραγωγή Αρχείου"
 
@@ -634,8 +810,13 @@ msgstr "Το torrent oλοκληρώθηκε"
 msgid "Start Now"
 msgstr "Εκκίνηση Τώρα"
 
+#, fuzzy
 msgid "Torrent Added"
-msgstr "Το torrent προστέθηκε"
+msgstr ""
+"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Το torrent προστέθηκε\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Το Torrent Προστέθηκε"
 
 msgid "Torrent files"
 msgstr "Αρχεία torrent"
@@ -652,23 +833,46 @@ msgstr "_Άνοιγμα"
 msgid "Show options dialog"
 msgstr "Εμφάνιση διαλόγου επιλογών"
 
-msgid "Select a File"
+msgid "Other…"
+msgstr ""
+
+msgid "Select File"
 msgstr "Επιλογή Αρχείου"
 
 msgid "(None)"
 msgstr "(Κανένα)"
 
+#, fuzzy
 msgid "Allow encryption"
-msgstr "Να επιτρέπεται κρυπτογράφηση"
+msgstr ""
+"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Να επιτρέπεται κρυπτογράφηση\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Να επιτρέπεται η κρυπτογράφηση"
 
+#, fuzzy
 msgid "Prefer encryption"
-msgstr "Να προτιμάται κρυπτογράφηση"
+msgstr ""
+"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Να προτιμάται κρυπτογράφηση\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Να προτιμάται η κρυπτογράφηση"
 
+#, fuzzy
 msgid "Require encryption"
-msgstr "Να απαιτείται κρυπτογράφηση"
+msgstr ""
+"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Να απαιτείται κρυπτογράφηση\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Να απαιτείται η κρυπτογράφηση"
 
+#, fuzzy
 msgid "Every Day"
-msgstr "Κάθε μέρα"
+msgstr ""
+"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Κάθε μέρα\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Κάθε Μέρα"
 
 msgid "Weekdays"
 msgstr "Εργάσιμες"
@@ -687,8 +891,13 @@ msgstr "Η λίστα φραγής ενημερώθηκε!"
 msgid "Couldn't update blocklist"
 msgstr "Αδυναμία ενημέρωσης λίστας φραγής"
 
+#, fuzzy
 msgid "Getting new blocklist…"
-msgstr "Λαμβάνεται νέα λίστα αποκλεισμού…"
+msgstr ""
+"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Λαμβάνεται νέα λίστα αποκλεισμού…\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Απόκτηση νέας λίστας φραγής…"
 
 msgctxt "Port test status"
 msgid "unknown"
@@ -725,27 +934,30 @@ msgstr "Δεν ήταν δυνατή η μετακίνηση του torrent"
 msgid "This may take a moment…"
 msgstr "Αυτό μπορεί να πάρει λίγο χρόνο…"
 
+#, fuzzy
+#| msgid "Couldn't watch '{path}': {error} ({error_code})"
+msgid "Couldn't open watchdir '{dirname}': {error} ({error_code})"
+msgstr "Αδυναμία παρακολούθησης '{path}': {error} ({error_code})"
+
 msgid "Couldn't read '{path}'"
 msgstr "Αδυναμία ανάγνωσης '{path}'"
-
-#. logging
-msgid "Inhibiting desktop hibernation"
-msgstr "Απαγόρευση αδρανοποίησης επιφάνειας εργασίας"
-
-msgid "Couldn't inhibit desktop hibernation: {error}"
-msgstr "Αδυναμία αποτροπής αδρανοποίησης επιφάνειας εργασίας: {error}"
-
-#. logging
-msgid "Allowing desktop hibernation"
-msgstr "Η ρύθμιση για να επιτρέπεται η αδρανοποίηση βρίσκεται σε εξέλιξη"
 
 msgid "Couldn't find pending RPC request for id {id}"
 msgstr ""
 
+#, fuzzy
 msgid "Started {count:L} time"
 msgid_plural "Started {count:L} times"
-msgstr[0] "Ξεκίνησε {count:L} φορά"
-msgstr[1] "Ξεκίνησε {count:L} φορές"
+msgstr[0] ""
+"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Ξεκίνησε {count:L} φορά\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Εκκινήθηκε {count:L} φορά"
+msgstr[1] ""
+"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Ξεκίνησε {count:L} φορές\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Εκκινήθηκε {count:L} φορές"
 
 msgid "Reset your statistics?"
 msgstr "Μηδενισμός των στατιστικών σας;"
@@ -756,12 +968,19 @@ msgstr "_Μηδενισμός"
 msgid "These statistics are for your information only. Resetting them doesn't affect the statistics logged by your BitTorrent trackers."
 msgstr "Τα στατιστικά αυτά είναι για την ενημέρωσή σας και μόνο. Ο μηδενισμός τους δεν επηρεάζει τα στατιστικά στοιχεία που έχουν καταγραφεί από τους BitTorrent ιχνηλάτες σας."
 
+msgid "_Show {appname}"
+msgstr "_Εμφάνιση του {appname}"
+
 msgid "{upload_speed} ▴ {download_speed} ▾"
 msgstr "{upload_speed} ▴ {download_speed} ▾"
 
-#, no-c-format
+#, fuzzy, no-c-format
 msgid "Verifying local data ({percent_done}% tested)"
-msgstr "Έλεγχος τοπικών δεδομένων ({percent_done}% ελεγχθέντα)"
+msgstr ""
+"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Έλεγχος τοπικών δεδομένων ({percent_done}% ελεγχθέντα)\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Επαλήθευση τοπικών δεδομένων ({percent_done}% ελέγχθηκαν)"
 
 msgid "{current_size} of {complete_size} ({percent_done}%)"
 msgstr "{current_size} από {complete_size} ({percent_done}%)"
@@ -769,15 +988,26 @@ msgstr "{current_size} από {complete_size} ({percent_done}%)"
 msgid "{current_size} of {complete_size} ({percent_complete}%), uploaded {uploaded_size} (Ratio: {ratio}, Goal: {seed_ratio})"
 msgstr "{current_size} από {complete_size} ({percent_complete}%), {uploaded_size} ανεβασμένα (Αναλογία: {ratio}, Στόχος: {seed_ratio})"
 
+#, fuzzy
 msgid "{current_size} of {complete_size} ({percent_complete}%), uploaded {uploaded_size} (Ratio: {ratio})"
-msgstr "{current_size} από {complete_size} ({percent_complete}%), {uploaded_size} ανεβασμένα (Αναλογία: {ratio})"
+msgstr ""
+"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{current_size} από {complete_size} ({percent_complete}%), {uploaded_size} ανεβασμένα (Αναλογία: {ratio})\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{current_size} από {complete_size} ({percent_complete}%), απεστάλησαν {uploaded_size} (Αναλογία: {ratio})"
 
 msgid "{complete_size}, uploaded {uploaded_size} (Ratio: {ratio}, Goal: {seed_ratio})"
 msgstr "{complete_size}, {uploaded_size} ανεβασμένα (Αναλογία: {ratio}, Στόχος: {seed_ratio})"
 
+#, fuzzy
 msgid "{complete_size}, uploaded {uploaded_size} (Ratio: {ratio})"
-msgstr "{complete_size}, {uploaded_size} ανεβασμένα (Αναλογία: {ratio})"
+msgstr ""
+"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{complete_size}, {uploaded_size} ανεβασμένα (Αναλογία: {ratio})\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{complete_size}, απεστάλησαν  {uploaded_size} (Αναλογία: {ratio})"
 
+#. Translators: Second (optional) part of torrent progress string
 msgid "Remaining time unknown"
 msgstr "Άγνωστος υπολειπόμενος χρόνος"
 
@@ -790,7 +1020,9 @@ msgstr "Στάσιμο"
 msgid "Tracker warning: '{warning}'"
 msgstr "Προειδοποίηση ιχνηλάτη: '{warning}'"
 
-msgid "Tracker Error: '{error}'"
+#, fuzzy
+#| msgid "Tracker Error: '{error}'"
+msgid "Tracker error: '{error}'"
 msgstr "Σφάλμα ιχνηλάτη: '{error}'"
 
 msgid "Local error: '{error}'"
@@ -812,15 +1044,1093 @@ msgid_plural "Downloading from {active_count} webseeds"
 msgstr[0] "Λήψη από {active_count} διαμοιραστή δικτύου"
 msgstr[1] "Λήψη από {active_count} διαμοιραστές δικτύου"
 
+#, fuzzy
 msgid "Downloading from {active_count} of {connected_count} connected peer"
 msgid_plural "Downloading from {active_count} of {connected_count} connected peers"
-msgstr[0] "Λήψη από {active_count} από {connected_count} συνδεδεμένο διαμοιραστή"
-msgstr[1] "Λήψη από {active_count} από {connected_count} συνδεδεμένους διαμοιραστές"
+msgstr[0] ""
+"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Λήψη από {active_count} από {connected_count} συνδεδεμένο διαμοιραστή\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Λήψη από {active_count} από {connected_count} συνδεδεμένο χρήστη"
+msgstr[1] ""
+"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Λήψη από {active_count} από {connected_count} συνδεδεμένους διαμοιραστές\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Λήψη από {active_count} από {connected_count} συνδεδεμένους χρήστες"
 
+#, fuzzy
 msgid "Seeding to {active_count} of {connected_count} connected peer"
 msgid_plural "Seeding to {active_count} of {connected_count} connected peers"
-msgstr[0] "Διαμοιρασμός σε {active_count} από {connected_count} συνδεδεμένο διαμοιραστή"
-msgstr[1] "Διαμοιρασμός σε {active_count} από {connected_count} συνδεδεμένους διαμοιραστές"
+msgstr[0] ""
+"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Διαμοιρασμός σε {active_count} από {connected_count} συνδεδεμένο διαμοιραστή\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Διαμοιρασμός σε {active_count} από {connected_count} συνδεδεμένο ομότιμο χρήστη"
+msgstr[1] ""
+"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Διαμοιρασμός σε {active_count} από {connected_count} συνδεδεμένους διαμοιραστές\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Διαμοιρασμός σε {active_count} από {connected_count} συνδεδεμένους χρήστες"
+
+msgid "Retransmission"
+msgstr "Retransmission"
+
+msgid "BitTorrent Client"
+msgstr "Πελάτης BitTorrent"
+
+msgid "Download and share files over BitTorrent"
+msgstr "Λήψη και διαμοιρασμός των αρχείων μέσω του BitTorrent"
+
+#. Translators: Search terms to find this application. Do NOT translate or localize the semicolons! The list MUST also end with a semicolon!
+msgid "torrents;downloading;uploading;share;sharing;"
+msgstr "torrent;λήψη;αποστολή;μοίρασε;διαμοιρασμός;"
+
+msgid "Start Retransmission with All Torrents Paused"
+msgstr "Εκκίνηση του Retransmission με Όλα τα Torrent σε Παύση"
+
+msgid "Start Retransmission Minimized"
+msgstr "Εκκίνηση του Retransmission Ελαχιστοποιημένο"
+
+#, fuzzy
+#| msgid "Copyright © The Retransmission Project"
+msgid "The Retransmission Project"
+msgstr "Με την επιφύλαξη παντός δικαιώματος © The Retransmission Project"
+
+#. Translators: these are the application description paragraphs in the MetaInfo file.
+msgid "BitTorrent is a peer-to-peer file-sharing protocol that is commonly used to distribute large amounts of data between multiple users."
+msgstr ""
+
+msgid "Retransmission is a BitTorrent client with an easy-to-use interface on top of a cross-platform backend. Native interfaces are available for macOS, Linux, and Windows, as well as command line binaries and a web GUI."
+msgstr ""
+
+msgid "Notable features of Retransmission include support for Local Peer Discovery, encryption, DHT, µTP, PEX and Magnet links."
+msgstr ""
+
+msgid "Main window, showing an ongoing download of Fedora Workstation"
+msgstr ""
+
+msgid "_File"
+msgstr "_Αρχείο"
+
+#, fuzzy
+msgid "Open _URL…"
+msgstr ""
+"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Άνοιγμα _URL…\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Άνοιγμα _Συνδέσμου…"
+
+msgid "_New…"
+msgstr "_Νέο…"
+
+#, fuzzy
+msgid "_Start All"
+msgstr ""
+"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Εκκίνηση όλων\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Εκκίνηση Όλων"
+
+msgid "_Pause All"
+msgstr "_Παύση όλων"
+
+#, fuzzy
+msgid "_Quit"
+msgstr ""
+"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Έ_ξοδος\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Έξοδος"
+
+msgid "_Edit"
+msgstr "_Επεξεργασία"
+
+msgid "Select _All"
+msgstr "Επιλογή _όλων"
+
+msgid "Dese_lect All"
+msgstr "Αποεπι_λογή όλων"
+
+msgid "_Preferences"
+msgstr "_Προτιμήσεις"
+
+msgid "_Torrent"
+msgstr "_Torrent"
+
+msgid "_Properties"
+msgstr "_Ιδιότητες"
+
+msgid "Open Fold_er"
+msgstr "Άνοιγμα Φακέ_λου"
+
+msgid "_Start"
+msgstr "_Εκκίνηση"
+
+#, fuzzy
+msgid "Start _Now"
+msgstr ""
+"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Εκκίνηση _τώρα\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Εκκίνηση _Τώρα"
+
+#, fuzzy
+msgid "Ask Tracker for _More Peers"
+msgstr ""
+"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Αίτηση στον ιχνηλάτη για ε_πιπλέον ομότιμους χρήστες\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Αίτημα στον Ιχνηλάτη για _Επιπλέον Χρήστες"
+
+#, fuzzy
+#| msgid "Queue"
+msgid "_Queue"
+msgstr "Ουρά"
+
+#, fuzzy
+msgid "Move to _Top"
+msgstr ""
+"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Μετακίνηση στην _κορυφή\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Μετακίνηση στην _Κορυφή"
+
+#, fuzzy
+msgid "Move _Up"
+msgstr ""
+"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Μετακίνηση _επάνω\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Μετακίνηση _Επάνω"
+
+#, fuzzy
+msgid "Move _Down"
+msgstr ""
+"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Μετακίνηση _κάτω\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Μετακίνηση _Kάτω"
+
+#, fuzzy
+msgid "Move to _Bottom"
+msgstr ""
+"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Μετακίνηση στο _τέλος\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Μετακίνηση στο _Tέλος"
+
+#, fuzzy
+msgid "_Pause"
+msgstr ""
+"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Παύ_ση\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Παύση"
+
+#, fuzzy
+msgid "Set _Location…"
+msgstr ""
+"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Καθορισμός _τοποθεσίας…\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Καθορισμός _Τοποθεσίας…"
+
+#, fuzzy
+msgid "_Verify Local Data"
+msgstr ""
+"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Επαλήθευση τοπικών δεδομένων\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Επαλήθευση Τοπικών Δεδομένων"
+
+msgid "_Copy Magnet Link to Clipboard"
+msgstr "_Αντιγραφή του Συνδέσμου Magnet στο Πρόχειρο"
+
+#, fuzzy
+msgid "_Delete Files and Remove"
+msgstr ""
+"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Διαγραφή αρχείων και αφαίρεση από την λίστα\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Διαγραφή Αρχείων και Αφαίρεση"
+
+msgid "_View"
+msgstr "_Προβολή"
+
+#, fuzzy
+msgid "_Compact View"
+msgstr ""
+"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Συνοπτική προβολή\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Συνοπτική Προβολή"
+
+#, fuzzy
+msgid "_Toolbar"
+msgstr ""
+"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Εργαλειοθήκη\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Γραμμή εργαλειών"
+
+#, fuzzy
+msgid "_Filterbar"
+msgstr ""
+"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Γραμμή _φίλτρου\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Γραμμή φίλτρου"
+
+#, fuzzy
+msgid "_Statusbar"
+msgstr ""
+"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Γραμμή _κατάστασης\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Γραμμή κατάστασης"
+
+msgid "Sort by _Activity"
+msgstr "Ταξινόμηση κατά _Δραστηριότητα"
+
+msgid "Sort by A_ge"
+msgstr "Ταξινόμηση κατά Πα_λαιότητα"
+
+#, fuzzy
+msgid "Sort by _Name"
+msgstr ""
+"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Ταξινόμηση κατά Ό_νομα\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Ταξινόμηση κατά _Όνομα"
+
+msgid "Sort by _Progress"
+msgstr "Ταξινόμηση κατά _Πρόοδο"
+
+#, fuzzy
+msgid "Sort by _Queue"
+msgstr ""
+"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Ταξινόμηση κατά _σειρά\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Ταξινόμηση κατά _Σειρά"
+
+#, fuzzy
+msgid "Sort by Rati_o"
+msgstr ""
+"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Ταξινόμηση κατά _Αναλογία\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Ταξινόμηση κατά Αναλογί_α"
+
+msgid "Sort by Si_ze"
+msgstr "Ταξινόμηση κατά Μέ_γεθος"
+
+#, fuzzy
+msgid "Sort by Stat_e"
+msgstr ""
+"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Ταξινόμηση κατά _Κατάσταση\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Ταξινόμηση κατά Κατάστα_ση"
+
+#, fuzzy
+msgid "Sort by Time _Left"
+msgstr ""
+"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Ταξινόμηση βάσει _Εναπομείναντος χρόνου\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Ταξινόμηση βάσει _Εναπομείναντος Χρόνου"
+
+#, fuzzy
+msgid "Re_verse Sort Order"
+msgstr ""
+"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Αν_τιστροφή σειράς ταξινόμησης\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Αν_τιστροφή Σειράς Ταξινόμησης"
+
+msgid "_Help"
+msgstr "_Βοήθεια"
+
+#, fuzzy
+msgid "Message _Log"
+msgstr ""
+"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Κ_αταγραφή μηνυμάτων\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Καταγραφή Μηνυμάτων"
+
+msgid "_Statistics"
+msgstr "_Στατιστικά"
+
+msgid "_Donate"
+msgstr "_Δωρεά"
+
+#, fuzzy
+msgid "_Contents"
+msgstr ""
+"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Περιεχόμενα\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Σχόλια"
+
+#, fuzzy
+msgid "_About"
+msgstr ""
+"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Σχετικά\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Περί"
+
+#, fuzzy
+#| msgid "Start torrent"
+msgid "_Sort Torrents By"
+msgstr "Εκκίνηση torrent"
+
+#, fuzzy
+#| msgid "Alternative Speed Limits"
+msgid "Alternative Speed _Limits"
+msgstr "Εναλλακτικά Όρια Ταχύτητας"
+
+#, fuzzy
+msgid "_Add"
+msgstr ""
+"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Προσθήκη\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Π_ροσθήκη"
+
+msgid "Tracker"
+msgstr "Ιχνηλάτης"
+
+msgid "_Announce URL:"
+msgstr "_URL Ανακοίνωσης:"
+
+msgid "_Close"
+msgstr "_Κλείσιμο"
+
+msgid "Activity"
+msgstr "Δραστηριότητα"
+
+msgid "Size:"
+msgstr "Μέγεθος:"
+
+msgid "Have:"
+msgstr "Έχουμε:"
+
+msgid "Uploaded:"
+msgstr "Απεσταλμένα:"
+
+msgid "Downloaded:"
+msgstr "Ληφθέντα:"
+
+msgid "State:"
+msgstr "Κατάσταση:"
+
+msgid "Running time:"
+msgstr "Χρόνος εκτέλεσης:"
+
+msgid "Remaining time:"
+msgstr "Χρόνος που απομένει:"
+
+msgid "Last activity:"
+msgstr "Τελευταία δραστηριότητα:"
+
+msgid "Error:"
+msgstr "Σφάλμα:"
+
+msgid "Details"
+msgstr "Λεπτομέρειες"
+
+msgid "Location:"
+msgstr "Τοποθεσία:"
+
+#, fuzzy
+msgid "Hash:"
+msgstr ""
+"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Κλειδί ελέγχου ακεραιότητας δεδομένων:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Hash:"
+
+msgid "Privacy:"
+msgstr "Απόρρητο:"
+
+msgid "Origin:"
+msgstr "Προέλευση:"
+
+#, fuzzy
+msgid "Added:"
+msgstr ""
+"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Προστέθηκαν:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Προστέθηκε:"
+
+msgid "Comment:"
+msgstr "Σχόλιο:"
+
+msgid "Information"
+msgstr "Πληροφορίες"
+
+msgid "Show _more details"
+msgstr "Εμφάνιση _περισσότερων  λεπτομερειών"
+
+#, fuzzy
+msgid "Peers"
+msgstr ""
+"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Ομότιμοι χρήστες\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Χρήστες"
+
+msgid "Show _backup trackers"
+msgstr "Εμφάνιση _δευτερευόντων ιχνηλατών"
+
+msgid "File listing not available for combined torrent properties"
+msgstr "Η λίστα αρχείων δεν είναι διαθέσιμη κατά την εμφάνιση πολλαπλών torrent"
+
+msgid "Files"
+msgstr "Αρχεία"
+
+msgid "Speed"
+msgstr "Ταχύτητα"
+
+msgid "Honor global _limits"
+msgstr "Τήρηση καθολικών _ορίων"
+
+msgid "Limit _download speed ({speed_units}):"
+msgstr "Περιορισμός ταχύτητας _κατεβάσματος ({speed_units}):"
+
+msgid "Limit _upload speed ({speed_units}):"
+msgstr "Περιορισμός ταχύτητας _ανεβάσματος ({speed_units}):"
+
+msgid "Torrent _priority:"
+msgstr "_Προτεραιότητα torrent"
+
+msgid "Seeding Limits"
+msgstr "Όρια Διαμοιρασμού"
+
+#, fuzzy
+msgid "_Ratio:"
+msgstr ""
+"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Αναλογία\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Αναλογία:"
+
+#, fuzzy
+msgid "_Idle:"
+msgstr ""
+"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Α_δρανές\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Αδρανές:"
+
+#, fuzzy
+msgid "Peer Connections"
+msgstr ""
+"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Συνδέσεις ομότιμων χρηστών\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Συνδέσεις Χρηστών"
+
+#, fuzzy
+msgid "_Maximum peers:"
+msgstr ""
+"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Μέγιστος αριθμός ομότιμων χρηστών:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Μέγιστος αριθμός χρηστών:"
+
+msgid "Options"
+msgstr "Επιλογές"
+
+#, fuzzy
+msgid "Tracker Announce URLs"
+msgstr ""
+"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"URL Αναφοράς Ιχνηλάτη\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Σύνδεσμοι Ανακοινώσεων Ιχνηλατών"
+
+msgid ""
+"To add a backup URL, add it on the next line after a primary URL.\n"
+"To add a new primary URL, add it after a blank line."
+msgstr ""
+"Για την προσθήκη εφεδρικού URL, προσθέστε το στην επόμενη γραμμή μετά το κύριο URL.\n"
+"Για την προσθήκη ενός νέου κύριου URL, προσθέστε το μετά από μία κενή γραμμή."
+
+#, fuzzy
+msgid "Also see Default Public Trackers in Edit > Preferences > Network"
+msgstr ""
+"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Δείτε επίσης τους Προεπιλεγμένους Δημόσιους Ιχνηλάτες στο Επεξεργασία > Προτιμήσεις > Δίκτυο\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Δείτε επίσης τους Προκαθορισμένους Δημόσιους Ιχνηλάτες υπό την Επεξεργασία > Προτιμήσεις > Δίκτυο"
+
+msgid "Open a torrent"
+msgstr "Άνοιγμα ενός torrent"
+
+msgid "Start torrent"
+msgstr "Εκκίνηση torrent"
+
+msgid "Pause torrent"
+msgstr "Παύση torrent"
+
+msgid "Remove torrent"
+msgstr "Αφαίρεση torrent"
+
+msgid "Torrent properties"
+msgstr "Ιδιότητες torrent"
+
+msgid "Torrent"
+msgstr "Torrent"
+
+msgid "Statistics"
+msgstr "Στατιστικά"
+
+msgid "New Torrent"
+msgstr "Νέο Torrent"
+
+#, fuzzy
+#| msgid "C_redits"
+msgid "C_reate"
+msgstr "Σ_υντελεστές"
+
+#, fuzzy
+msgid "Sa_ve to:"
+msgstr ""
+"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Α_ποθήκευση σε:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Απο_θήκευση σε:"
+
+msgid "Source f_older:"
+msgstr "Φά_κελος προέλευσης:"
+
+msgid "Source _file:"
+msgstr "_Αρχείο προέλευσης:"
+
+#, fuzzy
+#| msgid "Piece size:"
+msgid "Piece si_ze:"
+msgstr "Μέγεθους κομματιού:"
+
+msgid "Properties"
+msgstr "Ιδιότητες"
+
+#, fuzzy
+msgid "_Trackers:"
+msgstr ""
+"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Ιχνηλάτες:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Ιχνηλάτες"
+
+#, fuzzy
+msgid "Co_mment:"
+msgstr ""
+"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Σ_χόλιο:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Σχ_όλιο:"
+
+msgid "_Source:"
+msgstr "_Πηγή:"
+
+msgid "_Private torrent"
+msgstr "_Ιδιωτικό torrent"
+
+msgid "Creating torrent…"
+msgstr "Δημιουργία torrent…"
+
+msgid "Message Log"
+msgstr "Καταγραφή μηνυμάτων"
+
+msgid "Save _As"
+msgstr "Αποθήκευση_Ως"
+
+msgid "Clear"
+msgstr "Καθαρισμός"
+
+msgid "Level"
+msgstr "Επίπεδο"
+
+msgid "Torrent Options"
+msgstr "Επιλογές torrent"
+
+msgid "_Torrent file:"
+msgstr "_Αρχείο torrent:"
+
+msgid "Select Source File"
+msgstr "Επιλέξτε το πηγαίο αρχείο"
+
+msgid "_Destination folder:"
+msgstr "_Φάκελος προορισμού:"
+
+msgid "Select Destination Folder"
+msgstr "Επιλογή φακέλου προορισμού"
+
+msgid "_Start when added"
+msgstr "_Εκκίνηση κατά την προσθήκη"
+
+#, fuzzy
+#| msgid "Mo_ve torrent file to the trash"
+msgid "Mo_ve torrent file to the Trash"
+msgstr "Με_τακίνηση αρχείου torrent στον κάδο"
+
+msgid "{appname} Preferences"
+msgstr "Προτιμήσεις του {appname}"
+
+#, fuzzy
+msgid "Speed Limits"
+msgstr ""
+"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Όρια ταχύτητας\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Όρια Tαχύτητας"
+
+#. Checkbox to limit upload speed
+msgid "_Upload ({speed_units}):"
+msgstr "_Ανέβασμα ({speed_units}):"
+
+#. Checkbox to limit download speed
+msgid "_Download ({speed_units}):"
+msgstr "_Κατέβασμα ({speed_units}):"
+
+msgid "Alternative Speed Limits"
+msgstr "Εναλλακτικά Όρια Ταχύτητας"
+
+msgid "Override normal speed limits manually or at scheduled times"
+msgstr "Παράκαμψη συνηθισμένων ορίων ταχυτήτων χειροκίνητα ή σε προγραμματισμένες ώρες"
+
+#. Labels a spinbutton for alternate upload speed limits
+msgid "U_pload ({speed_units}):"
+msgstr "Α_νέβασμα ({speed_units}):"
+
+#. Labels a spinbutton for alternate download speed limits
+msgid "Do_wnload ({speed_units}):"
+msgstr "Κα_τέβασμα ({speed_units}):"
+
+msgid "_Scheduled times:"
+msgstr "_Προγραμματισμένες ώρες:"
+
+msgid "_On days:"
+msgstr "_Τις ημέρες:"
+
+#. Label goes between two time selectors, e.g. "limit speeds from [time] to [time]"
+#, fuzzy
+msgid "_to"
+msgstr ""
+"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_μέχρι\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_σε"
+
+msgctxt "Gerund"
+msgid "Adding"
+msgstr "Προσθήκη"
+
+msgid "Automatically add torrent files _from:"
+msgstr "Αυτόματη προσθήκη αρχείων torrent _από:"
+
+#, fuzzy
+msgid "Show the Torrent Options _dialog"
+msgstr ""
+"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Εμφάνιση του _διαλόγου Επιλογών Torrent\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Εμφάνιση του Διαλόγου _Επιλογών Torrent"
+
+#, fuzzy
+msgid "_Start added torrents"
+msgstr ""
+"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Εκκίνηση προστιθέμενων torrent\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Εκκίνηση των torrent που προστέθηκαν"
+
+#, fuzzy
+#| msgid "Save to _Location:"
+msgid "Save to _location:"
+msgstr "Αποθήκευση στην _τοποθεσία:"
+
+msgid "Download Queue"
+msgstr "Ουρά Λήψης"
+
+#, fuzzy
+msgid "Ma_ximum active downloads:"
+msgstr ""
+"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Μέ_γιστος αριθμός ενεργών λήψεων:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Μέγιστος αριθμός ενεργών λήψεων:"
+
+msgid "Downloads sharing data in the last _N minutes are active:"
+msgstr "Μεταφορτώσεις που ανταλλάσσουν δεδομένα στα τελευταία N λεπτά είναι _ενεργές:"
+
+msgid "Incomplete"
+msgstr "Μη ολοκληρωμένο"
+
+msgid "Append \"._part\" to incomplete files' names"
+msgstr "Προσθήκη της λέξης \"._part\" στα ονόματα των μη ολοκληρωμένων αρχείων"
+
+msgid "Keep _incomplete files in:"
+msgstr "Διατήρηση _μη ολοκληρωμένων αρχείων σε:"
+
+#, fuzzy
+#| msgid "Call scrip_t when downloading is completed:"
+msgid "Call scrip_t when download completes:"
+msgstr "Κλήση scrip_t όταν το κατέβασμα ολοκληρωθεί:"
+
+#, fuzzy
+#| msgid "Call scrip_t when downloading is completed:"
+msgid "Verify data when download completes"
+msgstr "Κλήση scrip_t όταν το κατέβασμα ολοκληρωθεί:"
+
+msgctxt "Gerund"
+msgid "Downloading"
+msgstr "Λήψη"
+
+msgid "Limits"
+msgstr "Όρια"
+
+#, fuzzy
+msgid "Stop seeding at _ratio:"
+msgstr ""
+"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Παύση διαμοιρασμού στην _αναλογία:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Διακοπή διαμοιρασμού στην _αναλογία:"
+
+msgid "Stop seeding if idle for _N minutes:"
+msgstr "Παύση διαμοιρασμού σε περίπτωση αδράνειας για _N λεπτά:"
+
+msgid "Call scrip_t when done seeding:"
+msgstr "Εκτέλεση scrip_t όταν ολοκληρωθεί ο διαμοιρασμός:"
+
+msgctxt "Gerund"
+msgid "Seeding"
+msgstr "Γίνεται διαμοιρασμός"
+
+msgid "Privacy"
+msgstr "Απόρρητο"
+
+msgid "_Encryption mode:"
+msgstr "_Λειτουργία κρυπτογράφησης:"
+
+#, fuzzy
+msgid "Blocklist"
+msgstr ""
+"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Μαύρη λίστα\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Λίστα αποκλεισμού"
+
+msgid "Enable _blocklist:"
+msgstr "Ενεργοποίηση _λίστας αποκλεισμού:"
+
+#, fuzzy
+#| msgid "Enable _automatic updates"
+msgid "_Automatically update weekly"
+msgstr "Ενεργοποίηση _αυτόματων ενημερώσεων"
+
+msgid "_Update"
+msgstr "_Ενημέρωση"
+
+msgid "Listening Port"
+msgstr "Θύρα Ακρόασης"
+
+msgid "_Port for incoming connections:"
+msgstr "_Θύρα για εισερχόμενες συνδέσεις:"
+
+#, fuzzy
+#| msgid "Pick a _random port every time Transmission is started"
+msgid "Pick a _random port at startup"
+msgstr "Χρήση μιας _τυχαίας θύρας κάθε φορά που εκκινείται το Transmission"
+
+msgid "Use UPnP or NAT-PMP port _forwarding from my router"
+msgstr "Χρήση του UPnP ή του NAT-PMP για την _προώθηση θυρών από τον δρομολογητή μου"
+
+#, fuzzy
+msgid "Te_st Port"
+msgstr ""
+"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Δ_οκιμή θύρας\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Δοκ_ιμή θύρας"
+
+#, fuzzy
+msgid "Peer Limits"
+msgstr ""
+"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Όριο ομότιμων χρηστών\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Όρια Χρηστών"
+
+#, fuzzy
+#| msgid "Maximum peers per _torrent:"
+msgid "Maximum peers for new _torrents:"
+msgstr "Μέγιστος αριθμός ομότιμων χρηστών ανά _torrent:"
+
+#, fuzzy
+msgid "Maximum peers _overall:"
+msgstr ""
+"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Μέγιστος αριθμός ομότιμων χρηστών _συνολικά:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Μέγιστος αριθμός χρηστών _συνολικά:"
+
+msgid "Enable µ_TP for peer connections"
+msgstr "Ενεργοποίηση µ_TP για συνδέσεις διαμοιραστών"
+
+#, fuzzy
+msgid "µTP is a tool for reducing network congestion."
+msgstr ""
+"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"To µTP είναι ένα εργαλείο μείωσης της συμφόρησης του δικτύου.\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Το µTP είναι ένα μέσο μείωσης της δικτυακής συμφόρησης."
+
+#, fuzzy
+#| msgid "Use PE_X to find more peers"
+msgid "Use PE_X to find more peers for public torrents"
+msgstr "Χρήση του P_EX για εύρεση επιπλέον ομότιμων χρηστών"
+
+#, fuzzy
+msgid "PEX is a tool for exchanging peer lists with the peers you're connected to."
+msgstr ""
+"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Το PEX είναι ένα εργαλείο για την ανταλλαγή λιστών ομότιμων χρηστών με τους χρήστες που είστε συνδεδεμένος.\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Το PEX είναι ένα εργαλείο για την ανταλλαγή λιστών χρηστών με τους χρήστες που είστε συνδεδεμένος."
+
+#, fuzzy
+#| msgid "Use _DHT to find more peers"
+msgid "Use _DHT to find more peers for public torrents"
+msgstr "Χρήση του _DHT για εύρεση επιπλέον ομότιμων χρηστών"
+
+#, fuzzy
+msgid "DHT is a tool for finding peers without a tracker."
+msgstr ""
+"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Το DHT είναι ένα εργαλείο για την εύρεση ομότιμων χρηστών χωρίς τη βοήθεια ιχνηλάτη.\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Το DHT είναι ένα εργαλείο για την εύρεση χρηστών χωρίς τη βοήθεια ανιχνευτή."
+
+#, fuzzy
+#| msgid "Use _Local Peer Discovery to find more peers"
+msgid "Use _Local Peer Discovery to find more peers for public torrents"
+msgstr "Χρήση Ανα_κάλυψης Τοπικών Διαμοιραστών για την εύρεση περισσότερων διαμοιραστών"
+
+#, fuzzy
+msgid "LPD is a tool for finding peers on your local network."
+msgstr ""
+"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Το LPD είναι ένα εργαλείο ανεύρεσης ομότιμων χρηστών στο τοπικό σας δίκτυο.\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Το LPD είναι ένα εργαλείο ανεύρεσης χρηστών στο τοπικό σας δίκτυο."
+
+#, fuzzy
+msgid "Default Public Trackers"
+msgstr ""
+"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Προεπιλεγμένοι Δημόσιοι Ιχνηλάτες\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Προκαθορισμένοι Δημόσιοι Ιχνηλάτες"
+
+#, fuzzy
+msgid ""
+"Trackers to use on all public torrents.\n"
+"\n"
+"To add a backup URL, add it on the next line after a primary URL.\n"
+"To add a new primary URL, add it after a blank line."
+msgstr ""
+"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Ιχνηλάτες προς χρήση σε όλα τα δημόσια torrents.\n"
+"\n"
+"Για την προσθήκη εφεδρικού URL, προσθέστε το στην επόμενη γραμμή μετά το κύριο URL.\n"
+"Για την προσθήκη νέου κύριου URL, προσθέστε το μετά από μία κενή γραμμή.\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Ιχνηλάτες για χρήση σε όλα τα δημόσια torrents.\n"
+"\n"
+"Για την χρήση εφεδρικού συνδέσμου, προσθέστε τον στην επόμενη γραμμή έπειτα από τον κύριο σύνδεσμο.\n"
+"Για την προσθήκη νέου κύριου συνδέσμου, προσθέστε τον έπειτα από μία κενή γραμμή."
+
+msgid "Network"
+msgstr "Δίκτυο"
+
+msgid "Desktop"
+msgstr "Επιφάνεια Eργασίας"
+
+msgid "_Prevent computer from sleeping with active torrents"
+msgstr ""
+
+#, fuzzy
+msgid "Show {appname} icon in the _notification area"
+msgstr ""
+"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Εμφάνιση του εικονιδίου του {appname} στην _περιοχή ειδοποιήσεων\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Εμφάνιση εικονιδίου του {appname} στην _περιοχή ειδοποιήσεων"
+
+msgid "Notification"
+msgstr "Ειδοποίηση"
+
+#, fuzzy
+msgid "Show a notification when torrents are a_dded"
+msgstr ""
+"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Εμφάνιση ειδοποίησης όταν _προστίθενται torrents\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Εμφάνιση ειδοποίησης όταν π_ροστίθενται torrent"
+
+#, fuzzy
+msgid "Show a notification when torrents _finish"
+msgstr ""
+"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Εμφάνιση μιας ειδοποίησης όταν _ολοκληρωθούν τα torrents\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Εμφάνιση μιας ειδοποίησης όταν _ολοκληρωθούν τα torrent"
+
+#, fuzzy
+msgid "Play a _sound when torrents finish"
+msgstr ""
+"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Αναπαραγωγή ενός ή_χου όταν ολοκληρώνονται torrents\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Αναπαραγωγή ενός _ήχου όταν ολοκληρώνονται torrent"
+
+msgid "Remote Control"
+msgstr "Απομακρυσμένος Έλεγχος"
+
+msgid "Allow _remote access"
+msgstr "Να επιτρέπεται ο _απομακρυσμένος έλεγχος"
+
+#, fuzzy
+#| msgid "_Open web client"
+msgid "_Open Web Client"
+msgstr "_Άνοιγμα πελάτη ιστού"
+
+#, fuzzy
+msgid "HTTP _port:"
+msgstr ""
+"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"πό_ρτα HTTP:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Θύρα HTTP:"
+
+msgid "Use _authentication"
+msgstr "Χρήση _πιστοποίησης"
+
+#, fuzzy
+msgid "_Username:"
+msgstr ""
+"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Ό_νομα χρήστη:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Όνομα χρήστη:"
+
+#, fuzzy
+msgid "Pass_word:"
+msgstr ""
+"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Κωδικός πρόσβασης:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Κωδικός _πρόσβασης:"
+
+#, fuzzy
+msgid "Only allow these IP a_ddresses:"
+msgstr ""
+"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Επίτρεψε μόνο σε αυτές τις δι_ευθύνσεις IP:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Επίτρεψε μόνο σε αυτές τις διευθύνσεις IP:"
+
+msgid "Addresses:"
+msgstr "Διευθύνσεις:"
+
+msgid "IP addresses may use wildcards, such as 192.168.*.*"
+msgstr "Οι διευθύνσεις IP μπορεί να περιέχουν μπαλαντέρ, όπως 192.168.*.*"
+
+msgid "Remote"
+msgstr "Απομακρυσμένα"
+
+#, fuzzy
+msgid "Set Torrent Location"
+msgstr ""
+"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Ορισμός τοποθεσίας torrent\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Ορισμός Τοποθεσίας Torrent"
+
+msgid "_Apply"
+msgstr "_Εφαρμογή"
+
+msgid "Location"
+msgstr "Τοποθεσία"
+
+msgid "New _location:"
+msgstr "Νέα _τοποθεσία:"
+
+msgid "_Move from the current folder"
+msgstr "_Μετακίνηση από τον τρέχοντα φάκελο"
+
+msgid "Local data is _already there"
+msgstr "Τα τοπικά δεδομένα είναι _ήδη εκεί"
+
+msgid "Current Session"
+msgstr "Τρέχουσα Συνεδρία"
+
+msgid "Ratio:"
+msgstr "Αναλογία:"
+
+msgid "Duration:"
+msgstr "Διάρκεια:"
+
+msgid "Total"
+msgstr "Σύνολο"
+
+msgid "Open URL"
+msgstr "Άνοιγμα URL"
+
+msgid "Open torrent from URL"
+msgstr "Άνοιγμα torrent από URL"
+
+msgid "_URL"
+msgstr "_URL"
+
+msgid "The torrent file '{path}' is already in use by '{torrent_name}'."
+msgstr "Το μονοπάτι του αρχείου torrent '{path}' χρησιμοποιείται ήδη από το '{torrent_name}'."
+
+msgid "Couldn't open torrent"
+msgstr "Αδυναμία ανοίγματος torrent"
+
+msgid "Couldn't move '{path}' to trash: {error} ({error_code})"
+msgstr "Αδυναμία μετακίνησης '{path}' στον κάδο: {error} ({error_code})"
+
+#, fuzzy
+#| msgid "Couldn't create proxy for '{bus}': {error} ({error_code})"
+msgid "Couldn't launch default application for URI '{uri}': {error} ({error_code})"
+msgstr "Αδυναμία δημιουργίας διαμεσολαβητή για '{bus}': {error} ({error_code})"
+
+#, fuzzy
+#| msgid "Couldn't open '{path}': {error} ({error_code})"
+msgid "Couldn't invoke xdg-open for URI '{uri}': {error} ({error_code})"
+msgstr "Αδυναμία ανοίγματος '{path}': {error} ({error_code})"
+
+msgid "Couldn't open '{url}'"
+msgstr "Αδυναμία ανοίγματος '{url}'"
+
+msgid "Unsupported URL: '{url}'"
+msgstr "Μη υποστηριζόμενο URL: '{url}'"
+
+msgid "{appname} doesn't know how to use '{url}'"
+msgstr "Το {appname} δεν γνωρίζει πως να χρησιμοποιήσει το '{url}'"
+
+msgid "This magnet link appears to be intended for something other than BitTorrent."
+msgstr "Αυτός ο μαγνητικός σύνδεσμος μοιάζει να προορίζεται για κάτι διαφορετικό του BitTorrent."
 
 msgid "{days_from_now:L} day from now"
 msgid_plural "{days_from_now:L} days from now"
@@ -865,6 +2175,76 @@ msgid_plural "{seconds_ago:L} seconds ago"
 msgstr[0] "πριν {seconds_ago:L} δευτερόλεπτο"
 msgstr[1] "πριν {seconds_ago:L} δευτερόλεπτα"
 
+msgid "Got a list of {markup_begin}{peer_count} peer{markup_end} {time_span_ago}"
+msgid_plural "Got a list of {markup_begin}{peer_count} peers{markup_end} {time_span_ago}"
+msgstr[0] "Λήφθηκε λίστα {markup_begin}{peer_count} διαμοιραστή{markup_end} {time_span_ago}"
+msgstr[1] "Λήφθηκε λίστα {markup_begin}{peer_count} διαμοιραστών{markup_end} {time_span_ago}"
+
+msgid "Peer list request {markup_begin}timed out {time_span_ago}{markup_end}; will retry"
+msgstr "Η αίτηση για λίστα διαμοιραστών {markup_begin}έληξε {time_span_ago}{markup_end}; θα γίνει νέα προσπάθεια"
+
+msgid "Got an error '{markup_begin}{error}{markup_end}' {time_span_ago}"
+msgstr "Λήφθηκε σφάλμα '{markup_begin}{error}{markup_end}' {time_span_ago}"
+
+#, fuzzy
+msgid "No updates scheduled"
+msgstr ""
+"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Δεν έχει προγραμματιστεί καμία ενημέρωση\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Δεν έχουν προγραμματιστεί ενημέρωσεις"
+
+msgid "Asking for more peers {time_span_from_now}"
+msgstr "Αίτηση για περισσότερους διαμοιραστές σε {time_span_from_now}"
+
+#, fuzzy
+msgid "Queued to ask for more peers"
+msgstr ""
+"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Σε αναμονή αίτησης για επιπλέον διαμοιραστές\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Σε ουρά για αίτημα επιπλέον χρηστών"
+
+msgid "Asked for more peers {markup_begin}{time_span_ago}{markup_end}"
+msgstr "Ζητήθηκαν περισσότεροι διαμοιραστές {markup_begin}{time_span_ago}{markup_end}"
+
+msgid "Got a scrape error '{markup_begin}{error}{markup_end}' {time_span_ago}"
+msgstr "Λήφθηκε σφάλμα απόξεσης '{markup_begin}{error}{markup_end}' {time_span_ago}"
+
+#, fuzzy
+#| msgid "Tracker had {markup_begin}no information{markup_end} on peer counts {time_span} ago"
+msgid "Tracker had {markup_begin}no information{markup_end} on peer counts {time_span_ago}"
+msgstr "Ο ιχνηλάτης {markup_begin}δεν είχε πληροφορίες{markup_end} σχετικά με τον αριθμό χρηστών πριν {time_span}"
+
+msgid "Tracker had {markup_begin}{seeder_count} {seeder_or_seeders} and {leecher_count} {leecher_or_leechers}{markup_end} {time_span_ago}"
+msgstr "Ο ιχνηλάτης είχε {markup_begin}{seeder_count} {seeder_or_seeders} και {leecher_count} {leecher_or_leechers}{markup_end} {time_span_ago}"
+
+msgid "seeder"
+msgid_plural "seeders"
+msgstr[0] "πάροχος"
+msgstr[1] "πάροχοι"
+
+msgid "leecher"
+msgid_plural "leechers"
+msgstr[0] "λήπτης"
+msgstr[1] "λήπτες"
+
+#, fuzzy
+#| msgid "Asking for peer counts in {time_span_from_now}"
+msgid "Asking for peer counts {time_span_from_now}"
+msgstr "Αίτηση για περισσότερους διαμοιραστές σε {time_span_from_now}"
+
+#, fuzzy
+msgid "Queued to ask for peer counts"
+msgstr ""
+"#-#-#-#-#  el.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Σε αναμονή για αίτηση αριθμού διαμοιραστών\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Σε ουρά για αίτημα αριθμού χρηστών"
+
+msgid "Asked for peer counts {markup_begin}{time_span_ago}{markup_end}"
+msgstr "Ζητήθηκαν αριθμοί διαμοιραστών {markup_begin}{time_span_ago}{markup_end}"
+
 msgid "{days:L} day"
 msgid_plural "{days:L} days"
 msgstr[0] "{days:L} μέρα"
@@ -875,6 +2255,7 @@ msgid_plural "{hours:L} hours"
 msgstr[0] "{hours:L} ώρα"
 msgstr[1] "{hours:L} ώρες"
 
+#. Translators: Spin box format, "Stop seeding if idle for: [ 5 minutes ]"
 msgid "{minutes:L} minute"
 msgid_plural "{minutes:L} minutes"
 msgstr[0] "{minutes:L} λεπτό"
@@ -905,761 +2286,6 @@ msgid_plural "{seconds_left:L} seconds left"
 msgstr[0] "απομένει {seconds_left:L} δευτερόλεπτο"
 msgstr[1] "απομένουν {seconds_left:L} δευτερόλεπτα"
 
-msgid "The torrent file '{path}' is already in use by '{torrent_name}'."
-msgstr "Το μονοπάτι του αρχείου torrent '{path}' χρησιμοποιείται ήδη από το '{torrent_name}'."
-
-msgid "Couldn't open torrent"
-msgstr "Αδυναμία ανοίγματος torrent"
-
-msgid "Couldn't move '{path}' to trash: {error} ({error_code})"
-msgstr "Αδυναμία μετακίνησης '{path}' στον κάδο: {error} ({error_code})"
-
-msgid "Couldn't open '{url}'"
-msgstr "Αδυναμία ανοίγματος '{url}'"
-
-msgid "Unsupported URL: '{url}'"
-msgstr "Μη υποστηριζόμενο URL: '{url}'"
-
-#. modal
-msgid "{appname} doesn't know how to use '{url}'"
-msgstr "Το {appname} δεν γνωρίζει πως να χρησιμοποιήσει το '{url}'"
-
-msgid "This magnet link appears to be intended for something other than BitTorrent."
-msgstr "Αυτός ο μαγνητικός σύνδεσμος μοιάζει να προορίζεται για κάτι διαφορετικό του BitTorrent."
-
-msgid "Retransmission"
-msgstr "Retransmission"
-
-#. parse the command line
-msgid "Where to look for configuration files"
-msgstr "Που υπάρχουν τα αρχεία ρυθμίσεων"
-
-msgid "Start with all torrents paused"
-msgstr "Έναρξη με όλα τα torrent σε παύση"
-
-msgid "Start minimized in notification area"
-msgstr "Εκκίνηση ελαχιστοποιημένο στην περιοχή ειδοποιήσεων"
-
-msgid "Show version number and exit"
-msgstr "Εμφάνιση αριθμού έκδοσης και έξοδος"
-
-msgid "[torrent files or urls]"
-msgstr "[αρχεία torrent ή urls]"
-
-msgid "Run '{program} --help' to see a full list of available command line options.\n"
-msgstr "Εκτελέστε '{program} --help' για να δείτε την πλήρη λίστα των διαθέσιμων εντολών.\n"
-
-msgid "B/s"
-msgstr "B/s"
-
-msgid "GB/s"
-msgstr "GB/s"
-
-msgid "MB/s"
-msgstr "MB/s"
-
-msgid "TB/s"
-msgstr "TB/s"
-
-msgid "kB/s"
-msgstr "kB/s"
-
-msgid "B"
-msgstr "B"
-
-msgid "GiB"
-msgstr "GiB"
-
-msgid "KiB"
-msgstr "KiB"
-
-msgid "MiB"
-msgstr "MiB"
-
-msgid "TiB"
-msgstr "TiB"
-
-msgid "GB"
-msgstr "GB"
-
-msgid "MB"
-msgstr "MB"
-
-msgid "TB"
-msgstr "TB"
-
-msgid "kB"
-msgstr "kB"
-
-msgid "BitTorrent Client"
-msgstr "Πελάτης BitTorrent"
-
-msgid "Download and share files over BitTorrent"
-msgstr "Λήψη και διαμοιρασμός των αρχείων μέσω του BitTorrent"
-
-#. Translators: Search terms to find this application. Do NOT translate or localize the semicolons! The list MUST also end with a semicolon!
-msgid "torrents;downloading;uploading;share;sharing;"
-msgstr "torrent;λήψη;αποστολή;μοίρασε;διαμοιρασμός;"
-
-msgid "Start Retransmission with All Torrents Paused"
-msgstr "Εκκίνηση του Retransmission με Όλα τα Torrent σε Παύση"
-
-msgid "Start Retransmission Minimized"
-msgstr "Εκκίνηση του Retransmission Ελαχιστοποιημένο"
-
-msgid "Open a torrent"
-msgstr "Άνοιγμα ενός torrent"
-
-msgid "Open _URL…"
-msgstr "Άνοιγμα _URL…"
-
-msgid "Open URL…"
-msgstr "Άνοιγμα URL…"
-
-msgid "_New…"
-msgstr "_Νέο…"
-
-msgid "_Start All"
-msgstr "_Εκκίνηση όλων"
-
-msgid "Start all torrents"
-msgstr "Εκκίνηση όλων των torrent"
-
-msgid "_Pause All"
-msgstr "_Παύση όλων"
-
-msgid "Pause all torrents"
-msgstr "Παύση όλων των torrent"
-
-msgid "_Quit"
-msgstr "Έ_ξοδος"
-
-msgid "Select _All"
-msgstr "Επιλογή _όλων"
-
-msgid "Dese_lect All"
-msgstr "Αποεπι_λογή όλων"
-
-msgid "_Preferences"
-msgstr "_Προτιμήσεις"
-
-msgid "_Properties"
-msgstr "_Ιδιότητες"
-
-msgid "Torrent properties"
-msgstr "Ιδιότητες torrent"
-
-msgid "Open Fold_er"
-msgstr "Άνοιγμα Φακέ_λου"
-
-msgid "_Start"
-msgstr "_Εκκίνηση"
-
-msgid "Start torrent"
-msgstr "Εκκίνηση torrent"
-
-msgid "Start _Now"
-msgstr "Εκκίνηση _τώρα"
-
-msgid "Start torrent now"
-msgstr "Εκκίνηση torrent τώρα"
-
-msgid "Ask Tracker for _More Peers"
-msgstr "Αίτηση στον ιχνηλάτη για ε_πιπλέον ομότιμους χρήστες"
-
-msgid "Move to _Top"
-msgstr "Μετακίνηση στην _κορυφή"
-
-msgid "Move _Up"
-msgstr "Μετακίνηση _επάνω"
-
-msgid "Move _Down"
-msgstr "Μετακίνηση _κάτω"
-
-msgid "Move to _Bottom"
-msgstr "Μετακίνηση στο _τέλος"
-
-msgid "_Pause"
-msgstr "Παύ_ση"
-
-msgid "Pause torrent"
-msgstr "Παύση torrent"
-
-msgid "Set _Location…"
-msgstr "Καθορισμός _τοποθεσίας…"
-
-msgid "_Verify Local Data"
-msgstr "_Επαλήθευση τοπικών δεδομένων"
-
-msgid "Copy _Magnet Link to Clipboard"
-msgstr "Αντιγραφή του δεσμού _Magnet στο πρόχειρο"
-
-msgid "Remove torrent"
-msgstr "Αφαίρεση torrent"
-
-msgid "_Delete Files and Remove"
-msgstr "_Διαγραφή αρχείων και αφαίρεση από την λίστα"
-
-msgid "_Compact View"
-msgstr "_Συνοπτική προβολή"
-
-msgid "_Toolbar"
-msgstr "_Εργαλειοθήκη"
-
-msgid "_Filterbar"
-msgstr "Γραμμή _φίλτρου"
-
-msgid "_Statusbar"
-msgstr "Γραμμή _κατάστασης"
-
-msgid "Sort by _Activity"
-msgstr "Ταξινόμηση κατά _Δραστηριότητα"
-
-msgid "Sort by A_ge"
-msgstr "Ταξινόμηση κατά Πα_λαιότητα"
-
-msgid "Sort by _Name"
-msgstr "Ταξινόμηση κατά Ό_νομα"
-
-msgid "Sort by _Progress"
-msgstr "Ταξινόμηση κατά _Πρόοδο"
-
-msgid "Sort by _Queue"
-msgstr "Ταξινόμηση κατά _σειρά"
-
-msgid "Sort by Rati_o"
-msgstr "Ταξινόμηση κατά _Αναλογία"
-
-msgid "Sort by Si_ze"
-msgstr "Ταξινόμηση κατά Μέ_γεθος"
-
-msgid "Sort by Stat_e"
-msgstr "Ταξινόμηση κατά _Κατάσταση"
-
-msgid "Sort by Time _Left"
-msgstr "Ταξινόμηση βάσει _Εναπομείναντος χρόνου"
-
-msgid "Re_verse Sort Order"
-msgstr "Αν_τιστροφή σειράς ταξινόμησης"
-
-msgid "Message _Log"
-msgstr "Κ_αταγραφή μηνυμάτων"
-
-msgid "_Statistics"
-msgstr "_Στατιστικά"
-
-msgid "_Donate"
-msgstr "_Δωρεά"
-
-msgid "_Contents"
-msgstr "_Περιεχόμενα"
-
-msgid "_About"
-msgstr "_Σχετικά"
-
-msgid "_Show {appname}"
-msgstr "_Εμφάνιση του {appname}"
-
-msgid "Enable Alternative Speed _Limits"
-msgstr "Ενεργοποίηση Εναλλακτικών Ορίων _Ταχύτητας"
-
-msgid "_Add"
-msgstr "_Προσθήκη"
-
-msgid "Tracker"
-msgstr "Ιχνηλάτης"
-
-msgid "_Announce URL:"
-msgstr "_URL Ανακοίνωσης:"
-
-msgid "_Close"
-msgstr "_Κλείσιμο"
-
-msgid "Activity"
-msgstr "Δραστηριότητα"
-
-msgid "Torrent size:"
-msgstr "Μέγεθος torrent:"
-
-msgid "Have:"
-msgstr "Έχουμε:"
-
-msgid "Uploaded:"
-msgstr "Απεσταλμένα:"
-
-msgid "Downloaded:"
-msgstr "Ληφθέντα:"
-
-msgid "State:"
-msgstr "Κατάσταση:"
-
-msgid "Running time:"
-msgstr "Χρόνος εκτέλεσης:"
-
-msgid "Remaining time:"
-msgstr "Χρόνος που απομένει:"
-
-msgid "Last activity:"
-msgstr "Τελευταία δραστηριότητα:"
-
-msgid "Error:"
-msgstr "Σφάλμα:"
-
-msgid "Details"
-msgstr "Λεπτομέρειες"
-
-msgid "Location:"
-msgstr "Τοποθεσία:"
-
-msgid "Hash:"
-msgstr "Κλειδί ελέγχου ακεραιότητας δεδομένων:"
-
-msgid "Privacy:"
-msgstr "Απόρρητο:"
-
-msgid "Origin:"
-msgstr "Προέλευση:"
-
-msgid "Added:"
-msgstr "Προστέθηκαν:"
-
-msgid "Comment:"
-msgstr "Σχόλιο:"
-
-msgid "Information"
-msgstr "Πληροφορίες"
-
-msgid "Show _more details"
-msgstr "Εμφάνιση _περισσότερων  λεπτομερειών"
-
-msgid "Peers"
-msgstr "Ομότιμοι χρήστες"
-
-msgid "_Edit"
-msgstr "_Επεξεργασία"
-
-msgid "Show _backup trackers"
-msgstr "Εμφάνιση _δευτερευόντων ιχνηλατών"
-
-msgid "File listing not available for combined torrent properties"
-msgstr "Η λίστα αρχείων δεν είναι διαθέσιμη κατά την εμφάνιση πολλαπλών torrent"
-
-msgid "Files"
-msgstr "Αρχεία"
-
-msgid "Speed"
-msgstr "Ταχύτητα"
-
-msgid "Honor global _limits"
-msgstr "Τήρηση καθολικών _ορίων"
-
-msgid "Limit _download speed ({speed_units}):"
-msgstr "Περιορισμός ταχύτητας _κατεβάσματος ({speed_units}):"
-
-msgid "Limit _upload speed ({speed_units}):"
-msgstr "Περιορισμός ταχύτητας _ανεβάσματος ({speed_units}):"
-
-msgid "Torrent _priority:"
-msgstr "_Προτεραιότητα torrent"
-
-msgid "Seeding Limits"
-msgstr "Όρια Διαμοιρασμού"
-
-msgid "_Ratio:"
-msgstr "_Αναλογία"
-
-msgid "_Idle:"
-msgstr "Α_δρανές"
-
-msgid "Peer Connections"
-msgstr "Συνδέσεις ομότιμων χρηστών"
-
-msgid "_Maximum peers:"
-msgstr "_Μέγιστος αριθμός ομότιμων χρηστών:"
-
-msgid "Options"
-msgstr "Επιλογές"
-
-msgid "Tracker Announce URLs"
-msgstr "URL Αναφοράς Ιχνηλάτη"
-
-msgid ""
-"To add a backup URL, add it on the next line after a primary URL.\n"
-"To add a new primary URL, add it after a blank line."
-msgstr ""
-"Για την προσθήκη εφεδρικού URL, προσθέστε το στην επόμενη γραμμή μετά το κύριο URL.\n"
-"Για την προσθήκη ενός νέου κύριου URL, προσθέστε το μετά από μία κενή γραμμή."
-
-msgid "Also see Default Public Trackers in Edit > Preferences > Network"
-msgstr "Δείτε επίσης τους Προεπιλεγμένους Δημόσιους Ιχνηλάτες στο Επεξεργασία > Προτιμήσεις > Δίκτυο"
-
-msgid "Torrent"
-msgstr "Torrent"
-
-msgid "Statistics"
-msgstr "Στατιστικά"
-
-msgid "New Torrent"
-msgstr "Νέο Torrent"
-
-msgid "_New"
-msgstr "_Νέο"
-
-msgid "Sa_ve to:"
-msgstr "Α_ποθήκευση σε:"
-
-msgid "Source F_older:"
-msgstr "Φά_κελος προέλευσης:"
-
-msgid "Source _File:"
-msgstr "Α_ρχείο προέλευσης:"
-
-msgid "Piece size:"
-msgstr "Μέγεθους κομματιού:"
-
-msgid "Properties"
-msgstr "Ιδιότητες"
-
-msgid "_Trackers:"
-msgstr "_Ιχνηλάτες:"
-
-msgid "Co_mment:"
-msgstr "Σ_χόλιο:"
-
-msgid "_Source:"
-msgstr "_Πηγή:"
-
-msgid "_Private torrent"
-msgstr "_Ιδιωτικό torrent"
-
-msgid "Creating torrent…"
-msgstr "Δημιουργία torrent…"
-
-msgid "Message Log"
-msgstr "Καταγραφή μηνυμάτων"
-
-msgid "Save _As"
-msgstr "Αποθήκευση_Ως"
-
-msgid "Clear"
-msgstr "Καθαρισμός"
-
-msgid "P_ause"
-msgstr "Π_αύση"
-
-msgid "Level"
-msgstr "Επίπεδο"
-
-msgid "Torrent Options"
-msgstr "Επιλογές torrent"
-
-msgid "_Torrent file:"
-msgstr "_Αρχείο torrent:"
-
-msgid "Select Source File"
-msgstr "Επιλέξτε το πηγαίο αρχείο"
-
-msgid "_Destination folder:"
-msgstr "_Φάκελος προορισμού:"
-
-msgid "Select Destination Folder"
-msgstr "Επιλογή φακέλου προορισμού"
-
-msgid "_Start when added"
-msgstr "_Εκκίνηση κατά την προσθήκη"
-
-msgid "Mo_ve torrent file to the trash"
-msgstr "Με_τακίνηση αρχείου torrent στον κάδο"
-
-msgid "{appname} Preferences"
-msgstr "Προτιμήσεις του {appname}"
-
-msgid "_Help"
-msgstr "_Βοήθεια"
-
-msgid "Speed Limits"
-msgstr "Όρια ταχύτητας"
-
-#. Checkbox to limit upload speed
-msgid "_Upload ({speed_units}):"
-msgstr "_Ανέβασμα ({speed_units}):"
-
-#. Checkbox to limit download speed
-msgid "_Download ({speed_units}):"
-msgstr "_Κατέβασμα ({speed_units}):"
-
-msgid "Alternative Speed Limits"
-msgstr "Εναλλακτικά Όρια Ταχύτητας"
-
-msgid "Override normal speed limits manually or at scheduled times"
-msgstr "Παράκαμψη συνηθισμένων ορίων ταχυτήτων χειροκίνητα ή σε προγραμματισμένες ώρες"
-
-#. Labels a spinbutton for alternate upload speed limits
-msgid "U_pload ({speed_units}):"
-msgstr "Α_νέβασμα ({speed_units}):"
-
-#. Labels a spinbutton for alternate download speed limits
-msgid "Do_wnload ({speed_units}):"
-msgstr "Κα_τέβασμα ({speed_units}):"
-
-msgid "_Scheduled times:"
-msgstr "_Προγραμματισμένες ώρες:"
-
-msgid "_On days:"
-msgstr "_Τις ημέρες:"
-
-#. Label goes between two time selectors, e.g. "limit speeds from [time] to [time]"
-msgid "_to"
-msgstr "_μέχρι"
-
-msgctxt "Gerund"
-msgid "Adding"
-msgstr "Προσθήκη"
-
-msgid "Automatically add torrent files _from:"
-msgstr "Αυτόματη προσθήκη αρχείων torrent _από:"
-
-msgid "Show the Torrent Options _dialog"
-msgstr "Εμφάνιση του _διαλόγου Επιλογών Torrent"
-
-msgid "_Start added torrents"
-msgstr "_Εκκίνηση προστιθέμενων torrent"
-
-msgid "Save to _Location:"
-msgstr "Αποθήκευση στην _τοποθεσία:"
-
-msgid "Download Queue"
-msgstr "Ουρά Λήψης"
-
-msgid "Ma_ximum active downloads:"
-msgstr "Μέ_γιστος αριθμός ενεργών λήψεων:"
-
-msgid "Downloads sharing data in the last _N minutes are active:"
-msgstr "Μεταφορτώσεις που ανταλλάσσουν δεδομένα στα τελευταία N λεπτά είναι _ενεργές:"
-
-msgid "Incomplete"
-msgstr "Μη ολοκληρωμένο"
-
-msgid "Append \"._part\" to incomplete files' names"
-msgstr "Προσθήκη της λέξης \"._part\" στα ονόματα των μη ολοκληρωμένων αρχείων"
-
-msgid "Keep _incomplete torrents in:"
-msgstr "Διατήρηση _μη ολοκληρωμένων torrents σε:"
-
-msgid "Call scrip_t when done downloading:"
-msgstr "Εκτέλεση scrip_t όταν η λήψη ολοκληρωθεί"
-
-msgctxt "Gerund"
-msgid "Downloading"
-msgstr "Λήψη"
-
-msgid "Limits"
-msgstr "Όρια"
-
-msgid "Stop seeding at _ratio:"
-msgstr "Παύση διαμοιρασμού στην _αναλογία:"
-
-msgid "Stop seeding if idle for _N minutes:"
-msgstr "Παύση διαμοιρασμού σε περίπτωση αδράνειας για _N λεπτά:"
-
-msgid "Call scrip_t when done seeding:"
-msgstr "Εκτέλεση scrip_t όταν ολοκληρωθεί ο διαμοιρασμός:"
-
-msgctxt "Gerund"
-msgid "Seeding"
-msgstr "Γίνεται διαμοιρασμός"
-
-msgid "Privacy"
-msgstr "Απόρρητο"
-
-msgid "_Encryption mode:"
-msgstr "_Λειτουργία κρυπτογράφησης:"
-
-msgid "Blocklist"
-msgstr "Μαύρη λίστα"
-
-msgid "Enable _blocklist:"
-msgstr "Ενεργοποίηση _λίστας αποκλεισμού:"
-
-msgid "Enable _automatic updates"
-msgstr "Ενεργοποίηση _αυτόματων ενημερώσεων"
-
-msgid "_Update"
-msgstr "_Ενημέρωση"
-
-msgid "Listening Port"
-msgstr "Θύρα Ακρόασης"
-
-msgid "_Port used for incoming connections:"
-msgstr "_Θύρα που χρησιμοποιείται για εισερχόμενες συνδέσεις:"
-
-msgid "Pick a _random port every time Transmission is started"
-msgstr "Χρήση μιας _τυχαίας θύρας κάθε φορά που εκκινείται το Transmission"
-
-msgid "Use UPnP or NAT-PMP port _forwarding from my router"
-msgstr "Χρήση του UPnP ή του NAT-PMP για την _προώθηση θυρών από τον δρομολογητή μου"
-
-msgid "Te_st Port"
-msgstr "Δ_οκιμή θύρας"
-
-msgid "Peer Limits"
-msgstr "Όριο ομότιμων χρηστών"
-
-msgid "Maximum peers per _torrent:"
-msgstr "Μέγιστος αριθμός ομότιμων χρηστών ανά _torrent:"
-
-msgid "Maximum peers _overall:"
-msgstr "Μέγιστος αριθμός ομότιμων χρηστών _συνολικά:"
-
-msgid "Enable µ_TP for peer communication"
-msgstr "Ενεργοποίηση µ_TP για επικοινωνία διαμοιραστών"
-
-msgid "µTP is a tool for reducing network congestion."
-msgstr "To µTP είναι ένα εργαλείο μείωσης της συμφόρησης του δικτύου."
-
-msgid "Use PE_X to find more peers"
-msgstr "Χρήση του P_EX για εύρεση επιπλέον ομότιμων χρηστών"
-
-msgid "PEX is a tool for exchanging peer lists with the peers you're connected to."
-msgstr "Το PEX είναι ένα εργαλείο για την ανταλλαγή λιστών ομότιμων χρηστών με τους χρήστες που είστε συνδεδεμένος."
-
-msgid "Use _DHT to find more peers"
-msgstr "Χρήση του _DHT για εύρεση επιπλέον ομότιμων χρηστών"
-
-msgid "DHT is a tool for finding peers without a tracker."
-msgstr "Το DHT είναι ένα εργαλείο για την εύρεση ομότιμων χρηστών χωρίς τη βοήθεια ιχνηλάτη."
-
-msgid "Use _Local Peer Discovery to find more peers"
-msgstr "Χρήση Ανα_κάλυψης Τοπικών Διαμοιραστών για την εύρεση περισσότερων διαμοιραστών"
-
-msgid "LPD is a tool for finding peers on your local network."
-msgstr "Το LPD είναι ένα εργαλείο ανεύρεσης ομότιμων χρηστών στο τοπικό σας δίκτυο."
-
-msgid "Default Public Trackers"
-msgstr "Προεπιλεγμένοι Δημόσιοι Ιχνηλάτες"
-
-msgid ""
-"Trackers to use on all public torrents.\n"
-"\n"
-"To add a backup URL, add it on the next line after a primary URL.\n"
-"To add a new primary URL, add it after a blank line."
-msgstr ""
-"Ιχνηλάτες προς χρήση σε όλα τα δημόσια torrents.\n"
-"\n"
-"Για την προσθήκη εφεδρικού URL, προσθέστε το στην επόμενη γραμμή μετά το κύριο URL.\n"
-"Για την προσθήκη νέου κύριου URL, προσθέστε το μετά από μία κενή γραμμή."
-
-msgid "Network"
-msgstr "Δίκτυο"
-
-msgid "Desktop"
-msgstr "Επιφάνεια Eργασίας"
-
-msgid "_Inhibit hibernation when torrents are active"
-msgstr "_Απαγόρευση αδρανοποίησης όταν υπάρχουν ενεργά torrents"
-
-msgid "Show {appname} icon in the _notification area"
-msgstr "Εμφάνιση του εικονιδίου του {appname} στην _περιοχή ειδοποιήσεων"
-
-msgid "Notification"
-msgstr "Ειδοποίηση"
-
-msgid "Show a notification when torrents are a_dded"
-msgstr "Εμφάνιση ειδοποίησης όταν _προστίθενται torrents"
-
-msgid "Show a notification when torrents _finish"
-msgstr "Εμφάνιση μιας ειδοποίησης όταν _ολοκληρωθούν τα torrents"
-
-msgid "Play a _sound when torrents finish"
-msgstr "Αναπαραγωγή ενός ή_χου όταν ολοκληρώνονται torrents"
-
-msgid "Remote Control"
-msgstr "Απομακρυσμένος Έλεγχος"
-
-msgid "Allow _remote access"
-msgstr "Να επιτρέπεται ο _απομακρυσμένος έλεγχος"
-
-msgid "_Open web client"
-msgstr "_Άνοιγμα πελάτη ιστού"
-
-msgid "HTTP _port:"
-msgstr "πό_ρτα HTTP:"
-
-msgid "Use _authentication"
-msgstr "Χρήση _πιστοποίησης"
-
-msgid "_Username:"
-msgstr "Ό_νομα χρήστη:"
-
-msgid "Pass_word:"
-msgstr "_Κωδικός πρόσβασης:"
-
-msgid "Only allow these IP a_ddresses:"
-msgstr "Επίτρεψε μόνο σε αυτές τις δι_ευθύνσεις IP:"
-
-msgid "Addresses:"
-msgstr "Διευθύνσεις:"
-
-msgid "IP addresses may use wildcards, such as 192.168.*.*"
-msgstr "Οι διευθύνσεις IP μπορεί να περιέχουν μπαλαντέρ, όπως 192.168.*.*"
-
-msgid "Remote"
-msgstr "Απομακρυσμένα"
-
-msgid "Set Torrent Location"
-msgstr "Ορισμός τοποθεσίας torrent"
-
-msgid "_Apply"
-msgstr "_Εφαρμογή"
-
-msgid "Location"
-msgstr "Τοποθεσία"
-
-msgid "Torrent _location:"
-msgstr "_Τοποθεσία Torrent:"
-
-msgid "_Move from the current folder"
-msgstr "_Μετακίνηση από τον τρέχοντα φάκελο"
-
-msgid "Local data is _already there"
-msgstr "Τα τοπικά δεδομένα είναι _ήδη εκεί"
-
-msgid "Current Session"
-msgstr "Τρέχουσα Συνεδρία"
-
-msgid "Ratio:"
-msgstr "Αναλογία:"
-
-msgid "Duration:"
-msgstr "Διάρκεια:"
-
-msgid "Total"
-msgstr "Σύνολο"
-
-msgid "Open URL"
-msgstr "Άνοιγμα URL"
-
-msgid "Open torrent from URL"
-msgstr "Άνοιγμα torrent από URL"
-
-msgid "_URL"
-msgstr "_URL"
-
-msgid "Couldn't parse announce response: {error} ({error_code})"
-msgstr "Αδυναμία προσπέλασης απόκρισης ανακοίνωσης: {error} ({error_code})"
-
-msgid "Couldn't parse scrape response: {error} ({error_code})"
-msgstr "Αδυναμία προσπέλασης απόκρισης απόξεσης: {error} ({error_code})"
-
-msgid "Unknown error"
-msgstr "Άγνωστο σφάλμα"
-
-msgid "{ip_protocol} connection failed"
-msgstr "αποτυχία σύνδεσης {ip_protocol}"
-
-msgid "Couldn't look up '{address}:{port}' in {ip_protocol}: {error} ({error_code})"
-msgstr "Αδυναμία ανεύρεσης  '{address}:{port}' σε {ip_protocol}: {error} ({error_code})"
-
 msgid "Announce error: {error} ({url})"
 msgstr "Αναγγελία σφάλματος: {error} ({url})"
 
@@ -1677,20 +2303,63 @@ msgstr "Ο ιχνηλάτης δεν αποκρίθηκε."
 msgid "Success"
 msgstr "Επιτυχία"
 
+msgid "Couldn't parse announce response: {error} ({error_code})"
+msgstr "Αδυναμία προσπέλασης απόκρισης ανακοίνωσης: {error} ({error_code})"
+
+msgid "Couldn't parse scrape response: {error} ({error_code})"
+msgstr "Αδυναμία προσπέλασης απόκρισης απόξεσης: {error} ({error_code})"
+
+msgid "Unknown error"
+msgstr "Άγνωστο σφάλμα"
+
+msgid "{ip_protocol} connection failed"
+msgstr "αποτυχία σύνδεσης {ip_protocol}"
+
+msgid "Couldn't look up '{address}:{port}' in {ip_protocol}: {error} ({error_code})"
+msgstr "Αδυναμία ανεύρεσης  '{address}:{port}' σε {ip_protocol}: {error} ({error_code})"
+
 msgid "Blocklist '{path}' has {count} entry"
 msgid_plural "Blocklist '{path}' has {count} entries"
 msgstr[0] "Η λίστα φραγής '{path}' έχει {count} καταχώρηση"
 msgstr[1] "Η λίστα φραγής '{path}' έχει {count} καταχωρήσεις"
 
-#. don't try to display the actual lines - it causes issues
-msgid "Couldn't parse line: '{line}'"
+#, fuzzy
+#| msgid "Couldn't parse line: '{line}'"
+msgid "Couldn't parse line {line}: {base64}"
 msgstr "Αδυναμία προσπέλασης γραμμής: '{line}'"
 
-msgid "Rewriting old blocklist file format to new format"
+#, fuzzy
+#| msgid "Rewriting old blocklist file format to new format"
+msgid "Rewriting old blocklist file {path} to new format"
 msgstr "Επανεγγραφή παλιού τύπου αρχείου λίστας φραγής σε νέο τύπο"
+
+msgid "Blocklist is larger than {limit} MiB; ignoring it"
+msgstr ""
+
+#, fuzzy
+#| msgid "Couldn't fetch blocklist: {error} ({error_code})"
+msgid "Couldn't fetch blocklist: {errmsg}, response code: {error} ({error_code})"
+msgstr "Αδυναμία απόκτησης λίστας φραγής: {error} ({error_code})"
+
+msgid "Couldn't fetch blocklist: {error} ({error_code})"
+msgstr "Αδυναμία απόκτησης λίστας φραγής: {error} ({error_code})"
+
+msgid "Automatically updated blocklist, which now has {count} rules"
+msgstr ""
+
+msgid "Invalid tr_sched_days value {val}"
+msgstr ""
 
 msgid "{crypto_library} error: {error} ({error_code})"
 msgstr "{crypto_library} σφάλμα: {error} ({error_code})"
+
+msgid "Couldn't read '{path}': Not a regular file"
+msgstr "Αδυναμία ανάγνωσης '{path}': ιδιότυπο αρχείο"
+
+#, fuzzy
+#| msgid "Couldn't read '{path}'"
+msgid "Couldn't get '{path}': "
+msgstr "Αδυναμία ανάγνωσης '{path}'"
 
 msgid "Couldn't get '{path}': {error} ({error_code})"
 msgstr "Αδυναμία απόκτησης '{path}': {error} ({error_code})"
@@ -1707,20 +2376,14 @@ msgstr "Το σύστημά σας δεν υποστηρίζει το {protocol}
 msgid "Successfully updated global {type} address to {ip} using {url}"
 msgstr "Επιτυχής ενημέρωση καθολικής διεύθυνσης {type} σε {ip} με χρήση του {url}"
 
+msgid "Still waiting for disk IO on torrent {id}: {running} running, {queued} queued"
+msgstr ""
+
 msgid "Too many messages like this! I won't log this message anymore this session."
 msgstr "Πολλά παρόμοια μηνύματα! Παύση καταχώρησης αυτού του μηνύματος σε αυτή τη συνεδρία."
 
 msgid "Skipping '{path}': {error} ({error_code})"
 msgstr "Παράβλεψη '{path}': {error} ({error_code})"
-
-msgid "Couldn't create socket: {error} ({error_code})"
-msgstr "Αδυναμία δημιουργίας υποδοχής: {error} ({error_code})"
-
-msgid "Couldn't set source address {address} on {socket}: {error} ({error_code})"
-msgstr "Αδυναμία καθορισμού διεύθυνσης πηγής {address} σε {socket}: {error} ({error_code})"
-
-msgid "Couldn't connect socket {socket} to {address}:{port}: {error} ({error_code})"
-msgstr "Αδυναμία σύνδεσης υποδοχής {socket} σε {address}:{port}: {error} ({error_code})"
 
 msgid "Couldn't bind port {port} on {address}: {error} ({error_code}) -- Is another copy of {appname} already running?"
 msgstr "Αδυναμία δέσμευσης θύρας {port} στην {address}: {error} ({error_code}) -- Μήπως μία άλλη συνεδρία του {appname} τρέχει ήδη;"
@@ -1737,8 +2400,35 @@ msgstr "Αδυναμία δέσμευσης '{path}': {error} ({error_code})"
 msgid "Couldn't truncate '{path}': {error} ({error_code})"
 msgstr "Αδυναμία περικοπής '{path}': {error} ({error_code})"
 
+msgid "Couldn't create socket: {error} ({error_code})"
+msgstr "Αδυναμία δημιουργίας υποδοχής: {error} ({error_code})"
+
+msgid "Couldn't set source address {address} on {socket}: {error} ({error_code})"
+msgstr "Αδυναμία καθορισμού διεύθυνσης πηγής {address} σε {socket}: {error} ({error_code})"
+
+msgid "Couldn't connect socket {socket} to {address}:{port}: {error} ({error_code})"
+msgstr "Αδυναμία σύνδεσης υποδοχής {socket} σε {address}:{port}: {error} ({error_code})"
+
 msgid "Unknown state: {state}"
 msgstr "Άγνωστη κατάσταση: {state}"
+
+msgid "Starting"
+msgstr "Εκκίνηση"
+
+msgid "Forwarded"
+msgstr "Προωθημένη"
+
+msgid "Stopping"
+msgstr "Διακόπτεται"
+
+msgid "Not forwarded"
+msgstr "Δεν έγινε προώθηση"
+
+msgid "Mapped private port {private_port} to public port {public_port}"
+msgstr "Απεικόνιση ιδιωτικής θύρας {private_port} στη δημόσια θύρα {public_port}"
+
+msgid "State changed from '{old_state}' to '{state}'"
+msgstr "Η κατάσταση άλλαξε από '{old_state}' σε '{state}'"
 
 msgid "Found public address '{address}'"
 msgstr "Βρέθηκε η δημόσια διεύθυνση '{address}'"
@@ -1770,23 +2460,21 @@ msgstr "Η τοπική θύρα {local_port} προωθείται στην {adv
 msgid "If your router supports UPnP, please make sure UPnP is enabled!"
 msgstr "Αν ο δρομολογητής σας υποστηρίζει UPnP, παρακαλώ βεβαιωθείτε ότι το UPnP είναι ενεργοποιημένο!"
 
-msgid "Starting"
-msgstr "Εκκίνηση"
+#, fuzzy
+#| msgid "Couldn't test port: {error} ({error_code})"
+msgid "Couldn't test port: {errmsg}, response code: {error} ({error_code})"
+msgstr "Αδυναμία ελέγχου θύρας: {error} ({error_code})"
 
-msgid "Forwarded"
-msgstr "Προωθημένη"
+msgid "Couldn't test port: {error} ({error_code})"
+msgstr "Αδυναμία ελέγχου θύρας: {error} ({error_code})"
 
-msgid "Stopping"
-msgstr "Διακόπτεται"
+#, fuzzy
+#| msgid "Couldn't fetch torrent: {error} ({error_code})"
+msgid "Couldn't fetch torrent: {errmsg}, Response code: {error} ({error_code})"
+msgstr "Αδυναμία απόκτησης torrent: {error} ({error_code})"
 
-msgid "Not forwarded"
-msgstr "Δεν έγινε προώθηση"
-
-msgid "Mapped private port {private_port} to public port {public_port}"
-msgstr "Απεικόνιση ιδιωτικής θύρας {private_port} στη δημόσια θύρα {public_port}"
-
-msgid "State changed from '{old_state}' to '{state}'"
-msgstr "Η κατάσταση άλλαξε από '{old_state}' σε '{state}'"
+msgid "Couldn't fetch torrent: {error} ({error_code})"
+msgstr "Αδυναμία απόκτησης torrent: {error} ({error_code})"
 
 msgid "Unix socket path must be fewer than {count} characters (including '{prefix}' prefix)"
 msgstr "Το μονοπάτι της υποδοχής Unix πρέπει να αποτελείται από λιγότερο από {count} χαρακτήρες (συμπεριλαμβανομένου του προθέματος '{prefix}')"
@@ -1844,29 +2532,24 @@ msgstr "Απαιτείται κωδικός"
 msgid "Serving RPC and Web requests from '{path}'"
 msgstr "Εξυπηρέτηση RPC και Web αιτημάτων από την {path}"
 
-msgid "Couldn't test port: {error} ({error_code})"
-msgstr "Αδυναμία ελέγχου θύρας: {error} ({error_code})"
-
-msgid "Couldn't fetch blocklist: {error} ({error_code})"
-msgstr "Αδυναμία απόκτησης λίστας φραγής: {error} ({error_code})"
-
-msgid "Couldn't fetch torrent: {error} ({error_code})"
-msgstr "Αδυναμία απόκτησης torrent: {error} ({error_code})"
-
-msgid "Time to turn off turtle mode"
-msgstr "Ώρα για απενεργοποίηση της λειτουργίας χελώνας"
-
-msgid "Time to turn on turtle mode"
+#, fuzzy
+#| msgid "Time to turn on turtle mode"
+msgid "Time to turn on alternative speed limits"
 msgstr "Ώρα για ενεργοποίηση της λειτουργίας χελώνας"
 
-msgid "Couldn't open session lock file '{path}': {error} ({error_code})"
-msgstr "Αδυναμία ανοίγματος αρχείου κλειδιού συνεδρίας '{path}': {error} ({error_code})"
+#, fuzzy
+#| msgid "Time to turn off turtle mode"
+msgid "Time to turn off alternative speed limits"
+msgstr "Ώρα για απενεργοποίηση της λειτουργίας χελώνας"
 
 msgid "Listening to incoming peer connections on {hostport}"
 msgstr "Παρακολούθηση για εισερχόμενες συνδέσεις διαμοιραστών στην {hostport}"
 
 msgid "{appname} version {version} starting"
 msgstr "Εκκίνηση {appname} έκδοσης {version}"
+
+msgid "Couldn't start disk IO workers, continuing without them: {error}"
+msgstr ""
 
 msgid "{appname} version {version} shutting down"
 msgstr "Τερματισμός {appname} έκδοσης {version}"
@@ -1876,8 +2559,11 @@ msgid_plural "Loaded {count} torrents"
 msgstr[0] "Φορτώθηκε {count} torrent"
 msgstr[1] "Φορτώθηκαν {count} torrents"
 
-msgid "Migrated torrent file from '{old_path}' to '{path}'"
-msgstr "Μετακίνηση αρχείου torrent από '{old_path}' στο '{path}'"
+msgid "Couldn't claim '{path}'. If another session is using it, the two will overwrite each other's settings, resume files and stats."
+msgstr ""
+
+msgid "Couldn't open session lock file '{path}': {error} ({error_code})"
+msgstr "Αδυναμία ανοίγματος αρχείου κλειδιού συνεδρίας '{path}': {error} ({error_code})"
 
 msgid "Couldn't use metainfo from '{path}' for '{magnet}': {error} ({error_code})"
 msgstr "Αδυναμία χρήσης μεταδεδομένων από '{path}' για '{magnet}': {error} ({error_code})"
@@ -1909,14 +2595,32 @@ msgstr "Αδυναμία αφαίρεσης όλων των αρχείων torre
 msgid "Removing torrent"
 msgstr "Γίνεται αφαίρεση του torrent"
 
-msgid "Couldn't move '{old_path}' to '{path}': {error} ({error_code})"
-msgstr "Αδυναμία μετακίνησης '{old_path}' σε '{path}': {error} ({error_code})"
+#, fuzzy
+#| msgid "Couldn't remove all torrent files: {error} ({error_code})"
+msgid "Couldn't move torrent files to '{path}': {error} ({error_code})"
+msgstr "Αδυναμία αφαίρεσης όλων των αρχείων torrent: {error} ({error_code})"
 
 msgid "Paused torrent as no data was found! Ensure your drives are connected or use \"Set Location\", then use \"Verify Local Data\" again. To re-download, start the torrent."
 msgstr "Παύση torrent καθώς δε βρέθηκαν δεδομένα! Βεβαιωθείτε ότι οι δίσκοι σας είναι συνδεδεμένοι ή χρησιμοποιήστε «Καθορισμός Τοποθεσίας». Για επανακατέβασμα, εκκινήστε το torrent."
 
+msgid "Couldn't move '{old_path}' to '{path}': {error} ({error_code})"
+msgstr "Αδυναμία μετακίνησης '{old_path}' σε '{path}': {error} ({error_code})"
+
 msgid "Tracker warning: '{warning}' ({url})"
 msgstr "Προειδοποίηση ιχνηλάτη: '{warning}' ({url})"
+
+#, fuzzy
+#| msgid "Removing torrent file '{path}'"
+msgid "Moving '{source}' will overwrite '{path}'"
+msgstr "Αφαιρείται το αρχείο torrent '{path}'"
+
+#, fuzzy
+#| msgid "Couldn't move '{old_path}' to '{path}': {error} ({error_code})"
+msgid "Couldn't compare '{path}' with '{root}': {error} ({error_code}); leaving it alone"
+msgstr "Αδυναμία μετακίνησης '{old_path}' σε '{path}': {error} ({error_code})"
+
+msgid "Migrated torrent file from '{old_path}' to '{path}'"
+msgstr "Μετακίνηση αρχείου torrent από '{old_path}' στο '{path}'"
 
 msgid "Couldn't parse '{filename}' line: '{line}'"
 msgstr "Αδυναμία προσπέλασης '{filename}' γραμμή: '{line}'"
@@ -1945,8 +2649,47 @@ msgstr ""
 msgid "Unknown socket family"
 msgstr "Άγνωστη οικογένεια υποδοχών"
 
-msgid "Couldn't read '{path}': Not a regular file"
-msgstr "Αδυναμία ανάγνωσης '{path}': ιδιότυπο αρχείο"
+msgid "B"
+msgstr "B"
+
+msgid "KiB"
+msgstr "KiB"
+
+msgid "MiB"
+msgstr "MiB"
+
+msgid "GiB"
+msgstr "GiB"
+
+msgid "TiB"
+msgstr "TiB"
+
+msgid "B/s"
+msgstr "B/s"
+
+msgid "kB/s"
+msgstr "kB/s"
+
+msgid "MB/s"
+msgstr "MB/s"
+
+msgid "GB/s"
+msgstr "GB/s"
+
+msgid "TB/s"
+msgstr "TB/s"
+
+msgid "kB"
+msgstr "kB"
+
+msgid "MB"
+msgstr "MB"
+
+msgid "GB"
+msgstr "GB"
+
+msgid "TB"
+msgstr "TB"
 
 msgid "Couldn't parse JSON at position {position} '{text}': {error} ({error_code})"
 msgstr "Αδυναμία προσπέλασης JSON στη θέση {position} '{text}': {error} ({error_code})"
@@ -1954,17 +2697,14 @@ msgstr "Αδυναμία προσπέλασης JSON στη θέση {position} 
 msgid "Couldn't watch '{path}': {error} ({error_code})"
 msgstr "Αδυναμία παρακολούθησης '{path}': {error} ({error_code})"
 
-msgid "Couldn't read event: {error} ({error_code})"
-msgstr "Αδυναμία ανάγνωσης γεγονότος: {error} ({error_code})"
-
 msgid "Couldn't read event: expected {expected_size}, got {actual_size}"
 msgstr "Αδυναμία ανάγνωσης γεγονότος: αναμενόμενο {expected_size}, ληφθέν {actual_size}"
 
-msgid "Couldn't read filename: {error} ({error_code})"
-msgstr "Αδυναμία ανάγνωσης ονόματος αρχείου: {error} ({error_code})"
-
 msgid "Couldn't read filename: expected {expected_size}, got {actual_size}"
 msgstr "Αδυναμία ανάγνωσης ονόματος αρχείου: αναμενόμενο {expected_size}, ληφθέν {actual_size}"
+
+msgid "Couldn't read event: {error} ({error_code})"
+msgstr "Αδυναμία ανάγνωσης γεγονότος: {error} ({error_code})"
 
 msgid "Couldn't convert '{path}' to native path"
 msgstr "Αδυναμία μετατροπής '{path}' σε ντόπιο μονοπάτι"
@@ -1984,10 +2724,13 @@ msgstr "Αδυναμία αναμονής αλλαγών καταλόγου αρ
 msgid "Consider upgrading your curl installation."
 msgstr ""
 
+msgid "The minimum supported version is {curl_version}, you might face unexpected behaviour."
+msgstr ""
+
 msgid "curl {curl_version} is prone to SIGPIPE crashes. {details_url}"
 msgstr ""
 
-msgid "curl {curl_version} is prone to an eventfd double close vulnerability that might cause SIGABRT crashes for the transmission-daemon systemd service. {details_url}"
+msgid "curl {curl_version} is prone to an eventfd double close vulnerability that might cause SIGABRT crashes for the daemon systemd service. {details_url}"
 msgstr ""
 
 msgid "Will verify tracker certs using envvar CURL_CA_BUNDLE: {bundle}"
@@ -1999,8 +2742,399 @@ msgstr "NB: αυτό λειτουργεί μόνο αν χτιστεί έναν�
 msgid "NB: Invalid certs will appear as 'Could not connect to tracker' like many other errors"
 msgstr "NB: Άκυρα πιστοποιητικά φαίνονται ως «Αδυναμία σύνδεσης με ιχνηλάτη» όπως πολλά άλλα σφάλματα"
 
+msgid "Aborting request: response body exceeded max size of {max_file_size} bytes"
+msgstr ""
+
 msgid "Couldn't fetch '{url}': expected HTTP response code {expected_code}, got {actual_code}"
 msgstr "Αδυναμία απόκτησης '{url}': αναμονή για κώδικα απόκρισης HTTP {expected_code}, λήφθηκε {actual_code}"
+
+msgid "Server"
+msgstr "Διακομιστής"
+
+msgid "C_redits"
+msgstr "Σ_υντελεστές"
+
+msgid "Credits"
+msgstr "Συντελεστές"
+
+msgid "About {appname}"
+msgstr "Σχετικά με το {appname}"
+
+msgid "Torrent Completed"
+msgstr "Ολοκληρωμένα Torrent"
+
+msgid "Torrents Completed"
+msgstr "Ολοκληρωμένα Torrent"
+
+#. Translators: Text following the "Have:" label in torrent properties dialog;
+#. {current_size} is amount of downloaded and verified data
+msgid "{current_size} (100%)"
+msgstr "{current_size} (100%)"
+
+msgid "{current_size} of {complete_size} ({percent_done}%), {unverified_size} Unverified"
+msgstr "{current_size} από {complete_size} ({percent_done}%), {unverified_size} Ανεπιβεβαίωτα"
+
+msgid "{total_size} ({piece_count:L} piece @ {piece_size})"
+msgid_plural "{total_size} ({piece_count:L} pieces @ {piece_size})"
+msgstr[0] "{total_size} ({piece_count:L} κομμάτι @ {piece_size})"
+msgstr[1] "{total_size} ({piece_count:L} κομμάτια @ {piece_size})"
+
+msgid "{total_size} ({piece_count:L} piece)"
+msgid_plural "{total_size} ({piece_count:L} pieces)"
+msgstr[0] "{total_size} ({piece_count:L} κομμάτι)"
+msgstr[1] "{total_size} ({piece_count:L} κομμάτια)"
+
+msgid "Add URL(s)"
+msgstr "Προσθήκη συνδέσμων"
+
+msgid "Add tracker announce URLs, one per line:"
+msgstr "Προσθήκη συνδέσμων για ανακοινώσεις ιχνηλατών, ένας ανά γραμμή:"
+
+msgid "No new URLs found."
+msgstr "Δεν βρέθηκαν νέοι σύνδεσμοι."
+
+msgid "Use Global Settings"
+msgstr "Χρήση καθολικών ρυθμίσεων"
+
+msgid "Stop seeding if idle for:"
+msgstr "Διακοπή διαμοιρασμού σε περίπτωση αδράνειας για:"
+
+msgid "Torrent Properties"
+msgstr "Ιδιότητες Torrent"
+
+msgid "Availability:"
+msgstr "Διαθεσιμότητα:"
+
+msgid "Labels:"
+msgstr "Ετικέτες:"
+
+msgid "Limit _upload speed:"
+msgstr "Περιορισμός _ταχύτητας αποστολής"
+
+msgid "Limit _download speed:"
+msgstr "Περιορισμός _ταχύτητας λήψης"
+
+msgid "Check Selected"
+msgstr "Μαρκάρισμα Επιλεγμένων"
+
+msgid "Uncheck Selected"
+msgstr "Ξεμαρκάρισμα Επιλεγμένων"
+
+msgid "Only Check Selected"
+msgstr "Μαρκάρισμα Επιλεγμένων Μόνο"
+
+msgid "Open"
+msgstr "Άνοιγμα"
+
+msgid "Rename…"
+msgstr "Μετονομασία…"
+
+msgid "Search…"
+msgstr "Αναζήτηση…"
+
+msgid "<i>Calculating Free Space…</i>"
+msgstr "<i>Υπολογισμός Ελεύθερου Χώρου…</i>"
+
+msgid "Limited at {speed}"
+msgstr "Περιορισμένη σε {speed}"
+
+#. Translators: Second (optional) part of main window title "Appname - host:port" (added when connected to remote session)
+#. notice that leading space (before the dash) is included here
+msgid " - {host}:{port}"
+msgstr " - {host}:{port}"
+
+msgid "Network Error"
+msgstr "Σφάλμα Δικτύου"
+
+msgid "Idle"
+msgstr "Αδρανές"
+
+msgid "Showing {visible_count:L} of {count:L} torrent"
+msgid_plural "Showing {visible_count:L} of {count:L} torrents"
+msgstr[0] "Εμφάνιση {visible_count:L} από {count:L} torrent"
+msgstr[1] "Εμφάνιση {visible_count:L} από {count:L} torrent"
+
+msgid "Torrent Files (*.torrent);;All Files (*.*)"
+msgstr "Αρχεία Torrent (*.torrent);;Όλα τα Αρχεία(*.*)"
+
+msgid "{host} has not responded yet"
+msgstr "{host} δεν έχει αποκριθεί ακόμη"
+
+msgid "{host} is responding"
+msgstr "{host} αποκρίνεται"
+
+#, fuzzy
+#| msgid "{host} last responded {time_span} ago"
+msgid "{host} last responded {time_span_ago}"
+msgstr "{host} αποκρίθηκε τελευταία φορά πριν {time_span}"
+
+msgid "{host} is not responding"
+msgstr "{host} δεν αποκρίνεται"
+
+msgid "_Open…"
+msgstr "_Άνοιγμα…"
+
+msgid "Create a new torrent"
+msgstr "Δημιουργία ενός νέου torrent"
+
+msgid "Open the torrent's folder"
+msgstr "Άνοιγμα φακέλου του torrent"
+
+msgid "Ask tracker for more peers"
+msgstr "Αίτημα στον ιχνηλάτη για επιπλέον χρήστες"
+
+msgid "Verify local data"
+msgstr "Επαλήθευση τοπικών δεδομένων"
+
+msgid "Remove torrent and delete its files"
+msgstr "Αφαίρεση torrent και διαγραφή των αρχείων του"
+
+msgid "Compact View"
+msgstr "Συνοπτική Προβολή"
+
+msgid "_Main Window"
+msgstr "_Κύριο Παράθυρο"
+
+msgid "Tray _Icon"
+msgstr "Εικονίδιο _Περιοχής Ειδοποιήσεων"
+
+msgid "_Change Session…"
+msgstr "_Αλλαγή Συνεδρίας…"
+
+#. Start a local session or connect to a running session
+msgid "Choose Session"
+msgstr "Επιλογή Συνεδρίας"
+
+msgid "Bypass the queue and start now"
+msgstr "Παράκαμψη ουράς και εκκίνηση τώρα"
+
+msgid "{file_count:L} File"
+msgid_plural "{file_count:L} Files"
+msgstr[0] "{file_count:L} Αρχείο"
+msgstr[1] "{file_count:L} Αρχεία"
+
+msgid "{piece_count:L} Piece"
+msgid_plural "{piece_count:L} Pieces"
+msgstr[0] "{piece_count:L} Κομμάτι"
+msgstr[1] "{piece_count:L} Κομμάτια"
+
+msgid "{total_size} in {files}; {pieces} @ {piece_size}"
+msgstr "{total_size} σε {files}· {pieces} @ {piece_size}"
+
+msgid ""
+"To add a backup URL, add it on the line after the primary URL.\n"
+"To add another primary URL, add it after a blank line."
+msgstr ""
+"Για να προσθέσετε ένα δευτερεύον (backup) URL, εισάγετέ το στη γραμμή αμέσως μετά το πρωτεύον URL.\n"
+"Για να προσθέσετε ακόμη ένα πρωτεύον URL, εισάγετέ το αφήνοντας μία κενή γραμμή."
+
+#, fuzzy
+#| msgid "_Source:"
+msgid "Sou_rce:"
+msgstr "_Πηγή:"
+
+msgid "_Priority:"
+msgstr "_Προτεραιότητα:"
+
+msgid "Select Folder"
+msgstr "Επιλογή Φακέλου"
+
+msgid "unknown"
+msgstr "άγνωστο"
+
+msgid "checking…"
+msgstr "έλεγχος…"
+
+msgid "open"
+msgstr "ανοιχτή"
+
+msgid "closed"
+msgstr "κλειστή"
+
+msgid "error"
+msgstr "σφάλμα"
+
+msgid "<b>Update succeeded!</b><p>Blocklist now has {count:L} rule.</p>"
+msgid_plural "<b>Update succeeded!</b><p>Blocklist now has {count:L} rules.</p>"
+msgstr[0] "<b>Η ενημέρωση πέτυχε!</b><p>Η λίστα φραγής τώρα έχει {count:L} κανόνα.</p>"
+msgstr[1] "<b>Η ενημέρωση πέτυχε!</b><p>Η λίστα φραγής τώρα έχει {count:L} κανόνες.</p>"
+
+msgid "Download of the blocklist failed."
+msgstr ""
+
+msgid "Update Blocklist"
+msgstr "Ενημέρωση λίστα φραγής"
+
+msgid "Select \"Torrent Done Seeding\" Script"
+msgstr "Επιλογή Script «Το Torrent Διαμοιράστηκε»"
+
+msgid "Select Watch Directory"
+msgstr "Επιλογή Καταλόγου Παρακολούθησης"
+
+msgid "Select Incomplete Directory"
+msgstr "Επιλογή Καταλόγου Μη Ολοκληρωμένου"
+
+msgid "Select \"Torrent Done Downloading\" Script"
+msgstr "Επιλογή Script «Το Torrent Κατέβηκε»"
+
+msgid "Not supported by remote sessions"
+msgstr "Δεν υποστηρίζεται από απομακρυσμένες συνεδρίες"
+
+msgid "<i>Blocklist contains {count:L} rule</i>"
+msgid_plural "<i>Blocklist contains {count:L} rules</i>"
+msgstr[0] "<i>Η λίστα αποκλεισμού περιέχει {count:L} κανόνα</i>"
+msgstr[1] "<i>Η λίστα αποκλεισμού περιέχει {count:L} κανόνες</i>"
+
+#, fuzzy
+#| msgid "<i>Blocklist contains {count:L} rule</i>"
+#| msgid_plural "<i>Blocklist contains {count:L} rules</i>"
+msgid "<i>Blocklist has never been updated</i>"
+msgstr "<i>Η λίστα αποκλεισμού περιέχει {count:L} κανόνα</i>"
+
+#, fuzzy
+#| msgid "<i>Blocklist contains {count:L} rule</i>"
+#| msgid_plural "<i>Blocklist contains {count:L} rules</i>"
+msgid "<i>Blocklist last updated {date}</i>"
+msgstr "<i>Η λίστα αποκλεισμού περιέχει {count:L} κανόνα</i>"
+
+msgid "_Upload:"
+msgstr "_Αποστολή:"
+
+msgid "_Download:"
+msgstr "_Λήψη:"
+
+msgid "U_pload:"
+msgstr "Α_ποστολή:"
+
+msgid "Do_wnload:"
+msgstr "Λ_ήψη:"
+
+msgid "Downloading"
+msgstr "Λήψη"
+
+msgid "Adding"
+msgstr "Προσθήκη"
+
+msgid "Reads user clipboard content for torrents"
+msgstr "Διαβάζει το περιεχόμενο του προχείρου του χρήστη για torrents"
+
+msgid "Detect new torrents from clipboard"
+msgstr "Εντοπίζει νέα torrents από το πρόχειρο"
+
+#. Please keep this phrase as short as possible, it's currently the longest and influences dialog width
+msgid "Download is i_nactive if data sharing stopped:"
+msgstr "Η λήψη είναι α_δρανής αν ο διαμοιρασμός των δεδομένων σταμάτησε:"
+
+msgid "Seeding"
+msgstr "Διαμοιρασμός"
+
+msgid "Stop seedi_ng if idle for:"
+msgstr "Διακοπή διαμοιρασμού σε περίπτωση αδράνειας για:"
+
+msgid "Encryption"
+msgstr "Κρυπτογράφηση"
+
+msgid "Start _minimized in notification area"
+msgstr "Εκκίνηση _ελαχιστοποιημένο στην περιοχή ειδοποιήσεων"
+
+#, fuzzy
+#| msgid "Retransmission"
+msgid "Retransmission (Qt)"
+msgstr "Retransmission"
+
+msgid "Select Location"
+msgstr "Επιλογή Τοποθεσίας"
+
+msgid "Error Renaming Path"
+msgstr "Σφάλμα Μετονομασίας Διαδρομής"
+
+msgid "Unable to rename \"{old_path}\" as \"{path}\": {error}."
+msgstr "Αδύνατη η μετονομασία του \"{old_path}\" σε \"{path}\": {error}."
+
+msgid "Error Adding Torrent"
+msgstr "Σφάλμα Προσθήκης Torrent"
+
+msgid "{torrent_name} (copy of {hash})"
+msgstr "{torrent_name} (αντίγραφο από {hash})"
+
+msgid "Duplicate Torrent"
+msgstr "Διπλότυπο Torrent"
+
+msgid "Duplicate Torrents"
+msgstr "Διπλότυπα Torrents"
+
+msgid "Unable to add {count} duplicate torrent"
+msgid_plural "Unable to add {count} duplicate torrents"
+msgstr[0] "Αδυναμία προσθήκης {count} διπλότυπου torrent"
+msgstr[1] "Αδυναμία προσθήκης {count} διπλότυπων torrents"
+
+msgid "Change Session"
+msgstr "Αλλαγή Συνεδρίας"
+
+msgid "Source"
+msgstr "Πηγή"
+
+msgid "Start _Local Session"
+msgstr "Εκκίνηση _Τοπικής Συνεδρίας"
+
+msgid "Connect to _Remote Session"
+msgstr "Σύνδεση σε _Απομακρυσμένη Συνεδρία"
+
+msgid "_Host:"
+msgstr "_Οικοδεσπότης:"
+
+msgid "_Port:"
+msgstr "_Θύρα:"
+
+msgid "_Authentication required"
+msgstr "_Απαιτείται πιστοποίηση"
+
+msgid "Remote root pa_th:"
+msgstr ""
+
+msgid "Tracker gave a warning: {warning}"
+msgstr "Ο ιχνηλάτης έδωσε μια προειδοποίηση: {warning}"
+
+msgid "Tracker gave an error: {error}"
+msgstr "Ο ιχνηλάτης έδωσε ένα σφάλμα: {error}"
+
+msgid "Error: {error}"
+msgstr "Σφάλμα: {error}"
+
+#, fuzzy
+#| msgid "Magnetized transfer - retrieving metadata (%1%)"
+msgid "Magnetized torrent - retrieving metadata ({percent_done}%)"
+msgstr "Μεταφορά magnet - ανάκτηση μεταδεδομένων (%1%)"
+
+#, no-c-format
+msgid "Downloading metadata from {active_count:L} peer ({percent_done}% done)"
+msgid_plural "Downloading metadata from {active_count:L} peers ({percent_done}% done)"
+msgstr[0] "Λήψη μεταδεδομένων από {active_count:L} χρήστη (έγινε {percent_done}%)"
+msgstr[1] "Λήψη μεταδεδομένων από {active_count:L} χρήστες (έγινε {percent_done}%)"
+
+msgid "Downloading from {active_count:L} peer"
+msgid_plural "Downloading from {active_count:L} peers"
+msgstr[0] "Λήψη από {active_count:L} χρήστη"
+msgstr[1] "Λήψη από {active_count:L} χρήστες"
+
+msgid " and {webseed_count:L} web seed"
+msgid_plural " and {webseed_count:L} web seeds"
+msgstr[0] " και {webseed_count:L} διαμοιραστή ιστού"
+msgstr[1] " και {webseed_count:L} διαμοιραστές ιστού"
+
+msgid "Seeding to {active_count:L} peer"
+msgid_plural "Seeding to {active_count:L} peers"
+msgstr[0] "Διαμοιρασμός σε {active_count:L} χρήστη"
+msgstr[1] "Διαμοιρασμός σε {active_count:L} χρήστες"
+
+msgid " - "
+msgstr " - "
+
+msgid "To add a backup URL, add it on the next line after a primary URL."
+msgstr "Για την χρήση εφεδρικού συνδέσμου, προσθέστε τον στην επόμενη γραμμή έπειτα ενός κύριου συνδέσμου."
+
+msgid "To add a new primary URL, add it after a blank line."
+msgstr "Για την προσθήκη ενός νέου κύριου συνδέσμου, προσθέστε τον έπειτα από μία κενή γραμμή."
 
 msgid "{file_count:L} file, {total_size}\n"
 msgid_plural "{file_count:L} files, {total_size}\n"
@@ -2022,7 +3156,10 @@ msgid_plural "minutes"
 msgstr[0] "λεπτό"
 msgstr[1] "λεπτά"
 
-msgid "seconds"
+#, fuzzy
+#| msgid "seconds"
+#| msgid_plural "seconds"
+msgid "second"
 msgid_plural "seconds"
 msgstr[0] "δευτερόλεπτο"
 msgstr[1] "δευτερόλεπτα"
@@ -2031,6 +3168,106 @@ msgid "day"
 msgid_plural "days"
 msgstr[0] "μέρα"
 msgstr[1] "μέρες"
+
+msgid "seconds"
+msgid_plural "seconds"
+msgstr[0] "δευτερόλεπτο"
+msgstr[1] "δευτερόλεπτα"
+
+#~ msgid "Finished"
+#~ msgstr "Ολοκληρωμένα"
+
+#~ msgid "We would upload to this peer if they asked"
+#~ msgstr "Θα γίνει ανέβασμα σε αυτό τον διαμοιραστή αν ζητηθεί"
+
+#~ msgid "Dn Blocks"
+#~ msgstr "Dn Blocks"
+
+#~ msgid "Up Blocks"
+#~ msgstr "Up Blocks"
+
+#~ msgid "We Cancelled"
+#~ msgstr "Ακυρώθηκαν από εμάς"
+
+#~ msgid "They Cancelled"
+#~ msgstr "Ακυρώθηκαν από άλλους"
+
+#~ msgid "Have"
+#~ msgstr "Κατοχή"
+
+#~ msgctxt "current session totals"
+#~ msgid "Down: {downloaded_size}, Up: {uploaded_size}"
+#~ msgstr "Κάτω: {downloaded_size}, Πάνω: {uploaded_size}"
+
+#~ msgctxt "all-time totals"
+#~ msgid "Down: {downloaded_size}, Up: {uploaded_size}"
+#~ msgstr "Κάτω: {downloaded_size}, Πάνω: {uploaded_size}"
+
+#~ msgid "Select a File"
+#~ msgstr "Επιλογή Αρχείου"
+
+#~ msgid "Inhibiting desktop hibernation"
+#~ msgstr "Απαγόρευση αδρανοποίησης επιφάνειας εργασίας"
+
+#~ msgid "Couldn't inhibit desktop hibernation: {error}"
+#~ msgstr "Αδυναμία αποτροπής αδρανοποίησης επιφάνειας εργασίας: {error}"
+
+#~ msgid "Allowing desktop hibernation"
+#~ msgstr "Η ρύθμιση για να επιτρέπεται η αδρανοποίηση βρίσκεται σε εξέλιξη"
+
+#~ msgid "Open URL…"
+#~ msgstr "Άνοιγμα URL…"
+
+#~ msgid "Start all torrents"
+#~ msgstr "Εκκίνηση όλων των torrent"
+
+#~ msgid "Pause all torrents"
+#~ msgstr "Παύση όλων των torrent"
+
+#~ msgid "Start torrent now"
+#~ msgstr "Εκκίνηση torrent τώρα"
+
+#~ msgid "Copy _Magnet Link to Clipboard"
+#~ msgstr "Αντιγραφή του δεσμού _Magnet στο πρόχειρο"
+
+#~ msgid "Enable Alternative Speed _Limits"
+#~ msgstr "Ενεργοποίηση Εναλλακτικών Ορίων _Ταχύτητας"
+
+#~ msgid "Torrent size:"
+#~ msgstr "Μέγεθος torrent:"
+
+#~ msgid "_New"
+#~ msgstr "_Νέο"
+
+#~ msgid "Source F_older:"
+#~ msgstr "Φά_κελος προέλευσης:"
+
+#~ msgid "Source _File:"
+#~ msgstr "Α_ρχείο προέλευσης:"
+
+#~ msgid "P_ause"
+#~ msgstr "Π_αύση"
+
+#~ msgid "Keep _incomplete torrents in:"
+#~ msgstr "Διατήρηση _μη ολοκληρωμένων torrents σε:"
+
+#~ msgid "Call scrip_t when done downloading:"
+#~ msgstr "Εκτέλεση scrip_t όταν η λήψη ολοκληρωθεί"
+
+#~ msgid "_Port used for incoming connections:"
+#~ msgstr "_Θύρα που χρησιμοποιείται για εισερχόμενες συνδέσεις:"
+
+#~ msgid "Enable µ_TP for peer communication"
+#~ msgstr "Ενεργοποίηση µ_TP για επικοινωνία διαμοιραστών"
+
+#~ msgid "_Inhibit hibernation when torrents are active"
+#~ msgstr "_Απαγόρευση αδρανοποίησης όταν υπάρχουν ενεργά torrents"
+
+#~ msgid "Torrent _location:"
+#~ msgstr "_Τοποθεσία Torrent:"
+
+#~ msgid "Couldn't read filename: {error} ({error_code})"
+#~ msgstr "Αδυναμία ανάγνωσης ονόματος αρχείου: {error} ({error_code})"
 
 #~ msgid "Couldn't find pending RPC request for tag {tag}"
 #~ msgstr "Αδυναμία εύρεσης εκρεμμούς PRC αιτήματος για την ετικέτα {tag}"

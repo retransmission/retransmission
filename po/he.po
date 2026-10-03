@@ -13,8 +13,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-01-04 14:15+0000\n"
+"Report-Msgid-Bugs-To: https://github.com/retransmission/retransmission/issues\n"
+"POT-Creation-Date: 2026-10-03 11:48-0500\n"
 "PO-Revision-Date: 2017-01-26 19:47+0000\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>, 2025\n"
 "Language-Team: Hebrew (https://app.transifex.com/transmissionbt/teams/33778/he/)\n"
@@ -24,11 +24,19 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n == 1 && n % 1 == 0) ? 0 : (n == 2 && n % 1 == 0) ? 1: 2;\n"
 
+#, fuzzy
 msgid "None"
-msgstr "ללא"
+msgstr ""
+"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"ללא\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"אין"
 
 msgid "Inf"
 msgstr "אינסוף"
+
+msgid "Another process is already using '{path}'."
+msgstr ""
 
 msgid "Couldn't read '{path}': {error} ({error_code})"
 msgstr "לא ניתן לקרוא את ‚{path}’:‏ {error} ‏({error_code})"
@@ -56,6 +64,9 @@ msgstr "ההגדרות נטענות מחדש מתוך ‚{path}’"
 
 msgid "Couldn't initialize daemon: {error} ({error_code})"
 msgstr "לא ניתן להפעיל את הסוכן: {error} ({error_code})"
+
+msgid "Waiting for another process to release '{path}'"
+msgstr ""
 
 msgid "Loading settings from '{path}'"
 msgstr "נטענות הגדרות מתוך ‚{path}’"
@@ -109,8 +120,13 @@ msgstr[0] "לא ניתן להוסיף טורנט כפול"
 msgstr[1] "לא ניתן להוסיף טורנטים כפולים"
 msgstr[2] "לא ניתן להוסיף טורנטים כפולים"
 
+#, fuzzy
 msgid "A fast and easy BitTorrent client"
-msgstr "תכנית ביטטורנט קלה ופשוטה"
+msgstr ""
+"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"תכנית ביטטורנט קלה ופשוטה\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"לקוח ביטורנט מהיר ופשוט"
 
 msgid "Copyright © The {appname} Project"
 msgstr "כל הזכויות שמורות © מיזם {appname}"
@@ -149,8 +165,13 @@ msgstr "שימוש בהגדרות כלליות"
 msgid "Seed regardless of ratio"
 msgstr "זריעה ללא התחשבות ביחס"
 
+#, fuzzy
 msgid "Stop seeding at ratio:"
-msgstr "הפסקת הזריעה ביחס:"
+msgstr ""
+"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"הפסקת הזריעה ביחס:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"הפסקת זריעה ביחס:"
 
 msgid "Seed regardless of activity"
 msgstr "זריעה ללא התחשבות ברמת הפעילות"
@@ -158,37 +179,80 @@ msgstr "זריעה ללא התחשבות ברמת הפעילות"
 msgid "Stop seeding if idle for N minutes:"
 msgstr "הפסקת זריעה במקרה של אי פעילות למשך N דקות:"
 
+#, fuzzy
 msgid "Queued for verification"
-msgstr "בהמתנה לאימות"
+msgstr ""
+"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"בהמתנה לאימות\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"בתור לאימות"
 
+#, fuzzy
 msgid "Verifying local data"
-msgstr "הנתונים המקומיים בהליכי אימות"
+msgstr ""
+"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"הנתונים המקומיים בהליכי אימות\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"הנתונים המקומיים באימות"
 
 msgid "Queued for download"
 msgstr "בתור להורדה"
 
+#, fuzzy
 msgctxt "Verb"
 msgid "Downloading"
-msgstr "בהליכי הורדה"
+msgstr ""
+"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"בהליכי הורדה\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"בהורדה\n"
+"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"בהליכי הורדה"
 
 msgid "Queued for seeding"
 msgstr "בתור לזריעה"
 
+#, fuzzy
 msgctxt "Verb"
 msgid "Seeding"
-msgstr "בזריעה"
+msgstr ""
+"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"בזריעה\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"בזריעה\n"
+"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"זריעה"
 
-msgid "Finished"
-msgstr "הסתיימו"
+#, fuzzy
+msgid "Seeding complete"
+msgstr ""
+"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"לא שלם\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"חלקי"
 
+#, fuzzy
 msgid "Paused"
-msgstr "מושהה"
+msgstr ""
+"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"מושהה\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"מושהה\n"
+"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"מושהים"
 
 msgid "N/A"
 msgstr "לא זמין"
 
+#, fuzzy
 msgid "Mixed"
-msgstr "מעורב"
+msgstr ""
+"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"מעורב\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"מעורב\n"
+"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"מעורבת"
 
 msgid "No Torrents Selected"
 msgstr "לא נבחרו טורנטים"
@@ -199,8 +263,13 @@ msgstr "פרטי לעוקב זה -- DHT ו־PEX מנוטרלים"
 msgid "Public torrent"
 msgstr "טורנט ציבורי"
 
+#, fuzzy
 msgid "Created by {creator} on {date}"
-msgstr "נוצר ע״י {creator} ב־{date}"
+msgstr ""
+"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"נוצר ע״י {creator} ב־{date}\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"נוצר על ידי {creator} ב־{date}"
 
 msgid "Created by {creator}"
 msgstr "נוצר על ידי {creator}"
@@ -232,11 +301,18 @@ msgstr "{current_size} ({percent_done}%)"
 msgid "{current_size} ({percent_done}% of {percent_available}% available)"
 msgstr "{current_size} ({percent_done}% מתוך {percent_available}% זמינים)"
 
+#, fuzzy, c-format
+#| msgid "{current_size} ({percent_done}% of {percent_available}% available; {unverified_size} unverified)"
 msgid "{current_size} ({percent_done}% of {percent_available}% available; {unverified_size} unverified)"
 msgstr "{current_size} ({percent_done}% מתוך {percent_available}% זמינים; {unverified_size} לא אומתו)"
 
+#, fuzzy
 msgid "{downloaded_size} (+{discarded_size} discarded after failed checksum)"
-msgstr "{downloaded_size} (+{discarded_size} הושלכו לאחר חישוב סכום שגוי)"
+msgstr ""
+"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{downloaded_size} (+{discarded_size} הושלכו לאחר חישוב סכום שגוי)\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{downloaded_size} (+{discarded_size} הושלכו לאחר בדיקת סכום שנכשלה)"
 
 msgid "{uploaded_size} (Ratio: {ratio})"
 msgstr "{uploaded_size} (יחס: {ratio})"
@@ -247,14 +323,24 @@ msgstr "אין שגיאות"
 msgid "Never"
 msgstr "אף פעם"
 
+#, fuzzy
 msgid "Active now"
-msgstr "פעילים כעת"
+msgstr ""
+"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"פעילים כעת\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"פעיל כעת"
 
 msgid "Optimistic unchoke"
 msgstr "שחרור בלימה אופטימי"
 
+#, fuzzy
 msgid "Downloading from this peer"
-msgstr "מתבצעת הורדה מעמית זה"
+msgstr ""
+"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"מתבצעת הורדה מעמית זה\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"הורדה מהעמית הזה"
 
 msgid "We would download from this peer if they would let us"
 msgstr "היינו מורידים מהעמית הזה אילו היה מתאפשר לנו"
@@ -262,8 +348,10 @@ msgstr "היינו מורידים מהעמית הזה אילו היה מתאפש
 msgid "Uploading to peer"
 msgstr "העלאה לעמית"
 
-msgid "We would upload to this peer if they asked"
-msgstr "היינו מעלים לעמית זה אילו היה מבקש"
+#, fuzzy
+#| msgid "We would download from this peer if they would let us"
+msgid "This peer would download from us if we would let them"
+msgstr "היינו מורידים מהעמית הזה אילו היה מתאפשר לנו"
 
 msgid "Peer has unchoked us, but we're not interested"
 msgstr "העמית שחרר את הבלימה, אך אין לנו עניין"
@@ -286,10 +374,12 @@ msgstr "העמית הוא חיבור נכנס"
 msgid "Peer is connected over µTP"
 msgstr "העמית מחובר דרך µTP"
 
+msgid "Peer supports holepunch (BEP 55)"
+msgstr ""
+
 msgid "Address"
 msgstr "כתובת"
 
-#. % is percent done
 msgid "%"
 msgstr "%"
 
@@ -299,23 +389,21 @@ msgstr "בקשות הורדה"
 msgid "Up Reqs"
 msgstr "בקשות העלאה"
 
-msgid "Dn Blocks"
-msgstr "בלוקים להורדה"
-
-msgid "Up Blocks"
-msgstr "בלוקים להעלאה"
-
-msgid "We Cancelled"
-msgstr "בוטל מצדנו"
-
-msgid "They Cancelled"
-msgstr "בוטל על ידם"
-
+#, fuzzy
 msgid "Down"
-msgstr "מהירות הורדה"
+msgstr ""
+"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"מהירות הורדה\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"הורדה"
 
+#, fuzzy
 msgid "Up"
-msgstr "מהירות העלאה"
+msgstr ""
+"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"מהירות העלאה\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"העלאה"
 
 msgid "Client"
 msgstr "לקוח"
@@ -325,64 +413,6 @@ msgstr "דגלונים"
 
 msgid "Web Seeds"
 msgstr "זורעי רשת"
-
-msgid "Got a list of {markup_begin}{peer_count} peer{markup_end} {time_span_ago}"
-msgid_plural "Got a list of {markup_begin}{peer_count} peers{markup_end} {time_span_ago}"
-msgstr[0] "התקבלה רשימה של {markup_begin}עמית{markup_end} {time_span_ago}"
-msgstr[1] "התקבלה רשימה של {markup_begin}{peer_count} עמיתים{markup_end} {time_span_ago}"
-msgstr[2] "התקבלה רשימה של {markup_begin}{peer_count} עמיתים{markup_end} {time_span_ago}"
-msgstr[3] "התקבלה רשימה של {markup_begin}{peer_count} עמיתים{markup_end} {time_span_ago}"
-
-#. {markup_begin} and {markup_end} should surround the time_span
-msgid "Peer list request {markup_begin}timed out {time_span_ago}{markup_end}; will retry"
-msgstr "הזמן שהוקצה לבקשת עמיתים {markup_begin}פג לפני {time_span_ago}{markup_end}: יתבצע ניסיון חוזר"
-
-#. {markup_begin} and {markup_end} should surround the error
-msgid "Got an error '{markup_begin}{error}{markup_end}' {time_span_ago}"
-msgstr "עלתה השגיאה ‚{markup_begin}{error}{markup_end}’ {time_span_ago}"
-
-msgid "No updates scheduled"
-msgstr "אין עדכונים מתוכננים"
-
-msgid "Asking for more peers {time_span_from_now}"
-msgstr "עלתה בקשה למשיכת עמיתים נוספים {time_span_from_now}"
-
-msgid "Queued to ask for more peers"
-msgstr "בתור לבקשת עמיתים נוספים"
-
-#. {markup_begin} and {markup_end} should surround time_span_ago
-msgid "Asked for more peers {markup_begin}{time_span_ago}{markup_end}"
-msgstr "הוגשה בקשה למשיכת עמיתים נוספים {markup_begin}{time_span_ago}{markup_end}"
-
-msgid "Tracker had {markup_begin}{seeder_count} {seeder_or_seeders} and {leecher_count} {leecher_or_leechers}{markup_end} {time_span_ago}"
-msgstr "לעוקב היו {markup_begin}{seeder_count} {seeder_or_seeders} ו־{leecher_count} {leecher_or_leechers}{markup_end} {time_span_ago}"
-
-msgid "seeder"
-msgid_plural "seeders"
-msgstr[0] "זורע"
-msgstr[1] "זורעים"
-msgstr[2] "זורעים"
-msgstr[3] "זורעים"
-
-msgid "leecher"
-msgid_plural "leechers"
-msgstr[0] "יונק"
-msgstr[1] "יונקים"
-msgstr[2] "יונקים"
-msgstr[3] "יונקים"
-
-#. {markup_begin} and {markup_end} should surround the error text
-msgid "Got a scrape error '{markup_begin}{error}{markup_end}' {time_span_ago}"
-msgstr "התקבלה שגיאת קרצוף ‚{markup_begin}{error}{markup_end}’ {time_span_ago}"
-
-msgid "Asking for peer counts in {time_span_from_now}"
-msgstr "בקשה למשיכת עמיתים נוספים בעוד {time_span_from_now}"
-
-msgid "Queued to ask for peer counts"
-msgstr "בהמתנה לבקשת ספירת עמיתים"
-
-msgid "Asked for peer counts {markup_begin}{time_span_ago}{markup_end}"
-msgstr "בקשה למשיכת עמיתים נוספים {markup_begin}{time_span_ago}{markup_end}"
 
 msgid "{torrent_name} - Edit Trackers"
 msgstr "{torrent_name} - עריכת עוקבים"
@@ -409,33 +439,78 @@ msgstr[1] "מאפיינים - {torrent_count:L} טורנטים"
 msgstr[2] "מאפיינים - {torrent_count:L} טורנטים"
 msgstr[3] "מאפיינים - {torrent_count:L} טורנטים"
 
+#, fuzzy
 msgid "Remove torrent?"
-msgstr "להסיר את הטורנט?"
+msgstr ""
+"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"להסיר את הטורנט?\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"הסרת טורנט?"
 
+#, fuzzy
+msgid "Delete this torrent's downloaded files?"
+msgstr ""
+"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"למחוק את הקבצים שהורדו במסגרת הטורנט הזה?\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"מחיקת הקבצים שהתקבלו לטורנט הזה?"
+
+#, fuzzy
 msgid "Remove {count:L} torrent?"
 msgid_plural "Remove {count:L} torrents?"
-msgstr[0] "הסרת טורנט?"
-msgstr[1] "להסיר {count:L} טורנטים?"
-msgstr[2] "להסיר {count:L} טורנטים?"
+msgstr[0] ""
+"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"הסרת טורנט?\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"הסרת טורנט?"
+msgstr[1] ""
+"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"להסיר {count:L} טורנטים?\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"הסרת {count:L} טורנטים?"
+msgstr[2] ""
+"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"להסיר {count:L} טורנטים?\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"הסרת {count:L} טורנטים?"
 
-msgid "Delete this torrent's downloaded files?"
-msgstr "למחוק את הקבצים שהורדו במסגרת הטורנט הזה?"
-
+#, fuzzy
 msgid "Delete this {count:L} torrent's downloaded files?"
 msgid_plural "Delete these {count:L} torrents' downloaded files?"
-msgstr[0] "למחוק את הקבצים שהתקבלו עבור הטורנט הזה?"
-msgstr[1] "למחוק את {count:L} הקבצים שהורדו במסגרת הטורנטים האלה?"
-msgstr[2] "למחוק את {count:L} הקבצים שהורדו במסגרת הטורנטים האלה?"
+msgstr[0] ""
+"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"למחוק את הקבצים שהתקבלו עבור הטורנט הזה?\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"למחוק את הקבצים שהתקבלו עבור הטורנט הזה?"
+msgstr[1] ""
+"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"למחוק את {count:L} הקבצים שהורדו במסגרת הטורנטים האלה?\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"למחוק את הקבצים שהתקבלו עבור {count:L} הטורנטים האלה?"
+msgstr[2] ""
+"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"למחוק את {count:L} הקבצים שהורדו במסגרת הטורנטים האלה?\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"למחוק את הקבצים שהתקבלו עבור {count:L} הטורנטים האלה?"
 
-msgid "Once removed, continuing the transfer will require the torrent file or magnet link."
-msgid_plural "Once removed, continuing the transfers will require the torrent files or magnet links."
-msgstr[0] "לאחר ההסרה, בחירה להמשיך בהעברות תדרוש את קובץ הטורנט או קישור המגנט."
-msgstr[1] "לאחר ההסרה, בחירה להמשיך בהעברות תדרוש את קובצי הטורנט או קישורי המגנט."
-msgstr[2] "לאחר ההסרה, בחירה להמשיך בהעברות תדרוש את קובצי הטורנט או קישורי המגנט."
-msgstr[3] "לאחר ההסרה, המשך ההעברה תדרוש את קובץ הטורנט או את קישור המגנט."
+#, fuzzy
+#| msgid "Once removed, continuing the transfer will require the torrent file or magnet link."
+#| msgid_plural "Once removed, continuing the transfers will require the torrent files or magnet links."
+msgid "Once removed, you'll need the torrent file or magnet link to add it again."
+msgstr "לאחר ההסרה, בחירה להמשיך בהעברות תדרוש את קובץ הטורנט או קישור המגנט."
 
+#, fuzzy
+#| msgid "Once removed, continuing the transfers will require the torrent files or magnet links."
+msgid "Once removed, you'll need the torrent files or magnet links to add them again."
+msgstr "לאחר ההסרה, המשך ההעברה תדרוש את קובץ הטורנט או את קישור המגנט."
+
+#, fuzzy
 msgid "This torrent has not finished downloading."
-msgstr "הורדת הטורנט הבא טרם הסתיימה."
+msgstr ""
+"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"הורדת הטורנט הבא טרם הסתיימה.\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"הורדת הטורנט טרם הסתיימה."
 
 msgid "These torrents have not finished downloading."
 msgstr "הורדת הטורנטים הבאים טרם הסתיימה."
@@ -446,11 +521,21 @@ msgstr "הטורנט הזה מחובר לעמיתים."
 msgid "These torrents are connected to peers."
 msgstr "הטורנטים האלו מחוברים לעמיתים."
 
+#, fuzzy
 msgid "One of these torrents is connected to peers."
-msgstr "אחד מהטורנטים האלו אינו מחובר לעמיתים."
+msgstr ""
+"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"אחד מהטורנטים האלו אינו מחובר לעמיתים.\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"אחד מהטורנטים האלה מחובר לעמיתים."
 
+#, fuzzy
 msgid "Some of these torrents are connected to peers."
-msgstr "חלק מהטורנטים האלו אינם מחוברים לעמיתים."
+msgstr ""
+"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"חלק מהטורנטים האלו אינם מחוברים לעמיתים.\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"חלק מהטורנטים האלו מחוברים לעמיתים."
 
 msgid "One of these torrents has not finished downloading."
 msgstr "הורדת אחד מהטורנטים האלה טרם הסתיימה."
@@ -464,8 +549,16 @@ msgstr "_ביטול"
 msgid "_Delete"
 msgstr "_מחיקה"
 
+#. Removes the torrent from the list and keeps its downloaded files
+#, fuzzy
 msgid "_Remove"
-msgstr "הס_רה"
+msgstr ""
+"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"הס_רה\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"הס_רה\n"
+"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"ה_סרה"
 
 msgid "High"
 msgstr "גבוהה"
@@ -485,8 +578,8 @@ msgstr "שם"
 msgid "Size"
 msgstr "גודל"
 
-msgid "Have"
-msgstr "קיימים"
+msgid "Progress"
+msgstr "התקדמות"
 
 msgid "Download"
 msgstr "הורדה"
@@ -507,14 +600,37 @@ msgstr "באימות"
 msgid "Error"
 msgstr "שגיאה"
 
+#, fuzzy
 msgid "_Show:"
-msgstr "ה_צגה:"
+msgstr ""
+"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"ה_צגה:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_הצגה:"
 
 msgid "_Show {count:L} of:"
 msgstr "לה_ציג {count:L} מתוך:"
 
 msgid "{disk_space} free"
 msgstr "{disk_space} פנויים"
+
+msgid "Where to look for configuration files"
+msgstr "איפה לחפש קובצי הגדרות"
+
+msgid "Start with all torrents paused"
+msgstr "התחלה במצב משהה של כל הטורנטים"
+
+msgid "Start minimized in notification area"
+msgstr "התחלה ממוזערת של אזור הודעות"
+
+msgid "Show version number and exit"
+msgstr "להציג את מספר הגירסה ולצאת"
+
+msgid "[torrent files or urls]"
+msgstr "[כתובות או קובצי טורנט]"
+
+msgid "Run '{program} --help' to see a full list of available command line options.\n"
+msgstr "יש להריץ את ‚‎{program} --help’ כדי לצפות ברשימה מלאה של אפשרויות שורת פקודה.\n"
 
 msgid ""
 "Click to disable Alternative Speed Limits\n"
@@ -545,11 +661,21 @@ msgstr "הגבלת מהירות ההעלאה"
 msgid "Stop Seeding at Ratio"
 msgstr "הפסקת זריעה ביחס"
 
+#, fuzzy
 msgid "Stop at Ratio ({ratio})"
-msgstr "לעצור ביחס ({ratio})"
+msgstr ""
+"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"לעצור ביחס ({ratio})\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"להפסיק ביחס ({ratio})"
 
+#, fuzzy
 msgid "Total Ratio"
-msgstr "יחס שיתוף כולל"
+msgstr ""
+"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"יחס שיתוף כולל\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"יחס כולל"
 
 msgid "Session Ratio"
 msgstr "יחס מופע"
@@ -560,16 +686,11 @@ msgstr "העברה כוללת"
 msgid "Session Transfer"
 msgstr "העברות מופע"
 
+msgid "Down: {downloaded_size}, Up: {uploaded_size}"
+msgstr "הורדה: {downloaded_size}, העלאה: {uploaded_size}"
+
 msgid "Ratio: {ratio}"
 msgstr "יחס: {ratio}"
-
-msgctxt "current session totals"
-msgid "Down: {downloaded_size}, Up: {uploaded_size}"
-msgstr "הורדה: {downloaded_size}, העלאה: {uploaded_size}"
-
-msgctxt "all-time totals"
-msgid "Down: {downloaded_size}, Up: {uploaded_size}"
-msgstr "הורדה: {downloaded_size}, העלאה: {uploaded_size}"
 
 msgid "{download_speed} ▾"
 msgstr "{download_speed} ▾"
@@ -627,6 +748,11 @@ msgstr "זמן"
 msgid "Couldn't create proxy for '{bus}': {error} ({error_code})"
 msgstr "לא ניתן ליצור מתווך עבור ‚{bus}’: {error} ({error_code})"
 
+#, fuzzy
+#| msgid "Couldn't save '{path}': {error} ({error_code})"
+msgid "Couldn't spawn async process \"'{command}'\": {error} ({error_code})"
+msgstr "לא ניתן לשמור את ‚{path}’: {error} ({error_code})"
+
 msgid "Open File"
 msgstr "פתיחת קובץ"
 
@@ -657,17 +783,30 @@ msgstr "_פתיחה"
 msgid "Show options dialog"
 msgstr "הצגת חלונית אפשרויות"
 
-msgid "Select a File"
+msgid "Other…"
+msgstr ""
+
+msgid "Select File"
 msgstr "בחירת קובץ"
 
+#, fuzzy
 msgid "(None)"
-msgstr "(ללא)"
+msgstr ""
+"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"(ללא)\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"(אין)"
 
 msgid "Allow encryption"
 msgstr "אפשור הצפנה"
 
+#, fuzzy
 msgid "Prefer encryption"
-msgstr "להעדיף הצפנה"
+msgstr ""
+"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"להעדיף הצפנה\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"העדפת הצפנה"
 
 msgid "Require encryption"
 msgstr "דרישת הצפנה"
@@ -694,8 +833,13 @@ msgstr "רשימת החסימה עודכנה!"
 msgid "Couldn't update blocklist"
 msgstr "לא ניתן לעדכן את רשימת החסימה"
 
+#, fuzzy
 msgid "Getting new blocklist…"
-msgstr "מתקבלת רשימה חדשה…"
+msgstr ""
+"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"מתקבלת רשימה חדשה…\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"מתקבלת רשימת חסימה חדשה…"
 
 msgctxt "Port test status"
 msgid "unknown"
@@ -732,29 +876,38 @@ msgstr "לא ניתן להעביר טורנט"
 msgid "This may take a moment…"
 msgstr "פעולה זו עשויה לארוך זמן מה…"
 
+#, fuzzy
+#| msgid "Couldn't watch '{path}': {error} ({error_code})"
+msgid "Couldn't open watchdir '{dirname}': {error} ({error_code})"
+msgstr "לא ניתן לעקוב אחר‚'{path}’: {error} ({error_code})"
+
 msgid "Couldn't read '{path}'"
 msgstr "לא ניתן לקרוא את ‚{path}’"
-
-#. logging
-msgid "Inhibiting desktop hibernation"
-msgstr "תרדמת שולחן העבודה נמנעת"
-
-msgid "Couldn't inhibit desktop hibernation: {error}"
-msgstr "לא ניתן למנוע את תרדמת שולחן העבודה: {error}"
-
-#. logging
-msgid "Allowing desktop hibernation"
-msgstr "תרדמת שולחן העבודה מותרת"
 
 msgid "Couldn't find pending RPC request for id {id}"
 msgstr ""
 
+#, fuzzy
 msgid "Started {count:L} time"
 msgid_plural "Started {count:L} times"
-msgstr[0] "התחיל פעם אחת"
-msgstr[1] "התחיל {count:L} פעמים"
-msgstr[2] "התחיל {count:L} פעמים"
-msgstr[3] "התחיל {count:L} פעמים"
+msgstr[0] ""
+"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"התחיל פעם אחת\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"התחיל פעם אחת"
+msgstr[1] ""
+"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"התחיל {count:L} פעמים\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"התחיל פעמיים"
+msgstr[2] ""
+"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"התחיל {count:L} פעמים\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"התחיל פעמיים"
+msgstr[3] ""
+"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"התחיל {count:L} פעמים"
 
 msgid "Reset your statistics?"
 msgstr "לאפס את הסטטיסטיקה שלך?"
@@ -765,12 +918,19 @@ msgstr "_איפוס"
 msgid "These statistics are for your information only. Resetting them doesn't affect the statistics logged by your BitTorrent trackers."
 msgstr "הסטטיסטיקה הזאת היא לידיעתך בלבד. איפוס הסטטיסטיקה לא ישפיע על הסטטיסטיקה שנאספת על מחשבך מצד עוקבי הביטורנט."
 
+msgid "_Show {appname}"
+msgstr "ה_צגת ‏{appname}"
+
 msgid "{upload_speed} ▴ {download_speed} ▾"
 msgstr "{upload_speed} ▴ {download_speed} ▾"
 
-#, no-c-format
+#, fuzzy, no-c-format
 msgid "Verifying local data ({percent_done}% tested)"
-msgstr "הנתונים המקומיים מאומתים ({percent_done}% נבדקו)"
+msgstr ""
+"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"הנתונים המקומיים מאומתים ({percent_done}% נבדקו)\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"הנתונים המקומיים בהליכי אימות ({percent_done}% נבדקו)"
 
 msgid "{current_size} of {complete_size} ({percent_done}%)"
 msgstr "{current_size} מתוך {complete_size} ({percent_done}%)"
@@ -787,6 +947,7 @@ msgstr "{complete_size}, הועלו {uploaded_size} (יחס: {ratio}, יעד: {s
 msgid "{complete_size}, uploaded {uploaded_size} (Ratio: {ratio})"
 msgstr "{complete_size}, הועלו {uploaded_size} (יחס: {ratio})"
 
+#. Translators: Second (optional) part of torrent progress string
 msgid "Remaining time unknown"
 msgstr "הזמן שנותר לא ידוע"
 
@@ -799,7 +960,9 @@ msgstr "מעוכב"
 msgid "Tracker warning: '{warning}'"
 msgstr "אזהרת עוקב: ‚{warning}’"
 
-msgid "Tracker Error: '{error}'"
+#, fuzzy
+#| msgid "Tracker Error: '{error}'"
+msgid "Tracker error: '{error}'"
 msgstr "שגיאת עוקב: ‚{error}’"
 
 msgid "Local error: '{error}'"
@@ -827,220 +990,52 @@ msgstr[1] "מתבצעת הורדה מ־{active_count} זורעים יעודיי�
 msgstr[2] "מתבצעת הורדה מ־{active_count} זורעים יעודיים"
 msgstr[3] "מתבצעת הורדה מ־{active_count} זורעים יעודיים"
 
+#, fuzzy
 msgid "Downloading from {active_count} of {connected_count} connected peer"
 msgid_plural "Downloading from {active_count} of {connected_count} connected peers"
-msgstr[0] "מתבצעת הורדה מהעמית המחובר"
-msgstr[1] "מתבצעת הורדה מ־{active_count} מתוך {connected_count} העמיתים המחוברים"
-msgstr[2] "מתבצעת הורדה מ־{active_count} מתוך {connected_count} העמיתים המחוברים"
-msgstr[3] "מתבצעת הורדה מ־{active_count} מתוך {connected_count} העמיתים המחוברים"
+msgstr[0] ""
+"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"מתבצעת הורדה מהעמית המחובר\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"מתבצעת הורדה מ־{active_count} מתוך עמית מחובר {connected_count}"
+msgstr[1] ""
+"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"מתבצעת הורדה מ־{active_count} מתוך {connected_count} העמיתים המחוברים\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"מתבצעת הורדה מ־{active_count} מתוך {connected_count} עמיתים מחוברים"
+msgstr[2] ""
+"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"מתבצעת הורדה מ־{active_count} מתוך {connected_count} העמיתים המחוברים\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"מתבצעת הורדה מ־{active_count} מתוך {connected_count} עמיתים מחוברים"
+msgstr[3] ""
+"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"מתבצעת הורדה מ־{active_count} מתוך {connected_count} העמיתים המחוברים"
 
+#, fuzzy
 msgid "Seeding to {active_count} of {connected_count} connected peer"
 msgid_plural "Seeding to {active_count} of {connected_count} connected peers"
-msgstr[0] "מתבצעת זריעה אל {active_count} מתוך עמית מחובר"
-msgstr[1] "מתבצעת זריעה אל {active_count} מתוך {connected_count} עמיתים מחוברים"
-msgstr[2] "מתבצעת זריעה אל {active_count} מתוך {connected_count} עמיתים מחוברים"
-msgstr[3] "מתבצעת זריעה אל {active_count} מתוך {connected_count} עמיתים מחוברים"
-
-msgid "{days_from_now:L} day from now"
-msgid_plural "{days_from_now:L} days from now"
-msgstr[0] "בעוד יום מעכשיו"
-msgstr[1] "בעוד יומיים  מעכשיו"
-msgstr[2] "בעוד {days_from_now:L} ימים מעכשיו"
-msgstr[3] "בעוד {days_from_now:L} ימים מעכשיו"
-
-msgid "{hours_from_now:L} hour from now"
-msgid_plural "{hours_from_now:L} hours from now"
-msgstr[0] "בעוד שעה מעכשיו"
-msgstr[1] "בעוד שעתיים מעכשיו"
-msgstr[2] "בעוד {hours_from_now:L} שעות מעכשיו"
-msgstr[3] "בעוד {hours_from_now:L} שעות מעכשיו"
-
-msgid "{minutes_from_now:L} minute from now"
-msgid_plural "{minutes_from_now:L} minutes from now"
-msgstr[0] "בעוד דקה מעכשיו"
-msgstr[1] "בעוד {minutes_from_now:L} דקות מעכשיו"
-msgstr[2] "בעוד {minutes_from_now:L} דקות מעכשיו"
-msgstr[3] "בעוד {minutes_from_now:L} דקות מעכשיו"
-
-msgid "{seconds_from_now:L} second from now"
-msgid_plural "{seconds_from_now:L} seconds from now"
-msgstr[0] "בעוד שנייה מעכשיו"
-msgstr[1] "בעוד {seconds_from_now:L} שניות מעכשיו"
-msgstr[2] "בעוד {seconds_from_now:L} שניות מעכשיו"
-msgstr[3] "בעוד {seconds_from_now:L} שניות מעכשיו"
-
-msgid "now"
-msgstr "עכשיו"
-
-msgid "{days_ago:L} day ago"
-msgid_plural "{days_ago:L} days ago"
-msgstr[0] "אתמול"
-msgstr[1] "שלשום"
-msgstr[2] "לפני {days_ago:L} ימים"
-msgstr[3] "לפני {days_ago:L} ימים"
-
-msgid "{hours_ago:L} hour ago"
-msgid_plural "{hours_ago:L} hours ago"
-msgstr[0] "לפני שעה"
-msgstr[1] "לפני שעתיים"
-msgstr[2] "לפני {hours_ago:L} שעות"
-msgstr[3] "לפני {hours_ago:L} שעות"
-
-msgid "{minutes_ago:L} minute ago"
-msgid_plural "{minutes_ago:L} minutes ago"
-msgstr[0] "לפני דקה"
-msgstr[1] "לפני {minutes_ago:L} דקות"
-msgstr[2] "לפני {minutes_ago:L} דקות"
-msgstr[3] "לפני {minutes_ago:L} דקות"
-
-msgid "{seconds_ago:L} second ago"
-msgid_plural "{seconds_ago:L} seconds ago"
-msgstr[0] "לפני שנייה"
-msgstr[1] "לפני {seconds_ago:L} שניות"
-msgstr[2] "לפני {seconds_ago:L} שניות"
-msgstr[3] "לפני {seconds_ago:L} שניות"
-
-msgid "{days:L} day"
-msgid_plural "{days:L} days"
-msgstr[0] "יום"
-msgstr[1] "יומיים"
-msgstr[2] "{days:L} ימים"
-msgstr[3] "{days:L} ימים"
-
-msgid "{hours:L} hour"
-msgid_plural "{hours:L} hours"
-msgstr[0] "שעה"
-msgstr[1] "שעתיים"
-msgstr[2] "{hours:L} שעות"
-msgstr[3] "{hours:L} שעות"
-
-msgid "{minutes:L} minute"
-msgid_plural "{minutes:L} minutes"
-msgstr[0] "דקה"
-msgstr[1] "{minutes:L} דקות"
-msgstr[2] "{minutes:L} דקות"
-msgstr[3] "{minutes:L} דקות"
-
-msgid "{seconds:L} second"
-msgid_plural "{seconds:L} seconds"
-msgstr[0] "שנייה"
-msgstr[1] "{seconds:L} שניות"
-msgstr[2] "{seconds:L} שניות"
-msgstr[3] "{seconds:L} שניות"
-
-msgid "{days_left:L} day left"
-msgid_plural "{days_left:L} days left"
-msgstr[0] "נותר יום"
-msgstr[1] "נותרו יומיים"
-msgstr[2] "נותרו {days_left:L} ימים"
-msgstr[3] "נותרו {days_left:L} ימים"
-
-msgid "{hours_left:L} hour left"
-msgid_plural "{hours_left:L} hours left"
-msgstr[0] "נותרה שעה"
-msgstr[1] "נותרו שעתיים"
-msgstr[2] "נותרו {hours_left:L} שעות"
-msgstr[3] "נותרו {hours_left:L} שעות"
-
-msgid "{minutes_left:L} minute left"
-msgid_plural "{minutes_left:L} minutes left"
-msgstr[0] "נותרה דקה"
-msgstr[1] "נותרו {minutes_left:L} דקות"
-msgstr[2] "נותרו {minutes_left:L} דקות"
-msgstr[3] "נותרו {minutes_left:L} דקות"
-
-msgid "{seconds_left:L} second left"
-msgid_plural "{seconds_left:L} seconds left"
-msgstr[0] "נותרה שנייה"
-msgstr[1] "נותרו {seconds_left:L} שניות"
-msgstr[2] "נותרו {seconds_left:L} שניות"
-msgstr[3] "נותרו {seconds_left:L} שניות"
-
-msgid "The torrent file '{path}' is already in use by '{torrent_name}'."
-msgstr "קובץ הטורנט ‚{path}’ כבר בשימוש ע״י ‚{torrent_name}’."
-
-msgid "Couldn't open torrent"
-msgstr "לא ניתן לפתוח את הטורנט"
-
-msgid "Couldn't move '{path}' to trash: {error} ({error_code})"
-msgstr "לא ניתן להעביר את ‚{path}’ לאשפה: {error} ({error_code})"
-
-msgid "Couldn't open '{url}'"
-msgstr "לא ניתן לפתוח את ‚{url}’"
-
-msgid "Unsupported URL: '{url}'"
-msgstr "כתובת לא נתמכת: ‚{url}’"
-
-#. modal
-msgid "{appname} doesn't know how to use '{url}'"
-msgstr "{appname} איך להשתמש ב־‚{url}’"
-
-msgid "This magnet link appears to be intended for something other than BitTorrent."
-msgstr "קישור מגנט זה כנראה מיועד למשהו שאינו ביטורנט."
+msgstr[0] ""
+"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"מתבצעת זריעה אל {active_count} מתוך עמית מחובר\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"מתבצעת זריעה ל־עמית מחובר {active_count} מתוך {connected_count}"
+msgstr[1] ""
+"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"מתבצעת זריעה אל {active_count} מתוך {connected_count} עמיתים מחוברים\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"מתבצעת זריעה ל־{active_count} מתוך {connected_count} עמיתים מחוברים"
+msgstr[2] ""
+"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"מתבצעת זריעה אל {active_count} מתוך {connected_count} עמיתים מחוברים\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"מתבצעת זריעה ל־{active_count} מתוך {connected_count} עמיתים מחוברים"
+msgstr[3] ""
+"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"מתבצעת זריעה אל {active_count} מתוך {connected_count} עמיתים מחוברים"
 
 msgid "Retransmission"
 msgstr "‏Retransmission"
-
-#. parse the command line
-msgid "Where to look for configuration files"
-msgstr "איפה לחפש קובצי הגדרות"
-
-msgid "Start with all torrents paused"
-msgstr "התחלה במצב משהה של כל הטורנטים"
-
-msgid "Start minimized in notification area"
-msgstr "התחלה ממוזערת של אזור הודעות"
-
-msgid "Show version number and exit"
-msgstr "להציג את מספר הגירסה ולצאת"
-
-msgid "[torrent files or urls]"
-msgstr "[כתובות או קובצי טורנט]"
-
-msgid "Run '{program} --help' to see a full list of available command line options.\n"
-msgstr "יש להריץ את ‚‎{program} --help’ כדי לצפות ברשימה מלאה של אפשרויות שורת פקודה.\n"
-
-msgid "B/s"
-msgstr "ב׳/שנ׳"
-
-msgid "GB/s"
-msgstr "ג״ב/שנייה"
-
-msgid "MB/s"
-msgstr "מ״ב/שנייה"
-
-msgid "TB/s"
-msgstr "ט״ב/שנ׳"
-
-msgid "kB/s"
-msgstr "ק״ב/שנייה"
-
-msgid "B"
-msgstr "ב׳"
-
-msgid "GiB"
-msgstr "GiB"
-
-msgid "KiB"
-msgstr "KiB"
-
-msgid "MiB"
-msgstr "MiB"
-
-msgid "TiB"
-msgstr "TiB"
-
-msgid "GB"
-msgstr "ג״ב"
-
-msgid "MB"
-msgstr "מ״ב"
-
-msgid "TB"
-msgstr "ט״ב"
-
-msgid "kB"
-msgstr "ק״ב"
 
 msgid "BitTorrent Client"
 msgstr "לקוח ביטורנט"
@@ -1058,32 +1053,64 @@ msgstr "הפעלת ‏Retransmission כשכל הטורנטים מופסקים"
 msgid "Start Retransmission Minimized"
 msgstr "הפעלת ‏Retransmission במצב ממוזער"
 
-msgid "Open a torrent"
-msgstr "פתיחת טורנט"
+#, fuzzy
+#| msgid "Copyright © The Retransmission Project"
+msgid "The Retransmission Project"
+msgstr "כל הזכויות שמורות © מיזם Retransmission"
 
+#. Translators: these are the application description paragraphs in the MetaInfo file.
+msgid "BitTorrent is a peer-to-peer file-sharing protocol that is commonly used to distribute large amounts of data between multiple users."
+msgstr ""
+
+msgid "Retransmission is a BitTorrent client with an easy-to-use interface on top of a cross-platform backend. Native interfaces are available for macOS, Linux, and Windows, as well as command line binaries and a web GUI."
+msgstr ""
+
+msgid "Notable features of Retransmission include support for Local Peer Discovery, encryption, DHT, µTP, PEX and Magnet links."
+msgstr ""
+
+msgid "Main window, showing an ongoing download of Fedora Workstation"
+msgstr ""
+
+msgid "_File"
+msgstr "_קובץ"
+
+#, fuzzy
 msgid "Open _URL…"
-msgstr "פתיחה מ_כתובת…"
-
-msgid "Open URL…"
-msgstr "פתיחה מכתובת…"
+msgstr ""
+"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"פתיחה מ_כתובת…\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"פתיחת _כתובת…"
 
 msgid "_New…"
 msgstr "_חדש…"
 
+#, fuzzy
 msgid "_Start All"
-msgstr "ה_תחלת הכול"
+msgstr ""
+"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"ה_תחלת הכול\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"התחלת ה_כול"
 
-msgid "Start all torrents"
-msgstr "התחלת הורדת כל הטורנטים"
-
+#, fuzzy
 msgid "_Pause All"
-msgstr "השהיית הכו_ל"
+msgstr ""
+"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"השהיית הכו_ל\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"ה_שהית הכול"
 
-msgid "Pause all torrents"
-msgstr "השהיית כל הטורנטים"
-
+#, fuzzy
 msgid "_Quit"
-msgstr "_יציאה"
+msgstr ""
+"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_יציאה\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"י_ציאה"
+
+msgid "_Edit"
+msgstr "_עריכה"
 
 msgid "Select _All"
 msgstr "לבחור ה_כול"
@@ -1091,32 +1118,46 @@ msgstr "לבחור ה_כול"
 msgid "Dese_lect All"
 msgstr "ביטול הבחי_רה"
 
+#, fuzzy
 msgid "_Preferences"
-msgstr "ה_עדפות"
+msgstr ""
+"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"ה_עדפות\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_העדפות"
+
+msgid "_Torrent"
+msgstr "_טורנט"
 
 msgid "_Properties"
 msgstr "מ_אפיינים"
 
-msgid "Torrent properties"
-msgstr "מאפייני הטורנט"
-
+#, fuzzy
 msgid "Open Fold_er"
-msgstr "פתיחת תי_קייה"
+msgstr ""
+"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"פתיחת תי_קייה\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"פתיחת _תיקייה"
 
+#, fuzzy
 msgid "_Start"
-msgstr "_התחלה"
-
-msgid "Start torrent"
-msgstr "התחלת טורנט"
+msgstr ""
+"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_התחלה\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"הת_חלה"
 
 msgid "Start _Now"
 msgstr "התחלה _כעת"
 
-msgid "Start torrent now"
-msgstr "התחלת הטורנט כעת"
-
 msgid "Ask Tracker for _More Peers"
 msgstr "בקשת עמיתים _נוספים מהעוקב"
+
+#, fuzzy
+#| msgid "Queue"
+msgid "_Queue"
+msgstr "תור"
 
 msgid "Move to _Top"
 msgstr "הצבה כע_ליון"
@@ -1133,35 +1174,62 @@ msgstr "הצבה כ_תחתון"
 msgid "_Pause"
 msgstr "ה_שהיה"
 
-msgid "Pause torrent"
-msgstr "השהיית טורנט"
-
+#, fuzzy
 msgid "Set _Location…"
-msgstr "הגדרת _מיקום…"
+msgstr ""
+"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"הגדרת _מיקום…\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"ה_גדרת מיקום…"
 
+#, fuzzy
 msgid "_Verify Local Data"
-msgstr "_בדיקת נתונים מקומיים"
+msgstr ""
+"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_בדיקת נתונים מקומיים\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_אימות נתונים מקומיים"
 
-msgid "Copy _Magnet Link to Clipboard"
+msgid "_Copy Magnet Link to Clipboard"
 msgstr "העתקת קישור מ_גנט אל לוח הגזירים"
 
-msgid "Remove torrent"
-msgstr "הסרת טורנט"
-
+#, fuzzy
 msgid "_Delete Files and Remove"
-msgstr "_מחיקת הקבצים והסרה"
+msgstr ""
+"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_מחיקת הקבצים והסרה\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"מ_חיקת הקבצים והסרה"
+
+msgid "_View"
+msgstr "ת_צוגה"
 
 msgid "_Compact View"
 msgstr "תצוגה _חסכונית"
 
+#, fuzzy
 msgid "_Toolbar"
-msgstr "סרגל _כלים"
+msgstr ""
+"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"סרגל _כלים\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_סרגל כלים"
 
+#, fuzzy
 msgid "_Filterbar"
-msgstr "שורת _סינון"
+msgstr ""
+"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"שורת _סינון\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"סרגל מס_ננים"
 
+#, fuzzy
 msgid "_Statusbar"
-msgstr "שורת _מצב"
+msgstr ""
+"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"שורת _מצב\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"סרגל מ_צב"
 
 msgid "Sort by _Activity"
 msgstr "מיון לפי _פעילות"
@@ -1193,26 +1261,58 @@ msgstr "מיון לפי זמן ש_נותר"
 msgid "Re_verse Sort Order"
 msgstr "מיון בסדר ה_פוך"
 
+#, fuzzy
+msgid "_Help"
+msgstr ""
+"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_עזרה\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"ע_זרה"
+
+#, fuzzy
 msgid "Message _Log"
-msgstr "יו_מן הודעות"
+msgstr ""
+"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"יו_מן הודעות\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"יומן הוד_עות"
 
 msgid "_Statistics"
 msgstr "_סטטיסטיקה"
 
+#, fuzzy
 msgid "_Donate"
-msgstr "ת_רומה"
+msgstr ""
+"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"ת_רומה\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_תרומה"
 
+#, fuzzy
 msgid "_Contents"
-msgstr "ת_כנים"
+msgstr ""
+"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"ת_כנים\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_תכנים"
 
+#, fuzzy
 msgid "_About"
-msgstr " על _אודות"
+msgstr ""
+"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
+" על _אודות\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"על _אודות"
 
-msgid "_Show {appname}"
-msgstr "ה_צגת ‏{appname}"
+#, fuzzy
+#| msgid "Start torrent"
+msgid "_Sort Torrents By"
+msgstr "התחלת טורנט"
 
-msgid "Enable Alternative Speed _Limits"
-msgstr "הפעלת מ_גבלות מהירות חלופיות"
+#, fuzzy
+#| msgid "Alternative Speed Limits"
+msgid "Alternative Speed _Limits"
+msgstr "מגבלות מהירות חלופיות"
 
 msgid "_Add"
 msgstr "הו_ספה"
@@ -1229,8 +1329,8 @@ msgstr "_סגירה"
 msgid "Activity"
 msgstr "פעילות"
 
-msgid "Torrent size:"
-msgstr "גודל הטורנט:"
+msgid "Size:"
+msgstr "גודל:"
 
 msgid "Have:"
 msgstr "קיימים:"
@@ -1238,8 +1338,15 @@ msgstr "קיימים:"
 msgid "Uploaded:"
 msgstr "הועלו:"
 
+#, fuzzy
 msgid "Downloaded:"
-msgstr "ירדו:"
+msgstr ""
+"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"ירדו:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"הורדו:\n"
+"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"ירדו:"
 
 msgid "State:"
 msgstr "מצב:"
@@ -1247,11 +1354,21 @@ msgstr "מצב:"
 msgid "Running time:"
 msgstr "זמן פעילות:"
 
+#, fuzzy
 msgid "Remaining time:"
-msgstr "הזמן שנותר:"
+msgstr ""
+"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"הזמן שנותר:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"זמן שנותר:"
 
+#, fuzzy
 msgid "Last activity:"
-msgstr "הפעילות האחרונה:"
+msgstr ""
+"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"הפעילות האחרונה:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"פעילות אחרונה:"
 
 msgid "Error:"
 msgstr "שגיאה:"
@@ -1286,9 +1403,6 @@ msgstr "הצגת פרטים _נוספים"
 msgid "Peers"
 msgstr "עמיתים"
 
-msgid "_Edit"
-msgstr "_עריכה"
-
 msgid "Show _backup trackers"
 msgstr "הצגת עוקבי _גיבוי"
 
@@ -1301,8 +1415,13 @@ msgstr "קבצים"
 msgid "Speed"
 msgstr "מהירות"
 
+#, fuzzy
 msgid "Honor global _limits"
-msgstr "אכיפת ה_גבלות כלליות"
+msgstr ""
+"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"אכיפת ה_גבלות כלליות\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_כיבוד מגבלות כלליות"
 
 msgid "Limit _download speed ({speed_units}):"
 msgstr "הגבלת מהירות ההו_רדה ({speed_units}):"
@@ -1310,8 +1429,13 @@ msgstr "הגבלת מהירות ההו_רדה ({speed_units}):"
 msgid "Limit _upload speed ({speed_units}):"
 msgstr "הגבלת מהירות הה_עלאה ({speed_units}):"
 
+#, fuzzy
 msgid "Torrent _priority:"
-msgstr "עדיפות ה_טורנט:"
+msgstr ""
+"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"עדיפות ה_טורנט:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_עדיפות טורנט:"
 
 msgid "Seeding Limits"
 msgstr "מגבלות זריעה"
@@ -1319,14 +1443,29 @@ msgstr "מגבלות זריעה"
 msgid "_Ratio:"
 msgstr "י_חס:"
 
+#, fuzzy
 msgid "_Idle:"
-msgstr "בהמ_תנה:"
+msgstr ""
+"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"בהמ_תנה:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"חוסר _פעילות:"
 
+#, fuzzy
 msgid "Peer Connections"
-msgstr "חיבורי עמיתים"
+msgstr ""
+"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"חיבורי עמיתים\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"חיבורים לעמיתים"
 
+#, fuzzy
 msgid "_Maximum peers:"
-msgstr "מס׳ עמיתים מרבי:"
+msgstr ""
+"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"מס׳ עמיתים מרבי:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"מספר עמיתים מ_רבי:"
 
 msgid "Options"
 msgstr "אפשרויות"
@@ -1344,6 +1483,26 @@ msgstr ""
 msgid "Also see Default Public Trackers in Edit > Preferences > Network"
 msgstr "כדאי לגשת לעוקבים הציבוריים כברירת מחדל דרך עריכה > העדפות > רשת"
 
+msgid "Open a torrent"
+msgstr "פתיחת טורנט"
+
+msgid "Start torrent"
+msgstr "התחלת טורנט"
+
+#, fuzzy
+msgid "Pause torrent"
+msgstr ""
+"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"השהיית טורנט\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"השהיית הטורנט"
+
+msgid "Remove torrent"
+msgstr "הסרת טורנט"
+
+msgid "Torrent properties"
+msgstr "מאפייני הטורנט"
+
 msgid "Torrent"
 msgstr "טורנט"
 
@@ -1353,19 +1512,23 @@ msgstr "סטטיסטיקה"
 msgid "New Torrent"
 msgstr "טורנט חדש"
 
-msgid "_New"
-msgstr "_חדש"
+#, fuzzy
+#| msgid "C_redits"
+msgid "C_reate"
+msgstr "_מזכים"
 
 msgid "Sa_ve to:"
 msgstr "_שמירה אל:"
 
-msgid "Source F_older:"
-msgstr "תיקיית מ_קור:"
+msgid "Source f_older:"
+msgstr "_תיקיית מקור:"
 
-msgid "Source _File:"
-msgstr "קובץ מקו_ר:"
+msgid "Source _file:"
+msgstr "_קובץ מקור:"
 
-msgid "Piece size:"
+#, fuzzy
+#| msgid "Piece size:"
+msgid "Piece si_ze:"
 msgstr "גודל חלק:"
 
 msgid "Properties"
@@ -1377,8 +1540,13 @@ msgstr "_עוקבים:"
 msgid "Co_mment:"
 msgstr "ה_ערה:"
 
+#, fuzzy
 msgid "_Source:"
-msgstr "_מקור:"
+msgstr ""
+"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_מקור:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"מ_קור:"
 
 msgid "_Private torrent"
 msgstr "טורנט _פרטי"
@@ -1395,9 +1563,6 @@ msgstr "שמירה _בשם"
 msgid "Clear"
 msgstr "ניקוי"
 
-msgid "P_ause"
-msgstr "ה_שהייה"
-
 msgid "Level"
 msgstr "רמה"
 
@@ -1410,8 +1575,13 @@ msgstr "קובץ _טורנט"
 msgid "Select Source File"
 msgstr "בחירת קובץ מקור"
 
+#, fuzzy
 msgid "_Destination folder:"
-msgstr "_תיקיית יעד:"
+msgstr ""
+"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_תיקיית יעד:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"תי_קיית יעד:"
 
 msgid "Select Destination Folder"
 msgstr "בחירת תיקיית יעד"
@@ -1419,14 +1589,13 @@ msgstr "בחירת תיקיית יעד"
 msgid "_Start when added"
 msgstr "ה_תחלה מיד עם ההוספה"
 
-msgid "Mo_ve torrent file to the trash"
+#, fuzzy
+#| msgid "Mo_ve torrent file to the trash"
+msgid "Mo_ve torrent file to the Trash"
 msgstr "הע_ברת קובץ טורנט לאשפה"
 
 msgid "{appname} Preferences"
 msgstr "העדפות ‏{appname}"
-
-msgid "_Help"
-msgstr "_עזרה"
 
 msgid "Speed Limits"
 msgstr "מגבלות מהירות"
@@ -1476,29 +1645,53 @@ msgstr "הצגת _דו־שיח לאפשרויות הטורנט"
 msgid "_Start added torrents"
 msgstr "הת_חלת הטורנטים שנוספו"
 
-msgid "Save to _Location:"
+#, fuzzy
+#| msgid "Save to _Location:"
+msgid "Save to _location:"
 msgstr "שמירה ל_מיקום:"
 
 msgid "Download Queue"
 msgstr "תור הורדה"
 
+#, fuzzy
 msgid "Ma_ximum active downloads:"
-msgstr "כמות מ_רבית של הורדות פעילות:"
+msgstr ""
+"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"כמות מ_רבית של הורדות פעילות:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"כמות ההורדות הפעילות המ_רבית:"
 
 msgid "Downloads sharing data in the last _N minutes are active:"
 msgstr "הורדות שחולקות נתונים ב־N הדקות ה_אחרונות הן פעילות:"
 
+#, fuzzy
 msgid "Incomplete"
-msgstr "לא שלם"
+msgstr ""
+"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"לא שלם\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"חלקי"
 
+#, fuzzy
 msgid "Append \"._part\" to incomplete files' names"
-msgstr "הוספת „‎.part” לשמות קבצים שהורדתם _טרם הושלמה"
+msgstr ""
+"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"הוספת „‎.part” לשמות קבצים שהורדתם _טרם הושלמה\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"הוספת „‎.part” לשמות קבצים שטרם הושלמו"
 
-msgid "Keep _incomplete torrents in:"
-msgstr "להשאיר טורנטים ש_לא הושלמו תחת:"
+msgid "Keep _incomplete files in:"
+msgstr "להשאיר קבצים ש_לא הושלמו תחת:"
 
-msgid "Call scrip_t when done downloading:"
-msgstr "לקרוא ל_סקריפט עם סיום ההורדה:"
+#, fuzzy
+#| msgid "Call scrip_t when downloading is completed:"
+msgid "Call scrip_t when download completes:"
+msgstr "לקרוא ל_סקריפט כאשר הורדת טורנט הושלמה:"
+
+#, fuzzy
+#| msgid "Call scrip_t when downloading is completed:"
+msgid "Verify data when download completes"
+msgstr "לקרוא ל_סקריפט כאשר הורדת טורנט הושלמה:"
 
 msgctxt "Gerund"
 msgid "Downloading"
@@ -1526,13 +1719,20 @@ msgstr "פרטיות"
 msgid "_Encryption mode:"
 msgstr "מצב ה_צפנה:"
 
+#, fuzzy
 msgid "Blocklist"
-msgstr "רשימת החסומים"
+msgstr ""
+"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"רשימת החסומים\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"רשימת חסימה"
 
 msgid "Enable _blocklist:"
 msgstr "הפעלת רשימת _חסימה:"
 
-msgid "Enable _automatic updates"
+#, fuzzy
+#| msgid "Enable _automatic updates"
+msgid "_Automatically update weekly"
 msgstr "הפעלת עדכונים _אוטומטיים"
 
 msgid "_Update"
@@ -1541,46 +1741,71 @@ msgstr "_עדכון"
 msgid "Listening Port"
 msgstr "פתחה להאזנה"
 
-msgid "_Port used for incoming connections:"
-msgstr "הפתחה המשמשת לחיבורים _נכנסים:"
+msgid "_Port for incoming connections:"
+msgstr "_פתחה לחיבורים נכנסים:"
 
-msgid "Pick a _random port every time Transmission is started"
+#, fuzzy
+#| msgid "Pick a _random port every time Transmission is started"
+msgid "Pick a _random port at startup"
 msgstr "יש לבחור בפתחה _אקראית עם כל הפעלה של ‏Transmission"
 
+#, fuzzy
 msgid "Use UPnP or NAT-PMP port _forwarding from my router"
-msgstr "להשתמש בהעברת _פתחות בסיוע UPnP או NAT-PMP מהנתב שלי"
+msgstr ""
+"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"להשתמש בהעברת _פתחות בסיוע UPnP או NAT-PMP מהנתב שלי\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"שימוש ב_ניתוב פתחות  UPnP או  NAT-PMP מהנתב שלי"
 
+#, fuzzy
 msgid "Te_st Port"
-msgstr "_בדיקת הפתחה"
+msgstr ""
+"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_בדיקת הפתחה\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_בדיקת פתחה"
 
 msgid "Peer Limits"
 msgstr "מגבלות עמיתים"
 
-msgid "Maximum peers per _torrent:"
+#, fuzzy
+#| msgid "Maximum peers per _torrent:"
+msgid "Maximum peers for new _torrents:"
 msgstr "כמות העמיתים המרבית לכל _טורנט:"
 
+#, fuzzy
 msgid "Maximum peers _overall:"
-msgstr "כמות _עמיתים מרבית:"
+msgstr ""
+"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"כמות _עמיתים מרבית:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"כמות עמיתים _כוללת:"
 
-msgid "Enable µ_TP for peer communication"
-msgstr "הפעלת µTP לתקשורת מול _עמיתים"
+msgid "Enable µ_TP for peer connections"
+msgstr "הפעלת µTP לחיבור _עמיתים"
 
 msgid "µTP is a tool for reducing network congestion."
 msgstr "µTP הוא כלי להפחתת העומס ברשת."
 
-msgid "Use PE_X to find more peers"
+#, fuzzy
+#| msgid "Use PE_X to find more peers"
+msgid "Use PE_X to find more peers for public torrents"
 msgstr "שימוש ב־PEX למ_ציאת עמיתים נוספים"
 
 msgid "PEX is a tool for exchanging peer lists with the peers you're connected to."
 msgstr "PEX הוא כלי להחלפת רשימות עמיתים עם העמיתים אליהם כבר התחברת."
 
-msgid "Use _DHT to find more peers"
+#, fuzzy
+#| msgid "Use _DHT to find more peers"
+msgid "Use _DHT to find more peers for public torrents"
 msgstr "לה_שתמש ב־DHT כדי למצוא עמיתים נוספים"
 
 msgid "DHT is a tool for finding peers without a tracker."
 msgstr "DHT הוא כלי למציאת עמיתים ללא עוקב."
 
-msgid "Use _Local Peer Discovery to find more peers"
+#, fuzzy
+#| msgid "Use _Local Peer Discovery to find more peers"
+msgid "Use _Local Peer Discovery to find more peers for public torrents"
 msgstr "להשתמש ב_גילוי עמיתים מקומי כדי למצוא עמיתים נוספים"
 
 msgid "LPD is a tool for finding peers on your local network."
@@ -1603,11 +1828,16 @@ msgstr ""
 msgid "Network"
 msgstr "רשת"
 
+#, fuzzy
 msgid "Desktop"
-msgstr "שולחן העבודה"
+msgstr ""
+"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"שולחן העבודה\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"שולחן עבודה"
 
-msgid "_Inhibit hibernation when torrents are active"
-msgstr "למ_נוע תרדמת כאשר יש טורנטים פעילים"
+msgid "_Prevent computer from sleeping with active torrents"
+msgstr ""
 
 msgid "Show {appname} icon in the _notification area"
 msgstr "הצגת סמל ‏{appname} באזור ההו_דעות"
@@ -1615,35 +1845,77 @@ msgstr "הצגת סמל ‏{appname} באזור ההו_דעות"
 msgid "Notification"
 msgstr "הודעה"
 
+#, fuzzy
 msgid "Show a notification when torrents are a_dded"
-msgstr "הצגת הודעה עם הוס_פת טורנטים"
+msgstr ""
+"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"הצגת הודעה עם הוס_פת טורנטים\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"הצגת הודעה כאשר מתוו_ספים טורנטים חדשים"
 
+#, fuzzy
 msgid "Show a notification when torrents _finish"
-msgstr "הצגת הו_דעה עם סיום הורדתם של טורנטים"
+msgstr ""
+"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"הצגת הו_דעה עם סיום הורדתם של טורנטים\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"הצגת הודעה עם _סיום טורנטים"
 
+#, fuzzy
 msgid "Play a _sound when torrents finish"
-msgstr "לנגן _צליל עם סיום הורדתם של טורנטים"
+msgstr ""
+"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"לנגן _צליל עם סיום הורדתם של טורנטים\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"השמעת _צליל בעת סיום טורנטים"
 
+#, fuzzy
 msgid "Remote Control"
-msgstr "גישה מרחוק"
+msgstr ""
+"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"גישה מרחוק\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"שלט רחוק"
 
+#, fuzzy
 msgid "Allow _remote access"
-msgstr "לאפשר _גישה מרחוק"
+msgstr ""
+"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"לאפשר _גישה מרחוק\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"אפשור _גישה מרחוק"
 
-msgid "_Open web client"
+#, fuzzy
+#| msgid "_Open web client"
+msgid "_Open Web Client"
 msgstr "_פתיחת לקוח רשת"
 
 msgid "HTTP _port:"
 msgstr "_פתחת HTTP:"
 
+#, fuzzy
 msgid "Use _authentication"
-msgstr "להשתמש ב_אימות"
+msgstr ""
+"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"להשתמש ב_אימות\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"שימוש ב_אימות"
 
+#, fuzzy
 msgid "_Username:"
-msgstr "שם _משתמש:"
+msgstr ""
+"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"שם _משתמש:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_שם משתמש:"
 
+#, fuzzy
 msgid "Pass_word:"
-msgstr "סיס_מה:"
+msgstr ""
+"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"סיס_מה:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_סיסמה:"
 
 msgid "Only allow these IP a_ddresses:"
 msgstr "לאפשר רק את _כתובות IP אלו:"
@@ -1666,23 +1938,38 @@ msgstr "הח_לה"
 msgid "Location"
 msgstr "מיקום"
 
-msgid "Torrent _location:"
-msgstr "מי_קום טורנט:"
+msgid "New _location:"
+msgstr "מיקום _חדש"
 
 msgid "_Move from the current folder"
 msgstr "ה_עברה מהתיקייה הנוכחית"
 
+#, fuzzy
 msgid "Local data is _already there"
-msgstr "הנתונים המקומיים כבר _שם"
+msgstr ""
+"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"הנתונים המקומיים כבר _שם\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"ה_נתונים המקומיים כבר שם"
 
 msgid "Current Session"
 msgstr "מופע נוכחי"
 
+#, fuzzy
 msgid "Ratio:"
-msgstr "יחס שיתוף:"
+msgstr ""
+"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"יחס שיתוף:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"יחס:"
 
+#, fuzzy
 msgid "Duration:"
-msgstr "משך זמן:"
+msgstr ""
+"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"משך זמן:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"משך:"
 
 msgid "Total"
 msgstr "סך הכול"
@@ -1696,20 +1983,304 @@ msgstr "פתיחת טורנט מכתובת"
 msgid "_URL"
 msgstr "_כתובת"
 
-msgid "Couldn't parse announce response: {error} ({error_code})"
-msgstr "לא ניתן לפענח את תגובת ההכרזה: {error} ({error_code})"
+msgid "The torrent file '{path}' is already in use by '{torrent_name}'."
+msgstr "קובץ הטורנט ‚{path}’ כבר בשימוש ע״י ‚{torrent_name}’."
 
-msgid "Couldn't parse scrape response: {error} ({error_code})"
-msgstr "לא ניתן לפענח את תגובת הקרצוף: {error} ({error_code})"
+msgid "Couldn't open torrent"
+msgstr "לא ניתן לפתוח את הטורנט"
 
-msgid "Unknown error"
-msgstr "שגיאה לא ידועה"
+msgid "Couldn't move '{path}' to trash: {error} ({error_code})"
+msgstr "לא ניתן להעביר את ‚{path}’ לאשפה: {error} ({error_code})"
 
-msgid "{ip_protocol} connection failed"
-msgstr "חיבור {ip_protocol} נכשל"
+#, fuzzy
+#| msgid "Couldn't create proxy for '{bus}': {error} ({error_code})"
+msgid "Couldn't launch default application for URI '{uri}': {error} ({error_code})"
+msgstr "לא ניתן ליצור מתווך עבור ‚{bus}’: {error} ({error_code})"
 
-msgid "Couldn't look up '{address}:{port}' in {ip_protocol}: {error} ({error_code})"
-msgstr "לא ניתן לאתר את ‚{address}:{port}’ תחת {ip_protocol}: {error} ({error_code})"
+#, fuzzy
+#| msgid "Couldn't open '{path}': {error} ({error_code})"
+msgid "Couldn't invoke xdg-open for URI '{uri}': {error} ({error_code})"
+msgstr "לא ניתן לפתוח את ‚{path}’: {error} ({error_code})"
+
+msgid "Couldn't open '{url}'"
+msgstr "לא ניתן לפתוח את ‚{url}’"
+
+msgid "Unsupported URL: '{url}'"
+msgstr "כתובת לא נתמכת: ‚{url}’"
+
+msgid "{appname} doesn't know how to use '{url}'"
+msgstr "{appname} איך להשתמש ב־‚{url}’"
+
+msgid "This magnet link appears to be intended for something other than BitTorrent."
+msgstr "קישור מגנט זה כנראה מיועד למשהו שאינו ביטורנט."
+
+msgid "{days_from_now:L} day from now"
+msgid_plural "{days_from_now:L} days from now"
+msgstr[0] "בעוד יום מעכשיו"
+msgstr[1] "בעוד יומיים  מעכשיו"
+msgstr[2] "בעוד {days_from_now:L} ימים מעכשיו"
+msgstr[3] "בעוד {days_from_now:L} ימים מעכשיו"
+
+msgid "{hours_from_now:L} hour from now"
+msgid_plural "{hours_from_now:L} hours from now"
+msgstr[0] "בעוד שעה מעכשיו"
+msgstr[1] "בעוד שעתיים מעכשיו"
+msgstr[2] "בעוד {hours_from_now:L} שעות מעכשיו"
+msgstr[3] "בעוד {hours_from_now:L} שעות מעכשיו"
+
+msgid "{minutes_from_now:L} minute from now"
+msgid_plural "{minutes_from_now:L} minutes from now"
+msgstr[0] "בעוד דקה מעכשיו"
+msgstr[1] "בעוד {minutes_from_now:L} דקות מעכשיו"
+msgstr[2] "בעוד {minutes_from_now:L} דקות מעכשיו"
+msgstr[3] "בעוד {minutes_from_now:L} דקות מעכשיו"
+
+msgid "{seconds_from_now:L} second from now"
+msgid_plural "{seconds_from_now:L} seconds from now"
+msgstr[0] "בעוד שנייה מעכשיו"
+msgstr[1] "בעוד {seconds_from_now:L} שניות מעכשיו"
+msgstr[2] "בעוד {seconds_from_now:L} שניות מעכשיו"
+msgstr[3] "בעוד {seconds_from_now:L} שניות מעכשיו"
+
+msgid "now"
+msgstr "עכשיו"
+
+msgid "{days_ago:L} day ago"
+msgid_plural "{days_ago:L} days ago"
+msgstr[0] "אתמול"
+msgstr[1] "שלשום"
+msgstr[2] "לפני {days_ago:L} ימים"
+msgstr[3] "לפני {days_ago:L} ימים"
+
+msgid "{hours_ago:L} hour ago"
+msgid_plural "{hours_ago:L} hours ago"
+msgstr[0] "לפני שעה"
+msgstr[1] "לפני שעתיים"
+msgstr[2] "לפני {hours_ago:L} שעות"
+msgstr[3] "לפני {hours_ago:L} שעות"
+
+#, fuzzy
+msgid "{minutes_ago:L} minute ago"
+msgid_plural "{minutes_ago:L} minutes ago"
+msgstr[0] ""
+"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"לפני דקה\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"לפני דקה"
+msgstr[1] ""
+"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"לפני {minutes_ago:L} דקות\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"לפני שתי דקות"
+msgstr[2] ""
+"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"לפני {minutes_ago:L} דקות\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"לפני שתי דקות"
+msgstr[3] ""
+"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"לפני {minutes_ago:L} דקות"
+
+msgid "{seconds_ago:L} second ago"
+msgid_plural "{seconds_ago:L} seconds ago"
+msgstr[0] "לפני שנייה"
+msgstr[1] "לפני {seconds_ago:L} שניות"
+msgstr[2] "לפני {seconds_ago:L} שניות"
+msgstr[3] "לפני {seconds_ago:L} שניות"
+
+msgid "Got a list of {markup_begin}{peer_count} peer{markup_end} {time_span_ago}"
+msgid_plural "Got a list of {markup_begin}{peer_count} peers{markup_end} {time_span_ago}"
+msgstr[0] "התקבלה רשימה של {markup_begin}עמית{markup_end} {time_span_ago}"
+msgstr[1] "התקבלה רשימה של {markup_begin}{peer_count} עמיתים{markup_end} {time_span_ago}"
+msgstr[2] "התקבלה רשימה של {markup_begin}{peer_count} עמיתים{markup_end} {time_span_ago}"
+msgstr[3] "התקבלה רשימה של {markup_begin}{peer_count} עמיתים{markup_end} {time_span_ago}"
+
+msgid "Peer list request {markup_begin}timed out {time_span_ago}{markup_end}; will retry"
+msgstr "הזמן שהוקצה לבקשת עמיתים {markup_begin}פג לפני {time_span_ago}{markup_end}: יתבצע ניסיון חוזר"
+
+msgid "Got an error '{markup_begin}{error}{markup_end}' {time_span_ago}"
+msgstr "עלתה השגיאה ‚{markup_begin}{error}{markup_end}’ {time_span_ago}"
+
+#, fuzzy
+msgid "No updates scheduled"
+msgstr ""
+"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"אין עדכונים מתוכננים\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"אין עדכונים מתוזמנים"
+
+msgid "Asking for more peers {time_span_from_now}"
+msgstr "עלתה בקשה למשיכת עמיתים נוספים {time_span_from_now}"
+
+#, fuzzy
+msgid "Queued to ask for more peers"
+msgstr ""
+"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"בתור לבקשת עמיתים נוספים\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"בתור לבקשת עוד עמיתים"
+
+msgid "Asked for more peers {markup_begin}{time_span_ago}{markup_end}"
+msgstr "הוגשה בקשה למשיכת עמיתים נוספים {markup_begin}{time_span_ago}{markup_end}"
+
+msgid "Got a scrape error '{markup_begin}{error}{markup_end}' {time_span_ago}"
+msgstr "התקבלה שגיאת קרצוף ‚{markup_begin}{error}{markup_end}’ {time_span_ago}"
+
+#, fuzzy
+#| msgid "Tracker had {markup_begin}no information{markup_end} on peer counts {time_span} ago"
+msgid "Tracker had {markup_begin}no information{markup_end} on peer counts {time_span_ago}"
+msgstr "לעוקב {markup_begin}לא היה מידע{markup_end} על ספירת עמיתים לפני {time_span}"
+
+msgid "Tracker had {markup_begin}{seeder_count} {seeder_or_seeders} and {leecher_count} {leecher_or_leechers}{markup_end} {time_span_ago}"
+msgstr "לעוקב היו {markup_begin}{seeder_count} {seeder_or_seeders} ו־{leecher_count} {leecher_or_leechers}{markup_end} {time_span_ago}"
+
+msgid "seeder"
+msgid_plural "seeders"
+msgstr[0] "זורע"
+msgstr[1] "זורעים"
+msgstr[2] "זורעים"
+msgstr[3] "זורעים"
+
+msgid "leecher"
+msgid_plural "leechers"
+msgstr[0] "יונק"
+msgstr[1] "יונקים"
+msgstr[2] "יונקים"
+msgstr[3] "יונקים"
+
+#, fuzzy
+#| msgid "Asking for peer counts in {time_span_from_now}"
+msgid "Asking for peer counts {time_span_from_now}"
+msgstr "בקשה למשיכת עמיתים נוספים בעוד {time_span_from_now}"
+
+msgid "Queued to ask for peer counts"
+msgstr "בהמתנה לבקשת ספירת עמיתים"
+
+msgid "Asked for peer counts {markup_begin}{time_span_ago}{markup_end}"
+msgstr "בקשה למשיכת עמיתים נוספים {markup_begin}{time_span_ago}{markup_end}"
+
+#, fuzzy
+msgid "{days:L} day"
+msgid_plural "{days:L} days"
+msgstr[0] ""
+"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"יום\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"יום"
+msgstr[1] ""
+"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"יומיים\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"יומיים"
+msgstr[2] ""
+"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{days:L} ימים\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"יומיים"
+msgstr[3] ""
+"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{days:L} ימים"
+
+#, fuzzy
+msgid "{hours:L} hour"
+msgid_plural "{hours:L} hours"
+msgstr[0] ""
+"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"שעה\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"שעה"
+msgstr[1] ""
+"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"שעתיים\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"שעתיים"
+msgstr[2] ""
+"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{hours:L} שעות\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"שעתיים"
+msgstr[3] ""
+"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{hours:L} שעות"
+
+#. Translators: Spin box format, "Stop seeding if idle for: [ 5 minutes ]"
+#, fuzzy
+msgid "{minutes:L} minute"
+msgid_plural "{minutes:L} minutes"
+msgstr[0] ""
+"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"דקה\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"דקה\n"
+"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"דקה"
+msgstr[1] ""
+"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{minutes:L} דקות\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{minutes:L} דק׳\n"
+"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{minutes:L} דקות"
+msgstr[2] ""
+"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{minutes:L} דקות\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{minutes:L} דק׳\n"
+"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{minutes:L} דקות"
+msgstr[3] ""
+"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{minutes:L} דקות"
+
+#, fuzzy
+msgid "{seconds:L} second"
+msgid_plural "{seconds:L} seconds"
+msgstr[0] ""
+"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"שנייה\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"שנייה"
+msgstr[1] ""
+"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{seconds:L} שניות\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{seconds:L} שניות"
+msgstr[2] ""
+"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{seconds:L} שניות\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{seconds:L} שניות"
+msgstr[3] ""
+"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{seconds:L} שניות"
+
+msgid "{days_left:L} day left"
+msgid_plural "{days_left:L} days left"
+msgstr[0] "נותר יום"
+msgstr[1] "נותרו יומיים"
+msgstr[2] "נותרו {days_left:L} ימים"
+msgstr[3] "נותרו {days_left:L} ימים"
+
+msgid "{hours_left:L} hour left"
+msgid_plural "{hours_left:L} hours left"
+msgstr[0] "נותרה שעה"
+msgstr[1] "נותרו שעתיים"
+msgstr[2] "נותרו {hours_left:L} שעות"
+msgstr[3] "נותרו {hours_left:L} שעות"
+
+msgid "{minutes_left:L} minute left"
+msgid_plural "{minutes_left:L} minutes left"
+msgstr[0] "נותרה דקה"
+msgstr[1] "נותרו {minutes_left:L} דקות"
+msgstr[2] "נותרו {minutes_left:L} דקות"
+msgstr[3] "נותרו {minutes_left:L} דקות"
+
+msgid "{seconds_left:L} second left"
+msgid_plural "{seconds_left:L} seconds left"
+msgstr[0] "נותרה שנייה"
+msgstr[1] "נותרו {seconds_left:L} שניות"
+msgstr[2] "נותרו {seconds_left:L} שניות"
+msgstr[3] "נותרו {seconds_left:L} שניות"
 
 msgid "Announce error: {error} ({url})"
 msgstr "שגיאת הכרזה: {error} ({url})"
@@ -1730,6 +2301,21 @@ msgstr "העוקב לא הגיב"
 msgid "Success"
 msgstr "הצלחה"
 
+msgid "Couldn't parse announce response: {error} ({error_code})"
+msgstr "לא ניתן לפענח את תגובת ההכרזה: {error} ({error_code})"
+
+msgid "Couldn't parse scrape response: {error} ({error_code})"
+msgstr "לא ניתן לפענח את תגובת הקרצוף: {error} ({error_code})"
+
+msgid "Unknown error"
+msgstr "שגיאה לא ידועה"
+
+msgid "{ip_protocol} connection failed"
+msgstr "חיבור {ip_protocol} נכשל"
+
+msgid "Couldn't look up '{address}:{port}' in {ip_protocol}: {error} ({error_code})"
+msgstr "לא ניתן לאתר את ‚{address}:{port}’ תחת {ip_protocol}: {error} ({error_code})"
+
 msgid "Blocklist '{path}' has {count} entry"
 msgid_plural "Blocklist '{path}' has {count} entries"
 msgstr[0] "ברשימת החסימה ‚{path}’ יש רשומה אחת"
@@ -1737,15 +2323,43 @@ msgstr[1] "ברשימת החסימה ‚{path}’ יש {count} רשומות"
 msgstr[2] "ברשימת החסימה ‚{path}’ יש {count} רשומות"
 msgstr[3] "ברשימת החסימה ‚{path}’ יש {count} רשומות"
 
-#. don't try to display the actual lines - it causes issues
-msgid "Couldn't parse line: '{line}'"
+#, fuzzy
+#| msgid "Couldn't parse line: '{line}'"
+msgid "Couldn't parse line {line}: {base64}"
 msgstr "לא ניתן לפענח את השורה: ‚{line}’"
 
-msgid "Rewriting old blocklist file format to new format"
+#, fuzzy
+#| msgid "Rewriting old blocklist file format to new format"
+msgid "Rewriting old blocklist file {path} to new format"
 msgstr "תצורת קובץ רשימת החסימה הישן משוכתבת לתצורה החדשה"
+
+msgid "Blocklist is larger than {limit} MiB; ignoring it"
+msgstr ""
+
+#, fuzzy
+#| msgid "Couldn't fetch blocklist: {error} ({error_code})"
+msgid "Couldn't fetch blocklist: {errmsg}, response code: {error} ({error_code})"
+msgstr "לא ניתן למשוך את רשימת החסימה: {error} ({error_code})"
+
+msgid "Couldn't fetch blocklist: {error} ({error_code})"
+msgstr "לא ניתן למשוך את רשימת החסימה: {error} ({error_code})"
+
+msgid "Automatically updated blocklist, which now has {count} rules"
+msgstr ""
+
+msgid "Invalid tr_sched_days value {val}"
+msgstr ""
 
 msgid "{crypto_library} error: {error} ({error_code})"
 msgstr "שגיאת {crypto_library}‏: {error} ‏({error_code})"
+
+msgid "Couldn't read '{path}': Not a regular file"
+msgstr "לא ניתן לקרוא את ‚{path}’: זה לא קובץ רגיל"
+
+#, fuzzy
+#| msgid "Couldn't read '{path}'"
+msgid "Couldn't get '{path}': "
+msgstr "לא ניתן לקרוא את ‚{path}’"
 
 msgid "Couldn't get '{path}': {error} ({error_code})"
 msgstr "לא ניתן למשוך את ‚{path}’: {error} ({error_code})"
@@ -1762,20 +2376,14 @@ msgstr "המכונה שלך לא תומכת ב־{protocol}"
 msgid "Successfully updated global {type} address to {ip} using {url}"
 msgstr "הכתובת הגלובלית {type} עודכנה בהצלחה ל־{ip} באמצעות {url}"
 
+msgid "Still waiting for disk IO on torrent {id}: {running} running, {queued} queued"
+msgstr ""
+
 msgid "Too many messages like this! I won't log this message anymore this session."
 msgstr "יותר מדי הודעות כאלו! לא יתעודו יותר הודעות כאלו בהפעלה הזאת."
 
 msgid "Skipping '{path}': {error} ({error_code})"
 msgstr "מתבצע דילוג על ‚{path}’: {error} ({error_code})"
-
-msgid "Couldn't create socket: {error} ({error_code})"
-msgstr "לא ניתן ליצור שקע: {error} ({error_code})"
-
-msgid "Couldn't set source address {address} on {socket}: {error} ({error_code})"
-msgstr "לא ניתן להגדיר כתובת מקור {address} על {socket}: {error} ({error_code})"
-
-msgid "Couldn't connect socket {socket} to {address}:{port}: {error} ({error_code})"
-msgstr "לחא ניתן לחבר את השקע {socket} אל {address}:{port}: {error} ({error_code})"
 
 msgid "Couldn't bind port {port} on {address}: {error} ({error_code}) -- Is another copy of {appname} already running?"
 msgstr "לא ניתן להתאגד לפתחה {port} על {address}: {error} ({error_code}) -- האם יש עותק פעיל נוסף של {appname}?"
@@ -1792,8 +2400,35 @@ msgstr "לא ניתן להקצות מראש את ‚{path}’:‏ {error} ({erro
 msgid "Couldn't truncate '{path}': {error} ({error_code})"
 msgstr "לא ניתן לקצץ את ‚{path}’:‏ {error} ({error_code})"
 
+msgid "Couldn't create socket: {error} ({error_code})"
+msgstr "לא ניתן ליצור שקע: {error} ({error_code})"
+
+msgid "Couldn't set source address {address} on {socket}: {error} ({error_code})"
+msgstr "לא ניתן להגדיר כתובת מקור {address} על {socket}: {error} ({error_code})"
+
+msgid "Couldn't connect socket {socket} to {address}:{port}: {error} ({error_code})"
+msgstr "לחא ניתן לחבר את השקע {socket} אל {address}:{port}: {error} ({error_code})"
+
 msgid "Unknown state: {state}"
 msgstr "מצב לא ידוע: {state}"
+
+msgid "Starting"
+msgstr "מתחיל"
+
+msgid "Forwarded"
+msgstr "מועבר"
+
+msgid "Stopping"
+msgstr "בהליכי עצירה"
+
+msgid "Not forwarded"
+msgstr "לא מועבר"
+
+msgid "Mapped private port {private_port} to public port {public_port}"
+msgstr "הפתחה הפרטית {private_port} מופתה לפתחה הציבורית {public_port}"
+
+msgid "State changed from '{old_state}' to '{state}'"
+msgstr "התרחש שינוי מהמצב ‚{old_state}’ למצב ‚{state}’"
 
 msgid "Found public address '{address}'"
 msgstr "נמצאה כתובת ציבורית ‚{address}’"
@@ -1825,23 +2460,21 @@ msgstr "הפתחה המקומית {local_port} מועברת אל {advertised_por
 msgid "If your router supports UPnP, please make sure UPnP is enabled!"
 msgstr "אם הנתב שלך תומך ב־UPnP, נא לוודא ש־UPnP מופעל!"
 
-msgid "Starting"
-msgstr "מתחיל"
+#, fuzzy
+#| msgid "Couldn't test port: {error} ({error_code})"
+msgid "Couldn't test port: {errmsg}, response code: {error} ({error_code})"
+msgstr "לא ניתן לבדוק את הפתחה: {error} ({error_code})"
 
-msgid "Forwarded"
-msgstr "מועבר"
+msgid "Couldn't test port: {error} ({error_code})"
+msgstr "לא ניתן לבדוק את הפתחה: {error} ({error_code})"
 
-msgid "Stopping"
-msgstr "בהליכי עצירה"
+#, fuzzy
+#| msgid "Couldn't fetch torrent: {error} ({error_code})"
+msgid "Couldn't fetch torrent: {errmsg}, Response code: {error} ({error_code})"
+msgstr "לא ניתן למשוך את הטורנט: {error} ({error_code})"
 
-msgid "Not forwarded"
-msgstr "לא מועבר"
-
-msgid "Mapped private port {private_port} to public port {public_port}"
-msgstr "הפתחה הפרטית {private_port} מופתה לפתחה הציבורית {public_port}"
-
-msgid "State changed from '{old_state}' to '{state}'"
-msgstr "התרחש שינוי מהמצב ‚{old_state}’ למצב ‚{state}’"
+msgid "Couldn't fetch torrent: {error} ({error_code})"
+msgstr "לא ניתן למשוך את הטורנט: {error} ({error_code})"
 
 msgid "Unix socket path must be fewer than {count} characters (including '{prefix}' prefix)"
 msgstr "אורך נתיב שקע היוניקס חייב להיות קצר מ־{count} תווים (לרבות הקידומת ‚{prefix}’)"
@@ -1901,29 +2534,24 @@ msgstr "נדרשת סיסמה"
 msgid "Serving RPC and Web requests from '{path}'"
 msgstr "בקשות RPC ודפדפן מוגשות מתוך ‚{path}’"
 
-msgid "Couldn't test port: {error} ({error_code})"
-msgstr "לא ניתן לבדוק את הפתחה: {error} ({error_code})"
-
-msgid "Couldn't fetch blocklist: {error} ({error_code})"
-msgstr "לא ניתן למשוך את רשימת החסימה: {error} ({error_code})"
-
-msgid "Couldn't fetch torrent: {error} ({error_code})"
-msgstr "לא ניתן למשוך את הטורנט: {error} ({error_code})"
-
-msgid "Time to turn off turtle mode"
-msgstr "הזמן לגיבוי מצב צב"
-
-msgid "Time to turn on turtle mode"
+#, fuzzy
+#| msgid "Time to turn on turtle mode"
+msgid "Time to turn on alternative speed limits"
 msgstr "הזמן להפעלת מצב צב"
 
-msgid "Couldn't open session lock file '{path}': {error} ({error_code})"
-msgstr "לא ניתן לפתוח את קובץ נעילת ההפעלה ‚{path}’: {error} ({error_code})"
+#, fuzzy
+#| msgid "Time to turn off turtle mode"
+msgid "Time to turn off alternative speed limits"
+msgstr "הזמן לגיבוי מצב צב"
 
 msgid "Listening to incoming peer connections on {hostport}"
 msgstr "בהאזנה לחיבורי עמיתים נכנסים דרך {hostport}"
 
 msgid "{appname} version {version} starting"
 msgstr "גרסה {version} של ‏{appname} מופעלת"
+
+msgid "Couldn't start disk IO workers, continuing without them: {error}"
+msgstr ""
 
 msgid "{appname} version {version} shutting down"
 msgstr "גרסה {version} של ‏{appname} נכבית"
@@ -1935,8 +2563,11 @@ msgstr[1] "נטענו {count} טורנטים"
 msgstr[2] "נטענו {count} טורנטים"
 msgstr[3] "נטענו {count} טורנטים"
 
-msgid "Migrated torrent file from '{old_path}' to '{path}'"
-msgstr "קובץ הטורנט הועבר מ־‚{old_path}’ ל־‚{path}’"
+msgid "Couldn't claim '{path}'. If another session is using it, the two will overwrite each other's settings, resume files and stats."
+msgstr ""
+
+msgid "Couldn't open session lock file '{path}': {error} ({error_code})"
+msgstr "לא ניתן לפתוח את קובץ נעילת ההפעלה ‚{path}’: {error} ({error_code})"
 
 msgid "Couldn't use metainfo from '{path}' for '{magnet}': {error} ({error_code})"
 msgstr "לא ניתן להשתמש בנתוני העל מתוך ‚{path}’ עבור ‚{magnet}’: {error} ({error_code})"
@@ -1968,14 +2599,32 @@ msgstr "לא ניתן להסיר את כל קובצי הטורנט: {error} ({er
 msgid "Removing torrent"
 msgstr "הטורנט נמחק כעת"
 
-msgid "Couldn't move '{old_path}' to '{path}': {error} ({error_code})"
-msgstr "לא ניתן להעביר את ‚{old_path}’ אל ‚{path}’: {error} ({error_code})"
+#, fuzzy
+#| msgid "Couldn't remove all torrent files: {error} ({error_code})"
+msgid "Couldn't move torrent files to '{path}': {error} ({error_code})"
+msgstr "לא ניתן להסיר את כל קובצי הטורנט: {error} ({error_code})"
 
 msgid "Paused torrent as no data was found! Ensure your drives are connected or use \"Set Location\", then use \"Verify Local Data\" again. To re-download, start the torrent."
 msgstr "הטורנטים מושהים כי לא נמצא נתונים! נא לוודא שהכוננים שלך מחוברים או להשתמש ב„הגדרות מקום”, לאחר מכן להשתמש ב„אימות נתונים מקומיים” שוב. כדי להוריד מחדש, יש להפעיל את הטורנט."
 
+msgid "Couldn't move '{old_path}' to '{path}': {error} ({error_code})"
+msgstr "לא ניתן להעביר את ‚{old_path}’ אל ‚{path}’: {error} ({error_code})"
+
 msgid "Tracker warning: '{warning}' ({url})"
 msgstr "אזהרת עוקב: ‚{warning}’ ({url})"
+
+#, fuzzy
+#| msgid "Removing torrent file '{path}'"
+msgid "Moving '{source}' will overwrite '{path}'"
+msgstr "קובץ הטורנט ‚{path}’ הוסר"
+
+#, fuzzy
+#| msgid "Couldn't move '{old_path}' to '{path}': {error} ({error_code})"
+msgid "Couldn't compare '{path}' with '{root}': {error} ({error_code}); leaving it alone"
+msgstr "לא ניתן להעביר את ‚{old_path}’ אל ‚{path}’: {error} ({error_code})"
+
+msgid "Migrated torrent file from '{old_path}' to '{path}'"
+msgstr "קובץ הטורנט הועבר מ־‚{old_path}’ ל־‚{path}’"
 
 msgid "Couldn't parse '{filename}' line: '{line}'"
 msgstr "לא ניתן לפענח את ‚{filename}’ בשורה: ‚{line}’"
@@ -2004,8 +2653,72 @@ msgstr ""
 msgid "Unknown socket family"
 msgstr "משפחת שקעים לא ידועה"
 
-msgid "Couldn't read '{path}': Not a regular file"
-msgstr "לא ניתן לקרוא את ‚{path}’: זה לא קובץ רגיל"
+msgid "B"
+msgstr "ב׳"
+
+msgid "KiB"
+msgstr "KiB"
+
+msgid "MiB"
+msgstr "MiB"
+
+msgid "GiB"
+msgstr "GiB"
+
+msgid "TiB"
+msgstr "TiB"
+
+#, fuzzy
+msgid "B/s"
+msgstr ""
+"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"ב׳/שנ׳\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"ב׳ לשנ׳"
+
+#, fuzzy
+msgid "kB/s"
+msgstr ""
+"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"ק״ב/שנייה\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"ק״ב לשנ׳"
+
+#, fuzzy
+msgid "MB/s"
+msgstr ""
+"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"מ״ב/שנייה\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"מ״ב לשנ׳"
+
+#, fuzzy
+msgid "GB/s"
+msgstr ""
+"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"ג״ב/שנייה\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"ג״ב לשנ׳"
+
+#, fuzzy
+msgid "TB/s"
+msgstr ""
+"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"ט״ב/שנ׳\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"ט״ב לשנ׳"
+
+msgid "kB"
+msgstr "ק״ב"
+
+msgid "MB"
+msgstr "מ״ב"
+
+msgid "GB"
+msgstr "ג״ב"
+
+msgid "TB"
+msgstr "ט״ב"
 
 msgid "Couldn't parse JSON at position {position} '{text}': {error} ({error_code})"
 msgstr "לא ניתן לפענח את ה־JSON במיקום {position} ‚{text}’: {error} ({error_code})"
@@ -2013,17 +2726,14 @@ msgstr "לא ניתן לפענח את ה־JSON במיקום {position} ‚{text}
 msgid "Couldn't watch '{path}': {error} ({error_code})"
 msgstr "לא ניתן לעקוב אחר‚'{path}’: {error} ({error_code})"
 
-msgid "Couldn't read event: {error} ({error_code})"
-msgstr "לא ניתן לקרוא אירוע: {error} ({error_code})"
-
 msgid "Couldn't read event: expected {expected_size}, got {actual_size}"
 msgstr "לא ניתן לקרוא אירוע: אמור היה להיות {expected_size}, התקבל {actual_size}"
 
-msgid "Couldn't read filename: {error} ({error_code})"
-msgstr "לא ניתן לקרוא את שם הקובץ: {error} ({error_code})"
-
 msgid "Couldn't read filename: expected {expected_size}, got {actual_size}"
 msgstr "לא ניתן לקרוא את שם הקובץ: אמור היה להיות {expected_size}, התקבל {actual_size}"
+
+msgid "Couldn't read event: {error} ({error_code})"
+msgstr "לא ניתן לקרוא אירוע: {error} ({error_code})"
 
 msgid "Couldn't convert '{path}' to native path"
 msgstr "לא ניתן להמיר את ‚{path}’ לנתיב טבעי"
@@ -2043,10 +2753,15 @@ msgstr "לא ניתן להמתין לשינויים בתיקייה"
 msgid "Consider upgrading your curl installation."
 msgstr "כדאי לעדכן את ה־curl שלך."
 
+msgid "The minimum supported version is {curl_version}, you might face unexpected behaviour."
+msgstr ""
+
 msgid "curl {curl_version} is prone to SIGPIPE crashes. {details_url}"
 msgstr "curl {curl_version} חשוף לקריסות SIGPIPE.‏ {details_url}"
 
-msgid "curl {curl_version} is prone to an eventfd double close vulnerability that might cause SIGABRT crashes for the transmission-daemon systemd service. {details_url}"
+#, fuzzy
+#| msgid "curl {curl_version} is prone to an eventfd double close vulnerability that might cause SIGABRT crashes for the transmission-daemon systemd service. {details_url}"
+msgid "curl {curl_version} is prone to an eventfd double close vulnerability that might cause SIGABRT crashes for the daemon systemd service. {details_url}"
 msgstr "curl {curl_version} חשוף לחולשת סגירת eventfd כפולה שעלולה לגרום לקריסותSIGABRT לשירות ה־systemd בשם transmission-daemon.‏ {details_url}"
 
 msgid "Will verify tracker certs using envvar CURL_CA_BUNDLE: {bundle}"
@@ -2058,8 +2773,414 @@ msgstr "נ״ב: עובד רק אם בנית כנגד libcurl עם openssl או g
 msgid "NB: Invalid certs will appear as 'Could not connect to tracker' like many other errors"
 msgstr "נ״ב: אישורים שגויים מופיעים בתור ‚לא ניתן להתחבר לעוקב’ כמו מגוון שגיאות אחרות"
 
+msgid "Aborting request: response body exceeded max size of {max_file_size} bytes"
+msgstr ""
+
 msgid "Couldn't fetch '{url}': expected HTTP response code {expected_code}, got {actual_code}"
 msgstr "לא ניתן למשוך את ‚{url}’: קוד ה־HTTP הצפוי הוא {expected_code}, התקבל {actual_code}"
+
+msgid "Server"
+msgstr "שרת"
+
+msgid "C_redits"
+msgstr "_מזכים"
+
+msgid "Credits"
+msgstr "מזכים"
+
+msgid "About {appname}"
+msgstr "על {appname}"
+
+msgid "Torrent Completed"
+msgstr "טורנט הושלם"
+
+msgid "Torrents Completed"
+msgstr "טורנטים הושלמו"
+
+#. Translators: Text following the "Have:" label in torrent properties dialog;
+#. {current_size} is amount of downloaded and verified data
+msgid "{current_size} (100%)"
+msgstr "{current_size} (100%)"
+
+msgid "{current_size} of {complete_size} ({percent_done}%), {unverified_size} Unverified"
+msgstr "{current_size} מתוך {complete_size} ({percent_done}%), {unverified_size} לא מאומת"
+
+msgid "{total_size} ({piece_count:L} piece @ {piece_size})"
+msgid_plural "{total_size} ({piece_count:L} pieces @ {piece_size})"
+msgstr[0] "{total_size} (חלק אחד @ {piece_size})"
+msgstr[1] "{total_size} ({piece_count:L} חלקים @ {piece_size})"
+msgstr[2] "{total_size} ({piece_count:L} חלקים @ {piece_size})"
+
+msgid "{total_size} ({piece_count:L} piece)"
+msgid_plural "{total_size} ({piece_count:L} pieces)"
+msgstr[0] "{total_size} (חלק אחד)"
+msgstr[1] "{total_size} ({piece_count:L} חלקים)"
+msgstr[2] "{total_size} ({piece_count:L} חלקים)"
+
+msgid "Add URL(s)"
+msgstr "הוספת כתובות"
+
+msgid "Add tracker announce URLs, one per line:"
+msgstr "הוספת כתובות הכרזת עוקבים, אחת בכל שורה:"
+
+msgid "No new URLs found."
+msgstr "לא נמצאו כתובות חדשות."
+
+msgid "Use Global Settings"
+msgstr "להשתמש בהגדרות גלובליות"
+
+msgid "Stop seeding if idle for:"
+msgstr "הפסקת זריעה בחוסר פעילות למשך:"
+
+msgid "Torrent Properties"
+msgstr "מאפייני טורנט"
+
+msgid "Availability:"
+msgstr "זמינות:"
+
+msgid "Labels:"
+msgstr "תוויות:"
+
+msgid "Limit _upload speed:"
+msgstr "ה_גבלת מהירות העלאה:"
+
+msgid "Limit _download speed:"
+msgstr "ה_גבלת מהירות הורדה:"
+
+msgid "Check Selected"
+msgstr "סימון הפריטים שנבחרו"
+
+msgid "Uncheck Selected"
+msgstr "סימון הפריטים שנבחרו"
+
+msgid "Only Check Selected"
+msgstr "סימון הפריטים שנבחרו בלבד"
+
+msgid "Open"
+msgstr "פתיחה"
+
+msgid "Rename…"
+msgstr "שינוי שם…"
+
+msgid "Search…"
+msgstr "חיפוש…"
+
+msgid "<i>Calculating Free Space…</i>"
+msgstr "<i>המקום הפנוי מחושב…</i>"
+
+msgid "Limited at {speed}"
+msgstr "מוגבל עד {speed}"
+
+#. Translators: Second (optional) part of main window title "Appname - host:port" (added when connected to remote session)
+#. notice that leading space (before the dash) is included here
+msgid " - {host}:{port}"
+msgstr " - {host}:{port}"
+
+msgid "Network Error"
+msgstr "שגיאת רשת"
+
+msgid "Idle"
+msgstr "לא פעיל"
+
+msgid "Showing {visible_count:L} of {count:L} torrent"
+msgid_plural "Showing {visible_count:L} of {count:L} torrents"
+msgstr[0] "מוצג {visible_count:L} מתוך טורנט אחד"
+msgstr[1] "מוצגים {visible_count:L} מתוך {count:L} טורנטים"
+msgstr[2] "מוצגים {visible_count:L} מתוך {count:L} טורנטים"
+
+msgid "Torrent Files (*.torrent);;All Files (*.*)"
+msgstr "קובצי טורנט (‎*.torrent);;כל הקבצים (*.*)"
+
+msgid "{host} has not responded yet"
+msgstr "טרם התקבלה תגובה מצד {host}"
+
+msgid "{host} is responding"
+msgstr "מתקבלת תגובה מצד {host}"
+
+#, fuzzy
+#| msgid "{host} last responded {time_span} ago"
+msgid "{host} last responded {time_span_ago}"
+msgstr "התקבלה תגובה מצד {host} לפני {time_span}"
+
+msgid "{host} is not responding"
+msgstr "אין תגובה מצד {host}"
+
+msgid "_Open…"
+msgstr "_פתיחה…"
+
+msgid "Create a new torrent"
+msgstr "יצירת טורנט חדש"
+
+msgid "Open the torrent's folder"
+msgstr "פתיחת תיקיית הטורנט"
+
+msgid "Ask tracker for more peers"
+msgstr "בקשת עמיתים נוספים מהעוקב"
+
+msgid "Verify local data"
+msgstr "אימות נתונים מקומיים"
+
+msgid "Remove torrent and delete its files"
+msgstr "הסרת טורנט ומחיקת הקבצים שלו"
+
+msgid "Compact View"
+msgstr "תצוגה חסכונית"
+
+msgid "_Main Window"
+msgstr "_חלון ראשי"
+
+msgid "Tray _Icon"
+msgstr "סמל במ_גש מערכת"
+
+msgid "_Change Session…"
+msgstr "הח_לפת הפעלה…"
+
+#. Start a local session or connect to a running session
+msgid "Choose Session"
+msgstr "בחירת מופע"
+
+msgid "Bypass the queue and start now"
+msgstr "עקיפת התור והתחלה כעת"
+
+msgid "{file_count:L} File"
+msgid_plural "{file_count:L} Files"
+msgstr[0] "קובץ אחד"
+msgstr[1] "{file_count:L} קבצים"
+msgstr[2] "{file_count:L} קבצים"
+
+msgid "{piece_count:L} Piece"
+msgid_plural "{piece_count:L} Pieces"
+msgstr[0] "חלק אחד"
+msgstr[1] "{piece_count:L} חלקים"
+msgstr[2] "{piece_count:L} חלקים"
+
+msgid "{total_size} in {files}; {pieces} @ {piece_size}"
+msgstr "{total_size} ב־{files}; {pieces} @ {piece_size}"
+
+msgid ""
+"To add a backup URL, add it on the line after the primary URL.\n"
+"To add another primary URL, add it after a blank line."
+msgstr ""
+"כדי להוסיף כתובת גיבוי יש להוסיפה בשורה שלאחר הכתובת העיקרית.\n"
+"כדי להוסיף כתובת עיקרית נוספת, יש להוסיפה לאחר שורה ריקה."
+
+#, fuzzy
+msgid "Sou_rce:"
+msgstr ""
+"#-#-#-#-#  he.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_מקור:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"מ_קור:"
+
+msgid "_Priority:"
+msgstr "ע_דיפות:"
+
+msgid "Select Folder"
+msgstr "בחירת תיקיה"
+
+msgid "unknown"
+msgstr "לא ידוע"
+
+msgid "checking…"
+msgstr "בבדיקה…"
+
+msgid "open"
+msgstr "פתוח"
+
+msgid "closed"
+msgstr "סגור"
+
+msgid "error"
+msgstr "שגיאה"
+
+msgid "<b>Update succeeded!</b><p>Blocklist now has {count:L} rule.</p>"
+msgid_plural "<b>Update succeeded!</b><p>Blocklist now has {count:L} rules.</p>"
+msgstr[0] "<b>העדכון הצליח!</b><p>ברשימת החסימה יש כעת כלל אחד.</p>"
+msgstr[1] "<b>העדכון הצליח!</b><p>ברשימת החסימה יש כעת {count:L} כללים.</p>"
+msgstr[2] "<b>העדכון הצליח!</b><p>ברשימת החסימה יש כעת {count:L} כללים.</p>"
+
+msgid "Download of the blocklist failed."
+msgstr ""
+
+msgid "Update Blocklist"
+msgstr "עדכון רשימת החסימה"
+
+msgid "Select \"Torrent Done Seeding\" Script"
+msgstr "בחירת סקריפט „סיום זריעת טורנט”"
+
+msgid "Select Watch Directory"
+msgstr "בחירת מחיצת מעקב"
+
+msgid "Select Incomplete Directory"
+msgstr "בחירת תיקיה לטורנטים חלקיים"
+
+msgid "Select \"Torrent Done Downloading\" Script"
+msgstr "בחירת סקריפט „סיום הורדת טורנט”"
+
+msgid "Not supported by remote sessions"
+msgstr "לא נתמך ממופעים המרוחקים"
+
+msgid "<i>Blocklist contains {count:L} rule</i>"
+msgid_plural "<i>Blocklist contains {count:L} rules</i>"
+msgstr[0] "<i>רשימת החסימה מכילה כלל אחד</i>"
+msgstr[1] "<i>רשימת החסימה מכילה {count:L} כללים</i>"
+msgstr[2] "<i>רשימת החסימה מכילה {count:L} כללים</i>"
+
+#, fuzzy
+#| msgid "<i>Blocklist contains {count:L} rule</i>"
+#| msgid_plural "<i>Blocklist contains {count:L} rules</i>"
+msgid "<i>Blocklist has never been updated</i>"
+msgstr "<i>רשימת החסימה מכילה כלל אחד</i>"
+
+#, fuzzy
+#| msgid "<i>Blocklist contains {count:L} rule</i>"
+#| msgid_plural "<i>Blocklist contains {count:L} rules</i>"
+msgid "<i>Blocklist last updated {date}</i>"
+msgstr "<i>רשימת החסימה מכילה כלל אחד</i>"
+
+msgid "_Upload:"
+msgstr "ה_עלאה:"
+
+msgid "_Download:"
+msgstr "הו_רדה:"
+
+msgid "U_pload:"
+msgstr "הע_לאה:"
+
+msgid "Do_wnload:"
+msgstr "הור_דה:"
+
+msgid "Downloading"
+msgstr "הורדה"
+
+msgid "Adding"
+msgstr "בהליכי הוספה"
+
+msgid "Reads user clipboard content for torrents"
+msgstr "קורא את לוח הגזירים של המשתמש לאיתור טורנטים"
+
+msgid "Detect new torrents from clipboard"
+msgstr "זיהוי טורנטים חדשים מלוח הגזירים"
+
+#. Please keep this phrase as short as possible, it's currently the longest and influences dialog width
+msgid "Download is i_nactive if data sharing stopped:"
+msgstr "ההורדה _אינה פעילה אם שיתוף הנתונים נעצר למשך:"
+
+msgid "Seeding"
+msgstr "זריעה"
+
+msgid "Stop seedi_ng if idle for:"
+msgstr "הפסקת זריעה בחוסר _פעילות למשך:"
+
+msgid "Encryption"
+msgstr "הצפנה"
+
+msgid "Start _minimized in notification area"
+msgstr "התחלה ממו_זערת של אזור הודעות"
+
+#, fuzzy
+#| msgid "Retransmission"
+msgid "Retransmission (Qt)"
+msgstr "‏Retransmission"
+
+msgid "Select Location"
+msgstr "בחירת מיקום"
+
+msgid "Error Renaming Path"
+msgstr "שגיאה בשינוי שם הנתיב"
+
+msgid "Unable to rename \"{old_path}\" as \"{path}\": {error}."
+msgstr "לא ניתן לשנות את השם „{old_path}” לשם „{path}”: {error}."
+
+msgid "Error Adding Torrent"
+msgstr "שגיאה בהוספת טורנט"
+
+msgid "{torrent_name} (copy of {hash})"
+msgstr "{torrent_name} (עותק של {hash})"
+
+msgid "Duplicate Torrent"
+msgstr "שכפול טורנט"
+
+msgid "Duplicate Torrents"
+msgstr "שכפול טורנטים"
+
+msgid "Unable to add {count} duplicate torrent"
+msgid_plural "Unable to add {count} duplicate torrents"
+msgstr[0] "לא ניתן להוסיף טורנט כפול"
+msgstr[1] "לא ניתן להוסיף {count} טורנטים כפולים"
+msgstr[2] "לא ניתן להוסיף {count} טורנטים כפולים"
+
+msgid "Change Session"
+msgstr "החלפת מופע"
+
+msgid "Source"
+msgstr "מקור"
+
+msgid "Start _Local Session"
+msgstr "התחלת _מופע נוכחי"
+
+msgid "Connect to _Remote Session"
+msgstr "התחברות למופע מ_רוחק"
+
+msgid "_Host:"
+msgstr "מ_ארח:"
+
+msgid "_Port:"
+msgstr "_פתחה:"
+
+msgid "_Authentication required"
+msgstr "_נדרש אימות"
+
+msgid "Remote root pa_th:"
+msgstr ""
+
+msgid "Tracker gave a warning: {warning}"
+msgstr "העוקב החזיר אזהרה: {warning}"
+
+msgid "Tracker gave an error: {error}"
+msgstr "העוקב החזיר שגיאה: {error}"
+
+msgid "Error: {error}"
+msgstr "שגיאה: {error}"
+
+#, fuzzy
+#| msgid "Magnetized transfer - retrieving metadata (%1%)"
+msgid "Magnetized torrent - retrieving metadata ({percent_done}%)"
+msgstr "העברה מגנטית - נתוני העל מתקבלים (%1%)"
+
+#, no-c-format
+msgid "Downloading metadata from {active_count:L} peer ({percent_done}% done)"
+msgid_plural "Downloading metadata from {active_count:L} peers ({percent_done}% done)"
+msgstr[0] "מתקבל מידע על מעמית אחד ({percent_done}% הושלמו)"
+msgstr[1] "מתקבל מידע על מ־{active_count:L} עמיתים ({percent_done}% הושלמו)"
+msgstr[2] "מתקבל מידע על מ־{active_count:L} עמיתים ({percent_done}% הושלמו)"
+
+msgid "Downloading from {active_count:L} peer"
+msgid_plural "Downloading from {active_count:L} peers"
+msgstr[0] "מתבצעת הורדה מעמית {active_count:L}"
+msgstr[1] "מתבצעת הורדה מ־{active_count:L} עמיתים"
+msgstr[2] "מתבצעת הורדה מ־{active_count:L} עמיתים"
+
+msgid " and {webseed_count:L} web seed"
+msgid_plural " and {webseed_count:L} web seeds"
+msgstr[0] "ועוד זורע רשת"
+msgstr[1] "ו־{webseed_count:L} זורעי רשת"
+msgstr[2] "ו־{webseed_count:L} זורעי רשת"
+
+msgid "Seeding to {active_count:L} peer"
+msgid_plural "Seeding to {active_count:L} peers"
+msgstr[0] "זריעה לעמית אחד"
+msgstr[1] "זריעה ל־{active_count:L} עמיתים"
+msgstr[2] "זריעה ל־{active_count:L} עמיתים"
+
+msgid " - "
+msgstr " - "
+
+msgid "To add a backup URL, add it on the next line after a primary URL."
+msgstr "כדי להוסיף כתובת גיבוי, יש להוסיף אותה בשורה העוקבת לשורת הכתובת העיקרית."
+
+msgid "To add a new primary URL, add it after a blank line."
+msgstr "כדי להוסיף כתובת עיקרית חדשה, יש להוסיף אותה לאחר שורה ריקה."
 
 msgid "{file_count:L} file, {total_size}\n"
 msgid_plural "{file_count:L} files, {total_size}\n"
@@ -2089,7 +3210,10 @@ msgstr[1] "דקות"
 msgstr[2] "דקות"
 msgstr[3] "דקות"
 
-msgid "seconds"
+#, fuzzy
+#| msgid "seconds"
+#| msgid_plural "seconds"
+msgid "second"
 msgid_plural "seconds"
 msgstr[0] "שנייה"
 msgstr[1] "שניות"
@@ -2102,6 +3226,108 @@ msgstr[0] "יום"
 msgstr[1] "יומיים"
 msgstr[2] "ימים"
 msgstr[3] "ימים"
+
+msgid "seconds"
+msgid_plural "seconds"
+msgstr[0] "שנייה"
+msgstr[1] "שניות"
+msgstr[2] "שניות"
+msgstr[3] "שניות"
+
+#~ msgid "Finished"
+#~ msgstr "הסתיימו"
+
+#~ msgid "We would upload to this peer if they asked"
+#~ msgstr "היינו מעלים לעמית זה אילו היה מבקש"
+
+#~ msgid "Dn Blocks"
+#~ msgstr "בלוקים להורדה"
+
+#~ msgid "Up Blocks"
+#~ msgstr "בלוקים להעלאה"
+
+#~ msgid "We Cancelled"
+#~ msgstr "בוטל מצדנו"
+
+#~ msgid "They Cancelled"
+#~ msgstr "בוטל על ידם"
+
+#~ msgid "Have"
+#~ msgstr "קיימים"
+
+#~ msgctxt "current session totals"
+#~ msgid "Down: {downloaded_size}, Up: {uploaded_size}"
+#~ msgstr "הורדה: {downloaded_size}, העלאה: {uploaded_size}"
+
+#~ msgctxt "all-time totals"
+#~ msgid "Down: {downloaded_size}, Up: {uploaded_size}"
+#~ msgstr "הורדה: {downloaded_size}, העלאה: {uploaded_size}"
+
+#~ msgid "Select a File"
+#~ msgstr "בחירת קובץ"
+
+#~ msgid "Inhibiting desktop hibernation"
+#~ msgstr "תרדמת שולחן העבודה נמנעת"
+
+#~ msgid "Couldn't inhibit desktop hibernation: {error}"
+#~ msgstr "לא ניתן למנוע את תרדמת שולחן העבודה: {error}"
+
+#~ msgid "Allowing desktop hibernation"
+#~ msgstr "תרדמת שולחן העבודה מותרת"
+
+#~ msgid "Open URL…"
+#~ msgstr "פתיחה מכתובת…"
+
+#~ msgid "Start all torrents"
+#~ msgstr "התחלת הורדת כל הטורנטים"
+
+#~ msgid "Pause all torrents"
+#~ msgstr "השהיית כל הטורנטים"
+
+#~ msgid "Start torrent now"
+#~ msgstr "התחלת הטורנט כעת"
+
+#~ msgid "Copy _Magnet Link to Clipboard"
+#~ msgstr "העתקת קישור מ_גנט אל לוח הגזירים"
+
+#~ msgid "Enable Alternative Speed _Limits"
+#~ msgstr "הפעלת מ_גבלות מהירות חלופיות"
+
+#~ msgid "Torrent size:"
+#~ msgstr "גודל הטורנט:"
+
+#~ msgid "_New"
+#~ msgstr "_חדש"
+
+#~ msgid "Source F_older:"
+#~ msgstr "תיקיית מ_קור:"
+
+#~ msgid "Source _File:"
+#~ msgstr "קובץ מקו_ר:"
+
+#~ msgid "P_ause"
+#~ msgstr "ה_שהייה"
+
+#~ msgid "Keep _incomplete torrents in:"
+#~ msgstr "להשאיר טורנטים ש_לא הושלמו תחת:"
+
+#~ msgid "Call scrip_t when done downloading:"
+#~ msgstr "לקרוא ל_סקריפט עם סיום ההורדה:"
+
+#~ msgid "_Port used for incoming connections:"
+#~ msgstr "הפתחה המשמשת לחיבורים _נכנסים:"
+
+#~ msgid "Enable µ_TP for peer communication"
+#~ msgstr "הפעלת µTP לתקשורת מול _עמיתים"
+
+#~ msgid "_Inhibit hibernation when torrents are active"
+#~ msgstr "למ_נוע תרדמת כאשר יש טורנטים פעילים"
+
+#~ msgid "Torrent _location:"
+#~ msgstr "מי_קום טורנט:"
+
+#~ msgid "Couldn't read filename: {error} ({error_code})"
+#~ msgstr "לא ניתן לקרוא את שם הקובץ: {error} ({error_code})"
 
 #~ msgid "Couldn't find pending RPC request for tag {tag}"
 #~ msgstr "לא ניתן למצוא את בקשת ה־RPC הממתינה לתגית {tag}"

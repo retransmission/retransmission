@@ -11,8 +11,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-01-04 14:15+0000\n"
+"Report-Msgid-Bugs-To: https://github.com/retransmission/retransmission/issues\n"
+"POT-Creation-Date: 2026-10-03 11:48-0500\n"
 "PO-Revision-Date: 2017-01-26 19:47+0000\n"
 "Last-Translator: Mike Gelfand <mikedld@mikedld.com>, 2022\n"
 "Language-Team: Indonesian (https://app.transifex.com/transmissionbt/teams/33778/id/)\n"
@@ -22,10 +22,18 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
+#, fuzzy
 msgid "None"
-msgstr "Nihil"
+msgstr ""
+"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Nihil\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Tidak ada"
 
 msgid "Inf"
+msgstr ""
+
+msgid "Another process is already using '{path}'."
 msgstr ""
 
 msgid "Couldn't read '{path}': {error} ({error_code})"
@@ -53,6 +61,9 @@ msgid "Reloading settings from '{path}'"
 msgstr ""
 
 msgid "Couldn't initialize daemon: {error} ({error_code})"
+msgstr ""
+
+msgid "Waiting for another process to release '{path}'"
 msgstr ""
 
 msgid "Loading settings from '{path}'"
@@ -102,8 +113,13 @@ msgid "Couldn't add duplicate torrent"
 msgid_plural "Couldn't add duplicate torrents"
 msgstr[0] "Tak bisa menambah torrent duplikat"
 
+#, fuzzy
 msgid "A fast and easy BitTorrent client"
-msgstr "Aplikasi BitTorrent yang cepat dan mudah"
+msgstr ""
+"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Aplikasi BitTorrent yang cepat dan mudah\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Klien BitTorrent yang cepat dan mudah"
 
 msgid "Copyright © The {appname} Project"
 msgstr "Hak Cipta © Proyek {appname}"
@@ -134,46 +150,97 @@ msgstr ""
 msgid "Use global settings"
 msgstr "Pakai pengaturan global"
 
+#, fuzzy
 msgid "Seed regardless of ratio"
-msgstr "Membibit tak peduli rasio"
+msgstr ""
+"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Membibit tak peduli rasio\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Membenih tak peduli rasio"
 
+#, fuzzy
 msgid "Stop seeding at ratio:"
-msgstr "Berhenti membibit pada rasio:"
+msgstr ""
+"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Berhenti membibit pada rasio:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Berhenti membenih pada rasio:"
 
+#, fuzzy
 msgid "Seed regardless of activity"
-msgstr "Membibit tak peduli aktivitas"
+msgstr ""
+"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Membibit tak peduli aktivitas\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Kirim terlepas dari rasio"
 
 msgid "Stop seeding if idle for N minutes:"
 msgstr "Berhenti membibit bila menganggur selama N menit:"
 
+#, fuzzy
 msgid "Queued for verification"
-msgstr "Diantrikan untuk verifikasi"
+msgstr ""
+"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Diantrikan untuk verifikasi\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Antri untuk pemeriksaan"
 
 msgid "Verifying local data"
 msgstr "Memeriksa data lokal"
 
+#, fuzzy
 msgid "Queued for download"
-msgstr "Diantrikan untuk diunduh"
+msgstr ""
+"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Diantrikan untuk diunduh\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Antri untuk mengunduh"
 
 msgctxt "Verb"
 msgid "Downloading"
 msgstr "Mengunduh"
 
+#, fuzzy
 msgid "Queued for seeding"
-msgstr "Diantrikan untuk pembibitan"
+msgstr ""
+"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Diantrikan untuk pembibitan\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Antri untuk mengirim"
 
+#, fuzzy
 msgctxt "Verb"
 msgid "Seeding"
-msgstr "Pembibitan"
+msgstr ""
+"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Pembibitan\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Mengirim"
 
-msgid "Finished"
-msgstr "Selesai"
+#, fuzzy
+#| msgid "Incomplete"
+msgid "Seeding complete"
+msgstr "Belum komplit"
 
+#, fuzzy
 msgid "Paused"
-msgstr "Ditunda"
+msgstr ""
+"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Ditunda\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Diistirahatkan\n"
+"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Berhenti Sejenak\n"
+"#-#-#-#-#  qt-2.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Dijeda"
 
+#, fuzzy
 msgid "N/A"
-msgstr "Tidak Tersedia"
+msgstr ""
+"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Tidak Tersedia\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"N/A"
 
 msgid "Mixed"
 msgstr "Campuran"
@@ -181,23 +248,33 @@ msgstr "Campuran"
 msgid "No Torrents Selected"
 msgstr "Tak Ada Torrent Yang Dipilih"
 
+#, fuzzy
 msgid "Private to this tracker -- DHT and PEX disabled"
-msgstr "Privat ke pelacak ini -- DHT dan PEX dimatikan"
+msgstr ""
+"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Privat ke pelacak ini -- DHT dan PEX dimatikan\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Pribadi ke pelacak ini -- DHT dan PEX dinonaktifkan"
 
 msgid "Public torrent"
 msgstr "Torrent publik"
 
 msgid "Created by {creator} on {date}"
-msgstr ""
+msgstr "Dibuat oleh {creator} pada {date}"
 
 msgid "Created by {creator}"
-msgstr ""
+msgstr "Dibuat oleh {creator}"
 
 msgid "Created on {date}"
-msgstr ""
+msgstr "Dibuat pada {date}"
 
+#, fuzzy
 msgid "Unknown"
-msgstr "Tak diketahui"
+msgstr ""
+"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Tak diketahui\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Tidak diketahui"
 
 msgid "{total_size} in {file_count:L} file"
 msgid_plural "{total_size} in {file_count:L} files"
@@ -214,14 +291,15 @@ msgstr ""
 msgid "{current_size} ({percent_done}% of {percent_available}% available)"
 msgstr ""
 
+#, c-format
 msgid "{current_size} ({percent_done}% of {percent_available}% available; {unverified_size} unverified)"
 msgstr ""
 
 msgid "{downloaded_size} (+{discarded_size} discarded after failed checksum)"
-msgstr ""
+msgstr "{downloaded_size} (+{discarded_size} dibuang setelah checksum gagal)"
 
 msgid "{uploaded_size} (Ratio: {ratio})"
-msgstr ""
+msgstr "{uploaded_size} (Rasio: {ratio})"
 
 msgid "No errors"
 msgstr "Tanpa galat"
@@ -232,29 +310,69 @@ msgstr "Tak pernah"
 msgid "Active now"
 msgstr "Aktif sekarang"
 
+#, fuzzy
 msgid "Optimistic unchoke"
-msgstr "Lepas rem optimistis"
+msgstr ""
+"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Lepas rem optimistis\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Buka pengetatan optimis"
 
+#, fuzzy
 msgid "Downloading from this peer"
-msgstr "Mengunduh dari peer ini"
+msgstr ""
+"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Mengunduh dari peer ini\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Mengunduh dari rekan ini"
 
+#, fuzzy
 msgid "We would download from this peer if they would let us"
-msgstr "Kita akan mengunduh dari peer ini bila mereka mengijinkan"
+msgstr ""
+"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Kita akan mengunduh dari peer ini bila mereka mengijinkan\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Kami akan mengunduh dari rekan ini jika mereka mengizinkan kami"
 
+#, fuzzy
 msgid "Uploading to peer"
-msgstr "Mengunggah ke peer"
+msgstr ""
+"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Mengunggah ke peer\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Mengunggah ke rekan"
 
-msgid "We would upload to this peer if they asked"
-msgstr "Kita akan mengunggah ke peer ini bila mereka minta"
+#, fuzzy
+msgid "This peer would download from us if we would let them"
+msgstr ""
+"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Kita akan mengunduh dari peer ini bila mereka mengijinkan\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Kami akan mengunduh dari rekan ini jika mereka mengizinkan kami"
 
+#, fuzzy
 msgid "Peer has unchoked us, but we're not interested"
-msgstr "Peer telah melepas remnya atas kita, tapi kita tak tertarik"
+msgstr ""
+"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Peer telah melepas remnya atas kita, tapi kita tak tertarik\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Rekan membuka pengetatan untuk kita, tapi kita tidak tertarik"
 
+#, fuzzy
 msgid "We unchoked this peer, but they're not interested"
-msgstr "Kita telah melepas rem ke peer ini, tapi mereka tak tertarik"
+msgstr ""
+"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Kita telah melepas rem ke peer ini, tapi mereka tak tertarik\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Kita membuka pengetatan untuk rekan ini, tapi mereka tidak tertarik"
 
+#, fuzzy
 msgid "Encrypted connection"
-msgstr "Koneksi terenkripsi"
+msgstr ""
+"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Koneksi terenkripsi\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Sambungan terenkripsi"
 
 msgid "Peer was found through Peer Exchange (PEX)"
 msgstr "Peer ditemukan melalui Peer Exchange (PEX)"
@@ -262,16 +380,23 @@ msgstr "Peer ditemukan melalui Peer Exchange (PEX)"
 msgid "Peer was found through DHT"
 msgstr "Peer ditemukan melalui DHT"
 
+#, fuzzy
 msgid "Peer is an incoming connection"
-msgstr "Peer adalah koneksi masuk"
+msgstr ""
+"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Peer adalah koneksi masuk\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Rekan adalah sambungan yang masuk"
 
 msgid "Peer is connected over µTP"
 msgstr "Peer tersambung lewat µTP"
 
+msgid "Peer supports holepunch (BEP 55)"
+msgstr ""
+
 msgid "Address"
 msgstr "Alamat"
 
-#. % is percent done
 msgid "%"
 msgstr "%"
 
@@ -281,26 +406,19 @@ msgstr "Minta Und"
 msgid "Up Reqs"
 msgstr "Minta Ung"
 
-msgid "Dn Blocks"
-msgstr "Blok Und"
-
-msgid "Up Blocks"
-msgstr "Blok Ung"
-
-msgid "We Cancelled"
-msgstr "Kita Batalkan"
-
-msgid "They Cancelled"
-msgstr "Mereka Batalkan"
-
 msgid "Down"
 msgstr "Unduh"
 
 msgid "Up"
 msgstr "Unggah"
 
+#, fuzzy
 msgid "Client"
-msgstr "Aplikasi"
+msgstr ""
+"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Aplikasi\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Klien"
 
 msgid "Flags"
 msgstr "Flag"
@@ -308,63 +426,19 @@ msgstr "Flag"
 msgid "Web Seeds"
 msgstr "Bibit Web"
 
-msgid "Got a list of {markup_begin}{peer_count} peer{markup_end} {time_span_ago}"
-msgid_plural "Got a list of {markup_begin}{peer_count} peers{markup_end} {time_span_ago}"
-msgstr[0] ""
-
-#. {markup_begin} and {markup_end} should surround the time_span
-msgid "Peer list request {markup_begin}timed out {time_span_ago}{markup_end}; will retry"
-msgstr ""
-
-#. {markup_begin} and {markup_end} should surround the error
-msgid "Got an error '{markup_begin}{error}{markup_end}' {time_span_ago}"
-msgstr ""
-
-msgid "No updates scheduled"
-msgstr "Tak ada pemutakhiran yang dijadwalkan"
-
-msgid "Asking for more peers {time_span_from_now}"
-msgstr ""
-
-msgid "Queued to ask for more peers"
-msgstr "Diantrikan untuk meminta lebih banyak peer"
-
-#. {markup_begin} and {markup_end} should surround time_span_ago
-msgid "Asked for more peers {markup_begin}{time_span_ago}{markup_end}"
-msgstr ""
-
-msgid "Tracker had {markup_begin}{seeder_count} {seeder_or_seeders} and {leecher_count} {leecher_or_leechers}{markup_end} {time_span_ago}"
-msgstr ""
-
-msgid "seeder"
-msgid_plural "seeders"
-msgstr[0] ""
-
-msgid "leecher"
-msgid_plural "leechers"
-msgstr[0] ""
-
-#. {markup_begin} and {markup_end} should surround the error text
-msgid "Got a scrape error '{markup_begin}{error}{markup_end}' {time_span_ago}"
-msgstr ""
-
-msgid "Asking for peer counts in {time_span_from_now}"
-msgstr ""
-
-msgid "Queued to ask for peer counts"
-msgstr "Diantrikan untuk meminta cacah peer"
-
-msgid "Asked for peer counts {markup_begin}{time_span_ago}{markup_end}"
-msgstr ""
-
 msgid "{torrent_name} - Edit Trackers"
-msgstr ""
+msgstr "{torrent_name} - Sunting Pelacak"
 
 msgid "List contains invalid URLs"
 msgstr "Daftar mengandung URL tak valid"
 
+#, fuzzy
 msgid "Please correct the errors and try again."
-msgstr "Mohon perbaiki dan coba lagi."
+msgstr ""
+"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Mohon perbaiki dan coba lagi.\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Silakan perbaiki galat dan coba lagi."
 
 msgid "{torrent_name} - Add Tracker"
 msgstr ""
@@ -380,46 +454,93 @@ msgid_plural "Properties - {torrent_count:L} Torrents"
 msgstr[0] ""
 
 msgid "Remove torrent?"
-msgstr ""
+msgstr "Hilangkan torrent?"
+
+msgid "Delete this torrent's downloaded files?"
+msgstr "Hapus berkas yang diunduh torrent ini?"
 
 msgid "Remove {count:L} torrent?"
 msgid_plural "Remove {count:L} torrents?"
-msgstr[0] ""
-
-msgid "Delete this torrent's downloaded files?"
-msgstr ""
+msgstr[0] "Hilangkan {count:L} torrent?"
 
 msgid "Delete this {count:L} torrent's downloaded files?"
 msgid_plural "Delete these {count:L} torrents' downloaded files?"
-msgstr[0] ""
+msgstr[0] "Hapus berkas {count:L} yang diunduh torrent ini?"
 
-msgid "Once removed, continuing the transfer will require the torrent file or magnet link."
-msgid_plural "Once removed, continuing the transfers will require the torrent files or magnet links."
-msgstr[0] "Sekali dihapus, melanjutkan transfer akan memerlukan berkas torrent atau magnet link."
+#, fuzzy
+#| msgid "Once removed, continuing the transfer will require the torrent file or magnet link."
+#| msgid_plural "Once removed, continuing the transfers will require the torrent files or magnet links."
+msgid "Once removed, you'll need the torrent file or magnet link to add it again."
+msgstr "Sekali dihapus, melanjutkan transfer akan memerlukan berkas torrent atau magnet link."
 
+#, fuzzy
+#| msgid "Once removed, continuing the transfers will require the torrent files or magnet links."
+msgid "Once removed, you'll need the torrent files or magnet links to add them again."
+msgstr "Sekali dihilangkan, melanjutkan transfer akan membutuhkan berkas torrent atau tautan magnet."
+
+#, fuzzy
 msgid "This torrent has not finished downloading."
-msgstr "Torrent ini belum selesai mengunduh."
+msgstr ""
+"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Torrent ini belum selesai mengunduh.\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Torrent ini belum selesai diunduh."
 
+#, fuzzy
 msgid "These torrents have not finished downloading."
-msgstr "Torrent ini belum selesai mengunduh."
+msgstr ""
+"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Torrent ini belum selesai mengunduh.\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Torrent ini belum selesai diunduh."
 
+#, fuzzy
 msgid "This torrent is connected to peers."
-msgstr "Torrent ini tersambung ke peer."
+msgstr ""
+"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Torrent ini tersambung ke peer.\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Torrent ini tersambung dengan rekan - rekan."
 
+#, fuzzy
 msgid "These torrents are connected to peers."
-msgstr "Torrent ini tersambung ke peer."
+msgstr ""
+"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Torrent ini tersambung ke peer.\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Torrent ini tersambung dengan rekan - rekan."
 
+#, fuzzy
 msgid "One of these torrents is connected to peers."
-msgstr "Satu atau lebih dari torrent-torrent ini tersambung ke peer."
+msgstr ""
+"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Satu atau lebih dari torrent-torrent ini tersambung ke peer.\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Salah satu torrent ini tersambung ke rekan-rekan."
 
+#, fuzzy
 msgid "Some of these torrents are connected to peers."
-msgstr "Satu atau lebih dari torrent-torrent ini tersambung ke peer."
+msgstr ""
+"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Satu atau lebih dari torrent-torrent ini tersambung ke peer.\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Beberapa torrent ini tersambung dengan rekan-rekan."
 
+#, fuzzy
 msgid "One of these torrents has not finished downloading."
-msgstr "Satu atau lebih dari torrent-torrent ini belum selesai mengunduh."
+msgstr ""
+"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Satu atau lebih dari torrent-torrent ini belum selesai mengunduh.\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Salah satu torrent ini belum selesai diunduh."
 
+#, fuzzy
 msgid "Some of these torrents have not finished downloading."
-msgstr "Satu atau lebih dari torrent-torrent ini belum selesai mengunduh."
+msgstr ""
+"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Satu atau lebih dari torrent-torrent ini belum selesai mengunduh.\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Beberapa torrent ini belum selesai diunduh."
 
 msgid "_Cancel"
 msgstr "_Batal"
@@ -427,6 +548,7 @@ msgstr "_Batal"
 msgid "_Delete"
 msgstr "_Hapus"
 
+#. Removes the torrent from the list and keeps its downloaded files
 msgid "_Remove"
 msgstr "_Hapus"
 
@@ -448,8 +570,8 @@ msgstr "Nama"
 msgid "Size"
 msgstr "Ukuran"
 
-msgid "Have"
-msgstr "Punya"
+msgid "Progress"
+msgstr "Kemajuan"
 
 msgid "Download"
 msgstr "Unduh"
@@ -463,20 +585,48 @@ msgstr "Semua"
 msgid "Active"
 msgstr "Aktif"
 
+#, fuzzy
 msgctxt "Verb"
 msgid "Verifying"
-msgstr "Memverifikasi"
+msgstr ""
+"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Memverifikasi\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Memeriksa"
 
 msgid "Error"
 msgstr "Galat"
 
+#, fuzzy
 msgid "_Show:"
-msgstr "_Tampilkan:"
+msgstr ""
+"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Tampilkan:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"T_ampilkan:"
 
 msgid "_Show {count:L} of:"
 msgstr ""
 
 msgid "{disk_space} free"
+msgstr "{disk_space} bebas"
+
+msgid "Where to look for configuration files"
+msgstr "Lokasi berkas konfigurasi"
+
+msgid "Start with all torrents paused"
+msgstr "Mulai dengan semua torrent diistirahatkan"
+
+msgid "Start minimized in notification area"
+msgstr "Mulai terminimalkan dalam area pemberitahuan"
+
+msgid "Show version number and exit"
+msgstr "Tampilkan nomor versi dan keluar"
+
+msgid "[torrent files or urls]"
+msgstr "[url atau berkas torrent]"
+
+msgid "Run '{program} --help' to see a full list of available command line options.\n"
 msgstr ""
 
 msgid ""
@@ -489,23 +639,38 @@ msgid ""
 " ({download_speed} down, {upload_speed} up)"
 msgstr ""
 
+#, fuzzy
 msgid "Unlimited"
-msgstr "Tak terbatas"
+msgstr ""
+"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Tak terbatas\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Tidak terbatas"
 
 msgid "Seed Forever"
 msgstr "Membibit Selamanya"
 
+#, fuzzy
 msgid "Limit Download Speed"
-msgstr "Batas Laju Unduh"
+msgstr ""
+"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Batas Laju Unduh\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Batas Kecepatan Unduh"
 
+#, fuzzy
 msgid "Limit Upload Speed"
-msgstr "Batas Laju Unggah"
+msgstr ""
+"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Batas Laju Unggah\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Batas Kecepatan Unggah"
 
 msgid "Stop Seeding at Ratio"
 msgstr "Berhenti Membibit pada Rasio"
 
 msgid "Stop at Ratio ({ratio})"
-msgstr ""
+msgstr "Berhenti pada Rasio ({ratio})"
 
 msgid "Total Ratio"
 msgstr "Rasio Total"
@@ -519,16 +684,11 @@ msgstr "Transfer Total"
 msgid "Session Transfer"
 msgstr "Transfer Sesi"
 
+msgid "Down: {downloaded_size}, Up: {uploaded_size}"
+msgstr "Unduh: {downloaded_size}, Unggah: {uploaded_size}"
+
 msgid "Ratio: {ratio}"
-msgstr ""
-
-msgctxt "current session totals"
-msgid "Down: {downloaded_size}, Up: {uploaded_size}"
-msgstr ""
-
-msgctxt "all-time totals"
-msgid "Down: {downloaded_size}, Up: {uploaded_size}"
-msgstr ""
+msgstr "Rasio: {ratio}"
 
 msgid "{download_speed} ▾"
 msgstr ""
@@ -586,6 +746,9 @@ msgstr "Waktu"
 msgid "Couldn't create proxy for '{bus}': {error} ({error_code})"
 msgstr ""
 
+msgid "Couldn't spawn async process \"'{command}'\": {error} ({error_code})"
+msgstr ""
+
 msgid "Open File"
 msgstr "Buka Berkas"
 
@@ -614,31 +777,59 @@ msgid "_Open"
 msgstr "_Buka"
 
 msgid "Show options dialog"
+msgstr "Tampilkan dialog pengaturan"
+
+msgid "Other…"
 msgstr ""
 
-msgid "Select a File"
-msgstr ""
+msgid "Select File"
+msgstr "Pilih Berkas"
 
 msgid "(None)"
-msgstr ""
+msgstr "(Tidak ada)"
 
+#, fuzzy
 msgid "Allow encryption"
-msgstr "Ijinkan enkripsi"
+msgstr ""
+"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Ijinkan enkripsi\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Mengizinkan enkripsi"
 
+#, fuzzy
 msgid "Prefer encryption"
-msgstr "Lebih suka enkripsi"
+msgstr ""
+"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Lebih suka enkripsi\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Lebih memilih enkripsi"
 
+#, fuzzy
 msgid "Require encryption"
-msgstr "Persyaratkan enkripsi"
+msgstr ""
+"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Persyaratkan enkripsi\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Membutuhkan enkripsi"
 
+#, fuzzy
 msgid "Every Day"
-msgstr "Tiap hari"
+msgstr ""
+"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Tiap hari\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Setiap Hari"
 
 msgid "Weekdays"
 msgstr "Hari kerja"
 
+#, fuzzy
 msgid "Weekends"
-msgstr "Akhir minggu"
+msgstr ""
+"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Akhir minggu\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Akhir pekan"
 
 msgid "Blocklist has {count:L} entry"
 msgid_plural "Blocklist has {count:L} entries"
@@ -688,26 +879,18 @@ msgstr "Tak bisa memindah torrent"
 msgid "This may take a moment…"
 msgstr "Ini mungkin makan waktu…"
 
+msgid "Couldn't open watchdir '{dirname}': {error} ({error_code})"
+msgstr ""
+
 msgid "Couldn't read '{path}'"
 msgstr ""
-
-#. logging
-msgid "Inhibiting desktop hibernation"
-msgstr "Mencegah hibernasi desktop"
-
-msgid "Couldn't inhibit desktop hibernation: {error}"
-msgstr ""
-
-#. logging
-msgid "Allowing desktop hibernation"
-msgstr "Mengijinkan hibernasi desktop"
 
 msgid "Couldn't find pending RPC request for id {id}"
 msgstr ""
 
 msgid "Started {count:L} time"
 msgid_plural "Started {count:L} times"
-msgstr[0] ""
+msgstr[0] "Dimulai {count:L} kali"
 
 msgid "Reset your statistics?"
 msgstr "Reset statistik Anda?"
@@ -718,30 +901,39 @@ msgstr "_Reset"
 msgid "These statistics are for your information only. Resetting them doesn't affect the statistics logged by your BitTorrent trackers."
 msgstr "Statistik ini hanya untuk informasi Anda. Mereset mereka tak mempengaruhi statistik yang dicatat oleh pelacak BitTorrent Anda."
 
+msgid "_Show {appname}"
+msgstr "_Tampilkan {appname}"
+
 msgid "{upload_speed} ▴ {download_speed} ▾"
 msgstr ""
 
 #, no-c-format
 msgid "Verifying local data ({percent_done}% tested)"
-msgstr ""
+msgstr "Memeriksa lokal data ({percent_done}% diuji)"
 
 msgid "{current_size} of {complete_size} ({percent_done}%)"
-msgstr ""
+msgstr "{current_size} dari {complete_size} ({percent_done}%)"
 
 msgid "{current_size} of {complete_size} ({percent_complete}%), uploaded {uploaded_size} (Ratio: {ratio}, Goal: {seed_ratio})"
 msgstr ""
 
 msgid "{current_size} of {complete_size} ({percent_complete}%), uploaded {uploaded_size} (Ratio: {ratio})"
-msgstr ""
+msgstr "{current_size} dari {complete_size} ({percent_complete}%), diunggah {uploaded_size} (Rasio: {ratio})"
 
 msgid "{complete_size}, uploaded {uploaded_size} (Ratio: {ratio}, Goal: {seed_ratio})"
 msgstr ""
 
 msgid "{complete_size}, uploaded {uploaded_size} (Ratio: {ratio})"
-msgstr ""
+msgstr "{complete_size}, diunggah {uploaded_size} (Rasio: {ratio})"
 
+#. Translators: Second (optional) part of torrent progress string
+#, fuzzy
 msgid "Remaining time unknown"
-msgstr "Sisa waktu tak diketahui"
+msgstr ""
+"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Sisa waktu tak diketahui\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Sisa waktu tidak diketahui"
 
 msgid "{download_speed} ▾  {upload_speed} ▴"
 msgstr ""
@@ -752,8 +944,10 @@ msgstr "Terhenti"
 msgid "Tracker warning: '{warning}'"
 msgstr ""
 
-msgid "Tracker Error: '{error}'"
-msgstr ""
+#, fuzzy
+#| msgid "Tracker gave an error: {error}"
+msgid "Tracker error: '{error}'"
+msgstr "Pelacak memberi sebuah galat: {error}"
 
 msgid "Local error: '{error}'"
 msgstr ""
@@ -773,11 +967,1161 @@ msgstr[0] ""
 
 msgid "Downloading from {active_count} of {connected_count} connected peer"
 msgid_plural "Downloading from {active_count} of {connected_count} connected peers"
-msgstr[0] ""
+msgstr[0] "Mengunduh dari {active_count} dari {connected_count} rekan yang tersambung"
 
 msgid "Seeding to {active_count} of {connected_count} connected peer"
 msgid_plural "Seeding to {active_count} of {connected_count} connected peers"
-msgstr[0] ""
+msgstr[0] "Mengirim ke {active_count} dari {connected_count} rekan tersambung"
+
+msgid "Retransmission"
+msgstr "Retransmission"
+
+msgid "BitTorrent Client"
+msgstr "Aplikasi BitTorrent"
+
+msgid "Download and share files over BitTorrent"
+msgstr "Unduh dan berbagi berkas melalui BitTorrent"
+
+#. Translators: Search terms to find this application. Do NOT translate or localize the semicolons! The list MUST also end with a semicolon!
+msgid "torrents;downloading;uploading;share;sharing;"
+msgstr "torrent;mengunduh;mengunggah;berbagi;"
+
+msgid "Start Retransmission with All Torrents Paused"
+msgstr "Mulai Retransmission dengan Semua Torrent Dijeda"
+
+msgid "Start Retransmission Minimized"
+msgstr "Mulai Retransmission Diminimalkan"
+
+#, fuzzy
+#| msgid "Copyright © The Retransmission Project"
+msgid "The Retransmission Project"
+msgstr "Hak Cipta © Proyek Retransmission"
+
+#. Translators: these are the application description paragraphs in the MetaInfo file.
+msgid "BitTorrent is a peer-to-peer file-sharing protocol that is commonly used to distribute large amounts of data between multiple users."
+msgstr ""
+
+msgid "Retransmission is a BitTorrent client with an easy-to-use interface on top of a cross-platform backend. Native interfaces are available for macOS, Linux, and Windows, as well as command line binaries and a web GUI."
+msgstr ""
+
+msgid "Notable features of Retransmission include support for Local Peer Discovery, encryption, DHT, µTP, PEX and Magnet links."
+msgstr ""
+
+msgid "Main window, showing an ongoing download of Fedora Workstation"
+msgstr ""
+
+msgid "_File"
+msgstr "_Berkas"
+
+msgid "Open _URL…"
+msgstr "Buka _URL…"
+
+msgid "_New…"
+msgstr "Bar_u…"
+
+msgid "_Start All"
+msgstr "Mulai _Semua"
+
+#, fuzzy
+msgid "_Pause All"
+msgstr ""
+"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Istirahat Semua\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Rehat Semua"
+
+#, fuzzy
+msgid "_Quit"
+msgstr ""
+"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Keluar\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Keluar"
+
+msgid "_Edit"
+msgstr "_Sunting"
+
+msgid "Select _All"
+msgstr "Pilih Semu_a"
+
+msgid "Dese_lect All"
+msgstr "Kosongkan semua pi_lihan"
+
+msgid "_Preferences"
+msgstr "_Preferensi"
+
+msgid "_Torrent"
+msgstr "_Torrent"
+
+msgid "_Properties"
+msgstr "_Properti"
+
+msgid "Open Fold_er"
+msgstr "Buka Fold_er"
+
+msgid "_Start"
+msgstr "_Mulai"
+
+msgid "Start _Now"
+msgstr "Mulai Sekara_ng"
+
+#, fuzzy
+msgid "Ask Tracker for _More Peers"
+msgstr ""
+"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Tanyakan Penjejak untuk _Peer yang lebih banyak\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Tanya Pelacak untuk _Rekan Lebih Banyak"
+
+#, fuzzy
+#| msgid "Queue"
+msgid "_Queue"
+msgstr "Antrian"
+
+msgid "Move to _Top"
+msgstr "Pindah ke _Puncak"
+
+#, fuzzy
+msgid "Move _Up"
+msgstr ""
+"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Nai_kkan\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Pindah ke _Atas"
+
+#, fuzzy
+msgid "Move _Down"
+msgstr ""
+"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Tur_unkan\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Pindah ke _Bawah"
+
+msgid "Move to _Bottom"
+msgstr "Pindah ke _Dasar"
+
+#, fuzzy
+msgid "_Pause"
+msgstr ""
+"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Stop\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Rehat"
+
+msgid "Set _Location…"
+msgstr "Tata _Lokasi…"
+
+#, fuzzy
+msgid "_Verify Local Data"
+msgstr ""
+"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Pe_riksa Data Lokal\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Verifikasi Data Lokal"
+
+msgid "_Copy Magnet Link to Clipboard"
+msgstr "_Salin Tautan Magnet ke Papan Klip"
+
+#, fuzzy
+msgid "_Delete Files and Remove"
+msgstr ""
+"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Hapus _dan Musnahkan Berkas\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Hapus File dan Hilangkan"
+
+msgid "_View"
+msgstr "_Tampilan"
+
+#, fuzzy
+msgid "_Compact View"
+msgstr ""
+"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Tilikan _Kompak\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Tampilan Kompak"
+
+#, fuzzy
+msgid "_Toolbar"
+msgstr ""
+"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Bilat Ala_t\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Bilah Alat"
+
+#, fuzzy
+msgid "_Filterbar"
+msgstr ""
+"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Bilah Pe_nyaring\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Bilah Penyaring"
+
+#, fuzzy
+msgid "_Statusbar"
+msgstr ""
+"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Bilah _Status\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Bilah Status"
+
+#, fuzzy
+msgid "Sort by _Activity"
+msgstr ""
+"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Urut _Aktivitas\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Urutkan dengan _Aktivitas"
+
+#, fuzzy
+msgid "Sort by A_ge"
+msgstr ""
+"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Urut U_mur\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Urutkan dengan U_mur"
+
+#, fuzzy
+msgid "Sort by _Name"
+msgstr ""
+"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Urut _Nama\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Urutkan dengan _Nama"
+
+#, fuzzy
+msgid "Sort by _Progress"
+msgstr ""
+"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Urut _Kemajuan\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Urutkan dengan _Kemajuan"
+
+#, fuzzy
+msgid "Sort by _Queue"
+msgstr ""
+"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Urut Ant_rian\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Urutkan dengan _Antrian"
+
+#, fuzzy
+msgid "Sort by Rati_o"
+msgstr ""
+"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Urut Rasi_o\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Urutkan dengan Rasi_o"
+
+#, fuzzy
+msgid "Sort by Si_ze"
+msgstr ""
+"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Urut _Ukuran\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Urutkan dengan Uku_ran"
+
+#, fuzzy
+msgid "Sort by Stat_e"
+msgstr ""
+"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Urut K_eadaan\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Urutkan dengan Kead_aan"
+
+#, fuzzy
+msgid "Sort by Time _Left"
+msgstr ""
+"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Urut Sisa _Waktu\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Urutkan dengan Waktu _Tersisa"
+
+#, fuzzy
+msgid "Re_verse Sort Order"
+msgstr ""
+"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Balikkan Urutan\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Balikkan Pengur_utan"
+
+msgid "_Help"
+msgstr "_Bantuan"
+
+#, fuzzy
+msgid "Message _Log"
+msgstr ""
+"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Log Pesan\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Catatan _Pesan"
+
+msgid "_Statistics"
+msgstr "_Statistik"
+
+#, fuzzy
+msgid "_Donate"
+msgstr ""
+"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Donasi\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Menyumbang"
+
+#, fuzzy
+msgid "_Contents"
+msgstr ""
+"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"I_si\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Konten"
+
+#, fuzzy
+msgid "_About"
+msgstr ""
+"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Perih_al\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Tent_ang"
+
+#, fuzzy
+#| msgid "Start torrent"
+msgid "_Sort Torrents By"
+msgstr "Mulai torrent"
+
+#, fuzzy
+#| msgid "Alternative Speed Limits"
+msgid "Alternative Speed _Limits"
+msgstr "Batas Kecepatan Alternatif"
+
+msgid "_Add"
+msgstr "T_ambah"
+
+msgid "Tracker"
+msgstr "Pelacak"
+
+msgid "_Announce URL:"
+msgstr "URL Pengumum_an:"
+
+msgid "_Close"
+msgstr "_Tutup"
+
+msgid "Activity"
+msgstr "Aktivitas"
+
+msgid "Size:"
+msgstr "Ukuran:"
+
+#, fuzzy
+msgid "Have:"
+msgstr ""
+"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Dimiliki:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Memiliki:"
+
+#, fuzzy
+msgid "Uploaded:"
+msgstr ""
+"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Terunggah:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Diunggah:"
+
+#, fuzzy
+msgid "Downloaded:"
+msgstr ""
+"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Terunduh:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Diunduh:"
+
+#, fuzzy
+msgid "State:"
+msgstr ""
+"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Status:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Keadaan:"
+
+msgid "Running time:"
+msgstr "Waktu berjalan:"
+
+#, fuzzy
+msgid "Remaining time:"
+msgstr ""
+"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Waktu tersisa:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Sisa waktu:"
+
+msgid "Last activity:"
+msgstr "Aktivitas terakhir:"
+
+#, fuzzy
+msgid "Error:"
+msgstr ""
+"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Error:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Galat:"
+
+#, fuzzy
+msgid "Details"
+msgstr ""
+"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Informasi\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Rincian"
+
+msgid "Location:"
+msgstr "Lokasi:"
+
+msgid "Hash:"
+msgstr "Hash:"
+
+msgid "Privacy:"
+msgstr "Privasi:"
+
+#, fuzzy
+msgid "Origin:"
+msgstr ""
+"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Asal:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Asal Usul:"
+
+msgid "Added:"
+msgstr "Ditambahkan:"
+
+msgid "Comment:"
+msgstr "Komentar:"
+
+msgid "Information"
+msgstr "Informasi"
+
+#, fuzzy
+msgid "Show _more details"
+msgstr ""
+"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Ta_mpilkan lebih banyak rincian\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Tampilan _rincian lebih"
+
+#, fuzzy
+msgid "Peers"
+msgstr ""
+"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Peer\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Rekan"
+
+#, fuzzy
+msgid "Show _backup trackers"
+msgstr ""
+"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Tampilkan pelacak _cadangan\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Tampilan _pelacak cadangan"
+
+msgid "File listing not available for combined torrent properties"
+msgstr "Mendaftar berkas tak tersedia bagi properti torrent terkombinasi"
+
+msgid "Files"
+msgstr "Berkas"
+
+msgid "Speed"
+msgstr "Kecepatan"
+
+#, fuzzy
+msgid "Honor global _limits"
+msgstr ""
+"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Hormati batas g_lobal\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Patuhi batas g_lobal"
+
+msgid "Limit _download speed ({speed_units}):"
+msgstr ""
+
+msgid "Limit _upload speed ({speed_units}):"
+msgstr ""
+
+msgid "Torrent _priority:"
+msgstr "_Prioritas torrent:"
+
+#, fuzzy
+msgid "Seeding Limits"
+msgstr ""
+"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Batas Pembibitan\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Batas Kirim"
+
+#, fuzzy
+msgid "_Ratio:"
+msgstr ""
+"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Rasio:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Rasio"
+
+#, fuzzy
+msgid "_Idle:"
+msgstr ""
+"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Mengganggur:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Mengan_ggur:"
+
+#, fuzzy
+msgid "Peer Connections"
+msgstr ""
+"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Koneksi-koneksi Peer\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Sambungan Rekan"
+
+#, fuzzy
+msgid "_Maximum peers:"
+msgstr ""
+"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Peer _maksimum:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Rekan _maksimum:"
+
+#, fuzzy
+msgid "Options"
+msgstr ""
+"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Pengaturan\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Opsi"
+
+msgid "Tracker Announce URLs"
+msgstr "URL Pengumuman Pelacak"
+
+msgid ""
+"To add a backup URL, add it on the next line after a primary URL.\n"
+"To add a new primary URL, add it after a blank line."
+msgstr ""
+
+msgid "Also see Default Public Trackers in Edit > Preferences > Network"
+msgstr "Lihat juga Pelacak Publik Baku dalam Sunting > Preferensi > Jaringan"
+
+#, fuzzy
+msgid "Open a torrent"
+msgstr ""
+"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Buka suatu torrent\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Buka sebuah torrent"
+
+msgid "Start torrent"
+msgstr "Mulai torrent"
+
+#, fuzzy
+msgid "Pause torrent"
+msgstr ""
+"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Hentikan torrent sementara\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Hentikan sejenak torrent"
+
+#, fuzzy
+msgid "Remove torrent"
+msgstr ""
+"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Hapus torrent\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Hilangkan torrent"
+
+msgid "Torrent properties"
+msgstr "Properti torrent"
+
+msgid "Torrent"
+msgstr "Torrent"
+
+msgid "Statistics"
+msgstr "Statistik"
+
+#, fuzzy
+msgid "New Torrent"
+msgstr ""
+"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Buat Torrent\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Torrent Baru"
+
+#, fuzzy
+#| msgid "C_redits"
+msgid "C_reate"
+msgstr "K_redit"
+
+#, fuzzy
+msgid "Sa_ve to:"
+msgstr ""
+"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Sim_pan ke:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Si_mpan ke:"
+
+msgid "Source f_older:"
+msgstr "F_older sumber:"
+
+msgid "Source _file:"
+msgstr "Berkas s_umber:"
+
+#, fuzzy
+#| msgid "Piece s_ize:"
+msgid "Piece si_ze:"
+msgstr "Ukuran _pecahan:"
+
+msgid "Properties"
+msgstr "Properti"
+
+msgid "_Trackers:"
+msgstr "_Pelacak:"
+
+#, fuzzy
+msgid "Co_mment:"
+msgstr ""
+"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"K_omentar:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Ko_mentar:"
+
+msgid "_Source:"
+msgstr "_Sumber:"
+
+#, fuzzy
+msgid "_Private torrent"
+msgstr ""
+"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Torrent _privat\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Torrent pribadi"
+
+msgid "Creating torrent…"
+msgstr "Membuat torrent…"
+
+msgid "Message Log"
+msgstr "Log Pesan"
+
+msgid "Save _As"
+msgstr "Simp_an Sebagai"
+
+msgid "Clear"
+msgstr "Bersihkan"
+
+msgid "Level"
+msgstr "Tingkat"
+
+msgid "Torrent Options"
+msgstr "Pengaturan Torrent"
+
+msgid "_Torrent file:"
+msgstr "Berkas _Torrent:"
+
+msgid "Select Source File"
+msgstr "Pilih Berkas Torrent"
+
+#, fuzzy
+msgid "_Destination folder:"
+msgstr ""
+"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Direktori penyimpanan:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Folder Tujuan:"
+
+msgid "Select Destination Folder"
+msgstr "Pilih Direktori Penyimpanan"
+
+msgid "_Start when added"
+msgstr "Mulai setelah dimasukkan"
+
+#, fuzzy
+#| msgid "Mo_ve .torrent file to the trash"
+msgid "Mo_ve torrent file to the Trash"
+msgstr "Pi_ndahkan berkas .torrent ke tempat sampah"
+
+msgid "{appname} Preferences"
+msgstr "Preferensi {appname}"
+
+msgid "Speed Limits"
+msgstr "Batas Kecepatan"
+
+#. Checkbox to limit upload speed
+msgid "_Upload ({speed_units}):"
+msgstr ""
+
+#. Checkbox to limit download speed
+msgid "_Download ({speed_units}):"
+msgstr ""
+
+msgid "Alternative Speed Limits"
+msgstr "Batas Kecepatan Alternatif"
+
+msgid "Override normal speed limits manually or at scheduled times"
+msgstr "Timpa batas kecepatan normal secara manual atau pada waktu terjadwal"
+
+#. Labels a spinbutton for alternate upload speed limits
+msgid "U_pload ({speed_units}):"
+msgstr ""
+
+#. Labels a spinbutton for alternate download speed limits
+msgid "Do_wnload ({speed_units}):"
+msgstr ""
+
+#, fuzzy
+msgid "_Scheduled times:"
+msgstr ""
+"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Waktu _terjadwal:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Waktu dijadwalkan:"
+
+msgid "_On days:"
+msgstr "_Pada hari:"
+
+#. Label goes between two time selectors, e.g. "limit speeds from [time] to [time]"
+msgid "_to"
+msgstr "_ke"
+
+msgctxt "Gerund"
+msgid "Adding"
+msgstr "Menambah"
+
+msgid "Automatically add torrent files _from:"
+msgstr ""
+
+#, fuzzy
+msgid "Show the Torrent Options _dialog"
+msgstr ""
+"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Tampilkan _dialog Opsi Torrent\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Tampilkan _dialog Pilihan Torrent"
+
+msgid "_Start added torrents"
+msgstr "_Mulai torrent yang ditambahkan"
+
+#, fuzzy
+#| msgid "Save to _Location:"
+msgid "Save to _location:"
+msgstr "Simpan ke _Lokasi:"
+
+msgid "Download Queue"
+msgstr "Antrian Unduh"
+
+#, fuzzy
+msgid "Ma_ximum active downloads:"
+msgstr ""
+"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Ma_ksimum unduhan aktif:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Ma_ksimum unduh yang aktif:"
+
+msgid "Downloads sharing data in the last _N minutes are active:"
+msgstr "Unduhan berbagi data dalam _N menit terakhir aktif:"
+
+msgid "Incomplete"
+msgstr "Belum komplit"
+
+#, fuzzy
+msgid "Append \"._part\" to incomplete files' names"
+msgstr ""
+"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Imbuhkan \".part\" ke nama berkas yang belum komplit\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Tambahkan \"._part\" pada nama berkas yang tidak selesai"
+
+msgid "Keep _incomplete files in:"
+msgstr "S_impan berkas belum lengkap di:"
+
+#, fuzzy
+#| msgid "Call scrip_t when downloading is completed:"
+msgid "Call scrip_t when download completes:"
+msgstr "Panggil skrip ke_tika pengunduhan selesai:"
+
+#, fuzzy
+#| msgid "Call scrip_t when downloading is completed:"
+msgid "Verify data when download completes"
+msgstr "Panggil skrip ke_tika pengunduhan selesai:"
+
+msgctxt "Gerund"
+msgid "Downloading"
+msgstr "Mengunduh"
+
+msgid "Limits"
+msgstr "Batas"
+
+#, fuzzy
+msgid "Stop seeding at _ratio:"
+msgstr ""
+"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Berhenti membibit pada _rasio:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Berhenti kirim pada _rasio:"
+
+msgid "Stop seeding if idle for _N minutes:"
+msgstr "Berhenti membibit bila menganggur _N menit:"
+
+msgid "Call scrip_t when done seeding:"
+msgstr ""
+
+msgctxt "Gerund"
+msgid "Seeding"
+msgstr "Membibit"
+
+msgid "Privacy"
+msgstr "Privasi"
+
+#, fuzzy
+msgid "_Encryption mode:"
+msgstr ""
+"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Mode _enkripsi:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Mode enkripsi:"
+
+msgid "Blocklist"
+msgstr "Daftar blok"
+
+#, fuzzy
+msgid "Enable _blocklist:"
+msgstr ""
+"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Fungsikan daftar _blok:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Aktifkan _daftarblok:"
+
+#, fuzzy
+#| msgid "Enable _automatic updates"
+msgid "_Automatically update weekly"
+msgstr "Fungsikan pemutakhiran otom_atis"
+
+#, fuzzy
+msgid "_Update"
+msgstr ""
+"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"M_utakhirkan\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Perbar_ui"
+
+msgid "Listening Port"
+msgstr "Port Pendengar"
+
+msgid "_Port for incoming connections:"
+msgstr "_Port untuk sambungan masuk:"
+
+#, fuzzy
+#| msgid "Pick a _random port every time Transmission is started"
+msgid "Pick a _random port at startup"
+msgstr "Pakai po_rt acak setiap kali Transmission dimulai"
+
+#, fuzzy
+msgid "Use UPnP or NAT-PMP port _forwarding from my router"
+msgstr ""
+"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Pakai penerusan port UPnP atau NAT-PMP dari routerku\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Gunakan penerusan port UPnP atau NAT-PMP dari router saya"
+
+#, fuzzy
+msgid "Te_st Port"
+msgstr ""
+"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Uji Port\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Po_rt Uji"
+
+#, fuzzy
+msgid "Peer Limits"
+msgstr ""
+"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Batas Peer\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Batas Rekan"
+
+#, fuzzy
+#| msgid "Maximum peers per _torrent:"
+msgid "Maximum peers for new _torrents:"
+msgstr "Maksimum peer per _torrent:"
+
+#, fuzzy
+msgid "Maximum peers _overall:"
+msgstr ""
+"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Maksimum peer _menyeluruh:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Maksimum rekan _keseluruhan:"
+
+#, fuzzy
+msgid "Enable µ_TP for peer connections"
+msgstr ""
+"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Koneksi-koneksi Peer\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Sambungan Rekan"
+
+msgid "µTP is a tool for reducing network congestion."
+msgstr ""
+
+#, fuzzy
+#| msgid "Use PE_X to find more peers"
+msgid "Use PE_X to find more peers for public torrents"
+msgstr "Pakai PE_X untuk menemukan lebih banyak peer"
+
+#, fuzzy
+msgid "PEX is a tool for exchanging peer lists with the peers you're connected to."
+msgstr ""
+"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"PEX adalah alat untuk mempertukarkan daftar peer dengan peer yang sedang tersambung.\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"PEX adalah alat untuk menukar daftar rekan dengan rekan yang tersambung denganmu."
+
+#, fuzzy
+#| msgid "Use _DHT to find more peers"
+msgid "Use _DHT to find more peers for public torrents"
+msgstr "Pakai _DHT untuk menemukan lebih banyak peer"
+
+#, fuzzy
+msgid "DHT is a tool for finding peers without a tracker."
+msgstr ""
+"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"DHT adalah alat untuk menemukan peer tanpa pelacak.\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"DHT adalah alat untuk mencari rekan tanpa sebuah pelacak."
+
+#, fuzzy
+#| msgid "Use _Local Peer Discovery to find more peers"
+msgid "Use _Local Peer Discovery to find more peers for public torrents"
+msgstr "Pakai _Local Peer Discovery untuk menemukan lebih banyak peer"
+
+#, fuzzy
+msgid "LPD is a tool for finding peers on your local network."
+msgstr ""
+"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"LPD adalah alat untuk menemukan peer pada jaringan lokal Anda.\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"LPD adalah alat untuk mencari rekan pada jaringan lokalmu."
+
+msgid "Default Public Trackers"
+msgstr "Pelacak Publik Baku"
+
+msgid ""
+"Trackers to use on all public torrents.\n"
+"\n"
+"To add a backup URL, add it on the next line after a primary URL.\n"
+"To add a new primary URL, add it after a blank line."
+msgstr ""
+
+msgid "Network"
+msgstr "Jaringan"
+
+msgid "Desktop"
+msgstr "Desktop"
+
+msgid "_Prevent computer from sleeping with active torrents"
+msgstr ""
+
+#, fuzzy
+msgid "Show {appname} icon in the _notification area"
+msgstr ""
+"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Tampilka_n ikon {appname} pada area pemberitahuan\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Tampilkan ikon {appname} di _area notifikasi"
+
+#, fuzzy
+msgid "Notification"
+msgstr ""
+"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Pemberitahuan\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Notifikasi"
+
+#, fuzzy
+msgid "Show a notification when torrents are a_dded"
+msgstr ""
+"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Tampilkan pemberitahuan saat torrent _ditambahkan\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Tampilkan notifikasi ketika torrent _ditambahkan"
+
+#, fuzzy
+msgid "Show a notification when torrents _finish"
+msgstr ""
+"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Tampilkan pemberitahuan saat torrent s_elesai\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Tampilkan notifikasi ketika torrent _selesai"
+
+#, fuzzy
+msgid "Play a _sound when torrents finish"
+msgstr ""
+"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Bunyikan suara saat torrent selesai\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Jalankan sebuah _suara ketika torrent selesai"
+
+#, fuzzy
+msgid "Remote Control"
+msgstr ""
+"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Kendali Jarak Jauh\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Kendali Remote"
+
+#, fuzzy
+msgid "Allow _remote access"
+msgstr ""
+"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Izinkan akses _remote\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Izinkan _akses remote"
+
+#, fuzzy
+#| msgid "_Open web client"
+msgid "_Open Web Client"
+msgstr "_Buka klien web"
+
+#, fuzzy
+msgid "HTTP _port:"
+msgstr ""
+"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Port HTTP:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Port _HTTP:"
+
+#, fuzzy
+msgid "Use _authentication"
+msgstr ""
+"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"P_akai otentikasi\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Gunakan _otentikasi"
+
+#, fuzzy
+msgid "_Username:"
+msgstr ""
+"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Nama pengg_una:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Nama Pengguna:"
+
+#, fuzzy
+msgid "Pass_word:"
+msgstr ""
+"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Sandi:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Kata_ Sandi:\n"
+"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Kata _Sandi:"
+
+#, fuzzy
+msgid "Only allow these IP a_ddresses:"
+msgstr ""
+"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Hanya izinkan ala_mat IP ini:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Hanya mengizinkan Alamat IP ini:"
+
+msgid "Addresses:"
+msgstr "Alamat:"
+
+msgid "IP addresses may use wildcards, such as 192.168.*.*"
+msgstr "Alamat IP dapat menggunakan wildcard, seperti 192.168.*.*"
+
+msgid "Remote"
+msgstr "Remote"
+
+#, fuzzy
+msgid "Set Torrent Location"
+msgstr ""
+"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Tata Lokasi Torrent\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Tetapkan Lokasi Torrent"
+
+msgid "_Apply"
+msgstr "Ter_apkan"
+
+msgid "Location"
+msgstr "Lokasi"
+
+msgid "New _location:"
+msgstr "_Lokasi baru:"
+
+#, fuzzy
+msgid "_Move from the current folder"
+msgstr ""
+"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Pi_ndahkan dari folder saat ini\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Pindah dari folder saat ini"
+
+#, fuzzy
+msgid "Local data is _already there"
+msgstr ""
+"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Data lokal sudah _ada di sana\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Data lokal _telah ada di sana"
+
+#, fuzzy
+msgid "Current Session"
+msgstr ""
+"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Sesi saat ini\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Sesi Saat Ini"
+
+msgid "Ratio:"
+msgstr "Rasio:"
+
+msgid "Duration:"
+msgstr "Durasi:"
+
+msgid "Total"
+msgstr "Total"
+
+msgid "Open URL"
+msgstr "Buka URL"
+
+msgid "Open torrent from URL"
+msgstr "Buka torrent dari URL"
+
+msgid "_URL"
+msgstr "_URL"
+
+msgid "The torrent file '{path}' is already in use by '{torrent_name}'."
+msgstr ""
+
+msgid "Couldn't open torrent"
+msgstr ""
+
+msgid "Couldn't move '{path}' to trash: {error} ({error_code})"
+msgstr ""
+
+msgid "Couldn't launch default application for URI '{uri}': {error} ({error_code})"
+msgstr ""
+
+msgid "Couldn't invoke xdg-open for URI '{uri}': {error} ({error_code})"
+msgstr ""
+
+msgid "Couldn't open '{url}'"
+msgstr ""
+
+msgid "Unsupported URL: '{url}'"
+msgstr ""
+
+msgid "{appname} doesn't know how to use '{url}'"
+msgstr ""
+
+msgid "This magnet link appears to be intended for something other than BitTorrent."
+msgstr ""
 
 msgid "{days_from_now:L} day from now"
 msgid_plural "{days_from_now:L} days from now"
@@ -814,21 +2158,89 @@ msgid "{seconds_ago:L} second ago"
 msgid_plural "{seconds_ago:L} seconds ago"
 msgstr[0] ""
 
+msgid "Got a list of {markup_begin}{peer_count} peer{markup_end} {time_span_ago}"
+msgid_plural "Got a list of {markup_begin}{peer_count} peers{markup_end} {time_span_ago}"
+msgstr[0] ""
+
+msgid "Peer list request {markup_begin}timed out {time_span_ago}{markup_end}; will retry"
+msgstr ""
+
+msgid "Got an error '{markup_begin}{error}{markup_end}' {time_span_ago}"
+msgstr ""
+
+#, fuzzy
+msgid "No updates scheduled"
+msgstr ""
+"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Tak ada pemutakhiran yang dijadwalkan\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Tidak ada pembaruan terjadwal"
+
+msgid "Asking for more peers {time_span_from_now}"
+msgstr ""
+
+#, fuzzy
+msgid "Queued to ask for more peers"
+msgstr ""
+"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Diantrikan untuk meminta lebih banyak peer\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Antri untuk meminta lebih banyak rekan"
+
+msgid "Asked for more peers {markup_begin}{time_span_ago}{markup_end}"
+msgstr ""
+
+msgid "Got a scrape error '{markup_begin}{error}{markup_end}' {time_span_ago}"
+msgstr ""
+
+#, fuzzy
+#| msgid "Tracker had {markup_begin}no information{markup_end} on peer counts {time_span} ago"
+msgid "Tracker had {markup_begin}no information{markup_end} on peer counts {time_span_ago}"
+msgstr "Pelacak tidak memiliki {markup_begin}informasi{markup_end} pada jumlah rekan {time_span} lalu"
+
+msgid "Tracker had {markup_begin}{seeder_count} {seeder_or_seeders} and {leecher_count} {leecher_or_leechers}{markup_end} {time_span_ago}"
+msgstr ""
+
+msgid "seeder"
+msgid_plural "seeders"
+msgstr[0] ""
+
+msgid "leecher"
+msgid_plural "leechers"
+msgstr[0] ""
+
+#, fuzzy
+#| msgid "Asking for peer counts in {time_span}"
+msgid "Asking for peer counts {time_span_from_now}"
+msgstr "Meminta untuk jumlah rekan di {time_span}"
+
+#, fuzzy
+msgid "Queued to ask for peer counts"
+msgstr ""
+"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Diantrikan untuk meminta cacah peer\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Antri untuk meminta jumlah rekan"
+
+msgid "Asked for peer counts {markup_begin}{time_span_ago}{markup_end}"
+msgstr ""
+
 msgid "{days:L} day"
 msgid_plural "{days:L} days"
-msgstr[0] ""
+msgstr[0] "{days:L} hari"
 
 msgid "{hours:L} hour"
 msgid_plural "{hours:L} hours"
-msgstr[0] ""
+msgstr[0] "{hours:L} jam"
 
+#. Translators: Spin box format, "Stop seeding if idle for: [ 5 minutes ]"
 msgid "{minutes:L} minute"
 msgid_plural "{minutes:L} minutes"
-msgstr[0] ""
+msgstr[0] "{minutes:L} menit"
 
 msgid "{seconds:L} second"
 msgid_plural "{seconds:L} seconds"
-msgstr[0] ""
+msgstr[0] "{seconds:L} detik"
 
 msgid "{days_left:L} day left"
 msgid_plural "{days_left:L} days left"
@@ -846,755 +2258,6 @@ msgid "{seconds_left:L} second left"
 msgid_plural "{seconds_left:L} seconds left"
 msgstr[0] ""
 
-msgid "The torrent file '{path}' is already in use by '{torrent_name}'."
-msgstr ""
-
-msgid "Couldn't open torrent"
-msgstr ""
-
-msgid "Couldn't move '{path}' to trash: {error} ({error_code})"
-msgstr ""
-
-msgid "Couldn't open '{url}'"
-msgstr ""
-
-msgid "Unsupported URL: '{url}'"
-msgstr ""
-
-#. modal
-msgid "{appname} doesn't know how to use '{url}'"
-msgstr ""
-
-msgid "This magnet link appears to be intended for something other than BitTorrent."
-msgstr ""
-
-msgid "Retransmission"
-msgstr "Retransmission"
-
-#. parse the command line
-msgid "Where to look for configuration files"
-msgstr "Lokasi berkas konfigurasi"
-
-msgid "Start with all torrents paused"
-msgstr "Mulai dengan semua torrent diistirahatkan"
-
-msgid "Start minimized in notification area"
-msgstr "Mulai terminimalkan dalam area pemberitahuan"
-
-msgid "Show version number and exit"
-msgstr "Tampilkan nomor versi dan keluar"
-
-msgid "[torrent files or urls]"
-msgstr "[url atau berkas torrent]"
-
-msgid "Run '{program} --help' to see a full list of available command line options.\n"
-msgstr ""
-
-msgid "B/s"
-msgstr ""
-
-msgid "GB/s"
-msgstr "GB/s"
-
-msgid "MB/s"
-msgstr "MB/s"
-
-msgid "TB/s"
-msgstr "TB/s"
-
-msgid "kB/s"
-msgstr "kB/s"
-
-msgid "B"
-msgstr ""
-
-msgid "GiB"
-msgstr "GiB"
-
-msgid "KiB"
-msgstr "KiB"
-
-msgid "MiB"
-msgstr "MiB"
-
-msgid "TiB"
-msgstr "TiB"
-
-msgid "GB"
-msgstr "GB"
-
-msgid "MB"
-msgstr "MB"
-
-msgid "TB"
-msgstr "TB"
-
-msgid "kB"
-msgstr "kB"
-
-msgid "BitTorrent Client"
-msgstr "Aplikasi BitTorrent"
-
-msgid "Download and share files over BitTorrent"
-msgstr "Unduh dan berbagi berkas melalui BitTorrent"
-
-#. Translators: Search terms to find this application. Do NOT translate or localize the semicolons! The list MUST also end with a semicolon!
-msgid "torrents;downloading;uploading;share;sharing;"
-msgstr "torrent;mengunduh;mengunggah;berbagi;"
-
-msgid "Start Retransmission with All Torrents Paused"
-msgstr "Mulai Retransmission dengan Semua Torrent Dijeda"
-
-msgid "Start Retransmission Minimized"
-msgstr "Mulai Retransmission Diminimalkan"
-
-msgid "Open a torrent"
-msgstr "Buka suatu torrent"
-
-msgid "Open _URL…"
-msgstr "Buka _URL…"
-
-msgid "Open URL…"
-msgstr "Open URL…"
-
-msgid "_New…"
-msgstr "Bar_u…"
-
-msgid "_Start All"
-msgstr "Mulai _Semua"
-
-msgid "Start all torrents"
-msgstr "Muali Semua Torrents"
-
-msgid "_Pause All"
-msgstr "_Istirahat Semua"
-
-msgid "Pause all torrents"
-msgstr "Istirahat Semua Torrents"
-
-msgid "_Quit"
-msgstr "Keluar"
-
-msgid "Select _All"
-msgstr "Pilih Semu_a"
-
-msgid "Dese_lect All"
-msgstr "Kosongkan semua pi_lihan"
-
-msgid "_Preferences"
-msgstr "_Preferensi"
-
-msgid "_Properties"
-msgstr "_Properti"
-
-msgid "Torrent properties"
-msgstr "Properti torrent"
-
-msgid "Open Fold_er"
-msgstr "Buka Fold_er"
-
-msgid "_Start"
-msgstr "_Mulai"
-
-msgid "Start torrent"
-msgstr "Mulai torrent"
-
-msgid "Start _Now"
-msgstr "Mulai Sekara_ng"
-
-msgid "Start torrent now"
-msgstr "Mulai torrent sekarang"
-
-msgid "Ask Tracker for _More Peers"
-msgstr "Tanyakan Penjejak untuk _Peer yang lebih banyak"
-
-msgid "Move to _Top"
-msgstr "Pindah ke _Puncak"
-
-msgid "Move _Up"
-msgstr "Nai_kkan"
-
-msgid "Move _Down"
-msgstr "Tur_unkan"
-
-msgid "Move to _Bottom"
-msgstr "Pindah ke _Dasar"
-
-msgid "_Pause"
-msgstr "_Stop"
-
-msgid "Pause torrent"
-msgstr "_Hentikan torrent sementara"
-
-msgid "Set _Location…"
-msgstr "Tata _Lokasi…"
-
-msgid "_Verify Local Data"
-msgstr "Pe_riksa Data Lokal"
-
-msgid "Copy _Magnet Link to Clipboard"
-msgstr "Salin _Magnet Link ke Papan Klip"
-
-msgid "Remove torrent"
-msgstr "Hapus torrent"
-
-msgid "_Delete Files and Remove"
-msgstr "Hapus _dan Musnahkan Berkas"
-
-msgid "_Compact View"
-msgstr "Tilikan _Kompak"
-
-msgid "_Toolbar"
-msgstr "Bilat Ala_t"
-
-msgid "_Filterbar"
-msgstr "Bilah Pe_nyaring"
-
-msgid "_Statusbar"
-msgstr "Bilah _Status"
-
-msgid "Sort by _Activity"
-msgstr "Urut _Aktivitas"
-
-msgid "Sort by A_ge"
-msgstr "Urut U_mur"
-
-msgid "Sort by _Name"
-msgstr "Urut _Nama"
-
-msgid "Sort by _Progress"
-msgstr "Urut _Kemajuan"
-
-msgid "Sort by _Queue"
-msgstr "Urut Ant_rian"
-
-msgid "Sort by Rati_o"
-msgstr "Urut Rasi_o"
-
-msgid "Sort by Si_ze"
-msgstr "Urut _Ukuran"
-
-msgid "Sort by Stat_e"
-msgstr "Urut K_eadaan"
-
-msgid "Sort by Time _Left"
-msgstr "Urut Sisa _Waktu"
-
-msgid "Re_verse Sort Order"
-msgstr "_Balikkan Urutan"
-
-msgid "Message _Log"
-msgstr "_Log Pesan"
-
-msgid "_Statistics"
-msgstr "_Statistik"
-
-msgid "_Donate"
-msgstr "_Donasi"
-
-msgid "_Contents"
-msgstr "I_si"
-
-msgid "_About"
-msgstr "Perih_al"
-
-msgid "_Show {appname}"
-msgstr "_Tampilkan {appname}"
-
-msgid "Enable Alternative Speed _Limits"
-msgstr "Fungsikan Batas Kecepatan A_lternatif"
-
-msgid "_Add"
-msgstr "T_ambah"
-
-msgid "Tracker"
-msgstr "Pelacak"
-
-msgid "_Announce URL:"
-msgstr "URL Pengumum_an:"
-
-msgid "_Close"
-msgstr "_Tutup"
-
-msgid "Activity"
-msgstr "Aktivitas"
-
-msgid "Torrent size:"
-msgstr "Ukuran torrent:"
-
-msgid "Have:"
-msgstr "Dimiliki:"
-
-msgid "Uploaded:"
-msgstr "Terunggah:"
-
-msgid "Downloaded:"
-msgstr "Terunduh:"
-
-msgid "State:"
-msgstr "Status:"
-
-msgid "Running time:"
-msgstr "Waktu berjalan:"
-
-msgid "Remaining time:"
-msgstr "Waktu tersisa:"
-
-msgid "Last activity:"
-msgstr "Aktivitas terakhir:"
-
-msgid "Error:"
-msgstr "Error:"
-
-msgid "Details"
-msgstr "Informasi"
-
-msgid "Location:"
-msgstr "Lokasi:"
-
-msgid "Hash:"
-msgstr "Hash:"
-
-msgid "Privacy:"
-msgstr "Privasi:"
-
-msgid "Origin:"
-msgstr "Asal:"
-
-msgid "Added:"
-msgstr ""
-
-msgid "Comment:"
-msgstr "Komentar:"
-
-msgid "Information"
-msgstr "Informasi"
-
-msgid "Show _more details"
-msgstr "Ta_mpilkan lebih banyak rincian"
-
-msgid "Peers"
-msgstr "Peer"
-
-msgid "_Edit"
-msgstr "_Sunting"
-
-msgid "Show _backup trackers"
-msgstr "Tampilkan pelacak _cadangan"
-
-msgid "File listing not available for combined torrent properties"
-msgstr "Mendaftar berkas tak tersedia bagi properti torrent terkombinasi"
-
-msgid "Files"
-msgstr "Berkas"
-
-msgid "Speed"
-msgstr "Kecepatan"
-
-msgid "Honor global _limits"
-msgstr "Hormati batas g_lobal"
-
-msgid "Limit _download speed ({speed_units}):"
-msgstr ""
-
-msgid "Limit _upload speed ({speed_units}):"
-msgstr ""
-
-msgid "Torrent _priority:"
-msgstr "_Prioritas torrent:"
-
-msgid "Seeding Limits"
-msgstr "Batas Pembibitan"
-
-msgid "_Ratio:"
-msgstr "_Rasio:"
-
-msgid "_Idle:"
-msgstr "_Mengganggur:"
-
-msgid "Peer Connections"
-msgstr "Koneksi-koneksi Peer"
-
-msgid "_Maximum peers:"
-msgstr "Peer _maksimum:"
-
-msgid "Options"
-msgstr "Pengaturan"
-
-msgid "Tracker Announce URLs"
-msgstr "URL Pengumuman Pelacak"
-
-msgid ""
-"To add a backup URL, add it on the next line after a primary URL.\n"
-"To add a new primary URL, add it after a blank line."
-msgstr ""
-
-msgid "Also see Default Public Trackers in Edit > Preferences > Network"
-msgstr ""
-
-msgid "Torrent"
-msgstr "Torrent"
-
-msgid "Statistics"
-msgstr "Statistik"
-
-msgid "New Torrent"
-msgstr "Buat Torrent"
-
-msgid "_New"
-msgstr "_Baru"
-
-msgid "Sa_ve to:"
-msgstr "Sim_pan ke:"
-
-msgid "Source F_older:"
-msgstr "F_older Sumber:"
-
-msgid "Source _File:"
-msgstr "_Berkas Sumber:"
-
-msgid "Piece size:"
-msgstr ""
-
-msgid "Properties"
-msgstr "Properti"
-
-msgid "_Trackers:"
-msgstr "_Pelacak:"
-
-msgid "Co_mment:"
-msgstr "K_omentar:"
-
-msgid "_Source:"
-msgstr "_Sumber:"
-
-msgid "_Private torrent"
-msgstr "Torrent _privat"
-
-msgid "Creating torrent…"
-msgstr "Membuat torrent…"
-
-msgid "Message Log"
-msgstr "Log Pesan"
-
-msgid "Save _As"
-msgstr "Simp_an Sebagai"
-
-msgid "Clear"
-msgstr "Bersihkan"
-
-msgid "P_ause"
-msgstr "Jed_a"
-
-msgid "Level"
-msgstr "Tingkat"
-
-msgid "Torrent Options"
-msgstr "Pengaturan Torrent"
-
-msgid "_Torrent file:"
-msgstr "Berkas _Torrent:"
-
-msgid "Select Source File"
-msgstr "Pilih Berkas Torrent"
-
-msgid "_Destination folder:"
-msgstr "_Direktori penyimpanan:"
-
-msgid "Select Destination Folder"
-msgstr "Pilih Direktori Penyimpanan"
-
-msgid "_Start when added"
-msgstr "Mulai setelah dimasukkan"
-
-msgid "Mo_ve torrent file to the trash"
-msgstr ""
-
-msgid "{appname} Preferences"
-msgstr "Preferensi {appname}"
-
-msgid "_Help"
-msgstr "_Bantuan"
-
-msgid "Speed Limits"
-msgstr "Batas Kecepatan"
-
-#. Checkbox to limit upload speed
-msgid "_Upload ({speed_units}):"
-msgstr ""
-
-#. Checkbox to limit download speed
-msgid "_Download ({speed_units}):"
-msgstr ""
-
-msgid "Alternative Speed Limits"
-msgstr "Batas Kecepatan Alternatif"
-
-msgid "Override normal speed limits manually or at scheduled times"
-msgstr "Timpa batas kecepatan normal secara manual atau pada waktu terjadwal"
-
-#. Labels a spinbutton for alternate upload speed limits
-msgid "U_pload ({speed_units}):"
-msgstr ""
-
-#. Labels a spinbutton for alternate download speed limits
-msgid "Do_wnload ({speed_units}):"
-msgstr ""
-
-msgid "_Scheduled times:"
-msgstr "Waktu _terjadwal:"
-
-msgid "_On days:"
-msgstr "_Pada hari:"
-
-#. Label goes between two time selectors, e.g. "limit speeds from [time] to [time]"
-msgid "_to"
-msgstr "_ke"
-
-msgctxt "Gerund"
-msgid "Adding"
-msgstr "Menambah"
-
-msgid "Automatically add torrent files _from:"
-msgstr ""
-
-msgid "Show the Torrent Options _dialog"
-msgstr "Tampilkan _dialog Opsi Torrent"
-
-msgid "_Start added torrents"
-msgstr "_Mulai torrent yang ditambahkan"
-
-msgid "Save to _Location:"
-msgstr "Simpan ke _Lokasi:"
-
-msgid "Download Queue"
-msgstr "Antrian Unduh"
-
-msgid "Ma_ximum active downloads:"
-msgstr "Ma_ksimum unduhan aktif:"
-
-msgid "Downloads sharing data in the last _N minutes are active:"
-msgstr "Unduhan berbagi data dalam _N menit terakhir aktif:"
-
-msgid "Incomplete"
-msgstr "Belum komplit"
-
-msgid "Append \"._part\" to incomplete files' names"
-msgstr "Imbuhkan \".part\" ke nama berkas yang belum komplit"
-
-msgid "Keep _incomplete torrents in:"
-msgstr "S_impan torrent yang belum komplit di:"
-
-msgid "Call scrip_t when done downloading:"
-msgstr ""
-
-msgctxt "Gerund"
-msgid "Downloading"
-msgstr "Mengunduh"
-
-msgid "Limits"
-msgstr "Batas"
-
-msgid "Stop seeding at _ratio:"
-msgstr "Berhenti membibit pada _rasio:"
-
-msgid "Stop seeding if idle for _N minutes:"
-msgstr "Berhenti membibit bila menganggur _N menit:"
-
-msgid "Call scrip_t when done seeding:"
-msgstr ""
-
-msgctxt "Gerund"
-msgid "Seeding"
-msgstr "Membibit"
-
-msgid "Privacy"
-msgstr "Privasi"
-
-msgid "_Encryption mode:"
-msgstr "Mode _enkripsi:"
-
-msgid "Blocklist"
-msgstr "Daftar blok"
-
-msgid "Enable _blocklist:"
-msgstr "Fungsikan daftar _blok:"
-
-msgid "Enable _automatic updates"
-msgstr "Fungsikan pemutakhiran otom_atis"
-
-msgid "_Update"
-msgstr "M_utakhirkan"
-
-msgid "Listening Port"
-msgstr "Port Pendengar"
-
-msgid "_Port used for incoming connections:"
-msgstr "_Port yang dipakai untuk koneksi masuk:"
-
-msgid "Pick a _random port every time Transmission is started"
-msgstr "Pakai po_rt acak setiap kali Transmission dimulai"
-
-msgid "Use UPnP or NAT-PMP port _forwarding from my router"
-msgstr "_Pakai penerusan port UPnP atau NAT-PMP dari routerku"
-
-msgid "Te_st Port"
-msgstr "_Uji Port"
-
-msgid "Peer Limits"
-msgstr "Batas Peer"
-
-msgid "Maximum peers per _torrent:"
-msgstr "Maksimum peer per _torrent:"
-
-msgid "Maximum peers _overall:"
-msgstr "Maksimum peer _menyeluruh:"
-
-msgid "Enable µ_TP for peer communication"
-msgstr ""
-
-msgid "µTP is a tool for reducing network congestion."
-msgstr ""
-
-msgid "Use PE_X to find more peers"
-msgstr "Pakai PE_X untuk menemukan lebih banyak peer"
-
-msgid "PEX is a tool for exchanging peer lists with the peers you're connected to."
-msgstr "PEX adalah alat untuk mempertukarkan daftar peer dengan peer yang sedang tersambung."
-
-msgid "Use _DHT to find more peers"
-msgstr "Pakai _DHT untuk menemukan lebih banyak peer"
-
-msgid "DHT is a tool for finding peers without a tracker."
-msgstr "DHT adalah alat untuk menemukan peer tanpa pelacak."
-
-msgid "Use _Local Peer Discovery to find more peers"
-msgstr "Pakai _Local Peer Discovery untuk menemukan lebih banyak peer"
-
-msgid "LPD is a tool for finding peers on your local network."
-msgstr "LPD adalah alat untuk menemukan peer pada jaringan lokal Anda."
-
-msgid "Default Public Trackers"
-msgstr ""
-
-msgid ""
-"Trackers to use on all public torrents.\n"
-"\n"
-"To add a backup URL, add it on the next line after a primary URL.\n"
-"To add a new primary URL, add it after a blank line."
-msgstr ""
-
-msgid "Network"
-msgstr "Jaringan"
-
-msgid "Desktop"
-msgstr "Desktop"
-
-msgid "_Inhibit hibernation when torrents are active"
-msgstr "Cegah h_ibernasi ketika torrent aktif"
-
-msgid "Show {appname} icon in the _notification area"
-msgstr "Tampilka_n ikon {appname} pada area pemberitahuan"
-
-msgid "Notification"
-msgstr "Pemberitahuan"
-
-msgid "Show a notification when torrents are a_dded"
-msgstr "Tampilkan pemberitahuan saat torrent _ditambahkan"
-
-msgid "Show a notification when torrents _finish"
-msgstr "Tampilkan pemberitahuan saat torrent s_elesai"
-
-msgid "Play a _sound when torrents finish"
-msgstr "Bunyikan suara saat torrent selesai"
-
-msgid "Remote Control"
-msgstr "Kendali Jarak Jauh"
-
-msgid "Allow _remote access"
-msgstr "Izinkan akses _remote"
-
-msgid "_Open web client"
-msgstr "_Buka klien web"
-
-msgid "HTTP _port:"
-msgstr "_Port HTTP:"
-
-msgid "Use _authentication"
-msgstr "P_akai otentikasi"
-
-msgid "_Username:"
-msgstr "Nama pengg_una:"
-
-msgid "Pass_word:"
-msgstr "_Sandi:"
-
-msgid "Only allow these IP a_ddresses:"
-msgstr "Hanya izinkan ala_mat IP ini:"
-
-msgid "Addresses:"
-msgstr "Alamat:"
-
-msgid "IP addresses may use wildcards, such as 192.168.*.*"
-msgstr "Alamat IP dapat menggunakan wildcard, seperti 192.168.*.*"
-
-msgid "Remote"
-msgstr "Remote"
-
-msgid "Set Torrent Location"
-msgstr "Tata Lokasi Torrent"
-
-msgid "_Apply"
-msgstr "Ter_apkan"
-
-msgid "Location"
-msgstr "Lokasi"
-
-msgid "Torrent _location:"
-msgstr "_Lokasi torrent:"
-
-msgid "_Move from the current folder"
-msgstr "Pi_ndahkan dari folder saat ini"
-
-msgid "Local data is _already there"
-msgstr "Data lokal sudah _ada di sana"
-
-msgid "Current Session"
-msgstr "Sesi saat ini"
-
-msgid "Ratio:"
-msgstr "Rasio:"
-
-msgid "Duration:"
-msgstr "Durasi:"
-
-msgid "Total"
-msgstr "Total"
-
-msgid "Open URL"
-msgstr "Buka URL"
-
-msgid "Open torrent from URL"
-msgstr "Buka torrent dari URL"
-
-msgid "_URL"
-msgstr "_URL"
-
-msgid "Couldn't parse announce response: {error} ({error_code})"
-msgstr ""
-
-msgid "Couldn't parse scrape response: {error} ({error_code})"
-msgstr ""
-
-msgid "Unknown error"
-msgstr "Galat tak dikenal"
-
-msgid "{ip_protocol} connection failed"
-msgstr ""
-
-msgid "Couldn't look up '{address}:{port}' in {ip_protocol}: {error} ({error_code})"
-msgstr ""
-
 msgid "Announce error: {error} ({url})"
 msgstr ""
 
@@ -1611,18 +2274,53 @@ msgstr "Pelacak tidak merespon"
 msgid "Success"
 msgstr "Sukses"
 
+msgid "Couldn't parse announce response: {error} ({error_code})"
+msgstr ""
+
+msgid "Couldn't parse scrape response: {error} ({error_code})"
+msgstr ""
+
+msgid "Unknown error"
+msgstr "Galat tak dikenal"
+
+msgid "{ip_protocol} connection failed"
+msgstr ""
+
+msgid "Couldn't look up '{address}:{port}' in {ip_protocol}: {error} ({error_code})"
+msgstr ""
+
 msgid "Blocklist '{path}' has {count} entry"
 msgid_plural "Blocklist '{path}' has {count} entries"
 msgstr[0] ""
 
-#. don't try to display the actual lines - it causes issues
-msgid "Couldn't parse line: '{line}'"
+msgid "Couldn't parse line {line}: {base64}"
 msgstr ""
 
-msgid "Rewriting old blocklist file format to new format"
+msgid "Rewriting old blocklist file {path} to new format"
+msgstr ""
+
+msgid "Blocklist is larger than {limit} MiB; ignoring it"
+msgstr ""
+
+msgid "Couldn't fetch blocklist: {errmsg}, response code: {error} ({error_code})"
+msgstr ""
+
+msgid "Couldn't fetch blocklist: {error} ({error_code})"
+msgstr ""
+
+msgid "Automatically updated blocklist, which now has {count} rules"
+msgstr ""
+
+msgid "Invalid tr_sched_days value {val}"
 msgstr ""
 
 msgid "{crypto_library} error: {error} ({error_code})"
+msgstr ""
+
+msgid "Couldn't read '{path}': Not a regular file"
+msgstr ""
+
+msgid "Couldn't get '{path}': "
 msgstr ""
 
 msgid "Couldn't get '{path}': {error} ({error_code})"
@@ -1640,19 +2338,13 @@ msgstr ""
 msgid "Successfully updated global {type} address to {ip} using {url}"
 msgstr ""
 
+msgid "Still waiting for disk IO on torrent {id}: {running} running, {queued} queued"
+msgstr ""
+
 msgid "Too many messages like this! I won't log this message anymore this session."
 msgstr ""
 
 msgid "Skipping '{path}': {error} ({error_code})"
-msgstr ""
-
-msgid "Couldn't create socket: {error} ({error_code})"
-msgstr ""
-
-msgid "Couldn't set source address {address} on {socket}: {error} ({error_code})"
-msgstr ""
-
-msgid "Couldn't connect socket {socket} to {address}:{port}: {error} ({error_code})"
 msgstr ""
 
 msgid "Couldn't bind port {port} on {address}: {error} ({error_code}) -- Is another copy of {appname} already running?"
@@ -1670,7 +2362,34 @@ msgstr ""
 msgid "Couldn't truncate '{path}': {error} ({error_code})"
 msgstr ""
 
+msgid "Couldn't create socket: {error} ({error_code})"
+msgstr ""
+
+msgid "Couldn't set source address {address} on {socket}: {error} ({error_code})"
+msgstr ""
+
+msgid "Couldn't connect socket {socket} to {address}:{port}: {error} ({error_code})"
+msgstr ""
+
 msgid "Unknown state: {state}"
+msgstr ""
+
+msgid "Starting"
+msgstr "Memulai"
+
+msgid "Forwarded"
+msgstr "Diteruskan"
+
+msgid "Stopping"
+msgstr "Menghentikan"
+
+msgid "Not forwarded"
+msgstr "Tak diteruskan"
+
+msgid "Mapped private port {private_port} to public port {public_port}"
+msgstr ""
+
+msgid "State changed from '{old_state}' to '{state}'"
 msgstr ""
 
 msgid "Found public address '{address}'"
@@ -1703,22 +2422,16 @@ msgstr ""
 msgid "If your router supports UPnP, please make sure UPnP is enabled!"
 msgstr ""
 
-msgid "Starting"
-msgstr "Memulai"
-
-msgid "Forwarded"
-msgstr "Diteruskan"
-
-msgid "Stopping"
-msgstr "Menghentikan"
-
-msgid "Not forwarded"
-msgstr "Tak diteruskan"
-
-msgid "Mapped private port {private_port} to public port {public_port}"
+msgid "Couldn't test port: {errmsg}, response code: {error} ({error_code})"
 msgstr ""
 
-msgid "State changed from '{old_state}' to '{state}'"
+msgid "Couldn't test port: {error} ({error_code})"
+msgstr ""
+
+msgid "Couldn't fetch torrent: {errmsg}, Response code: {error} ({error_code})"
+msgstr ""
+
+msgid "Couldn't fetch torrent: {error} ({error_code})"
 msgstr ""
 
 msgid "Unix socket path must be fewer than {count} characters (including '{prefix}' prefix)"
@@ -1776,28 +2489,23 @@ msgstr "Perlu kata sandi"
 msgid "Serving RPC and Web requests from '{path}'"
 msgstr ""
 
-msgid "Couldn't test port: {error} ({error_code})"
-msgstr ""
+#, fuzzy
+#| msgid "Alternative Speed Limits"
+msgid "Time to turn on alternative speed limits"
+msgstr "Batas Kecepatan Alternatif"
 
-msgid "Couldn't fetch blocklist: {error} ({error_code})"
-msgstr ""
-
-msgid "Couldn't fetch torrent: {error} ({error_code})"
-msgstr ""
-
-msgid "Time to turn off turtle mode"
-msgstr ""
-
-msgid "Time to turn on turtle mode"
-msgstr ""
-
-msgid "Couldn't open session lock file '{path}': {error} ({error_code})"
-msgstr ""
+#, fuzzy
+#| msgid "Alternative Speed Limits"
+msgid "Time to turn off alternative speed limits"
+msgstr "Batas Kecepatan Alternatif"
 
 msgid "Listening to incoming peer connections on {hostport}"
 msgstr ""
 
 msgid "{appname} version {version} starting"
+msgstr ""
+
+msgid "Couldn't start disk IO workers, continuing without them: {error}"
 msgstr ""
 
 msgid "{appname} version {version} shutting down"
@@ -1807,7 +2515,10 @@ msgid "Loaded {count} torrent"
 msgid_plural "Loaded {count} torrents"
 msgstr[0] ""
 
-msgid "Migrated torrent file from '{old_path}' to '{path}'"
+msgid "Couldn't claim '{path}'. If another session is using it, the two will overwrite each other's settings, resume files and stats."
+msgstr ""
+
+msgid "Couldn't open session lock file '{path}': {error} ({error_code})"
 msgstr ""
 
 msgid "Couldn't use metainfo from '{path}' for '{magnet}': {error} ({error_code})"
@@ -1840,13 +2551,25 @@ msgstr ""
 msgid "Removing torrent"
 msgstr "Menghapus torrent"
 
-msgid "Couldn't move '{old_path}' to '{path}': {error} ({error_code})"
+msgid "Couldn't move torrent files to '{path}': {error} ({error_code})"
 msgstr ""
 
 msgid "Paused torrent as no data was found! Ensure your drives are connected or use \"Set Location\", then use \"Verify Local Data\" again. To re-download, start the torrent."
 msgstr ""
 
+msgid "Couldn't move '{old_path}' to '{path}': {error} ({error_code})"
+msgstr ""
+
 msgid "Tracker warning: '{warning}' ({url})"
+msgstr ""
+
+msgid "Moving '{source}' will overwrite '{path}'"
+msgstr ""
+
+msgid "Couldn't compare '{path}' with '{root}': {error} ({error_code}); leaving it alone"
+msgstr ""
+
+msgid "Migrated torrent file from '{old_path}' to '{path}'"
 msgstr ""
 
 msgid "Couldn't parse '{filename}' line: '{line}'"
@@ -1876,8 +2599,47 @@ msgstr ""
 msgid "Unknown socket family"
 msgstr ""
 
-msgid "Couldn't read '{path}': Not a regular file"
+msgid "B"
 msgstr ""
+
+msgid "KiB"
+msgstr "KiB"
+
+msgid "MiB"
+msgstr "MiB"
+
+msgid "GiB"
+msgstr "GiB"
+
+msgid "TiB"
+msgstr "TiB"
+
+msgid "B/s"
+msgstr ""
+
+msgid "kB/s"
+msgstr "kB/s"
+
+msgid "MB/s"
+msgstr "MB/s"
+
+msgid "GB/s"
+msgstr "GB/s"
+
+msgid "TB/s"
+msgstr "TB/s"
+
+msgid "kB"
+msgstr "kB"
+
+msgid "MB"
+msgstr "MB"
+
+msgid "GB"
+msgstr "GB"
+
+msgid "TB"
+msgstr "TB"
 
 msgid "Couldn't parse JSON at position {position} '{text}': {error} ({error_code})"
 msgstr ""
@@ -1885,16 +2647,13 @@ msgstr ""
 msgid "Couldn't watch '{path}': {error} ({error_code})"
 msgstr ""
 
-msgid "Couldn't read event: {error} ({error_code})"
-msgstr ""
-
 msgid "Couldn't read event: expected {expected_size}, got {actual_size}"
 msgstr ""
 
-msgid "Couldn't read filename: {error} ({error_code})"
+msgid "Couldn't read filename: expected {expected_size}, got {actual_size}"
 msgstr ""
 
-msgid "Couldn't read filename: expected {expected_size}, got {actual_size}"
+msgid "Couldn't read event: {error} ({error_code})"
 msgstr ""
 
 msgid "Couldn't convert '{path}' to native path"
@@ -1915,10 +2674,13 @@ msgstr ""
 msgid "Consider upgrading your curl installation."
 msgstr ""
 
+msgid "The minimum supported version is {curl_version}, you might face unexpected behaviour."
+msgstr ""
+
 msgid "curl {curl_version} is prone to SIGPIPE crashes. {details_url}"
 msgstr ""
 
-msgid "curl {curl_version} is prone to an eventfd double close vulnerability that might cause SIGABRT crashes for the transmission-daemon systemd service. {details_url}"
+msgid "curl {curl_version} is prone to an eventfd double close vulnerability that might cause SIGABRT crashes for the daemon systemd service. {details_url}"
 msgstr ""
 
 msgid "Will verify tracker certs using envvar CURL_CA_BUNDLE: {bundle}"
@@ -1930,8 +2692,422 @@ msgstr ""
 msgid "NB: Invalid certs will appear as 'Could not connect to tracker' like many other errors"
 msgstr ""
 
+msgid "Aborting request: response body exceeded max size of {max_file_size} bytes"
+msgstr ""
+
 msgid "Couldn't fetch '{url}': expected HTTP response code {expected_code}, got {actual_code}"
 msgstr ""
+
+msgid "Server"
+msgstr "Server"
+
+msgid "C_redits"
+msgstr "K_redit"
+
+msgid "Credits"
+msgstr "Kredit"
+
+msgid "About {appname}"
+msgstr "Tentang {appname}"
+
+#, fuzzy
+#| msgid "Torrent Complete"
+msgid "Torrent Completed"
+msgstr "Torrent Selesai"
+
+#, fuzzy
+#| msgid "Torrent Complete"
+msgid "Torrents Completed"
+msgstr "Torrent Selesai"
+
+#. Translators: Text following the "Have:" label in torrent properties dialog;
+#. {current_size} is amount of downloaded and verified data
+msgid "{current_size} (100%)"
+msgstr "{current_size} (100%)"
+
+msgid "{current_size} of {complete_size} ({percent_done}%), {unverified_size} Unverified"
+msgstr "{current_size} dari {complete_size} ({percent_done}%), {unverified_size} Belum diverifikasi"
+
+msgid "{total_size} ({piece_count:L} piece @ {piece_size})"
+msgid_plural "{total_size} ({piece_count:L} pieces @ {piece_size})"
+msgstr[0] "{total_size} ({piece_count:L} bagian @ {piece_size})"
+
+msgid "{total_size} ({piece_count:L} piece)"
+msgid_plural "{total_size} ({piece_count:L} pieces)"
+msgstr[0] "{total_size} ({piece_count:L} bagian)"
+
+msgid "Add URL(s)"
+msgstr ""
+
+msgid "Add tracker announce URLs, one per line:"
+msgstr "Tambah URL pengumuman pelacak, satu per baris:"
+
+msgid "No new URLs found."
+msgstr "Tidak ditemukan URL baru."
+
+msgid "Use Global Settings"
+msgstr "Gunakan Pengaturan Global"
+
+msgid "Stop seeding if idle for:"
+msgstr "Berhenti membenih bila menganggur selama:"
+
+msgid "Torrent Properties"
+msgstr "Properti Torrent"
+
+msgid "Availability:"
+msgstr "Ketersediaan:"
+
+msgid "Labels:"
+msgstr ""
+
+msgid "Limit _upload speed:"
+msgstr "Batas _kecepatan unggah:"
+
+msgid "Limit _download speed:"
+msgstr "Batas _kecepatan unduh:"
+
+msgid "Check Selected"
+msgstr "Periksa Yang Dipilih"
+
+msgid "Uncheck Selected"
+msgstr "Jangan Periksa Yang Dipilih"
+
+msgid "Only Check Selected"
+msgstr "Hanya Periksa Yang Dipilih"
+
+msgid "Open"
+msgstr "Buka"
+
+msgid "Rename…"
+msgstr ""
+
+msgid "Search…"
+msgstr ""
+
+msgid "<i>Calculating Free Space…</i>"
+msgstr ""
+
+msgid "Limited at {speed}"
+msgstr "Dibatasi pada {speed}"
+
+#. Translators: Second (optional) part of main window title "Appname - host:port" (added when connected to remote session)
+#. notice that leading space (before the dash) is included here
+msgid " - {host}:{port}"
+msgstr " - {host}:{port}"
+
+msgid "Network Error"
+msgstr "Galat Jaringan"
+
+msgid "Idle"
+msgstr "Menganggur"
+
+msgid "Showing {visible_count:L} of {count:L} torrent"
+msgid_plural "Showing {visible_count:L} of {count:L} torrents"
+msgstr[0] "Menampilkan {visible_count:L} dari {count:L} torrent"
+
+msgid "Torrent Files (*.torrent);;All Files (*.*)"
+msgstr "Berkas Torrent (*.torrent);;Semua Berkas (*.*)"
+
+msgid "{host} has not responded yet"
+msgstr "{host} masih belum menanggapi juga"
+
+msgid "{host} is responding"
+msgstr "{host} menanggapi"
+
+#, fuzzy
+#| msgid "{host} last responded {time_span} ago"
+msgid "{host} last responded {time_span_ago}"
+msgstr "{host} terakhir menanggapi {time_span} lalu"
+
+msgid "{host} is not responding"
+msgstr "{host} tidak menanggapi"
+
+#, fuzzy
+#| msgid "_Open"
+msgid "_Open…"
+msgstr "_Buka"
+
+msgid "Create a new torrent"
+msgstr "Buat sebuah torrent baru"
+
+msgid "Open the torrent's folder"
+msgstr "Buka folder torrent"
+
+msgid "Ask tracker for more peers"
+msgstr "Tanya pelacak untuk rekan lebih banyak"
+
+msgid "Verify local data"
+msgstr "Verifikasi Data Lokal"
+
+msgid "Remove torrent and delete its files"
+msgstr "Hilangkan torrent dan hapus berkasnya"
+
+msgid "Compact View"
+msgstr "Tampilan Kompak"
+
+msgid "_Main Window"
+msgstr "_Jendela Utama"
+
+msgid "Tray _Icon"
+msgstr "Ikon _Baki"
+
+#, fuzzy
+#| msgid "Change Session"
+msgid "_Change Session…"
+msgstr "Ubah Sesi"
+
+#. Start a local session or connect to a running session
+msgid "Choose Session"
+msgstr "Pilih Sesi"
+
+msgid "Bypass the queue and start now"
+msgstr "Lewati antrian dan jalankan sekarang"
+
+msgid "{file_count:L} File"
+msgid_plural "{file_count:L} Files"
+msgstr[0] "{file_count:L} Berkas"
+
+msgid "{piece_count:L} Piece"
+msgid_plural "{piece_count:L} Pieces"
+msgstr[0] "{piece_count:L} Bagian"
+
+msgid "{total_size} in {files}; {pieces} @ {piece_size}"
+msgstr "{total_size} dalam {files}; {pieces} @ {piece_size}"
+
+msgid ""
+"To add a backup URL, add it on the line after the primary URL.\n"
+"To add another primary URL, add it after a blank line."
+msgstr ""
+"Untuk menambahkan URL cadangan, tambahkan pada baris setelah URL utama.\n"
+"Untuk menambahkan URL utama, tambahkan setelah baris kosong."
+
+#, fuzzy
+#| msgid "_Source:"
+msgid "Sou_rce:"
+msgstr "_Sumber:"
+
+msgid "_Priority:"
+msgstr "_Prioritas:"
+
+msgid "Select Folder"
+msgstr "Pilih Folder"
+
+#, fuzzy
+msgid "unknown"
+msgstr ""
+"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Tak diketahui\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Tidak diketahui"
+
+msgid "checking…"
+msgstr ""
+
+msgid "open"
+msgstr ""
+
+#, fuzzy
+#| msgid "_Close"
+msgid "closed"
+msgstr "_Tutup"
+
+#, fuzzy
+#| msgid "Error"
+msgid "error"
+msgstr "Galat"
+
+#, fuzzy
+#| msgid "<i>Blocklist contains {count:L} rule</i>"
+#| msgid_plural "<i>Blocklist contains {count:L} rules</i>"
+msgid "<b>Update succeeded!</b><p>Blocklist now has {count:L} rule.</p>"
+msgid_plural "<b>Update succeeded!</b><p>Blocklist now has {count:L} rules.</p>"
+msgstr[0] "<i>Daftar blokir memuat {count:L} aturan</i>"
+
+msgid "Download of the blocklist failed."
+msgstr ""
+
+#, fuzzy
+#| msgid "Blocklist"
+msgid "Update Blocklist"
+msgstr "Daftar blok"
+
+msgid "Select \"Torrent Done Seeding\" Script"
+msgstr "Pilih Skrip \"Torrent Selesai Dibibit\""
+
+msgid "Select Watch Directory"
+msgstr "Pilih Direktori Pantau"
+
+msgid "Select Incomplete Directory"
+msgstr "Pilih Direktori Tidak Selesai"
+
+msgid "Select \"Torrent Done Downloading\" Script"
+msgstr "Pilih Skrip \"Torrent Selesai Diunduh\""
+
+msgid "Not supported by remote sessions"
+msgstr "Tidak didukung oleh sesi remote"
+
+msgid "<i>Blocklist contains {count:L} rule</i>"
+msgid_plural "<i>Blocklist contains {count:L} rules</i>"
+msgstr[0] "<i>Daftar blokir memuat {count:L} aturan</i>"
+
+#, fuzzy
+#| msgid "<i>Blocklist contains {count:L} rule</i>"
+#| msgid_plural "<i>Blocklist contains {count:L} rules</i>"
+msgid "<i>Blocklist has never been updated</i>"
+msgstr "<i>Daftar blokir memuat {count:L} aturan</i>"
+
+#, fuzzy
+#| msgid "<i>Blocklist contains {count:L} rule</i>"
+#| msgid_plural "<i>Blocklist contains {count:L} rules</i>"
+msgid "<i>Blocklist last updated {date}</i>"
+msgstr "<i>Daftar blokir memuat {count:L} aturan</i>"
+
+msgid "_Upload:"
+msgstr "_Unggah:"
+
+msgid "_Download:"
+msgstr "Un_duh:"
+
+msgid "U_pload:"
+msgstr "U_nggah:"
+
+msgid "Do_wnload:"
+msgstr "Und_uh"
+
+msgid "Downloading"
+msgstr "Mengunduh"
+
+msgid "Adding"
+msgstr "Menambahkan"
+
+msgid "Reads user clipboard content for torrents"
+msgstr "Membaca isi papan klip pengguna bagi torrent"
+
+msgid "Detect new torrents from clipboard"
+msgstr "Deteksi torrent baru dari papan klip"
+
+#. Please keep this phrase as short as possible, it's currently the longest and influences dialog width
+msgid "Download is i_nactive if data sharing stopped:"
+msgstr "Unduh tidak _aktif jika berbagi data dihentikan:"
+
+msgid "Seeding"
+msgstr "Membibit"
+
+msgid "Stop seedi_ng if idle for:"
+msgstr "Berhenti membibit bila me_nganggur selama:"
+
+msgid "Encryption"
+msgstr "Enkripsi"
+
+msgid "Start _minimized in notification area"
+msgstr "Mulai _minimalkan di area notifikasi"
+
+#, fuzzy
+#| msgid "Retransmission"
+msgid "Retransmission (Qt)"
+msgstr "Retransmission"
+
+msgid "Select Location"
+msgstr "Pilih Lokasi"
+
+msgid "Error Renaming Path"
+msgstr "Galat Mengubah Nama Path"
+
+msgid "Unable to rename \"{old_path}\" as \"{path}\": {error}."
+msgstr "Tidak dapat mengubah nama \"{old_path}\" sebagai \"{path}\": {error}."
+
+msgid "Error Adding Torrent"
+msgstr "Galat Saat Menambah Torrent"
+
+msgid "{torrent_name} (copy of {hash})"
+msgstr "{torrent_name} (salinan dari {hash})"
+
+#, fuzzy
+#| msgid "Public torrent"
+msgid "Duplicate Torrent"
+msgstr "Torrent publik"
+
+#, fuzzy
+#| msgid "Public torrent"
+msgid "Duplicate Torrents"
+msgstr "Torrent publik"
+
+#, fuzzy
+#| msgid "Couldn't add duplicate torrent"
+#| msgid_plural "Couldn't add duplicate torrents"
+msgid "Unable to add {count} duplicate torrent"
+msgid_plural "Unable to add {count} duplicate torrents"
+msgstr[0] "Tak bisa menambah torrent duplikat"
+
+msgid "Change Session"
+msgstr "Ubah Sesi"
+
+msgid "Source"
+msgstr "Sumber"
+
+msgid "Start _Local Session"
+msgstr "Mulai Sesi _Lokal"
+
+msgid "Connect to _Remote Session"
+msgstr "Menyambung ke Sesi _Remote"
+
+msgid "_Host:"
+msgstr "_Host:"
+
+msgid "_Port:"
+msgstr "_Port:"
+
+msgid "_Authentication required"
+msgstr "_Otentikasi dibutuhkan"
+
+msgid "Remote root pa_th:"
+msgstr ""
+
+msgid "Tracker gave a warning: {warning}"
+msgstr "Pelacak memberi sebuah peringatan: {warning}"
+
+msgid "Tracker gave an error: {error}"
+msgstr "Pelacak memberi sebuah galat: {error}"
+
+msgid "Error: {error}"
+msgstr "Galat: {error}"
+
+#, fuzzy
+#| msgid "Magnetized transfer - retrieving metadata (%1%)"
+msgid "Magnetized torrent - retrieving metadata ({percent_done}%)"
+msgstr "Transfer termagnetisasi - mengambil metadata (%1%)"
+
+#, no-c-format
+msgid "Downloading metadata from {active_count:L} peer ({percent_done}% done)"
+msgid_plural "Downloading metadata from {active_count:L} peers ({percent_done}% done)"
+msgstr[0] "Mengunduh metadata dari {active_count:L} rekan ({percent_done}% selesai)"
+
+msgid "Downloading from {active_count:L} peer"
+msgid_plural "Downloading from {active_count:L} peers"
+msgstr[0] "Mengunduh dari {active_count:L} rekan"
+
+msgid " and {webseed_count:L} web seed"
+msgid_plural " and {webseed_count:L} web seeds"
+msgstr[0] " dan {webseed_count:L} kirim web"
+
+msgid "Seeding to {active_count:L} peer"
+msgid_plural "Seeding to {active_count:L} peers"
+msgstr[0] "Mengirim ke {active_count:L} rekan"
+
+msgid " - "
+msgstr " - "
+
+#, fuzzy
+#| msgid ""
+#| "To add a backup URL, add it on the line after the primary URL.\n"
+#| "To add another primary URL, add it after a blank line."
+msgid "To add a backup URL, add it on the next line after a primary URL."
+msgstr ""
+"Untuk menambahkan URL cadangan, tambahkan pada baris setelah URL utama.\n"
+"Untuk menambahkan URL utama, tambahkan setelah baris kosong."
+
+msgid "To add a new primary URL, add it after a blank line."
+msgstr "Untuk menambahkan sebuah URL primer baru, tambahkan itu setelah satu baris kosong."
 
 msgid "{file_count:L} file, {total_size}\n"
 msgid_plural "{file_count:L} files, {total_size}\n"
@@ -1949,13 +3125,89 @@ msgid "minute"
 msgid_plural "minutes"
 msgstr[0] ""
 
-msgid "seconds"
+msgid "second"
 msgid_plural "seconds"
 msgstr[0] ""
 
 msgid "day"
 msgid_plural "days"
 msgstr[0] ""
+
+msgid "seconds"
+msgid_plural "seconds"
+msgstr[0] ""
+
+#~ msgid "Finished"
+#~ msgstr "Selesai"
+
+#~ msgid "We would upload to this peer if they asked"
+#~ msgstr "Kita akan mengunggah ke peer ini bila mereka minta"
+
+#~ msgid "Dn Blocks"
+#~ msgstr "Blok Und"
+
+#~ msgid "Up Blocks"
+#~ msgstr "Blok Ung"
+
+#~ msgid "We Cancelled"
+#~ msgstr "Kita Batalkan"
+
+#~ msgid "They Cancelled"
+#~ msgstr "Mereka Batalkan"
+
+#~ msgid "Have"
+#~ msgstr "Punya"
+
+#~ msgid "Inhibiting desktop hibernation"
+#~ msgstr "Mencegah hibernasi desktop"
+
+#~ msgid "Allowing desktop hibernation"
+#~ msgstr "Mengijinkan hibernasi desktop"
+
+#~ msgid "Open URL…"
+#~ msgstr "Open URL…"
+
+#~ msgid "Start all torrents"
+#~ msgstr "Muali Semua Torrents"
+
+#~ msgid "Pause all torrents"
+#~ msgstr "Istirahat Semua Torrents"
+
+#~ msgid "Start torrent now"
+#~ msgstr "Mulai torrent sekarang"
+
+#~ msgid "Copy _Magnet Link to Clipboard"
+#~ msgstr "Salin _Magnet Link ke Papan Klip"
+
+#~ msgid "Enable Alternative Speed _Limits"
+#~ msgstr "Fungsikan Batas Kecepatan A_lternatif"
+
+#~ msgid "Torrent size:"
+#~ msgstr "Ukuran torrent:"
+
+#~ msgid "_New"
+#~ msgstr "_Baru"
+
+#~ msgid "Source F_older:"
+#~ msgstr "F_older Sumber:"
+
+#~ msgid "Source _File:"
+#~ msgstr "_Berkas Sumber:"
+
+#~ msgid "P_ause"
+#~ msgstr "Jed_a"
+
+#~ msgid "Keep _incomplete torrents in:"
+#~ msgstr "S_impan torrent yang belum komplit di:"
+
+#~ msgid "_Port used for incoming connections:"
+#~ msgstr "_Port yang dipakai untuk koneksi masuk:"
+
+#~ msgid "_Inhibit hibernation when torrents are active"
+#~ msgstr "Cegah h_ibernasi ketika torrent aktif"
+
+#~ msgid "Torrent _location:"
+#~ msgstr "_Lokasi torrent:"
 
 #~ msgid "I _Agree"
 #~ msgstr "S_aya Setuju"

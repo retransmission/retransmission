@@ -13,8 +13,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-01-04 14:15+0000\n"
+"Report-Msgid-Bugs-To: https://github.com/retransmission/retransmission/issues\n"
+"POT-Creation-Date: 2026-10-03 11:48-0500\n"
 "PO-Revision-Date: 2017-01-26 19:47+0000\n"
 "Last-Translator: Carlos Sánchez López <erielkhan@gmail.com>, 2024\n"
 "Language-Team: Catalan (https://app.transifex.com/transmissionbt/teams/33778/ca/)\n"
@@ -24,11 +24,19 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
+#, fuzzy
 msgid "None"
-msgstr "Res"
+msgstr ""
+"#-#-#-#-#  ca.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Res\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Cap"
 
 msgid "Inf"
 msgstr "Inf"
+
+msgid "Another process is already using '{path}'."
+msgstr ""
 
 msgid "Couldn't read '{path}': {error} ({error_code})"
 msgstr ""
@@ -55,6 +63,9 @@ msgid "Reloading settings from '{path}'"
 msgstr ""
 
 msgid "Couldn't initialize daemon: {error} ({error_code})"
+msgstr ""
+
+msgid "Waiting for another process to release '{path}'"
 msgstr ""
 
 msgid "Loading settings from '{path}'"
@@ -149,34 +160,56 @@ msgstr "Comparteix independentment de l'activitat"
 msgid "Stop seeding if idle for N minutes:"
 msgstr "Atura la compartició si està inactiu N minuts:"
 
+#, fuzzy
 msgid "Queued for verification"
-msgstr "S'ha enviat a la cua per a la verificació"
+msgstr ""
+"#-#-#-#-#  ca.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"S'ha enviat a la cua per a la verificació\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"S'ha enviat la cua per a la verificació"
 
 msgid "Verifying local data"
 msgstr "S'estan verificant les dades locals"
 
+#, fuzzy
 msgid "Queued for download"
-msgstr "S'ha enviat a la cua per a la baixada"
+msgstr ""
+"#-#-#-#-#  ca.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"S'ha enviat a la cua per a la baixada\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"S'ha posat a la cua per a la baixada"
 
 msgctxt "Verb"
 msgid "Downloading"
 msgstr "S'està baixant"
 
+#, fuzzy
 msgid "Queued for seeding"
-msgstr "S'ha enviat a la cua per a la compartició"
+msgstr ""
+"#-#-#-#-#  ca.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"S'ha enviat a la cua per a la compartició\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"S'ha enviat la cua per a la compartició"
 
 msgctxt "Verb"
 msgid "Seeding"
 msgstr "S'està compartint"
 
-msgid "Finished"
-msgstr "Finalitzat"
+#, fuzzy
+#| msgid "Incomplete"
+msgid "Seeding complete"
+msgstr "Incomplet"
 
 msgid "Paused"
 msgstr "En pausa"
 
+#, fuzzy
 msgid "N/A"
-msgstr "No disponible"
+msgstr ""
+"#-#-#-#-#  ca.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"No disponible\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"N/D"
 
 msgid "Mixed"
 msgstr "Mescla"
@@ -191,13 +224,13 @@ msgid "Public torrent"
 msgstr "Torrent públic"
 
 msgid "Created by {creator} on {date}"
-msgstr ""
+msgstr "Creat per {creator} el {date}"
 
 msgid "Created by {creator}"
-msgstr ""
+msgstr "Creat per {creator}"
 
 msgid "Created on {date}"
-msgstr ""
+msgstr "Creat el {date}$"
 
 msgid "Unknown"
 msgstr "Desconegut"
@@ -219,6 +252,7 @@ msgstr ""
 msgid "{current_size} ({percent_done}% of {percent_available}% available)"
 msgstr ""
 
+#, c-format
 msgid "{current_size} ({percent_done}% of {percent_available}% available; {unverified_size} unverified)"
 msgstr ""
 
@@ -226,7 +260,7 @@ msgid "{downloaded_size} (+{discarded_size} discarded after failed checksum)"
 msgstr ""
 
 msgid "{uploaded_size} (Ratio: {ratio})"
-msgstr ""
+msgstr "{uploaded_size} (relació: {ratio})"
 
 msgid "No errors"
 msgstr "Sense errors"
@@ -249,8 +283,10 @@ msgstr "Es baixaria d'aquest client si ho permetés"
 msgid "Uploading to peer"
 msgstr "S'està pujant al client"
 
-msgid "We would upload to this peer if they asked"
-msgstr "Es pujaria a aquest client si ho demanés"
+#, fuzzy
+#| msgid "We would download from this peer if they would let us"
+msgid "This peer would download from us if we would let them"
+msgstr "Es baixaria d'aquest client si ho permetés"
 
 msgid "Peer has unchoked us, but we're not interested"
 msgstr "Un client ha permès l'entrada, però no hi estem interessats"
@@ -273,10 +309,12 @@ msgstr "El client és una connexió entrant"
 msgid "Peer is connected over µTP"
 msgstr "El client està connectat mitjançant µTP"
 
+msgid "Peer supports holepunch (BEP 55)"
+msgstr ""
+
 msgid "Address"
 msgstr "Adreça"
 
-#. % is percent done
 msgid "%"
 msgstr "%"
 
@@ -285,18 +323,6 @@ msgstr "Pet. baixada"
 
 msgid "Up Reqs"
 msgstr "Pet. pujada"
-
-msgid "Dn Blocks"
-msgstr "Blocs baixats"
-
-msgid "Up Blocks"
-msgstr "Blocs pujats"
-
-msgid "We Cancelled"
-msgstr "Hem cancel·lat"
-
-msgid "They Cancelled"
-msgstr "Han cancel·lat"
 
 msgid "Down"
 msgstr "Baixada"
@@ -313,66 +339,19 @@ msgstr "Indicadors"
 msgid "Web Seeds"
 msgstr "Llavors web"
 
-msgid "Got a list of {markup_begin}{peer_count} peer{markup_end} {time_span_ago}"
-msgid_plural "Got a list of {markup_begin}{peer_count} peers{markup_end} {time_span_ago}"
-msgstr[0] ""
-msgstr[1] ""
-
-#. {markup_begin} and {markup_end} should surround the time_span
-msgid "Peer list request {markup_begin}timed out {time_span_ago}{markup_end}; will retry"
-msgstr ""
-
-#. {markup_begin} and {markup_end} should surround the error
-msgid "Got an error '{markup_begin}{error}{markup_end}' {time_span_ago}"
-msgstr ""
-
-msgid "No updates scheduled"
-msgstr "No hi ha actualitzacions programades"
-
-msgid "Asking for more peers {time_span_from_now}"
-msgstr ""
-
-msgid "Queued to ask for more peers"
-msgstr "S'ha enviat a la cua per a la sol·licitud de més clients"
-
-#. {markup_begin} and {markup_end} should surround time_span_ago
-msgid "Asked for more peers {markup_begin}{time_span_ago}{markup_end}"
-msgstr ""
-
-msgid "Tracker had {markup_begin}{seeder_count} {seeder_or_seeders} and {leecher_count} {leecher_or_leechers}{markup_end} {time_span_ago}"
-msgstr ""
-
-msgid "seeder"
-msgid_plural "seeders"
-msgstr[0] ""
-msgstr[1] ""
-
-msgid "leecher"
-msgid_plural "leechers"
-msgstr[0] ""
-msgstr[1] ""
-
-#. {markup_begin} and {markup_end} should surround the error text
-msgid "Got a scrape error '{markup_begin}{error}{markup_end}' {time_span_ago}"
-msgstr ""
-
-msgid "Asking for peer counts in {time_span_from_now}"
-msgstr ""
-
-msgid "Queued to ask for peer counts"
-msgstr "S'ha enviat a la cua per a la sol·licitud del nombre de clients"
-
-msgid "Asked for peer counts {markup_begin}{time_span_ago}{markup_end}"
-msgstr ""
-
 msgid "{torrent_name} - Edit Trackers"
 msgstr ""
 
 msgid "List contains invalid URLs"
 msgstr "La llista conté URL no vàlids"
 
+#, fuzzy
 msgid "Please correct the errors and try again."
-msgstr "Corregiu els errors i torneu-ho a provar."
+msgstr ""
+"#-#-#-#-#  ca.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Corregiu els errors i torneu-ho a provar.\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Corregiu els errors i torneu-ho a intentar."
 
 msgid "{torrent_name} - Add Tracker"
 msgstr ""
@@ -389,25 +368,31 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "Remove torrent?"
-msgstr ""
+msgstr "Voleu suprimir el torrent?"
+
+msgid "Delete this torrent's downloaded files?"
+msgstr "Voleu suprimir els fitxers baixats d'aquests torrent?"
 
 msgid "Remove {count:L} torrent?"
 msgid_plural "Remove {count:L} torrents?"
-msgstr[0] ""
-msgstr[1] ""
-
-msgid "Delete this torrent's downloaded files?"
-msgstr ""
+msgstr[0] "Voleu suprimir {count:L} torrent?"
+msgstr[1] "Voleu suprimir {count:L} torrents?"
 
 msgid "Delete this {count:L} torrent's downloaded files?"
 msgid_plural "Delete these {count:L} torrents' downloaded files?"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Voleu suprimir els fitxers baixats d'aquest {count:L} torrent?"
+msgstr[1] "Voleu suprimir els fitxers baixats d'aquests {count:L} torrents?"
 
-msgid "Once removed, continuing the transfer will require the torrent file or magnet link."
-msgid_plural "Once removed, continuing the transfers will require the torrent files or magnet links."
-msgstr[0] "Un cop s'ha suprimit, per continuar la transferència caldrà el fitxer torrent o l'enllaç magnet."
-msgstr[1] "Un cop s'han suprimit, per continuar les transferències caldran els fitxers torrent o els enllaços magnet."
+#, fuzzy
+#| msgid "Once removed, continuing the transfer will require the torrent file or magnet link."
+#| msgid_plural "Once removed, continuing the transfers will require the torrent files or magnet links."
+msgid "Once removed, you'll need the torrent file or magnet link to add it again."
+msgstr "Un cop s'ha suprimit, per continuar la transferència caldrà el fitxer torrent o l'enllaç magnet."
+
+#, fuzzy
+#| msgid "Once removed, continuing the transfers will require the torrent files or magnet links."
+msgid "Once removed, you'll need the torrent files or magnet links to add them again."
+msgstr "Un cop s'han suprimit, per continuar les transferències caldran els fitxers torrent o els enllaços magnet."
 
 msgid "This torrent has not finished downloading."
 msgstr "Aquest torrent encara no ha finalitzat la baixada."
@@ -439,8 +424,16 @@ msgstr "_Cancel·la"
 msgid "_Delete"
 msgstr "_Elimina"
 
+#. Removes the torrent from the list and keeps its downloaded files
+#, fuzzy
 msgid "_Remove"
-msgstr "_Suprimeix"
+msgstr ""
+"#-#-#-#-#  ca.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Suprimeix\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"S_uprimeix\n"
+"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Sup_rimeix"
 
 msgid "High"
 msgstr "Alta"
@@ -460,7 +453,7 @@ msgstr "Nom"
 msgid "Size"
 msgstr "Mida"
 
-msgid "Have"
+msgid "Progress"
 msgstr "Progrés"
 
 msgid "Download"
@@ -479,8 +472,13 @@ msgctxt "Verb"
 msgid "Verifying"
 msgstr "S'està verificant"
 
+#, fuzzy
 msgid "Error"
-msgstr "Errors"
+msgstr ""
+"#-#-#-#-#  ca.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Errors\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Error"
 
 msgid "_Show:"
 msgstr "_Mostra:"
@@ -489,6 +487,24 @@ msgid "_Show {count:L} of:"
 msgstr ""
 
 msgid "{disk_space} free"
+msgstr "{disk_space} lliures"
+
+msgid "Where to look for configuration files"
+msgstr "On cercar els fitxers de configuració"
+
+msgid "Start with all torrents paused"
+msgstr "Inicia amb tots els torrents en pausa"
+
+msgid "Start minimized in notification area"
+msgstr "Inicia minimitzat a l'àrea de notificació"
+
+msgid "Show version number and exit"
+msgstr "Mostra el número de versió i surt"
+
+msgid "[torrent files or urls]"
+msgstr "[fitxers torrent o URL]"
+
+msgid "Run '{program} --help' to see a full list of available command line options.\n"
 msgstr ""
 
 msgid ""
@@ -517,7 +533,7 @@ msgid "Stop Seeding at Ratio"
 msgstr "Atura la compartició a la relació"
 
 msgid "Stop at Ratio ({ratio})"
-msgstr ""
+msgstr "Atura a la relació ({ratio})"
 
 msgid "Total Ratio"
 msgstr "Relació total"
@@ -531,16 +547,11 @@ msgstr "Transferència total"
 msgid "Session Transfer"
 msgstr "Transferència de la sessió"
 
+msgid "Down: {downloaded_size}, Up: {uploaded_size}"
+msgstr "Baixada: {downloaded_size}, Pujada: {uploaded_size}"
+
 msgid "Ratio: {ratio}"
-msgstr ""
-
-msgctxt "current session totals"
-msgid "Down: {downloaded_size}, Up: {uploaded_size}"
-msgstr ""
-
-msgctxt "all-time totals"
-msgid "Down: {downloaded_size}, Up: {uploaded_size}"
-msgstr ""
+msgstr "Relació: {ratio}"
 
 msgid "{download_speed} ▾"
 msgstr ""
@@ -598,6 +609,11 @@ msgstr "Hora"
 msgid "Couldn't create proxy for '{bus}': {error} ({error_code})"
 msgstr ""
 
+#, fuzzy
+#| msgid "Couldn't save '{path}': {error} ({error_code})"
+msgid "Couldn't spawn async process \"'{command}'\": {error} ({error_code})"
+msgstr "No s'ha pogut guardar '{path}': {error} ({error_code})"
+
 msgid "Open File"
 msgstr "Obre un fitxer"
 
@@ -610,8 +626,13 @@ msgstr "S'ha completat el torrent"
 msgid "Start Now"
 msgstr ""
 
+#, fuzzy
 msgid "Torrent Added"
-msgstr "S'ha afegit el torrent"
+msgstr ""
+"#-#-#-#-#  ca.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"S'ha afegit el torrent\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Torrent afegit"
 
 msgid "Torrent files"
 msgstr "Fitxers torrent"
@@ -626,13 +647,16 @@ msgid "_Open"
 msgstr "_Obre"
 
 msgid "Show options dialog"
+msgstr "Mostra el diàleg de les opcions"
+
+msgid "Other…"
 msgstr ""
 
-msgid "Select a File"
-msgstr ""
+msgid "Select File"
+msgstr "Seleccioneu un fitxer"
 
 msgid "(None)"
-msgstr ""
+msgstr "(cap)"
 
 msgid "Allow encryption"
 msgstr "Permet el xifratge"
@@ -701,27 +725,21 @@ msgstr "No s'ha pogut moure el torrent"
 msgid "This may take a moment…"
 msgstr "Això tardarà una mica…"
 
+#, fuzzy
+#| msgid "Couldn't save '{path}': {error} ({error_code})"
+msgid "Couldn't open watchdir '{dirname}': {error} ({error_code})"
+msgstr "No s'ha pogut guardar '{path}': {error} ({error_code})"
+
 msgid "Couldn't read '{path}'"
 msgstr ""
-
-#. logging
-msgid "Inhibiting desktop hibernation"
-msgstr "S'està inhibint la hibernació de l'escriptori"
-
-msgid "Couldn't inhibit desktop hibernation: {error}"
-msgstr ""
-
-#. logging
-msgid "Allowing desktop hibernation"
-msgstr "Permet la hibernació de l'escriptori"
 
 msgid "Couldn't find pending RPC request for id {id}"
 msgstr ""
 
 msgid "Started {count:L} time"
 msgid_plural "Started {count:L} times"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "S'ha iniciat {count:L} cop"
+msgstr[1] "S'ha iniciat {count:L} cops"
 
 msgid "Reset your statistics?"
 msgstr "Voleu restablir les estadístiques?"
@@ -732,28 +750,32 @@ msgstr "_Restableix"
 msgid "These statistics are for your information only. Resetting them doesn't affect the statistics logged by your BitTorrent trackers."
 msgstr "Aquestes estadístiques només són per a la vostra informació. El restabliment no afecta les estadístiques registrades pels vostres rastrejadors BitTorrent."
 
+msgid "_Show {appname}"
+msgstr "_Mostra {appname}"
+
 msgid "{upload_speed} ▴ {download_speed} ▾"
 msgstr ""
 
 #, no-c-format
 msgid "Verifying local data ({percent_done}% tested)"
-msgstr ""
+msgstr "S'estan verificant les dades locals ({percent_done}% comprovat)"
 
 msgid "{current_size} of {complete_size} ({percent_done}%)"
-msgstr ""
+msgstr "{current_size} de {complete_size} ({percent_done}%)"
 
 msgid "{current_size} of {complete_size} ({percent_complete}%), uploaded {uploaded_size} (Ratio: {ratio}, Goal: {seed_ratio})"
 msgstr ""
 
 msgid "{current_size} of {complete_size} ({percent_complete}%), uploaded {uploaded_size} (Ratio: {ratio})"
-msgstr ""
+msgstr "{current_size} of {complete_size} ({percent_complete}%), pujat {uploaded_size} (relació: {ratio})"
 
 msgid "{complete_size}, uploaded {uploaded_size} (Ratio: {ratio}, Goal: {seed_ratio})"
 msgstr ""
 
 msgid "{complete_size}, uploaded {uploaded_size} (Ratio: {ratio})"
-msgstr ""
+msgstr "{complete_size}, pujat {uploaded_size} (relació: {ratio})"
 
+#. Translators: Second (optional) part of torrent progress string
 msgid "Remaining time unknown"
 msgstr "Temps restant desconegut"
 
@@ -766,8 +788,10 @@ msgstr "Encallat"
 msgid "Tracker warning: '{warning}'"
 msgstr ""
 
-msgid "Tracker Error: '{error}'"
-msgstr ""
+#, fuzzy
+#| msgid "Tracker gave an error: {error}"
+msgid "Tracker error: '{error}'"
+msgstr "El rastrejador ha emès un error: «{error}»"
 
 msgid "Local error: '{error}'"
 msgstr ""
@@ -790,182 +814,16 @@ msgstr[1] ""
 
 msgid "Downloading from {active_count} of {connected_count} connected peer"
 msgid_plural "Downloading from {active_count} of {connected_count} connected peers"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "S'està baixant de {active_count} de {connected_count} client connectat"
+msgstr[1] "S'està baixant de {active_count} de {connected_count} clients connectats"
 
 msgid "Seeding to {active_count} of {connected_count} connected peer"
 msgid_plural "Seeding to {active_count} of {connected_count} connected peers"
-msgstr[0] ""
-msgstr[1] ""
-
-msgid "{days_from_now:L} day from now"
-msgid_plural "{days_from_now:L} days from now"
-msgstr[0] ""
-msgstr[1] ""
-
-msgid "{hours_from_now:L} hour from now"
-msgid_plural "{hours_from_now:L} hours from now"
-msgstr[0] ""
-msgstr[1] ""
-
-msgid "{minutes_from_now:L} minute from now"
-msgid_plural "{minutes_from_now:L} minutes from now"
-msgstr[0] ""
-msgstr[1] ""
-
-msgid "{seconds_from_now:L} second from now"
-msgid_plural "{seconds_from_now:L} seconds from now"
-msgstr[0] ""
-msgstr[1] ""
-
-msgid "now"
-msgstr ""
-
-msgid "{days_ago:L} day ago"
-msgid_plural "{days_ago:L} days ago"
-msgstr[0] ""
-msgstr[1] ""
-
-msgid "{hours_ago:L} hour ago"
-msgid_plural "{hours_ago:L} hours ago"
-msgstr[0] ""
-msgstr[1] ""
-
-msgid "{minutes_ago:L} minute ago"
-msgid_plural "{minutes_ago:L} minutes ago"
-msgstr[0] ""
-msgstr[1] ""
-
-msgid "{seconds_ago:L} second ago"
-msgid_plural "{seconds_ago:L} seconds ago"
-msgstr[0] ""
-msgstr[1] ""
-
-msgid "{days:L} day"
-msgid_plural "{days:L} days"
-msgstr[0] ""
-msgstr[1] ""
-
-msgid "{hours:L} hour"
-msgid_plural "{hours:L} hours"
-msgstr[0] ""
-msgstr[1] ""
-
-msgid "{minutes:L} minute"
-msgid_plural "{minutes:L} minutes"
-msgstr[0] ""
-msgstr[1] ""
-
-msgid "{seconds:L} second"
-msgid_plural "{seconds:L} seconds"
-msgstr[0] ""
-msgstr[1] ""
-
-msgid "{days_left:L} day left"
-msgid_plural "{days_left:L} days left"
-msgstr[0] ""
-msgstr[1] ""
-
-msgid "{hours_left:L} hour left"
-msgid_plural "{hours_left:L} hours left"
-msgstr[0] ""
-msgstr[1] ""
-
-msgid "{minutes_left:L} minute left"
-msgid_plural "{minutes_left:L} minutes left"
-msgstr[0] ""
-msgstr[1] ""
-
-msgid "{seconds_left:L} second left"
-msgid_plural "{seconds_left:L} seconds left"
-msgstr[0] ""
-msgstr[1] ""
-
-msgid "The torrent file '{path}' is already in use by '{torrent_name}'."
-msgstr ""
-
-msgid "Couldn't open torrent"
-msgstr ""
-
-msgid "Couldn't move '{path}' to trash: {error} ({error_code})"
-msgstr ""
-
-msgid "Couldn't open '{url}'"
-msgstr ""
-
-msgid "Unsupported URL: '{url}'"
-msgstr ""
-
-#. modal
-msgid "{appname} doesn't know how to use '{url}'"
-msgstr ""
-
-msgid "This magnet link appears to be intended for something other than BitTorrent."
-msgstr ""
+msgstr[0] "S'està compartint amb {active_count} de {connected_count} client connectat"
+msgstr[1] "S'està compartint amb {active_count} de {connected_count} clients connectats"
 
 msgid "Retransmission"
 msgstr "Retransmission"
-
-#. parse the command line
-msgid "Where to look for configuration files"
-msgstr "On cercar els fitxers de configuració"
-
-msgid "Start with all torrents paused"
-msgstr "Inicia amb tots els torrents en pausa"
-
-msgid "Start minimized in notification area"
-msgstr "Inicia minimitzat a l'àrea de notificació"
-
-msgid "Show version number and exit"
-msgstr "Mostra el número de versió i surt"
-
-msgid "[torrent files or urls]"
-msgstr "[fitxers torrent o URL]"
-
-msgid "Run '{program} --help' to see a full list of available command line options.\n"
-msgstr ""
-
-msgid "B/s"
-msgstr ""
-
-msgid "GB/s"
-msgstr "GB/s"
-
-msgid "MB/s"
-msgstr "MB/s"
-
-msgid "TB/s"
-msgstr "TB/s"
-
-msgid "kB/s"
-msgstr "kB/s"
-
-msgid "B"
-msgstr ""
-
-msgid "GiB"
-msgstr "GiB"
-
-msgid "KiB"
-msgstr "KiB"
-
-msgid "MiB"
-msgstr "MiB"
-
-msgid "TiB"
-msgstr "TiB"
-
-msgid "GB"
-msgstr "GB"
-
-msgid "MB"
-msgstr "MB"
-
-msgid "TB"
-msgstr "TB"
-
-msgid "kB"
-msgstr "kB"
 
 msgid "BitTorrent Client"
 msgstr "Client de BitTorrent"
@@ -983,32 +841,49 @@ msgstr "Inicia Retransmission amb tots els torrents en pausa"
 msgid "Start Retransmission Minimized"
 msgstr "Inicia Retransmission minimitzat"
 
-msgid "Open a torrent"
-msgstr "Obre un torrent"
+#, fuzzy
+#| msgid "Retransmission"
+msgid "The Retransmission Project"
+msgstr "Retransmission"
+
+#. Translators: these are the application description paragraphs in the MetaInfo file.
+msgid "BitTorrent is a peer-to-peer file-sharing protocol that is commonly used to distribute large amounts of data between multiple users."
+msgstr ""
+
+msgid "Retransmission is a BitTorrent client with an easy-to-use interface on top of a cross-platform backend. Native interfaces are available for macOS, Linux, and Windows, as well as command line binaries and a web GUI."
+msgstr ""
+
+msgid "Notable features of Retransmission include support for Local Peer Discovery, encryption, DHT, µTP, PEX and Magnet links."
+msgstr ""
+
+msgid "Main window, showing an ongoing download of Fedora Workstation"
+msgstr ""
+
+msgid "_File"
+msgstr "_Fitxer"
 
 msgid "Open _URL…"
 msgstr "Obre l'_URL…"
 
-msgid "Open URL…"
-msgstr "Obre l'URL…"
-
 msgid "_New…"
 msgstr "_Nou…"
 
+#, fuzzy
 msgid "_Start All"
-msgstr "_Inicia-ho tot"
-
-msgid "Start all torrents"
-msgstr "Inicia tots els torrents"
+msgstr ""
+"#-#-#-#-#  ca.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Inicia-ho tot\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Inicia'ls tots"
 
 msgid "_Pause All"
 msgstr "Fes una _pausa a tot"
 
-msgid "Pause all torrents"
-msgstr "Fes una pausa a tots els torrents"
-
 msgid "_Quit"
 msgstr "_Surt"
+
+msgid "_Edit"
+msgstr "_Edita"
 
 msgid "Select _All"
 msgstr "_Selecciona-ho tot"
@@ -1019,29 +894,38 @@ msgstr "Desse_lecciona-ho tot"
 msgid "_Preferences"
 msgstr "_Preferències"
 
+msgid "_Torrent"
+msgstr "_Torrent"
+
 msgid "_Properties"
 msgstr "_Propietats"
 
-msgid "Torrent properties"
-msgstr "Propietats del torrent"
-
+#, fuzzy
 msgid "Open Fold_er"
-msgstr "Obre la _carpeta"
+msgstr ""
+"#-#-#-#-#  ca.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Obre la _carpeta\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Obr_e la carpeta"
 
+#, fuzzy
 msgid "_Start"
-msgstr "_Inicia"
-
-msgid "Start torrent"
-msgstr "Inicia el torrent"
+msgstr ""
+"#-#-#-#-#  ca.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Inicia\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Ini_cia"
 
 msgid "Start _Now"
 msgstr "I_nicia ara"
 
-msgid "Start torrent now"
-msgstr "Inicia el torrent ara"
-
 msgid "Ask Tracker for _More Peers"
 msgstr "Demana _més clients al rastrejador"
+
+#, fuzzy
+#| msgid "Queue"
+msgid "_Queue"
+msgstr "Cua"
 
 msgid "Move to _Top"
 msgstr "Mou al ca_pdamunt"
@@ -1058,29 +942,41 @@ msgstr "Mou al capda_vall"
 msgid "_Pause"
 msgstr "_Pausa"
 
-msgid "Pause torrent"
-msgstr "Fes una pausa al torrent"
-
 msgid "Set _Location…"
 msgstr "Estableix la _ubicació…"
 
 msgid "_Verify Local Data"
 msgstr "_Verifica les dades locals"
 
-msgid "Copy _Magnet Link to Clipboard"
-msgstr "Copia l'enllaç _magnet al porta-retalls"
+msgid "_Copy Magnet Link to Clipboard"
+msgstr "_Copia l'enllaç magnet al porta-retalls"
 
-msgid "Remove torrent"
-msgstr "Suprimeix el torrent"
-
+#, fuzzy
 msgid "_Delete Files and Remove"
-msgstr "Suprimeix i _elimina els fitxers"
+msgstr ""
+"#-#-#-#-#  ca.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Suprimeix i _elimina els fitxers\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Suprimeix i _esborra els fitxers"
 
+msgid "_View"
+msgstr "_Visualitza"
+
+#, fuzzy
 msgid "_Compact View"
-msgstr "Vista _compacta"
+msgstr ""
+"#-#-#-#-#  ca.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Vista _compacta\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Visualització _compacta"
 
+#, fuzzy
 msgid "_Toolbar"
-msgstr "Barra d'_eines"
+msgstr ""
+"#-#-#-#-#  ca.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Barra d'_eines\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Barra d'eines"
 
 msgid "_Filterbar"
 msgstr "Barra de _filtre"
@@ -1118,26 +1014,53 @@ msgstr "Ordena pel _temps restant"
 msgid "Re_verse Sort Order"
 msgstr "Mode d'ordenació _invertit"
 
+msgid "_Help"
+msgstr "_Ajuda"
+
+#, fuzzy
 msgid "Message _Log"
-msgstr "_Registre de missatges"
+msgstr ""
+"#-#-#-#-#  ca.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Registre de missatges\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Registre de _missatges"
 
+#, fuzzy
 msgid "_Statistics"
-msgstr "_Estadístiques"
+msgstr ""
+"#-#-#-#-#  ca.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Estadístiques\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"E_stadístiques"
 
+#, fuzzy
 msgid "_Donate"
-msgstr "_Donatius"
+msgstr ""
+"#-#-#-#-#  ca.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Donatius\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Fer un _donatiu"
 
+#, fuzzy
 msgid "_Contents"
-msgstr "_Continguts"
+msgstr ""
+"#-#-#-#-#  ca.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Continguts\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Contingut"
 
 msgid "_About"
 msgstr "_Quant a"
 
-msgid "_Show {appname}"
-msgstr "_Mostra {appname}"
+#, fuzzy
+#| msgid "Start torrent"
+msgid "_Sort Torrents By"
+msgstr "Inicia el torrent"
 
-msgid "Enable Alternative Speed _Limits"
-msgstr "Habilita els _límits de velocitats alternatius"
+#, fuzzy
+#| msgid "Alternative Speed Limits"
+msgid "Alternative Speed _Limits"
+msgstr "Límits de velocitat alternatius"
 
 msgid "_Add"
 msgstr "_Afegeix"
@@ -1154,8 +1077,8 @@ msgstr "Tan_ca"
 msgid "Activity"
 msgstr "Activitat"
 
-msgid "Torrent size:"
-msgstr "Mida del torrent:"
+msgid "Size:"
+msgstr "Mida:"
 
 msgid "Have:"
 msgstr "Rebut:"
@@ -1205,14 +1128,16 @@ msgstr "Comentari:"
 msgid "Information"
 msgstr "Informació"
 
+#, fuzzy
 msgid "Show _more details"
-msgstr "Mostra _més detalls"
+msgstr ""
+"#-#-#-#-#  ca.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Mostra _més detalls\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Mostra'n més detalls"
 
 msgid "Peers"
 msgstr "Clients"
-
-msgid "_Edit"
-msgstr "_Edita"
 
 msgid "Show _backup trackers"
 msgstr "Mostra els rastrejadors de _seguretat"
@@ -1250,8 +1175,13 @@ msgstr "_Inactiu:"
 msgid "Peer Connections"
 msgstr "Connexions de clients"
 
+#, fuzzy
 msgid "_Maximum peers:"
-msgstr "Nombre _màxim de clients connectats:"
+msgstr ""
+"#-#-#-#-#  ca.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Nombre _màxim de clients connectats:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Nombre _màxim de clients:"
 
 msgid "Options"
 msgstr "Opcions"
@@ -1267,6 +1197,21 @@ msgstr ""
 msgid "Also see Default Public Trackers in Edit > Preferences > Network"
 msgstr ""
 
+msgid "Open a torrent"
+msgstr "Obre un torrent"
+
+msgid "Start torrent"
+msgstr "Inicia el torrent"
+
+msgid "Pause torrent"
+msgstr "Fes una pausa al torrent"
+
+msgid "Remove torrent"
+msgstr "Suprimeix el torrent"
+
+msgid "Torrent properties"
+msgstr "Propietats del torrent"
+
 msgid "Torrent"
 msgstr "Torrent"
 
@@ -1276,35 +1221,47 @@ msgstr "Estadístiques"
 msgid "New Torrent"
 msgstr "Torrent nou"
 
-msgid "_New"
-msgstr "_Nou"
+#, fuzzy
+#| msgid "C_redits"
+msgid "C_reate"
+msgstr "C_rèdits"
 
 msgid "Sa_ve to:"
 msgstr "_Desa a:"
 
-msgid "Source F_older:"
+msgid "Source f_older:"
 msgstr "Carpeta d'_origen:"
 
-msgid "Source _File:"
+msgid "Source _file:"
 msgstr "_Fitxer d'origen:"
 
-msgid "Piece size:"
+msgid "Piece si_ze:"
 msgstr ""
 
 msgid "Properties"
 msgstr "Propietats"
 
+#, fuzzy
 msgid "_Trackers:"
-msgstr "_Rastrejadors:"
+msgstr ""
+"#-#-#-#-#  ca.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Rastrejadors:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Ras_trejadors:"
 
 msgid "Co_mment:"
 msgstr "Co_mentari:"
 
 msgid "_Source:"
-msgstr ""
+msgstr "_Origen:"
 
+#, fuzzy
 msgid "_Private torrent"
-msgstr "Torrent _particular"
+msgstr ""
+"#-#-#-#-#  ca.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Torrent _particular\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Torrent _privat"
 
 msgid "Creating torrent…"
 msgstr "Creant el torrent…"
@@ -1317,9 +1274,6 @@ msgstr "_Anomena i desa"
 
 msgid "Clear"
 msgstr "Neteja"
-
-msgid "P_ause"
-msgstr "P_ausa"
 
 msgid "Level"
 msgstr "Nivell"
@@ -1342,14 +1296,13 @@ msgstr "Seleccioneu una carpeta de destinació"
 msgid "_Start when added"
 msgstr "_Inicia quan s'afegeixi"
 
-msgid "Mo_ve torrent file to the trash"
-msgstr ""
+#, fuzzy
+#| msgid "Mo_ve .torrent file to the trash"
+msgid "Mo_ve torrent file to the Trash"
+msgstr "Mo_u el fitxer .torrent a la paperera"
 
 msgid "{appname} Preferences"
 msgstr "Preferències de {appname}"
-
-msgid "_Help"
-msgstr "_Ajuda"
 
 msgid "Speed Limits"
 msgstr "Límits de velocitat"
@@ -1399,7 +1352,9 @@ msgstr "Mostra el _diàleg de les opcions del torrent"
 msgid "_Start added torrents"
 msgstr "Inicia els torrents afegit_s"
 
-msgid "Save to _Location:"
+#, fuzzy
+#| msgid "Save to _Location:"
+msgid "Save to _location:"
 msgstr "Desa a la _ubicació:"
 
 msgid "Download Queue"
@@ -1417,10 +1372,13 @@ msgstr "Incomplet"
 msgid "Append \"._part\" to incomplete files' names"
 msgstr "Afegeix «._part» al nom dels fitxers incomplets"
 
-msgid "Keep _incomplete torrents in:"
-msgstr "Mantén els torrents incomplets a:"
+msgid "Keep _incomplete files in:"
+msgstr "Mantén els fitxers _incomplets a:"
 
-msgid "Call scrip_t when done downloading:"
+msgid "Call scrip_t when download completes:"
+msgstr ""
+
+msgid "Verify data when download completes"
 msgstr ""
 
 msgctxt "Gerund"
@@ -1455,19 +1413,28 @@ msgstr "Llista de bloqueigs"
 msgid "Enable _blocklist:"
 msgstr "Habilita la llista de _bloqueigs:"
 
-msgid "Enable _automatic updates"
+#, fuzzy
+#| msgid "Enable _automatic updates"
+msgid "_Automatically update weekly"
 msgstr "Habilita les actualitzacions _automàtiques"
 
+#, fuzzy
 msgid "_Update"
-msgstr "_Actualitza"
+msgstr ""
+"#-#-#-#-#  ca.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Actualitza\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Act_ualitza"
 
 msgid "Listening Port"
 msgstr "Port a escoltar"
 
-msgid "_Port used for incoming connections:"
+msgid "_Port for incoming connections:"
 msgstr "_Port utilitzat per a les connexions d'entrada:"
 
-msgid "Pick a _random port every time Transmission is started"
+#, fuzzy
+#| msgid "Pick a _random port every time Transmission is started"
+msgid "Pick a _random port at startup"
 msgstr "_Tria un port aleatori cada cop que s'inicia Transmission"
 
 msgid "Use UPnP or NAT-PMP port _forwarding from my router"
@@ -1479,31 +1446,41 @@ msgstr "_Comprova el port"
 msgid "Peer Limits"
 msgstr "Límit de clients"
 
-msgid "Maximum peers per _torrent:"
+#, fuzzy
+#| msgid "Maximum peers per _torrent:"
+msgid "Maximum peers for new _torrents:"
 msgstr "Nombre màxim de clients per t_orrent:"
 
 msgid "Maximum peers _overall:"
 msgstr "N_ombre màxim de clients:"
 
-msgid "Enable µ_TP for peer communication"
-msgstr ""
+#, fuzzy
+#| msgid "Peer Connections"
+msgid "Enable µ_TP for peer connections"
+msgstr "Connexions de clients"
 
 msgid "µTP is a tool for reducing network congestion."
 msgstr ""
 
-msgid "Use PE_X to find more peers"
+#, fuzzy
+#| msgid "Use PE_X to find more peers"
+msgid "Use PE_X to find more peers for public torrents"
 msgstr "Utilitza _PEX per trobar més clients"
 
 msgid "PEX is a tool for exchanging peer lists with the peers you're connected to."
 msgstr "PEX és una eina per intercanviar la llista de clients amb els clients amb què estigueu connectats."
 
-msgid "Use _DHT to find more peers"
+#, fuzzy
+#| msgid "Use _DHT to find more peers"
+msgid "Use _DHT to find more peers for public torrents"
 msgstr "Utilitza _DHT per trobar més clients"
 
 msgid "DHT is a tool for finding peers without a tracker."
 msgstr "DHT és una eina per trobar clients sense un rastrejador."
 
-msgid "Use _Local Peer Discovery to find more peers"
+#, fuzzy
+#| msgid "Use _Local Peer Discovery to find more peers"
+msgid "Use _Local Peer Discovery to find more peers for public torrents"
 msgstr "Utilitza el descobriment de clients _locals per trobar més clients"
 
 msgid "LPD is a tool for finding peers on your local network."
@@ -1525,8 +1502,8 @@ msgstr "Xarxa"
 msgid "Desktop"
 msgstr "Escriptori"
 
-msgid "_Inhibit hibernation when torrents are active"
-msgstr "_Inhibeix la hibernació quan hi hagi torrents actius"
+msgid "_Prevent computer from sleeping with active torrents"
+msgstr ""
 
 msgid "Show {appname} icon in the _notification area"
 msgstr "Mostra la icona de {appname} a l'àrea de _notificació"
@@ -1549,14 +1526,21 @@ msgstr "Control remot"
 msgid "Allow _remote access"
 msgstr "Permet l'accés _remot"
 
-msgid "_Open web client"
+#, fuzzy
+#| msgid "_Open web client"
+msgid "_Open Web Client"
 msgstr "_Obre el client web"
 
 msgid "HTTP _port:"
 msgstr "_Port HTTP:"
 
+#, fuzzy
 msgid "Use _authentication"
-msgstr "_Utilitza l'autenticació"
+msgstr ""
+"#-#-#-#-#  ca.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"_Utilitza l'autenticació\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Utilitza l'_autenticació"
 
 msgid "_Username:"
 msgstr "Nom d'_usuari:"
@@ -1576,8 +1560,13 @@ msgstr "Les adreces IP poden utilitzar comodins, com ara 192.168.*.*"
 msgid "Remote"
 msgstr "Remot"
 
+#, fuzzy
 msgid "Set Torrent Location"
-msgstr "Estableix la ubicació del torrent"
+msgstr ""
+"#-#-#-#-#  ca.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Estableix la ubicació del torrent\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Estableix la ubicació"
 
 msgid "_Apply"
 msgstr "_Aplica"
@@ -1585,8 +1574,8 @@ msgstr "_Aplica"
 msgid "Location"
 msgstr "Ubicació"
 
-msgid "Torrent _location:"
-msgstr "_Ubicació del torrent:"
+msgid "New _location:"
+msgstr "_Ubicació nova:"
 
 msgid "_Move from the current folder"
 msgstr "_Mou des de la carpeta actual"
@@ -1615,20 +1604,185 @@ msgstr "Obre un torrent des d'un URL"
 msgid "_URL"
 msgstr "_URL"
 
-msgid "Couldn't parse announce response: {error} ({error_code})"
+msgid "The torrent file '{path}' is already in use by '{torrent_name}'."
 msgstr ""
 
-msgid "Couldn't parse scrape response: {error} ({error_code})"
+msgid "Couldn't open torrent"
 msgstr ""
 
-msgid "Unknown error"
-msgstr "Error desconegut"
-
-msgid "{ip_protocol} connection failed"
+msgid "Couldn't move '{path}' to trash: {error} ({error_code})"
 msgstr ""
 
-msgid "Couldn't look up '{address}:{port}' in {ip_protocol}: {error} ({error_code})"
+#, fuzzy
+#| msgid "Couldn't save '{path}': {error} ({error_code})"
+msgid "Couldn't launch default application for URI '{uri}': {error} ({error_code})"
+msgstr "No s'ha pogut guardar '{path}': {error} ({error_code})"
+
+#, fuzzy
+#| msgid "Couldn't save '{path}': {error} ({error_code})"
+msgid "Couldn't invoke xdg-open for URI '{uri}': {error} ({error_code})"
+msgstr "No s'ha pogut guardar '{path}': {error} ({error_code})"
+
+msgid "Couldn't open '{url}'"
 msgstr ""
+
+msgid "Unsupported URL: '{url}'"
+msgstr ""
+
+msgid "{appname} doesn't know how to use '{url}'"
+msgstr ""
+
+msgid "This magnet link appears to be intended for something other than BitTorrent."
+msgstr ""
+
+msgid "{days_from_now:L} day from now"
+msgid_plural "{days_from_now:L} days from now"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "{hours_from_now:L} hour from now"
+msgid_plural "{hours_from_now:L} hours from now"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "{minutes_from_now:L} minute from now"
+msgid_plural "{minutes_from_now:L} minutes from now"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "{seconds_from_now:L} second from now"
+msgid_plural "{seconds_from_now:L} seconds from now"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "now"
+msgstr ""
+
+msgid "{days_ago:L} day ago"
+msgid_plural "{days_ago:L} days ago"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "{hours_ago:L} hour ago"
+msgid_plural "{hours_ago:L} hours ago"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "{minutes_ago:L} minute ago"
+msgid_plural "{minutes_ago:L} minutes ago"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "{seconds_ago:L} second ago"
+msgid_plural "{seconds_ago:L} seconds ago"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "Got a list of {markup_begin}{peer_count} peer{markup_end} {time_span_ago}"
+msgid_plural "Got a list of {markup_begin}{peer_count} peers{markup_end} {time_span_ago}"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "Peer list request {markup_begin}timed out {time_span_ago}{markup_end}; will retry"
+msgstr ""
+
+msgid "Got an error '{markup_begin}{error}{markup_end}' {time_span_ago}"
+msgstr ""
+
+msgid "No updates scheduled"
+msgstr "No hi ha actualitzacions programades"
+
+msgid "Asking for more peers {time_span_from_now}"
+msgstr ""
+
+#, fuzzy
+msgid "Queued to ask for more peers"
+msgstr ""
+"#-#-#-#-#  ca.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"S'ha enviat a la cua per a la sol·licitud de més clients\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"S'ha enviat la cua per a la sol·licitud de més clients"
+
+msgid "Asked for more peers {markup_begin}{time_span_ago}{markup_end}"
+msgstr ""
+
+msgid "Got a scrape error '{markup_begin}{error}{markup_end}' {time_span_ago}"
+msgstr ""
+
+#, fuzzy
+#| msgid "Got an error {markup_begin}\"{error}\"{markup_end} {time_span} ago"
+msgid "Tracker had {markup_begin}no information{markup_end} on peer counts {time_span_ago}"
+msgstr "S'ha obtingut l'error {markup_begin}«{error}»{markup_end} fa {time_span}"
+
+msgid "Tracker had {markup_begin}{seeder_count} {seeder_or_seeders} and {leecher_count} {leecher_or_leechers}{markup_end} {time_span_ago}"
+msgstr ""
+
+msgid "seeder"
+msgid_plural "seeders"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "leecher"
+msgid_plural "leechers"
+msgstr[0] ""
+msgstr[1] ""
+
+#, fuzzy
+#| msgid "Asking for peer counts in {time_span}"
+msgid "Asking for peer counts {time_span_from_now}"
+msgstr "Se sol·licitarà el nombre de clients d'aquí {time_span}"
+
+#, fuzzy
+msgid "Queued to ask for peer counts"
+msgstr ""
+"#-#-#-#-#  ca.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"S'ha enviat a la cua per a la sol·licitud del nombre de clients\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"S'ha enviat la cua per a la sol·licitud del nombre de clients"
+
+msgid "Asked for peer counts {markup_begin}{time_span_ago}{markup_end}"
+msgstr ""
+
+msgid "{days:L} day"
+msgid_plural "{days:L} days"
+msgstr[0] "{days:L} dia"
+msgstr[1] "{days:L} dies"
+
+msgid "{hours:L} hour"
+msgid_plural "{hours:L} hours"
+msgstr[0] "{hours:L} hora"
+msgstr[1] "{hours:L} hores"
+
+#. Translators: Spin box format, "Stop seeding if idle for: [ 5 minutes ]"
+msgid "{minutes:L} minute"
+msgid_plural "{minutes:L} minutes"
+msgstr[0] "{minutes:L} minut"
+msgstr[1] "{minutes:L} minuts"
+
+msgid "{seconds:L} second"
+msgid_plural "{seconds:L} seconds"
+msgstr[0] "{seconds:L} segon"
+msgstr[1] "{seconds:L} segons"
+
+msgid "{days_left:L} day left"
+msgid_plural "{days_left:L} days left"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "{hours_left:L} hour left"
+msgid_plural "{hours_left:L} hours left"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "{minutes_left:L} minute left"
+msgid_plural "{minutes_left:L} minutes left"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "{seconds_left:L} second left"
+msgid_plural "{seconds_left:L} seconds left"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "Announce error: {error} ({url})"
 msgstr ""
@@ -1647,20 +1801,59 @@ msgstr "El rastrejador no ha respost"
 msgid "Success"
 msgstr ""
 
+msgid "Couldn't parse announce response: {error} ({error_code})"
+msgstr ""
+
+msgid "Couldn't parse scrape response: {error} ({error_code})"
+msgstr ""
+
+msgid "Unknown error"
+msgstr "Error desconegut"
+
+msgid "{ip_protocol} connection failed"
+msgstr ""
+
+msgid "Couldn't look up '{address}:{port}' in {ip_protocol}: {error} ({error_code})"
+msgstr ""
+
 msgid "Blocklist '{path}' has {count} entry"
 msgid_plural "Blocklist '{path}' has {count} entries"
 msgstr[0] ""
 msgstr[1] ""
 
-#. don't try to display the actual lines - it causes issues
-msgid "Couldn't parse line: '{line}'"
+msgid "Couldn't parse line {line}: {base64}"
 msgstr ""
 
-msgid "Rewriting old blocklist file format to new format"
+msgid "Rewriting old blocklist file {path} to new format"
+msgstr ""
+
+msgid "Blocklist is larger than {limit} MiB; ignoring it"
+msgstr ""
+
+#, fuzzy
+#| msgid "Couldn't save '{path}': {error} ({error_code})"
+msgid "Couldn't fetch blocklist: {errmsg}, response code: {error} ({error_code})"
+msgstr "No s'ha pogut guardar '{path}': {error} ({error_code})"
+
+msgid "Couldn't fetch blocklist: {error} ({error_code})"
+msgstr ""
+
+msgid "Automatically updated blocklist, which now has {count} rules"
+msgstr ""
+
+msgid "Invalid tr_sched_days value {val}"
 msgstr ""
 
 msgid "{crypto_library} error: {error} ({error_code})"
 msgstr ""
+
+msgid "Couldn't read '{path}': Not a regular file"
+msgstr ""
+
+#, fuzzy
+#| msgid "Couldn't save '{path}': {error} ({error_code})"
+msgid "Couldn't get '{path}': "
+msgstr "No s'ha pogut guardar '{path}': {error} ({error_code})"
 
 msgid "Couldn't get '{path}': {error} ({error_code})"
 msgstr ""
@@ -1677,19 +1870,13 @@ msgstr ""
 msgid "Successfully updated global {type} address to {ip} using {url}"
 msgstr ""
 
+msgid "Still waiting for disk IO on torrent {id}: {running} running, {queued} queued"
+msgstr ""
+
 msgid "Too many messages like this! I won't log this message anymore this session."
 msgstr ""
 
 msgid "Skipping '{path}': {error} ({error_code})"
-msgstr ""
-
-msgid "Couldn't create socket: {error} ({error_code})"
-msgstr ""
-
-msgid "Couldn't set source address {address} on {socket}: {error} ({error_code})"
-msgstr ""
-
-msgid "Couldn't connect socket {socket} to {address}:{port}: {error} ({error_code})"
 msgstr ""
 
 msgid "Couldn't bind port {port} on {address}: {error} ({error_code}) -- Is another copy of {appname} already running?"
@@ -1707,7 +1894,34 @@ msgstr ""
 msgid "Couldn't truncate '{path}': {error} ({error_code})"
 msgstr ""
 
+msgid "Couldn't create socket: {error} ({error_code})"
+msgstr ""
+
+msgid "Couldn't set source address {address} on {socket}: {error} ({error_code})"
+msgstr ""
+
+msgid "Couldn't connect socket {socket} to {address}:{port}: {error} ({error_code})"
+msgstr ""
+
 msgid "Unknown state: {state}"
+msgstr ""
+
+msgid "Starting"
+msgstr "S'està iniciant"
+
+msgid "Forwarded"
+msgstr "Redireccionat"
+
+msgid "Stopping"
+msgstr "S'està aturant"
+
+msgid "Not forwarded"
+msgstr "No redireccionat"
+
+msgid "Mapped private port {private_port} to public port {public_port}"
+msgstr ""
+
+msgid "State changed from '{old_state}' to '{state}'"
 msgstr ""
 
 msgid "Found public address '{address}'"
@@ -1740,22 +1954,20 @@ msgstr ""
 msgid "If your router supports UPnP, please make sure UPnP is enabled!"
 msgstr ""
 
-msgid "Starting"
-msgstr "S'està iniciant"
+#, fuzzy
+#| msgid "Couldn't save '{path}': {error} ({error_code})"
+msgid "Couldn't test port: {errmsg}, response code: {error} ({error_code})"
+msgstr "No s'ha pogut guardar '{path}': {error} ({error_code})"
 
-msgid "Forwarded"
-msgstr "Redireccionat"
-
-msgid "Stopping"
-msgstr "S'està aturant"
-
-msgid "Not forwarded"
-msgstr "No redireccionat"
-
-msgid "Mapped private port {private_port} to public port {public_port}"
+msgid "Couldn't test port: {error} ({error_code})"
 msgstr ""
 
-msgid "State changed from '{old_state}' to '{state}'"
+#, fuzzy
+#| msgid "Couldn't save '{path}': {error} ({error_code})"
+msgid "Couldn't fetch torrent: {errmsg}, Response code: {error} ({error_code})"
+msgstr "No s'ha pogut guardar '{path}': {error} ({error_code})"
+
+msgid "Couldn't fetch torrent: {error} ({error_code})"
 msgstr ""
 
 msgid "Unix socket path must be fewer than {count} characters (including '{prefix}' prefix)"
@@ -1814,28 +2026,23 @@ msgstr "Cal contrasenya"
 msgid "Serving RPC and Web requests from '{path}'"
 msgstr ""
 
-msgid "Couldn't test port: {error} ({error_code})"
-msgstr ""
+#, fuzzy
+#| msgid "Alternative Speed Limits"
+msgid "Time to turn on alternative speed limits"
+msgstr "Límits de velocitat alternatius"
 
-msgid "Couldn't fetch blocklist: {error} ({error_code})"
-msgstr ""
-
-msgid "Couldn't fetch torrent: {error} ({error_code})"
-msgstr ""
-
-msgid "Time to turn off turtle mode"
-msgstr ""
-
-msgid "Time to turn on turtle mode"
-msgstr ""
-
-msgid "Couldn't open session lock file '{path}': {error} ({error_code})"
-msgstr ""
+#, fuzzy
+#| msgid "Alternative Speed Limits"
+msgid "Time to turn off alternative speed limits"
+msgstr "Límits de velocitat alternatius"
 
 msgid "Listening to incoming peer connections on {hostport}"
 msgstr ""
 
 msgid "{appname} version {version} starting"
+msgstr ""
+
+msgid "Couldn't start disk IO workers, continuing without them: {error}"
 msgstr ""
 
 msgid "{appname} version {version} shutting down"
@@ -1846,7 +2053,10 @@ msgid_plural "Loaded {count} torrents"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "Migrated torrent file from '{old_path}' to '{path}'"
+msgid "Couldn't claim '{path}'. If another session is using it, the two will overwrite each other's settings, resume files and stats."
+msgstr ""
+
+msgid "Couldn't open session lock file '{path}': {error} ({error_code})"
 msgstr ""
 
 msgid "Couldn't use metainfo from '{path}' for '{magnet}': {error} ({error_code})"
@@ -1879,13 +2089,31 @@ msgstr ""
 msgid "Removing torrent"
 msgstr "S'està suprimint el torrent"
 
-msgid "Couldn't move '{old_path}' to '{path}': {error} ({error_code})"
-msgstr ""
+#, fuzzy
+#| msgid "Couldn't save '{path}': {error} ({error_code})"
+msgid "Couldn't move torrent files to '{path}': {error} ({error_code})"
+msgstr "No s'ha pogut guardar '{path}': {error} ({error_code})"
 
 msgid "Paused torrent as no data was found! Ensure your drives are connected or use \"Set Location\", then use \"Verify Local Data\" again. To re-download, start the torrent."
 msgstr ""
 
+msgid "Couldn't move '{old_path}' to '{path}': {error} ({error_code})"
+msgstr ""
+
 msgid "Tracker warning: '{warning}' ({url})"
+msgstr ""
+
+#, fuzzy
+#| msgid "Removing torrent file '{path}'"
+msgid "Moving '{source}' will overwrite '{path}'"
+msgstr "Eliminant fitxer torrent '{path}'"
+
+#, fuzzy
+#| msgid "Couldn't save '{path}': {error} ({error_code})"
+msgid "Couldn't compare '{path}' with '{root}': {error} ({error_code}); leaving it alone"
+msgstr "No s'ha pogut guardar '{path}': {error} ({error_code})"
+
+msgid "Migrated torrent file from '{old_path}' to '{path}'"
 msgstr ""
 
 msgid "Couldn't parse '{filename}' line: '{line}'"
@@ -1915,8 +2143,47 @@ msgstr ""
 msgid "Unknown socket family"
 msgstr ""
 
-msgid "Couldn't read '{path}': Not a regular file"
+msgid "B"
 msgstr ""
+
+msgid "KiB"
+msgstr "KiB"
+
+msgid "MiB"
+msgstr "MiB"
+
+msgid "GiB"
+msgstr "GiB"
+
+msgid "TiB"
+msgstr "TiB"
+
+msgid "B/s"
+msgstr ""
+
+msgid "kB/s"
+msgstr "kB/s"
+
+msgid "MB/s"
+msgstr "MB/s"
+
+msgid "GB/s"
+msgstr "GB/s"
+
+msgid "TB/s"
+msgstr "TB/s"
+
+msgid "kB"
+msgstr "kB"
+
+msgid "MB"
+msgstr "MB"
+
+msgid "GB"
+msgstr "GB"
+
+msgid "TB"
+msgstr "TB"
 
 msgid "Couldn't parse JSON at position {position} '{text}': {error} ({error_code})"
 msgstr ""
@@ -1924,16 +2191,13 @@ msgstr ""
 msgid "Couldn't watch '{path}': {error} ({error_code})"
 msgstr ""
 
-msgid "Couldn't read event: {error} ({error_code})"
-msgstr ""
-
 msgid "Couldn't read event: expected {expected_size}, got {actual_size}"
 msgstr ""
 
-msgid "Couldn't read filename: {error} ({error_code})"
+msgid "Couldn't read filename: expected {expected_size}, got {actual_size}"
 msgstr ""
 
-msgid "Couldn't read filename: expected {expected_size}, got {actual_size}"
+msgid "Couldn't read event: {error} ({error_code})"
 msgstr ""
 
 msgid "Couldn't convert '{path}' to native path"
@@ -1954,10 +2218,13 @@ msgstr ""
 msgid "Consider upgrading your curl installation."
 msgstr ""
 
+msgid "The minimum supported version is {curl_version}, you might face unexpected behaviour."
+msgstr ""
+
 msgid "curl {curl_version} is prone to SIGPIPE crashes. {details_url}"
 msgstr ""
 
-msgid "curl {curl_version} is prone to an eventfd double close vulnerability that might cause SIGABRT crashes for the transmission-daemon systemd service. {details_url}"
+msgid "curl {curl_version} is prone to an eventfd double close vulnerability that might cause SIGABRT crashes for the daemon systemd service. {details_url}"
 msgstr ""
 
 msgid "Will verify tracker certs using envvar CURL_CA_BUNDLE: {bundle}"
@@ -1969,8 +2236,442 @@ msgstr ""
 msgid "NB: Invalid certs will appear as 'Could not connect to tracker' like many other errors"
 msgstr ""
 
+msgid "Aborting request: response body exceeded max size of {max_file_size} bytes"
+msgstr ""
+
 msgid "Couldn't fetch '{url}': expected HTTP response code {expected_code}, got {actual_code}"
 msgstr ""
+
+msgid "Server"
+msgstr ""
+
+msgid "C_redits"
+msgstr "C_rèdits"
+
+msgid "Credits"
+msgstr "Crèdits"
+
+msgid "About {appname}"
+msgstr "Quant a {appname}"
+
+#, fuzzy
+#| msgid "Torrent Complete"
+msgid "Torrent Completed"
+msgstr "S'ha completat el torrent"
+
+#, fuzzy
+#| msgid "Torrent Complete"
+msgid "Torrents Completed"
+msgstr "S'ha completat el torrent"
+
+#. Translators: Text following the "Have:" label in torrent properties dialog;
+#. {current_size} is amount of downloaded and verified data
+msgid "{current_size} (100%)"
+msgstr "{current_size} (100%)"
+
+msgid "{current_size} of {complete_size} ({percent_done}%), {unverified_size} Unverified"
+msgstr "{current_size} de {complete_size} ({percent_done}%), {unverified_size} sense verificar"
+
+msgid "{total_size} ({piece_count:L} piece @ {piece_size})"
+msgid_plural "{total_size} ({piece_count:L} pieces @ {piece_size})"
+msgstr[0] "{total_size} ({piece_count:L} peça de {piece_size})"
+msgstr[1] "{total_size} ({piece_count:L} peces de {piece_size})"
+
+msgid "{total_size} ({piece_count:L} piece)"
+msgid_plural "{total_size} ({piece_count:L} pieces)"
+msgstr[0] "{total_size} ({piece_count:L} peça)"
+msgstr[1] "{total_size} ({piece_count:L} peces)"
+
+msgid "Add URL(s)"
+msgstr ""
+
+#, fuzzy
+#| msgid "Tracker Announce URLs"
+msgid "Add tracker announce URLs, one per line:"
+msgstr "URL d'anunci de rastrejadors"
+
+msgid "No new URLs found."
+msgstr ""
+
+msgid "Use Global Settings"
+msgstr "Utilitza els paràmetres globals"
+
+msgid "Stop seeding if idle for:"
+msgstr "Atura la compartició si està inactiu durant:"
+
+msgid "Torrent Properties"
+msgstr "Propietats del torrent"
+
+msgid "Availability:"
+msgstr "Disponibilitat:"
+
+msgid "Labels:"
+msgstr ""
+
+msgid "Limit _upload speed:"
+msgstr "Límit de la velocitat de p_ujada:"
+
+msgid "Limit _download speed:"
+msgstr "Límit de la velocitat de baixa_da:"
+
+msgid "Check Selected"
+msgstr "Marca els seleccionats"
+
+msgid "Uncheck Selected"
+msgstr "Desmarca els seleccionats"
+
+msgid "Only Check Selected"
+msgstr "Marca només els seleccionats"
+
+msgid "Open"
+msgstr "Obre"
+
+msgid "Rename…"
+msgstr ""
+
+msgid "Search…"
+msgstr ""
+
+msgid "<i>Calculating Free Space…</i>"
+msgstr ""
+
+msgid "Limited at {speed}"
+msgstr "Limitat a {speed}"
+
+#. Translators: Second (optional) part of main window title "Appname - host:port" (added when connected to remote session)
+#. notice that leading space (before the dash) is included here
+msgid " - {host}:{port}"
+msgstr " - {host}:{port}"
+
+msgid "Network Error"
+msgstr "Error de xarxa"
+
+msgid "Idle"
+msgstr "Inactiu"
+
+msgid "Showing {visible_count:L} of {count:L} torrent"
+msgid_plural "Showing {visible_count:L} of {count:L} torrents"
+msgstr[0] "S'està mostrant {visible_count:L} de {count:L} torrent"
+msgstr[1] "S'estan mostrant {visible_count:L} de {count:L} torrents"
+
+msgid "Torrent Files (*.torrent);;All Files (*.*)"
+msgstr "Fitxers Torrent (*.torrent);;Tots els fitxers (*.*)"
+
+msgid "{host} has not responded yet"
+msgstr "{host} encara no ha respost"
+
+msgid "{host} is responding"
+msgstr "{host} està responent"
+
+#, fuzzy
+#| msgid "{host} last responded {time_span} ago"
+msgid "{host} last responded {time_span_ago}"
+msgstr "{host} ha respost per última vegada fa {time_span}"
+
+msgid "{host} is not responding"
+msgstr "{host} no està responent"
+
+#, fuzzy
+#| msgid "_Open"
+msgid "_Open…"
+msgstr "_Obre"
+
+msgid "Create a new torrent"
+msgstr "Crea un torrent nou"
+
+msgid "Open the torrent's folder"
+msgstr "Obre la carpeta del torrent"
+
+msgid "Ask tracker for more peers"
+msgstr "Demana més clients al rastrejador"
+
+msgid "Verify local data"
+msgstr "Verifica les dades locals"
+
+msgid "Remove torrent and delete its files"
+msgstr "Suprimeix el torrent i esborra els seus fitxers"
+
+msgid "Compact View"
+msgstr "Visualització compacta"
+
+msgid "_Main Window"
+msgstr "_Finestra principal"
+
+msgid "Tray _Icon"
+msgstr "_Icona de la safata"
+
+#, fuzzy
+#| msgid "Change Session"
+msgid "_Change Session…"
+msgstr "Canvia la sessió"
+
+#. Start a local session or connect to a running session
+msgid "Choose Session"
+msgstr "Tria la sessió"
+
+msgid "Bypass the queue and start now"
+msgstr ""
+
+msgid "{file_count:L} File"
+msgid_plural "{file_count:L} Files"
+msgstr[0] "{file_count:L} fitxer"
+msgstr[1] "{file_count:L} fitxers"
+
+msgid "{piece_count:L} Piece"
+msgid_plural "{piece_count:L} Pieces"
+msgstr[0] "{piece_count:L} peça"
+msgstr[1] "{piece_count:L} peces"
+
+msgid "{total_size} in {files}; {pieces} @ {piece_size}"
+msgstr "{total_size} en {files}; {pieces} @ {piece_size}"
+
+msgid ""
+"To add a backup URL, add it on the line after the primary URL.\n"
+"To add another primary URL, add it after a blank line."
+msgstr ""
+"Per afegir un URL de seguretat, afegiu-lo a la línia després de l'URL principal.\n"
+"Per afegir un altre URL principal, afegiu-lo després d'una línia en blanc."
+
+#, fuzzy
+#| msgid "_Source:"
+msgid "Sou_rce:"
+msgstr "_Origen:"
+
+msgid "_Priority:"
+msgstr "_Prioritat:"
+
+msgid "Select Folder"
+msgstr "Seleccioneu una carpeta"
+
+#, fuzzy
+#| msgid "Unknown"
+msgid "unknown"
+msgstr "Desconegut"
+
+msgid "checking…"
+msgstr ""
+
+msgid "open"
+msgstr ""
+
+#, fuzzy
+#| msgid "_Close"
+msgid "closed"
+msgstr "Tan_ca"
+
+#, fuzzy
+msgid "error"
+msgstr ""
+"#-#-#-#-#  ca.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Errors\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Error"
+
+#, fuzzy
+#| msgid "<i>Blocklist contains {count:L} rule</i>"
+#| msgid_plural "<i>Blocklist contains {count:L} rules</i>"
+msgid "<b>Update succeeded!</b><p>Blocklist now has {count:L} rule.</p>"
+msgid_plural "<b>Update succeeded!</b><p>Blocklist now has {count:L} rules.</p>"
+msgstr[0] "<i>La llista de bloqueig conté {count:L} regla</i>"
+msgstr[1] "<i>La llista de bloqueigs conté {count:L} regles</i>"
+
+msgid "Download of the blocklist failed."
+msgstr ""
+
+#, fuzzy
+#| msgid "Blocklist"
+msgid "Update Blocklist"
+msgstr "Llista de bloqueigs"
+
+msgid "Select \"Torrent Done Seeding\" Script"
+msgstr ""
+
+msgid "Select Watch Directory"
+msgstr "Selecciona el directori d'observació"
+
+msgid "Select Incomplete Directory"
+msgstr "Selecciona el directori dels incomplets"
+
+msgid "Select \"Torrent Done Downloading\" Script"
+msgstr ""
+
+msgid "Not supported by remote sessions"
+msgstr "No és compatible amb les sessions remotes"
+
+msgid "<i>Blocklist contains {count:L} rule</i>"
+msgid_plural "<i>Blocklist contains {count:L} rules</i>"
+msgstr[0] "<i>La llista de bloqueig conté {count:L} regla</i>"
+msgstr[1] "<i>La llista de bloqueigs conté {count:L} regles</i>"
+
+#, fuzzy
+#| msgid "<i>Blocklist contains {count:L} rule</i>"
+#| msgid_plural "<i>Blocklist contains {count:L} rules</i>"
+msgid "<i>Blocklist has never been updated</i>"
+msgstr "<i>La llista de bloqueig conté {count:L} regla</i>"
+
+#, fuzzy
+#| msgid "<i>Blocklist contains {count:L} rule</i>"
+#| msgid_plural "<i>Blocklist contains {count:L} rules</i>"
+msgid "<i>Blocklist last updated {date}</i>"
+msgstr "<i>La llista de bloqueig conté {count:L} regla</i>"
+
+msgid "_Upload:"
+msgstr "P_ujada:"
+
+msgid "_Download:"
+msgstr "Baixa_da:"
+
+msgid "U_pload:"
+msgstr "_Pujada:"
+
+msgid "Do_wnload:"
+msgstr "_Baixada:"
+
+msgid "Downloading"
+msgstr "Baixades"
+
+msgid "Adding"
+msgstr "Addició"
+
+msgid "Reads user clipboard content for torrents"
+msgstr ""
+
+msgid "Detect new torrents from clipboard"
+msgstr ""
+
+#. Please keep this phrase as short as possible, it's currently the longest and influences dialog width
+msgid "Download is i_nactive if data sharing stopped:"
+msgstr ""
+
+msgid "Seeding"
+msgstr "Compartició"
+
+msgid "Stop seedi_ng if idle for:"
+msgstr "Atura la compartició si està inactiu dura_nt:"
+
+msgid "Encryption"
+msgstr "Xifratge"
+
+msgid "Start _minimized in notification area"
+msgstr "Inicia _minimitzat a l'àrea de notificació"
+
+#, fuzzy
+#| msgid "Retransmission"
+msgid "Retransmission (Qt)"
+msgstr "Retransmission"
+
+msgid "Select Location"
+msgstr "Selecciona la ubicació"
+
+msgid "Error Renaming Path"
+msgstr "Error en reanomenar el camí"
+
+msgid "Unable to rename \"{old_path}\" as \"{path}\": {error}."
+msgstr "No es pot reanomenar \"{old_path}\" com a \"{path}\": {error}."
+
+msgid "Error Adding Torrent"
+msgstr "Error en afegir el torrent"
+
+msgid "{torrent_name} (copy of {hash})"
+msgstr "{torrent_name} (còpia de {hash})"
+
+#, fuzzy
+#| msgid "Public torrent"
+msgid "Duplicate Torrent"
+msgstr "Torrent públic"
+
+#, fuzzy
+#| msgid "Public torrent"
+msgid "Duplicate Torrents"
+msgstr "Torrent públic"
+
+#, fuzzy
+#| msgid "Couldn't add duplicate torrent"
+#| msgid_plural "Couldn't add duplicate torrents"
+msgid "Unable to add {count} duplicate torrent"
+msgid_plural "Unable to add {count} duplicate torrents"
+msgstr[0] "No s'ha pogut afegir un torrent duplicat"
+msgstr[1] "No s'han pogut afegir torrents duplicats"
+
+msgid "Change Session"
+msgstr "Canvia la sessió"
+
+msgid "Source"
+msgstr "Origen"
+
+msgid "Start _Local Session"
+msgstr "Inicia la sessió _local"
+
+msgid "Connect to _Remote Session"
+msgstr "Connecta a la sessió _remota"
+
+msgid "_Host:"
+msgstr "_Amfitrió:"
+
+msgid "_Port:"
+msgstr "_Port:"
+
+msgid "_Authentication required"
+msgstr "Requereix l'_autenticació"
+
+msgid "Remote root pa_th:"
+msgstr ""
+
+msgid "Tracker gave a warning: {warning}"
+msgstr "El rastrejador ha emès un avís: «{warning}»"
+
+msgid "Tracker gave an error: {error}"
+msgstr "El rastrejador ha emès un error: «{error}»"
+
+msgid "Error: {error}"
+msgstr "Error: {error}"
+
+#, fuzzy
+#| msgid "Magnetized transfer - retrieving metadata (%1%)"
+msgid "Magnetized torrent - retrieving metadata ({percent_done}%)"
+msgstr "Transferència amb magnet - s'estan rebent les metadades (%1%)"
+
+#, no-c-format
+msgid "Downloading metadata from {active_count:L} peer ({percent_done}% done)"
+msgid_plural "Downloading metadata from {active_count:L} peers ({percent_done}% done)"
+msgstr[0] "S'estan baixant les metadades de {active_count:L} client ({percent_done}% fet)"
+msgstr[1] "S'estan baixant les metadades de {active_count:L} clients ({percent_done}% fet)"
+
+msgid "Downloading from {active_count:L} peer"
+msgid_plural "Downloading from {active_count:L} peers"
+msgstr[0] "S'està baixant de {active_count:L} client"
+msgstr[1] "S'està baixant de {active_count:L} clients"
+
+msgid " and {webseed_count:L} web seed"
+msgid_plural " and {webseed_count:L} web seeds"
+msgstr[0] " i {webseed_count:L} client web"
+msgstr[1] " i {webseed_count:L} clients web"
+
+msgid "Seeding to {active_count:L} peer"
+msgid_plural "Seeding to {active_count:L} peers"
+msgstr[0] "S'està compartint amb {active_count:L} client"
+msgstr[1] "S'està compartint amb {active_count:L} clients"
+
+msgid " - "
+msgstr " - "
+
+#, fuzzy
+#| msgid ""
+#| "To add a backup URL, add it on the line after the primary URL.\n"
+#| "To add another primary URL, add it after a blank line."
+msgid "To add a backup URL, add it on the next line after a primary URL."
+msgstr ""
+"Per afegir un URL de seguretat, afegiu-lo a la línia després de l'URL principal.\n"
+"Per afegir un altre URL principal, afegiu-lo després d'una línia en blanc."
+
+#, fuzzy
+#| msgid ""
+#| "To add a backup URL, add it on the line after the primary URL.\n"
+#| "To add another primary URL, add it after a blank line."
+msgid "To add a new primary URL, add it after a blank line."
+msgstr ""
+"Per afegir un URL de seguretat, afegiu-lo a la línia després de l'URL principal.\n"
+"Per afegir un altre URL principal, afegiu-lo després d'una línia en blanc."
 
 msgid "{file_count:L} file, {total_size}\n"
 msgid_plural "{file_count:L} files, {total_size}\n"
@@ -1992,7 +2693,7 @@ msgid_plural "minutes"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "seconds"
+msgid "second"
 msgid_plural "seconds"
 msgstr[0] ""
 msgstr[1] ""
@@ -2001,6 +2702,83 @@ msgid "day"
 msgid_plural "days"
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "seconds"
+msgid_plural "seconds"
+msgstr[0] ""
+msgstr[1] ""
+
+#~ msgid "Finished"
+#~ msgstr "Finalitzat"
+
+#~ msgid "We would upload to this peer if they asked"
+#~ msgstr "Es pujaria a aquest client si ho demanés"
+
+#~ msgid "Dn Blocks"
+#~ msgstr "Blocs baixats"
+
+#~ msgid "Up Blocks"
+#~ msgstr "Blocs pujats"
+
+#~ msgid "We Cancelled"
+#~ msgstr "Hem cancel·lat"
+
+#~ msgid "They Cancelled"
+#~ msgstr "Han cancel·lat"
+
+#~ msgid "Have"
+#~ msgstr "Progrés"
+
+#~ msgid "Inhibiting desktop hibernation"
+#~ msgstr "S'està inhibint la hibernació de l'escriptori"
+
+#~ msgid "Allowing desktop hibernation"
+#~ msgstr "Permet la hibernació de l'escriptori"
+
+#~ msgid "Open URL…"
+#~ msgstr "Obre l'URL…"
+
+#~ msgid "Start all torrents"
+#~ msgstr "Inicia tots els torrents"
+
+#~ msgid "Pause all torrents"
+#~ msgstr "Fes una pausa a tots els torrents"
+
+#~ msgid "Start torrent now"
+#~ msgstr "Inicia el torrent ara"
+
+#~ msgid "Copy _Magnet Link to Clipboard"
+#~ msgstr "Copia l'enllaç _magnet al porta-retalls"
+
+#~ msgid "Enable Alternative Speed _Limits"
+#~ msgstr "Habilita els _límits de velocitats alternatius"
+
+#~ msgid "Torrent size:"
+#~ msgstr "Mida del torrent:"
+
+#~ msgid "_New"
+#~ msgstr "_Nou"
+
+#~ msgid "Source F_older:"
+#~ msgstr "Carpeta d'_origen:"
+
+#~ msgid "Source _File:"
+#~ msgstr "_Fitxer d'origen:"
+
+#~ msgid "P_ause"
+#~ msgstr "P_ausa"
+
+#~ msgid "Keep _incomplete torrents in:"
+#~ msgstr "Mantén els torrents incomplets a:"
+
+#~ msgid "_Port used for incoming connections:"
+#~ msgstr "_Port utilitzat per a les connexions d'entrada:"
+
+#~ msgid "_Inhibit hibernation when torrents are active"
+#~ msgstr "_Inhibeix la hibernació quan hi hagi torrents actius"
+
+#~ msgid "Torrent _location:"
+#~ msgstr "_Ubicació del torrent:"
 
 #~ msgid "I _Agree"
 #~ msgstr "Hi estic d'_acord"

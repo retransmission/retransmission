@@ -11,8 +11,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-01-04 14:15+0000\n"
+"Report-Msgid-Bugs-To: https://github.com/retransmission/retransmission/issues\n"
+"POT-Creation-Date: 2026-10-03 11:48-0500\n"
 "PO-Revision-Date: 2017-01-26 19:47+0000\n"
 "Last-Translator: Mike Gelfand <mikedld@mikedld.com>, 2023\n"
 "Language-Team: Hindi (https://app.transifex.com/transmissionbt/teams/33778/hi/)\n"
@@ -26,6 +26,9 @@ msgid "None"
 msgstr "कोई नहीं"
 
 msgid "Inf"
+msgstr ""
+
+msgid "Another process is already using '{path}'."
 msgstr ""
 
 msgid "Couldn't read '{path}': {error} ({error_code})"
@@ -53,6 +56,9 @@ msgid "Reloading settings from '{path}'"
 msgstr ""
 
 msgid "Couldn't initialize daemon: {error} ({error_code})"
+msgstr ""
+
+msgid "Waiting for another process to release '{path}'"
 msgstr ""
 
 msgid "Loading settings from '{path}'"
@@ -104,8 +110,13 @@ msgid_plural "Couldn't add duplicate torrents"
 msgstr[0] "प्रतिलिपि टोरेंट जोड़ना विफल"
 msgstr[1] "प्रतिलिपि टोरेंट जोड़ना विफल"
 
+#, fuzzy
 msgid "A fast and easy BitTorrent client"
-msgstr "तीव्र व सरल बिट टोरेंट साधन"
+msgstr ""
+"#-#-#-#-#  hi.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"तीव्र व सरल बिट टोरेंट साधन\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"तीव्र व सरल बिट टोरेंट साधन "
 
 msgid "Copyright © The {appname} Project"
 msgstr "कॉपीराइट © {appname} परियोजना"
@@ -159,8 +170,10 @@ msgctxt "Verb"
 msgid "Seeding"
 msgstr "सीड जारी"
 
-msgid "Finished"
-msgstr "पूर्ण"
+#, fuzzy
+#| msgid "Incomplete"
+msgid "Seeding complete"
+msgstr "अपूर्ण"
 
 msgid "Paused"
 msgstr "स्थगित"
@@ -177,17 +190,22 @@ msgstr "कोई टोरेंट चयनित नहीं"
 msgid "Private to this tracker -- DHT and PEX disabled"
 msgstr "निजी ट्रैकर -- डीएचटी व पेक्स निष्क्रिय"
 
+#, fuzzy
 msgid "Public torrent"
-msgstr "सार्वजनिक टोरेंट"
+msgstr ""
+"#-#-#-#-#  hi.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"सार्वजनिक टोरेंट\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"सामान्य टोरेंट"
 
 msgid "Created by {creator} on {date}"
-msgstr ""
+msgstr "{creator} द्वारा {date} को बनाया गया"
 
 msgid "Created by {creator}"
-msgstr ""
+msgstr "{creator} द्वारा बनाया गया"
 
 msgid "Created on {date}"
-msgstr ""
+msgstr "{date} को बनाया गया"
 
 msgid "Unknown"
 msgstr "अज्ञात"
@@ -209,14 +227,15 @@ msgstr ""
 msgid "{current_size} ({percent_done}% of {percent_available}% available)"
 msgstr ""
 
+#, c-format
 msgid "{current_size} ({percent_done}% of {percent_available}% available; {unverified_size} unverified)"
 msgstr ""
 
 msgid "{downloaded_size} (+{discarded_size} discarded after failed checksum)"
-msgstr ""
+msgstr "{downloaded_size} (+{discarded_size} चेकसम विफल होने के उपरांत हटाई गई)"
 
 msgid "{uploaded_size} (Ratio: {ratio})"
-msgstr ""
+msgstr "{uploaded_size} (अनुपात : {ratio})"
 
 msgid "No errors"
 msgstr "कोई त्रुटि नहीं"
@@ -239,8 +258,10 @@ msgstr "पीयर द्वारा अनुमति होने पर �
 msgid "Uploading to peer"
 msgstr "पीयर को अपलोड जारी"
 
-msgid "We would upload to this peer if they asked"
-msgstr "पीयर द्वारा अनुरोध होने पर अपलोड होगा"
+#, fuzzy
+#| msgid "We would download from this peer if they would let us"
+msgid "This peer would download from us if we would let them"
+msgstr "पीयर द्वारा अनुमति होने पर डाउनलोड होगा"
 
 msgid "Peer has unchoked us, but we're not interested"
 msgstr "पीयर द्वारा निर्विरोध अंतरण आरंभ, परंतु हमारी रूचि नहीं है"
@@ -263,10 +284,12 @@ msgstr "पीयर एक आवक कनेक्शन है"
 msgid "Peer is connected over µTP"
 msgstr "uTP द्वारा कनेक्ट पीयर"
 
+msgid "Peer supports holepunch (BEP 55)"
+msgstr ""
+
 msgid "Address"
 msgstr "पता"
 
-#. % is percent done
 msgid "%"
 msgstr "%"
 
@@ -275,18 +298,6 @@ msgstr "डाउनलोड अनुरोध"
 
 msgid "Up Reqs"
 msgstr "अपलोड अनुरोध"
-
-msgid "Dn Blocks"
-msgstr "डाउनलोड खंड"
-
-msgid "Up Blocks"
-msgstr "अपलोड खंड"
-
-msgid "We Cancelled"
-msgstr "हमारे द्वारा रद्द"
-
-msgid "They Cancelled"
-msgstr "उनके द्वारा रद्द"
 
 msgid "Down"
 msgstr "डाउनलोड"
@@ -303,66 +314,19 @@ msgstr "उपनाम"
 msgid "Web Seeds"
 msgstr "वेब सीड"
 
-msgid "Got a list of {markup_begin}{peer_count} peer{markup_end} {time_span_ago}"
-msgid_plural "Got a list of {markup_begin}{peer_count} peers{markup_end} {time_span_ago}"
-msgstr[0] ""
-msgstr[1] ""
-
-#. {markup_begin} and {markup_end} should surround the time_span
-msgid "Peer list request {markup_begin}timed out {time_span_ago}{markup_end}; will retry"
-msgstr ""
-
-#. {markup_begin} and {markup_end} should surround the error
-msgid "Got an error '{markup_begin}{error}{markup_end}' {time_span_ago}"
-msgstr ""
-
-msgid "No updates scheduled"
-msgstr "कोई अपडेट निर्धारित नहीं है"
-
-msgid "Asking for more peers {time_span_from_now}"
-msgstr ""
-
-msgid "Queued to ask for more peers"
-msgstr "अधिक पीयर अनुरोध हेतु पंक्तिबद्ध"
-
-#. {markup_begin} and {markup_end} should surround time_span_ago
-msgid "Asked for more peers {markup_begin}{time_span_ago}{markup_end}"
-msgstr ""
-
-msgid "Tracker had {markup_begin}{seeder_count} {seeder_or_seeders} and {leecher_count} {leecher_or_leechers}{markup_end} {time_span_ago}"
-msgstr ""
-
-msgid "seeder"
-msgid_plural "seeders"
-msgstr[0] ""
-msgstr[1] ""
-
-msgid "leecher"
-msgid_plural "leechers"
-msgstr[0] ""
-msgstr[1] ""
-
-#. {markup_begin} and {markup_end} should surround the error text
-msgid "Got a scrape error '{markup_begin}{error}{markup_end}' {time_span_ago}"
-msgstr ""
-
-msgid "Asking for peer counts in {time_span_from_now}"
-msgstr ""
-
-msgid "Queued to ask for peer counts"
-msgstr "अधिक पीयर संख्या अनुरोध हेतु पंक्तिबद्ध"
-
-msgid "Asked for peer counts {markup_begin}{time_span_ago}{markup_end}"
-msgstr ""
-
 msgid "{torrent_name} - Edit Trackers"
-msgstr ""
+msgstr "{torrent_name} - ट्रैकर संपादन"
 
 msgid "List contains invalid URLs"
 msgstr "सूची में अमान्य यूआरएल हैं"
 
+#, fuzzy
 msgid "Please correct the errors and try again."
-msgstr "कृपया त्रुटि सुधार कर पुनः प्रयास करें।"
+msgstr ""
+"#-#-#-#-#  hi.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"कृपया त्रुटि सुधार कर पुनः प्रयास करें।\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"त्रुटि ठीक कर पुनः प्रयास करें।"
 
 msgid "{torrent_name} - Add Tracker"
 msgstr ""
@@ -379,25 +343,31 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "Remove torrent?"
-msgstr ""
+msgstr "टोरेंट हटाएँ?"
+
+msgid "Delete this torrent's downloaded files?"
+msgstr "इस टोरेंट की डाउनलोड फाइलें हटाएँ?"
 
 msgid "Remove {count:L} torrent?"
 msgid_plural "Remove {count:L} torrents?"
-msgstr[0] ""
-msgstr[1] ""
-
-msgid "Delete this torrent's downloaded files?"
-msgstr ""
+msgstr[0] "%d टोरेंट हटाएँ?"
+msgstr[1] "%d टोरेंट हटाएँ?"
 
 msgid "Delete this {count:L} torrent's downloaded files?"
 msgid_plural "Delete these {count:L} torrents' downloaded files?"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "{count:L} टोरेंट की डाउनलोड फाइलें हटाएँ?"
+msgstr[1] "{count:L} टोरेंट की डाउनलोड फाइलें हटाएँ?"
 
-msgid "Once removed, continuing the transfer will require the torrent file or magnet link."
-msgid_plural "Once removed, continuing the transfers will require the torrent files or magnet links."
-msgstr[0] "हटने के उपरांत, अंतरण करने हेतु टोरेंट फाइल या मैग्नेट लिंक आवश्यक है।"
-msgstr[1] "हटने के उपरांत, अंतरण करने हेतु टोरेंट फाइलें या मैग्नेट लिंक आवश्यक हैं।"
+#, fuzzy
+#| msgid "Once removed, continuing the transfer will require the torrent file or magnet link."
+#| msgid_plural "Once removed, continuing the transfers will require the torrent files or magnet links."
+msgid "Once removed, you'll need the torrent file or magnet link to add it again."
+msgstr "हटने के उपरांत, अंतरण करने हेतु टोरेंट फाइल या मैग्नेट लिंक आवश्यक है।"
+
+#, fuzzy
+#| msgid "Once removed, continuing the transfers will require the torrent files or magnet links."
+msgid "Once removed, you'll need the torrent files or magnet links to add them again."
+msgstr "हटने के उपरांत, अंतरण करने हेतु टोरेंट फाइलें या मैग्नेट लिंक आवश्यक हैं।"
 
 msgid "This torrent has not finished downloading."
 msgstr "इस टोरेंट का डाउनलोड पूर्ण नहीं हुआ है।"
@@ -429,14 +399,22 @@ msgstr "रद्द करें (_C)"
 msgid "_Delete"
 msgstr "हटाएँ (_D)"
 
+#. Removes the torrent from the list and keeps its downloaded files
 msgid "_Remove"
 msgstr "हटाएँ (_R)"
 
 msgid "High"
 msgstr "उच्च"
 
+#, fuzzy
 msgid "Normal"
-msgstr "सामान्य"
+msgstr ""
+"#-#-#-#-#  hi.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"सामान्य\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"समान्य\n"
+"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"सामान्य"
 
 msgid "Low"
 msgstr "निम्न"
@@ -450,8 +428,8 @@ msgstr "नाम"
 msgid "Size"
 msgstr "आकार"
 
-msgid "Have"
-msgstr "प्राप्त"
+msgid "Progress"
+msgstr "प्रगति"
 
 msgid "Download"
 msgstr "डाउनलोड"
@@ -479,6 +457,24 @@ msgid "_Show {count:L} of:"
 msgstr ""
 
 msgid "{disk_space} free"
+msgstr "{disk_space} अप्रयुक्त"
+
+msgid "Where to look for configuration files"
+msgstr "विन्यास फाइल देखने हेतु स्थान"
+
+msgid "Start with all torrents paused"
+msgstr "आरंभ पर सभी टोरेंट स्थगित रखें"
+
+msgid "Start minimized in notification area"
+msgstr "अधिसूचना क्षेत्र में संक्षिप्त रूप आरंभ करें"
+
+msgid "Show version number and exit"
+msgstr "संस्करण संख्या दिखाकर बंद करें"
+
+msgid "[torrent files or urls]"
+msgstr "[टोरेंट फाइलें या यूआरएल]"
+
+msgid "Run '{program} --help' to see a full list of available command line options.\n"
 msgstr ""
 
 msgid ""
@@ -507,7 +503,7 @@ msgid "Stop Seeding at Ratio"
 msgstr "इस अनुपात पर सीड करना रोकें"
 
 msgid "Stop at Ratio ({ratio})"
-msgstr ""
+msgstr "इस अनुपात पर रोकें ({ratio})"
 
 msgid "Total Ratio"
 msgstr "कुल अनुपात"
@@ -521,16 +517,11 @@ msgstr "कुल अंतरण"
 msgid "Session Transfer"
 msgstr "सत्र अंतरण"
 
+msgid "Down: {downloaded_size}, Up: {uploaded_size}"
+msgstr "डाउनलोड: {downloaded_size}, अपलोड: {uploaded_size}"
+
 msgid "Ratio: {ratio}"
-msgstr ""
-
-msgctxt "current session totals"
-msgid "Down: {downloaded_size}, Up: {uploaded_size}"
-msgstr ""
-
-msgctxt "all-time totals"
-msgid "Down: {downloaded_size}, Up: {uploaded_size}"
-msgstr ""
+msgstr "अनुपात : %s"
 
 msgid "{download_speed} ▾"
 msgstr ""
@@ -588,6 +579,9 @@ msgstr "समय"
 msgid "Couldn't create proxy for '{bus}': {error} ({error_code})"
 msgstr ""
 
+msgid "Couldn't spawn async process \"'{command}'\": {error} ({error_code})"
+msgstr ""
+
 msgid "Open File"
 msgstr "फाइल खोलें"
 
@@ -616,13 +610,16 @@ msgid "_Open"
 msgstr "खोलें (_O)"
 
 msgid "Show options dialog"
+msgstr "विकल्प विंडो दिखाएँ"
+
+msgid "Other…"
 msgstr ""
 
-msgid "Select a File"
-msgstr ""
+msgid "Select File"
+msgstr "फाइल चुनें"
 
 msgid "(None)"
-msgstr ""
+msgstr "(कोई नहीं)"
 
 msgid "Allow encryption"
 msgstr "एन्क्रिप्शन स्वीकार्य"
@@ -691,27 +688,19 @@ msgstr "टोरेंट अंतरण विफल"
 msgid "This may take a moment…"
 msgstr "इसमें कुछ समय लग सकता है…"
 
+msgid "Couldn't open watchdir '{dirname}': {error} ({error_code})"
+msgstr ""
+
 msgid "Couldn't read '{path}'"
 msgstr ""
-
-#. logging
-msgid "Inhibiting desktop hibernation"
-msgstr "डेस्कटॉप सुप्त न करें"
-
-msgid "Couldn't inhibit desktop hibernation: {error}"
-msgstr ""
-
-#. logging
-msgid "Allowing desktop hibernation"
-msgstr "डेस्कटॉप सुप्त करना सक्रिय करें"
 
 msgid "Couldn't find pending RPC request for id {id}"
 msgstr ""
 
 msgid "Started {count:L} time"
 msgid_plural "Started {count:L} times"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "{count:L} बार आरंभ"
+msgstr[1] "{count:L} बार आरंभ"
 
 msgid "Reset your statistics?"
 msgstr "आँकड़ें पुनः सेट करें?"
@@ -722,28 +711,32 @@ msgstr "पुनः सेट करें (_R)"
 msgid "These statistics are for your information only. Resetting them doesn't affect the statistics logged by your BitTorrent trackers."
 msgstr "यह आँकड़ें केवल आपके उपयोग हेतु हैं। इन्हें पुनः सेट करने से आपके बिट टोरेंट ट्रैकर आँकड़ों पर कोई प्रभाव नहीं पड़ेगा।"
 
+msgid "_Show {appname}"
+msgstr "{appname} दिखाएँ (_S)"
+
 msgid "{upload_speed} ▴ {download_speed} ▾"
 msgstr ""
 
 #, no-c-format
 msgid "Verifying local data ({percent_done}% tested)"
-msgstr ""
+msgstr "लोकल डाटा प्रमाणीकरण जारी ({percent_done}% जाँचा गया)"
 
 msgid "{current_size} of {complete_size} ({percent_done}%)"
-msgstr ""
+msgstr "{complete_size} का {current_size} ({percent_done}%)"
 
 msgid "{current_size} of {complete_size} ({percent_complete}%), uploaded {uploaded_size} (Ratio: {ratio}, Goal: {seed_ratio})"
 msgstr ""
 
 msgid "{current_size} of {complete_size} ({percent_complete}%), uploaded {uploaded_size} (Ratio: {ratio})"
-msgstr ""
+msgstr "{complete_size} का {current_size} ({percent_complete}%), {uploaded_size} अपलोड (अनुपात : {ratio})"
 
 msgid "{complete_size}, uploaded {uploaded_size} (Ratio: {ratio}, Goal: {seed_ratio})"
 msgstr ""
 
 msgid "{complete_size}, uploaded {uploaded_size} (Ratio: {ratio})"
-msgstr ""
+msgstr "{complete_size}, {uploaded_size} अपलोड (अनुपात : {ratio})"
 
+#. Translators: Second (optional) part of torrent progress string
 msgid "Remaining time unknown"
 msgstr "शेष समय अज्ञात"
 
@@ -756,8 +749,10 @@ msgstr "निष्क्रिय"
 msgid "Tracker warning: '{warning}'"
 msgstr ""
 
-msgid "Tracker Error: '{error}'"
-msgstr ""
+#, fuzzy
+#| msgid "Tracker gave an error: {error}"
+msgid "Tracker error: '{error}'"
+msgstr "ट्रैकर द्वारा त्रुटि : {error}"
 
 msgid "Local error: '{error}'"
 msgstr ""
@@ -780,183 +775,17 @@ msgstr[1] ""
 
 msgid "Downloading from {active_count} of {connected_count} connected peer"
 msgid_plural "Downloading from {active_count} of {connected_count} connected peers"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "कनेक्ट हो रखें {connected_count} पीयर में से {active_count} से डाउनलोड जारी"
+msgstr[1] "कनेक्ट हो रखें {connected_count} पीयर में से {active_count} से डाउनलोड जारी"
 
 msgid "Seeding to {active_count} of {connected_count} connected peer"
 msgid_plural "Seeding to {active_count} of {connected_count} connected peers"
-msgstr[0] ""
-msgstr[1] ""
-
-msgid "{days_from_now:L} day from now"
-msgid_plural "{days_from_now:L} days from now"
-msgstr[0] ""
-msgstr[1] ""
-
-msgid "{hours_from_now:L} hour from now"
-msgid_plural "{hours_from_now:L} hours from now"
-msgstr[0] ""
-msgstr[1] ""
-
-msgid "{minutes_from_now:L} minute from now"
-msgid_plural "{minutes_from_now:L} minutes from now"
-msgstr[0] ""
-msgstr[1] ""
-
-msgid "{seconds_from_now:L} second from now"
-msgid_plural "{seconds_from_now:L} seconds from now"
-msgstr[0] ""
-msgstr[1] ""
-
-msgid "now"
-msgstr ""
-
-msgid "{days_ago:L} day ago"
-msgid_plural "{days_ago:L} days ago"
-msgstr[0] ""
-msgstr[1] ""
-
-msgid "{hours_ago:L} hour ago"
-msgid_plural "{hours_ago:L} hours ago"
-msgstr[0] ""
-msgstr[1] ""
-
-msgid "{minutes_ago:L} minute ago"
-msgid_plural "{minutes_ago:L} minutes ago"
-msgstr[0] ""
-msgstr[1] ""
-
-msgid "{seconds_ago:L} second ago"
-msgid_plural "{seconds_ago:L} seconds ago"
-msgstr[0] ""
-msgstr[1] ""
-
-msgid "{days:L} day"
-msgid_plural "{days:L} days"
-msgstr[0] ""
-msgstr[1] ""
-
-msgid "{hours:L} hour"
-msgid_plural "{hours:L} hours"
-msgstr[0] ""
-msgstr[1] ""
-
-msgid "{minutes:L} minute"
-msgid_plural "{minutes:L} minutes"
-msgstr[0] ""
-msgstr[1] ""
-
-msgid "{seconds:L} second"
-msgid_plural "{seconds:L} seconds"
-msgstr[0] ""
-msgstr[1] ""
-
-msgid "{days_left:L} day left"
-msgid_plural "{days_left:L} days left"
-msgstr[0] ""
-msgstr[1] ""
-
-msgid "{hours_left:L} hour left"
-msgid_plural "{hours_left:L} hours left"
-msgstr[0] ""
-msgstr[1] ""
-
-msgid "{minutes_left:L} minute left"
-msgid_plural "{minutes_left:L} minutes left"
-msgstr[0] ""
-msgstr[1] ""
-
-msgid "{seconds_left:L} second left"
-msgid_plural "{seconds_left:L} seconds left"
-msgstr[0] ""
-msgstr[1] ""
-
-msgid "The torrent file '{path}' is already in use by '{torrent_name}'."
-msgstr ""
-
-msgid "Couldn't open torrent"
-msgstr ""
-
-msgid "Couldn't move '{path}' to trash: {error} ({error_code})"
-msgstr ""
-
-msgid "Couldn't open '{url}'"
-msgstr ""
-
-msgid "Unsupported URL: '{url}'"
-msgstr ""
-
-#. modal
-msgid "{appname} doesn't know how to use '{url}'"
-msgstr ""
-
-msgid "This magnet link appears to be intended for something other than BitTorrent."
-msgstr "प्रतीत होता है कि इस मैग्नेट लिंक का उद्देश्य बिट-टोरेंट से संबंधित नहीं है।"
+msgstr[0] "कनेक्ट हो रखें {connected_count} पीयर में से {active_count} को सीड जारी"
+msgstr[1] "कनेक्ट हो रखें {connected_count} पीयर में से {active_count} को सीड जारी"
 
 #, fuzzy
 msgid "Retransmission"
 msgstr "ट्रांसमिशन"
-
-#. parse the command line
-msgid "Where to look for configuration files"
-msgstr "विन्यास फाइल देखने हेतु स्थान"
-
-msgid "Start with all torrents paused"
-msgstr "आरंभ पर सभी टोरेंट स्थगित रखें"
-
-msgid "Start minimized in notification area"
-msgstr "अधिसूचना क्षेत्र में संक्षिप्त रूप आरंभ करें"
-
-msgid "Show version number and exit"
-msgstr "संस्करण संख्या दिखाकर बंद करें"
-
-msgid "[torrent files or urls]"
-msgstr "[टोरेंट फाइलें या यूआरएल]"
-
-msgid "Run '{program} --help' to see a full list of available command line options.\n"
-msgstr ""
-
-msgid "B/s"
-msgstr ""
-
-msgid "GB/s"
-msgstr "जीबी/सेकंड"
-
-msgid "MB/s"
-msgstr "एमबी/सेकंड"
-
-msgid "TB/s"
-msgstr "टीबी/सेकंड"
-
-msgid "kB/s"
-msgstr "केबी/सेकंड"
-
-msgid "B"
-msgstr ""
-
-msgid "GiB"
-msgstr "जीबी"
-
-msgid "KiB"
-msgstr "केबी"
-
-msgid "MiB"
-msgstr "एमबी"
-
-msgid "TiB"
-msgstr "टीबी"
-
-msgid "GB"
-msgstr "जीबी"
-
-msgid "MB"
-msgstr "एमबी"
-
-msgid "TB"
-msgstr "टीबी"
-
-msgid "kB"
-msgstr "केबी"
 
 msgid "BitTorrent Client"
 msgstr "बिट टोरेंट साधन"
@@ -976,32 +805,48 @@ msgstr "ट्रांसमिशन आरंभ पर सभी टोर�
 msgid "Start Retransmission Minimized"
 msgstr "ट्रांसमिशन संक्षिप्त रूप में आरंभ करें"
 
-msgid "Open a torrent"
-msgstr "टोरेंट खोलें"
+#, fuzzy
+msgid "The Retransmission Project"
+msgstr "ट्रांसमिशन"
+
+#. Translators: these are the application description paragraphs in the MetaInfo file.
+msgid "BitTorrent is a peer-to-peer file-sharing protocol that is commonly used to distribute large amounts of data between multiple users."
+msgstr ""
+
+msgid "Retransmission is a BitTorrent client with an easy-to-use interface on top of a cross-platform backend. Native interfaces are available for macOS, Linux, and Windows, as well as command line binaries and a web GUI."
+msgstr ""
+
+msgid "Notable features of Retransmission include support for Local Peer Discovery, encryption, DHT, µTP, PEX and Magnet links."
+msgstr ""
+
+msgid "Main window, showing an ongoing download of Fedora Workstation"
+msgstr ""
+
+msgid "_File"
+msgstr "फाइल (_F)"
 
 msgid "Open _URL…"
 msgstr "यूआरएल खोलें (_U)…"
 
-msgid "Open URL…"
-msgstr "यूआरएल खोलें…"
-
 msgid "_New…"
 msgstr "नया (_N)…"
 
+#, fuzzy
 msgid "_Start All"
-msgstr "सभी आरंभ करें(_S)"
-
-msgid "Start all torrents"
-msgstr "सभी टोरेंट आरंभ करें"
+msgstr ""
+"#-#-#-#-#  hi.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"सभी आरंभ करें(_S)\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"सभी आरंभ करें (_S)"
 
 msgid "_Pause All"
 msgstr "सभी रोकें (_P)"
 
-msgid "Pause all torrents"
-msgstr "सभी टोरेंट रोकें"
-
 msgid "_Quit"
 msgstr "बंद करें (_Q)"
+
+msgid "_Edit"
+msgstr "संपादन (_E)"
 
 msgid "Select _All"
 msgstr "सभी चयनित करें (_S)"
@@ -1012,11 +857,11 @@ msgstr "सभी अचयनित करें (_D)"
 msgid "_Preferences"
 msgstr "सेटिंग्स (_P)"
 
+msgid "_Torrent"
+msgstr "टोरेंट (_T)"
+
 msgid "_Properties"
 msgstr "सूचना (_P)"
-
-msgid "Torrent properties"
-msgstr "टोरेंट सूचना"
 
 msgid "Open Fold_er"
 msgstr "फोल्डर खोलें (_e)"
@@ -1024,17 +869,16 @@ msgstr "फोल्डर खोलें (_e)"
 msgid "_Start"
 msgstr "आरंभ (_S)"
 
-msgid "Start torrent"
-msgstr "टोरेंट आरंभ करें"
-
 msgid "Start _Now"
 msgstr "अभी आरंभ करें (_N)"
 
-msgid "Start torrent now"
-msgstr "टोरेंट अभी आरंभ करें"
-
 msgid "Ask Tracker for _More Peers"
 msgstr "ट्रैकर से अधिक पीयर हेतु अनुरोध (_M)"
+
+#, fuzzy
+#| msgid "Queue"
+msgid "_Queue"
+msgstr "पंक्ति"
 
 msgid "Move to _Top"
 msgstr "शीर्ष पर ले जाएँ (_T)"
@@ -1051,23 +895,20 @@ msgstr "सबसे नीचे लाएँ (_B)"
 msgid "_Pause"
 msgstr "रोकें (_P)"
 
-msgid "Pause torrent"
-msgstr "टोरेंट स्थगित करें"
-
 msgid "Set _Location…"
 msgstr "स्थान सेट करें (_L)…"
 
 msgid "_Verify Local Data"
 msgstr "लोकल डाटा प्रमाणीकरण (_V)"
 
-msgid "Copy _Magnet Link to Clipboard"
+msgid "_Copy Magnet Link to Clipboard"
 msgstr "मैग्नेट लिंक क्लिपबोर्ड पर कॉपी करें (_C)"
-
-msgid "Remove torrent"
-msgstr "टोरेंट हटाएँ"
 
 msgid "_Delete Files and Remove"
 msgstr "फाइलें हटाएँ (_D)"
+
+msgid "_View"
+msgstr "दृश्य (_V)"
 
 msgid "_Compact View"
 msgstr "संक्षिप्त दृश्य (_C)"
@@ -1111,14 +952,22 @@ msgstr "शेष समय से अनुक्रमित (_L)"
 msgid "Re_verse Sort Order"
 msgstr "विपरीत अनुक्रम (_v)"
 
+msgid "_Help"
+msgstr "सहायता (_H)"
+
 msgid "Message _Log"
 msgstr "संदेश लॉग (_L)"
 
 msgid "_Statistics"
 msgstr "आँकड़ें (_S)"
 
+#, fuzzy
 msgid "_Donate"
-msgstr "दान करें (_D)"
+msgstr ""
+"#-#-#-#-#  hi.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"दान करें (_D)\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"दान दें (_D)"
 
 msgid "_Contents"
 msgstr "सामग्री (_C)"
@@ -1126,11 +975,15 @@ msgstr "सामग्री (_C)"
 msgid "_About"
 msgstr "बारे में (_A)"
 
-msgid "_Show {appname}"
-msgstr "{appname} दिखाएँ (_S)"
+#, fuzzy
+#| msgid "Start torrent"
+msgid "_Sort Torrents By"
+msgstr "टोरेंट आरंभ करें"
 
-msgid "Enable Alternative Speed _Limits"
-msgstr "वैकल्पिक गति सीमाएँ सक्रिय करें"
+#, fuzzy
+#| msgid "Alternative Speed Limits"
+msgid "Alternative Speed _Limits"
+msgstr "वैकल्पिक गति सीमाएँ"
 
 msgid "_Add"
 msgstr "जोड़ें (_A)"
@@ -1147,8 +1000,8 @@ msgstr "बंद करें (_C)"
 msgid "Activity"
 msgstr "गतिविधि"
 
-msgid "Torrent size:"
-msgstr "टोरेंट आकार :"
+msgid "Size:"
+msgstr "आकार :"
 
 msgid "Have:"
 msgstr "प्राप्त :"
@@ -1204,9 +1057,6 @@ msgstr "अधिक जानकारी दिखाएँ (_m)"
 msgid "Peers"
 msgstr "पीयर"
 
-msgid "_Edit"
-msgstr "संपादन (_E)"
-
 msgid "Show _backup trackers"
 msgstr "बैकअप ट्रैकर दिखाएँ (_b)"
 
@@ -1228,23 +1078,43 @@ msgstr ""
 msgid "Limit _upload speed ({speed_units}):"
 msgstr ""
 
+#, fuzzy
 msgid "Torrent _priority:"
-msgstr "टोरेंट प्राथमिकता (_p):"
+msgstr ""
+"#-#-#-#-#  hi.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"टोरेंट प्राथमिकता (_p):\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"टोरेंट प्राथमिकता (_p) :"
 
 msgid "Seeding Limits"
 msgstr "सीड सीमाएँ"
 
+#, fuzzy
 msgid "_Ratio:"
-msgstr "अनुपात (_R):"
+msgstr ""
+"#-#-#-#-#  hi.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"अनुपात (_R):\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"अनुपात (_R) :"
 
+#, fuzzy
 msgid "_Idle:"
-msgstr "निष्क्रिय (_I):"
+msgstr ""
+"#-#-#-#-#  hi.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"निष्क्रिय (_I):\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"निष्क्रिय (_I) :"
 
 msgid "Peer Connections"
 msgstr "पीयर कनेक्शन"
 
+#, fuzzy
 msgid "_Maximum peers:"
-msgstr "अधिकतम पियर (_M):"
+msgstr ""
+"#-#-#-#-#  hi.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"अधिकतम पियर (_M):\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"अधिकतम पीयर (_M) :"
 
 msgid "Options"
 msgstr "विकल्प"
@@ -1262,6 +1132,26 @@ msgstr ""
 msgid "Also see Default Public Trackers in Edit > Preferences > Network"
 msgstr "संपादन > सेटिंग्स > नेटवर्क में डिफ़ॉल्ट सार्वजानिक ट्रैकर देखें"
 
+msgid "Open a torrent"
+msgstr "टोरेंट खोलें"
+
+msgid "Start torrent"
+msgstr "टोरेंट आरंभ करें"
+
+#, fuzzy
+msgid "Pause torrent"
+msgstr ""
+"#-#-#-#-#  hi.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"टोरेंट स्थगित करें\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"टोरेंट रोकें"
+
+msgid "Remove torrent"
+msgstr "टोरेंट हटाएँ"
+
+msgid "Torrent properties"
+msgstr "टोरेंट सूचना"
+
 msgid "Torrent"
 msgstr "टोरेंट"
 
@@ -1271,23 +1161,30 @@ msgstr "आँकड़ें"
 msgid "New Torrent"
 msgstr "नया टोरेंट"
 
-msgid "_New"
-msgstr "नया (_N)"
+#, fuzzy
+#| msgid "C_redits"
+msgid "C_reate"
+msgstr "आभार (_r)"
 
 msgid "Sa_ve to:"
 msgstr "यहाँ संचित करें (_v):"
 
-msgid "Source F_older:"
-msgstr "स्रोत फोल्डर (_o):"
+msgid "Source f_older:"
+msgstr "स्रोत फोल्डर (__o):"
 
-msgid "Source _File:"
-msgstr "स्रोत फाइल (_F):"
+msgid "Source _file:"
+msgstr "स्रोत फाइल (_f):"
 
-msgid "Piece size:"
+msgid "Piece si_ze:"
 msgstr ""
 
+#, fuzzy
 msgid "Properties"
-msgstr "सूचना"
+msgstr ""
+"#-#-#-#-#  hi.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"सूचना\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"विशेषताएँ"
 
 msgid "_Trackers:"
 msgstr "ट्रैकर (_T):"
@@ -1313,9 +1210,6 @@ msgstr "इस रूप में संचित करें (_A)"
 msgid "Clear"
 msgstr "रिक्त करें"
 
-msgid "P_ause"
-msgstr "रोकें (_P)"
-
 msgid "Level"
 msgstr "स्तर"
 
@@ -1337,17 +1231,21 @@ msgstr "लक्षित फोल्डर चुनें"
 msgid "_Start when added"
 msgstr "जोड़ते ही आरंभ करें (_S)"
 
-msgid "Mo_ve torrent file to the trash"
-msgstr ""
+#, fuzzy
+#| msgid "Mo_ve .torrent file to the trash"
+msgid "Mo_ve torrent file to the Trash"
+msgstr ".torrent फाइल ट्रैश में भेजें (_v)"
 
 msgid "{appname} Preferences"
 msgstr "{appname} सेटिंग्स"
 
-msgid "_Help"
-msgstr "सहायता (_H)"
-
+#, fuzzy
 msgid "Speed Limits"
-msgstr "गति सीमा"
+msgstr ""
+"#-#-#-#-#  hi.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"गति सीमा\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"गति सीमाएँ"
 
 #. Checkbox to limit upload speed
 msgid "_Upload ({speed_units}):"
@@ -1394,7 +1292,9 @@ msgstr "टोरेंट विकल्प विंडो दिखाएँ
 msgid "_Start added torrents"
 msgstr "जोड़े गए टोरेंट आरंभ करें (_S)"
 
-msgid "Save to _Location:"
+#, fuzzy
+#| msgid "Save to _Location:"
+msgid "Save to _location:"
 msgstr "इस स्थान पर संचित करें(_L):"
 
 msgid "Download Queue"
@@ -1412,10 +1312,17 @@ msgstr "अपूर्ण"
 msgid "Append \"._part\" to incomplete files' names"
 msgstr "अपूर्ण फाइलों के नाम में \"._part\" जोड़ें"
 
-msgid "Keep _incomplete torrents in:"
+msgid "Keep _incomplete files in:"
 msgstr "यहाँ अपूर्ण फाइलें संचित करें (_i):"
 
-msgid "Call scrip_t when done downloading:"
+#, fuzzy
+#| msgid "Call scrip_t when downloading is completed:"
+msgid "Call scrip_t when download completes:"
+msgstr "डाउनलोड पूर्ण होने पर यह स्क्रिप्ट निष्पादित करें (_t):"
+
+#, fuzzy
+#| msgid "Call scrip_t when downloading is completed:"
+msgid "Verify data when download completes"
 msgstr "डाउनलोड पूर्ण होने पर यह स्क्रिप्ट निष्पादित करें (_t):"
 
 msgctxt "Gerund"
@@ -1450,7 +1357,9 @@ msgstr "अवरुद्ध सूची"
 msgid "Enable _blocklist:"
 msgstr "अवरुद्ध सूची सक्रिय करें (_b):"
 
-msgid "Enable _automatic updates"
+#, fuzzy
+#| msgid "Enable _automatic updates"
+msgid "_Automatically update weekly"
 msgstr "स्वतः अपडेट सक्रिय करें (_a)"
 
 msgid "_Update"
@@ -1459,14 +1368,21 @@ msgstr "अपडेट (_U)"
 msgid "Listening Port"
 msgstr "श्रोता पोर्ट"
 
-msgid "_Port used for incoming connections:"
-msgstr "आवक कनेक्शन उपयोग हेतु पोर्ट (_P):"
+msgid "_Port for incoming connections:"
+msgstr "आवक कनेक्शन हेतु पोर्ट (_P):"
 
-msgid "Pick a _random port every time Transmission is started"
+#, fuzzy
+#| msgid "Pick a _random port every time Transmission is started"
+msgid "Pick a _random port at startup"
 msgstr "प्रत्येक ट्रांसमिशन आरंभ पर क्रमरहित पोर्ट सेट करें (_r)"
 
+#, fuzzy
 msgid "Use UPnP or NAT-PMP port _forwarding from my router"
-msgstr "राऊटर से UPnP या NAT_PMP पोर्ट अग्रसारित करें (_f)"
+msgstr ""
+"#-#-#-#-#  hi.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"राऊटर से UPnP या NAT_PMP पोर्ट अग्रसारित करें (_f)\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"राऊटर से UPnP या NAT__PMP पोर्ट अग्रसारित करें (_f)"
 
 msgid "Te_st Port"
 msgstr "पोर्ट जाँच (_s)"
@@ -1474,31 +1390,41 @@ msgstr "पोर्ट जाँच (_s)"
 msgid "Peer Limits"
 msgstr "पीयर सीमाएँ"
 
-msgid "Maximum peers per _torrent:"
+#, fuzzy
+#| msgid "Maximum peers per _torrent:"
+msgid "Maximum peers for new _torrents:"
 msgstr "प्रति टोरेंट अधिकतम पीयर (_t):"
 
 msgid "Maximum peers _overall:"
 msgstr "कुल अधिकतम पीयर (_o):"
 
-msgid "Enable µ_TP for peer communication"
-msgstr ""
+#, fuzzy
+#| msgid "Peer Connections"
+msgid "Enable µ_TP for peer connections"
+msgstr "पीयर कनेक्शन"
 
 msgid "µTP is a tool for reducing network congestion."
 msgstr ""
 
-msgid "Use PE_X to find more peers"
+#, fuzzy
+#| msgid "Use PE_X to find more peers"
+msgid "Use PE_X to find more peers for public torrents"
 msgstr "अधिक पीयर हेतु पेक्स उपयोग करें (_X)"
 
 msgid "PEX is a tool for exchanging peer lists with the peers you're connected to."
 msgstr "पेक्स - वर्तमान पीयर से पीयर सूची के आदान-प्रदान हेतु एक साधन है।"
 
-msgid "Use _DHT to find more peers"
+#, fuzzy
+#| msgid "Use _DHT to find more peers"
+msgid "Use _DHT to find more peers for public torrents"
 msgstr "अधिक पीयर हेतु डीएचटी उपयोग करें (_D)"
 
 msgid "DHT is a tool for finding peers without a tracker."
 msgstr "डीएचटी - ट्रैकर के बिना पीयर खोज हेतु साधन।"
 
-msgid "Use _Local Peer Discovery to find more peers"
+#, fuzzy
+#| msgid "Use _Local Peer Discovery to find more peers"
+msgid "Use _Local Peer Discovery to find more peers for public torrents"
 msgstr "अधिक पीयर हेतु लोकल पीयर खोज उपयोग करें (_L)"
 
 msgid "LPD is a tool for finding peers on your local network."
@@ -1524,8 +1450,8 @@ msgstr "नेटवर्क"
 msgid "Desktop"
 msgstr "डेस्कटॉप"
 
-msgid "_Inhibit hibernation when torrents are active"
-msgstr "टोरेंट सक्रिय होने पर सिस्टम सुप्त न करें (_I)"
+msgid "_Prevent computer from sleeping with active torrents"
+msgstr ""
 
 msgid "Show {appname} icon in the _notification area"
 msgstr "अधिसूचना क्षेत्र में {appname} आइकन दिखाएँ (_n)"
@@ -1548,7 +1474,9 @@ msgstr "दूरस्थ नियंत्रण"
 msgid "Allow _remote access"
 msgstr "दूरस्थ अभिगम स्वीकार्य (_r)"
 
-msgid "_Open web client"
+#, fuzzy
+#| msgid "_Open web client"
+msgid "_Open Web Client"
 msgstr "वेब साधन खोलें (_O)"
 
 msgid "HTTP _port:"
@@ -1575,8 +1503,13 @@ msgstr "आईपी पत्तों हेतु वाइल्डकार
 msgid "Remote"
 msgstr "दूरस्थ"
 
+#, fuzzy
 msgid "Set Torrent Location"
-msgstr "टोरेंट स्थान सेट करें"
+msgstr ""
+"#-#-#-#-#  hi.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"टोरेंट स्थान सेट करें\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"टोरेंट फोल्डर चुनें"
 
 msgid "_Apply"
 msgstr "लागू करें (_A)"
@@ -1584,14 +1517,19 @@ msgstr "लागू करें (_A)"
 msgid "Location"
 msgstr "स्थान"
 
-msgid "Torrent _location:"
-msgstr "टोरेंट स्थान (_l):"
+msgid "New _location:"
+msgstr "नया फोल्डर (_l):"
 
 msgid "_Move from the current folder"
 msgstr "वर्तमान फोल्डर से अंतरित करें (_m)"
 
+#, fuzzy
 msgid "Local data is _already there"
-msgstr "वहाँ लोकल डाटा पहले से मौजूद है (_a)"
+msgstr ""
+"#-#-#-#-#  hi.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"वहाँ लोकल डाटा पहले से मौजूद है (_a)\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"लोकल डाटा पहले से मौजूद है"
 
 msgid "Current Session"
 msgstr "वर्तमान सत्र"
@@ -1614,20 +1552,171 @@ msgstr "यूआरएल से टोरेंट खोलें"
 msgid "_URL"
 msgstr "यूआरएल (_U)"
 
-msgid "Couldn't parse announce response: {error} ({error_code})"
+msgid "The torrent file '{path}' is already in use by '{torrent_name}'."
 msgstr ""
 
-msgid "Couldn't parse scrape response: {error} ({error_code})"
+msgid "Couldn't open torrent"
 msgstr ""
 
-msgid "Unknown error"
-msgstr "अज्ञात त्रुटि"
-
-msgid "{ip_protocol} connection failed"
+msgid "Couldn't move '{path}' to trash: {error} ({error_code})"
 msgstr ""
 
-msgid "Couldn't look up '{address}:{port}' in {ip_protocol}: {error} ({error_code})"
+msgid "Couldn't launch default application for URI '{uri}': {error} ({error_code})"
 msgstr ""
+
+msgid "Couldn't invoke xdg-open for URI '{uri}': {error} ({error_code})"
+msgstr ""
+
+msgid "Couldn't open '{url}'"
+msgstr ""
+
+msgid "Unsupported URL: '{url}'"
+msgstr ""
+
+msgid "{appname} doesn't know how to use '{url}'"
+msgstr ""
+
+msgid "This magnet link appears to be intended for something other than BitTorrent."
+msgstr "प्रतीत होता है कि इस मैग्नेट लिंक का उद्देश्य बिट-टोरेंट से संबंधित नहीं है।"
+
+msgid "{days_from_now:L} day from now"
+msgid_plural "{days_from_now:L} days from now"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "{hours_from_now:L} hour from now"
+msgid_plural "{hours_from_now:L} hours from now"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "{minutes_from_now:L} minute from now"
+msgid_plural "{minutes_from_now:L} minutes from now"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "{seconds_from_now:L} second from now"
+msgid_plural "{seconds_from_now:L} seconds from now"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "now"
+msgstr ""
+
+msgid "{days_ago:L} day ago"
+msgid_plural "{days_ago:L} days ago"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "{hours_ago:L} hour ago"
+msgid_plural "{hours_ago:L} hours ago"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "{minutes_ago:L} minute ago"
+msgid_plural "{minutes_ago:L} minutes ago"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "{seconds_ago:L} second ago"
+msgid_plural "{seconds_ago:L} seconds ago"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "Got a list of {markup_begin}{peer_count} peer{markup_end} {time_span_ago}"
+msgid_plural "Got a list of {markup_begin}{peer_count} peers{markup_end} {time_span_ago}"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "Peer list request {markup_begin}timed out {time_span_ago}{markup_end}; will retry"
+msgstr ""
+
+msgid "Got an error '{markup_begin}{error}{markup_end}' {time_span_ago}"
+msgstr ""
+
+msgid "No updates scheduled"
+msgstr "कोई अपडेट निर्धारित नहीं है"
+
+msgid "Asking for more peers {time_span_from_now}"
+msgstr ""
+
+msgid "Queued to ask for more peers"
+msgstr "अधिक पीयर अनुरोध हेतु पंक्तिबद्ध"
+
+msgid "Asked for more peers {markup_begin}{time_span_ago}{markup_end}"
+msgstr ""
+
+msgid "Got a scrape error '{markup_begin}{error}{markup_end}' {time_span_ago}"
+msgstr ""
+
+#, fuzzy
+#| msgid "Tracker had {markup_begin}no information{markup_end} on peer counts {time_span} ago"
+msgid "Tracker had {markup_begin}no information{markup_end} on peer counts {time_span_ago}"
+msgstr "ट्रैकर के पास {time_span} पूर्व पीयर संख्या की {markup_begin}कोई जानकारी नहीं{markup_end}"
+
+msgid "Tracker had {markup_begin}{seeder_count} {seeder_or_seeders} and {leecher_count} {leecher_or_leechers}{markup_end} {time_span_ago}"
+msgstr ""
+
+msgid "seeder"
+msgid_plural "seeders"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "leecher"
+msgid_plural "leechers"
+msgstr[0] ""
+msgstr[1] ""
+
+#, fuzzy
+#| msgid "Asking for peer counts in {time_span}"
+msgid "Asking for peer counts {time_span_from_now}"
+msgstr "{time_span} उपरांत पीयर संख्या हेतु अनुरोध"
+
+msgid "Queued to ask for peer counts"
+msgstr "अधिक पीयर संख्या अनुरोध हेतु पंक्तिबद्ध"
+
+msgid "Asked for peer counts {markup_begin}{time_span_ago}{markup_end}"
+msgstr ""
+
+msgid "{days:L} day"
+msgid_plural "{days:L} days"
+msgstr[0] "{days:L} दिन"
+msgstr[1] "{days:L} दिन"
+
+msgid "{hours:L} hour"
+msgid_plural "{hours:L} hours"
+msgstr[0] "{hours:L} घंटा"
+msgstr[1] "{hours:L} घंटे"
+
+#. Translators: Spin box format, "Stop seeding if idle for: [ 5 minutes ]"
+msgid "{minutes:L} minute"
+msgid_plural "{minutes:L} minutes"
+msgstr[0] "{minutes:L} मिनट"
+msgstr[1] "{minutes:L} मिनट"
+
+msgid "{seconds:L} second"
+msgid_plural "{seconds:L} seconds"
+msgstr[0] "{seconds:L} सेकंड"
+msgstr[1] "{seconds:L} सेकंड"
+
+msgid "{days_left:L} day left"
+msgid_plural "{days_left:L} days left"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "{hours_left:L} hour left"
+msgid_plural "{hours_left:L} hours left"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "{minutes_left:L} minute left"
+msgid_plural "{minutes_left:L} minutes left"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "{seconds_left:L} second left"
+msgid_plural "{seconds_left:L} seconds left"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "Announce error: {error} ({url})"
 msgstr ""
@@ -1646,19 +1735,54 @@ msgstr "ट्रैकर द्वारा कोई प्रतिक्र
 msgid "Success"
 msgstr "सफल"
 
+msgid "Couldn't parse announce response: {error} ({error_code})"
+msgstr ""
+
+msgid "Couldn't parse scrape response: {error} ({error_code})"
+msgstr ""
+
+msgid "Unknown error"
+msgstr "अज्ञात त्रुटि"
+
+msgid "{ip_protocol} connection failed"
+msgstr ""
+
+msgid "Couldn't look up '{address}:{port}' in {ip_protocol}: {error} ({error_code})"
+msgstr ""
+
 msgid "Blocklist '{path}' has {count} entry"
 msgid_plural "Blocklist '{path}' has {count} entries"
 msgstr[0] ""
 msgstr[1] ""
 
-#. don't try to display the actual lines - it causes issues
-msgid "Couldn't parse line: '{line}'"
+msgid "Couldn't parse line {line}: {base64}"
 msgstr ""
 
-msgid "Rewriting old blocklist file format to new format"
+msgid "Rewriting old blocklist file {path} to new format"
+msgstr ""
+
+msgid "Blocklist is larger than {limit} MiB; ignoring it"
+msgstr ""
+
+msgid "Couldn't fetch blocklist: {errmsg}, response code: {error} ({error_code})"
+msgstr ""
+
+msgid "Couldn't fetch blocklist: {error} ({error_code})"
+msgstr ""
+
+msgid "Automatically updated blocklist, which now has {count} rules"
+msgstr ""
+
+msgid "Invalid tr_sched_days value {val}"
 msgstr ""
 
 msgid "{crypto_library} error: {error} ({error_code})"
+msgstr ""
+
+msgid "Couldn't read '{path}': Not a regular file"
+msgstr ""
+
+msgid "Couldn't get '{path}': "
 msgstr ""
 
 msgid "Couldn't get '{path}': {error} ({error_code})"
@@ -1676,19 +1800,13 @@ msgstr ""
 msgid "Successfully updated global {type} address to {ip} using {url}"
 msgstr ""
 
+msgid "Still waiting for disk IO on torrent {id}: {running} running, {queued} queued"
+msgstr ""
+
 msgid "Too many messages like this! I won't log this message anymore this session."
 msgstr ""
 
 msgid "Skipping '{path}': {error} ({error_code})"
-msgstr ""
-
-msgid "Couldn't create socket: {error} ({error_code})"
-msgstr ""
-
-msgid "Couldn't set source address {address} on {socket}: {error} ({error_code})"
-msgstr ""
-
-msgid "Couldn't connect socket {socket} to {address}:{port}: {error} ({error_code})"
 msgstr ""
 
 msgid "Couldn't bind port {port} on {address}: {error} ({error_code}) -- Is another copy of {appname} already running?"
@@ -1706,7 +1824,34 @@ msgstr ""
 msgid "Couldn't truncate '{path}': {error} ({error_code})"
 msgstr ""
 
+msgid "Couldn't create socket: {error} ({error_code})"
+msgstr ""
+
+msgid "Couldn't set source address {address} on {socket}: {error} ({error_code})"
+msgstr ""
+
+msgid "Couldn't connect socket {socket} to {address}:{port}: {error} ({error_code})"
+msgstr ""
+
 msgid "Unknown state: {state}"
+msgstr ""
+
+msgid "Starting"
+msgstr "आरंभ जारी"
+
+msgid "Forwarded"
+msgstr "अग्रसारित"
+
+msgid "Stopping"
+msgstr "रोकना जारी"
+
+msgid "Not forwarded"
+msgstr "अग्रसारित नहीं"
+
+msgid "Mapped private port {private_port} to public port {public_port}"
+msgstr ""
+
+msgid "State changed from '{old_state}' to '{state}'"
 msgstr ""
 
 msgid "Found public address '{address}'"
@@ -1739,22 +1884,16 @@ msgstr ""
 msgid "If your router supports UPnP, please make sure UPnP is enabled!"
 msgstr ""
 
-msgid "Starting"
-msgstr "आरंभ जारी"
-
-msgid "Forwarded"
-msgstr "अग्रसारित"
-
-msgid "Stopping"
-msgstr "रोकना जारी"
-
-msgid "Not forwarded"
-msgstr "अग्रसारित नहीं"
-
-msgid "Mapped private port {private_port} to public port {public_port}"
+msgid "Couldn't test port: {errmsg}, response code: {error} ({error_code})"
 msgstr ""
 
-msgid "State changed from '{old_state}' to '{state}'"
+msgid "Couldn't test port: {error} ({error_code})"
+msgstr ""
+
+msgid "Couldn't fetch torrent: {errmsg}, Response code: {error} ({error_code})"
+msgstr ""
+
+msgid "Couldn't fetch torrent: {error} ({error_code})"
 msgstr ""
 
 msgid "Unix socket path must be fewer than {count} characters (including '{prefix}' prefix)"
@@ -1813,28 +1952,23 @@ msgstr "कूटशब्द आवश्यक"
 msgid "Serving RPC and Web requests from '{path}'"
 msgstr ""
 
-msgid "Couldn't test port: {error} ({error_code})"
-msgstr ""
+#, fuzzy
+#| msgid "Alternative Speed Limits"
+msgid "Time to turn on alternative speed limits"
+msgstr "वैकल्पिक गति सीमाएँ"
 
-msgid "Couldn't fetch blocklist: {error} ({error_code})"
-msgstr ""
-
-msgid "Couldn't fetch torrent: {error} ({error_code})"
-msgstr ""
-
-msgid "Time to turn off turtle mode"
-msgstr ""
-
-msgid "Time to turn on turtle mode"
-msgstr ""
-
-msgid "Couldn't open session lock file '{path}': {error} ({error_code})"
-msgstr ""
+#, fuzzy
+#| msgid "Alternative Speed Limits"
+msgid "Time to turn off alternative speed limits"
+msgstr "वैकल्पिक गति सीमाएँ"
 
 msgid "Listening to incoming peer connections on {hostport}"
 msgstr ""
 
 msgid "{appname} version {version} starting"
+msgstr ""
+
+msgid "Couldn't start disk IO workers, continuing without them: {error}"
 msgstr ""
 
 msgid "{appname} version {version} shutting down"
@@ -1845,7 +1979,10 @@ msgid_plural "Loaded {count} torrents"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "Migrated torrent file from '{old_path}' to '{path}'"
+msgid "Couldn't claim '{path}'. If another session is using it, the two will overwrite each other's settings, resume files and stats."
+msgstr ""
+
+msgid "Couldn't open session lock file '{path}': {error} ({error_code})"
 msgstr ""
 
 msgid "Couldn't use metainfo from '{path}' for '{magnet}': {error} ({error_code})"
@@ -1878,13 +2015,25 @@ msgstr ""
 msgid "Removing torrent"
 msgstr "टोरेंट हटना जारी"
 
-msgid "Couldn't move '{old_path}' to '{path}': {error} ({error_code})"
+msgid "Couldn't move torrent files to '{path}': {error} ({error_code})"
 msgstr ""
 
 msgid "Paused torrent as no data was found! Ensure your drives are connected or use \"Set Location\", then use \"Verify Local Data\" again. To re-download, start the torrent."
 msgstr ""
 
+msgid "Couldn't move '{old_path}' to '{path}': {error} ({error_code})"
+msgstr ""
+
 msgid "Tracker warning: '{warning}' ({url})"
+msgstr ""
+
+msgid "Moving '{source}' will overwrite '{path}'"
+msgstr ""
+
+msgid "Couldn't compare '{path}' with '{root}': {error} ({error_code}); leaving it alone"
+msgstr ""
+
+msgid "Migrated torrent file from '{old_path}' to '{path}'"
 msgstr ""
 
 msgid "Couldn't parse '{filename}' line: '{line}'"
@@ -1914,8 +2063,47 @@ msgstr ""
 msgid "Unknown socket family"
 msgstr ""
 
-msgid "Couldn't read '{path}': Not a regular file"
+msgid "B"
 msgstr ""
+
+msgid "KiB"
+msgstr "केबी"
+
+msgid "MiB"
+msgstr "एमबी"
+
+msgid "GiB"
+msgstr "जीबी"
+
+msgid "TiB"
+msgstr "टीबी"
+
+msgid "B/s"
+msgstr ""
+
+msgid "kB/s"
+msgstr "केबी/सेकंड"
+
+msgid "MB/s"
+msgstr "एमबी/सेकंड"
+
+msgid "GB/s"
+msgstr "जीबी/सेकंड"
+
+msgid "TB/s"
+msgstr "टीबी/सेकंड"
+
+msgid "kB"
+msgstr "केबी"
+
+msgid "MB"
+msgstr "एमबी"
+
+msgid "GB"
+msgstr "जीबी"
+
+msgid "TB"
+msgstr "टीबी"
 
 msgid "Couldn't parse JSON at position {position} '{text}': {error} ({error_code})"
 msgstr ""
@@ -1923,16 +2111,13 @@ msgstr ""
 msgid "Couldn't watch '{path}': {error} ({error_code})"
 msgstr ""
 
-msgid "Couldn't read event: {error} ({error_code})"
-msgstr ""
-
 msgid "Couldn't read event: expected {expected_size}, got {actual_size}"
 msgstr ""
 
-msgid "Couldn't read filename: {error} ({error_code})"
+msgid "Couldn't read filename: expected {expected_size}, got {actual_size}"
 msgstr ""
 
-msgid "Couldn't read filename: expected {expected_size}, got {actual_size}"
+msgid "Couldn't read event: {error} ({error_code})"
 msgstr ""
 
 msgid "Couldn't convert '{path}' to native path"
@@ -1953,10 +2138,13 @@ msgstr ""
 msgid "Consider upgrading your curl installation."
 msgstr ""
 
+msgid "The minimum supported version is {curl_version}, you might face unexpected behaviour."
+msgstr ""
+
 msgid "curl {curl_version} is prone to SIGPIPE crashes. {details_url}"
 msgstr ""
 
-msgid "curl {curl_version} is prone to an eventfd double close vulnerability that might cause SIGABRT crashes for the transmission-daemon systemd service. {details_url}"
+msgid "curl {curl_version} is prone to an eventfd double close vulnerability that might cause SIGABRT crashes for the daemon systemd service. {details_url}"
 msgstr ""
 
 msgid "Will verify tracker certs using envvar CURL_CA_BUNDLE: {bundle}"
@@ -1968,8 +2156,436 @@ msgstr ""
 msgid "NB: Invalid certs will appear as 'Could not connect to tracker' like many other errors"
 msgstr ""
 
+msgid "Aborting request: response body exceeded max size of {max_file_size} bytes"
+msgstr ""
+
 msgid "Couldn't fetch '{url}': expected HTTP response code {expected_code}, got {actual_code}"
 msgstr ""
+
+msgid "Server"
+msgstr "सर्वर"
+
+msgid "C_redits"
+msgstr "आभार (_r)"
+
+msgid "Credits"
+msgstr "आभार"
+
+msgid "About {appname}"
+msgstr "{appname} के बारे में"
+
+#, fuzzy
+#| msgid "Torrent Complete"
+msgid "Torrent Completed"
+msgstr "टोरेंट पूर्ण"
+
+#, fuzzy
+#| msgid "Torrent Complete"
+msgid "Torrents Completed"
+msgstr "टोरेंट पूर्ण"
+
+#. Translators: Text following the "Have:" label in torrent properties dialog;
+#. {current_size} is amount of downloaded and verified data
+msgid "{current_size} (100%)"
+msgstr "{current_size} (100%)"
+
+msgid "{current_size} of {complete_size} ({percent_done}%), {unverified_size} Unverified"
+msgstr "{complete_size} का {current_size} ({percent_done}%), {unverified_size} अप्रमाणित"
+
+msgid "{total_size} ({piece_count:L} piece @ {piece_size})"
+msgid_plural "{total_size} ({piece_count:L} pieces @ {piece_size})"
+msgstr[0] "{total_size} ({piece_count:L} खंड @ {piece_size})"
+msgstr[1] "{total_size} ({piece_count:L} खंड @ {piece_size})"
+
+msgid "{total_size} ({piece_count:L} piece)"
+msgid_plural "{total_size} ({piece_count:L} pieces)"
+msgstr[0] "{total_size} ({piece_count:L} खंड)"
+msgstr[1] "{total_size} ({piece_count:L} खंड)"
+
+msgid "Add URL(s)"
+msgstr ""
+
+msgid "Add tracker announce URLs, one per line:"
+msgstr "ट्रैकर अनुरोध यूआरएल जोड़ें, एक ट्रैकर प्रति पंक्ति :"
+
+msgid "No new URLs found."
+msgstr "कोई नवीन यूआरएल प्राप्त नहीं हुए।"
+
+msgid "Use Global Settings"
+msgstr "सर्वत्र सेटिंग्स उपयोग करें"
+
+msgid "Stop seeding if idle for:"
+msgstr "इस अवधि उपरांत निष्क्रिय होने पर सीड न करें :"
+
+msgid "Torrent Properties"
+msgstr "टोरेंट सूचना"
+
+msgid "Availability:"
+msgstr "उपलब्धता :"
+
+msgid "Labels:"
+msgstr ""
+
+msgid "Limit _upload speed:"
+msgstr "अपलोड गति सीमित करें (_u) :"
+
+msgid "Limit _download speed:"
+msgstr "डाउनलोड गति सीमित करें (_d) :"
+
+msgid "Check Selected"
+msgstr "चयनित चिन्हित करें"
+
+msgid "Uncheck Selected"
+msgstr "चयनित अचिन्हित करें"
+
+msgid "Only Check Selected"
+msgstr "केवल चयनित चिन्हित करें"
+
+msgid "Open"
+msgstr "खोलें"
+
+msgid "Rename…"
+msgstr ""
+
+msgid "Search…"
+msgstr ""
+
+msgid "<i>Calculating Free Space…</i>"
+msgstr ""
+
+msgid "Limited at {speed}"
+msgstr "{speed} पर सीमित"
+
+#. Translators: Second (optional) part of main window title "Appname - host:port" (added when connected to remote session)
+#. notice that leading space (before the dash) is included here
+msgid " - {host}:{port}"
+msgstr " - {host}:{port}"
+
+msgid "Network Error"
+msgstr "नेटवर्क त्रुटि"
+
+msgid "Idle"
+msgstr "निष्क्रिय"
+
+msgid "Showing {visible_count:L} of {count:L} torrent"
+msgid_plural "Showing {visible_count:L} of {count:L} torrents"
+msgstr[0] "{count:L} टोरेंट में से {visible_count:L} प्रदर्शित"
+msgstr[1] "{count:L} टोरेंट में से {visible_count:L} प्रदर्शित"
+
+msgid "Torrent Files (*.torrent);;All Files (*.*)"
+msgstr "टोरेंट फाइलें (*.torrent);;सभी फाइलें (*.*)"
+
+msgid "{host} has not responded yet"
+msgstr "{host} से कोई प्रतिक्रिया नहीं"
+
+msgid "{host} is responding"
+msgstr "{host} प्रतिक्रिया दे रहा है"
+
+#, fuzzy
+#| msgid "{host} last responded {time_span} ago"
+msgid "{host} last responded {time_span_ago}"
+msgstr "{host} ने {time_span} पूर्व प्रतिक्रिया दी"
+
+msgid "{host} is not responding"
+msgstr "{host} प्रतिक्रिया नहीं दे रहा है"
+
+#, fuzzy
+#| msgid "_Open"
+msgid "_Open…"
+msgstr "खोलें (_O)"
+
+msgid "Create a new torrent"
+msgstr "नया टोरेंट बनाएँ"
+
+msgid "Open the torrent's folder"
+msgstr "टोरेंट फोल्डर खोलें"
+
+msgid "Ask tracker for more peers"
+msgstr "ट्रैकर से अधिक पीयर हेतु अनुरोध करें"
+
+msgid "Verify local data"
+msgstr "लोकल डाटा प्रमाणित करें"
+
+msgid "Remove torrent and delete its files"
+msgstr "टोरेंट व उसकी फाइलें हटाएँ"
+
+msgid "Compact View"
+msgstr "संक्षिप्त दृश्य"
+
+msgid "_Main Window"
+msgstr "मुख्य विंडो (_M)"
+
+msgid "Tray _Icon"
+msgstr "ट्रे आइकन (_I)"
+
+#, fuzzy
+#| msgid "Change Session"
+msgid "_Change Session…"
+msgstr "सत्र बदलें"
+
+#. Start a local session or connect to a running session
+msgid "Choose Session"
+msgstr "सत्र चुनें"
+
+msgid "Bypass the queue and start now"
+msgstr "पंक्ति अनदेखी कर अभी आरंभ करें"
+
+msgid "{file_count:L} File"
+msgid_plural "{file_count:L} Files"
+msgstr[0] "{file_count:L} फाइल"
+msgstr[1] "{file_count:L} फाइलें"
+
+msgid "{piece_count:L} Piece"
+msgid_plural "{piece_count:L} Pieces"
+msgstr[0] "{piece_count:L} खंड"
+msgstr[1] "{piece_count:L} खंड"
+
+msgid "{total_size} in {files}; {pieces} @ {piece_size}"
+msgstr "{files} में {total_size}; {pieces} @ {piece_size}"
+
+msgid ""
+"To add a backup URL, add it on the line after the primary URL.\n"
+"To add another primary URL, add it after a blank line."
+msgstr ""
+"जोड़ने हेतु बैकअप यूआरएल को प्राथमिक यूआरएल से अगली पंक्ति में दर्ज करें।\n"
+"दूसरा प्राथमिक यूआरएल जोड़ने हेतु, रिक्त पंक्ति के बाद दर्ज करें।"
+
+#, fuzzy
+#| msgid "_Source:"
+msgid "Sou_rce:"
+msgstr "स्रोत (_S):"
+
+msgid "_Priority:"
+msgstr "प्राथमिकता (_P):"
+
+msgid "Select Folder"
+msgstr "फोल्डर चुनें"
+
+#, fuzzy
+#| msgid "Unknown"
+msgid "unknown"
+msgstr "अज्ञात"
+
+msgid "checking…"
+msgstr ""
+
+msgid "open"
+msgstr ""
+
+#, fuzzy
+#| msgid "_Close"
+msgid "closed"
+msgstr "बंद करें (_C)"
+
+#, fuzzy
+#| msgid "Error"
+msgid "error"
+msgstr "त्रुटि"
+
+#, fuzzy
+#| msgid "<i>Blocklist contains {count:L} rule</i>"
+#| msgid_plural "<i>Blocklist contains {count:L} rules</i>"
+msgid "<b>Update succeeded!</b><p>Blocklist now has {count:L} rule.</p>"
+msgid_plural "<b>Update succeeded!</b><p>Blocklist now has {count:L} rules.</p>"
+msgstr[0] "<i>अवरुद्ध सूची में {count:L} नियम है।</i>"
+msgstr[1] "<i>अवरुद्ध सूची में {count:L} नियम हैं।</i>"
+
+msgid "Download of the blocklist failed."
+msgstr ""
+
+#, fuzzy
+#| msgid "Blocklist"
+msgid "Update Blocklist"
+msgstr "अवरुद्ध सूची"
+
+msgid "Select \"Torrent Done Seeding\" Script"
+msgstr "\"टोरेंट सीड प्रक्रिया पूर्ण\" स्क्रिप्ट चुनें"
+
+msgid "Select Watch Directory"
+msgstr "कार्यरत डायरेक्टरी चुनें"
+
+msgid "Select Incomplete Directory"
+msgstr "अपूर्ण डायरेक्टरी चुनें"
+
+msgid "Select \"Torrent Done Downloading\" Script"
+msgstr "\"टोरेंट डाउनलोड पूर्ण\" स्क्रिप्ट चुनें"
+
+msgid "Not supported by remote sessions"
+msgstr "दूरस्थ सत्र द्वारा समर्थित नहीं है"
+
+msgid "<i>Blocklist contains {count:L} rule</i>"
+msgid_plural "<i>Blocklist contains {count:L} rules</i>"
+msgstr[0] "<i>अवरुद्ध सूची में {count:L} नियम है।</i>"
+msgstr[1] "<i>अवरुद्ध सूची में {count:L} नियम हैं।</i>"
+
+#, fuzzy
+#| msgid "<i>Blocklist contains {count:L} rule</i>"
+#| msgid_plural "<i>Blocklist contains {count:L} rules</i>"
+msgid "<i>Blocklist has never been updated</i>"
+msgstr "<i>अवरुद्ध सूची में {count:L} नियम है।</i>"
+
+#, fuzzy
+#| msgid "<i>Blocklist contains {count:L} rule</i>"
+#| msgid_plural "<i>Blocklist contains {count:L} rules</i>"
+msgid "<i>Blocklist last updated {date}</i>"
+msgstr "<i>अवरुद्ध सूची में {count:L} नियम है।</i>"
+
+msgid "_Upload:"
+msgstr "अपलोड (_U):"
+
+msgid "_Download:"
+msgstr "डाउनलोड (_D):"
+
+msgid "U_pload:"
+msgstr "अपलोड (_p):"
+
+msgid "Do_wnload:"
+msgstr "डाउनलोड (_w):"
+
+msgid "Downloading"
+msgstr "डाउनलोड जारी"
+
+msgid "Adding"
+msgstr "जोड़ना जारी"
+
+msgid "Reads user clipboard content for torrents"
+msgstr "टोरेंट प्राप्ति हेतु उपयोक्ता के क्लिपबोर्ड की सामग्री रीड करता है"
+
+msgid "Detect new torrents from clipboard"
+msgstr "क्लिपबोर्ड से नवीन टोरेंट पहचानें"
+
+#. Please keep this phrase as short as possible, it's currently the longest and influences dialog width
+msgid "Download is i_nactive if data sharing stopped:"
+msgstr "डाटा सहभाजन रुकने पर डाउनलोड निष्क्रिय (_n):"
+
+msgid "Seeding"
+msgstr "सीड जारी"
+
+msgid "Stop seedi_ng if idle for:"
+msgstr "अवधि उपरांत निष्क्रिय होने पर सीड न करें (_n):"
+
+msgid "Encryption"
+msgstr "एन्क्रिप्शन"
+
+msgid "Start _minimized in notification area"
+msgstr "अधिसूचना क्षेत्र में संक्षिप्त रूप आरंभ करें"
+
+#, fuzzy
+msgid "Retransmission (Qt)"
+msgstr "ट्रांसमिशन"
+
+msgid "Select Location"
+msgstr "फोल्डर चुनें"
+
+msgid "Error Renaming Path"
+msgstr "पथ नाम बदलने में त्रुटि"
+
+msgid "Unable to rename \"{old_path}\" as \"{path}\": {error}."
+msgstr "\"{old_path}\" का नाम \"{path}\" करने में विफल : {error}।"
+
+msgid "Error Adding Torrent"
+msgstr "टोरेंट जोड़ते समय त्रुटि"
+
+msgid "{torrent_name} (copy of {hash})"
+msgstr "{torrent_name} ({hash} की प्रतिलिपि)"
+
+#, fuzzy
+msgid "Duplicate Torrent"
+msgstr ""
+"#-#-#-#-#  hi.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"सार्वजनिक टोरेंट\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"सामान्य टोरेंट"
+
+#, fuzzy
+msgid "Duplicate Torrents"
+msgstr ""
+"#-#-#-#-#  hi.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"सार्वजनिक टोरेंट\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"सामान्य टोरेंट"
+
+#, fuzzy
+#| msgid "Couldn't add duplicate torrent"
+#| msgid_plural "Couldn't add duplicate torrents"
+msgid "Unable to add {count} duplicate torrent"
+msgid_plural "Unable to add {count} duplicate torrents"
+msgstr[0] "प्रतिलिपि टोरेंट जोड़ना विफल"
+msgstr[1] "प्रतिलिपि टोरेंट जोड़ना विफल"
+
+msgid "Change Session"
+msgstr "सत्र बदलें"
+
+msgid "Source"
+msgstr "स्रोत"
+
+msgid "Start _Local Session"
+msgstr "लोकल सत्र आरंभ करें (_L)"
+
+msgid "Connect to _Remote Session"
+msgstr "दूरस्थ सत्र से जुड़ें (_R)"
+
+msgid "_Host:"
+msgstr "होस्ट (_H):"
+
+msgid "_Port:"
+msgstr "पोर्ट (_P):"
+
+msgid "_Authentication required"
+msgstr "पुष्टिकरण आवश्यक (_A)"
+
+msgid "Remote root pa_th:"
+msgstr ""
+
+msgid "Tracker gave a warning: {warning}"
+msgstr "ट्रैकर द्वारा चेतावनी : {warning}"
+
+msgid "Tracker gave an error: {error}"
+msgstr "ट्रैकर द्वारा त्रुटि : {error}"
+
+msgid "Error: {error}"
+msgstr "त्रुटि : {error}"
+
+#, fuzzy
+#| msgid "Magnetized transfer - retrieving metadata (%1%)"
+msgid "Magnetized torrent - retrieving metadata ({percent_done}%)"
+msgstr "मैग्नेट अंतरण - मेटाडाटा प्राप्ति जारी (%1%)"
+
+#, no-c-format
+msgid "Downloading metadata from {active_count:L} peer ({percent_done}% done)"
+msgid_plural "Downloading metadata from {active_count:L} peers ({percent_done}% done)"
+msgstr[0] "{active_count:L} पीयर से मेटाडाटा डाउनलोड हो रहा है ({percent_done}% पूर्ण)"
+msgstr[1] "{active_count:L} पीयर से मेटाडाटा डाउनलोड जारी ({percent_done}% पूर्ण)"
+
+msgid "Downloading from {active_count:L} peer"
+msgid_plural "Downloading from {active_count:L} peers"
+msgstr[0] "{active_count:L} पीयर से डाउनलोड जारी"
+msgstr[1] "{active_count:L} पीयर से डाउनलोड जारी"
+
+msgid " and {webseed_count:L} web seed"
+msgid_plural " and {webseed_count:L} web seeds"
+msgstr[0] "व {webseed_count:L} वेब सीड"
+msgstr[1] "व {webseed_count:L} वेब सीड"
+
+msgid "Seeding to {active_count:L} peer"
+msgid_plural "Seeding to {active_count:L} peers"
+msgstr[0] "{active_count:L} पीयर को सीड जारी"
+msgstr[1] "{active_count:L} पीयर को सीड जारी"
+
+msgid " - "
+msgstr " - "
+
+#, fuzzy
+#| msgid ""
+#| "To add a backup URL, add it on the next line after a primary URL.\n"
+#| "To add a new primary URL, add it after a blank line."
+msgid "To add a backup URL, add it on the next line after a primary URL."
+msgstr ""
+"बैकअप यूआरएल जोड़ने हेतु उसे प्राथमिक यूआरएल से अगली पंक्ति में दर्ज करें।\n"
+"दूसरा प्राथमिक यूआरएल जोड़ने हेतु, उसे रिक्त पंक्ति के बाद दर्ज करें।"
+
+msgid "To add a new primary URL, add it after a blank line."
+msgstr "नवीन प्राथमिक यूआरएल जोड़ने हेतु, उसे रिक्त पंक्ति के बाद दर्ज करें।"
 
 msgid "{file_count:L} file, {total_size}\n"
 msgid_plural "{file_count:L} files, {total_size}\n"
@@ -1991,7 +2607,7 @@ msgid_plural "minutes"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "seconds"
+msgid "second"
 msgid_plural "seconds"
 msgstr[0] ""
 msgstr[1] ""
@@ -2000,6 +2616,86 @@ msgid "day"
 msgid_plural "days"
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "seconds"
+msgid_plural "seconds"
+msgstr[0] ""
+msgstr[1] ""
+
+#~ msgid "Finished"
+#~ msgstr "पूर्ण"
+
+#~ msgid "We would upload to this peer if they asked"
+#~ msgstr "पीयर द्वारा अनुरोध होने पर अपलोड होगा"
+
+#~ msgid "Dn Blocks"
+#~ msgstr "डाउनलोड खंड"
+
+#~ msgid "Up Blocks"
+#~ msgstr "अपलोड खंड"
+
+#~ msgid "We Cancelled"
+#~ msgstr "हमारे द्वारा रद्द"
+
+#~ msgid "They Cancelled"
+#~ msgstr "उनके द्वारा रद्द"
+
+#~ msgid "Have"
+#~ msgstr "प्राप्त"
+
+#~ msgid "Inhibiting desktop hibernation"
+#~ msgstr "डेस्कटॉप सुप्त न करें"
+
+#~ msgid "Allowing desktop hibernation"
+#~ msgstr "डेस्कटॉप सुप्त करना सक्रिय करें"
+
+#~ msgid "Open URL…"
+#~ msgstr "यूआरएल खोलें…"
+
+#~ msgid "Start all torrents"
+#~ msgstr "सभी टोरेंट आरंभ करें"
+
+#~ msgid "Pause all torrents"
+#~ msgstr "सभी टोरेंट रोकें"
+
+#~ msgid "Start torrent now"
+#~ msgstr "टोरेंट अभी आरंभ करें"
+
+#~ msgid "Copy _Magnet Link to Clipboard"
+#~ msgstr "मैग्नेट लिंक क्लिपबोर्ड पर कॉपी करें (_C)"
+
+#~ msgid "Enable Alternative Speed _Limits"
+#~ msgstr "वैकल्पिक गति सीमाएँ सक्रिय करें"
+
+#~ msgid "Torrent size:"
+#~ msgstr "टोरेंट आकार :"
+
+#~ msgid "_New"
+#~ msgstr "नया (_N)"
+
+#~ msgid "Source F_older:"
+#~ msgstr "स्रोत फोल्डर (_o):"
+
+#~ msgid "Source _File:"
+#~ msgstr "स्रोत फाइल (_F):"
+
+#~ msgid "P_ause"
+#~ msgstr "रोकें (_P)"
+
+#~ msgid "Keep _incomplete torrents in:"
+#~ msgstr "यहाँ अपूर्ण फाइलें संचित करें (_i):"
+
+#~ msgid "Call scrip_t when done downloading:"
+#~ msgstr "डाउनलोड पूर्ण होने पर यह स्क्रिप्ट निष्पादित करें (_t):"
+
+#~ msgid "_Port used for incoming connections:"
+#~ msgstr "आवक कनेक्शन उपयोग हेतु पोर्ट (_P):"
+
+#~ msgid "_Inhibit hibernation when torrents are active"
+#~ msgstr "टोरेंट सक्रिय होने पर सिस्टम सुप्त न करें (_I)"
+
+#~ msgid "Torrent _location:"
+#~ msgstr "टोरेंट स्थान (_l):"
 
 #~ msgid "I _Agree"
 #~ msgstr "मुझे स्वीकार है (_A)"

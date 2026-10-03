@@ -12,8 +12,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-01-04 14:15+0000\n"
+"Report-Msgid-Bugs-To: https://github.com/retransmission/retransmission/issues\n"
+"POT-Creation-Date: 2026-10-03 11:48-0500\n"
 "PO-Revision-Date: 2017-01-26 19:47+0000\n"
 "Last-Translator: Mike Gelfand <mikedld@mikedld.com>, 2025\n"
 "Language-Team: Japanese (https://app.transifex.com/transmissionbt/teams/33778/ja/)\n"
@@ -27,6 +27,9 @@ msgid "None"
 msgstr "なし"
 
 msgid "Inf"
+msgstr ""
+
+msgid "Another process is already using '{path}'."
 msgstr ""
 
 msgid "Couldn't read '{path}': {error} ({error_code})"
@@ -55,6 +58,9 @@ msgstr "以下から設定を再読み込み中「{path}」"
 
 msgid "Couldn't initialize daemon: {error} ({error_code})"
 msgstr "デーモンを初期化できません: {error} ({error_code})"
+
+msgid "Waiting for another process to release '{path}'"
+msgstr ""
 
 msgid "Loading settings from '{path}'"
 msgstr "以下から設定を読み込み中「{path}」"
@@ -103,8 +109,13 @@ msgid "Couldn't add duplicate torrent"
 msgid_plural "Couldn't add duplicate torrents"
 msgstr[0] "重複したトレントは追加できません"
 
+#, fuzzy
 msgid "A fast and easy BitTorrent client"
-msgstr "高速で簡単な BitTorrent クライアント"
+msgstr ""
+"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"高速で簡単な BitTorrent クライアント\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"高速でお手軽な BitTorrent クライアント"
 
 msgid "Copyright © The {appname} Project"
 msgstr "Copyright © The {appname} Project"
@@ -134,14 +145,24 @@ msgstr "稼働にかかわらずシードする"
 msgid "Stop seeding if idle for N minutes:"
 msgstr "N分のアイドル状態でシード停止:"
 
+#, fuzzy
 msgid "Queued for verification"
-msgstr "検証待ち"
+msgstr ""
+"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"検証待ち\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"検証の処理待ちに追加"
 
 msgid "Verifying local data"
 msgstr "取得済みのデータを検証中"
 
+#, fuzzy
 msgid "Queued for download"
-msgstr "ダウンロード待ち行列"
+msgstr ""
+"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"ダウンロード待ち行列\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"ダウンロードの処理待ちに追加"
 
 msgctxt "Verb"
 msgid "Downloading"
@@ -154,8 +175,10 @@ msgctxt "Verb"
 msgid "Seeding"
 msgstr "シード中"
 
-msgid "Finished"
-msgstr "完了"
+#, fuzzy
+#| msgid "Incomplete"
+msgid "Seeding complete"
+msgstr "未完了"
 
 msgid "Paused"
 msgstr "停止"
@@ -169,20 +192,35 @@ msgstr "混合"
 msgid "No Torrents Selected"
 msgstr "トレントファイルの選択なし"
 
+#, fuzzy
 msgid "Private to this tracker -- DHT and PEX disabled"
-msgstr "このトラッカーを非公開に -- DHT と PEX を無効化"
+msgstr ""
+"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"このトラッカーを非公開に -- DHT と PEX を無効化\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"このトラッカーは非公開 -- DHT と PEX を無効化"
 
 msgid "Public torrent"
 msgstr "公開トレント"
 
+#, fuzzy
 msgid "Created by {creator} on {date}"
-msgstr "作成 {creator} / 作成日 {date}"
+msgstr ""
+"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"作成 {creator} / 作成日 {date}\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"作成 {creator} / 作成日: {date}"
 
 msgid "Created by {creator}"
 msgstr "作成 {creator}"
 
+#, fuzzy
 msgid "Created on {date}"
-msgstr "{date} に作成"
+msgstr ""
+"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{date} に作成\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"作成日 {date}"
 
 msgid "Unknown"
 msgstr "不明"
@@ -202,11 +240,18 @@ msgstr "{current_size} ({percent_done}%)"
 msgid "{current_size} ({percent_done}% of {percent_available}% available)"
 msgstr "{current_size} ({percent_done}% / {percent_available}% 入手可能)"
 
+#, fuzzy, c-format
+#| msgid "{current_size} ({percent_done}% of {percent_available}% available; {unverified_size} unverified)"
 msgid "{current_size} ({percent_done}% of {percent_available}% available; {unverified_size} unverified)"
 msgstr "{current_size} ({percent_done}% / {percent_available}% 入手可能; {unverified_size} 未検証)"
 
+#, fuzzy
 msgid "{downloaded_size} (+{discarded_size} discarded after failed checksum)"
-msgstr "{downloaded_size} (+{discarded_size} をチェックサム失敗により破棄)"
+msgstr ""
+"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{downloaded_size} (+{discarded_size} をチェックサム失敗により破棄)\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{downloaded_size} (+{discarded_size} はチェックサムの失敗により破棄されました)"
 
 msgid "{uploaded_size} (Ratio: {ratio})"
 msgstr "{uploaded_size} (共有比: {ratio})"
@@ -226,20 +271,45 @@ msgstr "楽観的アンチョーク"
 msgid "Downloading from this peer"
 msgstr "このピアからダウンロード中"
 
+#, fuzzy
 msgid "We would download from this peer if they would let us"
-msgstr "許可されればこのピアからダウンロード可能"
+msgstr ""
+"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"許可されればこのピアからダウンロード可能\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"許可があればこのピアからダウンロード"
 
+#, fuzzy
 msgid "Uploading to peer"
-msgstr "ピアへのアップロード"
+msgstr ""
+"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"ピアへのアップロード\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"ピアにアップロード中"
 
-msgid "We would upload to this peer if they asked"
-msgstr "ピアから要求されればアップロード可能"
+#, fuzzy
+msgid "This peer would download from us if we would let them"
+msgstr ""
+"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"許可されればこのピアからダウンロード可能\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"許可があればこのピアからダウンロード"
 
+#, fuzzy
 msgid "Peer has unchoked us, but we're not interested"
-msgstr "ピアはこちらのチョークを解除しましたが影響はありません"
+msgstr ""
+"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"ピアはこちらのチョークを解除しましたが影響はありません\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"このピアをアンチョークしたがピアへの影響なし"
 
+#, fuzzy
 msgid "We unchoked this peer, but they're not interested"
-msgstr "このピアのチョークを解除したが、ピアはへの影響はありません"
+msgstr ""
+"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"このピアのチョークを解除したが、ピアはへの影響はありません\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"私はアンチョークだが大勢への影響なし"
 
 msgid "Encrypted connection"
 msgstr "暗号化接続"
@@ -253,13 +323,20 @@ msgstr "ピアを DHT 経由で発見"
 msgid "Peer is an incoming connection"
 msgstr "ピアが接続してきました"
 
+#, fuzzy
 msgid "Peer is connected over µTP"
-msgstr "ピアと µTP で接続しました"
+msgstr ""
+"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"ピアと µTP で接続しました\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"ピアに µTP を介して接続"
+
+msgid "Peer supports holepunch (BEP 55)"
+msgstr ""
 
 msgid "Address"
 msgstr "アドレス"
 
-#. % is percent done
 msgid "%"
 msgstr "%"
 
@@ -268,18 +345,6 @@ msgstr "ダウンロード要求"
 
 msgid "Up Reqs"
 msgstr "アップロード要求"
-
-msgid "Dn Blocks"
-msgstr "下りブロック"
-
-msgid "Up Blocks"
-msgstr "上りブロック"
-
-msgid "We Cancelled"
-msgstr "こちら側でキャンセルされました"
-
-msgid "They Cancelled"
-msgstr "相手側でキャンセルされました"
 
 msgid "Down"
 msgstr "下り"
@@ -296,63 +361,19 @@ msgstr "フラグ"
 msgid "Web Seeds"
 msgstr "ウェブシード"
 
-msgid "Got a list of {markup_begin}{peer_count} peer{markup_end} {time_span_ago}"
-msgid_plural "Got a list of {markup_begin}{peer_count} peers{markup_end} {time_span_ago}"
-msgstr[0] "リスト取得 {markup_begin}{peer_count}ピア{markup_end}{time_span_ago}"
-
-#. {markup_begin} and {markup_end} should surround the time_span
-msgid "Peer list request {markup_begin}timed out {time_span_ago}{markup_end}; will retry"
-msgstr " ピア一覧の要求が{markup_begin}タイムアウト {time_span_ago}{markup_end}; 再試行"
-
-#. {markup_begin} and {markup_end} should surround the error
-msgid "Got an error '{markup_begin}{error}{markup_end}' {time_span_ago}"
-msgstr "エラー取得「{markup_begin}{error}{markup_end}」{time_span_ago}"
-
-msgid "No updates scheduled"
-msgstr "更新の予定なし"
-
-msgid "Asking for more peers {time_span_from_now}"
-msgstr "ピア探索を要求 {time_span_from_now}"
-
-msgid "Queued to ask for more peers"
-msgstr "ピア探索の処理待ちに追加"
-
-#. {markup_begin} and {markup_end} should surround time_span_ago
-msgid "Asked for more peers {markup_begin}{time_span_ago}{markup_end}"
-msgstr "ピア探索を要求{markup_begin}{time_span_ago}{markup_end}"
-
-msgid "Tracker had {markup_begin}{seeder_count} {seeder_or_seeders} and {leecher_count} {leecher_or_leechers}{markup_end} {time_span_ago}"
-msgstr "以下を持つトラッカー: {markup_begin}{seeder_count} {seeder_or_seeders} と{leecher_count} {leecher_or_leechers}{markup_end} {time_span_ago}"
-
-msgid "seeder"
-msgid_plural "seeders"
-msgstr[0] "シーダー"
-
-msgid "leecher"
-msgid_plural "leechers"
-msgstr[0] "リーチャー"
-
-#. {markup_begin} and {markup_end} should surround the error text
-msgid "Got a scrape error '{markup_begin}{error}{markup_end}' {time_span_ago}"
-msgstr "スクレイプのエラー「{markup_begin}{error}{markup_end}」{time_span_ago}"
-
-msgid "Asking for peer counts in {time_span_from_now}"
-msgstr "ピア数を問い合わせ {time_span_from_now}後"
-
-msgid "Queued to ask for peer counts"
-msgstr "ピア数の確認の処理待ちに追加"
-
-msgid "Asked for peer counts {markup_begin}{time_span_ago}{markup_end}"
-msgstr "ピア数を問い合わせ {markup_begin}{time_span_ago}{markup_end}"
-
 msgid "{torrent_name} - Edit Trackers"
 msgstr "{torrent_name} - トラッカー編集"
 
 msgid "List contains invalid URLs"
 msgstr "リストに無効なURLが含まれています"
 
+#, fuzzy
 msgid "Please correct the errors and try again."
-msgstr "エラーを訂正し再度お試しください。"
+msgstr ""
+"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"エラーを訂正し再度お試しください。\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"エラーを修正し再度お試しください。"
 
 msgid "{torrent_name} - Add Tracker"
 msgstr "{torrent_name} - トラッカー追加"
@@ -367,44 +388,101 @@ msgid "Properties - {torrent_count:L} Torrent"
 msgid_plural "Properties - {torrent_count:L} Torrents"
 msgstr[0] "プロパティ― - {torrent_count:L} トレント"
 
+#, fuzzy
 msgid "Remove torrent?"
-msgstr "{count:L} 個のトレントを削除しますか？"
+msgstr ""
+"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{count:L} 個のトレントを削除しますか？\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"トレントを除去しますか？"
 
+#, fuzzy
+msgid "Delete this torrent's downloaded files?"
+msgstr ""
+"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"これら{count:L}個のトレントのダウンロード済みファイルを削除します？\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"このトレントとダウンロード済みファイルを削除しますか？"
+
+#, fuzzy
 msgid "Remove {count:L} torrent?"
 msgid_plural "Remove {count:L} torrents?"
-msgstr[0] "{count:L} 個のトレントを削除しますか？"
+msgstr[0] ""
+"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{count:L} 個のトレントを削除しますか？\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{count:L} トレントを除去しますか？"
 
-msgid "Delete this torrent's downloaded files?"
-msgstr "これら{count:L}個のトレントのダウンロード済みファイルを削除します？"
-
+#, fuzzy
 msgid "Delete this {count:L} torrent's downloaded files?"
 msgid_plural "Delete these {count:L} torrents' downloaded files?"
-msgstr[0] "これら{count:L}個のトレントのダウンロード済みファイルを削除します？"
+msgstr[0] ""
+"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"これら{count:L}個のトレントのダウンロード済みファイルを削除します？\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"これら {count:L} トレントのダウンロード済みファイルを削除しますか？"
 
-msgid "Once removed, continuing the transfer will require the torrent file or magnet link."
-msgid_plural "Once removed, continuing the transfers will require the torrent files or magnet links."
-msgstr[0] "一度削除してから転送を続けるには、トレントファイルかマグネットリンクが必要になります。"
+#, fuzzy
+#| msgid "Once removed, continuing the transfer will require the torrent file or magnet link."
+#| msgid_plural "Once removed, continuing the transfers will require the torrent files or magnet links."
+msgid "Once removed, you'll need the torrent file or magnet link to add it again."
+msgstr "一度削除してから転送を続けるには、トレントファイルかマグネットリンクが必要になります。"
+
+#, fuzzy
+#| msgid "Once removed, continuing the transfers will require the torrent files or magnet links."
+msgid "Once removed, you'll need the torrent files or magnet links to add them again."
+msgstr "一度削除してから転送を続けたい場合、トレントファイルかマグネットリンクが必要です。"
 
 msgid "This torrent has not finished downloading."
 msgstr "このトレントはダウンロードが完了していません。"
 
+#, fuzzy
 msgid "These torrents have not finished downloading."
-msgstr "このトレントはダウンロードが完了していません。"
+msgstr ""
+"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"このトレントはダウンロードが完了していません。\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"これらのトレントはダウンロードが完了していません。"
 
+#, fuzzy
 msgid "This torrent is connected to peers."
-msgstr "このトレントはピアに接続しています。"
+msgstr ""
+"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"このトレントはピアに接続しています。\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"このトレントはピアに接続されています。"
 
+#, fuzzy
 msgid "These torrents are connected to peers."
-msgstr "このトレントはピアに接続しています。"
+msgstr ""
+"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"このトレントはピアに接続しています。\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"これらのトレントはピアに接続されています。"
 
+#, fuzzy
 msgid "One of these torrents is connected to peers."
-msgstr "これらのトレントの一部はピアに接続しています。"
+msgstr ""
+"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"これらのトレントの一部はピアに接続しています。\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"これらのトレントの1つがピアに接続されています。"
 
+#, fuzzy
 msgid "Some of these torrents are connected to peers."
-msgstr "これらのトレントの一部はピアに接続しています。"
+msgstr ""
+"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"これらのトレントの一部はピアに接続しています。\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"これらのトレントの一部がピアに接続されています。"
 
+#, fuzzy
 msgid "One of these torrents has not finished downloading."
-msgstr "これらのトレントの一部はダウンロードが完了していません。"
+msgstr ""
+"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"これらのトレントの一部はダウンロードが完了していません。\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"これらのトレントの1つはダウンロードが完了していません。"
 
 msgid "Some of these torrents have not finished downloading."
 msgstr "これらのトレントの一部はダウンロードが完了していません。"
@@ -415,8 +493,16 @@ msgstr "キャンセル(_C)"
 msgid "_Delete"
 msgstr "削除(_D)"
 
+#. Removes the torrent from the list and keeps its downloaded files
+#, fuzzy
 msgid "_Remove"
-msgstr "削除(_R)"
+msgstr ""
+"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"削除(_R)\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"削除(_R)\n"
+"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"除去(_R)"
 
 msgid "High"
 msgstr "高"
@@ -436,8 +522,8 @@ msgstr "名前"
 msgid "Size"
 msgstr "サイズ"
 
-msgid "Have"
-msgstr "所有"
+msgid "Progress"
+msgstr "進行"
 
 msgid "Download"
 msgstr "ダウンロード"
@@ -467,6 +553,24 @@ msgstr " {count:L}個の表示(_S):"
 msgid "{disk_space} free"
 msgstr "{disk_space} の空き"
 
+msgid "Where to look for configuration files"
+msgstr "設定ファイルを探す場所"
+
+msgid "Start with all torrents paused"
+msgstr "停止したトレントをすべて再開"
+
+msgid "Start minimized in notification area"
+msgstr "通知領域に最小化した状態で起動"
+
+msgid "Show version number and exit"
+msgstr "バージョンを表示して終了"
+
+msgid "[torrent files or urls]"
+msgstr "[トレントファイルか URL]"
+
+msgid "Run '{program} --help' to see a full list of available command line options.\n"
+msgstr "「{program} --help」の実行で、コマンドラインのオプションの完全な一覧を表示します。\n"
+
 msgid ""
 "Click to disable Alternative Speed Limits\n"
 " ({download_speed} down, {upload_speed} up)"
@@ -481,8 +585,13 @@ msgstr ""
 "クリックで第二の速度制限を有効\n"
 " ({download_speed} ダウン, {upload_speed} アップ)"
 
+#, fuzzy
 msgid "Unlimited"
-msgstr "制限なし"
+msgstr ""
+"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"制限なし\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"無制限"
 
 msgid "Seed Forever"
 msgstr "常にシードする"
@@ -499,28 +608,33 @@ msgstr "この共有比でシード停止"
 msgid "Stop at Ratio ({ratio})"
 msgstr "この共有比で停止 ({ratio})"
 
+#, fuzzy
 msgid "Total Ratio"
-msgstr "全体比率"
+msgstr ""
+"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"全体比率\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"総比率"
 
 msgid "Session Ratio"
 msgstr "セッション比率"
 
+#, fuzzy
 msgid "Total Transfer"
-msgstr "全体転送"
+msgstr ""
+"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"全体転送\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"総転送"
 
 msgid "Session Transfer"
 msgstr "セッション転送"
 
+msgid "Down: {downloaded_size}, Up: {uploaded_size}"
+msgstr "下り: {downloaded_size}, 上り: {uploaded_size}"
+
 msgid "Ratio: {ratio}"
 msgstr "共有比: {ratio}"
-
-msgctxt "current session totals"
-msgid "Down: {downloaded_size}, Up: {uploaded_size}"
-msgstr "ダウン: {downloaded_size}, アップ: {uploaded_size}"
-
-msgctxt "all-time totals"
-msgid "Down: {downloaded_size}, Up: {uploaded_size}"
-msgstr "ダウン: {downloaded_size}, アップ: {uploaded_size}"
 
 msgid "{download_speed} ▾"
 msgstr "{download_speed} ▾"
@@ -578,6 +692,11 @@ msgstr "時間"
 msgid "Couldn't create proxy for '{bus}': {error} ({error_code})"
 msgstr "以下用のプロキシを作成できません「{bus}」: {error} ({error_code})"
 
+#, fuzzy
+#| msgid "Couldn't save '{path}': {error} ({error_code})"
+msgid "Couldn't spawn async process \"'{command}'\": {error} ({error_code})"
+msgstr "保存できませんでした「{path}」: {error} ({error_code})"
+
 msgid "Open File"
 msgstr "ファイルを開く"
 
@@ -590,8 +709,13 @@ msgstr "トレントが完了"
 msgid "Start Now"
 msgstr "すぐ開始"
 
+#, fuzzy
 msgid "Torrent Added"
-msgstr "トレントが追加されました"
+msgstr ""
+"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"トレントが追加されました\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"追加したトレント"
 
 msgid "Torrent files"
 msgstr "トレントファイル"
@@ -608,8 +732,11 @@ msgstr "開く(_O)"
 msgid "Show options dialog"
 msgstr "オプションダイアログを表示"
 
-msgid "Select a File"
-msgstr "ファイルを選択"
+msgid "Other…"
+msgstr ""
+
+msgid "Select File"
+msgstr "ファイルの選択"
 
 msgid "(None)"
 msgstr "(なし)"
@@ -642,8 +769,13 @@ msgstr "ブロックリストを更新しました !"
 msgid "Couldn't update blocklist"
 msgstr "ブロックリストを更新できません"
 
+#, fuzzy
 msgid "Getting new blocklist…"
-msgstr "新しいブロックリストを取得中…"
+msgstr ""
+"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"新しいブロックリストを取得中…\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"新しいブロックリストを取得…"
 
 msgctxt "Port test status"
 msgid "unknown"
@@ -680,26 +812,25 @@ msgstr "トレントを移動できません"
 msgid "This may take a moment…"
 msgstr "作業には数分かかる場合があります…"
 
+#, fuzzy
+#| msgid "Couldn't watch '{path}': {error} ({error_code})"
+msgid "Couldn't open watchdir '{dirname}': {error} ({error_code})"
+msgstr "以下を監視できません「{path}」: {error} ({error_code})"
+
 msgid "Couldn't read '{path}'"
 msgstr "読み込めません「{path}」"
-
-#. logging
-msgid "Inhibiting desktop hibernation"
-msgstr "デスクトップの休止状態を抑制中"
-
-msgid "Couldn't inhibit desktop hibernation: {error}"
-msgstr "デスクトップの休止状態を抑制できませんでした: {error}"
-
-#. logging
-msgid "Allowing desktop hibernation"
-msgstr "デスクトップの休止状態を許可中"
 
 msgid "Couldn't find pending RPC request for id {id}"
 msgstr ""
 
+#, fuzzy
 msgid "Started {count:L} time"
 msgid_plural "Started {count:L} times"
-msgstr[0] " {count:L} 回起動"
+msgstr[0] ""
+"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
+" {count:L} 回起動\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{count:L} 回起動"
 
 msgid "Reset your statistics?"
 msgstr "統計を初期化しますか?"
@@ -710,12 +841,19 @@ msgstr "初期化(_R)"
 msgid "These statistics are for your information only. Resetting them doesn't affect the statistics logged by your BitTorrent trackers."
 msgstr "これらの統計はあなたに関する情報のみです。これの統計を初期化してもあなたのBitTorrentのトラッカーで記録した統計には影響を及ぼしません。"
 
+msgid "_Show {appname}"
+msgstr "{appname} ウインドウを表示(_S)"
+
 msgid "{upload_speed} ▴ {download_speed} ▾"
 msgstr "{upload_speed} ▴ {download_speed} ▾"
 
-#, no-c-format
+#, fuzzy, no-c-format
 msgid "Verifying local data ({percent_done}% tested)"
-msgstr "取得済みのデータを検証中 ({percent_done}%)"
+msgstr ""
+"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"取得済みのデータを検証中 ({percent_done}%)\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"取得済みのデータを検証中 ({percent_done}% 済み)"
 
 msgid "{current_size} of {complete_size} ({percent_done}%)"
 msgstr "{current_size} / {complete_size} ({percent_done}%)"
@@ -723,15 +861,26 @@ msgstr "{current_size} / {complete_size} ({percent_done}%)"
 msgid "{current_size} of {complete_size} ({percent_complete}%), uploaded {uploaded_size} (Ratio: {ratio}, Goal: {seed_ratio})"
 msgstr "{current_size} / {complete_size} ({percent_complete}%), アップ済み {uploaded_size} (共有比: {ratio}, 目標: {seed_ratio})"
 
+#, fuzzy
 msgid "{current_size} of {complete_size} ({percent_complete}%), uploaded {uploaded_size} (Ratio: {ratio})"
-msgstr "{current_size} / {complete_size} ({percent_complete}%), アップ済み{uploaded_size} (共有比: {ratio})"
+msgstr ""
+"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{current_size} / {complete_size} ({percent_complete}%), アップ済み{uploaded_size} (共有比: {ratio})\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{current_size} / {complete_size} ({percent_complete}%), アップ済み {uploaded_size} (共有比: {ratio})"
 
 msgid "{complete_size}, uploaded {uploaded_size} (Ratio: {ratio}, Goal: {seed_ratio})"
 msgstr "{complete_size}, アップ済み{uploaded_size} (共有比: {ratio}, 目標: {seed_ratio})"
 
+#, fuzzy
 msgid "{complete_size}, uploaded {uploaded_size} (Ratio: {ratio})"
-msgstr "{complete_size}, アップ済み{uploaded_size} (共有比: {ratio})"
+msgstr ""
+"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{complete_size}, アップ済み{uploaded_size} (共有比: {ratio})\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{complete_size}, アップ済み {uploaded_size} (共有比: {ratio})"
 
+#. Translators: Second (optional) part of torrent progress string
 msgid "Remaining time unknown"
 msgstr "残り時間不明"
 
@@ -744,7 +893,9 @@ msgstr "停滞"
 msgid "Tracker warning: '{warning}'"
 msgstr "トラッカーの警告:「{warning}」"
 
-msgid "Tracker Error: '{error}'"
+#, fuzzy
+#| msgid "Tracker Error: '{error}'"
+msgid "Tracker error: '{error}'"
 msgstr "トラッカーエラー:「{error}」"
 
 msgid "Local error: '{error}'"
@@ -763,13 +914,1066 @@ msgid "Downloading from {active_count} webseed"
 msgid_plural "Downloading from {active_count} webseeds"
 msgstr[0] "ダウンロード中, {active_count} 個のウェブシードから"
 
+#, fuzzy
 msgid "Downloading from {active_count} of {connected_count} connected peer"
 msgid_plural "Downloading from {active_count} of {connected_count} connected peers"
-msgstr[0] "ダウンロード中, 全 {connected_count} 中  {active_count} 個の接続済みピアから"
+msgstr[0] ""
+"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"ダウンロード中, 全 {connected_count} 中  {active_count} 個の接続済みピアから\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"ダウンロード中, {connected_count} 中 {active_count} の接続ピア"
 
+#, fuzzy
 msgid "Seeding to {active_count} of {connected_count} connected peer"
 msgid_plural "Seeding to {active_count} of {connected_count} connected peers"
-msgstr[0] "シード中, 全 {connected_count} 中 {active_count} 個の接続済みピアへ"
+msgstr[0] ""
+"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"シード中, 全 {connected_count} 中 {active_count} 個の接続済みピアへ\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{connected_count} 中 {active_count} の接続ピアにシード中"
+
+msgid "Retransmission"
+msgstr "Retransmission"
+
+msgid "BitTorrent Client"
+msgstr "BitTorrent クライアント"
+
+msgid "Download and share files over BitTorrent"
+msgstr "BitTorrent を通じてファイルのダウンロードと共有"
+
+#. Translators: Search terms to find this application. Do NOT translate or localize the semicolons! The list MUST also end with a semicolon!
+msgid "torrents;downloading;uploading;share;sharing;"
+msgstr "トレント;ダウンロード中;アップロード中;共有;共有中;"
+
+msgid "Start Retransmission with All Torrents Paused"
+msgstr "全トレントを停止状態で Retransmission を起動"
+
+msgid "Start Retransmission Minimized"
+msgstr "最小化して Retransmission を起動"
+
+#, fuzzy
+#| msgid "Copyright © The Retransmission Project"
+msgid "The Retransmission Project"
+msgstr "Copyright © The Retransmission Project"
+
+#. Translators: these are the application description paragraphs in the MetaInfo file.
+msgid "BitTorrent is a peer-to-peer file-sharing protocol that is commonly used to distribute large amounts of data between multiple users."
+msgstr ""
+
+msgid "Retransmission is a BitTorrent client with an easy-to-use interface on top of a cross-platform backend. Native interfaces are available for macOS, Linux, and Windows, as well as command line binaries and a web GUI."
+msgstr ""
+
+msgid "Notable features of Retransmission include support for Local Peer Discovery, encryption, DHT, µTP, PEX and Magnet links."
+msgstr ""
+
+msgid "Main window, showing an ongoing download of Fedora Workstation"
+msgstr ""
+
+msgid "_File"
+msgstr "ファイル(_F)"
+
+#, fuzzy
+msgid "Open _URL…"
+msgstr ""
+"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"URLを開く(_U)…\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"URL を開く(_U)"
+
+#, fuzzy
+msgid "_New…"
+msgstr ""
+"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"新規(_N)…\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"新規(_N)"
+
+#, fuzzy
+msgid "_Start All"
+msgstr ""
+"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"すべてを開始(_S)\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"すべて開始(_S)"
+
+msgid "_Pause All"
+msgstr "すべて停止(_P)"
+
+msgid "_Quit"
+msgstr "終了(_Q)"
+
+msgid "_Edit"
+msgstr "編集(_E)"
+
+msgid "Select _All"
+msgstr "すべて選択(_A)"
+
+msgid "Dese_lect All"
+msgstr "すべて選択解除(_L)"
+
+#, fuzzy
+msgid "_Preferences"
+msgstr ""
+"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"環境設定(_P)\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"設定(_P)"
+
+msgid "_Torrent"
+msgstr "トレント(_T)"
+
+msgid "_Properties"
+msgstr "プロパティ(_P)"
+
+msgid "Open Fold_er"
+msgstr "フォルダを開く(_E)"
+
+msgid "_Start"
+msgstr "開始(_S)"
+
+msgid "Start _Now"
+msgstr "すぐに開始(_N)"
+
+#, fuzzy
+msgid "Ask Tracker for _More Peers"
+msgstr ""
+"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"トラッカーにピア増加を要求(_M)\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"トラッカーからピアを増加(_M)"
+
+#, fuzzy
+#| msgid "Queue"
+msgid "_Queue"
+msgstr "待ち行列"
+
+#, fuzzy
+msgid "Move to _Top"
+msgstr ""
+"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"先頭に移動(_T)\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"先頭へ(_T)"
+
+#, fuzzy
+msgid "Move _Up"
+msgstr ""
+"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"上に移動(_U)\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"ひとつ上へ(_U)"
+
+#, fuzzy
+msgid "Move _Down"
+msgstr ""
+"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"下に移動(_D)\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"ひとつ下へ(_D)"
+
+#, fuzzy
+msgid "Move to _Bottom"
+msgstr ""
+"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"末尾に移動(_B)\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"最後へ(_B)"
+
+#, fuzzy
+msgid "_Pause"
+msgstr ""
+"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"中断(_P)\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"停止(_P)"
+
+#, fuzzy
+msgid "Set _Location…"
+msgstr ""
+"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"場所を設定する(_L)…\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"場所の設定(_L)"
+
+#, fuzzy
+msgid "_Verify Local Data"
+msgstr ""
+"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"ローカルデータを検証(_V)\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"取得データを検証(_V)"
+
+msgid "_Copy Magnet Link to Clipboard"
+msgstr "マグネットリンクをコピー(_C)"
+
+#, fuzzy
+msgid "_Delete Files and Remove"
+msgstr ""
+"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"ファイルの削除(_D)\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"除去とファイルの削除(_R)"
+
+msgid "_View"
+msgstr "表示(_V)"
+
+msgid "_Compact View"
+msgstr "コンパクト表示(_C)"
+
+msgid "_Toolbar"
+msgstr "ツールバー(_T)"
+
+#, fuzzy
+msgid "_Filterbar"
+msgstr ""
+"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"フィルターバー(_F)\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"絞り込みバー(_F)"
+
+msgid "_Statusbar"
+msgstr "ステータスバー(_S)"
+
+#, fuzzy
+msgid "Sort by _Activity"
+msgstr ""
+"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"稼働順に並び替え(_A)\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"稼働順(_A)"
+
+#, fuzzy
+msgid "Sort by A_ge"
+msgstr ""
+"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"追加順に並び替え(_G)\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"登録日時順(_G)"
+
+#, fuzzy
+msgid "Sort by _Name"
+msgstr ""
+"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"名前順に並び替え(_N)\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"名前順(_N)"
+
+#, fuzzy
+msgid "Sort by _Progress"
+msgstr ""
+"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"進行率順に並び替え(_P)\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"進行率順(_P)"
+
+#, fuzzy
+msgid "Sort by _Queue"
+msgstr ""
+"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"処理待ち順に並び替え(_Q)\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"処理待ち順(_Q)"
+
+#, fuzzy
+msgid "Sort by Rati_o"
+msgstr ""
+"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"共有比順に並び替え(_O)\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"共有比順(_O)"
+
+#, fuzzy
+msgid "Sort by Si_ze"
+msgstr ""
+"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"サイズ順に並び替え(_Z)\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"サイズ順(_Z)"
+
+#, fuzzy
+msgid "Sort by Stat_e"
+msgstr ""
+"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"状態順に並び替え(_E)\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"状態順(_E)"
+
+#, fuzzy
+msgid "Sort by Time _Left"
+msgstr ""
+"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"残り時間順に並び替え(_L)\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"残り時間順(_L)"
+
+#, fuzzy
+msgid "Re_verse Sort Order"
+msgstr ""
+"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"逆順に並び替え(_V)\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"順序を逆に(_V)"
+
+msgid "_Help"
+msgstr "ヘルプ(_H)"
+
+msgid "Message _Log"
+msgstr "メッセージログ(_L)"
+
+#, fuzzy
+msgid "_Statistics"
+msgstr ""
+"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"統計データ(_S)\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"統計(_S)"
+
+#, fuzzy
+msgid "_Donate"
+msgstr ""
+"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"寄付(_D)\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"寄付する(_D)"
+
+#, fuzzy
+msgid "_Contents"
+msgstr ""
+"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"コンテンツ(_C)\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"オンライン文書(_C)"
+
+msgid "_About"
+msgstr "バージョン情報(_A)"
+
+#, fuzzy
+#| msgid "Start torrent"
+msgid "_Sort Torrents By"
+msgstr "トレントを開始"
+
+#, fuzzy
+msgid "Alternative Speed _Limits"
+msgstr ""
+"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"一時的な速度制限\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"第二の速度制限"
+
+msgid "_Add"
+msgstr "追加(_A)"
+
+msgid "Tracker"
+msgstr "トラッカー"
+
+msgid "_Announce URL:"
+msgstr "アナウンスURL(_A):"
+
+msgid "_Close"
+msgstr "閉じる(_C)"
+
+msgid "Activity"
+msgstr "稼働状況"
+
+msgid "Size:"
+msgstr "サイズ:"
+
+msgid "Have:"
+msgstr "所有:"
+
+#, fuzzy
+msgid "Uploaded:"
+msgstr ""
+"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"アップロード済:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"アップロード済み:"
+
+#, fuzzy
+msgid "Downloaded:"
+msgstr ""
+"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"ダウンロード済:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"ダウンロード済み:"
+
+msgid "State:"
+msgstr "状態:"
+
+msgid "Running time:"
+msgstr "実行時間:"
+
+msgid "Remaining time:"
+msgstr "残り時間:"
+
+#, fuzzy
+msgid "Last activity:"
+msgstr ""
+"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"最終稼働時間:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"最終稼働時間;"
+
+msgid "Error:"
+msgstr "エラー:"
+
+msgid "Details"
+msgstr "詳細"
+
+msgid "Location:"
+msgstr "場所:"
+
+msgid "Hash:"
+msgstr "ハッシュ:"
+
+msgid "Privacy:"
+msgstr "プライバシー:"
+
+#, fuzzy
+msgid "Origin:"
+msgstr ""
+"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"作成:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"起源:"
+
+msgid "Added:"
+msgstr "追加日時:"
+
+msgid "Comment:"
+msgstr "コメント:"
+
+msgid "Information"
+msgstr "情報"
+
+#, fuzzy
+msgid "Show _more details"
+msgstr ""
+"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"詳細を表示(_M)\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"詳細表示(_M)"
+
+msgid "Peers"
+msgstr "ピア"
+
+#, fuzzy
+msgid "Show _backup trackers"
+msgstr ""
+"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"代替トラッカーを表示(_B)\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"バックアップトラッカーを表示(_B)"
+
+msgid "File listing not available for combined torrent properties"
+msgstr "ファイル一覧は結合したトレントのプロパティでは使用できません"
+
+msgid "Files"
+msgstr "ファイル"
+
+msgid "Speed"
+msgstr "速度"
+
+#, fuzzy
+msgid "Honor global _limits"
+msgstr ""
+"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"速度制限の全体設定に従う(_L)\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"速度制限の全体設定を尊重(_L)"
+
+msgid "Limit _download speed ({speed_units}):"
+msgstr "ダウンロード速度の制限(_D) ({speed_units}):"
+
+msgid "Limit _upload speed ({speed_units}):"
+msgstr "アップロード速度の制限(_U) ({speed_units}):"
+
+#, fuzzy
+msgid "Torrent _priority:"
+msgstr ""
+"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"トレントの優先度(_P):\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"トレントの優先度 (_P):"
+
+#, fuzzy
+msgid "Seeding Limits"
+msgstr ""
+"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"シードの上限\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"シード制限"
+
+msgid "_Ratio:"
+msgstr "共有比(_R):"
+
+#, fuzzy
+msgid "_Idle:"
+msgstr ""
+"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"アイドル状態(_I):\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"アイドル(_I):"
+
+#, fuzzy
+msgid "Peer Connections"
+msgstr ""
+"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"ピアとの接続\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"ピア接続"
+
+#, fuzzy
+msgid "_Maximum peers:"
+msgstr ""
+"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"ピア最大数(_M):\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"最大ピア数(_M):"
+
+msgid "Options"
+msgstr "オプション"
+
+msgid "Tracker Announce URLs"
+msgstr "トラッカーのアナウンスURL"
+
+msgid ""
+"To add a backup URL, add it on the next line after a primary URL.\n"
+"To add a new primary URL, add it after a blank line."
+msgstr ""
+"代替URLを追加するときは、プライマリURLの次の行に追加してください。\n"
+"新しいプライマリURLを追加するときは、空白行を挟んで追加してください。"
+
+msgid "Also see Default Public Trackers in Edit > Preferences > Network"
+msgstr "編集 > 設定 > ネットワークから、標準の公開トラッカーも参照"
+
+msgid "Open a torrent"
+msgstr "トレントを開く"
+
+msgid "Start torrent"
+msgstr "トレントを開始"
+
+#, fuzzy
+msgid "Pause torrent"
+msgstr ""
+"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"トレントを一時停止\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"トレントを停止"
+
+#, fuzzy
+msgid "Remove torrent"
+msgstr ""
+"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"トレントを削除\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"トレントを除去"
+
+msgid "Torrent properties"
+msgstr "トレントのプロパティ"
+
+msgid "Torrent"
+msgstr "トレント"
+
+msgid "Statistics"
+msgstr "統計情報"
+
+msgid "New Torrent"
+msgstr "新規トレント"
+
+#, fuzzy
+#| msgid "C_redits"
+msgid "C_reate"
+msgstr "クレジット(_R)"
+
+msgid "Sa_ve to:"
+msgstr "保存先(_V):"
+
+msgid "Source f_older:"
+msgstr "対象フォルダー(_O):"
+
+msgid "Source _file:"
+msgstr "対象ファイル(_F):"
+
+#, fuzzy
+#| msgid "Piece size:"
+msgid "Piece si_ze:"
+msgstr "ピースの大きさ:"
+
+msgid "Properties"
+msgstr "プロパティ"
+
+#, fuzzy
+msgid "_Trackers:"
+msgstr ""
+"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"トラッカー(_T):\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"トラッカー(_T);"
+
+msgid "Co_mment:"
+msgstr "コメント(_M):"
+
+msgid "_Source:"
+msgstr "入力元(_S):"
+
+msgid "_Private torrent"
+msgstr "非公開トレント(_P)"
+
+msgid "Creating torrent…"
+msgstr "トレントを作成中…"
+
+msgid "Message Log"
+msgstr "メッセージログ"
+
+msgid "Save _As"
+msgstr "名前を付けて保存(_A)"
+
+msgid "Clear"
+msgstr "初期化"
+
+msgid "Level"
+msgstr "対象"
+
+msgid "Torrent Options"
+msgstr "トレントのオプション"
+
+msgid "_Torrent file:"
+msgstr "トレントファイル(_T):"
+
+msgid "Select Source File"
+msgstr "対象ファイルの選択"
+
+#, fuzzy
+msgid "_Destination folder:"
+msgstr ""
+"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"保存先フォルダ(_D):\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"保存フォルダ(_D):"
+
+msgid "Select Destination Folder"
+msgstr "保存先フォルダの選択"
+
+msgid "_Start when added"
+msgstr "追加と共に開始(_S)"
+
+#, fuzzy
+#| msgid "Mo_ve torrent file to the trash"
+msgid "Mo_ve torrent file to the Trash"
+msgstr ".torrent ファイルをごみ箱へ(_V)"
+
+#, fuzzy
+msgid "{appname} Preferences"
+msgstr ""
+"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{appname} 設定\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{appname} の設定"
+
+msgid "Speed Limits"
+msgstr "速度制限"
+
+#. Checkbox to limit upload speed
+msgid "_Upload ({speed_units}):"
+msgstr "アップロード(_U) ({speed_units}):"
+
+#. Checkbox to limit download speed
+msgid "_Download ({speed_units}):"
+msgstr "ダウンロード(_D) ({speed_units}):"
+
+#, fuzzy
+msgid "Alternative Speed Limits"
+msgstr ""
+"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"一時的な速度制限\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"第二の速度制限"
+
+msgid "Override normal speed limits manually or at scheduled times"
+msgstr "手動または予定表に従い速度制限を切り替え"
+
+#. Labels a spinbutton for alternate upload speed limits
+msgid "U_pload ({speed_units}):"
+msgstr "アップロード(_P) ({speed_units}):"
+
+#. Labels a spinbutton for alternate download speed limits
+msgid "Do_wnload ({speed_units}):"
+msgstr "ダウンロード(_W) ({speed_units}):"
+
+msgid "_Scheduled times:"
+msgstr "予定時刻(_S):"
+
+#, fuzzy
+msgid "_On days:"
+msgstr ""
+"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"日(_O):\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"曜日(_O)"
+
+#. Label goes between two time selectors, e.g. "limit speeds from [time] to [time]"
+#, fuzzy
+msgid "_to"
+msgstr ""
+"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"から(_T)\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"から"
+
+msgctxt "Gerund"
+msgid "Adding"
+msgstr "追加中"
+
+msgid "Automatically add torrent files _from:"
+msgstr "ここのトレントファイルを自動追加(_F):"
+
+#, fuzzy
+msgid "Show the Torrent Options _dialog"
+msgstr ""
+"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"トレントのオプションダイアログを表示(_D)\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"トレントオプションダイアログを表示(_D)"
+
+msgid "_Start added torrents"
+msgstr "追加したトレントを開始(_S)"
+
+#, fuzzy
+#| msgid "Save to _Location:"
+msgid "Save to _location:"
+msgstr "保存先フォルダ(_L):"
+
+msgid "Download Queue"
+msgstr "ダウンロード待ち行列"
+
+#, fuzzy
+msgid "Ma_ximum active downloads:"
+msgstr ""
+"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"最大稼働ダウンロード数:\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"最大稼働ダウンロード数(_X):"
+
+msgid "Downloads sharing data in the last _N minutes are active:"
+msgstr "最終稼働からN分間の共有データをダウンロード(_N)"
+
+msgid "Incomplete"
+msgstr "未完了"
+
+msgid "Append \"._part\" to incomplete files' names"
+msgstr "未完了のファイル名に .part を付加(_P)"
+
+msgid "Keep _incomplete files in:"
+msgstr "未完了ファイルの保存先(_I):"
+
+#, fuzzy
+#| msgid "Call scrip_t when downloading is completed:"
+msgid "Call scrip_t when download completes:"
+msgstr "ダウンロード完了時に呼ぶスクリプト(_T):"
+
+#, fuzzy
+#| msgid "Call scrip_t when downloading is completed:"
+msgid "Verify data when download completes"
+msgstr "ダウンロード完了時に呼ぶスクリプト(_T):"
+
+msgctxt "Gerund"
+msgid "Downloading"
+msgstr "ダウンロード"
+
+msgid "Limits"
+msgstr "制限"
+
+msgid "Stop seeding at _ratio:"
+msgstr "この共有比でシード停止(_R):"
+
+msgid "Stop seeding if idle for _N minutes:"
+msgstr "N分のアイドル状態でシード停止(_N):"
+
+msgid "Call scrip_t when done seeding:"
+msgstr "シード完了時に呼ぶスクリプト(_T):"
+
+msgctxt "Gerund"
+msgid "Seeding"
+msgstr "シード"
+
+msgid "Privacy"
+msgstr "プライバシー"
+
+msgid "_Encryption mode:"
+msgstr "暗号化の条件(_E):"
+
+msgid "Blocklist"
+msgstr "ブロックリスト"
+
+msgid "Enable _blocklist:"
+msgstr "ブロックリストを使用(_B):"
+
+#, fuzzy
+#| msgid "Enable _automatic updates"
+msgid "_Automatically update weekly"
+msgstr "自動更新する(_A)"
+
+msgid "_Update"
+msgstr "更新(_U)"
+
+msgid "Listening Port"
+msgstr "待ち受けポート"
+
+msgid "_Port for incoming connections:"
+msgstr "応答接続用ポート(_P):"
+
+#, fuzzy
+#| msgid "Pick a _random port every time Transmission is started"
+msgid "Pick a _random port at startup"
+msgstr "Transmission の起動ごとにランダムにポートを変更(_R)"
+
+#, fuzzy
+msgid "Use UPnP or NAT-PMP port _forwarding from my router"
+msgstr ""
+"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"UPnP か NAT-PMP にて自分のルーターのポート転送を使用(_F)\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"UPnP か NAT-PMP にて自分のルータのポート転送を使用(_F)"
+
+msgid "Te_st Port"
+msgstr "ポートのテスト(_S)"
+
+msgid "Peer Limits"
+msgstr "ピア制限"
+
+#, fuzzy
+#| msgid "Maximum peers per _torrent:"
+msgid "Maximum peers for new _torrents:"
+msgstr "トレントごとの最大ピア数(_T):"
+
+msgid "Maximum peers _overall:"
+msgstr "全体での最大ピア数(_O):"
+
+msgid "Enable µ_TP for peer connections"
+msgstr "ピア接続に µTP を使用(_T)"
+
+msgid "µTP is a tool for reducing network congestion."
+msgstr "µTP はネットワークの混雑を緩和するツールです。"
+
+#, fuzzy
+#| msgid "Use PE_X to find more peers"
+msgid "Use PE_X to find more peers for public torrents"
+msgstr "PEX でより多くのピアを探す(_X)"
+
+#, fuzzy
+msgid "PEX is a tool for exchanging peer lists with the peers you're connected to."
+msgstr ""
+"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"PEX は、ピアのリストを接続中のピアとで交換するツールです。\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"PEX は、接続中のピア同士でピア一覧を交換するツールです。"
+
+#, fuzzy
+#| msgid "Use _DHT to find more peers"
+msgid "Use _DHT to find more peers for public torrents"
+msgstr "DHT でより多くのピアを探す(_D)"
+
+#, fuzzy
+msgid "DHT is a tool for finding peers without a tracker."
+msgstr ""
+"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"DHTはトラッカーを介さずにピアを見つけるツールです。\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"DHT は、トラッカーなしでピアを探すツールです。"
+
+#, fuzzy
+#| msgid "Use _Local Peer Discovery to find more peers"
+msgid "Use _Local Peer Discovery to find more peers for public torrents"
+msgstr "ローカルピア探索でより多くのピアを探す(_L)"
+
+#, fuzzy
+msgid "LPD is a tool for finding peers on your local network."
+msgstr ""
+"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"LPD はローカル・ネットワーク上のピアを検索するツールです。\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"LPD は、あなたのローカルネットワーク上のピアを探すツールです。"
+
+msgid "Default Public Trackers"
+msgstr "標準の公開トラッカー"
+
+#, fuzzy
+msgid ""
+"Trackers to use on all public torrents.\n"
+"\n"
+"To add a backup URL, add it on the next line after a primary URL.\n"
+"To add a new primary URL, add it after a blank line."
+msgstr ""
+"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"すべての公開トレントで使用するトラッカーです。\n"
+"\n"
+"代替URLを追加するときは、プライマリURLの次の行に追加してください。\n"
+"新しいプライマリURLを追加するときは、空白行を挟んで追加してください。\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"すべての公開トレントに使用するトラッカー。\n"
+"\n"
+"代替 URL を追加するには、プライマリ URL の次の行に追加します。\n"
+"新しいプライマリ URL を追加するには、空白行の後に追加します。"
+
+msgid "Network"
+msgstr "ネットワーク"
+
+msgid "Desktop"
+msgstr "デスクトップ"
+
+msgid "_Prevent computer from sleeping with active torrents"
+msgstr ""
+
+#, fuzzy
+msgid "Show {appname} icon in the _notification area"
+msgstr ""
+"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"通知領域に {appname} のアイコンを表示(_N)\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{appname} のアイコンを通知領域に表示(_N)"
+
+msgid "Notification"
+msgstr "通知"
+
+#, fuzzy
+msgid "Show a notification when torrents are a_dded"
+msgstr ""
+"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"トレント追加時に通知を表示(_D)\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"トレントが追加されたら通知を表示(_D)"
+
+#, fuzzy
+msgid "Show a notification when torrents _finish"
+msgstr ""
+"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"トレント完了時に通知を表示(_F)\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"トレントが完了したら通知を表示(_F)"
+
+#, fuzzy
+msgid "Play a _sound when torrents finish"
+msgstr ""
+"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"トレント完了時に音を鳴らす(_S)\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"トレントが完了したら音を鳴らす(_S)"
+
+msgid "Remote Control"
+msgstr "リモート接続"
+
+msgid "Allow _remote access"
+msgstr "リモート接続を許可(_R)"
+
+#, fuzzy
+#| msgid "_Open web client"
+msgid "_Open Web Client"
+msgstr "ブラウザで開く(_O)"
+
+#, fuzzy
+msgid "HTTP _port:"
+msgstr ""
+"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"HTTPポート(_P):\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"HTTP ポート(_P):"
+
+msgid "Use _authentication"
+msgstr "認証を使用(_A)"
+
+msgid "_Username:"
+msgstr "ユーザー名(_U):"
+
+msgid "Pass_word:"
+msgstr "パスワード(_W):"
+
+msgid "Only allow these IP a_ddresses:"
+msgstr "以下の IP アドレスのみ許可(_D):"
+
+msgid "Addresses:"
+msgstr "アドレス:"
+
+msgid "IP addresses may use wildcards, such as 192.168.*.*"
+msgstr "IPアドレスにはワイルドカード(*)も使えます。例 192.168.*.*"
+
+msgid "Remote"
+msgstr "リモート"
+
+#, fuzzy
+msgid "Set Torrent Location"
+msgstr ""
+"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"トレントの場所を設定\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"トレントの保存場所を設定"
+
+msgid "_Apply"
+msgstr "適用(_A)"
+
+msgid "Location"
+msgstr "場所"
+
+msgid "New _location:"
+msgstr "新しい保存場所(_L):"
+
+msgid "_Move from the current folder"
+msgstr "現在のフォルダから移動(_M)"
+
+msgid "Local data is _already there"
+msgstr "取得データが既にそこにある(_A)"
+
+msgid "Current Session"
+msgstr "現在のセッション"
+
+msgid "Ratio:"
+msgstr "共有比:"
+
+msgid "Duration:"
+msgstr "時間:"
+
+msgid "Total"
+msgstr "合計"
+
+msgid "Open URL"
+msgstr "URL を開く"
+
+msgid "Open torrent from URL"
+msgstr "URL からトレントを開く"
+
+msgid "_URL"
+msgstr "URL(_U)"
+
+msgid "The torrent file '{path}' is already in use by '{torrent_name}'."
+msgstr "このトレントファイル「{path}」は既に以下で使われています:「{torrent_name}」。"
+
+msgid "Couldn't open torrent"
+msgstr "トレントを開けません"
+
+msgid "Couldn't move '{path}' to trash: {error} ({error_code})"
+msgstr "以下をゴミ箱へ移動できません「{path}」: {error} ({error_code})"
+
+#, fuzzy
+#| msgid "Couldn't create proxy for '{bus}': {error} ({error_code})"
+msgid "Couldn't launch default application for URI '{uri}': {error} ({error_code})"
+msgstr "以下用のプロキシを作成できません「{bus}」: {error} ({error_code})"
+
+#, fuzzy
+#| msgid "Couldn't open '{path}': {error} ({error_code})"
+msgid "Couldn't invoke xdg-open for URI '{uri}': {error} ({error_code})"
+msgstr "開けません「{path}」: {error} ({error_code})"
+
+msgid "Couldn't open '{url}'"
+msgstr "開けません「{url}」"
+
+msgid "Unsupported URL: '{url}'"
+msgstr "未対応のURL: {url}"
+
+msgid "{appname} doesn't know how to use '{url}'"
+msgstr "{appname} は以下の使い方を知りません: {url}"
+
+msgid "This magnet link appears to be intended for something other than BitTorrent."
+msgstr "このマグネットリンクは、BitTorrent 用ではないようです。"
 
 msgid "{days_from_now:L} day from now"
 msgid_plural "{days_from_now:L} days from now"
@@ -806,6 +2010,73 @@ msgid "{seconds_ago:L} second ago"
 msgid_plural "{seconds_ago:L} seconds ago"
 msgstr[0] "{seconds_ago:L}秒前"
 
+msgid "Got a list of {markup_begin}{peer_count} peer{markup_end} {time_span_ago}"
+msgid_plural "Got a list of {markup_begin}{peer_count} peers{markup_end} {time_span_ago}"
+msgstr[0] "リスト取得 {markup_begin}{peer_count}ピア{markup_end}{time_span_ago}"
+
+msgid "Peer list request {markup_begin}timed out {time_span_ago}{markup_end}; will retry"
+msgstr " ピア一覧の要求が{markup_begin}タイムアウト {time_span_ago}{markup_end}; 再試行"
+
+msgid "Got an error '{markup_begin}{error}{markup_end}' {time_span_ago}"
+msgstr "エラー取得「{markup_begin}{error}{markup_end}」{time_span_ago}"
+
+#, fuzzy
+msgid "No updates scheduled"
+msgstr ""
+"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"更新の予定なし\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"更新の予定はありません"
+
+msgid "Asking for more peers {time_span_from_now}"
+msgstr "ピア探索を要求 {time_span_from_now}"
+
+#, fuzzy
+msgid "Queued to ask for more peers"
+msgstr ""
+"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"ピア探索の処理待ちに追加\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"ピア探索を処理待ちに追加"
+
+msgid "Asked for more peers {markup_begin}{time_span_ago}{markup_end}"
+msgstr "ピア探索を要求{markup_begin}{time_span_ago}{markup_end}"
+
+msgid "Got a scrape error '{markup_begin}{error}{markup_end}' {time_span_ago}"
+msgstr "スクレイプのエラー「{markup_begin}{error}{markup_end}」{time_span_ago}"
+
+#, fuzzy
+#| msgid "Tracker had {markup_begin}no information{markup_end} on peer counts {time_span} ago"
+msgid "Tracker had {markup_begin}no information{markup_end} on peer counts {time_span_ago}"
+msgstr "トラッカーにピア数の{markup_begin}情報なし{markup_end} {time_span} 前"
+
+msgid "Tracker had {markup_begin}{seeder_count} {seeder_or_seeders} and {leecher_count} {leecher_or_leechers}{markup_end} {time_span_ago}"
+msgstr "以下を持つトラッカー: {markup_begin}{seeder_count} {seeder_or_seeders} と{leecher_count} {leecher_or_leechers}{markup_end} {time_span_ago}"
+
+msgid "seeder"
+msgid_plural "seeders"
+msgstr[0] "シーダー"
+
+msgid "leecher"
+msgid_plural "leechers"
+msgstr[0] "リーチャー"
+
+#, fuzzy
+#| msgid "Asking for peer counts in {time_span_from_now}"
+msgid "Asking for peer counts {time_span_from_now}"
+msgstr "ピア数を問い合わせ {time_span_from_now}後"
+
+#, fuzzy
+msgid "Queued to ask for peer counts"
+msgstr ""
+"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"ピア数の確認の処理待ちに追加\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"ピア数確認を処理待ちに追加"
+
+msgid "Asked for peer counts {markup_begin}{time_span_ago}{markup_end}"
+msgstr "ピア数を問い合わせ {markup_begin}{time_span_ago}{markup_end}"
+
 msgid "{days:L} day"
 msgid_plural "{days:L} days"
 msgstr[0] "{days:L}日"
@@ -814,13 +2085,26 @@ msgid "{hours:L} hour"
 msgid_plural "{hours:L} hours"
 msgstr[0] "{hours:L}時間"
 
+#. Translators: Spin box format, "Stop seeding if idle for: [ 5 minutes ]"
+#, fuzzy
 msgid "{minutes:L} minute"
 msgid_plural "{minutes:L} minutes"
-msgstr[0] "{minutes:L}分"
+msgstr[0] ""
+"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{minutes:L}分\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{minutes:L}分\n"
+"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{minutes:L} 分"
 
+#, fuzzy
 msgid "{seconds:L} second"
 msgid_plural "{seconds:L} seconds"
-msgstr[0] "{seconds:L}秒"
+msgstr[0] ""
+"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{seconds:L}秒\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{seconds:L} 秒"
 
 msgid "{days_left:L} day left"
 msgid_plural "{days_left:L} days left"
@@ -838,761 +2122,6 @@ msgid "{seconds_left:L} second left"
 msgid_plural "{seconds_left:L} seconds left"
 msgstr[0] "{seconds_left:L}秒残り"
 
-msgid "The torrent file '{path}' is already in use by '{torrent_name}'."
-msgstr "このトレントファイル「{path}」は既に以下で使われています:「{torrent_name}」。"
-
-msgid "Couldn't open torrent"
-msgstr "トレントを開けません"
-
-msgid "Couldn't move '{path}' to trash: {error} ({error_code})"
-msgstr "以下をゴミ箱へ移動できません「{path}」: {error} ({error_code})"
-
-msgid "Couldn't open '{url}'"
-msgstr "開けません「{url}」"
-
-msgid "Unsupported URL: '{url}'"
-msgstr "未対応のURL: {url}"
-
-#. modal
-msgid "{appname} doesn't know how to use '{url}'"
-msgstr "{appname} は以下の使い方を知りません: {url}"
-
-msgid "This magnet link appears to be intended for something other than BitTorrent."
-msgstr "このマグネットリンクは、BitTorrent 用ではないようです。"
-
-msgid "Retransmission"
-msgstr "Retransmission"
-
-#. parse the command line
-msgid "Where to look for configuration files"
-msgstr "設定ファイルを探す場所"
-
-msgid "Start with all torrents paused"
-msgstr "停止したトレントをすべて再開"
-
-msgid "Start minimized in notification area"
-msgstr "通知領域に最小化した状態で起動"
-
-msgid "Show version number and exit"
-msgstr "バージョンを表示して終了"
-
-msgid "[torrent files or urls]"
-msgstr "[トレントファイルか URL]"
-
-msgid "Run '{program} --help' to see a full list of available command line options.\n"
-msgstr "「{program} --help」の実行で、コマンドラインのオプションの完全な一覧を表示します。\n"
-
-msgid "B/s"
-msgstr "バイト/秒"
-
-msgid "GB/s"
-msgstr "GB/秒"
-
-msgid "MB/s"
-msgstr "MB/秒"
-
-msgid "TB/s"
-msgstr "TB/秒"
-
-msgid "kB/s"
-msgstr "kB/秒"
-
-msgid "B"
-msgstr "バイト"
-
-msgid "GiB"
-msgstr "GB"
-
-msgid "KiB"
-msgstr "KB"
-
-msgid "MiB"
-msgstr "MB"
-
-msgid "TiB"
-msgstr "TB"
-
-msgid "GB"
-msgstr "GB"
-
-msgid "MB"
-msgstr "MB"
-
-msgid "TB"
-msgstr "TB"
-
-msgid "kB"
-msgstr "kB"
-
-msgid "BitTorrent Client"
-msgstr "BitTorrent クライアント"
-
-msgid "Download and share files over BitTorrent"
-msgstr "BitTorrent を通じてファイルのダウンロードと共有"
-
-#. Translators: Search terms to find this application. Do NOT translate or localize the semicolons! The list MUST also end with a semicolon!
-msgid "torrents;downloading;uploading;share;sharing;"
-msgstr "トレント;ダウンロード中;アップロード中;共有;共有中;"
-
-msgid "Start Retransmission with All Torrents Paused"
-msgstr "全トレントを停止状態で Retransmission を起動"
-
-msgid "Start Retransmission Minimized"
-msgstr "最小化して Retransmission を起動"
-
-msgid "Open a torrent"
-msgstr "トレントを開く"
-
-msgid "Open _URL…"
-msgstr "URLを開く(_U)…"
-
-msgid "Open URL…"
-msgstr "URLを開く…"
-
-msgid "_New…"
-msgstr "新規(_N)…"
-
-msgid "_Start All"
-msgstr "すべてを開始(_S)"
-
-msgid "Start all torrents"
-msgstr "すべてのトレントを開始"
-
-msgid "_Pause All"
-msgstr "すべて停止(_P)"
-
-msgid "Pause all torrents"
-msgstr "すべてのトレントを停止"
-
-msgid "_Quit"
-msgstr "終了(_Q)"
-
-msgid "Select _All"
-msgstr "すべて選択(_A)"
-
-msgid "Dese_lect All"
-msgstr "すべて選択解除(_L)"
-
-msgid "_Preferences"
-msgstr "環境設定(_P)"
-
-msgid "_Properties"
-msgstr "プロパティ(_P)"
-
-msgid "Torrent properties"
-msgstr "トレントのプロパティ"
-
-msgid "Open Fold_er"
-msgstr "フォルダを開く(_E)"
-
-msgid "_Start"
-msgstr "開始(_S)"
-
-msgid "Start torrent"
-msgstr "トレントを開始"
-
-msgid "Start _Now"
-msgstr "すぐに開始(_N)"
-
-msgid "Start torrent now"
-msgstr "トレントをすぐに開始する"
-
-msgid "Ask Tracker for _More Peers"
-msgstr "トラッカーにピア増加を要求(_M)"
-
-msgid "Move to _Top"
-msgstr "先頭に移動(_T)"
-
-msgid "Move _Up"
-msgstr "上に移動(_U)"
-
-msgid "Move _Down"
-msgstr "下に移動(_D)"
-
-msgid "Move to _Bottom"
-msgstr "末尾に移動(_B)"
-
-msgid "_Pause"
-msgstr "中断(_P)"
-
-msgid "Pause torrent"
-msgstr "トレントを一時停止"
-
-msgid "Set _Location…"
-msgstr "場所を設定する(_L)…"
-
-msgid "_Verify Local Data"
-msgstr "ローカルデータを検証(_V)"
-
-msgid "Copy _Magnet Link to Clipboard"
-msgstr "マグネットリンクをコピー(_M)"
-
-msgid "Remove torrent"
-msgstr "トレントを削除"
-
-msgid "_Delete Files and Remove"
-msgstr "ファイルの削除(_D)"
-
-msgid "_Compact View"
-msgstr "コンパクト表示(_C)"
-
-msgid "_Toolbar"
-msgstr "ツールバー(_T)"
-
-msgid "_Filterbar"
-msgstr "フィルターバー(_F)"
-
-msgid "_Statusbar"
-msgstr "ステータスバー(_S)"
-
-msgid "Sort by _Activity"
-msgstr "稼働順に並び替え(_A)"
-
-msgid "Sort by A_ge"
-msgstr "追加順に並び替え(_G)"
-
-msgid "Sort by _Name"
-msgstr "名前順に並び替え(_N)"
-
-msgid "Sort by _Progress"
-msgstr "進行率順に並び替え(_P)"
-
-msgid "Sort by _Queue"
-msgstr "処理待ち順に並び替え(_Q)"
-
-msgid "Sort by Rati_o"
-msgstr "共有比順に並び替え(_O)"
-
-msgid "Sort by Si_ze"
-msgstr "サイズ順に並び替え(_Z)"
-
-msgid "Sort by Stat_e"
-msgstr "状態順に並び替え(_E)"
-
-msgid "Sort by Time _Left"
-msgstr "残り時間順に並び替え(_L)"
-
-msgid "Re_verse Sort Order"
-msgstr "逆順に並び替え(_V)"
-
-msgid "Message _Log"
-msgstr "メッセージログ(_L)"
-
-msgid "_Statistics"
-msgstr "統計データ(_S)"
-
-msgid "_Donate"
-msgstr "寄付(_D)"
-
-msgid "_Contents"
-msgstr "コンテンツ(_C)"
-
-msgid "_About"
-msgstr "バージョン情報(_A)"
-
-msgid "_Show {appname}"
-msgstr "{appname} ウインドウを表示(_S)"
-
-msgid "Enable Alternative Speed _Limits"
-msgstr "一時的な速度制限を有効化(_L)"
-
-msgid "_Add"
-msgstr "追加(_A)"
-
-msgid "Tracker"
-msgstr "トラッカー"
-
-msgid "_Announce URL:"
-msgstr "アナウンスURL(_A):"
-
-msgid "_Close"
-msgstr "閉じる(_C)"
-
-msgid "Activity"
-msgstr "稼働状況"
-
-msgid "Torrent size:"
-msgstr "トレントのサイズ:"
-
-msgid "Have:"
-msgstr "所有:"
-
-msgid "Uploaded:"
-msgstr "アップロード済:"
-
-msgid "Downloaded:"
-msgstr "ダウンロード済:"
-
-msgid "State:"
-msgstr "状態:"
-
-msgid "Running time:"
-msgstr "実行時間:"
-
-msgid "Remaining time:"
-msgstr "残り時間:"
-
-msgid "Last activity:"
-msgstr "最終稼働時間:"
-
-msgid "Error:"
-msgstr "エラー:"
-
-msgid "Details"
-msgstr "詳細"
-
-msgid "Location:"
-msgstr "場所:"
-
-msgid "Hash:"
-msgstr "ハッシュ:"
-
-msgid "Privacy:"
-msgstr "プライバシー:"
-
-msgid "Origin:"
-msgstr "作成:"
-
-msgid "Added:"
-msgstr "追加日時:"
-
-msgid "Comment:"
-msgstr "コメント:"
-
-msgid "Information"
-msgstr "情報"
-
-msgid "Show _more details"
-msgstr "詳細を表示(_M)"
-
-msgid "Peers"
-msgstr "ピア"
-
-msgid "_Edit"
-msgstr "編集(_E)"
-
-msgid "Show _backup trackers"
-msgstr "代替トラッカーを表示(_B)"
-
-msgid "File listing not available for combined torrent properties"
-msgstr "ファイル一覧は結合したトレントのプロパティでは使用できません"
-
-msgid "Files"
-msgstr "ファイル"
-
-msgid "Speed"
-msgstr "速度"
-
-msgid "Honor global _limits"
-msgstr "速度制限の全体設定に従う(_L)"
-
-msgid "Limit _download speed ({speed_units}):"
-msgstr "ダウンロード速度の制限(_D) ({speed_units}):"
-
-msgid "Limit _upload speed ({speed_units}):"
-msgstr "アップロード速度の制限(_U) ({speed_units}):"
-
-msgid "Torrent _priority:"
-msgstr "トレントの優先度(_P):"
-
-msgid "Seeding Limits"
-msgstr "シードの上限"
-
-msgid "_Ratio:"
-msgstr "共有比(_R):"
-
-msgid "_Idle:"
-msgstr "アイドル状態(_I):"
-
-msgid "Peer Connections"
-msgstr "ピアとの接続"
-
-msgid "_Maximum peers:"
-msgstr "ピア最大数(_M):"
-
-msgid "Options"
-msgstr "オプション"
-
-msgid "Tracker Announce URLs"
-msgstr "トラッカーのアナウンスURL"
-
-msgid ""
-"To add a backup URL, add it on the next line after a primary URL.\n"
-"To add a new primary URL, add it after a blank line."
-msgstr ""
-"代替URLを追加するときは、プライマリURLの次の行に追加してください。\n"
-"新しいプライマリURLを追加するときは、空白行を挟んで追加してください。"
-
-msgid "Also see Default Public Trackers in Edit > Preferences > Network"
-msgstr "編集 > 設定 > ネットワークから、標準の公開トラッカーも参照"
-
-msgid "Torrent"
-msgstr "トレント"
-
-msgid "Statistics"
-msgstr "統計情報"
-
-msgid "New Torrent"
-msgstr "新規トレント"
-
-msgid "_New"
-msgstr "新規(_N)"
-
-msgid "Sa_ve to:"
-msgstr "保存先(_V):"
-
-msgid "Source F_older:"
-msgstr "対象フォルダ(_O):"
-
-msgid "Source _File:"
-msgstr "対象ファイル(_F):"
-
-msgid "Piece size:"
-msgstr "ピースの大きさ:"
-
-msgid "Properties"
-msgstr "プロパティ"
-
-msgid "_Trackers:"
-msgstr "トラッカー(_T):"
-
-msgid "Co_mment:"
-msgstr "コメント(_M):"
-
-msgid "_Source:"
-msgstr "入力元(_S):"
-
-msgid "_Private torrent"
-msgstr "非公開トレント(_P)"
-
-msgid "Creating torrent…"
-msgstr "トレントを作成中…"
-
-msgid "Message Log"
-msgstr "メッセージログ"
-
-msgid "Save _As"
-msgstr "名前を付けて保存(_A)"
-
-msgid "Clear"
-msgstr "初期化"
-
-msgid "P_ause"
-msgstr "一時停止(_A)"
-
-msgid "Level"
-msgstr "対象"
-
-msgid "Torrent Options"
-msgstr "トレントのオプション"
-
-msgid "_Torrent file:"
-msgstr "トレントファイル(_T):"
-
-msgid "Select Source File"
-msgstr "対象ファイルの選択"
-
-msgid "_Destination folder:"
-msgstr "保存先フォルダ(_D):"
-
-msgid "Select Destination Folder"
-msgstr "保存先フォルダの選択"
-
-msgid "_Start when added"
-msgstr "追加と共に開始(_S)"
-
-msgid "Mo_ve torrent file to the trash"
-msgstr ".torrent ファイルをごみ箱へ(_V)"
-
-msgid "{appname} Preferences"
-msgstr "{appname} 設定"
-
-msgid "_Help"
-msgstr "ヘルプ(_H)"
-
-msgid "Speed Limits"
-msgstr "速度制限"
-
-#. Checkbox to limit upload speed
-msgid "_Upload ({speed_units}):"
-msgstr "アップロード(_U) ({speed_units}):"
-
-#. Checkbox to limit download speed
-msgid "_Download ({speed_units}):"
-msgstr "ダウンロード(_D) ({speed_units}):"
-
-msgid "Alternative Speed Limits"
-msgstr "一時的な速度制限"
-
-msgid "Override normal speed limits manually or at scheduled times"
-msgstr "手動または予定表に従い速度制限を切り替え"
-
-#. Labels a spinbutton for alternate upload speed limits
-msgid "U_pload ({speed_units}):"
-msgstr "アップロード(_P) ({speed_units}):"
-
-#. Labels a spinbutton for alternate download speed limits
-msgid "Do_wnload ({speed_units}):"
-msgstr "ダウンロード(_W) ({speed_units}):"
-
-msgid "_Scheduled times:"
-msgstr "予定時刻(_S):"
-
-msgid "_On days:"
-msgstr "日(_O):"
-
-#. Label goes between two time selectors, e.g. "limit speeds from [time] to [time]"
-msgid "_to"
-msgstr "から(_T)"
-
-msgctxt "Gerund"
-msgid "Adding"
-msgstr "追加中"
-
-msgid "Automatically add torrent files _from:"
-msgstr "ここのトレントファイルを自動追加(_F):"
-
-msgid "Show the Torrent Options _dialog"
-msgstr "トレントのオプションダイアログを表示(_D)"
-
-msgid "_Start added torrents"
-msgstr "追加したトレントを開始(_S)"
-
-msgid "Save to _Location:"
-msgstr "保存先フォルダ(_L):"
-
-msgid "Download Queue"
-msgstr "ダウンロード待ち行列"
-
-msgid "Ma_ximum active downloads:"
-msgstr "最大稼働ダウンロード数:"
-
-msgid "Downloads sharing data in the last _N minutes are active:"
-msgstr "最終稼働からN分間の共有データをダウンロード(_N)"
-
-msgid "Incomplete"
-msgstr "未完了"
-
-msgid "Append \"._part\" to incomplete files' names"
-msgstr "未完了のファイル名に .part を付加(_P)"
-
-msgid "Keep _incomplete torrents in:"
-msgstr "未完了トレントの保存先(_I):"
-
-msgid "Call scrip_t when done downloading:"
-msgstr "ダウンロード完了時に呼ぶスクリプト(_T):"
-
-msgctxt "Gerund"
-msgid "Downloading"
-msgstr "ダウンロード"
-
-msgid "Limits"
-msgstr "制限"
-
-msgid "Stop seeding at _ratio:"
-msgstr "この共有比でシード停止(_R):"
-
-msgid "Stop seeding if idle for _N minutes:"
-msgstr "N分のアイドル状態でシード停止(_N):"
-
-msgid "Call scrip_t when done seeding:"
-msgstr "シード完了時に呼ぶスクリプト(_T):"
-
-msgctxt "Gerund"
-msgid "Seeding"
-msgstr "シード"
-
-msgid "Privacy"
-msgstr "プライバシー"
-
-msgid "_Encryption mode:"
-msgstr "暗号化の条件(_E):"
-
-msgid "Blocklist"
-msgstr "ブロックリスト"
-
-msgid "Enable _blocklist:"
-msgstr "ブロックリストを使用(_B):"
-
-msgid "Enable _automatic updates"
-msgstr "自動更新する(_A)"
-
-msgid "_Update"
-msgstr "更新(_U)"
-
-msgid "Listening Port"
-msgstr "待ち受けポート"
-
-msgid "_Port used for incoming connections:"
-msgstr "応答接続に使うポート(_P):"
-
-msgid "Pick a _random port every time Transmission is started"
-msgstr "Transmission の起動ごとにランダムにポートを変更(_R)"
-
-msgid "Use UPnP or NAT-PMP port _forwarding from my router"
-msgstr "UPnP か NAT-PMP にて自分のルーターのポート転送を使用(_F)"
-
-msgid "Te_st Port"
-msgstr "ポートのテスト(_S)"
-
-msgid "Peer Limits"
-msgstr "ピア制限"
-
-msgid "Maximum peers per _torrent:"
-msgstr "トレントごとの最大ピア数(_T):"
-
-msgid "Maximum peers _overall:"
-msgstr "全体での最大ピア数(_O):"
-
-msgid "Enable µ_TP for peer communication"
-msgstr "ピア通信用の µTP を使用(_TP)"
-
-msgid "µTP is a tool for reducing network congestion."
-msgstr "µTP はネットワークの混雑を緩和するツールです。"
-
-msgid "Use PE_X to find more peers"
-msgstr "PEX でより多くのピアを探す(_X)"
-
-msgid "PEX is a tool for exchanging peer lists with the peers you're connected to."
-msgstr "PEX は、ピアのリストを接続中のピアとで交換するツールです。"
-
-msgid "Use _DHT to find more peers"
-msgstr "DHT でより多くのピアを探す(_D)"
-
-msgid "DHT is a tool for finding peers without a tracker."
-msgstr "DHTはトラッカーを介さずにピアを見つけるツールです。"
-
-msgid "Use _Local Peer Discovery to find more peers"
-msgstr "ローカルピア探索でより多くのピアを探す(_L)"
-
-msgid "LPD is a tool for finding peers on your local network."
-msgstr "LPD はローカル・ネットワーク上のピアを検索するツールです。"
-
-msgid "Default Public Trackers"
-msgstr "標準の公開トラッカー"
-
-msgid ""
-"Trackers to use on all public torrents.\n"
-"\n"
-"To add a backup URL, add it on the next line after a primary URL.\n"
-"To add a new primary URL, add it after a blank line."
-msgstr ""
-"すべての公開トレントで使用するトラッカーです。\n"
-"\n"
-"代替URLを追加するときは、プライマリURLの次の行に追加してください。\n"
-"新しいプライマリURLを追加するときは、空白行を挟んで追加してください。"
-
-msgid "Network"
-msgstr "ネットワーク"
-
-msgid "Desktop"
-msgstr "デスクトップ"
-
-msgid "_Inhibit hibernation when torrents are active"
-msgstr "トレント稼働中は休止状態を抑制(_I)"
-
-msgid "Show {appname} icon in the _notification area"
-msgstr "通知領域に {appname} のアイコンを表示(_N)"
-
-msgid "Notification"
-msgstr "通知"
-
-msgid "Show a notification when torrents are a_dded"
-msgstr "トレント追加時に通知を表示(_D)"
-
-msgid "Show a notification when torrents _finish"
-msgstr "トレント完了時に通知を表示(_F)"
-
-msgid "Play a _sound when torrents finish"
-msgstr "トレント完了時に音を鳴らす(_S)"
-
-msgid "Remote Control"
-msgstr "リモート接続"
-
-msgid "Allow _remote access"
-msgstr "リモート接続を許可(_R)"
-
-msgid "_Open web client"
-msgstr "ブラウザで開く(_O)"
-
-msgid "HTTP _port:"
-msgstr "HTTPポート(_P):"
-
-msgid "Use _authentication"
-msgstr "認証を使用(_A)"
-
-msgid "_Username:"
-msgstr "ユーザー名(_U):"
-
-msgid "Pass_word:"
-msgstr "パスワード(_W):"
-
-msgid "Only allow these IP a_ddresses:"
-msgstr "以下の IP アドレスのみ許可(_D):"
-
-msgid "Addresses:"
-msgstr "アドレス:"
-
-msgid "IP addresses may use wildcards, such as 192.168.*.*"
-msgstr "IPアドレスにはワイルドカード(*)も使えます。例 192.168.*.*"
-
-msgid "Remote"
-msgstr "リモート"
-
-msgid "Set Torrent Location"
-msgstr "トレントの場所を設定"
-
-msgid "_Apply"
-msgstr "適用(_A)"
-
-msgid "Location"
-msgstr "場所"
-
-msgid "Torrent _location:"
-msgstr "トレントの保存場所(_L):"
-
-msgid "_Move from the current folder"
-msgstr "現在のフォルダから移動(_M)"
-
-msgid "Local data is _already there"
-msgstr "取得データが既にそこにある(_A)"
-
-msgid "Current Session"
-msgstr "現在のセッション"
-
-msgid "Ratio:"
-msgstr "共有比:"
-
-msgid "Duration:"
-msgstr "時間:"
-
-msgid "Total"
-msgstr "合計"
-
-msgid "Open URL"
-msgstr "URL を開く"
-
-msgid "Open torrent from URL"
-msgstr "URL からトレントを開く"
-
-msgid "_URL"
-msgstr "URL(_U)"
-
-msgid "Couldn't parse announce response: {error} ({error_code})"
-msgstr "アナウンスの応答を解析できません: {error} ({error_code})"
-
-msgid "Couldn't parse scrape response: {error} ({error_code})"
-msgstr "スクレイプの応答を解析できません: {error} ({error_code})"
-
-msgid "Unknown error"
-msgstr "不明のエラー"
-
-msgid "{ip_protocol} connection failed"
-msgstr "{ip_protocol} 接続失敗"
-
-msgid "Couldn't look up '{address}:{port}' in {ip_protocol}: {error} ({error_code})"
-msgstr "参照できません '{address}:{port}'  /{ip_protocol}: {error} ({error_code})"
-
 msgid "Announce error: {error} ({url})"
 msgstr "アナウンスのエラー: {error} ({url})"
 
@@ -1609,19 +2138,62 @@ msgstr "トラッカーが応答しません"
 msgid "Success"
 msgstr "成功"
 
+msgid "Couldn't parse announce response: {error} ({error_code})"
+msgstr "アナウンスの応答を解析できません: {error} ({error_code})"
+
+msgid "Couldn't parse scrape response: {error} ({error_code})"
+msgstr "スクレイプの応答を解析できません: {error} ({error_code})"
+
+msgid "Unknown error"
+msgstr "不明のエラー"
+
+msgid "{ip_protocol} connection failed"
+msgstr "{ip_protocol} 接続失敗"
+
+msgid "Couldn't look up '{address}:{port}' in {ip_protocol}: {error} ({error_code})"
+msgstr "参照できません '{address}:{port}'  /{ip_protocol}: {error} ({error_code})"
+
 msgid "Blocklist '{path}' has {count} entry"
 msgid_plural "Blocklist '{path}' has {count} entries"
 msgstr[0] "ブロックリスト「{path}」には {count} 項目あります"
 
-#. don't try to display the actual lines - it causes issues
-msgid "Couldn't parse line: '{line}'"
+#, fuzzy
+#| msgid "Couldn't parse line: '{line}'"
+msgid "Couldn't parse line {line}: {base64}"
 msgstr "この行を解析できません: 「{line}」"
 
-msgid "Rewriting old blocklist file format to new format"
+#, fuzzy
+#| msgid "Rewriting old blocklist file format to new format"
+msgid "Rewriting old blocklist file {path} to new format"
 msgstr "古いブロックリストのファイル形式を新しいものへ書き換え中"
+
+msgid "Blocklist is larger than {limit} MiB; ignoring it"
+msgstr ""
+
+#, fuzzy
+#| msgid "Couldn't fetch blocklist: {error} ({error_code})"
+msgid "Couldn't fetch blocklist: {errmsg}, response code: {error} ({error_code})"
+msgstr "ブロックリストを取得できません: {error} ({error_code})"
+
+msgid "Couldn't fetch blocklist: {error} ({error_code})"
+msgstr "ブロックリストを取得できません: {error} ({error_code})"
+
+msgid "Automatically updated blocklist, which now has {count} rules"
+msgstr ""
+
+msgid "Invalid tr_sched_days value {val}"
+msgstr ""
 
 msgid "{crypto_library} error: {error} ({error_code})"
 msgstr "{crypto_library} エラー: {error} ({error_code})"
+
+msgid "Couldn't read '{path}': Not a regular file"
+msgstr "以下を読み込めません「{path}」: 通常のファイルではありません"
+
+#, fuzzy
+#| msgid "Couldn't read '{path}'"
+msgid "Couldn't get '{path}': "
+msgstr "読み込めません「{path}」"
 
 msgid "Couldn't get '{path}': {error} ({error_code})"
 msgstr "取得できません「{path}」: {error} ({error_code})"
@@ -1638,20 +2210,14 @@ msgstr " この端末は{protocol}に未対応"
 msgid "Successfully updated global {type} address to {ip} using {url}"
 msgstr "更新成功: グローバル {type} アドレスを {ip} の {url}を利用したものへ"
 
+msgid "Still waiting for disk IO on torrent {id}: {running} running, {queued} queued"
+msgstr ""
+
 msgid "Too many messages like this! I won't log this message anymore this session."
 msgstr "以下のようなメッセージがたくさん ! このセッションではこのメッセージは記録しません。"
 
 msgid "Skipping '{path}': {error} ({error_code})"
 msgstr "省略「{path}」: {error} ({error_code})"
-
-msgid "Couldn't create socket: {error} ({error_code})"
-msgstr "ソケットを作成できません: {error} ({error_code})"
-
-msgid "Couldn't set source address {address} on {socket}: {error} ({error_code})"
-msgstr "入力元のアドレス {address} : {socket} を設定できません: {error} ({error_code})"
-
-msgid "Couldn't connect socket {socket} to {address}:{port}: {error} ({error_code})"
-msgstr " ソケット{socket} を {address}:{port}へ接続できません: {error} ({error_code})"
 
 msgid "Couldn't bind port {port} on {address}: {error} ({error_code}) -- Is another copy of {appname} already running?"
 msgstr "{address}上のポート{port}をバインドできません : {error} ({error_code}) -- 別の {appname} のコピーが既に実行されていませんか ?"
@@ -1668,8 +2234,35 @@ msgstr "事前割り当てできません「{path}」: {error} ({error_code})"
 msgid "Couldn't truncate '{path}': {error} ({error_code})"
 msgstr "切り詰めできません「{path}」: {error} ({error_code})"
 
+msgid "Couldn't create socket: {error} ({error_code})"
+msgstr "ソケットを作成できません: {error} ({error_code})"
+
+msgid "Couldn't set source address {address} on {socket}: {error} ({error_code})"
+msgstr "入力元のアドレス {address} : {socket} を設定できません: {error} ({error_code})"
+
+msgid "Couldn't connect socket {socket} to {address}:{port}: {error} ({error_code})"
+msgstr " ソケット{socket} を {address}:{port}へ接続できません: {error} ({error_code})"
+
 msgid "Unknown state: {state}"
 msgstr "不明の状態: {state}"
+
+msgid "Starting"
+msgstr "開始"
+
+msgid "Forwarded"
+msgstr "転送済み"
+
+msgid "Stopping"
+msgstr "停止"
+
+msgid "Not forwarded"
+msgstr "未転送"
+
+msgid "Mapped private port {private_port} to public port {public_port}"
+msgstr "プライベートポート {private_port} をパブリックポート {public_port}にマッピングしました"
+
+msgid "State changed from '{old_state}' to '{state}'"
+msgstr "状態が変化「{old_state}」から「{state}」へ"
 
 msgid "Found public address '{address}'"
 msgstr "パブリックアドレスを発見「{address}」"
@@ -1701,23 +2294,21 @@ msgstr "ローカルのポート {local_port} を {advertised_port}に転送し�
 msgid "If your router supports UPnP, please make sure UPnP is enabled!"
 msgstr "お使いのルーターがUPnPに対応するなら、有効化されているか確認してください !"
 
-msgid "Starting"
-msgstr "開始"
+#, fuzzy
+#| msgid "Couldn't test port: {error} ({error_code})"
+msgid "Couldn't test port: {errmsg}, response code: {error} ({error_code})"
+msgstr "ポートをテストできません: {error} ({error_code})"
 
-msgid "Forwarded"
-msgstr "転送済み"
+msgid "Couldn't test port: {error} ({error_code})"
+msgstr "ポートをテストできません: {error} ({error_code})"
 
-msgid "Stopping"
-msgstr "停止"
+#, fuzzy
+#| msgid "Couldn't fetch torrent: {error} ({error_code})"
+msgid "Couldn't fetch torrent: {errmsg}, Response code: {error} ({error_code})"
+msgstr "トレントを取得できません: {error} ({error_code})"
 
-msgid "Not forwarded"
-msgstr "未転送"
-
-msgid "Mapped private port {private_port} to public port {public_port}"
-msgstr "プライベートポート {private_port} をパブリックポート {public_port}にマッピングしました"
-
-msgid "State changed from '{old_state}' to '{state}'"
-msgstr "状態が変化「{old_state}」から「{state}」へ"
+msgid "Couldn't fetch torrent: {error} ({error_code})"
+msgstr "トレントを取得できません: {error} ({error_code})"
 
 msgid "Unix socket path must be fewer than {count} characters (including '{prefix}' prefix)"
 msgstr "Unix のソケットのパスは {count} 文字以下の必要があります ({prefix} 接頭辞含む)"
@@ -1774,29 +2365,24 @@ msgstr "パスワードを要求"
 msgid "Serving RPC and Web requests from '{path}'"
 msgstr "以下からのRPCとウェブリクエストを処理「{path}」"
 
-msgid "Couldn't test port: {error} ({error_code})"
-msgstr "ポートをテストできません: {error} ({error_code})"
-
-msgid "Couldn't fetch blocklist: {error} ({error_code})"
-msgstr "ブロックリストを取得できません: {error} ({error_code})"
-
-msgid "Couldn't fetch torrent: {error} ({error_code})"
-msgstr "トレントを取得できません: {error} ({error_code})"
-
-msgid "Time to turn off turtle mode"
-msgstr "亀モード解除の時間"
-
-msgid "Time to turn on turtle mode"
+#, fuzzy
+#| msgid "Time to turn on turtle mode"
+msgid "Time to turn on alternative speed limits"
 msgstr "亀モード開始の時間"
 
-msgid "Couldn't open session lock file '{path}': {error} ({error_code})"
-msgstr "セッションのロックファイルを開けません「{path}」: {error} ({error_code})"
+#, fuzzy
+#| msgid "Time to turn off turtle mode"
+msgid "Time to turn off alternative speed limits"
+msgstr "亀モード解除の時間"
 
 msgid "Listening to incoming peer connections on {hostport}"
 msgstr "以下で接続してくるピア接続を待ち受け{hostport}"
 
 msgid "{appname} version {version} starting"
 msgstr "{appname} バージョン{version} 開始"
+
+msgid "Couldn't start disk IO workers, continuing without them: {error}"
+msgstr ""
 
 msgid "{appname} version {version} shutting down"
 msgstr "{appname} バージョン {version} シャットダウン"
@@ -1805,8 +2391,11 @@ msgid "Loaded {count} torrent"
 msgid_plural "Loaded {count} torrents"
 msgstr[0] "{count} トレントを読み込みました"
 
-msgid "Migrated torrent file from '{old_path}' to '{path}'"
-msgstr "トレントファイルを移行「{old_path}」から「{path}」へ"
+msgid "Couldn't claim '{path}'. If another session is using it, the two will overwrite each other's settings, resume files and stats."
+msgstr ""
+
+msgid "Couldn't open session lock file '{path}': {error} ({error_code})"
+msgstr "セッションのロックファイルを開けません「{path}」: {error} ({error_code})"
 
 msgid "Couldn't use metainfo from '{path}' for '{magnet}': {error} ({error_code})"
 msgstr "「{path}」からのメタ情報が使用できません。 「{magnet}」用のものです: {error} ({error_code})"
@@ -1838,14 +2427,32 @@ msgstr "すべてのトレントファイルを除去できませんでした: {
 msgid "Removing torrent"
 msgstr "トレントの削除"
 
-msgid "Couldn't move '{old_path}' to '{path}': {error} ({error_code})"
-msgstr "移動できません。「{old_path}」から「{path}」へ: {error} ({error_code})"
+#, fuzzy
+#| msgid "Couldn't remove all torrent files: {error} ({error_code})"
+msgid "Couldn't move torrent files to '{path}': {error} ({error_code})"
+msgstr "すべてのトレントファイルを除去できませんでした: {error} ({error_code})"
 
 msgid "Paused torrent as no data was found! Ensure your drives are connected or use \"Set Location\", then use \"Verify Local Data\" again. To re-download, start the torrent."
 msgstr "データがないためトレントを停止しました。ドライブの接続を確認したり「場所の設定」の後、「取得データの検証」を行います。再ダウンロードするにはトレントを開始します。"
 
+msgid "Couldn't move '{old_path}' to '{path}': {error} ({error_code})"
+msgstr "移動できません。「{old_path}」から「{path}」へ: {error} ({error_code})"
+
 msgid "Tracker warning: '{warning}' ({url})"
 msgstr "トラッカーの警告: '{warning}' ({url})"
+
+#, fuzzy
+#| msgid "Removing torrent file '{path}'"
+msgid "Moving '{source}' will overwrite '{path}'"
+msgstr "トレントファイルを削除「{path}」"
+
+#, fuzzy
+#| msgid "Couldn't move '{old_path}' to '{path}': {error} ({error_code})"
+msgid "Couldn't compare '{path}' with '{root}': {error} ({error_code}); leaving it alone"
+msgstr "移動できません。「{old_path}」から「{path}」へ: {error} ({error_code})"
+
+msgid "Migrated torrent file from '{old_path}' to '{path}'"
+msgstr "トレントファイルを移行「{old_path}」から「{path}」へ"
 
 msgid "Couldn't parse '{filename}' line: '{line}'"
 msgstr "解析負荷「{filename}」の{line}行"
@@ -1874,8 +2481,77 @@ msgstr ""
 msgid "Unknown socket family"
 msgstr "不明なソケットファミリー"
 
-msgid "Couldn't read '{path}': Not a regular file"
-msgstr "以下を読み込めません「{path}」: 通常のファイルではありません"
+#, fuzzy
+msgid "B"
+msgstr ""
+"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"バイト\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"B"
+
+#, fuzzy
+msgid "KiB"
+msgstr ""
+"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"KB\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"KiB"
+
+#, fuzzy
+msgid "MiB"
+msgstr ""
+"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"MB\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"MiB"
+
+#, fuzzy
+msgid "GiB"
+msgstr ""
+"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"GB\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"GiB"
+
+#, fuzzy
+msgid "TiB"
+msgstr ""
+"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"TB\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"TiB"
+
+#, fuzzy
+msgid "B/s"
+msgstr ""
+"#-#-#-#-#  ja.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"バイト/秒\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"B/秒"
+
+msgid "kB/s"
+msgstr "kB/秒"
+
+msgid "MB/s"
+msgstr "MB/秒"
+
+msgid "GB/s"
+msgstr "GB/秒"
+
+msgid "TB/s"
+msgstr "TB/秒"
+
+msgid "kB"
+msgstr "kB"
+
+msgid "MB"
+msgstr "MB"
+
+msgid "GB"
+msgstr "GB"
+
+msgid "TB"
+msgstr "TB"
 
 msgid "Couldn't parse JSON at position {position} '{text}': {error} ({error_code})"
 msgstr "JSON の以下の位置と内容を解析できません {position}「{text}」: {error} ({error_code})"
@@ -1883,17 +2559,14 @@ msgstr "JSON の以下の位置と内容を解析できません {position}「{t
 msgid "Couldn't watch '{path}': {error} ({error_code})"
 msgstr "以下を監視できません「{path}」: {error} ({error_code})"
 
-msgid "Couldn't read event: {error} ({error_code})"
-msgstr "イベントを読み取れません: {error} ({error_code})"
-
 msgid "Couldn't read event: expected {expected_size}, got {actual_size}"
 msgstr "イベントを読み取れません: 期待値{expected_size}, 実測値 {actual_size}"
 
-msgid "Couldn't read filename: {error} ({error_code})"
-msgstr "ファイル名を読み取れません: {error} ({error_code})"
-
 msgid "Couldn't read filename: expected {expected_size}, got {actual_size}"
 msgstr "ファイル名を読み取れません: 期待値 {expected_size}, 実測値 {actual_size}"
+
+msgid "Couldn't read event: {error} ({error_code})"
+msgstr "イベントを読み取れません: {error} ({error_code})"
 
 msgid "Couldn't convert '{path}' to native path"
 msgstr "「{path}」をネイティブのパスに変換できません"
@@ -1913,10 +2586,15 @@ msgstr "ディレクトリの変更を待機できません"
 msgid "Consider upgrading your curl installation."
 msgstr "curl のアップグレードを考慮してください。"
 
+msgid "The minimum supported version is {curl_version}, you might face unexpected behaviour."
+msgstr ""
+
 msgid "curl {curl_version} is prone to SIGPIPE crashes. {details_url}"
 msgstr "curl {curl_version} は SIGPIPE クラッシュを起こしやすいです。{details_url}"
 
-msgid "curl {curl_version} is prone to an eventfd double close vulnerability that might cause SIGABRT crashes for the transmission-daemon systemd service. {details_url}"
+#, fuzzy
+#| msgid "curl {curl_version} is prone to an eventfd double close vulnerability that might cause SIGABRT crashes for the transmission-daemon systemd service. {details_url}"
+msgid "curl {curl_version} is prone to an eventfd double close vulnerability that might cause SIGABRT crashes for the daemon systemd service. {details_url}"
 msgstr "curl {curl_version} には、eventfd にて二重にクローズする脆弱性があり、 transmission-daemon systemd サービスに SIGABRT クラッシュを引き起こすことがあります。{details_url}"
 
 msgid "Will verify tracker certs using envvar CURL_CA_BUNDLE: {bundle}"
@@ -1928,8 +2606,387 @@ msgstr "注: nssではなく、openssl か gnutls のある libcurl に対して
 msgid "NB: Invalid certs will appear as 'Could not connect to tracker' like many other errors"
 msgstr "注: 無効な証明書では、多くのほかのエラーのように「トラッカーに接続できません」となります"
 
+msgid "Aborting request: response body exceeded max size of {max_file_size} bytes"
+msgstr ""
+
 msgid "Couldn't fetch '{url}': expected HTTP response code {expected_code}, got {actual_code}"
 msgstr "以下から取得できません {url} : 期待する応答コード {expected_code}、実際は {actual_code}"
+
+msgid "Server"
+msgstr "サーバー"
+
+msgid "C_redits"
+msgstr "クレジット(_R)"
+
+msgid "Credits"
+msgstr "クレジット"
+
+msgid "About {appname}"
+msgstr "{appname} について"
+
+msgid "Torrent Completed"
+msgstr "トレント完了"
+
+msgid "Torrents Completed"
+msgstr "トレント完了"
+
+#. Translators: Text following the "Have:" label in torrent properties dialog;
+#. {current_size} is amount of downloaded and verified data
+msgid "{current_size} (100%)"
+msgstr "{current_size} (100%)"
+
+msgid "{current_size} of {complete_size} ({percent_done}%), {unverified_size} Unverified"
+msgstr "{current_size} / {complete_size} ({percent_done}%), {unverified_size} 未検証"
+
+msgid "{total_size} ({piece_count:L} piece @ {piece_size})"
+msgid_plural "{total_size} ({piece_count:L} pieces @ {piece_size})"
+msgstr[0] "{total_size} ({piece_count:L} ピース @ {piece_size})"
+
+msgid "{total_size} ({piece_count:L} piece)"
+msgid_plural "{total_size} ({piece_count:L} pieces)"
+msgstr[0] "{total_size} ({piece_count:L} ピース)"
+
+msgid "Add URL(s)"
+msgstr "URL を追加"
+
+msgid "Add tracker announce URLs, one per line:"
+msgstr "トラッカーのアナウンスURL, 1行ごと:"
+
+msgid "No new URLs found."
+msgstr "新規の URL はありませんでした。"
+
+msgid "Use Global Settings"
+msgstr "全体設定を使用"
+
+msgid "Stop seeding if idle for:"
+msgstr "アイドル状態でシード停止:"
+
+msgid "Torrent Properties"
+msgstr "トレントのプロパティ"
+
+msgid "Availability:"
+msgstr "可用性:"
+
+msgid "Labels:"
+msgstr "ラベル:"
+
+msgid "Limit _upload speed:"
+msgstr "アップロード速度制限 (_U):"
+
+msgid "Limit _download speed:"
+msgstr "ダウンロード速度制限 (_D):"
+
+msgid "Check Selected"
+msgstr "選択項目をチェック"
+
+msgid "Uncheck Selected"
+msgstr "選択項目のチェックを外す"
+
+msgid "Only Check Selected"
+msgstr "選択項目のみチェック"
+
+msgid "Open"
+msgstr "開く"
+
+msgid "Rename…"
+msgstr "改名…"
+
+msgid "Search…"
+msgstr "検索…"
+
+msgid "<i>Calculating Free Space…</i>"
+msgstr "<i>空き容量の計算中…</i>"
+
+msgid "Limited at {speed}"
+msgstr "{speed} に制限"
+
+#. Translators: Second (optional) part of main window title "Appname - host:port" (added when connected to remote session)
+#. notice that leading space (before the dash) is included here
+msgid " - {host}:{port}"
+msgstr " - {host}:{port}"
+
+msgid "Network Error"
+msgstr "ネットワークエラー"
+
+msgid "Idle"
+msgstr "アイドル"
+
+msgid "Showing {visible_count:L} of {count:L} torrent"
+msgid_plural "Showing {visible_count:L} of {count:L} torrents"
+msgstr[0] "{visible_count:L} / {count:L} トレントを表示中"
+
+msgid "Torrent Files (*.torrent);;All Files (*.*)"
+msgstr "トレントファイル (*.torrent);;すべてのファイル (*.*)"
+
+msgid "{host} has not responded yet"
+msgstr "{host} はまだ応答なし"
+
+msgid "{host} is responding"
+msgstr "{host} は応答中"
+
+#, fuzzy
+#| msgid "{host} last responded {time_span} ago"
+msgid "{host} last responded {time_span_ago}"
+msgstr "{host} 最後の応答は {time_span} 前"
+
+msgid "{host} is not responding"
+msgstr "{host} は応答していない"
+
+msgid "_Open…"
+msgstr "開く(_O)"
+
+msgid "Create a new torrent"
+msgstr "新規トレントの作成"
+
+msgid "Open the torrent's folder"
+msgstr "トレントのフォルダを開く"
+
+msgid "Ask tracker for more peers"
+msgstr "トラッカーにピアの増加を要求"
+
+msgid "Verify local data"
+msgstr "取得データを検証"
+
+msgid "Remove torrent and delete its files"
+msgstr "このトレントとそのファイルも削除"
+
+msgid "Compact View"
+msgstr "コンパクト表示"
+
+msgid "_Main Window"
+msgstr "メインウィンドウ(_M)"
+
+msgid "Tray _Icon"
+msgstr "トレイアイコン(_I)"
+
+msgid "_Change Session…"
+msgstr "セッションの変更(_C)"
+
+#. Start a local session or connect to a running session
+msgid "Choose Session"
+msgstr "セッションの選択"
+
+msgid "Bypass the queue and start now"
+msgstr "順番待ちを飛ばしてすぐに開始"
+
+msgid "{file_count:L} File"
+msgid_plural "{file_count:L} Files"
+msgstr[0] "{file_count:L} ファイル"
+
+msgid "{piece_count:L} Piece"
+msgid_plural "{piece_count:L} Pieces"
+msgstr[0] "{piece_count:L} ピース"
+
+msgid "{total_size} in {files}; {pieces} @ {piece_size}"
+msgstr "{total_size} の {files}; {pieces} @ {piece_size}"
+
+msgid ""
+"To add a backup URL, add it on the line after the primary URL.\n"
+"To add another primary URL, add it after a blank line."
+msgstr ""
+"代替 URL を追加するには、プライマリ URL の後の行に追加します。\n"
+"別のプライマリ URL は、空白行の後に追加します。"
+
+#, fuzzy
+#| msgid "_Source:"
+msgid "Sou_rce:"
+msgstr "入力元(_S):"
+
+msgid "_Priority:"
+msgstr "優先度(_P):"
+
+msgid "Select Folder"
+msgstr "フォルダの選択"
+
+msgid "unknown"
+msgstr "不明"
+
+msgid "checking…"
+msgstr "確認中..."
+
+msgid "open"
+msgstr "開く"
+
+msgid "closed"
+msgstr "閉鎖"
+
+msgid "error"
+msgstr "エラー"
+
+msgid "<b>Update succeeded!</b><p>Blocklist now has {count:L} rule.</p>"
+msgid_plural "<b>Update succeeded!</b><p>Blocklist now has {count:L} rules.</p>"
+msgstr[0] "<b>更新成功!</b><p>ブロックリストに {count:L} 個の規則があります。</p>"
+
+msgid "Download of the blocklist failed."
+msgstr ""
+
+msgid "Update Blocklist"
+msgstr "ブロックリストの更新"
+
+msgid "Select \"Torrent Done Seeding\" Script"
+msgstr "「トレントシード完了」スクリプトの選択"
+
+msgid "Select Watch Directory"
+msgstr "監視するフォルダを選択"
+
+msgid "Select Incomplete Directory"
+msgstr "未完了フォルダの選択"
+
+msgid "Select \"Torrent Done Downloading\" Script"
+msgstr "「トレントダウンロード完了」スクリプトの選択"
+
+msgid "Not supported by remote sessions"
+msgstr "リモートセッションからは変更できません"
+
+msgid "<i>Blocklist contains {count:L} rule</i>"
+msgid_plural "<i>Blocklist contains {count:L} rules</i>"
+msgstr[0] "<i>ブロックリスト内に {count:L} 個の規則があります</i>"
+
+#, fuzzy
+#| msgid "<i>Blocklist contains {count:L} rule</i>"
+#| msgid_plural "<i>Blocklist contains {count:L} rules</i>"
+msgid "<i>Blocklist has never been updated</i>"
+msgstr "<i>ブロックリスト内に {count:L} 個の規則があります</i>"
+
+#, fuzzy
+#| msgid "<i>Blocklist contains {count:L} rule</i>"
+#| msgid_plural "<i>Blocklist contains {count:L} rules</i>"
+msgid "<i>Blocklist last updated {date}</i>"
+msgstr "<i>ブロックリスト内に {count:L} 個の規則があります</i>"
+
+msgid "_Upload:"
+msgstr "アップロード(_U):"
+
+msgid "_Download:"
+msgstr "ダウンロード(_D):"
+
+msgid "U_pload:"
+msgstr "アップロード(_P):"
+
+msgid "Do_wnload:"
+msgstr "ダウンロード(_W):"
+
+msgid "Downloading"
+msgstr "ダウンロード"
+
+msgid "Adding"
+msgstr "追加"
+
+msgid "Reads user clipboard content for torrents"
+msgstr "クリップボードの内容をトレント用に読み取る"
+
+msgid "Detect new torrents from clipboard"
+msgstr "クリップボードから新規トレントを検出"
+
+#. Please keep this phrase as short as possible, it's currently the longest and influences dialog width
+msgid "Download is i_nactive if data sharing stopped:"
+msgstr "データ共有停止でダウンロード未稼働に(_N):"
+
+msgid "Seeding"
+msgstr "シード"
+
+msgid "Stop seedi_ng if idle for:"
+msgstr "アイドル状態でシード停止(_N):"
+
+msgid "Encryption"
+msgstr "暗号化"
+
+msgid "Start _minimized in notification area"
+msgstr "起動時に通知領域に最小化(_M)"
+
+#, fuzzy
+#| msgid "Retransmission"
+msgid "Retransmission (Qt)"
+msgstr "Retransmission"
+
+msgid "Select Location"
+msgstr "保存場所を選択"
+
+msgid "Error Renaming Path"
+msgstr "パスの改名時のエラー"
+
+msgid "Unable to rename \"{old_path}\" as \"{path}\": {error}."
+msgstr "「{old_path}」を「{path}」に改名できません: {error}。"
+
+msgid "Error Adding Torrent"
+msgstr "トレント追加時のエラー"
+
+msgid "{torrent_name} (copy of {hash})"
+msgstr "{torrent_name} ({hash} のコピー)"
+
+msgid "Duplicate Torrent"
+msgstr "トレントの重複"
+
+msgid "Duplicate Torrents"
+msgstr "トレントの重複"
+
+msgid "Unable to add {count} duplicate torrent"
+msgid_plural "Unable to add {count} duplicate torrents"
+msgstr[0] "{count}個の重複したトレントを追加できません"
+
+msgid "Change Session"
+msgstr "セッションの変更"
+
+msgid "Source"
+msgstr "接続先"
+
+msgid "Start _Local Session"
+msgstr "このPCでセッションを開始(_L)"
+
+msgid "Connect to _Remote Session"
+msgstr "リモートセッションに接続(_R)"
+
+msgid "_Host:"
+msgstr "ホスト(_H):"
+
+msgid "_Port:"
+msgstr "ポート(_P):"
+
+msgid "_Authentication required"
+msgstr "認証あり(_A)"
+
+msgid "Remote root pa_th:"
+msgstr ""
+
+msgid "Tracker gave a warning: {warning}"
+msgstr "トラッカーが警告しました: {warning}"
+
+msgid "Tracker gave an error: {error}"
+msgstr "トラッカーのエラー: {error}"
+
+msgid "Error: {error}"
+msgstr "エラー: {error}"
+
+#, fuzzy
+#| msgid "Magnetized transfer - retrieving metadata (%1%)"
+msgid "Magnetized torrent - retrieving metadata ({percent_done}%)"
+msgstr "マグネット転送 - メタ情報を取得中 (%1%)"
+
+#, no-c-format
+msgid "Downloading metadata from {active_count:L} peer ({percent_done}% done)"
+msgid_plural "Downloading metadata from {active_count:L} peers ({percent_done}% done)"
+msgstr[0] "{active_count:L} ピアからメタ情報をダウンロード中 ({percent_done}% 完了)"
+
+msgid "Downloading from {active_count:L} peer"
+msgid_plural "Downloading from {active_count:L} peers"
+msgstr[0] "ダウンロード中, {active_count:L} ピア"
+
+msgid " and {webseed_count:L} web seed"
+msgid_plural " and {webseed_count:L} web seeds"
+msgstr[0] "と {webseed_count:L} のウェブシードから"
+
+msgid "Seeding to {active_count:L} peer"
+msgid_plural "Seeding to {active_count:L} peers"
+msgstr[0] "{active_count:L} ピアにシード中"
+
+msgid " - "
+msgstr " - "
+
+msgid "To add a backup URL, add it on the next line after a primary URL."
+msgstr "代替 URLを追加するには、プライマリ URL の次の行に追加します。"
+
+msgid "To add a new primary URL, add it after a blank line."
+msgstr "新しいプライマリURLを追加するときは、空白行を挟んで追加してください。"
 
 msgid "{file_count:L} file, {total_size}\n"
 msgid_plural "{file_count:L} files, {total_size}\n"
@@ -1947,13 +3004,115 @@ msgid "minute"
 msgid_plural "minutes"
 msgstr[0] "分"
 
-msgid "seconds"
+#, fuzzy
+#| msgid "seconds"
+#| msgid_plural "seconds"
+msgid "second"
 msgid_plural "seconds"
 msgstr[0] "秒"
 
 msgid "day"
 msgid_plural "days"
 msgstr[0] "日"
+
+msgid "seconds"
+msgid_plural "seconds"
+msgstr[0] "秒"
+
+#~ msgid "Finished"
+#~ msgstr "完了"
+
+#~ msgid "We would upload to this peer if they asked"
+#~ msgstr "ピアから要求されればアップロード可能"
+
+#~ msgid "Dn Blocks"
+#~ msgstr "下りブロック"
+
+#~ msgid "Up Blocks"
+#~ msgstr "上りブロック"
+
+#~ msgid "We Cancelled"
+#~ msgstr "こちら側でキャンセルされました"
+
+#~ msgid "They Cancelled"
+#~ msgstr "相手側でキャンセルされました"
+
+#~ msgid "Have"
+#~ msgstr "所有"
+
+#~ msgctxt "current session totals"
+#~ msgid "Down: {downloaded_size}, Up: {uploaded_size}"
+#~ msgstr "ダウン: {downloaded_size}, アップ: {uploaded_size}"
+
+#~ msgctxt "all-time totals"
+#~ msgid "Down: {downloaded_size}, Up: {uploaded_size}"
+#~ msgstr "ダウン: {downloaded_size}, アップ: {uploaded_size}"
+
+#~ msgid "Select a File"
+#~ msgstr "ファイルを選択"
+
+#~ msgid "Inhibiting desktop hibernation"
+#~ msgstr "デスクトップの休止状態を抑制中"
+
+#~ msgid "Couldn't inhibit desktop hibernation: {error}"
+#~ msgstr "デスクトップの休止状態を抑制できませんでした: {error}"
+
+#~ msgid "Allowing desktop hibernation"
+#~ msgstr "デスクトップの休止状態を許可中"
+
+#~ msgid "Open URL…"
+#~ msgstr "URLを開く…"
+
+#~ msgid "Start all torrents"
+#~ msgstr "すべてのトレントを開始"
+
+#~ msgid "Pause all torrents"
+#~ msgstr "すべてのトレントを停止"
+
+#~ msgid "Start torrent now"
+#~ msgstr "トレントをすぐに開始する"
+
+#~ msgid "Copy _Magnet Link to Clipboard"
+#~ msgstr "マグネットリンクをコピー(_M)"
+
+#~ msgid "Enable Alternative Speed _Limits"
+#~ msgstr "一時的な速度制限を有効化(_L)"
+
+#~ msgid "Torrent size:"
+#~ msgstr "トレントのサイズ:"
+
+#~ msgid "_New"
+#~ msgstr "新規(_N)"
+
+#~ msgid "Source F_older:"
+#~ msgstr "対象フォルダ(_O):"
+
+#~ msgid "Source _File:"
+#~ msgstr "対象ファイル(_F):"
+
+#~ msgid "P_ause"
+#~ msgstr "一時停止(_A)"
+
+#~ msgid "Keep _incomplete torrents in:"
+#~ msgstr "未完了トレントの保存先(_I):"
+
+#~ msgid "Call scrip_t when done downloading:"
+#~ msgstr "ダウンロード完了時に呼ぶスクリプト(_T):"
+
+#~ msgid "_Port used for incoming connections:"
+#~ msgstr "応答接続に使うポート(_P):"
+
+#~ msgid "Enable µ_TP for peer communication"
+#~ msgstr "ピア通信用の µTP を使用(_TP)"
+
+#~ msgid "_Inhibit hibernation when torrents are active"
+#~ msgstr "トレント稼働中は休止状態を抑制(_I)"
+
+#~ msgid "Torrent _location:"
+#~ msgstr "トレントの保存場所(_L):"
+
+#~ msgid "Couldn't read filename: {error} ({error_code})"
+#~ msgstr "ファイル名を読み取れません: {error} ({error_code})"
 
 #~ msgid "Couldn't find pending RPC request for tag {tag}"
 #~ msgstr "タグ {tag} 用の待機中のRPC要求はありません"

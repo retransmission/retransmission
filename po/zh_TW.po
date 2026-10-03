@@ -14,8 +14,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-01-04 14:15+0000\n"
+"Report-Msgid-Bugs-To: https://github.com/retransmission/retransmission/issues\n"
+"POT-Creation-Date: 2026-10-03 11:48-0500\n"
 "PO-Revision-Date: 2017-01-26 19:47+0000\n"
 "Last-Translator: taijuin lee, 2025\n"
 "Language-Team: Chinese (Taiwan) (https://app.transifex.com/transmissionbt/teams/33778/zh_TW/)\n"
@@ -30,6 +30,9 @@ msgstr "無"
 
 msgid "Inf"
 msgstr "Inf"
+
+msgid "Another process is already using '{path}'."
+msgstr ""
 
 msgid "Couldn't read '{path}': {error} ({error_code})"
 msgstr "無法讀取 '{path}': {error} ({error_code})"
@@ -57,6 +60,9 @@ msgstr "正在從 '{path}' 重新載入設定"
 
 msgid "Couldn't initialize daemon: {error} ({error_code})"
 msgstr "無法初始化常駐程式：{error} ({error_code})"
+
+msgid "Waiting for another process to release '{path}'"
+msgstr ""
 
 msgid "Loading settings from '{path}'"
 msgstr "正在從 '{path}' 讀取設定"
@@ -105,8 +111,13 @@ msgid "Couldn't add duplicate torrent"
 msgid_plural "Couldn't add duplicate torrents"
 msgstr[0] "無法加入重複的 torrents"
 
+#, fuzzy
 msgid "A fast and easy BitTorrent client"
-msgstr "一個快速而簡單的 BitTorrent 用戶端"
+msgstr ""
+"#-#-#-#-#  zh_TW.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"一個快速而簡單的 BitTorrent 用戶端\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"簡單快速的 BitTorrent 用戶端"
 
 msgid "Copyright © The {appname} Project"
 msgstr "Copyright © The {appname} Project"
@@ -177,14 +188,21 @@ msgctxt "Verb"
 msgid "Seeding"
 msgstr "正在做種"
 
-msgid "Finished"
-msgstr "已完成"
+#, fuzzy
+#| msgid "Incomplete"
+msgid "Seeding complete"
+msgstr "未完成"
 
 msgid "Paused"
 msgstr "已暫停"
 
+#, fuzzy
 msgid "N/A"
-msgstr "不明"
+msgstr ""
+"#-#-#-#-#  zh_TW.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"不明\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"不適用"
 
 msgid "Mixed"
 msgstr "混合"
@@ -204,8 +222,13 @@ msgstr "由 {creator} 於 {date} 建立"
 msgid "Created by {creator}"
 msgstr "由 {creator} 建立"
 
+#, fuzzy
 msgid "Created on {date}"
-msgstr "建立於 {date}"
+msgstr ""
+"#-#-#-#-#  zh_TW.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"建立於 {date}\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"於 {date} 建立"
 
 msgid "Unknown"
 msgstr "未知"
@@ -225,6 +248,8 @@ msgstr "{current_size} ({percent_done}%)"
 msgid "{current_size} ({percent_done}% of {percent_available}% available)"
 msgstr "{current_size} ({percent_available}% 中的 {percent_done}% 可用)"
 
+#, fuzzy, c-format
+#| msgid "{current_size} ({percent_done}% of {percent_available}% available; {unverified_size} unverified)"
 msgid "{current_size} ({percent_done}% of {percent_available}% available; {unverified_size} unverified)"
 msgstr "{current_size} ({percent_available}% 中的 {percent_done}% 可用，{unverified_size} 未驗證)"
 
@@ -255,8 +280,10 @@ msgstr "如果對方允許，我們將從該節點下載"
 msgid "Uploading to peer"
 msgstr "正在上傳到該節點"
 
-msgid "We would upload to this peer if they asked"
-msgstr "如果對方請求，我們將上傳到該節點"
+#, fuzzy
+#| msgid "We would download from this peer if they would let us"
+msgid "This peer would download from us if we would let them"
+msgstr "如果對方允許，我們將從該節點下載"
 
 msgid "Peer has unchoked us, but we're not interested"
 msgstr "該節點已宣告暢通，但我們不感興趣"
@@ -276,13 +303,20 @@ msgstr "透過 DHT 探索到的節點"
 msgid "Peer is an incoming connection"
 msgstr "該節點為傳入連線"
 
+#, fuzzy
 msgid "Peer is connected over µTP"
-msgstr "透過 µTP 連線的節點"
+msgstr ""
+"#-#-#-#-#  zh_TW.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"透過 µTP 連線的節點\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"該節點為 µTP 連線"
+
+msgid "Peer supports holepunch (BEP 55)"
+msgstr ""
 
 msgid "Address"
 msgstr "位址"
 
-#. % is percent done
 msgid "%"
 msgstr "%"
 
@@ -292,26 +326,31 @@ msgstr "下載請求"
 msgid "Up Reqs"
 msgstr "上傳請求"
 
-msgid "Dn Blocks"
-msgstr "下載區塊"
-
-msgid "Up Blocks"
-msgstr "上傳區塊"
-
-msgid "We Cancelled"
-msgstr "我們已取消"
-
-msgid "They Cancelled"
-msgstr "他們已取消"
-
+#, fuzzy
 msgid "Down"
-msgstr "下載"
+msgstr ""
+"#-#-#-#-#  zh_TW.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"下載\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"下"
 
+#, fuzzy
 msgid "Up"
-msgstr "上傳"
+msgstr ""
+"#-#-#-#-#  zh_TW.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"上傳\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"上"
 
+#, fuzzy
 msgid "Client"
-msgstr "用戶端"
+msgstr ""
+"#-#-#-#-#  zh_TW.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"用戶端\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"用戶端\n"
+"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"客戶端"
 
 msgid "Flags"
 msgstr "旗標"
@@ -319,63 +358,19 @@ msgstr "旗標"
 msgid "Web Seeds"
 msgstr "網路種子"
 
-msgid "Got a list of {markup_begin}{peer_count} peer{markup_end} {time_span_ago}"
-msgid_plural "Got a list of {markup_begin}{peer_count} peers{markup_end} {time_span_ago}"
-msgstr[0] "已於 {time_span_ago} 之前取得{markup_begin}{peer_count} 個節點{markup_end}的清單"
-
-#. {markup_begin} and {markup_end} should surround the time_span
-msgid "Peer list request {markup_begin}timed out {time_span_ago}{markup_end}; will retry"
-msgstr "在 {time_span_ago} 之前請求節點清單{markup_begin}逾時{markup_end}，正在重試。"
-
-#. {markup_begin} and {markup_end} should surround the error
-msgid "Got an error '{markup_begin}{error}{markup_end}' {time_span_ago}"
-msgstr "在 {time_span_ago} 之前發生錯誤 '{markup_begin}{error}{markup_end}'"
-
-msgid "No updates scheduled"
-msgstr "沒有已排定的更新"
-
-msgid "Asking for more peers {time_span_from_now}"
-msgstr "將於 {time_span_from_now} 請求更多節點"
-
-msgid "Queued to ask for more peers"
-msgstr "已排程請求更多節點"
-
-#. {markup_begin} and {markup_end} should surround time_span_ago
-msgid "Asked for more peers {markup_begin}{time_span_ago}{markup_end}"
-msgstr "已於 {markup_begin}{time_span_ago}{markup_end} 之前請求更多節點"
-
-msgid "Tracker had {markup_begin}{seeder_count} {seeder_or_seeders} and {leecher_count} {leecher_or_leechers}{markup_end} {time_span_ago}"
-msgstr "該追蹤器在 {time_span_ago} 前有 {markup_begin}{seeder_count} 個 {seeder_or_seeders} 及 {leecher_count} 個 {leecher_or_leechers}{markup_end} "
-
-msgid "seeder"
-msgid_plural "seeders"
-msgstr[0] "做種者"
-
-msgid "leecher"
-msgid_plural "leechers"
-msgstr[0] "下載者"
-
-#. {markup_begin} and {markup_end} should surround the error text
-msgid "Got a scrape error '{markup_begin}{error}{markup_end}' {time_span_ago}"
-msgstr "擷取時發生錯誤 '{markup_begin}{error}{markup_end}' {time_span_ago}"
-
-msgid "Asking for peer counts in {time_span_from_now}"
-msgstr "將於 {time_span_from_now} 請求節點數量"
-
-msgid "Queued to ask for peer counts"
-msgstr "已排程請求節點數量"
-
-msgid "Asked for peer counts {markup_begin}{time_span_ago}{markup_end}"
-msgstr "已於 {markup_begin}{time_span_ago}{markup_end} 之前請求節點數量"
-
 msgid "{torrent_name} - Edit Trackers"
 msgstr "{torrent_name} - 編輯追蹤器"
 
 msgid "List contains invalid URLs"
 msgstr "清單包含無效的網址"
 
+#, fuzzy
 msgid "Please correct the errors and try again."
-msgstr "請修正錯誤並重試。"
+msgstr ""
+"#-#-#-#-#  zh_TW.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"請修正錯誤並重試。\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"請修正錯誤後再試一次。"
 
 msgid "{torrent_name} - Add Tracker"
 msgstr "{torrent_name} - 加入追蹤器"
@@ -390,44 +385,91 @@ msgid "Properties - {torrent_count:L} Torrent"
 msgid_plural "Properties - {torrent_count:L} Torrents"
 msgstr[0] "內容 - {torrent_count:L} 個 Torrents"
 
+#, fuzzy
 msgid "Remove torrent?"
-msgstr "移除 {count:L} 個 torrents？"
+msgstr ""
+"#-#-#-#-#  zh_TW.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"移除 {count:L} 個 torrents？\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"移除 Torrent?"
 
+#, fuzzy
+msgid "Delete this torrent's downloaded files?"
+msgstr ""
+"#-#-#-#-#  zh_TW.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"刪除這些 {count:L} torrents 已下載的檔案？\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"刪除這個 torrent 已下載的檔案？"
+
+#, fuzzy
 msgid "Remove {count:L} torrent?"
 msgid_plural "Remove {count:L} torrents?"
-msgstr[0] "移除 {count:L} 個 torrents？"
+msgstr[0] ""
+"#-#-#-#-#  zh_TW.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"移除 {count:L} 個 torrents？\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"移除 {count:L} 個 Torrents?"
 
-msgid "Delete this torrent's downloaded files?"
-msgstr "刪除這些 {count:L} torrents 已下載的檔案？"
-
+#, fuzzy
 msgid "Delete this {count:L} torrent's downloaded files?"
 msgid_plural "Delete these {count:L} torrents' downloaded files?"
-msgstr[0] "刪除這些 {count:L} torrents 已下載的檔案？"
+msgstr[0] ""
+"#-#-#-#-#  zh_TW.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"刪除這些 {count:L} torrents 已下載的檔案？\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"刪除這些 torrents 已下載的檔案？"
 
-msgid "Once removed, continuing the transfer will require the torrent file or magnet link."
-msgid_plural "Once removed, continuing the transfers will require the torrent files or magnet links."
-msgstr[0] "若您將其移除，需要使用 torrent 檔案或磁力連結才能繼續傳輸。"
+#, fuzzy
+#| msgid "Once removed, continuing the transfer will require the torrent file or magnet link."
+#| msgid_plural "Once removed, continuing the transfers will require the torrent files or magnet links."
+msgid "Once removed, you'll need the torrent file or magnet link to add it again."
+msgstr "若您將其移除，需要使用 torrent 檔案或磁力連結才能繼續傳輸。"
 
+#, fuzzy
+#| msgid "Once removed, continuing the transfers will require the torrent files or magnet links."
+msgid "Once removed, you'll need the torrent files or magnet links to add them again."
+msgstr "若您將其移除，需要使用 torrent 檔案或磁力連結才能繼續傳輸。"
+
+#, fuzzy
 msgid "This torrent has not finished downloading."
-msgstr "這些 torrents 尚未完成下載。"
+msgstr ""
+"#-#-#-#-#  zh_TW.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"這些 torrents 尚未完成下載。\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"這個 torrent 尚未完成下載。"
 
 msgid "These torrents have not finished downloading."
 msgstr "這些 torrents 尚未完成下載。"
 
+#, fuzzy
 msgid "This torrent is connected to peers."
-msgstr "這些 torrents 已連線到節點。"
+msgstr ""
+"#-#-#-#-#  zh_TW.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"這些 torrents 已連線到節點。\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"這個 torrent 已連線到節點。"
 
 msgid "These torrents are connected to peers."
 msgstr "這些 torrents 已連線到節點。"
 
+#, fuzzy
 msgid "One of these torrents is connected to peers."
-msgstr "這些 torrents 其中有一些已連線到節點。"
+msgstr ""
+"#-#-#-#-#  zh_TW.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"這些 torrents 其中有一些已連線到節點。\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"這些 torrents 的其中一個已連線到節點。"
 
 msgid "Some of these torrents are connected to peers."
 msgstr "這些 torrents 其中有一些已連線到節點。"
 
+#, fuzzy
 msgid "One of these torrents has not finished downloading."
-msgstr "這些 torrents 其中有一些尚未完成下載。"
+msgstr ""
+"#-#-#-#-#  zh_TW.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"這些 torrents 其中有一些尚未完成下載。\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"這些 torrents 的其中一個尚未完成下載。"
 
 msgid "Some of these torrents have not finished downloading."
 msgstr "這些 torrents 其中有一些尚未完成下載。"
@@ -438,14 +480,20 @@ msgstr "取消 (_C)"
 msgid "_Delete"
 msgstr "刪除 (_D)"
 
+#. Removes the torrent from the list and keeps its downloaded files
 msgid "_Remove"
 msgstr "移除 (_R)"
 
 msgid "High"
 msgstr "高"
 
+#, fuzzy
 msgid "Normal"
-msgstr "中"
+msgstr ""
+"#-#-#-#-#  zh_TW.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"中\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"正常"
 
 msgid "Low"
 msgstr "低"
@@ -459,14 +507,21 @@ msgstr "檔名"
 msgid "Size"
 msgstr "大小"
 
-msgid "Have"
-msgstr "已有"
+msgid "Progress"
+msgstr "進度"
 
 msgid "Download"
 msgstr "下載"
 
+#, fuzzy
 msgid "Priority"
-msgstr "優先順序"
+msgstr ""
+"#-#-#-#-#  zh_TW.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"優先順序\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"優先順序\n"
+"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"優先性"
 
 msgid "All"
 msgstr "全部"
@@ -489,6 +544,24 @@ msgstr "顯示 {count:L} 個，總計：(_S)"
 
 msgid "{disk_space} free"
 msgstr "{disk_space} 可用"
+
+msgid "Where to look for configuration files"
+msgstr "組態檔案的位置"
+
+msgid "Start with all torrents paused"
+msgstr "啟動時暫停所有 torrents"
+
+msgid "Start minimized in notification area"
+msgstr "啟動時最小化到通知區域"
+
+msgid "Show version number and exit"
+msgstr "顯示版本號碼並離開"
+
+msgid "[torrent files or urls]"
+msgstr "[torrent 檔或是網址]"
+
+msgid "Run '{program} --help' to see a full list of available command line options.\n"
+msgstr "請執行 '{program} --help' 以檢視所有可用的命令列選項。\n"
 
 msgid ""
 "Click to disable Alternative Speed Limits\n"
@@ -528,22 +601,22 @@ msgstr "總分享率"
 msgid "Session Ratio"
 msgstr "工作階段分享率"
 
+#, fuzzy
 msgid "Total Transfer"
-msgstr "總傳輸"
+msgstr ""
+"#-#-#-#-#  zh_TW.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"總傳輸\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"全部的傳輸"
 
 msgid "Session Transfer"
 msgstr "工作階段傳輸"
 
+msgid "Down: {downloaded_size}, Up: {uploaded_size}"
+msgstr "下載: {downloaded_size}，上傳: {uploaded_size}"
+
 msgid "Ratio: {ratio}"
 msgstr "分享率：{ratio}"
-
-msgctxt "current session totals"
-msgid "Down: {downloaded_size}, Up: {uploaded_size}"
-msgstr "下載：{downloaded_size}，上傳：{uploaded_size}"
-
-msgctxt "all-time totals"
-msgid "Down: {downloaded_size}, Up: {uploaded_size}"
-msgstr "下載：{downloaded_size}上傳：{uploaded_size}"
 
 msgid "{download_speed} ▾"
 msgstr "{download_speed} ▾"
@@ -601,6 +674,11 @@ msgstr "時間"
 msgid "Couldn't create proxy for '{bus}': {error} ({error_code})"
 msgstr "無法為 '{bus}' 建立 proxy：{error} ({error_code})"
 
+#, fuzzy
+#| msgid "Couldn't save '{path}': {error} ({error_code})"
+msgid "Couldn't spawn async process \"'{command}'\": {error} ({error_code})"
+msgstr "無法儲存 '{path}'：{error} ({error_code})"
+
 msgid "Open File"
 msgstr "開啟檔案"
 
@@ -631,7 +709,10 @@ msgstr "開啟 (_O)"
 msgid "Show options dialog"
 msgstr "顯示選項對話方塊"
 
-msgid "Select a File"
+msgid "Other…"
+msgstr ""
+
+msgid "Select File"
 msgstr "選擇檔案"
 
 msgid "(None)"
@@ -649,8 +730,13 @@ msgstr "要求加密"
 msgid "Every Day"
 msgstr "每天"
 
+#, fuzzy
 msgid "Weekdays"
-msgstr "週一到週五"
+msgstr ""
+"#-#-#-#-#  zh_TW.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"週一到週五\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"週間"
 
 msgid "Weekends"
 msgstr "週末"
@@ -703,19 +789,13 @@ msgstr "無法移動 Torrent"
 msgid "This may take a moment…"
 msgstr "這可能會花上一段時間…"
 
+#, fuzzy
+#| msgid "Couldn't watch '{path}': {error} ({error_code})"
+msgid "Couldn't open watchdir '{dirname}': {error} ({error_code})"
+msgstr "無法監看 '{path}'：{error} ({error_code})"
+
 msgid "Couldn't read '{path}'"
 msgstr "無法讀取 '{path}'"
-
-#. logging
-msgid "Inhibiting desktop hibernation"
-msgstr "禁止桌面休眠"
-
-msgid "Couldn't inhibit desktop hibernation: {error}"
-msgstr "無法禁止桌面休眠：{error}"
-
-#. logging
-msgid "Allowing desktop hibernation"
-msgstr "允許桌面休眠"
 
 msgid "Couldn't find pending RPC request for id {id}"
 msgstr ""
@@ -733,6 +813,9 @@ msgstr "重設 (_R)"
 msgid "These statistics are for your information only. Resetting them doesn't affect the statistics logged by your BitTorrent trackers."
 msgstr "這些統計資料只是提供給您的資訊而已。重設它們並不會影響 BitTorrent 追蹤器上所紀錄的統計資料。"
 
+msgid "_Show {appname}"
+msgstr "顯示 {appname} (_S)"
+
 msgid "{upload_speed} ▴ {download_speed} ▾"
 msgstr "{upload_speed} ▴ {download_speed} ▾"
 
@@ -740,8 +823,13 @@ msgstr "{upload_speed} ▴ {download_speed} ▾"
 msgid "Verifying local data ({percent_done}% tested)"
 msgstr "正在驗證本機資料 (已測試 {percent_done}%)"
 
+#, fuzzy
 msgid "{current_size} of {complete_size} ({percent_done}%)"
-msgstr "{complete_size}中的 {current_size} (已完成{percent_done}%)"
+msgstr ""
+"#-#-#-#-#  zh_TW.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{complete_size}中的 {current_size} (已完成{percent_done}%)\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"{current_size} 之 {complete_size} ({percent_done}%)"
 
 msgid "{current_size} of {complete_size} ({percent_complete}%), uploaded {uploaded_size} (Ratio: {ratio}, Goal: {seed_ratio})"
 msgstr "已下載 {complete_size} 中的 {current_size} ({percent_complete}%)，已上傳 {uploaded_size} (分享率：{ratio}，目標：{seed_ratio})"
@@ -755,6 +843,7 @@ msgstr "已下載 {complete_size}，已上傳 {uploaded_size} (分享率：{rati
 msgid "{complete_size}, uploaded {uploaded_size} (Ratio: {ratio})"
 msgstr "已下載 {complete_size}，已上傳 {uploaded_size} (分享率：{ratio})"
 
+#. Translators: Second (optional) part of torrent progress string
 msgid "Remaining time unknown"
 msgstr "剩餘時間未知"
 
@@ -767,7 +856,9 @@ msgstr "已停滯"
 msgid "Tracker warning: '{warning}'"
 msgstr "追蹤器警告：'{warning}'"
 
-msgid "Tracker Error: '{error}'"
+#, fuzzy
+#| msgid "Tracker Error: '{error}'"
+msgid "Tracker error: '{error}'"
 msgstr "追蹤器錯誤：'{error}'"
 
 msgid "Local error: '{error}'"
@@ -790,162 +881,17 @@ msgid "Downloading from {active_count} of {connected_count} connected peer"
 msgid_plural "Downloading from {active_count} of {connected_count} connected peers"
 msgstr[0] "正在從 {connected_count} 中的 {active_count} 個已連線的節點下載"
 
+#, fuzzy
 msgid "Seeding to {active_count} of {connected_count} connected peer"
 msgid_plural "Seeding to {active_count} of {connected_count} connected peers"
-msgstr[0] "正在為{connected_count} 中的 {active_count} 個已連線的節點做種"
-
-msgid "{days_from_now:L} day from now"
-msgid_plural "{days_from_now:L} days from now"
-msgstr[0] "{days_from_now:L} 天後"
-
-msgid "{hours_from_now:L} hour from now"
-msgid_plural "{hours_from_now:L} hours from now"
-msgstr[0] "{hours_from_now:L} 小時後"
-
-msgid "{minutes_from_now:L} minute from now"
-msgid_plural "{minutes_from_now:L} minutes from now"
-msgstr[0] "{minutes_from_now:L} 分鐘後"
-
-msgid "{seconds_from_now:L} second from now"
-msgid_plural "{seconds_from_now:L} seconds from now"
-msgstr[0] "{seconds_from_now:L} 秒後"
-
-msgid "now"
-msgstr "現在"
-
-msgid "{days_ago:L} day ago"
-msgid_plural "{days_ago:L} days ago"
-msgstr[0] "{days_ago:L} 天前"
-
-msgid "{hours_ago:L} hour ago"
-msgid_plural "{hours_ago:L} hours ago"
-msgstr[0] "{hours_ago:L} 小時前"
-
-msgid "{minutes_ago:L} minute ago"
-msgid_plural "{minutes_ago:L} minutes ago"
-msgstr[0] "{minutes_ago:L} 分鐘前"
-
-msgid "{seconds_ago:L} second ago"
-msgid_plural "{seconds_ago:L} seconds ago"
-msgstr[0] "{seconds_ago:L} 秒前"
-
-msgid "{days:L} day"
-msgid_plural "{days:L} days"
-msgstr[0] "{days:L} 天"
-
-msgid "{hours:L} hour"
-msgid_plural "{hours:L} hours"
-msgstr[0] "{hours:L} 小時"
-
-msgid "{minutes:L} minute"
-msgid_plural "{minutes:L} minutes"
-msgstr[0] "{minutes:L} 分鐘"
-
-msgid "{seconds:L} second"
-msgid_plural "{seconds:L} seconds"
-msgstr[0] "{seconds:L} 秒"
-
-msgid "{days_left:L} day left"
-msgid_plural "{days_left:L} days left"
-msgstr[0] "剩 {days_left:L} 天"
-
-msgid "{hours_left:L} hour left"
-msgid_plural "{hours_left:L} hours left"
-msgstr[0] "剩 {hours_left:L} 小時"
-
-msgid "{minutes_left:L} minute left"
-msgid_plural "{minutes_left:L} minutes left"
-msgstr[0] "剩 {minutes_left:L} 分鐘"
-
-msgid "{seconds_left:L} second left"
-msgid_plural "{seconds_left:L} seconds left"
-msgstr[0] "剩 {seconds_left:L} 秒"
-
-msgid "The torrent file '{path}' is already in use by '{torrent_name}'."
-msgstr "該 torrent 檔案 '{path}' 已被 '{torrent_name}' 使用中。"
-
-msgid "Couldn't open torrent"
-msgstr "無法開啟 torrent"
-
-msgid "Couldn't move '{path}' to trash: {error} ({error_code})"
-msgstr "無法移動 '{path}' 到垃圾桶：{error} ({error_code})"
-
-msgid "Couldn't open '{url}'"
-msgstr "無法開啟 '{url}'"
-
-msgid "Unsupported URL: '{url}'"
-msgstr "不支援的 URL：'{url}'"
-
-#. modal
-msgid "{appname} doesn't know how to use '{url}'"
-msgstr "{appname} 不知道要如何使用 '{url}'"
-
-msgid "This magnet link appears to be intended for something other than BitTorrent."
-msgstr "該磁力連結可能使用了 BitTorrent 以外的其他協定。"
+msgstr[0] ""
+"#-#-#-#-#  zh_TW.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"正在為{connected_count} 中的 {active_count} 個已連線的節點做種\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"正在為 {connected_count} 中的 {active_count} 個已連線的節點做種"
 
 msgid "Retransmission"
 msgstr "Retransmission"
-
-#. parse the command line
-msgid "Where to look for configuration files"
-msgstr "組態檔案的位置"
-
-msgid "Start with all torrents paused"
-msgstr "啟動時暫停所有 torrents"
-
-msgid "Start minimized in notification area"
-msgstr "啟動時最小化到通知區域"
-
-msgid "Show version number and exit"
-msgstr "顯示版本號碼並離開"
-
-msgid "[torrent files or urls]"
-msgstr "[torrent 檔或是網址]"
-
-msgid "Run '{program} --help' to see a full list of available command line options.\n"
-msgstr "請執行 '{program} --help' 以檢視所有可用的命令列選項。\n"
-
-msgid "B/s"
-msgstr "B/s"
-
-msgid "GB/s"
-msgstr "GB/s"
-
-msgid "MB/s"
-msgstr "MB/s"
-
-msgid "TB/s"
-msgstr "TB/s"
-
-msgid "kB/s"
-msgstr "kB/s"
-
-msgid "B"
-msgstr "B"
-
-msgid "GiB"
-msgstr "GiB"
-
-msgid "KiB"
-msgstr "KiB"
-
-msgid "MiB"
-msgstr "MiB"
-
-msgid "TiB"
-msgstr "TiB"
-
-msgid "GB"
-msgstr "GB"
-
-msgid "MB"
-msgstr "MB"
-
-msgid "TB"
-msgstr "TB"
-
-msgid "kB"
-msgstr "kB"
 
 msgid "BitTorrent Client"
 msgstr "BitTorrent 用戶端"
@@ -963,32 +909,59 @@ msgstr "啟動 Retransmission 時暫停所有 Torrents"
 msgid "Start Retransmission Minimized"
 msgstr "啟動 Retransmission 時最小化"
 
-msgid "Open a torrent"
-msgstr "開啟 torrent"
+#, fuzzy
+#| msgid "Copyright © The Retransmission Project"
+msgid "The Retransmission Project"
+msgstr "Copyright © The Retransmission Project"
 
+#. Translators: these are the application description paragraphs in the MetaInfo file.
+msgid "BitTorrent is a peer-to-peer file-sharing protocol that is commonly used to distribute large amounts of data between multiple users."
+msgstr ""
+
+msgid "Retransmission is a BitTorrent client with an easy-to-use interface on top of a cross-platform backend. Native interfaces are available for macOS, Linux, and Windows, as well as command line binaries and a web GUI."
+msgstr ""
+
+msgid "Notable features of Retransmission include support for Local Peer Discovery, encryption, DHT, µTP, PEX and Magnet links."
+msgstr ""
+
+msgid "Main window, showing an ongoing download of Fedora Workstation"
+msgstr ""
+
+msgid "_File"
+msgstr "檔案 (_F)"
+
+#, fuzzy
 msgid "Open _URL…"
-msgstr "開啟 URL (_U)…"
+msgstr ""
+"#-#-#-#-#  zh_TW.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"開啟 URL (_U)…\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"開啟 URL… (_U)"
 
-msgid "Open URL…"
-msgstr "開啟網址…"
-
+#, fuzzy
 msgid "_New…"
-msgstr "新增 (_N)…"
+msgstr ""
+"#-#-#-#-#  zh_TW.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"新增 (_N)…\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"新增… (_N)"
 
 msgid "_Start All"
 msgstr "全部開始 (_S)"
 
-msgid "Start all torrents"
-msgstr "開始所有 torrents"
-
+#, fuzzy
 msgid "_Pause All"
-msgstr "暫停全部(_P)"
-
-msgid "Pause all torrents"
-msgstr "暫停所有 torrents"
+msgstr ""
+"#-#-#-#-#  zh_TW.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"暫停全部(_P)\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"全部暫停 (_P)"
 
 msgid "_Quit"
 msgstr "結束 (_Q)"
+
+msgid "_Edit"
+msgstr "編輯 (_E)"
 
 msgid "Select _All"
 msgstr "全選 (_A)"
@@ -999,11 +972,11 @@ msgstr "取消全選 (_L)"
 msgid "_Preferences"
 msgstr "偏好設定 (_P)"
 
+msgid "_Torrent"
+msgstr "Torrent (_T)"
+
 msgid "_Properties"
 msgstr "內容 (_P)"
-
-msgid "Torrent properties"
-msgstr "Torrent 屬性"
 
 msgid "Open Fold_er"
 msgstr "開啟資料夾 (_E)"
@@ -1011,26 +984,35 @@ msgstr "開啟資料夾 (_E)"
 msgid "_Start"
 msgstr "開始 (_S)"
 
-msgid "Start torrent"
-msgstr "開始執行 torrent"
-
 msgid "Start _Now"
 msgstr "立即開始 (_N)"
-
-msgid "Start torrent now"
-msgstr "立即開始執行 torrent"
 
 msgid "Ask Tracker for _More Peers"
 msgstr "向追蹤器請求更多節點 (_M)"
 
+#, fuzzy
+#| msgid "Queue"
+msgid "_Queue"
+msgstr "排程"
+
 msgid "Move to _Top"
 msgstr "移動到頂端 (_T)"
 
+#, fuzzy
 msgid "Move _Up"
-msgstr "上移(_U)"
+msgstr ""
+"#-#-#-#-#  zh_TW.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"上移(_U)\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"上移 (_U)"
 
+#, fuzzy
 msgid "Move _Down"
-msgstr "下移(_D)"
+msgstr ""
+"#-#-#-#-#  zh_TW.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"下移(_D)\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"下移 (_D)"
 
 msgid "Move to _Bottom"
 msgstr "移動到底部 (_B)"
@@ -1038,23 +1020,20 @@ msgstr "移動到底部 (_B)"
 msgid "_Pause"
 msgstr "暫停 (_P)"
 
-msgid "Pause torrent"
-msgstr "暫停 Torrent"
-
 msgid "Set _Location…"
 msgstr "設定位置… (_L)"
 
 msgid "_Verify Local Data"
 msgstr "驗證本機資料 (_V)"
 
-msgid "Copy _Magnet Link to Clipboard"
-msgstr "複製磁力連結到剪貼簿 (_M)"
-
-msgid "Remove torrent"
-msgstr "移除 Torrent"
+msgid "_Copy Magnet Link to Clipboard"
+msgstr "複製磁力連結到剪貼簿 (_C)"
 
 msgid "_Delete Files and Remove"
 msgstr "刪除檔案並移除 (_D)"
+
+msgid "_View"
+msgstr "檢視 (_V)"
 
 msgid "_Compact View"
 msgstr "精簡檢視 (_C)"
@@ -1098,6 +1077,9 @@ msgstr "依剩餘時間排序 (_L)"
 msgid "Re_verse Sort Order"
 msgstr "反轉排列順序 (_V)"
 
+msgid "_Help"
+msgstr "說明 (_H)"
+
 msgid "Message _Log"
 msgstr "訊息日誌 (_L)"
 
@@ -1113,11 +1095,15 @@ msgstr "內容 (_C)"
 msgid "_About"
 msgstr "關於 (_A)"
 
-msgid "_Show {appname}"
-msgstr "顯示 {appname} (_S)"
+#, fuzzy
+#| msgid "Start torrent"
+msgid "_Sort Torrents By"
+msgstr "開始執行 torrent"
 
-msgid "Enable Alternative Speed _Limits"
-msgstr "啟用替代速度限制 (_L)"
+#, fuzzy
+#| msgid "Alternative Speed Limits"
+msgid "Alternative Speed _Limits"
+msgstr "替代速度限制"
 
 msgid "_Add"
 msgstr "加入 (_A)"
@@ -1134,8 +1120,8 @@ msgstr "關閉 (_C)"
 msgid "Activity"
 msgstr "活動"
 
-msgid "Torrent size:"
-msgstr "Torrent 大小："
+msgid "Size:"
+msgstr "大小："
 
 msgid "Have:"
 msgstr "擁有："
@@ -1149,8 +1135,13 @@ msgstr "已下載："
 msgid "State:"
 msgstr "狀態："
 
+#, fuzzy
 msgid "Running time:"
-msgstr "已執行時間："
+msgstr ""
+"#-#-#-#-#  zh_TW.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"已執行時間：\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"執行時間："
 
 msgid "Remaining time:"
 msgstr "剩餘時間："
@@ -1161,8 +1152,13 @@ msgstr "最後活動於："
 msgid "Error:"
 msgstr "錯誤："
 
+#, fuzzy
 msgid "Details"
-msgstr "細節"
+msgstr ""
+"#-#-#-#-#  zh_TW.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"細節\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"詳細資料"
 
 msgid "Location:"
 msgstr "位置："
@@ -1170,8 +1166,13 @@ msgstr "位置："
 msgid "Hash:"
 msgstr "雜湊："
 
+#, fuzzy
 msgid "Privacy:"
-msgstr "隱私："
+msgstr ""
+"#-#-#-#-#  zh_TW.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"隱私：\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"隱私權："
 
 msgid "Origin:"
 msgstr "來源："
@@ -1190,9 +1191,6 @@ msgstr "顯示更多詳細資料 (_M)"
 
 msgid "Peers"
 msgstr "節點"
-
-msgid "_Edit"
-msgstr "編輯 (_E)"
 
 msgid "Show _backup trackers"
 msgstr "顯示備用追蹤器 (_B)"
@@ -1215,8 +1213,13 @@ msgstr "限制下載速度 ({speed_units}) (_D)："
 msgid "Limit _upload speed ({speed_units}):"
 msgstr "限制上傳速度 ({speed_units}) (_U)："
 
+#, fuzzy
 msgid "Torrent _priority:"
-msgstr "種子優先順序 (_P)："
+msgstr ""
+"#-#-#-#-#  zh_TW.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"種子優先順序 (_P)：\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"Torrent 優先順序 (_P)："
 
 msgid "Seeding Limits"
 msgstr "做種限制"
@@ -1249,6 +1252,31 @@ msgstr ""
 msgid "Also see Default Public Trackers in Edit > Preferences > Network"
 msgstr "另請參閱 編輯 > 偏好設定 > 網路 中的預設公開追蹤器"
 
+msgid "Open a torrent"
+msgstr "開啟 torrent"
+
+msgid "Start torrent"
+msgstr "開始執行 torrent"
+
+#, fuzzy
+msgid "Pause torrent"
+msgstr ""
+"#-#-#-#-#  zh_TW.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"暫停 Torrent\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"暫停執行 torrent"
+
+#, fuzzy
+msgid "Remove torrent"
+msgstr ""
+"#-#-#-#-#  zh_TW.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"移除 Torrent\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"移除 torrent"
+
+msgid "Torrent properties"
+msgstr "Torrent 屬性"
+
 msgid "Torrent"
 msgstr "Torrent"
 
@@ -1258,23 +1286,32 @@ msgstr "統計資料"
 msgid "New Torrent"
 msgstr "新增 Torrent"
 
-msgid "_New"
-msgstr "新增 (_N)"
+#, fuzzy
+#| msgid "C_redits"
+msgid "C_reate"
+msgstr "致謝 (_C)"
 
 msgid "Sa_ve to:"
 msgstr "儲存到 (_V)："
 
-msgid "Source F_older:"
+msgid "Source f_older:"
 msgstr "來源資料夾 (_O)："
 
-msgid "Source _File:"
+msgid "Source _file:"
 msgstr "來源檔案 (_F)："
 
-msgid "Piece size:"
+#, fuzzy
+#| msgid "Piece size:"
+msgid "Piece si_ze:"
 msgstr "區塊大小："
 
+#, fuzzy
 msgid "Properties"
-msgstr "屬性"
+msgstr ""
+"#-#-#-#-#  zh_TW.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"屬性\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"內容"
 
 msgid "_Trackers:"
 msgstr "追蹤器 (_T)："
@@ -1282,8 +1319,15 @@ msgstr "追蹤器 (_T)："
 msgid "Co_mment:"
 msgstr "備註 (_M)："
 
+#, fuzzy
 msgid "_Source:"
-msgstr "來源 (_S)："
+msgstr ""
+"#-#-#-#-#  zh_TW.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"來源 (_S)：\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"來源 (_S)：\n"
+"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"來源 (_S):"
 
 msgid "_Private torrent"
 msgstr "私有 torrent (_P)"
@@ -1299,9 +1343,6 @@ msgstr "另存新檔 (_A)"
 
 msgid "Clear"
 msgstr "清除"
-
-msgid "P_ause"
-msgstr "暫停 (_P)"
 
 msgid "Level"
 msgstr "階級"
@@ -1324,14 +1365,13 @@ msgstr "選擇目標資料夾"
 msgid "_Start when added"
 msgstr "加入時開始 (_S)"
 
-msgid "Mo_ve torrent file to the trash"
+#, fuzzy
+#| msgid "Mo_ve torrent file to the trash"
+msgid "Mo_ve torrent file to the Trash"
 msgstr "移動 torrent 檔案到垃圾桶 (_V)"
 
 msgid "{appname} Preferences"
 msgstr "{appname} 偏好設定"
-
-msgid "_Help"
-msgstr "說明 (_H)"
 
 msgid "Speed Limits"
 msgstr "速度限制"
@@ -1381,7 +1421,9 @@ msgstr "顯示 Torrent 選項對話方塊 (_D)"
 msgid "_Start added torrents"
 msgstr "開始已加入的 torrents (_S)"
 
-msgid "Save to _Location:"
+#, fuzzy
+#| msgid "Save to _Location:"
+msgid "Save to _location:"
 msgstr "儲存到位置 (_L)："
 
 msgid "Download Queue"
@@ -1396,13 +1438,25 @@ msgstr "過去 N 分鐘內的下載資料分享為啟用 (_N)："
 msgid "Incomplete"
 msgstr "未完成"
 
+#, fuzzy
 msgid "Append \"._part\" to incomplete files' names"
-msgstr "為尚未完成的檔案加上 \".&part\" 副檔名"
+msgstr ""
+"#-#-#-#-#  zh_TW.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"為尚未完成的檔案加上 \".&part\" 副檔名\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"為尚未完成的檔案加上 \"._part\" 副檔名"
 
-msgid "Keep _incomplete torrents in:"
-msgstr "保存尚未完成的 torrents 於 (_I)："
+msgid "Keep _incomplete files in:"
+msgstr "保存尚未完成的檔案於 (_I)："
 
-msgid "Call scrip_t when done downloading:"
+#, fuzzy
+#| msgid "Call scrip_t when downloading is completed:"
+msgid "Call scrip_t when download completes:"
+msgstr "下載完成時呼叫腳本 (_T)："
+
+#, fuzzy
+#| msgid "Call scrip_t when downloading is completed:"
+msgid "Verify data when download completes"
 msgstr "下載完成時呼叫腳本 (_T)："
 
 msgctxt "Gerund"
@@ -1425,8 +1479,13 @@ msgctxt "Gerund"
 msgid "Seeding"
 msgstr "正在做種"
 
+#, fuzzy
 msgid "Privacy"
-msgstr "隱私"
+msgstr ""
+"#-#-#-#-#  zh_TW.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"隱私\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"隱私權"
 
 msgid "_Encryption mode:"
 msgstr "加密模式 (_E)："
@@ -1437,7 +1496,9 @@ msgstr "黑名單"
 msgid "Enable _blocklist:"
 msgstr "啟用黑名單 (_B)："
 
-msgid "Enable _automatic updates"
+#, fuzzy
+#| msgid "Enable _automatic updates"
+msgid "_Automatically update weekly"
 msgstr "啟用自動更新 (_A)"
 
 msgid "_Update"
@@ -1446,10 +1507,12 @@ msgstr "更新 (_U)"
 msgid "Listening Port"
 msgstr "監聽連接埠"
 
-msgid "_Port used for incoming connections:"
+msgid "_Port for incoming connections:"
 msgstr "傳入的連接埠 (_P)："
 
-msgid "Pick a _random port every time Transmission is started"
+#, fuzzy
+#| msgid "Pick a _random port every time Transmission is started"
+msgid "Pick a _random port at startup"
 msgstr "每次 Transmission 啟動時挑選一個隨機的連接埠 (_R)"
 
 msgid "Use UPnP or NAT-PMP port _forwarding from my router"
@@ -1461,31 +1524,44 @@ msgstr "測試連接埠 (_S)"
 msgid "Peer Limits"
 msgstr "節點限制"
 
-msgid "Maximum peers per _torrent:"
+#, fuzzy
+#| msgid "Maximum peers per _torrent:"
+msgid "Maximum peers for new _torrents:"
 msgstr "每個 torrent 的最大連線節點數量 (_T)："
 
 msgid "Maximum peers _overall:"
 msgstr "總計最大連線節點數量 (_O)："
 
-msgid "Enable µ_TP for peer communication"
+msgid "Enable µ_TP for peer connections"
 msgstr "為節點連線啟用 µTP (_T)"
 
+#, fuzzy
 msgid "µTP is a tool for reducing network congestion."
-msgstr "µTP 是一項用以降低網路壅塞的工具。"
+msgstr ""
+"#-#-#-#-#  zh_TW.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"µTP 是一項用以降低網路壅塞的工具。\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"µTP 是一個減少網路擁塞的工具。"
 
-msgid "Use PE_X to find more peers"
+#, fuzzy
+#| msgid "Use PE_X to find more peers"
+msgid "Use PE_X to find more peers for public torrents"
 msgstr "使用 PEX 以尋找更多節點 (_X)"
 
 msgid "PEX is a tool for exchanging peer lists with the peers you're connected to."
 msgstr "PEX 是一項和您連線的節點交換節點清單的工具。"
 
-msgid "Use _DHT to find more peers"
+#, fuzzy
+#| msgid "Use _DHT to find more peers"
+msgid "Use _DHT to find more peers for public torrents"
 msgstr "使用 DHT 以尋找更多節點 (_D)"
 
 msgid "DHT is a tool for finding peers without a tracker."
 msgstr "DHT 是一項不需要追蹤器也能尋找節點的工具。"
 
-msgid "Use _Local Peer Discovery to find more peers"
+#, fuzzy
+#| msgid "Use _Local Peer Discovery to find more peers"
+msgid "Use _Local Peer Discovery to find more peers for public torrents"
 msgstr "使用本機節點探索以尋找更多節點 (_L)"
 
 msgid "LPD is a tool for finding peers on your local network."
@@ -1494,16 +1570,23 @@ msgstr "LPD 是一項在您的區域網路上尋找節點的工具。"
 msgid "Default Public Trackers"
 msgstr "預設公開追蹤器"
 
+#, fuzzy
 msgid ""
 "Trackers to use on all public torrents.\n"
 "\n"
 "To add a backup URL, add it on the next line after a primary URL.\n"
 "To add a new primary URL, add it after a blank line."
 msgstr ""
+"#-#-#-#-#  zh_TW.po (PACKAGE VERSION)  #-#-#-#-#\n"
 "用於所有公開 torrents 的追蹤器。\n"
 "\n"
 "若要加入備用 URL，請填寫於主要 URL 的下一行。\n"
-"若要加入其他主要 URL，請空一行再填寫。"
+"若要加入其他主要 URL，請空一行再填寫。\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"可在所有公共 Torrent 上使用的追蹤器。\n"
+"\n"
+"若要備份 URL，請將它新增到主要 URL 之後的下一行。\n"
+"若要新增主要 URL，請在空白行後新增。"
 
 msgid "Network"
 msgstr "網路"
@@ -1511,23 +1594,43 @@ msgstr "網路"
 msgid "Desktop"
 msgstr "桌面"
 
-msgid "_Inhibit hibernation when torrents are active"
-msgstr "當 torrents 活躍中時禁止休眠 (_I)"
+msgid "_Prevent computer from sleeping with active torrents"
+msgstr ""
 
+#, fuzzy
 msgid "Show {appname} icon in the _notification area"
-msgstr "於通知區域顯示 {appname} 圖示 (_N)"
+msgstr ""
+"#-#-#-#-#  zh_TW.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"於通知區域顯示 {appname} 圖示 (_N)\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"在通知區域顯示 {appname} 圖示 (_N)"
 
 msgid "Notification"
 msgstr "通知"
 
+#, fuzzy
 msgid "Show a notification when torrents are a_dded"
-msgstr "當 torrents 加入時顯示通知 (_D)"
+msgstr ""
+"#-#-#-#-#  zh_TW.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"當 torrents 加入時顯示通知 (_D)\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"當 Torrents 加入時顯示通知 (_D)"
 
+#, fuzzy
 msgid "Show a notification when torrents _finish"
-msgstr "當 torrents 完成時顯示通知 (_F)"
+msgstr ""
+"#-#-#-#-#  zh_TW.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"當 torrents 完成時顯示通知 (_F)\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"當 Torrents 完成時顯示通知 (_F)"
 
+#, fuzzy
 msgid "Play a _sound when torrents finish"
-msgstr "當 torrents 完成時播放音效 (_S)"
+msgstr ""
+"#-#-#-#-#  zh_TW.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"當 torrents 完成時播放音效 (_S)\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"當 Torrent 完成時播放音效 (_S)"
 
 msgid "Remote Control"
 msgstr "遠端控制"
@@ -1535,14 +1638,21 @@ msgstr "遠端控制"
 msgid "Allow _remote access"
 msgstr "允許遠端存取 (_R)"
 
-msgid "_Open web client"
+#, fuzzy
+#| msgid "_Open web client"
+msgid "_Open Web Client"
 msgstr "開啟網頁用戶端 (_O)"
 
 msgid "HTTP _port:"
 msgstr "HTTP 連接埠 (_P)："
 
+#, fuzzy
 msgid "Use _authentication"
-msgstr "使用認證 (_A)"
+msgstr ""
+"#-#-#-#-#  zh_TW.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"使用認證 (_A)\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"使用驗證 (_A)"
 
 msgid "_Username:"
 msgstr "使用者名稱 (_U)："
@@ -1562,8 +1672,13 @@ msgstr "IP 位址可使用萬用字元，例如 192.168.*.*"
 msgid "Remote"
 msgstr "遠端"
 
+#, fuzzy
 msgid "Set Torrent Location"
-msgstr "設定 torrent 位置"
+msgstr ""
+"#-#-#-#-#  zh_TW.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"設定 torrent 位置\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"設定 Torrent 位置"
 
 msgid "_Apply"
 msgstr "套用 (_A)"
@@ -1571,8 +1686,8 @@ msgstr "套用 (_A)"
 msgid "Location"
 msgstr "位置"
 
-msgid "Torrent _location:"
-msgstr "Torrent 位置 (_L)："
+msgid "New _location:"
+msgstr "新位置 (_L)："
 
 msgid "_Move from the current folder"
 msgstr "從目前的資料夾移動 (_M)"
@@ -1586,11 +1701,21 @@ msgstr "目前的工作階段"
 msgid "Ratio:"
 msgstr "分享率："
 
+#, fuzzy
 msgid "Duration:"
-msgstr "持續期間："
+msgstr ""
+"#-#-#-#-#  zh_TW.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"持續期間：\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"持續時間："
 
+#, fuzzy
 msgid "Total"
-msgstr "總計"
+msgstr ""
+"#-#-#-#-#  zh_TW.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"總計\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"總"
 
 msgid "Open URL"
 msgstr "開啟網址"
@@ -1601,20 +1726,161 @@ msgstr "從網址開啟 torrent"
 msgid "_URL"
 msgstr "URL (_U)"
 
-msgid "Couldn't parse announce response: {error} ({error_code})"
-msgstr "無法解析傳回的宣告：{error} ({error_code})"
+msgid "The torrent file '{path}' is already in use by '{torrent_name}'."
+msgstr "該 torrent 檔案 '{path}' 已被 '{torrent_name}' 使用中。"
 
-msgid "Couldn't parse scrape response: {error} ({error_code})"
-msgstr "無法解析傳回的擷取：{error} ({error_code})"
+msgid "Couldn't open torrent"
+msgstr "無法開啟 torrent"
 
-msgid "Unknown error"
-msgstr "未知的錯誤"
+msgid "Couldn't move '{path}' to trash: {error} ({error_code})"
+msgstr "無法移動 '{path}' 到垃圾桶：{error} ({error_code})"
 
-msgid "{ip_protocol} connection failed"
-msgstr "{ip_protocol} 連線失敗"
+#, fuzzy
+#| msgid "Couldn't create proxy for '{bus}': {error} ({error_code})"
+msgid "Couldn't launch default application for URI '{uri}': {error} ({error_code})"
+msgstr "無法為 '{bus}' 建立 proxy：{error} ({error_code})"
 
-msgid "Couldn't look up '{address}:{port}' in {ip_protocol}: {error} ({error_code})"
-msgstr "無法找到 '{address}:{port}' 在 {ip_protocol}: {error} ({error_code})"
+#, fuzzy
+#| msgid "Couldn't open '{path}': {error} ({error_code})"
+msgid "Couldn't invoke xdg-open for URI '{uri}': {error} ({error_code})"
+msgstr "無法開啟 '{path}'：{error} ({error_code})"
+
+msgid "Couldn't open '{url}'"
+msgstr "無法開啟 '{url}'"
+
+msgid "Unsupported URL: '{url}'"
+msgstr "不支援的 URL：'{url}'"
+
+msgid "{appname} doesn't know how to use '{url}'"
+msgstr "{appname} 不知道要如何使用 '{url}'"
+
+msgid "This magnet link appears to be intended for something other than BitTorrent."
+msgstr "該磁力連結可能使用了 BitTorrent 以外的其他協定。"
+
+msgid "{days_from_now:L} day from now"
+msgid_plural "{days_from_now:L} days from now"
+msgstr[0] "{days_from_now:L} 天後"
+
+msgid "{hours_from_now:L} hour from now"
+msgid_plural "{hours_from_now:L} hours from now"
+msgstr[0] "{hours_from_now:L} 小時後"
+
+msgid "{minutes_from_now:L} minute from now"
+msgid_plural "{minutes_from_now:L} minutes from now"
+msgstr[0] "{minutes_from_now:L} 分鐘後"
+
+msgid "{seconds_from_now:L} second from now"
+msgid_plural "{seconds_from_now:L} seconds from now"
+msgstr[0] "{seconds_from_now:L} 秒後"
+
+msgid "now"
+msgstr "現在"
+
+msgid "{days_ago:L} day ago"
+msgid_plural "{days_ago:L} days ago"
+msgstr[0] "{days_ago:L} 天前"
+
+msgid "{hours_ago:L} hour ago"
+msgid_plural "{hours_ago:L} hours ago"
+msgstr[0] "{hours_ago:L} 小時前"
+
+msgid "{minutes_ago:L} minute ago"
+msgid_plural "{minutes_ago:L} minutes ago"
+msgstr[0] "{minutes_ago:L} 分鐘前"
+
+msgid "{seconds_ago:L} second ago"
+msgid_plural "{seconds_ago:L} seconds ago"
+msgstr[0] "{seconds_ago:L} 秒前"
+
+msgid "Got a list of {markup_begin}{peer_count} peer{markup_end} {time_span_ago}"
+msgid_plural "Got a list of {markup_begin}{peer_count} peers{markup_end} {time_span_ago}"
+msgstr[0] "已於 {time_span_ago} 之前取得{markup_begin}{peer_count} 個節點{markup_end}的清單"
+
+msgid "Peer list request {markup_begin}timed out {time_span_ago}{markup_end}; will retry"
+msgstr "在 {time_span_ago} 之前請求節點清單{markup_begin}逾時{markup_end}，正在重試。"
+
+msgid "Got an error '{markup_begin}{error}{markup_end}' {time_span_ago}"
+msgstr "在 {time_span_ago} 之前發生錯誤 '{markup_begin}{error}{markup_end}'"
+
+#, fuzzy
+msgid "No updates scheduled"
+msgstr ""
+"#-#-#-#-#  zh_TW.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"沒有已排定的更新\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"沒有排定的上傳"
+
+msgid "Asking for more peers {time_span_from_now}"
+msgstr "將於 {time_span_from_now} 請求更多節點"
+
+msgid "Queued to ask for more peers"
+msgstr "已排程請求更多節點"
+
+msgid "Asked for more peers {markup_begin}{time_span_ago}{markup_end}"
+msgstr "已於 {markup_begin}{time_span_ago}{markup_end} 之前請求更多節點"
+
+msgid "Got a scrape error '{markup_begin}{error}{markup_end}' {time_span_ago}"
+msgstr "擷取時發生錯誤 '{markup_begin}{error}{markup_end}' {time_span_ago}"
+
+#, fuzzy
+#| msgid "Tracker had {markup_begin}no information{markup_end} on peer counts {time_span} ago"
+msgid "Tracker had {markup_begin}no information{markup_end} on peer counts {time_span_ago}"
+msgstr "於 {time_span} 之前，追蹤器{markup_begin}沒有關於節點數量的資訊{markup_end}"
+
+msgid "Tracker had {markup_begin}{seeder_count} {seeder_or_seeders} and {leecher_count} {leecher_or_leechers}{markup_end} {time_span_ago}"
+msgstr "該追蹤器在 {time_span_ago} 前有 {markup_begin}{seeder_count} 個 {seeder_or_seeders} 及 {leecher_count} 個 {leecher_or_leechers}{markup_end} "
+
+msgid "seeder"
+msgid_plural "seeders"
+msgstr[0] "做種者"
+
+msgid "leecher"
+msgid_plural "leechers"
+msgstr[0] "下載者"
+
+#, fuzzy
+#| msgid "Asking for peer counts in {time_span_from_now}"
+msgid "Asking for peer counts {time_span_from_now}"
+msgstr "將於 {time_span_from_now} 請求節點數量"
+
+msgid "Queued to ask for peer counts"
+msgstr "已排程請求節點數量"
+
+msgid "Asked for peer counts {markup_begin}{time_span_ago}{markup_end}"
+msgstr "已於 {markup_begin}{time_span_ago}{markup_end} 之前請求節點數量"
+
+msgid "{days:L} day"
+msgid_plural "{days:L} days"
+msgstr[0] "{days:L} 天"
+
+msgid "{hours:L} hour"
+msgid_plural "{hours:L} hours"
+msgstr[0] "{hours:L} 小時"
+
+#. Translators: Spin box format, "Stop seeding if idle for: [ 5 minutes ]"
+msgid "{minutes:L} minute"
+msgid_plural "{minutes:L} minutes"
+msgstr[0] "{minutes:L} 分鐘"
+
+msgid "{seconds:L} second"
+msgid_plural "{seconds:L} seconds"
+msgstr[0] "{seconds:L} 秒"
+
+msgid "{days_left:L} day left"
+msgid_plural "{days_left:L} days left"
+msgstr[0] "剩 {days_left:L} 天"
+
+msgid "{hours_left:L} hour left"
+msgid_plural "{hours_left:L} hours left"
+msgstr[0] "剩 {hours_left:L} 小時"
+
+msgid "{minutes_left:L} minute left"
+msgid_plural "{minutes_left:L} minutes left"
+msgstr[0] "剩 {minutes_left:L} 分鐘"
+
+msgid "{seconds_left:L} second left"
+msgid_plural "{seconds_left:L} seconds left"
+msgstr[0] "剩 {seconds_left:L} 秒"
 
 msgid "Announce error: {error} ({url})"
 msgstr "公告錯誤：{error}（{url}）"
@@ -1632,19 +1898,62 @@ msgstr "追蹤器沒有回應"
 msgid "Success"
 msgstr "成功"
 
+msgid "Couldn't parse announce response: {error} ({error_code})"
+msgstr "無法解析傳回的宣告：{error} ({error_code})"
+
+msgid "Couldn't parse scrape response: {error} ({error_code})"
+msgstr "無法解析傳回的擷取：{error} ({error_code})"
+
+msgid "Unknown error"
+msgstr "未知的錯誤"
+
+msgid "{ip_protocol} connection failed"
+msgstr "{ip_protocol} 連線失敗"
+
+msgid "Couldn't look up '{address}:{port}' in {ip_protocol}: {error} ({error_code})"
+msgstr "無法找到 '{address}:{port}' 在 {ip_protocol}: {error} ({error_code})"
+
 msgid "Blocklist '{path}' has {count} entry"
 msgid_plural "Blocklist '{path}' has {count} entries"
 msgstr[0] "黑名單 '{path}' 有 {count} 個項目"
 
-#. don't try to display the actual lines - it causes issues
-msgid "Couldn't parse line: '{line}'"
+#, fuzzy
+#| msgid "Couldn't parse line: '{line}'"
+msgid "Couldn't parse line {line}: {base64}"
 msgstr "無法解析該行：'{line}'"
 
-msgid "Rewriting old blocklist file format to new format"
+#, fuzzy
+#| msgid "Rewriting old blocklist file format to new format"
+msgid "Rewriting old blocklist file {path} to new format"
 msgstr "將舊版黑名單重寫為新版的檔案格式"
+
+msgid "Blocklist is larger than {limit} MiB; ignoring it"
+msgstr ""
+
+#, fuzzy
+#| msgid "Couldn't fetch blocklist: {error} ({error_code})"
+msgid "Couldn't fetch blocklist: {errmsg}, response code: {error} ({error_code})"
+msgstr "無法擷取黑名單：{error} ({error_code})"
+
+msgid "Couldn't fetch blocklist: {error} ({error_code})"
+msgstr "無法擷取黑名單：{error} ({error_code})"
+
+msgid "Automatically updated blocklist, which now has {count} rules"
+msgstr ""
+
+msgid "Invalid tr_sched_days value {val}"
+msgstr ""
 
 msgid "{crypto_library} error: {error} ({error_code})"
 msgstr "{crypto_library} 錯誤：{error} ({error_code})"
+
+msgid "Couldn't read '{path}': Not a regular file"
+msgstr "無法讀取 '{path}'：不是一般檔案。"
+
+#, fuzzy
+#| msgid "Couldn't read '{path}'"
+msgid "Couldn't get '{path}': "
+msgstr "無法讀取 '{path}'"
 
 msgid "Couldn't get '{path}': {error} ({error_code})"
 msgstr "無法取得 '{path}'：{error} ({error_code})"
@@ -1661,20 +1970,14 @@ msgstr "您的裝置不支援 {protocol}"
 msgid "Successfully updated global {type} address to {ip} using {url}"
 msgstr "成功使用 {url} 更新全域 {type} 位址為 {ip}"
 
+msgid "Still waiting for disk IO on torrent {id}: {running} running, {queued} queued"
+msgstr ""
+
 msgid "Too many messages like this! I won't log this message anymore this session."
 msgstr "出現太多類似的訊息！將於本工作階段停止紀錄此類訊息。"
 
 msgid "Skipping '{path}': {error} ({error_code})"
 msgstr "跳過 '{path}'：{error} ({error_code})"
-
-msgid "Couldn't create socket: {error} ({error_code})"
-msgstr "無法建立 socket：{error} ({error_code})"
-
-msgid "Couldn't set source address {address} on {socket}: {error} ({error_code})"
-msgstr "無法在 {socket} 設定來源位址 {address}：{error} ({error_code})"
-
-msgid "Couldn't connect socket {socket} to {address}:{port}: {error} ({error_code})"
-msgstr "無法將 socket {socket} 連線到 {address}:{port}：{error} ({error_code})"
 
 msgid "Couldn't bind port {port} on {address}: {error} ({error_code}) -- Is another copy of {appname} already running?"
 msgstr "無法在 {address} 繫結 {port} 連接埠：{error} ({error_code}) -- 是否有另一個執行中的 {appname} 程式？"
@@ -1691,8 +1994,35 @@ msgstr "無法預先配置 '{path}'：{error} ({error_code})"
 msgid "Couldn't truncate '{path}': {error} ({error_code})"
 msgstr "無法截斷 '{path}'：{error} ({error_code})"
 
+msgid "Couldn't create socket: {error} ({error_code})"
+msgstr "無法建立 socket：{error} ({error_code})"
+
+msgid "Couldn't set source address {address} on {socket}: {error} ({error_code})"
+msgstr "無法在 {socket} 設定來源位址 {address}：{error} ({error_code})"
+
+msgid "Couldn't connect socket {socket} to {address}:{port}: {error} ({error_code})"
+msgstr "無法將 socket {socket} 連線到 {address}:{port}：{error} ({error_code})"
+
 msgid "Unknown state: {state}"
 msgstr "未知狀態：{state}"
+
+msgid "Starting"
+msgstr "正在啟動"
+
+msgid "Forwarded"
+msgstr "已轉送"
+
+msgid "Stopping"
+msgstr "停止中"
+
+msgid "Not forwarded"
+msgstr "沒有轉送"
+
+msgid "Mapped private port {private_port} to public port {public_port}"
+msgstr "已將私有連接埠 {private_port} 對應到公開連接埠 {public_port}"
+
+msgid "State changed from '{old_state}' to '{state}'"
+msgstr "狀態從 '{old_state}' 變更為 '{state}'"
 
 msgid "Found public address '{address}'"
 msgstr "找到公開位址 '{address}'"
@@ -1724,23 +2054,21 @@ msgstr "轉傳的本地埠 {local_port} 至 {advertised_port}"
 msgid "If your router supports UPnP, please make sure UPnP is enabled!"
 msgstr "若您的路由器支援 UPnP，請確認 UPnP 已啟用！"
 
-msgid "Starting"
-msgstr "正在啟動"
+#, fuzzy
+#| msgid "Couldn't test port: {error} ({error_code})"
+msgid "Couldn't test port: {errmsg}, response code: {error} ({error_code})"
+msgstr "無法測試連接埠：{error} ({error_code})"
 
-msgid "Forwarded"
-msgstr "已轉送"
+msgid "Couldn't test port: {error} ({error_code})"
+msgstr "無法測試連接埠：{error} ({error_code})"
 
-msgid "Stopping"
-msgstr "停止中"
+#, fuzzy
+#| msgid "Couldn't fetch torrent: {error} ({error_code})"
+msgid "Couldn't fetch torrent: {errmsg}, Response code: {error} ({error_code})"
+msgstr "無法擷取 torrent：{error} ({error_code})"
 
-msgid "Not forwarded"
-msgstr "沒有轉送"
-
-msgid "Mapped private port {private_port} to public port {public_port}"
-msgstr "已將私有連接埠 {private_port} 對應到公開連接埠 {public_port}"
-
-msgid "State changed from '{old_state}' to '{state}'"
-msgstr "狀態從 '{old_state}' 變更為 '{state}'"
+msgid "Couldn't fetch torrent: {error} ({error_code})"
+msgstr "無法擷取 torrent：{error} ({error_code})"
 
 msgid "Unix socket path must be fewer than {count} characters (including '{prefix}' prefix)"
 msgstr "Unix socket 路徑必須少於 {count} 個字元 (包含 '{prefix}' 前綴)"
@@ -1797,29 +2125,24 @@ msgstr "需要密碼"
 msgid "Serving RPC and Web requests from '{path}'"
 msgstr "正在從 '{path}' 提供服務給 RPC 及網路請求"
 
-msgid "Couldn't test port: {error} ({error_code})"
-msgstr "無法測試連接埠：{error} ({error_code})"
-
-msgid "Couldn't fetch blocklist: {error} ({error_code})"
-msgstr "無法擷取黑名單：{error} ({error_code})"
-
-msgid "Couldn't fetch torrent: {error} ({error_code})"
-msgstr "無法擷取 torrent：{error} ({error_code})"
-
-msgid "Time to turn off turtle mode"
-msgstr "關閉龜速模式的時間"
-
-msgid "Time to turn on turtle mode"
+#, fuzzy
+#| msgid "Time to turn on turtle mode"
+msgid "Time to turn on alternative speed limits"
 msgstr "開啟龜速模式的時間"
 
-msgid "Couldn't open session lock file '{path}': {error} ({error_code})"
-msgstr "無法開啟工作階段鎖定檔案 '{path}'：{error} ({error_code})"
+#, fuzzy
+#| msgid "Time to turn off turtle mode"
+msgid "Time to turn off alternative speed limits"
+msgstr "關閉龜速模式的時間"
 
 msgid "Listening to incoming peer connections on {hostport}"
 msgstr "正在監聽通訊埠 {hostport} 傳入的節點連線"
 
 msgid "{appname} version {version} starting"
 msgstr "{appname} 版本 {version} 正在啟動"
+
+msgid "Couldn't start disk IO workers, continuing without them: {error}"
+msgstr ""
 
 msgid "{appname} version {version} shutting down"
 msgstr "{appname} 版本 {version} 正在結束"
@@ -1828,8 +2151,11 @@ msgid "Loaded {count} torrent"
 msgid_plural "Loaded {count} torrents"
 msgstr[0] "已載入 {count} 個 torrents"
 
-msgid "Migrated torrent file from '{old_path}' to '{path}'"
-msgstr "已將 torrent 檔案從 '{old_path}' 移轉到 '{path}'"
+msgid "Couldn't claim '{path}'. If another session is using it, the two will overwrite each other's settings, resume files and stats."
+msgstr ""
+
+msgid "Couldn't open session lock file '{path}': {error} ({error_code})"
+msgstr "無法開啟工作階段鎖定檔案 '{path}'：{error} ({error_code})"
 
 msgid "Couldn't use metainfo from '{path}' for '{magnet}': {error} ({error_code})"
 msgstr "無法將 '{path}' 的後設資料使用於 '{magnet}'：{error} ({error_code})"
@@ -1861,14 +2187,32 @@ msgstr "無法移除所有 torrent 檔案：{error} ({error_code})"
 msgid "Removing torrent"
 msgstr "正在移除 torrent"
 
-msgid "Couldn't move '{old_path}' to '{path}': {error} ({error_code})"
-msgstr "無法移動 '{old_path}' 到 '{path}'：{error} ({error_code})"
+#, fuzzy
+#| msgid "Couldn't remove all torrent files: {error} ({error_code})"
+msgid "Couldn't move torrent files to '{path}': {error} ({error_code})"
+msgstr "無法移除所有 torrent 檔案：{error} ({error_code})"
 
 msgid "Paused torrent as no data was found! Ensure your drives are connected or use \"Set Location\", then use \"Verify Local Data\" again. To re-download, start the torrent."
 msgstr "因為找不到資料，已暫停 torrent！請確保您的硬碟已連接或使用「設定位置」，然後再次使用「驗證本機資料」。若要重新下載，開始下載 torrent。"
 
+msgid "Couldn't move '{old_path}' to '{path}': {error} ({error_code})"
+msgstr "無法移動 '{old_path}' 到 '{path}'：{error} ({error_code})"
+
 msgid "Tracker warning: '{warning}' ({url})"
 msgstr "追蹤器警告：'{warning}'（{url}）"
+
+#, fuzzy
+#| msgid "Removing torrent file '{path}'"
+msgid "Moving '{source}' will overwrite '{path}'"
+msgstr "正在移除 torrent 檔案 '{path}'"
+
+#, fuzzy
+#| msgid "Couldn't move '{old_path}' to '{path}': {error} ({error_code})"
+msgid "Couldn't compare '{path}' with '{root}': {error} ({error_code}); leaving it alone"
+msgstr "無法移動 '{old_path}' 到 '{path}'：{error} ({error_code})"
+
+msgid "Migrated torrent file from '{old_path}' to '{path}'"
+msgstr "已將 torrent 檔案從 '{old_path}' 移轉到 '{path}'"
 
 msgid "Couldn't parse '{filename}' line: '{line}'"
 msgstr "無法解析 '{filename}' 中的行數：'{line}'"
@@ -1897,8 +2241,47 @@ msgstr ""
 msgid "Unknown socket family"
 msgstr "未知的 socket 協定家族"
 
-msgid "Couldn't read '{path}': Not a regular file"
-msgstr "無法讀取 '{path}'：不是一般檔案。"
+msgid "B"
+msgstr "B"
+
+msgid "KiB"
+msgstr "KiB"
+
+msgid "MiB"
+msgstr "MiB"
+
+msgid "GiB"
+msgstr "GiB"
+
+msgid "TiB"
+msgstr "TiB"
+
+msgid "B/s"
+msgstr "B/s"
+
+msgid "kB/s"
+msgstr "kB/s"
+
+msgid "MB/s"
+msgstr "MB/s"
+
+msgid "GB/s"
+msgstr "GB/s"
+
+msgid "TB/s"
+msgstr "TB/s"
+
+msgid "kB"
+msgstr "kB"
+
+msgid "MB"
+msgstr "MB"
+
+msgid "GB"
+msgstr "GB"
+
+msgid "TB"
+msgstr "TB"
 
 msgid "Couldn't parse JSON at position {position} '{text}': {error} ({error_code})"
 msgstr "無法解析 JSON 中的行數 {position} '{text}'：{error} ({error_code})"
@@ -1906,17 +2289,14 @@ msgstr "無法解析 JSON 中的行數 {position} '{text}'：{error} ({error_cod
 msgid "Couldn't watch '{path}': {error} ({error_code})"
 msgstr "無法監看 '{path}'：{error} ({error_code})"
 
-msgid "Couldn't read event: {error} ({error_code})"
-msgstr "無法讀取事件：{error} ({error_code})"
-
 msgid "Couldn't read event: expected {expected_size}, got {actual_size}"
 msgstr "無法讀取事件：預期 {expected_size}，實際為 {actual_size}"
 
-msgid "Couldn't read filename: {error} ({error_code})"
-msgstr "無法讀取檔案名稱：{error} ({error_code})"
-
 msgid "Couldn't read filename: expected {expected_size}, got {actual_size}"
 msgstr "無法讀取檔案名稱：預期 {expected_size}，實際為 {actual_size}"
+
+msgid "Couldn't read event: {error} ({error_code})"
+msgstr "無法讀取事件：{error} ({error_code})"
 
 msgid "Couldn't convert '{path}' to native path"
 msgstr "無法轉換 '{path}' 為原始路徑"
@@ -1936,10 +2316,15 @@ msgstr "無法等候資料夾變更"
 msgid "Consider upgrading your curl installation."
 msgstr "請考慮升級您的 curl 安裝。"
 
+msgid "The minimum supported version is {curl_version}, you might face unexpected behaviour."
+msgstr ""
+
 msgid "curl {curl_version} is prone to SIGPIPE crashes. {details_url}"
 msgstr "curl {curl_version} 容易發生 SIGPIPE 崩潰。 {details_url}"
 
-msgid "curl {curl_version} is prone to an eventfd double close vulnerability that might cause SIGABRT crashes for the transmission-daemon systemd service. {details_url}"
+#, fuzzy
+#| msgid "curl {curl_version} is prone to an eventfd double close vulnerability that might cause SIGABRT crashes for the transmission-daemon systemd service. {details_url}"
+msgid "curl {curl_version} is prone to an eventfd double close vulnerability that might cause SIGABRT crashes for the daemon systemd service. {details_url}"
 msgstr "curl {curl_version} 容易產生 eventfd 雙重關閉漏洞，可能導致 transmission-daemon systemd 服務 SIGABRT 當機。 {details_url}"
 
 msgid "Will verify tracker certs using envvar CURL_CA_BUNDLE: {bundle}"
@@ -1951,8 +2336,392 @@ msgstr "註：這僅適用於使用 openssl 或 gnutls 建立的 libcurl，而�
 msgid "NB: Invalid certs will appear as 'Could not connect to tracker' like many other errors"
 msgstr "註：無效的憑證會和其他錯誤一樣顯示為「無法連線到追蹤器」。"
 
+msgid "Aborting request: response body exceeded max size of {max_file_size} bytes"
+msgstr ""
+
 msgid "Couldn't fetch '{url}': expected HTTP response code {expected_code}, got {actual_code}"
 msgstr "無法取得'{url}'：預期的HTTP回應碼為 {expected_code}，實際獲得 {actual_code}"
+
+msgid "Server"
+msgstr "伺服器"
+
+msgid "C_redits"
+msgstr "致謝 (_C)"
+
+msgid "Credits"
+msgstr "致謝"
+
+msgid "About {appname}"
+msgstr "關於 {appname}"
+
+msgid "Torrent Completed"
+msgstr "已完成的 torrents"
+
+msgid "Torrents Completed"
+msgstr "已完成的 torrents"
+
+#. Translators: Text following the "Have:" label in torrent properties dialog;
+#. {current_size} is amount of downloaded and verified data
+msgid "{current_size} (100%)"
+msgstr "{current_size} (100%)"
+
+msgid "{current_size} of {complete_size} ({percent_done}%), {unverified_size} Unverified"
+msgstr "{current_size} 之 {complete_size} ({percent_done}%)， {unverified_size} 未驗證"
+
+msgid "{total_size} ({piece_count:L} piece @ {piece_size})"
+msgid_plural "{total_size} ({piece_count:L} pieces @ {piece_size})"
+msgstr[0] "{total_size} ({piece_count:L} 個區塊 @ {piece_size})"
+
+msgid "{total_size} ({piece_count:L} piece)"
+msgid_plural "{total_size} ({piece_count:L} pieces)"
+msgstr[0] "{total_size} ({piece_count:L} 個區塊)"
+
+msgid "Add URL(s)"
+msgstr "加入 URL"
+
+msgid "Add tracker announce URLs, one per line:"
+msgstr "加入追蹤器宣告 URL，一行一個："
+
+msgid "No new URLs found."
+msgstr "沒有找到新的 URL。"
+
+msgid "Use Global Settings"
+msgstr "使用全域設定"
+
+msgid "Stop seeding if idle for:"
+msgstr "閒置超過時間時停止做種："
+
+msgid "Torrent Properties"
+msgstr "Torrent 內容"
+
+msgid "Availability:"
+msgstr "可用："
+
+msgid "Labels:"
+msgstr "標籤："
+
+msgid "Limit _upload speed:"
+msgstr "限制上傳速度 (_U)："
+
+msgid "Limit _download speed:"
+msgstr "限制下載速度 (_D)："
+
+msgid "Check Selected"
+msgstr "勾選已選取項目"
+
+msgid "Uncheck Selected"
+msgstr "取消勾選已選取項目"
+
+msgid "Only Check Selected"
+msgstr "僅勾選已選取項目"
+
+msgid "Open"
+msgstr "開啟"
+
+msgid "Rename…"
+msgstr "重新命名…"
+
+msgid "Search…"
+msgstr "搜尋…"
+
+msgid "<i>Calculating Free Space…</i>"
+msgstr "<i>正在計算可用空間…</i>"
+
+msgid "Limited at {speed}"
+msgstr "限制於 {speed}"
+
+#. Translators: Second (optional) part of main window title "Appname - host:port" (added when connected to remote session)
+#. notice that leading space (before the dash) is included here
+msgid " - {host}:{port}"
+msgstr " - {host}:{port}"
+
+msgid "Network Error"
+msgstr "網路錯誤"
+
+msgid "Idle"
+msgstr "閒置"
+
+msgid "Showing {visible_count:L} of {count:L} torrent"
+msgid_plural "Showing {visible_count:L} of {count:L} torrents"
+msgstr[0] "正在顯示 {visible_count:L} 中的 {count:L} 個 torrents"
+
+msgid "Torrent Files (*.torrent);;All Files (*.*)"
+msgstr "Torrent 檔案 (*.torrent);;所有檔案類型 (*.*)"
+
+msgid "{host} has not responded yet"
+msgstr "{host} 尚未回應"
+
+msgid "{host} is responding"
+msgstr "{host} 正在回應"
+
+#, fuzzy
+#| msgid "{host} last responded {time_span} ago"
+msgid "{host} last responded {time_span_ago}"
+msgstr "{host} 最後回應於 {time_span} 之前"
+
+msgid "{host} is not responding"
+msgstr "{host} 沒有回應"
+
+msgid "_Open…"
+msgstr "開啟… (_O)"
+
+msgid "Create a new torrent"
+msgstr "建立新的 torrent"
+
+msgid "Open the torrent's folder"
+msgstr "開啟 torrent 資料夾"
+
+msgid "Ask tracker for more peers"
+msgstr "向追蹤器請求更多節點"
+
+msgid "Verify local data"
+msgstr "驗證本機資料"
+
+msgid "Remove torrent and delete its files"
+msgstr "移除該 torrent 及其檔案"
+
+msgid "Compact View"
+msgstr "精簡檢視"
+
+msgid "_Main Window"
+msgstr "主視窗 (_M)"
+
+msgid "Tray _Icon"
+msgstr "通知區域圖示 (_I)"
+
+msgid "_Change Session…"
+msgstr "變更工作階段… (_C)"
+
+#. Start a local session or connect to a running session
+msgid "Choose Session"
+msgstr "選擇工作階段"
+
+msgid "Bypass the queue and start now"
+msgstr "忽略排程並立即開始"
+
+msgid "{file_count:L} File"
+msgid_plural "{file_count:L} Files"
+msgstr[0] "{file_count:L} 個檔案"
+
+msgid "{piece_count:L} Piece"
+msgid_plural "{piece_count:L} Pieces"
+msgstr[0] "{piece_count:L} 個區塊"
+
+msgid "{total_size} in {files}; {pieces} @ {piece_size}"
+msgstr "{total_size} 於 {files}； {pieces} @ {piece_size}"
+
+msgid ""
+"To add a backup URL, add it on the line after the primary URL.\n"
+"To add another primary URL, add it after a blank line."
+msgstr ""
+"若要加入備用 URL，請填寫於主要 URL 的下一行。\n"
+"若要加入其他主要 URL，請空一行再填寫。"
+
+#, fuzzy
+msgid "Sou_rce:"
+msgstr ""
+"#-#-#-#-#  zh_TW.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"來源 (_S)：\n"
+"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"來源 (_S)：\n"
+"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
+"來源 (_S):"
+
+msgid "_Priority:"
+msgstr "優先順序 (_P)："
+
+msgid "Select Folder"
+msgstr "選擇資料夾"
+
+msgid "unknown"
+msgstr "未知"
+
+msgid "checking…"
+msgstr "正在檢查…"
+
+msgid "open"
+msgstr "開啟"
+
+msgid "closed"
+msgstr "關閉"
+
+msgid "error"
+msgstr "錯誤"
+
+msgid "<b>Update succeeded!</b><p>Blocklist now has {count:L} rule.</p>"
+msgid_plural "<b>Update succeeded!</b><p>Blocklist now has {count:L} rules.</p>"
+msgstr[0] "<b>更新成功！</b><p>黑名單上現在有 {count:L} 個規則。</p>"
+
+msgid "Download of the blocklist failed."
+msgstr ""
+
+msgid "Update Blocklist"
+msgstr "更新黑名單"
+
+msgid "Select \"Torrent Done Seeding\" Script"
+msgstr "選擇 \"Torrent 做種完成\" 腳本"
+
+msgid "Select Watch Directory"
+msgstr "選擇監看資料夾"
+
+msgid "Select Incomplete Directory"
+msgstr "選擇尚未完成的資料夾"
+
+msgid "Select \"Torrent Done Downloading\" Script"
+msgstr "選擇 \"Torrent 下載完成\" 腳本"
+
+msgid "Not supported by remote sessions"
+msgstr "不支援遠端連線"
+
+msgid "<i>Blocklist contains {count:L} rule</i>"
+msgid_plural "<i>Blocklist contains {count:L} rules</i>"
+msgstr[0] "<i>黑名單包含 {count:L} 個規則</i>"
+
+#, fuzzy
+#| msgid "<i>Blocklist contains {count:L} rule</i>"
+#| msgid_plural "<i>Blocklist contains {count:L} rules</i>"
+msgid "<i>Blocklist has never been updated</i>"
+msgstr "<i>黑名單包含 {count:L} 個規則</i>"
+
+#, fuzzy
+#| msgid "<i>Blocklist contains {count:L} rule</i>"
+#| msgid_plural "<i>Blocklist contains {count:L} rules</i>"
+msgid "<i>Blocklist last updated {date}</i>"
+msgstr "<i>黑名單包含 {count:L} 個規則</i>"
+
+msgid "_Upload:"
+msgstr "上傳 (_U)："
+
+msgid "_Download:"
+msgstr "下載 (_D)："
+
+msgid "U_pload:"
+msgstr "上傳 (_U)："
+
+msgid "Do_wnload:"
+msgstr "下載 (_W)："
+
+msgid "Downloading"
+msgstr "正在下載"
+
+msgid "Adding"
+msgstr "正在加入"
+
+msgid "Reads user clipboard content for torrents"
+msgstr "從使用者的剪貼簿讀取 torrents"
+
+msgid "Detect new torrents from clipboard"
+msgstr "從剪貼簿偵測新的 torrents"
+
+#. Please keep this phrase as short as possible, it's currently the longest and influences dialog width
+msgid "Download is i_nactive if data sharing stopped:"
+msgstr "當停止資料分享時暫停下載 (_N)："
+
+msgid "Seeding"
+msgstr "正在做種"
+
+msgid "Stop seedi_ng if idle for:"
+msgstr "閒置超過時間時停止做種 (_N)："
+
+msgid "Encryption"
+msgstr "加密"
+
+msgid "Start _minimized in notification area"
+msgstr "啟動時最小化到通知區域 (_M)"
+
+#, fuzzy
+#| msgid "Retransmission"
+msgid "Retransmission (Qt)"
+msgstr "Retransmission"
+
+msgid "Select Location"
+msgstr "選擇位置"
+
+msgid "Error Renaming Path"
+msgstr "無法重新命名路徑"
+
+msgid "Unable to rename \"{old_path}\" as \"{path}\": {error}."
+msgstr "無法重新命名 \"{old_path}\" 為 \"{path}\"：{error}。"
+
+msgid "Error Adding Torrent"
+msgstr "無法加入 Torrent"
+
+msgid "{torrent_name} (copy of {hash})"
+msgstr "{torrent_name} ({hash} 的副本)"
+
+msgid "Duplicate Torrent"
+msgstr "重複的 torrents"
+
+msgid "Duplicate Torrents"
+msgstr "重複的 torrents"
+
+msgid "Unable to add {count} duplicate torrent"
+msgid_plural "Unable to add {count} duplicate torrents"
+msgstr[0] "無法加入 {count} 個重複的 torrents"
+
+msgid "Change Session"
+msgstr "變更工作階段"
+
+msgid "Source"
+msgstr "來源"
+
+msgid "Start _Local Session"
+msgstr "啟動本機工作階段 (_L)"
+
+msgid "Connect to _Remote Session"
+msgstr "連線到遠端工作階段 (_R)"
+
+msgid "_Host:"
+msgstr "主機 (_H)："
+
+msgid "_Port:"
+msgstr "連接埠 (_P)："
+
+msgid "_Authentication required"
+msgstr "需要認證 (_A)"
+
+msgid "Remote root pa_th:"
+msgstr ""
+
+msgid "Tracker gave a warning: {warning}"
+msgstr "追蹤器出現警告：{warning}"
+
+msgid "Tracker gave an error: {error}"
+msgstr "追蹤器出現錯誤：{error}"
+
+msgid "Error: {error}"
+msgstr "錯誤: {error}"
+
+#, fuzzy
+#| msgid "Magnetized transfer - retrieving metadata (%1%)"
+msgid "Magnetized torrent - retrieving metadata ({percent_done}%)"
+msgstr "磁力連結傳輸 - 正在擷取後設資料 (%1%)"
+
+#, no-c-format
+msgid "Downloading metadata from {active_count:L} peer ({percent_done}% done)"
+msgid_plural "Downloading metadata from {active_count:L} peers ({percent_done}% done)"
+msgstr[0] "正在從 {active_count:L} 個節點下載後設資料 (已完成 {percent_done}%)"
+
+msgid "Downloading from {active_count:L} peer"
+msgid_plural "Downloading from {active_count:L} peers"
+msgstr[0] "正在從 {active_count:L} 個節點下載"
+
+msgid " and {webseed_count:L} web seed"
+msgid_plural " and {webseed_count:L} web seeds"
+msgstr[0] " 及 {webseed_count:L} 個網路種子"
+
+msgid "Seeding to {active_count:L} peer"
+msgid_plural "Seeding to {active_count:L} peers"
+msgstr[0] "正在為 {active_count:L} 個節點做種"
+
+msgid " - "
+msgstr " - "
+
+msgid "To add a backup URL, add it on the next line after a primary URL."
+msgstr "若要新增備份 URL，請將它新增到主要 URL 之後的下一行。"
+
+msgid "To add a new primary URL, add it after a blank line."
+msgstr "若要加入其他主要 URL，請空一行再填寫。"
 
 msgid "{file_count:L} file, {total_size}\n"
 msgid_plural "{file_count:L} files, {total_size}\n"
@@ -1970,13 +2739,115 @@ msgid "minute"
 msgid_plural "minutes"
 msgstr[0] "分鐘"
 
-msgid "seconds"
+#, fuzzy
+#| msgid "seconds"
+#| msgid_plural "seconds"
+msgid "second"
 msgid_plural "seconds"
 msgstr[0] "秒"
 
 msgid "day"
 msgid_plural "days"
 msgstr[0] "天"
+
+msgid "seconds"
+msgid_plural "seconds"
+msgstr[0] "秒"
+
+#~ msgid "Finished"
+#~ msgstr "已完成"
+
+#~ msgid "We would upload to this peer if they asked"
+#~ msgstr "如果對方請求，我們將上傳到該節點"
+
+#~ msgid "Dn Blocks"
+#~ msgstr "下載區塊"
+
+#~ msgid "Up Blocks"
+#~ msgstr "上傳區塊"
+
+#~ msgid "We Cancelled"
+#~ msgstr "我們已取消"
+
+#~ msgid "They Cancelled"
+#~ msgstr "他們已取消"
+
+#~ msgid "Have"
+#~ msgstr "已有"
+
+#~ msgctxt "current session totals"
+#~ msgid "Down: {downloaded_size}, Up: {uploaded_size}"
+#~ msgstr "下載：{downloaded_size}，上傳：{uploaded_size}"
+
+#~ msgctxt "all-time totals"
+#~ msgid "Down: {downloaded_size}, Up: {uploaded_size}"
+#~ msgstr "下載：{downloaded_size}上傳：{uploaded_size}"
+
+#~ msgid "Select a File"
+#~ msgstr "選擇檔案"
+
+#~ msgid "Inhibiting desktop hibernation"
+#~ msgstr "禁止桌面休眠"
+
+#~ msgid "Couldn't inhibit desktop hibernation: {error}"
+#~ msgstr "無法禁止桌面休眠：{error}"
+
+#~ msgid "Allowing desktop hibernation"
+#~ msgstr "允許桌面休眠"
+
+#~ msgid "Open URL…"
+#~ msgstr "開啟網址…"
+
+#~ msgid "Start all torrents"
+#~ msgstr "開始所有 torrents"
+
+#~ msgid "Pause all torrents"
+#~ msgstr "暫停所有 torrents"
+
+#~ msgid "Start torrent now"
+#~ msgstr "立即開始執行 torrent"
+
+#~ msgid "Copy _Magnet Link to Clipboard"
+#~ msgstr "複製磁力連結到剪貼簿 (_M)"
+
+#~ msgid "Enable Alternative Speed _Limits"
+#~ msgstr "啟用替代速度限制 (_L)"
+
+#~ msgid "Torrent size:"
+#~ msgstr "Torrent 大小："
+
+#~ msgid "_New"
+#~ msgstr "新增 (_N)"
+
+#~ msgid "Source F_older:"
+#~ msgstr "來源資料夾 (_O)："
+
+#~ msgid "Source _File:"
+#~ msgstr "來源檔案 (_F)："
+
+#~ msgid "P_ause"
+#~ msgstr "暫停 (_P)"
+
+#~ msgid "Keep _incomplete torrents in:"
+#~ msgstr "保存尚未完成的 torrents 於 (_I)："
+
+#~ msgid "Call scrip_t when done downloading:"
+#~ msgstr "下載完成時呼叫腳本 (_T)："
+
+#~ msgid "_Port used for incoming connections:"
+#~ msgstr "傳入的連接埠 (_P)："
+
+#~ msgid "Enable µ_TP for peer communication"
+#~ msgstr "為節點連線啟用 µTP (_T)"
+
+#~ msgid "_Inhibit hibernation when torrents are active"
+#~ msgstr "當 torrents 活躍中時禁止休眠 (_I)"
+
+#~ msgid "Torrent _location:"
+#~ msgstr "Torrent 位置 (_L)："
+
+#~ msgid "Couldn't read filename: {error} ({error_code})"
+#~ msgstr "無法讀取檔案名稱：{error} ({error_code})"
 
 #~ msgid "Couldn't find pending RPC request for tag {tag}"
 #~ msgstr "無法找到標記為 {tag} 的待處理 RPC 請求"
