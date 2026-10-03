@@ -123,6 +123,7 @@ qt/OptionsDialog.ui
 qt/PathButton.cc
 qt/PrefsDialog.cc
 qt/PrefsDialog.ui
+qt/retransmission-qt.desktop.in
 qt/RelocateDialog.cc
 qt/RelocateDialog.ui
 qt/Session.cc
