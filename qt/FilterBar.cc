@@ -25,6 +25,7 @@
 #include "Torrent.h"
 #include "TorrentFilter.h"
 #include "TorrentModel.h"
+#include "TrFormat.h"
 #include "Utils.h"
 
 // NOLINTNEXTLINE(performance-enum-size)
@@ -42,7 +43,7 @@ FilterBarComboBox* FilterBar::createActivityCombo()
 
     auto* model = new QStandardItemModel{ this };
 
-    auto* row = new QStandardItem{ tr("All") };
+    auto* row = new QStandardItem{ TR_TEXT("All") };
     row->setData(QVariant::fromValue(ShowMode::ShowAll), ACTIVITY_ROLE);
     model->appendRow(row);
 
@@ -54,13 +55,13 @@ FilterBarComboBox* FilterBar::createActivityCombo()
         new_row->setData(QVariant::fromValue(show_mode), ACTIVITY_ROLE);
         model->appendRow(new_row);
     };
-    add_row(ShowMode::ShowActive, tr("Active"), icons::Type::TorrentStateActive);
-    add_row(ShowMode::ShowSeeding, tr("Seeding"), icons::Type::TorrentStateSeeding);
-    add_row(ShowMode::ShowDownloading, tr("Downloading"), icons::Type::TorrentStateDownloading);
-    add_row(ShowMode::ShowPaused, tr("Paused"), icons::Type::TorrentStatePaused);
-    add_row(ShowMode::ShowFinished, tr("Seeding complete"), icons::Type::TorrentStateFinished);
-    add_row(ShowMode::ShowVerifying, tr("Verifying"), icons::Type::TorrentStateVerifying);
-    add_row(ShowMode::ShowError, tr("Error"), icons::Type::TorrentStateError);
+    add_row(ShowMode::ShowActive, TR_TEXT("Active"), icons::Type::TorrentStateActive);
+    add_row(ShowMode::ShowSeeding, TR_TEXT_C("Verb", "Seeding"), icons::Type::TorrentStateSeeding);
+    add_row(ShowMode::ShowDownloading, TR_TEXT_C("Verb", "Downloading"), icons::Type::TorrentStateDownloading);
+    add_row(ShowMode::ShowPaused, TR_TEXT("Paused"), icons::Type::TorrentStatePaused);
+    add_row(ShowMode::ShowFinished, TR_TEXT("Seeding complete"), icons::Type::TorrentStateFinished);
+    add_row(ShowMode::ShowVerifying, TR_TEXT_C("Verb", "Verifying"), icons::Type::TorrentStateVerifying);
+    add_row(ShowMode::ShowError, TR_TEXT("Error"), icons::Type::TorrentStateError);
 
     c->setModel(model);
     return c;
@@ -166,7 +167,7 @@ FilterBarComboBox* FilterBar::createTrackerCombo(QStandardItemModel* model)
     auto* delegate = new FilterBarComboBoxDelegate{ this, c };
     c->setItemDelegate(delegate);
 
-    auto* row = new QStandardItem{ tr("All") };
+    auto* row = new QStandardItem{ TR_TEXT("All") };
     row->setData(QString{}, TRACKER_ROLE);
     int const count = torrents_.rowCount();
     row->setData(count, FilterBarComboBox::CountRole);
@@ -189,7 +190,7 @@ FilterBar::FilterBar(Prefs& prefs, TorrentModel const& torrents, TorrentFilter c
     , prefs_{ prefs }
     , torrents_{ torrents }
     , filter_{ filter }
-    , count_label_{ new QLabel{ tr("&Show:"), this } }
+    , count_label_{ new QLabel{ TR_MNEMONIC("_Show:"), this } }
     , is_bootstrapping_{ true }
 {
     auto* h = new QHBoxLayout{ this };
@@ -203,7 +204,7 @@ FilterBar::FilterBar(Prefs& prefs, TorrentModel const& torrents, TorrentFilter c
     h->addWidget(line_edit_, 1);
 
     line_edit_->setClearButtonEnabled(true);
-    line_edit_->setPlaceholderText(tr("Search…"));
+    line_edit_->setPlaceholderText(TR_TEXT("Search…"));
     line_edit_->setMaximumWidth(250);
     connect(line_edit_, &QLineEdit::textChanged, this, &FilterBar::onTextChanged);
 

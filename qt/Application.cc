@@ -308,7 +308,7 @@ void Application::onTorrentsAdded(torrent_ids_t const& torrent_ids) const
 void Application::onTorrentsCompleted(torrent_ids_t const& torrent_ids) const
 {
     if (prefs_.get<bool>(TR_KEY_torrent_complete_notification_enabled)) {
-        auto const title = tr("Torrent(s) Completed", nullptr, static_cast<int>(std::size(torrent_ids)));
+        auto const title = std::size(torrent_ids) == 1U ? TR_TEXT("Torrent Completed") : TR_TEXT("Torrents Completed");
         auto const body = getNames(torrent_ids).join(QStringLiteral("\n"));
         notifyApp(title, body);
     }
@@ -337,8 +337,8 @@ void Application::onTorrentsNeedInfo(torrent_ids_t const& torrent_ids) const
 void Application::notifyTorrentAdded(Torrent const* tor) const
 {
     QStringList actions;
-    actions << QString{ QStringLiteral("start-now(%1)") }.arg(tor->id()) << QObject::tr("Start Now");
-    notifyApp(tr("Torrent Added"), tor->name(), actions);
+    actions << QString{ QStringLiteral("start-now(%1)") }.arg(tor->id()) << TR_TEXT("Start Now");
+    notifyApp(TR_TEXT("Torrent Added"), tor->name(), actions);
 }
 
 // ---

@@ -6,6 +6,8 @@
 #include "TrFormat.h"
 
 #include <algorithm>
+#include <cstdint> // uint64_t
+#include <cstring> // std::strchr()
 #include <optional>
 #include <set>
 #include <string>
@@ -99,7 +101,7 @@ using tr::app::l10n::parse_fields;
 [[nodiscard]] bool fits(
     std::string_view const text,
     std::span<Field const> const source_fields,
-    std::span<format_detail::ArgInfo const> const arg_infos)
+    std::span<detail::ArgInfo const> const arg_infos)
 {
     auto const fields = parse_fields(text);
     if (!fields) {
@@ -125,6 +127,31 @@ using tr::app::l10n::parse_fields;
 [[nodiscard]] std::string_view toStringView(QByteArray const& bytes) noexcept
 {
     return { bytes.constData(), static_cast<size_t>(bytes.size()) };
+}
+
+// Turns the catalog's mnemonic markers into Qt's:
+// "&" becomes "&&", "_X" becomes "&X", and "__" becomes "_".
+[[nodiscard]] QString toQtMnemonic(std::string_view const text)
+{
+    auto str = std::string{};
+    str.reserve(std::size(text));
+
+    for (size_t pos = 0; pos < std::size(text); ++pos) {
+        auto const ch = text[pos];
+        auto const next = pos + 1 < std::size(text) ? text[pos + 1] : '\0';
+        if (ch == '&') {
+            str += "&&";
+        } else if (ch == '_' && next == '_') {
+            str += '_';
+            ++pos;
+        } else if (ch == '_' && next != '\0') {
+            str += '&'; // the next pass copies the mnemonic letter
+        } else {
+            str += ch;
+        }
+    }
+
+    return QString::fromStdString(str);
 }
 
 // Warns once per source string, since views format the same text on every repaint.
@@ -194,7 +221,33 @@ std::pair<QString, QString> splitAtField(QString const& translation, char const*
     return split(source).value_or(std::pair{ QString::fromUtf8(source), QString{} });
 }
 
-QString format_detail::formatTranslation(
+QString uiText(char const* const msgid, char const* const context)
+{
+    auto const* const translation = context != nullptr && *context != '\0' ? tr_pgettext(context, msgid) : tr_gettext(msgid);
+    return std::strchr(msgid, '_') != nullptr ? toQtMnemonic(translation) : QString::fromUtf8(translation);
+}
+
+QString detail::text(char const* const msgid)
+{
+    return QString::fromUtf8(tr_gettext(msgid));
+}
+
+QString detail::textInContext(char const* const context, char const* const msgid)
+{
+    return QString::fromUtf8(tr_pgettext(context, msgid));
+}
+
+QString detail::pluralText(char const* const msgid, char const* const msgid_plural, uint64_t const n)
+{
+    return QString::fromUtf8(tr_ngettext(msgid, msgid_plural, n));
+}
+
+QString detail::mnemonicText(char const* const msgid)
+{
+    return toQtMnemonic(tr_gettext(msgid));
+}
+
+QString detail::formatTranslation(
     QString const& translation,
     char const* const source,
     std::span<ArgInfo const> const arg_infos,

@@ -37,12 +37,13 @@ AboutDialog::AboutDialog(Session& session, QWidget* parent)
         QString title = QStringLiteral(
             "<div style='font-size:x-large; font-weight: bold; text-align: center'>" TR_PROJ_APPNAME_CAPITALIZED "</div>");
         title += QStringLiteral("<div style='text-align: center'>%1: %2</div>")
-                     .arg(tr("Client"), QStringLiteral(LONG_VERSION_STRING));
-        title += QStringLiteral("<div style='text-align: center'>%1: %2</div>").arg(tr("Server"), session.sessionVersion());
+                     .arg(TR_TEXT("Client"), QStringLiteral(LONG_VERSION_STRING));
+        title += QStringLiteral("<div style='text-align: center'>%1: %2</div>")
+                     .arg(TR_TEXT("Server"), session.sessionVersion());
         ui_.titleLabel->setText(title);
     }
 
-    QPushButton const* b = ui_.dialogButtons->addButton(tr("C&redits"), QDialogButtonBox::ActionRole);
+    QPushButton const* b = ui_.dialogButtons->addButton(TR_MNEMONIC("C_redits"), QDialogButtonBox::ActionRole);
     connect(b, &QAbstractButton::clicked, this, &AboutDialog::showCredits);
 
     ui_.dialogButtons->button(QDialogButtonBox::Close)->setDefault(true);
@@ -52,7 +53,7 @@ void AboutDialog::showCredits()
 {
     QMessageBox::about(
         this,
-        tr("Credits"),
+        TR_TEXT("Credits"),
         QString::fromUtf8(
             "Charles Kerr (Backend; Daemon; GTK+; Qt)\n"
             "Mitchell Livingston (macOS)\n"
