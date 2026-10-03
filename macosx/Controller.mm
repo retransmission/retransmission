@@ -60,6 +60,8 @@
 #import "ExpandedPathToIconTransformer.h"
 #import "PowerManager.h"
 #import "Utils.h"
+#import "UTTypeAdditions.h"
+#import "NSURLAdditions.h"
 
 typedef NSString* ToolbarItemIdentifier NS_TYPED_EXTENSIBLE_ENUM;
 
@@ -941,23 +943,37 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
     didReceiveResponse:(nonnull NSURLResponse*)response
      completionHandler:(nonnull void (^)(NSURLSessionResponseDisposition))completionHandler
 {
-    NSString* suggestedName = response.suggestedFilename;
-    if ([suggestedName.pathExtension caseInsensitiveCompare:@"torrent"] == NSOrderedSame) {
+    NSString* suggestedFilename = response.suggestedFilename;
+    BOOL isTorrent = [UTType isTorrentResponseWithMIMEType:response.MIMEType suggestedFilename:suggestedFilename];
+
+    if (isTorrent) {
         completionHandler(NSURLSessionResponseBecomeDownload);
         return;
     }
+
     completionHandler(NSURLSessionResponseCancel);
 
     NSString* message = [NSString
         stringWithFormat:NSLocalizedString(@"It appears that the file \"%@\" from %@ is not a torrent file.", "Download not a torrent -> message"),
-                         suggestedName,
+                         suggestedFilename,
                          dataTask.originalRequest.URL.absoluteString.stringByRemovingPercentEncoding];
     dispatch_async(dispatch_get_main_queue(), ^{
         NSAlert* alert = [[NSAlert alloc] init];
         [alert addButtonWithTitle:NSLocalizedString(@"OK", "Download not a torrent -> button")];
         alert.messageText = NSLocalizedString(@"Torrent download failed", "Download not a torrent -> title");
         alert.informativeText = message;
-        [alert runModal];
+
+        NSWindow* mainWindow = NSApp.mainWindow ?: NSApp.keyWindow;
+        if (mainWindow) {
+            [alert beginSheetModalForWindow:mainWindow completionHandler:nil];
+        } else {
+            if (@available(macOS 14.0, *)) {
+                [NSApp activate];
+            } else {
+                [NSApp activateIgnoringOtherApps:YES];
+            }
+            [alert runModal];
+        }
     });
 }
 
@@ -1249,7 +1265,8 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
     panel.canChooseFiles = YES;
     panel.canChooseDirectories = NO;
 
-    panel.allowedFileTypes = @[ @"org.bittorrent.torrent", @"torrent" ];
+    // Also accept the type LaunchServices prefers for .torrent, which may belong to another app.
+    panel.allowedContentTypes = @[ UTType.torrent, [UTType typeWithFilenameExtension:@"torrent"] ?: UTType.torrent ];
 
     [panel beginSheetModalForWindow:self.fWindow completionHandler:^(NSInteger result) {
         if (result == NSModalResponseOK) {
@@ -1832,7 +1849,7 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
 
     if (!torrent.magnet && [NSFileManager.defaultManager fileExistsAtPath:torrent.torrentLocation]) {
         NSSavePanel* panel = [NSSavePanel savePanel];
-        panel.allowedFileTypes = @[ @"org.bittorrent.torrent", @"torrent" ];
+        panel.allowedContentTypes = @[ UTType.torrent ];
         panel.extensionHidden = NO;
 
         panel.nameFieldStringValue = torrent.name;
@@ -3084,8 +3101,7 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
 
         NSString* fullFile = [path stringByAppendingPathComponent:file];
 
-        if (!([[NSWorkspace.sharedWorkspace typeOfFile:fullFile error:NULL] isEqualToString:@"org.bittorrent.torrent"] ||
-              [fullFile.pathExtension caseInsensitiveCompare:@"torrent"] == NSOrderedSame)) {
+        if (![NSURL fileURLWithPath:fullFile].isTorrentFile) {
             continue;
         }
 
@@ -3322,8 +3338,7 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
         NSArray<NSURL*>* files = [pasteboard readObjectsForClasses:@[ NSURL.class ]
                                                            options:@{ NSPasteboardURLReadingFileURLsOnlyKey : @YES }];
         for (NSURL* fileToParse in files) {
-            if ([[NSWorkspace.sharedWorkspace typeOfFile:fileToParse.path error:NULL] isEqualToString:@"org.bittorrent.torrent"] ||
-                [fileToParse.pathExtension caseInsensitiveCompare:@"torrent"] == NSOrderedSame) {
+            if (fileToParse.isTorrentFile) {
                 torrent = YES;
                 auto metainfo = tr_torrent_metainfo{};
                 if (metainfo.parse_torrent_file(fileToParse.path.UTF8String)) {
@@ -3384,8 +3399,7 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
                                                            options:@{ NSPasteboardURLReadingFileURLsOnlyKey : @YES }];
         NSMutableArray<NSString*>* filesToOpen = [NSMutableArray arrayWithCapacity:files.count];
         for (NSURL* file in files) {
-            if ([[NSWorkspace.sharedWorkspace typeOfFile:file.path error:NULL] isEqualToString:@"org.bittorrent.torrent"] ||
-                [file.pathExtension caseInsensitiveCompare:@"torrent"] == NSOrderedSame) {
+            if (file.isTorrentFile) {
                 torrent = YES;
                 auto metainfo = tr_torrent_metainfo{};
                 if (metainfo.parse_torrent_file(file.path.UTF8String)) {
