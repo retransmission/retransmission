@@ -35,252 +35,93 @@ add_subdirectory(VDKQueue)
 
 add_executable(${TR_NAME}-mac MACOSX_BUNDLE)
 
-target_sources(${TR_NAME}-mac
-    PRIVATE
-        AboutWindowController.h
-        AboutWindowController.mm
-        AddMagnetWindowController.h
-        AddMagnetWindowController.mm
-        AddWindowController.h
-        AddWindowController.mm
-        Badger.h
-        Badger.mm
-        BadgeView.h
-        BadgeView.mm
-        BaseFileNameCellView.h
-        BaseFileNameCellView.mm
-        BlocklistDownloaderViewController.h
-        BlocklistDownloaderViewController.mm
-        BonjourController.h
-        BonjourController.mm
-        ButtonToolbarItem.h
-        ButtonToolbarItem.mm
-        CocoaCompatibility.h
-        ColorTextField.h
-        ColorTextField.mm
-        Controller.h
-        Controller.mm
-        CreatorWindowController.h
-        CreatorWindowController.mm
-        DefaultAppHelper.h
-        DefaultAppHelper.mm
-        DragOverlayView.h
-        DragOverlayView.mm
-        DragOverlayWindow.h
-        DragOverlayWindow.mm
-        ExpandedPathToIconTransformer.h
-        ExpandedPathToIconTransformer.mm
-        ExpandedPathToPathTransformer.h
-        ExpandedPathToPathTransformer.mm
-        FileListNode.h
-        FileListNode.mm
-        FileCheckCellView.h
-        FileCheckCellView.mm
-        FileOutlineController.h
-        FileOutlineController.mm
-        FileOutlineView.h
-        FileOutlineView.mm
-        FilePriorityCellView.h
-        FilePriorityCellView.mm
-        FileRenameSheetController.h
-        FileRenameSheetController.mm
-        FilterBarController.h
-        FilterBarController.mm
-        FilterButton.h
-        FilterButton.mm
-        GlobalOptionsPopoverViewController.h
-        GlobalOptionsPopoverViewController.mm
-        GroupCell.h
-        GroupCell.mm
-        GroupPopUpButtonCell.h
-        GroupPopUpButtonCell.mm
-        GroupsController.h
-        GroupsController.mm
-        GroupsPrefsController.h
-        GroupsPrefsController.mm
-        GroupToolbarItem.h
-        GroupToolbarItem.mm
-        InfoActivityViewController.h
-        InfoActivityViewController.mm
-        InfoFileViewController.h
-        InfoFileViewController.mm
-        InfoGeneralViewController.h
-        InfoGeneralViewController.mm
-        InfoOptionsViewController.h
-        InfoOptionsViewController.mm
-        InfoPeersViewController.h
-        InfoPeersViewController.mm
-        InfoTextField.h
-        InfoTextField.mm
-        InfoTrackersViewController.h
-        InfoTrackersViewController.mm
-        InfoViewController.h
-        InfoWindowController.h
-        InfoWindowController.mm
-        main.mm
-        MessageWindowController.h
-        MessageWindowController.mm
-        NSApplicationAdditions.h
-        NSApplicationAdditions.mm
-        NSDataAdditions.h
-        NSDataAdditions.mm
-        NSImageAdditions.h
-        NSImageAdditions.mm
-        NSKeyedUnarchiverAdditions.h
-        NSKeyedUnarchiverAdditions.mm
-        NSMutableArrayAdditions.h
-        NSMutableArrayAdditions.mm
-        NSStringAdditions.h
-        NSStringAdditions.mm
-        PeerProgressIndicatorCell.h
-        PeerProgressIndicatorCell.mm
-        PiecesView.h
-        PiecesView.mm
-        PortChecker.h
-        PortChecker.mm
-        PowerManager.h
-        PowerManager.mm
-        PredicateEditorRowTemplateAny.h
-        PredicateEditorRowTemplateAny.mm
-        PrefsController.h
-        PrefsController.mm
-        PrefsWindow.h
-        PrefsWindow.mm
-        PriorityPopUpButtonCell.h
-        PriorityPopUpButtonCell.mm
-        ProgressBarView.h
-        ProgressBarView.mm
-        ProgressGradients.h
-        ProgressGradients.mm
-        ShareToolbarItem.h
-        ShareToolbarItem.mm
-        ShareTorrentFileHelper.h
-        ShareTorrentFileHelper.mm
-        SmallTorrentCell.h
-        SmallTorrentCell.mm
-        SparkleProxy.mm
-        StatsWindowController.h
-        StatsWindowController.mm
-        StatusBarController.h
-        StatusBarController.mm
-        Toolbar.h
-        Toolbar.mm
-        Torrent.h
-        Torrent.mm
-        TorrentCell.h
-        TorrentCell.mm
-        TorrentCellActionButton.h
-        TorrentCellActionButton.mm
-        TorrentCellControlButton.h
-        TorrentCellControlButton.mm
-        TorrentCellRevealButton.h
-        TorrentCellRevealButton.mm
-        TorrentGroup.h
-        TorrentGroup.mm
-        TorrentTableView.h
-        TorrentTableView.mm
-        TrackerCell.h
-        TrackerCell.mm
-        TrackerNode.h
-        TrackerNode.mm
-        TRGroup.h
-        TRGroup.mm
-        URLSheetWindowController.h
-        URLSheetWindowController.mm
-        Utils.h
-        Utils.mm)
+# =========================================================================
+# 1. SOURCE FILES (.h / .mm)
+# =========================================================================
+# Automatically collect code files strictly in the current directory (no recursion)
+file(GLOB MAC_SOURCES CONFIGURE_DEPENDS "*.h" "*.mm")
+target_sources(${TR_NAME}-mac PRIVATE ${MAC_SOURCES})
 
-set(XIB_FILES
-    AboutWindow.xib
-    BlocklistStatusWindow.xib
-    FileRenameSheetController.xib
-    FilterBar.xib
-    InfoFileView.xib
-    InfoPeersView.xib
-    InfoTrackersView.xib
-    InfoWindow.xib
-    MessageWindow.xib
-    StatsWindow.xib
-    StatusBar.xib
-    URLSheetWindow.xib)
+# =========================================================================
+# 2. INTERFACE FILES (.xib)
+# =========================================================================
+# Collect non-localized XIB files from Resources directory
+file(GLOB ALL_XIB_FILES CONFIGURE_DEPENDS
+    "*.xib"
+    "Base.lproj/*.xib"
+)
 
+# If using Xcode, it handles XIB compilation automatically
+if(CMAKE_GENERATOR STREQUAL Xcode)
+    file(GLOB NON_LOCALIZED_XIBS CONFIGURE_DEPENDS "Resources/*.xib")
+    set_source_files_properties(${NON_LOCALIZED_XIBS} PROPERTIES
+        MACOSX_PACKAGE_LOCATION Resources)
+
+    file(GLOB BASE_XIB_FILES CONFIGURE_DEPENDS "Base.lproj/*.xib")
+    set_source_files_properties(${BASE_XIB_FILES} PROPERTIES
+        MACOSX_PACKAGE_LOCATION Resources/Base.lproj)
+
+    target_sources(${TR_NAME}-mac PRIVATE ${ALL_XIB_FILES})
+else()
+    # For Ninja / Makefiles, we must manually compile .xib into .nib via ibtool
+    find_program(IBTOOL_EXECUTABLE ibtool REQUIRED)
+
+    foreach(XIB_FILE IN LISTS ALL_XIB_FILES)
+        # Get relative path (e.g., "Base.lproj/MainMenu.xib" or "AboutWindow.xib")
+        file(RELATIVE_PATH REL_PATH "${CMAKE_CURRENT_SOURCE_DIR}" "${XIB_FILE}")
+        get_filename_component(XIB_DIR "${REL_PATH}" DIRECTORY)
+        get_filename_component(XIB_NAME "${REL_PATH}" NAME_WE)
+
+        # Define output path in the build directory mirroring the source structure
+        set(NIB_OUTPUT_DIR "${CMAKE_CURRENT_BINARY_DIR}/${XIB_DIR}")
+        set(NIB_FILE "${NIB_OUTPUT_DIR}/${XIB_NAME}.nib")
+
+        # Compile .xib to .nib during build
+        add_custom_command(
+            OUTPUT "${NIB_FILE}"
+            COMMAND ${CMAKE_COMMAND} -E make_directory "${NIB_OUTPUT_DIR}"
+            COMMAND ${IBTOOL_EXECUTABLE} --errors --warnings --notices
+                    --compile "${NIB_FILE}" "${XIB_FILE}"
+            DEPENDS "${XIB_FILE}"
+            COMMENT "Compiling Interface Builder file: ${REL_PATH}"
+        )
+
+        # Place compiled .nib file into the target app bundle resources
+        set_source_files_properties("${NIB_FILE}" PROPERTIES
+            GENERATED TRUE
+            MACOSX_PACKAGE_LOCATION "Resources/${XIB_DIR}")
+
+        target_sources(${TR_NAME}-mac PRIVATE "${NIB_FILE}")
+    endforeach()
+endif()
+
+# =========================================================================
+# 3. STATIC RESOURCES AND ASSETS (Classic AppIcon version)
+# =========================================================================
+# Standalone static resources
 set(RESOURCES
     Defaults.plist
     Credits.rtf
     ../COPYING
     Images/TransmissionDocument.icns)
-source_group(Resources
-    FILES ${RESOURCES})
 
-set_source_files_properties(
-    ${RESOURCES}
-    PROPERTIES
-        MACOSX_PACKAGE_LOCATION Resources)
+source_group(Resources FILES ${RESOURCES})
+set_source_files_properties(${RESOURCES} PROPERTIES
+    MACOSX_PACKAGE_LOCATION Resources)
 
-set(IMAGESETS
-    ActionHover
-    CleanupTemplate
-    CompleteCheck
-    CreateLarge
-    DownArrowGroupTemplate
-    DownArrowTemplate
-    DownloadBadge
-    EllipsisTemplate
-    Globe
-    Magnet
-    PauseHover
-    PauseOff
-    PauseOn
-    PinTemplate
-    PriorityControlHigh
-    PriorityControlLow
-    PriorityControlNormal
-    PriorityHighTemplate
-    PriorityLowTemplate
-    PriorityNormalTemplate
-    ResumeHover
-    ResumeNoWaitHover
-    ResumeNoWaitOff
-    ResumeNoWaitOn
-    ResumeOff
-    ResumeOn
-    RevealHover
-    RevealOff
-    RevealOn
-    TortoiseTemplate
-    UpArrowGroupTemplate
-    UpArrowTemplate
-    UploadBadge
-    YingYangGroupTemplate
-    YingYangTemplate)
+# Define directories for classic asset compilation
+set(IMAGE_ASSETS_DIR "Images/Images.xcassets")
+set(APPICON_NAME "AppIcon") # Reverted to classic icon name
 
-set(APPICON_NAME AppIcon)
+# Collect ALL files strictly inside the asset catalog directory
+file(GLOB_RECURSE IMAGE_ASSETS CONFIGURE_DEPENDS "${IMAGE_ASSETS_DIR}/*")
 
-set(IMAGE_ASSETS_DIR Images/Images.xcassets)
-set(APPICONSET_DIR "${IMAGE_ASSETS_DIR}/${APPICON_NAME}.appiconset")
-
-set(IMAGE_ASSETS
-    ${IMAGE_ASSETS_DIR}/Contents.json
-    ${APPICONSET_DIR}/Contents.json)
-
-foreach(IMG IN LISTS IMAGESETS)
-    set(IMG_DIR "${IMAGE_ASSETS_DIR}/${IMG}.imageset")
-    list(APPEND IMAGE_ASSETS
-        ${IMG_DIR}/${IMG}.png
-        ${IMG_DIR}/${IMG}@2x.png
-        ${IMG_DIR}/Contents.json)
-endforeach()
-
-foreach(SIZE IN ITEMS 16 32 128 256 512)
-    list(APPEND IMAGE_ASSETS
-        ${APPICONSET_DIR}/icon_${SIZE}x${SIZE}.png
-        ${APPICONSET_DIR}/icon_${SIZE}x${SIZE}@2x.png)
-endforeach()
-
+# Output compiled assets generated by actool
 set(COMPILED_IMAGE_ASSETS
     "${CMAKE_CURRENT_BINARY_DIR}/${APPICON_NAME}.icns"
     "${CMAKE_CURRENT_BINARY_DIR}/Assets.car")
 
+# Universal asset compilation via actool (processes only classic .xcassets)
 add_custom_command(
     OUTPUT
         ${COMPILED_IMAGE_ASSETS}
@@ -290,24 +131,22 @@ add_custom_command(
         --compile "${CMAKE_CURRENT_BINARY_DIR}"
         --platform macosx
         --minimum-deployment-target ${CMAKE_OSX_DEPLOYMENT_TARGET}
-        --app-icon ${APPICON_NAME}
+        --app-icon ${APPICON_NAME} # Instructs actool to use classic AppIcon
         --output-partial-info-plist "${CMAKE_CURRENT_BINARY_DIR}/${APPICON_NAME}.Info.plist"
         ${IMAGE_ASSETS_DIR}
     DEPENDS ${IMAGE_ASSETS}
     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
-source_group("Generated Files"
-    FILES
-        ${COMPILED_IMAGE_ASSETS}
-        ${APPICON_NAME}.Info.plist)
 
-list(APPEND RESOURCES
-    ${COMPILED_IMAGE_ASSETS})
+source_group("Generated Files" FILES ${COMPILED_IMAGE_ASSETS} ${APPICON_NAME}.Info.plist)
 
-set_source_files_properties(
-    ${COMPILED_IMAGE_ASSETS}
-    PROPERTIES
-        MACOSX_PACKAGE_LOCATION Resources)
+list(APPEND RESOURCES ${COMPILED_IMAGE_ASSETS})
+set_source_files_properties(${COMPILED_IMAGE_ASSETS} PROPERTIES
+    MACOSX_PACKAGE_LOCATION Resources)
 
+
+# =========================================================================
+# 4. LOCALIZATION (.strings)
+# =========================================================================
 set(LINGUAS
     af
     da
@@ -330,8 +169,7 @@ set(LINGUAS
     tr
     uk
     zh-CN
-    zh-TW
-    )
+    zh-TW)
 
 if(ENABLE_NLS)
     set(ENABLED_LINGUAS ${LINGUAS})
@@ -339,59 +177,28 @@ else()
     set(ENABLED_LINGUAS en)
 endif()
 
-set(BASE_XIB_FILES
-    AddMagnetWindow.xib
-    AddWindow.xib
-    Creator.xib
-    GlobalOptionsPopover.xib
-    GroupRules.xib
-    InfoActivityView.xib
-    InfoGeneralView.xib
-    InfoOptionsView.xib
-    MainMenu.xib
-    PrefsWindow.xib)
-list(TRANSFORM BASE_XIB_FILES
-    PREPEND Base.lproj/)
-
-set(LANG_STRINGS_FILES
-    InfoPlist.strings
-    Localizable.strings)
-
 foreach(LANG ${ENABLED_LINGUAS})
-    set(${LANG}_STRINGS_FILES)
-    if(NOT LANG STREQUAL "en")
-        foreach(F ${BASE_XIB_FILES})
-            get_filename_component(F_BASE "${F}" NAME_WE)
-            list(APPEND ${LANG}_STRINGS_FILES ${LANG}.lproj/${F_BASE}.strings)
-        endforeach()
-    endif()
-    foreach(F ${LANG_STRINGS_FILES})
-        list(APPEND ${LANG}_STRINGS_FILES ${LANG}.lproj/${F})
-    endforeach()
-    source_group(Resources/${LANG}.lproj
-        FILES ${${LANG}_STRINGS_FILES})
-endforeach()
+    # Automatically collect localization files from the language directory
+    file(GLOB LANG_STRINGS CONFIGURE_DEPENDS "${LANG}.lproj/*.strings")
 
-foreach(LANG ${ENABLED_LINGUAS})
-    list(APPEND RESOURCES ${${LANG}_STRINGS_FILES})
-    set(STRINGS_FILES_RESOURCES_DIR Resources)
+    list(APPEND RESOURCES ${LANG_STRINGS})
+    source_group("Resources/${LANG}.lproj" FILES ${LANG_STRINGS})
+
+    set(STRINGS_DEST Resources)
     if(NOT CMAKE_GENERATOR STREQUAL Xcode)
-        string(APPEND STRINGS_FILES_RESOURCES_DIR /${LANG}.lproj)
+        string(APPEND STRINGS_DEST "/${LANG}.lproj")
     endif()
-    set_source_files_properties(
-        ${${LANG}_STRINGS_FILES}
-        PROPERTIES
-            MACOSX_PACKAGE_LOCATION ${STRINGS_FILES_RESOURCES_DIR})
+
+    set_source_files_properties(${LANG_STRINGS} PROPERTIES
+        MACOSX_PACKAGE_LOCATION "${STRINGS_DEST}")
 endforeach()
 
-target_sources(${TR_NAME}-mac
-    PRIVATE
-        ${RESOURCES})
+# Target compiled resources and strings to the main application bundle
+target_sources(${TR_NAME}-mac PRIVATE ${RESOURCES})
 
-tr_target_xib_files(${TR_NAME}-mac
-    ${XIB_FILES}
-    ${BASE_XIB_FILES})
-
+# =========================================================================
+# 5. LINK LIBRARIES AND SYSTEM FRAMEWORKS
+# =========================================================================
 find_library(SPARKLE_FRAMEWORK Sparkle
     PATHS ${CMAKE_CURRENT_SOURCE_DIR}
     NO_DEFAULT_PATHS)
@@ -426,13 +233,15 @@ set_target_properties(
         MACOSX_BUNDLE_INFO_PLIST ${CMAKE_CURRENT_SOURCE_DIR}/Info.plist.in
         OUTPUT_NAME ${MAC_BUNDLE_NAME})
 
-install(
-    TARGETS ${TR_NAME}-mac
-    DESTINATION Applications)
+# =========================================================================
+# 6. INSTALLATION AND BUNDLE FIXUP
+# =========================================================================
+install(TARGETS ${TR_NAME}-mac DESTINATION Applications)
 
 install(
     DIRECTORY TransmissionHelp
     DESTINATION Applications/${MAC_BUNDLE_NAME}.app/Contents/Resources)
+
 tr_install_web(Applications/${MAC_BUNDLE_NAME}.app/Contents/Resources)
 
 install(CODE
