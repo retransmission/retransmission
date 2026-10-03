@@ -111,8 +111,6 @@
 		A25BFD71167BED3B0039D1AA /* variant-common.h in Headers */ = {isa = PBXBuildFile; fileRef = A25BFD70167BED3B0039D1AA /* variant-common.h */; };
 		A25D2CBD0CF4C73E0096A262 /* stats.cc in Sources */ = {isa = PBXBuildFile; fileRef = A25D2CBB0CF4C7190096A262 /* stats.cc */; };
 		A25D2CBE0CF4C73E0096A262 /* stats.h in Headers */ = {isa = PBXBuildFile; fileRef = A25D2CBA0CF4C7190096A262 /* stats.h */; };
-		EDC0A1D22E5A100100A1B2C3 /* storage-descriptor.h in Headers */ = {isa = PBXBuildFile; fileRef = EDC0A1D02E5A100100A1B2C3 /* storage-descriptor.h */; };
-		EDC0A1D32E5A100100A1B2C3 /* storage-descriptor.cc in Sources */ = {isa = PBXBuildFile; fileRef = EDC0A1D12E5A100100A1B2C3 /* storage-descriptor.cc */; };
 		A25E03D90E4015100086C225 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
 		A25E03E20E4015380086C225 /* tr-getopt.h in Headers */ = {isa = PBXBuildFile; fileRef = A25E03E00E4015380086C225 /* tr-getopt.h */; };
 		A25E03E30E4015380086C225 /* tr-getopt.cc in Sources */ = {isa = PBXBuildFile; fileRef = A25E03E10E4015380086C225 /* tr-getopt.cc */; };
@@ -445,6 +443,8 @@
 		EDBDFA9E25AFCCA60093D9C1 /* evutil_time.c in Sources */ = {isa = PBXBuildFile; fileRef = EDBDFA9D25AFCCA60093D9C1 /* evutil_time.c */; };
 		EDC0A1B12E5A100100A1B2C3 /* local-data.h in Headers */ = {isa = PBXBuildFile; fileRef = EDC0A1AF2E5A100100A1B2C3 /* local-data.h */; };
 		EDC0A1B22E5A100100A1B2C3 /* local-data.cc in Sources */ = {isa = PBXBuildFile; fileRef = EDC0A1B02E5A100100A1B2C3 /* local-data.cc */; };
+		EDC0A1D22E5A100100A1B2C3 /* storage-descriptor.h in Headers */ = {isa = PBXBuildFile; fileRef = EDC0A1D02E5A100100A1B2C3 /* storage-descriptor.h */; };
+		EDC0A1D32E5A100100A1B2C3 /* storage-descriptor.cc in Sources */ = {isa = PBXBuildFile; fileRef = EDC0A1D12E5A100100A1B2C3 /* storage-descriptor.cc */; };
 		EDC37BCD2EE9C2AD001E2612 /* api-compat.cc in Sources */ = {isa = PBXBuildFile; fileRef = EDC37BCC2EE9C2AD001E2612 /* api-compat.cc */; };
 		EDC37BCE2EE9C2AD001E2612 /* api-compat.h in Headers */ = {isa = PBXBuildFile; fileRef = EDC37BCB2EE9C2AD001E2612 /* api-compat.h */; };
 		EDD735D62D83087400852628 /* UniformTypeIdentifiers.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EDD735D52D83087400852628 /* UniformTypeIdentifiers.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
@@ -719,14 +719,12 @@
 		A25964A4106D73A800453B31 /* announcer.cc */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = announcer.cc; sourceTree = "<group>"; };
 		A25964A5106D73A800453B31 /* announcer.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.h; path = announcer.h; sourceTree = "<group>"; };
 		A25BFD63167BED3B0039D1AA /* variant-benc.cc */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = "variant-benc.cc"; sourceTree = "<group>"; };
-		A25BFD70167BED3B0039D1AA /* variant-common.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.h; path = "variant-common.h"; sourceTree = "<group>"; };
 		A25BFD65167BED3B0039D1AA /* variant-json.cc */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = "variant-json.cc"; sourceTree = "<group>"; };
 		A25BFD67167BED3B0039D1AA /* variant.cc */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = variant.cc; sourceTree = "<group>"; };
 		A25BFD68167BED3B0039D1AA /* variant.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.h; path = variant.h; sourceTree = "<group>"; };
+		A25BFD70167BED3B0039D1AA /* variant-common.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.h; path = "variant-common.h"; sourceTree = "<group>"; };
 		A25D2CBA0CF4C7190096A262 /* stats.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.h; path = stats.h; sourceTree = "<group>"; };
 		A25D2CBB0CF4C7190096A262 /* stats.cc */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = stats.cc; sourceTree = "<group>"; };
-		EDC0A1D02E5A100100A1B2C3 /* storage-descriptor.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.h; path = "storage-descriptor.h"; sourceTree = "<group>"; };
-		EDC0A1D12E5A100100A1B2C3 /* storage-descriptor.cc */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = "storage-descriptor.cc"; sourceTree = "<group>"; };
 		A25E03E00E4015380086C225 /* tr-getopt.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.h; path = "tr-getopt.h"; sourceTree = "<group>"; };
 		A25E03E10E4015380086C225 /* tr-getopt.cc */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = "tr-getopt.cc"; sourceTree = "<group>"; };
 		A263C6B1F6718E2486DB20E1 /* tr-buffer.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.h; path = "tr-buffer.h"; sourceTree = "<group>"; };
@@ -1047,6 +1045,8 @@
 		EDBDFA9D25AFCCA60093D9C1 /* evutil_time.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = evutil_time.c; sourceTree = "<group>"; };
 		EDC0A1AF2E5A100100A1B2C3 /* local-data.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.h; path = "local-data.h"; sourceTree = "<group>"; };
 		EDC0A1B02E5A100100A1B2C3 /* local-data.cc */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = "local-data.cc"; sourceTree = "<group>"; };
+		EDC0A1D02E5A100100A1B2C3 /* storage-descriptor.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.h; path = "storage-descriptor.h"; sourceTree = "<group>"; };
+		EDC0A1D12E5A100100A1B2C3 /* storage-descriptor.cc */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = "storage-descriptor.cc"; sourceTree = "<group>"; };
 		EDC37BCB2EE9C2AD001E2612 /* api-compat.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "api-compat.h"; sourceTree = "<group>"; };
 		EDC37BCC2EE9C2AD001E2612 /* api-compat.cc */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = "api-compat.cc"; sourceTree = "<group>"; };
 		EDD735D52D83087400852628 /* UniformTypeIdentifiers.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UniformTypeIdentifiers.framework; path = System/Library/Frameworks/UniformTypeIdentifiers.framework; sourceTree = SDKROOT; };
