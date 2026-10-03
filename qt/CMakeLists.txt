@@ -271,13 +271,20 @@ if(INSTALL_DOC)
         DESTINATION ${CMAKE_INSTALL_MANDIR}/man1)
 endif()
 
-configure_file(
-    "${CMAKE_CURRENT_SOURCE_DIR}/retransmission-qt.desktop.in"
-    "${CMAKE_CURRENT_BINARY_DIR}/${TR_NAME}-qt.desktop"
-    @ONLY)
+set(DESKTOP_FILE "${CMAKE_CURRENT_BINARY_DIR}/${TR_NAME}-qt.desktop")
+
+# Gettext merges the translations into the configured copy.
+if(ENABLE_NLS AND GETTEXT_FOUND)
+    configure_file(retransmission-qt.desktop.in retransmission-qt.desktop.in @ONLY)
+    tr_gettext_msgfmt(${TR_NAME}-qt
+        ${DESKTOP_FILE}
+        ${CMAKE_CURRENT_BINARY_DIR}/retransmission-qt.desktop.in)
+else()
+    configure_file(retransmission-qt.desktop.in ${DESKTOP_FILE} @ONLY)
+endif()
 
 install(
-    FILES ${CMAKE_CURRENT_BINARY_DIR}/${TR_NAME}-qt.desktop
+    FILES ${DESKTOP_FILE}
     DESTINATION ${CMAKE_INSTALL_DATADIR}/applications)
 
 if(ENABLE_NLS)
