@@ -422,7 +422,6 @@ set_target_properties(
     ${TR_NAME}-mac
     PROPERTIES
         INSTALL_RPATH "@executable_path;@executable_path/../Frameworks"
-        MACOSX_BUNDLE_GUI_IDENTIFIER "org.m0k.transmission"
         MACOSX_BUNDLE_INFO_PLIST ${CMAKE_CURRENT_SOURCE_DIR}/Info.plist.in
         OUTPUT_NAME ${MAC_BUNDLE_NAME})
 

@@ -3431,7 +3431,7 @@
 					"-DWITH_CCRYPTO",
 				);
 				OTHER_CPLUSPLUSFLAGS = "$(OTHER_CFLAGS)";
-				PRODUCT_BUNDLE_IDENTIFIER = org.m0k.transmission;
+				PRODUCT_BUNDLE_IDENTIFIER = org.retransmission.retransmission;
 				SDKROOT = macosx;
 			};
 			name = Debug;
@@ -3643,7 +3643,7 @@
 					"-DNDEBUG",
 				);
 				OTHER_CPLUSPLUSFLAGS = "$(OTHER_CFLAGS)";
-				PRODUCT_BUNDLE_IDENTIFIER = org.m0k.transmission;
+				PRODUCT_BUNDLE_IDENTIFIER = org.retransmission.retransmission;
 				SDKROOT = macosx;
 			};
 			name = Release;
@@ -3801,7 +3801,7 @@
 					"-DWITH_CCRYPTO",
 				);
 				OTHER_CPLUSPLUSFLAGS = "$(OTHER_CFLAGS)";
-				PRODUCT_BUNDLE_IDENTIFIER = org.m0k.transmission;
+				PRODUCT_BUNDLE_IDENTIFIER = org.retransmission.retransmission;
 				SDKROOT = macosx;
 			};
 			name = "Release - Debug";
@@ -4424,7 +4424,7 @@
 					"-fmodules",
 					"-fcxx-modules",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "org.m0k.transmission.${PRODUCT_NAME:rfc1034identifier}";
+				PRODUCT_BUNDLE_IDENTIFIER = "org.retransmission.retransmission.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SYSTEM_HEADER_SEARCH_PATHS = (
@@ -4457,7 +4457,7 @@
 					"-fmodules",
 					"-fcxx-modules",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "org.m0k.transmission.${PRODUCT_NAME:rfc1034identifier}";
+				PRODUCT_BUNDLE_IDENTIFIER = "org.retransmission.retransmission.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SYSTEM_HEADER_SEARCH_PATHS = (
@@ -4490,7 +4490,7 @@
 					"-fmodules",
 					"-fcxx-modules",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "org.m0k.transmission.${PRODUCT_NAME:rfc1034identifier}";
+				PRODUCT_BUNDLE_IDENTIFIER = "org.retransmission.retransmission.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SYSTEM_HEADER_SEARCH_PATHS = (

@@ -32,7 +32,7 @@
 	<key>CFBundleIconName</key>
 	<string>@APPICON_NAME@</string>
 	<key>CFBundleIdentifier</key>
-	<string>org.m0k.transmission</string>
+	<string>@TR_PROJ_APPNAME_RDNS@</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
@@ -69,8 +69,6 @@
 	</dict>
 	<key>NSHumanReadableCopyright</key>
 	<string>Copyright © 2005–2026 The Retransmission Project</string>
-	<key>NSMainNibFile</key>
-	<string>MainMenu</string>
 	<key>NSPrincipalClass</key>
 	<string>NSApplication</string>
 	<key>NSSupportsAutomaticGraphicsSwitching</key>

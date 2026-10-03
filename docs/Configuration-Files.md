@@ -3,8 +3,8 @@
 ### macOS Defaults
 <table>
 <tr><th>What</th><th>Where</th></tr>
-<tr><td>Per-torrent settings</td><td><tt>$HOME/Library/Application Support/Transmission</tt></td></tr>
-<tr><td>Application settings</td><td><tt>$HOME/Library/Preferences/org.m0k.transmission.plist</tt></td></tr>
+<tr><td>Per-torrent settings</td><td><tt>$HOME/Library/Application Support/Retransmission</tt></td></tr>
+<tr><td>Application settings</td><td><tt>$HOME/Library/Preferences/org.retransmission.retransmission.plist</tt></td></tr>
 <tr><td>Default download folder</td><td><tt>$HOME/Downloads</tt></td></tr>
 </table>
 
