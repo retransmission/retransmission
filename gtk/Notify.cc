@@ -218,7 +218,7 @@ void gtr_notify_torrent_completed(Glib::RefPtr<Session> const& core, tr_torrent_
         gtr_variant_tuple(
             Glib::ustring(TR_PROJ_APPNAME_CAPITALIZED), // app_name
             0U, // replaces_id
-            Glib::ustring(TR_PROJ_APPNAME), // app_icon
+            Glib::ustring(TR_GTK_ICON_NAME), // app_icon
             Glib::ustring(_("Torrent Complete")), // summary
             Glib::ustring{ tr_torrentName(tor) }, // body
             actions,
@@ -250,7 +250,7 @@ void gtr_notify_torrent_added(Glib::RefPtr<Session> const& core, tr_torrent_id_t
         gtr_variant_tuple(
             Glib::ustring(TR_PROJ_APPNAME_CAPITALIZED), // app_name
             0U, // replaces
-            Glib::ustring(TR_PROJ_APPNAME), // icon_name
+            Glib::ustring(TR_GTK_ICON_NAME), // icon_name
             Glib::ustring(_("Torrent Added")), //  summary
             Glib::ustring{ tr_torrentName(tor) }, // body
             actions,

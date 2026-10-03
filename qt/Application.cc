@@ -102,13 +102,7 @@ void initUnits()
 
 [[nodiscard]] auto makeWindowIcon()
 {
-    // first, try to load it from the system theme
-    if (auto icon = QIcon::fromTheme(QStringLiteral(TR_PROJ_APPNAME)); !icon.isNull()) {
-        return icon;
-    }
-
-    // if that fails, use our own as the fallback
-    return QIcon{ QStringLiteral(":/icons/" TR_PROJ_APPNAME ".svg") };
+    return QIcon::fromTheme(QStringLiteral(TR_QT_ICON_NAME), QIcon{ QStringLiteral(":/icons/app-icon.svg") });
 }
 
 #if QT_CONFIG(accessibility)
@@ -490,7 +484,7 @@ bool Application::notifyApp(QString const& title, QString const& body, QStringLi
         QVariantList args;
         args.append(QStringLiteral(TR_PROJ_APPNAME_CAPITALIZED)); // app_name
         args.append(0U); // replaces_id
-        args.append(QStringLiteral(TR_PROJ_APPNAME)); // icon
+        args.append(QStringLiteral(TR_QT_ICON_NAME)); // icon
         args.append(title); // summary
         args.append(body); // body
         args.append(actions);
