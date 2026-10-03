@@ -9,6 +9,7 @@ add_test(
     COMMAND ${CMAKE_COMMAND}
         -Ddesktop_file=${CMAKE_BINARY_DIR}/gtk/${TR_NAME}-gtk.desktop
         -Dapp_id=${TR_GTK_APP_ID}
+        -Dexe=$<TARGET_FILE_BASE_NAME:${TR_NAME}-gtk>
         -Dvalidator=${DESKTOP_FILE_VALIDATE}
         -P ${CMAKE_CURRENT_SOURCE_DIR}/desktop-file-test.cmake)
 
