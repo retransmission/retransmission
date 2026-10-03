@@ -1,5 +1,6 @@
 # Source files with translatable strings, for xgettext --files-from.
-# Run xgettext with these options:
+# Run xgettext with GETTEXTDATADIRS=po, so that it reads Qt Designer files with the rules in po/its/,
+# and with these options:
 #   --from-code=UTF-8 --add-comments=Translators:
 #   -k_ -kN_ -kC_:1c,2 -kNC_:1c,2 -kngettext:1,2 -ktr_ngettext:1,2 -ktr_pgettext:1c,2
 #   -kTR_TEXT -kTR_TEXT_C:1c,2 -kTR_TEXT_N:1,2 -kTR_MNEMONIC -kTR_FORMAT -kTR_FORMAT_N:1,2
@@ -102,8 +103,10 @@ libtransmission/watchdir-kqueue.cc
 libtransmission/watchdir-win32.cc
 libtransmission/web.cc
 qt/AboutDialog.cc
+qt/AboutDialog.ui
 qt/Application.cc
 qt/DetailsDialog.cc
+qt/DetailsDialog.ui
 qt/FileTreeItem.cc
 qt/FileTreeModel.cc
 qt/FileTreeView.cc
@@ -111,15 +114,24 @@ qt/FilterBar.cc
 qt/Formatter.cc
 qt/FreeSpaceLabel.cc
 qt/MainWindow.cc
+qt/MainWindow.ui
 qt/MakeDialog.cc
+qt/MakeDialog.ui
+qt/MakeProgressDialog.ui
 qt/OptionsDialog.cc
+qt/OptionsDialog.ui
 qt/PathButton.cc
 qt/PrefsDialog.cc
+qt/PrefsDialog.ui
 qt/RelocateDialog.cc
+qt/RelocateDialog.ui
 qt/Session.cc
+qt/SessionDialog.ui
 qt/Speed.cc
 qt/StatsDialog.cc
+qt/StatsDialog.ui
 qt/Torrent.cc
 qt/TorrentDelegate.cc
+qt/TrackersDialog.ui
 utils/create.cc
 utils/remote.cc

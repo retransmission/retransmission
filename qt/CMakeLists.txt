@@ -214,12 +214,14 @@ target_compile_definitions(${TR_NAME}-qt-lib
         "TR_GETTEXT_DOMAIN=\"${TR_GETTEXT_DOMAIN}\""
         "TR_LOCALE_DIR=\"${CMAKE_INSTALL_FULL_LOCALEDIR}\"")
 
+# Designer files translate their text with the shared catalog, as the code does.
 set_target_properties(
     ${TR_NAME}-qt-lib
     PROPERTIES
         AUTOMOC ON
         AUTORCC ON
-        AUTOUIC ON)
+        AUTOUIC ON
+        AUTOUIC_OPTIONS "--tr;trqt::uiText;--include;TrFormat.h")
 
 add_executable(${TR_NAME}-qt WIN32)
 
