@@ -406,15 +406,8 @@ msgid "_Delete"
 msgstr "_Slet"
 
 #. Removes the torrent from the list and keeps its downloaded files
-#, fuzzy
 msgid "_Remove"
-msgstr ""
-"#-#-#-#-#  da.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Fje_rn\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"F_jern\n"
-"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Fjern"
+msgstr "_Fjern"
 
 msgid "High"
 msgstr "Høj"
@@ -446,22 +439,12 @@ msgstr "Prioritet"
 msgid "All"
 msgstr "Alle"
 
-#, fuzzy
 msgid "Active"
-msgstr ""
-"#-#-#-#-#  da.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Aktiv\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Aktive"
+msgstr "Aktiv"
 
-#, fuzzy
 msgctxt "Verb"
 msgid "Verifying"
-msgstr ""
-"#-#-#-#-#  da.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Bekræfter\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Bekræftet"
+msgstr "Bekræfter"
 
 msgid "Error"
 msgstr "Fejl"
@@ -528,13 +511,8 @@ msgstr "Stop ved forhold ({ratio})"
 msgid "Total Ratio"
 msgstr "Forhold (samlet)"
 
-#, fuzzy
 msgid "Session Ratio"
-msgstr ""
-"#-#-#-#-#  da.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Forhold (session)\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Sessionsforhold"
+msgstr "Forhold (session)"
 
 msgid "Total Transfer"
 msgstr "Overførsel (samlet)"
@@ -677,13 +655,8 @@ msgstr "Blokeringsliste opdateret!"
 msgid "Couldn't update blocklist"
 msgstr "Kunne ikke opdatere blokeringsliste."
 
-#, fuzzy
 msgid "Getting new blocklist…"
-msgstr ""
-"#-#-#-#-#  da.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Downloader ny blokeringsliste …\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Henter ny blokeringsliste …"
+msgstr "Henter ny blokeringsliste …"
 
 msgctxt "Port test status"
 msgid "unknown"
@@ -807,33 +780,15 @@ msgid_plural "Downloading from {active_count} webseeds"
 msgstr[0] "Downloader fra {active_count} webseed"
 msgstr[1] "Downloader fra {active_count} webseeds"
 
-#, fuzzy
 msgid "Downloading from {active_count} of {connected_count} connected peer"
 msgid_plural "Downloading from {active_count} of {connected_count} connected peers"
-msgstr[0] ""
-"#-#-#-#-#  da.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Downloader fra {active_count} af {connected_count} tilsluttede modpart\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Downloader fra {active_count} af {connected_count} forbundet modpart"
-msgstr[1] ""
-"#-#-#-#-#  da.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Downloader fra {active_count} af {connected_count} tilsluttede modparter\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Downloader fra {active_count} af {connected_count} forbundne modparter"
+msgstr[0] "Downloader fra {active_count} af {connected_count} forbundet modpart"
+msgstr[1] "Downloader fra {active_count} af {connected_count} forbundne modparter"
 
-#, fuzzy
 msgid "Seeding to {active_count} of {connected_count} connected peer"
 msgid_plural "Seeding to {active_count} of {connected_count} connected peers"
-msgstr[0] ""
-"#-#-#-#-#  da.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Seeder til {active_count} af {connected_count} tilsluttede modpart\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Seeder til {active_count} af {connected_count} forbundet modpart"
-msgstr[1] ""
-"#-#-#-#-#  da.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Seeder til {active_count} af {connected_count} tilsluttede modparter\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Seeder til {active_count} af {connected_count} forbundne modparter"
+msgstr[0] "Seeder til {active_count} af {connected_count} forbundet modpart"
+msgstr[1] "Seeder til {active_count} af {connected_count} forbundne modparter"
 
 msgid "Retransmission"
 msgstr "Retransmission"
@@ -890,15 +845,8 @@ msgstr "Sæt alle på _pause"
 msgid "_Quit"
 msgstr "_Afslut"
 
-#, fuzzy
 msgid "_Edit"
-msgstr ""
-"#-#-#-#-#  da.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Rediger\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"R_ediger\n"
-"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Rediger"
+msgstr "_Rediger"
 
 msgid "Select _All"
 msgstr "Vælg _alle"
@@ -915,13 +863,8 @@ msgstr "_Torrent"
 msgid "_Properties"
 msgstr "_Egenskaber"
 
-#, fuzzy
 msgid "Open Fold_er"
-msgstr ""
-"#-#-#-#-#  da.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Åbn mapp_e\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Åbn _mappe"
+msgstr "Åbn _mappe"
 
 msgid "_Start"
 msgstr "S_tart"
@@ -943,13 +886,8 @@ msgstr "Flyt _øverst"
 msgid "Move _Up"
 msgstr "Flyt _op"
 
-#, fuzzy
 msgid "Move _Down"
-msgstr ""
-"#-#-#-#-#  da.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Flyt ne_d\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Flyt _ned"
+msgstr "Flyt ne_d"
 
 msgid "Move to _Bottom"
 msgstr "Flyt n_ederst"
@@ -987,59 +925,29 @@ msgstr "_Statuslinje"
 msgid "Sort by _Activity"
 msgstr "Sortér efter _aktivitet"
 
-#, fuzzy
 msgid "Sort by A_ge"
-msgstr ""
-"#-#-#-#-#  da.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Sortér efter al_der\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Sortér efter a_lder"
+msgstr "Sortér efter al_der"
 
 msgid "Sort by _Name"
 msgstr "Sortér efter _navn"
 
-#, fuzzy
 msgid "Sort by _Progress"
-msgstr ""
-"#-#-#-#-#  da.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Sortér efter frem_gang\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Sortér efter f_remgang"
+msgstr "Sortér efter frem_gang"
 
 msgid "Sort by _Queue"
 msgstr "Sortér efter k_ø"
 
-#, fuzzy
 msgid "Sort by Rati_o"
-msgstr ""
-"#-#-#-#-#  da.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Sortér efter forh_old\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Sortér efter f_orhold"
+msgstr "Sortér efter forh_old"
 
-#, fuzzy
 msgid "Sort by Si_ze"
-msgstr ""
-"#-#-#-#-#  da.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Sortér efter størr_else\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Sortér efter s_tørrelse"
+msgstr "Sortér efter størr_else"
 
-#, fuzzy
 msgid "Sort by Stat_e"
-msgstr ""
-"#-#-#-#-#  da.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Sortér efter _tilstand\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Sortér efter t_ilstand"
+msgstr "Sortér efter _tilstand"
 
-#, fuzzy
 msgid "Sort by Time _Left"
-msgstr ""
-"#-#-#-#-#  da.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Sortér efter _tilbageværende tid\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Sortér efter til_bageværende tid"
+msgstr "Sortér efter til_bageværende tid"
 
 msgid "Re_verse Sort Order"
 msgstr "O_mvendt sorteringsrækkefølge"
@@ -1102,13 +1010,8 @@ msgstr "Downloadet:"
 msgid "State:"
 msgstr "Tilstand:"
 
-#, fuzzy
 msgid "Running time:"
-msgstr ""
-"#-#-#-#-#  da.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Køretid:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Igangværende tid:"
+msgstr "Køretid:"
 
 msgid "Remaining time:"
 msgstr "Tilbageværende tid:"
@@ -1191,13 +1094,8 @@ msgstr "_Højeste antal modparter:"
 msgid "Options"
 msgstr "Indstillinger"
 
-#, fuzzy
 msgid "Tracker Announce URLs"
-msgstr ""
-"#-#-#-#-#  da.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Tracker-bekendtgør-URL'er\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Annoncerings-URL'er for tracker"
+msgstr "Annoncerings-URL'er for tracker"
 
 msgid ""
 "To add a backup URL, add it on the next line after a primary URL.\n"
@@ -1258,13 +1156,8 @@ msgstr "Egenskaber"
 msgid "_Trackers:"
 msgstr "_Trackere:"
 
-#, fuzzy
 msgid "Co_mment:"
-msgstr ""
-"#-#-#-#-#  da.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ko_mmentar:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Kommentar:"
+msgstr "Ko_mmentar:"
 
 msgid "_Source:"
 msgstr "_Kilde:"
@@ -1541,13 +1434,8 @@ msgstr "Tillad _fjernadgang"
 msgid "_Open Web Client"
 msgstr "_Åbn webklient"
 
-#, fuzzy
 msgid "HTTP _port:"
-msgstr ""
-"#-#-#-#-#  da.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"HTTP-port:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"HTTP-_port:"
+msgstr "HTTP-_port:"
 
 msgid "Use _authentication"
 msgstr "Brug _godkendelse"
@@ -1555,13 +1443,8 @@ msgstr "Brug _godkendelse"
 msgid "_Username:"
 msgstr "_Brugernavn:"
 
-#, fuzzy
 msgid "Pass_word:"
-msgstr ""
-"#-#-#-#-#  da.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Adgangs_kode:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Adgangskode:"
+msgstr "Adgangs_kode:"
 
 msgid "Only allow these IP a_ddresses:"
 msgstr "Tillad kun disse IP-_adresser:"
@@ -1737,13 +1620,8 @@ msgstr[1] "leechere"
 msgid "Asking for peer counts {time_span_from_now}"
 msgstr "Spørger om modpartsantal i {time_span_from_now}"
 
-#, fuzzy
 msgid "Queued to ask for peer counts"
-msgstr ""
-"#-#-#-#-#  da.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Sat i kø til at spørge om modpartsantal\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Sat i kø til spørge om modpartsantal"
+msgstr "Sat i kø til at spørge om modpartsantal"
 
 msgid "Asked for peer counts {markup_begin}{time_span_ago}{markup_end}"
 msgstr "Spørger om modpartantal {markup_begin}{time_span_ago}{markup_end}"
@@ -2444,21 +2322,6 @@ msgstr "_Prioritet:"
 msgid "Select Folder"
 msgstr "Vælg mappe"
 
-msgid "unknown"
-msgstr "ukendt"
-
-msgid "checking…"
-msgstr "tjekker …"
-
-msgid "open"
-msgstr "åben"
-
-msgid "closed"
-msgstr "lukket"
-
-msgid "error"
-msgstr "fejl"
-
 msgid "<b>Update succeeded!</b><p>Blocklist now has {count:L} rule.</p>"
 msgid_plural "<b>Update succeeded!</b><p>Blocklist now has {count:L} rules.</p>"
 msgstr[0] "<b>Opdatering lykkedes!</b><p>Blokeringsliste har nu {count:L} regel.</p>"
@@ -2514,12 +2377,6 @@ msgstr "U_pload:"
 msgid "Do_wnload:"
 msgstr "Do_wnload:"
 
-msgid "Downloading"
-msgstr "Download"
-
-msgid "Adding"
-msgstr "Tilføjelse"
-
 msgid "Reads user clipboard content for torrents"
 msgstr "Læser indholdet af brugerens udklipsholder for torrents"
 
@@ -2529,9 +2386,6 @@ msgstr "Registrer nye torrents fra udklipsholder"
 #. Please keep this phrase as short as possible, it's currently the longest and influences dialog width
 msgid "Download is i_nactive if data sharing stopped:"
 msgstr "Download er _inaktiv hvis deling af data stoppede:"
-
-msgid "Seeding"
-msgstr "Seed"
 
 msgid "Stop seedi_ng if idle for:"
 msgstr "Stop med at _seede efter:"

@@ -22,13 +22,8 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-#, fuzzy
 msgid "None"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Nihil\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Tidak ada"
+msgstr "Tidak ada"
 
 msgid "Inf"
 msgstr ""
@@ -113,13 +108,8 @@ msgid "Couldn't add duplicate torrent"
 msgid_plural "Couldn't add duplicate torrents"
 msgstr[0] "Tak bisa menambah torrent duplikat"
 
-#, fuzzy
 msgid "A fast and easy BitTorrent client"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Aplikasi BitTorrent yang cepat dan mudah\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Klien BitTorrent yang cepat dan mudah"
+msgstr "Klien BitTorrent yang cepat dan mudah"
 
 msgid "Copyright © The {appname} Project"
 msgstr "Hak Cipta © Proyek {appname}"
@@ -150,97 +140,48 @@ msgstr ""
 msgid "Use global settings"
 msgstr "Pakai pengaturan global"
 
-#, fuzzy
 msgid "Seed regardless of ratio"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Membibit tak peduli rasio\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Membenih tak peduli rasio"
+msgstr "Membibit tak peduli rasio"
 
-#, fuzzy
 msgid "Stop seeding at ratio:"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Berhenti membibit pada rasio:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Berhenti membenih pada rasio:"
+msgstr "Berhenti membibit pada rasio:"
 
-#, fuzzy
 msgid "Seed regardless of activity"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Membibit tak peduli aktivitas\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Kirim terlepas dari rasio"
+msgstr "Membibit tak peduli aktivitas"
 
 msgid "Stop seeding if idle for N minutes:"
 msgstr "Berhenti membibit bila menganggur selama N menit:"
 
-#, fuzzy
 msgid "Queued for verification"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Diantrikan untuk verifikasi\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Antri untuk pemeriksaan"
+msgstr "Diantrikan untuk verifikasi"
 
 msgid "Verifying local data"
 msgstr "Memeriksa data lokal"
 
-#, fuzzy
 msgid "Queued for download"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Diantrikan untuk diunduh\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Antri untuk mengunduh"
+msgstr "Diantrikan untuk diunduh"
 
 msgctxt "Verb"
 msgid "Downloading"
 msgstr "Mengunduh"
 
-#, fuzzy
 msgid "Queued for seeding"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Diantrikan untuk pembibitan\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Antri untuk mengirim"
+msgstr "Diantrikan untuk pembibitan"
 
-#, fuzzy
 msgctxt "Verb"
 msgid "Seeding"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Pembibitan\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Mengirim"
+msgstr "Pembibitan"
 
 #, fuzzy
 #| msgid "Incomplete"
 msgid "Seeding complete"
 msgstr "Belum komplit"
 
-#, fuzzy
 msgid "Paused"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ditunda\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Diistirahatkan\n"
-"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Berhenti Sejenak\n"
-"#-#-#-#-#  qt-2.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Dijeda"
+msgstr "Dijeda"
 
-#, fuzzy
 msgid "N/A"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Tidak Tersedia\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"N/A"
+msgstr "Tidak Tersedia"
 
 msgid "Mixed"
 msgstr "Campuran"
@@ -248,13 +189,8 @@ msgstr "Campuran"
 msgid "No Torrents Selected"
 msgstr "Tak Ada Torrent Yang Dipilih"
 
-#, fuzzy
 msgid "Private to this tracker -- DHT and PEX disabled"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Privat ke pelacak ini -- DHT dan PEX dimatikan\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Pribadi ke pelacak ini -- DHT dan PEX dinonaktifkan"
+msgstr "Privat ke pelacak ini -- DHT dan PEX dimatikan"
 
 msgid "Public torrent"
 msgstr "Torrent publik"
@@ -268,13 +204,8 @@ msgstr "Dibuat oleh {creator}"
 msgid "Created on {date}"
 msgstr "Dibuat pada {date}"
 
-#, fuzzy
 msgid "Unknown"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Tak diketahui\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Tidak diketahui"
+msgstr "Tak diketahui"
 
 msgid "{total_size} in {file_count:L} file"
 msgid_plural "{total_size} in {file_count:L} files"
@@ -310,69 +241,30 @@ msgstr "Tak pernah"
 msgid "Active now"
 msgstr "Aktif sekarang"
 
-#, fuzzy
 msgid "Optimistic unchoke"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Lepas rem optimistis\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Buka pengetatan optimis"
+msgstr "Buka pengetatan optimis"
 
-#, fuzzy
 msgid "Downloading from this peer"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Mengunduh dari peer ini\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Mengunduh dari rekan ini"
+msgstr "Mengunduh dari rekan ini"
 
-#, fuzzy
 msgid "We would download from this peer if they would let us"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Kita akan mengunduh dari peer ini bila mereka mengijinkan\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Kami akan mengunduh dari rekan ini jika mereka mengizinkan kami"
+msgstr "Kami akan mengunduh dari rekan ini jika mereka mengizinkan kami"
 
-#, fuzzy
 msgid "Uploading to peer"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Mengunggah ke peer\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Mengunggah ke rekan"
+msgstr "Mengunggah ke rekan"
 
 #, fuzzy
 msgid "This peer would download from us if we would let them"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Kita akan mengunduh dari peer ini bila mereka mengijinkan\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Kami akan mengunduh dari rekan ini jika mereka mengizinkan kami"
+msgstr "Kami akan mengunduh dari rekan ini jika mereka mengizinkan kami"
 
-#, fuzzy
 msgid "Peer has unchoked us, but we're not interested"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Peer telah melepas remnya atas kita, tapi kita tak tertarik\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Rekan membuka pengetatan untuk kita, tapi kita tidak tertarik"
+msgstr "Rekan membuka pengetatan untuk kita, tapi kita tidak tertarik"
 
-#, fuzzy
 msgid "We unchoked this peer, but they're not interested"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Kita telah melepas rem ke peer ini, tapi mereka tak tertarik\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Kita membuka pengetatan untuk rekan ini, tapi mereka tidak tertarik"
+msgstr "Kita membuka pengetatan untuk rekan ini, tapi mereka tidak tertarik"
 
-#, fuzzy
 msgid "Encrypted connection"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Koneksi terenkripsi\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Sambungan terenkripsi"
+msgstr "Sambungan terenkripsi"
 
 msgid "Peer was found through Peer Exchange (PEX)"
 msgstr "Peer ditemukan melalui Peer Exchange (PEX)"
@@ -380,13 +272,8 @@ msgstr "Peer ditemukan melalui Peer Exchange (PEX)"
 msgid "Peer was found through DHT"
 msgstr "Peer ditemukan melalui DHT"
 
-#, fuzzy
 msgid "Peer is an incoming connection"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Peer adalah koneksi masuk\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Rekan adalah sambungan yang masuk"
+msgstr "Rekan adalah sambungan yang masuk"
 
 msgid "Peer is connected over µTP"
 msgstr "Peer tersambung lewat µTP"
@@ -412,13 +299,8 @@ msgstr "Unduh"
 msgid "Up"
 msgstr "Unggah"
 
-#, fuzzy
 msgid "Client"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Aplikasi\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Klien"
+msgstr "Klien"
 
 msgid "Flags"
 msgstr "Flag"
@@ -432,13 +314,8 @@ msgstr "{torrent_name} - Sunting Pelacak"
 msgid "List contains invalid URLs"
 msgstr "Daftar mengandung URL tak valid"
 
-#, fuzzy
 msgid "Please correct the errors and try again."
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Mohon perbaiki dan coba lagi.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Silakan perbaiki galat dan coba lagi."
+msgstr "Silakan perbaiki galat dan coba lagi."
 
 msgid "{torrent_name} - Add Tracker"
 msgstr ""
@@ -478,69 +355,29 @@ msgstr "Sekali dihapus, melanjutkan transfer akan memerlukan berkas torrent atau
 msgid "Once removed, you'll need the torrent files or magnet links to add them again."
 msgstr "Sekali dihilangkan, melanjutkan transfer akan membutuhkan berkas torrent atau tautan magnet."
 
-#, fuzzy
 msgid "This torrent has not finished downloading."
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Torrent ini belum selesai mengunduh.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Torrent ini belum selesai diunduh."
+msgstr "Torrent ini belum selesai diunduh."
 
-#, fuzzy
 msgid "These torrents have not finished downloading."
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Torrent ini belum selesai mengunduh.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Torrent ini belum selesai diunduh."
+msgstr "Torrent ini belum selesai diunduh."
 
-#, fuzzy
 msgid "This torrent is connected to peers."
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Torrent ini tersambung ke peer.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Torrent ini tersambung dengan rekan - rekan."
+msgstr "Torrent ini tersambung ke peer."
 
-#, fuzzy
 msgid "These torrents are connected to peers."
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Torrent ini tersambung ke peer.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Torrent ini tersambung dengan rekan - rekan."
+msgstr "Torrent ini tersambung ke peer."
 
-#, fuzzy
 msgid "One of these torrents is connected to peers."
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Satu atau lebih dari torrent-torrent ini tersambung ke peer.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Salah satu torrent ini tersambung ke rekan-rekan."
+msgstr "Salah satu torrent ini tersambung ke rekan-rekan."
 
-#, fuzzy
 msgid "Some of these torrents are connected to peers."
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Satu atau lebih dari torrent-torrent ini tersambung ke peer.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Beberapa torrent ini tersambung dengan rekan-rekan."
+msgstr "Beberapa torrent ini tersambung dengan rekan-rekan."
 
-#, fuzzy
 msgid "One of these torrents has not finished downloading."
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Satu atau lebih dari torrent-torrent ini belum selesai mengunduh.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Salah satu torrent ini belum selesai diunduh."
+msgstr "Salah satu torrent ini belum selesai diunduh."
 
-#, fuzzy
 msgid "Some of these torrents have not finished downloading."
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Satu atau lebih dari torrent-torrent ini belum selesai mengunduh.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Beberapa torrent ini belum selesai diunduh."
+msgstr "Beberapa torrent ini belum selesai diunduh."
 
 msgid "_Cancel"
 msgstr "_Batal"
@@ -585,25 +422,15 @@ msgstr "Semua"
 msgid "Active"
 msgstr "Aktif"
 
-#, fuzzy
 msgctxt "Verb"
 msgid "Verifying"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Memverifikasi\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Memeriksa"
+msgstr "Memeriksa"
 
 msgid "Error"
 msgstr "Galat"
 
-#, fuzzy
 msgid "_Show:"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Tampilkan:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"T_ampilkan:"
+msgstr "_Tampilkan:"
 
 msgid "_Show {count:L} of:"
 msgstr ""
@@ -639,32 +466,17 @@ msgid ""
 " ({download_speed} down, {upload_speed} up)"
 msgstr ""
 
-#, fuzzy
 msgid "Unlimited"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Tak terbatas\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Tidak terbatas"
+msgstr "Tak terbatas"
 
 msgid "Seed Forever"
 msgstr "Membibit Selamanya"
 
-#, fuzzy
 msgid "Limit Download Speed"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Batas Laju Unduh\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Batas Kecepatan Unduh"
+msgstr "Batas Kecepatan Unduh"
 
-#, fuzzy
 msgid "Limit Upload Speed"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Batas Laju Unggah\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Batas Kecepatan Unggah"
+msgstr "Batas Kecepatan Unggah"
 
 msgid "Stop Seeding at Ratio"
 msgstr "Berhenti Membibit pada Rasio"
@@ -788,48 +600,23 @@ msgstr "Pilih Berkas"
 msgid "(None)"
 msgstr "(Tidak ada)"
 
-#, fuzzy
 msgid "Allow encryption"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ijinkan enkripsi\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Mengizinkan enkripsi"
+msgstr "Mengizinkan enkripsi"
 
-#, fuzzy
 msgid "Prefer encryption"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Lebih suka enkripsi\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Lebih memilih enkripsi"
+msgstr "Lebih memilih enkripsi"
 
-#, fuzzy
 msgid "Require encryption"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Persyaratkan enkripsi\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Membutuhkan enkripsi"
+msgstr "Membutuhkan enkripsi"
 
-#, fuzzy
 msgid "Every Day"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Tiap hari\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Setiap Hari"
+msgstr "Tiap hari"
 
 msgid "Weekdays"
 msgstr "Hari kerja"
 
-#, fuzzy
 msgid "Weekends"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Akhir minggu\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Akhir pekan"
+msgstr "Akhir pekan"
 
 msgid "Blocklist has {count:L} entry"
 msgid_plural "Blocklist has {count:L} entries"
@@ -927,13 +714,8 @@ msgid "{complete_size}, uploaded {uploaded_size} (Ratio: {ratio})"
 msgstr "{complete_size}, diunggah {uploaded_size} (Rasio: {ratio})"
 
 #. Translators: Second (optional) part of torrent progress string
-#, fuzzy
 msgid "Remaining time unknown"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Sisa waktu tak diketahui\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Sisa waktu tidak diketahui"
+msgstr "Sisa waktu tak diketahui"
 
 msgid "{download_speed} ▾  {upload_speed} ▴"
 msgstr ""
@@ -1022,21 +804,11 @@ msgstr "Bar_u…"
 msgid "_Start All"
 msgstr "Mulai _Semua"
 
-#, fuzzy
 msgid "_Pause All"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Istirahat Semua\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Rehat Semua"
+msgstr "_Rehat Semua"
 
-#, fuzzy
 msgid "_Quit"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Keluar\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Keluar"
+msgstr "_Keluar"
 
 msgid "_Edit"
 msgstr "_Sunting"
@@ -1065,13 +837,8 @@ msgstr "_Mulai"
 msgid "Start _Now"
 msgstr "Mulai Sekara_ng"
 
-#, fuzzy
 msgid "Ask Tracker for _More Peers"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Tanyakan Penjejak untuk _Peer yang lebih banyak\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Tanya Pelacak untuk _Rekan Lebih Banyak"
+msgstr "Tanya Pelacak untuk _Rekan Lebih Banyak"
 
 #, fuzzy
 #| msgid "Queue"
@@ -1081,207 +848,92 @@ msgstr "Antrian"
 msgid "Move to _Top"
 msgstr "Pindah ke _Puncak"
 
-#, fuzzy
 msgid "Move _Up"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Nai_kkan\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Pindah ke _Atas"
+msgstr "Pindah ke _Atas"
 
-#, fuzzy
 msgid "Move _Down"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Tur_unkan\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Pindah ke _Bawah"
+msgstr "Pindah ke _Bawah"
 
 msgid "Move to _Bottom"
 msgstr "Pindah ke _Dasar"
 
-#, fuzzy
 msgid "_Pause"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Stop\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Rehat"
+msgstr "_Rehat"
 
 msgid "Set _Location…"
 msgstr "Tata _Lokasi…"
 
-#, fuzzy
 msgid "_Verify Local Data"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Pe_riksa Data Lokal\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Verifikasi Data Lokal"
+msgstr "_Verifikasi Data Lokal"
 
 msgid "_Copy Magnet Link to Clipboard"
 msgstr "_Salin Tautan Magnet ke Papan Klip"
 
-#, fuzzy
 msgid "_Delete Files and Remove"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Hapus _dan Musnahkan Berkas\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Hapus File dan Hilangkan"
+msgstr "Hapus File dan Hilangkan"
 
 msgid "_View"
 msgstr "_Tampilan"
 
-#, fuzzy
 msgid "_Compact View"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Tilikan _Kompak\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Tampilan Kompak"
+msgstr "_Tampilan Kompak"
 
-#, fuzzy
 msgid "_Toolbar"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Bilat Ala_t\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Bilah Alat"
+msgstr "_Bilah Alat"
 
-#, fuzzy
 msgid "_Filterbar"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Bilah Pe_nyaring\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Bilah Penyaring"
+msgstr "Bilah Pe_nyaring"
 
-#, fuzzy
 msgid "_Statusbar"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Bilah _Status\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Bilah Status"
+msgstr "Bilah _Status"
 
-#, fuzzy
 msgid "Sort by _Activity"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Urut _Aktivitas\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Urutkan dengan _Aktivitas"
+msgstr "Urut _Aktivitas"
 
-#, fuzzy
 msgid "Sort by A_ge"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Urut U_mur\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Urutkan dengan U_mur"
+msgstr "Urut U_mur"
 
-#, fuzzy
 msgid "Sort by _Name"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Urut _Nama\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Urutkan dengan _Nama"
+msgstr "Urut _Nama"
 
-#, fuzzy
 msgid "Sort by _Progress"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Urut _Kemajuan\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Urutkan dengan _Kemajuan"
+msgstr "Urut _Kemajuan"
 
-#, fuzzy
 msgid "Sort by _Queue"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Urut Ant_rian\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Urutkan dengan _Antrian"
+msgstr "Urut Ant_rian"
 
-#, fuzzy
 msgid "Sort by Rati_o"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Urut Rasi_o\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Urutkan dengan Rasi_o"
+msgstr "Urut Rasi_o"
 
-#, fuzzy
 msgid "Sort by Si_ze"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Urut _Ukuran\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Urutkan dengan Uku_ran"
+msgstr "Urut _Ukuran"
 
-#, fuzzy
 msgid "Sort by Stat_e"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Urut K_eadaan\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Urutkan dengan Kead_aan"
+msgstr "Urut K_eadaan"
 
-#, fuzzy
 msgid "Sort by Time _Left"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Urut Sisa _Waktu\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Urutkan dengan Waktu _Tersisa"
+msgstr "Urut Sisa _Waktu"
 
-#, fuzzy
 msgid "Re_verse Sort Order"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Balikkan Urutan\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Balikkan Pengur_utan"
+msgstr "_Balikkan Urutan"
 
 msgid "_Help"
 msgstr "_Bantuan"
 
-#, fuzzy
 msgid "Message _Log"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Log Pesan\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Catatan _Pesan"
+msgstr "_Log Pesan"
 
 msgid "_Statistics"
 msgstr "_Statistik"
 
-#, fuzzy
 msgid "_Donate"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Donasi\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Menyumbang"
+msgstr "_Donasi"
 
-#, fuzzy
 msgid "_Contents"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"I_si\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Konten"
+msgstr "_Konten"
 
-#, fuzzy
 msgid "_About"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Perih_al\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Tent_ang"
+msgstr "Perih_al"
 
 #, fuzzy
 #| msgid "Start torrent"
@@ -1311,67 +963,32 @@ msgstr "Aktivitas"
 msgid "Size:"
 msgstr "Ukuran:"
 
-#, fuzzy
 msgid "Have:"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Dimiliki:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Memiliki:"
+msgstr "Dimiliki:"
 
-#, fuzzy
 msgid "Uploaded:"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Terunggah:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Diunggah:"
+msgstr "Terunggah:"
 
-#, fuzzy
 msgid "Downloaded:"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Terunduh:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Diunduh:"
+msgstr "Terunduh:"
 
-#, fuzzy
 msgid "State:"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Status:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Keadaan:"
+msgstr "Keadaan:"
 
 msgid "Running time:"
 msgstr "Waktu berjalan:"
 
-#, fuzzy
 msgid "Remaining time:"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Waktu tersisa:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Sisa waktu:"
+msgstr "Sisa waktu:"
 
 msgid "Last activity:"
 msgstr "Aktivitas terakhir:"
 
-#, fuzzy
 msgid "Error:"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Error:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Galat:"
+msgstr "Galat:"
 
-#, fuzzy
 msgid "Details"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Informasi\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Rincian"
+msgstr "Rincian"
 
 msgid "Location:"
 msgstr "Lokasi:"
@@ -1382,13 +999,8 @@ msgstr "Hash:"
 msgid "Privacy:"
 msgstr "Privasi:"
 
-#, fuzzy
 msgid "Origin:"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Asal:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Asal Usul:"
+msgstr "Asal:"
 
 msgid "Added:"
 msgstr "Ditambahkan:"
@@ -1399,29 +1011,14 @@ msgstr "Komentar:"
 msgid "Information"
 msgstr "Informasi"
 
-#, fuzzy
 msgid "Show _more details"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ta_mpilkan lebih banyak rincian\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Tampilan _rincian lebih"
+msgstr "Ta_mpilkan lebih banyak rincian"
 
-#, fuzzy
 msgid "Peers"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Peer\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Rekan"
+msgstr "Rekan"
 
-#, fuzzy
 msgid "Show _backup trackers"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Tampilkan pelacak _cadangan\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Tampilan _pelacak cadangan"
+msgstr "Tampilkan pelacak _cadangan"
 
 msgid "File listing not available for combined torrent properties"
 msgstr "Mendaftar berkas tak tersedia bagi properti torrent terkombinasi"
@@ -1432,13 +1029,8 @@ msgstr "Berkas"
 msgid "Speed"
 msgstr "Kecepatan"
 
-#, fuzzy
 msgid "Honor global _limits"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Hormati batas g_lobal\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Patuhi batas g_lobal"
+msgstr "Hormati batas g_lobal"
 
 msgid "Limit _download speed ({speed_units}):"
 msgstr ""
@@ -1449,53 +1041,23 @@ msgstr ""
 msgid "Torrent _priority:"
 msgstr "_Prioritas torrent:"
 
-#, fuzzy
 msgid "Seeding Limits"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Batas Pembibitan\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Batas Kirim"
+msgstr "Batas Pembibitan"
 
-#, fuzzy
 msgid "_Ratio:"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Rasio:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Rasio"
+msgstr "_Rasio:"
 
-#, fuzzy
 msgid "_Idle:"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Mengganggur:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Mengan_ggur:"
+msgstr "Mengan_ggur:"
 
-#, fuzzy
 msgid "Peer Connections"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Koneksi-koneksi Peer\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Sambungan Rekan"
+msgstr "Sambungan Rekan"
 
-#, fuzzy
 msgid "_Maximum peers:"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Peer _maksimum:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Rekan _maksimum:"
+msgstr "Rekan _maksimum:"
 
-#, fuzzy
 msgid "Options"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Pengaturan\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Opsi"
+msgstr "Pengaturan"
 
 msgid "Tracker Announce URLs"
 msgstr "URL Pengumuman Pelacak"
@@ -1508,32 +1070,17 @@ msgstr ""
 msgid "Also see Default Public Trackers in Edit > Preferences > Network"
 msgstr "Lihat juga Pelacak Publik Baku dalam Sunting > Preferensi > Jaringan"
 
-#, fuzzy
 msgid "Open a torrent"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Buka suatu torrent\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Buka sebuah torrent"
+msgstr "Buka suatu torrent"
 
 msgid "Start torrent"
 msgstr "Mulai torrent"
 
-#, fuzzy
 msgid "Pause torrent"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Hentikan torrent sementara\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Hentikan sejenak torrent"
+msgstr "Hentikan sejenak torrent"
 
-#, fuzzy
 msgid "Remove torrent"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Hapus torrent\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Hilangkan torrent"
+msgstr "Hilangkan torrent"
 
 msgid "Torrent properties"
 msgstr "Properti torrent"
@@ -1544,26 +1091,16 @@ msgstr "Torrent"
 msgid "Statistics"
 msgstr "Statistik"
 
-#, fuzzy
 msgid "New Torrent"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Buat Torrent\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Torrent Baru"
+msgstr "Torrent Baru"
 
 #, fuzzy
 #| msgid "C_redits"
 msgid "C_reate"
 msgstr "K_redit"
 
-#, fuzzy
 msgid "Sa_ve to:"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Sim_pan ke:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Si_mpan ke:"
+msgstr "Si_mpan ke:"
 
 msgid "Source f_older:"
 msgstr "F_older sumber:"
@@ -1582,24 +1119,14 @@ msgstr "Properti"
 msgid "_Trackers:"
 msgstr "_Pelacak:"
 
-#, fuzzy
 msgid "Co_mment:"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"K_omentar:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ko_mentar:"
+msgstr "K_omentar:"
 
 msgid "_Source:"
 msgstr "_Sumber:"
 
-#, fuzzy
 msgid "_Private torrent"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Torrent _privat\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Torrent pribadi"
+msgstr "Torrent _privat"
 
 msgid "Creating torrent…"
 msgstr "Membuat torrent…"
@@ -1625,13 +1152,8 @@ msgstr "Berkas _Torrent:"
 msgid "Select Source File"
 msgstr "Pilih Berkas Torrent"
 
-#, fuzzy
 msgid "_Destination folder:"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Direktori penyimpanan:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Folder Tujuan:"
+msgstr "_Direktori penyimpanan:"
 
 msgid "Select Destination Folder"
 msgstr "Pilih Direktori Penyimpanan"
@@ -1672,13 +1194,8 @@ msgstr ""
 msgid "Do_wnload ({speed_units}):"
 msgstr ""
 
-#, fuzzy
 msgid "_Scheduled times:"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Waktu _terjadwal:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Waktu dijadwalkan:"
+msgstr "Waktu _terjadwal:"
 
 msgid "_On days:"
 msgstr "_Pada hari:"
@@ -1689,18 +1206,13 @@ msgstr "_ke"
 
 msgctxt "Gerund"
 msgid "Adding"
-msgstr "Menambah"
+msgstr "Menambahkan"
 
 msgid "Automatically add torrent files _from:"
 msgstr ""
 
-#, fuzzy
 msgid "Show the Torrent Options _dialog"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Tampilkan _dialog Opsi Torrent\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Tampilkan _dialog Pilihan Torrent"
+msgstr "Tampilkan _dialog Opsi Torrent"
 
 msgid "_Start added torrents"
 msgstr "_Mulai torrent yang ditambahkan"
@@ -1713,13 +1225,8 @@ msgstr "Simpan ke _Lokasi:"
 msgid "Download Queue"
 msgstr "Antrian Unduh"
 
-#, fuzzy
 msgid "Ma_ximum active downloads:"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ma_ksimum unduhan aktif:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ma_ksimum unduh yang aktif:"
+msgstr "Ma_ksimum unduhan aktif:"
 
 msgid "Downloads sharing data in the last _N minutes are active:"
 msgstr "Unduhan berbagi data dalam _N menit terakhir aktif:"
@@ -1727,13 +1234,8 @@ msgstr "Unduhan berbagi data dalam _N menit terakhir aktif:"
 msgid "Incomplete"
 msgstr "Belum komplit"
 
-#, fuzzy
 msgid "Append \"._part\" to incomplete files' names"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Imbuhkan \".part\" ke nama berkas yang belum komplit\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Tambahkan \"._part\" pada nama berkas yang tidak selesai"
+msgstr "Tambahkan \"._part\" pada nama berkas yang tidak selesai"
 
 msgid "Keep _incomplete files in:"
 msgstr "S_impan berkas belum lengkap di:"
@@ -1755,13 +1257,8 @@ msgstr "Mengunduh"
 msgid "Limits"
 msgstr "Batas"
 
-#, fuzzy
 msgid "Stop seeding at _ratio:"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Berhenti membibit pada _rasio:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Berhenti kirim pada _rasio:"
+msgstr "Berhenti membibit pada _rasio:"
 
 msgid "Stop seeding if idle for _N minutes:"
 msgstr "Berhenti membibit bila menganggur _N menit:"
@@ -1776,37 +1273,22 @@ msgstr "Membibit"
 msgid "Privacy"
 msgstr "Privasi"
 
-#, fuzzy
 msgid "_Encryption mode:"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Mode _enkripsi:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Mode enkripsi:"
+msgstr "Mode _enkripsi:"
 
 msgid "Blocklist"
 msgstr "Daftar blok"
 
-#, fuzzy
 msgid "Enable _blocklist:"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Fungsikan daftar _blok:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Aktifkan _daftarblok:"
+msgstr "Fungsikan daftar _blok:"
 
 #, fuzzy
 #| msgid "Enable _automatic updates"
 msgid "_Automatically update weekly"
 msgstr "Fungsikan pemutakhiran otom_atis"
 
-#, fuzzy
 msgid "_Update"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"M_utakhirkan\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Perbar_ui"
+msgstr "M_utakhirkan"
 
 msgid "Listening Port"
 msgstr "Port Pendengar"
@@ -1819,50 +1301,26 @@ msgstr "_Port untuk sambungan masuk:"
 msgid "Pick a _random port at startup"
 msgstr "Pakai po_rt acak setiap kali Transmission dimulai"
 
-#, fuzzy
 msgid "Use UPnP or NAT-PMP port _forwarding from my router"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Pakai penerusan port UPnP atau NAT-PMP dari routerku\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Gunakan penerusan port UPnP atau NAT-PMP dari router saya"
+msgstr "_Pakai penerusan port UPnP atau NAT-PMP dari routerku"
 
-#, fuzzy
 msgid "Te_st Port"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Uji Port\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Po_rt Uji"
+msgstr "_Uji Port"
 
-#, fuzzy
 msgid "Peer Limits"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Batas Peer\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Batas Rekan"
+msgstr "Batas Rekan"
 
 #, fuzzy
 #| msgid "Maximum peers per _torrent:"
 msgid "Maximum peers for new _torrents:"
 msgstr "Maksimum peer per _torrent:"
 
-#, fuzzy
 msgid "Maximum peers _overall:"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Maksimum peer _menyeluruh:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Maksimum rekan _keseluruhan:"
+msgstr "Maksimum rekan _keseluruhan:"
 
 #, fuzzy
 msgid "Enable µ_TP for peer connections"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Koneksi-koneksi Peer\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Sambungan Rekan"
+msgstr "Sambungan Rekan"
 
 msgid "µTP is a tool for reducing network congestion."
 msgstr ""
@@ -1872,39 +1330,24 @@ msgstr ""
 msgid "Use PE_X to find more peers for public torrents"
 msgstr "Pakai PE_X untuk menemukan lebih banyak peer"
 
-#, fuzzy
 msgid "PEX is a tool for exchanging peer lists with the peers you're connected to."
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"PEX adalah alat untuk mempertukarkan daftar peer dengan peer yang sedang tersambung.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"PEX adalah alat untuk menukar daftar rekan dengan rekan yang tersambung denganmu."
+msgstr "PEX adalah alat untuk menukar daftar rekan dengan rekan yang tersambung denganmu."
 
 #, fuzzy
 #| msgid "Use _DHT to find more peers"
 msgid "Use _DHT to find more peers for public torrents"
 msgstr "Pakai _DHT untuk menemukan lebih banyak peer"
 
-#, fuzzy
 msgid "DHT is a tool for finding peers without a tracker."
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"DHT adalah alat untuk menemukan peer tanpa pelacak.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"DHT adalah alat untuk mencari rekan tanpa sebuah pelacak."
+msgstr "DHT adalah alat untuk mencari rekan tanpa sebuah pelacak."
 
 #, fuzzy
 #| msgid "Use _Local Peer Discovery to find more peers"
 msgid "Use _Local Peer Discovery to find more peers for public torrents"
 msgstr "Pakai _Local Peer Discovery untuk menemukan lebih banyak peer"
 
-#, fuzzy
 msgid "LPD is a tool for finding peers on your local network."
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"LPD adalah alat untuk menemukan peer pada jaringan lokal Anda.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"LPD adalah alat untuk mencari rekan pada jaringan lokalmu."
+msgstr "LPD adalah alat untuk mencari rekan pada jaringan lokalmu."
 
 msgid "Default Public Trackers"
 msgstr "Pelacak Publik Baku"
@@ -1925,108 +1368,46 @@ msgstr "Desktop"
 msgid "_Prevent computer from sleeping with active torrents"
 msgstr ""
 
-#, fuzzy
 msgid "Show {appname} icon in the _notification area"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Tampilka_n ikon {appname} pada area pemberitahuan\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Tampilkan ikon {appname} di _area notifikasi"
+msgstr "Tampilka_n ikon {appname} pada area pemberitahuan"
 
-#, fuzzy
 msgid "Notification"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Pemberitahuan\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Notifikasi"
+msgstr "Pemberitahuan"
 
-#, fuzzy
 msgid "Show a notification when torrents are a_dded"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Tampilkan pemberitahuan saat torrent _ditambahkan\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Tampilkan notifikasi ketika torrent _ditambahkan"
+msgstr "Tampilkan pemberitahuan saat torrent _ditambahkan"
 
-#, fuzzy
 msgid "Show a notification when torrents _finish"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Tampilkan pemberitahuan saat torrent s_elesai\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Tampilkan notifikasi ketika torrent _selesai"
+msgstr "Tampilkan pemberitahuan saat torrent s_elesai"
 
-#, fuzzy
 msgid "Play a _sound when torrents finish"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Bunyikan suara saat torrent selesai\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Jalankan sebuah _suara ketika torrent selesai"
+msgstr "Jalankan sebuah _suara ketika torrent selesai"
 
-#, fuzzy
 msgid "Remote Control"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Kendali Jarak Jauh\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Kendali Remote"
+msgstr "Kendali Jarak Jauh"
 
-#, fuzzy
 msgid "Allow _remote access"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Izinkan akses _remote\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Izinkan _akses remote"
+msgstr "Izinkan akses _remote"
 
 #, fuzzy
 #| msgid "_Open web client"
 msgid "_Open Web Client"
 msgstr "_Buka klien web"
 
-#, fuzzy
 msgid "HTTP _port:"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Port HTTP:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Port _HTTP:"
+msgstr "_Port HTTP:"
 
-#, fuzzy
 msgid "Use _authentication"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"P_akai otentikasi\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Gunakan _otentikasi"
+msgstr "P_akai otentikasi"
 
-#, fuzzy
 msgid "_Username:"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Nama pengg_una:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Nama Pengguna:"
+msgstr "Nama pengg_una:"
 
-#, fuzzy
 msgid "Pass_word:"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Sandi:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Kata_ Sandi:\n"
-"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Kata _Sandi:"
+msgstr "_Sandi:"
 
-#, fuzzy
 msgid "Only allow these IP a_ddresses:"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Hanya izinkan ala_mat IP ini:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Hanya mengizinkan Alamat IP ini:"
+msgstr "Hanya izinkan ala_mat IP ini:"
 
 msgid "Addresses:"
 msgstr "Alamat:"
@@ -2037,13 +1418,8 @@ msgstr "Alamat IP dapat menggunakan wildcard, seperti 192.168.*.*"
 msgid "Remote"
 msgstr "Remote"
 
-#, fuzzy
 msgid "Set Torrent Location"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Tata Lokasi Torrent\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Tetapkan Lokasi Torrent"
+msgstr "Tata Lokasi Torrent"
 
 msgid "_Apply"
 msgstr "Ter_apkan"
@@ -2054,29 +1430,14 @@ msgstr "Lokasi"
 msgid "New _location:"
 msgstr "_Lokasi baru:"
 
-#, fuzzy
 msgid "_Move from the current folder"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Pi_ndahkan dari folder saat ini\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Pindah dari folder saat ini"
+msgstr "Pi_ndahkan dari folder saat ini"
 
-#, fuzzy
 msgid "Local data is _already there"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Data lokal sudah _ada di sana\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Data lokal _telah ada di sana"
+msgstr "Data lokal sudah _ada di sana"
 
-#, fuzzy
 msgid "Current Session"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Sesi saat ini\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Sesi Saat Ini"
+msgstr "Sesi saat ini"
 
 msgid "Ratio:"
 msgstr "Rasio:"
@@ -2168,24 +1529,14 @@ msgstr ""
 msgid "Got an error '{markup_begin}{error}{markup_end}' {time_span_ago}"
 msgstr ""
 
-#, fuzzy
 msgid "No updates scheduled"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Tak ada pemutakhiran yang dijadwalkan\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Tidak ada pembaruan terjadwal"
+msgstr "Tak ada pemutakhiran yang dijadwalkan"
 
 msgid "Asking for more peers {time_span_from_now}"
 msgstr ""
 
-#, fuzzy
 msgid "Queued to ask for more peers"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Diantrikan untuk meminta lebih banyak peer\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Antri untuk meminta lebih banyak rekan"
+msgstr "Antri untuk meminta lebih banyak rekan"
 
 msgid "Asked for more peers {markup_begin}{time_span_ago}{markup_end}"
 msgstr ""
@@ -2214,13 +1565,8 @@ msgstr[0] ""
 msgid "Asking for peer counts {time_span_from_now}"
 msgstr "Meminta untuk jumlah rekan di {time_span}"
 
-#, fuzzy
 msgid "Queued to ask for peer counts"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Diantrikan untuk meminta cacah peer\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Antri untuk meminta jumlah rekan"
+msgstr "Antri untuk meminta jumlah rekan"
 
 msgid "Asked for peer counts {markup_begin}{time_span_ago}{markup_end}"
 msgstr ""
@@ -2893,30 +2239,6 @@ msgid "Select Folder"
 msgstr "Pilih Folder"
 
 #, fuzzy
-msgid "unknown"
-msgstr ""
-"#-#-#-#-#  id.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Tak diketahui\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Tidak diketahui"
-
-msgid "checking…"
-msgstr ""
-
-msgid "open"
-msgstr ""
-
-#, fuzzy
-#| msgid "_Close"
-msgid "closed"
-msgstr "_Tutup"
-
-#, fuzzy
-#| msgid "Error"
-msgid "error"
-msgstr "Galat"
-
-#, fuzzy
 #| msgid "<i>Blocklist contains {count:L} rule</i>"
 #| msgid_plural "<i>Blocklist contains {count:L} rules</i>"
 msgid "<b>Update succeeded!</b><p>Blocklist now has {count:L} rule.</p>"
@@ -2974,12 +2296,6 @@ msgstr "U_nggah:"
 msgid "Do_wnload:"
 msgstr "Und_uh"
 
-msgid "Downloading"
-msgstr "Mengunduh"
-
-msgid "Adding"
-msgstr "Menambahkan"
-
 msgid "Reads user clipboard content for torrents"
 msgstr "Membaca isi papan klip pengguna bagi torrent"
 
@@ -2989,9 +2305,6 @@ msgstr "Deteksi torrent baru dari papan klip"
 #. Please keep this phrase as short as possible, it's currently the longest and influences dialog width
 msgid "Download is i_nactive if data sharing stopped:"
 msgstr "Unduh tidak _aktif jika berbagi data dihentikan:"
-
-msgid "Seeding"
-msgstr "Membibit"
 
 msgid "Stop seedi_ng if idle for:"
 msgstr "Berhenti membibit bila me_nganggur selama:"

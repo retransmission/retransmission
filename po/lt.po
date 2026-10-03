@@ -23,15 +23,8 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=4; plural=(n % 10 == 1 && (n % 100 > 19 || n % 100 < 11) ? 0 : (n % 10 >= 2 && n % 10 <=9) && (n % 100 > 19 || n % 100 < 11) ? 1 : n % 1 != 0 ? 2: 3);\n"
 
-#, fuzzy
 msgid "None"
-msgstr ""
-"#-#-#-#-#  lt.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"nėra\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"nėra\n"
-"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"laisvas"
+msgstr "nėra"
 
 msgid "Inf"
 msgstr ""
@@ -122,13 +115,8 @@ msgstr[1] "Nepavyko pridėti besidubliuojančių torentų"
 msgstr[2] "Nepavyko pridėti besidubliuojančių torentų"
 msgstr[3] "Nepavyko pridėti besidubliuojančių torentų"
 
-#, fuzzy
 msgid "A fast and easy BitTorrent client"
-msgstr ""
-"#-#-#-#-#  lt.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Sparti ir paprasta „BitTorrent“ klientinė programa\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Sparti ir paprasta „BitTorrent“ kliento programa"
+msgstr "Sparti ir paprasta „BitTorrent“ klientinė programa"
 
 msgid "Copyright © The {appname} Project"
 msgstr "Autorių teisės © {appname} projektas"
@@ -172,82 +160,38 @@ msgstr "skleisti nepaisant aktyvumo"
 msgid "Stop seeding if idle for N minutes:"
 msgstr "nebeskleisti jei neaktyvus N minučių:"
 
-#, fuzzy
 msgid "Queued for verification"
-msgstr ""
-"#-#-#-#-#  lt.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Eilėje patikrinimui\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Eilėje duomenų tikrinimui"
+msgstr "Eilėje patikrinimui"
 
 msgid "Verifying local data"
 msgstr "Tikrinami vietiniai duomenys"
 
-#, fuzzy
 msgid "Queued for download"
-msgstr ""
-"#-#-#-#-#  lt.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Eilėje atsiuntimui\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Eilėje parsiuntimui"
+msgstr "Eilėje atsiuntimui"
 
-#, fuzzy
 msgctxt "Verb"
 msgid "Downloading"
-msgstr ""
-"#-#-#-#-#  lt.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Atsiunčiama\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"atsiunčiamus\n"
-"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"atsiunčiamas"
+msgstr "Atsiunčiama"
 
 msgid "Queued for seeding"
 msgstr "Eilėje skleidimui"
 
-#, fuzzy
 msgctxt "Verb"
 msgid "Seeding"
-msgstr ""
-"#-#-#-#-#  lt.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Skleidžiama\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"skleidžiamus\n"
-"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"skleidžiamas"
+msgstr "Skleidžiama"
 
 #, fuzzy
 msgid "Seeding complete"
-msgstr ""
-"#-#-#-#-#  lt.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Nebaigti\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Nebaigtas"
+msgstr "Nebaigti"
 
-#, fuzzy
 msgid "Paused"
-msgstr ""
-"#-#-#-#-#  lt.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Pristabdytas\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"pristabdytas\n"
-"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"pristabdytus\n"
-"#-#-#-#-#  qt-2.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Pristabdytas"
+msgstr "Pristabdytas"
 
 msgid "N/A"
 msgstr "N/D"
 
-#, fuzzy
 msgid "Mixed"
-msgstr ""
-"#-#-#-#-#  lt.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"įvairuoja\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"įvairuoja\n"
-"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Maišyta"
+msgstr "įvairuoja"
 
 msgid "No Torrents Selected"
 msgstr "Nepažymėtas joks torentas"
@@ -258,21 +202,11 @@ msgstr "privatus šiam sekikliui – DHT ir PEX funkcijos išjungtos"
 msgid "Public torrent"
 msgstr "viešas torentas"
 
-#, fuzzy
 msgid "Created by {creator} on {date}"
-msgstr ""
-"#-#-#-#-#  lt.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"sukurtas {date} naudojant {creator}\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"sukurtas {date} naudojant „{creator}“"
+msgstr "sukurtas {date} naudojant „{creator}“"
 
-#, fuzzy
 msgid "Created by {creator}"
-msgstr ""
-"#-#-#-#-#  lt.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"sukurtas naudojant {creator}\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"sukurtas naudojant „{creator}“"
+msgstr "sukurtas naudojant „{creator}“"
 
 msgid "Created on {date}"
 msgstr "sukurtas {date}"
@@ -374,31 +308,14 @@ msgstr "Ats. užklausos"
 msgid "Up Reqs"
 msgstr "Išs. užklausos"
 
-#, fuzzy
 msgid "Down"
-msgstr ""
-"#-#-#-#-#  lt.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ats.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Atsiųsta"
+msgstr "Ats."
 
-#, fuzzy
 msgid "Up"
-msgstr ""
-"#-#-#-#-#  lt.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Išs.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Išsiųsta"
+msgstr "Išs."
 
-#, fuzzy
 msgid "Client"
-msgstr ""
-"#-#-#-#-#  lt.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Programa\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Klientas\n"
-"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Programa"
+msgstr "Programa"
 
 msgid "Flags"
 msgstr "Žymės"
@@ -412,13 +329,8 @@ msgstr ""
 msgid "List contains invalid URLs"
 msgstr "Sąraše yra netinkamų URL adresų"
 
-#, fuzzy
 msgid "Please correct the errors and try again."
-msgstr ""
-"#-#-#-#-#  lt.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ištaisykite klaidas ir bandykite dar kartą.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Prašome ištaisyti klaidas ir bandyti dar kartą."
+msgstr "Ištaisykite klaidas ir bandykite dar kartą."
 
 msgid "{torrent_name} - Add Tracker"
 msgstr ""
@@ -479,24 +391,14 @@ msgstr "Šis torentas prisijungęs prie siuntėjų."
 msgid "These torrents are connected to peers."
 msgstr "Šie torentai prisijungę prie siuntėjų."
 
-#, fuzzy
 msgid "One of these torrents is connected to peers."
-msgstr ""
-"#-#-#-#-#  lt.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Kai kurie šių torentų prisijungę prie siuntėjų.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Vienas šių torentų prisijungęs prie siuntėjų."
+msgstr "Vienas šių torentų prisijungęs prie siuntėjų."
 
 msgid "Some of these torrents are connected to peers."
 msgstr "Kai kurie šių torentų prisijungę prie siuntėjų."
 
-#, fuzzy
 msgid "One of these torrents has not finished downloading."
-msgstr ""
-"#-#-#-#-#  lt.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Kai kurie šių torentų dar neatsiųsti.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Vienas šių torentų dar neatsiųstas."
+msgstr "Vienas šių torentų dar neatsiųstas."
 
 msgid "Some of these torrents have not finished downloading."
 msgstr "Kai kurie šių torentų dar neatsiųsti."
@@ -511,25 +413,11 @@ msgstr "_Ištrinti"
 msgid "_Remove"
 msgstr "Pa_šalinti"
 
-#, fuzzy
 msgid "High"
-msgstr ""
-"#-#-#-#-#  lt.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"aukštas\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"aukštas\n"
-"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Aukštas"
+msgstr "aukštas"
 
-#, fuzzy
 msgid "Normal"
-msgstr ""
-"#-#-#-#-#  lt.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"normalus\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"normalus\n"
-"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Normalus"
+msgstr "normalus"
 
 msgid "Low"
 msgstr "žemas"
@@ -546,13 +434,8 @@ msgstr "Dydis"
 msgid "Progress"
 msgstr "Pažanga"
 
-#, fuzzy
 msgid "Download"
-msgstr ""
-"#-#-#-#-#  lt.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Atsiųsti\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Atsiuntimas"
+msgstr "Atsiųsti"
 
 msgid "Priority"
 msgstr "Prioritetas"
@@ -563,24 +446,12 @@ msgstr "visus"
 msgid "Active"
 msgstr "aktyvius"
 
-#, fuzzy
 msgctxt "Verb"
 msgid "Verifying"
-msgstr ""
-"#-#-#-#-#  lt.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Tikrinama\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"tikrinamus"
+msgstr "Tikrinama"
 
-#, fuzzy
 msgid "Error"
-msgstr ""
-"#-#-#-#-#  lt.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Klaida\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Klaida\n"
-"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"klaidas"
+msgstr "Klaida"
 
 msgid "_Show:"
 msgstr "Ro_dyti:"
@@ -1001,13 +872,8 @@ msgstr "Pažymėti _viską"
 msgid "Dese_lect All"
 msgstr "_Panaikinti žymėjimą"
 
-#, fuzzy
 msgid "_Preferences"
-msgstr ""
-"#-#-#-#-#  lt.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Nustatymai\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Nuostatos"
+msgstr "_Nustatymai"
 
 msgid "_Torrent"
 msgstr "T_orentas"
@@ -1021,13 +887,8 @@ msgstr "_Atverti aplanką"
 msgid "_Start"
 msgstr "_Paleisti"
 
-#, fuzzy
 msgid "Start _Now"
-msgstr ""
-"#-#-#-#-#  lt.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Pradėti _dabar\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Paleisti da_bar"
+msgstr "Pradėti _dabar"
 
 msgid "Ask Tracker for _More Peers"
 msgstr "Paprašyti sekiklio _daugiau siuntėjų"
@@ -1037,37 +898,17 @@ msgstr "Paprašyti sekiklio _daugiau siuntėjų"
 msgid "_Queue"
 msgstr "&Eilė"
 
-#, fuzzy
 msgid "Move to _Top"
-msgstr ""
-"#-#-#-#-#  lt.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Perkelti į _viršų\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Perkelti _aukštyn"
+msgstr "Perkelti į _viršų"
 
-#, fuzzy
 msgid "Move _Up"
-msgstr ""
-"#-#-#-#-#  lt.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Perkelti _aukštyn\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Pa_kelti"
+msgstr "Perkelti _aukštyn"
 
-#, fuzzy
 msgid "Move _Down"
-msgstr ""
-"#-#-#-#-#  lt.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Perkelti ž_emyn\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Nu_leisti"
+msgstr "Perkelti ž_emyn"
 
-#, fuzzy
 msgid "Move to _Bottom"
-msgstr ""
-"#-#-#-#-#  lt.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Perkelti į a_pačią\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Perkelti _žemyn"
+msgstr "Perkelti į a_pačią"
 
 msgid "_Pause"
 msgstr "_Pristabdyti"
@@ -1108,13 +949,8 @@ msgstr "Rikiuoti pagal se_numą"
 msgid "Sort by _Name"
 msgstr "Rikiuoti pagal pa_vadinimą"
 
-#, fuzzy
 msgid "Sort by _Progress"
-msgstr ""
-"#-#-#-#-#  lt.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Rikiuoti pagal _eigą\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Rikiuoti pagal _pažangą"
+msgstr "Rikiuoti pagal _pažangą"
 
 msgid "Sort by _Queue"
 msgstr "Rikiuoti pagal _eilę"
@@ -1137,13 +973,8 @@ msgstr "A_tvirkštinė rikiavimo tvarka"
 msgid "_Help"
 msgstr "_Pagalba"
 
-#, fuzzy
 msgid "Message _Log"
-msgstr ""
-"#-#-#-#-#  lt.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"P_ranešimų žurnalas\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Pranešimų _žurnalas"
+msgstr "P_ranešimų žurnalas"
 
 msgid "_Statistics"
 msgstr "_Statistika"
@@ -1164,11 +995,7 @@ msgstr "Paleisti torentą"
 
 #, fuzzy
 msgid "Alternative Speed _Limits"
-msgstr ""
-"#-#-#-#-#  lt.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Alternatyvieji greičio ribojimai\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Alternatyvūs greičio apribojimai"
+msgstr "Alternatyvieji greičio ribojimai"
 
 msgid "_Add"
 msgstr "_Pridėti"
@@ -1266,13 +1093,8 @@ msgstr "Riboti _išsiuntimo greitį ({speed_units}):"
 msgid "Torrent _priority:"
 msgstr "Torento p_rioritetas:"
 
-#, fuzzy
 msgid "Seeding Limits"
-msgstr ""
-"#-#-#-#-#  lt.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Skleidimo apribojimai\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Sklaidos apribojimai"
+msgstr "Skleidimo apribojimai"
 
 msgid "_Ratio:"
 msgstr "_Santykis:"
@@ -1286,15 +1108,8 @@ msgstr "Siuntėjų ryšiai"
 msgid "_Maximum peers:"
 msgstr "_Daugiausia galimų siuntėjų:"
 
-#, fuzzy
 msgid "Options"
-msgstr ""
-"#-#-#-#-#  lt.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Parametrai\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Nuostatos\n"
-"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Parametrai"
+msgstr "Parametrai"
 
 msgid "Tracker Announce URLs"
 msgstr "Sekiklių skelbimo URL adresai"
@@ -1401,13 +1216,8 @@ msgstr "P_radėti pridėjus"
 msgid "Mo_ve torrent file to the Trash"
 msgstr "Per_kelti torento failą į šiukšlinę"
 
-#, fuzzy
 msgid "{appname} Preferences"
-msgstr ""
-"#-#-#-#-#  lt.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"„{appname}“ nustatymai\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"„{appname}“ nuostatos"
+msgstr "„{appname}“ nustatymai"
 
 msgid "Speed Limits"
 msgstr "Greičio ribojimai"
@@ -1420,13 +1230,8 @@ msgstr "I_šsiuntimas ({speed_units}):"
 msgid "_Download ({speed_units}):"
 msgstr "_Atsiuntimas ({speed_units}):"
 
-#, fuzzy
 msgid "Alternative Speed Limits"
-msgstr ""
-"#-#-#-#-#  lt.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Alternatyvieji greičio ribojimai\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Alternatyvūs greičio apribojimai"
+msgstr "Alternatyvieji greičio ribojimai"
 
 msgid "Override normal speed limits manually or at scheduled times"
 msgstr "Taikomi vietoje įprastų greičio ribojimų rankiniu būdu arba numatytuoju laiku"
@@ -1456,53 +1261,28 @@ msgstr "Pridėjimas"
 msgid "Automatically add torrent files _from:"
 msgstr "Automatiškai pridėti torentų failus _iš:"
 
-#, fuzzy
 msgid "Show the Torrent Options _dialog"
-msgstr ""
-"#-#-#-#-#  lt.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Rodyti torento parametrų _dialogą\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Rodyti torento parinkčių _dialogą"
+msgstr "Rodyti torento parametrų _dialogą"
 
-#, fuzzy
 msgid "_Start added torrents"
-msgstr ""
-"#-#-#-#-#  lt.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Paleisti pridėtus torentus\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Palei_sti pridėtus torentus"
+msgstr "_Paleisti pridėtus torentus"
 
 #, fuzzy
 #| msgid "Save to _Location:"
 msgid "Save to _location:"
 msgstr "Įrašyti _vietoje:"
 
-#, fuzzy
 msgid "Download Queue"
-msgstr ""
-"#-#-#-#-#  lt.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Atsiuntimų eilė\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Atsiuntimų Eilė"
+msgstr "Atsiuntimų eilė"
 
-#, fuzzy
 msgid "Ma_ximum active downloads:"
-msgstr ""
-"#-#-#-#-#  lt.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Dau_giausia aktyvių atsiuntimų:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Dau_giausiai aktyvių atsiuntimų:"
+msgstr "Dau_giausia aktyvių atsiuntimų:"
 
 msgid "Downloads sharing data in the last _N minutes are active:"
 msgstr "Atsiuntimai, per pastarąsias N minučių keitęsi duomenimis, laikomi _aktyviais:"
 
-#, fuzzy
 msgid "Incomplete"
-msgstr ""
-"#-#-#-#-#  lt.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Nebaigti\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Nebaigtas"
+msgstr "Nebaigti"
 
 msgid "Append \"._part\" to incomplete files' names"
 msgstr "Nebaigtų failų varduose naudoti „.part“ _prievardį"
@@ -1522,13 +1302,8 @@ msgctxt "Gerund"
 msgid "Downloading"
 msgstr "Atsiuntimas"
 
-#, fuzzy
 msgid "Limits"
-msgstr ""
-"#-#-#-#-#  lt.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Apribojimai\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ribojimai"
+msgstr "Apribojimai"
 
 msgid "Stop seeding at _ratio:"
 msgstr "Nebeskleisti esant _santykiui:"
@@ -1580,13 +1355,8 @@ msgstr "Naudototi _UPnP arba NAT-PMP prievadų persiuntimą maršrutizatoriuje"
 msgid "Te_st Port"
 msgstr "_Tikrinti prievadą"
 
-#, fuzzy
 msgid "Peer Limits"
-msgstr ""
-"#-#-#-#-#  lt.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Siuntėjų ribojimai\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ryšių ribojimai"
+msgstr "Siuntėjų ribojimai"
 
 #, fuzzy
 #| msgid "Maximum peers per _torrent:"
@@ -1650,53 +1420,23 @@ msgstr ""
 msgid "Show {appname} icon in the _notification area"
 msgstr "Rodyti „{appname}“ piktogramą pranešimų _srityje"
 
-#, fuzzy
 msgid "Notification"
-msgstr ""
-"#-#-#-#-#  lt.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Pranešimas\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Pranešimai"
+msgstr "Pranešimas"
 
-#, fuzzy
 msgid "Show a notification when torrents are a_dded"
-msgstr ""
-"#-#-#-#-#  lt.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Rodyti pranešimą kai torentai _pridedami\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Rodyti pranešimą, kai yra pride_dami torentai"
+msgstr "Rodyti pranešimą, kai yra pride_dami torentai"
 
-#, fuzzy
 msgid "Show a notification when torrents _finish"
-msgstr ""
-"#-#-#-#-#  lt.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Rodyti pranešimą kai torentai _baigiami\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Rodyti pranešimą, kai torentai _yra užbaigiami"
+msgstr "Rodyti pranešimą, kai torentai _yra užbaigiami"
 
-#, fuzzy
 msgid "Play a _sound when torrents finish"
-msgstr ""
-"#-#-#-#-#  lt.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Sugroti _garsą kai torentai baigiami\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Groti gar_są, kai torentai yra užbaigiami"
+msgstr "Groti gar_są, kai torentai yra užbaigiami"
 
-#, fuzzy
 msgid "Remote Control"
-msgstr ""
-"#-#-#-#-#  lt.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Nuotolinis valdymas\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Nuotolinis Valdymas"
+msgstr "Nuotolinis valdymas"
 
-#, fuzzy
 msgid "Allow _remote access"
-msgstr ""
-"#-#-#-#-#  lt.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Leisti _nuotolinę prieigą\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Leisti nuotolinę p_rieigą"
+msgstr "Leisti _nuotolinę prieigą"
 
 #, fuzzy
 #| msgid "_Open web client"
@@ -1709,15 +1449,8 @@ msgstr "HTTP _prievadas:"
 msgid "Use _authentication"
 msgstr "Reikalauti _tapatybės nustatymo"
 
-#, fuzzy
 msgid "_Username:"
-msgstr ""
-"#-#-#-#-#  lt.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Naudotojo _vardas:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Naudotojo _vardas:\n"
-"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Naudotojo vardas:"
+msgstr "Naudotojo _vardas:"
 
 msgid "Pass_word:"
 msgstr "_Slaptažodis:"
@@ -1725,13 +1458,8 @@ msgstr "_Slaptažodis:"
 msgid "Only allow these IP a_ddresses:"
 msgstr "Leisti tik šiuos IP a_dresus:"
 
-#, fuzzy
 msgid "Addresses:"
-msgstr ""
-"#-#-#-#-#  lt.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ad_resai:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ad&resai:"
+msgstr "Ad_resai:"
 
 msgid "IP addresses may use wildcards, such as 192.168.*.*"
 msgstr "IP adresuose galima naudoti kaitos simbolius, pvz., 192.168.*.*"
@@ -2236,19 +1964,11 @@ msgstr ""
 
 #, fuzzy
 msgid "Time to turn on alternative speed limits"
-msgstr ""
-"#-#-#-#-#  lt.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Alternatyvieji greičio ribojimai\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Alternatyvūs greičio apribojimai"
+msgstr "Alternatyvieji greičio ribojimai"
 
 #, fuzzy
 msgid "Time to turn off alternative speed limits"
-msgstr ""
-"#-#-#-#-#  lt.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Alternatyvieji greičio ribojimai\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Alternatyvūs greičio apribojimai"
+msgstr "Alternatyvieji greičio ribojimai"
 
 msgid "Listening to incoming peer connections on {hostport}"
 msgstr ""
@@ -2666,25 +2386,6 @@ msgid "Select Folder"
 msgstr "Parinkite aplanką"
 
 #, fuzzy
-#| msgid "Unknown"
-msgid "unknown"
-msgstr "nežinomas"
-
-msgid "checking…"
-msgstr ""
-
-msgid "open"
-msgstr ""
-
-#, fuzzy
-#| msgid "_Close"
-msgid "closed"
-msgstr "_Užverti"
-
-msgid "error"
-msgstr "klaida"
-
-#, fuzzy
 #| msgid "<i>Blocklist contains {count:L} rule</i>"
 #| msgid_plural "<i>Blocklist contains {count:L} rules</i>"
 msgid "<b>Update succeeded!</b><p>Blocklist now has {count:L} rule.</p>"
@@ -2748,12 +2449,6 @@ msgstr "Išsiunti_mo:"
 msgid "Do_wnload:"
 msgstr "A_tsiuntimo:"
 
-msgid "Downloading"
-msgstr "Atsiuntimas"
-
-msgid "Adding"
-msgstr "Pridėjimas"
-
 msgid "Reads user clipboard content for torrents"
 msgstr ""
 
@@ -2763,9 +2458,6 @@ msgstr ""
 #. Please keep this phrase as short as possible, it's currently the longest and influences dialog width
 msgid "Download is i_nactive if data sharing stopped:"
 msgstr "Atsiuntimas yra _neaktyvus, jei dalinimasis duomenimis sustabdytas:"
-
-msgid "Seeding"
-msgstr "Skleidimas"
 
 msgid "Stop seedi_ng if idle for:"
 msgstr "Nebeskleisti jei _pasyvus:"

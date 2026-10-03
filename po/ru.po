@@ -120,13 +120,8 @@ msgstr[1] "Не удалось добавить дублирующиеся то�
 msgstr[2] "Не удалось добавить дублирующиеся торренты"
 msgstr[3] "Не удалось добавить дублирующиеся торренты"
 
-#, fuzzy
 msgid "A fast and easy BitTorrent client"
-msgstr ""
-"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Быстрый и простой клиент BitTorrent\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Быстрый и простой торрент-клиент"
+msgstr "Быстрый и простой клиент BitTorrent"
 
 msgid "Copyright © The {appname} Project"
 msgstr "Авторское право © The {appname} Project"
@@ -158,59 +153,29 @@ msgstr "Прекратить раздачу при простое N минут:"
 msgid "Queued for verification"
 msgstr "В очереди на проверку"
 
-#, fuzzy
 msgid "Verifying local data"
-msgstr ""
-"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Проверка загруженных данных\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Проверка локальных данных"
+msgstr "Проверка локальных данных"
 
 msgid "Queued for download"
 msgstr "В очереди на загрузку"
 
-#, fuzzy
 msgctxt "Verb"
 msgid "Downloading"
-msgstr ""
-"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Загружается\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Загрузки\n"
-"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Загрузка"
+msgstr "Загружается"
 
 msgid "Queued for seeding"
 msgstr "В очереди на раздачу"
 
-#, fuzzy
 msgctxt "Verb"
 msgid "Seeding"
-msgstr ""
-"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Раздаётся\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Раздачи\n"
-"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Раздача"
+msgstr "Раздаётся"
 
 #, fuzzy
 msgid "Seeding complete"
-msgstr ""
-"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Процесс загрузки\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Не завершено"
+msgstr "Процесс загрузки"
 
-#, fuzzy
 msgid "Paused"
-msgstr ""
-"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Приостановлен\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Приостановлено\n"
-"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Приостановленные"
+msgstr "Приостановлен"
 
 msgid "N/A"
 msgstr "Н/Д"
@@ -227,29 +192,14 @@ msgstr "Только для этого трекера — DHT и PEX отклю�
 msgid "Public torrent"
 msgstr "Публичный торрент"
 
-#, fuzzy
 msgid "Created by {creator} on {date}"
-msgstr ""
-"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Создано {creator} {date}\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Создан {creator}, {date}"
+msgstr "Создано {creator} {date}"
 
-#, fuzzy
 msgid "Created by {creator}"
-msgstr ""
-"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Создано {creator}\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Создан {creator}"
+msgstr "Создано {creator}"
 
-#, fuzzy
 msgid "Created on {date}"
-msgstr ""
-"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Создано {date}\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Создан {date}"
+msgstr "Создано {date}"
 
 msgid "Unknown"
 msgstr "Неизвестно"
@@ -280,21 +230,11 @@ msgstr "{current_size} (доступно {percent_done} % из {percent_availabl
 msgid "{current_size} ({percent_done}% of {percent_available}% available; {unverified_size} unverified)"
 msgstr "{current_size} (доступно {percent_done} % из {percent_available} %; не проверено {unverified_size})"
 
-#, fuzzy
 msgid "{downloaded_size} (+{discarded_size} discarded after failed checksum)"
-msgstr ""
-"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{downloaded_size} (+{discarded_size} отменено после проверки контрольной суммы)\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{downloaded_size} (+{discarded_size} отклонено после неудачной проверки контрольной суммы)"
+msgstr "{downloaded_size} (+{discarded_size} отклонено после неудачной проверки контрольной суммы)"
 
-#, fuzzy
 msgid "{uploaded_size} (Ratio: {ratio})"
-msgstr ""
-"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{uploaded_size} (Соотношение: {ratio})\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{uploaded_size} (Рейтинг: {ratio})"
+msgstr "{uploaded_size} (Рейтинг: {ratio})"
 
 msgid "No errors"
 msgstr "Ошибок нет"
@@ -305,13 +245,8 @@ msgstr "Никогда"
 msgid "Active now"
 msgstr "Активен сейчас"
 
-#, fuzzy
 msgid "Optimistic unchoke"
-msgstr ""
-"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Загрузка сейчас начнётся\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Скоро начнётся передача"
+msgstr "Скоро начнётся передача"
 
 msgid "Downloading from this peer"
 msgstr "Загрузка от этого участника"
@@ -333,13 +268,8 @@ msgstr "Участник согласен передавать данные, н�
 msgid "We unchoked this peer, but they're not interested"
 msgstr "Передача участнику была разрешена, но он не заинтересован"
 
-#, fuzzy
 msgid "Encrypted connection"
-msgstr ""
-"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Зашифрованное соединение\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Шифрованное соединение"
+msgstr "Зашифрованное соединение"
 
 msgid "Peer was found through Peer Exchange (PEX)"
 msgstr "Участник был найден с помощью обмена участниками (PEX)"
@@ -350,13 +280,8 @@ msgstr "Участник был найден через DHT"
 msgid "Peer is an incoming connection"
 msgstr "Участник открыл соединение с нами"
 
-#, fuzzy
 msgid "Peer is connected over µTP"
-msgstr ""
-"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Участник подключён через uTP\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Участник подключён через µTP"
+msgstr "Участник подключён через µTP"
 
 msgid "Peer supports holepunch (BEP 55)"
 msgstr ""
@@ -376,13 +301,8 @@ msgstr "Исходящие запросы"
 msgid "Down"
 msgstr "Загрузка"
 
-#, fuzzy
 msgid "Up"
-msgstr ""
-"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Раздача\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Отдача"
+msgstr "Отдача"
 
 msgid "Client"
 msgstr "Клиент"
@@ -399,13 +319,8 @@ msgstr "Изменить трекеры {torrent_name}"
 msgid "List contains invalid URLs"
 msgstr "Список содержит неправильные URL"
 
-#, fuzzy
 msgid "Please correct the errors and try again."
-msgstr ""
-"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Исправьте ошибки и повторите попытку.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Пожалуйста, исправьте ошибки и попробуйте снова."
+msgstr "Исправьте ошибки и повторите попытку."
 
 msgid "{torrent_name} - Add Tracker"
 msgstr "Добавить трекеры {torrent_name}"
@@ -426,13 +341,8 @@ msgstr[3] "Свойства {torrent_count:L} торрентов"
 msgid "Remove torrent?"
 msgstr "Удалить торрент?"
 
-#, fuzzy
 msgid "Delete this torrent's downloaded files?"
-msgstr ""
-"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Удалить эти загруженные файлы торрента?\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Удалить загруженные файлы этого торрента?"
+msgstr "Удалить загруженные файлы этого торрента?"
 
 msgid "Remove {count:L} torrent?"
 msgid_plural "Remove {count:L} torrents?"
@@ -441,29 +351,12 @@ msgstr[1] "Удалить {count:L} торрента?"
 msgstr[2] "Удалить {count:L} торрентов?"
 msgstr[3] "Удалить {count:L} торрентов?"
 
-#, fuzzy
 msgid "Delete this {count:L} torrent's downloaded files?"
 msgid_plural "Delete these {count:L} torrents' downloaded files?"
-msgstr[0] ""
-"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Удалить загруженные файлы этого {count:L} торрента?\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Удалить загруженные файлы этого {count:L} торрента?"
-msgstr[1] ""
-"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Удалить эти {count:L} загруженных файла торрента?\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Удалить загруженные файлы этих {count:L} торрентов?"
-msgstr[2] ""
-"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Удалить эти {count:L} загруженных файлов торрента?\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Удалить загруженные файлы этих {count:L} торрентов?"
-msgstr[3] ""
-"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Удалить эти {count:L} загруженных файлов торрента?\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Удалить загруженные файлы этих {count:L} торрентов?"
+msgstr[0] "Удалить загруженные файлы этого {count:L} торрента?"
+msgstr[1] "Удалить загруженные файлы этих {count:L} торрентов?"
+msgstr[2] "Удалить загруженные файлы этих {count:L} торрентов?"
+msgstr[3] "Удалить загруженные файлы этих {count:L} торрентов?"
 
 #, fuzzy
 #| msgid "Once removed, continuing the transfer will require the torrent file or magnet link."
@@ -482,37 +375,17 @@ msgstr "Загрузка этого торрента не завершена."
 msgid "These torrents have not finished downloading."
 msgstr "Загрузка этих торрентов не завершена."
 
-#, fuzzy
 msgid "This torrent is connected to peers."
-msgstr ""
-"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Этот торрент подключён к другим участникам.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Этот торрент подключён к участникам."
+msgstr "Этот торрент подключён к другим участникам."
 
-#, fuzzy
 msgid "These torrents are connected to peers."
-msgstr ""
-"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Эти торренты подключены к другим участникам.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Эти торренты подключены к участникам."
+msgstr "Эти торренты подключены к другим участникам."
 
-#, fuzzy
 msgid "One of these torrents is connected to peers."
-msgstr ""
-"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Один из этих торрентов подключён к другим участникам.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Один из этих торрентов подключён к участникам."
+msgstr "Один из этих торрентов подключён к другим участникам."
 
-#, fuzzy
 msgid "Some of these torrents are connected to peers."
-msgstr ""
-"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Некоторые из этих торрентов подключены к другим участникам.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Некоторые из этих торрентов подключены к участникам."
+msgstr "Некоторые из этих торрентов подключены к другим участникам."
 
 msgid "One of these torrents has not finished downloading."
 msgstr "Загрузка одного из этих торрентов не завершена."
@@ -560,40 +433,18 @@ msgstr "Приоритет"
 msgid "All"
 msgstr "Все"
 
-#, fuzzy
 msgid "Active"
-msgstr ""
-"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Активен\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Активные"
+msgstr "Активен"
 
-#, fuzzy
 msgctxt "Verb"
 msgid "Verifying"
-msgstr ""
-"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Проверяется\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Проверяемые"
+msgstr "Проверяется"
 
-#, fuzzy
 msgid "Error"
-msgstr ""
-"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ошибки\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ошибка\n"
-"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"С ошибкой"
+msgstr "Ошибка"
 
-#, fuzzy
 msgid "_Show:"
-msgstr ""
-"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Показать:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"П_оказать:"
+msgstr "_Показать:"
 
 msgid "_Show {count:L} of:"
 msgstr "_Показать {count:L} из:"
@@ -633,13 +484,8 @@ msgstr ""
 "Щёлкните для включения особых ограничений скорости\n"
 "({download_speed} загрузка, {upload_speed} отдача)"
 
-#, fuzzy
 msgid "Unlimited"
-msgstr ""
-"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Неограничено\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Не ограничено"
+msgstr "Не ограничено"
 
 msgid "Seed Forever"
 msgstr "Раздавать всегда"
@@ -650,13 +496,8 @@ msgstr "Ограничить скорость загрузки"
 msgid "Limit Upload Speed"
 msgstr "Ограничить скорость раздачи"
 
-#, fuzzy
 msgid "Stop Seeding at Ratio"
-msgstr ""
-"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Остановить раздачу при рейтинге\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Прекратить раздачу при рейтинге"
+msgstr "Прекратить раздачу при рейтинге"
 
 msgid "Stop at Ratio ({ratio})"
 msgstr "Остановить при рейтинге ({ratio})"
@@ -752,13 +593,8 @@ msgstr "Торрент завершён"
 msgid "Start Now"
 msgstr "Запустить сейчас"
 
-#, fuzzy
 msgid "Torrent Added"
-msgstr ""
-"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Добавлен торрент\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Торрент добавлен"
+msgstr "Торрент добавлен"
 
 msgid "Torrent files"
 msgstr "Торрент-файлы"
@@ -886,21 +722,12 @@ msgstr "_Показать {appname}"
 msgid "{upload_speed} ▴ {download_speed} ▾"
 msgstr "{upload_speed} ▴ {download_speed} ▾"
 
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Verifying local data ({percent_done}% tested)"
-msgstr ""
-"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Проверка данных (проверено {percent_done})\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Проверка локальных данных (проверено {percent_done}%)"
+msgstr "Проверка локальных данных (проверено {percent_done}%)"
 
-#, fuzzy
 msgid "{current_size} of {complete_size} ({percent_done}%)"
-msgstr ""
-"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{current_size} из {complete_size} ({percent_done} %)\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{current_size} из {complete_size} ({percent_done}%)"
+msgstr "{current_size} из {complete_size} ({percent_done}%)"
 
 msgid "{current_size} of {complete_size} ({percent_complete}%), uploaded {uploaded_size} (Ratio: {ratio}, Goal: {seed_ratio})"
 msgstr "{current_size} из {complete_size} ({percent_complete}%), отдано {uploaded_size} (Рейтинг: {ratio}, Цель: {seed_ratio})"
@@ -911,13 +738,8 @@ msgstr "{current_size} из {complete_size} ({percent_complete}%), отдано 
 msgid "{complete_size}, uploaded {uploaded_size} (Ratio: {ratio}, Goal: {seed_ratio})"
 msgstr "{complete_size}, отдано {uploaded_size} (Рейтинг: {ratio}, Цель: {seed_ratio})"
 
-#, fuzzy
 msgid "{complete_size}, uploaded {uploaded_size} (Ratio: {ratio})"
-msgstr ""
-"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{complete_size}, отдано {uploaded_size} (Цель: {ratio})\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{complete_size}, отдано {uploaded_size} (Рейтинг: {ratio})"
+msgstr "{complete_size}, отдано {uploaded_size} (Рейтинг: {ratio})"
 
 #. Translators: Second (optional) part of torrent progress string
 msgid "Remaining time unknown"
@@ -962,29 +784,12 @@ msgstr[1] "Загружается с {active_count} веб-сидов"
 msgstr[2] "Загружается с {active_count} веб-сидов"
 msgstr[3] "Загружается с {active_count} веб-сидов"
 
-#, fuzzy
 msgid "Downloading from {active_count} of {connected_count} connected peer"
 msgid_plural "Downloading from {active_count} of {connected_count} connected peers"
-msgstr[0] ""
-"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Загружается с {active_count} из {connected_count} подключённого участника\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Приём от {active_count} из {connected_count} подключённого участника"
-msgstr[1] ""
-"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Загружается с {active_count} из {connected_count} подключённых участников\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Приём от {active_count} из {connected_count} подключённых участников"
-msgstr[2] ""
-"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Загружается с {active_count} из {connected_count} подключённых участников\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Приём от {active_count} из {connected_count} подключённых участников"
-msgstr[3] ""
-"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Загружается с {active_count} из {connected_count} подключённых участников\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Приём от {active_count} из {connected_count} подключённых участников"
+msgstr[0] "Загружается с {active_count} из {connected_count} подключённого участника"
+msgstr[1] "Загружается с {active_count} из {connected_count} подключённых участников"
+msgstr[2] "Загружается с {active_count} из {connected_count} подключённых участников"
+msgstr[3] "Загружается с {active_count} из {connected_count} подключённых участников"
 
 msgid "Seeding to {active_count} of {connected_count} connected peer"
 msgid_plural "Seeding to {active_count} of {connected_count} connected peers"
@@ -1033,21 +838,11 @@ msgstr ""
 msgid "_File"
 msgstr "_Файл"
 
-#, fuzzy
 msgid "Open _URL…"
-msgstr ""
-"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Отк_рыть URL…\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Отк_рыть ссылку…"
+msgstr "Отк_рыть URL…"
 
-#, fuzzy
 msgid "_New…"
-msgstr ""
-"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Создать…\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Новый…"
+msgstr "_Создать…"
 
 msgid "_Start All"
 msgstr "_Запустить все"
@@ -1055,13 +850,8 @@ msgstr "_Запустить все"
 msgid "_Pause All"
 msgstr "_Приостановить все"
 
-#, fuzzy
 msgid "_Quit"
-msgstr ""
-"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Выход\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"В_ыход"
+msgstr "_Выход"
 
 msgid "_Edit"
 msgstr "_Правка"
@@ -1072,13 +862,8 @@ msgstr "Выде_лить всё"
 msgid "Dese_lect All"
 msgstr "_Снять выделение"
 
-#, fuzzy
 msgid "_Preferences"
-msgstr ""
-"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Настройки\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Н_астройки"
+msgstr "_Настройки"
 
 msgid "_Torrent"
 msgstr "_Торрент"
@@ -1086,21 +871,11 @@ msgstr "_Торрент"
 msgid "_Properties"
 msgstr "_Свойства"
 
-#, fuzzy
 msgid "Open Fold_er"
-msgstr ""
-"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Открыть папк_у\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Откр_ыть папку"
+msgstr "Открыть папк_у"
 
-#, fuzzy
 msgid "_Start"
-msgstr ""
-"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Запустить\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"З_апустить"
+msgstr "_Запустить"
 
 msgid "Start _Now"
 msgstr "Запустить _сейчас"
@@ -1137,13 +912,8 @@ msgstr "Про_верить локальные данные"
 msgid "_Copy Magnet Link to Clipboard"
 msgstr "Копировать магнит-_ссылку в буфер"
 
-#, fuzzy
 msgid "_Delete Files and Remove"
-msgstr ""
-"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Убрать торрент и удалить загруженные файлы\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Удалить _файлы и данные"
+msgstr "_Убрать торрент и удалить загруженные файлы"
 
 msgid "_View"
 msgstr "_Вид"
@@ -1157,78 +927,38 @@ msgstr "Панель _инструментов"
 msgid "_Filterbar"
 msgstr "Панель _фильтров"
 
-#, fuzzy
 msgid "_Statusbar"
-msgstr ""
-"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Строка состояния\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Строка состо_яния"
+msgstr "_Строка состояния"
 
 msgid "Sort by _Activity"
 msgstr "Упорядочивать по _активности"
 
-#, fuzzy
 msgid "Sort by A_ge"
-msgstr ""
-"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Упорядочивать по _дате добавления\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Упорядочивать по _возрасту"
+msgstr "Упорядочивать по _дате добавления"
 
 msgid "Sort by _Name"
 msgstr "Упорядочивать по _названию"
 
-#, fuzzy
 msgid "Sort by _Progress"
-msgstr ""
-"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Упорядочивать по _продвижению загрузки\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Упорядочивать по степени _загрузки"
+msgstr "Упорядочивать по степени _загрузки"
 
-#, fuzzy
 msgid "Sort by _Queue"
-msgstr ""
-"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Упорядочивать по о_черёдности\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Упорядочивать по очер_ёдности"
+msgstr "Упорядочивать по о_черёдности"
 
-#, fuzzy
 msgid "Sort by Rati_o"
-msgstr ""
-"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Упорядочивать по соо_тношению\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Упорядочивать по ре_йтингу"
+msgstr "Упорядочивать по ре_йтингу"
 
 msgid "Sort by Si_ze"
 msgstr "Упорядочивать по _размеру"
 
-#, fuzzy
 msgid "Sort by Stat_e"
-msgstr ""
-"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Упорядочивать по сос_тоянию\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Упорядочивать по _состоянию"
+msgstr "Упорядочивать по сос_тоянию"
 
-#, fuzzy
 msgid "Sort by Time _Left"
-msgstr ""
-"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Упорядочивать по оставшемуся _времени\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Упорядочивать по _оставшемуся времени"
+msgstr "Упорядочивать по оставшемуся _времени"
 
-#, fuzzy
 msgid "Re_verse Sort Order"
-msgstr ""
-"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"О_братить порядок\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Обра_тить порядок"
+msgstr "О_братить порядок"
 
 msgid "_Help"
 msgstr "_Справка"
@@ -1245,13 +975,8 @@ msgstr "_Пожертвовать"
 msgid "_Contents"
 msgstr "Со_держание"
 
-#, fuzzy
 msgid "_About"
-msgstr ""
-"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_О программе\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"О пр_иложении"
+msgstr "_О программе"
 
 #, fuzzy
 #| msgid "Start torrent"
@@ -1284,13 +1009,8 @@ msgstr "Размер:"
 msgid "Have:"
 msgstr "В наличии:"
 
-#, fuzzy
 msgid "Uploaded:"
-msgstr ""
-"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Роздано:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Отдано:"
+msgstr "Отдано:"
 
 msgid "Downloaded:"
 msgstr "Загружено:"
@@ -1361,13 +1081,8 @@ msgstr "Ограничение _скорости загрузки ({speed_units}
 msgid "Limit _upload speed ({speed_units}):"
 msgstr "Ограничение _скорости раздачи ({speed_units}):"
 
-#, fuzzy
 msgid "Torrent _priority:"
-msgstr ""
-"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Приоритет _торрента:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Приоритет торрента:"
+msgstr "Приоритет _торрента:"
 
 msgid "Seeding Limits"
 msgstr "Ограничения раздачи"
@@ -1387,13 +1102,8 @@ msgstr "_Максимум участников:"
 msgid "Options"
 msgstr "Параметры"
 
-#, fuzzy
 msgid "Tracker Announce URLs"
-msgstr ""
-"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Адреса анонсов трекера\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Адреса анонсов трекеров"
+msgstr "Адреса анонсов трекеров"
 
 msgid ""
 "To add a backup URL, add it on the next line after a primary URL.\n"
@@ -1405,13 +1115,8 @@ msgstr ""
 msgid "Also see Default Public Trackers in Edit > Preferences > Network"
 msgstr "Также смотрите Общедоступные трекеры по умолчанию в меню Правка > Настройки > Сеть"
 
-#, fuzzy
 msgid "Open a torrent"
-msgstr ""
-"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Открыть торрент\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Открыть файл"
+msgstr "Открыть торрент"
 
 msgid "Start torrent"
 msgstr "Запустить торрент"
@@ -1419,13 +1124,8 @@ msgstr "Запустить торрент"
 msgid "Pause torrent"
 msgstr "Приостановить торрент"
 
-#, fuzzy
 msgid "Remove torrent"
-msgstr ""
-"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Убрать торрент\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Удалить торрент"
+msgstr "Убрать торрент"
 
 msgid "Torrent properties"
 msgstr "Свойства торрента"
@@ -1436,26 +1136,16 @@ msgstr "Торрент"
 msgid "Statistics"
 msgstr "Статистика"
 
-#, fuzzy
 msgid "New Torrent"
-msgstr ""
-"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Новый торрент\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Создание нового торрента"
+msgstr "Новый торрент"
 
 #, fuzzy
 #| msgid "C_redits"
 msgid "C_reate"
 msgstr "А_вторы"
 
-#, fuzzy
 msgid "Sa_ve to:"
-msgstr ""
-"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Со_хранить в:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Сохранить в папку:"
+msgstr "Со_хранить в:"
 
 msgid "Source f_older:"
 msgstr "Исходная п_апка:"
@@ -1474,13 +1164,8 @@ msgstr "Свойства"
 msgid "_Trackers:"
 msgstr "_Трекеры:"
 
-#, fuzzy
 msgid "Co_mment:"
-msgstr ""
-"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"При_мечание:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Комментарий:"
+msgstr "_Комментарий:"
 
 msgid "_Source:"
 msgstr "_Источник:"
@@ -1526,13 +1211,8 @@ msgstr "_Запустить после добавления"
 msgid "Mo_ve torrent file to the Trash"
 msgstr "Убрать торрент-файл в корз_ину"
 
-#, fuzzy
 msgid "{appname} Preferences"
-msgstr ""
-"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Параметры {appname}\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Настройки {appname}"
+msgstr "Настройки {appname}"
 
 msgid "Speed Limits"
 msgstr "Ограничения скорости"
@@ -1562,13 +1242,8 @@ msgstr "За_грузка ({speed_units}):"
 msgid "_Scheduled times:"
 msgstr "_По расписанию:"
 
-#, fuzzy
 msgid "_On days:"
-msgstr ""
-"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_По дням:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"В указанные _дни:"
+msgstr "_По дням:"
 
 #. Label goes between two time selectors, e.g. "limit speeds from [time] to [time]"
 msgid "_to"
@@ -1581,21 +1256,11 @@ msgstr "Добавление"
 msgid "Automatically add torrent files _from:"
 msgstr "Автоматически добавлять торрент-файлы _из:"
 
-#, fuzzy
 msgid "Show the Torrent Options _dialog"
-msgstr ""
-"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Показывать диалоговое окно параметров торрента\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Показать окно настроек торрента"
+msgstr "Показывать диалоговое окно параметров торрента"
 
-#, fuzzy
 msgid "_Start added torrents"
-msgstr ""
-"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Запускать добавленные торренты\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Запустить добавленные торренты"
+msgstr "_Запускать добавленные торренты"
 
 #, fuzzy
 #| msgid "Save to _Location:"
@@ -1611,21 +1276,11 @@ msgstr "Ма_ксимум активных загрузок:"
 msgid "Downloads sharing data in the last _N minutes are active:"
 msgstr "Загружать данные о раздаче за последние N минут _активности:"
 
-#, fuzzy
 msgid "Incomplete"
-msgstr ""
-"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Процесс загрузки\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Не завершено"
+msgstr "Не завершено"
 
-#, fuzzy
 msgid "Append \"._part\" to incomplete files' names"
-msgstr ""
-"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Добавлять «._part» к именам незавершённых файлов\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Добавлят_ь «.part» к именам незавершённых файлов"
+msgstr "Добавлять «._part» к именам незавершённых файлов"
 
 msgid "Keep _incomplete files in:"
 msgstr "Сохранять _незавершённые файлы в:"
@@ -1647,13 +1302,8 @@ msgstr "Загрузка"
 msgid "Limits"
 msgstr "Ограничения"
 
-#, fuzzy
 msgid "Stop seeding at _ratio:"
-msgstr ""
-"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Прекратить раздачу при _рейтинге:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Прекратить _раздачу при рейтинге:"
+msgstr "Прекратить раздачу при _рейтинге:"
 
 msgid "Stop seeding if idle for _N minutes:"
 msgstr "Прекратить раздачу при простое _N минут:"
@@ -1674,13 +1324,8 @@ msgstr "_Режим шифрования:"
 msgid "Blocklist"
 msgstr "Чёрный список"
 
-#, fuzzy
 msgid "Enable _blocklist:"
-msgstr ""
-"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Включить _чёрный список:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Включить «_чёрный список»:"
+msgstr "Включить _чёрный список:"
 
 #, fuzzy
 #| msgid "Enable _automatic updates"
@@ -1701,13 +1346,8 @@ msgstr "_Порт для входящих подключений:"
 msgid "Pick a _random port at startup"
 msgstr "Устанавливать _случайный порт при каждом запуске программы"
 
-#, fuzzy
 msgid "Use UPnP or NAT-PMP port _forwarding from my router"
-msgstr ""
-"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Использовать перенаправление портов UPnP или NAT-PMP\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Использовать пере_направление портов UPnP или NAT-PMP"
+msgstr "_Использовать перенаправление портов UPnP или NAT-PMP"
 
 msgid "Te_st Port"
 msgstr "Про_верить порт"
@@ -1753,13 +1393,8 @@ msgstr "Исполь_зовать локальное обнаружение уч
 msgid "LPD is a tool for finding peers on your local network."
 msgstr "LPD — это технология поиска участников в локальной сети"
 
-#, fuzzy
 msgid "Default Public Trackers"
-msgstr ""
-"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Стандартные публичные трекеры\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Публичные трекеры по умолчанию"
+msgstr "Публичные трекеры по умолчанию"
 
 msgid ""
 "Trackers to use on all public torrents.\n"
@@ -1775,13 +1410,8 @@ msgstr ""
 msgid "Network"
 msgstr "Сеть"
 
-#, fuzzy
 msgid "Desktop"
-msgstr ""
-"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Система\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Рабочий стол"
+msgstr "Рабочий стол"
 
 msgid "_Prevent computer from sleeping with active torrents"
 msgstr ""
@@ -1792,29 +1422,14 @@ msgstr "Показыва_ть значок {appname} в области увед�
 msgid "Notification"
 msgstr "Уведомление"
 
-#, fuzzy
 msgid "Show a notification when torrents are a_dded"
-msgstr ""
-"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Показывать уведомление после добавления торрентов\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Отображать уведомление при доба_влении торрента"
+msgstr "Отображать уведомление при доба_влении торрента"
 
-#, fuzzy
 msgid "Show a notification when torrents _finish"
-msgstr ""
-"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Показывать _уведомление после завершения загрузки торрентов\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Отображать _уведомление по окончании торрента"
+msgstr "Показывать _уведомление после завершения загрузки торрентов"
 
-#, fuzzy
 msgid "Play a _sound when torrents finish"
-msgstr ""
-"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Воспроизводить _звуковое уведомление после завершения загрузки торрентов\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Звуковое уведомление при завершении торрента"
+msgstr "Воспроизводить _звуковое уведомление после завершения загрузки торрентов"
 
 msgid "Remote Control"
 msgstr "Удалённое управление"
@@ -1827,42 +1442,20 @@ msgstr "Разрешить _удалённый доступ"
 msgid "_Open Web Client"
 msgstr "_Открыть веб-клиент"
 
-#, fuzzy
 msgid "HTTP _port:"
-msgstr ""
-"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Порт HTTP:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"П_орт HTTP:"
+msgstr "_Порт HTTP:"
 
-#, fuzzy
 msgid "Use _authentication"
-msgstr ""
-"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Использовать _аутентификацию\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Испол_ьзовать проверку подлинности"
+msgstr "Использовать _аутентификацию"
 
-#, fuzzy
 msgid "_Username:"
-msgstr ""
-"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Имя пользователя:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Пользователь:\n"
-"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"По_льзователь:"
+msgstr "_Имя пользователя:"
 
 msgid "Pass_word:"
 msgstr "Па_роль:"
 
-#, fuzzy
 msgid "Only allow these IP a_ddresses:"
-msgstr ""
-"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Разрешить доступ только _данным IP-адресам:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Разрешить только эти IP-адреса:"
+msgstr "Разрешить доступ только _данным IP-адресам:"
 
 msgid "Addresses:"
 msgstr "Адреса:"
@@ -1870,21 +1463,11 @@ msgstr "Адреса:"
 msgid "IP addresses may use wildcards, such as 192.168.*.*"
 msgstr "IP-адреса могут быть введены в виде маски, например 192.168.*.*"
 
-#, fuzzy
 msgid "Remote"
-msgstr ""
-"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Удалённое управление\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Удалённый доступ"
+msgstr "Удалённое управление"
 
-#, fuzzy
 msgid "Set Torrent Location"
-msgstr ""
-"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Указать расположение торрента\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Указать папку торрента"
+msgstr "Указать расположение торрента"
 
 msgid "_Apply"
 msgstr "_Применить"
@@ -1895,21 +1478,11 @@ msgstr "Расположение"
 msgid "New _location:"
 msgstr "Новое _расположение:"
 
-#, fuzzy
 msgid "_Move from the current folder"
-msgstr ""
-"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"П_ереместить из текущей папки\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Переместить из текущей папки"
+msgstr "П_ереместить из текущей папки"
 
-#, fuzzy
 msgid "Local data is _already there"
-msgstr ""
-"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Не перемещать, данные уже есть в указанной папке\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Локальные данные уже там"
+msgstr "_Локальные данные уже там"
 
 msgid "Current Session"
 msgstr "Текущий сеанс"
@@ -2083,29 +1656,12 @@ msgstr "Запрос числа участников поставлен в оч�
 msgid "Asked for peer counts {markup_begin}{time_span_ago}{markup_end}"
 msgstr "Запрошено число участников {markup_begin}{time_span_ago}{markup_end}"
 
-#, fuzzy
 msgid "{days:L} day"
 msgid_plural "{days:L} days"
-msgstr[0] ""
-"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{days:L} день\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{days:L} день"
-msgstr[1] ""
-"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{days:L} дня\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{days:L} дня"
-msgstr[2] ""
-"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{days:L} дней\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{days:L} дней"
-msgstr[3] ""
-"#-#-#-#-#  ru.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{days:L} дня\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{days:L} дней"
+msgstr[0] "{days:L} день"
+msgstr[1] "{days:L} дня"
+msgstr[2] "{days:L} дней"
+msgstr[3] "{days:L} дня"
 
 msgid "{hours:L} hour"
 msgid_plural "{hours:L} hours"
@@ -2830,21 +2386,6 @@ msgstr "Приоритет:"
 msgid "Select Folder"
 msgstr "Выбор папки"
 
-msgid "unknown"
-msgstr "неизвестно"
-
-msgid "checking…"
-msgstr "проверяется…"
-
-msgid "open"
-msgstr "открыт"
-
-msgid "closed"
-msgstr "закрыт"
-
-msgid "error"
-msgstr "ошибка"
-
 msgid "<b>Update succeeded!</b><p>Blocklist now has {count:L} rule.</p>"
 msgid_plural "<b>Update succeeded!</b><p>Blocklist now has {count:L} rules.</p>"
 msgstr[0] "<b>Обновление завершено!</b><p>В чёрном списке {count:L} правило.</p>"
@@ -2904,12 +2445,6 @@ msgstr "Отдача:"
 msgid "Do_wnload:"
 msgstr "Загрузка:"
 
-msgid "Downloading"
-msgstr "Загрузка"
-
-msgid "Adding"
-msgstr "Добавление"
-
 msgid "Reads user clipboard content for torrents"
 msgstr "Считывает содержимое пользовательского буфера обмена на наличие торрентов"
 
@@ -2919,9 +2454,6 @@ msgstr "Искать новые торренты в буфере обмена"
 #. Please keep this phrase as short as possible, it's currently the longest and influences dialog width
 msgid "Download is i_nactive if data sharing stopped:"
 msgstr "Загрузка неак_тивна, если передача прекращена:"
-
-msgid "Seeding"
-msgstr "Раздача"
 
 msgid "Stop seedi_ng if idle for:"
 msgstr "Прекратить раздачу при _простое:"

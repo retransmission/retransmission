@@ -24,13 +24,8 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#, fuzzy
 msgid "None"
-msgstr ""
-"#-#-#-#-#  ca.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Res\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Cap"
+msgstr "Cap"
 
 msgid "Inf"
 msgstr "Inf"
@@ -160,36 +155,21 @@ msgstr "Comparteix independentment de l'activitat"
 msgid "Stop seeding if idle for N minutes:"
 msgstr "Atura la compartició si està inactiu N minuts:"
 
-#, fuzzy
 msgid "Queued for verification"
-msgstr ""
-"#-#-#-#-#  ca.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"S'ha enviat a la cua per a la verificació\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"S'ha enviat la cua per a la verificació"
+msgstr "S'ha enviat a la cua per a la verificació"
 
 msgid "Verifying local data"
 msgstr "S'estan verificant les dades locals"
 
-#, fuzzy
 msgid "Queued for download"
-msgstr ""
-"#-#-#-#-#  ca.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"S'ha enviat a la cua per a la baixada\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"S'ha posat a la cua per a la baixada"
+msgstr "S'ha enviat a la cua per a la baixada"
 
 msgctxt "Verb"
 msgid "Downloading"
 msgstr "S'està baixant"
 
-#, fuzzy
 msgid "Queued for seeding"
-msgstr ""
-"#-#-#-#-#  ca.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"S'ha enviat a la cua per a la compartició\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"S'ha enviat la cua per a la compartició"
+msgstr "S'ha enviat a la cua per a la compartició"
 
 msgctxt "Verb"
 msgid "Seeding"
@@ -203,13 +183,8 @@ msgstr "Incomplet"
 msgid "Paused"
 msgstr "En pausa"
 
-#, fuzzy
 msgid "N/A"
-msgstr ""
-"#-#-#-#-#  ca.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"No disponible\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"N/D"
+msgstr "No disponible"
 
 msgid "Mixed"
 msgstr "Mescla"
@@ -345,13 +320,8 @@ msgstr ""
 msgid "List contains invalid URLs"
 msgstr "La llista conté URL no vàlids"
 
-#, fuzzy
 msgid "Please correct the errors and try again."
-msgstr ""
-"#-#-#-#-#  ca.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Corregiu els errors i torneu-ho a provar.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Corregiu els errors i torneu-ho a intentar."
+msgstr "Corregiu els errors i torneu-ho a provar."
 
 msgid "{torrent_name} - Add Tracker"
 msgstr ""
@@ -425,15 +395,8 @@ msgid "_Delete"
 msgstr "_Elimina"
 
 #. Removes the torrent from the list and keeps its downloaded files
-#, fuzzy
 msgid "_Remove"
-msgstr ""
-"#-#-#-#-#  ca.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Suprimeix\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"S_uprimeix\n"
-"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Sup_rimeix"
+msgstr "_Suprimeix"
 
 msgid "High"
 msgstr "Alta"
@@ -472,13 +435,8 @@ msgctxt "Verb"
 msgid "Verifying"
 msgstr "S'està verificant"
 
-#, fuzzy
 msgid "Error"
-msgstr ""
-"#-#-#-#-#  ca.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Errors\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Error"
+msgstr "Error"
 
 msgid "_Show:"
 msgstr "_Mostra:"
@@ -626,13 +584,8 @@ msgstr "S'ha completat el torrent"
 msgid "Start Now"
 msgstr ""
 
-#, fuzzy
 msgid "Torrent Added"
-msgstr ""
-"#-#-#-#-#  ca.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"S'ha afegit el torrent\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Torrent afegit"
+msgstr "S'ha afegit el torrent"
 
 msgid "Torrent files"
 msgstr "Fitxers torrent"
@@ -868,13 +821,8 @@ msgstr "Obre l'_URL…"
 msgid "_New…"
 msgstr "_Nou…"
 
-#, fuzzy
 msgid "_Start All"
-msgstr ""
-"#-#-#-#-#  ca.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Inicia-ho tot\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Inicia'ls tots"
+msgstr "_Inicia-ho tot"
 
 msgid "_Pause All"
 msgstr "Fes una _pausa a tot"
@@ -900,21 +848,11 @@ msgstr "_Torrent"
 msgid "_Properties"
 msgstr "_Propietats"
 
-#, fuzzy
 msgid "Open Fold_er"
-msgstr ""
-"#-#-#-#-#  ca.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Obre la _carpeta\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Obr_e la carpeta"
+msgstr "Obre la _carpeta"
 
-#, fuzzy
 msgid "_Start"
-msgstr ""
-"#-#-#-#-#  ca.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Inicia\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ini_cia"
+msgstr "_Inicia"
 
 msgid "Start _Now"
 msgstr "I_nicia ara"
@@ -951,32 +889,17 @@ msgstr "_Verifica les dades locals"
 msgid "_Copy Magnet Link to Clipboard"
 msgstr "_Copia l'enllaç magnet al porta-retalls"
 
-#, fuzzy
 msgid "_Delete Files and Remove"
-msgstr ""
-"#-#-#-#-#  ca.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Suprimeix i _elimina els fitxers\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Suprimeix i _esborra els fitxers"
+msgstr "Suprimeix i _elimina els fitxers"
 
 msgid "_View"
 msgstr "_Visualitza"
 
-#, fuzzy
 msgid "_Compact View"
-msgstr ""
-"#-#-#-#-#  ca.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Vista _compacta\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Visualització _compacta"
+msgstr "Visualització _compacta"
 
-#, fuzzy
 msgid "_Toolbar"
-msgstr ""
-"#-#-#-#-#  ca.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Barra d'_eines\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Barra d'eines"
+msgstr "Barra d'_eines"
 
 msgid "_Filterbar"
 msgstr "Barra de _filtre"
@@ -1017,37 +940,17 @@ msgstr "Mode d'ordenació _invertit"
 msgid "_Help"
 msgstr "_Ajuda"
 
-#, fuzzy
 msgid "Message _Log"
-msgstr ""
-"#-#-#-#-#  ca.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Registre de missatges\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Registre de _missatges"
+msgstr "_Registre de missatges"
 
-#, fuzzy
 msgid "_Statistics"
-msgstr ""
-"#-#-#-#-#  ca.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Estadístiques\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"E_stadístiques"
+msgstr "_Estadístiques"
 
-#, fuzzy
 msgid "_Donate"
-msgstr ""
-"#-#-#-#-#  ca.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Donatius\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Fer un _donatiu"
+msgstr "_Donatius"
 
-#, fuzzy
 msgid "_Contents"
-msgstr ""
-"#-#-#-#-#  ca.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Continguts\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Contingut"
+msgstr "_Continguts"
 
 msgid "_About"
 msgstr "_Quant a"
@@ -1128,13 +1031,8 @@ msgstr "Comentari:"
 msgid "Information"
 msgstr "Informació"
 
-#, fuzzy
 msgid "Show _more details"
-msgstr ""
-"#-#-#-#-#  ca.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Mostra _més detalls\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Mostra'n més detalls"
+msgstr "Mostra _més detalls"
 
 msgid "Peers"
 msgstr "Clients"
@@ -1175,13 +1073,8 @@ msgstr "_Inactiu:"
 msgid "Peer Connections"
 msgstr "Connexions de clients"
 
-#, fuzzy
 msgid "_Maximum peers:"
-msgstr ""
-"#-#-#-#-#  ca.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Nombre _màxim de clients connectats:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Nombre _màxim de clients:"
+msgstr "Nombre _màxim de clients:"
 
 msgid "Options"
 msgstr "Opcions"
@@ -1241,13 +1134,8 @@ msgstr ""
 msgid "Properties"
 msgstr "Propietats"
 
-#, fuzzy
 msgid "_Trackers:"
-msgstr ""
-"#-#-#-#-#  ca.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Rastrejadors:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ras_trejadors:"
+msgstr "_Rastrejadors:"
 
 msgid "Co_mment:"
 msgstr "Co_mentari:"
@@ -1255,13 +1143,8 @@ msgstr "Co_mentari:"
 msgid "_Source:"
 msgstr "_Origen:"
 
-#, fuzzy
 msgid "_Private torrent"
-msgstr ""
-"#-#-#-#-#  ca.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Torrent _particular\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Torrent _privat"
+msgstr "Torrent _privat"
 
 msgid "Creating torrent…"
 msgstr "Creant el torrent…"
@@ -1418,13 +1301,8 @@ msgstr "Habilita la llista de _bloqueigs:"
 msgid "_Automatically update weekly"
 msgstr "Habilita les actualitzacions _automàtiques"
 
-#, fuzzy
 msgid "_Update"
-msgstr ""
-"#-#-#-#-#  ca.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Actualitza\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Act_ualitza"
+msgstr "_Actualitza"
 
 msgid "Listening Port"
 msgstr "Port a escoltar"
@@ -1534,13 +1412,8 @@ msgstr "_Obre el client web"
 msgid "HTTP _port:"
 msgstr "_Port HTTP:"
 
-#, fuzzy
 msgid "Use _authentication"
-msgstr ""
-"#-#-#-#-#  ca.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Utilitza l'autenticació\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Utilitza l'_autenticació"
+msgstr "_Utilitza l'autenticació"
 
 msgid "_Username:"
 msgstr "Nom d'_usuari:"
@@ -1560,13 +1433,8 @@ msgstr "Les adreces IP poden utilitzar comodins, com ara 192.168.*.*"
 msgid "Remote"
 msgstr "Remot"
 
-#, fuzzy
 msgid "Set Torrent Location"
-msgstr ""
-"#-#-#-#-#  ca.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Estableix la ubicació del torrent\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Estableix la ubicació"
+msgstr "Estableix la ubicació del torrent"
 
 msgid "_Apply"
 msgstr "_Aplica"
@@ -1695,13 +1563,8 @@ msgstr "No hi ha actualitzacions programades"
 msgid "Asking for more peers {time_span_from_now}"
 msgstr ""
 
-#, fuzzy
 msgid "Queued to ask for more peers"
-msgstr ""
-"#-#-#-#-#  ca.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"S'ha enviat a la cua per a la sol·licitud de més clients\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"S'ha enviat la cua per a la sol·licitud de més clients"
+msgstr "S'ha enviat a la cua per a la sol·licitud de més clients"
 
 msgid "Asked for more peers {markup_begin}{time_span_ago}{markup_end}"
 msgstr ""
@@ -1732,13 +1595,8 @@ msgstr[1] ""
 msgid "Asking for peer counts {time_span_from_now}"
 msgstr "Se sol·licitarà el nombre de clients d'aquí {time_span}"
 
-#, fuzzy
 msgid "Queued to ask for peer counts"
-msgstr ""
-"#-#-#-#-#  ca.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"S'ha enviat a la cua per a la sol·licitud del nombre de clients\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"S'ha enviat la cua per a la sol·licitud del nombre de clients"
+msgstr "S'ha enviat a la cua per a la sol·licitud del nombre de clients"
 
 msgid "Asked for peer counts {markup_begin}{time_span_ago}{markup_end}"
 msgstr ""
@@ -2444,30 +2302,6 @@ msgid "Select Folder"
 msgstr "Seleccioneu una carpeta"
 
 #, fuzzy
-#| msgid "Unknown"
-msgid "unknown"
-msgstr "Desconegut"
-
-msgid "checking…"
-msgstr ""
-
-msgid "open"
-msgstr ""
-
-#, fuzzy
-#| msgid "_Close"
-msgid "closed"
-msgstr "Tan_ca"
-
-#, fuzzy
-msgid "error"
-msgstr ""
-"#-#-#-#-#  ca.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Errors\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Error"
-
-#, fuzzy
 #| msgid "<i>Blocklist contains {count:L} rule</i>"
 #| msgid_plural "<i>Blocklist contains {count:L} rules</i>"
 msgid "<b>Update succeeded!</b><p>Blocklist now has {count:L} rule.</p>"
@@ -2527,12 +2361,6 @@ msgstr "_Pujada:"
 msgid "Do_wnload:"
 msgstr "_Baixada:"
 
-msgid "Downloading"
-msgstr "Baixades"
-
-msgid "Adding"
-msgstr "Addició"
-
 msgid "Reads user clipboard content for torrents"
 msgstr ""
 
@@ -2542,9 +2370,6 @@ msgstr ""
 #. Please keep this phrase as short as possible, it's currently the longest and influences dialog width
 msgid "Download is i_nactive if data sharing stopped:"
 msgstr ""
-
-msgid "Seeding"
-msgstr "Compartició"
 
 msgid "Stop seedi_ng if idle for:"
 msgstr "Atura la compartició si està inactiu dura_nt:"

@@ -111,13 +111,8 @@ msgid_plural "Couldn't add duplicate torrents"
 msgstr[0] "Gat ekki bætt við torrent-skrá sem var þegar til staðar"
 msgstr[1] "Gat ekki bætt við torrent-skrám sem voru þegar til staðar"
 
-#, fuzzy
 msgid "A fast and easy BitTorrent client"
-msgstr ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Hraðvikt torrent-forrit sem er auðvelt í notkun\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Hraðvikt BitTorrent-forrit sem er auðvelt í notkun"
+msgstr "Hraðvikt BitTorrent-forrit sem er auðvelt í notkun"
 
 msgid "Copyright © The {appname} Project"
 msgstr "Höfundarréttur © {appname}-verkefnið"
@@ -162,14 +157,9 @@ msgstr "Skoða sótt gögn"
 msgid "Queued for download"
 msgstr "Sett í niðurhalsbiðröð"
 
-#, fuzzy
 msgctxt "Verb"
 msgid "Downloading"
-msgstr ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Verið að sækja\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Sæki"
+msgstr "Verið að sækja"
 
 msgid "Queued for seeding"
 msgstr "Sett í deilibiðröð"
@@ -201,21 +191,11 @@ msgstr "Prívat til þessa rekjara -- DHT og PEX er óvirkt"
 msgid "Public torrent"
 msgstr "Opinbert torrent-streymi"
 
-#, fuzzy
 msgid "Created by {creator} on {date}"
-msgstr ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Búið til af {creator} {date}\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Búið til af {creator} þann {date}"
+msgstr "Búið til af {creator} þann {date}"
 
-#, fuzzy
 msgid "Created by {creator}"
-msgstr ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Búið til af {creator}\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Útbúið af {creator}"
+msgstr "Búið til af {creator}"
 
 msgid "Created on {date}"
 msgstr "Búið til {date}"
@@ -245,21 +225,11 @@ msgstr "{current_size} ({percent_done}% af {percent_available}% tiltæku)"
 msgid "{current_size} ({percent_done}% of {percent_available}% available; {unverified_size} unverified)"
 msgstr "{current_size} ({percent_done}% af {percent_available}% tiltæku; {unverified_size} ekki sannreynt)"
 
-#, fuzzy
 msgid "{downloaded_size} (+{discarded_size} discarded after failed checksum)"
-msgstr ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{downloaded_size} (+{discarded_size} hent eftir að yfirferð gátsummu mistókst)\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{downloaded_size} (+{discarded_size} hent eftir misheppnaða gátsummu)"
+msgstr "{downloaded_size} (+{discarded_size} hent eftir að yfirferð gátsummu mistókst)"
 
-#, fuzzy
 msgid "{uploaded_size} (Ratio: {ratio})"
-msgstr ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{uploaded_size} (Deilihlutfall: {ratio})\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{uploaded_size} (deilihlutfall: {ratio})"
+msgstr "{uploaded_size} (Deilihlutfall: {ratio})"
 
 msgid "No errors"
 msgstr "Engar villur"
@@ -367,33 +337,15 @@ msgstr "Fjarlægja torrent-skrána?"
 msgid "Delete this torrent's downloaded files?"
 msgstr "Viltu eyða sóttum skrám úr þessari torrent-skrá?"
 
-#, fuzzy
 msgid "Remove {count:L} torrent?"
 msgid_plural "Remove {count:L} torrents?"
-msgstr[0] ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Fjarlægja {count:L} torrent-streymi?\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Fjarlægja {count:L} torrent-streymi?"
-msgstr[1] ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Fjarlægja {count:L} torrent-skrárnar?\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Fjarlægja {count:L} torrent-streymi?"
+msgstr[0] "Fjarlægja {count:L} torrent-streymi?"
+msgstr[1] "Fjarlægja {count:L} torrent-streymi?"
 
-#, fuzzy
 msgid "Delete this {count:L} torrent's downloaded files?"
 msgid_plural "Delete these {count:L} torrents' downloaded files?"
-msgstr[0] ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Viltu eyða {count:L} sóttri skrá úr þessu torrent-streymi?\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Viltu eyða {count:L} sóttri skrá úr þessu torrent-streymi?"
-msgstr[1] ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Viltu eyða sóttum skrám úr þessum {count:L} torrent-skrám?\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Viltu eyða {count:L} sóttum skrám úr þessu torrent-streymi?"
+msgstr[0] "Viltu eyða {count:L} sóttri skrá úr þessu torrent-streymi?"
+msgstr[1] "Viltu eyða sóttum skrám úr þessum {count:L} torrent-skrám?"
 
 #, fuzzy
 #| msgid "Once removed, continuing the transfer will require the torrent file or magnet link."
@@ -421,13 +373,8 @@ msgstr "Þessar torrent-skrár eru tengdar við jafningja."
 msgid "One of these torrents is connected to peers."
 msgstr "Ein af þessum torrent-skrám er tengd við jafningja."
 
-#, fuzzy
 msgid "Some of these torrents are connected to peers."
-msgstr ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Einhverjar þessara torrent-skráa eru tengdar við jafningja.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Einhver þessara torrent-streyma eru tengd við jafningja."
+msgstr "Einhver þessara torrent-streyma eru tengd við jafningja."
 
 msgid "One of these torrents has not finished downloading."
 msgstr "Það á eftir að ljúka við að sækja eina af þessum torrent-skrám."
@@ -442,38 +389,17 @@ msgid "_Delete"
 msgstr "_Eyða"
 
 #. Removes the torrent from the list and keeps its downloaded files
-#, fuzzy
 msgid "_Remove"
-msgstr ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Fjarlægja\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"F_jarlægja\n"
-"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Fjarlægja"
+msgstr "F_jarlægja"
 
-#, fuzzy
 msgid "High"
-msgstr ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Hár\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Mikill\n"
-"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Hár"
+msgstr "Hár"
 
 msgid "Normal"
 msgstr "Venjulegur"
 
-#, fuzzy
 msgid "Low"
-msgstr ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Lágur\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Lítill\n"
-"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Lágur"
+msgstr "Lágur"
 
 msgid "Couldn't rename '{old_path}' as '{path}': {error} ({error_code})"
 msgstr "Gat ekki endurnefnt '{old_path}' sem '{path}': {error} ({error_code})"
@@ -499,30 +425,15 @@ msgstr "Allt"
 msgid "Active"
 msgstr "Virkt"
 
-#, fuzzy
 msgctxt "Verb"
 msgid "Verifying"
-msgstr ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Í yfirferð\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Staðfesti"
+msgstr "Í yfirferð"
 
-#, fuzzy
 msgid "Error"
-msgstr ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Villur\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Villa"
+msgstr "Villa"
 
-#, fuzzy
 msgid "_Show:"
-msgstr ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Sýna:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"S_ýna:"
+msgstr "_Sýna:"
 
 msgid "_Show {count:L} of:"
 msgstr "_Sýna {count:L} af:"
@@ -577,13 +488,8 @@ msgstr "Takmarka upphleðsluhraða"
 msgid "Stop Seeding at Ratio"
 msgstr "Hætta að deila þegar deilihlutfallið nær"
 
-#, fuzzy
 msgid "Stop at Ratio ({ratio})"
-msgstr ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Hætta við hlutfallið ({ratio})\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Hætta að deila þegar deilihlutfallið nær ({ratio})"
+msgstr "Hætta að deila þegar deilihlutfallið nær ({ratio})"
 
 msgid "Total Ratio"
 msgstr "Hlutfall alls"
@@ -700,13 +606,8 @@ msgstr ""
 msgid "Select File"
 msgstr "Veldu skrá"
 
-#, fuzzy
 msgid "(None)"
-msgstr ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"(ekkert)\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"(Ekkert)"
+msgstr "(ekkert)"
 
 msgid "Allow encryption"
 msgstr "Leyfa dulritun"
@@ -723,13 +624,8 @@ msgstr "Daglega"
 msgid "Weekdays"
 msgstr "Virka daga"
 
-#, fuzzy
 msgid "Weekends"
-msgstr ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Um helgar\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Helgar"
+msgstr "Um helgar"
 
 msgid "Blocklist has {count:L} entry"
 msgid_plural "Blocklist has {count:L} entries"
@@ -742,13 +638,8 @@ msgstr "Bannlistinn uppfærður!"
 msgid "Couldn't update blocklist"
 msgstr "Gat ekki uppfært bannlistann"
 
-#, fuzzy
 msgid "Getting new blocklist…"
-msgstr ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Sæki nýjan bannlista…\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Næ í nýjan bannlista…"
+msgstr "Sæki nýjan bannlista…"
 
 msgctxt "Port test status"
 msgid "unknown"
@@ -826,24 +717,14 @@ msgstr "{current_size} af {complete_size} ({percent_done}%)"
 msgid "{current_size} of {complete_size} ({percent_complete}%), uploaded {uploaded_size} (Ratio: {ratio}, Goal: {seed_ratio})"
 msgstr "{current_size} af {complete_size} ({percent_complete}%), sent inn {uploaded_size} (Deilihlutfall: {ratio}, Markmið: {seed_ratio})"
 
-#, fuzzy
 msgid "{current_size} of {complete_size} ({percent_complete}%), uploaded {uploaded_size} (Ratio: {ratio})"
-msgstr ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{current_size} af {complete_size} ({percent_complete}%), sent inn {uploaded_size} (Deilihlutfall: {ratio})\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{current_size} af {complete_size} ({percent_complete}%), sent {uploaded_size} (Deilihlutfall: {ratio})"
+msgstr "{current_size} af {complete_size} ({percent_complete}%), sent inn {uploaded_size} (Deilihlutfall: {ratio})"
 
 msgid "{complete_size}, uploaded {uploaded_size} (Ratio: {ratio}, Goal: {seed_ratio})"
 msgstr "{complete_size}, sent inn {uploaded_size} (Deilihlutfall: {ratio}, Markmið: {seed_ratio})"
 
-#, fuzzy
 msgid "{complete_size}, uploaded {uploaded_size} (Ratio: {ratio})"
-msgstr ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{complete_size}, sent inn {uploaded_size} (Deilihlutfall: {ratio})\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{complete_size}, sent {uploaded_size} (deilihlutfall: {ratio})"
+msgstr "{complete_size}, sent inn {uploaded_size} (Deilihlutfall: {ratio})"
 
 #. Translators: Second (optional) part of torrent progress string
 msgid "Remaining time unknown"
@@ -882,33 +763,15 @@ msgid_plural "Downloading from {active_count} webseeds"
 msgstr[0] "Sæki frá {active_count} vefdeilingu"
 msgstr[1] "Sæki frá {active_count} vefdeilingum"
 
-#, fuzzy
 msgid "Downloading from {active_count} of {connected_count} connected peer"
 msgid_plural "Downloading from {active_count} of {connected_count} connected peers"
-msgstr[0] ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Sæki frá {active_count} of {connected_count} tengdum jafningja\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Sæki frá {active_count} af {connected_count} tengdum jafningjum"
-msgstr[1] ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Sæki frá {active_count} of {connected_count} tengdum jafningjum\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Sæki frá {active_count} af {connected_count} tengdum jafningjum"
+msgstr[0] "Sæki frá {active_count} af {connected_count} tengdum jafningjum"
+msgstr[1] "Sæki frá {active_count} af {connected_count} tengdum jafningjum"
 
-#, fuzzy
 msgid "Seeding to {active_count} of {connected_count} connected peer"
 msgid_plural "Seeding to {active_count} of {connected_count} connected peers"
-msgstr[0] ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Deili til {active_count} af {connected_count} tengds jafningja\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Deili til {active_count} af {connected_count} tengdum jafningjum"
-msgstr[1] ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Deili til {active_count} af {connected_count} tengdra jafningja\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Deili til {active_count} af {connected_count} tengdum jafningjum"
+msgstr[0] "Deili til {active_count} af {connected_count} tengdum jafningjum"
+msgstr[1] "Deili til {active_count} af {connected_count} tengdum jafningjum"
 
 msgid "Retransmission"
 msgstr "Retransmission"
@@ -956,34 +819,17 @@ msgstr "O_pna slóð…"
 msgid "_New…"
 msgstr "_Nýtt…"
 
-#, fuzzy
 msgid "_Start All"
-msgstr ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Sækja allar skrár\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ræ_sa allt"
+msgstr "Ræ_sa allt"
 
-#, fuzzy
 msgid "_Pause All"
-msgstr ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Bíða með allt\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Setja allt í _bið"
+msgstr "_Bíða með allt"
 
 msgid "_Quit"
 msgstr "_Hætta"
 
-#, fuzzy
 msgid "_Edit"
-msgstr ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Breyta\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"B_reyta\n"
-"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Breyta"
+msgstr "_Breyta"
 
 msgid "Select _All"
 msgstr "Velja _allt"
@@ -1000,32 +846,17 @@ msgstr "_Torrent-streymi"
 msgid "_Properties"
 msgstr "_Eiginleikar"
 
-#, fuzzy
 msgid "Open Fold_er"
-msgstr ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Opna möppu\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Opna _möppu..."
+msgstr "_Opna möppu"
 
-#, fuzzy
 msgid "_Start"
-msgstr ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Sækja\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Byrja"
+msgstr "_Byrja"
 
 msgid "Start _Now"
 msgstr "Byrja _núna"
 
-#, fuzzy
 msgid "Ask Tracker for _More Peers"
-msgstr ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Biðja rekjara um _fleiri jafningja\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Biðja rekjara u_m fleiri jafningja"
+msgstr "Biðja rekjara u_m fleiri jafningja"
 
 #, fuzzy
 #| msgid "Queue"
@@ -1050,13 +881,8 @@ msgstr "_Bíða"
 msgid "Set _Location…"
 msgstr "Sti_lla staðsetningu…"
 
-#, fuzzy
 msgid "_Verify Local Data"
-msgstr ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Athuga þau gögn sem eru komin\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Skoða sótt gögn"
+msgstr "_Athuga þau gögn sem eru komin"
 
 msgid "_Copy Magnet Link to Clipboard"
 msgstr "A_frita segultengil á klippispjald "
@@ -1067,48 +893,23 @@ msgstr "_Eyða skrám og fjarlægja"
 msgid "_View"
 msgstr "S_koða"
 
-#, fuzzy
 msgid "_Compact View"
-msgstr ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Þjappa saman\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Þ_jöppuð sýn"
+msgstr "Þ_jöppuð sýn"
 
 msgid "_Toolbar"
 msgstr "_Verkfærastika"
 
-#, fuzzy
 msgid "_Filterbar"
-msgstr ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Síustika\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Síusti_ka"
+msgstr "Síusti_ka"
 
-#, fuzzy
 msgid "_Statusbar"
-msgstr ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"S_töðustika\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Stöðustika"
+msgstr "S_töðustika"
 
-#, fuzzy
 msgid "Sort by _Activity"
-msgstr ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Raða eftir _virkni\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"R_aða eftir virkni"
+msgstr "R_aða eftir virkni"
 
-#, fuzzy
 msgid "Sort by A_ge"
-msgstr ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Raða eftir _aldri\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Raða eftir al_dri"
+msgstr "Raða eftir al_dri"
 
 msgid "Sort by _Name"
 msgstr "Raða eftir _nafni"
@@ -1119,72 +920,32 @@ msgstr "Raða eftir _framvindu"
 msgid "Sort by _Queue"
 msgstr "Raða eftir _biðröð"
 
-#, fuzzy
 msgid "Sort by Rati_o"
-msgstr ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Raða eftir _hlutfalli\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Raða eftir deilihl_utfalli"
+msgstr "Raða eftir deilihl_utfalli"
 
-#, fuzzy
 msgid "Sort by Si_ze"
-msgstr ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Raða eftir s_tærð\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Raða eftir _stærð"
+msgstr "Raða eftir _stærð"
 
-#, fuzzy
 msgid "Sort by Stat_e"
-msgstr ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Raða eftir _stöðu\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Raða eftir s_töðu"
+msgstr "Raða eftir _stöðu"
 
-#, fuzzy
 msgid "Sort by Time _Left"
-msgstr ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Raða eftir _tíma sem er eftir\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Raða eftir tí_ma sem er eftir"
+msgstr "Raða eftir tí_ma sem er eftir"
 
-#, fuzzy
 msgid "Re_verse Sort Order"
-msgstr ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Öfug röð\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ö_fug röð"
+msgstr "_Öfug röð"
 
-#, fuzzy
 msgid "_Help"
-msgstr ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Aðstoð\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Hjálp"
+msgstr "_Aðstoð"
 
-#, fuzzy
 msgid "Message _Log"
-msgstr ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Skilaboð\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ski_laboðaskráning"
+msgstr "_Skilaboð"
 
 msgid "_Statistics"
 msgstr "_Tölfræði"
 
-#, fuzzy
 msgid "_Donate"
-msgstr ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Styðja\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"St_yrkja"
+msgstr "St_yrkja"
 
 msgid "_Contents"
 msgstr "_Innihald"
@@ -1220,13 +981,8 @@ msgstr "Virkni"
 msgid "Size:"
 msgstr "Stærð:"
 
-#, fuzzy
 msgid "Have:"
-msgstr ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Komið í hús:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Hafa:"
+msgstr "Komið í hús:"
 
 msgid "Uploaded:"
 msgstr "Sent:"
@@ -1237,13 +993,8 @@ msgstr "Sótt:"
 msgid "State:"
 msgstr "Staða:"
 
-#, fuzzy
 msgid "Running time:"
-msgstr ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Tími í keyrslu:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Keyrslu tími:"
+msgstr "Tími í keyrslu:"
 
 msgid "Remaining time:"
 msgstr "Tími eftir:"
@@ -1278,24 +1029,14 @@ msgstr "Athugasemd:"
 msgid "Information"
 msgstr "Upplýsingar"
 
-#, fuzzy
 msgid "Show _more details"
-msgstr ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Birta _frekari upplýsingar\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Sýna _frekari upplýsingar"
+msgstr "Birta _frekari upplýsingar"
 
 msgid "Peers"
 msgstr "Jafningjar"
 
-#, fuzzy
 msgid "Show _backup trackers"
-msgstr ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Birta _öryggisrekjara\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Birta öryggisrekjara"
+msgstr "Birta _öryggisrekjara"
 
 msgid "File listing not available for combined torrent properties"
 msgstr "Skráalisti er ekki tiltækur fyrir sameinaða eiginleika torrent-streymis"
@@ -1306,13 +1047,8 @@ msgstr "Skrár"
 msgid "Speed"
 msgstr "Hraði"
 
-#, fuzzy
 msgid "Honor global _limits"
-msgstr ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Virða _öll takmörk\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Virða ö_ll takmörk"
+msgstr "Virða _öll takmörk"
 
 msgid "Limit _download speed ({speed_units}):"
 msgstr "Takmarka niður_halshraða ({speed_units}):"
@@ -1326,43 +1062,23 @@ msgstr "_Forgangur torrent-streymis:"
 msgid "Seeding Limits"
 msgstr "Deilitakmörk"
 
-#, fuzzy
 msgid "_Ratio:"
-msgstr ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Hlutfall:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Deilihlutfall:"
+msgstr "_Deilihlutfall:"
 
-#, fuzzy
 msgid "_Idle:"
-msgstr ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Iðjulaus:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Aðgerðalaust:"
+msgstr "_Aðgerðalaust:"
 
 msgid "Peer Connections"
 msgstr "Tengingar við jafningja"
 
-#, fuzzy
 msgid "_Maximum peers:"
-msgstr ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Hámarksfjöldi jafningja:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Há_marksfjöldi jafningja:"
+msgstr "_Hámarksfjöldi jafningja:"
 
 msgid "Options"
 msgstr "Valkostir"
 
-#, fuzzy
 msgid "Tracker Announce URLs"
-msgstr ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Slóðatilkynningar rekjara\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Tilkynningaslóðir rekjara"
+msgstr "Tilkynningaslóðir rekjara"
 
 msgid ""
 "To add a backup URL, add it on the next line after a primary URL.\n"
@@ -1403,13 +1119,8 @@ msgstr "Nýtt torrent-streymi"
 msgid "C_reate"
 msgstr "F_ramlög"
 
-#, fuzzy
 msgid "Sa_ve to:"
-msgstr ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Vi_sta í:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Vista í:"
+msgstr "Vi_sta í:"
 
 msgid "Source f_older:"
 msgstr "U_pprunamappa:"
@@ -1425,32 +1136,17 @@ msgstr "Stærð bútar:"
 msgid "Properties"
 msgstr "Eiginleikar"
 
-#, fuzzy
 msgid "_Trackers:"
-msgstr ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Rekjarar:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Re_kjarar"
+msgstr "_Rekjarar:"
 
-#, fuzzy
 msgid "Co_mment:"
-msgstr ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"A_thugasemd:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Athugase_md:"
+msgstr "A_thugasemd:"
 
 msgid "_Source:"
 msgstr "_Uppruni:"
 
-#, fuzzy
 msgid "_Private torrent"
-msgstr ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Einka-torrent-streymi\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Einka torrent-streymi"
+msgstr "_Einka-torrent-streymi"
 
 msgid "Creating torrent…"
 msgstr "Bý til torrent-streymi…"
@@ -1476,13 +1172,8 @@ msgstr "_Torrent-skrá:"
 msgid "Select Source File"
 msgstr "Veldu upprunaskrá"
 
-#, fuzzy
 msgid "_Destination folder:"
-msgstr ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Staðsetning:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Móttökumappa:"
+msgstr "_Móttökumappa:"
 
 msgid "Select Destination Folder"
 msgstr "Velja möppu sem ákvörðunarstað"
@@ -1495,13 +1186,8 @@ msgstr "_Byrja að sækja um leið og skrá er bætt við"
 msgid "Mo_ve torrent file to the Trash"
 msgstr "_Henda torrent-skránni í ruslið"
 
-#, fuzzy
 msgid "{appname} Preferences"
-msgstr ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Stillingar á {appname}\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Kjörstillingar {appname}"
+msgstr "Kjörstillingar {appname}"
 
 msgid "Speed Limits"
 msgstr "Hraðatakmörk"
@@ -1528,21 +1214,11 @@ msgstr "Innsen_ding ({speed_units}):"
 msgid "Do_wnload ({speed_units}):"
 msgstr "Niður_hal ({speed_units}):"
 
-#, fuzzy
 msgid "_Scheduled times:"
-msgstr ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ákveðnir _tímar:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Áætlaðir _tímar:"
+msgstr "Ákveðnir _tímar:"
 
-#, fuzzy
 msgid "_On days:"
-msgstr ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Dagana:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Vikudagana:"
+msgstr "_Dagana:"
 
 #. Label goes between two time selectors, e.g. "limit speeds from [time] to [time]"
 msgid "_to"
@@ -1555,13 +1231,8 @@ msgstr "Bæti við"
 msgid "Automatically add torrent files _from:"
 msgstr "_Bæta sjálfkrafa við torrent-skrám frá:"
 
-#, fuzzy
 msgid "Show the Torrent Options _dialog"
-msgstr ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Birta _stillingaglugga torrent-streyma\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Birta stillinga_glugga torrent-streyma"
+msgstr "Birta _stillingaglugga torrent-streyma"
 
 msgid "_Start added torrents"
 msgstr "_Ræsa torrent-streymi sem bætt var við"
@@ -1574,13 +1245,8 @@ msgstr "_Vista á staðsetningu:"
 msgid "Download Queue"
 msgstr "Niðurhalsbiðröð"
 
-#, fuzzy
 msgid "Ma_ximum active downloads:"
-msgstr ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Hámarksfjöldi virkra niðurhala:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Hámar_ksfjöldi virkra niðurhala:"
+msgstr "_Hámarksfjöldi virkra niðurhala:"
 
 msgid "Downloads sharing data in the last _N minutes are active:"
 msgstr "Niðurhöl, sem deilt hafa gögnum síðustu _N mínútur, eru virk:"
@@ -1588,13 +1254,8 @@ msgstr "Niðurhöl, sem deilt hafa gögnum síðustu _N mínútur, eru virk:"
 msgid "Incomplete"
 msgstr "Óklárað"
 
-#, fuzzy
 msgid "Append \"._part\" to incomplete files' names"
-msgstr ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Bæta „._part“ við ókláruð skráaheiti\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Bæta „.._part“ við ókláruð skráaheiti"
+msgstr "Bæta „._part“ við ókláruð skráaheiti"
 
 msgid "Keep _incomplete files in:"
 msgstr "Geyma ó_kláraðar skrár í:"
@@ -1616,13 +1277,8 @@ msgstr "Verið að sækja"
 msgid "Limits"
 msgstr "Takmörk"
 
-#, fuzzy
 msgid "Stop seeding at _ratio:"
-msgstr ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Hætta að deila við _deilihlutfall:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Hætta að deila þega_r deilihlutfallið nær:"
+msgstr "Hætta að deila þega_r deilihlutfallið nær:"
 
 msgid "Stop seeding if idle for _N minutes:"
 msgstr "Hætta að deila ef óvirkt í _N mínútur:"
@@ -1637,13 +1293,8 @@ msgstr "Deiling"
 msgid "Privacy"
 msgstr "Gagnaleynd"
 
-#, fuzzy
 msgid "_Encryption mode:"
-msgstr ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Dulkóðunarhamur:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Dulritunarhamur:"
+msgstr "_Dulritunarhamur:"
 
 msgid "Blocklist"
 msgstr "Bannlisti"
@@ -1670,21 +1321,11 @@ msgstr "_Gátt fyrir innkomandi tengingar:"
 msgid "Pick a _random port at startup"
 msgstr "Velja _handahófskennda gátt þegar forritið er opnað"
 
-#, fuzzy
 msgid "Use UPnP or NAT-PMP port _forwarding from my router"
-msgstr ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Nota UPnP eða NAT-PMP gáttarframvísun frá _beininum\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Nota UPnP eða NAT-PMP endurbeiningu gáttar fyrir beininn minn"
+msgstr "Nota UPnP eða NAT-PMP gáttarframvísun frá _beininum"
 
-#, fuzzy
 msgid "Te_st Port"
-msgstr ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Prófa gáttina\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Prófa _gátt"
+msgstr "_Prófa gáttina"
 
 msgid "Peer Limits"
 msgstr "Takmörk jafningja"
@@ -1694,13 +1335,8 @@ msgstr "Takmörk jafningja"
 msgid "Maximum peers for new _torrents:"
 msgstr "Hámarksfjöldi jafningja á _hvert torrent-streymi:"
 
-#, fuzzy
 msgid "Maximum peers _overall:"
-msgstr ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Hámarksfjöldi jafningja _yfir höfuð:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Hámarksfjöldi jafningja alls:"
+msgstr "_Hámarksfjöldi jafningja alls:"
 
 msgid "Enable µ_TP for peer connections"
 msgstr "Virkja µ_TP fyrir tengingar við jafningja"
@@ -1729,13 +1365,8 @@ msgstr "DHT er leið til að finna jafningja án rekjara."
 msgid "Use _Local Peer Discovery to find more peers for public torrents"
 msgstr "Nota _Local Peer Discovery til að finna fleiri jafningja"
 
-#, fuzzy
 msgid "LPD is a tool for finding peers on your local network."
-msgstr ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"LPD finnur jafningja á staðværu (‚local‘) neti.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"LPD finnur jafningja á staðarnetinu þínu."
+msgstr "LPD finnur jafningja á staðarnetinu þínu."
 
 msgid "Default Public Trackers"
 msgstr "Sjálfgefnir opinberir rekjarar"
@@ -1760,13 +1391,8 @@ msgstr "Skjáborð"
 msgid "_Prevent computer from sleeping with active torrents"
 msgstr ""
 
-#, fuzzy
 msgid "Show {appname} icon in the _notification area"
-msgstr ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Birta {appname}-tákn í _tilkynningasvæðinu\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Birta {appname}-tákn í tilky_nningasvæðinu"
+msgstr "Birta {appname}-tákn í _tilkynningasvæðinu"
 
 msgid "Notification"
 msgstr "Tilkynning"
@@ -1774,13 +1400,8 @@ msgstr "Tilkynning"
 msgid "Show a notification when torrents are a_dded"
 msgstr "_Birta tilkynningu þegar torrent-streymum bætt er við"
 
-#, fuzzy
 msgid "Show a notification when torrents _finish"
-msgstr ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Birta tilkynningu þegar torrent-streymi _klárast\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Birta tilk_ynningu þegar torrent-streymi klárast"
+msgstr "Birta tilkynningu þegar torrent-streymi _klárast"
 
 msgid "Play a _sound when torrents finish"
 msgstr "Spila hl_jóð þegar torrent-streymi klárast"
@@ -1788,26 +1409,16 @@ msgstr "Spila hl_jóð þegar torrent-streymi klárast"
 msgid "Remote Control"
 msgstr "Fjarstýring"
 
-#, fuzzy
 msgid "Allow _remote access"
-msgstr ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Leyfa _fjarstýringu\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Leyfa fja_raðgang"
+msgstr "Leyfa fja_raðgang"
 
 #, fuzzy
 #| msgid "_Open web client"
 msgid "_Open Web Client"
 msgstr "_Opna netvafra"
 
-#, fuzzy
 msgid "HTTP _port:"
-msgstr ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"HTTP _gátt:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"HTT_P-gátt:"
+msgstr "HTT_P-gátt:"
 
 msgid "Use _authentication"
 msgstr "Nota _auðkenningu"
@@ -1815,23 +1426,11 @@ msgstr "Nota _auðkenningu"
 msgid "_Username:"
 msgstr "_Notandanafn:"
 
-#, fuzzy
 msgid "Pass_word:"
-msgstr ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Lykilorð:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Lykil_orð\n"
-"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Lykil_orð:"
+msgstr "_Lykilorð:"
 
-#, fuzzy
 msgid "Only allow these IP a_ddresses:"
-msgstr ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Aðeins leyfa þessar IP-_tölur:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Aðeins ley_fa þessi IP-vistföng:"
+msgstr "Aðeins leyfa þessar IP-_tölur:"
 
 msgid "Addresses:"
 msgstr "Vistföng:"
@@ -1854,21 +1453,11 @@ msgstr "Staðsetning"
 msgid "New _location:"
 msgstr "Ný staðsetnin_g:"
 
-#, fuzzy
 msgid "_Move from the current folder"
-msgstr ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Færa úr núverandi möppu\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Færa úr núverandi _möppu"
+msgstr "_Færa úr núverandi möppu"
 
-#, fuzzy
 msgid "Local data is _already there"
-msgstr ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Gögnin eru _þegar þar\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Gögnin eru þeg_ar þar"
+msgstr "Gögnin eru _þegar þar"
 
 msgid "Current Session"
 msgstr "Núverandi seta"
@@ -1955,19 +1544,10 @@ msgid_plural "{hours_ago:L} hours ago"
 msgstr[0] "Fyrir {hours_ago:L} klukkustund síðan"
 msgstr[1] "Fyrir {hours_ago:L} klukkustundum síðan"
 
-#, fuzzy
 msgid "{minutes_ago:L} minute ago"
 msgid_plural "{minutes_ago:L} minutes ago"
-msgstr[0] ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Fyrir {minutes_ago:L} mínútu síðan\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{minutes_ago:L} mínuta síðan"
-msgstr[1] ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Fyrir {minutes_ago:L} mínútum síðan\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{minutes_ago:L} mínutur síðan"
+msgstr[0] "Fyrir {minutes_ago:L} mínútu síðan"
+msgstr[1] "Fyrir {minutes_ago:L} mínútum síðan"
 
 msgid "{seconds_ago:L} second ago"
 msgid_plural "{seconds_ago:L} seconds ago"
@@ -2029,52 +1609,21 @@ msgstr "Bíð eftir að fá að spyrja um jafningjafjölda"
 msgid "Asked for peer counts {markup_begin}{time_span_ago}{markup_end}"
 msgstr "Óskaði eftir fjölda jafningja {markup_begin}{time_span_ago}{markup_end}"
 
-#, fuzzy
 msgid "{days:L} day"
 msgid_plural "{days:L} days"
-msgstr[0] ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{days:L} dagur\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{days:L} dag"
-msgstr[1] ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{days:L} dagar\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{days:L} dagar"
+msgstr[0] "{days:L} dagur"
+msgstr[1] "{days:L} dagar"
 
-#, fuzzy
 msgid "{hours:L} hour"
 msgid_plural "{hours:L} hours"
-msgstr[0] ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{hours:L} klukkustund\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{hours:L} klukkutími"
-msgstr[1] ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{hours:L} klukkustundir\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{hours:L} klukkutímar"
+msgstr[0] "{hours:L} klukkustund"
+msgstr[1] "{hours:L} klukkustundir"
 
 #. Translators: Spin box format, "Stop seeding if idle for: [ 5 minutes ]"
-#, fuzzy
 msgid "{minutes:L} minute"
 msgid_plural "{minutes:L} minutes"
-msgstr[0] ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{minutes:L} mínúta\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{minutes:L} mínúta\n"
-"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{minutes:L} mínuta"
-msgstr[1] ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{minutes:L} mínútur\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{minutes:L} mínutur\n"
-"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{minutes:L} mínutur"
+msgstr[0] "{minutes:L} mínúta"
+msgstr[1] "{minutes:L} mínútur"
 
 msgid "{seconds:L} second"
 msgid_plural "{seconds:L} seconds"
@@ -2754,30 +2303,6 @@ msgstr "_Forgangur:"
 msgid "Select Folder"
 msgstr "Veldu möppu"
 
-#, fuzzy
-#| msgid "Unknown"
-msgid "unknown"
-msgstr "Óþekkt"
-
-msgid "checking…"
-msgstr ""
-
-msgid "open"
-msgstr ""
-
-#, fuzzy
-#| msgid "_Close"
-msgid "closed"
-msgstr "_Loka"
-
-#, fuzzy
-msgid "error"
-msgstr ""
-"#-#-#-#-#  is.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Villur\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Villa"
-
 msgid "<b>Update succeeded!</b><p>Blocklist now has {count:L} rule.</p>"
 msgid_plural "<b>Update succeeded!</b><p>Blocklist now has {count:L} rules.</p>"
 msgstr[0] "<b>Uppfærsla tókst!</b><p>Bannlistinn er núna með {count:L} reglu.</p>"
@@ -2833,12 +2358,6 @@ msgstr "S_ent:"
 msgid "Do_wnload:"
 msgstr "Só_tt:"
 
-msgid "Downloading"
-msgstr "Sæki"
-
-msgid "Adding"
-msgstr "Bæti við"
-
 msgid "Reads user clipboard content for torrents"
 msgstr "Les hvort klippispjald notanda inniheldur streymi"
 
@@ -2848,9 +2367,6 @@ msgstr "Greinir ný streymi á klippispjaldi"
 #. Please keep this phrase as short as possible, it's currently the longest and influences dialog width
 msgid "Download is i_nactive if data sharing stopped:"
 msgstr "_Niðurhal er óvirkt ef deiling gagna er stöðvuð:"
-
-msgid "Seeding"
-msgstr "Í deilingu"
 
 msgid "Stop seedi_ng if idle for:"
 msgstr "Hætta að _deila ef óvirkt í:"

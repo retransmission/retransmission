@@ -147,24 +147,14 @@ msgstr ""
 msgid "Use global settings"
 msgstr "Uporabi splošne nastavitve"
 
-#, fuzzy
 msgid "Seed regardless of ratio"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Sejanje ne glede na razmerje\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Sej ne glede na razmerje"
+msgstr "Sejanje ne glede na razmerje"
 
 msgid "Stop seeding at ratio:"
 msgstr "Prenehaj sejati pri razmerju:"
 
-#, fuzzy
 msgid "Seed regardless of activity"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Sejanje ne glede na dejavnost\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Sej ne glede na aktivnost"
+msgstr "Sejanje ne glede na dejavnost"
 
 msgid "Stop seeding if idle for N minutes:"
 msgstr "Prenehaj sejati, če je torrent nedejaven N minut:"
@@ -172,51 +162,22 @@ msgstr "Prenehaj sejati, če je torrent nedejaven N minut:"
 msgid "Queued for verification"
 msgstr "V vrsti za preverjanje"
 
-#, fuzzy
 msgid "Verifying local data"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Preverjanje krajevnih podatkov\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Preverjam krajevne podatke"
+msgstr "Preverjanje krajevnih podatkov"
 
-#, fuzzy
 msgid "Queued for download"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"V vrsti za prejem\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"V vrsti za prejemanje"
+msgstr "V vrsti za prejem"
 
-#, fuzzy
 msgctxt "Verb"
 msgid "Downloading"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Prejemanje\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Prenašanje\n"
-"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Prejemanje"
+msgstr "Prejemanje"
 
-#, fuzzy
 msgid "Queued for seeding"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"V vrsti za sejanje\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"V vrsti za pošiljanje"
+msgstr "V vrsti za sejanje"
 
-#, fuzzy
 msgctxt "Verb"
 msgid "Seeding"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Sejanje\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Pošiljanje\n"
-"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Sejanje"
+msgstr "Sejanje"
 
 #, fuzzy
 #| msgid "Incomplete"
@@ -226,13 +187,8 @@ msgstr "Nedokončano"
 msgid "Paused"
 msgstr "V premoru"
 
-#, fuzzy
 msgid "N/A"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"N/A\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ni na voljo"
+msgstr "Ni na voljo"
 
 msgid "Mixed"
 msgstr "Mešano"
@@ -240,13 +196,8 @@ msgstr "Mešano"
 msgid "No Torrents Selected"
 msgstr "Noben torrent ni izbran"
 
-#, fuzzy
 msgid "Private to this tracker -- DHT and PEX disabled"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Lastno sledilniku -- DHT in PEX sta onemogočena\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Vidno le temu sledilniku - DHT in PEX onemogočena"
+msgstr "Vidno le temu sledilniku - DHT in PEX onemogočena"
 
 msgid "Public torrent"
 msgstr "Javni torrent"
@@ -300,64 +251,30 @@ msgstr "Brez napak"
 msgid "Never"
 msgstr "Nikoli"
 
-#, fuzzy
 msgid "Active now"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Trenutno dejavni\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Trenutno dejavno"
+msgstr "Trenutno dejavno"
 
-#, fuzzy
 msgid "Optimistic unchoke"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Optimistična oddušitev\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Optimistično zadrževanje"
+msgstr "Optimistična oddušitev"
 
-#, fuzzy
 msgid "Downloading from this peer"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Prejemanje od tega soležnika\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Prejemam od tega soležnika"
+msgstr "Prejemanje od tega soležnika"
 
-#, fuzzy
 msgid "We would download from this peer if they would let us"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Od tega soležnika bi bilo mogoče prejemati, če bi ta odobril zahtevo\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Bi prejemal od tega soležnika, če bi nam dovolil"
+msgstr "Od tega soležnika bi bilo mogoče prejemati, če bi ta odobril zahtevo"
 
 msgid "Uploading to peer"
 msgstr "Pošiljanje soležniku"
 
 #, fuzzy
 msgid "This peer would download from us if we would let them"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Od tega soležnika bi bilo mogoče prejemati, če bi ta odobril zahtevo\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Bi prejemal od tega soležnika, če bi nam dovolil"
+msgstr "Od tega soležnika bi bilo mogoče prejemati, če bi ta odobril zahtevo"
 
-#, fuzzy
 msgid "Peer has unchoked us, but we're not interested"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Soležnik nas je oddušil , vendar nas ne zanima\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Soležnik nas je nehal zadrževati, ampak nas ne zanima"
+msgstr "Soležnik nas je nehal zadrževati, ampak nas ne zanima"
 
-#, fuzzy
 msgid "We unchoked this peer, but they're not interested"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Soležnik je bil oddušen, vendar jim je vseeno\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Soležnika smo nehali zadrževati, ampak jih to ne zanima"
+msgstr "Soležnika smo nehali zadrževati, ampak jih to ne zanima"
 
 msgid "Encrypted connection"
 msgstr "Šifrirana povezava"
@@ -368,13 +285,8 @@ msgstr "Soležnik je bil najden s pomočjo Peer Exchange (PEX)"
 msgid "Peer was found through DHT"
 msgstr "Soležnik je bil najden skozi DHT"
 
-#, fuzzy
 msgid "Peer is an incoming connection"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Soležnik je dohodno povezan\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Soležnik je dohodna povezava"
+msgstr "Soležnik je dohodno povezan"
 
 msgid "Peer is connected over µTP"
 msgstr "Soležnik je povezan prek µTP"
@@ -394,21 +306,11 @@ msgstr "Zahteve prejemanja"
 msgid "Up Reqs"
 msgstr "Zahteve pošiljanja"
 
-#, fuzzy
 msgid "Down"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Prejemanje\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Dol"
+msgstr "Prejemanje"
 
-#, fuzzy
 msgid "Up"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Pošiljanje\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Gor"
+msgstr "Pošiljanje"
 
 msgid "Client"
 msgstr "Odjemalec"
@@ -425,13 +327,8 @@ msgstr "{torrent_name} - Uredi sledilnike"
 msgid "List contains invalid URLs"
 msgstr "Seznam vsebuje neveljavne naslove URL"
 
-#, fuzzy
 msgid "Please correct the errors and try again."
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Prosimo, popravite napake in poizkusite ponovno.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Prosimo, popravite napake in poskusite znova."
+msgstr "Prosimo, popravite napake in poskusite znova."
 
 msgid "{torrent_name} - Add Tracker"
 msgstr ""
@@ -480,64 +377,29 @@ msgstr "Ko bo torrent odstranjen, bo nadaljevanje prenosa zahtevalo datoteko tor
 msgid "Once removed, you'll need the torrent files or magnet links to add them again."
 msgstr "Po odstrajevanju bo za nadaljevanje prenosa potrebno podati datoteko torrent ali povezavo magnet."
 
-#, fuzzy
 msgid "This torrent has not finished downloading."
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Torrent še ni končal prejemanja.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ta torrent še ni zaključil s prenosom."
+msgstr "Ta torrent še ni zaključil s prenosom."
 
-#, fuzzy
 msgid "These torrents have not finished downloading."
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Torrenti še niso končali prejemanja.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ti torrenti še niso zaključili s prenosom."
+msgstr "Ti torrenti še niso zaključili s prenosom."
 
-#, fuzzy
 msgid "This torrent is connected to peers."
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Torrent je povezan s soležniki.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ta torrent je povezan s soležniki."
+msgstr "Ta torrent je povezan s soležniki."
 
-#, fuzzy
 msgid "These torrents are connected to peers."
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Torrenti so povezani s soležniki.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ti torrenti so povezani s soležniki."
+msgstr "Ti torrenti so povezani s soležniki."
 
-#, fuzzy
 msgid "One of these torrents is connected to peers."
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Eden od teh torrentov je povezanih s soležniki.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Eden od teh torrentov je povezan s soležniki."
+msgstr "Eden od teh torrentov je povezan s soležniki."
 
 msgid "Some of these torrents are connected to peers."
 msgstr "Nekateri od teh torrentov so povezani s soležniki."
 
-#, fuzzy
 msgid "One of these torrents has not finished downloading."
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Prejem torrenta še ni končan.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Eden od teh torrentov še ni zaključil s prenosom."
+msgstr "Eden od teh torrentov še ni zaključil s prenosom."
 
-#, fuzzy
 msgid "Some of these torrents have not finished downloading."
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Prejem torrentov še ni končan.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Nekateri od teh torrentov še niso zaključili s prenosom."
+msgstr "Nekateri od teh torrentov še niso zaključili s prenosom."
 
 msgid "_Cancel"
 msgstr ""
@@ -546,45 +408,17 @@ msgid "_Delete"
 msgstr ""
 
 #. Removes the torrent from the list and keeps its downloaded files
-#, fuzzy
 msgid "_Remove"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Odst_rani\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Odst_rani\n"
-"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Odstrani"
+msgstr "Odst_rani"
 
-#, fuzzy
 msgid "High"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Visoka\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Visoko\n"
-"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Visoka"
+msgstr "Visoka"
 
-#, fuzzy
 msgid "Normal"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Običajna\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Normalno\n"
-"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Normalna"
+msgstr "Običajna"
 
-#, fuzzy
 msgid "Low"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Nizka\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Nizko\n"
-"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Nizka"
+msgstr "Nizka"
 
 msgid "Couldn't rename '{old_path}' as '{path}': {error} ({error_code})"
 msgstr ""
@@ -598,46 +432,21 @@ msgstr "Velikost"
 msgid "Progress"
 msgstr "Napredek"
 
-#, fuzzy
 msgid "Download"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Prejemanje\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Prenos"
+msgstr "Prejemanje"
 
-#, fuzzy
 msgid "Priority"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Prednost\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Prioriteta"
+msgstr "Prednost"
 
-#, fuzzy
 msgid "All"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Vseh\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Vse"
+msgstr "Vse"
 
-#, fuzzy
 msgid "Active"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Dejavno\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Aktivno"
+msgstr "Dejavno"
 
-#, fuzzy
 msgctxt "Verb"
 msgid "Verifying"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Preverjanje\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"V potrjevanju"
+msgstr "Preverjanje"
 
 msgid "Error"
 msgstr "Napaka"
@@ -682,21 +491,11 @@ msgstr ""
 msgid "Unlimited"
 msgstr "Neomejeno"
 
-#, fuzzy
 msgid "Seed Forever"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ne omejuj sejanja\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Sej neomejeno"
+msgstr "Ne omejuj sejanja"
 
-#, fuzzy
 msgid "Limit Download Speed"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Omeji hitrost prejemanje\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Omeji hitrost prenašanja"
+msgstr "Omeji hitrost prenašanja"
 
 msgid "Limit Upload Speed"
 msgstr "Omeji hitrost pošiljanja"
@@ -710,24 +509,14 @@ msgstr "Prenehaj pri razmerju ({ratio})"
 msgid "Total Ratio"
 msgstr "Skupno razmerje"
 
-#, fuzzy
 msgid "Session Ratio"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Razmerje prenosa seje\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Sejno razmerje"
+msgstr "Sejno razmerje"
 
 msgid "Total Transfer"
 msgstr "Skupni prenos"
 
-#, fuzzy
 msgid "Session Transfer"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Prenos seje\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Sejni prenos"
+msgstr "Sejni prenos"
 
 msgid "Down: {downloaded_size}, Up: {uploaded_size}"
 msgstr "Dol: {downloaded_size}, Gor: {uploaded_size}"
@@ -806,13 +595,8 @@ msgstr "Torrent je dokončan"
 msgid "Start Now"
 msgstr "Začni zdaj"
 
-#, fuzzy
 msgid "Torrent Added"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Torrent je dodan\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Torrent dodan"
+msgstr "Torrent je dodan"
 
 msgid "Torrent files"
 msgstr "Torrent datoteke"
@@ -850,21 +634,11 @@ msgstr "Zahtevaj šifriranje"
 msgid "Every Day"
 msgstr "Vsak dan"
 
-#, fuzzy
 msgid "Weekdays"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Delovni dnevi\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Med tednom"
+msgstr "Delovni dnevi"
 
-#, fuzzy
 msgid "Weekends"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Konci tedna\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Med vikendom"
+msgstr "Konci tedna"
 
 msgid "Blocklist has {count:L} entry"
 msgid_plural "Blocklist has {count:L} entries"
@@ -879,13 +653,8 @@ msgstr ""
 msgid "Couldn't update blocklist"
 msgstr ""
 
-#, fuzzy
 msgid "Getting new blocklist…"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Prejemanje novega črnega seznama …\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Pridobivanje novega seznama blokad…"
+msgstr "Pridobivanje novega seznama blokad…"
 
 msgctxt "Port test status"
 msgid "unknown"
@@ -973,13 +742,8 @@ msgid "{complete_size}, uploaded {uploaded_size} (Ratio: {ratio})"
 msgstr "{complete_size}, poslano {uploaded_size} (Razmerje: {ratio})"
 
 #. Translators: Second (optional) part of torrent progress string
-#, fuzzy
 msgid "Remaining time unknown"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Čas do konca prenosa neznan\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Preostali čas neznan"
+msgstr "Preostali čas neznan"
 
 msgid "{download_speed} ▾  {upload_speed} ▴"
 msgstr ""
@@ -1080,39 +844,17 @@ msgstr "Odpri _URL …"
 msgid "_New…"
 msgstr "_Nov …"
 
-#, fuzzy
 msgid "_Start All"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Začni vse\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Začni vse"
+msgstr "_Začni vse"
 
-#, fuzzy
 msgid "_Pause All"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Naredi _premor prenosa\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Pavziraj vse"
+msgstr "Pavziraj vse"
 
-#, fuzzy
 msgid "_Quit"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Končaj\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Izhod"
+msgstr "_Končaj"
 
-#, fuzzy
 msgid "_Edit"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Uredi\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Uredi\n"
-"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Uredi"
+msgstr "_Uredi"
 
 msgid "Select _All"
 msgstr "_Izberi vse"
@@ -1129,90 +871,40 @@ msgstr "Torrent"
 msgid "_Properties"
 msgstr "Lastnosti"
 
-#, fuzzy
 msgid "Open Fold_er"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"O_dpri mapo\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Odpri mapo"
+msgstr "O_dpri mapo"
 
-#, fuzzy
 msgid "_Start"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Začni\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Začni"
+msgstr "_Začni"
 
-#, fuzzy
 msgid "Start _Now"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Z_ačni zdaj\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Začni zdaj"
+msgstr "Z_ačni zdaj"
 
-#, fuzzy
 msgid "Ask Tracker for _More Peers"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Zahtevaj večje število soležnikov\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Zahtevaj več soležnikov od sledilnika"
+msgstr "Zahtevaj več soležnikov od sledilnika"
 
 #, fuzzy
 #| msgid "Queue"
 msgid "_Queue"
 msgstr "Vrsta"
 
-#, fuzzy
 msgid "Move to _Top"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Premakni na _vrh\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Premakni na vrh"
+msgstr "Premakni na _vrh"
 
-#, fuzzy
 msgid "Move _Up"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Premakni _navzgor\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Premakni navzgor"
+msgstr "Premakni _navzgor"
 
-#, fuzzy
 msgid "Move _Down"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Premakni navz_dol\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Premakno navzdol"
+msgstr "Premakni navz_dol"
 
-#, fuzzy
 msgid "Move to _Bottom"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Premakni na d_no\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Premakni na dno"
+msgstr "Premakni na d_no"
 
-#, fuzzy
 msgid "_Pause"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Premor\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Premor"
+msgstr "_Premor"
 
-#, fuzzy
 msgid "Set _Location…"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Nastavi m_esto …\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Nastavi mesto …"
+msgstr "Nastavi m_esto …"
 
 msgid "_Verify Local Data"
 msgstr "Preveri krajevne podatke"
@@ -1220,168 +912,68 @@ msgstr "Preveri krajevne podatke"
 msgid "_Copy Magnet Link to Clipboard"
 msgstr "Kopiraj povezavo Magnet na odložišče"
 
-#, fuzzy
 msgid "_Delete Files and Remove"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Izbriši in odstrani datoteke\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Odstrani datoteke in torrent"
+msgstr "_Izbriši in odstrani datoteke"
 
 msgid "_View"
 msgstr "Pogled"
 
-#, fuzzy
 msgid "_Compact View"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Zgoščen pogled\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Kompaktni pogled"
+msgstr "_Zgoščen pogled"
 
-#, fuzzy
 msgid "_Toolbar"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Orodna vrstica\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Orodna vrstica"
+msgstr "_Orodna vrstica"
 
-#, fuzzy
 msgid "_Filterbar"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Vrstica _filtrov\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Vrstica filtra"
+msgstr "Vrstica _filtrov"
 
-#, fuzzy
 msgid "_Statusbar"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Vrstica _stanja\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Vrstica stanja"
+msgstr "Vrstica _stanja"
 
-#, fuzzy
 msgid "Sort by _Activity"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Razvrsti po dej_avnosti\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Uredi po a_ktivnosti"
+msgstr "Razvrsti po dej_avnosti"
 
-#, fuzzy
 msgid "Sort by A_ge"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Razvrsti po staros_ti\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Uredi po s_tarosti"
+msgstr "Razvrsti po staros_ti"
 
-#, fuzzy
 msgid "Sort by _Name"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Razvrsti po _imenu\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Uredi po imenu"
+msgstr "Razvrsti po _imenu"
 
-#, fuzzy
 msgid "Sort by _Progress"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Razvrsti po _napredku\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Uredi po napredku"
+msgstr "Razvrsti po _napredku"
 
-#, fuzzy
 msgid "Sort by _Queue"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Razvrsti po _čakalni vrsti\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Uredi po vrsti"
+msgstr "Razvrsti po _čakalni vrsti"
 
-#, fuzzy
 msgid "Sort by Rati_o"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Razvrsti po raz_merju\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Uredi po razmerju"
+msgstr "Razvrsti po raz_merju"
 
-#, fuzzy
 msgid "Sort by Si_ze"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Razvrsti po _velikosti\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Uredi po velikosti"
+msgstr "Razvrsti po _velikosti"
 
-#, fuzzy
 msgid "Sort by Stat_e"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Razvrsti po stan_ju\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Uredi po stanju"
+msgstr "Razvrsti po stan_ju"
 
-#, fuzzy
 msgid "Sort by Time _Left"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Razvrsti po _preostalem času\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Uredi po preostalem času"
+msgstr "Razvrsti po _preostalem času"
 
-#, fuzzy
 msgid "Re_verse Sort Order"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Obrni vrstni _red\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Obrni vrstni red urejanja"
+msgstr "Obrni vrstni _red"
 
-#, fuzzy
 msgid "_Help"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Pomo_č\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Pomoč"
+msgstr "Pomo_č"
 
-#, fuzzy
 msgid "Message _Log"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Dnevnik sporočil\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Dnevnik poročil"
+msgstr "_Dnevnik sporočil"
 
-#, fuzzy
 msgid "_Statistics"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Statistika\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Statistika"
+msgstr "_Statistika"
 
-#, fuzzy
 msgid "_Donate"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Podari\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Prispevaj"
+msgstr "_Podari"
 
-#, fuzzy
 msgid "_Contents"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Vsebina\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Vsebina"
+msgstr "_Vsebina"
 
 msgid "_About"
 msgstr "Več o"
@@ -1393,11 +985,7 @@ msgstr "Začni torrent"
 
 #, fuzzy
 msgid "Alternative Speed _Limits"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Nadomestne omejitve hitrosti\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Alternativne omejitve hitrosti"
+msgstr "Nadomestne omejitve hitrosti"
 
 msgid "_Add"
 msgstr "Dod_aj"
@@ -1411,24 +999,14 @@ msgstr "URL _najave:"
 msgid "_Close"
 msgstr ""
 
-#, fuzzy
 msgid "Activity"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Dejavnost\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Aktivnost"
+msgstr "Dejavnost"
 
 msgid "Size:"
 msgstr "Velikost:"
 
-#, fuzzy
 msgid "Have:"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Imate:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ima:"
+msgstr "Imate:"
 
 msgid "Uploaded:"
 msgstr "Poslano:"
@@ -1442,21 +1020,11 @@ msgstr "Stanje:"
 msgid "Running time:"
 msgstr "Čas delovanja:"
 
-#, fuzzy
 msgid "Remaining time:"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Preostal čas:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Preostali čas:"
+msgstr "Preostali čas:"
 
-#, fuzzy
 msgid "Last activity:"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Zadnja dejavnost:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Zadnja aktivnost:"
+msgstr "Zadnja dejavnost:"
 
 msgid "Error:"
 msgstr "Napaka:"
@@ -1479,40 +1047,20 @@ msgstr "Izvor:"
 msgid "Added:"
 msgstr "Dodan:"
 
-#, fuzzy
 msgid "Comment:"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Opomba:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Komentar:"
+msgstr "Opomba:"
 
-#, fuzzy
 msgid "Information"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Podrobnosti\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Informacije"
+msgstr "Informacije"
 
-#, fuzzy
 msgid "Show _more details"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Pokaži več _podrobnosti\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Pokaži več podrobnosti"
+msgstr "Pokaži več _podrobnosti"
 
 msgid "Peers"
 msgstr "Soležniki"
 
-#, fuzzy
 msgid "Show _backup trackers"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Pokaži _pomožne sledilnike\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Pokaži pomožne sledilnike"
+msgstr "Pokaži _pomožne sledilnike"
 
 msgid "File listing not available for combined torrent properties"
 msgstr "Skupni izpis seznama datotek torrentov ni na voljo"
@@ -1523,13 +1071,8 @@ msgstr "Datoteke"
 msgid "Speed"
 msgstr "Hitrost"
 
-#, fuzzy
 msgid "Honor global _limits"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Upoštevaj splošne _omejitve\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Upoštevaj splošne omejitve"
+msgstr "Upoštevaj splošne _omejitve"
 
 msgid "Limit _download speed ({speed_units}):"
 msgstr ""
@@ -1537,71 +1080,29 @@ msgstr ""
 msgid "Limit _upload speed ({speed_units}):"
 msgstr ""
 
-#, fuzzy
 msgid "Torrent _priority:"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Prednost torrenta:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Prioriteta torrenta:"
+msgstr "_Prednost torrenta:"
 
-#, fuzzy
 msgid "Seeding Limits"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Omejitve sejanja\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Omejitve sejanja:"
+msgstr "Omejitve sejanja"
 
-#, fuzzy
 msgid "_Ratio:"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Razmerje:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Razmerje"
+msgstr "_Razmerje:"
 
-#, fuzzy
 msgid "_Idle:"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Nedejavno:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Neaktivno:"
+msgstr "_Nedejavno:"
 
-#, fuzzy
 msgid "Peer Connections"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Povezave soležnikov\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Povezave do soležnikov"
+msgstr "Povezave soležnikov"
 
-#, fuzzy
 msgid "_Maximum peers:"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Največje število soležnikov:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Največ soležnikov:"
+msgstr "_Največje število soležnikov:"
 
-#, fuzzy
 msgid "Options"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Možnosti\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Možnosti\n"
-"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Nastavitve"
+msgstr "Možnosti"
 
-#, fuzzy
 msgid "Tracker Announce URLs"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Naslovi URL objave sledilnika\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"URL-ji za objave sledilnika"
+msgstr "Naslovi URL objave sledilnika"
 
 msgid ""
 "To add a backup URL, add it on the next line after a primary URL.\n"
@@ -1617,13 +1118,8 @@ msgstr "Odpri torrent"
 msgid "Start torrent"
 msgstr "Začni torrent"
 
-#, fuzzy
 msgid "Pause torrent"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Premor torrenta\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Pavziraj torrent"
+msgstr "Pavziraj torrent"
 
 msgid "Remove torrent"
 msgstr "Odstrani torrent"
@@ -1637,28 +1133,16 @@ msgstr "Torrent"
 msgid "Statistics"
 msgstr "Statistika"
 
-#, fuzzy
 msgid "New Torrent"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Nov torrent\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Nov torrent\n"
-"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Novi torrent"
+msgstr "Nov torrent"
 
 #, fuzzy
 #| msgid "C_redits"
 msgid "C_reate"
 msgstr "_Zasluge"
 
-#, fuzzy
 msgid "Sa_ve to:"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Shrani v mapo:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Shrani v:"
+msgstr "_Shrani v mapo:"
 
 msgid "Source f_older:"
 msgstr "Izvorna mapa:"
@@ -1674,32 +1158,17 @@ msgstr "Velikost kosov:"
 msgid "Properties"
 msgstr "Lastnosti"
 
-#, fuzzy
 msgid "_Trackers:"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Sledilniki:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Sledilniki:"
+msgstr "_Sledilniki:"
 
-#, fuzzy
 msgid "Co_mment:"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"O_pomba:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Komentar:"
+msgstr "O_pomba:"
 
 msgid "_Source:"
 msgstr "Vir:"
 
-#, fuzzy
 msgid "_Private torrent"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Zasebni torrent\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Zasebni torrent"
+msgstr "_Zasebni torrent"
 
 msgid "Creating torrent…"
 msgstr "Ustvarjanje torrenta …"
@@ -1725,13 +1194,8 @@ msgstr "_Torrent datoteka:"
 msgid "Select Source File"
 msgstr "Izbor izvorne datoteke"
 
-#, fuzzy
 msgid "_Destination folder:"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Ciljna mapa:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ciljna mapa:"
+msgstr "_Ciljna mapa:"
 
 msgid "Select Destination Folder"
 msgstr "Izbor ciljne mape"
@@ -1744,13 +1208,8 @@ msgstr "Začni ob dodajanju"
 msgid "Mo_ve torrent file to the Trash"
 msgstr "Premakni datoteko .torrent v smeti"
 
-#, fuzzy
 msgid "{appname} Preferences"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Nastavitve\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Nastavitve {appname}"
+msgstr "Nastavitve {appname}"
 
 msgid "Speed Limits"
 msgstr "Omejitve hitrosti"
@@ -1763,13 +1222,8 @@ msgstr ""
 msgid "_Download ({speed_units}):"
 msgstr ""
 
-#, fuzzy
 msgid "Alternative Speed Limits"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Nadomestne omejitve hitrosti\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Alternativne omejitve hitrosti"
+msgstr "Nadomestne omejitve hitrosti"
 
 msgid "Override normal speed limits manually or at scheduled times"
 msgstr "Prepis običajnih omejitev hitrosti ročno ali ob navedenem času"
@@ -1782,30 +1236,15 @@ msgstr ""
 msgid "Do_wnload ({speed_units}):"
 msgstr ""
 
-#, fuzzy
 msgid "_Scheduled times:"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Načrtovani časi:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Predpisani časi:"
+msgstr "_Načrtovani časi:"
 
-#, fuzzy
 msgid "_On days:"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Ob dnevih:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ob dnevih:"
+msgstr "_Ob dnevih:"
 
 #. Label goes between two time selectors, e.g. "limit speeds from [time] to [time]"
-#, fuzzy
 msgid "_to"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_do\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"do"
+msgstr "_do"
 
 msgctxt "Gerund"
 msgid "Adding"
@@ -1837,13 +1276,8 @@ msgstr ""
 msgid "Incomplete"
 msgstr "Nedokončano"
 
-#, fuzzy
 msgid "Append \"._part\" to incomplete files' names"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Pripni \"._part\" k imenu nedokončane datoteke\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Dodaj \".part\" k imenom nedokončanih datotek"
+msgstr "Pripni \"._part\" k imenu nedokončane datoteke"
 
 msgid "Keep _incomplete files in:"
 msgstr "Hrani nedokončane datoteke:"
@@ -1865,13 +1299,8 @@ msgstr "Prejemanje"
 msgid "Limits"
 msgstr "Omejitve"
 
-#, fuzzy
 msgid "Stop seeding at _ratio:"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Prenehaj sejati pri _razmerju:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Prenehaj sejati pri razmerju:"
+msgstr "Prenehaj sejati pri _razmerju:"
 
 msgid "Stop seeding if idle for _N minutes:"
 msgstr "Prenehaj sejati, če je torrent nedejaven _N minut:"
@@ -1886,42 +1315,22 @@ msgstr "Sejanje"
 msgid "Privacy"
 msgstr "Zasebnost"
 
-#, fuzzy
 msgid "_Encryption mode:"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Način _šifriranja:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Način šifriranja:"
+msgstr "Način _šifriranja:"
 
-#, fuzzy
 msgid "Blocklist"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Črni seznam\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Seznam blokad"
+msgstr "Seznam blokad"
 
-#, fuzzy
 msgid "Enable _blocklist:"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Omogoči _črni seznam:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Omogoči seznam blokad"
+msgstr "Omogoči _črni seznam:"
 
 #, fuzzy
 #| msgid "Enable _automatic updates"
 msgid "_Automatically update weekly"
 msgstr "Omogoči _samodejne posodobitve"
 
-#, fuzzy
 msgid "_Update"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Posodobi\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Posodobi"
+msgstr "_Posodobi"
 
 msgid "Listening Port"
 msgstr "Vrata za prisluh"
@@ -1934,21 +1343,11 @@ msgstr "Vrata za dohodne povezave:"
 msgid "Pick a _random port at startup"
 msgstr "Izberi _naključna vrata ob vsakem zagonu programa Transmission"
 
-#, fuzzy
 msgid "Use UPnP or NAT-PMP port _forwarding from my router"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Uporabi posredovanje _vrat UPnP ali NAT-PMP z usmerjevalnika\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Uporabi UPnP ali NAT-PMP posredovanje vrat na mojem usmerjevalniku"
+msgstr "Uporabi posredovanje _vrat UPnP ali NAT-PMP z usmerjevalnika"
 
-#, fuzzy
 msgid "Te_st Port"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Preizkus vrat\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Preveri vrata"
+msgstr "_Preizkus vrat"
 
 msgid "Peer Limits"
 msgstr "Omejitve soležnikov"
@@ -1958,13 +1357,8 @@ msgstr "Omejitve soležnikov"
 msgid "Maximum peers for new _torrents:"
 msgstr "Največje število soležnikov na _torrent:"
 
-#, fuzzy
 msgid "Maximum peers _overall:"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Največje število _soležnikov:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Največ soležnikov v celoti:"
+msgstr "Največ soležnikov v celoti:"
 
 msgid "Enable µ_TP for peer connections"
 msgstr "Omogoči µTP za povezave s soležniki"
@@ -1977,39 +1371,24 @@ msgstr "µTP je orodje za zmanjševanje zasičenosti omrežja."
 msgid "Use PE_X to find more peers for public torrents"
 msgstr "Uporabi PE_X za iskanje soležnikov"
 
-#, fuzzy
 msgid "PEX is a tool for exchanging peer lists with the peers you're connected to."
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"PEX je orodje za izmenjavo soležnikov s soležniki, s katerimi ste povezani.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"PEX je orodje za izmenjavo seznamov soležnikov z že povezanimi soležniki."
+msgstr "PEX je orodje za izmenjavo seznamov soležnikov z že povezanimi soležniki."
 
 #, fuzzy
 #| msgid "Use _DHT to find more peers"
 msgid "Use _DHT to find more peers for public torrents"
 msgstr "Uporabi _DHT za iskanje soležnikov"
 
-#, fuzzy
 msgid "DHT is a tool for finding peers without a tracker."
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"DHT je orodje za iskanje soležnikov brez uporabe sledilnika.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"DHT je orodje za iskanje soležnikov brez sledilnika."
+msgstr "DHT je orodje za iskanje soležnikov brez uporabe sledilnika."
 
 #, fuzzy
 #| msgid "Use _Local Peer Discovery to find more peers"
 msgid "Use _Local Peer Discovery to find more peers for public torrents"
 msgstr "Pri iskanju uporabi odkrivanje krajevnih soležnikov (_LPD)"
 
-#, fuzzy
 msgid "LPD is a tool for finding peers on your local network."
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"LPD je orodje za iskanje soležnikov na krajevnem omrežju.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"LPD je orodje za iskanje več virov na krajevnem omrežju."
+msgstr "LPD je orodje za iskanje soležnikov na krajevnem omrežju."
 
 msgid "Default Public Trackers"
 msgstr "Privzeti javni sledilniki"
@@ -2030,45 +1409,20 @@ msgstr "Namizje"
 msgid "_Prevent computer from sleeping with active torrents"
 msgstr ""
 
-#, fuzzy
 msgid "Show {appname} icon in the _notification area"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Pokaži ikono programa v _obvestilni vrstici.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Pokaži ikono {appname} v območju za obvestila"
+msgstr "Pokaži ikono {appname} v območju za obvestila"
 
-#, fuzzy
 msgid "Notification"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Obvestilo\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Obvestila"
+msgstr "Obvestilo"
 
-#, fuzzy
 msgid "Show a notification when torrents are a_dded"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Pokaži obvestilo ob _dodajanju torrentov\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Pokaži obvestilo ob dodajanju torrentov"
+msgstr "Pokaži obvestilo ob _dodajanju torrentov"
 
-#, fuzzy
 msgid "Show a notification when torrents _finish"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Pokaži obvestilo ob _končanju prejema torrenta\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Pokaži obvestilo ob zaključku torrentov"
+msgstr "Pokaži obvestilo ob _končanju prejema torrenta"
 
-#, fuzzy
 msgid "Play a _sound when torrents finish"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Predvajaj _zvok, ko se prejem torrenta konča\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Predvajaj zvok ob zaključku torrentov"
+msgstr "Predvajaj _zvok, ko se prejem torrenta konča"
 
 msgid "Remote Control"
 msgstr "Oddaljeni nadzor"
@@ -2081,29 +1435,14 @@ msgstr "Dovoli oddaljeni dostop"
 msgid "_Open Web Client"
 msgstr "_Odpri spletni odjemalec"
 
-#, fuzzy
 msgid "HTTP _port:"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Vrata HTT_P:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Vrata HTTP:"
+msgstr "Vrata HTT_P:"
 
-#, fuzzy
 msgid "Use _authentication"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Uporabi _overitev\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Uporabi overjanje"
+msgstr "Uporabi _overitev"
 
-#, fuzzy
 msgid "_Username:"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Uporabniško Ime:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Uporabniško ime:"
+msgstr "_Uporabniško Ime:"
 
 msgid "Pass_word:"
 msgstr "Geslo:"
@@ -2132,21 +1471,11 @@ msgstr "Mesto"
 msgid "New _location:"
 msgstr "Novo mesto:"
 
-#, fuzzy
 msgid "_Move from the current folder"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Premakni iz trenutne mape\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Premakni iz trenutne mape"
+msgstr "_Premakni iz trenutne mape"
 
-#, fuzzy
 msgid "Local data is _already there"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Krajevni podatki so _že prejeti\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Krajevni podatki so že na mestu"
+msgstr "Krajevni podatki so že na mestu"
 
 msgid "Current Session"
 msgstr "Trenutna seja"
@@ -2154,13 +1483,8 @@ msgstr "Trenutna seja"
 msgid "Ratio:"
 msgstr "Razmerje:"
 
-#, fuzzy
 msgid "Duration:"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Skupni čas izvajanja:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Trajanje:"
+msgstr "Trajanje:"
 
 msgid "Total"
 msgstr "Skupno"
@@ -2273,24 +1597,14 @@ msgstr ""
 msgid "Got an error '{markup_begin}{error}{markup_end}' {time_span_ago}"
 msgstr ""
 
-#, fuzzy
 msgid "No updates scheduled"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ni pripravljenih posodobitev\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ni načrtovanih posodobitev"
+msgstr "Ni načrtovanih posodobitev"
 
 msgid "Asking for more peers {time_span_from_now}"
 msgstr ""
 
-#, fuzzy
 msgid "Queued to ask for more peers"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"V vrsti za zahtevo po več soležnikih\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Načrtovana prošnja za več soležnikov"
+msgstr "V vrsti za zahtevo po več soležnikih"
 
 msgid "Asked for more peers {markup_begin}{time_span_ago}{markup_end}"
 msgstr ""
@@ -2325,13 +1639,8 @@ msgstr[3] ""
 msgid "Asking for peer counts {time_span_from_now}"
 msgstr "Prosim za število soležnikov čez {time_span}"
 
-#, fuzzy
 msgid "Queued to ask for peer counts"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"V vrsti za zahtevo štetja soležnikov\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Načrtovana prošnja za število soležnikov"
+msgstr "V vrsti za zahtevo štetja soležnikov"
 
 msgid "Asked for peer counts {markup_begin}{time_span_ago}{markup_end}"
 msgstr ""
@@ -2635,19 +1944,11 @@ msgstr ""
 
 #, fuzzy
 msgid "Time to turn on alternative speed limits"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Nadomestne omejitve hitrosti\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Alternativne omejitve hitrosti"
+msgstr "Nadomestne omejitve hitrosti"
 
 #, fuzzy
 msgid "Time to turn off alternative speed limits"
-msgstr ""
-"#-#-#-#-#  sl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Nadomestne omejitve hitrosti\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Alternativne omejitve hitrosti"
+msgstr "Nadomestne omejitve hitrosti"
 
 msgid "Listening to incoming peer connections on {hostport}"
 msgstr ""
@@ -3052,25 +2353,6 @@ msgstr "Prioriteta"
 msgid "Select Folder"
 msgstr "Izberi mapo"
 
-#, fuzzy
-#| msgid "Unknown"
-msgid "unknown"
-msgstr "Neznano"
-
-msgid "checking…"
-msgstr ""
-
-msgid "open"
-msgstr ""
-
-msgid "closed"
-msgstr ""
-
-#, fuzzy
-#| msgid "Error"
-msgid "error"
-msgstr "Napaka"
-
 msgid "<b>Update succeeded!</b><p>Blocklist now has {count:L} rule.</p>"
 msgid_plural "<b>Update succeeded!</b><p>Blocklist now has {count:L} rules.</p>"
 msgstr[0] "<b>Posodobitev uspešna!</b><p>Seznam blokad ima sedaj eno pravilo. </p>"
@@ -3130,12 +2412,6 @@ msgstr "Poslano:"
 msgid "Do_wnload:"
 msgstr "Prejeto:"
 
-msgid "Downloading"
-msgstr "Prejemanje"
-
-msgid "Adding"
-msgstr "Dodajanje"
-
 msgid "Reads user clipboard content for torrents"
 msgstr "Beri vsebino odložišča za nove torrente"
 
@@ -3145,9 +2421,6 @@ msgstr "Zaznaj nove torrente z odložišča"
 #. Please keep this phrase as short as possible, it's currently the longest and influences dialog width
 msgid "Download is i_nactive if data sharing stopped:"
 msgstr "Prejem je neaktiven, če se je deljenje podatkov nehalo:"
-
-msgid "Seeding"
-msgstr "Sejanje"
 
 msgid "Stop seedi_ng if idle for:"
 msgstr "Prenehaj sejati pri neaktivnosti:"

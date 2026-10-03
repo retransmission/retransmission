@@ -24,15 +24,8 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#, fuzzy
 msgid "None"
-msgstr ""
-"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ei mitään\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ei mitään\n"
-"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ei yhtään"
+msgstr "Ei mitään"
 
 msgid "Inf"
 msgstr "Inf"
@@ -119,21 +112,11 @@ msgid_plural "Couldn't add duplicate torrents"
 msgstr[0] "Samaa torrenttia ei voi lisätä toista kertaa"
 msgstr[1] "Samoja torrentteja ei voi lisätä toista kertaa"
 
-#, fuzzy
 msgid "A fast and easy BitTorrent client"
-msgstr ""
-"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Nopea ja helppokäyttöinen BitTorrent-sovellus\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Nopea ja helppo BitTorrent-asiakasohjelma"
+msgstr "Nopea ja helppo BitTorrent-asiakasohjelma"
 
-#, fuzzy
 msgid "Copyright © The {appname} Project"
-msgstr ""
-"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Copyright © The {appname} Project\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Copyright © {appname}-projekti"
+msgstr "Copyright © {appname}-projekti"
 
 #. Translators: translate "translator-credits" as your name
 #. to have it appear in the credits in the "About"
@@ -168,29 +151,14 @@ msgstr ""
 msgid "Use global settings"
 msgstr "Käytä yleisiä asetuksia"
 
-#, fuzzy
 msgid "Seed regardless of ratio"
-msgstr ""
-"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Jaa suhteesta välittämättä\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Kylvä suhdeluvusta huolimatta"
+msgstr "Jaa suhteesta välittämättä"
 
-#, fuzzy
 msgid "Stop seeding at ratio:"
-msgstr ""
-"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Lopeta jakaminen suhteen ollessa:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Pysäytä kylväminen suhdeluvulla:"
+msgstr "Lopeta jakaminen suhteen ollessa:"
 
-#, fuzzy
 msgid "Seed regardless of activity"
-msgstr ""
-"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Jaa välittämättä aktiivisuudesta\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Kylvä aktiivisuudesta huolimatta"
+msgstr "Jaa välittämättä aktiivisuudesta"
 
 msgid "Stop seeding if idle for N minutes:"
 msgstr "Pysäytä jakaminen jos jouten N minuuttia:"
@@ -198,88 +166,48 @@ msgstr "Pysäytä jakaminen jos jouten N minuuttia:"
 msgid "Queued for verification"
 msgstr "Laitettiin jonoon tarkistusta varten"
 
-#, fuzzy
 msgid "Verifying local data"
-msgstr ""
-"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Tarkistetaan paikallista dataa\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Vahvistetaan paikallista dataa"
+msgstr "Vahvistetaan paikallista dataa"
 
-#, fuzzy
 msgid "Queued for download"
-msgstr ""
-"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Jonossa latausta varten\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Laitettiin jonoon latausta varten"
+msgstr "Jonossa latausta varten"
 
 msgctxt "Verb"
 msgid "Downloading"
 msgstr "Ladataan"
 
-#, fuzzy
 msgid "Queued for seeding"
-msgstr ""
-"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Jonossa jaettavaksi\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Laitettiin jonoon jakamista varten"
+msgstr "Jonossa jaettavaksi"
 
-#, fuzzy
 msgctxt "Verb"
 msgid "Seeding"
-msgstr ""
-"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Jaetaan\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Kylvätään"
+msgstr "Jaetaan"
 
 #, fuzzy
 #| msgid "Incomplete"
 msgid "Seeding complete"
 msgstr "Keskeneräinen"
 
-#, fuzzy
 msgid "Paused"
-msgstr ""
-"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Pysäytetty\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Tauotettu"
+msgstr "Pysäytetty"
 
 msgid "N/A"
 msgstr "Ei saatavilla"
 
-#, fuzzy
 msgid "Mixed"
-msgstr ""
-"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Sekalainen\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Sekoitettu"
+msgstr "Sekalainen"
 
 msgid "No Torrents Selected"
 msgstr "Ei torrenteja valittuna"
 
-#, fuzzy
 msgid "Private to this tracker -- DHT and PEX disabled"
-msgstr ""
-"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Yksityinen tälle seurantapalvelimelle -- DHT ja PEX pois käytöstä\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Yksityisesti tälle seurantapalvelimelle -- DHT ja PEX pois käytöstä"
+msgstr "Yksityinen tälle seurantapalvelimelle -- DHT ja PEX pois käytöstä"
 
 msgid "Public torrent"
 msgstr "Julkinen torrent"
 
-#, fuzzy
 msgid "Created by {creator} on {date}"
-msgstr ""
-"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Luonut {creator} {date}\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Luonut {creator} ajankohtana {date}"
+msgstr "Luonut {creator} {date}"
 
 msgid "Created by {creator}"
 msgstr "Luonut {creator}"
@@ -287,15 +215,8 @@ msgstr "Luonut {creator}"
 msgid "Created on {date}"
 msgstr "Luotu {date}"
 
-#, fuzzy
 msgid "Unknown"
-msgstr ""
-"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Tuntematon\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Tunnistamaton\n"
-"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Tuntematon"
+msgstr "Tuntematon"
 
 msgid "{total_size} in {file_count:L} file"
 msgid_plural "{total_size} in {file_count:L} files"
@@ -319,13 +240,8 @@ msgstr "{current_size} ({percent_done}% / {percent_available}% saatavilla)"
 msgid "{current_size} ({percent_done}% of {percent_available}% available; {unverified_size} unverified)"
 msgstr "{current_size} ({percent_done}% / {percent_available}% saatavilla; {unverified_size} vahvistamaton)"
 
-#, fuzzy
 msgid "{downloaded_size} (+{discarded_size} discarded after failed checksum)"
-msgstr ""
-"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{downloaded_size} (+{discarded_size} hylätty tarkistussumman jälkeen)\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{downloaded_size} (+{discarded_size} hylätty väärän tarkistussumman jälkeen)"
+msgstr "{downloaded_size} (+{discarded_size} hylätty väärän tarkistussumman jälkeen)"
 
 msgid "{uploaded_size} (Ratio: {ratio})"
 msgstr "{uploaded_size} (Suhde: {ratio})"
@@ -336,64 +252,30 @@ msgstr "Ei virheitä"
 msgid "Never"
 msgstr "Ei koskaan"
 
-#, fuzzy
 msgid "Active now"
-msgstr ""
-"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Nyt aktiivinen\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Nyt aktiivisena"
+msgstr "Nyt aktiivinen"
 
-#, fuzzy
 msgid "Optimistic unchoke"
-msgstr ""
-"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Optimistinen vapautus\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Optimistinen rajoituksen poisto"
+msgstr "Optimistinen rajoituksen poisto"
 
-#, fuzzy
 msgid "Downloading from this peer"
-msgstr ""
-"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Lataus käynnissä tältä vertaiselta\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ladataan tältä vertaiselta"
+msgstr "Ladataan tältä vertaiselta"
 
-#, fuzzy
 msgid "We would download from this peer if they would let us"
-msgstr ""
-"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Tältä vertaiselta ladattaisiin, jos siihen olisi lupa\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Voitaisiin ladata tältä vertaiselta mikäli he sallisivat sen"
+msgstr "Tältä vertaiselta ladattaisiin, jos siihen olisi lupa"
 
 msgid "Uploading to peer"
 msgstr "Lähetetään vertaiselle"
 
 #, fuzzy
 msgid "This peer would download from us if we would let them"
-msgstr ""
-"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Tältä vertaiselta ladattaisiin, jos siihen olisi lupa\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Voitaisiin ladata tältä vertaiselta mikäli he sallisivat sen"
+msgstr "Tältä vertaiselta ladattaisiin, jos siihen olisi lupa"
 
-#, fuzzy
 msgid "Peer has unchoked us, but we're not interested"
-msgstr ""
-"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Käyttäjä on vapauttanut meidät, mutta emme ole kiinnostuneita\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Vertainen ei rajoita meitä, mutta emme ole kiinnostuneita"
+msgstr "Vertainen ei rajoita meitä, mutta emme ole kiinnostuneita"
 
-#, fuzzy
 msgid "We unchoked this peer, but they're not interested"
-msgstr ""
-"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Vapautimme tämän käyttäjän, mutta he eivät ole kiinnostuneita\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Emme rajoita tätä vertaista, mutta he eivät ole kiinnostuneita"
+msgstr "Emme rajoita tätä vertaista, mutta he eivät ole kiinnostuneita"
 
 msgid "Encrypted connection"
 msgstr "Salattu yhteys"
@@ -404,13 +286,8 @@ msgstr "Vertainen löytyi Peer Exchangen (PEX) kautta"
 msgid "Peer was found through DHT"
 msgstr "Vertainen löytyi DHT:n kautta"
 
-#, fuzzy
 msgid "Peer is an incoming connection"
-msgstr ""
-"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Vertainen on saapuva yhteys\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Vertainen on sisääntuleva yhteys"
+msgstr "Vertainen on saapuva yhteys"
 
 msgid "Peer is connected over µTP"
 msgstr "Vertainen on µTP:n kautta yhteydessä"
@@ -430,31 +307,14 @@ msgstr "Lat. pyynnöt"
 msgid "Up Reqs"
 msgstr "Läh. pyynnöt"
 
-#, fuzzy
 msgid "Down"
-msgstr ""
-"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ladattu\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Alas"
+msgstr "Ladattu"
 
-#, fuzzy
 msgid "Up"
-msgstr ""
-"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Lähetetty\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ylös"
+msgstr "Lähetetty"
 
-#, fuzzy
 msgid "Client"
-msgstr ""
-"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Asiakasohjelmisto\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Asiakasohjelmisto\n"
-"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Asiakasohjelma"
+msgstr "Asiakasohjelmisto"
 
 msgid "Flags"
 msgstr "Liput"
@@ -491,33 +351,15 @@ msgstr "Poistetaanko torrent?"
 msgid "Delete this torrent's downloaded files?"
 msgstr "Poistetaanko tämän torrentin ladatut tiedostot?"
 
-#, fuzzy
 msgid "Remove {count:L} torrent?"
 msgid_plural "Remove {count:L} torrents?"
-msgstr[0] ""
-"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Poista {count:L} torrentti?\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Poista {count:L} torrentti?"
-msgstr[1] ""
-"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Poistetaanko {count:L} torrentia?\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Poista {count:L} torrenttia?"
+msgstr[0] "Poista {count:L} torrentti?"
+msgstr[1] "Poistetaanko {count:L} torrentia?"
 
-#, fuzzy
 msgid "Delete this {count:L} torrent's downloaded files?"
 msgid_plural "Delete these {count:L} torrents' downloaded files?"
-msgstr[0] ""
-"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Poistetaanko tämän torrentin ladatut tiedostot?\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Poistetaanko tämän torrentin ladatut tiedostot?"
-msgstr[1] ""
-"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Poistetaanko näiden {count:L} torrentin ladatut tiedostot?\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Poista näiden {count:L}:n torrentin ladatut tiedostot?"
+msgstr[0] "Poistetaanko tämän torrentin ladatut tiedostot?"
+msgstr[1] "Poistetaanko näiden {count:L} torrentin ladatut tiedostot?"
 
 #, fuzzy
 #| msgid "Once removed, continuing the transfer will require the torrent file or magnet link."
@@ -530,69 +372,29 @@ msgstr "Kun poistettu, siirron jatkaminen vaatii torrent-tiedoston tai magneetti
 msgid "Once removed, you'll need the torrent files or magnet links to add them again."
 msgstr "Kun poistettu, siirtojen jatkaminen vaatii torrent-tiedostot tai magneettilinkit."
 
-#, fuzzy
 msgid "This torrent has not finished downloading."
-msgstr ""
-"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Tämän torrentin lataus ei ole vielä valmis.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Tämä torrent ei ole vielä valmistunut lataamisessa."
+msgstr "Tämän torrentin lataus ei ole vielä valmis."
 
-#, fuzzy
 msgid "These torrents have not finished downloading."
-msgstr ""
-"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Näiden torrenttien lataus ei ole vielä valmis.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Nämä torrentit eivät ole vielä valmistuneet lataamisessa."
+msgstr "Näiden torrenttien lataus ei ole vielä valmis."
 
-#, fuzzy
 msgid "This torrent is connected to peers."
-msgstr ""
-"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Tämä torrent on yhteydessä vertaisiinsa.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Tämä torrent on yhdistettynä vertaisiin."
+msgstr "Tämä torrent on yhteydessä vertaisiinsa."
 
-#, fuzzy
 msgid "These torrents are connected to peers."
-msgstr ""
-"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Nämä torrentit ovat yhteydessä vertaisiinsa.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Nämä torrentit ovat yhdistetyttyinä vertaisiin."
+msgstr "Nämä torrentit ovat yhteydessä vertaisiinsa."
 
-#, fuzzy
 msgid "One of these torrents is connected to peers."
-msgstr ""
-"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Yksi torrenteista on yhteydessä vertaisiinsa.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Jokin näistä torrenteista on yhteydessä vertaisiinsa."
+msgstr "Jokin näistä torrenteista on yhteydessä vertaisiinsa."
 
-#, fuzzy
 msgid "Some of these torrents are connected to peers."
-msgstr ""
-"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Jotkut torrenteista ovat yhteydessä vertaisiinsa.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Jotkin näistä torrenteista ovat yhteydessä vertaisiinsa."
+msgstr "Jotkin näistä torrenteista ovat yhteydessä vertaisiinsa."
 
-#, fuzzy
 msgid "One of these torrents has not finished downloading."
-msgstr ""
-"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Yksi torrenteista on vielä kesken.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Jokin näistä torrenteista on vielä kesken."
+msgstr "Jokin näistä torrenteista on vielä kesken."
 
-#, fuzzy
 msgid "Some of these torrents have not finished downloading."
-msgstr ""
-"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Jotkut torrenteista ovat vielä kesken.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Jotkin näistä torrenteista ovat vielä kesken."
+msgstr "Jotkin näistä torrenteista ovat vielä kesken."
 
 msgid "_Cancel"
 msgstr "_Peru"
@@ -625,21 +427,11 @@ msgstr "Koko"
 msgid "Progress"
 msgstr "Tilanne"
 
-#, fuzzy
 msgid "Download"
-msgstr ""
-"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Lataus\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Lataa"
+msgstr "Lataus"
 
-#, fuzzy
 msgid "Priority"
-msgstr ""
-"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Prioriteetti\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Tärkeysjärjestys"
+msgstr "Tärkeysjärjestys"
 
 msgid "All"
 msgstr "Kaikki"
@@ -647,25 +439,15 @@ msgstr "Kaikki"
 msgid "Active"
 msgstr "Aktiivinen"
 
-#, fuzzy
 msgctxt "Verb"
 msgid "Verifying"
-msgstr ""
-"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Tarkistetaan\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Vahvistetaan"
+msgstr "Vahvistetaan"
 
 msgid "Error"
 msgstr "Virhe"
 
-#, fuzzy
 msgid "_Show:"
-msgstr ""
-"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Näytä:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"N_äytä:"
+msgstr "N_äytä:"
 
 msgid "_Show {count:L} of:"
 msgstr "_Näytä {count:L} /:"
@@ -708,13 +490,8 @@ msgstr ""
 msgid "Unlimited"
 msgstr "Rajoittamaton"
 
-#, fuzzy
 msgid "Seed Forever"
-msgstr ""
-"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Jaa ikuisesti\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Kylvä ikuisesti"
+msgstr "Jaa ikuisesti"
 
 msgid "Limit Download Speed"
 msgstr "Rajoita latausnopeutta"
@@ -722,29 +499,14 @@ msgstr "Rajoita latausnopeutta"
 msgid "Limit Upload Speed"
 msgstr "Rajoita lähetysnopeutta"
 
-#, fuzzy
 msgid "Stop Seeding at Ratio"
-msgstr ""
-"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Lopeta jakaminen suhteessa\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Lopeta kylväminen suhdeluvulla"
+msgstr "Lopeta jakaminen suhteessa"
 
-#, fuzzy
 msgid "Stop at Ratio ({ratio})"
-msgstr ""
-"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Pysäytä suhteessa ({ratio})\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Pysäytä suhdeluvulla ({ratio})"
+msgstr "Pysäytä suhteessa ({ratio})"
 
-#, fuzzy
 msgid "Total Ratio"
-msgstr ""
-"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Kokonaissuhde\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Suhde kaikkiaan"
+msgstr "Kokonaissuhde"
 
 msgid "Session Ratio"
 msgstr "Istunnon suhde"
@@ -752,26 +514,14 @@ msgstr "Istunnon suhde"
 msgid "Total Transfer"
 msgstr "Siirretty kaikkiaan"
 
-#, fuzzy
 msgid "Session Transfer"
-msgstr ""
-"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Siirretty istunnossa\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Istunnon siirrot"
+msgstr "Siirretty istunnossa"
 
 msgid "Down: {downloaded_size}, Up: {uploaded_size}"
 msgstr "Alas: {downloaded_size}, Ylös: {uploaded_size}"
 
-#, fuzzy
 msgid "Ratio: {ratio}"
-msgstr ""
-"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Suhde: {ratio}\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Suhdeluku: {ratio}\n"
-"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Jakosuhde: {ratio}"
+msgstr "Suhde: {ratio}"
 
 msgid "{download_speed} ▾"
 msgstr "{download_speed} ▾"
@@ -846,13 +596,8 @@ msgstr "Torrent on valmis"
 msgid "Start Now"
 msgstr "Aloita nyt"
 
-#, fuzzy
 msgid "Torrent Added"
-msgstr ""
-"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Lisättiin torrent\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Torrent lisätty"
+msgstr "Torrent lisätty"
 
 msgid "Torrent files"
 msgstr "Torrent-tiedostot"
@@ -875,24 +620,14 @@ msgstr ""
 msgid "Select File"
 msgstr "Valitse tiedosto"
 
-#, fuzzy
 msgid "(None)"
-msgstr ""
-"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"(Ei mitään)\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"(Ei yhtään)"
+msgstr "(Ei mitään)"
 
 msgid "Allow encryption"
 msgstr "Salli salaus"
 
-#, fuzzy
 msgid "Prefer encryption"
-msgstr ""
-"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Jos mahdollista, käytä salausta\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Suosi salausta"
+msgstr "Suosi salausta"
 
 msgid "Require encryption"
 msgstr "Vaadi salaus"
@@ -900,13 +635,8 @@ msgstr "Vaadi salaus"
 msgid "Every Day"
 msgstr "Joka päivä"
 
-#, fuzzy
 msgid "Weekdays"
-msgstr ""
-"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Arkisin\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Arkipäivisin"
+msgstr "Arkisin"
 
 msgid "Weekends"
 msgstr "Viikonloppuisin"
@@ -991,32 +721,18 @@ msgstr "_Näytä {appname}"
 msgid "{upload_speed} ▴ {download_speed} ▾"
 msgstr "{upload_speed} ▴ {download_speed} ▾"
 
-#, fuzzy, no-c-format
+#, no-c-format
 msgid "Verifying local data ({percent_done}% tested)"
-msgstr ""
-"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Vahvistetaan paikallista dataa ({percent_done}% testattu)\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Vahvistetaan paikallista daataa ({percent_done}% testattu)"
+msgstr "Vahvistetaan paikallista dataa ({percent_done}% testattu)"
 
-#, fuzzy
 msgid "{current_size} of {complete_size} ({percent_done}%)"
-msgstr ""
-"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{current_size}/{complete_size} ({percent_done}%)\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{current_size} / {complete_size} ({percent_done}%)"
+msgstr "{current_size}/{complete_size} ({percent_done}%)"
 
 msgid "{current_size} of {complete_size} ({percent_complete}%), uploaded {uploaded_size} (Ratio: {ratio}, Goal: {seed_ratio})"
 msgstr "{current_size}/{complete_size} ({percent_complete}%), lähetetty {uploaded_size} (Suhde: {ratio}, Tavoite: {seed_ratio})"
 
-#, fuzzy
 msgid "{current_size} of {complete_size} ({percent_complete}%), uploaded {uploaded_size} (Ratio: {ratio})"
-msgstr ""
-"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{current_size}/{complete_size} ({percent_complete}%), lähetetty {uploaded_size} (Suhde: {ratio})\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{current_size}/{complete_size} ({percent_complete} %), lähetetty {uploaded_size} (Jakosuhde: {ratio})"
+msgstr "{current_size}/{complete_size} ({percent_complete}%), lähetetty {uploaded_size} (Suhde: {ratio})"
 
 msgid "{complete_size}, uploaded {uploaded_size} (Ratio: {ratio}, Goal: {seed_ratio})"
 msgstr "{complete_size}, lähetetty {uploaded_size} (Suhde: {ratio}, Tavoite: {seed_ratio})"
@@ -1061,33 +777,15 @@ msgid_plural "Downloading from {active_count} webseeds"
 msgstr[0] "Ladataan {active_count} siemenpalvelimesta"
 msgstr[1] "Ladataan {active_count} siemenpalvelimesta"
 
-#, fuzzy
 msgid "Downloading from {active_count} of {connected_count} connected peer"
 msgid_plural "Downloading from {active_count} of {connected_count} connected peers"
-msgstr[0] ""
-"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ladataan {active_count} / {connected_count} yhdistetystä koneesta\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ladataan {active_count} /{connected_count} yhdistetyltä vertaiselta"
-msgstr[1] ""
-"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ladataan {active_count} / {connected_count} yhdistetyltä koneelta\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ladataan {active_count}/{connected_count} yhdistetyltä vertaiselta"
+msgstr[0] "Ladataan {active_count} /{connected_count} yhdistetyltä vertaiselta"
+msgstr[1] "Ladataan {active_count}/{connected_count} yhdistetyltä vertaiselta"
 
-#, fuzzy
 msgid "Seeding to {active_count} of {connected_count} connected peer"
 msgid_plural "Seeding to {active_count} of {connected_count} connected peers"
-msgstr[0] ""
-"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Lähetetään {active_count} / {connected_count} koneeseen\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Lähteet {active_count} / {connected_count} yhdistetyt vertaiskoneet"
-msgstr[1] ""
-"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Lähetetään {active_count}/ {connected_count}\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Seeding to {active_count} of {connected_count} connected peers"
+msgstr[0] "Lähetetään {active_count} / {connected_count} koneeseen"
+msgstr[1] "Lähetetään {active_count}/ {connected_count}"
 
 msgid "Retransmission"
 msgstr "Retransmission"
@@ -1129,32 +827,17 @@ msgstr ""
 msgid "_File"
 msgstr "_Tiedosto"
 
-#, fuzzy
 msgid "Open _URL…"
-msgstr ""
-"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Avaa o_soite…\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Avaa _URL-osoite…"
+msgstr "Avaa o_soite…"
 
 msgid "_New…"
 msgstr "_Uusi…"
 
-#, fuzzy
 msgid "_Start All"
-msgstr ""
-"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Käynnistä kaikki\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Aloita kaikki"
+msgstr "_Käynnistä kaikki"
 
-#, fuzzy
 msgid "_Pause All"
-msgstr ""
-"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Pysäytä kaikki\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Tauota kaikki"
+msgstr "_Pysäytä kaikki"
 
 msgid "_Quit"
 msgstr "_Poistu"
@@ -1177,45 +860,25 @@ msgstr "_Torrent"
 msgid "_Properties"
 msgstr "_Ominaisuudet"
 
-#, fuzzy
 msgid "Open Fold_er"
-msgstr ""
-"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Avaa ka_nsio\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Avaa hake_misto"
+msgstr "Avaa ka_nsio"
 
 msgid "_Start"
 msgstr "_Aloita"
 
-#, fuzzy
 msgid "Start _Now"
-msgstr ""
-"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Käynnistä _nyt\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Aloita _nyt"
+msgstr "Aloita _nyt"
 
-#, fuzzy
 msgid "Ask Tracker for _More Peers"
-msgstr ""
-"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Pyydä seurantapalveli_melta lisää vertaisia\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Pyydä seurantapalvelimelta _lisää vertaisia"
+msgstr "Pyydä seurantapalvelimelta _lisää vertaisia"
 
 #, fuzzy
 #| msgid "Queue"
 msgid "_Queue"
 msgstr "Jonota"
 
-#, fuzzy
 msgid "Move to _Top"
-msgstr ""
-"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Siirrä yli_mmäiseksi\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Siirrä _ylimmäiseksi"
+msgstr "Siirrä yli_mmäiseksi"
 
 msgid "Move _Up"
 msgstr "Siirrä _ylös"
@@ -1223,153 +886,68 @@ msgstr "Siirrä _ylös"
 msgid "Move _Down"
 msgstr "Siirrä _alas"
 
-#, fuzzy
 msgid "Move to _Bottom"
-msgstr ""
-"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Siirrä al_immaiseksi\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Siirrä %alimmaiseksi"
+msgstr "Siirrä al_immaiseksi"
 
-#, fuzzy
 msgid "_Pause"
-msgstr ""
-"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"P_ysäytä\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Tauko"
+msgstr "P_ysäytä"
 
-#, fuzzy
 msgid "Set _Location…"
-msgstr ""
-"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Aseta s_ijainti…\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Aseta _sijainti…"
+msgstr "Aseta s_ijainti…"
 
-#, fuzzy
 msgid "_Verify Local Data"
-msgstr ""
-"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Tarkista paikallinen data\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Vahvista paikallinen data"
+msgstr "_Vahvista paikallinen data"
 
 msgid "_Copy Magnet Link to Clipboard"
 msgstr "_Kopioi Magnet-linkki leikepöydälle"
 
-#, fuzzy
 msgid "_Delete Files and Remove"
-msgstr ""
-"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Poista tiedostoineen\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Poista tiedostot ja latauslistasta"
+msgstr "_Poista tiedostoineen"
 
 msgid "_View"
 msgstr "_Näytä"
 
-#, fuzzy
 msgid "_Compact View"
-msgstr ""
-"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Tiivis näkymä\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Kompakti näkymä"
+msgstr "_Tiivis näkymä"
 
 msgid "_Toolbar"
 msgstr "_Työkalupalkki"
 
-#, fuzzy
 msgid "_Filterbar"
-msgstr ""
-"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Suodatinrivi\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Suodatinpalkki"
+msgstr "_Suodatinpalkki"
 
-#, fuzzy
 msgid "_Statusbar"
-msgstr ""
-"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Tilapalkki\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Tilannepalkki"
+msgstr "_Tilapalkki"
 
 msgid "Sort by _Activity"
 msgstr "Järjestä _aktiivisuuden mukaan"
 
-#, fuzzy
 msgid "Sort by A_ge"
-msgstr ""
-"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Järjestä _iän mukaan\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Järjestä i%än mukaan"
+msgstr "Järjestä _iän mukaan"
 
-#, fuzzy
 msgid "Sort by _Name"
-msgstr ""
-"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Järjestä _nimen mukaan\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Järjestä nimen _mukaan"
+msgstr "Järjestä _nimen mukaan"
 
-#, fuzzy
 msgid "Sort by _Progress"
-msgstr ""
-"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Järjestä _edistymisen mukaan\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Järjestä tilanteen _mukaan"
+msgstr "Järjestä _edistymisen mukaan"
 
-#, fuzzy
 msgid "Sort by _Queue"
-msgstr ""
-"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Järjest_ä jonon mukaan\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Järjestä jonotuksen _mukaan"
+msgstr "Järjest_ä jonon mukaan"
 
-#, fuzzy
 msgid "Sort by Rati_o"
-msgstr ""
-"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Järjestä _suhteen mukaan\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Järjestä suhteen mukaa_n"
+msgstr "Järjestä _suhteen mukaan"
 
-#, fuzzy
 msgid "Sort by Si_ze"
-msgstr ""
-"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Järjestä k_oon mukaan\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Järjestä koon muka_an"
+msgstr "Järjestä k_oon mukaan"
 
-#, fuzzy
 msgid "Sort by Stat_e"
-msgstr ""
-"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Järjestä _tilan mukaan\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Järjestä tilan mukaa_n"
+msgstr "Järjestä _tilan mukaan"
 
-#, fuzzy
 msgid "Sort by Time _Left"
-msgstr ""
-"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Järjestä _jäljellä olevan ajan mukaan\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Järjestä jäljellä olevan ajan _mukaan"
+msgstr "Järjestä _jäljellä olevan ajan mukaan"
 
-#, fuzzy
 msgid "Re_verse Sort Order"
-msgstr ""
-"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Käänteinen järjestys\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Kä_ännä lajittelujärjestystä"
+msgstr "_Käänteinen järjestys"
 
 msgid "_Help"
 msgstr "_Ohje"
@@ -1377,13 +955,8 @@ msgstr "_Ohje"
 msgid "Message _Log"
 msgstr "Viesti_loki"
 
-#, fuzzy
 msgid "_Statistics"
-msgstr ""
-"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Tilastot\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Tilastotiedot"
+msgstr "_Tilastot"
 
 msgid "_Donate"
 msgstr "_Lahjoita"
@@ -1404,13 +977,8 @@ msgstr "Aloita torrent"
 msgid "Alternative Speed _Limits"
 msgstr "Vaihtoehtoiset nopeusrajoitukset"
 
-#, fuzzy
 msgid "_Add"
-msgstr ""
-"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Lisää\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Li_sää"
+msgstr "_Lisää"
 
 msgid "Tracker"
 msgstr "Seurantapalvelin"
@@ -1421,24 +989,14 @@ msgstr "_Julkistusosoite:"
 msgid "_Close"
 msgstr "_Sulje"
 
-#, fuzzy
 msgid "Activity"
-msgstr ""
-"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Aktiivisuus\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Aktiviteetti"
+msgstr "Aktiivisuus"
 
 msgid "Size:"
 msgstr "Koko:"
 
-#, fuzzy
 msgid "Have:"
-msgstr ""
-"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ladattu:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Hallussa:"
+msgstr "Hallussa:"
 
 msgid "Uploaded:"
 msgstr "Lähetetty:"
@@ -1449,51 +1007,26 @@ msgstr "Ladattu:"
 msgid "State:"
 msgstr "Tila:"
 
-#, fuzzy
 msgid "Running time:"
-msgstr ""
-"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Käyntiaika:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Kulunut aika:"
+msgstr "Käyntiaika:"
 
-#, fuzzy
 msgid "Remaining time:"
-msgstr ""
-"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Jäljellä oleva aika:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Aikaa jäljellä:"
+msgstr "Jäljellä oleva aika:"
 
-#, fuzzy
 msgid "Last activity:"
-msgstr ""
-"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Viimeisin aktiivisuus:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Aktiivinen viimeksi:"
+msgstr "Viimeisin aktiivisuus:"
 
 msgid "Error:"
 msgstr "Virhe:"
 
-#, fuzzy
 msgid "Details"
-msgstr ""
-"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Yksityiskohtainen näkymä\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Lisätiedot"
+msgstr "Lisätiedot"
 
 msgid "Location:"
 msgstr "Sijainti:"
 
-#, fuzzy
 msgid "Hash:"
-msgstr ""
-"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Tiiviste:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Tarkiste:"
+msgstr "Tiiviste:"
 
 msgid "Privacy:"
 msgstr "Yksityisyys:"
@@ -1507,32 +1040,17 @@ msgstr "Lisätty:"
 msgid "Comment:"
 msgstr "Kommentti:"
 
-#, fuzzy
 msgid "Information"
-msgstr ""
-"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Tiedot\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Tietoa"
+msgstr "Tiedot"
 
-#, fuzzy
 msgid "Show _more details"
-msgstr ""
-"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Näytä _enemmän tietoja\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Näytä _lisää tietoja"
+msgstr "Näytä _enemmän tietoja"
 
 msgid "Peers"
 msgstr "Vertaiset"
 
-#, fuzzy
 msgid "Show _backup trackers"
-msgstr ""
-"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Näytä _varmistusseurantapalvelimet\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Näytä _varalla olevat seurantapalvelimet"
+msgstr "Näytä _varalla olevat seurantapalvelimet"
 
 msgid "File listing not available for combined torrent properties"
 msgstr "Tiedostojen luettelointi ei ole käytettävissä yhdistettyjen torrenttien ominaisuuksissa"
@@ -1543,13 +1061,8 @@ msgstr "Tiedostot"
 msgid "Speed"
 msgstr "Nopeus"
 
-#, fuzzy
 msgid "Honor global _limits"
-msgstr ""
-"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Noudata yleisiä _rajoituksia\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Kunnioita yleisiä _rajoituksia"
+msgstr "Noudata yleisiä _rajoituksia"
 
 msgid "Limit _download speed ({speed_units}):"
 msgstr "Rajoita _latausnopeus ({speed_units}):"
@@ -1557,66 +1070,29 @@ msgstr "Rajoita _latausnopeus ({speed_units}):"
 msgid "Limit _upload speed ({speed_units}):"
 msgstr "Rajoita l_ähetysnopeus ({speed_units}):"
 
-#, fuzzy
 msgid "Torrent _priority:"
-msgstr ""
-"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Torrentin _prioriteetti:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Torrentin _tärkeysjärjestys:"
+msgstr "Torrentin _tärkeysjärjestys:"
 
-#, fuzzy
 msgid "Seeding Limits"
-msgstr ""
-"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Jakamisen rajoitukset\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Rajoitukset kylvämiselle"
+msgstr "Jakamisen rajoitukset"
 
 msgid "_Ratio:"
 msgstr "_Suhde:"
 
-#, fuzzy
 msgid "_Idle:"
-msgstr ""
-"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Toimeton:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Joutilaana:"
+msgstr "_Joutilaana:"
 
-#, fuzzy
 msgid "Peer Connections"
-msgstr ""
-"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Vertaisyhteydet\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Vertaisen yhteydet"
+msgstr "Vertaisyhteydet"
 
-#, fuzzy
 msgid "_Maximum peers:"
-msgstr ""
-"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Vertaisten eni_mmäismäärä:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Vertaisia enimmillään:"
+msgstr "Vertaisten eni_mmäismäärä:"
 
-#, fuzzy
 msgid "Options"
-msgstr ""
-"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Valinnat\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ominaisuudet\n"
-"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Valinnat"
+msgstr "Valinnat"
 
-#, fuzzy
 msgid "Tracker Announce URLs"
-msgstr ""
-"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Seurantapalvelimien julkistusosoitteet\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Jäljitin Ilmoittaa URL-osoitteet"
+msgstr "Seurantapalvelimien julkistusosoitteet"
 
 msgid ""
 "To add a backup URL, add it on the next line after a primary URL.\n"
@@ -1625,13 +1101,8 @@ msgstr ""
 "Jos haluat lisätä varalle URL-osoitteen, lisää se URL-osoitteen jälkeen seuraavalle riville.\n"
 "Lisää uusi URL-osoite lisäämällä se tyhjän rivin jälkeen."
 
-#, fuzzy
 msgid "Also see Default Public Trackers in Edit > Preferences > Network"
-msgstr ""
-"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Katso myös \"Oletusarvoiset seurantapalvelimet\" kohdassa Muokkaa > Asetukset > Verkko\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Katso myös julkisten jäljittimien oletusarvot Muokkaa > Asetukset > Verkko"
+msgstr "Katso myös \"Oletusarvoiset seurantapalvelimet\" kohdassa Muokkaa > Asetukset > Verkko"
 
 msgid "Open a torrent"
 msgstr "Avaa torrent"
@@ -1639,13 +1110,8 @@ msgstr "Avaa torrent"
 msgid "Start torrent"
 msgstr "Aloita torrent"
 
-#, fuzzy
 msgid "Pause torrent"
-msgstr ""
-"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Pysäytä torrent\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Tauota torrent"
+msgstr "Pysäytä torrent"
 
 msgid "Remove torrent"
 msgstr "Poista torrent"
@@ -1656,15 +1122,8 @@ msgstr "Torrentin ominaisuudet"
 msgid "Torrent"
 msgstr "Torrent"
 
-#, fuzzy
 msgid "Statistics"
-msgstr ""
-"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Tilastot\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Tilastot\n"
-"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Tilastotiedot"
+msgstr "Tilastot"
 
 msgid "New Torrent"
 msgstr "Uusi torrent"
@@ -1674,13 +1133,8 @@ msgstr "Uusi torrent"
 msgid "C_reate"
 msgstr "L_opputekstit"
 
-#, fuzzy
 msgid "Sa_ve to:"
-msgstr ""
-"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Tallenna:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ta_llenna kohteeseen:"
+msgstr "Ta_llenna kohteeseen:"
 
 msgid "Source f_older:"
 msgstr "Lähdeh_akemisto:"
@@ -1699,13 +1153,8 @@ msgstr "Ominaisuudet"
 msgid "_Trackers:"
 msgstr "_Seurantapalvelimet:"
 
-#, fuzzy
 msgid "Co_mment:"
-msgstr ""
-"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Kommentti:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ko_mmentti:"
+msgstr "_Kommentti:"
 
 msgid "_Source:"
 msgstr "_Lähde:"
@@ -1782,22 +1231,12 @@ msgstr "La_taus ({speed_units}):"
 msgid "_Scheduled times:"
 msgstr "_Määriteltyinä aikoina:"
 
-#, fuzzy
 msgid "_On days:"
-msgstr ""
-"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Päivisin:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Päivinä:"
+msgstr "_Päivinä:"
 
 #. Label goes between two time selectors, e.g. "limit speeds from [time] to [time]"
-#, fuzzy
 msgid "_to"
-msgstr ""
-"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"-\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_asiakkaalle"
+msgstr "-"
 
 msgctxt "Gerund"
 msgid "Adding"
@@ -1809,13 +1248,8 @@ msgstr "Lisää torrentit automaattisesti _kohteesta:"
 msgid "Show the Torrent Options _dialog"
 msgstr "Näytä torrentin _valintaikkuna"
 
-#, fuzzy
 msgid "_Start added torrents"
-msgstr ""
-"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Kä_ynnistä lisätyt torrentit\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Käynnistä lisätyt torrentit"
+msgstr "Kä_ynnistä lisätyt torrentit"
 
 #, fuzzy
 #| msgid "Save to _Location:"
@@ -1857,13 +1291,8 @@ msgstr "Lataus"
 msgid "Limits"
 msgstr "Rajoitukset"
 
-#, fuzzy
 msgid "Stop seeding at _ratio:"
-msgstr ""
-"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Lopeta jakaminen _suhteessa:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Lopeta jakaminen _suhteen ollessa:"
+msgstr "Lopeta jakaminen _suhteen ollessa:"
 
 msgid "Stop seeding if idle for _N minutes:"
 msgstr "Lopeta jakaminen jos jouten _N minuuttia:"
@@ -1884,13 +1313,8 @@ msgstr "_Salaustila:"
 msgid "Blocklist"
 msgstr "Estolista"
 
-#, fuzzy
 msgid "Enable _blocklist:"
-msgstr ""
-"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Käytä e_stolistaa:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Kä_ytä estolistaa:"
+msgstr "Kä_ytä estolistaa:"
 
 #, fuzzy
 #| msgid "Enable _automatic updates"
@@ -1914,21 +1338,11 @@ msgstr "Ota _satunnainen portti joka kerta, kun Transmission käynnistetään"
 msgid "Use UPnP or NAT-PMP port _forwarding from my router"
 msgstr "Käytä UPnP- tai NAT-PMP-portti_välitystä reitittimeltä"
 
-#, fuzzy
 msgid "Te_st Port"
-msgstr ""
-"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Kokeile porttia\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Te_staa portti"
+msgstr "Te_staa portti"
 
-#, fuzzy
 msgid "Peer Limits"
-msgstr ""
-"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Vertaisrajoitukset\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Vertaisten rajoitukset"
+msgstr "Vertaisrajoitukset"
 
 #, fuzzy
 #| msgid "Maximum peers per _torrent:"
@@ -1957,13 +1371,8 @@ msgstr "PEX:n avulla voit vaihtaa vertaislistoja jo yhdistettyjen vertaisten kan
 msgid "Use _DHT to find more peers for public torrents"
 msgstr "Käytä _DHT:tä vertaisten löytämiseksi"
 
-#, fuzzy
 msgid "DHT is a tool for finding peers without a tracker."
-msgstr ""
-"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"DHT:n avulla voit löytää vertaisia ilman seurantapalvelinta\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"DHT:n avulla voit löytää vertaisia ilman seurantapalvelinta."
+msgstr "DHT:n avulla voit löytää vertaisia ilman seurantapalvelinta."
 
 #, fuzzy
 #| msgid "Use _Local Peer Discovery to find more peers"
@@ -1973,13 +1382,8 @@ msgstr "Käytä _paikallisvertaisten etsintää useamman vertaisen löytämiseks
 msgid "LPD is a tool for finding peers on your local network."
 msgstr "LPD etsii vertaisia lähiverkostasi."
 
-#, fuzzy
 msgid "Default Public Trackers"
-msgstr ""
-"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Oletusarvoiset seurantapalvelimet\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Oletusarvoiset julkiset seurantapalvelimet"
+msgstr "Oletusarvoiset julkiset seurantapalvelimet"
 
 msgid ""
 "Trackers to use on all public torrents.\n"
@@ -2019,13 +1423,8 @@ msgstr "Toista _ääni, kun torrent valmistuu"
 msgid "Remote Control"
 msgstr "Etähallinta"
 
-#, fuzzy
 msgid "Allow _remote access"
-msgstr ""
-"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Salli et_äkäyttö\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Salli etäkäyttö"
+msgstr "Salli et_äkäyttö"
 
 #, fuzzy
 #| msgid "_Open web client"
@@ -2035,32 +1434,17 @@ msgstr "_Avaa WWW-käyttöliittymä"
 msgid "HTTP _port:"
 msgstr "HTTP-_portti:"
 
-#, fuzzy
 msgid "Use _authentication"
-msgstr ""
-"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Käytä _todentamista\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Käytä _tunnistautumista"
+msgstr "Käytä _tunnistautumista"
 
 msgid "_Username:"
 msgstr "_Käyttäjänimi:"
 
-#, fuzzy
 msgid "Pass_word:"
-msgstr ""
-"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Salasana:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Sala_sana:"
+msgstr "_Salasana:"
 
-#, fuzzy
 msgid "Only allow these IP a_ddresses:"
-msgstr ""
-"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Salli vain seuraavat IP-_osoitteet:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Salli vain seuraavat _IP-osoitteet:"
+msgstr "Salli vain seuraavat IP-_osoitteet:"
 
 msgid "Addresses:"
 msgstr "Osoitteet:"
@@ -2083,43 +1467,23 @@ msgstr "Sijainti"
 msgid "New _location:"
 msgstr "Uusi _sijainti:"
 
-#, fuzzy
 msgid "_Move from the current folder"
-msgstr ""
-"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Siirrä nykyisestä kansiosta\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Siirrä tämänhetkisestä hakemistosta"
+msgstr "_Siirrä nykyisestä kansiosta"
 
 msgid "Local data is _already there"
 msgstr "Paikallinen data on _jo siellä"
 
-#, fuzzy
 msgid "Current Session"
-msgstr ""
-"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Nykyinen istunto\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Tämänhetkinen istunto"
+msgstr "Nykyinen istunto"
 
 msgid "Ratio:"
 msgstr "Suhde:"
 
-#, fuzzy
 msgid "Duration:"
-msgstr ""
-"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Kesto:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Kesto"
+msgstr "Kesto:"
 
-#, fuzzy
 msgid "Total"
-msgstr ""
-"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Yhteensä\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Kaikkiaan"
+msgstr "Yhteensä"
 
 msgid "Open URL"
 msgstr "Avaa osoite"
@@ -2194,19 +1558,10 @@ msgid_plural "{hours_ago:L} hours ago"
 msgstr[0] "{hours_ago:L}tuntia sitten"
 msgstr[1] "{hours_ago:L} tuntia sitten"
 
-#, fuzzy
 msgid "{minutes_ago:L} minute ago"
 msgid_plural "{minutes_ago:L} minutes ago"
-msgstr[0] ""
-"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{minutes_ago:L}minuuttia sitten\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{minutes_ago:L} minuuttia sitten"
-msgstr[1] ""
-"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{minutes_ago:L} minuuttia sitten\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{minutes_ago:L} minuuttia sitten"
+msgstr[0] "{minutes_ago:L} minuuttia sitten"
+msgstr[1] "{minutes_ago:L} minuuttia sitten"
 
 msgid "{seconds_ago:L} second ago"
 msgid_plural "{seconds_ago:L} seconds ago"
@@ -2224,24 +1579,14 @@ msgstr "Listan pyyntö koneista {markup_begin}aikakatkaisu {time_span_ago}{marku
 msgid "Got an error '{markup_begin}{error}{markup_end}' {time_span_ago}"
 msgstr "Tuli virhe '{markup_begin}{error}{markup_end}' {time_span_ago}"
 
-#, fuzzy
 msgid "No updates scheduled"
-msgstr ""
-"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ei ajastettuja päivityksiä\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ei aikataulutettuja päivityksiä"
+msgstr "Ei ajastettuja päivityksiä"
 
 msgid "Asking for more peers {time_span_from_now}"
 msgstr "Pyydetään lisää koneita {time_span_from_now}"
 
-#, fuzzy
 msgid "Queued to ask for more peers"
-msgstr ""
-"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Uusien vertaisten kysyminen jonossa\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Laitettu jonoon lisävertaisten kysymistä varten"
+msgstr "Uusien vertaisten kysyminen jonossa"
 
 msgid "Asked for more peers {markup_begin}{time_span_ago}{markup_end}"
 msgstr "Pyysi lisää koneita {markup_begin}{time_span_ago}{markup_end}"
@@ -2272,13 +1617,8 @@ msgstr[1] "lataajaa"
 msgid "Asking for peer counts {time_span_from_now}"
 msgstr "Pyydetään koneiden määrää {time_span_from_now}"
 
-#, fuzzy
 msgid "Queued to ask for peer counts"
-msgstr ""
-"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Vertaismäärien kysyminen jonossa\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Jonossa vertaismäärien pyytämiseksi"
+msgstr "Vertaismäärien kysyminen jonossa"
 
 msgid "Asked for peer counts {markup_begin}{time_span_ago}{markup_end}"
 msgstr "Pyydetyt koneet {markup_begin}{time_span_ago}{markup_end}"
@@ -2288,52 +1628,21 @@ msgid_plural "{days:L} days"
 msgstr[0] "{days:L} päivä"
 msgstr[1] "{days:L} päivää"
 
-#, fuzzy
 msgid "{hours:L} hour"
 msgid_plural "{hours:L} hours"
-msgstr[0] ""
-"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{hours:L} tuntia\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{hours:L} tunti"
-msgstr[1] ""
-"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{hours:L} tuntia\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{hours:L} tuntia"
+msgstr[0] "{hours:L} tunti"
+msgstr[1] "{hours:L} tuntia"
 
 #. Translators: Spin box format, "Stop seeding if idle for: [ 5 minutes ]"
-#, fuzzy
 msgid "{minutes:L} minute"
 msgid_plural "{minutes:L} minutes"
-msgstr[0] ""
-"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{minutes:L} minuuttia\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{minutes:L} minuuttia\n"
-"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{minutes:L} minuutti"
-msgstr[1] ""
-"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{minutes:L} minuuttia\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{minutes:L} minuuttia\n"
-"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{minutes:L} minuuttia"
+msgstr[0] "{minutes:L} minuutti"
+msgstr[1] "{minutes:L} minuuttia"
 
-#, fuzzy
 msgid "{seconds:L} second"
 msgid_plural "{seconds:L} seconds"
-msgstr[0] ""
-"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{seconds:L} sekuntia\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{seconds:L} sekunti"
-msgstr[1] ""
-"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{seconds:L} sekuntia\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{seconds:L} sekuntia"
+msgstr[0] "{seconds:L} sekunti"
+msgstr[1] "{seconds:L} sekuntia"
 
 msgid "{days_left:L} day left"
 msgid_plural "{days_left:L} days left"
@@ -2736,69 +2045,29 @@ msgstr "TiB"
 msgid "B/s"
 msgstr "B/s"
 
-#, fuzzy
 msgid "kB/s"
-msgstr ""
-"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"kt/s\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"kB/s"
+msgstr "kB/s"
 
-#, fuzzy
 msgid "MB/s"
-msgstr ""
-"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Mt/s\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"MB/s"
+msgstr "MB/s"
 
-#, fuzzy
 msgid "GB/s"
-msgstr ""
-"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Gt/s\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"GB/s"
+msgstr "GB/s"
 
-#, fuzzy
 msgid "TB/s"
-msgstr ""
-"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Tt/s\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"TB/s"
+msgstr "TB/s"
 
-#, fuzzy
 msgid "kB"
-msgstr ""
-"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"kt\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"kB"
+msgstr "kB"
 
-#, fuzzy
 msgid "MB"
-msgstr ""
-"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Mt\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"MB"
+msgstr "MB"
 
-#, fuzzy
 msgid "GB"
-msgstr ""
-"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Gt\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"GB"
+msgstr "GB"
 
-#, fuzzy
 msgid "TB"
-msgstr ""
-"#-#-#-#-#  fi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Tt\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"TB"
+msgstr "TB"
 
 msgid "Couldn't parse JSON at position {position} '{text}': {error} ({error_code})"
 msgstr "Ei voitu jäsentää JSON {position} '{text}': {error} ({error_code})"
@@ -3050,21 +2319,6 @@ msgstr "_Tärkeysjärjestys:"
 msgid "Select Folder"
 msgstr "Valitse hakemisto"
 
-msgid "unknown"
-msgstr "tuntematon"
-
-msgid "checking…"
-msgstr "tarkistetaan…"
-
-msgid "open"
-msgstr "auki"
-
-msgid "closed"
-msgstr "suljettu"
-
-msgid "error"
-msgstr "virhe"
-
 msgid "<b>Update succeeded!</b><p>Blocklist now has {count:L} rule.</p>"
 msgid_plural "<b>Update succeeded!</b><p>Blocklist now has {count:L} rules.</p>"
 msgstr[0] "<b>Päivitys onnistui!</b><p>Estolista sisältää nyt {count:L} säännön.</p>"
@@ -3120,12 +2374,6 @@ msgstr "Lä_hetys:"
 msgid "Do_wnload:"
 msgstr "L_ataus:"
 
-msgid "Downloading"
-msgstr "Ladataan"
-
-msgid "Adding"
-msgstr "Lisätään"
-
 msgid "Reads user clipboard content for torrents"
 msgstr "Lukee käyttäjän leikepöydän sisältöä uusien torrentien varalta"
 
@@ -3135,9 +2383,6 @@ msgstr "Havaitse uudet torrentit leikepöydältä"
 #. Please keep this phrase as short as possible, it's currently the longest and influences dialog width
 msgid "Download is i_nactive if data sharing stopped:"
 msgstr "Lataus pysähtyy, jos tietoje_n jakaminen lopetettiin:"
-
-msgid "Seeding"
-msgstr "Kylvätään"
 
 msgid "Stop seedi_ng if idle for:"
 msgstr "Pysäytä _jakaminen jos jouten N minuuttia:"
