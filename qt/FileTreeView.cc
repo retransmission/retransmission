@@ -331,19 +331,19 @@ void FileTreeView::initContextMenu()
 {
     context_menu_ = new QMenu{ this };
 
-    check_selected_action_ = context_menu_->addAction(TR_TEXT("Check Selected"), this, SLOT(checkSelectedItems()));
-    uncheck_selected_action_ = context_menu_->addAction(TR_TEXT("Uncheck Selected"), this, SLOT(uncheckSelectedItems()));
+    check_selected_action_ = context_menu_->addAction(TR_MNEMONIC("Check Selected"), this, SLOT(checkSelectedItems()));
+    uncheck_selected_action_ = context_menu_->addAction(TR_MNEMONIC("Uncheck Selected"), this, SLOT(uncheckSelectedItems()));
     only_check_selected_action_ = context_menu_->addAction(
-        TR_TEXT("Only Check Selected"),
+        TR_MNEMONIC("Only Check Selected"),
         this,
         SLOT(onlyCheckSelectedItems()));
 
     context_menu_->addSeparator();
 
-    priority_menu_ = context_menu_->addMenu(TR_TEXT("Priority"));
-    high_priority_action_ = priority_menu_->addAction(TR_TEXT("High"), this, SLOT(setSelectedItemsPriority()));
-    normal_priority_action_ = priority_menu_->addAction(TR_TEXT("Normal"), this, SLOT(setSelectedItemsPriority()));
-    low_priority_action_ = priority_menu_->addAction(TR_TEXT("Low"), this, SLOT(setSelectedItemsPriority()));
+    priority_menu_ = context_menu_->addMenu(TR_MNEMONIC("Priority"));
+    high_priority_action_ = priority_menu_->addAction(TR_MNEMONIC("High"), this, SLOT(setSelectedItemsPriority()));
+    normal_priority_action_ = priority_menu_->addAction(TR_MNEMONIC("Normal"), this, SLOT(setSelectedItemsPriority()));
+    low_priority_action_ = priority_menu_->addAction(TR_MNEMONIC("Low"), this, SLOT(setSelectedItemsPriority()));
 
     high_priority_action_->setProperty(PriorityKey, TR_PRI_HIGH);
     normal_priority_action_->setProperty(PriorityKey, TR_PRI_NORMAL);
@@ -351,8 +351,8 @@ void FileTreeView::initContextMenu()
 
     context_menu_->addSeparator();
 
-    open_action_ = context_menu_->addAction(TR_TEXT("Open"), this, SLOT(openSelectedItem()));
-    rename_action_ = context_menu_->addAction(TR_TEXT("Rename…"), this, SLOT(renameSelectedItem()));
+    open_action_ = context_menu_->addAction(TR_MNEMONIC("Open"), this, SLOT(openSelectedItem()));
+    rename_action_ = context_menu_->addAction(TR_MNEMONIC("Rename…"), this, SLOT(renameSelectedItem()));
 
     connect(context_menu_, &QMenu::aboutToShow, this, &FileTreeView::refreshContextMenuActionsSensitivity);
 }

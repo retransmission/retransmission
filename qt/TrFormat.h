@@ -7,7 +7,6 @@
 
 #include <array>
 #include <concepts>
-#include <cstdint> // uint64_t
 #include <locale>
 #include <span>
 #include <string_view>
@@ -31,14 +30,15 @@
 // TR_TEXT_C("Verb", "Seeding")
 #define TR_TEXT_C(context, msgid) ::trqt::detail::textInContext(context, msgid)
 
-// Translated text in the plural form for `n`:
-// TR_TEXT_N("{count:L} file", "{count:L} files", count)
+// Translated text in the plural form for `n`, left unformatted,
+// e.g. a spin box's TR_TEXT_N("{minutes:L} minute", "{minutes:L} minutes", minutes) around its own number.
+// TR_FORMAT_N also formats the text.
 // Text that doesn't show the count picks its wording with `count == 1` instead,
 // because a language's form for one can cover other counts, e.g. 21 in Russian.
 #define TR_TEXT_N(msgid, msgid_plural, n) ::trqt::detail::pluralText(msgid, msgid_plural, n)
 
-// Translated text for a widget that underlines a mnemonic, such as a menu item, button or buddy label:
-// TR_MNEMONIC("_File") returns "&File".
+// Translated text for a widget that reads "&" as a mnemonic marker, such as a menu item, button or buddy label,
+// whether or not the English marks a mnemonic: TR_MNEMONIC("_File") returns "&File", and a translation's "&" stays literal.
 // The catalog marks a mnemonic with "_" and writes a literal underscore as "__", as GTK does.
 #define TR_MNEMONIC(msgid) ::trqt::detail::mnemonicText(msgid)
 
@@ -90,12 +90,10 @@ namespace detail
 
 [[nodiscard]] QString textInContext(char const* context, char const* msgid);
 
-[[nodiscard]] QString pluralText(char const* msgid, char const* msgid_plural, uint64_t n);
-
 template<std::integral T>
 [[nodiscard]] QString pluralText(char const* const msgid, char const* const msgid_plural, T const n)
 {
-    return pluralText(msgid, msgid_plural, static_cast<uint64_t>(n));
+    return QString::fromUtf8(tr_ngettext(msgid, msgid_plural, n));
 }
 
 [[nodiscard]] QString mnemonicText(char const* msgid);

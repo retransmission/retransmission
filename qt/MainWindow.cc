@@ -316,7 +316,7 @@ QMenu* MainWindow::createOptionsMenu()
             // NOLINTNEXTLINE(clang-analyzer-cplusplus.NewDeleteLeaks)
             auto* action_group = new QActionGroup{ this };
 
-            off_action = menu->addAction(TR_TEXT("Unlimited"));
+            off_action = menu->addAction(TR_MNEMONIC("Unlimited"));
             off_action->setCheckable(true);
             action_group->addAction(off_action);
             connect(off_action, &QAction::triggered, this, [set_enabled](bool is_checked) {
@@ -357,7 +357,7 @@ QMenu* MainWindow::createOptionsMenu()
 
             auto* action_group = new QActionGroup{ this };
 
-            off_action = menu->addAction(TR_TEXT("Seed Forever"));
+            off_action = menu->addAction(TR_MNEMONIC("Seed Forever"));
             off_action->setCheckable(true);
             action_group->addAction(off_action);
             connect(off_action, &QAction::triggered, this, [set_enabled](bool is_checked) {
@@ -387,13 +387,13 @@ QMenu* MainWindow::createOptionsMenu()
     auto* menu = new QMenu{ this };
 
     init_speed_sub_menu(
-        menu->addMenu(TR_TEXT("Limit Download Speed")),
+        menu->addMenu(TR_MNEMONIC("Limit Download Speed")),
         dlimit_off_action_,
         dlimit_on_action_,
         TR_KEY_speed_limit_down,
         TR_KEY_speed_limit_down_enabled);
     init_speed_sub_menu(
-        menu->addMenu(TR_TEXT("Limit Upload Speed")),
+        menu->addMenu(TR_MNEMONIC("Limit Upload Speed")),
         ulimit_off_action_,
         ulimit_on_action_,
         TR_KEY_speed_limit_up,
@@ -402,7 +402,7 @@ QMenu* MainWindow::createOptionsMenu()
     menu->addSeparator();
 
     init_seed_ratio_sub_menu(
-        menu->addMenu(TR_TEXT("Stop Seeding at Ratio")),
+        menu->addMenu(TR_MNEMONIC("Stop Seeding at Ratio")),
         ratio_off_action_,
         ratio_on_action_,
         TR_KEY_seed_ratio_limit,
@@ -1216,7 +1216,7 @@ void MainWindow::openTorrent()
     d->setAttribute(Qt::WA_DeleteOnClose);
 
     if (auto* const l = qobject_cast<QGridLayout*>(d->layout()); l != nullptr) {
-        auto* b = new QCheckBox{ TR_TEXT("Show options dialog") };
+        auto* b = new QCheckBox{ TR_MNEMONIC("Show options dialog") };
         b->setChecked(prefs_.get<bool>(TR_KEY_show_options_window));
         b->setObjectName(show_options_checkbox_name_);
         l->addWidget(b, l->rowCount(), 0, 1, -1, Qt::AlignLeft);
