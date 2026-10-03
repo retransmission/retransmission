@@ -42,6 +42,18 @@ template<std::integral T>
     return tr_ngettext(msgid, msgid_plural, static_cast<uint64_t>(n));
 }
 
+// Like tr_gettext() and tr_ngettext(), for English text that needs a context to tell its meanings apart.
+// The catalog keys such a message by its context and text, as gettext's msgctxt does.
+[[nodiscard]] char const* tr_pgettext(char const* context, char const* msgid);
+
+[[nodiscard]] char const* tr_npgettext(char const* context, char const* msgid, char const* msgid_plural, uint64_t n);
+
+template<std::integral T>
+[[nodiscard]] char const* tr_npgettext(char const* context, char const* msgid, char const* msgid_plural, T n)
+{
+    return tr_npgettext(context, msgid, msgid_plural, static_cast<uint64_t>(n));
+}
+
 #define _(msgid) tr_gettext(msgid)
 
 // ---

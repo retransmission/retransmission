@@ -135,63 +135,6 @@ source_group(Ui
 source_group(Resources
     REGULAR_EXPRESSION [[.*\.qrc$]])
 
-set(LINGUAS
-    af
-    ca
-    da
-    de
-    el
-    en
-    es
-    eu
-    fi
-    fr
-    he
-    hu
-    id
-    is
-    it
-    ja
-    ka
-    kk
-    ko
-    lt
-    nb
-    nl
-    pl
-    pt
-    pt_BR
-    pt_PT
-    ru
-    sl
-    sv
-    tr
-    uk
-    zh_CN
-    zh_TW)
-
-if(ENABLE_NLS)
-    set(ENABLED_LINGUAS ${LINGUAS})
-else()
-    set(ENABLED_LINGUAS)
-endif()
-
-# The client loads <name>_<locale>.qm, which is built from translations/<name>_<locale>.ts.
-set(TRANSLATIONS_NAME transmission)
-
-set(TS_FILES)
-foreach(LANG ${ENABLED_LINGUAS})
-    list(APPEND TS_FILES translations/${TRANSLATIONS_NAME}_${LANG}.ts)
-endforeach()
-
-if(TS_FILES)
-    tr_qt_add_translation(QM_FILES ${TS_FILES})
-endif()
-
-target_sources(${TR_NAME}-qt-lib
-    PRIVATE
-        ${QM_FILES})
-
 target_include_directories(${TR_NAME}-qt-lib
     PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR})
@@ -208,18 +151,18 @@ target_compile_definitions(${TR_NAME}-qt-lib
         $<$<BOOL:${ENABLE_QT_DBUS_INTEROP}>:ENABLE_DBUS_INTEROP>
         QT_NO_CAST_FROM_ASCII
     PRIVATE
-        "TRANSLATIONS_DIR=\"${TR_DATA_INSTALL_FULL_DIR}/translations\""
-        "TRANSLATIONS_NAME=\"${TRANSLATIONS_NAME}\""
         "TR_QT_ICON_NAME=\"${TR_QT_ICON_NAME}\""
         "TR_GETTEXT_DOMAIN=\"${TR_GETTEXT_DOMAIN}\""
         "TR_LOCALE_DIR=\"${CMAKE_INSTALL_FULL_LOCALEDIR}\"")
 
+# Designer files translate their text with the shared catalog, as the code does.
 set_target_properties(
     ${TR_NAME}-qt-lib
     PROPERTIES
         AUTOMOC ON
         AUTORCC ON
-        AUTOUIC ON)
+        AUTOUIC ON
+        AUTOUIC_OPTIONS "--tr;trqt::uiText;--include;TrFormat.h")
 
 add_executable(${TR_NAME}-qt WIN32)
 
@@ -269,20 +212,21 @@ if(INSTALL_DOC)
         DESTINATION ${CMAKE_INSTALL_MANDIR}/man1)
 endif()
 
-configure_file(
-    "${CMAKE_CURRENT_SOURCE_DIR}/retransmission-qt.desktop.in"
-    "${CMAKE_CURRENT_BINARY_DIR}/${TR_NAME}-qt.desktop"
-    @ONLY)
+set(DESKTOP_FILE "${CMAKE_CURRENT_BINARY_DIR}/${TR_NAME}-qt.desktop")
+
+# Gettext merges the translations into the configured copy.
+if(ENABLE_NLS AND GETTEXT_FOUND)
+    configure_file(retransmission-qt.desktop.in retransmission-qt.desktop.in @ONLY)
+    tr_gettext_msgfmt(${TR_NAME}-qt
+        ${DESKTOP_FILE}
+        ${CMAKE_CURRENT_BINARY_DIR}/retransmission-qt.desktop.in)
+else()
+    configure_file(retransmission-qt.desktop.in ${DESKTOP_FILE} @ONLY)
+endif()
 
 install(
-    FILES ${CMAKE_CURRENT_BINARY_DIR}/${TR_NAME}-qt.desktop
+    FILES ${DESKTOP_FILE}
     DESTINATION ${CMAKE_INSTALL_DATADIR}/applications)
-
-if(ENABLE_NLS)
-    install(
-        FILES ${QM_FILES}
-        DESTINATION ${TR_DATA_INSTALL_DIR}/translations)
-endif()
 
 if(WIN32)
     file(GENERATE

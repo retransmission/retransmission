@@ -3,22 +3,16 @@
 # so one much below that mixes the two languages on every screen.
 set(LINGUAS
     da
-    de
     el
-    es
-    eu
     fi
     fr
     he
-    hu
-    is
     ja
     nl
     pl
     ru
     sv
     tr
-    uk
     zh_CN
     zh_TW)
 

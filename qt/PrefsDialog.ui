@@ -39,7 +39,7 @@
           <item row="0" column="0">
            <widget class="QCheckBox" name="uploadSpeedLimitCheck">
             <property name="text">
-             <string>&amp;Upload:</string>
+             <string>_Upload:</string>
             </property>
             <property name="checked">
              <bool>true</bool>
@@ -59,7 +59,7 @@
           <item row="1" column="0">
            <widget class="QCheckBox" name="downloadSpeedLimitCheck">
             <property name="text">
-             <string>&amp;Download:</string>
+             <string>_Download:</string>
             </property>
             <property name="checked">
              <bool>true</bool>
@@ -106,7 +106,7 @@
           <item row="1" column="0">
            <widget class="QLabel" name="altUploadSpeedLimitLabel">
             <property name="text">
-             <string>U&amp;pload:</string>
+             <string>U_pload:</string>
             </property>
             <property name="buddy">
              <cstring>altUploadSpeedLimitSpin</cstring>
@@ -126,7 +126,7 @@
           <item row="2" column="0">
            <widget class="QLabel" name="altDownloadSpeedLimitLabel">
             <property name="text">
-             <string>Do&amp;wnload:</string>
+             <string>Do_wnload:</string>
             </property>
             <property name="buddy">
              <cstring>altDownloadSpeedLimitSpin</cstring>
@@ -146,7 +146,7 @@
           <item row="3" column="0">
            <widget class="QCheckBox" name="altSpeedLimitScheduleCheck">
             <property name="text">
-             <string>&amp;Scheduled times:</string>
+             <string>_Scheduled times:</string>
             </property>
             <property name="checked">
              <bool>true</bool>
@@ -171,7 +171,7 @@
                </sizepolicy>
               </property>
               <property name="text">
-               <string>&amp;to</string>
+               <string>_to</string>
               </property>
               <property name="buddy">
                <cstring>altSpeedLimitEndTimeEdit</cstring>
@@ -190,7 +190,7 @@
           <item row="4" column="0">
            <widget class="QLabel" name="altSpeedLimitDaysLabel">
             <property name="text">
-             <string>&amp;On days:</string>
+             <string>_On days:</string>
             </property>
             <property name="buddy">
              <cstring>altSpeedLimitDaysCombo</cstring>
@@ -232,7 +232,7 @@
           <item row="0" column="0">
            <widget class="QCheckBox" name="watchDirCheck">
             <property name="text">
-             <string>Automatically add torrent files &amp;from:</string>
+             <string>Automatically add torrent files _from:</string>
             </property>
             <property name="checked">
              <bool>true</bool>
@@ -254,14 +254,14 @@
           <item row="1" column="0" colspan="2">
            <widget class="QCheckBox" name="showTorrentOptionsDialogCheck">
             <property name="text">
-             <string>Show the Torrent Options &amp;dialog</string>
+             <string>Show the Torrent Options _dialog</string>
             </property>
            </widget>
           </item>
           <item row="2" column="0" colspan="2">
            <widget class="QCheckBox" name="startAddedTorrentsCheck">
             <property name="text">
-             <string>&amp;Start added torrents</string>
+             <string>_Start added torrents</string>
             </property>
            </widget>
           </item>
@@ -278,14 +278,14 @@
           <item row="4" column="0" colspan="2">
            <widget class="QCheckBox" name="trashTorrentFileCheck">
             <property name="text">
-             <string>Mo&amp;ve torrent file to the Trash</string>
+             <string>Mo_ve torrent file to the Trash</string>
             </property>
            </widget>
           </item>
           <item row="5" column="0">
            <widget class="QLabel" name="downloadDirLabel">
             <property name="text">
-             <string>Save to &amp;location:</string>
+             <string>Save to _location:</string>
             </property>
            </widget>
           </item>
@@ -323,7 +323,7 @@
           <item row="0" column="0">
            <widget class="QLabel" name="downloadQueueSizeLabel">
             <property name="text">
-             <string>Ma&amp;ximum active downloads:</string>
+             <string>Ma_ximum active downloads:</string>
             </property>
             <property name="buddy">
              <cstring>downloadQueueSizeSpin</cstring>
@@ -343,7 +343,7 @@
           <item row="1" column="0">
            <widget class="QLabel" name="queueStalledMinutesLabel">
             <property name="text">
-             <string extracomment="Please keep this phrase as short as possible, it's currently the longest and influences dialog width">Download is i&amp;nactive if data sharing stopped:</string>
+             <string extracomment="Please keep this phrase as short as possible, it's currently the longest and influences dialog width">Download is i_nactive if data sharing stopped:</string>
             </property>
             <property name="buddy">
              <cstring>queueStalledMinutesSpin</cstring>
@@ -378,14 +378,14 @@
           <item row="0" column="0" colspan="2">
            <widget class="QCheckBox" name="renamePartialFilesCheck">
             <property name="text">
-             <string>Append &quot;.&amp;part&quot; to incomplete files' names</string>
+             <string>Append &quot;._part&quot; to incomplete files' names</string>
             </property>
            </widget>
           </item>
           <item row="1" column="0">
            <widget class="QCheckBox" name="incompleteDirCheck">
             <property name="text">
-             <string>Keep &amp;incomplete files in:</string>
+             <string>Keep _incomplete files in:</string>
             </property>
             <property name="checked">
              <bool>true</bool>
@@ -407,7 +407,7 @@
           <item row="2" column="0">
            <widget class="QCheckBox" name="doneDownloadingScriptCheck">
             <property name="text">
-             <string>Call scrip&amp;t when download completes:</string>
+             <string>Call scrip_t when download completes:</string>
             </property>
             <property name="checked">
              <bool>true</bool>
@@ -465,7 +465,7 @@
           <item row="0" column="0">
            <widget class="QCheckBox" name="ratioLimitCheck">
             <property name="text">
-             <string>Stop seeding at &amp;ratio:</string>
+             <string>Stop seeding at _ratio:</string>
             </property>
             <property name="checked">
              <bool>true</bool>
@@ -485,7 +485,7 @@
           <item row="1" column="0">
            <widget class="QCheckBox" name="idleLimitCheck">
             <property name="text">
-             <string>Stop seedi&amp;ng if idle for:</string>
+             <string>Stop seedi_ng if idle for:</string>
             </property>
             <property name="checked">
              <bool>true</bool>
@@ -511,7 +511,7 @@
           <item row="2" column="0">
            <widget class="QCheckBox" name="doneSeedingScriptCheck">
             <property name="text">
-             <string>Call scrip&amp;t when done seeding:</string>
+             <string>Call scrip_t when done seeding:</string>
             </property>
             <property name="checked">
              <bool>true</bool>
@@ -562,7 +562,7 @@
           <item row="0" column="0">
            <widget class="QLabel" name="encryptionModeLabel">
             <property name="text">
-             <string>&amp;Encryption mode:</string>
+             <string>_Encryption mode:</string>
             </property>
             <property name="buddy">
              <cstring>encryptionModeCombo</cstring>
@@ -584,7 +584,7 @@
           <item row="0" column="0">
            <widget class="QCheckBox" name="blocklistCheck">
             <property name="text">
-             <string>Enable &amp;blocklist:</string>
+             <string>Enable _blocklist:</string>
             </property>
             <property name="checked">
              <bool>true</bool>
@@ -604,7 +604,7 @@
           <item row="1" column="2">
            <widget class="QPushButton" name="updateBlocklistButton">
             <property name="text">
-             <string>&amp;Update</string>
+             <string>_Update</string>
             </property>
             <property name="autoDefault">
              <bool>false</bool>
@@ -614,7 +614,7 @@
           <item row="2" column="0" colspan="3">
            <widget class="QCheckBox" name="autoUpdateBlocklistCheck">
             <property name="text">
-             <string>&amp;Automatically update weekly</string>
+             <string>_Automatically update weekly</string>
             </property>
            </widget>
           </item>
@@ -657,7 +657,7 @@
           <item row="0" column="0">
            <widget class="QLabel" name="peerPortLabel">
             <property name="text">
-             <string>&amp;Port for incoming connections:</string>
+             <string>_Port for incoming connections:</string>
             </property>
             <property name="buddy">
              <cstring>peerPortSpin</cstring>
@@ -677,7 +677,7 @@
           <item row="0" column="2">
            <widget class="QPushButton" name="testPeerPortButton">
             <property name="text">
-             <string>Te&amp;st Port</string>
+             <string>Te_st Port</string>
             </property>
             <property name="autoDefault">
              <bool>false</bool>
@@ -694,14 +694,14 @@
           <item row="2" column="0" colspan="3">
            <widget class="QCheckBox" name="randomPeerPortCheck">
             <property name="text">
-             <string>Pick a &amp;random port at startup</string>
+             <string>Pick a _random port at startup</string>
             </property>
            </widget>
           </item>
           <item row="3" column="0" colspan="3">
            <widget class="QCheckBox" name="enablePortForwardingCheck">
             <property name="text">
-             <string>Use UPnP or NAT-PMP port &amp;forwarding from my router</string>
+             <string>Use UPnP or NAT-PMP port _forwarding from my router</string>
             </property>
            </widget>
           </item>
@@ -717,7 +717,7 @@
           <item row="0" column="0">
            <widget class="QLabel" name="torrentPeerLimitLabel">
             <property name="text">
-             <string>Maximum peers for new &amp;torrents:</string>
+             <string>Maximum peers for new _torrents:</string>
             </property>
             <property name="buddy">
              <cstring>torrentPeerLimitSpin</cstring>
@@ -740,7 +740,7 @@
           <item row="1" column="0">
            <widget class="QLabel" name="globalPeerLimitLabel">
             <property name="text">
-             <string>Maximum peers &amp;overall:</string>
+             <string>Maximum peers _overall:</string>
             </property>
             <property name="buddy">
              <cstring>globalPeerLimitSpin</cstring>
@@ -775,7 +775,7 @@
              <string>µTP is a tool for reducing network congestion.</string>
             </property>
             <property name="text">
-             <string>Enable µ&amp;TP for peer connections</string>
+             <string>Enable µ_TP for peer connections</string>
             </property>
            </widget>
           </item>
@@ -785,7 +785,7 @@
              <string>PEX is a tool for exchanging peer lists with the peers you're connected to.</string>
             </property>
             <property name="text">
-             <string>Use PE&amp;X to find more peers for public torrents</string>
+             <string>Use PE_X to find more peers for public torrents</string>
             </property>
            </widget>
           </item>
@@ -795,7 +795,7 @@
              <string>DHT is a tool for finding peers without a tracker.</string>
             </property>
             <property name="text">
-             <string>Use &amp;DHT to find more peers for public torrents</string>
+             <string>Use _DHT to find more peers for public torrents</string>
             </property>
            </widget>
           </item>
@@ -805,7 +805,7 @@
              <string>LPD is a tool for finding peers on your local network.</string>
             </property>
             <property name="text">
-             <string>Use &amp;Local Peer Discovery to find more peers for public torrents</string>
+             <string>Use _Local Peer Discovery to find more peers for public torrents</string>
             </property>
            </widget>
           </item>
@@ -869,21 +869,21 @@ To add a new primary URL, add it after a blank line.</string>
           <item>
            <widget class="QCheckBox" name="showTrayIconCheck">
             <property name="text">
-             <string>Show {appname} icon in the &amp;notification area</string>
+             <string>Show {appname} icon in the _notification area</string>
             </property>
            </widget>
           </item>
           <item>
            <widget class="QCheckBox" name="startMinimizedCheck">
             <property name="text">
-             <string>Start &amp;minimized in notification area</string>
+             <string>Start _minimized in notification area</string>
             </property>
            </widget>
           </item>
           <item>
            <widget class="QCheckBox" name="preventSleepCheck">
             <property name="text">
-             <string>&amp;Prevent computer from sleeping with active torrents</string>
+             <string>_Prevent computer from sleeping with active torrents</string>
             </property>
            </widget>
           </item>
@@ -899,21 +899,21 @@ To add a new primary URL, add it after a blank line.</string>
           <item>
            <widget class="QCheckBox" name="notifyOnTorrentAddedCheck">
             <property name="text">
-             <string>Show a notification when torrents are a&amp;dded</string>
+             <string>Show a notification when torrents are a_dded</string>
             </property>
            </widget>
           </item>
           <item>
            <widget class="QCheckBox" name="notifyOnTorrentCompletedCheck">
             <property name="text">
-             <string>Show a notification when torrents &amp;finish</string>
+             <string>Show a notification when torrents _finish</string>
             </property>
            </widget>
           </item>
           <item>
            <widget class="QCheckBox" name="playSoundOnTorrentCompletedCheck">
             <property name="text">
-             <string>Play a &amp;sound when torrents finish</string>
+             <string>Play a _sound when torrents finish</string>
             </property>
            </widget>
           </item>
@@ -949,7 +949,7 @@ To add a new primary URL, add it after a blank line.</string>
           <item row="0" column="0" colspan="2">
            <widget class="QCheckBox" name="enableRpcCheck">
             <property name="text">
-             <string>Allow &amp;remote access</string>
+             <string>Allow _remote access</string>
             </property>
             <property name="checked">
              <bool>true</bool>
@@ -959,7 +959,7 @@ To add a new primary URL, add it after a blank line.</string>
           <item row="0" column="2">
            <widget class="QPushButton" name="openWebClientButton">
             <property name="text">
-             <string>&amp;Open Web Client</string>
+             <string>_Open Web Client</string>
             </property>
             <property name="autoDefault">
              <bool>false</bool>
@@ -969,7 +969,7 @@ To add a new primary URL, add it after a blank line.</string>
           <item row="1" column="0">
            <widget class="QLabel" name="rpcPortLabel">
             <property name="text">
-             <string>HTTP &amp;port:</string>
+             <string>HTTP _port:</string>
             </property>
             <property name="buddy">
              <cstring>rpcPortSpin</cstring>
@@ -989,7 +989,7 @@ To add a new primary URL, add it after a blank line.</string>
           <item row="2" column="0" colspan="3">
            <widget class="QCheckBox" name="requireRpcAuthCheck">
             <property name="text">
-             <string>Use &amp;authentication</string>
+             <string>Use _authentication</string>
             </property>
             <property name="checked">
              <bool>true</bool>
@@ -999,7 +999,7 @@ To add a new primary URL, add it after a blank line.</string>
           <item row="3" column="0">
            <widget class="QLabel" name="rpcUsernameLabel">
             <property name="text">
-             <string>&amp;Username:</string>
+             <string>_Username:</string>
             </property>
             <property name="buddy">
              <cstring>rpcUsernameEdit</cstring>
@@ -1012,7 +1012,7 @@ To add a new primary URL, add it after a blank line.</string>
           <item row="4" column="0">
            <widget class="QLabel" name="rpcPasswordLabel">
             <property name="text">
-             <string>Pass&amp;word:</string>
+             <string>Pass_word:</string>
             </property>
             <property name="buddy">
              <cstring>rpcPasswordEdit</cstring>
@@ -1029,7 +1029,7 @@ To add a new primary URL, add it after a blank line.</string>
           <item row="5" column="0" colspan="3">
            <widget class="QCheckBox" name="enableRpcWhitelistCheck">
             <property name="text">
-             <string>Only allow these IP a&amp;ddresses:</string>
+             <string>Only allow these IP a_ddresses:</string>
             </property>
             <property name="checked">
              <bool>true</bool>

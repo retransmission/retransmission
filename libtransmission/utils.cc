@@ -79,6 +79,38 @@ char const* tr_ngettext(char const* const msgid, char const* const msgid_plural,
     return n == 1U ? msgid : msgid_plural;
 }
 
+namespace
+{
+// A catalog keys a message with a context as the context, '\x04', and the English text.
+[[nodiscard]] std::string context_key(char const* const context, char const* const msgid)
+{
+    auto key = std::string{ context };
+    key += '\x04';
+    key += msgid;
+    return key;
+}
+} // namespace
+
+// A translator returns its argument when it has no translation,
+// so returning the key means that the catalog lacks the message.
+char const* tr_pgettext(char const* const context, char const* const msgid)
+{
+    auto const key = context_key(context, msgid);
+    auto const* const translation = tr_gettext(key.c_str());
+    return translation == key.c_str() ? msgid : translation;
+}
+
+char const* tr_npgettext(char const* const context, char const* const msgid, char const* const msgid_plural, uint64_t const n)
+{
+    auto const key = context_key(context, msgid);
+    auto const* const translation = tr_ngettext(key.c_str(), msgid_plural, n);
+    if (translation == key.c_str() || translation == msgid_plural) {
+        return n == 1U ? msgid : msgid_plural;
+    }
+
+    return translation;
+}
+
 // ---
 
 #if defined(_WIN32) && defined(__clang_analyzer__)

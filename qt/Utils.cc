@@ -7,7 +7,6 @@
 
 #include <string_view>
 
-#include <QtCore/QCoreApplication>
 #include <QtCore/QDataStream>
 #include <QtCore/QFile>
 #include <QtCore/QFileInfo>
@@ -118,11 +117,16 @@ QColor Utils::getFadedColor(QColor const& color)
     return faded_color;
 }
 
-void Utils::updateSpinBoxFormat(QSpinBox* spinBox, char const* context, char const* format, std::string_view const field)
+void Utils::updateSpinBoxFormat(
+    QSpinBox* spinBox,
+    char const* const msgid,
+    char const* const msgid_plural,
+    std::string_view const field)
 {
+    auto const value = spinBox->value();
     auto const [units_prefix, units_suffix] = trqt::splitAtField(
-        QCoreApplication::translate(context, format, nullptr, spinBox->value()),
-        format,
+        TR_TEXT_N(msgid, msgid_plural, value),
+        value == 1 ? msgid : msgid_plural,
         field);
 
     if (spinBox->prefix() != units_prefix) {
