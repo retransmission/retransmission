@@ -1,15 +1,15 @@
 
-/* Class = "NSWindow"; title = "Transmission"; ObjectID = "21"; */
-"21.title" = "Transmission";
+/* Class = "NSWindow"; title = "Retransmission"; ObjectID = "21"; */
+"21.title" = "Retransmission";
 
-/* Class = "NSMenuItem"; title = "Transmission"; ObjectID = "56"; */
-"56.title" = "Transmission";
+/* Class = "NSMenuItem"; title = "Retransmission"; ObjectID = "56"; */
+"56.title" = "Retransmission";
 
-/* Class = "NSMenu"; title = "Transmission"; ObjectID = "57"; */
-"57.title" = "Transmission";
+/* Class = "NSMenu"; title = "Retransmission"; ObjectID = "57"; */
+"57.title" = "Retransmission";
 
-/* Class = "NSMenuItem"; title = "About Transmission"; ObjectID = "58"; */
-"58.title" = "О Transmission";
+/* Class = "NSMenuItem"; title = "About Retransmission"; ObjectID = "58"; */
+"58.title" = "О Retransmission";
 
 /* Class = "NSMenuItem"; title = "Open Torrent File…"; ObjectID = "72"; */
 "72.title" = "Открыть торрент-файл...";
@@ -38,11 +38,11 @@
 /* Class = "NSMenuItem"; title = "Services"; ObjectID = "131"; */
 "131.title" = "Службы";
 
-/* Class = "NSMenuItem"; title = "Hide Transmission"; ObjectID = "134"; */
-"134.title" = "Скрыть Transmission";
+/* Class = "NSMenuItem"; title = "Hide Retransmission"; ObjectID = "134"; */
+"134.title" = "Скрыть Retransmission";
 
-/* Class = "NSMenuItem"; title = "Quit Transmission"; ObjectID = "136"; */
-"136.title" = "Выйти из Transmission";
+/* Class = "NSMenuItem"; title = "Quit Retransmission"; ObjectID = "136"; */
+"136.title" = "Выйти из Retransmission";
 
 /* Class = "NSMenuItem"; title = "Hide Others"; ObjectID = "145"; */
 "145.title" = "Скрыть остальные";
@@ -75,7 +75,7 @@
 "302.title" = "Вид";
 
 /* Class = "NSMenuItem"; title = "Forums"; ObjectID = "418"; */
-"418.title" = "Форумы Transmission";
+"418.title" = "Форумы Retransmission";
 
 /* Class = "NSMenu"; title = "Menu"; ObjectID = "456"; */
 "456.title" = "Меню";
@@ -152,11 +152,11 @@
 /* Class = "NSMenuItem"; title = "Remove and Trash Data File"; ObjectID = "1551"; */
 "1551.title" = "Удалить данные";
 
-/* Class = "NSMenuItem"; title = "Transmission Homepage"; ObjectID = "1558"; */
-"1558.title" = "Домашняя страница Transmission";
+/* Class = "NSMenuItem"; title = "Retransmission Homepage"; ObjectID = "1558"; */
+"1558.title" = "Домашняя страница Retransmission";
 
-/* Class = "NSMenuItem"; title = "Transmission Help"; ObjectID = "1561"; */
-"1561.title" = "Справка Transmission";
+/* Class = "NSMenuItem"; title = "Retransmission Help"; ObjectID = "1561"; */
+"1561.title" = "Справка Retransmission";
 
 /* Class = "NSMenuItem"; title = "Speed Limit"; ObjectID = "1566"; */
 "1566.title" = "Ограничение скорости";
@@ -194,8 +194,8 @@
 /* Class = "NSMenuItem"; title = "Previous Inspector Tab"; ObjectID = "1694"; */
 "1694.title" = "Предыдущая вкладка инспектора";
 
-/* Class = "NSMenuItem"; title = "Transmission"; ObjectID = "1696"; */
-"1696.title" = "Transmission";
+/* Class = "NSMenuItem"; title = "Retransmission"; ObjectID = "1696"; */
+"1696.title" = "Retransmission";
 
 /* Class = "NSMenuItem"; title = "Delete"; ObjectID = "1766"; */
 "1766.title" = "Удалить";
@@ -303,7 +303,7 @@
 "3166.title" = "Быстрый ";
 
 /* Class = "NSMenuItem"; title = "Support & Development"; ObjectID = "3170"; */
-"3170.title" = "Transmission wiki и разработка";
+"3170.title" = "Retransmission wiki и разработка";
 
 /* Class = "NSMenuItem"; title = "Save Torrent File As…"; ObjectID = "3207"; */
 "3207.title" = "Сохранить торрент-файл как…";

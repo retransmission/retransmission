@@ -15,7 +15,7 @@
         </customObject>
         <customObject id="-1" userLabel="First Responder" customClass="FirstResponder"/>
         <customObject id="-3" userLabel="Application" customClass="NSObject"/>
-        <window title="Transmission" allowsToolTipsWhenApplicationIsInactive="NO" restorable="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" frameAutosaveName="TransmissionWindow" animationBehavior="default" tabbingMode="disallowed" id="21" userLabel="Transmission">
+        <window title="Retransmission" allowsToolTipsWhenApplicationIsInactive="NO" restorable="NO" releasedWhenClosed="NO" visibleAtLaunch="NO" frameAutosaveName="TransmissionWindow" animationBehavior="default" tabbingMode="disallowed" id="21" userLabel="Transmission">
             <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES" fullSizeContentView="YES"/>
             <windowPositionMask key="initialPositionMask" leftStrut="YES" topStrut="YES"/>
             <rect key="contentRect" x="71" y="712" width="480" height="269"/>
@@ -148,10 +148,10 @@
         </window>
         <menu systemMenu="main" id="29" userLabel="MainMenu">
             <items>
-                <menuItem title="Transmission" id="56">
-                    <menu key="submenu" title="Transmission" systemMenu="apple" id="57">
+                <menuItem title="Retransmission" id="56">
+                    <menu key="submenu" title="Retransmission" systemMenu="apple" id="57">
                         <items>
-                            <menuItem title="About Transmission" id="58">
+                            <menuItem title="About Retransmission" id="58">
                                 <modifierMask key="keyEquivalentModifierMask"/>
                                 <connections>
                                     <action selector="showAboutWindow:" target="206" id="1927"/>
@@ -186,7 +186,7 @@
                             <menuItem isSeparatorItem="YES" id="144">
                                 <modifierMask key="keyEquivalentModifierMask" command="YES"/>
                             </menuItem>
-                            <menuItem title="Hide Transmission" keyEquivalent="h" id="134">
+                            <menuItem title="Hide Retransmission" keyEquivalent="h" id="134">
                                 <connections>
                                     <action selector="hide:" target="-2" id="152"/>
                                 </connections>
@@ -205,7 +205,7 @@
                             <menuItem isSeparatorItem="YES" id="149">
                                 <modifierMask key="keyEquivalentModifierMask" command="YES"/>
                             </menuItem>
-                            <menuItem title="Quit Transmission" keyEquivalent="q" id="136">
+                            <menuItem title="Quit Retransmission" keyEquivalent="q" id="136">
                                 <connections>
                                     <action selector="terminate:" target="-2" id="614"/>
                                 </connections>
@@ -616,7 +616,7 @@ CA
                             <menuItem isSeparatorItem="YES" id="1799">
                                 <modifierMask key="keyEquivalentModifierMask" command="YES"/>
                             </menuItem>
-                            <menuItem title="Transmission" secondaryImage="house" catalog="system" keyEquivalent="1" id="1696">
+                            <menuItem title="Retransmission" secondaryImage="house" catalog="system" keyEquivalent="1" id="1696">
                                 <connections>
                                     <action selector="showMainWindow:" target="206" id="1702"/>
                                 </connections>
@@ -645,7 +645,7 @@ CA
                 <menuItem title="Help" id="103">
                     <menu key="submenu" title="Help" autoenablesItems="NO" id="106">
                         <items>
-                            <menuItem title="Transmission Help" keyEquivalent="?" id="1561">
+                            <menuItem title="Retransmission Help" keyEquivalent="?" id="1561">
                                 <connections>
                                     <action selector="showHelp:" target="-1" id="1562"/>
                                 </connections>
@@ -653,7 +653,7 @@ CA
                             <menuItem isSeparatorItem="YES" id="1559">
                                 <modifierMask key="keyEquivalentModifierMask" command="YES"/>
                             </menuItem>
-                            <menuItem title="Transmission Homepage" secondaryImage="globe" catalog="system" id="1558">
+                            <menuItem title="Retransmission Homepage" secondaryImage="globe" catalog="system" id="1558">
                                 <connections>
                                     <action selector="linkHomepage:" target="206" id="1560"/>
                                 </connections>

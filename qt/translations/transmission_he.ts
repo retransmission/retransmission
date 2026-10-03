@@ -5,13 +5,13 @@
     <name>AboutDialog</name>
     <message>
         <location filename="../AboutDialog.ui" line="+14"/>
-        <source>About Transmission</source>
-        <translation>על Transmission</translation>
+        <source>About {appname}</source>
+        <translation>על {appname}</translation>
     </message>
     <message>
         <location line="+39"/>
-        <source>Copyright © The Transmission Project</source>
-        <translation>כל הזכויות שמורות © מיזם Transmission</translation>
+        <source>Copyright © The Retransmission Project</source>
+        <translation>כל הזכויות שמורות © מיזם Retransmission</translation>
     </message>
     <message>
         <source>Copyright © The {appname} Project</source>
@@ -777,8 +777,8 @@
     <name>MainWindow</name>
     <message>
         <location filename="../MainWindow.ui" line="+14"/>
-        <source>Transmission</source>
-        <translation>‏Transmission</translation>
+        <source>Retransmission</source>
+        <translation>‏Retransmission</translation>
     </message>
     <message>
         <location line="+181"/>
@@ -1844,8 +1844,8 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message>
         <location line="+6"/>
-        <source>Show Transmission icon in the &amp;notification area</source>
-        <translation>הצגת סמל ‏Transmission באזור ההו&amp;דעות</translation>
+        <source>Show {appname} icon in the &amp;notification area</source>
+        <translation>הצגת סמל ‏{appname} באזור ההו&amp;דעות</translation>
     </message>
     <message>
         <location line="-192"/>
@@ -2126,8 +2126,8 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message>
         <location line="-467"/>
-        <source>Transmission Preferences</source>
-        <translation>העדפות ‏Transmission</translation>
+        <source>{appname} Preferences</source>
+        <translation>העדפות ‏{appname}</translation>
     </message>
     <message>
         <location line="+16"/>

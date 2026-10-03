@@ -5,12 +5,12 @@
     <name>AboutDialog</name>
     <message>
         <location filename="../AboutDialog.ui" line="+14"/>
-        <source>About Transmission</source>
-        <translation>Apie „Transmission“</translation>
+        <source>About {appname}</source>
+        <translation>Apie „{appname}“</translation>
     </message>
     <message>
         <location line="+39"/>
-        <source>Copyright © The Transmission Project</source>
+        <source>Copyright © The Retransmission Project</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -777,8 +777,8 @@
     <name>MainWindow</name>
     <message>
         <location filename="../MainWindow.ui" line="+14"/>
-        <source>Transmission</source>
-        <translation>Transmission</translation>
+        <source>Retransmission</source>
+        <translation>Retransmission</translation>
     </message>
     <message>
         <location line="+181"/>
@@ -1849,8 +1849,8 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message>
         <location line="+6"/>
-        <source>Show Transmission icon in the &amp;notification area</source>
-        <translation>Rodyti „Transmission“ piktogramą pranešimų &amp;srityje</translation>
+        <source>Show {appname} icon in the &amp;notification area</source>
+        <translation>Rodyti „{appname}“ piktogramą pranešimų &amp;srityje</translation>
     </message>
     <message>
         <location line="-192"/>
@@ -2124,8 +2124,8 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message>
         <location line="-467"/>
-        <source>Transmission Preferences</source>
-        <translation>„Transmission“ nuostatos</translation>
+        <source>{appname} Preferences</source>
+        <translation>„{appname}“ nuostatos</translation>
     </message>
     <message>
         <location line="+16"/>

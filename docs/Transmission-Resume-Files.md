@@ -1,4 +1,4 @@
-Transmission keeps working information on each torrent in a "resume" file. This file is stored in the 'resume' directory.
+Retransmission keeps working information on each torrent in a "resume" file. This file is stored in the 'resume' directory.
 
 Filename: `<hash?>.resume`
 

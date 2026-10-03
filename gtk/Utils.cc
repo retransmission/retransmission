@@ -914,3 +914,8 @@ std::string gtr_get_full_resource_path(std::string const& rel_path)
 {
     return fmt::format("/{:s}/{:s}/{:s}/{:s}", TR_PROJ_DOMAIN_TLD, TR_PROJ_DOMAIN_SLD, TR_PROJ_APPNAME, rel_path);
 }
+
+Glib::ustring gtr_with_app_name(Glib::ustring const& text)
+{
+    return fmt::format(fmt::runtime(text.raw()), fmt::arg("appname", TR_PROJ_APPNAME_CAPITALIZED));
+}

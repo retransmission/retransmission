@@ -5,12 +5,12 @@
     <name>AboutDialog</name>
     <message>
         <location filename="../AboutDialog.ui" line="+14"/>
-        <source>About Transmission</source>
-        <translation>Om Overføring</translation>
+        <source>About {appname}</source>
+        <translation>Om {appname}</translation>
     </message>
     <message>
         <location line="+39"/>
-        <source>Copyright © The Transmission Project</source>
+        <source>Copyright © The Retransmission Project</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -769,8 +769,8 @@
     <name>MainWindow</name>
     <message>
         <location filename="../MainWindow.ui" line="+14"/>
-        <source>Transmission</source>
-        <translation>Overføring</translation>
+        <source>Retransmission</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location line="+181"/>
@@ -1833,8 +1833,8 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message>
         <location line="+6"/>
-        <source>Show Transmission icon in the &amp;notification area</source>
-        <translation>Vis Transmission-ikon i &amp;merknadsområde</translation>
+        <source>Show {appname} icon in the &amp;notification area</source>
+        <translation>Vis {appname}-ikon i &amp;merknadsområde</translation>
     </message>
     <message>
         <location line="-192"/>
@@ -2107,8 +2107,8 @@ To add a new primary URL, add it after a blank line.</source>
     </message>
     <message>
         <location line="-467"/>
-        <source>Transmission Preferences</source>
-        <translation>Transmission-innstillinger</translation>
+        <source>{appname} Preferences</source>
+        <translation>{appname}-innstillinger</translation>
     </message>
     <message>
         <location line="+16"/>

@@ -1,6 +1,6 @@
 ## About
 
-Transmission is a fast, easy, and free BitTorrent client. It comes in several flavors:
+Retransmission is a fast, easy, and free BitTorrent client. It comes in several flavors:
   * A native macOS GUI application
   * GTK+ and Qt GUI applications for Linux, BSD, etc.
   * A Qt-based Windows-compatible GUI application
@@ -11,11 +11,11 @@ Visit https://retransmission.org/ for more information.
 
 ## Documentation
 
-[Transmission's documentation](docs/README.md) is currently out-of-date, but the team has recently begun a new project to update it and is looking for volunteers. If you're interested, please feel free to submit pull requests!
+[Retransmission's documentation](docs/README.md) is currently out-of-date, but the team has recently begun a new project to update it and is looking for volunteers. If you're interested, please feel free to submit pull requests!
 
 ## Command line interface notes
 
-Transmission is fully supported in transmission-remote, the preferred cli client.
+Retransmission is fully supported in transmission-remote, the preferred cli client.
 
 Three standalone tools to examine, create, and edit .torrent files exist: transmission-show, transmission-create, and transmission-edit, respectively.
 
@@ -25,11 +25,11 @@ Different distributions may choose to package any or all of these tools in one o
 
 ## Building
 
-Transmission has an Xcode project file (Transmission.xcodeproj) for building in Xcode.
+Retransmission has an Xcode project file (Transmission.xcodeproj) for building in Xcode.
 
-For a more detailed description, and dependencies, visit [How to Build Transmission](docs/Building-Transmission.md) in docs
+For a more detailed description, and dependencies, visit [How to Build Retransmission](docs/Building-Transmission.md) in docs
 
-### Building a Transmission release from the command line
+### Building a Retransmission release from the command line
 
 ```bash
 $ tar xf transmission-4.1.0.tar.xz
@@ -42,17 +42,17 @@ $ cmake --build .
 $ sudo cmake --install .
 ```
 
-### Building Transmission from the nightly builds
+### Building Retransmission from the nightly builds
 
 Download a tarball from https://build.retransmission.org/ and follow the steps from the previous section.
 
 If you're new to building programs from source code, this is typically easier than building from Git.
 
-### Building Transmission from Git (first time)
+### Building Retransmission from Git (first time)
 
 ```bash
-$ git clone --recurse-submodules https://github.com/retransmission/retransmission Transmission
-$ cd Transmission
+$ git clone --recurse-submodules https://github.com/retransmission/retransmission Retransmission
+$ cd Retransmission
 # Use -DCMAKE_BUILD_TYPE=RelWithDebInfo to build optimized binary with debug information. (preferred)
 # Use -DCMAKE_BUILD_TYPE=Release to build full optimized binary.
 $ cmake -B build -DCMAKE_BUILD_TYPE=RelWithDebInfo
@@ -61,10 +61,10 @@ $ cmake --build .
 $ sudo cmake --install .
 ```
 
-### Building Transmission from Git (updating)
+### Building Retransmission from Git (updating)
 
 ```bash
-$ cd Transmission/build
+$ cd Retransmission/build
 $ cmake --build . -t clean
 $ git submodule foreach --recursive git clean -xfd
 $ git pull --rebase --prune

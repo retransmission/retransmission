@@ -202,7 +202,7 @@
 "Apply Selected" = "Appliquer à la sélection";
 
 /* Confirm Quit panel -> title */
-"Are you sure you want to quit?" = "Voulez-vous vraiment fermer Transmission ?";
+"Are you sure you want to quit?" = "Voulez-vous vraiment fermer Retransmission ?";
 
 /* Remove completed confirm panel -> title */
 "Are you sure you want to remove %lu completed transfers from the transfer list?" = "Voulez-vous vraiment supprimer %lu transferts terminés de la liste de transferts ?";
@@ -631,10 +631,10 @@
 "Once removed, continuing the transfers will require the torrent files or magnet links." = "Une fois supprimés, la reprise des transferts exigera les fichiers torrent ou les liens magnet.";
 
 /* Remove trackers alert -> message */
-"Once removed, Transmission will no longer attempt to contact it. This cannot be undone." = "Une fois supprimé, Transmission ne tentera plus de le contacter. Cette action est définitive.";
+"Once removed, %@ will no longer attempt to contact it. This cannot be undone." = "Une fois supprimé, %@ ne tentera plus de le contacter. Cette action est définitive.";
 
 /* Remove trackers alert -> message */
-"Once removed, Transmission will no longer attempt to contact them. This cannot be undone." = "Une fois supprimés, Transmission ne tentera plus de les contacter. Cette action est définitive.";
+"Once removed, %@ will no longer attempt to contact them. This cannot be undone." = "Une fois supprimés, %@ ne tentera plus de les contacter. Cette action est définitive.";
 
 /* File Outline -> Menu */
 "Only Check Selected" = "Ne cocher que la sélection";
@@ -989,7 +989,7 @@
 "There are %1$lu transfers (%2$lu active)." = "Il y a %1$lu transferts (%2$lu actifs).";
 
 /* Confirm Quit panel -> message */
-"There are %lu active transfers that will be paused on quit. The transfers will automatically resume on the next launch." = "%lu transferts actifs seront suspendus lors de la fermeture de Transmission. Les transferts reprendront automatiquement au prochain lancement.";
+"There are %lu active transfers that will be paused on quit. The transfers will automatically resume on the next launch." = "%lu transferts actifs seront suspendus lors de la fermeture de Retransmission. Les transferts reprendront automatiquement au prochain lancement.";
 
 /* Removal confirm panel -> message part 1 */
 "There are %lu active transfers." = "Il y a %lu transferts actifs.";
@@ -998,10 +998,10 @@
 "There are no tracker addresses." = "Il n’y a pas d’adresse de traceur.";
 
 /* Transmission already running alert -> message */
-"There is already a copy of Transmission running. This copy cannot be opened until that instance is quit." = "Un exemplaire de Transmission est déjà en cours d’exécution. Nous ne pourrons en ouvrir un autre tant que le premier n’aura pas été fermé.";
+"There is already a copy of %@ running. This copy cannot be opened until that instance is quit." = "Un exemplaire de %@ est déjà en cours d’exécution. Nous ne pourrons en ouvrir un autre tant que le premier n’aura pas été fermé.";
 
 /* Confirm Quit panel -> message */
-"There is an active transfer that will be paused on quit. The transfer will automatically resume on the next launch." = "Un transfert actif sera suspendu lors de la fermeture de Transmission. Le transfert reprendra automatiquement au prochain lancement.";
+"There is an active transfer that will be paused on quit. The transfer will automatically resume on the next launch." = "Un transfert actif sera suspendu lors de la fermeture de Retransmission. Le transfert reprendra automatiquement au prochain lancement.";
 
 /* Create torrent -> no files -> warning */
 "There must be at least one file in a folder to create a torrent file." = "Il doit y avoir au moins un fichier dans un dossier pour créer un fichier torrent.";
@@ -1093,13 +1093,13 @@
 "Transfers Not Active" = "Transferts inactifs";
 
 /* Legal alert -> message */
-"Transmission is a file-sharing program. When you run a torrent, its data will be made available to others by means of upload. You and you alone are fully responsible for exercising proper judgement and abiding by your local laws." = "Transmission est un programme de partage de fichiers. Quand vous hébergez un torrent, ses données sont mises à disposition d’autrui par voie de téléversement. Vous et vous seul êtes entièrement responsable d’exercer un jugement adéquat et de respecter vos lois locales.";
+"%@ is a file-sharing program. When you run a torrent, its data will be made available to others by means of upload. You and you alone are fully responsible for exercising proper judgement and abiding by your local laws." = "%@ est un programme de partage de fichiers. Quand vous hébergez un torrent, ses données sont mises à disposition d’autrui par voie de téléversement. Vous et vous seul êtes entièrement responsable d’exercer un jugement adéquat et de respecter vos lois locales.";
 
 /* Donation beg -> message */
-"Transmission is a full-featured torrent application. A lot of time and effort have gone into development, coding, and refinement. If you enjoy using it, please consider showing your love with a donation." = "Transmission est une application Bittorrent complète. Beaucoup d’efforts et de temps ont étés nécessaires à son développement, sa programmation et son peaufinement. Si vous appréciez son utilisation, pensez à montrer votre amour par un don.";
+"%@ is a full-featured torrent application. A lot of time and effort have gone into development, coding, and refinement. If you enjoy using it, please consider showing your love with a donation." = "%@ est une application Bittorrent complète. Beaucoup d’efforts et de temps ont étés nécessaires à son développement, sa programmation et son peaufinement. Si vous appréciez son utilisation, pensez à montrer votre amour par un don.";
 
 /* Transmission already running alert -> title */
-"Transmission is already running." = "Transmission est déjà en cours d’exécution.";
+"%@ is already running." = "%@ est déjà en cours d’exécution.";
 
 /* inspector -> peer table -> header
    status bar -> status label
@@ -1157,7 +1157,7 @@
 "Web Seeds" = "Semences Web";
 
 /* Legal alert -> title */
-"Welcome to Transmission" = "Bienvenue dans Transmission";
+"Welcome to %@" = "Bienvenue dans %@";
 
 /* Groups -> Name */
 "Yellow" = "Jaune";

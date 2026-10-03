@@ -6,10 +6,10 @@ Download the desired "from-tarball" Artifact at the bottom of the page.
 
 ## How to open a CI build on macOS ##
 
-You need to mark Transmission.app both as executable and not quarantined:
+You need to mark Retransmission.app both as executable and not quarantined:
 
-1. `chmod +x Transmission.app/Contents/MacOS/Transmission`
-2. `xattr -rc Transmission.app`
+1. `chmod +x Retransmission.app/Contents/MacOS/Retransmission`
+2. `xattr -rc Retransmission.app`
 
 ## On Apple Silicon, you also need a working install of Rosetta ##
 
@@ -30,4 +30,4 @@ sudo rm -rf /Library/Apple/usr/share/rosetta
 8. In Terminal, run `reboot`
 9. In Terminal, reinstall Rosetta with: `softwareupdate --install-rosetta`
 
-And finally the CI builds of Transmission.app will be openable.
+And finally the CI builds of Retransmission.app will be openable.

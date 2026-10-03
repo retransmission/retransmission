@@ -631,10 +631,10 @@
 "Once removed, continuing the transfers will require the torrent files or magnet links." = "לאחר ההסרה, המשך ההעברה תדרוש את קובץ הטורנט או את קישור המגנט.";
 
 /* Remove trackers alert -> message */
-"Once removed, Transmission will no longer attempt to contact it. This cannot be undone." = "לאחר ההסרה, ‏Transmission לא ינסה להתחבר אליה. פעולה זו לא ניתנת להסגה.";
+"Once removed, %@ will no longer attempt to contact it. This cannot be undone." = "לאחר ההסרה, ‏%@ לא ינסה להתחבר אליה. פעולה זו לא ניתנת להסגה.";
 
 /* Remove trackers alert -> message */
-"Once removed, Transmission will no longer attempt to contact them. This cannot be undone." = "לאחר ההסרה, ‏Transmission לא ינסה להתחבר אליהם. פעולה זו לא ניתנת להסגה.";
+"Once removed, %@ will no longer attempt to contact them. This cannot be undone." = "לאחר ההסרה, ‏%@ לא ינסה להתחבר אליהם. פעולה זו לא ניתנת להסגה.";
 
 /* File Outline -> Menu */
 "Only Check Selected" = "בדיקת הפריטים שנבחרו בלבד";
@@ -998,7 +998,7 @@
 "There are no tracker addresses." = "אין כתובות עוקבים.";
 
 /* Transmission already running alert -> message */
-"There is already a copy of Transmission running. This copy cannot be opened until that instance is quit." = "כבר קיים עותק ‏Transmission פועל. לא ניתן לפתוח עותק זה עד לסגירת המופע הפעיל.";
+"There is already a copy of %@ running. This copy cannot be opened until that instance is quit." = "כבר קיים עותק ‏%@ פועל. לא ניתן לפתוח עותק זה עד לסגירת המופע הפעיל.";
 
 /* Confirm Quit panel -> message */
 "There is an active transfer that will be paused on quit. The transfer will automatically resume on the next launch." = "קיימת העברה פעילה שתושהה ביציאה. ההעברה תתחדש אוטומטית באתחול הבאה.";
@@ -1093,13 +1093,13 @@
 "Transfers Not Active" = "העברות בלתי פעילות";
 
 /* Legal alert -> message */
-"Transmission is a file-sharing program. When you run a torrent, its data will be made available to others by means of upload. You and you alone are fully responsible for exercising proper judgement and abiding by your local laws." = "‏Transmission היא תכנה לשיתוף קבצים. כאשר טורנט מופעל, הנתונים בו יהיו נגישים לאחרים דרך מנגנון ההעלאה. האחריות הבלעדית להפעלת שיקול דעת נכון ולציית לחוקים המקומיים חלים עליכם בלבד.";
+"%@ is a file-sharing program. When you run a torrent, its data will be made available to others by means of upload. You and you alone are fully responsible for exercising proper judgement and abiding by your local laws." = "‏%@ היא תכנה לשיתוף קבצים. כאשר טורנט מופעל, הנתונים בו יהיו נגישים לאחרים דרך מנגנון ההעלאה. האחריות הבלעדית להפעלת שיקול דעת נכון ולציית לחוקים המקומיים חלים עליכם בלבד.";
 
 /* Donation beg -> message */
-"Transmission is a full-featured torrent application. A lot of time and effort have gone into development, coding, and refinement. If you enjoy using it, please consider showing your love with a donation." = "‏Transmission היא בעלת תכונות מלאות להעברת טורנטים. זמן ומאמץ רב הושקעו בפיתוח, קידוד ועידון. אם אתם נהנים מהשימוש בה, נא שקלו להפגין את אהבתכם בתרומה.";
+"%@ is a full-featured torrent application. A lot of time and effort have gone into development, coding, and refinement. If you enjoy using it, please consider showing your love with a donation." = "‏%@ היא בעלת תכונות מלאות להעברת טורנטים. זמן ומאמץ רב הושקעו בפיתוח, קידוד ועידון. אם אתם נהנים מהשימוש בה, נא שקלו להפגין את אהבתכם בתרומה.";
 
 /* Transmission already running alert -> title */
-"Transmission is already running." = "‏Transmission כבר פעיל.";
+"%@ is already running." = "‏%@ כבר פעיל.";
 
 /* inspector -> peer table -> header
    status bar -> status label
@@ -1157,7 +1157,7 @@
 "Web Seeds" = "זורעי רשת";
 
 /* Legal alert -> title */
-"Welcome to Transmission" = "ברוך בואך אל ‏Transmission";
+"Welcome to %@" = "ברוך בואך אל ‏%@";
 
 /* Groups -> Name */
 "Yellow" = "צהוב";
