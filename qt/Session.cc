@@ -257,14 +257,14 @@ void Session::torrentRenamePath(torrent_ids_t const& torrent_ids, QString const&
             [this, params = makeParams(TR_KEY_ids, torrent_ids, TR_KEY_path, oldpath, TR_KEY_name, newname)](
                 RpcClient::ResponseFunc done) mutable { exec(TR_KEY_torrent_rename_path, std::move(params), std::move(done)); },
             [](RpcResponse const& r) {
-                auto const title = tr("Error Renaming Path");
+                auto const title = TR_TEXT("Error Renaming Path");
                 auto const summary = TR_FORMAT(
                     R"(Unable to rename "{old_path}" as "{path}": {error}.)",
                     fmt::arg("old_path", dictFind<QString>(r.args.get(), TR_KEY_path).value_or(QStringLiteral("(unknown)"))),
                     fmt::arg("path", dictFind<QString>(r.args.get(), TR_KEY_name).value_or(QStringLiteral("(unknown)"))),
                     fmt::arg("error", r.errmsg));
                 auto const text = QStringLiteral("<p><b>%1</b></p><p>%2</p>")
-                                      .arg(summary, tr("Please correct the errors and try again."));
+                                      .arg(summary, TR_TEXT("Please correct the errors and try again."));
                 auto* d = new QMessageBox{ QMessageBox::Information,
                                            title,
                                            text,
@@ -692,7 +692,7 @@ void Session::addTorrent(AddData const& add_me, tr_variant::Map args_dict)
                 exec(TR_KEY_torrent_add, std::move(args_dict), std::move(done));
             },
             [add_me](RpcResponse const& r) {
-                auto const title = tr("Error Adding Torrent");
+                auto const title = TR_TEXT("Error Adding Torrent");
                 auto const text = QStringLiteral("<p><b>%1</b></p><p>%2</p>")
                                       .arg(Utils::qstringFromUtf8(r.errmsg), add_me.readableName());
                 auto* d = new QMessageBox{ QMessageBox::Warning,
@@ -737,9 +737,13 @@ void Session::onDuplicatesTimer()
         lines.sort(Qt::CaseInsensitive);
         // NOLINTNEXTLINE(readability-redundant-casting): Remove this comment when we drop Qt5
         auto const count = static_cast<int>(lines.size());
-        auto const title = tr("Duplicate Torrent(s)", "", count);
+        auto const title = count == 1 ? TR_TEXT("Duplicate Torrent") : TR_TEXT("Duplicate Torrents");
         auto const detail = lines.join(QStringLiteral("\n"));
-        auto const detail_text = TR_FORMAT_N("Unable to add {count} duplicate torrent(s)", count, fmt::arg("count", count));
+        auto const detail_text = TR_FORMAT_N(
+            "Unable to add {count} duplicate torrent",
+            "Unable to add {count} duplicate torrents",
+            count,
+            fmt::arg("count", count));
         auto const use_detail = lines.size() > 1;
         auto const text = use_detail ? detail_text : detail;
 

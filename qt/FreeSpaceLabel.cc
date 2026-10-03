@@ -55,7 +55,7 @@ void FreeSpaceLabel::setSession(Session& session)
 void FreeSpaceLabel::setPath(QString const& path)
 {
     if (path_ != path) {
-        setText(tr("<i>Calculating Free Space…</i>"));
+        setText(TR_TEXT("<i>Calculating Free Space…</i>"));
         path_ = path;
         onTimer();
     }

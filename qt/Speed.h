@@ -5,7 +5,6 @@
 
 #pragma once
 
-#include <QtCore/QCoreApplication> // Q_DECLARE_TR_FUNCTIONS
 #include <QtCore/QString>
 
 #include <libtransmission/values.h>
@@ -14,8 +13,6 @@
 
 class Speed : public tr::Values::Speed
 {
-    Q_DECLARE_TR_FUNCTIONS(Speed)
-
 public:
     Speed() = default;
 

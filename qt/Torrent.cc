@@ -292,25 +292,25 @@ QString Torrent::activityString() const
 {
     switch (getActivity()) {
     case TR_STATUS_STOPPED:
-        return isFinished() ? tr("Seeding complete") : tr("Paused");
+        return isFinished() ? TR_TEXT("Seeding complete") : TR_TEXT("Paused");
 
     case TR_STATUS_CHECK_WAIT:
-        return tr("Queued for verification");
+        return TR_TEXT("Queued for verification");
 
     case TR_STATUS_CHECK:
-        return tr("Verifying local data");
+        return TR_TEXT("Verifying local data");
 
     case TR_STATUS_DOWNLOAD_WAIT:
-        return tr("Queued for download");
+        return TR_TEXT("Queued for download");
 
     case TR_STATUS_DOWNLOAD:
-        return tr("Downloading");
+        return TR_TEXT_C("Verb", "Downloading");
 
     case TR_STATUS_SEED_WAIT:
-        return tr("Queued for seeding");
+        return TR_TEXT("Queued for seeding");
 
     case TR_STATUS_SEED:
-        return tr("Seeding");
+        return TR_TEXT_C("Verb", "Seeding");
 
     default:
         return {};
