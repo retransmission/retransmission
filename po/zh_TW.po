@@ -111,13 +111,8 @@ msgid "Couldn't add duplicate torrent"
 msgid_plural "Couldn't add duplicate torrents"
 msgstr[0] "無法加入重複的 torrents"
 
-#, fuzzy
 msgid "A fast and easy BitTorrent client"
-msgstr ""
-"#-#-#-#-#  zh_TW.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"一個快速而簡單的 BitTorrent 用戶端\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"簡單快速的 BitTorrent 用戶端"
+msgstr "簡單快速的 BitTorrent 用戶端"
 
 msgid "Copyright © The {appname} Project"
 msgstr "Copyright © The {appname} Project"
@@ -196,13 +191,8 @@ msgstr "未完成"
 msgid "Paused"
 msgstr "已暫停"
 
-#, fuzzy
 msgid "N/A"
-msgstr ""
-"#-#-#-#-#  zh_TW.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"不明\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"不適用"
+msgstr "不適用"
 
 msgid "Mixed"
 msgstr "混合"
@@ -222,13 +212,8 @@ msgstr "由 {creator} 於 {date} 建立"
 msgid "Created by {creator}"
 msgstr "由 {creator} 建立"
 
-#, fuzzy
 msgid "Created on {date}"
-msgstr ""
-"#-#-#-#-#  zh_TW.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"建立於 {date}\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"於 {date} 建立"
+msgstr "於 {date} 建立"
 
 msgid "Unknown"
 msgstr "未知"
@@ -303,13 +288,8 @@ msgstr "透過 DHT 探索到的節點"
 msgid "Peer is an incoming connection"
 msgstr "該節點為傳入連線"
 
-#, fuzzy
 msgid "Peer is connected over µTP"
-msgstr ""
-"#-#-#-#-#  zh_TW.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"透過 µTP 連線的節點\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"該節點為 µTP 連線"
+msgstr "該節點為 µTP 連線"
 
 msgid "Peer supports holepunch (BEP 55)"
 msgstr ""
@@ -326,31 +306,14 @@ msgstr "下載請求"
 msgid "Up Reqs"
 msgstr "上傳請求"
 
-#, fuzzy
 msgid "Down"
-msgstr ""
-"#-#-#-#-#  zh_TW.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"下載\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"下"
+msgstr "下載"
 
-#, fuzzy
 msgid "Up"
-msgstr ""
-"#-#-#-#-#  zh_TW.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"上傳\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"上"
+msgstr "上傳"
 
-#, fuzzy
 msgid "Client"
-msgstr ""
-"#-#-#-#-#  zh_TW.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"用戶端\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"用戶端\n"
-"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"客戶端"
+msgstr "用戶端"
 
 msgid "Flags"
 msgstr "旗標"
@@ -364,13 +327,8 @@ msgstr "{torrent_name} - 編輯追蹤器"
 msgid "List contains invalid URLs"
 msgstr "清單包含無效的網址"
 
-#, fuzzy
 msgid "Please correct the errors and try again."
-msgstr ""
-"#-#-#-#-#  zh_TW.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"請修正錯誤並重試。\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"請修正錯誤後再試一次。"
+msgstr "請修正錯誤並重試。"
 
 msgid "{torrent_name} - Add Tracker"
 msgstr "{torrent_name} - 加入追蹤器"
@@ -385,39 +343,19 @@ msgid "Properties - {torrent_count:L} Torrent"
 msgid_plural "Properties - {torrent_count:L} Torrents"
 msgstr[0] "內容 - {torrent_count:L} 個 Torrents"
 
-#, fuzzy
 msgid "Remove torrent?"
-msgstr ""
-"#-#-#-#-#  zh_TW.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"移除 {count:L} 個 torrents？\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"移除 Torrent?"
+msgstr "移除 Torrent?"
 
-#, fuzzy
 msgid "Delete this torrent's downloaded files?"
-msgstr ""
-"#-#-#-#-#  zh_TW.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"刪除這些 {count:L} torrents 已下載的檔案？\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"刪除這個 torrent 已下載的檔案？"
+msgstr "刪除這個 torrent 已下載的檔案？"
 
-#, fuzzy
 msgid "Remove {count:L} torrent?"
 msgid_plural "Remove {count:L} torrents?"
-msgstr[0] ""
-"#-#-#-#-#  zh_TW.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"移除 {count:L} 個 torrents？\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"移除 {count:L} 個 Torrents?"
+msgstr[0] "移除 {count:L} 個 torrents？"
 
-#, fuzzy
 msgid "Delete this {count:L} torrent's downloaded files?"
 msgid_plural "Delete these {count:L} torrents' downloaded files?"
-msgstr[0] ""
-"#-#-#-#-#  zh_TW.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"刪除這些 {count:L} torrents 已下載的檔案？\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"刪除這些 torrents 已下載的檔案？"
+msgstr[0] "刪除這些 {count:L} torrents 已下載的檔案？"
 
 #, fuzzy
 #| msgid "Once removed, continuing the transfer will require the torrent file or magnet link."
@@ -430,46 +368,26 @@ msgstr "若您將其移除，需要使用 torrent 檔案或磁力連結才能繼
 msgid "Once removed, you'll need the torrent files or magnet links to add them again."
 msgstr "若您將其移除，需要使用 torrent 檔案或磁力連結才能繼續傳輸。"
 
-#, fuzzy
 msgid "This torrent has not finished downloading."
-msgstr ""
-"#-#-#-#-#  zh_TW.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"這些 torrents 尚未完成下載。\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"這個 torrent 尚未完成下載。"
+msgstr "這個 torrent 尚未完成下載。"
 
 msgid "These torrents have not finished downloading."
 msgstr "這些 torrents 尚未完成下載。"
 
-#, fuzzy
 msgid "This torrent is connected to peers."
-msgstr ""
-"#-#-#-#-#  zh_TW.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"這些 torrents 已連線到節點。\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"這個 torrent 已連線到節點。"
+msgstr "這個 torrent 已連線到節點。"
 
 msgid "These torrents are connected to peers."
 msgstr "這些 torrents 已連線到節點。"
 
-#, fuzzy
 msgid "One of these torrents is connected to peers."
-msgstr ""
-"#-#-#-#-#  zh_TW.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"這些 torrents 其中有一些已連線到節點。\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"這些 torrents 的其中一個已連線到節點。"
+msgstr "這些 torrents 的其中一個已連線到節點。"
 
 msgid "Some of these torrents are connected to peers."
 msgstr "這些 torrents 其中有一些已連線到節點。"
 
-#, fuzzy
 msgid "One of these torrents has not finished downloading."
-msgstr ""
-"#-#-#-#-#  zh_TW.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"這些 torrents 其中有一些尚未完成下載。\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"這些 torrents 的其中一個尚未完成下載。"
+msgstr "這些 torrents 的其中一個尚未完成下載。"
 
 msgid "Some of these torrents have not finished downloading."
 msgstr "這些 torrents 其中有一些尚未完成下載。"
@@ -487,13 +405,8 @@ msgstr "移除 (_R)"
 msgid "High"
 msgstr "高"
 
-#, fuzzy
 msgid "Normal"
-msgstr ""
-"#-#-#-#-#  zh_TW.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"中\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"正常"
+msgstr "中"
 
 msgid "Low"
 msgstr "低"
@@ -513,15 +426,8 @@ msgstr "進度"
 msgid "Download"
 msgstr "下載"
 
-#, fuzzy
 msgid "Priority"
-msgstr ""
-"#-#-#-#-#  zh_TW.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"優先順序\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"優先順序\n"
-"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"優先性"
+msgstr "優先順序"
 
 msgid "All"
 msgstr "全部"
@@ -601,13 +507,8 @@ msgstr "總分享率"
 msgid "Session Ratio"
 msgstr "工作階段分享率"
 
-#, fuzzy
 msgid "Total Transfer"
-msgstr ""
-"#-#-#-#-#  zh_TW.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"總傳輸\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"全部的傳輸"
+msgstr "總傳輸"
 
 msgid "Session Transfer"
 msgstr "工作階段傳輸"
@@ -730,13 +631,8 @@ msgstr "要求加密"
 msgid "Every Day"
 msgstr "每天"
 
-#, fuzzy
 msgid "Weekdays"
-msgstr ""
-"#-#-#-#-#  zh_TW.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"週一到週五\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"週間"
+msgstr "週一到週五"
 
 msgid "Weekends"
 msgstr "週末"
@@ -823,13 +719,8 @@ msgstr "{upload_speed} ▴ {download_speed} ▾"
 msgid "Verifying local data ({percent_done}% tested)"
 msgstr "正在驗證本機資料 (已測試 {percent_done}%)"
 
-#, fuzzy
 msgid "{current_size} of {complete_size} ({percent_done}%)"
-msgstr ""
-"#-#-#-#-#  zh_TW.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{complete_size}中的 {current_size} (已完成{percent_done}%)\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{current_size} 之 {complete_size} ({percent_done}%)"
+msgstr "{complete_size}中的 {current_size} (已完成{percent_done}%)"
 
 msgid "{current_size} of {complete_size} ({percent_complete}%), uploaded {uploaded_size} (Ratio: {ratio}, Goal: {seed_ratio})"
 msgstr "已下載 {complete_size} 中的 {current_size} ({percent_complete}%)，已上傳 {uploaded_size} (分享率：{ratio}，目標：{seed_ratio})"
@@ -881,14 +772,9 @@ msgid "Downloading from {active_count} of {connected_count} connected peer"
 msgid_plural "Downloading from {active_count} of {connected_count} connected peers"
 msgstr[0] "正在從 {connected_count} 中的 {active_count} 個已連線的節點下載"
 
-#, fuzzy
 msgid "Seeding to {active_count} of {connected_count} connected peer"
 msgid_plural "Seeding to {active_count} of {connected_count} connected peers"
-msgstr[0] ""
-"#-#-#-#-#  zh_TW.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"正在為{connected_count} 中的 {active_count} 個已連線的節點做種\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"正在為 {connected_count} 中的 {active_count} 個已連線的節點做種"
+msgstr[0] "正在為 {connected_count} 中的 {active_count} 個已連線的節點做種"
 
 msgid "Retransmission"
 msgstr "Retransmission"
@@ -930,32 +816,17 @@ msgstr ""
 msgid "_File"
 msgstr "檔案 (_F)"
 
-#, fuzzy
 msgid "Open _URL…"
-msgstr ""
-"#-#-#-#-#  zh_TW.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"開啟 URL (_U)…\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"開啟 URL… (_U)"
+msgstr "開啟 URL… (_U)"
 
-#, fuzzy
 msgid "_New…"
-msgstr ""
-"#-#-#-#-#  zh_TW.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"新增 (_N)…\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"新增… (_N)"
+msgstr "新增… (_N)"
 
 msgid "_Start All"
 msgstr "全部開始 (_S)"
 
-#, fuzzy
 msgid "_Pause All"
-msgstr ""
-"#-#-#-#-#  zh_TW.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"暫停全部(_P)\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"全部暫停 (_P)"
+msgstr "全部暫停 (_P)"
 
 msgid "_Quit"
 msgstr "結束 (_Q)"
@@ -998,21 +869,11 @@ msgstr "排程"
 msgid "Move to _Top"
 msgstr "移動到頂端 (_T)"
 
-#, fuzzy
 msgid "Move _Up"
-msgstr ""
-"#-#-#-#-#  zh_TW.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"上移(_U)\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"上移 (_U)"
+msgstr "上移 (_U)"
 
-#, fuzzy
 msgid "Move _Down"
-msgstr ""
-"#-#-#-#-#  zh_TW.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"下移(_D)\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"下移 (_D)"
+msgstr "下移 (_D)"
 
 msgid "Move to _Bottom"
 msgstr "移動到底部 (_B)"
@@ -1135,13 +996,8 @@ msgstr "已下載："
 msgid "State:"
 msgstr "狀態："
 
-#, fuzzy
 msgid "Running time:"
-msgstr ""
-"#-#-#-#-#  zh_TW.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"已執行時間：\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"執行時間："
+msgstr "已執行時間："
 
 msgid "Remaining time:"
 msgstr "剩餘時間："
@@ -1152,13 +1008,8 @@ msgstr "最後活動於："
 msgid "Error:"
 msgstr "錯誤："
 
-#, fuzzy
 msgid "Details"
-msgstr ""
-"#-#-#-#-#  zh_TW.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"細節\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"詳細資料"
+msgstr "詳細資料"
 
 msgid "Location:"
 msgstr "位置："
@@ -1166,13 +1017,8 @@ msgstr "位置："
 msgid "Hash:"
 msgstr "雜湊："
 
-#, fuzzy
 msgid "Privacy:"
-msgstr ""
-"#-#-#-#-#  zh_TW.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"隱私：\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"隱私權："
+msgstr "隱私："
 
 msgid "Origin:"
 msgstr "來源："
@@ -1213,13 +1059,8 @@ msgstr "限制下載速度 ({speed_units}) (_D)："
 msgid "Limit _upload speed ({speed_units}):"
 msgstr "限制上傳速度 ({speed_units}) (_U)："
 
-#, fuzzy
 msgid "Torrent _priority:"
-msgstr ""
-"#-#-#-#-#  zh_TW.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"種子優先順序 (_P)：\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Torrent 優先順序 (_P)："
+msgstr "Torrent 優先順序 (_P)："
 
 msgid "Seeding Limits"
 msgstr "做種限制"
@@ -1258,21 +1099,11 @@ msgstr "開啟 torrent"
 msgid "Start torrent"
 msgstr "開始執行 torrent"
 
-#, fuzzy
 msgid "Pause torrent"
-msgstr ""
-"#-#-#-#-#  zh_TW.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"暫停 Torrent\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"暫停執行 torrent"
+msgstr "暫停執行 torrent"
 
-#, fuzzy
 msgid "Remove torrent"
-msgstr ""
-"#-#-#-#-#  zh_TW.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"移除 Torrent\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"移除 torrent"
+msgstr "移除 torrent"
 
 msgid "Torrent properties"
 msgstr "Torrent 屬性"
@@ -1305,13 +1136,8 @@ msgstr "來源檔案 (_F)："
 msgid "Piece si_ze:"
 msgstr "區塊大小："
 
-#, fuzzy
 msgid "Properties"
-msgstr ""
-"#-#-#-#-#  zh_TW.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"屬性\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"內容"
+msgstr "屬性"
 
 msgid "_Trackers:"
 msgstr "追蹤器 (_T)："
@@ -1319,15 +1145,8 @@ msgstr "追蹤器 (_T)："
 msgid "Co_mment:"
 msgstr "備註 (_M)："
 
-#, fuzzy
 msgid "_Source:"
-msgstr ""
-"#-#-#-#-#  zh_TW.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"來源 (_S)：\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"來源 (_S)：\n"
-"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"來源 (_S):"
+msgstr "來源 (_S)："
 
 msgid "_Private torrent"
 msgstr "私有 torrent (_P)"
@@ -1438,13 +1257,8 @@ msgstr "過去 N 分鐘內的下載資料分享為啟用 (_N)："
 msgid "Incomplete"
 msgstr "未完成"
 
-#, fuzzy
 msgid "Append \"._part\" to incomplete files' names"
-msgstr ""
-"#-#-#-#-#  zh_TW.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"為尚未完成的檔案加上 \".&part\" 副檔名\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"為尚未完成的檔案加上 \"._part\" 副檔名"
+msgstr "為尚未完成的檔案加上 \"._part\" 副檔名"
 
 msgid "Keep _incomplete files in:"
 msgstr "保存尚未完成的檔案於 (_I)："
@@ -1479,13 +1293,8 @@ msgctxt "Gerund"
 msgid "Seeding"
 msgstr "正在做種"
 
-#, fuzzy
 msgid "Privacy"
-msgstr ""
-"#-#-#-#-#  zh_TW.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"隱私\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"隱私權"
+msgstr "隱私"
 
 msgid "_Encryption mode:"
 msgstr "加密模式 (_E)："
@@ -1535,13 +1344,8 @@ msgstr "總計最大連線節點數量 (_O)："
 msgid "Enable µ_TP for peer connections"
 msgstr "為節點連線啟用 µTP (_T)"
 
-#, fuzzy
 msgid "µTP is a tool for reducing network congestion."
-msgstr ""
-"#-#-#-#-#  zh_TW.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"µTP 是一項用以降低網路壅塞的工具。\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"µTP 是一個減少網路擁塞的工具。"
+msgstr "µTP 是一項用以降低網路壅塞的工具。"
 
 #, fuzzy
 #| msgid "Use PE_X to find more peers"
@@ -1570,23 +1374,16 @@ msgstr "LPD 是一項在您的區域網路上尋找節點的工具。"
 msgid "Default Public Trackers"
 msgstr "預設公開追蹤器"
 
-#, fuzzy
 msgid ""
 "Trackers to use on all public torrents.\n"
 "\n"
 "To add a backup URL, add it on the next line after a primary URL.\n"
 "To add a new primary URL, add it after a blank line."
 msgstr ""
-"#-#-#-#-#  zh_TW.po (PACKAGE VERSION)  #-#-#-#-#\n"
 "用於所有公開 torrents 的追蹤器。\n"
 "\n"
 "若要加入備用 URL，請填寫於主要 URL 的下一行。\n"
-"若要加入其他主要 URL，請空一行再填寫。\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"可在所有公共 Torrent 上使用的追蹤器。\n"
-"\n"
-"若要備份 URL，請將它新增到主要 URL 之後的下一行。\n"
-"若要新增主要 URL，請在空白行後新增。"
+"若要加入其他主要 URL，請空一行再填寫。"
 
 msgid "Network"
 msgstr "網路"
@@ -1597,40 +1394,20 @@ msgstr "桌面"
 msgid "_Prevent computer from sleeping with active torrents"
 msgstr ""
 
-#, fuzzy
 msgid "Show {appname} icon in the _notification area"
-msgstr ""
-"#-#-#-#-#  zh_TW.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"於通知區域顯示 {appname} 圖示 (_N)\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"在通知區域顯示 {appname} 圖示 (_N)"
+msgstr "於通知區域顯示 {appname} 圖示 (_N)"
 
 msgid "Notification"
 msgstr "通知"
 
-#, fuzzy
 msgid "Show a notification when torrents are a_dded"
-msgstr ""
-"#-#-#-#-#  zh_TW.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"當 torrents 加入時顯示通知 (_D)\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"當 Torrents 加入時顯示通知 (_D)"
+msgstr "當 torrents 加入時顯示通知 (_D)"
 
-#, fuzzy
 msgid "Show a notification when torrents _finish"
-msgstr ""
-"#-#-#-#-#  zh_TW.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"當 torrents 完成時顯示通知 (_F)\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"當 Torrents 完成時顯示通知 (_F)"
+msgstr "當 torrents 完成時顯示通知 (_F)"
 
-#, fuzzy
 msgid "Play a _sound when torrents finish"
-msgstr ""
-"#-#-#-#-#  zh_TW.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"當 torrents 完成時播放音效 (_S)\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"當 Torrent 完成時播放音效 (_S)"
+msgstr "當 torrents 完成時播放音效 (_S)"
 
 msgid "Remote Control"
 msgstr "遠端控制"
@@ -1646,13 +1423,8 @@ msgstr "開啟網頁用戶端 (_O)"
 msgid "HTTP _port:"
 msgstr "HTTP 連接埠 (_P)："
 
-#, fuzzy
 msgid "Use _authentication"
-msgstr ""
-"#-#-#-#-#  zh_TW.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"使用認證 (_A)\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"使用驗證 (_A)"
+msgstr "使用驗證 (_A)"
 
 msgid "_Username:"
 msgstr "使用者名稱 (_U)："
@@ -1672,13 +1444,8 @@ msgstr "IP 位址可使用萬用字元，例如 192.168.*.*"
 msgid "Remote"
 msgstr "遠端"
 
-#, fuzzy
 msgid "Set Torrent Location"
-msgstr ""
-"#-#-#-#-#  zh_TW.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"設定 torrent 位置\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"設定 Torrent 位置"
+msgstr "設定 torrent 位置"
 
 msgid "_Apply"
 msgstr "套用 (_A)"
@@ -1701,21 +1468,11 @@ msgstr "目前的工作階段"
 msgid "Ratio:"
 msgstr "分享率："
 
-#, fuzzy
 msgid "Duration:"
-msgstr ""
-"#-#-#-#-#  zh_TW.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"持續期間：\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"持續時間："
+msgstr "持續時間："
 
-#, fuzzy
 msgid "Total"
-msgstr ""
-"#-#-#-#-#  zh_TW.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"總計\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"總"
+msgstr "總計"
 
 msgid "Open URL"
 msgstr "開啟網址"
@@ -1802,13 +1559,8 @@ msgstr "在 {time_span_ago} 之前請求節點清單{markup_begin}逾時{markup_
 msgid "Got an error '{markup_begin}{error}{markup_end}' {time_span_ago}"
 msgstr "在 {time_span_ago} 之前發生錯誤 '{markup_begin}{error}{markup_end}'"
 
-#, fuzzy
 msgid "No updates scheduled"
-msgstr ""
-"#-#-#-#-#  zh_TW.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"沒有已排定的更新\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"沒有排定的上傳"
+msgstr "沒有已排定的更新"
 
 msgid "Asking for more peers {time_span_from_now}"
 msgstr "將於 {time_span_from_now} 請求更多節點"
@@ -2519,34 +2271,13 @@ msgstr ""
 
 #, fuzzy
 msgid "Sou_rce:"
-msgstr ""
-"#-#-#-#-#  zh_TW.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"來源 (_S)：\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"來源 (_S)：\n"
-"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"來源 (_S):"
+msgstr "來源 (_S)："
 
 msgid "_Priority:"
 msgstr "優先順序 (_P)："
 
 msgid "Select Folder"
 msgstr "選擇資料夾"
-
-msgid "unknown"
-msgstr "未知"
-
-msgid "checking…"
-msgstr "正在檢查…"
-
-msgid "open"
-msgstr "開啟"
-
-msgid "closed"
-msgstr "關閉"
-
-msgid "error"
-msgstr "錯誤"
 
 msgid "<b>Update succeeded!</b><p>Blocklist now has {count:L} rule.</p>"
 msgid_plural "<b>Update succeeded!</b><p>Blocklist now has {count:L} rules.</p>"
@@ -2601,12 +2332,6 @@ msgstr "上傳 (_U)："
 msgid "Do_wnload:"
 msgstr "下載 (_W)："
 
-msgid "Downloading"
-msgstr "正在下載"
-
-msgid "Adding"
-msgstr "正在加入"
-
 msgid "Reads user clipboard content for torrents"
 msgstr "從使用者的剪貼簿讀取 torrents"
 
@@ -2616,9 +2341,6 @@ msgstr "從剪貼簿偵測新的 torrents"
 #. Please keep this phrase as short as possible, it's currently the longest and influences dialog width
 msgid "Download is i_nactive if data sharing stopped:"
 msgstr "當停止資料分享時暫停下載 (_N)："
-
-msgid "Seeding"
-msgstr "正在做種"
 
 msgid "Stop seedi_ng if idle for:"
 msgstr "閒置超過時間時停止做種 (_N)："

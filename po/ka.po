@@ -110,13 +110,8 @@ msgid_plural "Couldn't add duplicate torrents"
 msgstr[0] "ვერ ვამატებ ტორენტის დუბლიკატს"
 msgstr[1] "ვერ ვამატებ ტორენტის დუბლიკატს"
 
-#, fuzzy
 msgid "A fast and easy BitTorrent client"
-msgstr ""
-"#-#-#-#-#  ka.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"სწრაფი და მარტივი ბიტტორენტ კლიენტი\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"სწრაფი და მარტივი BitTorrent კლიენტი"
+msgstr "სწრაფი და მარტივი BitTorrent კლიენტი"
 
 msgid "Copyright © The {appname} Project"
 msgstr ""
@@ -156,48 +151,24 @@ msgstr "ადგილობრივი მონაცემების გ�
 msgid "Queued for download"
 msgstr "რიგშია ჩამოტვირთვისთვის"
 
-#, fuzzy
 msgctxt "Verb"
 msgid "Downloading"
-msgstr ""
-"#-#-#-#-#  ka.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"გადმოწერა\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"ჩამოტვირთვა"
+msgstr "ჩამოტვირთვა"
 
-#, fuzzy
 msgid "Queued for seeding"
-msgstr ""
-"#-#-#-#-#  ka.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"რიგშია Seeding-სთვის\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"რიგშია სიდირებისთვის"
+msgstr "რიგშია სიდირებისთვის"
 
-#, fuzzy
 msgctxt "Verb"
 msgid "Seeding"
-msgstr ""
-"#-#-#-#-#  ka.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Seeding\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"ატვირთვა\n"
-"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"სიდირება"
+msgstr "სიდირება"
 
 #, fuzzy
 #| msgid "Incomplete"
 msgid "Seeding complete"
 msgstr "არასრული"
 
-#, fuzzy
 msgid "Paused"
-msgstr ""
-"#-#-#-#-#  ka.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"შეჩერება\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"შეჩერებული\n"
-"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"შეჩერებულია"
+msgstr "შეჩერებული"
 
 msgid "N/A"
 msgstr "N/A"
@@ -262,69 +233,30 @@ msgstr "არასოდეს"
 msgid "Active now"
 msgstr "ახლა აქტიური"
 
-#, fuzzy
 msgid "Optimistic unchoke"
-msgstr ""
-"#-#-#-#-#  ka.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"ოპტიმისტური ანჩოკი\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"ოპტიმისტური განჭედვა"
+msgstr "ოპტიმისტური განჭედვა"
 
-#, fuzzy
 msgid "Downloading from this peer"
-msgstr ""
-"#-#-#-#-#  ka.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"ამ პარტნიორისგან გადმოწერა\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"იტვირთება ამ პირისგან"
+msgstr "იტვირთება ამ პირისგან"
 
-#, fuzzy
 msgid "We would download from this peer if they would let us"
-msgstr ""
-"#-#-#-#-#  ka.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"პარტნიორისგან უფლების მიღების შემთხვევაში ამასმისგან გადმოვწერ\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"ნება რომ მოგვცეს, ამ პირისგან ჩამოვტვირთავდით"
+msgstr "ნება რომ მოგვცეს, ამ პირისგან ჩამოვტვირთავდით"
 
-#, fuzzy
 msgid "Uploading to peer"
-msgstr ""
-"#-#-#-#-#  ka.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"პარტნიორზე ატვირთვა\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"იტვირთება პირთან"
+msgstr "იტვირთება პირთან"
 
 #, fuzzy
 msgid "This peer would download from us if we would let them"
-msgstr ""
-"#-#-#-#-#  ka.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"პარტნიორისგან უფლების მიღების შემთხვევაში ამასმისგან გადმოვწერ\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"ნება რომ მოგვცეს, ამ პირისგან ჩამოვტვირთავდით"
+msgstr "ნება რომ მოგვცეს, ამ პირისგან ჩამოვტვირთავდით"
 
-#, fuzzy
 msgid "Peer has unchoked us, but we're not interested"
-msgstr ""
-"#-#-#-#-#  ka.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"პარტნიორმა გაგვიკეთა ანჩოკი, მაგრამ ჩვენ დაინტერესებულნი არა ვართ\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"პირმა განგვჭედა, მაგრამ ეს არ გვაინტერესებს"
+msgstr "პირმა განგვჭედა, მაგრამ ეს არ გვაინტერესებს"
 
-#, fuzzy
 msgid "We unchoked this peer, but they're not interested"
-msgstr ""
-"#-#-#-#-#  ka.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"ჩვენ ანჩოკი გავუკეთეთ პირს, მაგრამ ისინი დაინტერესებულნი არ არიან\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"ეს პირი განვჭედეთ, მაგრამ მას ეს არ აინტერესებს"
+msgstr "ეს პირი განვჭედეთ, მაგრამ მას ეს არ აინტერესებს"
 
-#, fuzzy
 msgid "Encrypted connection"
-msgstr ""
-"#-#-#-#-#  ka.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"დაშიფრული შეერთება\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"დაშიფრული კავშირი"
+msgstr "დაშიფრული კავშირი"
 
 msgid "Peer was found through Peer Exchange (PEX)"
 msgstr ""
@@ -332,13 +264,8 @@ msgstr ""
 msgid "Peer was found through DHT"
 msgstr ""
 
-#, fuzzy
 msgid "Peer is an incoming connection"
-msgstr ""
-"#-#-#-#-#  ka.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"პარტნიორი არის შემომავალი შეერთება\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"პირი შემომავალი კავშირია"
+msgstr "პირი შემომავალი კავშირია"
 
 msgid "Peer is connected over µTP"
 msgstr ""
@@ -358,21 +285,11 @@ msgstr ""
 msgid "Up Reqs"
 msgstr ""
 
-#, fuzzy
 msgid "Down"
-msgstr ""
-"#-#-#-#-#  ka.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"ქვემოთ\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"ჩამ."
+msgstr "ჩამ."
 
-#, fuzzy
 msgid "Up"
-msgstr ""
-"#-#-#-#-#  ka.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"ზემოთ\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"ატ."
+msgstr "ატ."
 
 msgid "Client"
 msgstr "კლიენტი"
@@ -463,26 +380,14 @@ msgid "_Delete"
 msgstr "_წაშლა"
 
 #. Removes the torrent from the list and keeps its downloaded files
-#, fuzzy
 msgid "_Remove"
-msgstr ""
-"#-#-#-#-#  ka.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_მოცილება\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"მ_ოცილება\n"
-"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_ამოღება"
+msgstr "_ამოღება"
 
 msgid "High"
 msgstr "მაღალი"
 
-#, fuzzy
 msgid "Normal"
-msgstr ""
-"#-#-#-#-#  ka.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"ნორმალური\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"ჩვეულებრივი"
+msgstr "ნორმალური"
 
 msgid "Low"
 msgstr "დაბალი"
@@ -511,32 +416,15 @@ msgstr "ყველა"
 msgid "Active"
 msgstr "აქტიური"
 
-#, fuzzy
 msgctxt "Verb"
 msgid "Verifying"
-msgstr ""
-"#-#-#-#-#  ka.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"შემოწმება\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"გადამოწმებული"
+msgstr "შემოწმება"
 
-#, fuzzy
 msgid "Error"
-msgstr ""
-"#-#-#-#-#  ka.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"შეცდომა\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"შეცდომა\n"
-"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"შეცდომიანი"
+msgstr "შეცდომა"
 
-#, fuzzy
 msgid "_Show:"
-msgstr ""
-"#-#-#-#-#  ka.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"[ჩვენება]\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"[_ჩვენება]"
+msgstr "[_ჩვენება]"
 
 msgid "_Show {count:L} of:"
 msgstr ""
@@ -709,13 +597,8 @@ msgstr "(არაფერი)"
 msgid "Allow encryption"
 msgstr "დაშიფვრის დაშვება"
 
-#, fuzzy
 msgid "Prefer encryption"
-msgstr ""
-"#-#-#-#-#  ka.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"მირჩევნია დავშიფრო\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"უპირატესობა დაშიფვრას"
+msgstr "უპირატესობა დაშიფვრას"
 
 msgid "Require encryption"
 msgstr "დაშიფვრის მოთხოვნა"
@@ -723,21 +606,11 @@ msgstr "დაშიფვრის მოთხოვნა"
 msgid "Every Day"
 msgstr "ყოველდღე"
 
-#, fuzzy
 msgid "Weekdays"
-msgstr ""
-"#-#-#-#-#  ka.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"სამუსაო დღეებში\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"სამუშაო დღეებში"
+msgstr "სამუშაო დღეებში"
 
-#, fuzzy
 msgid "Weekends"
-msgstr ""
-"#-#-#-#-#  ka.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"კვირის ბოლოს\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"შაბათ-კვირას"
+msgstr "შაბათ-კვირას"
 
 msgid "Blocklist has {count:L} entry"
 msgid_plural "Blocklist has {count:L} entries"
@@ -821,13 +694,8 @@ msgstr ""
 msgid "Verifying local data ({percent_done}% tested)"
 msgstr "ადგილობრივი მონაცემების გადამოწმება ({percent_done}% შემოწმებულია)"
 
-#, fuzzy
 msgid "{current_size} of {complete_size} ({percent_done}%)"
-msgstr ""
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{current_size} / {complete_size} ({percent_done}%)\n"
-"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{current_size}/{complete_size} ({percent_done}%)"
+msgstr "{current_size}/{complete_size} ({percent_done}%)"
 
 msgid "{current_size} of {complete_size} ({percent_complete}%), uploaded {uploaded_size} (Ratio: {ratio}, Goal: {seed_ratio})"
 msgstr ""
@@ -934,34 +802,17 @@ msgstr ""
 msgid "_New…"
 msgstr "_ახალი…"
 
-#, fuzzy
 msgid "_Start All"
-msgstr ""
-"#-#-#-#-#  ka.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_ყველას დაწყება\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"ყველას _დაწყება"
+msgstr "ყველას _დაწყება"
 
 msgid "_Pause All"
 msgstr "ყველას _შეჩერება"
 
-#, fuzzy
 msgid "_Quit"
-msgstr ""
-"#-#-#-#-#  ka.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_გამოსვლა\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_გასვლა"
+msgstr "_გასვლა"
 
-#, fuzzy
 msgid "_Edit"
-msgstr ""
-"#-#-#-#-#  ka.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_ჩასწორება\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_ჩასწორება\n"
-"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_რედაქტირება"
+msgstr "_ჩასწორება"
 
 msgid "Select _All"
 msgstr "ყველაფრის _მონიშვნა"
@@ -969,13 +820,8 @@ msgstr "ყველაფრის _მონიშვნა"
 msgid "Dese_lect All"
 msgstr "ყველა _მონიშვნის მოხსნა"
 
-#, fuzzy
 msgid "_Preferences"
-msgstr ""
-"#-#-#-#-#  ka.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"გამართვა\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_პარამეტრები"
+msgstr "_პარამეტრები"
 
 msgid "_Torrent"
 msgstr "_ტორენტი"
@@ -992,13 +838,8 @@ msgstr "_დაწყება"
 msgid "Start _Now"
 msgstr "_ახლავე დაწყება"
 
-#, fuzzy
 msgid "Ask Tracker for _More Peers"
-msgstr ""
-"#-#-#-#-#  ka.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"გამოითხოვე მეთვალყურისგან დამატებითი პირები\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"ტრეკერისთვის _მეტი პირების მოთხოვნა"
+msgstr "ტრეკერისთვის _მეტი პირების მოთხოვნა"
 
 #, fuzzy
 #| msgid "Queue"
@@ -1008,21 +849,11 @@ msgstr "რიგი"
 msgid "Move to _Top"
 msgstr "_თავში ატანა"
 
-#, fuzzy
 msgid "Move _Up"
-msgstr ""
-"#-#-#-#-#  ka.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"ზ_ემოთ აწევა\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_მაღლა ატანა"
+msgstr "_მაღლა ატანა"
 
-#, fuzzy
 msgid "Move _Down"
-msgstr ""
-"#-#-#-#-#  ka.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_ჩამოწევა\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"დაბლა _ჩატანა"
+msgstr "დაბლა _ჩატანა"
 
 msgid "Move to _Bottom"
 msgstr "_ბოლოში ჩატანა"
@@ -1033,86 +864,41 @@ msgstr "_შეჩერება"
 msgid "Set _Location…"
 msgstr ""
 
-#, fuzzy
 msgid "_Verify Local Data"
-msgstr ""
-"#-#-#-#-#  ka.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_ლოკალური ინფორმაციის შემოწმება\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"ადგილობრივი მონაცემების _გადამოწმება"
+msgstr "ადგილობრივი მონაცემების _გადამოწმება"
 
 msgid "_Copy Magnet Link to Clipboard"
 msgstr "მაგნიტური ბმულის ა_სლი ბუფერში"
 
-#, fuzzy
 msgid "_Delete Files and Remove"
-msgstr ""
-"#-#-#-#-#  ka.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_ფაილების წაშლა და სიიდან ამოღება\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"ფაილების წაშლა და ამოღე_ბა"
+msgstr "_ფაილების წაშლა და სიიდან ამოღება"
 
 msgid "_View"
 msgstr "_ხედი"
 
-#, fuzzy
 msgid "_Compact View"
-msgstr ""
-"#-#-#-#-#  ka.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"კომპაქტური ჩვენება\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_კომპაქტური ხედი"
+msgstr "_კომპაქტური ხედი"
 
-#, fuzzy
 msgid "_Toolbar"
-msgstr ""
-"#-#-#-#-#  ka.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"ხელსაწყოთა _პანელი\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_ხელსაწყოთა ზოლი"
+msgstr "_ხელსაწყოთა ზოლი"
 
-#, fuzzy
 msgid "_Filterbar"
-msgstr ""
-"#-#-#-#-#  ka.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"ფილტრები\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_ფილტრის ზოლი"
+msgstr "_ფილტრის ზოლი"
 
 msgid "_Statusbar"
 msgstr "_სტატუსის ზოლი"
 
-#, fuzzy
 msgid "Sort by _Activity"
-msgstr ""
-"#-#-#-#-#  ka.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_დალაგება აქტივობის მიხედვით\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"დალაგება _აქტივობით"
+msgstr "დალაგება _აქტივობით"
 
-#, fuzzy
 msgid "Sort by A_ge"
-msgstr ""
-"#-#-#-#-#  ka.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"დალაგება ასაკის _მიხედვით\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"დალაგება ა_საკით"
+msgstr "დალაგება ა_საკით"
 
-#, fuzzy
 msgid "Sort by _Name"
-msgstr ""
-"#-#-#-#-#  ka.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"დალაგება _სახელის მიხედვით\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"დალაგება _სახელით"
+msgstr "დალაგება _სახელით"
 
-#, fuzzy
 msgid "Sort by _Progress"
-msgstr ""
-"#-#-#-#-#  ka.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_დალაგება პროგრესის მიხედვით\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"დალაგება _პროგრესით"
+msgstr "დალაგება _პროგრესით"
 
 msgid "Sort by _Queue"
 msgstr "დალაგება _რიგით"
@@ -1120,83 +906,39 @@ msgstr "დალაგება _რიგით"
 msgid "Sort by Rati_o"
 msgstr "დალაგება _შეფარდებით"
 
-#, fuzzy
 msgid "Sort by Si_ze"
-msgstr ""
-"#-#-#-#-#  ka.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"ზომის მიხედვით\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"დალაგება _ზომით"
+msgstr "დალაგება _ზომით"
 
-#, fuzzy
 msgid "Sort by Stat_e"
-msgstr ""
-"#-#-#-#-#  ka.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"მდგომარეობის მიხედვით\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"დალაგება მ_დგომარეობით"
+msgstr "დალაგება მ_დგომარეობით"
 
-#, fuzzy
 msgid "Sort by Time _Left"
-msgstr ""
-"#-#-#-#-#  ka.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"დარჩენილი დროის მიხედვით\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"დალაგება _დარჩენილი დროით"
+msgstr "დალაგება _დარჩენილი დროით"
 
-#, fuzzy
 msgid "Re_verse Sort Order"
-msgstr ""
-"#-#-#-#-#  ka.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"დალაგების შებრუნე_ბა\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"დალაგების მიმართულების შე_ბრუნება"
+msgstr "დალაგების შებრუნე_ბა"
 
 msgid "_Help"
 msgstr "_დახმარება"
 
-#, fuzzy
 msgid "Message _Log"
-msgstr ""
-"#-#-#-#-#  ka.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"შეტყობინებების ჟურნალი\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"შეტყობინებების _ჟურნალი"
+msgstr "შეტყობინებების _ჟურნალი"
 
 msgid "_Statistics"
 msgstr "_სტატისტიკა"
 
-#, fuzzy
 msgid "_Donate"
-msgstr ""
-"#-#-#-#-#  ka.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_შეწირვა\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"შე_წირვა"
+msgstr "_შეწირვა"
 
-#, fuzzy
 msgid "_Contents"
-msgstr ""
-"#-#-#-#-#  ka.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_შემცველობა\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_შიგთავსი"
+msgstr "_შიგთავსი"
 
-#, fuzzy
 msgid "_About"
-msgstr ""
-"#-#-#-#-#  ka.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_შესახებ\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"შესა_ხებ"
+msgstr "_შესახებ"
 
 #, fuzzy
 msgid "_Sort Torrents By"
-msgstr ""
-"#-#-#-#-#  ka.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"ტორენტის გააშვება\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"ტორენტის დაწყება"
+msgstr "ტორენტის დაწყება"
 
 #, fuzzy
 #| msgid "Alternative Speed Limits"
@@ -1206,13 +948,8 @@ msgstr "ალტერნატიული სიჩქარის შეზ�
 msgid "_Add"
 msgstr "_დამატება"
 
-#, fuzzy
 msgid "Tracker"
-msgstr ""
-"#-#-#-#-#  ka.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"ტრეკერი\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"აღმნუსხავი"
+msgstr "ტრეკერი"
 
 msgid "_Announce URL:"
 msgstr ""
@@ -1220,42 +957,20 @@ msgstr ""
 msgid "_Close"
 msgstr "_დახურვა"
 
-#, fuzzy
 msgid "Activity"
-msgstr ""
-"#-#-#-#-#  ka.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"აქტივობა\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"აქტოვპბა"
+msgstr "აქტივობა"
 
 msgid "Size:"
 msgstr "ზომა:"
 
-#, fuzzy
 msgid "Have:"
-msgstr ""
-"#-#-#-#-#  ka.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"მაქვს:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"მიღებულია:"
+msgstr "მაქვს:"
 
-#, fuzzy
 msgid "Uploaded:"
-msgstr ""
-"#-#-#-#-#  ka.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"ატვირთულია:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"ატივრთული:\n"
-"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"ატვირთული:"
+msgstr "ატვირთული:"
 
-#, fuzzy
 msgid "Downloaded:"
-msgstr ""
-"#-#-#-#-#  ka.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"გადმოწერილია:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"ჩამოტვირთული:"
+msgstr "ჩამოტვირთული:"
 
 msgid "State:"
 msgstr "მდგომარეობა:"
@@ -1269,21 +984,11 @@ msgstr "დარჩენილი დრო:"
 msgid "Last activity:"
 msgstr "ბოლო აქტივობა:"
 
-#, fuzzy
 msgid "Error:"
-msgstr ""
-"#-#-#-#-#  ka.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"შეცდომა:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"შეცდომა"
+msgstr "შეცდომა:"
 
-#, fuzzy
 msgid "Details"
-msgstr ""
-"#-#-#-#-#  ka.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"დაწვრილებით\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"დეტალები"
+msgstr "დეტალები"
 
 msgid "Location:"
 msgstr "მდებარეობა:"
@@ -1291,32 +996,17 @@ msgstr "მდებარეობა:"
 msgid "Hash:"
 msgstr "ჰეში:"
 
-#, fuzzy
 msgid "Privacy:"
-msgstr ""
-"#-#-#-#-#  ka.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"პირადი ინფორმაცია:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"პრივატულობა:"
+msgstr "პრივატულობა:"
 
-#, fuzzy
 msgid "Origin:"
-msgstr ""
-"#-#-#-#-#  ka.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"საწყისი:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"წარმოშობა:"
+msgstr "საწყისი:"
 
 msgid "Added:"
 msgstr "დამატებულია:"
 
-#, fuzzy
 msgid "Comment:"
-msgstr ""
-"#-#-#-#-#  ka.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"კომენტარი:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"კომენტარები:"
+msgstr "კომენტარი:"
 
 msgid "Information"
 msgstr "ინფორმაცია"
@@ -1324,13 +1014,8 @@ msgstr "ინფორმაცია"
 msgid "Show _more details"
 msgstr "_მეტი დეტალის ჩვენება"
 
-#, fuzzy
 msgid "Peers"
-msgstr ""
-"#-#-#-#-#  ka.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"პარტნიორები\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"პირები"
+msgstr "პირები"
 
 msgid "Show _backup trackers"
 msgstr "_სარეზერვო ტრეკერების ჩვენება"
@@ -1365,29 +1050,14 @@ msgstr "შე_ფარდება"
 msgid "_Idle:"
 msgstr "_უმოქმედო:"
 
-#, fuzzy
 msgid "Peer Connections"
-msgstr ""
-"#-#-#-#-#  ka.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"პარტნორთან მიერთებები\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"პირის კავშირები"
+msgstr "პირის კავშირები"
 
-#, fuzzy
 msgid "_Maximum peers:"
-msgstr ""
-"#-#-#-#-#  ka.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"მაქსიმუმი პარტნიორები:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_მაქსიმალური პირები:"
+msgstr "_მაქსიმალური პირები:"
 
-#, fuzzy
 msgid "Options"
-msgstr ""
-"#-#-#-#-#  ka.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"გამართვა\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"პარამეტრები"
+msgstr "პარამეტრები"
 
 msgid "Tracker Announce URLs"
 msgstr ""
@@ -1403,24 +1073,14 @@ msgstr ""
 msgid "Open a torrent"
 msgstr "ტორენტის გახსნა"
 
-#, fuzzy
 msgid "Start torrent"
-msgstr ""
-"#-#-#-#-#  ka.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"ტორენტის გააშვება\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"ტორენტის დაწყება"
+msgstr "ტორენტის დაწყება"
 
 msgid "Pause torrent"
 msgstr "ტორენტის შეჩერება"
 
-#, fuzzy
 msgid "Remove torrent"
-msgstr ""
-"#-#-#-#-#  ka.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"ტორენტის წაშლა\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"ტორენტის ამოღება"
+msgstr "ტორენტის ამოღება"
 
 msgid "Torrent properties"
 msgstr "ტორენტის თვისებები"
@@ -1457,13 +1117,8 @@ msgstr "თვისებები"
 msgid "_Trackers:"
 msgstr "_ტრეკერები:"
 
-#, fuzzy
 msgid "Co_mment:"
-msgstr ""
-"#-#-#-#-#  ka.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"კომე_ნტარი:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"კო_მენტარი:"
+msgstr "კომე_ნტარი:"
 
 msgid "_Source:"
 msgstr "_წყარო:"
@@ -1512,15 +1167,8 @@ msgstr ".torrent ფაილის სანაგვეში გადა_ტ
 msgid "{appname} Preferences"
 msgstr "{appname}-ის პარამეტრები"
 
-#, fuzzy
 msgid "Speed Limits"
-msgstr ""
-"#-#-#-#-#  ka.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"სიჩქარის ლიმიტები\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"სიჩქარის ლიმიტები\n"
-"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"სიჩქარის შეზღუდვები"
+msgstr "სიჩქარის ლიმიტები"
 
 #. Checkbox to limit upload speed
 msgid "_Upload ({speed_units}):"
@@ -1598,15 +1246,10 @@ msgstr ""
 
 msgctxt "Gerund"
 msgid "Downloading"
-msgstr "გადმოწერა"
+msgstr "ჩამოტვირთვა"
 
-#, fuzzy
 msgid "Limits"
-msgstr ""
-"#-#-#-#-#  ka.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"ლიმიტები\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"შეზღუდვები"
+msgstr "ლიმიტები"
 
 msgid "Stop seeding at _ratio:"
 msgstr "სიდირების შეჩერება შეფარდება_ზე:"
@@ -1619,15 +1262,10 @@ msgstr ""
 
 msgctxt "Gerund"
 msgid "Seeding"
-msgstr "Seeding"
+msgstr "სიდირება"
 
-#, fuzzy
 msgid "Privacy"
-msgstr ""
-"#-#-#-#-#  ka.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"პირადი ინფორმაცია\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"პრივატულობა"
+msgstr "პრივატულობა"
 
 msgid "_Encryption mode:"
 msgstr "_დაშიფვირის სახეობა:"
@@ -1643,13 +1281,8 @@ msgstr "შავი _სიის ჩართვა"
 msgid "_Automatically update weekly"
 msgstr "_ავტომატური განახლებების ჩართვა"
 
-#, fuzzy
 msgid "_Update"
-msgstr ""
-"#-#-#-#-#  ka.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"განახლება\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_განახლება"
+msgstr "_განახლება"
 
 msgid "Listening Port"
 msgstr ""
@@ -1681,11 +1314,7 @@ msgstr "მაქსიმალური პირები _მთლიან
 
 #, fuzzy
 msgid "Enable µ_TP for peer connections"
-msgstr ""
-"#-#-#-#-#  ka.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"პარტნორთან მიერთებები\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"პირის კავშირები"
+msgstr "პირის კავშირები"
 
 msgid "µTP is a tool for reducing network congestion."
 msgstr ""
@@ -1736,13 +1365,8 @@ msgstr ""
 msgid "Show {appname} icon in the _notification area"
 msgstr "{appname}-ის ხატულის ჩვენება _შეტყობინებების არეში"
 
-#, fuzzy
 msgid "Notification"
-msgstr ""
-"#-#-#-#-#  ka.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"შეტყობინება\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"ცნობება"
+msgstr "შეტყობინება"
 
 msgid "Show a notification when torrents are a_dded"
 msgstr "ცნობება ტორენტის დამა_ტებისას"
@@ -1753,13 +1377,8 @@ msgstr "ცნობება ტორენტის და_სრულებ
 msgid "Play a _sound when torrents finish"
 msgstr "_ხმის დაკვრა ტორენტის დასრულებისას"
 
-#, fuzzy
 msgid "Remote Control"
-msgstr ""
-"#-#-#-#-#  ka.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"დაშორებული მართვა\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"დისტანციური მართვა"
+msgstr "დისტანციური მართვა"
 
 msgid "Allow _remote access"
 msgstr "_დისტანციური წვოდმის დაშვება"
@@ -1775,23 +1394,11 @@ msgstr "HTTP _პორტი:"
 msgid "Use _authentication"
 msgstr "_ავთენტიფიკაციის გამოყენება"
 
-#, fuzzy
 msgid "_Username:"
-msgstr ""
-"#-#-#-#-#  ka.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_მომხმარებელი:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_მომხმარებლის სახელი:"
+msgstr "_მომხმარებლის სახელი:"
 
-#, fuzzy
 msgid "Pass_word:"
-msgstr ""
-"#-#-#-#-#  ka.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"პა_როლი:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_პაროლი\n"
-"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"პარო_ლი:"
+msgstr "პა_როლი:"
 
 msgid "Only allow these IP a_ddresses:"
 msgstr "მხოლოდ ამ IP მი_სამართების დაშვება:"
@@ -1802,13 +1409,8 @@ msgstr "მისამართები:"
 msgid "IP addresses may use wildcards, such as 192.168.*.*"
 msgstr ""
 
-#, fuzzy
 msgid "Remote"
-msgstr ""
-"#-#-#-#-#  ka.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"დაშორებული\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"დისტანციური"
+msgstr "დისტანციური"
 
 msgid "Set Torrent Location"
 msgstr "ტორენტის მდებარეობის დაყენება"
@@ -1837,13 +1439,8 @@ msgstr "შეფარდება:"
 msgid "Duration:"
 msgstr "ხანგრძლივობა:"
 
-#, fuzzy
 msgid "Total"
-msgstr ""
-"#-#-#-#-#  ka.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"ჯამში\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"მთლიანობაში"
+msgstr "ჯამში"
 
 msgid "Open URL"
 msgstr "URL-ის გახსნა"
@@ -2664,32 +2261,6 @@ msgid "Select Folder"
 msgstr "საქაღალდის არჩევა"
 
 #, fuzzy
-#| msgid "Unknown"
-msgid "unknown"
-msgstr "უცნობი"
-
-msgid "checking…"
-msgstr ""
-
-msgid "open"
-msgstr ""
-
-#, fuzzy
-#| msgid "_Close"
-msgid "closed"
-msgstr "_დახურვა"
-
-#, fuzzy
-msgid "error"
-msgstr ""
-"#-#-#-#-#  ka.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"შეცდომა\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"შეცდომა\n"
-"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"შეცდომიანი"
-
-#, fuzzy
 #| msgid "<i>Blocklist contains {count:L} rule</i>"
 #| msgid_plural "<i>Blocklist contains {count:L} rules</i>"
 msgid "<b>Update succeeded!</b><p>Blocklist now has {count:L} rule.</p>"
@@ -2749,12 +2320,6 @@ msgstr "ა_ტვირთვა:"
 msgid "Do_wnload:"
 msgstr "ჩა_მოტვირთვა:"
 
-msgid "Downloading"
-msgstr "ჩამოტვირთვა"
-
-msgid "Adding"
-msgstr "ემატება"
-
 msgid "Reads user clipboard content for torrents"
 msgstr ""
 
@@ -2764,9 +2329,6 @@ msgstr ""
 #. Please keep this phrase as short as possible, it's currently the longest and influences dialog width
 msgid "Download is i_nactive if data sharing stopped:"
 msgstr "ჩამოტვირთვა უმოქ_მედოა თუ მონაცემთა გაზიარება შეჩერდა:"
-
-msgid "Seeding"
-msgstr "სიდირება"
 
 msgid "Stop seedi_ng if idle for:"
 msgstr "სიდირების შეჩერე_ბა უქმად ყოფნისას:"

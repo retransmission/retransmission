@@ -110,13 +110,8 @@ msgid_plural "Couldn't add duplicate torrents"
 msgstr[0] "प्रतिलिपि टोरेंट जोड़ना विफल"
 msgstr[1] "प्रतिलिपि टोरेंट जोड़ना विफल"
 
-#, fuzzy
 msgid "A fast and easy BitTorrent client"
-msgstr ""
-"#-#-#-#-#  hi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"तीव्र व सरल बिट टोरेंट साधन\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"तीव्र व सरल बिट टोरेंट साधन "
+msgstr "तीव्र व सरल बिट टोरेंट साधन"
 
 msgid "Copyright © The {appname} Project"
 msgstr "कॉपीराइट © {appname} परियोजना"
@@ -190,13 +185,8 @@ msgstr "कोई टोरेंट चयनित नहीं"
 msgid "Private to this tracker -- DHT and PEX disabled"
 msgstr "निजी ट्रैकर -- डीएचटी व पेक्स निष्क्रिय"
 
-#, fuzzy
 msgid "Public torrent"
-msgstr ""
-"#-#-#-#-#  hi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"सार्वजनिक टोरेंट\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"सामान्य टोरेंट"
+msgstr "सार्वजनिक टोरेंट"
 
 msgid "Created by {creator} on {date}"
 msgstr "{creator} द्वारा {date} को बनाया गया"
@@ -320,13 +310,8 @@ msgstr "{torrent_name} - ट्रैकर संपादन"
 msgid "List contains invalid URLs"
 msgstr "सूची में अमान्य यूआरएल हैं"
 
-#, fuzzy
 msgid "Please correct the errors and try again."
-msgstr ""
-"#-#-#-#-#  hi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"कृपया त्रुटि सुधार कर पुनः प्रयास करें।\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"त्रुटि ठीक कर पुनः प्रयास करें।"
+msgstr "कृपया त्रुटि सुधार कर पुनः प्रयास करें।"
 
 msgid "{torrent_name} - Add Tracker"
 msgstr ""
@@ -406,15 +391,8 @@ msgstr "हटाएँ (_R)"
 msgid "High"
 msgstr "उच्च"
 
-#, fuzzy
 msgid "Normal"
-msgstr ""
-"#-#-#-#-#  hi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"सामान्य\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"समान्य\n"
-"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"सामान्य"
+msgstr "सामान्य"
 
 msgid "Low"
 msgstr "निम्न"
@@ -831,13 +809,8 @@ msgstr "यूआरएल खोलें (_U)…"
 msgid "_New…"
 msgstr "नया (_N)…"
 
-#, fuzzy
 msgid "_Start All"
-msgstr ""
-"#-#-#-#-#  hi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"सभी आरंभ करें(_S)\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"सभी आरंभ करें (_S)"
+msgstr "सभी आरंभ करें (_S)"
 
 msgid "_Pause All"
 msgstr "सभी रोकें (_P)"
@@ -961,13 +934,8 @@ msgstr "संदेश लॉग (_L)"
 msgid "_Statistics"
 msgstr "आँकड़ें (_S)"
 
-#, fuzzy
 msgid "_Donate"
-msgstr ""
-"#-#-#-#-#  hi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"दान करें (_D)\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"दान दें (_D)"
+msgstr "दान करें (_D)"
 
 msgid "_Contents"
 msgstr "सामग्री (_C)"
@@ -1078,43 +1046,23 @@ msgstr ""
 msgid "Limit _upload speed ({speed_units}):"
 msgstr ""
 
-#, fuzzy
 msgid "Torrent _priority:"
-msgstr ""
-"#-#-#-#-#  hi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"टोरेंट प्राथमिकता (_p):\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"टोरेंट प्राथमिकता (_p) :"
+msgstr "टोरेंट प्राथमिकता (_p):"
 
 msgid "Seeding Limits"
 msgstr "सीड सीमाएँ"
 
-#, fuzzy
 msgid "_Ratio:"
-msgstr ""
-"#-#-#-#-#  hi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"अनुपात (_R):\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"अनुपात (_R) :"
+msgstr "अनुपात (_R):"
 
-#, fuzzy
 msgid "_Idle:"
-msgstr ""
-"#-#-#-#-#  hi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"निष्क्रिय (_I):\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"निष्क्रिय (_I) :"
+msgstr "निष्क्रिय (_I):"
 
 msgid "Peer Connections"
 msgstr "पीयर कनेक्शन"
 
-#, fuzzy
 msgid "_Maximum peers:"
-msgstr ""
-"#-#-#-#-#  hi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"अधिकतम पियर (_M):\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"अधिकतम पीयर (_M) :"
+msgstr "अधिकतम पीयर (_M) :"
 
 msgid "Options"
 msgstr "विकल्प"
@@ -1138,13 +1086,8 @@ msgstr "टोरेंट खोलें"
 msgid "Start torrent"
 msgstr "टोरेंट आरंभ करें"
 
-#, fuzzy
 msgid "Pause torrent"
-msgstr ""
-"#-#-#-#-#  hi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"टोरेंट स्थगित करें\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"टोरेंट रोकें"
+msgstr "टोरेंट रोकें"
 
 msgid "Remove torrent"
 msgstr "टोरेंट हटाएँ"
@@ -1178,13 +1121,8 @@ msgstr "स्रोत फाइल (_f):"
 msgid "Piece si_ze:"
 msgstr ""
 
-#, fuzzy
 msgid "Properties"
-msgstr ""
-"#-#-#-#-#  hi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"सूचना\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"विशेषताएँ"
+msgstr "विशेषताएँ"
 
 msgid "_Trackers:"
 msgstr "ट्रैकर (_T):"
@@ -1239,13 +1177,8 @@ msgstr ".torrent फाइल ट्रैश में भेजें (_v)"
 msgid "{appname} Preferences"
 msgstr "{appname} सेटिंग्स"
 
-#, fuzzy
 msgid "Speed Limits"
-msgstr ""
-"#-#-#-#-#  hi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"गति सीमा\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"गति सीमाएँ"
+msgstr "गति सीमाएँ"
 
 #. Checkbox to limit upload speed
 msgid "_Upload ({speed_units}):"
@@ -1376,13 +1309,8 @@ msgstr "आवक कनेक्शन हेतु पोर्ट (_P):"
 msgid "Pick a _random port at startup"
 msgstr "प्रत्येक ट्रांसमिशन आरंभ पर क्रमरहित पोर्ट सेट करें (_r)"
 
-#, fuzzy
 msgid "Use UPnP or NAT-PMP port _forwarding from my router"
-msgstr ""
-"#-#-#-#-#  hi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"राऊटर से UPnP या NAT_PMP पोर्ट अग्रसारित करें (_f)\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"राऊटर से UPnP या NAT__PMP पोर्ट अग्रसारित करें (_f)"
+msgstr "राऊटर से UPnP या NAT__PMP पोर्ट अग्रसारित करें (_f)"
 
 msgid "Te_st Port"
 msgstr "पोर्ट जाँच (_s)"
@@ -1503,13 +1431,8 @@ msgstr "आईपी पत्तों हेतु वाइल्डकार
 msgid "Remote"
 msgstr "दूरस्थ"
 
-#, fuzzy
 msgid "Set Torrent Location"
-msgstr ""
-"#-#-#-#-#  hi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"टोरेंट स्थान सेट करें\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"टोरेंट फोल्डर चुनें"
+msgstr "टोरेंट स्थान सेट करें"
 
 msgid "_Apply"
 msgstr "लागू करें (_A)"
@@ -1523,13 +1446,8 @@ msgstr "नया फोल्डर (_l):"
 msgid "_Move from the current folder"
 msgstr "वर्तमान फोल्डर से अंतरित करें (_m)"
 
-#, fuzzy
 msgid "Local data is _already there"
-msgstr ""
-"#-#-#-#-#  hi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"वहाँ लोकल डाटा पहले से मौजूद है (_a)\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"लोकल डाटा पहले से मौजूद है"
+msgstr "वहाँ लोकल डाटा पहले से मौजूद है (_a)"
 
 msgid "Current Session"
 msgstr "वर्तमान सत्र"
@@ -2362,27 +2280,6 @@ msgid "Select Folder"
 msgstr "फोल्डर चुनें"
 
 #, fuzzy
-#| msgid "Unknown"
-msgid "unknown"
-msgstr "अज्ञात"
-
-msgid "checking…"
-msgstr ""
-
-msgid "open"
-msgstr ""
-
-#, fuzzy
-#| msgid "_Close"
-msgid "closed"
-msgstr "बंद करें (_C)"
-
-#, fuzzy
-#| msgid "Error"
-msgid "error"
-msgstr "त्रुटि"
-
-#, fuzzy
 #| msgid "<i>Blocklist contains {count:L} rule</i>"
 #| msgid_plural "<i>Blocklist contains {count:L} rules</i>"
 msgid "<b>Update succeeded!</b><p>Blocklist now has {count:L} rule.</p>"
@@ -2442,12 +2339,6 @@ msgstr "अपलोड (_p):"
 msgid "Do_wnload:"
 msgstr "डाउनलोड (_w):"
 
-msgid "Downloading"
-msgstr "डाउनलोड जारी"
-
-msgid "Adding"
-msgstr "जोड़ना जारी"
-
 msgid "Reads user clipboard content for torrents"
 msgstr "टोरेंट प्राप्ति हेतु उपयोक्ता के क्लिपबोर्ड की सामग्री रीड करता है"
 
@@ -2457,9 +2348,6 @@ msgstr "क्लिपबोर्ड से नवीन टोरेंट �
 #. Please keep this phrase as short as possible, it's currently the longest and influences dialog width
 msgid "Download is i_nactive if data sharing stopped:"
 msgstr "डाटा सहभाजन रुकने पर डाउनलोड निष्क्रिय (_n):"
-
-msgid "Seeding"
-msgstr "सीड जारी"
 
 msgid "Stop seedi_ng if idle for:"
 msgstr "अवधि उपरांत निष्क्रिय होने पर सीड न करें (_n):"
@@ -2491,19 +2379,11 @@ msgstr "{torrent_name} ({hash} की प्रतिलिपि)"
 
 #, fuzzy
 msgid "Duplicate Torrent"
-msgstr ""
-"#-#-#-#-#  hi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"सार्वजनिक टोरेंट\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"सामान्य टोरेंट"
+msgstr "सार्वजनिक टोरेंट"
 
 #, fuzzy
 msgid "Duplicate Torrents"
-msgstr ""
-"#-#-#-#-#  hi.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"सार्वजनिक टोरेंट\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"सामान्य टोरेंट"
+msgstr "सार्वजनिक टोरेंट"
 
 #, fuzzy
 #| msgid "Couldn't add duplicate torrent"

@@ -110,13 +110,8 @@ msgid_plural "Couldn't add duplicate torrents"
 msgstr[0] "Қайталанатын торренттерді қосу мүмкін емес"
 msgstr[1] "Қайталанатын торренттерді қосу мүмкін емес"
 
-#, fuzzy
 msgid "A fast and easy BitTorrent client"
-msgstr ""
-"#-#-#-#-#  kk.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Жылдам мен қарапайым BitTorrent клиенті\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Жылдам мен қарапайым BitTorrent қолданбасы"
+msgstr "Жылдам мен қарапайым BitTorrent клиенті"
 
 msgid "Copyright © The {appname} Project"
 msgstr ""
@@ -158,14 +153,9 @@ msgstr "Жергілікті мәліметтерді тексеру"
 msgid "Queued for download"
 msgstr "Жүктеу үшін кезекте"
 
-#, fuzzy
 msgctxt "Verb"
 msgid "Downloading"
-msgstr ""
-"#-#-#-#-#  kk.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Жүктеп алу\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Жүктелуде"
+msgstr "Жүктелуде"
 
 msgid "Queued for seeding"
 msgstr "Тарату кезегіне қойылды"
@@ -363,24 +353,14 @@ msgstr "Өшірілсе, торренті қайта жалғастыру үш�
 msgid "Once removed, you'll need the torrent files or magnet links to add them again."
 msgstr "Өшірілсе, торренті қайта жалғастыру үшін торрент файлдар не сілтемесі керек болады."
 
-#, fuzzy
 msgid "This torrent has not finished downloading."
-msgstr ""
-"#-#-#-#-#  kk.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Бұл торренттердің жүктелуі аяқталмаған.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Бұл торренттің жүктелуі аяқталмаған."
+msgstr "Бұл торренттің жүктелуі аяқталмаған."
 
 msgid "These torrents have not finished downloading."
 msgstr "Бұл торренттердің жүктелуі аяқталмаған."
 
-#, fuzzy
 msgid "This torrent is connected to peers."
-msgstr ""
-"#-#-#-#-#  kk.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Бұл торренттер тораптарға қосулы тұр.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Бұл торрент тораптарға қосулы тұр."
+msgstr "Бұл торрент тораптарға қосулы тұр."
 
 msgid "These torrents are connected to peers."
 msgstr "Бұл торренттер тораптарға қосулы тұр."
@@ -391,13 +371,8 @@ msgstr "Бұл торренттердің кейбіреулері торапт�
 msgid "Some of these torrents are connected to peers."
 msgstr "Бұл торренттердің кейбіреулері тораптарға қосулы тұр."
 
-#, fuzzy
 msgid "One of these torrents has not finished downloading."
-msgstr ""
-"#-#-#-#-#  kk.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Бұл торренттердің кейбіреулерінің жүктелуі аяқталмаған.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Бұл торренттердің біреуінің жүктелуі аяқталмаған."
+msgstr "Бұл торренттердің біреуінің жүктелуі аяқталмаған."
 
 msgid "Some of these torrents have not finished downloading."
 msgstr "Бұл торренттердің кейбіреулерінің жүктелуі аяқталмаған."
@@ -501,13 +476,8 @@ msgstr "Қабылдау жылдамдығын шектеу"
 msgid "Limit Upload Speed"
 msgstr "Тарату жылдамдығын шектеу"
 
-#, fuzzy
 msgid "Stop Seeding at Ratio"
-msgstr ""
-"#-#-#-#-#  kk.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Келесі рейтингке жеткенде таратуды тоқтату:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Келесі рейтингке жеткенде таратуды тоқтату"
+msgstr "Келесі рейтингке жеткенде таратуды тоқтату"
 
 msgid "Stop at Ratio ({ratio})"
 msgstr "Рейтингте тоқтату ({ratio})"
@@ -1125,13 +1095,8 @@ msgstr "Торрент қасиеттері"
 msgid "Torrent"
 msgstr "Торрент"
 
-#, fuzzy
 msgid "Statistics"
-msgstr ""
-"#-#-#-#-#  kk.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Статистикасы\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Статистика"
+msgstr "Статистика"
 
 msgid "New Torrent"
 msgstr "Жаңа торрент"
@@ -1246,7 +1211,7 @@ msgstr ""
 
 msgctxt "Gerund"
 msgid "Adding"
-msgstr "Қосылуда"
+msgstr "Қосу"
 
 msgid "Automatically add torrent files _from:"
 msgstr ""
@@ -1306,13 +1271,8 @@ msgctxt "Gerund"
 msgid "Seeding"
 msgstr "Таратылуда"
 
-#, fuzzy
 msgid "Privacy"
-msgstr ""
-"#-#-#-#-#  kk.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Дербестік\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Жекелігі"
+msgstr "Жекелігі"
 
 msgid "_Encryption mode:"
 msgstr "_Шифрлеу режимі:"
@@ -1388,13 +1348,8 @@ msgstr "DHT - бұл трекерсіз-ақ тораптарды іздеу қ�
 msgid "Use _Local Peer Discovery to find more peers for public torrents"
 msgstr "_Тораптарды табу үшін LPD қолдану"
 
-#, fuzzy
 msgid "LPD is a tool for finding peers on your local network."
-msgstr ""
-"#-#-#-#-#  kk.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"LPD - жергілікті желіңізден тораптарды табу құралы.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"LPD - жергілікті желіңізден пирлерді табу құралы."
+msgstr "LPD - жергілікті желіңізден тораптарды табу құралы."
 
 msgid "Default Public Trackers"
 msgstr ""
@@ -1593,13 +1548,8 @@ msgstr "Жоспарланған жаңартулар жоқ"
 msgid "Asking for more peers {time_span_from_now}"
 msgstr ""
 
-#, fuzzy
 msgid "Queued to ask for more peers"
-msgstr ""
-"#-#-#-#-#  kk.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Көбірек тораптарды сұрауда кезекте тұр\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Көбірек пирлерді сұрауда кезекте тұр"
+msgstr "Көбірек тораптарды сұрауда кезекте тұр"
 
 msgid "Asked for more peers {markup_begin}{time_span_ago}{markup_end}"
 msgstr ""
@@ -1630,13 +1580,8 @@ msgstr[1] ""
 msgid "Asking for peer counts {time_span_from_now}"
 msgstr "{time_span} ішіндегі пирлер саны сұрауда"
 
-#, fuzzy
 msgid "Queued to ask for peer counts"
-msgstr ""
-"#-#-#-#-#  kk.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Тораптар санын сұрауда кезекте тұр\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Пирлер санын сұрауда кезекте тұр"
+msgstr "Тораптар санын сұрауда кезекте тұр"
 
 msgid "Asked for peer counts {markup_begin}{time_span_ago}{markup_end}"
 msgstr ""
@@ -2341,25 +2286,6 @@ msgstr "Приоритеті"
 msgid "Select Folder"
 msgstr "Бумадан жасау"
 
-#, fuzzy
-#| msgid "Unknown"
-msgid "unknown"
-msgstr "Белгісіз"
-
-msgid "checking…"
-msgstr ""
-
-msgid "open"
-msgstr ""
-
-msgid "closed"
-msgstr ""
-
-#, fuzzy
-#| msgid "Error"
-msgid "error"
-msgstr "Қате"
-
 msgid "<b>Update succeeded!</b><p>Blocklist now has {count:L} rule.</p>"
 msgid_plural "<b>Update succeeded!</b><p>Blocklist now has {count:L} rules.</p>"
 msgstr[0] ""
@@ -2419,12 +2345,6 @@ msgstr "Таратылған:"
 msgid "Do_wnload:"
 msgstr "Жүктеп алу"
 
-msgid "Downloading"
-msgstr "Жүктелуде"
-
-msgid "Adding"
-msgstr "Қосу"
-
 msgid "Reads user clipboard content for torrents"
 msgstr ""
 
@@ -2434,9 +2354,6 @@ msgstr ""
 #. Please keep this phrase as short as possible, it's currently the longest and influences dialog width
 msgid "Download is i_nactive if data sharing stopped:"
 msgstr ""
-
-msgid "Seeding"
-msgstr "Таратылуда"
 
 msgid "Stop seedi_ng if idle for:"
 msgstr "Белсенді е_мес болса, таратуды тоқтату:"

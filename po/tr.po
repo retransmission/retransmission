@@ -135,63 +135,33 @@ msgstr ""
 msgid "Use global settings"
 msgstr "Genel ayarları kullan"
 
-#, fuzzy
 msgid "Seed regardless of ratio"
-msgstr ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Orandan bağımsız gönderim\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Oran ne olursa olsun gönder"
+msgstr "Orandan bağımsız gönderim"
 
-#, fuzzy
 msgid "Stop seeding at ratio:"
-msgstr ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Şu oranda gönderimi durdur:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Şu oranda göndermeyi durdur:"
+msgstr "Şu oranda gönderimi durdur:"
 
-#, fuzzy
 msgid "Seed regardless of activity"
-msgstr ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Etkinlikten bağımsız gönderim\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Etkinlik ne olursa olsun gönder"
+msgstr "Etkinlikten bağımsız gönderim"
 
 msgid "Stop seeding if idle for N minutes:"
 msgstr "Şu dakika boyunca boşsa gönderimi durdur:"
 
-#, fuzzy
 msgid "Queued for verification"
-msgstr ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Doğrulama için sıralandı\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Doğrulama için kuyrukta"
+msgstr "Doğrulama için kuyrukta"
 
 msgid "Verifying local data"
 msgstr "Yerel veri doğrulanıyor"
 
-#, fuzzy
 msgid "Queued for download"
-msgstr ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"İndirme için sıralandı\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"İndirme sırasına eklendi"
+msgstr "İndirme sırasına eklendi"
 
 msgctxt "Verb"
 msgid "Downloading"
 msgstr "İndiriliyor"
 
-#, fuzzy
 msgid "Queued for seeding"
-msgstr ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Gönderim için sıralandı\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Gönderme kuyruğuna eklendi"
+msgstr "Gönderme kuyruğuna eklendi"
 
 msgctxt "Verb"
 msgid "Seeding"
@@ -214,45 +184,20 @@ msgstr "Karışık"
 msgid "No Torrents Selected"
 msgstr "Seçili Torrent Yok"
 
-#, fuzzy
 msgid "Private to this tracker -- DHT and PEX disabled"
-msgstr ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Bu izleyiciye özel -- DHT ve PEX etkisizleştirildi\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Bu izleyiciye özel -- DHT ve PEX devre dışı"
+msgstr "Bu izleyiciye özel -- DHT ve PEX etkisizleştirildi"
 
-#, fuzzy
 msgid "Public torrent"
-msgstr ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Kamusal torrent\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Genel torrent"
+msgstr "Genel torrent"
 
-#, fuzzy
 msgid "Created by {creator} on {date}"
-msgstr ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{creator} tarafından {date} tarihinde yaratıldı\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{creator} tarafından {date} üzerinde oluşturuldu"
+msgstr "{creator} tarafından {date} tarihinde yaratıldı"
 
-#, fuzzy
 msgid "Created by {creator}"
-msgstr ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{creator} tarafından yaratıldı\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{creator} tarafından oluşturuldu"
+msgstr "{creator} tarafından yaratıldı"
 
-#, fuzzy
 msgid "Created on {date}"
-msgstr ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{date} tarihinde yaratıldı\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{date} tarihinde oluşturuldu"
+msgstr "{date} tarihinde yaratıldı"
 
 msgid "Unknown"
 msgstr "Bilinmeyen"
@@ -279,13 +224,8 @@ msgstr "{current_size} ({percent_done} / %{percent_available} uygun)"
 msgid "{current_size} ({percent_done}% of {percent_available}% available; {unverified_size} unverified)"
 msgstr "{current_size} (%{percent_done} / %{percent_available} uygun; {unverified_size} doğrulanmamış)"
 
-#, fuzzy
 msgid "{downloaded_size} (+{discarded_size} discarded after failed checksum)"
-msgstr ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{downloaded_size} (+{discarded_size} özet denetimi sonrası atılan)\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{downloaded_size} (+{discarded_size} başarısız sağlama sonrası çıkarıldı)"
+msgstr "{downloaded_size} (+{discarded_size} başarısız sağlama sonrası çıkarıldı)"
 
 msgid "{uploaded_size} (Ratio: {ratio})"
 msgstr "{uploaded_size} (Oran: {ratio})"
@@ -305,24 +245,15 @@ msgstr "İyimser kesinti giderme"
 msgid "Downloading from this peer"
 msgstr "Bu eşten indiriliyor"
 
-#, fuzzy
 msgid "We would download from this peer if they would let us"
-msgstr ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Bize izin verirlerse bu eşten indirebiliriz\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Eğer bize izin verirse bu eşten indirebiliriz"
+msgstr "Bize izin verirlerse bu eşten indirebiliriz"
 
 msgid "Uploading to peer"
 msgstr "Eşe gönderiliyor"
 
 #, fuzzy
 msgid "This peer would download from us if we would let them"
-msgstr ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Bize izin verirlerse bu eşten indirebiliriz\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Eğer bize izin verirse bu eşten indirebiliriz"
+msgstr "Bize izin verirlerse bu eşten indirebiliriz"
 
 msgid "Peer has unchoked us, but we're not interested"
 msgstr "Eş kesintimizi giderdi, ama ilgilenmiyoruz"
@@ -330,13 +261,8 @@ msgstr "Eş kesintimizi giderdi, ama ilgilenmiyoruz"
 msgid "We unchoked this peer, but they're not interested"
 msgstr "Bu eşin kesintisini giderdik, ama ilgilenmiyorlar"
 
-#, fuzzy
 msgid "Encrypted connection"
-msgstr ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Şifreli bağlantı\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Şifrelenmiş bağlantı"
+msgstr "Şifreli bağlantı"
 
 msgid "Peer was found through Peer Exchange (PEX)"
 msgstr "Eş Takası (PEX) aracılığıyla eş bulundu"
@@ -347,13 +273,8 @@ msgstr "DHT aracılığıyla eş bulundu"
 msgid "Peer is an incoming connection"
 msgstr "Eş, bir gelen bağlantıdır"
 
-#, fuzzy
 msgid "Peer is connected over µTP"
-msgstr ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Eş, µTP üzerinden bağlandı\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Eş, µTP üstünden bağlandı"
+msgstr "Eş, µTP üzerinden bağlandı"
 
 msgid "Peer supports holepunch (BEP 55)"
 msgstr ""
@@ -370,21 +291,11 @@ msgstr "İnd. İst."
 msgid "Up Reqs"
 msgstr "Yük. İst."
 
-#, fuzzy
 msgid "Down"
-msgstr ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"İnd.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"İndirme"
+msgstr "İnd."
 
-#, fuzzy
 msgid "Up"
-msgstr ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Yük.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Gönderme"
+msgstr "Yük."
 
 msgid "Client"
 msgstr "İstemci"
@@ -418,49 +329,21 @@ msgid_plural "Properties - {torrent_count:L} Torrents"
 msgstr[0] "Özellikler - {torrent_count:L} Torrent"
 msgstr[1] "Özellikler - {torrent_count:L} Torrent"
 
-#, fuzzy
 msgid "Remove torrent?"
-msgstr ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Torrent kaldırılsın mı?\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Torrenti kaldır?"
+msgstr "Torrent kaldırılsın mı?"
 
-#, fuzzy
 msgid "Delete this torrent's downloaded files?"
-msgstr ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Bu torrentin indirilmiş dosyaları kaldırılsın mı?\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Bu torrentin indirilen dosyaları silinsin mi?"
+msgstr "Bu torrentin indirilen dosyaları silinsin mi?"
 
-#, fuzzy
 msgid "Remove {count:L} torrent?"
 msgid_plural "Remove {count:L} torrents?"
-msgstr[0] ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{count:L} torrenti kaldırılsın mı?\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{count:L} torrenti kaldırılsın mı?"
-msgstr[1] ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{count:L} torrent kaldırılsın mı?\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{count:L} torrenti kaldırılsın mı?"
+msgstr[0] "{count:L} torrenti kaldırılsın mı?"
+msgstr[1] "{count:L} torrent kaldırılsın mı?"
 
-#, fuzzy
 msgid "Delete this {count:L} torrent's downloaded files?"
 msgid_plural "Delete these {count:L} torrents' downloaded files?"
-msgstr[0] ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Bu {count:L} torrentin indirilen dosyaları silinsin mi?\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Bu {count:L} torrentin indirilen dosyaları silinsin mi?"
-msgstr[1] ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Bu {count:L} torrentin indirilen dosyaları kaldırılsın mı?\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Bu {count:L} torrentin indirilen dosyaları silinsin mi?"
+msgstr[0] "Bu {count:L} torrentin indirilen dosyaları silinsin mi?"
+msgstr[1] "Bu {count:L} torrentin indirilen dosyaları silinsin mi?"
 
 #, fuzzy
 #| msgid "Once removed, continuing the transfer will require the torrent file or magnet link."
@@ -473,69 +356,29 @@ msgstr "Bir kez silince, aktarımları sürdürmek için torrent dosyası veya m
 msgid "Once removed, you'll need the torrent files or magnet links to add them again."
 msgstr "Bir kez silince, aktarımları sürdürmek için torrent dosyaları veya mıknatıs bağlantıları gerekir."
 
-#, fuzzy
 msgid "This torrent has not finished downloading."
-msgstr ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Bu torrentin indirilmesi bitmedi.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Bu torrentin indirilmesi bitirilmedi."
+msgstr "Bu torrentin indirilmesi bitmedi."
 
-#, fuzzy
 msgid "These torrents have not finished downloading."
-msgstr ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Bu torrentlerin indirilmesi bitmedi.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Bu torrentlerin indirilmesi bitirilmedi."
+msgstr "Bu torrentlerin indirilmesi bitmedi."
 
-#, fuzzy
 msgid "This torrent is connected to peers."
-msgstr ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Bu torrent eşlere bağlı.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Bu torrent eşlere bağlı durumda."
+msgstr "Bu torrent eşlere bağlı."
 
-#, fuzzy
 msgid "These torrents are connected to peers."
-msgstr ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Bu torrentler eşlere bağlı.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Bu torrentler eşlere bağlı durumda."
+msgstr "Bu torrentler eşlere bağlı."
 
-#, fuzzy
 msgid "One of these torrents is connected to peers."
-msgstr ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Bu torrentlerin biri eşlere bağlı.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Bu torrentlerden biri eşlere bağlı durumda."
+msgstr "Bu torrentlerden biri eşlere bağlı durumda."
 
-#, fuzzy
 msgid "Some of these torrents are connected to peers."
-msgstr ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Bu torrentlerin bazıları eşlere bağlı.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Bu torrentlerden bazıları eşlere bağlı durumda."
+msgstr "Bu torrentlerden bazıları eşlere bağlı durumda."
 
-#, fuzzy
 msgid "One of these torrents has not finished downloading."
-msgstr ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Bu torrentlerin birinin indirilmesi bitmedi.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Bu torrentlerden biri indirmeyi bitirmedi."
+msgstr "Bu torrentlerin birinin indirilmesi bitmedi."
 
-#, fuzzy
 msgid "Some of these torrents have not finished downloading."
-msgstr ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Bu torrentlerin bazılarının indirilmesi bitmedi.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Bu torrentlerden bazıları indirmeyi bitirmedi."
+msgstr "Bu torrentlerin bazılarının indirilmesi bitmedi."
 
 msgid "_Cancel"
 msgstr "_İptal"
@@ -587,13 +430,8 @@ msgstr "Doğrulanıyor"
 msgid "Error"
 msgstr "Hata"
 
-#, fuzzy
 msgid "_Show:"
-msgstr ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Göster:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"G_öster:"
+msgstr "_Göster:"
 
 msgid "_Show {count:L} of:"
 msgstr "Şunun {count:L} tanesini göster:"
@@ -645,21 +483,11 @@ msgstr "İndirme Hızını Sınırla"
 msgid "Limit Upload Speed"
 msgstr "Gönderme Hızını Sınırla"
 
-#, fuzzy
 msgid "Stop Seeding at Ratio"
-msgstr ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Belli Orana Ulaşıldığında Dağıtımı Durdur\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Oranda Dağıtımı Durdur"
+msgstr "Belli Orana Ulaşıldığında Dağıtımı Durdur"
 
-#, fuzzy
 msgid "Stop at Ratio ({ratio})"
-msgstr ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Oranda Dur ({ratio})\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"({ratio}) Oranında Durdur"
+msgstr "({ratio}) Oranında Durdur"
 
 msgid "Total Ratio"
 msgstr "Toplam Oran"
@@ -776,13 +604,8 @@ msgstr ""
 msgid "Select File"
 msgstr "Dosya Seç"
 
-#, fuzzy
 msgid "(None)"
-msgstr ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"(Hiçbiri)\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"(Yok)"
+msgstr "(Hiçbiri)"
 
 msgid "Allow encryption"
 msgstr "Şifrelemeye izin ver"
@@ -892,24 +715,14 @@ msgstr "{current_size} / {complete_size} (%{percent_done})"
 msgid "{current_size} of {complete_size} ({percent_complete}%), uploaded {uploaded_size} (Ratio: {ratio}, Goal: {seed_ratio})"
 msgstr "{current_size} / {complete_size} (%{percent_complete}), gönderilen {uploaded_size} (Oran: {ratio}, Hedef: {seed_ratio})"
 
-#, fuzzy
 msgid "{current_size} of {complete_size} ({percent_complete}%), uploaded {uploaded_size} (Ratio: {ratio})"
-msgstr ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{current_size} / {complete_size} (%{percent_complete}), gönderilen {uploaded_size} (Oran: {ratio})\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{current_size} / {complete_size} (%{percent_complete}), Gönderilen: {uploaded_size} (Oran: {ratio})"
+msgstr "{current_size} / {complete_size} (%{percent_complete}), gönderilen {uploaded_size} (Oran: {ratio})"
 
 msgid "{complete_size}, uploaded {uploaded_size} (Ratio: {ratio}, Goal: {seed_ratio})"
 msgstr "{complete_size}, gönderilen {uploaded_size} (Oran: {ratio}, Hedef: {seed_ratio})"
 
-#, fuzzy
 msgid "{complete_size}, uploaded {uploaded_size} (Ratio: {ratio})"
-msgstr ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{complete_size}, gönderilen {uploaded_size} (Oran: {ratio})\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{complete_size}, Gönderilen: {uploaded_size} (Oran: {ratio})"
+msgstr "{complete_size}, gönderilen {uploaded_size} (Oran: {ratio})"
 
 #. Translators: Second (optional) part of torrent progress string
 msgid "Remaining time unknown"
@@ -948,33 +761,15 @@ msgid_plural "Downloading from {active_count} webseeds"
 msgstr[0] "{active_count} web besleyicisinden indiriliyor"
 msgstr[1] "{active_count} web besleyicisinden indiriliyor"
 
-#, fuzzy
 msgid "Downloading from {active_count} of {connected_count} connected peer"
 msgid_plural "Downloading from {active_count} of {connected_count} connected peers"
-msgstr[0] ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{active_count} / {connected_count} bağlı eşten indiriliyor\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{connected_count} bağlı eşin {active_count} tanesinden indiriliyor"
-msgstr[1] ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{active_count} / {connected_count} bağlı eşten indiriliyor\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{connected_count} bağlı eşin {active_count} tanesinden indiriliyor"
+msgstr[0] "{active_count} / {connected_count} bağlı eşten indiriliyor"
+msgstr[1] "{active_count} / {connected_count} bağlı eşten indiriliyor"
 
-#, fuzzy
 msgid "Seeding to {active_count} of {connected_count} connected peer"
 msgid_plural "Seeding to {active_count} of {connected_count} connected peers"
-msgstr[0] ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{active_count} / {connected_count} bağlı eşe gönderiliyor\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{connected_count} bağlı eşten {active_count} tanesine gönderiliyor"
-msgstr[1] ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{active_count} / {connected_count} bağlı eşe gönderiliyor\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{connected_count} bağlı eşten {active_count} tanesine gönderiliyor"
+msgstr[0] "{active_count} / {connected_count} bağlı eşe gönderiliyor"
+msgstr[1] "{active_count} / {connected_count} bağlı eşe gönderiliyor"
 
 msgid "Retransmission"
 msgstr "Retransmission"
@@ -1022,21 +817,11 @@ msgstr "_URL Aç…"
 msgid "_New…"
 msgstr "_Yeni…"
 
-#, fuzzy
 msgid "_Start All"
-msgstr ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Tümünü _Başlat\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Tümünü Başlat"
+msgstr "Tümünü _Başlat"
 
-#, fuzzy
 msgid "_Pause All"
-msgstr ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Tümünü _Duraklat\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Tümünü Duraklat"
+msgstr "Tümünü _Duraklat"
 
 msgid "_Quit"
 msgstr "_Çık"
@@ -1059,32 +844,17 @@ msgstr "_Torrent"
 msgid "_Properties"
 msgstr "_Özellikler"
 
-#, fuzzy
 msgid "Open Fold_er"
-msgstr ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Klasörü Aç\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Klasör Aç"
+msgstr "_Klasörü Aç"
 
 msgid "_Start"
 msgstr "_Başlat"
 
-#, fuzzy
 msgid "Start _Now"
-msgstr ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Şimdi Başlat\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Şimdi _Başlat"
+msgstr "_Şimdi Başlat"
 
-#, fuzzy
 msgid "Ask Tracker for _More Peers"
-msgstr ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"İzleyiciye Daha _Çok Eş Sor\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"İzleyiciye Daha Çok _Eş Sor"
+msgstr "İzleyiciye Daha _Çok Eş Sor"
 
 #, fuzzy
 #| msgid "Queue"
@@ -1100,13 +870,8 @@ msgstr "_Yukarı Taşı"
 msgid "Move _Down"
 msgstr "_Aşağı Taşı"
 
-#, fuzzy
 msgid "Move to _Bottom"
-msgstr ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"En _Alta Taşı\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_En Alta Taşı"
+msgstr "_En Alta Taşı"
 
 msgid "_Pause"
 msgstr "_Duraklat"
@@ -1114,24 +879,14 @@ msgstr "_Duraklat"
 msgid "Set _Location…"
 msgstr "_Konumu Ayarla…"
 
-#, fuzzy
 msgid "_Verify Local Data"
-msgstr ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Yerel Veriyi _Doğrula\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Yerel Veriyi Doğrula"
+msgstr "_Yerel Veriyi Doğrula"
 
 msgid "_Copy Magnet Link to Clipboard"
 msgstr "_Mıknatıs Bağlantısını Panoya Kopyala"
 
-#, fuzzy
 msgid "_Delete Files and Remove"
-msgstr ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Dosyaları _Sil ve Kaldır\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Dosyaları Sil ve Kaldır"
+msgstr "Dosyaları _Sil ve Kaldır"
 
 msgid "_View"
 msgstr "_Görünüm"
@@ -1151,13 +906,8 @@ msgstr "_Durum Çubuğu"
 msgid "Sort by _Activity"
 msgstr "_Etkinliğe Göre Sırala"
 
-#, fuzzy
 msgid "Sort by A_ge"
-msgstr ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Yaşa Göre Sırala\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Tarihe Göre Sırala"
+msgstr "_Yaşa Göre Sırala"
 
 msgid "Sort by _Name"
 msgstr "_Ada Göre Sırala"
@@ -1180,13 +930,8 @@ msgstr "_Duruma Göre Sırala"
 msgid "Sort by Time _Left"
 msgstr "_Kalan Süreye Göre Sırala"
 
-#, fuzzy
 msgid "Re_verse Sort Order"
-msgstr ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Sıralama Düzenini _Ters Çevir\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Sıralamayı Ters Çe_vir"
+msgstr "Sıralama Düzenini _Ters Çevir"
 
 msgid "_Help"
 msgstr "_Yardım"
@@ -1197,13 +942,8 @@ msgstr "İleti _Günlüğü"
 msgid "_Statistics"
 msgstr "_İstatistikler"
 
-#, fuzzy
 msgid "_Donate"
-msgstr ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Bağış Yap\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Bağış"
+msgstr "_Bağış Yap"
 
 msgid "_Contents"
 msgstr "_İçindekiler"
@@ -1239,31 +979,14 @@ msgstr "Etkinlik"
 msgid "Size:"
 msgstr "Boyut:"
 
-#, fuzzy
 msgid "Have:"
-msgstr ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Eldeki:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Sahip olunan:"
+msgstr "Eldeki:"
 
-#, fuzzy
 msgid "Uploaded:"
-msgstr ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Yüklenen:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Yüklendi:\n"
-"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Gönderildi:"
+msgstr "Yüklenen:"
 
-#, fuzzy
 msgid "Downloaded:"
-msgstr ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"İndirilen:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"İndirildi:"
+msgstr "İndirilen:"
 
 msgid "State:"
 msgstr "Durum:"
@@ -1322,13 +1045,8 @@ msgstr "Dosyalar"
 msgid "Speed"
 msgstr "Hız"
 
-#, fuzzy
 msgid "Honor global _limits"
-msgstr ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Genel _sınırlamalara uy\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Genel _sınırlara uy"
+msgstr "Genel _sınırlara uy"
 
 msgid "Limit _download speed ({speed_units}):"
 msgstr "İ_ndirme hızını sınırla ({speed_units}):"
@@ -1339,13 +1057,8 @@ msgstr "_Gönderme hızını sınırla ({speed_units}):"
 msgid "Torrent _priority:"
 msgstr "Torrent _önceliği:"
 
-#, fuzzy
 msgid "Seeding Limits"
-msgstr ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Gönderim Sınırlamaları\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Yükleme Sınırları"
+msgstr "Gönderim Sınırlamaları"
 
 msgid "_Ratio:"
 msgstr "_Oran:"
@@ -1356,24 +1069,14 @@ msgstr "_Boşta:"
 msgid "Peer Connections"
 msgstr "Eş Bağlantıları"
 
-#, fuzzy
 msgid "_Maximum peers:"
-msgstr ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"En _çok eş:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Azami eş:"
+msgstr "En _çok eş:"
 
 msgid "Options"
 msgstr "Seçenekler"
 
-#, fuzzy
 msgid "Tracker Announce URLs"
-msgstr ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"İzleyici Duyuru URL'leri\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"İzleyici Duyuru URL"
+msgstr "İzleyici Duyuru URL'leri"
 
 msgid ""
 "To add a backup URL, add it on the next line after a primary URL.\n"
@@ -1382,21 +1085,11 @@ msgstr ""
 "Yedek URL eklemek için, onu ana URL'den sonraki satıra ekleyin.\n"
 "Başka ana URL eklemek için, onu boş bir satırdan sonra ekleyin."
 
-#, fuzzy
 msgid "Also see Default Public Trackers in Edit > Preferences > Network"
-msgstr ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Düzenle > Tercihler > Ağ'da Öntanımlı Genel İzleyiciler'e de bakınız\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Düzenle > Tercihler > Ağ içindeki Öntanımlı Genel İzleyiciler'e de bakınız"
+msgstr "Düzenle > Tercihler > Ağ'da Öntanımlı Genel İzleyiciler'e de bakınız"
 
-#, fuzzy
 msgid "Open a torrent"
-msgstr ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Torrent aç\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Torrent Aç"
+msgstr "Torrent aç"
 
 msgid "Start torrent"
 msgstr "Torrenti başlat"
@@ -1424,13 +1117,8 @@ msgstr "Yeni Torrent"
 msgid "C_reate"
 msgstr "H_azırlayanlar"
 
-#, fuzzy
 msgid "Sa_ve to:"
-msgstr ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Kaydet:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Şuraya _kaydet:"
+msgstr "Şuraya _kaydet:"
 
 msgid "Source f_older:"
 msgstr "Kaynak _klasör:"
@@ -1527,13 +1215,8 @@ msgstr "İ_ndirme ({speed_units}):"
 msgid "_Scheduled times:"
 msgstr "_Planlanmış zaman:"
 
-#, fuzzy
 msgid "_On days:"
-msgstr ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Şu günlerde:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Şu günler:"
+msgstr "_Şu günlerde:"
 
 #. Label goes between two time selectors, e.g. "limit speeds from [time] to [time]"
 msgid "_to"
@@ -1546,13 +1229,8 @@ msgstr "Ekleme"
 msgid "Automatically add torrent files _from:"
 msgstr "_Şuradan torrent dosyalarını kendiliğinden ekle:"
 
-#, fuzzy
 msgid "Show the Torrent Options _dialog"
-msgstr ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Torrent Seçenekleri _iletişim kutusunu göster\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Torrent seçenekleri _ileti penceresini göster"
+msgstr "Torrent Seçenekleri _iletişim kutusunu göster"
 
 msgid "_Start added torrents"
 msgstr "Eklenen torrentleri _başlat"
@@ -1565,13 +1243,8 @@ msgstr "Şu _Konuma Kaydet:"
 msgid "Download Queue"
 msgstr "İndirme Sırası"
 
-#, fuzzy
 msgid "Ma_ximum active downloads:"
-msgstr ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"En _çok etkin indirme:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"En çok _etkin indirme sayısı:"
+msgstr "En _çok etkin indirme:"
 
 msgid "Downloads sharing data in the last _N minutes are active:"
 msgstr "Paylaşılan son veriler _şu dakika içinde etkinse indir:"
@@ -1599,21 +1272,11 @@ msgctxt "Gerund"
 msgid "Downloading"
 msgstr "İndirme"
 
-#, fuzzy
 msgid "Limits"
-msgstr ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Sınırlamalar\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Sınırlar"
+msgstr "Sınırlar"
 
-#, fuzzy
 msgid "Stop seeding at _ratio:"
-msgstr ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Şu _oranda gönderimi durdur:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Orana ulaşılınca göndermeyi durdur:"
+msgstr "Şu _oranda gönderimi durdur:"
 
 msgid "Stop seeding if idle for _N minutes:"
 msgstr "_Şu dakika boyunca boşsa gönderimi durdur:"
@@ -1631,13 +1294,8 @@ msgstr "Gizlilik"
 msgid "_Encryption mode:"
 msgstr "_Şifreleme kipi:"
 
-#, fuzzy
 msgid "Blocklist"
-msgstr ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Engel listesi\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Engel Listesi"
+msgstr "Engel Listesi"
 
 msgid "Enable _blocklist:"
 msgstr "_Engel listesini etkinleştir:"
@@ -1664,13 +1322,8 @@ msgstr "Transmission her başlatıldığında _rastgele bağlantı noktası seç
 msgid "Use UPnP or NAT-PMP port _forwarding from my router"
 msgstr "Yönelticimden _yönlendirirken UPnP ya da NAT-PMP bağlantı noktasını kullan"
 
-#, fuzzy
 msgid "Te_st Port"
-msgstr ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Bağlantı Noktasını _Sına\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Bağlantı Noktasını Sı_na"
+msgstr "Bağlantı Noktasını _Sına"
 
 msgid "Peer Limits"
 msgstr "Eş Sınırları"
@@ -1680,13 +1333,8 @@ msgstr "Eş Sınırları"
 msgid "Maximum peers for new _torrents:"
 msgstr "_Torrent başına azami eş sayısı:"
 
-#, fuzzy
 msgid "Maximum peers _overall:"
-msgstr ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Genel azami eş sayısı:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Genel azami eş sayısı"
+msgstr "_Genel azami eş sayısı:"
 
 msgid "Enable µ_TP for peer connections"
 msgstr "Eş bağlantıları için µ_TP'yi etkinleştir"
@@ -1699,56 +1347,34 @@ msgstr "µTP, ağ sıkışmalarını azaltan araçtır."
 msgid "Use PE_X to find more peers for public torrents"
 msgstr "Daha çok eş bulmak için PE_X kullan"
 
-#, fuzzy
 msgid "PEX is a tool for exchanging peer lists with the peers you're connected to."
-msgstr ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"PEX bağlı olduğunuz eşlerle, eş listenizi paylaşmanıza yarayan araçtır.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"PEX bağlı olduğunuz eşlerle, eş listenizi paylaşmanıza yarayan bir araçtır."
+msgstr "PEX bağlı olduğunuz eşlerle, eş listenizi paylaşmanıza yarayan araçtır."
 
 #, fuzzy
 #| msgid "Use _DHT to find more peers"
 msgid "Use _DHT to find more peers for public torrents"
 msgstr "Daha çok eş bulmak için _DHT kullan"
 
-#, fuzzy
 msgid "DHT is a tool for finding peers without a tracker."
-msgstr ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"DHT, izleyiciye gereksinmeden eş bulma aracıdır.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"DHT, izleyiciye gereksinim olmadan eş bulma aracıdır."
+msgstr "DHT, izleyiciye gereksinmeden eş bulma aracıdır."
 
 #, fuzzy
 #| msgid "Use _Local Peer Discovery to find more peers"
 msgid "Use _Local Peer Discovery to find more peers for public torrents"
 msgstr "Daha çok eş bulmak için _Yerel Eş Keşfini kullan"
 
-#, fuzzy
 msgid "LPD is a tool for finding peers on your local network."
-msgstr ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"LPD, yerel ağınızda eşleri bulmak için bir araçtır.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"LPD yerel ağınızda eşleri bulmanıza yardımcı bir araçtır."
+msgstr "LPD, yerel ağınızda eşleri bulmak için bir araçtır."
 
 msgid "Default Public Trackers"
 msgstr "Öntanımlı Genel İzleyiciler"
 
-#, fuzzy
 msgid ""
 "Trackers to use on all public torrents.\n"
 "\n"
 "To add a backup URL, add it on the next line after a primary URL.\n"
 "To add a new primary URL, add it after a blank line."
 msgstr ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Tüm genel torrentlerde kullanılacak izleyiciler.\n"
-"\n"
-"Yedek URL eklemek için, onu ana URL'den sonraki satıra ekleyin.\n"
-"Başka ana URL eklemek için, onu boş bir satırdan sonra ekleyin.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
 "Tüm genel torrentlerde kullanılacak izleyiciler.\n"
 "\n"
 "Yedek URL eklemek için, birincil URL'den sonraki satıra ekleyin.\n"
@@ -1769,21 +1395,11 @@ msgstr "{appname} simgesini _bildirim alanında göster"
 msgid "Notification"
 msgstr "Bildirim"
 
-#, fuzzy
 msgid "Show a notification when torrents are a_dded"
-msgstr ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Torrentler eklen_diğinde bildirim göster\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Torrent _eklendiğinde bildirim göster"
+msgstr "Torrentler eklen_diğinde bildirim göster"
 
-#, fuzzy
 msgid "Show a notification when torrents _finish"
-msgstr ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Torrentler _bittiğinde bildirim göster\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Torrent _bittiğinde bildirim göster"
+msgstr "Torrentler _bittiğinde bildirim göster"
 
 msgid "Play a _sound when torrents finish"
 msgstr "Torrent bittiğinde _ses çal"
@@ -1791,13 +1407,8 @@ msgstr "Torrent bittiğinde _ses çal"
 msgid "Remote Control"
 msgstr "Uzaktan Denetim"
 
-#, fuzzy
 msgid "Allow _remote access"
-msgstr ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Uzaktan erişime izin ver\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Uzaktan _erişime izin ver"
+msgstr "Uzaktan _erişime izin ver"
 
 #, fuzzy
 #| msgid "_Open web client"
@@ -1810,31 +1421,14 @@ msgstr "HTTP _bağlantı noktası:"
 msgid "Use _authentication"
 msgstr "_Yetkilendirme kullan"
 
-#, fuzzy
 msgid "_Username:"
-msgstr ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Kullanıcı adı:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Kullanıcı Adı:"
+msgstr "_Kullanıcı adı:"
 
-#, fuzzy
 msgid "Pass_word:"
-msgstr ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Parola:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Paro_la:\n"
-"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Parola:"
+msgstr "_Parola:"
 
-#, fuzzy
 msgid "Only allow these IP a_ddresses:"
-msgstr ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Yalnızca şu IP a_dreslerine bağlanma izni ver:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Yalnızca şu IP a_dreslerine izni ver:"
+msgstr "Yalnızca şu IP a_dreslerine bağlanma izni ver:"
 
 msgid "Addresses:"
 msgstr "Adresler:"
@@ -1857,13 +1451,8 @@ msgstr "Konum"
 msgid "New _location:"
 msgstr "Yeni _konum"
 
-#, fuzzy
 msgid "_Move from the current folder"
-msgstr ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Geçerli klasörden _taşı\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Şu anki dizinden _taşı"
+msgstr "Geçerli klasörden _taşı"
 
 msgid "Local data is _already there"
 msgstr "Yerel veri _zaten orada"
@@ -1974,13 +1563,8 @@ msgstr "Eş listesi istemi {markup_begin}{time_span_ago} önce zaman aşımına 
 msgid "Got an error '{markup_begin}{error}{markup_end}' {time_span_ago}"
 msgstr "{time_span_ago} önce '{markup_begin}{error}{markup_end}' hatası alındı"
 
-#, fuzzy
 msgid "No updates scheduled"
-msgstr ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Belirlenmiş güncelleştirme yok\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Planlanlı güncelleme yok"
+msgstr "Belirlenmiş güncelleştirme yok"
 
 msgid "Asking for more peers {time_span_from_now}"
 msgstr "{time_span_from_now} içinde daha çok eş sorulacak"
@@ -2445,37 +2029,17 @@ msgstr "TiB"
 msgid "B/s"
 msgstr "B/s"
 
-#, fuzzy
 msgid "kB/s"
-msgstr ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"kB/sn\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"kB/s"
+msgstr "kB/s"
 
-#, fuzzy
 msgid "MB/s"
-msgstr ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"MB/sn\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"MB/s"
+msgstr "MB/s"
 
-#, fuzzy
 msgid "GB/s"
-msgstr ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"GB/sn\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"GB/s"
+msgstr "GB/s"
 
-#, fuzzy
 msgid "TB/s"
-msgstr ""
-"#-#-#-#-#  tr.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"TB/sn\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"TB/s"
+msgstr "TB/s"
 
 msgid "kB"
 msgstr "kB"
@@ -2739,21 +2303,6 @@ msgstr "_Öncelik:"
 msgid "Select Folder"
 msgstr "Klasör Seç"
 
-msgid "unknown"
-msgstr "bilinmeyen"
-
-msgid "checking…"
-msgstr "denetleniyor…"
-
-msgid "open"
-msgstr "açık"
-
-msgid "closed"
-msgstr "kapalı"
-
-msgid "error"
-msgstr "hata"
-
 msgid "<b>Update succeeded!</b><p>Blocklist now has {count:L} rule.</p>"
 msgid_plural "<b>Update succeeded!</b><p>Blocklist now has {count:L} rules.</p>"
 msgstr[0] "<b>Güncelleme başarılı!</b><p>Şu anda engel listesinde {count:L} kural var.</p>"
@@ -2809,12 +2358,6 @@ msgstr "_Yükleme:"
 msgid "Do_wnload:"
 msgstr "_İndirme:"
 
-msgid "Downloading"
-msgstr "İndirme"
-
-msgid "Adding"
-msgstr "Ekleme"
-
 msgid "Reads user clipboard content for torrents"
 msgstr "Torrent için kullanıcı panosu içeriğini oku"
 
@@ -2824,9 +2367,6 @@ msgstr "Panodan yeni torrent algıla"
 #. Please keep this phrase as short as possible, it's currently the longest and influences dialog width
 msgid "Download is i_nactive if data sharing stopped:"
 msgstr "Veri paylaşımı durduğunda indirme işlemini durdur:"
-
-msgid "Seeding"
-msgstr "Gönderme"
 
 msgid "Stop seedi_ng if idle for:"
 msgstr "Eğer boş beklerse _göndermeyi durdur:"

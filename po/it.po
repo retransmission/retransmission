@@ -114,13 +114,8 @@ msgstr[0] "Impossbile aggiungere un torrent duplicato"
 msgstr[1] "Impossbile aggiungere torrent duplicati"
 msgstr[2] "Impossbile aggiungere torrent duplicati"
 
-#, fuzzy
 msgid "A fast and easy BitTorrent client"
-msgstr ""
-"#-#-#-#-#  it.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Un client BitTorrent semplice e veloce\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Un client BitTorrent facile e veloce"
+msgstr "Un client BitTorrent semplice e veloce"
 
 msgid "Copyright © The {appname} Project"
 msgstr "Copyright © Il progetto {appname}"
@@ -167,128 +162,62 @@ msgstr ""
 msgid "Use global settings"
 msgstr "Usa impostazioni globali"
 
-#, fuzzy
 msgid "Seed regardless of ratio"
-msgstr ""
-"#-#-#-#-#  it.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Distribuisci senza tener conto del rapporto\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Continua il seeding indipendentemente dal rapporto"
+msgstr "Distribuisci senza tener conto del rapporto"
 
-#, fuzzy
 msgid "Stop seeding at ratio:"
-msgstr ""
-"#-#-#-#-#  it.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ferma la distribuzione al rapporto:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ferma il seeding al rapporto:"
+msgstr "Ferma la distribuzione al rapporto:"
 
-#, fuzzy
 msgid "Seed regardless of activity"
-msgstr ""
-"#-#-#-#-#  it.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Distribuisci senza tener conto dell'attività\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Continua il seeding indipendentemente dall'attività"
+msgstr "Distribuisci senza tener conto dell'attività"
 
 msgid "Stop seeding if idle for N minutes:"
 msgstr "Ferma la distribuzione se inattivo per N minuti:"
 
-#, fuzzy
 msgid "Queued for verification"
-msgstr ""
-"#-#-#-#-#  it.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"In coda per essere verificato\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"In coda per la verifica"
+msgstr "In coda per essere verificato"
 
 msgid "Verifying local data"
 msgstr "Verifica dei dati locali"
 
-#, fuzzy
 msgid "Queued for download"
-msgstr ""
-"#-#-#-#-#  it.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Accodato per la ricezione\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"In coda per il download"
+msgstr "Accodato per la ricezione"
 
-#, fuzzy
 msgctxt "Verb"
 msgid "Downloading"
-msgstr ""
-"#-#-#-#-#  it.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"In ricezione\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"In scaricamento"
+msgstr "In ricezione"
 
-#, fuzzy
 msgid "Queued for seeding"
-msgstr ""
-"#-#-#-#-#  it.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Accodato per la distribuzione\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"In coda per il seed"
+msgstr "Accodato per la distribuzione"
 
-#, fuzzy
 msgctxt "Verb"
 msgid "Seeding"
-msgstr ""
-"#-#-#-#-#  it.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"In distribuzione\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"In seed"
+msgstr "In distribuzione"
 
 #, fuzzy
 msgid "Seeding complete"
-msgstr ""
-"#-#-#-#-#  it.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Incompleto\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Incompleti"
+msgstr "Incompleto"
 
 msgid "Paused"
 msgstr "In pausa"
 
-#, fuzzy
 msgid "N/A"
-msgstr ""
-"#-#-#-#-#  it.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"n/d\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"N/D"
+msgstr "N/D"
 
-#, fuzzy
 msgid "Mixed"
-msgstr ""
-"#-#-#-#-#  it.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Misto\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Misto\n"
-"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
-" Mista"
+msgstr "Misto"
 
 msgid "No Torrents Selected"
 msgstr "Nessun torrent selezionato"
 
-#, fuzzy
 msgid "Private to this tracker -- DHT and PEX disabled"
-msgstr ""
-"#-#-#-#-#  it.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Privato per questo server traccia -- DHT e PEX disabilitati\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Privato per questo server traccua -- DHT e PEX disabilitati"
+msgstr "Privato per questo server traccia -- DHT e PEX disabilitati"
 
 msgid "Public torrent"
 msgstr "Torrent pubblico"
 
-#, fuzzy
 msgid "Created by {creator} on {date}"
-msgstr ""
-"#-#-#-#-#  it.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Creato da {creator} in data {date}\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Creato da {creator} il {date}"
+msgstr "Creato da {creator} in data {date}"
 
 msgid "Created by {creator}"
 msgstr "Creato da {creator}"
@@ -337,61 +266,27 @@ msgstr "Mai"
 msgid "Active now"
 msgstr "Attualmente attivo"
 
-#, fuzzy
 msgid "Optimistic unchoke"
-msgstr ""
-"#-#-#-#-#  it.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Collaborazione ottimistica\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Sblocco ottimistico"
+msgstr "Collaborazione ottimistica"
 
-#, fuzzy
 msgid "Downloading from this peer"
-msgstr ""
-"#-#-#-#-#  it.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"In ricezione da questo nodo\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"In ricezione dal peer"
+msgstr "In ricezione da questo nodo"
 
-#, fuzzy
 msgid "We would download from this peer if they would let us"
-msgstr ""
-"#-#-#-#-#  it.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Sarà possibile scaricare da questo nodo quando sarà concesso\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Se ce lo consente, scaricheremmo da questo peer"
+msgstr "Sarà possibile scaricare da questo nodo quando sarà concesso"
 
-#, fuzzy
 msgid "Uploading to peer"
-msgstr ""
-"#-#-#-#-#  it.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Invio al nodo\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"In invio al peer"
+msgstr "Invio al nodo"
 
 #, fuzzy
 msgid "This peer would download from us if we would let them"
-msgstr ""
-"#-#-#-#-#  it.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Sarà possibile scaricare da questo nodo quando sarà concesso\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Se ce lo consente, scaricheremmo da questo peer"
+msgstr "Sarà possibile scaricare da questo nodo quando sarà concesso"
 
-#, fuzzy
 msgid "Peer has unchoked us, but we're not interested"
-msgstr ""
-"#-#-#-#-#  it.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Il nodo ha offerto collaborazione, ma non siamo interessati\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Il peer ci ha sbloccati, ma non siamo interessati interessati"
+msgstr "Il nodo ha offerto collaborazione, ma non siamo interessati"
 
-#, fuzzy
 msgid "We unchoked this peer, but they're not interested"
-msgstr ""
-"#-#-#-#-#  it.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Abbiamo offerto collaborazione al nodo, ma non è interessato\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Abbiamo sbloccato questo peer, ma non è interessato"
+msgstr "Abbiamo offerto collaborazione al nodo, ma non è interessato"
 
 msgid "Encrypted connection"
 msgstr "Connessione cifrata"
@@ -402,13 +297,8 @@ msgstr "Il nodo è strato trovato attraverso PEX (Peer Exchange)"
 msgid "Peer was found through DHT"
 msgstr "Il nodo è strato trovato attraverso DHT"
 
-#, fuzzy
 msgid "Peer is an incoming connection"
-msgstr ""
-"#-#-#-#-#  it.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Il nodo è una connessione in entrata\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Il peer è una connessione in entrata"
+msgstr "Il nodo è una connessione in entrata"
 
 msgid "Peer is connected over µTP"
 msgstr "Nodo connesso tramite µTP"
@@ -428,21 +318,11 @@ msgstr "Rich ric"
 msgid "Up Reqs"
 msgstr "Rich inv"
 
-#, fuzzy
 msgid "Down"
-msgstr ""
-"#-#-#-#-#  it.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ric\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Giù"
+msgstr "Ric"
 
-#, fuzzy
 msgid "Up"
-msgstr ""
-"#-#-#-#-#  it.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Inv\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Su"
+msgstr "Inv"
 
 msgid "Client"
 msgstr "Client"
@@ -459,13 +339,8 @@ msgstr "{torrent_name} - Modifica Tracker"
 msgid "List contains invalid URLs"
 msgstr "L'elenco contiene degli URL non validi"
 
-#, fuzzy
 msgid "Please correct the errors and try again."
-msgstr ""
-"#-#-#-#-#  it.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Correggere gli errori e provare nuovamente\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Si prega di correggere gli errori e riprovare."
+msgstr "Si prega di correggere gli errori e riprovare."
 
 msgid "{torrent_name} - Add Tracker"
 msgstr "{torrent_name} - Aggiungi Tracker"
@@ -511,64 +386,29 @@ msgstr "Una volta rimosso, per continuare il trasferimento sarà necessario il f
 msgid "Once removed, you'll need the torrent files or magnet links to add them again."
 msgstr "Una volta rimosso, continuare i trasferimenti richiederà i file torrent o i magnet link."
 
-#, fuzzy
 msgid "This torrent has not finished downloading."
-msgstr ""
-"#-#-#-#-#  it.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Questo torrent non è stato completamente scaricato.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Questo torrent non ha finito lo scaricamento."
+msgstr "Questo torrent non è stato completamente scaricato."
 
-#, fuzzy
 msgid "These torrents have not finished downloading."
-msgstr ""
-"#-#-#-#-#  it.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Questi torrent non sono stati completamente scaricati.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Questi torrent non hanno finito lo scaricamento."
+msgstr "Questi torrent non sono stati completamente scaricati."
 
-#, fuzzy
 msgid "This torrent is connected to peers."
-msgstr ""
-"#-#-#-#-#  it.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Questo torrent è connesso ai nodi.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Questo torrent è connesso ai peer."
+msgstr "Questo torrent è connesso ai nodi."
 
 msgid "These torrents are connected to peers."
 msgstr "Questi torrent sono connessi ai nodi."
 
-#, fuzzy
 msgid "One of these torrents is connected to peers."
-msgstr ""
-"#-#-#-#-#  it.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Uno di questi torrent è connesso ai nodi.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Uno di questi torrent è connesso ai peer."
+msgstr "Uno di questi torrent è connesso ai nodi."
 
-#, fuzzy
 msgid "Some of these torrents are connected to peers."
-msgstr ""
-"#-#-#-#-#  it.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Alcuni di questi torrent sono connessi ai nodi.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Alcuni di questi torrent sono connessi ai peer."
+msgstr "Alcuni di questi torrent sono connessi ai nodi."
 
-#, fuzzy
 msgid "One of these torrents has not finished downloading."
-msgstr ""
-"#-#-#-#-#  it.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Uno di questi torrent non è stato completamente scaricato.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Uno di questi torrent non ha finito lo scaricamento."
+msgstr "Uno di questi torrent non è stato completamente scaricato."
 
-#, fuzzy
 msgid "Some of these torrents have not finished downloading."
-msgstr ""
-"#-#-#-#-#  it.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Alcuni di questi torrent non sono stati completamente scaricati.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Alcuni di questi torrent non hanno finito lo scaricamento."
+msgstr "Alcuni di questi torrent non sono stati completamente scaricati."
 
 msgid "_Cancel"
 msgstr "A_nnulla"
@@ -577,15 +417,8 @@ msgid "_Delete"
 msgstr "_Elimina"
 
 #. Removes the torrent from the list and keeps its downloaded files
-#, fuzzy
 msgid "_Remove"
-msgstr ""
-"#-#-#-#-#  it.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Rimuovi\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Rimuovi\n"
-"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Remove"
+msgstr "_Rimuovi"
 
 msgid "High"
 msgstr "Alta"
@@ -602,24 +435,14 @@ msgstr ""
 msgid "Name"
 msgstr "Nome"
 
-#, fuzzy
 msgid "Size"
-msgstr ""
-"#-#-#-#-#  it.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Dimensione\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Dimensioni"
+msgstr "Dimensione"
 
 msgid "Progress"
 msgstr "Progresso"
 
-#, fuzzy
 msgid "Download"
-msgstr ""
-"#-#-#-#-#  it.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ricezione\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Download"
+msgstr "Ricezione"
 
 msgid "Priority"
 msgstr "Priorità"
@@ -674,45 +497,20 @@ msgid ""
 " ({download_speed} down, {upload_speed} up)"
 msgstr ""
 
-#, fuzzy
 msgid "Unlimited"
-msgstr ""
-"#-#-#-#-#  it.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Nessun limite\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Illimitata"
+msgstr "Nessun limite"
 
-#, fuzzy
 msgid "Seed Forever"
-msgstr ""
-"#-#-#-#-#  it.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Distribuisci per sempre\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Seed perpetuo"
+msgstr "Distribuisci per sempre"
 
-#, fuzzy
 msgid "Limit Download Speed"
-msgstr ""
-"#-#-#-#-#  it.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Limita velocità ricezione\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Limita velocità di download"
+msgstr "Limita velocità ricezione"
 
-#, fuzzy
 msgid "Limit Upload Speed"
-msgstr ""
-"#-#-#-#-#  it.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Limita velocità invio\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Limita velocità di upload"
+msgstr "Limita velocità invio"
 
-#, fuzzy
 msgid "Stop Seeding at Ratio"
-msgstr ""
-"#-#-#-#-#  it.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ferma distribuzione al rapporto\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ferma il seed al rapporto"
+msgstr "Ferma distribuzione al rapporto"
 
 msgid "Stop at Ratio ({ratio})"
 msgstr "Ferma al rapporto ({ratio})"
@@ -835,40 +633,20 @@ msgstr "Seleziona file"
 msgid "(None)"
 msgstr "(Nessuno)"
 
-#, fuzzy
 msgid "Allow encryption"
-msgstr ""
-"#-#-#-#-#  it.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Consentire la cifratura\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Consenti crittografia"
+msgstr "Consentire la cifratura"
 
-#, fuzzy
 msgid "Prefer encryption"
-msgstr ""
-"#-#-#-#-#  it.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Preferire la cifratura\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Preferisci crittografia"
+msgstr "Preferire la cifratura"
 
-#, fuzzy
 msgid "Require encryption"
-msgstr ""
-"#-#-#-#-#  it.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Richiedere la cifratura\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Richiedi crittografia"
+msgstr "Richiedere la cifratura"
 
 msgid "Every Day"
 msgstr "Ogni giorno"
 
-#, fuzzy
 msgid "Weekdays"
-msgstr ""
-"#-#-#-#-#  it.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Giorni feriali\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Settimanali"
+msgstr "Giorni feriali"
 
 msgid "Weekends"
 msgstr "Fine settimana"
@@ -975,13 +753,8 @@ msgid "{complete_size}, uploaded {uploaded_size} (Ratio: {ratio})"
 msgstr "{complete_size}, caricato {uploaded_size} (Rapporto: {ratio})"
 
 #. Translators: Second (optional) part of torrent progress string
-#, fuzzy
 msgid "Remaining time unknown"
-msgstr ""
-"#-#-#-#-#  it.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Tempo restante sconosciuto\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Tempo rimanente sconosciuto"
+msgstr "Tempo rimanente sconosciuto"
 
 msgid "{download_speed} ▾  {upload_speed} ▴"
 msgstr ""
@@ -1077,39 +850,17 @@ msgstr "Apri _URL…"
 msgid "_New…"
 msgstr "_Nuovo…"
 
-#, fuzzy
 msgid "_Start All"
-msgstr ""
-"#-#-#-#-#  it.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Avvia _tutti\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Start tutti"
+msgstr "Avvia _tutti"
 
-#, fuzzy
 msgid "_Pause All"
-msgstr ""
-"#-#-#-#-#  it.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Pausa tutti\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Pause tutti"
+msgstr "_Pausa tutti"
 
-#, fuzzy
 msgid "_Quit"
-msgstr ""
-"#-#-#-#-#  it.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Esci\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Quit"
+msgstr "_Esci"
 
-#, fuzzy
 msgid "_Edit"
-msgstr ""
-"#-#-#-#-#  it.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Modifica\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"M_odifica\n"
-"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Edit"
+msgstr "_Modifica"
 
 msgid "Select _All"
 msgstr "_Seleziona tutto"
@@ -1117,294 +868,125 @@ msgstr "_Seleziona tutto"
 msgid "Dese_lect All"
 msgstr "_Deseleziona tutto"
 
-#, fuzzy
 msgid "_Preferences"
-msgstr ""
-"#-#-#-#-#  it.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Preferen_ze\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Preferences"
+msgstr "Preferen_ze"
 
 msgid "_Torrent"
 msgstr "_Torrent"
 
-#, fuzzy
 msgid "_Properties"
-msgstr ""
-"#-#-#-#-#  it.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"P_roprietà\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Properties"
+msgstr "P_roprietà"
 
-#, fuzzy
 msgid "Open Fold_er"
-msgstr ""
-"#-#-#-#-#  it.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Apri cart_ella\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Apri Fold_er"
+msgstr "Apri cart_ella"
 
-#, fuzzy
 msgid "_Start"
-msgstr ""
-"#-#-#-#-#  it.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"A_vvia\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Start"
+msgstr "A_vvia"
 
-#, fuzzy
 msgid "Start _Now"
-msgstr ""
-"#-#-#-#-#  it.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Avvia ora\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Avvia _Now"
+msgstr "_Avvia ora"
 
-#, fuzzy
 msgid "Ask Tracker for _More Peers"
-msgstr ""
-"#-#-#-#-#  it.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"C_hiedi più nodi al server traccia\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Chiedi _More peers al tracker"
+msgstr "C_hiedi più nodi al server traccia"
 
 #, fuzzy
 #| msgid "Queue"
 msgid "_Queue"
 msgstr "Coda"
 
-#, fuzzy
 msgid "Move to _Top"
-msgstr ""
-"#-#-#-#-#  it.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Sposta in _alto\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Sposta _Top"
+msgstr "Sposta in _alto"
 
-#, fuzzy
 msgid "Move _Up"
-msgstr ""
-"#-#-#-#-#  it.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Sposta _su\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Sposta _Up"
+msgstr "Sposta _su"
 
-#, fuzzy
 msgid "Move _Down"
-msgstr ""
-"#-#-#-#-#  it.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Spos_ta giù\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Sposta Down"
+msgstr "Spos_ta giù"
 
-#, fuzzy
 msgid "Move to _Bottom"
-msgstr ""
-"#-#-#-#-#  it.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Sposta in _basso\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Sposta in _Bottom"
+msgstr "Sposta in _basso"
 
-#, fuzzy
 msgid "_Pause"
-msgstr ""
-"#-#-#-#-#  it.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Pausa\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Pause"
+msgstr "_Pausa"
 
 msgid "Set _Location…"
 msgstr "Imposta posi_zione…"
 
-#, fuzzy
 msgid "_Verify Local Data"
-msgstr ""
-"#-#-#-#-#  it.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Verifica _dati locali\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Verify dati locali"
+msgstr "Verifica _dati locali"
 
 msgid "_Copy Magnet Link to Clipboard"
 msgstr "_Copy Link Magnet negli appunti"
 
-#, fuzzy
 msgid "_Delete Files and Remove"
-msgstr ""
-"#-#-#-#-#  it.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Elimina _file e rimuovi\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Delete Files e Rimuovi"
+msgstr "Elimina _file e rimuovi"
 
 msgid "_View"
 msgstr "_View"
 
-#, fuzzy
 msgid "_Compact View"
-msgstr ""
-"#-#-#-#-#  it.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Vista _compatta\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Vista _Compact"
+msgstr "Vista _compatta"
 
-#, fuzzy
 msgid "_Toolbar"
-msgstr ""
-"#-#-#-#-#  it.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Barra degli _strumenti\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Toolbar"
+msgstr "Barra degli _strumenti"
 
-#, fuzzy
 msgid "_Filterbar"
-msgstr ""
-"#-#-#-#-#  it.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Barra dei _filtri\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Filterbar"
+msgstr "Barra dei _filtri"
 
-#, fuzzy
 msgid "_Statusbar"
-msgstr ""
-"#-#-#-#-#  it.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Barra di s_tato\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Statusbar"
+msgstr "Barra di s_tato"
 
-#, fuzzy
 msgid "Sort by _Activity"
-msgstr ""
-"#-#-#-#-#  it.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ordina per _Attività\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ordina per _Activity"
+msgstr "Ordina per _Attività"
 
-#, fuzzy
 msgid "Sort by A_ge"
-msgstr ""
-"#-#-#-#-#  it.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ordina per _età\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ordina per A_ge"
+msgstr "Ordina per _età"
 
-#, fuzzy
 msgid "Sort by _Name"
-msgstr ""
-"#-#-#-#-#  it.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ordina per _Nome\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ordina per _Name"
+msgstr "Ordina per _Nome"
 
-#, fuzzy
 msgid "Sort by _Progress"
-msgstr ""
-"#-#-#-#-#  it.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ordina per avan_zamento\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ordina per _Progress"
+msgstr "Ordina per avan_zamento"
 
-#, fuzzy
 msgid "Sort by _Queue"
-msgstr ""
-"#-#-#-#-#  it.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"O_rdina per accodamento\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ordina per _Queue"
+msgstr "O_rdina per accodamento"
 
-#, fuzzy
 msgid "Sort by Rati_o"
-msgstr ""
-"#-#-#-#-#  it.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ordina per ra_pporto\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ordina per Rati_o"
+msgstr "Ordina per ra_pporto"
 
-#, fuzzy
 msgid "Sort by Si_ze"
-msgstr ""
-"#-#-#-#-#  it.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ordina per _dimensione\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ordina per Si_ze"
+msgstr "Ordina per _dimensione"
 
-#, fuzzy
 msgid "Sort by Stat_e"
-msgstr ""
-"#-#-#-#-#  it.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ordina per stat_o\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ordina per Stat_e"
+msgstr "Ordina per stat_o"
 
-#, fuzzy
 msgid "Sort by Time _Left"
-msgstr ""
-"#-#-#-#-#  it.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ordina per tempo _mancante\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ordina per tempo _Left"
+msgstr "Ordina per tempo _mancante"
 
-#, fuzzy
 msgid "Re_verse Sort Order"
-msgstr ""
-"#-#-#-#-#  it.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ordine _inverso\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Re_verse ordinamento"
+msgstr "Ordine _inverso"
 
-#, fuzzy
 msgid "_Help"
-msgstr ""
-"#-#-#-#-#  it.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"A_iuto\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Help"
+msgstr "A_iuto"
 
-#, fuzzy
 msgid "Message _Log"
-msgstr ""
-"#-#-#-#-#  it.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Registro messaggi\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Log dei messaggi"
+msgstr "_Registro messaggi"
 
-#, fuzzy
 msgid "_Statistics"
-msgstr ""
-"#-#-#-#-#  it.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"S_tatistiche\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Statistics"
+msgstr "S_tatistiche"
 
-#, fuzzy
 msgid "_Donate"
-msgstr ""
-"#-#-#-#-#  it.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Donazioni\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Donate"
+msgstr "_Donazioni"
 
-#, fuzzy
 msgid "_Contents"
-msgstr ""
-"#-#-#-#-#  it.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Sommario\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Contents"
+msgstr "_Sommario"
 
-#, fuzzy
 msgid "_About"
-msgstr ""
-"#-#-#-#-#  it.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"I_nformazioni\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_About"
+msgstr "I_nformazioni"
 
 #, fuzzy
 msgid "_Sort Torrents By"
-msgstr ""
-"#-#-#-#-#  it.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Avvia il torrent\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Avvia torrent"
+msgstr "Avvia il torrent"
 
 #, fuzzy
 #| msgid "Alternative Speed Limits"
@@ -1414,13 +996,8 @@ msgstr "Limiti di velocità alternativi"
 msgid "_Add"
 msgstr "A_ggiungi"
 
-#, fuzzy
 msgid "Tracker"
-msgstr ""
-"#-#-#-#-#  it.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Server traccia\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Tracker"
+msgstr "Server traccia"
 
 msgid "_Announce URL:"
 msgstr "_URL di annuncio:"
@@ -1434,13 +1011,8 @@ msgstr "Attività"
 msgid "Size:"
 msgstr "Dimensione:"
 
-#, fuzzy
 msgid "Have:"
-msgstr ""
-"#-#-#-#-#  it.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Posseduti:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Hai:"
+msgstr "Posseduti:"
 
 msgid "Uploaded:"
 msgstr "Inviati:"
@@ -1451,13 +1023,8 @@ msgstr "Ricevuti:"
 msgid "State:"
 msgstr "Stato:"
 
-#, fuzzy
 msgid "Running time:"
-msgstr ""
-"#-#-#-#-#  it.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Tempo di esecuzione:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Tempo di attività:"
+msgstr "Tempo di esecuzione:"
 
 msgid "Remaining time:"
 msgstr "Tempo rimanente:"
@@ -1486,62 +1053,32 @@ msgstr "Origine:"
 msgid "Added:"
 msgstr "Aggiunto:"
 
-#, fuzzy
 msgid "Comment:"
-msgstr ""
-"#-#-#-#-#  it.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Commento:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Commento"
+msgstr "Commento:"
 
 msgid "Information"
 msgstr "Informazioni"
 
-#, fuzzy
 msgid "Show _more details"
-msgstr ""
-"#-#-#-#-#  it.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Mostrare _maggiori dettagli\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Mostra _more dettagli"
+msgstr "Mostrare _maggiori dettagli"
 
-#, fuzzy
 msgid "Peers"
-msgstr ""
-"#-#-#-#-#  it.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Nodi\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Peers"
+msgstr "Nodi"
 
-#, fuzzy
 msgid "Show _backup trackers"
-msgstr ""
-"#-#-#-#-#  it.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Mostrare i server traccia di _backup\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Mostra _backup trackers"
+msgstr "Mostrare i server traccia di _backup"
 
 msgid "File listing not available for combined torrent properties"
 msgstr "L'elencazione dei file non è disponibile nelle proprietà combinate di torrent"
 
-#, fuzzy
 msgid "Files"
-msgstr ""
-"#-#-#-#-#  it.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"File\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Files"
+msgstr "File"
 
 msgid "Speed"
 msgstr "Velocità"
 
-#, fuzzy
 msgid "Honor global _limits"
-msgstr ""
-"#-#-#-#-#  it.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Rispettare i _limiti globali\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Onora _limits globali"
+msgstr "Rispettare i _limiti globali"
 
 msgid "Limit _download speed ({speed_units}):"
 msgstr "_Limitare la velocità di ricezione ({speed_units}):"
@@ -1549,53 +1086,23 @@ msgstr "_Limitare la velocità di ricezione ({speed_units}):"
 msgid "Limit _upload speed ({speed_units}):"
 msgstr "Li_mitare la velocità di invio ({speed_units}):"
 
-#, fuzzy
 msgid "Torrent _priority:"
-msgstr ""
-"#-#-#-#-#  it.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Priorità del torrent:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_priority torrent:"
+msgstr "_Priorità del torrent:"
 
-#, fuzzy
 msgid "Seeding Limits"
-msgstr ""
-"#-#-#-#-#  it.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Limiti di distribuzione\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Limiti di seeding"
+msgstr "Limiti di distribuzione"
 
-#, fuzzy
 msgid "_Ratio:"
-msgstr ""
-"#-#-#-#-#  it.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Rapporto:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Ratio"
+msgstr "_Rapporto:"
 
-#, fuzzy
 msgid "_Idle:"
-msgstr ""
-"#-#-#-#-#  it.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Inattività:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Idle"
+msgstr "_Inattività:"
 
-#, fuzzy
 msgid "Peer Connections"
-msgstr ""
-"#-#-#-#-#  it.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Connessioni ai nodi\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Connessioni dei peer"
+msgstr "Connessioni ai nodi"
 
-#, fuzzy
 msgid "_Maximum peers:"
-msgstr ""
-"#-#-#-#-#  it.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"N_umero massimo di nodi:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Peer _Maximum:"
+msgstr "N_umero massimo di nodi:"
 
 msgid "Options"
 msgstr "Opzioni"
@@ -1613,37 +1120,17 @@ msgstr ""
 msgid "Also see Default Public Trackers in Edit > Preferences > Network"
 msgstr "Vedere anche «Server traccia pubblici predefiniti» in Modifica > Preferenze > Rete"
 
-#, fuzzy
 msgid "Open a torrent"
-msgstr ""
-"#-#-#-#-#  it.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Apre un torrent\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Apri un torrent"
+msgstr "Apre un torrent"
 
-#, fuzzy
 msgid "Start torrent"
-msgstr ""
-"#-#-#-#-#  it.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Avvia il torrent\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Avvia torrent"
+msgstr "Avvia il torrent"
 
-#, fuzzy
 msgid "Pause torrent"
-msgstr ""
-"#-#-#-#-#  it.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Mette in pausa il torrent\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Pausa torrent"
+msgstr "Mette in pausa il torrent"
 
-#, fuzzy
 msgid "Remove torrent"
-msgstr ""
-"#-#-#-#-#  it.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Rimuove il torrent\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Rimuovi torrent"
+msgstr "Rimuove il torrent"
 
 msgid "Torrent properties"
 msgstr "Proprietà torrent"
@@ -1662,13 +1149,8 @@ msgstr "Nuovo torrent"
 msgid "C_reate"
 msgstr "C_rediti"
 
-#, fuzzy
 msgid "Sa_ve to:"
-msgstr ""
-"#-#-#-#-#  it.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Sal_va su:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Sal_va in:"
+msgstr "Sal_va in:"
 
 msgid "Source f_older:"
 msgstr "Cartella s_orgente:"
@@ -1682,13 +1164,8 @@ msgstr ""
 msgid "Properties"
 msgstr "Proprietà"
 
-#, fuzzy
 msgid "_Trackers:"
-msgstr ""
-"#-#-#-#-#  it.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Server _traccia:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Trackers:"
+msgstr "Server _traccia:"
 
 msgid "Co_mment:"
 msgstr "Co_mmento:"
@@ -1723,13 +1200,8 @@ msgstr "File _torrent:"
 msgid "Select Source File"
 msgstr "Seleziona file sorgente"
 
-#, fuzzy
 msgid "_Destination folder:"
-msgstr ""
-"#-#-#-#-#  it.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Cartella di destinazione:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Cartella di _destinazione:"
+msgstr "_Cartella di destinazione:"
 
 msgid "Select Destination Folder"
 msgstr "Seleziona cartella destinazione"
@@ -1745,13 +1217,8 @@ msgstr "_Spostare il file torrent nel cestino"
 msgid "{appname} Preferences"
 msgstr "Preferenze di {appname}"
 
-#, fuzzy
 msgid "Speed Limits"
-msgstr ""
-"#-#-#-#-#  it.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Limiti di velocità\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Limiti di banda"
+msgstr "Limiti di velocità"
 
 #. Checkbox to limit upload speed
 msgid "_Upload ({speed_units}):"
@@ -1775,30 +1242,15 @@ msgstr ""
 msgid "Do_wnload ({speed_units}):"
 msgstr ""
 
-#, fuzzy
 msgid "_Scheduled times:"
-msgstr ""
-"#-#-#-#-#  it.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Orari _pianificati:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Orari prestabiliti:"
+msgstr "Orari _pianificati:"
 
-#, fuzzy
 msgid "_On days:"
-msgstr ""
-"#-#-#-#-#  it.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Nei gi_orni:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Nei giorni:"
+msgstr "Nei gi_orni:"
 
 #. Label goes between two time selectors, e.g. "limit speeds from [time] to [time]"
-#, fuzzy
 msgid "_to"
-msgstr ""
-"#-#-#-#-#  it.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"all_e\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_a"
+msgstr "all_e"
 
 msgctxt "Gerund"
 msgid "Adding"
@@ -1807,61 +1259,31 @@ msgstr "Aggiunta"
 msgid "Automatically add torrent files _from:"
 msgstr "A_ggiungere automaticamente i file torrent da:"
 
-#, fuzzy
 msgid "Show the Torrent Options _dialog"
-msgstr ""
-"#-#-#-#-#  it.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Mostrare il _dialogo delle opzioni\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Mostra la _maschera delle ozioni torrent"
+msgstr "Mostrare il _dialogo delle opzioni"
 
-#, fuzzy
 msgid "_Start added torrents"
-msgstr ""
-"#-#-#-#-#  it.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Avvia _torrent aggiunti\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Avvia all'aggiunta del torrent"
+msgstr "Avvia _torrent aggiunti"
 
 #, fuzzy
 #| msgid "Save to _Location:"
 msgid "Save to _location:"
 msgstr "Salvare nella _posizione:"
 
-#, fuzzy
 msgid "Download Queue"
-msgstr ""
-"#-#-#-#-#  it.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Coda di ricezione\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Coda di download"
+msgstr "Coda di ricezione"
 
-#, fuzzy
 msgid "Ma_ximum active downloads:"
-msgstr ""
-"#-#-#-#-#  it.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Massimi scaricamenti attivi:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Numero _massimo di download attivi:"
+msgstr "Numero _massimo di download attivi:"
 
 msgid "Downloads sharing data in the last _N minutes are active:"
 msgstr "Scaricamenti in condivisione negli ultimi N minuti sono _attivi:"
 
-#, fuzzy
 msgid "Incomplete"
-msgstr ""
-"#-#-#-#-#  it.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Incompleto\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Incompleti"
+msgstr "Incompleto"
 
-#, fuzzy
 msgid "Append \"._part\" to incomplete files' names"
-msgstr ""
-"#-#-#-#-#  it.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Aggiungere «.part» ai _nomi dei file non completati\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Aggiungi \"._part\" al nome di file incompleti"
+msgstr "Aggiungere «.part» ai _nomi dei file non completati"
 
 msgid "Keep _incomplete files in:"
 msgstr "Tieni i file _incompleti in:"
@@ -1881,13 +1303,8 @@ msgstr "Ricezione"
 msgid "Limits"
 msgstr "Limiti"
 
-#, fuzzy
 msgid "Stop seeding at _ratio:"
-msgstr ""
-"#-#-#-#-#  it.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Fermare la distribuzione al _rapporto:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ferma il seeding se il _rapporto è:"
+msgstr "Fermare la distribuzione al _rapporto:"
 
 msgid "Stop seeding if idle for _N minutes:"
 msgstr "Fermare la distribuzione se inattivo per N _minuti:"
@@ -1902,42 +1319,22 @@ msgstr "Distribuzione"
 msgid "Privacy"
 msgstr "Privacy"
 
-#, fuzzy
 msgid "_Encryption mode:"
-msgstr ""
-"#-#-#-#-#  it.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"M_odalità di cifratura:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Modalità _crittografia:"
+msgstr "M_odalità di cifratura:"
 
-#, fuzzy
 msgid "Blocklist"
-msgstr ""
-"#-#-#-#-#  it.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Blocklist\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Lista bloccati"
+msgstr "Blocklist"
 
-#, fuzzy
 msgid "Enable _blocklist:"
-msgstr ""
-"#-#-#-#-#  it.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Abilitare _blocklist:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Abilita lista dei _bloccati:"
+msgstr "Abilitare _blocklist:"
 
 #, fuzzy
 #| msgid "Enable _automatic updates"
 msgid "_Automatically update weekly"
 msgstr "Abilitare gli aggiornamenti auto_matici"
 
-#, fuzzy
 msgid "_Update"
-msgstr ""
-"#-#-#-#-#  it.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"A_ggiorna\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Aggiornamento"
+msgstr "A_ggiorna"
 
 msgid "Listening Port"
 msgstr "Porta in ascolto"
@@ -1950,50 +1347,26 @@ msgstr "_Porta per le connessioni in entrata:"
 msgid "Pick a _random port at startup"
 msgstr "_Scegliere una porta casuale ogni volta che il programma è avviato"
 
-#, fuzzy
 msgid "Use UPnP or NAT-PMP port _forwarding from my router"
-msgstr ""
-"#-#-#-#-#  it.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Usare il _forwarding della porta UPnP o NAT-PMP dal router\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Usa l'_inoltro di porta UPnP o NAT-PMP dal mio router"
+msgstr "Usare il _forwarding della porta UPnP o NAT-PMP dal router"
 
-#, fuzzy
 msgid "Te_st Port"
-msgstr ""
-"#-#-#-#-#  it.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Verifica porta\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Te_sta porta"
+msgstr "_Verifica porta"
 
-#, fuzzy
 msgid "Peer Limits"
-msgstr ""
-"#-#-#-#-#  it.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Limiti dei nodi\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Limiti dei peer"
+msgstr "Limiti dei nodi"
 
 #, fuzzy
 #| msgid "Maximum peers per _torrent:"
 msgid "Maximum peers for new _torrents:"
 msgstr "Numero massimo di nodi per _torrent:"
 
-#, fuzzy
 msgid "Maximum peers _overall:"
-msgstr ""
-"#-#-#-#-#  it.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Numero massimo di nodi _globale:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Numero massimo di peer _globali:"
+msgstr "Numero massimo di nodi _globale:"
 
 #, fuzzy
 msgid "Enable µ_TP for peer connections"
-msgstr ""
-"#-#-#-#-#  it.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Connessioni ai nodi\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Connessioni dei peer"
+msgstr "Connessioni ai nodi"
 
 msgid "µTP is a tool for reducing network congestion."
 msgstr ""
@@ -2003,39 +1376,24 @@ msgstr ""
 msgid "Use PE_X to find more peers for public torrents"
 msgstr "Usare PE_X per trovare più nodi"
 
-#, fuzzy
 msgid "PEX is a tool for exchanging peer lists with the peers you're connected to."
-msgstr ""
-"#-#-#-#-#  it.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"PEX è uno strumento per scambiare elenchi di nodi con i nodi con cui si è connessi.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"PEX è uno strumento per lo scambio di liste di peer con i peer con cui sei connesso."
+msgstr "PEX è uno strumento per scambiare elenchi di nodi con i nodi con cui si è connessi."
 
 #, fuzzy
 #| msgid "Use _DHT to find more peers"
 msgid "Use _DHT to find more peers for public torrents"
 msgstr "Usare D_HT per trovare più nodi"
 
-#, fuzzy
 msgid "DHT is a tool for finding peers without a tracker."
-msgstr ""
-"#-#-#-#-#  it.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"DHT è uno strumento per trovare nodi senza un server traccia.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"DHT è uno strumento per trovare peer senza un tracker."
+msgstr "DHT è uno strumento per trovare nodi senza un server traccia."
 
 #, fuzzy
 #| msgid "Use _Local Peer Discovery to find more peers"
 msgid "Use _Local Peer Discovery to find more peers for public torrents"
 msgstr "Usare _Local Peer Discovery per trovare più nodi"
 
-#, fuzzy
 msgid "LPD is a tool for finding peers on your local network."
-msgstr ""
-"#-#-#-#-#  it.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"LPD è uno strumento per trovare nodi sulla propria rete locale.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"LPD è uno strumento per trovare peer sulla tua rete locale."
+msgstr "LPD è uno strumento per trovare nodi sulla propria rete locale."
 
 msgid "Default Public Trackers"
 msgstr "Server traccia pubblici predefiniti"
@@ -2054,62 +1412,32 @@ msgstr ""
 msgid "Network"
 msgstr "Rete"
 
-#, fuzzy
 msgid "Desktop"
-msgstr ""
-"#-#-#-#-#  it.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ambiente grafico\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Desktop"
+msgstr "Ambiente grafico"
 
 msgid "_Prevent computer from sleeping with active torrents"
 msgstr ""
 
-#, fuzzy
 msgid "Show {appname} icon in the _notification area"
-msgstr ""
-"#-#-#-#-#  it.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Mostrare l'icona nell'area di _notifica\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Mostra l'icona di {appname} nell'area di _notifica"
+msgstr "Mostra l'icona di {appname} nell'area di _notifica"
 
 msgid "Notification"
 msgstr "Notifiche"
 
-#, fuzzy
 msgid "Show a notification when torrents are a_dded"
-msgstr ""
-"#-#-#-#-#  it.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Mostrare una notifica quando vengono a_ggiunti torrent\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Mostra una notifica quanto un torrent viene a_ggiunto"
+msgstr "Mostrare una notifica quando vengono a_ggiunti torrent"
 
-#, fuzzy
 msgid "Show a notification when torrents _finish"
-msgstr ""
-"#-#-#-#-#  it.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Mostrare una notifica quando i torrent sono completati\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Mostra una notifica quando un torrent viene _completato"
+msgstr "_Mostrare una notifica quando i torrent sono completati"
 
-#, fuzzy
 msgid "Play a _sound when torrents finish"
-msgstr ""
-"#-#-#-#-#  it.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Riprodurre un _suono quando i torrent sono completati\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Riproduci un _suono quando un torrent viene completato"
+msgstr "Riprodurre un _suono quando i torrent sono completati"
 
 msgid "Remote Control"
 msgstr "Controllo remoto"
 
-#, fuzzy
 msgid "Allow _remote access"
-msgstr ""
-"#-#-#-#-#  it.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Consentire accesso _remoto\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Consenti l'accesso _remoto"
+msgstr "Consentire accesso _remoto"
 
 #, fuzzy
 #| msgid "_Open web client"
@@ -2119,34 +1447,17 @@ msgstr "_Apri client web"
 msgid "HTTP _port:"
 msgstr "_Porta HTTP:"
 
-#, fuzzy
 msgid "Use _authentication"
-msgstr ""
-"#-#-#-#-#  it.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Usare l'_autenticazione\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Usa _autenticazione"
+msgstr "Usare l'_autenticazione"
 
-#, fuzzy
 msgid "_Username:"
-msgstr ""
-"#-#-#-#-#  it.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Nome _utente:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Nome _utente:\n"
-"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Utente:"
+msgstr "Nome _utente:"
 
 msgid "Pass_word:"
 msgstr "Pass_word:"
 
-#, fuzzy
 msgid "Only allow these IP a_ddresses:"
-msgstr ""
-"#-#-#-#-#  it.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Solo da questi  in_dirizzi IP:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Consenti solo i seguenti _indirizzi IP"
+msgstr "Consenti solo i seguenti _indirizzi IP"
 
 msgid "Addresses:"
 msgstr "Indirizzi:"
@@ -2169,29 +1480,14 @@ msgstr "Posizione"
 msgid "New _location:"
 msgstr "Nuova _posizione:"
 
-#, fuzzy
 msgid "_Move from the current folder"
-msgstr ""
-"#-#-#-#-#  it.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Sposta dalla cartella attuale\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Sposta dalla cartella corrente"
+msgstr "_Sposta dalla cartella attuale"
 
-#, fuzzy
 msgid "Local data is _already there"
-msgstr ""
-"#-#-#-#-#  it.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"I _dati locali sono già presenti\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"I dati locali sono _già li"
+msgstr "I _dati locali sono già presenti"
 
-#, fuzzy
 msgid "Current Session"
-msgstr ""
-"#-#-#-#-#  it.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Sessione attuale\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Sessione corrente"
+msgstr "Sessione attuale"
 
 msgid "Ratio:"
 msgstr "Rapporto:"
@@ -2311,13 +1607,8 @@ msgstr "Nessun aggiornamento pianificato"
 msgid "Asking for more peers {time_span_from_now}"
 msgstr "Alla ricerca di altri peers {time_span_from_now}"
 
-#, fuzzy
 msgid "Queued to ask for more peers"
-msgstr ""
-"#-#-#-#-#  it.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"In coda per chiedere altri nodi\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"In coda per richiedere più peer"
+msgstr "In coda per chiedere altri nodi"
 
 msgid "Asked for more peers {markup_begin}{time_span_ago}{markup_end}"
 msgstr ""
@@ -2350,13 +1641,8 @@ msgstr[2] ""
 msgid "Asking for peer counts {time_span_from_now}"
 msgstr "Alla ricerca di altri peers {time_span_from_now}"
 
-#, fuzzy
 msgid "Queued to ask for peer counts"
-msgstr ""
-"#-#-#-#-#  it.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"In coda per chiedere il conteggio dei nodi\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"In coda per richiedere i conteggi dei peer"
+msgstr "In coda per chiedere il conteggio dei nodi"
 
 msgid "Asked for peer counts {markup_begin}{time_span_ago}{markup_end}"
 msgstr ""
@@ -3080,27 +2366,6 @@ msgstr "_Priorità:"
 msgid "Select Folder"
 msgstr "Seleziona cartella"
 
-#, fuzzy
-#| msgid "Unknown"
-msgid "unknown"
-msgstr "Sconosciuto"
-
-msgid "checking…"
-msgstr ""
-
-msgid "open"
-msgstr ""
-
-#, fuzzy
-#| msgid "_Close"
-msgid "closed"
-msgstr "_Chiudi"
-
-#, fuzzy
-#| msgid "Error"
-msgid "error"
-msgstr "Errore"
-
 msgid "<b>Update succeeded!</b><p>Blocklist now has {count:L} rule.</p>"
 msgid_plural "<b>Update succeeded!</b><p>Blocklist now has {count:L} rules.</p>"
 msgstr[0] ""
@@ -3112,11 +2377,7 @@ msgstr ""
 
 #, fuzzy
 msgid "Update Blocklist"
-msgstr ""
-"#-#-#-#-#  it.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Blocklist\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Lista bloccati"
+msgstr "Blocklist"
 
 msgid "Select \"Torrent Done Seeding\" Script"
 msgstr ""
@@ -3157,13 +2418,6 @@ msgstr "U_pload:"
 msgid "Do_wnload:"
 msgstr "Do_wnload:"
 
-#, fuzzy
-msgid "Downloading"
-msgstr "In scaricamento"
-
-msgid "Adding"
-msgstr "Aggiunta"
-
 msgid "Reads user clipboard content for torrents"
 msgstr ""
 
@@ -3173,10 +2427,6 @@ msgstr ""
 #. Please keep this phrase as short as possible, it's currently the longest and influences dialog width
 msgid "Download is i_nactive if data sharing stopped:"
 msgstr "Il download è i_nattivo se la condivisione è stata fermata:"
-
-#, fuzzy
-msgid "Seeding"
-msgstr "In seed"
 
 msgid "Stop seedi_ng if idle for:"
 msgstr "Ferma il seedi_ng se inattivo per:"
@@ -3276,21 +2526,9 @@ msgstr[2] ""
 #, fuzzy
 msgid "Downloading from {active_count:L} peer"
 msgid_plural "Downloading from {active_count:L} peers"
-msgstr[0] ""
-"#-#-#-#-#  it.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"In ricezione da questo nodo\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"In ricezione dal peer"
-msgstr[1] ""
-"#-#-#-#-#  it.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"In ricezione da questo nodo\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"In ricezione dal peer"
-msgstr[2] ""
-"#-#-#-#-#  it.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"In ricezione da questo nodo\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"In ricezione dal peer"
+msgstr[0] "In ricezione da questo nodo"
+msgstr[1] "In ricezione da questo nodo"
+msgstr[2] "In ricezione da questo nodo"
 
 msgid " and {webseed_count:L} web seed"
 msgid_plural " and {webseed_count:L} web seeds"

@@ -356,13 +356,8 @@ msgstr "{torrent_name} — modyfikacja serwerów śledzących"
 msgid "List contains invalid URLs"
 msgstr "Lista zawiera nieprawidłowe adresy URL"
 
-#, fuzzy
 msgid "Please correct the errors and try again."
-msgstr ""
-"#-#-#-#-#  pl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Proszę poprawić błędy i spróbować ponownie.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Proszę poprawić błędy i spróbować ponownie."
+msgstr "Proszę poprawić błędy i spróbować ponownie."
 
 msgid "{torrent_name} - Add Tracker"
 msgstr "{torrent_name} — dodanie serwera śledzącego"
@@ -383,13 +378,8 @@ msgstr[3] "Właściwości — {torrent_count:L} torrentów"
 msgid "Remove torrent?"
 msgstr "Usunąć torrent?"
 
-#, fuzzy
 msgid "Delete this torrent's downloaded files?"
-msgstr ""
-"#-#-#-#-#  pl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Usunąć pobrane pliki tego torrenta?\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Usunąć pobrane pliki torrenta?"
+msgstr "Usunąć pobrane pliki tego torrenta?"
 
 msgid "Remove {count:L} torrent?"
 msgid_plural "Remove {count:L} torrents?"
@@ -398,29 +388,12 @@ msgstr[1] "Usunąć {count:L} torrenty?"
 msgstr[2] "Usunąć {count:L} torrentów?"
 msgstr[3] "Usunąć {count:L} torrentów?"
 
-#, fuzzy
 msgid "Delete this {count:L} torrent's downloaded files?"
 msgid_plural "Delete these {count:L} torrents' downloaded files?"
-msgstr[0] ""
-"#-#-#-#-#  pl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Usunąć pobrane pliki {count:L} torrenta?\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Usunąć pobrane pliki {count:L} torrenta?"
-msgstr[1] ""
-"#-#-#-#-#  pl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Usunąć pobrane pliki tych {count:L} torrentów?\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Usunąć pobrane pliki {count:L} torrentów?"
-msgstr[2] ""
-"#-#-#-#-#  pl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Usunąć pobrane pliki tych {count:L} torrentów?\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Usunąć pobrane pliki {count:L} torrentów?"
-msgstr[3] ""
-"#-#-#-#-#  pl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Usunąć pobrane pliki tych {count:L} torrentów?\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Usunąć pobrane pliki {count:L} torrentów?"
+msgstr[0] "Usunąć pobrane pliki {count:L} torrenta?"
+msgstr[1] "Usunąć pobrane pliki tych {count:L} torrentów?"
+msgstr[2] "Usunąć pobrane pliki tych {count:L} torrentów?"
+msgstr[3] "Usunąć pobrane pliki tych {count:L} torrentów?"
 
 #, fuzzy
 #| msgid "Once removed, continuing the transfer will require the torrent file or magnet link."
@@ -488,13 +461,8 @@ msgstr "Rozmiar"
 msgid "Progress"
 msgstr "Postęp"
 
-#, fuzzy
 msgid "Download"
-msgstr ""
-"#-#-#-#-#  pl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Pobierane\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Pobieranie"
+msgstr "Pobieranie"
 
 msgid "Priority"
 msgstr "Priorytet"
@@ -512,13 +480,8 @@ msgstr "Sprawdzanie"
 msgid "Error"
 msgstr "Błąd"
 
-#, fuzzy
 msgid "_Show:"
-msgstr ""
-"#-#-#-#-#  pl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Wyświetlanie:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"W_yświetlanie:"
+msgstr "W_yświetlanie:"
 
 msgid "_Show {count:L} of:"
 msgstr "_Wyświetlanie {count:L} z:"
@@ -694,13 +657,8 @@ msgstr "Wybór pliku"
 msgid "(None)"
 msgstr "(Brak)"
 
-#, fuzzy
 msgid "Allow encryption"
-msgstr ""
-"#-#-#-#-#  pl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Zezwalanie\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Zezwolenie"
+msgstr "Zezwalanie"
 
 msgid "Prefer encryption"
 msgstr "Preferowanie"
@@ -1000,13 +958,8 @@ msgstr "_Widok"
 msgid "_Compact View"
 msgstr "_Zwarty"
 
-#, fuzzy
 msgid "_Toolbar"
-msgstr ""
-"#-#-#-#-#  pl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Pasek _narzędziowy\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Pasek _narzędzi"
+msgstr "Pasek _narzędzi"
 
 msgid "_Filterbar"
 msgstr "_Pasek filtrów"
@@ -1251,15 +1204,8 @@ msgstr "_Serwery śledzące:"
 msgid "Co_mment:"
 msgstr "Ko_mentarz:"
 
-#, fuzzy
 msgid "_Source:"
-msgstr ""
-"#-#-#-#-#  pl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Źró_dło:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Źró_dło:\n"
-"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ź_ródło:"
+msgstr "Źró_dło:"
 
 msgid "_Private torrent"
 msgstr "P_rywatny torrent"
@@ -1409,24 +1355,14 @@ msgstr "Wysyłanie"
 msgid "Privacy"
 msgstr "Prywatność"
 
-#, fuzzy
 msgid "_Encryption mode:"
-msgstr ""
-"#-#-#-#-#  pl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Tryb _szyfrowania:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Tryb:"
+msgstr "Tryb _szyfrowania:"
 
 msgid "Blocklist"
 msgstr "Lista blokowania"
 
-#, fuzzy
 msgid "Enable _blocklist:"
-msgstr ""
-"#-#-#-#-#  pl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Włączenie:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Włączenie listy blokowania:"
+msgstr "_Włączenie listy blokowania:"
 
 #, fuzzy
 #| msgid "Enable _automatic updates"
@@ -1567,13 +1503,8 @@ msgstr "Adresy IP mogą zawierać wieloznaczniki, takie jak 192.168.*.*"
 msgid "Remote"
 msgstr "Zdalnie"
 
-#, fuzzy
 msgid "Set Torrent Location"
-msgstr ""
-"#-#-#-#-#  pl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ustawienie katalogu docelowego\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ustawienie położenia torrenta"
+msgstr "Ustawienie położenia torrenta"
 
 msgid "_Apply"
 msgstr "_Zastosuj"
@@ -2483,34 +2414,13 @@ msgstr ""
 
 #, fuzzy
 msgid "Sou_rce:"
-msgstr ""
-"#-#-#-#-#  pl.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Źró_dło:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Źró_dło:\n"
-"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ź_ródło:"
+msgstr "Źró_dło:"
 
 msgid "_Priority:"
 msgstr "_Priorytet:"
 
 msgid "Select Folder"
 msgstr "Wybór katalogu"
-
-msgid "unknown"
-msgstr "nieznany"
-
-msgid "checking…"
-msgstr "sprawdzanie…"
-
-msgid "open"
-msgstr "otwarty"
-
-msgid "closed"
-msgstr "zamknięty"
-
-msgid "error"
-msgstr "błąd"
 
 msgid "<b>Update succeeded!</b><p>Blocklist now has {count:L} rule.</p>"
 msgid_plural "<b>Update succeeded!</b><p>Blocklist now has {count:L} rules.</p>"
@@ -2571,12 +2481,6 @@ msgstr "Wy_syłanie:"
 msgid "Do_wnload:"
 msgstr "Po_bieranie:"
 
-msgid "Downloading"
-msgstr "Pobieranie"
-
-msgid "Adding"
-msgstr "Dodawanie"
-
 msgid "Reads user clipboard content for torrents"
 msgstr "Odczytuje zawartość schowka użytkownika w poszukiwaniu torrentów"
 
@@ -2586,9 +2490,6 @@ msgstr "Wykrywanie nowych torrentów w schowku"
 #. Please keep this phrase as short as possible, it's currently the longest and influences dialog width
 msgid "Download is i_nactive if data sharing stopped:"
 msgstr "Pobieranie jest _nieaktywne, jeśli zatrzymano wysyłanie danych:"
-
-msgid "Seeding"
-msgstr "Wysyłanie"
 
 msgid "Stop seedi_ng if idle for:"
 msgstr "Zatrzymanie po braku _aktywności przez:"

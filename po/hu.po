@@ -115,13 +115,8 @@ msgid_plural "Couldn't add duplicate torrents"
 msgstr[0] "A már meglévő torrent hozzáadása sikertelen"
 msgstr[1] "A már meglévő torrentek hozzáadása sikertelen"
 
-#, fuzzy
 msgid "A fast and easy BitTorrent client"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Egy gyors és egyszerű BitTorrent-kliens\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Egy gyors és egyszerű BitTorrent kliens"
+msgstr "Egy gyors és egyszerű BitTorrent-kliens"
 
 msgid "Copyright © The {appname} Project"
 msgstr "Copyright © A {appname} Projekt"
@@ -180,43 +175,21 @@ msgstr "Megosztás aktivitástól függetlenül"
 msgid "Stop seeding if idle for N minutes:"
 msgstr "Megosztás befejezése, ha N percig inaktív:"
 
-#, fuzzy
 msgid "Queued for verification"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Sorbaállítva ellenőrzéshez\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Sorbaállítva ellenőrzésre"
+msgstr "Sorbaállítva ellenőrzéshez"
 
 msgid "Verifying local data"
 msgstr "Helyi adatok ellenőrzése"
 
-#, fuzzy
 msgid "Queued for download"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Letöltéshez sorba állítva\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Sorbaállítva letöltésre"
+msgstr "Letöltéshez sorba állítva"
 
-#, fuzzy
 msgctxt "Verb"
 msgid "Downloading"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Letöltés\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Letöltés alatt\n"
-"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Letöltés"
+msgstr "Letöltés"
 
-#, fuzzy
 msgid "Queued for seeding"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Sorbaállítva megosztáshoz\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Sorba állítva megosztáshoz"
+msgstr "Sorba állítva megosztáshoz"
 
 msgctxt "Verb"
 msgid "Seeding"
@@ -227,15 +200,8 @@ msgstr "Megosztás"
 msgid "Seeding complete"
 msgstr "Befejezetlen"
 
-#, fuzzy
 msgid "Paused"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Szüneteltetett\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Szüneteltetve\n"
-"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Szünetelteve"
+msgstr "Szüneteltetve"
 
 msgid "N/A"
 msgstr "N/A"
@@ -252,29 +218,14 @@ msgstr "Privát ezen tracker számára -- DHT és PEX letiltva "
 msgid "Public torrent"
 msgstr "Nyilvános torrent"
 
-#, fuzzy
 msgid "Created by {creator} on {date}"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Létrehozta: {creator}, ekkor: {date}\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Készítette: {creator} ekkor: {date}"
+msgstr "Létrehozta: {creator}, ekkor: {date}"
 
-#, fuzzy
 msgid "Created by {creator}"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Létrehozta: {creator}\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Készítette: {creator}"
+msgstr "Létrehozta: {creator}"
 
-#, fuzzy
 msgid "Created on {date}"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Létrehozva: {date}\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ekkor készült: {date}"
+msgstr "Létrehozva: {date}"
 
 msgid "Unknown"
 msgstr "Ismeretlen"
@@ -301,21 +252,11 @@ msgstr "{current_size} ({percent_done}% kész, {percent_available}% érhető el)
 msgid "{current_size} ({percent_done}% of {percent_available}% available; {unverified_size} unverified)"
 msgstr "{current_size} ({percent_done}% kész, {percent_available}% érhető el, {unverified_size} nem ellenőrzött)"
 
-#, fuzzy
 msgid "{downloaded_size} (+{discarded_size} discarded after failed checksum)"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{downloaded_size} (+{discarded_size} hibás ellenőrzőösszeg miatt elvetve)\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{downloaded_size} (+{discarded_size} elvetve nem egyező ellenőrzőösszeg miatt)"
+msgstr "{downloaded_size} (+{discarded_size} hibás ellenőrzőösszeg miatt elvetve)"
 
-#, fuzzy
 msgid "{uploaded_size} (Ratio: {ratio})"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{uploaded_size} (arány: {ratio})\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{uploaded_size} (Arány: {ratio})"
+msgstr "{uploaded_size} (arány: {ratio})"
 
 msgid "No errors"
 msgstr "Nincs hiba"
@@ -323,21 +264,11 @@ msgstr "Nincs hiba"
 msgid "Never"
 msgstr "Soha"
 
-#, fuzzy
 msgid "Active now"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Most aktív\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Jelenleg aktív"
+msgstr "Most aktív"
 
-#, fuzzy
 msgid "Optimistic unchoke"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Optimista feloldás\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Optimista engedélyezés"
+msgstr "Optimista feloldás"
 
 msgid "Downloading from this peer"
 msgstr "Letöltés ettől a partnertől"
@@ -345,13 +276,8 @@ msgstr "Letöltés ettől a partnertől"
 msgid "We would download from this peer if they would let us"
 msgstr "Letöltenénk ettől a partnertől, ha hagyná"
 
-#, fuzzy
 msgid "Uploading to peer"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Feltöltés a partnernek\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Feltöltés partnernek"
+msgstr "Feltöltés a partnernek"
 
 #, fuzzy
 #| msgid "We would download from this peer if they would let us"
@@ -415,13 +341,8 @@ msgstr "{torrent_name} - Trackerek szerkesztése"
 msgid "List contains invalid URLs"
 msgstr "A lista érvénytelen webcímeket tartalmaz"
 
-#, fuzzy
 msgid "Please correct the errors and try again."
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Javítsa a hibákat és próbálja újra.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Javítsa ki a hibákat, és próbálkozzon újra."
+msgstr "Javítsa ki a hibákat, és próbálkozzon újra."
 
 msgid "{torrent_name} - Add Tracker"
 msgstr "{torrent_name} - Tracker hozzáadása"
@@ -440,41 +361,18 @@ msgstr[1] "Tulajdonságok - {torrent_count:L} torrent"
 msgid "Remove torrent?"
 msgstr "Eltávolítja a torrentet?"
 
-#, fuzzy
 msgid "Delete this torrent's downloaded files?"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Törli a torrent letöltött fájljait?\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Törölni kívánja a torrent letöltött fájljait?"
+msgstr "Törli a torrent letöltött fájljait?"
 
-#, fuzzy
 msgid "Remove {count:L} torrent?"
 msgid_plural "Remove {count:L} torrents?"
-msgstr[0] ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Valóban törölni kívánod mind a {count:L} torrentet?\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Valóban törölni kívánod mind a {count:L} torrentet?"
-msgstr[1] ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Eltávolít {count:L} torrentet?\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Valóban törölni kívánod mind a {count:L} torrentet?"
+msgstr[0] "Valóban törölni kívánod mind a {count:L} torrentet?"
+msgstr[1] "Eltávolít {count:L} torrentet?"
 
-#, fuzzy
 msgid "Delete this {count:L} torrent's downloaded files?"
 msgid_plural "Delete these {count:L} torrents' downloaded files?"
-msgstr[0] ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Valóban törölni akarod a(z) {count:L} torrent letöltött fájlait?\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Valóban törölni akarod a(z) {count:L} torrent letöltött fájlait?"
-msgstr[1] ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Törli {count:L} torrent letöltött fájljait?\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Valóban törölni akarod a(z) {count:L} torrent letöltött fájlait?"
+msgstr[0] "Valóban törölni akarod a(z) {count:L} torrent letöltött fájlait?"
+msgstr[1] "Törli {count:L} torrent letöltött fájljait?"
 
 #, fuzzy
 #| msgid "Once removed, continuing the transfer will require the torrent file or magnet link."
@@ -487,59 +385,29 @@ msgstr "Ha törölte, az átvitel folytatásához szüksége lesz a torrentfájl
 msgid "Once removed, you'll need the torrent files or magnet links to add them again."
 msgstr "Ha egyszer eltávolítja, akkor a folytatáshoz szüksége lesz a torrent fájlokra, vagy a magnet linkekre."
 
-#, fuzzy
 msgid "This torrent has not finished downloading."
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"A torrent letöltése még nem fejeződött be.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ez a torrent még nem fejezte be a letöltést."
+msgstr "A torrent letöltése még nem fejeződött be."
 
-#, fuzzy
 msgid "These torrents have not finished downloading."
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"A torrentek letöltése még nem fejeződött be.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ezek a torrentek még nem fejezték be a letöltést."
+msgstr "A torrentek letöltése még nem fejeződött be."
 
-#, fuzzy
 msgid "This torrent is connected to peers."
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ez a torrent partnerekhez csatlakozik.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ez a torrent partnerekhez kapcsolódik."
+msgstr "Ez a torrent partnerekhez csatlakozik."
 
 msgid "These torrents are connected to peers."
 msgstr "Ezek a torrentek partnerekhez kapcsolódnak."
 
-#, fuzzy
 msgid "One of these torrents is connected to peers."
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"A torrentek egyike partnerekhez csatlakozik.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ezen torrentek valamelyike partnerekhez kapcsolódik."
+msgstr "A torrentek egyike partnerekhez csatlakozik."
 
 msgid "Some of these torrents are connected to peers."
 msgstr "Ezen torrentek némelyike partnerekhez kapcsolódik."
 
-#, fuzzy
 msgid "One of these torrents has not finished downloading."
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Egy torrent letöltése még nem fejeződött be.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ezen torrentek egyike még nem fejezte be a letöltést."
+msgstr "Egy torrent letöltése még nem fejeződött be."
 
-#, fuzzy
 msgid "Some of these torrents have not finished downloading."
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Néhány torrent letöltése még nem fejeződött be.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ezen torrentek némelyike még nem fejezte be a letöltést."
+msgstr "Néhány torrent letöltése még nem fejeződött be."
 
 msgid "_Cancel"
 msgstr "_Mégse"
@@ -578,13 +446,8 @@ msgstr "Letöltés"
 msgid "Priority"
 msgstr "Prioritás"
 
-#, fuzzy
 msgid "All"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Összes\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Mind"
+msgstr "Összes"
 
 msgid "Active"
 msgstr "Aktív"
@@ -643,45 +506,20 @@ msgstr "Korlátlan"
 msgid "Seed Forever"
 msgstr "Megosztás folyamatosan"
 
-#, fuzzy
 msgid "Limit Download Speed"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Letöltési sebesség korlátozása\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Letöltési sebességkorlát"
+msgstr "Letöltési sebesség korlátozása"
 
-#, fuzzy
 msgid "Limit Upload Speed"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Feltöltési sebesség korlátozása\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Feltöltési sebességkorlát"
+msgstr "Feltöltési sebesség korlátozása"
 
-#, fuzzy
 msgid "Stop Seeding at Ratio"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Megosztás megállítása ekkora aránynál\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Megosztás befejezése ha elérte az arányt"
+msgstr "Megosztás megállítása ekkora aránynál"
 
-#, fuzzy
 msgid "Stop at Ratio ({ratio})"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Megosztás adott arányig ({ratio})\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Megállás aránynál ({ratio})"
+msgstr "Megosztás adott arányig ({ratio})"
 
-#, fuzzy
 msgid "Total Ratio"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Összesített arány\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Összarány"
+msgstr "Összesített arány"
 
 msgid "Session Ratio"
 msgstr "Munkamenet aránya"
@@ -827,13 +665,8 @@ msgstr "Tiltólista frissítve!"
 msgid "Couldn't update blocklist"
 msgstr "Nem sikerült a tiltólista frissítése"
 
-#, fuzzy
 msgid "Getting new blocklist…"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Új tiltólista beszerzése…\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Új tiltólista letöltése…"
+msgstr "Új tiltólista beszerzése…"
 
 msgctxt "Port test status"
 msgid "unknown"
@@ -881,19 +714,10 @@ msgstr "Nem sikerült '{path}' olvasása"
 msgid "Couldn't find pending RPC request for id {id}"
 msgstr ""
 
-#, fuzzy
 msgid "Started {count:L} time"
 msgid_plural "Started {count:L} times"
-msgstr[0] ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Elindítva {count:L} alkalommal\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{count:L} alkalommal lett elindítva"
-msgstr[1] ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Elindítva {count:L} alkalommal\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{count:L} alkalommal lett elindítva"
+msgstr[0] "Elindítva {count:L} alkalommal"
+msgstr[1] "Elindítva {count:L} alkalommal"
 
 msgid "Reset your statistics?"
 msgstr "Lenullázza a statisztikákat?"
@@ -920,24 +744,14 @@ msgstr "{current_size} / {complete_size} ({percent_done}%)"
 msgid "{current_size} of {complete_size} ({percent_complete}%), uploaded {uploaded_size} (Ratio: {ratio}, Goal: {seed_ratio})"
 msgstr "{current_size} / {complete_size} ({percent_complete}%), {uploaded_size} feltöltve (arány: {ratio}, cél: {seed_ratio})"
 
-#, fuzzy
 msgid "{current_size} of {complete_size} ({percent_complete}%), uploaded {uploaded_size} (Ratio: {ratio})"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{current_size} / {complete_size} ({percent_complete}%), {uploaded_size} feltöltve (arány: {ratio})\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{current_size} / {complete_size} ({percent_complete}%), feltöltve: {uploaded_size} (Arány: {ratio})"
+msgstr "{current_size} / {complete_size} ({percent_complete}%), {uploaded_size} feltöltve (arány: {ratio})"
 
 msgid "{complete_size}, uploaded {uploaded_size} (Ratio: {ratio}, Goal: {seed_ratio})"
 msgstr "{complete_size}, {uploaded_size} feltöltve (arány: {ratio}, cél: {seed_ratio})"
 
-#, fuzzy
 msgid "{complete_size}, uploaded {uploaded_size} (Ratio: {ratio})"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{complete_size}, {uploaded_size} feltöltve (arány: {ratio})\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{complete_size}, feltöltve {uploaded_size} (Arány: {ratio})"
+msgstr "{complete_size}, {uploaded_size} feltöltve (arány: {ratio})"
 
 #. Translators: Second (optional) part of torrent progress string
 msgid "Remaining time unknown"
@@ -976,33 +790,15 @@ msgid_plural "Downloading from {active_count} webseeds"
 msgstr[0] "Letöltés {active_count} webes megosztótól"
 msgstr[1] "Letöltés {active_count} webes megosztótól"
 
-#, fuzzy
 msgid "Downloading from {active_count} of {connected_count} connected peer"
 msgid_plural "Downloading from {active_count} of {connected_count} connected peers"
-msgstr[0] ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Letöltés {active_count} / {connected_count} kapcsolódó partnertől\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Letöltés {active_count} / {connected_count} kapcsolódott partnertől"
-msgstr[1] ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Letöltés {active_count} / {connected_count} kapcsolódó partnertől\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Letöltés {active_count} / {connected_count} kapcsolódott partnertől"
+msgstr[0] "Letöltés {active_count} / {connected_count} kapcsolódó partnertől"
+msgstr[1] "Letöltés {active_count} / {connected_count} kapcsolódó partnertől"
 
-#, fuzzy
 msgid "Seeding to {active_count} of {connected_count} connected peer"
 msgid_plural "Seeding to {active_count} of {connected_count} connected peers"
-msgstr[0] ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Megosztás {active_count} / {connected_count} kapcsolódó partnernek\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Seedelés a {active_count} partnernek ({connected_count} elérhető)"
-msgstr[1] ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Megosztás {active_count} / {connected_count} kapcsolódó partnernek\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Seedelés a {active_count} partnernek ({connected_count} elérhető)"
+msgstr[0] "Megosztás {active_count} / {connected_count} kapcsolódó partnernek"
+msgstr[1] "Megosztás {active_count} / {connected_count} kapcsolódó partnernek"
 
 msgid "Retransmission"
 msgstr "Retransmission"
@@ -1050,13 +846,8 @@ msgstr "_Webcím megnyitása…"
 msgid "_New…"
 msgstr "Ú_j…"
 
-#, fuzzy
 msgid "_Start All"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Összes in_dítása\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Összes _indítása"
+msgstr "Összes _indítása"
 
 msgid "_Pause All"
 msgstr "Összes _szüneteltetése"
@@ -1064,15 +855,8 @@ msgstr "Összes _szüneteltetése"
 msgid "_Quit"
 msgstr "_Kilépés"
 
-#, fuzzy
 msgid "_Edit"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"S_zerkesztés\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"S_zerkesztés\n"
-"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Szerkesztés"
+msgstr "S_zerkesztés"
 
 msgid "Select _All"
 msgstr "Összes _kijelölése"
@@ -1089,50 +873,25 @@ msgstr "_Torrent"
 msgid "_Properties"
 msgstr "_Tulajdonságok"
 
-#, fuzzy
 msgid "Open Fold_er"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"M_appa megnyitása\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Mappa megnyitása"
+msgstr "M_appa megnyitása"
 
-#, fuzzy
 msgid "_Start"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Indítás\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Start"
+msgstr "_Indítás"
 
-#, fuzzy
 msgid "Start _Now"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Indítás _most\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Indítás a_zonnal"
+msgstr "Indítás _most"
 
-#, fuzzy
 msgid "Ask Tracker for _More Peers"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Több partner kérése a tr_ackertől\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Több _partner igénylése a trackertől"
+msgstr "Több _partner igénylése a trackertől"
 
 #, fuzzy
 #| msgid "Queue"
 msgid "_Queue"
 msgstr "Sorrend"
 
-#, fuzzy
 msgid "Move to _Top"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Mozgatás l_egfelülre\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Mozgatás _legfelülre"
+msgstr "Mozgatás l_egfelülre"
 
 msgid "Move _Up"
 msgstr "Mozgatás _fel"
@@ -1140,48 +899,23 @@ msgstr "Mozgatás _fel"
 msgid "Move _Down"
 msgstr "Mozgatás _le"
 
-#, fuzzy
 msgid "Move to _Bottom"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Mozgatás az _aljára\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Mozgatás leg_alulra"
+msgstr "Mozgatás leg_alulra"
 
-#, fuzzy
 msgid "_Pause"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Szüneteltetés\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Szünet"
+msgstr "_Szüneteltetés"
 
-#, fuzzy
 msgid "Set _Location…"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"He_ly megadása…\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"H_ely megadása…"
+msgstr "He_ly megadása…"
 
-#, fuzzy
 msgid "_Verify Local Data"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Helyi adatok ellenőrzése\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Helyi adat ellenőrzése"
+msgstr "_Helyi adatok ellenőrzése"
 
 msgid "_Copy Magnet Link to Clipboard"
 msgstr "Magnet link másolása a _vágólapra"
 
-#, fuzzy
 msgid "_Delete Files and Remove"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Fájlok törlése és eltáv_olítás\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Fájlok törlése és eltávolítás"
+msgstr "_Fájlok törlése és eltávolítás"
 
 msgid "_View"
 msgstr "_Nézet"
@@ -1195,93 +929,38 @@ msgstr "_Eszköztár"
 msgid "_Filterbar"
 msgstr "_Szűrősor"
 
-#, fuzzy
 msgid "_Statusbar"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Á_llapotsor\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Állapotsor"
+msgstr "Á_llapotsor"
 
-#, fuzzy
 msgid "Sort by _Activity"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Aktivitás szerinti rendezés\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Rendezés _aktivitás szerint"
+msgstr "_Aktivitás szerinti rendezés"
 
-#, fuzzy
 msgid "Sort by A_ge"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Kor szerinti rendezés\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Rendezés _kor szerint"
+msgstr "_Kor szerinti rendezés"
 
-#, fuzzy
 msgid "Sort by _Name"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Név szerinti rendezés\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Rendezés _név szerint"
+msgstr "_Név szerinti rendezés"
 
-#, fuzzy
 msgid "Sort by _Progress"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Folyamat szerinti rendezés\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Rendezés _folyamat szerint"
+msgstr "_Folyamat szerinti rendezés"
 
-#, fuzzy
 msgid "Sort by _Queue"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Sorrend szerinti rendezés\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Sorrend szerint rendezés"
+msgstr "_Sorrend szerinti rendezés"
 
-#, fuzzy
 msgid "Sort by Rati_o"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Megosztási _arány szerinti rendezés\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Rendezés a_rány szerint"
+msgstr "Megosztási _arány szerinti rendezés"
 
-#, fuzzy
 msgid "Sort by Si_ze"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Méret szerinti rendezés\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Rendezés _méret szerint"
+msgstr "_Méret szerinti rendezés"
 
-#, fuzzy
 msgid "Sort by Stat_e"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Álla_pot szerinti rendezés\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Rendezés á_llapot szerint"
+msgstr "Álla_pot szerinti rendezés"
 
-#, fuzzy
 msgid "Sort by Time _Left"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Hátralévő _idő szerinti rendezés\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Rendezés _hátralévő idő szerint"
+msgstr "Hátralévő _idő szerinti rendezés"
 
-#, fuzzy
 msgid "Re_verse Sort Order"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Fordított rendezés\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Rendezés _fordítva"
+msgstr "_Fordított rendezés"
 
 msgid "_Help"
 msgstr "_Súgó"
@@ -1289,32 +968,17 @@ msgstr "_Súgó"
 msgid "Message _Log"
 msgstr "Ü_zenetnapló"
 
-#, fuzzy
 msgid "_Statistics"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Statisztikák\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Statisztika"
+msgstr "_Statisztikák"
 
-#, fuzzy
 msgid "_Donate"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Támogatás\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Adakozás"
+msgstr "_Adakozás"
 
 msgid "_Contents"
 msgstr "_Tartalom"
 
-#, fuzzy
 msgid "_About"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Névjegy\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"A Transmission-_ről"
+msgstr "_Névjegy"
 
 #, fuzzy
 #| msgid "Start torrent"
@@ -1344,13 +1008,8 @@ msgstr "Aktivitás"
 msgid "Size:"
 msgstr "Méret:"
 
-#, fuzzy
 msgid "Have:"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Meglévő:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Van:"
+msgstr "Meglévő:"
 
 msgid "Uploaded:"
 msgstr "Feltöltve:"
@@ -1361,29 +1020,14 @@ msgstr "Letöltve:"
 msgid "State:"
 msgstr "Állapot:"
 
-#, fuzzy
 msgid "Running time:"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Futási idő:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Futásidő:"
+msgstr "Futási idő:"
 
-#, fuzzy
 msgid "Remaining time:"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Hátralévő idő:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Hátralevő idő:"
+msgstr "Hátralévő idő:"
 
-#, fuzzy
 msgid "Last activity:"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Legutóbbi aktivitás:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Utolsó aktivitás:"
+msgstr "Legutóbbi aktivitás:"
 
 msgid "Error:"
 msgstr "Hiba:"
@@ -1412,24 +1056,14 @@ msgstr "Megjegyzés:"
 msgid "Information"
 msgstr "Információ"
 
-#, fuzzy
 msgid "Show _more details"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"További részletek _megjelenítése\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"További _részletek mutatása"
+msgstr "További részletek _megjelenítése"
 
 msgid "Peers"
 msgstr "Partnerek"
 
-#, fuzzy
 msgid "Show _backup trackers"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Tartalék tr_ackerek megjelenítése\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Tartalék _trackerek megjelenítése"
+msgstr "Tartalék tr_ackerek megjelenítése"
 
 msgid "File listing not available for combined torrent properties"
 msgstr "A fájlok felsorolása nem érhető el a kombinált torrenttulajdonságoknál"
@@ -1440,13 +1074,8 @@ msgstr "Fájlok"
 msgid "Speed"
 msgstr "Sebesség"
 
-#, fuzzy
 msgid "Honor global _limits"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Á_ltalános korlátok betartása\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Globális limitek betartása"
+msgstr "Á_ltalános korlátok betartása"
 
 msgid "Limit _download speed ({speed_units}):"
 msgstr "_Letöltési sebesség korlátozása ({speed_units}):"
@@ -1454,40 +1083,20 @@ msgstr "_Letöltési sebesség korlátozása ({speed_units}):"
 msgid "Limit _upload speed ({speed_units}):"
 msgstr "_Feltöltési sebesség korlátozása ({speed_units}):"
 
-#, fuzzy
 msgid "Torrent _priority:"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Torrent p_rioritása:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Torrent _prioritása:"
+msgstr "Torrent _prioritása:"
 
-#, fuzzy
 msgid "Seeding Limits"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Megosztás korlátozása\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Megosztási korlátok"
+msgstr "Megosztási korlátok"
 
-#, fuzzy
 msgid "_Ratio:"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"A_rány:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Arány:"
+msgstr "_Arány:"
 
 msgid "_Idle:"
 msgstr "_Inaktív:"
 
-#, fuzzy
 msgid "Peer Connections"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Partnerkapcsolatok\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Csatlakozott partnerek"
+msgstr "Partnerkapcsolatok"
 
 msgid "_Maximum peers:"
 msgstr "Partnerek _maximális száma:"
@@ -1526,36 +1135,19 @@ msgstr "Torrent tulajdonságai"
 msgid "Torrent"
 msgstr "Torrent"
 
-#, fuzzy
 msgid "Statistics"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Statisztikák\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Statisztika"
+msgstr "Statisztikák"
 
-#, fuzzy
 msgid "New Torrent"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Új torrent\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Új Torrent\n"
-"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Új torrent"
+msgstr "Új torrent"
 
 #, fuzzy
 #| msgid "C_redits"
 msgid "C_reate"
 msgstr "K_észítették"
 
-#, fuzzy
 msgid "Sa_ve to:"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Me_ntés ide:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Mentés _ide:"
+msgstr "Me_ntés ide:"
 
 msgid "Source f_older:"
 msgstr "Forrás _mappa:"
@@ -1574,13 +1166,8 @@ msgstr "Tulajdonságok"
 msgid "_Trackers:"
 msgstr "_Trackerek:"
 
-#, fuzzy
 msgid "Co_mment:"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Meg_jegyzés:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Megje_gyzés:"
+msgstr "Meg_jegyzés:"
 
 msgid "_Source:"
 msgstr "_Forrás:"
@@ -1629,15 +1216,8 @@ msgstr "Torrent fájl áthelyezése a _kukába"
 msgid "{appname} Preferences"
 msgstr "{appname} beállításai"
 
-#, fuzzy
 msgid "Speed Limits"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Sebességkorlátok\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Sebesség korlátok\n"
-"#-#-#-#-#  qt-1.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Sebességkorlátok"
+msgstr "Sebességkorlátok"
 
 #. Checkbox to limit upload speed
 msgid "_Upload ({speed_units}):"
@@ -1661,30 +1241,15 @@ msgstr "Fel_töltés ({speed_units}):"
 msgid "Do_wnload ({speed_units}):"
 msgstr "L_etöltés ({speed_units}):"
 
-#, fuzzy
 msgid "_Scheduled times:"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ütemezett i_dőszak:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ü_temezett időszakok:"
+msgstr "Ü_temezett időszakok:"
 
-#, fuzzy
 msgid "_On days:"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ezen _napokon:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Megadott _napokon:"
+msgstr "Ezen _napokon:"
 
 #. Label goes between two time selectors, e.g. "limit speeds from [time] to [time]"
-#, fuzzy
 msgid "_to"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"–\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_ide"
+msgstr "–"
 
 msgctxt "Gerund"
 msgid "Adding"
@@ -1696,34 +1261,19 @@ msgstr "Torrent fájlok automatikus hozzáadása _innen:"
 msgid "Show the Torrent Options _dialog"
 msgstr "Torrentbeállítások _ablak megjelenítése"
 
-#, fuzzy
 msgid "_Start added torrents"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Hozzáadott torrentek _elindítása\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Hozzáadott torrentek indítása"
+msgstr "Hozzáadott torrentek _elindítása"
 
 #, fuzzy
 #| msgid "Save to _Location:"
 msgid "Save to _location:"
 msgstr "Mentés _helye:"
 
-#, fuzzy
 msgid "Download Queue"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Letöltési sor\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Letöltési sorrend"
+msgstr "Letöltési sor"
 
-#, fuzzy
 msgid "Ma_ximum active downloads:"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Aktív letöltések ma_ximális száma:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Ma_ximum aktív letöltések:"
+msgstr "Aktív letöltések ma_ximális száma:"
 
 msgid "Downloads sharing data in the last _N minutes are active:"
 msgstr "Az utolsó _N percben adatokat megosztó letöltések legyenek aktívak:"
@@ -1731,13 +1281,8 @@ msgstr "Az utolsó _N percben adatokat megosztó letöltések legyenek aktívak:
 msgid "Incomplete"
 msgstr "Befejezetlen"
 
-#, fuzzy
 msgid "Append \"._part\" to incomplete files' names"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"\"._part\" hozzáfűzése a befejezetlen fájlok nevéhez\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Befejezetlen fájlok nevéhez \"._part\" hozzáfűzése"
+msgstr "\"._part\" hozzáfűzése a befejezetlen fájlok nevéhez"
 
 msgid "Keep _incomplete files in:"
 msgstr "_Befejezetlen fájlok tárolása ebben a mappában:"
@@ -1803,37 +1348,22 @@ msgstr "_Bejövő kapcsolatok portja:"
 msgid "Pick a _random port at startup"
 msgstr "Véletlenszerű port _választása a Transmission minden indításakor"
 
-#, fuzzy
 msgid "Use UPnP or NAT-PMP port _forwarding from my router"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"A router UPnP vagy _NAT-PMP porttovábbításának használata\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"UPnP vagy NAT-PMP portát_irányítás használata a routertől"
+msgstr "A router UPnP vagy _NAT-PMP porttovábbításának használata"
 
 msgid "Te_st Port"
 msgstr "P_ort tesztelése"
 
-#, fuzzy
 msgid "Peer Limits"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Partnerkorlátok\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Partner korlátok"
+msgstr "Partnerkorlátok"
 
 #, fuzzy
 #| msgid "Maximum peers per _torrent:"
 msgid "Maximum peers for new _torrents:"
 msgstr "Partnerek _maximális száma torrentenként:"
 
-#, fuzzy
 msgid "Maximum peers _overall:"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Partnerek száma összesen:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Partnerek maximális száma összesen:"
+msgstr "_Partnerek maximális száma összesen:"
 
 msgid "Enable µ_TP for peer connections"
 msgstr "µ_TP engedélyezése partner kapcsolatokhoz"
@@ -1846,13 +1376,8 @@ msgstr "Az µTP a hálózati torlódás csökkentésére használt eszköz."
 msgid "Use PE_X to find more peers for public torrents"
 msgstr "PE_X használata partnerek kereséséhez"
 
-#, fuzzy
 msgid "PEX is a tool for exchanging peer lists with the peers you're connected to."
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"A PEX a kapcsolódó partnerek partnerlistáinak cseréjére szolgál.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"A PEX egy eszköz ami lehetővé teszi a partnerlista cseréjét a kapcsolódott partnerekkel."
+msgstr "A PEX a kapcsolódó partnerek partnerlistáinak cseréjére szolgál."
 
 #, fuzzy
 #| msgid "Use _DHT to find more peers"
@@ -1867,13 +1392,8 @@ msgstr "A DHT egy a partnerek tracker nélküli megtalálására szolgáló eszk
 msgid "Use _Local Peer Discovery to find more peers for public torrents"
 msgstr "_Helyi partnerek felderítésének használata"
 
-#, fuzzy
 msgid "LPD is a tool for finding peers on your local network."
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Az LPD a helyi hálózaton levő partnerek megtalálására szolgál.\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Az LDP segít partnereket találni a helyi hálózaton."
+msgstr "Az LPD a helyi hálózaton levő partnerek megtalálására szolgál."
 
 msgid "Default Public Trackers"
 msgstr "Alapértelmezett nyilvános trackerek"
@@ -1898,72 +1418,37 @@ msgstr "Asztal"
 msgid "_Prevent computer from sleeping with active torrents"
 msgstr ""
 
-#, fuzzy
 msgid "Show {appname} icon in the _notification area"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{appname} iko_n megjelenítése az értesítési területen\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"{appname} ikon mutatása az ér_tesítési területen"
+msgstr "{appname} iko_n megjelenítése az értesítési területen"
 
 msgid "Notification"
 msgstr "Értesítés"
 
-#, fuzzy
 msgid "Show a notification when torrents are a_dded"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Értesítés megjelenítése a torrentek hozzáa_dásakor\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Értesítés megjelenítése torrentek h_ozzáadásakor"
+msgstr "Értesítés megjelenítése torrentek h_ozzáadásakor"
 
-#, fuzzy
 msgid "Show a notification when torrents _finish"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Értesítés megjelenítése a torrentek elkészültekor\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Értesítés megjelenítése torrentek be_fejeződésekor"
+msgstr "Értesítés megjelenítése torrentek be_fejeződésekor"
 
-#, fuzzy
 msgid "Play a _sound when torrents finish"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Hang leját_szása a torrentek elkészültekor\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Hang leját_szása torrentek befejeződésekor"
+msgstr "Hang leját_szása torrentek befejeződésekor"
 
 msgid "Remote Control"
 msgstr "Távvezérlés"
 
-#, fuzzy
 msgid "Allow _remote access"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Távoli hozzáférés engedélyezése\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Távvezérlés engedélyezése"
+msgstr "_Távoli hozzáférés engedélyezése"
 
 #, fuzzy
 #| msgid "_Open web client"
 msgid "_Open Web Client"
 msgstr "Webes kliens _megnyitása"
 
-#, fuzzy
 msgid "HTTP _port:"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"HTTP-_port:\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"HTTP _port:"
+msgstr "HTTP-_port:"
 
-#, fuzzy
 msgid "Use _authentication"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Hitelesítés használata\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"_Hitelesítés szükséges"
+msgstr "_Hitelesítés használata"
 
 msgid "_Username:"
 msgstr "_Felhasználónév:"
@@ -1983,13 +1468,8 @@ msgstr "Az IP-címekben lehetnek helyettesítő karakterek, például: 192.168.*
 msgid "Remote"
 msgstr "Távoli"
 
-#, fuzzy
 msgid "Set Torrent Location"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Torrent helyének beálltása\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Torrent helyének kiválasztása"
+msgstr "Torrent helyének kiválasztása"
 
 msgid "_Apply"
 msgstr "_Alkalmaz"
@@ -2000,21 +1480,11 @@ msgstr "Hely"
 msgid "New _location:"
 msgstr "Új _hely:"
 
-#, fuzzy
 msgid "_Move from the current folder"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Áthelyezés a jelenlegi _mappából\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Áthelyezés a _jelenlegi mappából"
+msgstr "Áthelyezés a jelenlegi _mappából"
 
-#, fuzzy
 msgid "Local data is _already there"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"A helyi adatok már _ott vannak\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"A letöltött adatok _már itt vannak"
+msgstr "A helyi adatok már _ott vannak"
 
 msgid "Current Session"
 msgstr "Jelenlegi munkamenet"
@@ -2122,24 +1592,14 @@ msgstr "A partnerlista kérése során {markup_begin}időtúllépés történt {
 msgid "Got an error '{markup_begin}{error}{markup_end}' {time_span_ago}"
 msgstr "'{markup_begin}{error}{markup_end}' hiba fogadva {time_span_ago}"
 
-#, fuzzy
 msgid "No updates scheduled"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Nincs ütemezett frissítés\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Nincs frissítés beütemezve"
+msgstr "Nincs ütemezett frissítés"
 
 msgid "Asking for more peers {time_span_from_now}"
 msgstr "További partnerek kérése {time_span_from_now}"
 
-#, fuzzy
 msgid "Queued to ask for more peers"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"További partnerek kérése ütemezve\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"További partnerek kérése beütemezve"
+msgstr "További partnerek kérése ütemezve"
 
 msgid "Asked for more peers {markup_begin}{time_span_ago}{markup_end}"
 msgstr "További partnerek kérve {markup_begin}{time_span_ago}{markup_end}"
@@ -2170,13 +1630,8 @@ msgstr[1] "letöltő"
 msgid "Asking for peer counts {time_span_from_now}"
 msgstr "Partnerek számának lekérése {time_span_from_now}"
 
-#, fuzzy
 msgid "Queued to ask for peer counts"
-msgstr ""
-"#-#-#-#-#  hu.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Partnerek számának lekérése ütemezve\n"
-"#-#-#-#-#  qt-0.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Partnerszám lekérése beütemezve"
+msgstr "Partnerek számának lekérése ütemezve"
 
 msgid "Asked for peer counts {markup_begin}{time_span_ago}{markup_end}"
 msgstr "Partnerek száma lekérve {markup_begin}{time_span_ago}{markup_end}"
@@ -2875,36 +2330,6 @@ msgstr "_Priorítás:"
 msgid "Select Folder"
 msgstr "Mappa kiválasztása"
 
-#, fuzzy
-#| msgctxt "Port test status"
-#| msgid "unknown"
-msgid "unknown"
-msgstr "ismeretlen"
-
-#, fuzzy
-#| msgctxt "Port test status"
-#| msgid "checking…"
-msgid "checking…"
-msgstr "ellenőrzés…"
-
-#, fuzzy
-#| msgctxt "Port test status"
-#| msgid "open"
-msgid "open"
-msgstr "nyitva"
-
-#, fuzzy
-#| msgctxt "Port test status"
-#| msgid "closed"
-msgid "closed"
-msgstr "zárva"
-
-#, fuzzy
-#| msgctxt "Port test status"
-#| msgid "error"
-msgid "error"
-msgstr "hiba"
-
 msgid "<b>Update succeeded!</b><p>Blocklist now has {count:L} rule.</p>"
 msgid_plural "<b>Update succeeded!</b><p>Blocklist now has {count:L} rules.</p>"
 msgstr[0] "<b>Frissítés sikeres!</b><p>A tiltólista most {count:L} szabályt tartalmaz."
@@ -2960,12 +2385,6 @@ msgstr "F_eltöltés:"
 msgid "Do_wnload:"
 msgstr "Le_töltés:"
 
-msgid "Downloading"
-msgstr "Letöltés"
-
-msgid "Adding"
-msgstr "Hozzáadás"
-
 msgid "Reads user clipboard content for torrents"
 msgstr "Kiolvassa a felhasználó vágólapjának tartalmát torrenteket keresve"
 
@@ -2975,9 +2394,6 @@ msgstr "Új torrentek észlelése a vágólapon"
 #. Please keep this phrase as short as possible, it's currently the longest and influences dialog width
 msgid "Download is i_nactive if data sharing stopped:"
 msgstr "Letöltés i_naktív ha megosztás leállítva:"
-
-msgid "Seeding"
-msgstr "Megosztás"
 
 msgid "Stop seedi_ng if idle for:"
 msgstr "Megosztás _befejezése ha inaktív a torrent:"
