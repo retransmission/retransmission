@@ -557,22 +557,22 @@ void DetailsDialog::refreshUI()
             // {current_size} is amount of downloaded and verified data
             string = TR_FORMAT("{current_size} (100%)", fmt::arg("current_size", Formatter::storageToString(have_verified)));
         } else if (have_unverified == 0U) {
-            // Translators: Text following the "Have:" label in torrent properties dialog;
-            // {current_size} is amount of downloaded and verified data,
-            // {complete_size} is overall size of torrent data,
-            // {percent_done} is percentage ({current_size}/{complete_size}*100)
             string = TR_FORMAT(
+                // Translators: Text following the "Have:" label in torrent properties dialog;
+                // {current_size} is amount of downloaded and verified data,
+                // {complete_size} is overall size of torrent data,
+                // {percent_done} is percentage ({current_size}/{complete_size}*100)
                 "{current_size} of {complete_size} ({percent_done}%)",
                 fmt::arg("current_size", Formatter::storageToString(have_verified)),
                 fmt::arg("complete_size", size_when_done_str),
                 fmt::arg("percent_done", pct));
         } else {
-            // Translators: Text following the "Have:" label in torrent properties dialog;
-            // {current_size} is amount of downloaded data (both verified and unverified),
-            // {complete_size} is overall size of torrent data,
-            // {percent_done} is percentage ({current_size}/{complete_size}*100),
-            // {unverified_size} is amount of downloaded but not yet verified data
             string = TR_FORMAT(
+                // Translators: Text following the "Have:" label in torrent properties dialog;
+                // {current_size} is amount of downloaded data (both verified and unverified),
+                // {complete_size} is overall size of torrent data,
+                // {percent_done} is percentage ({current_size}/{complete_size}*100),
+                // {unverified_size} is amount of downloaded but not yet verified data
                 "{current_size} of {complete_size} ({percent_done}%), {unverified_size} Unverified",
                 fmt::arg("current_size", Formatter::storageToString(have_verified + have_unverified)),
                 fmt::arg("complete_size", size_when_done_str),

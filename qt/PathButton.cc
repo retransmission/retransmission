@@ -26,7 +26,7 @@ PathButton::PathButton(QWidget* parent)
 {
     setSizePolicy(QSizePolicy{ QSizePolicy::Preferred, QSizePolicy::Fixed });
     setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
-    setText(TR_TEXT("(None)")); // for minimum width
+    setText(TR_MNEMONIC("(None)")); // for minimum width
 
     updateAppearance();
 
@@ -95,7 +95,7 @@ void PathButton::paintEvent(QPaintEvent* /*event*/)
     }
 
     if (path_.isEmpty()) {
-        option.text = TR_TEXT("(None)");
+        option.text = TR_MNEMONIC("(None)");
     } else if (auto const info = QFileInfo{ path_ }; !info.fileName().isEmpty()) {
         option.text = info.fileName();
     } else {
@@ -170,7 +170,7 @@ void PathButton::rebuildMenu()
     }
 
     menu_->addSeparator();
-    connect(menu_->addAction(TR_TEXT("Other\u2026")), &QAction::triggered, this, &PathButton::onClicked);
+    connect(menu_->addAction(TR_MNEMONIC("Other\u2026")), &QAction::triggered, this, &PathButton::onClicked);
 
     // With recents present, clicking anywhere on the button drops down the menu;
     // the "Other\u2026" entry is what opens the full file chooser.

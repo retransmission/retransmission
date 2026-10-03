@@ -502,9 +502,9 @@ void PrefsDialog::initSeedingTab()
 
 void PrefsDialog::onQueueStalledMinutesChanged()
 {
-    // Translators: Spin box format, "Download is inactive if data sharing stopped: [ 5 minutes ago ]"
     Utils::updateSpinBoxFormat(
         ui_.queueStalledMinutesSpin,
+        // Translators: Spin box format, "Download is inactive if data sharing stopped: [ 5 minutes ago ]"
         "{minutes_ago:L} minute ago",
         "{minutes_ago:L} minutes ago",
         "minutes_ago");

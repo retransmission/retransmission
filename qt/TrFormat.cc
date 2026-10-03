@@ -6,7 +6,6 @@
 #include "TrFormat.h"
 
 #include <algorithm>
-#include <cstdint> // uint64_t
 #include <cstring> // std::strchr()
 #include <optional>
 #include <set>
@@ -235,11 +234,6 @@ QString detail::text(char const* const msgid)
 QString detail::textInContext(char const* const context, char const* const msgid)
 {
     return QString::fromUtf8(tr_pgettext(context, msgid));
-}
-
-QString detail::pluralText(char const* const msgid, char const* const msgid_plural, uint64_t const n)
-{
-    return QString::fromUtf8(tr_ngettext(msgid, msgid_plural, n));
 }
 
 QString detail::mnemonicText(char const* const msgid)

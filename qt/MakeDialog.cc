@@ -302,8 +302,8 @@ void MakeDialog::updatePiecesLabel()
             "{piece_count:L} Pieces",
             piece_count,
             fmt::arg("piece_count", piece_count));
-        // Translators: {files} is "{file_count} Files" and {pieces} is "{piece_count} Pieces"
         text = TR_FORMAT(
+            // Translators: {files} is "{file_count} Files" and {pieces} is "{piece_count} Pieces"
             "{total_size} in {files}; {pieces} @ {piece_size}",
             fmt::arg("total_size", Formatter::storageToString(builder_->total_size())),
             fmt::arg("files", files),
