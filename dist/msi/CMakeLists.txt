@@ -82,14 +82,12 @@ file(
     DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 
 set(WEBSRCDIR "${TR_DATA_INSTALL_FULL_DIR}/public_html")
-set(TRQMSRCDIR "${TR_DATA_INSTALL_FULL_DIR}/translations")
 set(TRLOCALESRCDIR "${CMAKE_INSTALL_FULL_LOCALEDIR}")
 set(QTQMSRCDIR "${TR_QT_DIR}/translations")
 
 configure_file(TransmissionConfig.wxi.in TransmissionConfig.wxi)
 
 wix_heat(WebUi.wxs "${WEBSRCDIR}" WebUiComponents WEBINSTALLDIR var.WebSrcDir)
-wix_heat(QtClientTranslations.wxs "${TRQMSRCDIR}" QtClientTranslationsComponents QMINSTALLDIR var.TrQmSrcDir)
 wix_heat(QtClientCatalogs.wxs "${TRLOCALESRCDIR}" QtClientCatalogsComponents LOCALEINSTALLDIR var.TrLocaleSrcDir)
 wix_heat(QtTranslations.wxs "${QTQMSRCDIR}" QtTranslationsComponents QMINSTALLDIR var.QtQmSrcDir
     XSL_TRANSFORM QtTranslations.xsl)
@@ -103,7 +101,6 @@ wix_candle(WIX_OBJS
         components/QtClient.wxs
         Transmission.wxs
         "${CMAKE_CURRENT_BINARY_DIR}/WebUi.wxs"
-        "${CMAKE_CURRENT_BINARY_DIR}/QtClientTranslations.wxs"
         "${CMAKE_CURRENT_BINARY_DIR}/QtClientCatalogs.wxs"
         "${CMAKE_CURRENT_BINARY_DIR}/QtTranslations.wxs"
     EXTENSIONS
@@ -117,7 +114,6 @@ wix_candle(WIX_OBJS
         "QtMinorVer=${Qt_VERSION_MINOR}"
         "LicenseFile=${CMAKE_CURRENT_SOURCE_DIR}/GPLv2.rtf"
         "WebSrcDir=${WEBSRCDIR}"
-        "TrQmSrcDir=${TRQMSRCDIR}"
         "TrLocaleSrcDir=${TRLOCALESRCDIR}"
         "QtQmSrcDir=${QTQMSRCDIR}"
         "MsvcCrtMsmFile=${TR_MSVC_CRT_MSM_FILE}"

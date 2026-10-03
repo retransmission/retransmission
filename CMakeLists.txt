@@ -451,8 +451,7 @@ if(ENABLE_QT)
         Gui
         Widgets
         Network
-        Svg
-        LinguistTools)
+        Svg)
     if(ENABLE_TESTS)
         list(APPEND QT_REQUIRED_MODULES Test)
     endif()
@@ -476,7 +475,7 @@ if(ENABLE_QT)
         foreach(M ${QT_REQUIRED_MODULES})
             find_package(Qt${Qt_VERSION_MAJOR}${M} ${QT_MINIMUM} QUIET)
             if(Qt${Qt_VERSION_MAJOR}${M}_FOUND)
-                if(NOT M STREQUAL "LinguistTools" AND NOT M STREQUAL "Test")
+                if(NOT M STREQUAL "Test")
                     list(APPEND QT_TARGETS Qt${Qt_VERSION_MAJOR}::${M})
                 endif()
             else()
@@ -1014,8 +1013,7 @@ add_subdirectory(libtransmission-app)
 
 set(MAC_PROJECT_DIR macosx)
 
-# GTK needs the catalogs.
-# The Qt client uses them for libtransmission's strings when msgfmt is there to build them.
+# The clients' strings, and libtransmission's, come from the catalogs that msgfmt builds in po/.
 string(CONCAT TR_GETTEXT_HELP
     "To fix this, install GNU gettext 0.19.7 or newer, which provides msgfmt and msgmerge, and reconfigure:\n"
     "  Debian, Ubuntu: apt install gettext\n"
@@ -1037,8 +1035,7 @@ if(ENABLE_NLS AND (ENABLE_GTK OR ENABLE_QT))
         endif()
 
         message(WARNING
-            "gettext's msgfmt was not found, so the Qt client will show libtransmission's messages, "
-            "size units, relative times and tracker status in English.\n"
+            "gettext's msgfmt was not found, so the Qt client will be in English.\n"
             "${TR_GETTEXT_HELP}\n"
             "To build without translations, configure with -DENABLE_NLS=OFF.")
     endif()
