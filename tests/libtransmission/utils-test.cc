@@ -47,6 +47,36 @@ TEST_F(UtilsTest, translator)
     EXPECT_STREQ("{count} files", tr_ngettext("{count} file", "{count} files", 21));
 }
 
+TEST_F(UtilsTest, translatorWithContext)
+{
+    EXPECT_STREQ("Seeding", tr_pgettext("Verb", "Seeding"));
+    EXPECT_STREQ("{count} file", tr_npgettext("Noun", "{count} file", "{count} files", 1));
+    EXPECT_STREQ("{count} files", tr_npgettext("Noun", "{count} file", "{count} files", 2));
+
+    tr_set_translator(
+        [](char const* msgid) noexcept -> char const* {
+            if (msgid == "Verb\x04Seeding"sv) {
+                return "Verteilen";
+            }
+            return msgid == "Seeding"sv ? "Verteilt" : msgid;
+        },
+        [](char const* msgid, char const* msgid_plural, uint64_t n) noexcept -> char const* {
+            if (msgid == "Noun\x04{count} file"sv) {
+                return n == 1U ? "{count} Datei" : "{count} Dateien";
+            }
+            return n == 1U ? msgid : msgid_plural;
+        });
+    EXPECT_STREQ("Verteilen", tr_pgettext("Verb", "Seeding"));
+    EXPECT_STREQ("Verteilt", _("Seeding"));
+    EXPECT_STREQ("Seeding", tr_pgettext("Adjective", "Seeding"));
+    EXPECT_STREQ("{count} Datei", tr_npgettext("Noun", "{count} file", "{count} files", 1));
+    EXPECT_STREQ("{count} Dateien", tr_npgettext("Noun", "{count} file", "{count} files", size_t{ 2 }));
+    EXPECT_STREQ("{count} file", tr_npgettext("Verb", "{count} file", "{count} files", 1));
+    EXPECT_STREQ("{count} files", tr_npgettext("Verb", "{count} file", "{count} files", 2));
+
+    tr_set_translator(nullptr, nullptr);
+}
+
 TEST_F(UtilsTest, truncd)
 {
     EXPECT_EQ("100.00%"sv, fmt::format("{:.2f}%", 99.999));
