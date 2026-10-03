@@ -246,7 +246,7 @@ void Application::loadTranslations()
                                                         (applicationDirPath() + QStringLiteral("/locale")).toStdString() };
     auto const languages = tr::app::l10n::use_catalogs(catalog_dirs, TR_GETTEXT_DOMAIN, preferred_languages);
 
-    // Qt's own dialogs use the catalogs' language, so that no window mixes two languages.
+    // Qt's own dialogs use the language of the most preferred catalog.
     if (std::empty(languages)) {
         return;
     }
