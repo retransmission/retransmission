@@ -525,11 +525,19 @@ msgstr[0] "属性—{torrent_count:L} 个种子"
 
 #: ../gtk/Dialogs.cc:57
 msgid "Remove torrent?"
+msgstr "移除 {count:L} 个 Torrents？"
+
+#: ../gtk/Dialogs.cc:57
+msgid "Remove {count:L} torrent?"
 msgid_plural "Remove {count:L} torrents?"
 msgstr[0] "移除 {count:L} 个 Torrents？"
 
 #: ../gtk/Dialogs.cc:59
 msgid "Delete this torrent's downloaded files?"
+msgstr "删除这 {count:L} 个种子下载的文件吗？"
+
+#: ../gtk/Dialogs.cc:59
+msgid "Delete this {count:L} torrent's downloaded files?"
 msgid_plural "Delete these {count:L} torrents' downloaded files?"
 msgstr[0] "删除这 {count:L} 个种子下载的文件吗？"
 
@@ -540,23 +548,35 @@ msgstr[0] "一旦移除，继续传输将需要 Torrent 文件或磁力链接。
 
 #: ../gtk/Dialogs.cc:75
 msgid "This torrent has not finished downloading."
-msgid_plural "These torrents have not finished downloading."
-msgstr[0] "此种子尚未完成下载。"
+msgstr "此种子尚未完成下载。"
+
+#: ../gtk/Dialogs.cc:75
+msgid "These torrents have not finished downloading."
+msgstr "此种子尚未完成下载。"
 
 #: ../gtk/Dialogs.cc:81
 msgid "This torrent is connected to peers."
-msgid_plural "These torrents are connected to peers."
-msgstr[0] "此 Torrent 已连接到其他节点。"
+msgstr "此 Torrent 已连接到其他节点。"
+
+#: ../gtk/Dialogs.cc:81
+msgid "These torrents are connected to peers."
+msgstr "此 Torrent 已连接到其他节点。"
 
 #: ../gtk/Dialogs.cc:88
 msgid "One of these torrents is connected to peers."
-msgid_plural "Some of these torrents are connected to peers."
-msgstr[0] "其中一些种子文件已经连接到了节点。"
+msgstr "其中一些种子文件已经连接到了节点。"
+
+#: ../gtk/Dialogs.cc:88
+msgid "Some of these torrents are connected to peers."
+msgstr "其中一些种子文件已经连接到了节点。"
 
 #: ../gtk/Dialogs.cc:101
 msgid "One of these torrents has not finished downloading."
-msgid_plural "Some of these torrents have not finished downloading."
-msgstr[0] "有一个种子尚未完成下载。"
+msgstr "有一个种子尚未完成下载。"
+
+#: ../gtk/Dialogs.cc:101
+msgid "Some of these torrents have not finished downloading."
+msgstr "有一个种子尚未完成下载。"
 
 #: ../gtk/Dialogs.cc:120 ../gtk/MessageLogWindow.cc:271 ../gtk/OptionsDialog.cc:370 ../gtk/PathButton.cc:155 ../gtk/StatsDialog.cc:112 ../gtk/ui/gtk3/AddTrackerDialog.ui:20 ../gtk/ui/gtk3/EditTrackersDialog.ui:20 ../gtk/ui/gtk3/MakeProgressDialog.ui:21 ../gtk/ui/gtk3/OptionsDialog.ui:20 ../gtk/ui/gtk3/RelocateDialog.ui:20 ../gtk/ui/gtk3/TorrentUrlChooserDialog.ui:20 ../gtk/ui/gtk4/AddTrackerDialog.ui:67 ../gtk/ui/gtk4/EditTrackersDialog.ui:86 ../gtk/ui/gtk4/MakeProgressDialog.ui:36 ../gtk/ui/gtk4/OptionsDialog.ui:176 ../gtk/ui/gtk4/RelocateDialog.ui:93 ../gtk/ui/gtk4/TorrentUrlChooserDialog.ui:67
 msgid "_Cancel"
@@ -706,12 +726,12 @@ msgid "Down: {downloaded_size}, Up: {uploaded_size}"
 msgstr "下载：{downloaded_size}，上传：{uploaded_size}"
 
 #: ../gtk/MainWindow.cc:815
-msgid "{download_speed} ▼"
-msgstr "{download_speed} ▼"
+msgid "{download_speed} ▾"
+msgstr "{download_speed} ▾"
 
 #: ../gtk/MainWindow.cc:818 ../gtk/Torrent.cc:629
-msgid "{upload_speed} ▲"
-msgstr "{upload_speed} ▲"
+msgid "{upload_speed} ▴"
+msgstr "{upload_speed} ▴"
 
 #: ../gtk/MakeDialog.cc:194
 msgid "Creating '{path}'"
@@ -952,8 +972,8 @@ msgid "These statistics are for your information only. Resetting them doesn't af
 msgstr "这些统计信息只是供你参考。重置它们不会影响 Tracker 上的统计信息。"
 
 #: ../gtk/SystemTrayIcon.cc:207
-msgid "{upload_speed} ▲ {download_speed} ▼"
-msgstr "{upload_speed} ▲ {download_speed} ▼"
+msgid "{upload_speed} ▴ {download_speed} ▾"
+msgstr "{upload_speed} ▴ {download_speed} ▾"
 
 #: ../gtk/Torrent.cc:442
 #, no-c-format
@@ -985,8 +1005,8 @@ msgid "Remaining time unknown"
 msgstr "剩余时间未知"
 
 #: ../gtk/Torrent.cc:622
-msgid "{download_speed} ▼  {upload_speed} ▲"
-msgstr "{download_speed} ▼  {upload_speed} ▲"
+msgid "{download_speed} ▾  {upload_speed} ▴"
+msgstr "{download_speed} ▾  {upload_speed} ▴"
 
 #: ../gtk/Torrent.cc:634
 msgid "Stalled"

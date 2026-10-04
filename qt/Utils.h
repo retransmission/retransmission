@@ -48,5 +48,6 @@ public:
         }
     }
 
-    static void updateSpinBoxFormat(QSpinBox* spinBox, char const* context, char const* format, QString const& placeholder);
+    // Sets the spin box's prefix and suffix to the translated `format`'s text around its `field`.
+    static void updateSpinBoxFormat(QSpinBox* spinBox, char const* context, char const* format, std::string_view field);
 };

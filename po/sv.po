@@ -482,14 +482,22 @@ msgstr[1] "Egenskaper - {torrent_count:L} torrenter"
 
 #: ../gtk/Dialogs.cc:57
 msgid "Remove torrent?"
+msgstr "Ta bort torrent?"
+
+#: ../gtk/Dialogs.cc:57
+msgid "Remove {count:L} torrent?"
 msgid_plural "Remove {count:L} torrents?"
-msgstr[0] "Ta bort torrent?"
+msgstr[0] "Ta bort {count:L} torrent?"
 msgstr[1] "Ta bort {count:L} torrenter?"
 
 #: ../gtk/Dialogs.cc:59
 msgid "Delete this torrent's downloaded files?"
+msgstr "Ta bort den här torrentens hämtade filer?"
+
+#: ../gtk/Dialogs.cc:59
+msgid "Delete this {count:L} torrent's downloaded files?"
 msgid_plural "Delete these {count:L} torrents' downloaded files?"
-msgstr[0] "Ta bort den här torrentens hämtade filer?"
+msgstr[0] "Ta bort nedladdade filer för {count:L} torrent?"
 msgstr[1] "Ta bort dessa {count:L} torrenternas hämtade filer?"
 
 #: ../gtk/Dialogs.cc:68
@@ -500,27 +508,35 @@ msgstr[1] "När de har tagits bort kommer torrentfilerna eller magnetlänkarna a
 
 #: ../gtk/Dialogs.cc:75
 msgid "This torrent has not finished downloading."
-msgid_plural "These torrents have not finished downloading."
-msgstr[0] "Denna torrent har inte hämtats klart."
-msgstr[1] "Dessa torrenter har inte hämtats klart."
+msgstr "Denna torrent har inte hämtats klart."
+
+#: ../gtk/Dialogs.cc:75
+msgid "These torrents have not finished downloading."
+msgstr "Dessa torrenter har inte hämtats klart."
 
 #: ../gtk/Dialogs.cc:81
 msgid "This torrent is connected to peers."
-msgid_plural "These torrents are connected to peers."
-msgstr[0] "Denna torrent är ansluten till jämlikar."
-msgstr[1] "Dessa torrenter är anslutna till jämlikar."
+msgstr "Denna torrent är ansluten till jämlikar."
+
+#: ../gtk/Dialogs.cc:81
+msgid "These torrents are connected to peers."
+msgstr "Dessa torrenter är anslutna till jämlikar."
 
 #: ../gtk/Dialogs.cc:88
 msgid "One of these torrents is connected to peers."
-msgid_plural "Some of these torrents are connected to peers."
-msgstr[0] "En av de här torrenterna är ansluten till jämlikar."
-msgstr[1] "Några av dessa torrenter är anslutna till jämlikar."
+msgstr "En av de här torrenterna är ansluten till jämlikar."
+
+#: ../gtk/Dialogs.cc:88
+msgid "Some of these torrents are connected to peers."
+msgstr "Några av dessa torrenter är anslutna till jämlikar."
 
 #: ../gtk/Dialogs.cc:101
 msgid "One of these torrents has not finished downloading."
-msgid_plural "Some of these torrents have not finished downloading."
-msgstr[0] "En av de här torrenterna har inte hämtats klart."
-msgstr[1] "Några av dessa torrenter har inte hämtats klart."
+msgstr "En av de här torrenterna har inte hämtats klart."
+
+#: ../gtk/Dialogs.cc:101
+msgid "Some of these torrents have not finished downloading."
+msgstr "Några av dessa torrenter har inte hämtats klart."
 
 #: ../gtk/Dialogs.cc:120 ../gtk/MessageLogWindow.cc:271 ../gtk/OptionsDialog.cc:370 ../gtk/PathButton.cc:155 ../gtk/StatsDialog.cc:112 ../gtk/ui/gtk3/AddTrackerDialog.ui:20 ../gtk/ui/gtk3/EditTrackersDialog.ui:20 ../gtk/ui/gtk3/MakeProgressDialog.ui:21 ../gtk/ui/gtk3/OptionsDialog.ui:20 ../gtk/ui/gtk3/RelocateDialog.ui:20 ../gtk/ui/gtk3/TorrentUrlChooserDialog.ui:20 ../gtk/ui/gtk4/AddTrackerDialog.ui:67 ../gtk/ui/gtk4/EditTrackersDialog.ui:86 ../gtk/ui/gtk4/MakeProgressDialog.ui:36 ../gtk/ui/gtk4/OptionsDialog.ui:176 ../gtk/ui/gtk4/RelocateDialog.ui:93 ../gtk/ui/gtk4/TorrentUrlChooserDialog.ui:67
 msgid "_Cancel"
@@ -670,12 +686,12 @@ msgid "Down: {downloaded_size}, Up: {uploaded_size}"
 msgstr "Ner: {downloaded_size}, Upp: {uploaded_size}"
 
 #: ../gtk/MainWindow.cc:815
-msgid "{download_speed} ▼"
-msgstr "{download_speed} ▼"
+msgid "{download_speed} ▾"
+msgstr "{download_speed} ▾"
 
 #: ../gtk/MainWindow.cc:818 ../gtk/Torrent.cc:629
-msgid "{upload_speed} ▲"
-msgstr "{upload_speed} ▲"
+msgid "{upload_speed} ▴"
+msgstr "{upload_speed} ▴"
 
 #: ../gtk/MakeDialog.cc:194
 msgid "Creating '{path}'"
@@ -918,8 +934,8 @@ msgid "These statistics are for your information only. Resetting them doesn't af
 msgstr "Denna statistik är endast för din information. Återställning av den påverkar inte statistiken som loggas av dina BitTorrent-spårare."
 
 #: ../gtk/SystemTrayIcon.cc:207
-msgid "{upload_speed} ▲ {download_speed} ▼"
-msgstr "{upload_speed} ▲ {download_speed} ▼"
+msgid "{upload_speed} ▴ {download_speed} ▾"
+msgstr "{upload_speed} ▴ {download_speed} ▾"
 
 #: ../gtk/Torrent.cc:442
 #, no-c-format
@@ -951,8 +967,8 @@ msgid "Remaining time unknown"
 msgstr "Återstående tid är okänd"
 
 #: ../gtk/Torrent.cc:622
-msgid "{download_speed} ▼  {upload_speed} ▲"
-msgstr "{download_speed} ▼  {upload_speed} ▲"
+msgid "{download_speed} ▾  {upload_speed} ▴"
+msgstr "{download_speed} ▾  {upload_speed} ▴"
 
 #: ../gtk/Torrent.cc:634
 msgid "Stalled"

@@ -518,19 +518,25 @@ msgstr[3] "מאפיינים - {torrent_count:L} טורנטים"
 
 #: ../gtk/Dialogs.cc:57
 msgid "Remove torrent?"
+msgstr "להסיר את הטורנט?"
+
+#: ../gtk/Dialogs.cc:57
+msgid "Remove {count:L} torrent?"
 msgid_plural "Remove {count:L} torrents?"
-msgstr[0] "להסיר את הטורנט?"
+msgstr[0] "הסרת טורנט?"
 msgstr[1] "להסיר {count:L} טורנטים?"
 msgstr[2] "להסיר {count:L} טורנטים?"
-msgstr[3] "להסיר {count:L} טורנטים?"
 
 #: ../gtk/Dialogs.cc:59
 msgid "Delete this torrent's downloaded files?"
+msgstr "למחוק את הקבצים שהורדו במסגרת הטורנט הזה?"
+
+#: ../gtk/Dialogs.cc:59
+msgid "Delete this {count:L} torrent's downloaded files?"
 msgid_plural "Delete these {count:L} torrents' downloaded files?"
-msgstr[0] "למחוק את הקבצים שהורדו במסגרת הטורנט הזה?"
+msgstr[0] "למחוק את הקבצים שהתקבלו עבור הטורנט הזה?"
 msgstr[1] "למחוק את {count:L} הקבצים שהורדו במסגרת הטורנטים האלה?"
 msgstr[2] "למחוק את {count:L} הקבצים שהורדו במסגרת הטורנטים האלה?"
-msgstr[3] "למחוק את {count:L} הקבצים שהורדו במסגרת הטורנטים האלה?"
 
 #: ../gtk/Dialogs.cc:68
 msgid "Once removed, continuing the transfer will require the torrent file or magnet link."
@@ -542,35 +548,35 @@ msgstr[3] "לאחר ההסרה, המשך ההעברה תדרוש את קובץ �
 
 #: ../gtk/Dialogs.cc:75
 msgid "This torrent has not finished downloading."
-msgid_plural "These torrents have not finished downloading."
-msgstr[0] "הורדת הטורנט הבא טרם הסתיימה."
-msgstr[1] "הורדת הטורנטים הבאים טרם הסתיימה."
-msgstr[2] "הורדת הטורנטים הבאים טרם הסתיימה."
-msgstr[3] "הורדת הטורנטים הבאים טרם הסתיימה."
+msgstr "הורדת הטורנט הבא טרם הסתיימה."
+
+#: ../gtk/Dialogs.cc:75
+msgid "These torrents have not finished downloading."
+msgstr "הורדת הטורנטים הבאים טרם הסתיימה."
 
 #: ../gtk/Dialogs.cc:81
 msgid "This torrent is connected to peers."
-msgid_plural "These torrents are connected to peers."
-msgstr[0] "הטורנט הזה מחובר לעמיתים."
-msgstr[1] "הטורנטים האלו מחוברים לעמיתים."
-msgstr[2] "הטורנטים האלו מחוברים לעמיתים."
-msgstr[3] "הטורנטים האלו מחוברים לעמיתים."
+msgstr "הטורנט הזה מחובר לעמיתים."
+
+#: ../gtk/Dialogs.cc:81
+msgid "These torrents are connected to peers."
+msgstr "הטורנטים האלו מחוברים לעמיתים."
 
 #: ../gtk/Dialogs.cc:88
 msgid "One of these torrents is connected to peers."
-msgid_plural "Some of these torrents are connected to peers."
-msgstr[0] "אחד מהטורנטים האלו אינו מחובר לעמיתים."
-msgstr[1] "חלק מהטורנטים האלו אינם מחוברים לעמיתים."
-msgstr[2] "חלק מהטורנטים האלו אינם מחוברים לעמיתים."
-msgstr[3] "חלק מהטורנטים האלו אינם מחוברים לעמיתים."
+msgstr "אחד מהטורנטים האלו אינו מחובר לעמיתים."
+
+#: ../gtk/Dialogs.cc:88
+msgid "Some of these torrents are connected to peers."
+msgstr "חלק מהטורנטים האלו אינם מחוברים לעמיתים."
 
 #: ../gtk/Dialogs.cc:101
 msgid "One of these torrents has not finished downloading."
-msgid_plural "Some of these torrents have not finished downloading."
-msgstr[0] "הורדת אחד מהטורנטים האלה טרם הסתיימה."
-msgstr[1] "הורדת חלק מהטורנטים האלה טרם הסתיימה."
-msgstr[2] "הורדת חלק מהטורנטים האלה טרם הסתיימה."
-msgstr[3] "הורדת חלק מהטורנטים האלה טרם הסתיימה."
+msgstr "הורדת אחד מהטורנטים האלה טרם הסתיימה."
+
+#: ../gtk/Dialogs.cc:101
+msgid "Some of these torrents have not finished downloading."
+msgstr "הורדת חלק מהטורנטים האלה טרם הסתיימה."
 
 #: ../gtk/Dialogs.cc:120 ../gtk/MessageLogWindow.cc:271 ../gtk/OptionsDialog.cc:370 ../gtk/PathButton.cc:155 ../gtk/StatsDialog.cc:112 ../gtk/ui/gtk3/AddTrackerDialog.ui:20 ../gtk/ui/gtk3/EditTrackersDialog.ui:20 ../gtk/ui/gtk3/MakeProgressDialog.ui:21 ../gtk/ui/gtk3/OptionsDialog.ui:20 ../gtk/ui/gtk3/RelocateDialog.ui:20 ../gtk/ui/gtk3/TorrentUrlChooserDialog.ui:20 ../gtk/ui/gtk4/AddTrackerDialog.ui:67 ../gtk/ui/gtk4/EditTrackersDialog.ui:86 ../gtk/ui/gtk4/MakeProgressDialog.ui:36 ../gtk/ui/gtk4/OptionsDialog.ui:176 ../gtk/ui/gtk4/RelocateDialog.ui:93 ../gtk/ui/gtk4/TorrentUrlChooserDialog.ui:67
 msgid "_Cancel"
@@ -720,12 +726,12 @@ msgid "Down: {downloaded_size}, Up: {uploaded_size}"
 msgstr "הורדה: {downloaded_size}, העלאה: {uploaded_size}"
 
 #: ../gtk/MainWindow.cc:815
-msgid "{download_speed} ▼"
-msgstr "{download_speed} ▼"
+msgid "{download_speed} ▾"
+msgstr "{download_speed} ▾"
 
 #: ../gtk/MainWindow.cc:818 ../gtk/Torrent.cc:629
-msgid "{upload_speed} ▲"
-msgstr "{upload_speed} ▲"
+msgid "{upload_speed} ▴"
+msgstr "{upload_speed} ▴"
 
 #: ../gtk/MakeDialog.cc:194
 msgid "Creating '{path}'"
@@ -972,8 +978,8 @@ msgid "These statistics are for your information only. Resetting them doesn't af
 msgstr "הסטטיסטיקה הזאת היא לידיעתך בלבד. איפוס הסטטיסטיקה לא ישפיע על הסטטיסטיקה שנאספת על מחשבך מצד עוקבי הביטורנט."
 
 #: ../gtk/SystemTrayIcon.cc:207
-msgid "{upload_speed} ▲ {download_speed} ▼"
-msgstr "{upload_speed} ▲ {download_speed} ▼"
+msgid "{upload_speed} ▴ {download_speed} ▾"
+msgstr "{upload_speed} ▴ {download_speed} ▾"
 
 #: ../gtk/Torrent.cc:442
 #, no-c-format
@@ -1005,8 +1011,8 @@ msgid "Remaining time unknown"
 msgstr "הזמן שנותר לא ידוע"
 
 #: ../gtk/Torrent.cc:622
-msgid "{download_speed} ▼  {upload_speed} ▲"
-msgstr "{download_speed} ▼  {upload_speed} ▲"
+msgid "{download_speed} ▾  {upload_speed} ▴"
+msgstr "{download_speed} ▾  {upload_speed} ▴"
 
 #: ../gtk/Torrent.cc:634
 msgid "Stalled"

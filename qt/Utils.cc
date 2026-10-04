@@ -29,6 +29,7 @@
 #include <QtWidgets/QStyle>
 
 #include "QtCompat.h"
+#include "TrFormat.h"
 
 // ---
 
@@ -110,16 +111,12 @@ QColor Utils::getFadedColor(QColor const& color)
     return faded_color;
 }
 
-void Utils::updateSpinBoxFormat(QSpinBox* spinBox, char const* context, char const* format, QString const& placeholder)
+void Utils::updateSpinBoxFormat(QSpinBox* spinBox, char const* context, char const* format, std::string_view const field)
 {
-    QString const units_format = QCoreApplication::translate(context, format, nullptr, spinBox->value());
-    auto const placeholder_pos = units_format.indexOf(placeholder);
-    if (placeholder_pos == -1) {
-        return;
-    }
-
-    auto const units_prefix = units_format.left(placeholder_pos);
-    auto const units_suffix = units_format.mid(placeholder_pos + placeholder.size());
+    auto const [units_prefix, units_suffix] = trqt::splitAtField(
+        QCoreApplication::translate(context, format, nullptr, spinBox->value()),
+        format,
+        field);
 
     if (spinBox->prefix() != units_prefix) {
         spinBox->setPrefix(units_prefix);

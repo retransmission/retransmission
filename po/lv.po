@@ -498,6 +498,10 @@ msgstr[2] ""
 
 #: ../gtk/Dialogs.cc:57
 msgid "Remove torrent?"
+msgstr ""
+
+#: ../gtk/Dialogs.cc:57
+msgid "Remove {count:L} torrent?"
 msgid_plural "Remove {count:L} torrents?"
 msgstr[0] ""
 msgstr[1] ""
@@ -505,6 +509,10 @@ msgstr[2] ""
 
 #: ../gtk/Dialogs.cc:59
 msgid "Delete this torrent's downloaded files?"
+msgstr ""
+
+#: ../gtk/Dialogs.cc:59
+msgid "Delete this {count:L} torrent's downloaded files?"
 msgid_plural "Delete these {count:L} torrents' downloaded files?"
 msgstr[0] ""
 msgstr[1] ""
@@ -519,31 +527,35 @@ msgstr[2] "Kad izņemts, sūtīšanas turpināšanai būs nepieciešamas torentu
 
 #: ../gtk/Dialogs.cc:75
 msgid "This torrent has not finished downloading."
-msgid_plural "These torrents have not finished downloading."
-msgstr[0] "Šis torents nav beidzis lejupielādi."
-msgstr[1] "Šie torenti nav beiguši lejupielādi."
-msgstr[2] "Šie torenti nav beiguši lejupielādi."
+msgstr "Šis torents nav beidzis lejupielādi."
+
+#: ../gtk/Dialogs.cc:75
+msgid "These torrents have not finished downloading."
+msgstr "Šie torenti nav beiguši lejupielādi."
 
 #: ../gtk/Dialogs.cc:81
 msgid "This torrent is connected to peers."
-msgid_plural "These torrents are connected to peers."
-msgstr[0] "Šis torents ir savienots ar dalībniekiem."
-msgstr[1] "Šie torenti ir savienoti ar dalībniekiem."
-msgstr[2] "Šie torenti ir savienoti ar dalībniekiem."
+msgstr "Šis torents ir savienots ar dalībniekiem."
+
+#: ../gtk/Dialogs.cc:81
+msgid "These torrents are connected to peers."
+msgstr "Šie torenti ir savienoti ar dalībniekiem."
 
 #: ../gtk/Dialogs.cc:88
 msgid "One of these torrents is connected to peers."
-msgid_plural "Some of these torrents are connected to peers."
-msgstr[0] "Viens no šiem torentiem ir savienots ar dalībniekiem."
-msgstr[1] "Daži no šiem torentiem ir savienoti ar dalībniekiem."
-msgstr[2] "Daži no šiem torentiem ir savienoti ar dalībniekiem."
+msgstr "Viens no šiem torentiem ir savienots ar dalībniekiem."
+
+#: ../gtk/Dialogs.cc:88
+msgid "Some of these torrents are connected to peers."
+msgstr "Daži no šiem torentiem ir savienoti ar dalībniekiem."
 
 #: ../gtk/Dialogs.cc:101
 msgid "One of these torrents has not finished downloading."
-msgid_plural "Some of these torrents have not finished downloading."
-msgstr[0] "Viens no šiem torentiem nav beidzis lejupielādi."
-msgstr[1] "Daži no šiem torentiem nav beiguši lejupielādi."
-msgstr[2] "Daži no šiem torentiem nav beiguši lejupielādi."
+msgstr "Viens no šiem torentiem nav beidzis lejupielādi."
+
+#: ../gtk/Dialogs.cc:101
+msgid "Some of these torrents have not finished downloading."
+msgstr "Daži no šiem torentiem nav beiguši lejupielādi."
 
 #: ../gtk/Dialogs.cc:120 ../gtk/MessageLogWindow.cc:271 ../gtk/OptionsDialog.cc:370 ../gtk/PathButton.cc:155 ../gtk/StatsDialog.cc:112 ../gtk/ui/gtk3/AddTrackerDialog.ui:20 ../gtk/ui/gtk3/EditTrackersDialog.ui:20 ../gtk/ui/gtk3/MakeProgressDialog.ui:21 ../gtk/ui/gtk3/OptionsDialog.ui:20 ../gtk/ui/gtk3/RelocateDialog.ui:20 ../gtk/ui/gtk3/TorrentUrlChooserDialog.ui:20 ../gtk/ui/gtk4/AddTrackerDialog.ui:67 ../gtk/ui/gtk4/EditTrackersDialog.ui:86 ../gtk/ui/gtk4/MakeProgressDialog.ui:36 ../gtk/ui/gtk4/OptionsDialog.ui:176 ../gtk/ui/gtk4/RelocateDialog.ui:93 ../gtk/ui/gtk4/TorrentUrlChooserDialog.ui:67
 msgid "_Cancel"
@@ -689,11 +701,11 @@ msgid "Down: {downloaded_size}, Up: {uploaded_size}"
 msgstr ""
 
 #: ../gtk/MainWindow.cc:815
-msgid "{download_speed} ▼"
+msgid "{download_speed} ▾"
 msgstr ""
 
 #: ../gtk/MainWindow.cc:818 ../gtk/Torrent.cc:629
-msgid "{upload_speed} ▲"
+msgid "{upload_speed} ▴"
 msgstr ""
 
 #: ../gtk/MakeDialog.cc:194
@@ -939,7 +951,7 @@ msgid "These statistics are for your information only. Resetting them doesn't af
 msgstr "Šī statistika ir tikai jūsu zināšanai. Tās atstatīšana neietekmēs statistiku, ko uzkrāj BitTorrent sekotāji."
 
 #: ../gtk/SystemTrayIcon.cc:207
-msgid "{upload_speed} ▲ {download_speed} ▼"
+msgid "{upload_speed} ▴ {download_speed} ▾"
 msgstr ""
 
 #: ../gtk/Torrent.cc:442
@@ -972,7 +984,7 @@ msgid "Remaining time unknown"
 msgstr "Atlikušais laiks nav zināms"
 
 #: ../gtk/Torrent.cc:622
-msgid "{download_speed} ▼  {upload_speed} ▲"
+msgid "{download_speed} ▾  {upload_speed} ▴"
 msgstr ""
 
 #: ../gtk/Torrent.cc:634

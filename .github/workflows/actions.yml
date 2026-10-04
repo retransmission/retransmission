@@ -47,6 +47,7 @@ jobs:
       make-tests: ${{ steps.check-main-push.outputs.is-main-push == '1' || steps.check-diffs.outputs.tests-changed == '1' || steps.check-diffs.outputs.ci-actions-changed == '1' }}
       make-utils: ${{ steps.check-main-push.outputs.is-main-push == '1' || steps.check-diffs.outputs.utils-changed == '1' || steps.check-diffs.outputs.tests-changed == '1' || steps.check-diffs.outputs.ci-actions-changed == '1' }}
       test-style: ${{ steps.check-main-push.outputs.is-main-push == '1' || steps.check-diffs.outputs.our-code-changed == '1' || steps.check-diffs.outputs.ci-actions-changed == '1' }}
+      test-translations: ${{ steps.check-main-push.outputs.is-main-push == '1' || steps.check-diffs.outputs.translations-changed == '1' || steps.check-diffs.outputs.ci-actions-changed == '1' }}
       tidy-core: ${{ steps.check-main-push.outputs.is-main-push == '1' || steps.check-diffs.outputs.tidy-core-src-changed == '1' || steps.check-diffs.outputs.ci-actions-changed == '1' || steps.check-diffs.outputs.tidy-config-changed == '1' }}
       tidy-gtk: ${{ steps.check-main-push.outputs.is-main-push == '1' || steps.check-diffs.outputs.tidy-gtk-src-changed == '1' || steps.check-diffs.outputs.ci-actions-changed == '1' || steps.check-diffs.outputs.tidy-config-changed == '1' }}
       tidy-qt: ${{ steps.check-main-push.outputs.is-main-push == '1' || steps.check-diffs.outputs.tidy-qt-src-changed == '1' || steps.check-diffs.outputs.ci-actions-changed == '1' || steps.check-diffs.outputs.tidy-config-changed == '1' }}
@@ -97,6 +98,7 @@ jobs:
           get_changes mac        CMakeLists.txt cmake Transmission.xcodeproj third-party libtransmission macosx
           get_changes qt         CMakeLists.txt cmake third-party libtransmission libtransmission-app qt
           get_changes tests      CMakeLists.txt cmake third-party libtransmission libtransmission-app utils tests
+          get_changes translations po qt
           get_changes utils      CMakeLists.txt cmake third-party libtransmission utils
           get_changes ci-actions .github/workflows/actions.yml .github/actions release
           cat "$GITHUB_OUTPUT"
@@ -136,6 +138,16 @@ jobs:
           cat style.diff
           echo "When CI is done, the above patch will be uploaded as 'code-style.diff' to https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}/ ."
           exit 1
+
+  translations:
+    runs-on: ubuntu-slim
+    needs: [ what-to-make ]
+    if: ${{ needs.what-to-make.outputs.test-translations == 'true' }}
+    steps:
+      - name: Get Source
+        uses: actions/checkout@v7
+      - name: Check translations
+        run: release/find-broken-translations.py
 
   sanitizer-tests-linux:
     runs-on: ubuntu-latest
