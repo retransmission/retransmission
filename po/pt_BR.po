@@ -2906,6 +2906,12 @@ msgstr "Comunicação de pares"
 msgid "Port is open"
 msgstr "A porta está aberta"
 
+msgid "NAT traversal uses either NAT-PMP or UPnP"
+msgstr "Travessia NAT usa NAT-PMP ou UPnP"
+
+msgid "Automatically map port"
+msgstr "Mapear automaticamente a porta"
+
 msgid "System sleep:"
 msgstr "Repouso do sistema"
 
@@ -4157,12 +4163,6 @@ msgstr[2] "segundos"
 
 #~ msgid "Sunday"
 #~ msgstr "Domingo"
-
-#~ msgid "NAT traversal uses either NAT-PMP or UPnP"
-#~ msgstr "Travessia NAT usa NAT-PMP ou UPnP"
-
-#~ msgid "Automatically map port"
-#~ msgstr "Mapear automaticamente a porta"
 
 #~ msgid "{percent} of torrent metadata retrieved"
 #~ msgstr "{percent} metadados do torrent recuperados"

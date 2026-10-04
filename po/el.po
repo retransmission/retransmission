@@ -2841,6 +2841,12 @@ msgstr "Επικοινωνία διαμοιραστών:"
 msgid "Port is open"
 msgstr "Η θύρα είναι ανοιχτή"
 
+msgid "NAT traversal uses either NAT-PMP or UPnP"
+msgstr "Η προσπέλαση NAT χρησιμοποιεί NAT-PMP ή UPnP"
+
+msgid "Automatically map port"
+msgstr "Αυτόματη απεικόνιση θύρας:"
+
 msgid "System sleep:"
 msgstr "Αδρανοποίηση συστήματος:"
 
@@ -4049,12 +4055,6 @@ msgstr[1] "δευτερόλεπτα"
 
 #~ msgid "Sunday"
 #~ msgstr "Κυριακή"
-
-#~ msgid "NAT traversal uses either NAT-PMP or UPnP"
-#~ msgstr "Η προσπέλαση NAT χρησιμοποιεί NAT-PMP ή UPnP"
-
-#~ msgid "Automatically map port"
-#~ msgstr "Αυτόματη απεικόνιση θύρας:"
 
 #~ msgid "{percent} of torrent metadata retrieved"
 #~ msgstr "ανακτήθηκαν {percent} από μεταδεδομένα torrent"

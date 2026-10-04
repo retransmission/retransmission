@@ -2890,6 +2890,12 @@ msgstr "תקשורת מול עמיתים:"
 msgid "Port is open"
 msgstr "הפתחה פתוחה"
 
+msgid "NAT traversal uses either NAT-PMP or UPnP"
+msgstr "NAT traversal משתמש או ב־NAT-PMP או ב־UPnP"
+
+msgid "Automatically map port"
+msgstr "מיפוי פתחה אוטומטית"
+
 msgid "System sleep:"
 msgstr "שנת המערכת:"
 
@@ -4134,12 +4140,6 @@ msgstr[3] "שניות"
 
 #~ msgid "Sunday"
 #~ msgstr "יום ראשון"
-
-#~ msgid "NAT traversal uses either NAT-PMP or UPnP"
-#~ msgstr "NAT traversal משתמש או ב־NAT-PMP או ב־UPnP"
-
-#~ msgid "Automatically map port"
-#~ msgstr "מיפוי פתחה אוטומטית"
 
 #~ msgid "{percent} of torrent metadata retrieved"
 #~ msgstr "{percent} מנתוני העל של הטורנט התקבלו"

@@ -2818,6 +2818,12 @@ msgstr "节点通信："
 msgid "Port is open"
 msgstr "端口是打开的"
 
+msgid "NAT traversal uses either NAT-PMP or UPnP"
+msgstr "NAT 穿透使用 NAT-PMP 或 UPnP"
+
+msgid "Automatically map port"
+msgstr "自动映射端口"
+
 msgid "System sleep:"
 msgstr "系统睡眠："
 
@@ -3991,12 +3997,6 @@ msgstr[0] "秒"
 
 #~ msgid "Sunday"
 #~ msgstr "星期日"
-
-#~ msgid "NAT traversal uses either NAT-PMP or UPnP"
-#~ msgstr "NAT 穿透使用 NAT-PMP 或 UPnP"
-
-#~ msgid "Automatically map port"
-#~ msgstr "自动映射端口"
 
 #~ msgid "{percent} of torrent metadata retrieved"
 #~ msgstr "已收到种子元数据的 {percent}"

@@ -2836,6 +2836,12 @@ msgstr "Kommunikation:"
 msgid "Port is open"
 msgstr "Port åben"
 
+msgid "NAT traversal uses either NAT-PMP or UPnP"
+msgstr "NAT traversal benytter enten NAT-PMP eller UPnP"
+
+msgid "Automatically map port"
+msgstr "Tildel port automatisk"
+
 msgid "System sleep:"
 msgstr "Vågeblus:"
 
@@ -4053,12 +4059,6 @@ msgstr[1] "sekunder"
 
 #~ msgid "Sunday"
 #~ msgstr "Søndag"
-
-#~ msgid "NAT traversal uses either NAT-PMP or UPnP"
-#~ msgstr "NAT traversal benytter enten NAT-PMP eller UPnP"
-
-#~ msgid "Automatically map port"
-#~ msgstr "Tildel port automatisk"
 
 #~ msgid "{percent} of torrent metadata retrieved"
 #~ msgstr "{percent} af torrent-filens metadata er modtaget"

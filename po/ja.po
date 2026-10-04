@@ -2770,6 +2770,12 @@ msgstr "ピア通信:"
 msgid "Port is open"
 msgstr "ポートは開いています"
 
+msgid "NAT traversal uses either NAT-PMP or UPnP"
+msgstr "NATトラバーサルには NAT-PMP か UPnP を使用"
+
+msgid "Automatically map port"
+msgstr "自動的にポートをマッピング"
+
 msgid "System sleep:"
 msgstr "システムのスリープ:"
 
@@ -3948,12 +3954,6 @@ msgstr[0] "秒"
 
 #~ msgid "Sunday"
 #~ msgstr "日曜"
-
-#~ msgid "NAT traversal uses either NAT-PMP or UPnP"
-#~ msgstr "NATトラバーサルには NAT-PMP か UPnP を使用"
-
-#~ msgid "Automatically map port"
-#~ msgstr "自動的にポートをマッピング"
 
 #~ msgid "{percent} of torrent metadata retrieved"
 #~ msgstr "{percent}のトレントメタ情報を取得"

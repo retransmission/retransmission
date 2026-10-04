@@ -2810,6 +2810,12 @@ msgstr "Ewekniekommunikasie:"
 msgid "Port is open"
 msgstr "Poort is oop"
 
+msgid "NAT traversal uses either NAT-PMP or UPnP"
+msgstr "NAT-traversal gebruik NAT-PMP of UPnP"
+
+msgid "Automatically map port"
+msgstr "Outomatiese poorttoekenning"
+
 msgid "System sleep:"
 msgstr "Stelselslaap:"
 
@@ -4018,12 +4024,6 @@ msgstr[1] "sekondes"
 
 #~ msgid "Sunday"
 #~ msgstr "Sondag"
-
-#~ msgid "NAT traversal uses either NAT-PMP or UPnP"
-#~ msgstr "NAT-traversal gebruik NAT-PMP of UPnP"
-
-#~ msgid "Automatically map port"
-#~ msgstr "Outomatiese poorttoekenning"
 
 #~ msgid "{percent} of torrent metadata retrieved"
 #~ msgstr "{percent} van torrentmetadata opgehaal"

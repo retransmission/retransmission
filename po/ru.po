@@ -2888,6 +2888,12 @@ msgstr "Связь:"
 msgid "Port is open"
 msgstr "Порт открыт"
 
+msgid "NAT traversal uses either NAT-PMP or UPnP"
+msgstr "Используя NAT-T с NAT-PMP или UPnP"
+
+msgid "Automatically map port"
+msgstr "Открывать порт автоматически"
+
 msgid "System sleep:"
 msgstr "Спящий режим:"
 
@@ -4158,12 +4164,6 @@ msgstr[3] "секунд"
 
 #~ msgid "Sunday"
 #~ msgstr "В воскресенье"
-
-#~ msgid "NAT traversal uses either NAT-PMP or UPnP"
-#~ msgstr "Используя NAT-T с NAT-PMP или UPnP"
-
-#~ msgid "Automatically map port"
-#~ msgstr "Открывать порт автоматически"
 
 #~ msgid "{percent} of torrent metadata retrieved"
 #~ msgstr "{percent} метаданных торрента получено"

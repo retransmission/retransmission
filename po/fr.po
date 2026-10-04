@@ -2854,6 +2854,12 @@ msgstr "Connexions avec les pairs :"
 msgid "Port is open"
 msgstr "Le port est ouvert"
 
+msgid "NAT traversal uses either NAT-PMP or UPnP"
+msgstr "La traversée NAT utilise soit NAT-PMP soit UPnP"
+
+msgid "Automatically map port"
+msgstr "Mapper le port automatiquement"
+
 msgid "System sleep:"
 msgstr "Mise en veille de l’ordinateur :"
 
@@ -4096,12 +4102,6 @@ msgstr[2] "secondes"
 
 #~ msgid "Sunday"
 #~ msgstr "Dimanche"
-
-#~ msgid "NAT traversal uses either NAT-PMP or UPnP"
-#~ msgstr "La traversée NAT utilise soit NAT-PMP soit UPnP"
-
-#~ msgid "Automatically map port"
-#~ msgstr "Mapper le port automatiquement"
 
 #~ msgid "{percent} of torrent metadata retrieved"
 #~ msgstr "{percent} des métadonnées du torrent ont été récupérées"

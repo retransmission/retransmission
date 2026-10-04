@@ -2873,6 +2873,12 @@ msgstr "Kommunikation:"
 msgid "Port is open"
 msgstr "Port ist geöffnet."
 
+msgid "NAT traversal uses either NAT-PMP or UPnP"
+msgstr "Die Port-Weiterleitung nutzt NAT-PMP oder UPnP."
+
+msgid "Automatically map port"
+msgstr "Port automatisch durch den Router weiterleiten"
+
 msgid "System sleep:"
 msgstr "Ruhezustand:"
 
@@ -4078,12 +4084,6 @@ msgstr[1] "Sekunden"
 
 #~ msgid "Sunday"
 #~ msgstr "Sonntags"
-
-#~ msgid "NAT traversal uses either NAT-PMP or UPnP"
-#~ msgstr "Die Port-Weiterleitung nutzt NAT-PMP oder UPnP."
-
-#~ msgid "Automatically map port"
-#~ msgstr "Port automatisch durch den Router weiterleiten"
 
 #~ msgid "{percent} of torrent metadata retrieved"
 #~ msgstr "{percent} der Torrent-Metadaten empfangen"
