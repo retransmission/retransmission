@@ -2748,27 +2748,6 @@ msgstr "群組名稱："
 msgid "Color"
 msgstr "色彩"
 
-msgid "Monday"
-msgstr "週一"
-
-msgid "Tuesday"
-msgstr "週二"
-
-msgid "Wednesday"
-msgstr "週三"
-
-msgid "Thursday"
-msgstr "週四"
-
-msgid "Friday"
-msgstr "週五"
-
-msgid "Saturday"
-msgstr "週六"
-
-msgid "Sunday"
-msgstr "週日"
-
 msgid "_Download:"
 msgstr "下載 (_D)："
 
@@ -3976,6 +3955,27 @@ msgstr[0] "天"
 msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "秒"
+
+#~ msgid "Monday"
+#~ msgstr "週一"
+
+#~ msgid "Tuesday"
+#~ msgstr "週二"
+
+#~ msgid "Wednesday"
+#~ msgstr "週三"
+
+#~ msgid "Thursday"
+#~ msgstr "週四"
+
+#~ msgid "Friday"
+#~ msgstr "週五"
+
+#~ msgid "Saturday"
+#~ msgstr "週六"
+
+#~ msgid "Sunday"
+#~ msgstr "週日"
 
 #~ msgid "NAT traversal uses either NAT-PMP or UPnP"
 #~ msgstr "NAT 穿透使用 NAT-PMP 或 UPnP"

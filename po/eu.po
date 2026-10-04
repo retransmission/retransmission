@@ -2766,27 +2766,6 @@ msgstr "Taldearen Izena:"
 msgid "Color"
 msgstr "Kolorea"
 
-msgid "Monday"
-msgstr "Astelehena"
-
-msgid "Tuesday"
-msgstr "Asteartea"
-
-msgid "Wednesday"
-msgstr "Asteazkena"
-
-msgid "Thursday"
-msgstr "Osteguna"
-
-msgid "Friday"
-msgstr "Ostirala"
-
-msgid "Saturday"
-msgstr "Larunbata"
-
-msgid "Sunday"
-msgstr "Igandea"
-
 msgid "_Download:"
 msgstr "_Deskarga:"
 
@@ -4045,6 +4024,27 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "segundo"
 msgstr[1] "segundo"
+
+#~ msgid "Monday"
+#~ msgstr "Astelehena"
+
+#~ msgid "Tuesday"
+#~ msgstr "Asteartea"
+
+#~ msgid "Wednesday"
+#~ msgstr "Asteazkena"
+
+#~ msgid "Thursday"
+#~ msgstr "Osteguna"
+
+#~ msgid "Friday"
+#~ msgstr "Ostirala"
+
+#~ msgid "Saturday"
+#~ msgstr "Larunbata"
+
+#~ msgid "Sunday"
+#~ msgstr "Igandea"
 
 #~ msgid "NAT traversal uses either NAT-PMP or UPnP"
 #~ msgstr "NAT transbertsalak NAT-PMP ala UPnP erabiltzen du"

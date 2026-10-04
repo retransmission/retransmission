@@ -2792,27 +2792,6 @@ msgstr "Όνομα Ομάδας:"
 msgid "Color"
 msgstr "Χρώμα"
 
-msgid "Monday"
-msgstr "Δευτέρα"
-
-msgid "Tuesday"
-msgstr "Τρίτη"
-
-msgid "Wednesday"
-msgstr "Τετάρτη"
-
-msgid "Thursday"
-msgstr "Πέμπτη"
-
-msgid "Friday"
-msgstr "Παρασκευή"
-
-msgid "Saturday"
-msgstr "Σάββατο"
-
-msgid "Sunday"
-msgstr "Κυριακή"
-
 msgid "_Download:"
 msgstr "_Λήψη:"
 
@@ -4063,6 +4042,27 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "δευτερόλεπτο"
 msgstr[1] "δευτερόλεπτα"
+
+#~ msgid "Monday"
+#~ msgstr "Δευτέρα"
+
+#~ msgid "Tuesday"
+#~ msgstr "Τρίτη"
+
+#~ msgid "Wednesday"
+#~ msgstr "Τετάρτη"
+
+#~ msgid "Thursday"
+#~ msgstr "Πέμπτη"
+
+#~ msgid "Friday"
+#~ msgstr "Παρασκευή"
+
+#~ msgid "Saturday"
+#~ msgstr "Σάββατο"
+
+#~ msgid "Sunday"
+#~ msgstr "Κυριακή"
 
 #~ msgid "NAT traversal uses either NAT-PMP or UPnP"
 #~ msgstr "Η προσπέλαση NAT χρησιμοποιεί NAT-PMP ή UPnP"

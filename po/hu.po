@@ -2791,27 +2791,6 @@ msgstr "Csoport név:"
 msgid "Color"
 msgstr "Szín"
 
-msgid "Monday"
-msgstr "Hétfő"
-
-msgid "Tuesday"
-msgstr "Kedd"
-
-msgid "Wednesday"
-msgstr "Szerda"
-
-msgid "Thursday"
-msgstr "Csütörtök"
-
-msgid "Friday"
-msgstr "Péntek"
-
-msgid "Saturday"
-msgstr "Szombat"
-
-msgid "Sunday"
-msgstr "Vasárnap"
-
 msgid "_Download:"
 msgstr "_Letöltés:"
 
@@ -4061,6 +4040,27 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "másodperc"
 msgstr[1] "másodperc"
+
+#~ msgid "Monday"
+#~ msgstr "Hétfő"
+
+#~ msgid "Tuesday"
+#~ msgstr "Kedd"
+
+#~ msgid "Wednesday"
+#~ msgstr "Szerda"
+
+#~ msgid "Thursday"
+#~ msgstr "Csütörtök"
+
+#~ msgid "Friday"
+#~ msgstr "Péntek"
+
+#~ msgid "Saturday"
+#~ msgstr "Szombat"
+
+#~ msgid "Sunday"
+#~ msgstr "Vasárnap"
 
 #~ msgid "NAT traversal uses either NAT-PMP or UPnP"
 #~ msgstr "A NAT átjárás NAT-PMP-t vagy UPnP-t használ"

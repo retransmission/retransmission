@@ -2,6 +2,7 @@
 // It may be used under the MIT (SPDX: MIT) license.
 // License text can be found in the licenses/ folder.
 
+#include <array>
 #include <string_view>
 
 #include <libtransmission/macros.h>
@@ -200,6 +201,7 @@ static NSString* const kWebUIURLFormat = @"http://localhost:%ld/";
     //set speed limit
     self.fSpeedLimitUploadField.integerValue = [self.fDefaults integerForKey:@"SpeedLimitUploadLimit"];
     self.fSpeedLimitDownloadField.integerValue = [self.fDefaults integerForKey:@"SpeedLimitDownloadLimit"];
+    [self addWeekdaysToAutoSpeedDayTypePopUp];
 
     //set port
     self.fPortField.intValue = static_cast<int>([self.fDefaults integerForKey:@"BindPort"]);
@@ -700,6 +702,39 @@ static NSString* const kWebUIURLFormat = @"http://localhost:%ld/";
 {
     tr_sessionSetAltSpeedBegin(self.fHandle, [PrefsController dateToTimeSum:[self.fDefaults objectForKey:@"SpeedLimitAutoOnDate"]]);
     tr_sessionSetAltSpeedEnd(self.fHandle, [PrefsController dateToTimeSum:[self.fDefaults objectForKey:@"SpeedLimitAutoOffDate"]]);
+}
+
+// Adds an item for each day of the week, after the xib's "Every Day", "Weekdays" and "Weekends".
+// The OS names the days, in the app's language, so they need no translation of ours.
+- (void)addWeekdaysToAutoSpeedDayTypePopUp
+{
+    NSString* language = NSBundle.mainBundle.preferredLocalizations.firstObject;
+    if (language == nil || [language isEqualToString:@"Base"]) {
+        language = @"en";
+    }
+
+    NSDateFormatter* const formatter = [[NSDateFormatter alloc] init];
+    formatter.locale = [NSLocale localeWithLocaleIdentifier:language];
+    formatter.timeZone = [NSTimeZone timeZoneForSecondsFromGMT:0];
+    formatter.dateFormat = @"cccc"; // the day's name when it stands alone
+    formatter.formattingContext = NSFormattingContextListItem; // capitalized as the language capitalizes a menu item
+
+    // Monday first and Sunday last.
+    static constexpr auto Days = std::array{
+        TR_SCHED_MON, TR_SCHED_TUES, TR_SCHED_WED, TR_SCHED_THURS, TR_SCHED_FRI, TR_SCHED_SAT, TR_SCHED_SUN,
+    };
+    static constexpr auto SecondsPerDay = NSTimeInterval{ 24 * 60 * 60 };
+
+    NSMenu* const menu = self.fAutoSpeedDayTypePopUp.menu;
+    for (size_t i = 0; i < std::size(Days); ++i) {
+        // The reference date, 2001-01-01, was a Monday.
+        NSDate* const date = [NSDate dateWithTimeIntervalSinceReferenceDate:i * SecondsPerDay];
+        NSMenuItem* const item = [menu addItemWithTitle:[formatter stringFromDate:date] action:nil keyEquivalent:@""];
+        item.tag = Days[i];
+    }
+
+    // The xib's binding chose the selected item before these items existed.
+    [self.fAutoSpeedDayTypePopUp selectItemWithTag:[self.fDefaults integerForKey:@"SpeedLimitAutoDay"]];
 }
 
 - (void)setAutoSpeedLimitDay:(id)sender

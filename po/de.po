@@ -2822,27 +2822,6 @@ msgstr "Name:"
 msgid "Color"
 msgstr "Farbe"
 
-msgid "Monday"
-msgstr "Montags"
-
-msgid "Tuesday"
-msgstr "Dienstags"
-
-msgid "Wednesday"
-msgstr "Mittwochs"
-
-msgid "Thursday"
-msgstr "Donnerstags"
-
-msgid "Friday"
-msgstr "Freitags"
-
-msgid "Saturday"
-msgstr "Samstags"
-
-msgid "Sunday"
-msgstr "Sonntags"
-
 msgid "_Download:"
 msgstr "_Herunterladen:"
 
@@ -4092,6 +4071,27 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "Sekunde"
 msgstr[1] "Sekunden"
+
+#~ msgid "Monday"
+#~ msgstr "Montags"
+
+#~ msgid "Tuesday"
+#~ msgstr "Dienstags"
+
+#~ msgid "Wednesday"
+#~ msgstr "Mittwochs"
+
+#~ msgid "Thursday"
+#~ msgstr "Donnerstags"
+
+#~ msgid "Friday"
+#~ msgstr "Freitags"
+
+#~ msgid "Saturday"
+#~ msgstr "Samstags"
+
+#~ msgid "Sunday"
+#~ msgstr "Sonntags"
 
 #~ msgid "NAT traversal uses either NAT-PMP or UPnP"
 #~ msgstr "Die Port-Weiterleitung nutzt NAT-PMP oder UPnP."

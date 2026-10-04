@@ -2841,27 +2841,6 @@ msgstr "שם קבוצה:"
 msgid "Color"
 msgstr "צבע"
 
-msgid "Monday"
-msgstr "יום שני"
-
-msgid "Tuesday"
-msgstr "יום שלישי"
-
-msgid "Wednesday"
-msgstr "יום רביעי"
-
-msgid "Thursday"
-msgstr "יום חמישי"
-
-msgid "Friday"
-msgstr "יום שישי"
-
-msgid "Saturday"
-msgstr "יום שבת"
-
-msgid "Sunday"
-msgstr "יום ראשון"
-
 msgid "_Download:"
 msgstr "הו_רדה:"
 
@@ -4148,6 +4127,27 @@ msgstr[0] "שנייה"
 msgstr[1] "שניות"
 msgstr[2] "שניות"
 msgstr[3] "שניות"
+
+#~ msgid "Monday"
+#~ msgstr "יום שני"
+
+#~ msgid "Tuesday"
+#~ msgstr "יום שלישי"
+
+#~ msgid "Wednesday"
+#~ msgstr "יום רביעי"
+
+#~ msgid "Thursday"
+#~ msgstr "יום חמישי"
+
+#~ msgid "Friday"
+#~ msgstr "יום שישי"
+
+#~ msgid "Saturday"
+#~ msgstr "יום שבת"
+
+#~ msgid "Sunday"
+#~ msgstr "יום ראשון"
 
 #~ msgid "NAT traversal uses either NAT-PMP or UPnP"
 #~ msgstr "NAT traversal משתמש או ב־NAT-PMP או ב־UPnP"

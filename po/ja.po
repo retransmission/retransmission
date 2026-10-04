@@ -2721,27 +2721,6 @@ msgstr "グループ名:"
 msgid "Color"
 msgstr "色"
 
-msgid "Monday"
-msgstr "月曜"
-
-msgid "Tuesday"
-msgstr "火曜"
-
-msgid "Wednesday"
-msgstr "水曜"
-
-msgid "Thursday"
-msgstr "木曜"
-
-msgid "Friday"
-msgstr "金曜"
-
-msgid "Saturday"
-msgstr "土曜"
-
-msgid "Sunday"
-msgstr "日曜"
-
 msgid "_Download:"
 msgstr "ダウンロード(_D):"
 
@@ -3962,6 +3941,27 @@ msgstr[0] "日"
 msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "秒"
+
+#~ msgid "Monday"
+#~ msgstr "月曜"
+
+#~ msgid "Tuesday"
+#~ msgstr "火曜"
+
+#~ msgid "Wednesday"
+#~ msgstr "水曜"
+
+#~ msgid "Thursday"
+#~ msgstr "木曜"
+
+#~ msgid "Friday"
+#~ msgstr "金曜"
+
+#~ msgid "Saturday"
+#~ msgstr "土曜"
+
+#~ msgid "Sunday"
+#~ msgstr "日曜"
 
 #~ msgid "NAT traversal uses either NAT-PMP or UPnP"
 #~ msgstr "NATトラバーサルには NAT-PMP か UPnP を使用"

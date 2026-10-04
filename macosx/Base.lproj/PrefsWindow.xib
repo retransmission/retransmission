@@ -1446,13 +1446,6 @@
                                         <menuItem title="Weekdays" tag="62" id="1911"/>
                                         <menuItem title="Weekends" tag="65" id="1912"/>
                                         <menuItem isSeparatorItem="YES" tag="-1" id="1913"/>
-                                        <menuItem title="Monday" tag="2" id="1914"/>
-                                        <menuItem title="Tuesday" tag="4" id="1915"/>
-                                        <menuItem title="Wednesday" tag="8" id="1916"/>
-                                        <menuItem title="Thursday" tag="16" id="1917"/>
-                                        <menuItem title="Friday" tag="32" id="1918"/>
-                                        <menuItem title="Saturday" tag="64" id="1919"/>
-                                        <menuItem title="Sunday" tag="1" id="1920"/>
                                     </items>
                                 </menu>
                             </popUpButtonCell>

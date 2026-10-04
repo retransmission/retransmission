@@ -2764,27 +2764,6 @@ msgstr "Öbek adı:"
 msgid "Color"
 msgstr "Renk"
 
-msgid "Monday"
-msgstr "Pazartesi"
-
-msgid "Tuesday"
-msgstr "Salı"
-
-msgid "Wednesday"
-msgstr "Çarşamba"
-
-msgid "Thursday"
-msgstr "Perşembe"
-
-msgid "Friday"
-msgstr "Cuma"
-
-msgid "Saturday"
-msgstr "Cumartesi"
-
-msgid "Sunday"
-msgstr "Pazar"
-
 msgid "_Download:"
 msgstr "_İndirme:"
 
@@ -4033,6 +4012,27 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "saniye"
 msgstr[1] "saniye"
+
+#~ msgid "Monday"
+#~ msgstr "Pazartesi"
+
+#~ msgid "Tuesday"
+#~ msgstr "Salı"
+
+#~ msgid "Wednesday"
+#~ msgstr "Çarşamba"
+
+#~ msgid "Thursday"
+#~ msgstr "Perşembe"
+
+#~ msgid "Friday"
+#~ msgstr "Cuma"
+
+#~ msgid "Saturday"
+#~ msgstr "Cumartesi"
+
+#~ msgid "Sunday"
+#~ msgstr "Pazar"
 
 #~ msgid "NAT traversal uses either NAT-PMP or UPnP"
 #~ msgstr "NAT basamaklandırması ya NAT-PMP ya da UPnP kullanır"

@@ -2785,27 +2785,6 @@ msgstr "Gruppe navn:"
 msgid "Color"
 msgstr ""
 
-msgid "Monday"
-msgstr "Mandag"
-
-msgid "Tuesday"
-msgstr "Tirsdag"
-
-msgid "Wednesday"
-msgstr "Onsdag"
-
-msgid "Thursday"
-msgstr "Torsdag"
-
-msgid "Friday"
-msgstr "Fredag"
-
-msgid "Saturday"
-msgstr "Lørdag"
-
-msgid "Sunday"
-msgstr "Søndag"
-
 msgid "_Download:"
 msgstr "_Download:"
 
@@ -4067,6 +4046,27 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "sekund"
 msgstr[1] "sekunder"
+
+#~ msgid "Monday"
+#~ msgstr "Mandag"
+
+#~ msgid "Tuesday"
+#~ msgstr "Tirsdag"
+
+#~ msgid "Wednesday"
+#~ msgstr "Onsdag"
+
+#~ msgid "Thursday"
+#~ msgstr "Torsdag"
+
+#~ msgid "Friday"
+#~ msgstr "Fredag"
+
+#~ msgid "Saturday"
+#~ msgstr "Lørdag"
+
+#~ msgid "Sunday"
+#~ msgstr "Søndag"
 
 #~ msgid "NAT traversal uses either NAT-PMP or UPnP"
 #~ msgstr "NAT traversal benytter enten NAT-PMP eller UPnP"

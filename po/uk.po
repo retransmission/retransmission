@@ -2863,27 +2863,6 @@ msgstr "Назва групи:"
 msgid "Color"
 msgstr "Колір"
 
-msgid "Monday"
-msgstr "Понеділок"
-
-msgid "Tuesday"
-msgstr "Вівторок"
-
-msgid "Wednesday"
-msgstr "Середа"
-
-msgid "Thursday"
-msgstr "Четвер"
-
-msgid "Friday"
-msgstr "П’ятниця"
-
-msgid "Saturday"
-msgstr "Субота"
-
-msgid "Sunday"
-msgstr "Неділя"
-
 msgid "_Download:"
 msgstr "З_авантаження:"
 
@@ -4196,6 +4175,27 @@ msgstr[0] "секунда"
 msgstr[1] "секунди"
 msgstr[2] "секунд"
 msgstr[3] "секунди"
+
+#~ msgid "Monday"
+#~ msgstr "Понеділок"
+
+#~ msgid "Tuesday"
+#~ msgstr "Вівторок"
+
+#~ msgid "Wednesday"
+#~ msgstr "Середа"
+
+#~ msgid "Thursday"
+#~ msgstr "Четвер"
+
+#~ msgid "Friday"
+#~ msgstr "П’ятниця"
+
+#~ msgid "Saturday"
+#~ msgstr "Субота"
+
+#~ msgid "Sunday"
+#~ msgstr "Неділя"
 
 #~ msgid "NAT traversal uses either NAT-PMP or UPnP"
 #~ msgstr "Використовуючи NAT-T з NAT-PMP чи UPnP"
