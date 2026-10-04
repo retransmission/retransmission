@@ -5,6 +5,9 @@
 #   -k_ -kN_ -kC_:1c,2 -kNC_:1c,2 -kngettext:1,2 -ktr_ngettext:1,2 -ktr_pgettext:1c,2
 #   -kTR_TEXT -kTR_TEXT_C:1c,2 -kTR_MNEMONIC -kTR_FORMAT -kTR_FORMAT_N:1,2
 #   -kupdateSpinBoxFormat:2,3
+# Update each catalog with these msgmerge options.
+# They keep source locations, which the template has, out of the catalogs, and leave lines unwrapped:
+#   msgmerge --update --no-location --no-wrap --previous po/<language>.po <template>
 cli/cli.cc
 daemon/daemon.cc
 gtk/Application.cc
