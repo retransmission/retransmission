@@ -440,12 +440,6 @@ msgstr "Tikrinama"
 msgid "Error"
 msgstr "Klaida"
 
-msgid "_Show:"
-msgstr "Ro_dyti:"
-
-msgid "_Show {count:L} of:"
-msgstr "Ro_dyti {count:L}:"
-
 msgid "{disk_space} free"
 msgstr "{disk_space} laisva"
 
@@ -466,6 +460,13 @@ msgstr "[torentų failai arba URL adresai]"
 
 msgid "Run '{program} --help' to see a full list of available command line options.\n"
 msgstr ""
+
+msgid "Showing {visible_count:L} of {count:L} torrent"
+msgid_plural "Showing {visible_count:L} of {count:L} torrents"
+msgstr[0] "Rodomas {visible_count:L} iš {count:L} torentų"
+msgstr[1] "Rodomi {visible_count:L} iš {count:L} torentų"
+msgstr[2] "Rodoma {visible_count:L} iš {count:L} torentų"
+msgstr[3] "Rodoma {visible_count:L} iš {count:L} torentų"
 
 msgid ""
 "Click to disable Alternative Speed Limits\n"
@@ -1115,6 +1116,9 @@ msgstr ""
 
 msgid "Also see Default Public Trackers in Edit > Preferences > Network"
 msgstr ""
+
+msgid "_Show:"
+msgstr "Ro_dyti:"
 
 msgid "Open a torrent"
 msgstr "Atverti torentą"
@@ -2175,13 +2179,6 @@ msgstr "Tinklo klaida"
 msgid "Idle"
 msgstr "Pasyvus"
 
-msgid "Showing {visible_count:L} of {count:L} torrent"
-msgid_plural "Showing {visible_count:L} of {count:L} torrents"
-msgstr[0] "Rodomas {visible_count:L} iš {count:L} torentų"
-msgstr[1] "Rodomi {visible_count:L} iš {count:L} torentų"
-msgstr[2] "Rodoma {visible_count:L} iš {count:L} torentų"
-msgstr[3] "Rodoma {visible_count:L} iš {count:L} torentų"
-
 msgid "Torrent Files (*.torrent);;All Files (*.*)"
 msgstr "Torentų failai (*.torrent);;Visi failai (*.*)"
 
@@ -2433,6 +2430,9 @@ msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
 msgstr[3] ""
+
+#~ msgid "_Show {count:L} of:"
+#~ msgstr "Ro_dyti {count:L}:"
 
 #, fuzzy
 #~| msgid "Retransmission"

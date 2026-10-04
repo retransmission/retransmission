@@ -467,12 +467,6 @@ msgstr "Doğrulanıyor"
 msgid "Error"
 msgstr "Hata"
 
-msgid "_Show:"
-msgstr "_Göster:"
-
-msgid "_Show {count:L} of:"
-msgstr "Şunun {count:L} tanesini göster:"
-
 msgid "{disk_space} free"
 msgstr "{disk_space} boş"
 
@@ -493,6 +487,11 @@ msgstr "[torrent dosyaları ya da urller]"
 
 msgid "Run '{program} --help' to see a full list of available command line options.\n"
 msgstr "Kullanılabilir komut satırı seçeneklerinin tam listesini görmek için '{program} --help' çalıştırın.\n"
+
+msgid "Showing {visible_count:L} of {count:L} torrent"
+msgid_plural "Showing {visible_count:L} of {count:L} torrents"
+msgstr[0] "{count:L} torrentin {visible_count:L} tanesi gösteriliyor"
+msgstr[1] "{count:L} torrentin {visible_count:L} tanesi gösteriliyor"
 
 msgid ""
 "Click to disable Alternative Speed Limits\n"
@@ -1181,6 +1180,9 @@ msgstr ""
 
 msgid "Also see Default Public Trackers in Edit > Preferences > Network"
 msgstr "Düzenle > Tercihler > Ağ'da Öntanımlı Genel İzleyiciler'e de bakınız"
+
+msgid "_Show:"
+msgstr "_Göster:"
 
 #. Translators: Open toolbar item -> tooltip
 msgid "Open a torrent"
@@ -3406,11 +3408,6 @@ msgstr "Ağ Hatası"
 msgid "Idle"
 msgstr "Boşta"
 
-msgid "Showing {visible_count:L} of {count:L} torrent"
-msgid_plural "Showing {visible_count:L} of {count:L} torrents"
-msgstr[0] "{count:L} torrentin {visible_count:L} tanesi gösteriliyor"
-msgstr[1] "{count:L} torrentin {visible_count:L} tanesi gösteriliyor"
-
 msgid "Torrent Files (*.torrent);;All Files (*.*)"
 msgstr "Torrent Dosyaları (.torrent);;Tüm Dosyalar(*.*)"
 
@@ -3599,6 +3596,9 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "saniye"
 msgstr[1] "saniye"
+
+#~ msgid "_Show {count:L} of:"
+#~ msgstr "Şunun {count:L} tanesini göster:"
 
 #, fuzzy
 #~| msgid "Copyright © The Retransmission Project"

@@ -431,12 +431,6 @@ msgstr "Bekrefter"
 msgid "Error"
 msgstr "Feil"
 
-msgid "_Show:"
-msgstr "V_is:"
-
-msgid "_Show {count:L} of:"
-msgstr ""
-
 msgid "{disk_space} free"
 msgstr "{disk_space} ledig"
 
@@ -457,6 +451,11 @@ msgstr "[torrentfiler eller URLer]"
 
 msgid "Run '{program} --help' to see a full list of available command line options.\n"
 msgstr ""
+
+msgid "Showing {visible_count:L} of {count:L} torrent"
+msgid_plural "Showing {visible_count:L} of {count:L} torrents"
+msgstr[0] "Viser {visible_count:L} av {count:L} torrent"
+msgstr[1] "Viser {visible_count:L} av {count:L} torrenter"
 
 msgid ""
 "Click to disable Alternative Speed Limits\n"
@@ -1087,6 +1086,9 @@ msgstr ""
 
 msgid "Also see Default Public Trackers in Edit > Preferences > Network"
 msgstr ""
+
+msgid "_Show:"
+msgstr "V_is:"
 
 msgid "Open a torrent"
 msgstr "Åpne en torrent"
@@ -2087,11 +2089,6 @@ msgstr "Nettverksfeil"
 
 msgid "Idle"
 msgstr "Tomgang"
-
-msgid "Showing {visible_count:L} of {count:L} torrent"
-msgid_plural "Showing {visible_count:L} of {count:L} torrents"
-msgstr[0] "Viser {visible_count:L} av {count:L} torrent"
-msgstr[1] "Viser {visible_count:L} av {count:L} torrenter"
 
 msgid "Torrent Files (*.torrent);;All Files (*.*)"
 msgstr "Torrentfiler (*.torrent);;Alle filer (*.*)"

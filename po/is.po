@@ -420,12 +420,6 @@ msgstr "Í yfirferð"
 msgid "Error"
 msgstr "Villa"
 
-msgid "_Show:"
-msgstr "_Sýna:"
-
-msgid "_Show {count:L} of:"
-msgstr "_Sýna {count:L} af:"
-
 msgid "{disk_space} free"
 msgstr "{disk_space} laust"
 
@@ -446,6 +440,11 @@ msgstr "[torrent-skrár eða vefslóðir]"
 
 msgid "Run '{program} --help' to see a full list of available command line options.\n"
 msgstr "Keyrðu '{program} --help' til að sjá lista með öllum mögulegum valkostum skipanalínunnar.\n"
+
+msgid "Showing {visible_count:L} of {count:L} torrent"
+msgid_plural "Showing {visible_count:L} of {count:L} torrents"
+msgstr[0] "Sýni {visible_count:L} af {count:L} torrent-streymum"
+msgstr[1] "Sýni {visible_count:L} af {count:L} torrent-streymum"
 
 msgid ""
 "Click to disable Alternative Speed Limits\n"
@@ -1084,6 +1083,9 @@ msgstr ""
 
 msgid "Also see Default Public Trackers in Edit > Preferences > Network"
 msgstr "Skoðaðu einnig 'Sjálfgefnir opinberir rekjarar > Kjörstillingar > Netkerfi'"
+
+msgid "_Show:"
+msgstr "_Sýna:"
 
 msgid "Open a torrent"
 msgstr "Opna torrent-streymi"
@@ -2108,11 +2110,6 @@ msgstr "Villa í netkerfi"
 msgid "Idle"
 msgstr "Aðgerðalaus"
 
-msgid "Showing {visible_count:L} of {count:L} torrent"
-msgid_plural "Showing {visible_count:L} of {count:L} torrents"
-msgstr[0] "Sýni {visible_count:L} af {count:L} torrent-streymum"
-msgstr[1] "Sýni {visible_count:L} af {count:L} torrent-streymum"
-
 msgid "Torrent Files (*.torrent);;All Files (*.*)"
 msgstr "Torrent skrár (*.torrent);;Allar skrár (*.*)"
 
@@ -2334,6 +2331,9 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "sekúnda"
 msgstr[1] "sekúndur"
+
+#~ msgid "_Show {count:L} of:"
+#~ msgstr "_Sýna {count:L} af:"
 
 #, fuzzy
 #~| msgid "Copyright © The Retransmission Project"

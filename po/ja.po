@@ -457,12 +457,6 @@ msgstr "検証中"
 msgid "Error"
 msgstr "エラー"
 
-msgid "_Show:"
-msgstr "表示(_S):"
-
-msgid "_Show {count:L} of:"
-msgstr " {count:L}個の表示(_S):"
-
 msgid "{disk_space} free"
 msgstr "{disk_space} の空き"
 
@@ -483,6 +477,10 @@ msgstr "[トレントファイルか URL]"
 
 msgid "Run '{program} --help' to see a full list of available command line options.\n"
 msgstr "「{program} --help」の実行で、コマンドラインのオプションの完全な一覧を表示します。\n"
+
+msgid "Showing {visible_count:L} of {count:L} torrent"
+msgid_plural "Showing {visible_count:L} of {count:L} torrents"
+msgstr[0] "{visible_count:L} / {count:L} トレントを表示中"
 
 msgid ""
 "Click to disable Alternative Speed Limits\n"
@@ -1164,6 +1162,9 @@ msgstr ""
 
 msgid "Also see Default Public Trackers in Edit > Preferences > Network"
 msgstr "編集 > 設定 > ネットワークから、標準の公開トラッカーも参照"
+
+msgid "_Show:"
+msgstr "表示(_S):"
 
 #. Translators: Open toolbar item -> tooltip
 msgid "Open a torrent"
@@ -3360,10 +3361,6 @@ msgstr "ネットワークエラー"
 msgid "Idle"
 msgstr "アイドル"
 
-msgid "Showing {visible_count:L} of {count:L} torrent"
-msgid_plural "Showing {visible_count:L} of {count:L} torrents"
-msgstr[0] "{visible_count:L} / {count:L} トレントを表示中"
-
 msgid "Torrent Files (*.torrent);;All Files (*.*)"
 msgstr "トレントファイル (*.torrent);;すべてのファイル (*.*)"
 
@@ -3542,6 +3539,9 @@ msgstr[0] "日"
 msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "秒"
+
+#~ msgid "_Show {count:L} of:"
+#~ msgstr " {count:L}個の表示(_S):"
 
 #, fuzzy
 #~| msgid "Copyright © The Retransmission Project"

@@ -506,12 +506,6 @@ msgstr "正在验证"
 msgid "Error"
 msgstr "错误"
 
-msgid "_Show:"
-msgstr "显示(_S)："
-
-msgid "_Show {count:L} of:"
-msgstr "显示共 {count:L} 个(_S)："
-
 msgid "{disk_space} free"
 msgstr "{disk_space} 可用"
 
@@ -532,6 +526,10 @@ msgstr "[Torrent 文件或网址]"
 
 msgid "Run '{program} --help' to see a full list of available command line options.\n"
 msgstr "运行“{program} --help”以查看完整的可用的命令行选项列表。\n"
+
+msgid "Showing {visible_count:L} of {count:L} torrent"
+msgid_plural "Showing {visible_count:L} of {count:L} torrents"
+msgstr[0] "显示 {visible_count:L} / {count:L} 个种子"
 
 msgid ""
 "Click to disable Alternative Speed Limits\n"
@@ -1212,6 +1210,9 @@ msgstr ""
 
 msgid "Also see Default Public Trackers in Edit > Preferences > Network"
 msgstr "另请参见 编辑>首选项>网络 中的默认公共 Tracker"
+
+msgid "_Show:"
+msgstr "显示(_S)："
 
 #. Translators: Open toolbar item -> tooltip
 msgid "Open a torrent"
@@ -3404,10 +3405,6 @@ msgstr "网络错误"
 msgid "Idle"
 msgstr "闲置"
 
-msgid "Showing {visible_count:L} of {count:L} torrent"
-msgid_plural "Showing {visible_count:L} of {count:L} torrents"
-msgstr[0] "显示 {visible_count:L} / {count:L} 个种子"
-
 msgid "Torrent Files (*.torrent);;All Files (*.*)"
 msgstr "种子文件 (*.torrent);;全部文件 (*.*)"
 
@@ -3585,6 +3582,9 @@ msgstr[0] "天"
 msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "秒"
+
+#~ msgid "_Show {count:L} of:"
+#~ msgstr "显示共 {count:L} 个(_S)："
 
 #, fuzzy
 #~| msgid "Copyright © The Retransmission Project"

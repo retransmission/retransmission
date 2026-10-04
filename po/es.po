@@ -549,12 +549,6 @@ msgstr "Verificando"
 msgid "Error"
 msgstr "Error"
 
-msgid "_Show:"
-msgstr "Mo_strar:"
-
-msgid "_Show {count:L} of:"
-msgstr "_Mostrar {count:L} de:"
-
 msgid "{disk_space} free"
 msgstr "{disk_space} libre"
 
@@ -577,6 +571,12 @@ msgid "Run '{program} --help' to see a full list of available command line optio
 msgstr ""
 "%s\n"
 "Ejecute «{program} --help» para ver una lista completa de las opciones de línea de órdenes disponibles.\n"
+
+msgid "Showing {visible_count:L} of {count:L} torrent"
+msgid_plural "Showing {visible_count:L} of {count:L} torrents"
+msgstr[0] "Mostrando {visible_count:L} de {count:L} torrent"
+msgstr[1] "Mostrando {visible_count:L} de {count:L} torrents"
+msgstr[2] "Mostrando {visible_count:L} de {count:L} torrents"
 
 msgid ""
 "Click to disable Alternative Speed Limits\n"
@@ -1272,6 +1272,9 @@ msgstr ""
 
 msgid "Also see Default Public Trackers in Edit > Preferences > Network"
 msgstr "Ver también Rastreadores públicos por defecto en Editar > Preferencias > Red"
+
+msgid "_Show:"
+msgstr "Mo_strar:"
 
 #. Translators: Open toolbar item -> tooltip
 msgid "Open a torrent"
@@ -3535,12 +3538,6 @@ msgstr "Error de red"
 msgid "Idle"
 msgstr "Sin cambio"
 
-msgid "Showing {visible_count:L} of {count:L} torrent"
-msgid_plural "Showing {visible_count:L} of {count:L} torrents"
-msgstr[0] "Mostrando {visible_count:L} de {count:L} torrent"
-msgstr[1] "Mostrando {visible_count:L} de {count:L} torrents"
-msgstr[2] "Mostrando {visible_count:L} de {count:L} torrents"
-
 msgid "Torrent Files (*.torrent);;All Files (*.*)"
 msgstr "Archivos torrent (*.torrent);;Todos los archivos (*.*)"
 
@@ -3739,6 +3736,9 @@ msgid_plural "seconds"
 msgstr[0] "segundo"
 msgstr[1] "segundos"
 msgstr[2] "segundos"
+
+#~ msgid "_Show {count:L} of:"
+#~ msgstr "_Mostrar {count:L} de:"
 
 #, fuzzy
 #~| msgid "Copyright © The Retransmission Project"

@@ -427,12 +427,6 @@ msgstr "Provjera"
 msgid "Error"
 msgstr "Greška"
 
-msgid "_Show:"
-msgstr "_Prikaži:"
-
-msgid "_Show {count:L} of:"
-msgstr ""
-
 msgid "{disk_space} free"
 msgstr "{disk_space} slobodno"
 
@@ -453,6 +447,12 @@ msgstr "[torrent datoteke ili url-ovi]"
 
 msgid "Run '{program} --help' to see a full list of available command line options.\n"
 msgstr ""
+
+msgid "Showing {visible_count:L} of {count:L} torrent"
+msgid_plural "Showing {visible_count:L} of {count:L} torrents"
+msgstr[0] "Prikaz {visible_count:L} od {count:L} torrenta"
+msgstr[1] "Prikaz {visible_count:L} od {count:L} torrenta"
+msgstr[2] "Prikaz {visible_count:L} od {count:L} torrenta"
 
 msgid ""
 "Click to disable Alternative Speed Limits\n"
@@ -1091,6 +1091,9 @@ msgstr ""
 
 msgid "Also see Default Public Trackers in Edit > Preferences > Network"
 msgstr ""
+
+msgid "_Show:"
+msgstr "_Prikaži:"
 
 msgid "Open a torrent"
 msgstr "Otvori torrent"
@@ -2117,12 +2120,6 @@ msgstr "Mrežna greška"
 
 msgid "Idle"
 msgstr "Mirovanje"
-
-msgid "Showing {visible_count:L} of {count:L} torrent"
-msgid_plural "Showing {visible_count:L} of {count:L} torrents"
-msgstr[0] "Prikaz {visible_count:L} od {count:L} torrenta"
-msgstr[1] "Prikaz {visible_count:L} od {count:L} torrenta"
-msgstr[2] "Prikaz {visible_count:L} od {count:L} torrenta"
 
 msgid "Torrent Files (*.torrent);;All Files (*.*)"
 msgstr "Torrent datoteke (*.torrent);;Sve datoteke (*.*)"

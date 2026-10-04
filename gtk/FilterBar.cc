@@ -20,7 +20,6 @@
 #include <gtkmm/cellrenderertext.h>
 #include <gtkmm/combobox.h>
 #include <gtkmm/entry.h>
-#include <gtkmm/label.h>
 #include <gtkmm/liststore.h>
 #include <gtkmm/treemodel.h>
 #include <gtkmm/treemodelcolumn.h>
@@ -72,6 +71,11 @@ public:
 
     [[nodiscard]] Glib::RefPtr<FilterModel> get_filter_model() const;
 
+    [[nodiscard]] auto& signal_visible_count_changed() noexcept
+    {
+        return signal_visible_count_changed_;
+    }
+
 private:
     template<typename T>
     T* get_template_child(char const* name) const;
@@ -97,8 +101,8 @@ private:
     void update_filter_models(Torrent::ChangeFlags changes);
     void update_filter_models_idle(Torrent::ChangeFlags changes);
 
-    void update_count_label_idle();
-    bool update_count_label();
+    void notify_visible_count_idle();
+    bool notify_visible_count();
 
     static Glib::RefPtr<Gtk::ListStore> show_mode_filter_model_new();
     static void status_model_update_count(Gtk::TreeModel::iterator const& iter, int n);
@@ -122,11 +126,11 @@ private:
     Gtk::ComboBox* show_mode_ = nullptr;
     Gtk::ComboBox* tracker_ = nullptr;
     Gtk::Entry* entry_ = nullptr;
-    Gtk::Label* show_lb_ = nullptr;
     Glib::RefPtr<TorrentFilter> filter_ = TorrentFilter::create();
     Glib::RefPtr<FilterListModel<Torrent>> filter_model_;
 
-    sigc::connection update_count_label_tag_;
+    sigc::signal<void(guint)> signal_visible_count_changed_;
+    sigc::connection notify_visible_count_tag_;
     sigc::connection update_filter_models_tag_;
     sigc::connection update_filter_models_on_add_remove_tag_;
     sigc::connection update_filter_models_on_change_tag_;
@@ -547,38 +551,16 @@ void FilterBar::Impl::update_filter_tracker()
     }
 }
 
-bool FilterBar::Impl::update_count_label()
+bool FilterBar::Impl::notify_visible_count()
 {
-    /* get the visible count */
-    auto const visibleCount = static_cast<int>(filter_model_->get_n_items());
-
-    /* get the tracker count */
-    int trackerCount = 0;
-    if (auto const iter = tracker_->get_active(); iter) {
-        trackerCount = iter->get_value(tracker_filter_cols.count);
-    }
-
-    /* get the mode count */
-    int modeCount = 0;
-    if (auto const iter = show_mode_->get_active(); iter) {
-        modeCount = iter->get_value(show_mode_filter_cols.count);
-    }
-
-    /* set the text */
-    if (auto const new_markup = visibleCount == std::min(modeCount, trackerCount) ?
-            _("_Show:") :
-            fmt::format(fmt::runtime(_("_Show {count:L} of:")), fmt::arg("count", visibleCount));
-        new_markup != show_lb_->get_label().raw()) {
-        show_lb_->set_markup_with_mnemonic(new_markup);
-    }
-
+    signal_visible_count_changed_.emit(filter_model_->get_n_items());
     return false;
 }
 
-void FilterBar::Impl::update_count_label_idle()
+void FilterBar::Impl::notify_visible_count_idle()
 {
-    if (!update_count_label_tag_.connected()) {
-        update_count_label_tag_ = Glib::signal_idle().connect(sigc::mem_fun(*this, &Impl::update_count_label));
+    if (!notify_visible_count_tag_.connected()) {
+        notify_visible_count_tag_ = Glib::signal_idle().connect(sigc::mem_fun(*this, &Impl::notify_visible_count));
     }
 }
 
@@ -600,7 +582,7 @@ void FilterBar::Impl::update_filter_models(Torrent::ChangeFlags changes)
     filter_->update(changes);
 
     if (changes.test(show_mode_flags | tracker_flags)) {
-        update_count_label_idle();
+        notify_visible_count_idle();
     }
 }
 
@@ -674,7 +656,6 @@ FilterBar::Impl::Impl(FilterBar& widget, Glib::RefPtr<Session> const& core)
     , show_mode_(get_template_child<Gtk::ComboBox>("show_mode_combo"))
     , tracker_(get_template_child<Gtk::ComboBox>("tracker_combo"))
     , entry_(get_template_child<Gtk::Entry>("text_entry"))
-    , show_lb_(get_template_child<Gtk::Label>("show_label"))
 {
     update_filter_models_on_add_remove_tag_ = core_->get_model()->signal_items_changed().connect(
         [this](guint /*position*/, guint /*removed*/, guint /*added*/) { update_filter_models_idle(~Torrent::ChangeFlags()); });
@@ -687,7 +668,7 @@ FilterBar::Impl::Impl(FilterBar& widget, Glib::RefPtr<Session> const& core)
     show_mode_combo_box_init(*show_mode_);
     tracker_combo_box_init(*tracker_);
 
-    filter_->signal_changed().connect([this](auto /*changes*/) { update_count_label_idle(); });
+    filter_->signal_changed().connect([this](auto /*changes*/) { notify_visible_count_idle(); });
 
     filter_model_ = FilterListModel<Torrent>::create(core_->get_sorted_model(), filter_);
 
@@ -716,12 +697,17 @@ FilterBar::Impl::~Impl()
     update_filter_models_on_change_tag_.disconnect();
     update_filter_models_on_add_remove_tag_.disconnect();
     update_filter_models_tag_.disconnect();
-    update_count_label_tag_.disconnect();
+    notify_visible_count_tag_.disconnect();
 }
 
 Glib::RefPtr<FilterBar::Model> FilterBar::get_filter_model() const
 {
     return impl_->get_filter_model();
+}
+
+sigc::signal<void(guint)>& FilterBar::signal_visible_count_changed()
+{
+    return impl_->signal_visible_count_changed();
 }
 
 Glib::RefPtr<FilterBar::Impl::FilterModel> FilterBar::Impl::get_filter_model() const

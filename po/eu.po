@@ -471,12 +471,6 @@ msgstr "Egiaztatzen"
 msgid "Error"
 msgstr "Errorea"
 
-msgid "_Show:"
-msgstr "_Erakutsi:"
-
-msgid "_Show {count:L} of:"
-msgstr "_Erakutsi {count:L} hauetatik:"
-
 msgid "{disk_space} free"
 msgstr "{disk_space} libre"
 
@@ -497,6 +491,11 @@ msgstr "[torrent fitxategiak edo URLak]"
 
 msgid "Run '{program} --help' to see a full list of available command line options.\n"
 msgstr "Exekutatu '{program} --help' eskuragarri dagoen komando-lerro bidezko aukeren zerrenda osoa ikusteko.\n"
+
+msgid "Showing {visible_count:L} of {count:L} torrent"
+msgid_plural "Showing {visible_count:L} of {count:L} torrents"
+msgstr[0] "Erakusten {visible_count:L} -> {count:L} torrent"
+msgstr[1] " {visible_count:L} erakusten guztirako {count:L} torrent-etik"
 
 msgid ""
 "Click to disable Alternative Speed Limits\n"
@@ -1184,6 +1183,9 @@ msgstr ""
 
 msgid "Also see Default Public Trackers in Edit > Preferences > Network"
 msgstr "Aztarnari publiko lehenetsiak Editatu > Hobespenak > Sarea atalean ere ikusi ditzakezu"
+
+msgid "_Show:"
+msgstr "_Erakutsi:"
 
 #. Translators: Open toolbar item -> tooltip
 msgid "Open a torrent"
@@ -3419,11 +3421,6 @@ msgstr "Errorea sarean"
 msgid "Idle"
 msgstr "Geratuta"
 
-msgid "Showing {visible_count:L} of {count:L} torrent"
-msgid_plural "Showing {visible_count:L} of {count:L} torrents"
-msgstr[0] "Erakusten {visible_count:L} -> {count:L} torrent"
-msgstr[1] " {visible_count:L} erakusten guztirako {count:L} torrent-etik"
-
 msgid "Torrent Files (*.torrent);;All Files (*.*)"
 msgstr "Torrent Fitxategiak (*.torrent);;Fitxategi Guztiak (*.*)"
 
@@ -3612,6 +3609,9 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "segundo"
 msgstr[1] "segundo"
+
+#~ msgid "_Show {count:L} of:"
+#~ msgstr "_Erakutsi {count:L} hauetatik:"
 
 #, fuzzy
 #~| msgid "Copyright © The Retransmission Project"

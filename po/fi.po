@@ -434,12 +434,6 @@ msgstr "Vahvistetaan"
 msgid "Error"
 msgstr "Virhe"
 
-msgid "_Show:"
-msgstr "N_äytä:"
-
-msgid "_Show {count:L} of:"
-msgstr "_Näytä {count:L} /:"
-
 msgid "{disk_space} free"
 msgstr "{disk_space} vapaana"
 
@@ -460,6 +454,11 @@ msgstr "[torrent-tiedostot tai verkko-osoitteet]"
 
 msgid "Run '{program} --help' to see a full list of available command line options.\n"
 msgstr "Suorita '{program} --help' nähdäksesi kaikki komentorivivalitsimet.\n"
+
+msgid "Showing {visible_count:L} of {count:L} torrent"
+msgid_plural "Showing {visible_count:L} of {count:L} torrents"
+msgstr[0] "Näytetään {visible_count:L}/{count:L} torrentista"
+msgstr[1] "Näytetään {visible_count:L}/{count:L} torrentista"
 
 msgid ""
 "Click to disable Alternative Speed Limits\n"
@@ -1098,6 +1097,9 @@ msgstr ""
 
 msgid "Also see Default Public Trackers in Edit > Preferences > Network"
 msgstr "Katso myös \"Oletusarvoiset seurantapalvelimet\" kohdassa Muokkaa > Asetukset > Verkko"
+
+msgid "_Show:"
+msgstr "N_äytä:"
 
 msgid "Open a torrent"
 msgstr "Avaa torrent"
@@ -2124,11 +2126,6 @@ msgstr "Verkkovirhe"
 msgid "Idle"
 msgstr "Joutilaana"
 
-msgid "Showing {visible_count:L} of {count:L} torrent"
-msgid_plural "Showing {visible_count:L} of {count:L} torrents"
-msgstr[0] "Näytetään {visible_count:L}/{count:L} torrentista"
-msgstr[1] "Näytetään {visible_count:L}/{count:L} torrentista"
-
 msgid "Torrent Files (*.torrent);;All Files (*.*)"
 msgstr "Torrent-tiedostot (*.torrent);;Kaikki tiedostot (*.*)"
 
@@ -2350,6 +2347,9 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "sekunti"
 msgstr[1] "sekuntia"
+
+#~ msgid "_Show {count:L} of:"
+#~ msgstr "_Näytä {count:L} /:"
 
 #, fuzzy
 #~| msgid "Copyright © The Retransmission Project"

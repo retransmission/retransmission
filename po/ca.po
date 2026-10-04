@@ -430,12 +430,6 @@ msgstr "S'està verificant"
 msgid "Error"
 msgstr "Error"
 
-msgid "_Show:"
-msgstr "_Mostra:"
-
-msgid "_Show {count:L} of:"
-msgstr ""
-
 msgid "{disk_space} free"
 msgstr "{disk_space} lliures"
 
@@ -456,6 +450,11 @@ msgstr "[fitxers torrent o URL]"
 
 msgid "Run '{program} --help' to see a full list of available command line options.\n"
 msgstr ""
+
+msgid "Showing {visible_count:L} of {count:L} torrent"
+msgid_plural "Showing {visible_count:L} of {count:L} torrents"
+msgstr[0] "S'està mostrant {visible_count:L} de {count:L} torrent"
+msgstr[1] "S'estan mostrant {visible_count:L} de {count:L} torrents"
 
 msgid ""
 "Click to disable Alternative Speed Limits\n"
@@ -1087,6 +1086,9 @@ msgstr ""
 
 msgid "Also see Default Public Trackers in Edit > Preferences > Network"
 msgstr ""
+
+msgid "_Show:"
+msgstr "_Mostra:"
 
 msgid "Open a torrent"
 msgstr "Obre un torrent"
@@ -2102,11 +2104,6 @@ msgstr "Error de xarxa"
 
 msgid "Idle"
 msgstr "Inactiu"
-
-msgid "Showing {visible_count:L} of {count:L} torrent"
-msgid_plural "Showing {visible_count:L} of {count:L} torrents"
-msgstr[0] "S'està mostrant {visible_count:L} de {count:L} torrent"
-msgstr[1] "S'estan mostrant {visible_count:L} de {count:L} torrents"
 
 msgid "Torrent Files (*.torrent);;All Files (*.*)"
 msgstr "Fitxers Torrent (*.torrent);;Tots els fitxers (*.*)"

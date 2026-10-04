@@ -488,12 +488,6 @@ msgstr "באימות"
 msgid "Error"
 msgstr "שגיאה"
 
-msgid "_Show:"
-msgstr "_הצגה:"
-
-msgid "_Show {count:L} of:"
-msgstr "לה_ציג {count:L} מתוך:"
-
 msgid "{disk_space} free"
 msgstr "{disk_space} פנויים"
 
@@ -514,6 +508,12 @@ msgstr "[כתובות או קובצי טורנט]"
 
 msgid "Run '{program} --help' to see a full list of available command line options.\n"
 msgstr "יש להריץ את ‚‎{program} --help’ כדי לצפות ברשימה מלאה של אפשרויות שורת פקודה.\n"
+
+msgid "Showing {visible_count:L} of {count:L} torrent"
+msgid_plural "Showing {visible_count:L} of {count:L} torrents"
+msgstr[0] "מוצג {visible_count:L} מתוך טורנט אחד"
+msgstr[1] "מוצגים {visible_count:L} מתוך {count:L} טורנטים"
+msgstr[2] "מוצגים {visible_count:L} מתוך {count:L} טורנטים"
 
 msgid ""
 "Click to disable Alternative Speed Limits\n"
@@ -1213,6 +1213,9 @@ msgstr ""
 
 msgid "Also see Default Public Trackers in Edit > Preferences > Network"
 msgstr "כדאי לגשת לעוקבים הציבוריים כברירת מחדל דרך עריכה > העדפות > רשת"
+
+msgid "_Show:"
+msgstr "_הצגה:"
 
 #. Translators: Open toolbar item -> tooltip
 msgid "Open a torrent"
@@ -3490,12 +3493,6 @@ msgstr "שגיאת רשת"
 msgid "Idle"
 msgstr "לא פעיל"
 
-msgid "Showing {visible_count:L} of {count:L} torrent"
-msgid_plural "Showing {visible_count:L} of {count:L} torrents"
-msgstr[0] "מוצג {visible_count:L} מתוך טורנט אחד"
-msgstr[1] "מוצגים {visible_count:L} מתוך {count:L} טורנטים"
-msgstr[2] "מוצגים {visible_count:L} מתוך {count:L} טורנטים"
-
 msgid "Torrent Files (*.torrent);;All Files (*.*)"
 msgstr "קובצי טורנט (‎*.torrent);;כל הקבצים (*.*)"
 
@@ -3699,6 +3696,9 @@ msgstr[0] "שנייה"
 msgstr[1] "שניות"
 msgstr[2] "שניות"
 msgstr[3] "שניות"
+
+#~ msgid "_Show {count:L} of:"
+#~ msgstr "לה_ציג {count:L} מתוך:"
 
 #, fuzzy
 #~| msgid "Copyright © The Retransmission Project"

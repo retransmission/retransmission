@@ -439,12 +439,6 @@ msgstr "Preverjanje"
 msgid "Error"
 msgstr "Napaka"
 
-msgid "_Show:"
-msgstr "_Pokaži:"
-
-msgid "_Show {count:L} of:"
-msgstr ""
-
 msgid "{disk_space} free"
 msgstr "{disk_space} prosto"
 
@@ -465,6 +459,13 @@ msgstr "[torrent datoteke ali naslovi]"
 
 msgid "Run '{program} --help' to see a full list of available command line options.\n"
 msgstr ""
+
+msgid "Showing {visible_count:L} of {count:L} torrent"
+msgid_plural "Showing {visible_count:L} of {count:L} torrents"
+msgstr[0] "Prikazujem {visible_count:L} od {count:L} torrent"
+msgstr[1] "Prikazujem {visible_count:L} od {count:L} torrenta"
+msgstr[2] "Prikazujem {visible_count:L} od {count:L} torrente"
+msgstr[3] "Prikazujem {visible_count:L} od {count:L} torrentov"
 
 msgid ""
 "Click to disable Alternative Speed Limits\n"
@@ -1110,6 +1111,9 @@ msgstr ""
 
 msgid "Also see Default Public Trackers in Edit > Preferences > Network"
 msgstr "Glej tudi Privzete javne sledilnike v Uredi > Nastavitve > Omrežje"
+
+msgid "_Show:"
+msgstr "_Pokaži:"
 
 msgid "Open a torrent"
 msgstr "Odpri torrent"
@@ -2157,13 +2161,6 @@ msgstr "Napaka omrežja"
 
 msgid "Idle"
 msgstr "Neaktivno"
-
-msgid "Showing {visible_count:L} of {count:L} torrent"
-msgid_plural "Showing {visible_count:L} of {count:L} torrents"
-msgstr[0] "Prikazujem {visible_count:L} od {count:L} torrent"
-msgstr[1] "Prikazujem {visible_count:L} od {count:L} torrenta"
-msgstr[2] "Prikazujem {visible_count:L} od {count:L} torrente"
-msgstr[3] "Prikazujem {visible_count:L} od {count:L} torrentov"
 
 msgid "Torrent Files (*.torrent);;All Files (*.*)"
 msgstr "Datoteke torrent (*.torrent);;Vse datoteke (*.*)"

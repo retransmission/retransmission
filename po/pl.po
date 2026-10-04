@@ -513,12 +513,6 @@ msgstr "Sprawdzanie"
 msgid "Error"
 msgstr "Błąd"
 
-msgid "_Show:"
-msgstr "W_yświetlanie:"
-
-msgid "_Show {count:L} of:"
-msgstr "_Wyświetlanie {count:L} z:"
-
 msgid "{disk_space} free"
 msgstr "Wolne: {disk_space}"
 
@@ -539,6 +533,13 @@ msgstr "[pliki torrent lub adresy URL]"
 
 msgid "Run '{program} --help' to see a full list of available command line options.\n"
 msgstr "Polecenie „{program} --help” wyświetli pełną listę dostępnych opcji wiersza poleceń.\n"
+
+msgid "Showing {visible_count:L} of {count:L} torrent"
+msgid_plural "Showing {visible_count:L} of {count:L} torrents"
+msgstr[0] "Wyświetlanie {visible_count:L} z {count:L} torrenta"
+msgstr[1] "Wyświetlanie {visible_count:L} z {count:L} torrentów"
+msgstr[2] "Wyświetlanie {visible_count:L} z {count:L} torrentów"
+msgstr[3] "Wyświetlanie {visible_count:L} z {count:L} torrentów"
 
 msgid ""
 "Click to disable Alternative Speed Limits\n"
@@ -1241,6 +1242,9 @@ msgstr ""
 
 msgid "Also see Default Public Trackers in Edit > Preferences > Network"
 msgstr "Domyślne publiczne serwery śledzące znajdują się w Edycja → Preferencje → Sieć"
+
+msgid "_Show:"
+msgstr "W_yświetlanie:"
 
 #. Translators: Open toolbar item -> tooltip
 msgid "Open a torrent"
@@ -3527,13 +3531,6 @@ msgstr "Błąd sieci"
 msgid "Idle"
 msgstr "Bezczynny"
 
-msgid "Showing {visible_count:L} of {count:L} torrent"
-msgid_plural "Showing {visible_count:L} of {count:L} torrents"
-msgstr[0] "Wyświetlanie {visible_count:L} z {count:L} torrenta"
-msgstr[1] "Wyświetlanie {visible_count:L} z {count:L} torrentów"
-msgstr[2] "Wyświetlanie {visible_count:L} z {count:L} torrentów"
-msgstr[3] "Wyświetlanie {visible_count:L} z {count:L} torrentów"
-
 msgid "Torrent Files (*.torrent);;All Files (*.*)"
 msgstr "Pliki torrent (*.torrent);;Wszystkie pliki (*.*)"
 
@@ -3741,6 +3738,9 @@ msgstr[0] "sekunda"
 msgstr[1] "sekundy"
 msgstr[2] "sekund"
 msgstr[3] "sekund"
+
+#~ msgid "_Show {count:L} of:"
+#~ msgstr "_Wyświetlanie {count:L} z:"
 
 #, fuzzy
 #~| msgid "Copyright © The Retransmission Project"
