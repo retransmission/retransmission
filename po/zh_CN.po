@@ -260,13 +260,13 @@ msgstr "于 {date} 创建"
 msgid "Unknown"
 msgstr "未知"
 
-msgid "{total_size} in {file_count:L} file"
-msgid_plural "{total_size} in {file_count:L} files"
-msgstr[0] "{file_count:L} 个文件共 {total_size}"
+msgid "{total_size} ({piece_count:L} piece @ {piece_size})"
+msgid_plural "{total_size} ({piece_count:L} pieces @ {piece_size})"
+msgstr[0] "{total_size} ({piece_count:L} 个区块 @ {piece_size})"
 
-msgid "({piece_count} BitTorrent piece @ {piece_size})"
-msgid_plural "({piece_count} BitTorrent pieces @ {piece_size})"
-msgstr[0] "（{piece_count} 个 {piece_size} 的种子分片）"
+msgid "{total_size} ({piece_count:L} piece)"
+msgid_plural "{total_size} ({piece_count:L} pieces)"
+msgstr[0] "{total_size} ({piece_count:L} 个区块)"
 
 msgid "{current_size} ({percent_done}%)"
 msgstr "{current_size}（{percent_done}%）"
@@ -3539,14 +3539,6 @@ msgstr "种子已完成"
 msgid "{current_size} of {complete_size} ({percent_done}%), {unverified_size} Unverified"
 msgstr "{current_size} / {complete_size} ({percent_done}%), {unverified_size} 未验证"
 
-msgid "{total_size} ({piece_count:L} piece @ {piece_size})"
-msgid_plural "{total_size} ({piece_count:L} pieces @ {piece_size})"
-msgstr[0] "{total_size} ({piece_count:L} 个区块 @ {piece_size})"
-
-msgid "{total_size} ({piece_count:L} piece)"
-msgid_plural "{total_size} ({piece_count:L} pieces)"
-msgstr[0] "{total_size} ({piece_count:L} 个区块)"
-
 msgid "Add URL(s)"
 msgstr "添加网址"
 
@@ -3782,6 +3774,14 @@ msgstr[0] "天"
 msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "秒"
+
+#~ msgid "{total_size} in {file_count:L} file"
+#~ msgid_plural "{total_size} in {file_count:L} files"
+#~ msgstr[0] "{file_count:L} 个文件共 {total_size}"
+
+#~ msgid "({piece_count} BitTorrent piece @ {piece_size})"
+#~ msgid_plural "({piece_count} BitTorrent pieces @ {piece_size})"
+#~ msgstr[0] "（{piece_count} 个 {piece_size} 的种子分片）"
 
 #~ msgid "Log Could Not Be Saved"
 #~ msgstr "无法保存记录"

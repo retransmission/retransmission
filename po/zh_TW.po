@@ -234,13 +234,13 @@ msgstr "於 {date} 建立"
 msgid "Unknown"
 msgstr "未知"
 
-msgid "{total_size} in {file_count:L} file"
-msgid_plural "{total_size} in {file_count:L} files"
-msgstr[0] "總計 {file_count:L} 個檔案，大小為 {total_size}"
+msgid "{total_size} ({piece_count:L} piece @ {piece_size})"
+msgid_plural "{total_size} ({piece_count:L} pieces @ {piece_size})"
+msgstr[0] "{total_size} ({piece_count:L} 個區塊 @ {piece_size})"
 
-msgid "({piece_count} BitTorrent piece @ {piece_size})"
-msgid_plural "({piece_count} BitTorrent pieces @ {piece_size})"
-msgstr[0] "(總計 {piece_count} 個 BitTorrent 區塊，區塊大小為 {piece_size})"
+msgid "{total_size} ({piece_count:L} piece)"
+msgid_plural "{total_size} ({piece_count:L} pieces)"
+msgstr[0] "{total_size} ({piece_count:L} 個區塊)"
 
 msgid "{current_size} ({percent_done}%)"
 msgstr "{current_size} ({percent_done}%)"
@@ -3509,14 +3509,6 @@ msgstr "已完成的 torrents"
 msgid "{current_size} of {complete_size} ({percent_done}%), {unverified_size} Unverified"
 msgstr "{current_size} 之 {complete_size} ({percent_done}%)， {unverified_size} 未驗證"
 
-msgid "{total_size} ({piece_count:L} piece @ {piece_size})"
-msgid_plural "{total_size} ({piece_count:L} pieces @ {piece_size})"
-msgstr[0] "{total_size} ({piece_count:L} 個區塊 @ {piece_size})"
-
-msgid "{total_size} ({piece_count:L} piece)"
-msgid_plural "{total_size} ({piece_count:L} pieces)"
-msgstr[0] "{total_size} ({piece_count:L} 個區塊)"
-
 msgid "Add URL(s)"
 msgstr "加入 URL"
 
@@ -3752,6 +3744,14 @@ msgstr[0] "天"
 msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "秒"
+
+#~ msgid "{total_size} in {file_count:L} file"
+#~ msgid_plural "{total_size} in {file_count:L} files"
+#~ msgstr[0] "總計 {file_count:L} 個檔案，大小為 {total_size}"
+
+#~ msgid "({piece_count} BitTorrent piece @ {piece_size})"
+#~ msgid_plural "({piece_count} BitTorrent pieces @ {piece_size})"
+#~ msgstr[0] "(總計 {piece_count} 個 BitTorrent 區塊，區塊大小為 {piece_size})"
 
 #~ msgid "Log Could Not Be Saved"
 #~ msgstr "無法儲存日誌"

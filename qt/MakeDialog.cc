@@ -290,21 +290,14 @@ void MakeDialog::updatePiecesLabel()
         text = QStringLiteral("<i>%1</i>").arg(TR_TEXT("No source selected"));
         ui_.pieceSizeSlider->setEnabled(false);
     } else {
-        auto const file_count = builder_->file_count();
         auto const piece_count = builder_->piece_count();
-        auto const files = TR_FORMAT_N(
-            "{total_size} in {file_count:L} file",
-            "{total_size} in {file_count:L} files",
-            file_count,
-            fmt::arg("total_size", Formatter::storageToString(builder_->total_size())),
-            fmt::arg("file_count", file_count));
-        auto const pieces = TR_FORMAT_N(
-            "({piece_count} BitTorrent piece @ {piece_size})",
-            "({piece_count} BitTorrent pieces @ {piece_size})",
+        text = TR_FORMAT_N(
+            "{total_size} ({piece_count:L} piece @ {piece_size})",
+            "{total_size} ({piece_count:L} pieces @ {piece_size})",
             piece_count,
+            fmt::arg("total_size", Formatter::storageToString(builder_->total_size())),
             fmt::arg("piece_count", piece_count),
             fmt::arg("piece_size", Formatter::memoryToString(builder_->piece_size())));
-        text = QStringLiteral("%1 %2").arg(files, pieces);
         ui_.pieceSizeSlider->setEnabled(true);
     }
 

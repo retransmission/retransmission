@@ -211,13 +211,13 @@ msgstr "{date} に作成"
 msgid "Unknown"
 msgstr "不明"
 
-msgid "{total_size} in {file_count:L} file"
-msgid_plural "{total_size} in {file_count:L} files"
-msgstr[0] "{total_size} / {file_count:L} ファイル"
+msgid "{total_size} ({piece_count:L} piece @ {piece_size})"
+msgid_plural "{total_size} ({piece_count:L} pieces @ {piece_size})"
+msgstr[0] "{total_size} ({piece_count:L} ピース @ {piece_size})"
 
-msgid "({piece_count} BitTorrent piece @ {piece_size})"
-msgid_plural "({piece_count} BitTorrent pieces @ {piece_size})"
-msgstr[0] "({piece_count} 個の BitTorrent のピース@ {piece_size})"
+msgid "{total_size} ({piece_count:L} piece)"
+msgid_plural "{total_size} ({piece_count:L} pieces)"
+msgstr[0] "{total_size} ({piece_count:L} ピース)"
 
 msgid "{current_size} ({percent_done}%)"
 msgstr "{current_size} ({percent_done}%)"
@@ -3495,14 +3495,6 @@ msgstr "トレント完了"
 msgid "{current_size} of {complete_size} ({percent_done}%), {unverified_size} Unverified"
 msgstr "{current_size} / {complete_size} ({percent_done}%), {unverified_size} 未検証"
 
-msgid "{total_size} ({piece_count:L} piece @ {piece_size})"
-msgid_plural "{total_size} ({piece_count:L} pieces @ {piece_size})"
-msgstr[0] "{total_size} ({piece_count:L} ピース @ {piece_size})"
-
-msgid "{total_size} ({piece_count:L} piece)"
-msgid_plural "{total_size} ({piece_count:L} pieces)"
-msgstr[0] "{total_size} ({piece_count:L} ピース)"
-
 msgid "Add URL(s)"
 msgstr "URL を追加"
 
@@ -3739,6 +3731,14 @@ msgstr[0] "日"
 msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "秒"
+
+#~ msgid "{total_size} in {file_count:L} file"
+#~ msgid_plural "{total_size} in {file_count:L} files"
+#~ msgstr[0] "{total_size} / {file_count:L} ファイル"
+
+#~ msgid "({piece_count} BitTorrent piece @ {piece_size})"
+#~ msgid_plural "({piece_count} BitTorrent pieces @ {piece_size})"
+#~ msgstr[0] "({piece_count} 個の BitTorrent のピース@ {piece_size})"
 
 #~ msgid "Log Could Not Be Saved"
 #~ msgstr "ログを保存できません"
