@@ -4075,11 +4075,6 @@ msgid "Torrents Completed"
 msgstr "Torrent Tamamlandı"
 
 #. Translators: Text following the "Have:" label in torrent properties dialog;
-#. {current_size} is amount of downloaded and verified data
-msgid "{current_size} (100%)"
-msgstr "{current_size} (%100)"
-
-#. Translators: Text following the "Have:" label in torrent properties dialog;
 #. {current_size} is amount of downloaded data (both verified and unverified),
 #. {complete_size} is overall size of torrent data,
 #. {percent_done} is percentage ({current_size}/{complete_size}*100),
@@ -4190,20 +4185,6 @@ msgstr "Oturumu _Değiştir…"
 #. Start a local session or connect to a running session
 msgid "Choose Session"
 msgstr "Seçilen Oturum"
-
-msgid "{file_count:L} File"
-msgid_plural "{file_count:L} Files"
-msgstr[0] "{file_count:L} Dosya"
-msgstr[1] "{file_count:L} Dosya"
-
-msgid "{piece_count:L} Piece"
-msgid_plural "{piece_count:L} Pieces"
-msgstr[0] "{piece_count:L} Parça"
-msgstr[1] "{piece_count:L} Parça"
-
-#. Translators: {files} is "{file_count} Files" and {pieces} is "{piece_count} Pieces"
-msgid "{total_size} in {files}; {pieces} @ {piece_size}"
-msgstr "{files} içinde {total_size}; {pieces} @ {piece_size} "
 
 #, fuzzy
 #| msgid "_Source:"
@@ -4422,6 +4403,19 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "saniye"
 msgstr[1] "saniye"
+
+#~ msgid "{file_count:L} File"
+#~ msgid_plural "{file_count:L} Files"
+#~ msgstr[0] "{file_count:L} Dosya"
+#~ msgstr[1] "{file_count:L} Dosya"
+
+#~ msgid "{piece_count:L} Piece"
+#~ msgid_plural "{piece_count:L} Pieces"
+#~ msgstr[0] "{piece_count:L} Parça"
+#~ msgstr[1] "{piece_count:L} Parça"
+
+#~ msgid "{total_size} in {files}; {pieces} @ {piece_size}"
+#~ msgstr "{files} içinde {total_size}; {pieces} @ {piece_size} "
 
 #~ msgid "To add a backup URL, add it on the next line after a primary URL."
 #~ msgstr "Yedek URL eklemek için, birincil URL'nin hemen ardından gelen satıra yedek URL ekleyin."

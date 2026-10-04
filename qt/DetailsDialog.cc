@@ -555,7 +555,10 @@ void DetailsDialog::refreshUI()
         if (have_unverified == 0U && left_until_done == 0U) {
             // Translators: Text following the "Have:" label in torrent properties dialog;
             // {current_size} is amount of downloaded and verified data
-            string = TR_FORMAT("{current_size} (100%)", fmt::arg("current_size", Formatter::storageToString(have_verified)));
+            string = TR_FORMAT(
+                "{current_size} ({percent_done}%)",
+                fmt::arg("current_size", Formatter::storageToString(have_verified)),
+                fmt::arg("percent_done", pct));
         } else if (have_unverified == 0U) {
             string = TR_FORMAT(
                 // Translators: Text following the "Have:" label in torrent properties dialog;

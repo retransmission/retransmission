@@ -229,7 +229,7 @@ msgstr[2] ""
 msgstr[3] ""
 
 msgid "{current_size} ({percent_done}%)"
-msgstr ""
+msgstr "{current_size} ({percent_done}%)"
 
 #, no-c-format
 msgid "{current_size} ({percent_done}% of {percent_available}% available)"
@@ -2204,11 +2204,6 @@ msgid "Torrents Completed"
 msgstr "Torrenti dokončani"
 
 #. Translators: Text following the "Have:" label in torrent properties dialog;
-#. {current_size} is amount of downloaded and verified data
-msgid "{current_size} (100%)"
-msgstr "{current_size} (100%)"
-
-#. Translators: Text following the "Have:" label in torrent properties dialog;
 #. {current_size} is amount of downloaded data (both verified and unverified),
 #. {complete_size} is overall size of torrent data,
 #. {percent_done} is percentage ({current_size}/{complete_size}*100),
@@ -2355,24 +2350,6 @@ msgstr "Izberi sejo"
 
 msgid "Bypass the queue and start now"
 msgstr "Preskoči vrsto in začni zdaj"
-
-msgid "{file_count:L} File"
-msgid_plural "{file_count:L} Files"
-msgstr[0] "{file_count:L} datoteka"
-msgstr[1] "{file_count:L} datoteki"
-msgstr[2] "{file_count:L} datoteke"
-msgstr[3] "{file_count:L} datotek"
-
-msgid "{piece_count:L} Piece"
-msgid_plural "{piece_count:L} Pieces"
-msgstr[0] "{piece_count:L} kos"
-msgstr[1] "{piece_count:L} kosa"
-msgstr[2] "{piece_count:L} kosi"
-msgstr[3] "{piece_count:L} kosov"
-
-#. Translators: {files} is "{file_count} Files" and {pieces} is "{piece_count} Pieces"
-msgid "{total_size} in {files}; {pieces} @ {piece_size}"
-msgstr "{total_size} v {files}; {pieces} @ {piece_size}"
 
 #, fuzzy
 #| msgid "_Source:"
@@ -2619,6 +2596,23 @@ msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
 msgstr[3] ""
+
+#~ msgid "{file_count:L} File"
+#~ msgid_plural "{file_count:L} Files"
+#~ msgstr[0] "{file_count:L} datoteka"
+#~ msgstr[1] "{file_count:L} datoteki"
+#~ msgstr[2] "{file_count:L} datoteke"
+#~ msgstr[3] "{file_count:L} datotek"
+
+#~ msgid "{piece_count:L} Piece"
+#~ msgid_plural "{piece_count:L} Pieces"
+#~ msgstr[0] "{piece_count:L} kos"
+#~ msgstr[1] "{piece_count:L} kosa"
+#~ msgstr[2] "{piece_count:L} kosi"
+#~ msgstr[3] "{piece_count:L} kosov"
+
+#~ msgid "{total_size} in {files}; {pieces} @ {piece_size}"
+#~ msgstr "{total_size} v {files}; {pieces} @ {piece_size}"
 
 #, fuzzy
 #~| msgid ""

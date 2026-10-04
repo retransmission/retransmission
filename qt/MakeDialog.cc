@@ -293,22 +293,18 @@ void MakeDialog::updatePiecesLabel()
         auto const file_count = builder_->file_count();
         auto const piece_count = builder_->piece_count();
         auto const files = TR_FORMAT_N(
-            "{file_count:L} File",
-            "{file_count:L} Files",
+            "{total_size} in {file_count:L} file",
+            "{total_size} in {file_count:L} files",
             file_count,
+            fmt::arg("total_size", Formatter::storageToString(builder_->total_size())),
             fmt::arg("file_count", file_count));
         auto const pieces = TR_FORMAT_N(
-            "{piece_count:L} Piece",
-            "{piece_count:L} Pieces",
+            "({piece_count} BitTorrent piece @ {piece_size})",
+            "({piece_count} BitTorrent pieces @ {piece_size})",
             piece_count,
-            fmt::arg("piece_count", piece_count));
-        text = TR_FORMAT(
-            // Translators: {files} is "{file_count} Files" and {pieces} is "{piece_count} Pieces"
-            "{total_size} in {files}; {pieces} @ {piece_size}",
-            fmt::arg("total_size", Formatter::storageToString(builder_->total_size())),
-            fmt::arg("files", files),
-            fmt::arg("pieces", pieces),
+            fmt::arg("piece_count", piece_count),
             fmt::arg("piece_size", Formatter::memoryToString(builder_->piece_size())));
+        text = QStringLiteral("%1 %2").arg(files, pieces);
         ui_.pieceSizeSlider->setEnabled(true);
     }
 

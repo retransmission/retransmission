@@ -4105,11 +4105,6 @@ msgid "Torrents Completed"
 msgstr "Ολοκληρωμένα Torrent"
 
 #. Translators: Text following the "Have:" label in torrent properties dialog;
-#. {current_size} is amount of downloaded and verified data
-msgid "{current_size} (100%)"
-msgstr "{current_size} (100%)"
-
-#. Translators: Text following the "Have:" label in torrent properties dialog;
 #. {current_size} is amount of downloaded data (both verified and unverified),
 #. {complete_size} is overall size of torrent data,
 #. {percent_done} is percentage ({current_size}/{complete_size}*100),
@@ -4220,20 +4215,6 @@ msgstr "_Αλλαγή Συνεδρίας…"
 #. Start a local session or connect to a running session
 msgid "Choose Session"
 msgstr "Επιλογή Συνεδρίας"
-
-msgid "{file_count:L} File"
-msgid_plural "{file_count:L} Files"
-msgstr[0] "{file_count:L} Αρχείο"
-msgstr[1] "{file_count:L} Αρχεία"
-
-msgid "{piece_count:L} Piece"
-msgid_plural "{piece_count:L} Pieces"
-msgstr[0] "{piece_count:L} Κομμάτι"
-msgstr[1] "{piece_count:L} Κομμάτια"
-
-#. Translators: {files} is "{file_count} Files" and {pieces} is "{piece_count} Pieces"
-msgid "{total_size} in {files}; {pieces} @ {piece_size}"
-msgstr "{total_size} σε {files}· {pieces} @ {piece_size}"
 
 #, fuzzy
 #| msgid "_Source:"
@@ -4452,6 +4433,19 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "δευτερόλεπτο"
 msgstr[1] "δευτερόλεπτα"
+
+#~ msgid "{file_count:L} File"
+#~ msgid_plural "{file_count:L} Files"
+#~ msgstr[0] "{file_count:L} Αρχείο"
+#~ msgstr[1] "{file_count:L} Αρχεία"
+
+#~ msgid "{piece_count:L} Piece"
+#~ msgid_plural "{piece_count:L} Pieces"
+#~ msgstr[0] "{piece_count:L} Κομμάτι"
+#~ msgstr[1] "{piece_count:L} Κομμάτια"
+
+#~ msgid "{total_size} in {files}; {pieces} @ {piece_size}"
+#~ msgstr "{total_size} σε {files}· {pieces} @ {piece_size}"
 
 #~ msgid "To add a backup URL, add it on the next line after a primary URL."
 #~ msgstr "Για την χρήση εφεδρικού συνδέσμου, προσθέστε τον στην επόμενη γραμμή έπειτα ενός κύριου συνδέσμου."

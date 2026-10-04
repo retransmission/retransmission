@@ -47,6 +47,12 @@ RENAMES = [
     },
     # "Adding" has one meaning, so it needs no context. The Mac client's Preferences tab uses the same text.
     {'from': {'msgctxt': 'Gerund', 'msgid': 'Adding'}, 'to': {'msgid': 'Adding'}, 'prefer': 'from'},
+    # The Qt client's "Have:" text for a finished torrent takes the GTK client's, which has the 100 as a field.
+    {
+        'from': {'msgid': '{current_size} (100%)'},
+        'to': {'msgid': '{current_size} ({percent_done}%)'},
+        'replace': [['100', '{percent_done}']],
+    },
 ]
 
 FIELD_NAMES = ('msgctxt', 'msgid', 'msgid_plural')
