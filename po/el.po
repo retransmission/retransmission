@@ -241,14 +241,24 @@ msgstr[1] "({piece_count:L} κομμάτια @ {piece_size})"
 msgid "{current_size} ({percent_done}%)"
 msgstr "{current_size} ({percent_done}%)"
 
-#, no-c-format
-msgid "{current_size} ({percent_done}% of {percent_available}% available)"
-msgstr "{current_size} ({percent_done}% από {percent_available}% διαθέσιμα)"
+#. Translators: Text following the "Have:" label in torrent properties dialog;
+#. {current_size} is amount of downloaded and verified data,
+#. {complete_size} is overall size of torrent data,
+#. {percent_done} is percentage ({current_size}/{complete_size}*100)
+#. Translators: First part of torrent progress string,
+#. {current_size} is how much we've got,
+#. {complete_size} is how much we'll have when done,
+#. {percent_done} is a percentage of the two
+msgid "{current_size} of {complete_size} ({percent_done}%)"
+msgstr "{current_size} από {complete_size} ({percent_done}%)"
 
-#, fuzzy, c-format
-#| msgid "{current_size} ({percent_done}% of {percent_available}% available; {unverified_size} unverified)"
-msgid "{current_size} ({percent_done}% of {percent_available}% available; {unverified_size} unverified)"
-msgstr "{current_size} ({percent_done}% από {percent_available}% διαθέσιμα· {unverified_size} μη ελεγχθέντα)"
+#. Translators: Text following the "Have:" label in torrent properties dialog;
+#. {current_size} is amount of downloaded data (both verified and unverified),
+#. {complete_size} is overall size of torrent data,
+#. {percent_done} is percentage ({current_size}/{complete_size}*100),
+#. {unverified_size} is amount of downloaded but not yet verified data
+msgid "{current_size} of {complete_size} ({percent_done}%), {unverified_size} Unverified"
+msgstr "{current_size} από {complete_size} ({percent_done}%), {unverified_size} Ανεπιβεβαίωτα"
 
 msgid "{discarded_size} discarded after failed checksum"
 msgstr "{discarded_size} απορρίφθηκαν κατόπιν αποτυχημένου ελέγχου αθροίσματος"
@@ -768,17 +778,6 @@ msgstr "{upload_speed} ▴ {download_speed} ▾"
 msgid "Verifying local data ({percent_done}% tested)"
 msgstr "Επαλήθευση τοπικών δεδομένων ({percent_done}% ελέγχθηκαν)"
 
-#. Translators: Text following the "Have:" label in torrent properties dialog;
-#. {current_size} is amount of downloaded and verified data,
-#. {complete_size} is overall size of torrent data,
-#. {percent_done} is percentage ({current_size}/{complete_size}*100)
-#. Translators: First part of torrent progress string,
-#. {current_size} is how much we've got,
-#. {complete_size} is how much we'll have when done,
-#. {percent_done} is a percentage of the two
-msgid "{current_size} of {complete_size} ({percent_done}%)"
-msgstr "{current_size} από {complete_size} ({percent_done}%)"
-
 #. Translators: First part of torrent progress string,
 #. {current_size} is how much we've got,
 #. {complete_size} is the torrent's total size,
@@ -1085,6 +1084,9 @@ msgstr "Μέγεθος:"
 
 msgid "Have:"
 msgstr "Έχουμε:"
+
+msgid "Availability:"
+msgstr "Διαθεσιμότητα:"
 
 #. Translators: Stats window -> label
 msgid "Uploaded:"
@@ -3448,14 +3450,6 @@ msgstr "Σχετικά με το {appname}"
 msgid "Downloads Complete"
 msgstr "Ολοκληρωμένα Torrent"
 
-#. Translators: Text following the "Have:" label in torrent properties dialog;
-#. {current_size} is amount of downloaded data (both verified and unverified),
-#. {complete_size} is overall size of torrent data,
-#. {percent_done} is percentage ({current_size}/{complete_size}*100),
-#. {unverified_size} is amount of downloaded but not yet verified data
-msgid "{current_size} of {complete_size} ({percent_done}%), {unverified_size} Unverified"
-msgstr "{current_size} από {complete_size} ({percent_done}%), {unverified_size} Ανεπιβεβαίωτα"
-
 msgid "Add URL(s)"
 msgstr "Προσθήκη συνδέσμων"
 
@@ -3467,9 +3461,6 @@ msgstr "Δεν βρέθηκαν νέοι σύνδεσμοι."
 
 msgid "Torrent Properties"
 msgstr "Ιδιότητες Torrent"
-
-msgid "Availability:"
-msgstr "Διαθεσιμότητα:"
 
 msgid "Labels:"
 msgstr "Ετικέτες:"
@@ -3690,6 +3681,15 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "δευτερόλεπτο"
 msgstr[1] "δευτερόλεπτα"
+
+#, no-c-format
+#~ msgid "{current_size} ({percent_done}% of {percent_available}% available)"
+#~ msgstr "{current_size} ({percent_done}% από {percent_available}% διαθέσιμα)"
+
+#, fuzzy, c-format
+#~| msgid "{current_size} ({percent_done}% of {percent_available}% available; {unverified_size} unverified)"
+#~ msgid "{current_size} ({percent_done}% of {percent_available}% available; {unverified_size} unverified)"
+#~ msgstr "{current_size} ({percent_done}% από {percent_available}% διαθέσιμα· {unverified_size} μη ελεγχθέντα)"
 
 #~ msgid "Stop seeding if idle for N minutes:"
 #~ msgstr "Παύση διαμοιρασμού σε περίπτωση αδράνειας για N λεπτά:"

@@ -241,14 +241,24 @@ msgstr[3] "({piece_count:L} частин @ {piece_size})"
 msgid "{current_size} ({percent_done}%)"
 msgstr "{current_size} ({percent_done}%)"
 
-#, no-c-format
-msgid "{current_size} ({percent_done}% of {percent_available}% available)"
-msgstr "{current_size} ({percent_done}% з доступних {percent_available}%)"
+#. Translators: Text following the "Have:" label in torrent properties dialog;
+#. {current_size} is amount of downloaded and verified data,
+#. {complete_size} is overall size of torrent data,
+#. {percent_done} is percentage ({current_size}/{complete_size}*100)
+#. Translators: First part of torrent progress string,
+#. {current_size} is how much we've got,
+#. {complete_size} is how much we'll have when done,
+#. {percent_done} is a percentage of the two
+msgid "{current_size} of {complete_size} ({percent_done}%)"
+msgstr "{current_size} з {complete_size} ({percent_done}%)"
 
-#, fuzzy, c-format
-#| msgid "{current_size} ({percent_done}% of {percent_available}% available; {unverified_size} unverified)"
-msgid "{current_size} ({percent_done}% of {percent_available}% available; {unverified_size} unverified)"
-msgstr "{current_size} ({percent_done}% з доступних {percent_available}%; {unverified_size} не верифіковано)"
+#. Translators: Text following the "Have:" label in torrent properties dialog;
+#. {current_size} is amount of downloaded data (both verified and unverified),
+#. {complete_size} is overall size of torrent data,
+#. {percent_done} is percentage ({current_size}/{complete_size}*100),
+#. {unverified_size} is amount of downloaded but not yet verified data
+msgid "{current_size} of {complete_size} ({percent_done}%), {unverified_size} Unverified"
+msgstr "{current_size} з {complete_size} ({percent_done}%), не перевірено {unverified_size}"
 
 msgid "{discarded_size} discarded after failed checksum"
 msgstr "{discarded_size} відкинуто через неправильну контрольну суму"
@@ -779,17 +789,6 @@ msgstr "{upload_speed} ▴ {download_speed} ▾"
 msgid "Verifying local data ({percent_done}% tested)"
 msgstr "Перевірка локальних даних ({percent_done}% перевірено)"
 
-#. Translators: Text following the "Have:" label in torrent properties dialog;
-#. {current_size} is amount of downloaded and verified data,
-#. {complete_size} is overall size of torrent data,
-#. {percent_done} is percentage ({current_size}/{complete_size}*100)
-#. Translators: First part of torrent progress string,
-#. {current_size} is how much we've got,
-#. {complete_size} is how much we'll have when done,
-#. {percent_done} is a percentage of the two
-msgid "{current_size} of {complete_size} ({percent_done}%)"
-msgstr "{current_size} з {complete_size} ({percent_done}%)"
-
 #. Translators: First part of torrent progress string,
 #. {current_size} is how much we've got,
 #. {complete_size} is the torrent's total size,
@@ -1106,6 +1105,9 @@ msgstr "Розмір:"
 
 msgid "Have:"
 msgstr "Маємо:"
+
+msgid "Availability:"
+msgstr "Доступність:"
 
 #. Translators: Stats window -> label
 msgid "Uploaded:"
@@ -3533,14 +3535,6 @@ msgstr "Про {appname}"
 msgid "Downloads Complete"
 msgstr "Торенти завершені"
 
-#. Translators: Text following the "Have:" label in torrent properties dialog;
-#. {current_size} is amount of downloaded data (both verified and unverified),
-#. {complete_size} is overall size of torrent data,
-#. {percent_done} is percentage ({current_size}/{complete_size}*100),
-#. {unverified_size} is amount of downloaded but not yet verified data
-msgid "{current_size} of {complete_size} ({percent_done}%), {unverified_size} Unverified"
-msgstr "{current_size} з {complete_size} ({percent_done}%), не перевірено {unverified_size}"
-
 msgid "Add URL(s)"
 msgstr "Додати URL(-и) "
 
@@ -3552,9 +3546,6 @@ msgstr "Нові URL-адреси не знайдені."
 
 msgid "Torrent Properties"
 msgstr "Властивості торенту"
-
-msgid "Availability:"
-msgstr "Доступність:"
 
 msgid "Labels:"
 msgstr "Мітки:"
@@ -3797,6 +3788,15 @@ msgstr[0] "секунда"
 msgstr[1] "секунди"
 msgstr[2] "секунд"
 msgstr[3] "секунди"
+
+#, no-c-format
+#~ msgid "{current_size} ({percent_done}% of {percent_available}% available)"
+#~ msgstr "{current_size} ({percent_done}% з доступних {percent_available}%)"
+
+#, fuzzy, c-format
+#~| msgid "{current_size} ({percent_done}% of {percent_available}% available; {unverified_size} unverified)"
+#~ msgid "{current_size} ({percent_done}% of {percent_available}% available; {unverified_size} unverified)"
+#~ msgstr "{current_size} ({percent_done}% з доступних {percent_available}%; {unverified_size} не верифіковано)"
 
 #~ msgid "Stop seeding if idle for N minutes:"
 #~ msgstr "Припинити поширення, якщо не буде активності (у хвилинах):"

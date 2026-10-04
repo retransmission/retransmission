@@ -172,6 +172,7 @@ private:
     Gtk::Label* size_lb_ = nullptr;
     Gtk::Label* state_lb_ = nullptr;
     Gtk::Label* have_lb_ = nullptr;
+    Gtk::Label* availability_lb_ = nullptr;
     Gtk::Label* dl_lb_ = nullptr;
     Gtk::Label* failed_lb_ = nullptr;
     Gtk::Label* ul_lb_ = nullptr;
@@ -538,7 +539,6 @@ void DetailsDialog::Impl::refreshInfo(std::vector<tr_torrent*> const& torrents)
     Glib::ustring const mixed = _("Mixed");
     Glib::ustring const no_torrent = _("No Torrents Selected");
     Glib::ustring stateString;
-    uint64_t sizeWhenDone = 0;
 
     auto const stats = tr_torrentStat(torrents);
 
@@ -740,10 +740,12 @@ void DetailsDialog::Impl::refreshInfo(std::vector<tr_torrent*> const& torrents)
         size_lb_->set_text(str);
     }
 
-    /* have_lb */
+    /* have_lb, availability_lb */
+    auto availability_str = no_torrent;
     if (stats.empty()) {
         str = no_torrent;
     } else {
+        uint64_t sizeWhenDone = 0;
         uint64_t leftUntilDone = 0;
         uint64_t haveUnchecked = 0;
         uint64_t haveValid = 0;
@@ -757,42 +759,40 @@ void DetailsDialog::Impl::refreshInfo(std::vector<tr_torrent*> const& torrents)
             available += st.size_when_done - st.left_until_done + st.have_unchecked + st.desired_available;
         }
 
-        {
-            auto const d = sizeWhenDone != 0 ? 100.0 * static_cast<double>(available) / static_cast<double>(sizeWhenDone) : 0;
-            auto const ratio = 100.0 *
-                (sizeWhenDone != 0 ? static_cast<double>(haveValid + haveUnchecked) / static_cast<double>(sizeWhenDone) : 1.);
+        auto const percent_done = tr_strpercent(
+            sizeWhenDone != 0 ? 100.0 * static_cast<double>(sizeWhenDone - leftUntilDone) / static_cast<double>(sizeWhenDone) :
+                                100.0);
+        auto const complete_size = tr_strlsize(sizeWhenDone);
 
-            auto const avail = tr_strpercent(d);
-            auto const buf2 = tr_strpercent(ratio);
-            auto const total = tr_strlsize(haveUnchecked + haveValid);
-            auto const unver = tr_strlsize(haveUnchecked);
+        if (haveUnchecked == 0 && leftUntilDone == 0) {
+            str = fmt::format(
+                fmt::runtime(_("{current_size} ({percent_done}%)")),
+                fmt::arg("current_size", tr_strlsize(haveValid)),
+                fmt::arg("percent_done", percent_done));
+        } else if (haveUnchecked == 0) {
+            str = fmt::format(
+                fmt::runtime(_("{current_size} of {complete_size} ({percent_done}%)")),
+                fmt::arg("current_size", tr_strlsize(haveValid)),
+                fmt::arg("complete_size", complete_size),
+                fmt::arg("percent_done", percent_done));
+        } else {
+            str = fmt::format(
+                fmt::runtime(_("{current_size} of {complete_size} ({percent_done}%), {unverified_size} Unverified")),
+                fmt::arg("current_size", tr_strlsize(haveValid + haveUnchecked)),
+                fmt::arg("complete_size", complete_size),
+                fmt::arg("percent_done", percent_done),
+                fmt::arg("unverified_size", tr_strlsize(haveUnchecked)));
+        }
 
-            if (haveUnchecked == 0 && leftUntilDone == 0) {
-                str = fmt::format(
-                    fmt::runtime(_("{current_size} ({percent_done}%)")),
-                    fmt::arg("current_size", total),
-                    fmt::arg("percent_done", buf2));
-            } else if (haveUnchecked == 0) {
-                str = fmt::format(
-                    // xgettext:no-c-format
-                    fmt::runtime(_("{current_size} ({percent_done}% of {percent_available}% available)")),
-                    fmt::arg("current_size", total),
-                    fmt::arg("percent_done", buf2),
-                    fmt::arg("percent_available", avail));
-            } else {
-                str = fmt::format(
-                    // xgettext:no-c-format
-                    fmt::runtime(
-                        _("{current_size} ({percent_done}% of {percent_available}% available; {unverified_size} unverified)")),
-                    fmt::arg("current_size", total),
-                    fmt::arg("percent_done", buf2),
-                    fmt::arg("percent_available", avail),
-                    fmt::arg("unverified_size", unver));
-            }
+        if (sizeWhenDone != 0) {
+            availability_str = fmt::format(
+                "{:s}%",
+                tr_strpercent(100.0 * static_cast<double>(available) / static_cast<double>(sizeWhenDone)));
         }
     }
 
     have_lb_->set_text(str);
+    availability_lb_->set_text(availability_str);
 
     // dl_lb
     if (stats.empty()) {
@@ -2019,6 +2019,7 @@ DetailsDialog::Impl::Impl(DetailsDialog& dialog, Glib::RefPtr<Gtk::Builder> cons
     , size_lb_(gtr_get_widget<Gtk::Label>(builder, "torrent_size_value_label"))
     , state_lb_(gtr_get_widget<Gtk::Label>(builder, "state_value_label"))
     , have_lb_(gtr_get_widget<Gtk::Label>(builder, "have_value_label"))
+    , availability_lb_(gtr_get_widget<Gtk::Label>(builder, "availability_value_label"))
     , dl_lb_(gtr_get_widget<Gtk::Label>(builder, "downloaded_value_label"))
     , failed_lb_(gtr_get_widget<Gtk::Label>(builder, "failed_value_label"))
     , ul_lb_(gtr_get_widget<Gtk::Label>(builder, "uploaded_value_label"))

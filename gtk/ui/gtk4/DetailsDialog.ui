@@ -54,12 +54,22 @@
                               </object>
                             </child>
                             <child>
+                              <object class="GtkLabel" id="availability_label">
+                                <property name="label" translatable="yes">Availability:</property>
+                                <property name="xalign">0</property>
+                                <layout>
+                                  <property name="column">0</property>
+                                  <property name="row">2</property>
+                                </layout>
+                              </object>
+                            </child>
+                            <child>
                               <object class="GtkLabel" id="uploaded_label">
                                 <property name="label" translatable="yes">Uploaded:</property>
                                 <property name="xalign">0</property>
                                 <layout>
                                   <property name="column">0</property>
-                                  <property name="row">2</property>
+                                  <property name="row">3</property>
                                 </layout>
                               </object>
                             </child>
@@ -69,7 +79,7 @@
                                 <property name="xalign">0</property>
                                 <layout>
                                   <property name="column">0</property>
-                                  <property name="row">3</property>
+                                  <property name="row">4</property>
                                 </layout>
                               </object>
                             </child>
@@ -79,7 +89,7 @@
                                 <property name="xalign">0</property>
                                 <layout>
                                   <property name="column">0</property>
-                                  <property name="row">4</property>
+                                  <property name="row">5</property>
                                 </layout>
                               </object>
                             </child>
@@ -89,7 +99,7 @@
                                 <property name="xalign">0</property>
                                 <layout>
                                   <property name="column">0</property>
-                                  <property name="row">5</property>
+                                  <property name="row">6</property>
                                 </layout>
                               </object>
                             </child>
@@ -99,7 +109,7 @@
                                 <property name="xalign">0</property>
                                 <layout>
                                   <property name="column">0</property>
-                                  <property name="row">6</property>
+                                  <property name="row">7</property>
                                 </layout>
                               </object>
                             </child>
@@ -109,7 +119,7 @@
                                 <property name="xalign">0</property>
                                 <layout>
                                   <property name="column">0</property>
-                                  <property name="row">7</property>
+                                  <property name="row">8</property>
                                 </layout>
                               </object>
                             </child>
@@ -119,7 +129,7 @@
                                 <property name="xalign">0</property>
                                 <layout>
                                   <property name="column">0</property>
-                                  <property name="row">8</property>
+                                  <property name="row">9</property>
                                 </layout>
                               </object>
                             </child>
@@ -130,7 +140,7 @@
                                 <property name="yalign">0</property>
                                 <layout>
                                   <property name="column">0</property>
-                                  <property name="row">9</property>
+                                  <property name="row">10</property>
                                 </layout>
                               </object>
                             </child>
@@ -165,6 +175,21 @@
                               </object>
                             </child>
                             <child>
+                              <object class="GtkLabel" id="availability_value_label">
+                                <property name="hexpand">1</property>
+                                <property name="label">...</property>
+                                <property name="selectable">1</property>
+                                <property name="xalign">0</property>
+                                <accessibility>
+                                  <relation name="labelled-by">availability_label</relation>
+                                </accessibility>
+                                <layout>
+                                  <property name="column">1</property>
+                                  <property name="row">2</property>
+                                </layout>
+                              </object>
+                            </child>
+                            <child>
                               <object class="GtkLabel" id="uploaded_value_label">
                                 <property name="hexpand">1</property>
                                 <property name="label">...</property>
@@ -175,7 +200,7 @@
                                 </accessibility>
                                 <layout>
                                   <property name="column">1</property>
-                                  <property name="row">2</property>
+                                  <property name="row">3</property>
                                 </layout>
                               </object>
                             </child>
@@ -190,7 +215,7 @@
                                 </accessibility>
                                 <layout>
                                   <property name="column">1</property>
-                                  <property name="row">3</property>
+                                  <property name="row">4</property>
                                 </layout>
                               </object>
                             </child>
@@ -205,7 +230,7 @@
                                 </accessibility>
                                 <layout>
                                   <property name="column">1</property>
-                                  <property name="row">4</property>
+                                  <property name="row">5</property>
                                 </layout>
                               </object>
                             </child>
@@ -220,7 +245,7 @@
                                 </accessibility>
                                 <layout>
                                   <property name="column">1</property>
-                                  <property name="row">5</property>
+                                  <property name="row">6</property>
                                 </layout>
                               </object>
                             </child>
@@ -235,7 +260,7 @@
                                 </accessibility>
                                 <layout>
                                   <property name="column">1</property>
-                                  <property name="row">6</property>
+                                  <property name="row">7</property>
                                 </layout>
                               </object>
                             </child>
@@ -250,7 +275,7 @@
                                 </accessibility>
                                 <layout>
                                   <property name="column">1</property>
-                                  <property name="row">7</property>
+                                  <property name="row">8</property>
                                 </layout>
                               </object>
                             </child>
@@ -265,7 +290,7 @@
                                 </accessibility>
                                 <layout>
                                   <property name="column">1</property>
-                                  <property name="row">8</property>
+                                  <property name="row">9</property>
                                 </layout>
                               </object>
                             </child>
@@ -284,7 +309,7 @@
                                 </accessibility>
                                 <layout>
                                   <property name="column">1</property>
-                                  <property name="row">9</property>
+                                  <property name="row">10</property>
                                 </layout>
                               </object>
                             </child>
@@ -977,6 +1002,7 @@
     <widgets>
       <widget name="torrent_size_label"/>
       <widget name="have_label"/>
+      <widget name="availability_label"/>
       <widget name="uploaded_label"/>
       <widget name="downloaded_label"/>
       <widget name="failed_label"/>

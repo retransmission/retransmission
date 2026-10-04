@@ -191,13 +191,24 @@ msgstr[1] "({piece_count:L} ნაწილი @ {piece_size})"
 msgid "{current_size} ({percent_done}%)"
 msgstr "{current_size} ({percent_done}%)"
 
-#, no-c-format
-msgid "{current_size} ({percent_done}% of {percent_available}% available)"
-msgstr ""
+#. Translators: Text following the "Have:" label in torrent properties dialog;
+#. {current_size} is amount of downloaded and verified data,
+#. {complete_size} is overall size of torrent data,
+#. {percent_done} is percentage ({current_size}/{complete_size}*100)
+#. Translators: First part of torrent progress string,
+#. {current_size} is how much we've got,
+#. {complete_size} is how much we'll have when done,
+#. {percent_done} is a percentage of the two
+msgid "{current_size} of {complete_size} ({percent_done}%)"
+msgstr "{current_size}/{complete_size} ({percent_done}%)"
 
-#, c-format
-msgid "{current_size} ({percent_done}% of {percent_available}% available; {unverified_size} unverified)"
-msgstr ""
+#. Translators: Text following the "Have:" label in torrent properties dialog;
+#. {current_size} is amount of downloaded data (both verified and unverified),
+#. {complete_size} is overall size of torrent data,
+#. {percent_done} is percentage ({current_size}/{complete_size}*100),
+#. {unverified_size} is amount of downloaded but not yet verified data
+msgid "{current_size} of {complete_size} ({percent_done}%), {unverified_size} Unverified"
+msgstr "{current_size} / {complete_size} ({percent_done}%), {unverified_size} შეუმოწმებელი"
 
 msgid "{discarded_size} discarded after failed checksum"
 msgstr ""
@@ -660,17 +671,6 @@ msgstr ""
 msgid "Verifying local data ({percent_done}% tested)"
 msgstr "ადგილობრივი მონაცემების გადამოწმება ({percent_done}% შემოწმებულია)"
 
-#. Translators: Text following the "Have:" label in torrent properties dialog;
-#. {current_size} is amount of downloaded and verified data,
-#. {complete_size} is overall size of torrent data,
-#. {percent_done} is percentage ({current_size}/{complete_size}*100)
-#. Translators: First part of torrent progress string,
-#. {current_size} is how much we've got,
-#. {complete_size} is how much we'll have when done,
-#. {percent_done} is a percentage of the two
-msgid "{current_size} of {complete_size} ({percent_done}%)"
-msgstr "{current_size}/{complete_size} ({percent_done}%)"
-
 #. Translators: First part of torrent progress string,
 #. {current_size} is how much we've got,
 #. {complete_size} is the torrent's total size,
@@ -962,6 +962,9 @@ msgstr "ზომა:"
 
 msgid "Have:"
 msgstr "მაქვს:"
+
+msgid "Availability:"
+msgstr "ხელმისაწვდომობა:"
 
 msgid "Uploaded:"
 msgstr "ატვირთული:"
@@ -2068,14 +2071,6 @@ msgstr "{appname}-ის შესახებ"
 msgid "Downloads Complete"
 msgstr "ტორენტის თვისებები"
 
-#. Translators: Text following the "Have:" label in torrent properties dialog;
-#. {current_size} is amount of downloaded data (both verified and unverified),
-#. {complete_size} is overall size of torrent data,
-#. {percent_done} is percentage ({current_size}/{complete_size}*100),
-#. {unverified_size} is amount of downloaded but not yet verified data
-msgid "{current_size} of {complete_size} ({percent_done}%), {unverified_size} Unverified"
-msgstr "{current_size} / {complete_size} ({percent_done}%), {unverified_size} შეუმოწმებელი"
-
 msgid "Add URL(s)"
 msgstr ""
 
@@ -2087,9 +2082,6 @@ msgstr ""
 
 msgid "Torrent Properties"
 msgstr "ტორენტის თვისებები"
-
-msgid "Availability:"
-msgstr "ხელმისაწვდომობა:"
 
 msgid "Labels:"
 msgstr ""
