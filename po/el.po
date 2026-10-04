@@ -221,8 +221,6 @@ msgstr "Σε παύση"
 #. Translators: No Ratio
 #. Translators: Prefs -> blocklist -> message
 #. Translators: tracker peer stat
-#. Translators: Tracker last announce
-#. Translators: Tracker last scrape
 msgid "N/A"
 msgstr "N/A"
 
@@ -1135,6 +1133,7 @@ msgid "Uploaded:"
 msgstr "Απεσταλμένα:"
 
 #. Translators: Stats window -> label
+#. Translators: tracker peer stat
 msgid "Downloaded:"
 msgstr "Ληφθέντα:"
 
@@ -1740,7 +1739,6 @@ msgstr "Η αίτηση για λίστα διαμοιραστών {markup_begin
 msgid "Got an error '{markup_begin}{error}{markup_end}' {time_span_ago}"
 msgstr "Λήφθηκε σφάλμα '{markup_begin}{error}{markup_end}' {time_span_ago}"
 
-#. Translators: Tracker next announce
 msgid "No updates scheduled"
 msgstr "Δεν έχει προγραμματιστεί καμία ενημέρωση"
 
@@ -3685,58 +3683,15 @@ msgid "Change torrent settings"
 msgstr "Κοινή χρήση αρχείου torrent"
 
 #. Translators: tracker peer stat
-msgid "Seeders"
-msgstr "Διαμοιραστές"
+msgid "Seeders:"
+msgstr "Διαμοιραστές:"
 
 #. Translators: tracker peer stat
-msgid "Leechers"
-msgstr "Αποδέκτες"
-
-#. Translators: tracker peer stat
-msgid "Downloaded"
-msgstr "Ληφθέντα"
-
-#. Translators: Tracker last announce
-msgid "Announce timed out"
-msgstr "Λήξη χρονικού ορίου Ανακοίνωσης"
-
-#. Translators: Tracker last announce
-msgid "Announce error"
-msgstr "Σφάλμα Ανακοίνωσης"
-
-#. Translators: Tracker last announce
-msgid "Last Announce"
-msgstr "Τελευταία Ανακοίνωση"
-
-#. Translators: Tracker last announce
-#, fuzzy
-#| msgid "{count:L} Seeding"
-msgid "got {count:L} peer"
-msgid_plural "got {count:L} peers"
-msgstr[0] "{count:L} Ανεβαίνουν"
-msgstr[1] "{count:L} Ανεβαίνουν"
-
-#. Translators: Tracker next announce
-msgid "Announce in progress"
-msgstr "Ανακοίνωση σε εξέλιξη"
-
-msgid "Next announce in {time_span}"
-msgstr "Επόμενη ανακοίνωσης σε {time_span}"
+msgid "Leechers:"
+msgstr "Αποδέκτες:"
 
 msgid "Tracker will be used as a backup"
 msgstr "Ο Ιχνηλάτης θα χρησιμοποιηθεί ως εφεδρικός"
-
-#. Translators: Tracker last scrape
-msgid "Scrape timed out"
-msgstr "Λήξη χρονικού ορίου Περάσματος"
-
-#. Translators: Tracker last scrape
-msgid "Scrape error"
-msgstr "Σφάλμα Περάσματος"
-
-#. Translators: Tracker last scrape
-msgid "Last Scrape"
-msgstr "Τελευταίο Πέρασμα"
 
 msgid "Server"
 msgstr "Διακομιστής"
@@ -4026,6 +3981,37 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "δευτερόλεπτο"
 msgstr[1] "δευτερόλεπτα"
+
+#~ msgid "Announce timed out"
+#~ msgstr "Λήξη χρονικού ορίου Ανακοίνωσης"
+
+#~ msgid "Announce error"
+#~ msgstr "Σφάλμα Ανακοίνωσης"
+
+#~ msgid "Last Announce"
+#~ msgstr "Τελευταία Ανακοίνωση"
+
+#, fuzzy
+#~| msgid "{count:L} Seeding"
+#~ msgid "got {count:L} peer"
+#~ msgid_plural "got {count:L} peers"
+#~ msgstr[0] "{count:L} Ανεβαίνουν"
+#~ msgstr[1] "{count:L} Ανεβαίνουν"
+
+#~ msgid "Announce in progress"
+#~ msgstr "Ανακοίνωση σε εξέλιξη"
+
+#~ msgid "Next announce in {time_span}"
+#~ msgstr "Επόμενη ανακοίνωσης σε {time_span}"
+
+#~ msgid "Scrape timed out"
+#~ msgstr "Λήξη χρονικού ορίου Περάσματος"
+
+#~ msgid "Scrape error"
+#~ msgstr "Σφάλμα Περάσματος"
+
+#~ msgid "Last Scrape"
+#~ msgstr "Τελευταίο Πέρασμα"
 
 #, fuzzy
 #~| msgid "Down: {downloaded_size}, Up: {uploaded_size}"

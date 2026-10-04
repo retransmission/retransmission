@@ -135,6 +135,14 @@ TEST_F(FormattersTest, trackerStatusLines)
                 "Tracker had <ok>no information</ok> on peer counts 1 hour ago" }),
         tr::app::tracker_status_lines(tracker, Now, true, Markup));
 
+    // A client that shows plain text gets no markup, and nothing is escaped.
+    static auto constexpr PlainText = tr::app::TrackerStatusMarkup{ .pending_begin = {}, .pending_end = {}, .escape = false };
+    EXPECT_EQ(
+        (Lines{ R"(Got an error '<b>Tom & Jerry's "torrent"</b> ' 5 minutes ago)",
+                "Asked for more peers 1 second ago",
+                "Tracker had no information on peer counts 1 hour ago" }),
+        tr::app::tracker_status_lines(tracker, Now, true, PlainText));
+
     tracker.lastAnnounceTimedOut = true;
     tracker.announceState = TR_TRACKER_INACTIVE;
     tracker.hasAnnounced = false;

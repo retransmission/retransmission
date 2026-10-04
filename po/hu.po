@@ -221,8 +221,6 @@ msgstr "Szüneteltetve"
 #. Translators: No Ratio
 #. Translators: Prefs -> blocklist -> message
 #. Translators: tracker peer stat
-#. Translators: Tracker last announce
-#. Translators: Tracker last scrape
 msgid "N/A"
 msgstr "N/A"
 
@@ -1136,6 +1134,7 @@ msgid "Uploaded:"
 msgstr "Feltöltve:"
 
 #. Translators: Stats window -> label
+#. Translators: tracker peer stat
 msgid "Downloaded:"
 msgstr "Letöltve:"
 
@@ -1741,7 +1740,6 @@ msgstr "A partnerlista kérése során {markup_begin}időtúllépés történt {
 msgid "Got an error '{markup_begin}{error}{markup_end}' {time_span_ago}"
 msgstr "'{markup_begin}{error}{markup_end}' hiba fogadva {time_span_ago}"
 
-#. Translators: Tracker next announce
 msgid "No updates scheduled"
 msgstr "Nincs ütemezett frissítés"
 
@@ -3683,58 +3681,15 @@ msgid "Change torrent settings"
 msgstr "Torrent fájl megosztása"
 
 #. Translators: tracker peer stat
-msgid "Seeders"
-msgstr "Megosztók"
+msgid "Seeders:"
+msgstr "Megosztók:"
 
 #. Translators: tracker peer stat
-msgid "Leechers"
-msgstr "Letöltők"
-
-#. Translators: tracker peer stat
-msgid "Downloaded"
-msgstr "Letöltve"
-
-#. Translators: Tracker last announce
-msgid "Announce timed out"
-msgstr "Bejelentési időtúllépés"
-
-#. Translators: Tracker last announce
-msgid "Announce error"
-msgstr "Bejelentési hiba"
-
-#. Translators: Tracker last announce
-msgid "Last Announce"
-msgstr "Utolsó bejelentés"
-
-#. Translators: Tracker last announce
-#, fuzzy
-#| msgid "{count:L} Seeding"
-msgid "got {count:L} peer"
-msgid_plural "got {count:L} peers"
-msgstr[0] "{count:L} Megosztás"
-msgstr[1] "{count:L} Megosztás"
-
-#. Translators: Tracker next announce
-msgid "Announce in progress"
-msgstr "Bejelentés folyamatban"
-
-msgid "Next announce in {time_span}"
-msgstr "Következő bejelentés {time_span}"
+msgid "Leechers:"
+msgstr "Letöltők:"
 
 msgid "Tracker will be used as a backup"
 msgstr "Tracker tartalékként lesz használva"
-
-#. Translators: Tracker last scrape
-msgid "Scrape timed out"
-msgstr "Scrape időtúllépés"
-
-#. Translators: Tracker last scrape
-msgid "Scrape error"
-msgstr "Scrape hiba"
-
-#. Translators: Tracker last scrape
-msgid "Last Scrape"
-msgstr "Utolsó scrape"
 
 msgid "Server"
 msgstr "Kiszolgáló"
@@ -4024,6 +3979,37 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "másodperc"
 msgstr[1] "másodperc"
+
+#~ msgid "Announce timed out"
+#~ msgstr "Bejelentési időtúllépés"
+
+#~ msgid "Announce error"
+#~ msgstr "Bejelentési hiba"
+
+#~ msgid "Last Announce"
+#~ msgstr "Utolsó bejelentés"
+
+#, fuzzy
+#~| msgid "{count:L} Seeding"
+#~ msgid "got {count:L} peer"
+#~ msgid_plural "got {count:L} peers"
+#~ msgstr[0] "{count:L} Megosztás"
+#~ msgstr[1] "{count:L} Megosztás"
+
+#~ msgid "Announce in progress"
+#~ msgstr "Bejelentés folyamatban"
+
+#~ msgid "Next announce in {time_span}"
+#~ msgstr "Következő bejelentés {time_span}"
+
+#~ msgid "Scrape timed out"
+#~ msgstr "Scrape időtúllépés"
+
+#~ msgid "Scrape error"
+#~ msgstr "Scrape hiba"
+
+#~ msgid "Last Scrape"
+#~ msgstr "Utolsó scrape"
 
 #, fuzzy
 #~| msgid "Down: {downloaded_size}, Up: {uploaded_size}"

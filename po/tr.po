@@ -193,8 +193,6 @@ msgstr "Duraklatıldı"
 #. Translators: No Ratio
 #. Translators: Prefs -> blocklist -> message
 #. Translators: tracker peer stat
-#. Translators: Tracker last announce
-#. Translators: Tracker last scrape
 msgid "N/A"
 msgstr "Yok"
 
@@ -1107,6 +1105,7 @@ msgid "Uploaded:"
 msgstr "Yüklenen:"
 
 #. Translators: Stats window -> label
+#. Translators: tracker peer stat
 msgid "Downloaded:"
 msgstr "İndirilen:"
 
@@ -1712,7 +1711,6 @@ msgstr "Eş listesi istemi {markup_begin}{time_span_ago} önce zaman aşımına 
 msgid "Got an error '{markup_begin}{error}{markup_end}' {time_span_ago}"
 msgstr "{time_span_ago} önce '{markup_begin}{error}{markup_end}' hatası alındı"
 
-#. Translators: Tracker next announce
 msgid "No updates scheduled"
 msgstr "Belirlenmiş güncelleştirme yok"
 
@@ -3655,58 +3653,15 @@ msgid "Change torrent settings"
 msgstr "Torrent dosyasını paylaş"
 
 #. Translators: tracker peer stat
-msgid "Seeders"
-msgstr "Besleyenler"
+msgid "Seeders:"
+msgstr "Besleyenler:"
 
 #. Translators: tracker peer stat
-msgid "Leechers"
-msgstr "İndirenler"
-
-#. Translators: tracker peer stat
-msgid "Downloaded"
-msgstr "İndirildi"
-
-#. Translators: Tracker last announce
-msgid "Announce timed out"
-msgstr "Duyuru zaman aşımı"
-
-#. Translators: Tracker last announce
-msgid "Announce error"
-msgstr "Duyuru hatası"
-
-#. Translators: Tracker last announce
-msgid "Last Announce"
-msgstr "Son Duyuru"
-
-#. Translators: Tracker last announce
-#, fuzzy
-#| msgid "{count:L} Seeding"
-msgid "got {count:L} peer"
-msgid_plural "got {count:L} peers"
-msgstr[0] "{count:L} Besleniyor"
-msgstr[1] "{count:L} Besleniyor"
-
-#. Translators: Tracker next announce
-msgid "Announce in progress"
-msgstr "Duyuru sürüyor"
-
-msgid "Next announce in {time_span}"
-msgstr "Sonraki duyuru {time_span} içinde"
+msgid "Leechers:"
+msgstr "İndirenler:"
 
 msgid "Tracker will be used as a backup"
 msgstr "İzleyici bir yedek olarak kullanılacak"
-
-#. Translators: Tracker last scrape
-msgid "Scrape timed out"
-msgstr "İstek zaman aşımına uğradı"
-
-#. Translators: Tracker last scrape
-msgid "Scrape error"
-msgstr "İstek hatası"
-
-#. Translators: Tracker last scrape
-msgid "Last Scrape"
-msgstr "Son İstek"
 
 msgid "Server"
 msgstr "Sunucu"
@@ -3996,6 +3951,37 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "saniye"
 msgstr[1] "saniye"
+
+#~ msgid "Announce timed out"
+#~ msgstr "Duyuru zaman aşımı"
+
+#~ msgid "Announce error"
+#~ msgstr "Duyuru hatası"
+
+#~ msgid "Last Announce"
+#~ msgstr "Son Duyuru"
+
+#, fuzzy
+#~| msgid "{count:L} Seeding"
+#~ msgid "got {count:L} peer"
+#~ msgid_plural "got {count:L} peers"
+#~ msgstr[0] "{count:L} Besleniyor"
+#~ msgstr[1] "{count:L} Besleniyor"
+
+#~ msgid "Announce in progress"
+#~ msgstr "Duyuru sürüyor"
+
+#~ msgid "Next announce in {time_span}"
+#~ msgstr "Sonraki duyuru {time_span} içinde"
+
+#~ msgid "Scrape timed out"
+#~ msgstr "İstek zaman aşımına uğradı"
+
+#~ msgid "Scrape error"
+#~ msgstr "İstek hatası"
+
+#~ msgid "Last Scrape"
+#~ msgstr "Son İstek"
 
 #, fuzzy
 #~| msgid "Down: {downloaded_size}, Up: {uploaded_size}"

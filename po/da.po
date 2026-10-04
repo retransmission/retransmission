@@ -211,8 +211,6 @@ msgstr "På pause"
 #. Translators: No Ratio
 #. Translators: Prefs -> blocklist -> message
 #. Translators: tracker peer stat
-#. Translators: Tracker last announce
-#. Translators: Tracker last scrape
 msgid "N/A"
 msgstr "-"
 
@@ -1126,6 +1124,7 @@ msgid "Uploaded:"
 msgstr "Uploadet:"
 
 #. Translators: Stats window -> label
+#. Translators: tracker peer stat
 msgid "Downloaded:"
 msgstr "Downloadet:"
 
@@ -1731,7 +1730,6 @@ msgstr "Modpartliste anmodet {markup_begin}fik timeout {time_span_ago}{markup_en
 msgid "Got an error '{markup_begin}{error}{markup_end}' {time_span_ago}"
 msgstr "Fik en fejl '{markup_begin}{error}{markup_end}' {time_span_ago}"
 
-#. Translators: Tracker next announce
 msgid "No updates scheduled"
 msgstr "Ingen planlagte opdateringer"
 
@@ -3689,58 +3687,15 @@ msgstr "Del torrent-fil"
 #, fuzzy
 #| msgid "seeder"
 #| msgid_plural "seeders"
-msgid "Seeders"
-msgstr "seeder"
+msgid "Seeders:"
+msgstr "seeder:"
 
 #. Translators: tracker peer stat
-msgid "Leechers"
-msgstr "Leechere"
-
-#. Translators: tracker peer stat
-msgid "Downloaded"
-msgstr "Hentet"
-
-#. Translators: Tracker last announce
-msgid "Announce timed out"
-msgstr "Annoncering fik timeout"
-
-#. Translators: Tracker last announce
-msgid "Announce error"
-msgstr "Annonceringsfejl"
-
-#. Translators: Tracker last announce
-msgid "Last Announce"
-msgstr "Sidste annoncering"
-
-#. Translators: Tracker last announce
-#, fuzzy
-#| msgid "{count:L} Seeding"
-msgid "got {count:L} peer"
-msgid_plural "got {count:L} peers"
-msgstr[0] "{count:L} Deler"
-msgstr[1] "{count:L} Deler"
-
-#. Translators: Tracker next announce
-msgid "Announce in progress"
-msgstr "Annoncering i gang"
-
-msgid "Next announce in {time_span}"
-msgstr "Næste annoncering om {time_span}"
+msgid "Leechers:"
+msgstr "Leechere:"
 
 msgid "Tracker will be used as a backup"
 msgstr "Tracker benyttes som backup"
-
-#. Translators: Tracker last scrape
-msgid "Scrape timed out"
-msgstr "Scrape fik timeout"
-
-#. Translators: Tracker last scrape
-msgid "Scrape error"
-msgstr "Fejl ved scrape"
-
-#. Translators: Tracker last scrape
-msgid "Last Scrape"
-msgstr "Sidste scrape"
 
 msgid "Server"
 msgstr "Server"
@@ -4030,6 +3985,37 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "sekund"
 msgstr[1] "sekunder"
+
+#~ msgid "Announce timed out"
+#~ msgstr "Annoncering fik timeout"
+
+#~ msgid "Announce error"
+#~ msgstr "Annonceringsfejl"
+
+#~ msgid "Last Announce"
+#~ msgstr "Sidste annoncering"
+
+#, fuzzy
+#~| msgid "{count:L} Seeding"
+#~ msgid "got {count:L} peer"
+#~ msgid_plural "got {count:L} peers"
+#~ msgstr[0] "{count:L} Deler"
+#~ msgstr[1] "{count:L} Deler"
+
+#~ msgid "Announce in progress"
+#~ msgstr "Annoncering i gang"
+
+#~ msgid "Next announce in {time_span}"
+#~ msgstr "Næste annoncering om {time_span}"
+
+#~ msgid "Scrape timed out"
+#~ msgstr "Scrape fik timeout"
+
+#~ msgid "Scrape error"
+#~ msgstr "Fejl ved scrape"
+
+#~ msgid "Last Scrape"
+#~ msgstr "Sidste scrape"
 
 #, fuzzy
 #~| msgid "Down: {downloaded_size}, Up: {uploaded_size}"

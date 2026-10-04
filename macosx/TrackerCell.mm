@@ -2,6 +2,8 @@
 // It may be used under the MIT (SPDX: MIT) license.
 // License text can be found in the licenses/ folder.
 
+#include <iterator>
+
 #include <libtransmission/web-utils.h> //tr_addressIsIP()
 
 #import "CocoaCompatibility.h"
@@ -111,43 +113,37 @@ static NSMutableSet* fTrackerIconLoading;
 
     //count label strings
     // Translators: tracker peer stat
-    NSString* seederLabelBaseString = [TR_TEXT("Seeders") stringByAppendingFormat:@": "];
+    NSString* seederLabelBaseString = [TR_TEXT("Seeders:") stringByAppendingString:@" "];
     NSAttributedString* seederLabelString = [self attributedStatusWithString:seederLabelBaseString];
     NSRect const seederLabelRect = [self rectForCountLabelWithString:seederLabelString withRightRect:seederRect inBounds:cellFrame];
     [seederLabelString drawInRect:seederLabelRect];
 
     // Translators: tracker peer stat
-    NSString* leecherLabelBaseString = [TR_TEXT("Leechers") stringByAppendingFormat:@": "];
+    NSString* leecherLabelBaseString = [TR_TEXT("Leechers:") stringByAppendingString:@" "];
     NSAttributedString* leecherLabelString = [self attributedStatusWithString:leecherLabelBaseString];
     NSRect const leecherLabelRect = [self rectForCountLabelWithString:leecherLabelString withRightRect:leecherRect
                                                              inBounds:cellFrame];
     [leecherLabelString drawInRect:leecherLabelRect];
 
     // Translators: tracker peer stat
-    NSString* downloadedLabelBaseString = [TR_TEXT("Downloaded") stringByAppendingFormat:@": "];
+    NSString* downloadedLabelBaseString = [TR_TEXT("Downloaded:") stringByAppendingString:@" "];
     NSAttributedString* downloadedLabelString = [self attributedStatusWithString:downloadedLabelBaseString];
     NSRect const downloadedLabelRect = [self rectForCountLabelWithString:downloadedLabelString withRightRect:downloadedRect
                                                                 inBounds:cellFrame];
     [downloadedLabelString drawInRect:downloadedLabelRect];
 
-    //status strings
-    NSAttributedString* lastAnnounceString = [self attributedStatusWithString:node.lastAnnounceStatusString];
-    NSRect const lastAnnounceRect = [self rectForStatusWithString:lastAnnounceString withAboveRect:nameRect
-                                                    withRightRect:seederLabelRect
-                                                         inBounds:cellFrame];
-    [lastAnnounceString drawInRect:lastAnnounceRect];
-
-    NSAttributedString* nextAnnounceString = [self attributedStatusWithString:node.nextAnnounceStatusString];
-    NSRect const nextAnnounceRect = [self rectForStatusWithString:nextAnnounceString withAboveRect:lastAnnounceRect
-                                                    withRightRect:leecherLabelRect
-                                                         inBounds:cellFrame];
-    [nextAnnounceString drawInRect:nextAnnounceRect];
-
-    NSAttributedString* lastScrapeString = [self attributedStatusWithString:node.lastScrapeStatusString];
-    NSRect const lastScrapeRect = [self rectForStatusWithString:lastScrapeString withAboveRect:nextAnnounceRect
-                                                  withRightRect:downloadedLabelRect
-                                                       inBounds:cellFrame];
-    [lastScrapeString drawInRect:lastScrapeRect];
+    //status strings, one beside each count
+    // The cell has three rows. A tracker that has announced, has scraped and will scrape again has a fourth line,
+    // which says when the next scrape is. That line isn't drawn.
+    NSArray<NSString*>* const statusLines = node.statusLines;
+    NSRect const labelRects[] = { seederLabelRect, leecherLabelRect, downloadedLabelRect };
+    NSRect aboveRect = nameRect;
+    for (NSUInteger i = 0; i < std::size(labelRects) && i < statusLines.count; ++i) {
+        NSAttributedString* statusString = [self attributedStatusWithString:statusLines[i]];
+        aboveRect = [self rectForStatusWithString:statusString withAboveRect:aboveRect withRightRect:labelRects[i]
+                                         inBounds:cellFrame];
+        [statusString drawInRect:aboveRect];
+    }
 }
 
 #pragma mark - Private

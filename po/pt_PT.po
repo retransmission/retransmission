@@ -191,8 +191,6 @@ msgstr "Em pausa"
 #. Translators: No Ratio
 #. Translators: Prefs -> blocklist -> message
 #. Translators: tracker peer stat
-#. Translators: Tracker last announce
-#. Translators: Tracker last scrape
 msgid "N/A"
 msgstr "N/A"
 
@@ -1110,6 +1108,7 @@ msgid "Uploaded:"
 msgstr "Carregado:"
 
 #. Translators: Stats window -> label
+#. Translators: tracker peer stat
 msgid "Downloaded:"
 msgstr "Transferido:"
 
@@ -1717,7 +1716,6 @@ msgstr ""
 msgid "Got an error '{markup_begin}{error}{markup_end}' {time_span_ago}"
 msgstr ""
 
-#. Translators: Tracker next announce
 msgid "No updates scheduled"
 msgstr "Não há atualizações programadas"
 
@@ -3703,59 +3701,15 @@ msgstr "Partilhar ficheiro torrent"
 #. Translators: tracker peer stat
 #, fuzzy
 #| msgid "Seed Forever"
-msgid "Seeders"
-msgstr "Semear para sempre"
+msgid "Seeders:"
+msgstr "Semear para sempre:"
 
 #. Translators: tracker peer stat
-msgid "Leechers"
+msgid "Leechers:"
 msgstr ""
-
-#. Translators: tracker peer stat
-msgid "Downloaded"
-msgstr "Recebido"
-
-#. Translators: Tracker last announce
-msgid "Announce timed out"
-msgstr "O intervalo de espera do anúncio expirou"
-
-#. Translators: Tracker last announce
-msgid "Announce error"
-msgstr "Erro no anúncio"
-
-#. Translators: Tracker last announce
-msgid "Last Announce"
-msgstr "Último anúncio"
-
-#. Translators: Tracker last announce
-#, fuzzy
-#| msgid "{count:L} Seeding"
-msgid "got {count:L} peer"
-msgid_plural "got {count:L} peers"
-msgstr[0] "{count:L} a enviar"
-msgstr[1] "{count:L} a enviar"
-msgstr[2] "{count:L} a enviar"
-
-#. Translators: Tracker next announce
-msgid "Announce in progress"
-msgstr "Anúncio em progresso"
-
-msgid "Next announce in {time_span}"
-msgstr "Próximo anúncio em {time_span}"
 
 msgid "Tracker will be used as a backup"
 msgstr "O tracker será usado para redundância"
-
-#. Translators: Tracker last scrape
-msgid "Scrape timed out"
-msgstr "O intervalo de espera na passagem expirou"
-
-#. Translators: Tracker last scrape
-msgid "Scrape error"
-msgstr "Erro na passagem"
-
-#. Translators: Tracker last scrape
-msgid "Last Scrape"
-msgstr "Última passagem"
 
 msgid "Server"
 msgstr "Servidor"
@@ -4074,6 +4028,38 @@ msgid_plural "seconds"
 msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
+
+#~ msgid "Announce timed out"
+#~ msgstr "O intervalo de espera do anúncio expirou"
+
+#~ msgid "Announce error"
+#~ msgstr "Erro no anúncio"
+
+#~ msgid "Last Announce"
+#~ msgstr "Último anúncio"
+
+#, fuzzy
+#~| msgid "{count:L} Seeding"
+#~ msgid "got {count:L} peer"
+#~ msgid_plural "got {count:L} peers"
+#~ msgstr[0] "{count:L} a enviar"
+#~ msgstr[1] "{count:L} a enviar"
+#~ msgstr[2] "{count:L} a enviar"
+
+#~ msgid "Announce in progress"
+#~ msgstr "Anúncio em progresso"
+
+#~ msgid "Next announce in {time_span}"
+#~ msgstr "Próximo anúncio em {time_span}"
+
+#~ msgid "Scrape timed out"
+#~ msgstr "O intervalo de espera na passagem expirou"
+
+#~ msgid "Scrape error"
+#~ msgstr "Erro na passagem"
+
+#~ msgid "Last Scrape"
+#~ msgstr "Última passagem"
 
 #, fuzzy
 #~| msgid "Down: {downloaded_size}, Up: {uploaded_size}"

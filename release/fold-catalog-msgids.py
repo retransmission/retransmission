@@ -254,6 +254,10 @@ RENAMES = [
     },
     # The Qt client's combo box item takes the GTK client's sentence case. The Mac client's pop-up item keeps title case.
     {'from': {'msgid': 'Use Global Settings'}, 'to': {'msgid': 'Use global settings'}, 'keep': True},
+    # The Mac client's tracker counts keep their colons inside the message.
+    {'from': {'msgid': 'Seeders'}, 'to': {'msgid': 'Seeders:'}, 'colon': True},
+    {'from': {'msgid': 'Leechers'}, 'to': {'msgid': 'Leechers:'}, 'colon': True},
+    {'from': {'msgid': 'Downloaded'}, 'to': {'msgid': 'Downloaded:'}, 'colon': True},
 ]
 
 FIELD_NAMES = ('msgctxt', 'msgid', 'msgid_plural')

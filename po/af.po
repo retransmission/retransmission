@@ -193,8 +193,6 @@ msgstr "Wagtend"
 #. Translators: No Ratio
 #. Translators: Prefs -> blocklist -> message
 #. Translators: tracker peer stat
-#. Translators: Tracker last announce
-#. Translators: Tracker last scrape
 msgid "N/A"
 msgstr "NVT"
 
@@ -1104,6 +1102,7 @@ msgid "Uploaded:"
 msgstr "Opgelaai:"
 
 #. Translators: Stats window -> label
+#. Translators: tracker peer stat
 msgid "Downloaded:"
 msgstr "Afgelaai:"
 
@@ -1707,7 +1706,6 @@ msgstr ""
 msgid "Got an error '{markup_begin}{error}{markup_end}' {time_span_ago}"
 msgstr ""
 
-#. Translators: Tracker next announce
 msgid "No updates scheduled"
 msgstr "Geen bywerkings geskeduleer nie"
 
@@ -3654,58 +3652,15 @@ msgid "Change torrent settings"
 msgstr "Deel torrentlêer"
 
 #. Translators: tracker peer stat
-msgid "Seeders"
-msgstr "Saaiers"
+msgid "Seeders:"
+msgstr "Saaiers:"
 
 #. Translators: tracker peer stat
-msgid "Leechers"
-msgstr "Suiers"
-
-#. Translators: tracker peer stat
-msgid "Downloaded"
-msgstr "Afgelaai"
-
-#. Translators: Tracker last announce
-msgid "Announce timed out"
-msgstr "Aankondig het uitgetel"
-
-#. Translators: Tracker last announce
-msgid "Announce error"
-msgstr "Aankondigfout"
-
-#. Translators: Tracker last announce
-msgid "Last Announce"
-msgstr "Laas Aangekondig"
-
-#. Translators: Tracker last announce
-#, fuzzy
-#| msgid "{count:L} Seeding"
-msgid "got {count:L} peer"
-msgid_plural "got {count:L} peers"
-msgstr[0] "{count:L} saai tans"
-msgstr[1] "{count:L} saai tans"
-
-#. Translators: Tracker next announce
-msgid "Announce in progress"
-msgstr "Word tans aangekondig"
-
-msgid "Next announce in {time_span}"
-msgstr "Volgende aankondiging oor {time_span}"
+msgid "Leechers:"
+msgstr "Suiers:"
 
 msgid "Tracker will be used as a backup"
 msgstr "Spoorder sal as rugsteun gebruik word"
-
-#. Translators: Tracker last scrape
-msgid "Scrape timed out"
-msgstr "Skraap het uitgetel"
-
-#. Translators: Tracker last scrape
-msgid "Scrape error"
-msgstr "Skraapfout"
-
-#. Translators: Tracker last scrape
-msgid "Last Scrape"
-msgstr "Laas Geskraap"
 
 msgid "Server"
 msgstr "Bediener"
@@ -3995,6 +3950,37 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "sekonde"
 msgstr[1] "sekondes"
+
+#~ msgid "Announce timed out"
+#~ msgstr "Aankondig het uitgetel"
+
+#~ msgid "Announce error"
+#~ msgstr "Aankondigfout"
+
+#~ msgid "Last Announce"
+#~ msgstr "Laas Aangekondig"
+
+#, fuzzy
+#~| msgid "{count:L} Seeding"
+#~ msgid "got {count:L} peer"
+#~ msgid_plural "got {count:L} peers"
+#~ msgstr[0] "{count:L} saai tans"
+#~ msgstr[1] "{count:L} saai tans"
+
+#~ msgid "Announce in progress"
+#~ msgstr "Word tans aangekondig"
+
+#~ msgid "Next announce in {time_span}"
+#~ msgstr "Volgende aankondiging oor {time_span}"
+
+#~ msgid "Scrape timed out"
+#~ msgstr "Skraap het uitgetel"
+
+#~ msgid "Scrape error"
+#~ msgstr "Skraapfout"
+
+#~ msgid "Last Scrape"
+#~ msgstr "Laas Geskraap"
 
 #, fuzzy
 #~| msgid "Down: {downloaded_size}, Up: {uploaded_size}"

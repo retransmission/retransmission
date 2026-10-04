@@ -30,8 +30,7 @@
 /// -1 if unknown
 @property(nonatomic, readonly) NSInteger totalDownloaded;
 
-@property(nonatomic, readonly) NSString* lastAnnounceStatusString;
-@property(nonatomic, readonly) NSString* nextAnnounceStatusString;
-@property(nonatomic, readonly) NSString* lastScrapeStatusString;
+/// What the tracker's last announce and scrape got and when it is asked again, in the other clients' words.
+@property(nonatomic, readonly) NSArray<NSString*>* statusLines;
 
 @end

@@ -35,12 +35,19 @@ struct TrackerStatusMarkup {
     std::string_view timeout_end;
     std::string_view error_begin;
     std::string_view error_end;
+
+    // Around the time of a request that is under way.
+    std::string_view pending_begin = "<small>";
+    std::string_view pending_end = "</small>";
+
+    // Whether to escape the tracker's error messages, which markup needs since they come from the tracker.
+    // A client that shows the lines as plain text leaves every field above empty and sets this to false.
+    bool escape = true;
 };
 
-// A tracker's status as lines of Pango or HTML markup:
+// A tracker's status as lines of Pango or HTML markup, or of plain text:
 // what its last announce got and when it asks for peers again,
 // then the same for scrapes if `with_scrape`.
-// The tracker's error messages are escaped, since they come from the tracker.
 [[nodiscard]] std::vector<std::string> tracker_status_lines(
     tr_tracker_view const& tracker,
     time_t now,

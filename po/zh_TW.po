@@ -209,8 +209,6 @@ msgstr "已暫停"
 #. Translators: No Ratio
 #. Translators: Prefs -> blocklist -> message
 #. Translators: tracker peer stat
-#. Translators: Tracker last announce
-#. Translators: Tracker last scrape
 msgid "N/A"
 msgstr "不適用"
 
@@ -1112,6 +1110,7 @@ msgid "Uploaded:"
 msgstr "已上傳："
 
 #. Translators: Stats window -> label
+#. Translators: tracker peer stat
 msgid "Downloaded:"
 msgstr "已下載："
 
@@ -1708,7 +1707,6 @@ msgstr "在 {time_span_ago} 之前請求節點清單{markup_begin}逾時{markup_
 msgid "Got an error '{markup_begin}{error}{markup_end}' {time_span_ago}"
 msgstr "在 {time_span_ago} 之前發生錯誤 '{markup_begin}{error}{markup_end}'"
 
-#. Translators: Tracker next announce
 msgid "No updates scheduled"
 msgstr "沒有已排定的更新"
 
@@ -3613,58 +3611,15 @@ msgid "Change torrent settings"
 msgstr "分享 Torrent 檔案"
 
 #. Translators: tracker peer stat
-msgid "Seeders"
-msgstr "做種者"
+msgid "Seeders:"
+msgstr "做種者："
 
 #. Translators: tracker peer stat
-msgid "Leechers"
-msgstr "下載者"
-
-#. Translators: tracker peer stat
-msgid "Downloaded"
-msgstr "已下載"
-
-#. Translators: Tracker last announce
-msgid "Announce timed out"
-msgstr "宣告已逾時"
-
-#. Translators: Tracker last announce
-msgid "Announce error"
-msgstr "宣告錯誤"
-
-#. Translators: Tracker last announce
-msgid "Last Announce"
-msgstr "最後宣告於"
-
-#. Translators: Tracker last announce
-#, fuzzy
-#| msgid "Seeding to {active_count:L} peer"
-#| msgid_plural "Seeding to {active_count:L} peers"
-msgid "got {count:L} peer"
-msgid_plural "got {count:L} peers"
-msgstr[0] "正在為 {active_count:L} 個節點做種"
-
-#. Translators: Tracker next announce
-msgid "Announce in progress"
-msgstr "正在宣告"
-
-msgid "Next announce in {time_span}"
-msgstr "下一次宣告於 {time_span}"
+msgid "Leechers:"
+msgstr "下載者："
 
 msgid "Tracker will be used as a backup"
 msgstr "將該追蹤器做為備用"
-
-#. Translators: Tracker last scrape
-msgid "Scrape timed out"
-msgstr "擷取已逾時"
-
-#. Translators: Tracker last scrape
-msgid "Scrape error"
-msgstr "擷取錯誤"
-
-#. Translators: Tracker last scrape
-msgid "Last Scrape"
-msgstr "最後擷取於"
 
 msgid "Server"
 msgstr "伺服器"
@@ -3939,6 +3894,37 @@ msgstr[0] "天"
 msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "秒"
+
+#~ msgid "Announce timed out"
+#~ msgstr "宣告已逾時"
+
+#~ msgid "Announce error"
+#~ msgstr "宣告錯誤"
+
+#~ msgid "Last Announce"
+#~ msgstr "最後宣告於"
+
+#, fuzzy
+#~| msgid "Seeding to {active_count:L} peer"
+#~| msgid_plural "Seeding to {active_count:L} peers"
+#~ msgid "got {count:L} peer"
+#~ msgid_plural "got {count:L} peers"
+#~ msgstr[0] "正在為 {active_count:L} 個節點做種"
+
+#~ msgid "Announce in progress"
+#~ msgstr "正在宣告"
+
+#~ msgid "Next announce in {time_span}"
+#~ msgstr "下一次宣告於 {time_span}"
+
+#~ msgid "Scrape timed out"
+#~ msgstr "擷取已逾時"
+
+#~ msgid "Scrape error"
+#~ msgstr "擷取錯誤"
+
+#~ msgid "Last Scrape"
+#~ msgstr "最後擷取於"
 
 #, fuzzy
 #~| msgid "Down: {downloaded_size}, Up: {uploaded_size}"

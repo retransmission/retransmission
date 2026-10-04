@@ -451,6 +451,7 @@
 		F0A1B2C32F1A2B3C00445566 /* session-settings.h in Headers */ = {isa = PBXBuildFile; fileRef = F0A1B2C42F1A2B3C00445566 /* session-settings.h */; };
 		F11545ACA7C4D7A464F703AB /* block-info.h in Headers */ = {isa = PBXBuildFile; fileRef = 6A044CBD8C049AFCBD4DB411 /* block-info.h */; settings = {ATTRIBUTES = (Project, ); }; };
 		F6A2C0032FB0A00100A1B2C3 /* l10n.cc in Sources */ = {isa = PBXBuildFile; fileRef = F6A2C0012FB0A00100A1B2C3 /* l10n.cc */; };
+		F6A2C0082FB0A00100A1B2C3 /* formatters.cc in Sources */ = {isa = PBXBuildFile; fileRef = F6A2C0062FB0A00100A1B2C3 /* formatters.cc */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -1056,6 +1057,8 @@
 		F0A1B2C42F1A2B3C00445566 /* session-settings.h */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.h; path = "session-settings.h"; sourceTree = "<group>"; };
 		F6A2C0012FB0A00100A1B2C3 /* l10n.cc */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = l10n.cc; sourceTree = "<group>"; };
 		F6A2C0022FB0A00100A1B2C3 /* l10n.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = l10n.h; sourceTree = "<group>"; };
+		F6A2C0062FB0A00100A1B2C3 /* formatters.cc */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = formatters.cc; sourceTree = "<group>"; };
+		F6A2C0072FB0A00100A1B2C3 /* formatters.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = formatters.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -1941,6 +1944,8 @@
 		F6A2C0052FB0A00100A1B2C3 /* libtransmission-app */ = {
 			isa = PBXGroup;
 			children = (
+				F6A2C0062FB0A00100A1B2C3 /* formatters.cc */,
+				F6A2C0072FB0A00100A1B2C3 /* formatters.h */,
 				F6A2C0012FB0A00100A1B2C3 /* l10n.cc */,
 				F6A2C0022FB0A00100A1B2C3 /* l10n.h */,
 			);
@@ -2849,6 +2854,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F6A2C0082FB0A00100A1B2C3 /* formatters.cc in Sources */,
 				F6A2C0032FB0A00100A1B2C3 /* l10n.cc in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

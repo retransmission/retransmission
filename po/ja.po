@@ -186,8 +186,6 @@ msgstr "停止"
 #. Translators: No Ratio
 #. Translators: Prefs -> blocklist -> message
 #. Translators: tracker peer stat
-#. Translators: Tracker last announce
-#. Translators: Tracker last scrape
 msgid "N/A"
 msgstr "なし"
 
@@ -1087,6 +1085,7 @@ msgid "Uploaded:"
 msgstr "アップロード済み:"
 
 #. Translators: Stats window -> label
+#. Translators: tracker peer stat
 msgid "Downloaded:"
 msgstr "ダウンロード済み:"
 
@@ -1683,7 +1682,6 @@ msgstr " ピア一覧の要求が{markup_begin}タイムアウト {time_span_ago
 msgid "Got an error '{markup_begin}{error}{markup_end}' {time_span_ago}"
 msgstr "エラー取得「{markup_begin}{error}{markup_end}」{time_span_ago}"
 
-#. Translators: Tracker next announce
 msgid "No updates scheduled"
 msgstr "更新の予定なし"
 
@@ -3599,57 +3597,15 @@ msgid "Change torrent settings"
 msgstr "トレントファイルを共有"
 
 #. Translators: tracker peer stat
-msgid "Seeders"
-msgstr "シーダー"
+msgid "Seeders:"
+msgstr "シーダー:"
 
 #. Translators: tracker peer stat
-msgid "Leechers"
-msgstr "リーチャー"
-
-#. Translators: tracker peer stat
-msgid "Downloaded"
-msgstr "ダウンロード"
-
-#. Translators: Tracker last announce
-msgid "Announce timed out"
-msgstr "アナウンスがタイムアウト"
-
-#. Translators: Tracker last announce
-msgid "Announce error"
-msgstr "アナウンスのエラー"
-
-#. Translators: Tracker last announce
-msgid "Last Announce"
-msgstr "最終アナウンス"
-
-#. Translators: Tracker last announce
-#, fuzzy
-#| msgid "{count:L} Seeding"
-msgid "got {count:L} peer"
-msgid_plural "got {count:L} peers"
-msgstr[0] "{count:L} シード中"
-
-#. Translators: Tracker next announce
-msgid "Announce in progress"
-msgstr "アナウンス進行中"
-
-msgid "Next announce in {time_span}"
-msgstr "{time_span} で次のアナウンス"
+msgid "Leechers:"
+msgstr "リーチャー:"
 
 msgid "Tracker will be used as a backup"
 msgstr "トラッカーはバックアップに使われます"
-
-#. Translators: Tracker last scrape
-msgid "Scrape timed out"
-msgstr "スクレイプがタイムアウト"
-
-#. Translators: Tracker last scrape
-msgid "Scrape error"
-msgstr "スクレイプのエラー"
-
-#. Translators: Tracker last scrape
-msgid "Last Scrape"
-msgstr "最終スクレイプ"
 
 msgid "Server"
 msgstr "サーバー"
@@ -3925,6 +3881,36 @@ msgstr[0] "日"
 msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "秒"
+
+#~ msgid "Announce timed out"
+#~ msgstr "アナウンスがタイムアウト"
+
+#~ msgid "Announce error"
+#~ msgstr "アナウンスのエラー"
+
+#~ msgid "Last Announce"
+#~ msgstr "最終アナウンス"
+
+#, fuzzy
+#~| msgid "{count:L} Seeding"
+#~ msgid "got {count:L} peer"
+#~ msgid_plural "got {count:L} peers"
+#~ msgstr[0] "{count:L} シード中"
+
+#~ msgid "Announce in progress"
+#~ msgstr "アナウンス進行中"
+
+#~ msgid "Next announce in {time_span}"
+#~ msgstr "{time_span} で次のアナウンス"
+
+#~ msgid "Scrape timed out"
+#~ msgstr "スクレイプがタイムアウト"
+
+#~ msgid "Scrape error"
+#~ msgstr "スクレイプのエラー"
+
+#~ msgid "Last Scrape"
+#~ msgstr "最終スクレイプ"
 
 #, fuzzy
 #~| msgid "Down: {downloaded_size}, Up: {uploaded_size}"

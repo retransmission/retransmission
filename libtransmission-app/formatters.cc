@@ -85,37 +85,34 @@ auto constexpr SecondsPerDay = time_t{ 86400 };
     return _("now");
 }
 
-// Escapes text for Pango markup and for HTML,
-// and replaces control characters, which neither displays.
-[[nodiscard]] std::string escape_markup(std::string_view const text)
+// Replaces control characters, which no client displays,
+// and escapes the text for Pango markup and for HTML if `escape`.
+[[nodiscard]] std::string clean_text(std::string_view const text, bool const escape)
 {
-    auto escaped = std::string{};
-    escaped.reserve(std::size(text));
+    auto cleaned = std::string{};
+    cleaned.reserve(std::size(text));
 
     for (auto const ch : text) {
-        switch (ch) {
-        case '&':
-            escaped += "&amp;";
-            break;
-        case '<':
-            escaped += "&lt;";
-            break;
-        case '>':
-            escaped += "&gt;";
-            break;
-        case '"':
-            escaped += "&quot;";
-            break;
-        case '\'':
-            escaped += "&#39;";
-            break;
-        default:
-            escaped += (static_cast<unsigned char>(ch) < 0x20U || ch == 0x7F) ? ' ' : ch;
-            break;
+        if (static_cast<unsigned char>(ch) < 0x20U || ch == 0x7F) {
+            cleaned += ' ';
+        } else if (!escape) {
+            cleaned += ch;
+        } else if (ch == '&') {
+            cleaned += "&amp;";
+        } else if (ch == '<') {
+            cleaned += "&lt;";
+        } else if (ch == '>') {
+            cleaned += "&gt;";
+        } else if (ch == '"') {
+            cleaned += "&quot;";
+        } else if (ch == '\'') {
+            cleaned += "&#39;";
+        } else {
+            cleaned += ch;
         }
     }
 
-    return escaped;
+    return cleaned;
 }
 
 void append_announce_status(
@@ -153,7 +150,7 @@ void append_announce_status(
                     // {markup_begin} and {markup_end} should surround the error
                     fmt::runtime(_("Got an error '{markup_begin}{error}{markup_end}' {time_span_ago}")),
                     fmt::arg("markup_begin", markup.error_begin),
-                    fmt::arg("error", escape_markup(std::data(tracker.lastAnnounceResult))),
+                    fmt::arg("error", clean_text(std::data(tracker.lastAnnounceResult), markup.escape)),
                     fmt::arg("markup_end", markup.error_end),
                     fmt::arg("time_span_ago", time_span_ago)));
         }
@@ -180,9 +177,9 @@ void append_announce_status(
             fmt::format(
                 // {markup_begin} and {markup_end} should surround time_span_ago
                 fmt::runtime(_("Asked for more peers {markup_begin}{time_span_ago}{markup_end}")),
-                fmt::arg("markup_begin", "<small>"),
+                fmt::arg("markup_begin", markup.pending_begin),
                 fmt::arg("time_span_ago", format_time_relative(tracker.lastAnnounceStartTime, now)),
-                fmt::arg("markup_end", "</small>")));
+                fmt::arg("markup_end", markup.pending_end)));
         break;
 
     default:
@@ -204,7 +201,7 @@ void append_scrape_status(
                 fmt::format(
                     // {markup_begin} and {markup_end} should surround the error text
                     fmt::runtime(_("Got a scrape error '{markup_begin}{error}{markup_end}' {time_span_ago}")),
-                    fmt::arg("error", escape_markup(std::data(tracker.lastScrapeResult))),
+                    fmt::arg("error", clean_text(std::data(tracker.lastScrapeResult), markup.escape)),
                     fmt::arg("time_span_ago", time_span_ago),
                     fmt::arg("markup_begin", markup.error_begin),
                     fmt::arg("markup_end", markup.error_end)));
@@ -248,9 +245,9 @@ void append_scrape_status(
         lines.emplace_back(
             fmt::format(
                 fmt::runtime(_("Asked for peer counts {markup_begin}{time_span_ago}{markup_end}")),
-                fmt::arg("markup_begin", "<small>"),
+                fmt::arg("markup_begin", markup.pending_begin),
                 fmt::arg("time_span_ago", format_time_relative(tracker.lastScrapeStartTime, now)),
-                fmt::arg("markup_end", "</small>")));
+                fmt::arg("markup_end", markup.pending_end)));
         break;
 
     default: // TR_TRACKER_INACTIVE

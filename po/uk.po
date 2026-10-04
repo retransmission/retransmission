@@ -221,8 +221,6 @@ msgstr "Призупинено"
 #. Translators: No Ratio
 #. Translators: Prefs -> blocklist -> message
 #. Translators: tracker peer stat
-#. Translators: Tracker last announce
-#. Translators: Tracker last scrape
 msgid "N/A"
 msgstr "н/д"
 
@@ -1160,6 +1158,7 @@ msgid "Uploaded:"
 msgstr "Вивантажено:"
 
 #. Translators: Stats window -> label
+#. Translators: tracker peer stat
 msgid "Downloaded:"
 msgstr "Завантажено:"
 
@@ -1783,7 +1782,6 @@ msgstr "Запит списку вузлів {markup_begin}вичерпав ча
 msgid "Got an error '{markup_begin}{error}{markup_end}' {time_span_ago}"
 msgstr "Виникла помилка «{markup_begin}{error}{markup_end}» {time_span_ago}"
 
-#. Translators: Tracker next announce
 msgid "No updates scheduled"
 msgstr "Жодних оновлень не заплановано"
 
@@ -3788,60 +3786,15 @@ msgid "Change torrent settings"
 msgstr "Поширити торрент-файл"
 
 #. Translators: tracker peer stat
-msgid "Seeders"
-msgstr "Роздаючі"
+msgid "Seeders:"
+msgstr "Роздаючі:"
 
 #. Translators: tracker peer stat
-msgid "Leechers"
-msgstr "Завантажуючі"
-
-#. Translators: tracker peer stat
-msgid "Downloaded"
-msgstr "Завантажено"
-
-#. Translators: Tracker last announce
-msgid "Announce timed out"
-msgstr "Час оголошення вичерпано"
-
-#. Translators: Tracker last announce
-msgid "Announce error"
-msgstr "Помилка оголошення"
-
-#. Translators: Tracker last announce
-msgid "Last Announce"
-msgstr "Останнє Оголошення"
-
-#. Translators: Tracker last announce
-#, fuzzy
-#| msgid "{count:L} Seeding"
-msgid "got {count:L} peer"
-msgid_plural "got {count:L} peers"
-msgstr[0] "{count:L} роздається"
-msgstr[1] "{count:L} роздається"
-msgstr[2] "{count:L} роздається"
-msgstr[3] "{count:L} роздається"
-
-#. Translators: Tracker next announce
-msgid "Announce in progress"
-msgstr "Оголошення у процесі"
-
-msgid "Next announce in {time_span}"
-msgstr "Наступне оголошення через {time_span}"
+msgid "Leechers:"
+msgstr "Завантажуючі:"
 
 msgid "Tracker will be used as a backup"
 msgstr "Резервна толока"
-
-#. Translators: Tracker last scrape
-msgid "Scrape timed out"
-msgstr "Час на запит вичерпано"
-
-#. Translators: Tracker last scrape
-msgid "Scrape error"
-msgstr "Помилка запиту"
-
-#. Translators: Tracker last scrape
-msgid "Last Scrape"
-msgstr "Останній запит"
 
 msgid "Server"
 msgstr "Сервер"
@@ -4159,6 +4112,39 @@ msgstr[0] "секунда"
 msgstr[1] "секунди"
 msgstr[2] "секунд"
 msgstr[3] "секунди"
+
+#~ msgid "Announce timed out"
+#~ msgstr "Час оголошення вичерпано"
+
+#~ msgid "Announce error"
+#~ msgstr "Помилка оголошення"
+
+#~ msgid "Last Announce"
+#~ msgstr "Останнє Оголошення"
+
+#, fuzzy
+#~| msgid "{count:L} Seeding"
+#~ msgid "got {count:L} peer"
+#~ msgid_plural "got {count:L} peers"
+#~ msgstr[0] "{count:L} роздається"
+#~ msgstr[1] "{count:L} роздається"
+#~ msgstr[2] "{count:L} роздається"
+#~ msgstr[3] "{count:L} роздається"
+
+#~ msgid "Announce in progress"
+#~ msgstr "Оголошення у процесі"
+
+#~ msgid "Next announce in {time_span}"
+#~ msgstr "Наступне оголошення через {time_span}"
+
+#~ msgid "Scrape timed out"
+#~ msgstr "Час на запит вичерпано"
+
+#~ msgid "Scrape error"
+#~ msgstr "Помилка запиту"
+
+#~ msgid "Last Scrape"
+#~ msgstr "Останній запит"
 
 #, fuzzy
 #~| msgid "Down: {downloaded_size}, Up: {uploaded_size}"

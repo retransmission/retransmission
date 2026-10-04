@@ -232,8 +232,6 @@ msgstr "Wstrzymano"
 #. Translators: No Ratio
 #. Translators: Prefs -> blocklist -> message
 #. Translators: tracker peer stat
-#. Translators: Tracker last announce
-#. Translators: Tracker last scrape
 msgid "N/A"
 msgstr "Nie dotyczy"
 
@@ -1171,6 +1169,7 @@ msgid "Uploaded:"
 msgstr "Wysłano:"
 
 #. Translators: Stats window -> label
+#. Translators: tracker peer stat
 msgid "Downloaded:"
 msgstr "Pobrano:"
 
@@ -1794,7 +1793,6 @@ msgstr "Żądanie listy partnerów {markup_begin}przekroczyło czas oczekiwania 
 msgid "Got an error '{markup_begin}{error}{markup_end}' {time_span_ago}"
 msgstr "Otrzymano błąd „{markup_begin}{error}{markup_end}” {time_span_ago}"
 
-#. Translators: Tracker next announce
 msgid "No updates scheduled"
 msgstr "Brak zaplanowanych aktualizacji"
 
@@ -3794,61 +3792,15 @@ msgid "Change torrent settings"
 msgstr "Udostępnij plik torrent"
 
 #. Translators: tracker peer stat
-msgid "Seeders"
-msgstr "Wysyłający"
+msgid "Seeders:"
+msgstr "Wysyłający:"
 
 #. Translators: tracker peer stat
-msgid "Leechers"
-msgstr "Niewysyłający"
-
-#. Translators: tracker peer stat
-msgid "Downloaded"
-msgstr "Pobrano"
-
-#. Translators: Tracker last announce
-msgid "Announce timed out"
-msgstr "Ogłoszenie przekroczyło czas oczekiwania"
-
-#. Translators: Tracker last announce
-msgid "Announce error"
-msgstr "Błąd ogłoszenia"
-
-#. Translators: Tracker last announce
-msgid "Last Announce"
-msgstr "Ostatnie ogłoszenie"
-
-#. Translators: Tracker last announce
-#, fuzzy
-#| msgid "Seeding to {active_count:L} peer"
-#| msgid_plural "Seeding to {active_count:L} peers"
-msgid "got {count:L} peer"
-msgid_plural "got {count:L} peers"
-msgstr[0] "Wysyłanie do {active_count:L} partnera"
-msgstr[1] "Wysyłanie do {active_count:L} partnerów"
-msgstr[2] "Wysyłanie do {active_count:L} partnerów"
-msgstr[3] "Wysyłanie do {active_count:L} partnerów"
-
-#. Translators: Tracker next announce
-msgid "Announce in progress"
-msgstr "Trwa ogłaszanie"
-
-msgid "Next announce in {time_span}"
-msgstr "Następne ogłoszenie za {time_span}"
+msgid "Leechers:"
+msgstr "Niewysyłający:"
 
 msgid "Tracker will be used as a backup"
 msgstr "Serwer śledzący będzie używany jako zapasowy"
-
-#. Translators: Tracker last scrape
-msgid "Scrape timed out"
-msgstr "„Scrape” przekroczyło czas oczekiwania"
-
-#. Translators: Tracker last scrape
-msgid "Scrape error"
-msgstr "Błąd „scrape”"
-
-#. Translators: Tracker last scrape
-msgid "Last Scrape"
-msgstr "Ostatnie „scrape”"
 
 msgid "Server"
 msgstr "Serwer"
@@ -4165,6 +4117,40 @@ msgstr[0] "sekunda"
 msgstr[1] "sekundy"
 msgstr[2] "sekund"
 msgstr[3] "sekund"
+
+#~ msgid "Announce timed out"
+#~ msgstr "Ogłoszenie przekroczyło czas oczekiwania"
+
+#~ msgid "Announce error"
+#~ msgstr "Błąd ogłoszenia"
+
+#~ msgid "Last Announce"
+#~ msgstr "Ostatnie ogłoszenie"
+
+#, fuzzy
+#~| msgid "Seeding to {active_count:L} peer"
+#~| msgid_plural "Seeding to {active_count:L} peers"
+#~ msgid "got {count:L} peer"
+#~ msgid_plural "got {count:L} peers"
+#~ msgstr[0] "Wysyłanie do {active_count:L} partnera"
+#~ msgstr[1] "Wysyłanie do {active_count:L} partnerów"
+#~ msgstr[2] "Wysyłanie do {active_count:L} partnerów"
+#~ msgstr[3] "Wysyłanie do {active_count:L} partnerów"
+
+#~ msgid "Announce in progress"
+#~ msgstr "Trwa ogłaszanie"
+
+#~ msgid "Next announce in {time_span}"
+#~ msgstr "Następne ogłoszenie za {time_span}"
+
+#~ msgid "Scrape timed out"
+#~ msgstr "„Scrape” przekroczyło czas oczekiwania"
+
+#~ msgid "Scrape error"
+#~ msgstr "Błąd „scrape”"
+
+#~ msgid "Last Scrape"
+#~ msgstr "Ostatnie „scrape”"
 
 #, fuzzy
 #~| msgid "Down: {downloaded_size}, Up: {uploaded_size}"
