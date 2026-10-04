@@ -90,12 +90,6 @@ msgstr "Impossibile aggiungere l'evento: {error} ({error_code})"
 msgid "Couldn't launch daemon event loop: {error} ({error_code})"
 msgstr ""
 
-msgid "Couldn't register {appname} as a {content_type} handler: {error} ({error_code})"
-msgstr ""
-
-msgid "Got termination signal, trying to shut down cleanly. Do it again if it gets stuck."
-msgstr ""
-
 msgid "Closing Connections…"
 msgstr "Chiusura connessioni…"
 
@@ -642,14 +636,6 @@ msgstr "Messaggio"
 msgid "Time"
 msgstr "Orario"
 
-msgid "Couldn't create proxy for '{bus}': {error} ({error_code})"
-msgstr ""
-
-#, fuzzy
-#| msgid "Couldn't save '{path}': {error} ({error_code})"
-msgid "Couldn't spawn async process \"'{command}'\": {error} ({error_code})"
-msgstr "Impossibile salvare «{path}»: {error} ({error_code})"
-
 msgid "Open File"
 msgstr "Apri file"
 
@@ -761,20 +747,6 @@ msgstr "Impossibile spostare il torrent"
 
 msgid "This may take a moment…"
 msgstr "Potrebbe richiedere un po' di tempo…"
-
-#, fuzzy
-#| msgid "Couldn't read '{path}': {error} ({error_code})"
-msgid "Couldn't open watchdir '{dirname}': {error} ({error_code})"
-msgstr "Impossibile leggere «{path}»: {error} ({error_code})"
-
-msgid "Couldn't read '{path}'"
-msgstr ""
-
-msgid "The torrent could not be downloaded from {url}: {error}"
-msgstr "Il torrent non può essere scaricato da {url}: {error}"
-
-msgid "Couldn't find pending RPC request for id {id}"
-msgstr ""
 
 msgid "Started {count:L} time"
 msgid_plural "Started {count:L} times"
@@ -1654,22 +1626,6 @@ msgstr "_URL:"
 msgid "\"{source}\" is not a valid torrent file."
 msgstr "\"{source}\" non è un file torrent valido."
 
-msgid "Couldn't move '{path}' to trash: {error} ({error_code})"
-msgstr ""
-
-#, fuzzy
-#| msgid "Couldn't read '{path}': {error} ({error_code})"
-msgid "Couldn't launch default application for URI '{uri}': {error} ({error_code})"
-msgstr "Impossibile leggere «{path}»: {error} ({error_code})"
-
-#, fuzzy
-#| msgid "Couldn't remove '{path}': {error} ({error_code})"
-msgid "Couldn't invoke xdg-open for URI '{uri}': {error} ({error_code})"
-msgstr "Impossibile rimuovere «{path}»: {error} ({error_code})"
-
-msgid "Couldn't open '{url}'"
-msgstr ""
-
 msgid "Unsupported URL: '{url}'"
 msgstr "UL non supportato: «{url}»"
 
@@ -2010,6 +1966,9 @@ msgstr "Impossibile create l'evento: {error} ({error_code})"
 msgid "Couldn't test port: {error} ({error_code})"
 msgstr ""
 
+msgid "The torrent could not be downloaded from {url}: {error}"
+msgstr "Il torrent non può essere scaricato da {url}: {error}"
+
 msgid "Unix socket path must be fewer than {count} characters (including '{prefix}' prefix)"
 msgstr ""
 
@@ -2247,6 +2206,9 @@ msgid "Couldn't read event: {error} ({error_code})"
 msgstr ""
 
 msgid "Couldn't convert '{path}' to native path"
+msgstr ""
+
+msgid "Couldn't read '{path}'"
 msgstr ""
 
 msgid "Couldn't create pipe: {error} ({error_code})"
@@ -3819,6 +3781,26 @@ msgid_plural "seconds"
 msgstr[0] "secondo"
 msgstr[1] "secondi"
 msgstr[2] "secondi"
+
+#, fuzzy
+#~| msgid "Couldn't save '{path}': {error} ({error_code})"
+#~ msgid "Couldn't spawn async process \"'{command}'\": {error} ({error_code})"
+#~ msgstr "Impossibile salvare «{path}»: {error} ({error_code})"
+
+#, fuzzy
+#~| msgid "Couldn't read '{path}': {error} ({error_code})"
+#~ msgid "Couldn't open watchdir '{dirname}': {error} ({error_code})"
+#~ msgstr "Impossibile leggere «{path}»: {error} ({error_code})"
+
+#, fuzzy
+#~| msgid "Couldn't read '{path}': {error} ({error_code})"
+#~ msgid "Couldn't launch default application for URI '{uri}': {error} ({error_code})"
+#~ msgstr "Impossibile leggere «{path}»: {error} ({error_code})"
+
+#, fuzzy
+#~| msgid "Couldn't remove '{path}': {error} ({error_code})"
+#~ msgid "Couldn't invoke xdg-open for URI '{uri}': {error} ({error_code})"
+#~ msgstr "Impossibile rimuovere «{path}»: {error} ({error_code})"
 
 #~ msgid "Created on:"
 #~ msgstr "Creato il:"

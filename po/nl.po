@@ -91,12 +91,6 @@ msgstr "Kon geen event toevoegen: {error} ({error_code})"
 msgid "Couldn't launch daemon event loop: {error} ({error_code})"
 msgstr "Kon daemon event loop niet starten: {error} ({error_code})"
 
-msgid "Couldn't register {appname} as a {content_type} handler: {error} ({error_code})"
-msgstr "Kan {appname} niet registreren als een {content_type} handler: {error} ({error_code})"
-
-msgid "Got termination signal, trying to shut down cleanly. Do it again if it gets stuck."
-msgstr "Kreeg beëindigingssignaal, proberen om netjes af te sluiten. Doe het opnieuw als het vastloopt."
-
 msgid "Closing Connections…"
 msgstr "Verbindingen sluiten…"
 
@@ -645,14 +639,6 @@ msgstr "Bericht"
 msgid "Time"
 msgstr "Tijdstip"
 
-msgid "Couldn't create proxy for '{bus}': {error} ({error_code})"
-msgstr "Kan geen proxy maken voor '{bus}': {error} ({error_code})"
-
-#, fuzzy
-#| msgid "Couldn't save '{path}': {error} ({error_code})"
-msgid "Couldn't spawn async process \"'{command}'\": {error} ({error_code})"
-msgstr "Kon  '{path}' niet opslaan: {error} ({error_code})"
-
 msgid "Open File"
 msgstr "Bestand openen"
 
@@ -763,20 +749,6 @@ msgstr "Kon de torrent niet verplaatsen"
 
 msgid "This may take a moment…"
 msgstr "Dit kan even duren…"
-
-#, fuzzy
-#| msgid "Couldn't watch '{path}': {error} ({error_code})"
-msgid "Couldn't open watchdir '{dirname}': {error} ({error_code})"
-msgstr "Kon niet '{path}' bekijken: {error} ({error_code})"
-
-msgid "Couldn't read '{path}'"
-msgstr "Kon '{path}' niet lezen"
-
-msgid "The torrent could not be downloaded from {url}: {error}"
-msgstr "De torrent kon niet gedownload worden van {url}: {error}"
-
-msgid "Couldn't find pending RPC request for id {id}"
-msgstr ""
 
 msgid "Started {count:L} time"
 msgid_plural "Started {count:L} times"
@@ -1654,22 +1626,6 @@ msgstr "_URL:"
 msgid "\"{source}\" is not a valid torrent file."
 msgstr "‘{source}’ is geen geldig torrentbestand."
 
-msgid "Couldn't move '{path}' to trash: {error} ({error_code})"
-msgstr "Kon '{path}' niet verplaatsen naar de prullenbak: {error} ({error_code})"
-
-#, fuzzy
-#| msgid "Couldn't create proxy for '{bus}': {error} ({error_code})"
-msgid "Couldn't launch default application for URI '{uri}': {error} ({error_code})"
-msgstr "Kan geen proxy maken voor '{bus}': {error} ({error_code})"
-
-#, fuzzy
-#| msgid "Couldn't open '{path}': {error} ({error_code})"
-msgid "Couldn't invoke xdg-open for URI '{uri}': {error} ({error_code})"
-msgstr "Kan '{path}' niet openen: {error} ({error_code})"
-
-msgid "Couldn't open '{url}'"
-msgstr "Kon '{url}' niet openen"
-
 msgid "Unsupported URL: '{url}'"
 msgstr "Niet ondersteunde URL: '{url}'"
 
@@ -1991,6 +1947,9 @@ msgstr "Kon poort niet testen: {error} ({error_code})"
 msgid "Couldn't test port: {error} ({error_code})"
 msgstr "Kon poort niet testen: {error} ({error_code})"
 
+msgid "The torrent could not be downloaded from {url}: {error}"
+msgstr "De torrent kon niet gedownload worden van {url}: {error}"
+
 msgid "Unix socket path must be fewer than {count} characters (including '{prefix}' prefix)"
 msgstr "Unix socket pad moet minder zijn dan {count} lettertekens (inclusief '{prefix}' prefix)"
 
@@ -2227,6 +2186,9 @@ msgstr "Kon event niet lezen: {error} ({error_code})"
 
 msgid "Couldn't convert '{path}' to native path"
 msgstr "Kan '{path}' niet converteren naar oorspronkelijke pad"
+
+msgid "Couldn't read '{path}'"
+msgstr "Kon '{path}' niet lezen"
 
 msgid "Couldn't create pipe: {error} ({error_code})"
 msgstr "Kon geen pipe maken: {error} ({error_code})"
@@ -3779,6 +3741,41 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "seconde"
 msgstr[1] "seconden"
+
+#~ msgid "Couldn't register {appname} as a {content_type} handler: {error} ({error_code})"
+#~ msgstr "Kan {appname} niet registreren als een {content_type} handler: {error} ({error_code})"
+
+#~ msgid "Got termination signal, trying to shut down cleanly. Do it again if it gets stuck."
+#~ msgstr "Kreeg beëindigingssignaal, proberen om netjes af te sluiten. Doe het opnieuw als het vastloopt."
+
+#~ msgid "Couldn't create proxy for '{bus}': {error} ({error_code})"
+#~ msgstr "Kan geen proxy maken voor '{bus}': {error} ({error_code})"
+
+#, fuzzy
+#~| msgid "Couldn't save '{path}': {error} ({error_code})"
+#~ msgid "Couldn't spawn async process \"'{command}'\": {error} ({error_code})"
+#~ msgstr "Kon  '{path}' niet opslaan: {error} ({error_code})"
+
+#, fuzzy
+#~| msgid "Couldn't watch '{path}': {error} ({error_code})"
+#~ msgid "Couldn't open watchdir '{dirname}': {error} ({error_code})"
+#~ msgstr "Kon niet '{path}' bekijken: {error} ({error_code})"
+
+#~ msgid "Couldn't move '{path}' to trash: {error} ({error_code})"
+#~ msgstr "Kon '{path}' niet verplaatsen naar de prullenbak: {error} ({error_code})"
+
+#, fuzzy
+#~| msgid "Couldn't create proxy for '{bus}': {error} ({error_code})"
+#~ msgid "Couldn't launch default application for URI '{uri}': {error} ({error_code})"
+#~ msgstr "Kan geen proxy maken voor '{bus}': {error} ({error_code})"
+
+#, fuzzy
+#~| msgid "Couldn't open '{path}': {error} ({error_code})"
+#~ msgid "Couldn't invoke xdg-open for URI '{uri}': {error} ({error_code})"
+#~ msgstr "Kan '{path}' niet openen: {error} ({error_code})"
+
+#~ msgid "Couldn't open '{url}'"
+#~ msgstr "Kon '{url}' niet openen"
 
 #~ msgid "Created on:"
 #~ msgstr "Datum:"

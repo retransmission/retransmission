@@ -93,12 +93,6 @@ msgstr "Αδυναμία προσθήκης συμβάντος: {error} ({error_
 msgid "Couldn't launch daemon event loop: {error} ({error_code})"
 msgstr "Αδυναμία εκκίνησης βρόχου συμβάντων του daemon: {error} ({error_code})"
 
-msgid "Couldn't register {appname} as a {content_type} handler: {error} ({error_code})"
-msgstr "Αδυναμία καταχώρησης του {appname} ως διαχειριστή {content_type}: {error} ({error_code})"
-
-msgid "Got termination signal, trying to shut down cleanly. Do it again if it gets stuck."
-msgstr "Λήφθηκε σήμα τερματισμού, επιχειρείται ομαλός τερματισμός. Ξαναπροσπαθήστε αν κολλήσει."
-
 msgid "Closing Connections…"
 msgstr "Κλείσιμο συνδέσεων…"
 
@@ -646,14 +640,6 @@ msgstr "Μήνυμα"
 msgid "Time"
 msgstr "Χρόνος"
 
-msgid "Couldn't create proxy for '{bus}': {error} ({error_code})"
-msgstr "Αδυναμία δημιουργίας διαμεσολαβητή για '{bus}': {error} ({error_code})"
-
-#, fuzzy
-#| msgid "Couldn't save '{path}': {error} ({error_code})"
-msgid "Couldn't spawn async process \"'{command}'\": {error} ({error_code})"
-msgstr "Αδυναμία αποθήκευσης '{path}': {error} ({error_code})"
-
 msgid "Open File"
 msgstr "Αναπαραγωγή Αρχείου"
 
@@ -764,20 +750,6 @@ msgstr "Δεν ήταν δυνατή η μετακίνηση του torrent"
 
 msgid "This may take a moment…"
 msgstr "Αυτό μπορεί να πάρει λίγο χρόνο…"
-
-#, fuzzy
-#| msgid "Couldn't watch '{path}': {error} ({error_code})"
-msgid "Couldn't open watchdir '{dirname}': {error} ({error_code})"
-msgstr "Αδυναμία παρακολούθησης '{path}': {error} ({error_code})"
-
-msgid "Couldn't read '{path}'"
-msgstr "Αδυναμία ανάγνωσης '{path}'"
-
-msgid "The torrent could not be downloaded from {url}: {error}"
-msgstr "Αδυναμία λήψης torrent από {url}: {error}"
-
-msgid "Couldn't find pending RPC request for id {id}"
-msgstr ""
 
 msgid "Started {count:L} time"
 msgid_plural "Started {count:L} times"
@@ -1655,22 +1627,6 @@ msgstr "_URL:"
 msgid "\"{source}\" is not a valid torrent file."
 msgstr "\"{source}\" δεν είναι ένα έγκυρο αρχείο torrent."
 
-msgid "Couldn't move '{path}' to trash: {error} ({error_code})"
-msgstr "Αδυναμία μετακίνησης '{path}' στον κάδο: {error} ({error_code})"
-
-#, fuzzy
-#| msgid "Couldn't create proxy for '{bus}': {error} ({error_code})"
-msgid "Couldn't launch default application for URI '{uri}': {error} ({error_code})"
-msgstr "Αδυναμία δημιουργίας διαμεσολαβητή για '{bus}': {error} ({error_code})"
-
-#, fuzzy
-#| msgid "Couldn't open '{path}': {error} ({error_code})"
-msgid "Couldn't invoke xdg-open for URI '{uri}': {error} ({error_code})"
-msgstr "Αδυναμία ανοίγματος '{path}': {error} ({error_code})"
-
-msgid "Couldn't open '{url}'"
-msgstr "Αδυναμία ανοίγματος '{url}'"
-
 msgid "Unsupported URL: '{url}'"
 msgstr "Μη υποστηριζόμενο URL: '{url}'"
 
@@ -1992,6 +1948,9 @@ msgstr "Αδυναμία ελέγχου θύρας: {error} ({error_code})"
 msgid "Couldn't test port: {error} ({error_code})"
 msgstr "Αδυναμία ελέγχου θύρας: {error} ({error_code})"
 
+msgid "The torrent could not be downloaded from {url}: {error}"
+msgstr "Αδυναμία λήψης torrent από {url}: {error}"
+
 msgid "Unix socket path must be fewer than {count} characters (including '{prefix}' prefix)"
 msgstr "Το μονοπάτι της υποδοχής Unix πρέπει να αποτελείται από λιγότερο από {count} χαρακτήρες (συμπεριλαμβανομένου του προθέματος '{prefix}')"
 
@@ -2228,6 +2187,9 @@ msgstr "Αδυναμία ανάγνωσης γεγονότος: {error} ({error_
 
 msgid "Couldn't convert '{path}' to native path"
 msgstr "Αδυναμία μετατροπής '{path}' σε ντόπιο μονοπάτι"
+
+msgid "Couldn't read '{path}'"
+msgstr "Αδυναμία ανάγνωσης '{path}'"
 
 msgid "Couldn't create pipe: {error} ({error_code})"
 msgstr "Αδυναμία δημιουργίας αγωγού: {error} ({error_code})"
@@ -3765,6 +3727,41 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "δευτερόλεπτο"
 msgstr[1] "δευτερόλεπτα"
+
+#~ msgid "Couldn't register {appname} as a {content_type} handler: {error} ({error_code})"
+#~ msgstr "Αδυναμία καταχώρησης του {appname} ως διαχειριστή {content_type}: {error} ({error_code})"
+
+#~ msgid "Got termination signal, trying to shut down cleanly. Do it again if it gets stuck."
+#~ msgstr "Λήφθηκε σήμα τερματισμού, επιχειρείται ομαλός τερματισμός. Ξαναπροσπαθήστε αν κολλήσει."
+
+#~ msgid "Couldn't create proxy for '{bus}': {error} ({error_code})"
+#~ msgstr "Αδυναμία δημιουργίας διαμεσολαβητή για '{bus}': {error} ({error_code})"
+
+#, fuzzy
+#~| msgid "Couldn't save '{path}': {error} ({error_code})"
+#~ msgid "Couldn't spawn async process \"'{command}'\": {error} ({error_code})"
+#~ msgstr "Αδυναμία αποθήκευσης '{path}': {error} ({error_code})"
+
+#, fuzzy
+#~| msgid "Couldn't watch '{path}': {error} ({error_code})"
+#~ msgid "Couldn't open watchdir '{dirname}': {error} ({error_code})"
+#~ msgstr "Αδυναμία παρακολούθησης '{path}': {error} ({error_code})"
+
+#~ msgid "Couldn't move '{path}' to trash: {error} ({error_code})"
+#~ msgstr "Αδυναμία μετακίνησης '{path}' στον κάδο: {error} ({error_code})"
+
+#, fuzzy
+#~| msgid "Couldn't create proxy for '{bus}': {error} ({error_code})"
+#~ msgid "Couldn't launch default application for URI '{uri}': {error} ({error_code})"
+#~ msgstr "Αδυναμία δημιουργίας διαμεσολαβητή για '{bus}': {error} ({error_code})"
+
+#, fuzzy
+#~| msgid "Couldn't open '{path}': {error} ({error_code})"
+#~ msgid "Couldn't invoke xdg-open for URI '{uri}': {error} ({error_code})"
+#~ msgstr "Αδυναμία ανοίγματος '{path}': {error} ({error_code})"
+
+#~ msgid "Couldn't open '{url}'"
+#~ msgstr "Αδυναμία ανοίγματος '{url}'"
 
 #~ msgid "Created on:"
 #~ msgstr "Δημιουργήθηκε την:"

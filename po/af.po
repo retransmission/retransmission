@@ -90,12 +90,6 @@ msgstr "Kon nie gebeure toevoeg nie: {error} ({error_code})"
 msgid "Couldn't launch daemon event loop: {error} ({error_code})"
 msgstr ""
 
-msgid "Couldn't register {appname} as a {content_type} handler: {error} ({error_code})"
-msgstr "Kon nie {appname} as ’n {content_type}-hanteerder registreet nie: {error} ({error_code})"
-
-msgid "Got termination signal, trying to shut down cleanly. Do it again if it gets stuck."
-msgstr "Het sein termineringgekry, probeer deeglik afsluit. Doen dit weer indien dit vashaak."
-
 msgid "Closing Connections…"
 msgstr ""
 
@@ -615,14 +609,6 @@ msgstr "Boodskap"
 msgid "Time"
 msgstr "Tyd"
 
-msgid "Couldn't create proxy for '{bus}': {error} ({error_code})"
-msgstr "Kon nie proksie vir ‘{bus}’ skep nie: {error} ({error_code})"
-
-#, fuzzy
-#| msgid "Couldn't save '{path}': {error} ({error_code})"
-msgid "Couldn't spawn async process \"'{command}'\": {error} ({error_code})"
-msgstr "Kon nie ‘{path}’ bewaar nie: {error} ({error_code})"
-
 msgid "Open File"
 msgstr "Open Lêer"
 
@@ -733,20 +719,6 @@ msgstr "Kon nie torrent skuif nie"
 
 msgid "This may take a moment…"
 msgstr "Dit mag ’n oomblik duur…"
-
-#, fuzzy
-#| msgid "Couldn't watch '{path}': {error} ({error_code})"
-msgid "Couldn't open watchdir '{dirname}': {error} ({error_code})"
-msgstr "Kon nie ‘{path}’ kyk nie: {error} ({error_code})"
-
-msgid "Couldn't read '{path}'"
-msgstr "Kon nie ‘{path}’ lees nie"
-
-msgid "The torrent could not be downloaded from {url}: {error}"
-msgstr "Die torrentlêer kon nie van {url} afgelaai word nie: {error}"
-
-msgid "Couldn't find pending RPC request for id {id}"
-msgstr ""
 
 msgid "Started {count:L} time"
 msgid_plural "Started {count:L} times"
@@ -1622,22 +1594,6 @@ msgstr "_URL:"
 msgid "\"{source}\" is not a valid torrent file."
 msgstr "“{source}” is nie ’n geldige torrentlêer nie."
 
-msgid "Couldn't move '{path}' to trash: {error} ({error_code})"
-msgstr "Kon nie {path}’ na asblik skuif nie: {error} ({error_code})"
-
-#, fuzzy
-#| msgid "Couldn't create proxy for '{bus}': {error} ({error_code})"
-msgid "Couldn't launch default application for URI '{uri}': {error} ({error_code})"
-msgstr "Kon nie proksie vir ‘{bus}’ skep nie: {error} ({error_code})"
-
-#, fuzzy
-#| msgid "Couldn't open '{path}': {error} ({error_code})"
-msgid "Couldn't invoke xdg-open for URI '{uri}': {error} ({error_code})"
-msgstr "Kon nie ‘{path}’ open nie: {error} ({error_code})"
-
-msgid "Couldn't open '{url}'"
-msgstr "Kon nie ‘{url}’ open nie"
-
 msgid "Unsupported URL: '{url}'"
 msgstr "Onondersteunde URL: ‘{url}’"
 
@@ -1959,6 +1915,9 @@ msgstr "Kon nie poort toets nie: {error} ({error_code})"
 msgid "Couldn't test port: {error} ({error_code})"
 msgstr "Kon nie poort toets nie: {error} ({error_code})"
 
+msgid "The torrent could not be downloaded from {url}: {error}"
+msgstr "Die torrentlêer kon nie van {url} afgelaai word nie: {error}"
+
 msgid "Unix socket path must be fewer than {count} characters (including '{prefix}' prefix)"
 msgstr "Unix-sokpad moet minder wees as {count} karakters (insluitend ‘{prefix}’ prefiks)"
 
@@ -2195,6 +2154,9 @@ msgstr "Kon nie gebeure lees nie: {error} ({error_code})"
 
 msgid "Couldn't convert '{path}' to native path"
 msgstr "Kon nie ‘{path}’ omskakel na oorspronklike pad"
+
+msgid "Couldn't read '{path}'"
+msgstr "Kon nie ‘{path}’ lees nie"
 
 msgid "Couldn't create pipe: {error} ({error_code})"
 msgstr "Kon nie pyp skep nie: {error} ({error_code})"
@@ -3734,6 +3696,41 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "sekonde"
 msgstr[1] "sekondes"
+
+#~ msgid "Couldn't register {appname} as a {content_type} handler: {error} ({error_code})"
+#~ msgstr "Kon nie {appname} as ’n {content_type}-hanteerder registreet nie: {error} ({error_code})"
+
+#~ msgid "Got termination signal, trying to shut down cleanly. Do it again if it gets stuck."
+#~ msgstr "Het sein termineringgekry, probeer deeglik afsluit. Doen dit weer indien dit vashaak."
+
+#~ msgid "Couldn't create proxy for '{bus}': {error} ({error_code})"
+#~ msgstr "Kon nie proksie vir ‘{bus}’ skep nie: {error} ({error_code})"
+
+#, fuzzy
+#~| msgid "Couldn't save '{path}': {error} ({error_code})"
+#~ msgid "Couldn't spawn async process \"'{command}'\": {error} ({error_code})"
+#~ msgstr "Kon nie ‘{path}’ bewaar nie: {error} ({error_code})"
+
+#, fuzzy
+#~| msgid "Couldn't watch '{path}': {error} ({error_code})"
+#~ msgid "Couldn't open watchdir '{dirname}': {error} ({error_code})"
+#~ msgstr "Kon nie ‘{path}’ kyk nie: {error} ({error_code})"
+
+#~ msgid "Couldn't move '{path}' to trash: {error} ({error_code})"
+#~ msgstr "Kon nie {path}’ na asblik skuif nie: {error} ({error_code})"
+
+#, fuzzy
+#~| msgid "Couldn't create proxy for '{bus}': {error} ({error_code})"
+#~ msgid "Couldn't launch default application for URI '{uri}': {error} ({error_code})"
+#~ msgstr "Kon nie proksie vir ‘{bus}’ skep nie: {error} ({error_code})"
+
+#, fuzzy
+#~| msgid "Couldn't open '{path}': {error} ({error_code})"
+#~ msgid "Couldn't invoke xdg-open for URI '{uri}': {error} ({error_code})"
+#~ msgstr "Kon nie ‘{path}’ open nie: {error} ({error_code})"
+
+#~ msgid "Couldn't open '{url}'"
+#~ msgstr "Kon nie ‘{url}’ open nie"
 
 #~ msgid "Created on:"
 #~ msgstr "Geskep op:"

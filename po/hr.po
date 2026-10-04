@@ -85,12 +85,6 @@ msgstr ""
 msgid "Couldn't launch daemon event loop: {error} ({error_code})"
 msgstr ""
 
-msgid "Couldn't register {appname} as a {content_type} handler: {error} ({error_code})"
-msgstr ""
-
-msgid "Got termination signal, trying to shut down cleanly. Do it again if it gets stuck."
-msgstr ""
-
 msgid "Closing Connections…"
 msgstr ""
 
@@ -557,12 +551,6 @@ msgstr "Poruka"
 msgid "Time"
 msgstr "Vrijeme"
 
-msgid "Couldn't create proxy for '{bus}': {error} ({error_code})"
-msgstr ""
-
-msgid "Couldn't spawn async process \"'{command}'\": {error} ({error_code})"
-msgstr ""
-
 msgid "Open File"
 msgstr "Otvori datoteku"
 
@@ -669,18 +657,6 @@ msgstr "Premještanje torrenta nije moguće"
 
 msgid "This may take a moment…"
 msgstr "Ovo može potrajati nekoliko trenutaka…"
-
-msgid "Couldn't open watchdir '{dirname}': {error} ({error_code})"
-msgstr ""
-
-msgid "Couldn't read '{path}'"
-msgstr ""
-
-msgid "The torrent could not be downloaded from {url}: {error}"
-msgstr ""
-
-msgid "Couldn't find pending RPC request for id {id}"
-msgstr ""
 
 msgid "Started {count:L} time"
 msgid_plural "Started {count:L} times"
@@ -1511,18 +1487,6 @@ msgstr "_URL:"
 msgid "\"{source}\" is not a valid torrent file."
 msgstr ""
 
-msgid "Couldn't move '{path}' to trash: {error} ({error_code})"
-msgstr ""
-
-msgid "Couldn't launch default application for URI '{uri}': {error} ({error_code})"
-msgstr ""
-
-msgid "Couldn't invoke xdg-open for URI '{uri}': {error} ({error_code})"
-msgstr ""
-
-msgid "Couldn't open '{url}'"
-msgstr ""
-
 msgid "Unsupported URL: '{url}'"
 msgstr ""
 
@@ -1853,6 +1817,9 @@ msgstr ""
 msgid "Couldn't test port: {error} ({error_code})"
 msgstr ""
 
+msgid "The torrent could not be downloaded from {url}: {error}"
+msgstr ""
+
 msgid "Unix socket path must be fewer than {count} characters (including '{prefix}' prefix)"
 msgstr ""
 
@@ -2080,6 +2047,9 @@ msgid "Couldn't read event: {error} ({error_code})"
 msgstr ""
 
 msgid "Couldn't convert '{path}' to native path"
+msgstr ""
+
+msgid "Couldn't read '{path}'"
 msgstr ""
 
 msgid "Couldn't create pipe: {error} ({error_code})"

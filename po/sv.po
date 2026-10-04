@@ -91,12 +91,6 @@ msgstr "Det gick inte att lägga till händelse: {error} ({error_code})"
 msgid "Couldn't launch daemon event loop: {error} ({error_code})"
 msgstr "Det gick inte att starta demonens händelseslinga: {error} ({error_code})"
 
-msgid "Couldn't register {appname} as a {content_type} handler: {error} ({error_code})"
-msgstr "Det gick inte att registrera {appname} som en {content_type}-hanterare: {error} ({error_code})"
-
-msgid "Got termination signal, trying to shut down cleanly. Do it again if it gets stuck."
-msgstr "Fick stängningssignal, försöker stänga av rent. Gör det igen om det fastnar."
-
 msgid "Closing Connections…"
 msgstr "Stänger anslutningar…"
 
@@ -612,14 +606,6 @@ msgstr "Meddelande"
 msgid "Time"
 msgstr "Tid"
 
-msgid "Couldn't create proxy for '{bus}': {error} ({error_code})"
-msgstr "Det gick inte att skapa proxy för '{bus}': {error} ({error_code})"
-
-#, fuzzy
-#| msgid "Couldn't save '{path}': {error} ({error_code})"
-msgid "Couldn't spawn async process \"'{command}'\": {error} ({error_code})"
-msgstr "Det gick inte att spara '{path}': {error} ({error_code})"
-
 msgid "Open File"
 msgstr "Öppna fil"
 
@@ -730,20 +716,6 @@ msgstr "Det gick inte att flytta torrent"
 
 msgid "This may take a moment…"
 msgstr "Detta kan ta en stund…"
-
-#, fuzzy
-#| msgid "Couldn't watch '{path}': {error} ({error_code})"
-msgid "Couldn't open watchdir '{dirname}': {error} ({error_code})"
-msgstr "Det gick inte att se '{path}': {error} ({error_code})"
-
-msgid "Couldn't read '{path}'"
-msgstr "Det gick inte att läsa '{path}'"
-
-msgid "The torrent could not be downloaded from {url}: {error}"
-msgstr "Det gick inte att hämta torrenten från {url}: {error}"
-
-msgid "Couldn't find pending RPC request for id {id}"
-msgstr ""
 
 msgid "Started {count:L} time"
 msgid_plural "Started {count:L} times"
@@ -1621,22 +1593,6 @@ msgstr "_URL:"
 msgid "\"{source}\" is not a valid torrent file."
 msgstr "\"{source}\" är inte en giltig torrentfil."
 
-msgid "Couldn't move '{path}' to trash: {error} ({error_code})"
-msgstr "Det gick inte att flytta '{path}' till papperskorgen: {error} ({error_code})"
-
-#, fuzzy
-#| msgid "Couldn't create proxy for '{bus}': {error} ({error_code})"
-msgid "Couldn't launch default application for URI '{uri}': {error} ({error_code})"
-msgstr "Det gick inte att skapa proxy för '{bus}': {error} ({error_code})"
-
-#, fuzzy
-#| msgid "Couldn't open '{path}': {error} ({error_code})"
-msgid "Couldn't invoke xdg-open for URI '{uri}': {error} ({error_code})"
-msgstr "Det gick inte att öppna '{path}': {error} ({error_code})"
-
-msgid "Couldn't open '{url}'"
-msgstr "Det gick inte att öppna '{url}'"
-
 msgid "Unsupported URL: '{url}'"
 msgstr "URL som inte stöds: '{url}'"
 
@@ -1958,6 +1914,9 @@ msgstr "Det gick inte att testa port: {error} ({error_code})"
 msgid "Couldn't test port: {error} ({error_code})"
 msgstr "Det gick inte att testa port: {error} ({error_code})"
 
+msgid "The torrent could not be downloaded from {url}: {error}"
+msgstr "Det gick inte att hämta torrenten från {url}: {error}"
+
 msgid "Unix socket path must be fewer than {count} characters (including '{prefix}' prefix)"
 msgstr "Unix-sockets sökväg måste vara färre än {count} tecken (inklusive '{prefix}'-prefixet)"
 
@@ -2194,6 +2153,9 @@ msgstr "Det gick inte att läsa händelse: {error} ({error_code})"
 
 msgid "Couldn't convert '{path}' to native path"
 msgstr "Det gick inte att konvertera '{path}' till inbyggd sökväg"
+
+msgid "Couldn't read '{path}'"
+msgstr "Det gick inte att läsa '{path}'"
 
 msgid "Couldn't create pipe: {error} ({error_code})"
 msgstr "Det gick inte att skapa stuprör: {error} ({error_code})"
@@ -3736,6 +3698,41 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "sekund"
 msgstr[1] "sekunder"
+
+#~ msgid "Couldn't register {appname} as a {content_type} handler: {error} ({error_code})"
+#~ msgstr "Det gick inte att registrera {appname} som en {content_type}-hanterare: {error} ({error_code})"
+
+#~ msgid "Got termination signal, trying to shut down cleanly. Do it again if it gets stuck."
+#~ msgstr "Fick stängningssignal, försöker stänga av rent. Gör det igen om det fastnar."
+
+#~ msgid "Couldn't create proxy for '{bus}': {error} ({error_code})"
+#~ msgstr "Det gick inte att skapa proxy för '{bus}': {error} ({error_code})"
+
+#, fuzzy
+#~| msgid "Couldn't save '{path}': {error} ({error_code})"
+#~ msgid "Couldn't spawn async process \"'{command}'\": {error} ({error_code})"
+#~ msgstr "Det gick inte att spara '{path}': {error} ({error_code})"
+
+#, fuzzy
+#~| msgid "Couldn't watch '{path}': {error} ({error_code})"
+#~ msgid "Couldn't open watchdir '{dirname}': {error} ({error_code})"
+#~ msgstr "Det gick inte att se '{path}': {error} ({error_code})"
+
+#~ msgid "Couldn't move '{path}' to trash: {error} ({error_code})"
+#~ msgstr "Det gick inte att flytta '{path}' till papperskorgen: {error} ({error_code})"
+
+#, fuzzy
+#~| msgid "Couldn't create proxy for '{bus}': {error} ({error_code})"
+#~ msgid "Couldn't launch default application for URI '{uri}': {error} ({error_code})"
+#~ msgstr "Det gick inte att skapa proxy för '{bus}': {error} ({error_code})"
+
+#, fuzzy
+#~| msgid "Couldn't open '{path}': {error} ({error_code})"
+#~ msgid "Couldn't invoke xdg-open for URI '{uri}': {error} ({error_code})"
+#~ msgstr "Det gick inte att öppna '{path}': {error} ({error_code})"
+
+#~ msgid "Couldn't open '{url}'"
+#~ msgstr "Det gick inte att öppna '{url}'"
 
 #~ msgid "Created on:"
 #~ msgstr "Skapad den:"

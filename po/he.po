@@ -90,12 +90,6 @@ msgstr "לא ניתן להוסיף אירוע: {error} ({error_code})"
 msgid "Couldn't launch daemon event loop: {error} ({error_code})"
 msgstr "לא ניתן להפעיל את לולאת האירועים של הסוכן: {error} ({error_code})"
 
-msgid "Couldn't register {appname} as a {content_type} handler: {error} ({error_code})"
-msgstr "הרישום של {appname} כגורם הטיפול ב־{content_type} נכשל: {error} ({error_code})"
-
-msgid "Got termination signal, trying to shut down cleanly. Do it again if it gets stuck."
-msgstr "התקבל אות השמדה, מתבצע ניסיון סגירה בצורה נקייה. אפשר לחזור על הפעולה אם נתקע."
-
 msgid "Closing Connections…"
 msgstr "החיבורים נסגרים…"
 
@@ -639,14 +633,6 @@ msgstr "הודעה"
 msgid "Time"
 msgstr "זמן"
 
-msgid "Couldn't create proxy for '{bus}': {error} ({error_code})"
-msgstr "לא ניתן ליצור מתווך עבור ‚{bus}’: {error} ({error_code})"
-
-#, fuzzy
-#| msgid "Couldn't save '{path}': {error} ({error_code})"
-msgid "Couldn't spawn async process \"'{command}'\": {error} ({error_code})"
-msgstr "לא ניתן לשמור את ‚{path}’: {error} ({error_code})"
-
 msgid "Open File"
 msgstr "פתיחת קובץ"
 
@@ -759,20 +745,6 @@ msgstr "לא ניתן להעביר טורנט"
 
 msgid "This may take a moment…"
 msgstr "פעולה זו עשויה לארוך זמן מה…"
-
-#, fuzzy
-#| msgid "Couldn't watch '{path}': {error} ({error_code})"
-msgid "Couldn't open watchdir '{dirname}': {error} ({error_code})"
-msgstr "לא ניתן לעקוב אחר‚'{path}’: {error} ({error_code})"
-
-msgid "Couldn't read '{path}'"
-msgstr "לא ניתן לקרוא את ‚{path}’"
-
-msgid "The torrent could not be downloaded from {url}: {error}"
-msgstr "לא ניתן להורחד את הטורנט מ {url}: {error}"
-
-msgid "Couldn't find pending RPC request for id {id}"
-msgstr ""
 
 msgid "Started {count:L} time"
 msgid_plural "Started {count:L} times"
@@ -1659,22 +1631,6 @@ msgstr "_כתובת:"
 msgid "\"{source}\" is not a valid torrent file."
 msgstr "„{source}” אינו קובץ טורנט תקני."
 
-msgid "Couldn't move '{path}' to trash: {error} ({error_code})"
-msgstr "לא ניתן להעביר את ‚{path}’ לאשפה: {error} ({error_code})"
-
-#, fuzzy
-#| msgid "Couldn't create proxy for '{bus}': {error} ({error_code})"
-msgid "Couldn't launch default application for URI '{uri}': {error} ({error_code})"
-msgstr "לא ניתן ליצור מתווך עבור ‚{bus}’: {error} ({error_code})"
-
-#, fuzzy
-#| msgid "Couldn't open '{path}': {error} ({error_code})"
-msgid "Couldn't invoke xdg-open for URI '{uri}': {error} ({error_code})"
-msgstr "לא ניתן לפתוח את ‚{path}’: {error} ({error_code})"
-
-msgid "Couldn't open '{url}'"
-msgstr "לא ניתן לפתוח את ‚{url}’"
-
 msgid "Unsupported URL: '{url}'"
 msgstr "כתובת לא נתמכת: ‚{url}’"
 
@@ -2033,6 +1989,9 @@ msgstr "לא ניתן לבדוק את הפתחה: {error} ({error_code})"
 msgid "Couldn't test port: {error} ({error_code})"
 msgstr "לא ניתן לבדוק את הפתחה: {error} ({error_code})"
 
+msgid "The torrent could not be downloaded from {url}: {error}"
+msgstr "לא ניתן להורחד את הטורנט מ {url}: {error}"
+
 msgid "Unix socket path must be fewer than {count} characters (including '{prefix}' prefix)"
 msgstr "אורך נתיב שקע היוניקס חייב להיות קצר מ־{count} תווים (לרבות הקידומת ‚{prefix}’)"
 
@@ -2273,6 +2232,9 @@ msgstr "לא ניתן לקרוא אירוע: {error} ({error_code})"
 
 msgid "Couldn't convert '{path}' to native path"
 msgstr "לא ניתן להמיר את ‚{path}’ לנתיב טבעי"
+
+msgid "Couldn't read '{path}'"
+msgstr "לא ניתן לקרוא את ‚{path}’"
 
 msgid "Couldn't create pipe: {error} ({error_code})"
 msgstr "לא ניתן ליצור צינור: {error} ({error_code})"
@@ -3835,6 +3797,41 @@ msgstr[0] "שנייה"
 msgstr[1] "שניות"
 msgstr[2] "שניות"
 msgstr[3] "שניות"
+
+#~ msgid "Couldn't register {appname} as a {content_type} handler: {error} ({error_code})"
+#~ msgstr "הרישום של {appname} כגורם הטיפול ב־{content_type} נכשל: {error} ({error_code})"
+
+#~ msgid "Got termination signal, trying to shut down cleanly. Do it again if it gets stuck."
+#~ msgstr "התקבל אות השמדה, מתבצע ניסיון סגירה בצורה נקייה. אפשר לחזור על הפעולה אם נתקע."
+
+#~ msgid "Couldn't create proxy for '{bus}': {error} ({error_code})"
+#~ msgstr "לא ניתן ליצור מתווך עבור ‚{bus}’: {error} ({error_code})"
+
+#, fuzzy
+#~| msgid "Couldn't save '{path}': {error} ({error_code})"
+#~ msgid "Couldn't spawn async process \"'{command}'\": {error} ({error_code})"
+#~ msgstr "לא ניתן לשמור את ‚{path}’: {error} ({error_code})"
+
+#, fuzzy
+#~| msgid "Couldn't watch '{path}': {error} ({error_code})"
+#~ msgid "Couldn't open watchdir '{dirname}': {error} ({error_code})"
+#~ msgstr "לא ניתן לעקוב אחר‚'{path}’: {error} ({error_code})"
+
+#~ msgid "Couldn't move '{path}' to trash: {error} ({error_code})"
+#~ msgstr "לא ניתן להעביר את ‚{path}’ לאשפה: {error} ({error_code})"
+
+#, fuzzy
+#~| msgid "Couldn't create proxy for '{bus}': {error} ({error_code})"
+#~ msgid "Couldn't launch default application for URI '{uri}': {error} ({error_code})"
+#~ msgstr "לא ניתן ליצור מתווך עבור ‚{bus}’: {error} ({error_code})"
+
+#, fuzzy
+#~| msgid "Couldn't open '{path}': {error} ({error_code})"
+#~ msgid "Couldn't invoke xdg-open for URI '{uri}': {error} ({error_code})"
+#~ msgstr "לא ניתן לפתוח את ‚{path}’: {error} ({error_code})"
+
+#~ msgid "Couldn't open '{url}'"
+#~ msgstr "לא ניתן לפתוח את ‚{url}’"
 
 #~ msgid "Created on:"
 #~ msgstr "מועד יצירה:"

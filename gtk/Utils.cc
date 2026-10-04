@@ -379,12 +379,7 @@ bool gtr_file_trash_or_remove(std::string_view const filename, tr_error* error)
             trashed = file->trash();
         } catch (Glib::Error const& e) {
             error->set(e.code(), TR_GLIB_EXCEPTION_WHAT(e));
-            gtr_message(
-                fmt::format(
-                    fmt::runtime(_("Couldn't move '{path}' to trash: {error} ({error_code})")),
-                    fmt::arg("path", filename),
-                    fmt::arg("error", error->message()),
-                    fmt::arg("error_code", error->code())));
+            gtr_message(fmt::format("Couldn't move '{}' to trash: {} ({})", filename, error->message(), error->code()));
         }
     }
 
@@ -394,12 +389,7 @@ bool gtr_file_trash_or_remove(std::string_view const filename, tr_error* error)
             file->remove();
         } catch (Glib::Error const& e) {
             error->set(e.code(), TR_GLIB_EXCEPTION_WHAT(e));
-            gtr_message(
-                fmt::format(
-                    fmt::runtime(_("Couldn't remove '{path}': {error} ({error_code})")),
-                    fmt::arg("path", filename),
-                    fmt::arg("error", error->message()),
-                    fmt::arg("error_code", error->code())));
+            gtr_message(fmt::format("Couldn't remove '{}': {} ({})", filename, error->message(), error->code()));
             result = false;
         }
     }
@@ -471,27 +461,17 @@ void gtr_open_uri(std::string_view const uri)
             return;
         }
     } catch (Glib::Error const& e) {
-        gtr_warning(
-            fmt::format(
-                fmt::runtime(_("Couldn't launch default application for URI '{uri}': {error} ({error_code})")),
-                fmt::arg("uri", uri),
-                fmt::arg("error", e.what()),
-                fmt::arg("error_code", e.code())));
+        gtr_warning(fmt::format("Couldn't launch default application for URI '{}': {} ({})", uri, e.what(), e.code()));
     }
 
     try {
         Glib::spawn_async({}, std::vector<std::string>{ "xdg-open", uri_str }, TR_GLIB_SPAWN_FLAGS(SEARCH_PATH));
         return;
     } catch (Glib::SpawnError const& e) {
-        gtr_warning(
-            fmt::format(
-                fmt::runtime(_("Couldn't invoke xdg-open for URI '{uri}': {error} ({error_code})")),
-                fmt::arg("uri", uri),
-                fmt::arg("error", e.what()),
-                fmt::arg("error_code", static_cast<int>(e.code()))));
+        gtr_warning(fmt::format("Couldn't invoke xdg-open for URI '{}': {} ({})", uri, e.what(), static_cast<int>(e.code())));
     }
 
-    gtr_message(fmt::format(fmt::runtime(_("Couldn't open '{url}'")), fmt::arg("url", uri)));
+    gtr_message(fmt::format("Couldn't open '{}'", uri));
 }
 
 // ---

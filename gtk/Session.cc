@@ -308,13 +308,7 @@ void rename_torrent(Glib::RefPtr<Gio::File> const& file)
     try {
         file->set_display_name(new_name);
     } catch (Glib::Error const& e) {
-        gtr_message(
-            fmt::format(
-                fmt::runtime(_("Couldn't rename '{old_path}' as '{path}': {error} ({error_code})")),
-                fmt::arg("old_path", old_name),
-                fmt::arg("path", new_name),
-                fmt::arg("error", e.what()),
-                fmt::arg("error_code", e.code())));
+        gtr_message(fmt::format("Couldn't rename '{}' as '{}': {} ({})", old_name, new_name, e.what(), e.code()));
     }
 }
 
@@ -401,12 +395,7 @@ void Session::Impl::watchdir_scan()
             watchdir_monitor_file(Gio::File::create_for_path(Glib::build_filename(dirname, name)));
         }
     } catch (Glib::FileError const& e) {
-        gtr_warning(
-            fmt::format(
-                fmt::runtime(_("Couldn't open watchdir '{dirname}': {error} ({error_code})")),
-                fmt::arg("dirname", dirname),
-                fmt::arg("error", e.what()),
-                fmt::arg("error_code", static_cast<int>(e.code()))));
+        gtr_warning(fmt::format("Couldn't open watchdir '{}': {} ({})", dirname, e.what(), static_cast<int>(e.code())));
     }
 }
 
@@ -732,16 +721,12 @@ void Session::Impl::add_file_async_callback(
         char* contents = nullptr;
 
         if (!file->load_contents_finish(result, contents, length)) {
-            gtr_message(fmt::format(fmt::runtime(_("Couldn't read '{path}'")), fmt::arg("path", file->get_parse_name())));
+            gtr_message(fmt::format("Couldn't read '{}'", file->get_parse_name()));
         } else if (builder->set_metainfo(contents != nullptr ? std::string_view{ contents, length } : std::string_view{})) {
             add_builder(std::move(builder), do_prompt, do_notify);
         }
     } catch (Glib::Error const& e) {
-        gtr_message(
-            fmt::format(
-                fmt::runtime(_("The torrent could not be downloaded from {url}: {error}")),
-                fmt::arg("url", file->get_parse_name()),
-                fmt::arg("error", e.what())));
+        gtr_message(fmt::format("The torrent could not be downloaded from {}: {}", file->get_parse_name(), e.what()));
     }
 
     // add_from_url() returned, and ended its batch, long before this download finished.
@@ -797,10 +782,7 @@ bool Session::Impl::add(Glib::ustring const& name_in, bool const do_start, bool 
             add_file_async_callback(file, result, std::unique_ptr<tr_torrent_builder>{ builder }, do_prompt, do_notify);
         });
     } else {
-        std::cerr << fmt::format(
-                         fmt::runtime(_("Couldn't add torrent file '{path}'")),
-                         fmt::arg("path", file->get_parse_name()))
-                  << '\n';
+        std::cerr << fmt::format("Couldn't add torrent file '{}'", file->get_parse_name()) << '\n';
     }
 
     return handled;
@@ -979,7 +961,7 @@ bool core_read_rpc_response_idle(tr_variant& response)
             if (auto const nh = pendingRequests.extract(*id)) {
                 nh.mapped()(response);
             } else {
-                gtr_warning(fmt::format(fmt::runtime(_("Couldn't find pending RPC request for id {id}")), fmt::arg("id", *id)));
+                gtr_warning(fmt::format("Couldn't find pending RPC request for id {}", *id));
             }
         }
     }

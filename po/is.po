@@ -86,12 +86,6 @@ msgstr "Gat ekki bætt við atburði: {error} ({error_code})"
 msgid "Couldn't launch daemon event loop: {error} ({error_code})"
 msgstr "Gat ekki ræst atburðaendurtekningu bakgrunnsþjónustu: {error} ({error_code})"
 
-msgid "Couldn't register {appname} as a {content_type} handler: {error} ({error_code})"
-msgstr "Gat ekki skráð {appname} sem forrit til að meðhöndla {content_type}: {error} ({error_code})"
-
-msgid "Got termination signal, trying to shut down cleanly. Do it again if it gets stuck."
-msgstr "Fékk hætta-merki sent; reyni að hætta án sóðaskaps. Sendu það aftur ef þetta gengur ekki."
-
 msgid "Closing Connections…"
 msgstr "Loka tengingum…"
 
@@ -555,14 +549,6 @@ msgstr "Skilaboð"
 msgid "Time"
 msgstr "Tími"
 
-msgid "Couldn't create proxy for '{bus}': {error} ({error_code})"
-msgstr "Gat ekki útbúið milliþjón fyrir '{bus}': {error} ({error_code})"
-
-#, fuzzy
-#| msgid "Couldn't save '{path}': {error} ({error_code})"
-msgid "Couldn't spawn async process \"'{command}'\": {error} ({error_code})"
-msgstr "Gat ekki vistað '{path}': {error} ({error_code})"
-
 msgid "Open File"
 msgstr "Opna skrá"
 
@@ -668,20 +654,6 @@ msgstr "Gat ekki fært torrent-streymi"
 
 msgid "This may take a moment…"
 msgstr "Þetta getur tekið dágóða stund…"
-
-#, fuzzy
-#| msgid "Couldn't watch '{path}': {error} ({error_code})"
-msgid "Couldn't open watchdir '{dirname}': {error} ({error_code})"
-msgstr "Gat ekki vaktað '{path}': {error} ({error_code})"
-
-msgid "Couldn't read '{path}'"
-msgstr "Gat ekki lesið '{path}'"
-
-msgid "The torrent could not be downloaded from {url}: {error}"
-msgstr ""
-
-msgid "Couldn't find pending RPC request for id {id}"
-msgstr ""
 
 msgid "Started {count:L} time"
 msgid_plural "Started {count:L} times"
@@ -1514,22 +1486,6 @@ msgstr "_Slóð:"
 msgid "\"{source}\" is not a valid torrent file."
 msgstr ""
 
-msgid "Couldn't move '{path}' to trash: {error} ({error_code})"
-msgstr "Gat ekki fært '{path}' í ruslið: {error} ({error_code})"
-
-#, fuzzy
-#| msgid "Couldn't create proxy for '{bus}': {error} ({error_code})"
-msgid "Couldn't launch default application for URI '{uri}': {error} ({error_code})"
-msgstr "Gat ekki útbúið milliþjón fyrir '{bus}': {error} ({error_code})"
-
-#, fuzzy
-#| msgid "Couldn't open '{path}': {error} ({error_code})"
-msgid "Couldn't invoke xdg-open for URI '{uri}': {error} ({error_code})"
-msgstr "Gat ekki opnað '{path}': {error} ({error_code})"
-
-msgid "Couldn't open '{url}'"
-msgstr "Tókst ekki að opna '{url}'"
-
 msgid "Unsupported URL: '{url}'"
 msgstr "Óstudd URL-slóð: '{url}'"
 
@@ -1849,6 +1805,9 @@ msgstr "Gat ekki prófað gátt: {error} ({error_code})"
 msgid "Couldn't test port: {error} ({error_code})"
 msgstr "Gat ekki prófað gátt: {error} ({error_code})"
 
+msgid "The torrent could not be downloaded from {url}: {error}"
+msgstr ""
+
 msgid "Unix socket path must be fewer than {count} characters (including '{prefix}' prefix)"
 msgstr "Slóð Unix-sökkuls (socket) verður að vera færri en {count} stafir (að meðtöldu '{prefix}' forskeyti)"
 
@@ -2081,6 +2040,9 @@ msgstr "Gat ekki lesið atburð: {error} ({error_code})"
 
 msgid "Couldn't convert '{path}' to native path"
 msgstr "Gat ekki umbreytt '{path}' í innbyggða slóð"
+
+msgid "Couldn't read '{path}'"
+msgstr "Gat ekki lesið '{path}'"
 
 msgid "Couldn't create pipe: {error} ({error_code})"
 msgstr "Gat ekki útbúið pípu: {error} ({error_code})"
@@ -2457,6 +2419,41 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "sekúnda"
 msgstr[1] "sekúndur"
+
+#~ msgid "Couldn't register {appname} as a {content_type} handler: {error} ({error_code})"
+#~ msgstr "Gat ekki skráð {appname} sem forrit til að meðhöndla {content_type}: {error} ({error_code})"
+
+#~ msgid "Got termination signal, trying to shut down cleanly. Do it again if it gets stuck."
+#~ msgstr "Fékk hætta-merki sent; reyni að hætta án sóðaskaps. Sendu það aftur ef þetta gengur ekki."
+
+#~ msgid "Couldn't create proxy for '{bus}': {error} ({error_code})"
+#~ msgstr "Gat ekki útbúið milliþjón fyrir '{bus}': {error} ({error_code})"
+
+#, fuzzy
+#~| msgid "Couldn't save '{path}': {error} ({error_code})"
+#~ msgid "Couldn't spawn async process \"'{command}'\": {error} ({error_code})"
+#~ msgstr "Gat ekki vistað '{path}': {error} ({error_code})"
+
+#, fuzzy
+#~| msgid "Couldn't watch '{path}': {error} ({error_code})"
+#~ msgid "Couldn't open watchdir '{dirname}': {error} ({error_code})"
+#~ msgstr "Gat ekki vaktað '{path}': {error} ({error_code})"
+
+#~ msgid "Couldn't move '{path}' to trash: {error} ({error_code})"
+#~ msgstr "Gat ekki fært '{path}' í ruslið: {error} ({error_code})"
+
+#, fuzzy
+#~| msgid "Couldn't create proxy for '{bus}': {error} ({error_code})"
+#~ msgid "Couldn't launch default application for URI '{uri}': {error} ({error_code})"
+#~ msgstr "Gat ekki útbúið milliþjón fyrir '{bus}': {error} ({error_code})"
+
+#, fuzzy
+#~| msgid "Couldn't open '{path}': {error} ({error_code})"
+#~ msgid "Couldn't invoke xdg-open for URI '{uri}': {error} ({error_code})"
+#~ msgstr "Gat ekki opnað '{path}': {error} ({error_code})"
+
+#~ msgid "Couldn't open '{url}'"
+#~ msgstr "Tókst ekki að opna '{url}'"
 
 #~ msgid "_New…"
 #~ msgstr "_Nýtt…"

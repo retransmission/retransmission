@@ -96,12 +96,6 @@ msgstr "Olay eklenemedi: {error} ({error_code})"
 msgid "Couldn't launch daemon event loop: {error} ({error_code})"
 msgstr "Art alan olay döngüsü başlatılamadı: {error} ({error_code})"
 
-msgid "Couldn't register {appname} as a {content_type} handler: {error} ({error_code})"
-msgstr "{appname}, {content_type} işleyicisi olarak kaydedilemedi: {error} ({error_code})"
-
-msgid "Got termination signal, trying to shut down cleanly. Do it again if it gets stuck."
-msgstr "Sonlanma sinyali alındı, temizce kapatmaya çalışılıyor. Takılırsa yeniden yapın."
-
 msgid "Closing Connections…"
 msgstr "Bağlantılar Kapatılıyor…"
 
@@ -618,14 +612,6 @@ msgstr "İleti"
 msgid "Time"
 msgstr "Süre"
 
-msgid "Couldn't create proxy for '{bus}': {error} ({error_code})"
-msgstr "'{bus}' için vekil yaratılamadı: {error} ({error_code})"
-
-#, fuzzy
-#| msgid "Couldn't save '{path}': {error} ({error_code})"
-msgid "Couldn't spawn async process \"'{command}'\": {error} ({error_code})"
-msgstr "'{path}' kaydedilemedi: {error} ({error_code})"
-
 msgid "Open File"
 msgstr "Dosya Aç"
 
@@ -736,20 +722,6 @@ msgstr "Torrent taşınamadı"
 
 msgid "This may take a moment…"
 msgstr "Bu biraz zaman alabilir…"
-
-#, fuzzy
-#| msgid "Couldn't watch '{path}': {error} ({error_code})"
-msgid "Couldn't open watchdir '{dirname}': {error} ({error_code})"
-msgstr "'{path}' izlenemedi: {error} ({error_code})"
-
-msgid "Couldn't read '{path}'"
-msgstr "'{path}' okunamadı"
-
-msgid "The torrent could not be downloaded from {url}: {error}"
-msgstr "Torrent {url} konumundan indirilemedi: {error}"
-
-msgid "Couldn't find pending RPC request for id {id}"
-msgstr ""
 
 msgid "Started {count:L} time"
 msgid_plural "Started {count:L} times"
@@ -1627,22 +1599,6 @@ msgstr "_URL:"
 msgid "\"{source}\" is not a valid torrent file."
 msgstr "“{source}” geçerli bir torrent dosyası değil."
 
-msgid "Couldn't move '{path}' to trash: {error} ({error_code})"
-msgstr "'{path}' çöpe taşınamadı: {error} ({error_code})"
-
-#, fuzzy
-#| msgid "Couldn't create proxy for '{bus}': {error} ({error_code})"
-msgid "Couldn't launch default application for URI '{uri}': {error} ({error_code})"
-msgstr "'{bus}' için vekil yaratılamadı: {error} ({error_code})"
-
-#, fuzzy
-#| msgid "Couldn't open '{path}': {error} ({error_code})"
-msgid "Couldn't invoke xdg-open for URI '{uri}': {error} ({error_code})"
-msgstr "'{path}' açılamadı: {error} ({error_code})"
-
-msgid "Couldn't open '{url}'"
-msgstr "'{url}' açılamadı"
-
 msgid "Unsupported URL: '{url}'"
 msgstr "Desteklenmeyen URL: '{url}'"
 
@@ -1964,6 +1920,9 @@ msgstr "Bağlantı noktası sınanamadı: {error} ({error_code})"
 msgid "Couldn't test port: {error} ({error_code})"
 msgstr "Bağlantı noktası sınanamadı: {error} ({error_code})"
 
+msgid "The torrent could not be downloaded from {url}: {error}"
+msgstr "Torrent {url} konumundan indirilemedi: {error}"
+
 msgid "Unix socket path must be fewer than {count} characters (including '{prefix}' prefix)"
 msgstr "Unix yuva yolu {count} karakterden ('{prefix}' ön eki ile) az olmalıdır"
 
@@ -2200,6 +2159,9 @@ msgstr "Olay okunamadı: {error} ({error_code})"
 
 msgid "Couldn't convert '{path}' to native path"
 msgstr "'{path}', doğal yola çevrilemedi"
+
+msgid "Couldn't read '{path}'"
+msgstr "'{path}' okunamadı"
 
 msgid "Couldn't create pipe: {error} ({error_code})"
 msgstr "Boru oluşturulamadı: {error} ({error_code})"
@@ -3735,6 +3697,41 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "saniye"
 msgstr[1] "saniye"
+
+#~ msgid "Couldn't register {appname} as a {content_type} handler: {error} ({error_code})"
+#~ msgstr "{appname}, {content_type} işleyicisi olarak kaydedilemedi: {error} ({error_code})"
+
+#~ msgid "Got termination signal, trying to shut down cleanly. Do it again if it gets stuck."
+#~ msgstr "Sonlanma sinyali alındı, temizce kapatmaya çalışılıyor. Takılırsa yeniden yapın."
+
+#~ msgid "Couldn't create proxy for '{bus}': {error} ({error_code})"
+#~ msgstr "'{bus}' için vekil yaratılamadı: {error} ({error_code})"
+
+#, fuzzy
+#~| msgid "Couldn't save '{path}': {error} ({error_code})"
+#~ msgid "Couldn't spawn async process \"'{command}'\": {error} ({error_code})"
+#~ msgstr "'{path}' kaydedilemedi: {error} ({error_code})"
+
+#, fuzzy
+#~| msgid "Couldn't watch '{path}': {error} ({error_code})"
+#~ msgid "Couldn't open watchdir '{dirname}': {error} ({error_code})"
+#~ msgstr "'{path}' izlenemedi: {error} ({error_code})"
+
+#~ msgid "Couldn't move '{path}' to trash: {error} ({error_code})"
+#~ msgstr "'{path}' çöpe taşınamadı: {error} ({error_code})"
+
+#, fuzzy
+#~| msgid "Couldn't create proxy for '{bus}': {error} ({error_code})"
+#~ msgid "Couldn't launch default application for URI '{uri}': {error} ({error_code})"
+#~ msgstr "'{bus}' için vekil yaratılamadı: {error} ({error_code})"
+
+#, fuzzy
+#~| msgid "Couldn't open '{path}': {error} ({error_code})"
+#~ msgid "Couldn't invoke xdg-open for URI '{uri}': {error} ({error_code})"
+#~ msgstr "'{path}' açılamadı: {error} ({error_code})"
+
+#~ msgid "Couldn't open '{url}'"
+#~ msgstr "'{url}' açılamadı"
 
 #~ msgid "Created on:"
 #~ msgstr "Oluşturulma:"

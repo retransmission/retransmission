@@ -87,12 +87,6 @@ msgstr "Ei voitu lisätä tapahtumaa: {error} ({error_code})"
 msgid "Couldn't launch daemon event loop: {error} ({error_code})"
 msgstr "Taustapalvelun tapahtumia ei voitu käynnistää: {error} ({error_code})"
 
-msgid "Couldn't register {appname} as a {content_type} handler: {error} ({error_code})"
-msgstr "{appname}ia ei voitu rekisteröidä {content_type} käsittelijä: {error} ({error_code})"
-
-msgid "Got termination signal, trying to shut down cleanly. Do it again if it gets stuck."
-msgstr "Lopetuspyyntö saatu, sammutetaan siististi alas. Pyydä uudellen, jos ei tapahdu mitään."
-
 msgid "Closing Connections…"
 msgstr "Suljetaan yhteyksiä…"
 
@@ -569,14 +563,6 @@ msgstr "Viesti"
 msgid "Time"
 msgstr "Aika"
 
-msgid "Couldn't create proxy for '{bus}': {error} ({error_code})"
-msgstr "Ei voitu luoda välityspalvelinta väylään '{bus}': {error} ({error_code})"
-
-#, fuzzy
-#| msgid "Couldn't save '{path}': {error} ({error_code})"
-msgid "Couldn't spawn async process \"'{command}'\": {error} ({error_code})"
-msgstr "Ei voitu tallentaa '{path}': {error} ({error_code})"
-
 msgid "Open File"
 msgstr "Avaa tiedosto"
 
@@ -682,20 +668,6 @@ msgstr "Torrenttia ei voitu siirtää"
 
 msgid "This may take a moment…"
 msgstr "Tämä saattaa kestää hetken…"
-
-#, fuzzy
-#| msgid "Couldn't watch '{path}': {error} ({error_code})"
-msgid "Couldn't open watchdir '{dirname}': {error} ({error_code})"
-msgstr "Ei voinut katsoa '{path}': {error} ({error_code})"
-
-msgid "Couldn't read '{path}'"
-msgstr "Ei voitu lukea '{path}'"
-
-msgid "The torrent could not be downloaded from {url}: {error}"
-msgstr ""
-
-msgid "Couldn't find pending RPC request for id {id}"
-msgstr ""
 
 msgid "Started {count:L} time"
 msgid_plural "Started {count:L} times"
@@ -1528,22 +1500,6 @@ msgstr "_Verkko-osoite:"
 msgid "\"{source}\" is not a valid torrent file."
 msgstr ""
 
-msgid "Couldn't move '{path}' to trash: {error} ({error_code})"
-msgstr "Ei voitu siirtää '{path}' roskakoriin: {error} ({error_code})"
-
-#, fuzzy
-#| msgid "Couldn't create proxy for '{bus}': {error} ({error_code})"
-msgid "Couldn't launch default application for URI '{uri}': {error} ({error_code})"
-msgstr "Ei voitu luoda välityspalvelinta väylään '{bus}': {error} ({error_code})"
-
-#, fuzzy
-#| msgid "Couldn't open '{path}': {error} ({error_code})"
-msgid "Couldn't invoke xdg-open for URI '{uri}': {error} ({error_code})"
-msgstr "Ei voitu avata '{path}': {error} ({error_code})"
-
-msgid "Couldn't open '{url}'"
-msgstr "Osoitetta '{url}' ei voitu avata"
-
 msgid "Unsupported URL: '{url}'"
 msgstr "Ei tuettu URL: '{url}'"
 
@@ -1863,6 +1819,9 @@ msgstr "Ei voitu testata porttia: {error} ({error_code})"
 msgid "Couldn't test port: {error} ({error_code})"
 msgstr "Ei voitu testata porttia: {error} ({error_code})"
 
+msgid "The torrent could not be downloaded from {url}: {error}"
+msgstr ""
+
 msgid "Unix socket path must be fewer than {count} characters (including '{prefix}' prefix)"
 msgstr "Unix-portin polun on oltava pienempi kuin {count} merkkiä (sisältäen '{prefix}' etuliite)"
 
@@ -2095,6 +2054,9 @@ msgstr "Ei voitu lukea tapahtumaa: {error} ({error_code})"
 
 msgid "Couldn't convert '{path}' to native path"
 msgstr "Ei voitu muuntaa '{path}' alkuperäiseksi poluksi"
+
+msgid "Couldn't read '{path}'"
+msgstr "Ei voitu lukea '{path}'"
 
 msgid "Couldn't create pipe: {error} ({error_code})"
 msgstr "Ei voitu luoda putkea: {error} ({error_code})"
@@ -2473,6 +2435,41 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "sekunti"
 msgstr[1] "sekuntia"
+
+#~ msgid "Couldn't register {appname} as a {content_type} handler: {error} ({error_code})"
+#~ msgstr "{appname}ia ei voitu rekisteröidä {content_type} käsittelijä: {error} ({error_code})"
+
+#~ msgid "Got termination signal, trying to shut down cleanly. Do it again if it gets stuck."
+#~ msgstr "Lopetuspyyntö saatu, sammutetaan siististi alas. Pyydä uudellen, jos ei tapahdu mitään."
+
+#~ msgid "Couldn't create proxy for '{bus}': {error} ({error_code})"
+#~ msgstr "Ei voitu luoda välityspalvelinta väylään '{bus}': {error} ({error_code})"
+
+#, fuzzy
+#~| msgid "Couldn't save '{path}': {error} ({error_code})"
+#~ msgid "Couldn't spawn async process \"'{command}'\": {error} ({error_code})"
+#~ msgstr "Ei voitu tallentaa '{path}': {error} ({error_code})"
+
+#, fuzzy
+#~| msgid "Couldn't watch '{path}': {error} ({error_code})"
+#~ msgid "Couldn't open watchdir '{dirname}': {error} ({error_code})"
+#~ msgstr "Ei voinut katsoa '{path}': {error} ({error_code})"
+
+#~ msgid "Couldn't move '{path}' to trash: {error} ({error_code})"
+#~ msgstr "Ei voitu siirtää '{path}' roskakoriin: {error} ({error_code})"
+
+#, fuzzy
+#~| msgid "Couldn't create proxy for '{bus}': {error} ({error_code})"
+#~ msgid "Couldn't launch default application for URI '{uri}': {error} ({error_code})"
+#~ msgstr "Ei voitu luoda välityspalvelinta väylään '{bus}': {error} ({error_code})"
+
+#, fuzzy
+#~| msgid "Couldn't open '{path}': {error} ({error_code})"
+#~ msgid "Couldn't invoke xdg-open for URI '{uri}': {error} ({error_code})"
+#~ msgstr "Ei voitu avata '{path}': {error} ({error_code})"
+
+#~ msgid "Couldn't open '{url}'"
+#~ msgstr "Osoitetta '{url}' ei voitu avata"
 
 #~ msgid "_New…"
 #~ msgstr "_Uusi…"

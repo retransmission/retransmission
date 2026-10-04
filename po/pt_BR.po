@@ -99,12 +99,6 @@ msgstr "Não foi possível adicionar evento: {error}({error_code})"
 msgid "Couldn't launch daemon event loop: {error} ({error_code})"
 msgstr "Não foi possível iniciar loop de evento daemon: {error}({error_code})"
 
-msgid "Couldn't register {appname} as a {content_type} handler: {error} ({error_code})"
-msgstr "Não foi posível registrar {appname} como um manipulador {content_type}: {error}({error_code})"
-
-msgid "Got termination signal, trying to shut down cleanly. Do it again if it gets stuck."
-msgstr "Recebido sinal de término, tentando desligar de forma limpa. Faça novamente se ficar preso."
-
 msgid "Closing Connections…"
 msgstr "Fechando conexões…"
 
@@ -684,14 +678,6 @@ msgstr "Mensagem"
 msgid "Time"
 msgstr "Tempo"
 
-msgid "Couldn't create proxy for '{bus}': {error} ({error_code})"
-msgstr "Não foi possível criar evento '{bus}': {error} ({error_code})"
-
-#, fuzzy
-#| msgid "Couldn't save '{path}': {error} ({error_code})"
-msgid "Couldn't spawn async process \"'{command}'\": {error} ({error_code})"
-msgstr "Não foi possível salvar '{path}';{error}({error_code})"
-
 msgid "Open File"
 msgstr "Abrir Arquivo"
 
@@ -803,20 +789,6 @@ msgstr "Não pôde mover o torrent"
 
 msgid "This may take a moment…"
 msgstr "Isso pode levar um tempo…"
-
-#, fuzzy
-#| msgid "Couldn't read '{path}': {error} ({error_code})"
-msgid "Couldn't open watchdir '{dirname}': {error} ({error_code})"
-msgstr "Não foi possível ler '{path}': {error} ({error_code})"
-
-msgid "Couldn't read '{path}'"
-msgstr "Não foi possível ler '{path}'"
-
-msgid "The torrent could not be downloaded from {url}: {error}"
-msgstr "O torrent não pode ser baixado de {url}: {error}"
-
-msgid "Couldn't find pending RPC request for id {id}"
-msgstr ""
 
 msgid "Started {count:L} time"
 msgid_plural "Started {count:L} times"
@@ -1699,22 +1671,6 @@ msgstr "_URL:"
 msgid "\"{source}\" is not a valid torrent file."
 msgstr "\"{source}\" não é um arquivo torrent válido."
 
-msgid "Couldn't move '{path}' to trash: {error} ({error_code})"
-msgstr "Não foi possível mover '{path}' para o lixo: {error} ({error_code})"
-
-#, fuzzy
-#| msgid "Couldn't create proxy for '{bus}': {error} ({error_code})"
-msgid "Couldn't launch default application for URI '{uri}': {error} ({error_code})"
-msgstr "Não foi possível criar evento '{bus}': {error} ({error_code})"
-
-#, fuzzy
-#| msgid "Couldn't create proxy for '{bus}': {error} ({error_code})"
-msgid "Couldn't invoke xdg-open for URI '{uri}': {error} ({error_code})"
-msgstr "Não foi possível criar evento '{bus}': {error} ({error_code})"
-
-msgid "Couldn't open '{url}'"
-msgstr "Não foi possível abrir '{url}'"
-
 msgid "Unsupported URL: '{url}'"
 msgstr "URL não suportada: '{url}'"
 
@@ -2055,6 +2011,9 @@ msgstr "Não foi possível testar a porta: {error} ({error_code})"
 msgid "Couldn't test port: {error} ({error_code})"
 msgstr "Não foi possível testar a porta: {error} ({error_code})"
 
+msgid "The torrent could not be downloaded from {url}: {error}"
+msgstr "O torrent não pode ser baixado de {url}: {error}"
+
 msgid "Unix socket path must be fewer than {count} characters (including '{prefix}' prefix)"
 msgstr ""
 
@@ -2293,6 +2252,9 @@ msgstr ""
 
 msgid "Couldn't convert '{path}' to native path"
 msgstr ""
+
+msgid "Couldn't read '{path}'"
+msgstr "Não foi possível ler '{path}'"
 
 msgid "Couldn't create pipe: {error} ({error_code})"
 msgstr ""
@@ -3857,6 +3819,41 @@ msgid_plural "seconds"
 msgstr[0] "segundo"
 msgstr[1] "segundos"
 msgstr[2] "segundos"
+
+#~ msgid "Couldn't register {appname} as a {content_type} handler: {error} ({error_code})"
+#~ msgstr "Não foi posível registrar {appname} como um manipulador {content_type}: {error}({error_code})"
+
+#~ msgid "Got termination signal, trying to shut down cleanly. Do it again if it gets stuck."
+#~ msgstr "Recebido sinal de término, tentando desligar de forma limpa. Faça novamente se ficar preso."
+
+#~ msgid "Couldn't create proxy for '{bus}': {error} ({error_code})"
+#~ msgstr "Não foi possível criar evento '{bus}': {error} ({error_code})"
+
+#, fuzzy
+#~| msgid "Couldn't save '{path}': {error} ({error_code})"
+#~ msgid "Couldn't spawn async process \"'{command}'\": {error} ({error_code})"
+#~ msgstr "Não foi possível salvar '{path}';{error}({error_code})"
+
+#, fuzzy
+#~| msgid "Couldn't read '{path}': {error} ({error_code})"
+#~ msgid "Couldn't open watchdir '{dirname}': {error} ({error_code})"
+#~ msgstr "Não foi possível ler '{path}': {error} ({error_code})"
+
+#~ msgid "Couldn't move '{path}' to trash: {error} ({error_code})"
+#~ msgstr "Não foi possível mover '{path}' para o lixo: {error} ({error_code})"
+
+#, fuzzy
+#~| msgid "Couldn't create proxy for '{bus}': {error} ({error_code})"
+#~ msgid "Couldn't launch default application for URI '{uri}': {error} ({error_code})"
+#~ msgstr "Não foi possível criar evento '{bus}': {error} ({error_code})"
+
+#, fuzzy
+#~| msgid "Couldn't create proxy for '{bus}': {error} ({error_code})"
+#~ msgid "Couldn't invoke xdg-open for URI '{uri}': {error} ({error_code})"
+#~ msgstr "Não foi possível criar evento '{bus}': {error} ({error_code})"
+
+#~ msgid "Couldn't open '{url}'"
+#~ msgstr "Não foi possível abrir '{url}'"
 
 #~ msgid "Created on:"
 #~ msgstr "Criado em:"

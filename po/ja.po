@@ -89,12 +89,6 @@ msgstr "イベントを追加できません: {error} ({error_code})"
 msgid "Couldn't launch daemon event loop: {error} ({error_code})"
 msgstr "デーモンのイベントループを起動できません: {error} ({error_code})"
 
-msgid "Couldn't register {appname} as a {content_type} handler: {error} ({error_code})"
-msgstr "{appname}を {content_type} ハンドラーとして登録できません: {error} ({error_code})"
-
-msgid "Got termination signal, trying to shut down cleanly. Do it again if it gets stuck."
-msgstr "終了シグナルを取得し、きれいなシャットダウンを試します。うまくいかなければ再度お試しください。"
-
 msgid "Closing Connections…"
 msgstr "接続の終了中…"
 
@@ -608,14 +602,6 @@ msgstr "メッセージ"
 msgid "Time"
 msgstr "時間"
 
-msgid "Couldn't create proxy for '{bus}': {error} ({error_code})"
-msgstr "以下用のプロキシを作成できません「{bus}」: {error} ({error_code})"
-
-#, fuzzy
-#| msgid "Couldn't save '{path}': {error} ({error_code})"
-msgid "Couldn't spawn async process \"'{command}'\": {error} ({error_code})"
-msgstr "保存できませんでした「{path}」: {error} ({error_code})"
-
 msgid "Open File"
 msgstr "ファイルを開く"
 
@@ -725,20 +711,6 @@ msgstr "トレントを移動できません"
 
 msgid "This may take a moment…"
 msgstr "作業には数分かかる場合があります…"
-
-#, fuzzy
-#| msgid "Couldn't watch '{path}': {error} ({error_code})"
-msgid "Couldn't open watchdir '{dirname}': {error} ({error_code})"
-msgstr "以下を監視できません「{path}」: {error} ({error_code})"
-
-msgid "Couldn't read '{path}'"
-msgstr "読み込めません「{path}」"
-
-msgid "The torrent could not be downloaded from {url}: {error}"
-msgstr "トレントを {url} からダウンロードできません: {error}"
-
-msgid "Couldn't find pending RPC request for id {id}"
-msgstr ""
 
 msgid "Started {count:L} time"
 msgid_plural "Started {count:L} times"
@@ -1609,22 +1581,6 @@ msgstr "URL(_U):"
 msgid "\"{source}\" is not a valid torrent file."
 msgstr "「{source}」は正しいトレントファイルではありません。"
 
-msgid "Couldn't move '{path}' to trash: {error} ({error_code})"
-msgstr "以下をゴミ箱へ移動できません「{path}」: {error} ({error_code})"
-
-#, fuzzy
-#| msgid "Couldn't create proxy for '{bus}': {error} ({error_code})"
-msgid "Couldn't launch default application for URI '{uri}': {error} ({error_code})"
-msgstr "以下用のプロキシを作成できません「{bus}」: {error} ({error_code})"
-
-#, fuzzy
-#| msgid "Couldn't open '{path}': {error} ({error_code})"
-msgid "Couldn't invoke xdg-open for URI '{uri}': {error} ({error_code})"
-msgstr "開けません「{path}」: {error} ({error_code})"
-
-msgid "Couldn't open '{url}'"
-msgstr "開けません「{url}」"
-
 msgid "Unsupported URL: '{url}'"
 msgstr "未対応のURL: {url}"
 
@@ -1925,6 +1881,9 @@ msgstr "ポートをテストできません: {error} ({error_code})"
 msgid "Couldn't test port: {error} ({error_code})"
 msgstr "ポートをテストできません: {error} ({error_code})"
 
+msgid "The torrent could not be downloaded from {url}: {error}"
+msgstr "トレントを {url} からダウンロードできません: {error}"
+
 msgid "Unix socket path must be fewer than {count} characters (including '{prefix}' prefix)"
 msgstr "Unix のソケットのパスは {count} 文字以下の必要があります ({prefix} 接頭辞含む)"
 
@@ -2159,6 +2118,9 @@ msgstr "イベントを読み取れません: {error} ({error_code})"
 
 msgid "Couldn't convert '{path}' to native path"
 msgstr "「{path}」をネイティブのパスに変換できません"
+
+msgid "Couldn't read '{path}'"
+msgstr "読み込めません「{path}」"
 
 msgid "Couldn't create pipe: {error} ({error_code})"
 msgstr "パイプを作成できません: {error} ({error_code})"
@@ -3677,6 +3639,41 @@ msgstr[0] "日"
 msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "秒"
+
+#~ msgid "Couldn't register {appname} as a {content_type} handler: {error} ({error_code})"
+#~ msgstr "{appname}を {content_type} ハンドラーとして登録できません: {error} ({error_code})"
+
+#~ msgid "Got termination signal, trying to shut down cleanly. Do it again if it gets stuck."
+#~ msgstr "終了シグナルを取得し、きれいなシャットダウンを試します。うまくいかなければ再度お試しください。"
+
+#~ msgid "Couldn't create proxy for '{bus}': {error} ({error_code})"
+#~ msgstr "以下用のプロキシを作成できません「{bus}」: {error} ({error_code})"
+
+#, fuzzy
+#~| msgid "Couldn't save '{path}': {error} ({error_code})"
+#~ msgid "Couldn't spawn async process \"'{command}'\": {error} ({error_code})"
+#~ msgstr "保存できませんでした「{path}」: {error} ({error_code})"
+
+#, fuzzy
+#~| msgid "Couldn't watch '{path}': {error} ({error_code})"
+#~ msgid "Couldn't open watchdir '{dirname}': {error} ({error_code})"
+#~ msgstr "以下を監視できません「{path}」: {error} ({error_code})"
+
+#~ msgid "Couldn't move '{path}' to trash: {error} ({error_code})"
+#~ msgstr "以下をゴミ箱へ移動できません「{path}」: {error} ({error_code})"
+
+#, fuzzy
+#~| msgid "Couldn't create proxy for '{bus}': {error} ({error_code})"
+#~ msgid "Couldn't launch default application for URI '{uri}': {error} ({error_code})"
+#~ msgstr "以下用のプロキシを作成できません「{bus}」: {error} ({error_code})"
+
+#, fuzzy
+#~| msgid "Couldn't open '{path}': {error} ({error_code})"
+#~ msgid "Couldn't invoke xdg-open for URI '{uri}': {error} ({error_code})"
+#~ msgstr "開けません「{path}」: {error} ({error_code})"
+
+#~ msgid "Couldn't open '{url}'"
+#~ msgstr "開けません「{url}」"
 
 #~ msgid "Created on:"
 #~ msgstr "作成日:"

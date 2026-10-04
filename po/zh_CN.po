@@ -97,12 +97,6 @@ msgstr "无法添加事件：{error}（{error_code}）"
 msgid "Couldn't launch daemon event loop: {error} ({error_code})"
 msgstr "无法启动后台进程时间循环：{error}（{error_code}）"
 
-msgid "Couldn't register {appname} as a {content_type} handler: {error} ({error_code})"
-msgstr "无法将 {appname} 注册为 {content_type} 处理程序：{error}（{error_code}）"
-
-msgid "Got termination signal, trying to shut down cleanly. Do it again if it gets stuck."
-msgstr "已收到终止信号，正在尝试完全关闭。如果卡住请再试一次。"
-
 msgid "Closing Connections…"
 msgstr "正在关闭连接…"
 
@@ -657,14 +651,6 @@ msgstr "消息"
 msgid "Time"
 msgstr "时间"
 
-msgid "Couldn't create proxy for '{bus}': {error} ({error_code})"
-msgstr "无法为“{bus}”创建代理：{error}（{error_code}）"
-
-#, fuzzy
-#| msgid "Couldn't save '{path}': {error} ({error_code})"
-msgid "Couldn't spawn async process \"'{command}'\": {error} ({error_code})"
-msgstr "无法保存“{path}”：{error}（{error_code}）"
-
 msgid "Open File"
 msgstr "打开文件"
 
@@ -774,20 +760,6 @@ msgstr "无法移动种子"
 
 msgid "This may take a moment…"
 msgstr "这可能需要花费一点时间…"
-
-#, fuzzy
-#| msgid "Couldn't watch '{path}': {error} ({error_code})"
-msgid "Couldn't open watchdir '{dirname}': {error} ({error_code})"
-msgstr "无法监视“{path}”：{error}（{error_code}）"
-
-msgid "Couldn't read '{path}'"
-msgstr "无法读取“{path}”"
-
-msgid "The torrent could not be downloaded from {url}: {error}"
-msgstr "无法从 {url}:{error}下载 Torrent 文件"
-
-msgid "Couldn't find pending RPC request for id {id}"
-msgstr ""
 
 msgid "Started {count:L} time"
 msgid_plural "Started {count:L} times"
@@ -1657,22 +1629,6 @@ msgstr "网址(_U)："
 msgid "\"{source}\" is not a valid torrent file."
 msgstr "“{source}”不是有效的种子文件。"
 
-msgid "Couldn't move '{path}' to trash: {error} ({error_code})"
-msgstr "无法移动“{path}”至回收站：{error}（{error_code}）"
-
-#, fuzzy
-#| msgid "Couldn't create proxy for '{bus}': {error} ({error_code})"
-msgid "Couldn't launch default application for URI '{uri}': {error} ({error_code})"
-msgstr "无法为“{bus}”创建代理：{error}（{error_code}）"
-
-#, fuzzy
-#| msgid "Couldn't open '{path}': {error} ({error_code})"
-msgid "Couldn't invoke xdg-open for URI '{uri}': {error} ({error_code})"
-msgstr "无法打开“{path}”：{error}（{error_code}）"
-
-msgid "Couldn't open '{url}'"
-msgstr "无法打开“{url}”"
-
 msgid "Unsupported URL: '{url}'"
 msgstr "不支持的网址：“{url}”"
 
@@ -1973,6 +1929,9 @@ msgstr "无法测试端口：{error}（{error_code}）"
 msgid "Couldn't test port: {error} ({error_code})"
 msgstr "无法测试端口：{error}（{error_code}）"
 
+msgid "The torrent could not be downloaded from {url}: {error}"
+msgstr "无法从 {url}:{error}下载 Torrent 文件"
+
 msgid "Unix socket path must be fewer than {count} characters (including '{prefix}' prefix)"
 msgstr "Unix socket 路径必须少于 {count} 个字符（包括“{prefix}”前缀）"
 
@@ -2207,6 +2166,9 @@ msgstr "无法读取事件：{error}（{error_code}）"
 
 msgid "Couldn't convert '{path}' to native path"
 msgstr "无法将“{path}”转换为本地路径"
+
+msgid "Couldn't read '{path}'"
+msgstr "无法读取“{path}”"
 
 msgid "Couldn't create pipe: {error} ({error_code})"
 msgstr "无法创建管道：{error}（{error_code}）"
@@ -3720,6 +3682,41 @@ msgstr[0] "天"
 msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "秒"
+
+#~ msgid "Couldn't register {appname} as a {content_type} handler: {error} ({error_code})"
+#~ msgstr "无法将 {appname} 注册为 {content_type} 处理程序：{error}（{error_code}）"
+
+#~ msgid "Got termination signal, trying to shut down cleanly. Do it again if it gets stuck."
+#~ msgstr "已收到终止信号，正在尝试完全关闭。如果卡住请再试一次。"
+
+#~ msgid "Couldn't create proxy for '{bus}': {error} ({error_code})"
+#~ msgstr "无法为“{bus}”创建代理：{error}（{error_code}）"
+
+#, fuzzy
+#~| msgid "Couldn't save '{path}': {error} ({error_code})"
+#~ msgid "Couldn't spawn async process \"'{command}'\": {error} ({error_code})"
+#~ msgstr "无法保存“{path}”：{error}（{error_code}）"
+
+#, fuzzy
+#~| msgid "Couldn't watch '{path}': {error} ({error_code})"
+#~ msgid "Couldn't open watchdir '{dirname}': {error} ({error_code})"
+#~ msgstr "无法监视“{path}”：{error}（{error_code}）"
+
+#~ msgid "Couldn't move '{path}' to trash: {error} ({error_code})"
+#~ msgstr "无法移动“{path}”至回收站：{error}（{error_code}）"
+
+#, fuzzy
+#~| msgid "Couldn't create proxy for '{bus}': {error} ({error_code})"
+#~ msgid "Couldn't launch default application for URI '{uri}': {error} ({error_code})"
+#~ msgstr "无法为“{bus}”创建代理：{error}（{error_code}）"
+
+#, fuzzy
+#~| msgid "Couldn't open '{path}': {error} ({error_code})"
+#~ msgid "Couldn't invoke xdg-open for URI '{uri}': {error} ({error_code})"
+#~ msgstr "无法打开“{path}”：{error}（{error_code}）"
+
+#~ msgid "Couldn't open '{url}'"
+#~ msgstr "无法打开“{url}”"
 
 #~ msgid "Created on:"
 #~ msgstr "创建于："

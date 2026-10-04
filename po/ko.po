@@ -90,12 +90,6 @@ msgstr "이벤트를 추가할 수 없음: {error} ({error_code})"
 msgid "Couldn't launch daemon event loop: {error} ({error_code})"
 msgstr "데몬 이벤트 반복을 실행할 수 없음: {error} ({error_code})"
 
-msgid "Couldn't register {appname} as a {content_type} handler: {error} ({error_code})"
-msgstr "{appname}을 {content_type} 연결 프로그램에 등록할 수 없음: {error} ({error_code})"
-
-msgid "Got termination signal, trying to shut down cleanly. Do it again if it gets stuck."
-msgstr "정상 종료 신호를 받았습니다. 완전하게 종료하려고 합니다. 만약에 멈추면 다시 시도해주세요."
-
 msgid "Closing Connections…"
 msgstr "연결 닫는 중…"
 
@@ -557,14 +551,6 @@ msgstr "메시지"
 msgid "Time"
 msgstr "시간"
 
-msgid "Couldn't create proxy for '{bus}': {error} ({error_code})"
-msgstr ""
-
-#, fuzzy
-#| msgid "Couldn't save '{path}': {error} ({error_code})"
-msgid "Couldn't spawn async process \"'{command}'\": {error} ({error_code})"
-msgstr "'{path}' 경로에 저장할 수 없음: {error} ({error_code})"
-
 msgid "Open File"
 msgstr "파일 열기"
 
@@ -669,20 +655,6 @@ msgstr "토렌트를 옮길 수 없음"
 
 msgid "This may take a moment…"
 msgstr "다소 긴 시간이 걸릴 수 있습니다…"
-
-#, fuzzy
-#| msgid "Couldn't read '{path}': {error} ({error_code})"
-msgid "Couldn't open watchdir '{dirname}': {error} ({error_code})"
-msgstr "'{path}' 경로를 읽을 수 없음: {error} ({error_code})"
-
-msgid "Couldn't read '{path}'"
-msgstr ""
-
-msgid "The torrent could not be downloaded from {url}: {error}"
-msgstr ""
-
-msgid "Couldn't find pending RPC request for id {id}"
-msgstr ""
 
 msgid "Started {count:L} time"
 msgid_plural "Started {count:L} times"
@@ -1504,22 +1476,6 @@ msgstr "주소(_U):"
 msgid "\"{source}\" is not a valid torrent file."
 msgstr ""
 
-msgid "Couldn't move '{path}' to trash: {error} ({error_code})"
-msgstr ""
-
-#, fuzzy
-#| msgid "Couldn't launch daemon event loop: {error} ({error_code})"
-msgid "Couldn't launch default application for URI '{uri}': {error} ({error_code})"
-msgstr "데몬 이벤트 반복을 실행할 수 없음: {error} ({error_code})"
-
-#, fuzzy
-#| msgid "Couldn't remove '{path}': {error} ({error_code})"
-msgid "Couldn't invoke xdg-open for URI '{uri}': {error} ({error_code})"
-msgstr "'{path}' 경로를 지울 수 없음: {error} ({error_code})"
-
-msgid "Couldn't open '{url}'"
-msgstr ""
-
 msgid "Unsupported URL: '{url}'"
 msgstr ""
 
@@ -1816,6 +1772,9 @@ msgstr "이벤트를 만들 수 없음: {error}({error_code})"
 msgid "Couldn't test port: {error} ({error_code})"
 msgstr ""
 
+msgid "The torrent could not be downloaded from {url}: {error}"
+msgstr ""
+
 msgid "Unix socket path must be fewer than {count} characters (including '{prefix}' prefix)"
 msgstr ""
 
@@ -2045,6 +2004,9 @@ msgid "Couldn't read event: {error} ({error_code})"
 msgstr ""
 
 msgid "Couldn't convert '{path}' to native path"
+msgstr ""
+
+msgid "Couldn't read '{path}'"
 msgstr ""
 
 msgid "Couldn't create pipe: {error} ({error_code})"
@@ -2418,6 +2380,32 @@ msgstr[0] ""
 msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] ""
+
+#~ msgid "Couldn't register {appname} as a {content_type} handler: {error} ({error_code})"
+#~ msgstr "{appname}을 {content_type} 연결 프로그램에 등록할 수 없음: {error} ({error_code})"
+
+#~ msgid "Got termination signal, trying to shut down cleanly. Do it again if it gets stuck."
+#~ msgstr "정상 종료 신호를 받았습니다. 완전하게 종료하려고 합니다. 만약에 멈추면 다시 시도해주세요."
+
+#, fuzzy
+#~| msgid "Couldn't save '{path}': {error} ({error_code})"
+#~ msgid "Couldn't spawn async process \"'{command}'\": {error} ({error_code})"
+#~ msgstr "'{path}' 경로에 저장할 수 없음: {error} ({error_code})"
+
+#, fuzzy
+#~| msgid "Couldn't read '{path}': {error} ({error_code})"
+#~ msgid "Couldn't open watchdir '{dirname}': {error} ({error_code})"
+#~ msgstr "'{path}' 경로를 읽을 수 없음: {error} ({error_code})"
+
+#, fuzzy
+#~| msgid "Couldn't launch daemon event loop: {error} ({error_code})"
+#~ msgid "Couldn't launch default application for URI '{uri}': {error} ({error_code})"
+#~ msgstr "데몬 이벤트 반복을 실행할 수 없음: {error} ({error_code})"
+
+#, fuzzy
+#~| msgid "Couldn't remove '{path}': {error} ({error_code})"
+#~ msgid "Couldn't invoke xdg-open for URI '{uri}': {error} ({error_code})"
+#~ msgstr "'{path}' 경로를 지울 수 없음: {error} ({error_code})"
 
 #~ msgid "_New…"
 #~ msgstr "새 토렌트(_N)…"

@@ -93,12 +93,6 @@ msgstr "Ezin izan da ekitaldia gehitu: {error} ({error_code})"
 msgid "Couldn't launch daemon event loop: {error} ({error_code})"
 msgstr "Ezin izan da daemon-ekitaldi buklea abiarazi: {error} ({error_code})"
 
-msgid "Couldn't register {appname} as a {content_type} handler: {error} ({error_code})"
-msgstr "Ezin izan da {appname} {content_type} kudeatzaile gisa erregistratu: {error} ({error_code})"
-
-msgid "Got termination signal, trying to shut down cleanly. Do it again if it gets stuck."
-msgstr "Amaitzeko seinalea jaso da, modu garbian amaitzen saiatzen. Trabatuta geratuz gero berriz ere egin ezazu."
-
 msgid "Closing Connections…"
 msgstr "Konexioak ixten…"
 
@@ -622,14 +616,6 @@ msgstr "Mezua"
 msgid "Time"
 msgstr "Ordua"
 
-msgid "Couldn't create proxy for '{bus}': {error} ({error_code})"
-msgstr "Ezin izan da '{bus}'(r)entzako proxya sortu: {error} ({error_code})"
-
-#, fuzzy
-#| msgid "Couldn't save '{path}': {error} ({error_code})"
-msgid "Couldn't spawn async process \"'{command}'\": {error} ({error_code})"
-msgstr "Ezin izan da '{path}' gorde: {error} ({error_code})"
-
 msgid "Open File"
 msgstr "Ireki fitxategia"
 
@@ -740,20 +726,6 @@ msgstr "Ezin izan da torrent-a mugitu"
 
 msgid "This may take a moment…"
 msgstr "Horrek denbora behar du…"
-
-#, fuzzy
-#| msgid "Couldn't watch '{path}': {error} ({error_code})"
-msgid "Couldn't open watchdir '{dirname}': {error} ({error_code})"
-msgstr "Ezin izan da '{path}' ikusi: {error} ({error_code})"
-
-msgid "Couldn't read '{path}'"
-msgstr "Ezin izan da '{path}' irakurri"
-
-msgid "The torrent could not be downloaded from {url}: {error}"
-msgstr "Torrent-a ezin da {url}(e)tik deskagatu: {error}"
-
-msgid "Couldn't find pending RPC request for id {id}"
-msgstr ""
 
 msgid "Started {count:L} time"
 msgid_plural "Started {count:L} times"
@@ -1629,22 +1601,6 @@ msgstr "_URLa:"
 msgid "\"{source}\" is not a valid torrent file."
 msgstr "\"{source}\" ezin da torrent artxibo mota hau erabili."
 
-msgid "Couldn't move '{path}' to trash: {error} ({error_code})"
-msgstr "Ezin izan da '{path}' zakarrontzira mugitu: {error} ({error_code})"
-
-#, fuzzy
-#| msgid "Couldn't create proxy for '{bus}': {error} ({error_code})"
-msgid "Couldn't launch default application for URI '{uri}': {error} ({error_code})"
-msgstr "Ezin izan da '{bus}'(r)entzako proxya sortu: {error} ({error_code})"
-
-#, fuzzy
-#| msgid "Couldn't open '{path}': {error} ({error_code})"
-msgid "Couldn't invoke xdg-open for URI '{uri}': {error} ({error_code})"
-msgstr "Ezin izan da '{path}' ireki: {error} ({error_code})"
-
-msgid "Couldn't open '{url}'"
-msgstr "Ezin izan da '{url}' ireki"
-
 msgid "Unsupported URL: '{url}'"
 msgstr "URL baliogabea: '{url}'"
 
@@ -1966,6 +1922,9 @@ msgstr "Ezin izan da ataka probatu: {error} ({error_code})"
 msgid "Couldn't test port: {error} ({error_code})"
 msgstr "Ezin izan da ataka probatu: {error} ({error_code})"
 
+msgid "The torrent could not be downloaded from {url}: {error}"
+msgstr "Torrent-a ezin da {url}(e)tik deskagatu: {error}"
+
 msgid "Unix socket path must be fewer than {count} characters (including '{prefix}' prefix)"
 msgstr "Unix-eko socket bidea  {count} karaktere baino gutxiagokoa izan behar da ('{prefix}' aurrizkia barne)"
 
@@ -2202,6 +2161,9 @@ msgstr "Ezin izan da ekitaldia irakurri: {error} ({error_code})"
 
 msgid "Couldn't convert '{path}' to native path"
 msgstr "Ezin izan da '{path}' jatorrizko bidera bihurtu"
+
+msgid "Couldn't read '{path}'"
+msgstr "Ezin izan da '{path}' irakurri"
 
 msgid "Couldn't create pipe: {error} ({error_code})"
 msgstr "Ezin izan da hodia sortu: {error} ({error_code})"
@@ -3747,6 +3709,41 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "segundo"
 msgstr[1] "segundo"
+
+#~ msgid "Couldn't register {appname} as a {content_type} handler: {error} ({error_code})"
+#~ msgstr "Ezin izan da {appname} {content_type} kudeatzaile gisa erregistratu: {error} ({error_code})"
+
+#~ msgid "Got termination signal, trying to shut down cleanly. Do it again if it gets stuck."
+#~ msgstr "Amaitzeko seinalea jaso da, modu garbian amaitzen saiatzen. Trabatuta geratuz gero berriz ere egin ezazu."
+
+#~ msgid "Couldn't create proxy for '{bus}': {error} ({error_code})"
+#~ msgstr "Ezin izan da '{bus}'(r)entzako proxya sortu: {error} ({error_code})"
+
+#, fuzzy
+#~| msgid "Couldn't save '{path}': {error} ({error_code})"
+#~ msgid "Couldn't spawn async process \"'{command}'\": {error} ({error_code})"
+#~ msgstr "Ezin izan da '{path}' gorde: {error} ({error_code})"
+
+#, fuzzy
+#~| msgid "Couldn't watch '{path}': {error} ({error_code})"
+#~ msgid "Couldn't open watchdir '{dirname}': {error} ({error_code})"
+#~ msgstr "Ezin izan da '{path}' ikusi: {error} ({error_code})"
+
+#~ msgid "Couldn't move '{path}' to trash: {error} ({error_code})"
+#~ msgstr "Ezin izan da '{path}' zakarrontzira mugitu: {error} ({error_code})"
+
+#, fuzzy
+#~| msgid "Couldn't create proxy for '{bus}': {error} ({error_code})"
+#~ msgid "Couldn't launch default application for URI '{uri}': {error} ({error_code})"
+#~ msgstr "Ezin izan da '{bus}'(r)entzako proxya sortu: {error} ({error_code})"
+
+#, fuzzy
+#~| msgid "Couldn't open '{path}': {error} ({error_code})"
+#~ msgid "Couldn't invoke xdg-open for URI '{uri}': {error} ({error_code})"
+#~ msgstr "Ezin izan da '{path}' ireki: {error} ({error_code})"
+
+#~ msgid "Couldn't open '{url}'"
+#~ msgstr "Ezin izan da '{url}' ireki"
 
 #~ msgid "Created on:"
 #~ msgstr "Sortze-data:"

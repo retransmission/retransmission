@@ -94,12 +94,6 @@ msgstr "Не удалось добавить событие: {error} ({error_cod
 msgid "Couldn't launch daemon event loop: {error} ({error_code})"
 msgstr "Не удалось запустить цикл событий демона: {error} ({error_code})"
 
-msgid "Couldn't register {appname} as a {content_type} handler: {error} ({error_code})"
-msgstr "Не удалось зарегистрировать {appname} в качестве обработчика {content_type}: {error} ({error_code})"
-
-msgid "Got termination signal, trying to shut down cleanly. Do it again if it gets stuck."
-msgstr "Получен сигнал завершения, попытка завершить работу корректно. Повторите это, если возникнет ошибка."
-
 msgid "Closing Connections…"
 msgstr "Отключение соединений…"
 
@@ -627,14 +621,6 @@ msgstr "Сообщение"
 msgid "Time"
 msgstr "Время"
 
-msgid "Couldn't create proxy for '{bus}': {error} ({error_code})"
-msgstr "Не удалось создать прокси для \"{bus}\": {error} ({error_code})"
-
-#, fuzzy
-#| msgid "Couldn't save '{path}': {error} ({error_code})"
-msgid "Couldn't spawn async process \"'{command}'\": {error} ({error_code})"
-msgstr "Не удалось сохранить «{path}»: {error} ({error_code})"
-
 msgid "Open File"
 msgstr "Открыть файл"
 
@@ -747,20 +733,6 @@ msgstr "Не удалось переместить торрент"
 
 msgid "This may take a moment…"
 msgstr "Пожалуйста, подождите…"
-
-#, fuzzy
-#| msgid "Couldn't watch '{path}': {error} ({error_code})"
-msgid "Couldn't open watchdir '{dirname}': {error} ({error_code})"
-msgstr "Не удалось посмотреть «{path}»: {error} ({error_code})"
-
-msgid "Couldn't read '{path}'"
-msgstr "Не удалось прочитать «{path}»"
-
-msgid "The torrent could not be downloaded from {url}: {error}"
-msgstr "Торрент не может быть скачан из {url}: {error}"
-
-msgid "Couldn't find pending RPC request for id {id}"
-msgstr ""
 
 msgid "Started {count:L} time"
 msgid_plural "Started {count:L} times"
@@ -1650,22 +1622,6 @@ msgstr "_Ссылка:"
 msgid "\"{source}\" is not a valid torrent file."
 msgstr "«{source}» не является торрент-файлом."
 
-msgid "Couldn't move '{path}' to trash: {error} ({error_code})"
-msgstr "Не удалось убрать «{path}» в корзину: {error} ({error_code})"
-
-#, fuzzy
-#| msgid "Couldn't create proxy for '{bus}': {error} ({error_code})"
-msgid "Couldn't launch default application for URI '{uri}': {error} ({error_code})"
-msgstr "Не удалось создать прокси для \"{bus}\": {error} ({error_code})"
-
-#, fuzzy
-#| msgid "Couldn't open '{path}': {error} ({error_code})"
-msgid "Couldn't invoke xdg-open for URI '{uri}': {error} ({error_code})"
-msgstr "Не удалось открыть «{path}»: {error} ({error_code})"
-
-msgid "Couldn't open '{url}'"
-msgstr "Не удалось открыть «{url}»"
-
 msgid "Unsupported URL: '{url}'"
 msgstr "Неподдерживаемый адрес: «{url}»"
 
@@ -2029,6 +1985,9 @@ msgstr "Не удалось проверить порт: {error} ({error_code})"
 msgid "Couldn't test port: {error} ({error_code})"
 msgstr "Не удалось проверить порт: {error} ({error_code})"
 
+msgid "The torrent could not be downloaded from {url}: {error}"
+msgstr "Торрент не может быть скачан из {url}: {error}"
+
 msgid "Unix socket path must be fewer than {count} characters (including '{prefix}' prefix)"
 msgstr "Путь к сокету Unix должен быть меньше {count} символов (включая префикс «{prefix}»)"
 
@@ -2269,6 +2228,9 @@ msgstr "Не удалось прочесть событие: {error} ({error_cod
 
 msgid "Couldn't convert '{path}' to native path"
 msgstr "Не удалось преобразовать «{path}» в родной путь"
+
+msgid "Couldn't read '{path}'"
+msgstr "Не удалось прочитать «{path}»"
 
 msgid "Couldn't create pipe: {error} ({error_code})"
 msgstr "Не удалось создать конвейер: {error} ({error_code})"
@@ -3848,6 +3810,41 @@ msgstr[0] "секунда"
 msgstr[1] "секунды"
 msgstr[2] "секунд"
 msgstr[3] "секунд"
+
+#~ msgid "Couldn't register {appname} as a {content_type} handler: {error} ({error_code})"
+#~ msgstr "Не удалось зарегистрировать {appname} в качестве обработчика {content_type}: {error} ({error_code})"
+
+#~ msgid "Got termination signal, trying to shut down cleanly. Do it again if it gets stuck."
+#~ msgstr "Получен сигнал завершения, попытка завершить работу корректно. Повторите это, если возникнет ошибка."
+
+#~ msgid "Couldn't create proxy for '{bus}': {error} ({error_code})"
+#~ msgstr "Не удалось создать прокси для \"{bus}\": {error} ({error_code})"
+
+#, fuzzy
+#~| msgid "Couldn't save '{path}': {error} ({error_code})"
+#~ msgid "Couldn't spawn async process \"'{command}'\": {error} ({error_code})"
+#~ msgstr "Не удалось сохранить «{path}»: {error} ({error_code})"
+
+#, fuzzy
+#~| msgid "Couldn't watch '{path}': {error} ({error_code})"
+#~ msgid "Couldn't open watchdir '{dirname}': {error} ({error_code})"
+#~ msgstr "Не удалось посмотреть «{path}»: {error} ({error_code})"
+
+#~ msgid "Couldn't move '{path}' to trash: {error} ({error_code})"
+#~ msgstr "Не удалось убрать «{path}» в корзину: {error} ({error_code})"
+
+#, fuzzy
+#~| msgid "Couldn't create proxy for '{bus}': {error} ({error_code})"
+#~ msgid "Couldn't launch default application for URI '{uri}': {error} ({error_code})"
+#~ msgstr "Не удалось создать прокси для \"{bus}\": {error} ({error_code})"
+
+#, fuzzy
+#~| msgid "Couldn't open '{path}': {error} ({error_code})"
+#~ msgid "Couldn't invoke xdg-open for URI '{uri}': {error} ({error_code})"
+#~ msgstr "Не удалось открыть «{path}»: {error} ({error_code})"
+
+#~ msgid "Couldn't open '{url}'"
+#~ msgstr "Не удалось открыть «{url}»"
 
 #~ msgid "Created on:"
 #~ msgstr "Дата:"

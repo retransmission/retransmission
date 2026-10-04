@@ -121,11 +121,7 @@ void dbus_proxy_ready_callback(Glib::RefPtr<Gio::AsyncResult>& res)
         proxy = Gio::DBus::Proxy::create_for_bus_finish(res);
     } catch (Glib::Error const& e) {
         gtr_warning(
-            fmt::format(
-                fmt::runtime(_("Couldn't create proxy for '{bus}': {error} ({error_code})")),
-                fmt::arg("bus", NotificationsDbusName),
-                fmt::arg("error", TR_GLIB_EXCEPTION_WHAT(e)),
-                fmt::arg("error_code", e.code())));
+            fmt::format("Couldn't create proxy for '{}': {} ({})", NotificationsDbusName, TR_GLIB_EXCEPTION_WHAT(e), e.code()));
         return;
     }
 
@@ -181,10 +177,10 @@ void gtr_notify_torrent_completed(Glib::RefPtr<Session> const& core, tr_torrent_
         } catch (Glib::SpawnError const& e) {
             gtr_warning(
                 fmt::format(
-                    fmt::runtime(_("Couldn't spawn async process \"'{command}'\": {error} ({error_code})")),
-                    fmt::arg("command", fmt::join(argv, "' '")),
-                    fmt::arg("error", e.what()),
-                    fmt::arg("error_code", static_cast<int>(e.code()))));
+                    "Couldn't spawn async process \"'{}'\": {} ({})",
+                    fmt::join(argv, "' '"),
+                    e.what(),
+                    static_cast<int>(e.code())));
         }
     }
 
