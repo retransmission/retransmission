@@ -1070,31 +1070,35 @@ msgstr "_Filterleiste"
 msgid "_Statusbar"
 msgstr "_Statusleiste"
 
-msgid "Sort by _Activity"
-msgstr "Nach A_ktivität sortieren"
+#, fuzzy
+msgid "Sort Torrents _By"
+msgstr "Torrent starten"
 
-msgid "Sort by A_ge"
+msgid "_Activity"
+msgstr "Aktivität"
+
+msgid "A_ge"
 msgstr "Nach _Alter sortieren"
 
-msgid "Sort by _Name"
-msgstr "Nach _Name sortieren"
+msgid "_Name"
+msgstr "Name"
 
-msgid "Sort by _Progress"
-msgstr "Nach F_ortschritt sortieren"
+msgid "_Progress"
+msgstr "Fortschritt"
 
-msgid "Sort by _Queue"
-msgstr "Nach War_teschlange sortieren"
+msgid "_Queue Order"
+msgstr "Position in Warteliste"
 
-msgid "Sort by Rati_o"
-msgstr "Nach _Verhältnis sortieren"
+msgid "Rati_o"
+msgstr "Verhältnis"
 
-msgid "Sort by Si_ze"
-msgstr "Nach _Größe sortieren"
+msgid "Si_ze"
+msgstr "Größe"
 
-msgid "Sort by Stat_e"
-msgstr "Nach Stat_us sortieren"
+msgid "Stat_e"
+msgstr "Status"
 
-msgid "Sort by Time _Left"
+msgid "Time _Left"
 msgstr "Nach ver_bleibender Zeit sortieren"
 
 msgid "Re_verse Sort Order"
@@ -1118,10 +1122,6 @@ msgstr "In_halte"
 
 msgid "_About"
 msgstr "Ü_ber"
-
-#, fuzzy
-msgid "_Sort Torrents By"
-msgstr "Torrent starten"
 
 #, fuzzy
 msgid "Alternative Speed _Limits"
@@ -2537,24 +2537,6 @@ msgstr "Verfügbarkeit"
 msgid "Use Groups"
 msgstr "Gruppen verwenden"
 
-msgid "Queue Order"
-msgstr "Position in Warteliste"
-
-msgid "Date Added"
-msgstr "Hinzugefügt"
-
-msgid "ETA"
-msgstr ""
-
-msgid "State"
-msgstr "Status"
-
-msgid "Ascending"
-msgstr "Aufsteigend"
-
-msgid "Descending"
-msgstr "Absteigend"
-
 #. Translators: View menu -> Inspector
 msgid "Show Inspector"
 msgstr "Informationen einblenden"
@@ -3826,6 +3808,15 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "Sekunde"
 msgstr[1] "Sekunden"
+
+#~ msgid "Date Added"
+#~ msgstr "Hinzugefügt"
+
+#~ msgid "Ascending"
+#~ msgstr "Aufsteigend"
+
+#~ msgid "Descending"
+#~ msgstr "Absteigend"
 
 #~ msgid "_New…"
 #~ msgstr "_Neu …"

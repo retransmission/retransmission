@@ -1073,31 +1073,31 @@ msgstr "Barra de _peñera"
 msgid "_Statusbar"
 msgstr "Barra d'e_stáu"
 
-msgid "Sort by _Activity"
-msgstr "Ordenar per _actividá"
+msgid "_Activity"
+msgstr "Xera"
 
-msgid "Sort by A_ge"
+msgid "A_ge"
 msgstr "Ordenar per e_dá"
 
-msgid "Sort by _Name"
-msgstr "Ordenar per _nome"
+msgid "_Name"
+msgstr "Nome"
 
-msgid "Sort by _Progress"
+msgid "_Progress"
 msgstr "Ordenar per _progresu"
 
-msgid "Sort by _Queue"
+msgid "_Queue Order"
 msgstr "Ordenar per _cola"
 
-msgid "Sort by Rati_o"
+msgid "Rati_o"
 msgstr "_Axeitar por ratio"
 
-msgid "Sort by Si_ze"
-msgstr "Ordenar per tama_ñu"
+msgid "Si_ze"
+msgstr "Tamañu"
 
-msgid "Sort by Stat_e"
+msgid "Stat_e"
 msgstr "Ordenar per _estáu"
 
-msgid "Sort by Time _Left"
+msgid "Time _Left"
 msgstr "Ordenar pel tiempu que falta"
 
 msgid "Re_verse Sort Order"

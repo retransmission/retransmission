@@ -1103,31 +1103,31 @@ msgstr "Barre des _filtres"
 msgid "_Statusbar"
 msgstr "_Barre d'état"
 
-msgid "Sort by _Activity"
-msgstr "Trier par _activité"
+msgid "_Activity"
+msgstr "Activité"
 
-msgid "Sort by A_ge"
+msgid "A_ge"
 msgstr "Trier par â_ge"
 
-msgid "Sort by _Name"
-msgstr "Trier par _nom"
+msgid "_Name"
+msgstr "Nom"
 
-msgid "Sort by _Progress"
+msgid "_Progress"
 msgstr "Trier par _progression"
 
-msgid "Sort by _Queue"
+msgid "_Queue Order"
 msgstr "Trier par _file d'attente"
 
-msgid "Sort by Rati_o"
+msgid "Rati_o"
 msgstr "Trier par rati_o"
 
-msgid "Sort by Si_ze"
-msgstr "Trier par _taille"
+msgid "Si_ze"
+msgstr "Taille"
 
-msgid "Sort by Stat_e"
+msgid "Stat_e"
 msgstr "Tri_er par état"
 
-msgid "Sort by Time _Left"
+msgid "Time _Left"
 msgstr "Trier par te_mps restant"
 
 msgid "Re_verse Sort Order"

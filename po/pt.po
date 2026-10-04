@@ -929,31 +929,35 @@ msgstr "Barra de _filtragem"
 msgid "_Statusbar"
 msgstr "_Barra de estado"
 
-msgid "Sort by _Activity"
-msgstr "Ordenar por _Atividade"
+#, fuzzy
+msgid "Sort Torrents _By"
+msgstr "_Iniciar Torrent"
 
-msgid "Sort by A_ge"
+msgid "_Activity"
+msgstr "Atividade"
+
+msgid "A_ge"
 msgstr "Ordenar por _Período"
 
-msgid "Sort by _Name"
-msgstr "Ordenar por _Nome"
+msgid "_Name"
+msgstr "Nome"
 
-msgid "Sort by _Progress"
-msgstr "Ordenar por _Progresso"
+msgid "_Progress"
+msgstr "Progresso"
 
-msgid "Sort by _Queue"
+msgid "_Queue Order"
 msgstr "Ordenar por _Fila"
 
-msgid "Sort by Rati_o"
+msgid "Rati_o"
 msgstr "Ordenar por _Rácio"
 
-msgid "Sort by Si_ze"
-msgstr "Ordenar por _Tamanho"
+msgid "Si_ze"
+msgstr "Tamanho"
 
-msgid "Sort by Stat_e"
+msgid "Stat_e"
 msgstr "Ordenar por _Estado"
 
-msgid "Sort by Time _Left"
+msgid "Time _Left"
 msgstr "Ordenar por Tempo _Restante"
 
 msgid "Re_verse Sort Order"
@@ -976,10 +980,6 @@ msgstr "_Conteúdos"
 
 msgid "_About"
 msgstr "_Acerca"
-
-#, fuzzy
-msgid "_Sort Torrents By"
-msgstr "_Iniciar Torrent"
 
 #, fuzzy
 msgid "Alternative Speed _Limits"

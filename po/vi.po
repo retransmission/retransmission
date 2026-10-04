@@ -1046,31 +1046,31 @@ msgstr "T_hanh lọc"
 msgid "_Statusbar"
 msgstr "Thanh _trạng thái"
 
-msgid "Sort by _Activity"
-msgstr "Xếp theo _Hoạt động"
+msgid "_Activity"
+msgstr "Hoạt động"
 
-msgid "Sort by A_ge"
+msgid "A_ge"
 msgstr "Xếp theo Thời _gian"
 
-msgid "Sort by _Name"
-msgstr "Xếp theo _Tên"
+msgid "_Name"
+msgstr "Tên"
 
-msgid "Sort by _Progress"
+msgid "_Progress"
 msgstr "Xếp theo Tiến t_rình"
 
-msgid "Sort by _Queue"
+msgid "_Queue Order"
 msgstr ""
 
-msgid "Sort by Rati_o"
+msgid "Rati_o"
 msgstr "Xếp theo T_ỉ lệ"
 
-msgid "Sort by Si_ze"
-msgstr "Xếp theo _Kích thước"
+msgid "Si_ze"
+msgstr "Kích thước"
 
-msgid "Sort by Stat_e"
+msgid "Stat_e"
 msgstr "Xếp theo Tì_nh trạng"
 
-msgid "Sort by Time _Left"
+msgid "Time _Left"
 msgstr "Xếp theo Thời gian _còn lại"
 
 msgid "Re_verse Sort Order"

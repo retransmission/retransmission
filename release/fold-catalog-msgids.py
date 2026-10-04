@@ -29,7 +29,7 @@ import sys
 # and may have, for the translation that moves:
 #   'prefer':  'from' has the old message's translation win over the new message's
 #   'keep':    True leaves the old message in place, for a client that still uses it;
-#              its translation is copied to the new message if that has none
+#              its translation is copied to the new message if that has none, or whatever it has with 'override'
 #   'strip':   text to take out, e.g. ['<i>', '</i>']
 #   'replace': [[old, new], ...] text to replace
 #   'fields':  {old: new} for {fmt} fields, e.g. {'count': 'piece_count:L'}
@@ -306,6 +306,25 @@ RENAMES = [
     },
     # The command that makes a torrent file has the Mac client's name in every client.
     {'from': {'msgid': 'Create Torrent File…'}, 'to': {'msgid': '_Create Torrent File…'}},
+    # The sort keys sit in a "Sort Torrents By" submenu in every client, so they lose their "Sort by".
+    # Each takes the translation of the same word elsewhere in the catalog, where there is one.
+    {'from': {'msgid': '_Sort Torrents By'}, 'to': {'msgid': 'Sort Torrents _By'}},
+    {'from': {'msgid': 'Sort by _Activity'}, 'to': {'msgid': '_Activity'}},
+    {'from': {'msgid': 'Sort by A_ge'}, 'to': {'msgid': 'A_ge'}},
+    {'from': {'msgid': 'Sort by _Name'}, 'to': {'msgid': '_Name'}},
+    {'from': {'msgid': 'Sort by _Progress'}, 'to': {'msgid': '_Progress'}},
+    {'from': {'msgid': 'Sort by _Queue'}, 'to': {'msgid': '_Queue Order'}},
+    {'from': {'msgid': 'Sort by Rati_o'}, 'to': {'msgid': 'Rati_o'}},
+    {'from': {'msgid': 'Sort by Si_ze'}, 'to': {'msgid': 'Si_ze'}},
+    {'from': {'msgid': 'Sort by Stat_e'}, 'to': {'msgid': 'Stat_e'}},
+    {'from': {'msgid': 'Sort by Time _Left'}, 'to': {'msgid': 'Time _Left'}},
+    {'from': {'msgid': 'Activity'}, 'to': {'msgid': '_Activity'}, 'keep': True, 'override': True},
+    {'from': {'msgid': 'Name'}, 'to': {'msgid': '_Name'}, 'keep': True, 'override': True},
+    {'from': {'msgid': 'Progress'}, 'to': {'msgid': '_Progress'}, 'keep': True, 'override': True},
+    {'from': {'msgid': 'Size'}, 'to': {'msgid': 'Si_ze'}, 'keep': True, 'override': True},
+    {'from': {'msgid': 'Ratio'}, 'to': {'msgid': 'Rati_o'}, 'keep': True, 'override': True},
+    {'from': {'msgid': 'Queue Order'}, 'to': {'msgid': '_Queue Order'}, 'prefer': 'from'},
+    {'from': {'msgid': 'State'}, 'to': {'msgid': 'Stat_e'}, 'prefer': 'from'},
 ]
 
 FIELD_NAMES = ('msgctxt', 'msgid', 'msgid_plural')
@@ -468,7 +487,7 @@ def fold(po_path):
         moved = {name: moved_translation(text, rename, colon, period) for name, text in old.translations().items()}
 
         if rename.get('keep'):
-            if new is not None and old.is_translated() and not new.is_translated():
+            if new is not None and old.is_translated() and (rename.get('override') or not new.is_translated()):
                 new.rebuild(without_fuzzy(new.comments()), rename['to'], moved)
                 n_changed += 1
             continue

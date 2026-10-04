@@ -1152,31 +1152,31 @@ msgstr "Панэль _фільтраў"
 msgid "_Statusbar"
 msgstr "Панэль с_татусу"
 
-msgid "Sort by _Activity"
-msgstr "Парадкаваць паводле _актыўнасці"
+msgid "_Activity"
+msgstr "Актыўнасць"
 
-msgid "Sort by A_ge"
+msgid "A_ge"
 msgstr "Парадкаваць паводле _ўзросту"
 
-msgid "Sort by _Name"
-msgstr "Парадкаваць паводле _назвы"
+msgid "_Name"
+msgstr "Назва"
 
-msgid "Sort by _Progress"
+msgid "_Progress"
 msgstr "Парадкаваць паводле _ходу спампоўвання"
 
-msgid "Sort by _Queue"
+msgid "_Queue Order"
 msgstr "Парадкаваць паводле чар_гі"
 
-msgid "Sort by Rati_o"
+msgid "Rati_o"
 msgstr "Парадкаваць паводле _рэйтынгу"
 
-msgid "Sort by Si_ze"
-msgstr "Парадкаваць паводле па_меру"
+msgid "Si_ze"
+msgstr "Памер"
 
-msgid "Sort by Stat_e"
+msgid "Stat_e"
 msgstr "Парадкаваць паводле _стану"
 
-msgid "Sort by Time _Left"
+msgid "Time _Left"
 msgstr "Парадкаваць паводле _часу чакання"
 
 msgid "Re_verse Sort Order"

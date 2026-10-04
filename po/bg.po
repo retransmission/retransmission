@@ -1100,31 +1100,31 @@ msgstr "Лента за _търсене"
 msgid "_Statusbar"
 msgstr "Лента за _състоянието"
 
-msgid "Sort by _Activity"
-msgstr "Сортирай по _активност"
+msgid "_Activity"
+msgstr "Активност"
 
-msgid "Sort by A_ge"
+msgid "A_ge"
 msgstr "Сортирай по _дата"
 
-msgid "Sort by _Name"
-msgstr "Сортирай по _име"
+msgid "_Name"
+msgstr "Име"
 
-msgid "Sort by _Progress"
+msgid "_Progress"
 msgstr "Сортирай по _напредък"
 
-msgid "Sort by _Queue"
+msgid "_Queue Order"
 msgstr "Сортирай по _приоритет"
 
-msgid "Sort by Rati_o"
+msgid "Rati_o"
 msgstr "Сортирай по коефи_циент"
 
-msgid "Sort by Si_ze"
-msgstr "Сортирай по раз_мер"
+msgid "Si_ze"
+msgstr "Размер"
 
-msgid "Sort by Stat_e"
+msgid "Stat_e"
 msgstr "Сортирай по състояни_е"
 
-msgid "Sort by Time _Left"
+msgid "Time _Left"
 msgstr "Сортирай по оставащо _време"
 
 msgid "Re_verse Sort Order"

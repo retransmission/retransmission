@@ -108,11 +108,6 @@ typedef NS_ENUM(NSUInteger, SortTag) {
     SortTagETA = 8
 };
 
-typedef NS_ENUM(NSUInteger, SortOrderTag) { //
-    SortOrderTagAscending = 0,
-    SortOrderTagDescending = 1
-};
-
 static NSString* const kTorrentTableViewDataType = @"TorrentTableViewDataType";
 
 static CGFloat const kRowHeightRegular = 62.0;
@@ -2597,11 +2592,8 @@ static void offerToImportFromTransmission()
 
 - (IBAction)setSortReverse:(id)sender
 {
-    BOOL const setReverse = ((NSMenuItem*)sender).tag == SortOrderTagDescending;
-    if (setReverse != [self.fDefaults boolForKey:@"SortReverse"]) {
-        [self.fDefaults setBool:setReverse forKey:@"SortReverse"];
-        [self sortTorrentsAndIncludeQueueOrder:NO];
-    }
+    [self.fDefaults setBool:![self.fDefaults boolForKey:@"SortReverse"] forKey:@"SortReverse"];
+    [self sortTorrentsAndIncludeQueueOrder:NO];
 }
 
 - (void)sortTorrentsAndIncludeQueueOrder:(BOOL)includeQueueOrder
@@ -4537,8 +4529,7 @@ static void offerToImportFromTransmission()
 
     //enable reverse sort item
     if (action == @selector(setSortReverse:)) {
-        BOOL const isReverse = menuItem.tag == SortOrderTagDescending;
-        menuItem.state = (isReverse == [self.fDefaults boolForKey:@"SortReverse"]) ? NSControlStateValueOn : NSControlStateValueOff;
+        menuItem.state = [self.fDefaults boolForKey:@"SortReverse"] ? NSControlStateValueOn : NSControlStateValueOff;
         return ![[self.fDefaults stringForKey:@"Sort"] isEqualToString:SortTypeOrder];
     }
 

@@ -1034,31 +1034,31 @@ msgstr ""
 msgid "_Statusbar"
 msgstr ""
 
-msgid "Sort by _Activity"
-msgstr "porsi be le'i akti"
+msgid "_Activity"
+msgstr "nu akti"
 
-msgid "Sort by A_ge"
+msgid "A_ge"
 msgstr ""
 
-msgid "Sort by _Name"
-msgstr "porsi be le'i cmene"
+msgid "_Name"
+msgstr "cmene"
 
-msgid "Sort by _Progress"
+msgid "_Progress"
 msgstr "porsi be le'i nilfarvi"
 
-msgid "Sort by _Queue"
+msgid "_Queue Order"
 msgstr "porsi be le'i depypoi"
 
-msgid "Sort by Rati_o"
+msgid "Rati_o"
 msgstr "porsi be le'i parbi"
 
-msgid "Sort by Si_ze"
+msgid "Si_ze"
 msgstr ""
 
-msgid "Sort by Stat_e"
+msgid "Stat_e"
 msgstr ""
 
-msgid "Sort by Time _Left"
+msgid "Time _Left"
 msgstr ""
 
 msgid "Re_verse Sort Order"

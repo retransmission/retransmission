@@ -1151,31 +1151,31 @@ msgstr "Lišta _filtrov"
 msgid "_Statusbar"
 msgstr "Stavová _lišta"
 
-msgid "Sort by _Activity"
-msgstr "Usporiadať podľa _aktivity"
+msgid "_Activity"
+msgstr "Aktivita"
 
-msgid "Sort by A_ge"
+msgid "A_ge"
 msgstr "Usporiadať podľa _veku"
 
-msgid "Sort by _Name"
-msgstr "Usporiadať podľa _názvu"
+msgid "_Name"
+msgstr "Názov"
 
-msgid "Sort by _Progress"
+msgid "_Progress"
 msgstr "Usporiadať podľa _priebehu"
 
-msgid "Sort by _Queue"
+msgid "_Queue Order"
 msgstr "Usporiadať podľa _fronty"
 
-msgid "Sort by Rati_o"
+msgid "Rati_o"
 msgstr "Usporiadať podľa _pomeru"
 
-msgid "Sort by Si_ze"
-msgstr "Usporiadať podľa veľ_kosti"
+msgid "Si_ze"
+msgstr "Veľkosť"
 
-msgid "Sort by Stat_e"
+msgid "Stat_e"
 msgstr "Usporiadať podľa _stavu"
 
-msgid "Sort by Time _Left"
+msgid "Time _Left"
 msgstr "Usporiadať podľa _zostávajúceho času"
 
 msgid "Re_verse Sort Order"

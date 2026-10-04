@@ -1040,31 +1040,36 @@ msgstr "Γραμμή _φίλτρου"
 msgid "_Statusbar"
 msgstr "Γραμμή _κατάστασης"
 
-msgid "Sort by _Activity"
-msgstr "Ταξινόμηση κατά _Δραστηριότητα"
+#, fuzzy
+#| msgid "Start torrent"
+msgid "Sort Torrents _By"
+msgstr "Εκκίνηση torrent"
 
-msgid "Sort by A_ge"
+msgid "_Activity"
+msgstr "Δραστηριότητα"
+
+msgid "A_ge"
 msgstr "Ταξινόμηση κατά Πα_λαιότητα"
 
-msgid "Sort by _Name"
-msgstr "Ταξινόμηση κατά Ό_νομα"
+msgid "_Name"
+msgstr "Όνομα"
 
-msgid "Sort by _Progress"
-msgstr "Ταξινόμηση κατά _Πρόοδο"
+msgid "_Progress"
+msgstr "Πρόοδος"
 
-msgid "Sort by _Queue"
-msgstr "Ταξινόμηση κατά _Σειρά"
+msgid "_Queue Order"
+msgstr "Σειρά Ουράς"
 
-msgid "Sort by Rati_o"
-msgstr "Ταξινόμηση κατά _Αναλογία"
+msgid "Rati_o"
+msgstr "Αναλογία"
 
-msgid "Sort by Si_ze"
-msgstr "Ταξινόμηση κατά Μέ_γεθος"
+msgid "Si_ze"
+msgstr "Μέγεθος"
 
-msgid "Sort by Stat_e"
-msgstr "Ταξινόμηση κατά _Κατάσταση"
+msgid "Stat_e"
+msgstr "Κατάσταση"
 
-msgid "Sort by Time _Left"
+msgid "Time _Left"
 msgstr "Ταξινόμηση βάσει _Εναπομείναντος χρόνου"
 
 msgid "Re_verse Sort Order"
@@ -1088,11 +1093,6 @@ msgstr "_Περιεχόμενα"
 
 msgid "_About"
 msgstr "_Σχετικά"
-
-#, fuzzy
-#| msgid "Start torrent"
-msgid "_Sort Torrents By"
-msgstr "Εκκίνηση torrent"
 
 #, fuzzy
 #| msgid "Alternative Speed Limits"
@@ -2509,24 +2509,6 @@ msgstr "Διαθεσιμότητα"
 msgid "Use Groups"
 msgstr "Χρήση Ομάδων"
 
-msgid "Queue Order"
-msgstr "Σειρά Ουράς"
-
-msgid "Date Added"
-msgstr "Ημερομηνία Προσθήκης"
-
-msgid "ETA"
-msgstr ""
-
-msgid "State"
-msgstr "Κατάσταση"
-
-msgid "Ascending"
-msgstr "Αύξουσα"
-
-msgid "Descending"
-msgstr "Φθίνουσα"
-
 #. Translators: View menu -> Inspector
 msgid "Show Inspector"
 msgstr "Εμφάνιση Επιθεωρητή"
@@ -3799,6 +3781,15 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "δευτερόλεπτο"
 msgstr[1] "δευτερόλεπτα"
+
+#~ msgid "Date Added"
+#~ msgstr "Ημερομηνία Προσθήκης"
+
+#~ msgid "Ascending"
+#~ msgstr "Αύξουσα"
+
+#~ msgid "Descending"
+#~ msgstr "Φθίνουσα"
 
 #~ msgid "_New…"
 #~ msgstr "_Νέο…"

@@ -918,31 +918,35 @@ msgstr "_ფილტრის ზოლი"
 msgid "_Statusbar"
 msgstr "_სტატუსის ზოლი"
 
-msgid "Sort by _Activity"
-msgstr "დალაგება _აქტივობით"
+#, fuzzy
+msgid "Sort Torrents _By"
+msgstr "ტორენტის დაწყება"
 
-msgid "Sort by A_ge"
+msgid "_Activity"
+msgstr "აქტივობა"
+
+msgid "A_ge"
 msgstr "დალაგება ა_საკით"
 
-msgid "Sort by _Name"
-msgstr "დალაგება _სახელით"
+msgid "_Name"
+msgstr "სახელი"
 
-msgid "Sort by _Progress"
-msgstr "დალაგება _პროგრესით"
+msgid "_Progress"
+msgstr "პროგრესი"
 
-msgid "Sort by _Queue"
+msgid "_Queue Order"
 msgstr "დალაგება _რიგით"
 
-msgid "Sort by Rati_o"
+msgid "Rati_o"
 msgstr "დალაგება _შეფარდებით"
 
-msgid "Sort by Si_ze"
-msgstr "დალაგება _ზომით"
+msgid "Si_ze"
+msgstr "ზომა"
 
-msgid "Sort by Stat_e"
+msgid "Stat_e"
 msgstr "დალაგება მ_დგომარეობით"
 
-msgid "Sort by Time _Left"
+msgid "Time _Left"
 msgstr "დალაგება _დარჩენილი დროით"
 
 msgid "Re_verse Sort Order"
@@ -965,10 +969,6 @@ msgstr "_შიგთავსი"
 
 msgid "_About"
 msgstr "_შესახებ"
-
-#, fuzzy
-msgid "_Sort Torrents By"
-msgstr "ტორენტის დაწყება"
 
 #, fuzzy
 #| msgid "Alternative Speed Limits"

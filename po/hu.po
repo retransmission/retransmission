@@ -1041,31 +1041,36 @@ msgstr "_Szűrősor"
 msgid "_Statusbar"
 msgstr "Á_llapotsor"
 
-msgid "Sort by _Activity"
-msgstr "_Aktivitás szerinti rendezés"
+#, fuzzy
+#| msgid "Start torrent"
+msgid "Sort Torrents _By"
+msgstr "Torrent indítása"
 
-msgid "Sort by A_ge"
+msgid "_Activity"
+msgstr "Aktivitás"
+
+msgid "A_ge"
 msgstr "_Kor szerinti rendezés"
 
-msgid "Sort by _Name"
-msgstr "_Név szerinti rendezés"
+msgid "_Name"
+msgstr "Név"
 
-msgid "Sort by _Progress"
-msgstr "_Folyamat szerinti rendezés"
+msgid "_Progress"
+msgstr "Folyamat"
 
-msgid "Sort by _Queue"
-msgstr "_Sorrend szerinti rendezés"
+msgid "_Queue Order"
+msgstr "Sor rendezése"
 
-msgid "Sort by Rati_o"
-msgstr "Megosztási _arány szerinti rendezés"
+msgid "Rati_o"
+msgstr "Arány"
 
-msgid "Sort by Si_ze"
-msgstr "_Méret szerinti rendezés"
+msgid "Si_ze"
+msgstr "Méret"
 
-msgid "Sort by Stat_e"
-msgstr "Álla_pot szerinti rendezés"
+msgid "Stat_e"
+msgstr "Állapot"
 
-msgid "Sort by Time _Left"
+msgid "Time _Left"
 msgstr "Hátralévő _idő szerinti rendezés"
 
 msgid "Re_verse Sort Order"
@@ -1089,11 +1094,6 @@ msgstr "_Tartalom"
 
 msgid "_About"
 msgstr "_Névjegy"
-
-#, fuzzy
-#| msgid "Start torrent"
-msgid "_Sort Torrents By"
-msgstr "Torrent indítása"
 
 #, fuzzy
 #| msgid "Alternative Speed Limits"
@@ -2508,24 +2508,6 @@ msgstr "Elérhetőség"
 msgid "Use Groups"
 msgstr "Csoportok használata"
 
-msgid "Queue Order"
-msgstr "Sor rendezése"
-
-msgid "Date Added"
-msgstr "Hozzáadva"
-
-msgid "ETA"
-msgstr "Várható befejezési idő"
-
-msgid "State"
-msgstr "Állapot"
-
-msgid "Ascending"
-msgstr "Növekvő"
-
-msgid "Descending"
-msgstr "Csökkenő"
-
 #. Translators: View menu -> Inspector
 msgid "Show Inspector"
 msgstr "Szemlélő megjelenítése"
@@ -3797,6 +3779,18 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "másodperc"
 msgstr[1] "másodperc"
+
+#~ msgid "Date Added"
+#~ msgstr "Hozzáadva"
+
+#~ msgid "ETA"
+#~ msgstr "Várható befejezési idő"
+
+#~ msgid "Ascending"
+#~ msgstr "Növekvő"
+
+#~ msgid "Descending"
+#~ msgstr "Csökkenő"
 
 #~ msgid "_New…"
 #~ msgstr "Ú_j…"

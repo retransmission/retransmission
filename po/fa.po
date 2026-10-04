@@ -1076,31 +1076,31 @@ msgstr "نوار پالایش"
 msgid "_Statusbar"
 msgstr "نوار وضعیت"
 
-msgid "Sort by _Activity"
-msgstr "چینش بر پایهٔ فعّالیت"
+msgid "_Activity"
+msgstr "فعّالیت"
 
-msgid "Sort by A_ge"
+msgid "A_ge"
 msgstr "چینش بر پایهٔ سن"
 
-msgid "Sort by _Name"
-msgstr "چینش بر پایهٔ نام"
+msgid "_Name"
+msgstr "نام"
 
-msgid "Sort by _Progress"
+msgid "_Progress"
 msgstr "چینش بر پایهٔ پیش‌رفت"
 
-msgid "Sort by _Queue"
+msgid "_Queue Order"
 msgstr "چینش بر پایهٔ صف"
 
-msgid "Sort by Rati_o"
+msgid "Rati_o"
 msgstr "چینش بر پایهٔ نسبت"
 
-msgid "Sort by Si_ze"
-msgstr "چینش بر پایهٔ اندازه"
+msgid "Si_ze"
+msgstr "اندازه"
 
-msgid "Sort by Stat_e"
+msgid "Stat_e"
 msgstr "چینش بر پایهٔ وضعیت"
 
-msgid "Sort by Time _Left"
+msgid "Time _Left"
 msgstr "چینش بر پایهٔ زمان مانده"
 
 msgid "Re_verse Sort Order"

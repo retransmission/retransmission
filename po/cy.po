@@ -1136,31 +1136,31 @@ msgstr ""
 msgid "_Statusbar"
 msgstr "Bar _Statws"
 
-msgid "Sort by _Activity"
+msgid "_Activity"
 msgstr ""
 
-msgid "Sort by A_ge"
+msgid "A_ge"
 msgstr "Trefnu yn ôl _Oed"
 
-msgid "Sort by _Name"
+msgid "_Name"
 msgstr "Trefnu yn ôl _Enw"
 
-msgid "Sort by _Progress"
+msgid "_Progress"
 msgstr "Trefnu yn ôl C_ynydd"
 
-msgid "Sort by _Queue"
+msgid "_Queue Order"
 msgstr "Trefnu yn ôl _Ciw"
 
-msgid "Sort by Rati_o"
+msgid "Rati_o"
 msgstr "Trefnu yn ôl Cym_hareb"
 
-msgid "Sort by Si_ze"
+msgid "Si_ze"
 msgstr "Trefnu yn ôl _Maint"
 
-msgid "Sort by Stat_e"
+msgid "Stat_e"
 msgstr "Trefnu yn ôl Cyfl_wr"
 
-msgid "Sort by Time _Left"
+msgid "Time _Left"
 msgstr "Trefnu yn ôl _amser weddill"
 
 msgid "Re_verse Sort Order"

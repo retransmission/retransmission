@@ -1131,31 +1131,31 @@ msgstr "Bară de _filtrare"
 msgid "_Statusbar"
 msgstr "Bară de _stare"
 
-msgid "Sort by _Activity"
-msgstr "Sortează după _activitate"
+msgid "_Activity"
+msgstr "Activitate"
 
-msgid "Sort by A_ge"
+msgid "A_ge"
 msgstr "Sortează după _vechime"
 
-msgid "Sort by _Name"
-msgstr "Sortează după _nume"
+msgid "_Name"
+msgstr "Nume"
 
-msgid "Sort by _Progress"
+msgid "_Progress"
 msgstr "Sortează după _progres"
 
-msgid "Sort by _Queue"
+msgid "_Queue Order"
 msgstr "Sortare după _coadă"
 
-msgid "Sort by Rati_o"
+msgid "Rati_o"
 msgstr "S_ortează după raport"
 
-msgid "Sort by Si_ze"
-msgstr "Sortea_ză după dimensiune"
+msgid "Si_ze"
+msgstr "Dimensiune"
 
-msgid "Sort by Stat_e"
+msgid "Stat_e"
 msgstr "Sortează după star_e"
 
-msgid "Sort by Time _Left"
+msgid "Time _Left"
 msgstr "Sortează după _timp rămas"
 
 msgid "Re_verse Sort Order"

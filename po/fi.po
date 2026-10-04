@@ -946,31 +946,36 @@ msgstr "_Suodatinpalkki"
 msgid "_Statusbar"
 msgstr "_Tilapalkki"
 
-msgid "Sort by _Activity"
-msgstr "Järjestä _aktiivisuuden mukaan"
+#, fuzzy
+#| msgid "Start torrent"
+msgid "Sort Torrents _By"
+msgstr "Aloita torrent"
 
-msgid "Sort by A_ge"
+msgid "_Activity"
+msgstr "Aktiivisuus"
+
+msgid "A_ge"
 msgstr "Järjestä _iän mukaan"
 
-msgid "Sort by _Name"
-msgstr "Järjestä _nimen mukaan"
+msgid "_Name"
+msgstr "Nimi"
 
-msgid "Sort by _Progress"
-msgstr "Järjestä _edistymisen mukaan"
+msgid "_Progress"
+msgstr "Tilanne"
 
-msgid "Sort by _Queue"
+msgid "_Queue Order"
 msgstr "Järjest_ä jonon mukaan"
 
-msgid "Sort by Rati_o"
+msgid "Rati_o"
 msgstr "Järjestä _suhteen mukaan"
 
-msgid "Sort by Si_ze"
-msgstr "Järjestä k_oon mukaan"
+msgid "Si_ze"
+msgstr "Koko"
 
-msgid "Sort by Stat_e"
+msgid "Stat_e"
 msgstr "Järjestä _tilan mukaan"
 
-msgid "Sort by Time _Left"
+msgid "Time _Left"
 msgstr "Järjestä _jäljellä olevan ajan mukaan"
 
 msgid "Re_verse Sort Order"
@@ -993,11 +998,6 @@ msgstr "_Sisältö"
 
 msgid "_About"
 msgstr "_Tietoja"
-
-#, fuzzy
-#| msgid "Start torrent"
-msgid "_Sort Torrents By"
-msgstr "Aloita torrent"
 
 #, fuzzy
 #| msgid "Alternative Speed Limits"

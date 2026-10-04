@@ -919,31 +919,36 @@ msgstr "Bilah Pe_nyaring"
 msgid "_Statusbar"
 msgstr "Bilah _Status"
 
-msgid "Sort by _Activity"
-msgstr "Urut _Aktivitas"
+#, fuzzy
+#| msgid "Start torrent"
+msgid "Sort Torrents _By"
+msgstr "Mulai torrent"
 
-msgid "Sort by A_ge"
+msgid "_Activity"
+msgstr "Aktivitas"
+
+msgid "A_ge"
 msgstr "Urut U_mur"
 
-msgid "Sort by _Name"
-msgstr "Urut _Nama"
+msgid "_Name"
+msgstr "Nama"
 
-msgid "Sort by _Progress"
-msgstr "Urut _Kemajuan"
+msgid "_Progress"
+msgstr "Kemajuan"
 
-msgid "Sort by _Queue"
+msgid "_Queue Order"
 msgstr "Urut Ant_rian"
 
-msgid "Sort by Rati_o"
+msgid "Rati_o"
 msgstr "Urut Rasi_o"
 
-msgid "Sort by Si_ze"
-msgstr "Urut _Ukuran"
+msgid "Si_ze"
+msgstr "Ukuran"
 
-msgid "Sort by Stat_e"
+msgid "Stat_e"
 msgstr "Urut K_eadaan"
 
-msgid "Sort by Time _Left"
+msgid "Time _Left"
 msgstr "Urut Sisa _Waktu"
 
 msgid "Re_verse Sort Order"
@@ -966,11 +971,6 @@ msgstr "_Konten"
 
 msgid "_About"
 msgstr "Perih_al"
-
-#, fuzzy
-#| msgid "Start torrent"
-msgid "_Sort Torrents By"
-msgstr "Mulai torrent"
 
 #, fuzzy
 #| msgid "Alternative Speed Limits"

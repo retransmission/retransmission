@@ -1019,31 +1019,36 @@ msgstr "篩選器 (_F)"
 msgid "_Statusbar"
 msgstr "狀態列 (_S)"
 
-msgid "Sort by _Activity"
-msgstr "依活動排序 (_A)"
+#, fuzzy
+#| msgid "Start torrent"
+msgid "Sort Torrents _By"
+msgstr "開始執行 torrent"
 
-msgid "Sort by A_ge"
+msgid "_Activity"
+msgstr "活動"
+
+msgid "A_ge"
 msgstr "依新舊排序 (_G)"
 
-msgid "Sort by _Name"
-msgstr "依名稱排序 (_N)"
+msgid "_Name"
+msgstr "檔名"
 
-msgid "Sort by _Progress"
-msgstr "依進度排序 (_P)"
+msgid "_Progress"
+msgstr "進度"
 
-msgid "Sort by _Queue"
-msgstr "依排程排序 (_Q)"
+msgid "_Queue Order"
+msgstr "排程順序"
 
-msgid "Sort by Rati_o"
-msgstr "依分享率排序 (_O)"
+msgid "Rati_o"
+msgstr "分享率"
 
-msgid "Sort by Si_ze"
-msgstr "依大小排序 (_Z)"
+msgid "Si_ze"
+msgstr "大小"
 
-msgid "Sort by Stat_e"
-msgstr "依狀態排序 (_E)"
+msgid "Stat_e"
+msgstr "狀態"
 
-msgid "Sort by Time _Left"
+msgid "Time _Left"
 msgstr "依剩餘時間排序 (_L)"
 
 msgid "Re_verse Sort Order"
@@ -1067,11 +1072,6 @@ msgstr "內容 (_C)"
 
 msgid "_About"
 msgstr "關於 (_A)"
-
-#, fuzzy
-#| msgid "Start torrent"
-msgid "_Sort Torrents By"
-msgstr "開始執行 torrent"
 
 #, fuzzy
 #| msgid "Alternative Speed Limits"
@@ -2467,24 +2467,6 @@ msgstr "可用性"
 msgid "Use Groups"
 msgstr "使用群組"
 
-msgid "Queue Order"
-msgstr "排程順序"
-
-msgid "Date Added"
-msgstr "加入日期"
-
-msgid "ETA"
-msgstr ""
-
-msgid "State"
-msgstr "狀態"
-
-msgid "Ascending"
-msgstr "遞增"
-
-msgid "Descending"
-msgstr "遞減"
-
 #. Translators: View menu -> Inspector
 msgid "Show Inspector"
 msgstr "顯示檢測器"
@@ -3724,6 +3706,15 @@ msgstr[0] "天"
 msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "秒"
+
+#~ msgid "Date Added"
+#~ msgstr "加入日期"
+
+#~ msgid "Ascending"
+#~ msgstr "遞增"
+
+#~ msgid "Descending"
+#~ msgstr "遞減"
 
 #~ msgid "_New…"
 #~ msgstr "新增… (_N)"

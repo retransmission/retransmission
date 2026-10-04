@@ -1067,31 +1067,31 @@ msgstr "سۈزگۈچ بالدىقى(_F)"
 msgid "_Statusbar"
 msgstr "ھالەت بالداق(_S)"
 
-msgid "Sort by _Activity"
-msgstr "پائالىيىتى بويىچە تەرتىپلە(_A)"
+msgid "_Activity"
+msgstr "پائالىيەت"
 
-msgid "Sort by A_ge"
+msgid "A_ge"
 msgstr "يېشى بويىچە تەرتىپلە (_G)"
 
-msgid "Sort by _Name"
-msgstr "ئاتى بويىچە تەرتىپلە(_N)"
+msgid "_Name"
+msgstr "ئاتى"
 
-msgid "Sort by _Progress"
+msgid "_Progress"
 msgstr "ئىلگىرىلىشى بويىچە تەرتىپلە(_P)"
 
-msgid "Sort by _Queue"
+msgid "_Queue Order"
 msgstr "قاتار بويىچە تەرتىپلە(_Q)"
 
-msgid "Sort by Rati_o"
+msgid "Rati_o"
 msgstr "مۇناسىۋىتى بويىچە تەرتىپلە (_O)"
 
-msgid "Sort by Si_ze"
-msgstr "چوڭلۇقى بويىچە تەرتىپلە (_G)"
+msgid "Si_ze"
+msgstr "چوڭلۇقى"
 
-msgid "Sort by Stat_e"
+msgid "Stat_e"
 msgstr "ھالىتى بويىچە تەرتىپلە (_Z)"
 
-msgid "Sort by Time _Left"
+msgid "Time _Left"
 msgstr "قېلىپ قالغان ۋاقىت بويىچە تەرتىپلە (_L)"
 
 msgid "Re_verse Sort Order"

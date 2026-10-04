@@ -1044,31 +1044,36 @@ msgstr "שורת _סינון"
 msgid "_Statusbar"
 msgstr "שורת _מצב"
 
-msgid "Sort by _Activity"
-msgstr "מיון לפי _פעילות"
+#, fuzzy
+#| msgid "Start torrent"
+msgid "Sort Torrents _By"
+msgstr "התחלת טורנט"
 
-msgid "Sort by A_ge"
+msgid "_Activity"
+msgstr "פעילות"
+
+msgid "A_ge"
 msgstr "מיון לפי _גיל"
 
-msgid "Sort by _Name"
-msgstr "מיון לפי _שם"
+msgid "_Name"
+msgstr "שם"
 
-msgid "Sort by _Progress"
-msgstr "מיון לפי הת_קדמות"
+msgid "_Progress"
+msgstr "התקדמות"
 
-msgid "Sort by _Queue"
-msgstr "מיון לפי _תור"
+msgid "_Queue Order"
+msgstr "סדר התור"
 
-msgid "Sort by Rati_o"
-msgstr "מיון לפי י_חס"
+msgid "Rati_o"
+msgstr "יחס"
 
-msgid "Sort by Si_ze"
-msgstr "מיון לפי גו_דל"
+msgid "Si_ze"
+msgstr "גודל"
 
-msgid "Sort by Stat_e"
-msgstr "מיון לפי מ_צב"
+msgid "Stat_e"
+msgstr "מצב"
 
-msgid "Sort by Time _Left"
+msgid "Time _Left"
 msgstr "מיון לפי זמן ש_נותר"
 
 msgid "Re_verse Sort Order"
@@ -1092,11 +1097,6 @@ msgstr "ת_כנים"
 
 msgid "_About"
 msgstr "על _אודות"
-
-#, fuzzy
-#| msgid "Start torrent"
-msgid "_Sort Torrents By"
-msgstr "התחלת טורנט"
 
 #, fuzzy
 #| msgid "Alternative Speed Limits"
@@ -2554,24 +2554,6 @@ msgstr "זמינות"
 msgid "Use Groups"
 msgstr "להשתמש בקבוצות"
 
-msgid "Queue Order"
-msgstr "סדר התור"
-
-msgid "Date Added"
-msgstr "תאריך ההוספה"
-
-msgid "ETA"
-msgstr "זמן הגעה משוערך"
-
-msgid "State"
-msgstr "מצב"
-
-msgid "Ascending"
-msgstr "עולה"
-
-msgid "Descending"
-msgstr "יורד"
-
 #. Translators: View menu -> Inspector
 msgid "Show Inspector"
 msgstr "הצגת המפקח"
@@ -3869,6 +3851,18 @@ msgstr[0] "שנייה"
 msgstr[1] "שניות"
 msgstr[2] "שניות"
 msgstr[3] "שניות"
+
+#~ msgid "Date Added"
+#~ msgstr "תאריך ההוספה"
+
+#~ msgid "ETA"
+#~ msgstr "זמן הגעה משוערך"
+
+#~ msgid "Ascending"
+#~ msgstr "עולה"
+
+#~ msgid "Descending"
+#~ msgstr "יורד"
 
 #~ msgid "_New…"
 #~ msgstr "_חדש…"

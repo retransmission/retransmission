@@ -1009,31 +1009,36 @@ msgstr "_Filterbalk"
 msgid "_Statusbar"
 msgstr "_Statusbalk"
 
-msgid "Sort by _Activity"
-msgstr "Sorteer volgens _Aktiwiteit"
+#, fuzzy
+#| msgid "Start torrent"
+msgid "Sort Torrents _By"
+msgstr "Begin torrent"
 
-msgid "Sort by A_ge"
+msgid "_Activity"
+msgstr "Aktiwiteit"
+
+msgid "A_ge"
 msgstr "Sorteer volgens O_uderdom"
 
-msgid "Sort by _Name"
-msgstr "Sorteer volgens _Naam"
+msgid "_Name"
+msgstr "Naam"
 
-msgid "Sort by _Progress"
-msgstr "Sorteer volgens _Vordering"
+msgid "_Progress"
+msgstr "Vordering"
 
-msgid "Sort by _Queue"
-msgstr "Sorteer volgens _Wagry"
+msgid "_Queue Order"
+msgstr "Wagryvolgorde"
 
-msgid "Sort by Rati_o"
+msgid "Rati_o"
 msgstr "Sorteer volgens Rati_o"
 
-msgid "Sort by Si_ze"
-msgstr "Sorteer volgens _Grootte"
+msgid "Si_ze"
+msgstr "Grootte"
 
-msgid "Sort by Stat_e"
-msgstr "Sorteer volgens _Staat"
+msgid "Stat_e"
+msgstr "Status"
 
-msgid "Sort by Time _Left"
+msgid "Time _Left"
 msgstr "Sorteer volgens Oorblywende _Tyd"
 
 msgid "Re_verse Sort Order"
@@ -1057,11 +1062,6 @@ msgstr "_Inhoud"
 
 msgid "_About"
 msgstr "_Oor"
-
-#, fuzzy
-#| msgid "Start torrent"
-msgid "_Sort Torrents By"
-msgstr "Begin torrent"
 
 #, fuzzy
 #| msgid "Alternative Speed Limits"
@@ -2476,24 +2476,6 @@ msgstr "Beskikbaarheid"
 msgid "Use Groups"
 msgstr "Gebruik groepe"
 
-msgid "Queue Order"
-msgstr "Wagryvolgorde"
-
-msgid "Date Added"
-msgstr "Datum toegevoeg"
-
-msgid "ETA"
-msgstr "Aankoms"
-
-msgid "State"
-msgstr "Status"
-
-msgid "Ascending"
-msgstr "Stygend"
-
-msgid "Descending"
-msgstr "Dalend"
-
 #. Translators: View menu -> Inspector
 msgid "Show Inspector"
 msgstr "Toon Inspekteur"
@@ -3768,6 +3750,18 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "sekonde"
 msgstr[1] "sekondes"
+
+#~ msgid "Date Added"
+#~ msgstr "Datum toegevoeg"
+
+#~ msgid "ETA"
+#~ msgstr "Aankoms"
+
+#~ msgid "Ascending"
+#~ msgstr "Stygend"
+
+#~ msgid "Descending"
+#~ msgstr "Dalend"
 
 #~ msgid "_New…"
 #~ msgstr "_Nuut…"

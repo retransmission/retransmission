@@ -928,31 +928,35 @@ msgstr "필터 표시줄(_F)"
 msgid "_Statusbar"
 msgstr "상태 표시줄(_S)"
 
-msgid "Sort by _Activity"
-msgstr "활동 여부로 정렬(_A)"
+#, fuzzy
+msgid "Sort Torrents _By"
+msgstr "토렌트 시작"
 
-msgid "Sort by A_ge"
+msgid "_Activity"
+msgstr "활동"
+
+msgid "A_ge"
 msgstr "오래된 순서로 정렬(_G)"
 
-msgid "Sort by _Name"
-msgstr "이름으로 정렬(_N)"
+msgid "_Name"
+msgstr "이름"
 
-msgid "Sort by _Progress"
-msgstr "진행 상태 순서로 정렬(_P)"
+msgid "_Progress"
+msgstr "진행도"
 
-msgid "Sort by _Queue"
+msgid "_Queue Order"
 msgstr "대기 순서로 정렬(_Q)"
 
-msgid "Sort by Rati_o"
+msgid "Rati_o"
 msgstr "비율로 정렬(_O)"
 
-msgid "Sort by Si_ze"
-msgstr "크기로 정렬(_Z)"
+msgid "Si_ze"
+msgstr "크기"
 
-msgid "Sort by Stat_e"
+msgid "Stat_e"
 msgstr "상태로 정렬(_E)"
 
-msgid "Sort by Time _Left"
+msgid "Time _Left"
 msgstr "남은 시간으로 정렬(_L)"
 
 msgid "Re_verse Sort Order"
@@ -975,10 +979,6 @@ msgstr "차례(_C)"
 
 msgid "_About"
 msgstr "정보(_A)"
-
-#, fuzzy
-msgid "_Sort Torrents By"
-msgstr "토렌트 시작"
 
 #, fuzzy
 #| msgid "Alternative Speed Limits"

@@ -932,31 +932,36 @@ msgstr "Síusti_ka"
 msgid "_Statusbar"
 msgstr "S_töðustika"
 
-msgid "Sort by _Activity"
-msgstr "R_aða eftir virkni"
+#, fuzzy
+#| msgid "Start torrent"
+msgid "Sort Torrents _By"
+msgstr "Byrja að sækja torrent-streymi"
 
-msgid "Sort by A_ge"
+msgid "_Activity"
+msgstr "Virkni"
+
+msgid "A_ge"
 msgstr "Raða eftir al_dri"
 
-msgid "Sort by _Name"
-msgstr "Raða eftir _nafni"
+msgid "_Name"
+msgstr "Heiti"
 
-msgid "Sort by _Progress"
-msgstr "Raða eftir _framvindu"
+msgid "_Progress"
+msgstr "Framvinda"
 
-msgid "Sort by _Queue"
+msgid "_Queue Order"
 msgstr "Raða eftir _biðröð"
 
-msgid "Sort by Rati_o"
+msgid "Rati_o"
 msgstr "Raða eftir deilihl_utfalli"
 
-msgid "Sort by Si_ze"
-msgstr "Raða eftir _stærð"
+msgid "Si_ze"
+msgstr "Stærð"
 
-msgid "Sort by Stat_e"
+msgid "Stat_e"
 msgstr "Raða eftir _stöðu"
 
-msgid "Sort by Time _Left"
+msgid "Time _Left"
 msgstr "Raða eftir tí_ma sem er eftir"
 
 msgid "Re_verse Sort Order"
@@ -979,11 +984,6 @@ msgstr "_Innihald"
 
 msgid "_About"
 msgstr "Um _hugbúnaðinn"
-
-#, fuzzy
-#| msgid "Start torrent"
-msgid "_Sort Torrents By"
-msgstr "Byrja að sækja torrent-streymi"
 
 #, fuzzy
 #| msgid "Alternative Speed Limits"

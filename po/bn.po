@@ -1078,31 +1078,31 @@ msgstr "ফিল্টার বারে (_F)"
 msgid "_Statusbar"
 msgstr "স্ট্যাটাস বার (_S)"
 
-msgid "Sort by _Activity"
-msgstr "সক্রিয়তা অনুসারে সাজাও (_A)"
+msgid "_Activity"
+msgstr "কার্যকারিতা"
 
-msgid "Sort by A_ge"
+msgid "A_ge"
 msgstr "বয়স অনুযায়ী সাজাও (_g)"
 
-msgid "Sort by _Name"
-msgstr "নাম অনুযায়ী সাজান (_N)"
+msgid "_Name"
+msgstr "নাম"
 
-msgid "Sort by _Progress"
+msgid "_Progress"
 msgstr "সাফল্য অনুসারে সাজাও  (_P)"
 
-msgid "Sort by _Queue"
+msgid "_Queue Order"
 msgstr "সারিবদ্ধ অনুযায়ী সাজান (_Q)"
 
-msgid "Sort by Rati_o"
+msgid "Rati_o"
 msgstr "অনুপাত অনুযায়ী সাজাও (_o)"
 
-msgid "Sort by Si_ze"
-msgstr "আকৃতি অনুযায়ী সাজাও (_z)"
+msgid "Si_ze"
+msgstr "আকার"
 
-msgid "Sort by Stat_e"
+msgid "Stat_e"
 msgstr "অবস্থা অনুযায়ী সাজাও (_e)"
 
-msgid "Sort by Time _Left"
+msgid "Time _Left"
 msgstr "বাকি সময় অনুযায়ী সাজাও (_L)"
 
 msgid "Re_verse Sort Order"

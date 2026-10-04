@@ -243,23 +243,29 @@
     <property name="title">
      <string>_View</string>
     </property>
+    <widget class="QMenu" name="menuSort">
+     <property name="title">
+      <string>Sort Torrents _By</string>
+     </property>
+     <addaction name="action_SortByActivity"/>
+     <addaction name="action_SortByAge"/>
+     <addaction name="action_SortByName"/>
+     <addaction name="action_SortByProgress"/>
+     <addaction name="action_SortByQueue"/>
+     <addaction name="action_SortByRatio"/>
+     <addaction name="action_SortBySize"/>
+     <addaction name="action_SortByState"/>
+     <addaction name="action_SortByETA"/>
+     <addaction name="separator"/>
+     <addaction name="action_ReverseSortOrder"/>
+    </widget>
     <addaction name="action_CompactView"/>
     <addaction name="separator"/>
     <addaction name="action_Toolbar"/>
     <addaction name="action_Filterbar"/>
     <addaction name="action_Statusbar"/>
     <addaction name="separator"/>
-    <addaction name="action_SortByActivity"/>
-    <addaction name="action_SortByAge"/>
-    <addaction name="action_SortByName"/>
-    <addaction name="action_SortByProgress"/>
-    <addaction name="action_SortByQueue"/>
-    <addaction name="action_SortByRatio"/>
-    <addaction name="action_SortBySize"/>
-    <addaction name="action_SortByState"/>
-    <addaction name="action_SortByETA"/>
-    <addaction name="separator"/>
-    <addaction name="action_ReverseSortOrder"/>
+    <addaction name="menuSort"/>
    </widget>
    <widget class="QMenu" name="menu_File">
     <property name="title">
@@ -523,7 +529,7 @@
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>Sort by _Activity</string>
+    <string>_Activity</string>
    </property>
   </action>
   <action name="action_SortByAge">
@@ -531,7 +537,7 @@
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>Sort by A_ge</string>
+    <string>A_ge</string>
    </property>
   </action>
   <action name="action_SortByETA">
@@ -539,7 +545,7 @@
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>Sort by Time _Left</string>
+    <string>Time _Left</string>
    </property>
   </action>
   <action name="action_SortByName">
@@ -547,7 +553,7 @@
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>Sort by _Name</string>
+    <string>_Name</string>
    </property>
   </action>
   <action name="action_SortByProgress">
@@ -555,7 +561,7 @@
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>Sort by _Progress</string>
+    <string>_Progress</string>
    </property>
   </action>
   <action name="action_SortByRatio">
@@ -563,7 +569,7 @@
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>Sort by Rati_o</string>
+    <string>Rati_o</string>
    </property>
   </action>
   <action name="action_SortBySize">
@@ -571,7 +577,7 @@
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>Sort by Si_ze</string>
+    <string>Si_ze</string>
    </property>
   </action>
   <action name="action_SortByState">
@@ -579,7 +585,7 @@
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>Sort by Stat_e</string>
+    <string>Stat_e</string>
    </property>
   </action>
   <action name="action_Statistics">
@@ -738,7 +744,7 @@
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>Sort by _Queue</string>
+    <string>_Queue Order</string>
    </property>
   </action>
  </widget>

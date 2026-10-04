@@ -1037,31 +1037,31 @@ msgstr "Palang Pe_napis"
 msgid "_Statusbar"
 msgstr "Bar _Status"
 
-msgid "Sort by _Activity"
-msgstr "Susun mengikut _Aktiviti"
+msgid "_Activity"
+msgstr "Aktiviti"
 
-msgid "Sort by A_ge"
+msgid "A_ge"
 msgstr "Susun mengikut u_mur"
 
-msgid "Sort by _Name"
-msgstr "Susun mengikut _Nama"
+msgid "_Name"
+msgstr "Nama"
 
-msgid "Sort by _Progress"
+msgid "_Progress"
 msgstr "Susun mengikut_kemajuan"
 
-msgid "Sort by _Queue"
+msgid "_Queue Order"
 msgstr "Isih berdasarkan _Baris Gilir"
 
-msgid "Sort by Rati_o"
+msgid "Rati_o"
 msgstr "Susun mengikut _Nisbah"
 
-msgid "Sort by Si_ze"
-msgstr "Susun mengikut Sa_iz"
+msgid "Si_ze"
+msgstr "Saiz"
 
-msgid "Sort by Stat_e"
+msgid "Stat_e"
 msgstr "Susun mengikut Stat_e"
 
-msgid "Sort by Time _Left"
+msgid "Time _Left"
 msgstr "Susun mengikut Waktu _Tinggal"
 
 msgid "Re_verse Sort Order"

@@ -1041,31 +1041,31 @@ msgstr "過濾列(_F)"
 msgid "_Statusbar"
 msgstr "狀態列(_S)"
 
-msgid "Sort by _Activity"
-msgstr "依動態排序(_A)"
+msgid "_Activity"
+msgstr "動態"
 
-msgid "Sort by A_ge"
+msgid "A_ge"
 msgstr "依加入時間排序(_G)"
 
-msgid "Sort by _Name"
-msgstr "依名稱排序(_N)"
+msgid "_Name"
+msgstr "名稱"
 
-msgid "Sort by _Progress"
+msgid "_Progress"
 msgstr "依進度排序(_P)"
 
-msgid "Sort by _Queue"
+msgid "_Queue Order"
 msgstr "依佇列排序(_Q)"
 
-msgid "Sort by Rati_o"
+msgid "Rati_o"
 msgstr "依比率排序(_O)"
 
-msgid "Sort by Si_ze"
-msgstr "依大小排序(_Z)"
+msgid "Si_ze"
+msgstr "大小"
 
-msgid "Sort by Stat_e"
+msgid "Stat_e"
 msgstr "依狀態排序(_E)"
 
-msgid "Sort by Time _Left"
+msgid "Time _Left"
 msgstr "依剩餘時間排序(_L)"
 
 msgid "Re_verse Sort Order"

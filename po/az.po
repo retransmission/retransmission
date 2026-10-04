@@ -1070,31 +1070,31 @@ msgstr "_Filter paneli"
 msgid "_Statusbar"
 msgstr "_Vəziyyət sətri"
 
-msgid "Sort by _Activity"
-msgstr "_Aktivliyə görə çeşidlə"
+msgid "_Activity"
+msgstr "Aktvlik"
 
-msgid "Sort by A_ge"
+msgid "A_ge"
 msgstr "Yaşa_görə çeşidlə"
 
-msgid "Sort by _Name"
+msgid "_Name"
 msgstr "_Ada görə Sırala"
 
-msgid "Sort by _Progress"
+msgid "_Progress"
 msgstr "_Yükləmə mərhələsinə görə sırala"
 
-msgid "Sort by _Queue"
+msgid "_Queue Order"
 msgstr ""
 
-msgid "Sort by Rati_o"
+msgid "Rati_o"
 msgstr ""
 
-msgid "Sort by Si_ze"
+msgid "Si_ze"
 msgstr "_Ölçüyə görə çeşidlə"
 
-msgid "Sort by Stat_e"
+msgid "Stat_e"
 msgstr ""
 
-msgid "Sort by Time _Left"
+msgid "Time _Left"
 msgstr "_Qalan vaxta görə çeşidlə"
 
 msgid "Re_verse Sort Order"

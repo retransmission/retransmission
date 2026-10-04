@@ -1045,31 +1045,31 @@ msgstr "แถบมุมมอง"
 msgid "_Statusbar"
 msgstr "แถบสถานะ"
 
-msgid "Sort by _Activity"
-msgstr "เรียงตามกิจกรรม"
+msgid "_Activity"
+msgstr "กิจกรรม"
 
-msgid "Sort by A_ge"
+msgid "A_ge"
 msgstr "เรียงลำดับตาม_อายุ"
 
-msgid "Sort by _Name"
-msgstr "เรียงตามชื่อ"
+msgid "_Name"
+msgstr "ชื่อ"
 
-msgid "Sort by _Progress"
+msgid "_Progress"
 msgstr "เรียงตามความคืบหน้า"
 
-msgid "Sort by _Queue"
+msgid "_Queue Order"
 msgstr ""
 
-msgid "Sort by Rati_o"
+msgid "Rati_o"
 msgstr "เรียงลำดับตาม_สัดส่วน"
 
-msgid "Sort by Si_ze"
+msgid "Si_ze"
 msgstr "เรียงลำดับตาม_ขนาด"
 
-msgid "Sort by Stat_e"
+msgid "Stat_e"
 msgstr "เรียงลำดับตามส_ถานะ"
 
-msgid "Sort by Time _Left"
+msgid "Time _Left"
 msgstr "เรียงลำดับตามเ_วลาที่เหลือ"
 
 msgid "Re_verse Sort Order"

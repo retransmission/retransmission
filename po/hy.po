@@ -1072,31 +1072,31 @@ msgstr ""
 msgid "_Statusbar"
 msgstr "_Աշխատավիճակի տող"
 
-msgid "Sort by _Activity"
+msgid "_Activity"
 msgstr "Դասավորել ըստ _ակտիվության"
 
-msgid "Sort by A_ge"
+msgid "A_ge"
 msgstr "Դասավորել ըստ _հնության"
 
-msgid "Sort by _Name"
+msgid "_Name"
 msgstr "Դասավորել ըստ ա_նվան"
 
-msgid "Sort by _Progress"
+msgid "_Progress"
 msgstr "Դասավորել ըստ առաջ_ընթացի"
 
-msgid "Sort by _Queue"
+msgid "_Queue Order"
 msgstr ""
 
-msgid "Sort by Rati_o"
+msgid "Rati_o"
 msgstr "Դասավորել ըստ արա_գության"
 
-msgid "Sort by Si_ze"
+msgid "Si_ze"
 msgstr "Դասավորել ըստ չափս_ի"
 
-msgid "Sort by Stat_e"
+msgid "Stat_e"
 msgstr "Դասավորել ըստ _վիճակի"
 
-msgid "Sort by Time _Left"
+msgid "Time _Left"
 msgstr "Դասավորել ըստ _մնացած ժամանակի"
 
 msgid "Re_verse Sort Order"

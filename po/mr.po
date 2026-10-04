@@ -1072,31 +1072,31 @@ msgstr "गाळणपट्टी"
 msgid "_Statusbar"
 msgstr "स्थितीदर्शक पट्टी"
 
-msgid "Sort by _Activity"
+msgid "_Activity"
 msgstr "कार्यानुसार क्रमवारी"
 
-msgid "Sort by A_ge"
+msgid "A_ge"
 msgstr "वयानुसार क्रमवारी"
 
-msgid "Sort by _Name"
+msgid "_Name"
 msgstr "नावानुसार क्रमवारी"
 
-msgid "Sort by _Progress"
+msgid "_Progress"
 msgstr "प्रगतीनुसार क्रमवारी"
 
-msgid "Sort by _Queue"
+msgid "_Queue Order"
 msgstr "रांगेनुसार क्रमवारी"
 
-msgid "Sort by Rati_o"
+msgid "Rati_o"
 msgstr "गुणोत्तरानुसार क्रमवारी"
 
-msgid "Sort by Si_ze"
+msgid "Si_ze"
 msgstr "आकारानुसार क्रमवारी"
 
-msgid "Sort by Stat_e"
+msgid "Stat_e"
 msgstr "स्थितीनुसार क्रमवारी"
 
-msgid "Sort by Time _Left"
+msgid "Time _Left"
 msgstr "ैशिल्लक वेळेनुसार क्रमवारी"
 
 msgid "Re_verse Sort Order"

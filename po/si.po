@@ -1071,31 +1071,31 @@ msgstr ""
 msgid "_Statusbar"
 msgstr ""
 
-msgid "Sort by _Activity"
-msgstr "ක්‍රියාකාරිත්වය අනුව පෙලගස්වන්න (_A)"
+msgid "_Activity"
+msgstr "ක්‍රියාකාරිත්වය"
 
-msgid "Sort by A_ge"
+msgid "A_ge"
 msgstr "වයස අනුව පෙලගස්වන්න (_g)"
 
-msgid "Sort by _Name"
+msgid "_Name"
 msgstr "නම අනුව පෙලගස්වන්න (_N)"
 
-msgid "Sort by _Progress"
+msgid "_Progress"
 msgstr "ප්‍රගතිය අනුව පෙලගස්වන්න (_P)"
 
-msgid "Sort by _Queue"
+msgid "_Queue Order"
 msgstr "පෝලිම  අනුව පෙලගස්වන්න (_Q)"
 
-msgid "Sort by Rati_o"
+msgid "Rati_o"
 msgstr "අනුපාතය අනුව පෙලගස්වන්න (_o)"
 
-msgid "Sort by Si_ze"
+msgid "Si_ze"
 msgstr "ප්රමාණය අනුව පෙලගස්වන්න (_z)"
 
-msgid "Sort by Stat_e"
+msgid "Stat_e"
 msgstr "තත්වය අනුව පෙලගස්වන්න (_e)"
 
-msgid "Sort by Time _Left"
+msgid "Time _Left"
 msgstr "ඉතිරිව ඇති කාලය අනුව පෙලගස්වන්න (_L)"
 
 msgid "Re_verse Sort Order"

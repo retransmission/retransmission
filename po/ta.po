@@ -1069,31 +1069,31 @@ msgstr "வடிகட்டி பட்டை (_F)"
 msgid "_Statusbar"
 msgstr "நிகழ்நிலை பட்டை (_S)"
 
-msgid "Sort by _Activity"
-msgstr "கருமத்திற்கிணங்க  ஒழுங்குபடுத்து (_A)"
+msgid "_Activity"
+msgstr "செயற்ப்பாடு"
 
-msgid "Sort by A_ge"
+msgid "A_ge"
 msgstr "வயது படி ஒழுங்குபடுத்து (_G)"
 
-msgid "Sort by _Name"
+msgid "_Name"
 msgstr "பெயர் படி நிரல்படுத்து (_N)"
 
-msgid "Sort by _Progress"
+msgid "_Progress"
 msgstr "முனேற்றம் படி ஒழுங்குபடுத்து (_P)"
 
-msgid "Sort by _Queue"
+msgid "_Queue Order"
 msgstr ""
 
-msgid "Sort by Rati_o"
+msgid "Rati_o"
 msgstr "விகிதாசாரம் படி ஒழுங்குபடுத்து (_O)"
 
-msgid "Sort by Si_ze"
+msgid "Si_ze"
 msgstr "பருமன் அல்லது அளவு படி ஒழுங்குபடுத்து (_Z)"
 
-msgid "Sort by Stat_e"
+msgid "Stat_e"
 msgstr "நிலை படி ஒழுங்குபடுத்து (_N)"
 
-msgid "Sort by Time _Left"
+msgid "Time _Left"
 msgstr "மீதம் இருக்கும் நேரம் படி ஒழுங்குபடுத்து (_L)"
 
 msgid "Re_verse Sort Order"

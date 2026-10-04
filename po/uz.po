@@ -1038,31 +1038,31 @@ msgstr "_Filter paneli"
 msgid "_Statusbar"
 msgstr "_Holat paneli"
 
-msgid "Sort by _Activity"
-msgstr "_Faolligi bo‘yicha taxlash"
+msgid "_Activity"
+msgstr "Faoliyat"
 
-msgid "Sort by A_ge"
+msgid "A_ge"
 msgstr "_Yoshi bo‘yicha taxlash"
 
-msgid "Sort by _Name"
-msgstr "_Nomi bo‘yicha taxlash"
+msgid "_Name"
+msgstr "Nomi"
 
-msgid "Sort by _Progress"
+msgid "_Progress"
 msgstr "_Jarayon bo‘yicha taxlash"
 
-msgid "Sort by _Queue"
+msgid "_Queue Order"
 msgstr "_So‘rov bo‘yicha taxlash"
 
-msgid "Sort by Rati_o"
+msgid "Rati_o"
 msgstr "_Nisbati bo‘yicha taxlash"
 
-msgid "Sort by Si_ze"
-msgstr "_Hajmi bo‘yicha taxlash"
+msgid "Si_ze"
+msgstr "Hajmi"
 
-msgid "Sort by Stat_e"
+msgid "Stat_e"
 msgstr "H_olati bo‘yicha taxlash"
 
-msgid "Sort by Time _Left"
+msgid "Time _Left"
 msgstr "_Qolgan vaqti bo‘yicha taxlash"
 
 msgid "Re_verse Sort Order"

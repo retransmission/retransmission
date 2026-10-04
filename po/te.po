@@ -1074,31 +1074,31 @@ msgstr "వడపోతపట్టీ(_F)"
 msgid "_Statusbar"
 msgstr "స్థితిపట్టీ (_S)"
 
-msgid "Sort by _Activity"
-msgstr "క్రియాశీలత బట్టి క్రమబద్దీకరించు(_A)"
+msgid "_Activity"
+msgstr "క్రియాశీలత"
 
-msgid "Sort by A_ge"
+msgid "A_ge"
 msgstr "వయస్సును బట్టి క్రమబద్దీకరించు(_g)"
 
-msgid "Sort by _Name"
-msgstr "పేరును బట్టి క్రమబద్దీకరించు(_N)"
+msgid "_Name"
+msgstr "పేరు"
 
-msgid "Sort by _Progress"
+msgid "_Progress"
 msgstr "ప్రగతిని బట్టి క్రమబద్దీకరించు(_P)"
 
-msgid "Sort by _Queue"
+msgid "_Queue Order"
 msgstr "వరుసని బట్టి క్రమబద్దీకరించు (_Q)"
 
-msgid "Sort by Rati_o"
+msgid "Rati_o"
 msgstr "నిష్పత్తిని బట్టి క్రమబద్దీకరించు(_o)"
 
-msgid "Sort by Si_ze"
-msgstr "పరిమాణాన్ని బట్టి క్రమబద్దీకరించు(_z)"
+msgid "Si_ze"
+msgstr "పరిమాణం"
 
-msgid "Sort by Stat_e"
+msgid "Stat_e"
 msgstr "స్థితిని బట్టి క్రమబద్దీకరించు(_e)"
 
-msgid "Sort by Time _Left"
+msgid "Time _Left"
 msgstr "మిగిలివున్న సమయాన్ని బట్టి క్రమబద్దీకరించు(_L)"
 
 msgid "Re_verse Sort Order"

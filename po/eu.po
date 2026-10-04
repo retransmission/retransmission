@@ -1016,31 +1016,35 @@ msgstr "I_ragazkibarra"
 msgid "_Statusbar"
 msgstr "_Egoerabarra"
 
-msgid "Sort by _Activity"
-msgstr "Ordenatu _Jardueraren arabera"
+#, fuzzy
+msgid "Sort Torrents _By"
+msgstr "Abiarazi torrenta"
 
-msgid "Sort by A_ge"
+msgid "_Activity"
+msgstr "Jarduera"
+
+msgid "A_ge"
 msgstr "Ordenatu a_dinaren arabera"
 
-msgid "Sort by _Name"
-msgstr "Ordenatu _izenaren arabera"
+msgid "_Name"
+msgstr "Izena"
 
-msgid "Sort by _Progress"
-msgstr "Ordenatu aurrera_penaren arabera"
+msgid "_Progress"
+msgstr "Aurrerapena"
 
-msgid "Sort by _Queue"
-msgstr "Ordenatu i_lararen arabera"
+msgid "_Queue Order"
+msgstr "Ilaren ordena"
 
-msgid "Sort by Rati_o"
-msgstr "Ordenatu _tasaren arabera"
+msgid "Rati_o"
+msgstr "Maila"
 
-msgid "Sort by Si_ze"
-msgstr "Ordenatu ta_mainaren arabera"
+msgid "Si_ze"
+msgstr "Tamaina"
 
-msgid "Sort by Stat_e"
-msgstr "Ordenatu ego_eraren arabera"
+msgid "Stat_e"
+msgstr "Egoera"
 
-msgid "Sort by Time _Left"
+msgid "Time _Left"
 msgstr "Ordenatu _geratzen den denboraren arabera"
 
 msgid "Re_verse Sort Order"
@@ -1064,10 +1068,6 @@ msgstr "Ed_ukiak"
 
 msgid "_About"
 msgstr "_Honi buruz"
-
-#, fuzzy
-msgid "_Sort Torrents By"
-msgstr "Abiarazi torrenta"
 
 #, fuzzy
 msgid "Alternative Speed _Limits"
@@ -2481,24 +2481,6 @@ msgstr "Eskuragarritasuna"
 msgid "Use Groups"
 msgstr "Erabili Taldeak"
 
-msgid "Queue Order"
-msgstr "Ilaren ordena"
-
-msgid "Date Added"
-msgstr "Gehitze-data"
-
-msgid "ETA"
-msgstr ""
-
-msgid "State"
-msgstr "Egoera"
-
-msgid "Ascending"
-msgstr "Gorantz"
-
-msgid "Descending"
-msgstr "Beherantz"
-
 #. Translators: View menu -> Inspector
 msgid "Show Inspector"
 msgstr "Erakutsi Ikuskatzailea"
@@ -3781,6 +3763,15 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "segundo"
 msgstr[1] "segundo"
+
+#~ msgid "Date Added"
+#~ msgstr "Gehitze-data"
+
+#~ msgid "Ascending"
+#~ msgstr "Gorantz"
+
+#~ msgid "Descending"
+#~ msgstr "Beherantz"
 
 #~ msgid "_New…"
 #~ msgstr "_Berria…"

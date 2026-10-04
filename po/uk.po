@@ -1061,31 +1061,36 @@ msgstr "Панель _фільтрування"
 msgid "_Statusbar"
 msgstr "_Смужка стану"
 
-msgid "Sort by _Activity"
-msgstr "Впорядкувати за _активністю"
+#, fuzzy
+#| msgid "Start torrent"
+msgid "Sort Torrents _By"
+msgstr "Запустити торент"
 
-msgid "Sort by A_ge"
+msgid "_Activity"
+msgstr "Активність"
+
+msgid "A_ge"
 msgstr "Впорядкувати за _віком"
 
-msgid "Sort by _Name"
-msgstr "Впорядкувати за _назвою"
+msgid "_Name"
+msgstr "Назва"
 
-msgid "Sort by _Progress"
-msgstr "Впорядкувати за _поступом"
+msgid "_Progress"
+msgstr "Поступ"
 
-msgid "Sort by _Queue"
-msgstr "Впорядкувати за _чергою"
+msgid "_Queue Order"
+msgstr "Порядком черги"
 
-msgid "Sort by Rati_o"
-msgstr "Впорядкувати за спів_відношенням"
+msgid "Rati_o"
+msgstr "Рейтинг"
 
-msgid "Sort by Si_ze"
-msgstr "Впорядкувати за ро_зміром"
+msgid "Si_ze"
+msgstr "Розмір"
 
-msgid "Sort by Stat_e"
-msgstr "Впорядкувати за ста_ном"
+msgid "Stat_e"
+msgstr "Станом"
 
-msgid "Sort by Time _Left"
+msgid "Time _Left"
 msgstr "Впорядкувати за часом, _що залишився"
 
 msgid "Re_verse Sort Order"
@@ -1109,11 +1114,6 @@ msgstr "_Вміст"
 
 msgid "_About"
 msgstr "_Про програму"
-
-#, fuzzy
-#| msgid "Start torrent"
-msgid "_Sort Torrents By"
-msgstr "Запустити торент"
 
 #, fuzzy
 #| msgid "Alternative Speed Limits"
@@ -2574,24 +2574,6 @@ msgstr "Доступність"
 msgid "Use Groups"
 msgstr "Використовувати групи"
 
-msgid "Queue Order"
-msgstr "Порядком черги"
-
-msgid "Date Added"
-msgstr "Датою додавання"
-
-msgid "ETA"
-msgstr "Орієнтовний час завантаження"
-
-msgid "State"
-msgstr "Станом"
-
-msgid "Ascending"
-msgstr "Зростанням"
-
-msgid "Descending"
-msgstr "Спадаючою"
-
 #. Translators: View menu -> Inspector
 msgid "Show Inspector"
 msgstr "Показати Інспектор"
@@ -3906,6 +3888,18 @@ msgstr[0] "секунда"
 msgstr[1] "секунди"
 msgstr[2] "секунд"
 msgstr[3] "секунди"
+
+#~ msgid "Date Added"
+#~ msgstr "Датою додавання"
+
+#~ msgid "ETA"
+#~ msgstr "Орієнтовний час завантаження"
+
+#~ msgid "Ascending"
+#~ msgstr "Зростанням"
+
+#~ msgid "Descending"
+#~ msgstr "Спадаючою"
 
 #~ msgid "_New…"
 #~ msgstr "С_творити…"

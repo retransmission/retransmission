@@ -1103,31 +1103,36 @@ msgstr "Barra de _filtros"
 msgid "_Statusbar"
 msgstr "Barra de _estado"
 
-msgid "Sort by _Activity"
-msgstr "Ordenar por _actividad"
+#, fuzzy
+#| msgid "Start torrent"
+msgid "Sort Torrents _By"
+msgstr "Iniciar torrent"
 
-msgid "Sort by A_ge"
+msgid "_Activity"
+msgstr "Actividad"
+
+msgid "A_ge"
 msgstr "Ordenar por ant_igüedad"
 
-msgid "Sort by _Name"
-msgstr "Ordenar por _nombre"
+msgid "_Name"
+msgstr "Nombre"
 
-msgid "Sort by _Progress"
-msgstr "Ordenar por p_rogreso"
+msgid "_Progress"
+msgstr "Progreso"
 
-msgid "Sort by _Queue"
-msgstr "Ordenar por _cola"
+msgid "_Queue Order"
+msgstr "Orden de cola"
 
-msgid "Sort by Rati_o"
+msgid "Rati_o"
 msgstr "Ordenar por pr_oporción"
 
-msgid "Sort by Si_ze"
-msgstr "Ordenar por _tamaño"
+msgid "Si_ze"
+msgstr "Tamaño"
 
-msgid "Sort by Stat_e"
-msgstr "Ordenar por _estado"
+msgid "Stat_e"
+msgstr "Tamaño"
 
-msgid "Sort by Time _Left"
+msgid "Time _Left"
 msgstr "Ordenar por tiempo re_stante"
 
 msgid "Re_verse Sort Order"
@@ -1151,11 +1156,6 @@ msgstr "_Contenido"
 
 msgid "_About"
 msgstr "_Acerca de"
-
-#, fuzzy
-#| msgid "Start torrent"
-msgid "_Sort Torrents By"
-msgstr "Iniciar torrent"
 
 #, fuzzy
 msgid "Alternative Speed _Limits"
@@ -2592,24 +2592,6 @@ msgstr "Disponibilidad"
 msgid "Use Groups"
 msgstr "Usar grupos"
 
-msgid "Queue Order"
-msgstr "Orden de cola"
-
-msgid "Date Added"
-msgstr "Fecha añadido"
-
-msgid "ETA"
-msgstr ""
-
-msgid "State"
-msgstr "Tamaño"
-
-msgid "Ascending"
-msgstr "Invertir orden"
-
-msgid "Descending"
-msgstr "Descendente"
-
 #. Translators: View menu -> Inspector
 msgid "Show Inspector"
 msgstr "Mostrar Inspector"
@@ -3914,6 +3896,15 @@ msgid_plural "seconds"
 msgstr[0] "segundo"
 msgstr[1] "segundos"
 msgstr[2] "segundos"
+
+#~ msgid "Date Added"
+#~ msgstr "Fecha añadido"
+
+#~ msgid "Ascending"
+#~ msgstr "Invertir orden"
+
+#~ msgid "Descending"
+#~ msgstr "Descendente"
 
 #~ msgid "_New…"
 #~ msgstr "_Nuevo…"

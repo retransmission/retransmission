@@ -1170,31 +1170,31 @@ msgstr ""
 msgid "_Statusbar"
 msgstr ""
 
-msgid "Sort by _Activity"
+msgid "_Activity"
 msgstr ""
 
-msgid "Sort by A_ge"
+msgid "A_ge"
 msgstr ""
 
-msgid "Sort by _Name"
+msgid "_Name"
 msgstr ""
 
-msgid "Sort by _Progress"
+msgid "_Progress"
 msgstr ""
 
-msgid "Sort by _Queue"
+msgid "_Queue Order"
 msgstr ""
 
-msgid "Sort by Rati_o"
+msgid "Rati_o"
 msgstr ""
 
-msgid "Sort by Si_ze"
+msgid "Si_ze"
 msgstr ""
 
-msgid "Sort by Stat_e"
+msgid "Stat_e"
 msgstr ""
 
-msgid "Sort by Time _Left"
+msgid "Time _Left"
 msgstr ""
 
 msgid "Re_verse Sort Order"

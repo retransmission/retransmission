@@ -934,31 +934,35 @@ msgstr "_Filtreringsfelt"
 msgid "_Statusbar"
 msgstr "_Statuslinje"
 
-msgid "Sort by _Activity"
-msgstr "Sorter etter _aktivitet"
+#, fuzzy
+msgid "Sort Torrents _By"
+msgstr "Start torrent"
 
-msgid "Sort by A_ge"
+msgid "_Activity"
+msgstr "Aktivitet"
+
+msgid "A_ge"
 msgstr "Sorter etter a_lder"
 
-msgid "Sort by _Name"
-msgstr "Sorter etter _navn"
+msgid "_Name"
+msgstr "Navn"
 
-msgid "Sort by _Progress"
-msgstr "Sorter etter _framdrift"
+msgid "_Progress"
+msgstr "Framgang"
 
-msgid "Sort by _Queue"
+msgid "_Queue Order"
 msgstr "Sorter etter _kø"
 
-msgid "Sort by Rati_o"
+msgid "Rati_o"
 msgstr "Sorter etter delingsf_orhold"
 
-msgid "Sort by Si_ze"
-msgstr "Sorter etter st_ørrelse"
+msgid "Si_ze"
+msgstr "Størrelse"
 
-msgid "Sort by Stat_e"
+msgid "Stat_e"
 msgstr "Sorter etter _tilstand"
 
-msgid "Sort by Time _Left"
+msgid "Time _Left"
 msgstr "Sorter etter _gjenstående tid"
 
 msgid "Re_verse Sort Order"
@@ -981,10 +985,6 @@ msgstr "_Innhold"
 
 msgid "_About"
 msgstr "_Om"
-
-#, fuzzy
-msgid "_Sort Torrents By"
-msgstr "Start torrent"
 
 #, fuzzy
 msgid "Alternative Speed _Limits"

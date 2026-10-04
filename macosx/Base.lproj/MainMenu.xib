@@ -361,45 +361,45 @@
                                     <action selector="setSortByGroup:" target="206" id="3079"/>
                                 </connections>
                             </menuItem>
-                            <menuItem title="_Sort Torrents By" secondaryImage="arrow.up.arrow.down" catalog="system" id="1894">
-                                <menu key="submenu" title="_Sort Torrents By" id="1895">
+                            <menuItem title="Sort Torrents _By" secondaryImage="arrow.up.arrow.down" catalog="system" id="1894">
+                                <menu key="submenu" title="Sort Torrents _By" id="1895">
                                     <items>
-                                        <menuItem title="Queue Order" id="1901">
+                                        <menuItem title="_Queue Order" id="1901">
                                             <connections>
                                                 <action selector="setSort:" target="206" id="1903"/>
                                             </connections>
                                         </menuItem>
-                                        <menuItem title="Activity" tag="6" id="2324">
+                                        <menuItem title="_Activity" tag="6" id="2324">
                                             <connections>
                                                 <action selector="setSort:" target="206" id="2325"/>
                                             </connections>
                                         </menuItem>
-                                        <menuItem title="Date Added" tag="1" id="1900">
+                                        <menuItem title="A_ge" tag="1" id="1900">
                                             <connections>
                                                 <action selector="setSort:" target="206" id="1904"/>
                                             </connections>
                                         </menuItem>
-                                        <menuItem title="Name" tag="2" id="1902">
+                                        <menuItem title="_Name" tag="2" id="1902">
                                             <connections>
                                                 <action selector="setSort:" target="206" id="1905"/>
                                             </connections>
                                         </menuItem>
-                                        <menuItem title="Progress" tag="3" id="1896">
+                                        <menuItem title="_Progress" tag="3" id="1896">
                                             <connections>
                                                 <action selector="setSort:" target="206" id="1906"/>
                                             </connections>
                                         </menuItem>
-                                        <menuItem title="ETA" tag="8" id="zLF-YR-Oq6">
+                                        <menuItem title="Time _Left" tag="8" id="zLF-YR-Oq6">
                                             <connections>
                                                 <action selector="setSort:" target="206" id="fEQ-9j-ALl"/>
                                             </connections>
                                         </menuItem>
-                                        <menuItem title="Size" tag="7" id="3430">
+                                        <menuItem title="Si_ze" tag="7" id="3430">
                                             <connections>
                                                 <action selector="setSort:" target="206" id="3431"/>
                                             </connections>
                                         </menuItem>
-                                        <menuItem title="State" tag="4" id="1897">
+                                        <menuItem title="Stat_e" tag="4" id="1897">
                                             <connections>
                                                 <action selector="setSort:" target="206" id="1907"/>
                                             </connections>
@@ -412,14 +412,9 @@
                                         <menuItem isSeparatorItem="YES" id="2881">
                                             <modifierMask key="keyEquivalentModifierMask" command="YES"/>
                                         </menuItem>
-                                        <menuItem title="Ascending" image="arrow.up" catalog="system" id="1899">
+                                        <menuItem title="Re_verse Sort Order" id="1899">
                                             <connections>
                                                 <action selector="setSortReverse:" target="206" id="1908"/>
-                                            </connections>
-                                        </menuItem>
-                                        <menuItem title="Descending" image="arrow.down" catalog="system" tag="1" id="3405">
-                                            <connections>
-                                                <action selector="setSortReverse:" target="206" id="3406"/>
                                             </connections>
                                         </menuItem>
                                     </items>

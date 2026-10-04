@@ -925,31 +925,36 @@ msgstr "अनुक्रम पट्टी (_F)"
 msgid "_Statusbar"
 msgstr "स्थिति पट्टी (_S)"
 
-msgid "Sort by _Activity"
-msgstr "गतिविधि से अनुक्रमित (_A)"
+#, fuzzy
+#| msgid "Start torrent"
+msgid "Sort Torrents _By"
+msgstr "टोरेंट आरंभ करें"
 
-msgid "Sort by A_ge"
+msgid "_Activity"
+msgstr "गतिविधि"
+
+msgid "A_ge"
 msgstr "आयु से अनुक्रमित (_g)"
 
-msgid "Sort by _Name"
-msgstr "नाम से अनुक्रमित (_N)"
+msgid "_Name"
+msgstr "नाम"
 
-msgid "Sort by _Progress"
-msgstr "प्रगति से अनुक्रमित (_P)"
+msgid "_Progress"
+msgstr "प्रगति"
 
-msgid "Sort by _Queue"
+msgid "_Queue Order"
 msgstr "पंक्ति से अनुक्रमित (_Q)"
 
-msgid "Sort by Rati_o"
+msgid "Rati_o"
 msgstr "अनुपात से अनुक्रमित (_o)"
 
-msgid "Sort by Si_ze"
-msgstr "आकार से अनुक्रमित (_z)"
+msgid "Si_ze"
+msgstr "आकार"
 
-msgid "Sort by Stat_e"
+msgid "Stat_e"
 msgstr "स्थिति से अनुक्रमित (_e)"
 
-msgid "Sort by Time _Left"
+msgid "Time _Left"
 msgstr "शेष समय से अनुक्रमित (_L)"
 
 msgid "Re_verse Sort Order"
@@ -972,11 +977,6 @@ msgstr "सामग्री (_C)"
 
 msgid "_About"
 msgstr "बारे में (_A)"
-
-#, fuzzy
-#| msgid "Start torrent"
-msgid "_Sort Torrents By"
-msgstr "टोरेंट आरंभ करें"
 
 #, fuzzy
 #| msgid "Alternative Speed Limits"

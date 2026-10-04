@@ -1116,31 +1116,31 @@ msgstr "Трака _пропусника"
 msgid "_Statusbar"
 msgstr "Трака _стања"
 
-msgid "Sort by _Activity"
-msgstr "Поређај по _активности"
+msgid "_Activity"
+msgstr "Активност"
 
-msgid "Sort by A_ge"
+msgid "A_ge"
 msgstr "Поређај по ста_рости"
 
-msgid "Sort by _Name"
-msgstr "Поређај по _називу"
+msgid "_Name"
+msgstr "Назив"
 
-msgid "Sort by _Progress"
+msgid "_Progress"
 msgstr "Поређај по на_претку"
 
-msgid "Sort by _Queue"
+msgid "_Queue Order"
 msgstr "Поређај по _чекању"
 
-msgid "Sort by Rati_o"
+msgid "Rati_o"
 msgstr "Поређај по _односу размене"
 
-msgid "Sort by Si_ze"
-msgstr "Поређај по ве_личини"
+msgid "Si_ze"
+msgstr "Величина"
 
-msgid "Sort by Stat_e"
+msgid "Stat_e"
 msgstr "Поређај по _стању"
 
-msgid "Sort by Time _Left"
+msgid "Time _Left"
 msgstr "Поређај по преосталом _времену"
 
 msgid "Re_verse Sort Order"

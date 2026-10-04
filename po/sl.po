@@ -956,31 +956,36 @@ msgstr "Vrstica _filtrov"
 msgid "_Statusbar"
 msgstr "Vrstica _stanja"
 
-msgid "Sort by _Activity"
-msgstr "Razvrsti po dej_avnosti"
+#, fuzzy
+#| msgid "Start torrent"
+msgid "Sort Torrents _By"
+msgstr "Začni torrent"
 
-msgid "Sort by A_ge"
+msgid "_Activity"
+msgstr "Dejavnost"
+
+msgid "A_ge"
 msgstr "Razvrsti po staros_ti"
 
-msgid "Sort by _Name"
-msgstr "Razvrsti po _imenu"
+msgid "_Name"
+msgstr "Ime"
 
-msgid "Sort by _Progress"
-msgstr "Razvrsti po _napredku"
+msgid "_Progress"
+msgstr "Napredek"
 
-msgid "Sort by _Queue"
+msgid "_Queue Order"
 msgstr "Razvrsti po _čakalni vrsti"
 
-msgid "Sort by Rati_o"
+msgid "Rati_o"
 msgstr "Razvrsti po raz_merju"
 
-msgid "Sort by Si_ze"
-msgstr "Razvrsti po _velikosti"
+msgid "Si_ze"
+msgstr "Velikost"
 
-msgid "Sort by Stat_e"
+msgid "Stat_e"
 msgstr "Razvrsti po stan_ju"
 
-msgid "Sort by Time _Left"
+msgid "Time _Left"
 msgstr "Razvrsti po _preostalem času"
 
 msgid "Re_verse Sort Order"
@@ -1003,11 +1008,6 @@ msgstr "_Vsebina"
 
 msgid "_About"
 msgstr "Več o"
-
-#, fuzzy
-#| msgid "Start torrent"
-msgid "_Sort Torrents By"
-msgstr "Začni torrent"
 
 #, fuzzy
 msgid "Alternative Speed _Limits"

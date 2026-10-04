@@ -1071,31 +1071,31 @@ msgstr "zeukballek"
 msgid "_Statusbar"
 msgstr "bezigballek"
 
-msgid "Sort by _Activity"
-msgstr "sorteer bie activiteit"
+msgid "_Activity"
+msgstr "bezigheid"
 
-msgid "Sort by A_ge"
+msgid "A_ge"
 msgstr "Sorteer bej _leeftied"
 
-msgid "Sort by _Name"
-msgstr "sorteer bie naam"
+msgid "_Name"
+msgstr "Naam"
 
-msgid "Sort by _Progress"
+msgid "_Progress"
 msgstr "sotteer bie veuroetgang"
 
-msgid "Sort by _Queue"
+msgid "_Queue Order"
 msgstr ""
 
-msgid "Sort by Rati_o"
+msgid "Rati_o"
 msgstr "Sorteer bej Rati_o"
 
-msgid "Sort by Si_ze"
+msgid "Si_ze"
 msgstr "Sorteer op _Groete"
 
-msgid "Sort by Stat_e"
+msgid "Stat_e"
 msgstr "Sorteer bej _Status"
 
-msgid "Sort by Time _Left"
+msgid "Time _Left"
 msgstr "Sorteer bej _Overgebleve Tied"
 
 msgid "Re_verse Sort Order"

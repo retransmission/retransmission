@@ -966,31 +966,36 @@ msgstr "_Filtro juosta"
 msgid "_Statusbar"
 msgstr "_Būsenos juosta"
 
-msgid "Sort by _Activity"
-msgstr "Rikiuoti pagal _aktyvumą"
+#, fuzzy
+#| msgid "Start torrent"
+msgid "Sort Torrents _By"
+msgstr "Paleisti torentą"
 
-msgid "Sort by A_ge"
+msgid "_Activity"
+msgstr "Aktyvumas"
+
+msgid "A_ge"
 msgstr "Rikiuoti pagal se_numą"
 
-msgid "Sort by _Name"
-msgstr "Rikiuoti pagal pa_vadinimą"
+msgid "_Name"
+msgstr "Pavadinimas"
 
-msgid "Sort by _Progress"
-msgstr "Rikiuoti pagal _pažangą"
+msgid "_Progress"
+msgstr "Pažanga"
 
-msgid "Sort by _Queue"
+msgid "_Queue Order"
 msgstr "Rikiuoti pagal _eilę"
 
-msgid "Sort by Rati_o"
+msgid "Rati_o"
 msgstr "Rikiuoti pagal _santykį"
 
-msgid "Sort by Si_ze"
-msgstr "Rikiuoti pagal _dydį"
+msgid "Si_ze"
+msgstr "Dydis"
 
-msgid "Sort by Stat_e"
+msgid "Stat_e"
 msgstr "Rikiuoti pagal b_ūseną"
 
-msgid "Sort by Time _Left"
+msgid "Time _Left"
 msgstr "Rikiuoti pagal likusį _laiką"
 
 msgid "Re_verse Sort Order"
@@ -1013,11 +1018,6 @@ msgstr "_Žinynas"
 
 msgid "_About"
 msgstr "_Apie"
-
-#, fuzzy
-#| msgid "Start torrent"
-msgid "_Sort Torrents By"
-msgstr "Paleisti torentą"
 
 #, fuzzy
 msgid "Alternative Speed _Limits"

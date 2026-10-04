@@ -995,31 +995,36 @@ msgstr "フィルターバー(_F)"
 msgid "_Statusbar"
 msgstr "ステータスバー(_S)"
 
-msgid "Sort by _Activity"
-msgstr "稼働順に並び替え(_A)"
+#, fuzzy
+#| msgid "Start torrent"
+msgid "Sort Torrents _By"
+msgstr "トレントを開始"
 
-msgid "Sort by A_ge"
+msgid "_Activity"
+msgstr "稼働状況"
+
+msgid "A_ge"
 msgstr "追加順に並び替え(_G)"
 
-msgid "Sort by _Name"
-msgstr "名前順に並び替え(_N)"
+msgid "_Name"
+msgstr "名前"
 
-msgid "Sort by _Progress"
-msgstr "進行率順に並び替え(_P)"
+msgid "_Progress"
+msgstr "進行"
 
-msgid "Sort by _Queue"
-msgstr "処理待ち順に並び替え(_Q)"
+msgid "_Queue Order"
+msgstr "待ち行列の順"
 
-msgid "Sort by Rati_o"
-msgstr "共有比順に並び替え(_O)"
+msgid "Rati_o"
+msgstr "共有比"
 
-msgid "Sort by Si_ze"
-msgstr "サイズ順に並び替え(_Z)"
+msgid "Si_ze"
+msgstr "サイズ"
 
-msgid "Sort by Stat_e"
-msgstr "状態順に並び替え(_E)"
+msgid "Stat_e"
+msgstr "状態"
 
-msgid "Sort by Time _Left"
+msgid "Time _Left"
 msgstr "残り時間順に並び替え(_L)"
 
 msgid "Re_verse Sort Order"
@@ -1043,11 +1048,6 @@ msgstr "コンテンツ(_C)"
 
 msgid "_About"
 msgstr "バージョン情報(_A)"
-
-#, fuzzy
-#| msgid "Start torrent"
-msgid "_Sort Torrents By"
-msgstr "トレントを開始"
 
 #, fuzzy
 msgid "Alternative Speed _Limits"
@@ -2440,24 +2440,6 @@ msgstr "可用性"
 msgid "Use Groups"
 msgstr "グループ使用"
 
-msgid "Queue Order"
-msgstr "待ち行列の順"
-
-msgid "Date Added"
-msgstr "追加日時"
-
-msgid "ETA"
-msgstr "完了予想"
-
-msgid "State"
-msgstr "状態"
-
-msgid "Ascending"
-msgstr "昇順"
-
-msgid "Descending"
-msgstr "降順"
-
 #. Translators: View menu -> Inspector
 msgid "Show Inspector"
 msgstr "インスペクタを表示"
@@ -3711,6 +3693,18 @@ msgstr[0] "日"
 msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "秒"
+
+#~ msgid "Date Added"
+#~ msgstr "追加日時"
+
+#~ msgid "ETA"
+#~ msgstr "完了予想"
+
+#~ msgid "Ascending"
+#~ msgstr "昇順"
+
+#~ msgid "Descending"
+#~ msgstr "降順"
 
 #~ msgid "_New…"
 #~ msgstr "新規(_N)…"

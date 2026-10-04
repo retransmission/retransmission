@@ -1068,31 +1068,31 @@ msgstr "Barra de _filtro"
 msgid "_Statusbar"
 msgstr "Barra de _estau"
 
-msgid "Sort by _Activity"
-msgstr "Ordenar por _actividat"
+msgid "_Activity"
+msgstr "Actividat"
 
-msgid "Sort by A_ge"
+msgid "A_ge"
 msgstr "Ordenar por an_tigüedad"
 
-msgid "Sort by _Name"
-msgstr "Ordenar por _nombre"
+msgid "_Name"
+msgstr "Nome"
 
-msgid "Sort by _Progress"
+msgid "_Progress"
 msgstr "Ordenar por _progreso"
 
-msgid "Sort by _Queue"
+msgid "_Queue Order"
 msgstr ""
 
-msgid "Sort by Rati_o"
+msgid "Rati_o"
 msgstr "Ordenar por pr_oporción"
 
-msgid "Sort by Si_ze"
-msgstr "Ordenar por _tamanyo"
+msgid "Si_ze"
+msgstr "Tamanyo"
 
-msgid "Sort by Stat_e"
+msgid "Stat_e"
 msgstr "Ordenar por _estau"
 
-msgid "Sort by Time _Left"
+msgid "Time _Left"
 msgstr "Ordenar por tiempo re_stant"
 
 msgid "Re_verse Sort Order"

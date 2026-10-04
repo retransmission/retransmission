@@ -989,31 +989,35 @@ msgstr "شريط الت_رشيح"
 msgid "_Statusbar"
 msgstr "شريط ال_حالة"
 
-msgid "Sort by _Activity"
-msgstr "رتّب حسب ال_نشاط"
+#, fuzzy
+msgid "Sort Torrents _By"
+msgstr "ابدأ التورنت"
 
-msgid "Sort by A_ge"
+msgid "_Activity"
+msgstr "النشاط"
+
+msgid "A_ge"
 msgstr "رتب حسب ال_عمر"
 
-msgid "Sort by _Name"
-msgstr "رتّب حسب الا_سم"
+msgid "_Name"
+msgstr "الاسم"
 
-msgid "Sort by _Progress"
-msgstr "رتّب حسب ال_تقدم"
+msgid "_Progress"
+msgstr "التقدم"
 
-msgid "Sort by _Queue"
+msgid "_Queue Order"
 msgstr "رتّب حسب ال_طابور"
 
-msgid "Sort by Rati_o"
+msgid "Rati_o"
 msgstr "رتِّب حسب ال_نسبة"
 
-msgid "Sort by Si_ze"
-msgstr "رتب حسب ال_حجم"
+msgid "Si_ze"
+msgstr "الحجم"
 
-msgid "Sort by Stat_e"
+msgid "Stat_e"
 msgstr "رتِّب حسب ال_حالة"
 
-msgid "Sort by Time _Left"
+msgid "Time _Left"
 msgstr "رتِّب حسب الوقت المت_بقي"
 
 msgid "Re_verse Sort Order"
@@ -1036,10 +1040,6 @@ msgstr "الم_حتويات"
 
 msgid "_About"
 msgstr "حول"
-
-#, fuzzy
-msgid "_Sort Torrents By"
-msgstr "ابدأ التورنت"
 
 #, fuzzy
 #| msgid "Alternative Speed Limits"

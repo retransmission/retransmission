@@ -1044,31 +1044,35 @@ msgstr "筛选栏(_F)"
 msgid "_Statusbar"
 msgstr "状态栏(_S)"
 
-msgid "Sort by _Activity"
-msgstr "按活动状态排序(_A)"
+#, fuzzy
+msgid "Sort Torrents _By"
+msgstr "开始任务"
 
-msgid "Sort by A_ge"
+msgid "_Activity"
+msgstr "活动"
+
+msgid "A_ge"
 msgstr "按创建时间排序(_G)"
 
-msgid "Sort by _Name"
-msgstr "按名称排序(_N)"
+msgid "_Name"
+msgstr "名称"
 
-msgid "Sort by _Progress"
-msgstr "按进度排序(_P)"
+msgid "_Progress"
+msgstr "进度"
 
-msgid "Sort by _Queue"
-msgstr "按队列排序(_Q)"
+msgid "_Queue Order"
+msgstr "队列排序"
 
-msgid "Sort by Rati_o"
-msgstr "按分享率排序(_O)"
+msgid "Rati_o"
+msgstr "分享率"
 
-msgid "Sort by Si_ze"
-msgstr "按大小排序(_Z)"
+msgid "Si_ze"
+msgstr "大小"
 
-msgid "Sort by Stat_e"
-msgstr "按状态排序(_E)"
+msgid "Stat_e"
+msgstr "状态"
 
-msgid "Sort by Time _Left"
+msgid "Time _Left"
 msgstr "按剩余时间排序(_L)"
 
 msgid "Re_verse Sort Order"
@@ -1092,10 +1096,6 @@ msgstr "目录(_C)"
 
 msgid "_About"
 msgstr "关于(_A)"
-
-#, fuzzy
-msgid "_Sort Torrents By"
-msgstr "开始任务"
 
 #, fuzzy
 msgid "Alternative Speed _Limits"
@@ -2488,24 +2488,6 @@ msgstr "可用性"
 msgid "Use Groups"
 msgstr "使用群组"
 
-msgid "Queue Order"
-msgstr "队列排序"
-
-msgid "Date Added"
-msgstr "添加时间"
-
-msgid "ETA"
-msgstr "剩余时间"
-
-msgid "State"
-msgstr "状态"
-
-msgid "Ascending"
-msgstr "升序"
-
-msgid "Descending"
-msgstr "降序"
-
 #. Translators: View menu -> Inspector
 msgid "Show Inspector"
 msgstr "显示嗅探器"
@@ -3754,6 +3736,18 @@ msgstr[0] "天"
 msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "秒"
+
+#~ msgid "Date Added"
+#~ msgstr "添加时间"
+
+#~ msgid "ETA"
+#~ msgstr "剩余时间"
+
+#~ msgid "Ascending"
+#~ msgstr "升序"
+
+#~ msgid "Descending"
+#~ msgstr "降序"
 
 #~ msgid "_New…"
 #~ msgstr "新建(_N)…"

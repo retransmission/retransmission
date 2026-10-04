@@ -1071,31 +1071,31 @@ msgstr "_Shiriti i Filtrimit"
 msgid "_Statusbar"
 msgstr "_Shtylla e gjendjes"
 
-msgid "Sort by _Activity"
-msgstr "Klasifiko sipas _Aktivitetit"
+msgid "_Activity"
+msgstr "Aktiviteti"
 
-msgid "Sort by A_ge"
+msgid "A_ge"
 msgstr "Klasifiko sipas M_oshës"
 
-msgid "Sort by _Name"
-msgstr "Klasifiko sipas _Emrit"
+msgid "_Name"
+msgstr "Emri"
 
-msgid "Sort by _Progress"
+msgid "_Progress"
 msgstr "Klasifiko sipas _Progresit"
 
-msgid "Sort by _Queue"
+msgid "_Queue Order"
 msgstr "Rendite sipas _Magazinës"
 
-msgid "Sort by Rati_o"
+msgid "Rati_o"
 msgstr "Klasifiko sipas Shkallë_s"
 
-msgid "Sort by Si_ze"
-msgstr "Klasifiko sipas Madhësi_së"
+msgid "Si_ze"
+msgstr "Përmasa"
 
-msgid "Sort by Stat_e"
+msgid "Stat_e"
 msgstr "Klasifiko sipas Gjendje_s"
 
-msgid "Sort by Time _Left"
+msgid "Time _Left"
 msgstr "Klasifiko sipas Kohës së _Ngelur"
 
 msgid "Re_verse Sort Order"

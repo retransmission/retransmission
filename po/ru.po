@@ -1035,31 +1035,36 @@ msgstr "Панель _фильтров"
 msgid "_Statusbar"
 msgstr "_Строка состояния"
 
-msgid "Sort by _Activity"
-msgstr "Упорядочивать по _активности"
+#, fuzzy
+#| msgid "Start torrent"
+msgid "Sort Torrents _By"
+msgstr "Запустить торрент"
 
-msgid "Sort by A_ge"
+msgid "_Activity"
+msgstr "Активность"
+
+msgid "A_ge"
 msgstr "Упорядочивать по _дате добавления"
 
-msgid "Sort by _Name"
-msgstr "Упорядочивать по _названию"
+msgid "_Name"
+msgstr "Имя"
 
-msgid "Sort by _Progress"
-msgstr "Упорядочивать по степени _загрузки"
+msgid "_Progress"
+msgstr "Прогресс"
 
-msgid "Sort by _Queue"
-msgstr "Упорядочивать по о_черёдности"
+msgid "_Queue Order"
+msgstr "Порядку в очереди"
 
-msgid "Sort by Rati_o"
-msgstr "Упорядочивать по ре_йтингу"
+msgid "Rati_o"
+msgstr "Рейтинг"
 
-msgid "Sort by Si_ze"
-msgstr "Упорядочивать по _размеру"
+msgid "Si_ze"
+msgstr "Размер"
 
-msgid "Sort by Stat_e"
-msgstr "Упорядочивать по сос_тоянию"
+msgid "Stat_e"
+msgstr "Состоянию"
 
-msgid "Sort by Time _Left"
+msgid "Time _Left"
 msgstr "Упорядочивать по оставшемуся _времени"
 
 msgid "Re_verse Sort Order"
@@ -1083,11 +1088,6 @@ msgstr "Со_держание"
 
 msgid "_About"
 msgstr "_О программе"
-
-#, fuzzy
-#| msgid "Start torrent"
-msgid "_Sort Torrents By"
-msgstr "Запустить торрент"
 
 #, fuzzy
 #| msgid "Alternative Speed Limits"
@@ -2550,24 +2550,6 @@ msgstr "Доступность"
 msgid "Use Groups"
 msgstr "Использовать группы"
 
-msgid "Queue Order"
-msgstr "Порядку в очереди"
-
-msgid "Date Added"
-msgstr "Дате добавления"
-
-msgid "ETA"
-msgstr "Расчётное время"
-
-msgid "State"
-msgstr "Состоянию"
-
-msgid "Ascending"
-msgstr "Возрастающей"
-
-msgid "Descending"
-msgstr "Убывающей"
-
 #. Translators: View menu -> Inspector
 msgid "Show Inspector"
 msgstr "Показать инспектор"
@@ -3882,6 +3864,18 @@ msgstr[0] "секунда"
 msgstr[1] "секунды"
 msgstr[2] "секунд"
 msgstr[3] "секунд"
+
+#~ msgid "Date Added"
+#~ msgstr "Дате добавления"
+
+#~ msgid "ETA"
+#~ msgstr "Расчётное время"
+
+#~ msgid "Ascending"
+#~ msgstr "Возрастающей"
+
+#~ msgid "Descending"
+#~ msgstr "Убывающей"
 
 #~ msgid "_New…"
 #~ msgstr "_Создать…"

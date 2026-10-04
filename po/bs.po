@@ -1113,31 +1113,31 @@ msgstr "_Filterska traka"
 msgid "_Statusbar"
 msgstr "_Statusna linija"
 
-msgid "Sort by _Activity"
-msgstr "Sortiraj po _Aktivnosti"
+msgid "_Activity"
+msgstr "Aktivnost"
 
-msgid "Sort by A_ge"
+msgid "A_ge"
 msgstr "Sortiraj po St_arosti"
 
-msgid "Sort by _Name"
+msgid "_Name"
 msgstr "Sortiraj po _Imenu"
 
-msgid "Sort by _Progress"
+msgid "_Progress"
 msgstr "Sortiraj po _Progresu"
 
-msgid "Sort by _Queue"
+msgid "_Queue Order"
 msgstr "Poređaj po _čekanju"
 
-msgid "Sort by Rati_o"
+msgid "Rati_o"
 msgstr "Sortiraj po _Ocjeni"
 
-msgid "Sort by Si_ze"
-msgstr "Sortiraj po _veličini"
+msgid "Si_ze"
+msgstr "Veličina"
 
-msgid "Sort by Stat_e"
+msgid "Stat_e"
 msgstr "Sortiraj po S_tanju"
 
-msgid "Sort by Time _Left"
+msgid "Time _Left"
 msgstr "Sortiraj po preosta_lom vremenu"
 
 msgid "Re_verse Sort Order"

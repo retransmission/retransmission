@@ -1012,31 +1012,36 @@ msgstr "_Süzgeç Çubuğu"
 msgid "_Statusbar"
 msgstr "_Durum Çubuğu"
 
-msgid "Sort by _Activity"
-msgstr "_Etkinliğe Göre Sırala"
+#, fuzzy
+#| msgid "Start torrent"
+msgid "Sort Torrents _By"
+msgstr "Torrenti başlat"
 
-msgid "Sort by A_ge"
+msgid "_Activity"
+msgstr "Etkinlik"
+
+msgid "A_ge"
 msgstr "_Yaşa Göre Sırala"
 
-msgid "Sort by _Name"
-msgstr "_Ada Göre Sırala"
+msgid "_Name"
+msgstr "Ad"
 
-msgid "Sort by _Progress"
-msgstr "_İlerlemeye Göre Sırala"
+msgid "_Progress"
+msgstr "İlerleme"
 
-msgid "Sort by _Queue"
-msgstr "_Kuyruğa Göre Sırala"
+msgid "_Queue Order"
+msgstr "Sıraya Göre"
 
-msgid "Sort by Rati_o"
-msgstr "_Orana Göre Sırala"
+msgid "Rati_o"
+msgstr "Oran"
 
-msgid "Sort by Si_ze"
-msgstr "_Boyuta Göre Sırala"
+msgid "Si_ze"
+msgstr "Boyut"
 
-msgid "Sort by Stat_e"
-msgstr "_Duruma Göre Sırala"
+msgid "Stat_e"
+msgstr "Durum"
 
-msgid "Sort by Time _Left"
+msgid "Time _Left"
 msgstr "_Kalan Süreye Göre Sırala"
 
 msgid "Re_verse Sort Order"
@@ -1060,11 +1065,6 @@ msgstr "_İçindekiler"
 
 msgid "_About"
 msgstr "_Hakkında"
-
-#, fuzzy
-#| msgid "Start torrent"
-msgid "_Sort Torrents By"
-msgstr "Torrenti başlat"
 
 #, fuzzy
 #| msgid "Alternative Speed Limits"
@@ -2481,24 +2481,6 @@ msgstr "Uygunluk"
 msgid "Use Groups"
 msgstr "Öbekleri Kullan"
 
-msgid "Queue Order"
-msgstr "Sıraya Göre"
-
-msgid "Date Added"
-msgstr "Ekleme Tarihi"
-
-msgid "ETA"
-msgstr "Kalan Süre"
-
-msgid "State"
-msgstr "Durum"
-
-msgid "Ascending"
-msgstr "Artan"
-
-msgid "Descending"
-msgstr "Azalan"
-
 #. Translators: View menu -> Inspector
 msgid "Show Inspector"
 msgstr "Denetçiyi Göster"
@@ -3769,6 +3751,18 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "saniye"
 msgstr[1] "saniye"
+
+#~ msgid "Date Added"
+#~ msgstr "Ekleme Tarihi"
+
+#~ msgid "ETA"
+#~ msgstr "Kalan Süre"
+
+#~ msgid "Ascending"
+#~ msgstr "Artan"
+
+#~ msgid "Descending"
+#~ msgstr "Azalan"
 
 #~ msgid "_New…"
 #~ msgstr "_Yeni…"

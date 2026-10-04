@@ -1075,31 +1075,31 @@ msgstr "_Лента за филтрирање"
 msgid "_Statusbar"
 msgstr "_Статусна лента"
 
-msgid "Sort by _Activity"
-msgstr "Подреди по _активност"
+msgid "_Activity"
+msgstr "Активност"
 
-msgid "Sort by A_ge"
+msgid "A_ge"
 msgstr ""
 
-msgid "Sort by _Name"
-msgstr "Подреди по _име"
+msgid "_Name"
+msgstr "Име"
 
-msgid "Sort by _Progress"
+msgid "_Progress"
 msgstr "Подреди по _прогрес"
 
-msgid "Sort by _Queue"
+msgid "_Queue Order"
 msgstr ""
 
-msgid "Sort by Rati_o"
+msgid "Rati_o"
 msgstr ""
 
-msgid "Sort by Si_ze"
+msgid "Si_ze"
 msgstr ""
 
-msgid "Sort by Stat_e"
+msgid "Stat_e"
 msgstr ""
 
-msgid "Sort by Time _Left"
+msgid "Time _Left"
 msgstr ""
 
 msgid "Re_verse Sort Order"

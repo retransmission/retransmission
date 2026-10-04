@@ -1073,31 +1073,31 @@ msgstr "_Filturstong"
 msgid "_Statusbar"
 msgstr "_Støðustong"
 
-msgid "Sort by _Activity"
-msgstr "Flokka eftir _Virksemi"
+msgid "_Activity"
+msgstr "Virksemi"
 
-msgid "Sort by A_ge"
+msgid "A_ge"
 msgstr "Flokka eftir A_ldri"
 
-msgid "Sort by _Name"
-msgstr "Flokka eftir _Navni"
+msgid "_Name"
+msgstr "Navn"
 
-msgid "Sort by _Progress"
+msgid "_Progress"
 msgstr "Flokka eftir _Framgongd"
 
-msgid "Sort by _Queue"
+msgid "_Queue Order"
 msgstr "Flokka eftir _Í kø"
 
-msgid "Sort by Rati_o"
+msgid "Rati_o"
 msgstr "Flokka eftir Lutf_all"
 
-msgid "Sort by Si_ze"
-msgstr "Flokka eftir Stø_dd"
+msgid "Si_ze"
+msgstr "Stødd"
 
-msgid "Sort by Stat_e"
+msgid "Stat_e"
 msgstr "Flokka eftir Støð_u"
 
-msgid "Sort by Time _Left"
+msgid "Time _Left"
 msgstr "Flokka eftir Tíð _Eftir"
 
 msgid "Re_verse Sort Order"

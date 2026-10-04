@@ -1112,31 +1112,31 @@ msgstr "_Filtra josla"
 msgid "_Statusbar"
 msgstr "_Statusa josla"
 
-msgid "Sort by _Activity"
-msgstr "Kārtot pēc _aktivitātes"
+msgid "_Activity"
+msgstr "Aktivitāte"
 
-msgid "Sort by A_ge"
+msgid "A_ge"
 msgstr "Kārtot pēc _vecuma"
 
-msgid "Sort by _Name"
-msgstr "Kārtot pēc _nosaukuma"
+msgid "_Name"
+msgstr "Nosaukums"
 
-msgid "Sort by _Progress"
+msgid "_Progress"
 msgstr "Kārtot pēc _progresa"
 
-msgid "Sort by _Queue"
+msgid "_Queue Order"
 msgstr "Kārtot pēc _rindas"
 
-msgid "Sort by Rati_o"
+msgid "Rati_o"
 msgstr "Kārt_ot pēc samēra"
 
-msgid "Sort by Si_ze"
-msgstr "Kārtot pēc i_zmēra"
+msgid "Si_ze"
+msgstr "Izmērs"
 
-msgid "Sort by Stat_e"
+msgid "Stat_e"
 msgstr "Kārtot pēc s_tāvokļa"
 
-msgid "Sort by Time _Left"
+msgid "Time _Left"
 msgstr "Kārtot pēc atlikušā _laika"
 
 msgid "Re_verse Sort Order"

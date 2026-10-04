@@ -1090,31 +1090,31 @@ msgstr "_Filtrilobreto"
 msgid "_Statusbar"
 msgstr "_Statobreto"
 
-msgid "Sort by _Activity"
-msgstr "Ordigi laŭ _agado"
+msgid "_Activity"
+msgstr "Aktiveco"
 
-msgid "Sort by A_ge"
+msgid "A_ge"
 msgstr "Ordi_gi laŭ aĝo"
 
-msgid "Sort by _Name"
-msgstr "Ordigi laŭ _nomo"
+msgid "_Name"
+msgstr "Nomo"
 
-msgid "Sort by _Progress"
+msgid "_Progress"
 msgstr "Ordigi laŭ _progreso"
 
-msgid "Sort by _Queue"
+msgid "_Queue Order"
 msgstr "Ordigi laŭ _vico"
 
-msgid "Sort by Rati_o"
+msgid "Rati_o"
 msgstr "Ordigi laŭ proporci_o"
 
-msgid "Sort by Si_ze"
-msgstr "Ordigi laŭ gran_do"
+msgid "Si_ze"
+msgstr "Grando"
 
-msgid "Sort by Stat_e"
+msgid "Stat_e"
 msgstr "Ordigi laŭ stat_o"
 
-msgid "Sort by Time _Left"
+msgid "Time _Left"
 msgstr "Ordigi _laŭ plurestanta tempo"
 
 msgid "Re_verse Sort Order"

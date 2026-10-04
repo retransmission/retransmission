@@ -1084,31 +1084,31 @@ msgstr "_Filtreerimisriba"
 msgid "_Statusbar"
 msgstr "_Olekuriba"
 
-msgid "Sort by _Activity"
-msgstr "Järjesta _aktiivsuse järgi"
+msgid "_Activity"
+msgstr "Tegevus"
 
-msgid "Sort by A_ge"
+msgid "A_ge"
 msgstr "Järjesta _vanuse järgi"
 
-msgid "Sort by _Name"
-msgstr "Järjesta _nime järgi"
+msgid "_Name"
+msgstr "Nimi"
 
-msgid "Sort by _Progress"
+msgid "_Progress"
 msgstr "Järjesta _edenemise järgi"
 
-msgid "Sort by _Queue"
+msgid "_Queue Order"
 msgstr "Järjesta _järjekorra oleku järgi"
 
-msgid "Sort by Rati_o"
+msgid "Rati_o"
 msgstr "Järjesta _suhte järgi"
 
-msgid "Sort by Si_ze"
-msgstr "Järjesta _suuruse järgi"
+msgid "Si_ze"
+msgstr "Suurus"
 
-msgid "Sort by Stat_e"
+msgid "Stat_e"
 msgstr "Järjesta Olek_u järgi"
 
-msgid "Sort by Time _Left"
+msgid "Time _Left"
 msgstr "Järjesta _jäänud aja järgi"
 
 msgid "Re_verse Sort Order"

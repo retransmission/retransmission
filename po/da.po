@@ -1031,31 +1031,36 @@ msgstr "_Filterlinje"
 msgid "_Statusbar"
 msgstr "_Statuslinje"
 
-msgid "Sort by _Activity"
-msgstr "Sortér efter _aktivitet"
+#, fuzzy
+#| msgid "Start torrent"
+msgid "Sort Torrents _By"
+msgstr "Start torrent"
 
-msgid "Sort by A_ge"
+msgid "_Activity"
+msgstr "Aktivitet"
+
+msgid "A_ge"
 msgstr "Sortér efter al_der"
 
-msgid "Sort by _Name"
-msgstr "Sortér efter _navn"
+msgid "_Name"
+msgstr "Navn"
 
-msgid "Sort by _Progress"
-msgstr "Sortér efter frem_gang"
+msgid "_Progress"
+msgstr "Fremgang"
 
-msgid "Sort by _Queue"
-msgstr "Sortér efter k_ø"
+msgid "_Queue Order"
+msgstr "Kø"
 
-msgid "Sort by Rati_o"
-msgstr "Sortér efter forh_old"
+msgid "Rati_o"
+msgstr "Delingsforhold"
 
-msgid "Sort by Si_ze"
-msgstr "Sortér efter størr_else"
+msgid "Si_ze"
+msgstr "Størrelse"
 
-msgid "Sort by Stat_e"
-msgstr "Sortér efter _tilstand"
+msgid "Stat_e"
+msgstr "Tilstand"
 
-msgid "Sort by Time _Left"
+msgid "Time _Left"
 msgstr "Sortér efter til_bageværende tid"
 
 msgid "Re_verse Sort Order"
@@ -1079,11 +1084,6 @@ msgstr "_Indhold"
 
 msgid "_About"
 msgstr "_Om"
-
-#, fuzzy
-#| msgid "Start torrent"
-msgid "_Sort Torrents By"
-msgstr "Start torrent"
 
 #, fuzzy
 #| msgid "Alternative Speed Limits"
@@ -2502,24 +2502,6 @@ msgstr "Vis tilgængelighed"
 msgid "Use Groups"
 msgstr "Brug grupper"
 
-msgid "Queue Order"
-msgstr "Kø"
-
-msgid "Date Added"
-msgstr "Tilføjelsesdato"
-
-msgid "ETA"
-msgstr "Estimeret ankomsttid"
-
-msgid "State"
-msgstr "Tilstand"
-
-msgid "Ascending"
-msgstr "Stigende"
-
-msgid "Descending"
-msgstr "Faldende"
-
 #. Translators: View menu -> Inspector
 msgid "Show Inspector"
 msgstr "Vis inspektør"
@@ -3801,6 +3783,18 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "sekund"
 msgstr[1] "sekunder"
+
+#~ msgid "Date Added"
+#~ msgstr "Tilføjelsesdato"
+
+#~ msgid "ETA"
+#~ msgstr "Estimeret ankomsttid"
+
+#~ msgid "Ascending"
+#~ msgstr "Stigende"
+
+#~ msgid "Descending"
+#~ msgstr "Faldende"
 
 #~ msgid "_New…"
 #~ msgstr "_Ny …"

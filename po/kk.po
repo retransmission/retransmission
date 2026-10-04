@@ -921,31 +921,36 @@ msgstr "_Сүзгілер"
 msgid "_Statusbar"
 msgstr "Қалы_п-күй жолағы"
 
-msgid "Sort by _Activity"
-msgstr "Белсенділігі бойынш_а сұрыптау"
+#, fuzzy
+#| msgid "Start torrent"
+msgid "Sort Torrents _By"
+msgstr "Торренті жіберу"
 
-msgid "Sort by A_ge"
+msgid "_Activity"
+msgstr "Белсенділігі"
+
+msgid "A_ge"
 msgstr "Қосылған _уақыты бойынша сұрыптау"
 
-msgid "Sort by _Name"
-msgstr "Аты бойы_нша сұрыптау"
+msgid "_Name"
+msgstr "Аты"
 
-msgid "Sort by _Progress"
-msgstr "Үр_дісі бойынша сұрыптау"
+msgid "_Progress"
+msgstr "Барысы"
 
-msgid "Sort by _Queue"
+msgid "_Queue Order"
 msgstr "_Кезек бойынша сұрыптау"
 
-msgid "Sort by Rati_o"
+msgid "Rati_o"
 msgstr "Ре_йтингі бойынша сұрыптау"
 
-msgid "Sort by Si_ze"
-msgstr "Ө_лшемі ойынша сұрыптау"
+msgid "Si_ze"
+msgstr "Өлшемі"
 
-msgid "Sort by Stat_e"
+msgid "Stat_e"
 msgstr "Қал_ып-күйі бойынша сұрыптау"
 
-msgid "Sort by Time _Left"
+msgid "Time _Left"
 msgstr "Тре_кері бойынша сұрыптау"
 
 msgid "Re_verse Sort Order"
@@ -968,11 +973,6 @@ msgstr "Құра_масы"
 
 msgid "_About"
 msgstr ""
-
-#, fuzzy
-#| msgid "Start torrent"
-msgid "_Sort Torrents By"
-msgstr "Торренті жіберу"
 
 #, fuzzy
 #| msgid "Alternative Speed Limits"

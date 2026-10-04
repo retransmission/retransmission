@@ -1038,31 +1038,31 @@ msgstr "_Элегич панели"
 msgid "_Statusbar"
 msgstr "_Абал сабы"
 
-msgid "Sort by _Activity"
-msgstr "_Кыймыл-аракети боюнча сорттоо"
+msgid "_Activity"
+msgstr "Активдүүлүк"
 
-msgid "Sort by A_ge"
+msgid "A_ge"
 msgstr "Кошулган _убакыты боюнча сорттоо"
 
-msgid "Sort by _Name"
-msgstr "_Файл аты боюнча сорттоо"
+msgid "_Name"
+msgstr "Аты"
 
-msgid "Sort by _Progress"
+msgid "_Progress"
 msgstr "_Жылышы боюнча сорттоо"
 
-msgid "Sort by _Queue"
+msgid "_Queue Order"
 msgstr "_Кезеги боюнча сорттоо"
 
-msgid "Sort by Rati_o"
+msgid "Rati_o"
 msgstr "_Рейтинги боюнча сорттоо"
 
-msgid "Sort by Si_ze"
-msgstr "Ө_лчөмү боюнча сорттоо"
+msgid "Si_ze"
+msgstr "Өлчөмү"
 
-msgid "Sort by Stat_e"
+msgid "Stat_e"
 msgstr "А_балы боюнча сорттоо"
 
-msgid "Sort by Time _Left"
+msgid "Time _Left"
 msgstr "Ка_лган убагы боюнча сорттоо"
 
 msgid "Re_verse Sort Order"

@@ -1072,31 +1072,31 @@ msgstr ""
 msgid "_Statusbar"
 msgstr ""
 
-msgid "Sort by _Activity"
+msgid "_Activity"
 msgstr "Pagsunud-sunurin ayon sa G_awain"
 
-msgid "Sort by A_ge"
+msgid "A_ge"
 msgstr "Pagsunud-sunurin ayon sa  _Gulang"
 
-msgid "Sort by _Name"
-msgstr "Pagsunud-sunurin ayon sa Pa_ngalan"
+msgid "_Name"
+msgstr "Pangalan"
 
-msgid "Sort by _Progress"
+msgid "_Progress"
 msgstr "Pagsunud-sunurin ayon sa  _Progreso"
 
-msgid "Sort by _Queue"
+msgid "_Queue Order"
 msgstr ""
 
-msgid "Sort by Rati_o"
+msgid "Rati_o"
 msgstr "Pagsunud-sunurin ayon sa Pr_oporsyon"
 
-msgid "Sort by Si_ze"
+msgid "Si_ze"
 msgstr "Pagsunud-sunurin ayon sa La_ki"
 
-msgid "Sort by Stat_e"
+msgid "Stat_e"
 msgstr "Pagsunud-sunurin ayon sa _Estado"
 
-msgid "Sort by Time _Left"
+msgid "Time _Left"
 msgstr "Pagsunud-sunurin ayon sa Na_lalabing Oras"
 
 msgid "Re_verse Sort Order"

@@ -1075,31 +1075,31 @@ msgstr ""
 msgid "_Statusbar"
 msgstr "_‌സ്ഥിതിവിവര പട്ട"
 
-msgid "Sort by _Activity"
-msgstr "ക്രമീകരണം- ജോലിയുടെ അടിസ്താനത്തില്‍"
+msgid "_Activity"
+msgstr "പ്രവൃത്തി"
 
-msgid "Sort by A_ge"
+msgid "A_ge"
 msgstr "ക്രമീകരണം‌‌- വയസ്സിനാല്‍"
 
-msgid "Sort by _Name"
+msgid "_Name"
 msgstr "ക്രമീകരണം‌‌ -നാമത്താല്‍"
 
-msgid "Sort by _Progress"
+msgid "_Progress"
 msgstr "ക്രമീകരണം‌‌ -പുരോഗതിയാല്‍"
 
-msgid "Sort by _Queue"
+msgid "_Queue Order"
 msgstr ""
 
-msgid "Sort by Rati_o"
+msgid "Rati_o"
 msgstr "ക്രമീകരണം ആനുപാതികമയി"
 
-msgid "Sort by Si_ze"
+msgid "Si_ze"
 msgstr "ക്രമീകരണം‌‌- വലുപ്പതിന്റെ അടിസ്താനത്തില്‍"
 
-msgid "Sort by Stat_e"
+msgid "Stat_e"
 msgstr "ക്രമീകരണം‌‌-സ്തിതിയാല്‍"
 
-msgid "Sort by Time _Left"
+msgid "Time _Left"
 msgstr "ക്രമീകരണം‌‌- ബാക്കിയുള്ള സമയതിന്റെ അടിസ്താനത്തില്‍"
 
 msgid "Re_verse Sort Order"

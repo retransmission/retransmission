@@ -1102,31 +1102,31 @@ msgstr ""
 msgid "_Statusbar"
 msgstr ""
 
-msgid "Sort by _Activity"
+msgid "_Activity"
+msgstr "Aktiivvalaččat"
+
+msgid "A_ge"
 msgstr ""
 
-msgid "Sort by A_ge"
+msgid "_Name"
+msgstr "Namma"
+
+msgid "_Progress"
 msgstr ""
 
-msgid "Sort by _Name"
+msgid "_Queue Order"
 msgstr ""
 
-msgid "Sort by _Progress"
+msgid "Rati_o"
 msgstr ""
 
-msgid "Sort by _Queue"
+msgid "Si_ze"
+msgstr "Sturrodaga"
+
+msgid "Stat_e"
 msgstr ""
 
-msgid "Sort by Rati_o"
-msgstr ""
-
-msgid "Sort by Si_ze"
-msgstr "Sortere sturrodaga"
-
-msgid "Sort by Stat_e"
-msgstr ""
-
-msgid "Sort by Time _Left"
+msgid "Time _Left"
 msgstr ""
 
 msgid "Re_verse Sort Order"

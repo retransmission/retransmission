@@ -1070,31 +1070,31 @@ msgstr "Barra de _filtre"
 msgid "_Statusbar"
 msgstr "Barra d'e_stat"
 
-msgid "Sort by _Activity"
-msgstr "Triar per _activitat"
+msgid "_Activity"
+msgstr "Activitat"
 
-msgid "Sort by A_ge"
+msgid "A_ge"
 msgstr "Triar per at_ge"
 
-msgid "Sort by _Name"
-msgstr "Triar per _nom"
+msgid "_Name"
+msgstr "Nom"
 
-msgid "Sort by _Progress"
+msgid "_Progress"
 msgstr "Triar per _progression"
 
-msgid "Sort by _Queue"
+msgid "_Queue Order"
 msgstr "Triar per _fila d'espèra"
 
-msgid "Sort by Rati_o"
+msgid "Rati_o"
 msgstr "Triar per rati_o"
 
-msgid "Sort by Si_ze"
-msgstr "Triar per _talha"
+msgid "Si_ze"
+msgstr "Talha"
 
-msgid "Sort by Stat_e"
+msgid "Stat_e"
 msgstr "Tri_ar per estat"
 
-msgid "Sort by Time _Left"
+msgid "Time _Left"
 msgstr "Triar per te_mps restant"
 
 msgid "Re_verse Sort Order"
