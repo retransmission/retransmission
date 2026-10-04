@@ -3630,22 +3630,6 @@ msgid_plural "{count:L} web seeds"
 msgstr[0] "{count:L} websade"
 msgstr[1] "{count:L} websade"
 
-#, fuzzy
-#| msgid "Down: {downloaded_size}, Up: {uploaded_size}"
-msgid "Down: {download_speed}, Up: {upload_speed}"
-msgstr "Af: {downloaded_size}, Op: {uploaded_size}"
-
-#. Translators: Torrent -> status string
-#, fuzzy
-#| msgid "{upload_speed} ▴"
-msgid "Up: {upload_speed}"
-msgstr "{upload_speed} ▴"
-
-#, fuzzy
-#| msgid "Down: {downloaded_size}, Up: {uploaded_size}"
-msgid "Ratio: {ratio}, Up: {upload_speed}"
-msgstr "Af: {downloaded_size}, Op: {uploaded_size}"
-
 #. Translators: Torrent -> eta string
 msgid "inactive"
 msgstr "onaktief"
@@ -4011,6 +3995,21 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "sekonde"
 msgstr[1] "sekondes"
+
+#, fuzzy
+#~| msgid "Down: {downloaded_size}, Up: {uploaded_size}"
+#~ msgid "Down: {download_speed}, Up: {upload_speed}"
+#~ msgstr "Af: {downloaded_size}, Op: {uploaded_size}"
+
+#, fuzzy
+#~| msgid "{upload_speed} ▴"
+#~ msgid "Up: {upload_speed}"
+#~ msgstr "{upload_speed} ▴"
+
+#, fuzzy
+#~| msgid "Down: {downloaded_size}, Up: {uploaded_size}"
+#~ msgid "Ratio: {ratio}, Up: {upload_speed}"
+#~ msgstr "Af: {downloaded_size}, Op: {uploaded_size}"
 
 #~ msgid "Monday"
 #~ msgstr "Maandag"

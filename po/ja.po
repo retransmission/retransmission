@@ -3575,22 +3575,6 @@ msgid "{count:L} web seed"
 msgid_plural "{count:L} web seeds"
 msgstr[0] "{count:L} ウェブシード"
 
-#, fuzzy
-#| msgid "Down: {downloaded_size}, Up: {uploaded_size}"
-msgid "Down: {download_speed}, Up: {upload_speed}"
-msgstr "下り: {downloaded_size}, 上り: {uploaded_size}"
-
-#. Translators: Torrent -> status string
-#, fuzzy
-#| msgid "{upload_speed} ▴"
-msgid "Up: {upload_speed}"
-msgstr "{upload_speed} ▴"
-
-#, fuzzy
-#| msgid "Down: {downloaded_size}, Up: {uploaded_size}"
-msgid "Ratio: {ratio}, Up: {upload_speed}"
-msgstr "下り: {downloaded_size}, 上り: {uploaded_size}"
-
 #. Translators: Torrent -> eta string
 msgid "inactive"
 msgstr "未稼働"
@@ -3941,6 +3925,21 @@ msgstr[0] "日"
 msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "秒"
+
+#, fuzzy
+#~| msgid "Down: {downloaded_size}, Up: {uploaded_size}"
+#~ msgid "Down: {download_speed}, Up: {upload_speed}"
+#~ msgstr "下り: {downloaded_size}, 上り: {uploaded_size}"
+
+#, fuzzy
+#~| msgid "{upload_speed} ▴"
+#~ msgid "Up: {upload_speed}"
+#~ msgstr "{upload_speed} ▴"
+
+#, fuzzy
+#~| msgid "Down: {downloaded_size}, Up: {uploaded_size}"
+#~ msgid "Ratio: {ratio}, Up: {upload_speed}"
+#~ msgstr "下り: {downloaded_size}, 上り: {uploaded_size}"
 
 #~ msgid "Monday"
 #~ msgstr "月曜"

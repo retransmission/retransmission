@@ -3726,22 +3726,6 @@ msgstr[0] "{count:L} זורעי רשת"
 msgstr[1] "{count:L} זורעי רשת"
 msgstr[2] "{count:L} זורעי רשת"
 
-#, fuzzy
-#| msgid "Down: {downloaded_size}, Up: {uploaded_size}"
-msgid "Down: {download_speed}, Up: {upload_speed}"
-msgstr "הורדה: {downloaded_size}, העלאה: {uploaded_size}"
-
-#. Translators: Torrent -> status string
-#, fuzzy
-#| msgid "{upload_speed} ▴"
-msgid "Up: {upload_speed}"
-msgstr "{upload_speed} ▴"
-
-#, fuzzy
-#| msgid "Down: {downloaded_size}, Up: {uploaded_size}"
-msgid "Ratio: {ratio}, Up: {upload_speed}"
-msgstr "הורדה: {downloaded_size}, העלאה: {uploaded_size}"
-
 #. Translators: Torrent -> eta string
 msgid "inactive"
 msgstr "לא פיעל"
@@ -4127,6 +4111,21 @@ msgstr[0] "שנייה"
 msgstr[1] "שניות"
 msgstr[2] "שניות"
 msgstr[3] "שניות"
+
+#, fuzzy
+#~| msgid "Down: {downloaded_size}, Up: {uploaded_size}"
+#~ msgid "Down: {download_speed}, Up: {upload_speed}"
+#~ msgstr "הורדה: {downloaded_size}, העלאה: {uploaded_size}"
+
+#, fuzzy
+#~| msgid "{upload_speed} ▴"
+#~ msgid "Up: {upload_speed}"
+#~ msgstr "{upload_speed} ▴"
+
+#, fuzzy
+#~| msgid "Down: {downloaded_size}, Up: {uploaded_size}"
+#~ msgid "Ratio: {ratio}, Up: {upload_speed}"
+#~ msgstr "הורדה: {downloaded_size}, העלאה: {uploaded_size}"
 
 #~ msgid "Monday"
 #~ msgstr "יום שני"

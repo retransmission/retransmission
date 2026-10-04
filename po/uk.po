@@ -3764,22 +3764,6 @@ msgstr[1] "{count:L} сайтів роздачі"
 msgstr[2] "{count:L} сайтів роздачі"
 msgstr[3] "{count:L} сайтів роздачі"
 
-#, fuzzy
-#| msgid "Down: {downloaded_size}, Up: {uploaded_size}"
-msgid "Down: {download_speed}, Up: {upload_speed}"
-msgstr "Заван: {downloaded_size}, Виван: {uploaded_size}"
-
-#. Translators: Torrent -> status string
-#, fuzzy
-#| msgid "{upload_speed} ▴"
-msgid "Up: {upload_speed}"
-msgstr "{upload_speed} ▴"
-
-#, fuzzy
-#| msgid "Down: {downloaded_size}, Up: {uploaded_size}"
-msgid "Ratio: {ratio}, Up: {upload_speed}"
-msgstr "Заван: {downloaded_size}, Виван: {uploaded_size}"
-
 #. Translators: Torrent -> eta string
 msgid "inactive"
 msgstr "неактивний"
@@ -4175,6 +4159,21 @@ msgstr[0] "секунда"
 msgstr[1] "секунди"
 msgstr[2] "секунд"
 msgstr[3] "секунди"
+
+#, fuzzy
+#~| msgid "Down: {downloaded_size}, Up: {uploaded_size}"
+#~ msgid "Down: {download_speed}, Up: {upload_speed}"
+#~ msgstr "Заван: {downloaded_size}, Виван: {uploaded_size}"
+
+#, fuzzy
+#~| msgid "{upload_speed} ▴"
+#~ msgid "Up: {upload_speed}"
+#~ msgstr "{upload_speed} ▴"
+
+#, fuzzy
+#~| msgid "Down: {downloaded_size}, Up: {uploaded_size}"
+#~ msgid "Ratio: {ratio}, Up: {upload_speed}"
+#~ msgstr "Заван: {downloaded_size}, Виван: {uploaded_size}"
 
 #~ msgid "Monday"
 #~ msgstr "Понеділок"

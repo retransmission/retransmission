@@ -1178,14 +1178,13 @@ static tr_torrent_rename_done_func makeRenameDoneCallback(NSDictionary* contextI
         if (self.fStat.activity == TR_STATUS_DOWNLOAD) {
             string = [string stringByAppendingFormat:@" — %@",
                                                      TR_FORMAT(
-                                                         "Down: {download_speed}, Up: {upload_speed}",
+                                                         "{download_speed} ▾  {upload_speed} ▴",
                                                          TRArg("download_speed", [NSString stringForSpeed:self.downloadRate]),
                                                          TRArg("upload_speed", [NSString stringForSpeed:self.uploadRate]))];
         } else {
             string = [string
                 stringByAppendingFormat:@" — %@",
-                                        // Translators: Torrent -> status string
-                                        TR_FORMAT("Up: {upload_speed}", TRArg("upload_speed", [NSString stringForSpeed:self.uploadRate]))];
+                                        TR_FORMAT("{upload_speed} ▴", TRArg("upload_speed", [NSString stringForSpeed:self.uploadRate]))];
         }
     }
 
@@ -1231,16 +1230,16 @@ static tr_torrent_rename_done_func makeRenameDoneCallback(NSDictionary* contextI
 
     case TR_STATUS_DOWNLOAD:
         string = TR_FORMAT(
-            "Down: {download_speed}, Up: {upload_speed}",
+            "{download_speed} ▾  {upload_speed} ▴",
             TRArg("download_speed", [NSString stringForSpeed:self.downloadRate]),
             TRArg("upload_speed", [NSString stringForSpeed:self.uploadRate]));
         break;
 
     case TR_STATUS_SEED:
-        string = TR_FORMAT(
-            "Ratio: {ratio}, Up: {upload_speed}",
-            TRArg("ratio", [NSString stringForRatio:self.ratio]),
-            TRArg("upload_speed", [NSString stringForSpeed:self.uploadRate]));
+        string = [NSString
+            stringWithFormat:@"%@, %@",
+                             TR_FORMAT("Ratio: {ratio}", TRArg("ratio", [NSString stringForRatio:self.ratio])),
+                             TR_FORMAT("{upload_speed} ▴", TRArg("upload_speed", [NSString stringForSpeed:self.uploadRate]))];
     }
 
     return string;
