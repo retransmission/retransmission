@@ -2190,7 +2190,7 @@
                             </connections>
                         </button>
                         <button verticalHuggingPriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="332">
-                            <rect key="frame" x="152" y="35" width="253" height="18"/>
+                            <rect key="frame" x="152" y="35" width="265" height="18"/>
                             <buttonCell key="cell" type="check" title="Use UPnP or NAT-PMP port _forwarding" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="1247">
                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                 <font key="font" metaFont="system"/>
