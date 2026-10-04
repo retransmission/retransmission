@@ -775,11 +775,6 @@ msgstr "모든 토렌트를 멈춘 상태로 시작"
 msgid "Start Retransmission Minimized"
 msgstr "트랜스미션을 창이 최소화된 상태로 시작하기"
 
-#, fuzzy
-#| msgid "Retransmission"
-msgid "The Retransmission Project"
-msgstr "Retransmission"
-
 #. Translators: these are the application description paragraphs in the MetaInfo file.
 msgid "BitTorrent is a peer-to-peer file-sharing protocol that is commonly used to distribute large amounts of data between multiple users."
 msgstr ""
@@ -2344,6 +2339,11 @@ msgstr[0] ""
 msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] ""
+
+#, fuzzy
+#~| msgid "Retransmission"
+#~ msgid "The Retransmission Project"
+#~ msgstr "Retransmission"
 
 #, no-c-format
 #~ msgid "{current_size} ({percent_done}% of {percent_available}% available)"

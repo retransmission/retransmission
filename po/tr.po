@@ -851,11 +851,6 @@ msgstr "Retransmission ile Tüm Torrentleri Duraklatılmış Başlat"
 msgid "Start Retransmission Minimized"
 msgstr "Retransmission'ı Küçültülmüş Başlat"
 
-#, fuzzy
-#| msgid "Copyright © The Retransmission Project"
-msgid "The Retransmission Project"
-msgstr "Telif Hakkı © Retransmission Projesi"
-
 #. Translators: these are the application description paragraphs in the MetaInfo file.
 msgid "BitTorrent is a peer-to-peer file-sharing protocol that is commonly used to distribute large amounts of data between multiple users."
 msgstr ""
@@ -3651,6 +3646,11 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "saniye"
 msgstr[1] "saniye"
+
+#, fuzzy
+#~| msgid "Copyright © The Retransmission Project"
+#~ msgid "The Retransmission Project"
+#~ msgstr "Telif Hakkı © Retransmission Projesi"
 
 #, no-c-format
 #~ msgid "{current_size} ({percent_done}% of {percent_available}% available)"

@@ -779,11 +779,6 @@ msgstr "Ræsa Retransmission með allar torrent-skrár í bið"
 msgid "Start Retransmission Minimized"
 msgstr "Ræsa Retransmission lágmarkað"
 
-#, fuzzy
-#| msgid "Copyright © The Retransmission Project"
-msgid "The Retransmission Project"
-msgstr "Höfundarréttur © Retransmission-verkefnið"
-
 #. Translators: these are the application description paragraphs in the MetaInfo file.
 msgid "BitTorrent is a peer-to-peer file-sharing protocol that is commonly used to distribute large amounts of data between multiple users."
 msgstr ""
@@ -2386,6 +2381,11 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "sekúnda"
 msgstr[1] "sekúndur"
+
+#, fuzzy
+#~| msgid "Copyright © The Retransmission Project"
+#~ msgid "The Retransmission Project"
+#~ msgstr "Höfundarréttur © Retransmission-verkefnið"
 
 #, no-c-format
 #~ msgid "{current_size} ({percent_done}% of {percent_available}% available)"

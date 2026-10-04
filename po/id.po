@@ -771,11 +771,6 @@ msgstr "Mulai Retransmission dengan Semua Torrent Dijeda"
 msgid "Start Retransmission Minimized"
 msgstr "Mulai Retransmission Diminimalkan"
 
-#, fuzzy
-#| msgid "Copyright © The Retransmission Project"
-msgid "The Retransmission Project"
-msgstr "Hak Cipta © Proyek Retransmission"
-
 #. Translators: these are the application description paragraphs in the MetaInfo file.
 msgid "BitTorrent is a peer-to-peer file-sharing protocol that is commonly used to distribute large amounts of data between multiple users."
 msgstr ""
@@ -2333,6 +2328,11 @@ msgstr[0] ""
 msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] ""
+
+#, fuzzy
+#~| msgid "Copyright © The Retransmission Project"
+#~ msgid "The Retransmission Project"
+#~ msgstr "Hak Cipta © Proyek Retransmission"
 
 #~ msgid "Stop seeding if idle for N minutes:"
 #~ msgstr "Berhenti membibit bila menganggur selama N menit:"

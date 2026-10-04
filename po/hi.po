@@ -778,10 +778,6 @@ msgstr "ट्रांसमिशन आरंभ पर सभी टोर�
 msgid "Start Retransmission Minimized"
 msgstr "ट्रांसमिशन संक्षिप्त रूप में आरंभ करें"
 
-#, fuzzy
-msgid "The Retransmission Project"
-msgstr "ट्रांसमिशन"
-
 #. Translators: these are the application description paragraphs in the MetaInfo file.
 msgid "BitTorrent is a peer-to-peer file-sharing protocol that is commonly used to distribute large amounts of data between multiple users."
 msgstr ""
@@ -2374,6 +2370,10 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] ""
 msgstr[1] ""
+
+#, fuzzy
+#~ msgid "The Retransmission Project"
+#~ msgstr "ट्रांसमिशन"
 
 #~ msgid "Stop seeding if idle for N minutes:"
 #~ msgstr "N मिनट तक निष्क्रिय होने पर सीड न करें :"

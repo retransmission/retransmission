@@ -883,11 +883,6 @@ msgstr "הפעלת ‏Retransmission כשכל הטורנטים מופסקים"
 msgid "Start Retransmission Minimized"
 msgstr "הפעלת ‏Retransmission במצב ממוזער"
 
-#, fuzzy
-#| msgid "Copyright © The Retransmission Project"
-msgid "The Retransmission Project"
-msgstr "כל הזכויות שמורות © מיזם Retransmission"
-
 #. Translators: these are the application description paragraphs in the MetaInfo file.
 msgid "BitTorrent is a peer-to-peer file-sharing protocol that is commonly used to distribute large amounts of data between multiple users."
 msgstr ""
@@ -3751,6 +3746,11 @@ msgstr[0] "שנייה"
 msgstr[1] "שניות"
 msgstr[2] "שניות"
 msgstr[3] "שניות"
+
+#, fuzzy
+#~| msgid "Copyright © The Retransmission Project"
+#~ msgid "The Retransmission Project"
+#~ msgstr "כל הזכויות שמורות © מיזם Retransmission"
 
 #, no-c-format
 #~ msgid "{current_size} ({percent_done}% of {percent_available}% available)"

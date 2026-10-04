@@ -781,11 +781,6 @@ msgstr "Iniciar o Retransmission com todos os torrents em pausa"
 msgid "Start Retransmission Minimized"
 msgstr "Iniciar o Retransmission minimizado"
 
-#, fuzzy
-#| msgid "Retransmission"
-msgid "The Retransmission Project"
-msgstr "Retransmission"
-
 #. Translators: these are the application description paragraphs in the MetaInfo file.
 msgid "BitTorrent is a peer-to-peer file-sharing protocol that is commonly used to distribute large amounts of data between multiple users."
 msgstr ""
@@ -2405,6 +2400,11 @@ msgid_plural "seconds"
 msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
+
+#, fuzzy
+#~| msgid "Retransmission"
+#~ msgid "The Retransmission Project"
+#~ msgstr "Retransmission"
 
 #~ msgid "Stop seeding if idle for N minutes:"
 #~ msgstr "Parar de semear se inativo por N minutos:"

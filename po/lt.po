@@ -813,11 +813,6 @@ msgstr "Paleisti Retransmission pristabdžius visus torentus"
 msgid "Start Retransmission Minimized"
 msgstr "Paleisti Retransmission suskleistą"
 
-#, fuzzy
-#| msgid "Retransmission"
-msgid "The Retransmission Project"
-msgstr "Retransmission"
-
 #. Translators: these are the application description paragraphs in the MetaInfo file.
 msgid "BitTorrent is a peer-to-peer file-sharing protocol that is commonly used to distribute large amounts of data between multiple users."
 msgstr ""
@@ -2484,6 +2479,11 @@ msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
 msgstr[3] ""
+
+#, fuzzy
+#~| msgid "Retransmission"
+#~ msgid "The Retransmission Project"
+#~ msgstr "Retransmission"
 
 #, no-c-format
 #~ msgid "{current_size} ({percent_done}% of {percent_available}% available)"

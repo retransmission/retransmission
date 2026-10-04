@@ -770,11 +770,6 @@ msgstr ""
 msgid "Start Retransmission Minimized"
 msgstr ""
 
-#, fuzzy
-#| msgid "Retransmission"
-msgid "The Retransmission Project"
-msgstr "Retransmission"
-
 #. Translators: these are the application description paragraphs in the MetaInfo file.
 msgid "BitTorrent is a peer-to-peer file-sharing protocol that is commonly used to distribute large amounts of data between multiple users."
 msgstr ""
@@ -2366,6 +2361,11 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "წამი"
 msgstr[1] "წამი"
+
+#, fuzzy
+#~| msgid "Retransmission"
+#~ msgid "The Retransmission Project"
+#~ msgstr "Retransmission"
 
 #~ msgid "Download is i_nactive if data sharing stopped:"
 #~ msgstr "ჩამოტვირთვა უმოქ_მედოა თუ მონაცემთა გაზიარება შეჩერდა:"

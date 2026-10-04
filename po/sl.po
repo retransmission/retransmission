@@ -808,11 +808,6 @@ msgstr ""
 msgid "Start Retransmission Minimized"
 msgstr ""
 
-#, fuzzy
-#| msgid "Copyright © The Retransmission Project"
-msgid "The Retransmission Project"
-msgstr "Avtorske pravice © The Retransmission Project"
-
 #. Translators: these are the application description paragraphs in the MetaInfo file.
 msgid "BitTorrent is a peer-to-peer file-sharing protocol that is commonly used to distribute large amounts of data between multiple users."
 msgstr ""
@@ -2456,6 +2451,11 @@ msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
 msgstr[3] ""
+
+#, fuzzy
+#~| msgid "Copyright © The Retransmission Project"
+#~ msgid "The Retransmission Project"
+#~ msgstr "Avtorske pravice © The Retransmission Project"
 
 #~ msgid "Stop seeding if idle for N minutes:"
 #~ msgstr "Prenehaj sejati, če je torrent nedejaven N minut:"

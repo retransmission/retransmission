@@ -4,14 +4,13 @@ Copyright 2014 Richard Hughes <richard@hughsie.com>
 Copyright 2017 Endless Mobile, Inc.
  -->
 <component type="desktop-application">
-  <id type="desktop">@DESKTOP_FILE_ID@</id>
+  <id>@DESKTOP_FILE_ID@</id>
   <metadata_license>CC0-1.0</metadata_license>
-  <project_license>GPL-2.0 OR GPL-3.0</project_license>
+  <project_license>GPL-2.0-only OR GPL-3.0-only</project_license>
 
   <name>Retransmission</name>
-  <developer_name>The Retransmission Project</developer_name>
   <developer id="retransmission.org">
-    <name>The Retransmission Project</name>
+    <name translate="no">The Retransmission Project</name>
   </developer>
   <summary>Download and share files over BitTorrent</summary>
 
@@ -37,7 +36,6 @@ Copyright 2017 Endless Mobile, Inc.
   <url type="faq">https://retransmission.org/help/gtk/latest/html/FAQ.html</url>
   <url type="help">https://retransmission.org/help/gtk/latest/index.html</url>
   <url type="donation">https://retransmission.org/donate</url>
-  <url type="translate">https://explore.transifex.com/transmissionbt/transmissionbt/</url>
   <url type="contact">https://github.com/retransmission/retransmission/discussions</url>
   <url type="vcs-browser">https://github.com/retransmission/retransmission</url>
   <url type="contribute">https://github.com/retransmission/retransmission/blob/main/CONTRIBUTING.md</url>
