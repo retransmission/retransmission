@@ -308,7 +308,13 @@ void rename_torrent(Glib::RefPtr<Gio::File> const& file)
     try {
         file->set_display_name(new_name);
     } catch (Glib::Error const& e) {
-        gtr_message(fmt::format("Couldn't rename '{}' as '{}': {} ({})", old_name, new_name, e.what(), e.code()));
+        gtr_message(
+            fmt::format(
+                "Couldn't rename '{old_path}' as '{path}': {error} ({error_code})",
+                fmt::arg("old_path", old_name),
+                fmt::arg("path", new_name),
+                fmt::arg("error", e.what()),
+                fmt::arg("error_code", e.code())));
     }
 }
 
