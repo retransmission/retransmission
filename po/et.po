@@ -202,8 +202,8 @@ msgid_plural "{total_size} in {file_count:L} files"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "({piece_count} BitTorrent piece @ {piece_size})"
-msgid_plural "({piece_count} BitTorrent pieces @ {piece_size})"
+msgid "({piece_count:L} piece @ {piece_size})"
+msgid_plural "({piece_count:L} pieces @ {piece_size})"
 msgstr[0] ""
 msgstr[1] ""
 

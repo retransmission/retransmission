@@ -244,15 +244,15 @@ msgstr "Létrehozva: {date}"
 msgid "Unknown"
 msgstr "Ismeretlen"
 
-msgid "{total_size} ({piece_count:L} piece @ {piece_size})"
-msgid_plural "{total_size} ({piece_count:L} pieces @ {piece_size})"
-msgstr[0] "{total_size} ({piece_count:L} darab @ {piece_size})"
-msgstr[1] "{total_size} ({piece_count:L} darab @ {piece_size})"
+msgid "{total_size} in {file_count:L} file"
+msgid_plural "{total_size} in {file_count:L} files"
+msgstr[0] "{total_size} {file_count:L} fájlban"
+msgstr[1] "{total_size} {file_count:L} fájlban"
 
-msgid "{total_size} ({piece_count:L} piece)"
-msgid_plural "{total_size} ({piece_count:L} pieces)"
-msgstr[0] "{total_size} ({piece_count:L} darab)"
-msgstr[1] "{total_size} ({piece_count:L} darab)"
+msgid "({piece_count:L} piece @ {piece_size})"
+msgid_plural "({piece_count:L} pieces @ {piece_size})"
+msgstr[0] "({piece_count:L} darab @ {piece_size})"
+msgstr[1] "({piece_count:L} darab @ {piece_size})"
 
 msgid "{current_size} ({percent_done}%)"
 msgstr "{current_size} ({percent_done}%)"
@@ -2411,9 +2411,6 @@ msgstr "Létrehozva ekkor:"
 msgid "Creator:"
 msgstr "Készítő:"
 
-msgid "Pieces:"
-msgstr "Szeletek:"
-
 msgid "Was:"
 msgstr "Ez volt:"
 
@@ -3815,16 +3812,19 @@ msgid_plural "seconds"
 msgstr[0] "másodperc"
 msgstr[1] "másodperc"
 
+#~ msgid "{total_size} ({piece_count:L} piece)"
+#~ msgid_plural "{total_size} ({piece_count:L} pieces)"
+#~ msgstr[0] "{total_size} ({piece_count:L} darab)"
+#~ msgstr[1] "{total_size} ({piece_count:L} darab)"
+
+#~ msgid "Pieces:"
+#~ msgstr "Szeletek:"
+
 #~ msgid "NAT traversal uses either NAT-PMP or UPnP"
 #~ msgstr "A NAT átjárás NAT-PMP-t vagy UPnP-t használ"
 
 #~ msgid "Automatically map port"
 #~ msgstr "Port átirányítása automatikusan"
-
-#~ msgid "{total_size} in {file_count:L} file"
-#~ msgid_plural "{total_size} in {file_count:L} files"
-#~ msgstr[0] "{total_size} {file_count:L} fájlban"
-#~ msgstr[1] "{total_size} {file_count:L} fájlban"
 
 #~ msgid "({piece_count} BitTorrent piece @ {piece_size})"
 #~ msgid_plural "({piece_count} BitTorrent pieces @ {piece_size})"

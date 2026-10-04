@@ -316,6 +316,11 @@ public:
         return piece_count_;
     }
 
+    [[nodiscard]] constexpr auto fileCount() const noexcept
+    {
+        return file_count_;
+    }
+
     [[nodiscard]] constexpr auto downloadedEver() const noexcept
     {
         return downloaded_ever_;

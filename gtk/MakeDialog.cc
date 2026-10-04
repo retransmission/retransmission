@@ -371,10 +371,17 @@ void MakeDialog::Impl::updatePiecesLabel()
     } else {
         gstr += fmt::format(
             fmt::runtime(ngettext(
-                "{total_size} ({piece_count:L} piece @ {piece_size})",
-                "{total_size} ({piece_count:L} pieces @ {piece_size})",
-                builder_->piece_count())),
+                "{total_size} in {file_count:L} file",
+                "{total_size} in {file_count:L} files",
+                builder_->file_count())),
             fmt::arg("total_size", tr_strlsize(builder_->total_size())),
+            fmt::arg("file_count", builder_->file_count()));
+        gstr += ' ';
+        gstr += fmt::format(
+            fmt::runtime(ngettext(
+                "({piece_count:L} piece @ {piece_size})",
+                "({piece_count:L} pieces @ {piece_size})",
+                builder_->piece_count())),
             fmt::arg("piece_count", builder_->piece_count()),
             fmt::arg("piece_size", Memory{ builder_->piece_size(), Memory::Units::Bytes }.to_string()));
     }

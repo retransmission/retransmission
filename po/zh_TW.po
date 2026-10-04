@@ -234,13 +234,13 @@ msgstr "於 {date} 建立"
 msgid "Unknown"
 msgstr "未知"
 
-msgid "{total_size} ({piece_count:L} piece @ {piece_size})"
-msgid_plural "{total_size} ({piece_count:L} pieces @ {piece_size})"
-msgstr[0] "{total_size} ({piece_count:L} 個區塊 @ {piece_size})"
+msgid "{total_size} in {file_count:L} file"
+msgid_plural "{total_size} in {file_count:L} files"
+msgstr[0] "總計 {file_count:L} 個檔案，大小為 {total_size}"
 
-msgid "{total_size} ({piece_count:L} piece)"
-msgid_plural "{total_size} ({piece_count:L} pieces)"
-msgstr[0] "{total_size} ({piece_count:L} 個區塊)"
+msgid "({piece_count:L} piece @ {piece_size})"
+msgid_plural "({piece_count:L} pieces @ {piece_size})"
+msgstr[0] "({piece_count:L} 個區塊 @ {piece_size})"
 
 msgid "{current_size} ({percent_done}%)"
 msgstr "{current_size} ({percent_done}%)"
@@ -2368,9 +2368,6 @@ msgstr "建立於："
 msgid "Creator:"
 msgstr "建立者："
 
-msgid "Pieces:"
-msgstr "區塊："
-
 msgid "Was:"
 msgstr ""
 
@@ -3741,15 +3738,18 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "秒"
 
+#~ msgid "{total_size} ({piece_count:L} piece)"
+#~ msgid_plural "{total_size} ({piece_count:L} pieces)"
+#~ msgstr[0] "{total_size} ({piece_count:L} 個區塊)"
+
+#~ msgid "Pieces:"
+#~ msgstr "區塊："
+
 #~ msgid "NAT traversal uses either NAT-PMP or UPnP"
 #~ msgstr "NAT 穿透使用 NAT-PMP 或 UPnP"
 
 #~ msgid "Automatically map port"
 #~ msgstr "自動對應連接埠"
-
-#~ msgid "{total_size} in {file_count:L} file"
-#~ msgid_plural "{total_size} in {file_count:L} files"
-#~ msgstr[0] "總計 {file_count:L} 個檔案，大小為 {total_size}"
 
 #~ msgid "({piece_count} BitTorrent piece @ {piece_size})"
 #~ msgid_plural "({piece_count} BitTorrent pieces @ {piece_size})"

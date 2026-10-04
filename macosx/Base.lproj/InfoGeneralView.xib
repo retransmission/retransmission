@@ -15,7 +15,7 @@
                 <outlet property="fHashField" destination="5" id="43"/>
                 <outlet property="fLastDataLabel" destination="52" id="53"/>
                 <outlet property="fLastDataLocationField" destination="54" id="55"/>
-                <outlet property="fPiecesField" destination="19" id="42"/>
+                <outlet property="fSizeField" destination="19" id="42"/>
                 <outlet property="fRevealDataButton" destination="12" id="49"/>
                 <outlet property="fSecureField" destination="16" id="44"/>
                 <outlet property="view" destination="2" id="45"/>
@@ -147,7 +147,7 @@
                 </textField>
                 <textField horizontalHuggingPriority="249" verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="YES" preferredMaxLayoutWidth="0.0" translatesAutoresizingMaskIntoConstraints="NO" id="20">
                     <rect key="frame" x="10" y="186" width="68" height="14"/>
-                    <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="right" title="Pieces:" id="21">
+                    <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="right" title="Size:" id="21">
                         <font key="font" metaFont="smallSystem"/>
                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>

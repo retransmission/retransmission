@@ -216,15 +216,15 @@ msgstr "{date} tarihinde yaratıldı"
 msgid "Unknown"
 msgstr "Bilinmeyen"
 
-msgid "{total_size} ({piece_count:L} piece @ {piece_size})"
-msgid_plural "{total_size} ({piece_count:L} pieces @ {piece_size})"
-msgstr[0] "{total_size} ({piece_count:L} parça @ {piece_size})"
-msgstr[1] "{total_size} ({piece_count:L} parça @ {piece_size})"
+msgid "{total_size} in {file_count:L} file"
+msgid_plural "{total_size} in {file_count:L} files"
+msgstr[0] "{file_count:L} dosyada {total_size}"
+msgstr[1] "{file_count:L} dosyada {total_size}"
 
-msgid "{total_size} ({piece_count:L} piece)"
-msgid_plural "{total_size} ({piece_count:L} pieces)"
-msgstr[0] "{total_size} ({piece_count:L} parça)"
-msgstr[1] "{total_size} ({piece_count:L} parça)"
+msgid "({piece_count:L} piece @ {piece_size})"
+msgid_plural "({piece_count:L} pieces @ {piece_size})"
+msgstr[0] "({piece_count:L} parça @ {piece_size})"
+msgstr[1] "({piece_count:L} parça @ {piece_size})"
 
 msgid "{current_size} ({percent_done}%)"
 msgstr "{current_size} (%{percent_done})"
@@ -2384,9 +2384,6 @@ msgstr "Oluşturulma:"
 msgid "Creator:"
 msgstr "Oluşturan:"
 
-msgid "Pieces:"
-msgstr "Parçalar:"
-
 msgid "Was:"
 msgstr "Şu idi:"
 
@@ -3787,16 +3784,19 @@ msgid_plural "seconds"
 msgstr[0] "saniye"
 msgstr[1] "saniye"
 
+#~ msgid "{total_size} ({piece_count:L} piece)"
+#~ msgid_plural "{total_size} ({piece_count:L} pieces)"
+#~ msgstr[0] "{total_size} ({piece_count:L} parça)"
+#~ msgstr[1] "{total_size} ({piece_count:L} parça)"
+
+#~ msgid "Pieces:"
+#~ msgstr "Parçalar:"
+
 #~ msgid "NAT traversal uses either NAT-PMP or UPnP"
 #~ msgstr "NAT basamaklandırması ya NAT-PMP ya da UPnP kullanır"
 
 #~ msgid "Automatically map port"
 #~ msgstr "Kapıyı otomatik ata"
-
-#~ msgid "{total_size} in {file_count:L} file"
-#~ msgid_plural "{total_size} in {file_count:L} files"
-#~ msgstr[0] "{file_count:L} dosyada {total_size}"
-#~ msgstr[1] "{file_count:L} dosyada {total_size}"
 
 #~ msgid "({piece_count} BitTorrent piece @ {piece_size})"
 #~ msgid_plural "({piece_count} BitTorrent pieces @ {piece_size})"

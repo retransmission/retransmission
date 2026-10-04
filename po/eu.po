@@ -220,15 +220,15 @@ msgstr "Sortze-data: {date}"
 msgid "Unknown"
 msgstr "Ezezaguna"
 
-msgid "{total_size} ({piece_count:L} piece @ {piece_size})"
-msgid_plural "{total_size} ({piece_count:L} pieces @ {piece_size})"
-msgstr[0] "{total_size} ({piece_count:L} atal @ {piece_size})"
-msgstr[1] "{total_size} ({piece_count:L} zati @ {piece_size})"
+msgid "{total_size} in {file_count:L} file"
+msgid_plural "{total_size} in {file_count:L} files"
+msgstr[0] "{total_size} {file_count:L} fitxategian"
+msgstr[1] "{total_size} {file_count:L} fitxategitan"
 
-msgid "{total_size} ({piece_count:L} piece)"
-msgid_plural "{total_size} ({piece_count:L} pieces)"
-msgstr[0] "{total_size} ({piece_count:L} atal)"
-msgstr[1] "{total_size} ({piece_count:L} zati)"
+msgid "({piece_count:L} piece @ {piece_size})"
+msgid_plural "({piece_count:L} pieces @ {piece_size})"
+msgstr[0] "({piece_count:L} atal @ {piece_size})"
+msgstr[1] "({piece_count:L} zati @ {piece_size})"
 
 msgid "{current_size} ({percent_done}%)"
 msgstr "{current_size} (%{percent_done})"
@@ -2384,9 +2384,6 @@ msgstr "Sortze-data:"
 msgid "Creator:"
 msgstr "Sortzailea:"
 
-msgid "Pieces:"
-msgstr "Zatiak:"
-
 msgid "Was:"
 msgstr ""
 
@@ -3799,16 +3796,19 @@ msgid_plural "seconds"
 msgstr[0] "segundo"
 msgstr[1] "segundo"
 
+#~ msgid "{total_size} ({piece_count:L} piece)"
+#~ msgid_plural "{total_size} ({piece_count:L} pieces)"
+#~ msgstr[0] "{total_size} ({piece_count:L} atal)"
+#~ msgstr[1] "{total_size} ({piece_count:L} zati)"
+
+#~ msgid "Pieces:"
+#~ msgstr "Zatiak:"
+
 #~ msgid "NAT traversal uses either NAT-PMP or UPnP"
 #~ msgstr "NAT transbertsalak NAT-PMP ala UPnP erabiltzen du"
 
 #~ msgid "Automatically map port"
 #~ msgstr "Lotu ataka automatikoki"
-
-#~ msgid "{total_size} in {file_count:L} file"
-#~ msgid_plural "{total_size} in {file_count:L} files"
-#~ msgstr[0] "{total_size} {file_count:L} fitxategian"
-#~ msgstr[1] "{total_size} {file_count:L} fitxategitan"
 
 #~ msgid "({piece_count} BitTorrent piece @ {piece_size})"
 #~ msgid_plural "({piece_count} BitTorrent pieces @ {piece_size})"

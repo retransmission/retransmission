@@ -244,15 +244,15 @@ msgstr "Δημιουργήθηκε την {date}"
 msgid "Unknown"
 msgstr "Άγνωστο"
 
-msgid "{total_size} ({piece_count:L} piece @ {piece_size})"
-msgid_plural "{total_size} ({piece_count:L} pieces @ {piece_size})"
-msgstr[0] "{total_size} ({piece_count:L} κομμάτι @ {piece_size})"
-msgstr[1] "{total_size} ({piece_count:L} κομμάτια @ {piece_size})"
+msgid "{total_size} in {file_count:L} file"
+msgid_plural "{total_size} in {file_count:L} files"
+msgstr[0] "{total_size} σε {file_count:L} αρχείο"
+msgstr[1] "{total_size} σε {file_count:L} αρχεία"
 
-msgid "{total_size} ({piece_count:L} piece)"
-msgid_plural "{total_size} ({piece_count:L} pieces)"
-msgstr[0] "{total_size} ({piece_count:L} κομμάτι)"
-msgstr[1] "{total_size} ({piece_count:L} κομμάτια)"
+msgid "({piece_count:L} piece @ {piece_size})"
+msgid_plural "({piece_count:L} pieces @ {piece_size})"
+msgstr[0] "({piece_count:L} κομμάτι @ {piece_size})"
+msgstr[1] "({piece_count:L} κομμάτια @ {piece_size})"
 
 msgid "{current_size} ({percent_done}%)"
 msgstr "{current_size} ({percent_done}%)"
@@ -2410,9 +2410,6 @@ msgstr "Δημιουργήθηκε την:"
 msgid "Creator:"
 msgstr "Δημιουργός:"
 
-msgid "Pieces:"
-msgstr "Κομμάτια:"
-
 msgid "Was:"
 msgstr "Ήταν:"
 
@@ -3817,16 +3814,19 @@ msgid_plural "seconds"
 msgstr[0] "δευτερόλεπτο"
 msgstr[1] "δευτερόλεπτα"
 
+#~ msgid "{total_size} ({piece_count:L} piece)"
+#~ msgid_plural "{total_size} ({piece_count:L} pieces)"
+#~ msgstr[0] "{total_size} ({piece_count:L} κομμάτι)"
+#~ msgstr[1] "{total_size} ({piece_count:L} κομμάτια)"
+
+#~ msgid "Pieces:"
+#~ msgstr "Κομμάτια:"
+
 #~ msgid "NAT traversal uses either NAT-PMP or UPnP"
 #~ msgstr "Η προσπέλαση NAT χρησιμοποιεί NAT-PMP ή UPnP"
 
 #~ msgid "Automatically map port"
 #~ msgstr "Αυτόματη απεικόνιση θύρας:"
-
-#~ msgid "{total_size} in {file_count:L} file"
-#~ msgid_plural "{total_size} in {file_count:L} files"
-#~ msgstr[0] "{total_size} σε {file_count:L} αρχείο"
-#~ msgstr[1] "{total_size} σε {file_count:L} αρχεία"
 
 #~ msgid "({piece_count} BitTorrent piece @ {piece_size})"
 #~ msgid_plural "({piece_count} BitTorrent pieces @ {piece_size})"

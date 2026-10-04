@@ -211,13 +211,13 @@ msgstr "{date} に作成"
 msgid "Unknown"
 msgstr "不明"
 
-msgid "{total_size} ({piece_count:L} piece @ {piece_size})"
-msgid_plural "{total_size} ({piece_count:L} pieces @ {piece_size})"
-msgstr[0] "{total_size} ({piece_count:L} ピース @ {piece_size})"
+msgid "{total_size} in {file_count:L} file"
+msgid_plural "{total_size} in {file_count:L} files"
+msgstr[0] "{total_size} / {file_count:L} ファイル"
 
-msgid "{total_size} ({piece_count:L} piece)"
-msgid_plural "{total_size} ({piece_count:L} pieces)"
-msgstr[0] "{total_size} ({piece_count:L} ピース)"
+msgid "({piece_count:L} piece @ {piece_size})"
+msgid_plural "({piece_count:L} pieces @ {piece_size})"
+msgstr[0] "({piece_count:L} ピース @ {piece_size})"
 
 msgid "{current_size} ({percent_done}%)"
 msgstr "{current_size} ({percent_done}%)"
@@ -2343,9 +2343,6 @@ msgstr "作成日:"
 msgid "Creator:"
 msgstr "作成:"
 
-msgid "Pieces:"
-msgstr "ピース:"
-
 msgid "Was:"
 msgstr ""
 
@@ -3728,15 +3725,18 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "秒"
 
+#~ msgid "{total_size} ({piece_count:L} piece)"
+#~ msgid_plural "{total_size} ({piece_count:L} pieces)"
+#~ msgstr[0] "{total_size} ({piece_count:L} ピース)"
+
+#~ msgid "Pieces:"
+#~ msgstr "ピース:"
+
 #~ msgid "NAT traversal uses either NAT-PMP or UPnP"
 #~ msgstr "NATトラバーサルには NAT-PMP か UPnP を使用"
 
 #~ msgid "Automatically map port"
 #~ msgstr "自動的にポートをマッピング"
-
-#~ msgid "{total_size} in {file_count:L} file"
-#~ msgid_plural "{total_size} in {file_count:L} files"
-#~ msgstr[0] "{total_size} / {file_count:L} ファイル"
 
 #~ msgid "({piece_count} BitTorrent piece @ {piece_size})"
 #~ msgid_plural "({piece_count} BitTorrent pieces @ {piece_size})"

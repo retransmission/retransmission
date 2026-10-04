@@ -212,17 +212,20 @@ msgstr "Criado a {date}"
 msgid "Unknown"
 msgstr "Desconhecido"
 
-msgid "{total_size} ({piece_count:L} piece @ {piece_size})"
-msgid_plural "{total_size} ({piece_count:L} pieces @ {piece_size})"
-msgstr[0] "{total_size} ({piece_count:L} pedaço @ {piece_size})"
-msgstr[1] "{total_size} ({piece_count:L} pedaços @ {piece_size})"
-msgstr[2] "{total_size} ({piece_count:L} pedaços @ {piece_size})"
-
-msgid "{total_size} ({piece_count:L} piece)"
-msgid_plural "{total_size} ({piece_count:L} pieces)"
+#, fuzzy
+#| msgid "{total_size} ({piece_count:L} piece)"
+#| msgid_plural "{total_size} ({piece_count:L} pieces)"
+msgid "{total_size} in {file_count:L} file"
+msgid_plural "{total_size} in {file_count:L} files"
 msgstr[0] "{total_size} ({piece_count:L} pedaço)"
 msgstr[1] "{total_size} ({piece_count:L} pedaços)"
 msgstr[2] "{total_size} ({piece_count:L} pedaços)"
+
+msgid "({piece_count:L} piece @ {piece_size})"
+msgid_plural "({piece_count:L} pieces @ {piece_size})"
+msgstr[0] "({piece_count:L} pedaço @ {piece_size})"
+msgstr[1] "({piece_count:L} pedaços @ {piece_size})"
+msgstr[2] "({piece_count:L} pedaços @ {piece_size})"
 
 msgid "{current_size} ({percent_done}%)"
 msgstr "{current_size} ({percent_done}%)"
@@ -2391,9 +2394,6 @@ msgstr "Criado em:"
 msgid "Creator:"
 msgstr "Criador:"
 
-msgid "Pieces:"
-msgstr "Pedaços:"
-
 msgid "Was:"
 msgstr ""
 
@@ -3849,6 +3849,9 @@ msgid_plural "seconds"
 msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
+
+#~ msgid "Pieces:"
+#~ msgstr "Pedaços:"
 
 #~ msgid "NAT traversal uses either NAT-PMP or UPnP"
 #~ msgstr "NAT Traversal utiliza NAT-PMP ou UPnP"

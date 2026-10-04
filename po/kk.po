@@ -192,13 +192,15 @@ msgstr "{date} жасалған"
 msgid "Unknown"
 msgstr "Белгісіз"
 
-msgid "{total_size} ({piece_count:L} piece @ {piece_size})"
-msgid_plural "{total_size} ({piece_count:L} pieces @ {piece_size})"
-msgstr[0] ""
-msgstr[1] ""
+#, fuzzy
+#| msgid "Select File"
+msgid "{total_size} in {file_count:L} file"
+msgid_plural "{total_size} in {file_count:L} files"
+msgstr[0] "Файлдан жасау"
+msgstr[1] "Файлдан жасау"
 
-msgid "{total_size} ({piece_count:L} piece)"
-msgid_plural "{total_size} ({piece_count:L} pieces)"
+msgid "({piece_count:L} piece @ {piece_size})"
+msgid_plural "({piece_count:L} pieces @ {piece_size})"
 msgstr[0] ""
 msgstr[1] ""
 
@@ -2477,13 +2479,6 @@ msgstr[1] ""
 
 #~ msgid "Use Global Settings"
 #~ msgstr "Жалпы баптауларды қолдану"
-
-#, fuzzy
-#~| msgid "Select File"
-#~ msgid "{file_count:L} File"
-#~ msgid_plural "{file_count:L} Files"
-#~ msgstr[0] "Файлдан жасау"
-#~ msgstr[1] "Файлдан жасау"
 
 #, fuzzy
 #~| msgid ""

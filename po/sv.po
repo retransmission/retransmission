@@ -209,15 +209,15 @@ msgstr "Skapad den {date}"
 msgid "Unknown"
 msgstr "Okänd"
 
-msgid "{total_size} ({piece_count:L} piece @ {piece_size})"
-msgid_plural "{total_size} ({piece_count:L} pieces @ {piece_size})"
-msgstr[0] "{total_size} ({piece_count:L} del @ {piece_size})"
-msgstr[1] "{total_size} ({piece_count:L} delar @ {piece_size})"
+msgid "{total_size} in {file_count:L} file"
+msgid_plural "{total_size} in {file_count:L} files"
+msgstr[0] "{total_size} i {file_count:L} fil"
+msgstr[1] "{total_size} i {file_count:L} filer"
 
-msgid "{total_size} ({piece_count:L} piece)"
-msgid_plural "{total_size} ({piece_count:L} pieces)"
-msgstr[0] "{total_size} ({piece_count:L} del)"
-msgstr[1] "{total_size} ({piece_count:L} delar)"
+msgid "({piece_count:L} piece @ {piece_size})"
+msgid_plural "({piece_count:L} pieces @ {piece_size})"
+msgstr[0] "({piece_count:L} del @ {piece_size})"
+msgstr[1] "({piece_count:L} delar @ {piece_size})"
 
 msgid "{current_size} ({percent_done}%)"
 msgstr "{current_size} ({percent_done}%)"
@@ -2378,9 +2378,6 @@ msgstr "Skapad den:"
 msgid "Creator:"
 msgstr "Skapare:"
 
-msgid "Pieces:"
-msgstr "Delar:"
-
 msgid "Was:"
 msgstr "Var:"
 
@@ -3788,16 +3785,19 @@ msgid_plural "seconds"
 msgstr[0] "sekund"
 msgstr[1] "sekunder"
 
+#~ msgid "{total_size} ({piece_count:L} piece)"
+#~ msgid_plural "{total_size} ({piece_count:L} pieces)"
+#~ msgstr[0] "{total_size} ({piece_count:L} del)"
+#~ msgstr[1] "{total_size} ({piece_count:L} delar)"
+
+#~ msgid "Pieces:"
+#~ msgstr "Delar:"
+
 #~ msgid "NAT traversal uses either NAT-PMP or UPnP"
 #~ msgstr "NAT-genompassering använder antingen NAT-PMP eller UPnP"
 
 #~ msgid "Automatically map port"
 #~ msgstr "Kartlägg portar automatiskt"
-
-#~ msgid "{total_size} in {file_count:L} file"
-#~ msgid_plural "{total_size} in {file_count:L} files"
-#~ msgstr[0] "{total_size} i {file_count:L} fil"
-#~ msgstr[1] "{total_size} i {file_count:L} filer"
 
 #~ msgid "({piece_count} BitTorrent piece @ {piece_size})"
 #~ msgid_plural "({piece_count} BitTorrent pieces @ {piece_size})"

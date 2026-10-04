@@ -13,7 +13,7 @@
 
 @property(nonatomic) BOOL fSet;
 
-@property(nonatomic) IBOutlet NSTextField* fPiecesField;
+@property(nonatomic) IBOutlet NSTextField* fSizeField;
 @property(nonatomic) IBOutlet NSTextField* fHashField;
 @property(nonatomic) IBOutlet NSTextField* fSecureField;
 @property(nonatomic) IBOutlet NSTextField* fDataLocationField;
@@ -96,11 +96,25 @@
     if (self.fTorrents.count == 1) {
         Torrent* torrent = self.fTorrents[0];
 
-        // Associated Press Style: "Use a semicolon to clarify a series that includes a number of commas."
-        NSString* piecesString = !torrent.magnet ?
-            [NSString localizedStringWithFormat:@"%ld; %@", torrent.pieceCount, [NSString stringForFileSize:torrent.pieceSize]] :
-            @"";
-        self.fPiecesField.stringValue = piecesString;
+        // "1.21 GB in 3 files (4,812 pieces @ 256 KB)", as in the other clients.
+        // It takes two messages, because a plural form follows only one count.
+        NSString* sizeString = @"";
+        if (!torrent.magnet) {
+            NSString* const size = TR_FORMAT_N(
+                "{total_size} in {file_count:L} file",
+                "{total_size} in {file_count:L} files",
+                torrent.fileCount,
+                TRArg("total_size", [NSString stringForFileSize:torrent.size]),
+                TRArg("file_count", torrent.fileCount));
+            NSString* const pieces = TR_FORMAT_N(
+                "({piece_count:L} piece @ {piece_size})",
+                "({piece_count:L} pieces @ {piece_size})",
+                torrent.pieceCount,
+                TRArg("piece_count", torrent.pieceCount),
+                TRArg("piece_size", [NSString stringForFileSize:torrent.pieceSize]));
+            sizeString = [NSString stringWithFormat:@"%@ %@", size, pieces];
+        }
+        self.fSizeField.stringValue = sizeString;
 
         NSString* hashString = torrent.hashString;
         self.fHashField.stringValue = hashString;
@@ -116,7 +130,7 @@
         self.fCreatorField.stringValue = creatorString;
         self.fDateCreatedField.objectValue = torrent.dateCreated;
     } else {
-        self.fPiecesField.stringValue = @"";
+        self.fSizeField.stringValue = @"";
         self.fHashField.stringValue = @"";
         self.fHashField.toolTip = nil;
         self.fSecureField.stringValue = @"";

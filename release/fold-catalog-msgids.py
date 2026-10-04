@@ -37,6 +37,7 @@ import sys
 #   'append':  text to add at the end, unless it is there already
 #   'rstrip':  characters to take off the end, e.g. '.。'
 #   'period':  True adds the period that the catalog's other sentences end with
+#   'remove_prefix': text that the translation must start with and that is taken off; a translation without it is dropped
 RENAMES = [
     # The Qt client's New Torrent dialog takes the GTK client's tracker-list help.
     {
@@ -286,6 +287,23 @@ RENAMES = [
         'to': {'msgid': "{appname} doesn't know how to use '{url}'."},
         'period': True,
     },
+    # A torrent's size line is two messages again: the size with the file count, then the pieces in parentheses.
+    {
+        'from': {
+            'msgid': '{total_size} ({piece_count:L} piece @ {piece_size})',
+            'msgid_plural': '{total_size} ({piece_count:L} pieces @ {piece_size})',
+        },
+        'to': {'msgid': '({piece_count:L} piece @ {piece_size})', 'msgid_plural': '({piece_count:L} pieces @ {piece_size})'},
+        'remove_prefix': '{total_size} ',
+    },
+    {
+        'from': {
+            'msgid': '({piece_count} BitTorrent piece @ {piece_size})',
+            'msgid_plural': '({piece_count} BitTorrent pieces @ {piece_size})',
+        },
+        'to': {'msgid': '({piece_count:L} piece @ {piece_size})', 'msgid_plural': '({piece_count:L} pieces @ {piece_size})'},
+        'fields': {'piece_count': 'piece_count:L'},
+    },
 ]
 
 FIELD_NAMES = ('msgctxt', 'msgid', 'msgid_plural')
@@ -394,6 +412,12 @@ def period_of(messages):
 def moved_translation(text, rename, colon, period):
     if not text:
         return text
+
+    prefix = rename.get('remove_prefix')
+    if prefix:
+        if not text.startswith(prefix):
+            return ''
+        text = text[len(prefix):]
 
     for stripped in rename.get('strip', []):
         text = text.replace(stripped, '')

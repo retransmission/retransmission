@@ -750,11 +750,13 @@ void DetailsDialog::refreshUI()
     } else {
         int pieces = 0;
         auto size = uint64_t{};
+        auto file_count = uint64_t{};
         uint32_t piece_size = torrents[0]->pieceSize();
 
         for (Torrent const* const t : torrents) {
             pieces += t->pieceCount();
             size += t->totalSize();
+            file_count += t->fileCount();
 
             if (piece_size != t->pieceSize()) {
                 piece_size = 0;
@@ -763,21 +765,24 @@ void DetailsDialog::refreshUI()
 
         if (size == 0) {
             string = none;
-        } else if (piece_size > 0) {
-            string = TR_FORMAT_N(
-                "{total_size} ({piece_count:L} piece @ {piece_size})",
-                "{total_size} ({piece_count:L} pieces @ {piece_size})",
-                pieces,
-                fmt::arg("total_size", Formatter::storageToString(size)),
-                fmt::arg("piece_count", pieces),
-                fmt::arg("piece_size", Formatter::memoryToString(piece_size)));
         } else {
+            // Two messages, because a plural form follows only one count.
             string = TR_FORMAT_N(
-                "{total_size} ({piece_count:L} piece)",
-                "{total_size} ({piece_count:L} pieces)",
-                pieces,
+                "{total_size} in {file_count:L} file",
+                "{total_size} in {file_count:L} files",
+                file_count,
                 fmt::arg("total_size", Formatter::storageToString(size)),
-                fmt::arg("piece_count", pieces));
+                fmt::arg("file_count", file_count));
+
+            if (piece_size > 0) {
+                string += QLatin1Char{ ' ' };
+                string += TR_FORMAT_N(
+                    "({piece_count:L} piece @ {piece_size})",
+                    "({piece_count:L} pieces @ {piece_size})",
+                    pieces,
+                    fmt::arg("piece_count", pieces),
+                    fmt::arg("piece_size", Formatter::memoryToString(piece_size)));
+            }
         }
     }
 

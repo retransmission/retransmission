@@ -712,26 +712,32 @@ void DetailsDialog::Impl::refreshInfo(std::vector<tr_torrent*> const& torrents)
                 uint64_t{},
                 [](auto sum, auto const& info) { return sum + info.total_size; });
 
+            auto const file_count = std::accumulate(
+                std::begin(torrents),
+                std::end(torrents),
+                std::size_t{},
+                [](auto sum, auto const* tor) { return sum + tr_torrentFileCount(tor); });
+
+            str = fmt::format(
+                fmt::runtime(
+                    ngettext("{total_size} in {file_count:L} file", "{total_size} in {file_count:L} files", file_count)),
+                fmt::arg("total_size", tr_strlsize(total_size)),
+                fmt::arg("file_count", file_count));
+
             auto const piece_size = std::empty(infos) ? uint32_t{} : infos.front().piece_size;
             auto const piece_size_is_uniform = std::ranges::all_of(infos, [piece_size](auto const& info) {
                 return info.piece_size == piece_size;
             });
 
             if (piece_size_is_uniform) {
-                str = fmt::format(
+                str += ' ';
+                str += fmt::format(
                     fmt::runtime(ngettext(
-                        "{total_size} ({piece_count:L} piece @ {piece_size})",
-                        "{total_size} ({piece_count:L} pieces @ {piece_size})",
+                        "({piece_count:L} piece @ {piece_size})",
+                        "({piece_count:L} pieces @ {piece_size})",
                         piece_count)),
-                    fmt::arg("total_size", tr_strlsize(total_size)),
                     fmt::arg("piece_count", piece_count),
                     fmt::arg("piece_size", Memory{ piece_size, Memory::Units::Bytes }.to_string()));
-            } else {
-                str = fmt::format(
-                    fmt::runtime(
-                        ngettext("{total_size} ({piece_count:L} piece)", "{total_size} ({piece_count:L} pieces)", piece_count)),
-                    fmt::arg("total_size", tr_strlsize(total_size)),
-                    fmt::arg("piece_count", piece_count));
             }
         }
 

@@ -242,15 +242,15 @@ msgstr "Gemaakt op {date}"
 msgid "Unknown"
 msgstr "Onbekend"
 
-msgid "{total_size} ({piece_count:L} piece @ {piece_size})"
-msgid_plural "{total_size} ({piece_count:L} pieces @ {piece_size})"
-msgstr[0] "{total_size} ({piece_count:L} fragment @ {piece_size})"
-msgstr[1] "{total_size} ({piece_count:L} fragmenten @ {piece_size})"
+msgid "{total_size} in {file_count:L} file"
+msgid_plural "{total_size} in {file_count:L} files"
+msgstr[0] "{total_size} in {file_count:L} bestand"
+msgstr[1] "{total_size} in {file_count:L} bestanden"
 
-msgid "{total_size} ({piece_count:L} piece)"
-msgid_plural "{total_size} ({piece_count:L} pieces)"
-msgstr[0] "{total_size} ({piece_count:L} fragment)"
-msgstr[1] "{total_size} ({piece_count:L} fragmenten)"
+msgid "({piece_count:L} piece @ {piece_size})"
+msgid_plural "({piece_count:L} pieces @ {piece_size})"
+msgstr[0] "({piece_count:L} fragment @ {piece_size})"
+msgstr[1] "({piece_count:L} fragmenten @ {piece_size})"
 
 msgid "{current_size} ({percent_done}%)"
 msgstr "{current_size} ({percent_done}%)"
@@ -2415,9 +2415,6 @@ msgstr "Datum:"
 msgid "Creator:"
 msgstr "Maker:"
 
-msgid "Pieces:"
-msgstr "Fragmenten:"
-
 msgid "Was:"
 msgstr ""
 
@@ -3837,16 +3834,19 @@ msgid_plural "seconds"
 msgstr[0] "seconde"
 msgstr[1] "seconden"
 
+#~ msgid "{total_size} ({piece_count:L} piece)"
+#~ msgid_plural "{total_size} ({piece_count:L} pieces)"
+#~ msgstr[0] "{total_size} ({piece_count:L} fragment)"
+#~ msgstr[1] "{total_size} ({piece_count:L} fragmenten)"
+
+#~ msgid "Pieces:"
+#~ msgstr "Fragmenten:"
+
 #~ msgid "NAT traversal uses either NAT-PMP or UPnP"
 #~ msgstr "NAT-traversal gebruikt NAT-PMP of UPnP"
 
 #~ msgid "Automatically map port"
 #~ msgstr "Automatische poorttoekenning"
-
-#~ msgid "{total_size} in {file_count:L} file"
-#~ msgid_plural "{total_size} in {file_count:L} files"
-#~ msgstr[0] "{total_size} in {file_count:L} bestand"
-#~ msgstr[1] "{total_size} in {file_count:L} bestanden"
 
 #~ msgid "({piece_count} BitTorrent piece @ {piece_size})"
 #~ msgid_plural "({piece_count} BitTorrent pieces @ {piece_size})"
