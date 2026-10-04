@@ -1611,8 +1611,8 @@ msgstr "開啟網址"
 msgid "Open torrent from URL"
 msgstr "從網址開啟 torrent"
 
-msgid "_URL"
-msgstr "URL (_U)"
+msgid "_URL:"
+msgstr "URL (_U)："
 
 msgid "The torrent file '{path}' is already in use by '{torrent_name}'."
 msgstr "該 torrent 檔案 '{path}' 已被 '{torrent_name}' 使用中。"

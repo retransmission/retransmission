@@ -29,7 +29,7 @@
                     <property name="column-spacing">12</property>
                     <child>
                       <object class="GtkLabel" id="url_label">
-                        <property name="label" translatable="yes">_URL</property>
+                        <property name="label" translatable="yes">_URL:</property>
                         <property name="use-underline">1</property>
                         <property name="mnemonic-widget">url_entry</property>
                         <layout>

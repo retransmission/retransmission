@@ -1602,8 +1602,8 @@ msgstr "Abrir URL"
 msgid "Open torrent from URL"
 msgstr "Abrir um torrent por URL"
 
-msgid "_URL"
-msgstr "_URL"
+msgid "_URL:"
+msgstr "_URL:"
 
 msgid "The torrent file '{path}' is already in use by '{torrent_name}'."
 msgstr ""

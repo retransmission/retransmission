@@ -1662,8 +1662,8 @@ msgstr "Adresse öffnen"
 msgid "Open torrent from URL"
 msgstr "Torrent über Adresse öffnen"
 
-msgid "_URL"
-msgstr "_Adresse"
+msgid "_URL:"
+msgstr "_Adresse:"
 
 msgid "The torrent file '{path}' is already in use by '{torrent_name}'."
 msgstr "Die Torrent-Datei »{path}« ist bereits in Verwendung von »{torrent_name}«."

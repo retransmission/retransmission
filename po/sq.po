@@ -1597,8 +1597,8 @@ msgstr "Hape URL-në"
 msgid "Open torrent from URL"
 msgstr "Hape torrentin nga URL-ja"
 
-msgid "_URL"
-msgstr "_URL"
+msgid "_URL:"
+msgstr "_URL:"
 
 msgid "Couldn't parse announce response: {error} ({error_code})"
 msgstr ""

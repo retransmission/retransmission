@@ -1604,8 +1604,8 @@ msgstr "URL খুলুন"
 msgid "Open torrent from URL"
 msgstr "URL থেকে টরেন্ট খুলুন"
 
-msgid "_URL"
-msgstr "ইউআরএল (_U)"
+msgid "_URL:"
+msgstr "ইউআরএল (_U):"
 
 msgid "Couldn't parse announce response: {error} ({error_code})"
 msgstr ""

@@ -1558,8 +1558,8 @@ msgstr "فتح رابط"
 msgid "Open torrent from URL"
 msgstr "فتح تورنت من رابط"
 
-msgid "_URL"
-msgstr "ال_رابط"
+msgid "_URL:"
+msgstr "ال_رابط:"
 
 msgid "The torrent file '{path}' is already in use by '{torrent_name}'."
 msgstr ""

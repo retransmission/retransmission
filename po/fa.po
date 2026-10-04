@@ -1602,8 +1602,8 @@ msgstr "گشودن نشانی اینترنتی"
 msgid "Open torrent from URL"
 msgstr "گشودن تورنت از نشانی اینترنتی"
 
-msgid "_URL"
-msgstr "نشانی اینترنتی"
+msgid "_URL:"
+msgstr "نشانی اینترنتی:"
 
 msgid "Couldn't parse announce response: {error} ({error_code})"
 msgstr ""

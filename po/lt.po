@@ -1533,8 +1533,8 @@ msgstr "URL atvėrimas"
 msgid "Open torrent from URL"
 msgstr "Atverti torentą iš URL"
 
-msgid "_URL"
-msgstr "_URL"
+msgid "_URL:"
+msgstr "_URL:"
 
 msgid "The torrent file '{path}' is already in use by '{torrent_name}'."
 msgstr ""

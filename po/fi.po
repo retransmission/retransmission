@@ -1519,8 +1519,8 @@ msgstr "Avaa osoite"
 msgid "Open torrent from URL"
 msgstr "Avaa torrent verkko-osoitteesta"
 
-msgid "_URL"
-msgstr "_Verkko-osoite"
+msgid "_URL:"
+msgstr "_Verkko-osoite:"
 
 msgid "The torrent file '{path}' is already in use by '{torrent_name}'."
 msgstr "Torrent-tiedosto '{path}' on jo käytössä '{torrent_name}'."

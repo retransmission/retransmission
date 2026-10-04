@@ -1608,8 +1608,8 @@ msgstr "Ireki URLa"
 msgid "Open torrent from URL"
 msgstr "Ireki torrent-a URL batetik"
 
-msgid "_URL"
-msgstr "_URLa"
+msgid "_URL:"
+msgstr "_URLa:"
 
 msgid "The torrent file '{path}' is already in use by '{torrent_name}'."
 msgstr "'{path}' torrent-fitxategia dagoeneko honek erabilita dago: '{torrent_name}'."

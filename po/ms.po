@@ -1563,8 +1563,8 @@ msgstr "Buka URL"
 msgid "Open torrent from URL"
 msgstr "Buka torrent dari URL"
 
-msgid "_URL"
-msgstr "_URL"
+msgid "_URL:"
+msgstr "_URL:"
 
 msgid "Couldn't parse announce response: {error} ({error_code})"
 msgstr ""

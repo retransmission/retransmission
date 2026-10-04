@@ -1484,8 +1484,8 @@ msgstr "Buka URL"
 msgid "Open torrent from URL"
 msgstr "Buka torrent dari URL"
 
-msgid "_URL"
-msgstr "_URL"
+msgid "_URL:"
+msgstr "_URL:"
 
 msgid "The torrent file '{path}' is already in use by '{torrent_name}'."
 msgstr ""

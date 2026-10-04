@@ -1488,8 +1488,8 @@ msgstr "URL-ді ашу"
 msgid "Open torrent from URL"
 msgstr "Торрентті URL-ден ашу"
 
-msgid "_URL"
-msgstr "_URL сілтеме"
+msgid "_URL:"
+msgstr "_URL сілтеме:"
 
 msgid "The torrent file '{path}' is already in use by '{torrent_name}'."
 msgstr ""

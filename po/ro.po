@@ -1657,8 +1657,8 @@ msgstr "Deschide URL"
 msgid "Open torrent from URL"
 msgstr "Deschide un torent utilizând URL"
 
-msgid "_URL"
-msgstr "_URL"
+msgid "_URL:"
+msgstr "_URL:"
 
 msgid "Couldn't parse announce response: {error} ({error_code})"
 msgstr ""

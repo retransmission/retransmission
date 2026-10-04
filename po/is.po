@@ -1505,8 +1505,8 @@ msgstr "Opna slóð"
 msgid "Open torrent from URL"
 msgstr "Opna torrent-streymi úr vefslóð"
 
-msgid "_URL"
-msgstr "_Slóð"
+msgid "_URL:"
+msgstr "_Slóð:"
 
 msgid "The torrent file '{path}' is already in use by '{torrent_name}'."
 msgstr "Torrent-skráin '{path}' er þegar í notkun af '{torrent_name}'."

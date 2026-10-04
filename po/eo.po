@@ -1616,8 +1616,8 @@ msgstr "Malfermi URL-on"
 msgid "Open torrent from URL"
 msgstr "Malfermi torenton el URL"
 
-msgid "_URL"
-msgstr "_URL"
+msgid "_URL:"
+msgstr "_URL:"
 
 msgid "Couldn't parse announce response: {error} ({error_code})"
 msgstr ""

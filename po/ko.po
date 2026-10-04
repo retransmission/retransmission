@@ -1493,8 +1493,8 @@ msgstr "주소 열기"
 msgid "Open torrent from URL"
 msgstr "주소로 토렌트 열기"
 
-msgid "_URL"
-msgstr "주소(_U)"
+msgid "_URL:"
+msgstr "주소(_U):"
 
 msgid "The torrent file '{path}' is already in use by '{torrent_name}'."
 msgstr ""

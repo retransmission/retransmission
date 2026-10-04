@@ -1635,8 +1635,8 @@ msgstr "Webcím megnyitása"
 msgid "Open torrent from URL"
 msgstr "Torrent megnyitása webcímről"
 
-msgid "_URL"
-msgstr "_Webcím"
+msgid "_URL:"
+msgstr "_Webcím:"
 
 msgid "The torrent file '{path}' is already in use by '{torrent_name}'."
 msgstr "'{path}' torrent fájlt már használja a '{torrent_name}' torrent."

@@ -1678,8 +1678,8 @@ msgstr "Адкрыць URL"
 msgid "Open torrent from URL"
 msgstr "Адкрыць торэнт па URL"
 
-msgid "_URL"
-msgstr "_URL"
+msgid "_URL:"
+msgstr "_URL:"
 
 msgid "Couldn't parse announce response: {error} ({error_code})"
 msgstr ""

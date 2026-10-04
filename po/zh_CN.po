@@ -1634,8 +1634,8 @@ msgstr "打开网址"
 msgid "Open torrent from URL"
 msgstr "从网址打开种子"
 
-msgid "_URL"
-msgstr "网址(_U)"
+msgid "_URL:"
+msgstr "网址(_U)："
 
 msgid "The torrent file '{path}' is already in use by '{torrent_name}'."
 msgstr "种子文件“{path}”已被“{torrent_name}”使用。"

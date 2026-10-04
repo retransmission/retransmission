@@ -1633,8 +1633,8 @@ msgstr "URL openen"
 msgid "Open torrent from URL"
 msgstr "Torrent vanaf URL openen"
 
-msgid "_URL"
-msgstr "_URL"
+msgid "_URL:"
+msgstr "_URL:"
 
 msgid "The torrent file '{path}' is already in use by '{torrent_name}'."
 msgstr "Het torrent-bestand '{path}' is al in gebruik bij '{torrent_name}'."

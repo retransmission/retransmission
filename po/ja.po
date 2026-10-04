@@ -1586,8 +1586,8 @@ msgstr "URL を開く"
 msgid "Open torrent from URL"
 msgstr "URL からトレントを開く"
 
-msgid "_URL"
-msgstr "URL(_U)"
+msgid "_URL:"
+msgstr "URL(_U):"
 
 msgid "The torrent file '{path}' is already in use by '{torrent_name}'."
 msgstr "このトレントファイル「{path}」は既に以下で使われています:「{torrent_name}」。"

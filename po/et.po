@@ -1610,8 +1610,8 @@ msgstr "URL-i avamine"
 msgid "Open torrent from URL"
 msgstr "Torrenti avamine URL-ilt"
 
-msgid "_URL"
-msgstr "_URL"
+msgid "_URL:"
+msgstr "_URL:"
 
 msgid "Couldn't parse announce response: {error} ({error_code})"
 msgstr ""

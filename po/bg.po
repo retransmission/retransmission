@@ -1626,8 +1626,8 @@ msgstr "Отвори уеб адрес"
 msgid "Open torrent from URL"
 msgstr "Отвори торент от уеб адрес"
 
-msgid "_URL"
-msgstr "Уеб _адрес"
+msgid "_URL:"
+msgstr "Уеб _адрес:"
 
 msgid "Couldn't parse announce response: {error} ({error_code})"
 msgstr ""

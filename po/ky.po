@@ -1564,8 +1564,8 @@ msgstr "URL'ди ачуу"
 msgid "Open torrent from URL"
 msgstr "URL'ден торрентти ачуу"
 
-msgid "_URL"
-msgstr "_URL"
+msgid "_URL:"
+msgstr "_URL:"
 
 msgid "Couldn't parse announce response: {error} ({error_code})"
 msgstr ""

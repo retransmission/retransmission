@@ -1642,8 +1642,8 @@ msgstr "פתיחת כתובת"
 msgid "Open torrent from URL"
 msgstr "פתיחת טורנט מכתובת"
 
-msgid "_URL"
-msgstr "_כתובת"
+msgid "_URL:"
+msgstr "_כתובת:"
 
 msgid "The torrent file '{path}' is already in use by '{torrent_name}'."
 msgstr "קובץ הטורנט ‚{path}’ כבר בשימוש ע״י ‚{torrent_name}’."

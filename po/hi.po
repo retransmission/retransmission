@@ -1495,8 +1495,8 @@ msgstr "यूआरएल खोलें"
 msgid "Open torrent from URL"
 msgstr "यूआरएल से टोरेंट खोलें"
 
-msgid "_URL"
-msgstr "यूआरएल (_U)"
+msgid "_URL:"
+msgstr "यूआरएल (_U):"
 
 msgid "The torrent file '{path}' is already in use by '{torrent_name}'."
 msgstr ""
