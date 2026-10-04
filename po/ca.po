@@ -1341,7 +1341,9 @@ msgstr "_Port utilitzat per a les connexions d'entrada:"
 msgid "Pick a _random port at startup"
 msgstr "_Tria un port aleatori cada cop que s'inicia Transmission"
 
-msgid "Use UPnP or NAT-PMP port _forwarding from my router"
+#, fuzzy
+#| msgid "Use UPnP or NAT-PMP port _forwarding from my router"
+msgid "Use UPnP or NAT-PMP port _forwarding"
 msgstr "Utilitza la _redirecció de ports UPnP o NAT-PMP de l'encaminador"
 
 msgid "Te_st Port"

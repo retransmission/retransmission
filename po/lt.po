@@ -1371,7 +1371,9 @@ msgstr "Įeinantiems ryšiams naudotinas _prievadas:"
 msgid "Pick a _random port at startup"
 msgstr "Pasirinkti _atsitiktinį prievadą kaskart paleidus „Transmission“"
 
-msgid "Use UPnP or NAT-PMP port _forwarding from my router"
+#, fuzzy
+#| msgid "Use UPnP or NAT-PMP port _forwarding from my router"
+msgid "Use UPnP or NAT-PMP port _forwarding"
 msgstr "Naudototi _UPnP arba NAT-PMP prievadų persiuntimą maršrutizatoriuje"
 
 msgid "Te_st Port"

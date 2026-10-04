@@ -1341,7 +1341,9 @@ msgstr "_Ulaz za dolazna povezivanja:"
 msgid "Pick a _random port at startup"
 msgstr "Odaberi _naizmjenični ulaz svaki put kad se Transmission pokrene"
 
-msgid "Use UPnP or NAT-PMP port _forwarding from my router"
+#, fuzzy
+#| msgid "Use UPnP or NAT-PMP port _forwarding from my router"
+msgid "Use UPnP or NAT-PMP port _forwarding"
 msgstr "Koristi UPnP ili NAT-PMP _proslijeđivanje ulaza od mojeg usmjernika"
 
 msgid "Te_st Port"

@@ -1449,7 +1449,9 @@ msgstr "_Port för inkommande anslutningar:"
 msgid "Pick a _random port at startup"
 msgstr "Välj en s_lumpmässig port varje gång Transmission startas"
 
-msgid "Use UPnP or NAT-PMP port _forwarding from my router"
+#, fuzzy
+#| msgid "Use UPnP or NAT-PMP port _forwarding from my router"
+msgid "Use UPnP or NAT-PMP port _forwarding"
 msgstr "Använd port_vidarebefordran via UPnP eller NAT-PMP från min router"
 
 msgid "Te_st Port"
@@ -2770,12 +2772,6 @@ msgstr "Jämlikekommunikation:"
 msgid "Port is open"
 msgstr "Porten är öppen"
 
-msgid "NAT traversal uses either NAT-PMP or UPnP"
-msgstr "NAT-genompassering använder antingen NAT-PMP eller UPnP"
-
-msgid "Automatically map port"
-msgstr "Kartlägg portar automatiskt"
-
 msgid "System sleep:"
 msgstr "System viloläge:"
 
@@ -3791,6 +3787,12 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "sekund"
 msgstr[1] "sekunder"
+
+#~ msgid "NAT traversal uses either NAT-PMP or UPnP"
+#~ msgstr "NAT-genompassering använder antingen NAT-PMP eller UPnP"
+
+#~ msgid "Automatically map port"
+#~ msgstr "Kartlägg portar automatiskt"
 
 #~ msgid "{total_size} in {file_count:L} file"
 #~ msgid_plural "{total_size} in {file_count:L} files"

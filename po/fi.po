@@ -1359,7 +1359,9 @@ msgstr "_Portti saapuville yhteyksille:"
 msgid "Pick a _random port at startup"
 msgstr "Ota _satunnainen portti joka kerta, kun Transmission käynnistetään"
 
-msgid "Use UPnP or NAT-PMP port _forwarding from my router"
+#, fuzzy
+#| msgid "Use UPnP or NAT-PMP port _forwarding from my router"
+msgid "Use UPnP or NAT-PMP port _forwarding"
 msgstr "Käytä UPnP- tai NAT-PMP-portti_välitystä reitittimeltä"
 
 msgid "Te_st Port"

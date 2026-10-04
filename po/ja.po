@@ -1437,7 +1437,9 @@ msgstr "応答接続用ポート(_P):"
 msgid "Pick a _random port at startup"
 msgstr "Transmission の起動ごとにランダムにポートを変更(_R)"
 
-msgid "Use UPnP or NAT-PMP port _forwarding from my router"
+#, fuzzy
+#| msgid "Use UPnP or NAT-PMP port _forwarding from my router"
+msgid "Use UPnP or NAT-PMP port _forwarding"
 msgstr "UPnP か NAT-PMP にて自分のルーターのポート転送を使用(_F)"
 
 msgid "Te_st Port"
@@ -2735,12 +2737,6 @@ msgstr "ピア通信:"
 msgid "Port is open"
 msgstr "ポートは開いています"
 
-msgid "NAT traversal uses either NAT-PMP or UPnP"
-msgstr "NATトラバーサルには NAT-PMP か UPnP を使用"
-
-msgid "Automatically map port"
-msgstr "自動的にポートをマッピング"
-
 msgid "System sleep:"
 msgstr "システムのスリープ:"
 
@@ -3731,6 +3727,12 @@ msgstr[0] "日"
 msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "秒"
+
+#~ msgid "NAT traversal uses either NAT-PMP or UPnP"
+#~ msgstr "NATトラバーサルには NAT-PMP か UPnP を使用"
+
+#~ msgid "Automatically map port"
+#~ msgstr "自動的にポートをマッピング"
 
 #~ msgid "{total_size} in {file_count:L} file"
 #~ msgid_plural "{total_size} in {file_count:L} files"

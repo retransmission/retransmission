@@ -1485,7 +1485,9 @@ msgstr "入站连接的端口(_P)："
 msgid "Pick a _random port at startup"
 msgstr "在 Transmission 启动时随机选择端口(_R)"
 
-msgid "Use UPnP or NAT-PMP port _forwarding from my router"
+#, fuzzy
+#| msgid "Use UPnP or NAT-PMP port _forwarding from my router"
+msgid "Use UPnP or NAT-PMP port _forwarding"
 msgstr "使用路由器的 UPnP 或 NAT-PMP 端口转发(_F)"
 
 msgid "Te_st Port"
@@ -2783,12 +2785,6 @@ msgstr "节点通信："
 msgid "Port is open"
 msgstr "端口是打开的"
 
-msgid "NAT traversal uses either NAT-PMP or UPnP"
-msgstr "NAT 穿透使用 NAT-PMP 或 UPnP"
-
-msgid "Automatically map port"
-msgstr "自动映射端口"
-
 msgid "System sleep:"
 msgstr "系统睡眠："
 
@@ -3774,6 +3770,12 @@ msgstr[0] "天"
 msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "秒"
+
+#~ msgid "NAT traversal uses either NAT-PMP or UPnP"
+#~ msgstr "NAT 穿透使用 NAT-PMP 或 UPnP"
+
+#~ msgid "Automatically map port"
+#~ msgstr "自动映射端口"
 
 #~ msgid "{total_size} in {file_count:L} file"
 #~ msgid_plural "{total_size} in {file_count:L} files"

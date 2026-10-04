@@ -1483,7 +1483,9 @@ msgstr "_Θύρα για εισερχόμενες συνδέσεις:"
 msgid "Pick a _random port at startup"
 msgstr "Χρήση μιας _τυχαίας θύρας κάθε φορά που εκκινείται το Transmission"
 
-msgid "Use UPnP or NAT-PMP port _forwarding from my router"
+#, fuzzy
+#| msgid "Use UPnP or NAT-PMP port _forwarding from my router"
+msgid "Use UPnP or NAT-PMP port _forwarding"
 msgstr "Χρήση του UPnP ή του NAT-PMP για την _προώθηση θυρών από τον δρομολογητή μου"
 
 msgid "Te_st Port"
@@ -2804,12 +2806,6 @@ msgstr "Επικοινωνία διαμοιραστών:"
 msgid "Port is open"
 msgstr "Η θύρα είναι ανοιχτή"
 
-msgid "NAT traversal uses either NAT-PMP or UPnP"
-msgstr "Η προσπέλαση NAT χρησιμοποιεί NAT-PMP ή UPnP"
-
-msgid "Automatically map port"
-msgstr "Αυτόματη απεικόνιση θύρας:"
-
 msgid "System sleep:"
 msgstr "Αδρανοποίηση συστήματος:"
 
@@ -3820,6 +3816,12 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "δευτερόλεπτο"
 msgstr[1] "δευτερόλεπτα"
+
+#~ msgid "NAT traversal uses either NAT-PMP or UPnP"
+#~ msgstr "Η προσπέλαση NAT χρησιμοποιεί NAT-PMP ή UPnP"
+
+#~ msgid "Automatically map port"
+#~ msgstr "Αυτόματη απεικόνιση θύρας:"
 
 #~ msgid "{total_size} in {file_count:L} file"
 #~ msgid_plural "{total_size} in {file_count:L} files"

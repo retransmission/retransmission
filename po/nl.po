@@ -1482,7 +1482,9 @@ msgstr "_Poort voor inkomende verbindingen:"
 msgid "Pick a _random port at startup"
 msgstr "Een willekeurige poort kiezen telkens Transmission wordt gesta_rt"
 
-msgid "Use UPnP or NAT-PMP port _forwarding from my router"
+#, fuzzy
+#| msgid "Use UPnP or NAT-PMP port _forwarding from my router"
+msgid "Use UPnP or NAT-PMP port _forwarding"
 msgstr "Poort-_doorsturen via UPnP of NAT-PMP van de router gebruiken"
 
 msgid "Te_st Port"
@@ -2809,12 +2811,6 @@ msgstr "Peer communicatie:"
 msgid "Port is open"
 msgstr "Poort is open"
 
-msgid "NAT traversal uses either NAT-PMP or UPnP"
-msgstr "NAT-traversal gebruikt NAT-PMP of UPnP"
-
-msgid "Automatically map port"
-msgstr "Automatische poorttoekenning"
-
 msgid "System sleep:"
 msgstr "Systeem:"
 
@@ -3840,6 +3836,12 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "seconde"
 msgstr[1] "seconden"
+
+#~ msgid "NAT traversal uses either NAT-PMP or UPnP"
+#~ msgstr "NAT-traversal gebruikt NAT-PMP of UPnP"
+
+#~ msgid "Automatically map port"
+#~ msgstr "Automatische poorttoekenning"
 
 #~ msgid "{total_size} in {file_count:L} file"
 #~ msgid_plural "{total_size} in {file_count:L} files"

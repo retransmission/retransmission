@@ -1504,7 +1504,9 @@ msgstr "_Порт для вхідних з’єднань:"
 msgid "Pick a _random port at startup"
 msgstr "Вибирати випадковий порт при кожному запуску Transmission"
 
-msgid "Use UPnP or NAT-PMP port _forwarding from my router"
+#, fuzzy
+#| msgid "Use UPnP or NAT-PMP port _forwarding from my router"
+msgid "Use UPnP or NAT-PMP port _forwarding"
 msgstr "Використовувати UPnP або NAT-PMP п_ереадресування портів з мого маршрутизатора"
 
 msgid "Te_st Port"
@@ -2871,12 +2873,6 @@ msgstr "Звʼязок:"
 msgid "Port is open"
 msgstr "Порт відкритий"
 
-msgid "NAT traversal uses either NAT-PMP or UPnP"
-msgstr "Використовуючи NAT-T з NAT-PMP чи UPnP"
-
-msgid "Automatically map port"
-msgstr "Відкривати порт автоматично"
-
 msgid "System sleep:"
 msgstr "Сплячий режим:"
 
@@ -3929,6 +3925,12 @@ msgstr[0] "секунда"
 msgstr[1] "секунди"
 msgstr[2] "секунд"
 msgstr[3] "секунди"
+
+#~ msgid "NAT traversal uses either NAT-PMP or UPnP"
+#~ msgstr "Використовуючи NAT-T з NAT-PMP чи UPnP"
+
+#~ msgid "Automatically map port"
+#~ msgstr "Відкривати порт автоматично"
 
 #~ msgid "{total_size} in {file_count:L} file"
 #~ msgid_plural "{total_size} in {file_count:L} files"

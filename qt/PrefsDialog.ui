@@ -701,7 +701,7 @@
           <item row="3" column="0" colspan="3">
            <widget class="QCheckBox" name="enablePortForwardingCheck">
             <property name="text">
-             <string>Use UPnP or NAT-PMP port _forwarding from my router</string>
+             <string>Use UPnP or NAT-PMP port _forwarding</string>
             </property>
            </widget>
           </item>

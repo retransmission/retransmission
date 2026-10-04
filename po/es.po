@@ -1545,7 +1545,9 @@ msgstr "_Puerto para recibir conexiones:"
 msgid "Pick a _random port at startup"
 msgstr "Escoger un puerto al a_zar cada vez que inicie Transmission"
 
-msgid "Use UPnP or NAT-PMP port _forwarding from my router"
+#, fuzzy
+#| msgid "Use UPnP or NAT-PMP port _forwarding from my router"
+msgid "Use UPnP or NAT-PMP port _forwarding"
 msgstr "Utilizar _redirección de puertos UPnP o NAT-PMP desde mi enrutador"
 
 msgid "Te_st Port"
@@ -2887,12 +2889,6 @@ msgstr "Red:"
 msgid "Port is open"
 msgstr "El puerto está abierto"
 
-msgid "NAT traversal uses either NAT-PMP or UPnP"
-msgstr "NAT traversal o NAT-PMP o UPnP"
-
-msgid "Automatically map port"
-msgstr "Mapear puerto automáticamente"
-
 msgid "System sleep:"
 msgstr "Modo reposo:"
 
@@ -3936,6 +3932,12 @@ msgid_plural "seconds"
 msgstr[0] "segundo"
 msgstr[1] "segundos"
 msgstr[2] "segundos"
+
+#~ msgid "NAT traversal uses either NAT-PMP or UPnP"
+#~ msgstr "NAT traversal o NAT-PMP o UPnP"
+
+#~ msgid "Automatically map port"
+#~ msgstr "Mapear puerto automáticamente"
 
 #~ msgid "{total_size} in {file_count:L} file"
 #~ msgid_plural "{total_size} in {file_count:L} files"

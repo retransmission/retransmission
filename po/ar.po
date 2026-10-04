@@ -1392,7 +1392,9 @@ msgstr "المنفذ المستخدم للاتصالات القادمة:"
 msgid "Pick a _random port at startup"
 msgstr "اختيار منفذ _عشوائي في كل مرة يبدأ فيها ترانزميشن"
 
-msgid "Use UPnP or NAT-PMP port _forwarding from my router"
+#, fuzzy
+#| msgid "Use UPnP or NAT-PMP port _forwarding from my router"
+msgid "Use UPnP or NAT-PMP port _forwarding"
 msgstr "استخدم UPnP أو NAT-PMP في موجهي لإعادة توجيه المنفذ"
 
 msgid "Te_st Port"

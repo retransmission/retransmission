@@ -1338,7 +1338,9 @@ msgstr "들어오는 연결 포트 (_P)"
 msgid "Pick a _random port at startup"
 msgstr "시작할 때 임의의 포트를 선택(_R)"
 
-msgid "Use UPnP or NAT-PMP port _forwarding from my router"
+#, fuzzy
+#| msgid "Use UPnP or NAT-PMP port _forwarding from my router"
+msgid "Use UPnP or NAT-PMP port _forwarding"
 msgstr "라우터에서 포트를 포워딩할 때 UPnP 또는 NAT-PMP 포트 사용(_F)"
 
 msgid "Te_st Port"

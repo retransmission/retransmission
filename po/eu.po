@@ -1457,7 +1457,9 @@ msgstr "_Barrurako konexioentzako ataka:"
 msgid "Pick a _random port at startup"
 msgstr "Hautatu _ausazko ataka bat Transmission abiarazten den bakoitzean"
 
-msgid "Use UPnP or NAT-PMP port _forwarding from my router"
+#, fuzzy
+#| msgid "Use UPnP or NAT-PMP port _forwarding from my router"
+msgid "Use UPnP or NAT-PMP port _forwarding"
 msgstr "_Erabili UPnP edo NAT-PMP ataka berbidalketa nire router-etik"
 
 msgid "Te_st Port"
@@ -2778,12 +2780,6 @@ msgstr "Kideen komunikazioa:"
 msgid "Port is open"
 msgstr "Ataka zabalik dago"
 
-msgid "NAT traversal uses either NAT-PMP or UPnP"
-msgstr "NAT transbertsalak NAT-PMP ala UPnP erabiltzen du"
-
-msgid "Automatically map port"
-msgstr "Lotu ataka automatikoki"
-
 msgid "System sleep:"
 msgstr "Sistemaren lokartzea:"
 
@@ -3802,6 +3798,12 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "segundo"
 msgstr[1] "segundo"
+
+#~ msgid "NAT traversal uses either NAT-PMP or UPnP"
+#~ msgstr "NAT transbertsalak NAT-PMP ala UPnP erabiltzen du"
+
+#~ msgid "Automatically map port"
+#~ msgstr "Lotu ataka automatikoki"
 
 #~ msgid "{total_size} in {file_count:L} file"
 #~ msgid_plural "{total_size} in {file_count:L} files"

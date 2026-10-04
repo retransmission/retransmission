@@ -1336,7 +1336,9 @@ msgstr "_Port for innkommende tilkoblinger:"
 msgid "Pick a _random port at startup"
 msgstr "V_elg en tilfeldig port hver gang Transmission startes"
 
-msgid "Use UPnP or NAT-PMP port _forwarding from my router"
+#, fuzzy
+#| msgid "Use UPnP or NAT-PMP port _forwarding from my router"
+msgid "Use UPnP or NAT-PMP port _forwarding"
 msgstr "Bruk UPnP- eller NAT-PMP-_videreføring av porter fra ruter"
 
 msgid "Te_st Port"

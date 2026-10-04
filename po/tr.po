@@ -1455,7 +1455,9 @@ msgstr "Gelen bağlantılar için _bağlantı noktası:"
 msgid "Pick a _random port at startup"
 msgstr "Transmission her başlatıldığında _rastgele bağlantı noktası seç"
 
-msgid "Use UPnP or NAT-PMP port _forwarding from my router"
+#, fuzzy
+#| msgid "Use UPnP or NAT-PMP port _forwarding from my router"
+msgid "Use UPnP or NAT-PMP port _forwarding"
 msgstr "Yönelticimden _yönlendirirken UPnP ya da NAT-PMP bağlantı noktasını kullan"
 
 msgid "Te_st Port"
@@ -2776,12 +2778,6 @@ msgstr "İletişim:"
 msgid "Port is open"
 msgstr "Kapı açık"
 
-msgid "NAT traversal uses either NAT-PMP or UPnP"
-msgstr "NAT basamaklandırması ya NAT-PMP ya da UPnP kullanır"
-
-msgid "Automatically map port"
-msgstr "Kapıyı otomatik ata"
-
 msgid "System sleep:"
 msgstr "Sistem uykusu:"
 
@@ -3790,6 +3786,12 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "saniye"
 msgstr[1] "saniye"
+
+#~ msgid "NAT traversal uses either NAT-PMP or UPnP"
+#~ msgstr "NAT basamaklandırması ya NAT-PMP ya da UPnP kullanır"
+
+#~ msgid "Automatically map port"
+#~ msgstr "Kapıyı otomatik ata"
 
 #~ msgid "{total_size} in {file_count:L} file"
 #~ msgid_plural "{total_size} in {file_count:L} files"

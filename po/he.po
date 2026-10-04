@@ -1486,7 +1486,9 @@ msgstr "_פתחה לחיבורים נכנסים:"
 msgid "Pick a _random port at startup"
 msgstr "יש לבחור בפתחה _אקראית עם כל הפעלה של ‏Transmission"
 
-msgid "Use UPnP or NAT-PMP port _forwarding from my router"
+#, fuzzy
+#| msgid "Use UPnP or NAT-PMP port _forwarding from my router"
+msgid "Use UPnP or NAT-PMP port _forwarding"
 msgstr "להשתמש בהעברת _פתחות בסיוע UPnP או NAT-PMP מהנתב שלי"
 
 msgid "Te_st Port"
@@ -2848,12 +2850,6 @@ msgstr "תקשורת מול עמיתים:"
 msgid "Port is open"
 msgstr "הפתחה פתוחה"
 
-msgid "NAT traversal uses either NAT-PMP or UPnP"
-msgstr "NAT traversal משתמש או ב־NAT-PMP או ב־UPnP"
-
-msgid "Automatically map port"
-msgstr "מיפוי פתחה אוטומטית"
-
 msgid "System sleep:"
 msgstr "שנת המערכת:"
 
@@ -3890,6 +3886,12 @@ msgstr[0] "שנייה"
 msgstr[1] "שניות"
 msgstr[2] "שניות"
 msgstr[3] "שניות"
+
+#~ msgid "NAT traversal uses either NAT-PMP or UPnP"
+#~ msgstr "NAT traversal משתמש או ב־NAT-PMP או ב־UPnP"
+
+#~ msgid "Automatically map port"
+#~ msgstr "מיפוי פתחה אוטומטית"
 
 #~ msgid "{total_size} in {file_count:L} file"
 #~ msgid_plural "{total_size} in {file_count:L} files"

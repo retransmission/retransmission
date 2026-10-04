@@ -1321,7 +1321,9 @@ msgstr "_პორტი შემომავალი კავშირებ
 msgid "Pick a _random port at startup"
 msgstr "_შემთხვევითი პორტის არჩევა Transmission-ის ყოველ გაშვებაზე"
 
-msgid "Use UPnP or NAT-PMP port _forwarding from my router"
+#, fuzzy
+#| msgid "Use UPnP or NAT-PMP port _forwarding from my router"
+msgid "Use UPnP or NAT-PMP port _forwarding"
 msgstr "როუტერიდან UPnP ან NAT-PMP პორტის _გადამისამართების გამოყენება"
 
 msgid "Te_st Port"

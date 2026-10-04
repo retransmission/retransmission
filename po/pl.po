@@ -1515,7 +1515,9 @@ msgstr "_Port połączeń przychodzących:"
 msgid "Pick a _random port at startup"
 msgstr "_Losowanie portu po każdym uruchomieniu programu"
 
-msgid "Use UPnP or NAT-PMP port _forwarding from my router"
+#, fuzzy
+#| msgid "Use UPnP or NAT-PMP port _forwarding from my router"
+msgid "Use UPnP or NAT-PMP port _forwarding"
 msgstr "_Przekierowywanie portów z routera za pomocą UPnP lub NAT-PMP"
 
 msgid "Te_st Port"
@@ -2884,12 +2886,6 @@ msgstr "Komunikacja z partnerami:"
 msgid "Port is open"
 msgstr "Port jest otwarty"
 
-msgid "NAT traversal uses either NAT-PMP or UPnP"
-msgstr "Przechodzenie NAT używa NAT-PMP lub UPnP"
-
-msgid "Automatically map port"
-msgstr "Automatyczne mapowanie portu"
-
 msgid "System sleep:"
 msgstr "Uśpienie komputera:"
 
@@ -3934,6 +3930,12 @@ msgstr[0] "sekunda"
 msgstr[1] "sekundy"
 msgstr[2] "sekund"
 msgstr[3] "sekund"
+
+#~ msgid "NAT traversal uses either NAT-PMP or UPnP"
+#~ msgstr "Przechodzenie NAT używa NAT-PMP lub UPnP"
+
+#~ msgid "Automatically map port"
+#~ msgstr "Automatyczne mapowanie portu"
 
 #~ msgid "{total_size} in {file_count:L} file"
 #~ msgid_plural "{total_size} in {file_count:L} files"

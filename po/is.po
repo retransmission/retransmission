@@ -1345,7 +1345,9 @@ msgstr "_Gátt fyrir innkomandi tengingar:"
 msgid "Pick a _random port at startup"
 msgstr "Velja _handahófskennda gátt þegar forritið er opnað"
 
-msgid "Use UPnP or NAT-PMP port _forwarding from my router"
+#, fuzzy
+#| msgid "Use UPnP or NAT-PMP port _forwarding from my router"
+msgid "Use UPnP or NAT-PMP port _forwarding"
 msgstr "Nota UPnP eða NAT-PMP gáttarframvísun frá _beininum"
 
 msgid "Te_st Port"

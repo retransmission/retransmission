@@ -1474,7 +1474,9 @@ msgstr "_Port til indgående forbindelser:"
 msgid "Pick a _random port at startup"
 msgstr "Vælg en _tilfældig port hver gang Transmission startes"
 
-msgid "Use UPnP or NAT-PMP port _forwarding from my router"
+#, fuzzy
+#| msgid "Use UPnP or NAT-PMP port _forwarding from my router"
+msgid "Use UPnP or NAT-PMP port _forwarding"
 msgstr "Brug port_viderestilling med UPnP eller NAT-PMP fra min router"
 
 msgid "Te_st Port"
@@ -2797,12 +2799,6 @@ msgstr "Kommunikation:"
 msgid "Port is open"
 msgstr "Port åben"
 
-msgid "NAT traversal uses either NAT-PMP or UPnP"
-msgstr "NAT traversal benytter enten NAT-PMP eller UPnP"
-
-msgid "Automatically map port"
-msgstr "Tildel port automatisk"
-
 msgid "System sleep:"
 msgstr "Vågeblus:"
 
@@ -3822,6 +3818,12 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "sekund"
 msgstr[1] "sekunder"
+
+#~ msgid "NAT traversal uses either NAT-PMP or UPnP"
+#~ msgstr "NAT traversal benytter enten NAT-PMP eller UPnP"
+
+#~ msgid "Automatically map port"
+#~ msgstr "Tildel port automatisk"
 
 #~ msgid "{total_size} in {file_count:L} file"
 #~ msgid_plural "{total_size} in {file_count:L} files"

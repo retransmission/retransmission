@@ -1452,7 +1452,9 @@ msgstr "_Porta para ligações recebidas:"
 msgid "Pick a _random port at startup"
 msgstr "Escolher uma porta _aleatória sempre que o Transmission for iniciado"
 
-msgid "Use UPnP or NAT-PMP port _forwarding from my router"
+#, fuzzy
+#| msgid "Use UPnP or NAT-PMP port _forwarding from my router"
+msgid "Use UPnP or NAT-PMP port _forwarding"
 msgstr "Usar _encaminhamento de portas UPnP ou NAT-PMP apartir do router"
 
 msgid "Te_st Port"
@@ -2787,12 +2789,6 @@ msgstr "Comunicação entre peers:"
 msgid "Port is open"
 msgstr "A porta está aberta"
 
-msgid "NAT traversal uses either NAT-PMP or UPnP"
-msgstr "NAT Traversal utiliza NAT-PMP ou UPnP"
-
-msgid "Automatically map port"
-msgstr "Mapear porta automaticamente"
-
 msgid "System sleep:"
 msgstr "Sistema em pausa:"
 
@@ -3853,6 +3849,12 @@ msgid_plural "seconds"
 msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
+
+#~ msgid "NAT traversal uses either NAT-PMP or UPnP"
+#~ msgstr "NAT Traversal utiliza NAT-PMP ou UPnP"
+
+#~ msgid "Automatically map port"
+#~ msgstr "Mapear porta automaticamente"
 
 #~ msgid "Log Could Not Be Saved"
 #~ msgstr "Não foi possível guardar o registo"

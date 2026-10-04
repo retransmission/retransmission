@@ -1365,7 +1365,9 @@ msgstr "Vrata za dohodne povezave:"
 msgid "Pick a _random port at startup"
 msgstr "Izberi _naključna vrata ob vsakem zagonu programa Transmission"
 
-msgid "Use UPnP or NAT-PMP port _forwarding from my router"
+#, fuzzy
+#| msgid "Use UPnP or NAT-PMP port _forwarding from my router"
+msgid "Use UPnP or NAT-PMP port _forwarding"
 msgstr "Uporabi posredovanje _vrat UPnP ali NAT-PMP z usmerjevalnika"
 
 msgid "Te_st Port"

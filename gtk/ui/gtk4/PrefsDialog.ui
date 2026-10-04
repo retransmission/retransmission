@@ -849,7 +849,7 @@
                             </child>
                             <child>
                               <object class="GtkCheckButton" id="enable_listening_port_forwarding_check">
-                                <property name="label" translatable="yes">Use UPnP or NAT-PMP port _forwarding from my router</property>
+                                <property name="label" translatable="yes">Use UPnP or NAT-PMP port _forwarding</property>
                                 <property name="focusable">1</property>
                                 <property name="valign">center</property>
                                 <property name="hexpand">1</property>

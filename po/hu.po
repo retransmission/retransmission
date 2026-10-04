@@ -1484,7 +1484,9 @@ msgstr "_Bejövő kapcsolatok portja:"
 msgid "Pick a _random port at startup"
 msgstr "Véletlenszerű port _választása a Transmission minden indításakor"
 
-msgid "Use UPnP or NAT-PMP port _forwarding from my router"
+#, fuzzy
+#| msgid "Use UPnP or NAT-PMP port _forwarding from my router"
+msgid "Use UPnP or NAT-PMP port _forwarding"
 msgstr "A router UPnP vagy _NAT-PMP porttovábbításának használata"
 
 msgid "Te_st Port"
@@ -2803,12 +2805,6 @@ msgstr "Partner kommunikáció:"
 msgid "Port is open"
 msgstr "A port nyitva van"
 
-msgid "NAT traversal uses either NAT-PMP or UPnP"
-msgstr "A NAT átjárás NAT-PMP-t vagy UPnP-t használ"
-
-msgid "Automatically map port"
-msgstr "Port átirányítása automatikusan"
-
 msgid "System sleep:"
 msgstr "Rendszer alvás:"
 
@@ -3818,6 +3814,12 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "másodperc"
 msgstr[1] "másodperc"
+
+#~ msgid "NAT traversal uses either NAT-PMP or UPnP"
+#~ msgstr "A NAT átjárás NAT-PMP-t vagy UPnP-t használ"
+
+#~ msgid "Automatically map port"
+#~ msgstr "Port átirányítása automatikusan"
 
 #~ msgid "{total_size} in {file_count:L} file"
 #~ msgid_plural "{total_size} in {file_count:L} files"

@@ -1329,7 +1329,9 @@ msgstr "_Port untuk sambungan masuk:"
 msgid "Pick a _random port at startup"
 msgstr "Pakai po_rt acak setiap kali Transmission dimulai"
 
-msgid "Use UPnP or NAT-PMP port _forwarding from my router"
+#, fuzzy
+#| msgid "Use UPnP or NAT-PMP port _forwarding from my router"
+msgid "Use UPnP or NAT-PMP port _forwarding"
 msgstr "_Pakai penerusan port UPnP atau NAT-PMP dari routerku"
 
 msgid "Te_st Port"
