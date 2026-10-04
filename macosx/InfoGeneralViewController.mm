@@ -96,7 +96,7 @@
     if (self.fTorrents.count == 1) {
         Torrent* torrent = self.fTorrents[0];
 
-        // "1.21 GB in 3 files (4,812 pieces @ 256 KB)", as in the other clients.
+        // "1.21 GB in 3 files (4,616 pieces @ 262 KB)", as in the other clients.
         // It takes two messages, because a plural form follows only one count.
         NSString* sizeString = @"";
         if (!torrent.magnet) {
