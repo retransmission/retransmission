@@ -210,15 +210,6 @@ msgstr "פרטי לעוקב זה -- DHT ו־PEX מנוטרלים"
 msgid "Public torrent"
 msgstr "טורנט ציבורי"
 
-msgid "Created by {creator} on {date}"
-msgstr "נוצר ע״י {creator} ב־{date}"
-
-msgid "Created by {creator}"
-msgstr "נוצר על ידי {creator}"
-
-msgid "Created on {date}"
-msgstr "נוצר ב־{date}"
-
 msgid "Unknown"
 msgstr "לא ידוע"
 
@@ -1138,8 +1129,11 @@ msgstr "גיבוב:"
 msgid "Privacy:"
 msgstr "פרטיות:"
 
-msgid "Origin:"
-msgstr "מקור:"
+msgid "Creator:"
+msgstr "יצירה:"
+
+msgid "Created on:"
+msgstr "מועד יצירה:"
 
 msgid "Added:"
 msgstr "נוסף:"
@@ -3798,6 +3792,18 @@ msgstr[1] "שניות"
 msgstr[2] "שניות"
 msgstr[3] "שניות"
 
+#~ msgid "Created by {creator} on {date}"
+#~ msgstr "נוצר ע״י {creator} ב־{date}"
+
+#~ msgid "Created by {creator}"
+#~ msgstr "נוצר על ידי {creator}"
+
+#~ msgid "Created on {date}"
+#~ msgstr "נוצר ב־{date}"
+
+#~ msgid "Origin:"
+#~ msgstr "מקור:"
+
 #~ msgid "Couldn't register {appname} as a {content_type} handler: {error} ({error_code})"
 #~ msgstr "הרישום של {appname} כגורם הטיפול ב־{content_type} נכשל: {error} ({error_code})"
 
@@ -3832,12 +3838,6 @@ msgstr[3] "שניות"
 
 #~ msgid "Couldn't open '{url}'"
 #~ msgstr "לא ניתן לפתוח את ‚{url}’"
-
-#~ msgid "Created on:"
-#~ msgstr "מועד יצירה:"
-
-#~ msgid "Creator:"
-#~ msgstr "יצירה:"
 
 #~ msgid "Seeders:"
 #~ msgstr "זורעים:"

@@ -225,15 +225,6 @@ msgstr "Privát ezen tracker számára -- DHT és PEX letiltva "
 msgid "Public torrent"
 msgstr "Nyilvános torrent"
 
-msgid "Created by {creator} on {date}"
-msgstr "Létrehozta: {creator}, ekkor: {date}"
-
-msgid "Created by {creator}"
-msgstr "Létrehozta: {creator}"
-
-msgid "Created on {date}"
-msgstr "Létrehozva: {date}"
-
 msgid "Unknown"
 msgstr "Ismeretlen"
 
@@ -1135,8 +1126,11 @@ msgstr "Ellenőrzőösszeg:"
 msgid "Privacy:"
 msgstr "Adatvédelem:"
 
-msgid "Origin:"
-msgstr "Eredet:"
+msgid "Creator:"
+msgstr "Készítő:"
+
+msgid "Created on:"
+msgstr "Létrehozva ekkor:"
 
 msgid "Added:"
 msgstr "Hozzáadva:"
@@ -3726,6 +3720,18 @@ msgid_plural "seconds"
 msgstr[0] "másodperc"
 msgstr[1] "másodperc"
 
+#~ msgid "Created by {creator} on {date}"
+#~ msgstr "Létrehozta: {creator}, ekkor: {date}"
+
+#~ msgid "Created by {creator}"
+#~ msgstr "Létrehozta: {creator}"
+
+#~ msgid "Created on {date}"
+#~ msgstr "Létrehozva: {date}"
+
+#~ msgid "Origin:"
+#~ msgstr "Eredet:"
+
 #~ msgid "Couldn't register {appname} as a {content_type} handler: {error} ({error_code})"
 #~ msgstr "Nem sikerült a {appname} regisztrációja {content_type} tartalomtípus kezelőjeként: {error} ({error_code})"
 
@@ -3760,12 +3766,6 @@ msgstr[1] "másodperc"
 
 #~ msgid "Couldn't open '{url}'"
 #~ msgstr "'{url}' url nem nyitható meg"
-
-#~ msgid "Created on:"
-#~ msgstr "Létrehozva ekkor:"
-
-#~ msgid "Creator:"
-#~ msgstr "Készítő:"
 
 #~ msgid "Seeders:"
 #~ msgstr "Megosztók:"

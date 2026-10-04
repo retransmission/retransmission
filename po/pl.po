@@ -232,15 +232,6 @@ msgstr "Prywatne dla tego serwera śledzącego — DHT i PEX są wyłączone"
 msgid "Public torrent"
 msgstr "Publiczny torrent"
 
-msgid "Created by {creator} on {date}"
-msgstr "Utworzony dnia {date} przez: {creator}"
-
-msgid "Created by {creator}"
-msgstr "Utworzony przez: {creator}"
-
-msgid "Created on {date}"
-msgstr "Utworzony dnia {date}"
-
 msgid "Unknown"
 msgstr "Nieznane"
 
@@ -1166,8 +1157,11 @@ msgstr "Suma kontrolna:"
 msgid "Privacy:"
 msgstr "Prywatność:"
 
-msgid "Origin:"
-msgstr "Powstanie:"
+msgid "Creator:"
+msgstr "Twórca:"
+
+msgid "Created on:"
+msgstr "Utworzono:"
 
 msgid "Added:"
 msgstr "Dodano:"
@@ -3840,6 +3834,18 @@ msgstr[1] "sekundy"
 msgstr[2] "sekund"
 msgstr[3] "sekund"
 
+#~ msgid "Created by {creator} on {date}"
+#~ msgstr "Utworzony dnia {date} przez: {creator}"
+
+#~ msgid "Created by {creator}"
+#~ msgstr "Utworzony przez: {creator}"
+
+#~ msgid "Created on {date}"
+#~ msgstr "Utworzony dnia {date}"
+
+#~ msgid "Origin:"
+#~ msgstr "Powstanie:"
+
 #~ msgid "Couldn't register {appname} as a {content_type} handler: {error} ({error_code})"
 #~ msgstr "Nie można zarejestrować programu {appname} do obsługi plików typu {content_type}: {error} ({error_code})"
 
@@ -3874,12 +3880,6 @@ msgstr[3] "sekund"
 
 #~ msgid "Couldn't open '{url}'"
 #~ msgstr "Nie można otworzyć „{url}”"
-
-#~ msgid "Created on:"
-#~ msgstr "Utworzono:"
-
-#~ msgid "Creator:"
-#~ msgstr "Twórca:"
 
 #~ msgid "Seeders:"
 #~ msgstr "Wysyłający:"

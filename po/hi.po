@@ -175,15 +175,6 @@ msgstr "निजी ट्रैकर -- डीएचटी व पेक्�
 msgid "Public torrent"
 msgstr "सार्वजनिक टोरेंट"
 
-msgid "Created by {creator} on {date}"
-msgstr "{creator} द्वारा {date} को बनाया गया"
-
-msgid "Created by {creator}"
-msgstr "{creator} द्वारा बनाया गया"
-
-msgid "Created on {date}"
-msgstr "{date} को बनाया गया"
-
 msgid "Unknown"
 msgstr "अज्ञात"
 
@@ -1016,8 +1007,15 @@ msgstr "हैश :"
 msgid "Privacy:"
 msgstr "निजता :"
 
-msgid "Origin:"
-msgstr "स्रोत :"
+#, fuzzy
+#| msgid "C_redits"
+msgid "Creator:"
+msgstr "आभार (_r)"
+
+#, fuzzy
+#| msgid "Created on {date}"
+msgid "Created on:"
+msgstr "{date} को बनाया गया"
 
 msgid "Added:"
 msgstr ""
@@ -2409,6 +2407,15 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] ""
 msgstr[1] ""
+
+#~ msgid "Created by {creator} on {date}"
+#~ msgstr "{creator} द्वारा {date} को बनाया गया"
+
+#~ msgid "Created by {creator}"
+#~ msgstr "{creator} द्वारा बनाया गया"
+
+#~ msgid "Origin:"
+#~ msgstr "स्रोत :"
 
 #~ msgid "_New…"
 #~ msgstr "नया (_N)…"

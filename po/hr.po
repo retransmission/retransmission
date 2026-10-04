@@ -177,15 +177,6 @@ msgstr "Privatno za ovaj pratitelj - DHT i PEX onemogućeno"
 msgid "Public torrent"
 msgstr "Javni torrent"
 
-msgid "Created by {creator} on {date}"
-msgstr "Napravio/la {creator} datuma {date}"
-
-msgid "Created by {creator}"
-msgstr "Napravio/la {creator}"
-
-msgid "Created on {date}"
-msgstr "Napravljeno {date}"
-
 msgid "Unknown"
 msgstr "Nepoznato"
 
@@ -1028,8 +1019,15 @@ msgstr "Jedinstvena vrijednost:"
 msgid "Privacy:"
 msgstr "Privatnost:"
 
-msgid "Origin:"
-msgstr "Podrijetlo:"
+#, fuzzy
+#| msgid "C_redits"
+msgid "Creator:"
+msgstr "Z_asluge"
+
+#, fuzzy
+#| msgid "Created on {date}"
+msgid "Created on:"
+msgstr "Napravljeno {date}"
 
 msgid "Added:"
 msgstr ""
@@ -2453,6 +2451,15 @@ msgid_plural "seconds"
 msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
+
+#~ msgid "Created by {creator} on {date}"
+#~ msgstr "Napravio/la {creator} datuma {date}"
+
+#~ msgid "Created by {creator}"
+#~ msgstr "Napravio/la {creator}"
+
+#~ msgid "Origin:"
+#~ msgstr "Podrijetlo:"
 
 #~ msgid "_New…"
 #~ msgstr "_Novi…"

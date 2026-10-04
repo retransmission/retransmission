@@ -190,15 +190,6 @@ msgstr "خاص بهذا المُتتبع -- عُطّل PEX و DHT"
 msgid "Public torrent"
 msgstr "تورنت عام"
 
-msgid "Created by {creator} on {date}"
-msgstr "أنشى من طرف {creator} في {date}"
-
-msgid "Created by {creator}"
-msgstr "أنشئ من طرف {creator}"
-
-msgid "Created on {date}"
-msgstr "أنشئ في {date}"
-
 msgid "Unknown"
 msgstr "مجهول"
 
@@ -1075,8 +1066,15 @@ msgstr "التلبيدة:"
 msgid "Privacy:"
 msgstr "الخصوصية:"
 
-msgid "Origin:"
-msgstr "المصدر:"
+#, fuzzy
+#| msgid "C_redits"
+msgid "Creator:"
+msgstr "إشادات"
+
+#, fuzzy
+#| msgid "Created on {date}"
+msgid "Created on:"
+msgstr "أنشئ في {date}"
 
 msgid "Added:"
 msgstr "مضاف:"
@@ -2613,6 +2611,15 @@ msgstr[2] ""
 msgstr[3] ""
 msgstr[4] ""
 msgstr[5] ""
+
+#~ msgid "Created by {creator} on {date}"
+#~ msgstr "أنشى من طرف {creator} في {date}"
+
+#~ msgid "Created by {creator}"
+#~ msgstr "أنشئ من طرف {creator}"
+
+#~ msgid "Origin:"
+#~ msgstr "المصدر:"
 
 #, fuzzy
 #~| msgid "Couldn't read '{path}': {error} ({error_code})"

@@ -201,15 +201,6 @@ msgstr "Aztarnari honen pribatua -- DHT eta PEX desgaituta"
 msgid "Public torrent"
 msgstr "Torrent publikoa"
 
-msgid "Created by {creator} on {date}"
-msgstr "Sortzailea {creator} data honetan: {date}"
-
-msgid "Created by {creator}"
-msgstr "Sortzailea: {creator}"
-
-msgid "Created on {date}"
-msgstr "Sortze-data: {date}"
-
 msgid "Unknown"
 msgstr "Ezezaguna"
 
@@ -1108,8 +1099,11 @@ msgstr "Hash-a:"
 msgid "Privacy:"
 msgstr "Pribatutasuna:"
 
-msgid "Origin:"
-msgstr "Jatorria:"
+msgid "Creator:"
+msgstr "Sortzailea:"
+
+msgid "Created on:"
+msgstr "Sortze-data:"
 
 msgid "Added:"
 msgstr "Gehitze-data:"
@@ -3710,6 +3704,18 @@ msgid_plural "seconds"
 msgstr[0] "segundo"
 msgstr[1] "segundo"
 
+#~ msgid "Created by {creator} on {date}"
+#~ msgstr "Sortzailea {creator} data honetan: {date}"
+
+#~ msgid "Created by {creator}"
+#~ msgstr "Sortzailea: {creator}"
+
+#~ msgid "Created on {date}"
+#~ msgstr "Sortze-data: {date}"
+
+#~ msgid "Origin:"
+#~ msgstr "Jatorria:"
+
 #~ msgid "Couldn't register {appname} as a {content_type} handler: {error} ({error_code})"
 #~ msgstr "Ezin izan da {appname} {content_type} kudeatzaile gisa erregistratu: {error} ({error_code})"
 
@@ -3744,12 +3750,6 @@ msgstr[1] "segundo"
 
 #~ msgid "Couldn't open '{url}'"
 #~ msgstr "Ezin izan da '{url}' ireki"
-
-#~ msgid "Created on:"
-#~ msgstr "Sortze-data:"
-
-#~ msgid "Creator:"
-#~ msgstr "Sortzailea:"
 
 #~ msgid "Seeders:"
 #~ msgstr "Igorleak:"

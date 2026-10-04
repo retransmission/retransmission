@@ -225,15 +225,6 @@ msgstr "Ιδιωτικό σε αυτόν τον ιχνηλάτη -- DHT και P
 msgid "Public torrent"
 msgstr "Δημόσιο torrent"
 
-msgid "Created by {creator} on {date}"
-msgstr "Δημιουργήθηκε από {creator} την {date}"
-
-msgid "Created by {creator}"
-msgstr "Δημιουργήθηκε από {creator}"
-
-msgid "Created on {date}"
-msgstr "Δημιουργήθηκε την {date}"
-
 msgid "Unknown"
 msgstr "Άγνωστο"
 
@@ -1134,8 +1125,11 @@ msgstr "Κλειδί ελέγχου ακεραιότητας δεδομένων:
 msgid "Privacy:"
 msgstr "Απόρρητο:"
 
-msgid "Origin:"
-msgstr "Προέλευση:"
+msgid "Creator:"
+msgstr "Δημιουργός:"
+
+msgid "Created on:"
+msgstr "Δημιουργήθηκε την:"
 
 msgid "Added:"
 msgstr "Προστέθηκε:"
@@ -3728,6 +3722,18 @@ msgid_plural "seconds"
 msgstr[0] "δευτερόλεπτο"
 msgstr[1] "δευτερόλεπτα"
 
+#~ msgid "Created by {creator} on {date}"
+#~ msgstr "Δημιουργήθηκε από {creator} την {date}"
+
+#~ msgid "Created by {creator}"
+#~ msgstr "Δημιουργήθηκε από {creator}"
+
+#~ msgid "Created on {date}"
+#~ msgstr "Δημιουργήθηκε την {date}"
+
+#~ msgid "Origin:"
+#~ msgstr "Προέλευση:"
+
 #~ msgid "Couldn't register {appname} as a {content_type} handler: {error} ({error_code})"
 #~ msgstr "Αδυναμία καταχώρησης του {appname} ως διαχειριστή {content_type}: {error} ({error_code})"
 
@@ -3762,12 +3768,6 @@ msgstr[1] "δευτερόλεπτα"
 
 #~ msgid "Couldn't open '{url}'"
 #~ msgstr "Αδυναμία ανοίγματος '{url}'"
-
-#~ msgid "Created on:"
-#~ msgstr "Δημιουργήθηκε την:"
-
-#~ msgid "Creator:"
-#~ msgstr "Δημιουργός:"
 
 #~ msgid "Seeders:"
 #~ msgstr "Διαμοιραστές:"

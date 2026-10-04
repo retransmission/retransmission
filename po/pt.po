@@ -170,15 +170,6 @@ msgstr "Privado para este rastreador - DHT e PEX desativados"
 msgid "Public torrent"
 msgstr "Torrent público"
 
-msgid "Created by {creator} on {date}"
-msgstr "Criado por {creator} a {date}"
-
-msgid "Created by {creator}"
-msgstr "Criado por {creator}"
-
-msgid "Created on {date}"
-msgstr "Criado a {date}"
-
 msgid "Unknown"
 msgstr "Desconhecido"
 
@@ -1018,8 +1009,15 @@ msgstr "Hash:"
 msgid "Privacy:"
 msgstr "Privacidade:"
 
-msgid "Origin:"
-msgstr "Origem:"
+#, fuzzy
+#| msgid "C_redits"
+msgid "Creator:"
+msgstr "C_réditos"
+
+#, fuzzy
+#| msgid "Created on {date}"
+msgid "Created on:"
+msgstr "Criado a {date}"
 
 msgid "Added:"
 msgstr ""
@@ -2440,6 +2438,15 @@ msgid_plural "seconds"
 msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
+
+#~ msgid "Created by {creator} on {date}"
+#~ msgstr "Criado por {creator} a {date}"
+
+#~ msgid "Created by {creator}"
+#~ msgstr "Criado por {creator}"
+
+#~ msgid "Origin:"
+#~ msgstr "Origem:"
 
 #~ msgid "_New…"
 #~ msgstr "_Novo…"

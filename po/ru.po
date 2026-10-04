@@ -195,15 +195,6 @@ msgstr "Только для этого трекера — DHT и PEX отклю�
 msgid "Public torrent"
 msgstr "Публичный торрент"
 
-msgid "Created by {creator} on {date}"
-msgstr "Создано {creator} {date}"
-
-msgid "Created by {creator}"
-msgstr "Создано {creator}"
-
-msgid "Created on {date}"
-msgstr "Создано {date}"
-
 msgid "Unknown"
 msgstr "Неизвестно"
 
@@ -1129,8 +1120,11 @@ msgstr "Хеш:"
 msgid "Privacy:"
 msgstr "Приватность:"
 
-msgid "Origin:"
-msgstr "Источник:"
+msgid "Creator:"
+msgstr "Создано в:"
+
+msgid "Created on:"
+msgstr "Дата:"
 
 msgid "Added:"
 msgstr "Добавлен:"
@@ -3811,6 +3805,18 @@ msgstr[1] "секунды"
 msgstr[2] "секунд"
 msgstr[3] "секунд"
 
+#~ msgid "Created by {creator} on {date}"
+#~ msgstr "Создано {creator} {date}"
+
+#~ msgid "Created by {creator}"
+#~ msgstr "Создано {creator}"
+
+#~ msgid "Created on {date}"
+#~ msgstr "Создано {date}"
+
+#~ msgid "Origin:"
+#~ msgstr "Источник:"
+
 #~ msgid "Couldn't register {appname} as a {content_type} handler: {error} ({error_code})"
 #~ msgstr "Не удалось зарегистрировать {appname} в качестве обработчика {content_type}: {error} ({error_code})"
 
@@ -3845,12 +3851,6 @@ msgstr[3] "секунд"
 
 #~ msgid "Couldn't open '{url}'"
 #~ msgstr "Не удалось открыть «{url}»"
-
-#~ msgid "Created on:"
-#~ msgstr "Дата:"
-
-#~ msgid "Creator:"
-#~ msgstr "Создано в:"
 
 #~ msgid "Seeders:"
 #~ msgstr "Раздающих:"

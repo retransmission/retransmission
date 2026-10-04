@@ -193,15 +193,6 @@ msgstr "Privado para este rastreador - DHT e PEX desativados"
 msgid "Public torrent"
 msgstr "Torrent público"
 
-msgid "Created by {creator} on {date}"
-msgstr "Criado por {creator} a {date}"
-
-msgid "Created by {creator}"
-msgstr "Criado por {creator}"
-
-msgid "Created on {date}"
-msgstr "Criado a {date}"
-
 msgid "Unknown"
 msgstr "Desconhecido"
 
@@ -1110,8 +1101,11 @@ msgstr "Hash:"
 msgid "Privacy:"
 msgstr "Privacidade:"
 
-msgid "Origin:"
-msgstr "Origem:"
+msgid "Creator:"
+msgstr "Criador:"
+
+msgid "Created on:"
+msgstr "Criado em:"
 
 msgid "Added:"
 msgstr "Adicionado:"
@@ -3761,6 +3755,18 @@ msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
 
+#~ msgid "Created by {creator} on {date}"
+#~ msgstr "Criado por {creator} a {date}"
+
+#~ msgid "Created by {creator}"
+#~ msgstr "Criado por {creator}"
+
+#~ msgid "Created on {date}"
+#~ msgstr "Criado a {date}"
+
+#~ msgid "Origin:"
+#~ msgstr "Origem:"
+
 #, fuzzy
 #~| msgid "Couldn't call script '{path}': {error} ({error_code})"
 #~ msgid "Couldn't spawn async process \"'{command}'\": {error} ({error_code})"
@@ -3780,12 +3786,6 @@ msgstr[2] ""
 #~| msgid "Couldn't call script '{path}': {error} ({error_code})"
 #~ msgid "Couldn't invoke xdg-open for URI '{uri}': {error} ({error_code})"
 #~ msgstr "Não foi possível invocar o script '{path}': {error} ({error_code})"
-
-#~ msgid "Created on:"
-#~ msgstr "Criado em:"
-
-#~ msgid "Creator:"
-#~ msgstr "Criador:"
 
 #, fuzzy
 #~| msgid "Seed Forever"

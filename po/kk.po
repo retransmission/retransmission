@@ -174,15 +174,6 @@ msgstr "Осы трекерге жеке -- DHT және PEX сөндірулі"
 msgid "Public torrent"
 msgstr "Публикалық торрент"
 
-msgid "Created by {creator} on {date}"
-msgstr "{creator} жасаған, {date}"
-
-msgid "Created by {creator}"
-msgstr "{creator} жасаған"
-
-msgid "Created on {date}"
-msgstr "{date} жасалған"
-
 msgid "Unknown"
 msgstr "Белгісіз"
 
@@ -1014,8 +1005,15 @@ msgstr "Хеші:"
 msgid "Privacy:"
 msgstr "Жекелігі:"
 
-msgid "Origin:"
-msgstr "Тегі:"
+#, fuzzy
+#| msgid "Created \"%1\"!"
+msgid "Creator:"
+msgstr "Жасалды %1!"
+
+#, fuzzy
+#| msgid "Created on {date}"
+msgid "Created on:"
+msgstr "{date} жасалған"
 
 msgid "Added:"
 msgstr ""
@@ -2433,6 +2431,15 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] ""
 msgstr[1] ""
+
+#~ msgid "Created by {creator} on {date}"
+#~ msgstr "{creator} жасаған, {date}"
+
+#~ msgid "Created by {creator}"
+#~ msgstr "{creator} жасаған"
+
+#~ msgid "Origin:"
+#~ msgstr "Тегі:"
 
 #~ msgid "_New…"
 #~ msgstr "Ж_аңа…"

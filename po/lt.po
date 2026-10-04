@@ -185,15 +185,6 @@ msgstr "privatus šiam sekikliui – DHT ir PEX funkcijos išjungtos"
 msgid "Public torrent"
 msgstr "viešas torentas"
 
-msgid "Created by {creator} on {date}"
-msgstr "sukurtas {date} naudojant „{creator}“"
-
-msgid "Created by {creator}"
-msgstr "sukurtas naudojant „{creator}“"
-
-msgid "Created on {date}"
-msgstr "sukurtas {date}"
-
 msgid "Unknown"
 msgstr "nežinomas"
 
@@ -1052,8 +1043,15 @@ msgstr "Maiša:"
 msgid "Privacy:"
 msgstr "Privatumas:"
 
-msgid "Origin:"
-msgstr "Kilmė:"
+#, fuzzy
+#| msgid "C_redits"
+msgid "Creator:"
+msgstr "_Padėkos"
+
+#, fuzzy
+#| msgid "Created on {date}"
+msgid "Created on:"
+msgstr "sukurtas {date}"
 
 msgid "Added:"
 msgstr "Pridėtas:"
@@ -2520,6 +2518,15 @@ msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
 msgstr[3] ""
+
+#~ msgid "Created by {creator} on {date}"
+#~ msgstr "sukurtas {date} naudojant „{creator}“"
+
+#~ msgid "Created by {creator}"
+#~ msgstr "sukurtas naudojant „{creator}“"
+
+#~ msgid "Origin:"
+#~ msgstr "Kilmė:"
 
 #, fuzzy
 #~| msgid "Couldn't read '{path}': {error} ({error_code})"

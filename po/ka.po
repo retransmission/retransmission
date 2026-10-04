@@ -172,15 +172,6 @@ msgstr "პრივატული ამ ტრეკერთან -- DHT �
 msgid "Public torrent"
 msgstr "საჯარო ტორენტი"
 
-msgid "Created by {creator} on {date}"
-msgstr "ავტორი {creator} - {date}"
-
-msgid "Created by {creator}"
-msgstr "ავტორი: {creator}"
-
-msgid "Created on {date}"
-msgstr "შექმნილი - {date}"
-
 msgid "Unknown"
 msgstr "უცნობი"
 
@@ -1008,8 +999,15 @@ msgstr "ჰეში:"
 msgid "Privacy:"
 msgstr "პრივატულობა:"
 
-msgid "Origin:"
-msgstr "საწყისი:"
+#, fuzzy
+#| msgid "C_redits"
+msgid "Creator:"
+msgstr "ა_ვტორები"
+
+#, fuzzy
+#| msgid "Created on {date}"
+msgid "Created on:"
+msgstr "შექმნილი - {date}"
 
 msgid "Added:"
 msgstr "დამატებულია:"
@@ -2398,6 +2396,15 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "წამი"
 msgstr[1] "წამი"
+
+#~ msgid "Created by {creator} on {date}"
+#~ msgstr "ავტორი {creator} - {date}"
+
+#~ msgid "Created by {creator}"
+#~ msgstr "ავტორი: {creator}"
+
+#~ msgid "Origin:"
+#~ msgstr "საწყისი:"
 
 #~ msgid "_New…"
 #~ msgstr "_ახალი…"

@@ -215,15 +215,6 @@ msgstr "Privat for denne tracker -- DHT og PEX deaktiveret"
 msgid "Public torrent"
 msgstr "Offentlig torrent"
 
-msgid "Created by {creator} on {date}"
-msgstr "Oprettet af {creator} {date}"
-
-msgid "Created by {creator}"
-msgstr "Oprettet af {creator}"
-
-msgid "Created on {date}"
-msgstr "Oprettet {date}"
-
 msgid "Unknown"
 msgstr "Ukendt"
 
@@ -1125,8 +1116,11 @@ msgstr "Hash:"
 msgid "Privacy:"
 msgstr "Privatliv:"
 
-msgid "Origin:"
-msgstr "Oprindelse:"
+msgid "Creator:"
+msgstr "Udgiver:"
+
+msgid "Created on:"
+msgstr "Oprettet:"
 
 msgid "Added:"
 msgstr "Tilføjet:"
@@ -3727,6 +3721,18 @@ msgid_plural "seconds"
 msgstr[0] "sekund"
 msgstr[1] "sekunder"
 
+#~ msgid "Created by {creator} on {date}"
+#~ msgstr "Oprettet af {creator} {date}"
+
+#~ msgid "Created by {creator}"
+#~ msgstr "Oprettet af {creator}"
+
+#~ msgid "Created on {date}"
+#~ msgstr "Oprettet {date}"
+
+#~ msgid "Origin:"
+#~ msgstr "Oprindelse:"
+
 #~ msgid "Couldn't register {appname} as a {content_type} handler: {error} ({error_code})"
 #~ msgstr "Kunne ikke registrere {appname} som en {content_type}-handler: {error} ({error_code})"
 
@@ -3761,12 +3767,6 @@ msgstr[1] "sekunder"
 
 #~ msgid "Couldn't open '{url}'"
 #~ msgstr "Kunne ikke åbne '{url}'"
-
-#~ msgid "Created on:"
-#~ msgstr "Oprettet:"
-
-#~ msgid "Creator:"
-#~ msgstr "Udgiver:"
 
 #, fuzzy
 #~| msgid "seeder"

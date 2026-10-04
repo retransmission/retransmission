@@ -862,39 +862,42 @@ void DetailsDialog::refreshUI()
 
     ui_.commentTextEdit->setEnabled(!is_comment_mixed && !string.isEmpty());
 
-    // myOriginLabel
-    string = none;
+    // myCreatorLabel, myCreatedLabel
+    {
+        auto creator_string = none;
+        auto created_string = none;
 
-    if (!torrents.empty()) {
-        bool mixed_creator = false;
-        bool mixed_date = false;
-        auto const creator = torrents[0]->creator();
-        auto const date = torrents[0]->dateCreated();
+        if (!torrents.empty()) {
+            bool mixed_creator = false;
+            bool mixed_date = false;
+            auto const creator = torrents[0]->creator();
+            auto const date = torrents[0]->dateCreated();
 
-        for (Torrent const* const t : torrents) {
-            mixed_creator |= (creator != t->creator());
-            mixed_date |= (date != t->dateCreated());
+            for (Torrent const* const t : torrents) {
+                mixed_creator |= (creator != t->creator());
+                mixed_date |= (date != t->dateCreated());
+            }
+
+            if (mixed_creator) {
+                creator_string = mixed;
+            } else if (!creator.isEmpty()) {
+                creator_string = creator;
+            } else {
+                creator_string = TR_TEXT("N/A");
+            }
+
+            if (mixed_date) {
+                created_string = mixed;
+            } else if (date > 0) {
+                created_string = QDateTime::fromSecsSinceEpoch(date).toString();
+            } else {
+                created_string = TR_TEXT("N/A");
+            }
         }
 
-        bool const empty_creator = creator.isEmpty();
-        bool const empty_date = date <= 0;
-
-        if (mixed_creator || mixed_date) {
-            string = mixed;
-        } else if (empty_creator && empty_date) {
-            string = TR_TEXT("N/A");
-        } else if (empty_date && !empty_creator) {
-            string = TR_FORMAT("Created by {creator}", fmt::arg("creator", creator));
-        } else if (empty_creator && !empty_date) {
-            auto const date_str = QDateTime::fromSecsSinceEpoch(date).toString();
-            string = TR_FORMAT("Created on {date}", fmt::arg("date", date_str));
-        } else {
-            auto const date_str = QDateTime::fromSecsSinceEpoch(date).toString();
-            string = TR_FORMAT("Created by {creator} on {date}", fmt::arg("creator", creator), fmt::arg("date", date_str));
-        }
+        ui_.creatorValueLabel->setText(creator_string);
+        ui_.createdValueLabel->setText(created_string);
     }
-
-    ui_.originValueLabel->setText(string);
 
     // myLocationLabel
     string = none;

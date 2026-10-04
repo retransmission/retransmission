@@ -197,15 +197,6 @@ msgstr "Bu izleyiciye özel -- DHT ve PEX etkisizleştirildi"
 msgid "Public torrent"
 msgstr "Genel torrent"
 
-msgid "Created by {creator} on {date}"
-msgstr "{creator} tarafından {date} tarihinde yaratıldı"
-
-msgid "Created by {creator}"
-msgstr "{creator} tarafından yaratıldı"
-
-msgid "Created on {date}"
-msgstr "{date} tarihinde yaratıldı"
-
 msgid "Unknown"
 msgstr "Bilinmeyen"
 
@@ -1106,8 +1097,11 @@ msgstr "Özet:"
 msgid "Privacy:"
 msgstr "Gizlilik:"
 
-msgid "Origin:"
-msgstr "Köken:"
+msgid "Creator:"
+msgstr "Oluşturan:"
+
+msgid "Created on:"
+msgstr "Oluşturulma:"
 
 msgid "Added:"
 msgstr "Eklendi:"
@@ -3698,6 +3692,18 @@ msgid_plural "seconds"
 msgstr[0] "saniye"
 msgstr[1] "saniye"
 
+#~ msgid "Created by {creator} on {date}"
+#~ msgstr "{creator} tarafından {date} tarihinde yaratıldı"
+
+#~ msgid "Created by {creator}"
+#~ msgstr "{creator} tarafından yaratıldı"
+
+#~ msgid "Created on {date}"
+#~ msgstr "{date} tarihinde yaratıldı"
+
+#~ msgid "Origin:"
+#~ msgstr "Köken:"
+
 #~ msgid "Couldn't register {appname} as a {content_type} handler: {error} ({error_code})"
 #~ msgstr "{appname}, {content_type} işleyicisi olarak kaydedilemedi: {error} ({error_code})"
 
@@ -3732,12 +3738,6 @@ msgstr[1] "saniye"
 
 #~ msgid "Couldn't open '{url}'"
 #~ msgstr "'{url}' açılamadı"
-
-#~ msgid "Created on:"
-#~ msgstr "Oluşturulma:"
-
-#~ msgid "Creator:"
-#~ msgstr "Oluşturan:"
 
 #~ msgid "Seeders:"
 #~ msgstr "Besleyenler:"

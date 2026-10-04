@@ -178,15 +178,6 @@ msgstr "Prívat til þessa rekjara -- DHT og PEX er óvirkt"
 msgid "Public torrent"
 msgstr "Opinbert torrent-streymi"
 
-msgid "Created by {creator} on {date}"
-msgstr "Búið til af {creator} þann {date}"
-
-msgid "Created by {creator}"
-msgstr "Búið til af {creator}"
-
-msgid "Created on {date}"
-msgstr "Búið til {date}"
-
 msgid "Unknown"
 msgstr "Óþekkt"
 
@@ -1019,8 +1010,15 @@ msgstr "Tætigildi:"
 msgid "Privacy:"
 msgstr "Gagnaleynd:"
 
-msgid "Origin:"
-msgstr "Uppruni:"
+#, fuzzy
+#| msgid "C_redits"
+msgid "Creator:"
+msgstr "F_ramlög"
+
+#, fuzzy
+#| msgid "Created on {date}"
+msgid "Created on:"
+msgstr "Búið til {date}"
 
 msgid "Added:"
 msgstr "Bætt við:"
@@ -2419,6 +2417,15 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "sekúnda"
 msgstr[1] "sekúndur"
+
+#~ msgid "Created by {creator} on {date}"
+#~ msgstr "Búið til af {creator} þann {date}"
+
+#~ msgid "Created by {creator}"
+#~ msgstr "Búið til af {creator}"
+
+#~ msgid "Origin:"
+#~ msgstr "Uppruni:"
 
 #~ msgid "Couldn't register {appname} as a {content_type} handler: {error} ({error_code})"
 #~ msgstr "Gat ekki skráð {appname} sem forrit til að meðhöndla {content_type}: {error} ({error_code})"

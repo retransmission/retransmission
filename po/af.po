@@ -197,15 +197,6 @@ msgstr "Privaat tot die spoorder -- DHT en PEX gedeaktiveer"
 msgid "Public torrent"
 msgstr "Openbare torrent"
 
-msgid "Created by {creator} on {date}"
-msgstr "Geskep deur {creator} op {date}"
-
-msgid "Created by {creator}"
-msgstr "Geskep deur {creator}"
-
-msgid "Created on {date}"
-msgstr "Geskep op {date}"
-
 msgid "Unknown"
 msgstr "Onbekend"
 
@@ -1103,8 +1094,11 @@ msgstr "Huts:"
 msgid "Privacy:"
 msgstr "Privaatheid:"
 
-msgid "Origin:"
-msgstr "Oorsprong:"
+msgid "Creator:"
+msgstr "Skepper:"
+
+msgid "Created on:"
+msgstr "Geskep op:"
 
 msgid "Added:"
 msgstr "Toegevoeg:"
@@ -3697,6 +3691,18 @@ msgid_plural "seconds"
 msgstr[0] "sekonde"
 msgstr[1] "sekondes"
 
+#~ msgid "Created by {creator} on {date}"
+#~ msgstr "Geskep deur {creator} op {date}"
+
+#~ msgid "Created by {creator}"
+#~ msgstr "Geskep deur {creator}"
+
+#~ msgid "Created on {date}"
+#~ msgstr "Geskep op {date}"
+
+#~ msgid "Origin:"
+#~ msgstr "Oorsprong:"
+
 #~ msgid "Couldn't register {appname} as a {content_type} handler: {error} ({error_code})"
 #~ msgstr "Kon nie {appname} as ’n {content_type}-hanteerder registreet nie: {error} ({error_code})"
 
@@ -3731,12 +3737,6 @@ msgstr[1] "sekondes"
 
 #~ msgid "Couldn't open '{url}'"
 #~ msgstr "Kon nie ‘{url}’ open nie"
-
-#~ msgid "Created on:"
-#~ msgstr "Geskep op:"
-
-#~ msgid "Creator:"
-#~ msgstr "Skepper:"
 
 #~ msgid "Seeders:"
 #~ msgstr "Saaiers:"

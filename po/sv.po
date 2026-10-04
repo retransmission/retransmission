@@ -190,15 +190,6 @@ msgstr "Privat för denna spårare -- DHT och PEX är inaktiverade"
 msgid "Public torrent"
 msgstr "Publik torrent"
 
-msgid "Created by {creator} on {date}"
-msgstr "Skapad av {creator} den {date}"
-
-msgid "Created by {creator}"
-msgstr "Skapad av {creator}"
-
-msgid "Created on {date}"
-msgstr "Skapad den {date}"
-
 msgid "Unknown"
 msgstr "Okänd"
 
@@ -1100,8 +1091,11 @@ msgstr "Hash:"
 msgid "Privacy:"
 msgstr "Integritet:"
 
-msgid "Origin:"
-msgstr "Ursprung:"
+msgid "Creator:"
+msgstr "Skapare:"
+
+msgid "Created on:"
+msgstr "Skapad den:"
 
 msgid "Added:"
 msgstr "Tillagd:"
@@ -3699,6 +3693,18 @@ msgid_plural "seconds"
 msgstr[0] "sekund"
 msgstr[1] "sekunder"
 
+#~ msgid "Created by {creator} on {date}"
+#~ msgstr "Skapad av {creator} den {date}"
+
+#~ msgid "Created by {creator}"
+#~ msgstr "Skapad av {creator}"
+
+#~ msgid "Created on {date}"
+#~ msgstr "Skapad den {date}"
+
+#~ msgid "Origin:"
+#~ msgstr "Ursprung:"
+
 #~ msgid "Couldn't register {appname} as a {content_type} handler: {error} ({error_code})"
 #~ msgstr "Det gick inte att registrera {appname} som en {content_type}-hanterare: {error} ({error_code})"
 
@@ -3733,12 +3739,6 @@ msgstr[1] "sekunder"
 
 #~ msgid "Couldn't open '{url}'"
 #~ msgstr "Det gick inte att öppna '{url}'"
-
-#~ msgid "Created on:"
-#~ msgstr "Skapad den:"
-
-#~ msgid "Creator:"
-#~ msgstr "Skapare:"
 
 #~ msgid "Seeders:"
 #~ msgstr "Distributörer:"

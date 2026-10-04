@@ -186,15 +186,6 @@ msgstr "Privat tilhørende denne sporeren -- DHT og PEX avskrudd"
 msgid "Public torrent"
 msgstr "Offentlig torrent"
 
-msgid "Created by {creator} on {date}"
-msgstr "Opprettet av {creator} på {date}"
-
-msgid "Created by {creator}"
-msgstr "Opprettet av {creator}"
-
-msgid "Created on {date}"
-msgstr "Opprettet {date}"
-
 msgid "Unknown"
 msgstr "Ukjent"
 
@@ -1023,8 +1014,15 @@ msgstr "Hash:"
 msgid "Privacy:"
 msgstr "Fortrolighet:"
 
-msgid "Origin:"
-msgstr "Opphav:"
+#, fuzzy
+#| msgid "C_redits"
+msgid "Creator:"
+msgstr "B_idragsytere"
+
+#, fuzzy
+#| msgid "Created on {date}"
+msgid "Created on:"
+msgstr "Opprettet {date}"
 
 msgid "Added:"
 msgstr ""
@@ -2410,6 +2408,15 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] ""
 msgstr[1] ""
+
+#~ msgid "Created by {creator} on {date}"
+#~ msgstr "Opprettet av {creator} på {date}"
+
+#~ msgid "Created by {creator}"
+#~ msgstr "Opprettet av {creator}"
+
+#~ msgid "Origin:"
+#~ msgstr "Opphav:"
 
 #~ msgid "_New…"
 #~ msgstr "_Ny …"

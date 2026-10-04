@@ -255,15 +255,6 @@ msgstr "Für diesen Tracker privat -- DHT und PEX deaktiviert"
 msgid "Public torrent"
 msgstr "Öffentlicher Torrent"
 
-msgid "Created by {creator} on {date}"
-msgstr "Erstellt von {creator} am {date}"
-
-msgid "Created by {creator}"
-msgstr "Erstellt von {creator}"
-
-msgid "Created on {date}"
-msgstr "Erstellt am {date}"
-
 msgid "Unknown"
 msgstr "Unbekannt"
 
@@ -1162,8 +1153,11 @@ msgstr "Hash:"
 msgid "Privacy:"
 msgstr "Datenschutz:"
 
-msgid "Origin:"
-msgstr "Herkunft:"
+msgid "Creator:"
+msgstr "Erstellt mit:"
+
+msgid "Created on:"
+msgstr "Erstellt am:"
 
 msgid "Added:"
 msgstr "Hinzugefügt:"
@@ -3755,6 +3749,18 @@ msgid_plural "seconds"
 msgstr[0] "Sekunde"
 msgstr[1] "Sekunden"
 
+#~ msgid "Created by {creator} on {date}"
+#~ msgstr "Erstellt von {creator} am {date}"
+
+#~ msgid "Created by {creator}"
+#~ msgstr "Erstellt von {creator}"
+
+#~ msgid "Created on {date}"
+#~ msgstr "Erstellt am {date}"
+
+#~ msgid "Origin:"
+#~ msgstr "Herkunft:"
+
 #~ msgid "Couldn't register {appname} as a {content_type} handler: {error} ({error_code})"
 #~ msgstr "{appname} konnte nicht als Standardprogramm für {content_type} registriert werden: {error} ({error_code})"
 
@@ -3789,12 +3795,6 @@ msgstr[1] "Sekunden"
 
 #~ msgid "Couldn't open '{url}'"
 #~ msgstr "»{url}« konnte nicht geöffnet werden"
-
-#~ msgid "Created on:"
-#~ msgstr "Erstellt am:"
-
-#~ msgid "Creator:"
-#~ msgstr "Erstellt mit:"
 
 #~ msgid "Seeders:"
 #~ msgstr "Verteiler:"

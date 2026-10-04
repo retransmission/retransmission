@@ -192,15 +192,6 @@ msgstr "このトラッカーは非公開 -- DHT と PEX を無効化"
 msgid "Public torrent"
 msgstr "公開トレント"
 
-msgid "Created by {creator} on {date}"
-msgstr "作成 {creator} / 作成日 {date}"
-
-msgid "Created by {creator}"
-msgstr "作成 {creator}"
-
-msgid "Created on {date}"
-msgstr "{date} に作成"
-
 msgid "Unknown"
 msgstr "不明"
 
@@ -1088,8 +1079,11 @@ msgstr "ハッシュ:"
 msgid "Privacy:"
 msgstr "プライバシー:"
 
-msgid "Origin:"
+msgid "Creator:"
 msgstr "作成:"
+
+msgid "Created on:"
+msgstr "作成日:"
 
 msgid "Added:"
 msgstr "追加日時:"
@@ -3640,6 +3634,18 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "秒"
 
+#~ msgid "Created by {creator} on {date}"
+#~ msgstr "作成 {creator} / 作成日 {date}"
+
+#~ msgid "Created by {creator}"
+#~ msgstr "作成 {creator}"
+
+#~ msgid "Created on {date}"
+#~ msgstr "{date} に作成"
+
+#~ msgid "Origin:"
+#~ msgstr "作成:"
+
 #~ msgid "Couldn't register {appname} as a {content_type} handler: {error} ({error_code})"
 #~ msgstr "{appname}を {content_type} ハンドラーとして登録できません: {error} ({error_code})"
 
@@ -3674,12 +3680,6 @@ msgstr[0] "秒"
 
 #~ msgid "Couldn't open '{url}'"
 #~ msgstr "開けません「{url}」"
-
-#~ msgid "Created on:"
-#~ msgstr "作成日:"
-
-#~ msgid "Creator:"
-#~ msgstr "作成:"
 
 #~ msgid "Seeders:"
 #~ msgstr "シーダー:"

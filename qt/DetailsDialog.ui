@@ -494,17 +494,17 @@
            </widget>
           </item>
           <item row="4" column="0">
-           <widget class="QLabel" name="originLabel">
+           <widget class="QLabel" name="creatorLabel">
             <property name="text">
-             <string>Origin:</string>
+             <string>Creator:</string>
             </property>
             <property name="buddy">
-             <cstring>originValueLabel</cstring>
+             <cstring>creatorValueLabel</cstring>
             </property>
            </widget>
           </item>
           <item row="4" column="1">
-           <widget class="SqueezeLabel" name="originValueLabel">
+           <widget class="SqueezeLabel" name="creatorValueLabel">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Ignored" vsizetype="Preferred">
               <horstretch>0</horstretch>
@@ -526,17 +526,23 @@
            </widget>
           </item>
           <item row="5" column="0">
-           <widget class="QLabel" name="addedLabel">
+           <widget class="QLabel" name="createdLabel">
             <property name="text">
-             <string>Added:</string>
+             <string>Created on:</string>
             </property>
             <property name="buddy">
-             <cstring>addedValueLabel</cstring>
+             <cstring>createdValueLabel</cstring>
             </property>
            </widget>
           </item>
           <item row="5" column="1">
-           <widget class="SqueezeLabel" name="addedValueLabel">
+           <widget class="SqueezeLabel" name="createdValueLabel">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Ignored" vsizetype="Preferred">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
             <property name="focusPolicy">
              <enum>Qt::StrongFocus</enum>
             </property>
@@ -552,6 +558,32 @@
            </widget>
           </item>
           <item row="6" column="0">
+           <widget class="QLabel" name="addedLabel">
+            <property name="text">
+             <string>Added:</string>
+            </property>
+            <property name="buddy">
+             <cstring>addedValueLabel</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="6" column="1">
+           <widget class="SqueezeLabel" name="addedValueLabel">
+            <property name="focusPolicy">
+             <enum>Qt::StrongFocus</enum>
+            </property>
+            <property name="text">
+             <string notr="true">...</string>
+            </property>
+            <property name="textFormat">
+             <enum>Qt::PlainText</enum>
+            </property>
+            <property name="textInteractionFlags">
+             <set>Qt::LinksAccessibleByKeyboard|Qt::LinksAccessibleByMouse|Qt::TextBrowserInteraction|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
+            </property>
+           </widget>
+          </item>
+          <item row="7" column="0">
            <widget class="QLabel" name="labelsLabel">
             <property name="text">
              <string>Labels:</string>
@@ -561,14 +593,14 @@
             </property>
            </widget>
           </item>
-          <item row="6" column="1">
+          <item row="7" column="1">
            <widget class="QPlainTextEdit" name="labelsTextEdit">
             <property name="tabChangesFocus">
              <bool>true</bool>
             </property>
            </widget>
           </item>
-          <item row="7" column="0">
+          <item row="8" column="0">
            <widget class="QLabel" name="commentLabel">
             <property name="text">
              <string>Comment:</string>
@@ -578,7 +610,7 @@
             </property>
            </widget>
           </item>
-          <item row="7" column="1">
+          <item row="8" column="1">
            <widget class="QPlainTextEdit" name="commentTextEdit">
             <property name="tabChangesFocus">
              <bool>true</bool>

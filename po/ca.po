@@ -185,15 +185,6 @@ msgstr "Privat per a aquest rastrejador -- DHT i PEX estan inhabilitats"
 msgid "Public torrent"
 msgstr "Torrent públic"
 
-msgid "Created by {creator} on {date}"
-msgstr "Creat per {creator} el {date}"
-
-msgid "Created by {creator}"
-msgstr "Creat per {creator}"
-
-msgid "Created on {date}"
-msgstr "Creat el {date}$"
-
 msgid "Unknown"
 msgstr "Desconegut"
 
@@ -1024,8 +1015,15 @@ msgstr "Resum:"
 msgid "Privacy:"
 msgstr "Privadesa:"
 
-msgid "Origin:"
-msgstr "Origen:"
+#, fuzzy
+#| msgid "C_redits"
+msgid "Creator:"
+msgstr "C_rèdits"
+
+#, fuzzy
+#| msgid "Created on {date}"
+msgid "Created on:"
+msgstr "Creat el {date}$"
 
 msgid "Added:"
 msgstr ""
@@ -2426,6 +2424,15 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] ""
 msgstr[1] ""
+
+#~ msgid "Created by {creator} on {date}"
+#~ msgstr "Creat per {creator} el {date}"
+
+#~ msgid "Created by {creator}"
+#~ msgstr "Creat per {creator}"
+
+#~ msgid "Origin:"
+#~ msgstr "Origen:"
 
 #, fuzzy
 #~| msgid "Couldn't save '{path}': {error} ({error_code})"

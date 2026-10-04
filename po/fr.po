@@ -195,15 +195,6 @@ msgstr "Privé pour ce traceur -- La DHT et le PEX sont désactivés"
 msgid "Public torrent"
 msgstr "Torrent public"
 
-msgid "Created by {creator} on {date}"
-msgstr "Créé par {creator} le {date}"
-
-msgid "Created by {creator}"
-msgstr "Créé par {creator}"
-
-msgid "Created on {date}"
-msgstr "Créé le {date}"
-
 msgid "Unknown"
 msgstr "Inconnu"
 
@@ -1117,8 +1108,11 @@ msgstr "Hachage :"
 msgid "Privacy:"
 msgstr "Confidentialité :"
 
-msgid "Origin:"
-msgstr "Origine :"
+msgid "Creator:"
+msgstr "Créateur :"
+
+msgid "Created on:"
+msgstr "Créé le :"
 
 msgid "Added:"
 msgstr "Ajouté :"
@@ -3762,6 +3756,18 @@ msgstr[0] "seconde"
 msgstr[1] "de secondes"
 msgstr[2] "secondes"
 
+#~ msgid "Created by {creator} on {date}"
+#~ msgstr "Créé par {creator} le {date}"
+
+#~ msgid "Created by {creator}"
+#~ msgstr "Créé par {creator}"
+
+#~ msgid "Created on {date}"
+#~ msgstr "Créé le {date}"
+
+#~ msgid "Origin:"
+#~ msgstr "Origine :"
+
 #~ msgid "Couldn't register {appname} as a {content_type} handler: {error} ({error_code})"
 #~ msgstr "Impossible d’enregistrer {appname} en tant que gestionnaire {content_type} : {error} ({error_code})"
 
@@ -3796,12 +3802,6 @@ msgstr[2] "secondes"
 
 #~ msgid "Couldn't open '{url}'"
 #~ msgstr "Impossible d’ouvrir « {url} »"
-
-#~ msgid "Created on:"
-#~ msgstr "Créé le :"
-
-#~ msgid "Creator:"
-#~ msgstr "Créateur :"
 
 #~ msgid "Seeders:"
 #~ msgstr "Propagateurs :"

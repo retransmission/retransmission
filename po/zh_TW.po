@@ -215,15 +215,6 @@ msgstr "指定為此追蹤器私有 -- 已停用 DHT 與 PEX"
 msgid "Public torrent"
 msgstr "公開 torrent"
 
-msgid "Created by {creator} on {date}"
-msgstr "由 {creator} 於 {date} 建立"
-
-msgid "Created by {creator}"
-msgstr "由 {creator} 建立"
-
-msgid "Created on {date}"
-msgstr "於 {date} 建立"
-
 msgid "Unknown"
 msgstr "未知"
 
@@ -1113,8 +1104,11 @@ msgstr "雜湊："
 msgid "Privacy:"
 msgstr "隱私："
 
-msgid "Origin:"
-msgstr "來源："
+msgid "Creator:"
+msgstr "建立者："
+
+msgid "Created on:"
+msgstr "建立於："
 
 msgid "Added:"
 msgstr "加入於："
@@ -3653,6 +3647,18 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "秒"
 
+#~ msgid "Created by {creator} on {date}"
+#~ msgstr "由 {creator} 於 {date} 建立"
+
+#~ msgid "Created by {creator}"
+#~ msgstr "由 {creator} 建立"
+
+#~ msgid "Created on {date}"
+#~ msgstr "於 {date} 建立"
+
+#~ msgid "Origin:"
+#~ msgstr "來源："
+
 #~ msgid "Couldn't register {appname} as a {content_type} handler: {error} ({error_code})"
 #~ msgstr "無法將 {appname} 登錄為 {content_type} 預設應用程式：{error} ({error_code})"
 
@@ -3687,12 +3693,6 @@ msgstr[0] "秒"
 
 #~ msgid "Couldn't open '{url}'"
 #~ msgstr "無法開啟 '{url}'"
-
-#~ msgid "Created on:"
-#~ msgstr "建立於："
-
-#~ msgid "Creator:"
-#~ msgstr "建立者："
 
 #~ msgid "Seeders:"
 #~ msgstr "做種者："

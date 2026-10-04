@@ -185,15 +185,6 @@ msgstr "Vidno le temu sledilniku - DHT in PEX onemogočena"
 msgid "Public torrent"
 msgstr "Javni torrent"
 
-msgid "Created by {creator} on {date}"
-msgstr "Ustvaril {creator} {date}"
-
-msgid "Created by {creator}"
-msgstr "Ustvaril {creator}"
-
-msgid "Created on {date}"
-msgstr "Ustvarjeno {date}"
-
 msgid "Unknown"
 msgstr "Neznano"
 
@@ -1046,8 +1037,15 @@ msgstr "Razpršilo:"
 msgid "Privacy:"
 msgstr "Zasebnost:"
 
-msgid "Origin:"
-msgstr "Izvor:"
+#, fuzzy
+#| msgid "C_redits"
+msgid "Creator:"
+msgstr "_Zasluge"
+
+#, fuzzy
+#| msgid "Created on {date}"
+msgid "Created on:"
+msgstr "Ustvarjeno {date}"
 
 msgid "Added:"
 msgstr "Dodan:"
@@ -2491,6 +2489,15 @@ msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
 msgstr[3] ""
+
+#~ msgid "Created by {creator} on {date}"
+#~ msgstr "Ustvaril {creator} {date}"
+
+#~ msgid "Created by {creator}"
+#~ msgstr "Ustvaril {creator}"
+
+#~ msgid "Origin:"
+#~ msgstr "Izvor:"
 
 #~ msgid "_New…"
 #~ msgstr "_Nov …"

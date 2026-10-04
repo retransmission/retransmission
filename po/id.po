@@ -184,15 +184,6 @@ msgstr "Privat ke pelacak ini -- DHT dan PEX dimatikan"
 msgid "Public torrent"
 msgstr "Torrent publik"
 
-msgid "Created by {creator} on {date}"
-msgstr "Dibuat oleh {creator} pada {date}"
-
-msgid "Created by {creator}"
-msgstr "Dibuat oleh {creator}"
-
-msgid "Created on {date}"
-msgstr "Dibuat pada {date}"
-
 msgid "Unknown"
 msgstr "Tak diketahui"
 
@@ -1010,8 +1001,15 @@ msgstr "Hash:"
 msgid "Privacy:"
 msgstr "Privasi:"
 
-msgid "Origin:"
-msgstr "Asal:"
+#, fuzzy
+#| msgid "C_redits"
+msgid "Creator:"
+msgstr "K_redit"
+
+#, fuzzy
+#| msgid "Created on {date}"
+msgid "Created on:"
+msgstr "Dibuat pada {date}"
 
 msgid "Added:"
 msgstr "Ditambahkan:"
@@ -2368,6 +2366,15 @@ msgstr[0] ""
 msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] ""
+
+#~ msgid "Created by {creator} on {date}"
+#~ msgstr "Dibuat oleh {creator} pada {date}"
+
+#~ msgid "Created by {creator}"
+#~ msgstr "Dibuat oleh {creator}"
+
+#~ msgid "Origin:"
+#~ msgstr "Asal:"
 
 #~ msgid "_New…"
 #~ msgstr "Bar_u…"

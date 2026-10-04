@@ -241,15 +241,6 @@ msgstr "当前 Tracker 的私有种子——已禁用 DHT 和 PEX"
 msgid "Public torrent"
 msgstr "公共种子"
 
-msgid "Created by {creator} on {date}"
-msgstr "由 {creator} 于 {date} 创建"
-
-msgid "Created by {creator}"
-msgstr "由 {creator} 创建"
-
-msgid "Created on {date}"
-msgstr "于 {date} 创建"
-
 msgid "Unknown"
 msgstr "未知"
 
@@ -1136,8 +1127,11 @@ msgstr "散列值："
 msgid "Privacy:"
 msgstr "私密类型："
 
-msgid "Origin:"
-msgstr "来源："
+msgid "Creator:"
+msgstr "创建者："
+
+msgid "Created on:"
+msgstr "创建于："
 
 msgid "Added:"
 msgstr "添加时间："
@@ -3683,6 +3677,18 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "秒"
 
+#~ msgid "Created by {creator} on {date}"
+#~ msgstr "由 {creator} 于 {date} 创建"
+
+#~ msgid "Created by {creator}"
+#~ msgstr "由 {creator} 创建"
+
+#~ msgid "Created on {date}"
+#~ msgstr "于 {date} 创建"
+
+#~ msgid "Origin:"
+#~ msgstr "来源："
+
 #~ msgid "Couldn't register {appname} as a {content_type} handler: {error} ({error_code})"
 #~ msgstr "无法将 {appname} 注册为 {content_type} 处理程序：{error}（{error_code}）"
 
@@ -3717,12 +3723,6 @@ msgstr[0] "秒"
 
 #~ msgid "Couldn't open '{url}'"
 #~ msgstr "无法打开“{url}”"
-
-#~ msgid "Created on:"
-#~ msgstr "创建于："
-
-#~ msgid "Creator:"
-#~ msgstr "创建者："
 
 #~ msgid "Seeders:"
 #~ msgstr "做种用户："

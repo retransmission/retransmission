@@ -221,15 +221,6 @@ msgstr "Privato per questo server traccia -- DHT e PEX disabilitati"
 msgid "Public torrent"
 msgstr "Torrent pubblico"
 
-msgid "Created by {creator} on {date}"
-msgstr "Creato da {creator} in data {date}"
-
-msgid "Created by {creator}"
-msgstr "Creato da {creator}"
-
-msgid "Created on {date}"
-msgstr "Creato in data {date}"
-
 msgid "Unknown"
 msgstr "Sconosciuto"
 
@@ -1136,8 +1127,11 @@ msgstr "Hash:"
 msgid "Privacy:"
 msgstr "Privacy:"
 
-msgid "Origin:"
-msgstr "Origine:"
+msgid "Creator:"
+msgstr "Creatore:"
+
+msgid "Created on:"
+msgstr "Creato il:"
 
 msgid "Added:"
 msgstr "Aggiunto:"
@@ -3782,6 +3776,18 @@ msgstr[0] "secondo"
 msgstr[1] "secondi"
 msgstr[2] "secondi"
 
+#~ msgid "Created by {creator} on {date}"
+#~ msgstr "Creato da {creator} in data {date}"
+
+#~ msgid "Created by {creator}"
+#~ msgstr "Creato da {creator}"
+
+#~ msgid "Created on {date}"
+#~ msgstr "Creato in data {date}"
+
+#~ msgid "Origin:"
+#~ msgstr "Origine:"
+
 #, fuzzy
 #~| msgid "Couldn't save '{path}': {error} ({error_code})"
 #~ msgid "Couldn't spawn async process \"'{command}'\": {error} ({error_code})"
@@ -3801,12 +3807,6 @@ msgstr[2] "secondi"
 #~| msgid "Couldn't remove '{path}': {error} ({error_code})"
 #~ msgid "Couldn't invoke xdg-open for URI '{uri}': {error} ({error_code})"
 #~ msgstr "Impossibile rimuovere «{path}»: {error} ({error_code})"
-
-#~ msgid "Created on:"
-#~ msgstr "Creato il:"
-
-#~ msgid "Creator:"
-#~ msgstr "Creatore:"
 
 #~ msgid "Seeders:"
 #~ msgstr "Seeder:"

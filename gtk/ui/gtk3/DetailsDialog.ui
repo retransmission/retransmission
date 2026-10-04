@@ -427,15 +427,27 @@
                           </packing>
                         </child>
                         <child>
-                          <object class="GtkLabel" id="origin_label">
+                          <object class="GtkLabel" id="creator_label">
                             <property name="visible">True</property>
                             <property name="can-focus">False</property>
-                            <property name="label" translatable="yes">Origin:</property>
+                            <property name="label" translatable="yes">Creator:</property>
                             <property name="xalign">0</property>
                           </object>
                           <packing>
                             <property name="left-attach">0</property>
                             <property name="top-attach">3</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkLabel" id="created_label">
+                            <property name="visible">True</property>
+                            <property name="can-focus">False</property>
+                            <property name="label" translatable="yes">Created on:</property>
+                            <property name="xalign">0</property>
+                          </object>
+                          <packing>
+                            <property name="left-attach">0</property>
+                            <property name="top-attach">4</property>
                           </packing>
                         </child>
                         <child>
@@ -447,7 +459,7 @@
                           </object>
                           <packing>
                             <property name="left-attach">0</property>
-                            <property name="top-attach">4</property>
+                            <property name="top-attach">5</property>
                           </packing>
                         </child>
                         <child>
@@ -464,7 +476,7 @@
                           </object>
                           <packing>
                             <property name="left-attach">0</property>
-                            <property name="top-attach">5</property>
+                            <property name="top-attach">6</property>
                           </packing>
                         </child>
                         <child>
@@ -518,7 +530,7 @@
                           </packing>
                         </child>
                         <child>
-                          <object class="GtkLabel" id="origin_value_label">
+                          <object class="GtkLabel" id="creator_value_label">
                             <property name="visible">True</property>
                             <property name="can-focus">True</property>
                             <property name="label">...</property>
@@ -526,12 +538,29 @@
                             <property name="ellipsize">end</property>
                             <property name="xalign">0</property>
                             <accessibility>
-                              <relation type="labelled-by" target="origin_label"/>
+                              <relation type="labelled-by" target="creator_label"/>
                             </accessibility>
                           </object>
                           <packing>
                             <property name="left-attach">1</property>
                             <property name="top-attach">3</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkLabel" id="created_value_label">
+                            <property name="visible">True</property>
+                            <property name="can-focus">True</property>
+                            <property name="label">...</property>
+                            <property name="selectable">True</property>
+                            <property name="ellipsize">end</property>
+                            <property name="xalign">0</property>
+                            <accessibility>
+                              <relation type="labelled-by" target="created_label"/>
+                            </accessibility>
+                          </object>
+                          <packing>
+                            <property name="left-attach">1</property>
+                            <property name="top-attach">4</property>
                           </packing>
                         </child>
                         <child>
@@ -547,7 +576,7 @@
                           </object>
                           <packing>
                             <property name="left-attach">1</property>
-                            <property name="top-attach">4</property>
+                            <property name="top-attach">5</property>
                           </packing>
                         </child>
                         <child>
@@ -570,7 +599,7 @@
                           </object>
                           <packing>
                             <property name="left-attach">1</property>
-                            <property name="top-attach">5</property>
+                            <property name="top-attach">6</property>
                           </packing>
                         </child>
                       </object>
@@ -1241,7 +1270,8 @@
       <widget name="location_label"/>
       <widget name="hash_label"/>
       <widget name="privacy_label"/>
-      <widget name="origin_label"/>
+      <widget name="creator_label"/>
+      <widget name="created_label"/>
       <widget name="added_label"/>
       <widget name="comment_label"/>
     </widgets>

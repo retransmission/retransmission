@@ -337,12 +337,22 @@
                               </object>
                             </child>
                             <child>
-                              <object class="GtkLabel" id="origin_label">
-                                <property name="label" translatable="yes">Origin:</property>
+                              <object class="GtkLabel" id="creator_label">
+                                <property name="label" translatable="yes">Creator:</property>
                                 <property name="xalign">0</property>
                                 <layout>
                                   <property name="column">0</property>
                                   <property name="row">3</property>
+                                </layout>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="GtkLabel" id="created_label">
+                                <property name="label" translatable="yes">Created on:</property>
+                                <property name="xalign">0</property>
+                                <layout>
+                                  <property name="column">0</property>
+                                  <property name="row">4</property>
                                 </layout>
                               </object>
                             </child>
@@ -352,7 +362,7 @@
                                 <property name="xalign">0</property>
                                 <layout>
                                   <property name="column">0</property>
-                                  <property name="row">4</property>
+                                  <property name="row">5</property>
                                 </layout>
                               </object>
                             </child>
@@ -367,7 +377,7 @@
                                 <property name="yalign">0</property>
                                 <layout>
                                   <property name="column">0</property>
-                                  <property name="row">5</property>
+                                  <property name="row">6</property>
                                 </layout>
                               </object>
                             </child>
@@ -416,17 +426,32 @@
                               </object>
                             </child>
                             <child>
-                              <object class="GtkLabel" id="origin_value_label">
+                              <object class="GtkLabel" id="creator_value_label">
                                 <property name="label">...</property>
                                 <property name="selectable">1</property>
                                 <property name="ellipsize">end</property>
                                 <property name="xalign">0</property>
                                 <accessibility>
-                                  <relation name="labelled-by">origin_label</relation>
+                                  <relation name="labelled-by">creator_label</relation>
                                 </accessibility>
                                 <layout>
                                   <property name="column">1</property>
                                   <property name="row">3</property>
+                                </layout>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="GtkLabel" id="created_value_label">
+                                <property name="label">...</property>
+                                <property name="selectable">1</property>
+                                <property name="ellipsize">end</property>
+                                <property name="xalign">0</property>
+                                <accessibility>
+                                  <relation name="labelled-by">created_label</relation>
+                                </accessibility>
+                                <layout>
+                                  <property name="column">1</property>
+                                  <property name="row">4</property>
                                 </layout>
                               </object>
                             </child>
@@ -440,7 +465,7 @@
                                 </accessibility>
                                 <layout>
                                   <property name="column">1</property>
-                                  <property name="row">4</property>
+                                  <property name="row">5</property>
                                 </layout>
                               </object>
                             </child>
@@ -461,7 +486,7 @@
                                 </property>
                                 <layout>
                                   <property name="column">1</property>
-                                  <property name="row">5</property>
+                                  <property name="row">6</property>
                                 </layout>
                               </object>
                             </child>
@@ -935,7 +960,8 @@
       <widget name="location_label"/>
       <widget name="hash_label"/>
       <widget name="privacy_label"/>
-      <widget name="origin_label"/>
+      <widget name="creator_label"/>
+      <widget name="created_label"/>
       <widget name="added_label"/>
       <widget name="comment_label"/>
     </widgets>

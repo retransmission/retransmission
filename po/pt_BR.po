@@ -258,15 +258,6 @@ msgstr "Privado para esse rastreador -- DHT e PEX desabilitados"
 msgid "Public torrent"
 msgstr "Torrent público"
 
-msgid "Created by {creator} on {date}"
-msgstr "Criado por {creator} em {date}"
-
-msgid "Created by {creator}"
-msgstr "Criado por {creator}"
-
-msgid "Created on {date}"
-msgstr "Criado em {date}"
-
 msgid "Unknown"
 msgstr "Desconhecido"
 
@@ -1178,8 +1169,11 @@ msgstr "Hash:"
 msgid "Privacy:"
 msgstr "Privacidade:"
 
-msgid "Origin:"
-msgstr "Origem:"
+msgid "Creator:"
+msgstr "Criador:"
+
+msgid "Created on:"
+msgstr "Criado em:"
 
 msgid "Added:"
 msgstr "Adicionado:"
@@ -3820,6 +3814,18 @@ msgstr[0] "segundo"
 msgstr[1] "segundos"
 msgstr[2] "segundos"
 
+#~ msgid "Created by {creator} on {date}"
+#~ msgstr "Criado por {creator} em {date}"
+
+#~ msgid "Created by {creator}"
+#~ msgstr "Criado por {creator}"
+
+#~ msgid "Created on {date}"
+#~ msgstr "Criado em {date}"
+
+#~ msgid "Origin:"
+#~ msgstr "Origem:"
+
 #~ msgid "Couldn't register {appname} as a {content_type} handler: {error} ({error_code})"
 #~ msgstr "Não foi posível registrar {appname} como um manipulador {content_type}: {error}({error_code})"
 
@@ -3854,12 +3860,6 @@ msgstr[2] "segundos"
 
 #~ msgid "Couldn't open '{url}'"
 #~ msgstr "Não foi possível abrir '{url}'"
-
-#~ msgid "Created on:"
-#~ msgstr "Criado em:"
-
-#~ msgid "Creator:"
-#~ msgstr "Criador:"
 
 #~ msgid "Seeders:"
 #~ msgstr "Semeadores:"

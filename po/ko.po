@@ -190,15 +190,6 @@ msgstr "비 공개 트래커 -- DHT와 PEX를 사용할 수 없음"
 msgid "Public torrent"
 msgstr "공개 토렌트"
 
-msgid "Created by {creator} on {date}"
-msgstr "{creator}이(가) {date}에 만듦"
-
-msgid "Created by {creator}"
-msgstr "{creator}이(가) 만듦"
-
-msgid "Created on {date}"
-msgstr "{date}에 만듦"
-
 msgid "Unknown"
 msgstr "알려지지 않음"
 
@@ -1014,8 +1005,15 @@ msgstr "해시:"
 msgid "Privacy:"
 msgstr "공개/비공개:"
 
-msgid "Origin:"
-msgstr "출처:"
+#, fuzzy
+#| msgid "C_redits"
+msgid "Creator:"
+msgstr "크레딧 (_R)"
+
+#, fuzzy
+#| msgid "Created on {date}"
+msgid "Created on:"
+msgstr "{date}에 만듦"
 
 msgid "Added:"
 msgstr "추가됨:"
@@ -2380,6 +2378,15 @@ msgstr[0] ""
 msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] ""
+
+#~ msgid "Created by {creator} on {date}"
+#~ msgstr "{creator}이(가) {date}에 만듦"
+
+#~ msgid "Created by {creator}"
+#~ msgstr "{creator}이(가) 만듦"
+
+#~ msgid "Origin:"
+#~ msgstr "출처:"
 
 #~ msgid "Couldn't register {appname} as a {content_type} handler: {error} ({error_code})"
 #~ msgstr "{appname}을 {content_type} 연결 프로그램에 등록할 수 없음: {error} ({error_code})"

@@ -274,15 +274,6 @@ msgstr "Privado para este rastreador, DHT y PEX desactivados"
 msgid "Public torrent"
 msgstr "Torrent público"
 
-msgid "Created by {creator} on {date}"
-msgstr "Creado por {creator} el {date}"
-
-msgid "Created by {creator}"
-msgstr "Creado por {creator}"
-
-msgid "Created on {date}"
-msgstr "Creado el {date}"
-
 msgid "Unknown"
 msgstr "Desconocido"
 
@@ -1196,8 +1187,11 @@ msgstr "Hash:"
 msgid "Privacy:"
 msgstr "Privacidad:"
 
-msgid "Origin:"
-msgstr "Origen:"
+msgid "Creator:"
+msgstr "Creador:"
+
+msgid "Created on:"
+msgstr "Creado:"
 
 msgid "Added:"
 msgstr "Añadido:"
@@ -3837,6 +3831,18 @@ msgstr[0] "segundo"
 msgstr[1] "segundos"
 msgstr[2] "segundos"
 
+#~ msgid "Created by {creator} on {date}"
+#~ msgstr "Creado por {creator} el {date}"
+
+#~ msgid "Created by {creator}"
+#~ msgstr "Creado por {creator}"
+
+#~ msgid "Created on {date}"
+#~ msgstr "Creado el {date}"
+
+#~ msgid "Origin:"
+#~ msgstr "Origen:"
+
 #~ msgid "Couldn't register {appname} as a {content_type} handler: {error} ({error_code})"
 #~ msgstr "No se pudo registrar {appname} como un gestor de {content_type}: {error} ({error_code})"
 
@@ -3871,12 +3877,6 @@ msgstr[2] "segundos"
 
 #~ msgid "Couldn't open '{url}'"
 #~ msgstr "No se pudo abrir «{url}»"
-
-#~ msgid "Created on:"
-#~ msgstr "Creado:"
-
-#~ msgid "Creator:"
-#~ msgstr "Creador:"
 
 #, fuzzy
 #~| msgid "seeder"

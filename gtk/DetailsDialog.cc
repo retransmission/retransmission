@@ -182,7 +182,8 @@ private:
 
     Gtk::Label* hash_lb_ = nullptr;
     Gtk::Label* privacy_lb_ = nullptr;
-    Gtk::Label* origin_lb_ = nullptr;
+    Gtk::Label* creator_lb_ = nullptr;
+    Gtk::Label* created_lb_ = nullptr;
     Gtk::Label* destination_lb_ = nullptr;
     Glib::RefPtr<Gtk::TextBuffer> comment_buffer_;
 
@@ -585,38 +586,34 @@ void DetailsDialog::Impl::refreshInfo(std::vector<tr_torrent*> const& torrents)
 
     added_lb_->set_text(str);
 
-    /* origin_lb */
+    /* creator_lb, created_lb */
     if (infos.empty()) {
-        str = no_torrent;
+        creator_lb_->set_text(no_torrent);
+        created_lb_->set_text(no_torrent);
     } else {
         auto const creator = tr_strv_strip(infos.front().creator != nullptr ? infos.front().creator : "");
         auto const date = infos.front().date_created;
-        auto const datestr = get_date_string(date);
         bool const mixed_creator = std::ranges::any_of(infos, [&creator](auto const& info) {
             return creator != (info.creator != nullptr ? info.creator : "");
         });
         bool const mixed_date = std::ranges::any_of(infos, [date](auto const& info) { return date != info.date_created; });
 
-        bool const empty_creator = std::empty(creator);
-        bool const empty_date = date == 0;
-
-        if (mixed_creator || mixed_date) {
-            str = mixed;
-        } else if (!empty_creator && !empty_date) {
-            str = fmt::format(
-                fmt::runtime(_("Created by {creator} on {date}")),
-                fmt::arg("creator", creator),
-                fmt::arg("date", datestr));
-        } else if (!empty_creator) {
-            str = fmt::format(fmt::runtime(_("Created by {creator}")), fmt::arg("creator", creator));
-        } else if (!empty_date) {
-            str = fmt::format(fmt::runtime(_("Created on {date}")), fmt::arg("date", datestr));
+        if (mixed_creator) {
+            creator_lb_->set_text(mixed);
+        } else if (!std::empty(creator)) {
+            creator_lb_->set_text(std::string{ creator });
         } else {
-            str = _("N/A");
+            creator_lb_->set_text(_("N/A"));
+        }
+
+        if (mixed_date) {
+            created_lb_->set_text(mixed);
+        } else if (date != 0) {
+            created_lb_->set_text(get_date_string(date));
+        } else {
+            created_lb_->set_text(_("N/A"));
         }
     }
-
-    origin_lb_->set_text(str);
 
     /* comment_buffer */
     if (infos.empty()) {
@@ -2033,7 +2030,8 @@ DetailsDialog::Impl::Impl(DetailsDialog& dialog, Glib::RefPtr<Gtk::Builder> cons
     , last_activity_lb_(gtr_get_widget<Gtk::Label>(builder, "last_activity_value_label"))
     , hash_lb_(gtr_get_widget<Gtk::Label>(builder, "hash_value_label"))
     , privacy_lb_(gtr_get_widget<Gtk::Label>(builder, "privacy_value_label"))
-    , origin_lb_(gtr_get_widget<Gtk::Label>(builder, "origin_value_label"))
+    , creator_lb_(gtr_get_widget<Gtk::Label>(builder, "creator_value_label"))
+    , created_lb_(gtr_get_widget<Gtk::Label>(builder, "created_value_label"))
     , destination_lb_(gtr_get_widget<Gtk::Label>(builder, "location_value_label"))
     , webseed_view_(gtr_get_widget<Gtk::ScrolledWindow>(builder, "webseeds_view_scroll"))
     , peer_view_(gtr_get_widget<Gtk::TreeView>(builder, "peers_view"))
