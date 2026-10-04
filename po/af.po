@@ -3636,8 +3636,12 @@ msgstr "Laai Steeds Af"
 msgid "Do not check disk space again"
 msgstr "Moenie weer skyfspasie nagaan nie"
 
-msgid "{percent} of torrent metadata retrieved"
-msgstr "{percent} van torrentmetadata opgehaal"
+#. Translators: First part of torrent progress string,
+#. {percent_done} is the percentage of torrent metadata downloaded
+#, fuzzy
+#| msgid "Magnetized transfer - retrieving metadata (%1%)"
+msgid "Magnetized torrent - retrieving metadata ({percent_done}%)"
+msgstr "Gemagnetiseerde oordrag - herwin metadata (%1%)"
 
 #. Translators: Torrent -> progress string
 msgid "torrent metadata needed"
@@ -3984,13 +3988,6 @@ msgstr "_Waarmerking vereis"
 msgid "Remote root pa_th:"
 msgstr ""
 
-#. Translators: First part of torrent progress string,
-#. {percent_done} is the percentage of torrent metadata downloaded
-#, fuzzy
-#| msgid "Magnetized transfer - retrieving metadata (%1%)"
-msgid "Magnetized torrent - retrieving metadata ({percent_done}%)"
-msgstr "Gemagnetiseerde oordrag - herwin metadata (%1%)"
-
 #. Translators: First part of phrase "Downloading from ... peer(s) and ... web seed(s)"
 msgid "Downloading from {active_count:L} peer"
 msgid_plural "Downloading from {active_count:L} peers"
@@ -4044,6 +4041,9 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "sekonde"
 msgstr[1] "sekondes"
+
+#~ msgid "{percent} of torrent metadata retrieved"
+#~ msgstr "{percent} van torrentmetadata opgehaal"
 
 #~ msgid "{count:L} IP address rule in list"
 #~ msgid_plural "{count:L} IP address rules in list"

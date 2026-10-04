@@ -3626,8 +3626,12 @@ msgstr "仍然下载"
 msgid "Do not check disk space again"
 msgstr "不再检查磁盘空间"
 
-msgid "{percent} of torrent metadata retrieved"
-msgstr "已收到种子元数据的 {percent}"
+#. Translators: First part of torrent progress string,
+#. {percent_done} is the percentage of torrent metadata downloaded
+#, fuzzy
+#| msgid "Magnetized transfer - retrieving metadata (%1%)"
+msgid "Magnetized torrent - retrieving metadata ({percent_done}%)"
+msgstr "磁力传输 - 正在检索元数据 (%1%)"
 
 #. Translators: Torrent -> progress string
 msgid "torrent metadata needed"
@@ -3966,13 +3970,6 @@ msgstr "需要验证身份(_A)"
 msgid "Remote root pa_th:"
 msgstr ""
 
-#. Translators: First part of torrent progress string,
-#. {percent_done} is the percentage of torrent metadata downloaded
-#, fuzzy
-#| msgid "Magnetized transfer - retrieving metadata (%1%)"
-msgid "Magnetized torrent - retrieving metadata ({percent_done}%)"
-msgstr "磁力传输 - 正在检索元数据 (%1%)"
-
 #. Translators: First part of phrase "Downloading from ... peer(s) and ... web seed(s)"
 msgid "Downloading from {active_count:L} peer"
 msgid_plural "Downloading from {active_count:L} peers"
@@ -4017,6 +4014,9 @@ msgstr[0] "天"
 msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "秒"
+
+#~ msgid "{percent} of torrent metadata retrieved"
+#~ msgstr "已收到种子元数据的 {percent}"
 
 #~ msgid "{count:L} IP address rule in list"
 #~ msgid_plural "{count:L} IP address rules in list"

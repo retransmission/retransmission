@@ -13,6 +13,7 @@
 #include <libtransmission/log.h>
 #include <libtransmission/string-utils.h>
 #include <libtransmission/torrent-builder.h>
+#include <libtransmission/utils.h>
 
 #import "Torrent.h"
 #import "GroupsController.h"
@@ -1027,15 +1028,17 @@ static tr_torrent_rename_done_func makeRenameDoneCallback(NSDictionary* contextI
 - (NSString*)progressString
 {
     if (self.magnet) {
-        NSString* progressString = self.fStat.metadata_percent_complete > 0.0 ?
-            TR_FORMAT(
-                "{percent} of torrent metadata retrieved",
-                TRArg("percent", [NSString percentString:self.fStat.metadata_percent_complete longDecimals:YES])) :
-            // Translators: Torrent -> progress string
-            TR_TEXT("torrent metadata needed");
+        if (auto const percent_done = 100.0 * self.fStat.metadata_percent_complete; percent_done > 0.0) {
+            return TR_FORMAT(
+                "Magnetized torrent - retrieving metadata ({percent_done}%)",
+                TRArg("percent_done", tr_strv_to_utf8_nsstring(tr_strpercent(percent_done))));
+        }
 
-        // Translators: Torrent -> progress string
-        return [NSString stringWithFormat:@"%@ — %@", TR_TEXT("Magnetized torrent"), progressString];
+        return [NSString stringWithFormat:@"%@ — %@",
+                                          // Translators: Torrent -> progress string
+                                          TR_TEXT("Magnetized torrent"),
+                                          // Translators: Torrent -> progress string
+                                          TR_TEXT("torrent metadata needed")];
     }
 
     NSString* string;

@@ -3698,8 +3698,12 @@ msgstr "Télécharger quand même"
 msgid "Do not check disk space again"
 msgstr "Ne plus vérifier l’espace disque"
 
-msgid "{percent} of torrent metadata retrieved"
-msgstr "{percent} des métadonnées du torrent ont été récupérées"
+#. Translators: First part of torrent progress string,
+#. {percent_done} is the percentage of torrent metadata downloaded
+#, fuzzy
+#| msgid "Magnetized transfer - retrieving metadata (%1%)"
+msgid "Magnetized torrent - retrieving metadata ({percent_done}%)"
+msgstr "Transfert magnétisé – réception des métadonnées (%1 %)"
 
 #. Translators: Torrent -> progress string
 msgid "torrent metadata needed"
@@ -4053,13 +4057,6 @@ msgstr "L’_authentification est requise"
 msgid "Remote root pa_th:"
 msgstr ""
 
-#. Translators: First part of torrent progress string,
-#. {percent_done} is the percentage of torrent metadata downloaded
-#, fuzzy
-#| msgid "Magnetized transfer - retrieving metadata (%1%)"
-msgid "Magnetized torrent - retrieving metadata ({percent_done}%)"
-msgstr "Transfert magnétisé – réception des métadonnées (%1 %)"
-
 #. Translators: First part of phrase "Downloading from ... peer(s) and ... web seed(s)"
 msgid "Downloading from {active_count:L} peer"
 msgid_plural "Downloading from {active_count:L} peers"
@@ -4122,6 +4119,9 @@ msgid_plural "seconds"
 msgstr[0] "seconde"
 msgstr[1] "de secondes"
 msgstr[2] "secondes"
+
+#~ msgid "{percent} of torrent metadata retrieved"
+#~ msgstr "{percent} des métadonnées du torrent ont été récupérées"
 
 #~ msgid "{count:L} IP address rule in list"
 #~ msgid_plural "{count:L} IP address rules in list"

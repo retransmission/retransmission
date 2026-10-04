@@ -3637,8 +3637,12 @@ msgstr "Yine de İndir"
 msgid "Do not check disk space again"
 msgstr "Disk alanını bir daha denetleme"
 
-msgid "{percent} of torrent metadata retrieved"
-msgstr "{percent} torrent üst verisi alındı"
+#. Translators: First part of torrent progress string,
+#. {percent_done} is the percentage of torrent metadata downloaded
+#, fuzzy
+#| msgid "Magnetized transfer - retrieving metadata (%1%)"
+msgid "Magnetized torrent - retrieving metadata ({percent_done}%)"
+msgstr "Mıknatıslı aktarım - üst veri alınıyor (%%1)"
 
 #. Translators: Torrent -> progress string
 msgid "torrent metadata needed"
@@ -3985,13 +3989,6 @@ msgstr "_Yetkilendirme gerekli"
 msgid "Remote root pa_th:"
 msgstr ""
 
-#. Translators: First part of torrent progress string,
-#. {percent_done} is the percentage of torrent metadata downloaded
-#, fuzzy
-#| msgid "Magnetized transfer - retrieving metadata (%1%)"
-msgid "Magnetized torrent - retrieving metadata ({percent_done}%)"
-msgstr "Mıknatıslı aktarım - üst veri alınıyor (%%1)"
-
 #. Translators: First part of phrase "Downloading from ... peer(s) and ... web seed(s)"
 msgid "Downloading from {active_count:L} peer"
 msgid_plural "Downloading from {active_count:L} peers"
@@ -4045,6 +4042,9 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "saniye"
 msgstr[1] "saniye"
+
+#~ msgid "{percent} of torrent metadata retrieved"
+#~ msgstr "{percent} torrent üst verisi alındı"
 
 #~ msgid "{count:L} IP address rule in list"
 #~ msgid_plural "{count:L} IP address rules in list"

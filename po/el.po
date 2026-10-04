@@ -3667,8 +3667,12 @@ msgstr "Λήψη ούτως ή άλλως "
 msgid "Do not check disk space again"
 msgstr "Να μην γίνει ξανά έλεγχος του χώρου στο δίσκο"
 
-msgid "{percent} of torrent metadata retrieved"
-msgstr "ανακτήθηκαν {percent} από μεταδεδομένα torrent"
+#. Translators: First part of torrent progress string,
+#. {percent_done} is the percentage of torrent metadata downloaded
+#, fuzzy
+#| msgid "Magnetized transfer - retrieving metadata (%1%)"
+msgid "Magnetized torrent - retrieving metadata ({percent_done}%)"
+msgstr "Μεταφορά magnet - ανάκτηση μεταδεδομένων (%1%)"
 
 #. Translators: Torrent -> progress string
 msgid "torrent metadata needed"
@@ -4015,13 +4019,6 @@ msgstr "_Απαιτείται πιστοποίηση"
 msgid "Remote root pa_th:"
 msgstr ""
 
-#. Translators: First part of torrent progress string,
-#. {percent_done} is the percentage of torrent metadata downloaded
-#, fuzzy
-#| msgid "Magnetized transfer - retrieving metadata (%1%)"
-msgid "Magnetized torrent - retrieving metadata ({percent_done}%)"
-msgstr "Μεταφορά magnet - ανάκτηση μεταδεδομένων (%1%)"
-
 #. Translators: First part of phrase "Downloading from ... peer(s) and ... web seed(s)"
 msgid "Downloading from {active_count:L} peer"
 msgid_plural "Downloading from {active_count:L} peers"
@@ -4075,6 +4072,9 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "δευτερόλεπτο"
 msgstr[1] "δευτερόλεπτα"
+
+#~ msgid "{percent} of torrent metadata retrieved"
+#~ msgstr "ανακτήθηκαν {percent} από μεταδεδομένα torrent"
 
 #~ msgid "{count:L} IP address rule in list"
 #~ msgid_plural "{count:L} IP address rules in list"

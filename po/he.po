@@ -3731,8 +3731,12 @@ msgstr "להוריד בכל מקרה"
 msgid "Do not check disk space again"
 msgstr "לא לבדוק שוב את הנפח בכונן הקשיח"
 
-msgid "{percent} of torrent metadata retrieved"
-msgstr "{percent} מנתוני העל של הטורנט התקבלו"
+#. Translators: First part of torrent progress string,
+#. {percent_done} is the percentage of torrent metadata downloaded
+#, fuzzy
+#| msgid "Magnetized transfer - retrieving metadata (%1%)"
+msgid "Magnetized torrent - retrieving metadata ({percent_done}%)"
+msgstr "העברה מגנטית - נתוני העל מתקבלים (%1%)"
 
 #. Translators: Torrent -> progress string
 msgid "torrent metadata needed"
@@ -4085,13 +4089,6 @@ msgstr "_נדרש אימות"
 msgid "Remote root pa_th:"
 msgstr ""
 
-#. Translators: First part of torrent progress string,
-#. {percent_done} is the percentage of torrent metadata downloaded
-#, fuzzy
-#| msgid "Magnetized transfer - retrieving metadata (%1%)"
-msgid "Magnetized torrent - retrieving metadata ({percent_done}%)"
-msgstr "העברה מגנטית - נתוני העל מתקבלים (%1%)"
-
 #. Translators: First part of phrase "Downloading from ... peer(s) and ... web seed(s)"
 msgid "Downloading from {active_count:L} peer"
 msgid_plural "Downloading from {active_count:L} peers"
@@ -4160,6 +4157,9 @@ msgstr[0] "שנייה"
 msgstr[1] "שניות"
 msgstr[2] "שניות"
 msgstr[3] "שניות"
+
+#~ msgid "{percent} of torrent metadata retrieved"
+#~ msgstr "{percent} מנתוני העל של הטורנט התקבלו"
 
 #~ msgid "{count:L} IP address rule in list"
 #~ msgid_plural "{count:L} IP address rules in list"
