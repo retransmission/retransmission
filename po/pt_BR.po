@@ -2694,9 +2694,6 @@ msgstr "Fóruns"
 msgid "Support & Development"
 msgstr "Suporte & Desenvolvimento"
 
-msgid "Menu"
-msgstr ""
-
 msgid "Check for update:"
 msgstr "Buscar atualização:"
 
@@ -2879,14 +2876,8 @@ msgstr "Limites de Par"
 msgid "Blocklist:"
 msgstr "Lista de bloqueio:"
 
-msgid "Last updated: N/A"
-msgstr "Última atualização: N/A"
-
 msgid "Encryption:"
 msgstr "Criptografia:"
-
-msgid "blocklist loaded/not loaded"
-msgstr "lista de bloqueio carregada/não carregada"
 
 msgid "High connection limits might significantly impact system performance"
 msgstr "Limites altos de conexão podem afetar significativamente o desempenho do sistema"
@@ -4095,6 +4086,12 @@ msgid_plural "seconds"
 msgstr[0] "segundo"
 msgstr[1] "segundos"
 msgstr[2] "segundos"
+
+#~ msgid "Last updated: N/A"
+#~ msgstr "Última atualização: N/A"
+
+#~ msgid "blocklist loaded/not loaded"
+#~ msgstr "lista de bloqueio carregada/não carregada"
 
 #~ msgid "Announce timed out"
 #~ msgstr "Anúncio no prazo"

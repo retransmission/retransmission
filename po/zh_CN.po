@@ -2606,9 +2606,6 @@ msgstr "论坛"
 msgid "Support & Development"
 msgstr "支持和开发"
 
-msgid "Menu"
-msgstr "菜单"
-
 msgid "Check for update:"
 msgstr "检查更新："
 
@@ -2791,14 +2788,8 @@ msgstr "节点限制"
 msgid "Blocklist:"
 msgstr "屏蔽列表："
 
-msgid "Last updated: N/A"
-msgstr "最后更新时间：N/A"
-
 msgid "Encryption:"
 msgstr "加密："
-
-msgid "blocklist loaded/not loaded"
-msgstr "屏蔽列表已加载/未加载"
 
 msgid "High connection limits might significantly impact system performance"
 msgstr "高连接限制可能会显著影响系统性能"
@@ -3931,6 +3922,15 @@ msgstr[0] "天"
 msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "秒"
+
+#~ msgid "Menu"
+#~ msgstr "菜单"
+
+#~ msgid "Last updated: N/A"
+#~ msgstr "最后更新时间：N/A"
+
+#~ msgid "blocklist loaded/not loaded"
+#~ msgstr "屏蔽列表已加载/未加载"
 
 #~ msgid "Announce timed out"
 #~ msgstr "宣告超时"

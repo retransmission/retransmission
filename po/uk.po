@@ -2698,9 +2698,6 @@ msgstr "Форуми"
 msgid "Support & Development"
 msgstr "Retransmission wiki та розробка"
 
-msgid "Menu"
-msgstr "Меню"
-
 msgid "Check for update:"
 msgstr "Перевірити оновлення:"
 
@@ -2885,14 +2882,8 @@ msgstr "Обмеження вузлів"
 msgid "Blocklist:"
 msgstr "Список блокування:"
 
-msgid "Last updated: N/A"
-msgstr "Останнє оновлення: немає даних"
-
 msgid "Encryption:"
 msgstr "Шифрування:"
-
-msgid "blocklist loaded/not loaded"
-msgstr "чорний список завантажений / не завантажений"
 
 msgid "High connection limits might significantly impact system performance"
 msgstr "Деякі роутери будуть \"гальмувати\" якщо підключень дуже багато"
@@ -4119,6 +4110,15 @@ msgstr[0] "секунда"
 msgstr[1] "секунди"
 msgstr[2] "секунд"
 msgstr[3] "секунди"
+
+#~ msgid "Menu"
+#~ msgstr "Меню"
+
+#~ msgid "Last updated: N/A"
+#~ msgstr "Останнє оновлення: немає даних"
+
+#~ msgid "blocklist loaded/not loaded"
+#~ msgstr "чорний список завантажений / не завантажений"
 
 #~ msgid "Announce timed out"
 #~ msgstr "Час оголошення вичерпано"

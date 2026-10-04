@@ -2714,9 +2714,6 @@ msgstr "Foros de Retransmission"
 msgid "Support & Development"
 msgstr "Wiki y Desarrollo de Retransmission"
 
-msgid "Menu"
-msgstr "Menú"
-
 msgid "Check for update:"
 msgstr "Buscar actualizaciones:"
 
@@ -2899,14 +2896,8 @@ msgstr "Límite de conexiones"
 msgid "Blocklist:"
 msgstr "Lista de bloqueo:"
 
-msgid "Last updated: N/A"
-msgstr "Actualizado por última vez: N/D"
-
 msgid "Encryption:"
 msgstr "Encriptación:"
-
-msgid "blocklist loaded/not loaded"
-msgstr "Lista de bloqueo cargada/no cargada"
 
 msgid "High connection limits might significantly impact system performance"
 msgstr "Un límite de conexiones alto puede ralentizar algunos routers"
@@ -4115,6 +4106,15 @@ msgid_plural "seconds"
 msgstr[0] "segundo"
 msgstr[1] "segundos"
 msgstr[2] "segundos"
+
+#~ msgid "Menu"
+#~ msgstr "Menú"
+
+#~ msgid "Last updated: N/A"
+#~ msgstr "Actualizado por última vez: N/D"
+
+#~ msgid "blocklist loaded/not loaded"
+#~ msgstr "Lista de bloqueo cargada/no cargada"
 
 #~ msgid "Announce timed out"
 #~ msgstr "Anuncio expirado"

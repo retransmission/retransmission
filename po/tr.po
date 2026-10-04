@@ -2601,9 +2601,6 @@ msgstr "Forumlar"
 msgid "Support & Development"
 msgstr "Destek ve Geliştirme"
 
-msgid "Menu"
-msgstr "Menü"
-
 msgid "Check for update:"
 msgstr "Güncellemeleri denetle:"
 
@@ -2786,14 +2783,8 @@ msgstr "Eş Sınırları"
 msgid "Blocklist:"
 msgstr "Kara dizelge:"
 
-msgid "Last updated: N/A"
-msgstr "Son güncelleme: Bilinmiyor"
-
 msgid "Encryption:"
 msgstr "Şifreleme:"
-
-msgid "blocklist loaded/not loaded"
-msgstr "kara dizelge yüklü/yüklü değil"
 
 msgid "High connection limits might significantly impact system performance"
 msgstr "Yüksek bağlantı sınırları, sistem başarımını önemli ölçüde etkiler"
@@ -3958,6 +3949,15 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "saniye"
 msgstr[1] "saniye"
+
+#~ msgid "Menu"
+#~ msgstr "Menü"
+
+#~ msgid "Last updated: N/A"
+#~ msgstr "Son güncelleme: Bilinmiyor"
+
+#~ msgid "blocklist loaded/not loaded"
+#~ msgstr "kara dizelge yüklü/yüklü değil"
 
 #~ msgid "Announce timed out"
 #~ msgstr "Duyuru zaman aşımı"

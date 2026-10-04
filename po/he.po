@@ -2678,9 +2678,6 @@ msgstr "פורומים"
 msgid "Support & Development"
 msgstr "תמיכה ופיתו"
 
-msgid "Menu"
-msgstr "תפריט"
-
 msgid "Check for update:"
 msgstr "איתור עדכונים:"
 
@@ -2863,14 +2860,8 @@ msgstr "מגבלות עמיתים"
 msgid "Blocklist:"
 msgstr "רשימת חסימה:"
 
-msgid "Last updated: N/A"
-msgstr "עדכון אחרון: לא זמין"
-
 msgid "Encryption:"
 msgstr "הצפנה:"
-
-msgid "blocklist loaded/not loaded"
-msgstr "רשימת החסימה נטענה/לא נטענה"
 
 msgid "High connection limits might significantly impact system performance"
 msgstr "מגבלות מהירות חיבור גבוהות עלולות לפגוע בביצועי המערכת"
@@ -4072,6 +4063,15 @@ msgstr[0] "שנייה"
 msgstr[1] "שניות"
 msgstr[2] "שניות"
 msgstr[3] "שניות"
+
+#~ msgid "Menu"
+#~ msgstr "תפריט"
+
+#~ msgid "Last updated: N/A"
+#~ msgstr "עדכון אחרון: לא זמין"
+
+#~ msgid "blocklist loaded/not loaded"
+#~ msgstr "רשימת החסימה נטענה/לא נטענה"
 
 #~ msgid "Announce timed out"
 #~ msgstr "פג זמן הכרזה"

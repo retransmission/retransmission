@@ -2558,9 +2558,6 @@ msgstr "掲示板"
 msgid "Support & Development"
 msgstr "サポート・開発"
 
-msgid "Menu"
-msgstr "メニュー"
-
 msgid "Check for update:"
 msgstr "更新確認:"
 
@@ -2743,14 +2740,8 @@ msgstr "ピア制限"
 msgid "Blocklist:"
 msgstr "ブロックリスト:"
 
-msgid "Last updated: N/A"
-msgstr "最終更新: なし"
-
 msgid "Encryption:"
 msgstr "暗号化:"
-
-msgid "blocklist loaded/not loaded"
-msgstr "ブロックリスト 読込済み/なし"
 
 msgid "High connection limits might significantly impact system performance"
 msgstr "過大な接続制限はシステムの性能に大きく影響を与えがちです"
@@ -3888,6 +3879,15 @@ msgstr[0] "日"
 msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "秒"
+
+#~ msgid "Menu"
+#~ msgstr "メニュー"
+
+#~ msgid "Last updated: N/A"
+#~ msgstr "最終更新: なし"
+
+#~ msgid "blocklist loaded/not loaded"
+#~ msgstr "ブロックリスト 読込済み/なし"
 
 #~ msgid "Announce timed out"
 #~ msgstr "アナウンスがタイムアウト"

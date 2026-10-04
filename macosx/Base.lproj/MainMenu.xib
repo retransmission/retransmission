@@ -694,7 +694,7 @@ CA
                 <outlet property="fWindow" destination="21" id="246"/>
             </connections>
         </customObject>
-        <menu title="Menu" id="456" userLabel="ContextRowMenu">
+        <menu id="456" userLabel="ContextRowMenu">
             <items>
                 <menuItem title="_Pause" secondaryImage="pause" catalog="system" tag="1" id="457">
                     <connections>
@@ -804,7 +804,7 @@ CA
             </items>
             <point key="canvasLocation" x="117" y="-300"/>
         </menu>
-        <menu title="Menu" id="589" userLabel="ContextNoRowMenu">
+        <menu id="589" userLabel="ContextNoRowMenu">
             <items>
                 <menuItem title="Create Torrent File…" secondaryImage="doc.badge.plus" catalog="system" id="1923">
                     <connections>

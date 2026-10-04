@@ -2628,9 +2628,6 @@ msgstr "Fórum"
 msgid "Support & Development"
 msgstr "Támogatás & Fejlesztés"
 
-msgid "Menu"
-msgstr "Menü"
-
 msgid "Check for update:"
 msgstr "Frissítések keresése:"
 
@@ -2813,14 +2810,8 @@ msgstr "Partnerkorlátok"
 msgid "Blocklist:"
 msgstr "Tiltólista:"
 
-msgid "Last updated: N/A"
-msgstr "Utoljára frissítve: N/A"
-
 msgid "Encryption:"
 msgstr "Titkosítás:"
-
-msgid "blocklist loaded/not loaded"
-msgstr "tiltólista betöltve/nincs betöltve"
 
 msgid "High connection limits might significantly impact system performance"
 msgstr "Magas kapcsolati számok jelentősen befolyásolhatják a rendszer teljesítményt"
@@ -3986,6 +3977,15 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "másodperc"
 msgstr[1] "másodperc"
+
+#~ msgid "Menu"
+#~ msgstr "Menü"
+
+#~ msgid "Last updated: N/A"
+#~ msgstr "Utoljára frissítve: N/A"
+
+#~ msgid "blocklist loaded/not loaded"
+#~ msgstr "tiltólista betöltve/nincs betöltve"
 
 #~ msgid "Announce timed out"
 #~ msgstr "Bejelentési időtúllépés"

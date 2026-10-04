@@ -2585,9 +2585,6 @@ msgstr "討論區"
 msgid "Support & Development"
 msgstr "支援與開發"
 
-msgid "Menu"
-msgstr "功能表"
-
 msgid "Check for update:"
 msgstr "檢查更新："
 
@@ -2770,14 +2767,8 @@ msgstr "節點限制"
 msgid "Blocklist:"
 msgstr "黑名單："
 
-msgid "Last updated: N/A"
-msgstr "最後更新於：N/A"
-
 msgid "Encryption:"
 msgstr "加密："
-
-msgid "blocklist loaded/not loaded"
-msgstr "黑名單已載入 / 未載入"
 
 msgid "High connection limits might significantly impact system performance"
 msgstr "高連線數量可能會顯著影響系統效能"
@@ -3901,6 +3892,15 @@ msgstr[0] "天"
 msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "秒"
+
+#~ msgid "Menu"
+#~ msgstr "功能表"
+
+#~ msgid "Last updated: N/A"
+#~ msgstr "最後更新於：N/A"
+
+#~ msgid "blocklist loaded/not loaded"
+#~ msgstr "黑名單已載入 / 未載入"
 
 #~ msgid "Announce timed out"
 #~ msgstr "宣告已逾時"

@@ -2634,9 +2634,6 @@ msgstr ""
 msgid "Support & Development"
 msgstr "Support & ontwikkeling "
 
-msgid "Menu"
-msgstr ""
-
 msgid "Check for update:"
 msgstr "Updates:"
 
@@ -2819,14 +2816,8 @@ msgstr "Peerlimieten"
 msgid "Blocklist:"
 msgstr "Zwarte lijst:"
 
-msgid "Last updated: N/A"
-msgstr "Laatst bijgewerkt: N/B"
-
 msgid "Encryption:"
 msgstr "Codering:"
-
-msgid "blocklist loaded/not loaded"
-msgstr "Zwarte lijst geladen/niet geladen"
 
 msgid "High connection limits might significantly impact system performance"
 msgstr "Hoge verbindingslimieten kunnen zware impact op systeemprestaties hebben"
@@ -4008,6 +3999,12 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "seconde"
 msgstr[1] "seconden"
+
+#~ msgid "Last updated: N/A"
+#~ msgstr "Laatst bijgewerkt: N/B"
+
+#~ msgid "blocklist loaded/not loaded"
+#~ msgstr "Zwarte lijst geladen/niet geladen"
 
 #~ msgid "Announce timed out"
 #~ msgstr "Aankondiging verlopen"

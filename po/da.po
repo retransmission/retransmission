@@ -2622,9 +2622,6 @@ msgstr "Forum"
 msgid "Support & Development"
 msgstr "Support og udvikling"
 
-msgid "Menu"
-msgstr ""
-
 msgid "Check for update:"
 msgstr "Opdateringer:"
 
@@ -2807,16 +2804,8 @@ msgstr "Modpartsbegrænsninger"
 msgid "Blocklist:"
 msgstr "Blokering:"
 
-msgid "Last updated: N/A"
-msgstr "Sidst opdateret: N/A"
-
 msgid "Encryption:"
 msgstr "Kryptering:"
-
-#, fuzzy
-#| msgid "A blocklist must first be downloaded"
-msgid "blocklist loaded/not loaded"
-msgstr "En blokeringsliste skal først hentes"
 
 msgid "High connection limits might significantly impact system performance"
 msgstr "Høje forbindelsesbegrænsninger kan have indflydelse på systemydeevnen"
@@ -3992,6 +3981,14 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "sekund"
 msgstr[1] "sekunder"
+
+#~ msgid "Last updated: N/A"
+#~ msgstr "Sidst opdateret: N/A"
+
+#, fuzzy
+#~| msgid "A blocklist must first be downloaded"
+#~ msgid "blocklist loaded/not loaded"
+#~ msgstr "En blokeringsliste skal først hentes"
 
 #~ msgid "Announce timed out"
 #~ msgstr "Annoncering fik timeout"

@@ -2601,9 +2601,6 @@ msgstr "Foroak"
 msgid "Support & Development"
 msgstr "Laguntza eta Garapena"
 
-msgid "Menu"
-msgstr "Menua"
-
 msgid "Check for update:"
 msgstr "Egiaztatu eguneraketen bila:"
 
@@ -2788,14 +2785,8 @@ msgstr "Kideen mugak"
 msgid "Blocklist:"
 msgstr "Blokeo-zerrenda:"
 
-msgid "Last updated: N/A"
-msgstr "Azkenengoz eguneratuta: E/A"
-
 msgid "Encryption:"
 msgstr "Zifratzea:"
-
-msgid "blocklist loaded/not loaded"
-msgstr "blokeo-zerrenda kargatuta/ez kargatuta"
 
 msgid "High connection limits might significantly impact system performance"
 msgstr "Konexio-muga altuek sistemaren errendimenduan eragin nabarmena izan dezakete"
@@ -3970,6 +3961,15 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "segundo"
 msgstr[1] "segundo"
+
+#~ msgid "Menu"
+#~ msgstr "Menua"
+
+#~ msgid "Last updated: N/A"
+#~ msgstr "Azkenengoz eguneratuta: E/A"
+
+#~ msgid "blocklist loaded/not loaded"
+#~ msgstr "blokeo-zerrenda kargatuta/ez kargatuta"
 
 #~ msgid "Announce timed out"
 #~ msgstr "Iragarria huts egin du"

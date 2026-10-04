@@ -2629,9 +2629,6 @@ msgstr ""
 msgid "Support & Development"
 msgstr "Υποστήριξη και Ανάπτυξη"
 
-msgid "Menu"
-msgstr "Μενού"
-
 msgid "Check for update:"
 msgstr "Έλεγχος για ενημέρωση:"
 
@@ -2814,14 +2811,8 @@ msgstr "Όριο ομότιμων χρηστών"
 msgid "Blocklist:"
 msgstr "Λίστα φραγής:"
 
-msgid "Last updated: N/A"
-msgstr "Τελευταία ενημέρωση: N/A"
-
 msgid "Encryption:"
 msgstr "Κρυπτογράφηση:"
-
-msgid "blocklist loaded/not loaded"
-msgstr "η λίστα φραγής φορτώθηκε/δεν φορτώθηκε"
 
 msgid "High connection limits might significantly impact system performance"
 msgstr "Τα υψηλά όρια συνδέσεων μπορεί να επηρεάσουν σημαντικά την επίδοση του συστήματος"
@@ -3988,6 +3979,15 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "δευτερόλεπτο"
 msgstr[1] "δευτερόλεπτα"
+
+#~ msgid "Menu"
+#~ msgstr "Μενού"
+
+#~ msgid "Last updated: N/A"
+#~ msgstr "Τελευταία ενημέρωση: N/A"
+
+#~ msgid "blocklist loaded/not loaded"
+#~ msgstr "η λίστα φραγής φορτώθηκε/δεν φορτώθηκε"
 
 #~ msgid "Announce timed out"
 #~ msgstr "Λήξη χρονικού ορίου Ανακοίνωσης"

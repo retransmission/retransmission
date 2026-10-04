@@ -2659,9 +2659,6 @@ msgstr "Diskussionsforen"
 msgid "Support & Development"
 msgstr "Support und Entwicklung"
 
-msgid "Menu"
-msgstr ""
-
 msgid "Check for update:"
 msgstr "Aktualisierungen:"
 
@@ -2844,16 +2841,8 @@ msgstr "Gegenstellenbeschränkungen"
 msgid "Blocklist:"
 msgstr "Blockliste:"
 
-msgid "Last updated: N/A"
-msgstr "Zuletzt aktualisiert: —"
-
 msgid "Encryption:"
 msgstr "Verschlüsselung:"
-
-#, fuzzy
-#| msgid "A blocklist must first be downloaded"
-msgid "blocklist loaded/not loaded"
-msgstr "Es muß zunächst eine Blockliste geladen werden."
 
 msgid "High connection limits might significantly impact system performance"
 msgstr "Eine große Anzahl von Verbindungen kann die Geschwindigkeit des Computers negativ beeinflussen."
@@ -4017,6 +4006,14 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "Sekunde"
 msgstr[1] "Sekunden"
+
+#~ msgid "Last updated: N/A"
+#~ msgstr "Zuletzt aktualisiert: —"
+
+#, fuzzy
+#~| msgid "A blocklist must first be downloaded"
+#~ msgid "blocklist loaded/not loaded"
+#~ msgstr "Es muß zunächst eine Blockliste geladen werden."
 
 #~ msgid "Announce timed out"
 #~ msgstr "Zeitüberschreitung bei Meldung"

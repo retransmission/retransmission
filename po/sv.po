@@ -2595,9 +2595,6 @@ msgstr "Forum"
 msgid "Support & Development"
 msgstr "Support & utveckling"
 
-msgid "Menu"
-msgstr "Meny"
-
 msgid "Check for update:"
 msgstr "Sök efter uppdatering:"
 
@@ -2780,14 +2777,8 @@ msgstr "Jämlikegränser"
 msgid "Blocklist:"
 msgstr "Blockeringslista:"
 
-msgid "Last updated: N/A"
-msgstr "Senast uppdaterad: N/A"
-
 msgid "Encryption:"
 msgstr "Kryptering:"
-
-msgid "blocklist loaded/not loaded"
-msgstr "blockeringslistan inläst/inte inläst"
 
 msgid "High connection limits might significantly impact system performance"
 msgstr "Höga anslutningsgränser kan avsevärt påverka systemets prestanda"
@@ -3959,6 +3950,15 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "sekund"
 msgstr[1] "sekunder"
+
+#~ msgid "Menu"
+#~ msgstr "Meny"
+
+#~ msgid "Last updated: N/A"
+#~ msgstr "Senast uppdaterad: N/A"
+
+#~ msgid "blocklist loaded/not loaded"
+#~ msgstr "blockeringslistan inläst/inte inläst"
 
 #~ msgid "Announce timed out"
 #~ msgstr "Annonseringstiden gick ut"

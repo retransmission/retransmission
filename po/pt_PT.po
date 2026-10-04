@@ -2612,9 +2612,6 @@ msgstr "Fóruns"
 msgid "Support & Development"
 msgstr "Suporte e desenvolvimento"
 
-msgid "Menu"
-msgstr ""
-
 msgid "Check for update:"
 msgstr "Procurar actualizações:"
 
@@ -2799,14 +2796,8 @@ msgstr "Limites de pares"
 msgid "Blocklist:"
 msgstr "Lista de bloqueio:"
 
-msgid "Last updated: N/A"
-msgstr "Última actualização: N/D"
-
 msgid "Encryption:"
 msgstr "Cifragem:"
-
-msgid "blocklist loaded/not loaded"
-msgstr "lista de bloqueio carregada/não carregada"
 
 msgid "High connection limits might significantly impact system performance"
 msgstr "Limites de ligações altos podem ter impacto significativo na performance"
@@ -4035,6 +4026,12 @@ msgid_plural "seconds"
 msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
+
+#~ msgid "Last updated: N/A"
+#~ msgstr "Última actualização: N/D"
+
+#~ msgid "blocklist loaded/not loaded"
+#~ msgstr "lista de bloqueio carregada/não carregada"
 
 #~ msgid "Announce timed out"
 #~ msgstr "O intervalo de espera do anúncio expirou"

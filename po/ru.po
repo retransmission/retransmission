@@ -2674,9 +2674,6 @@ msgstr "Форумы Retransmission"
 msgid "Support & Development"
 msgstr "Retransmission wiki и разработка"
 
-msgid "Menu"
-msgstr "Меню"
-
 msgid "Check for update:"
 msgstr "Обновления программы:"
 
@@ -2861,14 +2858,8 @@ msgstr "Ограничения участников"
 msgid "Blocklist:"
 msgstr "Чёрный список:"
 
-msgid "Last updated: N/A"
-msgstr "Последнее обновление: нет данных"
-
 msgid "Encryption:"
 msgstr "Шифрование:"
-
-msgid "blocklist loaded/not loaded"
-msgstr "чёрный список загружен / не загружен"
 
 msgid "High connection limits might significantly impact system performance"
 msgstr "Некоторые роутеры будут «тормозить» если подключений очень много"
@@ -4095,6 +4086,15 @@ msgstr[0] "секунда"
 msgstr[1] "секунды"
 msgstr[2] "секунд"
 msgstr[3] "секунд"
+
+#~ msgid "Menu"
+#~ msgstr "Меню"
+
+#~ msgid "Last updated: N/A"
+#~ msgstr "Последнее обновление: нет данных"
+
+#~ msgid "blocklist loaded/not loaded"
+#~ msgstr "чёрный список загружен / не загружен"
 
 #~ msgid "Announce timed out"
 #~ msgstr "Превышено время ожидания анонса"

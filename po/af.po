@@ -2598,9 +2598,6 @@ msgstr ""
 msgid "Support & Development"
 msgstr "Ondersteuning & ontwikkeling"
 
-msgid "Menu"
-msgstr "Kieslys"
-
 msgid "Check for update:"
 msgstr "Soek na bywerking:"
 
@@ -2783,14 +2780,8 @@ msgstr "Eweknielimiete"
 msgid "Blocklist:"
 msgstr "Swartlys:"
 
-msgid "Last updated: N/A"
-msgstr "Laas bygewerk: NVT"
-
 msgid "Encryption:"
 msgstr "Enkripsie:"
-
-msgid "blocklist loaded/not loaded"
-msgstr "Swartlys gelaai/nie gelaai"
 
 msgid "High connection limits might significantly impact system performance"
 msgstr "Hoë verbindingslimieten kan swaar invloed op stelselverrigting hê"
@@ -3957,6 +3948,15 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "sekonde"
 msgstr[1] "sekondes"
+
+#~ msgid "Menu"
+#~ msgstr "Kieslys"
+
+#~ msgid "Last updated: N/A"
+#~ msgstr "Laas bygewerk: NVT"
+
+#~ msgid "blocklist loaded/not loaded"
+#~ msgstr "Swartlys gelaai/nie gelaai"
 
 #~ msgid "Announce timed out"
 #~ msgstr "Aankondig het uitgetel"

@@ -2642,9 +2642,6 @@ msgstr ""
 msgid "Support & Development"
 msgstr "Soutien et développement"
 
-msgid "Menu"
-msgstr ""
-
 msgid "Check for update:"
 msgstr "Vérifier la présence d’une mise à jour :"
 
@@ -2827,14 +2824,8 @@ msgstr "Limites des pairs"
 msgid "Blocklist:"
 msgstr "Liste de blocage :"
 
-msgid "Last updated: N/A"
-msgstr "Dernière mise à jour : N/D"
-
 msgid "Encryption:"
 msgstr "Chiffrement :"
-
-msgid "blocklist loaded/not loaded"
-msgstr "liste de blocage chargée ou non"
 
 msgid "High connection limits might significantly impact system performance"
 msgstr "Des limites de connexion élevées pourraient avoir un impact significatif sur les performances du système"
@@ -4034,6 +4025,12 @@ msgid_plural "seconds"
 msgstr[0] "seconde"
 msgstr[1] "de secondes"
 msgstr[2] "secondes"
+
+#~ msgid "Last updated: N/A"
+#~ msgstr "Dernière mise à jour : N/D"
+
+#~ msgid "blocklist loaded/not loaded"
+#~ msgstr "liste de blocage chargée ou non"
 
 #~ msgid "Announce timed out"
 #~ msgstr "L’annonce est arrivée au bout de son délai"

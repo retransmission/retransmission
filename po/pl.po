@@ -2713,9 +2713,6 @@ msgstr "Fora"
 msgid "Support & Development"
 msgstr "Wsparcie i rozwój"
 
-msgid "Menu"
-msgstr ""
-
 msgid "Check for update:"
 msgstr "Wyszukiwanie aktualizacji:"
 
@@ -2898,14 +2895,8 @@ msgstr "Ograniczenia partnerów"
 msgid "Blocklist:"
 msgstr "Lista blokowania:"
 
-msgid "Last updated: N/A"
-msgstr "Ostatnia aktualizacja: brak danych"
-
 msgid "Encryption:"
 msgstr "Szyfrowanie:"
-
-msgid "blocklist loaded/not loaded"
-msgstr "wczytano/nie wczytano listy blokowania"
 
 msgid "High connection limits might significantly impact system performance"
 msgstr "Wysokie ograniczenia połączenia mogą znacznie wpłynąć na wydajność komputera"
@@ -4124,6 +4115,12 @@ msgstr[0] "sekunda"
 msgstr[1] "sekundy"
 msgstr[2] "sekund"
 msgstr[3] "sekund"
+
+#~ msgid "Last updated: N/A"
+#~ msgstr "Ostatnia aktualizacja: brak danych"
+
+#~ msgid "blocklist loaded/not loaded"
+#~ msgstr "wczytano/nie wczytano listy blokowania"
 
 #~ msgid "Announce timed out"
 #~ msgstr "Ogłoszenie przekroczyło czas oczekiwania"
