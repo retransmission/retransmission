@@ -984,7 +984,7 @@ msgstr "Таратылған:"
 msgid "Downloaded:"
 msgstr "Жүктелген:"
 
-msgid "Failed download:"
+msgid "Failed DL:"
 msgstr ""
 
 msgid "State:"

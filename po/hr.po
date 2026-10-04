@@ -998,7 +998,7 @@ msgstr "Poslano:"
 msgid "Downloaded:"
 msgstr "Preuzeto:"
 
-msgid "Failed download:"
+msgid "Failed DL:"
 msgstr ""
 
 msgid "State:"

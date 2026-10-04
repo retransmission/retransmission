@@ -1069,7 +1069,7 @@ msgstr "Skickat:"
 msgid "Downloaded:"
 msgstr "Mottagit:"
 
-msgid "Failed download:"
+msgid "Failed DL:"
 msgstr "Misslyckad hämtning:"
 
 msgid "State:"

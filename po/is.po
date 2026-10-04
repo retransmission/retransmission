@@ -989,7 +989,7 @@ msgstr "Sent:"
 msgid "Downloaded:"
 msgstr "Sótt:"
 
-msgid "Failed download:"
+msgid "Failed DL:"
 msgstr ""
 
 msgid "State:"

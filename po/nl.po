@@ -1102,7 +1102,7 @@ msgstr "Geüpload:"
 msgid "Downloaded:"
 msgstr "Gedownload:"
 
-msgid "Failed download:"
+msgid "Failed DL:"
 msgstr "Corrupte DL:"
 
 msgid "State:"

@@ -1107,7 +1107,7 @@ msgstr "הועלו:"
 msgid "Downloaded:"
 msgstr "הורדו:"
 
-msgid "Failed download:"
+msgid "Failed DL:"
 msgstr "הורדה נכשלה:"
 
 msgid "State:"

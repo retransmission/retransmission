@@ -1075,7 +1075,7 @@ msgstr "Yüklenen:"
 msgid "Downloaded:"
 msgstr "İndirilen:"
 
-msgid "Failed download:"
+msgid "Failed DL:"
 msgstr "Hatalı ind.:"
 
 msgid "State:"

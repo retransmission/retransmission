@@ -1165,7 +1165,7 @@ msgstr "Subido:"
 msgid "Downloaded:"
 msgstr "Descargado:"
 
-msgid "Failed download:"
+msgid "Failed DL:"
 msgstr "Fallos:"
 
 msgid "State:"

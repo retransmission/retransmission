@@ -1082,7 +1082,7 @@ msgstr "已上傳："
 msgid "Downloaded:"
 msgstr "已下載："
 
-msgid "Failed download:"
+msgid "Failed DL:"
 msgstr "下載失敗："
 
 msgid "State:"

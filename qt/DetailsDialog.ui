@@ -167,7 +167,7 @@
           <item row="4" column="0">
            <widget class="QLabel" name="failedLabel">
             <property name="text">
-             <string>Failed download:</string>
+             <string>Failed DL:</string>
             </property>
             <property name="buddy">
              <cstring>failedValueLabel</cstring>

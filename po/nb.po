@@ -993,7 +993,7 @@ msgstr "Lastet opp:"
 msgid "Downloaded:"
 msgstr "Lastet ned:"
 
-msgid "Failed download:"
+msgid "Failed DL:"
 msgstr ""
 
 msgid "State:"

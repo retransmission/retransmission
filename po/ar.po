@@ -1045,7 +1045,7 @@ msgstr "مرفوع:"
 msgid "Downloaded:"
 msgstr "مُنزّل:"
 
-msgid "Failed download:"
+msgid "Failed DL:"
 msgstr ""
 
 msgid "State:"

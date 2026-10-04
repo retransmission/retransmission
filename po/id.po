@@ -980,7 +980,7 @@ msgstr "Terunggah:"
 msgid "Downloaded:"
 msgstr "Terunduh:"
 
-msgid "Failed download:"
+msgid "Failed DL:"
 msgstr ""
 
 msgid "State:"

@@ -1072,7 +1072,7 @@ msgstr "Opgelaai:"
 msgid "Downloaded:"
 msgstr "Afgelaai:"
 
-msgid "Failed download:"
+msgid "Failed DL:"
 msgstr "Mislukte aflaai:"
 
 msgid "State:"

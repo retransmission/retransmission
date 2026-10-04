@@ -1022,7 +1022,7 @@ msgstr "Išsiųsta:"
 msgid "Downloaded:"
 msgstr "Atsiųsta:"
 
-msgid "Failed download:"
+msgid "Failed DL:"
 msgstr ""
 
 msgid "State:"

@@ -1079,7 +1079,7 @@ msgstr "Carregado:"
 msgid "Downloaded:"
 msgstr "Transferido:"
 
-msgid "Failed download:"
+msgid "Failed DL:"
 msgstr "Falhado:"
 
 msgid "State:"

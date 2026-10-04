@@ -986,7 +986,7 @@ msgstr "अपलोड :"
 msgid "Downloaded:"
 msgstr "डाउनलोड :"
 
-msgid "Failed download:"
+msgid "Failed DL:"
 msgstr ""
 
 msgid "State:"

@@ -984,7 +984,7 @@ msgstr "업로드함:"
 msgid "Downloaded:"
 msgstr "다운로드함:"
 
-msgid "Failed download:"
+msgid "Failed DL:"
 msgstr ""
 
 msgid "State:"

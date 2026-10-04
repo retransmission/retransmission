@@ -994,7 +994,7 @@ msgstr "Pujat:"
 msgid "Downloaded:"
 msgstr "Baixat:"
 
-msgid "Failed download:"
+msgid "Failed DL:"
 msgstr ""
 
 msgid "State:"
