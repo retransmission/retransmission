@@ -778,12 +778,12 @@ msgid "Downloading metadata from {active_count:L} connected peer ({percent_done}
 msgid_plural "Downloading metadata from {active_count:L} connected peers ({percent_done}% done)"
 msgstr[0] "{active_count:L} 피어로부터 메타데이터 다운로드중 ({percent_done}% 완료)"
 
-msgid "Downloading from {active_count} of {connected_count} connected peer and webseed"
-msgid_plural "Downloading from {active_count} of {connected_count} connected peers and webseeds"
+msgid "Downloading from {active_count} of {connected_count} connected peer and web seed"
+msgid_plural "Downloading from {active_count} of {connected_count} connected peers and web seeds"
 msgstr[0] ""
 
-msgid "Downloading from {active_count} webseed"
-msgid_plural "Downloading from {active_count} webseeds"
+msgid "Downloading from {active_count} web seed"
+msgid_plural "Downloading from {active_count} web seeds"
 msgstr[0] ""
 
 #. Translators: First part of phrase "Downloading from ... of ... connected peer(s) and ... web seed(s)"

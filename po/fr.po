@@ -865,14 +865,14 @@ msgstr[0] "Téléchargement des métadonnées en provenance de {active_count:L}�
 msgstr[1] "Téléchargement des métadonnées en provenance de {active_count:L} pairs connectés ({percent_done} % terminés)"
 msgstr[2] "Téléchargement des métadonnées en provenance de {active_count:L} pairs connectés ({percent_done} % terminés)"
 
-msgid "Downloading from {active_count} of {connected_count} connected peer and webseed"
-msgid_plural "Downloading from {active_count} of {connected_count} connected peers and webseeds"
+msgid "Downloading from {active_count} of {connected_count} connected peer and web seed"
+msgid_plural "Downloading from {active_count} of {connected_count} connected peers and web seeds"
 msgstr[0] "Téléchargement de {active_count} sur {connected_count} semence Web et pair connectés"
 msgstr[1] "Téléchargement de {active_count} sur {connected_count} de semences Web et pairs connectés"
 msgstr[2] "Téléchargement de {active_count} sur {connected_count} semences Web et pairs connectés"
 
-msgid "Downloading from {active_count} webseed"
-msgid_plural "Downloading from {active_count} webseeds"
+msgid "Downloading from {active_count} web seed"
+msgid_plural "Downloading from {active_count} web seeds"
 msgstr[0] "Téléchargement en provenance de {active_count} semence Web"
 msgstr[1] "Téléchargement en provenance de {active_count} semences Web"
 msgstr[2] "Téléchargement en provenance de {active_count} semences Web"

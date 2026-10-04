@@ -638,8 +638,8 @@ Glib::ustring Torrent::Impl::get_activity_text() const
         if (cache_.peers_sending_to_us != 0 && cache_.webseeds_sending_to_us != 0) {
             return fmt::format(
                 fmt::runtime(ngettext(
-                    "Downloading from {active_count} of {connected_count} connected peer and webseed",
-                    "Downloading from {active_count} of {connected_count} connected peers and webseeds",
+                    "Downloading from {active_count} of {connected_count} connected peer and web seed",
+                    "Downloading from {active_count} of {connected_count} connected peers and web seeds",
                     cache_.peers_connected + cache_.webseeds_sending_to_us)),
                 fmt::arg("active_count", cache_.peers_sending_to_us + cache_.webseeds_sending_to_us),
                 fmt::arg("connected_count", cache_.peers_connected + cache_.webseeds_sending_to_us));
@@ -648,8 +648,8 @@ Glib::ustring Torrent::Impl::get_activity_text() const
         if (cache_.webseeds_sending_to_us != 0) {
             return fmt::format(
                 fmt::runtime(ngettext(
-                    "Downloading from {active_count} webseed",
-                    "Downloading from {active_count} webseeds",
+                    "Downloading from {active_count} web seed",
+                    "Downloading from {active_count} web seeds",
                     cache_.webseeds_sending_to_us)),
                 fmt::arg("active_count", cache_.webseeds_sending_to_us));
         }

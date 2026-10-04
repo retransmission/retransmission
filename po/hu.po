@@ -885,13 +885,13 @@ msgid_plural "Downloading metadata from {active_count:L} connected peers ({perce
 msgstr[0] "Metaadatok letöltése {active_count:L} kapcsolódó partnertől ({percent_done}% kész)"
 msgstr[1] "Metaadatok letöltése {active_count:L} kapcsolódó partnertől ({percent_done}% kész)"
 
-msgid "Downloading from {active_count} of {connected_count} connected peer and webseed"
-msgid_plural "Downloading from {active_count} of {connected_count} connected peers and webseeds"
+msgid "Downloading from {active_count} of {connected_count} connected peer and web seed"
+msgid_plural "Downloading from {active_count} of {connected_count} connected peers and web seeds"
 msgstr[0] "Letöltés {active_count} / {connected_count} kapcsolódó partnertől és webes megosztótól"
 msgstr[1] "Letöltés {active_count} / {connected_count} kapcsolódó partnertől és webes megosztótól"
 
-msgid "Downloading from {active_count} webseed"
-msgid_plural "Downloading from {active_count} webseeds"
+msgid "Downloading from {active_count} web seed"
+msgid_plural "Downloading from {active_count} web seeds"
 msgstr[0] "Letöltés {active_count} webes megosztótól"
 msgstr[1] "Letöltés {active_count} webes megosztótól"
 

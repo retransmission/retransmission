@@ -914,13 +914,13 @@ msgid_plural "Downloading metadata from {active_count:L} connected peers ({perce
 msgstr[0] "Lade Metadaten herunter von {active_count:L} verbundener Gegenstelle ({percent_done}% abgeschlossen)"
 msgstr[1] "Lade Metadaten herunter von {active_count:L} verbundenen Gegenstellen ({percent_done}% abgeschlossen)"
 
-msgid "Downloading from {active_count} of {connected_count} connected peer and webseed"
-msgid_plural "Downloading from {active_count} of {connected_count} connected peers and webseeds"
+msgid "Downloading from {active_count} of {connected_count} connected peer and web seed"
+msgid_plural "Downloading from {active_count} of {connected_count} connected peers and web seeds"
 msgstr[0] "Lade herunter von {active_count} von {connected_count} verbundener Gegenstelle und Webseed"
 msgstr[1] "Lade herunter von {active_count} von {connected_count} verbundenen Gegenstellen und Webseeds"
 
-msgid "Downloading from {active_count} webseed"
-msgid_plural "Downloading from {active_count} webseeds"
+msgid "Downloading from {active_count} web seed"
+msgid_plural "Downloading from {active_count} web seeds"
 msgstr[0] "Lade herunter von {active_count} Webseed"
 msgstr[1] "Lade herunter von {active_count} Webseeds"
 

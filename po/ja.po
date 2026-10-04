@@ -841,12 +841,12 @@ msgid "Downloading metadata from {active_count:L} connected peer ({percent_done}
 msgid_plural "Downloading metadata from {active_count:L} connected peers ({percent_done}% done)"
 msgstr[0] "メタデータをダウンロード中, {active_count:L} 個の接続済みピアから ({percent_done}%完了)"
 
-msgid "Downloading from {active_count} of {connected_count} connected peer and webseed"
-msgid_plural "Downloading from {active_count} of {connected_count} connected peers and webseeds"
+msgid "Downloading from {active_count} of {connected_count} connected peer and web seed"
+msgid_plural "Downloading from {active_count} of {connected_count} connected peers and web seeds"
 msgstr[0] "ダウンロード中, 全{connected_count} 中 {active_count} 個の接続済みピアとウェブシードから"
 
-msgid "Downloading from {active_count} webseed"
-msgid_plural "Downloading from {active_count} webseeds"
+msgid "Downloading from {active_count} web seed"
+msgid_plural "Downloading from {active_count} web seeds"
 msgstr[0] "ダウンロード中, {active_count} 個のウェブシードから"
 
 #. Translators: First part of phrase "Downloading from ... of ... connected peer(s) and ... web seed(s)"

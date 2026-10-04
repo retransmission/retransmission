@@ -856,13 +856,13 @@ msgid_plural "Downloading metadata from {active_count:L} connected peers ({perce
 msgstr[0] "{active_count:L} bağlı eşten üst veri indiriliyor (%{percent_done} bitti)"
 msgstr[1] "{active_count:L} bağlı eşten üst veri indiriliyor (%{percent_done} bitti)"
 
-msgid "Downloading from {active_count} of {connected_count} connected peer and webseed"
-msgid_plural "Downloading from {active_count} of {connected_count} connected peers and webseeds"
+msgid "Downloading from {active_count} of {connected_count} connected peer and web seed"
+msgid_plural "Downloading from {active_count} of {connected_count} connected peers and web seeds"
 msgstr[0] "{active_count} / {connected_count} bağlı eşten ve web besleyicisinden indiriliyor"
 msgstr[1] "{active_count} / {connected_count} bağlı eşten ve web besleyicisinden indiriliyor"
 
-msgid "Downloading from {active_count} webseed"
-msgid_plural "Downloading from {active_count} webseeds"
+msgid "Downloading from {active_count} web seed"
+msgid_plural "Downloading from {active_count} web seeds"
 msgstr[0] "{active_count} web besleyicisinden indiriliyor"
 msgstr[1] "{active_count} web besleyicisinden indiriliyor"
 

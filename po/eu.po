@@ -860,13 +860,13 @@ msgid_plural "Downloading metadata from {active_count:L} connected peers ({perce
 msgstr[0] "Metadatuak deskargatzen  {active_count:L} konektatutako hartzaileatik  (%{percent_done}eginda)"
 msgstr[1] "Metadatuak deskargatzen {active_count:L} konektatu kidetatik (%{percent_done} eginda)"
 
-msgid "Downloading from {active_count} of {connected_count} connected peer and webseed"
-msgid_plural "Downloading from {active_count} of {connected_count} connected peers and webseeds"
+msgid "Downloading from {active_count} of {connected_count} connected peer and web seed"
+msgid_plural "Downloading from {active_count} of {connected_count} connected peers and web seeds"
 msgstr[0] "Deskargatzen {active_count} / {connected_count} konektatutako hartzaile eta web-igorleatik"
 msgstr[1] "Deskargatzen {active_count} / {connected_count} konektatutako kide eta web-igorleetatik"
 
-msgid "Downloading from {active_count} webseed"
-msgid_plural "Downloading from {active_count} webseeds"
+msgid "Downloading from {active_count} web seed"
+msgid_plural "Downloading from {active_count} web seeds"
 msgstr[0] "Deskargatzen {active_count} web-igorleatik"
 msgstr[1] "Deskargatzen {active_count} web-igorleetatik"
 

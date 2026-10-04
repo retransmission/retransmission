@@ -883,13 +883,13 @@ msgid_plural "Downloading metadata from {active_count:L} connected peers ({perce
 msgstr[0] "Metadata downloaden van {active_count:L} verbonden peers ({percent_done}% gedaan)"
 msgstr[1] "Metadata downloaden van {active_count:L} verbonden peers ({percent_done}% gedaan)"
 
-msgid "Downloading from {active_count} of {connected_count} connected peer and webseed"
-msgid_plural "Downloading from {active_count} of {connected_count} connected peers and webseeds"
+msgid "Downloading from {active_count} of {connected_count} connected peer and web seed"
+msgid_plural "Downloading from {active_count} of {connected_count} connected peers and web seeds"
 msgstr[0] "Downloaden vanaf {active_count} van {connected_count} verbonden peer en webseed"
 msgstr[1] "Downloaden vanaf {active_count} van {connected_count} verbonden peers en webseeds"
 
-msgid "Downloading from {active_count} webseed"
-msgid_plural "Downloading from {active_count} webseeds"
+msgid "Downloading from {active_count} web seed"
+msgid_plural "Downloading from {active_count} web seeds"
 msgstr[0] "Downloaden vanaf {active_count} webseed"
 msgstr[1] "Downloaden vanaf {active_count} webseeds"
 

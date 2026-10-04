@@ -235,6 +235,21 @@ RENAMES = [
     {'from': {'msgid': 'Priority:'}, 'to': {'msgid': '_Priority:'}},
     {'from': {'msgid': 'Upload:'}, 'to': {'msgid': '_Upload:'}},
     {'from': {'msgid': 'Download:'}, 'to': {'msgid': '_Download:'}},
+    # "web seed" is two words in every client.
+    {
+        'from': {
+            'msgid': 'Downloading from {active_count} of {connected_count} connected peer and webseed',
+            'msgid_plural': 'Downloading from {active_count} of {connected_count} connected peers and webseeds',
+        },
+        'to': {
+            'msgid': 'Downloading from {active_count} of {connected_count} connected peer and web seed',
+            'msgid_plural': 'Downloading from {active_count} of {connected_count} connected peers and web seeds',
+        },
+    },
+    {
+        'from': {'msgid': 'Downloading from {active_count} webseed', 'msgid_plural': 'Downloading from {active_count} webseeds'},
+        'to': {'msgid': 'Downloading from {active_count} web seed', 'msgid_plural': 'Downloading from {active_count} web seeds'},
+    },
 ]
 
 FIELD_NAMES = ('msgctxt', 'msgid', 'msgid_plural')

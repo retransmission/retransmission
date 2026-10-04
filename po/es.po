@@ -945,14 +945,14 @@ msgstr[0] "Descargando metadatos desde {active_count:L} par conectado ({percent_
 msgstr[1] "Descargando metadatos desde {active_count:L} pares conectados ({percent_done}% hecho)"
 msgstr[2] "Descargando metadatos desde {active_count:L} pares conectados ({percent_done}% hecho)"
 
-msgid "Downloading from {active_count} of {connected_count} connected peer and webseed"
-msgid_plural "Downloading from {active_count} of {connected_count} connected peers and webseeds"
+msgid "Downloading from {active_count} of {connected_count} connected peer and web seed"
+msgid_plural "Downloading from {active_count} of {connected_count} connected peers and web seeds"
 msgstr[0] "Descargando metadatos desde {active_count} de {connected_count} par y sembrador conectado "
 msgstr[1] "Descargando metadatos desde {active_count} de {connected_count} pares y sembradores conectados "
 msgstr[2] "Descargando metadatos desde {active_count} de {connected_count} pares y sembradores conectados "
 
-msgid "Downloading from {active_count} webseed"
-msgid_plural "Downloading from {active_count} webseeds"
+msgid "Downloading from {active_count} web seed"
+msgid_plural "Downloading from {active_count} web seeds"
 msgstr[0] "Descargando desde {active_count} sembrador"
 msgstr[1] "Descargando desde {active_count} sembradores"
 msgstr[2] "Descargando desde {active_count} sembradores"
