@@ -656,8 +656,8 @@ namespace
 // Returns the size of the parenthesized mnemonic that `str` starts with, e.g. "(_F)", or 0 if it starts with none.
 [[nodiscard]] constexpr size_t parenthesized_mnemonic_size(std::string_view const str) noexcept
 {
-    static constexpr auto FullWidthOpen = "\xEF\xBC\x88"sv; // U+FF08
-    static constexpr auto FullWidthClose = "\xEF\xBC\x89"sv; // U+FF09
+    constexpr auto FullWidthOpen = "\xEF\xBC\x88"sv; // U+FF08
+    constexpr auto FullWidthClose = "\xEF\xBC\x89"sv; // U+FF09
 
     for (auto const open : { "("sv, FullWidthOpen }) {
         if (!str.starts_with(open)) {
