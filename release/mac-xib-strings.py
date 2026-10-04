@@ -116,7 +116,8 @@ def write_strings(po_path, folder, xib_paths):
                 lines.append(f'{quote(key)} = {quote(translation)};\n')
 
         strings_path = pathlib.Path(folder) / (pathlib.Path(xib_path).stem + '.strings')
-        strings_path.write_text(''.join(lines), encoding='utf-8')
+        # AppKit logs a parse error for a .strings file with nothing in it.
+        strings_path.write_text(''.join(lines) or '/* No entries */\n', encoding='utf-8')
 
 
 def its_texts(its_path, xib_path):
