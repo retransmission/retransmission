@@ -102,10 +102,8 @@ msgstr "Lähetetään seurantapalvelimelle lataus- ja lähetystilastot…"
 msgid "_Quit Now"
 msgstr "_Lopeta nyt"
 
-msgid "Couldn't add duplicate torrent"
-msgid_plural "Couldn't add duplicate torrents"
-msgstr[0] "Samaa torrenttia ei voi lisätä toista kertaa"
-msgstr[1] "Samoja torrentteja ei voi lisätä toista kertaa"
+msgid "A torrent for \"{torrent_name}\" already exists."
+msgstr ""
 
 msgid "A fast and easy BitTorrent client"
 msgstr "Nopea ja helppo BitTorrent-asiakasohjelma"
@@ -1520,12 +1518,6 @@ msgstr "Avaa torrent verkko-osoitteesta"
 msgid "_URL:"
 msgstr "_Verkko-osoite:"
 
-msgid "Couldn't open torrent"
-msgstr "Ei voitu avata torrentia"
-
-msgid "The torrent file '{path}' is already in use by '{torrent_name}'."
-msgstr "Torrent-tiedosto '{path}' on jo käytössä '{torrent_name}'."
-
 msgid "\"{source}\" is not a valid torrent file."
 msgstr ""
 
@@ -1548,8 +1540,8 @@ msgstr "Osoitetta '{url}' ei voitu avata"
 msgid "Unsupported URL: '{url}'"
 msgstr "Ei tuettu URL: '{url}'"
 
-msgid "{appname} doesn't know how to use '{url}'"
-msgstr "{appname} ei osaa käyttää '{url}'"
+msgid "{appname} doesn't know how to use '{url}'."
+msgstr "{appname} ei osaa käyttää '{url}'."
 
 msgid "{days_from_now:L} day from now"
 msgid_plural "{days_from_now:L} days from now"
@@ -2389,19 +2381,11 @@ msgstr "Kohdetta \"{old_path}\" ei voi nimetä nimellä \"{path}\": {error}."
 msgid "Error Adding Torrent"
 msgstr "Virhe lisättäessä torrentia"
 
-msgid "{torrent_name} (copy of {hash})"
-msgstr "{torrent_name} (kopio {hash})"
-
 msgid "Duplicate Torrent"
 msgstr "Torrentin kaksoiskappale"
 
 msgid "Duplicate Torrents"
 msgstr "Torrentien kaksoiskappaleita"
-
-msgid "Unable to add {count} duplicate torrent"
-msgid_plural "Unable to add {count} duplicate torrents"
-msgstr[0] "{count} torrentin kaksoiskappaletta ei voitu lisätä"
-msgstr[1] "{count} torrentien kaksoiskappaletta ei voitu lisätä"
 
 msgid "Change Session"
 msgstr "Vaihda istuntoa"
@@ -2492,6 +2476,25 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "sekunti"
 msgstr[1] "sekuntia"
+
+#~ msgid "Couldn't add duplicate torrent"
+#~ msgid_plural "Couldn't add duplicate torrents"
+#~ msgstr[0] "Samaa torrenttia ei voi lisätä toista kertaa"
+#~ msgstr[1] "Samoja torrentteja ei voi lisätä toista kertaa"
+
+#~ msgid "Couldn't open torrent"
+#~ msgstr "Ei voitu avata torrentia"
+
+#~ msgid "The torrent file '{path}' is already in use by '{torrent_name}'."
+#~ msgstr "Torrent-tiedosto '{path}' on jo käytössä '{torrent_name}'."
+
+#~ msgid "{torrent_name} (copy of {hash})"
+#~ msgstr "{torrent_name} (kopio {hash})"
+
+#~ msgid "Unable to add {count} duplicate torrent"
+#~ msgid_plural "Unable to add {count} duplicate torrents"
+#~ msgstr[0] "{count} torrentin kaksoiskappaletta ei voitu lisätä"
+#~ msgstr[1] "{count} torrentien kaksoiskappaletta ei voitu lisätä"
 
 #~ msgid "Couldn't add corrupt torrent"
 #~ msgid_plural "Couldn't add corrupt torrents"

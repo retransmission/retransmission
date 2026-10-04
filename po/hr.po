@@ -100,11 +100,8 @@ msgstr "Slanje zbroja slanja/preuzimanja na pratitelj…"
 msgid "_Quit Now"
 msgstr "_Izađi odmah"
 
-msgid "Couldn't add duplicate torrent"
-msgid_plural "Couldn't add duplicate torrents"
-msgstr[0] "Nemoguće dodati duplikat torrenta"
-msgstr[1] "Nemoguće dodati duplikate torrenata"
-msgstr[2] "Nemoguće dodati duplikate torrenata"
+msgid "A torrent for \"{torrent_name}\" already exists."
+msgstr ""
 
 msgid "A fast and easy BitTorrent client"
 msgstr "Jednostavan i brz BitTorrent klijent"
@@ -1501,12 +1498,6 @@ msgstr "Otvori torrent iz URL-a"
 msgid "_URL:"
 msgstr "_URL:"
 
-msgid "Couldn't open torrent"
-msgstr ""
-
-msgid "The torrent file '{path}' is already in use by '{torrent_name}'."
-msgstr ""
-
 msgid "\"{source}\" is not a valid torrent file."
 msgstr ""
 
@@ -1525,7 +1516,7 @@ msgstr ""
 msgid "Unsupported URL: '{url}'"
 msgstr ""
 
-msgid "{appname} doesn't know how to use '{url}'"
+msgid "{appname} doesn't know how to use '{url}'."
 msgstr ""
 
 msgid "{days_from_now:L} day from now"
@@ -2388,9 +2379,6 @@ msgstr "Nemoguće je preimenovati \"{old_path}\" kao \"{path}\": {error}."
 msgid "Error Adding Torrent"
 msgstr "Greška pri dodavanju torrenta"
 
-msgid "{torrent_name} (copy of {hash})"
-msgstr "{torrent_name} (kopija od {hash})"
-
 #, fuzzy
 #| msgid "Public torrent"
 msgid "Duplicate Torrent"
@@ -2400,15 +2388,6 @@ msgstr "Javni torrent"
 #| msgid "Public torrent"
 msgid "Duplicate Torrents"
 msgstr "Javni torrent"
-
-#, fuzzy
-#| msgid "Couldn't add duplicate torrent"
-#| msgid_plural "Couldn't add duplicate torrents"
-msgid "Unable to add {count} duplicate torrent"
-msgid_plural "Unable to add {count} duplicate torrents"
-msgstr[0] "Nemoguće dodati duplikat torrenta"
-msgstr[1] "Nemoguće dodati duplikate torrenata"
-msgstr[2] "Nemoguće dodati duplikate torrenata"
 
 msgid "Change Session"
 msgstr "Promjena sesije"
@@ -2506,6 +2485,24 @@ msgid_plural "seconds"
 msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
+
+#~ msgid "Couldn't add duplicate torrent"
+#~ msgid_plural "Couldn't add duplicate torrents"
+#~ msgstr[0] "Nemoguće dodati duplikat torrenta"
+#~ msgstr[1] "Nemoguće dodati duplikate torrenata"
+#~ msgstr[2] "Nemoguće dodati duplikate torrenata"
+
+#~ msgid "{torrent_name} (copy of {hash})"
+#~ msgstr "{torrent_name} (kopija od {hash})"
+
+#, fuzzy
+#~| msgid "Couldn't add duplicate torrent"
+#~| msgid_plural "Couldn't add duplicate torrents"
+#~ msgid "Unable to add {count} duplicate torrent"
+#~ msgid_plural "Unable to add {count} duplicate torrents"
+#~ msgstr[0] "Nemoguće dodati duplikat torrenta"
+#~ msgstr[1] "Nemoguće dodati duplikate torrenata"
+#~ msgstr[2] "Nemoguće dodati duplikate torrenata"
 
 #~ msgid "Couldn't add corrupt torrent"
 #~ msgid_plural "Couldn't add corrupt torrents"

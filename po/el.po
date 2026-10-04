@@ -108,10 +108,8 @@ msgstr "Αποστολή στατιστικών απεσταλμένων/ληφ�
 msgid "_Quit Now"
 msgstr "_Τερματισμός τώρα"
 
-msgid "Couldn't add duplicate torrent"
-msgid_plural "Couldn't add duplicate torrents"
-msgstr[0] "Αδύνατη η προσθήκη διπλότυπου torrent"
-msgstr[1] "Δεν ήταν δυνατή η προσθήκη διπλότυπων torrent"
+msgid "A torrent for \"{torrent_name}\" already exists."
+msgstr ""
 
 msgid "A fast and easy BitTorrent client"
 msgstr "Ένα γρήγορο κι εύχρηστο πρόγραμμα-πελάτης BitTorrent"
@@ -1651,12 +1649,6 @@ msgstr "Άνοιγμα torrent από URL"
 msgid "_URL:"
 msgstr "_URL:"
 
-msgid "Couldn't open torrent"
-msgstr "Αδυναμία ανοίγματος torrent"
-
-msgid "The torrent file '{path}' is already in use by '{torrent_name}'."
-msgstr "Το μονοπάτι του αρχείου torrent '{path}' χρησιμοποιείται ήδη από το '{torrent_name}'."
-
 msgid "\"{source}\" is not a valid torrent file."
 msgstr "\"{source}\" δεν είναι ένα έγκυρο αρχείο torrent."
 
@@ -1679,8 +1671,8 @@ msgstr "Αδυναμία ανοίγματος '{url}'"
 msgid "Unsupported URL: '{url}'"
 msgstr "Μη υποστηριζόμενο URL: '{url}'"
 
-msgid "{appname} doesn't know how to use '{url}'"
-msgstr "Το {appname} δεν γνωρίζει πως να χρησιμοποιήσει το '{url}'"
+msgid "{appname} doesn't know how to use '{url}'."
+msgstr "Το {appname} δεν γνωρίζει πως να χρησιμοποιήσει το '{url}'."
 
 msgid "{days_from_now:L} day from now"
 msgid_plural "{days_from_now:L} days from now"
@@ -2939,20 +2931,6 @@ msgstr[1] ""
 msgid "{appname} will quit, because the two apps would work on the same downloads."
 msgstr ""
 
-msgid "A torrent for \"{torrent_name}\" already exists."
-msgstr ""
-
-#, fuzzy
-#| msgid "The torrent file cannot be opened because it contains invalid data."
-msgid "The torrent cannot be added because it is a duplicate of an already existing torrent."
-msgstr "Δεν μπορεί να ανοιχτεί το αρχείο επειδή περιέχει μη έγκυρα δεδομένα."
-
-msgid "Magnet link is a duplicate of an existing torrent."
-msgstr ""
-
-msgid "The magnet link \"{magnet_link}\" cannot be added because it is a duplicate of an already existing torrent."
-msgstr ""
-
 msgid "Select the new folder for \"{torrent_name}\"."
 msgstr "Επιλογή του νέου καταλόγου για το \"{torrent_name}\"."
 
@@ -3788,19 +3766,11 @@ msgstr "Αδύνατη η μετονομασία του \"{old_path}\" σε \"{p
 msgid "Error Adding Torrent"
 msgstr "Σφάλμα Προσθήκης Torrent"
 
-msgid "{torrent_name} (copy of {hash})"
-msgstr "{torrent_name} (αντίγραφο από {hash})"
-
 msgid "Duplicate Torrent"
 msgstr "Διπλότυπο Torrent"
 
 msgid "Duplicate Torrents"
 msgstr "Διπλότυπα Torrents"
-
-msgid "Unable to add {count} duplicate torrent"
-msgid_plural "Unable to add {count} duplicate torrents"
-msgstr[0] "Αδυναμία προσθήκης {count} διπλότυπου torrent"
-msgstr[1] "Αδυναμία προσθήκης {count} διπλότυπων torrents"
 
 msgid "Change Session"
 msgstr "Αλλαγή Συνεδρίας"
@@ -3879,6 +3849,30 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "δευτερόλεπτο"
 msgstr[1] "δευτερόλεπτα"
+
+#~ msgid "Couldn't add duplicate torrent"
+#~ msgid_plural "Couldn't add duplicate torrents"
+#~ msgstr[0] "Αδύνατη η προσθήκη διπλότυπου torrent"
+#~ msgstr[1] "Δεν ήταν δυνατή η προσθήκη διπλότυπων torrent"
+
+#~ msgid "Couldn't open torrent"
+#~ msgstr "Αδυναμία ανοίγματος torrent"
+
+#~ msgid "The torrent file '{path}' is already in use by '{torrent_name}'."
+#~ msgstr "Το μονοπάτι του αρχείου torrent '{path}' χρησιμοποιείται ήδη από το '{torrent_name}'."
+
+#, fuzzy
+#~| msgid "The torrent file cannot be opened because it contains invalid data."
+#~ msgid "The torrent cannot be added because it is a duplicate of an already existing torrent."
+#~ msgstr "Δεν μπορεί να ανοιχτεί το αρχείο επειδή περιέχει μη έγκυρα δεδομένα."
+
+#~ msgid "{torrent_name} (copy of {hash})"
+#~ msgstr "{torrent_name} (αντίγραφο από {hash})"
+
+#~ msgid "Unable to add {count} duplicate torrent"
+#~ msgid_plural "Unable to add {count} duplicate torrents"
+#~ msgstr[0] "Αδυναμία προσθήκης {count} διπλότυπου torrent"
+#~ msgstr[1] "Αδυναμία προσθήκης {count} διπλότυπων torrents"
 
 #~ msgid "Couldn't add corrupt torrent"
 #~ msgid_plural "Couldn't add corrupt torrents"

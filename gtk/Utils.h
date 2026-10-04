@@ -52,7 +52,7 @@ void gtr_error(std::string const& message);
 ****
 ***/
 
-enum class GtrUnicode : uint8_t { Up, Down, Inf, Bullet };
+enum class GtrUnicode : uint8_t { Up, Down, Inf };
 
 Glib::ustring gtr_get_unicode_string(GtrUnicode uni);
 

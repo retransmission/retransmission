@@ -100,11 +100,8 @@ msgstr "A enviar o total de enviado/descarregado ao rastreador…"
 msgid "_Quit Now"
 msgstr "_Sair Agora"
 
-msgid "Couldn't add duplicate torrent"
-msgid_plural "Couldn't add duplicate torrents"
-msgstr[0] "Não foi possível adicionar o torrent duplicado"
-msgstr[1] "Não foi possível adicionar torrents duplicados"
-msgstr[2] "Não foi possível adicionar torrents duplicados"
+msgid "A torrent for \"{torrent_name}\" already exists."
+msgstr ""
 
 msgid "A fast and easy BitTorrent client"
 msgstr "Um cliente BitTorrent rápido e fácil de usar"
@@ -1490,12 +1487,6 @@ msgstr "Abrir um torrent por URL"
 msgid "_URL:"
 msgstr "_URL:"
 
-msgid "Couldn't open torrent"
-msgstr ""
-
-msgid "The torrent file '{path}' is already in use by '{torrent_name}'."
-msgstr ""
-
 msgid "\"{source}\" is not a valid torrent file."
 msgstr ""
 
@@ -1514,7 +1505,7 @@ msgstr ""
 msgid "Unsupported URL: '{url}'"
 msgstr ""
 
-msgid "{appname} doesn't know how to use '{url}'"
+msgid "{appname} doesn't know how to use '{url}'."
 msgstr ""
 
 msgid "{days_from_now:L} day from now"
@@ -2375,9 +2366,6 @@ msgstr "Incapaz de renomear \"{old_path}\" para \"{path}\": {error}."
 msgid "Error Adding Torrent"
 msgstr "Erro ao Adicionar Torrent"
 
-msgid "{torrent_name} (copy of {hash})"
-msgstr "{torrent_name} (cópia de {hash})"
-
 #, fuzzy
 #| msgid "Public torrent"
 msgid "Duplicate Torrent"
@@ -2387,15 +2375,6 @@ msgstr "Torrent público"
 #| msgid "Public torrent"
 msgid "Duplicate Torrents"
 msgstr "Torrent público"
-
-#, fuzzy
-#| msgid "Couldn't add duplicate torrent"
-#| msgid_plural "Couldn't add duplicate torrents"
-msgid "Unable to add {count} duplicate torrent"
-msgid_plural "Unable to add {count} duplicate torrents"
-msgstr[0] "Não foi possível adicionar o torrent duplicado"
-msgstr[1] "Não foi possível adicionar torrents duplicados"
-msgstr[2] "Não foi possível adicionar torrents duplicados"
 
 msgid "Change Session"
 msgstr "Alterar sessão"
@@ -2493,6 +2472,24 @@ msgid_plural "seconds"
 msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
+
+#~ msgid "Couldn't add duplicate torrent"
+#~ msgid_plural "Couldn't add duplicate torrents"
+#~ msgstr[0] "Não foi possível adicionar o torrent duplicado"
+#~ msgstr[1] "Não foi possível adicionar torrents duplicados"
+#~ msgstr[2] "Não foi possível adicionar torrents duplicados"
+
+#~ msgid "{torrent_name} (copy of {hash})"
+#~ msgstr "{torrent_name} (cópia de {hash})"
+
+#, fuzzy
+#~| msgid "Couldn't add duplicate torrent"
+#~| msgid_plural "Couldn't add duplicate torrents"
+#~ msgid "Unable to add {count} duplicate torrent"
+#~ msgid_plural "Unable to add {count} duplicate torrents"
+#~ msgstr[0] "Não foi possível adicionar o torrent duplicado"
+#~ msgstr[1] "Não foi possível adicionar torrents duplicados"
+#~ msgstr[2] "Não foi possível adicionar torrents duplicados"
 
 #~ msgid "Couldn't add corrupt torrent"
 #~ msgid_plural "Couldn't add corrupt torrents"

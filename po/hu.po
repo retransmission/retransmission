@@ -108,10 +108,8 @@ msgstr "Feltöltési/letöltési összesítések elküldése a trackernek…"
 msgid "_Quit Now"
 msgstr "_Kilépés most"
 
-msgid "Couldn't add duplicate torrent"
-msgid_plural "Couldn't add duplicate torrents"
-msgstr[0] "A már meglévő torrent hozzáadása sikertelen"
-msgstr[1] "A már meglévő torrentek hozzáadása sikertelen"
+msgid "A torrent for \"{torrent_name}\" already exists."
+msgstr ""
 
 msgid "A fast and easy BitTorrent client"
 msgstr "Egy gyors és egyszerű BitTorrent-kliens"
@@ -1652,12 +1650,6 @@ msgstr "Torrent megnyitása webcímről"
 msgid "_URL:"
 msgstr "_Webcím:"
 
-msgid "Couldn't open torrent"
-msgstr "Nem sikerült megnyitni a torrentet"
-
-msgid "The torrent file '{path}' is already in use by '{torrent_name}'."
-msgstr "'{path}' torrent fájlt már használja a '{torrent_name}' torrent."
-
 msgid "\"{source}\" is not a valid torrent file."
 msgstr "'{source}' nem egy érvényes torrent fájl."
 
@@ -1680,8 +1672,8 @@ msgstr "'{url}' url nem nyitható meg"
 msgid "Unsupported URL: '{url}'"
 msgstr "Nem támogatott webcím: '{url}'"
 
-msgid "{appname} doesn't know how to use '{url}'"
-msgstr "A {appname} nem tudja hogyan használja a '{url}' webcímet"
+msgid "{appname} doesn't know how to use '{url}'."
+msgstr "A {appname} nem tudja hogyan használja a '{url}' webcímet."
 
 msgid "{days_from_now:L} day from now"
 msgid_plural "{days_from_now:L} days from now"
@@ -2938,20 +2930,6 @@ msgstr[1] ""
 msgid "{appname} will quit, because the two apps would work on the same downloads."
 msgstr ""
 
-msgid "A torrent for \"{torrent_name}\" already exists."
-msgstr ""
-
-#, fuzzy
-#| msgid "The torrent file cannot be opened because it contains invalid data."
-msgid "The torrent cannot be added because it is a duplicate of an already existing torrent."
-msgstr "A torrent fájl nem nyitható meg, mert érvénytelen adatokat tartalmaz."
-
-msgid "Magnet link is a duplicate of an existing torrent."
-msgstr ""
-
-msgid "The magnet link \"{magnet_link}\" cannot be added because it is a duplicate of an already existing torrent."
-msgstr ""
-
 msgid "Select the new folder for \"{torrent_name}\"."
 msgstr "Új mappa választása \"{torrent_name}\" számára."
 
@@ -3786,19 +3764,11 @@ msgstr "Nem sikerült átnevezni a(z) \"{old_path}\" elemet erre: \"{path}\", me
 msgid "Error Adding Torrent"
 msgstr "Hiba a torrent hozzáadásakor"
 
-msgid "{torrent_name} (copy of {hash})"
-msgstr "{torrent_name} (a {hash} másolata)"
-
 msgid "Duplicate Torrent"
 msgstr "Ismétlődő torrent"
 
 msgid "Duplicate Torrents"
 msgstr "Ismétlődő torrent"
-
-msgid "Unable to add {count} duplicate torrent"
-msgid_plural "Unable to add {count} duplicate torrents"
-msgstr[0] "Nem sikerült hozzáadni {count} ismétlődő torrentet"
-msgstr[1] "Nem sikerült hozzáadni {count} ismétlődő torrentet"
 
 msgid "Change Session"
 msgstr "Munkamenet váltás"
@@ -3877,6 +3847,30 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "másodperc"
 msgstr[1] "másodperc"
+
+#~ msgid "Couldn't add duplicate torrent"
+#~ msgid_plural "Couldn't add duplicate torrents"
+#~ msgstr[0] "A már meglévő torrent hozzáadása sikertelen"
+#~ msgstr[1] "A már meglévő torrentek hozzáadása sikertelen"
+
+#~ msgid "Couldn't open torrent"
+#~ msgstr "Nem sikerült megnyitni a torrentet"
+
+#~ msgid "The torrent file '{path}' is already in use by '{torrent_name}'."
+#~ msgstr "'{path}' torrent fájlt már használja a '{torrent_name}' torrent."
+
+#, fuzzy
+#~| msgid "The torrent file cannot be opened because it contains invalid data."
+#~ msgid "The torrent cannot be added because it is a duplicate of an already existing torrent."
+#~ msgstr "A torrent fájl nem nyitható meg, mert érvénytelen adatokat tartalmaz."
+
+#~ msgid "{torrent_name} (copy of {hash})"
+#~ msgstr "{torrent_name} (a {hash} másolata)"
+
+#~ msgid "Unable to add {count} duplicate torrent"
+#~ msgid_plural "Unable to add {count} duplicate torrents"
+#~ msgstr[0] "Nem sikerült hozzáadni {count} ismétlődő torrentet"
+#~ msgstr[1] "Nem sikerült hozzáadni {count} ismétlődő torrentet"
 
 #~ msgid "Couldn't add corrupt torrent"
 #~ msgid_plural "Couldn't add corrupt torrents"

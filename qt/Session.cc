@@ -704,7 +704,7 @@ void Session::addTorrent(AddData const& add_me, tr_variant::Map args_dict)
                 } else if (r.code == JsonRpc::Error::CORRUPT_TORRENT || r.code == JsonRpc::Error::UNRECOGNIZED_INFO) {
                     if (add_me.type == AddData::MAGNET) {
                         text = TR_FORMAT(
-                            "{appname} doesn't know how to use '{url}'",
+                            "{appname} doesn't know how to use '{url}'.",
                             fmt::arg("appname", TR_PROJ_APPNAME_CAPITALIZED),
                             fmt::arg("url", add_me.magnet));
                     } else if (!source.isEmpty()) {
@@ -734,12 +734,10 @@ void Session::addTorrent(AddData const& add_me, tr_variant::Map args_dict)
                 } else if (auto const* const dup = args->find_if<tr_variant::Map>(TR_KEY_torrent_duplicate)) {
                     add_me.disposeSourceFile();
 
-                    if (auto const iter = dup->find(TR_KEY_hash_string); iter != dup->end()) {
-                        if (auto const hash = iter->second.value_if<std::string_view>()) {
-                            duplicates_.try_emplace(add_me.readableShortName(), Utils::qstringFromUtf8(*hash));
-                            duplicates_timer_.start(1000);
-                        }
-                    }
+                    // Name the torrent that is already here.
+                    auto const name = dup->value_if<std::string_view>(TR_KEY_name);
+                    duplicates_.push_back(name ? Utils::qstringFromUtf8(*name) : add_me.readableShortName());
+                    duplicates_timer_.start(1000);
                 }
             }
         })
@@ -750,35 +748,28 @@ void Session::onDuplicatesTimer()
 {
     decltype(duplicates_) duplicates;
     duplicates.swap(duplicates_);
-
-    QStringList lines;
-    for (auto const& [dupe, original] : duplicates) {
-        lines.push_back(
-            TR_FORMAT("{torrent_name} (copy of {hash})", fmt::arg("torrent_name", dupe), fmt::arg("hash", original.left(7))));
+    if (duplicates.empty()) {
+        return;
     }
 
-    if (!lines.empty()) {
-        lines.sort(Qt::CaseInsensitive);
-        // NOLINTNEXTLINE(readability-redundant-casting): Remove this comment when we drop Qt5
-        auto const count = static_cast<int>(lines.size());
-        auto const title = count == 1 ? TR_TEXT("Duplicate Torrent") : TR_TEXT("Duplicate Torrents");
-        auto const detail = lines.join(QStringLiteral("\n"));
-        auto const detail_text = TR_FORMAT_N(
-            "Unable to add {count} duplicate torrent",
-            "Unable to add {count} duplicate torrents",
-            count,
-            fmt::arg("count", count));
-        auto const use_detail = lines.size() > 1;
-        auto const text = use_detail ? detail_text : detail;
+    duplicates.sort(Qt::CaseInsensitive);
+    duplicates.removeDuplicates();
 
-        auto* d = new QMessageBox{ QMessageBox::Warning, title, text, QMessageBox::Close, QApplication::activeWindow() };
-        if (use_detail) {
-            d->setDetailedText(detail);
-        }
-
-        QObject::connect(d, &QMessageBox::rejected, d, &QMessageBox::deleteLater);
-        d->show();
+    // One sentence for each torrent that is already here.
+    auto lines = QStringList{};
+    for (auto const& name : duplicates) {
+        lines.push_back(TR_FORMAT("A torrent for \"{torrent_name}\" already exists.", fmt::arg("torrent_name", name)));
     }
+
+    auto const title = lines.size() == 1 ? TR_TEXT("Duplicate Torrent") : TR_TEXT("Duplicate Torrents");
+    auto* d = new QMessageBox{ QMessageBox::Warning,
+                               title,
+                               lines.join(QLatin1Char{ '\n' }),
+                               QMessageBox::Close,
+                               QApplication::activeWindow() };
+    d->setTextFormat(Qt::PlainText);
+    QObject::connect(d, &QMessageBox::rejected, d, &QMessageBox::deleteLater);
+    d->show();
 }
 
 void Session::addTorrent(AddData const& add_me)

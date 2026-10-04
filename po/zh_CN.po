@@ -112,9 +112,8 @@ msgstr "正在发送上传/下载统计到 Tracker…"
 msgid "_Quit Now"
 msgstr "立即退出(_Q)"
 
-msgid "Couldn't add duplicate torrent"
-msgid_plural "Couldn't add duplicate torrents"
-msgstr[0] "无法添加重复的种子"
+msgid "A torrent for \"{torrent_name}\" already exists."
+msgstr ""
 
 msgid "A fast and easy BitTorrent client"
 msgstr "一个快速易用的 BitTorrent 客户端"
@@ -1652,12 +1651,6 @@ msgstr "从网址打开种子"
 msgid "_URL:"
 msgstr "网址(_U)："
 
-msgid "Couldn't open torrent"
-msgstr "无法打开种子"
-
-msgid "The torrent file '{path}' is already in use by '{torrent_name}'."
-msgstr "种子文件“{path}”已被“{torrent_name}”使用。"
-
 msgid "\"{source}\" is not a valid torrent file."
 msgstr "“{source}”不是有效的种子文件。"
 
@@ -1680,8 +1673,8 @@ msgstr "无法打开“{url}”"
 msgid "Unsupported URL: '{url}'"
 msgstr "不支持的网址：“{url}”"
 
-msgid "{appname} doesn't know how to use '{url}'"
-msgstr "{appname} 不清楚“{url}”的使用方式"
+msgid "{appname} doesn't know how to use '{url}'."
+msgstr "{appname} 不清楚“{url}”的使用方式。"
 
 msgid "{days_from_now:L} day from now"
 msgid_plural "{days_from_now:L} days from now"
@@ -2916,20 +2909,6 @@ msgstr[0] ""
 msgid "{appname} will quit, because the two apps would work on the same downloads."
 msgstr ""
 
-msgid "A torrent for \"{torrent_name}\" already exists."
-msgstr ""
-
-#, fuzzy
-#| msgid "The torrent file cannot be opened because it contains invalid data."
-msgid "The torrent cannot be added because it is a duplicate of an already existing torrent."
-msgstr "无法打开 Torrent 文件，因为它包含无效数据。"
-
-msgid "Magnet link is a duplicate of an existing torrent."
-msgstr ""
-
-msgid "The magnet link \"{magnet_link}\" cannot be added because it is a duplicate of an already existing torrent."
-msgstr ""
-
 msgid "Select the new folder for \"{torrent_name}\"."
 msgstr "为“{torrent_name}”选择新的文件夹。"
 
@@ -3747,18 +3726,11 @@ msgstr "无法重命名 \"{old_path}\" 为 \"{path}\": {error}."
 msgid "Error Adding Torrent"
 msgstr "添加 Torrent 出错"
 
-msgid "{torrent_name} (copy of {hash})"
-msgstr "{torrent_name} ({hash} 的副本)"
-
 msgid "Duplicate Torrent"
 msgstr "重复的 Torrent"
 
 msgid "Duplicate Torrents"
 msgstr "重复的 Torrent"
-
-msgid "Unable to add {count} duplicate torrent"
-msgid_plural "Unable to add {count} duplicate torrents"
-msgstr[0] "无法添加 {count} 个重复的 Torrent"
 
 msgid "Change Session"
 msgstr "更改会话"
@@ -3828,6 +3800,28 @@ msgstr[0] "天"
 msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "秒"
+
+#~ msgid "Couldn't add duplicate torrent"
+#~ msgid_plural "Couldn't add duplicate torrents"
+#~ msgstr[0] "无法添加重复的种子"
+
+#~ msgid "Couldn't open torrent"
+#~ msgstr "无法打开种子"
+
+#~ msgid "The torrent file '{path}' is already in use by '{torrent_name}'."
+#~ msgstr "种子文件“{path}”已被“{torrent_name}”使用。"
+
+#, fuzzy
+#~| msgid "The torrent file cannot be opened because it contains invalid data."
+#~ msgid "The torrent cannot be added because it is a duplicate of an already existing torrent."
+#~ msgstr "无法打开 Torrent 文件，因为它包含无效数据。"
+
+#~ msgid "{torrent_name} (copy of {hash})"
+#~ msgstr "{torrent_name} ({hash} 的副本)"
+
+#~ msgid "Unable to add {count} duplicate torrent"
+#~ msgid_plural "Unable to add {count} duplicate torrents"
+#~ msgstr[0] "无法添加 {count} 个重复的 Torrent"
 
 #~ msgid "Couldn't add corrupt torrent"
 #~ msgid_plural "Couldn't add corrupt torrents"

@@ -100,9 +100,8 @@ msgstr "Mengirim total unggah/unduh ke pelacak…"
 msgid "_Quit Now"
 msgstr "Keluar Sekarang"
 
-msgid "Couldn't add duplicate torrent"
-msgid_plural "Couldn't add duplicate torrents"
-msgstr[0] "Tak bisa menambah torrent duplikat"
+msgid "A torrent for \"{torrent_name}\" already exists."
+msgstr ""
 
 msgid "A fast and easy BitTorrent client"
 msgstr "Klien BitTorrent yang cepat dan mudah"
@@ -1486,12 +1485,6 @@ msgstr "Buka torrent dari URL"
 msgid "_URL:"
 msgstr "_URL:"
 
-msgid "Couldn't open torrent"
-msgstr ""
-
-msgid "The torrent file '{path}' is already in use by '{torrent_name}'."
-msgstr ""
-
 msgid "\"{source}\" is not a valid torrent file."
 msgstr ""
 
@@ -1510,7 +1503,7 @@ msgstr ""
 msgid "Unsupported URL: '{url}'"
 msgstr ""
 
-msgid "{appname} doesn't know how to use '{url}'"
+msgid "{appname} doesn't know how to use '{url}'."
 msgstr ""
 
 msgid "{days_from_now:L} day from now"
@@ -2317,9 +2310,6 @@ msgstr "Tidak dapat mengubah nama \"{old_path}\" sebagai \"{path}\": {error}."
 msgid "Error Adding Torrent"
 msgstr "Galat Saat Menambah Torrent"
 
-msgid "{torrent_name} (copy of {hash})"
-msgstr "{torrent_name} (salinan dari {hash})"
-
 #, fuzzy
 #| msgid "Public torrent"
 msgid "Duplicate Torrent"
@@ -2329,13 +2319,6 @@ msgstr "Torrent publik"
 #| msgid "Public torrent"
 msgid "Duplicate Torrents"
 msgstr "Torrent publik"
-
-#, fuzzy
-#| msgid "Couldn't add duplicate torrent"
-#| msgid_plural "Couldn't add duplicate torrents"
-msgid "Unable to add {count} duplicate torrent"
-msgid_plural "Unable to add {count} duplicate torrents"
-msgstr[0] "Tak bisa menambah torrent duplikat"
 
 msgid "Change Session"
 msgstr "Ubah Sesi"
@@ -2413,6 +2396,20 @@ msgstr[0] ""
 msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] ""
+
+#~ msgid "Couldn't add duplicate torrent"
+#~ msgid_plural "Couldn't add duplicate torrents"
+#~ msgstr[0] "Tak bisa menambah torrent duplikat"
+
+#~ msgid "{torrent_name} (copy of {hash})"
+#~ msgstr "{torrent_name} (salinan dari {hash})"
+
+#, fuzzy
+#~| msgid "Couldn't add duplicate torrent"
+#~| msgid_plural "Couldn't add duplicate torrents"
+#~ msgid "Unable to add {count} duplicate torrent"
+#~ msgid_plural "Unable to add {count} duplicate torrents"
+#~ msgstr[0] "Tak bisa menambah torrent duplikat"
 
 #~ msgid "Couldn't add corrupt torrent"
 #~ msgid_plural "Couldn't add corrupt torrents"

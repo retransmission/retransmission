@@ -108,9 +108,6 @@ Glib::ustring gtr_get_unicode_string(GtrUnicode uni)
     case GtrUnicode::Inf:
         return "\xE2\x88\x9E";
 
-    case GtrUnicode::Bullet:
-        return "\xE2\x88\x99";
-
     default:
         return "err";
     }
@@ -134,13 +131,10 @@ Glib::ustring tr_strlsize(guint64 n_bytes)
 void gtr_add_torrent_error_dialog(Gtk::Widget& child, tr_torrent* duplicate_torrent, std::string const& filename)
 {
     Glib::ustring primary;
-    Glib::ustring secondary;
 
     if (duplicate_torrent != nullptr) {
-        primary = _("Couldn't open torrent");
-        secondary = fmt::format(
-            fmt::runtime(_("The torrent file '{path}' is already in use by '{torrent_name}'.")),
-            fmt::arg("path", filename),
+        primary = fmt::format(
+            fmt::runtime(_("A torrent for \"{torrent_name}\" already exists.")),
             fmt::arg("torrent_name", tr_torrentName(duplicate_torrent)));
     } else {
         primary = fmt::format(
@@ -154,9 +148,6 @@ void gtr_add_torrent_error_dialog(Gtk::Widget& child, tr_torrent* duplicate_torr
         false,
         TR_GTK_MESSAGE_TYPE(ERROR),
         TR_GTK_BUTTONS_TYPE(CLOSE));
-    if (!secondary.empty()) {
-        w->set_secondary_text(secondary);
-    }
     w->signal_response().connect([w](int /*response*/) mutable { w.reset(); });
     w->show();
 }
@@ -696,7 +687,7 @@ void gtr_unrecognized_url_dialog(Gtk::Widget& parent, Glib::ustring const& url)
         true /*modal*/);
     w->set_secondary_text(
         fmt::format(
-            fmt::runtime(_("{appname} doesn't know how to use '{url}'")),
+            fmt::runtime(_("{appname} doesn't know how to use '{url}'.")),
             fmt::arg("appname", TR_PROJ_APPNAME_CAPITALIZED),
             fmt::arg("url", url)));
     w->signal_response().connect([w](int /*response*/) mutable { w.reset(); });

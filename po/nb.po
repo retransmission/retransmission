@@ -101,10 +101,8 @@ msgstr "Sender opp- og nedlastningsstatistikk til stifinner …"
 msgid "_Quit Now"
 msgstr "_Avslutt nå"
 
-msgid "Couldn't add duplicate torrent"
-msgid_plural "Couldn't add duplicate torrents"
-msgstr[0] "Klarte ikke å legge til torrent som var lagt til fra før"
-msgstr[1] "Klarte ikke å legge til torrenter som var lagt til fra før"
+msgid "A torrent for \"{torrent_name}\" already exists."
+msgstr ""
 
 msgid "A fast and easy BitTorrent client"
 msgstr "En rask og enkel BitTorrent-klient"
@@ -1494,12 +1492,6 @@ msgstr "Åpne torrent fra URL"
 msgid "_URL:"
 msgstr "_URL:"
 
-msgid "Couldn't open torrent"
-msgstr ""
-
-msgid "The torrent file '{path}' is already in use by '{torrent_name}'."
-msgstr ""
-
 msgid "\"{source}\" is not a valid torrent file."
 msgstr ""
 
@@ -1518,7 +1510,7 @@ msgstr ""
 msgid "Unsupported URL: '{url}'"
 msgstr ""
 
-msgid "{appname} doesn't know how to use '{url}'"
+msgid "{appname} doesn't know how to use '{url}'."
 msgstr ""
 
 msgid "{days_from_now:L} day from now"
@@ -2352,9 +2344,6 @@ msgstr "Klarte ikke å gi \"{old_path}\" nytt navn som \"{path}\": {error}."
 msgid "Error Adding Torrent"
 msgstr "Feil under tillegg av torrent"
 
-msgid "{torrent_name} (copy of {hash})"
-msgstr ""
-
 #, fuzzy
 #| msgid "Public torrent"
 msgid "Duplicate Torrent"
@@ -2364,14 +2353,6 @@ msgstr "Offentlig torrent"
 #| msgid "Public torrent"
 msgid "Duplicate Torrents"
 msgstr "Offentlig torrent"
-
-#, fuzzy
-#| msgid "Couldn't add duplicate torrent"
-#| msgid_plural "Couldn't add duplicate torrents"
-msgid "Unable to add {count} duplicate torrent"
-msgid_plural "Unable to add {count} duplicate torrents"
-msgstr[0] "Klarte ikke å legge til torrent som var lagt til fra før"
-msgstr[1] "Klarte ikke å legge til torrenter som var lagt til fra før"
 
 msgid "Change Session"
 msgstr "Endre økt"
@@ -2459,6 +2440,19 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] ""
 msgstr[1] ""
+
+#~ msgid "Couldn't add duplicate torrent"
+#~ msgid_plural "Couldn't add duplicate torrents"
+#~ msgstr[0] "Klarte ikke å legge til torrent som var lagt til fra før"
+#~ msgstr[1] "Klarte ikke å legge til torrenter som var lagt til fra før"
+
+#, fuzzy
+#~| msgid "Couldn't add duplicate torrent"
+#~| msgid_plural "Couldn't add duplicate torrents"
+#~ msgid "Unable to add {count} duplicate torrent"
+#~ msgid_plural "Unable to add {count} duplicate torrents"
+#~ msgstr[0] "Klarte ikke å legge til torrent som var lagt til fra før"
+#~ msgstr[1] "Klarte ikke å legge til torrenter som var lagt til fra før"
 
 #~ msgid "Couldn't add corrupt torrent"
 #~ msgid_plural "Couldn't add corrupt torrents"

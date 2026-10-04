@@ -111,10 +111,8 @@ msgstr "Gönderme/indirme toplamları izleyiciye gönderiliyor…"
 msgid "_Quit Now"
 msgstr "Şimdi _Çık"
 
-msgid "Couldn't add duplicate torrent"
-msgid_plural "Couldn't add duplicate torrents"
-msgstr[0] "Yinelenen torrent eklenemedi"
-msgstr[1] "Yinelenen torrentler eklenemedi"
+msgid "A torrent for \"{torrent_name}\" already exists."
+msgstr ""
 
 msgid "A fast and easy BitTorrent client"
 msgstr "Hızlı ve kolay BitTorrent istemcisi"
@@ -1623,12 +1621,6 @@ msgstr "URL'den torrent aç"
 msgid "_URL:"
 msgstr "_URL:"
 
-msgid "Couldn't open torrent"
-msgstr "Torrent açılamadı"
-
-msgid "The torrent file '{path}' is already in use by '{torrent_name}'."
-msgstr "'{path}' torrent dosyası halihazırda '{torrent_name}' tarafından kullanılıyor."
-
 msgid "\"{source}\" is not a valid torrent file."
 msgstr "“{source}” geçerli bir torrent dosyası değil."
 
@@ -1651,8 +1643,8 @@ msgstr "'{url}' açılamadı"
 msgid "Unsupported URL: '{url}'"
 msgstr "Desteklenmeyen URL: '{url}'"
 
-msgid "{appname} doesn't know how to use '{url}'"
-msgstr "{appname} şunun nasıl kullanılacağını bilmiyor: '{url}'"
+msgid "{appname} doesn't know how to use '{url}'."
+msgstr "{appname} şunun nasıl kullanılacağını bilmiyor: '{url}'."
 
 msgid "{days_from_now:L} day from now"
 msgid_plural "{days_from_now:L} days from now"
@@ -2911,20 +2903,6 @@ msgstr[1] ""
 msgid "{appname} will quit, because the two apps would work on the same downloads."
 msgstr ""
 
-msgid "A torrent for \"{torrent_name}\" already exists."
-msgstr ""
-
-#, fuzzy
-#| msgid "The torrent file cannot be opened because it contains invalid data."
-msgid "The torrent cannot be added because it is a duplicate of an already existing torrent."
-msgstr "Bu torrent dosyası açılamaz çünkü geçersiz veri içeriyor."
-
-msgid "Magnet link is a duplicate of an existing torrent."
-msgstr ""
-
-msgid "The magnet link \"{magnet_link}\" cannot be added because it is a duplicate of an already existing torrent."
-msgstr ""
-
 msgid "Select the new folder for \"{torrent_name}\"."
 msgstr "“{torrent_name}” için yeni klasörü seçin."
 
@@ -3758,19 +3736,11 @@ msgstr "\"{old_path}\", \"{path}\" olarak yeniden adlandırılamadı: {error}."
 msgid "Error Adding Torrent"
 msgstr "Torrent Eklenirken Hata"
 
-msgid "{torrent_name} (copy of {hash})"
-msgstr "{torrent_name} ({hash} kopyası)"
-
 msgid "Duplicate Torrent"
 msgstr "Yinelenen Torrent"
 
 msgid "Duplicate Torrents"
 msgstr "Yinelenen Torrent"
-
-msgid "Unable to add {count} duplicate torrent"
-msgid_plural "Unable to add {count} duplicate torrents"
-msgstr[0] "{count} yinelenen torrent eklenemiyor"
-msgstr[1] "{count} yinelenen torrent eklenemiyor"
 
 msgid "Change Session"
 msgstr "Oturumu Değiştir"
@@ -3849,6 +3819,30 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "saniye"
 msgstr[1] "saniye"
+
+#~ msgid "Couldn't add duplicate torrent"
+#~ msgid_plural "Couldn't add duplicate torrents"
+#~ msgstr[0] "Yinelenen torrent eklenemedi"
+#~ msgstr[1] "Yinelenen torrentler eklenemedi"
+
+#~ msgid "Couldn't open torrent"
+#~ msgstr "Torrent açılamadı"
+
+#~ msgid "The torrent file '{path}' is already in use by '{torrent_name}'."
+#~ msgstr "'{path}' torrent dosyası halihazırda '{torrent_name}' tarafından kullanılıyor."
+
+#, fuzzy
+#~| msgid "The torrent file cannot be opened because it contains invalid data."
+#~ msgid "The torrent cannot be added because it is a duplicate of an already existing torrent."
+#~ msgstr "Bu torrent dosyası açılamaz çünkü geçersiz veri içeriyor."
+
+#~ msgid "{torrent_name} (copy of {hash})"
+#~ msgstr "{torrent_name} ({hash} kopyası)"
+
+#~ msgid "Unable to add {count} duplicate torrent"
+#~ msgid_plural "Unable to add {count} duplicate torrents"
+#~ msgstr[0] "{count} yinelenen torrent eklenemiyor"
+#~ msgstr[1] "{count} yinelenen torrent eklenemiyor"
 
 #~ msgid "Couldn't add corrupt torrent"
 #~ msgid_plural "Couldn't add corrupt torrents"

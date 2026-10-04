@@ -100,10 +100,8 @@ msgstr ""
 msgid "_Quit Now"
 msgstr "_დახურვა"
 
-msgid "Couldn't add duplicate torrent"
-msgid_plural "Couldn't add duplicate torrents"
-msgstr[0] "ვერ ვამატებ ტორენტის დუბლიკატს"
-msgstr[1] "ვერ ვამატებ ტორენტის დუბლიკატს"
+msgid "A torrent for \"{torrent_name}\" already exists."
+msgstr ""
 
 msgid "A fast and easy BitTorrent client"
 msgstr "სწრაფი და მარტივი BitTorrent კლიენტი"
@@ -1479,12 +1477,6 @@ msgstr ""
 msgid "_URL:"
 msgstr "_URL:"
 
-msgid "Couldn't open torrent"
-msgstr ""
-
-msgid "The torrent file '{path}' is already in use by '{torrent_name}'."
-msgstr ""
-
 msgid "\"{source}\" is not a valid torrent file."
 msgstr ""
 
@@ -1503,7 +1495,7 @@ msgstr ""
 msgid "Unsupported URL: '{url}'"
 msgstr ""
 
-msgid "{appname} doesn't know how to use '{url}'"
+msgid "{appname} doesn't know how to use '{url}'."
 msgstr ""
 
 msgid "{days_from_now:L} day from now"
@@ -2337,9 +2329,6 @@ msgstr "ვერ მოხერხდა \"{old_path}-ის\" \"{path}\": {er
 msgid "Error Adding Torrent"
 msgstr ""
 
-msgid "{torrent_name} (copy of {hash})"
-msgstr ""
-
 #, fuzzy
 #| msgid "Public torrent"
 msgid "Duplicate Torrent"
@@ -2349,14 +2338,6 @@ msgstr "საჯარო ტორენტი"
 #| msgid "Public torrent"
 msgid "Duplicate Torrents"
 msgstr "საჯარო ტორენტი"
-
-#, fuzzy
-#| msgid "Couldn't add duplicate torrent"
-#| msgid_plural "Couldn't add duplicate torrents"
-msgid "Unable to add {count} duplicate torrent"
-msgid_plural "Unable to add {count} duplicate torrents"
-msgstr[0] "ვერ ვამატებ ტორენტის დუბლიკატს"
-msgstr[1] "ვერ ვამატებ ტორენტის დუბლიკატს"
 
 msgid "Change Session"
 msgstr "სესიის შეცვლა"
@@ -2447,6 +2428,19 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "წამი"
 msgstr[1] "წამი"
+
+#~ msgid "Couldn't add duplicate torrent"
+#~ msgid_plural "Couldn't add duplicate torrents"
+#~ msgstr[0] "ვერ ვამატებ ტორენტის დუბლიკატს"
+#~ msgstr[1] "ვერ ვამატებ ტორენტის დუბლიკატს"
+
+#, fuzzy
+#~| msgid "Couldn't add duplicate torrent"
+#~| msgid_plural "Couldn't add duplicate torrents"
+#~ msgid "Unable to add {count} duplicate torrent"
+#~ msgid_plural "Unable to add {count} duplicate torrents"
+#~ msgstr[0] "ვერ ვამატებ ტორენტის დუბლიკატს"
+#~ msgstr[1] "ვერ ვამატებ ტორენტის დუბლიკატს"
 
 #~ msgid "Couldn't add corrupt torrent"
 #~ msgid_plural "Couldn't add corrupt torrents"

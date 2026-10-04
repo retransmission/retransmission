@@ -100,14 +100,8 @@ msgstr "يرسل مجاميع الرفع والتنزيل إلى المتتبع�
 msgid "_Quit Now"
 msgstr "مغ_ادرة الآن"
 
-msgid "Couldn't add duplicate torrent"
-msgid_plural "Couldn't add duplicate torrents"
-msgstr[0] "لا يمكن تكرار إضافة ملف تورنت موجود حاليا"
-msgstr[1] "لا يمكن تكرار إضافة ملف تورنت موجود حاليا"
-msgstr[2] "لا يمكن تكرار إضافة ملفات تورنت موجودة حاليا"
-msgstr[3] "لا يمكن تكرار إضافة ملفات تورنت موجودة حاليا"
-msgstr[4] "لا يمكن تكرار إضافة ملفات تورنت موجودة حاليا"
-msgstr[5] "لا يمكن تكرار إضافة ملفات تورنت موجودة حاليا"
+msgid "A torrent for \"{torrent_name}\" already exists."
+msgstr ""
 
 msgid "A fast and easy BitTorrent client"
 msgstr "عميل «بت تورنت» سريع وسهل الاستخدام"
@@ -1555,12 +1549,6 @@ msgstr "فتح تورنت من رابط"
 msgid "_URL:"
 msgstr "ال_رابط:"
 
-msgid "Couldn't open torrent"
-msgstr ""
-
-msgid "The torrent file '{path}' is already in use by '{torrent_name}'."
-msgstr ""
-
 msgid "\"{source}\" is not a valid torrent file."
 msgstr ""
 
@@ -1583,7 +1571,7 @@ msgstr ""
 msgid "Unsupported URL: '{url}'"
 msgstr ""
 
-msgid "{appname} doesn't know how to use '{url}'"
+msgid "{appname} doesn't know how to use '{url}'."
 msgstr ""
 
 msgid "{days_from_now:L} day from now"
@@ -2536,11 +2524,6 @@ msgid "Error Adding Torrent"
 msgstr "تعذر إضافة التورنت"
 
 #, fuzzy
-#| msgid "{torrent_name} - Edit Trackers"
-msgid "{torrent_name} (copy of {hash})"
-msgstr "{torrent_name} - تعديل المتتبعات"
-
-#, fuzzy
 #| msgid "Public torrent"
 msgid "Duplicate Torrent"
 msgstr "تورنت عام"
@@ -2549,18 +2532,6 @@ msgstr "تورنت عام"
 #| msgid "Public torrent"
 msgid "Duplicate Torrents"
 msgstr "تورنت عام"
-
-#, fuzzy
-#| msgid "Couldn't add duplicate torrent"
-#| msgid_plural "Couldn't add duplicate torrents"
-msgid "Unable to add {count} duplicate torrent"
-msgid_plural "Unable to add {count} duplicate torrents"
-msgstr[0] "لا يمكن تكرار إضافة ملف تورنت موجود حاليا"
-msgstr[1] "لا يمكن تكرار إضافة ملف تورنت موجود حاليا"
-msgstr[2] "لا يمكن تكرار إضافة ملفات تورنت موجودة حاليا"
-msgstr[3] "لا يمكن تكرار إضافة ملفات تورنت موجودة حاليا"
-msgstr[4] "لا يمكن تكرار إضافة ملفات تورنت موجودة حاليا"
-msgstr[5] "لا يمكن تكرار إضافة ملفات تورنت موجودة حاليا"
 
 msgid "Change Session"
 msgstr "تغيير الجلسة"
@@ -2688,6 +2659,32 @@ msgstr[2] ""
 msgstr[3] ""
 msgstr[4] ""
 msgstr[5] ""
+
+#~ msgid "Couldn't add duplicate torrent"
+#~ msgid_plural "Couldn't add duplicate torrents"
+#~ msgstr[0] "لا يمكن تكرار إضافة ملف تورنت موجود حاليا"
+#~ msgstr[1] "لا يمكن تكرار إضافة ملف تورنت موجود حاليا"
+#~ msgstr[2] "لا يمكن تكرار إضافة ملفات تورنت موجودة حاليا"
+#~ msgstr[3] "لا يمكن تكرار إضافة ملفات تورنت موجودة حاليا"
+#~ msgstr[4] "لا يمكن تكرار إضافة ملفات تورنت موجودة حاليا"
+#~ msgstr[5] "لا يمكن تكرار إضافة ملفات تورنت موجودة حاليا"
+
+#, fuzzy
+#~| msgid "{torrent_name} - Edit Trackers"
+#~ msgid "{torrent_name} (copy of {hash})"
+#~ msgstr "{torrent_name} - تعديل المتتبعات"
+
+#, fuzzy
+#~| msgid "Couldn't add duplicate torrent"
+#~| msgid_plural "Couldn't add duplicate torrents"
+#~ msgid "Unable to add {count} duplicate torrent"
+#~ msgid_plural "Unable to add {count} duplicate torrents"
+#~ msgstr[0] "لا يمكن تكرار إضافة ملف تورنت موجود حاليا"
+#~ msgstr[1] "لا يمكن تكرار إضافة ملف تورنت موجود حاليا"
+#~ msgstr[2] "لا يمكن تكرار إضافة ملفات تورنت موجودة حاليا"
+#~ msgstr[3] "لا يمكن تكرار إضافة ملفات تورنت موجودة حاليا"
+#~ msgstr[4] "لا يمكن تكرار إضافة ملفات تورنت موجودة حاليا"
+#~ msgstr[5] "لا يمكن تكرار إضافة ملفات تورنت موجودة حاليا"
 
 #~ msgid "Couldn't add corrupt torrent"
 #~ msgid_plural "Couldn't add corrupt torrents"

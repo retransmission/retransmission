@@ -36,6 +36,7 @@ import sys
 #   'colon':   True adds the colon that the catalog's other labels end with
 #   'append':  text to add at the end, unless it is there already
 #   'rstrip':  characters to take off the end, e.g. '.。'
+#   'period':  True adds the period that the catalog's other sentences end with
 RENAMES = [
     # The Qt client's New Torrent dialog takes the GTK client's tracker-list help.
     {
@@ -279,6 +280,12 @@ RENAMES = [
         'to': {'msgid': '"{source}" is not a valid torrent file.'},
         'fields': {'filename': 'source'},
     },
+    # The sentence about a URL that can't be used ends with a period, as the other two do.
+    {
+        'from': {'msgid': "{appname} doesn't know how to use '{url}'"},
+        'to': {'msgid': "{appname} doesn't know how to use '{url}'."},
+        'period': True,
+    },
 ]
 
 FIELD_NAMES = ('msgctxt', 'msgid', 'msgid_plural')
@@ -373,7 +380,18 @@ def colon_of(messages):
     return colons.most_common(1)[0][0] if colons else ':'
 
 
-def moved_translation(text, rename, colon):
+def period_of(messages):
+    """Returns the mark that most of the catalog's sentences end with, e.g. "。" in Japanese."""
+    periods = collections.Counter()
+    for message in messages:
+        msgid = message.fields.get('msgid', '')
+        match = re.search(r'[.。]$', message.fields.get('msgstr', ''))
+        if msgid.endswith('.') and not msgid.endswith('…') and match and message.is_translated():
+            periods[match.group(0)] += 1
+    return periods.most_common(1)[0][0] if periods else '.'
+
+
+def moved_translation(text, rename, colon, period):
     if not text:
         return text
 
@@ -396,6 +414,9 @@ def moved_translation(text, rename, colon):
 
     text = text.rstrip(rename.get('rstrip', ''))
 
+    if rename.get('period') and not re.search(r'[.。!?！？]$', text):
+        text += period
+
     append = rename.get('append', '')
     if append and not text.endswith(append):
         text += append
@@ -407,6 +428,7 @@ def fold(po_path):
     text = pathlib.Path(po_path).read_text(encoding='utf-8')
     messages = [Message(block.split('\n')) for block in text.rstrip('\n').split('\n\n')]
     colon = colon_of(messages)
+    period = period_of(messages)
     n_changed = 0
 
     for rename in RENAMES:
@@ -417,7 +439,7 @@ def fold(po_path):
         if old is None or old is new:
             continue
 
-        moved = {name: moved_translation(text, rename, colon) for name, text in old.translations().items()}
+        moved = {name: moved_translation(text, rename, colon, period) for name, text in old.translations().items()}
 
         if rename.get('keep'):
             if new is not None and old.is_translated() and not new.is_translated():

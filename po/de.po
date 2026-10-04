@@ -109,10 +109,8 @@ msgstr "Hoch-/Herunterladestatistik wird an den Tracker gesendet …"
 msgid "_Quit Now"
 msgstr "_Jetzt beenden"
 
-msgid "Couldn't add duplicate torrent"
-msgid_plural "Couldn't add duplicate torrents"
-msgstr[0] "Doppelte Torrentdatei konnte nicht hinzugefügt werden"
-msgstr[1] "Doppelte Torrentdateien konnten nicht hinzugefügt werden"
+msgid "A torrent for \"{torrent_name}\" already exists."
+msgstr ""
 
 msgid "A fast and easy BitTorrent client"
 msgstr "Ein schnelles und einfaches BitTorrent-Programm"
@@ -1679,12 +1677,6 @@ msgstr "Torrent über Adresse öffnen"
 msgid "_URL:"
 msgstr "_Adresse:"
 
-msgid "Couldn't open torrent"
-msgstr "Torrent konnte nicht geöffnet werden"
-
-msgid "The torrent file '{path}' is already in use by '{torrent_name}'."
-msgstr "Die Torrent-Datei »{path}« ist bereits in Verwendung von »{torrent_name}«."
-
 msgid "\"{source}\" is not a valid torrent file."
 msgstr "„{source}“ ist keine wohlgeformte Torrent-Datei."
 
@@ -1707,8 +1699,8 @@ msgstr "»{url}« konnte nicht geöffnet werden"
 msgid "Unsupported URL: '{url}'"
 msgstr "Nicht unterstützte Adresse: »{url}«"
 
-msgid "{appname} doesn't know how to use '{url}'"
-msgstr "{appname} weiß nicht, wie es »{url}« verwenden soll"
+msgid "{appname} doesn't know how to use '{url}'."
+msgstr "{appname} weiß nicht, wie es »{url}« verwenden soll."
 
 msgid "{days_from_now:L} day from now"
 msgid_plural "{days_from_now:L} days from now"
@@ -2969,20 +2961,6 @@ msgstr[1] ""
 msgid "{appname} will quit, because the two apps would work on the same downloads."
 msgstr ""
 
-msgid "A torrent for \"{torrent_name}\" already exists."
-msgstr ""
-
-#, fuzzy
-#| msgid "The torrent file cannot be opened because it contains invalid data."
-msgid "The torrent cannot be added because it is a duplicate of an already existing torrent."
-msgstr "Die Torrent-Datei kann nicht geöffnet werden, da sie ungültige Daten enthält."
-
-msgid "Magnet link is a duplicate of an existing torrent."
-msgstr ""
-
-msgid "The magnet link \"{magnet_link}\" cannot be added because it is a duplicate of an already existing torrent."
-msgstr ""
-
 msgid "Select the new folder for \"{torrent_name}\"."
 msgstr "Neuen Zielordner für „{torrent_name}“ auswählen."
 
@@ -3815,19 +3793,11 @@ msgstr "Konnte \"{old_path}\" nicht zu \"{path}\" umbenennen: {error}."
 msgid "Error Adding Torrent"
 msgstr "Fehler beim Hinzufügen des Torrents"
 
-msgid "{torrent_name} (copy of {hash})"
-msgstr "{torrent_name} (Kopie von {hash})"
-
 msgid "Duplicate Torrent"
 msgstr "Doppelte Torrentdatei"
 
 msgid "Duplicate Torrents"
 msgstr "Doppelte Torrentdateien"
-
-msgid "Unable to add {count} duplicate torrent"
-msgid_plural "Unable to add {count} duplicate torrents"
-msgstr[0] "{count} doppelte Torrentdatei konnten nicht hinzugefügt werden"
-msgstr[1] "{count} doppelte Torrentdateien konnten nicht hinzugefügt werden"
 
 msgid "Change Session"
 msgstr "Sitzung wechseln"
@@ -3906,6 +3876,30 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "Sekunde"
 msgstr[1] "Sekunden"
+
+#~ msgid "Couldn't add duplicate torrent"
+#~ msgid_plural "Couldn't add duplicate torrents"
+#~ msgstr[0] "Doppelte Torrentdatei konnte nicht hinzugefügt werden"
+#~ msgstr[1] "Doppelte Torrentdateien konnten nicht hinzugefügt werden"
+
+#~ msgid "Couldn't open torrent"
+#~ msgstr "Torrent konnte nicht geöffnet werden"
+
+#~ msgid "The torrent file '{path}' is already in use by '{torrent_name}'."
+#~ msgstr "Die Torrent-Datei »{path}« ist bereits in Verwendung von »{torrent_name}«."
+
+#, fuzzy
+#~| msgid "The torrent file cannot be opened because it contains invalid data."
+#~ msgid "The torrent cannot be added because it is a duplicate of an already existing torrent."
+#~ msgstr "Die Torrent-Datei kann nicht geöffnet werden, da sie ungültige Daten enthält."
+
+#~ msgid "{torrent_name} (copy of {hash})"
+#~ msgstr "{torrent_name} (Kopie von {hash})"
+
+#~ msgid "Unable to add {count} duplicate torrent"
+#~ msgid_plural "Unable to add {count} duplicate torrents"
+#~ msgstr[0] "{count} doppelte Torrentdatei konnten nicht hinzugefügt werden"
+#~ msgstr[1] "{count} doppelte Torrentdateien konnten nicht hinzugefügt werden"
 
 #~ msgid "Couldn't add corrupt torrent"
 #~ msgid_plural "Couldn't add corrupt torrents"

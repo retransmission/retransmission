@@ -105,11 +105,8 @@ msgstr "נשלחים סיכומי הלאה/הורדה לעוקב…"
 msgid "_Quit Now"
 msgstr "ל_צאת עכשיו"
 
-msgid "Couldn't add duplicate torrent"
-msgid_plural "Couldn't add duplicate torrents"
-msgstr[0] "לא ניתן להוסיף טורנט כפול"
-msgstr[1] "לא ניתן להוסיף טורנטים כפולים"
-msgstr[2] "לא ניתן להוסיף טורנטים כפולים"
+msgid "A torrent for \"{torrent_name}\" already exists."
+msgstr ""
 
 msgid "A fast and easy BitTorrent client"
 msgstr "לקוח ביטורנט מהיר ופשוט"
@@ -1657,12 +1654,6 @@ msgstr "פתיחת טורנט מכתובת"
 msgid "_URL:"
 msgstr "_כתובת:"
 
-msgid "Couldn't open torrent"
-msgstr "לא ניתן לפתוח את הטורנט"
-
-msgid "The torrent file '{path}' is already in use by '{torrent_name}'."
-msgstr "קובץ הטורנט ‚{path}’ כבר בשימוש ע״י ‚{torrent_name}’."
-
 msgid "\"{source}\" is not a valid torrent file."
 msgstr "„{source}” אינו קובץ טורנט תקני."
 
@@ -1685,8 +1676,8 @@ msgstr "לא ניתן לפתוח את ‚{url}’"
 msgid "Unsupported URL: '{url}'"
 msgstr "כתובת לא נתמכת: ‚{url}’"
 
-msgid "{appname} doesn't know how to use '{url}'"
-msgstr "{appname} איך להשתמש ב־‚{url}’"
+msgid "{appname} doesn't know how to use '{url}'."
+msgstr "{appname} איך להשתמש ב־‚{url}’."
 
 msgid "{days_from_now:L} day from now"
 msgid_plural "{days_from_now:L} days from now"
@@ -2987,20 +2978,6 @@ msgstr[2] ""
 msgid "{appname} will quit, because the two apps would work on the same downloads."
 msgstr ""
 
-msgid "A torrent for \"{torrent_name}\" already exists."
-msgstr ""
-
-#, fuzzy
-#| msgid "The torrent file cannot be opened because it contains invalid data."
-msgid "The torrent cannot be added because it is a duplicate of an already existing torrent."
-msgstr "לא ניתן לפתוח את קובץ הטורנט  מאחר והוא מכיל נתונים לא תקינים."
-
-msgid "Magnet link is a duplicate of an existing torrent."
-msgstr ""
-
-msgid "The magnet link \"{magnet_link}\" cannot be added because it is a duplicate of an already existing torrent."
-msgstr ""
-
 msgid "Select the new folder for \"{torrent_name}\"."
 msgstr "בחירת תיקייה חדשה עבור \"{torrent_name}\"."
 
@@ -3849,20 +3826,11 @@ msgstr "לא ניתן לשנות את השם „{old_path}” לשם „{path}�
 msgid "Error Adding Torrent"
 msgstr "שגיאה בהוספת טורנט"
 
-msgid "{torrent_name} (copy of {hash})"
-msgstr "{torrent_name} (עותק של {hash})"
-
 msgid "Duplicate Torrent"
 msgstr "שכפול טורנט"
 
 msgid "Duplicate Torrents"
 msgstr "שכפול טורנטים"
-
-msgid "Unable to add {count} duplicate torrent"
-msgid_plural "Unable to add {count} duplicate torrents"
-msgstr[0] "לא ניתן להוסיף טורנט כפול"
-msgstr[1] "לא ניתן להוסיף {count} טורנטים כפולים"
-msgstr[2] "לא ניתן להוסיף {count} טורנטים כפולים"
 
 msgid "Change Session"
 msgstr "החלפת מופע"
@@ -3956,6 +3924,32 @@ msgstr[0] "שנייה"
 msgstr[1] "שניות"
 msgstr[2] "שניות"
 msgstr[3] "שניות"
+
+#~ msgid "Couldn't add duplicate torrent"
+#~ msgid_plural "Couldn't add duplicate torrents"
+#~ msgstr[0] "לא ניתן להוסיף טורנט כפול"
+#~ msgstr[1] "לא ניתן להוסיף טורנטים כפולים"
+#~ msgstr[2] "לא ניתן להוסיף טורנטים כפולים"
+
+#~ msgid "Couldn't open torrent"
+#~ msgstr "לא ניתן לפתוח את הטורנט"
+
+#~ msgid "The torrent file '{path}' is already in use by '{torrent_name}'."
+#~ msgstr "קובץ הטורנט ‚{path}’ כבר בשימוש ע״י ‚{torrent_name}’."
+
+#, fuzzy
+#~| msgid "The torrent file cannot be opened because it contains invalid data."
+#~ msgid "The torrent cannot be added because it is a duplicate of an already existing torrent."
+#~ msgstr "לא ניתן לפתוח את קובץ הטורנט  מאחר והוא מכיל נתונים לא תקינים."
+
+#~ msgid "{torrent_name} (copy of {hash})"
+#~ msgstr "{torrent_name} (עותק של {hash})"
+
+#~ msgid "Unable to add {count} duplicate torrent"
+#~ msgid_plural "Unable to add {count} duplicate torrents"
+#~ msgstr[0] "לא ניתן להוסיף טורנט כפול"
+#~ msgstr[1] "לא ניתן להוסיף {count} טורנטים כפולים"
+#~ msgstr[2] "לא ניתן להוסיף {count} טורנטים כפולים"
 
 #~ msgid "Couldn't add corrupt torrent"
 #~ msgid_plural "Couldn't add corrupt torrents"

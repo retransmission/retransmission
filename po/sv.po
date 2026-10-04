@@ -106,10 +106,8 @@ msgstr "Skickar totalvärden för sändning/hämtning till spårare…"
 msgid "_Quit Now"
 msgstr "A_vsluta nu"
 
-msgid "Couldn't add duplicate torrent"
-msgid_plural "Couldn't add duplicate torrents"
-msgstr[0] "Det gick inte att lägga till torrentdubblett"
-msgstr[1] "Det gick inte att lägga till torrentdubbletter"
+msgid "A torrent for \"{torrent_name}\" already exists."
+msgstr ""
 
 msgid "A fast and easy BitTorrent client"
 msgstr "En snabb och enkel BitTorrent-klient"
@@ -1617,12 +1615,6 @@ msgstr "Öppna torrent från URL"
 msgid "_URL:"
 msgstr "_URL:"
 
-msgid "Couldn't open torrent"
-msgstr "Det gick inte att öppna torrent"
-
-msgid "The torrent file '{path}' is already in use by '{torrent_name}'."
-msgstr "Torrentfilen '{path}' används redan av '{torrent_name}'."
-
 msgid "\"{source}\" is not a valid torrent file."
 msgstr "\"{source}\" är inte en giltig torrentfil."
 
@@ -1645,8 +1637,8 @@ msgstr "Det gick inte att öppna '{url}'"
 msgid "Unsupported URL: '{url}'"
 msgstr "URL som inte stöds: '{url}'"
 
-msgid "{appname} doesn't know how to use '{url}'"
-msgstr "{appname} vet inte hur den ska använda '{url}'"
+msgid "{appname} doesn't know how to use '{url}'."
+msgstr "{appname} vet inte hur den ska använda '{url}'."
 
 msgid "{days_from_now:L} day from now"
 msgid_plural "{days_from_now:L} days from now"
@@ -2905,20 +2897,6 @@ msgstr[1] ""
 msgid "{appname} will quit, because the two apps would work on the same downloads."
 msgstr ""
 
-msgid "A torrent for \"{torrent_name}\" already exists."
-msgstr ""
-
-#, fuzzy
-#| msgid "The torrent file cannot be opened because it contains invalid data."
-msgid "The torrent cannot be added because it is a duplicate of an already existing torrent."
-msgstr "Torrentfilen kan inte öppnas eftersom den innehåller ogiltig data."
-
-msgid "Magnet link is a duplicate of an existing torrent."
-msgstr ""
-
-msgid "The magnet link \"{magnet_link}\" cannot be added because it is a duplicate of an already existing torrent."
-msgstr ""
-
 msgid "Select the new folder for \"{torrent_name}\"."
 msgstr "Välj den nya mappen för \"{torrent_name}\"."
 
@@ -3759,19 +3737,11 @@ msgstr "Det går inte att byta namn på \"{old_path}\" till \"{path}\": {error}.
 msgid "Error Adding Torrent"
 msgstr "Fel vi tillägg av torrent"
 
-msgid "{torrent_name} (copy of {hash})"
-msgstr "{torrent_name} (kopia av {hash})"
-
 msgid "Duplicate Torrent"
 msgstr "Torrentdubblett"
 
 msgid "Duplicate Torrents"
 msgstr "Torrentdubbletter"
-
-msgid "Unable to add {count} duplicate torrent"
-msgid_plural "Unable to add {count} duplicate torrents"
-msgstr[0] "Det går inte att lägga till {count} torrentdubblett"
-msgstr[1] "Det går inte att lägga till {count} torrentdubbletter"
 
 msgid "Change Session"
 msgstr "Byt session"
@@ -3850,6 +3820,30 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "sekund"
 msgstr[1] "sekunder"
+
+#~ msgid "Couldn't add duplicate torrent"
+#~ msgid_plural "Couldn't add duplicate torrents"
+#~ msgstr[0] "Det gick inte att lägga till torrentdubblett"
+#~ msgstr[1] "Det gick inte att lägga till torrentdubbletter"
+
+#~ msgid "Couldn't open torrent"
+#~ msgstr "Det gick inte att öppna torrent"
+
+#~ msgid "The torrent file '{path}' is already in use by '{torrent_name}'."
+#~ msgstr "Torrentfilen '{path}' används redan av '{torrent_name}'."
+
+#, fuzzy
+#~| msgid "The torrent file cannot be opened because it contains invalid data."
+#~ msgid "The torrent cannot be added because it is a duplicate of an already existing torrent."
+#~ msgstr "Torrentfilen kan inte öppnas eftersom den innehåller ogiltig data."
+
+#~ msgid "{torrent_name} (copy of {hash})"
+#~ msgstr "{torrent_name} (kopia av {hash})"
+
+#~ msgid "Unable to add {count} duplicate torrent"
+#~ msgid_plural "Unable to add {count} duplicate torrents"
+#~ msgstr[0] "Det går inte att lägga till {count} torrentdubblett"
+#~ msgstr[1] "Det går inte att lägga till {count} torrentdubbletter"
 
 #~ msgid "Couldn't add corrupt torrent"
 #~ msgid_plural "Couldn't add corrupt torrents"

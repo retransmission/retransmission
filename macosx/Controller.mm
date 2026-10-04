@@ -1457,7 +1457,7 @@ static void offerToImportFromTransmission()
     tr_torrent* duplicateTorrent;
     if ((duplicateTorrent = tr_torrentFindFromMagnetLink(self.fLib, address.UTF8String))) {
         NSString* name = tr_strv_to_utf8_nsstring(tr_torrentName(duplicateTorrent));
-        [self duplicateOpenMagnetAlert:address transferName:name];
+        [self duplicateOpenAlert:name];
         return;
     }
 
@@ -1587,7 +1587,7 @@ static void offerToImportFromTransmission()
     }
 
     NSAlert* alert = [[NSAlert alloc] init];
-    alert.messageText = TR_FORMAT("{appname} doesn't know how to use '{url}'", TRAppNameArg(), TRArg("url", address));
+    alert.messageText = TR_FORMAT("{appname} doesn't know how to use '{url}'.", TRAppNameArg(), TRArg("url", address));
     alert.alertStyle = NSAlertStyleWarning;
     [alert addButtonWithTitle:TR_TEXT("OK")];
 
@@ -1605,33 +1605,7 @@ static void offerToImportFromTransmission()
 
     NSAlert* alert = [[NSAlert alloc] init];
     alert.messageText = TR_FORMAT("A torrent for \"{torrent_name}\" already exists.", TRArg("torrent_name", name));
-    alert.informativeText = TR_TEXT("The torrent cannot be added because it is a duplicate of an already existing torrent.");
 
-    alert.alertStyle = NSAlertStyleWarning;
-    [alert addButtonWithTitle:TR_TEXT("OK")];
-    alert.showsSuppressionButton = YES;
-
-    [alert runModal];
-    if (alert.suppressionButton.state) {
-        [self.fDefaults setBool:NO forKey:@"WarningDuplicate"];
-    }
-}
-
-- (void)duplicateOpenMagnetAlert:(NSString*)address transferName:(NSString*)name
-{
-    if (![self.fDefaults boolForKey:@"WarningDuplicate"]) {
-        return;
-    }
-
-    NSAlert* alert = [[NSAlert alloc] init];
-    if (name) {
-        alert.messageText = TR_FORMAT("A torrent for \"{torrent_name}\" already exists.", TRArg("torrent_name", name));
-    } else {
-        alert.messageText = TR_TEXT("Magnet link is a duplicate of an existing torrent.");
-    }
-    alert.informativeText = TR_FORMAT(
-        "The magnet link \"{magnet_link}\" cannot be added because it is a duplicate of an already existing torrent.",
-        TRArg("magnet_link", address));
     alert.alertStyle = NSAlertStyleWarning;
     [alert addButtonWithTitle:TR_TEXT("OK")];
     alert.showsSuppressionButton = YES;

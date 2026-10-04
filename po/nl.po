@@ -106,10 +106,8 @@ msgstr "Upload/download-totalen versturen naar tracker…"
 msgid "_Quit Now"
 msgstr "_Direct afsluiten"
 
-msgid "Couldn't add duplicate torrent"
-msgid_plural "Couldn't add duplicate torrents"
-msgstr[0] "Kon dubbele torrent niet toevoegen"
-msgstr[1] "Kon dubbele torrents niet toevoegen"
+msgid "A torrent for \"{torrent_name}\" already exists."
+msgstr ""
 
 msgid "A fast and easy BitTorrent client"
 msgstr "Een eenvoudige en snelle BitTorrent-cliënt"
@@ -1650,12 +1648,6 @@ msgstr "Torrent vanaf URL openen"
 msgid "_URL:"
 msgstr "_URL:"
 
-msgid "Couldn't open torrent"
-msgstr "Kon torrent niet openen"
-
-msgid "The torrent file '{path}' is already in use by '{torrent_name}'."
-msgstr "Het torrent-bestand '{path}' is al in gebruik bij '{torrent_name}'."
-
 msgid "\"{source}\" is not a valid torrent file."
 msgstr "‘{source}’ is geen geldig torrentbestand."
 
@@ -1678,8 +1670,8 @@ msgstr "Kon '{url}' niet openen"
 msgid "Unsupported URL: '{url}'"
 msgstr "Niet ondersteunde URL: '{url}'"
 
-msgid "{appname} doesn't know how to use '{url}'"
-msgstr "{appname} weet niet hoe '{url}' te gebruiken"
+msgid "{appname} doesn't know how to use '{url}'."
+msgstr "{appname} weet niet hoe '{url}' te gebruiken."
 
 msgid "{days_from_now:L} day from now"
 msgid_plural "{days_from_now:L} days from now"
@@ -2944,20 +2936,6 @@ msgstr[1] ""
 msgid "{appname} will quit, because the two apps would work on the same downloads."
 msgstr ""
 
-msgid "A torrent for \"{torrent_name}\" already exists."
-msgstr ""
-
-#, fuzzy
-#| msgid "The torrent file cannot be opened because it contains invalid data."
-msgid "The torrent cannot be added because it is a duplicate of an already existing torrent."
-msgstr "Het torrentbestand kan niet geopend worden omdat het ongeldige gegevens bevat."
-
-msgid "Magnet link is a duplicate of an existing torrent."
-msgstr ""
-
-msgid "The magnet link \"{magnet_link}\" cannot be added because it is a duplicate of an already existing torrent."
-msgstr ""
-
 msgid "Select the new folder for \"{torrent_name}\"."
 msgstr "Selecteer de nieuwe map voor \"{torrent_name}\"."
 
@@ -3808,19 +3786,11 @@ msgstr "Kan ‘{old_path}’ niet naar ‘{path}’ hernoemen: {error}."
 msgid "Error Adding Torrent"
 msgstr "Fout bij toevoegen van torrent"
 
-msgid "{torrent_name} (copy of {hash})"
-msgstr "{torrent_name} (kopie van {hash})"
-
 msgid "Duplicate Torrent"
 msgstr "Dubbele torrent"
 
 msgid "Duplicate Torrents"
 msgstr "Dubbele torrents"
-
-msgid "Unable to add {count} duplicate torrent"
-msgid_plural "Unable to add {count} duplicate torrents"
-msgstr[0] "Kan {count} dubbele torrent niet toevoegen"
-msgstr[1] "Kon {count} gedupliceerde torrents niet toevoegen"
 
 msgid "Change Session"
 msgstr "Wijzig sessie"
@@ -3899,6 +3869,30 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "seconde"
 msgstr[1] "seconden"
+
+#~ msgid "Couldn't add duplicate torrent"
+#~ msgid_plural "Couldn't add duplicate torrents"
+#~ msgstr[0] "Kon dubbele torrent niet toevoegen"
+#~ msgstr[1] "Kon dubbele torrents niet toevoegen"
+
+#~ msgid "Couldn't open torrent"
+#~ msgstr "Kon torrent niet openen"
+
+#~ msgid "The torrent file '{path}' is already in use by '{torrent_name}'."
+#~ msgstr "Het torrent-bestand '{path}' is al in gebruik bij '{torrent_name}'."
+
+#, fuzzy
+#~| msgid "The torrent file cannot be opened because it contains invalid data."
+#~ msgid "The torrent cannot be added because it is a duplicate of an already existing torrent."
+#~ msgstr "Het torrentbestand kan niet geopend worden omdat het ongeldige gegevens bevat."
+
+#~ msgid "{torrent_name} (copy of {hash})"
+#~ msgstr "{torrent_name} (kopie van {hash})"
+
+#~ msgid "Unable to add {count} duplicate torrent"
+#~ msgid_plural "Unable to add {count} duplicate torrents"
+#~ msgstr[0] "Kan {count} dubbele torrent niet toevoegen"
+#~ msgstr[1] "Kon {count} gedupliceerde torrents niet toevoegen"
 
 #~ msgid "Couldn't add corrupt torrent"
 #~ msgid_plural "Couldn't add corrupt torrents"

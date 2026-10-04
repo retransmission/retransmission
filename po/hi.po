@@ -100,10 +100,8 @@ msgstr "कुल अपलोड/डाउनलोड ट्रैकर क�
 msgid "_Quit Now"
 msgstr "अभी बंद करें (_Q)"
 
-msgid "Couldn't add duplicate torrent"
-msgid_plural "Couldn't add duplicate torrents"
-msgstr[0] "प्रतिलिपि टोरेंट जोड़ना विफल"
-msgstr[1] "प्रतिलिपि टोरेंट जोड़ना विफल"
+msgid "A torrent for \"{torrent_name}\" already exists."
+msgstr ""
 
 msgid "A fast and easy BitTorrent client"
 msgstr "तीव्र व सरल बिट टोरेंट साधन"
@@ -1496,12 +1494,6 @@ msgstr "यूआरएल से टोरेंट खोलें"
 msgid "_URL:"
 msgstr "यूआरएल (_U):"
 
-msgid "Couldn't open torrent"
-msgstr ""
-
-msgid "The torrent file '{path}' is already in use by '{torrent_name}'."
-msgstr ""
-
 msgid "\"{source}\" is not a valid torrent file."
 msgstr ""
 
@@ -1520,7 +1512,7 @@ msgstr ""
 msgid "Unsupported URL: '{url}'"
 msgstr ""
 
-msgid "{appname} doesn't know how to use '{url}'"
+msgid "{appname} doesn't know how to use '{url}'."
 msgstr ""
 
 msgid "{days_from_now:L} day from now"
@@ -2353,9 +2345,6 @@ msgstr "\"{old_path}\" का नाम \"{path}\" करने में वि
 msgid "Error Adding Torrent"
 msgstr "टोरेंट जोड़ते समय त्रुटि"
 
-msgid "{torrent_name} (copy of {hash})"
-msgstr "{torrent_name} ({hash} की प्रतिलिपि)"
-
 #, fuzzy
 msgid "Duplicate Torrent"
 msgstr "सार्वजनिक टोरेंट"
@@ -2363,14 +2352,6 @@ msgstr "सार्वजनिक टोरेंट"
 #, fuzzy
 msgid "Duplicate Torrents"
 msgstr "सार्वजनिक टोरेंट"
-
-#, fuzzy
-#| msgid "Couldn't add duplicate torrent"
-#| msgid_plural "Couldn't add duplicate torrents"
-msgid "Unable to add {count} duplicate torrent"
-msgid_plural "Unable to add {count} duplicate torrents"
-msgstr[0] "प्रतिलिपि टोरेंट जोड़ना विफल"
-msgstr[1] "प्रतिलिपि टोरेंट जोड़ना विफल"
 
 msgid "Change Session"
 msgstr "सत्र बदलें"
@@ -2458,6 +2439,22 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] ""
 msgstr[1] ""
+
+#~ msgid "Couldn't add duplicate torrent"
+#~ msgid_plural "Couldn't add duplicate torrents"
+#~ msgstr[0] "प्रतिलिपि टोरेंट जोड़ना विफल"
+#~ msgstr[1] "प्रतिलिपि टोरेंट जोड़ना विफल"
+
+#~ msgid "{torrent_name} (copy of {hash})"
+#~ msgstr "{torrent_name} ({hash} की प्रतिलिपि)"
+
+#, fuzzy
+#~| msgid "Couldn't add duplicate torrent"
+#~| msgid_plural "Couldn't add duplicate torrents"
+#~ msgid "Unable to add {count} duplicate torrent"
+#~ msgid_plural "Unable to add {count} duplicate torrents"
+#~ msgstr[0] "प्रतिलिपि टोरेंट जोड़ना विफल"
+#~ msgstr[1] "प्रतिलिपि टोरेंट जोड़ना विफल"
 
 #~ msgid "Couldn't add corrupt torrent"
 #~ msgid_plural "Couldn't add corrupt torrents"

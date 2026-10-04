@@ -104,9 +104,8 @@ msgstr "トラッカーにアップ/ダウンロード総量を送信中…"
 msgid "_Quit Now"
 msgstr "今すぐ終了(_Q)"
 
-msgid "Couldn't add duplicate torrent"
-msgid_plural "Couldn't add duplicate torrents"
-msgstr[0] "重複したトレントは追加できません"
+msgid "A torrent for \"{torrent_name}\" already exists."
+msgstr ""
 
 msgid "A fast and easy BitTorrent client"
 msgstr "高速で簡単な BitTorrent クライアント"
@@ -1604,12 +1603,6 @@ msgstr "URL からトレントを開く"
 msgid "_URL:"
 msgstr "URL(_U):"
 
-msgid "Couldn't open torrent"
-msgstr "トレントを開けません"
-
-msgid "The torrent file '{path}' is already in use by '{torrent_name}'."
-msgstr "このトレントファイル「{path}」は既に以下で使われています:「{torrent_name}」。"
-
 msgid "\"{source}\" is not a valid torrent file."
 msgstr "「{source}」は正しいトレントファイルではありません。"
 
@@ -1632,8 +1625,8 @@ msgstr "開けません「{url}」"
 msgid "Unsupported URL: '{url}'"
 msgstr "未対応のURL: {url}"
 
-msgid "{appname} doesn't know how to use '{url}'"
-msgstr "{appname} は以下の使い方を知りません: {url}"
+msgid "{appname} doesn't know how to use '{url}'."
+msgstr "{appname} は以下の使い方を知りません: {url}。"
 
 msgid "{days_from_now:L} day from now"
 msgid_plural "{days_from_now:L} days from now"
@@ -2868,20 +2861,6 @@ msgstr[0] ""
 msgid "{appname} will quit, because the two apps would work on the same downloads."
 msgstr ""
 
-msgid "A torrent for \"{torrent_name}\" already exists."
-msgstr ""
-
-#, fuzzy
-#| msgid "The torrent file cannot be opened because it contains invalid data."
-msgid "The torrent cannot be added because it is a duplicate of an already existing torrent."
-msgstr "トレントファイルが開けません。無効なデータが含まれます。"
-
-msgid "Magnet link is a duplicate of an existing torrent."
-msgstr ""
-
-msgid "The magnet link \"{magnet_link}\" cannot be added because it is a duplicate of an already existing torrent."
-msgstr ""
-
 msgid "Select the new folder for \"{torrent_name}\"."
 msgstr "「{torrent_name}」の新規フォルダを選択します。"
 
@@ -3704,18 +3683,11 @@ msgstr "「{old_path}」を「{path}」に改名できません: {error}。"
 msgid "Error Adding Torrent"
 msgstr "トレント追加時のエラー"
 
-msgid "{torrent_name} (copy of {hash})"
-msgstr "{torrent_name} ({hash} のコピー)"
-
 msgid "Duplicate Torrent"
 msgstr "トレントの重複"
 
 msgid "Duplicate Torrents"
 msgstr "トレントの重複"
-
-msgid "Unable to add {count} duplicate torrent"
-msgid_plural "Unable to add {count} duplicate torrents"
-msgstr[0] "{count}個の重複したトレントを追加できません"
 
 msgid "Change Session"
 msgstr "セッションの変更"
@@ -3785,6 +3757,28 @@ msgstr[0] "日"
 msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "秒"
+
+#~ msgid "Couldn't add duplicate torrent"
+#~ msgid_plural "Couldn't add duplicate torrents"
+#~ msgstr[0] "重複したトレントは追加できません"
+
+#~ msgid "Couldn't open torrent"
+#~ msgstr "トレントを開けません"
+
+#~ msgid "The torrent file '{path}' is already in use by '{torrent_name}'."
+#~ msgstr "このトレントファイル「{path}」は既に以下で使われています:「{torrent_name}」。"
+
+#, fuzzy
+#~| msgid "The torrent file cannot be opened because it contains invalid data."
+#~ msgid "The torrent cannot be added because it is a duplicate of an already existing torrent."
+#~ msgstr "トレントファイルが開けません。無効なデータが含まれます。"
+
+#~ msgid "{torrent_name} (copy of {hash})"
+#~ msgstr "{torrent_name} ({hash} のコピー)"
+
+#~ msgid "Unable to add {count} duplicate torrent"
+#~ msgid_plural "Unable to add {count} duplicate torrents"
+#~ msgstr[0] "{count}個の重複したトレントを追加できません"
 
 #~ msgid "Couldn't add corrupt torrent"
 #~ msgid_plural "Couldn't add corrupt torrents"

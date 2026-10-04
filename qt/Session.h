@@ -8,7 +8,6 @@
 #include <array>
 #include <cstddef> // size_t
 #include <cstdint> // int64_t
-#include <map>
 #include <optional>
 #include <span>
 #include <string>
@@ -18,6 +17,7 @@
 
 #include <QtCore/QObject>
 #include <QtCore/QString>
+#include <QtCore/QStringList>
 #include <QtCore/QTimer>
 
 #include <libtransmission/converters.h>
@@ -222,7 +222,7 @@ private:
 
     static inline torrent_ids_t const RecentlyActiveIDs = { -1 };
 
-    std::map<QString, QString> duplicates_;
+    QStringList duplicates_;
     QTimer duplicates_timer_;
 
     static auto constexpr EmptyStats = tr_session_stats{

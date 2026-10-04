@@ -100,12 +100,8 @@ msgstr "Pošiljanje podatkov o skupni količini poslanih/prejetih podatkov sledi
 msgid "_Quit Now"
 msgstr "_Končaj takoj"
 
-msgid "Couldn't add duplicate torrent"
-msgid_plural "Couldn't add duplicate torrents"
-msgstr[0] "Ni mogoče podvojiti torrenta"
-msgstr[1] "Ni mogoče podvojiti torrentov"
-msgstr[2] "Ni mogoče podvojiti torrentov"
-msgstr[3] "Ni mogoče podvojiti torrentov"
+msgid "A torrent for \"{torrent_name}\" already exists."
+msgstr ""
 
 msgid "A fast and easy BitTorrent client"
 msgstr "Hiter in preprost BitTorrent odjemalec"
@@ -1524,12 +1520,6 @@ msgstr "Odpri torrent iz URL-ja"
 msgid "_URL:"
 msgstr "_URL:"
 
-msgid "Couldn't open torrent"
-msgstr ""
-
-msgid "The torrent file '{path}' is already in use by '{torrent_name}'."
-msgstr ""
-
 msgid "\"{source}\" is not a valid torrent file."
 msgstr ""
 
@@ -1548,7 +1538,7 @@ msgstr ""
 msgid "Unsupported URL: '{url}'"
 msgstr ""
 
-msgid "{appname} doesn't know how to use '{url}'"
+msgid "{appname} doesn't know how to use '{url}'."
 msgstr ""
 
 msgid "{days_from_now:L} day from now"
@@ -2423,21 +2413,11 @@ msgstr "Ni možno preimenovati \"{old_path}\" v \"{path}\": {error}."
 msgid "Error Adding Torrent"
 msgstr "Napaka pri dodajanju torrenta"
 
-msgid "{torrent_name} (copy of {hash})"
-msgstr "{torrent_name} (kopija {hash})"
-
 msgid "Duplicate Torrent"
 msgstr "Podvojeni torrent"
 
 msgid "Duplicate Torrents"
 msgstr "Podvojeni torrenti"
-
-msgid "Unable to add {count} duplicate torrent"
-msgid_plural "Unable to add {count} duplicate torrents"
-msgstr[0] "Ni mogoče dodati podvojenega torrenta"
-msgstr[1] "Ni mogoče dodati {count} podvojenih torrentov"
-msgstr[2] "Ni mogoče dodati {count} podvojenih torrentov"
-msgstr[3] "Ni mogoče dodati {count} podvojenih torrentov"
 
 msgid "Change Session"
 msgstr "Spremeni sejo"
@@ -2545,6 +2525,23 @@ msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
 msgstr[3] ""
+
+#~ msgid "Couldn't add duplicate torrent"
+#~ msgid_plural "Couldn't add duplicate torrents"
+#~ msgstr[0] "Ni mogoče podvojiti torrenta"
+#~ msgstr[1] "Ni mogoče podvojiti torrentov"
+#~ msgstr[2] "Ni mogoče podvojiti torrentov"
+#~ msgstr[3] "Ni mogoče podvojiti torrentov"
+
+#~ msgid "{torrent_name} (copy of {hash})"
+#~ msgstr "{torrent_name} (kopija {hash})"
+
+#~ msgid "Unable to add {count} duplicate torrent"
+#~ msgid_plural "Unable to add {count} duplicate torrents"
+#~ msgstr[0] "Ni mogoče dodati podvojenega torrenta"
+#~ msgstr[1] "Ni mogoče dodati {count} podvojenih torrentov"
+#~ msgstr[2] "Ni mogoče dodati {count} podvojenih torrentov"
+#~ msgstr[3] "Ni mogoče dodati {count} podvojenih torrentov"
 
 #~ msgid "Couldn't add corrupt torrent"
 #~ msgid_plural "Couldn't add corrupt torrents"

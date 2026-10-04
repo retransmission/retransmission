@@ -101,10 +101,8 @@ msgstr "Sendi upplýsingar um upp- og niðurhal til rekjara…"
 msgid "_Quit Now"
 msgstr "_Hætta núna"
 
-msgid "Couldn't add duplicate torrent"
-msgid_plural "Couldn't add duplicate torrents"
-msgstr[0] "Gat ekki bætt við torrent-skrá sem var þegar til staðar"
-msgstr[1] "Gat ekki bætt við torrent-skrám sem voru þegar til staðar"
+msgid "A torrent for \"{torrent_name}\" already exists."
+msgstr ""
 
 msgid "A fast and easy BitTorrent client"
 msgstr "Hraðvikt BitTorrent-forrit sem er auðvelt í notkun"
@@ -1506,12 +1504,6 @@ msgstr "Opna torrent-streymi úr vefslóð"
 msgid "_URL:"
 msgstr "_Slóð:"
 
-msgid "Couldn't open torrent"
-msgstr "Gat ekki opnað torrent-skrána"
-
-msgid "The torrent file '{path}' is already in use by '{torrent_name}'."
-msgstr "Torrent-skráin '{path}' er þegar í notkun af '{torrent_name}'."
-
 msgid "\"{source}\" is not a valid torrent file."
 msgstr ""
 
@@ -1534,8 +1526,8 @@ msgstr "Tókst ekki að opna '{url}'"
 msgid "Unsupported URL: '{url}'"
 msgstr "Óstudd URL-slóð: '{url}'"
 
-msgid "{appname} doesn't know how to use '{url}'"
-msgstr "{appname} veit ekki hvernig á að nota '{url}'"
+msgid "{appname} doesn't know how to use '{url}'."
+msgstr "{appname} veit ekki hvernig á að nota '{url}'."
 
 msgid "{days_from_now:L} day from now"
 msgid_plural "{days_from_now:L} days from now"
@@ -2373,19 +2365,11 @@ msgstr "Tókst ekki að endurnefna \"{old_path}\" sem \"{path}\": {error}."
 msgid "Error Adding Torrent"
 msgstr "Villa við að bæta við torrent-streymi"
 
-msgid "{torrent_name} (copy of {hash})"
-msgstr "{torrent_name} (afrit af {hash})"
-
 msgid "Duplicate Torrent"
 msgstr "Tvítaka torrent-streymi"
 
 msgid "Duplicate Torrents"
 msgstr "Tvítaka torrent-streymin"
-
-msgid "Unable to add {count} duplicate torrent"
-msgid_plural "Unable to add {count} duplicate torrents"
-msgstr[0] "Gat ekki bætt við {count} tvíteknu torrent-streymi"
-msgstr[1] "Gat ekki bætt við {count} tvíteknum torrent-streymum"
 
 msgid "Change Session"
 msgstr "Skipta um setu"
@@ -2476,6 +2460,25 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "sekúnda"
 msgstr[1] "sekúndur"
+
+#~ msgid "Couldn't add duplicate torrent"
+#~ msgid_plural "Couldn't add duplicate torrents"
+#~ msgstr[0] "Gat ekki bætt við torrent-skrá sem var þegar til staðar"
+#~ msgstr[1] "Gat ekki bætt við torrent-skrám sem voru þegar til staðar"
+
+#~ msgid "Couldn't open torrent"
+#~ msgstr "Gat ekki opnað torrent-skrána"
+
+#~ msgid "The torrent file '{path}' is already in use by '{torrent_name}'."
+#~ msgstr "Torrent-skráin '{path}' er þegar í notkun af '{torrent_name}'."
+
+#~ msgid "{torrent_name} (copy of {hash})"
+#~ msgstr "{torrent_name} (afrit af {hash})"
+
+#~ msgid "Unable to add {count} duplicate torrent"
+#~ msgid_plural "Unable to add {count} duplicate torrents"
+#~ msgstr[0] "Gat ekki bætt við {count} tvíteknu torrent-streymi"
+#~ msgstr[1] "Gat ekki bætt við {count} tvíteknum torrent-streymum"
 
 #~ msgid "Couldn't add corrupt torrent"
 #~ msgid_plural "Couldn't add corrupt torrents"

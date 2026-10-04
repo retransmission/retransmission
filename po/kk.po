@@ -100,10 +100,8 @@ msgstr "Трекерге жүктеп алу/тарату статистикас
 msgid "_Quit Now"
 msgstr "Қазір _шығу"
 
-msgid "Couldn't add duplicate torrent"
-msgid_plural "Couldn't add duplicate torrents"
-msgstr[0] "Қайталанатын торренттерді қосу мүмкін емес"
-msgstr[1] "Қайталанатын торренттерді қосу мүмкін емес"
+msgid "A torrent for \"{torrent_name}\" already exists."
+msgstr ""
 
 msgid "A fast and easy BitTorrent client"
 msgstr "Жылдам мен қарапайым BitTorrent клиенті"
@@ -1489,12 +1487,6 @@ msgstr "Торрентті URL-ден ашу"
 msgid "_URL:"
 msgstr "_URL сілтеме:"
 
-msgid "Couldn't open torrent"
-msgstr ""
-
-msgid "The torrent file '{path}' is already in use by '{torrent_name}'."
-msgstr ""
-
 msgid "\"{source}\" is not a valid torrent file."
 msgstr ""
 
@@ -1513,7 +1505,7 @@ msgstr ""
 msgid "Unsupported URL: '{url}'"
 msgstr ""
 
-msgid "{appname} doesn't know how to use '{url}'"
+msgid "{appname} doesn't know how to use '{url}'."
 msgstr ""
 
 msgid "{days_from_now:L} day from now"
@@ -2368,9 +2360,6 @@ msgstr ""
 msgid "Error Adding Torrent"
 msgstr "Торренті өшіру"
 
-msgid "{torrent_name} (copy of {hash})"
-msgstr ""
-
 #, fuzzy
 #| msgid "Public torrent"
 msgid "Duplicate Torrent"
@@ -2380,14 +2369,6 @@ msgstr "Публикалық торрент"
 #| msgid "Public torrent"
 msgid "Duplicate Torrents"
 msgstr "Публикалық торрент"
-
-#, fuzzy
-#| msgid "Couldn't add duplicate torrent"
-#| msgid_plural "Couldn't add duplicate torrents"
-msgid "Unable to add {count} duplicate torrent"
-msgid_plural "Unable to add {count} duplicate torrents"
-msgstr[0] "Қайталанатын торренттерді қосу мүмкін емес"
-msgstr[1] "Қайталанатын торренттерді қосу мүмкін емес"
 
 #, fuzzy
 #| msgid "Current Session"
@@ -2483,6 +2464,19 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] ""
 msgstr[1] ""
+
+#~ msgid "Couldn't add duplicate torrent"
+#~ msgid_plural "Couldn't add duplicate torrents"
+#~ msgstr[0] "Қайталанатын торренттерді қосу мүмкін емес"
+#~ msgstr[1] "Қайталанатын торренттерді қосу мүмкін емес"
+
+#, fuzzy
+#~| msgid "Couldn't add duplicate torrent"
+#~| msgid_plural "Couldn't add duplicate torrents"
+#~ msgid "Unable to add {count} duplicate torrent"
+#~ msgid_plural "Unable to add {count} duplicate torrents"
+#~ msgstr[0] "Қайталанатын торренттерді қосу мүмкін емес"
+#~ msgstr[1] "Қайталанатын торренттерді қосу мүмкін емес"
 
 #~ msgid "Couldn't add corrupt torrent"
 #~ msgid_plural "Couldn't add corrupt torrents"

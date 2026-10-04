@@ -105,9 +105,8 @@ msgstr "총 업로드/다운로드 정보를 트래커로 보내고 있습니다
 msgid "_Quit Now"
 msgstr "지금 끝내기(_Q)"
 
-msgid "Couldn't add duplicate torrent"
-msgid_plural "Couldn't add duplicate torrents"
-msgstr[0] "중복된 토렌트는 추가할 수 없습니다"
+msgid "A torrent for \"{torrent_name}\" already exists."
+msgstr ""
 
 msgid "A fast and easy BitTorrent client"
 msgstr "빠르고 간편한 비트토렌트 클라이언트"
@@ -1495,12 +1494,6 @@ msgstr "주소로 토렌트 열기"
 msgid "_URL:"
 msgstr "주소(_U):"
 
-msgid "Couldn't open torrent"
-msgstr ""
-
-msgid "The torrent file '{path}' is already in use by '{torrent_name}'."
-msgstr ""
-
 msgid "\"{source}\" is not a valid torrent file."
 msgstr ""
 
@@ -1523,7 +1516,7 @@ msgstr ""
 msgid "Unsupported URL: '{url}'"
 msgstr ""
 
-msgid "{appname} doesn't know how to use '{url}'"
+msgid "{appname} doesn't know how to use '{url}'."
 msgstr ""
 
 msgid "{days_from_now:L} day from now"
@@ -2343,24 +2336,12 @@ msgid "Error Adding Torrent"
 msgstr "Torrent 추가 오류"
 
 #, fuzzy
-#| msgid "{torrent_name} - Add Tracker"
-msgid "{torrent_name} (copy of {hash})"
-msgstr "{torrent_name} - 트래커 추가"
-
-#, fuzzy
 msgid "Duplicate Torrent"
 msgstr "공개 토렌트"
 
 #, fuzzy
 msgid "Duplicate Torrents"
 msgstr "공개 토렌트"
-
-#, fuzzy
-#| msgid "Couldn't add duplicate torrent"
-#| msgid_plural "Couldn't add duplicate torrents"
-msgid "Unable to add {count} duplicate torrent"
-msgid_plural "Unable to add {count} duplicate torrents"
-msgstr[0] "중복된 토렌트는 추가할 수 없습니다"
 
 msgid "Change Session"
 msgstr "세션 변경"
@@ -2438,6 +2419,22 @@ msgstr[0] ""
 msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] ""
+
+#~ msgid "Couldn't add duplicate torrent"
+#~ msgid_plural "Couldn't add duplicate torrents"
+#~ msgstr[0] "중복된 토렌트는 추가할 수 없습니다"
+
+#, fuzzy
+#~| msgid "{torrent_name} - Add Tracker"
+#~ msgid "{torrent_name} (copy of {hash})"
+#~ msgstr "{torrent_name} - 트래커 추가"
+
+#, fuzzy
+#~| msgid "Couldn't add duplicate torrent"
+#~| msgid_plural "Couldn't add duplicate torrents"
+#~ msgid "Unable to add {count} duplicate torrent"
+#~ msgid_plural "Unable to add {count} duplicate torrents"
+#~ msgstr[0] "중복된 토렌트는 추가할 수 없습니다"
 
 #~ msgid "Couldn't add corrupt torrent"
 #~ msgid_plural "Couldn't add corrupt torrents"

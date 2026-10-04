@@ -101,12 +101,8 @@ msgstr "Siunčiamos išsiuntimo/atsiuntimo sumos sekikliui…"
 msgid "_Quit Now"
 msgstr "_Baigti darbą dabar"
 
-msgid "Couldn't add duplicate torrent"
-msgid_plural "Couldn't add duplicate torrents"
-msgstr[0] "Nepavyko pridėti besidubliuojančių torentų"
-msgstr[1] "Nepavyko pridėti besidubliuojančių torentų"
-msgstr[2] "Nepavyko pridėti besidubliuojančių torentų"
-msgstr[3] "Nepavyko pridėti besidubliuojančių torentų"
+msgid "A torrent for \"{torrent_name}\" already exists."
+msgstr ""
 
 msgid "A fast and easy BitTorrent client"
 msgstr "Sparti ir paprasta „BitTorrent“ klientinė programa"
@@ -1532,12 +1528,6 @@ msgstr "Atverti torentą iš URL"
 msgid "_URL:"
 msgstr "_URL:"
 
-msgid "Couldn't open torrent"
-msgstr ""
-
-msgid "The torrent file '{path}' is already in use by '{torrent_name}'."
-msgstr ""
-
 msgid "\"{source}\" is not a valid torrent file."
 msgstr ""
 
@@ -1560,7 +1550,7 @@ msgstr ""
 msgid "Unsupported URL: '{url}'"
 msgstr ""
 
-msgid "{appname} doesn't know how to use '{url}'"
+msgid "{appname} doesn't know how to use '{url}'."
 msgstr ""
 
 msgid "{days_from_now:L} day from now"
@@ -2456,9 +2446,6 @@ msgstr "Nepavyko pervadinti \"{old_path}\" kaip \"{path}\": {error}."
 msgid "Error Adding Torrent"
 msgstr "Klaida pridedant torentą"
 
-msgid "{torrent_name} (copy of {hash})"
-msgstr "{torrent_name} ({hash} kopija)"
-
 #, fuzzy
 #| msgid "Public torrent"
 msgid "Duplicate Torrent"
@@ -2468,16 +2455,6 @@ msgstr "viešas torentas"
 #| msgid "Public torrent"
 msgid "Duplicate Torrents"
 msgstr "viešas torentas"
-
-#, fuzzy
-#| msgid "Couldn't add duplicate torrent"
-#| msgid_plural "Couldn't add duplicate torrents"
-msgid "Unable to add {count} duplicate torrent"
-msgid_plural "Unable to add {count} duplicate torrents"
-msgstr[0] "Nepavyko pridėti besidubliuojančių torentų"
-msgstr[1] "Nepavyko pridėti besidubliuojančių torentų"
-msgstr[2] "Nepavyko pridėti besidubliuojančių torentų"
-msgstr[3] "Nepavyko pridėti besidubliuojančių torentų"
 
 msgid "Change Session"
 msgstr "Seanso keitimas"
@@ -2585,6 +2562,26 @@ msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
 msgstr[3] ""
+
+#~ msgid "Couldn't add duplicate torrent"
+#~ msgid_plural "Couldn't add duplicate torrents"
+#~ msgstr[0] "Nepavyko pridėti besidubliuojančių torentų"
+#~ msgstr[1] "Nepavyko pridėti besidubliuojančių torentų"
+#~ msgstr[2] "Nepavyko pridėti besidubliuojančių torentų"
+#~ msgstr[3] "Nepavyko pridėti besidubliuojančių torentų"
+
+#~ msgid "{torrent_name} (copy of {hash})"
+#~ msgstr "{torrent_name} ({hash} kopija)"
+
+#, fuzzy
+#~| msgid "Couldn't add duplicate torrent"
+#~| msgid_plural "Couldn't add duplicate torrents"
+#~ msgid "Unable to add {count} duplicate torrent"
+#~ msgid_plural "Unable to add {count} duplicate torrents"
+#~ msgstr[0] "Nepavyko pridėti besidubliuojančių torentų"
+#~ msgstr[1] "Nepavyko pridėti besidubliuojančių torentų"
+#~ msgstr[2] "Nepavyko pridėti besidubliuojančių torentų"
+#~ msgstr[3] "Nepavyko pridėti besidubliuojančių torentų"
 
 #~ msgid "Couldn't add corrupt torrent"
 #~ msgid_plural "Couldn't add corrupt torrents"

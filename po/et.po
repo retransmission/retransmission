@@ -896,7 +896,7 @@ msgid "Unsupported URL: '{url}'"
 msgstr "Ei toetata seda URL: '{url}'"
 
 #. modal
-msgid "{appname} doesn't know how to use '{url}'"
+msgid "{appname} doesn't know how to use '{url}'."
 msgstr ""
 
 msgid "This magnet link appears to be intended for something other than BitTorrent."

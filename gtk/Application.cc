@@ -227,7 +227,6 @@ private:
     bool on_session_closed();
     void on_app_exit();
 
-    void show_torrent_errors(Glib::ustring const& primary, std::vector<std::string>& files);
     void flush_torrent_errors();
 
     bool update_model_once();
@@ -1029,36 +1028,33 @@ void Application::Impl::on_app_exit()
     }).detach();
 }
 
-void Application::Impl::show_torrent_errors(Glib::ustring const& primary, std::vector<std::string>& files)
+void Application::Impl::flush_torrent_errors()
 {
-    std::ostringstream s;
-    auto const leader = files.size() > 1 ? gtr_get_unicode_string(GtrUnicode::Bullet) : "";
-
-    for (auto const& f : files) {
-        s << leader << ' ' << f << '\n';
+    if (duplicates_list_.empty()) {
+        return;
     }
+
+    // One sentence for each torrent that is already here.
+    auto text = std::string{};
+    for (auto const& name : duplicates_list_) {
+        if (!std::empty(text)) {
+            text += '\n';
+        }
+        text += fmt::format(
+            fmt::runtime(_("A torrent for \"{torrent_name}\" already exists.")),
+            fmt::arg("torrent_name", name));
+    }
+    duplicates_list_.clear();
 
     auto w = std::make_shared<Gtk::MessageDialog>(
         *wind_,
-        primary,
+        text,
         false,
         TR_GTK_MESSAGE_TYPE(ERROR),
         TR_GTK_BUTTONS_TYPE(CLOSE),
         true);
-    w->set_secondary_text(s.str());
     w->signal_response().connect([w](int /*response*/) mutable { w.reset(); });
     w->show();
-
-    files.clear();
-}
-
-void Application::Impl::flush_torrent_errors()
-{
-    if (!duplicates_list_.empty()) {
-        show_torrent_errors(
-            ngettext("Couldn't add duplicate torrent", "Couldn't add duplicate torrents", duplicates_list_.size()),
-            duplicates_list_);
-    }
 }
 
 void Application::Impl::on_core_error(Session::ErrorCode code, Glib::ustring const& msg)
