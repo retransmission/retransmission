@@ -588,7 +588,7 @@ msgstr "کردنه‌وه‌ی په‌ڕگه‌"
 msgid "Open Folder"
 msgstr "کردنه‌وه‌ی بوخچه‌"
 
-msgid "Torrent Complete"
+msgid "Download Complete"
 msgstr "ته‌واوبوونی تۆرێنت"
 
 msgid "Start Now"

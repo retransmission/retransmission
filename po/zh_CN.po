@@ -674,8 +674,9 @@ msgstr "打开文件"
 msgid "Open Folder"
 msgstr "打开文件夹"
 
-msgid "Torrent Complete"
-msgstr "种子已完成"
+#. Translators: notification title
+msgid "Download Complete"
+msgstr "下载完成"
 
 msgid "Start Now"
 msgstr "立即开始"
@@ -3340,10 +3341,6 @@ msgid "The torrent file ({path}) cannot be found."
 msgstr "Torrent 文件（{path}）找不到。"
 
 #. Translators: notification title
-msgid "Download Complete"
-msgstr "下载完成"
-
-#. Translators: notification title
 msgid "Seeding Complete"
 msgstr "做种完成"
 
@@ -4032,10 +4029,7 @@ msgstr "致谢"
 msgid "About {appname}"
 msgstr "关于 {appname}"
 
-msgid "Torrent Completed"
-msgstr "种子已完成"
-
-msgid "Torrents Completed"
+msgid "Downloads Complete"
 msgstr "种子已完成"
 
 #. Translators: Text following the "Have:" label in torrent properties dialog;

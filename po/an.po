@@ -587,7 +587,7 @@ msgstr "Ubrir archivo"
 msgid "Open Folder"
 msgstr "Ubrir carpeta"
 
-msgid "Torrent Complete"
+msgid "Download Complete"
 msgstr "Torrent rematau"
 
 msgid "Start Now"

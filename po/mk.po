@@ -594,7 +594,7 @@ msgstr "Отвори датотека"
 msgid "Open Folder"
 msgstr "Отвори папка"
 
-msgid "Torrent Complete"
+msgid "Download Complete"
 msgstr "Торентот заврши"
 
 msgid "Start Now"

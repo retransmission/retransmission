@@ -603,7 +603,7 @@ msgstr "Ava fail"
 msgid "Open Folder"
 msgstr "Ava kaust"
 
-msgid "Torrent Complete"
+msgid "Download Complete"
 msgstr "Torrent lõpetatud"
 
 msgid "Start Now"

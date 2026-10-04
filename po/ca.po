@@ -578,7 +578,7 @@ msgstr "Obre un fitxer"
 msgid "Open Folder"
 msgstr "Obre la carpeta"
 
-msgid "Torrent Complete"
+msgid "Download Complete"
 msgstr "S'ha completat el torrent"
 
 msgid "Start Now"
@@ -2145,12 +2145,7 @@ msgstr "Quant a {appname}"
 
 #, fuzzy
 #| msgid "Torrent Complete"
-msgid "Torrent Completed"
-msgstr "S'ha completat el torrent"
-
-#, fuzzy
-#| msgid "Torrent Complete"
-msgid "Torrents Completed"
+msgid "Downloads Complete"
 msgstr "S'ha completat el torrent"
 
 #. Translators: Text following the "Have:" label in torrent properties dialog;

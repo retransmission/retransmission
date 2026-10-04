@@ -608,7 +608,7 @@ msgstr "Atvērt datni"
 msgid "Open Folder"
 msgstr "Atvērt mapi"
 
-msgid "Torrent Complete"
+msgid "Download Complete"
 msgstr "Torents pabeigts"
 
 msgid "Start Now"

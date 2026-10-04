@@ -609,7 +609,7 @@ msgstr "Malfermi dosieron"
 msgid "Open Folder"
 msgstr "Malfermi dosierujon"
 
-msgid "Torrent Complete"
+msgid "Download Complete"
 msgstr "Torento Kompleta"
 
 msgid "Start Now"

@@ -590,7 +590,7 @@ msgstr "Hape Skedarin"
 msgid "Open Folder"
 msgstr "Hape Folderin"
 
-msgid "Torrent Complete"
+msgid "Download Complete"
 msgstr "Torrenti u Kompletua"
 
 msgid "Start Now"

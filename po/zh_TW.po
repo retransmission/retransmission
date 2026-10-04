@@ -649,8 +649,9 @@ msgstr "開啟檔案"
 msgid "Open Folder"
 msgstr "開啟資料夾"
 
-msgid "Torrent Complete"
-msgstr "Torrent 完成"
+#. Translators: notification title
+msgid "Download Complete"
+msgstr "下載完成"
 
 msgid "Start Now"
 msgstr "立即開始"
@@ -3320,10 +3321,6 @@ msgid "The torrent file ({path}) cannot be found."
 msgstr "找不到 torrent 檔案 ({path})。"
 
 #. Translators: notification title
-msgid "Download Complete"
-msgstr "下載完成"
-
-#. Translators: notification title
 msgid "Seeding Complete"
 msgstr "做種完成"
 
@@ -4004,10 +4001,7 @@ msgstr "致謝"
 msgid "About {appname}"
 msgstr "關於 {appname}"
 
-msgid "Torrent Completed"
-msgstr "已完成的 torrents"
-
-msgid "Torrents Completed"
+msgid "Downloads Complete"
 msgstr "已完成的 torrents"
 
 #. Translators: Text following the "Have:" label in torrent properties dialog;

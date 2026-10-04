@@ -634,8 +634,9 @@ msgstr "Open Lêer"
 msgid "Open Folder"
 msgstr "Open Vouer"
 
-msgid "Torrent Complete"
-msgstr "Torrent Voltooid"
+#. Translators: notification title
+msgid "Download Complete"
+msgstr "Aflaai Afgehandel"
 
 msgid "Start Now"
 msgstr "Begin nou"
@@ -3342,10 +3343,6 @@ msgid "The torrent file ({path}) cannot be found."
 msgstr "Die torrentlêer ({path}) kan nie gevind word nie."
 
 #. Translators: notification title
-msgid "Download Complete"
-msgstr "Aflaai Afgehandel"
-
-#. Translators: notification title
 msgid "Seeding Complete"
 msgstr "Klaar Gesaai"
 
@@ -4048,10 +4045,7 @@ msgstr "Erkennings"
 msgid "About {appname}"
 msgstr "Oor {appname}"
 
-msgid "Torrent Completed"
-msgstr "Torrent voltooi"
-
-msgid "Torrents Completed"
+msgid "Downloads Complete"
 msgstr "Torrents voltooi"
 
 #. Translators: Text following the "Have:" label in torrent properties dialog;

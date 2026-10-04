@@ -295,7 +295,7 @@ void Application::onTorrentsAdded(torrent_ids_t const& torrent_ids) const
 void Application::onTorrentsCompleted(torrent_ids_t const& torrent_ids) const
 {
     if (prefs_.get<bool>(TR_KEY_torrent_complete_notification_enabled)) {
-        auto const title = std::size(torrent_ids) == 1U ? TR_TEXT("Torrent Completed") : TR_TEXT("Torrents Completed");
+        auto const title = std::size(torrent_ids) == 1U ? TR_TEXT("Download Complete") : TR_TEXT("Downloads Complete");
         auto const body = getNames(torrent_ids).join(QStringLiteral("\n"));
         notifyApp(title, body);
     }

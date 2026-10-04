@@ -625,8 +625,9 @@ msgstr "ファイルを開く"
 msgid "Open Folder"
 msgstr "フォルダを開く"
 
-msgid "Torrent Complete"
-msgstr "トレントが完了"
+#. Translators: notification title
+msgid "Download Complete"
+msgstr "ダウンロード完了"
 
 msgid "Start Now"
 msgstr "すぐ開始"
@@ -3293,10 +3294,6 @@ msgid "The torrent file ({path}) cannot be found."
 msgstr "トレントファイル「{path}」が見つかりません。"
 
 #. Translators: notification title
-msgid "Download Complete"
-msgstr "ダウンロード完了"
-
-#. Translators: notification title
 msgid "Seeding Complete"
 msgstr "シード完了"
 
@@ -3989,10 +3986,7 @@ msgstr "クレジット"
 msgid "About {appname}"
 msgstr "{appname} について"
 
-msgid "Torrent Completed"
-msgstr "トレント完了"
-
-msgid "Torrents Completed"
+msgid "Downloads Complete"
 msgstr "トレント完了"
 
 #. Translators: Text following the "Have:" label in torrent properties dialog;

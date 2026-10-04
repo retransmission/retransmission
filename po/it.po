@@ -663,8 +663,9 @@ msgstr "Apri file"
 msgid "Open Folder"
 msgstr "Apri cartella"
 
-msgid "Torrent Complete"
-msgstr "Torrent completato"
+#. Translators: notification title
+msgid "Download Complete"
+msgstr "Ricezione completata"
 
 msgid "Start Now"
 msgstr "Avvia ora"
@@ -3404,10 +3405,6 @@ msgid "The torrent file ({path}) cannot be found."
 msgstr "Impossibile trovare il file torrent ({path})."
 
 #. Translators: notification title
-msgid "Download Complete"
-msgstr "Ricezione completata"
-
-#. Translators: notification title
 msgid "Seeding Complete"
 msgstr "Distribuzione completata"
 
@@ -4128,10 +4125,7 @@ msgstr "Crediti"
 msgid "About {appname}"
 msgstr "Informazioni su {appname}"
 
-msgid "Torrent Completed"
-msgstr "Torrent Completato"
-
-msgid "Torrents Completed"
+msgid "Downloads Complete"
 msgstr "Torrent Completati"
 
 #. Translators: Text following the "Have:" label in torrent properties dialog;

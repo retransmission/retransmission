@@ -619,7 +619,7 @@ msgstr "Отвори файла"
 msgid "Open Folder"
 msgstr "Отвори папката"
 
-msgid "Torrent Complete"
+msgid "Download Complete"
 msgstr "Торентът е завършен"
 
 msgid "Start Now"

@@ -590,7 +590,7 @@ msgstr "Bestanj openen"
 msgid "Open Folder"
 msgstr "Map openen"
 
-msgid "Torrent Complete"
+msgid "Download Complete"
 msgstr "stortvlood compleet"
 
 msgid "Start Now"

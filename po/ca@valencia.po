@@ -589,7 +589,7 @@ msgstr "Obri un fitxer"
 msgid "Open Folder"
 msgstr "Obri la carpeta"
 
-msgid "Torrent Complete"
+msgid "Download Complete"
 msgstr "S'ha completat el torrent"
 
 msgid "Start Now"

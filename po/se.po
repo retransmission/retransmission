@@ -598,7 +598,7 @@ msgstr "Raba fiilla"
 msgid "Open Folder"
 msgstr "Raba máhpa"
 
-msgid "Torrent Complete"
+msgid "Download Complete"
 msgstr ""
 
 msgid "Start Now"

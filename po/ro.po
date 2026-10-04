@@ -627,7 +627,7 @@ msgstr "Deschide fişier"
 msgid "Open Folder"
 msgstr "Deschide dosar"
 
-msgid "Torrent Complete"
+msgid "Download Complete"
 msgstr "Torent complet"
 
 msgid "Start Now"

@@ -580,7 +580,7 @@ msgstr "Файлды ачуу"
 msgid "Open Folder"
 msgstr "Папканы ачуу"
 
-msgid "Torrent Complete"
+msgid "Download Complete"
 msgstr "Торрент аякталды"
 
 msgid "Start Now"

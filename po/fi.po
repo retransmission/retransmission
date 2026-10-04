@@ -590,7 +590,7 @@ msgstr "Avaa tiedosto"
 msgid "Open Folder"
 msgstr "Avaa kansio"
 
-msgid "Torrent Complete"
+msgid "Download Complete"
 msgstr "Torrent on valmis"
 
 msgid "Start Now"
@@ -2169,10 +2169,7 @@ msgstr "Lopputekstit"
 msgid "About {appname}"
 msgstr "Tietoa {appname}ista"
 
-msgid "Torrent Completed"
-msgstr "Torrenti valmistui"
-
-msgid "Torrents Completed"
+msgid "Downloads Complete"
 msgstr "Torrentit valmistuivat"
 
 #. Translators: Text following the "Have:" label in torrent properties dialog;

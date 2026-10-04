@@ -610,7 +610,7 @@ msgstr "افتح ملفا"
 msgid "Open Folder"
 msgstr "افتح المجلد"
 
-msgid "Torrent Complete"
+msgid "Download Complete"
 msgstr "اكتمل التورنت"
 
 msgid "Start Now"
@@ -2294,12 +2294,7 @@ msgstr "حول {appname}"
 
 #, fuzzy
 #| msgid "Torrent Complete"
-msgid "Torrent Completed"
-msgstr "اكتمل التورنت"
-
-#, fuzzy
-#| msgid "Torrent Complete"
-msgid "Torrents Completed"
+msgid "Downloads Complete"
 msgstr "اكتمل التورنت"
 
 #. Translators: Text following the "Have:" label in torrent properties dialog;

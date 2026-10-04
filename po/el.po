@@ -665,8 +665,9 @@ msgstr "Αναπαραγωγή Αρχείου"
 msgid "Open Folder"
 msgstr "Άνοιγμα φακέλου"
 
-msgid "Torrent Complete"
-msgstr "Το torrent oλοκληρώθηκε"
+#. Translators: notification title
+msgid "Download Complete"
+msgstr "Η Λήψη Ολοκληρώθηκε"
 
 msgid "Start Now"
 msgstr "Εκκίνηση Τώρα"
@@ -3371,10 +3372,6 @@ msgid "The torrent file ({path}) cannot be found."
 msgstr "Δεν βρέθηκε το αρχείο torrent ({path}) "
 
 #. Translators: notification title
-msgid "Download Complete"
-msgstr "Η Λήψη Ολοκληρώθηκε"
-
-#. Translators: notification title
 msgid "Seeding Complete"
 msgstr "Ολοκλήρωση Διαμοιρασμού"
 
@@ -4077,10 +4074,7 @@ msgstr "Συντελεστές"
 msgid "About {appname}"
 msgstr "Σχετικά με το {appname}"
 
-msgid "Torrent Completed"
-msgstr "Ολοκληρωμένα Torrent"
-
-msgid "Torrents Completed"
+msgid "Downloads Complete"
 msgstr "Ολοκληρωμένα Torrent"
 
 #. Translators: Text following the "Have:" label in torrent properties dialog;

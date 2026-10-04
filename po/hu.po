@@ -666,8 +666,9 @@ msgstr "Fájl megnyitása"
 msgid "Open Folder"
 msgstr "Mappa megnyitása"
 
-msgid "Torrent Complete"
-msgstr "Torrent kész"
+#. Translators: notification title
+msgid "Download Complete"
+msgstr "Letöltés kész"
 
 msgid "Start Now"
 msgstr "Indítás most"
@@ -3370,10 +3371,6 @@ msgid "The torrent file ({path}) cannot be found."
 msgstr "A torrent fájl ({path}) nem található."
 
 #. Translators: notification title
-msgid "Download Complete"
-msgstr "Letöltés kész"
-
-#. Translators: notification title
 msgid "Seeding Complete"
 msgstr "Megosztás kész"
 
@@ -4075,10 +4072,7 @@ msgstr "Készítették"
 msgid "About {appname}"
 msgstr "A {appname}-ről"
 
-msgid "Torrent Completed"
-msgstr "Befejezett torrent"
-
-msgid "Torrents Completed"
+msgid "Downloads Complete"
 msgstr "Befejezett torrent"
 
 #. Translators: Text following the "Have:" label in torrent properties dialog;

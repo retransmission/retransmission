@@ -589,7 +589,7 @@ msgstr "Dobrir un fichièr"
 msgid "Open Folder"
 msgstr "Dobrir un dorsièr"
 
-msgid "Torrent Complete"
+msgid "Download Complete"
 msgstr "Torrent complet"
 
 msgid "Start Now"

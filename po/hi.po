@@ -566,7 +566,7 @@ msgstr "फाइल खोलें"
 msgid "Open Folder"
 msgstr "फोल्डर खोलें"
 
-msgid "Torrent Complete"
+msgid "Download Complete"
 msgstr "टोरेंट पूर्ण"
 
 msgid "Start Now"
@@ -2123,12 +2123,7 @@ msgstr "{appname} के बारे में"
 
 #, fuzzy
 #| msgid "Torrent Complete"
-msgid "Torrent Completed"
-msgstr "टोरेंट पूर्ण"
-
-#, fuzzy
-#| msgid "Torrent Complete"
-msgid "Torrents Completed"
+msgid "Downloads Complete"
 msgstr "टोरेंट पूर्ण"
 
 #. Translators: Text following the "Have:" label in torrent properties dialog;

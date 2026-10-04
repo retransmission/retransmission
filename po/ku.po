@@ -589,7 +589,7 @@ msgstr "Pelê Veke"
 msgid "Open Folder"
 msgstr "Peldankê veke"
 
-msgid "Torrent Complete"
+msgid "Download Complete"
 msgstr "Torrent Qediya"
 
 msgid "Start Now"

@@ -609,7 +609,7 @@ msgstr "Отвори датотеку"
 msgid "Open Folder"
 msgstr "Отвори фасциклу"
 
-msgid "Torrent Complete"
+msgid "Download Complete"
 msgstr "Торент је преузет"
 
 msgid "Start Now"

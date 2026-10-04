@@ -219,7 +219,7 @@ void gtr_notify_torrent_completed(Glib::RefPtr<Session> const& core, tr_torrent_
             Glib::ustring(TR_PROJ_APPNAME_CAPITALIZED), // app_name
             0U, // replaces_id
             Glib::ustring(TR_GTK_ICON_NAME), // app_icon
-            Glib::ustring(_("Torrent Complete")), // summary
+            Glib::ustring(_("Download Complete")), // summary
             Glib::ustring{ tr_torrentName(tor) }, // body
             actions,
             hints,

@@ -625,7 +625,7 @@ msgstr "Адкрыць файл"
 msgid "Open Folder"
 msgstr "Адкрыць каталог"
 
-msgid "Torrent Complete"
+msgid "Download Complete"
 msgstr "Торэнт завершаны"
 
 msgid "Start Now"

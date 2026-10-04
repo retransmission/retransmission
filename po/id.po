@@ -567,7 +567,7 @@ msgstr "Buka Berkas"
 msgid "Open Folder"
 msgstr "Buka Direktori"
 
-msgid "Torrent Complete"
+msgid "Download Complete"
 msgstr "Torrent Selesai"
 
 msgid "Start Now"
@@ -2089,12 +2089,7 @@ msgstr "Tentang {appname}"
 
 #, fuzzy
 #| msgid "Torrent Complete"
-msgid "Torrent Completed"
-msgstr "Torrent Selesai"
-
-#, fuzzy
-#| msgid "Torrent Complete"
-msgid "Torrents Completed"
+msgid "Downloads Complete"
 msgstr "Torrent Selesai"
 
 #. Translators: Text following the "Have:" label in torrent properties dialog;

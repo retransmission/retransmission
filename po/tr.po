@@ -637,8 +637,9 @@ msgstr "Dosya Aç"
 msgid "Open Folder"
 msgstr "Klasör Aç"
 
-msgid "Torrent Complete"
-msgstr "Torrent Tamamlandı"
+#. Translators: notification title
+msgid "Download Complete"
+msgstr "İndirme Bitti"
 
 msgid "Start Now"
 msgstr "Şimdi Başlat"
@@ -3343,10 +3344,6 @@ msgid "The torrent file ({path}) cannot be found."
 msgstr "Torrent dosyası ({path}) bulunamadı."
 
 #. Translators: notification title
-msgid "Download Complete"
-msgstr "İndirme Bitti"
-
-#. Translators: notification title
 msgid "Seeding Complete"
 msgstr "Besleme Tamamlandı"
 
@@ -4047,10 +4044,7 @@ msgstr "Hazırlayanlar"
 msgid "About {appname}"
 msgstr "{appname} Hakkında"
 
-msgid "Torrent Completed"
-msgstr "Torrent Tamamlandı"
-
-msgid "Torrents Completed"
+msgid "Downloads Complete"
 msgstr "Torrent Tamamlandı"
 
 #. Translators: Text following the "Have:" label in torrent properties dialog;

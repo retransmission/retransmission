@@ -588,7 +588,7 @@ msgstr "Mở Tập tin"
 msgid "Open Folder"
 msgstr "Mở thư mục"
 
-msgid "Torrent Complete"
+msgid "Download Complete"
 msgstr "Hoàn thành Torrent"
 
 msgid "Start Now"

@@ -631,8 +631,9 @@ msgstr "Öppna fil"
 msgid "Open Folder"
 msgstr "Öppna mapp"
 
-msgid "Torrent Complete"
-msgstr "Torrenten är komplett"
+#. Translators: notification title
+msgid "Download Complete"
+msgstr "Hämtningen slutförd"
 
 msgid "Start Now"
 msgstr "Starta nu"
@@ -3337,10 +3338,6 @@ msgid "The torrent file ({path}) cannot be found."
 msgstr "Torrentfilen ({path}) kan inte hittas."
 
 #. Translators: notification title
-msgid "Download Complete"
-msgstr "Hämtningen slutförd"
-
-#. Translators: notification title
 msgid "Seeding Complete"
 msgstr "Distribution slutförd"
 
@@ -4048,10 +4045,7 @@ msgstr "Tack till"
 msgid "About {appname}"
 msgstr "Om {appname}"
 
-msgid "Torrent Completed"
-msgstr "Torrent slutförd"
-
-msgid "Torrents Completed"
+msgid "Downloads Complete"
 msgstr "Torrenter slutförda"
 
 #. Translators: Text following the "Have:" label in torrent properties dialog;

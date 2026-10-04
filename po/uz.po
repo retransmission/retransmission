@@ -580,7 +580,7 @@ msgstr "Faylni ochish"
 msgid "Open Folder"
 msgstr "Jildni ochish"
 
-msgid "Torrent Complete"
+msgid "Download Complete"
 msgstr "Torrent tugadi"
 
 msgid "Start Now"

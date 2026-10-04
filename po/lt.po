@@ -597,7 +597,7 @@ msgstr "Atverti failą"
 msgid "Open Folder"
 msgstr "Atverti aplanką"
 
-msgid "Torrent Complete"
+msgid "Download Complete"
 msgstr "Torentas baigtas"
 
 msgid "Start Now"
@@ -2221,12 +2221,7 @@ msgstr "Apie „{appname}“"
 
 #, fuzzy
 #| msgid "Torrent Complete"
-msgid "Torrent Completed"
-msgstr "Torentas baigtas"
-
-#, fuzzy
-#| msgid "Torrent Complete"
-msgid "Torrents Completed"
+msgid "Downloads Complete"
 msgstr "Torentas baigtas"
 
 #. Translators: Text following the "Have:" label in torrent properties dialog;

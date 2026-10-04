@@ -576,7 +576,7 @@ msgstr "파일 열기"
 msgid "Open Folder"
 msgstr "폴더 열기"
 
-msgid "Torrent Complete"
+msgid "Download Complete"
 msgstr "토렌트 완료"
 
 msgid "Start Now"
@@ -2116,10 +2116,7 @@ msgstr "크레딧"
 msgid "About {appname}"
 msgstr "{appname}에 대하여"
 
-msgid "Torrent Completed"
-msgstr "Torrent 완료됨"
-
-msgid "Torrents Completed"
+msgid "Downloads Complete"
 msgstr "Torrent 완료됨"
 
 #. Translators: Text following the "Have:" label in torrent properties dialog;

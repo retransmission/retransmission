@@ -575,7 +575,7 @@ msgstr "Otvori datoteku"
 msgid "Open Folder"
 msgstr "Otvori mapu"
 
-msgid "Torrent Complete"
+msgid "Download Complete"
 msgstr "Torrent preuzet"
 
 msgid "Start Now"
@@ -2152,12 +2152,7 @@ msgstr "O {appname}u"
 
 #, fuzzy
 #| msgid "Torrent Complete"
-msgid "Torrent Completed"
-msgstr "Torrent preuzet"
-
-#, fuzzy
-#| msgid "Torrent Complete"
-msgid "Torrents Completed"
+msgid "Downloads Complete"
 msgstr "Torrent preuzet"
 
 #. Translators: Text following the "Have:" label in torrent properties dialog;

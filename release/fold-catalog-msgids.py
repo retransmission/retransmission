@@ -139,6 +139,10 @@ RENAMES = [
         'to': {'msgid': '{piece_count:L} piece, {piece_size}', 'msgid_plural': '{piece_count:L} pieces, {piece_size} each'},
         'fields': {'count': 'piece_count:L', 'size': 'piece_size'},
     },
+    # The notification for a finished download has the Mac client's title in every client.
+    {'from': {'msgid': 'Torrent Complete'}, 'to': {'msgid': 'Download Complete'}},
+    {'from': {'msgid': 'Torrent Completed'}, 'to': {'msgid': 'Download Complete'}},
+    {'from': {'msgid': 'Torrents Completed'}, 'to': {'msgid': 'Downloads Complete'}},
 ]
 
 FIELD_NAMES = ('msgctxt', 'msgid', 'msgid_plural')

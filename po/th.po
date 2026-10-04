@@ -587,7 +587,7 @@ msgstr "เปิดแฟ้ม"
 msgid "Open Folder"
 msgstr "เปิดโฟลเดอร์"
 
-msgid "Torrent Complete"
+msgid "Download Complete"
 msgstr "ทอร์เรนท์เสร็จสมบูรณ์"
 
 msgid "Start Now"

@@ -583,7 +583,7 @@ msgstr "開啟檔案"
 msgid "Open Folder"
 msgstr "開啟資料夾"
 
-msgid "Torrent Complete"
+msgid "Download Complete"
 msgstr "Torrent 完成"
 
 msgid "Start Now"

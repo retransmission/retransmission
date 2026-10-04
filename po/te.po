@@ -592,7 +592,7 @@ msgstr "దస్త్రాన్ని తెరువు"
 msgid "Open Folder"
 msgstr "సంచయాన్ని తెరువు"
 
-msgid "Torrent Complete"
+msgid "Download Complete"
 msgstr "టోరెంట్ పూర్తయింది"
 
 msgid "Start Now"

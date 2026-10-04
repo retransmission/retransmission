@@ -599,7 +599,7 @@ msgstr "Abrir ficheiro"
 msgid "Open Folder"
 msgstr "Abrir o cartafol"
 
-msgid "Torrent Complete"
+msgid "Download Complete"
 msgstr "Torrent completo"
 
 msgid "Start Now"

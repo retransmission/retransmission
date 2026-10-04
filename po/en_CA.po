@@ -593,7 +593,7 @@ msgstr "Open File"
 msgid "Open Folder"
 msgstr "Open Folder"
 
-msgid "Torrent Complete"
+msgid "Download Complete"
 msgstr "Torrent Complete"
 
 msgid "Start Now"

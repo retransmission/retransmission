@@ -594,7 +594,7 @@ msgstr "گشودن پرونده"
 msgid "Open Folder"
 msgstr "گشودن پوشه"
 
-msgid "Torrent Complete"
+msgid "Download Complete"
 msgstr "تورنت کامل شد"
 
 msgid "Start Now"

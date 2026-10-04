@@ -579,7 +579,7 @@ msgstr "Buka Fail"
 msgid "Open Folder"
 msgstr "Buka Folder"
 
-msgid "Torrent Complete"
+msgid "Download Complete"
 msgstr "Torrent Selesai"
 
 msgid "Start Now"

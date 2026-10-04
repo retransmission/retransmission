@@ -589,7 +589,7 @@ msgstr "Odpri datoteko"
 msgid "Open Folder"
 msgstr "Odpri mapo"
 
-msgid "Torrent Complete"
+msgid "Download Complete"
 msgstr "Torrent je dokončan"
 
 msgid "Start Now"
@@ -2195,10 +2195,7 @@ msgstr "Zasluge"
 msgid "About {appname}"
 msgstr "O programu"
 
-msgid "Torrent Completed"
-msgstr "Torrent dokončan"
-
-msgid "Torrents Completed"
+msgid "Downloads Complete"
 msgstr "Torrenti dokončani"
 
 #. Translators: Text following the "Have:" label in torrent properties dialog;

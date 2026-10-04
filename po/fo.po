@@ -592,7 +592,7 @@ msgstr "Lat upp fílu"
 msgid "Open Folder"
 msgstr "Lat upp skjáttu"
 
-msgid "Torrent Complete"
+msgid "Download Complete"
 msgstr "Torrentur er fullgjørdur"
 
 msgid "Start Now"

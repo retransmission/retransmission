@@ -596,7 +596,7 @@ msgstr "ফাইল খুলুন"
 msgid "Open Folder"
 msgstr "ফোল্ডার খুলুন"
 
-msgid "Torrent Complete"
+msgid "Download Complete"
 msgstr "টরেন্ট সম্পন্ন"
 
 msgid "Start Now"

@@ -641,8 +641,9 @@ msgstr "Ireki fitxategia"
 msgid "Open Folder"
 msgstr "Ireki karpeta"
 
-msgid "Torrent Complete"
-msgstr "Torrent-a osatu da"
+#. Translators: notification title
+msgid "Download Complete"
+msgstr "Deskarga osatu da"
 
 msgid "Start Now"
 msgstr "Hasi orain"
@@ -3344,10 +3345,6 @@ msgid "The torrent file ({path}) cannot be found."
 msgstr "Ezin izan da ({path}) torrent fitxategia aurkitu."
 
 #. Translators: notification title
-msgid "Download Complete"
-msgstr "Deskarga osatu da"
-
-#. Translators: notification title
 msgid "Seeding Complete"
 msgstr "Igortzea Amaituta"
 
@@ -4058,10 +4055,7 @@ msgstr "Kredituak"
 msgid "About {appname}"
 msgstr "{appname}i buruz"
 
-msgid "Torrent Completed"
-msgstr "Osatutako Torrent-a"
-
-msgid "Torrents Completed"
+msgid "Downloads Complete"
 msgstr "Osatutako Torrent-ak"
 
 #. Translators: Text following the "Have:" label in torrent properties dialog;

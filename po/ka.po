@@ -561,7 +561,7 @@ msgstr "ფაილის გახსნა"
 msgid "Open Folder"
 msgstr "გახსენი საქაღალდე"
 
-msgid "Torrent Complete"
+msgid "Download Complete"
 msgstr ""
 
 msgid "Start Now"
@@ -2106,12 +2106,7 @@ msgstr "{appname}-ის შესახებ"
 
 #, fuzzy
 #| msgid "Torrent properties"
-msgid "Torrent Completed"
-msgstr "ტორენტის თვისებები"
-
-#, fuzzy
-#| msgid "Torrent properties"
-msgid "Torrents Completed"
+msgid "Downloads Complete"
 msgstr "ტორენტის თვისებები"
 
 #. Translators: Text following the "Have:" label in torrent properties dialog;

@@ -676,8 +676,9 @@ msgstr "Відкрити файл"
 msgid "Open Folder"
 msgstr "Відкрити теку"
 
-msgid "Torrent Complete"
-msgstr "Торент завершено"
+#. Translators: notification title
+msgid "Download Complete"
+msgstr "Завантаження завершено"
 
 msgid "Start Now"
 msgstr "Розпочати зараз"
@@ -3456,10 +3457,6 @@ msgid "The torrent file ({path}) cannot be found."
 msgstr "Торрент-файл ({path}) не можна знайти."
 
 #. Translators: notification title
-msgid "Download Complete"
-msgstr "Завантаження завершено"
-
-#. Translators: notification title
 msgid "Seeding Complete"
 msgstr "Роздача Закінчена"
 
@@ -4184,10 +4181,7 @@ msgstr "Автори"
 msgid "About {appname}"
 msgstr "Про {appname}"
 
-msgid "Torrent Completed"
-msgstr "Торент завершено"
-
-msgid "Torrents Completed"
+msgid "Downloads Complete"
 msgstr "Торенти завершені"
 
 #. Translators: Text following the "Have:" label in torrent properties dialog;

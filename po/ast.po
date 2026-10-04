@@ -592,7 +592,7 @@ msgstr "Abrir Ficheru"
 msgid "Open Folder"
 msgstr "Abrir carpeta"
 
-msgid "Torrent Complete"
+msgid "Download Complete"
 msgstr "Completóse'l torrent"
 
 msgid "Start Now"

@@ -576,7 +576,7 @@ msgstr "Opna skrá"
 msgid "Open Folder"
 msgstr "Opna möppu"
 
-msgid "Torrent Complete"
+msgid "Download Complete"
 msgstr "Torrent-streymi lokið"
 
 msgid "Start Now"
@@ -2153,10 +2153,7 @@ msgstr "Framlög"
 msgid "About {appname}"
 msgstr "Um {appname}"
 
-msgid "Torrent Completed"
-msgstr "Torrent-streymi lokið"
-
-msgid "Torrents Completed"
+msgid "Downloads Complete"
 msgstr "Torrent-streymum lokið"
 
 #. Translators: Text following the "Have:" label in torrent properties dialog;

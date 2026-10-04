@@ -565,7 +565,7 @@ msgstr "Файлды ашу"
 msgid "Open Folder"
 msgstr "Буманы ашу"
 
-msgid "Torrent Complete"
+msgid "Download Complete"
 msgstr "Торрент аяқталды"
 
 msgid "Start Now"
@@ -2118,12 +2118,7 @@ msgstr "{appname}-ды _көрсету"
 
 #, fuzzy
 #| msgid "Torrent Complete"
-msgid "Torrent Completed"
-msgstr "Торрент аяқталды"
-
-#, fuzzy
-#| msgid "Torrent Complete"
-msgid "Torrents Completed"
+msgid "Downloads Complete"
 msgstr "Торрент аяқталды"
 
 #. Translators: Text following the "Have:" label in torrent properties dialog;

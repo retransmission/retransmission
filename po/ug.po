@@ -586,7 +586,7 @@ msgstr "ھۆججەت ئېچىش"
 msgid "Open Folder"
 msgstr "قىسقۇچ ئېچىش"
 
-msgid "Torrent Complete"
+msgid "Download Complete"
 msgstr "توررېنت تامام"
 
 msgid "Start Now"

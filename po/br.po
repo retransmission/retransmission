@@ -622,7 +622,7 @@ msgstr "Digeriñ ur restr"
 msgid "Open Folder"
 msgstr "Digeriñ an teuliad"
 
-msgid "Torrent Complete"
+msgid "Download Complete"
 msgstr ""
 
 msgid "Start Now"

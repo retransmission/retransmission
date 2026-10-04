@@ -628,7 +628,7 @@ msgstr "Otevřít soubor"
 msgid "Open Folder"
 msgstr "Otevřít složku"
 
-msgid "Torrent Complete"
+msgid "Download Complete"
 msgstr "Torrent kompletní"
 
 msgid "Start Now"

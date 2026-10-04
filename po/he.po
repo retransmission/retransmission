@@ -662,8 +662,9 @@ msgstr "פתיחת קובץ"
 msgid "Open Folder"
 msgstr "פתיחת תיקייה"
 
-msgid "Torrent Complete"
-msgstr "טורנט הושלם"
+#. Translators: notification title
+msgid "Download Complete"
+msgstr "ההורדה הושלמה"
 
 msgid "Start Now"
 msgstr "להתחיל עכשיו"
@@ -3427,10 +3428,6 @@ msgid "The torrent file ({path}) cannot be found."
 msgstr "קובץ טורנט ({path}) לא נמצא."
 
 #. Translators: notification title
-msgid "Download Complete"
-msgstr "ההורדה הושלמה"
-
-#. Translators: notification title
 msgid "Seeding Complete"
 msgstr "הזריעה הושלמה"
 
@@ -4144,10 +4141,7 @@ msgstr "מזכים"
 msgid "About {appname}"
 msgstr "על {appname}"
 
-msgid "Torrent Completed"
-msgstr "טורנט הושלם"
-
-msgid "Torrents Completed"
+msgid "Downloads Complete"
 msgstr "טורנטים הושלמו"
 
 #. Translators: Text following the "Have:" label in torrent properties dialog;
