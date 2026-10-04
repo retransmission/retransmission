@@ -3601,9 +3601,6 @@ msgstr ""
 msgid "Program started:"
 msgstr ""
 
-msgid "This will clear the global statistics displayed by {appname}. Individual torrent statistics will not be affected."
-msgstr ""
-
 #. Translators: stats total
 msgid "Total N/A"
 msgstr "Guztira E/A"

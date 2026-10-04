@@ -119,9 +119,9 @@ static tr_session* fLib = NULL;
 
     NSAlert* alert = [[NSAlert alloc] init];
     alert.messageText = TR_TEXT("Reset your statistics?");
-    alert.informativeText = TR_FORMAT(
-        "This will clear the global statistics displayed by {appname}. Individual torrent statistics will not be affected.",
-        TRAppNameArg());
+    alert.informativeText = TR_TEXT(
+        "These statistics are for your information only. "
+        "Resetting them doesn't affect the statistics logged by your BitTorrent trackers.");
     alert.alertStyle = NSAlertStyleWarning;
     // Translators: Stats reset -> button
     [alert addButtonWithTitle:TR_MNEMONIC("_Reset")];
