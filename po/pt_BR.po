@@ -246,7 +246,6 @@ msgstr "Pausado"
 #. Translators: Inspector -> Peers tab -> table row tooltip
 #. Translators: No Ratio
 #. Translators: Prefs -> blocklist -> message
-#. Translators: tracker peer stat
 msgid "N/A"
 msgstr "N/D"
 
@@ -1173,7 +1172,6 @@ msgid "Uploaded:"
 msgstr "Enviado:"
 
 #. Translators: Stats window -> label
-#. Translators: tracker peer stat
 msgid "Downloaded:"
 msgstr "Baixado:"
 
@@ -3582,17 +3580,6 @@ msgstr "Parar de aguardar para começar"
 msgid "Change torrent settings"
 msgstr "Compartilhar arquivo de torrent"
 
-#. Translators: tracker peer stat
-msgid "Seeders:"
-msgstr "Semeadores:"
-
-#. Translators: tracker peer stat
-#, fuzzy
-#| msgid "leecher"
-#| msgid_plural "leechers"
-msgid "Leechers:"
-msgstr "leecher:"
-
 msgid "Tracker will be used as a backup"
 msgstr "O rastreador será usado como backup"
 
@@ -3876,6 +3863,15 @@ msgid_plural "seconds"
 msgstr[0] "segundo"
 msgstr[1] "segundos"
 msgstr[2] "segundos"
+
+#~ msgid "Seeders:"
+#~ msgstr "Semeadores:"
+
+#, fuzzy
+#~| msgid "leecher"
+#~| msgid_plural "leechers"
+#~ msgid "Leechers:"
+#~ msgstr "leecher:"
 
 #~ msgid "Date Added"
 #~ msgstr "Data de Adição"

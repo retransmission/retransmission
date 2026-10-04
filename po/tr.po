@@ -185,7 +185,6 @@ msgstr "Duraklatıldı"
 #. Translators: Inspector -> Peers tab -> table row tooltip
 #. Translators: No Ratio
 #. Translators: Prefs -> blocklist -> message
-#. Translators: tracker peer stat
 msgid "N/A"
 msgstr "Yok"
 
@@ -1101,7 +1100,6 @@ msgid "Uploaded:"
 msgstr "Yüklenen:"
 
 #. Translators: Stats window -> label
-#. Translators: tracker peer stat
 msgid "Downloaded:"
 msgstr "İndirilen:"
 
@@ -3470,14 +3468,6 @@ msgstr "Başlatılmayı bekleme"
 msgid "Change torrent settings"
 msgstr "Torrent dosyasını paylaş"
 
-#. Translators: tracker peer stat
-msgid "Seeders:"
-msgstr "Besleyenler:"
-
-#. Translators: tracker peer stat
-msgid "Leechers:"
-msgstr "İndirenler:"
-
 msgid "Tracker will be used as a backup"
 msgstr "İzleyici bir yedek olarak kullanılacak"
 
@@ -3751,6 +3741,12 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "saniye"
 msgstr[1] "saniye"
+
+#~ msgid "Seeders:"
+#~ msgstr "Besleyenler:"
+
+#~ msgid "Leechers:"
+#~ msgstr "İndirenler:"
 
 #~ msgid "Date Added"
 #~ msgstr "Ekleme Tarihi"

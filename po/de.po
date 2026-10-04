@@ -243,7 +243,6 @@ msgstr "Pausiert"
 #. Translators: Inspector -> Peers tab -> table row tooltip
 #. Translators: No Ratio
 #. Translators: Prefs -> blocklist -> message
-#. Translators: tracker peer stat
 msgid "N/A"
 msgstr "n.v."
 
@@ -1157,7 +1156,6 @@ msgid "Uploaded:"
 msgstr "Hochgeladen:"
 
 #. Translators: Stats window -> label
-#. Translators: tracker peer stat
 msgid "Downloaded:"
 msgstr "Heruntergeladen:"
 
@@ -3527,14 +3525,6 @@ msgstr "Warten auf den Beginn abbrechen"
 msgid "Change torrent settings"
 msgstr "Torrent-Datei bereitstellen"
 
-#. Translators: tracker peer stat
-msgid "Seeders:"
-msgstr "Verteiler:"
-
-#. Translators: tracker peer stat
-msgid "Leechers:"
-msgstr "Empfänger:"
-
 msgid "Tracker will be used as a backup"
 msgstr "Tracker wird als Backup genutzt"
 
@@ -3808,6 +3798,12 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "Sekunde"
 msgstr[1] "Sekunden"
+
+#~ msgid "Seeders:"
+#~ msgstr "Verteiler:"
+
+#~ msgid "Leechers:"
+#~ msgstr "Empfänger:"
 
 #~ msgid "Date Added"
 #~ msgstr "Hinzugefügt"

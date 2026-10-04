@@ -23,13 +23,6 @@
 
 @property(nonatomic, readonly) NSUInteger identifier;
 
-/// -1 if unknown
-@property(nonatomic, readonly) NSInteger totalSeeders;
-/// -1 if unknown
-@property(nonatomic, readonly) NSInteger totalLeechers;
-/// -1 if unknown
-@property(nonatomic, readonly) NSInteger totalDownloaded;
-
 /// What the tracker's last announce and scrape got and when it is asked again, in the other clients' words.
 @property(nonatomic, readonly) NSArray<NSString*>* statusLines;
 

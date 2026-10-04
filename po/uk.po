@@ -209,7 +209,6 @@ msgstr "Призупинено"
 #. Translators: Inspector -> Peers tab -> table row tooltip
 #. Translators: No Ratio
 #. Translators: Prefs -> blocklist -> message
-#. Translators: tracker peer stat
 msgid "N/A"
 msgstr "н/д"
 
@@ -1150,7 +1149,6 @@ msgid "Uploaded:"
 msgstr "Вивантажено:"
 
 #. Translators: Stats window -> label
-#. Translators: tracker peer stat
 msgid "Downloaded:"
 msgstr "Завантажено:"
 
@@ -3585,14 +3583,6 @@ msgstr "Не очікувати на початок"
 msgid "Change torrent settings"
 msgstr "Поширити торрент-файл"
 
-#. Translators: tracker peer stat
-msgid "Seeders:"
-msgstr "Роздаючі:"
-
-#. Translators: tracker peer stat
-msgid "Leechers:"
-msgstr "Завантажуючі:"
-
 msgid "Tracker will be used as a backup"
 msgstr "Резервна толока"
 
@@ -3888,6 +3878,12 @@ msgstr[0] "секунда"
 msgstr[1] "секунди"
 msgstr[2] "секунд"
 msgstr[3] "секунди"
+
+#~ msgid "Seeders:"
+#~ msgstr "Роздаючі:"
+
+#~ msgid "Leechers:"
+#~ msgstr "Завантажуючі:"
 
 #~ msgid "Date Added"
 #~ msgstr "Датою додавання"

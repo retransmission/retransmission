@@ -189,7 +189,6 @@ msgstr "Pausatuta"
 #. Translators: Inspector -> Peers tab -> table row tooltip
 #. Translators: No Ratio
 #. Translators: Prefs -> blocklist -> message
-#. Translators: tracker peer stat
 msgid "N/A"
 msgstr "E/E"
 
@@ -1103,7 +1102,6 @@ msgid "Uploaded:"
 msgstr "Igota:"
 
 #. Translators: Stats window -> label
-#. Translators: tracker peer stat
 msgid "Downloaded:"
 msgstr "Deskargatuta:"
 
@@ -3482,14 +3480,6 @@ msgstr "Geratu abiarazteko itxarotea"
 msgid "Change torrent settings"
 msgstr "Partekatu torrent fitxategia"
 
-#. Translators: tracker peer stat
-msgid "Seeders:"
-msgstr "Igorleak:"
-
-#. Translators: tracker peer stat
-msgid "Leechers:"
-msgstr "Izainak:"
-
 msgid "Tracker will be used as a backup"
 msgstr "Aztarnaria segurtasun-kopia gisa erabiliko da"
 
@@ -3763,6 +3753,12 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "segundo"
 msgstr[1] "segundo"
+
+#~ msgid "Seeders:"
+#~ msgstr "Igorleak:"
+
+#~ msgid "Leechers:"
+#~ msgstr "Izainak:"
 
 #~ msgid "Date Added"
 #~ msgstr "Gehitze-data"

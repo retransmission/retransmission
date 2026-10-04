@@ -198,7 +198,6 @@ msgstr "מושהה"
 #. Translators: Inspector -> Peers tab -> table row tooltip
 #. Translators: No Ratio
 #. Translators: Prefs -> blocklist -> message
-#. Translators: tracker peer stat
 msgid "N/A"
 msgstr "לא זמין"
 
@@ -1133,7 +1132,6 @@ msgid "Uploaded:"
 msgstr "הועלו:"
 
 #. Translators: Stats window -> label
-#. Translators: tracker peer stat
 msgid "Downloaded:"
 msgstr "הורדו:"
 
@@ -3554,14 +3552,6 @@ msgstr "הפסקת המתנה להתחלה"
 msgid "Change torrent settings"
 msgstr "שיתוף קובץ טורנט"
 
-#. Translators: tracker peer stat
-msgid "Seeders:"
-msgstr "זורעים:"
-
-#. Translators: tracker peer stat
-msgid "Leechers:"
-msgstr "יונקים:"
-
 msgid "Tracker will be used as a backup"
 msgstr "העוקב ישמש כגיבוי"
 
@@ -3851,6 +3841,12 @@ msgstr[0] "שנייה"
 msgstr[1] "שניות"
 msgstr[2] "שניות"
 msgstr[3] "שניות"
+
+#~ msgid "Seeders:"
+#~ msgstr "זורעים:"
+
+#~ msgid "Leechers:"
+#~ msgstr "יונקים:"
 
 #~ msgid "Date Added"
 #~ msgstr "תאריך ההוספה"

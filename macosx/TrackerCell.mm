@@ -2,8 +2,6 @@
 // It may be used under the MIT (SPDX: MIT) license.
 // License text can be found in the licenses/ folder.
 
-#include <iterator>
-
 #include <libtransmission/web-utils.h> //tr_addressIsIP()
 
 #import "CocoaCompatibility.h"
@@ -19,8 +17,7 @@ static CGFloat const kPaddingBetweenIconAndName = 4.0;
 static CGFloat const kPaddingAboveIcon = 1.0;
 static CGFloat const kPaddingAboveName = 1.0;
 static CGFloat const kPaddingBetweenLines = 1.0;
-static CGFloat const kPaddingBetweenLinesOnSameLine = 4.0;
-static CGFloat const kCountWidth = 60.0;
+static NSUInteger const kStatusRows = 3;
 
 // make the favicons accessible to all tracker cells
 static NSCache* fTrackerIconCache;
@@ -98,50 +95,14 @@ static NSMutableSet* fTrackerIconLoading;
     NSRect const nameRect = [self rectForNameWithString:nameString inBounds:cellFrame];
     [nameString drawInRect:nameRect];
 
-    //count strings
-    NSAttributedString* seederString = [self attributedCount:node.totalSeeders];
-    NSRect const seederRect = [self rectForCountWithString:seederString withAboveRect:nameRect inBounds:cellFrame];
-    [seederString drawInRect:seederRect];
-
-    NSAttributedString* leecherString = [self attributedCount:node.totalLeechers];
-    NSRect const leecherRect = [self rectForCountWithString:leecherString withAboveRect:seederRect inBounds:cellFrame];
-    [leecherString drawInRect:leecherRect];
-
-    NSAttributedString* downloadedString = [self attributedCount:node.totalDownloaded];
-    NSRect const downloadedRect = [self rectForCountWithString:downloadedString withAboveRect:leecherRect inBounds:cellFrame];
-    [downloadedString drawInRect:downloadedRect];
-
-    //count label strings
-    // Translators: tracker peer stat
-    NSString* seederLabelBaseString = [TR_TEXT("Seeders:") stringByAppendingString:@" "];
-    NSAttributedString* seederLabelString = [self attributedStatusWithString:seederLabelBaseString];
-    NSRect const seederLabelRect = [self rectForCountLabelWithString:seederLabelString withRightRect:seederRect inBounds:cellFrame];
-    [seederLabelString drawInRect:seederLabelRect];
-
-    // Translators: tracker peer stat
-    NSString* leecherLabelBaseString = [TR_TEXT("Leechers:") stringByAppendingString:@" "];
-    NSAttributedString* leecherLabelString = [self attributedStatusWithString:leecherLabelBaseString];
-    NSRect const leecherLabelRect = [self rectForCountLabelWithString:leecherLabelString withRightRect:leecherRect
-                                                             inBounds:cellFrame];
-    [leecherLabelString drawInRect:leecherLabelRect];
-
-    // Translators: tracker peer stat
-    NSString* downloadedLabelBaseString = [TR_TEXT("Downloaded:") stringByAppendingString:@" "];
-    NSAttributedString* downloadedLabelString = [self attributedStatusWithString:downloadedLabelBaseString];
-    NSRect const downloadedLabelRect = [self rectForCountLabelWithString:downloadedLabelString withRightRect:downloadedRect
-                                                                inBounds:cellFrame];
-    [downloadedLabelString drawInRect:downloadedLabelRect];
-
-    //status strings, one beside each count
+    //status strings
     // The cell has three rows. A tracker that has announced, has scraped and will scrape again has a fourth line,
     // which says when the next scrape is. That line isn't drawn.
     NSArray<NSString*>* const statusLines = node.statusLines;
-    NSRect const labelRects[] = { seederLabelRect, leecherLabelRect, downloadedLabelRect };
     NSRect aboveRect = nameRect;
-    for (NSUInteger i = 0; i < std::size(labelRects) && i < statusLines.count; ++i) {
+    for (NSUInteger i = 0; i < kStatusRows && i < statusLines.count; ++i) {
         NSAttributedString* statusString = [self attributedStatusWithString:statusLines[i]];
-        aboveRect = [self rectForStatusWithString:statusString withAboveRect:aboveRect withRightRect:labelRects[i]
-                                         inBounds:cellFrame];
+        aboveRect = [self rectForStatusWithString:statusString withAboveRect:aboveRect inBounds:cellFrame];
         [statusString drawInRect:aboveRect];
     }
 }
@@ -240,35 +201,14 @@ static NSMutableSet* fTrackerIconLoading;
     return result;
 }
 
-- (NSRect)rectForCountWithString:(NSAttributedString*)string withAboveRect:(NSRect)aboveRect inBounds:(NSRect)bounds
-{
-    return NSMakeRect(
-        NSMaxX(bounds) - kPaddingHorizontal - kCountWidth,
-        NSMaxY(aboveRect) + kPaddingBetweenLines,
-        kCountWidth,
-        [string size].height);
-}
-
-- (NSRect)rectForCountLabelWithString:(NSAttributedString*)string withRightRect:(NSRect)rightRect inBounds:(NSRect)bounds
-{
-    NSRect result = rightRect;
-    result.size.width = [string size].width;
-    result.origin.x -= NSWidth(result);
-
-    return result;
-}
-
-- (NSRect)rectForStatusWithString:(NSAttributedString*)string
-                    withAboveRect:(NSRect)aboveRect
-                    withRightRect:(NSRect)rightRect
-                         inBounds:(NSRect)bounds
+- (NSRect)rectForStatusWithString:(NSAttributedString*)string withAboveRect:(NSRect)aboveRect inBounds:(NSRect)bounds
 {
     NSRect result;
     result.origin.x = NSMinX(bounds) + kPaddingStatusHorizontal;
     result.origin.y = NSMaxY(aboveRect) + kPaddingBetweenLines;
 
     result.size.height = [string size].height;
-    result.size.width = NSMinX(rightRect) - kPaddingBetweenLinesOnSameLine - NSMinX(result);
+    result.size.width = NSMaxX(bounds) - kPaddingHorizontal - NSMinX(result);
 
     return result;
 }
@@ -282,14 +222,6 @@ static NSMutableSet* fTrackerIconLoading;
 - (NSAttributedString*)attributedStatusWithString:(NSString*)statusString
 {
     return [[NSAttributedString alloc] initWithString:statusString attributes:self.fStatusAttributes];
-}
-
-- (NSAttributedString*)attributedCount:(NSInteger)count
-{
-    NSString* countString = count != -1 ? [NSString localizedStringWithFormat:@"%ld", count] :
-                                          // Translators: tracker peer stat
-                                          TR_TEXT("N/A");
-    return [[NSAttributedString alloc] initWithString:countString attributes:self.fStatusAttributes];
 }
 
 @end

@@ -213,7 +213,6 @@ msgstr "Σε παύση"
 #. Translators: Inspector -> Peers tab -> table row tooltip
 #. Translators: No Ratio
 #. Translators: Prefs -> blocklist -> message
-#. Translators: tracker peer stat
 msgid "N/A"
 msgstr "N/A"
 
@@ -1129,7 +1128,6 @@ msgid "Uploaded:"
 msgstr "Απεσταλμένα:"
 
 #. Translators: Stats window -> label
-#. Translators: tracker peer stat
 msgid "Downloaded:"
 msgstr "Ληφθέντα:"
 
@@ -3500,14 +3498,6 @@ msgstr "Διακοπή αναμονής εκκίνησης"
 msgid "Change torrent settings"
 msgstr "Κοινή χρήση αρχείου torrent"
 
-#. Translators: tracker peer stat
-msgid "Seeders:"
-msgstr "Διαμοιραστές:"
-
-#. Translators: tracker peer stat
-msgid "Leechers:"
-msgstr "Αποδέκτες:"
-
 msgid "Tracker will be used as a backup"
 msgstr "Ο Ιχνηλάτης θα χρησιμοποιηθεί ως εφεδρικός"
 
@@ -3781,6 +3771,12 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "δευτερόλεπτο"
 msgstr[1] "δευτερόλεπτα"
+
+#~ msgid "Seeders:"
+#~ msgstr "Διαμοιραστές:"
+
+#~ msgid "Leechers:"
+#~ msgstr "Αποδέκτες:"
 
 #~ msgid "Date Added"
 #~ msgstr "Ημερομηνία Προσθήκης"

@@ -229,7 +229,6 @@ msgstr "已暂停"
 #. Translators: Inspector -> Peers tab -> table row tooltip
 #. Translators: No Ratio
 #. Translators: Prefs -> blocklist -> message
-#. Translators: tracker peer stat
 msgid "N/A"
 msgstr "N/A"
 
@@ -1131,7 +1130,6 @@ msgid "Uploaded:"
 msgstr "已上传："
 
 #. Translators: Stats window -> label
-#. Translators: tracker peer stat
 msgid "Downloaded:"
 msgstr "已下载："
 
@@ -3467,14 +3465,6 @@ msgstr "停止等待开始"
 msgid "Change torrent settings"
 msgstr "分享 Torrent 文件"
 
-#. Translators: tracker peer stat
-msgid "Seeders:"
-msgstr "做种用户："
-
-#. Translators: tracker peer stat
-msgid "Leechers:"
-msgstr "吸血鬼："
-
 msgid "Tracker will be used as a backup"
 msgstr "Tracker 将被用作备份"
 
@@ -3736,6 +3726,12 @@ msgstr[0] "天"
 msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "秒"
+
+#~ msgid "Seeders:"
+#~ msgstr "做种用户："
+
+#~ msgid "Leechers:"
+#~ msgstr "吸血鬼："
 
 #~ msgid "Date Added"
 #~ msgstr "添加时间"

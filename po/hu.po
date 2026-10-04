@@ -213,7 +213,6 @@ msgstr "Szüneteltetve"
 #. Translators: Inspector -> Peers tab -> table row tooltip
 #. Translators: No Ratio
 #. Translators: Prefs -> blocklist -> message
-#. Translators: tracker peer stat
 msgid "N/A"
 msgstr "N/A"
 
@@ -1130,7 +1129,6 @@ msgid "Uploaded:"
 msgstr "Feltöltve:"
 
 #. Translators: Stats window -> label
-#. Translators: tracker peer stat
 msgid "Downloaded:"
 msgstr "Letöltve:"
 
@@ -3498,14 +3496,6 @@ msgstr "Várakozás elkezdésének leállítása"
 msgid "Change torrent settings"
 msgstr "Torrent fájl megosztása"
 
-#. Translators: tracker peer stat
-msgid "Seeders:"
-msgstr "Megosztók:"
-
-#. Translators: tracker peer stat
-msgid "Leechers:"
-msgstr "Letöltők:"
-
 msgid "Tracker will be used as a backup"
 msgstr "Tracker tartalékként lesz használva"
 
@@ -3779,6 +3769,12 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "másodperc"
 msgstr[1] "másodperc"
+
+#~ msgid "Seeders:"
+#~ msgstr "Megosztók:"
+
+#~ msgid "Leechers:"
+#~ msgstr "Letöltők:"
 
 #~ msgid "Date Added"
 #~ msgstr "Hozzáadva"

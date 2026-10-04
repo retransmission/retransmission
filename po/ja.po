@@ -180,7 +180,6 @@ msgstr "停止"
 #. Translators: Inspector -> Peers tab -> table row tooltip
 #. Translators: No Ratio
 #. Translators: Prefs -> blocklist -> message
-#. Translators: tracker peer stat
 msgid "N/A"
 msgstr "なし"
 
@@ -1083,7 +1082,6 @@ msgid "Uploaded:"
 msgstr "アップロード済み:"
 
 #. Translators: Stats window -> label
-#. Translators: tracker peer stat
 msgid "Downloaded:"
 msgstr "ダウンロード済み:"
 
@@ -3423,14 +3421,6 @@ msgstr "開始の待機を停止"
 msgid "Change torrent settings"
 msgstr "トレントファイルを共有"
 
-#. Translators: tracker peer stat
-msgid "Seeders:"
-msgstr "シーダー:"
-
-#. Translators: tracker peer stat
-msgid "Leechers:"
-msgstr "リーチャー:"
-
 msgid "Tracker will be used as a backup"
 msgstr "トラッカーはバックアップに使われます"
 
@@ -3693,6 +3683,12 @@ msgstr[0] "日"
 msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "秒"
+
+#~ msgid "Seeders:"
+#~ msgstr "シーダー:"
+
+#~ msgid "Leechers:"
+#~ msgstr "リーチャー:"
 
 #~ msgid "Date Added"
 #~ msgstr "追加日時"

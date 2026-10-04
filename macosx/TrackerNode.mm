@@ -78,21 +78,6 @@
     return self.fStat.id;
 }
 
-- (NSInteger)totalSeeders
-{
-    return self.fStat.seederCount;
-}
-
-- (NSInteger)totalLeechers
-{
-    return self.fStat.leecherCount;
-}
-
-- (NSInteger)totalDownloaded
-{
-    return self.fStat.downloadCount;
-}
-
 - (NSArray<NSString*>*)statusLines
 {
     if (self.fStat.isBackup) {

@@ -185,7 +185,6 @@ msgstr "Wagtend"
 #. Translators: Inspector -> Peers tab -> table row tooltip
 #. Translators: No Ratio
 #. Translators: Prefs -> blocklist -> message
-#. Translators: tracker peer stat
 msgid "N/A"
 msgstr "NVT"
 
@@ -1098,7 +1097,6 @@ msgid "Uploaded:"
 msgstr "Opgelaai:"
 
 #. Translators: Stats window -> label
-#. Translators: tracker peer stat
 msgid "Downloaded:"
 msgstr "Afgelaai:"
 
@@ -3469,14 +3467,6 @@ msgstr "Stop wag om te begin"
 msgid "Change torrent settings"
 msgstr "Deel torrentlêer"
 
-#. Translators: tracker peer stat
-msgid "Seeders:"
-msgstr "Saaiers:"
-
-#. Translators: tracker peer stat
-msgid "Leechers:"
-msgstr "Suiers:"
-
 msgid "Tracker will be used as a backup"
 msgstr "Spoorder sal as rugsteun gebruik word"
 
@@ -3750,6 +3740,12 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "sekonde"
 msgstr[1] "sekondes"
+
+#~ msgid "Seeders:"
+#~ msgstr "Saaiers:"
+
+#~ msgid "Leechers:"
+#~ msgstr "Suiers:"
 
 #~ msgid "Date Added"
 #~ msgstr "Datum toegevoeg"
