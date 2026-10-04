@@ -17,7 +17,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://github.com/retransmission/retransmission/issues\n"
-"POT-Creation-Date: 2026-10-04 11:10-0500\n"
+"POT-Creation-Date: 2026-10-04 12:30-0500\n"
 "PO-Revision-Date: 2017-01-26 19:47+0000\n"
 "Last-Translator: Giorgos Mousa, 2025\n"
 "Language-Team: Greek (https://app.transifex.com/transmissionbt/teams/33778/el/)\n"
@@ -4239,13 +4239,6 @@ msgstr[1] "{piece_count:L} Κομμάτια"
 msgid "{total_size} in {files}; {pieces} @ {piece_size}"
 msgstr "{total_size} σε {files}· {pieces} @ {piece_size}"
 
-msgid ""
-"To add a backup URL, add it on the line after the primary URL.\n"
-"To add another primary URL, add it after a blank line."
-msgstr ""
-"Για να προσθέσετε ένα δευτερεύον (backup) URL, εισάγετέ το στη γραμμή αμέσως μετά το πρωτεύον URL.\n"
-"Για να προσθέσετε ακόμη ένα πρωτεύον URL, εισάγετέ το αφήνοντας μία κενή γραμμή."
-
 #, fuzzy
 #| msgid "_Source:"
 msgid "Sou_rce:"
@@ -4426,12 +4419,6 @@ msgstr[1] "Διαμοιρασμός σε {active_count:L} χρήστες"
 msgid " - "
 msgstr " - "
 
-msgid "To add a backup URL, add it on the next line after a primary URL."
-msgstr "Για την χρήση εφεδρικού συνδέσμου, προσθέστε τον στην επόμενη γραμμή έπειτα ενός κύριου συνδέσμου."
-
-msgid "To add a new primary URL, add it after a blank line."
-msgstr "Για την προσθήκη ενός νέου κύριου συνδέσμου, προσθέστε τον έπειτα από μία κενή γραμμή."
-
 msgid "{file_count:L} file, {total_size}\n"
 msgid_plural "{file_count:L} files, {total_size}\n"
 msgstr[0] "{file_count:L} αρχείο, {total_size}\n"
@@ -4469,6 +4456,12 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "δευτερόλεπτο"
 msgstr[1] "δευτερόλεπτα"
+
+#~ msgid "To add a backup URL, add it on the next line after a primary URL."
+#~ msgstr "Για την χρήση εφεδρικού συνδέσμου, προσθέστε τον στην επόμενη γραμμή έπειτα ενός κύριου συνδέσμου."
+
+#~ msgid "To add a new primary URL, add it after a blank line."
+#~ msgstr "Για την προσθήκη ενός νέου κύριου συνδέσμου, προσθέστε τον έπειτα από μία κενή γραμμή."
 
 #~ msgid "Finished"
 #~ msgstr "Ολοκληρωμένα"

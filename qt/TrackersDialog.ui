@@ -21,27 +21,21 @@
      </property>
      <layout class="QGridLayout" name="filesSectionLayout">
       <item row="0" column="0">
-       <widget class="QLabel" name="backupLabel">
+       <widget class="QLabel" name="trackersDescriptionLabel">
         <property name="text">
-         <string>To add a backup URL, add it on the next line after a primary URL.</string>
+         <string>To add a backup URL, add it on the next line after a primary URL.
+To add a new primary URL, add it after a blank line.</string>
         </property>
        </widget>
       </item>
       <item row="1" column="0">
-       <widget class="QLabel" name="primaryLabel">
-        <property name="text">
-         <string>To add a new primary URL, add it after a blank line.</string>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="0">
        <widget class="QPlainTextEdit" name="trackerList">
         <property name="tabChangesFocus">
          <bool>true</bool>
         </property>
        </widget>
       </item>
-      <item row="3" column="0">
+      <item row="2" column="0">
        <widget class="QLabel" name="defaultsLabel">
         <property name="text">
          <string>Also see Default Public Trackers in Edit &gt; Preferences &gt; Network</string>

@@ -18,7 +18,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://github.com/retransmission/retransmission/issues\n"
-"POT-Creation-Date: 2026-10-04 11:10-0500\n"
+"POT-Creation-Date: 2026-10-04 12:30-0500\n"
 "PO-Revision-Date: 2017-01-26 19:47+0000\n"
 "Last-Translator: Andrei Stepanov, 2025\n"
 "Language-Team: Russian (https://app.transifex.com/transmissionbt/teams/33778/ru/)\n"
@@ -4336,13 +4336,6 @@ msgstr[3] "{piece_count:L} частей"
 msgid "{total_size} in {files}; {pieces} @ {piece_size}"
 msgstr "{total_size} в {files}; {pieces} @ {piece_size}"
 
-msgid ""
-"To add a backup URL, add it on the line after the primary URL.\n"
-"To add another primary URL, add it after a blank line."
-msgstr ""
-"Чтобы добавить резервный адрес, добавьте его после основного в той же строке.\n"
-"Чтобы добавить ещё один основной адрес, добавьте пустую строку, а затем его в новой строке."
-
 #, fuzzy
 #| msgid "_Source:"
 msgid "Sou_rce:"
@@ -4537,12 +4530,6 @@ msgstr[3] "Раздаётся {active_count:L} участникам"
 msgid " - "
 msgstr " — "
 
-msgid "To add a backup URL, add it on the next line after a primary URL."
-msgstr "Чтобы добавить резервный адрес, добавьте его в следующей строке после основного адреса."
-
-msgid "To add a new primary URL, add it after a blank line."
-msgstr "Чтобы добавить новый основной адрес, укажите его после пустой строки."
-
 msgid "{file_count:L} file, {total_size}\n"
 msgid_plural "{file_count:L} files, {total_size}\n"
 msgstr[0] "{file_count:L} файл, {total_size}\n"
@@ -4594,6 +4581,12 @@ msgstr[0] "секунда"
 msgstr[1] "секунды"
 msgstr[2] "секунд"
 msgstr[3] "секунд"
+
+#~ msgid "To add a backup URL, add it on the next line after a primary URL."
+#~ msgstr "Чтобы добавить резервный адрес, добавьте его в следующей строке после основного адреса."
+
+#~ msgid "To add a new primary URL, add it after a blank line."
+#~ msgstr "Чтобы добавить новый основной адрес, укажите его после пустой строки."
 
 #~ msgid "Finished"
 #~ msgstr "Завершён"

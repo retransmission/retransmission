@@ -13,7 +13,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://github.com/retransmission/retransmission/issues\n"
-"POT-Creation-Date: 2026-10-04 11:10-0500\n"
+"POT-Creation-Date: 2026-10-04 12:30-0500\n"
 "PO-Revision-Date: 2017-01-26 19:47+0000\n"
 "Last-Translator: Marek Adamski, 2025\n"
 "Language-Team: Polish (https://app.transifex.com/transmissionbt/teams/33778/pl/)\n"
@@ -4367,13 +4367,6 @@ msgstr[3] "{piece_count:L} części"
 msgid "{total_size} in {files}; {pieces} @ {piece_size}"
 msgstr "{total_size} w {files}, {pieces} o {piece_size}"
 
-msgid ""
-"To add a backup URL, add it on the line after the primary URL.\n"
-"To add another primary URL, add it after a blank line."
-msgstr ""
-"Zapasowy adres URL należy dodać do wiersza za podstawowym adresem URL.\n"
-"Kolejny podstawowy adres URL należy dodać po pustym wierszu."
-
 #, fuzzy
 msgid "Sou_rce:"
 msgstr "Źró_dło:"
@@ -4567,12 +4560,6 @@ msgstr[3] "Wysyłanie do {active_count:L} partnerów"
 msgid " - "
 msgstr " — "
 
-msgid "To add a backup URL, add it on the next line after a primary URL."
-msgstr "Zapasowy adres URL należy dodać do następnego wiersza po podstawowym adresie URL."
-
-msgid "To add a new primary URL, add it after a blank line."
-msgstr "Nowy podstawowy adres URL należy dodać po pustym wierszu."
-
 msgid "{file_count:L} file, {total_size}\n"
 msgid_plural "{file_count:L} files, {total_size}\n"
 msgstr[0] "{file_count:L} plik, {total_size}\n"
@@ -4624,6 +4611,12 @@ msgstr[0] "sekunda"
 msgstr[1] "sekundy"
 msgstr[2] "sekund"
 msgstr[3] "sekund"
+
+#~ msgid "To add a backup URL, add it on the next line after a primary URL."
+#~ msgstr "Zapasowy adres URL należy dodać do następnego wiersza po podstawowym adresie URL."
+
+#~ msgid "To add a new primary URL, add it after a blank line."
+#~ msgstr "Nowy podstawowy adres URL należy dodać po pustym wierszu."
 
 #~ msgid "Finished"
 #~ msgstr "Ukończono"

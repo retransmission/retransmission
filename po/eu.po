@@ -17,7 +17,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://github.com/retransmission/retransmission/issues\n"
-"POT-Creation-Date: 2026-10-04 11:10-0500\n"
+"POT-Creation-Date: 2026-10-04 12:30-0500\n"
 "PO-Revision-Date: 2017-01-26 19:47+0000\n"
 "Last-Translator: Iñigo Zendegi Urzelai, 2023\n"
 "Language-Team: Basque (https://app.transifex.com/transmissionbt/teams/33778/eu/)\n"
@@ -4220,13 +4220,6 @@ msgstr[1] "{piece_count:L}Zati"
 msgid "{total_size} in {files}; {pieces} @ {piece_size}"
 msgstr "{total_size} -> {files}; {pieces} @ {piece_size}"
 
-msgid ""
-"To add a backup URL, add it on the line after the primary URL.\n"
-"To add another primary URL, add it after a blank line."
-msgstr ""
-"Segurtasun-kopiarako URL bat gehitzeko, URL nagusiaren ondorengo errenkadan gehitu ezazu.\n"
-"Beste URL nagusi bat gehitzeko, errenkada huts baten ondoren gehitu ezazu."
-
 #, fuzzy
 #| msgid "_Source:"
 msgid "Sou_rce:"
@@ -4407,12 +4400,6 @@ msgstr[1] "{active_count:L} kidetara igortzen"
 msgid " - "
 msgstr " - "
 
-msgid "To add a backup URL, add it on the next line after a primary URL."
-msgstr "URLaren babeskopia gehitzekotan, gehitu hurrengo lerroan, oinarrizko URLaren ostean."
-
-msgid "To add a new primary URL, add it after a blank line."
-msgstr "URL nagusi berri bat gehitzeko, errenkada huts baten ondoren gehitu ezazu."
-
 msgid "{file_count:L} file, {total_size}\n"
 msgid_plural "{file_count:L} files, {total_size}\n"
 msgstr[0] "{file_count:L} fitxategi, {total_size}\n"
@@ -4450,6 +4437,12 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "segundo"
 msgstr[1] "segundo"
+
+#~ msgid "To add a backup URL, add it on the next line after a primary URL."
+#~ msgstr "URLaren babeskopia gehitzekotan, gehitu hurrengo lerroan, oinarrizko URLaren ostean."
+
+#~ msgid "To add a new primary URL, add it after a blank line."
+#~ msgstr "URL nagusi berri bat gehitzeko, errenkada huts baten ondoren gehitu ezazu."
 
 #~ msgid "Finished"
 #~ msgstr "Amaitua"

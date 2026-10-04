@@ -20,7 +20,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://github.com/retransmission/retransmission/issues\n"
-"POT-Creation-Date: 2026-10-04 11:10-0500\n"
+"POT-Creation-Date: 2026-10-04 12:30-0500\n"
 "PO-Revision-Date: 2017-01-26 19:47+0000\n"
 "Last-Translator: Mike Gelfand <mikedld@mikedld.com>, 2025\n"
 "Language-Team: Turkish (https://app.transifex.com/transmissionbt/teams/33778/tr/)\n"
@@ -4209,13 +4209,6 @@ msgstr[1] "{piece_count:L} Parça"
 msgid "{total_size} in {files}; {pieces} @ {piece_size}"
 msgstr "{files} içinde {total_size}; {pieces} @ {piece_size} "
 
-msgid ""
-"To add a backup URL, add it on the line after the primary URL.\n"
-"To add another primary URL, add it after a blank line."
-msgstr ""
-"Yedek URL eklemek için, onu ana URL'den sonraki satıra ekleyin.\n"
-"Başka ana URL eklemek için, onu boş bir satırdan sonra ekleyin."
-
 #, fuzzy
 #| msgid "_Source:"
 msgid "Sou_rce:"
@@ -4396,12 +4389,6 @@ msgstr[1] "{active_count:L} eşe gönderiliyor"
 msgid " - "
 msgstr " - "
 
-msgid "To add a backup URL, add it on the next line after a primary URL."
-msgstr "Yedek URL eklemek için, birincil URL'nin hemen ardından gelen satıra yedek URL ekleyin."
-
-msgid "To add a new primary URL, add it after a blank line."
-msgstr "Yeni birincil URL eklemek için boş bir satırdan sonra ekleyin."
-
 msgid "{file_count:L} file, {total_size}\n"
 msgid_plural "{file_count:L} files, {total_size}\n"
 msgstr[0] "{file_count:L} dosya, {total_size}\n"
@@ -4439,6 +4426,12 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "saniye"
 msgstr[1] "saniye"
+
+#~ msgid "To add a backup URL, add it on the next line after a primary URL."
+#~ msgstr "Yedek URL eklemek için, birincil URL'nin hemen ardından gelen satıra yedek URL ekleyin."
+
+#~ msgid "To add a new primary URL, add it after a blank line."
+#~ msgstr "Yeni birincil URL eklemek için boş bir satırdan sonra ekleyin."
 
 #~ msgid "Finished"
 #~ msgstr "Bitti"

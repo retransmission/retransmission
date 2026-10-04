@@ -15,7 +15,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://github.com/retransmission/retransmission/issues\n"
-"POT-Creation-Date: 2026-10-04 11:10-0500\n"
+"POT-Creation-Date: 2026-10-04 12:30-0500\n"
 "PO-Revision-Date: 2017-01-26 19:47+0000\n"
 "Last-Translator: Gideon van Melle <translations@gvmelle.com>, 2025\n"
 "Language-Team: Dutch (https://app.transifex.com/transmissionbt/teams/33778/nl/)\n"
@@ -4266,13 +4266,6 @@ msgstr[1] "{piece_count:L} fragmenten"
 msgid "{total_size} in {files}; {pieces} @ {piece_size}"
 msgstr "{total_size} in {files}; {pieces} @ {piece_size}"
 
-msgid ""
-"To add a backup URL, add it on the line after the primary URL.\n"
-"To add another primary URL, add it after a blank line."
-msgstr ""
-"Om een backup-URL toe te voegen, moet u hem op de regel na de hoofd-URL plaatsen.\n"
-"Om een andere hoofd-URL toe te voegen, plaats deze na een lege regel"
-
 #, fuzzy
 msgid "Sou_rce:"
 msgstr "_Bron:"
@@ -4452,12 +4445,6 @@ msgstr[1] "Seeden naar {active_count:L} peers"
 msgid " - "
 msgstr " - "
 
-msgid "To add a backup URL, add it on the next line after a primary URL."
-msgstr "Als je een back-up-URL wil toevoegen, voeg je deze toe op de volgende regel na een primaire URL."
-
-msgid "To add a new primary URL, add it after a blank line."
-msgstr "Als u een nieuwe primaire URL wilt toevoegen, voegt u deze toe na een lege regel."
-
 msgid "{file_count:L} file, {total_size}\n"
 msgid_plural "{file_count:L} files, {total_size}\n"
 msgstr[0] "{file_count:L} bestand, {total_size}\n"
@@ -4495,6 +4482,12 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "seconde"
 msgstr[1] "seconden"
+
+#~ msgid "To add a backup URL, add it on the next line after a primary URL."
+#~ msgstr "Als je een back-up-URL wil toevoegen, voeg je deze toe op de volgende regel na een primaire URL."
+
+#~ msgid "To add a new primary URL, add it after a blank line."
+#~ msgstr "Als u een nieuwe primaire URL wilt toevoegen, voegt u deze toe na een lege regel."
 
 #~ msgid "Finished"
 #~ msgstr "Voltooid"

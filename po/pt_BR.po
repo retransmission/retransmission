@@ -23,7 +23,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://github.com/retransmission/retransmission/issues\n"
-"POT-Creation-Date: 2026-10-04 11:10-0500\n"
+"POT-Creation-Date: 2026-10-04 12:30-0500\n"
 "PO-Revision-Date: 2017-01-26 19:47+0000\n"
 "Last-Translator: Emilio Demeterco, 2025\n"
 "Language-Team: Portuguese (Brazil) (https://app.transifex.com/transmissionbt/teams/33778/pt_BR/)\n"
@@ -4341,13 +4341,6 @@ msgstr[2] "{piece_count:L} Pedaços"
 msgid "{total_size} in {files}; {pieces} @ {piece_size}"
 msgstr "{total_size} em {files}; {pieces} @ {piece_size}"
 
-msgid ""
-"To add a backup URL, add it on the line after the primary URL.\n"
-"To add another primary URL, add it after a blank line."
-msgstr ""
-"Adicione uma URL reserva na linha após a primária.\n"
-"Adicione outra URL primária depois de uma linha em branco."
-
 #, fuzzy
 msgid "Sou_rce:"
 msgstr "_Origem:"
@@ -4534,12 +4527,6 @@ msgstr[2] "Semeando para {active_count:L} fontes"
 msgid " - "
 msgstr " - "
 
-msgid "To add a backup URL, add it on the next line after a primary URL."
-msgstr "Para adicionar uma URL de backup, adicione-a na próxima linha após uma URL principal."
-
-msgid "To add a new primary URL, add it after a blank line."
-msgstr "Para adicionar um novo URL primário, adicione-o após uma linha em branco."
-
 msgid "{file_count:L} file, {total_size}\n"
 msgid_plural "{file_count:L} files, {total_size}\n"
 msgstr[0] ""
@@ -4584,6 +4571,12 @@ msgid_plural "seconds"
 msgstr[0] "segundo"
 msgstr[1] "segundos"
 msgstr[2] "segundos"
+
+#~ msgid "To add a backup URL, add it on the next line after a primary URL."
+#~ msgstr "Para adicionar uma URL de backup, adicione-a na próxima linha após uma URL principal."
+
+#~ msgid "To add a new primary URL, add it after a blank line."
+#~ msgstr "Para adicionar um novo URL primário, adicione-o após uma linha em branco."
 
 #~ msgid "Finished"
 #~ msgstr "Concluído"

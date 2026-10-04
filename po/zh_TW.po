@@ -15,7 +15,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://github.com/retransmission/retransmission/issues\n"
-"POT-Creation-Date: 2026-10-04 11:10-0500\n"
+"POT-Creation-Date: 2026-10-04 12:30-0500\n"
 "PO-Revision-Date: 2017-01-26 19:47+0000\n"
 "Last-Translator: taijuin lee, 2025\n"
 "Language-Team: Chinese (Taiwan) (https://app.transifex.com/transmissionbt/teams/33778/zh_TW/)\n"
@@ -4159,13 +4159,6 @@ msgstr[0] "{piece_count:L} 個區塊"
 msgid "{total_size} in {files}; {pieces} @ {piece_size}"
 msgstr "{total_size} 於 {files}； {pieces} @ {piece_size}"
 
-msgid ""
-"To add a backup URL, add it on the line after the primary URL.\n"
-"To add another primary URL, add it after a blank line."
-msgstr ""
-"若要加入備用 URL，請填寫於主要 URL 的下一行。\n"
-"若要加入其他主要 URL，請空一行再填寫。"
-
 #, fuzzy
 msgid "Sou_rce:"
 msgstr "來源 (_S)："
@@ -4338,12 +4331,6 @@ msgstr[0] "正在為 {active_count:L} 個節點做種"
 msgid " - "
 msgstr " - "
 
-msgid "To add a backup URL, add it on the next line after a primary URL."
-msgstr "若要新增備份 URL，請將它新增到主要 URL 之後的下一行。"
-
-msgid "To add a new primary URL, add it after a blank line."
-msgstr "若要加入其他主要 URL，請空一行再填寫。"
-
 msgid "{file_count:L} file, {total_size}\n"
 msgid_plural "{file_count:L} files, {total_size}\n"
 msgstr[0] "{file_count:L} 個檔案，大小為 {total_size}\n"
@@ -4374,6 +4361,12 @@ msgstr[0] "天"
 msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "秒"
+
+#~ msgid "To add a backup URL, add it on the next line after a primary URL."
+#~ msgstr "若要新增備份 URL，請將它新增到主要 URL 之後的下一行。"
+
+#~ msgid "To add a new primary URL, add it after a blank line."
+#~ msgstr "若要加入其他主要 URL，請空一行再填寫。"
 
 #~ msgid "Finished"
 #~ msgstr "已完成"

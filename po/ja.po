@@ -13,7 +13,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://github.com/retransmission/retransmission/issues\n"
-"POT-Creation-Date: 2026-10-04 11:10-0500\n"
+"POT-Creation-Date: 2026-10-04 12:30-0500\n"
 "PO-Revision-Date: 2017-01-26 19:47+0000\n"
 "Last-Translator: Mike Gelfand <mikedld@mikedld.com>, 2025\n"
 "Language-Team: Japanese (https://app.transifex.com/transmissionbt/teams/33778/ja/)\n"
@@ -4144,13 +4144,6 @@ msgstr[0] "{piece_count:L} ピース"
 msgid "{total_size} in {files}; {pieces} @ {piece_size}"
 msgstr "{total_size} の {files}; {pieces} @ {piece_size}"
 
-msgid ""
-"To add a backup URL, add it on the line after the primary URL.\n"
-"To add another primary URL, add it after a blank line."
-msgstr ""
-"代替 URL を追加するには、プライマリ URL の後の行に追加します。\n"
-"別のプライマリ URL は、空白行の後に追加します。"
-
 #, fuzzy
 #| msgid "_Source:"
 msgid "Sou_rce:"
@@ -4324,12 +4317,6 @@ msgstr[0] "{active_count:L} ピアにシード中"
 msgid " - "
 msgstr " - "
 
-msgid "To add a backup URL, add it on the next line after a primary URL."
-msgstr "代替 URLを追加するには、プライマリ URL の次の行に追加します。"
-
-msgid "To add a new primary URL, add it after a blank line."
-msgstr "新しいプライマリURLを追加するときは、空白行を挟んで追加してください。"
-
 msgid "{file_count:L} file, {total_size}\n"
 msgid_plural "{file_count:L} files, {total_size}\n"
 msgstr[0] "{file_count:L} ファイル, {total_size}\n"
@@ -4360,6 +4347,12 @@ msgstr[0] "日"
 msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "秒"
+
+#~ msgid "To add a backup URL, add it on the next line after a primary URL."
+#~ msgstr "代替 URLを追加するには、プライマリ URL の次の行に追加します。"
+
+#~ msgid "To add a new primary URL, add it after a blank line."
+#~ msgstr "新しいプライマリURLを追加するときは、空白行を挟んで追加してください。"
 
 #~ msgid "Finished"
 #~ msgstr "完了"

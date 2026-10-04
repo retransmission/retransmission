@@ -14,7 +14,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: https://github.com/retransmission/retransmission/issues\n"
-"POT-Creation-Date: 2026-10-04 11:10-0500\n"
+"POT-Creation-Date: 2026-10-04 12:30-0500\n"
 "PO-Revision-Date: 2017-01-26 19:47+0000\n"
 "Last-Translator: Yaron Shahrabani <sh.yaron@gmail.com>, 2025\n"
 "Language-Team: Hebrew (https://app.transifex.com/transmissionbt/teams/33778/he/)\n"
@@ -4312,13 +4312,6 @@ msgstr[2] "{piece_count:L} חלקים"
 msgid "{total_size} in {files}; {pieces} @ {piece_size}"
 msgstr "{total_size} ב־{files}; {pieces} @ {piece_size}"
 
-msgid ""
-"To add a backup URL, add it on the line after the primary URL.\n"
-"To add another primary URL, add it after a blank line."
-msgstr ""
-"כדי להוסיף כתובת גיבוי יש להוסיפה בשורה שלאחר הכתובת העיקרית.\n"
-"כדי להוסיף כתובת עיקרית נוספת, יש להוסיפה לאחר שורה ריקה."
-
 #, fuzzy
 msgid "Sou_rce:"
 msgstr "_מקור:"
@@ -4505,12 +4498,6 @@ msgstr[2] "זריעה ל־{active_count:L} עמיתים"
 msgid " - "
 msgstr " - "
 
-msgid "To add a backup URL, add it on the next line after a primary URL."
-msgstr "כדי להוסיף כתובת גיבוי, יש להוסיף אותה בשורה העוקבת לשורת הכתובת העיקרית."
-
-msgid "To add a new primary URL, add it after a blank line."
-msgstr "כדי להוסיף כתובת עיקרית חדשה, יש להוסיף אותה לאחר שורה ריקה."
-
 msgid "{file_count:L} file, {total_size}\n"
 msgid_plural "{file_count:L} files, {total_size}\n"
 msgstr[0] "קובץ אחד, {total_size}\n"
@@ -4562,6 +4549,12 @@ msgstr[0] "שנייה"
 msgstr[1] "שניות"
 msgstr[2] "שניות"
 msgstr[3] "שניות"
+
+#~ msgid "To add a backup URL, add it on the next line after a primary URL."
+#~ msgstr "כדי להוסיף כתובת גיבוי, יש להוסיף אותה בשורה העוקבת לשורת הכתובת העיקרית."
+
+#~ msgid "To add a new primary URL, add it after a blank line."
+#~ msgstr "כדי להוסיף כתובת עיקרית חדשה, יש להוסיף אותה לאחר שורה ריקה."
 
 #~ msgid "Finished"
 #~ msgstr "הסתיימו"
