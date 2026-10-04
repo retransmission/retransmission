@@ -763,18 +763,48 @@ msgstr "{upload_speed} ▴ {download_speed} ▾"
 msgid "Verifying local data ({percent_done}% tested)"
 msgstr "Sprawdzanie pobranych danych (sprawdzono {percent_done}%)"
 
+#. Translators: Text following the "Have:" label in torrent properties dialog;
+#. {current_size} is amount of downloaded and verified data,
+#. {complete_size} is overall size of torrent data,
+#. {percent_done} is percentage ({current_size}/{complete_size}*100)
+#. Translators: First part of torrent progress string,
+#. {current_size} is how much we've got,
+#. {complete_size} is how much we'll have when done,
+#. {percent_done} is a percentage of the two
 msgid "{current_size} of {complete_size} ({percent_done}%)"
 msgstr "{current_size} z {complete_size} ({percent_done}%)"
 
+#. Translators: First part of torrent progress string,
+#. {current_size} is how much we've got,
+#. {complete_size} is the torrent's total size,
+#. {percent_complete} is a percentage of the two,
+#. {uploaded_size} is how much we've uploaded,
+#. {ratio} is our upload-to-download ratio,
+#. {seed_ratio} is the ratio we want to reach before we stop uploading
 msgid "{current_size} of {complete_size} ({percent_complete}%), uploaded {uploaded_size} (Ratio: {ratio}, Goal: {seed_ratio})"
 msgstr "{current_size} z {complete_size} ({percent_complete}%), wysłano {uploaded_size} (udział: {ratio}, docelowo: {seed_ratio})"
 
+#. Translators: First part of torrent progress string,
+#. {current_size} is how much we've got,
+#. {complete_size} is the torrent's total size,
+#. {percent_complete} is a percentage of the two,
+#. {uploaded_size} is how much we've uploaded,
+#. {ratio} is our upload-to-download ratio
 msgid "{current_size} of {complete_size} ({percent_complete}%), uploaded {uploaded_size} (Ratio: {ratio})"
 msgstr "{current_size} z {complete_size} ({percent_complete}%), wysłano {uploaded_size} (udział: {ratio})"
 
+#. Translators: First part of torrent progress string,
+#. {complete_size} is the torrent's total size,
+#. {uploaded_size} is how much we've uploaded,
+#. {ratio} is our upload-to-download ratio,
+#. {seed_ratio} is the ratio we want to reach before we stop uploading
 msgid "{complete_size}, uploaded {uploaded_size} (Ratio: {ratio}, Goal: {seed_ratio})"
 msgstr "{complete_size}, wysłano {uploaded_size} (udział: {ratio}, docelowo: {seed_ratio})"
 
+#. Translators: First part of torrent progress string,
+#. {complete_size} is the torrent's total size,
+#. {uploaded_size} is how much we've uploaded,
+#. {ratio} is our upload-to-download ratio
 msgid "{complete_size}, uploaded {uploaded_size} (Ratio: {ratio})"
 msgstr "{complete_size}, wysłano {uploaded_size} (udział: {ratio})"
 
@@ -821,6 +851,7 @@ msgstr[1] "Pobieranie od {active_count} wysyłających w sieci"
 msgstr[2] "Pobieranie od {active_count} wysyłających w sieci"
 msgstr[3] "Pobieranie od {active_count} wysyłających w sieci"
 
+#. Translators: First part of phrase "Downloading from ... of ... connected peer(s) and ... web seed(s)"
 msgid "Downloading from {active_count} of {connected_count} connected peer"
 msgid_plural "Downloading from {active_count} of {connected_count} connected peers"
 msgstr[0] "Pobieranie od {active_count} z {connected_count} połączonego partnera"
@@ -1618,6 +1649,7 @@ msgstr[1] "{hours_ago:L} godziny temu"
 msgstr[2] "{hours_ago:L} godzin temu"
 msgstr[3] "{hours_ago:L} godzin temu"
 
+#. Translators: Spin box format, "Download is inactive if data sharing stopped: [ 5 minutes ago ]"
 msgid "{minutes_ago:L} minute ago"
 msgid_plural "{minutes_ago:L} minutes ago"
 msgstr[0] "{minutes_ago:L} minuta temu"
@@ -2245,6 +2277,11 @@ msgstr "Ukończono torrenty"
 msgid "{current_size} (100%)"
 msgstr "{current_size} (100%)"
 
+#. Translators: Text following the "Have:" label in torrent properties dialog;
+#. {current_size} is amount of downloaded data (both verified and unverified),
+#. {complete_size} is overall size of torrent data,
+#. {percent_done} is percentage ({current_size}/{complete_size}*100),
+#. {unverified_size} is amount of downloaded but not yet verified data
 msgid "{current_size} of {complete_size} ({percent_done}%), {unverified_size} Unverified"
 msgstr "{current_size} z {complete_size} ({percent_done}%), {unverified_size} niesprawdzone"
 
@@ -2402,6 +2439,7 @@ msgstr[1] "{piece_count:L} części"
 msgstr[2] "{piece_count:L} części"
 msgstr[3] "{piece_count:L} części"
 
+#. Translators: {files} is "{file_count} Files" and {pieces} is "{piece_count} Pieces"
 msgid "{total_size} in {files}; {pieces} @ {piece_size}"
 msgstr "{total_size} w {files}, {pieces} o {piece_size}"
 
@@ -2566,6 +2604,8 @@ msgstr "Serwer śledzący zwrócił błąd: {error}"
 msgid "Error: {error}"
 msgstr "Błąd: {error}"
 
+#. Translators: First part of torrent progress string,
+#. {percent_done} is the percentage of torrent metadata downloaded
 #, fuzzy
 #| msgid "Magnetized transfer - retrieving metadata (%1%)"
 msgid "Magnetized torrent - retrieving metadata ({percent_done}%)"
@@ -2579,6 +2619,7 @@ msgstr[1] "Pobieranie metadanych od {active_count:L} partnerów (ukończono {per
 msgstr[2] "Pobieranie metadanych od {active_count:L} partnerów (ukończono {percent_done}%)"
 msgstr[3] "Pobieranie metadanych od {active_count:L} partnerów (ukończono {percent_done}%)"
 
+#. Translators: First part of phrase "Downloading from ... peer(s) and ... web seed(s)"
 msgid "Downloading from {active_count:L} peer"
 msgid_plural "Downloading from {active_count:L} peers"
 msgstr[0] "Pobieranie od {active_count:L} partnera"
@@ -2586,6 +2627,8 @@ msgstr[1] "Pobieranie od {active_count:L} partnerów"
 msgstr[2] "Pobieranie od {active_count:L} partnerów"
 msgstr[3] "Pobieranie od {active_count:L} partnerów"
 
+#. Translators: Second (optional) part of phrase "Downloading from ... of ... connected peer(s) and ... web seed(s)",
+#. notice that leading space (before "and") is included here
 msgid " and {webseed_count:L} web seed"
 msgid_plural " and {webseed_count:L} web seeds"
 msgstr[0] " i {webseed_count:L} wysyłającego w sieci"
