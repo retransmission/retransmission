@@ -203,4 +203,9 @@ QString detail::mnemonicText(char const* const msgid)
     return toQtMnemonic(tr_gettext(msgid));
 }
 
+QString detail::strippedText(char const* const msgid)
+{
+    return QString::fromStdString(tr::app::l10n::strip_mnemonic(tr_gettext(msgid)));
+}
+
 } // namespace trqt

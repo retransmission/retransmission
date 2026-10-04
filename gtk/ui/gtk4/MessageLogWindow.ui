@@ -2,7 +2,7 @@
 <interface>
   <requires lib="gtk" version="4.0"/>
   <object class="GtkWindow" id="MessageLogWindow">
-    <property name="title" translatable="yes">Message Log</property>
+    <property name="title" translatable="yes">Message _Log</property>
     <property name="default-width">750</property>
     <property name="default-height">350</property>
     <property name="child">

@@ -125,9 +125,6 @@ msgstr "Utilizar los paramètres globals"
 msgid "Seed regardless of ratio"
 msgstr "Partejar quin que siá lo racio"
 
-msgid "Stop seeding at ratio:"
-msgstr "Partejar fins a un racio de :"
-
 msgid "Seed regardless of activity"
 msgstr "Partejar quina que siá l’activitat"
 
@@ -586,14 +583,8 @@ msgstr ""
 msgid "Open File"
 msgstr "Dobrir un fichièr"
 
-msgid "Open Folder"
-msgstr "Dobrir un dorsièr"
-
 msgid "Download Complete"
 msgstr "Torrent complet"
-
-msgid "Start Now"
-msgstr ""
 
 msgid "Torrent Added"
 msgstr "Torrent apondut"
@@ -898,7 +889,7 @@ msgstr "Emplaçament ont recercar los fichièrs de configuracion"
 msgid "Start with all torrents paused"
 msgstr "Aviar amb totes los torrents en pausa"
 
-msgid "Start minimized in notification area"
+msgid "Start _minimized in notification area"
 msgstr "Aviar en minimizat dins la zòna de notificacion"
 
 msgid "Show version number and exit"
@@ -1181,9 +1172,6 @@ msgstr "Origina :"
 msgid "Added:"
 msgstr ""
 
-msgid "Comment:"
-msgstr "Comentari :"
-
 msgid "Information"
 msgstr "Informacion"
 
@@ -1249,11 +1237,8 @@ msgstr ""
 msgid "Also see Default Public Trackers in Edit > Preferences > Network"
 msgstr ""
 
-msgid "Torrent"
+msgid "_Torrent"
 msgstr "Torrent"
-
-msgid "Statistics"
-msgstr "Estatisticas"
 
 msgid "New Torrent"
 msgstr "Torrent novèl"
@@ -1273,9 +1258,6 @@ msgstr "_Fichièr Font :"
 msgid "Piece size:"
 msgstr ""
 
-msgid "Properties"
-msgstr "Proprietats"
-
 msgid "_Trackers:"
 msgstr "_Tracadors :"
 
@@ -1290,9 +1272,6 @@ msgstr "_Torrent privat"
 
 msgid "Creating torrent…"
 msgstr "Creacion del torrent en cors…"
-
-msgid "Message Log"
-msgstr "Jornal dels messatges"
 
 msgid "Save _As"
 msgstr "Enregistrar _jos"
@@ -1344,7 +1323,7 @@ msgstr ""
 msgid "_Download:"
 msgstr "_Recepcion :"
 
-msgid "Alternative Speed Limits"
+msgid "Alternative Speed _Limits"
 msgstr "Limits de velocitat alternatius"
 
 msgid "Override normal speed limits manually or at scheduled times"
@@ -1577,9 +1556,6 @@ msgstr "Las donadas loc_alas son ja aicí"
 
 msgid "Current Session"
 msgstr "Session en cors"
-
-msgid "Ratio:"
-msgstr "Racio :"
 
 msgid "Duration:"
 msgstr "Durada :"

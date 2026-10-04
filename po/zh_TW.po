@@ -146,14 +146,14 @@ msgstr "使用全域設定"
 msgid "Seed regardless of ratio"
 msgstr "無論分享率限制，持續做種"
 
-msgid "Stop seeding at ratio:"
-msgstr "達到分享率時停止做種："
+msgid "Stop seeding at _ratio:"
+msgstr "達到分享率時停止做種 (_R)："
 
 msgid "Seed regardless of activity"
 msgstr "無論是否有活動，持續做種"
 
-msgid "Stop seeding if idle for:"
-msgstr "閒置超過時間時停止做種："
+msgid "Stop seedi_ng if idle for:"
+msgstr "閒置超過時間時停止做種 (_N)："
 
 #. Translators: Torrent -> status string
 msgid "Queued for verification"
@@ -496,8 +496,8 @@ msgstr "組態檔案的位置"
 msgid "Start with all torrents paused"
 msgstr "啟動時暫停所有 torrents"
 
-msgid "Start minimized in notification area"
-msgstr "啟動時最小化到通知區域"
+msgid "Start _minimized in notification area"
+msgstr "啟動時最小化到通知區域 (_M)"
 
 msgid "Show version number and exit"
 msgstr "顯示版本號碼並離開"
@@ -630,15 +630,15 @@ msgstr "時間"
 msgid "Open File"
 msgstr "開啟檔案"
 
-msgid "Open Folder"
-msgstr "開啟資料夾"
+msgid "Open Fold_er"
+msgstr "開啟資料夾 (_E)"
 
 #. Translators: notification title
 msgid "Download Complete"
 msgstr "下載完成"
 
-msgid "Start Now"
-msgstr "立即開始"
+msgid "Start _Now"
+msgstr "立即開始 (_N)"
 
 #. Translators: notification title
 msgid "Torrent Added"
@@ -653,6 +653,8 @@ msgstr "所有檔案"
 msgid "Open a Torrent"
 msgstr "開啟 Torrent"
 
+#. Translators: Open toolbar item -> label
+#. Translators: URL sheet button
 msgid "_Open"
 msgstr "開啟 (_O)"
 
@@ -914,15 +916,9 @@ msgstr "Torrent (_T)"
 msgid "_Properties"
 msgstr "內容 (_P)"
 
-msgid "Open Fold_er"
-msgstr "開啟資料夾 (_E)"
-
 #. Translators: Selected toolbar item -> label
 msgid "_Start"
 msgstr "開始 (_S)"
-
-msgid "Start _Now"
-msgstr "立即開始 (_N)"
 
 msgid "Ask Tracker for _More Peers"
 msgstr "向追蹤器請求更多節點 (_M)"
@@ -1013,9 +1009,11 @@ msgstr "反轉排列順序 (_V)"
 msgid "_Help"
 msgstr "說明 (_H)"
 
+#. Translators: Message window -> title
 msgid "Message _Log"
 msgstr "訊息日誌 (_L)"
 
+#. Translators: Stats window -> title
 msgid "_Statistics"
 msgstr "統計資料 (_S)"
 
@@ -1029,8 +1027,8 @@ msgstr "內容 (_C)"
 msgid "_About"
 msgstr "關於 (_A)"
 
-#, fuzzy
-#| msgid "Alternative Speed Limits"
+#. Translators: Dock item
+#. Translators: Status Bar -> speed tooltip
 msgid "Alternative Speed _Limits"
 msgstr "替代速度限制"
 
@@ -1110,8 +1108,8 @@ msgstr "建立於："
 msgid "Added:"
 msgstr "加入於："
 
-msgid "Comment:"
-msgstr "備註："
+msgid "Co_mment:"
+msgstr "備註 (_M)："
 
 #. Translators: Inspector view -> title
 #. Translators: Inspector -> tab
@@ -1157,6 +1155,7 @@ msgstr "Torrent 優先順序 (_P)："
 msgid "Seeding Limits"
 msgstr "做種限制"
 
+#. Translators: Stats window -> label
 msgid "_Ratio:"
 msgstr "分享率 (_R)："
 
@@ -1211,13 +1210,6 @@ msgstr "移除 torrent"
 msgid "Torrent properties"
 msgstr "Torrent 屬性"
 
-msgid "Torrent"
-msgstr "Torrent"
-
-#. Translators: Stats window -> title
-msgid "Statistics"
-msgstr "統計資料"
-
 msgid "New Torrent"
 msgstr "新增 Torrent"
 
@@ -1240,14 +1232,8 @@ msgstr "來源檔案 (_F)："
 msgid "Piece si_ze:"
 msgstr "區塊大小："
 
-msgid "Properties"
-msgstr "屬性"
-
 msgid "_Trackers:"
 msgstr "追蹤器 (_T)："
-
-msgid "Co_mment:"
-msgstr "備註 (_M)："
 
 msgid "_Source:"
 msgstr "來源 (_S)："
@@ -1257,10 +1243,6 @@ msgstr "私有 torrent (_P)"
 
 msgid "Creating torrent…"
 msgstr "正在建立 torrent…"
-
-#. Translators: Message window -> title
-msgid "Message Log"
-msgstr "訊息日誌"
 
 msgid "Save _As"
 msgstr "另存新檔 (_A)"
@@ -1308,11 +1290,6 @@ msgstr "上傳 (_U)："
 #. Checkbox to limit download speed
 msgid "_Download:"
 msgstr "下載 (_D)："
-
-#. Translators: Dock item
-#. Translators: Status Bar -> speed tooltip
-msgid "Alternative Speed Limits"
-msgstr "替代速度限制"
 
 msgid "Override normal speed limits manually or at scheduled times"
 msgstr "手動或定時覆蓋正常速度限制"
@@ -1388,12 +1365,6 @@ msgstr "下載"
 
 msgid "Limits"
 msgstr "限制"
-
-msgid "Stop seeding at _ratio:"
-msgstr "達到分享率時停止做種 (_R)："
-
-msgid "Stop seedi_ng if idle for:"
-msgstr "閒置超過時間時停止做種 (_N)："
 
 msgid "Call scrip_t when done seeding:"
 msgstr "做種完成時呼叫腳本 (_T)："
@@ -1575,10 +1546,6 @@ msgstr "本機資料已存在 (_A)"
 
 msgid "Current Session"
 msgstr "目前的工作階段"
-
-#. Translators: Stats window -> label
-msgid "Ratio:"
-msgstr "分享率："
 
 msgid "Duration:"
 msgstr "持續時間："
@@ -2393,9 +2360,6 @@ msgstr "複製"
 msgid "Paste"
 msgstr "貼上"
 
-msgid "Compact View"
-msgstr "精簡檢視"
-
 msgid "Pieces Bar"
 msgstr "區塊列"
 
@@ -2818,11 +2782,6 @@ msgstr "建立 Torrent 檔案"
 
 msgid "Create a new torrent"
 msgstr "建立新的 torrent"
-
-#. Translators: Open toolbar item -> label
-#. Translators: URL sheet button
-msgid "Open"
-msgstr "開啟"
 
 #. Translators: Open toolbar item -> palette label
 msgid "Open Torrent Files"
@@ -3373,9 +3332,6 @@ msgstr "伺服器"
 msgid "C_redits"
 msgstr "致謝 (_C)"
 
-msgid "Credits"
-msgstr "致謝"
-
 msgid "About {appname}"
 msgstr "關於 {appname}"
 
@@ -3506,9 +3462,6 @@ msgstr "從剪貼簿偵測新的 torrents"
 
 msgid "Encryption"
 msgstr "加密"
-
-msgid "Start _minimized in notification area"
-msgstr "啟動時最小化到通知區域 (_M)"
 
 #, fuzzy
 #| msgid "Retransmission"

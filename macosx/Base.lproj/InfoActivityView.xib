@@ -90,7 +90,7 @@
                                 </textField>
                                 <textField verticalHuggingPriority="1000" horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="1000" allowsCharacterPickerTouchBarItem="YES" preferredMaxLayoutWidth="0.0" translatesAutoresizingMaskIntoConstraints="NO" id="25">
                                     <rect key="frame" x="-2" y="72" width="73" height="14"/>
-                                    <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="right" title="Ratio:" id="34">
+                                    <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="right" title="_Ratio:" id="34">
                                         <font key="font" metaFont="smallSystem"/>
                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>

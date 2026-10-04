@@ -133,14 +133,14 @@ msgstr "Erabili ezarpen orokorrak"
 msgid "Seed regardless of ratio"
 msgstr "Igorri maila kontuan izan gabe"
 
-msgid "Stop seeding at ratio:"
-msgstr "Gelditu igortzen maila honetan:"
+msgid "Stop seeding at _ratio:"
+msgstr "Gelditu igortzen _maila honetan:"
 
 msgid "Seed regardless of activity"
 msgstr "Igorri jarduera kontuan izan gabe"
 
-msgid "Stop seeding if idle for:"
-msgstr "Gelditu igortzen geratuta badago:"
+msgid "Stop seedi_ng if idle for:"
+msgstr "Gelditu igortzen _geratuta badago:"
 
 #. Translators: Torrent -> status string
 msgid "Queued for verification"
@@ -486,8 +486,8 @@ msgstr "Non bilatu konfigurazio-fitxategiak"
 msgid "Start with all torrents paused"
 msgstr "Abiarazi torrent guztiak pausatuta"
 
-msgid "Start minimized in notification area"
-msgstr "Abiarazi jakinarazpen-arean ikonotuta"
+msgid "Start _minimized in notification area"
+msgstr "_Hasi jakinarazpen eremuan minimizatuta"
 
 msgid "Show version number and exit"
 msgstr "Erakutsi bertsio-zenbakia eta irten"
@@ -620,15 +620,15 @@ msgstr "Ordua"
 msgid "Open File"
 msgstr "Ireki fitxategia"
 
-msgid "Open Folder"
-msgstr "Ireki karpeta"
+msgid "Open Fold_er"
+msgstr "Ireki karpe_ta"
 
 #. Translators: notification title
 msgid "Download Complete"
 msgstr "Deskarga osatu da"
 
-msgid "Start Now"
-msgstr "Hasi orain"
+msgid "Start _Now"
+msgstr "Abiarazi _Orain"
 
 #. Translators: notification title
 msgid "Torrent Added"
@@ -643,6 +643,8 @@ msgstr "Fitxategi guztiak"
 msgid "Open a Torrent"
 msgstr "Ireki torrent-a"
 
+#. Translators: Open toolbar item -> label
+#. Translators: URL sheet button
 msgid "_Open"
 msgstr "_Zabaldu"
 
@@ -911,15 +913,9 @@ msgstr "_Torrenta"
 msgid "_Properties"
 msgstr "_Ezaugarriak"
 
-msgid "Open Fold_er"
-msgstr "Ireki karpe_ta"
-
 #. Translators: Selected toolbar item -> label
 msgid "_Start"
 msgstr "_Abiarazi"
-
-msgid "Start _Now"
-msgstr "Abiarazi _Orain"
 
 msgid "Ask Tracker for _More Peers"
 msgstr "_Eskatu Aztarnariari Kide Gehiago"
@@ -1009,9 +1005,11 @@ msgstr "Al_derantzikatu ordena"
 msgid "_Help"
 msgstr "_Laguntza"
 
+#. Translators: Message window -> title
 msgid "Message _Log"
 msgstr "Mezuen _egunkaria"
 
+#. Translators: Stats window -> title
 msgid "_Statistics"
 msgstr "_Estatistikak"
 
@@ -1025,7 +1023,8 @@ msgstr "Ed_ukiak"
 msgid "_About"
 msgstr "_Honi buruz"
 
-#, fuzzy
+#. Translators: Dock item
+#. Translators: Status Bar -> speed tooltip
 msgid "Alternative Speed _Limits"
 msgstr "Abiadura-muga alternatiboak"
 
@@ -1105,8 +1104,8 @@ msgstr "Sortze-data:"
 msgid "Added:"
 msgstr "Gehitze-data:"
 
-msgid "Comment:"
-msgstr "Iruzkina:"
+msgid "Co_mment:"
+msgstr "Iru_zkina:"
 
 #. Translators: Inspector view -> title
 #. Translators: Inspector -> tab
@@ -1152,6 +1151,7 @@ msgstr "_Torrent lehentasuna:"
 msgid "Seeding Limits"
 msgstr "Igortze-Mugak"
 
+#. Translators: Stats window -> label
 msgid "_Ratio:"
 msgstr "M_aila:"
 
@@ -1206,13 +1206,6 @@ msgstr "Kendu torrenta"
 msgid "Torrent properties"
 msgstr "Torrentaren ezaugarriak"
 
-msgid "Torrent"
-msgstr "Torrent-a"
-
-#. Translators: Stats window -> title
-msgid "Statistics"
-msgstr "Estatistikak"
-
 msgid "New Torrent"
 msgstr "Torrent berria"
 
@@ -1235,14 +1228,8 @@ msgstr "Jatorrizko _Fitxategia:"
 msgid "Piece si_ze:"
 msgstr "Zatiaren tamaina:"
 
-msgid "Properties"
-msgstr "Ezaugarriak"
-
 msgid "_Trackers:"
 msgstr "_Aztarnariak:"
-
-msgid "Co_mment:"
-msgstr "Iru_zkina:"
 
 msgid "_Source:"
 msgstr "_Jatorria:"
@@ -1252,10 +1239,6 @@ msgstr "Torrent _pribatua"
 
 msgid "Creating torrent…"
 msgstr "Torrent-a sortzen…"
-
-#. Translators: Message window -> title
-msgid "Message Log"
-msgstr "Mezuen egunkaria"
 
 msgid "Save _As"
 msgstr "Gorde _honela"
@@ -1303,11 +1286,6 @@ msgstr "_Igoera:"
 #. Checkbox to limit download speed
 msgid "_Download:"
 msgstr "_Deskarga:"
-
-#. Translators: Dock item
-#. Translators: Status Bar -> speed tooltip
-msgid "Alternative Speed Limits"
-msgstr "Abiadura-muga alternatiboak"
 
 msgid "Override normal speed limits manually or at scheduled times"
 msgstr "Gainidatzi abiadura-muga normalak eskuz edo programatutako orduetan"
@@ -1383,12 +1361,6 @@ msgstr "Deskargatzen"
 
 msgid "Limits"
 msgstr "Mugak"
-
-msgid "Stop seeding at _ratio:"
-msgstr "Gelditu igortzen _maila honetan:"
-
-msgid "Stop seedi_ng if idle for:"
-msgstr "Gelditu igortzen _geratuta badago:"
 
 msgid "Call scrip_t when done seeding:"
 msgstr "Deitu scrip_t-a igortzea amaitzerakoan:"
@@ -1570,10 +1542,6 @@ msgstr "Datu lokalak _jadanik han daude"
 
 msgid "Current Session"
 msgstr "Uneko saioa"
-
-#. Translators: Stats window -> label
-msgid "Ratio:"
-msgstr "Maila:"
 
 msgid "Duration:"
 msgstr "Iraupena:"
@@ -2407,9 +2375,6 @@ msgstr "Kopiatu"
 msgid "Paste"
 msgstr "Itsatsi"
 
-msgid "Compact View"
-msgstr "Ikuspegi Trinkoa"
-
 msgid "Pieces Bar"
 msgstr "Zatien Barra"
 
@@ -2835,11 +2800,6 @@ msgstr "Torrent artxibo mota sortu"
 
 msgid "Create a new torrent"
 msgstr "Sortu torrent berri bat"
-
-#. Translators: Open toolbar item -> label
-#. Translators: URL sheet button
-msgid "Open"
-msgstr "Ireki"
 
 #. Translators: Open toolbar item -> palette label
 msgid "Open Torrent Files"
@@ -3418,9 +3378,6 @@ msgstr "Zerbitzaria"
 msgid "C_redits"
 msgstr "_Kredituak"
 
-msgid "Credits"
-msgstr "Kredituak"
-
 msgid "About {appname}"
 msgstr "{appname}i buruz"
 
@@ -3554,9 +3511,6 @@ msgstr "Antzeman torrent berriak arbeletik"
 
 msgid "Encryption"
 msgstr "Zifratzea"
-
-msgid "Start _minimized in notification area"
-msgstr "_Hasi jakinarazpen eremuan minimizatuta"
 
 #, fuzzy
 #| msgid "Retransmission"

@@ -143,9 +143,6 @@ msgstr "Выкарыстоўваць глабальныя налады"
 msgid "Seed regardless of ratio"
 msgstr "Раздаваць незалежна ад рэйтынгу"
 
-msgid "Stop seeding at ratio:"
-msgstr "Спыніць раздачу пры рэйтынгу:"
-
 msgid "Seed regardless of activity"
 msgstr "Раздаваць незалежна ад актыўнасці"
 
@@ -622,14 +619,8 @@ msgstr ""
 msgid "Open File"
 msgstr "Адкрыць файл"
 
-msgid "Open Folder"
-msgstr "Адкрыць каталог"
-
 msgid "Download Complete"
 msgstr "Торэнт завершаны"
-
-msgid "Start Now"
-msgstr ""
 
 msgid "Torrent Added"
 msgstr "Торэнт дададзены"
@@ -980,7 +971,7 @@ msgstr "Месцазнаходжанне файлаў канфігурацыі"
 msgid "Start with all torrents paused"
 msgstr "Запускаць з прыпыненымі торэнтамі"
 
-msgid "Start minimized in notification area"
+msgid "Start _minimized in notification area"
 msgstr "Уключаць згорнутым на прастору апавяшчэнняў"
 
 msgid "Show version number and exit"
@@ -1263,9 +1254,6 @@ msgstr "Паходжанне:"
 msgid "Added:"
 msgstr ""
 
-msgid "Comment:"
-msgstr "Каментар:"
-
 msgid "Information"
 msgstr "Інфармацыя"
 
@@ -1331,11 +1319,8 @@ msgstr ""
 msgid "Also see Default Public Trackers in Edit > Preferences > Network"
 msgstr ""
 
-msgid "Torrent"
+msgid "_Torrent"
 msgstr "Торэнт"
-
-msgid "Statistics"
-msgstr "Статыстыка"
 
 msgid "New Torrent"
 msgstr "Новы торэнт"
@@ -1355,9 +1340,6 @@ msgstr "Зыходны _файл:"
 msgid "Piece size:"
 msgstr ""
 
-msgid "Properties"
-msgstr "Уласцівасці"
-
 msgid "_Trackers:"
 msgstr "_Трэкеры:"
 
@@ -1372,9 +1354,6 @@ msgstr "_Прыватны торэнт"
 
 msgid "Creating torrent…"
 msgstr "Стварэнне торэнта…"
-
-msgid "Message Log"
-msgstr "Журнал паведамленняў"
 
 msgid "Save _As"
 msgstr "Захаваць _як"
@@ -1426,7 +1405,7 @@ msgstr ""
 msgid "_Download:"
 msgstr ""
 
-msgid "Alternative Speed Limits"
+msgid "Alternative Speed _Limits"
 msgstr "Альтэрнатыўныя абмежаванні хуткасці"
 
 msgid "Override normal speed limits manually or at scheduled times"
@@ -1659,9 +1638,6 @@ msgstr "Тут ужо _ёсць лакальныя даныя"
 
 msgid "Current Session"
 msgstr "Бягучы сеанс"
-
-msgid "Ratio:"
-msgstr "Рэйтынг:"
 
 msgid "Duration:"
 msgstr "Працягласць:"

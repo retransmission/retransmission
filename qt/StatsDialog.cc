@@ -22,6 +22,9 @@ StatsDialog::StatsDialog(Session& session, QWidget* parent)
     , session_{ session }
 {
     ui_.setupUi(this);
+    setWindowTitle(TR_STRIP_MNEMONIC("_Statistics"));
+    ui_.currentRatioLabel->setText(TR_STRIP_MNEMONIC("_Ratio:"));
+    ui_.totalRatioLabel->setText(TR_STRIP_MNEMONIC("_Ratio:"));
 
     auto* cr = new ColumnResizer{ this };
     cr->addLayout(ui_.currentSessionSectionLayout);

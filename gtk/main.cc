@@ -106,7 +106,10 @@ int main(int argc, char** argv)
     /* parse the command line */
     auto const config_dir_option = create_option_entry("config-dir", 'g', _("Where to look for configuration files"));
     auto const paused_option = create_option_entry("paused", 'p', _("Start with all torrents paused"));
-    auto const minimized_option = create_option_entry("minimized", 'm', _("Start minimized in notification area"));
+    auto const minimized_option = create_option_entry(
+        "minimized",
+        'm',
+        gtr_strip_mnemonic(_("Start _minimized in notification area")));
     auto const version_option = create_option_entry("version", 'v', _("Show version number and exit"));
 
     Glib::OptionGroup main_group({}, {});

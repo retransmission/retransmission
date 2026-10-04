@@ -134,14 +134,14 @@ msgstr "naudoti visuotinius parametrus"
 msgid "Seed regardless of ratio"
 msgstr "skleisti nepaisant santykio"
 
-msgid "Stop seeding at ratio:"
-msgstr "nebeskleisti esant santykiui:"
+msgid "Stop seeding at _ratio:"
+msgstr "Nebeskleisti esant _santykiui:"
 
 msgid "Seed regardless of activity"
 msgstr "skleisti nepaisant aktyvumo"
 
-msgid "Stop seeding if idle for:"
-msgstr "Nebeskleisti, jei pasyvus:"
+msgid "Stop seedi_ng if idle for:"
+msgstr "Nebeskleisti jei _pasyvus:"
 
 msgid "Queued for verification"
 msgstr "Eilėje patikrinimui"
@@ -455,8 +455,8 @@ msgstr "Kur ieškoti konfigūracijos failų"
 msgid "Start with all torrents paused"
 msgstr "Paleisti pristabdžius visus torentus"
 
-msgid "Start minimized in notification area"
-msgstr "Paleisti sumažintą pranešimų srityje"
+msgid "Start _minimized in notification area"
+msgstr "Paleisti su_mažintą pranešimų srityje"
 
 msgid "Show version number and exit"
 msgstr "Parodyti laidos numerį ir baigti darbą"
@@ -573,14 +573,14 @@ msgstr "Laikas"
 msgid "Open File"
 msgstr "Atverti failą"
 
-msgid "Open Folder"
-msgstr "Atverti aplanką"
+msgid "Open Fold_er"
+msgstr "_Atverti aplanką"
 
 msgid "Download Complete"
 msgstr "Torentas baigtas"
 
-msgid "Start Now"
-msgstr "Pradėti dabar"
+msgid "Start _Now"
+msgstr "Pradėti _dabar"
 
 msgid "Torrent Added"
 msgstr "Torentas pridėtas"
@@ -864,14 +864,8 @@ msgstr "T_orentas"
 msgid "_Properties"
 msgstr "_Savybės"
 
-msgid "Open Fold_er"
-msgstr "_Atverti aplanką"
-
 msgid "_Start"
 msgstr "_Paleisti"
-
-msgid "Start _Now"
-msgstr "Pradėti _dabar"
 
 msgid "Ask Tracker for _More Peers"
 msgstr "Paprašyti sekiklio _daugiau siuntėjų"
@@ -976,7 +970,6 @@ msgstr "_Žinynas"
 msgid "_About"
 msgstr "_Apie"
 
-#, fuzzy
 msgid "Alternative Speed _Limits"
 msgstr "Alternatyvieji greičio ribojimai"
 
@@ -1053,8 +1046,8 @@ msgstr "sukurtas {date}"
 msgid "Added:"
 msgstr "Pridėtas:"
 
-msgid "Comment:"
-msgstr "Komentaras:"
+msgid "Co_mment:"
+msgstr "_Komentaras:"
 
 msgid "Information"
 msgstr "Savybės"
@@ -1138,12 +1131,6 @@ msgstr "Pašalinti torentą"
 msgid "Torrent properties"
 msgstr "Torento savybės"
 
-msgid "Torrent"
-msgstr "Torentas"
-
-msgid "Statistics"
-msgstr "Statistika"
-
 msgid "New Torrent"
 msgstr "Naujas torentas"
 
@@ -1164,14 +1151,8 @@ msgstr "Šaltinio _failas:"
 msgid "Piece si_ze:"
 msgstr ""
 
-msgid "Properties"
-msgstr "Savybės"
-
 msgid "_Trackers:"
 msgstr "_Sekikliai:"
-
-msgid "Co_mment:"
-msgstr "_Komentaras:"
 
 msgid "_Source:"
 msgstr "Š_altinis:"
@@ -1181,9 +1162,6 @@ msgstr "_Privatus torentas"
 
 msgid "Creating torrent…"
 msgstr "Kuriamas torentas…"
-
-msgid "Message Log"
-msgstr "Pranešimų žurnalas"
 
 msgid "Save _As"
 msgstr "Įrašyti k_aip"
@@ -1230,9 +1208,6 @@ msgstr "Išsi_untimo:"
 #. Checkbox to limit download speed
 msgid "_Download:"
 msgstr "_Atsiuntimo:"
-
-msgid "Alternative Speed Limits"
-msgstr "Alternatyvieji greičio ribojimai"
 
 msgid "Override normal speed limits manually or at scheduled times"
 msgstr "Taikomi vietoje įprastų greičio ribojimų rankiniu būdu arba numatytuoju laiku"
@@ -1304,12 +1279,6 @@ msgstr "Atsiuntimas"
 
 msgid "Limits"
 msgstr "Apribojimai"
-
-msgid "Stop seeding at _ratio:"
-msgstr "Nebeskleisti esant _santykiui:"
-
-msgid "Stop seedi_ng if idle for:"
-msgstr "Nebeskleisti jei _pasyvus:"
 
 msgid "Call scrip_t when done seeding:"
 msgstr "Baigus skleisti torentą, vykdyti s_cenarijų:"
@@ -1489,9 +1458,6 @@ msgstr "Vietiniai duomenys jau yra _ten"
 
 msgid "Current Session"
 msgstr "Šis seansas"
-
-msgid "Ratio:"
-msgstr "Santykis:"
 
 msgid "Duration:"
 msgstr "Naudojimosi trukmė:"
@@ -2152,9 +2118,6 @@ msgstr "Serveris"
 msgid "C_redits"
 msgstr "_Padėkos"
 
-msgid "Credits"
-msgstr "Padėkos"
-
 msgid "About {appname}"
 msgstr "Apie „{appname}“"
 
@@ -2188,9 +2151,6 @@ msgstr "Nuimti žymėjimą nuo pasirinktų"
 
 msgid "Only Check Selected"
 msgstr "Pažymėti tik pasirinktus"
-
-msgid "Open"
-msgstr "Atverti"
 
 msgid "Rename…"
 msgstr "Pervadinti…"
@@ -2256,9 +2216,6 @@ msgstr "Patikrinti turimus duomenis"
 
 msgid "Remove torrent and delete its files"
 msgstr "Pašalinti torentą ir jo failus"
-
-msgid "Compact View"
-msgstr "Glaustasis rodinys"
 
 msgid "_Main Window"
 msgstr "_Pagrindinis langas"
@@ -2342,9 +2299,6 @@ msgstr ""
 
 msgid "Encryption"
 msgstr "Šifravimas"
-
-msgid "Start _minimized in notification area"
-msgstr "Paleisti su_mažintą pranešimų srityje"
 
 #, fuzzy
 #| msgid "Retransmission"

@@ -132,9 +132,6 @@ msgstr "ใช้การตั้งค่าหลัก"
 msgid "Seed regardless of ratio"
 msgstr "seed โดยไม่คำนึงถึงสัดส่วน"
 
-msgid "Stop seeding at ratio:"
-msgstr "หยุดการ seed ที่อัตราส่วน:"
-
 msgid "Seed regardless of activity"
 msgstr "seed โดยไม่คำนึงถึงกิจกรรม"
 
@@ -584,14 +581,8 @@ msgstr ""
 msgid "Open File"
 msgstr "เปิดแฟ้ม"
 
-msgid "Open Folder"
-msgstr "เปิดโฟลเดอร์"
-
 msgid "Download Complete"
 msgstr "ทอร์เรนท์เสร็จสมบูรณ์"
-
-msgid "Start Now"
-msgstr ""
 
 msgid "Torrent Added"
 msgstr ""
@@ -873,7 +864,7 @@ msgstr "ตำแหน่งที่จะค้นหาแฟ้มค่า
 msgid "Start with all torrents paused"
 msgstr "เริ่มโดยหยุดทอร์เรนท์ทั้งหมดชั่วคราว"
 
-msgid "Start minimized in notification area"
+msgid "Start _minimized in notification area"
 msgstr "เริ่มต้นแบบย่อในพื้นที่แจ้งเตือน"
 
 msgid "Show version number and exit"
@@ -1156,9 +1147,6 @@ msgstr "ต้นทาง:"
 msgid "Added:"
 msgstr ""
 
-msgid "Comment:"
-msgstr "หมายเหตุ:"
-
 msgid "Information"
 msgstr "ข้อมูล"
 
@@ -1224,11 +1212,8 @@ msgstr ""
 msgid "Also see Default Public Trackers in Edit > Preferences > Network"
 msgstr ""
 
-msgid "Torrent"
+msgid "_Torrent"
 msgstr "ทอร์เรนท์"
-
-msgid "Statistics"
-msgstr "สถิติ"
 
 msgid "New Torrent"
 msgstr "ทอร์เรนท์ใหม่"
@@ -1248,14 +1233,11 @@ msgstr ""
 msgid "Piece size:"
 msgstr ""
 
-msgid "Properties"
-msgstr ""
-
 msgid "_Trackers:"
 msgstr "_ตัวนำร่อง:"
 
 msgid "Co_mment:"
-msgstr ""
+msgstr "หมายเหตุ:"
 
 msgid "_Source:"
 msgstr ""
@@ -1265,9 +1247,6 @@ msgstr "ทอร์เรนส่วนตัว"
 
 msgid "Creating torrent…"
 msgstr ""
-
-msgid "Message Log"
-msgstr "บันทึกเหตุการณ์"
 
 msgid "Save _As"
 msgstr ""
@@ -1319,7 +1298,7 @@ msgstr ""
 msgid "_Download:"
 msgstr ""
 
-msgid "Alternative Speed Limits"
+msgid "Alternative Speed _Limits"
 msgstr ""
 
 msgid "Override normal speed limits manually or at scheduled times"
@@ -1552,9 +1531,6 @@ msgstr "เมื่อข้อมูลเ_สร็จให้นำมา�
 
 msgid "Current Session"
 msgstr "ปัจจุบัน"
-
-msgid "Ratio:"
-msgstr "อัตราส่วน:"
 
 msgid "Duration:"
 msgstr "ระยะเวลา:"

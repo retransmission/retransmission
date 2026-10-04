@@ -135,14 +135,14 @@ msgstr "Bruk globale innstillinger"
 msgid "Seed regardless of ratio"
 msgstr "Del uansett delingsforhold"
 
-msgid "Stop seeding at ratio:"
-msgstr "Slutt å dele når delingsforholdet er:"
+msgid "Stop seeding at _ratio:"
+msgstr "Slutt å dele når _delingsforholdet er:"
 
 msgid "Seed regardless of activity"
 msgstr "Del uavhengig av aktivitet"
 
-msgid "Stop seeding if idle for:"
-msgstr "Stopp deling hvis inaktiv i:"
+msgid "Stop seedi_ng if idle for:"
+msgstr "Stopp deli_ng hvis inaktiv i:"
 
 msgid "Queued for verification"
 msgstr "Satt i kø for bekreftelse"
@@ -446,8 +446,8 @@ msgstr "Plassering av konfigurasjonsfiler"
 msgid "Start with all torrents paused"
 msgstr "Start med alle torrenter på pause"
 
-msgid "Start minimized in notification area"
-msgstr "Start minimert i varslingsområdet"
+msgid "Start _minimized in notification area"
+msgstr "Start _minimert i merknadsområde"
 
 msgid "Show version number and exit"
 msgstr "Vis versjonsnummer og avslutt"
@@ -560,14 +560,14 @@ msgstr "Tid"
 msgid "Open File"
 msgstr "Åpne fil"
 
-msgid "Open Folder"
-msgstr "Åpne mappe"
+msgid "Open Fold_er"
+msgstr "Åpne _mappe"
 
 msgid "Download Complete"
 msgstr "Torrent ferdigstilt"
 
-msgid "Start Now"
-msgstr ""
+msgid "Start _Now"
+msgstr "Start _nå"
 
 msgid "Torrent Added"
 msgstr "Torrent lagt til"
@@ -582,7 +582,7 @@ msgid "Open a Torrent"
 msgstr "Åpne en torrent"
 
 msgid "_Open"
-msgstr ""
+msgstr "Åpne"
 
 msgid "Show options dialog"
 msgstr "Vis valgdialog"
@@ -837,14 +837,8 @@ msgstr "_Torrent"
 msgid "_Properties"
 msgstr "_Egenskaper"
 
-msgid "Open Fold_er"
-msgstr "Åpne _mappe"
-
 msgid "_Start"
 msgstr "_Start"
-
-msgid "Start _Now"
-msgstr "Start _nå"
 
 msgid "Ask Tracker for _More Peers"
 msgstr "Spør sporeren om _flere likemenn"
@@ -948,7 +942,6 @@ msgstr "_Innhold"
 msgid "_About"
 msgstr "_Om"
 
-#, fuzzy
 msgid "Alternative Speed _Limits"
 msgstr "Alternative hastighetsgrenser"
 
@@ -1025,8 +1018,8 @@ msgstr "Opprettet {date}"
 msgid "Added:"
 msgstr ""
 
-msgid "Comment:"
-msgstr "Kommentar:"
+msgid "Co_mment:"
+msgstr "_Kommentar:"
 
 msgid "Information"
 msgstr "Informasjon"
@@ -1110,12 +1103,6 @@ msgstr "Fjern torrent"
 msgid "Torrent properties"
 msgstr "Egenskaper for torrent"
 
-msgid "Torrent"
-msgstr "Torrent"
-
-msgid "Statistics"
-msgstr "Statistikk"
-
 msgid "New Torrent"
 msgstr "Ny torrent"
 
@@ -1136,14 +1123,8 @@ msgstr "Kilde_fil:"
 msgid "Piece si_ze:"
 msgstr ""
 
-msgid "Properties"
-msgstr "Egenskaper"
-
 msgid "_Trackers:"
 msgstr "_Sporere:"
-
-msgid "Co_mment:"
-msgstr "_Kommentar:"
 
 msgid "_Source:"
 msgstr "_Kilde:"
@@ -1153,9 +1134,6 @@ msgstr "_Privat torrent"
 
 msgid "Creating torrent…"
 msgstr "Lager torrent …"
-
-msgid "Message Log"
-msgstr "Meldingslogg"
 
 msgid "Save _As"
 msgstr ""
@@ -1202,9 +1180,6 @@ msgstr "_Last opp:"
 #. Checkbox to limit download speed
 msgid "_Download:"
 msgstr "_Last ned:"
-
-msgid "Alternative Speed Limits"
-msgstr "Alternative hastighetsgrenser"
 
 msgid "Override normal speed limits manually or at scheduled times"
 msgstr "Overstyr normale fartsgrenser manuelt eller i planlagte tidsrom"
@@ -1274,12 +1249,6 @@ msgstr "Nedlasting"
 
 msgid "Limits"
 msgstr "Grenser"
-
-msgid "Stop seeding at _ratio:"
-msgstr "Slutt å dele når _delingsforholdet er:"
-
-msgid "Stop seedi_ng if idle for:"
-msgstr "Stopp deli_ng hvis inaktiv i:"
 
 msgid "Call scrip_t when done seeding:"
 msgstr ""
@@ -1458,9 +1427,6 @@ msgstr "Lokal data _finnes der allerede"
 
 msgid "Current Session"
 msgstr "Denne økta"
-
-msgid "Ratio:"
-msgstr "Forhold:"
 
 msgid "Duration:"
 msgstr "Varighet:"
@@ -2065,9 +2031,6 @@ msgstr ""
 msgid "C_redits"
 msgstr "B_idragsytere"
 
-msgid "Credits"
-msgstr "Bidragsytere"
-
 msgid "About {appname}"
 msgstr "Om {appname}"
 
@@ -2101,9 +2064,6 @@ msgstr "Fravelg valgt"
 
 msgid "Only Check Selected"
 msgstr "Bare sjekk noen"
-
-msgid "Open"
-msgstr "Åpne"
 
 msgid "Rename…"
 msgstr ""
@@ -2169,9 +2129,6 @@ msgstr "Kontrollerer lokale data"
 
 msgid "Remove torrent and delete its files"
 msgstr "Fjern torrent og slett dens filer"
-
-msgid "Compact View"
-msgstr "Kompakt visning"
 
 msgid "_Main Window"
 msgstr "_Hovedvindu"
@@ -2253,9 +2210,6 @@ msgstr ""
 
 msgid "Encryption"
 msgstr "Kryptering"
-
-msgid "Start _minimized in notification area"
-msgstr "Start _minimert i merknadsområde"
 
 #, fuzzy
 #| msgid "Retransmission"

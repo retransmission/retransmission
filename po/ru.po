@@ -127,14 +127,14 @@ msgstr "Использовать общие настройки"
 msgid "Seed regardless of ratio"
 msgstr "Раздавать независимо от рейтинга"
 
-msgid "Stop seeding at ratio:"
-msgstr "Прекратить раздачу при рейтинге:"
+msgid "Stop seeding at _ratio:"
+msgstr "Прекратить раздачу при _рейтинге:"
 
 msgid "Seed regardless of activity"
 msgstr "Раздавать независимо от активности"
 
-msgid "Stop seeding if idle for:"
-msgstr "Прекратить раздачу при простое:"
+msgid "Stop seedi_ng if idle for:"
+msgstr "Прекратить раздачу при _простое:"
 
 #. Translators: Torrent -> status string
 msgid "Queued for verification"
@@ -491,8 +491,8 @@ msgstr "Расположение файлов конфигурации"
 msgid "Start with all torrents paused"
 msgstr "Начать с приостановленными торрентами"
 
-msgid "Start minimized in notification area"
-msgstr "Запускать свёрнутым в области уведомлений"
+msgid "Start _minimized in notification area"
+msgstr "Запускать с_вёрнутым в область уведомлений"
 
 msgid "Show version number and exit"
 msgstr "Показать номер версии и завершить"
@@ -625,15 +625,15 @@ msgstr "Время"
 msgid "Open File"
 msgstr "Открыть файл"
 
-msgid "Open Folder"
-msgstr "Открыть папку"
+msgid "Open Fold_er"
+msgstr "Открыть папк_у"
 
 #. Translators: notification title
 msgid "Download Complete"
 msgstr "Скачивание завершено"
 
-msgid "Start Now"
-msgstr "Запустить сейчас"
+msgid "Start _Now"
+msgstr "Запустить _сейчас"
 
 #. Translators: notification title
 msgid "Torrent Added"
@@ -648,6 +648,8 @@ msgstr "Все файлы"
 msgid "Open a Torrent"
 msgstr "Открыть торрент"
 
+#. Translators: Open toolbar item -> label
+#. Translators: URL sheet button
 msgid "_Open"
 msgstr "_Открыть"
 
@@ -930,15 +932,9 @@ msgstr "_Торрент"
 msgid "_Properties"
 msgstr "_Свойства"
 
-msgid "Open Fold_er"
-msgstr "Открыть папк_у"
-
 #. Translators: Selected toolbar item -> label
 msgid "_Start"
 msgstr "_Запустить"
-
-msgid "Start _Now"
-msgstr "Запустить _сейчас"
 
 msgid "Ask Tracker for _More Peers"
 msgstr "Позват_ь ещё участников с трекера"
@@ -1029,9 +1025,11 @@ msgstr "О_братить порядок"
 msgid "_Help"
 msgstr "_Справка"
 
+#. Translators: Message window -> title
 msgid "Message _Log"
 msgstr "_Журнал сообщений"
 
+#. Translators: Stats window -> title
 msgid "_Statistics"
 msgstr "_Статистика"
 
@@ -1045,8 +1043,8 @@ msgstr "Со_держание"
 msgid "_About"
 msgstr "_О программе"
 
-#, fuzzy
-#| msgid "Alternative Speed Limits"
+#. Translators: Dock item
+#. Translators: Status Bar -> speed tooltip
 msgid "Alternative Speed _Limits"
 msgstr "Особые ограничения скорости"
 
@@ -1126,8 +1124,8 @@ msgstr "Дата:"
 msgid "Added:"
 msgstr "Добавлен:"
 
-msgid "Comment:"
-msgstr "Комментарий:"
+msgid "Co_mment:"
+msgstr "_Комментарий:"
 
 #. Translators: Inspector view -> title
 #. Translators: Inspector -> tab
@@ -1173,6 +1171,7 @@ msgstr "Приоритет _торрента:"
 msgid "Seeding Limits"
 msgstr "Ограничения раздачи"
 
+#. Translators: Stats window -> label
 msgid "_Ratio:"
 msgstr "_Рейтинг:"
 
@@ -1227,13 +1226,6 @@ msgstr "Убрать торрент"
 msgid "Torrent properties"
 msgstr "Свойства торрента"
 
-msgid "Torrent"
-msgstr "Торрент"
-
-#. Translators: Stats window -> title
-msgid "Statistics"
-msgstr "Статистика"
-
 msgid "New Torrent"
 msgstr "Новый торрент"
 
@@ -1256,14 +1248,8 @@ msgstr "_Исходный файл:"
 msgid "Piece si_ze:"
 msgstr "Размер части:"
 
-msgid "Properties"
-msgstr "Свойства"
-
 msgid "_Trackers:"
 msgstr "_Трекеры:"
-
-msgid "Co_mment:"
-msgstr "_Комментарий:"
 
 msgid "_Source:"
 msgstr "_Источник:"
@@ -1273,10 +1259,6 @@ msgstr "_Закрытый торрент"
 
 msgid "Creating torrent…"
 msgstr "Создание торрента…"
-
-#. Translators: Message window -> title
-msgid "Message Log"
-msgstr "Журнал сообщений"
 
 msgid "Save _As"
 msgstr "Сохранить _как"
@@ -1324,11 +1306,6 @@ msgstr "_Отдача:"
 #. Checkbox to limit download speed
 msgid "_Download:"
 msgstr "_Загрузка:"
-
-#. Translators: Dock item
-#. Translators: Status Bar -> speed tooltip
-msgid "Alternative Speed Limits"
-msgstr "Особые ограничения скорости"
 
 msgid "Override normal speed limits manually or at scheduled times"
 msgstr "Замещение обычных ограничений скорости по расписанию или вручную"
@@ -1404,12 +1381,6 @@ msgstr "Загрузка"
 
 msgid "Limits"
 msgstr "Ограничения"
-
-msgid "Stop seeding at _ratio:"
-msgstr "Прекратить раздачу при _рейтинге:"
-
-msgid "Stop seedi_ng if idle for:"
-msgstr "Прекратить раздачу при _простое:"
 
 msgid "Call scrip_t when done seeding:"
 msgstr "Выполнять сц_енарий по окончании раздачи:"
@@ -1591,10 +1562,6 @@ msgstr "_Локальные данные уже там"
 
 msgid "Current Session"
 msgstr "Текущий сеанс"
-
-#. Translators: Stats window -> label
-msgid "Ratio:"
-msgstr "Рейтинг:"
 
 msgid "Duration:"
 msgstr "Длительность:"
@@ -2476,9 +2443,6 @@ msgstr "Копировать"
 msgid "Paste"
 msgstr "Вставить"
 
-msgid "Compact View"
-msgstr "Компактный вид"
-
 msgid "Pieces Bar"
 msgstr "Части"
 
@@ -2906,11 +2870,6 @@ msgstr "Создать торрент-файл"
 
 msgid "Create a new torrent"
 msgstr "Создать новый торрент"
-
-#. Translators: Open toolbar item -> label
-#. Translators: URL sheet button
-msgid "Open"
-msgstr "Открыть"
 
 #. Translators: Open toolbar item -> palette label
 msgid "Open Torrent Files"
@@ -3497,9 +3456,6 @@ msgstr "Сервер"
 msgid "C_redits"
 msgstr "А_вторы"
 
-msgid "Credits"
-msgstr "Сведения об авторах"
-
 msgid "About {appname}"
 msgstr "О {appname}"
 
@@ -3637,9 +3593,6 @@ msgstr "Искать новые торренты в буфере обмена"
 
 msgid "Encryption"
 msgstr "Шифрование"
-
-msgid "Start _minimized in notification area"
-msgstr "Запускать с_вёрнутым в область уведомлений"
 
 #, fuzzy
 #| msgid "Retransmission"

@@ -697,6 +697,7 @@ MainWindow::Impl::Impl(
     /* ratio selector */
     auto* ratio_button = gtr_get_widget<Gtk::MenuButton>(builder, "ratio_button");
     ratio_button->set_menu_model(createStatsMenu());
+    ratio_button->set_tooltip_text(gtr_strip_mnemonic(ratio_button->get_tooltip_text()));
 
     /**
     *** Workarea

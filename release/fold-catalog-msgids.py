@@ -345,6 +345,27 @@ RENAMES = [
             ('Limit _download speed ({speed_units}):', 'Limit _download speed:'),
         )
     ),
+    # Text that shows no mnemonic, such as a window title, shares the entry of the menu item or label that has one.
+    *(
+        {'from': {'msgid': marked.replace('_', '', 1)}, 'to': {'msgid': marked}}
+        for marked in (
+            'Alternative Speed _Limits',
+            'C_redits',
+            'Co_mment:',
+            'Message _Log',
+            'Open Fold_er',
+            'Start _Now',
+            'Start _minimized in notification area',
+            'Stop seedi_ng if idle for:',
+            'Stop seeding at _ratio:',
+            '_Compact View',
+            '_Open',
+            '_Properties',
+            '_Ratio:',
+            '_Statistics',
+            '_Torrent',
+        )
+    ),
     # Every client uses the Mac client's text for the stalled-torrent setting, with a mnemonic.
     {'from': {'msgid': 'Torrent is stalled when inactive for:'}, 'to': {'msgid': 'Torrent is stalled when i_nactive for:'}},
     # The row's label is the Mac client's "Failed DL:" again.
@@ -499,6 +520,10 @@ def moved_translation(text, rename, colon, period):
     return text
 
 
+def obsolete_key(message):
+    return Message([line[3:] for line in message.lines if line.startswith('#~ ')]).key()
+
+
 def fold(po_path):
     text = pathlib.Path(po_path).read_text(encoding='utf-8')
     messages = [Message(block.split('\n')) for block in text.rstrip('\n').split('\n\n')]
@@ -524,6 +549,8 @@ def fold(po_path):
 
         n_changed += 1
         if new is None:
+            # msgfmt rejects an obsolete message that has a live message's msgid.
+            messages = [message for message in messages if not (message.obsolete and obsolete_key(message) == new_key)]
             old.rebuild(old.comments(), rename['to'], moved)
             continue
 

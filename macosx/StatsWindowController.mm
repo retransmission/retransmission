@@ -73,7 +73,7 @@ static tr_session* fLib = NULL;
     self.window.restorationClass = [self class];
 
     // Translators: Stats window -> title
-    self.window.title = TR_TEXT("Statistics");
+    self.window.title = TR_MNEMONIC("_Statistics");
 
     //disable fullscreen support
     self.window.collectionBehavior = NSWindowCollectionBehaviorFullScreenNone;
@@ -84,7 +84,7 @@ static tr_session* fLib = NULL;
     // Translators: Stats window -> label
     self.fDownloadedLabelField.stringValue = TR_TEXT("Downloaded:");
     // Translators: Stats window -> label
-    self.fRatioLabelField.stringValue = TR_TEXT("Ratio:");
+    self.fRatioLabelField.stringValue = TR_MNEMONIC("_Ratio:");
     // Translators: Stats window -> label
     self.fTimeLabelField.stringValue = TR_TEXT("Running time:");
     // The row says what it counts in its value, "Started 5 times", as the other clients do.

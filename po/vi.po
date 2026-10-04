@@ -133,9 +133,6 @@ msgstr "Dùng các thiết lập toàn cục"
 msgid "Seed regardless of ratio"
 msgstr "Chia sẻ không kể tỉ lệ"
 
-msgid "Stop seeding at ratio:"
-msgstr "Ngừng chia sẻ khi đạt tỉ lệ:"
-
 msgid "Seed regardless of activity"
 msgstr "Chia sẻ không kể tình trạng hoạt động"
 
@@ -585,14 +582,8 @@ msgstr ""
 msgid "Open File"
 msgstr "Mở Tập tin"
 
-msgid "Open Folder"
-msgstr "Mở thư mục"
-
 msgid "Download Complete"
 msgstr "Hoàn thành Torrent"
-
-msgid "Start Now"
-msgstr "Bắt đầu ngay"
 
 msgid "Torrent Added"
 msgstr "Đã thêm vào torrent."
@@ -874,7 +865,7 @@ msgstr "Vị trí tìm các tập tin cấu hình"
 msgid "Start with all torrents paused"
 msgstr "Bắt đầu với tất cả torrent đã tạm dừng"
 
-msgid "Start minimized in notification area"
+msgid "Start _minimized in notification area"
 msgstr "Chạy thu nhỏ ở khu vực thông báo"
 
 msgid "Show version number and exit"
@@ -978,7 +969,7 @@ msgid "_Preferences"
 msgstr ""
 
 msgid "_Properties"
-msgstr ""
+msgstr "Thuộc tính"
 
 msgid "Torrent properties"
 msgstr "Thuộc tính torrent"
@@ -993,7 +984,7 @@ msgid "Start torrent"
 msgstr "Bắt đầu torrent"
 
 msgid "Start _Now"
-msgstr ""
+msgstr "Bắt đầu ngay"
 
 msgid "Start torrent now"
 msgstr ""
@@ -1157,9 +1148,6 @@ msgstr "Nguồn gốc:"
 msgid "Added:"
 msgstr ""
 
-msgid "Comment:"
-msgstr "Ghi chú :"
-
 msgid "Information"
 msgstr "Thông tin"
 
@@ -1225,11 +1213,8 @@ msgstr ""
 msgid "Also see Default Public Trackers in Edit > Preferences > Network"
 msgstr ""
 
-msgid "Torrent"
+msgid "_Torrent"
 msgstr "Torrent"
-
-msgid "Statistics"
-msgstr "Thống kê"
 
 msgid "New Torrent"
 msgstr "Torrent mới"
@@ -1249,9 +1234,6 @@ msgstr "_Tập tin Nguồn:"
 msgid "Piece size:"
 msgstr ""
 
-msgid "Properties"
-msgstr "Thuộc tính"
-
 msgid "_Trackers:"
 msgstr "_Tracker:"
 
@@ -1266,9 +1248,6 @@ msgstr "Torrent _riêng tư"
 
 msgid "Creating torrent…"
 msgstr ""
-
-msgid "Message Log"
-msgstr "Nhật ký"
 
 msgid "Save _As"
 msgstr ""
@@ -1320,7 +1299,7 @@ msgstr ""
 msgid "_Download:"
 msgstr ""
 
-msgid "Alternative Speed Limits"
+msgid "Alternative Speed _Limits"
 msgstr "Giới hạn tốc độ thủ công"
 
 msgid "Override normal speed limits manually or at scheduled times"
@@ -1553,9 +1532,6 @@ msgstr "Đã _có dữ liệu ở đó"
 
 msgid "Current Session"
 msgstr "Phiên chạy hiện tại"
-
-msgid "Ratio:"
-msgstr "Tỉ lệ:"
 
 msgid "Duration:"
 msgstr "Thời lượng:"

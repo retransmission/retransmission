@@ -191,6 +191,13 @@ std::string gtr_get_full_resource_path(std::string const& rel_path);
 // Fills in the {appname} field of an already-translated string, such as one from a .ui file.
 [[nodiscard]] Glib::ustring gtr_with_app_name(Glib::ustring const& text);
 
+// Returns text without its mnemonic marker, for a place that shows no mnemonic, such as a window title or combo box item.
+// That place then shares the catalog entry of a menu item or label: gtr_strip_mnemonic(_("_Statistics")) returns "Statistics".
+[[nodiscard]] Glib::ustring gtr_strip_mnemonic(Glib::ustring const& text);
+
+// Takes the mnemonic marker out of a .ui file's label that has no widget to activate.
+void gtr_label_strip_mnemonic(Gtk::Label& label);
+
 /***
 ****
 ***/

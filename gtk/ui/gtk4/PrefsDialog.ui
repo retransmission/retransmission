@@ -112,7 +112,7 @@
                       <object class="GtkFrame">
                         <child type="label">
                           <object class="GtkLabel" id="alt_speed_limits_section_label">
-                            <property name="label" translatable="yes">Alternative Speed Limits</property>
+                            <property name="label" translatable="yes">Alternative Speed _Limits</property>
                             <attributes>
                               <attribute name="weight" value="bold"/>
                             </attributes>

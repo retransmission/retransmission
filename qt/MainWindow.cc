@@ -101,6 +101,8 @@ MainWindow::MainWindow(Session& session, Prefs& prefs, TorrentModel& model, bool
     qApp->setAttribute(Qt::ApplicationAttribute::AA_DontShowIconsInMenus, false);
 
     ui_.setupUi(this);
+    // QAction would derive "Open…" from the action's text.
+    ui_.action_OpenFile->setIconText(TR_STRIP_MNEMONIC("_Open"));
     refreshTitle();
 
     ui_.listView->setStyle(lvp_style_.get());
@@ -296,6 +298,7 @@ void MainWindow::initStatusBar()
     ui_.uploadSpeedLabel->setMinimumWidth(minimum_speed_width);
 
     ui_.statsModeButton->setMenu(createStatsModeMenu());
+    ui_.statsModeButton->setToolTip(TR_STRIP_MNEMONIC("_Statistics"));
 
     connect(ui_.altSpeedButton, &QAbstractButton::clicked, this, &MainWindow::toggleSpeedMode);
 }

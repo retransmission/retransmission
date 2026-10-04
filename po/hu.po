@@ -156,14 +156,14 @@ msgstr "Globális beállítások használata"
 msgid "Seed regardless of ratio"
 msgstr "Megosztás aránytól függetlenül"
 
-msgid "Stop seeding at ratio:"
-msgstr "Megosztás eddig az arányig:"
+msgid "Stop seeding at _ratio:"
+msgstr "Megosztás eddig az _arányig:"
 
 msgid "Seed regardless of activity"
 msgstr "Megosztás aktivitástól függetlenül"
 
-msgid "Stop seeding if idle for:"
-msgstr "Megosztás befejezése, ha inaktív a torrent:"
+msgid "Stop seedi_ng if idle for:"
+msgstr "Megosztás _befejezése ha inaktív a torrent:"
 
 #. Translators: Torrent -> status string
 msgid "Queued for verification"
@@ -511,8 +511,8 @@ msgstr "Hol keresse a beállításfájlokat"
 msgid "Start with all torrents paused"
 msgstr "Az összes torrent indítása szüneteltetve"
 
-msgid "Start minimized in notification area"
-msgstr "Indítás az értesítési területen, kis méretben"
+msgid "Start _minimized in notification area"
+msgstr "_Indítás az értesítési területen, kis méretben"
 
 msgid "Show version number and exit"
 msgstr "Verziószám megjelenítése és kilépés"
@@ -645,15 +645,15 @@ msgstr "Idő"
 msgid "Open File"
 msgstr "Fájl megnyitása"
 
-msgid "Open Folder"
-msgstr "Mappa megnyitása"
+msgid "Open Fold_er"
+msgstr "M_appa megnyitása"
 
 #. Translators: notification title
 msgid "Download Complete"
 msgstr "Letöltés kész"
 
-msgid "Start Now"
-msgstr "Indítás most"
+msgid "Start _Now"
+msgstr "Indítás _most"
 
 #. Translators: notification title
 msgid "Torrent Added"
@@ -668,6 +668,8 @@ msgstr "Összes fájl"
 msgid "Open a Torrent"
 msgstr "Torrent megnyitása"
 
+#. Translators: Open toolbar item -> label
+#. Translators: URL sheet button
 msgid "_Open"
 msgstr "_Megnyitás"
 
@@ -936,15 +938,9 @@ msgstr "_Torrent"
 msgid "_Properties"
 msgstr "_Tulajdonságok"
 
-msgid "Open Fold_er"
-msgstr "M_appa megnyitása"
-
 #. Translators: Selected toolbar item -> label
 msgid "_Start"
 msgstr "_Indítás"
-
-msgid "Start _Now"
-msgstr "Indítás _most"
 
 msgid "Ask Tracker for _More Peers"
 msgstr "Több _partner igénylése a trackertől"
@@ -1035,9 +1031,11 @@ msgstr "_Fordított rendezés"
 msgid "_Help"
 msgstr "_Súgó"
 
+#. Translators: Message window -> title
 msgid "Message _Log"
 msgstr "Ü_zenetnapló"
 
+#. Translators: Stats window -> title
 msgid "_Statistics"
 msgstr "_Statisztikák"
 
@@ -1051,8 +1049,8 @@ msgstr "_Tartalom"
 msgid "_About"
 msgstr "_Névjegy"
 
-#, fuzzy
-#| msgid "Alternative Speed Limits"
+#. Translators: Dock item
+#. Translators: Status Bar -> speed tooltip
 msgid "Alternative Speed _Limits"
 msgstr "Alternatív sebességkorlátok"
 
@@ -1132,8 +1130,8 @@ msgstr "Létrehozva ekkor:"
 msgid "Added:"
 msgstr "Hozzáadva:"
 
-msgid "Comment:"
-msgstr "Megjegyzés:"
+msgid "Co_mment:"
+msgstr "Meg_jegyzés:"
 
 #. Translators: Inspector view -> title
 #. Translators: Inspector -> tab
@@ -1179,6 +1177,7 @@ msgstr "Torrent _prioritása:"
 msgid "Seeding Limits"
 msgstr "Megosztási korlátok"
 
+#. Translators: Stats window -> label
 msgid "_Ratio:"
 msgstr "_Arány:"
 
@@ -1233,13 +1232,6 @@ msgstr "Torrent eltávolítása"
 msgid "Torrent properties"
 msgstr "Torrent tulajdonságai"
 
-msgid "Torrent"
-msgstr "Torrent"
-
-#. Translators: Stats window -> title
-msgid "Statistics"
-msgstr "Statisztikák"
-
 msgid "New Torrent"
 msgstr "Új torrent"
 
@@ -1262,14 +1254,8 @@ msgstr "_Forrásfájl:"
 msgid "Piece si_ze:"
 msgstr "Szeletméret:"
 
-msgid "Properties"
-msgstr "Tulajdonságok"
-
 msgid "_Trackers:"
 msgstr "_Trackerek:"
-
-msgid "Co_mment:"
-msgstr "Meg_jegyzés:"
 
 msgid "_Source:"
 msgstr "_Forrás:"
@@ -1279,10 +1265,6 @@ msgstr "_Privát torrent"
 
 msgid "Creating torrent…"
 msgstr "Torrent létrehozása…"
-
-#. Translators: Message window -> title
-msgid "Message Log"
-msgstr "Üzenetnapló"
 
 msgid "Save _As"
 msgstr "Mentés _másként"
@@ -1330,11 +1312,6 @@ msgstr "_Feltöltés:"
 #. Checkbox to limit download speed
 msgid "_Download:"
 msgstr "_Letöltés:"
-
-#. Translators: Dock item
-#. Translators: Status Bar -> speed tooltip
-msgid "Alternative Speed Limits"
-msgstr "Alternatív sebességkorlátok"
 
 msgid "Override normal speed limits manually or at scheduled times"
 msgstr "Általános sebességkorlátok figyelmen kívül hagyása kézileg, vagy az ütemezett időszakokban"
@@ -1410,12 +1387,6 @@ msgstr "Letöltés"
 
 msgid "Limits"
 msgstr "Korlátok"
-
-msgid "Stop seeding at _ratio:"
-msgstr "Megosztás eddig az _arányig:"
-
-msgid "Stop seedi_ng if idle for:"
-msgstr "Megosztás _befejezése ha inaktív a torrent:"
 
 msgid "Call scrip_t when done seeding:"
 msgstr "Parancsfájl meg_hívása, ha a megosztás kész:"
@@ -1597,10 +1568,6 @@ msgstr "A helyi adatok már _ott vannak"
 
 msgid "Current Session"
 msgstr "Jelenlegi munkamenet"
-
-#. Translators: Stats window -> label
-msgid "Ratio:"
-msgstr "Arány:"
 
 msgid "Duration:"
 msgstr "Időtartam:"
@@ -2434,9 +2401,6 @@ msgstr "Másolás"
 msgid "Paste"
 msgstr "Beilleszt"
 
-msgid "Compact View"
-msgstr "Kompakt nézet"
-
 msgid "Pieces Bar"
 msgstr "Szeletek sáv"
 
@@ -2860,11 +2824,6 @@ msgstr "Torrent fájl létrehozása"
 
 msgid "Create a new torrent"
 msgstr "Új torrent létrehozása"
-
-#. Translators: Open toolbar item -> label
-#. Translators: URL sheet button
-msgid "Open"
-msgstr "Megnyitás"
 
 #. Translators: Open toolbar item -> palette label
 msgid "Open Torrent Files"
@@ -3434,9 +3393,6 @@ msgstr "Kiszolgáló"
 msgid "C_redits"
 msgstr "K_észítették"
 
-msgid "Credits"
-msgstr "Készítették"
-
 msgid "About {appname}"
 msgstr "A {appname}-ről"
 
@@ -3570,9 +3526,6 @@ msgstr "Új torrentek észlelése a vágólapon"
 
 msgid "Encryption"
 msgstr "Titkosítás"
-
-msgid "Start _minimized in notification area"
-msgstr "_Indítás az értesítési területen, kis méretben"
 
 #, fuzzy
 #| msgid "Retransmission"

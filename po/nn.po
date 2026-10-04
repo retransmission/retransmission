@@ -129,9 +129,6 @@ msgstr ""
 msgid "Seed regardless of ratio"
 msgstr "Del uansett delingsforhold"
 
-msgid "Stop seeding at ratio:"
-msgstr "Slutt å dele på delingsforhold:"
-
 msgid "Seed regardless of activity"
 msgstr "Del uavhengig av aktivitet"
 
@@ -590,14 +587,8 @@ msgstr ""
 msgid "Open File"
 msgstr "Opne fil"
 
-msgid "Open Folder"
-msgstr "Opne mappe"
-
 msgid "Download Complete"
 msgstr "Torrent ferdig"
-
-msgid "Start Now"
-msgstr ""
 
 msgid "Torrent Added"
 msgstr ""
@@ -902,7 +893,7 @@ msgstr "Kor ein skal sjå etter konfigurasjonsfiler"
 msgid "Start with all torrents paused"
 msgstr "Start med alle torrentar pausa"
 
-msgid "Start minimized in notification area"
+msgid "Start _minimized in notification area"
 msgstr "Start minimert i varslingsområdet"
 
 msgid "Show version number and exit"
@@ -1006,7 +997,7 @@ msgid "_Preferences"
 msgstr ""
 
 msgid "_Properties"
-msgstr ""
+msgstr "Eigenskapar"
 
 msgid "Torrent properties"
 msgstr "Eigenskapar for torrent"
@@ -1185,9 +1176,6 @@ msgstr "Opphav:"
 msgid "Added:"
 msgstr ""
 
-msgid "Comment:"
-msgstr "Kommentar:"
-
 msgid "Information"
 msgstr "Informasjon"
 
@@ -1228,7 +1216,7 @@ msgid "Seeding Limits"
 msgstr ""
 
 msgid "_Ratio:"
-msgstr ""
+msgstr "Tilhøve:"
 
 msgid "_Idle:"
 msgstr "_Inaktiv:"
@@ -1253,11 +1241,8 @@ msgstr ""
 msgid "Also see Default Public Trackers in Edit > Preferences > Network"
 msgstr ""
 
-msgid "Torrent"
+msgid "_Torrent"
 msgstr "Torrent"
-
-msgid "Statistics"
-msgstr "Statistikkar"
 
 msgid "New Torrent"
 msgstr "Ny torrent"
@@ -1277,14 +1262,11 @@ msgstr "Kjelde_fil:"
 msgid "Piece size:"
 msgstr ""
 
-msgid "Properties"
-msgstr "Eigenskapar"
-
 msgid "_Trackers:"
 msgstr ""
 
 msgid "Co_mment:"
-msgstr ""
+msgstr "Kommentar:"
 
 msgid "_Source:"
 msgstr ""
@@ -1294,9 +1276,6 @@ msgstr "_Privat torrent"
 
 msgid "Creating torrent…"
 msgstr "Opprettar torrent …"
-
-msgid "Message Log"
-msgstr "Meldingslogg"
 
 msgid "Save _As"
 msgstr ""
@@ -1348,7 +1327,7 @@ msgstr ""
 msgid "_Download:"
 msgstr ""
 
-msgid "Alternative Speed Limits"
+msgid "Alternative Speed _Limits"
 msgstr ""
 
 msgid "Override normal speed limits manually or at scheduled times"
@@ -1416,7 +1395,7 @@ msgid "Limits"
 msgstr "Grenser"
 
 msgid "Stop seeding at _ratio:"
-msgstr ""
+msgstr "Slutt å dele på delingsforhold:"
 
 msgid "Stop seeding if idle for _N minutes:"
 msgstr ""
@@ -1581,9 +1560,6 @@ msgstr ""
 
 msgid "Current Session"
 msgstr "Gjeldane økt"
-
-msgid "Ratio:"
-msgstr "Tilhøve:"
 
 msgid "Duration:"
 msgstr "Varigskap:"

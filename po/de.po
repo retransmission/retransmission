@@ -187,14 +187,14 @@ msgstr "Globale Einstellungen verwenden"
 msgid "Seed regardless of ratio"
 msgstr "Ungeachtet des Verhältnisses verteilen"
 
-msgid "Stop seeding at ratio:"
-msgstr "Verteilung bei diesem Verhältnis anhalten:"
+msgid "Stop seeding at _ratio:"
+msgstr "Verteilung bei diesem Ve_rhältnis anhalten:"
 
 msgid "Seed regardless of activity"
 msgstr "Ungeachtet der Aktivität verteilen"
 
-msgid "Stop seeding if idle for:"
-msgstr "Verteilung stoppen, wenn untätig für:"
+msgid "Stop seedi_ng if idle for:"
+msgstr "Verteile_n anhalten, wenn untätig für:"
 
 #. Translators: Torrent -> status string
 msgid "Queued for verification"
@@ -540,8 +540,8 @@ msgstr "Wo nach Konfigurationsdateien gesucht werden soll"
 msgid "Start with all torrents paused"
 msgstr "Mit allen Torrents pausiert starten"
 
-msgid "Start minimized in notification area"
-msgstr "Verkleinert im Benachrichtigungsfeld starten"
+msgid "Start _minimized in notification area"
+msgstr "_Minimiert im Benachrichtigungsfeld starten"
 
 msgid "Show version number and exit"
 msgstr "Die Versionsnummer anzeigen und beenden"
@@ -674,15 +674,15 @@ msgstr "Zeit"
 msgid "Open File"
 msgstr "Datei öffnen"
 
-msgid "Open Folder"
-msgstr "Ordner öffnen"
+msgid "Open Fold_er"
+msgstr "Ordner öffn_en"
 
 #. Translators: notification title
 msgid "Download Complete"
 msgstr "Empfangen abgeschlossen"
 
-msgid "Start Now"
-msgstr "Jetzt starten"
+msgid "Start _Now"
+msgstr "Jetzt _beginnen"
 
 #. Translators: notification title
 msgid "Torrent Added"
@@ -697,6 +697,8 @@ msgstr "Alle Dateien"
 msgid "Open a Torrent"
 msgstr "Torrent öffnen"
 
+#. Translators: Open toolbar item -> label
+#. Translators: URL sheet button
 msgid "_Open"
 msgstr "Ö_ffnen"
 
@@ -965,15 +967,9 @@ msgstr "_Torrent"
 msgid "_Properties"
 msgstr "Ei_genschaften"
 
-msgid "Open Fold_er"
-msgstr "Ordner öffn_en"
-
 #. Translators: Selected toolbar item -> label
 msgid "_Start"
 msgstr "_Starten"
-
-msgid "Start _Now"
-msgstr "Jetzt _beginnen"
 
 msgid "Ask Tracker for _More Peers"
 msgstr "Mehr Gegenstellen vom _Tracker anfordern"
@@ -1063,9 +1059,11 @@ msgstr "Sortierreihenfolge _umkehren"
 msgid "_Help"
 msgstr "_Hilfe"
 
+#. Translators: Message window -> title
 msgid "Message _Log"
 msgstr "_Nachrichtenprotokoll"
 
+#. Translators: Stats window -> title
 msgid "_Statistics"
 msgstr "_Statistiken"
 
@@ -1079,7 +1077,8 @@ msgstr "In_halte"
 msgid "_About"
 msgstr "Ü_ber"
 
-#, fuzzy
+#. Translators: Dock item
+#. Translators: Status Bar -> speed tooltip
 msgid "Alternative Speed _Limits"
 msgstr "Alternative Geschwindigkeitsbeschränkungen"
 
@@ -1159,8 +1158,8 @@ msgstr "Erstellt am:"
 msgid "Added:"
 msgstr "Hinzugefügt:"
 
-msgid "Comment:"
-msgstr "Kommentar:"
+msgid "Co_mment:"
+msgstr "Ko_mmentar:"
 
 #. Translators: Inspector view -> title
 #. Translators: Inspector -> tab
@@ -1206,6 +1205,7 @@ msgstr "Torrent-_Priorität:"
 msgid "Seeding Limits"
 msgstr "Verteilungsbeschränkungen"
 
+#. Translators: Stats window -> label
 msgid "_Ratio:"
 msgstr "Ve_rhältnis:"
 
@@ -1260,13 +1260,6 @@ msgstr "Torrent entfernen"
 msgid "Torrent properties"
 msgstr "Torrent-Eigenschaften"
 
-msgid "Torrent"
-msgstr "Torrent"
-
-#. Translators: Stats window -> title
-msgid "Statistics"
-msgstr "Statistiken"
-
 msgid "New Torrent"
 msgstr "Neuer Torrent"
 
@@ -1289,14 +1282,8 @@ msgstr "Quellen-D_atei:"
 msgid "Piece si_ze:"
 msgstr "Stückgröße:"
 
-msgid "Properties"
-msgstr "Eigenschaften"
-
 msgid "_Trackers:"
 msgstr "_Tracker:"
-
-msgid "Co_mment:"
-msgstr "Ko_mmentar:"
 
 msgid "_Source:"
 msgstr "_Quelle:"
@@ -1306,10 +1293,6 @@ msgstr "_Privater Torrent"
 
 msgid "Creating torrent…"
 msgstr "Torrent wird erstellt …"
-
-#. Translators: Message window -> title
-msgid "Message Log"
-msgstr "Nachrichtenprotokoll"
 
 msgid "Save _As"
 msgstr "Speichern _unter"
@@ -1357,11 +1340,6 @@ msgstr "_Hochladen:"
 #. Checkbox to limit download speed
 msgid "_Download:"
 msgstr "_Herunterladen:"
-
-#. Translators: Dock item
-#. Translators: Status Bar -> speed tooltip
-msgid "Alternative Speed Limits"
-msgstr "Alternative Geschwindigkeitsbeschränkungen"
 
 msgid "Override normal speed limits manually or at scheduled times"
 msgstr "Normale Geschwindigkeitsbeschränkungen manuell oder zu gewünschten Zeiten überschreiben"
@@ -1437,12 +1415,6 @@ msgstr "Herunterladen"
 
 msgid "Limits"
 msgstr "Beschränkungen"
-
-msgid "Stop seeding at _ratio:"
-msgstr "Verteilung bei diesem Ve_rhältnis anhalten:"
-
-msgid "Stop seedi_ng if idle for:"
-msgstr "Verteile_n anhalten, wenn untätig für:"
 
 msgid "Call scrip_t when done seeding:"
 msgstr "Rufe Skrip_t nach abgeschlossener Verteilung auf:"
@@ -1624,10 +1596,6 @@ msgstr "Lokale Daten sind _bereits vorhanden"
 
 msgid "Current Session"
 msgstr "Aktuelle Sitzung"
-
-#. Translators: Stats window -> label
-msgid "Ratio:"
-msgstr "Verhältnis:"
 
 msgid "Duration:"
 msgstr "Dauer:"
@@ -2463,9 +2431,6 @@ msgstr "Kopieren"
 msgid "Paste"
 msgstr "Einsetzen"
 
-msgid "Compact View"
-msgstr "Kompakte Ansicht"
-
 msgid "Pieces Bar"
 msgstr "Teilstückebalken"
 
@@ -2891,11 +2856,6 @@ msgstr "Neue Torrent-Datei"
 
 msgid "Create a new torrent"
 msgstr "Erstelle einen neuen Torrent"
-
-#. Translators: Open toolbar item -> label
-#. Translators: URL sheet button
-msgid "Open"
-msgstr "Öffnen"
 
 #. Translators: Open toolbar item -> palette label
 msgid "Open Torrent Files"
@@ -3463,9 +3423,6 @@ msgstr "Server"
 msgid "C_redits"
 msgstr "_Mitwirkende"
 
-msgid "Credits"
-msgstr "Mitwirkende"
-
 msgid "About {appname}"
 msgstr "Info zu {appname}"
 
@@ -3599,9 +3556,6 @@ msgstr "Neue Torrents aus Zwischenablage erkennen"
 
 msgid "Encryption"
 msgstr "Verschlüsselung"
-
-msgid "Start _minimized in notification area"
-msgstr "_Minimiert im Benachrichtigungsfeld starten"
 
 #, fuzzy
 #| msgid "Retransmission"

@@ -156,13 +156,13 @@ msgstr "Χρήση καθολικών ρυθμίσεων"
 msgid "Seed regardless of ratio"
 msgstr "Διαμοιρασμός ανεξάρτητα από την αναλογία"
 
-msgid "Stop seeding at ratio:"
-msgstr "Παύση διαμοιρασμού στην αναλογία:"
+msgid "Stop seeding at _ratio:"
+msgstr "Παύση διαμοιρασμού στην _αναλογία:"
 
 msgid "Seed regardless of activity"
 msgstr "Διαμοιρασμός ανεξάρτητα από την δραστηριότητα"
 
-msgid "Stop seeding if idle for:"
+msgid "Stop seedi_ng if idle for:"
 msgstr "Διακοπή διαμοιρασμού σε περίπτωση αδράνειας για:"
 
 #. Translators: Torrent -> status string
@@ -510,8 +510,8 @@ msgstr "Που υπάρχουν τα αρχεία ρυθμίσεων"
 msgid "Start with all torrents paused"
 msgstr "Έναρξη με όλα τα torrent σε παύση"
 
-msgid "Start minimized in notification area"
-msgstr "Εκκίνηση ελαχιστοποιημένο στην περιοχή ειδοποιήσεων"
+msgid "Start _minimized in notification area"
+msgstr "Εκκίνηση _ελαχιστοποιημένο στην περιοχή ειδοποιήσεων"
 
 msgid "Show version number and exit"
 msgstr "Εμφάνιση αριθμού έκδοσης και έξοδος"
@@ -644,15 +644,15 @@ msgstr "Χρόνος"
 msgid "Open File"
 msgstr "Αναπαραγωγή Αρχείου"
 
-msgid "Open Folder"
-msgstr "Άνοιγμα φακέλου"
+msgid "Open Fold_er"
+msgstr "Άνοιγμα Φακέ_λου"
 
 #. Translators: notification title
 msgid "Download Complete"
 msgstr "Η Λήψη Ολοκληρώθηκε"
 
-msgid "Start Now"
-msgstr "Εκκίνηση Τώρα"
+msgid "Start _Now"
+msgstr "Εκκίνηση _τώρα"
 
 #. Translators: notification title
 msgid "Torrent Added"
@@ -667,6 +667,8 @@ msgstr "Όλα τα αρχεία"
 msgid "Open a Torrent"
 msgstr "Άνοιγμα ενός torrent"
 
+#. Translators: Open toolbar item -> label
+#. Translators: URL sheet button
 msgid "_Open"
 msgstr "_Άνοιγμα"
 
@@ -935,15 +937,9 @@ msgstr "_Torrent"
 msgid "_Properties"
 msgstr "_Ιδιότητες"
 
-msgid "Open Fold_er"
-msgstr "Άνοιγμα Φακέ_λου"
-
 #. Translators: Selected toolbar item -> label
 msgid "_Start"
 msgstr "_Εκκίνηση"
-
-msgid "Start _Now"
-msgstr "Εκκίνηση _τώρα"
 
 msgid "Ask Tracker for _More Peers"
 msgstr "Αίτηση στον ιχνηλάτη για ε_πιπλέον ομότιμους χρήστες"
@@ -1034,9 +1030,11 @@ msgstr "Αν_τιστροφή σειράς ταξινόμησης"
 msgid "_Help"
 msgstr "_Βοήθεια"
 
+#. Translators: Message window -> title
 msgid "Message _Log"
 msgstr "Κ_αταγραφή μηνυμάτων"
 
+#. Translators: Stats window -> title
 msgid "_Statistics"
 msgstr "_Στατιστικά"
 
@@ -1050,8 +1048,8 @@ msgstr "_Περιεχόμενα"
 msgid "_About"
 msgstr "_Σχετικά"
 
-#, fuzzy
-#| msgid "Alternative Speed Limits"
+#. Translators: Dock item
+#. Translators: Status Bar -> speed tooltip
 msgid "Alternative Speed _Limits"
 msgstr "Εναλλακτικά Όρια Ταχύτητας"
 
@@ -1131,8 +1129,8 @@ msgstr "Δημιουργήθηκε την:"
 msgid "Added:"
 msgstr "Προστέθηκε:"
 
-msgid "Comment:"
-msgstr "Σχόλιο:"
+msgid "Co_mment:"
+msgstr "Σ_χόλιο:"
 
 #. Translators: Inspector view -> title
 #. Translators: Inspector -> tab
@@ -1178,6 +1176,7 @@ msgstr "_Προτεραιότητα torrent"
 msgid "Seeding Limits"
 msgstr "Όρια Διαμοιρασμού"
 
+#. Translators: Stats window -> label
 msgid "_Ratio:"
 msgstr "_Αναλογία:"
 
@@ -1232,13 +1231,6 @@ msgstr "Αφαίρεση torrent"
 msgid "Torrent properties"
 msgstr "Ιδιότητες torrent"
 
-msgid "Torrent"
-msgstr "Torrent"
-
-#. Translators: Stats window -> title
-msgid "Statistics"
-msgstr "Στατιστικά"
-
 msgid "New Torrent"
 msgstr "Νέο Torrent"
 
@@ -1261,14 +1253,8 @@ msgstr "_Αρχείο προέλευσης:"
 msgid "Piece si_ze:"
 msgstr "Μέγεθους κομματιού:"
 
-msgid "Properties"
-msgstr "Ιδιότητες"
-
 msgid "_Trackers:"
 msgstr "_Ιχνηλάτες:"
-
-msgid "Co_mment:"
-msgstr "Σ_χόλιο:"
 
 msgid "_Source:"
 msgstr "_Πηγή:"
@@ -1278,10 +1264,6 @@ msgstr "_Ιδιωτικό torrent"
 
 msgid "Creating torrent…"
 msgstr "Δημιουργία torrent…"
-
-#. Translators: Message window -> title
-msgid "Message Log"
-msgstr "Καταγραφή μηνυμάτων"
 
 msgid "Save _As"
 msgstr "Αποθήκευση_Ως"
@@ -1329,11 +1311,6 @@ msgstr "_Αποστολή:"
 #. Checkbox to limit download speed
 msgid "_Download:"
 msgstr "_Λήψη:"
-
-#. Translators: Dock item
-#. Translators: Status Bar -> speed tooltip
-msgid "Alternative Speed Limits"
-msgstr "Εναλλακτικά Όρια Ταχύτητας"
 
 msgid "Override normal speed limits manually or at scheduled times"
 msgstr "Παράκαμψη συνηθισμένων ορίων ταχυτήτων χειροκίνητα ή σε προγραμματισμένες ώρες"
@@ -1409,12 +1386,6 @@ msgstr "Λήψη"
 
 msgid "Limits"
 msgstr "Όρια"
-
-msgid "Stop seeding at _ratio:"
-msgstr "Παύση διαμοιρασμού στην _αναλογία:"
-
-msgid "Stop seedi_ng if idle for:"
-msgstr "Διακοπή διαμοιρασμού σε περίπτωση αδράνειας για:"
 
 msgid "Call scrip_t when done seeding:"
 msgstr "Εκτέλεση scrip_t όταν ολοκληρωθεί ο διαμοιρασμός:"
@@ -1596,10 +1567,6 @@ msgstr "Τα τοπικά δεδομένα είναι _ήδη εκεί"
 
 msgid "Current Session"
 msgstr "Τρέχουσα Συνεδρία"
-
-#. Translators: Stats window -> label
-msgid "Ratio:"
-msgstr "Αναλογία:"
 
 msgid "Duration:"
 msgstr "Διάρκεια:"
@@ -2435,9 +2402,6 @@ msgstr "Αντιγραφή"
 msgid "Paste"
 msgstr "Επικόλληση"
 
-msgid "Compact View"
-msgstr "Συνοπτική Προβολή"
-
 msgid "Pieces Bar"
 msgstr "Μπάρα Κομματιών"
 
@@ -2861,11 +2825,6 @@ msgstr "Δημιουργία Αρχείου Torrent"
 
 msgid "Create a new torrent"
 msgstr "Δημιουργία ενός νέου torrent"
-
-#. Translators: Open toolbar item -> label
-#. Translators: URL sheet button
-msgid "Open"
-msgstr "Άνοιγμα"
 
 #. Translators: Open toolbar item -> palette label
 msgid "Open Torrent Files"
@@ -3436,9 +3395,6 @@ msgstr "Διακομιστής"
 msgid "C_redits"
 msgstr "Σ_υντελεστές"
 
-msgid "Credits"
-msgstr "Συντελεστές"
-
 msgid "About {appname}"
 msgstr "Σχετικά με το {appname}"
 
@@ -3572,9 +3528,6 @@ msgstr "Εντοπίζει νέα torrents από το πρόχειρο"
 
 msgid "Encryption"
 msgstr "Κρυπτογράφηση"
-
-msgid "Start _minimized in notification area"
-msgstr "Εκκίνηση _ελαχιστοποιημένο στην περιοχή ειδοποιήσεων"
 
 #, fuzzy
 #| msgid "Retransmission"

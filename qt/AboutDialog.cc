@@ -53,7 +53,7 @@ void AboutDialog::showCredits()
 {
     QMessageBox::about(
         this,
-        TR_TEXT("Credits"),
+        TR_STRIP_MNEMONIC("C_redits"),
         QString::fromUtf8(
             "Charles Kerr (Backend; Daemon; GTK+; Qt)\n"
             "Mitchell Livingston (macOS)\n"

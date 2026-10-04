@@ -126,14 +126,14 @@ msgstr "Nota almennar stillingar"
 msgid "Seed regardless of ratio"
 msgstr "Deila óháð deilihlutfalli"
 
-msgid "Stop seeding at ratio:"
-msgstr "Hætta að deila þegar hlutfallið er:"
+msgid "Stop seeding at _ratio:"
+msgstr "Hætta að deila þega_r deilihlutfallið nær:"
 
 msgid "Seed regardless of activity"
 msgstr "Deila óháð virkni"
 
-msgid "Stop seeding if idle for:"
-msgstr "Hætta að deila ef óvirkt í:"
+msgid "Stop seedi_ng if idle for:"
+msgstr "Hætta að _deila ef óvirkt í:"
 
 msgid "Queued for verification"
 msgstr "Bíður eftir að vera endurskoðað"
@@ -435,8 +435,8 @@ msgstr "Hvar skal leita að stillingaskrám"
 msgid "Start with all torrents paused"
 msgstr "Byrja með allar torrent-skrár í bið"
 
-msgid "Start minimized in notification area"
-msgstr "Byrja lágmarkkað í tilkynningarsvæðinu"
+msgid "Start _minimized in notification area"
+msgstr "Byrja lág_markað í tilkynningarsvæðinu"
 
 msgid "Show version number and exit"
 msgstr "Sýna útgáfunúmer og hætta"
@@ -553,14 +553,14 @@ msgstr "Tími"
 msgid "Open File"
 msgstr "Opna skrá"
 
-msgid "Open Folder"
-msgstr "Opna möppu"
+msgid "Open Fold_er"
+msgstr "_Opna möppu"
 
 msgid "Download Complete"
 msgstr "Torrent-streymi lokið"
 
-msgid "Start Now"
-msgstr "Byrja núna"
+msgid "Start _Now"
+msgstr "Byrja _núna"
 
 msgid "Torrent Added"
 msgstr "Torrent-streymi bætt við"
@@ -830,14 +830,8 @@ msgstr "_Torrent-streymi"
 msgid "_Properties"
 msgstr "_Eiginleikar"
 
-msgid "Open Fold_er"
-msgstr "_Opna möppu"
-
 msgid "_Start"
 msgstr "_Byrja"
-
-msgid "Start _Now"
-msgstr "Byrja _núna"
 
 msgid "Ask Tracker for _More Peers"
 msgstr "Biðja rekjara u_m fleiri jafningja"
@@ -942,8 +936,6 @@ msgstr "_Innihald"
 msgid "_About"
 msgstr "Um _hugbúnaðinn"
 
-#, fuzzy
-#| msgid "Alternative Speed Limits"
 msgid "Alternative Speed _Limits"
 msgstr "Önnur hraðatakmörk"
 
@@ -1020,8 +1012,8 @@ msgstr "Búið til {date}"
 msgid "Added:"
 msgstr "Bætt við:"
 
-msgid "Comment:"
-msgstr "Athugasemd:"
+msgid "Co_mment:"
+msgstr "A_thugasemd:"
 
 msgid "Information"
 msgstr "Upplýsingar"
@@ -1108,12 +1100,6 @@ msgstr "Fjarlægja torrent-streymi"
 msgid "Torrent properties"
 msgstr "Eiginleikar torrent-streymis"
 
-msgid "Torrent"
-msgstr "Torrent-streymi"
-
-msgid "Statistics"
-msgstr "Tölfræði"
-
 msgid "New Torrent"
 msgstr "Nýtt torrent-streymi"
 
@@ -1136,14 +1122,8 @@ msgstr "Upprunale_g skrá:"
 msgid "Piece si_ze:"
 msgstr "Stærð bútar:"
 
-msgid "Properties"
-msgstr "Eiginleikar"
-
 msgid "_Trackers:"
 msgstr "_Rekjarar:"
-
-msgid "Co_mment:"
-msgstr "A_thugasemd:"
 
 msgid "_Source:"
 msgstr "_Uppruni:"
@@ -1153,9 +1133,6 @@ msgstr "_Einka-torrent-streymi"
 
 msgid "Creating torrent…"
 msgstr "Bý til torrent-streymi…"
-
-msgid "Message Log"
-msgstr "Skilaboð"
 
 msgid "Save _As"
 msgstr "Vist_a sem"
@@ -1202,9 +1179,6 @@ msgstr "Sen_t:"
 #. Checkbox to limit download speed
 msgid "_Download:"
 msgstr "_Sótt:"
-
-msgid "Alternative Speed Limits"
-msgstr "Önnur hraðatakmörk"
 
 msgid "Override normal speed limits manually or at scheduled times"
 msgstr "Hætta að nota venjuleg hraðatakmörk á ákveðnum tímum eða handvirkt"
@@ -1278,12 +1252,6 @@ msgstr "Verið að sækja"
 
 msgid "Limits"
 msgstr "Takmörk"
-
-msgid "Stop seeding at _ratio:"
-msgstr "Hætta að deila þega_r deilihlutfallið nær:"
-
-msgid "Stop seedi_ng if idle for:"
-msgstr "Hætta að _deila ef óvirkt í:"
 
 msgid "Call scrip_t when done seeding:"
 msgstr "Kalla í skrif_tu þegar deilingu er lokið:"
@@ -1465,9 +1433,6 @@ msgstr "Gögnin eru _þegar þar"
 
 msgid "Current Session"
 msgstr "Núverandi seta"
-
-msgid "Ratio:"
-msgstr "Deilihlutfall:"
 
 msgid "Duration:"
 msgstr "Lengd:"
@@ -2090,9 +2055,6 @@ msgstr "Þjónn"
 msgid "C_redits"
 msgstr "F_ramlög"
 
-msgid "Credits"
-msgstr "Framlög"
-
 msgid "About {appname}"
 msgstr "Um {appname}"
 
@@ -2122,9 +2084,6 @@ msgstr "Afmerkja valið"
 
 msgid "Only Check Selected"
 msgstr "Aðeins merkja valið"
-
-msgid "Open"
-msgstr "Opna"
 
 msgid "Rename…"
 msgstr "Endurnefna…"
@@ -2188,9 +2147,6 @@ msgstr "Skoða sótt gögn"
 
 msgid "Remove torrent and delete its files"
 msgstr "Fjarlægja streymi og skrám hans"
-
-msgid "Compact View"
-msgstr "Þjöppuð sýn"
 
 msgid "_Main Window"
 msgstr "_Aðalgluggi"
@@ -2265,9 +2221,6 @@ msgstr "Greinir ný streymi á klippispjaldi"
 
 msgid "Encryption"
 msgstr "Dulritun"
-
-msgid "Start _minimized in notification area"
-msgstr "Byrja lág_markað í tilkynningarsvæðinu"
 
 #, fuzzy
 #| msgid "Retransmission"

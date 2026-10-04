@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Statistics</string>
+   <string notr="true">Statistics</string>
   </property>
   <layout class="QVBoxLayout" name="dialogLayout">
    <property name="sizeConstraint">
@@ -78,7 +78,7 @@
       <item row="2" column="0">
        <widget class="QLabel" name="currentRatioLabel">
         <property name="text">
-         <string>Ratio:</string>
+         <string notr="true">Ratio:</string>
         </property>
         <property name="buddy">
          <cstring>currentRatioValueLabel</cstring>
@@ -207,7 +207,7 @@
       <item row="3" column="0">
        <widget class="QLabel" name="totalRatioLabel">
         <property name="text">
-         <string>Ratio:</string>
+         <string notr="true">Ratio:</string>
         </property>
         <property name="buddy">
          <cstring>totalRatioValueLabel</cstring>

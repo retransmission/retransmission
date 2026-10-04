@@ -115,6 +115,14 @@ private slots:
         QCOMPARE(TR_MNEMONIC("Alternative Speed _Limits"), QStringLiteral("Alternative Speed &Limits"));
     }
 
+    void strips_mnemonics()
+    {
+        QCOMPARE(TR_STRIP_MNEMONIC("Alternative Speed _Limits"), QStringLiteral("Alternative Speed Limits"));
+
+        translate("_Statistics", { "統計(_S)" });
+        QCOMPARE(TR_STRIP_MNEMONIC("_Statistics"), QStringLiteral("統計"));
+    }
+
     void translates_designer_text()
     {
         translate("Paused", { "Pausiert" });

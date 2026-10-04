@@ -39,7 +39,7 @@
                                     <color key="gridColor" name="gridColor" catalog="System" colorSpace="catalog"/>
                                     <tableColumns>
                                         <tableColumn identifier="Torrent" editable="NO" width="448" minWidth="16" maxWidth="3000" id="3093">
-                                            <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="Torrent">
+                                            <tableHeaderCell key="headerCell" lineBreakMode="truncatingTail" borderStyle="border" alignment="left" title="_Torrent">
                                                 <color key="textColor" name="headerTextColor" catalog="System" colorSpace="catalog"/>
                                                 <color key="backgroundColor" white="0.33333299" alpha="1" colorSpace="calibratedWhite"/>
                                             </tableHeaderCell>
@@ -336,7 +336,7 @@
                 <menuItem title="_View" id="301">
                     <menu key="submenu" title="_View" id="302">
                         <items>
-                            <menuItem title="Compact View" secondaryImage="arrow.down.forward.and.arrow.up.backward" catalog="system" keyEquivalent="t" id="1578">
+                            <menuItem title="_Compact View" secondaryImage="arrow.down.forward.and.arrow.up.backward" catalog="system" keyEquivalent="t" id="1578">
                                 <connections>
                                     <action selector="toggleSmallView:" target="206" id="1579"/>
                                 </connections>
@@ -457,10 +457,10 @@
                         </items>
                     </menu>
                 </menuItem>
-                <menuItem title="Torrent" id="1399">
-                    <menu key="submenu" title="Torrent" id="1400">
+                <menuItem title="_Torrent" id="1399">
+                    <menu key="submenu" title="_Torrent" id="1400">
                         <items>
-                            <menuItem title="Alternative Speed Limits" secondaryImage="tortoise" catalog="system" keyEquivalent="l" id="1566">
+                            <menuItem title="Alternative Speed _Limits" secondaryImage="tortoise" catalog="system" keyEquivalent="l" id="1566">
                                 <connections>
                                     <action selector="toggleSpeedLimit:" target="206" id="2144"/>
                                 </connections>
@@ -530,7 +530,7 @@ CA
                             <menuItem isSeparatorItem="YES" id="1805">
                                 <modifierMask key="keyEquivalentModifierMask" command="YES"/>
                             </menuItem>
-                            <menuItem title="Start Now" secondaryImage="arrow.clockwise.circle" catalog="system" id="1678">
+                            <menuItem title="Start _Now" secondaryImage="arrow.clockwise.circle" catalog="system" id="1678">
                                 <connections>
                                     <action selector="resumeSelectedTorrentsNoWait:" target="206" id="1806"/>
                                 </connections>
@@ -616,12 +616,12 @@ CA
                                     <action selector="showMainWindow:" target="206" id="1702"/>
                                 </connections>
                             </menuItem>
-                            <menuItem title="Statistics" secondaryImage="chart.bar" catalog="system" keyEquivalent="2" id="2301">
+                            <menuItem title="_Statistics" secondaryImage="chart.bar" catalog="system" keyEquivalent="2" id="2301">
                                 <connections>
                                     <action selector="showStatsWindow:" target="206" id="2302"/>
                                 </connections>
                             </menuItem>
-                            <menuItem title="Message Log" secondaryImage="text.bubble" catalog="system" keyEquivalent="3" id="1795">
+                            <menuItem title="Message _Log" secondaryImage="text.bubble" catalog="system" keyEquivalent="3" id="1795">
                                 <connections>
                                     <action selector="showMessageWindow:" target="206" id="1796"/>
                                 </connections>
@@ -701,7 +701,7 @@ CA
                         <action selector="resumeSelectedTorrents:" target="206" id="1584"/>
                     </connections>
                 </menuItem>
-                <menuItem title="Start Now" secondaryImage="arrow.clockwise.circle" catalog="system" tag="1" id="1808">
+                <menuItem title="Start _Now" secondaryImage="arrow.clockwise.circle" catalog="system" tag="1" id="1808">
                     <connections>
                         <action selector="resumeSelectedTorrentsNoWait:" target="206" id="1809"/>
                     </connections>

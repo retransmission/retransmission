@@ -133,14 +133,14 @@ msgstr "Utilitza els paràmetres globals"
 msgid "Seed regardless of ratio"
 msgstr "Comparteix independentment de la relació"
 
-msgid "Stop seeding at ratio:"
-msgstr "Atura la compartició a la relació:"
+msgid "Stop seeding at _ratio:"
+msgstr "Atura la compartició a la _relació:"
 
 msgid "Seed regardless of activity"
 msgstr "Comparteix independentment de l'activitat"
 
-msgid "Stop seeding if idle for:"
-msgstr "Atura la compartició si està inactiu durant:"
+msgid "Stop seedi_ng if idle for:"
+msgstr "Atura la compartició si està inactiu dura_nt:"
 
 msgid "Queued for verification"
 msgstr "S'ha enviat a la cua per a la verificació"
@@ -445,8 +445,8 @@ msgstr "On cercar els fitxers de configuració"
 msgid "Start with all torrents paused"
 msgstr "Inicia amb tots els torrents en pausa"
 
-msgid "Start minimized in notification area"
-msgstr "Inicia minimitzat a l'àrea de notificació"
+msgid "Start _minimized in notification area"
+msgstr "Inicia _minimitzat a l'àrea de notificació"
 
 msgid "Show version number and exit"
 msgstr "Mostra el número de versió i surt"
@@ -559,14 +559,14 @@ msgstr "Hora"
 msgid "Open File"
 msgstr "Obre un fitxer"
 
-msgid "Open Folder"
-msgstr "Obre la carpeta"
+msgid "Open Fold_er"
+msgstr "Obre la _carpeta"
 
 msgid "Download Complete"
 msgstr "S'ha completat el torrent"
 
-msgid "Start Now"
-msgstr ""
+msgid "Start _Now"
+msgstr "I_nicia ara"
 
 msgid "Torrent Added"
 msgstr "S'ha afegit el torrent"
@@ -836,14 +836,8 @@ msgstr "_Torrent"
 msgid "_Properties"
 msgstr "_Propietats"
 
-msgid "Open Fold_er"
-msgstr "Obre la _carpeta"
-
 msgid "_Start"
 msgstr "_Inicia"
-
-msgid "Start _Now"
-msgstr "I_nicia ara"
 
 msgid "Ask Tracker for _More Peers"
 msgstr "Demana _més clients al rastrejador"
@@ -948,8 +942,6 @@ msgstr "_Continguts"
 msgid "_About"
 msgstr "_Quant a"
 
-#, fuzzy
-#| msgid "Alternative Speed Limits"
 msgid "Alternative Speed _Limits"
 msgstr "Límits de velocitat alternatius"
 
@@ -1026,8 +1018,8 @@ msgstr "Creat el {date}$"
 msgid "Added:"
 msgstr ""
 
-msgid "Comment:"
-msgstr "Comentari:"
+msgid "Co_mment:"
+msgstr "Co_mentari:"
 
 msgid "Information"
 msgstr "Informació"
@@ -1111,12 +1103,6 @@ msgstr "Suprimeix el torrent"
 msgid "Torrent properties"
 msgstr "Propietats del torrent"
 
-msgid "Torrent"
-msgstr "Torrent"
-
-msgid "Statistics"
-msgstr "Estadístiques"
-
 msgid "New Torrent"
 msgstr "Torrent nou"
 
@@ -1137,14 +1123,8 @@ msgstr "_Fitxer d'origen:"
 msgid "Piece si_ze:"
 msgstr ""
 
-msgid "Properties"
-msgstr "Propietats"
-
 msgid "_Trackers:"
 msgstr "_Rastrejadors:"
-
-msgid "Co_mment:"
-msgstr "Co_mentari:"
 
 msgid "_Source:"
 msgstr "_Origen:"
@@ -1154,9 +1134,6 @@ msgstr "Torrent _privat"
 
 msgid "Creating torrent…"
 msgstr "Creant el torrent…"
-
-msgid "Message Log"
-msgstr "Registre de missatges"
 
 msgid "Save _As"
 msgstr "_Anomena i desa"
@@ -1203,9 +1180,6 @@ msgstr "P_ujada:"
 #. Checkbox to limit download speed
 msgid "_Download:"
 msgstr "Baixa_da:"
-
-msgid "Alternative Speed Limits"
-msgstr "Límits de velocitat alternatius"
 
 msgid "Override normal speed limits manually or at scheduled times"
 msgstr "Sobreescriu els límits de velocitat normals manualment o a les hores programades"
@@ -1275,12 +1249,6 @@ msgstr "Baixades"
 
 msgid "Limits"
 msgstr "Límits"
-
-msgid "Stop seeding at _ratio:"
-msgstr "Atura la compartició a la _relació:"
-
-msgid "Stop seedi_ng if idle for:"
-msgstr "Atura la compartició si està inactiu dura_nt:"
 
 msgid "Call scrip_t when done seeding:"
 msgstr ""
@@ -1460,9 +1428,6 @@ msgstr "Les dades locals ja són _allí"
 
 msgid "Current Session"
 msgstr "Sessió actual"
-
-msgid "Ratio:"
-msgstr "Relació:"
 
 msgid "Duration:"
 msgstr "Durada:"
@@ -2081,9 +2046,6 @@ msgstr ""
 msgid "C_redits"
 msgstr "C_rèdits"
 
-msgid "Credits"
-msgstr "Crèdits"
-
 msgid "About {appname}"
 msgstr "Quant a {appname}"
 
@@ -2117,9 +2079,6 @@ msgstr "Desmarca els seleccionats"
 
 msgid "Only Check Selected"
 msgstr "Marca només els seleccionats"
-
-msgid "Open"
-msgstr "Obre"
 
 msgid "Rename…"
 msgstr ""
@@ -2185,9 +2144,6 @@ msgstr "Verifica les dades locals"
 
 msgid "Remove torrent and delete its files"
 msgstr "Suprimeix el torrent i esborra els seus fitxers"
-
-msgid "Compact View"
-msgstr "Visualització compacta"
 
 msgid "_Main Window"
 msgstr "_Finestra principal"
@@ -2269,9 +2225,6 @@ msgstr ""
 
 msgid "Encryption"
 msgstr "Xifratge"
-
-msgid "Start _minimized in notification area"
-msgstr "Inicia _minimitzat a l'àrea de notificació"
 
 #, fuzzy
 #| msgid "Retransmission"

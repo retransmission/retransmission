@@ -2,7 +2,7 @@
 <interface>
   <requires lib="gtk" version="4.0"/>
   <object class="GtkDialog" id="StatsDialog">
-    <property name="title" translatable="yes">Statistics</property>
+    <property name="title" translatable="yes">_Statistics</property>
     <child internal-child="content_area">
       <object class="GtkBox" id="dialog_layout">
         <property name="orientation">vertical</property>
@@ -79,7 +79,7 @@
                     </child>
                     <child>
                       <object class="GtkLabel" id="current_ratio_label">
-                        <property name="label" translatable="yes">Ratio:</property>
+                        <property name="label" translatable="yes">_Ratio:</property>
                         <property name="xalign">0</property>
                         <layout>
                           <property name="column">0</property>
@@ -211,7 +211,7 @@
                     </child>
                     <child>
                       <object class="GtkLabel" id="total_ratio_label">
-                        <property name="label" translatable="yes">Ratio:</property>
+                        <property name="label" translatable="yes">_Ratio:</property>
                         <property name="xalign">0</property>
                         <layout>
                           <property name="column">0</property>

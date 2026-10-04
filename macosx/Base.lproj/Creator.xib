@@ -95,7 +95,7 @@
                     </scrollView>
                     <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" allowsCharacterPickerTouchBarItem="YES" translatesAutoresizingMaskIntoConstraints="NO" id="13">
                         <rect key="frame" x="18" y="169" width="77" height="16"/>
-                        <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="right" title="Comment:" usesSingleLineMode="YES" id="70">
+                        <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="right" title="Co_mment:" usesSingleLineMode="YES" id="70">
                             <font key="font" metaFont="system"/>
                             <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                             <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>

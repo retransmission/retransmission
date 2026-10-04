@@ -102,7 +102,7 @@
    <item>
     <widget class="QGroupBox" name="propertiesSection">
      <property name="title">
-      <string>Properties</string>
+      <string notr="true">Properties</string>
      </property>
      <layout class="QGridLayout" name="propertiesSectionLayout" columnstretch="0,1">
       <item row="0" column="0">

@@ -212,7 +212,7 @@
                 </button>
                 <button translatesAutoresizingMaskIntoConstraints="NO" id="115">
                     <rect key="frame" x="11" y="33" width="134" height="16"/>
-                    <buttonCell key="cell" type="check" title="Stop seeding at ratio:" bezelStyle="regularSquare" imagePosition="left" alignment="left" controlSize="small" state="on" inset="2" id="116">
+                    <buttonCell key="cell" type="check" title="Stop seeding at _ratio:" bezelStyle="regularSquare" imagePosition="left" alignment="left" controlSize="small" state="on" inset="2" id="116">
                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                         <font key="font" metaFont="smallSystem"/>
                     </buttonCell>
@@ -223,7 +223,7 @@
                 </button>
                 <button translatesAutoresizingMaskIntoConstraints="NO" id="117">
                     <rect key="frame" x="11" y="11" width="187" height="16"/>
-                    <buttonCell key="cell" type="check" title="Stop seeding if idle for:" bezelStyle="regularSquare" imagePosition="left" alignment="left" controlSize="small" state="on" inset="2" id="118">
+                    <buttonCell key="cell" type="check" title="Stop seedi_ng if idle for:" bezelStyle="regularSquare" imagePosition="left" alignment="left" controlSize="small" state="on" inset="2" id="118">
                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                         <font key="font" metaFont="smallSystem"/>
                     </buttonCell>

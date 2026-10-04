@@ -82,7 +82,7 @@
        <item>
         <widget class="QGroupBox" name="altSpeedLimitsSection">
          <property name="title">
-          <string>Alternative Speed Limits</string>
+          <string notr="true">Alternative Speed Limits</string>
          </property>
          <layout class="QGridLayout" name="altSpeedLimitsSectionLayout" columnstretch="0,1">
           <item row="0" column="0" colspan="2">

@@ -473,6 +473,8 @@ MessageLogWindow::Impl::Impl(
               sigc::mem_fun(*this, &Impl::onRefresh),
               SECONDARY_WINDOW_REFRESH_INTERVAL_SECONDS))
 {
+    window_.set_title(gtr_strip_mnemonic(window_.get_title()));
+
     /**
     ***  toolbar
     **/

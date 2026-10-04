@@ -123,14 +123,14 @@ msgstr "全体設定を使用"
 msgid "Seed regardless of ratio"
 msgstr "共有比にかかわらずシードする"
 
-msgid "Stop seeding at ratio:"
-msgstr "この共有比でシード停止:"
+msgid "Stop seeding at _ratio:"
+msgstr "この共有比でシード停止(_R):"
 
 msgid "Seed regardless of activity"
 msgstr "稼働にかかわらずシードする"
 
-msgid "Stop seeding if idle for:"
-msgstr "アイドル状態でシード停止:"
+msgid "Stop seedi_ng if idle for:"
+msgstr "アイドル状態でシード停止(_N):"
 
 #. Translators: Torrent -> status string
 msgid "Queued for verification"
@@ -472,8 +472,8 @@ msgstr "設定ファイルを探す場所"
 msgid "Start with all torrents paused"
 msgstr "停止したトレントをすべて再開"
 
-msgid "Start minimized in notification area"
-msgstr "通知領域に最小化した状態で起動"
+msgid "Start _minimized in notification area"
+msgstr "起動時に通知領域に最小化(_M)"
 
 msgid "Show version number and exit"
 msgstr "バージョンを表示して終了"
@@ -606,15 +606,15 @@ msgstr "時間"
 msgid "Open File"
 msgstr "ファイルを開く"
 
-msgid "Open Folder"
-msgstr "フォルダを開く"
+msgid "Open Fold_er"
+msgstr "フォルダを開く(_E)"
 
 #. Translators: notification title
 msgid "Download Complete"
 msgstr "ダウンロード完了"
 
-msgid "Start Now"
-msgstr "すぐ開始"
+msgid "Start _Now"
+msgstr "すぐに開始(_N)"
 
 #. Translators: notification title
 msgid "Torrent Added"
@@ -629,6 +629,8 @@ msgstr "すべてのファイル"
 msgid "Open a Torrent"
 msgstr "トレントを開く"
 
+#. Translators: Open toolbar item -> label
+#. Translators: URL sheet button
 msgid "_Open"
 msgstr "開く(_O)"
 
@@ -890,15 +892,9 @@ msgstr "トレント(_T)"
 msgid "_Properties"
 msgstr "プロパティ(_P)"
 
-msgid "Open Fold_er"
-msgstr "フォルダを開く(_E)"
-
 #. Translators: Selected toolbar item -> label
 msgid "_Start"
 msgstr "開始(_S)"
-
-msgid "Start _Now"
-msgstr "すぐに開始(_N)"
 
 msgid "Ask Tracker for _More Peers"
 msgstr "トラッカーにピア増加を要求(_M)"
@@ -989,9 +985,11 @@ msgstr "逆順に並び替え(_V)"
 msgid "_Help"
 msgstr "ヘルプ(_H)"
 
+#. Translators: Message window -> title
 msgid "Message _Log"
 msgstr "メッセージログ(_L)"
 
+#. Translators: Stats window -> title
 msgid "_Statistics"
 msgstr "統計データ(_S)"
 
@@ -1005,7 +1003,8 @@ msgstr "コンテンツ(_C)"
 msgid "_About"
 msgstr "バージョン情報(_A)"
 
-#, fuzzy
+#. Translators: Dock item
+#. Translators: Status Bar -> speed tooltip
 msgid "Alternative Speed _Limits"
 msgstr "第二の速度制限"
 
@@ -1085,8 +1084,8 @@ msgstr "作成日:"
 msgid "Added:"
 msgstr "追加日時:"
 
-msgid "Comment:"
-msgstr "コメント:"
+msgid "Co_mment:"
+msgstr "コメント(_M):"
 
 #. Translators: Inspector view -> title
 #. Translators: Inspector -> tab
@@ -1132,6 +1131,7 @@ msgstr "トレントの優先度(_P):"
 msgid "Seeding Limits"
 msgstr "シードの上限"
 
+#. Translators: Stats window -> label
 msgid "_Ratio:"
 msgstr "共有比(_R):"
 
@@ -1186,13 +1186,6 @@ msgstr "トレントを除去"
 msgid "Torrent properties"
 msgstr "トレントのプロパティ"
 
-msgid "Torrent"
-msgstr "トレント"
-
-#. Translators: Stats window -> title
-msgid "Statistics"
-msgstr "統計情報"
-
 msgid "New Torrent"
 msgstr "新規トレント"
 
@@ -1215,14 +1208,8 @@ msgstr "対象ファイル(_F):"
 msgid "Piece si_ze:"
 msgstr "ピースの大きさ:"
 
-msgid "Properties"
-msgstr "プロパティ"
-
 msgid "_Trackers:"
 msgstr "トラッカー(_T):"
-
-msgid "Co_mment:"
-msgstr "コメント(_M):"
 
 msgid "_Source:"
 msgstr "入力元(_S):"
@@ -1232,10 +1219,6 @@ msgstr "非公開トレント(_P)"
 
 msgid "Creating torrent…"
 msgstr "トレントを作成中…"
-
-#. Translators: Message window -> title
-msgid "Message Log"
-msgstr "メッセージログ"
 
 msgid "Save _As"
 msgstr "名前を付けて保存(_A)"
@@ -1283,11 +1266,6 @@ msgstr "アップロード(_U):"
 #. Checkbox to limit download speed
 msgid "_Download:"
 msgstr "ダウンロード(_D):"
-
-#. Translators: Dock item
-#. Translators: Status Bar -> speed tooltip
-msgid "Alternative Speed Limits"
-msgstr "第二の速度制限"
 
 msgid "Override normal speed limits manually or at scheduled times"
 msgstr "手動または予定表に従い速度制限を切り替え"
@@ -1363,12 +1341,6 @@ msgstr "ダウンロード"
 
 msgid "Limits"
 msgstr "制限"
-
-msgid "Stop seeding at _ratio:"
-msgstr "この共有比でシード停止(_R):"
-
-msgid "Stop seedi_ng if idle for:"
-msgstr "アイドル状態でシード停止(_N):"
 
 msgid "Call scrip_t when done seeding:"
 msgstr "シード完了時に呼ぶスクリプト(_T):"
@@ -1550,10 +1522,6 @@ msgstr "取得データが既にそこにある(_A)"
 
 msgid "Current Session"
 msgstr "現在のセッション"
-
-#. Translators: Stats window -> label
-msgid "Ratio:"
-msgstr "共有比:"
 
 msgid "Duration:"
 msgstr "時間:"
@@ -2366,9 +2334,6 @@ msgstr "コピー"
 msgid "Paste"
 msgstr "貼り付け"
 
-msgid "Compact View"
-msgstr "コンパクト表示"
-
 msgid "Pieces Bar"
 msgstr "ピースのバー"
 
@@ -2791,11 +2756,6 @@ msgstr "トレントファイルの作成"
 
 msgid "Create a new torrent"
 msgstr "新規トレントの作成"
-
-#. Translators: Open toolbar item -> label
-#. Translators: URL sheet button
-msgid "Open"
-msgstr "開く"
 
 #. Translators: Open toolbar item -> palette label
 msgid "Open Torrent Files"
@@ -3359,9 +3319,6 @@ msgstr "サーバー"
 msgid "C_redits"
 msgstr "クレジット(_R)"
 
-msgid "Credits"
-msgstr "クレジット"
-
 msgid "About {appname}"
 msgstr "{appname} について"
 
@@ -3493,9 +3450,6 @@ msgstr "クリップボードから新規トレントを検出"
 
 msgid "Encryption"
 msgstr "暗号化"
-
-msgid "Start _minimized in notification area"
-msgstr "起動時に通知領域に最小化(_M)"
 
 #, fuzzy
 #| msgid "Retransmission"

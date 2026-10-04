@@ -127,9 +127,6 @@ msgstr "ग्लोबल सेटिंगस् वापरा"
 msgid "Seed regardless of ratio"
 msgstr ""
 
-msgid "Stop seeding at ratio:"
-msgstr ""
-
 msgid "Seed regardless of activity"
 msgstr ""
 
@@ -588,13 +585,7 @@ msgstr ""
 msgid "Open File"
 msgstr ""
 
-msgid "Open Folder"
-msgstr ""
-
 msgid "Download Complete"
-msgstr ""
-
-msgid "Start Now"
 msgstr ""
 
 msgid "Torrent Added"
@@ -900,7 +891,7 @@ msgstr ""
 msgid "Start with all torrents paused"
 msgstr ""
 
-msgid "Start minimized in notification area"
+msgid "Start _minimized in notification area"
 msgstr ""
 
 msgid "Show version number and exit"
@@ -1183,9 +1174,6 @@ msgstr ""
 msgid "Added:"
 msgstr ""
 
-msgid "Comment:"
-msgstr ""
-
 msgid "Information"
 msgstr "माहिती.."
 
@@ -1251,10 +1239,7 @@ msgstr ""
 msgid "Also see Default Public Trackers in Edit > Preferences > Network"
 msgstr ""
 
-msgid "Torrent"
-msgstr ""
-
-msgid "Statistics"
+msgid "_Torrent"
 msgstr ""
 
 msgid "New Torrent"
@@ -1275,9 +1260,6 @@ msgstr ""
 msgid "Piece size:"
 msgstr ""
 
-msgid "Properties"
-msgstr ""
-
 msgid "_Trackers:"
 msgstr ""
 
@@ -1291,9 +1273,6 @@ msgid "_Private torrent"
 msgstr ""
 
 msgid "Creating torrent…"
-msgstr ""
-
-msgid "Message Log"
 msgstr ""
 
 msgid "Save _As"
@@ -1346,7 +1325,7 @@ msgstr ""
 msgid "_Download:"
 msgstr ""
 
-msgid "Alternative Speed Limits"
+msgid "Alternative Speed _Limits"
 msgstr ""
 
 msgid "Override normal speed limits manually or at scheduled times"
@@ -1578,9 +1557,6 @@ msgid "Local data is _already there"
 msgstr ""
 
 msgid "Current Session"
-msgstr ""
-
-msgid "Ratio:"
 msgstr ""
 
 msgid "Duration:"

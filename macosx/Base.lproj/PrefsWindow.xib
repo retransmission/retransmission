@@ -736,7 +736,7 @@
                                             </textField>
                                             <button verticalHuggingPriority="1000" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="264">
                                                 <rect key="frame" x="76" y="254" width="156" height="18"/>
-                                                <buttonCell key="cell" type="check" title="Stop seeding at ratio:" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="1232">
+                                                <buttonCell key="cell" type="check" title="Stop seeding at _ratio:" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="1232">
                                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                                     <font key="font" metaFont="system"/>
                                                 </buttonCell>
@@ -770,7 +770,7 @@
                                             </textField>
                                             <button verticalHuggingPriority="1000" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="1958">
                                                 <rect key="frame" x="76" y="214" width="217" height="18"/>
-                                                <buttonCell key="cell" type="check" title="Stop seeding if idle for:" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="1962">
+                                                <buttonCell key="cell" type="check" title="Stop seedi_ng if idle for:" bezelStyle="regularSquare" imagePosition="left" alignment="left" inset="2" id="1962">
                                                     <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                                     <font key="font" metaFont="system"/>
                                                 </buttonCell>

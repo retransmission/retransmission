@@ -122,14 +122,14 @@ msgstr "Жалпы баптауларды қолдану"
 msgid "Seed regardless of ratio"
 msgstr "Рейтингті елемей, тарату"
 
-msgid "Stop seeding at ratio:"
-msgstr "Рейтинг мәні келесіге жеткенде, таратуды тоқтату:"
+msgid "Stop seeding at _ratio:"
+msgstr "Рейтинг _мәні келесідей болғанда, таратуды тоқтату:"
 
 msgid "Seed regardless of activity"
 msgstr "Белсенділікті елемей, тарату"
 
-msgid "Stop seeding if idle for:"
-msgstr "Белсенді емес болса, таратуды тоқтату:"
+msgid "Stop seedi_ng if idle for:"
+msgstr "Белсенді е_мес болса, таратуды тоқтату:"
 
 msgid "Queued for verification"
 msgstr "Тексеруге кезекте тұр"
@@ -435,7 +435,7 @@ msgstr "Баптаулар файлдарын іздейтін орын"
 msgid "Start with all torrents paused"
 msgstr "Аялдатылған торрентермен бастау"
 
-msgid "Start minimized in notification area"
+msgid "Start _minimized in notification area"
 msgstr "Трейге жасырылған күйінде қосылу"
 
 msgid "Show version number and exit"
@@ -549,14 +549,14 @@ msgstr "Уақыты"
 msgid "Open File"
 msgstr "Файлды ашу"
 
-msgid "Open Folder"
-msgstr "Буманы ашу"
+msgid "Open Fold_er"
+msgstr "Бу_маны ашу"
 
 msgid "Download Complete"
 msgstr "Торрент аяқталды"
 
-msgid "Start Now"
-msgstr ""
+msgid "Start _Now"
+msgstr "Қа_зір бастау"
 
 msgid "Torrent Added"
 msgstr "Торрент қосылған"
@@ -826,14 +826,8 @@ msgstr "_Торрент"
 msgid "_Properties"
 msgstr "_Қасиеттері"
 
-msgid "Open Fold_er"
-msgstr "Бу_маны ашу"
-
 msgid "_Start"
 msgstr "Ба_стау"
-
-msgid "Start _Now"
-msgstr "Қа_зір бастау"
 
 msgid "Ask Tracker for _More Peers"
 msgstr "Тре_керден тағы тораптарды сұрау"
@@ -938,8 +932,6 @@ msgstr "Құра_масы"
 msgid "_About"
 msgstr ""
 
-#, fuzzy
-#| msgid "Alternative Speed Limits"
 msgid "Alternative Speed _Limits"
 msgstr "Жылдамдықты альтернативті шектеу"
 
@@ -1018,8 +1010,8 @@ msgstr "{date} жасалған"
 msgid "Added:"
 msgstr ""
 
-msgid "Comment:"
-msgstr "Түсініктемесі:"
+msgid "Co_mment:"
+msgstr "К_омментарийі:"
 
 msgid "Information"
 msgstr "Ақпараты"
@@ -1103,12 +1095,6 @@ msgstr "Торрентті өшіру"
 msgid "Torrent properties"
 msgstr "Торрент қасиеттері"
 
-msgid "Torrent"
-msgstr "Торрент"
-
-msgid "Statistics"
-msgstr "Статистика"
-
 msgid "New Torrent"
 msgstr "Жаңа торрент"
 
@@ -1129,14 +1115,8 @@ msgstr "Фай_лдан жасау:"
 msgid "Piece si_ze:"
 msgstr ""
 
-msgid "Properties"
-msgstr "Қасиеттері"
-
 msgid "_Trackers:"
 msgstr "_Трекерлер:"
-
-msgid "Co_mment:"
-msgstr "К_омментарийі:"
 
 msgid "_Source:"
 msgstr ""
@@ -1146,9 +1126,6 @@ msgstr "_Жабық торрент"
 
 msgid "Creating torrent…"
 msgstr "Торрент жасалуда…"
-
-msgid "Message Log"
-msgstr "Хабарламалар журналы"
 
 msgid "Save _As"
 msgstr ""
@@ -1199,9 +1176,6 @@ msgstr "Таратылған:"
 #| msgid "Download"
 msgid "_Download:"
 msgstr "Жүктеп алу"
-
-msgid "Alternative Speed Limits"
-msgstr "Жылдамдықты альтернативті шектеу"
 
 msgid "Override normal speed limits manually or at scheduled times"
 msgstr "Қалыпты жылдамдық шектеулерін қолмен не жоспарланған уақытта сөндіреді"
@@ -1275,12 +1249,6 @@ msgstr "Жүктелуде"
 
 msgid "Limits"
 msgstr "Шектеулер"
-
-msgid "Stop seeding at _ratio:"
-msgstr "Рейтинг _мәні келесідей болғанда, таратуды тоқтату:"
-
-msgid "Stop seedi_ng if idle for:"
-msgstr "Белсенді е_мес болса, таратуды тоқтату:"
 
 msgid "Call scrip_t when done seeding:"
 msgstr ""
@@ -1462,9 +1430,6 @@ msgstr "Жергілікті мәліметтер ол жерде _болып т
 
 msgid "Current Session"
 msgstr "Ағымдағы сессия"
-
-msgid "Ratio:"
-msgstr "Рейтинг:"
 
 msgid "Duration:"
 msgstr "Ұзақтығы:"
@@ -2071,9 +2036,6 @@ msgstr ""
 msgid "C_redits"
 msgstr ""
 
-msgid "Credits"
-msgstr ""
-
 #, fuzzy
 #| msgid "_Show {appname}"
 msgid "About {appname}"
@@ -2109,11 +2071,6 @@ msgstr ""
 
 msgid "Only Check Selected"
 msgstr ""
-
-#, fuzzy
-#| msgid "Open URL"
-msgid "Open"
-msgstr "URL-ді ашу"
 
 msgid "Rename…"
 msgstr ""
@@ -2183,9 +2140,6 @@ msgstr "Жергілікті мәліметтерді тексеріп шығу"
 
 msgid "Remove torrent and delete its files"
 msgstr ""
-
-msgid "Compact View"
-msgstr "Ықшам көрінісі"
 
 msgid "_Main Window"
 msgstr "_Басты терезе"
@@ -2262,11 +2216,6 @@ msgstr ""
 #| msgid "_Encryption mode:"
 msgid "Encryption"
 msgstr "_Шифрлеу режимі:"
-
-#, fuzzy
-#| msgid "Start minimized in notification area"
-msgid "Start _minimized in notification area"
-msgstr "Трейге жасырылған күйінде қосылу"
 
 #, fuzzy
 #| msgid "Retransmission"

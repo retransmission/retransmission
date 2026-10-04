@@ -154,9 +154,6 @@ msgstr "Utilizează configurările globale"
 msgid "Seed regardless of ratio"
 msgstr "Contribuie indiferent de raport"
 
-msgid "Stop seeding at ratio:"
-msgstr "Oprește contribuirea la raportul:"
-
 msgid "Seed regardless of activity"
 msgstr "Contribuie indiferent de activitate"
 
@@ -624,14 +621,8 @@ msgstr ""
 msgid "Open File"
 msgstr "Deschide fişier"
 
-msgid "Open Folder"
-msgstr "Deschide dosar"
-
 msgid "Download Complete"
 msgstr "Torent complet"
-
-msgid "Start Now"
-msgstr ""
 
 msgid "Torrent Added"
 msgstr "Torent adăugat"
@@ -959,7 +950,7 @@ msgstr "Locația fișierelor de configurare"
 msgid "Start with all torrents paused"
 msgstr "Porneşte cu toate torentele suspendate"
 
-msgid "Start minimized in notification area"
+msgid "Start _minimized in notification area"
 msgstr "Afișează dialogul cu _opțiuni"
 
 msgid "Show version number and exit"
@@ -1063,7 +1054,7 @@ msgid "_Preferences"
 msgstr ""
 
 msgid "_Properties"
-msgstr ""
+msgstr "Proprietăți"
 
 msgid "Torrent properties"
 msgstr "Proprietăți torent"
@@ -1242,9 +1233,6 @@ msgstr "Origine:"
 msgid "Added:"
 msgstr ""
 
-msgid "Comment:"
-msgstr "Comentariu:"
-
 msgid "Information"
 msgstr "Informații"
 
@@ -1310,11 +1298,8 @@ msgstr ""
 msgid "Also see Default Public Trackers in Edit > Preferences > Network"
 msgstr ""
 
-msgid "Torrent"
+msgid "_Torrent"
 msgstr "Torent"
-
-msgid "Statistics"
-msgstr "Statistici"
 
 msgid "New Torrent"
 msgstr "Torent nou"
@@ -1334,9 +1319,6 @@ msgstr "_Fișier sursă:"
 msgid "Piece size:"
 msgstr ""
 
-msgid "Properties"
-msgstr "Proprietăți"
-
 msgid "_Trackers:"
 msgstr "_Trackere:"
 
@@ -1351,9 +1333,6 @@ msgstr "Torent _privat"
 
 msgid "Creating torrent…"
 msgstr "Se creează un torent…"
-
-msgid "Message Log"
-msgstr "Istoric mesaje"
 
 msgid "Save _As"
 msgstr ""
@@ -1405,7 +1384,7 @@ msgstr ""
 msgid "_Download:"
 msgstr ""
 
-msgid "Alternative Speed Limits"
+msgid "Alternative Speed _Limits"
 msgstr "Limite alternative de viteză"
 
 msgid "Override normal speed limits manually or at scheduled times"
@@ -1638,9 +1617,6 @@ msgstr "Datele locale sunt dej_a acolo"
 
 msgid "Current Session"
 msgstr "Sesiune curentă"
-
-msgid "Ratio:"
-msgstr "Raport:"
 
 msgid "Duration:"
 msgstr "Durată:"

@@ -135,9 +135,6 @@ msgstr "Lietot globālos iestatījumus"
 msgid "Seed regardless of ratio"
 msgstr "Dot, neskatoties uz samēru"
 
-msgid "Stop seeding at ratio:"
-msgstr "Apturēt došanu pie samēra:"
-
 msgid "Seed regardless of activity"
 msgstr "Dot, neskatoties uz aktivitāti"
 
@@ -605,14 +602,8 @@ msgstr ""
 msgid "Open File"
 msgstr "Atvērt datni"
 
-msgid "Open Folder"
-msgstr "Atvērt mapi"
-
 msgid "Download Complete"
 msgstr "Torents pabeigts"
-
-msgid "Start Now"
-msgstr ""
 
 msgid "Torrent Added"
 msgstr "Torents pievienots"
@@ -940,7 +931,7 @@ msgstr "Kur meklēt konfigurācijas datnes"
 msgid "Start with all torrents paused"
 msgstr "Palaižot apturēt visus torentus"
 
-msgid "Start minimized in notification area"
+msgid "Start _minimized in notification area"
 msgstr "Palaist minimizētu paziņojumu laukā"
 
 msgid "Show version number and exit"
@@ -1044,7 +1035,7 @@ msgid "_Preferences"
 msgstr ""
 
 msgid "_Properties"
-msgstr ""
+msgstr "Īpašības"
 
 msgid "Torrent properties"
 msgstr "Torena īpašības"
@@ -1223,9 +1214,6 @@ msgstr "Izcelsme:"
 msgid "Added:"
 msgstr ""
 
-msgid "Comment:"
-msgstr "Komentārs:"
-
 msgid "Information"
 msgstr "Informācija"
 
@@ -1291,11 +1279,8 @@ msgstr ""
 msgid "Also see Default Public Trackers in Edit > Preferences > Network"
 msgstr ""
 
-msgid "Torrent"
+msgid "_Torrent"
 msgstr "Torents"
-
-msgid "Statistics"
-msgstr "Statistika"
 
 msgid "New Torrent"
 msgstr "Jauns torents"
@@ -1315,9 +1300,6 @@ msgstr "Avota _datne:"
 msgid "Piece size:"
 msgstr ""
 
-msgid "Properties"
-msgstr "Īpašības"
-
 msgid "_Trackers:"
 msgstr "Seko_tāji:"
 
@@ -1332,9 +1314,6 @@ msgstr "_Privāts torents"
 
 msgid "Creating torrent…"
 msgstr "Izveido torentu…"
-
-msgid "Message Log"
-msgstr "Ziņojumu žurnāls"
 
 msgid "Save _As"
 msgstr ""
@@ -1386,7 +1365,7 @@ msgstr ""
 msgid "_Download:"
 msgstr ""
 
-msgid "Alternative Speed Limits"
+msgid "Alternative Speed _Limits"
 msgstr "Alternatīvie ātruma ierobežojumi"
 
 msgid "Override normal speed limits manually or at scheduled times"
@@ -1619,9 +1598,6 @@ msgstr "Lokālie d_ati jau ir tur"
 
 msgid "Current Session"
 msgstr "Pašreizējā sesija"
-
-msgid "Ratio:"
-msgstr "Samērs:"
 
 msgid "Duration:"
 msgstr "Darbības laiks:"

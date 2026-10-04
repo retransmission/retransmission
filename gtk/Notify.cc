@@ -201,7 +201,7 @@ void gtr_notify_torrent_completed(Glib::RefPtr<Session> const& core, tr_torrent_
             actions.emplace_back(_("Open File"));
         } else {
             actions.emplace_back("folder");
-            actions.emplace_back(_("Open Folder"));
+            actions.emplace_back(gtr_strip_mnemonic(_("Open Fold_er")));
         }
     }
 
@@ -235,7 +235,7 @@ void gtr_notify_torrent_added(Glib::RefPtr<Session> const& core, tr_torrent_id_t
     std::vector<Glib::ustring> actions;
     if (server_supports_actions) {
         actions.emplace_back("start-now");
-        actions.emplace_back(_("Start Now"));
+        actions.emplace_back(gtr_strip_mnemonic(_("Start _Now")));
     }
 
     auto const n = TrNotification{ .core = core, .torrent_id = tor_id };

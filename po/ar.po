@@ -139,13 +139,13 @@ msgstr "استخدام الإعدادات العمومية"
 msgid "Seed regardless of ratio"
 msgstr "التوزيع بغض النظر عن النسبة"
 
-msgid "Stop seeding at ratio:"
-msgstr "إيقاف التوزيع عند نسبة:"
+msgid "Stop seeding at _ratio:"
+msgstr "إيقاف التوزيع عند ن_سبة:"
 
 msgid "Seed regardless of activity"
 msgstr "التوزيع بغض النظر عن النشاط"
 
-msgid "Stop seeding if idle for:"
+msgid "Stop seedi_ng if idle for:"
 msgstr "إيقاف الرفع عند الخمول لمدة:"
 
 msgid "Queued for verification"
@@ -469,7 +469,7 @@ msgstr "موضع ملفات التضبيطات"
 msgid "Start with all torrents paused"
 msgstr "ابدأ بكل التورنتات الملبثة"
 
-msgid "Start minimized in notification area"
+msgid "Start _minimized in notification area"
 msgstr "بدء البرنامج مصغّرا في منطقة التنبيهات"
 
 msgid "Show version number and exit"
@@ -583,14 +583,14 @@ msgstr "الوقت"
 msgid "Open File"
 msgstr "افتح ملفا"
 
-msgid "Open Folder"
-msgstr "افتح المجلد"
+msgid "Open Fold_er"
+msgstr "افتح الم_جلد"
 
 msgid "Download Complete"
 msgstr "اكتمل التورنت"
 
-msgid "Start Now"
-msgstr ""
+msgid "Start _Now"
+msgstr "ابدأ الآ_ن"
 
 msgid "Torrent Added"
 msgstr "تمت إضافة تورنت"
@@ -605,7 +605,7 @@ msgid "Open a Torrent"
 msgstr "افتح تورنت"
 
 msgid "_Open"
-msgstr ""
+msgstr "إفتح"
 
 msgid "Show options dialog"
 msgstr "عرض نافذة الخيارات"
@@ -888,14 +888,8 @@ msgstr "تورنت"
 msgid "_Properties"
 msgstr "الخصائص"
 
-msgid "Open Fold_er"
-msgstr "افتح الم_جلد"
-
 msgid "_Start"
 msgstr "ا_بدأ"
-
-msgid "Start _Now"
-msgstr "ابدأ الآ_ن"
 
 msgid "Ask Tracker for _More Peers"
 msgstr "اطلب مزيدا من الأنداد من المتتبع"
@@ -999,8 +993,6 @@ msgstr "الم_حتويات"
 msgid "_About"
 msgstr "حول"
 
-#, fuzzy
-#| msgid "Alternative Speed Limits"
 msgid "Alternative Speed _Limits"
 msgstr "حدود السرعة البديلة"
 
@@ -1077,8 +1069,8 @@ msgstr "أنشئ في {date}"
 msgid "Added:"
 msgstr "مضاف:"
 
-msgid "Comment:"
-msgstr "التعليق:"
+msgid "Co_mment:"
+msgstr "الت_عليق:"
 
 msgid "Information"
 msgstr "معلومات"
@@ -1162,12 +1154,6 @@ msgstr "أزل التورنت"
 msgid "Torrent properties"
 msgstr "خصائص التورنت"
 
-msgid "Torrent"
-msgstr "تورنت"
-
-msgid "Statistics"
-msgstr "الإحصائيات"
-
 msgid "New Torrent"
 msgstr "تورنت جديد"
 
@@ -1188,14 +1174,8 @@ msgstr "الملف المصدر:"
 msgid "Piece si_ze:"
 msgstr ""
 
-msgid "Properties"
-msgstr "الخصائص"
-
 msgid "_Trackers:"
 msgstr "الم_تتبعات:"
-
-msgid "Co_mment:"
-msgstr "الت_عليق:"
 
 msgid "_Source:"
 msgstr "المصدر:"
@@ -1205,9 +1185,6 @@ msgstr "تورنت _خاص"
 
 msgid "Creating torrent…"
 msgstr "يُنشئ التورنت…"
-
-msgid "Message Log"
-msgstr "سِجل الرسائل"
 
 msgid "Save _As"
 msgstr ""
@@ -1254,9 +1231,6 @@ msgstr "الرفع:"
 #. Checkbox to limit download speed
 msgid "_Download:"
 msgstr "التنزيل:"
-
-msgid "Alternative Speed Limits"
-msgstr "حدود السرعة البديلة"
 
 msgid "Override normal speed limits manually or at scheduled times"
 msgstr "استبدل حدود السرعة الطبيعية يدويا أو في مواعيد محددة"
@@ -1326,12 +1300,6 @@ msgstr "التنزيل"
 
 msgid "Limits"
 msgstr "الحدود"
-
-msgid "Stop seeding at _ratio:"
-msgstr "إيقاف التوزيع عند ن_سبة:"
-
-msgid "Stop seedi_ng if idle for:"
-msgstr "إيقاف الرفع عند الخمول لمدة:"
 
 msgid "Call scrip_t when done seeding:"
 msgstr ""
@@ -1511,9 +1479,6 @@ msgstr "البيانات المحلية موجودة بال_فعل"
 
 msgid "Current Session"
 msgstr "الجلسة الحالية"
-
-msgid "Ratio:"
-msgstr "النسبة:"
 
 msgid "Duration:"
 msgstr "المدّة:"
@@ -2222,9 +2187,6 @@ msgstr "خادم"
 msgid "C_redits"
 msgstr "إشادات"
 
-msgid "Credits"
-msgstr "إشادات"
-
 msgid "About {appname}"
 msgstr "حول {appname}"
 
@@ -2258,9 +2220,6 @@ msgstr "ألغ إختيار العناصر المحددة"
 
 msgid "Only Check Selected"
 msgstr "إختر العناصر المحددة فقط"
-
-msgid "Open"
-msgstr "إفتح"
 
 msgid "Rename…"
 msgstr "أعد التسمية…"
@@ -2328,9 +2287,6 @@ msgstr "تحقق من البيانات المحلية"
 
 msgid "Remove torrent and delete its files"
 msgstr "حذف التورنت مع حذف ملفاته"
-
-msgid "Compact View"
-msgstr "عرض مضغوط"
 
 msgid "_Main Window"
 msgstr "أظهر النافذة الرئيسية"
@@ -2416,9 +2372,6 @@ msgstr ""
 
 msgid "Encryption"
 msgstr "التشفير"
-
-msgid "Start _minimized in notification area"
-msgstr "بدء البرنامج مصغّرا في منطقة التنبيهات"
 
 #, fuzzy
 #| msgid "Retransmission"

@@ -71,7 +71,7 @@ static NSUInteger const kMaxQueueLength = 10000U;
     [window setContentBorderThickness:NSMinY(self.fMessageTable.enclosingScrollView.frame) forEdge:NSMinYEdge];
 
     // Translators: Message window -> title
-    self.window.title = TR_TEXT("Message Log");
+    self.window.title = TR_MNEMONIC("Message _Log");
 
     //disable fullscreen support
     window.collectionBehavior = NSWindowCollectionBehaviorFullScreenNone;

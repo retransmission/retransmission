@@ -130,9 +130,6 @@ msgstr "استفاده از تنظمیات عمومی"
 msgid "Seed regardless of ratio"
 msgstr "دانه دادن بدون توجّه به نسبت"
 
-msgid "Stop seeding at ratio:"
-msgstr "پایان دانه‌دهی در نسبت:"
-
 msgid "Seed regardless of activity"
 msgstr "دانه دادن بدون توجّه به فعّالیت"
 
@@ -591,14 +588,8 @@ msgstr ""
 msgid "Open File"
 msgstr "گشودن پرونده"
 
-msgid "Open Folder"
-msgstr "گشودن پوشه"
-
 msgid "Download Complete"
 msgstr "تورنت کامل شد"
-
-msgid "Start Now"
-msgstr ""
 
 msgid "Torrent Added"
 msgstr "تورنت افزوده شد"
@@ -904,7 +895,7 @@ msgstr "کجا برای پرونده‌های پیکربندی جست‌وجو �
 msgid "Start with all torrents paused"
 msgstr "شروع با تورنت‌های مکث شده"
 
-msgid "Start minimized in notification area"
+msgid "Start _minimized in notification area"
 msgstr "شروع به صورت کمینه در منطقهٔ آگهی"
 
 msgid "Show version number and exit"
@@ -1187,9 +1178,6 @@ msgstr "مبدأ:"
 msgid "Added:"
 msgstr ""
 
-msgid "Comment:"
-msgstr "دیدگاه:"
-
 msgid "Information"
 msgstr "اطّلاعات"
 
@@ -1255,11 +1243,8 @@ msgstr ""
 msgid "Also see Default Public Trackers in Edit > Preferences > Network"
 msgstr ""
 
-msgid "Torrent"
+msgid "_Torrent"
 msgstr "تورنت"
-
-msgid "Statistics"
-msgstr "آمار"
 
 msgid "New Torrent"
 msgstr "تورنت جدید"
@@ -1279,9 +1264,6 @@ msgstr "پروندهٔ مبدأ:"
 msgid "Piece size:"
 msgstr ""
 
-msgid "Properties"
-msgstr "ویژگی‌ها"
-
 msgid "_Trackers:"
 msgstr "ردیاب‌ها:"
 
@@ -1296,9 +1278,6 @@ msgstr "تورنت خصوصی"
 
 msgid "Creating torrent…"
 msgstr "در حال ایجاد تورنت…"
-
-msgid "Message Log"
-msgstr "گزارش پیام"
 
 msgid "Save _As"
 msgstr "ذخیره با _نام"
@@ -1350,7 +1329,7 @@ msgstr ""
 msgid "_Download:"
 msgstr ""
 
-msgid "Alternative Speed Limits"
+msgid "Alternative Speed _Limits"
 msgstr "کران‌های سرعت جایگزین"
 
 msgid "Override normal speed limits manually or at scheduled times"
@@ -1583,9 +1562,6 @@ msgstr "داده‌ّای محلّی هم‌اکنون آن‌جا هستند"
 
 msgid "Current Session"
 msgstr "نشست فعلی"
-
-msgid "Ratio:"
-msgstr "نسبت:"
 
 msgid "Duration:"
 msgstr "مدت:"

@@ -45,7 +45,8 @@ struct Arg {
 // a catalog holds no such translation, because Catalog::parse() drops them.
 [[nodiscard]] std::string format_translation(std::locale const& locale, char const* translation, std::span<Arg const> args);
 
-// Returns `text` without the catalog's mnemonic markers, for a client whose controls have no mnemonics:
+// Returns `text` without the catalog's mnemonic markers, for a place that shows no mnemonic,
+// such as a window title, a combo box item or any text in the Mac client:
 // "_File" becomes "File", and "__" becomes "_".
 // Chinese, Japanese and Korean translations mark a Latin letter in parentheses after the text,
 // which goes away whole: "ファイル(_F)" becomes "ファイル". Its parentheses may be ASCII or full-width.

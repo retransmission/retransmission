@@ -3857,7 +3857,7 @@ static void offerToImportFromTransmission()
         ButtonToolbarItem* item = [self standardToolbarButtonWithIdentifier:ident];
 
         // Translators: Open toolbar item -> label
-        item.label = TR_TEXT("Open");
+        item.label = TR_MNEMONIC("_Open");
         // Translators: Open toolbar item -> palette label
         item.paletteLabel = TR_TEXT("Open Torrent Files");
         // Translators: Open toolbar item -> tooltip
@@ -4618,7 +4618,7 @@ static void offerToImportFromTransmission()
     [menu addItemWithTitle:TR_MNEMONIC("_Start All") action:@selector(resumeAllTorrents:) keyEquivalent:@""];
     [menu addItem:[NSMenuItem separatorItem]];
     // Translators: Dock item
-    [menu addItemWithTitle:TR_TEXT("Alternative Speed Limits") action:@selector(toggleSpeedLimit:) keyEquivalent:@""];
+    [menu addItemWithTitle:TR_MNEMONIC("Alternative Speed _Limits") action:@selector(toggleSpeedLimit:) keyEquivalent:@""];
 
     return menu;
 }

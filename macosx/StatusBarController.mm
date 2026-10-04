@@ -156,7 +156,7 @@ typedef NS_ENUM(NSUInteger, StatusTag) {
     NSString *uploadText, *downloadText;
     if ([defaults boolForKey:@"SpeedLimit"]) {
         // Translators: Status Bar -> speed tooltip
-        NSString* const altSpeedLimits = TR_TEXT("Alternative Speed Limits");
+        NSString* const altSpeedLimits = TR_MNEMONIC("Alternative Speed _Limits");
         uploadText = [NSString stringWithFormat:@"%@ (%@)", limitText(@"SpeedLimitUploadLimit"), altSpeedLimits];
         downloadText = [NSString stringWithFormat:@"%@ (%@)", limitText(@"SpeedLimitDownloadLimit"), altSpeedLimits];
     } else {

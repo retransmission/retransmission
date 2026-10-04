@@ -140,7 +140,7 @@
                   <object class="GtkTreeViewColumn" id="torrent_column">
                     <property name="resizable">True</property>
                     <property name="sizing">fixed</property>
-                    <property name="title" translatable="yes">Torrent</property>
+                    <property name="title">Torrent</property>
                   </object>
                 </child>
               </object>
@@ -248,7 +248,7 @@
                 <property name="visible">True</property>
                 <property name="can-focus">True</property>
                 <property name="receives-default">True</property>
-                <property name="tooltip-text" translatable="yes">Statistics</property>
+                <property name="tooltip-text" translatable="yes">_Statistics</property>
                 <property name="relief">none</property>
                 <child>
                   <object class="GtkImage" id="ratio_button_image">

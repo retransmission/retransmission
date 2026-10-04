@@ -246,6 +246,8 @@ void PrefsDialog::initRemoteTab()
 
 void PrefsDialog::initSpeedTab()
 {
+    ui_.altSpeedLimitsSection->setTitle(TR_STRIP_MNEMONIC("Alternative Speed _Limits"));
+
     auto const suffix = QStringLiteral(" %1").arg(Speed::displayName(Speed::Units::KByps));
 
     ui_.uploadSpeedLimitSpin->setSuffix(suffix);

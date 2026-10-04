@@ -141,14 +141,14 @@ msgstr "Käytä yleisiä asetuksia"
 msgid "Seed regardless of ratio"
 msgstr "Jaa suhteesta välittämättä"
 
-msgid "Stop seeding at ratio:"
-msgstr "Lopeta jakaminen suhteen ollessa:"
+msgid "Stop seeding at _ratio:"
+msgstr "Lopeta jakaminen _suhteen ollessa:"
 
 msgid "Seed regardless of activity"
 msgstr "Jaa välittämättä aktiivisuudesta"
 
-msgid "Stop seeding if idle for:"
-msgstr "Pysäytä kylväminen jos joutilaana ajan:"
+msgid "Stop seedi_ng if idle for:"
+msgstr "Pysäytä _jakaminen jos jouten N minuuttia:"
 
 msgid "Queued for verification"
 msgstr "Laitettiin jonoon tarkistusta varten"
@@ -449,8 +449,8 @@ msgstr "Mistä etsitään asetustiedostoja"
 msgid "Start with all torrents paused"
 msgstr "Käynnistä kaikki torrentit pysäytettyinä"
 
-msgid "Start minimized in notification area"
-msgstr "Käynnistä pienennettynä ilmoitusalueelle"
+msgid "Start _minimized in notification area"
+msgstr "Käynnistä _pienennettynä ilmoitusalueelle"
 
 msgid "Show version number and exit"
 msgstr "Näytä versionumero ja poistu"
@@ -567,14 +567,14 @@ msgstr "Aika"
 msgid "Open File"
 msgstr "Avaa tiedosto"
 
-msgid "Open Folder"
-msgstr "Avaa kansio"
+msgid "Open Fold_er"
+msgstr "Avaa ka_nsio"
 
 msgid "Download Complete"
 msgstr "Torrent on valmis"
 
-msgid "Start Now"
-msgstr "Aloita nyt"
+msgid "Start _Now"
+msgstr "Aloita _nyt"
 
 msgid "Torrent Added"
 msgstr "Torrent lisätty"
@@ -844,14 +844,8 @@ msgstr "_Torrent"
 msgid "_Properties"
 msgstr "_Ominaisuudet"
 
-msgid "Open Fold_er"
-msgstr "Avaa ka_nsio"
-
 msgid "_Start"
 msgstr "_Aloita"
-
-msgid "Start _Now"
-msgstr "Aloita _nyt"
 
 msgid "Ask Tracker for _More Peers"
 msgstr "Pyydä seurantapalvelimelta _lisää vertaisia"
@@ -956,8 +950,6 @@ msgstr "_Sisältö"
 msgid "_About"
 msgstr "_Tietoja"
 
-#, fuzzy
-#| msgid "Alternative Speed Limits"
 msgid "Alternative Speed _Limits"
 msgstr "Vaihtoehtoiset nopeusrajoitukset"
 
@@ -1034,8 +1026,8 @@ msgstr "Luotu {date}"
 msgid "Added:"
 msgstr "Lisätty:"
 
-msgid "Comment:"
-msgstr "Kommentti:"
+msgid "Co_mment:"
+msgstr "_Kommentti:"
 
 msgid "Information"
 msgstr "Tiedot"
@@ -1122,12 +1114,6 @@ msgstr "Poista torrent"
 msgid "Torrent properties"
 msgstr "Torrentin ominaisuudet"
 
-msgid "Torrent"
-msgstr "Torrent"
-
-msgid "Statistics"
-msgstr "Tilastot"
-
 msgid "New Torrent"
 msgstr "Uusi torrent"
 
@@ -1150,14 +1136,8 @@ msgstr "Lähde_tiedosto:"
 msgid "Piece si_ze:"
 msgstr "Osan koko:"
 
-msgid "Properties"
-msgstr "Ominaisuudet"
-
 msgid "_Trackers:"
 msgstr "_Seurantapalvelimet:"
-
-msgid "Co_mment:"
-msgstr "_Kommentti:"
 
 msgid "_Source:"
 msgstr "_Lähde:"
@@ -1167,9 +1147,6 @@ msgstr "_Yksityinen torrent"
 
 msgid "Creating torrent…"
 msgstr "Luodaan torrentia…"
-
-msgid "Message Log"
-msgstr "Viestiloki"
 
 msgid "Save _As"
 msgstr "Tallenna _nimellä"
@@ -1216,9 +1193,6 @@ msgstr "L_ähetys:"
 #. Checkbox to limit download speed
 msgid "_Download:"
 msgstr "_Lataus:"
-
-msgid "Alternative Speed Limits"
-msgstr "Vaihtoehtoiset nopeusrajoitukset"
 
 msgid "Override normal speed limits manually or at scheduled times"
 msgstr "Korvaa normaalit siirtorajoitukset käsin tai ajastettuina aikoina"
@@ -1292,12 +1266,6 @@ msgstr "Lataus"
 
 msgid "Limits"
 msgstr "Rajoitukset"
-
-msgid "Stop seeding at _ratio:"
-msgstr "Lopeta jakaminen _suhteen ollessa:"
-
-msgid "Stop seedi_ng if idle for:"
-msgstr "Pysäytä _jakaminen jos jouten N minuuttia:"
 
 msgid "Call scrip_t when done seeding:"
 msgstr "Kutsu scrip_t, kun levitys on valmis:"
@@ -1479,9 +1447,6 @@ msgstr "Paikallinen data on _jo siellä"
 
 msgid "Current Session"
 msgstr "Nykyinen istunto"
-
-msgid "Ratio:"
-msgstr "Suhde:"
 
 msgid "Duration:"
 msgstr "Kesto:"
@@ -2106,9 +2071,6 @@ msgstr "Palvelin"
 msgid "C_redits"
 msgstr "L_opputekstit"
 
-msgid "Credits"
-msgstr "Lopputekstit"
-
 msgid "About {appname}"
 msgstr "Tietoa {appname}ista"
 
@@ -2138,9 +2100,6 @@ msgstr "Poista valittujen merkintä"
 
 msgid "Only Check Selected"
 msgstr "Merkkaa vain valitut"
-
-msgid "Open"
-msgstr "Avaa"
 
 msgid "Rename…"
 msgstr "Nimeä uudelleen…"
@@ -2204,9 +2163,6 @@ msgstr "Vahvista paikallinen data"
 
 msgid "Remove torrent and delete its files"
 msgstr "Poista torrent ja poista sen tiedostot"
-
-msgid "Compact View"
-msgstr "Kompakti näkymä"
 
 msgid "_Main Window"
 msgstr "_Pääikkuna"
@@ -2281,9 +2237,6 @@ msgstr "Havaitse uudet torrentit leikepöydältä"
 
 msgid "Encryption"
 msgstr "Salaus"
-
-msgid "Start _minimized in notification area"
-msgstr "Käynnistä _pienennettynä ilmoitusalueelle"
 
 #, fuzzy
 #| msgid "Retransmission"

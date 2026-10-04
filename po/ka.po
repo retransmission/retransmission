@@ -120,14 +120,14 @@ msgstr "გლობალური პარამეტრების გა�
 msgid "Seed regardless of ratio"
 msgstr "სიდირება შეფარდების მიუხედავად"
 
-msgid "Stop seeding at ratio:"
-msgstr "სიდირების შეჩერება შეფარდებაზე:"
+msgid "Stop seeding at _ratio:"
+msgstr "სიდირების შეჩერება შეფარდება_ზე:"
 
 msgid "Seed regardless of activity"
 msgstr "სიდირება აქტიურობის მიუხედავად"
 
-msgid "Stop seeding if idle for:"
-msgstr "სიდირების შეჩერება უმოქმედობის:"
+msgid "Stop seedi_ng if idle for:"
+msgstr "სიდირების შეჩერე_ბა უქმად ყოფნისას:"
 
 msgid "Queued for verification"
 msgstr "რიგშია შემოწმებისთვის"
@@ -430,8 +430,8 @@ msgstr ""
 msgid "Start with all torrents paused"
 msgstr "ყველა ტორენტის შეჩერება დაწყებისას"
 
-msgid "Start minimized in notification area"
-msgstr ""
+msgid "Start _minimized in notification area"
+msgstr "შეტყობინებების არეში _ჩაკეცილ მდგომარეობაში გაშვება"
 
 msgid "Show version number and exit"
 msgstr "ვერსიის ჩვენება და გასვლა"
@@ -544,14 +544,14 @@ msgstr "დრო"
 msgid "Open File"
 msgstr "ფაილის გახსნა"
 
-msgid "Open Folder"
-msgstr "გახსენი საქაღალდე"
+msgid "Open Fold_er"
+msgstr "სა_ქაღალდის გახსნა"
 
 msgid "Download Complete"
 msgstr ""
 
-msgid "Start Now"
-msgstr "ახლა დაწყება"
+msgid "Start _Now"
+msgstr "_ახლავე დაწყება"
 
 msgid "Torrent Added"
 msgstr "ტორენტი დაემატა"
@@ -821,14 +821,8 @@ msgstr "_ტორენტი"
 msgid "_Properties"
 msgstr "_თვისებები"
 
-msgid "Open Fold_er"
-msgstr "სა_ქაღალდის გახსნა"
-
 msgid "_Start"
 msgstr "_დაწყება"
-
-msgid "Start _Now"
-msgstr "_ახლავე დაწყება"
 
 msgid "Ask Tracker for _More Peers"
 msgstr "ტრეკერისთვის _მეტი პირების მოთხოვნა"
@@ -932,8 +926,6 @@ msgstr "_შიგთავსი"
 msgid "_About"
 msgstr "_შესახებ"
 
-#, fuzzy
-#| msgid "Alternative Speed Limits"
 msgid "Alternative Speed _Limits"
 msgstr "ალტერნატიული სიჩქარის შეზღუდვები"
 
@@ -1010,8 +1002,8 @@ msgstr "შექმნილი - {date}"
 msgid "Added:"
 msgstr "დამატებულია:"
 
-msgid "Comment:"
-msgstr "კომენტარი:"
+msgid "Co_mment:"
+msgstr "კომე_ნტარი:"
 
 msgid "Information"
 msgstr "ინფორმაცია"
@@ -1098,12 +1090,6 @@ msgstr "ტორენტის ამოღება"
 msgid "Torrent properties"
 msgstr "ტორენტის თვისებები"
 
-msgid "Torrent"
-msgstr "Torrent"
-
-msgid "Statistics"
-msgstr "სტატისტიკა"
-
 msgid "New Torrent"
 msgstr "ახალი ტორენტი"
 
@@ -1124,14 +1110,8 @@ msgstr "წყაროს _ფაილი:"
 msgid "Piece si_ze:"
 msgstr ""
 
-msgid "Properties"
-msgstr "თვისებები"
-
 msgid "_Trackers:"
 msgstr "_ტრეკერები:"
-
-msgid "Co_mment:"
-msgstr "კომე_ნტარი:"
 
 msgid "_Source:"
 msgstr "_წყარო:"
@@ -1141,9 +1121,6 @@ msgstr "_პრივატული ტორენტი"
 
 msgid "Creating torrent…"
 msgstr ""
-
-msgid "Message Log"
-msgstr "შეტყობინებების ჟურნალი"
 
 msgid "Save _As"
 msgstr "_შენახვა, როგორც"
@@ -1190,9 +1167,6 @@ msgstr "_ატვირთვა:"
 #. Checkbox to limit download speed
 msgid "_Download:"
 msgstr "_ჩამოტვირთვა:"
-
-msgid "Alternative Speed Limits"
-msgstr "ალტერნატიული სიჩქარის შეზღუდვები"
 
 msgid "Override normal speed limits manually or at scheduled times"
 msgstr ""
@@ -1262,12 +1236,6 @@ msgstr "ჩამოტვირთვა"
 
 msgid "Limits"
 msgstr "ლიმიტები"
-
-msgid "Stop seeding at _ratio:"
-msgstr "სიდირების შეჩერება შეფარდება_ზე:"
-
-msgid "Stop seedi_ng if idle for:"
-msgstr "სიდირების შეჩერე_ბა უქმად ყოფნისას:"
 
 msgid "Call scrip_t when done seeding:"
 msgstr ""
@@ -1446,9 +1414,6 @@ msgstr "ადგილობრივი მონაცემები _უკ
 
 msgid "Current Session"
 msgstr "მიმდინარე სესია"
-
-msgid "Ratio:"
-msgstr "შეფარდება:"
 
 msgid "Duration:"
 msgstr "ხანგრძლივობა:"
@@ -2055,9 +2020,6 @@ msgstr ""
 msgid "C_redits"
 msgstr "ა_ვტორები"
 
-msgid "Credits"
-msgstr "ავტორები"
-
 msgid "About {appname}"
 msgstr "{appname}-ის შესახებ"
 
@@ -2089,9 +2051,6 @@ msgstr "არჩეულის გადანიშვნა"
 
 msgid "Only Check Selected"
 msgstr "მხოლოდ არჩეულის მონიშვნა"
-
-msgid "Open"
-msgstr "გახსნა"
 
 msgid "Rename…"
 msgstr ""
@@ -2157,9 +2116,6 @@ msgstr "ადგილობრივი მონაცემების გ�
 
 msgid "Remove torrent and delete its files"
 msgstr "ტორენტის ამოღება და მისი ფაილების წაშლა"
-
-msgid "Compact View"
-msgstr "კომპაქტური ხედი"
 
 msgid "_Main Window"
 msgstr "_მთავარი ფანჯარა"
@@ -2241,9 +2197,6 @@ msgstr ""
 
 msgid "Encryption"
 msgstr "დაშიფვრა"
-
-msgid "Start _minimized in notification area"
-msgstr "შეტყობინებების არეში _ჩაკეცილ მდგომარეობაში გაშვება"
 
 #, fuzzy
 #| msgid "Retransmission"

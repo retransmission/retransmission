@@ -125,14 +125,14 @@ msgstr "Koristi globalne postavke"
 msgid "Seed regardless of ratio"
 msgstr "Dijeli bez obzira na omjer"
 
-msgid "Stop seeding at ratio:"
-msgstr "Zaustavi dijeljenje pri omjeru:"
+msgid "Stop seeding at _ratio:"
+msgstr "Zaustavi dijeljenje pri _omjeru:"
 
 msgid "Seed regardless of activity"
 msgstr "Dijeli bez obzira na aktivnost"
 
-msgid "Stop seeding if idle for:"
-msgstr "Zaustavi dijeljenje pri neaktivnosti:"
+msgid "Stop seedi_ng if idle for:"
+msgstr "Zaustavi dijelje_nje pri neaktivnosti:"
 
 msgid "Queued for verification"
 msgstr "Čekanje na provjeru"
@@ -442,8 +442,8 @@ msgstr "Gdje tražiti konfiguracijske datoteke"
 msgid "Start with all torrents paused"
 msgstr "Pokreni sa svim torrentima pauzirano"
 
-msgid "Start minimized in notification area"
-msgstr "Pokreni smanjeno u traci sustava"
+msgid "Start _minimized in notification area"
+msgstr "Pokreni _smanjeno u traci sustava"
 
 msgid "Show version number and exit"
 msgstr "Prikaži broj inačice i izađi"
@@ -556,14 +556,14 @@ msgstr "Vrijeme"
 msgid "Open File"
 msgstr "Otvori datoteku"
 
-msgid "Open Folder"
-msgstr "Otvori mapu"
+msgid "Open Fold_er"
+msgstr "Otvori _mapu"
 
 msgid "Download Complete"
 msgstr "Torrent preuzet"
 
-msgid "Start Now"
-msgstr ""
+msgid "Start _Now"
+msgstr "Pokre_ni odmah"
 
 msgid "Torrent Added"
 msgstr "Torrent dodan"
@@ -840,14 +840,8 @@ msgstr "_Torrent"
 msgid "_Properties"
 msgstr "_Svojstva"
 
-msgid "Open Fold_er"
-msgstr "Otvori _mapu"
-
 msgid "_Start"
 msgstr "_Pokreni"
-
-msgid "Start _Now"
-msgstr "Pokre_ni odmah"
 
 msgid "Ask Tracker for _More Peers"
 msgstr "Pitaj pratitelja za _više točaka"
@@ -952,8 +946,6 @@ msgstr "_Sadržaj"
 msgid "_About"
 msgstr "_O programu"
 
-#, fuzzy
-#| msgid "Alternative Speed Limits"
 msgid "Alternative Speed _Limits"
 msgstr "Alternativna ograničenja brzine"
 
@@ -1030,8 +1022,8 @@ msgstr "Napravljeno {date}"
 msgid "Added:"
 msgstr ""
 
-msgid "Comment:"
-msgstr "Komentar:"
+msgid "Co_mment:"
+msgstr "Ko_mentar:"
 
 msgid "Information"
 msgstr "Informacije"
@@ -1115,12 +1107,6 @@ msgstr "Ukloni torrent"
 msgid "Torrent properties"
 msgstr "Svojstva torrenta"
 
-msgid "Torrent"
-msgstr "Torrent"
-
-msgid "Statistics"
-msgstr "Statistika"
-
 msgid "New Torrent"
 msgstr "Novi torrent"
 
@@ -1141,14 +1127,8 @@ msgstr "Izvorna _datoteka:"
 msgid "Piece si_ze:"
 msgstr ""
 
-msgid "Properties"
-msgstr "Svojstva"
-
 msgid "_Trackers:"
 msgstr "Pra_titelji:"
-
-msgid "Co_mment:"
-msgstr "Ko_mentar:"
 
 msgid "_Source:"
 msgstr "_Izvor:"
@@ -1158,9 +1138,6 @@ msgstr "_Privatni torrent"
 
 msgid "Creating torrent…"
 msgstr "Stvaranje torrenta…"
-
-msgid "Message Log"
-msgstr "Zapis poruka"
 
 msgid "Save _As"
 msgstr "Spremi _kao"
@@ -1207,9 +1184,6 @@ msgstr "_Slanje:"
 #. Checkbox to limit download speed
 msgid "_Download:"
 msgstr "_Preuzimanje:"
-
-msgid "Alternative Speed Limits"
-msgstr "Alternativna ograničenja brzine"
 
 msgid "Override normal speed limits manually or at scheduled times"
 msgstr "Premosti normalno ograničenje brzine ručno ili u zakazano vrijeme"
@@ -1279,12 +1253,6 @@ msgstr "Preuzimanje"
 
 msgid "Limits"
 msgstr "Ograničenja"
-
-msgid "Stop seeding at _ratio:"
-msgstr "Zaustavi dijeljenje pri _omjeru:"
-
-msgid "Stop seedi_ng if idle for:"
-msgstr "Zaustavi dijelje_nje pri neaktivnosti:"
 
 msgid "Call scrip_t when done seeding:"
 msgstr ""
@@ -1464,9 +1432,6 @@ msgstr "Lokalni podaci su _već tu"
 
 msgid "Current Session"
 msgstr "Trenutna sesija"
-
-msgid "Ratio:"
-msgstr "Omjer:"
 
 msgid "Duration:"
 msgstr "Trajanje:"
@@ -2096,9 +2061,6 @@ msgstr ""
 msgid "C_redits"
 msgstr "Z_asluge"
 
-msgid "Credits"
-msgstr "Zasluge"
-
 msgid "About {appname}"
 msgstr "O {appname}u"
 
@@ -2132,9 +2094,6 @@ msgstr "Ukloni odabir odabranih"
 
 msgid "Only Check Selected"
 msgstr "Provjeri samo odabrano"
-
-msgid "Open"
-msgstr "Otvori"
 
 msgid "Rename…"
 msgstr ""
@@ -2201,9 +2160,6 @@ msgstr "Provjera lokalnih podataka"
 
 msgid "Remove torrent and delete its files"
 msgstr "Ukloni torrente i obriši datoteke"
-
-msgid "Compact View"
-msgstr "Zbijen pogled"
 
 msgid "_Main Window"
 msgstr "_Glavni prozor"
@@ -2286,9 +2242,6 @@ msgstr ""
 
 msgid "Encryption"
 msgstr "Šifriranje"
-
-msgid "Start _minimized in notification area"
-msgstr "Pokreni _smanjeno u traci sustava"
 
 #, fuzzy
 #| msgid "Retransmission"

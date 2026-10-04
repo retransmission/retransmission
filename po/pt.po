@@ -119,14 +119,14 @@ msgstr "Usar definições globais"
 msgid "Seed regardless of ratio"
 msgstr "Semear independentemente do rácio"
 
-msgid "Stop seeding at ratio:"
-msgstr "Parar de semear no rácio:"
+msgid "Stop seeding at _ratio:"
+msgstr "Parar de semear no _rácio:"
 
 msgid "Seed regardless of activity"
 msgstr "Semear independentemente da atividade"
 
-msgid "Stop seeding if idle for:"
-msgstr "Parar de efetuar seed se inativo durante:"
+msgid "Stop seedi_ng if idle for:"
+msgstr "Parar de efetuar _seed se inativo durante:"
 
 msgid "Queued for verification"
 msgstr "Na fila para verificação"
@@ -434,8 +434,8 @@ msgstr "Onde procurar por ficheiros de configuração"
 msgid "Start with all torrents paused"
 msgstr "Iniciar com todos os torrents em pausa"
 
-msgid "Start minimized in notification area"
-msgstr "Iniciar minimizado na área de notificações"
+msgid "Start _minimized in notification area"
+msgstr "Íniciar _minimizado na área de notificações"
 
 msgid "Show version number and exit"
 msgstr "Mostrar número da versão e sair"
@@ -548,14 +548,14 @@ msgstr "Hora"
 msgid "Open File"
 msgstr "Abrir ficheiro"
 
-msgid "Open Folder"
-msgstr "Abrir pasta"
+msgid "Open Fold_er"
+msgstr "Abrir _pasta"
 
 msgid "Download Complete"
 msgstr "Torrent terminado"
 
-msgid "Start Now"
-msgstr "Iniciar agora"
+msgid "Start _Now"
+msgstr "Iniciar _Agora"
 
 msgid "Torrent Added"
 msgstr "Torrent adicionado"
@@ -832,14 +832,8 @@ msgstr "_Torrent"
 msgid "_Properties"
 msgstr "_Propriedades"
 
-msgid "Open Fold_er"
-msgstr "Abrir _pasta"
-
 msgid "_Start"
 msgstr "_Iniciar"
-
-msgid "Start _Now"
-msgstr "Iniciar _Agora"
 
 msgid "Ask Tracker for _More Peers"
 msgstr "Pedir ao rastreador _mais pares"
@@ -943,7 +937,6 @@ msgstr "_Conteúdos"
 msgid "_About"
 msgstr "_Acerca"
 
-#, fuzzy
 msgid "Alternative Speed _Limits"
 msgstr "Limites de velocidade alternativos"
 
@@ -1020,8 +1013,8 @@ msgstr "Criado a {date}"
 msgid "Added:"
 msgstr ""
 
-msgid "Comment:"
-msgstr "Comentário:"
+msgid "Co_mment:"
+msgstr "Co_mentário:"
 
 msgid "Information"
 msgstr "Informação"
@@ -1105,12 +1098,6 @@ msgstr "Remover torrent"
 msgid "Torrent properties"
 msgstr "Propriedades do torrent"
 
-msgid "Torrent"
-msgstr "Torrent"
-
-msgid "Statistics"
-msgstr "Estatísticas"
-
 msgid "New Torrent"
 msgstr "Novo torrent"
 
@@ -1131,14 +1118,8 @@ msgstr "Ficheiro de _fonte:"
 msgid "Piece si_ze:"
 msgstr ""
 
-msgid "Properties"
-msgstr "Propriedades"
-
 msgid "_Trackers:"
 msgstr "_Rastreadores:"
-
-msgid "Co_mment:"
-msgstr "Co_mentário:"
 
 msgid "_Source:"
 msgstr "_Fonte:"
@@ -1148,9 +1129,6 @@ msgstr "Torrent _privado"
 
 msgid "Creating torrent…"
 msgstr "A criar o torrent…"
-
-msgid "Message Log"
-msgstr "Registo de mensagens"
 
 msgid "Save _As"
 msgstr "Grav_ar como"
@@ -1197,9 +1175,6 @@ msgstr "_Carregamento:"
 #. Checkbox to limit download speed
 msgid "_Download:"
 msgstr "_Transferência:"
-
-msgid "Alternative Speed Limits"
-msgstr "Limites de velocidade alternativos"
 
 msgid "Override normal speed limits manually or at scheduled times"
 msgstr "Ignorar limites de velocidade normal manualmente ou em horas programadas"
@@ -1269,12 +1244,6 @@ msgstr "A Transferir"
 
 msgid "Limits"
 msgstr "Limites"
-
-msgid "Stop seeding at _ratio:"
-msgstr "Parar de semear no _rácio:"
-
-msgid "Stop seedi_ng if idle for:"
-msgstr "Parar de efetuar _seed se inativo durante:"
 
 msgid "Call scrip_t when done seeding:"
 msgstr ""
@@ -1453,9 +1422,6 @@ msgstr "Os d_ados locais já estão lá"
 
 msgid "Current Session"
 msgstr "Sessão atual"
-
-msgid "Ratio:"
-msgstr "Rácio:"
 
 msgid "Duration:"
 msgstr "Duração:"
@@ -2083,9 +2049,6 @@ msgstr ""
 msgid "C_redits"
 msgstr "C_réditos"
 
-msgid "Credits"
-msgstr "Créditos"
-
 msgid "About {appname}"
 msgstr "Acerca do {appname}"
 
@@ -2119,9 +2082,6 @@ msgstr "Desmarcar Selecionadas"
 
 msgid "Only Check Selected"
 msgstr "Apenas Marcar Selecionadas"
-
-msgid "Open"
-msgstr "Abrir"
 
 msgid "Rename…"
 msgstr ""
@@ -2188,9 +2148,6 @@ msgstr "Verificar dados locais"
 
 msgid "Remove torrent and delete its files"
 msgstr "Remover torrent e apagar os ficheiros"
-
-msgid "Compact View"
-msgstr "Visão comprimida"
 
 msgid "_Main Window"
 msgstr "_Janela Principal"
@@ -2273,9 +2230,6 @@ msgstr ""
 
 msgid "Encryption"
 msgstr "Encriptação"
-
-msgid "Start _minimized in notification area"
-msgstr "Íniciar _minimizado na área de notificações"
 
 #, fuzzy
 #| msgid "Retransmission"

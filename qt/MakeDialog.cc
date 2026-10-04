@@ -226,6 +226,7 @@ MakeDialog::MakeDialog(Session& session, QWidget* parent)
     , session_{ session }
 {
     ui_.setupUi(this);
+    ui_.propertiesSection->setTitle(TR_STRIP_MNEMONIC("_Properties"));
 
     ui_.destinationButton->setMode(PathButton::DirectoryMode);
     ui_.destinationButton->setPath(QDir::homePath());

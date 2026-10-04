@@ -139,14 +139,14 @@ msgstr "전체 설정 사용"
 msgid "Seed regardless of ratio"
 msgstr "비율과 상관없이 배포"
 
-msgid "Stop seeding at ratio:"
-msgstr "설정한 비율에서 배포 중지:"
+msgid "Stop seeding at _ratio:"
+msgstr "설정한 비율에서 배포 중지(_R):"
 
 msgid "Seed regardless of activity"
 msgstr "상태와 상관없이 배포"
 
-msgid "Stop seeding if idle for:"
-msgstr "비활성화 되면 시드 중지"
+msgid "Stop seedi_ng if idle for:"
+msgstr "비활성화 되면 시드 중지 (_N)"
 
 msgid "Queued for verification"
 msgstr "검사를 위해 대기"
@@ -441,8 +441,8 @@ msgstr "설정 파일을 찾아볼 위치"
 msgid "Start with all torrents paused"
 msgstr "모든 토렌트를 멈춘 상태로 시작"
 
-msgid "Start minimized in notification area"
-msgstr "알림 영역에 최소화된 상태로 시작"
+msgid "Start _minimized in notification area"
+msgstr "시작시 알람 영역에 최소화"
 
 msgid "Show version number and exit"
 msgstr "버전 번호를 보여주고 마침"
@@ -555,14 +555,14 @@ msgstr "시간"
 msgid "Open File"
 msgstr "파일 열기"
 
-msgid "Open Folder"
-msgstr "폴더 열기"
+msgid "Open Fold_er"
+msgstr "폴더 열기(_E)"
 
 msgid "Download Complete"
 msgstr "토렌트 완료"
 
-msgid "Start Now"
-msgstr "지금 시작"
+msgid "Start _Now"
+msgstr "지금 시작(_N)"
 
 msgid "Torrent Added"
 msgstr "토렌트 추가됨"
@@ -826,14 +826,8 @@ msgstr "Torrent (_T)"
 msgid "_Properties"
 msgstr "속성 (_P)"
 
-msgid "Open Fold_er"
-msgstr "폴더 열기(_E)"
-
 msgid "_Start"
 msgstr "시작(_S)"
-
-msgid "Start _Now"
-msgstr "지금 시작(_N)"
 
 msgid "Ask Tracker for _More Peers"
 msgstr "더 많은 피어를 트래커에 요청(_M)"
@@ -937,8 +931,6 @@ msgstr "차례(_C)"
 msgid "_About"
 msgstr "정보(_A)"
 
-#, fuzzy
-#| msgid "Alternative Speed Limits"
 msgid "Alternative Speed _Limits"
 msgstr "대체 속도 제한"
 
@@ -1015,8 +1007,8 @@ msgstr "{date}에 만듦"
 msgid "Added:"
 msgstr "추가됨:"
 
-msgid "Comment:"
-msgstr "주석:"
+msgid "Co_mment:"
+msgstr "설명(_M):"
 
 msgid "Information"
 msgstr "정보"
@@ -1100,12 +1092,6 @@ msgstr "토렌트 제거"
 msgid "Torrent properties"
 msgstr "토렌트 속성"
 
-msgid "Torrent"
-msgstr "토렌트"
-
-msgid "Statistics"
-msgstr "통계"
-
 msgid "New Torrent"
 msgstr "새 토렌트"
 
@@ -1128,14 +1114,8 @@ msgstr "소스 파일 (_O)"
 msgid "Piece si_ze:"
 msgstr "조각 크기:"
 
-msgid "Properties"
-msgstr "속성"
-
 msgid "_Trackers:"
 msgstr "트래커(_T):"
-
-msgid "Co_mment:"
-msgstr "설명(_M):"
 
 msgid "_Source:"
 msgstr "소스(_S):"
@@ -1145,9 +1125,6 @@ msgstr "토렌트 비공개(_P)"
 
 msgid "Creating torrent…"
 msgstr "토렌트를 만드는 중…"
-
-msgid "Message Log"
-msgstr "메시지 로그"
 
 msgid "Save _As"
 msgstr "다른 이름으로 저장(_A)"
@@ -1194,9 +1171,6 @@ msgstr "업로드 (_U): "
 #. Checkbox to limit download speed
 msgid "_Download:"
 msgstr "다운로드 (_D): "
-
-msgid "Alternative Speed Limits"
-msgstr "대체 속도 제한"
 
 msgid "Override normal speed limits manually or at scheduled times"
 msgstr "기본 속도 제한을 직접 선택하거나 예정된 시간 동안 제한합니다"
@@ -1268,12 +1242,6 @@ msgstr "다운로드"
 
 msgid "Limits"
 msgstr "제한"
-
-msgid "Stop seeding at _ratio:"
-msgstr "설정한 비율에서 배포 중지(_R):"
-
-msgid "Stop seedi_ng if idle for:"
-msgstr "비활성화 되면 시드 중지 (_N)"
 
 msgid "Call scrip_t when done seeding:"
 msgstr "시드가 완료되면 호출 스크립트(_T):"
@@ -1452,9 +1420,6 @@ msgstr "다운 받은 데이터가 이미 존재함(_A)"
 
 msgid "Current Session"
 msgstr "현재 세션"
-
-msgid "Ratio:"
-msgstr "비율:"
 
 msgid "Duration:"
 msgstr "실행 시간:"
@@ -2052,9 +2017,6 @@ msgstr ""
 msgid "C_redits"
 msgstr "크레딧 (_R)"
 
-msgid "Credits"
-msgstr "크레딧"
-
 msgid "About {appname}"
 msgstr "{appname}에 대하여"
 
@@ -2086,9 +2048,6 @@ msgstr "선택항목 체크 해제"
 
 msgid "Only Check Selected"
 msgstr "오직 선택항목만 체크"
-
-msgid "Open"
-msgstr "열기"
 
 msgid "Rename…"
 msgstr ""
@@ -2153,9 +2112,6 @@ msgstr "로컬 데이터 검증"
 
 msgid "Remove torrent and delete its files"
 msgstr "Torrent 파일과 데이터 삭제"
-
-msgid "Compact View"
-msgstr "간략하게 보기"
 
 msgid "_Main Window"
 msgstr "주 윈도 (_M)"
@@ -2234,9 +2190,6 @@ msgstr ""
 
 msgid "Encryption"
 msgstr "암호화"
-
-msgid "Start _minimized in notification area"
-msgstr "시작시 알람 영역에 최소화"
 
 #, fuzzy
 #| msgid "Retransmission"

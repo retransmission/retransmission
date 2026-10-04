@@ -132,14 +132,14 @@ msgstr "Pakai pengaturan global"
 msgid "Seed regardless of ratio"
 msgstr "Membibit tak peduli rasio"
 
-msgid "Stop seeding at ratio:"
-msgstr "Berhenti membibit pada rasio:"
+msgid "Stop seeding at _ratio:"
+msgstr "Berhenti membibit pada _rasio:"
 
 msgid "Seed regardless of activity"
 msgstr "Membibit tak peduli aktivitas"
 
-msgid "Stop seeding if idle for:"
-msgstr "Berhenti membenih bila menganggur selama:"
+msgid "Stop seedi_ng if idle for:"
+msgstr "Berhenti membibit bila me_nganggur selama:"
 
 msgid "Queued for verification"
 msgstr "Diantrikan untuk verifikasi"
@@ -438,8 +438,8 @@ msgstr "Lokasi berkas konfigurasi"
 msgid "Start with all torrents paused"
 msgstr "Mulai dengan semua torrent diistirahatkan"
 
-msgid "Start minimized in notification area"
-msgstr "Mulai terminimalkan dalam area pemberitahuan"
+msgid "Start _minimized in notification area"
+msgstr "Mulai _minimalkan di area notifikasi"
 
 msgid "Show version number and exit"
 msgstr "Tampilkan nomor versi dan keluar"
@@ -552,14 +552,14 @@ msgstr "Waktu"
 msgid "Open File"
 msgstr "Buka Berkas"
 
-msgid "Open Folder"
-msgstr "Buka Direktori"
+msgid "Open Fold_er"
+msgstr "Buka Fold_er"
 
 msgid "Download Complete"
 msgstr "Torrent Selesai"
 
-msgid "Start Now"
-msgstr "Mulai Sekarang"
+msgid "Start _Now"
+msgstr "Mulai Sekara_ng"
 
 msgid "Torrent Added"
 msgstr "Torrent Ditambahkan"
@@ -822,14 +822,8 @@ msgstr "_Torrent"
 msgid "_Properties"
 msgstr "_Properti"
 
-msgid "Open Fold_er"
-msgstr "Buka Fold_er"
-
 msgid "_Start"
 msgstr "_Mulai"
-
-msgid "Start _Now"
-msgstr "Mulai Sekara_ng"
 
 msgid "Ask Tracker for _More Peers"
 msgstr "Tanya Pelacak untuk _Rekan Lebih Banyak"
@@ -934,8 +928,6 @@ msgstr "_Konten"
 msgid "_About"
 msgstr "Perih_al"
 
-#, fuzzy
-#| msgid "Alternative Speed Limits"
 msgid "Alternative Speed _Limits"
 msgstr "Batas Kecepatan Alternatif"
 
@@ -1012,8 +1004,8 @@ msgstr "Dibuat pada {date}"
 msgid "Added:"
 msgstr "Ditambahkan:"
 
-msgid "Comment:"
-msgstr "Komentar:"
+msgid "Co_mment:"
+msgstr "K_omentar:"
 
 msgid "Information"
 msgstr "Informasi"
@@ -1097,12 +1089,6 @@ msgstr "Hilangkan torrent"
 msgid "Torrent properties"
 msgstr "Properti torrent"
 
-msgid "Torrent"
-msgstr "Torrent"
-
-msgid "Statistics"
-msgstr "Statistik"
-
 msgid "New Torrent"
 msgstr "Torrent Baru"
 
@@ -1125,14 +1111,8 @@ msgstr "Berkas s_umber:"
 msgid "Piece si_ze:"
 msgstr "Ukuran _pecahan:"
 
-msgid "Properties"
-msgstr "Properti"
-
 msgid "_Trackers:"
 msgstr "_Pelacak:"
-
-msgid "Co_mment:"
-msgstr "K_omentar:"
 
 msgid "_Source:"
 msgstr "_Sumber:"
@@ -1142,9 +1122,6 @@ msgstr "Torrent _privat"
 
 msgid "Creating torrent…"
 msgstr "Membuat torrent…"
-
-msgid "Message Log"
-msgstr "Log Pesan"
 
 msgid "Save _As"
 msgstr "Simp_an Sebagai"
@@ -1191,9 +1168,6 @@ msgstr "_Unggah:"
 #. Checkbox to limit download speed
 msgid "_Download:"
 msgstr "Un_duh:"
-
-msgid "Alternative Speed Limits"
-msgstr "Batas Kecepatan Alternatif"
 
 msgid "Override normal speed limits manually or at scheduled times"
 msgstr "Timpa batas kecepatan normal secara manual atau pada waktu terjadwal"
@@ -1267,12 +1241,6 @@ msgstr "Mengunduh"
 
 msgid "Limits"
 msgstr "Batas"
-
-msgid "Stop seeding at _ratio:"
-msgstr "Berhenti membibit pada _rasio:"
-
-msgid "Stop seedi_ng if idle for:"
-msgstr "Berhenti membibit bila me_nganggur selama:"
 
 msgid "Call scrip_t when done seeding:"
 msgstr ""
@@ -1451,9 +1419,6 @@ msgstr "Data lokal sudah _ada di sana"
 
 msgid "Current Session"
 msgstr "Sesi saat ini"
-
-msgid "Ratio:"
-msgstr "Rasio:"
 
 msgid "Duration:"
 msgstr "Durasi:"
@@ -2037,9 +2002,6 @@ msgstr "Server"
 msgid "C_redits"
 msgstr "K_redit"
 
-msgid "Credits"
-msgstr "Kredit"
-
 msgid "About {appname}"
 msgstr "Tentang {appname}"
 
@@ -2071,9 +2033,6 @@ msgstr "Jangan Periksa Yang Dipilih"
 
 msgid "Only Check Selected"
 msgstr "Hanya Periksa Yang Dipilih"
-
-msgid "Open"
-msgstr "Buka"
 
 msgid "Rename…"
 msgstr ""
@@ -2138,9 +2097,6 @@ msgstr "Verifikasi Data Lokal"
 
 msgid "Remove torrent and delete its files"
 msgstr "Hilangkan torrent dan hapus berkasnya"
-
-msgid "Compact View"
-msgstr "Tampilan Kompak"
 
 msgid "_Main Window"
 msgstr "_Jendela Utama"
@@ -2221,9 +2177,6 @@ msgstr "Deteksi torrent baru dari papan klip"
 
 msgid "Encryption"
 msgstr "Enkripsi"
-
-msgid "Start _minimized in notification area"
-msgstr "Mulai _minimalkan di area notifikasi"
 
 #, fuzzy
 #| msgid "Retransmission"

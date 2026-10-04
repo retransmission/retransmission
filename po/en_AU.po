@@ -128,9 +128,6 @@ msgstr "Use global settings"
 msgid "Seed regardless of ratio"
 msgstr "Seed regardless of ratio"
 
-msgid "Stop seeding at ratio:"
-msgstr "Stop seeding at ratio:"
-
 msgid "Seed regardless of activity"
 msgstr "Seed regardless of activity"
 
@@ -589,14 +586,8 @@ msgstr ""
 msgid "Open File"
 msgstr "Open File"
 
-msgid "Open Folder"
-msgstr "Open Folder"
-
 msgid "Download Complete"
 msgstr "Torrent Complete"
-
-msgid "Start Now"
-msgstr ""
 
 msgid "Torrent Added"
 msgstr "Torrent Added"
@@ -901,7 +892,7 @@ msgstr "Where to look for configuration files"
 msgid "Start with all torrents paused"
 msgstr "Start with all torrents paused"
 
-msgid "Start minimized in notification area"
+msgid "Start _minimized in notification area"
 msgstr "Start minimised in notification area"
 
 msgid "Show version number and exit"
@@ -1005,7 +996,7 @@ msgid "_Preferences"
 msgstr ""
 
 msgid "_Properties"
-msgstr ""
+msgstr "Properties"
 
 msgid "Torrent properties"
 msgstr "Torrent properties"
@@ -1184,9 +1175,6 @@ msgstr "Origin:"
 msgid "Added:"
 msgstr ""
 
-msgid "Comment:"
-msgstr "Comment:"
-
 msgid "Information"
 msgstr "Information"
 
@@ -1252,11 +1240,8 @@ msgstr ""
 msgid "Also see Default Public Trackers in Edit > Preferences > Network"
 msgstr ""
 
-msgid "Torrent"
+msgid "_Torrent"
 msgstr "Torrent"
-
-msgid "Statistics"
-msgstr "Statistics"
 
 msgid "New Torrent"
 msgstr "New Torrent"
@@ -1276,9 +1261,6 @@ msgstr "Source _File:"
 msgid "Piece size:"
 msgstr ""
 
-msgid "Properties"
-msgstr "Properties"
-
 msgid "_Trackers:"
 msgstr "_Trackers:"
 
@@ -1293,9 +1275,6 @@ msgstr "_Private torrent"
 
 msgid "Creating torrent…"
 msgstr "Creating torrent…"
-
-msgid "Message Log"
-msgstr "Message Log"
 
 msgid "Save _As"
 msgstr ""
@@ -1347,7 +1326,7 @@ msgstr ""
 msgid "_Download:"
 msgstr ""
 
-msgid "Alternative Speed Limits"
+msgid "Alternative Speed _Limits"
 msgstr "Alternative Speed Limits"
 
 msgid "Override normal speed limits manually or at scheduled times"
@@ -1580,9 +1559,6 @@ msgstr "Local data is _already there"
 
 msgid "Current Session"
 msgstr "Current Session"
-
-msgid "Ratio:"
-msgstr "Ratio:"
 
 msgid "Duration:"
 msgstr "Duration:"

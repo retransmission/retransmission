@@ -142,14 +142,14 @@ msgstr "שימוש בהגדרות כלליות"
 msgid "Seed regardless of ratio"
 msgstr "זריעה ללא התחשבות ביחס"
 
-msgid "Stop seeding at ratio:"
-msgstr "הפסקת זריעה ביחס:"
+msgid "Stop seeding at _ratio:"
+msgstr "הפסקת זריעה בי_חס:"
 
 msgid "Seed regardless of activity"
 msgstr "זריעה ללא התחשבות ברמת הפעילות"
 
-msgid "Stop seeding if idle for:"
-msgstr "הפסקת זריעה בחוסר פעילות למשך:"
+msgid "Stop seedi_ng if idle for:"
+msgstr "הפסקת זריעה בחוסר _פעילות למשך:"
 
 #. Translators: Torrent -> status string
 msgid "Queued for verification"
@@ -503,8 +503,8 @@ msgstr "איפה לחפש קובצי הגדרות"
 msgid "Start with all torrents paused"
 msgstr "התחלה במצב משהה של כל הטורנטים"
 
-msgid "Start minimized in notification area"
-msgstr "התחלה ממוזערת של אזור הודעות"
+msgid "Start _minimized in notification area"
+msgstr "התחלה ממו_זערת של אזור הודעות"
 
 msgid "Show version number and exit"
 msgstr "להציג את מספר הגירסה ולצאת"
@@ -637,15 +637,15 @@ msgstr "זמן"
 msgid "Open File"
 msgstr "פתיחת קובץ"
 
-msgid "Open Folder"
-msgstr "פתיחת תיקייה"
+msgid "Open Fold_er"
+msgstr "פתיחת תי_קייה"
 
 #. Translators: notification title
 msgid "Download Complete"
 msgstr "ההורדה הושלמה"
 
-msgid "Start Now"
-msgstr "להתחיל עכשיו"
+msgid "Start _Now"
+msgstr "התחלה _כעת"
 
 #. Translators: notification title
 msgid "Torrent Added"
@@ -660,6 +660,8 @@ msgstr "כל הקבצים"
 msgid "Open a Torrent"
 msgstr "פתיחת טורנט"
 
+#. Translators: Open toolbar item -> label
+#. Translators: URL sheet button
 msgid "_Open"
 msgstr "_פתיחה"
 
@@ -939,15 +941,9 @@ msgstr "_טורנט"
 msgid "_Properties"
 msgstr "מ_אפיינים"
 
-msgid "Open Fold_er"
-msgstr "פתיחת תי_קייה"
-
 #. Translators: Selected toolbar item -> label
 msgid "_Start"
 msgstr "_התחלה"
-
-msgid "Start _Now"
-msgstr "התחלה _כעת"
 
 msgid "Ask Tracker for _More Peers"
 msgstr "בקשת עמיתים _נוספים מהעוקב"
@@ -1038,9 +1034,11 @@ msgstr "מיון בסדר ה_פוך"
 msgid "_Help"
 msgstr "ע_זרה"
 
+#. Translators: Message window -> title
 msgid "Message _Log"
 msgstr "יו_מן הודעות"
 
+#. Translators: Stats window -> title
 msgid "_Statistics"
 msgstr "_סטטיסטיקה"
 
@@ -1054,8 +1052,8 @@ msgstr "ת_כנים"
 msgid "_About"
 msgstr "על _אודות"
 
-#, fuzzy
-#| msgid "Alternative Speed Limits"
+#. Translators: Dock item
+#. Translators: Status Bar -> speed tooltip
 msgid "Alternative Speed _Limits"
 msgstr "מגבלות מהירות חלופיות"
 
@@ -1135,8 +1133,8 @@ msgstr "מועד יצירה:"
 msgid "Added:"
 msgstr "נוסף:"
 
-msgid "Comment:"
-msgstr "הערה:"
+msgid "Co_mment:"
+msgstr "ה_ערה:"
 
 #. Translators: Inspector view -> title
 #. Translators: Inspector -> tab
@@ -1182,6 +1180,7 @@ msgstr "עדיפות ה_טורנט:"
 msgid "Seeding Limits"
 msgstr "מגבלות זריעה"
 
+#. Translators: Stats window -> label
 msgid "_Ratio:"
 msgstr "י_חס:"
 
@@ -1236,13 +1235,6 @@ msgstr "הסרת טורנט"
 msgid "Torrent properties"
 msgstr "מאפייני הטורנט"
 
-msgid "Torrent"
-msgstr "טורנט"
-
-#. Translators: Stats window -> title
-msgid "Statistics"
-msgstr "סטטיסטיקה"
-
 msgid "New Torrent"
 msgstr "טורנט חדש"
 
@@ -1265,14 +1257,8 @@ msgstr "_קובץ מקור:"
 msgid "Piece si_ze:"
 msgstr "גודל חלק:"
 
-msgid "Properties"
-msgstr "מאפיינים"
-
 msgid "_Trackers:"
 msgstr "_עוקבים:"
-
-msgid "Co_mment:"
-msgstr "ה_ערה:"
 
 msgid "_Source:"
 msgstr "_מקור:"
@@ -1282,10 +1268,6 @@ msgstr "טורנט _פרטי"
 
 msgid "Creating torrent…"
 msgstr "נוצר טורנט…"
-
-#. Translators: Message window -> title
-msgid "Message Log"
-msgstr "יומן הודעות"
 
 msgid "Save _As"
 msgstr "שמירה _בשם"
@@ -1333,11 +1315,6 @@ msgstr "ה_עלאה:"
 #. Checkbox to limit download speed
 msgid "_Download:"
 msgstr "הו_רדה:"
-
-#. Translators: Dock item
-#. Translators: Status Bar -> speed tooltip
-msgid "Alternative Speed Limits"
-msgstr "מגבלות מהירות חלופיות"
 
 msgid "Override normal speed limits manually or at scheduled times"
 msgstr "לדרוס את מגבלות המהירות התקניות באופן ידני או במועדים מתוזמנים"
@@ -1413,12 +1390,6 @@ msgstr "הורדה"
 
 msgid "Limits"
 msgstr "מגבלות"
-
-msgid "Stop seeding at _ratio:"
-msgstr "הפסקת זריעה בי_חס:"
-
-msgid "Stop seedi_ng if idle for:"
-msgstr "הפסקת זריעה בחוסר _פעילות למשך:"
 
 msgid "Call scrip_t when done seeding:"
 msgstr "לקרוא לסקריפט עם סיום ה_זריעה:"
@@ -1600,10 +1571,6 @@ msgstr "הנתונים המקומיים כבר _שם"
 
 msgid "Current Session"
 msgstr "מופע נוכחי"
-
-#. Translators: Stats window -> label
-msgid "Ratio:"
-msgstr "יחס:"
 
 msgid "Duration:"
 msgstr "משך זמן:"
@@ -2480,9 +2447,6 @@ msgstr "העתקה"
 msgid "Paste"
 msgstr "הדבקה"
 
-msgid "Compact View"
-msgstr "תצוגה חסכונית"
-
 msgid "Pieces Bar"
 msgstr "סרגל חלקים"
 
@@ -2907,11 +2871,6 @@ msgstr "יצירת קובץ טורנט"
 
 msgid "Create a new torrent"
 msgstr "יצירת טורנט חדש"
-
-#. Translators: Open toolbar item -> label
-#. Translators: URL sheet button
-msgid "Open"
-msgstr "פתיחה"
 
 #. Translators: Open toolbar item -> palette label
 msgid "Open Torrent Files"
@@ -3490,9 +3449,6 @@ msgstr "שרת"
 msgid "C_redits"
 msgstr "_מזכים"
 
-msgid "Credits"
-msgstr "מזכים"
-
 msgid "About {appname}"
 msgstr "על {appname}"
 
@@ -3627,9 +3583,6 @@ msgstr "זיהוי טורנטים חדשים מלוח הגזירים"
 
 msgid "Encryption"
 msgstr "הצפנה"
-
-msgid "Start _minimized in notification area"
-msgstr "התחלה ממו_זערת של אזור הודעות"
 
 #, fuzzy
 #| msgid "Retransmission"

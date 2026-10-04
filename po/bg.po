@@ -151,9 +151,6 @@ msgstr "Използвай общите настройки"
 msgid "Seed regardless of ratio"
 msgstr "Разпространявай независимо от коефициента"
 
-msgid "Stop seeding at ratio:"
-msgstr "Прекрати разпространяването при коефициент:"
-
 msgid "Seed regardless of activity"
 msgstr "Разпространявай независимо от активността"
 
@@ -616,14 +613,8 @@ msgstr "Неуспешно създаване на прокси за '{bus}': {e
 msgid "Open File"
 msgstr "Отвори файла"
 
-msgid "Open Folder"
-msgstr "Отвори папката"
-
 msgid "Download Complete"
 msgstr "Торентът е завършен"
-
-msgid "Start Now"
-msgstr "Започни Сега"
 
 msgid "Torrent Added"
 msgstr "Торентът е добавен"
@@ -928,7 +919,7 @@ msgstr "Местоположение на конфигурационните ф�
 msgid "Start with all torrents paused"
 msgstr "Стартирай с всички торенти на пауза"
 
-msgid "Start minimized in notification area"
+msgid "Start _minimized in notification area"
 msgstr "Стартирай в минимизирано състояние в областта за уведомяване"
 
 msgid "Show version number and exit"
@@ -1211,9 +1202,6 @@ msgstr "Произход:"
 msgid "Added:"
 msgstr ""
 
-msgid "Comment:"
-msgstr "Коментар:"
-
 msgid "Information"
 msgstr "Информация"
 
@@ -1279,11 +1267,8 @@ msgstr ""
 msgid "Also see Default Public Trackers in Edit > Preferences > Network"
 msgstr ""
 
-msgid "Torrent"
+msgid "_Torrent"
 msgstr "Торент"
-
-msgid "Statistics"
-msgstr "Статистика"
 
 msgid "New Torrent"
 msgstr "Нов торент"
@@ -1303,9 +1288,6 @@ msgstr "Изходен _файл:"
 msgid "Piece size:"
 msgstr ""
 
-msgid "Properties"
-msgstr "Свойства"
-
 msgid "_Trackers:"
 msgstr "_Тракери:"
 
@@ -1320,9 +1302,6 @@ msgstr "_Частен торент"
 
 msgid "Creating torrent…"
 msgstr "Създаване на торент…"
-
-msgid "Message Log"
-msgstr "Дневник със съобщения"
 
 msgid "Save _As"
 msgstr "Запазване _като"
@@ -1374,7 +1353,7 @@ msgstr ""
 msgid "_Download:"
 msgstr ""
 
-msgid "Alternative Speed Limits"
+msgid "Alternative Speed _Limits"
 msgstr "Aлтернативни ограничения на скоростта"
 
 msgid "Override normal speed limits manually or at scheduled times"
@@ -1607,9 +1586,6 @@ msgstr "Данните _вече са в указаната папка"
 
 msgid "Current Session"
 msgstr "Текуща сесия"
-
-msgid "Ratio:"
-msgstr "Коефициент:"
 
 msgid "Duration:"
 msgstr "Продължителност:"

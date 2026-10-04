@@ -515,6 +515,8 @@ MakeDialog::Impl::Impl(MakeDialog& dialog, Glib::RefPtr<Gtk::Builder> const& bui
 {
     dialog_.signal_response().connect(sigc::mem_fun(*this, &Impl::onResponse));
 
+    gtr_label_strip_mnemonic(*gtr_get_widget<Gtk::Label>(builder, "properties_section_label"));
+
     destination_chooser_->set_filename(Glib::get_user_special_dir(TR_GLIB_USER_DIRECTORY(DESKTOP)));
 
     folder_radio_->signal_toggled().connect([this]() { onSourceToggled(folder_radio_, folder_chooser_); });

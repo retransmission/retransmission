@@ -828,6 +828,8 @@ public:
 SpeedPage::SpeedPage(BaseObjectType* cast_item, Glib::RefPtr<Gtk::Builder> const& builder, Glib::RefPtr<Session> const& core)
     : PageBase(cast_item, builder, core)
 {
+    gtr_label_strip_mnemonic(*get_widget<Gtk::Label>("alt_speed_limits_section_label"));
+
     auto const speed_units_kbyps_str = std::string{ Speed::units().display_name(Speed::Units::KByps) };
 
     init_check_button("upload_limit_check", TR_KEY_speed_limit_up_enabled);

@@ -132,9 +132,6 @@ msgstr "আন্তর্জাতিক সেটিং ব্যবহার"
 msgid "Seed regardless of ratio"
 msgstr "অনুপাত নির্বিশেষে সীড"
 
-msgid "Stop seeding at ratio:"
-msgstr "অনুপাত এ সীডিং বন্ধ করুন:"
-
 msgid "Seed regardless of activity"
 msgstr "বীজ নির্বিশেষে কার্যকলাপ"
 
@@ -593,14 +590,8 @@ msgstr ""
 msgid "Open File"
 msgstr "ফাইল খুলুন"
 
-msgid "Open Folder"
-msgstr "ফোল্ডার খুলুন"
-
 msgid "Download Complete"
 msgstr "টরেন্ট সম্পন্ন"
-
-msgid "Start Now"
-msgstr ""
 
 msgid "Torrent Added"
 msgstr "টরেন্ট যোগ করা হয়েছে"
@@ -906,7 +897,7 @@ msgstr "কনফিগারেশন ফাইল কোথায় অনুস
 msgid "Start with all torrents paused"
 msgstr "সমস্ত স্হগিত টরেন্ট থেকে শুরু করুন"
 
-msgid "Start minimized in notification area"
+msgid "Start _minimized in notification area"
 msgstr "বিজ্ঞপ্তি এলাকায় হ্রাস করা শুরু করুন"
 
 msgid "Show version number and exit"
@@ -1010,7 +1001,7 @@ msgid "_Preferences"
 msgstr ""
 
 msgid "_Properties"
-msgstr ""
+msgstr "বৈশিষ্ট্যাবলী"
 
 msgid "Torrent properties"
 msgstr "টরেনট বৈশিষ্ট্যাবলী"
@@ -1189,9 +1180,6 @@ msgstr "উৎসঃ"
 msgid "Added:"
 msgstr ""
 
-msgid "Comment:"
-msgstr "মন্তব্য:"
-
 msgid "Information"
 msgstr "তথ্য"
 
@@ -1257,11 +1245,8 @@ msgstr ""
 msgid "Also see Default Public Trackers in Edit > Preferences > Network"
 msgstr ""
 
-msgid "Torrent"
+msgid "_Torrent"
 msgstr "টরেন্ট"
-
-msgid "Statistics"
-msgstr "পরিসংখ্যান"
 
 msgid "New Torrent"
 msgstr "নতুন টরেন্ট"
@@ -1281,9 +1266,6 @@ msgstr "উত্স ফাইল: (_F)"
 msgid "Piece size:"
 msgstr ""
 
-msgid "Properties"
-msgstr "বৈশিষ্ট্যাবলী"
-
 msgid "_Trackers:"
 msgstr "ট্র্যাকার: (_T)"
 
@@ -1298,9 +1280,6 @@ msgstr "টরেন্ট ব্যক্তিগত (_P)"
 
 msgid "Creating torrent…"
 msgstr "টরেন্ট তৈরি করা হচ্ছে…"
-
-msgid "Message Log"
-msgstr "বার্তার লগ"
 
 msgid "Save _As"
 msgstr ""
@@ -1352,7 +1331,7 @@ msgstr ""
 msgid "_Download:"
 msgstr ""
 
-msgid "Alternative Speed Limits"
+msgid "Alternative Speed _Limits"
 msgstr "বিকল্প গতিসীমা"
 
 msgid "Override normal speed limits manually or at scheduled times"
@@ -1585,9 +1564,6 @@ msgstr "স্হানীয় উপাত্ত ইতিমধ্যে সে
 
 msgid "Current Session"
 msgstr "বর্তমান সেশন"
-
-msgid "Ratio:"
-msgstr "সম্পর্ক"
 
 msgid "Duration:"
 msgstr "স্থিতিকাল:"

@@ -143,9 +143,6 @@
        </item>
        <item>
         <widget class="IconToolButton" name="statsModeButton">
-         <property name="toolTip">
-          <string>Statistics</string>
-         </property>
          <property name="icon">
           <iconset resource="application.qrc">
            <normaloff>:/icons/ratio.svg</normaloff>:/icons/ratio.svg</iconset>
@@ -323,9 +320,6 @@
    <property name="text">
     <string>_Open…</string>
    </property>
-   <property name="iconText">
-    <string>Open</string>
-   </property>
    <property name="toolTip">
     <string>Open a torrent</string>
    </property>
@@ -489,12 +483,6 @@
    </property>
    <property name="text">
     <string>_Compact View</string>
-   </property>
-   <property name="iconText">
-    <string>Compact View</string>
-   </property>
-   <property name="toolTip">
-    <string>Compact View</string>
    </property>
    <property name="shortcut">
     <string notr="true">Alt+C</string>

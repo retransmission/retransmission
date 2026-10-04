@@ -1201,6 +1201,8 @@ void DetailsDialog::setEnabled(bool enabled)
 
 void DetailsDialog::initInfoTab()
 {
+    ui_.commentLabel->setText(TR_STRIP_MNEMONIC("Co_mment:"));
+
     int const cbh = QFontMetrics{ ui_.commentTextEdit->font() }.lineSpacing() * 4;
     ui_.commentTextEdit->setFixedHeight(cbh);
 
@@ -1405,11 +1407,11 @@ void DetailsDialog::initOptionsTab()
 
     ui_.ratioCombo->addItem(TR_TEXT("Use global settings"), TR_RATIOLIMIT_GLOBAL);
     ui_.ratioCombo->addItem(TR_TEXT("Seed regardless of ratio"), TR_RATIOLIMIT_UNLIMITED);
-    ui_.ratioCombo->addItem(TR_TEXT("Stop seeding at ratio:"), TR_RATIOLIMIT_SINGLE);
+    ui_.ratioCombo->addItem(TR_STRIP_MNEMONIC("Stop seeding at _ratio:"), TR_RATIOLIMIT_SINGLE);
 
     ui_.idleCombo->addItem(TR_TEXT("Use global settings"), TR_IDLELIMIT_GLOBAL);
     ui_.idleCombo->addItem(TR_TEXT("Seed regardless of activity"), TR_IDLELIMIT_UNLIMITED);
-    ui_.idleCombo->addItem(TR_TEXT("Stop seeding if idle for:"), TR_IDLELIMIT_SINGLE);
+    ui_.idleCombo->addItem(TR_STRIP_MNEMONIC("Stop seedi_ng if idle for:"), TR_IDLELIMIT_SINGLE);
 
     auto* cr = new ColumnResizer{ this };
     cr->addLayout(ui_.speedSectionLayout);

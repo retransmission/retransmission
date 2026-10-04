@@ -124,9 +124,6 @@ msgstr ""
 msgid "Seed regardless of ratio"
 msgstr ""
 
-msgid "Stop seeding at ratio:"
-msgstr ""
-
 msgid "Seed regardless of activity"
 msgstr ""
 
@@ -585,14 +582,8 @@ msgstr ""
 msgid "Open File"
 msgstr "کردنه‌وه‌ی په‌ڕگه‌"
 
-msgid "Open Folder"
-msgstr "کردنه‌وه‌ی بوخچه‌"
-
 msgid "Download Complete"
 msgstr "ته‌واوبوونی تۆرێنت"
-
-msgid "Start Now"
-msgstr ""
 
 msgid "Torrent Added"
 msgstr ""
@@ -897,7 +888,7 @@ msgstr "له‌ کوێ بگه‌ڕێ بۆ په‌ڕگه‌ی شێوه‌پێدا
 msgid "Start with all torrents paused"
 msgstr "ده‌ستپێبکه‌ له‌گه‌ڵ هه‌موو تۆرێنته‌ ڕاگیراوه‌کان"
 
-msgid "Start minimized in notification area"
+msgid "Start _minimized in notification area"
 msgstr ""
 
 msgid "Show version number and exit"
@@ -1007,7 +998,7 @@ msgid "Torrent properties"
 msgstr ""
 
 msgid "Open Fold_er"
-msgstr ""
+msgstr "کردنه‌وه‌ی بوخچه‌"
 
 msgid "_Start"
 msgstr "_ده‌ستپێکردن"
@@ -1180,9 +1171,6 @@ msgstr ""
 msgid "Added:"
 msgstr ""
 
-msgid "Comment:"
-msgstr "لێدوان:"
-
 msgid "Information"
 msgstr "زانیاریی"
 
@@ -1223,7 +1211,7 @@ msgid "Seeding Limits"
 msgstr ""
 
 msgid "_Ratio:"
-msgstr ""
+msgstr "ڕێژه‌:"
 
 msgid "_Idle:"
 msgstr ""
@@ -1248,11 +1236,8 @@ msgstr ""
 msgid "Also see Default Public Trackers in Edit > Preferences > Network"
 msgstr ""
 
-msgid "Torrent"
+msgid "_Torrent"
 msgstr ""
-
-msgid "Statistics"
-msgstr "ئاماره‌کان"
 
 msgid "New Torrent"
 msgstr "تۆرێنتێکی نوێ"
@@ -1272,14 +1257,11 @@ msgstr ""
 msgid "Piece size:"
 msgstr ""
 
-msgid "Properties"
-msgstr ""
-
 msgid "_Trackers:"
 msgstr ""
 
 msgid "Co_mment:"
-msgstr ""
+msgstr "لێدوان:"
 
 msgid "_Source:"
 msgstr ""
@@ -1289,9 +1271,6 @@ msgstr "تۆرێنتی _تایبه‌تی"
 
 msgid "Creating torrent…"
 msgstr ""
-
-msgid "Message Log"
-msgstr "لۆگی په‌یام"
 
 msgid "Save _As"
 msgstr ""
@@ -1343,7 +1322,7 @@ msgstr ""
 msgid "_Download:"
 msgstr ""
 
-msgid "Alternative Speed Limits"
+msgid "Alternative Speed _Limits"
 msgstr ""
 
 msgid "Override normal speed limits manually or at scheduled times"
@@ -1576,9 +1555,6 @@ msgstr ""
 
 msgid "Current Session"
 msgstr ""
-
-msgid "Ratio:"
-msgstr "ڕێژه‌:"
 
 msgid "Duration:"
 msgstr "ماوه‌:"

@@ -32,6 +32,10 @@
 // The catalog marks a mnemonic with "_" and writes a literal underscore as "__", as GTK does.
 #define TR_MNEMONIC(msgid) ::trqt::detail::mnemonicText(msgid)
 
+// Translated text without its mnemonic marker, for a place that doesn't read "&", such as a window title, tooltip or combo box item.
+// That place then shares the catalog entry of a menu item or label: TR_STRIP_MNEMONIC("_Statistics") returns "Statistics".
+#define TR_STRIP_MNEMONIC(msgid) ::trqt::detail::strippedText(msgid)
+
 // Translated text, formatted with {fmt} named arguments:
 // TR_FORMAT("Created by {creator}", fmt::arg("creator", creator))
 // {fmt} is built without exceptions and aborts on a format string that doesn't fit its arguments,
@@ -84,6 +88,8 @@ namespace detail
 [[nodiscard]] QString textInContext(char const* context, char const* msgid);
 
 [[nodiscard]] QString mnemonicText(char const* msgid);
+
+[[nodiscard]] QString strippedText(char const* msgid);
 
 template<typename T>
 concept NamedArg = requires(T const& arg) {

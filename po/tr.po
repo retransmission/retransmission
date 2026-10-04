@@ -128,14 +128,14 @@ msgstr "Genel ayarları kullan"
 msgid "Seed regardless of ratio"
 msgstr "Orandan bağımsız gönderim"
 
-msgid "Stop seeding at ratio:"
-msgstr "Şu oranda gönderimi durdur:"
+msgid "Stop seeding at _ratio:"
+msgstr "Şu _oranda gönderimi durdur:"
 
 msgid "Seed regardless of activity"
 msgstr "Etkinlikten bağımsız gönderim"
 
-msgid "Stop seeding if idle for:"
-msgstr "Eğer şu kadar boşlanırsa gönderimi durdur:"
+msgid "Stop seedi_ng if idle for:"
+msgstr "Eğer boş beklerse _göndermeyi durdur:"
 
 #. Translators: Torrent -> status string
 msgid "Queued for verification"
@@ -482,8 +482,8 @@ msgstr "Yapılandırma dosyaları nerede aransın"
 msgid "Start with all torrents paused"
 msgstr "Tüm torrentleri duraklatılmış başlat"
 
-msgid "Start minimized in notification area"
-msgstr "Bildirim alanına küçültülmüş başlat"
+msgid "Start _minimized in notification area"
+msgstr "Bildirim alanında _küçültülmüş olarak başlat"
 
 msgid "Show version number and exit"
 msgstr "Sürüm numarasını göster ve çık"
@@ -616,15 +616,15 @@ msgstr "Süre"
 msgid "Open File"
 msgstr "Dosya Aç"
 
-msgid "Open Folder"
-msgstr "Klasör Aç"
+msgid "Open Fold_er"
+msgstr "_Klasörü Aç"
 
 #. Translators: notification title
 msgid "Download Complete"
 msgstr "İndirme Bitti"
 
-msgid "Start Now"
-msgstr "Şimdi Başlat"
+msgid "Start _Now"
+msgstr "_Şimdi Başlat"
 
 #. Translators: notification title
 msgid "Torrent Added"
@@ -639,6 +639,8 @@ msgstr "Tüm dosyalar"
 msgid "Open a Torrent"
 msgstr "Torrent Aç"
 
+#. Translators: Open toolbar item -> label
+#. Translators: URL sheet button
 msgid "_Open"
 msgstr "_Aç"
 
@@ -907,15 +909,9 @@ msgstr "_Torrent"
 msgid "_Properties"
 msgstr "_Özellikler"
 
-msgid "Open Fold_er"
-msgstr "_Klasörü Aç"
-
 #. Translators: Selected toolbar item -> label
 msgid "_Start"
 msgstr "_Başlat"
-
-msgid "Start _Now"
-msgstr "_Şimdi Başlat"
 
 msgid "Ask Tracker for _More Peers"
 msgstr "İzleyiciye Daha _Çok Eş Sor"
@@ -1006,9 +1002,11 @@ msgstr "Sıralama Düzenini _Ters Çevir"
 msgid "_Help"
 msgstr "_Yardım"
 
+#. Translators: Message window -> title
 msgid "Message _Log"
 msgstr "İleti _Günlüğü"
 
+#. Translators: Stats window -> title
 msgid "_Statistics"
 msgstr "_İstatistikler"
 
@@ -1022,8 +1020,8 @@ msgstr "_İçindekiler"
 msgid "_About"
 msgstr "_Hakkında"
 
-#, fuzzy
-#| msgid "Alternative Speed Limits"
+#. Translators: Dock item
+#. Translators: Status Bar -> speed tooltip
 msgid "Alternative Speed _Limits"
 msgstr "Alternatif Hız Sınırları"
 
@@ -1103,8 +1101,8 @@ msgstr "Oluşturulma:"
 msgid "Added:"
 msgstr "Eklendi:"
 
-msgid "Comment:"
-msgstr "Yorum:"
+msgid "Co_mment:"
+msgstr "_Yorum:"
 
 #. Translators: Inspector view -> title
 #. Translators: Inspector -> tab
@@ -1150,6 +1148,7 @@ msgstr "Torrent _önceliği:"
 msgid "Seeding Limits"
 msgstr "Gönderim Sınırlamaları"
 
+#. Translators: Stats window -> label
 msgid "_Ratio:"
 msgstr "_Oran:"
 
@@ -1204,13 +1203,6 @@ msgstr "Torrenti kaldır"
 msgid "Torrent properties"
 msgstr "Torrent özellikleri"
 
-msgid "Torrent"
-msgstr "Torrent"
-
-#. Translators: Stats window -> title
-msgid "Statistics"
-msgstr "İstatistikler"
-
 msgid "New Torrent"
 msgstr "Yeni Torrent"
 
@@ -1233,14 +1225,8 @@ msgstr "Kaynak _dosya:"
 msgid "Piece si_ze:"
 msgstr "Parça boyutu:"
 
-msgid "Properties"
-msgstr "Özellikler"
-
 msgid "_Trackers:"
 msgstr "_İzleyiciler:"
-
-msgid "Co_mment:"
-msgstr "_Yorum:"
 
 msgid "_Source:"
 msgstr "_Kaynak:"
@@ -1250,10 +1236,6 @@ msgstr "_Özel torrent"
 
 msgid "Creating torrent…"
 msgstr "Torrent yaratılıyor…"
-
-#. Translators: Message window -> title
-msgid "Message Log"
-msgstr "İleti Günlüğü"
 
 msgid "Save _As"
 msgstr "_Farklı Kaydet"
@@ -1301,11 +1283,6 @@ msgstr "_Yükleme:"
 #. Checkbox to limit download speed
 msgid "_Download:"
 msgstr "_İndirme:"
-
-#. Translators: Dock item
-#. Translators: Status Bar -> speed tooltip
-msgid "Alternative Speed Limits"
-msgstr "Alternatif Hız Sınırları"
 
 msgid "Override normal speed limits manually or at scheduled times"
 msgstr "Normal hız sınırlarını elle veya belirlenmiş zamanlarda geçersiz kıl"
@@ -1381,12 +1358,6 @@ msgstr "İndirme"
 
 msgid "Limits"
 msgstr "Sınırlar"
-
-msgid "Stop seeding at _ratio:"
-msgstr "Şu _oranda gönderimi durdur:"
-
-msgid "Stop seedi_ng if idle for:"
-msgstr "Eğer boş beklerse _göndermeyi durdur:"
 
 msgid "Call scrip_t when done seeding:"
 msgstr "Gönderim bittiğinde çağrılacak be_tik:"
@@ -1568,10 +1539,6 @@ msgstr "Yerel veri _zaten orada"
 
 msgid "Current Session"
 msgstr "Geçerli Oturum"
-
-#. Translators: Stats window -> label
-msgid "Ratio:"
-msgstr "Oran:"
 
 msgid "Duration:"
 msgstr "Süre:"
@@ -2407,9 +2374,6 @@ msgstr "Kopyala"
 msgid "Paste"
 msgstr "Yapıştır"
 
-msgid "Compact View"
-msgstr "Sıkışık Görünüm"
-
 msgid "Pieces Bar"
 msgstr "Parçalar Çubuğu"
 
@@ -2833,11 +2797,6 @@ msgstr "Torrent Dosyası Oluştur"
 
 msgid "Create a new torrent"
 msgstr "Yeni torrent oluştur"
-
-#. Translators: Open toolbar item -> label
-#. Translators: URL sheet button
-msgid "Open"
-msgstr "Aç"
 
 #. Translators: Open toolbar item -> palette label
 msgid "Open Torrent Files"
@@ -3406,9 +3365,6 @@ msgstr "Sunucu"
 msgid "C_redits"
 msgstr "H_azırlayanlar"
 
-msgid "Credits"
-msgstr "Hazırlayanlar"
-
 msgid "About {appname}"
 msgstr "{appname} Hakkında"
 
@@ -3542,9 +3498,6 @@ msgstr "Panodan yeni torrent algıla"
 
 msgid "Encryption"
 msgstr "Şifreleme"
-
-msgid "Start _minimized in notification area"
-msgstr "Bildirim alanında _küçültülmüş olarak başlat"
 
 #, fuzzy
 #| msgid "Retransmission"

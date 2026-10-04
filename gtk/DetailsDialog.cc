@@ -440,7 +440,7 @@ void DetailsDialog::Impl::options_page_init(Glib::RefPtr<Gtk::Builder> const& bu
         {
             { _("Use global settings"), TR_RATIOLIMIT_GLOBAL },
             { _("Seed regardless of ratio"), TR_RATIOLIMIT_UNLIMITED },
-            { _("Stop seeding at ratio:"), TR_RATIOLIMIT_SINGLE },
+            { gtr_strip_mnemonic(_("Stop seeding at _ratio:")), TR_RATIOLIMIT_SINGLE },
         });
     ratio_combo_tag_ = ratio_combo_->signal_changed().connect([this]() {
         torrent_set_field(TR_KEY_seed_ratio_mode, gtr_combo_box_get_active_enum(*ratio_combo_));
@@ -456,7 +456,7 @@ void DetailsDialog::Impl::options_page_init(Glib::RefPtr<Gtk::Builder> const& bu
         {
             { _("Use global settings"), TR_IDLELIMIT_GLOBAL },
             { _("Seed regardless of activity"), TR_IDLELIMIT_UNLIMITED },
-            { _("Stop seeding if idle for:"), TR_IDLELIMIT_SINGLE },
+            { gtr_strip_mnemonic(_("Stop seedi_ng if idle for:")), TR_IDLELIMIT_SINGLE },
         });
     idle_combo_tag_ = idle_combo_->signal_changed().connect([this]() {
         torrent_set_field(TR_KEY_seed_idle_mode, gtr_combo_box_get_active_enum(*idle_combo_));
@@ -892,6 +892,8 @@ void DetailsDialog::Impl::refreshInfo(std::vector<tr_torrent*> const& torrents)
 
 void DetailsDialog::Impl::info_page_init(Glib::RefPtr<Gtk::Builder> const& builder)
 {
+    gtr_label_strip_mnemonic(*gtr_get_widget<Gtk::Label>(builder, "comment_label"));
+
     comment_buffer_ = Gtk::TextBuffer::create();
     auto* tw = gtr_get_widget<Gtk::TextView>(builder, "comment_value_view");
     tw->set_buffer(comment_buffer_);

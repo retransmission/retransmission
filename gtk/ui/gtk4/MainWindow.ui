@@ -187,7 +187,7 @@ horizontal]]></property>
                 <property name="focusable">1</property>
                 <property name="has-frame">0</property>
                 <property name="receives-default">1</property>
-                <property name="tooltip-text" translatable="yes">Statistics</property>
+                <property name="tooltip-text" translatable="yes">_Statistics</property>
                 <child>
                   <object class="GtkImage" id="ratio_button_image">
                     <property name="icon-name">ratio-symbolic</property>

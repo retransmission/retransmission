@@ -9,6 +9,7 @@
 #include "Session.h"
 
 #include <libtransmission-app/interop.h>
+#include <libtransmission-app/l10n.h>
 
 #include <libtransmission/error.h>
 #include <libtransmission/macros.h>
@@ -759,4 +760,14 @@ std::string gtr_get_full_resource_path(std::string const& rel_path)
 Glib::ustring gtr_with_app_name(Glib::ustring const& text)
 {
     return fmt::format(fmt::runtime(text.raw()), fmt::arg("appname", TR_PROJ_APPNAME_CAPITALIZED));
+}
+
+Glib::ustring gtr_strip_mnemonic(Glib::ustring const& text)
+{
+    return tr::app::l10n::strip_mnemonic(text.raw());
+}
+
+void gtr_label_strip_mnemonic(Gtk::Label& label)
+{
+    label.set_label(gtr_strip_mnemonic(label.get_label()));
 }

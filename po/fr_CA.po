@@ -126,9 +126,6 @@ msgstr "Utiliser les paramètres globaux"
 msgid "Seed regardless of ratio"
 msgstr "Propager quel que soit le ratio"
 
-msgid "Stop seeding at ratio:"
-msgstr "Arrêter la propagation au ratio :"
-
 msgid "Seed regardless of activity"
 msgstr "Propager quelle que soit l’activité"
 
@@ -596,14 +593,8 @@ msgstr ""
 msgid "Open File"
 msgstr "Ouvrir un fichier"
 
-msgid "Open Folder"
-msgstr "Ouvrir le dossier"
-
 msgid "Download Complete"
 msgstr "Torrent terminé"
-
-msgid "Start Now"
-msgstr ""
 
 msgid "Torrent Added"
 msgstr "Torrent ajouté"
@@ -931,7 +922,7 @@ msgstr "Où rechercher les fichiers de configuration"
 msgid "Start with all torrents paused"
 msgstr "Commencer avec tous les torrents en pause"
 
-msgid "Start minimized in notification area"
+msgid "Start _minimized in notification area"
 msgstr "Démarrer minimisé dans la zone de notification"
 
 msgid "Show version number and exit"
@@ -1035,7 +1026,7 @@ msgid "_Preferences"
 msgstr ""
 
 msgid "_Properties"
-msgstr ""
+msgstr "Propriétés"
 
 msgid "Torrent properties"
 msgstr "Propriétés du torrent"
@@ -1214,9 +1205,6 @@ msgstr "Origine :"
 msgid "Added:"
 msgstr ""
 
-msgid "Comment:"
-msgstr "Commentaire :"
-
 msgid "Information"
 msgstr "Informations"
 
@@ -1282,11 +1270,8 @@ msgstr ""
 msgid "Also see Default Public Trackers in Edit > Preferences > Network"
 msgstr ""
 
-msgid "Torrent"
+msgid "_Torrent"
 msgstr "Torrent"
-
-msgid "Statistics"
-msgstr "Statistiques"
 
 msgid "New Torrent"
 msgstr "Nouveau torrent"
@@ -1306,9 +1291,6 @@ msgstr "_Fichier source :"
 msgid "Piece size:"
 msgstr ""
 
-msgid "Properties"
-msgstr "Propriétés"
-
 msgid "_Trackers:"
 msgstr "_Traqueurs :"
 
@@ -1323,9 +1305,6 @@ msgstr "Torrent _privé"
 
 msgid "Creating torrent…"
 msgstr "Création du torrent…"
-
-msgid "Message Log"
-msgstr "Journal des messages"
 
 msgid "Save _As"
 msgstr ""
@@ -1377,7 +1356,7 @@ msgstr ""
 msgid "_Download:"
 msgstr ""
 
-msgid "Alternative Speed Limits"
+msgid "Alternative Speed _Limits"
 msgstr "Limites de vitesse alternatives"
 
 msgid "Override normal speed limits manually or at scheduled times"
@@ -1610,9 +1589,6 @@ msgstr "Les données loc_ales sont déjà présentes"
 
 msgid "Current Session"
 msgstr "Session actuelle"
-
-msgid "Ratio:"
-msgstr "Ratio :"
 
 msgid "Duration:"
 msgstr "Durée :"

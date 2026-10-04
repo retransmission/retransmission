@@ -395,7 +395,7 @@
                               <object class="GtkLabel" id="comment_label">
                                 <property name="margin-top">6</property>
                                 <property name="margin-bottom">6</property>
-                                <property name="label" translatable="yes">Comment:</property>
+                                <property name="label" translatable="yes">Co_mment:</property>
                                 <property name="use-underline">1</property>
                                 <property name="mnemonic-widget">comment_value_view</property>
                                 <property name="xalign">0</property>

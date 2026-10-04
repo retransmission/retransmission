@@ -163,6 +163,10 @@ StatsDialog::Impl::Impl(StatsDialog& dialog, Glib::RefPtr<Gtk::Builder> const& b
     , all_time_lb_(gtr_get_widget<Gtk::Label>(builder, "total_duration_value_label"))
     , all_sessions_lb_(gtr_get_widget<Gtk::Label>(builder, "start_count_label"))
 {
+    dialog_.set_title(gtr_strip_mnemonic(dialog_.get_title()));
+    gtr_label_strip_mnemonic(*gtr_get_widget<Gtk::Label>(builder, "current_ratio_label"));
+    gtr_label_strip_mnemonic(*gtr_get_widget<Gtk::Label>(builder, "total_ratio_label"));
+
     dialog_.set_default_response(TR_GTK_RESPONSE_TYPE(CLOSE));
     dialog_.signal_response().connect(sigc::mem_fun(*this, &Impl::dialogResponse));
 

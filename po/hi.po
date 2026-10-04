@@ -123,14 +123,14 @@ msgstr "सर्वत्र सेटिंग्स उपयोग करे
 msgid "Seed regardless of ratio"
 msgstr "अनुपात अनदेखा कर सीड करें"
 
-msgid "Stop seeding at ratio:"
-msgstr "इस अनुपात पर सीड करना रोकें :"
+msgid "Stop seeding at _ratio:"
+msgstr "अनुपात पर सीड करना रोकें (_r):"
 
 msgid "Seed regardless of activity"
 msgstr "गतिविधि अनदेखी कर सीड करें"
 
-msgid "Stop seeding if idle for:"
-msgstr "इस अवधि उपरांत निष्क्रिय होने पर सीड न करें :"
+msgid "Stop seedi_ng if idle for:"
+msgstr "अवधि उपरांत निष्क्रिय होने पर सीड न करें (_n):"
 
 msgid "Queued for verification"
 msgstr "प्रमाणीकरण हेतु पंक्तिबद्ध"
@@ -435,7 +435,7 @@ msgstr "विन्यास फाइल देखने हेतु स्�
 msgid "Start with all torrents paused"
 msgstr "आरंभ पर सभी टोरेंट स्थगित रखें"
 
-msgid "Start minimized in notification area"
+msgid "Start _minimized in notification area"
 msgstr "अधिसूचना क्षेत्र में संक्षिप्त रूप आरंभ करें"
 
 msgid "Show version number and exit"
@@ -549,14 +549,14 @@ msgstr "समय"
 msgid "Open File"
 msgstr "फाइल खोलें"
 
-msgid "Open Folder"
-msgstr "फोल्डर खोलें"
+msgid "Open Fold_er"
+msgstr "फोल्डर खोलें (_e)"
 
 msgid "Download Complete"
 msgstr "टोरेंट पूर्ण"
 
-msgid "Start Now"
-msgstr "अभी आरंभ करें"
+msgid "Start _Now"
+msgstr "अभी आरंभ करें (_N)"
 
 msgid "Torrent Added"
 msgstr "टोरेंट जोड़ा गया"
@@ -829,14 +829,8 @@ msgstr "टोरेंट (_T)"
 msgid "_Properties"
 msgstr "सूचना (_P)"
 
-msgid "Open Fold_er"
-msgstr "फोल्डर खोलें (_e)"
-
 msgid "_Start"
 msgstr "आरंभ (_S)"
-
-msgid "Start _Now"
-msgstr "अभी आरंभ करें (_N)"
 
 msgid "Ask Tracker for _More Peers"
 msgstr "ट्रैकर से अधिक पीयर हेतु अनुरोध (_M)"
@@ -941,8 +935,6 @@ msgstr "सामग्री (_C)"
 msgid "_About"
 msgstr "बारे में (_A)"
 
-#, fuzzy
-#| msgid "Alternative Speed Limits"
 msgid "Alternative Speed _Limits"
 msgstr "वैकल्पिक गति सीमाएँ"
 
@@ -1019,8 +1011,8 @@ msgstr "{date} को बनाया गया"
 msgid "Added:"
 msgstr ""
 
-msgid "Comment:"
-msgstr "टिप्पणी :"
+msgid "Co_mment:"
+msgstr "टिप्पणी (_m):"
 
 msgid "Information"
 msgstr "सूचना"
@@ -1104,12 +1096,6 @@ msgstr "टोरेंट हटाएँ"
 msgid "Torrent properties"
 msgstr "टोरेंट सूचना"
 
-msgid "Torrent"
-msgstr "टोरेंट"
-
-msgid "Statistics"
-msgstr "आँकड़ें"
-
 msgid "New Torrent"
 msgstr "नया टोरेंट"
 
@@ -1130,14 +1116,8 @@ msgstr "स्रोत फाइल (_f):"
 msgid "Piece si_ze:"
 msgstr ""
 
-msgid "Properties"
-msgstr "विशेषताएँ"
-
 msgid "_Trackers:"
 msgstr "ट्रैकर (_T):"
-
-msgid "Co_mment:"
-msgstr "टिप्पणी (_m):"
 
 msgid "_Source:"
 msgstr "स्रोत (_S):"
@@ -1147,9 +1127,6 @@ msgstr "निजी टोरेंट (_P)"
 
 msgid "Creating torrent…"
 msgstr "टोरेंट बनाना जारी…"
-
-msgid "Message Log"
-msgstr "संदेश लॉग"
 
 msgid "Save _As"
 msgstr "इस रूप में संचित करें (_A)"
@@ -1196,9 +1173,6 @@ msgstr "अपलोड (_U):"
 #. Checkbox to limit download speed
 msgid "_Download:"
 msgstr "डाउनलोड (_D):"
-
-msgid "Alternative Speed Limits"
-msgstr "वैकल्पिक गति सीमाएँ"
 
 msgid "Override normal speed limits manually or at scheduled times"
 msgstr "सामान्य गति सीमाओं को स्वयं या निर्धारित समय पर अधिलेखित करें"
@@ -1272,12 +1246,6 @@ msgstr "डाउनलोड जारी"
 
 msgid "Limits"
 msgstr "सीमाएँ"
-
-msgid "Stop seeding at _ratio:"
-msgstr "अनुपात पर सीड करना रोकें (_r):"
-
-msgid "Stop seedi_ng if idle for:"
-msgstr "अवधि उपरांत निष्क्रिय होने पर सीड न करें (_n):"
 
 msgid "Call scrip_t when done seeding:"
 msgstr "सीड प्रक्रिया पूर्ण होने पर यह स्क्रिप्ट निष्पादित करें (_t):"
@@ -1461,9 +1429,6 @@ msgstr "वहाँ लोकल डाटा पहले से मौजू�
 
 msgid "Current Session"
 msgstr "वर्तमान सत्र"
-
-msgid "Ratio:"
-msgstr "अनुपात :"
 
 msgid "Duration:"
 msgstr "अवधि :"
@@ -2070,9 +2035,6 @@ msgstr "सर्वर"
 msgid "C_redits"
 msgstr "आभार (_r)"
 
-msgid "Credits"
-msgstr "आभार"
-
 msgid "About {appname}"
 msgstr "{appname} के बारे में"
 
@@ -2104,9 +2066,6 @@ msgstr "चयनित अचिन्हित करें"
 
 msgid "Only Check Selected"
 msgstr "केवल चयनित चिन्हित करें"
-
-msgid "Open"
-msgstr "खोलें"
 
 msgid "Rename…"
 msgstr ""
@@ -2172,9 +2131,6 @@ msgstr "लोकल डाटा प्रमाणित करें"
 
 msgid "Remove torrent and delete its files"
 msgstr "टोरेंट व उसकी फाइलें हटाएँ"
-
-msgid "Compact View"
-msgstr "संक्षिप्त दृश्य"
 
 msgid "_Main Window"
 msgstr "मुख्य विंडो (_M)"
@@ -2256,9 +2212,6 @@ msgstr "क्लिपबोर्ड से नवीन टोरेंट �
 
 msgid "Encryption"
 msgstr "एन्क्रिप्शन"
-
-msgid "Start _minimized in notification area"
-msgstr "अधिसूचना क्षेत्र में संक्षिप्त रूप आरंभ करें"
 
 #, fuzzy
 msgid "Retransmission (Qt)"

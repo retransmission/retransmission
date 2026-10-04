@@ -121,14 +121,14 @@ msgstr "Använd globala inställningar"
 msgid "Seed regardless of ratio"
 msgstr "Distribuera oavsett kvot"
 
-msgid "Stop seeding at ratio:"
-msgstr "Stoppa distribuering vid kvot:"
+msgid "Stop seeding at _ratio:"
+msgstr "Stoppa distribuering vid _kvot:"
 
 msgid "Seed regardless of activity"
 msgstr "Distribuera oavsett aktivitet"
 
-msgid "Stop seeding if idle for:"
-msgstr "Stoppa distribuering om inaktiv i:"
+msgid "Stop seedi_ng if idle for:"
+msgstr "Sluta dis_tribuera om inaktiv i:"
 
 #. Translators: Torrent -> status string
 msgid "Queued for verification"
@@ -476,8 +476,8 @@ msgstr "Var man ska leta efter konfigurationsfiler"
 msgid "Start with all torrents paused"
 msgstr "Starta med alla torrenter pausade"
 
-msgid "Start minimized in notification area"
-msgstr "Starta minimerad i aviseringsfältet"
+msgid "Start _minimized in notification area"
+msgstr "Starta _minimerad i aviseringsfältet"
 
 msgid "Show version number and exit"
 msgstr "Visa versionsnummer och avsluta"
@@ -610,15 +610,15 @@ msgstr "Tid"
 msgid "Open File"
 msgstr "Öppna fil"
 
-msgid "Open Folder"
-msgstr "Öppna mapp"
+msgid "Open Fold_er"
+msgstr "Öppna ma_pp"
 
 #. Translators: notification title
 msgid "Download Complete"
 msgstr "Hämtningen slutförd"
 
-msgid "Start Now"
-msgstr "Starta nu"
+msgid "Start _Now"
+msgstr "Starta _nu"
 
 #. Translators: notification title
 msgid "Torrent Added"
@@ -633,6 +633,8 @@ msgstr "Alla filer"
 msgid "Open a Torrent"
 msgstr "Öppna en torrent"
 
+#. Translators: Open toolbar item -> label
+#. Translators: URL sheet button
 msgid "_Open"
 msgstr "_Öppna"
 
@@ -901,15 +903,9 @@ msgstr "_Torrent"
 msgid "_Properties"
 msgstr "_Egenskaper"
 
-msgid "Open Fold_er"
-msgstr "Öppna ma_pp"
-
 #. Translators: Selected toolbar item -> label
 msgid "_Start"
 msgstr "Sta_rta"
-
-msgid "Start _Now"
-msgstr "Starta _nu"
 
 msgid "Ask Tracker for _More Peers"
 msgstr "Fråga spårare efter f_ler jämlikar"
@@ -1000,9 +996,11 @@ msgstr "O_mvänd sorteringsordning"
 msgid "_Help"
 msgstr "_Hjälp"
 
+#. Translators: Message window -> title
 msgid "Message _Log"
 msgstr "Meddelande_logg"
 
+#. Translators: Stats window -> title
 msgid "_Statistics"
 msgstr "_Statistik"
 
@@ -1016,8 +1014,8 @@ msgstr "_Innehåll"
 msgid "_About"
 msgstr "_Om"
 
-#, fuzzy
-#| msgid "Alternative Speed Limits"
+#. Translators: Dock item
+#. Translators: Status Bar -> speed tooltip
 msgid "Alternative Speed _Limits"
 msgstr "Alternativa hastighetsgränser"
 
@@ -1097,8 +1095,8 @@ msgstr "Skapad den:"
 msgid "Added:"
 msgstr "Tillagd:"
 
-msgid "Comment:"
-msgstr "Kommentar:"
+msgid "Co_mment:"
+msgstr "Ko_mmentar:"
 
 #. Translators: Inspector view -> title
 #. Translators: Inspector -> tab
@@ -1144,6 +1142,7 @@ msgstr "Torrent_prioritet:"
 msgid "Seeding Limits"
 msgstr "Distributionsgränser"
 
+#. Translators: Stats window -> label
 msgid "_Ratio:"
 msgstr "_Kvot:"
 
@@ -1198,13 +1197,6 @@ msgstr "Ta bort torrent"
 msgid "Torrent properties"
 msgstr "Torrent-egenskaper"
 
-msgid "Torrent"
-msgstr "Torrent"
-
-#. Translators: Stats window -> title
-msgid "Statistics"
-msgstr "Statistik"
-
 msgid "New Torrent"
 msgstr "Ny torrent"
 
@@ -1227,14 +1219,8 @@ msgstr "Käll_fil:"
 msgid "Piece si_ze:"
 msgstr "Delstorlek:"
 
-msgid "Properties"
-msgstr "Egenskaper"
-
 msgid "_Trackers:"
 msgstr "_Spårare:"
-
-msgid "Co_mment:"
-msgstr "Ko_mmentar:"
 
 msgid "_Source:"
 msgstr "_Källa:"
@@ -1244,10 +1230,6 @@ msgstr "_Privat torrent"
 
 msgid "Creating torrent…"
 msgstr "Skapar torrent…"
-
-#. Translators: Message window -> title
-msgid "Message Log"
-msgstr "Meddelandelogg"
 
 msgid "Save _As"
 msgstr "Spara _som"
@@ -1295,11 +1277,6 @@ msgstr "_Sändning:"
 #. Checkbox to limit download speed
 msgid "_Download:"
 msgstr "_Hämtning:"
-
-#. Translators: Dock item
-#. Translators: Status Bar -> speed tooltip
-msgid "Alternative Speed Limits"
-msgstr "Alternativa hastighetsgränser"
 
 msgid "Override normal speed limits manually or at scheduled times"
 msgstr "Åsidosätt normala hastighetsgränser manuellt eller vid schemalagda tider"
@@ -1375,12 +1352,6 @@ msgstr "Hämtning"
 
 msgid "Limits"
 msgstr "Gränser"
-
-msgid "Stop seeding at _ratio:"
-msgstr "Stoppa distribuering vid _kvot:"
-
-msgid "Stop seedi_ng if idle for:"
-msgstr "Sluta dis_tribuera om inaktiv i:"
 
 msgid "Call scrip_t when done seeding:"
 msgstr "Anropa skrip_t när distributionen är klar:"
@@ -1562,10 +1533,6 @@ msgstr "Lokala data finns _redan där"
 
 msgid "Current Session"
 msgstr "Aktuell session"
-
-#. Translators: Stats window -> label
-msgid "Ratio:"
-msgstr "Kvot:"
 
 msgid "Duration:"
 msgstr "Längd:"
@@ -2401,9 +2368,6 @@ msgstr "Kopiera"
 msgid "Paste"
 msgstr "Klistra in"
 
-msgid "Compact View"
-msgstr "Kompakt vy"
-
 msgid "Pieces Bar"
 msgstr "Fält med delar"
 
@@ -2827,11 +2791,6 @@ msgstr "Skapa torrentfil"
 
 msgid "Create a new torrent"
 msgstr "Skapa en ny torrent"
-
-#. Translators: Open toolbar item -> label
-#. Translators: URL sheet button
-msgid "Open"
-msgstr "Öppna"
 
 #. Translators: Open toolbar item -> palette label
 msgid "Open Torrent Files"
@@ -3407,9 +3366,6 @@ msgstr "Server"
 msgid "C_redits"
 msgstr "T_ack till"
 
-msgid "Credits"
-msgstr "Tack till"
-
 msgid "About {appname}"
 msgstr "Om {appname}"
 
@@ -3543,9 +3499,6 @@ msgstr "Upptäck nya torrenter från urklipp"
 
 msgid "Encryption"
 msgstr "Kryptering"
-
-msgid "Start _minimized in notification area"
-msgstr "Starta _minimerad i aviseringsfältet"
 
 #, fuzzy
 #| msgid "Retransmission"
