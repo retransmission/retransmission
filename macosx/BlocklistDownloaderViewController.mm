@@ -57,7 +57,7 @@ static BlocklistDownloaderViewController* fBLViewController = nil;
 - (void)setStatusStarting
 {
     // Translators: Blocklist -> message
-    self.fTextField.stringValue = [TR_TEXT("Updating blocklist") stringByAppendingEllipsis];
+    self.fTextField.stringValue = TR_TEXT("Updating blocklist…");
     self.fProgressBar.indeterminate = YES;
 }
 

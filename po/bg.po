@@ -667,8 +667,8 @@ msgstr "Делнични дни"
 msgid "Weekends"
 msgstr "Уикендите"
 
-msgid "Blocklist has {count:L} entry"
-msgid_plural "Blocklist has {count:L} entries"
+msgid "Blocklist has {count:L} rule"
+msgid_plural "Blocklist has {count:L} rules"
 msgstr[0] "Черният списък съдържа {count:L} запис"
 msgstr[1] "Черният списък съдържа {count:L} записа"
 
@@ -678,7 +678,7 @@ msgstr "Черният списък е актуализиран!"
 msgid "Couldn't update blocklist"
 msgstr "Неуспешно актуализиране на черния списък"
 
-msgid "Getting new blocklist…"
+msgid "Updating blocklist…"
 msgstr "Получаване на нов черен списък…"
 
 msgctxt "Port test status"

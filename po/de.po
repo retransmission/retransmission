@@ -748,8 +748,8 @@ msgstr "An Wochentagen"
 msgid "Weekends"
 msgstr "An Wochenenden"
 
-msgid "Blocklist has {count:L} entry"
-msgid_plural "Blocklist has {count:L} entries"
+msgid "Blocklist has {count:L} rule"
+msgid_plural "Blocklist has {count:L} rules"
 msgstr[0] "Sperrliste hat {count:L} Eintrag"
 msgstr[1] "Sperrliste hat {count:L} Einträge"
 
@@ -760,7 +760,8 @@ msgstr "Sperrliste aktualisiert!"
 msgid "Couldn't update blocklist"
 msgstr "Konnte Sperrliste nicht aktualisieren"
 
-msgid "Getting new blocklist…"
+#. Translators: Blocklist -> message
+msgid "Updating blocklist…"
 msgstr "Neue Sperrliste wird empfangen …"
 
 msgctxt "Port test status"
@@ -3176,12 +3177,6 @@ msgstr "Internetprogramm öffnen"
 msgid "{part} of {whole}"
 msgstr "{part} von {whole}"
 
-#. Translators: Blocklist -> message
-#, fuzzy
-#| msgid "Update Blocklist"
-msgid "Updating blocklist"
-msgstr "Aktualisiere Sperrliste"
-
 msgid "Download of the blocklist failed."
 msgstr "Blockliste konnte nicht geladen werden."
 
@@ -3910,17 +3905,11 @@ msgstr "Port ist geschlossen."
 msgid "Port check site is down"
 msgstr "Site zum Überprüfen des Ports ist nicht erreichbar."
 
-msgid "{count:L} IP address rule in list"
-msgid_plural "{count:L} IP address rules in list"
-msgstr[0] "{count:L} IP-Adressen in der Blockliste"
-msgstr[1] "{count:L} IP-Adressen in der Blockliste"
-
 msgid "A blocklist must first be downloaded"
 msgstr "Es muß zunächst eine Blockliste geladen werden."
 
-#. Translators: Prefs -> blocklist -> message
-msgid "Last updated"
-msgstr "Letzte Aktualisierung"
+msgid "Last updated: {date}"
+msgstr "Letzte Aktualisierung: {date}"
 
 msgid "This option is not available if Save to location is set to Same as torrent file."
 msgstr ""
@@ -4251,21 +4240,10 @@ msgstr "\"Torrent fertig heruntergeladen\"-Skript auswählen"
 msgid "Not supported by remote sessions"
 msgstr "Nicht unterstützt von entfernten Sitzungen"
 
-msgid "<i>Blocklist contains {count:L} rule</i>"
-msgid_plural "<i>Blocklist contains {count:L} rules</i>"
-msgstr[0] "<i>Sperrliste enthält {count:L} Regel</i>"
-msgstr[1] "<i>Sperrliste enthält {count:L} Regeln</i>"
-
 #, fuzzy
 #| msgid "<i>Blocklist contains {count:L} rule</i>"
 #| msgid_plural "<i>Blocklist contains {count:L} rules</i>"
 msgid "<i>Blocklist has never been updated</i>"
-msgstr "<i>Sperrliste enthält {count:L} Regel</i>"
-
-#, fuzzy
-#| msgid "<i>Blocklist contains {count:L} rule</i>"
-#| msgid_plural "<i>Blocklist contains {count:L} rules</i>"
-msgid "<i>Blocklist last updated {date}</i>"
 msgstr "<i>Sperrliste enthält {count:L} Regel</i>"
 
 msgid "_Upload:"
@@ -4414,6 +4392,11 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "Sekunde"
 msgstr[1] "Sekunden"
+
+#~ msgid "{count:L} IP address rule in list"
+#~ msgid_plural "{count:L} IP address rules in list"
+#~ msgstr[0] "{count:L} IP-Adressen in der Blockliste"
+#~ msgstr[1] "{count:L} IP-Adressen in der Blockliste"
 
 #~ msgid "Tracker returned error"
 #~ msgstr "Fehlermeldung vom Tracker"

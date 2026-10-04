@@ -631,8 +631,8 @@ msgstr "星期一到星期五"
 msgid "Weekends"
 msgstr "星期六和星期日"
 
-msgid "Blocklist has {count:L} entry"
-msgid_plural "Blocklist has {count:L} entries"
+msgid "Blocklist has {count:L} rule"
+msgid_plural "Blocklist has {count:L} rules"
 msgstr[0] ""
 
 msgid "Blocklist updated!"
@@ -641,7 +641,7 @@ msgstr ""
 msgid "Couldn't update blocklist"
 msgstr ""
 
-msgid "Getting new blocklist…"
+msgid "Updating blocklist…"
 msgstr "正在取得新的封鎖清單…"
 
 msgctxt "Port test status"

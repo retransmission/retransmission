@@ -443,7 +443,7 @@ void PrefsDialog::onUpdateBlocklistClicked()
     blocklist_dialog_ = new QMessageBox{
         QMessageBox::Information,
         QString{},
-        QStringLiteral("<b>%1</b><p>%2</p>").arg(TR_TEXT("Update Blocklist"), TR_TEXT("Getting new blocklist…")),
+        QStringLiteral("<b>%1</b><p>%2</p>").arg(TR_TEXT("Update Blocklist"), TR_TEXT("Updating blocklist…")),
         QMessageBox::Close,
         this
     };
@@ -657,18 +657,22 @@ void PrefsDialog::sessionUpdated()
 void PrefsDialog::updateBlocklistLabel()
 {
     auto const rule_count = session_.blocklistSize();
-    ui_.blocklistStatusLabel->setText(TR_FORMAT_N(
-        "<i>Blocklist contains {count:L} rule</i>",
-        "<i>Blocklist contains {count:L} rules</i>",
+    auto const italic = [](QString const& text) {
+        return QStringLiteral("<i>%1</i>").arg(text.toHtmlEscaped());
+    };
+
+    ui_.blocklistStatusLabel->setText(italic(TR_FORMAT_N(
+        "Blocklist has {count:L} rule",
+        "Blocklist has {count:L} rules",
         rule_count,
-        fmt::arg("count", rule_count)));
+        fmt::arg("count", rule_count))));
 
     auto const updated_at = prefs_.get<std::chrono::sys_seconds>(TR_KEY_blocklist_date).time_since_epoch().count();
     ui_.blocklistDateLabel->setText(
         updated_at == 0 ? TR_TEXT("<i>Blocklist has never been updated</i>") :
-                          TR_FORMAT(
-                              "<i>Blocklist last updated {date}</i>",
-                              fmt::arg("date", QDateTime::fromSecsSinceEpoch(updated_at).toString(Qt::TextDate))));
+                          italic(TR_FORMAT(
+                              "Last updated: {date}",
+                              fmt::arg("date", QDateTime::fromSecsSinceEpoch(updated_at).toString(Qt::TextDate)))));
 }
 
 void PrefsDialog::refreshPref(tr_quark key)

@@ -719,8 +719,8 @@ msgstr "Hétköznap"
 msgid "Weekends"
 msgstr "Hétvégén"
 
-msgid "Blocklist has {count:L} entry"
-msgid_plural "Blocklist has {count:L} entries"
+msgid "Blocklist has {count:L} rule"
+msgid_plural "Blocklist has {count:L} rules"
 msgstr[0] "A tiltólistának {count:L} eleme van"
 msgstr[1] "A tiltólistának {count:L} eleme van"
 
@@ -731,7 +731,8 @@ msgstr "Tiltólista frissítve!"
 msgid "Couldn't update blocklist"
 msgstr "Nem sikerült a tiltólista frissítése"
 
-msgid "Getting new blocklist…"
+#. Translators: Blocklist -> message
+msgid "Updating blocklist…"
 msgstr "Új tiltólista beszerzése…"
 
 msgctxt "Port test status"
@@ -3144,12 +3145,6 @@ msgstr "Webes kliens megnyitása"
 msgid "{part} of {whole}"
 msgstr "{part}/{whole}"
 
-#. Translators: Blocklist -> message
-#, fuzzy
-#| msgid "Update Blocklist"
-msgid "Updating blocklist"
-msgstr "Tiltólista frissítése"
-
 msgid "Download of the blocklist failed."
 msgstr "A tiltólista letöltése sikertelen."
 
@@ -3880,17 +3875,11 @@ msgstr "A port zárva van"
 msgid "Port check site is down"
 msgstr "Port ellenőrző oldal nem elérhető"
 
-msgid "{count:L} IP address rule in list"
-msgid_plural "{count:L} IP address rules in list"
-msgstr[0] "{count:L} IP cím szabály a listában"
-msgstr[1] "{count:L} IP cím szabály a listában"
-
 msgid "A blocklist must first be downloaded"
 msgstr "A tiltólistát először le kell tölteni"
 
-#. Translators: Prefs -> blocklist -> message
-msgid "Last updated"
-msgstr "Utóljára frissítve"
+msgid "Last updated: {date}"
+msgstr "Utóljára frissítve: {date}"
 
 msgid "This option is not available if Save to location is set to Same as torrent file."
 msgstr ""
@@ -4221,21 +4210,10 @@ msgstr "Válasszon \"Torrent letöltése kész\" parancsfájlt"
 msgid "Not supported by remote sessions"
 msgstr "Távoli munkamenet esetén nem támogatott"
 
-msgid "<i>Blocklist contains {count:L} rule</i>"
-msgid_plural "<i>Blocklist contains {count:L} rules</i>"
-msgstr[0] "<i>A blokkolási lista {count:L} szabályt tartalmaz</i>"
-msgstr[1] "<i>A blokkolási lista {count:L} szabályt tartalmaz</i>"
-
 #, fuzzy
 #| msgid "<i>Blocklist contains {count:L} rule</i>"
 #| msgid_plural "<i>Blocklist contains {count:L} rules</i>"
 msgid "<i>Blocklist has never been updated</i>"
-msgstr "<i>A blokkolási lista {count:L} szabályt tartalmaz</i>"
-
-#, fuzzy
-#| msgid "<i>Blocklist contains {count:L} rule</i>"
-#| msgid_plural "<i>Blocklist contains {count:L} rules</i>"
-msgid "<i>Blocklist last updated {date}</i>"
 msgstr "<i>A blokkolási lista {count:L} szabályt tartalmaz</i>"
 
 msgid "_Upload:"
@@ -4384,6 +4362,11 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "másodperc"
 msgstr[1] "másodperc"
+
+#~ msgid "{count:L} IP address rule in list"
+#~ msgid_plural "{count:L} IP address rules in list"
+#~ msgstr[0] "{count:L} IP cím szabály a listában"
+#~ msgstr[1] "{count:L} IP cím szabály a listában"
 
 #~ msgid "Tracker returned error"
 #~ msgstr "Tracker hibát jelzett vissza"

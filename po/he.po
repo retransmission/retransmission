@@ -715,8 +715,8 @@ msgstr "ימי השבוע"
 msgid "Weekends"
 msgstr "סופי שבוע"
 
-msgid "Blocklist has {count:L} entry"
-msgid_plural "Blocklist has {count:L} entries"
+msgid "Blocklist has {count:L} rule"
+msgid_plural "Blocklist has {count:L} rules"
 msgstr[0] "יש רשומה אחת ברשימת החסימה"
 msgstr[1] "יש {count:L} רשומות ברשימת החסימה"
 msgstr[2] "יש {count:L} רשומות ברשימת החסימה"
@@ -729,7 +729,8 @@ msgstr "רשימת החסימה עודכנה!"
 msgid "Couldn't update blocklist"
 msgstr "לא ניתן לעדכן את רשימת החסימה"
 
-msgid "Getting new blocklist…"
+#. Translators: Blocklist -> message
+msgid "Updating blocklist…"
 msgstr "מתקבלת רשימת חסימה חדשה…"
 
 msgctxt "Port test status"
@@ -3194,12 +3195,6 @@ msgstr "פתיחת לקוח רשת"
 msgid "{part} of {whole}"
 msgstr "{part} מתוך {whole}"
 
-#. Translators: Blocklist -> message
-#, fuzzy
-#| msgid "Update Blocklist"
-msgid "Updating blocklist"
-msgstr "עדכון רשימת החסימה"
-
 msgid "Download of the blocklist failed."
 msgstr "הורדת רשימת חסימה כשלה."
 
@@ -3945,18 +3940,11 @@ msgstr "הפתחה סגורה"
 msgid "Port check site is down"
 msgstr "אתר בדיקות פיתחה אינו זמין"
 
-msgid "{count:L} IP address rule in list"
-msgid_plural "{count:L} IP address rules in list"
-msgstr[0] "{count:L} כללי כתובות IP ברשימה"
-msgstr[1] "{count:L} כללי כתובות IP ברשימה"
-msgstr[2] "{count:L} כללי כתובות IP ברשימה"
-
 msgid "A blocklist must first be downloaded"
 msgstr " יש להוריד רשימת חסימה תחילה"
 
-#. Translators: Prefs -> blocklist -> message
-msgid "Last updated"
-msgstr "עודכנו לאחרונה"
+msgid "Last updated: {date}"
+msgstr "עודכנו לאחרונה: {date}"
 
 msgid "This option is not available if Save to location is set to Same as torrent file."
 msgstr ""
@@ -4293,22 +4281,10 @@ msgstr "בחירת סקריפט „סיום הורדת טורנט”"
 msgid "Not supported by remote sessions"
 msgstr "לא נתמך ממופעים המרוחקים"
 
-msgid "<i>Blocklist contains {count:L} rule</i>"
-msgid_plural "<i>Blocklist contains {count:L} rules</i>"
-msgstr[0] "<i>רשימת החסימה מכילה כלל אחד</i>"
-msgstr[1] "<i>רשימת החסימה מכילה {count:L} כללים</i>"
-msgstr[2] "<i>רשימת החסימה מכילה {count:L} כללים</i>"
-
 #, fuzzy
 #| msgid "<i>Blocklist contains {count:L} rule</i>"
 #| msgid_plural "<i>Blocklist contains {count:L} rules</i>"
 msgid "<i>Blocklist has never been updated</i>"
-msgstr "<i>רשימת החסימה מכילה כלל אחד</i>"
-
-#, fuzzy
-#| msgid "<i>Blocklist contains {count:L} rule</i>"
-#| msgid_plural "<i>Blocklist contains {count:L} rules</i>"
-msgid "<i>Blocklist last updated {date}</i>"
 msgstr "<i>רשימת החסימה מכילה כלל אחד</i>"
 
 msgid "_Upload:"
@@ -4473,6 +4449,12 @@ msgstr[0] "שנייה"
 msgstr[1] "שניות"
 msgstr[2] "שניות"
 msgstr[3] "שניות"
+
+#~ msgid "{count:L} IP address rule in list"
+#~ msgid_plural "{count:L} IP address rules in list"
+#~ msgstr[0] "{count:L} כללי כתובות IP ברשימה"
+#~ msgstr[1] "{count:L} כללי כתובות IP ברשימה"
+#~ msgstr[2] "{count:L} כללי כתובות IP ברשימה"
 
 #~ msgid "Tracker returned error"
 #~ msgstr "העוקב החזיר שגיאה"

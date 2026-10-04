@@ -627,9 +627,9 @@ msgstr "주중"
 msgid "Weekends"
 msgstr "주말"
 
-msgid "Blocklist has {count:L} entry"
-msgid_plural "Blocklist has {count:L} entries"
-msgstr[0] ""
+msgid "Blocklist has {count:L} rule"
+msgid_plural "Blocklist has {count:L} rules"
+msgstr[0] "블록리스트는 {count:L} 규칙을 포함하고 있습니다"
 
 msgid "Blocklist updated!"
 msgstr "차단 목록이 업데이트 되었습니다!"
@@ -637,7 +637,7 @@ msgstr "차단 목록이 업데이트 되었습니다!"
 msgid "Couldn't update blocklist"
 msgstr "차단 목록을 업데이트할 수 없습니다"
 
-msgid "Getting new blocklist…"
+msgid "Updating blocklist…"
 msgstr "새 차단 목록을 가져오는 중…"
 
 msgctxt "Port test status"
@@ -2303,10 +2303,6 @@ msgstr ""
 msgid "Not supported by remote sessions"
 msgstr "리모트 세션은 지원하지 않습니다"
 
-msgid "<i>Blocklist contains {count:L} rule</i>"
-msgid_plural "<i>Blocklist contains {count:L} rules</i>"
-msgstr[0] "<i>블록리스트는 {count:L} 규칙을 포함하고 있습니다</i>"
-
 #, fuzzy
 #| msgid "<i>Blocklist contains {count:L} rule</i>"
 #| msgid_plural "<i>Blocklist contains {count:L} rules</i>"
@@ -2316,8 +2312,8 @@ msgstr "<i>블록리스트는 {count:L} 규칙을 포함하고 있습니다</i>"
 #, fuzzy
 #| msgid "<i>Blocklist contains {count:L} rule</i>"
 #| msgid_plural "<i>Blocklist contains {count:L} rules</i>"
-msgid "<i>Blocklist last updated {date}</i>"
-msgstr "<i>블록리스트는 {count:L} 규칙을 포함하고 있습니다</i>"
+msgid "Last updated: {date}"
+msgstr "블록리스트는 {count:L} 규칙을 포함하고 있습니다"
 
 msgid "_Upload:"
 msgstr "업로드 (_U): "

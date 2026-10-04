@@ -641,8 +641,8 @@ msgstr "Arkisin"
 msgid "Weekends"
 msgstr "Viikonloppuisin"
 
-msgid "Blocklist has {count:L} entry"
-msgid_plural "Blocklist has {count:L} entries"
+msgid "Blocklist has {count:L} rule"
+msgid_plural "Blocklist has {count:L} rules"
 msgstr[0] "Estolistalla {count:L} kohtaa"
 msgstr[1] "Estolistalla {count:L} kohtaa"
 
@@ -652,7 +652,7 @@ msgstr "Estolista päivitetty!"
 msgid "Couldn't update blocklist"
 msgstr "Estolistaa ei voitu päivittää"
 
-msgid "Getting new blocklist…"
+msgid "Updating blocklist…"
 msgstr "Noudetaan uutta estolistaa…"
 
 msgctxt "Port test status"
@@ -2351,11 +2351,6 @@ msgstr "Valitse \"Torrentin lataus valmis\" -komentosarja"
 msgid "Not supported by remote sessions"
 msgstr "Ei tuettu etäistunnoissa"
 
-msgid "<i>Blocklist contains {count:L} rule</i>"
-msgid_plural "<i>Blocklist contains {count:L} rules</i>"
-msgstr[0] "<i>Estolista sisältää {count:L} säännön</i>"
-msgstr[1] "<i>Estolista sisältää {count:L} sääntöä</i>"
-
 #, fuzzy
 #| msgid "<i>Blocklist contains {count:L} rule</i>"
 #| msgid_plural "<i>Blocklist contains {count:L} rules</i>"
@@ -2365,8 +2360,8 @@ msgstr "<i>Estolista sisältää {count:L} säännön</i>"
 #, fuzzy
 #| msgid "<i>Blocklist contains {count:L} rule</i>"
 #| msgid_plural "<i>Blocklist contains {count:L} rules</i>"
-msgid "<i>Blocklist last updated {date}</i>"
-msgstr "<i>Estolista sisältää {count:L} säännön</i>"
+msgid "Last updated: {date}"
+msgstr "Estolista sisältää {count:L} säännön"
 
 msgid "_Upload:"
 msgstr "L_ähetys:"

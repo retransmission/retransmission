@@ -684,8 +684,8 @@ msgstr "Vardagar"
 msgid "Weekends"
 msgstr "Helger"
 
-msgid "Blocklist has {count:L} entry"
-msgid_plural "Blocklist has {count:L} entries"
+msgid "Blocklist has {count:L} rule"
+msgid_plural "Blocklist has {count:L} rules"
 msgstr[0] "Blockeringslistan har 1 post"
 msgstr[1] "Blockeringslistan har {count:L} poster"
 
@@ -696,7 +696,8 @@ msgstr "Blockeringslistan uppdaterad!"
 msgid "Couldn't update blocklist"
 msgstr "Det gick inte att uppdatera blockeringslista"
 
-msgid "Getting new blocklist…"
+#. Translators: Blocklist -> message
+msgid "Updating blocklist…"
 msgstr "Hämtar ny blockeringslista…"
 
 msgctxt "Port test status"
@@ -3111,12 +3112,6 @@ msgstr "Öppna webbklient"
 msgid "{part} of {whole}"
 msgstr "{part} av {whole}"
 
-#. Translators: Blocklist -> message
-#, fuzzy
-#| msgid "Update Blocklist"
-msgid "Updating blocklist"
-msgstr "Uppdatera blockeringslista"
-
 msgid "Download of the blocklist failed."
 msgstr "Det gick inte att hämta blockeringslistan."
 
@@ -3851,17 +3846,11 @@ msgstr "Porten är stängd"
 msgid "Port check site is down"
 msgstr "Webbplats för portkontroll är nere"
 
-msgid "{count:L} IP address rule in list"
-msgid_plural "{count:L} IP address rules in list"
-msgstr[0] "{count:L} IP-adressregler i listan"
-msgstr[1] "{count:L} IP-adressregler i listan"
-
 msgid "A blocklist must first be downloaded"
 msgstr "En blockeringslista måste först hämtas"
 
-#. Translators: Prefs -> blocklist -> message
-msgid "Last updated"
-msgstr "Senast uppdaterad"
+msgid "Last updated: {date}"
+msgstr "Senast uppdaterad: {date}"
 
 msgid "This option is not available if Save to location is set to Same as torrent file."
 msgstr ""
@@ -4194,21 +4183,10 @@ msgstr "Välj skriptet \"Torrenthämtning klar\"."
 msgid "Not supported by remote sessions"
 msgstr "Stöds inte av fjärrsessioner"
 
-msgid "<i>Blocklist contains {count:L} rule</i>"
-msgid_plural "<i>Blocklist contains {count:L} rules</i>"
-msgstr[0] "<i>Blocklistan innehåller {count:L} regel</i>"
-msgstr[1] "<i>Blockeringslistan innehåller {count:L} regler</i>"
-
 #, fuzzy
 #| msgid "<i>Blocklist contains {count:L} rule</i>"
 #| msgid_plural "<i>Blocklist contains {count:L} rules</i>"
 msgid "<i>Blocklist has never been updated</i>"
-msgstr "<i>Blocklistan innehåller {count:L} regel</i>"
-
-#, fuzzy
-#| msgid "<i>Blocklist contains {count:L} rule</i>"
-#| msgid_plural "<i>Blocklist contains {count:L} rules</i>"
-msgid "<i>Blocklist last updated {date}</i>"
 msgstr "<i>Blocklistan innehåller {count:L} regel</i>"
 
 msgid "_Upload:"
@@ -4357,6 +4335,11 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "sekund"
 msgstr[1] "sekunder"
+
+#~ msgid "{count:L} IP address rule in list"
+#~ msgid_plural "{count:L} IP address rules in list"
+#~ msgstr[0] "{count:L} IP-adressregler i listan"
+#~ msgstr[1] "{count:L} IP-adressregler i listan"
 
 #~ msgid "Tracker returned error"
 #~ msgstr "Spårare returnerade fel"

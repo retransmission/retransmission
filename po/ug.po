@@ -634,8 +634,8 @@ msgstr "بىنەپتە كۈنلەر"
 msgid "Weekends"
 msgstr "ھەپتە ئاخىرى"
 
-msgid "Blocklist has {count:L} entry"
-msgid_plural "Blocklist has {count:L} entries"
+msgid "Blocklist has {count:L} rule"
+msgid_plural "Blocklist has {count:L} rules"
 msgstr[0] ""
 msgstr[1] ""
 
@@ -645,7 +645,7 @@ msgstr ""
 msgid "Couldn't update blocklist"
 msgstr ""
 
-msgid "Getting new blocklist…"
+msgid "Updating blocklist…"
 msgstr ""
 
 msgctxt "Port test status"

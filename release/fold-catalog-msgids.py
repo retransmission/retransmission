@@ -143,6 +143,24 @@ RENAMES = [
     {'from': {'msgid': 'Torrent Complete'}, 'to': {'msgid': 'Download Complete'}},
     {'from': {'msgid': 'Torrent Completed'}, 'to': {'msgid': 'Download Complete'}},
     {'from': {'msgid': 'Torrents Completed'}, 'to': {'msgid': 'Downloads Complete'}},
+    # The blocklist's size, its date and its update message read the same in every client.
+    {
+        'from': {'msgid': 'Blocklist has {count:L} entry', 'msgid_plural': 'Blocklist has {count:L} entries'},
+        'to': {'msgid': 'Blocklist has {count:L} rule', 'msgid_plural': 'Blocklist has {count:L} rules'},
+    },
+    {
+        'from': {'msgid': '<i>Blocklist contains {count:L} rule</i>', 'msgid_plural': '<i>Blocklist contains {count:L} rules</i>'},
+        'to': {'msgid': 'Blocklist has {count:L} rule', 'msgid_plural': 'Blocklist has {count:L} rules'},
+        'strip': ['<i>', '</i>'],
+    },
+    {'from': {'msgid': 'Updating blocklist'}, 'to': {'msgid': 'Updating blocklist…'}, 'append': '…'},
+    {'from': {'msgid': 'Getting new blocklist…'}, 'to': {'msgid': 'Updating blocklist…'}},
+    {'from': {'msgid': 'Last updated'}, 'to': {'msgid': 'Last updated: {date}'}, 'colon': True, 'append': ' {date}'},
+    {
+        'from': {'msgid': '<i>Blocklist last updated {date}</i>'},
+        'to': {'msgid': 'Last updated: {date}'},
+        'strip': ['<i>', '</i>'],
+    },
 ]
 
 FIELD_NAMES = ('msgctxt', 'msgid', 'msgid_plural')

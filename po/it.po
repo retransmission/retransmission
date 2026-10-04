@@ -716,8 +716,8 @@ msgstr "Giorni feriali"
 msgid "Weekends"
 msgstr "Fine settimana"
 
-msgid "Blocklist has {count:L} entry"
-msgid_plural "Blocklist has {count:L} entries"
+msgid "Blocklist has {count:L} rule"
+msgid_plural "Blocklist has {count:L} rules"
 msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
@@ -729,7 +729,8 @@ msgstr ""
 msgid "Couldn't update blocklist"
 msgstr ""
 
-msgid "Getting new blocklist…"
+#. Translators: Blocklist -> message
+msgid "Updating blocklist…"
 msgstr "Recupero nuova blocklist…"
 
 msgctxt "Port test status"
@@ -3175,11 +3176,6 @@ msgstr "Apri client web"
 msgid "{part} of {whole}"
 msgstr "{part} su {whole}"
 
-#. Translators: Blocklist -> message
-#, fuzzy
-msgid "Updating blocklist"
-msgstr "Blocklist"
-
 msgid "Download of the blocklist failed."
 msgstr "La ricezione della blocklist è fallita."
 
@@ -3929,18 +3925,11 @@ msgstr "La porta è chiusa"
 msgid "Port check site is down"
 msgstr "Il sito di test non è disponibile"
 
-msgid "{count:L} IP address rule in list"
-msgid_plural "{count:L} IP address rules in list"
-msgstr[0] "{count:L} regole indirizzi IP nella lista"
-msgstr[1] "{count:L} regole indirizzi IP nella lista"
-msgstr[2] "{count:L} regole indirizzi IP nella lista"
-
 msgid "A blocklist must first be downloaded"
 msgstr "Occorre prima scaricare una blocklist"
 
-#. Translators: Prefs -> blocklist -> message
-msgid "Last updated"
-msgstr "Ultimo aggiornamento"
+msgid "Last updated: {date}"
+msgstr "Ultimo aggiornamento: {date}"
 
 msgid "This option is not available if Save to location is set to Same as torrent file."
 msgstr ""
@@ -4281,16 +4270,7 @@ msgstr ""
 msgid "Not supported by remote sessions"
 msgstr "Non supportato dalle sessioni remote"
 
-msgid "<i>Blocklist contains {count:L} rule</i>"
-msgid_plural "<i>Blocklist contains {count:L} rules</i>"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-
 msgid "<i>Blocklist has never been updated</i>"
-msgstr ""
-
-msgid "<i>Blocklist last updated {date}</i>"
 msgstr ""
 
 msgid "_Upload:"
@@ -4459,6 +4439,12 @@ msgid_plural "seconds"
 msgstr[0] "secondo"
 msgstr[1] "secondi"
 msgstr[2] "secondi"
+
+#~ msgid "{count:L} IP address rule in list"
+#~ msgid_plural "{count:L} IP address rules in list"
+#~ msgstr[0] "{count:L} regole indirizzi IP nella lista"
+#~ msgstr[1] "{count:L} regole indirizzi IP nella lista"
+#~ msgstr[2] "{count:L} regole indirizzi IP nella lista"
 
 #~ msgid "Tracker returned error"
 #~ msgstr "Il server traccia ha restituito un errore"

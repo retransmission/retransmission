@@ -718,8 +718,8 @@ msgstr "Εργάσιμες"
 msgid "Weekends"
 msgstr "Σαββατοκύριακα"
 
-msgid "Blocklist has {count:L} entry"
-msgid_plural "Blocklist has {count:L} entries"
+msgid "Blocklist has {count:L} rule"
+msgid_plural "Blocklist has {count:L} rules"
 msgstr[0] "Η λίστα φραγής έχει {count:L} καταχώρηση"
 msgstr[1] "Η λίστα φραγής έχει {count:L} καταχωρήσεις"
 
@@ -730,7 +730,8 @@ msgstr "Η λίστα φραγής ενημερώθηκε!"
 msgid "Couldn't update blocklist"
 msgstr "Αδυναμία ενημέρωσης λίστας φραγής"
 
-msgid "Getting new blocklist…"
+#. Translators: Blocklist -> message
+msgid "Updating blocklist…"
 msgstr "Απόκτηση νέας λίστας φραγής…"
 
 msgctxt "Port test status"
@@ -3145,12 +3146,6 @@ msgstr "Άνοιγμα πελάτη ιστού"
 msgid "{part} of {whole}"
 msgstr "{part} από {whole}"
 
-#. Translators: Blocklist -> message
-#, fuzzy
-#| msgid "Update Blocklist"
-msgid "Updating blocklist"
-msgstr "Ενημέρωση λίστα φραγής"
-
 msgid "Download of the blocklist failed."
 msgstr "Η λήψη της λίστας αποκλεισμού απέτυχε."
 
@@ -3882,17 +3877,11 @@ msgstr "Η θύρα είναι κλειστή"
 msgid "Port check site is down"
 msgstr "Η ιστοσελίδα ελέγχου θυρών είναι εκτός λειτουργίας"
 
-msgid "{count:L} IP address rule in list"
-msgid_plural "{count:L} IP address rules in list"
-msgstr[0] "{count:L} κανόνες διευθύνσεων IP στη λίστα"
-msgstr[1] "{count:L} κανόνες διευθύνσεων IP στη λίστα"
-
 msgid "A blocklist must first be downloaded"
 msgstr "Πρέπει πρώτα να γίνει λήψη μίας λίστας αποκλεισμού"
 
-#. Translators: Prefs -> blocklist -> message
-msgid "Last updated"
-msgstr "Τελευταία ενημέρωση "
+msgid "Last updated: {date}"
+msgstr "Τελευταία ενημέρωση : {date}"
 
 msgid "This option is not available if Save to location is set to Same as torrent file."
 msgstr ""
@@ -4223,21 +4212,10 @@ msgstr "Επιλογή Script «Το Torrent Κατέβηκε»"
 msgid "Not supported by remote sessions"
 msgstr "Δεν υποστηρίζεται από απομακρυσμένες συνεδρίες"
 
-msgid "<i>Blocklist contains {count:L} rule</i>"
-msgid_plural "<i>Blocklist contains {count:L} rules</i>"
-msgstr[0] "<i>Η λίστα αποκλεισμού περιέχει {count:L} κανόνα</i>"
-msgstr[1] "<i>Η λίστα αποκλεισμού περιέχει {count:L} κανόνες</i>"
-
 #, fuzzy
 #| msgid "<i>Blocklist contains {count:L} rule</i>"
 #| msgid_plural "<i>Blocklist contains {count:L} rules</i>"
 msgid "<i>Blocklist has never been updated</i>"
-msgstr "<i>Η λίστα αποκλεισμού περιέχει {count:L} κανόνα</i>"
-
-#, fuzzy
-#| msgid "<i>Blocklist contains {count:L} rule</i>"
-#| msgid_plural "<i>Blocklist contains {count:L} rules</i>"
-msgid "<i>Blocklist last updated {date}</i>"
 msgstr "<i>Η λίστα αποκλεισμού περιέχει {count:L} κανόνα</i>"
 
 msgid "_Upload:"
@@ -4386,6 +4364,11 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "δευτερόλεπτο"
 msgstr[1] "δευτερόλεπτα"
+
+#~ msgid "{count:L} IP address rule in list"
+#~ msgid_plural "{count:L} IP address rules in list"
+#~ msgstr[0] "{count:L} κανόνες διευθύνσεων IP στη λίστα"
+#~ msgstr[1] "{count:L} κανόνες διευθύνσεων IP στη λίστα"
 
 #~ msgid "Tracker returned error"
 #~ msgstr "Ο Ιχνηλάτης επέστρεψε σφάλμα"

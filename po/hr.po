@@ -626,11 +626,11 @@ msgstr "Radnim danom"
 msgid "Weekends"
 msgstr "Vikendom"
 
-msgid "Blocklist has {count:L} entry"
-msgid_plural "Blocklist has {count:L} entries"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgid "Blocklist has {count:L} rule"
+msgid_plural "Blocklist has {count:L} rules"
+msgstr[0] "Popis blokiranja sadrži {count:L} pravilo"
+msgstr[1] "Popis blokiranja sadrži {count:L} pravila"
+msgstr[2] "Popis blokiranja sadrži {count:L} pravila"
 
 msgid "Blocklist updated!"
 msgstr ""
@@ -638,7 +638,7 @@ msgstr ""
 msgid "Couldn't update blocklist"
 msgstr ""
 
-msgid "Getting new blocklist…"
+msgid "Updating blocklist…"
 msgstr "Preuzimanje novog popisa blokiranja…"
 
 msgctxt "Port test status"
@@ -2349,12 +2349,6 @@ msgstr ""
 msgid "Not supported by remote sessions"
 msgstr "Nije podržano udaljenom sesijom"
 
-msgid "<i>Blocklist contains {count:L} rule</i>"
-msgid_plural "<i>Blocklist contains {count:L} rules</i>"
-msgstr[0] "Popis blokiranja sadrži {count:L} pravilo"
-msgstr[1] "Popis blokiranja sadrži {count:L} pravila"
-msgstr[2] "Popis blokiranja sadrži {count:L} pravila"
-
 #, fuzzy
 #| msgid "<i>Blocklist contains {count:L} rule</i>"
 #| msgid_plural "<i>Blocklist contains {count:L} rules</i>"
@@ -2364,7 +2358,7 @@ msgstr "Popis blokiranja sadrži {count:L} pravilo"
 #, fuzzy
 #| msgid "<i>Blocklist contains {count:L} rule</i>"
 #| msgid_plural "<i>Blocklist contains {count:L} rules</i>"
-msgid "<i>Blocklist last updated {date}</i>"
+msgid "Last updated: {date}"
 msgstr "Popis blokiranja sadrži {count:L} pravilo"
 
 msgid "_Upload:"

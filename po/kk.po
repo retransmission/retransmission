@@ -616,8 +616,8 @@ msgstr "Жұмыс күндері"
 msgid "Weekends"
 msgstr "Демалыс күндері"
 
-msgid "Blocklist has {count:L} entry"
-msgid_plural "Blocklist has {count:L} entries"
+msgid "Blocklist has {count:L} rule"
+msgid_plural "Blocklist has {count:L} rules"
 msgstr[0] ""
 msgstr[1] ""
 
@@ -627,7 +627,7 @@ msgstr ""
 msgid "Couldn't update blocklist"
 msgstr ""
 
-msgid "Getting new blocklist…"
+msgid "Updating blocklist…"
 msgstr "Жаңа блоктізімін алу…"
 
 msgctxt "Port test status"
@@ -2318,15 +2318,10 @@ msgstr ""
 msgid "Not supported by remote sessions"
 msgstr ""
 
-msgid "<i>Blocklist contains {count:L} rule</i>"
-msgid_plural "<i>Blocklist contains {count:L} rules</i>"
-msgstr[0] ""
-msgstr[1] ""
-
 msgid "<i>Blocklist has never been updated</i>"
 msgstr ""
 
-msgid "<i>Blocklist last updated {date}</i>"
+msgid "Last updated: {date}"
 msgstr ""
 
 #, fuzzy

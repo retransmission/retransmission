@@ -636,8 +636,8 @@ msgstr "Các ngày làm việc"
 msgid "Weekends"
 msgstr "Cuối tuần"
 
-msgid "Blocklist has {count:L} entry"
-msgid_plural "Blocklist has {count:L} entries"
+msgid "Blocklist has {count:L} rule"
+msgid_plural "Blocklist has {count:L} rules"
 msgstr[0] "Danh sách chặn có {count:L} mục"
 
 msgid "Blocklist updated!"
@@ -646,7 +646,7 @@ msgstr "Đã cập nhật danh sách chặn!"
 msgid "Couldn't update blocklist"
 msgstr "Không thể cập nhật danh sách chặn"
 
-msgid "Getting new blocklist…"
+msgid "Updating blocklist…"
 msgstr "Đang tải danh sách chặn mới..."
 
 msgctxt "Port test status"

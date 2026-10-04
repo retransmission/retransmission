@@ -547,7 +547,7 @@ void PrivacyPage::updateBlocklistText()
 {
     auto const n = tr_blocklistGetRuleCount(core_->get_session());
     auto const msg = fmt::format(
-        fmt::runtime(ngettext("Blocklist has {count:L} entry", "Blocklist has {count:L} entries", n)),
+        fmt::runtime(ngettext("Blocklist has {count:L} rule", "Blocklist has {count:L} rules", n)),
         fmt::arg("count", n));
     label_->set_text(msg);
 }
@@ -575,7 +575,7 @@ void PrivacyPage::onBlocklistUpdate()
 {
     updateBlocklistButton_->set_sensitive(false);
 
-    label_->set_text(_("Getting new blocklist…"));
+    label_->set_text(_("Updating blocklist…"));
     blocklist_update_result_tag_.disconnect();
 
     core_->blocklist_update();

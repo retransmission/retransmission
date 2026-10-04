@@ -638,8 +638,8 @@ msgstr "Gjatë Ditëve të Javës"
 msgid "Weekends"
 msgstr "Gjatë Fundjavës"
 
-msgid "Blocklist has {count:L} entry"
-msgid_plural "Blocklist has {count:L} entries"
+msgid "Blocklist has {count:L} rule"
+msgid_plural "Blocklist has {count:L} rules"
 msgstr[0] ""
 msgstr[1] ""
 
@@ -649,7 +649,7 @@ msgstr ""
 msgid "Couldn't update blocklist"
 msgstr ""
 
-msgid "Getting new blocklist…"
+msgid "Updating blocklist…"
 msgstr "Duke marrë listën e re të bllokimeve…"
 
 msgctxt "Port test status"

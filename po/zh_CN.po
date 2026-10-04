@@ -727,8 +727,8 @@ msgstr "工作日"
 msgid "Weekends"
 msgstr "周末"
 
-msgid "Blocklist has {count:L} entry"
-msgid_plural "Blocklist has {count:L} entries"
+msgid "Blocklist has {count:L} rule"
+msgid_plural "Blocklist has {count:L} rules"
 msgstr[0] "屏蔽列表中有 {count:L} 个条目"
 
 msgid "Blocklist updated!"
@@ -738,7 +738,8 @@ msgstr "屏蔽列表已更新！"
 msgid "Couldn't update blocklist"
 msgstr "无法更新屏蔽列表"
 
-msgid "Getting new blocklist…"
+#. Translators: Blocklist -> message
+msgid "Updating blocklist…"
 msgstr "正在获取新的屏蔽列表…"
 
 msgctxt "Port test status"
@@ -3121,12 +3122,6 @@ msgstr "打开 Web 客户端"
 msgid "{part} of {whole}"
 msgstr "{part} / {whole}"
 
-#. Translators: Blocklist -> message
-#, fuzzy
-#| msgid "Update Blocklist"
-msgid "Updating blocklist"
-msgstr "更新屏蔽列表"
-
 msgid "Download of the blocklist failed."
 msgstr "下载屏蔽列表失败"
 
@@ -3841,16 +3836,11 @@ msgstr "端口是关闭的"
 msgid "Port check site is down"
 msgstr "端口检查网站不在线"
 
-msgid "{count:L} IP address rule in list"
-msgid_plural "{count:L} IP address rules in list"
-msgstr[0] "列表中有 {count:L} 条 IP 地址规则"
-
 msgid "A blocklist must first be downloaded"
 msgstr "必须先下载一个屏蔽列表"
 
-#. Translators: Prefs -> blocklist -> message
-msgid "Last updated"
-msgstr "最后更新"
+msgid "Last updated: {date}"
+msgstr "最后更新： {date}"
 
 msgid "This option is not available if Save to location is set to Same as torrent file."
 msgstr ""
@@ -4173,20 +4163,10 @@ msgstr "选择 \"Torrent 下载完成\" 脚本"
 msgid "Not supported by remote sessions"
 msgstr "远程会话不支持"
 
-msgid "<i>Blocklist contains {count:L} rule</i>"
-msgid_plural "<i>Blocklist contains {count:L} rules</i>"
-msgstr[0] "<i>屏蔽列表包含 {count:L} 条规则</i>"
-
 #, fuzzy
 #| msgid "<i>Blocklist contains {count:L} rule</i>"
 #| msgid_plural "<i>Blocklist contains {count:L} rules</i>"
 msgid "<i>Blocklist has never been updated</i>"
-msgstr "<i>屏蔽列表包含 {count:L} 条规则</i>"
-
-#, fuzzy
-#| msgid "<i>Blocklist contains {count:L} rule</i>"
-#| msgid_plural "<i>Blocklist contains {count:L} rules</i>"
-msgid "<i>Blocklist last updated {date}</i>"
 msgstr "<i>屏蔽列表包含 {count:L} 条规则</i>"
 
 msgid "_Upload:"
@@ -4325,6 +4305,10 @@ msgstr[0] "天"
 msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "秒"
+
+#~ msgid "{count:L} IP address rule in list"
+#~ msgid_plural "{count:L} IP address rules in list"
+#~ msgstr[0] "列表中有 {count:L} 条 IP 地址规则"
 
 #~ msgid "Tracker returned error"
 #~ msgstr "Tracker 返回错误"

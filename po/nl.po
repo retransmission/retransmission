@@ -717,8 +717,8 @@ msgstr "Weekdagen"
 msgid "Weekends"
 msgstr "Weekends"
 
-msgid "Blocklist has {count:L} entry"
-msgid_plural "Blocklist has {count:L} entries"
+msgid "Blocklist has {count:L} rule"
+msgid_plural "Blocklist has {count:L} rules"
 msgstr[0] "zwarte lijst heeft {count:L} regels"
 msgstr[1] "Zwarte lijst heeft {count:L} regel"
 
@@ -729,7 +729,8 @@ msgstr "Zwarte lijst bijgewerkt!"
 msgid "Couldn't update blocklist"
 msgstr "Kon zwarte lijst niet bijwerken"
 
-msgid "Getting new blocklist…"
+#. Translators: Blocklist -> message
+msgid "Updating blocklist…"
 msgstr "Nieuwe blokkadelijst wordt opgehaald…"
 
 msgctxt "Port test status"
@@ -3156,12 +3157,6 @@ msgstr "Webcliënt openen"
 msgid "{part} of {whole}"
 msgstr "{part} van {whole}"
 
-#. Translators: Blocklist -> message
-#, fuzzy
-#| msgid "Update Blocklist"
-msgid "Updating blocklist"
-msgstr "Zwarte lijst bijwerken"
-
 msgid "Download of the blocklist failed."
 msgstr "Downloaden van de zwarte lijst mislukt."
 
@@ -3903,17 +3898,11 @@ msgstr "Poort is gesloten"
 msgid "Port check site is down"
 msgstr "Poortcontrolesite onbereikbaar"
 
-msgid "{count:L} IP address rule in list"
-msgid_plural "{count:L} IP address rules in list"
-msgstr[0] "{count:L} IP-adressen in de lijst"
-msgstr[1] "{count:L} IP-adressen in de lijst"
-
 msgid "A blocklist must first be downloaded"
 msgstr "Een zwarte lijst moet eerst gedownload worden"
 
-#. Translators: Prefs -> blocklist -> message
-msgid "Last updated"
-msgstr "Laatst bijgewerkt"
+msgid "Last updated: {date}"
+msgstr "Laatst bijgewerkt: {date}"
 
 msgid "This option is not available if Save to location is set to Same as torrent file."
 msgstr ""
@@ -4249,21 +4238,10 @@ msgstr "Selecteer \"Torrent Done Downloading\" Script"
 msgid "Not supported by remote sessions"
 msgstr "Niet ondersteund door sessies op afstand"
 
-msgid "<i>Blocklist contains {count:L} rule</i>"
-msgid_plural "<i>Blocklist contains {count:L} rules</i>"
-msgstr[0] "<i>Zwarte lijst bevat {count:L} regel</i>"
-msgstr[1] "<i>Zwarte lijst bevat {count:L} regels</i>"
-
 #, fuzzy
 #| msgid "<i>Blocklist contains {count:L} rule</i>"
 #| msgid_plural "<i>Blocklist contains {count:L} rules</i>"
 msgid "<i>Blocklist has never been updated</i>"
-msgstr "<i>Zwarte lijst bevat {count:L} regel</i>"
-
-#, fuzzy
-#| msgid "<i>Blocklist contains {count:L} rule</i>"
-#| msgid_plural "<i>Blocklist contains {count:L} rules</i>"
-msgid "<i>Blocklist last updated {date}</i>"
 msgstr "<i>Zwarte lijst bevat {count:L} regel</i>"
 
 msgid "_Upload:"
@@ -4412,6 +4390,11 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "seconde"
 msgstr[1] "seconden"
+
+#~ msgid "{count:L} IP address rule in list"
+#~ msgid_plural "{count:L} IP address rules in list"
+#~ msgstr[0] "{count:L} IP-adressen in de lijst"
+#~ msgstr[1] "{count:L} IP-adressen in de lijst"
 
 #~ msgid "Tracker returned error"
 #~ msgstr "Tracker gaf een foutmelding"

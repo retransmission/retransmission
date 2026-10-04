@@ -618,9 +618,9 @@ msgstr "Hari kerja"
 msgid "Weekends"
 msgstr "Akhir pekan"
 
-msgid "Blocklist has {count:L} entry"
-msgid_plural "Blocklist has {count:L} entries"
-msgstr[0] ""
+msgid "Blocklist has {count:L} rule"
+msgid_plural "Blocklist has {count:L} rules"
+msgstr[0] "Daftar blokir memuat {count:L} aturan"
 
 msgid "Blocklist updated!"
 msgstr ""
@@ -628,7 +628,7 @@ msgstr ""
 msgid "Couldn't update blocklist"
 msgstr ""
 
-msgid "Getting new blocklist…"
+msgid "Updating blocklist…"
 msgstr "Mengambil daftar blok baru…"
 
 msgctxt "Port test status"
@@ -2276,10 +2276,6 @@ msgstr "Pilih Skrip \"Torrent Selesai Diunduh\""
 msgid "Not supported by remote sessions"
 msgstr "Tidak didukung oleh sesi remote"
 
-msgid "<i>Blocklist contains {count:L} rule</i>"
-msgid_plural "<i>Blocklist contains {count:L} rules</i>"
-msgstr[0] "<i>Daftar blokir memuat {count:L} aturan</i>"
-
 #, fuzzy
 #| msgid "<i>Blocklist contains {count:L} rule</i>"
 #| msgid_plural "<i>Blocklist contains {count:L} rules</i>"
@@ -2289,8 +2285,8 @@ msgstr "<i>Daftar blokir memuat {count:L} aturan</i>"
 #, fuzzy
 #| msgid "<i>Blocklist contains {count:L} rule</i>"
 #| msgid_plural "<i>Blocklist contains {count:L} rules</i>"
-msgid "<i>Blocklist last updated {date}</i>"
-msgstr "<i>Daftar blokir memuat {count:L} aturan</i>"
+msgid "Last updated: {date}"
+msgstr "Daftar blokir memuat {count:L} aturan"
 
 msgid "_Upload:"
 msgstr "_Unggah:"

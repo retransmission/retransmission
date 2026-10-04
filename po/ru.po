@@ -703,8 +703,8 @@ msgstr "Будни"
 msgid "Weekends"
 msgstr "Выходные"
 
-msgid "Blocklist has {count:L} entry"
-msgid_plural "Blocklist has {count:L} entries"
+msgid "Blocklist has {count:L} rule"
+msgid_plural "Blocklist has {count:L} rules"
 msgstr[0] "В чёрном списке {count:L} запись"
 msgstr[1] "В чёрном списке {count:L} записи"
 msgstr[2] "В чёрном списке {count:L} записей"
@@ -717,7 +717,8 @@ msgstr "Чёрный список обновлён!"
 msgid "Couldn't update blocklist"
 msgstr "Не удалось обновить чёрный список"
 
-msgid "Getting new blocklist…"
+#. Translators: Blocklist -> message
+msgid "Updating blocklist…"
 msgstr "Получение нового чёрного списка…"
 
 msgctxt "Port test status"
@@ -3192,12 +3193,6 @@ msgstr "Открыть веб-клиент"
 msgid "{part} of {whole}"
 msgstr "{part} из {whole}"
 
-#. Translators: Blocklist -> message
-#, fuzzy
-#| msgid "Update Blocklist"
-msgid "Updating blocklist"
-msgstr "Обновить чёрный список"
-
 msgid "Download of the blocklist failed."
 msgstr "Не могу скачать черный список."
 
@@ -3957,19 +3952,11 @@ msgstr "Порт закрыт"
 msgid "Port check site is down"
 msgstr "Сайт проверки порта недоступен"
 
-msgid "{count:L} IP address rule in list"
-msgid_plural "{count:L} IP address rules in list"
-msgstr[0] "{count:L} IP-адресов в списке"
-msgstr[1] "{count:L} IP-адресов в списке"
-msgstr[2] "{count:L} IP-адресов в списке"
-msgstr[3] "{count:L} IP-адресов в списке"
-
 msgid "A blocklist must first be downloaded"
 msgstr "Необходимо скачать черный список"
 
-#. Translators: Prefs -> blocklist -> message
-msgid "Last updated"
-msgstr "Последнее обновление"
+msgid "Last updated: {date}"
+msgstr "Последнее обновление: {date}"
 
 msgid "This option is not available if Save to location is set to Same as torrent file."
 msgstr ""
@@ -4314,23 +4301,10 @@ msgstr "Выбор сценария «Торрент завершил загру
 msgid "Not supported by remote sessions"
 msgstr "Не поддерживается удалёнными сеансами"
 
-msgid "<i>Blocklist contains {count:L} rule</i>"
-msgid_plural "<i>Blocklist contains {count:L} rules</i>"
-msgstr[0] "<i>«Чёрный список» содержит {count:L} правило</i>"
-msgstr[1] "<i>«Чёрный список» содержит {count:L} правила</i>"
-msgstr[2] "<i>«Чёрный список» содержит {count:L} правил</i>"
-msgstr[3] "<i>«Чёрный список» содержит {count:L} правил</i>"
-
 #, fuzzy
 #| msgid "<i>Blocklist contains {count:L} rule</i>"
 #| msgid_plural "<i>Blocklist contains {count:L} rules</i>"
 msgid "<i>Blocklist has never been updated</i>"
-msgstr "<i>«Чёрный список» содержит {count:L} правило</i>"
-
-#, fuzzy
-#| msgid "<i>Blocklist contains {count:L} rule</i>"
-#| msgid_plural "<i>Blocklist contains {count:L} rules</i>"
-msgid "<i>Blocklist last updated {date}</i>"
 msgstr "<i>«Чёрный список» содержит {count:L} правило</i>"
 
 msgid "_Upload:"
@@ -4499,6 +4473,13 @@ msgstr[0] "секунда"
 msgstr[1] "секунды"
 msgstr[2] "секунд"
 msgstr[3] "секунд"
+
+#~ msgid "{count:L} IP address rule in list"
+#~ msgid_plural "{count:L} IP address rules in list"
+#~ msgstr[0] "{count:L} IP-адресов в списке"
+#~ msgstr[1] "{count:L} IP-адресов в списке"
+#~ msgstr[2] "{count:L} IP-адресов в списке"
+#~ msgstr[3] "{count:L} IP-адресов в списке"
 
 #~ msgid "Tracker returned error"
 #~ msgstr "Трекер сообщил об ошибке"

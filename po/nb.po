@@ -628,10 +628,10 @@ msgstr "Ukedager"
 msgid "Weekends"
 msgstr "Helger"
 
-msgid "Blocklist has {count:L} entry"
-msgid_plural "Blocklist has {count:L} entries"
-msgstr[0] ""
-msgstr[1] ""
+msgid "Blocklist has {count:L} rule"
+msgid_plural "Blocklist has {count:L} rules"
+msgstr[0] "Blokklisten inneholder {count:L} regel"
+msgstr[1] "Blokklisten inneholder {count:L} regler"
 
 msgid "Blocklist updated!"
 msgstr ""
@@ -639,7 +639,7 @@ msgstr ""
 msgid "Couldn't update blocklist"
 msgstr ""
 
-msgid "Getting new blocklist…"
+msgid "Updating blocklist…"
 msgstr "Henter ny blokkeringsliste …"
 
 msgctxt "Port test status"
@@ -2312,11 +2312,6 @@ msgstr ""
 msgid "Not supported by remote sessions"
 msgstr "Ikke støttet av fjern-økter"
 
-msgid "<i>Blocklist contains {count:L} rule</i>"
-msgid_plural "<i>Blocklist contains {count:L} rules</i>"
-msgstr[0] "<i>Blokklisten inneholder {count:L} regel</i>"
-msgstr[1] "<i>Blokklisten inneholder {count:L} regler</i>"
-
 #, fuzzy
 #| msgid "<i>Blocklist contains {count:L} rule</i>"
 #| msgid_plural "<i>Blocklist contains {count:L} rules</i>"
@@ -2326,8 +2321,8 @@ msgstr "<i>Blokklisten inneholder {count:L} regel</i>"
 #, fuzzy
 #| msgid "<i>Blocklist contains {count:L} rule</i>"
 #| msgid_plural "<i>Blocklist contains {count:L} rules</i>"
-msgid "<i>Blocklist last updated {date}</i>"
-msgstr "<i>Blokklisten inneholder {count:L} regel</i>"
+msgid "Last updated: {date}"
+msgstr "Blokklisten inneholder {count:L} regel"
 
 msgid "_Upload:"
 msgstr "_Last opp:"

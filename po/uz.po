@@ -628,8 +628,8 @@ msgstr "Hafta kunlari"
 msgid "Weekends"
 msgstr "Hafta so‘nggi kunlari"
 
-msgid "Blocklist has {count:L} entry"
-msgid_plural "Blocklist has {count:L} entries"
+msgid "Blocklist has {count:L} rule"
+msgid_plural "Blocklist has {count:L} rules"
 msgstr[0] ""
 
 msgid "Blocklist updated!"
@@ -638,7 +638,7 @@ msgstr ""
 msgid "Couldn't update blocklist"
 msgstr ""
 
-msgid "Getting new blocklist…"
+msgid "Updating blocklist…"
 msgstr "Yangi to‘silganlar ro‘yxatini olish…"
 
 msgctxt "Port test status"

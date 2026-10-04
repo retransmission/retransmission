@@ -690,8 +690,8 @@ msgstr "Hafta İçi"
 msgid "Weekends"
 msgstr "Hafta Sonu"
 
-msgid "Blocklist has {count:L} entry"
-msgid_plural "Blocklist has {count:L} entries"
+msgid "Blocklist has {count:L} rule"
+msgid_plural "Blocklist has {count:L} rules"
 msgstr[0] "Engel listesinde {count:L} girdi var"
 msgstr[1] "Engel listesinde {count:L} girdi var"
 
@@ -702,7 +702,8 @@ msgstr "Engel listesi güncellendi!"
 msgid "Couldn't update blocklist"
 msgstr "Engel listesi güncellenemedi"
 
-msgid "Getting new blocklist…"
+#. Translators: Blocklist -> message
+msgid "Updating blocklist…"
 msgstr "Yeni engel listesi alınıyor…"
 
 msgctxt "Port test status"
@@ -3117,12 +3118,6 @@ msgstr "Web istemcisini aç"
 msgid "{part} of {whole}"
 msgstr "{part}/{whole}"
 
-#. Translators: Blocklist -> message
-#, fuzzy
-#| msgid "Update Blocklist"
-msgid "Updating blocklist"
-msgstr "Engel Listesini Güncelle"
-
 msgid "Download of the blocklist failed."
 msgstr "Kara dizelge indirilemedi."
 
@@ -3852,17 +3847,11 @@ msgstr "Kapı kapalı"
 msgid "Port check site is down"
 msgstr "Kapı denetim alanı çalışmıyor"
 
-msgid "{count:L} IP address rule in list"
-msgid_plural "{count:L} IP address rules in list"
-msgstr[0] "Dizelgede {count:L} IP adresi kuralı"
-msgstr[1] "Dizelgede {count:L} IP adresi kuralı"
-
 msgid "A blocklist must first be downloaded"
 msgstr "Önce bir kara dizelge indirilmeli"
 
-#. Translators: Prefs -> blocklist -> message
-msgid "Last updated"
-msgstr "Son güncelleme"
+msgid "Last updated: {date}"
+msgstr "Son güncelleme: {date}"
 
 msgid "This option is not available if Save to location is set to Same as torrent file."
 msgstr ""
@@ -4193,21 +4182,10 @@ msgstr "\"Torrent İndirildi\" Betiğini Seç"
 msgid "Not supported by remote sessions"
 msgstr "Uzak oturumlarca desteklenmiyor"
 
-msgid "<i>Blocklist contains {count:L} rule</i>"
-msgid_plural "<i>Blocklist contains {count:L} rules</i>"
-msgstr[0] "<i>Engel listesi {count:L} kural içeriyor</i>"
-msgstr[1] "<i>Engel listesi {count:L} kural içeriyor</i>"
-
 #, fuzzy
 #| msgid "<i>Blocklist contains {count:L} rule</i>"
 #| msgid_plural "<i>Blocklist contains {count:L} rules</i>"
 msgid "<i>Blocklist has never been updated</i>"
-msgstr "<i>Engel listesi {count:L} kural içeriyor</i>"
-
-#, fuzzy
-#| msgid "<i>Blocklist contains {count:L} rule</i>"
-#| msgid_plural "<i>Blocklist contains {count:L} rules</i>"
-msgid "<i>Blocklist last updated {date}</i>"
 msgstr "<i>Engel listesi {count:L} kural içeriyor</i>"
 
 msgid "_Upload:"
@@ -4356,6 +4334,11 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "saniye"
 msgstr[1] "saniye"
+
+#~ msgid "{count:L} IP address rule in list"
+#~ msgid_plural "{count:L} IP address rules in list"
+#~ msgstr[0] "Dizelgede {count:L} IP adresi kuralı"
+#~ msgstr[1] "Dizelgede {count:L} IP adresi kuralı"
 
 #~ msgid "Tracker returned error"
 #~ msgstr "İzleyici hata verdi"

@@ -540,8 +540,8 @@ static NSString* const kWebUIURLFormat = @"http://localhost:%ld/";
     if (exists) {
         auto const ruleCount = tr_blocklistGetRuleCount(self.fHandle);
         self.fBlocklistMessageField.stringValue = TR_FORMAT_N(
-            "{count:L} IP address rule in list",
-            "{count:L} IP address rules in list",
+            "Blocklist has {count:L} rule",
+            "Blocklist has {count:L} rules",
             ruleCount,
             TRArg("count", ruleCount));
     } else {
@@ -565,9 +565,7 @@ static NSString* const kWebUIURLFormat = @"http://localhost:%ld/";
         updatedDateString = TR_TEXT("Never");
     }
 
-    self.fBlocklistDateField.stringValue = [NSString
-        // Translators: Prefs -> blocklist -> message
-        stringWithFormat:@"%@: %@", TR_TEXT("Last updated"), updatedDateString];
+    self.fBlocklistDateField.stringValue = TR_FORMAT("Last updated: {date}", TRArg("date", updatedDateString));
 }
 
 - (void)updateBlocklistURLField

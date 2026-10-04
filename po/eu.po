@@ -694,8 +694,8 @@ msgstr "Lanegunetan"
 msgid "Weekends"
 msgstr "Asteburuetan"
 
-msgid "Blocklist has {count:L} entry"
-msgid_plural "Blocklist has {count:L} entries"
+msgid "Blocklist has {count:L} rule"
+msgid_plural "Blocklist has {count:L} rules"
 msgstr[0] "BLokeo-zerrendak {count:L} sarrera du"
 msgstr[1] "Blokeo-zerrendak {count:L} sarrera ditu"
 
@@ -706,7 +706,8 @@ msgstr "Blokeo-zerrenda eguneratuta!"
 msgid "Couldn't update blocklist"
 msgstr "Ezin izan da blokeo-zerrenda eguneratu"
 
-msgid "Getting new blocklist…"
+#. Translators: Blocklist -> message
+msgid "Updating blocklist…"
 msgstr "Blokeo-zerrenda berria jasotzen…"
 
 msgctxt "Port test status"
@@ -3118,12 +3119,6 @@ msgstr "Ireki web bezeroa"
 msgid "{part} of {whole}"
 msgstr "{part} {whole}-etik"
 
-#. Translators: Blocklist -> message
-#, fuzzy
-#| msgid "Update Blocklist"
-msgid "Updating blocklist"
-msgstr "Eguneratu Blokeo-zerrenda"
-
 msgid "Download of the blocklist failed."
 msgstr "Blokeo-zerrendaren deskargak huts egin du."
 
@@ -3863,17 +3858,11 @@ msgstr "Ataka itxita dago"
 msgid "Port check site is down"
 msgstr "Ataka-egiaztatzeko gunea erorita dago"
 
-msgid "{count:L} IP address rule in list"
-msgid_plural "{count:L} IP address rules in list"
-msgstr[0] "{count:L} IP helbide-arau zerrendan"
-msgstr[1] "{count:L} IP helbide-arau zerrendan"
-
 msgid "A blocklist must first be downloaded"
 msgstr "Aurretik blokeo-zerrenda bat deskargatu behar da"
 
-#. Translators: Prefs -> blocklist -> message
-msgid "Last updated"
-msgstr "Azkenengoz eguneratuta"
+msgid "Last updated: {date}"
+msgstr "Azkenengoz eguneratuta: {date}"
 
 msgid "This option is not available if Save to location is set to Same as torrent file."
 msgstr ""
@@ -4204,21 +4193,10 @@ msgstr "Aukeratu \"Torrentaren Deskarga Amaituta\" Script-a"
 msgid "Not supported by remote sessions"
 msgstr "Ez dago sostengaturik urruneko saioentzat"
 
-msgid "<i>Blocklist contains {count:L} rule</i>"
-msgid_plural "<i>Blocklist contains {count:L} rules</i>"
-msgstr[0] "<i>Blokeo-zerrendak ditu {count:L} arau</i>"
-msgstr[1] "<i>Blokeo-zerrendak {count:L} arau ditu</i>"
-
 #, fuzzy
 #| msgid "<i>Blocklist contains {count:L} rule</i>"
 #| msgid_plural "<i>Blocklist contains {count:L} rules</i>"
 msgid "<i>Blocklist has never been updated</i>"
-msgstr "<i>Blokeo-zerrendak ditu {count:L} arau</i>"
-
-#, fuzzy
-#| msgid "<i>Blocklist contains {count:L} rule</i>"
-#| msgid_plural "<i>Blocklist contains {count:L} rules</i>"
-msgid "<i>Blocklist last updated {date}</i>"
 msgstr "<i>Blokeo-zerrendak ditu {count:L} arau</i>"
 
 msgid "_Upload:"
@@ -4367,6 +4345,11 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "segundo"
 msgstr[1] "segundo"
+
+#~ msgid "{count:L} IP address rule in list"
+#~ msgid_plural "{count:L} IP address rules in list"
+#~ msgstr[0] "{count:L} IP helbide-arau zerrendan"
+#~ msgstr[1] "{count:L} IP helbide-arau zerrendan"
 
 #~ msgid "Tracker returned error"
 #~ msgstr "Aztarnariak errorea itzuli du"

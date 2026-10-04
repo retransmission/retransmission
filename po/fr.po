@@ -696,8 +696,8 @@ msgstr "En semaine"
 msgid "Weekends"
 msgstr "En fin de semaine"
 
-msgid "Blocklist has {count:L} entry"
-msgid_plural "Blocklist has {count:L} entries"
+msgid "Blocklist has {count:L} rule"
+msgid_plural "Blocklist has {count:L} rules"
 msgstr[0] "La liste de blocage comporte {count:L} entrée"
 msgstr[1] "La liste de blocage comporte {count:L} d’entrées"
 msgstr[2] "La liste de blocage comporte {count:L} entrées"
@@ -709,7 +709,8 @@ msgstr "La liste de blocage a été mise à jour"
 msgid "Couldn't update blocklist"
 msgstr "Impossible de mettre la liste de blocage à jour"
 
-msgid "Getting new blocklist…"
+#. Translators: Blocklist -> message
+msgid "Updating blocklist…"
 msgstr "Récupération de la nouvelle liste de blocage…"
 
 msgctxt "Port test status"
@@ -3158,12 +3159,6 @@ msgstr "Ouvrir le client Web"
 msgid "{part} of {whole}"
 msgstr "{part} sur {whole}"
 
-#. Translators: Blocklist -> message
-#, fuzzy
-#| msgid "Update Blocklist"
-msgid "Updating blocklist"
-msgstr "Mise à jour de la liste de blocage"
-
 msgid "Download of the blocklist failed."
 msgstr "Échec de téléchargement de la liste de blocage"
 
@@ -3912,18 +3907,11 @@ msgstr "Le port est fermé"
 msgid "Port check site is down"
 msgstr "Le site de vérification de ports est hors service"
 
-msgid "{count:L} IP address rule in list"
-msgid_plural "{count:L} IP address rules in list"
-msgstr[0] "{count:L} règles d’adresses IP dans la liste"
-msgstr[1] "{count:L} règles d’adresses IP dans la liste"
-msgstr[2] "{count:L} règles d’adresses IP dans la liste"
-
 msgid "A blocklist must first be downloaded"
 msgstr "Une liste de blocage doit d’abord être téléchargée"
 
-#. Translators: Prefs -> blocklist -> message
-msgid "Last updated"
-msgstr "Dernière mise à jour"
+msgid "Last updated: {date}"
+msgstr "Dernière mise à jour : {date}"
 
 msgid "This option is not available if Save to location is set to Same as torrent file."
 msgstr ""
@@ -4261,22 +4249,10 @@ msgstr "Sélectionner le script « Le torrent a fini de télécharger »"
 msgid "Not supported by remote sessions"
 msgstr "N’est pas pris en charge par les sessions à distance"
 
-msgid "<i>Blocklist contains {count:L} rule</i>"
-msgid_plural "<i>Blocklist contains {count:L} rules</i>"
-msgstr[0] "<i>La liste de blocage comporte {count:L} règle</i>"
-msgstr[1] "<i>La liste de blocage comprend {count:L} règles</i>"
-msgstr[2] "<i>La liste de blocage comprend {count:L} règles</i>"
-
 #, fuzzy
 #| msgid "<i>Blocklist contains {count:L} rule</i>"
 #| msgid_plural "<i>Blocklist contains {count:L} rules</i>"
 msgid "<i>Blocklist has never been updated</i>"
-msgstr "<i>La liste de blocage comporte {count:L} règle</i>"
-
-#, fuzzy
-#| msgid "<i>Blocklist contains {count:L} rule</i>"
-#| msgid_plural "<i>Blocklist contains {count:L} rules</i>"
-msgid "<i>Blocklist last updated {date}</i>"
 msgstr "<i>La liste de blocage comporte {count:L} règle</i>"
 
 msgid "_Upload:"
@@ -4435,6 +4411,12 @@ msgid_plural "seconds"
 msgstr[0] "seconde"
 msgstr[1] "de secondes"
 msgstr[2] "secondes"
+
+#~ msgid "{count:L} IP address rule in list"
+#~ msgid_plural "{count:L} IP address rules in list"
+#~ msgstr[0] "{count:L} règles d’adresses IP dans la liste"
+#~ msgstr[1] "{count:L} règles d’adresses IP dans la liste"
+#~ msgstr[2] "{count:L} règles d’adresses IP dans la liste"
 
 #~ msgid "Tracker returned error"
 #~ msgstr "Le traceur a retourné une erreur"

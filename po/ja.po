@@ -678,8 +678,8 @@ msgstr "平日"
 msgid "Weekends"
 msgstr "週末"
 
-msgid "Blocklist has {count:L} entry"
-msgid_plural "Blocklist has {count:L} entries"
+msgid "Blocklist has {count:L} rule"
+msgid_plural "Blocklist has {count:L} rules"
 msgstr[0] "ブロックリスト内に {count:L} 項目あります"
 
 msgid "Blocklist updated!"
@@ -689,7 +689,8 @@ msgstr "ブロックリストを更新しました !"
 msgid "Couldn't update blocklist"
 msgstr "ブロックリストを更新できません"
 
-msgid "Getting new blocklist…"
+#. Translators: Blocklist -> message
+msgid "Updating blocklist…"
 msgstr "新しいブロックリストを取得中…"
 
 msgctxt "Port test status"
@@ -3074,12 +3075,6 @@ msgstr "ブラウザで開く"
 msgid "{part} of {whole}"
 msgstr "{part} / {whole}"
 
-#. Translators: Blocklist -> message
-#, fuzzy
-#| msgid "Update Blocklist"
-msgid "Updating blocklist"
-msgstr "ブロックリストの更新"
-
 msgid "Download of the blocklist failed."
 msgstr "ブロックリストのダウンロードに失敗"
 
@@ -3798,16 +3793,11 @@ msgstr "ポートは閉じています"
 msgid "Port check site is down"
 msgstr "ポート確認サイトの反応なし"
 
-msgid "{count:L} IP address rule in list"
-msgid_plural "{count:L} IP address rules in list"
-msgstr[0] "リスト内に {count:L} 個のIP アドレスの規則"
-
 msgid "A blocklist must first be downloaded"
 msgstr "ブロックリストは最初にダウンロードしてください"
 
-#. Translators: Prefs -> blocklist -> message
-msgid "Last updated"
-msgstr "最終更新"
+msgid "Last updated: {date}"
+msgstr "最終更新: {date}"
 
 msgid "This option is not available if Save to location is set to Same as torrent file."
 msgstr ""
@@ -4131,20 +4121,10 @@ msgstr "「トレントダウンロード完了」スクリプトの選択"
 msgid "Not supported by remote sessions"
 msgstr "リモートセッションからは変更できません"
 
-msgid "<i>Blocklist contains {count:L} rule</i>"
-msgid_plural "<i>Blocklist contains {count:L} rules</i>"
-msgstr[0] "<i>ブロックリスト内に {count:L} 個の規則があります</i>"
-
 #, fuzzy
 #| msgid "<i>Blocklist contains {count:L} rule</i>"
 #| msgid_plural "<i>Blocklist contains {count:L} rules</i>"
 msgid "<i>Blocklist has never been updated</i>"
-msgstr "<i>ブロックリスト内に {count:L} 個の規則があります</i>"
-
-#, fuzzy
-#| msgid "<i>Blocklist contains {count:L} rule</i>"
-#| msgid_plural "<i>Blocklist contains {count:L} rules</i>"
-msgid "<i>Blocklist last updated {date}</i>"
 msgstr "<i>ブロックリスト内に {count:L} 個の規則があります</i>"
 
 msgid "_Upload:"
@@ -4283,6 +4263,10 @@ msgstr[0] "日"
 msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "秒"
+
+#~ msgid "{count:L} IP address rule in list"
+#~ msgid_plural "{count:L} IP address rules in list"
+#~ msgstr[0] "リスト内に {count:L} 個のIP アドレスの規則"
 
 #~ msgid "Tracker returned error"
 #~ msgstr "トラッカーがエラーを返送"
