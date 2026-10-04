@@ -864,10 +864,10 @@ msgid "Local error: '{error}'"
 msgstr "Lokal-fejl: '{error}'"
 
 #, no-c-format
-msgid "Downloading metadata from {active_count} connected peer ({percent_done}% done)"
-msgid_plural "Downloading metadata from {active_count} connected peers ({percent_done}% done)"
-msgstr[0] "Downloader metadata fra {active_count} tilsluttede modpart ({percent_done}% færdig)"
-msgstr[1] "Downloader metadata fra {active_count} tilsluttede modparter ({percent_done}% færdig)"
+msgid "Downloading metadata from {active_count:L} connected peer ({percent_done}% done)"
+msgid_plural "Downloading metadata from {active_count:L} connected peers ({percent_done}% done)"
+msgstr[0] "Downloader metadata fra {active_count:L} tilsluttede modpart ({percent_done}% færdig)"
+msgstr[1] "Downloader metadata fra {active_count:L} tilsluttede modparter ({percent_done}% færdig)"
 
 msgid "Downloading from {active_count} of {connected_count} connected peer and webseed"
 msgid_plural "Downloading from {active_count} of {connected_count} connected peers and webseeds"
@@ -880,15 +880,15 @@ msgstr[0] "Downloader fra {active_count} webseed"
 msgstr[1] "Downloader fra {active_count} webseeds"
 
 #. Translators: First part of phrase "Downloading from ... of ... connected peer(s) and ... web seed(s)"
-msgid "Downloading from {active_count} of {connected_count} connected peer"
-msgid_plural "Downloading from {active_count} of {connected_count} connected peers"
-msgstr[0] "Downloader fra {active_count} af {connected_count} forbundet modpart"
-msgstr[1] "Downloader fra {active_count} af {connected_count} forbundne modparter"
+msgid "Downloading from {active_count:L} of {connected_count:L} connected peer"
+msgid_plural "Downloading from {active_count:L} of {connected_count:L} connected peers"
+msgstr[0] "Downloader fra {active_count:L} af {connected_count:L} forbundet modpart"
+msgstr[1] "Downloader fra {active_count:L} af {connected_count:L} forbundne modparter"
 
-msgid "Seeding to {active_count} of {connected_count} connected peer"
-msgid_plural "Seeding to {active_count} of {connected_count} connected peers"
-msgstr[0] "Seeder til {active_count} af {connected_count} forbundet modpart"
-msgstr[1] "Seeder til {active_count} af {connected_count} forbundne modparter"
+msgid "Seeding to {active_count:L} of {connected_count:L} connected peer"
+msgid_plural "Seeding to {active_count:L} of {connected_count:L} connected peers"
+msgstr[0] "Seeder til {active_count:L} af {connected_count:L} forbundet modpart"
+msgstr[1] "Seeder til {active_count:L} af {connected_count:L} forbundne modparter"
 
 msgid "Retransmission"
 msgstr "Retransmission"
@@ -3976,11 +3976,6 @@ msgstr "Tracker returnerede en fejl"
 msgid "Tracker returned warning"
 msgstr "Tracker returnerede en advarsel"
 
-msgid "Downloading from {active_count:L} of {connected_count:L} peer"
-msgid_plural "Downloading from {active_count:L} of {connected_count:L} peers"
-msgstr[0] "Henter fra {active_count:L} af {connected_count:L} modpart"
-msgstr[1] "Henter fra {active_count:L} af {connected_count:L} modparter"
-
 #. Translators: Torrent -> status string
 msgid "web seed"
 msgstr "Webseed"
@@ -3990,11 +3985,6 @@ msgid "{count:L} web seed"
 msgid_plural "{count:L} web seeds"
 msgstr[0] "{count:L} webseeds"
 msgstr[1] "{count:L} webseeds"
-
-msgid "Seeding to {active_count:L} of {connected_count:L} peer"
-msgid_plural "Seeding to {active_count:L} of {connected_count:L} peers"
-msgstr[0] "Deler til {active_count:L} af {connected_count:L} modpart"
-msgstr[1] "Deler til {active_count:L} af {connected_count:L} modparter"
 
 #, fuzzy
 #| msgid "Down: {downloaded_size}, Up: {uploaded_size}"
@@ -4374,12 +4364,6 @@ msgstr "Fejl: {error}"
 #| msgid "Magnetized transfer - retrieving metadata (%1%)"
 msgid "Magnetized torrent - retrieving metadata ({percent_done}%)"
 msgstr "Magnetiseret overførsel - modtager metadata (%1%)"
-
-#, no-c-format
-msgid "Downloading metadata from {active_count:L} peer ({percent_done}% done)"
-msgid_plural "Downloading metadata from {active_count:L} peers ({percent_done}% done)"
-msgstr[0] "Downloader metadata fra {active_count:L} modpart ({percent_done}% færdig)"
-msgstr[1] "Downloader metadata fra {active_count:L} modparter ({percent_done}% færdig)"
 
 #. Translators: First part of phrase "Downloading from ... peer(s) and ... web seed(s)"
 msgid "Downloading from {active_count:L} peer"

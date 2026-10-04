@@ -873,10 +873,10 @@ msgid "Local error: '{error}'"
 msgstr "Τοπικό σφάλμα: '{error}'"
 
 #, no-c-format
-msgid "Downloading metadata from {active_count} connected peer ({percent_done}% done)"
-msgid_plural "Downloading metadata from {active_count} connected peers ({percent_done}% done)"
-msgstr[0] "Λήψη μεταδεδομένων από {active_count} συνδεδεμένο διαμοιραστή (ολοκληρωμένη κατά {percent_done}%)"
-msgstr[1] "Λήψη μεταδεδομένων από {active_count} συνδεδεμένους διαμοιραστές (ολοκληρωμένη κατά {percent_done}%)"
+msgid "Downloading metadata from {active_count:L} connected peer ({percent_done}% done)"
+msgid_plural "Downloading metadata from {active_count:L} connected peers ({percent_done}% done)"
+msgstr[0] "Λήψη μεταδεδομένων από {active_count:L} συνδεδεμένο διαμοιραστή (ολοκληρωμένη κατά {percent_done}%)"
+msgstr[1] "Λήψη μεταδεδομένων από {active_count:L} συνδεδεμένους διαμοιραστές (ολοκληρωμένη κατά {percent_done}%)"
 
 msgid "Downloading from {active_count} of {connected_count} connected peer and webseed"
 msgid_plural "Downloading from {active_count} of {connected_count} connected peers and webseeds"
@@ -889,15 +889,15 @@ msgstr[0] "Λήψη από {active_count} διαμοιραστή δικτύου"
 msgstr[1] "Λήψη από {active_count} διαμοιραστές δικτύου"
 
 #. Translators: First part of phrase "Downloading from ... of ... connected peer(s) and ... web seed(s)"
-msgid "Downloading from {active_count} of {connected_count} connected peer"
-msgid_plural "Downloading from {active_count} of {connected_count} connected peers"
-msgstr[0] "Λήψη από {active_count} από {connected_count} συνδεδεμένο διαμοιραστή"
-msgstr[1] "Λήψη από {active_count} από {connected_count} συνδεδεμένους διαμοιραστές"
+msgid "Downloading from {active_count:L} of {connected_count:L} connected peer"
+msgid_plural "Downloading from {active_count:L} of {connected_count:L} connected peers"
+msgstr[0] "Λήψη από {active_count:L} από {connected_count:L} συνδεδεμένο διαμοιραστή"
+msgstr[1] "Λήψη από {active_count:L} από {connected_count:L} συνδεδεμένους διαμοιραστές"
 
-msgid "Seeding to {active_count} of {connected_count} connected peer"
-msgid_plural "Seeding to {active_count} of {connected_count} connected peers"
-msgstr[0] "Διαμοιρασμός σε {active_count} από {connected_count} συνδεδεμένο διαμοιραστή"
-msgstr[1] "Διαμοιρασμός σε {active_count} από {connected_count} συνδεδεμένους διαμοιραστές"
+msgid "Seeding to {active_count:L} of {connected_count:L} connected peer"
+msgid_plural "Seeding to {active_count:L} of {connected_count:L} connected peers"
+msgstr[0] "Διαμοιρασμός σε {active_count:L} από {connected_count:L} συνδεδεμένο διαμοιραστή"
+msgstr[1] "Διαμοιρασμός σε {active_count:L} από {connected_count:L} συνδεδεμένους διαμοιραστές"
 
 msgid "Retransmission"
 msgstr "Retransmission"
@@ -3973,11 +3973,6 @@ msgstr "Ο Ιχνηλάτης επέστρεψε σφάλμα"
 msgid "Tracker returned warning"
 msgstr "Ο Ιχνηλάτης επέστρεψε προειδοποίηση"
 
-msgid "Downloading from {active_count:L} of {connected_count:L} peer"
-msgid_plural "Downloading from {active_count:L} of {connected_count:L} peers"
-msgstr[0] "Λήψη από {active_count:L} από {connected_count:L} διαμοιραστή"
-msgstr[1] "Λήψη από {active_count:L} από {connected_count:L} διαμοιραστές"
-
 #. Translators: Torrent -> status string
 msgid "web seed"
 msgstr "διαμοιραστής δικτύου"
@@ -3987,11 +3982,6 @@ msgid "{count:L} web seed"
 msgid_plural "{count:L} web seeds"
 msgstr[0] "{count:L} διαμοιραστές δικτύου"
 msgstr[1] "{count:L} διαμοιραστές δικτύου"
-
-msgid "Seeding to {active_count:L} of {connected_count:L} peer"
-msgid_plural "Seeding to {active_count:L} of {connected_count:L} peers"
-msgstr[0] "Διαμοιρασμός σε {active_count:L} από {connected_count:L} διαμοιραστή"
-msgstr[1] "Διαμοιρασμός σε {active_count:L} από {connected_count:L} διαμοιραστές"
 
 #, fuzzy
 #| msgid "Down: {downloaded_size}, Up: {uploaded_size}"
@@ -4368,12 +4358,6 @@ msgstr "Σφάλμα: {error}"
 #| msgid "Magnetized transfer - retrieving metadata (%1%)"
 msgid "Magnetized torrent - retrieving metadata ({percent_done}%)"
 msgstr "Μεταφορά magnet - ανάκτηση μεταδεδομένων (%1%)"
-
-#, no-c-format
-msgid "Downloading metadata from {active_count:L} peer ({percent_done}% done)"
-msgid_plural "Downloading metadata from {active_count:L} peers ({percent_done}% done)"
-msgstr[0] "Λήψη μεταδεδομένων από {active_count:L} χρήστη (έγινε {percent_done}%)"
-msgstr[1] "Λήψη μεταδεδομένων από {active_count:L} χρήστες (έγινε {percent_done}%)"
 
 #. Translators: First part of phrase "Downloading from ... peer(s) and ... web seed(s)"
 msgid "Downloading from {active_count:L} peer"

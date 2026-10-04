@@ -53,6 +53,70 @@ RENAMES = [
         'to': {'msgid': '{current_size} ({percent_done}%)'},
         'replace': [['100', '{percent_done}']],
     },
+    # The peer counts in the status line are "L" fields in every client, and the Mac client says "connected" too.
+    {
+        'from': {
+            'msgid': 'Downloading from {active_count} of {connected_count} connected peer',
+            'msgid_plural': 'Downloading from {active_count} of {connected_count} connected peers',
+        },
+        'to': {
+            'msgid': 'Downloading from {active_count:L} of {connected_count:L} connected peer',
+            'msgid_plural': 'Downloading from {active_count:L} of {connected_count:L} connected peers',
+        },
+        'fields': {'active_count': 'active_count:L', 'connected_count': 'connected_count:L'},
+    },
+    {
+        'from': {
+            'msgid': 'Downloading from {active_count:L} of {connected_count:L} peer',
+            'msgid_plural': 'Downloading from {active_count:L} of {connected_count:L} peers',
+        },
+        'to': {
+            'msgid': 'Downloading from {active_count:L} of {connected_count:L} connected peer',
+            'msgid_plural': 'Downloading from {active_count:L} of {connected_count:L} connected peers',
+        },
+    },
+    {
+        'from': {
+            'msgid': 'Seeding to {active_count} of {connected_count} connected peer',
+            'msgid_plural': 'Seeding to {active_count} of {connected_count} connected peers',
+        },
+        'to': {
+            'msgid': 'Seeding to {active_count:L} of {connected_count:L} connected peer',
+            'msgid_plural': 'Seeding to {active_count:L} of {connected_count:L} connected peers',
+        },
+        'fields': {'active_count': 'active_count:L', 'connected_count': 'connected_count:L'},
+    },
+    {
+        'from': {
+            'msgid': 'Seeding to {active_count:L} of {connected_count:L} peer',
+            'msgid_plural': 'Seeding to {active_count:L} of {connected_count:L} peers',
+        },
+        'to': {
+            'msgid': 'Seeding to {active_count:L} of {connected_count:L} connected peer',
+            'msgid_plural': 'Seeding to {active_count:L} of {connected_count:L} connected peers',
+        },
+    },
+    {
+        'from': {
+            'msgid': 'Downloading metadata from {active_count} connected peer ({percent_done}% done)',
+            'msgid_plural': 'Downloading metadata from {active_count} connected peers ({percent_done}% done)',
+        },
+        'to': {
+            'msgid': 'Downloading metadata from {active_count:L} connected peer ({percent_done}% done)',
+            'msgid_plural': 'Downloading metadata from {active_count:L} connected peers ({percent_done}% done)',
+        },
+        'fields': {'active_count': 'active_count:L'},
+    },
+    {
+        'from': {
+            'msgid': 'Downloading metadata from {active_count:L} peer ({percent_done}% done)',
+            'msgid_plural': 'Downloading metadata from {active_count:L} peers ({percent_done}% done)',
+        },
+        'to': {
+            'msgid': 'Downloading metadata from {active_count:L} connected peer ({percent_done}% done)',
+            'msgid_plural': 'Downloading metadata from {active_count:L} connected peers ({percent_done}% done)',
+        },
+    },
 ]
 
 FIELD_NAMES = ('msgctxt', 'msgid', 'msgid_plural')

@@ -839,10 +839,10 @@ msgid "Local error: '{error}'"
 msgstr "Lokalt fel: '{error}'"
 
 #, no-c-format
-msgid "Downloading metadata from {active_count} connected peer ({percent_done}% done)"
-msgid_plural "Downloading metadata from {active_count} connected peers ({percent_done}% done)"
-msgstr[0] "Hämtar metadata från {active_count} ansluten jämlike ({percent_done}% klart)"
-msgstr[1] "Hämtar metadata från {active_count} anslutna jämlikar ({percent_done}% klart)"
+msgid "Downloading metadata from {active_count:L} connected peer ({percent_done}% done)"
+msgid_plural "Downloading metadata from {active_count:L} connected peers ({percent_done}% done)"
+msgstr[0] "Hämtar metadata från {active_count:L} ansluten jämlike ({percent_done}% klart)"
+msgstr[1] "Hämtar metadata från {active_count:L} anslutna jämlikar ({percent_done}% klart)"
 
 msgid "Downloading from {active_count} of {connected_count} connected peer and webseed"
 msgid_plural "Downloading from {active_count} of {connected_count} connected peers and webseeds"
@@ -855,15 +855,15 @@ msgstr[0] "Hämtar från {active_count} webbdistribution"
 msgstr[1] "Hämtar från {active_count} webbdistributioner"
 
 #. Translators: First part of phrase "Downloading from ... of ... connected peer(s) and ... web seed(s)"
-msgid "Downloading from {active_count} of {connected_count} connected peer"
-msgid_plural "Downloading from {active_count} of {connected_count} connected peers"
-msgstr[0] "Hämtar från {active_count} av {connected_count} ansluten jämlike"
-msgstr[1] "Hämtar från {active_count} av {connected_count} anslutna jämlikar"
+msgid "Downloading from {active_count:L} of {connected_count:L} connected peer"
+msgid_plural "Downloading from {active_count:L} of {connected_count:L} connected peers"
+msgstr[0] "Hämtar från {active_count:L} av {connected_count:L} ansluten jämlike"
+msgstr[1] "Hämtar från {active_count:L} av {connected_count:L} anslutna jämlikar"
 
-msgid "Seeding to {active_count} of {connected_count} connected peer"
-msgid_plural "Seeding to {active_count} of {connected_count} connected peers"
-msgstr[0] "Distribuerar till {active_count} av {connected_count} ansluten jämlike"
-msgstr[1] "Distribuerar till {active_count} av {connected_count} anslutna jämlikar"
+msgid "Seeding to {active_count:L} of {connected_count:L} connected peer"
+msgid_plural "Seeding to {active_count:L} of {connected_count:L} connected peers"
+msgstr[0] "Distribuerar till {active_count:L} av {connected_count:L} ansluten jämlike"
+msgstr[1] "Distribuerar till {active_count:L} av {connected_count:L} anslutna jämlikar"
 
 msgid "Retransmission"
 msgstr "Retransmission"
@@ -3944,11 +3944,6 @@ msgstr "Spårare returnerade fel"
 msgid "Tracker returned warning"
 msgstr "Spårare returnerade varning"
 
-msgid "Downloading from {active_count:L} of {connected_count:L} peer"
-msgid_plural "Downloading from {active_count:L} of {connected_count:L} peers"
-msgstr[0] "Hämtar från {active_count:L} av {connected_count:L} jämlike"
-msgstr[1] "Hämtar från {active_count:L} av {connected_count:L} jämlikar"
-
 #. Translators: Torrent -> status string
 msgid "web seed"
 msgstr "webbdistribution"
@@ -3958,11 +3953,6 @@ msgid "{count:L} web seed"
 msgid_plural "{count:L} web seeds"
 msgstr[0] "{count:L} webbdistributioner"
 msgstr[1] "{count:L} webbdistributioner"
-
-msgid "Seeding to {active_count:L} of {connected_count:L} peer"
-msgid_plural "Seeding to {active_count:L} of {connected_count:L} peers"
-msgstr[0] "Distribuerar till {active_count:L} av {connected_count:L} jämlike"
-msgstr[1] "Distribuerar till {active_count:L} av {connected_count:L} jämlikar"
 
 #, fuzzy
 #| msgid "Down: {downloaded_size}, Up: {uploaded_size}"
@@ -4339,12 +4329,6 @@ msgstr "Fel: {error}"
 #| msgid "Magnetized transfer - retrieving metadata (%1%)"
 msgid "Magnetized torrent - retrieving metadata ({percent_done}%)"
 msgstr "Magnetiserad överföring - hämtar metadata (%1%)"
-
-#, no-c-format
-msgid "Downloading metadata from {active_count:L} peer ({percent_done}% done)"
-msgid_plural "Downloading metadata from {active_count:L} peers ({percent_done}% done)"
-msgstr[0] "Hämtar metadata från {active_count:L} jämlike ({percent_done}% klart)"
-msgstr[1] "Hämtar metadata från {active_count:L} jämlikar ({percent_done}% klart)"
 
 #. Translators: First part of phrase "Downloading from ... peer(s) and ... web seed(s)"
 msgid "Downloading from {active_count:L} peer"

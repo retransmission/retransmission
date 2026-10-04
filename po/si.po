@@ -758,8 +758,8 @@ msgid "Local error: '{error}'"
 msgstr ""
 
 #, no-c-format
-msgid "Downloading metadata from {active_count} connected peer ({percent_done}% done)"
-msgid_plural "Downloading metadata from {active_count} connected peers ({percent_done}% done)"
+msgid "Downloading metadata from {active_count:L} connected peer ({percent_done}% done)"
+msgid_plural "Downloading metadata from {active_count:L} connected peers ({percent_done}% done)"
 msgstr[0] ""
 msgstr[1] ""
 
@@ -773,13 +773,13 @@ msgid_plural "Downloading from {active_count} webseeds"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "Downloading from {active_count} of {connected_count} connected peer"
-msgid_plural "Downloading from {active_count} of {connected_count} connected peers"
+msgid "Downloading from {active_count:L} of {connected_count:L} connected peer"
+msgid_plural "Downloading from {active_count:L} of {connected_count:L} connected peers"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "Seeding to {active_count} of {connected_count} connected peer"
-msgid_plural "Seeding to {active_count} of {connected_count} connected peers"
+msgid "Seeding to {active_count:L} of {connected_count:L} connected peer"
+msgid_plural "Seeding to {active_count:L} of {connected_count:L} connected peers"
 msgstr[0] ""
 msgstr[1] ""
 

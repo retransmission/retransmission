@@ -872,10 +872,10 @@ msgid "Local error: '{error}'"
 msgstr "Lokale fout: '{error}'"
 
 #, no-c-format
-msgid "Downloading metadata from {active_count} connected peer ({percent_done}% done)"
-msgid_plural "Downloading metadata from {active_count} connected peers ({percent_done}% done)"
-msgstr[0] "Metadata downloaden van {active_count} verbonden peers ({percent_done}% gedaan)"
-msgstr[1] "Metadata downloaden van {active_count} verbonden peers ({percent_done}% gedaan)"
+msgid "Downloading metadata from {active_count:L} connected peer ({percent_done}% done)"
+msgid_plural "Downloading metadata from {active_count:L} connected peers ({percent_done}% done)"
+msgstr[0] "Metadata downloaden van {active_count:L} verbonden peers ({percent_done}% gedaan)"
+msgstr[1] "Metadata downloaden van {active_count:L} verbonden peers ({percent_done}% gedaan)"
 
 msgid "Downloading from {active_count} of {connected_count} connected peer and webseed"
 msgid_plural "Downloading from {active_count} of {connected_count} connected peers and webseeds"
@@ -888,15 +888,15 @@ msgstr[0] "Downloaden vanaf {active_count} webseed"
 msgstr[1] "Downloaden vanaf {active_count} webseeds"
 
 #. Translators: First part of phrase "Downloading from ... of ... connected peer(s) and ... web seed(s)"
-msgid "Downloading from {active_count} of {connected_count} connected peer"
-msgid_plural "Downloading from {active_count} of {connected_count} connected peers"
-msgstr[0] "Downloaden vanaf {active_count} van {connected_count} verbonden peer"
-msgstr[1] "Downloaden vanaf {active_count} van {connected_count} verbonden peers"
+msgid "Downloading from {active_count:L} of {connected_count:L} connected peer"
+msgid_plural "Downloading from {active_count:L} of {connected_count:L} connected peers"
+msgstr[0] "Downloaden vanaf {active_count:L} van {connected_count:L} verbonden peer"
+msgstr[1] "Downloaden vanaf {active_count:L} van {connected_count:L} verbonden peers"
 
-msgid "Seeding to {active_count} of {connected_count} connected peer"
-msgid_plural "Seeding to {active_count} of {connected_count} connected peers"
-msgstr[0] "Seeden naar {active_count} van {connected_count} verbonden peer"
-msgstr[1] "Seeden naar {active_count} van {connected_count} verbonden peers"
+msgid "Seeding to {active_count:L} of {connected_count:L} connected peer"
+msgid_plural "Seeding to {active_count:L} of {connected_count:L} connected peers"
+msgstr[0] "Seeden naar {active_count:L} van {connected_count:L} verbonden peer"
+msgstr[1] "Seeden naar {active_count:L} van {connected_count:L} verbonden peers"
 
 msgid "Retransmission"
 msgstr "Retransmission"
@@ -3994,11 +3994,6 @@ msgstr "Tracker gaf een foutmelding"
 msgid "Tracker returned warning"
 msgstr "Tracker gaf een waarschuwing"
 
-msgid "Downloading from {active_count:L} of {connected_count:L} peer"
-msgid_plural "Downloading from {active_count:L} of {connected_count:L} peers"
-msgstr[0] "Downloaden van {active_count:L} van {connected_count:L} peer"
-msgstr[1] "Downloaden van {active_count:L} van {connected_count:L} peers"
-
 #. Translators: Torrent -> status string
 msgid "web seed"
 msgstr "webseed"
@@ -4008,11 +4003,6 @@ msgid "{count:L} web seed"
 msgid_plural "{count:L} web seeds"
 msgstr[0] "{count:L} webseeds"
 msgstr[1] "{count:L} webseeds"
-
-msgid "Seeding to {active_count:L} of {connected_count:L} peer"
-msgid_plural "Seeding to {active_count:L} of {connected_count:L} peers"
-msgstr[0] "Seeden naar {active_count:L} van {connected_count:L} peer"
-msgstr[1] "Seeden naar {active_count:L} van {connected_count:L} peers"
 
 #, fuzzy
 #| msgid "Down: {downloaded_size}, Up: {uploaded_size}"
@@ -4394,12 +4384,6 @@ msgstr "Fout: {error}"
 #| msgid "Magnetized transfer - retrieving metadata (%1%)"
 msgid "Magnetized torrent - retrieving metadata ({percent_done}%)"
 msgstr "Magneetoverdracht - bezig met ontvangen van metagegevens (%1%)"
-
-#, no-c-format
-msgid "Downloading metadata from {active_count:L} peer ({percent_done}% done)"
-msgid_plural "Downloading metadata from {active_count:L} peers ({percent_done}% done)"
-msgstr[0] "Metagegevens van {active_count:L} peer downloaden ({percent_done} % voltooid)"
-msgstr[1] "Metagegevens van {active_count:L} peers downloaden ({percent_done} % voltooid)"
 
 #. Translators: First part of phrase "Downloading from ... peer(s) and ... web seed(s)"
 msgid "Downloading from {active_count:L} peer"

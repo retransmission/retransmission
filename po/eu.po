@@ -849,10 +849,10 @@ msgid "Local error: '{error}'"
 msgstr "Errore lokala: '{error}'"
 
 #, no-c-format
-msgid "Downloading metadata from {active_count} connected peer ({percent_done}% done)"
-msgid_plural "Downloading metadata from {active_count} connected peers ({percent_done}% done)"
-msgstr[0] "Metadatuak deskargatzen  {active_count} konektatutako hartzaileatik  (%{percent_done}eginda)"
-msgstr[1] "Metadatuak deskargatzen {active_count} konektatu kidetatik (%{percent_done} eginda)"
+msgid "Downloading metadata from {active_count:L} connected peer ({percent_done}% done)"
+msgid_plural "Downloading metadata from {active_count:L} connected peers ({percent_done}% done)"
+msgstr[0] "Metadatuak deskargatzen  {active_count:L} konektatutako hartzaileatik  (%{percent_done}eginda)"
+msgstr[1] "Metadatuak deskargatzen {active_count:L} konektatu kidetatik (%{percent_done} eginda)"
 
 msgid "Downloading from {active_count} of {connected_count} connected peer and webseed"
 msgid_plural "Downloading from {active_count} of {connected_count} connected peers and webseeds"
@@ -865,15 +865,15 @@ msgstr[0] "Deskargatzen {active_count} web-igorleatik"
 msgstr[1] "Deskargatzen {active_count} web-igorleetatik"
 
 #. Translators: First part of phrase "Downloading from ... of ... connected peer(s) and ... web seed(s)"
-msgid "Downloading from {active_count} of {connected_count} connected peer"
-msgid_plural "Downloading from {active_count} of {connected_count} connected peers"
-msgstr[0] "Deskargatzen {active_count} / {connected_count} konektatutako hartzaileatik"
-msgstr[1] "Deskargatzen {active_count} / {connected_count} konektatutako kideetatik"
+msgid "Downloading from {active_count:L} of {connected_count:L} connected peer"
+msgid_plural "Downloading from {active_count:L} of {connected_count:L} connected peers"
+msgstr[0] "Deskargatzen {active_count:L} / {connected_count:L} konektatutako hartzaileatik"
+msgstr[1] "Deskargatzen {active_count:L} / {connected_count:L} konektatutako kideetatik"
 
-msgid "Seeding to {active_count} of {connected_count} connected peer"
-msgid_plural "Seeding to {active_count} of {connected_count} connected peers"
-msgstr[0] "{active_count} / {connected_count} elkarturiko hartzailera emaritzen"
-msgstr[1] "{active_count} / {connected_count} konektatutako kidetara igortzen"
+msgid "Seeding to {active_count:L} of {connected_count:L} connected peer"
+msgid_plural "Seeding to {active_count:L} of {connected_count:L} connected peers"
+msgstr[0] "{active_count:L} / {connected_count:L} elkarturiko hartzailera emaritzen"
+msgstr[1] "{active_count:L} / {connected_count:L} konektatutako kidetara igortzen"
 
 msgid "Retransmission"
 msgstr "Retransmission"
@@ -3954,11 +3954,6 @@ msgstr "Aztarnariak errorea itzuli du"
 msgid "Tracker returned warning"
 msgstr "Aztarnariak oharra itzuli du"
 
-msgid "Downloading from {active_count:L} of {connected_count:L} peer"
-msgid_plural "Downloading from {active_count:L} of {connected_count:L} peers"
-msgstr[0] " {active_count:L} kide batetik deskargatzen"
-msgstr[1] "{active_count:L} {connected_count:L} kideetatik deskargatzen"
-
 #. Translators: Torrent -> status string
 msgid "web seed"
 msgstr "web igortzea"
@@ -3968,11 +3963,6 @@ msgid "{count:L} web seed"
 msgid_plural "{count:L} web seeds"
 msgstr[0] "{count:L} web igortze"
 msgstr[1] "{count:L} web igortze"
-
-msgid "Seeding to {active_count:L} of {connected_count:L} peer"
-msgid_plural "Seeding to {active_count:L} of {connected_count:L} peers"
-msgstr[0] " {active_count:L} Igortzen kide batetara"
-msgstr[1] "{active_count:L} {connected_count:L} kideetara igortzen"
 
 #, fuzzy
 #| msgid "Down: {downloaded_size}, Up: {uploaded_size}"
@@ -4349,12 +4339,6 @@ msgstr "Errorea: {error}"
 #| msgid "Magnetized transfer - retrieving metadata (%1%)"
 msgid "Magnetized torrent - retrieving metadata ({percent_done}%)"
 msgstr "Magnetizatutako transferentzia - metadatuak berreskuratzen (%1%)"
-
-#, no-c-format
-msgid "Downloading metadata from {active_count:L} peer ({percent_done}% done)"
-msgid_plural "Downloading metadata from {active_count:L} peers ({percent_done}% done)"
-msgstr[0] "Metadatuak jeisten {active_count:L} hartzailetik ({percent_done}% eginda)"
-msgstr[1] "Metadatuak deskargatzen {active_count:L} kidetatik ({percent_done}% eginda)"
 
 #. Translators: First part of phrase "Downloading from ... peer(s) and ... web seed(s)"
 msgid "Downloading from {active_count:L} peer"

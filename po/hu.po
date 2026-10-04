@@ -874,10 +874,10 @@ msgid "Local error: '{error}'"
 msgstr "Helyi hiba: '{error}'"
 
 #, no-c-format
-msgid "Downloading metadata from {active_count} connected peer ({percent_done}% done)"
-msgid_plural "Downloading metadata from {active_count} connected peers ({percent_done}% done)"
-msgstr[0] "Metaadatok letöltése {active_count} kapcsolódó partnertől ({percent_done}% kész)"
-msgstr[1] "Metaadatok letöltése {active_count} kapcsolódó partnertől ({percent_done}% kész)"
+msgid "Downloading metadata from {active_count:L} connected peer ({percent_done}% done)"
+msgid_plural "Downloading metadata from {active_count:L} connected peers ({percent_done}% done)"
+msgstr[0] "Metaadatok letöltése {active_count:L} kapcsolódó partnertől ({percent_done}% kész)"
+msgstr[1] "Metaadatok letöltése {active_count:L} kapcsolódó partnertől ({percent_done}% kész)"
 
 msgid "Downloading from {active_count} of {connected_count} connected peer and webseed"
 msgid_plural "Downloading from {active_count} of {connected_count} connected peers and webseeds"
@@ -890,15 +890,15 @@ msgstr[0] "Letöltés {active_count} webes megosztótól"
 msgstr[1] "Letöltés {active_count} webes megosztótól"
 
 #. Translators: First part of phrase "Downloading from ... of ... connected peer(s) and ... web seed(s)"
-msgid "Downloading from {active_count} of {connected_count} connected peer"
-msgid_plural "Downloading from {active_count} of {connected_count} connected peers"
-msgstr[0] "Letöltés {active_count} / {connected_count} kapcsolódó partnertől"
-msgstr[1] "Letöltés {active_count} / {connected_count} kapcsolódó partnertől"
+msgid "Downloading from {active_count:L} of {connected_count:L} connected peer"
+msgid_plural "Downloading from {active_count:L} of {connected_count:L} connected peers"
+msgstr[0] "Letöltés {active_count:L} / {connected_count:L} kapcsolódó partnertől"
+msgstr[1] "Letöltés {active_count:L} / {connected_count:L} kapcsolódó partnertől"
 
-msgid "Seeding to {active_count} of {connected_count} connected peer"
-msgid_plural "Seeding to {active_count} of {connected_count} connected peers"
-msgstr[0] "Megosztás {active_count} / {connected_count} kapcsolódó partnernek"
-msgstr[1] "Megosztás {active_count} / {connected_count} kapcsolódó partnernek"
+msgid "Seeding to {active_count:L} of {connected_count:L} connected peer"
+msgid_plural "Seeding to {active_count:L} of {connected_count:L} connected peers"
+msgstr[0] "Megosztás {active_count:L} / {connected_count:L} kapcsolódó partnernek"
+msgstr[1] "Megosztás {active_count:L} / {connected_count:L} kapcsolódó partnernek"
 
 msgid "Retransmission"
 msgstr "Retransmission"
@@ -3971,11 +3971,6 @@ msgstr "Tracker hibát jelzett vissza"
 msgid "Tracker returned warning"
 msgstr "Tracker figyelmeztetést jelzett vissza"
 
-msgid "Downloading from {active_count:L} of {connected_count:L} peer"
-msgid_plural "Downloading from {active_count:L} of {connected_count:L} peers"
-msgstr[0] "Letöltés {active_count:L} partnertől az elérhető {connected_count:L} partnerből"
-msgstr[1] "Letöltés {active_count:L} partnertől az elérhető {connected_count:L} partnerből"
-
 #. Translators: Torrent -> status string
 msgid "web seed"
 msgstr "webes partner"
@@ -3985,11 +3980,6 @@ msgid "{count:L} web seed"
 msgid_plural "{count:L} web seeds"
 msgstr[0] "{count:L} web seed"
 msgstr[1] "{count:L} web seed"
-
-msgid "Seeding to {active_count:L} of {connected_count:L} peer"
-msgid_plural "Seeding to {active_count:L} of {connected_count:L} peers"
-msgstr[0] "Megosztás {active_count:L} partnernek {connected_count:L} partnerből"
-msgstr[1] "Megosztás {active_count:L} partnernek a {connected_count:L} partnerből"
 
 #, fuzzy
 #| msgid "Down: {downloaded_size}, Up: {uploaded_size}"
@@ -4366,12 +4356,6 @@ msgstr "Hiba: {error}"
 #| msgid "Magnetized transfer - retrieving metadata (%1%)"
 msgid "Magnetized torrent - retrieving metadata ({percent_done}%)"
 msgstr "Magnet átvitel - metaadatok letöltése (%1 %)"
-
-#, no-c-format
-msgid "Downloading metadata from {active_count:L} peer ({percent_done}% done)"
-msgid_plural "Downloading metadata from {active_count:L} peers ({percent_done}% done)"
-msgstr[0] "Metaadat letöltése {active_count:L} partnertől ({percent_done} % kész)"
-msgstr[1] "Metaadat letöltése {active_count:L} partnertől ({percent_done} % kész)"
 
 #. Translators: First part of phrase "Downloading from ... peer(s) and ... web seed(s)"
 msgid "Downloading from {active_count:L} peer"

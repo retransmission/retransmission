@@ -831,9 +831,9 @@ msgid "Local error: '{error}'"
 msgstr "内部エラー:「{error}」"
 
 #, no-c-format
-msgid "Downloading metadata from {active_count} connected peer ({percent_done}% done)"
-msgid_plural "Downloading metadata from {active_count} connected peers ({percent_done}% done)"
-msgstr[0] "メタデータをダウンロード中, {active_count} 個の接続済みピアから ({percent_done}%完了)"
+msgid "Downloading metadata from {active_count:L} connected peer ({percent_done}% done)"
+msgid_plural "Downloading metadata from {active_count:L} connected peers ({percent_done}% done)"
+msgstr[0] "メタデータをダウンロード中, {active_count:L} 個の接続済みピアから ({percent_done}%完了)"
 
 msgid "Downloading from {active_count} of {connected_count} connected peer and webseed"
 msgid_plural "Downloading from {active_count} of {connected_count} connected peers and webseeds"
@@ -844,13 +844,13 @@ msgid_plural "Downloading from {active_count} webseeds"
 msgstr[0] "ダウンロード中, {active_count} 個のウェブシードから"
 
 #. Translators: First part of phrase "Downloading from ... of ... connected peer(s) and ... web seed(s)"
-msgid "Downloading from {active_count} of {connected_count} connected peer"
-msgid_plural "Downloading from {active_count} of {connected_count} connected peers"
-msgstr[0] "ダウンロード中, 全 {connected_count} 中  {active_count} 個の接続済みピアから"
+msgid "Downloading from {active_count:L} of {connected_count:L} connected peer"
+msgid_plural "Downloading from {active_count:L} of {connected_count:L} connected peers"
+msgstr[0] "ダウンロード中, 全 {connected_count:L} 中  {active_count:L} 個の接続済みピアから"
 
-msgid "Seeding to {active_count} of {connected_count} connected peer"
-msgid_plural "Seeding to {active_count} of {connected_count} connected peers"
-msgstr[0] "シード中, 全 {connected_count} 中 {active_count} 個の接続済みピアへ"
+msgid "Seeding to {active_count:L} of {connected_count:L} connected peer"
+msgid_plural "Seeding to {active_count:L} of {connected_count:L} connected peers"
+msgstr[0] "シード中, 全 {connected_count:L} 中 {active_count:L} 個の接続済みピアへ"
 
 msgid "Retransmission"
 msgstr "Retransmission"
@@ -3887,10 +3887,6 @@ msgstr "トラッカーがエラーを返送"
 msgid "Tracker returned warning"
 msgstr "トラッカーが警告を返送"
 
-msgid "Downloading from {active_count:L} of {connected_count:L} peer"
-msgid_plural "Downloading from {active_count:L} of {connected_count:L} peers"
-msgstr[0] "{connected_count:L} ピアの {active_count:L} からダウンロード中"
-
 #. Translators: Torrent -> status string
 msgid "web seed"
 msgstr "ウェブシード"
@@ -3899,10 +3895,6 @@ msgstr "ウェブシード"
 msgid "{count:L} web seed"
 msgid_plural "{count:L} web seeds"
 msgstr[0] "{count:L} ウェブシード"
-
-msgid "Seeding to {active_count:L} of {connected_count:L} peer"
-msgid_plural "Seeding to {active_count:L} of {connected_count:L} peers"
-msgstr[0] "{connected_count:L} ピアの {active_count:L} へシード中"
 
 #, fuzzy
 #| msgid "Down: {downloaded_size}, Up: {uploaded_size}"
@@ -4272,11 +4264,6 @@ msgstr "エラー: {error}"
 #| msgid "Magnetized transfer - retrieving metadata (%1%)"
 msgid "Magnetized torrent - retrieving metadata ({percent_done}%)"
 msgstr "マグネット転送 - メタ情報を取得中 (%1%)"
-
-#, no-c-format
-msgid "Downloading metadata from {active_count:L} peer ({percent_done}% done)"
-msgid_plural "Downloading metadata from {active_count:L} peers ({percent_done}% done)"
-msgstr[0] "{active_count:L} ピアからメタ情報をダウンロード中 ({percent_done}% 完了)"
 
 #. Translators: First part of phrase "Downloading from ... peer(s) and ... web seed(s)"
 msgid "Downloading from {active_count:L} peer"

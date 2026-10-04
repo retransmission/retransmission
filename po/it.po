@@ -873,8 +873,8 @@ msgid "Local error: '{error}'"
 msgstr ""
 
 #, no-c-format
-msgid "Downloading metadata from {active_count} connected peer ({percent_done}% done)"
-msgid_plural "Downloading metadata from {active_count} connected peers ({percent_done}% done)"
+msgid "Downloading metadata from {active_count:L} connected peer ({percent_done}% done)"
+msgid_plural "Downloading metadata from {active_count:L} connected peers ({percent_done}% done)"
 msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
@@ -892,17 +892,17 @@ msgstr[1] ""
 msgstr[2] ""
 
 #. Translators: First part of phrase "Downloading from ... of ... connected peer(s) and ... web seed(s)"
-msgid "Downloading from {active_count} of {connected_count} connected peer"
-msgid_plural "Downloading from {active_count} of {connected_count} connected peers"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgid "Downloading from {active_count:L} of {connected_count:L} connected peer"
+msgid_plural "Downloading from {active_count:L} of {connected_count:L} connected peers"
+msgstr[0] "In ricezione da {active_count:L} su {connected_count:L} peer"
+msgstr[1] "In ricezione da {active_count:L} su {connected_count:L} peer"
+msgstr[2] "In ricezione da {active_count:L} su {connected_count:L} peer"
 
-msgid "Seeding to {active_count} of {connected_count} connected peer"
-msgid_plural "Seeding to {active_count} of {connected_count} connected peers"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgid "Seeding to {active_count:L} of {connected_count:L} connected peer"
+msgid_plural "Seeding to {active_count:L} of {connected_count:L} connected peers"
+msgstr[0] "In distribuzione verso {active_count:L} su {connected_count:L} peer"
+msgstr[1] "In distribuzione verso {active_count:L} su {connected_count:L} peer"
+msgstr[2] "In distribuzione verso {active_count:L} su {connected_count:L} peer"
 
 msgid "Retransmission"
 msgstr "Retransmission"
@@ -4022,12 +4022,6 @@ msgstr "Il server traccia ha restituito un errore"
 msgid "Tracker returned warning"
 msgstr "Il server traccia ha restituito un avviso"
 
-msgid "Downloading from {active_count:L} of {connected_count:L} peer"
-msgid_plural "Downloading from {active_count:L} of {connected_count:L} peers"
-msgstr[0] "In ricezione da {active_count:L} su {connected_count:L} peer"
-msgstr[1] "In ricezione da {active_count:L} su {connected_count:L} peer"
-msgstr[2] "In ricezione da {active_count:L} su {connected_count:L} peer"
-
 #. Translators: Torrent -> status string
 msgid "web seed"
 msgstr "seeder web"
@@ -4038,12 +4032,6 @@ msgid_plural "{count:L} web seeds"
 msgstr[0] "{count:L} seeder web"
 msgstr[1] "{count:L} seeder web"
 msgstr[2] "{count:L} seeder web"
-
-msgid "Seeding to {active_count:L} of {connected_count:L} peer"
-msgid_plural "Seeding to {active_count:L} of {connected_count:L} peers"
-msgstr[0] "In distribuzione verso {active_count:L} su {connected_count:L} peer"
-msgstr[1] "In distribuzione verso {active_count:L} su {connected_count:L} peer"
-msgstr[2] "In distribuzione verso {active_count:L} su {connected_count:L} peer"
 
 #, fuzzy
 #| msgid "Down: {downloaded_size}, Up: {uploaded_size}"
@@ -4433,13 +4421,6 @@ msgstr "Errore: {error}"
 #| msgid "Magnetized transfer - retrieving metadata (%1%)"
 msgid "Magnetized torrent - retrieving metadata ({percent_done}%)"
 msgstr "Trasferimento magnetizzato - scaricamento metadati (%1%)"
-
-#, no-c-format
-msgid "Downloading metadata from {active_count:L} peer ({percent_done}% done)"
-msgid_plural "Downloading metadata from {active_count:L} peers ({percent_done}% done)"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
 
 #. Translators: First part of phrase "Downloading from ... peer(s) and ... web seed(s)"
 #, fuzzy

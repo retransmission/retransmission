@@ -842,10 +842,10 @@ msgid "Local error: '{error}'"
 msgstr "Lokale fout: ‘{error}’"
 
 #, no-c-format
-msgid "Downloading metadata from {active_count} connected peer ({percent_done}% done)"
-msgid_plural "Downloading metadata from {active_count} connected peers ({percent_done}% done)"
-msgstr[0] ""
-msgstr[1] ""
+msgid "Downloading metadata from {active_count:L} connected peer ({percent_done}% done)"
+msgid_plural "Downloading metadata from {active_count:L} connected peers ({percent_done}% done)"
+msgstr[0] "Laai tans metadata van {active_count:L} eweknie af ({percent_done}% klaar)"
+msgstr[1] "Laai tans metadata van {active_count:L} eweknieë af ({percent_done}% klaar)"
 
 msgid "Downloading from {active_count} of {connected_count} connected peer and webseed"
 msgid_plural "Downloading from {active_count} of {connected_count} connected peers and webseeds"
@@ -858,15 +858,15 @@ msgstr[0] ""
 msgstr[1] ""
 
 #. Translators: First part of phrase "Downloading from ... of ... connected peer(s) and ... web seed(s)"
-msgid "Downloading from {active_count} of {connected_count} connected peer"
-msgid_plural "Downloading from {active_count} of {connected_count} connected peers"
-msgstr[0] "Laai tans van {active_count} uit {connected_count} verbonde eweknie af"
-msgstr[1] "Laai tans van {active_count} uit {connected_count} verbonde eweknieë af"
+msgid "Downloading from {active_count:L} of {connected_count:L} connected peer"
+msgid_plural "Downloading from {active_count:L} of {connected_count:L} connected peers"
+msgstr[0] "Laai tans van {active_count:L} uit {connected_count:L} verbonde eweknie af"
+msgstr[1] "Laai tans van {active_count:L} uit {connected_count:L} verbonde eweknieë af"
 
-msgid "Seeding to {active_count} of {connected_count} connected peer"
-msgid_plural "Seeding to {active_count} of {connected_count} connected peers"
-msgstr[0] "Saai na {active_count} van {connected_count} verbonde eweknie"
-msgstr[1] "Saai na {active_count} van {connected_count} verbonde eweknieë"
+msgid "Seeding to {active_count:L} of {connected_count:L} connected peer"
+msgid_plural "Seeding to {active_count:L} of {connected_count:L} connected peers"
+msgstr[0] "Saai na {active_count:L} van {connected_count:L} verbonde eweknie"
+msgstr[1] "Saai na {active_count:L} van {connected_count:L} verbonde eweknieë"
 
 msgid "Retransmission"
 msgstr "Retransmission"
@@ -3944,11 +3944,6 @@ msgstr "Spoorder het fout gegee"
 msgid "Tracker returned warning"
 msgstr "Spoorder het waarskuwing gegee"
 
-msgid "Downloading from {active_count:L} of {connected_count:L} peer"
-msgid_plural "Downloading from {active_count:L} of {connected_count:L} peers"
-msgstr[0] "Laai tans van {active_count:L} uit {connected_count:L} eweknie af"
-msgstr[1] "Laai tans van {active_count:L} uit {connected_count:L} eweknieë af"
-
 #. Translators: Torrent -> status string
 msgid "web seed"
 msgstr "websaad"
@@ -3958,11 +3953,6 @@ msgid "{count:L} web seed"
 msgid_plural "{count:L} web seeds"
 msgstr[0] "{count:L} websade"
 msgstr[1] "{count:L} websade"
-
-msgid "Seeding to {active_count:L} of {connected_count:L} peer"
-msgid_plural "Seeding to {active_count:L} of {connected_count:L} peers"
-msgstr[0] "Saai na {active_count:L} van {connected_count:L} eweknie"
-msgstr[1] "Saai na {active_count:L} van {connected_count:L} eweknieë"
 
 #, fuzzy
 #| msgid "Down: {downloaded_size}, Up: {uploaded_size}"
@@ -4339,12 +4329,6 @@ msgstr "Fout: {error}"
 #| msgid "Magnetized transfer - retrieving metadata (%1%)"
 msgid "Magnetized torrent - retrieving metadata ({percent_done}%)"
 msgstr "Gemagnetiseerde oordrag - herwin metadata (%1%)"
-
-#, no-c-format
-msgid "Downloading metadata from {active_count:L} peer ({percent_done}% done)"
-msgid_plural "Downloading metadata from {active_count:L} peers ({percent_done}% done)"
-msgstr[0] "Laai tans metadata van {active_count:L} eweknie af ({percent_done}% klaar)"
-msgstr[1] "Laai tans metadata van {active_count:L} eweknieë af ({percent_done}% klaar)"
 
 #. Translators: First part of phrase "Downloading from ... peer(s) and ... web seed(s)"
 msgid "Downloading from {active_count:L} peer"

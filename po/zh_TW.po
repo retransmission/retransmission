@@ -855,9 +855,9 @@ msgid "Local error: '{error}'"
 msgstr "本機錯誤：'{error}'"
 
 #, no-c-format
-msgid "Downloading metadata from {active_count} connected peer ({percent_done}% done)"
-msgid_plural "Downloading metadata from {active_count} connected peers ({percent_done}% done)"
-msgstr[0] "正在從 {active_count} 個已連線的節點下載後設資料 (已完成 {percent_done}%)"
+msgid "Downloading metadata from {active_count:L} connected peer ({percent_done}% done)"
+msgid_plural "Downloading metadata from {active_count:L} connected peers ({percent_done}% done)"
+msgstr[0] "正在從 {active_count:L} 個已連線的節點下載後設資料 (已完成 {percent_done}%)"
 
 msgid "Downloading from {active_count} of {connected_count} connected peer and webseed"
 msgid_plural "Downloading from {active_count} of {connected_count} connected peers and webseeds"
@@ -868,13 +868,13 @@ msgid_plural "Downloading from {active_count} webseeds"
 msgstr[0] "正在從 {active_count} 個網路種子下載"
 
 #. Translators: First part of phrase "Downloading from ... of ... connected peer(s) and ... web seed(s)"
-msgid "Downloading from {active_count} of {connected_count} connected peer"
-msgid_plural "Downloading from {active_count} of {connected_count} connected peers"
-msgstr[0] "正在從 {connected_count} 中的 {active_count} 個已連線的節點下載"
+msgid "Downloading from {active_count:L} of {connected_count:L} connected peer"
+msgid_plural "Downloading from {active_count:L} of {connected_count:L} connected peers"
+msgstr[0] "正在從 {connected_count:L} 中的 {active_count:L} 個已連線的節點下載"
 
-msgid "Seeding to {active_count} of {connected_count} connected peer"
-msgid_plural "Seeding to {active_count} of {connected_count} connected peers"
-msgstr[0] "正在為 {connected_count} 中的 {active_count} 個已連線的節點做種"
+msgid "Seeding to {active_count:L} of {connected_count:L} connected peer"
+msgid_plural "Seeding to {active_count:L} of {connected_count:L} connected peers"
+msgstr[0] "正在為 {connected_count:L} 中的 {active_count:L} 個已連線的節點做種"
 
 msgid "Retransmission"
 msgstr "Retransmission"
@@ -3901,10 +3901,6 @@ msgstr "追蹤器回傳錯誤"
 msgid "Tracker returned warning"
 msgstr "追蹤器回傳警告"
 
-msgid "Downloading from {active_count:L} of {connected_count:L} peer"
-msgid_plural "Downloading from {active_count:L} of {connected_count:L} peers"
-msgstr[0] "正在從 {active_count:L} 個節點下載，總計 {connected_count:L} 個可用節點。"
-
 #. Translators: Torrent -> status string
 msgid "web seed"
 msgstr "網路種子"
@@ -3913,10 +3909,6 @@ msgstr "網路種子"
 msgid "{count:L} web seed"
 msgid_plural "{count:L} web seeds"
 msgstr[0] "{count:L} 個網路種子"
-
-msgid "Seeding to {active_count:L} of {connected_count:L} peer"
-msgid_plural "Seeding to {active_count:L} of {connected_count:L} peers"
-msgstr[0] "正在為 {connected_count:L} 中的 {active_count:L} 個節點做種"
 
 #, fuzzy
 #| msgid "Down: {downloaded_size}, Up: {uploaded_size}"
@@ -4286,11 +4278,6 @@ msgstr "錯誤: {error}"
 #| msgid "Magnetized transfer - retrieving metadata (%1%)"
 msgid "Magnetized torrent - retrieving metadata ({percent_done}%)"
 msgstr "磁力連結傳輸 - 正在擷取後設資料 (%1%)"
-
-#, no-c-format
-msgid "Downloading metadata from {active_count:L} peer ({percent_done}% done)"
-msgid_plural "Downloading metadata from {active_count:L} peers ({percent_done}% done)"
-msgstr[0] "正在從 {active_count:L} 個節點下載後設資料 (已完成 {percent_done}%)"
 
 #. Translators: First part of phrase "Downloading from ... peer(s) and ... web seed(s)"
 msgid "Downloading from {active_count:L} peer"

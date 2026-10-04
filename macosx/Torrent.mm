@@ -1144,8 +1144,8 @@ static tr_torrent_rename_done_func makeRenameDoneCallback(NSDictionary* contextI
 
         case TR_STATUS_DOWNLOAD:
             string = TR_FORMAT_N(
-                "Downloading from {active_count:L} of {connected_count:L} peer",
-                "Downloading from {active_count:L} of {connected_count:L} peers",
+                "Downloading from {active_count:L} of {connected_count:L} connected peer",
+                "Downloading from {active_count:L} of {connected_count:L} connected peers",
                 self.totalPeersConnected,
                 TRArg("active_count", self.peersSendingToUs),
                 TRArg("connected_count", self.totalPeersConnected));
@@ -1164,8 +1164,8 @@ static tr_torrent_rename_done_func makeRenameDoneCallback(NSDictionary* contextI
 
         case TR_STATUS_SEED:
             string = TR_FORMAT_N(
-                "Seeding to {active_count:L} of {connected_count:L} peer",
-                "Seeding to {active_count:L} of {connected_count:L} peers",
+                "Seeding to {active_count:L} of {connected_count:L} connected peer",
+                "Seeding to {active_count:L} of {connected_count:L} connected peers",
                 self.totalPeersConnected,
                 TRArg("active_count", self.peersGettingFromUs),
                 TRArg("connected_count", self.totalPeersConnected));

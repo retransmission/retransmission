@@ -331,10 +331,10 @@ QString TorrentDelegate::statusString(Torrent const& tor)
             if (!tor.hasMetadata()) {
                 str = TR_FORMAT_N(
                     // xgettext:no-c-format
-                    "Downloading metadata from {active_count:L} peer ({percent_done}% done)",
-                    "Downloading metadata from {active_count:L} peers ({percent_done}% done)",
-                    tor.peersWeAreDownloadingFrom(),
-                    fmt::arg("active_count", tor.peersWeAreDownloadingFrom()),
+                    "Downloading metadata from {active_count:L} connected peer ({percent_done}% done)",
+                    "Downloading metadata from {active_count:L} connected peers ({percent_done}% done)",
+                    tor.connectedPeers(),
+                    fmt::arg("active_count", tor.connectedPeers()),
                     fmt::arg("percent_done", Formatter::percentToString(100.0 * tor.metadataPercentDone())));
             } else {
                 // One string would translate better, but a plural form follows only one count.
@@ -348,8 +348,8 @@ QString TorrentDelegate::statusString(Torrent const& tor)
                 } else {
                     str = TR_FORMAT_N(
                         // Translators: First part of phrase "Downloading from ... of ... connected peer(s) and ... web seed(s)"
-                        "Downloading from {active_count} of {connected_count} connected peer",
-                        "Downloading from {active_count} of {connected_count} connected peers",
+                        "Downloading from {active_count:L} of {connected_count:L} connected peer",
+                        "Downloading from {active_count:L} of {connected_count:L} connected peers",
                         tor.connectedPeersAndWebseeds(),
                         fmt::arg("active_count", tor.peersWeAreDownloadingFrom()),
                         fmt::arg("connected_count", tor.connectedPeersAndWebseeds()));
@@ -377,8 +377,8 @@ QString TorrentDelegate::statusString(Torrent const& tor)
                     fmt::arg("active_count", tor.peersWeAreUploadingTo()));
             } else {
                 str = TR_FORMAT_N(
-                    "Seeding to {active_count} of {connected_count} connected peer",
-                    "Seeding to {active_count} of {connected_count} connected peers",
+                    "Seeding to {active_count:L} of {connected_count:L} connected peer",
+                    "Seeding to {active_count:L} of {connected_count:L} connected peers",
                     tor.connectedPeers(),
                     fmt::arg("active_count", tor.peersWeAreUploadingTo()),
                     fmt::arg("connected_count", tor.connectedPeers()));

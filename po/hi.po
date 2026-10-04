@@ -766,10 +766,10 @@ msgid "Local error: '{error}'"
 msgstr ""
 
 #, no-c-format
-msgid "Downloading metadata from {active_count} connected peer ({percent_done}% done)"
-msgid_plural "Downloading metadata from {active_count} connected peers ({percent_done}% done)"
-msgstr[0] ""
-msgstr[1] ""
+msgid "Downloading metadata from {active_count:L} connected peer ({percent_done}% done)"
+msgid_plural "Downloading metadata from {active_count:L} connected peers ({percent_done}% done)"
+msgstr[0] "{active_count:L} पीयर से मेटाडाटा डाउनलोड हो रहा है ({percent_done}% पूर्ण)"
+msgstr[1] "{active_count:L} पीयर से मेटाडाटा डाउनलोड जारी ({percent_done}% पूर्ण)"
 
 msgid "Downloading from {active_count} of {connected_count} connected peer and webseed"
 msgid_plural "Downloading from {active_count} of {connected_count} connected peers and webseeds"
@@ -782,15 +782,15 @@ msgstr[0] ""
 msgstr[1] ""
 
 #. Translators: First part of phrase "Downloading from ... of ... connected peer(s) and ... web seed(s)"
-msgid "Downloading from {active_count} of {connected_count} connected peer"
-msgid_plural "Downloading from {active_count} of {connected_count} connected peers"
-msgstr[0] "कनेक्ट हो रखें {connected_count} पीयर में से {active_count} से डाउनलोड जारी"
-msgstr[1] "कनेक्ट हो रखें {connected_count} पीयर में से {active_count} से डाउनलोड जारी"
+msgid "Downloading from {active_count:L} of {connected_count:L} connected peer"
+msgid_plural "Downloading from {active_count:L} of {connected_count:L} connected peers"
+msgstr[0] "कनेक्ट हो रखें {connected_count:L} पीयर में से {active_count:L} से डाउनलोड जारी"
+msgstr[1] "कनेक्ट हो रखें {connected_count:L} पीयर में से {active_count:L} से डाउनलोड जारी"
 
-msgid "Seeding to {active_count} of {connected_count} connected peer"
-msgid_plural "Seeding to {active_count} of {connected_count} connected peers"
-msgstr[0] "कनेक्ट हो रखें {connected_count} पीयर में से {active_count} को सीड जारी"
-msgstr[1] "कनेक्ट हो रखें {connected_count} पीयर में से {active_count} को सीड जारी"
+msgid "Seeding to {active_count:L} of {connected_count:L} connected peer"
+msgid_plural "Seeding to {active_count:L} of {connected_count:L} connected peers"
+msgstr[0] "कनेक्ट हो रखें {connected_count:L} पीयर में से {active_count:L} को सीड जारी"
+msgstr[1] "कनेक्ट हो रखें {connected_count:L} पीयर में से {active_count:L} को सीड जारी"
 
 #, fuzzy
 msgid "Retransmission"
@@ -2443,12 +2443,6 @@ msgstr "त्रुटि : {error}"
 #| msgid "Magnetized transfer - retrieving metadata (%1%)"
 msgid "Magnetized torrent - retrieving metadata ({percent_done}%)"
 msgstr "मैग्नेट अंतरण - मेटाडाटा प्राप्ति जारी (%1%)"
-
-#, no-c-format
-msgid "Downloading metadata from {active_count:L} peer ({percent_done}% done)"
-msgid_plural "Downloading metadata from {active_count:L} peers ({percent_done}% done)"
-msgstr[0] "{active_count:L} पीयर से मेटाडाटा डाउनलोड हो रहा है ({percent_done}% पूर्ण)"
-msgstr[1] "{active_count:L} पीयर से मेटाडाटा डाउनलोड जारी ({percent_done}% पूर्ण)"
 
 #. Translators: First part of phrase "Downloading from ... peer(s) and ... web seed(s)"
 msgid "Downloading from {active_count:L} peer"
