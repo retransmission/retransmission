@@ -2854,13 +2854,6 @@ msgstr[0] ""
 msgid "{appname} will quit, because the two apps would work on the same downloads."
 msgstr ""
 
-msgid "Select the new folder for \"{torrent_name}\"."
-msgstr "「{torrent_name}」の新規フォルダを選択します。"
-
-msgid "Select the new folder for {count:L} data file."
-msgid_plural "Select the new folder for {count:L} data files."
-msgstr[0] "{count:L} データファイル用の新しいフォルダを選択"
-
 msgid "Copy of \"{torrent_name}\" Cannot Be Created"
 msgstr "「{torrent_name}」のコピーを作成できません"
 
@@ -3392,9 +3385,6 @@ msgstr "全体アップロード制限: {limit}"
 msgid "Global download limit: {limit}"
 msgstr "全体ダウンロード制限: {limit}"
 
-msgid "The move operation of \"{torrent_name}\" cannot be done."
-msgstr "「{torrent_name}」の移動は完了しませんでした。"
-
 msgid "Not enough remaining disk space to download \"{torrent_name}\" completely."
 msgstr "「{torrent_name}」を完全にダウンロードするためにディスク容量が十分ではありません。"
 
@@ -3724,6 +3714,16 @@ msgstr[0] "日"
 msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "秒"
+
+#~ msgid "Select the new folder for \"{torrent_name}\"."
+#~ msgstr "「{torrent_name}」の新規フォルダを選択します。"
+
+#~ msgid "Select the new folder for {count:L} data file."
+#~ msgid_plural "Select the new folder for {count:L} data files."
+#~ msgstr[0] "{count:L} データファイル用の新しいフォルダを選択"
+
+#~ msgid "The move operation of \"{torrent_name}\" cannot be done."
+#~ msgstr "「{torrent_name}」の移動は完了しませんでした。"
 
 #~ msgid "{total_size} ({piece_count:L} piece)"
 #~ msgid_plural "{total_size} ({piece_count:L} pieces)"

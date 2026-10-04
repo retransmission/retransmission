@@ -2898,14 +2898,6 @@ msgstr[1] ""
 msgid "{appname} will quit, because the two apps would work on the same downloads."
 msgstr ""
 
-msgid "Select the new folder for \"{torrent_name}\"."
-msgstr "Aukeratu karpeta berria \"{torrent_name}\"(e)rako."
-
-msgid "Select the new folder for {count:L} data file."
-msgid_plural "Select the new folder for {count:L} data files."
-msgstr[0] "Aukeratu karpeta berria {count:L} datu-fitxategientzako."
-msgstr[1] "Aukeratu karpeta berria {count:L} datu-fitxategientzako."
-
 msgid "Copy of \"{torrent_name}\" Cannot Be Created"
 msgstr "Ezin da \"{torrent_name}\"(r)en kopia sortu"
 
@@ -3451,9 +3443,6 @@ msgstr "Igoeren muga orokorra: {limit}"
 msgid "Global download limit: {limit}"
 msgstr "Deskargen muga orokorra: {limit}"
 
-msgid "The move operation of \"{torrent_name}\" cannot be done."
-msgstr "Ezin izan da \"{torrent_name}\" mugitzeko eragiketa egin."
-
 msgid "Not enough remaining disk space to download \"{torrent_name}\" completely."
 msgstr "Diskoan ez dago \"{torrent_name}\" osorik deskargatzeko behar beste espazio."
 
@@ -3795,6 +3784,17 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "segundo"
 msgstr[1] "segundo"
+
+#~ msgid "Select the new folder for \"{torrent_name}\"."
+#~ msgstr "Aukeratu karpeta berria \"{torrent_name}\"(e)rako."
+
+#~ msgid "Select the new folder for {count:L} data file."
+#~ msgid_plural "Select the new folder for {count:L} data files."
+#~ msgstr[0] "Aukeratu karpeta berria {count:L} datu-fitxategientzako."
+#~ msgstr[1] "Aukeratu karpeta berria {count:L} datu-fitxategientzako."
+
+#~ msgid "The move operation of \"{torrent_name}\" cannot be done."
+#~ msgstr "Ezin izan da \"{torrent_name}\" mugitzeko eragiketa egin."
 
 #~ msgid "{total_size} ({piece_count:L} piece)"
 #~ msgid_plural "{total_size} ({piece_count:L} pieces)"

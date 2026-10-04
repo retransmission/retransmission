@@ -2929,14 +2929,6 @@ msgstr[1] ""
 msgid "{appname} will quit, because the two apps would work on the same downloads."
 msgstr ""
 
-msgid "Select the new folder for \"{torrent_name}\"."
-msgstr "Selecteer de nieuwe map voor \"{torrent_name}\"."
-
-msgid "Select the new folder for {count:L} data file."
-msgid_plural "Select the new folder for {count:L} data files."
-msgstr[0] "Selecteer de nieuwe map voor {count:L} gegevensbestanden."
-msgstr[1] "Selecteer de nieuwe map voor {count:L} gegevensbestanden."
-
 msgid "Copy of \"{torrent_name}\" Cannot Be Created"
 msgstr "Kopie van \"{torrent_name}\" kan niet gemaakt worden"
 
@@ -3484,9 +3476,6 @@ msgstr "Globale uploadlimiet: {limit}"
 msgid "Global download limit: {limit}"
 msgstr "Globale downloadlimiet: {limit}"
 
-msgid "The move operation of \"{torrent_name}\" cannot be done."
-msgstr "‘{torrent_name}’ kan niet verplaatst worden."
-
 msgid "Not enough remaining disk space to download \"{torrent_name}\" completely."
 msgstr "Onvoldoende opslagruimte om ‘{torrent_name}’ volledig te downloaden."
 
@@ -3833,6 +3822,17 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "seconde"
 msgstr[1] "seconden"
+
+#~ msgid "Select the new folder for \"{torrent_name}\"."
+#~ msgstr "Selecteer de nieuwe map voor \"{torrent_name}\"."
+
+#~ msgid "Select the new folder for {count:L} data file."
+#~ msgid_plural "Select the new folder for {count:L} data files."
+#~ msgstr[0] "Selecteer de nieuwe map voor {count:L} gegevensbestanden."
+#~ msgstr[1] "Selecteer de nieuwe map voor {count:L} gegevensbestanden."
+
+#~ msgid "The move operation of \"{torrent_name}\" cannot be done."
+#~ msgstr "‘{torrent_name}’ kan niet verplaatst worden."
 
 #~ msgid "{total_size} ({piece_count:L} piece)"
 #~ msgid_plural "{total_size} ({piece_count:L} pieces)"

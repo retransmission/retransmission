@@ -2970,15 +2970,6 @@ msgstr[2] ""
 msgid "{appname} will quit, because the two apps would work on the same downloads."
 msgstr ""
 
-msgid "Select the new folder for \"{torrent_name}\"."
-msgstr "בחירת תיקייה חדשה עבור \"{torrent_name}\"."
-
-msgid "Select the new folder for {count:L} data file."
-msgid_plural "Select the new folder for {count:L} data files."
-msgstr[0] "בחירת תיקייה חדשה עבור {count:L} קובצי נתונים."
-msgstr[1] "בחירת תיקייה חדשה עבור {count:L} קובצי נתונים."
-msgstr[2] "בחירת תיקייה חדשה עבור {count:L} קובצי נתונים."
-
 msgid "Copy of \"{torrent_name}\" Cannot Be Created"
 msgstr "לא ניתן ליצור עותק של „{torrent_name}”"
 
@@ -3523,9 +3514,6 @@ msgstr "מגבלת העלאה כללית: {limit}"
 msgid "Global download limit: {limit}"
 msgstr "מגבלת הורדה כללית: {limit}"
 
-msgid "The move operation of \"{torrent_name}\" cannot be done."
-msgstr "לא ניתן לבצע העברה של \"{torrent_name}\"."
-
 msgid "Not enough remaining disk space to download \"{torrent_name}\" completely."
 msgstr "לא נותר מספיק מקום בקונן להורדת \"{torrent_name}\" במלאו."
 
@@ -3884,6 +3872,18 @@ msgstr[0] "שנייה"
 msgstr[1] "שניות"
 msgstr[2] "שניות"
 msgstr[3] "שניות"
+
+#~ msgid "Select the new folder for \"{torrent_name}\"."
+#~ msgstr "בחירת תיקייה חדשה עבור \"{torrent_name}\"."
+
+#~ msgid "Select the new folder for {count:L} data file."
+#~ msgid_plural "Select the new folder for {count:L} data files."
+#~ msgstr[0] "בחירת תיקייה חדשה עבור {count:L} קובצי נתונים."
+#~ msgstr[1] "בחירת תיקייה חדשה עבור {count:L} קובצי נתונים."
+#~ msgstr[2] "בחירת תיקייה חדשה עבור {count:L} קובצי נתונים."
+
+#~ msgid "The move operation of \"{torrent_name}\" cannot be done."
+#~ msgstr "לא ניתן לבצע העברה של \"{torrent_name}\"."
 
 #~ msgid "{total_size} ({piece_count:L} piece)"
 #~ msgid_plural "{total_size} ({piece_count:L} pieces)"

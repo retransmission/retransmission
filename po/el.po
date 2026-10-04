@@ -2924,14 +2924,6 @@ msgstr[1] ""
 msgid "{appname} will quit, because the two apps would work on the same downloads."
 msgstr ""
 
-msgid "Select the new folder for \"{torrent_name}\"."
-msgstr "Επιλογή του νέου καταλόγου για το \"{torrent_name}\"."
-
-msgid "Select the new folder for {count:L} data file."
-msgid_plural "Select the new folder for {count:L} data files."
-msgstr[0] "Επίλεξε τον νέο φάκελο για {count:L} αρχεία δεδομένων."
-msgstr[1] "Επίλεξε τον νέο φάκελο για {count:L} αρχεία δεδομένων."
-
 msgid "Copy of \"{torrent_name}\" Cannot Be Created"
 msgstr "Δεν μπορεί να δημιουργηθεί αντίγραφο του \"{torrent_name}\" "
 
@@ -3469,9 +3461,6 @@ msgstr "Καθολικό όριο αποστολής: {limit}"
 msgid "Global download limit: {limit}"
 msgstr "Καθολικό όριο λήψης: {limit}"
 
-msgid "The move operation of \"{torrent_name}\" cannot be done."
-msgstr "Η λειτουργία μετακίνησης του \"{torrent_name}\" δεν μπορεί να γίνει."
-
 msgid "Not enough remaining disk space to download \"{torrent_name}\" completely."
 msgstr "Δεν υπάρχει αρκετός υπολειπόμενος χώρος στο δίσκο για την πλήρη λήψη του \"{torrent_name}\"."
 
@@ -3813,6 +3802,17 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "δευτερόλεπτο"
 msgstr[1] "δευτερόλεπτα"
+
+#~ msgid "Select the new folder for \"{torrent_name}\"."
+#~ msgstr "Επιλογή του νέου καταλόγου για το \"{torrent_name}\"."
+
+#~ msgid "Select the new folder for {count:L} data file."
+#~ msgid_plural "Select the new folder for {count:L} data files."
+#~ msgstr[0] "Επίλεξε τον νέο φάκελο για {count:L} αρχεία δεδομένων."
+#~ msgstr[1] "Επίλεξε τον νέο φάκελο για {count:L} αρχεία δεδομένων."
+
+#~ msgid "The move operation of \"{torrent_name}\" cannot be done."
+#~ msgstr "Η λειτουργία μετακίνησης του \"{torrent_name}\" δεν μπορεί να γίνει."
 
 #~ msgid "{total_size} ({piece_count:L} piece)"
 #~ msgid_plural "{total_size} ({piece_count:L} pieces)"

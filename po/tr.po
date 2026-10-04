@@ -2896,14 +2896,6 @@ msgstr[1] ""
 msgid "{appname} will quit, because the two apps would work on the same downloads."
 msgstr ""
 
-msgid "Select the new folder for \"{torrent_name}\"."
-msgstr "“{torrent_name}” için yeni klasörü seçin."
-
-msgid "Select the new folder for {count:L} data file."
-msgid_plural "Select the new folder for {count:L} data files."
-msgstr[0] "{count:L} veri dosyaları için yeni klasör seç."
-msgstr[1] "{count:L} veri dosyaları için yeni klasör seç."
-
 msgid "Copy of \"{torrent_name}\" Cannot Be Created"
 msgstr "“{torrent_name}” Kopyası Oluşturulamadı"
 
@@ -3439,9 +3431,6 @@ msgstr "Genel karşıya yükleme sınırı: {limit}"
 msgid "Global download limit: {limit}"
 msgstr "Genel indirme sınırı: {limit}"
 
-msgid "The move operation of \"{torrent_name}\" cannot be done."
-msgstr "“{torrent_name}” için taşıma işlemi yapılamadı."
-
 msgid "Not enough remaining disk space to download \"{torrent_name}\" completely."
 msgstr "“{torrent_name}” aktarımını tamamlamak için yeterli disk alanı yok."
 
@@ -3783,6 +3772,17 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "saniye"
 msgstr[1] "saniye"
+
+#~ msgid "Select the new folder for \"{torrent_name}\"."
+#~ msgstr "“{torrent_name}” için yeni klasörü seçin."
+
+#~ msgid "Select the new folder for {count:L} data file."
+#~ msgid_plural "Select the new folder for {count:L} data files."
+#~ msgstr[0] "{count:L} veri dosyaları için yeni klasör seç."
+#~ msgstr[1] "{count:L} veri dosyaları için yeni klasör seç."
+
+#~ msgid "The move operation of \"{torrent_name}\" cannot be done."
+#~ msgstr "“{torrent_name}” için taşıma işlemi yapılamadı."
 
 #~ msgid "{total_size} ({piece_count:L} piece)"
 #~ msgid_plural "{total_size} ({piece_count:L} pieces)"

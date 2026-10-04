@@ -2954,14 +2954,6 @@ msgstr[1] ""
 msgid "{appname} will quit, because the two apps would work on the same downloads."
 msgstr ""
 
-msgid "Select the new folder for \"{torrent_name}\"."
-msgstr "Neuen Zielordner für „{torrent_name}“ auswählen."
-
-msgid "Select the new folder for {count:L} data file."
-msgid_plural "Select the new folder for {count:L} data files."
-msgstr[0] "Neuen Zielordner für {count:L} Übertragungen auswählen."
-msgstr[1] "Neuen Zielordner für {count:L} Übertragungen auswählen."
-
 msgid "Copy of \"{torrent_name}\" Cannot Be Created"
 msgstr "Kopie von „{torrent_name}“ kann nicht erstellt werden"
 
@@ -3496,9 +3488,6 @@ msgstr "Sendegeschwindigkeit begrenzt auf: {limit}"
 msgid "Global download limit: {limit}"
 msgstr "Empfangsgeschwindigkeit begrenzt auf: {limit}"
 
-msgid "The move operation of \"{torrent_name}\" cannot be done."
-msgstr "„{torrent_name}“ kann nicht bewegt werden."
-
 msgid "Not enough remaining disk space to download \"{torrent_name}\" completely."
 msgstr "Es ist nicht genügend Festplattenplatz vorhanden, um „{torrent_name}“ vollständig zu empfangen."
 
@@ -3840,6 +3829,17 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "Sekunde"
 msgstr[1] "Sekunden"
+
+#~ msgid "Select the new folder for \"{torrent_name}\"."
+#~ msgstr "Neuen Zielordner für „{torrent_name}“ auswählen."
+
+#~ msgid "Select the new folder for {count:L} data file."
+#~ msgid_plural "Select the new folder for {count:L} data files."
+#~ msgstr[0] "Neuen Zielordner für {count:L} Übertragungen auswählen."
+#~ msgstr[1] "Neuen Zielordner für {count:L} Übertragungen auswählen."
+
+#~ msgid "The move operation of \"{torrent_name}\" cannot be done."
+#~ msgstr "„{torrent_name}“ kann nicht bewegt werden."
 
 #~ msgid "{total_size} ({piece_count:L} piece)"
 #~ msgid_plural "{total_size} ({piece_count:L} pieces)"

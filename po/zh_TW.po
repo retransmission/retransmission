@@ -2881,13 +2881,6 @@ msgstr[0] ""
 msgid "{appname} will quit, because the two apps would work on the same downloads."
 msgstr ""
 
-msgid "Select the new folder for \"{torrent_name}\"."
-msgstr "選擇 \"{torrent_name}\" 的新資料夾。"
-
-msgid "Select the new folder for {count:L} data file."
-msgid_plural "Select the new folder for {count:L} data files."
-msgstr[0] "選擇儲存 {count:L} 個資料檔案的新資料夾。"
-
 msgid "Copy of \"{torrent_name}\" Cannot Be Created"
 msgstr "無法建立 \"{torrent_name}\" 的副本"
 
@@ -3406,9 +3399,6 @@ msgstr "全域上傳限制： {limit}"
 msgid "Global download limit: {limit}"
 msgstr "全域下載限制： {limit}"
 
-msgid "The move operation of \"{torrent_name}\" cannot be done."
-msgstr "無法移動 \"{torrent_name}\"。"
-
 msgid "Not enough remaining disk space to download \"{torrent_name}\" completely."
 msgstr "剩餘磁碟空間不足，無法完整下載 \"{torrent_name}\"。"
 
@@ -3737,6 +3727,16 @@ msgstr[0] "天"
 msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "秒"
+
+#~ msgid "Select the new folder for \"{torrent_name}\"."
+#~ msgstr "選擇 \"{torrent_name}\" 的新資料夾。"
+
+#~ msgid "Select the new folder for {count:L} data file."
+#~ msgid_plural "Select the new folder for {count:L} data files."
+#~ msgstr[0] "選擇儲存 {count:L} 個資料檔案的新資料夾。"
+
+#~ msgid "The move operation of \"{torrent_name}\" cannot be done."
+#~ msgstr "無法移動 \"{torrent_name}\"。"
 
 #~ msgid "{total_size} ({piece_count:L} piece)"
 #~ msgid_plural "{total_size} ({piece_count:L} pieces)"

@@ -2923,14 +2923,6 @@ msgstr[1] ""
 msgid "{appname} will quit, because the two apps would work on the same downloads."
 msgstr ""
 
-msgid "Select the new folder for \"{torrent_name}\"."
-msgstr "Új mappa választása \"{torrent_name}\" számára."
-
-msgid "Select the new folder for {count:L} data file."
-msgid_plural "Select the new folder for {count:L} data files."
-msgstr[0] "Új mappa kiválasztása {count:L} adatfájloknak. "
-msgstr[1] "Új mappa kiválasztása {count:L} adatfájloknak. "
-
 msgid "Copy of \"{torrent_name}\" Cannot Be Created"
 msgstr "A(z) \"{torrent_name}\" másolata nem hozható létre"
 
@@ -3467,9 +3459,6 @@ msgstr "Globális fetöltési korlát: {limit}"
 msgid "Global download limit: {limit}"
 msgstr "Globális letöltési korlát: {limit}"
 
-msgid "The move operation of \"{torrent_name}\" cannot be done."
-msgstr "\"{torrent_name}\" áthelyezése nem hajtható végre."
-
 msgid "Not enough remaining disk space to download \"{torrent_name}\" completely."
 msgstr "Nincs elég szabad lemezterület \"{torrent_name}\" teljes letöltéséhez."
 
@@ -3811,6 +3800,17 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "másodperc"
 msgstr[1] "másodperc"
+
+#~ msgid "Select the new folder for \"{torrent_name}\"."
+#~ msgstr "Új mappa választása \"{torrent_name}\" számára."
+
+#~ msgid "Select the new folder for {count:L} data file."
+#~ msgid_plural "Select the new folder for {count:L} data files."
+#~ msgstr[0] "Új mappa kiválasztása {count:L} adatfájloknak. "
+#~ msgstr[1] "Új mappa kiválasztása {count:L} adatfájloknak. "
+
+#~ msgid "The move operation of \"{torrent_name}\" cannot be done."
+#~ msgstr "\"{torrent_name}\" áthelyezése nem hajtható végre."
 
 #~ msgid "{total_size} ({piece_count:L} piece)"
 #~ msgid_plural "{total_size} ({piece_count:L} pieces)"

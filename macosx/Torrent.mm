@@ -562,7 +562,6 @@ static tr_torrent_rename_done_func makeRenameDoneCallback(NSDictionary* contextI
         NSAlert* alert = [[NSAlert alloc] init];
         // Translators: Move error alert -> title
         alert.messageText = TR_TEXT("Couldn't move torrent");
-        alert.informativeText = TR_FORMAT("The move operation of \"{torrent_name}\" cannot be done.", TRArg("torrent_name", self.name));
         [alert addButtonWithTitle:TR_TEXT("OK")];
 
         [alert runModal];

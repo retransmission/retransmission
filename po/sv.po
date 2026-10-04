@@ -2890,14 +2890,6 @@ msgstr[1] ""
 msgid "{appname} will quit, because the two apps would work on the same downloads."
 msgstr ""
 
-msgid "Select the new folder for \"{torrent_name}\"."
-msgstr "Välj den nya mappen för \"{torrent_name}\"."
-
-msgid "Select the new folder for {count:L} data file."
-msgid_plural "Select the new folder for {count:L} data files."
-msgstr[0] "Välj den nya mappen för {count:L} datafiler."
-msgstr[1] "Välj den nya mappen för {count:L} datafiler."
-
 msgid "Copy of \"{torrent_name}\" Cannot Be Created"
 msgstr "Kopia av \"{torrent_name}\" kan inte skapas"
 
@@ -3440,9 +3432,6 @@ msgstr "Global sändningsgräns: {limit}"
 msgid "Global download limit: {limit}"
 msgstr "Global hämtningsgräns: {limit}"
 
-msgid "The move operation of \"{torrent_name}\" cannot be done."
-msgstr "Flyttningen av \"{torrent_name}\" kan inte göras."
-
 msgid "Not enough remaining disk space to download \"{torrent_name}\" completely."
 msgstr "Inte tillräckligt med återstående lagringsutrymme för att hämta \"{torrent_name}\" helt."
 
@@ -3784,6 +3773,17 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "sekund"
 msgstr[1] "sekunder"
+
+#~ msgid "Select the new folder for \"{torrent_name}\"."
+#~ msgstr "Välj den nya mappen för \"{torrent_name}\"."
+
+#~ msgid "Select the new folder for {count:L} data file."
+#~ msgid_plural "Select the new folder for {count:L} data files."
+#~ msgstr[0] "Välj den nya mappen för {count:L} datafiler."
+#~ msgstr[1] "Välj den nya mappen för {count:L} datafiler."
+
+#~ msgid "The move operation of \"{torrent_name}\" cannot be done."
+#~ msgstr "Flyttningen av \"{torrent_name}\" kan inte göras."
 
 #~ msgid "{total_size} ({piece_count:L} piece)"
 #~ msgid_plural "{total_size} ({piece_count:L} pieces)"

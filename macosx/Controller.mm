@@ -2048,17 +2048,6 @@ static void offerToImportFromTransmission()
     panel.canChooseDirectories = YES;
     panel.canCreateDirectories = YES;
 
-    NSUInteger count = torrents.count;
-    if (count == 1) {
-        panel.message = TR_FORMAT("Select the new folder for \"{torrent_name}\".", TRArg("torrent_name", torrents[0].name));
-    } else {
-        panel.message = TR_FORMAT_N(
-            "Select the new folder for {count:L} data file.",
-            "Select the new folder for {count:L} data files.",
-            count,
-            TRArg("count", count));
-    }
-
     [panel beginSheetModalForWindow:self.fWindow completionHandler:^(NSInteger result) {
         if (result == NSModalResponseOK) {
             for (Torrent* torrent in torrents) {

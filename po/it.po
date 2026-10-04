@@ -2947,15 +2947,6 @@ msgstr[2] ""
 msgid "{appname} will quit, because the two apps would work on the same downloads."
 msgstr ""
 
-msgid "Select the new folder for \"{torrent_name}\"."
-msgstr "Selezionare la nuova cartella per \"{torrent_name}\"."
-
-msgid "Select the new folder for {count:L} data file."
-msgid_plural "Select the new folder for {count:L} data files."
-msgstr[0] "Selezionare la nuova cartella per {count:L} file dati."
-msgstr[1] "Selezionare la nuova cartella per {count:L} file dati."
-msgstr[2] "Selezionare la nuova cartella per {count:L} file dati."
-
 msgid "Copy of \"{torrent_name}\" Cannot Be Created"
 msgstr "Impossibile creare copia di \"{torrent_name}\""
 
@@ -3507,9 +3498,6 @@ msgstr "Limite generale di invio: {limit}"
 msgid "Global download limit: {limit}"
 msgstr "Limite generale di ricezione: {limit}"
 
-msgid "The move operation of \"{torrent_name}\" cannot be done."
-msgstr "Impossibile eseguire l'operazione di spostamento di \"{torrent_name}\"."
-
 msgid "Not enough remaining disk space to download \"{torrent_name}\" completely."
 msgstr "Spazio residuo su disco insufficiente per scaricare completamente \"{torrent_name}\"."
 
@@ -3868,6 +3856,18 @@ msgid_plural "seconds"
 msgstr[0] "secondo"
 msgstr[1] "secondi"
 msgstr[2] "secondi"
+
+#~ msgid "Select the new folder for \"{torrent_name}\"."
+#~ msgstr "Selezionare la nuova cartella per \"{torrent_name}\"."
+
+#~ msgid "Select the new folder for {count:L} data file."
+#~ msgid_plural "Select the new folder for {count:L} data files."
+#~ msgstr[0] "Selezionare la nuova cartella per {count:L} file dati."
+#~ msgstr[1] "Selezionare la nuova cartella per {count:L} file dati."
+#~ msgstr[2] "Selezionare la nuova cartella per {count:L} file dati."
+
+#~ msgid "The move operation of \"{torrent_name}\" cannot be done."
+#~ msgstr "Impossibile eseguire l'operazione di spostamento di \"{torrent_name}\"."
 
 #~ msgid "{total_size} ({piece_count:L} piece)"
 #~ msgid_plural "{total_size} ({piece_count:L} pieces)"

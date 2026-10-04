@@ -2936,15 +2936,6 @@ msgstr[2] ""
 msgid "{appname} will quit, because the two apps would work on the same downloads."
 msgstr ""
 
-msgid "Select the new folder for \"{torrent_name}\"."
-msgstr "Sélectionner le nouveau dossier pour « {torrent_name} »."
-
-msgid "Select the new folder for {count:L} data file."
-msgid_plural "Select the new folder for {count:L} data files."
-msgstr[0] "Sélectionner un nouveau dossier pour les fichiers de données de {count:L}."
-msgstr[1] "Sélectionner un nouveau dossier pour les fichiers de données de {count:L}."
-msgstr[2] "Sélectionner un nouveau dossier pour les fichiers de données de {count:L}."
-
 msgid "Copy of \"{torrent_name}\" Cannot Be Created"
 msgstr "La copie de « {torrent_name} » ne peut être créée"
 
@@ -3492,9 +3483,6 @@ msgstr "Limite globale de téléversement : {limit}"
 msgid "Global download limit: {limit}"
 msgstr "Limite globale de téléchargement : {limit}"
 
-msgid "The move operation of \"{torrent_name}\" cannot be done."
-msgstr "L’opération de déplacement de « {torrent_name} » n’a pu être effectuée."
-
 msgid "Not enough remaining disk space to download \"{torrent_name}\" completely."
 msgstr "Il n’y a pas assez d’espace disque restant pour télécharger complètement « {torrent_name} »."
 
@@ -3848,6 +3836,18 @@ msgid_plural "seconds"
 msgstr[0] "seconde"
 msgstr[1] "de secondes"
 msgstr[2] "secondes"
+
+#~ msgid "Select the new folder for \"{torrent_name}\"."
+#~ msgstr "Sélectionner le nouveau dossier pour « {torrent_name} »."
+
+#~ msgid "Select the new folder for {count:L} data file."
+#~ msgid_plural "Select the new folder for {count:L} data files."
+#~ msgstr[0] "Sélectionner un nouveau dossier pour les fichiers de données de {count:L}."
+#~ msgstr[1] "Sélectionner un nouveau dossier pour les fichiers de données de {count:L}."
+#~ msgstr[2] "Sélectionner un nouveau dossier pour les fichiers de données de {count:L}."
+
+#~ msgid "The move operation of \"{torrent_name}\" cannot be done."
+#~ msgstr "L’opération de déplacement de « {torrent_name} » n’a pu être effectuée."
 
 #~ msgid "{total_size} ({piece_count:L} piece)"
 #~ msgid_plural "{total_size} ({piece_count:L} pieces)"
