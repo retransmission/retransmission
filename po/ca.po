@@ -2177,9 +2177,6 @@ msgstr "URL d'anunci de rastrejadors"
 msgid "No new URLs found."
 msgstr ""
 
-msgid "Use Global Settings"
-msgstr "Utilitza els paràmetres globals"
-
 msgid "Stop seeding if idle for:"
 msgstr "Atura la compartició si està inactiu durant:"
 
@@ -2505,6 +2502,9 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] ""
 msgstr[1] ""
+
+#~ msgid "Use Global Settings"
+#~ msgstr "Utilitza els paràmetres globals"
 
 #~ msgid "{file_count:L} File"
 #~ msgid_plural "{file_count:L} Files"

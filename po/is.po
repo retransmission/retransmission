@@ -2183,9 +2183,6 @@ msgstr "Bæta við tilkynningaslóðum rekjara, ein á hverja línu:"
 msgid "No new URLs found."
 msgstr "Engar nýjar slóðir fundust."
 
-msgid "Use Global Settings"
-msgstr "Nota víðværar stillingar"
-
 msgid "Stop seeding if idle for:"
 msgstr "Hætta að deila ef óvirkt í:"
 
@@ -2498,6 +2495,9 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "sekúnda"
 msgstr[1] "sekúndur"
+
+#~ msgid "Use Global Settings"
+#~ msgstr "Nota víðværar stillingar"
 
 #~ msgid "{file_count:L} File"
 #~ msgid_plural "{file_count:L} Files"

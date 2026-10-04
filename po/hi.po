@@ -2153,9 +2153,6 @@ msgstr "ट्रैकर अनुरोध यूआरएल जोड़ें
 msgid "No new URLs found."
 msgstr "कोई नवीन यूआरएल प्राप्त नहीं हुए।"
 
-msgid "Use Global Settings"
-msgstr "सर्वत्र सेटिंग्स उपयोग करें"
-
 msgid "Stop seeding if idle for:"
 msgstr "इस अवधि उपरांत निष्क्रिय होने पर सीड न करें :"
 
@@ -2478,6 +2475,9 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] ""
 msgstr[1] ""
+
+#~ msgid "Use Global Settings"
+#~ msgstr "सर्वत्र सेटिंग्स उपयोग करें"
 
 #~ msgid "{file_count:L} File"
 #~ msgid_plural "{file_count:L} Files"

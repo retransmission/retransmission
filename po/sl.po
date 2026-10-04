@@ -2229,9 +2229,6 @@ msgstr "Dodaj URL-je za objave sledilnika, vsakega v svojo vrstico:"
 msgid "No new URLs found."
 msgstr "Ni najdenih novih URL-jev."
 
-msgid "Use Global Settings"
-msgstr "Uporabi glavne nastavitve"
-
 msgid "Stop seeding if idle for:"
 msgstr "Prenehaj sejati pri neaktivnosti za:"
 
@@ -2567,6 +2564,9 @@ msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
 msgstr[3] ""
+
+#~ msgid "Use Global Settings"
+#~ msgstr "Uporabi glavne nastavitve"
 
 #~ msgid "{file_count:L} File"
 #~ msgid_plural "{file_count:L} Files"

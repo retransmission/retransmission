@@ -2186,9 +2186,6 @@ msgstr "Pratiteljevi URL-ovi najave"
 msgid "No new URLs found."
 msgstr ""
 
-msgid "Use Global Settings"
-msgstr "Koristi globalne postavke"
-
 msgid "Stop seeding if idle for:"
 msgstr "Zaustavi dijeljenje pri neaktivnosti:"
 
@@ -2527,6 +2524,9 @@ msgid_plural "seconds"
 msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
+
+#~ msgid "Use Global Settings"
+#~ msgstr "Koristi globalne postavke"
 
 #~ msgid "{file_count:L} File"
 #~ msgid_plural "{file_count:L} Files"

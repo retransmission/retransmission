@@ -28,6 +28,8 @@ import sys
 #   'to':      the new message, in the same form
 # and may have, for the translation that moves:
 #   'prefer':  'from' has the old message's translation win over the new message's
+#   'keep':    True leaves the old message in place, for a client that still uses it;
+#              its translation is copied to the new message if that has none
 #   'strip':   text to take out, e.g. ['<i>', '</i>']
 #   'replace': [[old, new], ...] text to replace
 #   'fields':  {old: new} for {fmt} fields, e.g. {'count': 'piece_count:L'}
@@ -250,6 +252,8 @@ RENAMES = [
         'from': {'msgid': 'Downloading from {active_count} webseed', 'msgid_plural': 'Downloading from {active_count} webseeds'},
         'to': {'msgid': 'Downloading from {active_count} web seed', 'msgid_plural': 'Downloading from {active_count} web seeds'},
     },
+    # The Qt client's combo box item takes the GTK client's sentence case. The Mac client's pop-up item keeps title case.
+    {'from': {'msgid': 'Use Global Settings'}, 'to': {'msgid': 'Use global settings'}, 'keep': True},
 ]
 
 FIELD_NAMES = ('msgctxt', 'msgid', 'msgid_plural')
@@ -386,9 +390,15 @@ def fold(po_path):
         if old is None or old is new:
             continue
 
-        n_changed += 1
         moved = {name: moved_translation(text, rename, colon) for name, text in old.translations().items()}
 
+        if rename.get('keep'):
+            if new is not None and old.is_translated() and not new.is_translated():
+                new.rebuild(without_fuzzy(new.comments()), rename['to'], moved)
+                n_changed += 1
+            continue
+
+        n_changed += 1
         if new is None:
             old.rebuild(old.comments(), rename['to'], moved)
             continue

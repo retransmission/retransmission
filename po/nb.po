@@ -2151,9 +2151,6 @@ msgstr "Stifinneres nettadresser for annonsering"
 msgid "No new URLs found."
 msgstr ""
 
-msgid "Use Global Settings"
-msgstr "Bruk Globale innstillinger"
-
 msgid "Stop seeding if idle for:"
 msgstr "Stopp deling hvis inaktiv i:"
 
@@ -2479,6 +2476,9 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] ""
 msgstr[1] ""
+
+#~ msgid "Use Global Settings"
+#~ msgstr "Bruk Globale innstillinger"
 
 #~ msgid "{file_count:L} File"
 #~ msgid_plural "{file_count:L} Files"

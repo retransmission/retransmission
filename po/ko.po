@@ -2146,9 +2146,6 @@ msgstr "트래커 알림 주소"
 msgid "No new URLs found."
 msgstr ""
 
-msgid "Use Global Settings"
-msgstr "전역 설정 사용"
-
 msgid "Stop seeding if idle for:"
 msgstr "비활성화 되면 시드 중지"
 
@@ -2459,6 +2456,9 @@ msgstr[0] ""
 msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] ""
+
+#~ msgid "Use Global Settings"
+#~ msgstr "전역 설정 사용"
 
 #~ msgid "{file_count:L} File"
 #~ msgid_plural "{file_count:L} Files"

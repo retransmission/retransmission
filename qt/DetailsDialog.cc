@@ -1398,11 +1398,11 @@ void DetailsDialog::initOptionsTab()
     ui_.bandwidthPriorityCombo->addItem(TR_TEXT("Normal"), TR_PRI_NORMAL);
     ui_.bandwidthPriorityCombo->addItem(TR_TEXT("Low"), TR_PRI_LOW);
 
-    ui_.ratioCombo->addItem(TR_TEXT("Use Global Settings"), TR_RATIOLIMIT_GLOBAL);
+    ui_.ratioCombo->addItem(TR_TEXT("Use global settings"), TR_RATIOLIMIT_GLOBAL);
     ui_.ratioCombo->addItem(TR_TEXT("Seed regardless of ratio"), TR_RATIOLIMIT_UNLIMITED);
     ui_.ratioCombo->addItem(TR_TEXT("Stop seeding at ratio:"), TR_RATIOLIMIT_SINGLE);
 
-    ui_.idleCombo->addItem(TR_TEXT("Use Global Settings"), TR_IDLELIMIT_GLOBAL);
+    ui_.idleCombo->addItem(TR_TEXT("Use global settings"), TR_IDLELIMIT_GLOBAL);
     ui_.idleCombo->addItem(TR_TEXT("Seed regardless of activity"), TR_IDLELIMIT_UNLIMITED);
     ui_.idleCombo->addItem(TR_TEXT("Stop seeding if idle for:"), TR_IDLELIMIT_SINGLE);
 

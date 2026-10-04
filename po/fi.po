@@ -2199,9 +2199,6 @@ msgstr "Lisää jäljitin ilmoittamaan URL-osoitteet, yksi riviä kohti:"
 msgid "No new URLs found."
 msgstr "Uusia URL-osoitteita ei löytynyt."
 
-msgid "Use Global Settings"
-msgstr "Käytä yleisiä asetuksia"
-
 msgid "Stop seeding if idle for:"
 msgstr "Pysäytä kylväminen jos joutilaana ajan:"
 
@@ -2514,6 +2511,9 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "sekunti"
 msgstr[1] "sekuntia"
+
+#~ msgid "Use Global Settings"
+#~ msgstr "Käytä yleisiä asetuksia"
 
 #~ msgid "{file_count:L} File"
 #~ msgid_plural "{file_count:L} Files"

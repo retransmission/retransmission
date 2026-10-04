@@ -2173,9 +2173,6 @@ msgstr "URLs de anúncios do rastreador"
 msgid "No new URLs found."
 msgstr ""
 
-msgid "Use Global Settings"
-msgstr "Usar Definições Globais"
-
 msgid "Stop seeding if idle for:"
 msgstr "Parar de efetuar seed se inativo durante:"
 
@@ -2514,6 +2511,9 @@ msgid_plural "seconds"
 msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
+
+#~ msgid "Use Global Settings"
+#~ msgstr "Usar Definições Globais"
 
 #~ msgid "{file_count:L} File"
 #~ msgid_plural "{file_count:L} Files"

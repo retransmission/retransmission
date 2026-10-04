@@ -2117,9 +2117,6 @@ msgstr "Tambah URL pengumuman pelacak, satu per baris:"
 msgid "No new URLs found."
 msgstr "Tidak ditemukan URL baru."
 
-msgid "Use Global Settings"
-msgstr "Gunakan Pengaturan Global"
-
 msgid "Stop seeding if idle for:"
 msgstr "Berhenti membenih bila menganggur selama:"
 
@@ -2432,6 +2429,9 @@ msgstr[0] ""
 msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] ""
+
+#~ msgid "Use Global Settings"
+#~ msgstr "Gunakan Pengaturan Global"
 
 #~ msgid "{file_count:L} File"
 #~ msgid_plural "{file_count:L} Files"

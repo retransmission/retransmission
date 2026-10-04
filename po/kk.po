@@ -2152,9 +2152,6 @@ msgstr "Трекердің анонс URL-ы"
 msgid "No new URLs found."
 msgstr ""
 
-msgid "Use Global Settings"
-msgstr "Жалпы баптауларды қолдану"
-
 msgid "Stop seeding if idle for:"
 msgstr "Белсенді емес болса, таратуды тоқтату:"
 
@@ -2503,6 +2500,9 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] ""
 msgstr[1] ""
+
+#~ msgid "Use Global Settings"
+#~ msgstr "Жалпы баптауларды қолдану"
 
 #, fuzzy
 #~| msgid "Select File"

@@ -2334,9 +2334,6 @@ msgstr "روابط التبليغ للمتتبع"
 msgid "No new URLs found."
 msgstr ""
 
-msgid "Use Global Settings"
-msgstr "استخدام الإعدادات العامة"
-
 msgid "Stop seeding if idle for:"
 msgstr "إيقاف الرفع عند الخمول لمدة:"
 
@@ -2714,6 +2711,9 @@ msgstr[2] ""
 msgstr[3] ""
 msgstr[4] ""
 msgstr[5] ""
+
+#~ msgid "Use Global Settings"
+#~ msgstr "استخدام الإعدادات العامة"
 
 #~ msgid "{file_count:L} File"
 #~ msgid_plural "{file_count:L} Files"

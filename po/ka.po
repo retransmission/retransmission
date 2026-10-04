@@ -2136,9 +2136,6 @@ msgstr ""
 msgid "No new URLs found."
 msgstr ""
 
-msgid "Use Global Settings"
-msgstr "გლობალური პარამეტრების გამოყენება"
-
 msgid "Stop seeding if idle for:"
 msgstr "სიდირების შეჩერება უმოქმედობის:"
 
@@ -2467,6 +2464,9 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "წამი"
 msgstr[1] "წამი"
+
+#~ msgid "Use Global Settings"
+#~ msgstr "გლობალური პარამეტრების გამოყენება"
 
 #~ msgid "{file_count:L} File"
 #~ msgid_plural "{file_count:L} Files"
