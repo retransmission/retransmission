@@ -5,6 +5,7 @@
 #import "StatusBarController.h"
 #import "NSStringAdditions.h"
 #import "Utils.h"
+#import "L10n.h"
 
 typedef NSString* StatusRatioType NS_TYPED_EXTENSIBLE_ENUM;
 
@@ -56,10 +57,14 @@ typedef NS_ENUM(NSUInteger, StatusTag) {
 {
     [super awakeFromNib];
     //localize menu items
-    [self.fStatusButton.menu itemWithTag:StatusTagTotalRatio].title = NSLocalizedString(@"Total Ratio", "Status Bar -> status menu");
-    [self.fStatusButton.menu itemWithTag:StatusTagSessionRatio].title = NSLocalizedString(@"Session Ratio", "Status Bar -> status menu");
-    [self.fStatusButton.menu itemWithTag:StatusTagTotalTransfer].title = NSLocalizedString(@"Total Transfer", "Status Bar -> status menu");
-    [self.fStatusButton.menu itemWithTag:StatusTagSessionTransfer].title = NSLocalizedString(@"Session Transfer", "Status Bar -> status menu");
+    // Translators: Status Bar -> status menu
+    [self.fStatusButton.menu itemWithTag:StatusTagTotalRatio].title = TR_TEXT("Total Ratio");
+    // Translators: Status Bar -> status menu
+    [self.fStatusButton.menu itemWithTag:StatusTagSessionRatio].title = TR_TEXT("Session Ratio");
+    // Translators: Status Bar -> status menu
+    [self.fStatusButton.menu itemWithTag:StatusTagTotalTransfer].title = TR_TEXT("Total Transfer");
+    // Translators: Status Bar -> status menu
+    [self.fStatusButton.menu itemWithTag:StatusTagSessionTransfer].title = TR_TEXT("Session Transfer");
 
     self.fStatusButton.cell.backgroundStyle = NSBackgroundStyleRaised;
     self.fTotalDLField.cell.backgroundStyle = NSBackgroundStyleRaised;
@@ -93,17 +98,18 @@ typedef NS_ENUM(NSUInteger, StatusTag) {
     if ((total = [statusLabel isEqualToString:StatusRatioTypeTotal]) || [statusLabel isEqualToString:StatusRatioTypeSession]) {
         auto const stats = total ? tr_sessionGetCumulativeStats(self.fLib) : tr_sessionGetStats(self.fLib);
 
-        statusString = [NSLocalizedString(@"Ratio", "status bar -> status label")
-            stringByAppendingFormat:@": %@", [NSString stringForRatio:stats.ratio]];
+        // Translators: status bar -> status label
+        statusString = [TR_TEXT("Ratio") stringByAppendingFormat:@": %@", [NSString stringForRatio:stats.ratio]];
     } else //StatusTransferTypeTotal or StatusTransferTypeSession
     {
         total = [statusLabel isEqualToString:StatusTransferTypeTotal];
 
         auto const stats = total ? tr_sessionGetCumulativeStats(self.fLib) : tr_sessionGetStats(self.fLib);
 
-        statusString = [NSString stringWithFormat:NSLocalizedString(@"Down: %@, Up: %@", "status bar -> status label"),
-                                                  [NSString stringForFileSize:stats.downloadedBytes],
-                                                  [NSString stringForFileSize:stats.uploadedBytes]];
+        statusString = TR_FORMAT(
+            "Down: {downloaded_size}, Up: {uploaded_size}",
+            TRArg("downloaded_size", [NSString stringForFileSize:stats.downloadedBytes]),
+            TRArg("uploaded_size", [NSString stringForFileSize:stats.uploadedBytes]));
     }
 
     if (![self.fStatusButton.title isEqualToString:statusString]) {
@@ -139,33 +145,29 @@ typedef NS_ENUM(NSUInteger, StatusTag) {
 
 - (void)updateSpeedFieldsToolTips
 {
+    NSUserDefaults* const defaults = NSUserDefaults.standardUserDefaults;
+    NSString* (^limitText)(NSString*) = ^(NSString* limitKey) {
+        // Translators: Status Bar -> speed tooltip
+        return TR_FORMAT("{speed:L} KB/s", TRArg("speed", [defaults integerForKey:limitKey]));
+    };
+    // Translators: Status Bar -> speed tooltip
+    NSString* const unlimited = TR_TEXT("unlimited");
+
     NSString *uploadText, *downloadText;
-
-    if ([NSUserDefaults.standardUserDefaults boolForKey:@"SpeedLimit"]) {
-        NSString* speedString = [NSString stringWithFormat:@"%@ (%@)",
-                                                           NSLocalizedString(@"%ld KB/s", "Status Bar -> speed tooltip"),
-                                                           NSLocalizedString(@"Alternative Speed Limits", "Status Bar -> speed tooltip")];
-
-        uploadText = [NSString stringWithFormat:speedString, [NSUserDefaults.standardUserDefaults integerForKey:@"SpeedLimitUploadLimit"]];
-        downloadText = [NSString stringWithFormat:speedString, [NSUserDefaults.standardUserDefaults integerForKey:@"SpeedLimitDownloadLimit"]];
+    if ([defaults boolForKey:@"SpeedLimit"]) {
+        // Translators: Status Bar -> speed tooltip
+        NSString* const altSpeedLimits = TR_TEXT("Alternative Speed Limits");
+        uploadText = [NSString stringWithFormat:@"%@ (%@)", limitText(@"SpeedLimitUploadLimit"), altSpeedLimits];
+        downloadText = [NSString stringWithFormat:@"%@ (%@)", limitText(@"SpeedLimitDownloadLimit"), altSpeedLimits];
     } else {
-        if ([NSUserDefaults.standardUserDefaults boolForKey:@"CheckUpload"]) {
-            uploadText = [NSString localizedStringWithFormat:NSLocalizedString(@"%ld KB/s", "Status Bar -> speed tooltip"),
-                                                             [NSUserDefaults.standardUserDefaults integerForKey:@"UploadLimit"]];
-        } else {
-            uploadText = NSLocalizedString(@"unlimited", "Status Bar -> speed tooltip");
-        }
-
-        if ([NSUserDefaults.standardUserDefaults boolForKey:@"CheckDownload"]) {
-            downloadText = [NSString localizedStringWithFormat:NSLocalizedString(@"%ld KB/s", "Status Bar -> speed tooltip"),
-                                                               [NSUserDefaults.standardUserDefaults integerForKey:@"DownloadLimit"]];
-        } else {
-            downloadText = NSLocalizedString(@"unlimited", "Status Bar -> speed tooltip");
-        }
+        uploadText = [defaults boolForKey:@"CheckUpload"] ? limitText(@"UploadLimit") : unlimited;
+        downloadText = [defaults boolForKey:@"CheckDownload"] ? limitText(@"DownloadLimit") : unlimited;
     }
 
-    uploadText = [NSLocalizedString(@"Global upload limit", "Status Bar -> speed tooltip") stringByAppendingFormat:@": %@", uploadText];
-    downloadText = [NSLocalizedString(@"Global download limit", "Status Bar -> speed tooltip") stringByAppendingFormat:@": %@", downloadText];
+    // Translators: Status Bar -> speed tooltip
+    uploadText = [TR_TEXT("Global upload limit") stringByAppendingFormat:@": %@", uploadText];
+    // Translators: Status Bar -> speed tooltip
+    downloadText = [TR_TEXT("Global download limit") stringByAppendingFormat:@": %@", downloadText];
 
     self.fTotalULField.toolTip = uploadText;
     self.fTotalDLField.toolTip = downloadText;

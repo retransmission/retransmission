@@ -12,6 +12,7 @@
 #import "NSImageAdditions.h"
 #import "NSMutableArrayAdditions.h"
 #import "NSStringAdditions.h"
+#import "L10n.h"
 
 typedef NS_ENUM(NSUInteger, LevelButtonLevel) {
     LevelButtonLevelError = 0,
@@ -69,16 +70,21 @@ static NSUInteger const kMaxQueueLength = 10000U;
 
     [window setContentBorderThickness:NSMinY(self.fMessageTable.enclosingScrollView.frame) forEdge:NSMinYEdge];
 
-    self.window.title = NSLocalizedString(@"Message Log", "Message window -> title");
+    // Translators: Message window -> title
+    self.window.title = TR_TEXT("Message Log");
 
     //disable fullscreen support
     window.collectionBehavior = NSWindowCollectionBehaviorFullScreenNone;
 
     //set images and text for popup button items
-    [self.fLevelButton itemAtIndex:LevelButtonLevelError].title = NSLocalizedString(@"Error", "Message window -> level string");
-    [self.fLevelButton itemAtIndex:LevelButtonLevelWarn].title = NSLocalizedString(@"Warning", "Message window -> level string");
-    [self.fLevelButton itemAtIndex:LevelButtonLevelInfo].title = NSLocalizedString(@"Information", "Message window -> level string");
-    [self.fLevelButton itemAtIndex:LevelButtonLevelDebug].title = NSLocalizedString(@"Debug", "Message window -> level string");
+    // Translators: Message window -> level string
+    [self.fLevelButton itemAtIndex:LevelButtonLevelError].title = TR_TEXT_C("Logging level", "Error");
+    // Translators: Message window -> level string
+    [self.fLevelButton itemAtIndex:LevelButtonLevelWarn].title = TR_TEXT_C("Logging level", "Warning");
+    // Translators: Message window -> level string
+    [self.fLevelButton itemAtIndex:LevelButtonLevelInfo].title = TR_TEXT_C("Logging level", "Information");
+    // Translators: Message window -> level string
+    [self.fLevelButton itemAtIndex:LevelButtonLevelDebug].title = TR_TEXT_C("Logging level", "Debug");
     [self.fLevelButton itemAtIndex:LevelButtonLevelError].image = [self.class iconForLevel:TR_LOG_ERROR];
     [self.fLevelButton itemAtIndex:LevelButtonLevelWarn].image = [self.class iconForLevel:TR_LOG_WARN];
     [self.fLevelButton itemAtIndex:LevelButtonLevelInfo].image = [self.class iconForLevel:TR_LOG_INFO];
@@ -88,12 +94,16 @@ static NSUInteger const kMaxQueueLength = 10000U;
     [self.fLevelButton sizeToFit];
 
     //set table column text
-    [self.fMessageTable tableColumnWithIdentifier:@"Date"].headerCell.title = NSLocalizedString(@"Time", "Message window -> table column");
-    [self.fMessageTable tableColumnWithIdentifier:@"Name"].headerCell.title = NSLocalizedString(@"Name", "Message window -> table column");
-    [self.fMessageTable tableColumnWithIdentifier:@"Message"].headerCell.title = NSLocalizedString(@"Message", "Message window -> table column");
+    // Translators: Message window -> table column
+    [self.fMessageTable tableColumnWithIdentifier:@"Date"].headerCell.title = TR_TEXT("Time");
+    // Translators: Message window -> table column
+    [self.fMessageTable tableColumnWithIdentifier:@"Name"].headerCell.title = TR_TEXT("Name");
+    // Translators: Message window -> table column
+    [self.fMessageTable tableColumnWithIdentifier:@"Message"].headerCell.title = TR_TEXT("Message");
 
     //set and size buttons
-    self.fSaveButton.title = [NSLocalizedString(@"Save", "Message window -> save button") stringByAppendingEllipsis];
+    // Translators: Message window -> save button
+    self.fSaveButton.title = [TR_TEXT("Save") stringByAppendingEllipsis];
     [self.fSaveButton sizeToFit];
 
     NSRect saveButtonFrame = self.fSaveButton.frame;
@@ -103,7 +113,8 @@ static NSUInteger const kMaxQueueLength = 10000U;
 
     CGFloat const oldClearButtonWidth = self.fClearButton.frame.size.width;
 
-    self.fClearButton.title = NSLocalizedString(@"Clear", "Message window -> save button");
+    // Translators: Message window -> save button
+    self.fClearButton.title = TR_TEXT("Clear");
     [self.fClearButton sizeToFit];
 
     NSRect clearButtonFrame = self.fClearButton.frame;
@@ -111,7 +122,8 @@ static NSUInteger const kMaxQueueLength = 10000U;
     clearButtonFrame.origin.x -= NSWidth(clearButtonFrame) - oldClearButtonWidth;
     self.fClearButton.frame = clearButtonFrame;
 
-    [self.fFilterField.cell setPlaceholderString:NSLocalizedString(@"Filter", "Message window -> filter field")];
+    // Translators: Message window -> filter field
+    [self.fFilterField.cell setPlaceholderString:TR_TEXT("Filter")];
     NSRect filterButtonFrame = self.fFilterField.frame;
     filterButtonFrame.origin.x -= NSWidth(clearButtonFrame) - oldClearButtonWidth;
     self.fFilterField.frame = filterButtonFrame;
@@ -436,7 +448,8 @@ static NSUInteger const kMaxQueueLength = 10000U;
     panel.allowedFileTypes = @[ @"txt" ];
     panel.canSelectHiddenExtension = YES;
 
-    panel.nameFieldStringValue = NSLocalizedString(@"untitled", "Save log panel -> default file name");
+    // Translators: Save log panel -> default file name
+    panel.nameFieldStringValue = TR_TEXT("untitled");
 
     [panel beginSheetModalForWindow:self.window completionHandler:^(NSInteger result) {
         if (result == NSModalResponseOK) {
@@ -455,11 +468,11 @@ static NSUInteger const kMaxQueueLength = 10000U;
 
             if (![fileString writeToFile:panel.URL.path atomically:YES encoding:NSUTF8StringEncoding error:nil]) {
                 NSAlert* alert = [[NSAlert alloc] init];
-                [alert addButtonWithTitle:NSLocalizedString(@"OK", "Save log alert panel -> button")];
-                alert.messageText = NSLocalizedString(@"Log Could Not Be Saved", "Save log alert panel -> title");
-                alert.informativeText = [NSString
-                    stringWithFormat:NSLocalizedString(@"There was a problem creating the file \"%@\".", "Save log alert panel -> message"),
-                                     panel.URL.path.lastPathComponent];
+                [alert addButtonWithTitle:TR_TEXT("OK")];
+                alert.messageText = TR_TEXT("Log Could Not Be Saved");
+                alert.informativeText = TR_FORMAT(
+                    "There was a problem creating the file \"{filename}\".",
+                    TRArg("filename", panel.URL.path.lastPathComponent));
                 alert.alertStyle = NSAlertStyleWarning;
 
                 [alert runModal];
@@ -547,19 +560,24 @@ static NSUInteger const kMaxQueueLength = 10000U;
     NSInteger const level = [message[@"Level"] integerValue];
     switch (level) {
     case TR_LOG_ERROR:
-        levelString = NSLocalizedString(@"Error", "Message window -> level");
+        // Translators: Message window -> level
+        levelString = TR_TEXT_C("Logging level", "Error");
         break;
     case TR_LOG_WARN:
-        levelString = NSLocalizedString(@"Warning", "Message window -> level");
+        // Translators: Message window -> level
+        levelString = TR_TEXT_C("Logging level", "Warning");
         break;
     case TR_LOG_INFO:
-        levelString = NSLocalizedString(@"Information", "Message window -> level");
+        // Translators: Message window -> level
+        levelString = TR_TEXT_C("Logging level", "Information");
         break;
     case TR_LOG_DEBUG:
-        levelString = NSLocalizedString(@"Debug", "Message window -> level");
+        // Translators: Message window -> level
+        levelString = TR_TEXT_C("Logging level", "Debug");
         break;
     case TR_LOG_TRACE:
-        levelString = NSLocalizedString(@"Trace", "Message window -> level");
+        // Translators: Message window -> level
+        levelString = TR_TEXT_C("Logging level", "Trace");
         break;
     default:
         NSAssert1(NO, @"Unknown message log level: %ld", level);

@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<!-- Which text in an Interface Builder file xgettext extracts:
+     the attributes that AppKit translates with a .strings file.
+     release/mac-xib-strings.py writes those files and checks that it reads the same text as these rules. -->
+<its:rules xmlns:its="http://www.w3.org/2005/11/its" version="2.0">
+  <its:translateRule selector="/document" translate="no"/>
+  <its:translateRule selector="//buttonCell/@title" translate="yes"/>
+  <its:translateRule selector="//menu/@title" translate="yes"/>
+  <its:translateRule selector="//menuItem/@title" translate="yes"/>
+  <its:translateRule selector="//textFieldCell/@title" translate="yes"/>
+  <its:translateRule selector="//window/@title" translate="yes"/>
+  <its:translateRule selector="//searchFieldCell/@placeholderString" translate="yes"/>
+  <its:translateRule selector="//textFieldCell/@placeholderString" translate="yes"/>
+  <its:translateRule selector="//tabViewItem/@label" translate="yes"/>
+  <its:translateRule selector="//tableColumn/tableHeaderCell/@title" translate="yes"/>
+  <its:translateRule selector="//segmentedCell/segments/segment/@label" translate="yes"/>
+  <its:preserveSpaceRule selector="/document" space="preserve"/>
+</its:rules>

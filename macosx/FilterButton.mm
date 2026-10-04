@@ -4,6 +4,7 @@
 
 #import "FilterButton.h"
 #import "NSStringAdditions.h"
+#import "L10n.h"
 
 @implementation FilterButton
 
@@ -23,9 +24,7 @@
 
     _count = count;
 
-    self.toolTip = count == 1 ?
-        NSLocalizedString(@"1 torrent", "Filter Button -> tool tip") :
-        [NSString localizedStringWithFormat:NSLocalizedString(@"%lu torrents", "Filter Bar Button -> tool tip"), count];
+    self.toolTip = [NSString stringForTorrentCount:count];
 }
 
 @end

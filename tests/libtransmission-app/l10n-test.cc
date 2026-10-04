@@ -5,7 +5,8 @@
 
 #include <array>
 #include <cstddef> // size_t
-#include <cstdint> // uint32_t, uint64_t
+#include <cstdint> // int64_t, uint32_t, uint64_t
+#include <locale>
 #include <string>
 #include <string_view>
 #include <utility>
@@ -107,6 +108,33 @@ TEST_F(L10nTest, parseFields)
     EXPECT_FALSE(parse_fields("{count"sv));
     EXPECT_FALSE(parse_fields("count}"sv));
     EXPECT_FALSE(parse_fields("{a{b}}"sv));
+}
+
+TEST_F(L10nTest, formatsTranslation)
+{
+    auto const loc = std::locale::classic();
+    auto const* const source = "Created by {creator} on {date}";
+    auto const args = std::array{ Arg{ "creator", "Mnemosaic"s }, Arg{ "date", "Tuesday"s } };
+
+    EXPECT_EQ("Created by Mnemosaic on Tuesday"sv, format_translation(loc, source, args));
+    EXPECT_EQ("Am Tuesday von Mnemosaic erstellt"sv, format_translation(loc, "Am {date} von {creator} erstellt", args));
+
+    // Arguments are formatted verbatim, braces and all.
+    auto const braces = std::array{ Arg{ "creator", "{date}"s }, Arg{ "date", "}{"s } };
+    EXPECT_EQ("Created by {date} on }{"sv, format_translation(loc, source, braces));
+}
+
+TEST_F(L10nTest, formatsNumbers)
+{
+    auto const loc = std::locale::classic();
+    auto const* const source = "{count:L} of {total}, {ratio:.2f}";
+    auto const args = std::array{
+        Arg{ "count", int64_t{ -12345 } },
+        Arg{ "total", uint64_t{ 18446744073709551615ULL } },
+        Arg{ "ratio", 0.5 },
+    };
+
+    EXPECT_EQ("-12345 of 18446744073709551615, 0.50"sv, format_translation(loc, source, args));
 }
 
 TEST_F(L10nTest, englishPluralForms)
@@ -315,4 +343,29 @@ TEST_F(L10nTest, useCatalogs)
     EXPECT_TRUE(std::empty(use_catalogs(dirs, "domain"sv, std::vector<std::string>{ "de" })));
     EXPECT_STREQ("Paused", _("Paused"));
     EXPECT_EQ("10 kB/s", (tr::Values::Speed{ 10, tr::Values::Speed::Units::KByps }.to_string()));
+}
+
+TEST_F(L10nTest, useCatalogFiles)
+{
+    auto const write_mo = [this](std::string_view const name, std::vector<Message> const& messages) {
+        auto filename = fmt::format("{:s}/{:s}", sandbox_dir(), name);
+        EXPECT_TRUE(tr_file_save(filename, make_mo(messages)));
+        return filename;
+    };
+
+    auto const filenames = std::vector<std::string>{
+        write_mo("pt-BR.mo"sv, { { "Paused"sv, "Pausado (pt-BR)"sv } }),
+        fmt::format("{:s}/missing.mo", sandbox_dir()),
+        write_mo("pt.mo"sv, { { "Paused"sv, "Pausado (pt)"sv }, { "Verifying"sv, "A verificar"sv } }),
+    };
+    EXPECT_EQ(2U, use_catalog_files(filenames));
+
+    // Each message comes from the most preferred catalog that has it, else it stays English.
+    EXPECT_STREQ("Pausado (pt-BR)", _("Paused"));
+    EXPECT_STREQ("A verificar", _("Verifying"));
+    EXPECT_STREQ("Seeding", _("Seeding"));
+
+    // Without a catalog, everything is English.
+    EXPECT_EQ(0U, use_catalog_files({}));
+    EXPECT_STREQ("Paused", _("Paused"));
 }

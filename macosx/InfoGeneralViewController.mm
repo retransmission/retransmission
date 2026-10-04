@@ -5,6 +5,7 @@
 #import "InfoGeneralViewController.h"
 #import "NSStringAdditions.h"
 #import "Torrent.h"
+#import "L10n.h"
 
 @interface InfoGeneralViewController ()
 
@@ -32,7 +33,8 @@
 - (instancetype)init
 {
     if ((self = [super initWithNibName:@"InfoGeneralView" bundle:nil])) {
-        self.title = NSLocalizedString(@"Information", "Inspector view -> title");
+        // Translators: Inspector view -> title
+        self.title = TR_TEXT("Information");
     }
 
     return self;
@@ -103,9 +105,9 @@
         NSString* hashString = torrent.hashString;
         self.fHashField.stringValue = hashString;
         self.fHashField.toolTip = hashString;
-        self.fSecureField.stringValue = torrent.privateTorrent ?
-            NSLocalizedString(@"Private to this tracker -- DHT and PEX disabled", "Inspector -> private torrent") :
-            NSLocalizedString(@"Public torrent", "Inspector -> private torrent");
+        self.fSecureField.stringValue = torrent.privateTorrent ? TR_TEXT("Private to this tracker -- DHT and PEX disabled") :
+                                                                 // Translators: Inspector -> private torrent
+                                                                 TR_TEXT("Public torrent");
 
         NSString* commentString = torrent.comment;
         self.fCommentView.string = commentString;

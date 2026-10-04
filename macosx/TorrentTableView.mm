@@ -20,6 +20,7 @@
 #import "TorrentCellActionButton.h"
 #import "TorrentCellControlButton.h"
 #import "TorrentCellRevealButton.h"
+#import "L10n.h"
 
 CGFloat const kGroupSeparatorHeight = 18.0;
 
@@ -286,7 +287,8 @@ static NSTimeInterval const kToggleProgressSeconds = 0.175;
         [groupCell updateImage:[NSImage discIconWithColor:groupColor insetFactor:0]];
 
         NSString* groupName = groupIndex != -1 ? [GroupsController.groups nameForIndex:groupIndex] :
-                                                 NSLocalizedString(@"No Group", "Group table row");
+                                                 // Translators: Group table row
+                                                 TR_TEXT("No Group");
         [groupCell updateTitle:groupName];
 
         auto aggregatedData = group.aggregatedData;
@@ -546,21 +548,24 @@ static NSTimeInterval const kToggleProgressSeconds = 0.175;
 
     NSString* statusString;
     if ([view isKindOfClass:[TorrentCellRevealButton class]]) {
-        statusString = NSLocalizedString(@"Show the data file in Finder", "Torrent cell -> button info");
+        statusString = TR_TEXT("Show the data file in Finder");
     } else if ([view isKindOfClass:[TorrentCellControlButton class]]) {
         if (torrent.active)
-            statusString = NSLocalizedString(@"Pause torrent", "Torrent Table -> tooltip");
+            // Translators: Torrent Table -> tooltip
+            statusString = TR_TEXT("Pause torrent");
         else {
             if (NSApp.currentEvent.modifierFlags & NSEventModifierFlagOption) {
-                statusString = NSLocalizedString(@"Bypass the queue and start now", "Torrent cell -> button info");
+                statusString = TR_TEXT("Bypass the queue and start now");
             } else if (torrent.waitingToStart) {
-                statusString = NSLocalizedString(@"Stop waiting to start", "Torrent cell -> button info");
+                statusString = TR_TEXT("Stop waiting to start");
             } else {
-                statusString = NSLocalizedString(@"Start torrent", "Torrent cell -> button info");
+                // Translators: Torrent cell -> button info
+                statusString = TR_TEXT("Start torrent");
             }
         }
     } else if ([view isKindOfClass:[TorrentCellActionButton class]]) {
-        statusString = NSLocalizedString(@"Change torrent settings", "Torrent Table -> tooltip");
+        // Translators: Torrent Table -> tooltip
+        statusString = TR_TEXT("Change torrent settings");
     }
 
     auto previousHoveredTorrent = self.hoveringData.hoveredTorrent;

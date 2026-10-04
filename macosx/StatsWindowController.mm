@@ -7,6 +7,7 @@
 #import "StatsWindowController.h"
 #import "Controller.h"
 #import "NSStringAdditions.h"
+#import "L10n.h"
 
 static NSTimeInterval const kUpdateSeconds = 1.0;
 
@@ -30,6 +31,12 @@ static NSTimeInterval const kUpdateSeconds = 1.0;
 @property(nonatomic) NSTimer* fTimer;
 
 @end
+
+static NSString* totalString(NSString* const amount)
+{
+    // Translators: stats total
+    return TR_FORMAT("{amount} total", TRArg("amount", amount));
+}
 
 @implementation StatsWindowController
 
@@ -65,19 +72,26 @@ static tr_session* fLib = NULL;
 
     self.window.restorationClass = [self class];
 
-    self.window.title = NSLocalizedString(@"Statistics", "Stats window -> title");
+    // Translators: Stats window -> title
+    self.window.title = TR_TEXT("Statistics");
 
     //disable fullscreen support
     self.window.collectionBehavior = NSWindowCollectionBehaviorFullScreenNone;
 
     //set label text
-    self.fUploadedLabelField.stringValue = NSLocalizedString(@"Uploaded:", "Stats window -> label");
-    self.fDownloadedLabelField.stringValue = NSLocalizedString(@"Downloaded:", "Stats window -> label");
-    self.fRatioLabelField.stringValue = NSLocalizedString(@"Ratio:", "Stats window -> label");
-    self.fTimeLabelField.stringValue = NSLocalizedString(@"Running time:", "Stats window -> label");
-    self.fNumOpenedLabelField.stringValue = NSLocalizedString(@"Program started:", "Stats window -> label");
+    // Translators: Stats window -> label
+    self.fUploadedLabelField.stringValue = TR_TEXT("Uploaded:");
+    // Translators: Stats window -> label
+    self.fDownloadedLabelField.stringValue = TR_TEXT("Downloaded:");
+    // Translators: Stats window -> label
+    self.fRatioLabelField.stringValue = TR_TEXT("Ratio:");
+    // Translators: Stats window -> label
+    self.fTimeLabelField.stringValue = TR_TEXT("Running time:");
+    // Translators: Stats window -> label
+    self.fNumOpenedLabelField.stringValue = TR_TEXT("Program started:");
 
-    self.fResetButton.title = NSLocalizedString(@"Reset", "Stats window -> reset button");
+    // Translators: Stats window -> reset button
+    self.fResetButton.title = TR_TEXT("Reset");
 }
 
 - (void)windowWillClose:(id)sender
@@ -104,15 +118,14 @@ static tr_session* fLib = NULL;
     }
 
     NSAlert* alert = [[NSAlert alloc] init];
-    alert.messageText = NSLocalizedString(@"Reset your statistics?", "Stats reset -> title");
-    alert.informativeText = [NSString stringWithFormat:NSLocalizedString(
-                                                           @"This will clear the global statistics displayed by %@."
-                                                            " Individual torrent statistics will not be affected.",
-                                                           "Stats reset -> message"),
-                                                       @TR_PROJ_APPNAME_CAPITALIZED];
+    alert.messageText = TR_TEXT("Reset your statistics?");
+    alert.informativeText = TR_FORMAT(
+        "This will clear the global statistics displayed by {appname}. Individual torrent statistics will not be affected.",
+        TRAppNameArg());
     alert.alertStyle = NSAlertStyleWarning;
-    [alert addButtonWithTitle:NSLocalizedString(@"Reset", "Stats reset -> button")];
-    [alert addButtonWithTitle:NSLocalizedString(@"Cancel", "Stats reset -> button")];
+    // Translators: Stats reset -> button
+    [alert addButtonWithTitle:TR_TEXT("Reset")];
+    [alert addButtonWithTitle:TR_TEXT("Cancel")];
     alert.showsSuppressionButton = YES;
 
     [alert beginSheetModalForWindow:self.window completionHandler:^(NSModalResponse returnCode) {
@@ -143,21 +156,20 @@ static tr_session* fLib = NULL;
 
     self.fUploadedField.stringValue = [NSString stringForFileSize:statsSession.uploadedBytes];
     self.fUploadedField.toolTip = [byteFormatter stringFromByteCount:statsSession.uploadedBytes];
-    self.fUploadedAllField.stringValue = [NSString
-        stringWithFormat:NSLocalizedString(@"%@ total", "stats total"), [NSString stringForFileSize:statsAll.uploadedBytes]];
+    self.fUploadedAllField.stringValue = totalString([NSString stringForFileSize:statsAll.uploadedBytes]);
     self.fUploadedAllField.toolTip = [byteFormatter stringFromByteCount:statsAll.uploadedBytes];
 
     self.fDownloadedField.stringValue = [NSString stringForFileSize:statsSession.downloadedBytes];
     self.fDownloadedField.toolTip = [byteFormatter stringFromByteCount:statsSession.downloadedBytes];
-    self.fDownloadedAllField.stringValue = [NSString
-        stringWithFormat:NSLocalizedString(@"%@ total", "stats total"), [NSString stringForFileSize:statsAll.downloadedBytes]];
+    self.fDownloadedAllField.stringValue = totalString([NSString stringForFileSize:statsAll.downloadedBytes]);
     self.fDownloadedAllField.toolTip = [byteFormatter stringFromByteCount:statsAll.downloadedBytes];
 
     self.fRatioField.stringValue = [NSString stringForRatio:statsSession.ratio];
 
     NSString* totalRatioString = static_cast<int>(statsAll.ratio) != TR_RATIO_NA ?
-        [NSString stringWithFormat:NSLocalizedString(@"%@ total", "stats total"), [NSString stringForRatio:statsAll.ratio]] :
-        NSLocalizedString(@"Total N/A", "stats total");
+        totalString([NSString stringForRatio:statsAll.ratio]) :
+        // Translators: stats total
+        TR_TEXT("Total N/A");
     self.fRatioAllField.stringValue = totalRatioString;
 
     static NSDateComponentsFormatter* timeFormatter;
@@ -171,15 +183,14 @@ static tr_session* fLib = NULL;
     });
 
     self.fTimeField.stringValue = [timeFormatter stringFromTimeInterval:statsSession.secondsActive];
-    self.fTimeAllField.stringValue = [NSString stringWithFormat:NSLocalizedString(@"%@ total", "stats total"),
-                                                                [timeFormatter stringFromTimeInterval:statsAll.secondsActive]];
+    self.fTimeAllField.stringValue = totalString([timeFormatter stringFromTimeInterval:statsAll.secondsActive]);
 
-    if (statsAll.sessionCount == 1) {
-        self.fNumOpenedField.stringValue = NSLocalizedString(@"1 time", "stats window -> times opened");
-    } else {
-        self.fNumOpenedField.stringValue = [NSString
-            localizedStringWithFormat:NSLocalizedString(@"%llu times", "stats window -> times opened"), statsAll.sessionCount];
-    }
+    self.fNumOpenedField.stringValue = TR_FORMAT_N(
+        // Translators: stats window -> times opened
+        "{count:L} time",
+        "{count:L} times",
+        statsAll.sessionCount,
+        TRArg("count", statsAll.sessionCount));
 }
 
 - (void)performResetStats

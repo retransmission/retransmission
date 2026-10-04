@@ -4,6 +4,7 @@
 
 #import "GroupCell.h"
 #import "NSStringAdditions.h"
+#import "L10n.h"
 
 // Layout
 // Leading Stack
@@ -73,20 +74,25 @@ static CGFloat const kTrailingOffset = -5.0; // inverted for constraints.
 
     auto downloadIconView = [[NSImageView alloc] init];
     downloadIconView.image = [NSImage imageNamed:@"DownArrowGroupTemplate"];
-    downloadIconView.toolTip = NSLocalizedString(@"Download speed", "Torrent table -> group row -> tooltip");
+    // Translators: Torrent table -> group row -> tooltip
+    downloadIconView.toolTip = TR_TEXT("Download speed");
     downloadField.toolTip = downloadIconView.toolTip;
 
     auto uploadIconView = [[NSImageView alloc] init];
     uploadIconView.image = [NSImage imageNamed:@"UpArrowGroupTemplate"];
-    uploadIconView.toolTip = NSLocalizedString(@"Upload speed", "Torrent table -> group row -> tooltip");
+    // Translators: Torrent table -> group row -> tooltip
+    uploadIconView.toolTip = TR_TEXT("Upload speed");
     uploadField.toolTip = uploadIconView.toolTip;
-    uploadIconView.image.accessibilityDescription = NSLocalizedString(@"Up", "Torrent -> status image");
+    // Translators: Torrent -> status image
+    uploadIconView.image.accessibilityDescription = TR_TEXT("Up");
 
     auto ratioIconView = [[NSImageView alloc] init];
     ratioIconView.image = [NSImage imageNamed:@"YingYangGroupTemplate"];
-    ratioIconView.toolTip = NSLocalizedString(@"Ratio", "Torrent table -> group row -> tooltip");
+    // Translators: Torrent table -> group row -> tooltip
+    ratioIconView.toolTip = TR_TEXT("Ratio");
     ratioField.toolTip = ratioIconView.toolTip;
-    ratioIconView.image.accessibilityDescription = NSLocalizedString(@"Ratio", "Torrent -> status image");
+    // Translators: Torrent -> status image
+    ratioIconView.image.accessibilityDescription = TR_TEXT("Ratio");
 
     for (NSImageView* view in @[ downloadIconView, uploadIconView, ratioIconView ]) {
         view.imageScaling = NSImageScaleProportionallyDown;
@@ -221,14 +227,7 @@ static CGFloat const kTrailingOffset = -5.0; // inverted for constraints.
 
 - (void)updateTooltipForTorrentsCount:(NSUInteger)count
 {
-    NSString* tooltipGroup;
-    if (count == 1) {
-        tooltipGroup = NSLocalizedString(@"1 torrent", "Torrent table -> group row -> tooltip");
-    } else {
-        tooltipGroup = NSLocalizedString(@"%lu torrents", "Torrent table -> group row -> tooltip");
-        tooltipGroup = [NSString localizedStringWithFormat:tooltipGroup, count];
-    }
-    self.toolTip = tooltipGroup;
+    self.toolTip = [NSString stringForTorrentCount:count];
 }
 
 - (BOOL)isPointInStatusArea:(NSPoint)pointInCell

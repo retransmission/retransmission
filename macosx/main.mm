@@ -11,6 +11,7 @@
 #include <libtransmission/utils.h>
 
 #import "Controller.h"
+#import "L10n.h"
 
 // Shows the launch alerts and then loads the main nib, while the app finishes launching.
 // The nib's objects read the settings an import changes, so the nib loads after the alerts.
@@ -47,7 +48,7 @@ int main()
 {
     tr_lib_init();
 
-    tr_locale_set_global("");
+    TRSetUpLocalization();
 
     // NSApplication holds its delegate weakly.
     static LaunchDelegate* launchDelegate;

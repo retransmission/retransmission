@@ -58,9 +58,3 @@ NSString* tr_strv_to_utf8_nsstring(std::string_view const sv)
     NSString* str = [[NSString alloc] initWithBytes:std::data(sv) length:std::size(sv) encoding:NSUTF8StringEncoding];
     return str != nil ? str : @"";
 }
-
-NSString* tr_strv_to_utf8_nsstring(std::string_view const sv, NSString* key, NSString* comment)
-{
-    NSString* str = [[NSString alloc] initWithBytes:std::data(sv) length:std::size(sv) encoding:NSUTF8StringEncoding];
-    return str != nil ? str : NSLocalizedString(key, comment);
-}

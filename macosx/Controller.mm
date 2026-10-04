@@ -60,6 +60,7 @@
 #import "ExpandedPathToIconTransformer.h"
 #import "PowerManager.h"
 #import "Utils.h"
+#import "L10n.h"
 
 typedef NSString* ToolbarItemIdentifier NS_TYPED_EXTENSIBLE_ENUM;
 
@@ -162,11 +163,16 @@ static void initUnits()
     Config::storage = { Config::Base::Kilo, b_str.UTF8String, k_str.UTF8String,
                         m_str.UTF8String,   g_str.UTF8String, t_str.UTF8String };
 
-    b_str = NSLocalizedString(@"B/s", "Transfer speed (bytes per second)");
-    k_str = NSLocalizedString(@"KB/s", "Transfer speed (kilobytes per second)");
-    m_str = NSLocalizedString(@"MB/s", "Transfer speed (megabytes per second)");
-    g_str = NSLocalizedString(@"GB/s", "Transfer speed (gigabytes per second)");
-    t_str = NSLocalizedString(@"TB/s", "Transfer speed (terabytes per second)");
+    // Translators: Transfer speed (bytes per second)
+    b_str = TR_TEXT("B/s");
+    // Translators: Transfer speed (kilobytes per second)
+    k_str = TR_TEXT("KB/s");
+    // Translators: Transfer speed (megabytes per second)
+    m_str = TR_TEXT("MB/s");
+    // Translators: Transfer speed (gigabytes per second)
+    g_str = TR_TEXT("GB/s");
+    // Translators: Transfer speed (terabytes per second)
+    t_str = TR_TEXT("TB/s");
     Config::speed = { Config::Base::Kilo, b_str.UTF8String, k_str.UTF8String,
                       m_str.UTF8String,   g_str.UTF8String, t_str.UTF8String };
 }
@@ -397,16 +403,15 @@ static auto getSettingsFromNSUserDefaults(NSUserDefaults* defaults)
 static void showLegalNotice()
 {
     NSAlert* alert = [[NSAlert alloc] init];
-    [alert addButtonWithTitle:NSLocalizedString(@"I Accept", "Legal alert -> button")];
-    [alert addButtonWithTitle:NSLocalizedString(@"Quit", "Legal alert -> button")];
-    alert.messageText = [NSString stringWithFormat:NSLocalizedString(@"Welcome to %@", "Legal alert -> title"), @TR_PROJ_APPNAME_CAPITALIZED];
-    alert.informativeText = [NSString
-        stringWithFormat:NSLocalizedString(
-                             @"%@ is a file-sharing program."
-                              " When you run a torrent, its data will be made available to others by means of upload."
-                              " You and you alone are fully responsible for exercising proper judgement and abiding by your local laws.",
-                             "Legal alert -> message"),
-                         @TR_PROJ_APPNAME_CAPITALIZED];
+    // Translators: Legal alert -> button
+    [alert addButtonWithTitle:TR_TEXT("I Accept")];
+    // Translators: Legal alert -> button
+    [alert addButtonWithTitle:TR_TEXT("Quit")];
+    // Translators: Legal alert -> title
+    alert.messageText = TR_FORMAT("Welcome to {appname}", TRAppNameArg());
+    alert.informativeText = TR_FORMAT(
+        "{appname} is a file-sharing program. When you run a torrent, its data will be made available to others by means of upload. You and you alone are fully responsible for exercising proper judgement and abiding by your local laws.",
+        TRAppNameArg());
     alert.alertStyle = NSAlertStyleInformational;
 
     if ([alert runModal] == NSAlertSecondButtonReturn) {
@@ -456,19 +461,15 @@ static void replaceImportedRPCPassword()
     }
 
     NSAlert* const alert = [[NSAlert alloc] init];
-    [alert addButtonWithTitle:NSLocalizedString(@"OK", "Transmission import remote access alert -> button")];
-    alert.messageText = NSLocalizedString(@"Remote access needs a new password.", "Transmission import remote access alert -> title");
+    [alert addButtonWithTitle:TR_TEXT("OK")];
+    alert.messageText = TR_TEXT("Remote access needs a new password.");
     alert.informativeText = saved ?
-        [NSString stringWithFormat:NSLocalizedString(
-                                       @"%@ can't copy Transmission's remote access password. "
-                                        "Until you set a new one in the Remote preferences, remote access refuses every login.",
-                                       "Transmission import remote access alert -> message"),
-                                   @TR_PROJ_APPNAME_CAPITALIZED] :
-        [NSString stringWithFormat:NSLocalizedString(
-                                       @"%@ can't copy Transmission's remote access password or save a new one, so remote access is off. "
-                                        "Set a password in the Remote preferences, then turn remote access back on.",
-                                       "Transmission import remote access alert -> message"),
-                                   @TR_PROJ_APPNAME_CAPITALIZED];
+        TR_FORMAT(
+            "{appname} can't copy Transmission's remote access password. Until you set a new one in the Remote preferences, remote access refuses every login.",
+            TRAppNameArg()) :
+        TR_FORMAT(
+            "{appname} can't copy Transmission's remote access password or save a new one, so remote access is off. Set a password in the Remote preferences, then turn remote access back on.",
+            TRAppNameArg());
     [alert runModal];
 }
 
@@ -501,8 +502,8 @@ static void replaceImportedRPCPassword()
     NSProgressIndicator* const spinner = [[NSProgressIndicator alloc] init];
     spinner.style = NSProgressIndicatorStyleSpinning;
     [spinner startAnimation:nil];
-    NSTextField* const label = [NSTextField labelWithString:[NSLocalizedString(@"Copying Transmission's transfers", "Transmission import progress -> label")
-                                                                stringByAppendingEllipsis]];
+    // Translators: Transmission import progress -> label
+    NSTextField* const label = [NSTextField labelWithString:[TR_TEXT("Copying Transmission's transfers") stringByAppendingEllipsis]];
     NSStackView* const stack = [NSStackView stackViewWithViews:@[ spinner, label ]];
     stack.edgeInsets = NSEdgeInsetsMake(20, 20, 20, 20);
 
@@ -562,23 +563,21 @@ static void offerToImportFromTransmission()
     // Asks again while Transmission runs, because Transmission saves its settings and transfers as it quits.
     for (;;) {
         NSString* message = canCopyTransfers ?
-            [NSString stringWithFormat:NSLocalizedString(
-                                           @"%@ can copy your settings and transfers from Transmission. "
-                                            "The two apps will share your downloaded files, so run only one at a time.",
-                                           "Transmission import alert -> message"),
-                                       @TR_PROJ_APPNAME_CAPITALIZED] :
-            [NSString stringWithFormat:NSLocalizedString(@"%@ can copy your settings from Transmission, but not its transfers.", "Transmission import alert -> message"),
-                                       @TR_PROJ_APPNAME_CAPITALIZED];
+            TR_FORMAT(
+                "{appname} can copy your settings and transfers from Transmission. The two apps will share your downloaded files, so run only one at a time.",
+                TRAppNameArg()) :
+            TR_FORMAT("{appname} can copy your settings from Transmission, but not its transfers.", TRAppNameArg());
         if (isTransmissionRunning()) {
-            message = [NSString
-                stringWithFormat:@"%@\n\n%@", message, NSLocalizedString(@"Quit Transmission, then click Import.", "Transmission import alert -> message")];
+            message = [NSString stringWithFormat:@"%@\n\n%@", message, TR_TEXT("Quit Transmission, then click Import.")];
         }
 
         NSAlert* const alert = [[NSAlert alloc] init];
-        alert.messageText = NSLocalizedString(@"Import from Transmission?", "Transmission import alert -> title");
+        alert.messageText = TR_TEXT("Import from Transmission?");
         alert.informativeText = message;
-        [alert addButtonWithTitle:NSLocalizedString(@"Import", "Transmission import alert -> button")];
-        [alert addButtonWithTitle:NSLocalizedString(@"Don't Import", "Transmission import alert -> button")].keyEquivalent = @"\e";
+        // Translators: Transmission import alert -> button
+        [alert addButtonWithTitle:TR_TEXT("Import")];
+        // Translators: Transmission import alert -> button
+        [alert addButtonWithTitle:TR_TEXT("Don't Import")].keyEquivalent = @"\e";
 
         if ([alert runModal] != NSAlertFirstButtonReturn) {
             return;
@@ -595,8 +594,8 @@ static void offerToImportFromTransmission()
             [defaults setObject:[NSDate date] forKey:@"DonateAskDate"];
         } else {
             NSAlert* const errorAlert = [[NSAlert alloc] init];
-            [errorAlert addButtonWithTitle:NSLocalizedString(@"OK", "Transmission import error alert -> button")];
-            errorAlert.messageText = NSLocalizedString(@"Transmission's transfers couldn't be copied.", "Transmission import error alert -> title");
+            [errorAlert addButtonWithTitle:TR_TEXT("OK")];
+            errorAlert.messageText = TR_TEXT("Transmission's transfers couldn't be copied.");
             errorAlert.informativeText = error.localizedDescription;
             errorAlert.alertStyle = NSAlertStyleWarning;
             [errorAlert runModal];
@@ -616,14 +615,11 @@ static void offerToImportFromTransmission()
     NSArray* apps = [NSRunningApplication runningApplicationsWithBundleIdentifier:NSBundle.mainBundle.bundleIdentifier];
     if (apps.count > 1) {
         NSAlert* alert = [[NSAlert alloc] init];
-        [alert addButtonWithTitle:NSLocalizedString(@"OK", "Already running alert -> button")];
-        alert.messageText = [NSString stringWithFormat:NSLocalizedString(@"%@ is already running.", "Already running alert -> title"),
-                                                       @TR_PROJ_APPNAME_CAPITALIZED];
-        alert.informativeText = [NSString stringWithFormat:NSLocalizedString(
-                                                               @"There is already a copy of %@ running. "
-                                                                "This copy cannot be opened until that instance is quit.",
-                                                               "Already running alert -> message"),
-                                                           @TR_PROJ_APPNAME_CAPITALIZED];
+        [alert addButtonWithTitle:TR_TEXT("OK")];
+        alert.messageText = TR_FORMAT("{appname} is already running.", TRAppNameArg());
+        alert.informativeText = TR_FORMAT(
+            "There is already a copy of {appname} running. This copy cannot be opened until that instance is quit.",
+            TRAppNameArg());
         alert.alertStyle = NSAlertStyleCritical;
 
         [alert runModal];
@@ -639,12 +635,11 @@ static void offerToImportFromTransmission()
     // Two apps working on the same downloads would each change files the other is using.
     if (isTransmissionRunning() && sharesDownloadsWithTransmission()) {
         NSAlert* alert = [[NSAlert alloc] init];
-        [alert addButtonWithTitle:NSLocalizedString(@"OK", "Transmission running alert -> button")];
-        alert.messageText = NSLocalizedString(@"Transmission is running.", "Transmission running alert -> title");
-        alert.informativeText = [NSString stringWithFormat:NSLocalizedString(
-                                                               @"Quit Transmission before opening %@. The two apps would work on the same downloads.",
-                                                               "Transmission running alert -> message"),
-                                                           @TR_PROJ_APPNAME_CAPITALIZED];
+        [alert addButtonWithTitle:TR_TEXT("OK")];
+        alert.messageText = TR_TEXT("Transmission is running.");
+        alert.informativeText = TR_FORMAT(
+            "Quit Transmission before opening {appname}. The two apps would work on the same downloads.",
+            TRAppNameArg());
         alert.alertStyle = NSAlertStyleCritical;
 
         [alert runModal];
@@ -811,7 +806,7 @@ static void offerToImportFromTransmission()
 
     self.fTotalTorrentsField.cell.backgroundStyle = NSBackgroundStyleRaised;
 
-    self.fActionButton.toolTip = NSLocalizedString(@"Shortcuts for changing global settings.", "Main window -> 1st bottom left button (action) tooltip");
+    self.fActionButton.toolTip = TR_TEXT("Shortcuts for changing global settings.");
     if (@available(macOS 26.0, *)) {
         NSLayoutConstraint* constraint = [self.fActionButton.leadingAnchor constraintEqualToAnchor:self.fActionButton.superview.leadingAnchor
                                                                                           constant:16.0];
@@ -819,13 +814,9 @@ static void offerToImportFromTransmission()
         constraint.active = YES;
     }
 
-    self.fSpeedLimitButton.toolTip = NSLocalizedString(
-        @"Override normal speed limits manually or at scheduled times",
-        "Main window -> 2nd bottom left button (turtle) tooltip");
+    self.fSpeedLimitButton.toolTip = TR_TEXT("Override normal speed limits manually or at scheduled times");
 
-    self.fClearCompletedButton.toolTip = NSLocalizedString(
-        @"Remove all torrents that have completed seeding.",
-        "Main window -> 3rd bottom left button (remove all) tooltip");
+    self.fClearCompletedButton.toolTip = TR_TEXT("Remove all torrents that have completed seeding.");
 
     [self.fTableView registerForDraggedTypes:@[ kTorrentTableViewDataType ]];
     [self.fWindow registerForDraggedTypes:@[ NSPasteboardTypeFileURL, NSPasteboardTypeURL ]];
@@ -975,7 +966,8 @@ static void offerToImportFromTransmission()
     // user notifications
     UNUserNotificationCenter.currentNotificationCenter.delegate = self;
     UNNotificationAction* actionShow = [UNNotificationAction actionWithIdentifier:@"actionShow"
-                                                                            title:NSLocalizedString(@"Show", "notification button")
+                                                                            // Translators: notification button
+                                                                            title:TR_TEXT("Show")
                                                                           options:UNNotificationActionOptionForeground];
     UNNotificationCategory* categoryShow = [UNNotificationCategory categoryWithIdentifier:@"categoryShow" actions:@[ actionShow ]
                                                                         intentIdentifiers:@[]
@@ -1032,30 +1024,29 @@ static void offerToImportFromTransmission()
             [self.fDefaults setObject:[NSDate date] forKey:@"DonateAskDate"];
 
             NSAlert* alert = [[NSAlert alloc] init];
-            alert.messageText = NSLocalizedString(@"Support open-source indie software", "Donation beg -> title");
+            alert.messageText = TR_TEXT("Support open-source indie software");
 
             NSString* donateMessage = [NSString
                 stringWithFormat:@"%@\n\n%@",
-                                 [NSString stringWithFormat:NSLocalizedString(
-                                                                @"%@ is a full-featured torrent application."
-                                                                 " A lot of time and effort have gone into development, coding, and refinement."
-                                                                 " If you enjoy using it, please consider showing your love with a donation.",
-                                                                "Donation beg -> message"),
-                                                            @TR_PROJ_APPNAME_CAPITALIZED],
-                                 NSLocalizedString(@"Donate or not, there will be no difference to your torrenting experience.", "Donation beg -> message")];
+                                 TR_FORMAT(
+                                     "{appname} is a full-featured torrent application. A lot of time and effort have gone into development, coding, and refinement. If you enjoy using it, please consider showing your love with a donation.",
+                                     TRAppNameArg()),
+                                 TR_TEXT("Donate or not, there will be no difference to your torrenting experience.")];
 
             alert.informativeText = donateMessage;
             alert.alertStyle = NSAlertStyleInformational;
 
-            [alert addButtonWithTitle:[NSLocalizedString(@"Donate", "Donation beg -> button") stringByAppendingEllipsis]];
-            NSButton* noDonateButton = [alert addButtonWithTitle:NSLocalizedString(@"Nope", "Donation beg -> button")];
+            // Translators: Donation beg -> button
+            [alert addButtonWithTitle:[TR_TEXT("Donate") stringByAppendingEllipsis]];
+            // Translators: Donation beg -> button
+            NSButton* noDonateButton = [alert addButtonWithTitle:TR_TEXT("Nope")];
             noDonateButton.keyEquivalent = @"\e"; //escape key
 
             // hide the "don't show again" check the first time - give them time to try the app
             BOOL const allowNeverAgain = lastDonateDate != nil;
             alert.showsSuppressionButton = allowNeverAgain;
             if (allowNeverAgain) {
-                alert.suppressionButton.title = NSLocalizedString(@"Don't bug me about this ever again.", "Donation beg -> button");
+                alert.suppressionButton.title = TR_TEXT("Don't bug me about this ever again.");
             }
 
             NSInteger const donateResult = [alert runModal];
@@ -1124,19 +1115,17 @@ static void offerToImportFromTransmission()
 
     NSAlert* alert = [[NSAlert alloc] init];
     alert.alertStyle = NSAlertStyleInformational;
-    alert.messageText = NSLocalizedString(@"Are you sure you want to quit?", "Confirm Quit panel -> title");
+    alert.messageText = TR_TEXT("Are you sure you want to quit?");
     alert.informativeText = active == 1 ?
-        NSLocalizedString(
-            @"There is an active torrent that will be paused on quit."
-             " The torrent will start again automatically on the next launch.",
-            "Confirm Quit panel -> message") :
-        [NSString localizedStringWithFormat:NSLocalizedString(
-                                                @"There are %lu active torrents that will be paused on quit."
-                                                 " The torrents will start again automatically on the next launch.",
-                                                "Confirm Quit panel -> message"),
-                                            active];
-    [alert addButtonWithTitle:NSLocalizedString(@"Quit", "Confirm Quit panel -> button")];
-    [alert addButtonWithTitle:NSLocalizedString(@"Cancel", "Confirm Quit panel -> button")];
+        TR_TEXT("There is an active torrent that will be paused on quit. The torrent will start again automatically on the next launch.") :
+        TR_FORMAT_N(
+            "There is {count:L} active torrent that will be paused on quit. The torrent will start again automatically on the next launch.",
+            "There are {count:L} active torrents that will be paused on quit. The torrents will start again automatically on the next launch.",
+            active,
+            TRArg("count", active));
+    // Translators: Confirm Quit panel -> button
+    [alert addButtonWithTitle:TR_TEXT("Quit")];
+    [alert addButtonWithTitle:TR_TEXT("Cancel")];
     alert.showsSuppressionButton = YES;
 
     [alert beginSheetModalForWindow:self.fWindow completionHandler:^(NSModalResponse returnCode) {
@@ -1204,11 +1193,10 @@ static void offerToImportFromTransmission()
 
     if (self.fQuitForTransmission) {
         NSAlert* const alert = [[NSAlert alloc] init];
-        [alert addButtonWithTitle:NSLocalizedString(@"Quit", "Transmission launched alert -> button")];
-        alert.messageText = NSLocalizedString(@"Transmission is running.", "Transmission launched alert -> title");
-        alert.informativeText = [NSString
-            stringWithFormat:NSLocalizedString(@"%@ will quit, because the two apps would work on the same downloads.", "Transmission launched alert -> message"),
-                             @TR_PROJ_APPNAME_CAPITALIZED];
+        // Translators: Transmission launched alert -> button
+        [alert addButtonWithTitle:TR_TEXT("Quit")];
+        alert.messageText = TR_TEXT("Transmission is running.");
+        alert.informativeText = TR_FORMAT("{appname} will quit, because the two apps would work on the same downloads.", TRAppNameArg());
         alert.alertStyle = NSAlertStyleCritical;
 
         // Transmission just opened and is the active app, so the alert stays behind it until the user comes here.
@@ -1261,14 +1249,15 @@ static void offerToImportFromTransmission()
     }
     completionHandler(NSURLSessionResponseCancel);
 
-    NSString* message = [NSString
-        stringWithFormat:NSLocalizedString(@"It appears that the file \"%@\" from %@ is not a torrent file.", "Download not a torrent -> message"),
-                         suggestedName,
-                         dataTask.originalRequest.URL.absoluteString.stringByRemovingPercentEncoding];
+    NSString* message = TR_FORMAT(
+        "It appears that the file \"{filename}\" from {url} is not a torrent file.",
+        TRArg("filename", suggestedName),
+        TRArg("url", dataTask.originalRequest.URL.absoluteString.stringByRemovingPercentEncoding));
     dispatch_async(dispatch_get_main_queue(), ^{
         NSAlert* alert = [[NSAlert alloc] init];
-        [alert addButtonWithTitle:NSLocalizedString(@"OK", "Download not a torrent -> button")];
-        alert.messageText = NSLocalizedString(@"Torrent download failed", "Download not a torrent -> title");
+        [alert addButtonWithTitle:TR_TEXT("OK")];
+        // Translators: Download not a torrent -> title
+        alert.messageText = TR_TEXT("Torrent download failed");
         alert.informativeText = message;
         [alert runModal];
     });
@@ -1320,14 +1309,15 @@ static void offerToImportFromTransmission()
         return;
     }
 
-    NSString* message = [NSString
-        stringWithFormat:NSLocalizedString(@"The torrent could not be downloaded from %@: %@.", "Torrent download failed -> message"),
-                         task.originalRequest.URL.absoluteString.stringByRemovingPercentEncoding,
-                         error.localizedDescription];
+    NSString* message = TR_FORMAT(
+        "The torrent could not be downloaded from {url}: {error}.",
+        TRArg("url", task.originalRequest.URL.absoluteString.stringByRemovingPercentEncoding),
+        TRArg("error", error.localizedDescription));
     dispatch_async(dispatch_get_main_queue(), ^{
         NSAlert* alert = [[NSAlert alloc] init];
-        [alert addButtonWithTitle:NSLocalizedString(@"OK", "Torrent download failed -> button")];
-        alert.messageText = NSLocalizedString(@"Torrent download failed", "Torrent download error -> title");
+        [alert addButtonWithTitle:TR_TEXT("OK")];
+        // Translators: Torrent download error -> title
+        alert.messageText = TR_TEXT("Torrent download failed");
         alert.informativeText = message;
         [alert runModal];
     });
@@ -1586,12 +1576,11 @@ static void offerToImportFromTransmission()
     }
 
     NSAlert* alert = [[NSAlert alloc] init];
-    alert.messageText = [NSString
-        stringWithFormat:NSLocalizedString(@"\"%@\" is not a valid torrent file.", "Open invalid alert -> title"), filename];
-    alert.informativeText = NSLocalizedString(@"The torrent file cannot be opened because it contains invalid data.", "Open invalid alert -> message");
+    alert.messageText = TR_FORMAT("\"{filename}\" is not a valid torrent file.", TRArg("filename", filename));
+    alert.informativeText = TR_TEXT("The torrent file cannot be opened because it contains invalid data.");
 
     alert.alertStyle = NSAlertStyleWarning;
-    [alert addButtonWithTitle:NSLocalizedString(@"OK", "Open invalid alert -> button")];
+    [alert addButtonWithTitle:TR_TEXT("OK")];
 
     [alert runModal];
     if (alert.suppressionButton.state == NSControlStateValueOn) {
@@ -1606,14 +1595,12 @@ static void offerToImportFromTransmission()
     }
 
     NSAlert* alert = [[NSAlert alloc] init];
-    alert.messageText = NSLocalizedString(@"Adding magnetized torrent failed.", "Magnet link failed -> title");
-    alert.informativeText = [NSString stringWithFormat:NSLocalizedString(
-                                                           @"There was an error when adding the magnet link \"%@\"."
-                                                            " The torrent will not be added.",
-                                                           "Magnet link failed -> message"),
-                                                       address];
+    alert.messageText = TR_TEXT("Adding magnetized torrent failed.");
+    alert.informativeText = TR_FORMAT(
+        "There was an error when adding the magnet link \"{magnet_link}\". The torrent will not be added.",
+        TRArg("magnet_link", address));
     alert.alertStyle = NSAlertStyleWarning;
-    [alert addButtonWithTitle:NSLocalizedString(@"OK", "Magnet link failed -> button")];
+    [alert addButtonWithTitle:TR_TEXT("OK")];
 
     [alert runModal];
     if (alert.suppressionButton.state == NSControlStateValueOn) {
@@ -1628,14 +1615,11 @@ static void offerToImportFromTransmission()
     }
 
     NSAlert* alert = [[NSAlert alloc] init];
-    alert.messageText = [NSString
-        stringWithFormat:NSLocalizedString(@"A torrent for \"%@\" already exists.", "Open duplicate alert -> title"), name];
-    alert.informativeText = NSLocalizedString(
-        @"The torrent cannot be added because it is a duplicate of an already existing torrent.",
-        "Open duplicate alert -> message");
+    alert.messageText = TR_FORMAT("A torrent for \"{torrent_name}\" already exists.", TRArg("torrent_name", name));
+    alert.informativeText = TR_TEXT("The torrent cannot be added because it is a duplicate of an already existing torrent.");
 
     alert.alertStyle = NSAlertStyleWarning;
-    [alert addButtonWithTitle:NSLocalizedString(@"OK", "Open duplicate alert -> button")];
+    [alert addButtonWithTitle:TR_TEXT("OK")];
     alert.showsSuppressionButton = YES;
 
     [alert runModal];
@@ -1652,18 +1636,15 @@ static void offerToImportFromTransmission()
 
     NSAlert* alert = [[NSAlert alloc] init];
     if (name) {
-        alert.messageText = [NSString
-            stringWithFormat:NSLocalizedString(@"A torrent for \"%@\" already exists.", "Open duplicate magnet alert -> title"), name];
+        alert.messageText = TR_FORMAT("A torrent for \"{torrent_name}\" already exists.", TRArg("torrent_name", name));
     } else {
-        alert.messageText = NSLocalizedString(@"Magnet link is a duplicate of an existing torrent.", "Open duplicate magnet alert -> title");
+        alert.messageText = TR_TEXT("Magnet link is a duplicate of an existing torrent.");
     }
-    alert.informativeText = [NSString
-        stringWithFormat:NSLocalizedString(
-                             @"The magnet link \"%@\" cannot be added because it is a duplicate of an already existing torrent.",
-                             "Open duplicate magnet alert -> message"),
-                         address];
+    alert.informativeText = TR_FORMAT(
+        "The magnet link \"{magnet_link}\" cannot be added because it is a duplicate of an already existing torrent.",
+        TRArg("magnet_link", address));
     alert.alertStyle = NSAlertStyleWarning;
-    [alert addButtonWithTitle:NSLocalizedString(@"OK", "Open duplicate magnet alert -> button")];
+    [alert addButtonWithTitle:TR_TEXT("OK")];
     alert.showsSuppressionButton = YES;
 
     [alert runModal];
@@ -1879,55 +1860,50 @@ static void offerToImportFromTransmission()
                 NSString* torrentName = torrents[0].name;
 
                 if (deleteData) {
-                    title = [NSString stringWithFormat:NSLocalizedString(
-                                                           @"Are you sure you want to remove \"%@\" from the torrent list"
-                                                            " and trash the data file?",
-                                                           "Removal confirm panel -> title"),
-                                                       torrentName];
+                    title = TR_FORMAT(
+                        "Are you sure you want to remove \"{torrent_name}\" from the torrent list and trash the data file?",
+                        TRArg("torrent_name", torrentName));
                 } else {
-                    title = [NSString
-                        stringWithFormat:NSLocalizedString(@"Are you sure you want to remove \"%@\" from the torrent list?", "Removal confirm panel -> title"),
-                                         torrentName];
+                    title = TR_FORMAT("Are you sure you want to remove \"{torrent_name}\" from the torrent list?", TRArg("torrent_name", torrentName));
                 }
 
-                message = NSLocalizedString(
-                    @"This torrent is active."
-                     " Once removed, you'll need the torrent file or magnet link to add it again.",
-                    "Removal confirm panel -> message");
+                message = TR_TEXT("This torrent is active. Once removed, you'll need the torrent file or magnet link to add it again.");
             } else {
                 if (deleteData) {
-                    title = [NSString localizedStringWithFormat:NSLocalizedString(
-                                                                    @"Are you sure you want to remove %lu torrents from the torrent list"
-                                                                     " and trash the data files?",
-                                                                    "Removal confirm panel -> title"),
-                                                                selected];
+                    title = TR_FORMAT_N(
+                        "Are you sure you want to remove {count:L} torrent from the torrent list and trash the data file?",
+                        "Are you sure you want to remove {count:L} torrents from the torrent list and trash the data files?",
+                        selected,
+                        TRArg("count", selected));
                 } else {
-                    title = [NSString localizedStringWithFormat:NSLocalizedString(
-                                                                    @"Are you sure you want to remove %lu torrents from the torrent list?",
-                                                                    "Removal confirm panel -> title"),
-                                                                selected];
+                    title = TR_FORMAT_N(
+                        "Are you sure you want to remove {count:L} torrent from the torrent list?",
+                        "Are you sure you want to remove {count:L} torrents from the torrent list?",
+                        selected,
+                        TRArg("count", selected));
                 }
 
                 if (selected == active) {
-                    message = [NSString localizedStringWithFormat:NSLocalizedString(@"There are %lu active torrents.", "Removal confirm panel -> message part 1"),
-                                                                  active];
+                    message = TR_FORMAT_N("There is {count:L} active torrent.", "There are {count:L} active torrents.", active, TRArg("count", active));
                 } else {
-                    message = [NSString localizedStringWithFormat:NSLocalizedString(@"There are %1$lu torrents (%2$lu active).", "Removal confirm panel -> message part 1"),
-                                                                  selected,
-                                                                  active];
+                    message = TR_FORMAT_N(
+                        "There is {count:L} torrent ({active_count:L} active).",
+                        "There are {count:L} torrents ({active_count:L} active).",
+                        selected,
+                        TRArg("count", selected),
+                        TRArg("active_count", active));
                 }
-                message = [message stringByAppendingFormat:@" %@",
-                                                           NSLocalizedString(
-                                                               @"Once removed, you'll need the torrent files or magnet links to add them again.",
-                                                               "Removal confirm panel -> message part 2")];
+                message = [message
+                    stringByAppendingFormat:@" %@", TR_TEXT("Once removed, you'll need the torrent files or magnet links to add them again.")];
             }
 
             NSAlert* alert = [[NSAlert alloc] init];
             alert.alertStyle = NSAlertStyleInformational;
             alert.messageText = title;
             alert.informativeText = message;
-            [alert addButtonWithTitle:NSLocalizedString(@"Remove", "Removal confirm panel -> button")];
-            [alert addButtonWithTitle:NSLocalizedString(@"Cancel", "Removal confirm panel -> button")];
+            // Translators: Removal confirm panel -> button
+            [alert addButtonWithTitle:TR_TEXT("Remove")];
+            [alert addButtonWithTitle:TR_TEXT("Cancel")];
 
             [alert beginSheetModalForWindow:self.fWindow completionHandler:^(NSModalResponse returnCode) {
                 if (returnCode == NSAlertFirstButtonReturn) {
@@ -2062,25 +2038,26 @@ static void offerToImportFromTransmission()
         NSString *message, *info;
         if (torrents.count == 1) {
             NSString* torrentName = torrents[0].name;
-            message = [NSString stringWithFormat:NSLocalizedString(@"Are you sure you want to remove \"%@\" from the torrent list?", "Remove completed confirm panel -> title"),
-                                                 torrentName];
+            message = TR_FORMAT("Are you sure you want to remove \"{torrent_name}\" from the torrent list?", TRArg("torrent_name", torrentName));
 
-            info = NSLocalizedString(@"Once removed, you'll need the torrent file or magnet link to add it again.", "Remove completed confirm panel -> message");
+            info = TR_TEXT("Once removed, you'll need the torrent file or magnet link to add it again.");
         } else {
-            message = [NSString localizedStringWithFormat:NSLocalizedString(
-                                                              @"Are you sure you want to remove %lu completed torrents from the torrent list?",
-                                                              "Remove completed confirm panel -> title"),
-                                                          torrents.count];
+            message = TR_FORMAT_N(
+                "Are you sure you want to remove {count:L} completed torrent from the torrent list?",
+                "Are you sure you want to remove {count:L} completed torrents from the torrent list?",
+                torrents.count,
+                TRArg("count", torrents.count));
 
-            info = NSLocalizedString(@"Once removed, you'll need the torrent files or magnet links to add them again.", "Remove completed confirm panel -> message");
+            info = TR_TEXT("Once removed, you'll need the torrent files or magnet links to add them again.");
         }
 
         NSAlert* alert = [[NSAlert alloc] init];
         alert.messageText = message;
         alert.informativeText = info;
         alert.alertStyle = NSAlertStyleWarning;
-        [alert addButtonWithTitle:NSLocalizedString(@"Remove", "Remove completed confirm panel -> button")];
-        [alert addButtonWithTitle:NSLocalizedString(@"Cancel", "Remove completed confirm panel -> button")];
+        // Translators: Remove completed confirm panel -> button
+        [alert addButtonWithTitle:TR_TEXT("Remove")];
+        [alert addButtonWithTitle:TR_TEXT("Cancel")];
         alert.showsSuppressionButton = YES;
 
         NSInteger const returnCode = [alert runModal];
@@ -2104,7 +2081,8 @@ static void offerToImportFromTransmission()
 - (void)moveDataFiles:(NSArray<Torrent*>*)torrents
 {
     NSOpenPanel* panel = [NSOpenPanel openPanel];
-    panel.prompt = NSLocalizedString(@"Select", "Move torrent -> prompt");
+    // Translators: Move torrent -> prompt
+    panel.prompt = TR_TEXT("Select");
     panel.allowsMultipleSelection = NO;
     panel.canChooseFiles = NO;
     panel.canChooseDirectories = YES;
@@ -2112,13 +2090,13 @@ static void offerToImportFromTransmission()
 
     NSUInteger count = torrents.count;
     if (count == 1) {
-        panel.message = [NSString
-            stringWithFormat:NSLocalizedString(@"Select the new folder for \"%@\".", "Move torrent -> select destination folder"),
-                             torrents[0].name];
+        panel.message = TR_FORMAT("Select the new folder for \"{torrent_name}\".", TRArg("torrent_name", torrents[0].name));
     } else {
-        panel.message = [NSString
-            localizedStringWithFormat:NSLocalizedString(@"Select the new folder for %lu data files.", "Move torrent -> select destination folder"),
-                                      count];
+        panel.message = TR_FORMAT_N(
+            "Select the new folder for {count:L} data file.",
+            "Select the new folder for {count:L} data files.",
+            count,
+            TRArg("count", count));
     }
 
     [panel beginSheetModalForWindow:self.fWindow completionHandler:^(NSInteger result) {
@@ -2164,13 +2142,9 @@ static void offerToImportFromTransmission()
     } else {
         if (!torrent.magnet) {
             NSAlert* alert = [[NSAlert alloc] init];
-            [alert addButtonWithTitle:NSLocalizedString(@"OK", "Torrent file copy alert -> button")];
-            alert.messageText = [NSString
-                stringWithFormat:NSLocalizedString(@"Copy of \"%@\" Cannot Be Created", "Torrent file copy alert -> title"),
-                                 torrent.name];
-            alert.informativeText = [NSString
-                stringWithFormat:NSLocalizedString(@"The torrent file (%@) cannot be found.", "Torrent file copy alert -> message"),
-                                 torrent.torrentLocation];
+            [alert addButtonWithTitle:TR_TEXT("OK")];
+            alert.messageText = TR_FORMAT("Copy of \"{torrent_name}\" Cannot Be Created", TRArg("torrent_name", torrent.name));
+            alert.informativeText = TR_FORMAT("The torrent file ({path}) cannot be found.", TRArg("path", torrent.torrentLocation));
             alert.alertStyle = NSAlertStyleWarning;
 
             [alert runModal];
@@ -2372,13 +2346,8 @@ static void offerToImportFromTransmission()
 
 - (void)setBottomCountText:(BOOL)filtering
 {
-    NSString* totalTorrentsString;
-    NSUInteger totalCount = self.fTorrents.count;
-    if (totalCount != 1) {
-        totalTorrentsString = [NSString localizedStringWithFormat:NSLocalizedString(@"%lu torrents", "Status bar transfer count"), totalCount];
-    } else {
-        totalTorrentsString = NSLocalizedString(@"1 torrent", "Status bar transfer count");
-    }
+    NSUInteger const totalCount = self.fTorrents.count;
+    NSString* totalTorrentsString = [NSString stringForTorrentCount:totalCount];
 
     if (filtering) {
         NSUInteger count = self.fTableView.numberOfRows; //have to factor in collapsed rows
@@ -2386,9 +2355,11 @@ static void offerToImportFromTransmission()
             count -= self.fDisplayedTorrents.count;
         }
 
-        totalTorrentsString = [NSString stringWithFormat:NSLocalizedString(@"%@ of %@", "Status bar transfer count"),
-                                                         [NSString localizedStringWithFormat:@"%lu", count],
-                                                         totalTorrentsString];
+        totalTorrentsString = TR_FORMAT(
+            // Translators: Status bar transfer count
+            "{part} of {whole}",
+            TRArg("part", [NSString localizedStringWithFormat:@"%lu", count]),
+            TRArg("whole", totalTorrentsString));
     }
 
     self.fTotalTorrentsField.stringValue = totalTorrentsString;
@@ -2528,7 +2499,8 @@ static void offerToImportFromTransmission()
             }
         }
 
-        NSString* title = NSLocalizedString(@"Download Complete", "notification title");
+        // Translators: notification title
+        NSString* title = TR_TEXT("Download Complete");
         NSString* body = torrent.name;
         NSString* location = torrent.dataLocation;
         NSMutableDictionary* userInfo = [NSMutableDictionary dictionaryWithObject:torrent.hashString forKey:@"Hash"];
@@ -2574,7 +2546,8 @@ static void offerToImportFromTransmission()
         }
     }
 
-    NSString* title = NSLocalizedString(@"Seeding Complete", "notification title");
+    // Translators: notification title
+    NSString* title = TR_TEXT("Seeding Complete");
     NSString* body = torrent.name;
     NSString* location = torrent.dataLocation;
     NSMutableDictionary* userInfo = [NSMutableDictionary dictionaryWithObject:torrent.hashString forKey:@"Hash"];
@@ -3319,9 +3292,8 @@ static void offerToImportFromTransmission()
     [self.fStatusBar updateSpeedFieldsToolTips];
 
     if (![dict[@"ByUser"] boolValue]) {
-        NSString* title = isLimited ? NSLocalizedString(@"Alternative Speed Limits Enabled", "notification title") :
-                                      NSLocalizedString(@"Alternative Speed Limits Disabled", "notification title");
-        NSString* body = NSLocalizedString(@"Changed at a scheduled time", "notification description");
+        NSString* title = isLimited ? TR_TEXT("Alternative Speed Limits Enabled") : TR_TEXT("Alternative Speed Limits Disabled");
+        NSString* body = TR_TEXT("Changed at a scheduled time");
 
         NSString* identifier = @"Bandwidth settings changed";
         UNMutableNotificationContent* content = [UNMutableNotificationContent new];
@@ -3417,7 +3389,8 @@ static void offerToImportFromTransmission()
 
         [self openFiles:@[ fullFile ] addType:AddTypeAuto forcePath:nil];
 
-        NSString* notificationTitle = NSLocalizedString(@"Torrent Added", "notification title");
+        // Translators: notification title
+        NSString* notificationTitle = TR_TEXT("Torrent Added");
 
         NSString* identifier = [@"Torrent File Auto Added " stringByAppendingString:file];
         UNMutableNotificationContent* content = [UNMutableNotificationContent new];
@@ -3928,9 +3901,11 @@ static void offerToImportFromTransmission()
     if ([ident isEqualToString:ToolbarItemIdentifierCreate]) {
         ButtonToolbarItem* item = [self standardToolbarButtonWithIdentifier:ident];
 
-        item.label = NSLocalizedString(@"Create", "Create toolbar item -> label");
-        item.paletteLabel = NSLocalizedString(@"Create Torrent File", "Create toolbar item -> palette label");
-        item.toolTip = NSLocalizedString(@"Create a new torrent", "Create toolbar item -> tooltip");
+        // Translators: Create toolbar item -> label
+        item.label = TR_TEXT("Create");
+        // Translators: Create toolbar item -> palette label
+        item.paletteLabel = TR_TEXT("Create Torrent File");
+        item.toolTip = TR_TEXT("Create a new torrent");
         item.image = [NSImage imageWithSystemSymbolName:@"doc.badge.plus" accessibilityDescription:nil];
         item.target = self;
         item.action = @selector(createFile:);
@@ -3940,9 +3915,12 @@ static void offerToImportFromTransmission()
     } else if ([ident isEqualToString:ToolbarItemIdentifierOpenFile]) {
         ButtonToolbarItem* item = [self standardToolbarButtonWithIdentifier:ident];
 
-        item.label = NSLocalizedString(@"Open", "Open toolbar item -> label");
-        item.paletteLabel = NSLocalizedString(@"Open Torrent Files", "Open toolbar item -> palette label");
-        item.toolTip = NSLocalizedString(@"Open a torrent", "Open toolbar item -> tooltip");
+        // Translators: Open toolbar item -> label
+        item.label = TR_TEXT("Open");
+        // Translators: Open toolbar item -> palette label
+        item.paletteLabel = TR_TEXT("Open Torrent Files");
+        // Translators: Open toolbar item -> tooltip
+        item.toolTip = TR_TEXT("Open a torrent");
         item.image = [NSImage imageWithSystemSymbolName:@"folder" accessibilityDescription:nil];
         item.target = self;
         item.action = @selector(openShowSheet:);
@@ -3952,9 +3930,11 @@ static void offerToImportFromTransmission()
     } else if ([ident isEqualToString:ToolbarItemIdentifierOpenWeb]) {
         ButtonToolbarItem* item = [self standardToolbarButtonWithIdentifier:ident];
 
-        item.label = NSLocalizedString(@"Open URL", "Open address toolbar item -> label");
-        item.paletteLabel = NSLocalizedString(@"Open URL", "Open address toolbar item -> palette label");
-        item.toolTip = NSLocalizedString(@"Open torrent from URL", "Open address toolbar item -> tooltip");
+        // Translators: Open address toolbar item -> label
+        item.label = TR_TEXT("Open URL");
+        // Translators: Open address toolbar item -> palette label
+        item.paletteLabel = TR_TEXT("Open URL");
+        item.toolTip = TR_TEXT("Open torrent from URL");
         item.image = [NSImage imageWithSystemSymbolName:@"globe" accessibilityDescription:nil];
         item.target = self;
         item.action = @selector(openURLShowSheet:);
@@ -3964,9 +3944,12 @@ static void offerToImportFromTransmission()
     } else if ([ident isEqualToString:ToolbarItemIdentifierRemove]) {
         ButtonToolbarItem* item = [self standardToolbarButtonWithIdentifier:ident];
 
-        item.label = NSLocalizedString(@"Remove", "Remove toolbar item -> label");
-        item.paletteLabel = NSLocalizedString(@"Remove Selected", "Remove toolbar item -> palette label");
-        item.toolTip = NSLocalizedString(@"Remove torrent", "Remove toolbar item -> tooltip");
+        // Translators: Remove toolbar item -> label
+        item.label = TR_TEXT("Remove");
+        // Translators: Remove toolbar item -> palette label
+        item.paletteLabel = TR_TEXT("Remove Selected");
+        // Translators: Remove toolbar item -> tooltip
+        item.toolTip = TR_TEXT("Remove torrent");
         item.image = [NSImage imageWithSystemSymbolName:@"nosign" accessibilityDescription:nil];
         item.target = self;
         item.action = @selector(removeNoDelete:);
@@ -3977,9 +3960,11 @@ static void offerToImportFromTransmission()
         ButtonToolbarItem* item = [self standardToolbarButtonWithIdentifier:ident];
         ((NSButtonCell*)((NSButton*)item.view).cell).showsStateBy = NSContentsCellMask; //blue when enabled
 
-        item.label = NSLocalizedString(@"Inspector", "Inspector toolbar item -> label");
-        item.paletteLabel = NSLocalizedString(@"Inspector", "Inspector toolbar item -> palette label");
-        item.toolTip = NSLocalizedString(@"Toggle the torrent inspector", "Inspector toolbar item -> tooltip");
+        // Translators: Inspector toolbar item -> label
+        item.label = TR_TEXT("Inspector");
+        // Translators: Inspector toolbar item -> palette label
+        item.paletteLabel = TR_TEXT("Inspector");
+        item.toolTip = TR_TEXT("Toggle the torrent inspector");
         item.image = [NSImage imageWithSystemSymbolName:@"info.circle" accessibilityDescription:nil];
         item.target = self;
         item.action = @selector(showInfo:);
@@ -3999,22 +3984,23 @@ static void offerToImportFromTransmission()
         [segmentedControl setTag:ToolbarGroupTagPause forSegment:ToolbarGroupTagPause];
         [segmentedControl setImage:[NSImage imageWithSystemSymbolName:@"pause.circle.fill" accessibilityDescription:nil]
                         forSegment:ToolbarGroupTagPause];
-        [segmentedControl setToolTip:NSLocalizedString(@"Pause all torrents", "All toolbar item -> tooltip")
-                          forSegment:ToolbarGroupTagPause];
+        // Translators: All toolbar item -> tooltip
+        [segmentedControl setToolTip:TR_TEXT("Pause all torrents") forSegment:ToolbarGroupTagPause];
 
         [segmentedControl setTag:ToolbarGroupTagResume forSegment:ToolbarGroupTagResume];
         [segmentedControl setImage:[NSImage imageWithSystemSymbolName:@"arrow.clockwise.circle.fill" accessibilityDescription:nil]
                         forSegment:ToolbarGroupTagResume];
-        [segmentedControl setToolTip:NSLocalizedString(@"Start all torrents", "All toolbar item -> tooltip")
-                          forSegment:ToolbarGroupTagResume];
+        // Translators: All toolbar item -> tooltip
+        [segmentedControl setToolTip:TR_TEXT("Start all torrents") forSegment:ToolbarGroupTagResume];
         if ([toolbar isKindOfClass:Toolbar.class] && ((Toolbar*)toolbar).isRunningCustomizationPalette) {
             // On macOS 13.2, the palette autolayout will hang unless the segmentedControl width is longer than the groupItem paletteLabel (matters especially in Russian and French).
             [segmentedControl setWidth:64 forSegment:ToolbarGroupTagPause];
             [segmentedControl setWidth:64 forSegment:ToolbarGroupTagResume];
         }
 
-        groupItem.label = NSLocalizedString(@"Apply All", "All toolbar item -> label");
-        groupItem.paletteLabel = NSLocalizedString(@"Pause / Start All", "All toolbar item -> palette label");
+        // Translators: All toolbar item -> label
+        groupItem.label = TR_TEXT("Apply All");
+        groupItem.paletteLabel = TR_TEXT("Pause / Start All");
         groupItem.visibilityPriority = NSToolbarItemVisibilityPriorityHigh;
         groupItem.subitems = @[ itemPause, itemResume ];
         groupItem.view = segmentedControl;
@@ -4022,8 +4008,10 @@ static void offerToImportFromTransmission()
         groupItem.action = @selector(allToolbarClicked:);
 
         [groupItem createMenu:@[
-            NSLocalizedString(@"Pause All", "All toolbar item -> label"),
-            NSLocalizedString(@"Start All", "All toolbar item -> label")
+            // Translators: All toolbar item -> label
+            TR_TEXT("Pause All"),
+            // Translators: All toolbar item -> label
+            TR_TEXT("Start All")
         ]];
 
         return groupItem;
@@ -4041,22 +4029,23 @@ static void offerToImportFromTransmission()
         [segmentedControl setTag:ToolbarGroupTagPause forSegment:ToolbarGroupTagPause];
         [segmentedControl setImage:[NSImage imageWithSystemSymbolName:@"pause" accessibilityDescription:nil]
                         forSegment:ToolbarGroupTagPause];
-        [segmentedControl setToolTip:NSLocalizedString(@"Pause torrent", "Selected toolbar item -> tooltip")
-                          forSegment:ToolbarGroupTagPause];
+        // Translators: Selected toolbar item -> tooltip
+        [segmentedControl setToolTip:TR_TEXT("Pause torrent") forSegment:ToolbarGroupTagPause];
 
         [segmentedControl setTag:ToolbarGroupTagResume forSegment:ToolbarGroupTagResume];
         [segmentedControl setImage:[NSImage imageWithSystemSymbolName:@"arrow.clockwise" accessibilityDescription:nil]
                         forSegment:ToolbarGroupTagResume];
-        [segmentedControl setToolTip:NSLocalizedString(@"Start torrent", "Selected toolbar item -> tooltip")
-                          forSegment:ToolbarGroupTagResume];
+        // Translators: Selected toolbar item -> tooltip
+        [segmentedControl setToolTip:TR_TEXT("Start torrent") forSegment:ToolbarGroupTagResume];
         if ([toolbar isKindOfClass:Toolbar.class] && ((Toolbar*)toolbar).isRunningCustomizationPalette) {
             // On macOS 13.2, the palette autolayout will hang unless the segmentedControl width is longer than the groupItem paletteLabel (matters especially in Russian and French).
             [segmentedControl setWidth:64 forSegment:ToolbarGroupTagPause];
             [segmentedControl setWidth:64 forSegment:ToolbarGroupTagResume];
         }
 
-        groupItem.label = NSLocalizedString(@"Apply Selected", "Selected toolbar item -> label");
-        groupItem.paletteLabel = NSLocalizedString(@"Pause / Start Selected", "Selected toolbar item -> palette label");
+        // Translators: Selected toolbar item -> label
+        groupItem.label = TR_TEXT("Apply Selected");
+        groupItem.paletteLabel = TR_TEXT("Pause / Start Selected");
         groupItem.visibilityPriority = NSToolbarItemVisibilityPriorityHigh;
         groupItem.subitems = @[ itemPause, itemResume ];
         groupItem.view = segmentedControl;
@@ -4064,8 +4053,10 @@ static void offerToImportFromTransmission()
         groupItem.action = @selector(selectedToolbarClicked:);
 
         [groupItem createMenu:@[
-            NSLocalizedString(@"Pause", "Selected toolbar item -> label"),
-            NSLocalizedString(@"Start", "Selected toolbar item -> label")
+            // Translators: Selected toolbar item -> label
+            TR_TEXT("Pause"),
+            // Translators: Selected toolbar item -> label
+            TR_TEXT("Start")
         ]];
 
         return groupItem;
@@ -4073,9 +4064,11 @@ static void offerToImportFromTransmission()
         ButtonToolbarItem* item = [self standardToolbarButtonWithIdentifier:ident];
         ((NSButtonCell*)((NSButton*)item.view).cell).showsStateBy = NSContentsCellMask; //blue when enabled
 
-        item.label = NSLocalizedString(@"Filter", "Filter toolbar item -> label");
-        item.paletteLabel = NSLocalizedString(@"Toggle Filter", "Filter toolbar item -> palette label");
-        item.toolTip = NSLocalizedString(@"Toggle the filter bar", "Filter toolbar item -> tooltip");
+        // Translators: Filter toolbar item -> label
+        item.label = TR_TEXT("Filter");
+        // Translators: Filter toolbar item -> palette label
+        item.paletteLabel = TR_TEXT("Toggle Filter");
+        item.toolTip = TR_TEXT("Toggle the filter bar");
         item.image = [NSImage imageWithSystemSymbolName:@"magnifyingglass" accessibilityDescription:nil];
         item.target = self;
         item.action = @selector(toggleFilterBar:);
@@ -4085,9 +4078,12 @@ static void offerToImportFromTransmission()
         ButtonToolbarItem* item = [self standardToolbarButtonWithIdentifier:ident];
         ((NSButtonCell*)((NSButton*)item.view).cell).showsStateBy = NSContentsCellMask; //blue when enabled
 
-        item.label = NSLocalizedString(@"Quick Look", "QuickLook toolbar item -> label");
-        item.paletteLabel = NSLocalizedString(@"Quick Look", "QuickLook toolbar item -> palette label");
-        item.toolTip = NSLocalizedString(@"Quick Look", "QuickLook toolbar item -> tooltip");
+        // Translators: QuickLook toolbar item -> label
+        item.label = TR_TEXT("Quick Look");
+        // Translators: QuickLook toolbar item -> palette label
+        item.paletteLabel = TR_TEXT("Quick Look");
+        // Translators: QuickLook toolbar item -> tooltip
+        item.toolTip = TR_TEXT("Quick Look");
         item.image = [NSImage imageNamed:NSImageNameQuickLookTemplate];
         item.target = self;
         item.action = @selector(toggleQuickLook:);
@@ -4097,9 +4093,12 @@ static void offerToImportFromTransmission()
     } else if ([ident isEqualToString:ToolbarItemIdentifierShare]) {
         ShareToolbarItem* item = [self toolbarButtonWithIdentifier:ident forToolbarButtonClass:[ShareToolbarItem class]];
 
-        item.label = NSLocalizedString(@"Share", "Share toolbar item -> label");
-        item.paletteLabel = NSLocalizedString(@"Share", "Share toolbar item -> palette label");
-        item.toolTip = NSLocalizedString(@"Share torrent file", "Share toolbar item -> tooltip");
+        // Translators: Share toolbar item -> label
+        item.label = TR_TEXT("Share");
+        // Translators: Share toolbar item -> palette label
+        item.paletteLabel = TR_TEXT("Share");
+        // Translators: Share toolbar item -> tooltip
+        item.toolTip = TR_TEXT("Share torrent file");
         item.image = [NSImage imageNamed:NSImageNameShareTemplate];
         item.visibilityPriority = NSToolbarItemVisibilityPriorityLow;
 
@@ -4341,8 +4340,10 @@ static void offerToImportFromTransmission()
 
     //enable show info
     if (action == @selector(showInfo:)) {
-        NSString* title = self.fInfoController.window.visible ? NSLocalizedString(@"Hide Inspector", "View menu -> Inspector") :
-                                                                NSLocalizedString(@"Show Inspector", "View menu -> Inspector");
+        // Translators: View menu -> Inspector
+        NSString* title = self.fInfoController.window.visible ? TR_TEXT("Hide Inspector") :
+                                                                // Translators: View menu -> Inspector
+                                                                TR_TEXT("Show Inspector");
         menuItem.title = title;
 
         return YES;
@@ -4356,8 +4357,10 @@ static void offerToImportFromTransmission()
     //enable toggle status bar
     BOOL statusBarVisible = self.fStatusBar && !self.fStatusBar.isHidden;
     if (action == @selector(toggleStatusBar:)) {
-        NSString* title = !statusBarVisible ? NSLocalizedString(@"Show Status Bar", "View menu -> Status Bar") :
-                                              NSLocalizedString(@"Hide Status Bar", "View menu -> Status Bar");
+        // Translators: View menu -> Status Bar
+        NSString* title = !statusBarVisible ? TR_TEXT("Show Status Bar") :
+                                              // Translators: View menu -> Status Bar
+                                              TR_TEXT("Hide Status Bar");
         menuItem.title = title;
 
         return self.fWindow.visible;
@@ -4366,8 +4369,10 @@ static void offerToImportFromTransmission()
     //enable toggle filter bar
     BOOL filterBarVisible = self.fFilterBar && !self.fFilterBar.isHidden;
     if (action == @selector(toggleFilterBar:)) {
-        NSString* title = !filterBarVisible ? NSLocalizedString(@"Show Filter Bar", "View menu -> Filter Bar") :
-                                              NSLocalizedString(@"Hide Filter Bar", "View menu -> Filter Bar");
+        // Translators: View menu -> Filter Bar
+        NSString* title = !filterBarVisible ? TR_TEXT("Show Filter Bar") :
+                                              // Translators: View menu -> Filter Bar
+                                              TR_TEXT("Hide Filter Bar");
         menuItem.title = title;
 
         return self.fWindow.visible;
@@ -4375,8 +4380,10 @@ static void offerToImportFromTransmission()
 
     // enable toggle toolbar
     if (action == @selector(toggleToolbarShown:)) {
-        NSString* title = !self.fWindow.toolbar.isVisible ? NSLocalizedString(@"Show Toolbar", "View menu -> Toolbar") :
-                                                            NSLocalizedString(@"Hide Toolbar", "View menu -> Toolbar");
+        // Translators: View menu -> Toolbar
+        NSString* title = !self.fWindow.toolbar.isVisible ? TR_TEXT("Show Toolbar") :
+                                                            // Translators: View menu -> Toolbar
+                                                            TR_TEXT("Hide Toolbar");
         menuItem.title = title;
 
         return self.fWindow.visible;
@@ -4595,8 +4602,10 @@ static void offerToImportFromTransmission()
     if (action == @selector(toggleQuickLook:)) {
         BOOL const visible = [QLPreviewPanel sharedPreviewPanelExists] && [QLPreviewPanel sharedPreviewPanel].visible;
         //text consistent with Finder
-        NSString* title = !visible ? NSLocalizedString(@"Quick Look", "View menu -> Quick Look") :
-                                     NSLocalizedString(@"Close Quick Look", "View menu -> Quick Look");
+        // Translators: View menu -> Quick Look
+        NSString* title = !visible ? TR_TEXT("Quick Look") :
+                                     // Translators: View menu -> Quick Look
+                                     TR_TEXT("Close Quick Look");
         menuItem.title = title;
 
         return self.fTableView.numberOfSelectedRows > 0;
@@ -4648,12 +4657,14 @@ static void offerToImportFromTransmission()
     NSMenu* menu = [[NSMenu alloc] init];
 
     if (seeding > 0) {
-        NSString* title = [NSString localizedStringWithFormat:NSLocalizedString(@"%lu Seeding", "Dock item - Seeding"), seeding];
+        // Translators: Dock item - Seeding
+        NSString* title = TR_FORMAT("{count:L} Seeding", TRArg("count", seeding));
         [menu addItemWithTitle:title action:nil keyEquivalent:@""];
     }
 
     if (downloading > 0) {
-        NSString* title = [NSString localizedStringWithFormat:NSLocalizedString(@"%lu Downloading", "Dock item - Downloading"), downloading];
+        // Translators: Dock item - Downloading
+        NSString* title = TR_FORMAT("{count:L} Downloading", TRArg("count", downloading));
         [menu addItemWithTitle:title action:nil keyEquivalent:@""];
     }
 
@@ -4661,11 +4672,13 @@ static void offerToImportFromTransmission()
         [menu addItem:[NSMenuItem separatorItem]];
     }
 
-    [menu addItemWithTitle:NSLocalizedString(@"Pause All", "Dock item") action:@selector(stopAllTorrents:) keyEquivalent:@""];
-    [menu addItemWithTitle:NSLocalizedString(@"Start All", "Dock item") action:@selector(resumeAllTorrents:) keyEquivalent:@""];
+    // Translators: Dock item
+    [menu addItemWithTitle:TR_TEXT("Pause All") action:@selector(stopAllTorrents:) keyEquivalent:@""];
+    // Translators: Dock item
+    [menu addItemWithTitle:TR_TEXT("Start All") action:@selector(resumeAllTorrents:) keyEquivalent:@""];
     [menu addItem:[NSMenuItem separatorItem]];
-    [menu addItemWithTitle:NSLocalizedString(@"Alternative Speed Limits", "Dock item") action:@selector(toggleSpeedLimit:)
-             keyEquivalent:@""];
+    // Translators: Dock item
+    [menu addItemWithTitle:TR_TEXT("Alternative Speed Limits") action:@selector(toggleSpeedLimit:) keyEquivalent:@""];
 
     return menu;
 }

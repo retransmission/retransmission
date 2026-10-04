@@ -8,6 +8,7 @@
 #import "Controller.h"
 #import "PrefsController.h"
 #import "NSStringAdditions.h"
+#import "L10n.h"
 
 @interface BlocklistDownloaderViewController ()
 
@@ -34,7 +35,7 @@ static BlocklistDownloaderViewController* fBLViewController = nil;
 - (void)awakeFromNib
 {
     [super awakeFromNib];
-    self.fButton.title = NSLocalizedString(@"Cancel", "Blocklist -> cancel button");
+    self.fButton.title = TR_TEXT("Cancel");
 
     CGFloat const oldWidth = NSWidth(self.fButton.frame);
     [self.fButton sizeToFit];
@@ -55,7 +56,8 @@ static BlocklistDownloaderViewController* fBLViewController = nil;
 
 - (void)setStatusStarting
 {
-    self.fTextField.stringValue = [NSLocalizedString(@"Updating blocklist", "Blocklist -> message") stringByAppendingEllipsis];
+    // Translators: Blocklist -> message
+    self.fTextField.stringValue = [TR_TEXT("Updating blocklist") stringByAppendingEllipsis];
     self.fProgressBar.indeterminate = YES;
 }
 
@@ -71,8 +73,8 @@ static BlocklistDownloaderViewController* fBLViewController = nil;
     [self.fPrefsController.window endSheet:self.fStatusWindow];
 
     NSAlert* alert = [[NSAlert alloc] init];
-    [alert addButtonWithTitle:NSLocalizedString(@"OK", "Blocklist -> button")];
-    alert.messageText = NSLocalizedString(@"Download of the blocklist failed.", "Blocklist -> message");
+    [alert addButtonWithTitle:TR_TEXT("OK")];
+    alert.messageText = TR_TEXT("Download of the blocklist failed.");
     alert.alertStyle = NSAlertStyleWarning;
 
     alert.informativeText = error;
@@ -123,7 +125,8 @@ static BlocklistDownloaderViewController* fBLViewController = nil;
                 [weakPrefsController updateBlocklistFields];
                 break;
             default:
-                [strongSelf setFailed:error ?: NSLocalizedString(@"Couldn't update blocklist", "Blocklist -> message")];
+                // Translators: Blocklist -> message
+                [strongSelf setFailed:error ?: TR_TEXT("Couldn't update blocklist")];
                 break;
             }
         });

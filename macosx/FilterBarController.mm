@@ -6,6 +6,7 @@
 #import "FilterButton.h"
 #import "GroupsController.h"
 #import "NSStringAdditions.h"
+#import "L10n.h"
 
 FilterType const FilterTypeNone = @"None";
 FilterType const FilterTypeActive = @"Active";
@@ -52,12 +53,18 @@ typedef NS_ENUM(NSInteger, FilterTypeTag) {
 {
     [super awakeFromNib];
     //localizations
-    self.fNoFilterButton.title = NSLocalizedString(@"All", "Filter Bar -> filter button");
-    self.fActiveFilterButton.title = NSLocalizedString(@"Active", "Filter Bar -> filter button");
-    self.fDownloadFilterButton.title = NSLocalizedString(@"Downloading", "Filter Bar -> filter button");
-    self.fSeedFilterButton.title = NSLocalizedString(@"Seeding", "Filter Bar -> filter button");
-    self.fPauseFilterButton.title = NSLocalizedString(@"Paused", "Filter Bar -> filter button");
-    self.fErrorFilterButton.title = NSLocalizedString(@"Error", "Filter Bar -> filter button");
+    // Translators: Filter Bar -> filter button
+    self.fNoFilterButton.title = TR_TEXT("All");
+    // Translators: Filter Bar -> filter button
+    self.fActiveFilterButton.title = TR_TEXT("Active");
+    // Translators: Filter Bar -> filter button
+    self.fDownloadFilterButton.title = TR_TEXT_C("Verb", "Downloading");
+    // Translators: Filter Bar -> filter button
+    self.fSeedFilterButton.title = TR_TEXT_C("Verb", "Seeding");
+    // Translators: Filter Bar -> filter button
+    self.fPauseFilterButton.title = TR_TEXT("Paused");
+    // Translators: Filter Bar -> filter button
+    self.fErrorFilterButton.title = TR_TEXT("Error");
 
     self.fNoFilterButton.cell.backgroundStyle = NSBackgroundStyleRaised;
     self.fActiveFilterButton.cell.backgroundStyle = NSBackgroundStyleRaised;
@@ -66,10 +73,13 @@ typedef NS_ENUM(NSInteger, FilterTypeTag) {
     self.fPauseFilterButton.cell.backgroundStyle = NSBackgroundStyleRaised;
     self.fErrorFilterButton.cell.backgroundStyle = NSBackgroundStyleRaised;
 
-    [self.fSearchField.searchMenuTemplate itemWithTag:FilterTypeTagName].title = NSLocalizedString(@"Name", "Filter Bar -> filter menu");
-    [self.fSearchField.searchMenuTemplate itemWithTag:FilterTypeTagTracker].title = NSLocalizedString(@"Tracker", "Filter Bar -> filter menu");
+    // Translators: Filter Bar -> filter menu
+    [self.fSearchField.searchMenuTemplate itemWithTag:FilterTypeTagName].title = TR_TEXT("Name");
+    // Translators: Filter Bar -> filter menu
+    [self.fSearchField.searchMenuTemplate itemWithTag:FilterTypeTagTracker].title = TR_TEXT("Tracker");
 
-    [self.fGroupsButton.menu itemWithTag:kGroupFilterAllTag].title = NSLocalizedString(@"All Groups", "Filter Bar -> group filter menu");
+    // Translators: Filter Bar -> group filter menu
+    [self.fGroupsButton.menu itemWithTag:kGroupFilterAllTag].title = TR_TEXT("All Groups");
 
     //set current filter
     NSString* filterType = [NSUserDefaults.standardUserDefaults stringForKey:@"Filter"];
@@ -346,12 +356,15 @@ typedef NS_ENUM(NSInteger, FilterTypeTag) {
     NSString* toolTip;
     if (groupIndex == kGroupFilterAllTag) {
         icon = [NSImage imageNamed:@"PinTemplate"];
-        toolTip = NSLocalizedString(@"All Groups", "Groups -> Button");
+        // Translators: Groups -> Button
+        toolTip = TR_TEXT("All Groups");
     } else {
         icon = [GroupsController.groups imageForIndex:groupIndex];
         NSString* groupName = groupIndex != -1 ? [GroupsController.groups nameForIndex:groupIndex] :
-                                                 NSLocalizedString(@"None", "Groups -> Button");
-        toolTip = [NSLocalizedString(@"Group", "Groups -> Button") stringByAppendingFormat:@": %@", groupName];
+                                                 // Translators: Groups -> Button
+                                                 TR_TEXT("None");
+        // Translators: Groups -> Button
+        toolTip = [TR_TEXT("Group") stringByAppendingFormat:@": %@", groupName];
     }
 
     [self.fGroupsButton.menu itemAtIndex:0].image = icon;
