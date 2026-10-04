@@ -556,6 +556,7 @@ msgstr "Sessie-oordrag"
 msgid "Down: {downloaded_size}, Up: {uploaded_size}"
 msgstr "Af: {downloaded_size}, Op: {uploaded_size}"
 
+#. Translators: status bar -> status label
 msgid "Ratio: {ratio}"
 msgstr "Ratio: {ratio}"
 
@@ -2556,7 +2557,6 @@ msgstr "Toon in Finder"
 msgid "Start All Queued Now"
 msgstr "Begin Almal"
 
-#. Translators: Groups -> Button
 msgid "Group"
 msgstr "Groepeer"
 
@@ -3267,6 +3267,10 @@ msgstr "Hernoem"
 msgid "All Groups"
 msgstr "Alle Groepe"
 
+#. Translators: Groups -> Button
+msgid "Group: {group_name}"
+msgstr "Groepeer: {group_name}"
+
 #. Translators: Torrent table -> group row -> tooltip
 msgid "Download speed"
 msgstr "Aflaaispoed"
@@ -3277,7 +3281,6 @@ msgstr "Oplaaispoed"
 
 #. Translators: Torrent table -> group row -> tooltip
 #. Translators: Torrent -> status image
-#. Translators: status bar -> status label
 #, fuzzy
 #| msgid "Ratio:"
 msgid "Ratio"
@@ -3577,13 +3580,11 @@ msgstr "{speed:L} KG/s"
 msgid "unlimited"
 msgstr "onbeperk"
 
-#. Translators: Status Bar -> speed tooltip
-msgid "Global upload limit"
-msgstr "Globale oplaailimiet"
+msgid "Global upload limit: {limit}"
+msgstr "Globale oplaailimiet: {limit}"
 
-#. Translators: Status Bar -> speed tooltip
-msgid "Global download limit"
-msgstr "Globale aflaailimiet"
+msgid "Global download limit: {limit}"
+msgstr "Globale aflaailimiet: {limit}"
 
 msgid "A folder cannot be moved to inside itself."
 msgstr "’n Vouer kan nie na binne homself geskuif word nie."

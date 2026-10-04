@@ -572,6 +572,7 @@ msgstr "Передано за сеанс"
 msgid "Down: {downloaded_size}, Up: {uploaded_size}"
 msgstr "Принято: {downloaded_size}, Отдано: {uploaded_size}"
 
+#. Translators: status bar -> status label
 msgid "Ratio: {ratio}"
 msgstr "Рейтинг: {ratio}"
 
@@ -2634,7 +2635,6 @@ msgstr "Показать в Finder"
 msgid "Start All Queued Now"
 msgstr "Запустить все"
 
-#. Translators: Groups -> Button
 msgid "Group"
 msgstr "Группы"
 
@@ -3363,6 +3363,10 @@ msgstr "Переименовать"
 msgid "All Groups"
 msgstr "Все группы"
 
+#. Translators: Groups -> Button
+msgid "Group: {group_name}"
+msgstr "Группы: {group_name}"
+
 #. Translators: Torrent table -> group row -> tooltip
 msgid "Download speed"
 msgstr "Скорость скачивания"
@@ -3373,7 +3377,6 @@ msgstr "Скорость раздачи"
 
 #. Translators: Torrent table -> group row -> tooltip
 #. Translators: Torrent -> status image
-#. Translators: status bar -> status label
 msgid "Ratio"
 msgstr "Рейтинг"
 
@@ -3685,13 +3688,11 @@ msgstr "{speed:L} КБ/s"
 msgid "unlimited"
 msgstr "Неограниченно"
 
-#. Translators: Status Bar -> speed tooltip
-msgid "Global upload limit"
-msgstr "Общее огранчение скорости раздачи"
+msgid "Global upload limit: {limit}"
+msgstr "Общее огранчение скорости раздачи: {limit}"
 
-#. Translators: Status Bar -> speed tooltip
-msgid "Global download limit"
-msgstr "Общее ограничене скорости скачивания"
+msgid "Global download limit: {limit}"
+msgstr "Общее ограничене скорости скачивания: {limit}"
 
 msgid "A folder cannot be moved to inside itself."
 msgstr "Папка не может быть перемещена внутрь себя."

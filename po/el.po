@@ -587,6 +587,7 @@ msgstr "Μεταφερθέντα Συνεδρίας"
 msgid "Down: {downloaded_size}, Up: {uploaded_size}"
 msgstr "Λήψη: {downloaded_size}, Αποστολή: {uploaded_size}"
 
+#. Translators: status bar -> status label
 msgid "Ratio: {ratio}"
 msgstr "Αναλογία: {ratio}"
 
@@ -2589,7 +2590,6 @@ msgstr "Εμφάνιση στο Finder"
 msgid "Start All Queued Now"
 msgstr "Εκκίνηση όλων"
 
-#. Translators: Groups -> Button
 msgid "Group"
 msgstr "Ομάδα"
 
@@ -3298,6 +3298,10 @@ msgstr "Μετονομασία"
 msgid "All Groups"
 msgstr "Όλες οι ομάδες"
 
+#. Translators: Groups -> Button
+msgid "Group: {group_name}"
+msgstr "Ομάδα: {group_name}"
+
 #. Translators: Torrent table -> group row -> tooltip
 msgid "Download speed"
 msgstr "Ταχύτητα Λήψης"
@@ -3308,7 +3312,6 @@ msgstr "Ταχύτητα αποστολής"
 
 #. Translators: Torrent table -> group row -> tooltip
 #. Translators: Torrent -> status image
-#. Translators: status bar -> status label
 msgid "Ratio"
 msgstr "Αναλογία"
 
@@ -3608,13 +3611,11 @@ msgstr ""
 msgid "unlimited"
 msgstr "απεριόριστα"
 
-#. Translators: Status Bar -> speed tooltip
-msgid "Global upload limit"
-msgstr "Καθολικό όριο αποστολής"
+msgid "Global upload limit: {limit}"
+msgstr "Καθολικό όριο αποστολής: {limit}"
 
-#. Translators: Status Bar -> speed tooltip
-msgid "Global download limit"
-msgstr "Καθολικό όριο λήψης"
+msgid "Global download limit: {limit}"
+msgstr "Καθολικό όριο λήψης: {limit}"
 
 msgid "A folder cannot be moved to inside itself."
 msgstr "Ένας φάκελος δεν μπορεί να μεταφερθεί στο εσωτερικό του."

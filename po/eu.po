@@ -563,6 +563,7 @@ msgstr "Saioaren transferentzia"
 msgid "Down: {downloaded_size}, Up: {uploaded_size}"
 msgstr "Deskarga: {downloaded_size}, Igoera: {uploaded_size}"
 
+#. Translators: status bar -> status label
 msgid "Ratio: {ratio}"
 msgstr "Maila: {ratio}"
 
@@ -2561,7 +2562,6 @@ msgstr "Erakutsi Finder-en"
 msgid "Start All Queued Now"
 msgstr "Abiarazi Guztiak"
 
-#. Translators: Groups -> Button
 msgid "Group"
 msgstr "Taldea"
 
@@ -3274,6 +3274,10 @@ msgstr "Berrizendatu"
 msgid "All Groups"
 msgstr "Talde guztiak"
 
+#. Translators: Groups -> Button
+msgid "Group: {group_name}"
+msgstr "Taldea: {group_name}"
+
 #. Translators: Torrent table -> group row -> tooltip
 msgid "Download speed"
 msgstr "Deskargaren abiadura"
@@ -3284,7 +3288,6 @@ msgstr "Igoera-abiadura"
 
 #. Translators: Torrent table -> group row -> tooltip
 #. Translators: Torrent -> status image
-#. Translators: status bar -> status label
 msgid "Ratio"
 msgstr "Maila"
 
@@ -3590,13 +3593,11 @@ msgstr ""
 msgid "unlimited"
 msgstr "mugagabea"
 
-#. Translators: Status Bar -> speed tooltip
-msgid "Global upload limit"
-msgstr "Igoeren muga orokorra"
+msgid "Global upload limit: {limit}"
+msgstr "Igoeren muga orokorra: {limit}"
 
-#. Translators: Status Bar -> speed tooltip
-msgid "Global download limit"
-msgstr "Deskargen muga orokorra"
+msgid "Global download limit: {limit}"
+msgstr "Deskargen muga orokorra: {limit}"
 
 msgid "A folder cannot be moved to inside itself."
 msgstr "Karpeta bat ezin da bere barrura mugitu."

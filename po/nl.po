@@ -586,6 +586,7 @@ msgstr "Overdracht per sessie"
 msgid "Down: {downloaded_size}, Up: {uploaded_size}"
 msgstr "Download: {downloaded_size}$s, Upload: {uploaded_size}$s"
 
+#. Translators: status bar -> status label
 msgid "Ratio: {ratio}"
 msgstr "Verhouding: {ratio}"
 
@@ -2594,7 +2595,6 @@ msgstr "Toon in Finder"
 msgid "Start All Queued Now"
 msgstr "Alles starten"
 
-#. Translators: Groups -> Button
 msgid "Group"
 msgstr "Groep"
 
@@ -3303,6 +3303,10 @@ msgstr "Hernoemen"
 msgid "All Groups"
 msgstr "Alle groepen"
 
+#. Translators: Groups -> Button
+msgid "Group: {group_name}"
+msgstr "Groep: {group_name}"
+
 #. Translators: Torrent table -> group row -> tooltip
 msgid "Download speed"
 msgstr "Downloadsnelheid"
@@ -3313,7 +3317,6 @@ msgstr "Uploadsnelheid"
 
 #. Translators: Torrent table -> group row -> tooltip
 #. Translators: Torrent -> status image
-#. Translators: status bar -> status label
 #, fuzzy
 #| msgid "Ratio:"
 msgid "Ratio"
@@ -3623,13 +3626,11 @@ msgstr ""
 msgid "unlimited"
 msgstr "onbeperkt"
 
-#. Translators: Status Bar -> speed tooltip
-msgid "Global upload limit"
-msgstr "Globale uploadlimiet"
+msgid "Global upload limit: {limit}"
+msgstr "Globale uploadlimiet: {limit}"
 
-#. Translators: Status Bar -> speed tooltip
-msgid "Global download limit"
-msgstr "Globale downloadlimiet"
+msgid "Global download limit: {limit}"
+msgstr "Globale downloadlimiet: {limit}"
 
 msgid "A folder cannot be moved to inside itself."
 msgstr "Een map kan niet in zichzelf geplaatst worden."

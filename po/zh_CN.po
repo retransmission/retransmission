@@ -596,6 +596,7 @@ msgstr "会话传输量"
 msgid "Down: {downloaded_size}, Up: {uploaded_size}"
 msgstr "下载: {downloaded_size}, 上传: {uploaded_size}"
 
+#. Translators: status bar -> status label
 msgid "Ratio: {ratio}"
 msgstr "分享率：{ratio}"
 
@@ -2566,7 +2567,6 @@ msgstr "在 Finder 中显示"
 msgid "Start All Queued Now"
 msgstr "全部开始"
 
-#. Translators: Groups -> Button
 msgid "Group"
 msgstr "群组"
 
@@ -3266,6 +3266,10 @@ msgstr "重命名"
 msgid "All Groups"
 msgstr "全部群组"
 
+#. Translators: Groups -> Button
+msgid "Group: {group_name}"
+msgstr "群组： {group_name}"
+
 #. Translators: Torrent table -> group row -> tooltip
 msgid "Download speed"
 msgstr "下载速度"
@@ -3276,7 +3280,6 @@ msgstr "上传速度"
 
 #. Translators: Torrent table -> group row -> tooltip
 #. Translators: Torrent -> status image
-#. Translators: status bar -> status label
 msgid "Ratio"
 msgstr "分享率"
 
@@ -3567,13 +3570,11 @@ msgstr "{speed:L} KB/秒"
 msgid "unlimited"
 msgstr "无限制"
 
-#. Translators: Status Bar -> speed tooltip
-msgid "Global upload limit"
-msgstr "全局上传限制"
+msgid "Global upload limit: {limit}"
+msgstr "全局上传限制： {limit}"
 
-#. Translators: Status Bar -> speed tooltip
-msgid "Global download limit"
-msgstr "全局下载限制"
+msgid "Global download limit: {limit}"
+msgstr "全局下载限制： {limit}"
 
 msgid "A folder cannot be moved to inside itself."
 msgstr "不能将一个文件夹移动到其自身里面。"

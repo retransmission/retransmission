@@ -609,6 +609,7 @@ msgstr "Przesłano w sesji"
 msgid "Down: {downloaded_size}, Up: {uploaded_size}"
 msgstr "Pobrano: {downloaded_size}, wysłano: {uploaded_size}"
 
+#. Translators: status bar -> status label
 msgid "Ratio: {ratio}"
 msgstr "Udział: {ratio}"
 
@@ -2673,7 +2674,6 @@ msgstr "Wyświetl w programie Finder"
 msgid "Start All Queued Now"
 msgstr "Rozpocznij wszystko"
 
-#. Translators: Groups -> Button
 msgid "Group"
 msgstr "Grupa"
 
@@ -3400,6 +3400,10 @@ msgstr "Zmień nazwę"
 msgid "All Groups"
 msgstr "Wszystkie grupy"
 
+#. Translators: Groups -> Button
+msgid "Group: {group_name}"
+msgstr "Grupa: {group_name}"
+
 #. Translators: Torrent table -> group row -> tooltip
 msgid "Download speed"
 msgstr "Prędkość pobierania"
@@ -3410,7 +3414,6 @@ msgstr "Prędkość wysyłania"
 
 #. Translators: Torrent table -> group row -> tooltip
 #. Translators: Torrent -> status image
-#. Translators: status bar -> status label
 msgid "Ratio"
 msgstr "Udział"
 
@@ -3715,13 +3718,11 @@ msgstr ""
 msgid "unlimited"
 msgstr "bez ograniczenia"
 
-#. Translators: Status Bar -> speed tooltip
-msgid "Global upload limit"
-msgstr "Globalne ograniczenie wysyłania"
+msgid "Global upload limit: {limit}"
+msgstr "Globalne ograniczenie wysyłania: {limit}"
 
-#. Translators: Status Bar -> speed tooltip
-msgid "Global download limit"
-msgstr "Globalne ograniczenie pobierania"
+msgid "Global download limit: {limit}"
+msgstr "Globalne ograniczenie pobierania: {limit}"
 
 msgid "A folder cannot be moved to inside itself."
 msgstr "Katalog nie może zostać przeniesiony do siebie."

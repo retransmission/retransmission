@@ -584,6 +584,7 @@ msgstr "העברות מופע"
 msgid "Down: {downloaded_size}, Up: {uploaded_size}"
 msgstr "הורדה: {downloaded_size}, העלאה: {uploaded_size}"
 
+#. Translators: status bar -> status label
 msgid "Ratio: {ratio}"
 msgstr "יחס: {ratio}"
 
@@ -2638,7 +2639,6 @@ msgstr "הצגה ב־„מאתר”"
 msgid "Start All Queued Now"
 msgstr "התחלת הכול"
 
-#. Translators: Groups -> Button
 msgid "Group"
 msgstr "קבוצה"
 
@@ -3357,6 +3357,10 @@ msgstr "שינוי שם "
 msgid "All Groups"
 msgstr "כל הקבוצות"
 
+#. Translators: Groups -> Button
+msgid "Group: {group_name}"
+msgstr "קבוצה: {group_name}"
+
 #. Translators: Torrent table -> group row -> tooltip
 msgid "Download speed"
 msgstr "מהירות הורדה"
@@ -3367,7 +3371,6 @@ msgstr "מהירות העלאה"
 
 #. Translators: Torrent table -> group row -> tooltip
 #. Translators: Torrent -> status image
-#. Translators: status bar -> status label
 msgid "Ratio"
 msgstr "יחס"
 
@@ -3672,13 +3675,11 @@ msgstr "{speed:L} ק״ב/שנ׳"
 msgid "unlimited"
 msgstr "ללא הגבלה"
 
-#. Translators: Status Bar -> speed tooltip
-msgid "Global upload limit"
-msgstr "מגבלת העלאה כללית"
+msgid "Global upload limit: {limit}"
+msgstr "מגבלת העלאה כללית: {limit}"
 
-#. Translators: Status Bar -> speed tooltip
-msgid "Global download limit"
-msgstr "מגבלת הורדה כללית"
+msgid "Global download limit: {limit}"
+msgstr "מגבלת הורדה כללית: {limit}"
 
 msgid "A folder cannot be moved to inside itself."
 msgstr "לא ניתן להעביר תיקיה לתוך עצמה."

@@ -547,6 +547,7 @@ msgstr "セッション転送"
 msgid "Down: {downloaded_size}, Up: {uploaded_size}"
 msgstr "下り: {downloaded_size}, 上り: {uploaded_size}"
 
+#. Translators: status bar -> status label
 msgid "Ratio: {ratio}"
 msgstr "共有比: {ratio}"
 
@@ -2518,7 +2519,6 @@ msgstr "Finder で表示"
 msgid "Start All Queued Now"
 msgstr "すべて開始"
 
-#. Translators: Groups -> Button
 msgid "Group"
 msgstr "グループ"
 
@@ -3218,6 +3218,10 @@ msgstr "名前の変更"
 msgid "All Groups"
 msgstr "すべてのグループ"
 
+#. Translators: Groups -> Button
+msgid "Group: {group_name}"
+msgstr "グループ: {group_name}"
+
 #. Translators: Torrent table -> group row -> tooltip
 msgid "Download speed"
 msgstr "ダウンロード速度"
@@ -3228,7 +3232,6 @@ msgstr "アップロード速度"
 
 #. Translators: Torrent table -> group row -> tooltip
 #. Translators: Torrent -> status image
-#. Translators: status bar -> status label
 msgid "Ratio"
 msgstr "共有比"
 
@@ -3523,13 +3526,11 @@ msgstr "{speed:L} KB/秒"
 msgid "unlimited"
 msgstr "無制限"
 
-#. Translators: Status Bar -> speed tooltip
-msgid "Global upload limit"
-msgstr "全体アップロード制限"
+msgid "Global upload limit: {limit}"
+msgstr "全体アップロード制限: {limit}"
 
-#. Translators: Status Bar -> speed tooltip
-msgid "Global download limit"
-msgstr "全体ダウンロード制限"
+msgid "Global download limit: {limit}"
+msgstr "全体ダウンロード制限: {limit}"
 
 msgid "A folder cannot be moved to inside itself."
 msgstr "フォルダ自身の中にフォルダを移動できません。"

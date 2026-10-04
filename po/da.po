@@ -578,6 +578,7 @@ msgstr "Overførsel (session)"
 msgid "Down: {downloaded_size}, Up: {uploaded_size}"
 msgstr "Ned: {downloaded_size}, Op: {uploaded_size}"
 
+#. Translators: status bar -> status label
 msgid "Ratio: {ratio}"
 msgstr "Forhold: {ratio}"
 
@@ -2582,7 +2583,6 @@ msgstr "Vis i Finder"
 msgid "Start All Queued Now"
 msgstr "Start alle"
 
-#. Translators: Groups -> Button
 msgid "Group"
 msgstr "Gruppe"
 
@@ -3293,6 +3293,10 @@ msgstr "Omdøb"
 msgid "All Groups"
 msgstr "Alle grupper"
 
+#. Translators: Groups -> Button
+msgid "Group: {group_name}"
+msgstr "Gruppe: {group_name}"
+
 #. Translators: Torrent table -> group row -> tooltip
 msgid "Download speed"
 msgstr "Download hastighed"
@@ -3303,7 +3307,6 @@ msgstr "Upload hastighed"
 
 #. Translators: Torrent table -> group row -> tooltip
 #. Translators: Torrent -> status image
-#. Translators: status bar -> status label
 msgid "Ratio"
 msgstr "Delingsforhold"
 
@@ -3609,13 +3612,11 @@ msgstr ""
 msgid "unlimited"
 msgstr "ubegrænset"
 
-#. Translators: Status Bar -> speed tooltip
-msgid "Global upload limit"
-msgstr "Generel upload begrænsning"
+msgid "Global upload limit: {limit}"
+msgstr "Generel upload begrænsning: {limit}"
 
-#. Translators: Status Bar -> speed tooltip
-msgid "Global download limit"
-msgstr "Generel download begrænsning"
+msgid "Global download limit: {limit}"
+msgstr "Generel download begrænsning: {limit}"
 
 msgid "A folder cannot be moved to inside itself."
 msgstr "En mappe kan ikke blive flyttet til sig selv."

@@ -588,6 +588,7 @@ msgstr "Munkamenet forgalma"
 msgid "Down: {downloaded_size}, Up: {uploaded_size}"
 msgstr "Le: {downloaded_size}, Fel: {uploaded_size}"
 
+#. Translators: status bar -> status label
 msgid "Ratio: {ratio}"
 msgstr "Arány: {ratio}"
 
@@ -2588,7 +2589,6 @@ msgstr "Megjelenítés Finderben"
 msgid "Start All Queued Now"
 msgstr "Összes indítása"
 
-#. Translators: Groups -> Button
 msgid "Group"
 msgstr "Csoport"
 
@@ -3297,6 +3297,10 @@ msgstr "Átnevezés"
 msgid "All Groups"
 msgstr "Összes csoport"
 
+#. Translators: Groups -> Button
+msgid "Group: {group_name}"
+msgstr "Csoport: {group_name}"
+
 #. Translators: Torrent table -> group row -> tooltip
 msgid "Download speed"
 msgstr "Letöltési sebesség"
@@ -3307,7 +3311,6 @@ msgstr "Feltöltési sebesség"
 
 #. Translators: Torrent table -> group row -> tooltip
 #. Translators: Torrent -> status image
-#. Translators: status bar -> status label
 msgid "Ratio"
 msgstr "Arány"
 
@@ -3606,13 +3609,11 @@ msgstr ""
 msgid "unlimited"
 msgstr "korlátlan"
 
-#. Translators: Status Bar -> speed tooltip
-msgid "Global upload limit"
-msgstr "Globális fetöltési korlát"
+msgid "Global upload limit: {limit}"
+msgstr "Globális fetöltési korlát: {limit}"
 
-#. Translators: Status Bar -> speed tooltip
-msgid "Global download limit"
-msgstr "Globális letöltési korlát"
+msgid "Global download limit: {limit}"
+msgstr "Globális letöltési korlát: {limit}"
 
 msgid "A folder cannot be moved to inside itself."
 msgstr "A mappa nem mozgatható saját magába."

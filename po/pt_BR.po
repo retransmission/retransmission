@@ -627,6 +627,7 @@ msgstr "Transferência da Sessão"
 msgid "Down: {downloaded_size}, Up: {uploaded_size}"
 msgstr "Baixado: {downloaded_size} - Enviado: {uploaded_size}"
 
+#. Translators: status bar -> status label
 msgid "Ratio: {ratio}"
 msgstr "Proporção: {ratio}"
 
@@ -2654,7 +2655,6 @@ msgstr "Exibir no Finder"
 msgid "Start All Queued Now"
 msgstr "Iniciar Todos"
 
-#. Translators: Groups -> Button
 msgid "Group"
 msgstr "Grupo"
 
@@ -3372,6 +3372,10 @@ msgstr "Renomear"
 msgid "All Groups"
 msgstr "Todos os Grupos"
 
+#. Translators: Groups -> Button
+msgid "Group: {group_name}"
+msgstr "Grupo: {group_name}"
+
 #. Translators: Torrent table -> group row -> tooltip
 msgid "Download speed"
 msgstr "Velocidade de download"
@@ -3382,7 +3386,6 @@ msgstr "Velocidade de upload"
 
 #. Translators: Torrent table -> group row -> tooltip
 #. Translators: Torrent -> status image
-#. Translators: status bar -> status label
 msgid "Ratio"
 msgstr "Proporção"
 
@@ -3695,13 +3698,11 @@ msgstr ""
 msgid "unlimited"
 msgstr "ilimitado"
 
-#. Translators: Status Bar -> speed tooltip
-msgid "Global upload limit"
-msgstr "Limite global de upload"
+msgid "Global upload limit: {limit}"
+msgstr "Limite global de upload: {limit}"
 
-#. Translators: Status Bar -> speed tooltip
-msgid "Global download limit"
-msgstr "Limite global de download"
+msgid "Global download limit: {limit}"
+msgstr "Limite global de download: {limit}"
 
 msgid "A folder cannot be moved to inside itself."
 msgstr "Uma pasta não pode ser movida para dentro de si mesma."

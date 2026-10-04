@@ -559,6 +559,7 @@ msgstr "Oturum Aktarımı"
 msgid "Down: {downloaded_size}, Up: {uploaded_size}"
 msgstr "İndirme: {downloaded_size}, Yükleme: {uploaded_size}"
 
+#. Translators: status bar -> status label
 msgid "Ratio: {ratio}"
 msgstr "Oran: {ratio}"
 
@@ -2561,7 +2562,6 @@ msgstr "Finder’da Göster"
 msgid "Start All Queued Now"
 msgstr "Tümünü Başlat"
 
-#. Translators: Groups -> Button
 msgid "Group"
 msgstr "Öbek"
 
@@ -3270,6 +3270,10 @@ msgstr "Yeniden Adlandır"
 msgid "All Groups"
 msgstr "Bütün Öbekler"
 
+#. Translators: Groups -> Button
+msgid "Group: {group_name}"
+msgstr "Öbek: {group_name}"
+
 #. Translators: Torrent table -> group row -> tooltip
 msgid "Download speed"
 msgstr "İndirme hızı"
@@ -3280,7 +3284,6 @@ msgstr "Karşıya yükleme hızı"
 
 #. Translators: Torrent table -> group row -> tooltip
 #. Translators: Torrent -> status image
-#. Translators: status bar -> status label
 msgid "Ratio"
 msgstr "Oran"
 
@@ -3578,13 +3581,11 @@ msgstr "{speed:L} KB/sn"
 msgid "unlimited"
 msgstr "sınırsız"
 
-#. Translators: Status Bar -> speed tooltip
-msgid "Global upload limit"
-msgstr "Genel karşıya yükleme sınırı"
+msgid "Global upload limit: {limit}"
+msgstr "Genel karşıya yükleme sınırı: {limit}"
 
-#. Translators: Status Bar -> speed tooltip
-msgid "Global download limit"
-msgstr "Genel indirme sınırı"
+msgid "Global download limit: {limit}"
+msgstr "Genel indirme sınırı: {limit}"
 
 msgid "A folder cannot be moved to inside itself."
 msgstr "Bir klasör kendi içine taşınamaz."

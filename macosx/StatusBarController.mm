@@ -99,7 +99,7 @@ typedef NS_ENUM(NSUInteger, StatusTag) {
         auto const stats = total ? tr_sessionGetCumulativeStats(self.fLib) : tr_sessionGetStats(self.fLib);
 
         // Translators: status bar -> status label
-        statusString = [TR_TEXT("Ratio") stringByAppendingFormat:@": %@", [NSString stringForRatio:stats.ratio]];
+        statusString = TR_FORMAT("Ratio: {ratio}", TRArg("ratio", [NSString stringForRatio:stats.ratio]));
     } else //StatusTransferTypeTotal or StatusTransferTypeSession
     {
         total = [statusLabel isEqualToString:StatusTransferTypeTotal];
@@ -164,10 +164,8 @@ typedef NS_ENUM(NSUInteger, StatusTag) {
         downloadText = [defaults boolForKey:@"CheckDownload"] ? limitText(@"DownloadLimit") : unlimited;
     }
 
-    // Translators: Status Bar -> speed tooltip
-    uploadText = [TR_TEXT("Global upload limit") stringByAppendingFormat:@": %@", uploadText];
-    // Translators: Status Bar -> speed tooltip
-    downloadText = [TR_TEXT("Global download limit") stringByAppendingFormat:@": %@", downloadText];
+    uploadText = TR_FORMAT("Global upload limit: {limit}", TRArg("limit", uploadText));
+    downloadText = TR_FORMAT("Global download limit: {limit}", TRArg("limit", downloadText));
 
     self.fTotalULField.toolTip = uploadText;
     self.fTotalDLField.toolTip = downloadText;

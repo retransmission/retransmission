@@ -364,7 +364,7 @@ typedef NS_ENUM(NSInteger, FilterTypeTag) {
                                                  // Translators: Groups -> Button
                                                  TR_TEXT("None");
         // Translators: Groups -> Button
-        toolTip = [TR_TEXT("Group") stringByAppendingFormat:@": %@", groupName];
+        toolTip = TR_FORMAT("Group: {group_name}", TRArg("group_name", groupName));
     }
 
     [self.fGroupsButton.menu itemAtIndex:0].image = icon;

@@ -258,6 +258,15 @@ RENAMES = [
     {'from': {'msgid': 'Seeders'}, 'to': {'msgid': 'Seeders:'}, 'colon': True},
     {'from': {'msgid': 'Leechers'}, 'to': {'msgid': 'Leechers:'}, 'colon': True},
     {'from': {'msgid': 'Downloaded'}, 'to': {'msgid': 'Downloaded:'}, 'colon': True},
+    # The Mac client's status bar tooltips keep their colons inside the message.
+    {'from': {'msgid': 'Global upload limit'}, 'to': {'msgid': 'Global upload limit: {limit}'}, 'colon': True, 'append': ' {limit}'},
+    {
+        'from': {'msgid': 'Global download limit'},
+        'to': {'msgid': 'Global download limit: {limit}'},
+        'colon': True,
+        'append': ' {limit}',
+    },
+    {'from': {'msgid': 'Group'}, 'to': {'msgid': 'Group: {group_name}'}, 'keep': True, 'colon': True, 'append': ' {group_name}'},
 ]
 
 FIELD_NAMES = ('msgctxt', 'msgid', 'msgid_plural')

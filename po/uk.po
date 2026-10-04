@@ -598,6 +598,7 @@ msgstr "Передано за сеанс"
 msgid "Down: {downloaded_size}, Up: {uploaded_size}"
 msgstr "Заван: {downloaded_size}, Виван: {uploaded_size}"
 
+#. Translators: status bar -> status label
 msgid "Ratio: {ratio}"
 msgstr "Співвідношення: {ratio}"
 
@@ -2658,7 +2659,6 @@ msgstr "Показати у Finder"
 msgid "Start All Queued Now"
 msgstr "Запустити усе"
 
-#. Translators: Groups -> Button
 msgid "Group"
 msgstr "Група"
 
@@ -3387,6 +3387,10 @@ msgstr "Перейменувати"
 msgid "All Groups"
 msgstr "Усі Групи"
 
+#. Translators: Groups -> Button
+msgid "Group: {group_name}"
+msgstr "Група: {group_name}"
+
 #. Translators: Torrent table -> group row -> tooltip
 msgid "Download speed"
 msgstr "Швидкість завантаження"
@@ -3397,7 +3401,6 @@ msgstr "Швидкість завантаження"
 
 #. Translators: Torrent table -> group row -> tooltip
 #. Translators: Torrent -> status image
-#. Translators: status bar -> status label
 msgid "Ratio"
 msgstr "Рейтинг"
 
@@ -3709,13 +3712,11 @@ msgstr "{speed:L} КБ/с"
 msgid "unlimited"
 msgstr "необмежено"
 
-#. Translators: Status Bar -> speed tooltip
-msgid "Global upload limit"
-msgstr "Загальний ліміт роздачі"
+msgid "Global upload limit: {limit}"
+msgstr "Загальний ліміт роздачі: {limit}"
 
-#. Translators: Status Bar -> speed tooltip
-msgid "Global download limit"
-msgstr "Загальне обмеження завантаження"
+msgid "Global download limit: {limit}"
+msgstr "Загальне обмеження завантаження: {limit}"
 
 msgid "A folder cannot be moved to inside itself."
 msgstr "Теку неможливо перемістити всередину себе"
