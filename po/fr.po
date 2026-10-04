@@ -218,7 +218,7 @@ msgid "{total_size} in {file_count:L} file"
 msgid_plural "{total_size} in {file_count:L} files"
 msgstr[0] "{total_size} dans {file_count:L} fichier"
 msgstr[1] "{total_size} dans {file_count:L} fichiers"
-msgstr[2] "{total_size} répartis entre {file_count:L} fichiers"
+msgstr[2] "{total_size} dans {file_count:L} fichiers"
 
 msgid "({piece_count:L} piece @ {piece_size})"
 msgid_plural "({piece_count:L} pieces @ {piece_size})"
