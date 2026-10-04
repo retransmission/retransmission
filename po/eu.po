@@ -2436,7 +2436,7 @@ msgstr "Emandako denbora"
 msgid "Downloading:"
 msgstr "Deskargatzen:"
 
-msgid "Created On:"
+msgid "Created on:"
 msgstr "Sortze-data:"
 
 msgid "Creator:"

@@ -2471,7 +2471,7 @@ msgstr "Verstreken tijd"
 msgid "Downloading:"
 msgstr "Downloaden:"
 
-msgid "Created On:"
+msgid "Created on:"
 msgstr "Datum:"
 
 msgid "Creator:"

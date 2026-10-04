@@ -2509,7 +2509,7 @@ msgstr "Продолжительность"
 msgid "Downloading:"
 msgstr "Скачивания:"
 
-msgid "Created On:"
+msgid "Created on:"
 msgstr "Дата:"
 
 msgid "Creator:"

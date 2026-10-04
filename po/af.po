@@ -2431,7 +2431,7 @@ msgstr "Verloopte tyd"
 msgid "Downloading:"
 msgstr "Laai tans af:"
 
-msgid "Created On:"
+msgid "Created on:"
 msgstr "Geskep op:"
 
 msgid "Creator:"

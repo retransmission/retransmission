@@ -91,7 +91,7 @@
                 </textField>
                 <textField horizontalHuggingPriority="249" verticalHuggingPriority="750" allowsCharacterPickerTouchBarItem="YES" preferredMaxLayoutWidth="0.0" translatesAutoresizingMaskIntoConstraints="NO" id="9">
                     <rect key="frame" x="10" y="122" width="68" height="14"/>
-                    <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="right" title="Created On:" id="32">
+                    <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="right" title="Created on:" id="32">
                         <font key="font" metaFont="smallSystem"/>
                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>

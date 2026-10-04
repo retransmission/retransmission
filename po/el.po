@@ -2462,7 +2462,7 @@ msgstr "Παρελθών χρόνος"
 msgid "Downloading:"
 msgstr "Κατέβασμα:"
 
-msgid "Created On:"
+msgid "Created on:"
 msgstr "Δημιουργήθηκε την:"
 
 msgid "Creator:"

@@ -2430,7 +2430,7 @@ msgstr "Förfluten tid"
 msgid "Downloading:"
 msgstr "Hämtar:"
 
-msgid "Created On:"
+msgid "Created on:"
 msgstr "Skapad den:"
 
 msgid "Creator:"

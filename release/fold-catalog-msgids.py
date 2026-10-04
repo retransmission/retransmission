@@ -163,6 +163,8 @@ RENAMES = [
     },
     # The GTK client's URL label ends in a colon, as its other field labels do.
     {'from': {'msgid': '_URL'}, 'to': {'msgid': '_URL:'}, 'colon': True},
+    # Field labels are in sentence case.
+    {'from': {'msgid': 'Created On:'}, 'to': {'msgid': 'Created on:'}},
 ]
 
 FIELD_NAMES = ('msgctxt', 'msgid', 'msgid_plural')

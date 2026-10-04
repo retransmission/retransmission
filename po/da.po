@@ -2457,7 +2457,7 @@ msgstr "Forløbet tid"
 msgid "Downloading:"
 msgstr "Henter:"
 
-msgid "Created On:"
+msgid "Created on:"
 msgstr "Oprettet:"
 
 msgid "Creator:"

@@ -2475,7 +2475,7 @@ msgstr "Temps écoulé"
 msgid "Downloading:"
 msgstr "Téléchargement :"
 
-msgid "Created On:"
+msgid "Created on:"
 msgstr "Créé le :"
 
 msgid "Creator:"

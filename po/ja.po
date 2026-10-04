@@ -2393,7 +2393,7 @@ msgstr "経過時間"
 msgid "Downloading:"
 msgstr "ダウンロード中:"
 
-msgid "Created On:"
+msgid "Created on:"
 msgstr "作成日:"
 
 msgid "Creator:"

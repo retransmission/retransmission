@@ -2546,7 +2546,7 @@ msgstr "Czas"
 msgid "Downloading:"
 msgstr "Pobieranie:"
 
-msgid "Created On:"
+msgid "Created on:"
 msgstr "Utworzono:"
 
 msgid "Creator:"

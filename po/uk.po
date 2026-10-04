@@ -2533,7 +2533,7 @@ msgstr "Пройшло часу"
 msgid "Downloading:"
 msgstr "Завантажується:"
 
-msgid "Created On:"
+msgid "Created on:"
 msgstr "Створено:"
 
 msgid "Creator:"

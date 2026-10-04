@@ -2436,7 +2436,7 @@ msgstr "Geçen Süre"
 msgid "Downloading:"
 msgstr "İndirilme:"
 
-msgid "Created On:"
+msgid "Created on:"
 msgstr "Oluşturulma:"
 
 msgid "Creator:"

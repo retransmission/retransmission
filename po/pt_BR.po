@@ -2529,7 +2529,7 @@ msgstr "Tempo Decorrido"
 msgid "Downloading:"
 msgstr "Baixando:"
 
-msgid "Created On:"
+msgid "Created on:"
 msgstr "Criado em:"
 
 msgid "Creator:"

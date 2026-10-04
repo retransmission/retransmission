@@ -2441,7 +2441,7 @@ msgstr "已用时间"
 msgid "Downloading:"
 msgstr "正在下载："
 
-msgid "Created On:"
+msgid "Created on:"
 msgstr "创建于："
 
 msgid "Creator:"

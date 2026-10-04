@@ -2463,7 +2463,7 @@ msgstr "Eltelt idő"
 msgid "Downloading:"
 msgstr "Letöltés:"
 
-msgid "Created On:"
+msgid "Created on:"
 msgstr "Létrehozva ekkor:"
 
 msgid "Creator:"

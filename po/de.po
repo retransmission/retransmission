@@ -2492,7 +2492,7 @@ msgstr "Dauer"
 msgid "Downloading:"
 msgstr "Empfangen:"
 
-msgid "Created On:"
+msgid "Created on:"
 msgstr "Erstellt am:"
 
 msgid "Creator:"

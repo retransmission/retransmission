@@ -2513,7 +2513,7 @@ msgstr "עבר זמן"
 msgid "Downloading:"
 msgstr "הורדה:"
 
-msgid "Created On:"
+msgid "Created on:"
 msgstr "מועד יצירה:"
 
 msgid "Creator:"
