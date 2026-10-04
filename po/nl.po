@@ -503,7 +503,6 @@ msgid "Verifying"
 msgstr "Verifiëren"
 
 #. Translators: Filter Bar -> filter button
-#. Translators: Torrent -> status string
 msgid "Error"
 msgstr "Fout"
 
@@ -860,16 +859,14 @@ msgstr "{download_speed} ▾  {upload_speed} ▴"
 msgid "Stalled"
 msgstr "Onderbroken"
 
-msgid "Tracker warning: '{warning}'"
+msgid "Tracker warning: {warning}"
 msgstr "Tracker waarschuwing: '{warning}'"
 
-#, fuzzy
-#| msgid "Tracker Error: '{error}'"
-msgid "Tracker error: '{error}'"
-msgstr "Tracker fout: '{error}'"
+msgid "Tracker error: {error}"
+msgstr "Tracker gaf een foutmelding: {error}"
 
-msgid "Local error: '{error}'"
-msgstr "Lokale fout: '{error}'"
+msgid "Error: {error}"
+msgstr "Fout: {error}"
 
 #, no-c-format
 msgid "Downloading metadata from {active_count:L} connected peer ({percent_done}% done)"
@@ -3987,14 +3984,6 @@ msgid "uploaded {uploaded_size} (Ratio: {ratio})"
 msgstr "{uploaded_size} geüpload (verhouding: {ratio})"
 
 #. Translators: Torrent -> status string
-msgid "Tracker returned error"
-msgstr "Tracker gaf een foutmelding"
-
-#. Translators: Torrent -> status string
-msgid "Tracker returned warning"
-msgstr "Tracker gaf een waarschuwing"
-
-#. Translators: Torrent -> status string
 msgid "web seed"
 msgstr "webseed"
 
@@ -4369,15 +4358,6 @@ msgstr "_Authenticatie vereisd"
 msgid "Remote root pa_th:"
 msgstr ""
 
-msgid "Tracker gave a warning: {warning}"
-msgstr "Tracker gaf een waarschuwing: {warning}"
-
-msgid "Tracker gave an error: {error}"
-msgstr "Tracker gaf een foutmelding: {error}"
-
-msgid "Error: {error}"
-msgstr "Fout: {error}"
-
 #. Translators: First part of torrent progress string,
 #. {percent_done} is the percentage of torrent metadata downloaded
 #, fuzzy
@@ -4443,6 +4423,12 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "seconde"
 msgstr[1] "seconden"
+
+#~ msgid "Tracker returned error"
+#~ msgstr "Tracker gaf een foutmelding"
+
+#~ msgid "Tracker returned warning"
+#~ msgstr "Tracker gaf een waarschuwing"
 
 #~ msgid "{file_count:L} File"
 #~ msgid_plural "{file_count:L} Files"

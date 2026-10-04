@@ -753,16 +753,14 @@ msgstr ""
 msgid "Stalled"
 msgstr "Terhenti"
 
-msgid "Tracker warning: '{warning}'"
-msgstr ""
+msgid "Tracker warning: {warning}"
+msgstr "Pelacak memberi sebuah peringatan: {warning}"
 
-#, fuzzy
-#| msgid "Tracker gave an error: {error}"
-msgid "Tracker error: '{error}'"
+msgid "Tracker error: {error}"
 msgstr "Pelacak memberi sebuah galat: {error}"
 
-msgid "Local error: '{error}'"
-msgstr ""
+msgid "Error: {error}"
+msgstr "Galat: {error}"
 
 #, no-c-format
 msgid "Downloading metadata from {active_count:L} connected peer ({percent_done}% done)"
@@ -2390,15 +2388,6 @@ msgstr "_Otentikasi dibutuhkan"
 
 msgid "Remote root pa_th:"
 msgstr ""
-
-msgid "Tracker gave a warning: {warning}"
-msgstr "Pelacak memberi sebuah peringatan: {warning}"
-
-msgid "Tracker gave an error: {error}"
-msgstr "Pelacak memberi sebuah galat: {error}"
-
-msgid "Error: {error}"
-msgstr "Galat: {error}"
 
 #. Translators: First part of torrent progress string,
 #. {percent_done} is the percentage of torrent metadata downloaded

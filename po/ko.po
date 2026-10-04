@@ -764,16 +764,14 @@ msgstr ""
 msgid "Stalled"
 msgstr "지연됨"
 
-msgid "Tracker warning: '{warning}'"
-msgstr ""
+msgid "Tracker warning: {warning}"
+msgstr "트래커가 경고를 주었습니다: {warning}"
 
-#, fuzzy
-#| msgid "Tracker gave an error: {error}"
-msgid "Tracker error: '{error}'"
+msgid "Tracker error: {error}"
 msgstr "트래커가 오류를 주었습니다: {error}"
 
-msgid "Local error: '{error}'"
-msgstr ""
+msgid "Error: {error}"
+msgstr "오류: {error}"
 
 #, no-c-format
 msgid "Downloading metadata from {active_count:L} connected peer ({percent_done}% done)"
@@ -2415,15 +2413,6 @@ msgstr "인증 필요함 (_A):"
 
 msgid "Remote root pa_th:"
 msgstr ""
-
-msgid "Tracker gave a warning: {warning}"
-msgstr "트래커가 경고를 주었습니다: {warning}"
-
-msgid "Tracker gave an error: {error}"
-msgstr "트래커가 오류를 주었습니다: {error}"
-
-msgid "Error: {error}"
-msgstr "오류: {error}"
 
 #. Translators: First part of torrent progress string,
 #. {percent_done} is the percentage of torrent metadata downloaded

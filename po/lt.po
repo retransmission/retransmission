@@ -791,16 +791,14 @@ msgstr ""
 msgid "Stalled"
 msgstr "Sustojęs"
 
-msgid "Tracker warning: '{warning}'"
-msgstr ""
+msgid "Tracker warning: {warning}"
+msgstr "Sekiklis įspėjo: {warning}"
 
-#, fuzzy
-#| msgid "Tracker gave an error: {error}"
-msgid "Tracker error: '{error}'"
+msgid "Tracker error: {error}"
 msgstr "Sekiklis pranešė apie klaidą: {error}"
 
-msgid "Local error: '{error}'"
-msgstr "Vietinė klaida: '{error}'"
+msgid "Error: {error}"
+msgstr "Klaida: {error}"
 
 #, no-c-format
 msgid "Downloading metadata from {active_count:L} connected peer ({percent_done}% done)"
@@ -2540,15 +2538,6 @@ msgstr "Reikia patvirtinti _tapatybę"
 
 msgid "Remote root pa_th:"
 msgstr ""
-
-msgid "Tracker gave a warning: {warning}"
-msgstr "Sekiklis įspėjo: {warning}"
-
-msgid "Tracker gave an error: {error}"
-msgstr "Sekiklis pranešė apie klaidą: {error}"
-
-msgid "Error: {error}"
-msgstr "Klaida: {error}"
 
 #. Translators: First part of torrent progress string,
 #. {percent_done} is the percentage of torrent metadata downloaded

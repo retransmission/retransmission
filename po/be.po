@@ -788,13 +788,13 @@ msgstr ""
 msgid "Stalled"
 msgstr "Спынена"
 
-msgid "Tracker warning: '{warning}'"
+msgid "Tracker warning: {warning}"
 msgstr ""
 
 msgid "Tracker Error: '{error}'"
 msgstr "Памылка трэкера: '{error}'"
 
-msgid "Local error: '{error}'"
+msgid "Error: {error}"
 msgstr "Лакальная памылка: '{error}'"
 
 #, no-c-format

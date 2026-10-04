@@ -321,10 +321,10 @@ QString Torrent::getError() const
 {
     switch (error_) {
     case tr_stat::Error::TrackerWarning:
-        return TR_FORMAT("Tracker gave a warning: {warning}", fmt::arg("warning", error_string_));
+        return TR_FORMAT("Tracker warning: {warning}", fmt::arg("warning", error_string_));
 
     case tr_stat::Error::TrackerError:
-        return TR_FORMAT("Tracker gave an error: {error}", fmt::arg("error", error_string_));
+        return TR_FORMAT("Tracker error: {error}", fmt::arg("error", error_string_));
 
     case tr_stat::Error::LocalError:
         return TR_FORMAT("Error: {error}", fmt::arg("error", error_string_));

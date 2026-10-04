@@ -526,7 +526,6 @@ msgid "Verifying"
 msgstr "Sprawdzanie"
 
 #. Translators: Filter Bar -> filter button
-#. Translators: Torrent -> status string
 msgid "Error"
 msgstr "Błąd"
 
@@ -887,16 +886,14 @@ msgstr "{download_speed} ▾  {upload_speed} ▴"
 msgid "Stalled"
 msgstr "Zawieszony"
 
-msgid "Tracker warning: '{warning}'"
+msgid "Tracker warning: {warning}"
 msgstr "Ostrzeżenie serwera śledzącego: „{warning}”"
 
-#, fuzzy
-#| msgid "Tracker Error: '{error}'"
-msgid "Tracker error: '{error}'"
-msgstr "Błąd serwera śledzącego: „{error}”"
+msgid "Tracker error: {error}"
+msgstr "Serwer śledzący zwrócił błąd: {error}"
 
-msgid "Local error: '{error}'"
-msgstr "Błąd lokalny: „{error}”"
+msgid "Error: {error}"
+msgstr "Błąd: {error}"
 
 #, no-c-format
 msgid "Downloading metadata from {active_count:L} connected peer ({percent_done}% done)"
@@ -4075,14 +4072,6 @@ msgid "uploaded {uploaded_size} (Ratio: {ratio})"
 msgstr "wysłano {uploaded_size} (udział: {ratio})"
 
 #. Translators: Torrent -> status string
-msgid "Tracker returned error"
-msgstr "Serwer śledzący zwrócił błąd"
-
-#. Translators: Torrent -> status string
-msgid "Tracker returned warning"
-msgstr "Serwer śledzący zwrócił ostrzeżenie"
-
-#. Translators: Torrent -> status string
 msgid "web seed"
 msgstr "wysyłający w sieci"
 
@@ -4468,15 +4457,6 @@ msgstr "_Wymaga uwierzytelnienia"
 msgid "Remote root pa_th:"
 msgstr ""
 
-msgid "Tracker gave a warning: {warning}"
-msgstr "Serwer śledzący zwrócił ostrzeżenie: {warning}"
-
-msgid "Tracker gave an error: {error}"
-msgstr "Serwer śledzący zwrócił błąd: {error}"
-
-msgid "Error: {error}"
-msgstr "Błąd: {error}"
-
 #. Translators: First part of torrent progress string,
 #. {percent_done} is the percentage of torrent metadata downloaded
 #, fuzzy
@@ -4562,6 +4542,12 @@ msgstr[0] "sekunda"
 msgstr[1] "sekundy"
 msgstr[2] "sekund"
 msgstr[3] "sekund"
+
+#~ msgid "Tracker returned error"
+#~ msgstr "Serwer śledzący zwrócił błąd"
+
+#~ msgid "Tracker returned warning"
+#~ msgstr "Serwer śledzący zwrócił ostrzeżenie"
 
 #~ msgid "{file_count:L} File"
 #~ msgid_plural "{file_count:L} Files"

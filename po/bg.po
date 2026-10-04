@@ -778,13 +778,13 @@ msgstr "{download_speed} ▾ {upload_speed} ▴"
 msgid "Stalled"
 msgstr "В застой"
 
-msgid "Tracker warning: '{warning}'"
+msgid "Tracker warning: {warning}"
 msgstr "Предупреждение от тракера: {warning}"
 
 msgid "Tracker Error: '{error}'"
 msgstr "Грешка на тракера:{error}"
 
-msgid "Local error: '{error}'"
+msgid "Error: {error}"
 msgstr "Локална грешка:{error}"
 
 #, no-c-format

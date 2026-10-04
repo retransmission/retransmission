@@ -781,16 +781,14 @@ msgstr ""
 msgid "Stalled"
 msgstr "zastal prenos"
 
-msgid "Tracker warning: '{warning}'"
-msgstr ""
+msgid "Tracker warning: {warning}"
+msgstr "Sledilnik je vrnil opozorilo: {warning}"
 
-#, fuzzy
-#| msgid "Tracker gave an error: {error}"
-msgid "Tracker error: '{error}'"
+msgid "Tracker error: {error}"
 msgstr "Sledilnik je vrnil napako: {error}"
 
-msgid "Local error: '{error}'"
-msgstr ""
+msgid "Error: {error}"
+msgstr "Napaka: {error}"
 
 #, no-c-format
 msgid "Downloading metadata from {active_count:L} connected peer ({percent_done}% done)"
@@ -2496,15 +2494,6 @@ msgstr "Zahtevano overjanje"
 
 msgid "Remote root pa_th:"
 msgstr ""
-
-msgid "Tracker gave a warning: {warning}"
-msgstr "Sledilnik je vrnil opozorilo: {warning}"
-
-msgid "Tracker gave an error: {error}"
-msgstr "Sledilnik je vrnil napako: {error}"
-
-msgid "Error: {error}"
-msgstr "Napaka: {error}"
 
 #. Translators: First part of torrent progress string,
 #. {percent_done} is the percentage of torrent metadata downloaded

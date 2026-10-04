@@ -762,13 +762,13 @@ msgstr ""
 msgid "Stalled"
 msgstr "Seiskunud"
 
-msgid "Tracker warning: '{warning}'"
+msgid "Tracker warning: {warning}"
 msgstr "Jälitaja hoiatus: '{warning}'"
 
 msgid "Tracker Error: '{error}'"
 msgstr ""
 
-msgid "Local error: '{error}'"
+msgid "Error: {error}"
 msgstr ""
 
 #, no-c-format

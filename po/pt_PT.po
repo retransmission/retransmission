@@ -478,7 +478,6 @@ msgid "Verifying"
 msgstr "A verificar"
 
 #. Translators: Filter Bar -> filter button
-#. Translators: Torrent -> status string
 msgid "Error"
 msgstr "Erro"
 
@@ -833,16 +832,14 @@ msgstr ""
 msgid "Stalled"
 msgstr "Paralisado"
 
-msgid "Tracker warning: '{warning}'"
-msgstr ""
+msgid "Tracker warning: {warning}"
+msgstr "O tracker devolveu um aviso: {warning}"
 
-#, fuzzy
-#| msgid "Tracker gave an error: {error}"
-msgid "Tracker error: '{error}'"
+msgid "Tracker error: {error}"
 msgstr "O tracker devolveu um erro: {error}"
 
-msgid "Local error: '{error}'"
-msgstr ""
+msgid "Error: {error}"
+msgstr "Erro: {error}"
 
 #, no-c-format
 msgid "Downloading metadata from {active_count:L} connected peer ({percent_done}% done)"
@@ -3984,14 +3981,6 @@ msgid "uploaded {uploaded_size} (Ratio: {ratio})"
 msgstr "enviou {uploaded_size} (Rácio: {ratio})"
 
 #. Translators: Torrent -> status string
-msgid "Tracker returned error"
-msgstr "O tracker responder com erro"
-
-#. Translators: Torrent -> status string
-msgid "Tracker returned warning"
-msgstr "O tracker respondeu com aviso"
-
-#. Translators: Torrent -> status string
 msgid "web seed"
 msgstr "seed da web"
 
@@ -4393,15 +4382,6 @@ msgstr "_Autenticação Necessária"
 msgid "Remote root pa_th:"
 msgstr ""
 
-msgid "Tracker gave a warning: {warning}"
-msgstr "O tracker devolveu um aviso: {warning}"
-
-msgid "Tracker gave an error: {error}"
-msgstr "O tracker devolveu um erro: {error}"
-
-msgid "Error: {error}"
-msgstr "Erro: {error}"
-
 #. Translators: First part of torrent progress string,
 #. {percent_done} is the percentage of torrent metadata downloaded
 #, fuzzy
@@ -4474,6 +4454,12 @@ msgid_plural "seconds"
 msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
+
+#~ msgid "Tracker returned error"
+#~ msgstr "O tracker responder com erro"
+
+#~ msgid "Tracker returned warning"
+#~ msgstr "O tracker respondeu com aviso"
 
 #~ msgid "{file_count:L} File"
 #~ msgid_plural "{file_count:L} Files"

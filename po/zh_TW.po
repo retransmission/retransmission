@@ -488,7 +488,6 @@ msgid "Verifying"
 msgstr "正在驗證"
 
 #. Translators: Filter Bar -> filter button
-#. Translators: Torrent -> status string
 msgid "Error"
 msgstr "錯誤"
 
@@ -843,16 +842,14 @@ msgstr "{download_speed} ▾  {upload_speed} ▴"
 msgid "Stalled"
 msgstr "已停滯"
 
-msgid "Tracker warning: '{warning}'"
+msgid "Tracker warning: {warning}"
 msgstr "追蹤器警告：'{warning}'"
 
-#, fuzzy
-#| msgid "Tracker Error: '{error}'"
-msgid "Tracker error: '{error}'"
-msgstr "追蹤器錯誤：'{error}'"
+msgid "Tracker error: {error}"
+msgstr "追蹤器出現錯誤：{error}"
 
-msgid "Local error: '{error}'"
-msgstr "本機錯誤：'{error}'"
+msgid "Error: {error}"
+msgstr "錯誤: {error}"
 
 #, no-c-format
 msgid "Downloading metadata from {active_count:L} connected peer ({percent_done}% done)"
@@ -3894,14 +3891,6 @@ msgid "uploaded {uploaded_size} (Ratio: {ratio})"
 msgstr "已上傳 {uploaded_size} (比例: {ratio})"
 
 #. Translators: Torrent -> status string
-msgid "Tracker returned error"
-msgstr "追蹤器回傳錯誤"
-
-#. Translators: Torrent -> status string
-msgid "Tracker returned warning"
-msgstr "追蹤器回傳警告"
-
-#. Translators: Torrent -> status string
 msgid "web seed"
 msgstr "網路種子"
 
@@ -4263,15 +4252,6 @@ msgstr "需要認證 (_A)"
 msgid "Remote root pa_th:"
 msgstr ""
 
-msgid "Tracker gave a warning: {warning}"
-msgstr "追蹤器出現警告：{warning}"
-
-msgid "Tracker gave an error: {error}"
-msgstr "追蹤器出現錯誤：{error}"
-
-msgid "Error: {error}"
-msgstr "錯誤: {error}"
-
 #. Translators: First part of torrent progress string,
 #. {percent_done} is the percentage of torrent metadata downloaded
 #, fuzzy
@@ -4327,6 +4307,12 @@ msgstr[0] "天"
 msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "秒"
+
+#~ msgid "Tracker returned error"
+#~ msgstr "追蹤器回傳錯誤"
+
+#~ msgid "Tracker returned warning"
+#~ msgstr "追蹤器回傳警告"
 
 #~ msgid "{file_count:L} File"
 #~ msgid_plural "{file_count:L} Files"

@@ -480,7 +480,6 @@ msgid "Verifying"
 msgstr "Egiaztatzen"
 
 #. Translators: Filter Bar -> filter button
-#. Translators: Torrent -> status string
 msgid "Error"
 msgstr "Errorea"
 
@@ -837,16 +836,14 @@ msgstr "{download_speed} ▾  {upload_speed} ▴"
 msgid "Stalled"
 msgstr "Trabatuta"
 
-msgid "Tracker warning: '{warning}'"
+msgid "Tracker warning: {warning}"
 msgstr "Aztarnari oharra: '{warning}'"
 
-#, fuzzy
-#| msgid "Tracker Error: '{error}'"
-msgid "Tracker error: '{error}'"
-msgstr "Aztarnari-errorea: '{error}'"
+msgid "Tracker error: {error}"
+msgstr "Aztarnariak errore bat eman du: {error}"
 
-msgid "Local error: '{error}'"
-msgstr "Errore lokala: '{error}'"
+msgid "Error: {error}"
+msgstr "Errorea: {error}"
 
 #, no-c-format
 msgid "Downloading metadata from {active_count:L} connected peer ({percent_done}% done)"
@@ -3947,14 +3944,6 @@ msgid "uploaded {uploaded_size} (Ratio: {ratio})"
 msgstr " {uploaded_size} igota (Maila: {ratio})"
 
 #. Translators: Torrent -> status string
-msgid "Tracker returned error"
-msgstr "Aztarnariak errorea itzuli du"
-
-#. Translators: Torrent -> status string
-msgid "Tracker returned warning"
-msgstr "Aztarnariak oharra itzuli du"
-
-#. Translators: Torrent -> status string
 msgid "web seed"
 msgstr "web igortzea"
 
@@ -4324,15 +4313,6 @@ msgstr "_Autentifikazioa behar da"
 msgid "Remote root pa_th:"
 msgstr ""
 
-msgid "Tracker gave a warning: {warning}"
-msgstr "Aztarnariak ohar bat eman du: {warning}"
-
-msgid "Tracker gave an error: {error}"
-msgstr "Aztarnariak errore bat eman du: {error}"
-
-msgid "Error: {error}"
-msgstr "Errorea: {error}"
-
 #. Translators: First part of torrent progress string,
 #. {percent_done} is the percentage of torrent metadata downloaded
 #, fuzzy
@@ -4398,6 +4378,12 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "segundo"
 msgstr[1] "segundo"
+
+#~ msgid "Tracker returned error"
+#~ msgstr "Aztarnariak errorea itzuli du"
+
+#~ msgid "Tracker returned warning"
+#~ msgstr "Aztarnariak oharra itzuli du"
 
 #~ msgid "{file_count:L} File"
 #~ msgid_plural "{file_count:L} Files"

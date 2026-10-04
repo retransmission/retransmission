@@ -758,13 +758,13 @@ msgstr ""
 msgid "Stalled"
 msgstr "Agardando"
 
-msgid "Tracker warning: '{warning}'"
+msgid "Tracker warning: {warning}"
 msgstr ""
 
 msgid "Tracker Error: '{error}'"
 msgstr ""
 
-msgid "Local error: '{error}'"
+msgid "Error: {error}"
 msgstr ""
 
 #, no-c-format

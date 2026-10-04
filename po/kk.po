@@ -753,16 +753,14 @@ msgstr ""
 msgid "Stalled"
 msgstr "Тоқтап қалды"
 
-msgid "Tracker warning: '{warning}'"
-msgstr ""
+msgid "Tracker warning: {warning}"
+msgstr "Трекер ескерту жіберген: {warning}"
 
-#, fuzzy
-#| msgid "Tracker gave an error: {error}"
-msgid "Tracker error: '{error}'"
+msgid "Tracker error: {error}"
 msgstr "Трекер қате жіберген: {error}"
 
-msgid "Local error: '{error}'"
-msgstr ""
+msgid "Error: {error}"
+msgstr "Қате: {error}"
 
 #, no-c-format
 msgid "Downloading metadata from {active_count:L} connected peer ({percent_done}% done)"
@@ -2452,15 +2450,6 @@ msgstr "_Аутентификацияны қолдану"
 
 msgid "Remote root pa_th:"
 msgstr ""
-
-msgid "Tracker gave a warning: {warning}"
-msgstr "Трекер ескерту жіберген: {warning}"
-
-msgid "Tracker gave an error: {error}"
-msgstr "Трекер қате жіберген: {error}"
-
-msgid "Error: {error}"
-msgstr "Қате: {error}"
 
 #. Translators: First part of torrent progress string,
 #. {percent_done} is the percentage of torrent metadata downloaded

@@ -117,6 +117,12 @@ RENAMES = [
             'msgid_plural': 'Downloading metadata from {active_count:L} connected peers ({percent_done}% done)',
         },
     },
+    # A torrent's error status reads the same in every client. The GTK client's translations keep their quotes.
+    {'from': {'msgid': "Tracker warning: '{warning}'"}, 'to': {'msgid': 'Tracker warning: {warning}'}},
+    {'from': {'msgid': 'Tracker gave a warning: {warning}'}, 'to': {'msgid': 'Tracker warning: {warning}'}},
+    {'from': {'msgid': "Tracker error: '{error}'"}, 'to': {'msgid': 'Tracker error: {error}'}},
+    {'from': {'msgid': 'Tracker gave an error: {error}'}, 'to': {'msgid': 'Tracker error: {error}'}},
+    {'from': {'msgid': "Local error: '{error}'"}, 'to': {'msgid': 'Error: {error}'}},
 ]
 
 FIELD_NAMES = ('msgctxt', 'msgid', 'msgid_plural')

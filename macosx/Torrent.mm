@@ -1087,26 +1087,19 @@ static tr_torrent_rename_done_func makeRenameDoneCallback(NSDictionary* contextI
     NSString* string;
 
     if (self.anyErrorOrWarning) {
+        // errorMessage is never empty: it says so when the error is unknown.
         switch (self.fStat.error) {
         case tr_stat::Error::LocalError:
-            // Translators: Torrent -> status string
-            string = TR_TEXT("Error");
+            string = TR_FORMAT("Error: {error}", TRArg("error", self.errorMessage));
             break;
         case tr_stat::Error::TrackerError:
-            // Translators: Torrent -> status string
-            string = TR_TEXT("Tracker returned error");
+            string = TR_FORMAT("Tracker error: {error}", TRArg("error", self.errorMessage));
             break;
         case tr_stat::Error::TrackerWarning:
-            // Translators: Torrent -> status string
-            string = TR_TEXT("Tracker returned warning");
+            string = TR_FORMAT("Tracker warning: {warning}", TRArg("warning", self.errorMessage));
             break;
         default:
             NSAssert(NO, @"unknown error state");
-        }
-
-        NSString* errorString = self.errorMessage;
-        if (errorString && ![errorString isEqualToString:@""]) {
-            string = [string stringByAppendingFormat:@": %@", errorString];
         }
     } else {
         switch (self.fStat.activity) {

@@ -506,7 +506,6 @@ msgid "Verifying"
 msgstr "In verifica"
 
 #. Translators: Filter Bar -> filter button
-#. Translators: Torrent -> status string
 msgid "Error"
 msgstr "Errore"
 
@@ -861,16 +860,14 @@ msgstr ""
 msgid "Stalled"
 msgstr "Stallo"
 
-msgid "Tracker warning: '{warning}'"
-msgstr ""
+msgid "Tracker warning: {warning}"
+msgstr "Il tracker ha dato un avviso: {warning}"
 
-#, fuzzy
-#| msgid "Tracker gave an error: {error}"
-msgid "Tracker error: '{error}'"
+msgid "Tracker error: {error}"
 msgstr "Il tracker ha dato un errore: {error}"
 
-msgid "Local error: '{error}'"
-msgstr ""
+msgid "Error: {error}"
+msgstr "Errore: {error}"
 
 #, no-c-format
 msgid "Downloading metadata from {active_count:L} connected peer ({percent_done}% done)"
@@ -4015,14 +4012,6 @@ msgid "uploaded {uploaded_size} (Ratio: {ratio})"
 msgstr "inviati {uploaded_size} (rapporto: {ratio})"
 
 #. Translators: Torrent -> status string
-msgid "Tracker returned error"
-msgstr "Il server traccia ha restituito un errore"
-
-#. Translators: Torrent -> status string
-msgid "Tracker returned warning"
-msgstr "Il server traccia ha restituito un avviso"
-
-#. Translators: Torrent -> status string
 msgid "web seed"
 msgstr "seeder web"
 
@@ -4406,15 +4395,6 @@ msgstr "_Autenticazione richiesta"
 msgid "Remote root pa_th:"
 msgstr ""
 
-msgid "Tracker gave a warning: {warning}"
-msgstr "Il tracker ha dato un avviso: {warning}"
-
-msgid "Tracker gave an error: {error}"
-msgstr "Il tracker ha dato un errore: {error}"
-
-msgid "Error: {error}"
-msgstr "Errore: {error}"
-
 #. Translators: First part of torrent progress string,
 #. {percent_done} is the percentage of torrent metadata downloaded
 #, fuzzy
@@ -4491,6 +4471,12 @@ msgid_plural "seconds"
 msgstr[0] "secondo"
 msgstr[1] "secondi"
 msgstr[2] "secondi"
+
+#~ msgid "Tracker returned error"
+#~ msgstr "Il server traccia ha restituito un errore"
+
+#~ msgid "Tracker returned warning"
+#~ msgstr "Il server traccia ha restituito un avviso"
 
 #, fuzzy
 #~| msgid "{total_size} in {file_count:L} file"

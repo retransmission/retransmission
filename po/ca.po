@@ -768,16 +768,14 @@ msgstr ""
 msgid "Stalled"
 msgstr "Encallat"
 
-msgid "Tracker warning: '{warning}'"
-msgstr ""
+msgid "Tracker warning: {warning}"
+msgstr "El rastrejador ha emès un avís: «{warning}»"
 
-#, fuzzy
-#| msgid "Tracker gave an error: {error}"
-msgid "Tracker error: '{error}'"
+msgid "Tracker error: {error}"
 msgstr "El rastrejador ha emès un error: «{error}»"
 
-msgid "Local error: '{error}'"
-msgstr ""
+msgid "Error: {error}"
+msgstr "Error: {error}"
 
 #, no-c-format
 msgid "Downloading metadata from {active_count:L} connected peer ({percent_done}% done)"
@@ -2454,15 +2452,6 @@ msgstr "Requereix l'_autenticació"
 
 msgid "Remote root pa_th:"
 msgstr ""
-
-msgid "Tracker gave a warning: {warning}"
-msgstr "El rastrejador ha emès un avís: «{warning}»"
-
-msgid "Tracker gave an error: {error}"
-msgstr "El rastrejador ha emès un error: «{error}»"
-
-msgid "Error: {error}"
-msgstr "Error: {error}"
 
 #. Translators: First part of torrent progress string,
 #. {percent_done} is the percentage of torrent metadata downloaded

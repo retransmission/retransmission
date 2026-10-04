@@ -754,16 +754,14 @@ msgstr ""
 msgid "Stalled"
 msgstr "निष्क्रिय"
 
-msgid "Tracker warning: '{warning}'"
-msgstr ""
+msgid "Tracker warning: {warning}"
+msgstr "ट्रैकर द्वारा चेतावनी : {warning}"
 
-#, fuzzy
-#| msgid "Tracker gave an error: {error}"
-msgid "Tracker error: '{error}'"
+msgid "Tracker error: {error}"
 msgstr "ट्रैकर द्वारा त्रुटि : {error}"
 
-msgid "Local error: '{error}'"
-msgstr ""
+msgid "Error: {error}"
+msgstr "त्रुटि : {error}"
 
 #, no-c-format
 msgid "Downloading metadata from {active_count:L} connected peer ({percent_done}% done)"
@@ -2427,15 +2425,6 @@ msgstr "पुष्टिकरण आवश्यक (_A)"
 
 msgid "Remote root pa_th:"
 msgstr ""
-
-msgid "Tracker gave a warning: {warning}"
-msgstr "ट्रैकर द्वारा चेतावनी : {warning}"
-
-msgid "Tracker gave an error: {error}"
-msgstr "ट्रैकर द्वारा त्रुटि : {error}"
-
-msgid "Error: {error}"
-msgstr "त्रुटि : {error}"
 
 #. Translators: First part of torrent progress string,
 #. {percent_done} is the percentage of torrent metadata downloaded
