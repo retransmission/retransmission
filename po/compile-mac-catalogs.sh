@@ -34,13 +34,17 @@ fi
 for LPROJ in macosx/*.lproj; do
   LANGUAGE=$(basename "$LPROJ" .lproj)
   PO="po/$(echo "$LANGUAGE" | tr - _).po"
-  mkdir -p "$RESOURCES/$LANGUAGE.lproj"
-  if [ -n "$MSGFMT" ] && [ -f "$PO" ]; then
+  if [ "$LANGUAGE" = Base ]; then
+    continue
+  elif [ -n "$MSGFMT" ] && [ -f "$PO" ]; then
+    mkdir -p "$RESOURCES/$LANGUAGE.lproj"
     # The app looks for a catalog named after the gettext domain, which is the app's name.
     "$MSGFMT" --output-file="$RESOURCES/$LANGUAGE.lproj/retransmission.mo" "$PO"
     "$PYTHON3" release/mac-xib-strings.py strings "$PO" "$RESOURCES/$LANGUAGE.lproj" macosx/Base.lproj/*.xib
-  else
-    # English, or a language whose catalog can't be compiled: the xibs' own text, without its markers.
+  elif [ "$LANGUAGE" = en ] || [ -d "$RESOURCES/$LANGUAGE.lproj" ]; then
+    # English, or a language that the bundle has a folder for but no catalog: the xibs' own text, without its markers.
+    # No folder is made for such a language, since AppKit would run the app in it.
+    mkdir -p "$RESOURCES/$LANGUAGE.lproj"
     "$PYTHON3" release/mac-xib-strings.py strings - "$RESOURCES/$LANGUAGE.lproj" macosx/Base.lproj/*.xib
   fi
 done
