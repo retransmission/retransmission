@@ -3550,11 +3550,11 @@ msgid "The torrent will not contact trackers for peers, and will have to rely so
 msgstr ""
 
 #. Translators: Create torrent -> info
-msgid "{count} piece, {size}"
-msgid_plural "{count} pieces, {size} each"
-msgstr[0] "{count} parte, {size}"
-msgstr[1] "{count} parti, {size} ciascuna"
-msgstr[2] "{count} parti, {size} ciascuna"
+msgid "{piece_count:L} piece, {piece_size}"
+msgid_plural "{piece_count:L} pieces, {piece_size} each"
+msgstr[0] "{piece_count:L} parte, {piece_size}"
+msgstr[1] "{piece_count:L} parti, {piece_size} ciascuna"
+msgstr[2] "{piece_count:L} parti, {piece_size} ciascuna"
 
 msgid "Select a file or folder for the torrent file."
 msgstr "Selezionare un file o una cartella per il file torrent."
@@ -4427,14 +4427,8 @@ msgstr[2] ""
 msgid " - "
 msgstr " - "
 
-msgid "{file_count:L} file, {total_size}\n"
-msgid_plural "{file_count:L} files, {total_size}\n"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-
-msgid "{piece_count:L} piece, {piece_size}\n"
-msgid_plural "{piece_count:L} pieces, {piece_size} each\n"
+msgid "{file_count:L} file, {total_size}"
+msgid_plural "{file_count:L} files, {total_size}"
 msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""

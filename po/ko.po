@@ -2439,12 +2439,12 @@ msgstr[0] "{active_count:L} 피어로부터 시드중"
 msgid " - "
 msgstr " - "
 
-msgid "{file_count:L} file, {total_size}\n"
-msgid_plural "{file_count:L} files, {total_size}\n"
+msgid "{file_count:L} file, {total_size}"
+msgid_plural "{file_count:L} files, {total_size}"
 msgstr[0] ""
 
-msgid "{piece_count:L} piece, {piece_size}\n"
-msgid_plural "{piece_count:L} pieces, {piece_size} each\n"
+msgid "{piece_count:L} piece, {piece_size}"
+msgid_plural "{piece_count:L} pieces, {piece_size} each"
 msgstr[0] ""
 
 msgid "hour"

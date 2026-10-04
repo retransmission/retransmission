@@ -3515,10 +3515,10 @@ msgid "The torrent will not contact trackers for peers, and will have to rely so
 msgstr ""
 
 #. Translators: Create torrent -> info
-msgid "{count} piece, {size}"
-msgid_plural "{count} pieces, {size} each"
-msgstr[0] "{count} κομμάτι, {size}"
-msgstr[1] "{count} κομμάτια, {size} έκαστο"
+msgid "{piece_count:L} piece, {piece_size}"
+msgid_plural "{piece_count:L} pieces, {piece_size} each"
+msgstr[0] "{piece_count:L} κομμάτι, {piece_size}"
+msgstr[1] "{piece_count:L} κομμάτια, {piece_size} έκαστο"
 
 msgid "Select a file or folder for the torrent file."
 msgstr "Επιλογή ενός αρχείου ή φακέλου για το αρχείο torrent."
@@ -4360,15 +4360,10 @@ msgstr[1] "Διαμοιρασμός σε {active_count:L} χρήστες"
 msgid " - "
 msgstr " - "
 
-msgid "{file_count:L} file, {total_size}\n"
-msgid_plural "{file_count:L} files, {total_size}\n"
-msgstr[0] "{file_count:L} αρχείο, {total_size}\n"
-msgstr[1] "{file_count:L} αρχεία, {total_size}\n"
-
-msgid "{piece_count:L} piece, {piece_size}\n"
-msgid_plural "{piece_count:L} pieces, {piece_size} each\n"
-msgstr[0] "{piece_count:L} κομμάτι, {piece_size}\n"
-msgstr[1] "{piece_count:L} κομμάτια, {piece_size} έκαστο\n"
+msgid "{file_count:L} file, {total_size}"
+msgid_plural "{file_count:L} files, {total_size}"
+msgstr[0] "{file_count:L} αρχείο, {total_size}"
+msgstr[1] "{file_count:L} αρχεία, {total_size}"
 
 msgid "hour"
 msgid_plural "hours"

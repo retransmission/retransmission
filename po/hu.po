@@ -3514,10 +3514,10 @@ msgid "The torrent will not contact trackers for peers, and will have to rely so
 msgstr ""
 
 #. Translators: Create torrent -> info
-msgid "{count} piece, {size}"
-msgid_plural "{count} pieces, {size} each"
-msgstr[0] "{count} szelet, {size}"
-msgstr[1] "{count} szelet, egyenként {size}"
+msgid "{piece_count:L} piece, {piece_size}"
+msgid_plural "{piece_count:L} pieces, {piece_size} each"
+msgstr[0] "{piece_count:L} darab, {piece_size}-os szelet"
+msgstr[1] "{piece_count:L} darab, {piece_size}-os szelet"
 
 msgid "Select a file or folder for the torrent file."
 msgstr "Válasszon fájlt vagy mappát a torrent fájlhoz."
@@ -4358,15 +4358,10 @@ msgstr[1] "Seedelés a {active_count:L} partnernek"
 msgid " - "
 msgstr " - "
 
-msgid "{file_count:L} file, {total_size}\n"
-msgid_plural "{file_count:L} files, {total_size}\n"
-msgstr[0] "{file_count:L} fájl, {total_size}\n"
-msgstr[1] "{file_count:L} fájl, {total_size}\n"
-
-msgid "{piece_count:L} piece, {piece_size}\n"
-msgid_plural "{piece_count:L} pieces, {piece_size} each\n"
-msgstr[0] "{piece_count:L} darab, {piece_size}-os szelet\n"
-msgstr[1] "{piece_count:L} darab, {piece_size}-os szelet\n"
+msgid "{file_count:L} file, {total_size}"
+msgid_plural "{file_count:L} files, {total_size}"
+msgstr[0] "{file_count:L} fájl, {total_size}"
+msgstr[1] "{file_count:L} fájl, {total_size}"
 
 msgid "hour"
 msgid_plural "hours"

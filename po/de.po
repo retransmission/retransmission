@@ -3546,10 +3546,10 @@ msgid "The torrent will not contact trackers for peers, and will have to rely so
 msgstr ""
 
 #. Translators: Create torrent -> info
-msgid "{count} piece, {size}"
-msgid_plural "{count} pieces, {size} each"
-msgstr[0] "{count} Teilstück, {size}"
-msgstr[1] "{count} Teilstücke à {size}"
+msgid "{piece_count:L} piece, {piece_size}"
+msgid_plural "{piece_count:L} pieces, {piece_size} each"
+msgstr[0] "{piece_count:L} Teil, {piece_size}"
+msgstr[1] "{piece_count:L} Teile, jeweils {piece_size}"
 
 msgid "Select a file or folder for the torrent file."
 msgstr "Datei oder Ordner, für den die Torrent-Datei erstellt werden soll, auswählen."
@@ -4388,15 +4388,10 @@ msgstr[1] "Verteile an {active_count:L} Peers"
 msgid " - "
 msgstr " - "
 
-msgid "{file_count:L} file, {total_size}\n"
-msgid_plural "{file_count:L} files, {total_size}\n"
-msgstr[0] "{file_count:L} Datei, {total_size}\n"
-msgstr[1] "{file_count:L} Dateien, {total_size}\n"
-
-msgid "{piece_count:L} piece, {piece_size}\n"
-msgid_plural "{piece_count:L} pieces, {piece_size} each\n"
-msgstr[0] "{piece_count:L} Teil, {piece_size}\n"
-msgstr[1] "{piece_count:L} Teile, jeweils {piece_size}\n"
+msgid "{file_count:L} file, {total_size}"
+msgid_plural "{file_count:L} files, {total_size}"
+msgstr[0] "{file_count:L} Datei, {total_size}"
+msgstr[1] "{file_count:L} Dateien, {total_size}"
 
 msgid "hour"
 msgid_plural "hours"

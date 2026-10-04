@@ -3464,9 +3464,9 @@ msgid "The torrent will not contact trackers for peers, and will have to rely so
 msgstr ""
 
 #. Translators: Create torrent -> info
-msgid "{count} piece, {size}"
-msgid_plural "{count} pieces, {size} each"
-msgstr[0] "總計 {count} 個區塊，區塊大小為 {size}"
+msgid "{piece_count:L} piece, {piece_size}"
+msgid_plural "{piece_count:L} pieces, {piece_size} each"
+msgstr[0] "總計 {piece_count:L} 個區塊，區塊大小為 {piece_size}"
 
 msgid "Select a file or folder for the torrent file."
 msgstr "選擇 torrent 檔案或資料夾。"
@@ -4277,13 +4277,9 @@ msgstr[0] "正在為 {active_count:L} 個節點做種"
 msgid " - "
 msgstr " - "
 
-msgid "{file_count:L} file, {total_size}\n"
-msgid_plural "{file_count:L} files, {total_size}\n"
-msgstr[0] "{file_count:L} 個檔案，大小為 {total_size}\n"
-
-msgid "{piece_count:L} piece, {piece_size}\n"
-msgid_plural "{piece_count:L} pieces, {piece_size} each\n"
-msgstr[0] "總計 {piece_count:L} 個區塊，區塊大小為 {piece_size}\n"
+msgid "{file_count:L} file, {total_size}"
+msgid_plural "{file_count:L} files, {total_size}"
+msgstr[0] "{file_count:L} 個檔案，大小為 {total_size}"
 
 msgid "hour"
 msgid_plural "hours"

@@ -123,6 +123,22 @@ RENAMES = [
     {'from': {'msgid': "Tracker error: '{error}'"}, 'to': {'msgid': 'Tracker error: {error}'}},
     {'from': {'msgid': 'Tracker gave an error: {error}'}, 'to': {'msgid': 'Tracker error: {error}'}},
     {'from': {'msgid': "Local error: '{error}'"}, 'to': {'msgid': 'Error: {error}'}},
+    # transmission-create prints its line breaks itself, so its piece summary is the Mac client's too.
+    {
+        'from': {'msgid': '{file_count:L} file, {total_size}\n', 'msgid_plural': '{file_count:L} files, {total_size}\n'},
+        'to': {'msgid': '{file_count:L} file, {total_size}', 'msgid_plural': '{file_count:L} files, {total_size}'},
+        'strip': ['\n'],
+    },
+    {
+        'from': {'msgid': '{piece_count:L} piece, {piece_size}\n', 'msgid_plural': '{piece_count:L} pieces, {piece_size} each\n'},
+        'to': {'msgid': '{piece_count:L} piece, {piece_size}', 'msgid_plural': '{piece_count:L} pieces, {piece_size} each'},
+        'strip': ['\n'],
+    },
+    {
+        'from': {'msgid': '{count} piece, {size}', 'msgid_plural': '{count} pieces, {size} each'},
+        'to': {'msgid': '{piece_count:L} piece, {piece_size}', 'msgid_plural': '{piece_count:L} pieces, {piece_size} each'},
+        'fields': {'count': 'piece_count:L', 'size': 'piece_size'},
+    },
 ]
 
 FIELD_NAMES = ('msgctxt', 'msgid', 'msgid_plural')
