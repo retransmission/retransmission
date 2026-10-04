@@ -18,6 +18,7 @@
 #import "CreatorWindowController.h"
 #import "Controller.h"
 #import "NSStringAdditions.h"
+#import "L10n.h"
 
 typedef NS_ENUM(NSUInteger, TrackerSegmentTag) {
     TrackerSegmentTagAdd = 0,
@@ -94,11 +95,9 @@ static NSMutableSet* creatorWindowControllerSet;
 
         if (_fBuilder->file_count() == 0U) {
             NSAlert* alert = [[NSAlert alloc] init];
-            [alert addButtonWithTitle:NSLocalizedString(@"OK", "Create torrent -> no files -> button")];
-            alert.messageText = NSLocalizedString(@"This folder contains no files.", "Create torrent -> no files -> title");
-            alert.informativeText = NSLocalizedString(
-                @"There must be at least one file in a folder to create a torrent file.",
-                "Create torrent -> no files -> warning");
+            [alert addButtonWithTitle:TR_TEXT("OK")];
+            alert.messageText = TR_TEXT("This folder contains no files.");
+            alert.informativeText = TR_TEXT("There must be at least one file in a folder to create a torrent file.");
             alert.alertStyle = NSAlertStyleWarning;
 
             [alert runModal];
@@ -107,9 +106,9 @@ static NSMutableSet* creatorWindowControllerSet;
         }
         if (_fBuilder->total_size() == 0U) {
             NSAlert* alert = [[NSAlert alloc] init];
-            [alert addButtonWithTitle:NSLocalizedString(@"OK", "Create torrent -> zero size -> button")];
-            alert.messageText = NSLocalizedString(@"The total file size is zero bytes.", "Create torrent -> zero size -> title");
-            alert.informativeText = NSLocalizedString(@"A torrent file cannot be created for files with no size.", "Create torrent -> zero size -> warning");
+            [alert addButtonWithTitle:TR_TEXT("OK")];
+            alert.messageText = TR_TEXT("The total file size is zero bytes.");
+            alert.informativeText = TR_TEXT("A torrent file cannot be created for files with no size.");
             alert.alertStyle = NSAlertStyleWarning;
 
             [alert runModal];
@@ -159,9 +158,7 @@ static NSMutableSet* creatorWindowControllerSet;
     NSString* status_string = [NSString stringForFileSize:self.fBuilder->total_size()];
     if (is_folder) {
         NSUInteger const count = self.fBuilder->file_count();
-        NSString* const fileString = count != 1 ?
-            [NSString localizedStringWithFormat:NSLocalizedString(@"%lu files", "Create torrent -> info"), count] :
-            NSLocalizedString(@"1 file", "Create torrent -> info");
+        NSString* const fileString = [NSString stringForFileCount:count];
         status_string = [NSString stringWithFormat:@"%@, %@", fileString, status_string];
     }
     self.fStatusField.stringValue = status_string;
@@ -239,8 +236,9 @@ static NSMutableSet* creatorWindowControllerSet;
 {
     NSSavePanel* panel = [NSSavePanel savePanel];
 
-    panel.prompt = NSLocalizedString(@"Select", "Create torrent -> location sheet -> button");
-    panel.message = NSLocalizedString(@"Select the name and location for the torrent file.", "Create torrent -> location sheet -> message");
+    // Translators: Create torrent -> location sheet -> button
+    panel.prompt = TR_TEXT("Select");
+    panel.message = TR_TEXT("Select the name and location for the torrent file.");
 
     panel.allowedFileTypes = @[ @"org.bittorrent.torrent", @"torrent" ];
     panel.canSelectHiddenExtension = YES;
@@ -267,22 +265,16 @@ static NSMutableSet* creatorWindowControllerSet;
     if (self.fTrackers.count == 0 &&
         [self.fDefaults boolForKey:isPrivate ? @"WarningCreatorPrivateBlankAddress" : @"WarningCreatorBlankAddress"]) {
         NSAlert* alert = [[NSAlert alloc] init];
-        alert.messageText = NSLocalizedString(@"There are no tracker addresses.", "Create torrent -> blank address -> title");
+        alert.messageText = TR_TEXT("There are no tracker addresses.");
 
         NSString* infoString = isPrivate ?
-            NSLocalizedString(
-                @"A torrent marked as private with no tracker addresses will be unable to connect to peers."
-                 " The torrent file will only be useful if you plan to upload the file to a tracker website"
-                 " that will add the addresses for you.",
-                "Create torrent -> blank address -> message") :
-            NSLocalizedString(
-                @"The torrent will not contact trackers for peers, and will have to rely solely on"
-                 " non-tracker peer discovery methods such as PEX and DHT to download and seed.",
-                "Create torrent -> blank address -> message");
+            TR_TEXT("A torrent marked as private with no tracker addresses will be unable to connect to peers. The torrent file will only be useful if you plan to upload the file to a tracker website that will add the addresses for you.") :
+            TR_TEXT("The torrent will not contact trackers for peers, and will have to rely solely on non-tracker peer discovery methods such as PEX and DHT to download and seed.");
 
         alert.informativeText = infoString;
-        [alert addButtonWithTitle:NSLocalizedString(@"Create", "Create torrent -> blank address -> button")];
-        [alert addButtonWithTitle:NSLocalizedString(@"Cancel", "Create torrent -> blank address -> button")];
+        // Translators: Create torrent -> blank address -> button
+        [alert addButtonWithTitle:TR_TEXT("Create")];
+        [alert addButtonWithTitle:TR_TEXT("Cancel")];
         alert.showsSuppressionButton = YES;
 
         [alert beginSheetModalForWindow:self.window completionHandler:^(NSModalResponse returnCode) {
@@ -459,14 +451,13 @@ static NSMutableSet* creatorWindowControllerSet;
     auto const piece_size = self.fBuilder->piece_size();
     auto const piece_count = self.fBuilder->piece_count();
 
-    if (piece_count == 1U) {
-        self.fPiecesField.stringValue = [NSString stringWithFormat:NSLocalizedString(@"1 piece, %@", "Create torrent -> info"),
-                                                                   [NSString stringForFileSize:piece_size]];
-    } else {
-        self.fPiecesField.stringValue = [NSString stringWithFormat:NSLocalizedString(@"%u pieces, %@ each", "Create torrent -> info"),
-                                                                   piece_count,
-                                                                   [NSString stringForFileSize:piece_size]];
-    }
+    self.fPiecesField.stringValue = TR_FORMAT_N(
+        // Translators: Create torrent -> info
+        "{count} piece, {size}",
+        "{count} pieces, {size} each",
+        piece_count,
+        TRArg("count", piece_count),
+        TRArg("size", [NSString stringForFileSize:piece_size]));
 }
 
 - (void)updateLocationField
@@ -480,14 +471,16 @@ static NSMutableSet* creatorWindowControllerSet;
 {
     NSOpenPanel* panel = [NSOpenPanel openPanel];
 
-    panel.title = NSLocalizedString(@"Create Torrent File", "Create torrent -> select file");
-    panel.prompt = NSLocalizedString(@"Select", "Create torrent -> select file");
+    // Translators: Create torrent -> select file
+    panel.title = TR_TEXT("Create Torrent File");
+    // Translators: Create torrent -> select file
+    panel.prompt = TR_TEXT("Select");
     panel.allowsMultipleSelection = NO;
     panel.canChooseFiles = YES;
     panel.canChooseDirectories = YES;
     panel.canCreateDirectories = NO;
 
-    panel.message = NSLocalizedString(@"Select a file or folder for the torrent file.", "Create torrent -> select file");
+    panel.message = TR_TEXT("Select a file or folder for the torrent file.");
 
     BOOL success = [panel runModal] == NSModalResponseOK;
     return success ? panel.URLs[0] : nil;
@@ -498,13 +491,11 @@ static NSMutableSet* creatorWindowControllerSet;
     //check if the location currently exists
     if (![self.fLocation.URLByDeletingLastPathComponent checkResourceIsReachableAndReturnError:NULL]) {
         NSAlert* alert = [[NSAlert alloc] init];
-        [alert addButtonWithTitle:NSLocalizedString(@"OK", "Create torrent -> directory doesn't exist warning -> button")];
-        alert.messageText = NSLocalizedString(@"The chosen torrent file location does not exist.", "Create torrent -> directory doesn't exist warning -> title");
-        alert.informativeText = [NSString stringWithFormat:NSLocalizedString(
-                                                               @"The directory \"%@\" does not currently exist. "
-                                                                "Create this directory or choose a different one to create the torrent file.",
-                                                               "Create torrent -> directory doesn't exist warning -> warning"),
-                                                           self.fLocation.URLByDeletingLastPathComponent.path];
+        [alert addButtonWithTitle:TR_TEXT("OK")];
+        alert.messageText = TR_TEXT("The chosen torrent file location does not exist.");
+        alert.informativeText = TR_FORMAT(
+            "The directory \"{directory}\" does not currently exist. Create this directory or choose a different one to create the torrent file.",
+            TRArg("directory", self.fLocation.URLByDeletingLastPathComponent.path));
         alert.alertStyle = NSAlertStyleWarning;
 
         [alert beginSheetModalForWindow:self.window completionHandler:nil];
@@ -517,16 +508,12 @@ static NSMutableSet* creatorWindowControllerSet;
         NSInteger count = pathComponents.count;
 
         NSAlert* alert = [[NSAlert alloc] init];
-        [alert addButtonWithTitle:NSLocalizedString(@"OK", "Create torrent -> file already exists warning -> button")];
-        alert.messageText = NSLocalizedString(
-            @"A torrent file with this name and directory cannot be created.",
-            "Create torrent -> file already exists warning -> title");
-        alert.informativeText = [NSString stringWithFormat:NSLocalizedString(
-                                                               @"A file with the name \"%@\" already exists in the directory \"%@\". "
-                                                                "Choose a new name or directory to create the torrent file.",
-                                                               "Create torrent -> file already exists warning -> warning"),
-                                                           pathComponents[count - 1],
-                                                           pathComponents[count - 2]];
+        [alert addButtonWithTitle:TR_TEXT("OK")];
+        alert.messageText = TR_TEXT("A torrent file with this name and directory cannot be created.");
+        alert.informativeText = TR_FORMAT(
+            "A file with the name \"{filename}\" already exists in the directory \"{directory}\". Choose a new name or directory to create the torrent file.",
+            TRArg("filename", pathComponents[count - 1]),
+            TRArg("directory", pathComponents[count - 2]));
         alert.alertStyle = NSAlertStyleWarning;
 
         [alert beginSheetModalForWindow:self.window completionHandler:nil];
@@ -614,9 +601,8 @@ static NSMutableSet* creatorWindowControllerSet;
 
     if (error) {
         auto* const alert = [[NSAlert alloc] init];
-        [alert addButtonWithTitle:NSLocalizedString(@"OK", "Create torrent -> failed -> button")];
-        alert.messageText = [NSString stringWithFormat:NSLocalizedString(@"Creation of \"%@\" failed.", "Create torrent -> failed -> title"),
-                                                       self.fLocation.lastPathComponent];
+        [alert addButtonWithTitle:TR_TEXT("OK")];
+        alert.messageText = TR_FORMAT("Creation of \"{filename}\" failed.", TRArg("filename", self.fLocation.lastPathComponent));
         alert.alertStyle = NSAlertStyleWarning;
 
         alert.informativeText = [NSString

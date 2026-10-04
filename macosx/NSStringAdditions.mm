@@ -7,6 +7,7 @@
 
 #import "NSStringAdditions.h"
 #import "NSDataAdditions.h"
+#import "L10n.h"
 
 @interface NSString (Private)
 
@@ -36,6 +37,16 @@
 
 // Maximum supported localization is 9.22 EB, which is the maximum supported filesystem size by macOS, 8 EiB.
 // https://developer.apple.com/library/archive/documentation/FileManagement/Conceptual/APFS_Guide/VolumeFormatComparison/VolumeFormatComparison.html
++ (NSString*)stringForFileCount:(NSUInteger)count
+{
+    return TR_FORMAT_N("{file_count:L} file", "{file_count:L} files", count, TRArg("file_count", count));
+}
+
++ (NSString*)stringForTorrentCount:(NSUInteger)count
+{
+    return TR_FORMAT_N("{count:L} torrent", "{count:L} torrents", count, TRArg("count", count));
+}
+
 + (NSString*)stringForFilePartialSize:(uint64_t)partialSize fullSize:(uint64_t)fullSize
 {
     NSByteCountFormatter* fileSizeFormatter = [[NSByteCountFormatter alloc] init];
@@ -56,14 +67,18 @@
     fileSizeFormatter.includesUnit = !partialUnitsSame;
     NSString* partialSizeString = [fileSizeFormatter stringFromByteCount:partialSize];
 
-    return [NSString stringWithFormat:NSLocalizedString(@"%@ of %@", "file size string"), partialSizeString, fullSizeString];
+    // Translators: file size string
+    return TR_FORMAT("{part} of {whole}", TRArg("part", partialSizeString), TRArg("whole", fullSizeString));
 }
 
 + (NSString*)stringForSpeed:(CGFloat)speed
 {
-    return [self stringForSpeed:speed kb:NSLocalizedString(@"KB/s", "Transfer speed (kilobytes per second)")
-                             mb:NSLocalizedString(@"MB/s", "Transfer speed (megabytes per second)")
-                             gb:NSLocalizedString(@"GB/s", "Transfer speed (gigabytes per second)")];
+    // Translators: Transfer speed (kilobytes per second)
+    return [self stringForSpeed:speed kb:TR_TEXT("KB/s")
+                             // Translators: Transfer speed (megabytes per second)
+                             mb:TR_TEXT("MB/s")
+                             // Translators: Transfer speed (gigabytes per second)
+                             gb:TR_TEXT("GB/s")];
 }
 
 + (NSString*)stringForSpeedAbbrev:(CGFloat)speed
@@ -81,7 +96,8 @@
     //N/A is different than libtransmission's
 
     if (static_cast<int>(ratio) == TR_RATIO_NA) {
-        return NSLocalizedString(@"N/A", "No Ratio");
+        // Translators: No Ratio
+        return TR_TEXT("N/A");
     }
 
     if (static_cast<int>(ratio) == TR_RATIO_INF) {

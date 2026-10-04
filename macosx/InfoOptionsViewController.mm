@@ -6,6 +6,7 @@
 #import "NSStringAdditions.h"
 #import "Torrent.h"
 #import "Utils.h"
+#import "L10n.h"
 
 typedef NS_ENUM(NSInteger, OptionPopupType) {
     OptionPopupTypeGlobal = 0,
@@ -66,7 +67,8 @@ static CGFloat const kStackViewSpacing = 8.0;
 - (instancetype)init
 {
     if ((self = [super initWithNibName:@"InfoOptionsView" bundle:nil])) {
-        self.title = NSLocalizedString(@"Options", "Inspector view -> title");
+        // Translators: Inspector view -> title
+        self.title = TR_TEXT("Options");
     }
 
     return self;
@@ -655,18 +657,19 @@ static CGFloat const kStackViewSpacing = 8.0;
 {
     NSString* global = [NSUserDefaults.standardUserDefaults boolForKey:@"RatioCheck"] ?
         [NSString stringForRatio:[NSUserDefaults.standardUserDefaults floatForKey:@"RatioLimit"]] :
-        NSLocalizedString(@"disabled", "Info options -> global setting");
+        // Translators: Info options -> global setting
+        TR_TEXT("disabled");
     self.fRatioLimitGlobalLabel.stringValue = global;
 
     //idle field
     NSString* globalIdle;
     if ([NSUserDefaults.standardUserDefaults boolForKey:@"IdleLimitCheck"]) {
         NSInteger const globalMin = [NSUserDefaults.standardUserDefaults integerForKey:@"IdleLimitMinutes"];
-        globalIdle = globalMin == 1 ?
-            NSLocalizedString(@"1 minute", "Info options -> global setting") :
-            [NSString localizedStringWithFormat:NSLocalizedString(@"%ld minutes", "Info options -> global setting"), globalMin];
+        // Translators: Info options -> global setting
+        globalIdle = TR_FORMAT_N("{minutes:L} minute", "{minutes:L} minutes", globalMin, TRArg("minutes", globalMin));
     } else {
-        globalIdle = NSLocalizedString(@"disabled", "Info options -> global setting");
+        // Translators: Info options -> global setting
+        globalIdle = TR_TEXT("disabled");
     }
     self.fIdleLimitGlobalLabel.stringValue = globalIdle;
 }

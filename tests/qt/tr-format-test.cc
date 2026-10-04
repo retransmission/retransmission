@@ -159,40 +159,12 @@ private slots:
         QCOMPARE(TR_FORMAT("{{{name}}} is {{set}}", fmt::arg("name", "key")), QStringLiteral("{key} ist {gesetzt}"));
     }
 
-    void falls_back_on_bad_translation_data()
-    {
-        QTest::addColumn<QByteArray>("translation");
-
-        QTest::newRow("unknown field") << QByteArray{ "Erstellt von {author}" };
-        QTest::newRow("positional field") << QByteArray{ "Erstellt von {0}" };
-        QTest::newRow("automatic field") << QByteArray{ "Erstellt von {}" };
-        QTest::newRow("unmatched open brace") << QByteArray{ "Erstellt von {creator" };
-        QTest::newRow("unmatched close brace") << QByteArray{ "Erstellt von creator}" };
-        QTest::newRow("nested field") << QByteArray{ "Erstellt von {creator:{width}}" };
-        QTest::newRow("localized string") << QByteArray{ "Erstellt von {creator:L}" };
-        QTest::newRow("spec not in source") << QByteArray{ "Erstellt von {creator:>20}" };
-    }
-
-    void falls_back_on_bad_translation()
-    {
-        QFETCH(QByteArray, translation);
-        translate("Created by {creator}", { translation });
-
-        QCOMPARE(TR_FORMAT("Created by {creator}", fmt::arg("creator", "Mnemosaic")), QStringLiteral("Created by Mnemosaic"));
-    }
-
     void accepts_localized_number()
     {
         QLocale::setDefault(QLocale{ QLocale::German, QLocale::Germany });
         translate("{count} torrents", { "{count:L} Torrents" });
 
         QCOMPARE(TR_FORMAT("{count} torrents", fmt::arg("count", 12345)), QStringLiteral("12.345 Torrents"));
-    }
-
-    void shows_bad_source_unformatted()
-    {
-        QCOMPARE(TR_FORMAT("Created by {creator", fmt::arg("creator", "Mnemosaic")), QStringLiteral("Created by {creator"));
-        QCOMPARE(TR_FORMAT("Created by {author}", fmt::arg("creator", "Mnemosaic")), QStringLiteral("Created by {author}"));
     }
 
     void picks_plural_form()

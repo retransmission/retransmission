@@ -117,6 +117,8 @@ target_sources(${TR_NAME}-mac
         InfoViewController.h
         InfoWindowController.h
         InfoWindowController.mm
+        L10n.h
+        L10n.mm
         main.mm
         MessageWindowController.h
         MessageWindowController.mm
@@ -333,7 +335,22 @@ set(LINGUAS
     zh-TW
     )
 
-if(ENABLE_NLS)
+# The app's translations are compiled from po/, which takes gettext's msgfmt and Python.
+# Without them the app is built in English alone:
+# AppKit runs the app in any language that has a folder in the bundle, whatever the folder holds.
+set(BUILD_CATALOGS OFF)
+if(ENABLE_NLS AND GETTEXT_FOUND)
+    find_package(Python3 COMPONENTS Interpreter)
+    if(Python3_FOUND)
+        set(BUILD_CATALOGS ON)
+    else()
+        message(WARNING
+            "Python 3 was not found, so the Mac client will be in English.\n"
+            "To fix this, install Python 3, which Xcode's command line tools provide, and reconfigure.")
+    endif()
+endif()
+
+if(BUILD_CATALOGS)
     set(ENABLED_LINGUAS ${LINGUAS})
 else()
     set(ENABLED_LINGUAS en)
@@ -353,35 +370,20 @@ set(BASE_XIB_FILES
 list(TRANSFORM BASE_XIB_FILES
     PREPEND Base.lproj/)
 
-set(LANG_STRINGS_FILES
-    InfoPlist.strings
-    Localizable.strings)
-
+# Each language's .lproj folder, which is also how AppKit knows that the app has the language.
 foreach(LANG ${ENABLED_LINGUAS})
-    set(${LANG}_STRINGS_FILES)
-    if(NOT LANG STREQUAL "en")
-        foreach(F ${BASE_XIB_FILES})
-            get_filename_component(F_BASE "${F}" NAME_WE)
-            list(APPEND ${LANG}_STRINGS_FILES ${LANG}.lproj/${F_BASE}.strings)
-        endforeach()
-    endif()
-    foreach(F ${LANG_STRINGS_FILES})
-        list(APPEND ${LANG}_STRINGS_FILES ${LANG}.lproj/${F})
-    endforeach()
-    source_group(Resources/${LANG}.lproj
-        FILES ${${LANG}_STRINGS_FILES})
-endforeach()
-
-foreach(LANG ${ENABLED_LINGUAS})
-    list(APPEND RESOURCES ${${LANG}_STRINGS_FILES})
-    set(STRINGS_FILES_RESOURCES_DIR Resources)
+    set(LANG_FILES ${LANG}.lproj/InfoPlist.strings)
+    list(APPEND RESOURCES ${LANG_FILES})
+    set(LANG_RESOURCES_DIR Resources)
     if(NOT CMAKE_GENERATOR STREQUAL Xcode)
-        string(APPEND STRINGS_FILES_RESOURCES_DIR /${LANG}.lproj)
+        string(APPEND LANG_RESOURCES_DIR /${LANG}.lproj)
     endif()
     set_source_files_properties(
-        ${${LANG}_STRINGS_FILES}
+        ${LANG_FILES}
         PROPERTIES
-            MACOSX_PACKAGE_LOCATION ${STRINGS_FILES_RESOURCES_DIR})
+            MACOSX_PACKAGE_LOCATION ${LANG_RESOURCES_DIR})
+    source_group(Resources/${LANG}.lproj
+        FILES ${LANG_FILES})
 endforeach()
 
 target_sources(${TR_NAME}-mac
@@ -399,6 +401,7 @@ find_library(SPARKLE_FRAMEWORK Sparkle
 target_link_libraries(${TR_NAME}-mac
     PRIVATE
         ${TR_NAME}
+        ${TR_NAME}-app
         woke::woke
         transmission::fmt-header-only
         vdkqueue
@@ -410,6 +413,33 @@ target_link_libraries(${TR_NAME}-mac
         "-weak_framework Sparkle"
         "-weak_framework UniformTypeIdentifiers"
         "-weak_framework UserNotifications")
+
+# Each language's catalog and xib .strings files go into its .lproj folder once the bundle is linked.
+# The Xcode project's app target runs the same script.
+# The app is relinked when a translation or a xib changes, so that the script runs again.
+if(BUILD_CATALOGS)
+    set(CATALOG_SCRIPT "${PROJECT_SOURCE_DIR}/po/compile-mac-catalogs.sh")
+    file(GLOB PO_FILES CONFIGURE_DEPENDS "${PROJECT_SOURCE_DIR}/po/*.po")
+    set(BASE_XIB_PATHS ${BASE_XIB_FILES})
+    list(TRANSFORM BASE_XIB_PATHS PREPEND "${CMAKE_CURRENT_SOURCE_DIR}/")
+    set_property(
+        TARGET ${TR_NAME}-mac
+        APPEND
+        PROPERTY LINK_DEPENDS
+            ${PO_FILES}
+            ${BASE_XIB_PATHS}
+            ${CATALOG_SCRIPT}
+            "${PROJECT_SOURCE_DIR}/release/mac-xib-strings.py")
+    add_custom_command(
+        TARGET ${TR_NAME}-mac
+        POST_BUILD
+        COMMAND
+            ${CMAKE_COMMAND} -E env
+                "MSGFMT=${GETTEXT_MSGFMT_EXECUTABLE}"
+                "PYTHON3=${Python3_EXECUTABLE}"
+            sh ${CATALOG_SCRIPT} $<TARGET_BUNDLE_CONTENT_DIR:${TR_NAME}-mac>/Resources
+        VERBATIM)
+endif()
 
 if(NOT CMAKE_GENERATOR STREQUAL Xcode)
     add_custom_command(

@@ -6,6 +6,7 @@
 #import "FileListNode.h"
 #import "NSImageAdditions.h"
 #import "Torrent.h"
+#import "L10n.h"
 
 static CGFloat const kImageOverlap = 1.0;
 
@@ -261,23 +262,28 @@ static CGFloat const kImageOverlap = 1.0;
     NSString* tooltip = nil;
     switch (priorities.count) {
     case 0:
-        tooltip = NSLocalizedString(@"Priority not available", "files tab -> tooltip");
+        // Translators: files tab -> tooltip
+        tooltip = TR_TEXT("Priority not available");
         break;
     case 1:
         switch ([[priorities anyObject] intValue]) {
         case TR_PRI_LOW:
-            tooltip = NSLocalizedString(@"Low priority", "files tab -> tooltip");
+            // Translators: files tab -> tooltip
+            tooltip = TR_TEXT("Low priority");
             break;
         case TR_PRI_HIGH:
-            tooltip = NSLocalizedString(@"High priority", "files tab -> tooltip");
+            // Translators: files tab -> tooltip
+            tooltip = TR_TEXT("High priority");
             break;
         case TR_PRI_NORMAL:
-            tooltip = NSLocalizedString(@"Normal priority", "files tab -> tooltip");
+            // Translators: files tab -> tooltip
+            tooltip = TR_TEXT("Normal priority");
             break;
         }
         break;
     default:
-        tooltip = NSLocalizedString(@"Mixed", "files tab -> tooltip");
+        // Translators: files tab -> tooltip
+        tooltip = TR_TEXT("Mixed");
         break;
     }
     self.toolTip = tooltip;

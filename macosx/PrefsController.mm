@@ -18,6 +18,7 @@
 #import "NSImageAdditions.h"
 #import "NSStringAdditions.h"
 #import "Utils.h"
+#import "L10n.h"
 
 typedef NS_ENUM(NSUInteger, DownloadPopupIndex) {
     DownloadPopupIndexFolder = 0,
@@ -260,43 +261,50 @@ static NSString* const kWebUIURLFormat = @"http://localhost:%ld/";
     NSToolbarItem* item = [[NSToolbarItem alloc] initWithItemIdentifier:ident];
 
     if ([ident isEqualToString:ToolbarTabGeneral]) {
-        item.label = NSLocalizedString(@"General", "Preferences -> toolbar item title");
+        // Translators: Preferences -> toolbar item title
+        item.label = TR_TEXT("General");
         item.image = [NSImage imageWithSystemSymbolName:@"gearshape" accessibilityDescription:nil];
         item.target = self;
         item.action = @selector(setPrefView:);
         item.autovalidates = NO;
     } else if ([ident isEqualToString:ToolbarTabTransfers]) {
-        item.label = NSLocalizedString(@"Torrents", "Preferences -> toolbar item title");
+        // Translators: Preferences -> toolbar item title
+        item.label = TR_TEXT("Torrents");
         item.image = [NSImage imageWithSystemSymbolName:@"arrow.up.arrow.down" accessibilityDescription:nil];
         item.target = self;
         item.action = @selector(setPrefView:);
         item.autovalidates = NO;
     } else if ([ident isEqualToString:ToolbarTabGroups]) {
-        item.label = NSLocalizedString(@"Groups", "Preferences -> toolbar item title");
+        // Translators: Preferences -> toolbar item title
+        item.label = TR_TEXT("Groups");
         item.image = [NSImage imageWithSystemSymbolName:@"pin" accessibilityDescription:nil];
         item.target = self;
         item.action = @selector(setPrefView:);
         item.autovalidates = NO;
     } else if ([ident isEqualToString:ToolbarTabBandwidth]) {
-        item.label = NSLocalizedString(@"Speed", "Preferences -> toolbar item title");
+        // Translators: Preferences -> toolbar item title
+        item.label = TR_TEXT("Speed");
         item.image = [NSImage imageWithSystemSymbolName:@"speedometer" accessibilityDescription:nil];
         item.target = self;
         item.action = @selector(setPrefView:);
         item.autovalidates = NO;
     } else if ([ident isEqualToString:ToolbarTabPeers]) {
-        item.label = NSLocalizedString(@"Peers", "Preferences -> toolbar item title");
+        // Translators: Preferences -> toolbar item title
+        item.label = TR_TEXT("Peers");
         item.image = [NSImage imageWithSystemSymbolName:@"person.2" accessibilityDescription:nil];
         item.target = self;
         item.action = @selector(setPrefView:);
         item.autovalidates = NO;
     } else if ([ident isEqualToString:ToolbarTabNetwork]) {
-        item.label = NSLocalizedString(@"Network", "Preferences -> toolbar item title");
+        // Translators: Preferences -> toolbar item title
+        item.label = TR_TEXT("Network");
         item.image = [NSImage imageWithSystemSymbolName:@"network" accessibilityDescription:nil];
         item.target = self;
         item.action = @selector(setPrefView:);
         item.autovalidates = NO;
     } else if ([ident isEqualToString:ToolbarTabRemote]) {
-        item.label = NSLocalizedString(@"Remote", "Preferences -> toolbar item title");
+        // Translators: Preferences -> toolbar item title
+        item.label = TR_TEXT("Remote");
         item.image = [NSImage imageWithSystemSymbolName:@"antenna.radiowaves.left.and.right" accessibilityDescription:nil];
         item.target = self;
         item.action = @selector(setPrefView:);
@@ -343,11 +351,10 @@ static NSString* const kWebUIURLFormat = @"http://localhost:%ld/";
 {
     //set window width with localised value
     NSRect windowRect = self.window.frame;
-    NSString* sizeString = NSLocalizedString(@"PrefWindowSize", nil);
-    if ([sizeString isEqualToString:@"PrefWindowSize"]) {
-        sizeString = @"640";
-    }
-    windowRect.size.width = [sizeString floatValue];
+    // Translators: The width of the Mac client's Preferences window in points, as a number such as 700, for languages whose text needs more room than English. Leave this untranslated for the usual width.
+    CGFloat const width = TR_TEXT("PrefWindowSize").floatValue;
+    // Text that isn't a number, such as the untranslated message, has a value of zero.
+    windowRect.size.width = width > 0.0 ? width : 640.0;
     [self.window setFrame:windowRect display:YES animate:NO];
 }
 
@@ -412,15 +419,17 @@ static NSString* const kWebUIURLFormat = @"http://localhost:%ld/";
     [self.fPortStatusProgress stopAnimation:self];
     switch (self.fPortChecker.status) {
     case PortStatusOpen:
-        self.fPortStatusField.stringValue = NSLocalizedString(@"Port is open", "Preferences -> Network -> port status");
+        // Translators: Preferences -> Network -> port status
+        self.fPortStatusField.stringValue = TR_TEXT("Port is open");
         self.fPortStatusImage.image = [NSImage imageNamed:NSImageNameStatusAvailable];
         break;
     case PortStatusClosed:
-        self.fPortStatusField.stringValue = NSLocalizedString(@"Port is closed", "Preferences -> Network -> port status");
+        // Translators: Preferences -> Network -> port status
+        self.fPortStatusField.stringValue = TR_TEXT("Port is closed");
         self.fPortStatusImage.image = [NSImage imageNamed:NSImageNameStatusUnavailable];
         break;
     case PortStatusError:
-        self.fPortStatusField.stringValue = NSLocalizedString(@"Port check site is down", "Preferences -> Network -> port status");
+        self.fPortStatusField.stringValue = TR_TEXT("Port check site is down");
         self.fPortStatusImage.image = [NSImage imageNamed:NSImageNameStatusPartiallyAvailable];
         break;
     case PortStatusChecking:
@@ -529,11 +538,14 @@ static NSString* const kWebUIURLFormat = @"http://localhost:%ld/";
     BOOL const exists = tr_blocklistExists(self.fHandle);
 
     if (exists) {
-        self.fBlocklistMessageField.stringValue = [NSString
-            localizedStringWithFormat:NSLocalizedString(@"%lu IP address rules in list", "Prefs -> blocklist -> message"),
-                                      tr_blocklistGetRuleCount(self.fHandle)];
+        auto const ruleCount = tr_blocklistGetRuleCount(self.fHandle);
+        self.fBlocklistMessageField.stringValue = TR_FORMAT_N(
+            "{count:L} IP address rule in list",
+            "{count:L} IP address rules in list",
+            ruleCount,
+            TRArg("count", ruleCount));
     } else {
-        self.fBlocklistMessageField.stringValue = NSLocalizedString(@"A blocklist must first be downloaded", "Prefs -> blocklist -> message");
+        self.fBlocklistMessageField.stringValue = TR_TEXT("A blocklist must first be downloaded");
     }
 
     NSString* updatedDateString;
@@ -545,14 +557,17 @@ static NSString* const kWebUIURLFormat = @"http://localhost:%ld/";
             updatedDateString = [NSDateFormatter localizedStringFromDate:updatedDate dateStyle:NSDateFormatterFullStyle
                                                                timeStyle:NSDateFormatterShortStyle];
         } else {
-            updatedDateString = NSLocalizedString(@"N/A", "Prefs -> blocklist -> message");
+            // Translators: Prefs -> blocklist -> message
+            updatedDateString = TR_TEXT("N/A");
         }
     } else {
-        updatedDateString = NSLocalizedString(@"Never", "Prefs -> blocklist -> message");
+        // Translators: Prefs -> blocklist -> message
+        updatedDateString = TR_TEXT("Never");
     }
 
     self.fBlocklistDateField.stringValue = [NSString
-        stringWithFormat:@"%@: %@", NSLocalizedString(@"Last updated", "Prefs -> blocklist -> message"), updatedDateString];
+        // Translators: Prefs -> blocklist -> message
+        stringWithFormat:@"%@: %@", TR_TEXT("Last updated"), updatedDateString];
 }
 
 - (void)updateBlocklistURLField
@@ -841,7 +856,8 @@ static NSString* const kWebUIURLFormat = @"http://localhost:%ld/";
 {
     NSOpenPanel* panel = [NSOpenPanel openPanel];
 
-    panel.prompt = NSLocalizedString(@"Select", "Preferences -> Open panel prompt");
+    // Translators: Preferences -> Open panel prompt
+    panel.prompt = TR_TEXT("Select");
     panel.allowsMultipleSelection = NO;
     panel.canChooseFiles = NO;
     panel.canChooseDirectories = YES;
@@ -870,7 +886,8 @@ static NSString* const kWebUIURLFormat = @"http://localhost:%ld/";
 {
     NSOpenPanel* panel = [NSOpenPanel openPanel];
 
-    panel.prompt = NSLocalizedString(@"Select", "Preferences -> Open panel prompt");
+    // Translators: Preferences -> Open panel prompt
+    panel.prompt = TR_TEXT("Select");
     panel.allowsMultipleSelection = NO;
     panel.canChooseFiles = NO;
     panel.canChooseDirectories = YES;
@@ -892,7 +909,8 @@ static NSString* const kWebUIURLFormat = @"http://localhost:%ld/";
 {
     NSOpenPanel* panel = [NSOpenPanel openPanel];
 
-    panel.prompt = NSLocalizedString(@"Select", "Preferences -> Open panel prompt");
+    // Translators: Preferences -> Open panel prompt
+    panel.prompt = TR_TEXT("Select");
     panel.allowsMultipleSelection = NO;
     panel.canChooseFiles = YES;
     panel.canChooseDirectories = NO;
@@ -935,9 +953,7 @@ static NSString* const kWebUIURLFormat = @"http://localhost:%ld/";
         //always show the add window for magnet links when the download location is the same as the torrent file
         self.fShowMagnetAddWindowCheck.state = NSControlStateValueOn;
         self.fShowMagnetAddWindowCheck.enabled = NO;
-        self.fShowMagnetAddWindowCheck.toolTip = NSLocalizedString(
-            @"This option is not available if Save to location is set to Same as torrent file.",
-            "Preferences -> Transfers -> Adding -> Magnet tooltip");
+        self.fShowMagnetAddWindowCheck.toolTip = TR_TEXT("This option is not available if Save to location is set to Same as torrent file.");
     } else {
         self.fShowMagnetAddWindowCheck.state = [self.fDefaults boolForKey:@"MagnetOpenAsk"];
         self.fShowMagnetAddWindowCheck.enabled = YES;
@@ -978,7 +994,8 @@ static NSString* const kWebUIURLFormat = @"http://localhost:%ld/";
 {
     NSOpenPanel* panel = [NSOpenPanel openPanel];
 
-    panel.prompt = NSLocalizedString(@"Select", "Preferences -> Open panel prompt");
+    // Translators: Preferences -> Open panel prompt
+    panel.prompt = TR_TEXT("Select");
     panel.allowsMultipleSelection = NO;
     panel.canChooseFiles = NO;
     panel.canChooseDirectories = YES;

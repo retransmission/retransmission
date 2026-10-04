@@ -6,6 +6,7 @@
 #import "FileRenameSheetController.h"
 #import "FileListNode.h"
 #import "Torrent.h"
+#import "L10n.h"
 
 typedef void (^CompletionBlock)(BOOL);
 
@@ -71,7 +72,7 @@ typedef void (^CompletionBlock)(BOOL);
     [super windowDidLoad];
 
     self.originalName = self.node.name ?: self.torrent.name;
-    NSString* label = [NSString stringWithFormat:NSLocalizedString(@"Rename the file \"%@\":", "rename sheet label"), self.originalName];
+    NSString* label = TR_FORMAT("Rename the file \"{filename}\":", TRArg("filename", self.originalName));
     self.labelField.stringValue = label;
 
     self.inputField.stringValue = self.originalName;
@@ -85,8 +86,9 @@ typedef void (^CompletionBlock)(BOOL);
     [self.renameButton sizeToFit];
     CGFloat const extra = NSWidth(oldRenameFrame) - NSWidth(self.renameButton.frame);
 
-    self.renameButton.title = NSLocalizedString(@"Rename", "rename sheet button");
-    self.cancelButton.title = NSLocalizedString(@"Cancel", "rename sheet button");
+    // Translators: rename sheet button
+    self.renameButton.title = TR_TEXT("Rename");
+    self.cancelButton.title = TR_TEXT("Cancel");
 
     [self.renameButton sizeToFit];
     [self.cancelButton sizeToFit];

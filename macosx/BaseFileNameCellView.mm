@@ -8,6 +8,7 @@
 #import "FileListNode.h"
 #import "Torrent.h"
 #import "NSStringAdditions.h"
+#import "L10n.h"
 
 static CGFloat const kPaddingHorizontal = 2.0;
 static CGFloat const kImageFolderSize = 16.0;
@@ -122,9 +123,8 @@ static NSCache<UTType*, NSImage*>* iconCache;
     CGFloat const progress = [torrent fileProgress:node];
     NSString* percentString = [NSString percentString:progress longDecimals:YES];
 
-    NSString* status = [NSString stringWithFormat:NSLocalizedString(@"%@ of %@", "Inspector -> Files tab -> file status string"),
-                                                  percentString,
-                                                  [NSString stringForFileSize:node.size]];
+    // Translators: Inspector -> Files tab -> file status string
+    NSString* status = TR_FORMAT("{part} of {whole}", TRArg("part", percentString), TRArg("whole", [NSString stringForFileSize:node.size]));
     self.statusField.stringValue = status;
 
     // Update colors based on background style and check state

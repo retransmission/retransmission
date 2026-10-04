@@ -13,6 +13,7 @@
 #import "NSImageAdditions.h"
 #import "NSStringAdditions.h"
 #import "Torrent.h"
+#import "L10n.h"
 
 typedef NSString* TabIdentifier NS_TYPED_EXTENSIBLE_ENUM;
 
@@ -71,7 +72,8 @@ typedef NS_ENUM(NSUInteger, TabTag) {
 - (void)awakeFromNib
 {
     [super awakeFromNib];
-    self.fNoneSelectedField.stringValue = NSLocalizedString(@"No Torrents Selected", "Inspector -> selected torrents");
+    // Translators: Inspector -> selected torrents
+    self.fNoneSelectedField.stringValue = TR_TEXT("No Torrents Selected");
 
     //window location and size
     NSPanel* window = (NSPanel*)self.window;
@@ -106,27 +108,33 @@ typedef NS_ENUM(NSUInteger, TabTag) {
     };
     setImageAndToolTipForSegment(
         [NSImage imageWithSystemSymbolName:@"info.circle" accessibilityDescription:nil],
-        NSLocalizedString(@"Information", "Inspector -> tab"),
+        // Translators: Inspector -> tab
+        TR_TEXT("Information"),
         TabTagGeneral);
     setImageAndToolTipForSegment(
         [NSImage imageWithSystemSymbolName:@"square.grid.3x3.fill.square" accessibilityDescription:nil],
-        NSLocalizedString(@"Activity", "Inspector -> tab"),
+        // Translators: Inspector -> tab
+        TR_TEXT("Activity"),
         TabTagActivity);
     setImageAndToolTipForSegment(
         [NSImage imageWithSystemSymbolName:@"antenna.radiowaves.left.and.right" accessibilityDescription:nil],
-        NSLocalizedString(@"Trackers", "Inspector -> tab"),
+        // Translators: Inspector -> tab
+        TR_TEXT("Trackers"),
         TabTagTrackers);
     setImageAndToolTipForSegment(
         [NSImage imageWithSystemSymbolName:@"person.2" accessibilityDescription:nil],
-        NSLocalizedString(@"Peers", "Inspector -> tab"),
+        // Translators: Inspector -> tab
+        TR_TEXT("Peers"),
         TabTagPeers);
     setImageAndToolTipForSegment(
         [NSImage imageWithSystemSymbolName:@"doc.on.doc" accessibilityDescription:nil],
-        NSLocalizedString(@"Files", "Inspector -> tab"),
+        // Translators: Inspector -> tab
+        TR_TEXT("Files"),
         TabTagFile);
     setImageAndToolTipForSegment(
         [NSImage imageWithSystemSymbolName:@"gearshape" accessibilityDescription:nil],
-        NSLocalizedString(@"Options", "Inspector -> tab"),
+        // Translators: Inspector -> tab
+        TR_TEXT("Options"),
         TabTagOptions);
 
     //set selected tab
@@ -314,7 +322,9 @@ typedef NS_ENUM(NSUInteger, TabTag) {
 
     NSWindow* window = self.window;
 
-    window.title = [NSString stringWithFormat:@"%@ — %@", self.fViewController.title, NSLocalizedString(@"Inspector", "Inspector -> title")];
+    window.title = [NSString
+        // Translators: Inspector -> title
+        stringWithFormat:@"%@ — %@", self.fViewController.title, TR_TEXT("Inspector")];
 
     NSView* view = self.fViewController.view;
 
@@ -474,8 +484,8 @@ typedef NS_ENUM(NSUInteger, TabTag) {
         if (numberSelected > 0) {
             self.fImageView.image = [NSImage imageNamed:NSImageNameMultipleDocuments];
 
-            self.fNameField.stringValue = [NSString
-                localizedStringWithFormat:NSLocalizedString(@"%lu Torrents Selected", "Inspector -> selected torrents"), numberSelected];
+            // Translators: Inspector -> selected torrents
+            self.fNameField.stringValue = TR_FORMAT_N("{count:L} Torrent Selected", "{count:L} Torrents Selected", numberSelected, TRArg("count", numberSelected));
             self.fNameField.hidden = NO;
 
             uint64_t size = 0;
@@ -490,23 +500,12 @@ typedef NS_ENUM(NSUInteger, TabTag) {
 
             NSMutableArray* fileStrings = [NSMutableArray arrayWithCapacity:2];
             if (fileCount > 0) {
-                NSString* fileString;
-                if (fileCount == 1) {
-                    fileString = NSLocalizedString(@"1 file", "Inspector -> selected torrents");
-                } else {
-                    fileString = [NSString
-                        localizedStringWithFormat:NSLocalizedString(@"%lu files", "Inspector -> selected torrents"), fileCount];
-                }
+                NSString* fileString = [NSString stringForFileCount:fileCount];
                 [fileStrings addObject:fileString];
             }
             if (magnetCount > 0) {
-                NSString* magnetString;
-                if (magnetCount == 1) {
-                    magnetString = NSLocalizedString(@"1 magnetized torrent", "Inspector -> selected torrents");
-                } else {
-                    magnetString = [NSString
-                        localizedStringWithFormat:NSLocalizedString(@"%lu magnetized torrents", "Inspector -> selected torrents"), magnetCount];
-                }
+                // Translators: Inspector -> selected torrents
+                NSString* magnetString = TR_FORMAT_N("{count:L} magnetized torrent", "{count:L} magnetized torrents", magnetCount, TRArg("count", magnetCount));
                 [fileStrings addObject:magnetString];
             }
 
@@ -516,8 +515,8 @@ typedef NS_ENUM(NSUInteger, TabTag) {
                 self.fBasicInfoField.stringValue = [NSString
                     stringWithFormat:@"%@, %@",
                                      fileString,
-                                     [NSString stringWithFormat:NSLocalizedString(@"%@ total", "Inspector -> selected torrents"),
-                                                                [NSString stringForFileSize:size]]];
+                                     // Translators: Inspector -> selected torrents
+                                     TR_FORMAT("{amount} total", TRArg("amount", [NSString stringForFileSize:size]))];
 
                 NSByteCountFormatter* formatter = [[NSByteCountFormatter alloc] init];
                 formatter.allowedUnits = NSByteCountFormatterUseBytes;
@@ -551,14 +550,8 @@ typedef NS_ENUM(NSUInteger, TabTag) {
         if (!torrent.magnet) {
             NSString* basicString = [NSString stringForFileSize:torrent.size];
             if (torrent.folder) {
-                NSString* fileString;
                 NSUInteger const fileCount = torrent.fileCount;
-                if (fileCount == 1) {
-                    fileString = NSLocalizedString(@"1 file", "Inspector -> selected torrents");
-                } else {
-                    fileString = [NSString
-                        localizedStringWithFormat:NSLocalizedString(@"%lu files", "Inspector -> selected torrents"), fileCount];
-                }
+                NSString* fileString = [NSString stringForFileCount:fileCount];
                 basicString = [NSString stringWithFormat:@"%@, %@", fileString, basicString];
             }
             self.fBasicInfoField.stringValue = basicString;
@@ -567,7 +560,8 @@ typedef NS_ENUM(NSUInteger, TabTag) {
             formatter.allowedUnits = NSByteCountFormatterUseBytes;
             self.fBasicInfoField.toolTip = [formatter stringFromByteCount:torrent.size];
         } else {
-            self.fBasicInfoField.stringValue = NSLocalizedString(@"Magnetized torrent", "Inspector -> selected torrents");
+            // Translators: Inspector -> selected torrents
+            self.fBasicInfoField.stringValue = TR_TEXT("Magnetized torrent");
             self.fBasicInfoField.toolTip = nil;
         }
         self.fBasicInfoField.hidden = NO;

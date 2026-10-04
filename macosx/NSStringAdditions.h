@@ -10,6 +10,8 @@
 @property(nonatomic, readonly, copy) NSString* stringByAppendingEllipsis;
 
 + (NSString*)stringForFileSize:(uint64_t)size;
++ (NSString*)stringForFileCount:(NSUInteger)count;
++ (NSString*)stringForTorrentCount:(NSUInteger)count;
 + (NSString*)stringForFilePartialSize:(uint64_t)partialSize fullSize:(uint64_t)fullSize;
 
 // 4 significant digits
