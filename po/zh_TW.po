@@ -1860,17 +1860,11 @@ msgstr "無法讀取 '{path}'"
 msgid "Couldn't get '{path}': {error} ({error_code})"
 msgstr "無法取得 '{path}'：{error} ({error_code})"
 
-msgid "Successfully updated source {protocol} address to {ip}"
-msgstr "成功更新來源 {protocol} 位址為 {ip}"
-
 msgid "Couldn't obtain source address in any IP protocol, no network connections possible"
 msgstr "在所有 IP 協定中都無法存取來源位址，沒有可用的網路連線"
 
 msgid "Your machine does not support {protocol}"
 msgstr "您的裝置不支援 {protocol}"
-
-msgid "Successfully updated global {type} address to {ip} using {url}"
-msgstr "成功使用 {url} 更新全域 {type} 位址為 {ip}"
 
 msgid "Still waiting for disk IO on torrent {id}: {running} running, {queued} queued"
 msgstr ""
@@ -1946,9 +1940,6 @@ msgstr "本地埠 {local_port} 未轉傳至 {advertised_port}"
 
 msgid "Stopping port forwarding through '{url}', service '{type}'"
 msgstr "正在停止 '{url}' ，服務 '{type}' 的通訊埠轉送"
-
-msgid "Port forwarding through '{url}', service '{type}'. (local address: {address}:{port})"
-msgstr "正在從 '{url}'，服務 '{type}' 通訊埠轉送。(本機位址：{address}:{port})"
 
 msgid "Forwarded local port {local_port} to {advertised_port}"
 msgstr "轉傳的本地埠 {local_port} 至 {advertised_port}"
@@ -3839,6 +3830,15 @@ msgstr[0] "天"
 msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "秒"
+
+#~ msgid "Successfully updated source {protocol} address to {ip}"
+#~ msgstr "成功更新來源 {protocol} 位址為 {ip}"
+
+#~ msgid "Successfully updated global {type} address to {ip} using {url}"
+#~ msgstr "成功使用 {url} 更新全域 {type} 位址為 {ip}"
+
+#~ msgid "Port forwarding through '{url}', service '{type}'. (local address: {address}:{port})"
+#~ msgstr "正在從 '{url}'，服務 '{type}' 通訊埠轉送。(本機位址：{address}:{port})"
 
 #, fuzzy
 #~| msgid "Are you sure you want to remove {count:L} tracker?"

@@ -1871,17 +1871,11 @@ msgstr "Kon nie ‘{path}’ lees nie"
 msgid "Couldn't get '{path}': {error} ({error_code})"
 msgstr "Kon nie ‘{path}’ kry nie: {error} ({error_code})"
 
-msgid "Successfully updated source {protocol} address to {ip}"
-msgstr ""
-
 msgid "Couldn't obtain source address in any IP protocol, no network connections possible"
 msgstr ""
 
 msgid "Your machine does not support {protocol}"
 msgstr "U masjien ondersteun nie {protocol} nie"
-
-msgid "Successfully updated global {type} address to {ip} using {url}"
-msgstr ""
 
 msgid "Still waiting for disk IO on torrent {id}: {running} running, {queued} queued"
 msgstr ""
@@ -1957,9 +1951,6 @@ msgstr ""
 
 msgid "Stopping port forwarding through '{url}', service '{type}'"
 msgstr "Stop poortaanstuur deur ‘{url}’, diens ‘{type}’"
-
-msgid "Port forwarding through '{url}', service '{type}'. (local address: {address}:{port})"
-msgstr "Poortaanstuur deur ‘{url}’, diens ‘{type}’. (lokale adres: {address}:{port})"
 
 msgid "Forwarded local port {local_port} to {advertised_port}"
 msgstr ""
@@ -3890,6 +3881,9 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "sekonde"
 msgstr[1] "sekondes"
+
+#~ msgid "Port forwarding through '{url}', service '{type}'. (local address: {address}:{port})"
+#~ msgstr "Poortaanstuur deur ‘{url}’, diens ‘{type}’. (lokale adres: {address}:{port})"
 
 #, fuzzy
 #~| msgid "Are you sure you want to remove {count:L} tracker?"

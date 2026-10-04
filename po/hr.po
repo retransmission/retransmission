@@ -1762,16 +1762,10 @@ msgstr ""
 msgid "Couldn't get '{path}': {error} ({error_code})"
 msgstr ""
 
-msgid "Successfully updated source {protocol} address to {ip}"
-msgstr ""
-
 msgid "Couldn't obtain source address in any IP protocol, no network connections possible"
 msgstr ""
 
 msgid "Your machine does not support {protocol}"
-msgstr ""
-
-msgid "Successfully updated global {type} address to {ip} using {url}"
 msgstr ""
 
 msgid "Still waiting for disk IO on torrent {id}: {running} running, {queued} queued"
@@ -1847,9 +1841,6 @@ msgid "Local port {local_port} is not forwarded to {advertised_port}"
 msgstr ""
 
 msgid "Stopping port forwarding through '{url}', service '{type}'"
-msgstr ""
-
-msgid "Port forwarding through '{url}', service '{type}'. (local address: {address}:{port})"
 msgstr ""
 
 msgid "Forwarded local port {local_port} to {advertised_port}"

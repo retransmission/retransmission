@@ -420,11 +420,11 @@ tr_port_forwarding_state tr_upnpPulse(
 
         tr_logAddDebug(
             fmt::format(
-                fmt::runtime(_("Port forwarding through '{url}', service '{type}'. (local address: {address}:{port})")),
-                fmt::arg("url", handle->urls.controlURL),
-                fmt::arg("type", handle->data.first.servicetype),
-                fmt::arg("address", handle->lanaddr),
-                fmt::arg("port", local_port.host())));
+                "Port forwarding through '{}', service '{}'. (local address: {}:{})",
+                handle->urls.controlURL,
+                handle->data.first.servicetype,
+                handle->lanaddr,
+                local_port.host()));
 
         if (handle->isMapped) {
             tr_logAddInfo(

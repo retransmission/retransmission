@@ -1949,17 +1949,11 @@ msgstr "לא ניתן לקרוא את ‚{path}’"
 msgid "Couldn't get '{path}': {error} ({error_code})"
 msgstr "לא ניתן למשוך את ‚{path}’: {error} ({error_code})"
 
-msgid "Successfully updated source {protocol} address to {ip}"
-msgstr "כתובת המקור {protocol} עודכנה בהצלחה לכדי {ip}"
-
 msgid "Couldn't obtain source address in any IP protocol, no network connections possible"
 msgstr "לא ניתן לקבל את כתובת המקור באף פרוטוקול IP, אין חיבורי רשת אפשריים"
 
 msgid "Your machine does not support {protocol}"
 msgstr "המכונה שלך לא תומכת ב־{protocol}"
-
-msgid "Successfully updated global {type} address to {ip} using {url}"
-msgstr "הכתובת הגלובלית {type} עודכנה בהצלחה ל־{ip} באמצעות {url}"
 
 msgid "Still waiting for disk IO on torrent {id}: {running} running, {queued} queued"
 msgstr ""
@@ -2035,9 +2029,6 @@ msgstr "הפתחה המקומית {local_port} לא מועברת אל {advertise
 
 msgid "Stopping port forwarding through '{url}', service '{type}'"
 msgstr "העברת הפתחות דרך „{url}”, השירות „{type}” נעצרת"
-
-msgid "Port forwarding through '{url}', service '{type}'. (local address: {address}:{port})"
-msgstr "העברת פתחות דרך „{url}”, השירות „{type}”. (כתובת מקומית: {address}:{port})"
 
 msgid "Forwarded local port {local_port} to {advertised_port}"
 msgstr "הפתחה המקומית {local_port} מועברת אל {advertised_port}"
@@ -4000,6 +3991,15 @@ msgstr[0] "שנייה"
 msgstr[1] "שניות"
 msgstr[2] "שניות"
 msgstr[3] "שניות"
+
+#~ msgid "Successfully updated source {protocol} address to {ip}"
+#~ msgstr "כתובת המקור {protocol} עודכנה בהצלחה לכדי {ip}"
+
+#~ msgid "Successfully updated global {type} address to {ip} using {url}"
+#~ msgstr "הכתובת הגלובלית {type} עודכנה בהצלחה ל־{ip} באמצעות {url}"
+
+#~ msgid "Port forwarding through '{url}', service '{type}'. (local address: {address}:{port})"
+#~ msgstr "העברת פתחות דרך „{url}”, השירות „{type}”. (כתובת מקומית: {address}:{port})"
 
 #, fuzzy
 #~| msgid "Are you sure you want to remove {count:L} tracker?"

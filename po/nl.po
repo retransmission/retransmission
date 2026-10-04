@@ -1903,17 +1903,11 @@ msgstr "Kon '{path}' niet lezen"
 msgid "Couldn't get '{path}': {error} ({error_code})"
 msgstr "Kon '{path}' niet verkrijgen: {error} ({error_code})"
 
-msgid "Successfully updated source {protocol} address to {ip}"
-msgstr "Succesvol geüpdatete bron {protocol} naar adres {ip}"
-
 msgid "Couldn't obtain source address in any IP protocol, no network connections possible"
 msgstr "Kan geen bronadres verkrijgen in een IP-protocol, geen netwerkverbindingen mogelijk"
 
 msgid "Your machine does not support {protocol}"
 msgstr "Uw machine ondersteunt  {protocol} niet"
-
-msgid "Successfully updated global {type} address to {ip} using {url}"
-msgstr "Globaal {type} met succes geüpdate naar adres {ip} met gebruik van {url}"
 
 msgid "Still waiting for disk IO on torrent {id}: {running} running, {queued} queued"
 msgstr ""
@@ -1989,9 +1983,6 @@ msgstr "Lokale poort {local_port} wordt niet doorgestuurd naar {advertised_port}
 
 msgid "Stopping port forwarding through '{url}', service '{type}'"
 msgstr "Port forwarding stoppen via '{url}', service '{type}'"
-
-msgid "Port forwarding through '{url}', service '{type}'. (local address: {address}:{port})"
-msgstr "Port forwarding door '{url}', service '{type}'. (lokaal adres: {address}:{port})"
 
 msgid "Forwarded local port {local_port} to {advertised_port}"
 msgstr "Doorgestuurde lokale poort {local_port} naar {advertised_port}"
@@ -3941,6 +3932,15 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "seconde"
 msgstr[1] "seconden"
+
+#~ msgid "Successfully updated source {protocol} address to {ip}"
+#~ msgstr "Succesvol geüpdatete bron {protocol} naar adres {ip}"
+
+#~ msgid "Successfully updated global {type} address to {ip} using {url}"
+#~ msgstr "Globaal {type} met succes geüpdate naar adres {ip} met gebruik van {url}"
+
+#~ msgid "Port forwarding through '{url}', service '{type}'. (local address: {address}:{port})"
+#~ msgstr "Port forwarding door '{url}', service '{type}'. (lokaal adres: {address}:{port})"
 
 #, fuzzy
 #~| msgid "Are you sure you want to remove {count:L} tracker?"

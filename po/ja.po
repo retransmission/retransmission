@@ -1835,17 +1835,11 @@ msgstr "読み込めません「{path}」"
 msgid "Couldn't get '{path}': {error} ({error_code})"
 msgstr "取得できません「{path}」: {error} ({error_code})"
 
-msgid "Successfully updated source {protocol} address to {ip}"
-msgstr "更新成功: 元の {protocol} アドレスを {ip} へ"
-
 msgid "Couldn't obtain source address in any IP protocol, no network connections possible"
 msgstr ""
 
 msgid "Your machine does not support {protocol}"
 msgstr " この端末は{protocol}に未対応"
-
-msgid "Successfully updated global {type} address to {ip} using {url}"
-msgstr "更新成功: グローバル {type} アドレスを {ip} の {url}を利用したものへ"
 
 msgid "Still waiting for disk IO on torrent {id}: {running} running, {queued} queued"
 msgstr ""
@@ -1921,9 +1915,6 @@ msgstr "ローカルのポート{local_port} は {advertised_port}に転送さ�
 
 msgid "Stopping port forwarding through '{url}', service '{type}'"
 msgstr "以下によるポート転送を停止中「{url}」「サービス {type}」"
-
-msgid "Port forwarding through '{url}', service '{type}'. (local address: {address}:{port})"
-msgstr "以下によるポート転送中「{url}」「サービス {type}」。(内部アドレス: {address}:{port})"
 
 msgid "Forwarded local port {local_port} to {advertised_port}"
 msgstr "ローカルのポート {local_port} を {advertised_port}に転送しました"
@@ -3826,6 +3817,15 @@ msgstr[0] "日"
 msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "秒"
+
+#~ msgid "Successfully updated source {protocol} address to {ip}"
+#~ msgstr "更新成功: 元の {protocol} アドレスを {ip} へ"
+
+#~ msgid "Successfully updated global {type} address to {ip} using {url}"
+#~ msgstr "更新成功: グローバル {type} アドレスを {ip} の {url}を利用したものへ"
+
+#~ msgid "Port forwarding through '{url}', service '{type}'. (local address: {address}:{port})"
+#~ msgstr "以下によるポート転送中「{url}」「サービス {type}」。(内部アドレス: {address}:{port})"
 
 #, fuzzy
 #~| msgid "Are you sure you want to remove {count:L} tracker?"

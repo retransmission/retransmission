@@ -1878,16 +1878,10 @@ msgstr "Ezin izan da '{path}' irakurri"
 msgid "Couldn't get '{path}': {error} ({error_code})"
 msgstr "Ezin izan da '{path}' eskuratu: {error} ({error_code})"
 
-msgid "Successfully updated source {protocol} address to {ip}"
-msgstr ""
-
 msgid "Couldn't obtain source address in any IP protocol, no network connections possible"
 msgstr ""
 
 msgid "Your machine does not support {protocol}"
-msgstr ""
-
-msgid "Successfully updated global {type} address to {ip} using {url}"
 msgstr ""
 
 msgid "Still waiting for disk IO on torrent {id}: {running} running, {queued} queued"
@@ -1964,9 +1958,6 @@ msgstr ""
 
 msgid "Stopping port forwarding through '{url}', service '{type}'"
 msgstr "'{url}' bidezko ataka-berbidalketa geratzen, '{type}' zerbitzua"
-
-msgid "Port forwarding through '{url}', service '{type}'. (local address: {address}:{port})"
-msgstr "Ataka berbidalketa '{url}' bitartez, '{type}' zerbitzua. (helbide lokala: {address}:{port})"
 
 msgid "Forwarded local port {local_port} to {advertised_port}"
 msgstr ""
@@ -3903,6 +3894,9 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "segundo"
 msgstr[1] "segundo"
+
+#~ msgid "Port forwarding through '{url}', service '{type}'. (local address: {address}:{port})"
+#~ msgstr "Ataka berbidalketa '{url}' bitartez, '{type}' zerbitzua. (helbide lokala: {address}:{port})"
 
 #, fuzzy
 #~| msgid "Are you sure you want to remove {count:L} tracker?"

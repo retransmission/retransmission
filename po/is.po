@@ -1757,17 +1757,11 @@ msgstr "Gat ekki lesið '{path}'"
 msgid "Couldn't get '{path}': {error} ({error_code})"
 msgstr "Gat ekki sótt '{path}': {error} ({error_code})"
 
-msgid "Successfully updated source {protocol} address to {ip}"
-msgstr "Tókst að uppfæra upprunalegt {protocol} vistfang í {ip}"
-
 msgid "Couldn't obtain source address in any IP protocol, no network connections possible"
 msgstr ""
 
 msgid "Your machine does not support {protocol}"
 msgstr "Vélin þín styður ekki {protocol}"
-
-msgid "Successfully updated global {type} address to {ip} using {url}"
-msgstr "Tókst að uppfæra víðværa {type} vistfangið í {ip} með {url}"
 
 msgid "Still waiting for disk IO on torrent {id}: {running} running, {queued} queued"
 msgstr ""
@@ -1843,9 +1837,6 @@ msgstr ""
 
 msgid "Stopping port forwarding through '{url}', service '{type}'"
 msgstr "Stöðva endurbeiningu gáttar í gegnum '{url}', þjónustu '{type}'"
-
-msgid "Port forwarding through '{url}', service '{type}'. (local address: {address}:{port})"
-msgstr "Áframvísun gáttar í gegnum '{url}', þjónustu '{type}'. (staðbundið vistfang: {address}:{port})"
 
 msgid "Forwarded local port {local_port} to {advertised_port}"
 msgstr ""
@@ -2495,6 +2486,15 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "sekúnda"
 msgstr[1] "sekúndur"
+
+#~ msgid "Successfully updated source {protocol} address to {ip}"
+#~ msgstr "Tókst að uppfæra upprunalegt {protocol} vistfang í {ip}"
+
+#~ msgid "Successfully updated global {type} address to {ip} using {url}"
+#~ msgstr "Tókst að uppfæra víðværa {type} vistfangið í {ip} með {url}"
+
+#~ msgid "Port forwarding through '{url}', service '{type}'. (local address: {address}:{port})"
+#~ msgstr "Áframvísun gáttar í gegnum '{url}', þjónustu '{type}'. (staðbundið vistfang: {address}:{port})"
 
 #~ msgid "Use Global Settings"
 #~ msgstr "Nota víðværar stillingar"

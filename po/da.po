@@ -1895,17 +1895,11 @@ msgstr "Kunne ikke læse '{path}'"
 msgid "Couldn't get '{path}': {error} ({error_code})"
 msgstr "Kunne ikke hente '{path}': {error} ({error_code})"
 
-msgid "Successfully updated source {protocol} address to {ip}"
-msgstr "Det lykkedes at opdatere kilde {protocol}-adresse til {ip}"
-
 msgid "Couldn't obtain source address in any IP protocol, no network connections possible"
 msgstr ""
 
 msgid "Your machine does not support {protocol}"
 msgstr "Din maskine understøtter ikke {protocol}"
-
-msgid "Successfully updated global {type} address to {ip} using {url}"
-msgstr "Det lykkedes at opdatere global {type}-adresse til {ip} med {url}"
 
 msgid "Still waiting for disk IO on torrent {id}: {running} running, {queued} queued"
 msgstr ""
@@ -1981,9 +1975,6 @@ msgstr "Lokal port {local_port} er ikke viderestillet til {advertised_port}"
 
 msgid "Stopping port forwarding through '{url}', service '{type}'"
 msgstr "Stopper portviderestilling gennem '{url}', tjeneste '{type}'"
-
-msgid "Port forwarding through '{url}', service '{type}'. (local address: {address}:{port})"
-msgstr "Portviderestilling gennem '{url}', tjeneste '{type}'. (lokal adresse: {address}:{port})"
 
 msgid "Forwarded local port {local_port} to {advertised_port}"
 msgstr "Viderestillede lokal port {local_port} til {advertised_port}"
@@ -3923,6 +3914,15 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "sekund"
 msgstr[1] "sekunder"
+
+#~ msgid "Successfully updated source {protocol} address to {ip}"
+#~ msgstr "Det lykkedes at opdatere kilde {protocol}-adresse til {ip}"
+
+#~ msgid "Successfully updated global {type} address to {ip} using {url}"
+#~ msgstr "Det lykkedes at opdatere global {type}-adresse til {ip} med {url}"
+
+#~ msgid "Port forwarding through '{url}', service '{type}'. (local address: {address}:{port})"
+#~ msgstr "Portviderestilling gennem '{url}', tjeneste '{type}'. (lokal adresse: {address}:{port})"
 
 #, fuzzy
 #~| msgid "Are you sure you want to remove {count:L} tracker?"

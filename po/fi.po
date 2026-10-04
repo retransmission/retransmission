@@ -1771,17 +1771,11 @@ msgstr "Ei voitu lukea '{path}'"
 msgid "Couldn't get '{path}': {error} ({error_code})"
 msgstr "Ei saatu '{path}': {error} ({error_code})"
 
-msgid "Successfully updated source {protocol} address to {ip}"
-msgstr "Lähteen päivitys onnistui {protocol} osoitteeseen {ip}"
-
 msgid "Couldn't obtain source address in any IP protocol, no network connections possible"
 msgstr "Ei saatu osoitetta yhdestäkään protokollasta, yhteydet eivät ole mahdollisia."
 
 msgid "Your machine does not support {protocol}"
 msgstr "Tietokoneesi ei tue {protocol}"
-
-msgid "Successfully updated global {type} address to {ip} using {url}"
-msgstr "Päivitetty onnistuneesti {type} osoitteeseen {ip} käyttäen {url}"
 
 msgid "Still waiting for disk IO on torrent {id}: {running} running, {queued} queued"
 msgstr ""
@@ -1857,9 +1851,6 @@ msgstr "Porttia {local_port} ei välitetä edelleen {advertised_port}"
 
 msgid "Stopping port forwarding through '{url}', service '{type}'"
 msgstr "Pysäytetään portin välitys '{url}', palvelu '{type}'"
-
-msgid "Port forwarding through '{url}', service '{type}'. (local address: {address}:{port})"
-msgstr "Portin välitys '{url}', palvelu '{type}'. (paikallinen osoite: {address}:{port})"
 
 msgid "Forwarded local port {local_port} to {advertised_port}"
 msgstr "Välitetty portti {local_port} kohteeseen {advertised_port}"
@@ -2511,6 +2502,15 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "sekunti"
 msgstr[1] "sekuntia"
+
+#~ msgid "Successfully updated source {protocol} address to {ip}"
+#~ msgstr "Lähteen päivitys onnistui {protocol} osoitteeseen {ip}"
+
+#~ msgid "Successfully updated global {type} address to {ip} using {url}"
+#~ msgstr "Päivitetty onnistuneesti {type} osoitteeseen {ip} käyttäen {url}"
+
+#~ msgid "Port forwarding through '{url}', service '{type}'. (local address: {address}:{port})"
+#~ msgstr "Portin välitys '{url}', palvelu '{type}'. (paikallinen osoite: {address}:{port})"
 
 #~ msgid "Use Global Settings"
 #~ msgstr "Käytä yleisiä asetuksia"

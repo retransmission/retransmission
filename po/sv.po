@@ -1870,17 +1870,11 @@ msgstr "Det gick inte att läsa '{path}'"
 msgid "Couldn't get '{path}': {error} ({error_code})"
 msgstr "Det gick inte att få '{path}': {error} ({error_code})"
 
-msgid "Successfully updated source {protocol} address to {ip}"
-msgstr "Uppdaterade källans {protocol}-adress till {ip}"
-
 msgid "Couldn't obtain source address in any IP protocol, no network connections possible"
 msgstr "Kunde inte hämta källadressen i något IP-protokoll, inga nätverksanslutningar möjliga"
 
 msgid "Your machine does not support {protocol}"
 msgstr "Din maskin stöder inte {protocol}"
-
-msgid "Successfully updated global {type} address to {ip} using {url}"
-msgstr "Den globala {type}-adressen har uppdaterats till {ip} med {url}"
 
 msgid "Still waiting for disk IO on torrent {id}: {running} running, {queued} queued"
 msgstr ""
@@ -1956,9 +1950,6 @@ msgstr "Lokal port {local_port} vidarebefordras inte till {advertised_port}"
 
 msgid "Stopping port forwarding through '{url}', service '{type}'"
 msgstr "Stoppar portvidarebefordran genom '{url}', tjänst '{type}'"
-
-msgid "Port forwarding through '{url}', service '{type}'. (local address: {address}:{port})"
-msgstr "Portvidarebefordran genom '{url}', tjänst '{type}'. (lokal adress: {address}:{port})"
 
 msgid "Forwarded local port {local_port} to {advertised_port}"
 msgstr "Vidarebefordrade lokal port {local_port} till {advertised_port}"
@@ -3892,6 +3883,15 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "sekund"
 msgstr[1] "sekunder"
+
+#~ msgid "Successfully updated source {protocol} address to {ip}"
+#~ msgstr "Uppdaterade källans {protocol}-adress till {ip}"
+
+#~ msgid "Successfully updated global {type} address to {ip} using {url}"
+#~ msgstr "Den globala {type}-adressen har uppdaterats till {ip} med {url}"
+
+#~ msgid "Port forwarding through '{url}', service '{type}'. (local address: {address}:{port})"
+#~ msgstr "Portvidarebefordran genom '{url}', tjänst '{type}'. (lokal adress: {address}:{port})"
 
 #, fuzzy
 #~| msgid "Are you sure you want to remove {count:L} tracker?"

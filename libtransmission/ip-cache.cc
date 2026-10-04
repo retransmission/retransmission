@@ -266,11 +266,7 @@ void tr_ip_cache::update_source_addr(tr_address_type type)
     source_addr_checked_[type] = true;
     if (auto const& source_addr = get_global_source_address(bind_addr(type), err); source_addr) {
         set_source_addr(*source_addr);
-        tr_logAddDebug(
-            fmt::format(
-                fmt::runtime(_("Successfully updated source {protocol} address to {ip}")),
-                fmt::arg("protocol", protocol),
-                fmt::arg("ip", source_addr->display_name())));
+        tr_logAddDebug(fmt::format("Successfully updated source {} address to {}", protocol, source_addr->display_name()));
     } else {
         // Stop the update process since we have no public internet connectivity
         unset_addr(type);
@@ -331,10 +327,10 @@ void tr_ip_cache::on_response_ip_query(tr_address_type const type, tr_web::Fetch
 
             tr_logAddDebug(
                 fmt::format(
-                    fmt::runtime(_("Successfully updated global {type} address to {ip} using {url}")),
-                    fmt::arg("type", protocol),
-                    fmt::arg("ip", addr->display_name()),
-                    fmt::arg("url", ip_endpoints[ix_service])));
+                    "Successfully updated global {} address to {} using {}",
+                    protocol,
+                    addr->display_name(),
+                    ip_endpoints[ix_service]));
         }
     }
 

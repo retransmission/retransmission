@@ -1904,17 +1904,11 @@ msgstr "Αδυναμία ανάγνωσης '{path}'"
 msgid "Couldn't get '{path}': {error} ({error_code})"
 msgstr "Αδυναμία απόκτησης '{path}': {error} ({error_code})"
 
-msgid "Successfully updated source {protocol} address to {ip}"
-msgstr "Επιτυχής ενημέρωση {protocol} διεύθυνσης πηγής σε {ip}"
-
 msgid "Couldn't obtain source address in any IP protocol, no network connections possible"
 msgstr ""
 
 msgid "Your machine does not support {protocol}"
 msgstr "Το σύστημά σας δεν υποστηρίζει το {protocol}"
-
-msgid "Successfully updated global {type} address to {ip} using {url}"
-msgstr "Επιτυχής ενημέρωση καθολικής διεύθυνσης {type} σε {ip} με χρήση του {url}"
 
 msgid "Still waiting for disk IO on torrent {id}: {running} running, {queued} queued"
 msgstr ""
@@ -1990,9 +1984,6 @@ msgstr "Η τοπική θύρα {local_port} δεν προωθείται στη
 
 msgid "Stopping port forwarding through '{url}', service '{type}'"
 msgstr "Διακοπή προώθησης θυρών δια μέσου του '{url}', υπηρεσία '{type}'"
-
-msgid "Port forwarding through '{url}', service '{type}'. (local address: {address}:{port})"
-msgstr "Προώθηση θυρών δια μέσου του '{url}', υπηρεσία '{type}'. (τοπική διεύθυνση: {address}:{port})"
 
 msgid "Forwarded local port {local_port} to {advertised_port}"
 msgstr "Η τοπική θύρα {local_port} προωθείται στην {advertised_port}"
@@ -3921,6 +3912,15 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "δευτερόλεπτο"
 msgstr[1] "δευτερόλεπτα"
+
+#~ msgid "Successfully updated source {protocol} address to {ip}"
+#~ msgstr "Επιτυχής ενημέρωση {protocol} διεύθυνσης πηγής σε {ip}"
+
+#~ msgid "Successfully updated global {type} address to {ip} using {url}"
+#~ msgstr "Επιτυχής ενημέρωση καθολικής διεύθυνσης {type} σε {ip} με χρήση του {url}"
+
+#~ msgid "Port forwarding through '{url}', service '{type}'. (local address: {address}:{port})"
+#~ msgstr "Προώθηση θυρών δια μέσου του '{url}', υπηρεσία '{type}'. (τοπική διεύθυνση: {address}:{port})"
 
 #, fuzzy
 #~| msgid "Are you sure you want to remove {count:L} tracker?"

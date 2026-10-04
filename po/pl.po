@@ -1982,17 +1982,11 @@ msgstr "Nie można odczytać „{path}”"
 msgid "Couldn't get '{path}': {error} ({error_code})"
 msgstr "Nie można uzyskać „{path}”: {error} ({error_code})"
 
-msgid "Successfully updated source {protocol} address to {ip}"
-msgstr "Pomyślnie zaktualizowano adres źródłowy {protocol} na {ip}"
-
 msgid "Couldn't obtain source address in any IP protocol, no network connections possible"
 msgstr "Nie udało się uzyskać adresu źródłowego w żadnym protokole IP, nie ma możliwości nawiązania połączenia sieciowego"
 
 msgid "Your machine does not support {protocol}"
 msgstr "Ten komputer nie obsługuje {protocol}"
-
-msgid "Successfully updated global {type} address to {ip} using {url}"
-msgstr "Pomyślnie zaktualizowano globalny adres {type} na {ip} przy za pomocą {url}"
 
 msgid "Still waiting for disk IO on torrent {id}: {running} running, {queued} queued"
 msgstr ""
@@ -2068,9 +2062,6 @@ msgstr "Port lokalny {local_port} nie jest przekierowywany na {advertised_port}"
 
 msgid "Stopping port forwarding through '{url}', service '{type}'"
 msgstr "Zatrzymywanie przekierowywania portów przez „{url}”, usługa „{type}”"
-
-msgid "Port forwarding through '{url}', service '{type}'. (local address: {address}:{port})"
-msgstr "Przekierowywanie portów przez „{url}”, usługę „{type}” (lokalny adres: {address}:{port})."
 
 msgid "Forwarded local port {local_port} to {advertised_port}"
 msgstr "Przekierowywany port lokalny {local_port} na {advertised_port}"
@@ -4047,6 +4038,15 @@ msgstr[0] "sekunda"
 msgstr[1] "sekundy"
 msgstr[2] "sekund"
 msgstr[3] "sekund"
+
+#~ msgid "Successfully updated source {protocol} address to {ip}"
+#~ msgstr "Pomyślnie zaktualizowano adres źródłowy {protocol} na {ip}"
+
+#~ msgid "Successfully updated global {type} address to {ip} using {url}"
+#~ msgstr "Pomyślnie zaktualizowano globalny adres {type} na {ip} przy za pomocą {url}"
+
+#~ msgid "Port forwarding through '{url}', service '{type}'. (local address: {address}:{port})"
+#~ msgstr "Przekierowywanie portów przez „{url}”, usługę „{type}” (lokalny adres: {address}:{port})."
 
 #, fuzzy
 #~| msgid "Are you sure you want to remove {count:L} tracker?"

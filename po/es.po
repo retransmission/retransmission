@@ -1989,17 +1989,11 @@ msgstr "No se pudo leer «{path}»"
 msgid "Couldn't get '{path}': {error} ({error_code})"
 msgstr "No se pudo obtener «{path}»:  {error} ({error_code})"
 
-msgid "Successfully updated source {protocol} address to {ip}"
-msgstr "Dirección de fuente {protocol} actualizada correctamente a {ip}"
-
 msgid "Couldn't obtain source address in any IP protocol, no network connections possible"
 msgstr ""
 
 msgid "Your machine does not support {protocol}"
 msgstr "Su máquina no soporta {protocol}"
-
-msgid "Successfully updated global {type} address to {ip} using {url}"
-msgstr "Dirección global {type} actualizada correctamente a {ip} usando {url}"
 
 msgid "Still waiting for disk IO on torrent {id}: {running} running, {queued} queued"
 msgstr ""
@@ -2075,9 +2069,6 @@ msgstr ""
 
 msgid "Stopping port forwarding through '{url}', service '{type}'"
 msgstr "Parando reenvio de puertos a traves de «{url}»: servicio «{type}»"
-
-msgid "Port forwarding through '{url}', service '{type}'. (local address: {address}:{port})"
-msgstr "Renvio de puertos a través de «{url}»: servicio «{type}». (dirección local: {address}:{port})"
 
 msgid "Forwarded local port {local_port} to {advertised_port}"
 msgstr ""
@@ -4043,6 +4034,15 @@ msgid_plural "seconds"
 msgstr[0] "segundo"
 msgstr[1] "segundos"
 msgstr[2] "segundos"
+
+#~ msgid "Successfully updated source {protocol} address to {ip}"
+#~ msgstr "Dirección de fuente {protocol} actualizada correctamente a {ip}"
+
+#~ msgid "Successfully updated global {type} address to {ip} using {url}"
+#~ msgstr "Dirección global {type} actualizada correctamente a {ip} usando {url}"
+
+#~ msgid "Port forwarding through '{url}', service '{type}'. (local address: {address}:{port})"
+#~ msgstr "Renvio de puertos a través de «{url}»: servicio «{type}». (dirección local: {address}:{port})"
 
 #, fuzzy
 #~| msgid "Are you sure you want to remove {count:L} tracker?"

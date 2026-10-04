@@ -1905,17 +1905,11 @@ msgstr "Nem sikerült '{path}' olvasása"
 msgid "Couldn't get '{path}': {error} ({error_code})"
 msgstr "Nem sikerült '{path}' lekérése: {error} ({error_code})"
 
-msgid "Successfully updated source {protocol} address to {ip}"
-msgstr "Sikeresen frissítette a forrás {protocol} címet {ip}-re"
-
 msgid "Couldn't obtain source address in any IP protocol, no network connections possible"
 msgstr "Egyetlen IP protokollon sem sikerült lekérni a forráscímet, a hálózati kapcsolat nem lehetséges"
 
 msgid "Your machine does not support {protocol}"
 msgstr "Az ön gépe nem támogatja a következőt: {protocol}"
-
-msgid "Successfully updated global {type} address to {ip} using {url}"
-msgstr "Sikeresen frissítette a globális {type} címet {ip}-re a {url} használatával"
 
 msgid "Still waiting for disk IO on torrent {id}: {running} running, {queued} queued"
 msgstr ""
@@ -1991,9 +1985,6 @@ msgstr "A helyi port ({local_port}) nincs ide továbbítva: {advertised_port}"
 
 msgid "Stopping port forwarding through '{url}', service '{type}'"
 msgstr "'{url}' címen keresztüli porttovábbítás leállítása, szolgáltatás: '{type}'"
-
-msgid "Port forwarding through '{url}', service '{type}'. (local address: {address}:{port})"
-msgstr "Porttovábbítás '{url}' címen keresztül, szolgáltatás: '{type}'. (helyi cím: {address}:{port})"
 
 msgid "Forwarded local port {local_port} to {advertised_port}"
 msgstr "Helyi port ({local_port}) továbbítva ide: {advertised_port}"
@@ -3919,6 +3910,15 @@ msgid "seconds"
 msgid_plural "seconds"
 msgstr[0] "másodperc"
 msgstr[1] "másodperc"
+
+#~ msgid "Successfully updated source {protocol} address to {ip}"
+#~ msgstr "Sikeresen frissítette a forrás {protocol} címet {ip}-re"
+
+#~ msgid "Successfully updated global {type} address to {ip} using {url}"
+#~ msgstr "Sikeresen frissítette a globális {type} címet {ip}-re a {url} használatával"
+
+#~ msgid "Port forwarding through '{url}', service '{type}'. (local address: {address}:{port})"
+#~ msgstr "Porttovábbítás '{url}' címen keresztül, szolgáltatás: '{type}'. (helyi cím: {address}:{port})"
 
 #, fuzzy
 #~| msgid "Are you sure you want to remove {count:L} tracker?"

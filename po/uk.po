@@ -1971,17 +1971,11 @@ msgstr "Не вдалося зчитати «{path}»"
 msgid "Couldn't get '{path}': {error} ({error_code})"
 msgstr "Не вдалося отримати «{path}»: {error} ({error_code})"
 
-msgid "Successfully updated source {protocol} address to {ip}"
-msgstr "Успішно оновлено джерело{protocol}за адресою {ip}"
-
 msgid "Couldn't obtain source address in any IP protocol, no network connections possible"
 msgstr ""
 
 msgid "Your machine does not support {protocol}"
 msgstr "Ваш пристрій не підтримує {protocol}"
-
-msgid "Successfully updated global {type} address to {ip} using {url}"
-msgstr "Успішно оновлено глобальну  {type} за адресою {ip} за допомогою{url}"
 
 msgid "Still waiting for disk IO on torrent {id}: {running} running, {queued} queued"
 msgstr ""
@@ -2057,9 +2051,6 @@ msgstr ""
 
 msgid "Stopping port forwarding through '{url}', service '{type}'"
 msgstr "Припинення переадресування портів через «{url}», служба «{type}»"
-
-msgid "Port forwarding through '{url}', service '{type}'. (local address: {address}:{port})"
-msgstr "Переадресація порту за допомогою «{url}», служба «{type}». (локальна адреса: {address}:{port})"
 
 msgid "Forwarded local port {local_port} to {advertised_port}"
 msgstr ""
@@ -4042,6 +4033,15 @@ msgstr[0] "секунда"
 msgstr[1] "секунди"
 msgstr[2] "секунд"
 msgstr[3] "секунди"
+
+#~ msgid "Successfully updated source {protocol} address to {ip}"
+#~ msgstr "Успішно оновлено джерело{protocol}за адресою {ip}"
+
+#~ msgid "Successfully updated global {type} address to {ip} using {url}"
+#~ msgstr "Успішно оновлено глобальну  {type} за адресою {ip} за допомогою{url}"
+
+#~ msgid "Port forwarding through '{url}', service '{type}'. (local address: {address}:{port})"
+#~ msgstr "Переадресація порту за допомогою «{url}», служба «{type}». (локальна адреса: {address}:{port})"
 
 #, fuzzy
 #~| msgid "Are you sure you want to remove {count:L} tracker?"
