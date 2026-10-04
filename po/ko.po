@@ -1012,7 +1012,7 @@ msgstr "업로드함:"
 msgid "Downloaded:"
 msgstr "다운로드함:"
 
-msgid "Failed DL:"
+msgid "Failed download:"
 msgstr ""
 
 msgid "State:"

@@ -1132,7 +1132,7 @@ msgstr "Feltöltve:"
 msgid "Downloaded:"
 msgstr "Letöltve:"
 
-msgid "Failed DL:"
+msgid "Failed download:"
 msgstr "Sikertelen LE:"
 
 msgid "State:"

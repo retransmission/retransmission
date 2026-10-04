@@ -1131,7 +1131,7 @@ msgstr "Απεσταλμένα:"
 msgid "Downloaded:"
 msgstr "Ληφθέντα:"
 
-msgid "Failed DL:"
+msgid "Failed download:"
 msgstr "Ανεπιτυχές DL:"
 
 msgid "State:"

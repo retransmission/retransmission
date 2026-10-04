@@ -1122,7 +1122,7 @@ msgstr "Uploadet:"
 msgid "Downloaded:"
 msgstr "Downloadet:"
 
-msgid "Failed DL:"
+msgid "Failed download:"
 msgstr "Mislykkede DL:"
 
 msgid "State:"

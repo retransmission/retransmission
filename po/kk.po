@@ -1008,7 +1008,7 @@ msgstr "Таратылған:"
 msgid "Downloaded:"
 msgstr "Жүктелген:"
 
-msgid "Failed DL:"
+msgid "Failed download:"
 msgstr ""
 
 msgid "State:"

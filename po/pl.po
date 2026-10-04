@@ -1163,7 +1163,7 @@ msgstr "Wysłano:"
 msgid "Downloaded:"
 msgstr "Pobrano:"
 
-msgid "Failed DL:"
+msgid "Failed download:"
 msgstr "Nieudane pobieranie:"
 
 msgid "State:"

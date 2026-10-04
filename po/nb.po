@@ -1017,7 +1017,7 @@ msgstr "Lastet opp:"
 msgid "Downloaded:"
 msgstr "Lastet ned:"
 
-msgid "Failed DL:"
+msgid "Failed download:"
 msgstr ""
 
 msgid "State:"

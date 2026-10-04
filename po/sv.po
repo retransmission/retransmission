@@ -1097,7 +1097,7 @@ msgstr "Skickat:"
 msgid "Downloaded:"
 msgstr "Mottagit:"
 
-msgid "Failed DL:"
+msgid "Failed download:"
 msgstr "Misslyckad hämtning:"
 
 msgid "State:"

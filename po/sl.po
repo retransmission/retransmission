@@ -1040,7 +1040,7 @@ msgstr "Poslano:"
 msgid "Downloaded:"
 msgstr "Prejeto:"
 
-msgid "Failed DL:"
+msgid "Failed download:"
 msgstr ""
 
 msgid "State:"

@@ -1114,7 +1114,7 @@ msgstr "Téléversé :"
 msgid "Downloaded:"
 msgstr "Téléchargé :"
 
-msgid "Failed DL:"
+msgid "Failed download:"
 msgstr "Téléchargement en échec :"
 
 msgid "State:"

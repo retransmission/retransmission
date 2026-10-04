@@ -98,7 +98,7 @@
                                 </textField>
                                 <textField verticalHuggingPriority="1000" horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="1000" allowsCharacterPickerTouchBarItem="YES" preferredMaxLayoutWidth="0.0" translatesAutoresizingMaskIntoConstraints="NO" id="5">
                                     <rect key="frame" x="-2" y="88" width="73" height="14"/>
-                                    <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="right" title="Failed DL:" id="57">
+                                    <textFieldCell key="cell" sendsActionOnEndEditing="YES" alignment="right" title="Failed download:" id="57">
                                         <font key="font" metaFont="smallSystem"/>
                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>

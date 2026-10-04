@@ -1126,7 +1126,7 @@ msgstr "Отдано:"
 msgid "Downloaded:"
 msgstr "Загружено:"
 
-msgid "Failed DL:"
+msgid "Failed download:"
 msgstr "Неудачно:"
 
 msgid "State:"

@@ -1004,7 +1004,7 @@ msgstr "Terunggah:"
 msgid "Downloaded:"
 msgstr "Terunduh:"
 
-msgid "Failed DL:"
+msgid "Failed download:"
 msgstr ""
 
 msgid "State:"

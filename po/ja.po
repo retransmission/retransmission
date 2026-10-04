@@ -1085,7 +1085,7 @@ msgstr "アップロード済み:"
 msgid "Downloaded:"
 msgstr "ダウンロード済み:"
 
-msgid "Failed DL:"
+msgid "Failed download:"
 msgstr "DL失敗:"
 
 msgid "State:"

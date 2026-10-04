@@ -1031,7 +1031,7 @@ msgstr "Lähetetty:"
 msgid "Downloaded:"
 msgstr "Ladattu:"
 
-msgid "Failed DL:"
+msgid "Failed download:"
 msgstr ""
 
 msgid "State:"

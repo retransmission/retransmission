@@ -1152,7 +1152,7 @@ msgstr "Вивантажено:"
 msgid "Downloaded:"
 msgstr "Завантажено:"
 
-msgid "Failed DL:"
+msgid "Failed download:"
 msgstr "Невдалих завантажень:"
 
 msgid "State:"

@@ -1050,7 +1050,7 @@ msgstr "Išsiųsta:"
 msgid "Downloaded:"
 msgstr "Atsiųsta:"
 
-msgid "Failed DL:"
+msgid "Failed download:"
 msgstr ""
 
 msgid "State:"

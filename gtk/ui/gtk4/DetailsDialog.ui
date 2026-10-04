@@ -75,7 +75,7 @@
                             </child>
                             <child>
                               <object class="GtkLabel" id="failed_label">
-                                <property name="label" translatable="yes">Failed DL:</property>
+                                <property name="label" translatable="yes">Failed download:</property>
                                 <property name="xalign">0</property>
                                 <layout>
                                   <property name="column">0</property>

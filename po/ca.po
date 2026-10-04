@@ -1022,7 +1022,7 @@ msgstr "Pujat:"
 msgid "Downloaded:"
 msgstr "Baixat:"
 
-msgid "Failed DL:"
+msgid "Failed download:"
 msgstr ""
 
 msgid "State:"

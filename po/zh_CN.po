@@ -1133,7 +1133,7 @@ msgstr "已上传："
 msgid "Downloaded:"
 msgstr "已下载："
 
-msgid "Failed DL:"
+msgid "Failed download:"
 msgstr "下载失败："
 
 msgid "State:"

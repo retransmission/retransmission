@@ -1105,7 +1105,7 @@ msgstr "Igota:"
 msgid "Downloaded:"
 msgstr "Deskargatuta:"
 
-msgid "Failed DL:"
+msgid "Failed download:"
 msgstr "Huts egindako deskarga:"
 
 msgid "State:"

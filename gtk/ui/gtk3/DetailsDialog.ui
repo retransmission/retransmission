@@ -119,7 +119,7 @@
                           <object class="GtkLabel" id="failed_label">
                             <property name="visible">True</property>
                             <property name="can-focus">False</property>
-                            <property name="label" translatable="yes">Failed DL:</property>
+                            <property name="label" translatable="yes">Failed download:</property>
                             <property name="xalign">0</property>
                           </object>
                           <packing>

@@ -333,6 +333,8 @@ RENAMES = [
         'remove_prefix': '{downloaded_size} (+',
         'remove_suffix': ')',
     },
+    # The row's label spells out "download".
+    {'from': {'msgid': 'Failed DL:'}, 'to': {'msgid': 'Failed download:'}},
 ]
 
 FIELD_NAMES = ('msgctxt', 'msgid', 'msgid_plural')

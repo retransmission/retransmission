@@ -1022,7 +1022,7 @@ msgstr "Poslano:"
 msgid "Downloaded:"
 msgstr "Preuzeto:"
 
-msgid "Failed DL:"
+msgid "Failed download:"
 msgstr ""
 
 msgid "State:"

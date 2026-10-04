@@ -1002,7 +1002,7 @@ msgstr "ატვირთული:"
 msgid "Downloaded:"
 msgstr "ჩამოტვირთული:"
 
-msgid "Failed DL:"
+msgid "Failed download:"
 msgstr ""
 
 msgid "State:"

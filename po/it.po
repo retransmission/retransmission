@@ -1133,7 +1133,7 @@ msgstr "Inviati:"
 msgid "Downloaded:"
 msgstr "Ricevuti:"
 
-msgid "Failed DL:"
+msgid "Failed download:"
 msgstr "Ric. fallita:"
 
 msgid "State:"
