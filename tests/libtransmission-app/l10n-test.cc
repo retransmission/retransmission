@@ -345,6 +345,29 @@ TEST_F(L10nTest, useCatalogs)
     EXPECT_EQ("10 kB/s", (tr::Values::Speed{ 10, tr::Values::Speed::Units::KByps }.to_string()));
 }
 
+TEST_F(L10nTest, stripMnemonic)
+{
+    static constexpr auto Tests = std::array<std::pair<std::string_view, std::string_view>, 13U>{ {
+        { ""sv, ""sv },
+        { "Paused"sv, "Paused"sv },
+        { "_File"sv, "File"sv },
+        { "Open _URL…"sv, "Open URL…"sv },
+        { "Pass_word:"sv, "Password:"sv },
+        { "Append \"._part\" to incomplete files' names"sv, "Append \".part\" to incomplete files' names"sv },
+        { "snake__case"sv, "snake_case"sv },
+        { "trailing_"sv, "trailing_"sv },
+        { "ファイル(_F)"sv, "ファイル"sv },
+        { "開く(_O)…"sv, "開く…"sv },
+        { "文件 (_F)"sv, "文件"sv },
+        { "場所（_L）:"sv, "場所:"sv },
+        { "Size (_bytes)"sv, "Size (bytes)"sv },
+    } };
+
+    for (auto const& [text, expected] : Tests) {
+        EXPECT_EQ(expected, strip_mnemonic(text)) << text;
+    }
+}
+
 TEST_F(L10nTest, useCatalogFiles)
 {
     auto const write_mo = [this](std::string_view const name, std::vector<Message> const& messages) {

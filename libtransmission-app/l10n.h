@@ -45,6 +45,12 @@ struct Arg {
 // a catalog holds no such translation, because Catalog::parse() drops them.
 [[nodiscard]] std::string format_translation(std::locale const& locale, char const* translation, std::span<Arg const> args);
 
+// Returns `text` without the catalog's mnemonic markers, for a client whose controls have no mnemonics:
+// "_File" becomes "File", and "__" becomes "_".
+// Chinese, Japanese and Korean translations mark a Latin letter in parentheses after the text,
+// which goes away whole: "ファイル(_F)" becomes "ファイル". Its parentheses may be ASCII or full-width.
+[[nodiscard]] std::string strip_mnemonic(std::string_view text);
+
 // Loads `<dir>/<language>/LC_MESSAGES/<domain>.mo` for each candidate language,
 // from the first of `dirs` that has it,
 // and sets libtransmission's translator to look up each message

@@ -25,6 +25,11 @@
 // TR_TEXT_C("Verb", "Seeding")
 #define TR_TEXT_C(context, msgid) TRTextInContext(context, msgid)
 
+// Translated text that the catalog marks a mnemonic in, for the clients whose controls have one:
+// TR_MNEMONIC("_Cancel") returns "Cancel".
+// AppKit has no mnemonics, so the marker goes away, as does a translation's parenthesized one, e.g. "(_C)".
+#define TR_MNEMONIC(msgid) TRMnemonicText(msgid)
+
 // Translated text, formatted with {fmt} named arguments:
 // TR_FORMAT("Created by {creator}", TRArg("creator", creator))
 // {fmt} is built without exceptions and aborts on a format string that doesn't fit its arguments,
@@ -74,6 +79,8 @@ void TRSetUpLocalization();
 [[nodiscard]] NSString* TRText(char const* msgid);
 
 [[nodiscard]] NSString* TRTextInContext(char const* context, char const* msgid);
+
+[[nodiscard]] NSString* TRMnemonicText(char const* msgid);
 
 [[nodiscard]] NSString* TRFormat(char const* msgid, std::initializer_list<tr::app::l10n::Arg> args);
 

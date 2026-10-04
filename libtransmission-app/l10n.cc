@@ -650,6 +650,68 @@ std::string format_translation(std::locale const& locale, char const* const tran
 
 // ---
 
+namespace
+{
+
+// Returns the size of the parenthesized mnemonic that `str` starts with, e.g. "(_F)", or 0 if it starts with none.
+[[nodiscard]] constexpr size_t parenthesized_mnemonic_size(std::string_view const str) noexcept
+{
+    static constexpr auto FullWidthOpen = "\xEF\xBC\x88"sv; // U+FF08
+    static constexpr auto FullWidthClose = "\xEF\xBC\x89"sv; // U+FF09
+
+    for (auto const open : { "("sv, FullWidthOpen }) {
+        if (!str.starts_with(open)) {
+            continue;
+        }
+
+        auto const letter = str.substr(std::size(open));
+        auto const is_marked_letter = std::size(letter) >= 2U && letter[0] == '_' &&
+            ((letter[1] >= 'A' && letter[1] <= 'Z') || (letter[1] >= 'a' && letter[1] <= 'z') ||
+             (letter[1] >= '0' && letter[1] <= '9'));
+        if (!is_marked_letter) {
+            continue;
+        }
+
+        for (auto const close : { ")"sv, FullWidthClose }) {
+            if (letter.substr(2U).starts_with(close)) {
+                return std::size(open) + 2U + std::size(close);
+            }
+        }
+    }
+
+    return 0U;
+}
+
+} // namespace
+
+std::string strip_mnemonic(std::string_view text)
+{
+    auto str = std::string{};
+    str.reserve(std::size(text));
+
+    while (!std::empty(text)) {
+        if (auto const size = parenthesized_mnemonic_size(text); size != 0U) {
+            // Some translations put a space before the parentheses.
+            while (str.ends_with(' ')) {
+                str.pop_back();
+            }
+            text.remove_prefix(size);
+        } else if (text.starts_with("__"sv)) {
+            str += '_';
+            text.remove_prefix(2U);
+        } else if (text.front() == '_' && std::size(text) > 1U) {
+            text.remove_prefix(1U); // the next pass copies the mnemonic letter
+        } else {
+            str += text.front();
+            text.remove_prefix(1U);
+        }
+    }
+
+    return str;
+}
+
+// ---
+
 std::vector<std::string> use_catalogs(
     std::span<std::string const> const dirs,
     std::string_view const domain,

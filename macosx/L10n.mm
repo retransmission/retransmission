@@ -118,6 +118,11 @@ NSString* TRTextInContext(char const* const context, char const* const msgid)
     return tr_strv_to_utf8_nsstring(tr_pgettext(context, msgid));
 }
 
+NSString* TRMnemonicText(char const* const msgid)
+{
+    return tr_strv_to_utf8_nsstring(tr::app::l10n::strip_mnemonic(tr_gettext(msgid)));
+}
+
 NSString* TRFormat(char const* const msgid, std::initializer_list<tr::app::l10n::Arg> const args)
 {
     return formatTranslation(tr_gettext(msgid), args);
