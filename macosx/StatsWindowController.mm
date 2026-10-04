@@ -91,7 +91,7 @@ static tr_session* fLib = NULL;
     self.fNumOpenedLabelField.stringValue = TR_TEXT("Program started:");
 
     // Translators: Stats window -> reset button
-    self.fResetButton.title = TR_TEXT("Reset");
+    self.fResetButton.title = TR_MNEMONIC("_Reset");
 }
 
 - (void)windowWillClose:(id)sender
@@ -124,8 +124,8 @@ static tr_session* fLib = NULL;
         TRAppNameArg());
     alert.alertStyle = NSAlertStyleWarning;
     // Translators: Stats reset -> button
-    [alert addButtonWithTitle:TR_TEXT("Reset")];
-    [alert addButtonWithTitle:TR_TEXT("Cancel")];
+    [alert addButtonWithTitle:TR_MNEMONIC("_Reset")];
+    [alert addButtonWithTitle:TR_MNEMONIC("_Cancel")];
     alert.showsSuppressionButton = YES;
 
     [alert beginSheetModalForWindow:self.window completionHandler:^(NSModalResponse returnCode) {

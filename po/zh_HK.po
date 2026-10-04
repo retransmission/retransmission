@@ -945,9 +945,6 @@ msgstr "開啟 torrent"
 msgid "Open _URL…"
 msgstr "開啟網址(_U)…"
 
-msgid "Open URL…"
-msgstr "開啟網址…"
-
 msgid "_New…"
 msgstr "新增(_N)…"
 

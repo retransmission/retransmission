@@ -974,9 +974,6 @@ msgstr "Torrent aç"
 msgid "Open _URL…"
 msgstr ""
 
-msgid "Open URL…"
-msgstr ""
-
 msgid "_New…"
 msgstr ""
 

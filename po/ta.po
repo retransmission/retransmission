@@ -973,9 +973,6 @@ msgstr "டொராண்டை திற"
 msgid "Open _URL…"
 msgstr ""
 
-msgid "Open URL…"
-msgstr ""
-
 msgid "_New…"
 msgstr ""
 

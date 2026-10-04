@@ -942,9 +942,6 @@ msgstr "Торрентти ачуу"
 msgid "Open _URL…"
 msgstr "_URL'ди ачуу…"
 
-msgid "Open URL…"
-msgstr "Шилтемени ачуу…"
-
 msgid "_New…"
 msgstr "_Жаңы…"
 

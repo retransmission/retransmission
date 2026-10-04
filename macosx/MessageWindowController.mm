@@ -103,7 +103,7 @@ static NSUInteger const kMaxQueueLength = 10000U;
 
     //set and size buttons
     // Translators: Message window -> save button
-    self.fSaveButton.title = [TR_TEXT("Save") stringByAppendingEllipsis];
+    self.fSaveButton.title = [TR_MNEMONIC("_Save") stringByAppendingEllipsis];
     [self.fSaveButton sizeToFit];
 
     NSRect saveButtonFrame = self.fSaveButton.frame;

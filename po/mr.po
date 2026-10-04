@@ -976,9 +976,6 @@ msgstr "टोरंट खोला"
 msgid "Open _URL…"
 msgstr "यु आर एल ओपन करा"
 
-msgid "Open URL…"
-msgstr "यु आर एल ओपन करा"
-
 msgid "_New…"
 msgstr "नवीन"
 

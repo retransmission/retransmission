@@ -462,6 +462,10 @@ msgid "_Delete"
 msgstr "_Видалити"
 
 #. Removes the torrent from the list and keeps its downloaded files
+#. Translators: Removal confirm panel -> button
+#. Translators: Remove completed confirm panel -> button
+#. Translators: Remove toolbar item -> label
+#. Translators: Remove trackers alert -> button
 msgid "_Remove"
 msgstr "В_илучити"
 
@@ -651,6 +655,7 @@ msgstr "Дебаг"
 msgid "Save Log"
 msgstr "Зберегти журнал"
 
+#. Translators: Message window -> save button
 msgid "_Save"
 msgstr "_Зберегти"
 
@@ -804,6 +809,8 @@ msgstr[3] "Запущено {count:L} рази"
 msgid "Reset your statistics?"
 msgstr "Вилучити Ваші статистичні дані?"
 
+#. Translators: Stats window -> reset button
+#. Translators: Stats reset -> button
 msgid "_Reset"
 msgstr "_Скинути"
 
@@ -969,12 +976,19 @@ msgstr "Відкрити _адресу…"
 msgid "_New…"
 msgstr "С_творити…"
 
+#. Translators: All toolbar item -> label
+#. Translators: Dock item
 msgid "_Start All"
 msgstr "_Запустити усе"
 
+#. Translators: All toolbar item -> label
+#. Translators: Dock item
 msgid "_Pause All"
 msgstr "П_ризупинити усі"
 
+#. Translators: Legal alert -> button
+#. Translators: Confirm Quit panel -> button
+#. Translators: Transmission launched alert -> button
 msgid "_Quit"
 msgstr "Ви_йти"
 
@@ -999,6 +1013,7 @@ msgstr "_Властивості"
 msgid "Open Fold_er"
 msgstr "Відкрити _теку"
 
+#. Translators: Selected toolbar item -> label
 msgid "_Start"
 msgstr "_Запустити"
 
@@ -1025,6 +1040,7 @@ msgstr "Пересунути в_низ"
 msgid "Move to _Bottom"
 msgstr "Пересунути в _кінець"
 
+#. Translators: Selected toolbar item -> label
 msgid "_Pause"
 msgstr "_Призупинити"
 
@@ -1094,6 +1110,7 @@ msgstr "_Журнал повідомлень"
 msgid "_Statistics"
 msgstr "_Статистика"
 
+#. Translators: Donation beg -> button
 msgid "_Donate"
 msgstr "_Підтримати фінансово"
 
@@ -1113,6 +1130,7 @@ msgstr "Запустити торент"
 msgid "Alternative Speed _Limits"
 msgstr "Альтернативні обмеження швидкості"
 
+#. Translators: Add torrent -> same name -> button
 msgid "_Add"
 msgstr "_Додати"
 
@@ -1287,10 +1305,10 @@ msgstr "Статистика"
 msgid "New Torrent"
 msgstr "Новий торент"
 
-#, fuzzy
-#| msgid "C_redits"
+#. Translators: Create toolbar item -> label
+#. Translators: Create torrent -> blank address -> button
 msgid "C_reate"
-msgstr "А_втори"
+msgstr "Створити"
 
 msgid "Sa_ve to:"
 msgstr "З_берегти до:"
@@ -1478,10 +1496,8 @@ msgstr "Список блокувань"
 msgid "Enable _blocklist:"
 msgstr "Увімкнути перелік _блокування:"
 
-#, fuzzy
-#| msgid "Enable _automatic updates"
 msgid "_Automatically update weekly"
-msgstr "Увімкнути _автоматичне оновлення"
+msgstr "Оновлювати список щотижня"
 
 msgid "_Update"
 msgstr "_Оновити"
@@ -1659,6 +1675,7 @@ msgstr "Відкрити адресу"
 msgid "Open torrent from URL"
 msgstr "Відкрити торент з адреси"
 
+#. Translators: URL sheet label
 msgid "_URL:"
 msgstr "_Адреса:"
 
@@ -2372,32 +2389,17 @@ msgstr "Тека призначення та коренева тека дани�
 msgid "If you are attempting to use already existing data, the root data directory should be inside the destination directory."
 msgstr "Якщо ви намагаєтесь використовувати вже наявні дані, тека кореневих даних повинна знаходитись всередині теки призначення."
 
-msgid "Cancel"
-msgstr "Скасувати"
-
-#. Translators: Add torrent -> same name -> button
-msgid "Add"
-msgstr "Додати"
-
 #. Translators: Add torrent -> info
 #. Translators: Inspector -> Activity tab -> progress
 #. Translators: Torrent -> progress string
 msgid "{amount} selected"
 msgstr "{amount} вибрано"
 
-msgid "Start when added"
-msgstr "Почати, коли додастся"
-
 msgid "Magnet Link"
 msgstr "Магнітне посилання"
 
-#, fuzzy
-#| msgid "_Destination folder:"
-msgid "Destination folder:"
-msgstr "Тека призначення:"
-
-msgid "Priority:"
-msgstr "Приорітет:"
+msgid "_Priority:"
+msgstr "_Пріоритет:"
 
 msgid "Group:"
 msgstr "Група"
@@ -2405,32 +2407,11 @@ msgstr "Група"
 msgid "Change…"
 msgstr "Змінити..."
 
-#, fuzzy
-#| msgid "Mo_ve torrent file to the trash"
-msgid "Move torrent file to the Trash"
-msgstr "Вилучити торент-файл до смітника"
-
-msgid "Verify Local Data"
-msgstr "Перевірити місцеві дані"
-
 #. Translators: Filter toolbar item -> label
 #. Translators: inspector -> file filter
 #. Translators: Message window -> filter field
 msgid "Filter"
 msgstr "Фільтр"
-
-msgid "Trackers:"
-msgstr "Відстежувачі:"
-
-#, fuzzy
-#| msgid "_Private torrent"
-msgid "Private torrent"
-msgstr "Приватний торент"
-
-#. Translators: Create toolbar item -> label
-#. Translators: Create torrent -> blank address -> button
-msgid "Create"
-msgstr "Створити"
 
 msgid "Open when created"
 msgstr "Відкрити коли створеться"
@@ -2438,23 +2419,11 @@ msgstr "Відкрити коли створеться"
 msgid "Each tracker will be placed into its own tier"
 msgstr "Кожний відстежувач буде розміщено на своєму ярусі"
 
-msgid "Source:"
-msgstr "Джерело:"
+msgid "Limit _download speed:"
+msgstr "Обмежити _швидкість завантаження:"
 
-#, fuzzy
-#| msgid "_Torrent file:"
-msgid "Torrent file:"
-msgstr "Торент-файл:"
-
-#, fuzzy
-#| msgid "Limit _download speed:"
-msgid "Limit download speed:"
-msgstr "Обмежити швидкість завантаження:"
-
-#, fuzzy
-#| msgid "Limit _upload speed:"
-msgid "Limit upload speed:"
-msgstr "Обмежити швидкість відвантаження:"
+msgid "Limit _upload speed:"
+msgstr "Обмежити шв_идкість відвантаження:"
 
 msgid "minutes"
 msgstr "хвилини"
@@ -2545,16 +2514,6 @@ msgstr "Частини:"
 msgid "Was:"
 msgstr "Було:"
 
-#, fuzzy
-#| msgid "Torrent _priority:"
-msgid "Torrent priority:"
-msgstr "Пріоритетність торенту:"
-
-#, fuzzy
-#| msgid "Honor global _limits"
-msgid "Honor global limits"
-msgstr "Зважати на загальні обмеження"
-
 msgid "Use Global Settings"
 msgstr "Використовувати загальні параметри"
 
@@ -2565,16 +2524,6 @@ msgstr "Зупинити коли неактивний"
 #| msgid "Remove from the transfer list when seeding completes"
 msgid "Remove from the torrent list when seeding completes"
 msgstr "Видалити з переліку передач коли висів закінчиться"
-
-#, fuzzy
-#| msgid "_Maximum peers:"
-msgid "Maximum peers:"
-msgstr "Максимальна кількість вузлів:"
-
-#, fuzzy
-#| msgid "_Idle:"
-msgid "Idle:"
-msgstr "Неактивність:"
 
 #. Translators: Preferences -> toolbar item title
 #, fuzzy
@@ -2587,10 +2536,6 @@ msgstr "Про Retransmission"
 
 msgid "Check for Update…"
 msgstr "Перевірити оновлення..."
-
-#. Translators: Donation beg -> button
-msgid "Donate"
-msgstr "Підтримати"
 
 msgid "Preferences…"
 msgstr "Параметри..."
@@ -2610,22 +2555,14 @@ msgstr "Показати всі"
 msgid "Quit Retransmission"
 msgstr "Завершити Retransmission"
 
-msgid "File"
-msgstr "Файл"
-
 msgid "Create Torrent File…"
 msgstr "Створити торент-файл..."
 
-#, fuzzy
-#| msgid "_Open…"
-msgid "Open…"
-msgstr "Відкрити…"
+msgid "_Open…"
+msgstr "_Відкрити…"
 
 msgid "Open With Options Window…"
 msgstr "Відкрити з вікном опцій..."
-
-msgid "Open URL…"
-msgstr "Відкрити адресу…"
 
 msgid "Close Window"
 msgstr "Закрити вікно"
@@ -2637,11 +2574,6 @@ msgstr "Закрити вікно"
 msgid "Quick Look"
 msgstr "Швидкий Перегляд"
 
-#, fuzzy
-#| msgid "Set _Location…"
-msgid "Set Location…"
-msgstr "Встановити місце…"
-
 #. Translators: File Outline -> Menu
 msgid "Rename…"
 msgstr "Перейменувати…"
@@ -2651,12 +2583,6 @@ msgstr "Зберегти торент-файл як..."
 
 msgid "Share Torrent File"
 msgstr "Поширити торент-файл"
-
-msgid "Copy Magnet Link to Clipboard"
-msgstr "Скопіювати magnet-посилання до буферу обміну"
-
-msgid "Edit"
-msgstr "Редагування"
 
 msgid "Undo"
 msgstr "Скасувати"
@@ -2673,15 +2599,6 @@ msgstr "Скопіювати"
 msgid "Paste"
 msgstr "Вставити"
 
-msgid "Delete"
-msgstr "Видалити"
-
-msgid "Select All"
-msgstr "Вибрати все"
-
-msgid "View"
-msgstr "Перегляд"
-
 msgid "Compact View"
 msgstr "Стислий перегляд"
 
@@ -2693,11 +2610,6 @@ msgstr "Доступність"
 
 msgid "Use Groups"
 msgstr "Використовувати групи"
-
-#, fuzzy
-#| msgid "Start torrent"
-msgid "Sort Torrents By"
-msgstr "Запустити торент"
 
 msgid "Queue Order"
 msgstr "Порядком черги"
@@ -2736,48 +2648,12 @@ msgstr "Сховати панель інструментів"
 msgid "Customize Toolbar…"
 msgstr "Налаштувати панель інструментів..."
 
-#. Translators: Selected toolbar item -> label
-#, fuzzy
-#| msgid "Paused"
-msgid "Pause"
-msgstr "Призупинено"
-
-#. Translators: Selected toolbar item -> label
-#, fuzzy
-#| msgid "_Start"
-msgid "Start"
-msgstr "Запустити"
-
-#. Translators: Removal confirm panel -> button
-#. Translators: Remove completed confirm panel -> button
-#. Translators: Remove toolbar item -> label
-#. Translators: Remove trackers alert -> button
-msgid "Remove"
-msgstr "Видалити"
-
-#, fuzzy
-#| msgid "_Delete Files and Remove"
-msgid "Delete Files and Remove"
-msgstr "Вилучити файли і торент"
-
 msgid "Remove All Completed From List"
 msgstr "Видалити зі списку всі завершені"
 
 #. Translators: File Outline -> Menu
 msgid "Show in Finder"
 msgstr "Показати у Finder"
-
-#. Translators: All toolbar item -> label
-#. Translators: Dock item
-msgid "Pause All"
-msgstr "Призупинити Всі"
-
-#. Translators: All toolbar item -> label
-#. Translators: Dock item
-#, fuzzy
-#| msgid "_Start All"
-msgid "Start All"
-msgstr "Запустити усе"
 
 #, fuzzy
 #| msgid "_Start All"
@@ -2787,11 +2663,6 @@ msgstr "Запустити усе"
 #. Translators: Groups -> Button
 msgid "Group"
 msgstr "Група"
-
-#, fuzzy
-#| msgid "Ask Tracker for _More Peers"
-msgid "Ask Tracker for More Peers"
-msgstr "Запросити у трекера більше вузлів"
 
 msgid "Window"
 msgstr "Вікно"
@@ -2817,9 +2688,6 @@ msgstr "Попередня кнопка фільтру"
 msgid "Bring All to Front"
 msgstr "Перенести всі вперед"
 
-msgid "Help"
-msgstr "Довідка"
-
 msgid "Retransmission Help"
 msgstr "Довідка про Retransmission"
 
@@ -2835,9 +2703,6 @@ msgstr "Retransmission wiki та розробка"
 msgid "Menu"
 msgstr "Меню"
 
-msgid "Preferences"
-msgstr "Налаштування"
-
 msgid "Check for update:"
 msgstr "Перевірити оновлення:"
 
@@ -2849,11 +2714,6 @@ msgstr "Перевіряти оновлення кожен день"
 
 msgid "Reset all alerts:"
 msgstr "Скинути всі попередження:"
-
-#. Translators: Stats window -> reset button
-#. Translators: Stats reset -> button
-msgid "Reset"
-msgstr "Скинути"
 
 msgid "Set Default Application"
 msgstr "Зробити програмою за замовчуванням"
@@ -2908,40 +2768,17 @@ msgstr "Відкрити торент-файли:"
 msgid "Same as torrent file"
 msgstr "Ту саму теку, де торент-файл"
 
-#, fuzzy
-#| msgid "Save to _Location:"
-msgid "Save to location:"
-msgstr "Зберігати до теки:"
-
 msgid "Settings:"
 msgstr "Налаштування:"
 
-#, fuzzy
-#| msgid "Append \"._part\" to incomplete files' names"
-msgid "Append \".part\" to incomplete files' names"
-msgstr "Додавати до назви незавершених файлів «.part»"
-
-#, fuzzy
-#| msgid "Automatically add torrent files _from:"
-msgid "Automatically add torrent files from:"
-msgstr "Автоматично додавати торент-файли з:"
-
 msgid "Auto add:"
 msgstr "Автододавання:"
-
-msgid "Keep incomplete files in:"
-msgstr "Зберігати недозавантажені файли у:"
 
 msgid "Display a window when opening a torrent file"
 msgstr "Показувати діалогове вікно під час відкриття торент-файлу"
 
 msgid "Display a window when opening a magnet link"
 msgstr "Показувати діалогове вікно під час відкриття магнет-посилання"
-
-#, fuzzy
-#| msgid "_Start added torrents"
-msgid "Start added torrents"
-msgstr "Розпочати додані торенти"
 
 msgid "Only when adding manually"
 msgstr "Тільки при додаванні вручну"
@@ -3047,23 +2884,11 @@ msgstr "Субота"
 msgid "Sunday"
 msgstr "Неділя"
 
-msgid "to"
-msgstr "до"
+msgid "_Download:"
+msgstr "З_авантаження:"
 
-#, fuzzy
-#| msgid "_Scheduled times:"
-msgid "Scheduled times:"
-msgstr "Згідно розкладу:"
-
-#, fuzzy
-#| msgid "_Download:"
-msgid "Download:"
-msgstr "Завантаження:"
-
-#, fuzzy
-#| msgid "_Upload:"
-msgid "Upload:"
-msgstr "Відвантаження:"
+msgid "_Upload:"
+msgstr "Ві_двантаження:"
 
 #, fuzzy
 #| msgid "Alternative Speed Limits"
@@ -3080,18 +2905,8 @@ msgstr "Обмеження швидкості"
 msgid "Peer limits:"
 msgstr "Обмеження вузлів"
 
-#, fuzzy
-#| msgid "Use _DHT to find more peers"
-msgid "Use DHT to find more peers for public torrents"
-msgstr "Використовувати DHT для пошуку вузлів"
-
 msgid "Blocklist:"
 msgstr "Список блокування:"
-
-#, fuzzy
-#| msgid "Maximum peers per _torrent:"
-msgid "Maximum peers for new torrents:"
-msgstr "Макс. кількість вузлів на торент:"
 
 msgid "Last updated: N/A"
 msgstr "Останнє оновлення: немає даних"
@@ -3099,33 +2914,8 @@ msgstr "Останнє оновлення: немає даних"
 msgid "Encryption:"
 msgstr "Шифрування:"
 
-msgid "Automatically update weekly"
-msgstr "Оновлювати список щотижня"
-
-#, fuzzy
-#| msgid "Maximum peers _overall:"
-msgid "Maximum peers overall:"
-msgstr "Макс. кількість вузлів взагалі:"
-
 msgid "blocklist loaded/not loaded"
 msgstr "чорний список завантажений / не завантажений"
-
-#, fuzzy
-#| msgid "Use PE_X to find more peers"
-msgid "Use PEX to find more peers for public torrents"
-msgstr "Використовувати PEX для пошуку вузлів"
-
-#. Translators: URL sheet label
-msgid "URL:"
-msgstr ""
-
-#, fuzzy
-#| msgid "Use _Local Peer Discovery to find more peers"
-msgid "Use Local Peer Discovery to find more peers for public torrents"
-msgstr "Використовувати виявлення локальних вузлів"
-
-msgid "Update"
-msgstr "Оновити"
 
 msgid "High connection limits might significantly impact system performance"
 msgstr "Деякі роутери будуть \"гальмувати\" якщо підключень дуже багато"
@@ -3141,11 +2931,6 @@ msgstr "Випадковий порт"
 msgid "Peer communication:"
 msgstr "Звʼязок:"
 
-#, fuzzy
-#| msgid "_Port for incoming connections:"
-msgid "Port for incoming connections:"
-msgstr "Порт для вхідних з’єднань:"
-
 #. Translators: Preferences -> Network -> port status
 msgid "Port is open"
 msgstr "Порт відкритий"
@@ -3153,63 +2938,17 @@ msgstr "Порт відкритий"
 msgid "NAT traversal uses either NAT-PMP or UPnP"
 msgstr "Використовуючи NAT-T з NAT-PMP чи UPnP"
 
-#, fuzzy
-#| msgid "Pick a _random port every time Transmission is started"
-msgid "Pick a random port at startup"
-msgstr "Вибирати випадковий порт при кожному запуску Transmission"
-
 msgid "Automatically map port"
 msgstr "Відкривати порт автоматично"
-
-#, fuzzy
-#| msgid "Prevent computer from sleeping with active transfers"
-msgid "Prevent computer from sleeping with active torrents"
-msgstr "Запобігати переходу комп’ютера в режим сну поки є активні роздачі"
 
 msgid "System sleep:"
 msgstr "Сплячий режим:"
 
-#, fuzzy
-#| msgid "Enable µ_TP for peer connections"
-msgid "Enable µTP for peer connections"
-msgstr "Увімкнути обмін даними за µTP"
-
 msgid "This enables the web interface and allows remote requests"
 msgstr "Керування програмою буде доступне через веб-інтерфейс"
 
-#, fuzzy
-#| msgid "Only allow these IP a_ddresses:"
-msgid "Only allow these IP addresses:"
-msgstr "Дозволити лише таким IP-адресам:"
-
-#, fuzzy
-#| msgid "Use _authentication"
-msgid "Use authentication"
-msgstr "Вимагати авторизації"
-
 msgid "Display the web interface with Bonjour"
 msgstr "Анонсувати веб-інтерфейс через Bonjour"
-
-#, fuzzy
-#| msgid "Allow _remote access"
-msgid "Allow remote access"
-msgstr "Дозволити віддалений доступ"
-
-msgid "Username:"
-msgstr "Користувач:"
-
-msgid "Password:"
-msgstr "Пароль:"
-
-#, fuzzy
-#| msgid "HTTP _port:"
-msgid "HTTP port:"
-msgstr "Порт HTTP:"
-
-#, fuzzy
-#| msgid "_Open web client"
-msgid "Open Web Client"
-msgstr "Переглянути через веб"
 
 #. Translators: Inspector -> Files tab -> file status string
 #. Translators: Status bar transfer count
@@ -3223,12 +2962,6 @@ msgstr "Помилка завантаження чорного списку."
 #. Translators: Legal alert -> button
 msgid "I Accept"
 msgstr "Приймаю"
-
-#. Translators: Legal alert -> button
-#. Translators: Confirm Quit panel -> button
-#. Translators: Transmission launched alert -> button
-msgid "Quit"
-msgstr "Вихід"
 
 #. Translators: Legal alert -> title
 msgid "Welcome to {appname}"
@@ -3921,10 +3654,6 @@ msgstr "{amount} всього"
 msgid "Magnetized torrent"
 msgstr "Приватний торент"
 
-#. Translators: Message window -> save button
-msgid "Save"
-msgstr "Зберегти"
-
 #. Translators: Save log panel -> default file name
 msgid "untitled"
 msgstr "без назви"
@@ -4211,12 +3940,6 @@ msgstr "Доступність:"
 msgid "Labels:"
 msgstr "Мітки:"
 
-msgid "Limit _upload speed:"
-msgstr "Обмежити шв_идкість відвантаження:"
-
-msgid "Limit _download speed:"
-msgstr "Обмежити _швидкість завантаження:"
-
 msgid "Search…"
 msgstr "Шукати…"
 
@@ -4261,9 +3984,6 @@ msgstr "{host} остання відповідь {time_span} тому"
 msgid "{host} is not responding"
 msgstr "{host} не відповідає"
 
-msgid "_Open…"
-msgstr "_Відкрити…"
-
 msgid "Open the torrent's folder"
 msgstr "Відкрити теку з торентами"
 
@@ -4293,9 +4013,6 @@ msgstr "Обрати сеанс"
 #| msgid "_Source:"
 msgid "Sou_rce:"
 msgstr "_Джерело:"
-
-msgid "_Priority:"
-msgstr "_Пріоритет:"
 
 msgid "Select Folder"
 msgstr "Обрати теку"
@@ -4330,12 +4047,6 @@ msgstr "Не підтримується віддаленою сесією"
 #| msgid_plural "<i>Blocklist contains {count:L} rules</i>"
 msgid "<i>Blocklist has never been updated</i>"
 msgstr "<i>У списку блокування міститься {count:L} правило</i>"
-
-msgid "_Upload:"
-msgstr "Ві_двантаження:"
-
-msgid "_Download:"
-msgstr "З_авантаження:"
 
 msgid "U_pload:"
 msgstr "Ві_двантаження:"

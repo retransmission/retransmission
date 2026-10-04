@@ -941,9 +941,6 @@ msgstr "Buka torrent"
 msgid "Open _URL…"
 msgstr "Buka _URL…"
 
-msgid "Open URL…"
-msgstr "Buka URL…"
-
 msgid "_New…"
 msgstr "_Baru…"
 

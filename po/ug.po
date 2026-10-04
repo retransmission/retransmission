@@ -971,9 +971,6 @@ msgstr "توررېنت ئاچىدۇ"
 msgid "Open _URL…"
 msgstr "_URL ئاچ…"
 
-msgid "Open URL…"
-msgstr "URL ئا…"
-
 msgid "_New…"
 msgstr "يېڭى(_N)…"
 

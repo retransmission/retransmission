@@ -988,9 +988,6 @@ msgstr "Ava torrent"
 msgid "Open _URL…"
 msgstr "Ava _URL…"
 
-msgid "Open URL…"
-msgstr "Ava URL…"
-
 msgid "_New…"
 msgstr "_Uus…"
 

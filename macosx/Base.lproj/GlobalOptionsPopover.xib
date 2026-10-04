@@ -23,7 +23,7 @@
             <subviews>
                 <button translatesAutoresizingMaskIntoConstraints="NO" id="7">
                     <rect key="frame" x="11" y="99" width="105" height="16"/>
-                    <buttonCell key="cell" type="check" title="Limit download speed:" bezelStyle="regularSquare" imagePosition="left" alignment="left" controlSize="small" state="on" inset="2" id="44">
+                    <buttonCell key="cell" type="check" title="Limit _download speed:" bezelStyle="regularSquare" imagePosition="left" alignment="left" controlSize="small" state="on" inset="2" id="44">
                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                         <font key="font" metaFont="smallSystem"/>
                         <connections>
@@ -37,7 +37,7 @@
                 </button>
                 <button translatesAutoresizingMaskIntoConstraints="NO" id="8">
                     <rect key="frame" x="11" y="77" width="105" height="16"/>
-                    <buttonCell key="cell" type="check" title="Limit upload speed:" bezelStyle="regularSquare" imagePosition="left" alignment="left" controlSize="small" state="on" inset="2" id="43">
+                    <buttonCell key="cell" type="check" title="Limit _upload speed:" bezelStyle="regularSquare" imagePosition="left" alignment="left" controlSize="small" state="on" inset="2" id="43">
                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                         <font key="font" metaFont="smallSystem"/>
                     </buttonCell>

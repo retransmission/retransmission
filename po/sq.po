@@ -975,9 +975,6 @@ msgstr "Hap një torrent"
 msgid "Open _URL…"
 msgstr "Hap _URL…"
 
-msgid "Open URL…"
-msgstr "Hap URL…"
-
 msgid "_New…"
 msgstr "_I Ri…"
 

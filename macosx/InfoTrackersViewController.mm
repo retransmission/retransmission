@@ -365,8 +365,8 @@ typedef NS_ENUM(NSInteger, TrackerSegmentTag) {
         }
 
         // Translators: Remove trackers alert -> button
-        [alert addButtonWithTitle:TR_TEXT("Remove")];
-        [alert addButtonWithTitle:TR_TEXT("Cancel")];
+        [alert addButtonWithTitle:TR_MNEMONIC("_Remove")];
+        [alert addButtonWithTitle:TR_MNEMONIC("_Cancel")];
 
         alert.showsSuppressionButton = YES;
 

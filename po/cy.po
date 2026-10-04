@@ -1040,9 +1040,6 @@ msgstr "Agor torrent"
 msgid "Open _URL…"
 msgstr "Agor _URL…"
 
-msgid "Open URL…"
-msgstr "Agor URL…"
-
 msgid "_New…"
 msgstr "_Newydd…"
 

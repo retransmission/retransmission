@@ -491,6 +491,10 @@ msgid "_Delete"
 msgstr "_Deletar"
 
 #. Removes the torrent from the list and keeps its downloaded files
+#. Translators: Removal confirm panel -> button
+#. Translators: Remove completed confirm panel -> button
+#. Translators: Remove toolbar item -> label
+#. Translators: Remove trackers alert -> button
 msgid "_Remove"
 msgstr "_Remover"
 
@@ -680,6 +684,7 @@ msgstr "Depurar"
 msgid "Save Log"
 msgstr "Salvar Registro"
 
+#. Translators: Message window -> save button
 msgid "_Save"
 msgstr "_Salvar"
 
@@ -831,6 +836,8 @@ msgstr[2] "Iniciado {count:L} vezes"
 msgid "Reset your statistics?"
 msgstr "Reiniciar estatísticas?"
 
+#. Translators: Stats window -> reset button
+#. Translators: Stats reset -> button
 msgid "_Reset"
 msgstr "Reiniciar"
 
@@ -991,12 +998,19 @@ msgstr "Abrir _URL…"
 msgid "_New…"
 msgstr "_Novo…"
 
+#. Translators: All toolbar item -> label
+#. Translators: Dock item
 msgid "_Start All"
 msgstr "Iniciar Todo_s"
 
+#. Translators: All toolbar item -> label
+#. Translators: Dock item
 msgid "_Pause All"
 msgstr "_Pausar Todos"
 
+#. Translators: Legal alert -> button
+#. Translators: Confirm Quit panel -> button
+#. Translators: Transmission launched alert -> button
 msgid "_Quit"
 msgstr "_Sair"
 
@@ -1021,6 +1035,7 @@ msgstr "_Propriedades"
 msgid "Open Fold_er"
 msgstr "Abrir Pas_ta"
 
+#. Translators: Selected toolbar item -> label
 msgid "_Start"
 msgstr "_Iniciar"
 
@@ -1047,6 +1062,7 @@ msgstr "_Descer"
 msgid "Move to _Bottom"
 msgstr "Mover para o _final"
 
+#. Translators: Selected toolbar item -> label
 msgid "_Pause"
 msgstr "_Pausar"
 
@@ -1116,6 +1132,7 @@ msgstr "Registro de _Mensagens"
 msgid "_Statistics"
 msgstr "E_statísticas"
 
+#. Translators: Donation beg -> button
 msgid "_Donate"
 msgstr "Fazer _Doação"
 
@@ -1134,6 +1151,7 @@ msgstr "Iniciar torrent"
 msgid "Alternative Speed _Limits"
 msgstr "Limites Alternativos de Velocidade"
 
+#. Translators: Add torrent -> same name -> button
 msgid "_Add"
 msgstr "_Adicionar"
 
@@ -1308,10 +1326,10 @@ msgstr "Estatísticas"
 msgid "New Torrent"
 msgstr "Novo Torrent"
 
-#, fuzzy
-#| msgid "C_redits"
+#. Translators: Create toolbar item -> label
+#. Translators: Create torrent -> blank address -> button
 msgid "C_reate"
-msgstr "C_réditos"
+msgstr "Criar"
 
 msgid "Sa_ve to:"
 msgstr "Sal_var para:"
@@ -1499,10 +1517,8 @@ msgstr "Lista de Bloqueio"
 msgid "Enable _blocklist:"
 msgstr "Ativar a lista de _bloqueio:"
 
-#, fuzzy
-#| msgid "Enable _automatic updates"
 msgid "_Automatically update weekly"
-msgstr "Ativar as atualizações _automáticas"
+msgstr "Atualizar automaticamente semanalmente"
 
 msgid "_Update"
 msgstr "At_ualizar"
@@ -1680,6 +1696,7 @@ msgstr "Abrir URL"
 msgid "Open torrent from URL"
 msgstr "Abrir torrent de uma URL"
 
+#. Translators: URL sheet label
 msgid "_URL:"
 msgstr "_URL:"
 
@@ -2368,32 +2385,17 @@ msgstr "O diretório de destino e o diretório de raiz têm o mesmo nome."
 msgid "If you are attempting to use already existing data, the root data directory should be inside the destination directory."
 msgstr "Se você estiver tentando usar dados já existentes, o diretório de dados raiz deve estar dentro do diretório de destino."
 
-msgid "Cancel"
-msgstr "Cancelar"
-
-#. Translators: Add torrent -> same name -> button
-msgid "Add"
-msgstr "Adicionado"
-
 #. Translators: Add torrent -> info
 #. Translators: Inspector -> Activity tab -> progress
 #. Translators: Torrent -> progress string
 msgid "{amount} selected"
 msgstr "{amount} selecionado"
 
-msgid "Start when added"
-msgstr "Iniciar quando adicionado"
-
 msgid "Magnet Link"
 msgstr "Link Magnético"
 
-#, fuzzy
-#| msgid "_Destination folder:"
-msgid "Destination folder:"
-msgstr "Pasta de destino:"
-
-msgid "Priority:"
-msgstr "Prioridade:"
+msgid "_Priority:"
+msgstr "_Prioridade:"
 
 msgid "Group:"
 msgstr "Grupo:"
@@ -2401,32 +2403,11 @@ msgstr "Grupo:"
 msgid "Change…"
 msgstr "Alterar..."
 
-#, fuzzy
-#| msgid "Mo_ve torrent file to the trash"
-msgid "Move torrent file to the Trash"
-msgstr "Mover arquivo torrent para o lixo"
-
-msgid "Verify Local Data"
-msgstr "Verificar Dados Locais"
-
 #. Translators: Filter toolbar item -> label
 #. Translators: inspector -> file filter
 #. Translators: Message window -> filter field
 msgid "Filter"
 msgstr "Filtro"
-
-msgid "Trackers:"
-msgstr "Rastreadores:"
-
-#, fuzzy
-#| msgid "_Private torrent"
-msgid "Private torrent"
-msgstr "Torrent privado"
-
-#. Translators: Create toolbar item -> label
-#. Translators: Create torrent -> blank address -> button
-msgid "Create"
-msgstr "Criar"
 
 msgid "Open when created"
 msgstr "Abrir quando criado"
@@ -2434,23 +2415,11 @@ msgstr "Abrir quando criado"
 msgid "Each tracker will be placed into its own tier"
 msgstr "Cada rastreador será colocado em sua própria fileira"
 
-msgid "Source:"
-msgstr "Origem:"
-
-#, fuzzy
-#| msgid "_Torrent file:"
-msgid "Torrent file:"
-msgstr "Arquivo torrent:"
-
-#, fuzzy
-#| msgid "Limit _download speed:"
-msgid "Limit download speed:"
+msgid "Limit _download speed:"
 msgstr "Limitar velocidade de download:"
 
-#, fuzzy
-#| msgid "Limit _upload speed:"
-msgid "Limit upload speed:"
-msgstr "Limitar velocidade de upload:"
+msgid "Limit _upload speed:"
+msgstr "Limitar velocidade de _upload:"
 
 msgid "minutes"
 msgstr "minutos"
@@ -2541,16 +2510,6 @@ msgstr "Pedaços:"
 msgid "Was:"
 msgstr "Era:"
 
-#, fuzzy
-#| msgid "Torrent _priority:"
-msgid "Torrent priority:"
-msgstr "Prioridade do torrent:"
-
-#, fuzzy
-#| msgid "Honor global _limits"
-msgid "Honor global limits"
-msgstr "Honrar limites globais"
-
 msgid "Use Global Settings"
 msgstr "Usar Configurações Globais"
 
@@ -2561,16 +2520,6 @@ msgstr "Parar Quando Inativo"
 #| msgid "Remove from the transfer list when seeding completes"
 msgid "Remove from the torrent list when seeding completes"
 msgstr "Remover da lista de transferência quando a semeadura for concluída"
-
-#, fuzzy
-#| msgid "_Maximum peers:"
-msgid "Maximum peers:"
-msgstr "Máximo de fontes:"
-
-#, fuzzy
-#| msgid "_Idle:"
-msgid "Idle:"
-msgstr "Ocioso:"
 
 #. Translators: Preferences -> toolbar item title
 #, fuzzy
@@ -2583,10 +2532,6 @@ msgstr "Sobre o Retransmission"
 
 msgid "Check for Update…"
 msgstr "Buscar Atualização..."
-
-#. Translators: Donation beg -> button
-msgid "Donate"
-msgstr "Doar"
 
 msgid "Preferences…"
 msgstr "Preferências..."
@@ -2606,22 +2551,14 @@ msgstr "Exibir Todos"
 msgid "Quit Retransmission"
 msgstr "Encerrar Retransmission"
 
-msgid "File"
-msgstr "Arquivo"
-
 msgid "Create Torrent File…"
 msgstr "Criar Arquivo Torrent..."
 
-#, fuzzy
-#| msgid "_Open…"
-msgid "Open…"
-msgstr "Abrir…"
+msgid "_Open…"
+msgstr "_Abrir…"
 
 msgid "Open With Options Window…"
 msgstr "Abrir Com Janela de Opções..."
-
-msgid "Open URL…"
-msgstr "Abrir URL…"
 
 msgid "Close Window"
 msgstr "Fechar Janela"
@@ -2633,11 +2570,6 @@ msgstr "Fechar Janela"
 msgid "Quick Look"
 msgstr "Visualização Rápida"
 
-#, fuzzy
-#| msgid "Set _Location…"
-msgid "Set Location…"
-msgstr "Definir Local…"
-
 #. Translators: File Outline -> Menu
 msgid "Rename…"
 msgstr "Renomear…"
@@ -2647,12 +2579,6 @@ msgstr "Salvar Arquivo Torrent Como..."
 
 msgid "Share Torrent File"
 msgstr "Compartilhar Arquivo Torrent"
-
-msgid "Copy Magnet Link to Clipboard"
-msgstr "Copiar Link Magnético para Área de Transferência"
-
-msgid "Edit"
-msgstr "Editar"
 
 msgid "Undo"
 msgstr "Desfazer"
@@ -2669,15 +2595,6 @@ msgstr "Copiar"
 msgid "Paste"
 msgstr "Colar"
 
-msgid "Delete"
-msgstr "Apagar"
-
-msgid "Select All"
-msgstr "Selecionar Tudo"
-
-msgid "View"
-msgstr "Visualizar"
-
 msgid "Compact View"
 msgstr "Modo Compacto"
 
@@ -2689,10 +2606,6 @@ msgstr "Disponibilidade"
 
 msgid "Use Groups"
 msgstr "Usar Grupos"
-
-#, fuzzy
-msgid "Sort Torrents By"
-msgstr "Iniciar torrent"
 
 msgid "Queue Order"
 msgstr "Ordem de Fila"
@@ -2731,48 +2644,12 @@ msgstr "Ocultar Barra de Ferramentas"
 msgid "Customize Toolbar…"
 msgstr "Personalizar Barra de Ferramentas"
 
-#. Translators: Selected toolbar item -> label
-#, fuzzy
-#| msgid "Paused"
-msgid "Pause"
-msgstr "Pausado"
-
-#. Translators: Selected toolbar item -> label
-#, fuzzy
-#| msgid "_Start"
-msgid "Start"
-msgstr "Iniciar"
-
-#. Translators: Removal confirm panel -> button
-#. Translators: Remove completed confirm panel -> button
-#. Translators: Remove toolbar item -> label
-#. Translators: Remove trackers alert -> button
-msgid "Remove"
-msgstr "Remover"
-
-#, fuzzy
-#| msgid "_Delete Files and Remove"
-msgid "Delete Files and Remove"
-msgstr "Remover e Excluir Arquivos"
-
 msgid "Remove All Completed From List"
 msgstr "Remover Todos Completos Da Lista"
 
 #. Translators: File Outline -> Menu
 msgid "Show in Finder"
 msgstr "Exibir no Finder"
-
-#. Translators: All toolbar item -> label
-#. Translators: Dock item
-msgid "Pause All"
-msgstr "Pausar Tudo"
-
-#. Translators: All toolbar item -> label
-#. Translators: Dock item
-#, fuzzy
-#| msgid "_Start All"
-msgid "Start All"
-msgstr "Iniciar Todos"
 
 #, fuzzy
 #| msgid "_Start All"
@@ -2782,11 +2659,6 @@ msgstr "Iniciar Todos"
 #. Translators: Groups -> Button
 msgid "Group"
 msgstr "Grupo"
-
-#, fuzzy
-#| msgid "Ask Tracker for _More Peers"
-msgid "Ask Tracker for More Peers"
-msgstr "Pedir Mais Pares ao Rastreador"
 
 msgid "Window"
 msgstr "Janela"
@@ -2812,9 +2684,6 @@ msgstr "Botão Filtro Anterior"
 msgid "Bring All to Front"
 msgstr "Trazer Todas para Frente"
 
-msgid "Help"
-msgstr "Ajuda"
-
 msgid "Retransmission Help"
 msgstr "Ajuda do Retransmission"
 
@@ -2830,9 +2699,6 @@ msgstr "Suporte & Desenvolvimento"
 msgid "Menu"
 msgstr ""
 
-msgid "Preferences"
-msgstr "Preferências"
-
 msgid "Check for update:"
 msgstr "Buscar atualização:"
 
@@ -2844,11 +2710,6 @@ msgstr "Automaticamente verificar diariamente"
 
 msgid "Reset all alerts:"
 msgstr "Zerar todos os alertas"
-
-#. Translators: Stats window -> reset button
-#. Translators: Stats reset -> button
-msgid "Reset"
-msgstr "Reiniciar"
 
 msgid "Set Default Application"
 msgstr "Definir Aplicativo Padrão"
@@ -2903,40 +2764,17 @@ msgstr "Abrir arquivos torrent:"
 msgid "Same as torrent file"
 msgstr "Mesmo que arquivo torrent"
 
-#, fuzzy
-#| msgid "Save to _Location:"
-msgid "Save to location:"
-msgstr "Salvar no Local:"
-
 msgid "Settings:"
 msgstr "Ajustes:"
 
-#, fuzzy
-#| msgid "Append \"._part\" to incomplete files' names"
-msgid "Append \".part\" to incomplete files' names"
-msgstr "Acrescentar \".part\" aos arquivos incompletos"
-
-#, fuzzy
-#| msgid "Automatically add torrent files _from:"
-msgid "Automatically add torrent files from:"
-msgstr "Automaticamente adicionar arquivos torrents de:"
-
 msgid "Auto add:"
 msgstr "Auto-adicionar:"
-
-msgid "Keep incomplete files in:"
-msgstr "Manter arquivos incompletos em:"
 
 msgid "Display a window when opening a torrent file"
 msgstr "Exibir uma janela ao abrir um arquivo torrent"
 
 msgid "Display a window when opening a magnet link"
 msgstr "Exibir uma janela ao abrir um link magnético"
-
-#, fuzzy
-#| msgid "_Start added torrents"
-msgid "Start added torrents"
-msgstr "Iniciar torrents adicionados"
 
 msgid "Only when adding manually"
 msgstr "Somente ao adicionar manualmente"
@@ -3040,23 +2878,11 @@ msgstr "Sábado"
 msgid "Sunday"
 msgstr "Domingo"
 
-msgid "to"
-msgstr "para"
+msgid "_Download:"
+msgstr "_Download:"
 
-#, fuzzy
-#| msgid "_Scheduled times:"
-msgid "Scheduled times:"
-msgstr "programar horários:"
-
-#, fuzzy
-#| msgid "_Download:"
-msgid "Download:"
-msgstr "Download:"
-
-#, fuzzy
-#| msgid "_Upload:"
-msgid "Upload:"
-msgstr "Upload:"
+msgid "_Upload:"
+msgstr "_Upload:"
 
 #, fuzzy
 #| msgid "Alternative Speed Limits"
@@ -3073,18 +2899,8 @@ msgstr "Limites de Velocidade"
 msgid "Peer limits:"
 msgstr "Limites de Par"
 
-#, fuzzy
-#| msgid "Use _DHT to find more peers"
-msgid "Use DHT to find more peers for public torrents"
-msgstr "Usar DHT para encontrar mais pares"
-
 msgid "Blocklist:"
 msgstr "Lista de bloqueio:"
-
-#, fuzzy
-#| msgid "Maximum peers per _torrent:"
-msgid "Maximum peers for new torrents:"
-msgstr "Máximo de pares por torrent:"
 
 msgid "Last updated: N/A"
 msgstr "Última atualização: N/A"
@@ -3092,33 +2908,8 @@ msgstr "Última atualização: N/A"
 msgid "Encryption:"
 msgstr "Criptografia:"
 
-msgid "Automatically update weekly"
-msgstr "Atualizar automaticamente semanalmente"
-
-#, fuzzy
-#| msgid "Maximum peers _overall:"
-msgid "Maximum peers overall:"
-msgstr "Máximo global de pares:"
-
 msgid "blocklist loaded/not loaded"
 msgstr "lista de bloqueio carregada/não carregada"
-
-#, fuzzy
-#| msgid "Use PE_X to find more peers"
-msgid "Use PEX to find more peers for public torrents"
-msgstr "Usar PEX para encontrar mais pares"
-
-#. Translators: URL sheet label
-msgid "URL:"
-msgstr ""
-
-#, fuzzy
-#| msgid "Use _Local Peer Discovery to find more peers"
-msgid "Use Local Peer Discovery to find more peers for public torrents"
-msgstr "Usar o descobridor de pares locais para encontrar mais pares"
-
-msgid "Update"
-msgstr "Atualização"
 
 msgid "High connection limits might significantly impact system performance"
 msgstr "Limites altos de conexão podem afetar significativamente o desempenho do sistema"
@@ -3134,11 +2925,6 @@ msgstr "Randomizar"
 msgid "Peer communication:"
 msgstr "Comunicação de pares"
 
-#, fuzzy
-#| msgid "_Port for incoming connections:"
-msgid "Port for incoming connections:"
-msgstr "Porta para conexões de entrada:"
-
 #. Translators: Preferences -> Network -> port status
 msgid "Port is open"
 msgstr "A porta está aberta"
@@ -3146,63 +2932,17 @@ msgstr "A porta está aberta"
 msgid "NAT traversal uses either NAT-PMP or UPnP"
 msgstr "Travessia NAT usa NAT-PMP ou UPnP"
 
-#, fuzzy
-#| msgid "Pick a _random port every time Transmission is started"
-msgid "Pick a random port at startup"
-msgstr "Escolher uma porta aleatória sempre que o Transmission for iniciado"
-
 msgid "Automatically map port"
 msgstr "Mapear automaticamente a porta"
-
-#, fuzzy
-#| msgid "Prevent computer from sleeping with active transfers"
-msgid "Prevent computer from sleeping with active torrents"
-msgstr "Impedir que o computador entre em repouso com transferências ativas"
 
 msgid "System sleep:"
 msgstr "Repouso do sistema"
 
-#, fuzzy
-#| msgid "Enable µ_TP for peer connections"
-msgid "Enable µTP for peer connections"
-msgstr "Habilitar µTP para conexões pares"
-
 msgid "This enables the web interface and allows remote requests"
 msgstr "Isso habilita a interface web e permite solicitações remotas"
 
-#, fuzzy
-#| msgid "Only allow these IP a_ddresses:"
-msgid "Only allow these IP addresses:"
-msgstr "Permitir apenas estes endereços de IP:"
-
-#, fuzzy
-#| msgid "Use _authentication"
-msgid "Use authentication"
-msgstr "Usar autenticação"
-
 msgid "Display the web interface with Bonjour"
 msgstr "Exibir a interface web com Bonjour"
-
-#, fuzzy
-#| msgid "Allow _remote access"
-msgid "Allow remote access"
-msgstr "Permitir acesso remoto"
-
-msgid "Username:"
-msgstr "Nome de usuário:"
-
-msgid "Password:"
-msgstr "Senha:"
-
-#, fuzzy
-#| msgid "HTTP _port:"
-msgid "HTTP port:"
-msgstr "Porta HTTP:"
-
-#, fuzzy
-#| msgid "_Open web client"
-msgid "Open Web Client"
-msgstr "Abrir cliente web"
 
 #. Translators: Inspector -> Files tab -> file status string
 #. Translators: Status bar transfer count
@@ -3216,12 +2956,6 @@ msgstr "O download da lista de bloqueio falhou."
 #. Translators: Legal alert -> button
 msgid "I Accept"
 msgstr "Eu Aceito"
-
-#. Translators: Legal alert -> button
-#. Translators: Confirm Quit panel -> button
-#. Translators: Transmission launched alert -> button
-msgid "Quit"
-msgstr "Sair"
 
 #. Translators: Legal alert -> title
 msgid "Welcome to {appname}"
@@ -3909,10 +3643,6 @@ msgstr "{amount} selecionado"
 msgid "Magnetized torrent"
 msgstr "Torrent privado"
 
-#. Translators: Message window -> save button
-msgid "Save"
-msgstr "Salvar"
-
 #. Translators: Save log panel -> default file name
 msgid "untitled"
 msgstr "sem título"
@@ -4198,12 +3928,6 @@ msgstr "Disponibilidade:"
 msgid "Labels:"
 msgstr "Etiquetas:"
 
-msgid "Limit _upload speed:"
-msgstr "Limitar velocidade de _upload:"
-
-msgid "Limit _download speed:"
-msgstr "Limitar velocidade de download:"
-
 msgid "Search…"
 msgstr "Buscar…"
 
@@ -4247,9 +3971,6 @@ msgstr "{host} última resposta {time_span} anteriormente"
 msgid "{host} is not responding"
 msgstr "{host} não está respondendo"
 
-msgid "_Open…"
-msgstr "_Abrir…"
-
 msgid "Open the torrent's folder"
 msgstr "Abre a pasta do torrent"
 
@@ -4278,9 +3999,6 @@ msgstr "Escolher Sessão"
 #, fuzzy
 msgid "Sou_rce:"
 msgstr "_Origem:"
-
-msgid "_Priority:"
-msgstr "_Prioridade:"
 
 msgid "Select Folder"
 msgstr "Selecionar Pasta"
@@ -4314,12 +4032,6 @@ msgstr "Não suportado por sessões remotas"
 #| msgid_plural "<i>Blocklist contains {count:L} rules</i>"
 msgid "<i>Blocklist has never been updated</i>"
 msgstr "<i>Lista de bloqueio possui {count:L} regra</i>"
-
-msgid "_Upload:"
-msgstr "_Upload:"
-
-msgid "_Download:"
-msgstr "_Download:"
 
 msgid "U_pload:"
 msgstr "U_pload:"

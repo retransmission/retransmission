@@ -23,6 +23,7 @@ To start a language that has no catalog yet, open an issue and a maintainer will
   You may reorder fields, and a singular form may leave the count out.
 - **`_` marks a keyboard mnemonic** in the GTK and Qt clients: `_Open` underlines the O.
   Keep one in your translation, on a letter that nothing else in the same menu or dialog uses.
+  The Mac client shows the same text without the marker, and without a parenthesized one such as `(_O)`.
 - **Plural entries** have one `msgstr[n]` per plural form of your language.
   The catalog's `Plural-Forms` header says how many there are and which counts each one covers.
 - **`#. Translators:` comments** say where a piece of text appears or what it means.

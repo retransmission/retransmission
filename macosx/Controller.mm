@@ -406,7 +406,7 @@ static void showLegalNotice()
     // Translators: Legal alert -> button
     [alert addButtonWithTitle:TR_TEXT("I Accept")];
     // Translators: Legal alert -> button
-    [alert addButtonWithTitle:TR_TEXT("Quit")];
+    [alert addButtonWithTitle:TR_MNEMONIC("_Quit")];
     // Translators: Legal alert -> title
     alert.messageText = TR_FORMAT("Welcome to {appname}", TRAppNameArg());
     alert.informativeText = TR_FORMAT(
@@ -1037,7 +1037,7 @@ static void offerToImportFromTransmission()
             alert.alertStyle = NSAlertStyleInformational;
 
             // Translators: Donation beg -> button
-            [alert addButtonWithTitle:[TR_TEXT("Donate") stringByAppendingEllipsis]];
+            [alert addButtonWithTitle:[TR_MNEMONIC("_Donate") stringByAppendingEllipsis]];
             // Translators: Donation beg -> button
             NSButton* noDonateButton = [alert addButtonWithTitle:TR_TEXT("Nope")];
             noDonateButton.keyEquivalent = @"\e"; //escape key
@@ -1124,8 +1124,8 @@ static void offerToImportFromTransmission()
             active,
             TRArg("count", active));
     // Translators: Confirm Quit panel -> button
-    [alert addButtonWithTitle:TR_TEXT("Quit")];
-    [alert addButtonWithTitle:TR_TEXT("Cancel")];
+    [alert addButtonWithTitle:TR_MNEMONIC("_Quit")];
+    [alert addButtonWithTitle:TR_MNEMONIC("_Cancel")];
     alert.showsSuppressionButton = YES;
 
     [alert beginSheetModalForWindow:self.fWindow completionHandler:^(NSModalResponse returnCode) {
@@ -1194,7 +1194,7 @@ static void offerToImportFromTransmission()
     if (self.fQuitForTransmission) {
         NSAlert* const alert = [[NSAlert alloc] init];
         // Translators: Transmission launched alert -> button
-        [alert addButtonWithTitle:TR_TEXT("Quit")];
+        [alert addButtonWithTitle:TR_MNEMONIC("_Quit")];
         alert.messageText = TR_TEXT("Transmission is running.");
         alert.informativeText = TR_FORMAT("{appname} will quit, because the two apps would work on the same downloads.", TRAppNameArg());
         alert.alertStyle = NSAlertStyleCritical;
@@ -1902,8 +1902,8 @@ static void offerToImportFromTransmission()
             alert.messageText = title;
             alert.informativeText = message;
             // Translators: Removal confirm panel -> button
-            [alert addButtonWithTitle:TR_TEXT("Remove")];
-            [alert addButtonWithTitle:TR_TEXT("Cancel")];
+            [alert addButtonWithTitle:TR_MNEMONIC("_Remove")];
+            [alert addButtonWithTitle:TR_MNEMONIC("_Cancel")];
 
             [alert beginSheetModalForWindow:self.fWindow completionHandler:^(NSModalResponse returnCode) {
                 if (returnCode == NSAlertFirstButtonReturn) {
@@ -2056,8 +2056,8 @@ static void offerToImportFromTransmission()
         alert.informativeText = info;
         alert.alertStyle = NSAlertStyleWarning;
         // Translators: Remove completed confirm panel -> button
-        [alert addButtonWithTitle:TR_TEXT("Remove")];
-        [alert addButtonWithTitle:TR_TEXT("Cancel")];
+        [alert addButtonWithTitle:TR_MNEMONIC("_Remove")];
+        [alert addButtonWithTitle:TR_MNEMONIC("_Cancel")];
         alert.showsSuppressionButton = YES;
 
         NSInteger const returnCode = [alert runModal];
@@ -3902,7 +3902,7 @@ static void offerToImportFromTransmission()
         ButtonToolbarItem* item = [self standardToolbarButtonWithIdentifier:ident];
 
         // Translators: Create toolbar item -> label
-        item.label = TR_TEXT("Create");
+        item.label = TR_MNEMONIC("C_reate");
         // Translators: Create toolbar item -> palette label
         item.paletteLabel = TR_TEXT("Create Torrent File");
         item.toolTip = TR_TEXT("Create a new torrent");
@@ -3945,7 +3945,7 @@ static void offerToImportFromTransmission()
         ButtonToolbarItem* item = [self standardToolbarButtonWithIdentifier:ident];
 
         // Translators: Remove toolbar item -> label
-        item.label = TR_TEXT("Remove");
+        item.label = TR_MNEMONIC("_Remove");
         // Translators: Remove toolbar item -> palette label
         item.paletteLabel = TR_TEXT("Remove Selected");
         // Translators: Remove toolbar item -> tooltip
@@ -4009,9 +4009,9 @@ static void offerToImportFromTransmission()
 
         [groupItem createMenu:@[
             // Translators: All toolbar item -> label
-            TR_TEXT("Pause All"),
+            TR_MNEMONIC("_Pause All"),
             // Translators: All toolbar item -> label
-            TR_TEXT("Start All")
+            TR_MNEMONIC("_Start All")
         ]];
 
         return groupItem;
@@ -4054,9 +4054,9 @@ static void offerToImportFromTransmission()
 
         [groupItem createMenu:@[
             // Translators: Selected toolbar item -> label
-            TR_TEXT("Pause"),
+            TR_MNEMONIC("_Pause"),
             // Translators: Selected toolbar item -> label
-            TR_TEXT("Start")
+            TR_MNEMONIC("_Start")
         ]];
 
         return groupItem;
@@ -4673,9 +4673,9 @@ static void offerToImportFromTransmission()
     }
 
     // Translators: Dock item
-    [menu addItemWithTitle:TR_TEXT("Pause All") action:@selector(stopAllTorrents:) keyEquivalent:@""];
+    [menu addItemWithTitle:TR_MNEMONIC("_Pause All") action:@selector(stopAllTorrents:) keyEquivalent:@""];
     // Translators: Dock item
-    [menu addItemWithTitle:TR_TEXT("Start All") action:@selector(resumeAllTorrents:) keyEquivalent:@""];
+    [menu addItemWithTitle:TR_MNEMONIC("_Start All") action:@selector(resumeAllTorrents:) keyEquivalent:@""];
     [menu addItem:[NSMenuItem separatorItem]];
     // Translators: Dock item
     [menu addItemWithTitle:TR_TEXT("Alternative Speed Limits") action:@selector(toggleSpeedLimit:) keyEquivalent:@""];

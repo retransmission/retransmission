@@ -1020,9 +1020,6 @@ msgstr "Отворите торент"
 msgid "Open _URL…"
 msgstr "Отвори _адресу…"
 
-msgid "Open URL…"
-msgstr "Отвори адресу…"
-
 msgid "_New…"
 msgstr "_Ново…"
 

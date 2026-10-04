@@ -975,9 +975,6 @@ msgstr "ටොරන්ට් විවෘත තරන්න"
 msgid "Open _URL…"
 msgstr "URL විවෘත කරන්න… (_U)"
 
-msgid "Open URL…"
-msgstr "URL විවෘත කරන්න…"
-
 msgid "_New…"
 msgstr "අලුත්… (_N)"
 

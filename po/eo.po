@@ -994,9 +994,6 @@ msgstr "Malfermi torenton"
 msgid "Open _URL…"
 msgstr "Malfermi _URL…"
 
-msgid "Open URL…"
-msgstr "Malfermi URL…"
-
 msgid "_New…"
 msgstr "_Nova…"
 

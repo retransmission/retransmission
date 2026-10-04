@@ -448,6 +448,10 @@ msgid "_Delete"
 msgstr "_מחיקה"
 
 #. Removes the torrent from the list and keeps its downloaded files
+#. Translators: Removal confirm panel -> button
+#. Translators: Remove completed confirm panel -> button
+#. Translators: Remove toolbar item -> label
+#. Translators: Remove trackers alert -> button
 msgid "_Remove"
 msgstr "הס_רה"
 
@@ -637,6 +641,7 @@ msgstr "ניפוי שגיאות"
 msgid "Save Log"
 msgstr "שמירת יומן"
 
+#. Translators: Message window -> save button
 msgid "_Save"
 msgstr "_שמירה"
 
@@ -789,6 +794,8 @@ msgstr[2] "התחיל {count:L} פעמים"
 msgid "Reset your statistics?"
 msgstr "לאפס את הסטטיסטיקה שלך?"
 
+#. Translators: Stats window -> reset button
+#. Translators: Stats reset -> button
 msgid "_Reset"
 msgstr "_איפוס"
 
@@ -952,12 +959,19 @@ msgstr "פתיחה מ_כתובת…"
 msgid "_New…"
 msgstr "_חדש…"
 
+#. Translators: All toolbar item -> label
+#. Translators: Dock item
 msgid "_Start All"
 msgstr "ה_תחלת הכול"
 
+#. Translators: All toolbar item -> label
+#. Translators: Dock item
 msgid "_Pause All"
 msgstr "השהיית הכו_ל"
 
+#. Translators: Legal alert -> button
+#. Translators: Confirm Quit panel -> button
+#. Translators: Transmission launched alert -> button
 msgid "_Quit"
 msgstr "_יציאה"
 
@@ -982,6 +996,7 @@ msgstr "מ_אפיינים"
 msgid "Open Fold_er"
 msgstr "פתיחת תי_קייה"
 
+#. Translators: Selected toolbar item -> label
 msgid "_Start"
 msgstr "_התחלה"
 
@@ -1008,6 +1023,7 @@ msgstr "העברה למ_טה"
 msgid "Move to _Bottom"
 msgstr "הצבה כ_תחתון"
 
+#. Translators: Selected toolbar item -> label
 msgid "_Pause"
 msgstr "ה_שהיה"
 
@@ -1077,6 +1093,7 @@ msgstr "יו_מן הודעות"
 msgid "_Statistics"
 msgstr "_סטטיסטיקה"
 
+#. Translators: Donation beg -> button
 msgid "_Donate"
 msgstr "ת_רומה"
 
@@ -1096,6 +1113,7 @@ msgstr "התחלת טורנט"
 msgid "Alternative Speed _Limits"
 msgstr "מגבלות מהירות חלופיות"
 
+#. Translators: Add torrent -> same name -> button
 msgid "_Add"
 msgstr "הו_ספה"
 
@@ -1270,10 +1288,10 @@ msgstr "סטטיסטיקה"
 msgid "New Torrent"
 msgstr "טורנט חדש"
 
-#, fuzzy
-#| msgid "C_redits"
+#. Translators: Create toolbar item -> label
+#. Translators: Create torrent -> blank address -> button
 msgid "C_reate"
-msgstr "_מזכים"
+msgstr "יצירה"
 
 msgid "Sa_ve to:"
 msgstr "_שמירה אל:"
@@ -1461,10 +1479,8 @@ msgstr "רשימת חסימה"
 msgid "Enable _blocklist:"
 msgstr "הפעלת רשימת _חסימה:"
 
-#, fuzzy
-#| msgid "Enable _automatic updates"
 msgid "_Automatically update weekly"
-msgstr "הפעלת עדכונים _אוטומטיים"
+msgstr "לעדכן אוטומטית כל שבוע"
 
 msgid "_Update"
 msgstr "_עדכון"
@@ -1642,6 +1658,7 @@ msgstr "פתיחת כתובת"
 msgid "Open torrent from URL"
 msgstr "פתיחת טורנט מכתובת"
 
+#. Translators: URL sheet label
 msgid "_URL:"
 msgstr "_כתובת:"
 
@@ -2352,32 +2369,17 @@ msgstr "למחיצת היעד ולמחיצת נתוני השורש שם זהה."
 msgid "If you are attempting to use already existing data, the root data directory should be inside the destination directory."
 msgstr "אם אתם מנסים להשתמש בנתונים שכבר קיימים, מחיצת נתוני השורש צריכה להיות בתוך מחיצת היעד."
 
-msgid "Cancel"
-msgstr "ביטול"
-
-#. Translators: Add torrent -> same name -> button
-msgid "Add"
-msgstr "הוספה"
-
 #. Translators: Add torrent -> info
 #. Translators: Inspector -> Activity tab -> progress
 #. Translators: Torrent -> progress string
 msgid "{amount} selected"
 msgstr "{amount} נבחרו"
 
-msgid "Start when added"
-msgstr "להתחיל עם ההוספה"
-
 msgid "Magnet Link"
 msgstr "קישור מגנט"
 
-#, fuzzy
-#| msgid "_Destination folder:"
-msgid "Destination folder:"
-msgstr "תיקיית יעד:"
-
-msgid "Priority:"
-msgstr "עדיפות:"
+msgid "_Priority:"
+msgstr "ע_דיפות:"
 
 msgid "Group:"
 msgstr "קבוצה:"
@@ -2385,32 +2387,11 @@ msgstr "קבוצה:"
 msgid "Change…"
 msgstr "החלפה…"
 
-#, fuzzy
-#| msgid "Mo_ve torrent file to the trash"
-msgid "Move torrent file to the Trash"
-msgstr "העברת קובץ טורנט לאשפה"
-
-msgid "Verify Local Data"
-msgstr "אימות הנתונים המקומיים"
-
 #. Translators: Filter toolbar item -> label
 #. Translators: inspector -> file filter
 #. Translators: Message window -> filter field
 msgid "Filter"
 msgstr "סינון"
-
-msgid "Trackers:"
-msgstr "עוקבים:"
-
-#, fuzzy
-#| msgid "_Private torrent"
-msgid "Private torrent"
-msgstr "טורנט פרטי"
-
-#. Translators: Create toolbar item -> label
-#. Translators: Create torrent -> blank address -> button
-msgid "Create"
-msgstr "יצירה"
 
 msgid "Open when created"
 msgstr "לפתוח בעת היצירה"
@@ -2418,23 +2399,11 @@ msgstr "לפתוח בעת היצירה"
 msgid "Each tracker will be placed into its own tier"
 msgstr "כל עוקב יוצב בשכבה משלו"
 
-msgid "Source:"
-msgstr "מקור:"
+msgid "Limit _download speed:"
+msgstr "ה_גבלת מהירות הורדה:"
 
-#, fuzzy
-#| msgid "_Torrent file:"
-msgid "Torrent file:"
-msgstr "קובץ טורנט"
-
-#, fuzzy
-#| msgid "Limit _download speed:"
-msgid "Limit download speed:"
-msgstr "הגבלת מהירות הורדה:"
-
-#, fuzzy
-#| msgid "Limit _upload speed:"
-msgid "Limit upload speed:"
-msgstr "הגבלת מהירות העלאה:"
+msgid "Limit _upload speed:"
+msgstr "ה_גבלת מהירות העלאה:"
 
 msgid "minutes"
 msgstr "דקות"
@@ -2525,16 +2494,6 @@ msgstr "חלקים:"
 msgid "Was:"
 msgstr "היה:"
 
-#, fuzzy
-#| msgid "Torrent _priority:"
-msgid "Torrent priority:"
-msgstr "עדיפות הטורנט:"
-
-#, fuzzy
-#| msgid "Honor global _limits"
-msgid "Honor global limits"
-msgstr "כיבוד מגבלות כלליות"
-
 msgid "Use Global Settings"
 msgstr "להשתמש בהגדרות גלובליות"
 
@@ -2545,16 +2504,6 @@ msgstr "לעצור בחוסר פעילות"
 #| msgid "Remove from the transfer list when seeding completes"
 msgid "Remove from the torrent list when seeding completes"
 msgstr "הסרה מרשימת ההעברות עם השלמת הזריעה"
-
-#, fuzzy
-#| msgid "_Maximum peers:"
-msgid "Maximum peers:"
-msgstr "מספר עמיתים מרבי:"
-
-#, fuzzy
-#| msgid "_Idle:"
-msgid "Idle:"
-msgstr "חוסר פעילות:"
 
 #. Translators: Preferences -> toolbar item title
 #, fuzzy
@@ -2567,10 +2516,6 @@ msgstr "על Retransmission"
 
 msgid "Check for Update…"
 msgstr "איתור עדכונים…"
-
-#. Translators: Donation beg -> button
-msgid "Donate"
-msgstr "תרומה"
 
 msgid "Preferences…"
 msgstr "העדפות…"
@@ -2590,22 +2535,14 @@ msgstr "להציג הכול"
 msgid "Quit Retransmission"
 msgstr "יציאה מ־Retransmission"
 
-msgid "File"
-msgstr "קובץ"
-
 msgid "Create Torrent File…"
 msgstr "יצירת קובץ טורנט…"
 
-#, fuzzy
-#| msgid "_Open…"
-msgid "Open…"
-msgstr "פתיחה…"
+msgid "_Open…"
+msgstr "_פתיחה…"
 
 msgid "Open With Options Window…"
 msgstr "פתיחה עם חלון אפשרויות…"
-
-msgid "Open URL…"
-msgstr "פתיחה מכתובת…"
 
 msgid "Close Window"
 msgstr "סגירת חלון"
@@ -2617,11 +2554,6 @@ msgstr "סגירת חלון"
 msgid "Quick Look"
 msgstr "מבט מהיר"
 
-#, fuzzy
-#| msgid "Set _Location…"
-msgid "Set Location…"
-msgstr "הגדרת מיקום…"
-
 #. Translators: File Outline -> Menu
 msgid "Rename…"
 msgstr "שינוי שם…"
@@ -2631,12 +2563,6 @@ msgstr "שמירת קובץ טורנט בתור…"
 
 msgid "Share Torrent File"
 msgstr "שיתוף קובץ טורנט"
-
-msgid "Copy Magnet Link to Clipboard"
-msgstr "העתקת קישור מגנט אל לוח הגזירים"
-
-msgid "Edit"
-msgstr "עריכה"
 
 msgid "Undo"
 msgstr "החזרה לאחור"
@@ -2653,15 +2579,6 @@ msgstr "העתקה"
 msgid "Paste"
 msgstr "הדבקה"
 
-msgid "Delete"
-msgstr "מחיקה"
-
-msgid "Select All"
-msgstr "בחירה בהכול"
-
-msgid "View"
-msgstr "תצוגה"
-
 msgid "Compact View"
 msgstr "תצוגה חסכונית"
 
@@ -2673,11 +2590,6 @@ msgstr "זמינות"
 
 msgid "Use Groups"
 msgstr "להשתמש בקבוצות"
-
-#, fuzzy
-#| msgid "Start torrent"
-msgid "Sort Torrents By"
-msgstr "התחלת טורנט"
 
 msgid "Queue Order"
 msgstr "סדר התור"
@@ -2716,48 +2628,12 @@ msgstr "הסתרת סרגל כלים"
 msgid "Customize Toolbar…"
 msgstr "התאמת סרגל הכלים לטעמך…"
 
-#. Translators: Selected toolbar item -> label
-#, fuzzy
-#| msgid "Paused"
-msgid "Pause"
-msgstr "מושהה"
-
-#. Translators: Selected toolbar item -> label
-#, fuzzy
-#| msgid "_Start"
-msgid "Start"
-msgstr "התחלה"
-
-#. Translators: Removal confirm panel -> button
-#. Translators: Remove completed confirm panel -> button
-#. Translators: Remove toolbar item -> label
-#. Translators: Remove trackers alert -> button
-msgid "Remove"
-msgstr "הסרה"
-
-#, fuzzy
-#| msgid "_Delete Files and Remove"
-msgid "Delete Files and Remove"
-msgstr "מחיקת הקבצים והסרה"
-
 msgid "Remove All Completed From List"
 msgstr "להסיר מהרשימה את כל אלו שהושלמו"
 
 #. Translators: File Outline -> Menu
 msgid "Show in Finder"
 msgstr "הצגה ב־„מאתר”"
-
-#. Translators: All toolbar item -> label
-#. Translators: Dock item
-msgid "Pause All"
-msgstr "השהיית הכול"
-
-#. Translators: All toolbar item -> label
-#. Translators: Dock item
-#, fuzzy
-#| msgid "_Start All"
-msgid "Start All"
-msgstr "התחלת הכול"
 
 #, fuzzy
 #| msgid "_Start All"
@@ -2767,11 +2643,6 @@ msgstr "התחלת הכול"
 #. Translators: Groups -> Button
 msgid "Group"
 msgstr "קבוצה"
-
-#, fuzzy
-#| msgid "Ask Tracker for _More Peers"
-msgid "Ask Tracker for More Peers"
-msgstr "בקשת עמיתים נוספים מהעוקב"
 
 msgid "Window"
 msgstr "חלון"
@@ -2797,9 +2668,6 @@ msgstr "כפתור המסנן הקודם"
 msgid "Bring All to Front"
 msgstr "קידום הכול לחזית"
 
-msgid "Help"
-msgstr "עזרה"
-
 msgid "Retransmission Help"
 msgstr "עזרה עם ‏Retransmission"
 
@@ -2815,9 +2683,6 @@ msgstr "תמיכה ופיתו"
 msgid "Menu"
 msgstr "תפריט"
 
-msgid "Preferences"
-msgstr "העדפות"
-
 msgid "Check for update:"
 msgstr "איתור עדכונים:"
 
@@ -2829,11 +2694,6 @@ msgstr "לבדוק יומית אוטומטית"
 
 msgid "Reset all alerts:"
 msgstr "איפוס כל ההתראות:"
-
-#. Translators: Stats window -> reset button
-#. Translators: Stats reset -> button
-msgid "Reset"
-msgstr "איפוס"
 
 msgid "Set Default Application"
 msgstr "הגדרה כיישום ברירת המחדל"
@@ -2888,40 +2748,17 @@ msgstr "פתיחת קובצי טורנט:"
 msgid "Same as torrent file"
 msgstr "כמו קובץ הטורנט"
 
-#, fuzzy
-#| msgid "Save to _Location:"
-msgid "Save to location:"
-msgstr "שמירה למיקום:"
-
 msgid "Settings:"
 msgstr "הגדרות:"
 
-#, fuzzy
-#| msgid "Append \"._part\" to incomplete files' names"
-msgid "Append \".part\" to incomplete files' names"
-msgstr "הוספת „‎.part” לשמות קבצים שהורדתם טרם הושלמה"
-
-#, fuzzy
-#| msgid "Automatically add torrent files _from:"
-msgid "Automatically add torrent files from:"
-msgstr "להוסיף אוטומטית קובצי טורנט מתוך:"
-
 msgid "Auto add:"
 msgstr "הוספה אוטומטית:"
-
-msgid "Keep incomplete files in:"
-msgstr "לשמור קבצים חלקיים בתוך:"
 
 msgid "Display a window when opening a torrent file"
 msgstr "להציג חלון בעת פתיחת קובץ טורנט"
 
 msgid "Display a window when opening a magnet link"
 msgstr "להציג חלון בעת פתיחת קישור מגנט"
-
-#, fuzzy
-#| msgid "_Start added torrents"
-msgid "Start added torrents"
-msgstr "התחלת הטורנטים שנוספו"
 
 msgid "Only when adding manually"
 msgstr "רק בעת הוספה ידנית"
@@ -3025,23 +2862,11 @@ msgstr "יום שבת"
 msgid "Sunday"
 msgstr "יום ראשון"
 
-msgid "to"
-msgstr "עד"
+msgid "_Download:"
+msgstr "הו_רדה:"
 
-#, fuzzy
-#| msgid "_Scheduled times:"
-msgid "Scheduled times:"
-msgstr "מועדים מתוזמנים:"
-
-#, fuzzy
-#| msgid "_Download:"
-msgid "Download:"
-msgstr "הורדה:"
-
-#, fuzzy
-#| msgid "_Upload:"
-msgid "Upload:"
-msgstr "העלאה:"
+msgid "_Upload:"
+msgstr "ה_עלאה:"
 
 #, fuzzy
 #| msgid "Alternative Speed Limits"
@@ -3058,18 +2883,8 @@ msgstr "מגבלות מהירות"
 msgid "Peer limits:"
 msgstr "מגבלות עמיתים"
 
-#, fuzzy
-#| msgid "Use _DHT to find more peers"
-msgid "Use DHT to find more peers for public torrents"
-msgstr "להשתמש ב־DHT כדי למצוא עמיתים נוספים"
-
 msgid "Blocklist:"
 msgstr "רשימת חסימה:"
-
-#, fuzzy
-#| msgid "Maximum peers per _torrent:"
-msgid "Maximum peers for new torrents:"
-msgstr "כמות העמיתים המרבית לכל טורנט:"
 
 msgid "Last updated: N/A"
 msgstr "עדכון אחרון: לא זמין"
@@ -3077,33 +2892,8 @@ msgstr "עדכון אחרון: לא זמין"
 msgid "Encryption:"
 msgstr "הצפנה:"
 
-msgid "Automatically update weekly"
-msgstr "לעדכן אוטומטית כל שבוע"
-
-#, fuzzy
-#| msgid "Maximum peers _overall:"
-msgid "Maximum peers overall:"
-msgstr "כמות עמיתים מרבית:"
-
 msgid "blocklist loaded/not loaded"
 msgstr "רשימת החסימה נטענה/לא נטענה"
-
-#, fuzzy
-#| msgid "Use PE_X to find more peers"
-msgid "Use PEX to find more peers for public torrents"
-msgstr "שימוש ב־PEX למציאת עמיתים נוספים"
-
-#. Translators: URL sheet label
-msgid "URL:"
-msgstr "כתובת:"
-
-#, fuzzy
-#| msgid "Use _Local Peer Discovery to find more peers"
-msgid "Use Local Peer Discovery to find more peers for public torrents"
-msgstr "להשתמש בגילוי עמיתים מקומי כדי למצוא עמיתים נוספים"
-
-msgid "Update"
-msgstr "עדכון"
 
 msgid "High connection limits might significantly impact system performance"
 msgstr "מגבלות מהירות חיבור גבוהות עלולות לפגוע בביצועי המערכת"
@@ -3119,11 +2909,6 @@ msgstr "הגרלה אקראית"
 msgid "Peer communication:"
 msgstr "תקשורת מול עמיתים:"
 
-#, fuzzy
-#| msgid "_Port for incoming connections:"
-msgid "Port for incoming connections:"
-msgstr "פתחה לחיבורים נכנסים:"
-
 #. Translators: Preferences -> Network -> port status
 msgid "Port is open"
 msgstr "הפתחה פתוחה"
@@ -3131,63 +2916,17 @@ msgstr "הפתחה פתוחה"
 msgid "NAT traversal uses either NAT-PMP or UPnP"
 msgstr "NAT traversal משתמש או ב־NAT-PMP או ב־UPnP"
 
-#, fuzzy
-#| msgid "Pick a _random port every time Transmission is started"
-msgid "Pick a random port at startup"
-msgstr "יש לבחור בפתחה אקראית עם כל הפעלה של ‏Transmission"
-
 msgid "Automatically map port"
 msgstr "מיפוי פתחה אוטומטית"
-
-#, fuzzy
-#| msgid "Prevent computer from sleeping with active transfers"
-msgid "Prevent computer from sleeping with active torrents"
-msgstr "למנוע מהמחשב לישון כשיש העברות פעילות"
 
 msgid "System sleep:"
 msgstr "שנת המערכת:"
 
-#, fuzzy
-#| msgid "Enable µ_TP for peer connections"
-msgid "Enable µTP for peer connections"
-msgstr "הפעלת µTP לחיבור עמיתים"
-
 msgid "This enables the web interface and allows remote requests"
 msgstr "מפעיל את מנשק הדפדפן ומאפשר בקשות מרוחקות"
 
-#, fuzzy
-#| msgid "Only allow these IP a_ddresses:"
-msgid "Only allow these IP addresses:"
-msgstr "לאפשר רק את כתובות IP אלו:"
-
-#, fuzzy
-#| msgid "Use _authentication"
-msgid "Use authentication"
-msgstr "להשתמש באימות"
-
 msgid "Display the web interface with Bonjour"
 msgstr "להציג את מנשק הדפדפן עם Bonjour"
-
-#, fuzzy
-#| msgid "Allow _remote access"
-msgid "Allow remote access"
-msgstr "לאפשר גישה מרחוק"
-
-msgid "Username:"
-msgstr "שם משתמש:"
-
-msgid "Password:"
-msgstr "סיסמה:"
-
-#, fuzzy
-#| msgid "HTTP _port:"
-msgid "HTTP port:"
-msgstr "פתחת HTTP:"
-
-#, fuzzy
-#| msgid "_Open web client"
-msgid "Open Web Client"
-msgstr "פתיחת לקוח רשת"
 
 #. Translators: Inspector -> Files tab -> file status string
 #. Translators: Status bar transfer count
@@ -3201,12 +2940,6 @@ msgstr "הורדת רשימת חסימה כשלה."
 #. Translators: Legal alert -> button
 msgid "I Accept"
 msgstr "מוסכם עלי"
-
-#. Translators: Legal alert -> button
-#. Translators: Confirm Quit panel -> button
-#. Translators: Transmission launched alert -> button
-msgid "Quit"
-msgstr "יציאה"
 
 #. Translators: Legal alert -> title
 msgid "Welcome to {appname}"
@@ -3887,10 +3620,6 @@ msgstr "{amount} סך הכול"
 msgid "Magnetized torrent"
 msgstr "טורנט פרטי"
 
-#. Translators: Message window -> save button
-msgid "Save"
-msgstr "שמירה"
-
 #. Translators: Save log panel -> default file name
 msgid "untitled"
 msgstr "ללא שם"
@@ -4170,12 +3899,6 @@ msgstr "זמינות:"
 msgid "Labels:"
 msgstr "תוויות:"
 
-msgid "Limit _upload speed:"
-msgstr "ה_גבלת מהירות העלאה:"
-
-msgid "Limit _download speed:"
-msgstr "ה_גבלת מהירות הורדה:"
-
 msgid "Search…"
 msgstr "חיפוש…"
 
@@ -4219,9 +3942,6 @@ msgstr "התקבלה תגובה מצד {host} לפני {time_span}"
 msgid "{host} is not responding"
 msgstr "אין תגובה מצד {host}"
 
-msgid "_Open…"
-msgstr "_פתיחה…"
-
 msgid "Open the torrent's folder"
 msgstr "פתיחת תיקיית הטורנט"
 
@@ -4250,9 +3970,6 @@ msgstr "בחירת מופע"
 #, fuzzy
 msgid "Sou_rce:"
 msgstr "_מקור:"
-
-msgid "_Priority:"
-msgstr "ע_דיפות:"
 
 msgid "Select Folder"
 msgstr "בחירת תיקיה"
@@ -4286,12 +4003,6 @@ msgstr "לא נתמך ממופעים המרוחקים"
 #| msgid_plural "<i>Blocklist contains {count:L} rules</i>"
 msgid "<i>Blocklist has never been updated</i>"
 msgstr "<i>רשימת החסימה מכילה כלל אחד</i>"
-
-msgid "_Upload:"
-msgstr "ה_עלאה:"
-
-msgid "_Download:"
-msgstr "הו_רדה:"
 
 msgid "U_pload:"
 msgstr "הע_לאה:"

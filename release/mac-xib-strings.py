@@ -7,8 +7,14 @@ A .strings file maps each element's ID to its text,
 while the catalog that the clients share maps English text to its translation.
 xgettext extracts a xib's English text into the catalog with the rules in po/its/xib.its.
 
+A xib's text marks a mnemonic with "_" wherever the GTK and Qt clients' text does, as in "_File",
+so that the three clients share one catalog entry. AppKit has no mnemonics,
+so every language needs a .strings file, English too, to show such text without its marker.
+A literal underscore in a xib's text is written "__".
+
   mac-xib-strings.py strings <po> <folder> <xib>...
       Writes each xib's .strings file for the .po file's language into the folder.
+      With "-" for the .po file, the text stays in English.
 
   mac-xib-strings.py check <its> <xib>...
       Fails unless the ITS rules select the same text in each xib as this script writes entries for.
@@ -53,6 +59,14 @@ def xib_strings(xib_path):
     return [(key, text) for key, text in found if text]
 
 
+def strip_mnemonic(text):
+    """Returns text without its mnemonic markers: "_File" becomes "File", and "__" becomes "_".
+    A parenthesized mnemonic, which Chinese, Japanese and Korean translations add after the text, goes away whole.
+    tr::app::l10n::strip_mnemonic() does the same for the text in the Mac client's code."""
+    text = re.sub(r' *[(（]_[A-Za-z0-9][)）]', '', text)
+    return re.sub(r'_(.)', r'\1', text, flags=re.DOTALL)
+
+
 def quote(text):
     return '"' + text.replace('\\', '\\\\').replace('"', '\\"').replace('\n', '\\n').replace('\t', '\\t') + '"'
 
@@ -90,11 +104,14 @@ def po_translations(po_path):
 
 
 def write_strings(po_path, folder, xib_paths):
-    translations = po_translations(po_path)
+    translations = {} if po_path == '-' else po_translations(po_path)
     for xib_path in xib_paths:
         lines = []
         for key, text in xib_strings(xib_path):
             translation = translations.get(text)
+            if '_' in text:
+                # Without an entry, AppKit would show the xib's own text, marker and all.
+                translation = strip_mnemonic(translation or text)
             if translation:
                 lines.append(f'{quote(key)} = {quote(translation)};\n')
 

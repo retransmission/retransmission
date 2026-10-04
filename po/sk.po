@@ -1055,9 +1055,6 @@ msgstr "Otvoriť torrent"
 msgid "Open _URL…"
 msgstr "Otvoriť _URL…"
 
-msgid "Open URL…"
-msgstr "Otvoriť URL…"
-
 msgid "_New…"
 msgstr "_Nový…"
 

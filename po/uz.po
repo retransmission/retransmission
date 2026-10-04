@@ -942,9 +942,6 @@ msgstr "Torrentni ochish"
 msgid "Open _URL…"
 msgstr "_URL’ni ochish…"
 
-msgid "Open URL…"
-msgstr "URL’ni ochish…"
-
 msgid "_New…"
 msgstr "_Yangi…"
 

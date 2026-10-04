@@ -452,6 +452,10 @@ msgid "_Delete"
 msgstr "_Törlés"
 
 #. Removes the torrent from the list and keeps its downloaded files
+#. Translators: Removal confirm panel -> button
+#. Translators: Remove completed confirm panel -> button
+#. Translators: Remove toolbar item -> label
+#. Translators: Remove trackers alert -> button
 msgid "_Remove"
 msgstr "_Eltávolítás"
 
@@ -641,6 +645,7 @@ msgstr "Hibakeresés"
 msgid "Save Log"
 msgstr "Napló mentése"
 
+#. Translators: Message window -> save button
 msgid "_Save"
 msgstr "_Mentés"
 
@@ -790,6 +795,8 @@ msgstr[1] "Elindítva {count:L} alkalommal"
 msgid "Reset your statistics?"
 msgstr "Lenullázza a statisztikákat?"
 
+#. Translators: Stats window -> reset button
+#. Translators: Stats reset -> button
 msgid "_Reset"
 msgstr "_Visszaállítás"
 
@@ -945,12 +952,19 @@ msgstr "_Webcím megnyitása…"
 msgid "_New…"
 msgstr "Ú_j…"
 
+#. Translators: All toolbar item -> label
+#. Translators: Dock item
 msgid "_Start All"
 msgstr "Összes _indítása"
 
+#. Translators: All toolbar item -> label
+#. Translators: Dock item
 msgid "_Pause All"
 msgstr "Összes _szüneteltetése"
 
+#. Translators: Legal alert -> button
+#. Translators: Confirm Quit panel -> button
+#. Translators: Transmission launched alert -> button
 msgid "_Quit"
 msgstr "_Kilépés"
 
@@ -975,6 +989,7 @@ msgstr "_Tulajdonságok"
 msgid "Open Fold_er"
 msgstr "M_appa megnyitása"
 
+#. Translators: Selected toolbar item -> label
 msgid "_Start"
 msgstr "_Indítás"
 
@@ -1001,6 +1016,7 @@ msgstr "Mozgatás _le"
 msgid "Move to _Bottom"
 msgstr "Mozgatás leg_alulra"
 
+#. Translators: Selected toolbar item -> label
 msgid "_Pause"
 msgstr "_Szüneteltetés"
 
@@ -1070,6 +1086,7 @@ msgstr "Ü_zenetnapló"
 msgid "_Statistics"
 msgstr "_Statisztikák"
 
+#. Translators: Donation beg -> button
 msgid "_Donate"
 msgstr "_Adakozás"
 
@@ -1089,6 +1106,7 @@ msgstr "Torrent indítása"
 msgid "Alternative Speed _Limits"
 msgstr "Alternatív sebességkorlátok"
 
+#. Translators: Add torrent -> same name -> button
 msgid "_Add"
 msgstr "_Hozzáadás"
 
@@ -1263,10 +1281,10 @@ msgstr "Statisztikák"
 msgid "New Torrent"
 msgstr "Új torrent"
 
-#, fuzzy
-#| msgid "C_redits"
+#. Translators: Create toolbar item -> label
+#. Translators: Create torrent -> blank address -> button
 msgid "C_reate"
-msgstr "K_észítették"
+msgstr "Létrehozás"
 
 msgid "Sa_ve to:"
 msgstr "Me_ntés ide:"
@@ -1454,10 +1472,8 @@ msgstr "Tiltólista"
 msgid "Enable _blocklist:"
 msgstr "_Tiltólista engedélyezése:"
 
-#, fuzzy
-#| msgid "Enable _automatic updates"
 msgid "_Automatically update weekly"
-msgstr "_Automatikus frissítések engedélyezése"
+msgstr "Frissítések keresése hetente"
 
 msgid "_Update"
 msgstr "_Frissítés"
@@ -1635,6 +1651,7 @@ msgstr "Webcím megnyitása"
 msgid "Open torrent from URL"
 msgstr "Torrent megnyitása webcímről"
 
+#. Translators: URL sheet label
 msgid "_URL:"
 msgstr "_Webcím:"
 
@@ -2302,32 +2319,17 @@ msgstr "A célkönyvtár és a gyökérkönyvtár neve megegyezik."
 msgid "If you are attempting to use already existing data, the root data directory should be inside the destination directory."
 msgstr "Ha megpróbál meglévő adatokat használni, a gyökérkönyvtárnak a célkönyvtárban kell lennie."
 
-msgid "Cancel"
-msgstr "Mégse"
-
-#. Translators: Add torrent -> same name -> button
-msgid "Add"
-msgstr "Hozzáad"
-
 #. Translators: Add torrent -> info
 #. Translators: Inspector -> Activity tab -> progress
 #. Translators: Torrent -> progress string
 msgid "{amount} selected"
 msgstr "{amount} kiválasztva"
 
-msgid "Start when added"
-msgstr "Elindítás hozzáadáskor"
-
 msgid "Magnet Link"
 msgstr ""
 
-#, fuzzy
-#| msgid "_Destination folder:"
-msgid "Destination folder:"
-msgstr "Célmappa:"
-
-msgid "Priority:"
-msgstr "Priorítás:"
+msgid "_Priority:"
+msgstr "_Priorítás:"
 
 msgid "Group:"
 msgstr "Csoport:"
@@ -2335,32 +2337,11 @@ msgstr "Csoport:"
 msgid "Change…"
 msgstr "Változtat..."
 
-#, fuzzy
-#| msgid "Mo_ve torrent file to the trash"
-msgid "Move torrent file to the Trash"
-msgstr "Torrent fájl áthelyezése a kukába"
-
-msgid "Verify Local Data"
-msgstr "Helyi adatok ellenőrzése"
-
 #. Translators: Filter toolbar item -> label
 #. Translators: inspector -> file filter
 #. Translators: Message window -> filter field
 msgid "Filter"
 msgstr "Szűrés"
-
-msgid "Trackers:"
-msgstr "Trackerek:"
-
-#, fuzzy
-#| msgid "_Private torrent"
-msgid "Private torrent"
-msgstr "Privát torrent"
-
-#. Translators: Create toolbar item -> label
-#. Translators: Create torrent -> blank address -> button
-msgid "Create"
-msgstr "Létrehozás"
 
 msgid "Open when created"
 msgstr "Létrehozás után nyissa meg"
@@ -2368,23 +2349,11 @@ msgstr "Létrehozás után nyissa meg"
 msgid "Each tracker will be placed into its own tier"
 msgstr "Minden egyes tracker a saját szintjébe kerülni"
 
-msgid "Source:"
-msgstr "Forrás:"
+msgid "Limit _download speed:"
+msgstr "_Letöltési sebességkorlát:"
 
-#, fuzzy
-#| msgid "_Torrent file:"
-msgid "Torrent file:"
-msgstr "Torrent fájl:"
-
-#, fuzzy
-#| msgid "Limit _download speed:"
-msgid "Limit download speed:"
-msgstr "Letöltési sebességkorlát:"
-
-#, fuzzy
-#| msgid "Limit _upload speed:"
-msgid "Limit upload speed:"
-msgstr "Feltöltési sebességkorlát:"
+msgid "Limit _upload speed:"
+msgstr "_Feltöltési sebességkorlát:"
 
 msgid "minutes"
 msgstr "perc"
@@ -2475,16 +2444,6 @@ msgstr "Szeletek:"
 msgid "Was:"
 msgstr "Ez volt:"
 
-#, fuzzy
-#| msgid "Torrent _priority:"
-msgid "Torrent priority:"
-msgstr "Torrent prioritása:"
-
-#, fuzzy
-#| msgid "Honor global _limits"
-msgid "Honor global limits"
-msgstr "Általános korlátok betartása"
-
 msgid "Use Global Settings"
 msgstr "Globális beállítások használata"
 
@@ -2495,16 +2454,6 @@ msgstr "Leállítás ha nem aktív"
 #| msgid "Remove from the transfer list when seeding completes"
 msgid "Remove from the torrent list when seeding completes"
 msgstr "Távolítsa el az átviteli listából ha a megosztás befejeződött"
-
-#, fuzzy
-#| msgid "_Maximum peers:"
-msgid "Maximum peers:"
-msgstr "Partnerek maximális száma:"
-
-#, fuzzy
-#| msgid "_Idle:"
-msgid "Idle:"
-msgstr "Inaktív:"
 
 #. Translators: Preferences -> toolbar item title
 #, fuzzy
@@ -2517,10 +2466,6 @@ msgstr "Névjegy"
 
 msgid "Check for Update…"
 msgstr "Frissítések keresése..."
-
-#. Translators: Donation beg -> button
-msgid "Donate"
-msgstr "Támogatás"
 
 msgid "Preferences…"
 msgstr "Beállítások..."
@@ -2540,22 +2485,14 @@ msgstr "Mind mutatása"
 msgid "Quit Retransmission"
 msgstr "Retransmission bezárása"
 
-msgid "File"
-msgstr "Fájl"
-
 msgid "Create Torrent File…"
 msgstr "Torrent fájl létrehozása..."
 
-#, fuzzy
-#| msgid "_Open…"
-msgid "Open…"
-msgstr "Megnyitás…"
+msgid "_Open…"
+msgstr "_Megnyitás…"
 
 msgid "Open With Options Window…"
 msgstr "Megnyitás beállítások ablakkal..."
-
-msgid "Open URL…"
-msgstr "Webcím megnyitása…"
 
 msgid "Close Window"
 msgstr "Ablak bezárása"
@@ -2567,11 +2504,6 @@ msgstr "Ablak bezárása"
 msgid "Quick Look"
 msgstr "Gyors nézet"
 
-#, fuzzy
-#| msgid "Set _Location…"
-msgid "Set Location…"
-msgstr "Hely megadása…"
-
 #. Translators: File Outline -> Menu
 msgid "Rename…"
 msgstr "Átnevezés…"
@@ -2581,12 +2513,6 @@ msgstr "Torrent fájl mentése másként..."
 
 msgid "Share Torrent File"
 msgstr "Torrent fájl megosztása"
-
-msgid "Copy Magnet Link to Clipboard"
-msgstr "Magnet link másolása a vágólapra"
-
-msgid "Edit"
-msgstr "Szerkesztés"
 
 msgid "Undo"
 msgstr "Visszavon"
@@ -2603,15 +2529,6 @@ msgstr "Másolás"
 msgid "Paste"
 msgstr "Beilleszt"
 
-msgid "Delete"
-msgstr "Törlés"
-
-msgid "Select All"
-msgstr "Mind kijelölése"
-
-msgid "View"
-msgstr "Nézet"
-
 msgid "Compact View"
 msgstr "Kompakt nézet"
 
@@ -2623,11 +2540,6 @@ msgstr "Elérhetőség"
 
 msgid "Use Groups"
 msgstr "Csoportok használata"
-
-#, fuzzy
-#| msgid "Start torrent"
-msgid "Sort Torrents By"
-msgstr "Torrent indítása"
 
 msgid "Queue Order"
 msgstr "Sor rendezése"
@@ -2666,48 +2578,12 @@ msgstr "Eszköztár elrejtése"
 msgid "Customize Toolbar…"
 msgstr "Eszköztár személyre szabása..."
 
-#. Translators: Selected toolbar item -> label
-#, fuzzy
-#| msgid "Paused"
-msgid "Pause"
-msgstr "Szüneteltetve"
-
-#. Translators: Selected toolbar item -> label
-#, fuzzy
-#| msgid "_Start"
-msgid "Start"
-msgstr "Indítás"
-
-#. Translators: Removal confirm panel -> button
-#. Translators: Remove completed confirm panel -> button
-#. Translators: Remove toolbar item -> label
-#. Translators: Remove trackers alert -> button
-msgid "Remove"
-msgstr "Eltávolít"
-
-#, fuzzy
-#| msgid "_Delete Files and Remove"
-msgid "Delete Files and Remove"
-msgstr "Fájlok törlése és eltávolítás"
-
 msgid "Remove All Completed From List"
 msgstr "Összes befejezett eltávolítása a listából"
 
 #. Translators: File Outline -> Menu
 msgid "Show in Finder"
 msgstr "Megjelenítés Finderben"
-
-#. Translators: All toolbar item -> label
-#. Translators: Dock item
-msgid "Pause All"
-msgstr "Összes szüneteltetése"
-
-#. Translators: All toolbar item -> label
-#. Translators: Dock item
-#, fuzzy
-#| msgid "_Start All"
-msgid "Start All"
-msgstr "Összes indítása"
 
 #, fuzzy
 #| msgid "_Start All"
@@ -2717,11 +2593,6 @@ msgstr "Összes indítása"
 #. Translators: Groups -> Button
 msgid "Group"
 msgstr "Csoport"
-
-#, fuzzy
-#| msgid "Ask Tracker for _More Peers"
-msgid "Ask Tracker for More Peers"
-msgstr "Több partner igénylése a trackertől"
 
 msgid "Window"
 msgstr "Ablak"
@@ -2747,9 +2618,6 @@ msgstr "Előző szűrő gomb"
 msgid "Bring All to Front"
 msgstr "Mindet előtérbe helyez"
 
-msgid "Help"
-msgstr "Súgó"
-
 msgid "Retransmission Help"
 msgstr "Retransmission súgó"
 
@@ -2765,9 +2633,6 @@ msgstr "Támogatás & Fejlesztés"
 msgid "Menu"
 msgstr "Menü"
 
-msgid "Preferences"
-msgstr "Beállítások"
-
 msgid "Check for update:"
 msgstr "Frissítések keresése:"
 
@@ -2779,11 +2644,6 @@ msgstr "Ellenőrzés naponta automatikusan"
 
 msgid "Reset all alerts:"
 msgstr "Összes figyelmeztetés nullázása:"
-
-#. Translators: Stats window -> reset button
-#. Translators: Stats reset -> button
-msgid "Reset"
-msgstr "Visszaállítás"
 
 msgid "Set Default Application"
 msgstr "Alapértelmezett alkalmazás beállítása"
@@ -2838,40 +2698,17 @@ msgstr "Torrent fájlok megnyitása:"
 msgid "Same as torrent file"
 msgstr "Ugyanaz mint a torrent fájl"
 
-#, fuzzy
-#| msgid "Save to _Location:"
-msgid "Save to location:"
-msgstr "Mentés helye:"
-
 msgid "Settings:"
 msgstr "Beállítások:"
 
-#, fuzzy
-#| msgid "Append \"._part\" to incomplete files' names"
-msgid "Append \".part\" to incomplete files' names"
-msgstr "\".part\" hozzáfűzése a befejezetlen fájlok nevéhez"
-
-#, fuzzy
-#| msgid "Automatically add torrent files _from:"
-msgid "Automatically add torrent files from:"
-msgstr "Torrent fájlok automatikus hozzáadása innen:"
-
 msgid "Auto add:"
 msgstr "Auto hozzáadás:"
-
-msgid "Keep incomplete files in:"
-msgstr "Befejezetlen fájlok tárolása itt:"
 
 msgid "Display a window when opening a torrent file"
 msgstr "Ablak mutatása torrent fájl megnyitásakor"
 
 msgid "Display a window when opening a magnet link"
 msgstr "Ablak mutatása magnet link megnyitásakor"
-
-#, fuzzy
-#| msgid "_Start added torrents"
-msgid "Start added torrents"
-msgstr "Hozzáadott torrentek elindítása"
 
 msgid "Only when adding manually"
 msgstr "Csak kézi hozzáadáskor"
@@ -2975,23 +2812,11 @@ msgstr "Szombat"
 msgid "Sunday"
 msgstr "Vasárnap"
 
-msgid "to"
-msgstr "-"
+msgid "_Download:"
+msgstr "_Letöltés:"
 
-#, fuzzy
-#| msgid "_Scheduled times:"
-msgid "Scheduled times:"
-msgstr "Ütemezett időszakok:"
-
-#, fuzzy
-#| msgid "_Download:"
-msgid "Download:"
-msgstr "Letöltés:"
-
-#, fuzzy
-#| msgid "_Upload:"
-msgid "Upload:"
-msgstr "Feltöltés:"
+msgid "_Upload:"
+msgstr "_Feltöltés:"
 
 #, fuzzy
 #| msgid "Alternative Speed Limits"
@@ -3008,18 +2833,8 @@ msgstr "Sebességkorlátok"
 msgid "Peer limits:"
 msgstr "Partnerkorlátok"
 
-#, fuzzy
-#| msgid "Use _DHT to find more peers"
-msgid "Use DHT to find more peers for public torrents"
-msgstr "DHT használata partnerek kereséséhez"
-
 msgid "Blocklist:"
 msgstr "Tiltólista:"
-
-#, fuzzy
-#| msgid "Maximum peers per _torrent:"
-msgid "Maximum peers for new torrents:"
-msgstr "Partnerek maximális száma torrentenként:"
 
 msgid "Last updated: N/A"
 msgstr "Utoljára frissítve: N/A"
@@ -3027,33 +2842,8 @@ msgstr "Utoljára frissítve: N/A"
 msgid "Encryption:"
 msgstr "Titkosítás:"
 
-msgid "Automatically update weekly"
-msgstr "Frissítések keresése hetente"
-
-#, fuzzy
-#| msgid "Maximum peers _overall:"
-msgid "Maximum peers overall:"
-msgstr "Partnerek maximális száma összesen:"
-
 msgid "blocklist loaded/not loaded"
 msgstr "tiltólista betöltve/nincs betöltve"
-
-#, fuzzy
-#| msgid "Use PE_X to find more peers"
-msgid "Use PEX to find more peers for public torrents"
-msgstr "PEX használata partnerek kereséséhez"
-
-#. Translators: URL sheet label
-msgid "URL:"
-msgstr "Webcím:"
-
-#, fuzzy
-#| msgid "Use _Local Peer Discovery to find more peers"
-msgid "Use Local Peer Discovery to find more peers for public torrents"
-msgstr "Helyi partnerek felderítésének használata"
-
-msgid "Update"
-msgstr "Frissítés"
 
 msgid "High connection limits might significantly impact system performance"
 msgstr "Magas kapcsolati számok jelentősen befolyásolhatják a rendszer teljesítményt"
@@ -3069,11 +2859,6 @@ msgstr "Véletlenszerű"
 msgid "Peer communication:"
 msgstr "Partner kommunikáció:"
 
-#, fuzzy
-#| msgid "_Port for incoming connections:"
-msgid "Port for incoming connections:"
-msgstr "Bejövő kapcsolatok portja:"
-
 #. Translators: Preferences -> Network -> port status
 msgid "Port is open"
 msgstr "A port nyitva van"
@@ -3081,63 +2866,17 @@ msgstr "A port nyitva van"
 msgid "NAT traversal uses either NAT-PMP or UPnP"
 msgstr "A NAT átjárás NAT-PMP-t vagy UPnP-t használ"
 
-#, fuzzy
-#| msgid "Pick a _random port every time Transmission is started"
-msgid "Pick a random port at startup"
-msgstr "Véletlenszerű port választása a Transmission minden indításakor"
-
 msgid "Automatically map port"
 msgstr "Port átirányítása automatikusan"
-
-#, fuzzy
-#| msgid "Prevent computer from sleeping with active transfers"
-msgid "Prevent computer from sleeping with active torrents"
-msgstr "Számítógép altatásának megakadályozása aktív átvitelek esetén"
 
 msgid "System sleep:"
 msgstr "Rendszer alvás:"
 
-#, fuzzy
-#| msgid "Enable µ_TP for peer connections"
-msgid "Enable µTP for peer connections"
-msgstr "µTP engedélyezése partner kapcsolatokhoz"
-
 msgid "This enables the web interface and allows remote requests"
 msgstr "Ez engedélyezi a web felületet és a távoli kéréseket"
 
-#, fuzzy
-#| msgid "Only allow these IP a_ddresses:"
-msgid "Only allow these IP addresses:"
-msgstr "Csak a következő IP címek engedélyezése:"
-
-#, fuzzy
-#| msgid "Use _authentication"
-msgid "Use authentication"
-msgstr "Hitelesítés használata"
-
 msgid "Display the web interface with Bonjour"
 msgstr "Web-felület mutatása Bonjour-ral."
-
-#, fuzzy
-#| msgid "Allow _remote access"
-msgid "Allow remote access"
-msgstr "Távoli hozzáférés engedélyezése"
-
-msgid "Username:"
-msgstr "Felhasználónév:"
-
-msgid "Password:"
-msgstr "Jelszó:"
-
-#, fuzzy
-#| msgid "HTTP _port:"
-msgid "HTTP port:"
-msgstr "HTTP-port:"
-
-#, fuzzy
-#| msgid "_Open web client"
-msgid "Open Web Client"
-msgstr "Webes kliens megnyitása"
 
 #. Translators: Inspector -> Files tab -> file status string
 #. Translators: Status bar transfer count
@@ -3151,12 +2890,6 @@ msgstr "A tiltólista letöltése sikertelen."
 #. Translators: Legal alert -> button
 msgid "I Accept"
 msgstr "Elfogadom"
-
-#. Translators: Legal alert -> button
-#. Translators: Confirm Quit panel -> button
-#. Translators: Transmission launched alert -> button
-msgid "Quit"
-msgstr "Kilépés"
 
 #. Translators: Legal alert -> title
 msgid "Welcome to {appname}"
@@ -3824,10 +3557,6 @@ msgstr "{amount} összesen"
 msgid "Magnetized torrent"
 msgstr "Privát torrent"
 
-#. Translators: Message window -> save button
-msgid "Save"
-msgstr "Mentés"
-
 #. Translators: Save log panel -> default file name
 msgid "untitled"
 msgstr "névtelen"
@@ -4100,12 +3829,6 @@ msgstr "Elérhetőség:"
 msgid "Labels:"
 msgstr "Címkék:"
 
-msgid "Limit _upload speed:"
-msgstr "_Feltöltési sebességkorlát:"
-
-msgid "Limit _download speed:"
-msgstr "_Letöltési sebességkorlát:"
-
 msgid "Search…"
 msgstr "Keresés…"
 
@@ -4148,9 +3871,6 @@ msgstr "{host} legutóbb {time_span} válaszolt"
 msgid "{host} is not responding"
 msgstr "{host} nem válaszol"
 
-msgid "_Open…"
-msgstr "_Megnyitás…"
-
 msgid "Open the torrent's folder"
 msgstr "Torrent mappájának megnyitása"
 
@@ -4180,9 +3900,6 @@ msgstr "Munkamenet kiválasztása"
 #| msgid "_Source:"
 msgid "Sou_rce:"
 msgstr "_Forrás:"
-
-msgid "_Priority:"
-msgstr "_Priorítás:"
 
 msgid "Select Folder"
 msgstr "Mappa kiválasztása"
@@ -4215,12 +3932,6 @@ msgstr "Távoli munkamenet esetén nem támogatott"
 #| msgid_plural "<i>Blocklist contains {count:L} rules</i>"
 msgid "<i>Blocklist has never been updated</i>"
 msgstr "<i>A blokkolási lista {count:L} szabályt tartalmaz</i>"
-
-msgid "_Upload:"
-msgstr "_Feltöltés:"
-
-msgid "_Download:"
-msgstr "_Letöltés:"
 
 msgid "U_pload:"
 msgstr "F_eltöltés:"

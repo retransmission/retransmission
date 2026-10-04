@@ -27,10 +27,10 @@
 {
     [super awakeFromNib];
     // Translators: URL sheet label
-    self.fLabelField.stringValue = TR_TEXT("URL:");
+    self.fLabelField.stringValue = TR_MNEMONIC("_URL:");
     // Translators: URL sheet button
     self.fOpenButton.title = TR_TEXT("Open");
-    self.fCancelButton.title = TR_TEXT("Cancel");
+    self.fCancelButton.title = TR_MNEMONIC("_Cancel");
 
     [self.fOpenButton sizeToFit];
     [self.fCancelButton sizeToFit];

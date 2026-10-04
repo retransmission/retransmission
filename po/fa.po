@@ -980,9 +980,6 @@ msgstr "گشودن یک تورنت"
 msgid "Open _URL…"
 msgstr "گشودن نشانی اینترنتی…"
 
-msgid "Open URL…"
-msgstr "گشودن نشانی اینترنتی…"
-
 msgid "_New…"
 msgstr "جدید…"
 

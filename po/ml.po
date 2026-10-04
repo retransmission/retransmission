@@ -979,9 +979,6 @@ msgstr "ടോറന്റ്  തുറക്കുക"
 msgid "Open _URL…"
 msgstr ""
 
-msgid "Open URL…"
-msgstr ""
-
 msgid "_New…"
 msgstr ""
 

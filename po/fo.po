@@ -977,9 +977,6 @@ msgstr "Opna ein torrent"
 msgid "Open _URL…"
 msgstr "Opna_URL…"
 
-msgid "Open URL…"
-msgstr "Opna URL…"
-
 msgid "_New…"
 msgstr "_Nýtt…"
 

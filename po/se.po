@@ -1006,9 +1006,6 @@ msgstr "Rahpat torrent"
 msgid "Open _URL…"
 msgstr "Rahpat _URL…"
 
-msgid "Open URL…"
-msgstr "Rahpat URL…"
-
 msgid "_New…"
 msgstr ""
 

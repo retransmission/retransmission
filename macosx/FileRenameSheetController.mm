@@ -88,7 +88,7 @@ typedef void (^CompletionBlock)(BOOL);
 
     // Translators: rename sheet button
     self.renameButton.title = TR_TEXT("Rename");
-    self.cancelButton.title = TR_TEXT("Cancel");
+    self.cancelButton.title = TR_MNEMONIC("_Cancel");
 
     [self.renameButton sizeToFit];
     [self.cancelButton sizeToFit];

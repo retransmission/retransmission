@@ -1056,9 +1056,6 @@ msgstr "Адкрыць торэнт"
 msgid "Open _URL…"
 msgstr "Адкрыць _URL…"
 
-msgid "Open URL…"
-msgstr "Адкрыць URL…"
-
 msgid "_New…"
 msgstr "_Новы…"
 

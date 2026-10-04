@@ -35,7 +35,7 @@ static BlocklistDownloaderViewController* fBLViewController = nil;
 - (void)awakeFromNib
 {
     [super awakeFromNib];
-    self.fButton.title = TR_TEXT("Cancel");
+    self.fButton.title = TR_MNEMONIC("_Cancel");
 
     CGFloat const oldWidth = NSWidth(self.fButton.frame);
     [self.fButton sizeToFit];

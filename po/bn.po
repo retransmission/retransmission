@@ -982,9 +982,6 @@ msgstr "টরেনট খুলুন"
 msgid "Open _URL…"
 msgstr "URL খুলুন (_U)…"
 
-msgid "Open URL…"
-msgstr "URL খুলুন…"
-
 msgid "_New…"
 msgstr "নতুন (_N)…"
 

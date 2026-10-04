@@ -978,9 +978,6 @@ msgstr "ఒక టోరెంట్ను తెరువు"
 msgid "Open _URL…"
 msgstr "URL తెరవండి…(_U)"
 
-msgid "Open URL…"
-msgstr "URL తెరవండి…"
-
 msgid "_New…"
 msgstr "కొత్తది…(_N)"
 

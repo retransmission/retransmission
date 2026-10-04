@@ -1017,9 +1017,6 @@ msgstr "Otvori torent"
 msgid "Open _URL…"
 msgstr "Otvori _adresu…"
 
-msgid "Open URL…"
-msgstr "Otvori adresu…"
-
 msgid "_New…"
 msgstr "_Novo…"
 

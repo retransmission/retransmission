@@ -1035,9 +1035,6 @@ msgstr "Deschide un torent"
 msgid "Open _URL…"
 msgstr "Deschide _URL…"
 
-msgid "Open URL…"
-msgstr "Deschide URL…"
-
 msgid "_New…"
 msgstr "_Nou"
 

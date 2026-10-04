@@ -1004,9 +1004,6 @@ msgstr "Отвори торент файла"
 msgid "Open _URL…"
 msgstr "Отвори _линк…"
 
-msgid "Open URL…"
-msgstr "Отвори линк…"
-
 msgid "_New…"
 msgstr "_Нов…"
 

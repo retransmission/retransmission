@@ -950,9 +950,6 @@ msgstr "Mở một torrent"
 msgid "Open _URL…"
 msgstr ""
 
-msgid "Open URL…"
-msgstr ""
-
 msgid "_New…"
 msgstr "_Mới..."
 

@@ -66,7 +66,7 @@
                                 </textField>
                                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" allowsCharacterPickerTouchBarItem="YES" preferredMaxLayoutWidth="0.0" translatesAutoresizingMaskIntoConstraints="NO" id="4">
                                     <rect key="frame" x="-2" y="102" width="92" height="14"/>
-                                    <textFieldCell key="cell" sendsActionOnEndEditing="YES" title="Torrent priority:" id="47">
+                                    <textFieldCell key="cell" sendsActionOnEndEditing="YES" title="Torrent _priority:" id="47">
                                         <font key="font" metaFont="smallSystem"/>
                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
@@ -74,7 +74,7 @@
                                 </textField>
                                 <button horizontalHuggingPriority="1000" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="6">
                                     <rect key="frame" x="-1" y="11" width="223" height="16"/>
-                                    <buttonCell key="cell" type="check" title="Honor global limits" bezelStyle="regularSquare" imagePosition="left" alignment="left" controlSize="small" state="on" allowsMixedState="YES" inset="2" id="45">
+                                    <buttonCell key="cell" type="check" title="Honor global _limits" bezelStyle="regularSquare" imagePosition="left" alignment="left" controlSize="small" state="on" allowsMixedState="YES" inset="2" id="45">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                         <font key="font" metaFont="smallSystem"/>
                                     </buttonCell>
@@ -84,7 +84,7 @@
                                 </button>
                                 <button verticalHuggingPriority="1000" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="7">
                                     <rect key="frame" x="-1" y="51" width="105" height="16"/>
-                                    <buttonCell key="cell" type="check" title="Limit download speed:" bezelStyle="regularSquare" imagePosition="left" alignment="left" controlSize="small" state="on" allowsMixedState="YES" inset="2" id="44">
+                                    <buttonCell key="cell" type="check" title="Limit _download speed:" bezelStyle="regularSquare" imagePosition="left" alignment="left" controlSize="small" state="on" allowsMixedState="YES" inset="2" id="44">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                         <font key="font" metaFont="smallSystem"/>
                                     </buttonCell>
@@ -94,7 +94,7 @@
                                 </button>
                                 <button verticalHuggingPriority="1000" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="8">
                                     <rect key="frame" x="-1" y="31" width="105" height="16"/>
-                                    <buttonCell key="cell" type="check" title="Limit upload speed:" bezelStyle="regularSquare" imagePosition="left" alignment="left" controlSize="small" state="on" allowsMixedState="YES" inset="2" id="43">
+                                    <buttonCell key="cell" type="check" title="Limit _upload speed:" bezelStyle="regularSquare" imagePosition="left" alignment="left" controlSize="small" state="on" allowsMixedState="YES" inset="2" id="43">
                                         <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                         <font key="font" metaFont="smallSystem"/>
                                     </buttonCell>
@@ -250,7 +250,7 @@
                                 </button>
                                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" allowsCharacterPickerTouchBarItem="YES" preferredMaxLayoutWidth="0.0" translatesAutoresizingMaskIntoConstraints="NO" id="13">
                                     <rect key="frame" x="-2" y="2" width="125" height="14"/>
-                                    <textFieldCell key="cell" sendsActionOnEndEditing="YES" title="Maximum peers:" id="32">
+                                    <textFieldCell key="cell" sendsActionOnEndEditing="YES" title="_Maximum peers:" id="32">
                                         <font key="font" metaFont="smallSystem"/>
                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>
@@ -381,7 +381,7 @@
                                 </textField>
                                 <textField verticalHuggingPriority="750" horizontalCompressionResistancePriority="1000" allowsCharacterPickerTouchBarItem="YES" preferredMaxLayoutWidth="0.0" translatesAutoresizingMaskIntoConstraints="NO" id="79">
                                     <rect key="frame" x="-2" y="82" width="56" height="14"/>
-                                    <textFieldCell key="cell" sendsActionOnEndEditing="YES" title="Idle:" id="89">
+                                    <textFieldCell key="cell" sendsActionOnEndEditing="YES" title="_Idle:" id="89">
                                         <font key="font" metaFont="smallSystem"/>
                                         <color key="textColor" name="controlTextColor" catalog="System" colorSpace="catalog"/>
                                         <color key="backgroundColor" name="controlColor" catalog="System" colorSpace="catalog"/>

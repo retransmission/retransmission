@@ -1016,9 +1016,6 @@ msgstr "Atvērt torentu"
 msgid "Open _URL…"
 msgstr "Atvērt  _URL…"
 
-msgid "Open URL…"
-msgstr "Atvērt URL…"
-
 msgid "_New…"
 msgstr "Jau_ns…"
 
